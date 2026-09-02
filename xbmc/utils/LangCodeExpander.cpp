@@ -298,7 +298,7 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     return true;
   }
 
-  const CSubTagRegistryManager& registry{CServiceBroker::GetSubTagRegistry()};
+  const CSubTagRegistryManager& registry{CSubTagRegistryManager::GetInstance()};
   if (const auto ret = registry.GetLanguageSubTags().LookupByDescription(descTmp); ret.has_value())
   {
     code = ret->m_subTag;

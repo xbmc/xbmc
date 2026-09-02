@@ -8,7 +8,6 @@
 
 #include "utils/i18n/Bcp47.h"
 
-#include "ServiceBroker.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/i18n/Bcp47Formatter.h"
@@ -37,7 +36,7 @@ std::optional<CBcp47> CBcp47::ParseTag(std::string str, const CSubTagRegistryMan
     return std::nullopt;
 
   if (registry == nullptr)
-    registry = &CServiceBroker::GetSubTagRegistry();
+    registry = &CSubTagRegistryManager::GetInstance();
 
   CBcp47 tag;
   tag.m_registry = registry;

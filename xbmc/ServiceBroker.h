@@ -135,11 +135,6 @@ namespace XFILE
 class CBlurayDiscCache;
 }
 
-namespace KODI::UTILS::I18N
-{
-class CSubTagRegistryManager;
-}
-
 class CServiceBroker
 {
 public:
@@ -193,7 +188,6 @@ public:
   static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
   static CComponentContainer<IApplicationComponent>& GetAppComponents();
-  static KODI::UTILS::I18N::CSubTagRegistryManager& GetSubTagRegistry();
 
   static CGUIComponent* GetGUI();
   static const CGUIComponent* GetGUIConst();
