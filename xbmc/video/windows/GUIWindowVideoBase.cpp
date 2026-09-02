@@ -688,7 +688,8 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
 
 void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
                                         CVideoDatabase& database,
-                                        bool allowReplaceLabels)
+                                        bool allowReplaceLabels,
+                                        int getDetails)
 {
   //! @todo this could possibly be threaded as per the music info loading,
   //!       we could also cache the info
@@ -727,7 +728,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   bool fetchedPlayCounts = false;
   if (!content.empty())
   {
-    database.GetItemsForPath(content, items.GetPath(), dbItems);
+    database.GetItemsForPath(content, items.GetPath(), dbItems, getDetails);
 
     // Determine episode ranges for multi-episode items sharing the same basePath (same file).
     if (content == "episodes" && !dbItems.IsEmpty())
