@@ -1318,7 +1318,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
       file = mp4File = new MP4::File(stream);
     else if (strExtension == "mpc")
       file = mpcFile = new MPC::File(stream);
-    else if (strExtension == "mp3" || strExtension == "aac")
+    else if (strExtension == "mp2" || strExtension == "mp3" || strExtension == "aac")
 #if (TAGLIB_MAJOR_VERSION >= 2)
       file = mpegFile = new MPEG::File(stream);
 #else
