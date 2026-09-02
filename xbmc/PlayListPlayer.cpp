@@ -140,8 +140,10 @@ int CPlayListPlayer::GetNextItemIdx(int offset) const
   if (g_partyModeManager.IsEnabled() && GetCurrentPlaylist() == Id::TYPE_MUSIC)
     return song + offset;
 
-  // wrap around in the case of repeating
-  if (RepeatedOne(m_iCurrentPlayList))
+  // wrap around in the case of repeating. Repeating one repeats the current item, so it needs
+  // there to be one: a cleared playlist leaves no current item and the first item of whatever
+  // is queued next is what follows it.
+  if (RepeatedOne(m_iCurrentPlayList) && song >= 0)
     return song;
 
   song += offset;
@@ -164,8 +166,10 @@ int CPlayListPlayer::GetNextItemIdx()
   if (g_partyModeManager.IsEnabled() && GetCurrentPlaylist() == Id::TYPE_MUSIC)
     return iSong + 1;
 
-  // if repeat one, keep playing the current song if its valid
-  if (RepeatedOne(m_iCurrentPlayList))
+  // if repeat one, keep playing the current song if its valid. There has to be a current song
+  // to repeat: a cleared playlist leaves none, and what follows is the first item of whatever
+  // is queued next rather than nothing at all.
+  if (RepeatedOne(m_iCurrentPlayList) && iSong >= 0)
   {
     // otherwise immediately abort playback
     if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetProperty("unplayable").asBoolean())
@@ -467,9 +471,17 @@ void CPlayListPlayer::ClearPlaylist(Id playlistId)
   CPlayList& playlist = GetPlaylist(playlistId);
   playlist.Clear();
 
+  // The position indexes items that no longer exist. The item it named may still be playing,
+  // so the playback state is left for the stop that ends it to clean up.
+  if (m_iCurrentPlayList == playlistId)
+    m_iCurrentSong = -1;
+
   // its likely that the playlist changed
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  if (CServiceBroker::GetGUI() != nullptr)
+  {
+    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
 }
 
 CPlayList& CPlayListPlayer::GetPlaylist(Id playlistId)
