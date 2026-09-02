@@ -46,7 +46,6 @@
 #include "pictures/SlideShowDelegator.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 
@@ -87,9 +86,6 @@ bool CServiceManager::InitForTesting()
   m_extsMimeSupportList = std::make_unique<ADDONS::CExtsMimeSupportList>(*m_addonMgr);
   m_fileExtensionProvider->Initialize(*m_addonMgr);
 
-  m_subTagRegistryManager = std::make_unique<KODI::UTILS::I18N::CSubTagRegistryManager>();
-  m_subTagRegistryManager->Initialize();
-
   m_mediaManager = std::make_unique<CMediaManager>();
 
   init_level = 1;
@@ -100,7 +96,6 @@ void CServiceManager::DeinitTesting()
 {
   init_level = 0;
   m_mediaManager.reset();
-  m_subTagRegistryManager.reset();
   m_fileExtensionProvider->Deinitialize();
   m_extsMimeSupportList.reset();
   m_dataCacheCore.reset();
@@ -202,9 +197,6 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
   m_WSDiscovery = WSDiscovery::IWSDiscovery::GetInstance();
 #endif
 
-  m_subTagRegistryManager = std::make_unique<KODI::UTILS::I18N::CSubTagRegistryManager>();
-  m_subTagRegistryManager->Initialize();
-
   if (!m_Platform->InitStageTwo())
     return false;
 
@@ -270,8 +262,6 @@ void CServiceManager::DeinitStageTwo()
     return;
 
   init_level = 1;
-
-  m_subTagRegistryManager.reset();
 
 #if defined(HAS_FILESYSTEM_SMB)
   m_WSDiscovery.reset();
@@ -471,9 +461,4 @@ CMediaManager& CServiceManager::GetMediaManager()
 CSlideShowDelegator& CServiceManager::GetSlideShowDelegator()
 {
   return *m_slideShowDelegator;
-}
-
-KODI::UTILS::I18N::CSubTagRegistryManager& CServiceManager::GetSubTagRegistryManager()
-{
-  return *m_subTagRegistryManager;
 }
