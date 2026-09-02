@@ -13,8 +13,10 @@
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "utils/EndianSwap.h"
 #include "utils/MemUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -993,6 +995,45 @@ void CActiveAESink::OpenSink()
   CLog::Log(LOGDEBUG, "  Channel Layout: {}", ((std::string)m_sinkFormat.m_channelLayout));
   CLog::Log(LOGDEBUG, "  Frames        : {}", m_sinkFormat.m_frames);
   CLog::Log(LOGDEBUG, "  Frame Size    : {}", m_sinkFormat.m_frameSize);
+
+  if (m_sink->IsSilentFallback())
+  {
+    // Notify the user from the orchestration layer rather than inside
+    // the platform-specific sink. QueueNotification is thread-safe.
+    std::string formatName;
+    switch (m_sinkFormat.m_streamInfo.m_type)
+    {
+      case CAEStreamInfo::STREAM_TYPE_AC3:
+        formatName = "DD (AC3)";
+        break;
+      case CAEStreamInfo::STREAM_TYPE_EAC3:
+        formatName = "DD+ (E‑AC3)";
+        break;
+      case CAEStreamInfo::STREAM_TYPE_DTS_512:
+      case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+      case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+      case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+        formatName = "DTS";
+        break;
+      case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+        formatName = "DTS‑HD";
+        break;
+      case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+        formatName = "TrueHD";
+        break;
+      default:
+        // Fallback to the internal name for any unexpected type.
+        formatName = CAEUtil::StreamTypeToStr(m_sinkFormat.m_streamInfo.m_type);
+        break;
+    }
+
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning, "Passthrough unsupported",
+        StringUtils::Format(
+            "{} audio cannot be used with current settings on this device. Playing silently.",
+            formatName));
+  }
 
   // init sample of silence
   SampleConfig config;
