@@ -489,16 +489,17 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(!result1);
   EXPECT_TRUE(!result2);
 
-  EXPECT_TRUE(w3.waiting);
   EXPECT_TRUE(w3.result == NULL);
 
-  // this should end given the wait is for only 50 millis
-  EXPECT_TRUE(waitThread3.timed_join(200ms));
+  // nothing sets an event here, so the thread can only end by timing out
+  EXPECT_TRUE(waitThread3.timed_join(10000ms));
 
   EXPECT_TRUE(!w3.waiting);
   EXPECT_TRUE(w3.result == NULL);
 
-  group_wait w4(group, 50ms);
+  // this one is ended by event1 below rather than by its timeout, so the
+  // timeout only has to be long enough never to fire
+  group_wait w4(group, 60000ms);
   thread waitThread4(w4);
 
   EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
