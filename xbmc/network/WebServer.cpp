@@ -1192,7 +1192,9 @@ bool CWebServer::LoadCert(std::string& skey, std::string& scert)
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 {
   unsigned int timeout = 60 * 60 * 24;
-  const char* ciphers = "PFS:-VERS-TLS1.0:-VERS-TLS1.1";
+  // PFS covers ECDHE and DHE alike, so the finite-field exchanges RFC 10015 forbids for
+  // TLS 1.2 have to be subtracted from it by name.
+  const char* ciphers = "PFS:-VERS-TLS1.0:-VERS-TLS1.1:-DHE-RSA:-DHE-DSS:-DHE-PSK";
 
   MHD_set_panic_func(&panicHandlerForMHD, nullptr);
 
