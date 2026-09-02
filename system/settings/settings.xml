@@ -196,6 +196,20 @@
           </updates>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.hdrpgsbrightness" type="integer" label="39213" help="39214">
+          <requirement>HAS_GLES</requirement>
+          <dependencies>
+            <dependency type="visible" on="property" name="ishdrdisplay"/>
+          </dependencies>
+          <level>2</level>
+          <default>50</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>5</step>
+            <maximum>100</maximum>
+          </constraints>
+          <control type="slider" format="percentage" range="0,100" />
+        </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
           <level>2</level>
