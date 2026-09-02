@@ -94,27 +94,14 @@ int DegreeToOrientation(int degrees)
   }
 }
 
-namespace
+bool CDVDFileInfo::SeekAndDecodeFirstPicture(CDVDDemux& demuxer,
+                                             CDVDVideoCodec& codec,
+                                             int videoStream,
+                                             int64_t seekTo_ms,
+                                             VideoPicture& picture,
+                                             int& packetsTried)
 {
-//! Seek to the thumbnail position (chapter start or one third in) and decode the
-//! first clean picture.
-bool SeekAndDecodeFirstPicture(CDVDDemux& demuxer,
-                               CDVDVideoCodec& codec,
-                               int videoStream,
-                               int chapterNumber,
-                               const std::string& redactPath,
-                               VideoPicture& picture,
-                               int& packetsTried)
-{
-  const int nTotalLen = demuxer.GetStreamLength();
-
-  const bool seekToChapter = chapterNumber > 0 && demuxer.GetChapterCount() > 0;
-  const int64_t nSeekTo =
-      seekToChapter ? demuxer.GetChapterPos(chapterNumber).count() : nTotalLen / 3;
-
-  CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen, redactPath);
-
-  if (!demuxer.SeekTime(static_cast<double>(nSeekTo), true))
+  if (!demuxer.SeekTime(static_cast<double>(seekTo_ms), true))
     return false;
 
   CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
@@ -153,6 +140,8 @@ bool SeekAndDecodeFirstPicture(CDVDDemux& demuxer,
   return iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED);
 }
 
+namespace
+{
 //! Convert a decoded picture to a BGRA texture sized for the thumbnail cache.
 std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CDVDStreamInfo& hint)
 {
@@ -337,9 +326,18 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
     if (pVideoCodec)
     {
+      // Thumbnail position: the chapter start, or one third in
+      const int nTotalLen = demuxer->GetStreamLength();
+      const bool seekToChapter = chapterNumber > 0 && demuxer->GetChapterCount() > 0;
+      const int64_t nSeekTo =
+          seekToChapter ? demuxer->GetChapterPos(chapterNumber).count() : nTotalLen / 3;
+
+      CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
+                 redactPath);
+
       VideoPicture picture = {};
-      if (SeekAndDecodeFirstPicture(*demuxer, *pVideoCodec, nVideoStream, chapterNumber, redactPath,
-                                    picture, packetsTried))
+      if (SeekAndDecodeFirstPicture(*demuxer, *pVideoCodec, nVideoStream, nSeekTo, picture,
+                                    packetsTried))
         result = PictureToTexture(picture, hint);
       else
         CLog::LogF(LOGDEBUG, "decode failed in {} after {} packets.", redactPath, packetsTried);
