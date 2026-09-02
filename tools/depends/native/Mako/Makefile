@@ -12,7 +12,7 @@ all: .installed-$(PLATFORM)
 	touch $@
 
 .installed-$(PLATFORM): .configured-$(PLATFORM)
-	cd $(PLATFORM); $(PREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
+	cd $(PLATFORM); $(PREFIX)/bin/python3 -m pip install --no-deps --no-build-isolation --prefix=$(PREFIX) .
 	touch $@
 
 clean:
