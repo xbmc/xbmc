@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2006 elupus (Joakim Plate)
- *  Copyright (C) 2006-2018 Team Kodi
+ *  Copyright (C) 2006-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -99,15 +99,6 @@ public:
     return m_trainfo.cur_transport_status;
   }
 
-  void OnGetMediaInfoResult(NPT_Result res,
-                            PLT_DeviceDataReference& device,
-                            PLT_MediaInfo* info,
-                            void* userdata) override
-  {
-    if (NPT_FAILED(res) || info == NULL)
-      m_logger->error("OnGetMediaInfoResult failed");
-  }
-
   void OnGetTransportInfoResult(NPT_Result res,
                                 PLT_DeviceDataReference& device,
                                 PLT_TransportInfo* info,
@@ -146,7 +137,7 @@ public:
 
     if (NPT_FAILED(res) || info == NULL)
     {
-      m_logger->error("OnGetMediaInfoResult failed");
+      m_logger->error("OnGetPositionInfoResult failed");
       m_posinfo = PLT_PositionInfo();
     }
     else
@@ -235,6 +226,14 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   if (obj.IsNull())
     goto failed;
 
+  // Before the DIDL is written, so the renderer is told about every address as well as being
+  // handed one of them. Scoped so it does not cross a goto.
+  {
+    NPT_IpAddress rendererAddress;
+    if (NPT_SUCCEEDED(rendererAddress.Parse(m_delegate->m_device->GetURLBase().GetHost())))
+      SortResourcesForRenderer(*obj, rendererAddress);
+  }
+
   NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed_todidl);
   tmp.Insert(didl_header, 0);
   tmp.Append(didl_footer);
@@ -257,8 +256,23 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   /* The resource uri's are stored in the Didl. We must choose the best resource
    * for the playback device */
   NPT_Cardinal res_index;
-  NPT_CHECK_LABEL_SEVERE(m_control->FindBestResource(m_delegate->m_device, *obj, res_index),
-                         failed_findbestresource);
+  if (NPT_FAILED(m_control->FindBestResource(m_delegate->m_device, *obj, res_index)))
+  {
+    /* An empty sink list means the renderer never told us what it accepts, which is not the same
+     * as it accepting nothing. Offer the first resource and let the device answer for itself. */
+    NPT_List<NPT_String> sinks;
+    const bool advertised =
+        NPT_SUCCEEDED(m_control->GetProtocolInfoSink(m_delegate->m_device->GetUUID(), sinks)) &&
+        sinks.GetItemCount() > 0 && !(*sinks.GetFirstItem()).IsEmpty();
+
+    if (advertised || obj->m_Resources.GetItemCount() == 0)
+      goto failed_findbestresource;
+
+    res_index = 0;
+    m_logger->warn("PlayFile({}): {} advertises no protocolInfo, offering '{}' unmatched",
+                   file.GetPath(), m_delegate->m_device->GetFriendlyName().GetChars(),
+                   obj->m_Resources[res_index].m_ProtocolInfo.ToString().GetChars());
+  }
 
   // get the transport info to evaluate the TransportState to be able to
   // determine whether we first need to call Stop()
@@ -277,6 +291,24 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
         failed_stop);
     NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout), failed_stop);
     NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed_stop);
+
+    // Stopping is acknowledged before the renderer has stopped, and until it has it keeps
+    // reporting the file being replaced as playing. Waiting for the transport to reach STOPPED
+    // is what makes the states seen from here on belong to the file about to be opened. Polled
+    // directly rather than through WaitOnEvent, which has no bound and shows a busy dialog.
+    XbmcThreads::EndTime<> stopping(3s);
+    while (!stopping.IsTimePast())
+    {
+      if (NPT_FAILED(m_control->GetTransportInfo(m_delegate->m_device, m_delegate->m_instance,
+                                                 m_delegate.get())))
+        break;
+      if (!m_delegate->m_traevnt.Wait(500ms))
+        continue;
+
+      const NPT_String stoppedState = m_delegate->GetTransportState();
+      if (stoppedState == "STOPPED" || stoppedState == "NO_MEDIA_PRESENT")
+        break;
+    }
   }
 
   timeout.Set(timeout.GetInitialTimeoutValue());
@@ -298,9 +330,13 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   timeout.Set(timeout.GetInitialTimeoutValue());
   do
   {
+    // The reply must be awaited before the state is read, or the first pass evaluates the state
+    // left by the query at the top of this function - the renderer still playing what is being
+    // replaced - and stops waiting before the new file has started.
     NPT_CHECK_LABEL_SEVERE(
         m_control->GetTransportInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
         failed_waitplaying);
+    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_waitplaying);
 
     const NPT_String transportStatus = m_delegate->GetTransportStatus();
     const NPT_String transportState = m_delegate->GetTransportState();
@@ -313,8 +349,6 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
       m_logger->error("OpenFile({}): remote player signalled error", file.GetPath());
       return NPT_FAILURE;
     }
-
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_waitplaying);
 
   } while (!timeout.IsTimePast());
 
@@ -361,6 +395,8 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 {
   XbmcThreads::EndTime<> timeout(10s);
 
+  m_playback.Opening();
+
   /* if no path we want to attach to a already playing player */
   if (file.GetPath().empty())
   {
@@ -384,7 +420,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
     Create();
 
   m_stopremote = true;
-  m_started = true;
+  m_playback.Started();
 
   if (VIDEO::IsVideo(file))
   {
@@ -399,9 +435,6 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   m_callback.OnAVStarted(file);
   NPT_CHECK_LABEL_SEVERE(
       m_control->GetPositionInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
-      failed);
-  NPT_CHECK_LABEL_SEVERE(
-      m_control->GetMediaInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
       failed);
 
   m_updateTimer.Set(0ms);
@@ -459,11 +492,9 @@ bool CUPnPPlayer::CloseFile(bool reopen)
     NPT_CHECK_LABEL(m_delegate->m_resstatus, failed);
   }
 
-  if (m_started)
-  {
-    m_started = false;
+  if (m_playback.Finish())
     m_callback.OnPlayBackStopped();
-  }
+
   StopThread(true);
   CServiceBroker::GetDataCacheCore().Reset();
   return true;
@@ -536,7 +567,7 @@ void CUPnPPlayer::Process()
     NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
     m_delegate->UpdatePositionInfo();
 
-    if (m_started)
+    if (m_playback.IsStarted())
     {
       // Update player times
       CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
@@ -558,10 +589,10 @@ void CUPnPPlayer::Process()
         dataCacheCore.SetSpeed(1.0, 1.0);
       }
 
-      if (m_delegate->GetTransportState() == "STOPPED")
+      if (m_playback.HasEnded(m_delegate->GetTransportState().GetChars()))
       {
         m_logger->info("Transport state flagged as STOPPED. Triggering OnPlayBackEnded.");
-        m_started = false;
+        m_playback.Finish();
         m_callback.OnPlayBackEnded();
       }
     }
@@ -654,7 +685,7 @@ failed:
 
 void CUPnPPlayer::OnExit()
 {
-  if (m_started)
+  if (m_playback.IsStarted())
   {
     m_callback.OnPlayBackEnded();
   }
