@@ -692,6 +692,14 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     m_url.RemoveOption("duration");
   }
 
+  // What the scraper calls the episode
+  std::string title;
+  if (m_url.HasOption("title"))
+  {
+    title = m_url.GetOption("title");
+    m_url.RemoveOption("title");
+  }
+
   std::string root{m_url.GetHostName()};
   std::string file{m_url.GetFileName()};
   URIUtils::RemoveSlashAtEnd(file);
@@ -822,8 +830,11 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
           return false; // Episode not on disc
         episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
 
-        // Add duration from scraper
-        it->duration = duration;
+        // Add duration and title from scraper
+        if (duration > 0)
+          it->duration = duration;
+        if (!title.empty())
+          it->strTitle = title;
       }
 
       // Get episode playlists
