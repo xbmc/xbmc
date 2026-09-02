@@ -131,9 +131,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver);
 
     // Delayed Intent
+    // savedInstanceState is non-null when the Activity is being recreated
+    // rather than started with a new intent, so we treat the old intent as
+    // expired and don't replay it.
     if (getIntent().getData() != null)
     {
-      mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
+      if (savedInstanceState == null)
+      {
+        mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
+      }
       getIntent().setData(null);
     }
 
