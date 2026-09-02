@@ -1948,11 +1948,28 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
 
 namespace
 {
+//! \brief eg. "Title: 820", or "Title: 820 (SF_Inside_Derry_102)" where the disc names it
+std::string GetProjectName(unsigned int playlist, const PlaylistNames& names)
+{
+  const auto it{names.find(playlist)};
+  return it != names.end() && !it->second.empty() ? StringUtils::Format(" ({})", it->second)
+                                                  : std::string{};
+}
+
+std::string GetTitleWithName(unsigned int playlist, const PlaylistNames& names)
+{
+  return StringUtils::Format(
+             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title */,
+             playlist) +
+         GetProjectName(playlist, names);
+}
+
 std::shared_ptr<CFileItem> GenerateEpisodeItem(const CURL& url,
                                                unsigned int playlist,
                                                const PlaylistInformation& information,
                                                const Episode& episode,
                                                bool isSpecial,
+                                               const PlaylistNames& names,
                                                std::chrono::milliseconds episodeStart = 0ms,
                                                std::chrono::milliseconds episodeDuration = 0ms)
 {
@@ -2002,9 +2019,7 @@ std::shared_ptr<CFileItem> GenerateEpisodeItem(const CURL& url,
   item->SetLabel(buf);
 
   item->SetLabel2(StringUtils::Format(
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title: {0:d} */ +
-          " - {1:s}: {2:s}\r\n{3:s}: {4:s}",
-      playlist,
+      "{0:s} - {1:s}: {2:s}\r\n{3:s}: {4:s}", GetTitleWithName(playlist, names),
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(180) /* Duration */,
       StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)),
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24026) /* Languages */,
@@ -2096,9 +2111,9 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
         continue;
       }
       const auto& information{playlists.find(playlist.playlist)->second};
-      const auto newItem{GenerateEpisodeItem(url, playlist.playlist, information,
-                                             episodesOnDisc[playlist.index], false, // Episode
-                                             playlist.episodeStart, playlist.episodeDuration)};
+      const auto newItem{GenerateEpisodeItem(
+          url, playlist.playlist, information, episodesOnDisc[playlist.index], false, // Episode
+          m_playlistNames, playlist.episodeStart, playlist.episodeDuration)};
       if (!newItem)
       {
         CLog::LogF(LOGDEBUG, "Failed to generate FileItem for playlist {}", playlist.playlist);
@@ -2127,7 +2142,8 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
       if (m_isSpecial == IsSpecial::SPECIAL && m_candidateSpecials.size() == 1)
         episode = episodesOnDisc[episodeIndex];
 
-      const auto newItem{GenerateEpisodeItem(url, playlist, information, episode, true)}; // Special
+      const auto newItem{GenerateEpisodeItem(url, playlist, information, episode, true,
+                                             m_playlistNames)}; // Special
       if (!newItem)
       {
         CLog::LogF(LOGDEBUG, "Failed to generate FileItem for playlist {}", playlist);
@@ -2220,7 +2236,8 @@ void InitialiseAllEpisodesPlaylistSearch(std::vector<PlaylistInformation>& playl
 
 std::shared_ptr<CFileItem> GenerateAllEpisodesItem(const CURL& url,
                                                    unsigned int playlist,
-                                                   const PlaylistInformation& information)
+                                                   const PlaylistInformation& information,
+                                                   const PlaylistNames& names)
 {
   CURL path{url};
   path.SetFileName(StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", playlist));
@@ -2242,10 +2259,9 @@ std::shared_ptr<CFileItem> GenerateAllEpisodesItem(const CURL& url,
   item->SetTitle(title);
   item->SetLabel(title);
 
+  const std::string titleWithName{GetTitleWithName(playlist, names)};
   item->SetLabel2(StringUtils::Format(
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title: {0:d} */ +
-          " - {1:s}: {2:s}\r\n{3:s}: {4:s}",
-      playlist,
+      "{0:s} - {1:s}: {2:s}\r\n{3:s}: {4:s}", titleWithName,
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(180) /* Duration */,
       StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)),
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24026) /* Languages */,
@@ -2261,7 +2277,8 @@ void PopulateAllEpisodesFileItems(const CURL& url,
                                   const CFileItemList& allTitles,
                                   const std::vector<PlaylistInformation>& playlists,
                                   const PlaylistMap& playlistMap,
-                                  const StreamDetailsProvider& getStreamDetails)
+                                  const StreamDetailsProvider& getStreamDetails,
+                                  const PlaylistNames& names)
 {
   // Sort by playlist
   auto sortedPlaylists = playlists;
@@ -2275,7 +2292,7 @@ void PopulateAllEpisodesFileItems(const CURL& url,
       continue;
     }
     const auto& information{playlistMap.find(playlist.playlist)->second};
-    const auto newItem{GenerateAllEpisodesItem(url, playlist.playlist, information)};
+    const auto newItem{GenerateAllEpisodesItem(url, playlist.playlist, information, names)};
     if (!newItem)
     {
       CLog::LogF(LOGDEBUG, "Failed to generate FileItem for playlist {}", playlist.playlist);
@@ -2336,7 +2353,8 @@ bool CDiscDirectoryHelper::GetAllEpisodePlaylists(
   if (!FilterAllEpisodesPlaylists(playlists, job))
     return false;
   EndEpisodePlaylistSearch();
-  PopulateAllEpisodesFileItems(url, items, allTitles, playlists, playlistMap, m_getStreamDetails);
+  PopulateAllEpisodesFileItems(url, items, allTitles, playlists, playlistMap, m_getStreamDetails,
+                               m_playlistNames);
 
   if (job != GetTitle::ALL)
   {
@@ -2780,7 +2798,8 @@ std::string GetDefaultStreamLanguages(const PlaylistInformation& information)
 std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
                                              unsigned int playlist,
                                              unsigned int mainPlaylist,
-                                             const PlaylistInformation& information)
+                                             const PlaylistInformation& information,
+                                             const PlaylistNames& names)
 {
   CURL path{url};
   std::string buf{StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", playlist)};
@@ -2799,6 +2818,7 @@ std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
           ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25004) /* Main Title */
           : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25005) /* Title */,
       playlist);
+  buf += GetProjectName(playlist, names);
   item->SetTitle(buf);
   item->SetLabel(buf);
 
@@ -2825,7 +2845,8 @@ void PopulateMovieFileItems(
     int mainPlaylist,
     const CFileItemList& allTitles, // FileItem for each playlist on the disc (no stream details)
     const std::vector<PlaylistInformation>& playlists,
-    const StreamDetailsProvider& getStreamDetails)
+    const StreamDetailsProvider& getStreamDetails,
+    const PlaylistNames& names)
 {
   // Sort by duration (putting mainPlaylist first if present, and any picture-in-picture
   // presentation last however long it runs)
@@ -2863,7 +2884,7 @@ void PopulateMovieFileItems(
 
   for (const auto& playlist : sortedPlaylists)
   {
-    const auto newItem{GenerateMovieItem(url, playlist.playlist, mainPlaylist, playlist)};
+    const auto newItem{GenerateMovieItem(url, playlist.playlist, mainPlaylist, playlist, names)};
     if (!newItem)
     {
       CLog::LogF(LOGDEBUG, "Failed to generate FileItem for playlist {}", playlist.playlist);
@@ -2926,6 +2947,19 @@ std::vector<unsigned int> GetHintedPlaylists(const PlaylistHintMap& hints,
   return hinted;
 }
 
+//! \brief The playlists hinted as specials, with what they hold, in playlist order
+std::vector<std::pair<unsigned int, std::string>> GetHintedSpecials(const PlaylistHintMap& hints,
+                                                                    const PlaylistMap& playlists)
+{
+  std::vector<std::pair<unsigned int, std::string>> specials;
+  for (const auto& [playlist, hint] : hints)
+  {
+    if (hint.role == PlaylistRole::SPECIAL && playlists.contains(playlist))
+      specials.emplace_back(playlist, hint.title.empty() ? hint.name : hint.title);
+  }
+  return specials;
+}
+
 /*!
  \brief The playlists hinted as episodes, grouped by the disc's numbering of them
  An episode can be presented more than once, eg. audio described or dubbed
@@ -2971,6 +3005,225 @@ std::map<unsigned int, std::vector<unsigned int>> GetHintedEpisodePlaylists(
   return byEpisode;
 }
 
+//! \brief Simplify a number
+std::optional<std::string> SimplifyNumbers(std::string_view name)
+{
+  const auto digit{[](char c) { return c >= '0' && c <= '9'; }};
+
+  std::string rewritten;
+  rewritten.reserve(name.size());
+  bool changed{false};
+
+  for (size_t i = 0; i < name.size();)
+  {
+    if (!digit(name[i]))
+    {
+      rewritten += name[i++];
+      continue;
+    }
+
+    size_t end{i};
+    while (end < name.size() && digit(name[end]))
+      ++end;
+    const std::string_view number{name.substr(i, end - i)};
+    i = end;
+
+    // Three digits are a season and an episode run together (unless starts with 0 or
+    // ends in 00)
+    std::string_view plain{number};
+    if (number.size() == 3 && number.front() != '0' && number.substr(1) != "00")
+      plain = number.substr(1);
+
+    // Leading zeros are padding either way, but a number of nothing but zeros keeps one
+    const size_t start{plain.find_first_not_of('0')};
+    plain = start == std::string_view::npos ? plain.substr(plain.size() - 1) : plain.substr(start);
+
+    changed = changed || plain != number;
+    rewritten += plain;
+  }
+
+  return changed ? std::optional<std::string>{std::move(rewritten)} : std::nullopt;
+}
+
+// Dropped in the second pass only
+constexpr std::array RELAXED_NOISE_WORDS{"extended"};
+
+//! \brief Simplify a name. Remove punctuation and then drop noise words.
+std::string SimplifyName(std::string_view name)
+{
+  std::string letters;
+  letters.reserve(name.size());
+  for (const char c : name)
+    letters += (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ? c : ' ';
+
+  std::vector<std::string> words{StringUtils::Split(letters, " ")};
+  std::erase_if(words,
+                [](const std::string& word)
+                {
+                  return word.empty() ||
+                         std::ranges::find(RELAXED_NOISE_WORDS, word) != RELAXED_NOISE_WORDS.end();
+                });
+  return StringUtils::Join(words, " ");
+}
+
+// First round match needs to be nearly exact.
+constexpr double MIN_SPECIAL_TITLE_SCORE = 0.92;
+
+// Once the confident pairings are done run a relaxed pass
+constexpr double MIN_SPECIAL_TITLE_SCORE_REMAINING = 0.6;
+
+std::vector<std::string> NumbersIn(std::string_view name)
+{
+  std::vector<std::string> numbers;
+  for (size_t i = 0; i < name.size();)
+  {
+    if (name[i] < '0' || name[i] > '9')
+    {
+      ++i;
+      continue;
+    }
+    size_t end{i};
+    while (end < name.size() && name[end] >= '0' && name[end] <= '9')
+      ++end;
+    numbers.emplace_back(name.substr(i, end - i));
+    i = end;
+  }
+  return numbers;
+}
+
+/*!
+ \brief Whether two titles differ by number
+
+ Titles differing only in a trailing number score above even the confident threshold - "deleted
+ scene 1" against "deleted scene 2" is 0.95 - so similarity alone pairs the wrong two whenever the
+ correct counterpart has not been scraped yet.
+ */
+bool NumbersDisagree(std::string_view a, std::string_view b)
+{
+  const std::vector<std::string> left{NumbersIn(a)};
+  const std::vector<std::string> right{NumbersIn(b)};
+  return !left.empty() && !right.empty() && left != right;
+}
+
+/*!
+ \brief Match each special using the scraped titles and the titles the disc gives its specials
+ \return a playlist per special, by its index in episodesOnDisc
+ */
+std::map<size_t, unsigned int> MatchSpecialsByTitle(
+    const std::vector<std::pair<unsigned int, std::string>>& specials,
+    const Episodes& episodesOnDisc,
+    const std::vector<size_t>& extras)
+{
+  std::vector<std::string> names;
+  std::vector<size_t> owner;
+  for (size_t i = 0; i < specials.size(); ++i)
+  {
+    std::string plain{specials[i].second};
+    StringUtils::ToLower(plain);
+    if (std::optional<std::string> rewritten{SimplifyNumbers(plain)})
+    {
+      names.emplace_back(std::move(*rewritten));
+      owner.push_back(i);
+    }
+    names.emplace_back(plain);
+    owner.push_back(i);
+  }
+
+  struct Candidate
+  {
+    double score{0.0};
+    size_t extra{0};
+    size_t special{0};
+    size_t name{0};
+  };
+
+  const auto compare{
+      [](std::string_view a, std::string_view b)
+      {
+        const size_t longest{std::max(a.size(), b.size())};
+        return longest == 0 ? 0.0 : StringUtils::CompareFuzzy(a, b) / static_cast<double>(longest);
+      }};
+
+  std::vector<Candidate> candidates;
+  std::vector<Candidate> relaxed;
+  for (const size_t extra : extras)
+  {
+    std::string wanted{episodesOnDisc[extra].strTitle};
+    if (wanted.empty())
+      continue;
+    StringUtils::ToLower(wanted);
+    const std::string simplified{SimplifyName(wanted)};
+
+    for (size_t i = 0; i < names.size(); ++i)
+    {
+      if (NumbersDisagree(wanted, names[i]))
+        continue;
+
+      candidates.push_back(
+          {.score = compare(wanted, names[i]), .extra = extra, .special = owner[i], .name = i});
+      relaxed.push_back({.score = compare(simplified, SimplifyName(names[i])),
+                         .extra = extra,
+                         .special = owner[i],
+                         .name = i});
+    }
+  }
+
+  std::ranges::sort(candidates, std::ranges::greater{}, &Candidate::score);
+  std::ranges::sort(relaxed, std::ranges::greater{}, &Candidate::score);
+
+  std::map<size_t, unsigned int> matched;
+  std::set<unsigned int> taken;
+  const auto assign{[&](const std::vector<Candidate>& from, double threshold, std::string_view how)
+                    {
+                      for (const Candidate& candidate : from)
+                      {
+                        const unsigned int playlist{specials[candidate.special].first};
+                        if (candidate.score < threshold || matched.contains(candidate.extra) ||
+                            taken.contains(playlist))
+                          continue;
+
+                        matched.emplace(candidate.extra, playlist);
+                        taken.insert(playlist);
+                        CLog::LogF(LOGDEBUG, "Playlist {} ({}) matches \"{}\" at {:.2f}{}",
+                                   playlist, specials[candidate.special].second,
+                                   episodesOnDisc[candidate.extra].strTitle, candidate.score, how);
+                      }
+                    }};
+
+  // The surest pairings first
+  assign(candidates, MIN_SPECIAL_TITLE_SCORE, "");
+
+  // Then whatever is left over against whatever is still free - but only once every special is
+  // named. A library is filled an episode at a time, and until the rest have been scanned there
+  // is no telling which of them the free playlists belong to
+  if (std::ranges::all_of(extras, [&episodesOnDisc](size_t extra)
+                          { return !episodesOnDisc[extra].strTitle.empty(); }))
+    assign(relaxed, MIN_SPECIAL_TITLE_SCORE_REMAINING, " of what was left");
+  else if (matched.size() < extras.size())
+    CLog::LogF(LOGDEBUG,
+               "Not every special on the disc is named yet, so the {} still unmatched are left to "
+               "a later pass rather than given what happens to be free",
+               extras.size() - matched.size());
+
+  // Say how close the nearest was
+  for (const size_t extra : extras)
+  {
+    if (matched.contains(extra) || episodesOnDisc[extra].strTitle.empty())
+      continue;
+
+    std::string wanted{episodesOnDisc[extra].strTitle};
+    StringUtils::ToLower(wanted);
+    double closest{0.0};
+    const int best{StringUtils::FindBestMatch(wanted, names, closest)};
+    CLog::LogF(
+        LOGDEBUG, "Nothing the disc names resembles \"{}\"{}", episodesOnDisc[extra].strTitle,
+        best < 0 ? ""
+                 : StringUtils::Format(" - closest is \"{}\" at {:.2f}", names[best], closest));
+  }
+
+  return matched;
+}
+
 /*!
  \brief Match the episodes the disc names to those on the disc
  \return A group of playlists per episode, ordered as in episodesOnDisc, or empty when they cannot
@@ -2978,33 +3231,56 @@ std::map<unsigned int, std::vector<unsigned int>> GetHintedEpisodePlaylists(
  */
 std::vector<std::vector<unsigned int>> MatchHintedEpisodes(
     const std::map<unsigned int, std::vector<unsigned int>>& byEpisode,
+    const std::vector<std::pair<unsigned int, std::string>>& specials,
     const Episodes& episodesOnDisc)
 {
-  if (byEpisode.size() != episodesOnDisc.size())
-    return {};
+  // A special is not one of the numbered episodes and the disc does not number it either
+  std::vector<size_t> numbered;
+  std::vector<size_t> extras;
+  for (size_t i = 0; i < episodesOnDisc.size(); ++i)
+    (episodesOnDisc[i].iSeason == 0 ? extras : numbered).push_back(i);
 
-  // A special is not one of the numbered episodes, so its presence breaks the correspondence
-  if (std::ranges::any_of(episodesOnDisc, [](const Episode& e) { return e.iSeason == 0; }))
-    return {};
-
-  // episodesOnDisc comes from the file name and need not be in order
-  std::vector<size_t> order(episodesOnDisc.size());
-  std::iota(order.begin(), order.end(), 0);
-  std::ranges::sort(order,
-                    [&episodesOnDisc](size_t a, size_t b)
-                    {
-                      const Episode& x{episodesOnDisc[a]};
-                      const Episode& y{episodesOnDisc[b]};
-                      if (x.iSeason != y.iSeason)
-                        return x.iSeason < y.iSeason;
-                      return x.iEpisode < y.iEpisode;
-                    });
-
-  // The map is keyed by ordinal, so iterating it walks the episodes in the order they play
   std::vector<std::vector<unsigned int>> matched(episodesOnDisc.size());
-  size_t i{0};
-  for (const auto& group : byEpisode | std::views::values)
-    matched[order[i++]] = group;
+
+  // The disc's numbering need not relate to actual episode or season numbers, so the episodes can
+  // only be taken in order and only where the disc names as many as are on it. A special is named
+  // outright and does not depend on that.
+  if (byEpisode.size() == numbered.size())
+  {
+    // episodesOnDisc comes from the file name and need not be in order
+    std::ranges::sort(numbered,
+                      [&episodesOnDisc](size_t a, size_t b)
+                      {
+                        const Episode& x{episodesOnDisc[a]};
+                        const Episode& y{episodesOnDisc[b]};
+                        if (x.iSeason != y.iSeason)
+                          return x.iSeason < y.iSeason;
+                        return x.iEpisode < y.iEpisode;
+                      });
+
+    // The map is keyed by ordinal, so iterating it walks the episodes in the order they play
+    size_t i{0};
+    for (const auto& group : byEpisode | std::views::values)
+      matched[numbered[i++]] = group;
+  }
+
+  // The scraper names the special and the disc names the extras, so the two can be compared
+  // directly. Where they cannot - no title yet, or nothing resembling it - a disc holding a single
+  // special still leaves only one thing the disc could mean.
+  const std::map<size_t, unsigned int> byTitle{
+      MatchSpecialsByTitle(specials, episodesOnDisc, extras)};
+  for (const size_t extra : extras)
+  {
+    if (const auto it{byTitle.find(extra)}; it != byTitle.end())
+      matched[extra] = {it->second};
+    else if (extras.size() == 1 && specials.size() == 1)
+      matched[extra] = {specials.front().first};
+  }
+
+  if (std::ranges::all_of(matched, [](const std::vector<unsigned int>& group)
+                          { return group.empty(); }))
+    return {};
+
   return matched;
 }
 
@@ -3033,6 +3309,13 @@ void GetOrderedItems(CFileItemList& items, const std::vector<unsigned int>& want
 void CDiscDirectoryHelper::SetPlaylistHints(std::shared_ptr<const IPlaylistHints> hints)
 {
   m_hints = std::move(hints);
+
+  m_playlistNames.clear();
+  if (m_hints)
+  {
+    for (const auto& [playlist, hint] : m_hints->GetHints())
+      m_playlistNames.emplace(playlist, hint.name);
+  }
 }
 
 void CDiscDirectoryHelper::ApplyPlaylistHintsToMovie(const CURL& url,
@@ -3078,7 +3361,7 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToMovie(const CURL& url,
   // ones that are not wanted have gone. The ordering puts the best presentation first, which is
   // the one a single title wants.
   CFileItemList chosen;
-  PopulateMovieFileItems(url, chosen, mainPlaylist, allTitles, selected, {});
+  PopulateMovieFileItems(url, chosen, mainPlaylist, allTitles, selected, {}, m_playlistNames);
   while (job == GetTitle::SINGLE && chosen.Size() > 1)
     chosen.Remove(chosen.Size() - 1);
 
@@ -3111,9 +3394,12 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToEpisodes(const CURL& url,
   if (!m_hints || !m_hints->HasHints() || episodesOnDisc.empty())
     return;
 
+  const PlaylistHintMap& hints{m_hints->GetHints()};
   const std::map<unsigned int, std::vector<unsigned int>> byEpisode{
-      GetHintedEpisodePlaylists(m_hints->GetHints(), playlists)};
-  if (byEpisode.empty())
+      GetHintedEpisodePlaylists(hints, playlists)};
+  const std::vector<std::pair<unsigned int, std::string>> specials{
+      GetHintedSpecials(hints, playlists)};
+  if (byEpisode.empty() && specials.empty())
   {
     CLog::LogF(LOGDEBUG,
                "Disc names no episode playlists - keeping playlist(s) {} from the heuristics",
@@ -3122,7 +3408,7 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToEpisodes(const CURL& url,
   }
 
   const std::vector<std::vector<unsigned int>> matched{
-      MatchHintedEpisodes(byEpisode, episodesOnDisc)};
+      MatchHintedEpisodes(byEpisode, specials, episodesOnDisc)};
   if (matched.empty())
   {
     CLog::LogF(LOGDEBUG,
@@ -3136,12 +3422,26 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToEpisodes(const CURL& url,
   std::vector<unsigned int> wanted;
   if (episodeIndex == ALL_PLAYLISTS)
   {
+    if (std::ranges::any_of(matched,
+                            [](const std::vector<unsigned int>& group) { return group.empty(); }))
+    {
+      CLog::LogF(LOGDEBUG,
+                 "Disc does not name every episode on it - keeping playlist(s) {} from the "
+                 "heuristics",
+                 DescribePlaylists(items));
+      return;
+    }
+
     for (const std::vector<unsigned int>& group : matched)
       wanted.insert(wanted.end(), group.begin(), group.end());
   }
   else if (std::cmp_less(episodeIndex, matched.size()))
     wanted = matched[episodeIndex];
   else
+    return;
+
+  // A special the disc named nothing for
+  if (wanted.empty())
     return;
 
   // The named playlists become items as the all-episodes listing would build them
@@ -3152,7 +3452,7 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToEpisodes(const CURL& url,
 
   CFileItemList chosen;
   PopulateAllEpisodesFileItems(url, chosen, allTitles, wantedPlaylists, playlists,
-                               m_getStreamDetails);
+                               m_getStreamDetails, m_playlistNames);
   if (chosen.IsEmpty())
   {
     CLog::LogF(LOGDEBUG,
@@ -3198,7 +3498,8 @@ bool CDiscDirectoryHelper::GetMoviePlaylists(const CURL& url,
   if (playlists.empty())
     return false;
 
-  PopulateMovieFileItems(url, items, mainPlaylist, allTitles, playlists, m_getStreamDetails);
+  PopulateMovieFileItems(url, items, mainPlaylist, allTitles, playlists, m_getStreamDetails,
+                         m_playlistNames);
   ApplyPlaylistHintsToMovie(url, items, allTitles, mainPlaylist, job, clips, playlistMap);
 
   return !items.IsEmpty();
@@ -3372,13 +3673,18 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     return false;
   }
 
-  // Add duration to bluray:// url as needed for episode determination in CBlurayDirectory
+  // Add what the scraper knows to the bluray:// url, as CBlurayDirectory needs it to work out
+  // which playlist an episode is. The duration narrows the candidates; the title is the only
+  // thing that could tell one special from another.
   std::string directoryDuration{directory};
-  if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->GetDuration() > 0 &&
-      item.GetVideoContentType() == VideoDbContentType::EPISODES)
+  if (item.HasVideoInfoTag() && item.GetVideoContentType() == VideoDbContentType::EPISODES)
   {
+    const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
     CURL dirUrl(directory);
-    dirUrl.SetOption("duration", std::to_string(item.GetVideoInfoTag()->GetDuration()));
+    if (tag.GetDuration() > 0)
+      dirUrl.SetOption("duration", std::to_string(tag.GetDuration()));
+    if (!tag.GetTitle().empty())
+      dirUrl.SetOption("title", tag.GetTitle());
     directoryDuration = dirUrl.Get();
   }
 
