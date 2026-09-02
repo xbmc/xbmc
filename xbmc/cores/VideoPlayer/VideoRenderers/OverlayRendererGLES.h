@@ -38,6 +38,9 @@ public:
   float m_u;
   float m_v;
   bool m_pma; /*< is alpha in texture premultiplied in the values */
+  //! Whether this overlay's PGS palette was converted from HDR PQ to SDR
+  //! when its texture was built. Decided once, not per frame.
+  bool m_pgsConvertedToSdr = false;
 };
 
 class COverlayGlyphGLES : public COverlay
