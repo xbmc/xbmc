@@ -69,8 +69,9 @@
 /xbmc/filesystem/bluray/ @78andyp
 /xbmc/games/ @garbear
 /xbmc/guilib/GUIRangesControl.* @ksooo
-/xbmc/guilib/guiinfo/ @ksooo
-/xbmc/guilib/listproviders/ @ksooo
+/xbmc/guilib/guiinfo/GUIInfoProvider.h @ksooo
+/xbmc/guilib/guiinfo/GUIInfoProviders.* @ksooo
+/xbmc/guilib/guiinfo/IGUIInfoProvider.h @ksooo
 /xbmc/imagefiles/ @rmrector
 /xbmc/input/ @garbear
 /xbmc/interfaces/builtins/PVR*.* @ksooo
