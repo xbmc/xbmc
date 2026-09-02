@@ -393,6 +393,21 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::APPFOCUSED:
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::APPFOCUSED, msg->data, sizeof(bool));
           return;
+        case CActiveAEControlProtocol::YIELDDEVICE:
+        {
+          Message* sinkReply = nullptr;
+          bool success = false;
+          if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::RESERVE, &sinkReply, 1s,
+                                                      msg->data, sizeof(bool)))
+          {
+            success = sinkReply->signal == CSinkControlProtocol::ACC;
+            sinkReply->Release();
+          }
+          if (!success)
+            CLog::LogF(LOGERROR, "sink failed to handle the yield request");
+          msg->Reply(success ? CActiveAEControlProtocol::ACC : CActiveAEControlProtocol::ERR);
+          return;
+        }
         case CActiveAEControlProtocol::STREAMRESAMPLEMODE:
           MsgStreamParameter *par;
           par = reinterpret_cast<MsgStreamParameter*>(msg->data);
@@ -3092,6 +3107,31 @@ bool CActiveAE::Resume()
 bool CActiveAE::IsSuspended()
 {
   return m_stats.IsSuspended();
+}
+
+bool CActiveAE::YieldDevice()
+{
+  return SendYieldDevice(true);
+}
+
+bool CActiveAE::ReclaimDevice()
+{
+  return SendYieldDevice(false);
+}
+
+bool CActiveAE::SendYieldDevice(bool yield)
+{
+  Message* reply = nullptr;
+  if (!m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::YIELDDEVICE, &reply, 2s, &yield,
+                                        sizeof(bool)))
+  {
+    CLog::LogF(LOGERROR, "timed out");
+    return false;
+  }
+
+  const bool success = reply->signal == CActiveAEControlProtocol::ACC;
+  reply->Release();
+  return success;
 }
 
 float CActiveAE::GetVolume()

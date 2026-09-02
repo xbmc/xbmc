@@ -100,6 +100,7 @@ public:
     DISPLAYRESET,
     APPFOCUSED,
     KEEPCONFIG,
+    YIELDDEVICE,
     TIMEOUT,
   };
   enum InSignal
@@ -244,6 +245,8 @@ public:
   bool Suspend() override;
   bool Resume() override;
   bool IsSuspended() override;
+  bool YieldDevice() override;
+  bool ReclaimDevice() override;
   void OnSettingsChange();
 
   float GetVolume() override;
@@ -308,6 +311,7 @@ protected:
   void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
   bool InitSink();
+  bool SendYieldDevice(bool yield);
   void DrainSink();
   void UnconfigureSink();
   void Dispose();
