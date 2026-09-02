@@ -1885,6 +1885,16 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
   if (m_numSpecials == 0)
     return;
 
+  // Nothing on the disc tells one special from another
+  // So user will have to choose from the simple menu
+  if (m_isSpecial == IsSpecial::SPECIAL && m_numSpecials > 1)
+  {
+    CLog::LogF(LOGDEBUG,
+               "Disc holds {} specials and nothing to tell them apart - offering none",
+               m_numSpecials);
+    return;
+  }
+
   // Specials
   //
   // These are more difficult - as there may only be one per disc and we can't make assumptions about playlists.
