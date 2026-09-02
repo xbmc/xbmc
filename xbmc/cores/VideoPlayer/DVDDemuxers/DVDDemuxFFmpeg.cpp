@@ -812,6 +812,10 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
   if (url.GetProtocol().empty() || url.IsProtocol("file"))
     av_dict_set(&options, "protocol_whitelist", "file,http,https,tcp,tls,crypto", 0);
 
+  // FFmpeg's HLS demuxer otherwise refuses segment URIs that do not end in a media file
+  // extension.
+  av_dict_set_int(&options, "extension_picky", 0, 0);
+
   if (url.IsProtocol("http") || url.IsProtocol("https"))
   {
     std::map<std::string, std::string> protocolOptions;
