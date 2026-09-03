@@ -20,6 +20,7 @@
 #include "utils/log.h"
 
 #include <charconv>
+#include <cstdint>
 #include <cstdlib>
 #include <mutex>
 
@@ -865,6 +866,12 @@ void CDateTime::GetAsTime(time_t& time) const
   time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 
+int64_t CDateTime::GetAsSecondsSinceEpoch() const
+{
+  const int64_t ll{(static_cast<int64_t>(m_time.highDateTime) << 32) + m_time.lowDateTime};
+  return (ll - UNIX_BASE_TIME) / 10000000;
+}
+
 void CDateTime::GetAsTm(tm& time) const
 {
   KODI::TIME::SystemTime st;
@@ -1239,6 +1246,25 @@ CDateTime CDateTime::FromUTCDateTime(const time_t &dateTime)
   CDateTime dt;
   dt.SetFromUTCDateTime(dateTime);
   return dt;
+}
+
+CDateTime CDateTime::FromSecondsSinceEpoch(int64_t seconds)
+{
+  constexpr int64_t FIRST_SECOND{-11644473600}; // 1601-01-01, where a FileTime starts counting
+  constexpr int64_t LAST_SECOND{910692730085}; // 30828-09-14, where the 100ns count leaves int64
+
+  // a count read out of a database column can be anything, and the multiply below overflows
+  // outside this range
+  if (seconds < FIRST_SECOND || seconds > LAST_SECOND)
+    return {};
+
+  const int64_t ll{seconds * 10000000LL + UNIX_BASE_TIME};
+
+  KODI::TIME::FileTime fileTime{};
+  fileTime.lowDateTime = static_cast<uint32_t>(ll & 0xFFFFFFFF);
+  fileTime.highDateTime = static_cast<uint32_t>(ll >> 32);
+
+  return CDateTime(fileTime);
 }
 
 CDateTime CDateTime::FromRFC1123DateTime(const std::string &dateTime)
