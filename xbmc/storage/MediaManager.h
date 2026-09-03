@@ -175,6 +175,14 @@ private:
 
   std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
   std::map<std::string, std::string> m_volumeLabel;
+#ifdef HAS_OPTICAL_DRIVE
+  /*! \brief Resolve a drive letter to the device path of that drive
+   * \param cDriveLetter The drive letter (e.g. 'D'), or '\0' for the first available drive
+   * \return The device path of that drive (e.g. "D:"), or of the first available optical
+   *         drive when no letter is given
+   */
+  std::string TranslateDriveLetter(char cDriveLetter);
+#endif
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   /*! Last known state of each optical drive, to keep the GUI off the hardware - see GetDriveStatus */
   std::map<std::string, DriveState> m_driveStatusCache;
