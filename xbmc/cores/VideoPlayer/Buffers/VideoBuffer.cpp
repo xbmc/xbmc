@@ -283,6 +283,11 @@ bool CVideoBufferSysMem::Alloc()
   return true;
 }
 
+bool CVideoBufferSysMem::IsCompatible(AVPixelFormat format, int size) const
+{
+  return m_pixFormat == format && m_size >= size;
+}
+
 
 //-----------------------------------------------------------------------------
 // CVideoBufferPool
@@ -309,6 +314,13 @@ CVideoBuffer* CVideoBufferPoolSysMem::Get()
     m_free.pop_front();
     m_used.push_back(idx);
     buf = m_all[idx];
+    if (!buf->IsCompatible(m_pixFormat, m_size))
+    {
+      delete buf;
+      buf = new CVideoBufferSysMem(*this, idx, m_pixFormat, m_size);
+      buf->Alloc();
+      m_all[idx] = buf;
+    }
   }
   else
   {
