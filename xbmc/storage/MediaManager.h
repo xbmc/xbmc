@@ -168,7 +168,11 @@ private:
 #endif
 
   void RemoveDiscInfo(const std::string& devicePath);
+
+  void InvalidateDiscInfo(const std::string& devicePath);
+
   std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
+  std::map<std::string, std::string> m_volumeLabel;
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   /*! Last known state of each optical drive, to keep the GUI off the hardware - see GetDriveStatus */
   std::map<std::string, DriveState> m_driveStatusCache;
