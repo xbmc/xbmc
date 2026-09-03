@@ -156,6 +156,7 @@ public:
   void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]) override;
   void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES]) override;
   bool Alloc();
+  bool IsCompatible(AVPixelFormat format, int size) const;
 
 protected:
   int m_width = 0;
