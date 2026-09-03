@@ -310,6 +310,14 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       case LISTITEM_TVSHOW:
         value = tag->m_strShowTitle;
         return true;
+      case VIDEOPLAYER_EPISODENAME:
+      case LISTITEM_EPISODENAME:
+        if (tag->m_type == MediaTypeEpisode)
+        {
+          value = tag->m_strTitle;
+          return true;
+        }
+        break;
       case VIDEOPLAYER_STUDIO:
       case LISTITEM_STUDIO:
         value = StringUtils::Join(
