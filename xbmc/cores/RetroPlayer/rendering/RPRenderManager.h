@@ -285,6 +285,15 @@ private:
   std::set<std::string> m_failedShaderPresets;
   std::atomic<bool> m_bFlush = {false};
 
+  /*!
+   * \brief Bumped by each completed flush
+   *
+   * A frame already in flight when a flush completes belongs to the stream
+   * that was discarded, and m_bFlush cannot say so: it is cleared again by
+   * the time the frame is ready to be published.
+   */
+  std::atomic<unsigned int> m_flushGeneration = {0};
+
   // Playback parameters
   std::atomic<double> m_speed = {1.0};
 
