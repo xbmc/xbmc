@@ -605,7 +605,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   "clean list",
                   CURL::GetRedacted(strDirectory));
         if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          AddPathToClean(strDirectory);
         bSkip = true;
       }
       else if (dbHash.empty())
@@ -694,7 +694,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (!URIUtils::IsArchive(CURL(strDirectory)))
             m_database.SetPathHash(strDirectory, hash);
           if (m_bClean)
-            m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+            AddPathToClean(strDirectory);
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir {}",
                     CURL::GetRedacted(strDirectory));
         }
@@ -712,7 +712,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                         [](const auto& item) { return item->IsFolder(); }))
           m_database.SetPathHash(strDirectory, hash);
         if (m_bClean)
-          m_pathsToClean.insert(m_database.GetPathId(strDirectory));
+          AddPathToClean(strDirectory);
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir {}",
                   CURL::GetRedacted(strDirectory));
       }
@@ -2996,6 +2996,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     hash = digest.Finalize();
     return count;
+  }
+
+  void CVideoInfoScanner::AddPathToClean(const std::string& directory)
+  {
+    m_pathsToClean.insert(m_database.GetPathId(directory));
+
+    // Pick up the base paths of directory's disc rips and archives
+    std::vector<std::pair<int, std::string>> subPaths;
+    m_database.GetSubPaths(directory, subPaths, false);
+    for (const auto& [idPath, path] : subPaths)
+    {
+      if (!URIUtils::PathHasParent(path, directory) || URIUtils::IsDiscPath(path))
+        m_pathsToClean.insert(idPath);
+    }
   }
 
   bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const
