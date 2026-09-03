@@ -12,6 +12,7 @@
 #include "utils/TimeFormat.h"
 #include "utils/XTimeUtils.h"
 
+#include <cstdint>
 #include <optional>
 #include <string>
 
@@ -86,6 +87,18 @@ public:
   static CDateTime FromUTCDateTime(const CDateTime &dateTime);
   static CDateTime FromUTCDateTime(const time_t &dateTime);
   static CDateTime FromRFC1123DateTime(const std::string &dateTime);
+
+  /*!
+   * \brief Create from a count of seconds since the UNIX epoch.
+   *
+   * Carries a date past 2038-01-19 on the targets where time_t is 32 bits. The result is a UTC
+   * time.
+   *
+   * \param seconds The seconds since 1970-01-01 00:00:00 UTC.
+   * \return The time those seconds name, or an invalid time if they name one the underlying
+   *         FileTime cannot hold, which is anything outside 1601-01-01 to 30828-09-14.
+   */
+  static CDateTime FromSecondsSinceEpoch(int64_t seconds);
 
   const CDateTime& operator=(const KODI::TIME::SystemTime& right);
   const CDateTime& operator=(const KODI::TIME::FileTime& right);
@@ -179,6 +192,16 @@ public:
   void GetAsTime(time_t& time) const;
   void GetAsTm(tm& time) const;
   void GetAsTimeStamp(KODI::TIME::FileTime& time) const;
+
+  /*!
+   * \brief The count of seconds since the UNIX epoch.
+   *
+   * Carries a date past 2038-01-19 on the targets where time_t is 32 bits. The stored time is
+   * read as UTC, so a local time gives a count that is out by the timezone bias.
+   *
+   * \return The seconds since 1970-01-01 00:00:00 UTC.
+   */
+  int64_t GetAsSecondsSinceEpoch() const;
 
   enum class ReturnFormat : bool
   {
