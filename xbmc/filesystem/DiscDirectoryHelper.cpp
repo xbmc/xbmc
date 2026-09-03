@@ -2946,6 +2946,54 @@ std::vector<CVideoInfoTag> CDiscDirectoryHelper::GetEpisodesOnDisc(const CURL& u
   return episodesOnDisc;
 }
 
+namespace
+{
+//! \brief Show which playlists are already allocated (and to what)
+void LabelUsedPlaylists(CFileItemList& items,
+                        const std::vector<CVideoDatabase::PlaylistInfo>& usedPlaylists)
+{
+  for (const auto& item : items)
+  {
+    const int playlist{item->GetProperty("bluray_playlist").asInteger32(-1)};
+    if (playlist < 0)
+      continue;
+
+    // Several episodes can share one playlist, and choosing it detaches all of them, so all of
+    // them are named
+    auto owners{usedPlaylists |
+                std::views::filter([playlist](const CVideoDatabase::PlaylistInfo& used)
+                                   { return used.playlist == playlist; })};
+    if (std::ranges::distance(owners) == 0)
+      continue;
+
+    const CLocalizeStrings& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+
+    // An episode names itself, where a movie's asset is one of a known few and is named here so
+    // that it can be translated as a whole phrase
+    std::string label;
+    if (const CVideoDatabase::PlaylistInfo& first{*owners.begin()};
+        first.mediaType == VideoDbContentType::MOVIES)
+    {
+      if (first.itemType == VideoAssetType::EXTRA)
+        label = strings.Get(25023);
+      else
+        label = strings.Get(25022);
+    }
+    else
+    {
+      std::vector<std::string> titles;
+      for (const CVideoDatabase::PlaylistInfo& owner : owners)
+        titles.emplace_back(owner.title);
+      std::ranges::sort(titles);
+      label = StringUtils::Format(strings.Get(25021), StringUtils::Join(titles, ", "));
+    }
+
+    const std::string& existing{item->GetLabel()};
+    item->SetLabel(existing.empty() ? label : StringUtils::Format("{} ({})", existing, label));
+  }
+}
+} // namespace
+
 bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
                                                       CFileItemList& items,
                                                       MenuDecision playback)
@@ -3057,24 +3105,24 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
       usedPlaylists =
           database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(item.GetDynPath()));
 
-      // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
-      // as user could choose the same playlist again
-      if (item.GetProperty("force_playlist_selection").asBoolean(false))
+      // The playlist this item already uses is labelled like any other, but choosing it again
+      // is no change and must not go through the reassignment
+      std::vector<CVideoDatabase::PlaylistInfo> reusablePlaylists{usedPlaylists};
+      if (CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
+          regex.RegFind(item.GetDynPath()) != -1)
       {
-        CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
-        if (regex.RegFind(item.GetDynPath()) != -1)
-        {
-          const int playlist{std::stoi(regex.GetMatch(1))};
-          std::erase_if(usedPlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
-                        { return p.playlist == playlist; });
-        }
+        const int playlist{std::stoi(regex.GetMatch(1))};
+        std::erase_if(reusablePlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
+                      { return p.playlist == playlist; });
       }
 
       // Use simple menu dialog to select playlist
       while (true)
       {
+        LabelUsedPlaylists(sourceItems, usedPlaylists);
+
         if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item, selectedItem, sourceItems,
-                                                         usedPlaylists))
+                                                         reusablePlaylists))
           return false;
 
         // If a non-folder item is selected, we're done
