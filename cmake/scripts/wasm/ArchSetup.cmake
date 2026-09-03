@@ -52,6 +52,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sFULL_ES3=1"
     "SHELL:-lidbfs.js"
     "SHELL:-lembind"
+    "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDCodecs/Video/webcodecs_bridge.js"
   )
 
   # ---------------------------------------------------------------------------

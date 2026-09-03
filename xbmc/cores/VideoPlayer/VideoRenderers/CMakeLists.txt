@@ -42,7 +42,8 @@ if(TARGET ${APP_NAME_LC}::OpenGLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC 
                             "tvos" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "gbm" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "x11" IN_LIST CORE_PLATFORM_NAME_LC OR
-                            "wayland" IN_LIST CORE_PLATFORM_NAME_LC))
+                            "wayland" IN_LIST CORE_PLATFORM_NAME_LC OR
+                            "wasm" IN_LIST CORE_PLATFORM_NAME_LC))
   list(APPEND SOURCES LinuxRendererGLES.cpp
                       OverlayRendererGLES.cpp)
   list(APPEND HEADERS LinuxRendererGLES.h

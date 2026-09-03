@@ -37,6 +37,12 @@ if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND HEADERS DVDVideoCodecAndroidMediaCodec.h)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL wasm)
+  list(APPEND SOURCES DVDVideoCodecWebCodecs.cpp)
+  list(APPEND HEADERS DVDVideoCodecWebCodecs.h
+                      DVDVideoCodecWebCodecsBridge.h)
+endif()
+
 if(("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC) AND
    TARGET ${APP_NAME_LC}::OpenGLES)
   list(APPEND SOURCES DVDVideoCodecDRMPRIME.cpp)
