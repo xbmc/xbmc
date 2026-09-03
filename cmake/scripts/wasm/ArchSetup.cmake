@@ -53,6 +53,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sMAX_WEBGL_VERSION=2"
     "SHELL:-sFULL_ES3=1"
     "SHELL:-sABORTING_MALLOC=0"
+    # CPython's call trampoline installs its wasm-gc adaptor with addFunction().
+    "SHELL:-sALLOW_TABLE_GROWTH"
     "SHELL:-lidbfs.js"
   )
 
