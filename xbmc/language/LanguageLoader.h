@@ -20,15 +20,12 @@ struct StringSettingOption;
 namespace KODI::LANGUAGE
 {
 /*!
- * \brief Puts a language pack in use: finds and enables it, hands it to CLanguage, has CLangInfo
- *        read its region profiles, loads its strings and tells the services that draw text.
+ * \brief Puts a language pack in use, and everything that has to happen for the interface to
+ *        come back up in it.
  */
 class CLanguageLoader : public ISettingCallback
 {
 public:
-  /*!
-   * \brief The one instance, registered for the language settings.
-   */
   static CLanguageLoader& GetInstance();
 
   // implementation of ISettingCallback

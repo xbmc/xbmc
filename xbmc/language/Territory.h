@@ -23,11 +23,9 @@ class CLanguageTag;
  * publishes it, or a three-digit UN M.49 code for an area ISO 3166 does not cover. That is the
  * form it holds; the others are derived on demand and none is stored.
  *
- * \note There is no parse and no invalid state. A region is whatever CBcp47 says a region is, so
- *       asking a second time would be a second answer, and a tag's own region could end up
- *       denying that it is one. Text is judged once - by FromCode at the two boundaries that read
- *       it, or by the tag parser, which hands its region over already judged. A territory holding
- *       a code therefore always holds a real one.
+ * \note There is no parse and no invalid state. What counts as a region is CBcp47's answer, and
+ *       text is judged against it once, on the way in. A territory holding a code holds a real
+ *       one.
  *
  * \note Naming no place is an ordinary state, not a failure: most tags state no region, and a
  *       default-constructed territory is that. Every member answers with nothing for it, so a
@@ -45,9 +43,8 @@ public:
 
   /*!
    * \brief Build a territory from a code read from a file or a table.
-   * \note The only entry point that judges text. Its callers are the places a place arrives as
-   *       loose characters: a langinfo.xml region and the RDS country tables. Everywhere else
-   *       already holds a territory or a tag that carries one.
+   * \note For text arriving as loose characters. Anything holding a language tag takes the
+   *       territory from the tag instead.
    * \param[in] code An ISO 3166-1 alpha-2 code or a three-digit UN M.49 code.
    * \return The territory, naming no place where the text names none.
    */
@@ -55,15 +52,11 @@ public:
 
   /*!
    * \brief Whether the place is one ISO 3166-1 assigns a current code to.
-   * \note The question a caller contracting to supply a country has to ask.
    * \return true for a place with an ISO 3166-1 code.
    */
   bool IsCountry() const;
 
-  /*!
-   * \brief The canonical form, which is a BCP 47 region subtag.
-   * \return The code.
-   */
+  //! \brief The canonical form, which is a BCP 47 region subtag.
   const std::string& ToString() const { return m_code; }
 
   /*!
@@ -95,7 +88,6 @@ private:
   //! \brief From a region subtag already judged to be one, in the case a canonical tag holds it
   explicit CTerritory(std::string code) : m_code(std::move(code)) {}
 
-  //! A tag's region has been judged by the parser that read it, so it is handed over as it is
   friend class CLanguageTag;
 
   std::string m_code;

@@ -20,10 +20,9 @@ namespace KODI::LANGUAGE::I18N
 /*!
  * \brief Every language Kodi can name, and the codes each answers to.
  *
- * Built once from the ISO 639-1 and ISO 639-2 data, then extended at startup by the languages
- * declared in advancedsettings.xml. A declaration replaces whatever a code named before it, so
- * once the table is built nothing can tell the two sources apart - which is the point, as no
- * lookup then has to consult the user's declarations separately.
+ * Built from the ISO 639-1 and ISO 639-2 data, then extended at startup by the languages
+ * declared in advancedsettings.xml. A declaration replaces whatever a code named before it, and
+ * a declared language is a language like any other once the table holds it.
  */
 class CLanguageTable
 {
@@ -43,8 +42,7 @@ public:
    * List() answers that, and the addons contribute to it separately.
    *
    * \note A name already held is kept, so the ISO 639 tables and a user's <languagecodes> both
-   *       outrank an addon. That is the order this had when naming was a live lookup the addons
-   *       only answered after the table missed, and it is the order upstream settled on.
+   *       outrank an addon.
    * \param[in] languages The names, as language code to English name.
    */
   void DeclareNames(const std::map<std::string, std::string>& languages);

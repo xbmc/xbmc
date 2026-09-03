@@ -22,7 +22,6 @@ class CLanguageResource;
 
 namespace KODI::LANGUAGE
 {
-//! The active language pack
 using LanguageResourcePtr = std::shared_ptr<ADDON::CLanguageResource>;
 
 // The setting values that name no language
@@ -37,8 +36,7 @@ constexpr std::string_view subtitleLanguageSettingForcedOnly = "forced_only";
  *
  * A setting states either a language or a way of choosing one, and the two are not
  * interchangeable: asking for the original-language track is not the same question as asking for
- * a track in a named language, and neither is answerable by the other. Holding both in one value
- * is what lets a caller act on the choice without reading the setting back.
+ * a track in a named language, and neither is answerable by the other.
  */
 class CLanguagePreference
 {
@@ -103,8 +101,7 @@ private:
 };
 
 /*!
- * \brief The language the interface is in, the languages the user wants to hear and read, and
- *        the active language pack.
+ * \brief What language Kodi is running in and what languages the viewer asked to hear and read.
  */
 class CLanguage
 {
@@ -112,10 +109,6 @@ public:
   //! The leading words a sort steps over, each held with the separator that follows it
   using Tokens = std::set<std::string, std::less<>>;
 
-  /*!
-   * \brief The one instance, holding what the running application is set to.
-   * \note The character sets and the sort tokens read settings; the languages do not.
-   */
   static CLanguage& GetInstance();
 
   CLanguage() = default;
@@ -125,7 +118,6 @@ public:
    * \note This is the language of the pack the user chose, so it carries whatever region that
    *       pack states - en-GB and en-US are different answers, and anything ranking a
    *       translation by territory needs them to be.
-   * \return The language.
    */
   const CLanguageTag& UI() const { return m_ui; }
 
@@ -174,7 +166,7 @@ public:
   const LanguageResourcePtr& Pack() const { return m_pack; }
 
   /*!
-   * \brief The name the active language pack states for itself, in english.
+   * \brief The name the active language pack states for itself, in English.
    * \return The name, or empty when no pack has been loaded.
    */
   std::string PackName() const;
@@ -190,14 +182,13 @@ public:
 
   /*!
    * \brief The leading words a sort steps over - "the", "le", "der".
-   * \note The pack's words, plus advancedsettings.xml's.
-   * \return The words, each carrying the separator that follows it.
+   * \return The pack's words, plus the ones advancedsettings.xml adds.
    */
   Tokens SortTokens() const;
 
   /*!
    * \brief Run the interface in the language pack the user chose.
-   * \param[in] pack The pack, or nullptr to fall back to english.
+   * \param[in] pack The pack, or nullptr to fall back to English.
    */
   void SetPack(const LanguageResourcePtr& pack);
 

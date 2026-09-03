@@ -25,6 +25,9 @@ namespace KODI::LANGUAGE
  * The form a tag holds is a BCP 47 language tag, spelled the way RFC 5646 recommends - en, en-GB,
  * zh-Hant-HK. Every other notation is derived from it on demand, and none of them is stored.
  *
+ * A tag is taken apart where it is built and keeps what that read - the language it names and the
+ * place it names - so asking it about either is a read rather than a second look at the text.
+ *
  * The members say what they answer with:
  *
  * - ToString is the canonical form itself, which is what the tag is rather than a view of it
@@ -191,7 +194,6 @@ public:
    * \brief Whether this is the same tag as another.
    * \note Tags, not languages: en and eng are the same tag once parsed, but en and en-AU are
    *       not. Matches answers whether two tags name the same language.
-   * \return true when the tags are identical.
    */
   bool operator==(const CLanguageTag& other) const = default;
 

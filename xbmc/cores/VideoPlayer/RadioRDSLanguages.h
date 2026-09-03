@@ -31,8 +31,8 @@ std::string_view LanguageCode(unsigned int index);
 
 /*!
  * \brief The language a slow labelling language index names.
- * \note The parse at this vocabulary's boundary. The codes are ISO 639-2/B where the standard
- *       has one, and ISO 639-3 for the few languages it does not, so the tag is what says which.
+ * \note The table holds ISO 639-2/B codes where the standard has one, and ISO 639-3 for the few
+ *       languages it does not.
  * \param[in] index The index, as carried by slow labelling variant 3.
  * \return The language, undetermined where the index names none.
  */

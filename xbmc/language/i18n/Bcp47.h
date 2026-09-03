@@ -44,8 +44,8 @@ public:
 
   /*!
    * \brief Whether text is a region subtag RFC 5646 accepts.
-   * \note The single answer to what a region is. A region has to mean the same thing inside a
-   *       language tag as it does standing on its own, or a tag's own region can fail to be one.
+   * \note A region means the same thing inside a language tag as it does standing on its own, so
+   *       this answers for both.
    * \param[in] region Lower case candidate region subtag.
    * \param[in] registry Subtag registry used. If not provided, the global registry will be used.
    * \return true for an accepted region subtag.
@@ -62,8 +62,8 @@ public:
 
   /*!
    * \brief Return the region subtag of the tag.
-   * \return The region subtag, in the case Canonicalize gives it. Empty for a tag naming no
-   *         region.
+   * \return The region subtag, lower case as the tag holds its subtags, where Format renders it
+   *         the upper case BCP 47 recommends. Empty for a tag naming no region.
    */
   const std::string& GetRegion() const { return m_region; }
 

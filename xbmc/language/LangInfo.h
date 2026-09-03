@@ -77,8 +77,6 @@ public:
 
   /*!
    * \brief The place the selected region profile is for.
-   * \note One accessor rather than one per notation - the caller states which notation it needs,
-   *       and the territory answers with nothing where that standard has no code for the place.
    * \return The territory, naming no place where langinfo.xml stated none.
    */
   const KODI::LANGUAGE::CTerritory& GetRegionTerritory() const;

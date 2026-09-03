@@ -43,7 +43,6 @@ std::optional<std::string_view> CountryCode(unsigned int extendedCountryCode,
 
 /*!
  * \brief The place an extended country code and PI country code name.
- * \note The parse at this vocabulary's boundary.
  * \param[in] extendedCountryCode The ECC, as the high nibble carries it: 0xA0, 0xD0, 0xE0 or 0xF0.
  * \param[in] countryCode The PI country code, 1 to 15.
  * \param[in] index The ECC's low nibble.

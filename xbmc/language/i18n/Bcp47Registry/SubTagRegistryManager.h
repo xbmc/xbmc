@@ -23,10 +23,11 @@ public:
    * \brief The IANA registry Kodi ships, loaded on first use.
    *
    * The registry is a published table that does not change while Kodi runs, so it is held as data
-   * rather than as a service: nothing to depend on, no lifetime to manage, nothing to order it
-   * against. That is what lets a language be parsed at any point in the process, including before
-   * any service exists.
+   * rather than as a service.
    *
+   * \note Read on first use, from a path that resolves only once the special protocol is set up.
+   *       A parse before that leaves the registry empty for the rest of the run, so nothing may
+   *       parse a language during static initialization.
    * \return The registry, empty rather than absent if the shipped file cannot be read.
    */
   static const CSubTagRegistryManager& GetInstance();

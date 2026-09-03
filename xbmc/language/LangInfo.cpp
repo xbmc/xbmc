@@ -205,9 +205,7 @@ void CLangInfo::CRegion::SetSpeedUnit(const std::string& strUnit)
 void CLangInfo::CRegion::SetGlobalLocale(CLangInfo& langInfo)
 {
   // A platform locale pairs the interface language with the place the selected region is for,
-  // which are two separate choices - a British pack with the Australian region is en_AU. The
-  // language is the interface's, so it comes from CLanguage rather than being copied onto every
-  // region; the territory is this region's.
+  // which are two separate choices - a British pack with the Australian region is en_AU
   const std::string language{CLanguage::GetInstance().UI().AsIso6391()};
   const std::string territory{m_territory.AsIso3166_1Alpha2()};
 
@@ -372,10 +370,6 @@ bool CLangInfo::Load(const std::string& langInfoPath)
     return false;
   }
 
-  // The root element's locale attribute states the language, which the pack already states as
-  // its own locale and CLanguage holds. It is the language half of a region name, not a value
-  // of its own, so nothing reads it here.
-
   const auto* pRegions = pRootElement->FirstChildElement("regions");
   if (pRegions && !pRegions->NoChildren())
   {
@@ -388,8 +382,7 @@ bool CLangInfo::Load(const std::string& langInfoPath)
         region.m_strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
             10005); // Not available
 
-      // The one place a region's place arrives as text, so the one place it is judged. A
-      // langinfo.xml stating no place, or one naming nothing, leaves the region without one.
+      // A langinfo.xml stating no place, or one naming nothing, leaves the region without one
       if (pRegion->Attribute("locale"))
         region.m_territory = CTerritory::FromCode(pRegion->Attribute("locale"));
 
@@ -504,8 +497,7 @@ namespace
 /*!
  * \brief A display name without the qualifier it carries in parentheses - a region profile named
  *        "USA (12h)" becomes "USA".
- * \note Text handling on text meant for a reader, which is all it is fit for. A language is never
- *       taken apart this way to find out what it is - CLanguageTag says that.
+ * \note Fit for text meant for a reader and nothing else. What a language is, CLanguageTag says.
  */
 std::string WithoutQualifier(const std::string& name)
 {
