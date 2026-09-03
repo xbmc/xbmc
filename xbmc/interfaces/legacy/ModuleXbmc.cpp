@@ -27,6 +27,7 @@
 #include "guilib/TextureManager.h"
 #include "input/WindowTranslator.h"
 #include "language/LangInfo.h"
+#include "language/Language.h"
 #include "language/LanguageTag.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
@@ -198,8 +199,9 @@ namespace XBMCAddon
         case KODI::LANGUAGE::CLanguageTag::ISO_NAME:
         case KODI::LANGUAGE::CLanguageTag::ISO_639_1:
         case KODI::LANGUAGE::CLanguageTag::ISO_639_2:
-          return g_langInfo.GetLanguageAs(
-              static_cast<KODI::LANGUAGE::CLanguageTag::Notation>(format), region);
+          return KODI::LANGUAGE::DescribeLanguage(
+              static_cast<KODI::LANGUAGE::CLanguageTag::Notation>(format),
+              KODI::LANGUAGE::CLanguage::GetInstance(), g_langInfo, region);
         default:
           return "";
       }

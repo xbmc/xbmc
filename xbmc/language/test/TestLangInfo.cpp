@@ -31,6 +31,38 @@ using KODI::LANGUAGE::CLanguageTag;
 
 } // namespace
 
+// What the add-on and Python interfaces are handed when they ask what Kodi is running in
+TEST(TestLangInfo, DescribeLanguage)
+{
+  using KODI::LANGUAGE::DescribeLanguage;
+
+  CLangInfoTest langInfo;
+  ASSERT_TRUE(langInfo.LoadLang("en_gb"));
+  langInfo.SetCurrentRegion("USA (12h)");
+
+  KODI::LANGUAGE::CLanguage language;
+  language.SetUI(CLanguageTag::Parse("en-GB"));
+
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_1, language, langInfo, false), "en");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_2, language, langInfo, false), "eng");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_NAME, language, langInfo, false), "English");
+
+  // The place is the region profile's, not the language's, so a British pack under the USA
+  // profile is named for where the viewer is
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_1, language, langInfo, true), "en-US");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_2, language, langInfo, true), "eng-USA");
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_NAME, language, langInfo, true), "English-USA");
+
+  // A language with no code in the notation asked for is answered with nothing, rather than with
+  // a bare place
+  language.SetUI(CLanguageTag::Parse("ast"));
+  EXPECT_TRUE(DescribeLanguage(CLanguageTag::ISO_639_1, language, langInfo, true).empty());
+  EXPECT_EQ(DescribeLanguage(CLanguageTag::ISO_639_2, language, langInfo, true), "ast-USA");
+
+  // Without a pack there is no name for a pack to have stated
+  EXPECT_TRUE(DescribeLanguage(CLanguageTag::ENGLISH_NAME, language, langInfo, true).empty());
+}
+
 TEST(TestLangInfo, Load)
 {
   CLangInfoTest langInfo;

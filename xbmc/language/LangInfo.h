@@ -67,15 +67,6 @@ public:
   bool Load(const std::string& langInfoPath);
 
   /*!
-   * \brief The active language, named in the requested format.
-   * \param format The notation to name the language in.
-   * \param withRegion Append the active region, separated by "-", in the notation the format
-   *        implies: an ISO 3166-1 code for the ISO 639 formats, the region's name otherwise.
-   * \return The language, empty when it has no code in the requested format.
-   */
-  std::string GetLanguageAs(KODI::LANGUAGE::CLanguageTag::Notation format, bool withRegion) const;
-
-  /*!
    * \brief The place the selected region profile is for.
    * \return The territory, naming no place where langinfo.xml stated none.
    */

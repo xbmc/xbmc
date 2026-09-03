@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/LanguageResource.h"
+#include "language/LangInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -36,6 +37,22 @@ bool Names(const std::string& setting, std::string_view value)
  * \param[in] settingId The setting holding the choice.
  * \return The set, or nothing where the setting is on its default.
  */
+/*!
+ * \brief A display name without the qualifier it carries in parentheses - a region profile named
+ *        "USA (12h)" becomes "USA".
+ * \note Fit for text meant for a reader and nothing else. What a language is, CLanguageTag says.
+ */
+std::string WithoutQualifier(const std::string& name)
+{
+  const size_t openParen = name.find('(');
+  if (openParen == std::string::npos)
+    return name;
+
+  std::string base = name.substr(0, openParen);
+  StringUtils::TrimRight(base);
+  return base;
+}
+
 std::optional<std::string> ChosenCharset(const std::string& settingId)
 {
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -152,6 +169,60 @@ std::string CLanguage::SubtitleCharset() const
     return *chosen;
 
   return m_pack ? m_pack->GetSubtitleCharset() : std::string{builtInCharset};
+}
+
+std::string KODI::LANGUAGE::DescribeLanguage(CLanguageTag::Notation notation,
+                                             const CLanguage& language,
+                                             const CLangInfo& region,
+                                             bool withRegion)
+{
+  const CLanguageTag& ui{language.UI()};
+
+  std::string named;
+  switch (notation)
+  {
+    case CLanguageTag::ENGLISH_NAME:
+      // The name the pack declares for itself, which is the one a user has seen named
+      named = language.PackName();
+      break;
+    case CLanguageTag::ISO_NAME:
+      named = ui.ToEnglishLanguageName();
+      break;
+    case CLanguageTag::ISO_639_1:
+      named = ui.AsIso6391();
+      break;
+    case CLanguageTag::ISO_639_2:
+      named = ui.AsIso6392B();
+      break;
+  }
+
+  // Some languages have no code in the requested ISO 639 notation - Asturian, for one, has no
+  // ISO 639-1 code - and there is then nothing to join a place to
+  if (!withRegion || named.empty())
+    return named;
+
+  // The place, named in the notation the language notation implies
+  std::string place;
+  switch (notation)
+  {
+    case CLanguageTag::ISO_639_1:
+      place = region.GetRegionTerritory().AsIso3166_1Alpha2();
+      break;
+    case CLanguageTag::ISO_639_2:
+      place = region.GetRegionTerritory().AsIso3166_1Alpha3();
+      break;
+    case CLanguageTag::ISO_NAME:
+      place = WithoutQualifier(region.GetCurrentRegion());
+      break;
+    case CLanguageTag::ENGLISH_NAME:
+      place = region.GetCurrentRegion();
+      break;
+  }
+
+  if (!place.empty())
+    named += "-" + place;
+
+  return named;
 }
 
 CLanguage::Tokens CLanguage::SortTokens() const

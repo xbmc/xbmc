@@ -22,6 +22,8 @@ class CLanguageResource;
 
 namespace KODI::LANGUAGE
 {
+class CLangInfo;
+
 using LanguageResourcePtr = std::shared_ptr<ADDON::CLanguageResource>;
 
 // The setting values that name no language
@@ -207,4 +209,24 @@ private:
   CLanguagePreference m_subtitle;
   LanguageResourcePtr m_pack;
 };
+
+/*!
+ * \brief Name what Kodi is running in, for an interface that states how it wants it named.
+ *
+ * The add-on and Python interfaces let a caller choose the notation, and whether the place is
+ * named alongside the language. The language is the interface's and the place is the one the
+ * selected region profile is for, so the two are separate choices and either can answer with
+ * nothing.
+ *
+ * \param[in] notation How the language is to be named.
+ * \param[in] language The interface language and the pack it came from.
+ * \param[in] region The region profile the place is taken from.
+ * \param[in] withRegion Whether the place is named after the language, separated by "-".
+ * \return The name, empty where the language has none in that notation. A place is never named
+ *         on its own, so a language that cannot be named answers with nothing at all.
+ */
+std::string DescribeLanguage(CLanguageTag::Notation notation,
+                             const CLanguage& language,
+                             const CLangInfo& region,
+                             bool withRegion);
 } // namespace KODI::LANGUAGE

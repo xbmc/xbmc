@@ -20,6 +20,7 @@
 #include "input/keyboard/KeyboardLayout.h"
 #include "input/keyboard/KeyboardLayoutManager.h"
 #include "language/LangInfo.h"
+#include "language/Language.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
@@ -105,7 +106,9 @@ char* Interface_General::get_language(void* kodiBase, int format, bool region)
       break;
   }
 
-  return strdup(g_langInfo.GetLanguageAs(langFormat, region).c_str());
+  return strdup(KODI::LANGUAGE::DescribeLanguage(
+                    langFormat, KODI::LANGUAGE::CLanguage::GetInstance(), g_langInfo, region)
+                    .c_str());
 }
 
 bool Interface_General::queue_notification(void* kodiBase, int type, const char* header,
