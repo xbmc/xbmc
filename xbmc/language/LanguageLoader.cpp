@@ -37,7 +37,6 @@
 #include <string_view>
 
 using namespace KODI::LANGUAGE;
-using namespace KODI::LANGUAGE;
 using namespace KODI::LANGUAGE::I18N;
 
 namespace

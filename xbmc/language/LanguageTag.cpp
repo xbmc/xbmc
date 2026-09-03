@@ -8,17 +8,18 @@
 
 #include "language/LanguageTag.h"
 
-#include "utils/StringUtils.h"
 #include "language/i18n/Bcp47.h"
 #include "language/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "language/i18n/Iso639.h"
 #include "language/i18n/Iso639_2.h"
 #include "language/i18n/LanguageTable.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
 #include <string_view>
-#include <vector>
+#include <utility>
 
 using namespace KODI::LANGUAGE;
 using namespace KODI::LANGUAGE::I18N;
@@ -41,16 +42,65 @@ constexpr char SUBTAG_SEPARATOR{'-'};
 //! The subtag separator a POSIX locale name uses
 constexpr char POSIX_SUBTAG_SEPARATOR{'_'};
 
-//! Every subtag of a tag, in the order BCP 47 gives them
-std::vector<std::string> Subtags(const std::string& tag)
+//! What a POSIX locale name puts before its codeset and its modifier: sr_RS.UTF-8@latin
+constexpr char POSIX_CODESET_SEPARATOR{'.'};
+constexpr char POSIX_MODIFIER_SEPARATOR{'@'};
+
+//! The script subtag a POSIX locale modifier names, for the modifiers that name one
+constexpr auto POSIX_SCRIPT_MODIFIERS = std::array{
+    std::pair<std::string_view, std::string_view>{"cyrillic", "Cyrl"},
+    std::pair<std::string_view, std::string_view>{"latin", "Latn"},
+};
+
+/*!
+ * \brief Take the codeset and modifier off a POSIX locale name.
+ * \note Only a name shaped like a POSIX locale - one carrying a territory or a modifier - is
+ *       read this way, so dotted text that is not a locale is left for the parse to reject.
+ * \param[in,out] locale The name, lower case. Left as the language and territory alone.
+ * \return The script subtag the modifier names, or empty where there is none or it names none.
+ */
+std::string TakePosixModifier(std::string& locale)
 {
-  return StringUtils::Split(tag, SUBTAG_SEPARATOR);
+  std::string modifier;
+  if (const std::size_t at = locale.find(POSIX_MODIFIER_SEPARATOR); at != std::string::npos)
+  {
+    modifier = locale.substr(at + 1);
+    locale.erase(at);
+  }
+
+  if (modifier.empty() && locale.find(POSIX_SUBTAG_SEPARATOR) == std::string::npos)
+    return {};
+
+  if (const std::size_t dot = locale.find(POSIX_CODESET_SEPARATOR); dot != std::string::npos)
+    locale.erase(dot);
+
+  const auto script = std::ranges::find(POSIX_SCRIPT_MODIFIERS, modifier,
+                                        &std::pair<std::string_view, std::string_view>::first);
+  return script == POSIX_SCRIPT_MODIFIERS.end() ? std::string{} : std::string{script->second};
 }
 
-//! The primary language subtag, which is everything a canonical tag has before its first subtag
-std::string PrimarySubtag(const std::string& tag)
+/*!
+ * \brief A tag as the parse produced it: the canonical form, and the subtags read out of it.
+ * \note Read out here because this is the only place a tag is taken apart. Everything a tag is
+ *       later asked about is answered from these rather than from the text.
+ */
+struct Parsed
 {
-  return tag.substr(0, tag.find(SUBTAG_SEPARATOR));
+  std::string tag;
+  std::string language;
+  CTerritory territory;
+};
+
+//! What a parsed tag says about itself
+Parsed Read(const CBcp47& tag)
+{
+  return {tag.Format(), tag.GetLanguage(), CTerritory::FromCode(tag.GetRegion())};
+}
+
+//! A code Kodi holds but BCP 47 does not describe, which names a language and nothing else
+Parsed Undescribed(std::string code)
+{
+  return {code, std::move(code), {}};
 }
 
 //! The English name of whatever a code names
@@ -98,22 +148,30 @@ std::optional<std::string> CodeOfName(const std::string& name)
 }
 
 //! The canonical BCP 47 form of a language written in any notation Kodi recognizes
-std::optional<std::string> CanonicalBcp47(const std::string& text)
+std::optional<Parsed> CanonicalBcp47(const std::string& text)
 {
   std::string code{StringUtils::ToLower(text)};
   StringUtils::Trim(code);
 
-  // A POSIX locale name spells the subtag separator _, as en_GB. Only the parsing sees it as -,
-  // so text naming no language is answered as written.
+  // A POSIX locale name spells the subtag separator _, as en_GB, and may qualify the language by
+  // a script, as sr_RS@latin. Only the parsing sees the BCP 47 form, so text naming no language
+  // is answered as written.
   std::string parseCode{code};
+  const std::string script{TakePosixModifier(parseCode)};
   std::ranges::replace(parseCode, POSIX_SUBTAG_SEPARATOR, SUBTAG_SEPARATOR);
+  if (!script.empty())
+  {
+    const std::size_t primaryEnd{parseCode.find(SUBTAG_SEPARATOR)};
+    parseCode.insert(primaryEnd == std::string::npos ? parseCode.size() : primaryEnd,
+                     SUBTAG_SEPARATOR + script);
+  }
 
   auto tag = CBcp47::ParseTag(parseCode);
 
   if (tag.has_value() && tag->IsValid())
   {
     tag->Canonicalize();
-    return tag->Format();
+    return Read(*tag);
   }
 
   // Well formed but not registered is how an ISO 639-2/B code parses. Its alpha-2 sibling is what
@@ -125,7 +183,7 @@ std::optional<std::string> CanonicalBcp47(const std::string& text)
       // Alpha-2 codes are likely to be registered but there is no guarantee
       if (const auto alpha2Tag = CBcp47::ParseTag(*alpha2);
           alpha2Tag.has_value() && alpha2Tag->IsValid())
-        return alpha2Tag->Format();
+        return Read(*alpha2Tag);
 
       // Kodi's table and the subtag registry disagree, which is a data bug rather than bad input
       CLog::LogF(LOGERROR,
@@ -135,11 +193,26 @@ std::optional<std::string> CanonicalBcp47(const std::string& text)
     }
   }
 
+  // A code advancedsettings.xml declares is a language by declaration, whether or not any
+  // standard assigns it, and is answered as declared
+  if (CLanguageTable::GetInstance().NameOf(parseCode).has_value())
+    return Undescribed(std::move(parseCode));
+
   // Unknown as a code, the text may be an English language name
   if (const auto named = CodeOfName(code); named.has_value())
   {
     // BCP 47 uses the alpha-2 code where the language has one, and the alpha-3 otherwise
-    return CIso639::Alpha3ToAlpha2(*named).value_or(*named);
+    std::string resolved{CIso639::Alpha3ToAlpha2(*named).value_or(*named)};
+
+    // The table holds a declared code as written, so it is spelled out the way any tag is
+    if (auto resolvedTag = CBcp47::ParseTag(resolved);
+        resolvedTag.has_value() && resolvedTag->IsValid())
+    {
+      resolvedTag->Canonicalize();
+      return Read(*resolvedTag);
+    }
+
+    return Undescribed(std::move(resolved));
   }
 
   return std::nullopt;
@@ -148,12 +221,12 @@ std::optional<std::string> CanonicalBcp47(const std::string& text)
 
 CLanguageTag CLanguageTag::Undetermined()
 {
-  return CLanguageTag(std::string{UNDETERMINED}, true);
+  return CLanguageTag(std::string{UNDETERMINED}, std::string{UNDETERMINED}, {});
 }
 
 CLanguageTag CLanguageTag::English()
 {
-  return CLanguageTag(std::string{ENGLISH}, true);
+  return CLanguageTag(std::string{ENGLISH}, std::string{ENGLISH}, {});
 }
 
 bool CLanguageTag::IsEnglish() const
@@ -164,7 +237,7 @@ bool CLanguageTag::IsEnglish() const
 bool CLanguageTag::IsLanguage(std::string_view subtag) const
 {
   // The language named, not the text the tag starts with
-  return StringUtils::EqualsNoCase(PrimarySubtag(m_tag), subtag);
+  return StringUtils::EqualsNoCase(m_language, subtag);
 }
 
 bool CLanguageTag::IsUndetermined() const
@@ -177,10 +250,13 @@ CLanguageTag CLanguageTag::Parse(const std::string& text)
   if (text.empty())
     return {};
 
-  if (auto bcp47 = CanonicalBcp47(text); bcp47.has_value())
-    return CLanguageTag(std::move(*bcp47), true);
+  if (auto parsed = CanonicalBcp47(text); parsed.has_value())
+  {
+    return CLanguageTag(std::move(parsed->tag), std::move(parsed->language),
+                        std::move(parsed->territory));
+  }
 
-  return CLanguageTag(text, false);
+  return CLanguageTag(text);
 }
 
 CLanguageTag CLanguageTag::ParseStreamLanguage(const std::string& text)
@@ -227,17 +303,15 @@ std::string CLanguageTag::AsIso6392B() const
   if (!m_valid)
     return m_tag;
 
-  const std::string language{PrimarySubtag(m_tag)};
-
-  if (language.length() == 2)
-    return CIso639::Alpha2ToAlpha3B(language).value_or(language);
+  if (m_language.length() == 2)
+    return CIso639::Alpha2ToAlpha3B(m_language).value_or(m_language);
 
   // An alpha-3 subtag is already an ISO 639-2 code wherever that standard assigns one, so only
   // the languages spelling their two forms differently have a mapping to follow
-  if (language.length() == 3)
-    return CIso639_2::TCodeToBCode(language).value_or(language);
+  if (m_language.length() == 3)
+    return CIso639_2::TCodeToBCode(m_language).value_or(m_language);
 
-  return language;
+  return m_language;
 }
 
 std::string CLanguageTag::AsIso6392T() const
@@ -255,50 +329,18 @@ std::string CLanguageTag::AsIso6392T() const
   return iso6392B;
 }
 
-CTerritory CLanguageTag::GetTerritory() const
+const CTerritory& CLanguageTag::GetTerritory() const
 {
-  // Text that names no language names no territory either
-  if (!m_valid)
-    return {};
-
-  const std::vector<std::string> subtags{Subtags(m_tag)};
-
-  // The tag is canonical, so a region subtag is already spelled the way ISO 3166-1 and UN M.49
-  // publish theirs, and no other subtag can take either shape: an extlang is three letters, a
-  // script is four, and a variant is at least four
-  for (std::size_t i{1}; i < subtags.size(); ++i)
-  {
-    const std::string& subtag{subtags[i]};
-
-    // A singleton opens an extension or the private use sequence, past which nothing is a region
-    if (subtag.length() == 1)
-      break;
-
-    // Judged when the tag was parsed, so it is handed over rather than judged again
-    if (subtag.length() == 2 &&
-        std::ranges::all_of(subtag, [](char c) { return c >= 'A' && c <= 'Z'; }))
-      return CTerritory(subtag);
-
-    if (subtag.length() == 3 &&
-        std::ranges::all_of(subtag, [](char c) { return c >= '0' && c <= '9'; }))
-      return CTerritory(subtag);
-  }
-
-  return {};
+  return m_territory;
 }
 
 std::string CLanguageTag::AsIso6391() const
 {
-  if (!m_valid)
-    return {};
-
-  const std::string language{PrimarySubtag(m_tag)};
-
   // Canonical BCP 47 already prefers the alpha-2 code wherever a language has one
-  if (language.length() == 2)
-    return language;
+  if (m_language.length() == 2)
+    return m_language;
 
-  return CIso639::Alpha3ToAlpha2(language).value_or(std::string{});
+  return CIso639::Alpha3ToAlpha2(m_language).value_or(std::string{});
 }
 
 bool CLanguageTag::Matches(const CLanguageTag& other) const

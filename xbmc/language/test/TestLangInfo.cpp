@@ -86,9 +86,9 @@ TEST(TestLangInfo, FallsBackWhenTheLanguageSettingNamesNoLanguage)
   language.SetSubtitle("not a language");
   EXPECT_TRUE(language.SubtitlePreference().GetLanguage().IsUndetermined());
 
-  // Subtitles follow the audio preference rather than the interface language, and that preference
-  // names no language either, so nothing here answers it - the caller uses what is playing
-  EXPECT_TRUE(language.Subtitle().IsUndetermined());
+  // Subtitles follow the audio preference, and that preference names no language either, so
+  // nothing here answers it - a caller that knows what is playing uses that instead
+  EXPECT_TRUE(language.Subtitle(false).IsUndetermined());
 
   // Stated, the audio preference is what a subtitle without its own preference follows
   language.SetAudio("french");

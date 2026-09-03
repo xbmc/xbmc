@@ -1751,6 +1751,9 @@ bool CApplication::Cleanup()
 
     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear();
     KODI::LANGUAGE::I18N::CLanguageTable::GetInstance().Reset();
+    // The pack is an add-on, and holding one past the add-on manager leaves its release to the
+    // order the process tears its statics down in
+    KODI::LANGUAGE::CLanguage::GetInstance().SetPack(nullptr);
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     //CServiceBroker::GetInputManager().ClearKeymaps(); //! @todo

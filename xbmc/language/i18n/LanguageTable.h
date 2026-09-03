@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "threads/SharedSection.h"
+
 #include <map>
 #include <optional>
 #include <string>
@@ -86,5 +88,8 @@ private:
   std::map<std::string, std::string> m_codes;
   //! The declarations alone, so a listing can offer them alongside the ISO 639 languages
   std::map<std::string, std::string> m_declared;
+
+  //! Declarations arrive on the thread loading a language while any thread may be parsing
+  mutable CSharedSection m_section;
 };
 } // namespace KODI::LANGUAGE::I18N

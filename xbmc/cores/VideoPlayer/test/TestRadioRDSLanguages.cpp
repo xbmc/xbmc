@@ -37,8 +37,8 @@ TEST(TestRadioRDSLanguages, EveryAssignedIndexNamesALanguage)
 
 TEST(TestRadioRDSLanguages, AReservedIndexNamesNoLanguage)
 {
-  // 0x00 is reserved, as is the block from 0x2C, and 0x64 within an otherwise assigned row
-  for (const unsigned int index : {0x00U, 0x2CU, 0x3FU, 0x44U, 0x64U})
+  // 0x00 is reserved, as is the block from 0x2C to 0x44
+  for (const unsigned int index : {0x00U, 0x2CU, 0x3FU, 0x44U})
   {
     EXPECT_TRUE(KODI::RDS::LanguageCode(index).empty()) << "index " << index;
     EXPECT_TRUE(KODI::RDS::Language(index).IsUndetermined()) << "index " << index;
@@ -63,6 +63,11 @@ TEST(TestRadioRDSLanguages, TheMistranscribedCellsNameTheirLanguage)
   // 0x61 is Malay. It read "mys", which is the ISO 3166 code for Malaysia, not a language
   EXPECT_EQ(KODI::RDS::LanguageCode(0x61), "may");
   EXPECT_TRUE(KODI::RDS::Language(0x61).Matches(CLanguageTag::Parse("ms")));
+
+  // 0x64 is Laotian, between Macedonian and Korean in the reverse-alphabetical run. It read as
+  // a reserved index
+  EXPECT_EQ(KODI::RDS::LanguageCode(0x64), "lao");
+  EXPECT_EQ(KODI::RDS::Language(0x64).ToString(), "lo");
 }
 
 // A code the standard printed but ISO has since withdrawn is replaced by the one that survived,
@@ -71,16 +76,17 @@ TEST(TestRadioRDSLanguages, TheMistranscribedCellsNameTheirLanguage)
 // replacement is not a guess about what the broadcaster meant.
 TEST(TestRadioRDSLanguages, WithdrawnCodesAreReplacedByTheOneThatSurvived)
 {
-  // 0x54 is Serbian, printed as scc, withdrawn 2008-06-28 in favour of srp
-  EXPECT_EQ(KODI::RDS::LanguageCode(0x54), "srp");
-  EXPECT_EQ(KODI::RDS::Language(0x54).ToString(), "sr");
+  // 0x54 is Serbo-Croat, printed as scc, which ISO 639-2 withdrew 2008-06-28. Serbian has its
+  // own index at 0x24, so the survivor is the ISO 639-3 macrolanguage hbs, not srp
+  EXPECT_EQ(KODI::RDS::LanguageCode(0x54), "hbs");
+  EXPECT_EQ(KODI::RDS::Language(0x54).ToString(), "sh");
+  EXPECT_NE(KODI::RDS::Language(0x54), KODI::RDS::Language(0x24));
 
   // 0x60 is Moldavian, which ISO withdrew as a language distinct from Romanian
   EXPECT_EQ(KODI::RDS::LanguageCode(0x60), "rum");
   EXPECT_EQ(KODI::RDS::Language(0x60).ToString(), "ro");
 
   // The standard names some languages twice, once in each block, and the two agree
-  EXPECT_EQ(KODI::RDS::Language(0x24), KODI::RDS::Language(0x54)); // Serbian
   EXPECT_EQ(KODI::RDS::Language(0x22), KODI::RDS::Language(0x60)); // Romanian
   EXPECT_EQ(KODI::RDS::Language(0x1D), KODI::RDS::Language(0x2A)); // Dutch, as dut and nld
 }

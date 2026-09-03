@@ -6,10 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "language/LanguageTag.h"
 #include "language/i18n/LanguageTable.h"
 
 #include <gtest/gtest.h>
 
+using KODI::LANGUAGE::CLanguageTag;
 using namespace KODI::LANGUAGE::I18N;
 
 namespace
@@ -85,6 +87,27 @@ TEST_F(LanguageTableTest, DeclaredLanguagesAreFoundLikeAnyOther)
 
   EXPECT_EQ(Table().NameOf("es-419"), "Spanish - Latin America");
   EXPECT_EQ(Table().CodeOf("Spanish - Latin America"), "es-419");
+
+  // Whichever separator the declaration was written with
+  Table().Declare({{"pt_BR", "Brazilian"}});
+  EXPECT_EQ(Table().NameOf("pt-BR"), "Brazilian");
+  EXPECT_EQ(CLanguageTag::Parse("pt-BR").ToEnglishName(), "Brazilian");
+}
+
+TEST_F(LanguageTableTest, ADeclaredCodeIsALanguageLikeAnyOther)
+{
+  // Media tagged with a code no standard assigns is the reason the feature exists
+  Table().Declare({{"zzz", "High Valyrian"}});
+
+  const CLanguageTag language{CLanguageTag::Parse("zzz")};
+  EXPECT_TRUE(language.IsValid());
+  EXPECT_EQ(language.ToString(), "zzz");
+  EXPECT_EQ(language.AsIso6392B(), "zzz");
+  EXPECT_EQ(language.ToEnglishName(), "High Valyrian");
+
+  EXPECT_EQ(CLanguageTag::Parse("High Valyrian"), language);
+  EXPECT_TRUE(CLanguageTag::TryParse("ZZZ").has_value());
+  EXPECT_TRUE(CLanguageTag::ParseStreamLanguage("zzz").Matches(language));
 }
 
 TEST_F(LanguageTableTest, ADeclarationReplacesWhatACodeNamed)
@@ -104,6 +127,10 @@ TEST_F(LanguageTableTest, ADeclarationMayRenameALanguageOntoAnother)
   Table().Declare({{"en-GB", "French"}});
 
   EXPECT_EQ(Table().CodeOf("French"), "en-gb");
+
+  // The tag that comes of it is spelled the way BCP 47 spells it, as any parsed tag is
+  EXPECT_EQ(CLanguageTag::Parse("French").ToString(), "en-GB");
+  EXPECT_EQ(CLanguageTag::Parse("French").GetTerritory().ToString(), "GB");
 }
 
 TEST_F(LanguageTableTest, ResetRestoresTheStandardLanguages)

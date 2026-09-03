@@ -134,23 +134,28 @@ public:
    *
    * The audio preference, resolving "default" to the interface language. A preference answered
    * by something other than a language - the media's own first track, or the original-language
-   * track - names none, and the caller decides what to do instead.
+   * track - is answered by the interface language as well, so that a caller with nothing better
+   * to match against still has a language.
    *
-   * \return The language, or an empty tag where the choice is not made by language.
+   * \param[in] fallbackToUI Whether a preference naming no language is answered by the interface
+   *            language. False for a caller that answers it better itself, or that acts on the
+   *            choice rather than matching a language against it.
+   * \return The language, or an empty tag where the preference names none and there is no
+   *         fallback.
    */
-  CLanguageTag Audio() const { return m_audio.Resolve(m_ui); }
+  CLanguageTag Audio(bool fallbackToUI = true) const;
 
   /*!
    * \brief The language a subtitle track should be matched against.
    *
-   * The interface language is deliberately not part of this, though it is part of Audio: a
-   * viewer who has stated no subtitle language is answered by the one they asked to hear, and
-   * failing that by whatever is playing. The caller supplies that last step, as it is not a
-   * setting.
+   * The subtitle preference, falling back to the audio one: a viewer who has stated no subtitle
+   * language is answered by the one they asked to hear. Where neither states a language, the
+   * caller that knows what is playing answers it with that instead, as it is not a setting.
    *
-   * \return The language, or an empty tag where neither preference states one.
+   * \param[in] fallbackToUI As Audio describes.
+   * \return The language, as Audio describes.
    */
-  CLanguageTag Subtitle() const;
+  CLanguageTag Subtitle(bool fallbackToUI = true) const;
 
   /*!
    * \brief What the user asked for, rather than the language it resolves to.

@@ -45,7 +45,12 @@ namespace
  */
 KODI::LANGUAGE::CLanguageTag LanguageFromNfo(const std::string& value, std::string_view streamType)
 {
-  KODI::LANGUAGE::CLanguageTag language{KODI::LANGUAGE::CLanguageTag::Parse(value)};
+  // Trimmed and lower case whether or not it names a language: that is the form the
+  // streamdetails column holds, and a smart playlist rule compares against the column as stored
+  std::string text{StringUtils::ToLower(value)};
+  StringUtils::Trim(text);
+
+  KODI::LANGUAGE::CLanguageTag language{KODI::LANGUAGE::CLanguageTag::Parse(text)};
   if (!language.IsValid())
   {
     CLog::Log(LOGWARNING,
@@ -1079,7 +1084,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
       // Order by the stream the GUI describes, which is the one playback will start with,
       // rather than by the technically best stream the list does not show
       const int idx{m_streamDetails.GetPreferredAudioStreamIndex(
-          KODI::LANGUAGE::CLanguage::GetInstance().Audio())};
+          KODI::LANGUAGE::CLanguage::GetInstance().Audio(false))};
       if (field == Field::AUDIO_CHANNELS)
         sortable[Field::AUDIO_CHANNELS] = m_streamDetails.GetAudioChannels(idx);
       else if (field == Field::AUDIO_CODEC)

@@ -107,12 +107,24 @@ CLanguage& CLanguage::GetInstance()
   return language;
 }
 
-CLanguageTag CLanguage::Subtitle() const
+CLanguageTag CLanguage::Audio(bool fallbackToUI /* = true */) const
+{
+  const CLanguageTag audio{m_audio.Resolve(m_ui)};
+  if (!audio.IsUndetermined() || !fallbackToUI)
+    return audio;
+
+  return m_ui;
+}
+
+CLanguageTag CLanguage::Subtitle(bool fallbackToUI /* = true */) const
 {
   if (!m_subtitle.GetLanguage().IsUndetermined())
     return m_subtitle.GetLanguage();
 
-  return m_audio.GetLanguage();
+  if (!m_audio.GetLanguage().IsUndetermined())
+    return m_audio.GetLanguage();
+
+  return fallbackToUI ? m_ui : CLanguageTag{};
 }
 
 void CLanguage::SetPack(const LanguageResourcePtr& pack)

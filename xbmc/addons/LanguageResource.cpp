@@ -56,7 +56,6 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
   if (charsetsElement != nullptr)
   {
     m_charsetGui = charsetsElement->GetValue("gui").asString();
-    m_forceUnicodeFont = charsetsElement->GetValue("gui@unicodefont").asBoolean();
     m_charsetSubtitle = charsetsElement->GetValue("subtitle").asString();
   }
 

@@ -27,7 +27,6 @@ public:
   const KODI::LANGUAGE::CLanguageTag& GetLanguage() const { return m_language; }
 
   const std::string& GetGuiCharset() const { return m_charsetGui; }
-  bool ForceUnicodeFont() const { return m_forceUnicodeFont; }
   const std::string& GetSubtitleCharset() const { return m_charsetSubtitle; }
 
 
@@ -43,7 +42,6 @@ private:
   KODI::LANGUAGE::CLanguageTag m_language;
 
   std::string m_charsetGui;
-  bool m_forceUnicodeFont;
   std::string m_charsetSubtitle;
 
 

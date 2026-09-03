@@ -52,10 +52,8 @@ TEST(TestI18nCollation, NordicCollationWeight)
   }
 
   // No override for other languages or unrelated codepoints
-  EXPECT_EQ(NordicCollationWeight(CLanguageTag::Parse("eng"),
-                                                  L'å'),
+  EXPECT_EQ(NordicCollationWeight(CLanguageTag::Parse("eng"), L'å'),
             0); // å
-  EXPECT_EQ(NordicCollationWeight(CLanguageTag::Parse("nob"),
-                                                  L'é'),
+  EXPECT_EQ(NordicCollationWeight(CLanguageTag::Parse("nob"), L'é'),
             0); // é
 }

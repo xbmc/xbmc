@@ -46,6 +46,33 @@ std::string GetSharedLibraryNameRegexPattern()
   // linux is different and has the version number after the suffix
   return "^.*" + suffix + R"(\.?\d*\.?\d*\.?\d*$)";
 }
+
+/*!
+ * \brief The languages an add-on states, as its addon.xml <language> element lists them.
+ * \param[in] text The element's text: language tags separated by spaces.
+ * \param[in] addonId The add-on, for the warning.
+ * \return The languages, leaving out any text that names none.
+ */
+std::vector<KODI::LANGUAGE::CLanguageTag> ParseLanguages(const std::string& text,
+                                                         const std::string& addonId)
+{
+  std::vector<KODI::LANGUAGE::CLanguageTag> languages;
+  for (const auto& token : StringUtils::Split(text, " "))
+  {
+    if (token.empty())
+      continue;
+
+    if (const auto language = KODI::LANGUAGE::CLanguageTag::TryParse(token); language.has_value())
+      languages.emplace_back(*language);
+    else
+      CLog::Log(LOGWARNING,
+                "CAddonInfoBuilder: add-on '{}' states a language of '{}', which names no "
+                "language and is ignored",
+                addonId, token);
+  }
+
+  return languages;
+}
 }
 
 namespace ADDON
@@ -164,6 +191,12 @@ void CAddonInfoBuilderFromDB::SetDependencies(std::vector<DependencyInfo> depend
 void CAddonInfoBuilderFromDB::SetExtrainfo(InfoMap extrainfo)
 {
   m_addonInfo->m_extrainfo = std::move(extrainfo);
+
+  // The languages are persisted as the <language> text, so they are read from it as they were
+  // from the addon.xml
+  if (const auto it = m_addonInfo->m_extrainfo.find("language");
+      it != m_addonInfo->m_extrainfo.end())
+    m_addonInfo->m_languages = ParseLanguages(it->second, m_addonInfo->m_id);
 }
 
 void CAddonInfoBuilderFromDB::SetInstallDate(const CDateTime& installDate)
@@ -551,21 +584,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
       if (element && element->GetText() != nullptr)
       {
         addon->AddExtraInfo("language", element->GetText());
-
-        for (const auto& token : StringUtils::Split(element->GetText(), " "))
-        {
-          if (token.empty())
-            continue;
-
-          if (const auto language = KODI::LANGUAGE::CLanguageTag::TryParse(token);
-              language.has_value())
-            addon->m_languages.emplace_back(*language);
-          else
-            CLog::Log(LOGWARNING,
-                      "CAddonInfoBuilder: add-on '{}' states a language of '{}', which names no "
-                      "language and is ignored",
-                      addon->m_id, token);
-        }
+        addon->m_languages = ParseLanguages(element->GetText(), addon->m_id);
       }
 
       /* Parse addon.xml "<reuselanguageinvoker">...</reuselanguageinvoker>" */

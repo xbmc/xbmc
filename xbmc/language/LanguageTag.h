@@ -176,7 +176,7 @@ public:
    * \return The territory, naming no place where the tag states no region, which is true of
    *         most tags.
    */
-  CTerritory GetTerritory() const;
+  const CTerritory& GetTerritory() const;
 
   /*!
    * \brief The 2-Char ISO 639-1 code.
@@ -242,9 +242,22 @@ public:
   std::string ToEnglishLanguageName() const;
 
 private:
-  CLanguageTag(std::string tag, bool valid) : m_tag(std::move(tag)), m_valid(valid) {}
+  //! A tag that named a language, with what the parse read out of it
+  CLanguageTag(std::string tag, std::string language, CTerritory territory)
+    : m_tag(std::move(tag)),
+      m_language(std::move(language)),
+      m_territory(std::move(territory)),
+      m_valid(true)
+  {
+  }
+
+  //! Text that named no language, kept as it was given
+  explicit CLanguageTag(std::string text) : m_tag(std::move(text)) {}
 
   std::string m_tag;
+  //! The primary language subtag, so that nothing has to take the tag apart to find it
+  std::string m_language;
+  CTerritory m_territory;
   bool m_valid{false};
 };
 } // namespace KODI::LANGUAGE

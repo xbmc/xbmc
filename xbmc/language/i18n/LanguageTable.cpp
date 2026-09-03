@@ -8,9 +8,13 @@
 
 #include "language/i18n/LanguageTable.h"
 
-#include "utils/StringUtils.h"
 #include "language/i18n/Iso639_1.h"
 #include "language/i18n/Iso639_2.h"
+#include "utils/StringUtils.h"
+
+#include <algorithm>
+#include <mutex>
+#include <shared_mutex>
 
 using namespace KODI::LANGUAGE::I18N;
 
@@ -20,6 +24,9 @@ std::string Key(std::string_view text)
 {
   std::string key{StringUtils::ToLower(text)};
   StringUtils::Trim(key);
+
+  // A declaration may spell a code the POSIX way, pt_BR, and a tag spells it pt-BR
+  std::ranges::replace(key, '_', '-');
   return key;
 }
 } // namespace
@@ -52,6 +59,8 @@ void CLanguageTable::Seed()
 
 void CLanguageTable::Declare(const std::map<std::string, std::string>& languages)
 {
+  std::unique_lock lock(m_section);
+
   for (const auto& [code, name] : languages)
   {
     const std::string key{Key(code)};
@@ -64,6 +73,8 @@ void CLanguageTable::Declare(const std::map<std::string, std::string>& languages
 
 void CLanguageTable::DeclareNames(const std::map<std::string, std::string>& languages)
 {
+  std::unique_lock lock(m_section);
+
   for (const auto& [code, name] : languages)
   {
     if (code.empty() || name.empty())
@@ -78,6 +89,8 @@ void CLanguageTable::DeclareNames(const std::map<std::string, std::string>& lang
 
 void CLanguageTable::Reset()
 {
+  std::unique_lock lock(m_section);
+
   m_names.clear();
   m_codes.clear();
   m_declared.clear();
@@ -90,6 +103,7 @@ std::optional<std::string> CLanguageTable::NameOf(std::string_view code) const
   if (code.empty())
     return std::nullopt;
 
+  std::shared_lock lock(m_section);
   if (const auto it = m_names.find(Key(code)); it != m_names.end())
     return it->second;
 
@@ -101,6 +115,7 @@ std::optional<std::string> CLanguageTable::CodeOf(std::string_view name) const
   if (name.empty())
     return std::nullopt;
 
+  std::shared_lock lock(m_section);
   if (const auto it = m_codes.find(Key(name)); it != m_codes.end())
     return it->second;
 
@@ -115,6 +130,7 @@ void CLanguageTable::List(std::map<std::string, std::string>& languages) const
   for (const auto& [code, name] : iso)
     languages.insert_or_assign(code, name);
 
+  std::shared_lock lock(m_section);
   for (const auto& [code, name] : m_declared)
     languages.insert_or_assign(code, name);
 }

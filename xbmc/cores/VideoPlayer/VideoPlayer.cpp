@@ -133,9 +133,9 @@ public:
     m_hideSameAudioLang = settings->GetBool(CSettings::SETTING_SUBTITLES_HIDESAMEAUDIOLANGUAGE);
 
     // The subtitle setting, falling back to the audio setting where it names no language. Where
-    // neither does, the language actually playing answers it - which is not a setting, so it is
-    // supplied here rather than by CLanguage
-    m_subLang = CLanguage::GetInstance().Subtitle();
+    // neither does, the language actually playing answers it better than the interface language,
+    // and it is not a setting, so it is supplied here rather than by CLanguage
+    m_subLang = CLanguage::GetInstance().Subtitle(false);
     if (m_subLang.IsUndetermined())
       m_subLang = m_playedAudioLang;
 

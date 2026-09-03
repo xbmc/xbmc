@@ -60,7 +60,10 @@ namespace
  */
 int GetDescribedAudioStreamIndex(const CStreamDetails& details)
 {
-  return details.GetPreferredAudioStreamIndex(KODI::LANGUAGE::CLanguage::GetInstance().Audio());
+  // No fallback: a viewer who asked for the media's own first track, or the original-language
+  // one, is not asking for the interface language, and neither choice ranks streams by language
+  return details.GetPreferredAudioStreamIndex(
+      KODI::LANGUAGE::CLanguage::GetInstance().Audio(false));
 }
 } // unnamed namespace
 

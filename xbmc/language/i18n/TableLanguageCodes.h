@@ -174,7 +174,7 @@ inline constexpr std::array<ISO639, LANGUAGE_CODES_COUNT> LanguageCodes = {{
     {"sd", "snd"},
     {"se", "sme"},
     {"sg", "sag"},
-    {"sh", "scr"},
+    {"sh", "hbs"}, // Serbo-Croatian: ISO 639-2 withdrew scr in 2008, hbs is its ISO 639-3 code
     {"si", "sin"},
     {"sk", "slo"},
     {"sl", "slv"},

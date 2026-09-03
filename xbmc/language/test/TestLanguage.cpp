@@ -97,7 +97,35 @@ TEST(TestLanguage, AnswersAnUnstatedSubtitleLanguageWithTheAudioOne)
   EXPECT_EQ(language.Subtitle(), CLanguageTag::Parse("fr"));
 
   language.SetAudio("default");
-  EXPECT_TRUE(language.Subtitle().IsUndetermined());
+  EXPECT_TRUE(language.Subtitle(false).IsUndetermined());
+}
+
+TEST(TestLanguage, AnswersAChoiceThatNamesNoLanguageWithTheInterfaceOne)
+{
+  CLanguage language;
+  language.SetUI(CLanguageTag::Parse("de"));
+
+  // A caller with nothing better to match against still has a language to match
+  for (const char* audio : {"original", "mediadefault"})
+  {
+    language.SetAudio(audio);
+    EXPECT_EQ(language.Audio(), CLanguageTag::Parse("de")) << audio;
+    EXPECT_TRUE(language.Audio(false).IsUndetermined()) << audio;
+  }
+
+  language.SetAudio("original");
+  for (const char* subtitle : {"none", "forced_only", "original"})
+  {
+    language.SetSubtitle(subtitle);
+    EXPECT_EQ(language.Subtitle(), CLanguageTag::Parse("de")) << subtitle;
+    EXPECT_TRUE(language.Subtitle(false).IsUndetermined()) << subtitle;
+  }
+
+  // A stated language is the answer whether or not there is a fallback
+  language.SetAudio("fr");
+  language.SetSubtitle("es");
+  EXPECT_EQ(language.Audio(false), CLanguageTag::Parse("fr"));
+  EXPECT_EQ(language.Subtitle(false), CLanguageTag::Parse("es"));
 }
 
 TEST(TestLanguage, KeepsTheChoiceThatNamesNoLanguageReadable)
@@ -109,7 +137,7 @@ TEST(TestLanguage, KeepsTheChoiceThatNamesNoLanguageReadable)
 
   EXPECT_TRUE(language.AudioPreference().Is(Kind::Original));
   EXPECT_TRUE(language.SubtitlePreference().Is(Kind::ForcedOnly));
-  EXPECT_TRUE(language.Audio().IsUndetermined());
+  EXPECT_TRUE(language.Audio(false).IsUndetermined());
 }
 
 TEST(TestLanguage, WithoutAPackTheInterfaceIsInTheBuiltInLanguage)

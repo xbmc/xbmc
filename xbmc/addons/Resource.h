@@ -29,12 +29,17 @@ public:
   /*!
    * \brief Whether a path below this add-on's resources directory resolves to something it
    *        publishes.
+   *
+   * One rule for every resource type. The resources directory itself and the directories under
+   * it always resolve, so any type can be browsed. A type that publishes no set resolves every
+   * file; every other type resolves the file names and the extensions it publishes, and nothing
+   * else.
+   *
    * \param[in] file The path, relative to that directory. Empty names the directory itself.
+   * \return True where the path resolves.
    */
   bool CanResolve(const std::string& file) const
   {
-    // The resource root and the directories under it resolve for every type; which files may
-    // be read out of them is the type's own answer
     if (file.empty() || URIUtils::HasSlashAtEnd(file, true))
       return true;
 

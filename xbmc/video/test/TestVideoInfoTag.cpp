@@ -97,6 +97,32 @@ TEST(TestVideoInfoTag, ReadStreamDetailFlags)
   EXPECT_EQ(StreamFlags::FLAG_NONE, streams.GetSubtitleFlags(3));
 }
 
+TEST(TestVideoInfoTag, ReadStreamDetailLanguageThatNamesNone)
+{
+  const std::string document =
+      R"(<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+         <movie>
+         <fileinfo>
+         <streamdetails>
+         <audio><codec>dts</codec><language> High Valyrian </language><channels>6</channels></audio>
+         <subtitle><language>HIGH VALYRIAN</language></subtitle>
+         </streamdetails>
+         </fileinfo>
+         </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  // Kept as written so the NFO round-trips, but in the form the streamdetails table holds and
+  // smart playlist rules compare against: trimmed and lower case
+  const CStreamDetails& streams = details.m_streamDetails;
+  EXPECT_EQ(streams.GetAudioLanguage(1).AsIso6392B(), "high valyrian");
+  EXPECT_EQ(streams.GetSubtitleLanguage(1).AsIso6392B(), "high valyrian");
+}
+
 TEST(TestVideoInfoTag, WriteStreamDetailFlags)
 {
   // Flags survive an export/import cycle, so a library rebuilt from exported NFOs

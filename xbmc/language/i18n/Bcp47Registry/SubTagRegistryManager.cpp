@@ -35,7 +35,14 @@ static const std::string DEFAULTREGISTRYFILEPATH(
 
 CSubTagRegistryManager::CSubTagRegistryManager(Shipped)
 {
-  Initialize();
+  // The shipped registry is read once and never again, so a failure here is not a failure to
+  // read a file - it is every language in the process going unrecognized from now on
+  if (!Initialize())
+  {
+    CLog::LogF(LOGERROR,
+               "the shipped subtag registry could not be read, so no text will be recognized as a "
+               "language for the rest of this run");
+  }
 }
 
 const CSubTagRegistryManager& CSubTagRegistryManager::GetInstance()

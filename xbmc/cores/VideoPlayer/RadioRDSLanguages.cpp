@@ -25,8 +25,8 @@ constexpr std::array<std::string_view, KODI::RDS::LANGUAGE_INDEX_COUNT> LANGUAGE
   "pol",    "por",    "rum",    "rom",    "srp",    "slo",    "slv",    "fin",    "swe",    "tur",    "nld",    "wln",    RESERVED, RESERVED, RESERVED, RESERVED, // 2
   RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, // 3
   RESERVED, RESERVED, RESERVED, RESERVED, RESERVED, "zul",    "vie",    "uzb",    "urd",    "ukr",    "tha",    "tel",    "tat",    "tam",    "tgk",    "swa",    // 4
-  "srn",    "som",    "sin",    "sna",    "srp",    "rue",    "rus",    "que",    "pus",    "pan",    "per",    "pap",    "ori",    "nep",    "nde",    "mar",    // 5
-  "rum",    "may",    "mlg",    "mkd",    RESERVED, "kor",    "khm",    "kaz",    "kan",    "jpn",    "ind",    "hin",    "heb",    "hau",    "grn",    "guj",    // 6
+  "srn",    "som",    "sin",    "sna",    "hbs",    "rue",    "rus",    "que",    "pus",    "pan",    "per",    "pap",    "ori",    "nep",    "nde",    "mar",    // 5
+  "rum",    "may",    "mlg",    "mkd",    "lao",    "kor",    "khm",    "kaz",    "kan",    "jpn",    "ind",    "hin",    "heb",    "hau",    "grn",    "guj",    // 6
   "gre",    "geo",    "ful",    "prs",    "chv",    "chi",    "bur",    "bul",    "ben",    "bel",    "bam",    "aze",    "asm",    "arm",    "ara",    "amh"     // 7
 }};
 // clang-format on

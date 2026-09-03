@@ -8,9 +8,9 @@
 
 #include "language/i18n/Iso639_1.h"
 
-#include "utils/StringUtils.h"
 #include "language/i18n/Iso639.h"
 #include "language/i18n/Iso639_1_Table.h"
+#include "utils/StringUtils.h"
 
 #include <algorithm>
 

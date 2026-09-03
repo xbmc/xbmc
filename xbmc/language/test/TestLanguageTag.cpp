@@ -46,6 +46,21 @@ TEST(TestLanguageTag, TakesThePosixSpellingOfTheSubtagSeparator)
   EXPECT_EQ(CLanguageTag::Parse("1080p_x264").ToString(), "1080p_x264");
 }
 
+TEST(TestLanguageTag, TakesThePosixCodesetAndModifier)
+{
+  // A language pack names itself by a POSIX locale, and the Serbian packs qualify theirs by script
+  EXPECT_EQ(CLanguageTag::Parse("sr_RS@latin").ToString(), "sr-Latn-RS");
+  EXPECT_EQ(CLanguageTag::Parse("sr_RS@cyrillic").ToString(), "sr-Cyrl-RS");
+  EXPECT_EQ(CLanguageTag::Parse("sr_RS@latin").AsIso6391(), "sr");
+  EXPECT_EQ(CLanguageTag::Parse("sr_RS@latin").GetTerritory().ToString(), "RS");
+  EXPECT_TRUE(CLanguageTag::Parse("sr_RS@latin").Matches(CLanguageTag::Parse("sr")));
+
+  // A codeset says nothing about the language, and neither does a modifier that names no script
+  EXPECT_EQ(CLanguageTag::Parse("en_GB.UTF-8").ToString(), "en-GB");
+  EXPECT_EQ(CLanguageTag::Parse("de_DE@euro").ToString(), "de-DE");
+  EXPECT_EQ(CLanguageTag::Parse("sr_RS.UTF-8@latin").ToString(), "sr-Latn-RS");
+}
+
 TEST(TestLanguageTag, NamesTheTerritoryWhereTheSourceStatedOne)
 {
   EXPECT_EQ(CLanguageTag::Parse("en-GB").GetTerritory().ToString(), "GB");

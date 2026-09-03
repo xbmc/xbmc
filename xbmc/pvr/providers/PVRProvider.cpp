@@ -14,7 +14,6 @@
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/StringUtils.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 
 #include <memory>

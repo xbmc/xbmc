@@ -8,14 +8,14 @@
 
 #pragma once
 
+#include "language/Language.h"
+#include "language/LanguageTag.h"
+#include "language/Territory.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
-#include "language/Language.h"
-#include "language/LanguageTag.h"
 #include "utils/Speed.h"
 #include "utils/Temperature.h"
-#include "language/Territory.h"
 
 #include <locale>
 #include <map>
@@ -84,7 +84,6 @@ public:
   const KODI::LANGUAGE::CTerritory& GetRegionTerritory() const;
 
   const std::locale& GetOriginalLocale() const;
-
 
   /*!
    \brief Returns the system's current locale.
@@ -170,12 +169,20 @@ protected:
     class custom_numpunct : public std::numpunct<char>
     {
     public:
-      custom_numpunct(const char decimal_point, const char thousands_sep, const std::string& grouping)
-        : cDecimalPoint(decimal_point), cThousandsSep(thousands_sep), sGroup(grouping) {}
+      custom_numpunct(const char decimal_point,
+                      const char thousands_sep,
+                      const std::string& grouping)
+        : cDecimalPoint(decimal_point),
+          cThousandsSep(thousands_sep),
+          sGroup(grouping)
+      {
+      }
+
     protected:
       char do_decimal_point() const override { return cDecimalPoint; }
       char do_thousands_sep() const override { return cThousandsSep; }
       std::string do_grouping() const override { return sGroup; }
+
     private:
       const char cDecimalPoint;
       const char cThousandsSep;
@@ -202,14 +209,13 @@ protected:
     CSpeed::Unit m_speedUnit;
   };
 
-
   typedef std::map<std::string, CRegion> MAPREGIONS;
   typedef std::map<std::string, CRegion>::iterator ITMAPREGIONS;
   typedef std::pair<std::string, CRegion> PAIR_REGIONS;
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
-  std::locale m_systemLocale;     // current locale, matching GUI settings
+  std::locale m_systemLocale; // current locale, matching GUI settings
   std::locale m_originalLocale; // original locale, without changes of collate
   int m_collationtype;
 
@@ -219,7 +225,6 @@ protected:
   bool m_use24HourClock;
   CTemperature::Unit m_temperatureUnit;
   CSpeed::Unit m_speedUnit;
-
 };
 } // namespace KODI::LANGUAGE
 

@@ -8,10 +8,10 @@
 
 #include "language/Territory.h"
 
-#include "utils/StringUtils.h"
 #include "language/i18n/Bcp47.h"
 #include "language/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "language/i18n/Iso3166_1.h"
+#include "utils/StringUtils.h"
 
 #include <algorithm>
 
