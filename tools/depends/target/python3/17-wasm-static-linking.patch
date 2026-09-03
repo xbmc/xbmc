@@ -1,0 +1,354 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Clement Peron <peron.clem@gmail.com>
+Date: Tue, 1 Sep 2026 00:00:00 +0000
+Subject: [PATCH] Emscripten: support static linking
+
+Backport of python/cpython#156798 and #156781.
+---
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -982,9 +982,12 @@
+ clinic-tests: check-clean-src $(srcdir)/Lib/test/clinic.test.c
+ 	$(PYTHON_FOR_REGEN) $(srcdir)/Tools/clinic/clinic.py -f $(srcdir)/Lib/test/clinic.test.c
+ 
++# Objects linked into the interpreter only, not into libpython.
++PLATFORM_MAIN_OBJS=	@PLATFORM_MAIN_OBJS@
++
+ # Build the interpreter
+-$(BUILDPYTHON):	Programs/python.o $(LINK_PYTHON_DEPS)
+-	$(LINKCC) $(PY_CORE_LDFLAGS) $(LINKFORSHARED) -o $@ Programs/python.o $(LINK_PYTHON_OBJS) $(LIBS) $(MODLIBS) $(SYSLIBS)
++$(BUILDPYTHON):	Programs/python.o $(PLATFORM_MAIN_OBJS) $(LINK_PYTHON_DEPS)
++	$(LINKCC) $(PY_CORE_LDFLAGS) $(LINKFORSHARED) -o $@ Programs/python.o $(PLATFORM_MAIN_OBJS) $(LINK_PYTHON_OBJS) $(LIBS) $(MODLIBS) $(SYSLIBS)
+ 
+ platform: $(PYTHON_FOR_BUILD_DEPS) pybuilddir.txt
+ 	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print("%s-%d.%d" % (get_platform(), *sys.version_info[:2]))' >platform
+diff --git a/Programs/emscripten_beforemain.c b/Programs/emscripten_beforemain.c
+--- a/Programs/emscripten_beforemain.c
++++ b/Programs/emscripten_beforemain.c
+@@ -0,0 +1,118 @@
++/* Emscripten setup that only applies when Python is the program.
++ *
++ * Linked into the interpreter only, never into libpython, so an embedder whose
++ * main() is not Python's does not get it.
++ */
++
++#include "pyconfig.h"
++
++#include <emscripten.h>
++#include <errno.h>
++
++// Variant of EM_JS that does C preprocessor substitution on the body
++#define EM_JS_MACROS(ret, func_name, args, body...)                            \
++  EM_JS(ret, func_name, args, body)
++#ifdef Py_EMSCRIPTEN_DYNAMIC_LINKING
++#define _Py_EM_WRAP_MAIN                                                       \
++    const origResolveGlobalSymbol = resolveGlobalSymbol;                       \
++    resolveGlobalSymbol = function (name, direct = false) {                    \
++        const orig = origResolveGlobalSymbol(name, direct);                    \
++        if (name === "main") {                                                 \
++            orig.sym = _PyEM_promising(orig.sym);                              \
++        }                                                                      \
++        return orig;                                                           \
++    };
++#else
++// WebAssembly.promising() rejects the createExportWrapper() shim in _main, so
++// wrap the raw export.
++#define _Py_EM_WRAP_MAIN                                                       \
++    _main = _PyEM_promising(wasmExports["main"]);
++#endif
++
++EM_JS_MACROS(void, _PyEmscripten_BeforeMain_js, (void), {
++    // Define FS.createAsyncInputDevice(), This is quite similar to
++    // FS.createDevice() defined here:
++    // https://github.com/emscripten-core/emscripten/blob/4.0.11/src/lib/libfs.js?plain=1#L1642
++    // but instead of returning one byte at a time, the input() function should
++    // return a Uint8Array. This makes the handler code simpler, the
++    // `createAsyncInputDevice` simpler, and everything faster.
++    FS.createAsyncInputDevice = function(parent, name, input) {
++        parent = typeof parent == 'string' ? parent : FS.getPath(parent);
++        var path = PATH.join2(parent, name);
++        var mode = FS_getMode(true, false);
++        FS.createDevice.major ||= 64;
++        var dev = FS.makedev(FS.createDevice.major++, 0);
++        async function getDataBuf() {
++            var buf;
++            try {
++                buf = await input();
++            } catch (e) {
++                throw new FS.ErrnoError(EIO);
++            }
++            if (!buf?.byteLength) {
++                throw new FS.ErrnoError(EAGAIN);
++            }
++            ops._dataBuf = buf;
++        }
++
++        var ops = {
++            _dataBuf: new Uint8Array(0),
++            open(stream) {
++                stream.seekable = false;
++            },
++            async readAsync(stream, buffer, offset, length, pos /* ignored */) {
++                buffer = buffer.subarray(offset, offset + length);
++                if (!ops._dataBuf.byteLength) {
++                    await getDataBuf();
++                }
++                var toRead = Math.min(ops._dataBuf.byteLength, buffer.byteLength);
++                buffer.subarray(0, toRead).set(ops._dataBuf);
++                buffer = buffer.subarray(toRead);
++                ops._dataBuf = ops._dataBuf.subarray(toRead);
++                if (toRead) {
++                    stream.node.atime = Date.now();
++                }
++                return toRead;
++            },
++        };
++        FS.registerDevice(dev, ops);
++        return FS.mkdev(path, mode, dev);
++    };
++    if (!WebAssembly.promising) {
++        // No stack switching support =(
++        return;
++    }
++    if (ENVIRONMENT_IS_NODE && !Module.onExit) {
++        Module.onExit = (code) => process.exit(code);
++    }
++    _Py_EM_WRAP_MAIN
++}
++// * wrap the entry point with WebAssembly.promising,
++// * call exit_with_live_runtime() to prevent emscripten from shutting down
++//   the runtime before the promise resolves,
++// * call onExit / process.exit ourselves, since exit_with_live_runtime()
++//   prevented Emscripten from calling it normally.
++function _PyEM_promising(orig) {
++    const main = WebAssembly.promising(orig);
++    return (...args) => {
++        (async () => {
++            const ret = await main(...args);
++            Module.onExit?.(ret);
++        })();
++        _emscripten_exit_with_live_runtime();
++    };
++}
++)
++
++#ifdef Py_EMSCRIPTEN_DYNAMIC_LINKING
++EM_JS_DEPS(_PyEmscripten_BeforeMain,
++           "$FS,$PATH,$FS_getMode,$resolveGlobalSymbol,"
++           "emscripten_exit_with_live_runtime");
++#else
++EM_JS_DEPS(_PyEmscripten_BeforeMain,
++           "$FS,$PATH,$FS_getMode,emscripten_exit_with_live_runtime");
++#endif
++
++__attribute__((constructor)) void _PyEmscripten_BeforeMain(void) {
++    _PyEmscripten_BeforeMain_js();
++}
+diff --git a/Python/emscripten_syscalls.c b/Python/emscripten_syscalls.c
+--- a/Python/emscripten_syscalls.c
++++ b/Python/emscripten_syscalls.c
+@@ -47,89 +47,7 @@
+ #define EM_JS_MACROS(ret, func_name, args, body...)                            \
+   EM_JS(ret, func_name, args, body)
+ 
+-EM_JS_MACROS(void, _emscripten_promising_main_js, (void), {
+-    // Define FS.createAsyncInputDevice(), This is quite similar to
+-    // FS.createDevice() defined here:
+-    // https://github.com/emscripten-core/emscripten/blob/4.0.11/src/lib/libfs.js?plain=1#L1642
+-    // but instead of returning one byte at a time, the input() function should
+-    // return a Uint8Array. This makes the handler code simpler, the
+-    // `createAsyncInputDevice` simpler, and everything faster.
+-    FS.createAsyncInputDevice = function(parent, name, input) {
+-        parent = typeof parent == 'string' ? parent : FS.getPath(parent);
+-        var path = PATH.join2(parent, name);
+-        var mode = FS_getMode(true, false);
+-        FS.createDevice.major ||= 64;
+-        var dev = FS.makedev(FS.createDevice.major++, 0);
+-        async function getDataBuf() {
+-            var buf;
+-            try {
+-                buf = await input();
+-            } catch (e) {
+-                throw new FS.ErrnoError(EIO);
+-            }
+-            if (!buf?.byteLength) {
+-                throw new FS.ErrnoError(EAGAIN);
+-            }
+-            ops._dataBuf = buf;
+-        }
+ 
+-        var ops = {
+-            _dataBuf: new Uint8Array(0),
+-            open(stream) {
+-                stream.seekable = false;
+-            },
+-            async readAsync(stream, buffer, offset, length, pos /* ignored */) {
+-                buffer = buffer.subarray(offset, offset + length);
+-                if (!ops._dataBuf.byteLength) {
+-                    await getDataBuf();
+-                }
+-                var toRead = Math.min(ops._dataBuf.byteLength, buffer.byteLength);
+-                buffer.subarray(0, toRead).set(ops._dataBuf);
+-                buffer = buffer.subarray(toRead);
+-                ops._dataBuf = ops._dataBuf.subarray(toRead);
+-                if (toRead) {
+-                    stream.node.atime = Date.now();
+-                }
+-                return toRead;
+-            },
+-        };
+-        FS.registerDevice(dev, ops);
+-        return FS.mkdev(path, mode, dev);
+-    };
+-    if (!WebAssembly.promising) {
+-        // No stack switching support =(
+-        return;
+-    }
+-    const origResolveGlobalSymbol = resolveGlobalSymbol;
+-    if (ENVIRONMENT_IS_NODE && !Module.onExit) {
+-        Module.onExit = (code) => process.exit(code);
+-    }
+-    // * wrap the main symbol with WebAssembly.promising,
+-    // * call exit_with_live_runtime() to prevent emscripten from shutting down
+-    //   the runtime before the promise resolves,
+-    // * call onExit / process.exit ourselves, since exit_with_live_runtime()
+-    //   prevented Emscripten from calling it normally.
+-    resolveGlobalSymbol = function (name, direct = false) {
+-        const orig = origResolveGlobalSymbol(name, direct);
+-        if (name === "main") {
+-            const main = WebAssembly.promising(orig.sym);
+-            orig.sym = (...args) => {
+-                (async () => {
+-                    const ret = await main(...args);
+-                    Module.onExit?.(ret);
+-                })();
+-                _emscripten_exit_with_live_runtime();
+-            };
+-        }
+-        return orig;
+-    };
+-})
+-
+-__attribute__((constructor)) void _emscripten_promising_main(void) {
+-    _emscripten_promising_main_js();
+-}
+-
+-
+ #define IOVEC_T_BUF_OFFSET 0
+ #define IOVEC_T_BUF_LEN_OFFSET 4
+ #define IOVEC_T_SIZE 8
+@@ -192,6 +110,8 @@
+ };
+ );
+ 
++EM_JS_DEPS(__maybe_fd_read_async, "$SYSCALLS");
++
+ // Bind original fd_read syscall to __wasi_fd_read_orig().
+ __wasi_errno_t __wasi_fd_read_orig(__wasi_fd_t fd, const __wasi_iovec_t *iovs,
+                                    size_t iovs_len, __wasi_size_t *nread)
+@@ -234,6 +154,19 @@
+     if (!WebAssembly.promising) {
+         return null;
+     }
++    // Suspending with nothing to await still requires a promising stack, which
++    // an embedder that has not wrapped its entry point does not have.
++    var async = false;
++    for (var i = 0; i < nfds; i++) {
++        var s = FS.getStream(HEAP32[(fds + POLLFD_SIZE * i + POLLFD_FD)/4]);
++        if (s && s.stream_ops.pollAsync) {
++            async = true;
++            break;
++        }
++    }
++    if (!async) {
++        return null;
++    }
+     return (async function() {
+         try {
+             var nonzero = 0;
+@@ -272,6 +205,8 @@
+         }
+     })();
+ });
++
++EM_JS_DEPS(__maybe_poll_async, "$FS");
+ 
+ // Bind original poll syscall to syscall_poll_orig().
+ int syscall_poll_orig(intptr_t fds, int nfds, int timeout)
+diff --git a/Python/emscripten_trampoline.c b/Python/emscripten_trampoline.c
+--- a/Python/emscripten_trampoline.c
++++ b/Python/emscripten_trampoline.c
+@@ -47,6 +47,10 @@
+                                     PyObject* args,
+                                     PyObject* kw);
+ 
++// _PyRuntime is bound in the JS glue only when it is exported, which an
++// embedder linking libpython does not do. Export its address from here.
++EMSCRIPTEN_KEEPALIVE _PyRuntimeState *const _PyEM_runtime = &_PyRuntime;
++
+ /**
+  * Backwards compatible trampoline works with all JS runtimes
+  */
+@@ -90,9 +94,12 @@
+ addOnPreRun(function setEmscriptenTrampoline() {
+     const ptr = getPyEMTrampolinePtr();
+     const offset = HEAP32[__PyEM_EMSCRIPTEN_TRAMPOLINE_OFFSET / 4];
+-    HEAP32[(__PyRuntime + offset) / 4] = ptr;
++    HEAP32[(HEAPU32[__PyEM_runtime / 4] + offset) / 4] = ptr;
+ });
+ );
++
++EM_JS_DEPS(_PyEM_TrampolineCall,
++           "$wasmTable,$wasmMemory,$addFunction,$addOnPreRun");
+ 
+ PyObject*
+ _PyEM_TrampolineCall(PyCFunctionWithKeywords func,
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
+@@ -2376,6 +2376,11 @@
+ 
+     AS_VAR_IF([enable_wasm_dynamic_linking], [yes], [
+       AS_VAR_APPEND([LINKFORSHARED], [" -sMAIN_MODULE"])
++      AC_DEFINE([Py_EMSCRIPTEN_DYNAMIC_LINKING], [1],
++                [Define if the Emscripten build is linked with -sMAIN_MODULE.])
++    ], [
++      dnl MAIN_MODULE implies this; the call trampoline's addFunction() needs it.
++      AS_VAR_APPEND([LINKFORSHARED], [" -sALLOW_TABLE_GROWTH"])
+     ])
+ 
+     AS_VAR_IF([enable_wasm_pthreads], [yes], [
+@@ -5178,15 +5183,19 @@
+ dnl Platform-specific C and header files.
+ PLATFORM_HEADERS=
+ PLATFORM_OBJS=
++dnl Objects linked into the interpreter only, not into libpython.
++PLATFORM_MAIN_OBJS=
+ 
+ AS_CASE([$ac_sys_system],
+   [Emscripten], [
++    AS_VAR_APPEND([PLATFORM_MAIN_OBJS], [' Programs/emscripten_beforemain.o'])
+     AS_VAR_APPEND([PLATFORM_OBJS], [' Python/emscripten_signal.o Python/emscripten_trampoline.o Python/emscripten_trampoline_wasm.o Python/emscripten_syscalls.o'])
+     AS_VAR_APPEND([PLATFORM_HEADERS], [' $(srcdir)/Include/internal/pycore_emscripten_signal.h $(srcdir)/Include/internal/pycore_emscripten_trampoline.h'])
+   ],
+ )
+ AC_SUBST([PLATFORM_HEADERS])
+ AC_SUBST([PLATFORM_OBJS])
++AC_SUBST([PLATFORM_MAIN_OBJS])
+ 
+ # -I${DLINCLDIR} is added to the compile rule for importdl.o
+ AC_SUBST([DLINCLDIR])
+diff --git a/pyconfig.h.in b/pyconfig.h.in
+--- a/pyconfig.h.in
++++ b/pyconfig.h.in
+@@ -1727,6 +1727,9 @@
+ /* Define if you want to build an interpreter with many run-time checks. */
+ #undef Py_DEBUG
+ 
++/* Define if the Emscripten build is linked with -sMAIN_MODULE. */
++#undef Py_EMSCRIPTEN_DYNAMIC_LINKING
++
+ /* Defined if Python is built as a shared library. */
+ #undef Py_ENABLE_SHARED
+ 
