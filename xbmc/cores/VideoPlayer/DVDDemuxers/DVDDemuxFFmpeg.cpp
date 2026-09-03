@@ -1181,6 +1181,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
               ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
           pPacket->duration = DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num /
                                               stream->time_base.den);
+          pPacket->m_keyFrame = (m_pkt.pkt.flags & AV_PKT_FLAG_KEY) != 0;
 
           CDVDDemuxUtils::StoreSideData(pPacket, &m_pkt.pkt);
 

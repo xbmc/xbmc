@@ -43,6 +43,13 @@ extern "C"
 
     //! @brief PTS offset correction applied to the PTS and DTS.
     double m_ptsOffsetCorrection{0};
+
+    //! @brief Whether the packet holds a keyframe, as reported by the demuxer.
+    //! Unlike recoveryPoint this says nothing about where output may start: an
+    //! open GOP keyframe is followed by leading pictures that reference frames
+    //! before it. Packets from inputstream addons leave this false, since the
+    //! field is not part of the DEMUX_PACKET ABI.
+    bool m_keyFrame{false};
   };
 
 #ifdef __cplusplus
