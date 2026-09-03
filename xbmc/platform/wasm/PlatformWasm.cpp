@@ -8,6 +8,8 @@
 
 #include "PlatformWasm.h"
 
+#include "cores/AudioEngine/Sinks/AESinkWasmAudioWorklet.h"
+
 #include <cstdlib>
 
 CPlatform* CPlatform::CreateInstance()
@@ -20,5 +22,10 @@ bool CPlatformWasm::InitStageOne()
   if (!std::getenv("HOME"))
     setenv("HOME", "/home/web_user", 1);
 
-  return CPlatformPosix::InitStageOne();
+  if (!CPlatformPosix::InitStageOne())
+    return false;
+
+  CAESinkWasmAudioWorklet::Register();
+
+  return true;
 }

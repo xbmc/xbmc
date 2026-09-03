@@ -159,6 +159,11 @@ if(CORE_SYSTEM_NAME STREQUAL freebsd)
   list(APPEND HEADERS Sinks/AESinkOSS.h)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL wasm)
+  list(APPEND SOURCES Sinks/AESinkWasmAudioWorklet.cpp)
+  list(APPEND HEADERS Sinks/AESinkWasmAudioWorklet.h)
+endif()
+
 core_add_library(audioengine)
 target_include_directories(${CORE_LIBRARY} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
