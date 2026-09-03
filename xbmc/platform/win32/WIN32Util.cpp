@@ -552,7 +552,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   }
 
   auto strVolFormat = ToW(StringUtils::Format("\\\\.\\{}:", cDL));
-  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   auto strRootFormat = ToW(StringUtils::Format("{}:\\", cDL));
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&
