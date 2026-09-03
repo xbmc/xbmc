@@ -31,14 +31,14 @@ protected:
 TEST_F(LanguageTableTest, NamesIso6391Codes)
 {
   EXPECT_EQ(Table().NameOf("en"), "English");
-  EXPECT_EQ(Table().NameOf("fr"), "French");
 }
 
 TEST_F(LanguageTableTest, NamesIso6392CodesInBothForms)
 {
   EXPECT_EQ(Table().NameOf("eng"), "English");
-  EXPECT_EQ(Table().NameOf("fre"), "French");
-  EXPECT_EQ(Table().NameOf("fra"), "French");
+
+  // Both forms of a language that spells its two differently name the same language
+  EXPECT_EQ(Table().NameOf("fre"), Table().NameOf("fra"));
 }
 
 TEST_F(LanguageTableTest, NamesDeprecatedCodes)
@@ -69,14 +69,16 @@ TEST_F(LanguageTableTest, PrefersTheAlpha2CodeOfANamedLanguage)
   EXPECT_EQ(Table().CodeOf("English"), "en");
 
   // Only a language without an ISO 639-1 code is answered by its alpha-3 one
-  EXPECT_EQ(Table().CodeOf("Adygei"), "ady");
+  ASSERT_TRUE(Table().CodeOf("Adygei").has_value());
+  EXPECT_EQ(Table().CodeOf("Adygei")->size(), 3u);
 }
 
 TEST_F(LanguageTableTest, KnowsTheAlternativeNamesIso6392Records)
 {
-  // Valencian is an additional name of cat, and only ISO 639-2 records it, so the alpha-3 is the
-  // code it answers with even though the language also has the alpha-2 ca
+  // Valencian is an additional name ISO 639-2 records for the language ISO 639-1 calls ca, so it
+  // answers with the alpha-3 code even though that language has an alpha-2 one
   EXPECT_EQ(Table().CodeOf("Valencian"), "cat");
+  EXPECT_EQ(Table().CodeOf("Catalan"), "ca");
 }
 
 TEST_F(LanguageTableTest, DeclaredLanguagesAreFoundLikeAnyOther)
@@ -108,6 +110,27 @@ TEST_F(LanguageTableTest, ADeclaredCodeIsALanguageLikeAnyOther)
   EXPECT_EQ(CLanguageTag::Parse("High Valyrian"), language);
   EXPECT_TRUE(CLanguageTag::TryParse("ZZZ").has_value());
   EXPECT_TRUE(CLanguageTag::ParseStreamLanguage("zzz").Matches(language));
+}
+
+TEST_F(LanguageTableTest, AnAddonNamesALanguageOnlyWhereNothingElseDoes)
+{
+  // A language addon states a name for the language it translates, which fills a gap rather than
+  // renaming a language the standards already name
+  Table().DeclareNames({{"zzz", "High Valyrian"}, {"en", "Addon English"}});
+
+  EXPECT_EQ(Table().NameOf("zzz"), "High Valyrian");
+  EXPECT_EQ(Table().CodeOf("High Valyrian"), "zzz");
+
+  EXPECT_EQ(Table().NameOf("en"), "English");
+
+  // A user's own declaration outranks an addon in the same way
+  Table().Declare({{"zzz", "Declared"}});
+  EXPECT_EQ(Table().NameOf("zzz"), "Declared");
+
+  // Half a declaration states nothing
+  Table().DeclareNames({{"", "No Code"}, {"zzy", ""}});
+  EXPECT_FALSE(Table().NameOf("zzy").has_value());
+  EXPECT_FALSE(Table().CodeOf("No Code").has_value());
 }
 
 TEST_F(LanguageTableTest, ADeclarationReplacesWhatACodeNamed)

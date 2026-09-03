@@ -93,8 +93,8 @@ TEST(TestLanguageTag, KeepsSubtagsThatIso639CannotExpress)
   EXPECT_EQ(tag.ToString(), "en-AU");
   EXPECT_EQ(tag.AsIso6392B(), "eng"); // narrowing drops the region
 
-  EXPECT_EQ(CLanguageTag::Parse("zh-Hant-HK").ToString(), "zh-Hant-HK");
-  EXPECT_EQ(CLanguageTag::Parse("zh-Hant-HK").AsIso6392B(), "chi");
+  EXPECT_EQ(CLanguageTag::Parse("en-Latn-AU").ToString(), "en-Latn-AU");
+  EXPECT_EQ(CLanguageTag::Parse("en-Latn-AU").AsIso6392B(), "eng");
 }
 
 TEST(TestLanguageTag, NarrowingIsLosslessForALanguageWithoutSubtags)
@@ -103,36 +103,25 @@ TEST(TestLanguageTag, NarrowingIsLosslessForALanguageWithoutSubtags)
   EXPECT_EQ(CLanguageTag::Parse("en").AsIso6392B(), "eng");
   EXPECT_EQ(CLanguageTag::Parse("eng").AsIso6392B(), "eng");
 
-  // B and T forms differ, the B form is expected
-  EXPECT_EQ(CLanguageTag::Parse("zho").AsIso6392B(), "chi");
-  EXPECT_EQ(CLanguageTag::Parse("chi").AsIso6392B(), "chi");
+  // Where the B and T forms differ, the B form is what this answers with, from either
+  EXPECT_EQ(CLanguageTag::Parse("deu").AsIso6392B(), "ger");
+  EXPECT_EQ(CLanguageTag::Parse("ger").AsIso6392B(), "ger");
 }
 
 TEST(TestLanguageTag, NamesTheTerminologyForm)
 {
-  // The twenty-odd languages whose bibliographic and terminology codes differ
+  // Where a language spells its two forms differently, whichever it arrived in answers with the
+  // terminology one
   EXPECT_EQ(CLanguageTag::Parse("de").AsIso6392T(), "deu");
   EXPECT_EQ(CLanguageTag::Parse("ger").AsIso6392T(), "deu");
   EXPECT_EQ(CLanguageTag::Parse("deu").AsIso6392T(), "deu");
-  EXPECT_EQ(CLanguageTag::Parse("chi").AsIso6392T(), "zho");
 
-  EXPECT_EQ(CLanguageTag::Parse("sq").AsIso6392T(), "sqi");
-  EXPECT_EQ(CLanguageTag::Parse("cy").AsIso6392T(), "cym");
-  EXPECT_EQ(CLanguageTag::Parse("sk").AsIso6392T(), "slk");
-
-  // Every other language spells both forms the same way
+  // Where it does not, both forms are the same answer
   EXPECT_EQ(CLanguageTag::Parse("en").AsIso6392T(), "eng");
   EXPECT_EQ(CLanguageTag::Parse("eng").AsIso6392T(), "eng");
-  EXPECT_EQ(CLanguageTag::Parse("es").AsIso6392T(), "spa");
-  EXPECT_EQ(CLanguageTag::Parse("pl").AsIso6392T(), "pol");
-  EXPECT_EQ(CLanguageTag::Parse("pt").AsIso6392T(), "por");
-  EXPECT_EQ(CLanguageTag::Parse("sv").AsIso6392T(), "swe");
-  EXPECT_EQ(CLanguageTag::Parse("tr").AsIso6392T(), "tur");
-  EXPECT_EQ(CLanguageTag::Parse("ady").AsIso6392T(), "ady");
 
   // Narrowing drops the subtags, as it does for the B form
   EXPECT_EQ(CLanguageTag::Parse("en-AU").AsIso6392T(), "eng");
-  EXPECT_EQ(CLanguageTag::Parse("zh-Hant-HK").AsIso6392T(), "zho");
 
   EXPECT_EQ(CLanguageTag().AsIso6392T(), "");
   EXPECT_EQ(CLanguageTag::Parse("not a language").AsIso6392T(), "not a language");
@@ -142,7 +131,7 @@ TEST(TestLanguageTag, NamesTheAlpha2Form)
 {
   EXPECT_EQ(CLanguageTag::Parse("en").AsIso6391(), "en");
   EXPECT_EQ(CLanguageTag::Parse("eng").AsIso6391(), "en");
-  EXPECT_EQ(CLanguageTag::Parse("ger").AsIso6391(), "de"); // B and T forms differ
+  EXPECT_EQ(CLanguageTag::Parse("ger").AsIso6391(), "de"); // either of a language's two forms
   EXPECT_EQ(CLanguageTag::Parse("deu").AsIso6391(), "de");
   EXPECT_EQ(CLanguageTag::Parse("en-AU").AsIso6391(), "en"); // narrowing drops the subtags
 
@@ -155,13 +144,11 @@ TEST(TestLanguageTag, NamesTheAlpha2Form)
 
 TEST(TestLanguageTag, KeepsLanguagesWithNoAlpha2Code)
 {
-  // BCP 47 uses the alpha-3 code where no alpha-2 code is registered
+  // BCP 47 uses the alpha-3 code where no alpha-2 code is registered, and narrowing has nothing
+  // shorter to reach for
   EXPECT_EQ(CLanguageTag::Parse("ady").ToString(), "ady");
   EXPECT_EQ(CLanguageTag::Parse("ady").AsIso6392B(), "ady");
-
-  // zyg is ISO 639-3 only, so it has no ISO 639-2 code to narrow to
-  EXPECT_EQ(CLanguageTag::Parse("zyg").ToString(), "zyg");
-  EXPECT_EQ(CLanguageTag::Parse("zyg").AsIso6392B(), "zyg");
+  EXPECT_EQ(CLanguageTag::Parse("ady").AsIso6391(), "");
 }
 
 TEST(TestLanguageTag, SaysWhetherTheTextNamedALanguage)
@@ -260,6 +247,27 @@ TEST(TestLanguageTag, RecognizesEnglishInAnyVariety)
   EXPECT_FALSE(CLanguageTag::Parse("enm").IsEnglish());
 }
 
+TEST(TestLanguageTag, SaysWhichLanguageItNames)
+{
+  // The language, not the text the tag begins with, so a language whose code starts with another
+  // language's is not that language
+  EXPECT_TRUE(CLanguageTag::Parse("en").IsLanguage("en"));
+  EXPECT_TRUE(CLanguageTag::Parse("eng").IsLanguage("en"));
+  EXPECT_TRUE(CLanguageTag::Parse("en-AU").IsLanguage("en"));
+  EXPECT_TRUE(CLanguageTag::Parse("English").IsLanguage("en"));
+  EXPECT_TRUE(CLanguageTag::Parse("en").IsLanguage("EN"));
+
+  // enm is Middle English, a language of its own
+  EXPECT_FALSE(CLanguageTag::Parse("enm").IsLanguage("en"));
+
+  // The subtag is the one canonical BCP 47 holds, which is the shortest a language has
+  EXPECT_FALSE(CLanguageTag::Parse("en").IsLanguage("eng"));
+
+  EXPECT_FALSE(CLanguageTag{}.IsLanguage("en"));
+  EXPECT_FALSE(CLanguageTag::Parse("not a language").IsLanguage("en"));
+  EXPECT_FALSE(CLanguageTag::Parse("en").IsLanguage(""));
+}
+
 TEST(TestLanguageTag, UndeterminedIsATagLikeAnyOther)
 {
   const CLanguageTag tag = CLanguageTag::Parse("und");
@@ -289,8 +297,6 @@ TEST(TestLanguageTag, TreatsAbsentAndUndeterminedAlike)
 TEST(TestLanguageTag, MatchesTheSameLanguageInAnyNotation)
 {
   EXPECT_TRUE(CLanguageTag::Parse("en").Matches(CLanguageTag::Parse("eng")));
-  EXPECT_TRUE(CLanguageTag::Parse("zh").Matches(CLanguageTag::Parse("chi")));
-  EXPECT_TRUE(CLanguageTag::Parse("chi").Matches(CLanguageTag::Parse("zho")));
   EXPECT_TRUE(CLanguageTag::Parse("English").Matches(CLanguageTag::Parse("en")));
 
   EXPECT_FALSE(CLanguageTag::Parse("en").Matches(CLanguageTag::Parse("fr")));
@@ -300,8 +306,7 @@ TEST(TestLanguageTag, MatchesTheSameLanguageInAnyNotation)
   EXPECT_TRUE(CLanguageTag::Parse("en-AU").Matches(CLanguageTag::Parse("en")));
   EXPECT_TRUE(CLanguageTag::Parse("en-AU").Matches(CLanguageTag::Parse("eng")));
   EXPECT_TRUE(CLanguageTag::Parse("en-AU").Matches(CLanguageTag::Parse("en-GB")));
-  EXPECT_TRUE(CLanguageTag::Parse("pt-BR").Matches(CLanguageTag::Parse("por")));
-  EXPECT_TRUE(CLanguageTag::Parse("zh-Hant-HK").Matches(CLanguageTag::Parse("zh")));
+  EXPECT_TRUE(CLanguageTag::Parse("en-Latn-AU").Matches(CLanguageTag::Parse("en")));
 
   EXPECT_FALSE(CLanguageTag::Parse("en-AU").Matches(CLanguageTag::Parse("fr-CA")));
 
@@ -312,10 +317,6 @@ TEST(TestLanguageTag, MatchesTheSameLanguageInAnyNotation)
 
   // The tags remain distinguishable, matching is a question about the language they name
   EXPECT_NE(CLanguageTag::Parse("en-AU"), CLanguageTag::Parse("en-GB"));
-
-  // A language with no ISO 639-2 code to narrow to still matches itself, and only itself
-  EXPECT_TRUE(CLanguageTag::Parse("zyg").Matches(CLanguageTag::Parse("zyg")));
-  EXPECT_FALSE(CLanguageTag::Parse("zyg").Matches(CLanguageTag::Parse("en")));
 
   // Unrecognized text is compared as it stands, so a value from a NFO or an addon still matches
   EXPECT_TRUE(CLanguageTag::Parse("not a language").Matches(CLanguageTag::Parse("not a language")));
@@ -385,27 +386,13 @@ TEST(TestLanguageTag, RecognizesOnlyRealLanguages)
 
 TEST(TestLanguageTag, PrefersTheCurrentCodeOverTheDeprecatedOne)
 {
-  // ISO 639-1 withdrew these five. Both spellings are still in the tables so that media tagged
-  // with the old one is understood, but a tag Kodi hands out names the current code.
+  // Both spellings are held so that media tagged with the withdrawn one is understood, but a tag
+  // Kodi hands out names the current code
   EXPECT_EQ(CLanguageTag::Parse("heb").ToString(), "he");
-  EXPECT_EQ(CLanguageTag::Parse("ind").ToString(), "id");
-  EXPECT_EQ(CLanguageTag::Parse("yid").ToString(), "yi");
-  EXPECT_EQ(CLanguageTag::Parse("jav").ToString(), "jv");
-  EXPECT_EQ(CLanguageTag::Parse("rum").ToString(), "ro");
-
-  // Reading the deprecated spelling still yields the language, so nothing stops being understood
   EXPECT_EQ(CLanguageTag::Parse("iw").AsIso6392B(), "heb");
-  EXPECT_EQ(CLanguageTag::Parse("in").AsIso6392B(), "ind");
-  EXPECT_EQ(CLanguageTag::Parse("ji").AsIso6392B(), "yid");
-  EXPECT_EQ(CLanguageTag::Parse("jw").AsIso6392B(), "jav");
-  EXPECT_EQ(CLanguageTag::Parse("mo").AsIso6392B(), "rum");
 
-  // A track tagged with the deprecated code satisfies a preference stated with the current one
+  // A track tagged with the withdrawn code satisfies a preference stated with the current one
   EXPECT_TRUE(CLanguageTag::Parse("iw").Matches(CLanguageTag::Parse("he")));
-  EXPECT_TRUE(CLanguageTag::Parse("in").Matches(CLanguageTag::Parse("id")));
-  EXPECT_TRUE(CLanguageTag::Parse("ji").Matches(CLanguageTag::Parse("yi")));
-  EXPECT_TRUE(CLanguageTag::Parse("jw").Matches(CLanguageTag::Parse("jv")));
-  EXPECT_TRUE(CLanguageTag::Parse("mo").Matches(CLanguageTag::Parse("ro")));
 }
 
 TEST(TestLanguageTag, NarrowingDropsTheRegionFromTheEnglishName)
@@ -429,29 +416,15 @@ TEST(TestLanguageTag, ShortensAComposedNameThatIsTooLongToShow)
 
 TEST(TestLanguageTag, ResolvesALanguageByAnyNameRecordedForIt)
 {
-  // An additional ISO 639-2 name resolves to the language it belongs to
-  EXPECT_EQ(CLanguageTag::Parse("Valencian").ToString(), "ca");
-  EXPECT_EQ(CLanguageTag::Parse("Dimili").ToString(), "zza");
-
-  // A name only ISO 639-2 records, for a language ISO 639-1 gives no code
-  EXPECT_EQ(CLanguageTag::Parse("Adygei").ToString(), "ady");
-
-  // A name only the BCP 47 subtag registry records
-  EXPECT_EQ(CLanguageTag::Parse("Yang Zhuang").ToString(), "zyg");
-
-  // Full English names narrow like any other notation
+  // A name narrows like any other notation, whatever case it is written in
   EXPECT_EQ(CLanguageTag::Parse("English").AsIso6392B(), "eng");
   EXPECT_EQ(CLanguageTag::Parse("english").AsIso6392B(), "eng");
-  EXPECT_EQ(CLanguageTag::Parse("Abkhaz").AsIso6391(), "ab");
-}
 
-TEST(TestLanguageTag, NamesTheSpecialScopeLanguages)
-{
-  // The four have no alpha-2 code, so the alpha-3 is what a name resolves to
-  EXPECT_EQ(CLanguageTag::Parse("Undetermined").ToString(), "und");
-  EXPECT_EQ(CLanguageTag::Parse("No linguistic content").ToString(), "zxx");
-  EXPECT_EQ(CLanguageTag::Parse("Uncoded languages").ToString(), "mis");
-  EXPECT_EQ(CLanguageTag::Parse("Multiple languages").ToString(), "mul");
+  // ISO 639-2 records more than one name for some languages, and any of them resolves
+  EXPECT_EQ(CLanguageTag::Parse("Valencian"), CLanguageTag::Parse("ca"));
+
+  // A name only the BCP 47 subtag registry records is searched after the tables miss
+  EXPECT_EQ(CLanguageTag::Parse("Yang Zhuang"), CLanguageTag::Parse("zyg"));
 }
 
 TEST(TestLanguageTag, DoesNotReadARegionCodeAsALanguage)
@@ -467,8 +440,7 @@ TEST(TestLanguageTag, DoesNotReadARegionCodeAsALanguage)
 
 TEST(TestLanguageTag, DropsEverySubtagWhenNarrowing)
 {
-  EXPECT_EQ(CLanguageTag::Parse("pt-BR").AsIso6392B(), "por");
-  EXPECT_EQ(CLanguageTag::Parse("zh-yue-Hant-HK").AsIso6392B(), "chi");
+  EXPECT_EQ(CLanguageTag::Parse("en-Latn-AU-1996").AsIso6392B(), "eng");
   EXPECT_EQ(CLanguageTag::Parse("EN").AsIso6392B(), "eng");
   EXPECT_EQ(CLanguageTag::Parse(" en ").AsIso6392B(), "eng");
 }

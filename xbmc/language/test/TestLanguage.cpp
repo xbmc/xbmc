@@ -140,6 +140,42 @@ TEST(TestLanguage, KeepsTheChoiceThatNamesNoLanguageReadable)
   EXPECT_TRUE(language.Audio(false).IsUndetermined());
 }
 
+TEST(TestLanguagePreference, StatesWhichChoiceWasMade)
+{
+  // The kind is what a caller acting on the choice reads, where Is answers one question about it
+  EXPECT_EQ(CLanguagePreference::ForAudio("fr").GetKind(), Kind::Language);
+  EXPECT_EQ(CLanguagePreference::ForAudio("default").GetKind(), Kind::FollowUI);
+  EXPECT_EQ(CLanguagePreference::ForAudio("mediadefault").GetKind(), Kind::MediaDefault);
+  EXPECT_EQ(CLanguagePreference::ForSubtitles("none").GetKind(), Kind::None);
+  EXPECT_EQ(CLanguagePreference::ForSubtitles("forced_only").GetKind(), Kind::ForcedOnly);
+
+  // A default-constructed preference is the one that states nothing
+  EXPECT_EQ(CLanguagePreference{}.GetKind(), Kind::FollowUI);
+
+  // The choices are not interchangeable, so neither are the values holding them
+  EXPECT_NE(CLanguagePreference::ForSubtitles("none"), CLanguagePreference::ForSubtitles("fr"));
+}
+
+TEST(TestLanguage, WithoutAPackTheCharacterSetsAreTheBuiltInOnes)
+{
+  // Without a pack, and with the settings on their defaults, the character sets are the one
+  // Kodi's own strings are in
+  const CLanguage language;
+
+  EXPECT_EQ(language.GuiCharset(), "CP1252");
+  EXPECT_EQ(language.SubtitleCharset(), "CP1252");
+}
+
+TEST(TestLanguage, WithoutAPackTheSortTokensAreOnlyTheDeclaredOnes)
+{
+  // A pack ships the words a sort steps over, and advancedsettings.xml adds to them. With no
+  // pack there is nothing to add to, so what comes back is what was declared and nothing else
+  const CLanguage language;
+  const CLanguage::Tokens tokens{language.SortTokens()};
+
+  EXPECT_EQ(tokens, CLanguage::Tokens{});
+}
+
 TEST(TestLanguage, WithoutAPackTheInterfaceIsInTheBuiltInLanguage)
 {
   CLanguage language;
