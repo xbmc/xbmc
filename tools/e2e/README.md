@@ -84,7 +84,8 @@ reasoning.
 - `driver/launcher.py` — starts/stops a Kodi process with a disposable portable
   profile. Exercised on macOS, Linux (POSIX), and Windows in CI; not Kodi/OS-specific
   beyond that (kodi.exe supports `-p`/`--portable` the same way, so Windows needed no
-  launcher changes at all).
+  launcher changes at all). On Linux it can also drive an installed Kodi, with the
+  profile handed over through `KODI_DATA` (`KODI_PROFILE_DIR`) instead of `-p`.
 - `driver/android_launcher.py` — the Android equivalent: installs a built debug APK
   over adb, launches it on a device/emulator, and manages the same disposable-profile
   contract (fresh userdata per test, webserver enabled, screenshot path set) despite
@@ -118,8 +119,20 @@ cd tools/e2e
 KODI_BINARY=/path/to/kodi.bin uv run pytest scenarios -v
 ```
 
-If `KODI_BINARY` is not set, it defaults to `<repo_root>/build/kodi.bin`. To run
-against Android instead, set `KODI_APK` to a built debug APK (`make apk` per
+If `KODI_BINARY` is not set, it defaults to `<repo_root>/build/kodi.bin`.
+
+To run against an installed Kodi on Linux (a `.deb` built as described in
+`docs/README.Ubuntu.md`, for instance), point `KODI_BINARY` at the real binary rather
+than the `/usr/bin/kodi` wrapper script, and set `KODI_PROFILE_DIR` to a writable
+directory. An installed Kodi cannot use `-p`, so the launcher exports the directory
+as `KODI_DATA` instead:
+
+```bash
+cd tools/e2e
+KODI_BINARY=/usr/lib/x86_64-linux-gnu/kodi/kodi-gbm KODI_PROFILE_DIR=/tmp/kodi-e2e uv run pytest scenarios -v
+```
+
+To run against Android instead, set `KODI_APK` to a built debug APK (`make apk` per
 `docs/README.Android.md`) with a device or emulator already connected over adb
 (`ANDROID_SERIAL` selects a specific one if more than one is attached):
 
@@ -145,15 +158,19 @@ two-platform matrices, so a full run is eight platforms. Each workflow has the s
 two jobs:
 
 - `build` compiles Kodi from source, runs the unit tests where the platform has
-  them (macOS, Windows, X11), and uploads only what is needed to run Kodi in place:
-  the binary plus the `addons`/`media`/`sounds`/`system`/`userdata` directories
-  cmake mirrors into the build tree, or the APK / `Kodi.app` bundle. The archive is
-  uploaded before the unit tests run, so an E2E result is still produced when a
-  unit test fails.
-- `e2e` downloads that archive onto a fresh runner, sets up the display, emulator or
+  them (macOS, Windows, X11), and uploads what the test job needs to run Kodi: on
+  Linux the Debian packages CPack produces (`kodi` and `kodi-bin`, see
+  `docs/README.Ubuntu.md`), on macOS the `Kodi.app` bundle, on Windows `kodi.exe`
+  with the DLLs and the `addons`/`media`/`system`/`userdata` directories cmake
+  mirrors next to it, and the APK or Simulator app on mobile. It is uploaded before
+  the unit tests run, so an E2E result is still produced when a unit test fails.
+- `e2e` downloads that onto a fresh runner, sets up the display, emulator or
   Simulator the platform needs, and runs `tools/e2e` through
   `.github/actions/run-e2e`, which uploads Kodi's log, the screenshots and the
-  JUnit results. Re-running a failed `e2e` job reuses the build.
+  JUnit results. On Linux it installs the packages with apt, which also resolves
+  the runtime dependencies `dpkg-shlibdeps` recorded, and runs the installed
+  binary with its profile under the workspace via `KODI_DATA`. Re-running a failed
+  `e2e` job reuses the build.
 
 The steps shared between workflows live in `.github/actions/`: `ccache-restore` /
 `ccache-save`, `depends-cache-restore` / `depends-cache-save` for the built
@@ -183,10 +200,11 @@ Per platform:
   GBM gets its display from the `vkms` virtual KMS driver (with a newer libdrm built
   on the test runner, since 24.04's cannot see vkms), Wayland from a headless Weston;
   both render through Mesa's llvmpipe, exercising the DRM/GBM/EGL/GLES pipeline on a
-  GPU-less runner.
+  GPU-less runner. Both legs test the installed `.deb`, not the build tree.
 - `e2e-linux-x11.yml` — the X11 backend built with `APP_RENDER_SYSTEM=gl` for desktop
   OpenGL/GLX, which is why it is a separate workflow rather than a third matrix leg.
-  Runs on Ubuntu 22.04 (see the workflow header for why) under Xvfb.
+  Runs on Ubuntu 22.04 (see the workflow header for why) under Xvfb, against the
+  installed `.deb` like the other Linux legs.
 - `e2e-android.yml` — cross-builds the x86_64 debug APK via `tools/depends`, boots a
   hardware-accelerated emulator (`reactivecircus/android-emulator-runner`) and runs
   the suite over an adb-forwarded JSON-RPC connection. Logs and screenshots are pulled
