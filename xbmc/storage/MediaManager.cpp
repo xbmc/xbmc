@@ -791,9 +791,13 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 void CMediaManager::AddOpticalSource(const std::string& devicePath)
 {
+  // Standardise device path - the storage events carry "D:", while the
+  // startup enumeration passes what GetLogicalDriveStringsW() returns - "D:\"
+  const std::string drivePath{TranslateDevicePath(devicePath)};
+
   CMediaSource share;
-  share.strPath = devicePath;
-  share.strName = devicePath;
+  share.strPath = drivePath;
+  share.strName = drivePath;
 
   RemoveAutoSource(share);
 
