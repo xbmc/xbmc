@@ -1,0 +1,185 @@
+name: E2E (Windows)
+
+# Builds kodi.exe on a GitHub-hosted Windows runner and runs tools/e2e against it
+# through the same desktop launcher as macOS/Linux (kodi.exe supports
+# -p/--portable through the same CAppParamParser path).
+#
+# Dependencies are not built via tools/depends: they are downloaded as prebuilt
+# packages from mirrors.kodi.tv plus an MSYS2 environment, per
+# docs/README.Windows.md sections 4 and 6.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-windows-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    # Drafts are skipped; ready_for_review starts the first run.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    # Pinned so the toolchain stays predictable; VS2022 and CMake 3.31 are both
+    # above docs/README.Windows.md's minimums.
+    runs-on: windows-2022
+    timeout-minutes: 180
+    outputs:
+      runtime: ${{ steps.runtime.outputs.uploaded }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # Ninja rather than the Visual Studio generator: MSBuild ignores
+      # CMAKE_<LANG>_COMPILER_LAUNCHER, which is how FindCCache.cmake wires ccache
+      # in, so the cache would be configured and never used.
+      - name: Install ccache and ninja
+        shell: pwsh
+        run: |
+          choco install ccache ninja -y --no-progress
+          ccache --version
+          ninja --version
+
+      # project/BuildDependencies/scripts/*.list pins the package versions and
+      # tools/buildsteps/windows pins the MSYS2 revision, so the cache only
+      # changes when the downloads would.
+      - name: Restore Windows build dependencies
+        id: depends-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: project\BuildDependencies
+          key: windows-x64-depends-${{ hashFiles('project/BuildDependencies/scripts/**', 'tools/buildsteps/windows/**') }}
+
+      # The scripts derive the repo root from their own location, so they must
+      # run from their own directory.
+      - name: Download prebuilt Windows dependencies
+        shell: cmd
+        working-directory: tools\buildsteps\windows\x64
+        run: download-dependencies.bat
+
+      - name: Download and set up MSYS2 build environment
+        shell: cmd
+        working-directory: tools\buildsteps\windows\x64
+        run: download-msys2.bat
+
+      # 2G rather than 1G: /Z7 puts the debug info inside each object file.
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: windows-x64
+          dir: ${{ github.workspace }}\.ccache
+          max-size: 2G
+
+      # vcvarsall puts MSVC on PATH for one step only, so every compiling step
+      # repeats the preamble; vswhere finds whichever VS edition the image has.
+      #
+      # CMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded (/Z7) is what makes caching
+      # possible: ccache cannot reproduce the shared PDB that /Zi routes through
+      # mspdbsrv, so it declines to cache those objects.
+      #
+      # CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION is passed by hand because
+      # cmake/scripts/windows/ArchSetup.cmake gates on it and only the Visual
+      # Studio generator populates it. vcvarsall exports the selected SDK as
+      # WindowsSDKVersion with a trailing backslash.
+      #
+      # Release rather than Debug: the prebuilt dependency packages' install
+      # steps assume the multi-config Debug/ layout that Ninja does not produce
+      # (libmicrohttpd's pdb install fails outright), and a Release build starts
+      # faster, which suits a smoke test.
+      - name: Configure Kodi
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
+          call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
+          echo Windows SDK selected by vcvarsall: %WindowsSDKVersion%
+          cmake -G Ninja -B build -S . ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded ^
+            -DCMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION=%WindowsSDKVersion:~0,-1%
+
+      - name: Build Kodi
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
+          call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
+          cmake --build build
+
+      # kodi-test is EXCLUDE_FROM_ALL and whole-archive links the app, so this
+      # is a real link step.
+      - name: Build unit tests
+        shell: cmd
+        run: |
+          for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
+          call "%VSPATH%\VC\Auxiliary\Build\vcvarsall.bat" x64
+          cmake --build build --target kodi-test
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: windows-x64
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - name: Save Windows build dependencies cache
+        if: '!cancelled() && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
+        uses: actions/cache/save@v6
+        with:
+          path: project\BuildDependencies
+          key: windows-x64-depends-${{ hashFiles('project/BuildDependencies/scripts/**', 'tools/buildsteps/windows/**') }}
+
+      # Kodi runs in place from its build tree: the exe, the dependency DLLs
+      # cmake copied next to it, and the data directories (cmake/installdata).
+      # Uploaded before the unit tests run so the e2e job still gets a binary
+      # when a unit test fails; the e2e job keys on this output, not on the
+      # job's result.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-build-windows
+          path: |
+            build/kodi.exe
+            build/*.dll
+            build/*.jar
+            build/addons
+            build/media
+            build/system
+            build/userdata
+          retention-days: 7
+
+      - id: runtime
+        shell: bash
+        run: echo "uploaded=true" >> "$GITHUB_OUTPUT"
+
+      # From the build tree: the reference data the tests read
+      # (cmake/installdata/test-reference-data.txt) was mirrored there.
+      - name: Run unit tests
+        shell: cmd
+        working-directory: build
+        run: kodi-test.exe
+
+  e2e:
+    needs: build
+    if: ${{ !cancelled() && needs.build.outputs.runtime == 'true' }}
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-build-windows
+          path: build
+
+      # kodi.log sits at the profile root on Windows alone: InitDirectoriesWin32()
+      # points special://logpath there and special://temp at cache/.
+      - uses: ./.github/actions/run-e2e
+        with:
+          name: windows
+          kodi-binary: ${{ github.workspace }}\build\kodi.exe
+          log-paths: |
+            build/portable_data/kodi.log
+            build/portable_data/temp/process-output.log
+            build/portable_data/cache/*.log
+          screenshot-glob: build/portable_data/screenshots/*.png
