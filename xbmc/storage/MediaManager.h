@@ -85,8 +85,10 @@ public:
    * This is needed as HasMediaBlurayPlaylist() is called every screen refresh when
    * the disc node is highlighted.
    * It needs to be reset whenever a disc is ejected or played (as a playlist may have been selected).
-  */
-  void ResetBlurayPlaylistStatus();
+   *
+   * \param devicePath The optical drive it changed for, or empty for every drive
+   */
+  void ResetBlurayPlaylistStatus(const std::string& devicePath = "");
 
   /*! \brief Gets the platform disc drive handler
   * @todo this likely doesn't belong here but in some discsupport component owned by media manager
@@ -179,6 +181,7 @@ private:
   CCriticalSection m_driveStatusSection;
 #endif
 #ifdef HAVE_LIBBLURAY
-  HasBlurayPlaylist m_hasBlurayPlaylist{HasBlurayPlaylist::UNKNOWN};
+  //! Whether the disc in each drive has a stored playlist
+  std::map<std::string, HasBlurayPlaylist> m_blurayPlaylist;
 #endif
 };
