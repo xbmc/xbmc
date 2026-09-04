@@ -21,6 +21,7 @@
 #include "utils/log.h"
 
 #include <chrono>
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -721,8 +722,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
     }
     else
     {
-      const unsigned int startDate{static_cast<unsigned int>(minStart) / ONE_DAY};
-      filter.AppendWhere(PrepareSQL("(iStartTime / %u) >= %u", ONE_DAY, startDate));
+      const uint64_t startDate{static_cast<unsigned int>(minStart) / ONE_DAY};
+      filter.AppendWhere(PrepareSQL("iStartTime >= %llu", startDate * ONE_DAY));
 
       const unsigned int startTime{static_cast<unsigned int>(minStart) % ONE_DAY};
       filter.AppendWhere(PrepareSQL("(iStartTime %% %u) >= %u", ONE_DAY, startTime));
@@ -744,8 +745,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
     }
     else
     {
-      const unsigned int endDate{static_cast<unsigned int>(maxEnd) / ONE_DAY};
-      filter.AppendWhere(PrepareSQL("(iEndTime / %u) <= %u", ONE_DAY, endDate));
+      const uint64_t endDate{static_cast<unsigned int>(maxEnd) / ONE_DAY};
+      filter.AppendWhere(PrepareSQL("iEndTime < %llu", (endDate + 1) * ONE_DAY));
 
       const unsigned int endTime{static_cast<unsigned int>(maxEnd) % ONE_DAY};
       filter.AppendWhere(PrepareSQL("(iEndTime %% %u) <= %u", ONE_DAY, endTime));
