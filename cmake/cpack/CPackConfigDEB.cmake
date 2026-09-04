@@ -17,18 +17,28 @@ endfunction()
 #
 # The following variable is set:
 #   PACKAGE_MAINTAINER - user stamp in the form of "username <username@example.com>"
-#                        if no git tree is found, value is set to "nobody <nobody@example.com>"
+#                        if no git tree is found or git has no user configured
+#                        (a CI checkout, for instance), value is set to
+#                        "nobody <nobody@example.com>"
 function(userstamp)
+  set(username "")
+  set(useremail "")
   find_package(Git)
   if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
     execute_process(COMMAND ${GIT_EXECUTABLE} config user.name
                     OUTPUT_VARIABLE username
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    ERROR_QUIET)
     execute_process(COMMAND ${GIT_EXECUTABLE} config user.email
                     OUTPUT_VARIABLE useremail
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    ERROR_QUIET)
+  endif()
+  # A git user named No, N or False is a CMake false constant; only an empty
+  # field means it is unset.
+  if(NOT username STREQUAL "" AND NOT useremail STREQUAL "")
     set(PACKAGE_MAINTAINER "${username} <${useremail}>" PARENT_SCOPE)
   else()
     set(PACKAGE_MAINTAINER "nobody <nobody@example.com>" PARENT_SCOPE)
