@@ -60,6 +60,7 @@ public:
     int64_t size;
     int index; // index in m_items
     std::string playPath; // for a folder candidate: the file inside the folder
+    std::string pattern; // the stack expression that matched, for logging
 
     auto operator<=>(const StackCandidate&) const = default;
   };

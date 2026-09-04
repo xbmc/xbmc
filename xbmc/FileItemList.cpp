@@ -785,7 +785,8 @@ void CFileItemList::Stack()
                                                       .volume = regExp.GetMatch(2),
                                                       .size = item->GetSize(),
                                                       .index = i,
-                                                      .playPath = playPath});
+                                                      .playPath = playPath,
+                                                      .pattern = regExp.GetPattern()});
           break;
         }
       }
@@ -812,7 +813,8 @@ void CFileItemList::Stack()
                                                     .volume = regExp.GetMatch(2),
                                                     .remainder = regExp.GetMatch(3),
                                                     .size = item->GetSize(),
-                                                    .index = i});
+                                                    .index = i,
+                                                    .pattern = regExp.GetPattern()});
         break;
       }
     }
@@ -875,6 +877,9 @@ void CFileItemList::Stack()
     const std::string stackPath{baseItem->IsRAR()
                                     ? baseItem->GetPath()
                                     : CStackDirectory::ConstructStackPath(*this, stack)};
+
+    CLog::LogF(LOGDEBUG, "Stacked {} parts into '{}' (stack expression '{}')", stack.size(),
+               CURL::GetRedacted(stackPath), parts[0].pattern);
 
     // First item in stack becomes the stack
     std::string stackName{candidate.title};
