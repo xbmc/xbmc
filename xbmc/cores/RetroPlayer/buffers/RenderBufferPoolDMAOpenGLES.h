@@ -14,20 +14,15 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 class CRenderBufferPoolDMAOpenGLES : public CRenderBufferPoolDMA
 {
 public:
-  explicit CRenderBufferPoolDMAOpenGLES(CRenderContext& context);
+  CRenderBufferPoolDMAOpenGLES() = default;
   ~CRenderBufferPoolDMAOpenGLES() override = default;
 
 protected:
   // Implementation of CBaseRenderBufferPool
   IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
-
-private:
-  CRenderContext& m_context;
 };
 } // namespace RETRO
 } // namespace KODI

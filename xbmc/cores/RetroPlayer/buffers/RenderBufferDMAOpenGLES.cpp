@@ -8,7 +8,7 @@
 
 #include "RenderBufferDMAOpenGLES.h"
 
-#include "cores/RetroPlayer/rendering/RenderContext.h"
+#include "rendering/GLExtensions.h"
 #include "utils/log.h"
 
 #include <cstring>
@@ -57,9 +57,7 @@ void ConvertArgb1555ToRgb565(const uint8_t* source, uint8_t* destination, unsign
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferDMAOpenGLES::CRenderBufferDMAOpenGLES(CRenderContext& context, int fourcc)
-  : CRenderBufferDMA(fourcc),
-    m_context(context)
+CRenderBufferDMAOpenGLES::CRenderBufferDMAOpenGLES(int fourcc) : CRenderBufferDMA(fourcc)
 {
 }
 
@@ -86,13 +84,13 @@ bool CRenderBufferDMAOpenGLES::UploadFromMemory()
     case DRM_FORMAT_XRGB8888:
       pixelType = GL_UNSIGNED_BYTE;
       bytesPerPixel = 4;
-      if (m_context.IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
-          m_context.IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+      if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_format_BGRA8888) ||
+          CGLExtensions::IsExtensionSupported(CGLExtensions::IMG_texture_format_BGRA8888))
       {
         internalFormat = GL_BGRA_EXT;
         pixelFormat = GL_BGRA_EXT;
       }
-      else if (m_context.IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+      else if (CGLExtensions::IsExtensionSupported(CGLExtensions::APPLE_texture_format_BGRA8888))
       {
         // Apple's extension requires RGBA as the internal format.
         internalFormat = GL_RGBA;
@@ -156,7 +154,7 @@ bool CRenderBufferDMAOpenGLES::UploadFromMemory()
   else
   {
 #if defined(GL_UNPACK_ROW_LENGTH_EXT)
-    if (m_context.IsExtSupported("GL_EXT_unpack_subimage"))
+    if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_unpack_subimage))
     {
       GLint previousRowLength = 0;
       glGetIntegerv(GL_UNPACK_ROW_LENGTH_EXT, &previousRowLength);

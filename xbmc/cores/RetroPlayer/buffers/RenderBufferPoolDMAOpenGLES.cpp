@@ -13,12 +13,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferPoolDMAOpenGLES::CRenderBufferPoolDMAOpenGLES(CRenderContext& context)
-  : m_context(context)
-{
-}
-
 IRenderBuffer* CRenderBufferPoolDMAOpenGLES::CreateRenderBuffer(void* header /* = nullptr */)
 {
-  return new CRenderBufferDMAOpenGLES(m_context, GetFourcc());
+  return new CRenderBufferDMAOpenGLES(GetFourcc());
 }
