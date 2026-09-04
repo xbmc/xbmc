@@ -1,0 +1,41 @@
+name: Restore tools/depends cache
+description: >
+  Restores a built tools/depends tree and its install prefix, keyed on the git
+  tree hash of tools/depends so it rebuilds only when the recipes change.
+inputs:
+  platform:
+    description: Cache key prefix, unique per depends platform (e.g. macos-ARM64).
+    required: true
+  prefix:
+    description: The --prefix the dependencies were installed to.
+    required: true
+outputs:
+  cache-hit:
+    description: Whether the key was an exact hit ("true" or "false").
+    value: ${{ steps.restore.outputs.cache-hit }}
+runs:
+  using: composite
+  steps:
+    # The git tree hash reflects committed files only, so the extracted build
+    # trees that accumulate under tools/depends do not affect the key and
+    # computing it stays instant.
+    - name: Compute cache key
+      id: key
+      shell: bash
+      run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
+
+    # The whole tree is cached, not just the prefix: make's up-to-date checks
+    # compare the .installed-* stamps against the recipe files, which checkout
+    # hands back with mtime "now". tar restores the original mtimes, keeping the
+    # stamps newer. Each recipe's <platform>/ build directory is excluded (the
+    # trailing slash keeps the sibling .installed-<platform> stamp files).
+    - name: Restore
+      id: restore
+      uses: actions/cache/restore@v6
+      with:
+        path: |
+          ${{ inputs.prefix }}
+          tools/depends
+          !tools/depends/native/*/*/
+          !tools/depends/target/*/*/
+        key: ${{ inputs.platform }}-depends-${{ steps.key.outputs.hash }}
