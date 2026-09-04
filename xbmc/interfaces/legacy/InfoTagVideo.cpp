@@ -136,6 +136,11 @@ namespace XBMCAddon
       return infoTag->m_iDbId;
     }
 
+    int InfoTagVideo::getFileId()
+    {
+      return infoTag->m_iFileId;
+    }
+
     String InfoTagVideo::getDirector()
     {
       return StringUtils::Join(infoTag->m_director, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
