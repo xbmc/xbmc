@@ -96,14 +96,11 @@ void CAdvancedSettings::OnSettingsLoaded()
   }
   CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
 
-  std::vector<AdvancedSettingsCallback> callbacks;
   {
     std::lock_guard lock{m_listCritSection};
-    callbacks.reserve(m_settingsLoadedCallbacks.size());
-    std::ranges::transform(m_settingsLoadedCallbacks, std::back_inserter(callbacks),
-                           [](const auto& pair) { return pair.second; });
+    for (const auto& [handle, callback] : m_settingsLoadedCallbacks)
+      callback();
   }
-  std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
