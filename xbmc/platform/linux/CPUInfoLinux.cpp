@@ -8,16 +8,17 @@
 
 #include "CPUInfoLinux.h"
 
-#include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/Temperature.h"
 
 #include "platform/linux/SysfsPath.h"
 
+#include <array>
 #include <exception>
 #include <fstream>
 #include <regex>
 #include <sstream>
+#include <string_view>
 #include <vector>
 
 #if (defined(__arm__) && defined(HAS_NEON)) || defined(__aarch64__)
@@ -96,27 +97,28 @@ CCPUInfoLinux::CCPUInfoLinux()
   if (freqPath.Exists())
     m_freqPath = freqStr;
 
-  static constexpr auto modules = make_set<std::string_view>({
-      "coretemp",
-      "k10temp",
-      "scpi_sensors",
-      "imx_thermal_zone",
-      "cpu_thermal",
-  });
+  // A hwmon device backed by a device tree thermal zone takes its name from the
+  // zone type with hyphens replaced by underscores. Listed in preference order:
+  // a platform can expose several of these, e.g. i.MX8MP has both cpu_thermal
+  // and soc_thermal.
+  static constexpr std::array<std::string_view, 7> modules = {
+      "coretemp",    "k10temp",     "scpi_sensors",    "imx_thermal_zone",
+      "cpu_thermal", "soc_thermal", "package_thermal",
+  };
 
-  for (int i = 0; i < 20; i++)
+  for (const auto& module : modules)
   {
-    CSysfsPath path{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/name"};
-    if (!path.Exists())
-      continue;
-
-    auto name = path.Get<std::string>();
-
-    if (!name.has_value())
-      continue;
-
-    if (modules.contains(*name))
+    for (int i = 0; i < 20; i++)
     {
+      CSysfsPath path{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/name"};
+      if (!path.Exists())
+        continue;
+
+      auto name = path.Get<std::string>();
+
+      if (!name.has_value() || *name != module)
+        continue;
+
       std::string tempStr{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/temp1_input"};
       CSysfsPath tempPath{tempStr};
       if (!tempPath.Exists())
@@ -125,6 +127,9 @@ CCPUInfoLinux::CCPUInfoLinux()
       m_tempPath = tempStr;
       break;
     }
+
+    if (!m_tempPath.empty())
+      break;
   }
 
   m_cpuCount = sysconf(_SC_NPROCESSORS_ONLN);
