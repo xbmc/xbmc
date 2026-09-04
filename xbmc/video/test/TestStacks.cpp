@@ -129,6 +129,31 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart)
   }
 }
 
+TEST_F(TestStacks, TestLoneFolderStackPartStaysAFolder)
+{
+  // A folder that looks like a part of a folder stack but has no other part to stack with must
+  // stay a folder, so that it is still listed and scanned as a movie folder of its own
+  const std::string movieFolder{
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)")};
+  CFileItemList items{movieFolder};
+
+  const auto part{
+      std::make_shared<CFileItem>(URIUtils::AddFileToFolder(movieFolder, "part_1"), true)};
+  part->SetLabel("part_1");
+  items.Add(part);
+
+  // an unrelated movie, so that the list is not a single item
+  items.Add(std::make_shared<CFileItem>(
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)A.mp4"),
+      false));
+
+  items.Stack();
+
+  EXPECT_EQ(items.Size(), 2);
+  EXPECT_EQ(part->IsFolder(), true);
+  EXPECT_EQ(part->IsStack(), false);
+}
+
 TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart2)
 {
   const std::string movieFolder =

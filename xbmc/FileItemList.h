@@ -58,6 +58,7 @@ public:
     std::string volume;
     int64_t size;
     int index; // index in m_items
+    std::string playPath; // for a folder candidate: the file inside the folder
 
     auto operator<=>(const StackCandidate&) const = default;
   };
