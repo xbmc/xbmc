@@ -752,6 +752,7 @@ void CFileItemList::Stack()
           continue;
 
         bool fileFound{true};
+        std::string playPath;
         if (item->IsFolder())
         {
           // Look for media files in the folder
@@ -764,7 +765,7 @@ void CFileItemList::Stack()
 
           // Only expect one media file per folder (if >1 should be a file stack)
           if (items.GetFileCount() == 1)
-            ChangeFolderToFile(item, items[0]->GetPath());
+            playPath = items[0]->GetPath();
           else
           {
             CLog::LogF(LOGDEBUG,
@@ -782,7 +783,8 @@ void CFileItemList::Stack()
                                                       .title = regExp.GetMatch(1),
                                                       .volume = regExp.GetMatch(2),
                                                       .size = item->GetSize(),
-                                                      .index = i});
+                                                      .index = i,
+                                                      .playPath = playPath});
           break;
         }
       }
@@ -839,6 +841,10 @@ void CFileItemList::Stack()
              std::views::filter([type = candidate.type, title = candidate.title](const auto& item)
                                 { return item.type == type && item.title == title; }))
     {
+      // Now the stack is known to have more than one part
+      if (!stackItem.playPath.empty())
+        ChangeFolderToFile(Get(stackItem.index), stackItem.playPath);
+
       stack.emplace_back(stackItem.index);
       size += stackItem.size;
       if (stack.size() > 1)

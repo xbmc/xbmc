@@ -15,6 +15,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -127,6 +128,35 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart)
     EXPECT_EQ(items.Get(0)->IsStack(), true);
     EXPECT_EQ(items.Get(0)->IsFolder(), false);
   }
+}
+
+TEST_F(TestStacks, TestLoneFolderStackPartStaysAFolder)
+{
+  // A folder that looks like a part of a folder stack but has no other part to stack with must
+  // stay a folder, so that it is still listed and scanned as a movie folder of its own
+  const std::string movieFolder =
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)");
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, "", DIR_FLAG_DEFAULTS);
+  EXPECT_EQ(items.Size(), 3);
+
+  // drop all but the first part, and add an unrelated movie so the list is not a single item
+  items.Remove(2);
+  items.Remove(1);
+  items.Add(std::make_shared<CFileItem>(
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)A.mp4"),
+      false));
+  ASSERT_EQ(items.Size(), 2);
+
+  items.Stack();
+
+  EXPECT_EQ(items.Size(), 2);
+  const auto& list{items.GetList()};
+  const auto part{std::ranges::find_if(list, [](const auto& item)
+                                       { return item->GetLabel() == "part_1"; })};
+  ASSERT_NE(part, list.end());
+  EXPECT_EQ((*part)->IsFolder(), true);
+  EXPECT_EQ((*part)->IsStack(), false);
 }
 
 TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart2)
