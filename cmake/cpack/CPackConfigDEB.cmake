@@ -47,7 +47,6 @@ endfunction()
 
 # find stuff we need
 find_program(LSB_RELEASE_CMD lsb_release)
-find_program(DPKG_CMD dpkg)
 find_package(Git)
 find_program(GZIP_CMD gzip)
 
@@ -59,13 +58,17 @@ endif()
 # force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
 set(CPACK_SET_DESTDIR true)
 
-# set architecture
-if(NOT CPACK_SYSTEM_NAME)
-  set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_PROCESSOR})
-  # sanity check
-  if(CPACK_SYSTEM_NAME STREQUAL x86_64)
-    set(CPACK_SYSTEM_NAME amd64)
+# architecture, in Debian's naming (amd64, arm64, ...), also used for the
+# package file names and as the per-component default
+include(${CMAKE_SOURCE_DIR}/cmake/cpack/DebianArchitecture.cmake)
+if(NOT CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
+  core_debian_architecture(CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
+  if(NOT CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
+    message(FATAL_ERROR "DEB Generator: Can't determine the Debian architecture for ${CMAKE_SYSTEM_PROCESSOR}. Set CPACK_DEBIAN_PACKAGE_ARCHITECTURE.")
   endif()
+endif()
+if(NOT CPACK_SYSTEM_NAME)
+  set(CPACK_SYSTEM_NAME ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE})
 endif()
 
 # set packaging by components
@@ -123,17 +126,6 @@ if(DEBIAN_PACKAGE_EPOCH)
   set(CPACK_DEBIAN_PACKAGE_VERSION ${DEBIAN_PACKAGE_EPOCH}:${PACKAGE_NAME_VERSION})
 else()
   set(CPACK_DEBIAN_PACKAGE_VERSION 2:${PACKAGE_NAME_VERSION})
-endif()
-
-# architecture
-if(NOT CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
-  if(NOT DPKG_CMD)
-    message(WARNING "DEB Generator: Can't find dpkg in your path. Setting CPACK_DEBIAN_PACKAGE_ARCHITECTURE to i386.")
-    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
-  endif()
-  execute_process(COMMAND "${DPKG_CMD}" --print-architecture
-                  OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
 # package maintainer
