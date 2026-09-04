@@ -173,6 +173,9 @@ TEST_F(TestStacks, TestFilesOnlyStackWhenOnlyTheirVolumeDiffers)
 
   // ..including parts that are not in the same container
   EXPECT_EQ(SizeAfterStacking({"Movie (2001) cd1.avi", "Movie (2001) cd2.mkv"}), 1);
+
+  // but the same part in two containers is two versions of that part, not a stack
+  EXPECT_EQ(SizeAfterStacking({"Movie (2001) cd1.avi", "Movie (2001) cd1.mkv"}), 2);
 }
 
 TEST_F(TestStacks, TestFolderStacksIgnoreAnyFurtherCapturesOfTheirExpression)

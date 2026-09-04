@@ -836,16 +836,28 @@ void CFileItemList::Stack()
   for (const auto& [candidate, count] :
        countedCandidates | std::views::filter([](const auto& c) { return c.second > 1; }))
   {
-    // Find all items in this stack
+    // Find all the parts of this stack (sorted by volume)
+    std::vector<StackCandidate> parts;
+    std::ranges::copy(stackCandidates |
+                          std::views::filter([type = candidate.type, title = candidate.title,
+                                              remainder = candidate.remainder](const auto& item) {
+                            return item.type == type && item.title == title &&
+                                   item.remainder == remainder;
+                          }),
+                      std::back_inserter(parts));
+
+    // Every part of a stack should be a different volume
+    if (std::ranges::adjacent_find(parts, {}, &StackCandidate::volume) != parts.end())
+    {
+      CLog::LogF(LOGDEBUG,
+                 "Skipping stack '{}' - {} parts found, but not all of a different volume",
+                 candidate.title, parts.size());
+      continue;
+    }
+
     std::vector<int> stack;
     int64_t size{0};
-    for (const auto& stackItem :
-         stackCandidates | std::views::filter(
-                               [type = candidate.type, title = candidate.title,
-                                remainder = candidate.remainder](const auto& item) {
-                                 return item.type == type && item.title == title &&
-                                        item.remainder == remainder;
-                               }))
+    for (const auto& stackItem : parts)
     {
       // Now the stack is known to have more than one part
       if (!stackItem.playPath.empty())
