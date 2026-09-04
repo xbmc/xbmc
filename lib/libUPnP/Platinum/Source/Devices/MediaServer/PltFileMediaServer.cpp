@@ -45,7 +45,189 @@
 #include "PltVersion.h"
 #include "PltMimeType.h"
 
+#include <filesystem>
+
+#if defined(_WIN32)
+#include <windows.h>
+#endif
+
 NPT_SET_LOCAL_LOGGER("platinum.media.server.file.delegate")
+
+namespace {
+
+static bool
+PLT_IsPathSeparator(char value)
+{
+    return value == '/' || value == '\\';
+}
+
+static NPT_Result
+PLT_ValidatePathComponents(const NPT_String& path)
+{
+    const char* chars = path.GetChars();
+    NPT_Size length = path.GetLength();
+
+    NPT_Size component_start = 0;
+    for (NPT_Size i = 0; i <= length; ++i) {
+        if (i != length && !PLT_IsPathSeparator(chars[i])) {
+            if (chars[i] == '\0') return NPT_ERROR_INVALID_PARAMETERS;
+            continue;
+        }
+
+        if (i-component_start == 2 && chars[component_start] == '.' &&
+            chars[component_start+1] == '.') {
+            return NPT_ERROR_INVALID_PARAMETERS;
+        }
+        component_start = i+1;
+    }
+
+    return NPT_SUCCESS;
+}
+
+static NPT_Result
+PLT_ValidateRelativePath(const NPT_String& path)
+{
+    const char* chars = path.GetChars();
+    NPT_Size length = path.GetLength();
+
+    if (length && PLT_IsPathSeparator(chars[0])) return NPT_ERROR_INVALID_PARAMETERS;
+#if defined(_WIN32)
+    if (length >= 2 && ((chars[0] >= 'A' && chars[0] <= 'Z') ||
+                        (chars[0] >= 'a' && chars[0] <= 'z')) &&
+        chars[1] == ':') {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    }
+#endif
+
+    return PLT_ValidatePathComponents(path);
+}
+
+static std::filesystem::path
+PLT_PathFromUtf8(const NPT_String& path)
+{
+    const char8_t* begin = reinterpret_cast<const char8_t*>(path.GetChars());
+    return std::filesystem::path(std::u8string(begin, begin+path.GetLength()));
+}
+
+static NPT_String
+PLT_PathToUtf8(const std::filesystem::path& path)
+{
+    const std::u8string result = path.u8string();
+    return NPT_String(reinterpret_cast<const char*>(result.data()), result.size());
+}
+
+static void
+PLT_TrimTrailingPathSeparators(NPT_String& path)
+{
+    try {
+        NPT_Size root_length = PLT_PathToUtf8(PLT_PathFromUtf8(path).root_path()).GetLength();
+        while (path.GetLength() > root_length &&
+               PLT_IsPathSeparator(path[path.GetLength()-1])) {
+            path.SetLength(path.GetLength()-1);
+        }
+    } catch (...) {
+        return;
+    }
+}
+
+static NPT_Size
+PLT_GetRelativePathOffset(const NPT_String& root, const NPT_String& path)
+{
+    NPT_Size offset = root.GetLength();
+    if (offset < path.GetLength() && PLT_IsPathSeparator(path[offset])) ++offset;
+    return offset;
+}
+
+#if defined(_WIN32)
+static bool
+PLT_IsPathLexicallyWithin(const std::filesystem::path& root,
+                          const std::filesystem::path& path)
+{
+    std::filesystem::path::const_iterator root_component = root.begin();
+    std::filesystem::path::const_iterator path_component = path.begin();
+    for (; root_component != root.end(); ++root_component, ++path_component) {
+        if (path_component == path.end() || *root_component != *path_component) return false;
+    }
+    return true;
+}
+
+static bool
+PLT_HasReparsePointBelowRoot(const std::filesystem::path& root,
+                             const std::filesystem::path& path)
+{
+    std::filesystem::path relative = path.lexically_relative(root);
+    if (relative.empty() && path != root) return true;
+
+    std::filesystem::path current = root;
+    for (const std::filesystem::path& component : relative) {
+        if (component == ".") continue;
+        if (component == "..") return true;
+        current /= component;
+
+        DWORD attributes = GetFileAttributesW(current.c_str());
+        if (attributes == INVALID_FILE_ATTRIBUTES ||
+            (attributes & FILE_ATTRIBUTE_REPARSE_POINT) != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+#endif
+
+static bool
+PLT_IsFilesystemPathWithin(const std::filesystem::path& root,
+                           const std::filesystem::path& path,
+                           std::error_code&             error)
+{
+    std::filesystem::path ancestor = path;
+    while (true) {
+        error.clear();
+        if (std::filesystem::equivalent(root, ancestor, error)) return true;
+        if (error) return false;
+
+        std::filesystem::path parent = ancestor.parent_path();
+        if (parent == ancestor) return false;
+        ancestor = parent;
+    }
+}
+
+static NPT_Result
+PLT_ResolvePathWithinRoot(const NPT_String& root,
+                          const NPT_String& path,
+                          NPT_String&       resolved_path)
+{
+    try {
+        std::error_code error;
+        std::filesystem::path absolute_root = std::filesystem::absolute(PLT_PathFromUtf8(root), error);
+        if (error) return NPT_ERROR_NO_SUCH_ITEM;
+        absolute_root = absolute_root.lexically_normal();
+
+        std::filesystem::path absolute_path = std::filesystem::absolute(PLT_PathFromUtf8(path), error);
+        if (error) return NPT_ERROR_NO_SUCH_ITEM;
+        absolute_path = absolute_path.lexically_normal();
+
+#if defined(_WIN32)
+        if (!PLT_IsPathLexicallyWithin(absolute_root, absolute_path) ||
+            PLT_HasReparsePointBelowRoot(absolute_root, absolute_path)) {
+            return NPT_ERROR_NO_SUCH_ITEM;
+        }
+#endif
+
+        std::filesystem::path canonical_root = std::filesystem::canonical(absolute_root, error);
+        if (error) return NPT_ERROR_NO_SUCH_ITEM;
+        std::filesystem::path canonical_path = std::filesystem::canonical(absolute_path, error);
+        if (error || !PLT_IsFilesystemPathWithin(canonical_root, canonical_path, error)) {
+            return NPT_ERROR_NO_SUCH_ITEM;
+        }
+
+        resolved_path = PLT_PathToUtf8(canonical_path);
+        return NPT_SUCCESS;
+    } catch (...) {
+        return NPT_ERROR_NO_SUCH_ITEM;
+    }
+}
+
+}
 
 /*----------------------------------------------------------------------
 |   PLT_FileMediaServerDelegate::PLT_FileMediaServerDelegate
@@ -59,7 +241,7 @@ PLT_FileMediaServerDelegate::PLT_FileMediaServerDelegate(const char* url_root,
     m_UseCache(use_cache)
 {
     /* Trim excess separators */
-    m_FileRoot.TrimRight("/\\");
+    PLT_TrimTrailingPathSeparators(m_FileRoot);
 }
 
 /*----------------------------------------------------------------------
@@ -89,6 +271,7 @@ PLT_FileMediaServerDelegate::ProcessFileRequest(NPT_HttpRequest&              re
     /* Extract file path from url */
     NPT_String file_path;
     NPT_CHECK_LABEL_WARNING(ExtractResourcePath(request.GetUrl(), file_path), failure);
+    NPT_CHECK_LABEL_WARNING(PLT_ValidateRelativePath(file_path), failure);
     
     /* Serve file */
     NPT_CHECK_WARNING(ServeFile(request, context, response, NPT_FilePath::Create(m_FileRoot, file_path)));
@@ -108,7 +291,9 @@ PLT_FileMediaServerDelegate::ServeFile(const NPT_HttpRequest&        request,
                                        NPT_HttpResponse&             response,
                                        const NPT_String&             file_path)
 {
-    NPT_CHECK_WARNING(PLT_HttpServer::ServeFile(request, context, response, file_path));
+    NPT_String resolved_path;
+    NPT_CHECK_WARNING(PLT_ResolvePathWithinRoot(m_FileRoot, file_path, resolved_path));
+    NPT_CHECK_WARNING(PLT_HttpServer::ServeFile(request, context, response, resolved_path, file_path));
     return NPT_SUCCESS;
 }
 
@@ -317,15 +502,20 @@ PLT_FileMediaServerDelegate::GetFilePath(const char* object_id,
                                          NPT_String& filepath) 
 {
     if (!object_id) return NPT_ERROR_INVALID_PARAMETERS;
-    
-    filepath = m_FileRoot;
-    
-    /* object id is formatted as 0/<filepath> */
+
+    NPT_String object_path;
     if (NPT_StringLength(object_id) >= 1) {
-        filepath += (object_id + (object_id[0]=='0'?1:0));
+        object_path = object_id + (object_id[0]=='0'?1:0);
     }
-    
-    return NPT_SUCCESS;
+    NPT_CHECK(PLT_ValidatePathComponents(object_path));
+
+    filepath = m_FileRoot;
+
+    /* object id is formatted as 0/<filepath> */
+    filepath += object_path;
+
+    NPT_String resolved_path;
+    return PLT_ResolvePathWithinRoot(m_FileRoot, filepath, resolved_path);
 }
 
 /*----------------------------------------------------------------------
@@ -420,11 +610,14 @@ PLT_FileMediaServerDelegate::BuildFromFilePath(const NPT_String&             fil
     NPT_String            root = m_FileRoot;
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
+    NPT_String            resolved_path;
+    NPT_FileInfo          info;
+
+    NPT_CHECK_LABEL_FATAL(PLT_ResolvePathWithinRoot(root, filepath, resolved_path), failure);
     
     NPT_LOG_FINEST_1("Building didl for file '%s'", (const char*)filepath);
     
     /* retrieve the entry type (directory or file) */
-    NPT_FileInfo info; 
     NPT_CHECK_LABEL_FATAL(NPT_File::GetInfo(filepath, &info), failure);
     
     if (info.m_Type == NPT_FileInfo::FILE_TYPE_REGULAR) {
@@ -449,7 +642,7 @@ PLT_FileMediaServerDelegate::BuildFromFilePath(const NPT_String&             fil
         resource.m_Size = info.m_Size;
         
         /* format the resource URI */
-        NPT_String url = filepath.SubString(root.GetLength()+1);
+        NPT_String url = filepath.SubString(PLT_GetRelativePathOffset(root, filepath));
         
         // get list of ip addresses
         NPT_List<NPT_IpAddress> ips;
