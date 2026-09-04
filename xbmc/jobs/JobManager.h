@@ -226,6 +226,11 @@ private:
    */
   CJob* PopJob();
 
+  /*! \brief Workers that are unavailable: running a job, or still in its callbacks.
+   Must be called with m_section held.
+   */
+  size_t GetBusyCount() const { return m_processing.size() + m_completing; }
+
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker* worker);
   static unsigned int GetMaxWorkers(CJob::PRIORITY priority);
@@ -239,7 +244,10 @@ private:
   std::array<JobQueue, CJob::PRIORITY_DEDICATED + 1> m_jobQueue;
   bool m_pauseJobs{false};
   Processing m_processing;
+  size_t m_completing{0};
   Workers m_workers;
+  // Incremented only across the m_jobEvent wait, always under m_section.
+  size_t m_idleWorkers{0};
 
   mutable CCriticalSection m_section;
   CEvent m_jobEvent;
