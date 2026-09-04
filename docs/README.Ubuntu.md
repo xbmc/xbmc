@@ -240,7 +240,7 @@ The package version is `<major>.<minor>~git<timestamp>-<identifier>-<distro code
 |----------|--------|
 | `DEBIAN_PACKAGE_TYPE` | `stable` uses `final` as identifier, `unstable` uses the version tag (for instance `beta2`); anything else uses the git revision |
 | `DEBIAN_PACKAGE_VERSION` / `DEBIAN_PACKAGE_REVISION` | Prefix and suffix of the distro part, `0<codename>` by default |
-| `DEBIAN_PACKAGE_EPOCH` | Overrides the epoch |
+| `DEBIAN_PACKAGE_EPOCH` | Overrides the epoch (`2` by default); `0` produces a version without epoch |
 | `CPACK_DEBIAN_PACKAGE_MAINTAINER` | Overrides the maintainer, otherwise taken from `git config user.name` and `user.email` |
 | `CPACK_DEBIAN_PACKAGE_ARCHITECTURE` | Overrides the architecture, otherwise `dpkg --print-architecture` for a native build and the target triplet (`arm-linux-gnueabihf` gives `armhf`) for a cross build |
 
