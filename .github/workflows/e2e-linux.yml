@@ -1,0 +1,218 @@
+name: E2E (Linux GBM/Wayland)
+
+# Builds Kodi's GBM and Wayland backends against Ubuntu's own packages, as
+# docs/README.Linux.md documents, packages them with CPack's DEB generator and
+# runs tools/e2e against the installed packages. GBM gets a display from the
+# vkms virtual KMS driver, Wayland from a headless Weston; both render through
+# Mesa's llvmpipe, so the real DRM/GBM/EGL/GLES path is exercised but GPU
+# drivers and hardware decode are not. X11 has its own workflow because it
+# builds for desktop GL rather than GLES.
+#
+# ffmpeg is built internally because Kodi needs >= 7.0 and 24.04 ships 6.1;
+# TagLib because Matroska tag support compiles out below 2.3.1.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-linux-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # docs/README.Linux.md section 3 minus optional features, plus what the DEB
+  # generator needs (dpkg-dev, fakeroot, lsb-release). libmicrohttpd-dev is not
+  # optional here: without it HAS_WEB_SERVER is undefined and the JSON-RPC port
+  # the suite drives never opens. libgif/libjpeg are for TexturePacker.
+  APT_PACKAGES: >-
+    build-essential cmake gawk gperf gettext libtool meson nasm
+    ninja-build pkg-config swig python3-dev unzip zip ccache uuid-dev
+    dpkg-dev fakeroot lsb-release
+    libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev
+    libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev
+    libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev
+    libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev
+    libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev
+    libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev
+    libdbus-1-dev libasound2-dev libdav1d-dev
+    libdrm-dev libxkbcommon-dev
+    libegl-dev libegl1 libegl-mesa0 libgles2-mesa-dev libgl1-mesa-dri
+
+jobs:
+  build:
+    # Drafts are skipped; ready_for_review starts the first run.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [gbm, wayland]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install build tools and libraries
+        run: |
+          case "${{ matrix.platform }}" in
+            gbm) extra="libinput-dev libudev-dev libdisplay-info-dev libgbm-dev" ;;
+            wayland) extra="libgbm-dev libwayland-dev wayland-protocols waylandpp-dev weston" ;;
+          esac
+          sudo apt-get update
+          # shellcheck disable=SC2086
+          sudo apt-get install -y ${{ env.APT_PACKAGES }} $extra
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: linux-${{ matrix.platform }}-system-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      # Without KODI_DEPENDSBUILD, FindFFMPEG fails hard instead of falling back
+      # to an internal build when the system ffmpeg is too old. The install
+      # prefix is compiled into the binary, so it has to be the one dpkg will
+      # install to.
+      - name: Configure Kodi
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr \
+            -DCORE_PLATFORM_NAME=${{ matrix.platform }} -DAPP_RENDER_SYSTEM=gles \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON \
+            -DCPACK_GENERATOR=DEB
+
+      - name: Build Kodi
+        run: cmake --build build -- -j"$(nproc)"
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: linux-${{ matrix.platform }}-system-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      # cmake/cpack/CPackConfigDEB.cmake, see docs/README.Ubuntu.md. The test job
+      # installs kodi and kodi-bin with apt, so what runs is the installed binary
+      # with the dependencies dpkg-shlibdeps recorded.
+      - name: Package
+        working-directory: build
+        run: cpack
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-deb-linux-${{ matrix.platform }}
+          path: build/packages/*.deb
+          retention-days: 7
+
+  e2e:
+    needs: build
+    # Runs the legs whose build succeeded even if the other leg's failed.
+    if: ${{ !cancelled() && needs.build.result != 'skipped' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [gbm, wayland]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-deb-linux-${{ matrix.platform }}
+          path: packages
+
+      # apt resolves the dependencies recorded in the packages. libgl1-mesa-dri
+      # holds Mesa's software rasteriser and is loaded at runtime rather than
+      # linked, so shlibdeps cannot know about it.
+      - name: Install Kodi
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ./packages/kodi_*.deb ./packages/kodi-bin_*.deb libgl1-mesa-dri
+          echo "KODI_BINARY=$(dpkg -L kodi-bin | grep -E '/kodi/kodi-${{ matrix.platform }}$')" >> "$GITHUB_ENV"
+
+      # vkms ships in linux-modules-extra. CDRMUtils::OpenDrm() takes the first
+      # card with a connected connector, which vkms reports and the runner's own
+      # virtual card does not. The node is group "video", which the runner user is
+      # not in, hence the chmod; udev creates the node shortly after modprobe
+      # returns, so settle first or the chmod misses it.
+      - name: Load vkms virtual display driver
+        if: matrix.platform == 'gbm'
+        run: |
+          sudo apt-get install -y "linux-modules-extra-$(uname -r)"
+          sudo modprobe vkms
+          sudo udevadm settle
+          sudo chmod 666 /dev/dri/card*
+          ls -l /dev/dri
+
+      # Ubuntu 24.04's libdrm 2.4.125 predates the kernel's vkms-to-faux_device
+      # conversion: drmGetDevices2() cannot classify the faux bus until 2.4.134
+      # and silently drops the card, so Kodi reports "No drm devices found". Same
+      # version, mirror and meson options as tools/depends/target/libdrm. Installed
+      # to /usr/local, which the runtime linker searches ahead of /usr.
+      - name: Build libdrm 2.4.134
+        if: matrix.platform == 'gbm'
+        run: |
+          sudo apt-get install -y build-essential meson ninja-build pkg-config
+          curl -fsSL -o libdrm.tar.xz https://mirrors.kodi.tv/build-deps/sources/libdrm-2.4.134.tar.xz
+          echo "ef2abddea59d1e93c83a48de920431b839ab50d6071ef4da3cf126e7d64ba7b235f2e34e1169d49ad9de2937a0a18acd66bb8d324b067239b1136e0ddbe792a1  libdrm.tar.xz" | sha512sum -c -
+          mkdir libdrm-src
+          tar -xf libdrm.tar.xz -C libdrm-src --strip-components=1
+          meson setup libdrm-src libdrm-build \
+            --prefix=/usr/local --libdir=lib --buildtype=release \
+            -Ddefault_library=shared -Dnouveau=disabled -Domap=disabled \
+            -Dexynos=disabled -Dtegra=disabled -Dintel=disabled \
+            -Dradeon=disabled -Damdgpu=disabled -Dvmwgfx=disabled \
+            -Dvc4=disabled -Dfreedreno=disabled -Detnaviv=disabled \
+            -Dcairo-tests=disabled -Dman-pages=disabled -Dvalgrind=disabled \
+            -Dfreedreno-kgsl=false -Dinstall-test-programs=false -Dudev=false
+          ninja -C libdrm-build
+          sudo ninja -C libdrm-build install
+          sudo ldconfig
+
+      # CWinSystemGbm refuses to start if DISPLAY or WAYLAND_DISPLAY is set at
+      # all, so these are exported from the Wayland leg only, never declared on
+      # the job. Weston prints no ready message, so the socket is polled for.
+      - name: Start headless Wayland compositor (Weston)
+        if: matrix.platform == 'wayland'
+        env:
+          XDG_RUNTIME_DIR: /tmp/xdg-runtime-kodi-e2e
+          WAYLAND_DISPLAY: wayland-1
+        run: |
+          sudo apt-get install -y weston
+          echo "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}" >> "$GITHUB_ENV"
+          echo "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" >> "$GITHUB_ENV"
+          mkdir -p "${XDG_RUNTIME_DIR}"
+          chmod 0700 "${XDG_RUNTIME_DIR}"
+          weston --backend=headless-backend.so --renderer=gl \
+            --socket="${WAYLAND_DISPLAY}" --no-config --idle-time=0 &
+          for _ in $(seq 1 30); do
+            [ -S "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" ] && break
+            sleep 1
+          done
+          [ -S "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" ] || {
+            echo "::error::Weston did not create ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY} in time"
+            exit 1
+          }
+
+      - name: Re-assert DRM node permissions
+        if: matrix.platform == 'gbm'
+        run: |
+          sudo chmod 666 /dev/dri/card*
+          ls -l /dev/dri
+
+      # The installed binary is run directly, not through the /usr/bin/kodi
+      # wrapper script, which hides the exit code and does not forward signals.
+      # Its profile goes under the workspace via KODI_DATA. No audio or input
+      # hardware on the runner; Kodi tolerates both being absent and everything
+      # is driven over JSON-RPC.
+      - uses: ./.github/actions/run-e2e
+        with:
+          name: linux-${{ matrix.platform }}
+          kodi-binary: ${{ env.KODI_BINARY }}
+          kodi-profile-dir: ${{ github.workspace }}/e2e-profile
+          log-paths: |
+            e2e-profile/temp/kodi.log
+            e2e-profile/temp/process-output.log
+          screenshot-glob: e2e-profile/screenshots/*.png
