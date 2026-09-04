@@ -465,6 +465,8 @@ bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 
 void CFileExtensionProvider::OnAdvancedSettingsLoaded()
 {
+  // Avoid lost invalidation for a nullptr list built at the same time
+  std::lock_guard lock{m_critSection};
   // m_fileFolderExtensions is built from the add-ons alone, so a settings reload keeps it.
   ReleaseSettingsDerivedLists();
 }
