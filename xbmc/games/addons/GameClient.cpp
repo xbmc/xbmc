@@ -63,6 +63,7 @@ using namespace GAME;
 namespace
 {
 constexpr const char* GAME_PROPERTY_SUPPORTS_DISC_CONTROL = "supports_disc_control";
+constexpr const char* GAME_PROPERTY_PLATFORMS = "platforms";
 
 /*
  * \brief Convert to lower case and canonicalize with a leading "."
@@ -113,6 +114,11 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
                               .asBoolean();
 
   std::tie(m_emulatorName, m_platforms) = ParseLibretroName(Name());
+
+  const std::string platforms =
+      addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_PLATFORMS).asString();
+  if (!platforms.empty())
+    m_platforms = platforms;
 }
 
 CGameClient::~CGameClient(void)
