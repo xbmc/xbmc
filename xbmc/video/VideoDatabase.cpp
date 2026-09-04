@@ -5380,10 +5380,12 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       std::string strSQL2;
 
       strSQL2 = PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i,VideoStream=%i,"
-                           "TonemapMethod=%i,TonemapParam=%f where idFile=%i\n",
+                           "TonemapMethod=%i,TonemapParam=%f,Orientation=%i,CenterMixLevel=%i "
+                           "where idFile=%i\n",
                            setting.m_ResumeTime, setting.m_StereoMode, setting.m_StereoInvert,
                            setting.m_VideoStream, setting.m_ToneMapMethod,
-                           static_cast<double>(setting.m_ToneMapParam), idFile);
+                           static_cast<double>(setting.m_ToneMapParam), setting.m_Orientation,
+                           setting.m_CenterMixLevel, idFile);
       strSQL += strSQL2;
       m_pDS->exec(strSQL);
       return ;
@@ -11919,15 +11921,19 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
 
 bool CVideoDatabase::CommitTransaction()
 {
-  if (CDatabase::CommitTransaction())
-  { // number of items in the db has likely changed, so recalculate
-    GUIINFO::CLibraryGUIInfo& guiInfo = CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider();
+  if (!CDatabase::CommitTransaction())
+    return false;
+
+  // number of items in the db has likely changed, so recalculate
+  if (CGUIComponent* gui = CServiceBroker::GetGUI())
+  {
+    GUIINFO::CLibraryGUIInfo& guiInfo =
+        gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider();
     guiInfo.SetLibraryBool(LIBRARY_HAS_MOVIES, HasContent(VideoDbContentType::MOVIES));
     guiInfo.SetLibraryBool(LIBRARY_HAS_TVSHOWS, HasContent(VideoDbContentType::TVSHOWS));
     guiInfo.SetLibraryBool(LIBRARY_HAS_MUSICVIDEOS, HasContent(VideoDbContentType::MUSICVIDEOS));
-    return true;
   }
-  return false;
+  return true;
 }
 
 bool CVideoDatabase::SetSingleValue(VideoDbContentType type,
