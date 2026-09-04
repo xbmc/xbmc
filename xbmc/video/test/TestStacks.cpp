@@ -8,10 +8,14 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
+#include "utils/RegExp.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 
@@ -30,7 +34,20 @@ using ::testing::WithParamInterface;
 namespace
 {
 const std::string VIDEO_EXTENSIONS = ".mpg|.mpeg|.mp4|.mkv|.mk3d|.iso";
+
+int SizeAfterStacking(const std::vector<std::string>& fileNames)
+{
+  CFileItemList items{R"(D:\Movies\Movie folder\)"};
+  for (const auto& name : fileNames)
+  {
+    const auto item{std::make_shared<CFileItem>(items.GetPath() + name, false)};
+    item->SetLabel(name);
+    items.Add(item);
+  }
+  items.Stack();
+  return items.Size();
 }
+} // namespace
 
 class TestStacks : public ::testing::Test
 {
@@ -128,6 +145,56 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart)
     EXPECT_EQ(items.Get(0)->IsStack(), true);
     EXPECT_EQ(items.Get(0)->IsFolder(), false);
   }
+}
+
+TEST_F(TestStacks, TestFilesOnlyStackWhenOnlyTheirVolumeDiffers)
+{
+  // Parts of a stack differ only in their volume, so a file whose name matches a stack
+  // expression must not stack with one whose name differs elsewhere as well
+
+  // a movie and its trailer both yield the title 'it cha' and the volume 'pte'
+  EXPECT_EQ(SizeAfterStacking({"It Chapter Two (2019).mp4", "It Chapter Two (2019)-trailer.mp4"}),
+            2);
+
+  // three unrelated films all yield the title 'ca' and the volume 'pta'
+  EXPECT_EQ(SizeAfterStacking({"Captain America - The First Avenger (2011).mp4",
+                               "Captain Phillips (2013).mp4",
+                               "Captain America - The Winter Soldier (2014).mp4"}),
+            3);
+
+  // sequels are not parts of one another
+  EXPECT_EQ(
+      SizeAfterStacking({"John Wick - Chapter 2 (2017).mp4", "John Wick - Chapter 4 (2023).mp4"}),
+      2);
+
+  // real parts still stack, whatever else the name carries..
+  EXPECT_EQ(
+      SizeAfterStacking({"Movie (2001) part1 [1080p].mkv", "Movie (2001) part2 [1080p].mkv"}), 1);
+
+  // ..including parts that are not in the same container
+  EXPECT_EQ(SizeAfterStacking({"Movie (2001) cd1.avi", "Movie (2001) cd2.mkv"}), 1);
+}
+
+TEST_F(TestStacks, TestFolderStacksIgnoreAnyFurtherCapturesOfTheirExpression)
+{
+  // A custom <folderstacking> expression may capture more than the title and the volume
+  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const auto folderStackRegExps{advancedSettings->m_folderStackRegExps};
+
+  CRegExp regExp{true, CRegExp::autoUtf8};
+  EXPECT_TRUE(regExp.RegComp("()((?:p(?:(?:ar)?t)[ _.-]*([0-9])))$"));
+  advancedSettings->m_folderStackRegExps = {regExp};
+
+  const std::string movieFolder =
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_subfolder_parts/Movie_(2001)");
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, "", DIR_FLAG_DEFAULTS);
+  EXPECT_EQ(items.Size(), 3);
+
+  items.Stack();
+  EXPECT_EQ(items.Size(), 1);
+
+  advancedSettings->m_folderStackRegExps = folderStackRegExps;
 }
 
 TEST_F(TestStacks, TestLoneFolderStackPartStaysAFolder)

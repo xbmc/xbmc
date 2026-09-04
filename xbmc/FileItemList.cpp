@@ -779,6 +779,7 @@ void CFileItemList::Stack()
         if (fileFound)
         {
           // Add to stack vector
+          // Folder expressions capture no remainder, so folder parts group on their title alone
           stackCandidates.emplace_back(StackCandidate{.type = StackCandidateType::FOLDER_CANDIDATE,
                                                       .title = regExp.GetMatch(1),
                                                       .volume = regExp.GetMatch(2),
@@ -809,6 +810,7 @@ void CFileItemList::Stack()
         stackCandidates.emplace_back(StackCandidate{.type = StackCandidateType::FILE_CANDIDATE,
                                                     .title = regExp.GetMatch(1),
                                                     .volume = regExp.GetMatch(2),
+                                                    .remainder = regExp.GetMatch(3),
                                                     .size = item->GetSize(),
                                                     .index = i});
         break;
@@ -824,9 +826,10 @@ void CFileItemList::Stack()
   std::ranges::sort(stackCandidates);
 
   // Count stack candidates
+  // Parts of the same stack should differ only in their volume
   std::map<CountedStackCandidate, int> countedCandidates;
   for (const auto& s : stackCandidates)
-    ++countedCandidates[{s.type, s.title}];
+    ++countedCandidates[{s.type, s.title, s.remainder}];
 
   // Find stacks
   std::vector<int> deleteItems;
@@ -837,9 +840,12 @@ void CFileItemList::Stack()
     std::vector<int> stack;
     int64_t size{0};
     for (const auto& stackItem :
-         stackCandidates |
-             std::views::filter([type = candidate.type, title = candidate.title](const auto& item)
-                                { return item.type == type && item.title == title; }))
+         stackCandidates | std::views::filter(
+                               [type = candidate.type, title = candidate.title,
+                                remainder = candidate.remainder](const auto& item) {
+                                 return item.type == type && item.title == title &&
+                                        item.remainder == remainder;
+                               }))
     {
       // Now the stack is known to have more than one part
       if (!stackItem.playPath.empty())
