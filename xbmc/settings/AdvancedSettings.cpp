@@ -95,14 +95,17 @@ void CAdvancedSettings::OnSettingsLoaded()
   }
   CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
 
-  std::vector<AdvancedSettingsCallback> callbacks;
   {
     std::lock_guard lock{m_listCritSection};
+
+    // Copy for list stability in case of concurrent registration
+    std::vector<AdvancedSettingsCallback> callbacks;
     callbacks.reserve(m_settingsLoadedCallbacks.size());
     std::ranges::transform(m_settingsLoadedCallbacks, std::back_inserter(callbacks),
                            [](const auto& pair) { return pair.second; });
+    // Execute callbacks under lock in case of concurrent unregistration
+    std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
   }
-  std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
