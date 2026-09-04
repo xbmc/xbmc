@@ -462,6 +462,9 @@ bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 
 void CFileExtensionProvider::OnAdvancedSettingsLoaded()
 {
+  // A getter can otherwise store a list built from the old settings after this release.
+  std::lock_guard lock{m_critSection};
+
   // m_fileFolderExtensions is deliberately not released here: it is built from the add-ons
   // alone, so a settings reload cannot have changed it.
   ReleaseSettingsDerivedLists();
