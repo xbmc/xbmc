@@ -34,3 +34,4 @@ xbmc/utils/i18n/test              test/utils/i18n
 xbmc/utils/i18n/Bcp47Registry/test test/utils/i18n/Bcp47Registry
 xbmc/utils/test                   test/utils
 xbmc/video/test                   test/video
+xbmc/windowing/test               test/windowing

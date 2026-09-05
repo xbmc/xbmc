@@ -3269,6 +3269,10 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoscreen.screenalignment" type="action" label="40805" help="40806">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
         <setting id="videoscreen.guicalibration" type="action" label="214" help="36357">
           <level>3</level>
           <control type="button" format="action" />
