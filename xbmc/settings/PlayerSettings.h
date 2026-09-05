@@ -25,4 +25,9 @@ public:
   static void SettingOptionsFastForwardSpeeds(const SettingConstPtr& setting,
                                               std::vector<IntegerSettingOption>& list,
                                               int& current);
+
+  //! \brief The ratios a viewer may state their display rests at, keyed in hundredths.
+  static void SettingOptionsRasterAspectRatios(const SettingConstPtr& setting,
+                                               std::vector<IntegerSettingOption>& list,
+                                               int& current);
 };

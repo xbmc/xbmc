@@ -267,52 +267,11 @@ TEST(TestStreamDetails, VideoAspectToAspectDescriptionCommonRatios)
 
 TEST(TestStreamDetails, VideoAspectToAspectDescriptionBoundaries)
 {
-  // The cutoff between two adjacent entries is their geometric mean. Probe either side of
-  // every cutoff so that a change to the table cannot silently move one.
-  EXPECT_STREQ("1.00", CStreamDetails::VideoAspectToAspectDescription(1.0899f).c_str());
-  EXPECT_STREQ("1.19", CStreamDetails::VideoAspectToAspectDescription(1.0919f).c_str());
-
-  EXPECT_STREQ("1.19", CStreamDetails::VideoAspectToAspectDescription(1.2571f).c_str());
-  EXPECT_STREQ("1.33", CStreamDetails::VideoAspectToAspectDescription(1.2591f).c_str());
-
-  EXPECT_STREQ("1.33", CStreamDetails::VideoAspectToAspectDescription(1.3489f).c_str());
-  EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.3509f).c_str());
-
-  EXPECT_STREQ("1.37", CStreamDetails::VideoAspectToAspectDescription(1.3987f).c_str());
-  EXPECT_STREQ("1.43", CStreamDetails::VideoAspectToAspectDescription(1.4007f).c_str());
-
-  EXPECT_STREQ("1.43", CStreamDetails::VideoAspectToAspectDescription(1.4636f).c_str());
-  EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.4656f).c_str());
-
-  EXPECT_STREQ("1.50", CStreamDetails::VideoAspectToAspectDescription(1.5770f).c_str());
-  EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.5790f).c_str());
-
-  EXPECT_STREQ("1.66", CStreamDetails::VideoAspectToAspectDescription(1.7180f).c_str());
-  EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.7200f).c_str());
-
-  EXPECT_STREQ("1.78", CStreamDetails::VideoAspectToAspectDescription(1.8137f).c_str());
-  EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.8157f).c_str());
-
-  EXPECT_STREQ("1.85", CStreamDetails::VideoAspectToAspectDescription(1.8738f).c_str());
-  EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.8758f).c_str());
-
-  EXPECT_STREQ("1.90", CStreamDetails::VideoAspectToAspectDescription(1.9484f).c_str());
-  EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(1.9504f).c_str());
-
-  EXPECT_STREQ("2.00", CStreamDetails::VideoAspectToAspectDescription(2.0966f).c_str());
-  EXPECT_STREQ("2.20", CStreamDetails::VideoAspectToAspectDescription(2.0986f).c_str());
-
-  EXPECT_STREQ("2.20", CStreamDetails::VideoAspectToAspectDescription(2.2728f).c_str());
-  EXPECT_STREQ("2.35", CStreamDetails::VideoAspectToAspectDescription(2.2748f).c_str());
-
+  // One probe either side of one cutoff. The cutoffs themselves belong to the vocabulary,
+  // where TestAspectRatioVocabulary pins every one; this asserts the description still
+  // classifies through it.
   EXPECT_STREQ("2.35", CStreamDetails::VideoAspectToAspectDescription(2.3739f).c_str());
   EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.3759f).c_str());
-
-  EXPECT_STREQ("2.40", CStreamDetails::VideoAspectToAspectDescription(2.4729f).c_str());
-  EXPECT_STREQ("2.55", CStreamDetails::VideoAspectToAspectDescription(2.4749f).c_str());
-
-  EXPECT_STREQ("2.55", CStreamDetails::VideoAspectToAspectDescription(2.6519f).c_str());
-  EXPECT_STREQ("2.76", CStreamDetails::VideoAspectToAspectDescription(2.6539f).c_str());
 }
 
 TEST(TestStreamDetails, VideoAspectToAspectDescriptionEdgeCases)
