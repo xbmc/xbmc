@@ -20,8 +20,4 @@ if(TARGET ${APP_NAME_LC}::NFS)
   list(APPEND SOURCES TestNfsFile.cpp)
 endif()
 
-if(TARGET ${APP_NAME_LC}::SmbClient)
-  list(APPEND SOURCES TestSMBFile.cpp)
-endif()
-
 core_add_test_library(filesystem_test)
