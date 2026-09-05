@@ -85,3 +85,22 @@ TEST(TestGameClientDiscModel, DeriveBasenameHandlesUnixAndWindowsPaths)
   EXPECT_EQ(CGameClientDiscModel::DeriveBasename("C:\\roms\\disc2.chd"), "disc2.chd");
   EXPECT_EQ(CGameClientDiscModel::DeriveBasename("/roms/subdir/"), "subdir");
 }
+
+TEST(TestGameClientDiscModel, SnapshotEqualityIncludesAllMachineDiscState)
+{
+  CGameClientDiscModel first;
+  first.AddDisc("/roms/disc1.chd", "One");
+  CGameClientDiscModel second = first;
+  EXPECT_TRUE(first == second);
+  second.SetEjected(true);
+  EXPECT_FALSE(first == second);
+  second = first;
+  second.SetSelectedNoDisc();
+  EXPECT_FALSE(first == second);
+  second = first;
+  second.AddRemovedSlot();
+  EXPECT_FALSE(first == second);
+  second = first;
+  second.UpdateCachedLabel("/roms/disc1.chd", "Changed");
+  EXPECT_FALSE(first == second);
+}

@@ -37,6 +37,8 @@ struct GameClientDiscEntry
 class CGameClientDiscModel
 {
 public:
+  bool operator==(const CGameClientDiscModel& rhs) const;
+
   // Selected disc state used by the frontend selector/workflow.
   // "No disc" is explicit and distinct from any real disc entry.
   enum class DiscSelectionType

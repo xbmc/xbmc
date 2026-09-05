@@ -27,8 +27,7 @@ using namespace GAME;
 void CDiscManagerGame::Initialize(GameClientPtr gameClient)
 {
   m_gameClient = std::move(gameClient);
-  m_initialDiscModel.Clear();
-  m_discSelectionRequested = false;
+  m_pendingDiscModel.reset();
 
   if (m_gameClient)
   {
@@ -36,9 +35,6 @@ void CDiscManagerGame::Initialize(GameClientPtr gameClient)
     {
       // Refresh discs from live core state
       m_gameClient->Discs().RefreshDiscState();
-
-      // Store initial disc state
-      m_initialDiscModel = m_gameClient->Discs().GetDiscs();
     }
     else
     {
@@ -55,24 +51,13 @@ void CDiscManagerGame::Initialize(GameClientPtr gameClient)
 
 void CDiscManagerGame::Deinitialize()
 {
-  // Handle disc state transitions
   if (m_gameClient && m_gameClient->SupportsDiscControl())
   {
-    const CGameClientDiscModel& currentModel = m_gameClient->Discs().GetDiscs();
+    const auto lock = m_gameClient->LockForSnapshot();
+    CGameClientDiscs& discs = m_gameClient->Discs();
 
-    // If selected disc changed, commit that change by forcing tray closed
-    const std::string initialSelectedDisc = m_initialDiscModel.GetSelectedDiscPath();
-    const std::string currentSelectedDisc = currentModel.GetSelectedDiscPath();
-    const bool selectedDiscChanged = (initialSelectedDisc != currentSelectedDisc);
-
-    // If the disc list has changed (a disc was added, removed or swapped),
-    // force the tray closed
-    const std::vector<GameClientDiscEntry>& initialDiscs = m_initialDiscModel.GetDiscs();
-    const std::vector<GameClientDiscEntry>& currentDiscs = currentModel.GetDiscs();
-    bool discListChanged = (initialDiscs != currentDiscs);
-
-    if ((m_discSelectionRequested || selectedDiscChanged || discListChanged) &&
-        m_gameClient->Discs().IsEjected() && !m_gameClient->Discs().SetEjected(false))
+    if (m_pendingDiscModel && *m_pendingDiscModel == discs.GetDiscs() && discs.IsEjected() &&
+        !discs.SetEjected(false))
     {
       auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
       CLog::Log(LOGERROR, "Failed to insert selected disc when closing Disc Manager");
@@ -82,13 +67,21 @@ void CDiscManagerGame::Deinitialize()
   }
 
   m_gameClient.reset();
-  m_initialDiscModel.Clear();
-  m_discSelectionRequested = false;
+  m_pendingDiscModel.reset();
 }
 
-void CDiscManagerGame::NotifyDiscSelection()
+void CDiscManagerGame::NotifyDiscChange()
 {
-  m_discSelectionRequested = true;
+  if (m_gameClient)
+  {
+    const auto lock = m_gameClient->LockForSnapshot();
+    m_pendingDiscModel = m_gameClient->Discs().GetDiscs();
+  }
+}
+
+void CDiscManagerGame::NotifyTrayChange()
+{
+  m_pendingDiscModel.reset();
 }
 
 bool CDiscManagerGame::IsEjected() const

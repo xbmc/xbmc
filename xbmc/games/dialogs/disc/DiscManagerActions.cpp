@@ -64,28 +64,23 @@ void CDiscManagerActions::OnSelectDisc()
                                    [this](std::optional<size_t> discIndex)
                                    {
                                      bool success = false;
-                                     if (discIndex.has_value())
                                      {
+                                       const auto lock = m_gameClient->LockForSnapshot();
                                        success =
-                                           m_gameClient->Discs().InsertDiscByIndex(*discIndex);
-                                       if (!success)
-                                         ShowInternalError();
+                                           discIndex.has_value()
+                                               ? m_gameClient->Discs().InsertDiscByIndex(*discIndex)
+                                               : m_gameClient->Discs().InsertDisc("");
+                                       if (success)
+                                         m_discManager.NotifyDiscChange();
                                      }
-                                     else
-                                     {
-                                       success = m_gameClient->Discs().InsertDisc("");
-                                       if (!success)
-                                         ShowInternalError();
-                                     }
+                                     if (!success)
+                                       ShowInternalError();
 
                                      m_discManager.UpdateMenu();
 
                                      // Returning from a successful selection of a disc should land on Resume
                                      if (success)
-                                     {
-                                       m_discManager.NotifyDiscSelection();
                                        m_discManager.FocusMainMenuItem(MENU_INDEX_RESUME_GAME);
-                                     }
                                      else
                                        m_discManager.FocusMainMenuItem(MENU_INDEX_SELECT_DISC);
                                    });
@@ -100,9 +95,15 @@ void CDiscManagerActions::OnEjectInsert()
 
   CGameClientDiscs& discs = m_gameClient->Discs();
 
-  const bool wasEjected = discs.IsEjected();
-
-  const bool success = discs.SetEjected(!wasEjected);
+  bool wasEjected;
+  bool success;
+  {
+    const auto lock = m_gameClient->LockForSnapshot();
+    wasEjected = discs.IsEjected();
+    success = discs.SetEjected(!wasEjected);
+    if (success)
+      m_discManager.NotifyTrayChange();
+  }
 
   if (!success)
   {
@@ -164,7 +165,14 @@ void CDiscManagerActions::OnAdd()
     return;
   }
 
-  const bool success = discs.AddDisc(filePath);
+  bool success;
+  {
+    const auto lock = m_gameClient->LockForSnapshot();
+    const CGameClientDiscModel previousModel = discs.GetDiscs();
+    success = discs.AddDisc(filePath);
+    if (success && !(previousModel == discs.GetDiscs()))
+      m_discManager.NotifyDiscChange();
+  }
   if (!success)
     ShowInternalError();
 
@@ -190,7 +198,15 @@ void CDiscManagerActions::OnDelete()
   m_discManager.SelectDiscToDelete(
       [this](size_t discIndex)
       {
-        const bool success = m_gameClient->Discs().RemoveDiscByIndex(discIndex);
+        bool success;
+        {
+          const auto lock = m_gameClient->LockForSnapshot();
+          CGameClientDiscs& discs = m_gameClient->Discs();
+          const CGameClientDiscModel previousModel = discs.GetDiscs();
+          success = discs.RemoveDiscByIndex(discIndex);
+          if (success && !(previousModel == discs.GetDiscs()))
+            m_discManager.NotifyDiscChange();
+        }
         if (!success)
           ShowInternalError();
 

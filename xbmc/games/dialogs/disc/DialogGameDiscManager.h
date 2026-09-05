@@ -61,7 +61,8 @@ public:
                           std::function<void(std::optional<size_t>)> callback);
   void SelectDiscToDelete(std::function<void(size_t)> callback);
   void OnDiscSelect(size_t discIndex, bool isNoDisc);
-  void NotifyDiscSelection();
+  void NotifyDiscChange();
+  void NotifyTrayChange();
   bool AllowSelectNoDisc() const;
 
 protected:
