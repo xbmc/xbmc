@@ -13,6 +13,7 @@
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "application/Application.h"
@@ -128,6 +129,8 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
       extras += '|' + vfsAddon->GetExtensions();
   }
 
+  std::vector<CMediaSource> shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
+
   const auto currentItem{g_application.CurrentFileItem()};
   std::string strPath{currentItem.GetProperty("BasePath").asString("")};
   if (strPath.empty())
@@ -143,6 +146,15 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
     }
   }
 
+  // A stream belonging to no source has no parent directory worth listing, and trying to list
+  // one is what hangs the dialog. An empty path opens the browser at the root instead.
+  bool isSourceName{false}; // GetMatchingSource requires it; the answer is not used here
+  if (URIUtils::IsInternetStream(strPath) &&
+      CUtil::GetMatchingSource(strPath, shares, isSourceName) < 0)
+  {
+    strPath.clear();
+  }
+
   std::string strMask =
       ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.vtt|.idx|.zip|.sup";
 
@@ -151,7 +163,6 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
 
   strMask += extras;
 
-  std::vector<CMediaSource> shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
   if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
   {
     CMediaSource share;
