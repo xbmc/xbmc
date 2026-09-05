@@ -1,0 +1,89 @@
+name: JSON-RPC API description
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'xbmc/interfaces/json-rpc/**'
+      - 'tools/jsonrpc/**'
+      - 'docs/jsonrpc/**'
+      - '.github/workflows/jsonrpc-docs.yml'
+  pull_request:
+    paths:
+      - 'xbmc/interfaces/json-rpc/**'
+      - 'tools/jsonrpc/**'
+      - 'docs/jsonrpc/**'
+      - '.github/workflows/jsonrpc-docs.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  # The committed descriptions must equal what the schema generates;
+  # regenerate them rather than edit them.
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: No draft-03 constructs in the schema
+        run: python tools/jsonrpc/lint_schema.py
+
+      - name: Regenerate API descriptions
+        run: |
+          python tools/jsonrpc/generate_openrpc.py
+          python tools/jsonrpc/generate_asyncapi.py
+
+      - name: Committed descriptions match the schema
+        run: git diff --exit-code -- docs/jsonrpc
+
+      - name: Generator unit tests
+        run: python -m unittest discover -s tools/jsonrpc -p "test_*.py"
+
+      - name: Validate against the OpenRPC meta-schema
+        run: |
+          pip install --quiet jsonschema
+          curl -fsSL -o /tmp/open-rpc-meta-schema.json https://meta.open-rpc.org/
+          python -c "
+          import json, jsonschema
+          schema = json.load(open('/tmp/open-rpc-meta-schema.json'))
+          document = json.load(open('docs/jsonrpc/openrpc.json'))
+          jsonschema.validate(document, schema)
+          print('openrpc.json validates')
+          "
+
+  # Publishes to the Pages repository named by the API_DOCS_REPO variable,
+  # using the deploy key in the API_DOCS_DEPLOY_KEY secret.
+  deploy:
+    if: github.event_name == 'push' && vars.API_DOCS_REPO != ''
+    needs: gate
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Build site
+        run: python tools/jsonrpc/generate_site.py --out build/apidocs
+
+      - name: Deploy to Pages repository
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.API_DOCS_DEPLOY_KEY }}
+          external_repository: ${{ vars.API_DOCS_REPO }}
+          publish_branch: main
+          publish_dir: build/apidocs
+          keep_files: true
+          full_commit_message: 'deploy: ${{ github.repository }}@${{ github.sha }}'

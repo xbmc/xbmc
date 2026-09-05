@@ -1,0 +1,47 @@
+{
+  "title": "Page through the movie library with selected properties",
+  "method": "VideoLibrary.GetMovies",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "method": "VideoLibrary.GetMovies",
+    "params": {
+      "properties": [
+        "title",
+        "year",
+        "rating"
+      ],
+      "limits": {
+        "start": 0,
+        "end": 2
+      }
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "result": {
+      "limits": {
+        "start": 0,
+        "end": 2,
+        "total": 245
+      },
+      "movies": [
+        {
+          "movieid": 1,
+          "label": "The Matrix",
+          "title": "The Matrix",
+          "year": 1999,
+          "rating": 8.7
+        },
+        {
+          "movieid": 2,
+          "label": "Spirited Away",
+          "title": "Spirited Away",
+          "year": 2001,
+          "rating": 8.6
+        }
+      ]
+    }
+  }
+}
