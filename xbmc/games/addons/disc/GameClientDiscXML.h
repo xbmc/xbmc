@@ -11,6 +11,7 @@
 #include "games/addons/disc/GameClientDiscModel.h"
 #include "games/addons/disc/GameClientDiscPlaylist.h"
 
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -35,7 +36,8 @@ public:
   static bool Save(const std::string& gamePath, const CGameClientDiscModel& model);
 
 private:
-  static std::vector<GameClientDiscEntry> ReadSlotsFromXML(const tinyxml2::XMLElement* rootElement);
+  static std::optional<std::vector<GameClientDiscEntry>> ReadSlotsFromXML(
+      const tinyxml2::XMLElement* rootElement);
   static void WriteSlotsToXML(CXBMCTinyXML2& xmlDoc,
                               tinyxml2::XMLElement* rootElement,
                               const CGameClientDiscModel& model);
@@ -45,7 +47,7 @@ private:
                              tinyxml2::XMLElement* rootElement,
                              const CGameClientDiscModel& model);
 
-  static void ReadSelectedFromXML(const tinyxml2::XMLElement* rootElement,
+  static bool ReadSelectedFromXML(const tinyxml2::XMLElement* rootElement,
                                   CGameClientDiscModel& model);
   static void WriteSelectedToXML(CXBMCTinyXML2& xmlDoc,
                                  tinyxml2::XMLElement* rootElement,

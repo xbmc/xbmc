@@ -16,6 +16,7 @@
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
+#include <charconv>
 #include <cstring>
 #include <optional>
 
@@ -81,9 +82,20 @@ bool CGameClientDiscXML::Load(const std::string& gamePath, CGameClientDiscModel&
     return false;
   }
 
-  model.SetDiscs(ReadSlotsFromXML(rootElement));
+  const auto discs = ReadSlotsFromXML(rootElement);
+  if (!discs)
+  {
+    CLog::Log(LOGWARNING, "Invalid slots in disc state XML {}", CURL::GetRedacted(xmlPath));
+    return false;
+  }
+  model.SetDiscs(*discs);
 
-  ReadSelectedFromXML(rootElement, model);
+  if (!ReadSelectedFromXML(rootElement, model))
+  {
+    CLog::Log(LOGWARNING, "Invalid selected disc in disc state XML {}", CURL::GetRedacted(xmlPath));
+    model.Clear();
+    return false;
+  }
   ReadTrayFromXML(rootElement, model);
 
   return true;
@@ -132,15 +144,16 @@ bool CGameClientDiscXML::Save(const std::string& gamePath, const CGameClientDisc
   return true;
 }
 
-std::vector<GameClientDiscEntry> CGameClientDiscXML::ReadSlotsFromXML(
+std::optional<std::vector<GameClientDiscEntry>> CGameClientDiscXML::ReadSlotsFromXML(
     const tinyxml2::XMLElement* rootElement)
 {
   std::vector<GameClientDiscEntry> discs;
 
   const tinyxml2::XMLElement* slotsElement =
       rootElement != nullptr ? rootElement->FirstChildElement(XML_SLOTS) : nullptr;
-  const tinyxml2::XMLElement* slotElement =
-      slotsElement != nullptr ? slotsElement->FirstChildElement(XML_SLOT) : nullptr;
+  if (slotsElement == nullptr)
+    return std::nullopt;
+  const tinyxml2::XMLElement* slotElement = slotsElement->FirstChildElement(XML_SLOT);
 
   while (slotElement != nullptr)
   {
@@ -153,15 +166,16 @@ std::vector<GameClientDiscEntry> CGameClientDiscXML::ReadSlotsFromXML(
     {
       discs.push_back({GameClientDiscEntry::DiscSlotType::RemovedSlot, "", "", ""});
     }
-    else
+    else if (type != nullptr && std::strcmp(type, TYPE_DISC) == 0)
     {
       const char* path = slotElement->Attribute(XML_ATTR_PATH);
-      if (path != nullptr)
-      {
-        discs.push_back({GameClientDiscEntry::DiscSlotType::Disc, path,
-                         CGameClientDiscModel::DeriveBasename(path), label});
-      }
+      if (path == nullptr || *path == '\0')
+        return std::nullopt;
+      discs.push_back({GameClientDiscEntry::DiscSlotType::Disc, path,
+                       CGameClientDiscModel::DeriveBasename(path), label});
     }
+    else
+      return std::nullopt;
 
     slotElement = slotElement->NextSiblingElement(XML_SLOT);
   }
@@ -223,31 +237,33 @@ void CGameClientDiscXML::WriteTrayToXML(CXBMCTinyXML2& xmlDoc,
   trayElement->SetAttribute(XML_ATTR_EJECTED, model.IsEjected());
 }
 
-void CGameClientDiscXML::ReadSelectedFromXML(const tinyxml2::XMLElement* rootElement,
+bool CGameClientDiscXML::ReadSelectedFromXML(const tinyxml2::XMLElement* rootElement,
                                              CGameClientDiscModel& model)
 {
-  const tinyxml2::XMLElement* selectedElement =
-      rootElement != nullptr ? rootElement->FirstChildElement(XML_SELECTED) : nullptr;
-  if (selectedElement != nullptr)
-  {
-    const char* selectedType = selectedElement->Attribute(XML_ATTR_TYPE);
-    if (selectedType != nullptr && std::strcmp(selectedType, TYPE_NONE) == 0)
-    {
-      model.SetSelectedNoDisc();
-    }
-    else
-    {
-      const int selectedIndex = selectedElement->IntAttribute(XML_ATTR_INDEX, -1);
-      if (selectedIndex >= 0)
-        model.SetSelectedDiscByIndex(static_cast<size_t>(selectedIndex));
-      else
-        model.SetSelectedNoDisc();
-    }
-  }
-  else
+  const tinyxml2::XMLElement* selectedElement = rootElement->FirstChildElement(XML_SELECTED);
+  if (selectedElement == nullptr)
+    return false;
+
+  const char* selectedType = selectedElement->Attribute(XML_ATTR_TYPE);
+  if (selectedType == nullptr)
+    return false;
+  if (std::strcmp(selectedType, TYPE_NONE) == 0)
   {
     model.SetSelectedNoDisc();
+    return true;
   }
+  if (std::strcmp(selectedType, TYPE_DISC) != 0)
+    return false;
+
+  const char* index = selectedElement->Attribute(XML_ATTR_INDEX);
+  if (index == nullptr)
+    return false;
+
+  size_t selectedIndex;
+  const char* end = index + std::strlen(index);
+  const auto result = std::from_chars(index, end, selectedIndex);
+  return result.ec == std::errc{} && result.ptr == end &&
+         model.SetSelectedDiscByIndex(selectedIndex);
 }
 
 void CGameClientDiscXML::WriteSelectedToXML(CXBMCTinyXML2& xmlDoc,

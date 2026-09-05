@@ -235,7 +235,8 @@ TEST(TestGameClientDiscXML, LoadMissingEjectedDefaultsToFalse)
   XFILE::CFile file;
   ASSERT_TRUE(file.OpenForWrite(xmlPath, true));
   static constexpr char xml[] =
-      "<discstate><slots><slot type=\"disc\" path=\"/roms/disc1.chd\"/></slots></discstate>";
+      "<discstate><slots><slot type=\"disc\" path=\"/roms/disc1.chd\"/></slots>"
+      "<selected type=\"none\"/></discstate>";
   ASSERT_EQ(file.Write(xml, sizeof(xml) - 1), sizeof(xml) - 1);
   file.Close();
 
@@ -279,3 +280,73 @@ TEST(TestGameClientDiscXML, SaveCreatesPerGameStateFile)
 
   CleanupStateFile();
 }
+
+class TestGameClientDiscXMLInvalidSelection : public testing::TestWithParam<const char*>
+{
+protected:
+  void SetUp() override { CleanupStateFile(); }
+  void TearDown() override { CleanupStateFile(); }
+};
+
+TEST_P(TestGameClientDiscXMLInvalidSelection, RejectsInvalidSelection)
+{
+  EnsureStateSubdirectory();
+  const std::string xml =
+      std::string{"<discstate><slots><slot type=\"disc\" path=\"/roms/disc1.chd\"/>"
+                  "<slot type=\"removed\"/></slots>"} +
+      GetParam() + "</discstate>";
+  XFILE::CFile file;
+  ASSERT_TRUE(file.OpenForWrite(CGameClientDiscXML::GetXMLPath(GAME_PATH), true));
+  ASSERT_EQ(file.Write(xml.data(), xml.size()), static_cast<ssize_t>(xml.size()));
+  file.Close();
+
+  CGameClientDiscXML discXml;
+  CGameClientDiscModel loaded;
+  EXPECT_FALSE(discXml.Load(GAME_PATH, loaded));
+  EXPECT_TRUE(loaded.Empty());
+}
+
+INSTANTIATE_TEST_SUITE_P(InvalidMetadata,
+                         TestGameClientDiscXMLInvalidSelection,
+                         testing::Values("<selected type=\"disc\" index=\"2\"/>",
+                                         "<selected type=\"disc\" index=\"1\"/>",
+                                         "<selected type=\"disc\" index=\"-1\"/>",
+                                         "<selected type=\"disc\" index=\"abc\"/>",
+                                         "<selected type=\"disc\" index=\"0junk\"/>",
+                                         "<selected type=\"disc\" index=\"0.5\"/>",
+                                         "<selected type=\"disc\" index=\"18446744073709551616\"/>",
+                                         "<selected type=\"disc\" index=\"\"/>",
+                                         "<selected type=\"disc\"/>",
+                                         "<selected index=\"0\"/>",
+                                         "<selected type=\"unknown\" index=\"0\"/>",
+                                         ""));
+
+class TestGameClientDiscXMLInvalidSlots : public testing::TestWithParam<const char*>
+{
+protected:
+  void SetUp() override { CleanupStateFile(); }
+  void TearDown() override { CleanupStateFile(); }
+};
+
+TEST_P(TestGameClientDiscXMLInvalidSlots, RejectsMalformedSlotWithoutShiftingSelection)
+{
+  EnsureStateSubdirectory();
+  const std::string xml = std::string{"<discstate><slots>"} + GetParam() +
+                          R"(<slot type="disc" path="/roms/disc2.chd"/></slots>)" +
+                          R"(<selected type="disc" index="0"/></discstate>)";
+  XFILE::CFile file;
+  ASSERT_TRUE(file.OpenForWrite(CGameClientDiscXML::GetXMLPath(GAME_PATH), true));
+  ASSERT_EQ(file.Write(xml.data(), xml.size()), static_cast<ssize_t>(xml.size()));
+  file.Close();
+
+  CGameClientDiscModel loaded;
+  EXPECT_FALSE(CGameClientDiscXML::Load(GAME_PATH, loaded));
+  EXPECT_TRUE(loaded.Empty());
+}
+
+INSTANTIATE_TEST_SUITE_P(InvalidMetadata,
+                         TestGameClientDiscXMLInvalidSlots,
+                         testing::Values(R"(<slot type="disc"/>)",
+                                         R"(<slot type="disc" path=""/>)",
+                                         R"(<slot type="unknown" path="/roms/disc1.chd"/>)",
+                                         R"(<slot path="/roms/disc1.chd"/>)"));
