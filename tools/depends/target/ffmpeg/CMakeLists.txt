@@ -162,6 +162,7 @@ if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
 else()
   set(sourceplugin_patch PATCH_COMMAND patch -p1 -i <SOURCE_DIR>/002-ffmpeg-libavutil-common-h-cpp11-constant-macros.patch)
 endif()
+list(APPEND sourceplugin_patch COMMAND patch -p1 -i <SOURCE_DIR>/008-ffmpeg-all-pgssubdec-use-caller-colorspace.patch)
 
 include(ExternalProject)
 externalproject_add(ffmpeg

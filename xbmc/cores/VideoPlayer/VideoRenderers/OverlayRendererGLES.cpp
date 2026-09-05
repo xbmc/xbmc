@@ -145,6 +145,8 @@ std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlayImage& o, CRect& rSo
 
 COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSource)
 {
+  m_isHDROverlay = o.m_isHDROverlay;
+
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
@@ -161,9 +163,44 @@ COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSour
   }
   else
   {
+    // Convert the HDR PGS palette to SDR before upload where
+    // the windowing system does not already composite HDR GUI correctly.
+    float sdrWhiteNits = 0.0f;
+    m_pgsConvertedToSdr = OVERLAY::ShouldConvertPgsPaletteToSdr(o.m_isHDROverlay, sdrWhiteNits);
+
+    std::vector<uint32_t> convertedPalette;
+    const std::vector<uint32_t>* paletteOverride = nullptr;
+    if (m_pgsConvertedToSdr)
+    {
+      convertedPalette = o.palette;
+      OVERLAY::ConvertPgsPaletteToSdr(convertedPalette, sdrWhiteNits);
+      paletteOverride = &convertedPalette;
+    }
+
     std::vector<uint32_t> rgba(o.width * o.height);
     m_pma = !!USE_PREMULTIPLIED_ALPHA;
-    convert_rgba(o, m_pma, rgba);
+    convert_rgba(o, m_pma, rgba, paletteOverride);
+
+    // the direct back-buffer draw in Render bypasses the composite's
+    // limited-range encode, so apply it to the pixels here
+    //! @todo Move this into the overlay shader once limited-range and
+    //! full-range GUI shader variants are kept compiled in parallel and
+    //! selectable per draw; then this draw selects the limited variant.
+    if (m_isHDROverlay && CServiceBroker::GetWinSystem()->IsHdrComposite() &&
+        CServiceBroker::GetWinSystem()->UseLimitedColor())
+    {
+      for (uint32_t& px : rgba)
+      {
+        const uint32_t a = (px >> PIXEL_ASHIFT) & 0xff;
+        const uint32_t r = (px >> PIXEL_RSHIFT) & 0xff;
+        const uint32_t g = (px >> PIXEL_GSHIFT) & 0xff;
+        const uint32_t b = (px >> PIXEL_BSHIFT) & 0xff;
+        px = (a << PIXEL_ASHIFT) | (((r * 219 + a * 16 + 127) / 255) << PIXEL_RSHIFT) |
+             (((g * 219 + a * 16 + 127) / 255) << PIXEL_GSHIFT) |
+             (((b * 219 + a * 16 + 127) / 255) << PIXEL_BSHIFT);
+      }
+    }
+
     LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.width * 4, &m_u, &m_v, false, rgba.data());
   }
 
@@ -373,6 +410,7 @@ void COverlayGlyphGLES::Render(SRenderState& state)
 
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
@@ -459,7 +497,11 @@ void COverlayTextureGLES::Render(SRenderState& state)
 
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_NOBLEND);
+
+  // Converted PGS textures are already SDR and must not receive
+  // the transfer-PQ GUI boost.
+  renderSystem->EnableGUIShader(m_pgsConvertedToSdr ? ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS
+                                                    : ShaderMethodGLES::SM_TEXTURE_NOBLEND);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();

@@ -36,7 +36,33 @@ struct SQuads
   std::vector<SQuad> quad;
 };
 
-void convert_rgba(const CDVDOverlayImage& o, bool mergealpha, std::vector<uint32_t>& rgba);
+//! Decides whether a PGS overlay's palette should be converted from
+//! BT.2020 PQ to BT.709/sRGB before texture upload.
+//!
+//! isHDROverlay is set for both PQ and HLG video. The additional checks
+//! limit conversion to PQ content on platforms without proper HDR GUI
+//! compositing:
+//!  - IsHdrComposite() excludes platforms that already render HDR overlays
+//!    natively.
+//!  - IsTransferPQ() includes only PQ/Dolby Vision output, never HLG.
+bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay, float& sdrWhiteNits);
+
+//! Converts a PGS palette (CDVDOverlayImage::palette - PIXEL_A/R/G/BSHIFT-
+//! packed, see PlatformDefs.h) in place from BT.2020 ST.2084 (PQ)
+//! to BT.709/sRGB, scaled to the given SDR white point in nits. Alpha is
+//! untouched. Operates on the whole palette (<=256 entries): PGS colour
+//! information lives entirely in the palette, so converting it once here
+//! is equivalent to, and far cheaper than, converting every output pixel
+//! every frame in a shader.
+void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits);
+
+//! paletteOverride, when non-null, is used in place of o.palette - e.g.
+//! a palette already converted by ConvertPgsPaletteToSdr() above. o.pixels
+//! (the per-pixel palette indices) is always taken from o itself either way.
+void convert_rgba(const CDVDOverlayImage& o,
+                  bool mergealpha,
+                  std::vector<uint32_t>& rgba,
+                  const std::vector<uint32_t>* paletteOverride = nullptr);
 void convert_rgba(const CDVDOverlaySpu& o,
                   bool mergealpha,
                   int& min_x,
