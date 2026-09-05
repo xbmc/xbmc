@@ -117,10 +117,18 @@ void CBaseRenderBufferPool::Return(IRenderBuffer* buffer)
 {
   std::unique_lock lock(m_bufferMutex);
 
+  std::unique_ptr<IRenderBuffer> bufferPtr(buffer);
+
+  // A buffer handed back after the pool was flushed belongs to the
+  // configuration that was thrown away. GetBuffer() matches on dimensions
+  // alone, so keeping it would let a stream of a different format be given an
+  // allocation made for the old one.
+  if (!m_bConfigured)
+    return;
+
   buffer->SetLoaded(false);
   buffer->SetRendered(false);
 
-  std::unique_ptr<IRenderBuffer> bufferPtr(buffer);
   m_free.emplace_back(std::move(bufferPtr));
 }
 
