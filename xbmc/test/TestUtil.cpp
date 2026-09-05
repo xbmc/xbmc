@@ -10,6 +10,7 @@
 #include "Util.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -928,3 +929,75 @@ TEST_P(TestExternalStreamDetails, GetExternalStreamDetailsFromFilename)
 INSTANTIATE_TEST_SUITE_P(GetExternalStreamDetailsFromFilename,
                          TestExternalStreamDetails,
                          ValuesIn(ExternalStreams));
+
+class TestTitleFromPath : public Test
+{
+protected:
+  void SetUp() override
+  {
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    m_showExtensions = settings->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
+    settings->SetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS, false);
+  }
+
+  void TearDown() override
+  {
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+        CSettings::SETTING_FILELISTS_SHOWEXTENSIONS, m_showExtensions);
+  }
+
+private:
+  bool m_showExtensions{true};
+};
+
+TEST_F(TestTitleFromPath, DecodesAnEscapedNameWhileHidingTheExtension)
+{
+  EXPECT_EQ("file name", CUtil::GetTitleFromPath("davs://server/files/file%20name.mkv"));
+}
+
+TEST_F(TestTitleFromPath, LeavesAnUnescapedNameAlone)
+{
+  EXPECT_EQ("file_name", CUtil::GetTitleFromPath("davs://server/files/file_name.mkv"));
+  EXPECT_EQ("C++ Media", CUtil::GetTitleFromPath("/path/to/C++ Media.mkv"));
+  EXPECT_EQ("100% proof", CUtil::GetTitleFromPath("/path/to/100% proof.mkv"));
+}
+
+TEST_F(TestTitleFromPath, KeepsAPlusInTheName)
+{
+  EXPECT_EQ("C++ Collection", CUtil::GetTitleFromPath("smb://server/share/C++ Collection.mkv"));
+  EXPECT_EQ("C++ Collection", CUtil::GetTitleFromPath("davs://server/files/C++ Collection.mkv"));
+}
+
+TEST_F(TestTitleFromPath, DecodesAnEscapedPercent)
+{
+  EXPECT_EQ("100% proof", CUtil::GetTitleFromPath("davs://server/files/100%25%20proof.mkv"));
+
+  // a name that itself contains the characters "%20"
+  EXPECT_EQ("100%20proof", CUtil::GetTitleFromPath("davs://server/files/100%2520proof.mkv"));
+
+  // the name is taken off the path before the decode, so an escaped separator stays in the leaf
+  EXPECT_EQ("file/name", CUtil::GetTitleFromPath("davs://server/files/file%2Fname.mkv"));
+}
+
+TEST_F(TestTitleFromPath, LeavesAMalformedEscapeAlone)
+{
+  EXPECT_EQ("file%2", CUtil::GetTitleFromPath("davs://server/files/file%2.mkv"));
+  EXPECT_EQ("file%zz", CUtil::GetTitleFromPath("davs://server/files/file%zz.mkv"));
+  EXPECT_EQ("file%", CUtil::GetTitleFromPath("davs://server/files/file%.mkv"));
+  EXPECT_EQ("100% off", CUtil::GetTitleFromPath("davs://server/files/100% off.mkv"));
+}
+
+TEST_F(TestTitleFromPath, LeavesANameOnANonEscapingProtocolAlone)
+{
+  EXPECT_EQ("file name", CUtil::GetTitleFromPath("smb://server/share/file name.mkv"));
+  EXPECT_EQ("file name", CUtil::GetTitleFromPath("nfs://server/export/file name.mkv"));
+  EXPECT_EQ("file name", CUtil::GetTitleFromPath("ftp://server/pub/file name.mkv"));
+  EXPECT_EQ("100% proof", CUtil::GetTitleFromPath("smb://server/share/100% proof.mkv"));
+}
+
+TEST_F(TestTitleFromPath, DecodesAnEscapeWhateverTheProtocol)
+{
+  // SMB, NFS and FTP put the server's name into the path unescaped, so a name that itself
+  // contains an escape triplet is decoded here. Showing the extension has always done this.
+  EXPECT_EQ("100 proof", CUtil::GetTitleFromPath("smb://server/share/100%20proof.mkv"));
+}
