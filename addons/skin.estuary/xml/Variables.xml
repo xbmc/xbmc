@@ -390,7 +390,7 @@
 		<value condition="Player.Muted">dialogs/volume/mute.png</value>
 		<value condition="Integer.IsGreater(Player.Volume,66)">dialogs/volume/volume.png</value>
 		<value condition="Integer.IsGreater(Player.Volume,33)">dialogs/volume/volume2.png</value>
-		<value condition="player.passthrough">dialogs/volume/volume.png</value>
+		<value condition="player.passthrough + !System.GetBool(audiooutput.passthroughvolumecontrol)">dialogs/volume/volume.png</value>
 		<value>dialogs/volume/volume1.png</value>
 	</variable>
 	<variable name="ListSubLabelVar">
