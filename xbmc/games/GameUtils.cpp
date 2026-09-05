@@ -87,7 +87,7 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
         GameClientVector candidates;
         GameClientVector installable;
         bool bHasVfsGameClient;
-        GetGameClients(item, candidates, installable, bHasVfsGameClient);
+        GetInstalledGameClients(item, candidates, bHasVfsGameClient);
 
         // An emulator remembered for this game, or for a folder above it,
         // answers the question without asking
@@ -96,27 +96,32 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
         {
           item.GetGameInfoTag()->SetGameClient(defaultClient);
         }
-        else if (candidates.empty() && installable.empty())
-        {
-          // if: "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
-          // else: "This game isn't compatible with any available emulators."
-          int errorTextId = bHasVfsGameClient ? 35214 : 35212;
-
-          // "Failed to play game"
-          MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{errorTextId});
-        }
-        else if (candidates.size() == 1 && installable.empty())
-        {
-          // Only 1 option, avoid prompting the user
-          item.GetGameInfoTag()->SetGameClient(candidates[0]->ID());
-        }
         else
         {
-          std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(
-              item.GetPath(), candidates, installable);
+          GetInstallableGameClients(item, installable, bHasVfsGameClient);
 
-          if (!gameClient.empty())
-            item.GetGameInfoTag()->SetGameClient(gameClient);
+          if (candidates.empty() && installable.empty())
+          {
+            // if: "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
+            // else: "This game isn't compatible with any available emulators."
+            int errorTextId = bHasVfsGameClient ? 35214 : 35212;
+
+            // "Failed to play game"
+            MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{errorTextId});
+          }
+          else if (candidates.size() == 1 && installable.empty())
+          {
+            // Only 1 option, avoid prompting the user
+            item.GetGameInfoTag()->SetGameClient(candidates[0]->ID());
+          }
+          else
+          {
+            std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(
+                item.GetPath(), candidates, installable);
+
+            if (!gameClient.empty())
+              item.GetGameInfoTag()->SetGameClient(gameClient);
+          }
         }
       }
     }
@@ -267,6 +272,38 @@ bool CGameUtils::ChooseAndSetDefaultGameClient(const CFileItem& item)
   return true;
 }
 
+void CGameUtils::GetInstalledGameClients(const CFileItem& file,
+                                         GameClientVector& candidates,
+                                         bool& bHasVfsGameClient)
+{
+  using namespace ADDON;
+
+  bHasVfsGameClient = false;
+
+  // Try to resolve path to a local file, as not all game clients support VFS
+  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
+
+  VECADDONS localAddons;
+  CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
+  addonCache.GetAddons(localAddons, AddonType::GAMEDLL);
+
+  GetGameClients(localAddons, translatedUrl, candidates, bHasVfsGameClient);
+
+  // Sort by name
+  //! @todo Move to presentation code
+  std::sort(candidates.begin(), candidates.end(),
+            [](const GameClientPtr& lhs, const GameClientPtr& rhs)
+            {
+              std::string lhsName = lhs->Name();
+              std::string rhsName = rhs->Name();
+
+              StringUtils::ToLower(lhsName);
+              StringUtils::ToLower(rhsName);
+
+              return lhsName < rhsName;
+            });
+}
+
 void CGameUtils::GetGameClients(const CFileItem& file,
                                 GameClientVector& candidates,
                                 GameClientVector& installable,
@@ -276,41 +313,40 @@ void CGameUtils::GetGameClients(const CFileItem& file,
 
   bHasVfsGameClient = false;
 
+  GetInstalledGameClients(file, candidates, bHasVfsGameClient);
+  GetInstallableGameClients(file, installable, bHasVfsGameClient);
+}
+
+void CGameUtils::GetInstallableGameClients(const CFileItem& file,
+                                           GameClientVector& installable,
+                                           bool& bHasVfsGameClient)
+{
+  using namespace ADDON;
+
   // Try to resolve path to a local file, as not all game clients support VFS
   CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
 
-  // Get local candidates
-  VECADDONS localAddons;
-  CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(localAddons, AddonType::GAMEDLL);
+  VECADDONS remoteAddons;
+  if (!CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::GAMEDLL))
+    return;
 
   bool bVfs = false;
-  GetGameClients(localAddons, translatedUrl, candidates, bVfs);
+  GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
   bHasVfsGameClient |= bVfs;
-
-  // Get remote candidates
-  VECADDONS remoteAddons;
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::GAMEDLL))
-  {
-    GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
-    bHasVfsGameClient |= bVfs;
-  }
 
   // Sort by name
   //! @todo Move to presentation code
-  auto SortByName = [](const GameClientPtr& lhs, const GameClientPtr& rhs)
-  {
-    std::string lhsName = lhs->Name();
-    std::string rhsName = rhs->Name();
+  std::sort(installable.begin(), installable.end(),
+            [](const GameClientPtr& lhs, const GameClientPtr& rhs)
+            {
+              std::string lhsName = lhs->Name();
+              std::string rhsName = rhs->Name();
 
-    StringUtils::ToLower(lhsName);
-    StringUtils::ToLower(rhsName);
+              StringUtils::ToLower(lhsName);
+              StringUtils::ToLower(rhsName);
 
-    return lhsName < rhsName;
-  };
-
-  std::sort(candidates.begin(), candidates.end(), SortByName);
-  std::sort(installable.begin(), installable.end(), SortByName);
+              return lhsName < rhsName;
+            });
 }
 
 void CGameUtils::GetGameClients(const ADDON::VECADDONS& addons,

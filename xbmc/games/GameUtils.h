@@ -107,6 +107,20 @@ private:
                              GameClientVector& candidates,
                              GameClientVector& installable,
                              bool& bHasVfsGameClient);
+
+  static void GetInstalledGameClients(const CFileItem& file,
+                                      GameClientVector& candidates,
+                                      bool& bHasVfsGameClient);
+
+  /*!
+   * \brief Get the game clients that could be installed to open a file
+   *
+   * Reads the whole add-on repository, so it is only worth asking once the
+   * installed clients have failed to answer the question.
+   */
+  static void GetInstallableGameClients(const CFileItem& file,
+                                        GameClientVector& installable,
+                                        bool& bHasVfsGameClient);
   static void GetGameClients(const ADDON::VECADDONS& addons,
                              const CURL& translatedUrl,
                              GameClientVector& candidates,
