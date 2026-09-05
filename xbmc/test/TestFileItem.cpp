@@ -1066,6 +1066,33 @@ TEST(TestFileItem, MergeInfoKeepsAResolvedDynPath)
   EXPECT_EQ("/resolved/real-stream.mkv", target.GetDynPath());
 }
 
+TEST(TestFileItem, GetSubtitleAnchorPathUsesDynPathForRegularFiles)
+{
+  CFileItem item;
+  item.SetPath("/local/path/video.mkv");
+  item.SetDynPath("smb://server/share/video.mkv");
+
+  EXPECT_EQ("smb://server/share/video.mkv", item.GetSubtitleAnchorPath());
+}
+
+TEST(TestFileItem, GetSubtitleAnchorPathUsesPathForStrmFiles)
+{
+  CFileItem item;
+  item.SetPath("/local/path/video.strm");
+  item.SetDynPath("https://example.com/video.m3u8");
+
+  EXPECT_EQ("/local/path/video.strm", item.GetSubtitleAnchorPath());
+}
+
+TEST(TestFileItem, GetSubtitleAnchorPathUsesDynPathForPluginStrmRoutes)
+{
+  CFileItem item;
+  item.SetPath("plugin://plugin.video.example/play/video.strm");
+  item.SetDynPath("https://example.com/video.m3u8");
+
+  EXPECT_EQ("https://example.com/video.m3u8", item.GetSubtitleAnchorPath());
+}
+
 TEST(TestFileItem, TestLabel)
 {
   CFileItem item("My Item Label");
