@@ -2845,6 +2845,16 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="gamesachievements.encore" type="boolean" label="35303" help="35304">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="gamesachievements.challengeindicator" type="boolean" label="35364" help="35365">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
   </section>

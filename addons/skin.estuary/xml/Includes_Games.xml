@@ -1077,6 +1077,48 @@
 		</control>
 		</definition>
 	</include>
+	<!-- The corner indicators shown over a running game: the achievement being
+	     attempted, how far along a measured one is, and the live value of a
+	     leaderboard attempt.
+
+	     This has to stay a dialog: over a game with its own DRM plane the GUI
+	     layer is not composited unless one is up. -->
+	<include name="GameDialogIndicators">
+		<control type="grouplist">
+			<description>
+				An indicator that is not showing takes no room, so the rest close
+				up on their own.
+			</description>
+			<right>40</right>
+			<top>40</top>
+			<width>420</width>
+			<height>400</height>
+			<orientation>vertical</orientation>
+			<itemgap>10</itemgap>
+			<align>right</align>
+
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle)" />
+				<param name="badge" value="RetroPlayer.AchievementsChallengeBadge" />
+				<param name="title" value="RetroPlayer.AchievementsChallengeTitle" />
+			</include>
+
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsIndicatorTitle)" />
+				<param name="badge" value="RetroPlayer.AchievementsIndicatorBadge" />
+				<param name="title" value="RetroPlayer.AchievementsIndicatorTitle" />
+				<param name="detail" value="RetroPlayer.AchievementsIndicatorProgress" />
+				<param name="bar" value="RetroPlayer.AchievementsIndicatorPercent" />
+			</include>
+
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.LeaderboardTracker)" />
+				<param name="title" value="RetroPlayer.LeaderboardTracker" />
+				<param name="height" value="56" />
+			</include>
+		</control>
+	</include>
+
 	<include name="GameDialogAchievements">
 		<control type="group">
 			<animation effect="fade" time="200">VisibleChange</animation>
@@ -1108,9 +1150,46 @@
 				<scrollsuffix> - </scrollsuffix>
 			</control>
 			<control type="group">
-				<description>Content area</description>
+				<description>
+					Shown instead of the list to someone without an account: the
+					dialog opens for them so the feature is discoverable, and the
+					code is the shortest route to signing up from the sofa.
+				</description>
+				<visible>!RetroPlayer.AchievementsLoggedIn</visible>
 				<top>90</top>
 				<bottom>30</bottom>
+				<left>30</left>
+				<right>30</right>
+				<control type="label">
+					<top>40</top>
+					<height>50</height>
+					<align>center</align>
+					<font>font30</font>
+					<label>$LOCALIZE[35366]</label>
+				</control>
+				<control type="image">
+					<top>110</top>
+					<width>400</width>
+					<height>400</height>
+					<centerleft>50%</centerleft>
+					<aspectratio>keep</aspectratio>
+					<texture>special://xbmc/media/qr/retroachievements.png</texture>
+				</control>
+				<control type="label">
+					<top>540</top>
+					<height>50</height>
+					<align>center</align>
+					<font>font13</font>
+					<textcolor>FFC8C8C8</textcolor>
+					<label>$LOCALIZE[35367]</label>
+				</control>
+			</control>
+
+			<control type="group">
+				<description>Content area</description>
+				<visible>RetroPlayer.AchievementsLoggedIn</visible>
+				<top>90</top>
+				<bottom>100</bottom>
 				<left>30</left>
 				<right>30</right>
 				<control type="image">
@@ -1124,6 +1203,7 @@
 				<control type="list" id="3">
 					<description>Achievement list</description>
 					<onright>62</onright>
+					<ondown>20</ondown>
 					<pagecontrol>62</pagecontrol>
 					<scrolltime tween="sine">200</scrolltime>
 					<orientation>vertical</orientation>
@@ -1159,6 +1239,440 @@
 					<showonepage>false</showonepage>
 				</control>
 			</control>
+			<control type="button" id="20">
+				<description>
+					Leaderboards live behind the achievements they belong to rather than
+					beside them in the OSD. Hidden when signed out, where there is
+					nothing to show and nothing to submit.
+				</description>
+				<visible>RetroPlayer.AchievementsLoggedIn</visible>
+				<bottom>20</bottom>
+				<left>30</left>
+				<right>30</right>
+				<height>60</height>
+				<label>$LOCALIZE[35331]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font25_title</font>
+				<onup>3</onup>
+				<onclick>ActivateWindow(gameleaderboards)</onclick>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<texturenofocus />
+			</control>
 		</control>
 	</include>
+	<!-- The leaderboards of the game being played. Browsing only: a score can
+	     only be submitted in hardcore mode, which RetroAchievements grants an
+	     emulator once it has been approved. -->
+	<include name="GameDialogLeaderboards">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="CC000000">colors/white.png</texture>
+		</control>
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1200</width>
+			<height>810</height>
+
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1200" />
+				<param name="height" value="810" />
+				<param name="header_label" value="$LOCALIZE[35331]" />
+				<param name="header_id" value="2" />
+			</include>
+
+			<control type="label">
+				<left>20</left>
+				<top>84</top>
+				<width>1148</width>
+				<height>30</height>
+				<align>center</align>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<label>$INFO[RetroPlayer.Title]</label>
+				<visible>!String.IsEmpty(RetroPlayer.Title)</visible>
+			</control>
+
+			<control type="label">
+				<description>
+					Said in place of the list: the boards are fetched when the dialog
+					first opens, and a game may have none at all
+				</description>
+				<left>20</left>
+				<top>300</top>
+				<width>1148</width>
+				<height>60</height>
+				<align>center</align>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.Status)]</label>
+				<visible>!String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+			</control>
+
+			<control type="list" id="3">
+				<top>124</top>
+				<left>20</left>
+				<width>1148</width>
+				<visible>String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+				<!-- A whole number of 110px rows, so the last one is not sliced
+				     in half by the edge of the list -->
+				<height>550</height>
+				<orientation>vertical</orientation>
+				<pagecontrol>62</pagecontrol>
+				<scrolltime tween="sine" easing="out">200</scrolltime>
+
+				<itemlayout width="1148" height="110">
+					<control type="image">
+						<left>0</left><top>2</top><width>1148</width><height>106</height>
+						<texture colordiffuse="22FFFFFF">colors/white.png</texture>
+					</control>
+					<include content="GameLeaderboardRow" />
+				</itemlayout>
+
+				<focusedlayout width="1148" height="110">
+					<control type="image">
+						<left>0</left><top>2</top><width>1148</width><height>106</height>
+						<texture colordiffuse="button_focus">colors/white.png</texture>
+					</control>
+					<include content="GameLeaderboardRow" />
+				</focusedlayout>
+			</control>
+
+			<control type="scrollbar" id="62">
+				<left>1172</left>
+				<top>124</top>
+				<width>16</width>
+				<height>550</height>
+				<orientation>vertical</orientation>
+				<showonepage>false</showonepage>
+			</control>
+
+			<!-- Said once, at the foot, rather than on every row -->
+			<control type="label">
+				<left>20</left>
+				<top>730</top>
+				<width>1148</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<label>$LOCALIZE[35332]</label>
+			</control>
+		</control>
+	</include>
+
+	<!-- The standings of one leaderboard -->
+	<include name="GameDialogLeaderboardEntries">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="CC000000">colors/white.png</texture>
+		</control>
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1200</width>
+			<height>810</height>
+
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1200" />
+				<param name="height" value="810" />
+				<param name="header_label" value="$INFO[Window.Property(Leaderboards.Title)]" />
+				<param name="header_id" value="2" />
+			</include>
+
+			<control type="label">
+				<left>20</left>
+				<top>84</top>
+				<width>1148</width>
+				<height>30</height>
+				<align>center</align>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.Description)]</label>
+			</control>
+
+			<!-- Where the player stands, without reading down the table for a
+			     name. Kodi composes the whole sentence, including the case where
+			     they have never set a time. -->
+			<control type="label">
+				<left>20</left>
+				<top>110</top>
+				<width>1148</width>
+				<height>30</height>
+				<align>center</align>
+				<font>font12</font>
+				<textcolor>blue</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.PlayerBest)]</label>
+				<visible>!String.IsEmpty(Window.Property(Leaderboards.PlayerBest))</visible>
+			</control>
+
+			<!-- Column headings -->
+			<control type="group">
+				<top>146</top>
+				<left>20</left>
+				<visible>String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+				<control type="label">
+					<left>10</left><top>0</top><width>80</width><height>30</height>
+					<font>font12</font><textcolor>blue</textcolor>
+					<label>$LOCALIZE[35344]</label>
+				</control>
+				<control type="label">
+					<left>96</left><top>0</top><width>440</width><height>30</height>
+					<font>font12</font><textcolor>blue</textcolor>
+					<label>$LOCALIZE[14200]</label>
+				</control>
+				<control type="label">
+					<left>600</left><top>0</top><width>280</width><height>30</height>
+					<font>font12</font><textcolor>blue</textcolor>
+					<label>$LOCALIZE[552]</label>
+				</control>
+				<control type="label">
+					<right>15</right><top>0</top><width>220</width><height>30</height>
+					<align>right</align>
+					<font>font12</font><textcolor>blue</textcolor>
+					<label>$LOCALIZE[35345]</label>
+				</control>
+			</control>
+
+			<control type="label">
+				<left>20</left>
+				<top>300</top>
+				<width>1148</width>
+				<height>40</height>
+				<align>center</align>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.Status)]</label>
+				<visible>!String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+			</control>
+
+			<control type="list" id="3">
+				<top>184</top>
+				<left>20</left>
+				<width>1148</width>
+				<!-- A whole number of 58px rows, so the last one is not sliced
+				     in half by the edge of the list -->
+				<height>580</height>
+				<orientation>vertical</orientation>
+				<pagecontrol>62</pagecontrol>
+				<visible>String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+				<scrolltime tween="sine" easing="out">200</scrolltime>
+
+				<itemlayout width="1148" height="58">
+					<!-- The player's own row is tinted, so it can be found without
+					     reading down the table -->
+					<control type="image">
+						<left>0</left><top>1</top><width>1148</width><height>56</height>
+						<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+						<visible>!String.IsEmpty(ListItem.Property(IsPlayer))</visible>
+					</control>
+					<include content="GameLeaderboardEntryRow" />
+				</itemlayout>
+
+				<focusedlayout width="1148" height="58">
+					<control type="image">
+						<left>0</left><top>1</top><width>1148</width><height>56</height>
+						<texture colordiffuse="button_focus">colors/white.png</texture>
+					</control>
+					<include content="GameLeaderboardEntryRow" />
+				</focusedlayout>
+			</control>
+
+			<control type="scrollbar" id="62">
+				<left>1172</left>
+				<top>184</top>
+				<width>16</width>
+				<height>580</height>
+				<orientation>vertical</orientation>
+				<showonepage>false</showonepage>
+			</control>
+		</control>
+	</include>
+
+	<!-- One row of the leaderboards list, shared by both layouts so the focused
+	     and unfocused versions cannot drift apart -->
+	<include name="GameLeaderboardRow">
+		<control type="label">
+			<left>15</left><top>8</top><width>760</width><height>35</height>
+			<font>font25_title</font>
+			<label>$INFO[ListItem.Label]</label>
+		</control>
+		<control type="label">
+			<left>15</left><top>46</top><width>600</width><height>26</height>
+			<font>font12</font>
+			<textcolor>blue</textcolor>
+			<label>$INFO[ListItem.Property(Format)]</label>
+		</control>
+		<control type="label">
+			<left>15</left><top>74</top><width>620</width><height>26</height>
+			<font>font12</font>
+			<textcolor>FFC8C8C8</textcolor>
+			<label>$INFO[ListItem.Label2]</label>
+		</control>
+
+		<control type="label">
+			<right>15</right><top>8</top><width>340</width><height>35</height>
+			<align>right</align>
+			<font>font25_title</font>
+			<label>$INFO[ListItem.Property(TopScore)]</label>
+		</control>
+		<control type="label">
+			<right>15</right><top>46</top><width>340</width><height>26</height>
+			<align>right</align>
+			<font>font12</font>
+			<textcolor>FFC8C8C8</textcolor>
+			<label>$INFO[ListItem.Property(TopUsername)]</label>
+		</control>
+		<control type="label">
+			<right>15</right><top>74</top><width>480</width><height>26</height>
+			<align>right</align>
+			<font>font12</font>
+			<textcolor>FFC8C8C8</textcolor>
+			<label>$INFO[ListItem.Property(PlayerRank)]$INFO[ListItem.Property(TotalEntries),  ·  ,]</label>
+		</control>
+	</include>
+
+	<include name="GameLeaderboardEntryRow">
+		<include content="GameLeaderboardRank">
+			<param name="medal" value="gold" />
+			<param name="color" value="FFFFD24A" />
+		</include>
+		<include content="GameLeaderboardRank">
+			<param name="medal" value="silver" />
+			<param name="color" value="FFB9C6D2" />
+		</include>
+		<include content="GameLeaderboardRank">
+			<param name="medal" value="bronze" />
+			<param name="color" value="FFCD8B45" />
+		</include>
+		<include content="GameLeaderboardRank">
+			<param name="medal" value="" />
+			<param name="color" value="white" />
+		</include>
+		<!-- The player's RetroAchievements avatar, as the site shows it -->
+		<control type="image">
+			<left>96</left><top>10</top><width>40</width><height>40</height>
+			<aspectratio>keep</aspectratio>
+			<texture background="true" fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+		</control>
+		<control type="label">
+			<left>150</left><top>0</top><width>440</width><height>58</height>
+			<aligny>center</aligny>
+			<font>font13</font>
+			<label>$INFO[ListItem.Label]</label>
+		</control>
+		<!-- "3 months ago" is taken in at a glance where a date has to be worked
+		     out against today's, but the date itself is what settles an argument,
+		     so both are here -->
+		<control type="label">
+			<left>600</left><top>6</top><width>280</width><height>24</height>
+			<aligny>center</aligny>
+			<font>font13</font>
+			<textcolor>FFC8C8C8</textcolor>
+			<label>$INFO[ListItem.Property(DateRelative)]</label>
+		</control>
+		<control type="label">
+			<left>600</left><top>31</top><width>280</width><height>22</height>
+			<aligny>center</aligny>
+			<font>font12</font>
+			<textcolor>FFC8C8C8</textcolor>
+			<label>$INFO[ListItem.Property(Date)]</label>
+		</control>
+		<control type="label">
+			<right>15</right><top>0</top><width>220</width><height>58</height>
+			<align>right</align><aligny>center</aligny>
+			<font>font13</font>
+			<label>$INFO[ListItem.Label2]</label>
+		</control>
+	</include>
+
+	<include name="GameLeaderboardRank">
+		<param name="medal" default="" />
+		<param name="color" default="white" />
+		<definition>
+			<control type="label">
+				<left>10</left><top>0</top><width>80</width><height>58</height>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textcolor>$PARAM[color]</textcolor>
+				<label>$INFO[ListItem.Property(RankLabel)]</label>
+				<visible>String.IsEqual(ListItem.Property(Medal),$PARAM[medal])</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- One corner indicator over a running game. The three of them are the
+	     same shape - a backdrop, something to look at, something to read - so
+	     they are described once here and differ only by what they are told. -->
+	<include name="GameIndicator">
+		<param name="condition" default="" />
+		<param name="badge" default="" />
+		<param name="title" default="" />
+		<param name="detail" default="" />
+		<param name="bar" default="" />
+		<param name="height" default="72" />
+		<definition>
+			<control type="group">
+				<visible>$PARAM[condition]</visible>
+				<width>420</width>
+				<height>$PARAM[height]</height>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<control type="image">
+					<description>Backdrop, so it stays readable over any game</description>
+					<left>0</left><top>0</top>
+					<width>420</width><height>$PARAM[height]</height>
+					<texture border="10" colordiffuse="BB000000">dialogs/dialog-bg-nobo.png</texture>
+				</control>
+				<control type="image">
+					<description>Badge, where there is one to show</description>
+					<left>10</left><top>10</top>
+					<width>52</width><height>52</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[$PARAM[badge]]</texture>
+					<visible>!String.IsEmpty($PARAM[badge])</visible>
+				</control>
+				<control type="label">
+					<left>72</left><top>6</top>
+					<width>270</width><height>32</height>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>$INFO[$PARAM[title]]</label>
+					<scroll>true</scroll>
+					<scrollsuffix>   </scrollsuffix>
+				</control>
+				<control type="label">
+					<description>How far along, where that is counted</description>
+					<right>14</right><top>6</top>
+					<width>90</width><height>32</height>
+					<align>right</align><aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>$INFO[$PARAM[detail]]</label>
+					<visible>!String.IsEmpty($PARAM[detail])</visible>
+				</control>
+				<control type="progress">
+					<description>
+						Driven by the percentage Kodi sends alongside the text, rather
+						than parsing "13/180" back into numbers.
+					</description>
+					<left>72</left><top>44</top>
+					<width>336</width><height>10</height>
+					<info>$PARAM[bar]</info>
+					<visible>!String.IsEmpty($PARAM[bar])</visible>
+				</control>
+			</control>
+		</definition>
+	</include>
+
 </includes>

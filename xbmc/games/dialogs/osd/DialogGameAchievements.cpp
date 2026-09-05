@@ -121,11 +121,9 @@ void CDialogGameAchievements::OnInitWindow()
   const CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
   if (!gameSettings.GetAchievementsLoggedIn())
   {
-    // "RetroAchievements", "Log in to RetroAchievements in Settings to use this feature."
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, Localize(35264),
-                                          Localize(35285), TOAST_DISPLAY_TIME_MS, false,
-                                          TOAST_MESSAGE_TIME_MS);
-    Abort();
+    // Opened rather than refused: someone without an account has no other way
+    // to find out the feature is there. The skin shows them how to get one.
+    CGUIDialog::OnInitWindow();
     return;
   }
 

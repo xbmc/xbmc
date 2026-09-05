@@ -14,6 +14,8 @@
 #include "events/NotificationEvent.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
+#include "games/AchievementRuntime.h"
+#include "games/GameServices.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
@@ -41,6 +43,8 @@ const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 const std::string SETTING_GAMES_ACHIEVEMENTS_USERNAME = "gamesachievements.username";
 const std::string SETTING_GAMES_ACHIEVEMENTS_PASSWORD = "gamesachievements.password";
 const std::string SETTING_GAMES_ACHIEVEMENTS_TOKEN = "gamesachievements.token";
+const std::string SETTING_GAMES_ACHIEVEMENTS_ENCORE = "gamesachievements.encore";
+const std::string SETTING_GAMES_ACHIEVEMENTS_INDICATOR = "gamesachievements.challengeindicator";
 const std::string SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN = "gamesachievements.loggedin";
 
 constexpr auto LOGIN_TO_RETRO_ACHIEVEMENTS_URL =
@@ -62,10 +66,11 @@ CGameSettings::CGameSettings()
 {
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  m_settings->RegisterCallback(this, {SETTING_GAMES_ENABLEREWIND, SETTING_GAMES_REWINDTIME,
-                                      SETTING_GAMES_ACHIEVEMENTS_USERNAME,
-                                      SETTING_GAMES_ACHIEVEMENTS_PASSWORD,
-                                      SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN});
+  m_settings->RegisterCallback(
+      this,
+      {SETTING_GAMES_ENABLEREWIND, SETTING_GAMES_REWINDTIME, SETTING_GAMES_ACHIEVEMENTS_USERNAME,
+       SETTING_GAMES_ACHIEVEMENTS_PASSWORD, SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN,
+       SETTING_GAMES_ACHIEVEMENTS_ENCORE, SETTING_GAMES_ACHIEVEMENTS_INDICATOR});
 
   // On startup reset logged-in flag if token is missing
   const std::string token = m_settings->GetString(SETTING_GAMES_ACHIEVEMENTS_TOKEN);
@@ -142,10 +147,27 @@ void CGameSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& sett
 
   const std::string& settingId = setting->GetId();
 
-  if (settingId == SETTING_GAMES_ENABLEREWIND || settingId == SETTING_GAMES_REWINDTIME)
+  // Signing in or out changes who the kept standings describe, and the runtime
+  // holds them per game rather than per account. Settings outlive the services
+  // that read them, so the runtime is only reached while it is there.
+  if (CServiceBroker::IsServiceManagerUp() && (settingId == SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN ||
+                                               settingId == SETTING_GAMES_ACHIEVEMENTS_USERNAME))
+  {
+    CServiceBroker::GetGameServices().AchievementRuntime().ForgetPlayerLeaderboardData();
+  }
+
+  if (settingId == SETTING_GAMES_ENABLEREWIND || settingId == SETTING_GAMES_REWINDTIME ||
+      settingId == SETTING_GAMES_ACHIEVEMENTS_ENCORE)
   {
     SetChanged();
     NotifyObservers(ObservableMessageSettingsChanged);
+  }
+  else if (settingId == SETTING_GAMES_ACHIEVEMENTS_INDICATOR)
+  {
+    // Turning it on has to bring back an attempt that is already running, and
+    // no event is coming to say so
+    if (CServiceBroker::IsServiceManagerUp())
+      CServiceBroker::GetGameServices().AchievementRuntime().NotifyIndicatorsChanged();
   }
   else if (settingId == SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN &&
            std::dynamic_pointer_cast<const CSettingBool>(setting)->GetValue())
@@ -281,6 +303,18 @@ bool CGameSettings::IsAccountVerified(const std::string& username, const std::st
 
   CLog::Log(LOGERROR, "CGameSettings::IsAccountVerified -- verification request failed");
   return false;
+}
+
+bool CGameSettings::GetAchievementsEncore() const
+{
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      SETTING_GAMES_ACHIEVEMENTS_ENCORE);
+}
+
+bool CGameSettings::GetChallengeIndicator() const
+{
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      SETTING_GAMES_ACHIEVEMENTS_INDICATOR);
 }
 
 bool CGameSettings::GetAchievementsLoggedIn() const

@@ -224,13 +224,6 @@ public:
    */
   bool DeserializeAchievements(const uint8_t* data, size_t size);
 
-  /*!
-   * \brief Give the client the RetroAchievements account to sign in with
-   *
-   * The account is held by Kodi, which owns the settings it is entered in.
-   */
-  bool SetRetroAchievementsCredentials(const std::string& username, const std::string& token);
-
   // Implementation of IHwFramebufferCallback
   void HardwareContextReset() override;
 
@@ -293,6 +286,31 @@ private:
                                             unsigned int count);
   static void cb_rc_on_server_error(KODI_HANDLE kodiInstance, const char* message, const char* api);
   static void cb_rc_on_connection_changed(KODI_HANDLE kodiInstance, bool connected);
+  static void cb_rc_on_challenge_indicator(KODI_HANDLE kodiInstance,
+                                           const game_rc_achievement_challenge* data,
+                                           bool show);
+  static void cb_rc_on_achievement_progress_show(
+      KODI_HANDLE kodiInstance, const struct game_rc_achievement_progress_indicator* data);
+  static void cb_rc_on_achievement_progress_update(
+      KODI_HANDLE kodiInstance, const struct game_rc_achievement_progress_indicator* data);
+  static void cb_rc_on_achievement_progress_hide(
+      KODI_HANDLE kodiInstance, const struct game_rc_achievement_progress_indicator* data);
+  static void cb_rc_on_leaderboard_started(KODI_HANDLE kodiInstance,
+                                           const struct game_rc_leaderboard* data);
+  static void cb_rc_on_leaderboard_failed(KODI_HANDLE kodiInstance,
+                                          const struct game_rc_leaderboard* data);
+  static void cb_rc_on_leaderboard_submitted(KODI_HANDLE kodiInstance,
+                                             const struct game_rc_leaderboard* data);
+  static void cb_rc_on_leaderboard_tracker_show(KODI_HANDLE kodiInstance,
+                                                const struct game_rc_leaderboard_tracker* data);
+  static void cb_rc_on_leaderboard_tracker_update(KODI_HANDLE kodiInstance,
+                                                  const struct game_rc_leaderboard_tracker* data);
+  static void cb_rc_on_leaderboard_tracker_hide(KODI_HANDLE kodiInstance,
+                                                const struct game_rc_leaderboard_tracker* data);
+  static void cb_rc_on_leaderboard_scoreboard(KODI_HANDLE kodiInstance,
+                                              const struct game_rc_leaderboard_scoreboard* data);
+  static void cb_rc_on_reset(KODI_HANDLE kodiInstance);
+  static void cb_rc_on_subset_completed(KODI_HANDLE kodiInstance, const char* title);
   //@}
 
   /*!
