@@ -191,6 +191,19 @@ bool CGameClient::Initialize(void)
   m_ifc.game->toKodi->RCOnAchievementProgress = cb_rc_on_achievement_progress;
   m_ifc.game->toKodi->RCOnServerError = cb_rc_on_server_error;
   m_ifc.game->toKodi->RCOnConnectionChanged = cb_rc_on_connection_changed;
+  m_ifc.game->toKodi->RCOnChallengeIndicator = cb_rc_on_challenge_indicator;
+  m_ifc.game->toKodi->RCOnAchievementProgressShow = cb_rc_on_achievement_progress_show;
+  m_ifc.game->toKodi->RCOnAchievementProgressUpdate = cb_rc_on_achievement_progress_update;
+  m_ifc.game->toKodi->RCOnAchievementProgressHide = cb_rc_on_achievement_progress_hide;
+  m_ifc.game->toKodi->RCOnLeaderboardStarted = cb_rc_on_leaderboard_started;
+  m_ifc.game->toKodi->RCOnLeaderboardFailed = cb_rc_on_leaderboard_failed;
+  m_ifc.game->toKodi->RCOnLeaderboardSubmitted = cb_rc_on_leaderboard_submitted;
+  m_ifc.game->toKodi->RCOnLeaderboardTrackerShow = cb_rc_on_leaderboard_tracker_show;
+  m_ifc.game->toKodi->RCOnLeaderboardTrackerUpdate = cb_rc_on_leaderboard_tracker_update;
+  m_ifc.game->toKodi->RCOnLeaderboardTrackerHide = cb_rc_on_leaderboard_tracker_hide;
+  m_ifc.game->toKodi->RCOnLeaderboardScoreboard = cb_rc_on_leaderboard_scoreboard;
+  m_ifc.game->toKodi->RCOnReset = cb_rc_on_reset;
+  m_ifc.game->toKodi->RCOnSubsetCompleted = cb_rc_on_subset_completed;
 
   memset(m_ifc.game->toAddon, 0, sizeof(KodiToAddonFuncTable_Game));
 
@@ -706,25 +719,6 @@ bool CGameClient::SerializeAchievementState(std::vector<uint8_t>& data)
   return false;
 }
 
-bool CGameClient::SetRetroAchievementsCredentials(const std::string& username,
-                                                  const std::string& token)
-{
-  std::unique_lock lock(m_critSection);
-
-  try
-  {
-    return LogError(m_ifc.game->toAddon->SetRetroAchievementsCredentials(
-                        m_ifc.game, username.c_str(), token.c_str()),
-                    "SetRetroAchievementsCredentials()");
-  }
-  catch (...)
-  {
-    LogException("SetRetroAchievementsCredentials()");
-  }
-
-  return false;
-}
-
 bool CGameClient::DeserializeAchievements(const uint8_t* data, size_t size)
 {
   // An empty payload is forwarded, not refused: it tells the client the
@@ -1014,6 +1008,137 @@ void CGameClient::cb_rc_on_connection_changed(KODI_HANDLE kodiInstance, bool con
     return;
 
   gameClient->Cheevos().OnConnectionChanged(connected);
+}
+
+void CGameClient::cb_rc_on_challenge_indicator(KODI_HANDLE kodiInstance,
+                                               const game_rc_achievement_challenge* data,
+                                               bool show)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnChallengeIndicator(*data, show);
+}
+
+void CGameClient::cb_rc_on_achievement_progress_show(
+    KODI_HANDLE kodiInstance, const game_rc_achievement_progress_indicator* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnAchievementProgressIndicator(*data, true);
+}
+
+void CGameClient::cb_rc_on_achievement_progress_update(
+    KODI_HANDLE kodiInstance, const game_rc_achievement_progress_indicator* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  // An update to an indicator that was never shown is still one to show
+  gameClient->Cheevos().OnAchievementProgressIndicator(*data, true);
+}
+
+void CGameClient::cb_rc_on_achievement_progress_hide(
+    KODI_HANDLE kodiInstance, const game_rc_achievement_progress_indicator* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnAchievementProgressIndicator(*data, false);
+}
+
+void CGameClient::cb_rc_on_leaderboard_started(KODI_HANDLE kodiInstance,
+                                               const game_rc_leaderboard* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnLeaderboardStarted(*data);
+}
+
+void CGameClient::cb_rc_on_leaderboard_failed(KODI_HANDLE kodiInstance,
+                                              const game_rc_leaderboard* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnLeaderboardFailed(*data);
+}
+
+void CGameClient::cb_rc_on_leaderboard_submitted(KODI_HANDLE kodiInstance,
+                                                 const game_rc_leaderboard* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnLeaderboardSubmitted(*data);
+}
+
+void CGameClient::cb_rc_on_leaderboard_tracker_show(KODI_HANDLE kodiInstance,
+                                                    const game_rc_leaderboard_tracker* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnLeaderboardTracker(*data, true);
+}
+
+void CGameClient::cb_rc_on_leaderboard_tracker_update(KODI_HANDLE kodiInstance,
+                                                      const game_rc_leaderboard_tracker* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  // An update to a tracker that was never shown is still a tracker to show
+  gameClient->Cheevos().OnLeaderboardTracker(*data, true);
+}
+
+void CGameClient::cb_rc_on_leaderboard_tracker_hide(KODI_HANDLE kodiInstance,
+                                                    const game_rc_leaderboard_tracker* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnLeaderboardTracker(*data, false);
+}
+
+void CGameClient::cb_rc_on_leaderboard_scoreboard(KODI_HANDLE kodiInstance,
+                                                  const game_rc_leaderboard_scoreboard* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnLeaderboardScoreboard(*data);
+}
+
+void CGameClient::cb_rc_on_reset(KODI_HANDLE kodiInstance)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr)
+    return;
+
+  gameClient->Cheevos().OnReset();
+}
+
+void CGameClient::cb_rc_on_subset_completed(KODI_HANDLE kodiInstance, const char* title)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr)
+    return;
+
+  gameClient->Cheevos().OnSubsetCompleted(title != nullptr ? title : "");
 }
 
 std::pair<std::string, std::string> CGameClient::ParseLibretroName(const std::string& addonName)

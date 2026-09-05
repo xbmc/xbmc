@@ -41,6 +41,20 @@ public:
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 
+  /*!
+   * \brief Whether achievements already earned can be triggered again
+   */
+  bool GetAchievementsEncore() const;
+
+  /*!
+   * \brief Whether to show the achievement being attempted over the game
+   *
+   * Some players want to know an attempt is live; others would rather nothing
+   * covered the picture. It is on by default, because an indicator nobody asked
+   * for is easier to turn off than one nobody knew existed.
+   */
+  bool GetChallengeIndicator() const;
+
   bool GetAchievementsLoggedIn() const;
 
   /*!

@@ -19539,7 +19539,222 @@ msgctxt "#35299"
 msgid "Still looking this game up on RetroAchievements..."
 msgstr ""
 
-#empty strings from id 35300 to 35504
+#. Label of the setting that enables RetroAchievements encore mode
+#: system/settings/settings.xml
+msgctxt "#35303"
+msgid "Encore mode"
+msgstr ""
+
+#. Help text for the encore mode setting
+#: system/settings/settings.xml
+msgctxt "#35304"
+msgid "Allow achievements you have already earned to be triggered again when replaying a game."
+msgstr ""
+
+#. Notification shown when all achievements of a subset are earned, {0:s} is the subset
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+msgctxt "#35307"
+msgid "Subset completed"
+msgstr ""
+
+#empty strings from id 35313 to 35330
+
+#. Label of the game OSD button that opens the leaderboards
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35331"
+msgid "Leaderboards"
+msgstr ""
+
+#. Shown in the leaderboards dialog: scores cannot be submitted yet
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35332"
+msgid "Leaderboards are read-only until this emulator is approved for hardcore mode"
+msgstr ""
+
+#. Shown when the player is not signed in
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35333"
+msgid "Sign in to RetroAchievements to see leaderboards"
+msgstr ""
+
+#. Shown when the game defines none
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35334"
+msgid "This game has no leaderboards"
+msgstr ""
+
+#. How a time-based leaderboard ranks, lowest first
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35335"
+msgid "Fastest time"
+msgstr ""
+
+#. How a time-based leaderboard ranks, highest first
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35336"
+msgid "Longest time"
+msgstr ""
+
+#. How a scored leaderboard ranks, lowest first
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35337"
+msgid "Lowest score"
+msgstr ""
+
+#. How a scored leaderboard ranks, highest first
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35338"
+msgid "Highest score"
+msgstr ""
+
+#. How many players have submitted to a leaderboard, {0:d} is the number of entries
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35339"
+msgid "{0:d} entries"
+msgstr ""
+
+#. Where the player stands on a leaderboard, {0:d} is their rank
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35340"
+msgid "Your rank: {0:d}"
+msgstr ""
+
+#. Shown when the player has never submitted to a leaderboard
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35341"
+msgid "Not ranked"
+msgstr ""
+
+#. Shown while a leaderboard's entries are being fetched
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35342"
+msgid "Loading standings..."
+msgstr ""
+
+#. Shown when the request for a leaderboard's entries failed
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35343"
+msgid "The standings could not be loaded"
+msgstr ""
+
+#. Column heading for a player's position on a leaderboard
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35344"
+msgid "Rank"
+msgstr ""
+
+#. Column heading for a leaderboard value
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35345"
+msgid "Score"
+msgstr ""
+
+#. A leaderboard entry submitted one day ago
+#: xbmc/games/dialogs/osd/LeaderboardUtils.cpp
+msgctxt "#35346"
+msgid "Yesterday"
+msgstr ""
+
+#. How long ago a leaderboard entry was submitted, {0:d} is the number of days
+#: xbmc/games/dialogs/osd/LeaderboardUtils.cpp
+msgctxt "#35347"
+msgid "{0:d} days ago"
+msgstr ""
+
+#. How long ago a leaderboard entry was submitted, {0:d} is the number of months
+#: xbmc/games/dialogs/osd/LeaderboardUtils.cpp
+msgctxt "#35348"
+msgid "{0:d} months ago"
+msgstr ""
+
+#. How long ago a leaderboard entry was submitted, {0:d} is the number of years
+#: xbmc/games/dialogs/osd/LeaderboardUtils.cpp
+msgctxt "#35349"
+msgid "{0:d} years ago"
+msgstr ""
+
+#. Heading for the player's own standing on a leaderboard
+#: xbmc/games/dialogs/osd/LeaderboardUtils.cpp
+msgctxt "#35350"
+msgid "Your best"
+msgstr ""
+
+#. Shown when the player has never submitted
+#: xbmc/games/dialogs/osd/LeaderboardUtils.cpp
+msgctxt "#35351"
+msgid "You have not submitted an entry to this leaderboard yet"
+msgstr ""
+
+#. A leaderboard entry submitted last month
+msgctxt "#35352"
+msgid "Last month"
+msgstr ""
+
+#. A leaderboard entry submitted last year
+msgctxt "#35353"
+msgid "Last year"
+msgstr ""
+
+#. Notification heading when a leaderboard attempt begins
+msgctxt "#35354"
+msgid "Leaderboard attempt started"
+msgstr ""
+
+#. Notification heading when a leaderboard attempt is abandoned
+msgctxt "#35355"
+msgid "Leaderboard attempt failed"
+msgstr ""
+
+#. Notification heading when a leaderboard score is sent to the server
+msgctxt "#35356"
+msgid "Leaderboard attempt submitted"
+msgstr ""
+
+#. Where a submitted leaderboard score placed, {0:d} is the rank and {1:d} the number of entries
+msgctxt "#35357"
+msgid "Your rank: {0:d} of {1:d}"
+msgstr ""
+
+#. Shown when a submitted score did not beat the player's existing best, {0:s} is that best
+msgctxt "#35358"
+msgid "Your best is still {0:s}"
+msgstr ""
+
+#. Setting to show the achievement being attempted over the game
+msgctxt "#35364"
+msgid "Show challenge indicator on screen"
+msgstr ""
+
+#. Help text for the challenge indicator setting
+msgctxt "#35365"
+msgid "Show the achievement you are inside an attempt at in the corner of the screen while you play."
+msgstr ""
+
+#. Shown in the achievements dialog to someone without a RetroAchievements account
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35366"
+msgid "Scan to create a free RetroAchievements account"
+msgstr ""
+
+#. Says what an account is for, under the sign-up QR code
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35367"
+msgid "Earn achievements, track your progress and compare with other players."
+msgstr ""
+
+#. Shown in place of a leaderboard's standings when nobody has entered it
+#: xbmc/games/dialogs/osd/DialogGameLeaderboardEntries.cpp
+msgctxt "#35368"
+msgid "Nobody has submitted an entry to this leaderboard yet"
+msgstr ""
+
+#. Shown when the list of a game's leaderboards could not be fetched
+#: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
+msgctxt "#35369"
+msgid "The leaderboards could not be loaded"
+msgstr ""
+
+#empty strings from id 35370 to 35504
 
 #. connection state "host unreachable"
 #: xbmc/pvr/addons/PVRClients.cpp
