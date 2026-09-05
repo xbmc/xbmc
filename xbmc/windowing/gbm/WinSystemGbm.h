@@ -18,6 +18,7 @@
 
 #include "platform/linux/input/LibInputHandler.h"
 
+#include <deque>
 #include <utility>
 
 #include <gbm.h>
@@ -67,6 +68,7 @@ public:
   KODI::UTILS::Colorimetry GetColorimetry() const override { return m_colorimetry; }
   KODI::UTILS::Eotf GetEotf() const override { return m_eotf; }
   bool SetHDR(const VideoPicture* videoPicture) override;
+  bool RefreshHDRLightMetadata(const VideoPicture* videoPicture) override;
   bool IsHDRDisplay() override;
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
 
@@ -99,7 +101,9 @@ protected:
   std::unique_ptr<CLibInputHandler> m_libinput;
 
 private:
-  CDRMPropertyBlob m_hdrBlob;
+  CDRMPropertyBlob& PushHDRBlob(int fd, const void* data, std::size_t size);
+
+  std::deque<CDRMPropertyBlob> m_hdrBlobs;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
   KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
 
