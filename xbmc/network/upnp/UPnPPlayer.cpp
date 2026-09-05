@@ -198,7 +198,7 @@ static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime<>& timeout)
   if (event.Wait(0ms))
     return NPT_SUCCESS;
 
-  if (!CGUIDialogBusy::WaitOnEvent(event))
+  if (!CGUIDialogBusy::WaitOnEvent(event, 100, true, timeout.GetTimeLeft()))
     return NPT_FAILURE;
 
   return NPT_SUCCESS;
@@ -295,7 +295,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
     // Stopping is acknowledged before the renderer has stopped, and until it has it keeps
     // reporting the file being replaced as playing. Waiting for the transport to reach STOPPED
     // is what makes the states seen from here on belong to the file about to be opened. Polled
-    // directly rather than through WaitOnEvent, which has no bound and shows a busy dialog.
+    // directly rather than through WaitOnEvent, which shows a busy dialog.
     XbmcThreads::EndTime<> stopping(3s);
     while (!stopping.IsTimePast())
     {
@@ -336,7 +336,15 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
     NPT_CHECK_LABEL_SEVERE(
         m_control->GetTransportInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
         failed_waitplaying);
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_waitplaying);
+    if (NPT_FAILED(WaitOnEvent(m_delegate->m_traevnt, timeout)))
+    {
+      // Reaching the deadline ends this loop, it does not fail the open - that is what the loop
+      // condition below did before the wait honoured a deadline of its own. A wait that ends
+      // while the deadline is still live is the user cancelling.
+      if (timeout.IsTimePast())
+        break;
+      goto failed_waitplaying;
+    }
 
     const NPT_String transportStatus = m_delegate->GetTransportStatus();
     const NPT_String transportState = m_delegate->GetTransportState();
