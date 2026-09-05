@@ -1891,6 +1891,7 @@
         "fanart",
         "thumbnail",
         "file",
+        "fileid",
         "sorttitle",
         "resume",
         "setid",
@@ -2005,6 +2006,7 @@
         "fanart",
         "thumbnail",
         "file",
+        "fileid",
         "resume",
         "tvshowid",
         "dateadded",
@@ -2043,6 +2045,7 @@
         "fanart",
         "thumbnail",
         "file",
+        "fileid",
         "resume",
         "dateadded",
         "tag",
@@ -2194,6 +2197,10 @@
     "properties": {
       "file": {
         "type": "string"
+      },
+      "fileid": {
+        "type": "integer",
+        "description": "Database ID of the video file, or -1 when unavailable"
       },
       "plot": {
         "type": "string"
@@ -3930,6 +3937,7 @@
         "showtitle",
         "thumbnail",
         "file",
+        "fileid",
         "resume",
         "artistid",
         "albumid",
@@ -4072,6 +4080,7 @@
         "showtitle",
         "thumbnail",
         "file",
+        "fileid",
         "resume",
         "artistid",
         "albumid",

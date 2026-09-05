@@ -926,6 +926,22 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getFileId() }
+      /// Get database ID of the selected video file.
+      ///
+      /// @return [integer] database file ID, or -1 when unavailable
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getFileId();
+#else
+      int getFileId();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
       /// @brief \python_func{ getDirector() }
       /// Get [film director](https://en.wikipedia.org/wiki/Film_director)
       /// who has made the film (if present).
