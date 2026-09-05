@@ -14,6 +14,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/disc/GameClientDiscs.h"
 #include "resources/LocalizeStrings.h"
@@ -27,6 +28,7 @@ void CDiscManagerGame::Initialize(GameClientPtr gameClient)
 {
   m_gameClient = std::move(gameClient);
   m_initialDiscModel.Clear();
+  m_discSelectionRequested = false;
 
   if (m_gameClient)
   {
@@ -69,12 +71,24 @@ void CDiscManagerGame::Deinitialize()
     const std::vector<GameClientDiscEntry>& currentDiscs = currentModel.GetDiscs();
     bool discListChanged = (initialDiscs != currentDiscs);
 
-    if ((selectedDiscChanged || discListChanged) && m_gameClient->Discs().IsEjected())
-      m_gameClient->Discs().SetEjected(false);
+    if ((m_discSelectionRequested || selectedDiscChanged || discListChanged) &&
+        m_gameClient->Discs().IsEjected() && !m_gameClient->Discs().SetEjected(false))
+    {
+      auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+      CLog::Log(LOGERROR, "Failed to insert selected disc when closing Disc Manager");
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strings.Get(257),
+                                            strings.Get(35279));
+    }
   }
 
   m_gameClient.reset();
   m_initialDiscModel.Clear();
+  m_discSelectionRequested = false;
+}
+
+void CDiscManagerGame::NotifyDiscSelection()
+{
+  m_discSelectionRequested = true;
 }
 
 bool CDiscManagerGame::IsEjected() const

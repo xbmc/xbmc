@@ -32,6 +32,7 @@ public:
   // Lifecycle functions
   void Initialize(GameClientPtr gameClient);
   void Deinitialize();
+  void NotifyDiscSelection();
 
   // Game interface
   bool IsEjected() const;
@@ -46,6 +47,7 @@ private:
   // Game parameters
   GameClientPtr m_gameClient;
   CGameClientDiscModel m_initialDiscModel;
+  bool m_discSelectionRequested{false};
 };
 } // namespace GAME
 } // namespace KODI

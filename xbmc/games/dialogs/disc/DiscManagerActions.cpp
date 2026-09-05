@@ -82,7 +82,10 @@ void CDiscManagerActions::OnSelectDisc()
 
                                      // Returning from a successful selection of a disc should land on Resume
                                      if (success)
+                                     {
+                                       m_discManager.NotifyDiscSelection();
                                        m_discManager.FocusMainMenuItem(MENU_INDEX_RESUME_GAME);
+                                     }
                                      else
                                        m_discManager.FocusMainMenuItem(MENU_INDEX_SELECT_DISC);
                                    });
