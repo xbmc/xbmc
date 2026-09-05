@@ -9,6 +9,7 @@
 #include "GUIFixedListContainer.h"
 
 #include "GUIListItemLayout.h"
+#include "GUIMessage.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 
@@ -48,13 +49,13 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
   {
   case ACTION_PAGE_UP:
     {
-      Scroll(-GetPageSize());
+      SelectItem(std::max(GetSelectedItem() - GetPageSize(), 0));
       return true;
     }
     break;
   case ACTION_PAGE_DOWN:
     {
-      Scroll(GetPageSize());
+      SelectItem(std::min(GetSelectedItem() + GetPageSize(), static_cast<int>(m_items.size()) - 1));
       return true;
     }
     break;
@@ -87,6 +88,24 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
     break;
   }
   return CGUIBaseContainer::OnAction(action);
+}
+
+bool CGUIFixedListContainer::OnMessage(CGUIMessage& message)
+{
+  if (message.GetControlId() == GetID() && message.GetMessage() == GUI_MSG_PAGE_CHANGE &&
+      message.GetSenderId() == m_pageControl && IsVisible())
+  {
+    const int maxOffset = std::max(static_cast<int>(GetRows()) - GetPageSize(), 0);
+    const int pageOffset = std::min(std::max(message.GetParam1(), 0), maxOffset);
+    const int currentPageOffset = std::min(std::max(GetOffset(), 0), maxOffset);
+    const int targetOffset = pageOffset + GetOffset() - currentPageOffset;
+    if (pageOffset != currentPageOffset)
+      StartPageChangeTimer();
+    SelectItem(std::min(targetOffset + GetCursor(), static_cast<int>(m_items.size()) - 1));
+    return true;
+  }
+
+  return CGUIBaseContainer::OnMessage(message);
 }
 
 bool CGUIFixedListContainer::MoveUp(bool wrapAround)
@@ -283,6 +302,18 @@ void CGUIFixedListContainer::SelectItem(int item)
     SetCursor(cursor);
     ScrollToOffset(item - GetCursor());
     MarkDirtyRegion();
+  }
+}
+
+void CGUIFixedListContainer::UpdatePageControl(int offset)
+{
+  const int maxOffset = std::max(static_cast<int>(GetRows()) - GetPageSize(), 0);
+  const int pageOffset = std::min(std::max(offset, 0), maxOffset);
+  if (m_pageControl && m_lastPageControlOffset != pageOffset)
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, pageOffset);
+    SendWindowMessage(msg);
+    m_lastPageControlOffset = pageOffset;
   }
 }
 

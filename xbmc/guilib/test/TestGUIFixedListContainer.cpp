@@ -9,6 +9,8 @@
 #include "guilib/GUIFixedListContainer.h"
 #include "guilib/GUIListItem.h"
 #include "guilib/GUIListItemLayout.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIMessageIDs.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 
@@ -64,11 +66,22 @@ public:
   }
 
   int GetPageSizeForTest() const { return GetPageSize(); }
+  int GetOffsetForTest() const { return GetOffset(); }
+  int GetCursorForTest() const { return GetCursor(); }
 
   void PrepareForAction()
   {
     m_wasReset = true;
     CalculatePageSize();
+  }
+
+  void SelectItemForTest(int item) { SelectItem(item); }
+  void SetPageControlForTest(int pageControl) { m_pageControl = pageControl; }
+
+  bool SendPageChangeForTest(int offset)
+  {
+    CGUIMessage message(GUI_MSG_PAGE_CHANGE, m_pageControl, GetID(), offset);
+    return OnMessage(message);
   }
 
 private:
@@ -106,4 +119,36 @@ TEST(TestGUIFixedListContainer, PageActionsSkipPartiallyVisibleSlots)
 
   EXPECT_TRUE(container.OnAction(CAction(ACTION_PAGE_DOWN)));
   EXPECT_EQ(container.GetSelectedItem(), 5);
+}
+
+TEST(TestGUIFixedListContainer, PageControlPreservesStartBoundaryOffset)
+{
+  TestGUIFixedListContainer container(0, 1000, 0, 1000, 100, 100, 5);
+  container.AddItems(20);
+  container.PrepareForAction();
+  container.SetPageControlForTest(10);
+  container.SelectItemForTest(0);
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 10);
+  EXPECT_EQ(container.GetCursorForTest(), 5);
+  EXPECT_EQ(container.GetOffsetForTest(), -5);
+
+  EXPECT_TRUE(container.SendPageChangeForTest(10));
+  EXPECT_EQ(container.GetSelectedItem(), 10);
+}
+
+TEST(TestGUIFixedListContainer, PageControlPreservesEndBoundaryOffset)
+{
+  TestGUIFixedListContainer container(0, 1000, 0, 1000, 100, 100, 5);
+  container.AddItems(20);
+  container.PrepareForAction();
+  container.SetPageControlForTest(10);
+  container.SelectItemForTest(19);
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 10);
+  EXPECT_EQ(container.GetCursorForTest(), 5);
+  EXPECT_EQ(container.GetOffsetForTest(), 14);
+
+  EXPECT_TRUE(container.SendPageChangeForTest(0));
+  EXPECT_EQ(container.GetSelectedItem(), 9);
 }
