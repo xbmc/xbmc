@@ -133,6 +133,60 @@ TEST_F(TestGameClientDiscMutations, ReusedRemovedSlotKeepsIdentityWithoutCoreMet
   ASSERT_EQ(model.Size(), 2U);
   EXPECT_FALSE(model.IsRemovedSlotByIndex(1));
   EXPECT_EQ(model.GetPathByIndex(1), "/roms/disc3.chd");
+  EXPECT_EQ(model.GetSelectedDiscIndex(), 0U);
+  EXPECT_EQ(m_core.slots, (std::vector<std::string>{"/roms/disc1.chd", "/roms/disc3.chd"}));
+}
+
+TEST_F(TestGameClientDiscMutations, FailedSlotReuseKeepsRemovedSlot)
+{
+  ASSERT_TRUE(m_client->Discs().RemoveDiscByIndex(1));
+  m_client->GetInstanceInterface()->toAddon->ReplaceImageIndex =
+      [](const AddonInstance_Game*, unsigned int, const char*) { return GAME_ERROR_FAILED; };
+
+  EXPECT_FALSE(m_client->Discs().AddDisc("/roms/disc3.chd"));
+
+  const CGameClientDiscModel model = m_client->Discs().GetDiscs();
+  EXPECT_EQ(model.Size(), 2U);
+  EXPECT_TRUE(model.IsRemovedSlotByIndex(1));
+  EXPECT_TRUE(model.GetPathByIndex(1).empty());
+  EXPECT_EQ(model.GetSelectedDiscIndex(), 0U);
+  EXPECT_EQ(m_core.slots, (std::vector<std::string>{"/roms/disc1.chd", ""}));
+}
+
+TEST_F(TestGameClientDiscMutations, ReusedRemovedSlotPreservesNoDiscSelection)
+{
+  ASSERT_TRUE(m_client->Discs().InsertDisc(""));
+  ASSERT_TRUE(m_client->Discs().RemoveDiscByIndex(1));
+  ASSERT_TRUE(m_client->Discs().AddDisc("/roms/disc3.chd"));
+
+  const CGameClientDiscModel model = m_client->Discs().GetDiscs();
+  EXPECT_EQ(model.Size(), 2U);
+  EXPECT_TRUE(model.IsSelectedNoDisc());
+  EXPECT_EQ(model.GetPathByIndex(1), "/roms/disc3.chd");
+  EXPECT_EQ(m_core.selected, 2U);
+}
+
+TEST_F(TestGameClientDiscMutations, CompactingRemovalKeepsIdentityWithoutCoreMetadata)
+{
+  m_client->GetInstanceInterface()->toAddon->RemoveImageIndex =
+      [](const AddonInstance_Game* game, unsigned int index)
+  {
+    auto& core = Core(game);
+    if (index >= core.slots.size())
+      return GAME_ERROR_FAILED;
+    core.slots.erase(core.slots.begin() + index);
+    if (core.selected > index)
+      --core.selected;
+    return GAME_ERROR_NO_ERROR;
+  };
+  ASSERT_TRUE(m_client->Discs().InsertDiscByIndex(1));
+
+  ASSERT_TRUE(m_client->Discs().RemoveDiscByIndex(0));
+
+  const CGameClientDiscModel model = m_client->Discs().GetDiscs();
+  ASSERT_EQ(model.Size(), 1U);
+  EXPECT_EQ(model.GetPathByIndex(0), "/roms/disc2.chd");
+  EXPECT_EQ(model.GetSelectedDiscIndex(), 0U);
 }
 
 TEST_F(TestGameClientDiscMutations,

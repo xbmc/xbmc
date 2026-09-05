@@ -64,6 +64,18 @@ void CGameClientDiscModel::AddDisc(const std::string& path, const std::string& c
   }
 }
 
+bool CGameClientDiscModel::SetDiscByIndex(size_t index,
+                                          const std::string& path,
+                                          const std::string& cachedLabel)
+{
+  if (index >= m_discs.size() || path.empty())
+    return false;
+
+  m_discs[index] = {GameClientDiscEntry::DiscSlotType::Disc, path, DeriveBasename(path),
+                    cachedLabel};
+  return true;
+}
+
 void CGameClientDiscModel::AddRemovedSlot()
 {
   m_discs.emplace_back(

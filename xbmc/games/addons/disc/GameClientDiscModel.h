@@ -62,6 +62,7 @@ public:
   void SetDiscs(const std::vector<GameClientDiscEntry>& discs);
 
   void AddDisc(const std::string& path, const std::string& cachedLabel = "");
+  bool SetDiscByIndex(size_t index, const std::string& path, const std::string& cachedLabel = "");
   void AddRemovedSlot();
   bool RemoveDiscByPath(const std::string& path);
   bool RemoveDiscByIndex(size_t index);
