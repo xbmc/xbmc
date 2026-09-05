@@ -829,10 +829,11 @@ constexpr TestMatchingSourceData SourcesToMatch[] = {
 
 TEST_P(TestMatchingSource, GetMatchingSource)
 {
+  char dosDriveLetter{'D'};
+
 #if defined(TARGET_WINDOWS_DESKTOP)
   // D: is often an optical drive. Use a non-optical letter so this fixture tests source matching
   // rather than the intentional optical-source shortcut.
-  char dosDriveLetter{'D'};
   if (URIUtils::IsOnDVD("D:\\"))
   {
     for (char candidate = 'C'; candidate <= 'Z'; ++candidate)
@@ -847,8 +848,6 @@ TEST_P(TestMatchingSource, GetMatchingSource)
     }
   }
   ASSERT_FALSE(URIUtils::IsOnDVD(std::string{dosDriveLetter} + ":\\"));
-#else
-  const char dosDriveLetter{'D'};
 #endif
 
   const auto replaceOpticalTestDrive = [dosDriveLetter](const char* value)
