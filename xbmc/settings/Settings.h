@@ -437,7 +437,7 @@ public:
       "input.siriremotehorizontalsensitivity";
   static constexpr auto SETTING_INPUT_SIRIREMOTEVERTICALSENSITIVITY =
       "input.siriremoteverticalsensitivity";
-  static constexpr auto SETTING_INPUT_TVOSUSEKODIKEYBOARD = "input.tvosusekodikeyboard";
+  static constexpr auto SETTING_INPUT_USEAPPLICATIONKEYBOARD = "input.useapplicationkeyboard";
   static constexpr auto SETTING_NETWORK_USEHTTPPROXY = "network.usehttpproxy";
   static constexpr auto SETTING_NETWORK_HTTPPROXYTYPE = "network.httpproxytype";
   static constexpr auto SETTING_NETWORK_HTTPPROXYSERVER = "network.httpproxyserver";
