@@ -10,12 +10,15 @@
 
 #include "Socket.h"
 
+#include "SocketOptions.h"
 #include "utils/ScopeGuard.h"
 #include "utils/log.h"
 
 #include <vector>
 
 using namespace SOCKETS;
+using KODI::NETWORK::SetIPv6Only;
+using KODI::NETWORK::SetReusePort;
 
 #ifdef WINSOCK_VERSION
 #define close closesocket
@@ -42,12 +45,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
       m_iSock = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
       if (m_iSock != INVALID_SOCKET)
       {
-#ifdef WINSOCK_VERSION
-        const char zero = 0;
-#else
-        int zero = 0;
-#endif
-        if (setsockopt(m_iSock, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) == -1)
+        if (!SetIPv6Only(m_iSock, 0))
         {
           closesocket(m_iSock);
           m_iSock = INVALID_SOCKET;
@@ -79,12 +77,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
   }
 
   // make sure we can reuse the address
-#ifdef WINSOCK_VERSION
-  const char yes=1;
-#else
-  int yes = 1;
-#endif
-  if (setsockopt(m_iSock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+  if (!SetReusePort(m_iSock))
   {
     CLog::Log(LOGWARNING, "UDP: Could not enable the address reuse options");
     CLog::Log(LOGWARNING, "UDP: {}", strerror(errno));
@@ -143,6 +136,9 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
 
 bool CPosixUDPSocket::CheckIPv6(int port, int range)
 {
+#if defined(TARGET_WASM)
+  return false;
+#else
   CAddress testaddr("::");
 #if defined(TARGET_WINDOWS)
   using CAutoPtrSocket = KODI::UTILS::CScopeGuard<SOCKET, INVALID_SOCKET, decltype(closesocket)>;
@@ -158,14 +154,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
     return false;
   }
 
-#ifdef WINSOCK_VERSION
-  const char zero = 0;
-#else
-  int zero = 0;
-#endif
-
-  if (setsockopt(static_cast<SOCKET>(testSocket), IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) ==
-      -1)
+  if (!SetIPv6Only(static_cast<SOCKET>(testSocket), 0))
   {
     CLog::LogF(LOGDEBUG, "Could not disable IPV6_V6ONLY for socket: {}", strerror(errno));
     return false;
@@ -188,6 +177,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
   }
 
   return false;
+#endif // !TARGET_WASM
 }
 
 void CPosixUDPSocket::Close()
