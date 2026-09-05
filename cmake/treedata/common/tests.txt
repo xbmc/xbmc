@@ -25,6 +25,7 @@ xbmc/network/test                 test/network
 xbmc/pictures/metadata/test       test/pictures/metadata
 xbmc/playlists/test               test/playlists
 xbmc/pvr/channels/test            test/pvrchannels
+xbmc/pvr/epg/test                 test/pvrepg
 xbmc/rendering/capture/test       test/rendering_capture
 xbmc/settings/test                test/settings
 xbmc/settings/lib/test            test/lib/settings
