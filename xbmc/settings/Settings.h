@@ -389,6 +389,7 @@ public:
   static constexpr auto SETTING_VIDEOSCREEN_3DLUT = "videoscreen.cms3dlut";
   static constexpr auto SETTING_VIDEOSCREEN_DISPLAYPROFILE = "videoscreen.displayprofile";
   static constexpr auto SETTING_VIDEOSCREEN_GUICALIBRATION = "videoscreen.guicalibration";
+  static constexpr auto SETTING_VIDEOSCREEN_SCREENALIGNMENT = "videoscreen.screenalignment";
   static constexpr auto SETTING_VIDEOSCREEN_TESTPATTERN = "videoscreen.testpattern";
   static constexpr auto SETTING_VIDEOSCREEN_LIMITEDRANGE = "videoscreen.limitedrange";
   static constexpr auto SETTING_VIDEOSCREEN_FRAMEPACKING = "videoscreen.framepacking";

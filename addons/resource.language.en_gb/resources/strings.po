@@ -25393,3 +25393,15 @@ msgstr ""
 msgctxt "#40804"
 msgid "{0:.1f} dB"
 msgstr ""
+
+#. Label for the action opening the screen alignment tool, and its window title
+#: system/settings/settings.xml
+msgctxt "#40805"
+msgid "Screen alignment"
+msgstr ""
+
+#. Help text for the action opening the screen alignment tool
+#: system/settings/settings.xml
+msgctxt "#40806"
+msgid "Draws a frame at each aspect ratio you choose, for aligning a projector to your screen."
+msgstr ""
