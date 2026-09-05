@@ -136,7 +136,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     /*!
      * \brief Unregister a callback for notifications of advanced settings load.
-     * \param[in] handle of the callback
+     *        Note: unregistering a callback from callback context is not allowed and will cause
+     *              problems.
+     * \param[in] callback handle
      */
     void UnregisterSettingsLoadedCallback(int handle);
 
@@ -431,7 +433,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_folderStackStrings;
 
     mutable CCriticalSection m_listCritSection;
-    int m_nextCallbackHandle{0};
     std::map<int, AdvancedSettingsCallback> m_settingsLoadedCallbacks;
     std::string m_metadataSourcesPriv;
 };

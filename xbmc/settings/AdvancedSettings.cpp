@@ -95,14 +95,17 @@ void CAdvancedSettings::OnSettingsLoaded()
   }
   CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
 
-  std::vector<AdvancedSettingsCallback> callbacks;
   {
     std::lock_guard lock{m_listCritSection};
+
+    // Copy for list stability in case of concurrent registration
+    std::vector<AdvancedSettingsCallback> callbacks;
     callbacks.reserve(m_settingsLoadedCallbacks.size());
     std::ranges::transform(m_settingsLoadedCallbacks, std::back_inserter(callbacks),
                            [](const auto& pair) { return pair.second; });
+    // Execute callbacks under lock in case of concurrent unregistration
+    std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
   }
-  std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
@@ -122,12 +125,11 @@ void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& 
 
 int CAdvancedSettings::RegisterSettingsLoadedCallback(AdvancedSettingsCallback callback)
 {
+  static int nextHandle{0};
   std::lock_guard lock{m_listCritSection};
-  // The handle is read back from the inserted element, so it cannot drift from the key the
-  // callback is stored under and Unregister can never erase a different caller's callback.
-  const auto it =
-      m_settingsLoadedCallbacks.emplace(m_nextCallbackHandle++, std::move(callback)).first;
-  return it->first;
+  const int handle{nextHandle++};
+  m_settingsLoadedCallbacks.emplace(handle, std::move(callback));
+  return handle;
 }
 
 void CAdvancedSettings::UnregisterSettingsLoadedCallback(int handle)

@@ -112,8 +112,8 @@ void TestBasicEnvironment::TearDown()
 {
   g_application.m_ServiceManager->DeinitTesting();
 
-  // The VFS machinery is not usable once the services are deinitialized. The path is UTF-8, which
-  // std::filesystem takes as the native narrow encoding unless told otherwise.
+  // Do not use the deinitialized VFS machinery.
+  // std::u8string cast to interpret the path as UTF-8 on all platforms.
   std::error_code ec;
   const std::filesystem::path tempPath{
       std::u8string{reinterpret_cast<const char8_t*>(m_tempPath.data()), m_tempPath.size()}};
