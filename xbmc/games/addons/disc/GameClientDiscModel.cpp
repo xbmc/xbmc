@@ -18,7 +18,13 @@ using namespace GAME;
 bool GameClientDiscEntry::operator==(const GameClientDiscEntry& rhs) const
 {
   return slotType == rhs.slotType && URIUtils::PathEquals(path, rhs.path) &&
-         cachedLabel == rhs.cachedLabel;
+         basename == rhs.basename && cachedLabel == rhs.cachedLabel;
+}
+
+bool CGameClientDiscModel::operator==(const CGameClientDiscModel& rhs) const
+{
+  return m_discs == rhs.m_discs && m_selectedType == rhs.m_selectedType &&
+         m_selectedDiscIndex == rhs.m_selectedDiscIndex && m_isEjected == rhs.m_isEjected;
 }
 
 size_t CGameClientDiscModel::Size() const

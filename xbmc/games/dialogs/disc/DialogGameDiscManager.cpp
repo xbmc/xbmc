@@ -256,9 +256,14 @@ void CDialogGameDiscManager::OnDiscSelect(size_t discIndex, bool isNoDisc)
     m_deleteCallback(discIndex);
 }
 
-void CDialogGameDiscManager::NotifyDiscSelection()
+void CDialogGameDiscManager::NotifyDiscChange()
 {
-  m_discGame->NotifyDiscSelection();
+  m_discGame->NotifyDiscChange();
+}
+
+void CDialogGameDiscManager::NotifyTrayChange()
+{
+  m_discGame->NotifyTrayChange();
 }
 
 bool CDialogGameDiscManager::AllowSelectNoDisc() const
