@@ -47,8 +47,7 @@ public:
   void SetHeight(float height) override;
   std::string GetDescription() const override;
   void SetRadioDimensions(float posX, float posY, float width, float height);
-  void SetToggleSelect(const std::string &toggleSelect);
-  bool IsSelected() const { return m_bSelected; }
+  void SetToggleSelect(const std::string& toggleSelect);
 
 protected:
   bool UpdateColors(const CGUIListItem* item) override;
