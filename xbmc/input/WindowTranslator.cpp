@@ -62,6 +62,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"pvrosdteletext", WINDOW_DIALOG_OSD_TELETEXT},
     {"systeminfo", WINDOW_SYSTEM_INFORMATION},
     {"screencalibration", WINDOW_SCREEN_CALIBRATION},
+    {"screenalignment", WINDOW_SCREEN_ALIGNMENT},
     {"systemsettings", WINDOW_SETTINGS_SYSTEM},
     {"servicesettings", WINDOW_SETTINGS_SERVICE},
     {"pvrsettings", WINDOW_SETTINGS_MYPVR},
