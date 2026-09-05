@@ -30,6 +30,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
+#include "video/geometry/ContentGeometryScanner.h"
 
 #include <algorithm>
 #include <string>
@@ -245,6 +246,8 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
       return false;
 
     m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::EXTRA, item);
+
+    KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
 
     return true;
   }

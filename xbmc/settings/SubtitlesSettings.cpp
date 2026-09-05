@@ -24,23 +24,37 @@ using namespace SUBTITLES;
 CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& settings)
   : m_settings(settings)
 {
-  m_settings->RegisterCallback(
-      this,
-      {CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,  CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
-       CSettings::SETTING_SUBTITLES_ALIGN,          CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH,
-       CSettings::SETTING_SUBTITLES_FONTNAME,       CSettings::SETTING_SUBTITLES_FONTSIZE,
-       CSettings::SETTING_SUBTITLES_STYLE,          CSettings::SETTING_SUBTITLES_COLOR,
-       CSettings::SETTING_SUBTITLES_BORDERSIZE,     CSettings::SETTING_SUBTITLES_BORDERCOLOR,
-       CSettings::SETTING_SUBTITLES_OPACITY,        CSettings::SETTING_SUBTITLES_BGCOLOR,
-       CSettings::SETTING_SUBTITLES_BGOPACITY,      CSettings::SETTING_SUBTITLES_BLUR,
-       CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE, CSettings::SETTING_SUBTITLES_SHADOWCOLOR,
-       CSettings::SETTING_SUBTITLES_SHADOWOPACITY,  CSettings::SETTING_SUBTITLES_SHADOWSIZE,
-       CSettings::SETTING_SUBTITLES_MARGINVERTICAL, CSettings::SETTING_SUBTITLES_CHARSET,
-       CSettings::SETTING_SUBTITLES_OVERRIDEFONTS,  CSettings::SETTING_SUBTITLES_OVERRIDESTYLES,
-       CSettings::SETTING_SUBTITLES_LANGUAGES,      CSettings::SETTING_SUBTITLES_STORAGEMODE,
-       CSettings::SETTING_SUBTITLES_CUSTOMPATH,     CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
-       CSettings::SETTING_SUBTITLES_DOWNLOADFIRST,  CSettings::SETTING_SUBTITLES_TV,
-       CSettings::SETTING_SUBTITLES_MOVIE,          CSettings::SETTING_SUBTITLES_LINE_SPACING});
+  m_settings->RegisterCallback(this, {CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,
+                                      CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
+                                      CSettings::SETTING_SUBTITLES_ALIGN,
+                                      CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT,
+                                      CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH,
+                                      CSettings::SETTING_SUBTITLES_FONTNAME,
+                                      CSettings::SETTING_SUBTITLES_FONTSIZE,
+                                      CSettings::SETTING_SUBTITLES_STYLE,
+                                      CSettings::SETTING_SUBTITLES_COLOR,
+                                      CSettings::SETTING_SUBTITLES_BORDERSIZE,
+                                      CSettings::SETTING_SUBTITLES_BORDERCOLOR,
+                                      CSettings::SETTING_SUBTITLES_OPACITY,
+                                      CSettings::SETTING_SUBTITLES_BGCOLOR,
+                                      CSettings::SETTING_SUBTITLES_BGOPACITY,
+                                      CSettings::SETTING_SUBTITLES_BLUR,
+                                      CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE,
+                                      CSettings::SETTING_SUBTITLES_SHADOWCOLOR,
+                                      CSettings::SETTING_SUBTITLES_SHADOWOPACITY,
+                                      CSettings::SETTING_SUBTITLES_SHADOWSIZE,
+                                      CSettings::SETTING_SUBTITLES_MARGINVERTICAL,
+                                      CSettings::SETTING_SUBTITLES_CHARSET,
+                                      CSettings::SETTING_SUBTITLES_OVERRIDEFONTS,
+                                      CSettings::SETTING_SUBTITLES_OVERRIDESTYLES,
+                                      CSettings::SETTING_SUBTITLES_LANGUAGES,
+                                      CSettings::SETTING_SUBTITLES_STORAGEMODE,
+                                      CSettings::SETTING_SUBTITLES_CUSTOMPATH,
+                                      CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
+                                      CSettings::SETTING_SUBTITLES_DOWNLOADFIRST,
+                                      CSettings::SETTING_SUBTITLES_TV,
+                                      CSettings::SETTING_SUBTITLES_MOVIE,
+                                      CSettings::SETTING_SUBTITLES_LINE_SPACING});
 }
 
 CSubtitlesSettings::~CSubtitlesSettings()
@@ -70,6 +84,11 @@ Align CSubtitlesSettings::GetAlignment() const
 void CSubtitlesSettings::SetAlignment(Align align) const
 {
   m_settings->SetInt(CSettings::SETTING_SUBTITLES_ALIGN, static_cast<int>(align));
+}
+
+bool CSubtitlesSettings::IsAlignedToContent() const
+{
+  return m_settings->GetBool(CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT);
 }
 
 HorizontalAlign CSubtitlesSettings::GetHorizontalAlignment() const

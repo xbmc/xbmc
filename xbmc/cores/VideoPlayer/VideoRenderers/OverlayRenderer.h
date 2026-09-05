@@ -192,6 +192,10 @@ namespace OVERLAY {
 
     void CreateSubtitlesStyle();
 
+    //! \brief Set the picture rectangle on \p opts, so subtitles aligned inside the video are
+    //! placed inside the picture rather than in the coded bars.
+    void SetContentRect(KODI::SUBTITLES::STYLE::renderOpts& opts) const;
+
     void Release(std::vector<SElement>& list);
     void ReleaseCache();
     void ReleaseUnused();
@@ -225,6 +229,8 @@ namespace OVERLAY {
     KODI::SUBTITLES::HorizontalAlign m_subtitleHorizontalAlign{
         KODI::SUBTITLES::HorizontalAlign::CENTER};
     KODI::SUBTITLES::Align m_subtitleAlign{KODI::SUBTITLES::Align::BOTTOM_OUTSIDE};
+    //! \brief Measure alignment against the picture rather than the whole video.
+    bool m_subtitleAlignToContent{false};
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};

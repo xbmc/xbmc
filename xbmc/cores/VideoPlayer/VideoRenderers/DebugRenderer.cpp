@@ -163,6 +163,7 @@ void CDebugRenderer::CRenderer::Render(int idx, float depth)
       rOpts.videoHeight = m_rd.Height();
       rOpts.frameWidth = m_rv.Width();
       rOpts.frameHeight = m_rv.Height();
+      SetContentRect(rOpts);
 
       // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
       if (m_stereomode == "left_right" || m_stereomode == "right_left")
