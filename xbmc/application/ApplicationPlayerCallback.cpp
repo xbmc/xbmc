@@ -13,6 +13,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
@@ -417,6 +418,21 @@ void CApplicationPlayerCallback::OnPlayBackPaused()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_PAUSED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+#if defined(TARGET_ANDROID)
+  // Android calls the ON_PAUSE when app goes out of focus, but calls nothing else when the app is closed. 
+  // So we need to save the resume playback position here.
+  const auto appPlayer{CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()};
+  if (appPlayer->IsPlayingVideo())
+  {
+    CBookmark bookmark;
+    bookmark.timeInSeconds = static_cast<double>(appPlayer->GetTime()) / 1000.0;
+    bookmark.totalTimeInSeconds = static_cast<double>(appPlayer->GetTotalTime()) / 1000.0;
+    bookmark.player = appPlayer->GetCurrentPlayer();
+    bookmark.playerState = appPlayer->GetPlayerState();
+    CSaveFileState::DoWork(g_application.CurrentFileItem(), bookmark, false);
+  }
+#endif // TARGET_ANDROID
 }
 
 void CApplicationPlayerCallback::OnPlayBackResumed()
