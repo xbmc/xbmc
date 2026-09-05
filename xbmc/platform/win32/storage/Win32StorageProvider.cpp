@@ -400,10 +400,33 @@ MEDIA_DETECT::STORAGE::StorageDevice CWin32StorageProvider::GetStorageDevice(
   return device;
 }
 
+bool CWin32StorageProvider::IsSameChange(StorageEventType a, StorageEventType b)
+{
+  const auto normalize = [](StorageEventType t)
+  { return t == StorageEventType::UNSAFELY_REMOVED ? StorageEventType::SAFELY_REMOVED : t; };
+  return normalize(a) == normalize(b);
+}
+
+void CWin32StorageProvider::ForgetLastEvent(const std::string& devicePath)
+{
+  std::unique_lock lock(m_eventsSection);
+  m_lastQueuedEvent.erase(devicePath);
+}
+
 void CWin32StorageProvider::QueueStorageEvent(StorageEventType type,
                                               const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
   std::unique_lock lock(m_eventsSection);
+
+  const auto it{m_lastQueuedEvent.find(device.path)};
+  if (it != m_lastQueuedEvent.end() && IsSameChange(it->second, type))
+  {
+    CLog::LogF(LOGDEBUG, "Ignoring repeated event for {} - already reported by another channel",
+               device.path);
+    return;
+  }
+
+  m_lastQueuedEvent.insert_or_assign(device.path, type);
   m_events.emplace_back(StorageEvent{type, device});
 }
 

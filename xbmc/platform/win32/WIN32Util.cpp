@@ -105,8 +105,6 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   T_SPDT_SBUF sptd_sb = {}; // SCSI Pass Through Direct variable.
   byte DataBuf[8] = {}; // Buffer for holding data to/from drive.
 
-  CLog::LogF(LOGDEBUG, "Requesting status for drive {}.", strPath);
-
   hDevice = CreateFile( strPathW.c_str(),                  // drive
                         0,                                // no access to the drive
                         FILE_SHARE_READ,                  // share mode
@@ -121,7 +119,6 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
     return -1;
   }
 
-  CLog::LogF(LOGDEBUG, "Requesting media status for drive {}.", strPath);
   iResult = DeviceIoControl((HANDLE) hDevice,             // handle to device
                              IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode
                              NULL,                        // lpInBuffer
@@ -555,7 +552,7 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   }
 
   auto strVolFormat = ToW(StringUtils::Format("\\\\.\\{}:", cDL));
-  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                              NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   auto strRootFormat = ToW(StringUtils::Format("{}:\\", cDL));
   if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) &&

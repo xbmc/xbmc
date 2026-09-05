@@ -72,6 +72,8 @@ public:
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
   DriveState GetDriveStatus(const std::string& devicePath = "");
+
+  void ResetDriveStatusCache();
 #ifdef HAS_OPTICAL_DRIVE
   MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath="");
   bool RemoveCdInfo(const std::string& devicePath="");
@@ -83,8 +85,10 @@ public:
    * This is needed as HasMediaBlurayPlaylist() is called every screen refresh when
    * the disc node is highlighted.
    * It needs to be reset whenever a disc is ejected or played (as a playlist may have been selected).
-  */
-  void ResetBlurayPlaylistStatus();
+   *
+   * \param devicePath The optical drive it changed for, or empty for every drive
+   */
+  void ResetBlurayPlaylistStatus(const std::string& devicePath = "");
 
   /*! \brief Gets the platform disc drive handler
   * @todo this likely doesn't belong here but in some discsupport component owned by media manager
@@ -166,8 +170,26 @@ private:
 #endif
 
   void RemoveDiscInfo(const std::string& devicePath);
+
+  void InvalidateDiscInfo(const std::string& devicePath);
+
   std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
+  std::map<std::string, std::string> m_volumeLabel;
+#ifdef HAS_OPTICAL_DRIVE
+  /*! \brief Resolve a drive letter to the device path of that drive
+   * \param cDriveLetter The drive letter (e.g. 'D'), or '\0' for the first available drive
+   * \return The device path of that drive (e.g. "D:"), or of the first available optical
+   *         drive when no letter is given
+   */
+  std::string TranslateDriveLetter(char cDriveLetter);
+#endif
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  /*! Last known state of each optical drive, to keep the GUI off the hardware - see GetDriveStatus */
+  std::map<std::string, DriveState> m_driveStatusCache;
+  CCriticalSection m_driveStatusSection;
+#endif
 #ifdef HAVE_LIBBLURAY
-  HasBlurayPlaylist m_hasBlurayPlaylist{HasBlurayPlaylist::UNKNOWN};
+  //! Whether the disc in each drive has a stored playlist
+  std::map<std::string, HasBlurayPlaylist> m_blurayPlaylist;
 #endif
 };

@@ -53,6 +53,10 @@
 #endif
 #endif
 
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+#include "platform/win32/storage/Win32StorageProvider.h"
+#endif
+
 #include <string>
 #include <vector>
 
@@ -385,9 +389,7 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
     gui->GetWindowManager().SendThreadMessage(msg);
 
 #ifdef HAS_OPTICAL_DRIVE
-  // delete cached CdInfo if any
-  RemoveCdInfo(TranslateDevicePath(share.strPath, true));
-  RemoveDiscInfo(TranslateDevicePath(share.strPath, true));
+  InvalidateDiscInfo(share.strPath);
 #endif
 }
 
@@ -419,23 +421,23 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
   return strDevice;
 }
 
+#ifdef HAS_OPTICAL_DRIVE
+std::string CMediaManager::TranslateDriveLetter(const char cDriveLetter)
+{
+#ifdef TARGET_WINDOWS
+  // A drive letter only identifies a drive on Windows. Elsewhere the device path is not
+  // letter based and callers always leave cDriveLetter at its default.
+  if (cDriveLetter != '\0')
+    return TranslateDevicePath(StringUtils::Format("{}:", cDriveLetter));
+#endif
+  return TranslateDevicePath("");
+}
+#endif
+
 bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
 #ifdef TARGET_WINDOWS
-  if (!m_bOpticalDrivePresent)
-    return false;
-
-  std::string strDevice = TranslateDevicePath(devicePath, false);
-
-  // m_mapCdInfo is only populated for audio CDs
-  {
-    std::unique_lock waitLock(m_muAutoSource);
-    if (m_mapCdInfo.contains(strDevice))
-      return true;
-  }
-
-  // Check physical drive state (for video discs)
   return GetDriveStatus(devicePath) == DriveState::CLOSED_MEDIA_PRESENT;
 #else
   if(URIUtils::IsDVD(devicePath) || devicePath.empty())
@@ -486,13 +488,64 @@ DriveState CMediaManager::GetDriveStatus(const std::string& devicePath)
   if (!m_bOpticalDrivePresent || !m_platformDiscDriveHander)
     return DriveState::NOT_READY;
 
-  std::string translatedDevicePath = TranslateDevicePath(devicePath, true);
-  return m_platformDiscDriveHander->GetDriveState(translatedDevicePath);
+  const std::string translatedDevicePath{TranslateDevicePath(devicePath, true)};
+
+  // SYSTEM_MEDIA_DVD, SYSTEM_DVDREADY and SYSTEM_TRAYOPEN are evaluated by the GUI on every
+  // frame while a skin exposes them, so answer from what was last seen. Everything that can
+  // change a drive's state clears this first - see ResetDriveStatusCache()
+  {
+    std::unique_lock lock(m_driveStatusSection);
+    const auto it{m_driveStatusCache.find(translatedDevicePath)};
+    if (it != m_driveStatusCache.end())
+      return it->second;
+  }
+
+  // Deliberately queried without holding m_driveStatusSection - this can block for seconds on a
+  // drive that is spinning up, and no other caller should have to wait behind it.
+  const DriveState state{m_platformDiscDriveHander->GetDriveState(translatedDevicePath)};
+  if (state == DriveState::NOT_READY)
+    return state;
+
+  {
+    std::unique_lock lock(m_driveStatusSection);
+    const auto it{m_driveStatusCache.find(translatedDevicePath)};
+    const bool changed{it == m_driveStatusCache.end() || it->second != state};
+
+    m_driveStatusCache.insert_or_assign(translatedDevicePath, state);
+
+    if (changed)
+      CLog::LogF(LOGDEBUG, "Drive {} state is now {}", translatedDevicePath,
+                 static_cast<int>(state));
+  }
+
+  return state;
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDriveState();
 #endif
 #else
   return DriveState::NOT_READY;
+#endif
+}
+
+void CMediaManager::InvalidateDiscInfo(const std::string& devicePath)
+{
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  RemoveCdInfo(devicePath);
+  // Also clears the bluray disc cache for this drive
+  RemoveDiscInfo(devicePath);
+  ResetBlurayPlaylistStatus(devicePath);
+  {
+    std::unique_lock lock(m_muAutoSource);
+    m_volumeLabel.erase(TranslateDevicePath(devicePath));
+  }
+#endif
+}
+
+void CMediaManager::ResetDriveStatusCache()
+{
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  std::unique_lock lock(m_driveStatusSection);
+  m_driveStatusCache.clear();
 #endif
 }
 
@@ -558,9 +611,16 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
 
   std::string mediaPath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath);
 
-  auto cached = m_mapDiscInfo.find(mediaPath);
-  if (cached != m_mapDiscInfo.end())
-    return cached->second.name;
+  {
+    std::unique_lock lock(m_muAutoSource);
+    const auto cached{m_mapDiscInfo.find(mediaPath)};
+    if (cached != m_mapDiscInfo.end())
+      return cached->second.name;
+
+    const auto label{m_volumeLabel.find(mediaPath)};
+    if (label != m_volumeLabel.end())
+      return label->second;
+  }
 
   // try to minimize the chance of a "device not ready" dialog
   std::string drivePath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath, true);
@@ -568,13 +628,10 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
       DriveState::CLOSED_MEDIA_PRESENT)
     return "";
 
-  UTILS::DISCS::DiscInfo info;
-  info = GetDiscInfo(mediaPath);
+  // GetDiscInfo() caches, so this only probes the first time for a given disc
+  const UTILS::DISCS::DiscInfo info{GetDiscInfo(mediaPath)};
   if (!info.name.empty())
-  {
-    m_mapDiscInfo[mediaPath] = info;
     return info.name;
-  }
 
   std::string strDevice = TranslateDevicePath(devicePath);
   WCHAR cVolumenName[128];
@@ -585,11 +642,14 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   if(GetVolumeInformationW(strDeviceW.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
   g_charsetConverter.wToUTF8(cVolumenName, strDevice);
-  info.name = StringUtils::TrimRight(strDevice, " ");
-  if (!info.name.empty())
-    m_mapDiscInfo[mediaPath] = info;
 
-  return info.name;
+  const std::string label{StringUtils::TrimRight(strDevice, " ")};
+  {
+    std::unique_lock lock(m_muAutoSource);
+    m_volumeLabel.insert_or_assign(mediaPath, label);
+  }
+
+  return label;
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
@@ -613,7 +673,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
     mediaPath = devicePath;
 
 #ifdef TARGET_WINDOWS
-  if (mediaPath.empty() || mediaPath == "iso9660://")
+  if (mediaPath.empty() || mediaPath == "iso9660://" || mediaPath == devicePath)
   {
     mediaPath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath);
   }
@@ -646,32 +706,52 @@ bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
 #ifdef HAVE_LIBBLURAY
   // When the disc node is displayed, this gets called by the GUI via SYSTEM_MEDIA_BLURAY_PLAYLIST
   // in CSystemCGUIInfo at every refresh - so cache result until eject.
-  if (m_hasBlurayPlaylist != HasBlurayPlaylist::UNKNOWN)
-    return m_hasBlurayPlaylist == HasBlurayPlaylist::YES;
-
   const std::string mediaPath{TranslateDevicePath(devicePath)};
+
+  {
+    std::unique_lock lock(m_muAutoSource);
+    const auto cached{m_blurayPlaylist.find(mediaPath)};
+    if (cached != m_blurayPlaylist.end() && cached->second != HasBlurayPlaylist::UNKNOWN)
+      return cached->second == HasBlurayPlaylist::YES;
+  }
+
+  HasBlurayPlaylist status{HasBlurayPlaylist::NO};
   UTILS::DISCS::DiscInfo info{GetDiscInfo(mediaPath)};
   if (!info.empty() && info.type == UTILS::DISCS::DiscType::BLURAY)
   {
-    const std::string blurayPath{GetDiskUniqueId()};
+    const std::string blurayPath{GetDiskUniqueId(devicePath)};
     CVideoDatabase db;
     if (db.Open())
     {
       const std::string path{db.GetRemovableBlurayPath(blurayPath)};
       db.Close();
-      m_hasBlurayPlaylist = path.empty() ? HasBlurayPlaylist::NO : HasBlurayPlaylist::YES;
-      return !path.empty();
+      status = path.empty() ? HasBlurayPlaylist::NO : HasBlurayPlaylist::YES;
     }
   }
-  m_hasBlurayPlaylist = HasBlurayPlaylist::NO;
-#endif
+
+  {
+    std::unique_lock lock(m_muAutoSource);
+    m_blurayPlaylist.insert_or_assign(mediaPath, status);
+  }
+
+  return status == HasBlurayPlaylist::YES;
+#else
   return false;
+#endif
 }
 
-void CMediaManager::ResetBlurayPlaylistStatus()
+void CMediaManager::ResetBlurayPlaylistStatus(const std::string& devicePath)
 {
 #ifdef HAVE_LIBBLURAY
-  m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
+  // No drive given means every drive
+  const std::string mediaPath{devicePath.empty() ? std::string{}
+                                                 : TranslateDevicePath(devicePath)};
+
+  std::unique_lock lock(m_muAutoSource);
+  if (mediaPath.empty())
+    m_blurayPlaylist.clear();
+  else
+    m_blurayPlaylist.erase(mediaPath);
 #endif
 }
 
@@ -703,17 +783,22 @@ std::shared_ptr<IDiscDriveHandler> CMediaManager::GetDiscDriveHandler()
 
 void CMediaManager::SetHasOpticalDrive(bool bstatus)
 {
-  std::unique_lock waitLock(m_muAutoSource);
-  m_bOpticalDrivePresent = bstatus;
+  {
+    std::unique_lock waitLock(m_muAutoSource);
+    m_bOpticalDrivePresent = bstatus;
+  }
+  ResetDriveStatusCache();
 }
 
 bool CMediaManager::Eject(const std::string& mountpath)
 {
   std::unique_lock lock(m_CritSecStorageProvider);
-#ifdef HAVE_LIBBLURAY
-  m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
+#ifdef HAS_OPTICAL_DRIVE
+  ResetBlurayPlaylistStatus(mountpath);
 #endif
-  return m_platformStorage->Eject(mountpath);
+  const bool ejected{m_platformStorage->Eject(mountpath)};
+  ResetDriveStatusCache();
+  return ejected;
 }
 
 void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
@@ -721,10 +806,13 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
   {
-#ifdef HAVE_LIBBLURAY
-    m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
-#endif
-    m_platformDiscDriveHander->EjectDriveTray(TranslateDevicePath(""));
+    const std::string devicePath{TranslateDriveLetter(cDriveLetter)};
+    ResetBlurayPlaylistStatus(devicePath);
+    if (bEject)
+      m_platformDiscDriveHander->EjectDriveTray(devicePath);
+    else
+      m_platformDiscDriveHander->CloseDriveTray(devicePath);
+    ResetDriveStatusCache();
   }
 #endif
 }
@@ -734,10 +822,10 @@ void CMediaManager::CloseTray(const char cDriveLetter)
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
   {
-#ifdef HAVE_LIBBLURAY
-    m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
-#endif
-    m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
+    const std::string devicePath{TranslateDriveLetter(cDriveLetter)};
+    ResetBlurayPlaylistStatus(devicePath);
+    m_platformDiscDriveHander->CloseDriveTray(devicePath);
+    ResetDriveStatusCache();
   }
 #endif
 }
@@ -747,10 +835,10 @@ void CMediaManager::ToggleTray(const char cDriveLetter)
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
   {
-#ifdef HAVE_LIBBLURAY
-    m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
-#endif
-    m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
+    const std::string devicePath{TranslateDriveLetter(cDriveLetter)};
+    ResetBlurayPlaylistStatus(devicePath);
+    m_platformDiscDriveHander->ToggleDriveTray(devicePath);
+    ResetDriveStatusCache();
   }
 #endif
 }
@@ -791,9 +879,13 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 void CMediaManager::AddOpticalSource(const std::string& devicePath)
 {
+  // Standardise device path - the storage events carry "D:", while the
+  // startup enumeration passes what GetLogicalDriveStringsW() returns - "D:\"
+  const std::string drivePath{TranslateDevicePath(devicePath)};
+
   CMediaSource share;
-  share.strPath = devicePath;
-  share.strName = devicePath;
+  share.strPath = drivePath;
+  share.strName = drivePath;
 
   RemoveAutoSource(share);
 
@@ -812,13 +904,27 @@ void CMediaManager::AddOpticalSource(const std::string& devicePath)
 
 void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
+  ResetDriveStatusCache();
 #ifdef HAS_OPTICAL_DRIVE
   if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
+    InvalidateDiscInfo(device.path);
+
 #ifdef TARGET_WINDOWS
     SetHasOpticalDrive(true); // In case drive appeared after startup (eg. virtual drive)
     if (m_strFirstAvailDrive.empty())
       m_strFirstAvailDrive = device.path;
+
+    // Windows reports a tray closing on nothing as an arrival
+    // Have to identify from the drive (otherwise we would announce an empty drive)
+    const DriveState state{GetDriveStatus(device.path)};
+    if (state == DriveState::CLOSED_NO_MEDIA || state == DriveState::OPEN)
+    {
+      // Nothing arrived
+      CWin32StorageProvider::ForgetLastEvent(device.path);
+      return;
+    }
+
     AddOpticalSource(device.path);
 #endif
 
@@ -901,6 +1007,7 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
 
 void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
+  ResetDriveStatusCache();
 #ifdef TARGET_WINDOWS
   if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
@@ -908,6 +1015,7 @@ void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageD
     share.strPath = device.path;
     share.strName = device.path;
     RemoveAutoSource(share);
+    InvalidateDiscInfo(device.path);
   }
 #endif
   CGUIDialogKaiToast::QueueNotification(
@@ -918,6 +1026,7 @@ void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageD
 
 void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
+  ResetDriveStatusCache();
 #ifdef TARGET_WINDOWS
   if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
@@ -925,6 +1034,7 @@ void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::Storag
     share.strPath = device.path;
     share.strName = device.path;
     RemoveAutoSource(share);
+    InvalidateDiscInfo(device.path);
   }
 #endif
   CGUIDialogKaiToast::QueueNotification(
@@ -939,6 +1049,17 @@ UTILS::DISCS::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
   if (mediaPath.empty())
     return info;
 
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  // Probing a Blu-ray means loading libaacs and opening the disc with it, which is expensive.
+  // So report from cache (if available)
+  {
+    std::unique_lock lock(m_muAutoSource);
+    const auto cached{m_mapDiscInfo.find(mediaPath)};
+    if (cached != m_mapDiscInfo.end())
+      return cached->second;
+  }
+#endif
+
   // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted
   std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS", "VIDEO_TS.IFO");
   // correct the filename if needed
@@ -952,14 +1073,21 @@ UTILS::DISCS::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
   if (CFileUtils::Exists(pathVideoTS))
   {
     info = UTILS::DISCS::ProbeDVDDiscInfo(pathVideoTS);
-    if (!info.empty())
-      return info;
   }
   // check for Blu-ray discs
-  if (CFileUtils::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
+  if (info.empty() &&
+      CFileUtils::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
   {
     info = UTILS::DISCS::ProbeBlurayDiscInfo(mediaPath);
   }
+
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  if (!info.empty())
+  {
+    std::unique_lock lock(m_muAutoSource);
+    m_mapDiscInfo.insert_or_assign(mediaPath, info);
+  }
+#endif
 
   return info;
 }
@@ -968,9 +1096,10 @@ void CMediaManager::RemoveDiscInfo(const std::string& devicePath)
 {
   std::string strDevice = TranslateDevicePath(devicePath, false);
 
-  auto it = m_mapDiscInfo.find(strDevice);
-  if (it != m_mapDiscInfo.end())
-    m_mapDiscInfo.erase(it);
+  {
+    std::unique_lock lock(m_muAutoSource);
+    m_mapDiscInfo.erase(strDevice);
+  }
 
 #ifdef HAVE_LIBBLURAY
   CServiceBroker::GetBlurayDiscCache()->ClearDisc(strDevice);
