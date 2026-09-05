@@ -85,10 +85,10 @@ namespace UPNP
       only one of two names in common use cannot be selected by a renderer naming the other. */
   void AddAlternateMimeResources(PLT_MediaObject& object);
 
-  /*! rief Move the resources reachable from `preferred` to the front, order preserved. */
+  /*! \brief Move the resources reachable from `preferred` to the front, order preserved. */
   void PreferResourceAddresses(PLT_MediaObject& object, const std::vector<NPT_UInt32>& preferred);
 
-  /*! rief Order an object's resources so a renderer is offered an address it can route to.
+  /*! \brief Order an object's resources so a renderer is offered an address it can route to.
       One resource is built per local address, in host enumeration order, and a renderer can only
       fetch from one on its own network. */
   void SortResourcesForRenderer(PLT_MediaObject& object, const NPT_IpAddress& renderer);

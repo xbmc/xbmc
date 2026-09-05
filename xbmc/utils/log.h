@@ -80,6 +80,17 @@ public:
   bool IsLogLevelLogged(int loglevel) const;
 
   bool CanLogComponent(uint32_t component) const;
+
+  /*!
+   \brief The names of the log components this build knows, in declaration order
+   */
+  static std::vector<std::string> GetComponentNames();
+
+  /*!
+   \brief The component with the given name, or 0 (LOG_COMPONENT_GENERAL) for an unknown one
+   */
+  static uint32_t GetComponentByName(std::string_view name);
+
   static void SettingOptionsLoggingComponentsFiller(const std::shared_ptr<const CSetting>& setting,
                                                     std::vector<IntegerSettingOption>& list,
                                                     int& current);

@@ -45,15 +45,18 @@ private:
   class CHTTPTransportLayer : public JSONRPC::ITransportLayer
   {
   public:
-    CHTTPTransportLayer() = default;
+    explicit CHTTPTransportLayer(const HTTPRequest& request) : m_request(request) {}
     ~CHTTPTransportLayer() override = default;
 
     // implementations of JSONRPC::ITransportLayer
     bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) override;
     bool Download(const char *path, CVariant &result) override;
     int GetCapabilities() override;
+
+  private:
+    const HTTPRequest& m_request;
   };
-  CHTTPTransportLayer m_transportLayer;
+  CHTTPTransportLayer m_transportLayer{m_request};
 
   class CHTTPClient : public JSONRPC::IClient
   {

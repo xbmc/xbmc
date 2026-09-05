@@ -16,6 +16,7 @@
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
 #include "interfaces/python/swig.h"
+#include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -402,7 +403,10 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   }
   {
     // wsgi.url_scheme
-    PyObject* pyValue = PyUnicode_FromStringAndSize("http", 4);
+    const std::string scheme = HTTPRequestHandlerUtils::GetRequestScheme(
+        request != nullptr ? request->connection : nullptr);
+    PyObject* pyValue =
+        PyUnicode_FromStringAndSize(scheme.c_str(), static_cast<Py_ssize_t>(scheme.size()));
     PyDict_SetItemString(pyEnviron, "wsgi.url_scheme", pyValue);
     Py_DECREF(pyValue);
   }

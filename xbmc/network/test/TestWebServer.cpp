@@ -14,19 +14,25 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "network/DNSNameCache.h"
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPJsonRpcHandler.h"
 #include "network/httprequesthandler/HTTPVfsHandler.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 #include "utils/JSONVariantParser.h"
+#include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#include <cstring>
 #include <errno.h>
 #include <stdlib.h>
 
@@ -353,6 +359,37 @@ protected:
     return StringUtils::Format("bytes={}-{}", start, end);
   }
 
+  //! \brief Files.PrepareDownload for a test file over HTTP POST, with an optional
+  //!        X-Forwarded-Proto header.
+  CVariant PrepareDownloadOfTestFile(const std::string& testFile,
+                                     const std::string& forwardedProtocol = "")
+  {
+    CVariant request(CVariant::VariantTypeObject);
+    request["jsonrpc"] = "2.0";
+    request["id"] = 1;
+    request["method"] = "Files.PrepareDownload";
+    request["params"]["path"] = URIUtils::AddFileToFolder(sourcePath, testFile);
+
+    std::string requestData;
+    if (!CJSONVariantWriter::Write(request, requestData, true))
+      return CVariant();
+
+    CCurlFile curl;
+    curl.SetMimeType("application/json");
+    if (!forwardedProtocol.empty())
+      curl.SetRequestHeader("X-Forwarded-Proto", forwardedProtocol);
+
+    std::string response;
+    if (!curl.Post(GetUrl(TEST_URL_JSONRPC), requestData, response))
+      return CVariant();
+
+    CVariant responseObj;
+    if (!CJSONVariantParser::Parse(response, responseObj) || !responseObj.isObject())
+      return CVariant();
+
+    return responseObj["result"];
+  }
+
   CWebServer webserver;
   CHTTPJsonRpcHandler m_jsonRpcHandler;
   CHTTPVfsHandler m_vfsHandler;
@@ -552,6 +589,50 @@ TEST_F(TestWebServer, CanModifyOverJsonRpcWithHttpPost)
   EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
 
   // uninitialize JSON-RPC
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadReportsTheSchemeOfThePlainRequest)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML);
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("http", result["protocol"].asString().c_str());
+
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadReportsTheSchemeForwardedByAProxy)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML, "https");
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("https", result["protocol"].asString().c_str());
+
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadReportsTheSchemeOfTheFirstProxyInAChain)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML, "HTTPS, http");
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("https", result["protocol"].asString().c_str());
+
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadDoesNotReportAnUnknownForwardedScheme)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML, "javascript");
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("http", result["protocol"].asString().c_str());
+
   JSONRPC::CJSONRPC::Cleanup();
 }
 
@@ -1064,4 +1145,70 @@ TEST_F(TestWebServerAuth, CanStatWithStoredCredentials)
   // CFile::Stat() has always applied the stored credentials, unlike the CCurlFile helpers above
   struct __stat64 buffer;
   ASSERT_EQ(0, CFile::Stat(CURL{GetUrlOfTestFile(TEST_FILES_RANGES)}, &buffer));
+}
+
+//! \brief Points debug.screenshotpath somewhere no media source covers.
+class TestWebServerScreenshots : public TestWebServer
+{
+protected:
+  void SetUp() override
+  {
+    TestWebServer::SetUp();
+
+    m_screenshotDir =
+        URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath("special://temp/"), "shots");
+    ASSERT_TRUE(CDirectory::Create(m_screenshotDir));
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+        CSettings::SETTING_DEBUG_SCREENSHOTPATH, m_screenshotDir);
+  }
+
+  void TearDown() override
+  {
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+        CSettings::SETTING_DEBUG_SCREENSHOTPATH, "");
+    CDirectory::RemoveRecursive(m_screenshotDir);
+
+    TestWebServer::TearDown();
+  }
+
+  //! \brief Writes a file and answers the /vfs URL of the special:// path
+  //!        GUI.TakeScreenshot would hand out for it.
+  std::string WriteFile(const std::string& directory, const std::string& specialPath)
+  {
+    CFile file;
+    EXPECT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(directory, m_name), true));
+    EXPECT_EQ(static_cast<ssize_t>(std::strlen(TEST_FILES_DATA)),
+              file.Write(TEST_FILES_DATA, std::strlen(TEST_FILES_DATA)));
+    file.Close();
+
+    return GetUrl(URIUtils::AddFileToFolder("vfs", CURL::Encode(specialPath)));
+  }
+
+  const std::string m_name{"screenshot00000.png"};
+  std::string m_screenshotDir;
+};
+
+TEST_F(TestWebServerScreenshots, CanGetAScreenshotNoMediaSourceCovers)
+{
+  const std::string url = WriteFile(m_screenshotDir, "special://screenshots/" + m_name);
+
+  CCurlFile curl;
+  std::string result;
+  ASSERT_TRUE(curl.Get(url, result));
+  EXPECT_STREQ(TEST_FILES_DATA, result.c_str());
+}
+
+TEST_F(TestWebServerScreenshots, CannotGetAFileTheScreenshotFolderOnlyLeadsTo)
+{
+  // a sibling of the screenshot folder: reachable through it, and not a screenshot
+  const std::string outside = CSpecialProtocol::TranslatePath("special://temp/");
+  const std::string path = "special://screenshots/../" + m_name;
+  const std::string url = WriteFile(outside, path);
+  ASSERT_TRUE(CFile::Exists(path)) << "the guard, not the file being absent, must refuse this";
+
+  CCurlFile curl;
+  std::string result;
+  EXPECT_FALSE(curl.Get(url, result));
+
+  CFile::Delete(URIUtils::AddFileToFolder(outside, m_name));
 }

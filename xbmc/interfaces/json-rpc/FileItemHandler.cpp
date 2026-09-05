@@ -11,6 +11,8 @@
 #include "AudioLibrary.h"
 #include "FileItemList.h"
 #include "FileOperations.h"
+#include "JSONServiceDescription.h"
+#include "PVREpgFields.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "VideoLibrary.h"
@@ -40,17 +42,51 @@
 
 #include <map>
 #include <memory>
+#include <optional>
+#include <set>
 #include <string.h>
+#include <string>
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
+
+namespace
+{
+/*!
+ \brief The members of Playlist.Item that name a library entry by its identifier
+ \return the identifier names, empty when the service description has not been parsed
+ */
+std::set<std::string> LibraryIdentifiers()
+{
+  std::set<std::string> identifiers;
+
+  const JSONSchemaTypeDefinitionPtr item{CJSONServiceDescription::GetType("Playlist.Item")};
+  const JSONSchemaTypeDefinitionPtr libraryId{CJSONServiceDescription::GetType("Library.Id")};
+  if (!item || !libraryId)
+    return identifiers;
+
+  for (const auto& alternative : item->unionTypes)
+  {
+    for (auto property = alternative->properties.begin(); property != alternative->properties.end();
+         ++property)
+    {
+      if (property->second->referencedType == libraryId)
+        identifiers.insert(property->first);
+    }
+  }
+
+  return identifiers;
+}
+} // unnamed namespace
 
 bool CFileItemHandler::GetField(const std::string& field,
                                 const CVariant& info,
                                 const std::shared_ptr<CFileItem>& item,
                                 CVariant& result,
                                 bool& fetchedArt,
+                                std::optional<std::shared_ptr<PVR::CPVRRecording>>& epgRecording,
+                                std::optional<std::shared_ptr<PVR::CPVRTimerInfoTag>>& epgTimer,
                                 CThumbLoader* thumbLoader /* = NULL */)
 {
   if (result.isMember(field) && !result[field].empty())
@@ -72,16 +108,7 @@ bool CFileItemHandler::GetField(const std::string& field,
       if (field == "cast")
       {
         // string -> Video.Cast
-        const std::vector<std::string> actors =
-            StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
-
-        result[field] = CVariant(CVariant::VariantTypeArray);
-        for (const auto& actor : actors)
-        {
-          CVariant actorVar;
-          actorVar["name"] = actor;
-          result[field].push_back(actorVar);
-        }
+        result[field] = TranslateEpgCast(info[field].asString());
         return true;
       }
       else if (field == "director" || field == "writer")
@@ -96,45 +123,61 @@ bool CFileItemHandler::GetField(const std::string& field,
             *item->GetPVRChannelInfoTag());
         return true;
       }
+      else if (field == "broadcastnow" || field == "broadcastnext")
+      {
+        // Both slots are PVR.Details.Broadcast, whose label and field set only the handler supplies
+        const std::shared_ptr<const PVR::CPVRChannel> channel{item->GetPVRChannelInfoTag()};
+        const std::shared_ptr<PVR::CPVREpgInfoTag> tag{
+            field == "broadcastnow" ? channel->GetEPGNow() : channel->GetEPGNext()};
+        if (tag)
+        {
+          HandleFileItem("broadcastid", false, field.c_str(), std::make_shared<CFileItem>(tag),
+                         CVariant{CVariant::VariantTypeObject}, BroadcastFields(), result, false);
+        }
+        return true;
+      }
     }
 
     if (item->HasEPGInfoTag())
     {
-      if (field == "hastimer")
+      if (field == "hastimer" || field == "hasreminder" || field == "hastimerrule")
       {
-        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
-            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
-        result[field] = (timer != nullptr);
+        if (!epgTimer.has_value())
+        {
+          epgTimer =
+              CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
+        }
+
+        const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer{*epgTimer};
+        if (field == "hastimer")
+          result[field] = (timer != nullptr);
+        else if (field == "hasreminder")
+          result[field] = (timer && timer->IsReminder());
+        else
+          result[field] = (timer && timer->HasParent());
         return true;
       }
-      else if (field == "hasreminder")
+      else if (field == "hasrecording" || field == "recording" || field == "recordingid")
       {
-        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
-            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
-        result[field] = (timer && timer->IsReminder());
-        return true;
-      }
-      else if (field == "hastimerrule")
-      {
-        const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
-            CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
-        result[field] = (timer && timer->HasParent());
-        return true;
-      }
-      else if (field == "hasrecording")
-      {
-        const std::shared_ptr<PVR::CPVRRecording> recording =
-            CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
-                item->GetEPGInfoTag());
-        result[field] = (recording != nullptr);
-        return true;
-      }
-      else if (field == "recording")
-      {
-        const std::shared_ptr<PVR::CPVRRecording> recording =
-            CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
-                item->GetEPGInfoTag());
-        result[field] = recording ? recording->m_strFileNameAndPath : "";
+        if (!epgRecording.has_value())
+        {
+          epgRecording = CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(
+              item->GetEPGInfoTag());
+        }
+
+        const std::shared_ptr<PVR::CPVRRecording>& recording{*epgRecording};
+        if (field == "hasrecording")
+        {
+          result[field] = (recording != nullptr);
+        }
+        else if (field == "recording")
+        {
+          result[field] = recording ? recording->m_strFileNameAndPath : "";
+        }
+        else
+        {
+          result[field] = recording ? static_cast<int>(recording->RecordingID()) : -1;
+        }
         return true;
       }
     }
@@ -275,12 +318,15 @@ void CFileItemHandler::FillDetails(const ISerializable* info,
   info->Serialize(serialization);
 
   bool fetchedArt = false;
+  std::optional<std::shared_ptr<PVR::CPVRRecording>> epgRecording;
+  std::optional<std::shared_ptr<PVR::CPVRTimerInfoTag>> epgTimer;
 
   std::set<std::string> originalFields = fields;
 
   for (const auto& fieldIt : originalFields)
   {
-    if (GetField(fieldIt, serialization, item, result, fetchedArt, thumbLoader) &&
+    if (GetField(fieldIt, serialization, item, result, fetchedArt, epgRecording, epgTimer,
+                 thumbLoader) &&
         result.isMember(fieldIt) && !result[fieldIt].empty())
       fields.erase(fieldIt);
   }
@@ -316,13 +362,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
       thumbLoader->OnLoaderStart();
   }
 
-  std::set<std::string> fields;
-  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
-  {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
-         field != parameterObject["properties"].end_array(); ++field)
-      fields.insert(field->asString());
-  }
+  const std::set<std::string> fields{RequestedFields(parameterObject)};
 
   result[resultname].reserve(static_cast<size_t>(end - start));
   for (int i = start; i < end; i++)
@@ -344,15 +384,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
                                       bool append /* = true */,
                                       CThumbLoader* thumbLoader /* = NULL */)
 {
-  std::set<std::string> fields;
-  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
-  {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
-         field != parameterObject["properties"].end_array(); ++field)
-      fields.insert(field->asString());
-  }
-
-  HandleFileItem(ID, allowFile, resultname, item, parameterObject, fields, result, append, thumbLoader);
+  HandleFileItem(ID, allowFile, resultname, item, parameterObject, FieldNames(validFields), result,
+                 append, thumbLoader);
 }
 
 void CFileItemHandler::HandleFileItem(const char* ID,
@@ -375,8 +408,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
     {
       if (allowFile)
       {
-        //! @todo get rid of "videos with versions as folder" hack!
-        if (fields.contains("filetype") && item->GetProperty("IsHybridFolder").asBoolean(false))
+        // A folder reports its own path so that file agrees with filetype
+        if (fields.contains("filetype") && item->IsFolder())
         {
           object["file"] = item->GetPath().c_str();
         }
@@ -552,6 +585,28 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
   }
 
   return (list.Size() > 0);
+}
+
+JSONRPC_STATUS CFileItemHandler::DiagnoseUnresolvedItem(const CVariant& item)
+{
+  const std::string file{item["file"].asString()};
+  if (!file.empty() && !URIUtils::IsURL(file) && !CFileUtils::Exists(file, false))
+  {
+    // A directory named as a file is a malformed request, not a reference that has gone stale
+    return XFILE::CDirectory::Exists(file, false) ? InvalidParams : NotFound;
+  }
+
+  const std::string directory{item["directory"].asString()};
+  if (!directory.empty() && !XFILE::CDirectory::Exists(directory, false))
+    return NotFound;
+
+  for (const std::string& identifier : LibraryIdentifiers())
+  {
+    if (item[identifier].asInteger(-1) > 0)
+      return NotFound;
+  }
+
+  return InvalidParams;
 }
 
 void CFileItemHandler::Sort(CFileItemList &items, const CVariant &parameterObject)

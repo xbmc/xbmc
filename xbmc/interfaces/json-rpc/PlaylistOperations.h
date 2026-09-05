@@ -33,14 +33,34 @@ namespace JSONRPC
     static JSONRPC_STATUS Insert(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Clear(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Swap(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS SetShuffle(const std::string& method,
+                                     ITransportLayer* transport,
+                                     IClient* client,
+                                     const CVariant& parameterObject,
+                                     CVariant& result);
+    static JSONRPC_STATUS SetRepeat(const std::string& method,
+                                    ITransportLayer* transport,
+                                    IClient* client,
+                                    const CVariant& parameterObject,
+                                    CVariant& result);
+
   private:
     static KODI::PLAYLIST::Id GetPlaylist(const CVariant& playlist);
     static JSONRPC_STATUS GetPropertyValue(KODI::PLAYLIST::Id playlistId,
                                            const std::string& property,
                                            CVariant& result);
     static bool CheckMediaParameter(KODI::PLAYLIST::Id playlistId, const CVariant& itemObject);
-    static bool HandleItemsParameter(KODI::PLAYLIST::Id playlistId,
+
+    /*!
+     \brief Resolves the "item" parameter, reporting the entries that could not be resolved
+     \param playlistId The playlist the items are destined for
+     \param itemParam A single item or an array of them
+     \param items Receives the items that resolved, in request order
+     \param unresolved Each item that did not, with a "reason" of notfound, unavailable or invalid
+     */
+    static void HandleItemsParameter(KODI::PLAYLIST::Id playlistId,
                                      const CVariant& itemParam,
-                                     CFileItemList& items);
+                                     CFileItemList& items,
+                                     CVariant& unresolved);
   };
 }

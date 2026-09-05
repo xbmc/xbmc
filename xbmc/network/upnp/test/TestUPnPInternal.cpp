@@ -289,7 +289,7 @@ TEST(TestUPnPInternal, PreferResourceAddressesPutsAReachableAddressFirst)
   EXPECT_STREQ("http://192.0.2.1:1298/song", object.m_Resources[0].m_Uri.GetChars());
 }
 
-//! rief The rest keep their order behind it, so nothing is lost or reshuffled.
+//! \brief The rest keep their order behind it, so nothing is lost or reshuffled.
 TEST(TestUPnPInternal, PreferResourceAddressesKeepsTheRestInOrder)
 {
   PLT_MediaItem object;
@@ -303,7 +303,7 @@ TEST(TestUPnPInternal, PreferResourceAddressesKeepsTheRestInOrder)
   EXPECT_STREQ("http://169.254.96.137:1298/song", object.m_Resources[2].m_Uri.GetChars());
 }
 
-//! rief With nothing known to be reachable the order is left alone rather than guessed at.
+//! \brief With nothing known to be reachable the order is left alone rather than guessed at.
 TEST(TestUPnPInternal, PreferResourceAddressesLeavesTheOrderAloneWhenNoneMatch)
 {
   PLT_MediaItem object;

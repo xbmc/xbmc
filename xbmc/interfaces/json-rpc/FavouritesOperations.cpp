@@ -28,13 +28,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
 
   std::string type = !parameterObject["type"].isNull() ? parameterObject["type"].asString() : "";
 
-  std::set<std::string> fields;
-  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
-  {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
-         field != parameterObject["properties"].end_array(); ++field)
-      fields.insert(field->asString());
-  }
+  std::set<std::string> fields{RequestedFields(parameterObject)};
 
   for (int i = 0; i < favourites.Size(); i++)
   {

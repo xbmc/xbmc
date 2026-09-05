@@ -1,117 +1,176 @@
 {
   "Player.OnPlay": {
     "type": "notification",
-    "description":
-        "Playback of a media item has been started or the playback speed has changed. If there is no ID available extra information will be provided.",
+    "description": "Playback of a media item has been started or the playback speed has changed. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "$ref": "Player.Notifications.Data",
-        "required": true
+        "required": true,
+        "schema": {
+          "$ref": "#/$defs/Player.Notifications.Data"
+        }
       }
     ],
     "returns": null
   },
   "Player.OnResume": {
     "type": "notification",
-    "description":
-        "Playback of a media item has been resumed. If there is no ID available extra information will be provided.",
+    "description": "Playback of a media item has been resumed. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "$ref": "Player.Notifications.Data",
-        "required": true
+        "required": true,
+        "schema": {
+          "$ref": "#/$defs/Player.Notifications.Data"
+        }
       }
     ],
     "returns": null
   },
   "Player.OnAVStart": {
     "type": "notification",
-    "description":
-        "Playback of a media item has been started and first frame is available. If there is no ID available extra information will be provided.",
+    "description": "Playback of a media item has been started and first frame is available. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "$ref": "Player.Notifications.Data",
-        "required": true
+        "required": true,
+        "schema": {
+          "$ref": "#/$defs/Player.Notifications.Data"
+        }
       }
     ],
     "returns": null
   },
   "Player.OnAVChange": {
     "type": "notification",
-    "description":
-        "Audio- or videostream has changed. If there is no ID available extra information will be provided.",
+    "description": "Audio- or videostream has changed. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "$ref": "Player.Notifications.Data",
-        "required": true
+        "required": true,
+        "schema": {
+          "$ref": "#/$defs/Player.Notifications.Data"
+        }
       }
     ],
     "returns": null
   },
   "Player.OnPause": {
     "type": "notification",
-    "description":
-        "Playback of a media item has been paused. If there is no ID available extra information will be provided.",
+    "description": "Playback of a media item has been paused. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "$ref": "Player.Notifications.Data",
-        "required": true
+        "required": true,
+        "schema": {
+          "$ref": "#/$defs/Player.Notifications.Data"
+        }
       }
     ],
     "returns": null
   },
   "Player.OnStop": {
     "type": "notification",
-    "description":
-        "Playback of a media item has been stopped. If there is no ID available extra information will be provided.",
+    "description": "Playback of a media item has been stopped. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "item": {
-            "$ref": "Notifications.Item"
+        "schema": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "$ref": "#/$defs/Notifications.Item"
+            },
+            "end": {
+              "type": "boolean",
+              "description": "Whether the player has reached the end of the playable item(s) or not"
+            }
           },
-          "end": {
-            "type": "boolean",
-            "required": true,
-            "description": "Whether the player has reached the end of the playable item(s) or not"
-          }
+          "required": [
+            "end"
+          ]
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Player.OnPlaybackFailed": {
+    "type": "notification",
+    "description": "Playback of a media item was requested but did not happen. Playback starts asynchronously, so a request that was answered successfully can still fail afterwards.",
+    "params": [
+      {
+        "name": "sender",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "data",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "$ref": "#/$defs/Notifications.Item"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Why the item was not played. \"unplayable\": no player could play it, or the player refused it. \"unresolved\": a plugin did not return a playable item. \"locked\": the master or media source lock refused it. \"error\": the player reported an error after playback had started.",
+              "enum": [
+                "unplayable",
+                "unresolved",
+                "locked",
+                "error"
+              ]
+            }
+          },
+          "required": [
+            "reason"
+          ]
         }
       }
     ],
@@ -119,44 +178,52 @@
   },
   "Player.OnSpeedChanged": {
     "type": "notification",
-    "description":
-        "Speed of the playback of a media item has been changed. If there is no ID available extra information will be provided.",
+    "description": "Speed of the playback of a media item has been changed. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "$ref": "Player.Notifications.Data",
-        "required": true
+        "required": true,
+        "schema": {
+          "$ref": "#/$defs/Player.Notifications.Data"
+        }
       }
     ],
     "returns": null
   },
   "Player.OnSeek": {
     "type": "notification",
-    "description":
-        "The playback position has been changed. If there is no ID available extra information will be provided.",
+    "description": "The playback position has been changed. If there is no ID available extra information will be provided.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "item": {
-            "$ref": "Notifications.Item"
+        "schema": {
+          "type": "object",
+          "properties": {
+            "item": {
+              "$ref": "#/$defs/Notifications.Item"
+            },
+            "player": {
+              "$ref": "#/$defs/Player.Notifications.Player.Seek"
+            }
           },
-          "player": {
-            "$ref": "Player.Notifications.Player.Seek",
-            "required": true
-          }
+          "required": [
+            "player"
+          ]
         }
       }
     ],
@@ -168,21 +235,27 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "property": {
-            "$ref": "Player.Property.Value"
+        "schema": {
+          "type": "object",
+          "properties": {
+            "property": {
+              "$ref": "#/$defs/Player.Property.Value"
+            },
+            "player": {
+              "$ref": "#/$defs/Player.Notifications.Player"
+            }
           },
-          "player": {
-            "$ref": "Player.Notifications.Player",
-            "required": true
-          }
+          "required": [
+            "player"
+          ]
         }
       }
     ],
@@ -194,24 +267,30 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "playlistid": {
-            "$ref": "Playlist.Id",
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "playlistid": {
+              "$ref": "#/$defs/Playlist.Id"
+            },
+            "item": {
+              "$ref": "#/$defs/Notifications.Item"
+            },
+            "position": {
+              "$ref": "#/$defs/Playlist.Position"
+            }
           },
-          "item": {
-            "$ref": "Notifications.Item"
-          },
-          "position": {
-            "$ref": "Playlist.Position"
-          }
+          "required": [
+            "playlistid"
+          ]
         }
       }
     ],
@@ -223,21 +302,27 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "playlistid": {
-            "$ref": "Playlist.Id",
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "playlistid": {
+              "$ref": "#/$defs/Playlist.Id"
+            },
+            "position": {
+              "$ref": "#/$defs/Playlist.Position"
+            }
           },
-          "position": {
-            "$ref": "Playlist.Position"
-          }
+          "required": [
+            "playlistid"
+          ]
         }
       }
     ],
@@ -249,18 +334,57 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "playlistid": {
-            "$ref": "Playlist.Id",
-            "required": true
-          }
+        "schema": {
+          "type": "object",
+          "properties": {
+            "playlistid": {
+              "$ref": "#/$defs/Playlist.Id"
+            }
+          },
+          "required": [
+            "playlistid"
+          ]
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Playlist.OnPropertyChanged": {
+    "type": "notification",
+    "description": "A property of the playlist has changed. Unlike Player.OnPropertyChanged this is also sent when the playlist is not currently being played.",
+    "params": [
+      {
+        "name": "sender",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "data",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "playlistid": {
+              "$ref": "#/$defs/Playlist.Id"
+            },
+            "property": {
+              "$ref": "#/$defs/Playlist.Property.Value"
+            }
+          },
+          "required": [
+            "playlistid",
+            "property"
+          ]
         }
       }
     ],
@@ -272,34 +396,36 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "id": {
-            "$ref": "Library.Id",
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/Library.Id"
+            },
+            "type": {
+              "$ref": "#/$defs/Notifications.Library.Audio.Type"
+            },
+            "transaction": {
+              "$ref": "#/$defs/Optional.Boolean",
+              "description": "True if the update is being performed within a transaction."
+            },
+            "added": {
+              "$ref": "#/$defs/Optional.Boolean",
+              "description": "True if the update is for a newly added item."
+            }
           },
-          "type": {
-            "type": "string",
-            "id": "Notifications.Library.Audio.Type",
-            "enum": [
-              "song"
-            ],
-            "required": true
-          },
-          "transaction": {
-            "$ref": "Optional.Boolean",
-            "description": "True if the update is being performed within a transaction."
-          },
-          "added": {
-            "$ref": "Optional.Boolean",
-            "description": "True if the update is for a newly added item."
-          }
+          "required": [
+            "id",
+            "type"
+          ]
         }
       }
     ],
@@ -311,26 +437,32 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "id": {
-            "$ref": "Library.Id",
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/Library.Id"
+            },
+            "type": {
+              "$ref": "#/$defs/Notifications.Library.Audio.Type"
+            },
+            "transaction": {
+              "$ref": "#/$defs/Optional.Boolean",
+              "description": "True if the removal is being performed within a transaction."
+            }
           },
-          "type": {
-            "$ref": "Notifications.Library.Audio.Type",
-            "required": true
-          },
-          "transaction": {
-            "$ref": "Optional.Boolean",
-            "description": "True if the removal is being performed within a transaction."
-          }
+          "required": [
+            "id",
+            "type"
+          ]
         }
       }
     ],
@@ -342,13 +474,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -359,13 +495,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -376,13 +516,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -393,13 +537,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -410,24 +558,25 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
-        "required": false,
-        "properties": {
-          "file": {
-            "type": "string",
-            "required": false,
-            "default": ""
-          },
-          "failcount": {
-            "type": "integer",
-            "minimum": 0,
-            "required": false,
-            "default": 0
+        "schema": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string",
+              "default": ""
+            },
+            "failcount": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
           }
         }
       }
@@ -440,42 +589,41 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "id": {
-            "$ref": "Library.Id",
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/Library.Id"
+            },
+            "type": {
+              "$ref": "#/$defs/Notifications.Library.Video.Type"
+            },
+            "playcount": {
+              "type": "integer",
+              "minimum": 0,
+              "default": -1
+            },
+            "transaction": {
+              "$ref": "#/$defs/Optional.Boolean",
+              "description": "True if the update is being performed within a transaction."
+            },
+            "added": {
+              "$ref": "#/$defs/Optional.Boolean",
+              "description": "True if the update is for a newly added item."
+            }
           },
-          "type": {
-            "type": "string",
-            "id": "Notifications.Library.Video.Type",
-            "enum": [
-              "movie",
-              "tvshow",
-              "episode",
-              "musicvideo"
-            ],
-            "required": true
-          },
-          "playcount": {
-            "type": "integer",
-            "minimum": 0,
-            "default": -1
-          },
-          "transaction": {
-            "$ref": "Optional.Boolean",
-            "description": "True if the update is being performed within a transaction."
-          },
-          "added": {
-            "$ref": "Optional.Boolean",
-            "description": "True if the update is for a newly added item."
-          }
+          "required": [
+            "id",
+            "type"
+          ]
         }
       }
     ],
@@ -487,29 +635,29 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
-        "required": false,
-        "properties": {
-          "file": {
-            "type": "string",
-            "required": false,
-            "default": ""
-          },
-          "root": {
-            "type": "string",
-            "required": false,
-            "default": ""
-          },
-          "failcount": {
-            "type": "integer",
-            "minimum": 0,
-            "required": false,
-            "default": 0
+        "schema": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string",
+              "default": ""
+            },
+            "root": {
+              "type": "string",
+              "default": ""
+            },
+            "failcount": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
           }
         }
       }
@@ -522,26 +670,32 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "id": {
-            "$ref": "Library.Id",
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/Library.Id"
+            },
+            "type": {
+              "$ref": "#/$defs/Notifications.Library.Video.Type"
+            },
+            "transaction": {
+              "$ref": "#/$defs/Optional.Boolean",
+              "description": "True if the removal is being performed within a transaction."
+            }
           },
-          "type": {
-            "$ref": "Notifications.Library.Video.Type",
-            "required": true
-          },
-          "transaction": {
-            "$ref": "Optional.Boolean",
-            "description": "True if the removal is being performed within a transaction."
-          }
+          "required": [
+            "id",
+            "type"
+          ]
         }
       }
     ],
@@ -553,13 +707,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -570,13 +728,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -587,13 +749,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -604,31 +770,38 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
   },
   "VideoLibrary.OnRefresh": {
     "type": "notification",
-    "description":
-        "The video library has been refreshed and a home screen reload might be necessary.",
+    "description": "The video library has been refreshed and a home screen reload might be necessary.",
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -639,19 +812,25 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "exitcode": {
-            "type": "integer",
-            "minimum": 0,
-            "required": true
-          }
+        "schema": {
+          "type": "object",
+          "properties": {
+            "exitcode": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "exitcode"
+          ]
         }
       }
     ],
@@ -663,13 +842,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -680,13 +863,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -697,13 +884,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -714,13 +905,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -731,24 +926,30 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "volume": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 100,
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "volume": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "muted": {
+              "type": "boolean"
+            }
           },
-          "muted": {
-            "type": "boolean",
-            "required": true
-          }
+          "required": [
+            "volume",
+            "muted"
+          ]
         }
       }
     ],
@@ -760,35 +961,41 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "keyboard",
-              "time",
-              "date",
-              "ip",
-              "password",
-              "numericpassword",
-              "number",
-              "seconds"
-            ],
-            "required": true
+        "schema": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "keyboard",
+                "time",
+                "date",
+                "ip",
+                "password",
+                "numericpassword",
+                "number",
+                "seconds"
+              ]
+            },
+            "value": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            }
           },
-          "value": {
-            "type": "string",
-            "required": true
-          },
-          "title": {
-            "type": "string"
-          }
+          "required": [
+            "type",
+            "value"
+          ]
         }
       }
     ],
@@ -800,13 +1007,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -817,13 +1028,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -834,18 +1049,24 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "object",
         "required": true,
-        "properties": {
-          "shuttingdown": {
-            "type": "boolean",
-            "required": true
-          }
+        "schema": {
+          "type": "object",
+          "properties": {
+            "shuttingdown": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "shuttingdown"
+          ]
         }
       }
     ],
@@ -857,13 +1078,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -874,13 +1099,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -891,13 +1120,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -908,13 +1141,17 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
       }
     ],
     "returns": null
@@ -925,13 +1162,46 @@
     "params": [
       {
         "name": "sender",
-        "type": "string",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
       },
       {
         "name": "data",
-        "type": "null",
-        "required": true
+        "required": true,
+        "schema": {
+          "type": "null"
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Settings.OnLevelChanged": {
+    "type": "notification",
+    "description": "The setting level in force has changed. The profile's settings lock can lower it without the viewer asking for it.",
+    "params": [
+      {
+        "name": "sender",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "data",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "$ref": "#/$defs/Setting.Level"
+            }
+          },
+          "required": [
+            "level"
+          ]
+        }
       }
     ],
     "returns": null

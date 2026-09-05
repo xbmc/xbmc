@@ -52,6 +52,14 @@ void CApplicationPlayer::ResetPlayer()
   // we need to do this directly on the member
   std::unique_lock lock(m_playerLock);
   m_pPlayer.reset();
+
+  // the cached stream indices describe the player that has just gone away
+  m_iAudioStream = -1;
+  m_iVideoStream = -1;
+  m_iSubtitleStream = -1;
+  m_audioStreamUpdate.SetExpired();
+  m_videoStreamUpdate.SetExpired();
+  m_subtitleStreamUpdate.SetExpired();
 }
 
 void CApplicationPlayer::CloseFile(bool reopen)
@@ -479,7 +487,7 @@ int CApplicationPlayer::GetAudioStream()
     return m_iAudioStream;
   }
   else
-    return 0;
+    return -1;
 }
 
 int CApplicationPlayer::GetSubtitle()
@@ -495,7 +503,7 @@ int CApplicationPlayer::GetSubtitle()
     return m_iSubtitleStream;
   }
   else
-    return 0;
+    return -1;
 }
 
 bool CApplicationPlayer::GetSubtitleVisible() const
@@ -665,7 +673,7 @@ int CApplicationPlayer::GetVideoStream()
     return m_iVideoStream;
   }
   else
-    return 0;
+    return -1;
 }
 
 int CApplicationPlayer::GetVideoStreamCount() const
@@ -712,6 +720,8 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
   if (player)
   {
     player->SetSubtitleVisible(bVisible);
+    // hiding a subtitle can close its stream, which changes the reported index
+    m_subtitleStreamUpdate.SetExpired();
   }
 }
 

@@ -151,9 +151,11 @@ int main(int argc, char* argv[])
 
   out << "namespace JSONRPC" << std::endl;
   out << "{" << std::endl;
-  out << "  const char* const JSONRPC_SERVICE_ID          = \"http://xbmc.org/jsonrpc/ServiceDescription.json\";" << std::endl;
+  out << "  const char* const JSONRPC_SERVICE_ID          = "
+         "\"https://kodi.tv/jsonrpc/ServiceDescription.json\";"
+      << std::endl;
   out << "  const char* const JSONRPC_SERVICE_VERSION     = \""; print_version(version, out); out << "\";" << std::endl;
-  out << "  const char* const JSONRPC_SERVICE_DESCRIPTION = \"JSON-RPC API of XBMC\";" << std::endl;
+  out << "  const char* const JSONRPC_SERVICE_DESCRIPTION = \"JSON-RPC API of Kodi\";" << std::endl;
   out << std::endl;
 
   out << "  const char* const JSONRPC_SERVICE_TYPES[] = {";

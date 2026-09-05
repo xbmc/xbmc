@@ -523,7 +523,7 @@ public:
   }
 
 private:
-  /*! rief Write a protocolInfo list where the state variable eventing would have put it. */
+  /*! \brief Write a protocolInfo list where the state variable eventing would have put it. */
   static void StoreProtocolInfo(PLT_DeviceDataReference& device,
                                 const char* variable,
                                 const PLT_StringList& values)

@@ -258,6 +258,27 @@ void CDisplaySettings::OnSettingAction(const std::shared_ptr<const CSetting>& se
   }
 }
 
+namespace
+{
+// the prompt is raised on the thread that changes the setting
+thread_local unsigned int s_confirmedChangeDepth = 0;
+} // namespace
+
+CDisplaySettings::CConfirmedChange::CConfirmedChange()
+{
+  ++s_confirmedChangeDepth;
+}
+
+CDisplaySettings::CConfirmedChange::~CConfirmedChange()
+{
+  --s_confirmedChangeDepth;
+}
+
+bool CDisplaySettings::IsChangeConfirmed()
+{
+  return s_confirmedChangeDepth > 0;
+}
+
 bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
   if (!setting)
@@ -302,7 +323,8 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
     {
       if (!m_resolutionChangeAborted)
       {
-        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""},
+        if (!IsChangeConfirmed() &&
+            HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""},
                                          CVariant{""}, 15000) != DialogResponse::CHOICE_YES)
         {
           m_resolutionChangeAborted = true;
@@ -331,7 +353,8 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
 
     if (!m_resolutionChangeAborted)
     {
-      if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""},
+      if (!IsChangeConfirmed() &&
+          HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""},
                                        10000) != DialogResponse::CHOICE_YES)
       {
         m_resolutionChangeAborted = true;

@@ -45,6 +45,11 @@ protected:
    */
   void FocusElement(const std::string& elementId);
 
+  /*!
+   * Rebuild the categories and settings for the setting level now in force.
+   */
+  void OnSettingLevelChanged();
+
   std::shared_ptr<CSettings> m_settings;
   int m_iSection = 0;
   bool m_returningFromSkinLoad = false; // true if we are returning from loading the skin

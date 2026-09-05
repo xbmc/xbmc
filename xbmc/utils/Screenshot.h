@@ -31,10 +31,48 @@ public:
                              KODI::RENDERING::CAPTURE::CaptureContent content =
                                  KODI::RENDERING::CAPTURE::CaptureContent::COMPOSITE);
 
-  //! \brief Capture the video-only image and the full composite from the same
-  //! rendered frame into two files in the configured folder
-  //! (screenshotNNNNN.png and screenshotNNNNN-video.png).
-  static void TakeScreenshotBoth();
+  //! \brief Why a screenshot did not happen, so a caller can say which.
+  enum class ScreenshotError
+  {
+    NONE,
+    NO_FOLDER, //!< no screenshot folder is configured
+    BAD_TARGET, //!< the requested name is not a plain .png file name
+    NOT_FOUND, //!< the named screenshot is not in the folder
+    FAILED, //!< the frame did not arrive, or a file could not be written
+  };
+
+  //! \brief What a screenshot wrote, as paths under special://screenshots.
+  struct ScreenshotFiles
+  {
+    ScreenshotError error{ScreenshotError::NONE};
+    //! the full display output; empty when only the video frame was asked for
+    std::string composite;
+    //! the video frame alone; empty when only the composite was asked for
+    std::string video;
+  };
+
+  //! \brief Screenshot of the given content, written before this returns; an unset folder is
+  //!        NO_FOLDER, never a prompt.
+  //! \param content what to capture
+  //! \param target file name under the configured folder, auto-numbered when empty; the video
+  //!               frame takes the matching "-video" name
+  static ScreenshotFiles TakeScreenshotSync(KODI::RENDERING::CAPTURE::CaptureContent content,
+                                            const std::string& target = "");
+
+  //! \brief Whether a path names a screenshot: the special://screenshots folder and a plain .png name
+  static bool IsScreenshotPath(const std::string& path);
+
+  //! \brief What a delete removed.
+  struct ScreenshotDeletion
+  {
+    ScreenshotError error{ScreenshotError::NONE};
+    unsigned int deleted{0};
+  };
+
+  //! \brief Delete screenshots from the configured folder.
+  //! \param file one screenshot, named as TakeScreenshotSync answers or as a bare name; every
+  //!             .png in the folder when empty
+  static ScreenshotDeletion DeleteScreenshots(const std::string& file = "");
 
 private:
   static std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> m_screenShotSurfaces;

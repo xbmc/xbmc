@@ -551,6 +551,9 @@ bool CApplication::InitWindow(RESOLUTION res)
 
 bool CApplication::Initialize()
 {
+  // Must precede anything that can dispatch a JSON-RPC call
+  CJSONRPC::Initialize();
+
   m_pActiveAE->Start();
   // restore AE's previous volume state
 
@@ -745,10 +748,6 @@ bool CApplication::Initialize()
     // rendered while we load the main window or enter the master lock key
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SPLASH);
   }
-
-  // Must stay above the window activation below: that can raise a modal dialog, whose nested
-  // render loop reaches anything after it only once the dialog has been dismissed.
-  CJSONRPC::Initialize();
 
   CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
 
@@ -2115,15 +2114,12 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // pushed some delay message into the threadmessage list, they are not
   // expected be processed after or during the new item playback starting.
   // so we clean up previous playing item's playback callback delay messages here.
-  static constexpr std::array previousMsgsIgnoredByNewPlaying{GUI_MSG_PLAYBACK_STARTED,
-                                                              GUI_MSG_PLAYBACK_ENDED,
-                                                              GUI_MSG_PLAYBACK_STOPPED,
-                                                              GUI_MSG_PLAYLIST_CHANGED,
-                                                              GUI_MSG_PLAYLISTPLAYER_STOPPED,
-                                                              GUI_MSG_PLAYLISTPLAYER_STARTED,
-                                                              GUI_MSG_PLAYLISTPLAYER_CHANGED,
-                                                              GUI_MSG_QUEUE_NEXT_ITEM,
-                                                              0};
+  static constexpr std::array previousMsgsIgnoredByNewPlaying{
+      GUI_MSG_PLAYBACK_STARTED,       GUI_MSG_PLAYBACK_ENDED,
+      GUI_MSG_PLAYBACK_STOPPED,       GUI_MSG_PLAYBACK_ERROR,
+      GUI_MSG_PLAYLIST_CHANGED,       GUI_MSG_PLAYLISTPLAYER_STOPPED,
+      GUI_MSG_PLAYLISTPLAYER_STARTED, GUI_MSG_PLAYLISTPLAYER_CHANGED,
+      GUI_MSG_QUEUE_NEXT_ITEM,        0};
   if (const int dMsgCount{
           CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(
               &previousMsgsIgnoredByNewPlaying[0])};
