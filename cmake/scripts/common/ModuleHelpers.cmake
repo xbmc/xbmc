@@ -885,11 +885,23 @@ function(create_mesonbinaries)
     list(APPEND binariespairs "strip" "CMAKE_STRIP")
   endif()
 
-  if(PKG_CONFIG_EXECUTABLE)
+  # MESON_PKG_CONFIG_EXECUTABLE lets a build system hand meson a different
+  # pkg-config than the one used for the main configure. Distribution build
+  # systems (OpenWrt, Buildroot, Yocto) commonly wrap pkg-config to redefine
+  # ${prefix} to their sysroot; that is right for their own .pc files but
+  # wrong for the ones below DEPENDS_PATH, the only pkg_config_libdir these
+  # cross files allow, which carry absolute prefixes already.
+  if(MESON_PKG_CONFIG_EXECUTABLE)
+    set(meson_pkg_config_executable "${MESON_PKG_CONFIG_EXECUTABLE}")
+  else()
+    set(meson_pkg_config_executable "${PKG_CONFIG_EXECUTABLE}")
+  endif()
+
+  if(meson_pkg_config_executable)
     # Both names, because meson renamed this entry from "pkgconfig" to "pkg-config"
     # in 1.2.0. Duplicates are accepted as long as the values match.
-    list(APPEND binariespairs "pkg-config" "PKG_CONFIG_EXECUTABLE"
-                              "pkgconfig" "PKG_CONFIG_EXECUTABLE")
+    list(APPEND binariespairs "pkg-config" "meson_pkg_config_executable"
+                              "pkgconfig" "meson_pkg_config_executable")
   endif()
 
   # Get/set loop limit (Size - 1) from size of binariespairs list
