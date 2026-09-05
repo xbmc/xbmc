@@ -305,7 +305,79 @@ CHDRCapabilities CAndroidUtils::GetDisplayHDRCapabilities()
       types.end())
     caps.SetDolbyVision();
 
+  // Some older Dolby Vision displays only advertise Dolby Vision for a subset of their
+  // display modes (commonly the low frame rate ones), so Android reports no Dolby Vision
+  // support at all while the display is running at e.g. 4K60. Allow the user to override
+  // the reported capability in that case.
+  if (!caps.SupportsDolbyVision() && IsDolbyVisionForcedBySetting())
+    caps.SetDolbyVision();
+
   return caps;
+}
+
+bool CAndroidUtils::IsDolbyVisionForcedBySetting()
+{
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return false;
+
+  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_FORCEDOLBYVISION))
+    return false;
+
+  // Forcing is a bet that the display will be in a Dolby Vision capable mode by the time the
+  // picture is sent, which is only true when Kodi switches the display to match the content
+  // frame rate. The capability is read when the decoder is chosen, before the mode switch has
+  // happened, which is exactly why the override is needed at all - but with refresh rate
+  // switching off the display simply stays where it is, and a display that only accepts Dolby
+  // Vision at some rates (many sets only do so at 24Hz) is then handed a signal it rejects
+  // outright, giving no picture rather than a fallback.
+  if (settings->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_OFF)
+  {
+    CLog::Log(LOGDEBUG, "CAndroidUtils: Dolby Vision override ignored, display refresh rate "
+                        "switching is disabled");
+    return false;
+  }
+
+  return true;
+}
+
+bool CAndroidUtils::IsForcedDolbyVisionBlockedForFps(double fps)
+{
+  if (!IsDolbyVisionForcedBySetting())
+    return false;
+
+  // A stream with no frame rate never gets a mode switch: CVideoPlayer::OpenVideoStream
+  // only asks for one when fpsrate and fpsscale are both set. The display therefore stays
+  // where it is, and on the displays this setting exists for that means handing Dolby
+  // Vision to a mode which rejects it outright.
+  if (fps <= 0.0)
+    return true;
+
+  // HDMI 2.0 cannot carry more than 8 bit colour depth above 30Hz at 4K, which is what
+  // confines these displays to Dolby Vision at the lower rates to begin with, so there is
+  // nothing above 30fps for forcing to reach.
+  //
+  // The limit is applied even where the display currently reports Dolby Vision, because on
+  // the displays this exists for that report only describes the mode they happen to be in.
+  // A display left at 24Hz by a previous item advertises Dolby Vision it will withdraw as
+  // soon as it is switched for the next one.
+  //
+  // Tolerance so the broadcast rates (23.976 / 29.97) meet their nominal limit.
+  constexpr double maxFps = 30.0;
+  constexpr double tolerance = 0.05;
+  const bool blocked = fps > (maxFps + tolerance);
+
+  if (blocked)
+    CLog::Log(LOGDEBUG,
+              "CAndroidUtils: forced Dolby Vision not applied, content {:.3f} fps is beyond the "
+              "{:.0f} fps that HDMI 2.0 carries as Dolby Vision at 4K",
+              fps, maxFps);
+
+  return blocked;
 }
 
 bool CAndroidUtils::SupportsMediaCodecMimeType(const std::string& mimeType)

@@ -38,6 +38,21 @@ public:
   static CHDRCapabilities GetDisplayHDRCapabilities();
   static std::pair<bool, bool> GetDolbyVisionCapabilities();
 
+  /*!
+   * \brief Whether the user enabled forcing of Dolby Vision display support.
+   */
+  static bool IsDolbyVisionForcedBySetting();
+
+  /*!
+   * \brief Whether forced Dolby Vision must not be used for content at a given frame rate.
+   * \param fps the content frame rate, <= 0 when unknown
+   * \return true when Dolby Vision display support is only present because the user forced
+   *         it and the content cannot be shown that way, either because it is above the 30fps
+   *         that HDMI 2.0 carries as Dolby Vision at 4K, or because its frame rate is unknown
+   *         and so no display mode will be requested for it.
+   */
+  static bool IsForcedDolbyVisionBlockedForFps(double fps);
+
 protected:
   mutable int m_width;
   mutable int m_height;
