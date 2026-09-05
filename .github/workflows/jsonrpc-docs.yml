@@ -57,3 +57,33 @@ jobs:
           jsonschema.validate(document, schema)
           print('openrpc.json validates')
           "
+
+  # Publishes to the Pages repository named by the API_DOCS_REPO variable,
+  # using the deploy key in the API_DOCS_DEPLOY_KEY secret.
+  deploy:
+    if: github.event_name == 'push' && vars.API_DOCS_REPO != ''
+    needs: gate
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Build site
+        run: python tools/jsonrpc/generate_site.py --out build/apidocs
+
+      - name: Deploy to Pages repository
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          deploy_key: ${{ secrets.API_DOCS_DEPLOY_KEY }}
+          external_repository: ${{ vars.API_DOCS_REPO }}
+          publish_branch: main
+          publish_dir: build/apidocs
+          keep_files: true
+          full_commit_message: 'deploy: ${{ github.repository }}@${{ github.sha }}'

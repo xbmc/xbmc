@@ -1,0 +1,20 @@
+{
+  "title": "List the players that are currently active",
+  "method": "Player.GetActivePlayers",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "Player.GetActivePlayers"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": [
+      {
+        "playerid": 1,
+        "playertype": "internal",
+        "type": "video"
+      }
+    ]
+  }
+}
