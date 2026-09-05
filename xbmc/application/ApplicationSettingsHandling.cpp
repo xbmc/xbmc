@@ -269,6 +269,9 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_CALIBRATION);
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_CALIBRATIONALIGNMENT)
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_ALIGNMENT);
   else if (settingId == CSettings::SETTING_SOURCE_VIDEOS)
   {
     std::vector<std::string> params{"library://video/files.xml", "return"};

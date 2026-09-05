@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
@@ -25,6 +26,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -47,6 +49,7 @@
 #define SETTING_VIDEO_TONEMAP_METHOD      "video.tonemapmethod"
 #define SETTING_VIDEO_TONEMAP_PARAM       "video.tonemapparam"
 #define SETTING_VIDEO_ORIENTATION         "video.orientation"
+#define SETTING_VIDEO_DECLARED_ASPECT "video.declaredaspect"
 
 #define SETTING_VIDEO_VDPAU_NOISE         "vdpau.noise"
 #define SETTING_VIDEO_VDPAU_SHARPNESS     "vdpau.sharpness"
@@ -60,6 +63,31 @@
 #define SETTING_VIDEO_MAKE_DEFAULT        "video.save"
 #define SETTING_VIDEO_CALIBRATION         "video.calibration"
 #define SETTING_VIDEO_STREAM              "video.stream"
+
+namespace
+{
+using namespace KODI::UTILS;
+
+std::shared_ptr<CSetting> CalibrationSetting()
+{
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent || !settingsComponent->GetSettings())
+    return nullptr;
+
+  return settingsComponent->GetSettings()->GetSetting(
+      CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION);
+}
+
+void DeclaredAspectFiller(const std::shared_ptr<const CSetting>& /*setting*/,
+                          std::vector<IntegerSettingOption>& list,
+                          int& /*current*/)
+{
+  // Zero is "Auto": the absence of a declaration rather than a ratio of its own.
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16316), 0);
+
+  CAspectRatioVocabulary::AppendDeclareChoices(list);
+}
+} // unnamed namespace
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings()
     : CGUIDialogSettingsManualBase(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "DialogSettings.xml")
@@ -138,6 +166,12 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
     else
       appPlayer->SetRenderViewMode(vs.m_ViewMode, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
                                    vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
+  }
+  else if (settingId == SETTING_VIDEO_DECLARED_ASPECT)
+  {
+    const int key = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
+    components.GetComponent<CApplicationContentGeometry>()->ApplyDeclaredAspect(
+        *appPlayer, CAspectRatioVocabulary::RatioForKey(key));
   }
   else if (settingId == SETTING_VIDEO_POSTPROCESS)
   {
@@ -220,15 +254,7 @@ void CGUIDialogVideoSettings::OnSettingAction(const std::shared_ptr<const CSetti
   {
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-    auto settingsComponent = CServiceBroker::GetSettingsComponent();
-    if (!settingsComponent)
-      return;
-
-    auto settings = settingsComponent->GetSettings();
-    if (!settings)
-      return;
-
-    auto calibsetting = settings->GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION);
+    const std::shared_ptr<CSetting> calibsetting = CalibrationSetting();
     if (!calibsetting)
     {
       CLog::Log(LOGERROR, "Failed to load setting for: {}",
@@ -271,6 +297,7 @@ bool CGUIDialogVideoSettings::Save()
     CMediaSettings::GetInstance().GetDefaultVideoSettings() = appPlayer->GetVideoSettings();
     CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
     CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
+    CMediaSettings::GetInstance().GetDefaultVideoSettings().ClearDeclaredAspect();
     CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
   }
 
@@ -409,6 +436,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
   {
     AddList(groupVideo, SETTING_VIDEO_VIEW_MODE, 629, SettingLevel::Basic, videoSettings.m_ViewMode, CViewModeSettings::ViewModesFiller, 629);
   }
+
+  AddList(groupVideo, SETTING_VIDEO_DECLARED_ASPECT, 40862, SettingLevel::Basic,
+          CAspectRatioVocabulary::Key(videoSettings.m_declaredAspect), DeclaredAspectFiller, 40862);
+
   if (appPlayer->Supports(RENDERFEATURE_ZOOM))
     AddSlider(groupVideo, SETTING_VIDEO_ZOOM, 216, SettingLevel::Basic,
               videoSettings.m_CustomZoomAmount, "{:2.2f}", 0.5f, 0.01f, 2.0f, 216, usePopup);
@@ -465,7 +496,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   // general settings
   AddButton(groupSaveAsDefault, SETTING_VIDEO_MAKE_DEFAULT, 12376, SettingLevel::Basic);
-  AddButton(groupSaveAsDefault, SETTING_VIDEO_CALIBRATION, 214, SettingLevel::Basic);
+
+  const std::shared_ptr<CSetting> calibration = CalibrationSetting();
+  AddButton(groupSaveAsDefault, SETTING_VIDEO_CALIBRATION, 214,
+            calibration ? calibration->GetLevel() : SettingLevel::Expert);
 }
 
 void CGUIDialogVideoSettings::AddVideoStreams(const std::shared_ptr<CSettingGroup>& group,

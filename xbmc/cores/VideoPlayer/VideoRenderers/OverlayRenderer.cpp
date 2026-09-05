@@ -12,6 +12,7 @@
 #include "OverlayRendererUtil.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlay.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
@@ -285,6 +286,22 @@ bool CRenderer::HasVisibleOverlay(int idx) const
   return false;
 }
 
+void CRenderer::SetContentRect(SUBTITLES::STYLE::renderOpts& opts) const
+{
+  if (!m_subtitleAlignToContent)
+    return;
+
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto geometry = components.GetComponent<CApplicationContentGeometry>();
+  if (!geometry)
+    return;
+
+  const CRect picture =
+      KODI::VIDEO::GEOMETRY::PictureOnScreen(geometry->GetRenderInputs().geometry, m_rs, m_rd);
+  opts.contentWidth = picture.Width();
+  opts.contentHeight = picture.Height();
+}
+
 void CRenderer::SetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
   if (m_rv != view) // Screen resolution is changed
@@ -482,6 +499,7 @@ void CRenderer::PrepareOverlays(int idx)
     rOpts.videoHeight = m_rd.Height();
     rOpts.frameWidth = m_rv.Width();
     rOpts.frameHeight = m_rv.Height();
+    SetContentRect(rOpts);
 
     // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
     if (m_stereomode == "left_right" || m_stereomode == "right_left")
@@ -700,5 +718,6 @@ void CRenderer::LoadSettings()
   const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
   m_subtitleHorizontalAlign = settings->GetHorizontalAlignment();
   m_subtitleAlign = settings->GetAlignment();
+  m_subtitleAlignToContent = settings->IsAlignedToContent();
   ResetSubtitlePosition();
 }
