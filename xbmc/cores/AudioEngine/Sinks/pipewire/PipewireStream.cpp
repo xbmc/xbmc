@@ -13,8 +13,10 @@
 #include "PipewireThreadLoop.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <stdexcept>
 
+#include <spa/param/param.h>
 #include <spa/utils/result.h>
 
 using namespace KODI;
@@ -22,10 +24,7 @@ using namespace PIPEWIRE;
 
 CPipewireStream::CPipewireStream(CPipewireCore& core)
   : m_core(core),
-    m_streamEvents(CreateStreamEvents()),
-    m_buffer(nullptr),
-    m_waiting(false),
-    m_running(false)
+    m_streamEvents(CreateStreamEvents())
 {
   m_stream.reset(pw_stream_new(core.Get(), nullptr, pw_properties_new(nullptr, nullptr)));
   if (!m_stream)
@@ -39,19 +38,8 @@ CPipewireStream::CPipewireStream(CPipewireCore& core)
 
 void CPipewireStream::Stop()
 {
-  using namespace std::chrono_literals;
-  auto& loop = GetCore().GetContext().GetThreadLoop();
-
-  // Stop blocking in Process(), nothing produces samples any more
   m_running = false;
-
-  // If Process() is blocking, wake it up
-  if (m_waiting)
-  {
-    loop.Accept();
-    while (m_waiting)
-      loop.Wait(1s);
-  }
+  m_dataConsumed.notify_all();
 }
 
 CPipewireStream::~CPipewireStream()
@@ -80,50 +68,29 @@ pw_stream_state CPipewireStream::GetState()
   return pw_stream_get_state(m_stream.get(), nullptr);
 }
 
+pw_stream_state CPipewireStream::GetState(const char** error)
+{
+  return pw_stream_get_state(m_stream.get(), error);
+}
+
 void CPipewireStream::SetActive(bool active)
 {
-  if (!active)
+  if (active)
+  {
+    // Reset ring buffer under lock (as documented in AERingBuffer.h)
+    {
+      std::lock_guard<std::mutex> lock(m_mutex);
+      if (m_ringBuffer)
+        m_ringBuffer->Reset();
+    }
+    m_streamError = false;
+    m_running = true;
+  }
+  else
+  {
     Stop();
+  }
   pw_stream_set_active(m_stream.get(), active);
-  m_running = active;
-}
-
-pw_buffer* CPipewireStream::PeekBuffer()
-{
-  return m_buffer;
-}
-
-pw_buffer* CPipewireStream::GetBuffer()
-{
-  if (!m_buffer)
-  {
-    m_buffer = pw_stream_dequeue_buffer(m_stream.get());
-    if (m_buffer)
-      m_buffer->size = 0;
-  }
-  return m_buffer;
-}
-
-void CPipewireStream::QueueBuffer()
-{
-  auto& loop = GetCore().GetContext().GetThreadLoop();
-
-  if (!m_buffer)
-    return;
-
-  pw_stream_queue_buffer(m_stream.get(), m_buffer);
-  m_buffer = nullptr;
-
-  if (m_waiting)
-  {
-    m_waiting = false;
-    loop.Accept();
-  }
-}
-
-bool CPipewireStream::NeedsData() const
-{
-  return m_waiting;
 }
 
 void CPipewireStream::Flush(bool drain)
@@ -150,6 +117,53 @@ pw_time CPipewireStream::GetTime() const
   return time;
 }
 
+// Ring buffer methods
+
+void CPipewireStream::InitRingBuffer(uint32_t size, uint32_t frameSize)
+{
+  m_frameSize = frameSize;
+  m_ringBuffer = std::make_unique<AERingBuffer>(size);
+}
+
+unsigned int CPipewireStream::Write(const uint8_t* data, unsigned int frames)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  if (!m_ringBuffer)
+    return 0;
+
+  uint32_t bytesToWrite = frames * m_frameSize;
+  uint32_t space = m_ringBuffer->GetWriteSize();
+  uint32_t toWrite = std::min(bytesToWrite, space);
+  uint32_t writtenFrames = toWrite / m_frameSize;
+  toWrite = writtenFrames * m_frameSize; // align to frame boundary
+
+  if (writtenFrames > 0)
+    m_ringBuffer->Write(const_cast<unsigned char*>(data), toWrite);
+
+  return writtenFrames;
+}
+
+bool CPipewireStream::WaitForSpace(std::chrono::milliseconds timeout)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+  return m_dataConsumed.wait_for(lock, timeout,
+                                 [this]
+                                 {
+                                   return !m_ringBuffer ||
+                                          m_ringBuffer->GetWriteSize() >= m_frameSize ||
+                                          !m_running || m_streamError;
+                                 });
+}
+
+unsigned int CPipewireStream::GetRingBufferReadSize() const
+{
+  if (!m_ringBuffer)
+    return 0;
+  return m_ringBuffer->GetReadSize();
+}
+
+// PipeWire callbacks
+
 void CPipewireStream::StateChanged(void* userdata,
                                    enum pw_stream_state old,
                                    enum pw_stream_state state,
@@ -165,32 +179,97 @@ void CPipewireStream::StateChanged(void* userdata,
     CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {}", __FUNCTION__, stream.GetNodeId());
 
   if (state == PW_STREAM_STATE_ERROR)
-    CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {} error: {}", __FUNCTION__,
-              stream.GetNodeId(), error);
+  {
+    stream.m_initError = true;
+    stream.m_streamError = true;
+    CLog::Log(LOGWARNING, "CPipewireStream::{} - stream error: {}", __FUNCTION__,
+              error ? error : "unknown");
+    // Unblock WaitForSpace so AddPackets returns immediately
+    stream.m_dataConsumed.notify_all();
+  }
+
+  if (state == PW_STREAM_STATE_UNCONNECTED && old != PW_STREAM_STATE_UNCONNECTED)
+  {
+    stream.m_streamError = true;
+    CLog::Log(LOGWARNING, "CPipewireStream::{} - stream disconnected", __FUNCTION__);
+    stream.m_dataConsumed.notify_all();
+  }
 
   loop.Signal(false);
+}
+
+void CPipewireStream::ParamChanged(void* userdata, uint32_t id, const struct spa_pod* param)
+{
+  auto& stream = *reinterpret_cast<CPipewireStream*>(userdata);
+  auto& loop = stream.GetCore().GetContext().GetThreadLoop();
+
+  if (id == SPA_PARAM_Format && param != nullptr)
+  {
+    CLog::Log(LOGDEBUG, "CPipewireStream::{} - format negotiated", __FUNCTION__);
+
+    if (stream.m_paramChangedCallback)
+      stream.m_paramChangedCallback(id, param);
+
+    stream.m_formatNegotiated = true;
+  }
+
+  // Latency param indicates the stream node is linked (mpv pattern)
+  if (id == SPA_PARAM_Latency)
+    loop.Signal(false);
 }
 
 void CPipewireStream::Process(void* userdata)
 {
   auto& stream = *reinterpret_cast<CPipewireStream*>(userdata);
-  auto& loop = stream.GetCore().GetContext().GetThreadLoop();
 
-  // Block thread loop until there is enough data.
-  // This is allowed since we are running without PW_STREAM_FLAG_RT_PROCESS.
-  stream.m_waiting = stream.m_running;
-  while (stream.m_waiting)
+  pw_buffer* b = pw_stream_dequeue_buffer(stream.m_stream.get());
+  if (!b)
+    return;
+
+  spa_buffer* buf = b->buffer;
+  spa_data* d = &buf->datas[0];
+
+  if (stream.m_frameSize == 0 || !d->data)
   {
-    if (!stream.m_running)
-    {
-      stream.m_waiting = false;
-      loop.Signal(false);
-      return;
-    }
-
-    // Wake up AddPackets() and wait for notify from QueueBuffer()
-    loop.Signal(true);
+    pw_stream_queue_buffer(stream.m_stream.get(), b);
+    return;
   }
+
+  uint32_t maxFrames = d->maxsize / stream.m_frameSize;
+  uint32_t requested = b->requested ? b->requested : maxFrames;
+  uint32_t target = std::min(requested, maxFrames);
+
+  uint32_t toRead = 0;
+  {
+    std::lock_guard<std::mutex> lock(stream.m_mutex);
+    if (stream.m_ringBuffer)
+    {
+      uint32_t available = stream.m_ringBuffer->GetReadSize() / stream.m_frameSize;
+      toRead = std::min(target, available);
+
+      if (toRead > 0)
+        stream.m_ringBuffer->Read(static_cast<unsigned char*>(d->data),
+                                  toRead * stream.m_frameSize);
+    }
+  }
+
+  // Fill remainder with silence to prevent graph stall
+  if (toRead < target)
+  {
+    std::memset(static_cast<uint8_t*>(d->data) + toRead * stream.m_frameSize, 0,
+                (target - toRead) * stream.m_frameSize);
+    toRead = target;
+  }
+
+  d->chunk->offset = 0;
+  d->chunk->stride = stream.m_frameSize;
+  d->chunk->size = toRead * stream.m_frameSize;
+  b->size = toRead;
+
+  pw_stream_queue_buffer(stream.m_stream.get(), b);
+
+  // Signal AddPackets that space is available in the ring buffer
+  stream.m_dataConsumed.notify_one();
 }
 
 void CPipewireStream::Drained(void* userdata)
@@ -205,11 +284,22 @@ void CPipewireStream::Drained(void* userdata)
   loop.Signal(false);
 }
 
+void CPipewireStream::SetParamChangedCallback(ParamChangedCallback callback)
+{
+  m_paramChangedCallback = std::move(callback);
+}
+
+int CPipewireStream::UpdateParams(const spa_pod** params, uint32_t n_params)
+{
+  return pw_stream_update_params(m_stream.get(), params, n_params);
+}
+
 pw_stream_events CPipewireStream::CreateStreamEvents()
 {
   pw_stream_events streamEvents = {};
   streamEvents.version = PW_VERSION_STREAM_EVENTS;
   streamEvents.state_changed = StateChanged;
+  streamEvents.param_changed = ParamChanged;
   streamEvents.process = Process;
   streamEvents.drained = Drained;
 
