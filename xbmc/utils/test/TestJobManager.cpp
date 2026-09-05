@@ -7,13 +7,19 @@
  */
 
 #include "ServiceBroker.h"
+#include "jobs/IJobCallback.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
+#include "jobs/JobQueue.h"
 #include "test/MtTestUtils.h"
 #include "utils/XTimeUtils.h"
 
 #include <atomic>
+#include <chrono>
 #include <mutex>
+#include <thread>
+#include <utility>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -210,4 +216,237 @@ TEST_F(TestJobManager, IsProcessing)
   EXPECT_EQ(0, CServiceBroker::GetJobManager()->IsProcessing(""));
 
   job->FinishAndStopBlocking();
+}
+
+namespace
+{
+class BlockingCallback : public IJobCallback
+{
+public:
+  ~BlockingCallback() override { Release(); }
+
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override { Block(); }
+
+  void OnJobAbort(unsigned int jobID, CJob* job) override { Block(); }
+
+  bool HasEntered() const { return m_entered; }
+
+  void Release()
+  {
+    m_blocked = false;
+    while (m_entered && !m_exited)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+
+private:
+  void Block()
+  {
+    m_entered = true;
+    while (m_blocked)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    m_exited = true;
+  }
+
+  std::atomic<bool> m_blocked{true};
+  std::atomic<bool> m_entered{false};
+  std::atomic<bool> m_exited{false};
+};
+
+unsigned int AddDumbJob(Flags& flags, IJobCallback* callback, CJob::PRIORITY priority)
+{
+  return CServiceBroker::GetJobManager()->AddJob(new ReallyDumbJob(&flags), callback, priority);
+}
+
+/*!
+ rief Owns the threads a test starts, releasing the callback and joining them however the
+        test exits.
+
+ A fatal assertion returns from the test body. A thread still joinable at that point calls
+ std::terminate, taking the whole test binary with it, and one blocked in the callback only
+ finishes once the callback is released.
+ */
+/*!
+ rief A queue whose abort callback can be held in flight, before it reaches the base class
+        and takes the queue's lock.
+ */
+class BlockingJobQueue : public CJobQueue
+{
+public:
+  BlockingJobQueue() : CJobQueue(false, 1, CJob::PRIORITY_LOW_PAUSABLE) {}
+  ~BlockingJobQueue() override { Unblock(); }
+
+  void OnJobAbort(unsigned int jobID, CJob* job) override
+  {
+    m_entered = true;
+    while (m_blocked)
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+    CJobQueue::OnJobAbort(jobID, job);
+  }
+
+  bool HasEntered() const { return m_entered; }
+  void Unblock() { m_blocked = false; }
+
+private:
+  std::atomic<bool> m_blocked{true};
+  std::atomic<bool> m_entered{false};
+};
+
+class ScopedThreads
+{
+public:
+  explicit ScopedThreads(BlockingCallback& callback) : m_callback(callback) {}
+
+  ~ScopedThreads()
+  {
+    m_callback.Release();
+    for (auto& thread : m_threads)
+      thread.join();
+  }
+
+  template<typename F>
+  void Start(F&& function)
+  {
+    m_threads.emplace_back(std::forward<F>(function));
+  }
+
+private:
+  BlockingCallback& m_callback;
+  std::vector<std::thread> m_threads;
+};
+} // namespace
+
+TEST_F(TestJobManager, BlockedCallbackDoesNotStallOtherJobs)
+{
+  BlockingCallback callback;
+  Flags blockedFlags;
+  AddDumbJob(blockedFlags, &callback, CJob::PRIORITY_NORMAL);
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  Flags flags;
+  AddDumbJob(flags, nullptr, CJob::PRIORITY_NORMAL);
+  EXPECT_TRUE(poll([&flags]() { return flags.finished.load(); }));
+
+  callback.Release();
+}
+
+TEST_F(TestJobManager, BlockedCallbackDoesNotStallDedicatedJobs)
+{
+  BlockingCallback callback;
+  Flags blockedFlags;
+  AddDumbJob(blockedFlags, &callback, CJob::PRIORITY_NORMAL);
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  Flags flags;
+  AddDumbJob(flags, nullptr, CJob::PRIORITY_DEDICATED);
+  EXPECT_TRUE(poll([&flags]() { return flags.finished.load(); }));
+
+  callback.Release();
+}
+
+TEST_F(TestJobManager, CallbacksCountTowardsTheConcurrencyLimit)
+{
+  BlockingCallback firstCallback;
+  BlockingCallback secondCallback;
+  Flags firstFlags;
+  Flags secondFlags;
+
+  AddDumbJob(firstFlags, &firstCallback, CJob::PRIORITY_LOW_PAUSABLE);
+  ASSERT_TRUE(poll([&firstCallback]() { return firstCallback.HasEntered(); }));
+  AddDumbJob(secondFlags, &secondCallback, CJob::PRIORITY_LOW_PAUSABLE);
+  ASSERT_TRUE(poll([&secondCallback]() { return secondCallback.HasEntered(); }));
+
+  Flags thirdFlags;
+  AddDumbJob(thirdFlags, nullptr, CJob::PRIORITY_LOW_PAUSABLE);
+  EXPECT_FALSE(poll(1000, [&thirdFlags]() { return thirdFlags.finished.load(); }));
+
+  firstCallback.Release();
+  secondCallback.Release();
+
+  EXPECT_TRUE(poll([&thirdFlags]() { return thirdFlags.finished.load(); }));
+}
+
+TEST_F(TestJobManager, CancelJobsDoesNotRunCallbacksUnderTheLock)
+{
+  CServiceBroker::GetJobManager()->PauseJobs();
+
+  BlockingCallback callback;
+  Flags flags;
+  AddDumbJob(flags, &callback, CJob::PRIORITY_LOW_PAUSABLE);
+
+  ScopedThreads threads(callback);
+  threads.Start([]() { CServiceBroker::GetJobManager()->CancelJobs(); });
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  std::atomic<bool> queried{false};
+  threads.Start(
+      [&queried]()
+      {
+        CServiceBroker::GetJobManager()->IsProcessing(CJob::PRIORITY_NORMAL);
+        queried = true;
+      });
+
+  EXPECT_TRUE(poll(2000, [&queried]() { return queried.load(); }));
+}
+
+TEST_F(TestJobManager, CancelJobWaitsForAnAbortCallbackInFlight)
+{
+  CServiceBroker::GetJobManager()->PauseJobs();
+
+  BlockingCallback callback;
+  Flags flags;
+  const unsigned int id = AddDumbJob(flags, &callback, CJob::PRIORITY_LOW_PAUSABLE);
+
+  ScopedThreads threads(callback);
+  threads.Start([]() { CServiceBroker::GetJobManager()->CancelJobs(); });
+  ASSERT_TRUE(poll([&callback]() { return callback.HasEntered(); }));
+
+  std::atomic<bool> returned{false};
+  threads.Start(
+      [id, &returned]()
+      {
+        CServiceBroker::GetJobManager()->CancelJob(id);
+        returned = true;
+      });
+
+  // The callback is still blocked, so the owner must not have been told the job is gone.
+  EXPECT_FALSE(poll(500, [&returned]() { return returned.load(); }));
+
+  callback.Release();
+  EXPECT_TRUE(poll([&returned]() { return returned.load(); }));
+}
+
+/*!
+ The job manager runs an abort callback with its own lock dropped, but that callback is
+ CJobQueue::OnJobNotify, which takes the queue's lock. A queue cancelling its own jobs must
+ therefore not hold that lock while it waits on the manager.
+
+ Disabled because a regression wedges both threads instead of failing, which CI cannot
+ recover from. Run it by hand with
+   kodi-test --gtest_also_run_disabled_tests              --gtest_filter=TestJobManager.DISABLED_CancellingAQueueWaitsWithoutItsLock
+ */
+TEST_F(TestJobManager, DISABLED_CancellingAQueueWaitsWithoutItsLock)
+{
+  CServiceBroker::GetJobManager()->PauseJobs();
+
+  BlockingJobQueue queue;
+  Flags flags;
+  queue.AddJob(new ReallyDumbJob(&flags));
+
+  std::thread manager([]() { CServiceBroker::GetJobManager()->CancelJobs(); });
+  ASSERT_TRUE(poll([&queue]() { return queue.HasEntered(); }));
+
+  std::atomic<bool> returned{false};
+  std::thread canceller(
+      [&queue, &returned]()
+      {
+        queue.CancelJobs();
+        returned = true;
+      });
+
+  queue.Unblock();
+  EXPECT_TRUE(poll([&returned]() { return returned.load(); }));
+
+  canceller.join();
+  manager.join();
 }
