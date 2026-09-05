@@ -56,8 +56,9 @@ void CDiscManagerGame::Deinitialize()
     const auto lock = m_gameClient->LockForSnapshot();
     CGameClientDiscs& discs = m_gameClient->Discs();
 
-    if (m_pendingDiscModel && *m_pendingDiscModel == discs.GetDiscs() && discs.IsEjected() &&
-        !discs.SetEjected(false))
+    // A savestate or rewind can supersede the last edit made by this dialog.
+    if (m_pendingDiscModel && m_pendingRestoreGeneration == discs.GetRestoreGeneration() &&
+        *m_pendingDiscModel == discs.GetDiscs() && discs.IsEjected() && !discs.SetEjected(false))
     {
       auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
       CLog::Log(LOGERROR, "Failed to insert selected disc when closing Disc Manager");
@@ -76,6 +77,7 @@ void CDiscManagerGame::NotifyDiscChange()
   {
     const auto lock = m_gameClient->LockForSnapshot();
     m_pendingDiscModel = m_gameClient->Discs().GetDiscs();
+    m_pendingRestoreGeneration = m_gameClient->Discs().GetRestoreGeneration();
   }
 }
 

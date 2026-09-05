@@ -137,6 +137,106 @@ TEST_F(TestDiscManagerGame, FailedAutomaticInsertLeavesTrayOpen)
   EXPECT_TRUE(m_core.ejected);
 }
 
+TEST_F(TestDiscManagerGame, RestoredEmptyPlaylistKeepsTrayOpenOnDeinitialize)
+{
+  m_core.slots = {"/roms/disc2.chd", "/roms/disc1.chd"};
+  CDiscManagerGame game;
+  game.Initialize(m_client);
+
+  CGameClientDiscModel restored;
+  restored.SetEjected(true);
+  m_client->Discs().SetDiscModel(restored);
+  ASSERT_TRUE(m_client->Discs().RestoreDiscList());
+
+  game.Deinitialize();
+
+  EXPECT_TRUE(m_core.ejected);
+  EXPECT_TRUE(m_client->Discs().GetDiscs().Empty());
+  EXPECT_TRUE(m_client->Discs().GetDiscs().IsSelectedNoDisc());
+}
+
+TEST_F(TestDiscManagerGame, RestoredSelectionKeepsTrayOpenOnDeinitialize)
+{
+  m_core.slots = {"/roms/disc1.chd", "/roms/disc2.chd"};
+  CDiscManagerGame game;
+  game.Initialize(m_client);
+
+  CGameClientDiscModel restored = m_client->Discs().GetDiscs();
+  ASSERT_TRUE(restored.SetSelectedDiscByIndex(1));
+  m_client->Discs().SetDiscModel(restored);
+  ASSERT_TRUE(m_client->Discs().RestoreDiscList());
+
+  game.Deinitialize();
+
+  EXPECT_TRUE(m_core.ejected);
+  EXPECT_EQ(m_core.selected, 1U);
+}
+
+TEST_F(TestDiscManagerGame, RestoreSupersedesEarlierExplicitSelection)
+{
+  m_core.slots = {"/roms/disc1.chd", "/roms/disc2.chd"};
+  CDiscManagerGame game;
+  game.Initialize(m_client);
+  ASSERT_TRUE(m_client->Discs().InsertDiscByIndex(1));
+  game.NotifyDiscChange();
+
+  CGameClientDiscModel restored = m_client->Discs().GetDiscs();
+  ASSERT_TRUE(restored.SetSelectedDiscByIndex(0));
+  m_client->Discs().SetDiscModel(restored);
+  ASSERT_TRUE(m_client->Discs().RestoreDiscList());
+
+  game.Deinitialize();
+
+  EXPECT_TRUE(m_core.ejected);
+  EXPECT_EQ(m_core.selected, 0U);
+}
+
+TEST_F(TestDiscManagerGame, RestoringSameStateSupersedesEarlierExplicitSelection)
+{
+  CDiscManagerGame game;
+  game.Initialize(m_client);
+  ASSERT_TRUE(m_client->Discs().InsertDiscByIndex(0));
+  game.NotifyDiscChange();
+
+  const CGameClientDiscModel restored = m_client->Discs().GetDiscs();
+  m_client->Discs().SetDiscModel(restored);
+  ASSERT_TRUE(m_client->Discs().RestoreDiscList());
+
+  game.Deinitialize();
+
+  EXPECT_TRUE(m_core.ejected);
+  EXPECT_EQ(m_core.selected, 0U);
+}
+
+TEST_F(TestDiscManagerGame, SessionResetSupersedesEarlierExplicitSelection)
+{
+  CDiscManagerGame game;
+  game.Initialize(m_client);
+  ASSERT_TRUE(m_client->Discs().InsertDiscByIndex(0));
+  game.NotifyDiscChange();
+  m_client->Discs().Deinitialize();
+  m_client->Discs().RefreshDiscState();
+
+  game.Deinitialize();
+
+  EXPECT_TRUE(m_core.ejected);
+}
+
+TEST_F(TestDiscManagerGame, SelectionAfterRestoreClosesTrayOnDeinitialize)
+{
+  CDiscManagerGame game;
+  game.Initialize(m_client);
+  const CGameClientDiscModel restored = m_client->Discs().GetDiscs();
+  m_client->Discs().SetDiscModel(restored);
+  ASSERT_TRUE(m_client->Discs().RestoreDiscList());
+  ASSERT_TRUE(m_client->Discs().InsertDiscByIndex(0));
+  game.NotifyDiscChange();
+
+  game.Deinitialize();
+
+  EXPECT_FALSE(m_core.ejected);
+}
+
 TEST_F(TestDiscManagerGame, DiscOperationsDoNotInvalidatePendingSelection)
 {
   CDiscManagerGame game;

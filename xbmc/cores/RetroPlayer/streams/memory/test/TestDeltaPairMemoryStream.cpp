@@ -34,7 +34,9 @@ protected:
   void ExpectZeroPadding(const uint8_t* frame) const
   {
     for (size_t i = m_stream.FrameSize(); i < m_stream.WordCount() * sizeof(uint32_t); ++i)
+    {
       EXPECT_EQ(0, frame[i]) << "Byte " << i;
+    }
   }
 
   TestMemoryStream m_stream;

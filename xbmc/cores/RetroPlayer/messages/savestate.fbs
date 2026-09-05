@@ -11,7 +11,7 @@ include "video.fbs";
 namespace KODI.RETRO.SAVESTATE;
 
 // Savestate schema
-// Version 5
+// Version 6
 
 file_identifier "SAV_";
 
@@ -23,6 +23,24 @@ enum SaveType : uint8 {
 
 enum CompressionType : uint8 {
   None,
+}
+
+enum DiscSlotType : uint8 {
+  Unknown,
+  Disc,
+  Removed
+}
+
+table DiscSlot {
+  type:DiscSlotType (id: 0);
+  file_name:string (id: 1);
+  label:string (id: 2);
+}
+
+table DiscState {
+  slots:[DiscSlot] (id: 0);
+  selected_slot:int32 = -1 (id: 1);
+  tray_ejected:bool (id: 2);
 }
 
 table Savestate {
@@ -74,6 +92,9 @@ table Savestate {
 
   // Achievement properties
   achievement_data:[uint8] (id: 30);
+
+  // Disc properties
+  disc_state:DiscState (id: 31);
 }
 
 root_type Savestate;
