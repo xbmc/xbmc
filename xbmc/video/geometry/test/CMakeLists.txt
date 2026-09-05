@@ -1,10 +1,12 @@
 set(SOURCES TestContentBarDetector.cpp
             TestContentGeometryCombiner.cpp
             TestContentGeometryRecord.cpp
+            TestContentGeometrySampler.cpp
             TestEffectiveGeometry.cpp
             TestFrameReduction.cpp
             TestFrameSampling.cpp
             TestGeometryPublication.cpp
+            TestGeometrySettings.cpp
             TestGeometryTransforms.cpp
             TestLiveGeometrySelector.cpp
             TestSampledGeometry.cpp)

@@ -43,7 +43,7 @@ RESOLUTION_INFO::RESOLUTION_INFO(int width, int height, float aspect, const std:
   iBlanking = 0;
   iScreenWidth = width;
   iScreenHeight = height;
-  fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
+  fPixelRatio = aspect ? aspect / (((float)width) / height) : 1.0f;
   bFullScreen = true;
   fRefreshRate = 0;
   dwFlags = iSubtitles = 0;

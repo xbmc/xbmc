@@ -15,6 +15,8 @@
 #include "utils/Geometry.h" // for CRect/CPoint
 #include "utils/TransformMatrix.h" // for the members m_guiTransform etc.
 
+#include <atomic>
+#include <cstdint>
 #include <stack>
 #include <string>
 #include <vector>
@@ -94,6 +96,50 @@ public:
   const CRect &GetScissors() const;
   const CRect GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
+  //! \brief Confine the GUI to \p rect, empty for the whole screen. Not persisted, unlike the
+  //! overscan calibration. \return whether the confinement changed
+  bool SetGuiContentRect(const CRect& rect);
+
+  //! \brief State the shape of the screen the display is projected onto, or zero for the
+  //! display's own. Nothing drawn may exceed the raster this defines.
+  void SetRasterAspect(float aspect);
+
+  //! \brief The stated shape of the screen, or zero when the display's own is in force.
+  float GetRasterAspect() const;
+
+  //! \brief Stated, not in force: one suspended while a screen tool is up still counts.
+  bool IsRasterShapeStated() const { return GetRasterAspect() > 0.0f; }
+
+  //! \brief The raster, in screen coordinates. The whole display when no shape is stated.
+  CRect GetRasterRect() const;
+
+  //! \brief The resolution sized as the raster, for the skin's layout selection. A selection
+  //! target, not a drawable resolution.
+  RESOLUTION_INFO GetRasterResInfo() const;
+
+  //! \brief Draw the interface at its authored proportions inside the area in force rather than
+  //! stretching it to fill. A 16:9 skin in a 2.40 raster is then pillarboxed.
+  void SetGuiKeepShape(bool keepShape);
+
+  //! \brief Asked for, not in force - unlike GetGuiKeepShapeRect(), which answers empty while
+  //! the hold is merely suspended.
+  bool GetGuiKeepShape() const { return m_guiKeepShape; }
+
+  //! \brief The rectangle the interface is held to, empty whenever no hold is in force.
+  CRect GetGuiKeepShapeRect() const;
+
+  //! \brief Confine drawing to the area the interface occupies. \return the previous clip
+  CRect ClipToGui();
+
+  //! \brief Lift the clip to the whole display for the picture's render pass, which is contained
+  //! by scaling rather than by the scissor. \return the previous clip
+  CRect ClipToVideo();
+
+  //! \brief Clip to exactly \p rect, re-applying no bound. \return the previous clip
+  CRect SetClip(const CRect& rect);
+
+  //! \brief Whether a screen tool is on screen. While one is, the raster and the proportions
+  //! hold are suspended and the tool draws on the raw pixel grid.
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
@@ -230,6 +276,31 @@ protected:
   int m_iScreenWidth = 720;
   std::string m_strMediaDir;
   CRect m_videoRect;
+  CRect m_guiContentRect;
+  float m_rasterAspect{0.0f};
+  bool m_guiKeepShape{false};
+
+  //! \brief The area the interface occupies, recorded by GetGUIScaling for the clip.
+  CRect m_guiRect;
+
+  //! \brief The furthest anything being drawn may reach: the raster for the interface, the whole
+  //! display for the picture.
+  CRect ClipBounds() const;
+
+  CRect ScreenRect() const;
+
+  //! \brief The stated shape put through ComputeRasterAspectInForce() for the state in hand.
+  float RasterAspectInForce() const;
+
+  //! \brief The hold put through ComputeGuiKeepShape() for the state in hand.
+  bool GuiKeepShapeInForce() const;
+
+  //! \brief Discard the held raster rect. Call from anything GetRasterRect() reads.
+  void InvalidateRasterRect() { m_rasterGeneration.fetch_add(1, std::memory_order_release); }
+
+  std::atomic<uint32_t> m_rasterGeneration{1};
+  mutable std::atomic<uint32_t> m_rasterRectGeneration{0};
+  mutable CRect m_rasterRect;
   bool m_bFullScreenRoot = true;
   bool m_bFullScreenVideo = false;
   bool m_bCalibrating = false;

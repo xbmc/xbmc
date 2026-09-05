@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
 #ifdef HAVE_LIBBLURAY
@@ -39,7 +40,11 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/geometry/ContentGeometryCombiner.h"
+#include "video/geometry/ContentGeometryRecord.h"
+#include "video/geometry/EffectiveGeometry.h"
 
+#include <algorithm>
 #include <chrono>
 #include <memory>
 
@@ -49,6 +54,8 @@ using namespace std::chrono_literals;
 void CApplicationPlayerCallback::OnPlayBackEnded()
 {
   CLog::LogF(LOGDEBUG, "call");
+
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Clear();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -347,7 +354,51 @@ bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
 
   return false;
 }
-} // namespace
+
+//! \brief Add the shapes this playback saw to what the file is recorded as containing.
+void RecordDiscoveredGeometry(const CFileItem& fileItem)
+{
+  const auto geometry =
+      CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>();
+  if (!geometry)
+    return;
+
+  const std::vector<CRectInt> found = geometry->Discovered();
+  if (found.empty())
+    return;
+
+  CVideoDatabase dbs;
+  if (!dbs.Open())
+    return;
+
+  const int idFile{dbs.GetPlayedFileId(fileItem)};
+  if (idFile <= 0)
+  {
+    dbs.Close();
+    return;
+  }
+
+  const VIDEO::GEOMETRY::ContentGeometryLookup cached{
+      dbs.GetContentGeometry(idFile, VIDEO::GEOMETRY::GetFileIdentity(fileItem.GetDynPath()))};
+
+  if (cached.state != VIDEO::GEOMETRY::ContentGeometryState::VALID || !cached.record.hasReading)
+  {
+    dbs.Close();
+    return;
+  }
+
+  const std::optional<VIDEO::GEOMETRY::ContentGeometryRecord> merged{
+      VIDEO::GEOMETRY::MergeDiscoveredGeometry(cached.record, found)};
+  if (merged)
+  {
+    dbs.SetContentGeometry(idFile, *merged);
+    CLog::LogF(LOGDEBUG, "live detection updated the content geometry of file {}", idFile);
+  }
+
+  dbs.Close();
+}
+
+} // unnamed namespace
 
 void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
                                                    const CBookmark& bookmarkParam)
@@ -358,6 +409,12 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 
   CFileItem fileItem{file};
   CBookmark bookmark{bookmarkParam};
+
+  if (VIDEO::IsVideo(fileItem) && CServiceBroker::GetSettingsComponent()
+                                      ->GetProfileManager()
+                                      ->GetCurrentProfile()
+                                      .canWriteDatabases())
+    RecordDiscoveredGeometry(fileItem);
 
   // Make sure we don't reset existing bookmark etc. on eg. player start failure
   if (bookmark.timeInSeconds == 0.0)
@@ -433,6 +490,8 @@ void CApplicationPlayerCallback::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "call");
 
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Clear();
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
@@ -494,6 +553,8 @@ void CApplicationPlayerCallback::OnAVChange()
 
   CServiceBroker::GetGUI()->GetStereoscopicsManager().OnStreamChange();
 
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Refresh();
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
@@ -501,6 +562,8 @@ void CApplicationPlayerCallback::OnAVChange()
 void CApplicationPlayerCallback::OnAVStarted(const CFileItem& file)
 {
   CLog::LogF(LOGDEBUG, "call");
+
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Refresh();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -521,6 +584,12 @@ void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     appPlayer->SetVideoSettings(vs);
+
+    const VIDEO::GEOMETRY::ContentGeometryLookup cached{dbs.GetContentGeometry(
+        dbs.GetPlayedFileId(fileItem), VIDEO::GEOMETRY::GetFileIdentity(fileItem.GetDynPath()))};
+
+    components.GetComponent<CApplicationContentGeometry>()->SetFileInputs(
+        cached, cached.record.sections, vs.m_declaredAspect);
 
     dbs.Close();
   }

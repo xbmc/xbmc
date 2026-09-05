@@ -41,6 +41,7 @@ void CDVDStreamInfo::Clear()
   flags = 0;
   filename.clear();
   dvd = false;
+  liveContentGeometry = false;
 
   extradata = {};
 
@@ -198,6 +199,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   flags = right.flags;
   filename = right.filename;
   dvd = right.dvd;
+  liveContentGeometry = right.liveContentGeometry;
 
   if (withextradata && right.extradata)
   {

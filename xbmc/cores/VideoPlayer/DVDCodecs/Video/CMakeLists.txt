@@ -13,8 +13,10 @@ if(TARGET ffmpeg::libpostproc)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
-  list(APPEND SOURCES DXVA.cpp)
-  list(APPEND HEADERS DXVA.h)
+  list(APPEND SOURCES DXVA.cpp
+                      DXVAReadback.cpp)
+  list(APPEND HEADERS DXVA.h
+                      DXVAReadback.h)
 endif()
 
 if(TARGET ${APP_NAME_LC}::VDPAU)

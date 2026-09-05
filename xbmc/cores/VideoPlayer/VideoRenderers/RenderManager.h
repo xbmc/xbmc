@@ -46,6 +46,8 @@ class CLinuxRendererGL;
 class CLinuxRendererGLES;
 class CRenderManager;
 
+struct DEBUG_INFO_PLAYER;
+
 class IRenderMsg
 {
   friend CRenderManager;
@@ -53,7 +55,8 @@ public:
   virtual ~IRenderMsg() = default;
 protected:
   virtual void VideoParamsChange() = 0;
-  virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) = 0;
+  //! \brief Fill the player's rows of \p info.
+  virtual void GetDebugInfo(DEBUG_INFO_PLAYER& info) = 0;
   virtual void UpdateClockSync(bool enabled) = 0;
   virtual void UpdateRenderInfo(CRenderInfo &info) = 0;
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
@@ -217,6 +220,9 @@ protected:
     double         pts;
     EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
+
+    //! \brief VideoPicture::contentRect, held per buffer.
+    CRectInt contentRect;
   } m_Queue[NUM_BUFFERS]{};
 
   std::deque<int> m_free;
