@@ -4,6 +4,7 @@ xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
 xbmc/cores/VideoPlayer/Buffers/test test/videoplayer_buffers
 xbmc/cores/VideoPlayer/test       test/videoplayer
 xbmc/cores/VideoPlayer/DVDDemuxers/test test/dvddemuxers
+xbmc/cores/VideoPlayer/DVDCodecs/Overlay/test test/dvdoverlaycodecs
 xbmc/cores/VideoPlayer/Edl/test   test/edl
 xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/dbwrappers/test              test/dbwrappers
