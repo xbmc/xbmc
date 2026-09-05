@@ -20,7 +20,9 @@ if(TARGET ${APP_NAME_LC}::NFS)
   list(APPEND SOURCES TestNfsFile.cpp)
 endif()
 
-if(TARGET ${APP_NAME_LC}::SmbClient)
+# the tested implementation is the posix one, windows has its own
+if(TARGET ${APP_NAME_LC}::SmbClient AND NOT CORE_SYSTEM_NAME STREQUAL windows AND
+   NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES TestSMBFile.cpp)
 endif()
 
