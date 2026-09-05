@@ -8,6 +8,9 @@
 
 #include "FileItem.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "utils/Variant.h"
 
 #include <array>
@@ -80,4 +83,66 @@ TEST(TestPlayListFileItemClassify, IsSmartPlayList)
   EXPECT_TRUE(PLAYLIST::IsSmartPlayList(item2));
   CFileItem item3("/some/where.xsp", true);
   EXPECT_TRUE(PLAYLIST::IsSmartPlayList(item3));
+}
+
+namespace
+{
+
+std::shared_ptr<PVR::CPVRRecording> MakeRecording(bool radio)
+{
+  PVR_RECORDING recording{};
+  recording.channelType = radio ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
+  return std::make_shared<PVR::CPVRRecording>(recording, 1);
+}
+
+std::shared_ptr<PVR::CPVRChannelGroupMember> MakeChannel(bool radio)
+{
+  return std::make_shared<PVR::CPVRChannelGroupMember>("group", 1, 0,
+                                                       std::make_shared<PVR::CPVRChannel>(radio));
+}
+
+} // unnamed namespace
+
+TEST(TestPlayListFileItemClassify, PlaylistIdOfRecognisesTheOrdinaryCases)
+{
+  EXPECT_EQ(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::PlaylistIdOf(CFileItem("/home/user/a.avi", false)));
+  EXPECT_EQ(PLAYLIST::Id::TYPE_MUSIC, PLAYLIST::PlaylistIdOf(CFileItem("/home/user/a.mp3", false)));
+}
+
+// CFileItem's PVR constructors reach CServiceBroker::GetPVRManager(), which the test environment
+// does not stand up, so these fault rather than fail. Disabled and skipped so that neither plain
+// runs nor --gtest_also_run_disabled_tests can execute them until it does.
+TEST(TestPlayListFileItemClassify, DISABLED_APvrItemAnswersFromItsTagNotItsStreams)
+{
+  GTEST_SKIP() << "constructing a CFileItem from a PVR tag needs a PVR manager";
+
+  EXPECT_EQ(PLAYLIST::Id::TYPE_MUSIC, PLAYLIST::PlaylistIdOf(CFileItem(MakeRecording(true))));
+  EXPECT_EQ(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::PlaylistIdOf(CFileItem(MakeRecording(false))));
+  EXPECT_EQ(PLAYLIST::Id::TYPE_MUSIC, PLAYLIST::PlaylistIdOf(CFileItem(MakeChannel(true))));
+  EXPECT_EQ(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::PlaylistIdOf(CFileItem(MakeChannel(false))));
+}
+
+TEST(TestPlayListFileItemClassify, AnItemThatSaysNothingHasNoPlaylist)
+{
+  EXPECT_EQ(PLAYLIST::Id::TYPE_NONE, PLAYLIST::PlaylistIdOf(CFileItem("/home/user/a", false)));
+}
+
+TEST(TestPlayListFileItemClassify, TheHintDecidesWhatTheClassifiersCannot)
+{
+  // A generic path answers neither video nor audio, so only the hint can say.
+  CFileItem item("/home/user/a", false);
+  item.SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_VIDEO));
+  EXPECT_EQ(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::PlaylistIdOf(item));
+
+  item.SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_MUSIC));
+  EXPECT_EQ(PLAYLIST::Id::TYPE_MUSIC, PLAYLIST::PlaylistIdOf(item));
+}
+
+TEST(TestPlayListFileItemClassify, DISABLED_APvrItemIgnoresTheHint)
+{
+  GTEST_SKIP() << "constructing a CFileItem from a PVR tag needs a PVR manager";
+
+  CFileItem item(MakeRecording(true));
+  item.SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_VIDEO));
+  EXPECT_EQ(PLAYLIST::Id::TYPE_MUSIC, PLAYLIST::PlaylistIdOf(item));
 }
