@@ -291,6 +291,7 @@ bool CGameClientDiscs::RemoveDiscByIndex(size_t index)
 
   const std::optional<size_t> selectedIndex = m_discModel->GetSelectedDiscIndex();
   const bool wasSelected = selectedIndex.has_value() && *selectedIndex == index;
+  bool selectionUpdated = true;
 
   // Remove from the core by current index
   if (!m_transport->RemoveImageIndex(static_cast<unsigned int>(index)))
@@ -302,14 +303,14 @@ bool CGameClientDiscs::RemoveDiscByIndex(size_t index)
   if (wasSelected)
   {
     const unsigned int noDiscIndex = m_transport->GetImageCount();
-    m_transport->SetImageIndex(noDiscIndex);
+    selectionUpdated = m_transport->SetImageIndex(noDiscIndex);
   }
 
   m_discModel->MarkRemovedByIndex(index);
 
   RefreshDiscState();
 
-  return true;
+  return selectionUpdated;
 }
 
 bool CGameClientDiscs::InsertDisc(const std::string& filePath)
