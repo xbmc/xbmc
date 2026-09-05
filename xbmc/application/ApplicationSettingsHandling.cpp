@@ -195,7 +195,10 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
   {
     auto* const gui = CServiceBroker::GetGUI();
     if (gui)
+    {
+      gui->GetWindowManager().InvalidateSurround();
       gui->GetWindowManager().MarkDirty();
+    }
   }
 }
 
