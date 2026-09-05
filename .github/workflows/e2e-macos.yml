@@ -1,0 +1,132 @@
+name: E2E (macOS)
+
+# Builds Kodi.app via tools/depends on a GitHub-hosted macOS runner and runs
+# tools/e2e against it. See tools/e2e/README.md for what the suite covers.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-macos-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DEPENDS_PREFIX: /Users/Shared/xbmc-depends
+
+jobs:
+  build:
+    # Drafts are skipped; ready_for_review starts the first run.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    # macos-14 is Apple Silicon. Pinned so cache keys and toolchain stay stable.
+    runs-on: macos-14
+    timeout-minutes: 180
+    outputs:
+      runtime: ${{ steps.runtime.outputs.uploaded }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install ccache
+        run: brew install ccache
+
+      - uses: ./.github/actions/depends-cache-restore
+        id: depends-cache
+        with:
+          platform: macos-${{ runner.arch }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: macos-${{ runner.arch }}
+          dir: /Users/runner/.cache/kodi-e2e-ccache
+
+      - name: Configure and build dependencies
+        working-directory: tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host=aarch64-apple-darwin --with-platform=macos --prefix="${DEPENDS_PREFIX}"
+          make -j"$(sysctl -n hw.ncpu)"
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys
+
+      - name: Build Kodi
+        run: make -j"$(sysctl -n hw.ncpu)" -C build
+
+      # kodi-test is EXCLUDE_FROM_ALL and whole-archive links the app, so this
+      # is a real link step.
+      - name: Build unit tests
+        run: make -j"$(sysctl -n hw.ncpu)" -C build kodi-test
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: macos
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: macos-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - uses: ./.github/actions/depends-cache-save
+        if: '!cancelled() && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
+        with:
+          platform: macos-${{ runner.arch }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      # Tarred so permissions and symlinks inside the bundle survive the
+      # artifact round trip.
+      - name: Package Kodi.app
+        run: tar -cf kodi-runtime.tar -C build Kodi.app
+
+      # Uploaded before the unit tests run so the e2e job still gets a binary
+      # when a unit test fails; the e2e job keys on this output, not on the
+      # job's result.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-build-macos
+          path: kodi-runtime.tar
+          retention-days: 7
+
+      - id: runtime
+        run: echo "uploaded=true" >> "$GITHUB_OUTPUT"
+
+      # From the build tree: with no Resources/Kodi next to the bare test
+      # binary, CUtil::GetHomePath() walks up to the directory holding
+      # system/settings/settings.xml.
+      - name: Run unit tests
+        working-directory: build
+        run: ./kodi-test
+
+  e2e:
+    needs: build
+    if: ${{ !cancelled() && needs.build.outputs.runtime == 'true' }}
+    runs-on: macos-14
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-build-macos
+
+      - name: Unpack Kodi.app
+        run: mkdir -p build && tar -xf kodi-runtime.tar -C build
+
+      # portable_data lives under Contents/Resources/Kodi, not next to the
+      # binary - see driver/launcher.py's _resolve_app_root.
+      - uses: ./.github/actions/run-e2e
+        with:
+          name: macos
+          kodi-binary: ${{ github.workspace }}/build/Kodi.app/Contents/MacOS/Kodi
+          log-paths: |
+            build/Kodi.app/Contents/Resources/Kodi/portable_data/temp/kodi.log
+            build/Kodi.app/Contents/Resources/Kodi/portable_data/temp/process-output.log
+          screenshot-glob: build/Kodi.app/Contents/Resources/Kodi/portable_data/screenshots/*.png

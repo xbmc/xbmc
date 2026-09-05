@@ -17,18 +17,28 @@ endfunction()
 #
 # The following variable is set:
 #   PACKAGE_MAINTAINER - user stamp in the form of "username <username@example.com>"
-#                        if no git tree is found, value is set to "nobody <nobody@example.com>"
+#                        if no git tree is found or git has no user configured
+#                        (a CI checkout, for instance), value is set to
+#                        "nobody <nobody@example.com>"
 function(userstamp)
+  set(username "")
+  set(useremail "")
   find_package(Git)
   if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
     execute_process(COMMAND ${GIT_EXECUTABLE} config user.name
                     OUTPUT_VARIABLE username
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    ERROR_QUIET)
     execute_process(COMMAND ${GIT_EXECUTABLE} config user.email
                     OUTPUT_VARIABLE useremail
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+                    OUTPUT_STRIP_TRAILING_WHITESPACE
+                    ERROR_QUIET)
+  endif()
+  # A git user named No, N or False is a CMake false constant; only an empty
+  # field means it is unset.
+  if(NOT username STREQUAL "" AND NOT useremail STREQUAL "")
     set(PACKAGE_MAINTAINER "${username} <${useremail}>" PARENT_SCOPE)
   else()
     set(PACKAGE_MAINTAINER "nobody <nobody@example.com>" PARENT_SCOPE)
@@ -37,7 +47,6 @@ endfunction()
 
 # find stuff we need
 find_program(LSB_RELEASE_CMD lsb_release)
-find_program(DPKG_CMD dpkg)
 find_package(Git)
 find_program(GZIP_CMD gzip)
 
@@ -49,13 +58,17 @@ endif()
 # force CPack generated DEBs to use the same path as CMAKE_INSTALL_PREFIX
 set(CPACK_SET_DESTDIR true)
 
-# set architecture
-if(NOT CPACK_SYSTEM_NAME)
-  set(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_PROCESSOR})
-  # sanity check
-  if(CPACK_SYSTEM_NAME STREQUAL x86_64)
-    set(CPACK_SYSTEM_NAME amd64)
+# architecture, in Debian's naming (amd64, arm64, ...), also used for the
+# package file names and as the per-component default
+include(${CMAKE_SOURCE_DIR}/cmake/cpack/DebianArchitecture.cmake)
+if(NOT CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
+  core_debian_architecture(CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
+  if(NOT CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
+    message(FATAL_ERROR "DEB Generator: Can't determine the Debian architecture for ${CMAKE_SYSTEM_PROCESSOR}. Set CPACK_DEBIAN_PACKAGE_ARCHITECTURE.")
   endif()
+endif()
+if(NOT CPACK_SYSTEM_NAME)
+  set(CPACK_SYSTEM_NAME ${CPACK_DEBIAN_PACKAGE_ARCHITECTURE})
 endif()
 
 # set packaging by components
@@ -108,22 +121,15 @@ endif()
 string(TIMESTAMP PACKAGE_TIMESTAMP "%Y%m%d.%H%M" UTC)
 set(PACKAGE_NAME_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}~git${PACKAGE_TIMESTAMP}-${RELEASE_IDENTIFIER}-${DISTRO_CODENAME})
 
-# package version
-if(DEBIAN_PACKAGE_EPOCH)
-  set(CPACK_DEBIAN_PACKAGE_VERSION ${DEBIAN_PACKAGE_EPOCH}:${PACKAGE_NAME_VERSION})
-else()
-  set(CPACK_DEBIAN_PACKAGE_VERSION 2:${PACKAGE_NAME_VERSION})
+# package version. Debian treats epoch 0 as no epoch, so 0 drops the prefix
+# rather than selecting the default.
+if(NOT DEFINED DEBIAN_PACKAGE_EPOCH OR DEBIAN_PACKAGE_EPOCH STREQUAL "")
+  set(DEBIAN_PACKAGE_EPOCH 2)
 endif()
-
-# architecture
-if(NOT CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
-  if(NOT DPKG_CMD)
-    message(WARNING "DEB Generator: Can't find dpkg in your path. Setting CPACK_DEBIAN_PACKAGE_ARCHITECTURE to i386.")
-    set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
-  endif()
-  execute_process(COMMAND "${DPKG_CMD}" --print-architecture
-                  OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
-                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(DEBIAN_PACKAGE_EPOCH STREQUAL 0)
+  set(CPACK_DEBIAN_PACKAGE_VERSION ${PACKAGE_NAME_VERSION})
+else()
+  set(CPACK_DEBIAN_PACKAGE_VERSION ${DEBIAN_PACKAGE_EPOCH}:${PACKAGE_NAME_VERSION})
 endif()
 
 # package maintainer

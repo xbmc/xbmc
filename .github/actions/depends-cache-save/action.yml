@@ -1,0 +1,29 @@
+name: Save tools/depends cache
+description: >
+  Saves the tools/depends tree under the same key depends-cache-restore used.
+  Callers skip it on an exact hit and on cancelled runs, so a half-built tree is
+  never saved under a key later runs would trust.
+inputs:
+  platform:
+    description: Cache key prefix, identical to the one given to depends-cache-restore.
+    required: true
+  prefix:
+    description: The --prefix the dependencies were installed to.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Compute cache key
+      id: key
+      shell: bash
+      run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
+
+    - name: Save
+      uses: actions/cache/save@v6
+      with:
+        path: |
+          ${{ inputs.prefix }}
+          tools/depends
+          !tools/depends/native/*/*/
+          !tools/depends/target/*/*/
+        key: ${{ inputs.platform }}-depends-${{ steps.key.outputs.hash }}

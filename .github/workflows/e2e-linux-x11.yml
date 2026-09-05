@@ -1,0 +1,167 @@
+name: E2E (Linux X11)
+
+# Builds Kodi's X11 backend with APP_RENDER_SYSTEM=gl, so the desktop OpenGL/GLX
+# path (xbmc/rendering/gl, GLContextGLX) is exercised rather than the GLES/EGL
+# path of the GBM/Wayland workflow, packages it with CPack's DEB generator and
+# runs tools/e2e against the installed packages under Xvfb with Mesa's llvmpipe.
+#
+# 22.04 rather than 24.04: xbmc/windowing/X11/GLContextEGL.h includes
+# <EGL/eglextchromium.h>, which Mesa stopped shipping when EGL headers moved to
+# libglvnd; 22.04's libegl1-mesa-dev is the newest Ubuntu that still has it.
+# 22.04 is also old enough that ffmpeg, TagLib, fmt, spdlog, exiv2, flatbuffers
+# and dav1d all have to be built internally (without dav1d the internal ffmpeg
+# has no AV1 decoder and TestVideoCodecPictureFormat fails). Once X11 builds
+# without that header this should move to 24.04 and drop most of those flags.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-linux-x11-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # libflatbuffers-dev is deliberately absent: 22.04's flatc (2.0.0) would be
+  # picked up by FindFlatC and generate schemas the internal 23.3.3 library
+  # cannot read. dpkg-dev, fakeroot and lsb-release are for the DEB generator.
+  APT_PACKAGES: >-
+    build-essential cmake gawk gperf gettext libtool meson nasm
+    ninja-build pkg-config swig python3-dev unzip zip ccache uuid-dev
+    dpkg-dev fakeroot lsb-release
+    libass-dev libcurl4-openssl-dev libexiv2-dev
+    libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev
+    libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev
+    libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev
+    libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev
+    libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev
+    libdbus-1-dev libasound2-dev libdav1d-dev libdrm-dev
+    libgl-dev libegl-dev libegl1-mesa-dev libglu1-mesa-dev libgl1-mesa-dri
+    libx11-dev libxext-dev libxrandr-dev
+
+jobs:
+  build:
+    # Drafts are skipped; ready_for_review starts the first run.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+    outputs:
+      runtime: ${{ steps.runtime.outputs.uploaded }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install build tools and libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ env.APT_PACKAGES }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: linux-x11-ubuntu2204-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      # The install prefix is compiled into the binary, so it has to be the one
+      # dpkg will install to.
+      - name: Configure Kodi
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr \
+            -DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON \
+            -DENABLE_INTERNAL_FMT=ON -DENABLE_INTERNAL_SPDLOG=ON \
+            -DENABLE_INTERNAL_EXIV2=ON -DENABLE_INTERNAL_FLATBUFFERS=ON \
+            -DENABLE_INTERNAL_DAV1D=ON -DCPACK_GENERATOR=DEB
+
+      - name: Build Kodi
+        run: cmake --build build -- -j"$(nproc)"
+
+      # kodi-test is EXCLUDE_FROM_ALL and whole-archive links the app, so this
+      # is a real link step.
+      - name: Build unit tests
+        run: cmake --build build --target kodi-test -- -j"$(nproc)"
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: linux-x11-ubuntu2204-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      # cmake/cpack/CPackConfigDEB.cmake, see docs/README.Ubuntu.md. The test job
+      # installs kodi and kodi-bin with apt, so what runs is the installed binary
+      # with the dependencies dpkg-shlibdeps recorded.
+      - name: Package
+        working-directory: build
+        run: cpack
+
+      # Uploaded before the unit tests run so the e2e job still gets a build
+      # when a unit test fails; the e2e job keys on this output, not on the
+      # job's result.
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-deb-linux-x11
+          path: build/packages/*.deb
+          retention-days: 7
+
+      - id: runtime
+        run: echo "uploaded=true" >> "$GITHUB_OUTPUT"
+
+      # From the build tree: the reference data the tests read
+      # (cmake/installdata/test-reference-data.txt) was mirrored there.
+      - name: Run unit tests
+        working-directory: build
+        run: ./kodi-test
+
+  e2e:
+    needs: build
+    if: ${{ !cancelled() && needs.build.outputs.runtime == 'true' }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    env:
+      DISPLAY: ":99"
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-deb-linux-x11
+          path: packages
+
+      # apt resolves the dependencies recorded in the packages. libgl1-mesa-dri
+      # holds Mesa's software rasteriser and is loaded at runtime rather than
+      # linked, so shlibdeps cannot know about it.
+      - name: Install Kodi
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ./packages/kodi_*.deb ./packages/kodi-bin_*.deb libgl1-mesa-dri xvfb x11-utils
+          echo "KODI_BINARY=$(dpkg -L kodi-bin | grep -E '/kodi/kodi-x11$')" >> "$GITHUB_ENV"
+
+      # Xvfb prints no ready message, so xdpyinfo is polled.
+      - name: Start headless X server (Xvfb)
+        run: |
+          Xvfb "${DISPLAY}" -screen 0 1920x1080x24 &
+          for _ in $(seq 1 30); do
+            xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1 && break
+            sleep 1
+          done
+          xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1 || {
+            echo "::error::Xvfb did not become ready on display ${DISPLAY} in time"
+            exit 1
+          }
+
+      # The installed binary is run directly, not through the /usr/bin/kodi
+      # wrapper script, which hides the exit code and does not forward signals.
+      # Its profile goes under the workspace via KODI_DATA.
+      - uses: ./.github/actions/run-e2e
+        with:
+          name: linux-x11
+          kodi-binary: ${{ env.KODI_BINARY }}
+          kodi-profile-dir: ${{ github.workspace }}/e2e-profile
+          log-paths: |
+            e2e-profile/temp/kodi.log
+            e2e-profile/temp/process-output.log
+          screenshot-glob: e2e-profile/screenshots/*.png

@@ -1,0 +1,184 @@
+name: E2E (Android emulator)
+
+# Cross-builds the Android APK via tools/depends, boots a hardware-accelerated
+# x86_64 emulator and runs tools/e2e against it over adb-forwarded JSON-RPC.
+# Android has no -p/--portable flag, so tools/e2e/driver/android_launcher.py
+# manages a fixed on-device profile instead of the desktop launcher.
+#
+# x86_64 because that is the ABI the emulator runs under KVM on a Linux runner;
+# arm64 would run under binary translation, if at all.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-android-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # The runner image's preinstalled SDK; the NDK is installed into it below.
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+  APK: kodiapp-x86_64-debug.apk
+
+jobs:
+  build:
+    # Drafts are skipped; ready_for_review starts the first run.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      DEPENDS_PREFIX: /home/runner/xbmc-android-depends
+    steps:
+      - uses: actions/checkout@v7
+
+      # docs/README.Android.md's package list and NDK pin (r28c).
+      - name: Install build tools and libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf bison build-essential ccache curl flex gawk gperf \
+            lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zip zlib1g-dev
+
+      - name: Install Android SDK components
+        run: |
+          yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" \
+            "platform-tools" "platforms;android-37.0" "build-tools;37.0.0" "ndk;28.2.13676358"
+
+      # Every build type signs via the "release" signingConfig, which falls back
+      # to this path/alias/password when KODI_ANDROID_* is unset
+      # (tools/android/packaging/Makefile.in, docs/README.Android.md 3.3).
+      - name: Create Android debug signing key
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -keystore ~/.android/debug.keystore -v -alias androiddebugkey \
+            -dname "CN=Android Debug,O=Android,C=US" -keypass android -storepass android \
+            -keyalg RSA -keysize 2048 -validity 10000
+
+      - uses: ./.github/actions/depends-cache-restore
+        id: depends-cache
+        with:
+          platform: android-${{ runner.arch }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: android-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      - name: Configure and build dependencies
+        working-directory: tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host=x86_64-linux-android \
+            --with-sdk-path="${ANDROID_SDK_ROOT}" \
+            --with-tarballs="${DEPENDS_PREFIX}/xbmc-tarballs" \
+            --prefix="${DEPENDS_PREFIX}"
+          make -j"$(nproc)"
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      # The apk target lives in the generated build tree and drops the APK at
+      # the repo root.
+      - name: Package debug APK
+        run: |
+          make -C build apk
+          test -f "${APK}" || { echo "::error::${APK} not found after 'make apk'"; exit 1; }
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: android
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: android-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - uses: ./.github/actions/depends-cache-save
+        if: '!cancelled() && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
+        with:
+          platform: android-${{ runner.arch }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-build-android
+          path: ${{ env.APK }}
+          retention-days: 7
+
+  e2e:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-build-android
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: tools/e2e/uv.lock
+
+      # /dev/kvm is not group-writable by default; without this the emulator
+      # falls back to software emulation and blows the job's time budget.
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # API 30 is the lowest level with the MANAGE_EXTERNAL_STORAGE consent flow
+      # the launcher pre-grants its way past; lower levels would skip that path.
+      #
+      # Each line of `script` is its own shell, hence the single chained
+      # command. Logs are pulled here rather than in a later step because the
+      # action shuts the emulator down when the step ends. `adb root` because
+      # nothing less can read the external-storage profile (see the launcher's
+      # module docstring); reading as root is safe, only writing mislabels files.
+      # Repeated here so logs are collected even when pytest never launched Kodi.
+      - name: Run E2E suite on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: >
+            cd tools/e2e &&
+            KODI_APK="${GITHUB_WORKSPACE}/${APK}" uv run pytest scenarios -v --junitxml=../../e2e-results.xml ;
+            test_exit=$? ;
+            mkdir -p ../../android-artifacts/screenshots ;
+            adb root ; adb wait-for-device ;
+            adb pull /storage/emulated/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log ../../android-artifacts/kodi.log ;
+            for f in $(adb shell ls -1 /storage/emulated/0/Android/data/org.xbmc.kodi/files/.kodi/temp/*.png 2>/dev/null | tr -d '\r'); do adb exec-out cat "$f" > "../../android-artifacts/screenshots/$(basename $f)"; done ;
+            adb logcat -d > ../../android-artifacts/logcat.txt ;
+            exit $test_exit
+
+      - uses: ./.github/actions/e2e-artifacts
+        if: always()
+        with:
+          name: android
+          log-paths: |
+            android-artifacts/kodi.log
+            android-artifacts/logcat.txt
+          screenshot-glob: android-artifacts/screenshots/*.png

@@ -1,0 +1,42 @@
+name: Restore ccache
+description: >
+  Configures ccache for CI and restores the newest cache saved under the given
+  key prefix. Pair with ccache-save.
+inputs:
+  key:
+    description: Cache key prefix, unique per platform (e.g. linux-gbm-X64).
+    required: true
+  dir:
+    description: ccache directory.
+    required: true
+  max-size:
+    description: CCACHE_MAXSIZE.
+    default: 1G
+  hashdir:
+    description: Set to "true" to keep ccache's default of hashing the build directory.
+    default: "false"
+runs:
+  using: composite
+  steps:
+    # Restored files get a fresh mtime and Debug builds embed absolute paths, both
+    # of which defeat ccache's direct mode unless relaxed here. compilercheck=content
+    # matters when the compiler itself comes out of a restored tools/depends tree.
+    - name: Configure ccache
+      shell: bash
+      run: |
+        {
+          echo "CCACHE_DIR=${{ inputs.dir }}"
+          echo "CCACHE_COMPILERCHECK=content"
+          echo "CCACHE_SLOPPINESS=include_file_mtime,include_file_ctime,time_macros"
+          echo "CCACHE_BASEDIR=${{ github.workspace }}"
+          echo "CCACHE_MAXSIZE=${{ inputs.max-size }}"
+          if [ "${{ inputs.hashdir }}" != "true" ]; then echo "CCACHE_NOHASHDIR=true"; fi
+        } >> "$GITHUB_ENV"
+
+    - name: Restore ccache
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ inputs.dir }}
+        key: ${{ inputs.key }}-ccache-${{ github.sha }}
+        restore-keys: |
+          ${{ inputs.key }}-ccache-
