@@ -9,6 +9,7 @@
 #include "AnnouncementManager.h"
 
 #include "FileItem.h"
+#include "interfaces/json-rpc/PlayerIds.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListTypes.h"
@@ -43,8 +44,8 @@ void CopyPVRTagInfoToObject(const PVR::CPVRChannel& channel, bool copyPlayerId, 
 
   if (copyPlayerId)
   {
-    object["player"]["playerid"] =
-        static_cast<int>(channel.IsRadio() ? PLAYLIST::Id::TYPE_MUSIC : PLAYLIST::Id::TYPE_VIDEO);
+    JSONRPC::DescribePlayer(object["player"], channel.IsRadio() ? JSONRPC::Audio : JSONRPC::Video,
+                            PLAYLIST::Id::TYPE_NONE);
   }
 
   objItem["id"] = channel.ChannelID();

@@ -29,7 +29,8 @@ namespace
 // AnnouncePropertyChanged() asking the application components for CApplicationPlayer; that
 // component is not registered in a test, and the container throws rather than answering null.
 //
-// m_repeatState, RepeatedOne() and m_bPlaybackStarted are protected, so a subclass reaches them.
+// m_repeatState, RepeatedOne(), m_bPlaybackStarted and CurrentItemIsInStack() are protected, so
+// a subclass reaches them.
 class TestablePlayListPlayer : public PLAYLIST::CPlayListPlayer
 {
 public:
@@ -41,6 +42,8 @@ public:
   bool IsRepeatedOne(PLAYLIST::Id playlistId) const { return RepeatedOne(playlistId); }
 
   bool PlaybackStarted() const { return m_bPlaybackStarted; }
+
+  bool IsCurrentItemInStack() const { return CurrentItemIsInStack(); }
 };
 
 } // namespace
@@ -147,4 +150,63 @@ TEST_F(TestPlayListPlayer, ClearingTheCurrentPlaylistKeepsThePlaybackStartedStat
   EXPECT_EQ(-1, player.GetCurrentItemIdx());
   EXPECT_TRUE(player.PlaybackStarted());
   EXPECT_EQ(PLAYLIST::Id::TYPE_VIDEO, player.GetCurrentPlaylist());
+}
+
+// Playing a single item discards the playlist unless the current item is part of a stack, so
+// that question is asked on a playlist that may have been cleared since the position was set.
+TEST_F(TestPlayListPlayer, NoCurrentItemIsNotInAStack)
+{
+  TestablePlayListPlayer player;
+  player.SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+  FillWithTwoItems(player, PLAYLIST::Id::TYPE_VIDEO);
+  player.SetCurrentItemIdx(0);
+
+  player.ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+  ASSERT_EQ(-1, player.GetCurrentItemIdx()) << "the no-current-item state under test was not set";
+  ASSERT_EQ(PLAYLIST::Id::TYPE_VIDEO, player.GetCurrentPlaylist())
+      << "the playlist under test was not left current";
+
+  // Without the bounds check this reads item -1, which is an empty CFileItemPtr, and
+  // dereferences it.
+  EXPECT_FALSE(player.IsCurrentItemInStack());
+}
+
+// The position is still out of range once items are queued again, because clearing set it to -1
+// rather than to a position in the new contents.
+TEST_F(TestPlayListPlayer, NoCurrentItemIsNotInAStackAfterThePlaylistIsRefilled)
+{
+  TestablePlayListPlayer player;
+  player.SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+  FillWithTwoItems(player, PLAYLIST::Id::TYPE_VIDEO);
+  player.SetCurrentItemIdx(0);
+
+  player.ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+  FillWithTwoItems(player, PLAYLIST::Id::TYPE_VIDEO);
+  ASSERT_EQ(-1, player.GetCurrentItemIdx()) << "the no-current-item state under test was not set";
+
+  EXPECT_FALSE(player.IsCurrentItemInStack());
+}
+
+TEST_F(TestPlayListPlayer, AnOrdinaryCurrentItemIsNotInAStack)
+{
+  TestablePlayListPlayer player;
+  player.SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+  FillWithTwoItems(player, PLAYLIST::Id::TYPE_VIDEO);
+  player.SetCurrentItemIdx(1);
+
+  EXPECT_FALSE(player.IsCurrentItemInStack());
+}
+
+TEST_F(TestPlayListPlayer, AnItemInAStackIsInAStack)
+{
+  TestablePlayListPlayer player;
+  player.SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+
+  PLAYLIST::CPlayList& playlist = player.GetPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+  playlist.Add(std::make_shared<CFileItem>("stack:///video/cd1.mkv , /video/cd2.mkv", false));
+  ASSERT_EQ(1, playlist.size());
+
+  player.SetCurrentItemIdx(0);
+
+  EXPECT_TRUE(player.IsCurrentItemInStack());
 }

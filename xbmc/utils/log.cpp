@@ -246,6 +246,25 @@ bool CLog::CanLogComponent(uint32_t component) const
   return ((m_componentLogLevels & component) == component);
 }
 
+std::vector<std::string> CLog::GetComponentNames()
+{
+  std::vector<std::string> names;
+  names.reserve(componentMap.size());
+  for (const auto& [_, info] : componentMap)
+    names.emplace_back(info.name);
+  return names;
+}
+
+uint32_t CLog::GetComponentByName(std::string_view name)
+{
+  for (const auto& [id, info] : componentMap)
+  {
+    if (info.name == name)
+      return id;
+  }
+  return LOG_COMPONENT_GENERAL;
+}
+
 void CLog::SettingOptionsLoggingComponentsFiller(const SettingConstPtr& setting,
                                                  std::vector<IntegerSettingOption>& list,
                                                  int& current)

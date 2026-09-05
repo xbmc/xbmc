@@ -35,7 +35,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h" //! @todo Remove me
 #include "input/InputManager.h"
-#include "interfaces/json-rpc/JSONRPC.h" //! @todo Remove me
 #include "music/MusicLibraryQueue.h"
 #include "network/Network.h" //! @todo Remove me
 #include "network/NetworkServices.h" //! @todo Remove me
@@ -420,8 +419,6 @@ void CProfileManager::FinalizeLoadProfile()
   }
 
   weatherManager.Refresh();
-
-  JSONRPC::CJSONRPC::Initialize();
 
   // Restart context menu manager
   contextMenuManager.Init();

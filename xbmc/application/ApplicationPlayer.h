@@ -217,11 +217,11 @@ private:
 
   // cache player state
   XbmcThreads::EndTime<> m_audioStreamUpdate;
-  int m_iAudioStream;
+  int m_iAudioStream{-1};
   XbmcThreads::EndTime<> m_videoStreamUpdate;
-  int m_iVideoStream;
+  int m_iVideoStream{-1};
   XbmcThreads::EndTime<> m_subtitleStreamUpdate;
-  int m_iSubtitleStream;
+  int m_iSubtitleStream{-1};
 
   struct SNextItem
   {

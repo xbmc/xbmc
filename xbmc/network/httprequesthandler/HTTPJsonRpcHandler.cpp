@@ -139,7 +139,7 @@ bool CHTTPJsonRpcHandler::CHTTPTransportLayer::PrepareDownload(const char *path,
   if (!CFileUtils::Exists(path))
     return false;
 
-  protocol = "http";
+  protocol = HTTPRequestHandlerUtils::GetRequestScheme(m_request.connection);
   std::string url;
   std::string strPath = path;
   if (StringUtils::StartsWith(strPath, "image://") ||

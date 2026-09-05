@@ -182,6 +182,9 @@ protected:
    */
   bool RepeatedOne(Id playlistId) const;
 
+  // False when the position names no item, as it does once the playlist has been cleared.
+  bool CurrentItemIsInStack() const;
+
   void ReShuffle(Id playlistId, int iPosition);
 
   void AnnouncePropertyChanged(Id playlistId,
