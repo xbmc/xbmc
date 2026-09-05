@@ -622,6 +622,10 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   {
     SPresent& m = m_Queue[m_presentsource];
 
+    // Before anything is drawn, so the frame about to be presented is fitted by its own
+    // measurement rather than by whichever one happened to arrive most recently.
+    m_pRenderer->SetFrameContentRect(m.contentRect);
+
     if( m.presentmethod == PRESENT_METHOD_BOB )
       PresentFields(clear, flags, alpha);
     else if( m.presentmethod == PRESENT_METHOD_BLEND )
@@ -659,7 +663,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
       {
         DEBUG_INFO_PLAYER info;
 
-        m_playerPort->GetDebugInfo(info.audio, info.video, info.player);
+        m_playerPort->GetDebugInfo(info);
 
         double refreshrate, clockspeed;
         int missedvblanks;
@@ -915,6 +919,7 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
   m.presentfield = displayField;
   m.presentmethod = presentmethod;
   m.pts = picture.pts;
+  m.contentRect = picture.contentRect;
   m_queued.push_back(m_free.front());
   m_free.pop_front();
   m_playerPort->UpdateRenderBuffers(m_queued.size(), m_discard.size(), m_free.size());

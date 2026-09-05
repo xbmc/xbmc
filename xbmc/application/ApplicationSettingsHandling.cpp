@@ -15,6 +15,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
@@ -26,6 +27,8 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "video/geometry/GeometrySettings.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #if defined(TARGET_DARWIN_OSX)
@@ -69,7 +72,8 @@ void CApplicationSettingsHandling::RegisterSettings()
                                           CSettings::SETTING_SCREENSAVER_SETTINGS,
                                           CSettings::SETTING_AUDIOCDS_SETTINGS,
                                           CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
-                                          CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
+                                          CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT,
+                                          CSettings::SETTING_VIDEOSCREEN_CALIBRATIONALIGNMENT,
                                           CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
                                           CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
                                           CSettings::SETTING_VIDEOPLAYER_USEDECODERFILTER,
@@ -77,9 +81,18 @@ void CApplicationSettingsHandling::RegisterSettings()
                                           CSettings::SETTING_SOURCE_VIDEOS,
                                           CSettings::SETTING_SOURCE_MUSIC,
                                           CSettings::SETTING_SOURCE_PICTURES,
+                                          CSettings::SETTING_VIDEOSCREEN_RASTERASPECT,
+                                          CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE,
+                                          CSettings::SETTING_VIDEOSCREEN_GUISURROUND,
+                                          CSettings::SETTING_VIDEOSCREEN_GUISURROUNDCOLOUR,
+                                          CSettings::SETTING_VIDEOSCREEN_GUISURROUNDIMAGE,
                                           CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN,
                                           CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS,
                                       });
+
+  // The graphics context is constructed before the settings exist, so until now it has been
+  // operating on the whole display whatever the viewer asked for.
+  ApplyRasterSettings();
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -92,6 +105,20 @@ void CApplicationSettingsHandling::RegisterSettings()
        CSettings::SETTING_MUSICPLAYER_SEEKDELAY, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS});
 
   settingsMgr->AddDynamicCondition("isplaying", IsPlaying);
+
+  const auto contentGeometry = components.GetComponent<CApplicationContentGeometry>();
+  if (contentGeometry)
+  {
+    settingsMgr->RegisterCallback(contentGeometry.get(),
+                                  {CSettings::SETTING_VIDEOSCREEN_RASTERASPECT,
+                                   CSettings::SETTING_VIDEOSCREEN_VARIABLECONTENTGEOMETRY,
+                                   CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE,
+                                   CSettings::SETTING_VIDEOSCREEN_GUISURROUND});
+
+    // The component was constructed before the settings existed, so until now it has been
+    // describing the default shape rather than the one the viewer chose.
+    contentGeometry->RefreshAtRest();
+  }
 
   settings->RegisterSubSettings(this);
 }
@@ -107,6 +134,11 @@ void CApplicationSettingsHandling::UnregisterSettings()
 
   settings->UnregisterSubSettings(this);
   settingsMgr->RemoveDynamicCondition("isplaying");
+
+  const auto contentGeometry = components.GetComponent<CApplicationContentGeometry>();
+  if (contentGeometry)
+    settingsMgr->UnregisterCallback(contentGeometry.get());
+
   settingsMgr->UnregisterCallback(&appPlayer->GetSeekHandler());
   settingsMgr->UnregisterCallback(this);
   settingsMgr->UnregisterSettingsHandler(this);
@@ -151,6 +183,86 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_RASTERASPECT)
+  {
+    ApplyRasterChange();
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE)
+  {
+    // No skin reload: the hold changes how the interface is fitted inside the raster, and
+    // nothing the skin selected against has moved.
+    ApplyRasterSettings();
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUISURROUND ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_GUISURROUNDCOLOUR ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_GUISURROUNDIMAGE)
+  {
+    // The surround is read at render time, so nothing is applied here - but under dirty-region
+    // rendering a frame in which only it changed is otherwise never repainted. No skin reload:
+    // nothing the skin loaded depends on it.
+    auto* const gui = CServiceBroker::GetGUI();
+    if (gui)
+      gui->GetWindowManager().MarkDirty();
+  }
+}
+
+void CApplicationSettingsHandling::ApplyRasterChange()
+{
+  // Applied through the reload rather than before it, so that the raster and the skin selected
+  // against it move in one step on the render thread. Headless there is no reload to carry it.
+  if (CServiceBroker::GetGUI())
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               "ReloadSkin");
+  else
+    ApplyRasterSettings();
+}
+
+void CApplicationSettingsHandling::ApplyRasterSettings()
+{
+  const auto settings = CServiceBroker::GetSettingsComponent();
+  if (!settings || !settings->GetSettings())
+    return;
+
+  const auto values = settings->GetSettings();
+
+  // Reached while the application is still coming up as well as after it, so neither service
+  // is guaranteed.
+  auto* const winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
+
+  CGraphicContext& context = winSystem->GetGfxContext();
+
+  // The raster in force rather than the setting itself, so a raster stated over the API reaches
+  // the layout by the same path. The component is absent only during startup.
+  const auto contentGeometry =
+      CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>();
+  const float aspect = contentGeometry ? contentGeometry->RasterAspect()
+                                       : KODI::VIDEO::GEOMETRY::RasterAspectFromSettings();
+  const bool keepShape = values->GetBool(CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE);
+
+  // Re-applied on every skin reload, whatever prompted it, so an unchanged pair costs nothing.
+  if (aspect == context.GetRasterAspect() && keepShape == context.GetGuiKeepShape())
+    return;
+
+  context.SetRasterAspect(aspect);
+  context.SetGuiKeepShape(keepShape);
+
+  // Every window has to lay itself out again, not merely repaint: marking the interface dirty
+  // leaves controls at the widths they were measured at while the fonts re-cache at the new
+  // scale.
+  auto* const gui = CServiceBroker::GetGUI();
+  if (gui)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+    gui->GetWindowManager().SendThreadMessage(msg);
+  }
+
+  // The shape published at rest can be the shape the interface is drawn at, which has just
+  // changed. Read after the layout above rather than with the setting that prompted it: the
+  // rectangle is filled during layout, so asking any earlier answers with the old one.
+  if (contentGeometry)
+    contentGeometry->RefreshAtRest();
 }
 
 void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
@@ -177,6 +289,9 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_CALIBRATION);
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_CALIBRATIONALIGNMENT)
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_ALIGNMENT);
   else if (settingId == CSettings::SETTING_SOURCE_VIDEOS)
   {
     std::vector<std::string> params{"library://video/files.xml", "return"};

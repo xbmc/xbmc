@@ -31,6 +31,7 @@
 #include "video/ViewModeSettings.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "video/dialogs/GUIDialogSubtitleSettings.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
@@ -393,20 +394,26 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
   m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
 }
 
+void CGUIWindowFullScreen::RenderPicture(bool clear, bool gui)
+{
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  context.SetRenderingResolution(context.GetVideoResolution(), false);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  const CRect clip = context.ClipToVideo();
+  appPlayer->Render(clear, 255, gui);
+  context.SetClip(clip);
+  context.SetRenderingResolution(m_coordsRes, m_needsScaling);
+}
+
 void CGUIWindowFullScreen::Render()
 {
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() !=
       RENDER_ORDER_FRONT_TO_BACK)
   {
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(
-        CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), false);
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     // FIXME: remove clearing pass from renderer, it should be its own, dedicated function.
-    bool clear = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear;
-    appPlayer->Render(clear, 255);
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes,
-                                                                           m_needsScaling);
+    RenderPicture(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear,
+                  true);
   }
   CGUIWindow::Render();
 }
@@ -414,11 +421,7 @@ void CGUIWindowFullScreen::Render()
 void CGUIWindowFullScreen::RenderEx()
 {
   CGUIWindow::RenderEx();
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), false);
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  appPlayer->Render(false, 255, false);
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
+  RenderPicture(false, false);
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)

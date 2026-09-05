@@ -36,9 +36,22 @@ namespace JSONRPC
                                          IClient* client,
                                          const CVariant& parameterObject,
                                          CVariant& result);
+    static JSONRPC_STATUS SetScreenAlignment(const std::string& method,
+                                             ITransportLayer* transport,
+                                             IClient* client,
+                                             const CVariant& parameterObject,
+                                             CVariant& result);
+    static JSONRPC_STATUS GetScreenAlignment(const std::string& method,
+                                             ITransportLayer* transport,
+                                             IClient* client,
+                                             const CVariant& parameterObject,
+                                             CVariant& result);
 
   private:
     static JSONRPC_STATUS GetPropertyValue(const std::string &property, CVariant &result);
     static CVariant GetStereoModeObjectFromGuiMode(const RenderStereoMode mode);
+
+    //! \brief The alignment tool's state as both methods answer with it.
+    static CVariant GetScreenAlignmentState();
   };
 }

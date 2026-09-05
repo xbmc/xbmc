@@ -30,6 +30,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include <mutex>
@@ -357,11 +358,18 @@ void CGUIWindow::DoRender()
   // to occur.
   if (!m_bAllocated) return;
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  context.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().AddGUITransform();
+  // Bracketed around the controls alone: not the frame's clear, which would leave whatever was
+  // outside the interface last frame on the screen, and not the picture.
+  const CRect scissors = context.ClipToGui();
+
+  context.AddGUITransform();
   CGUIControlGroup::DoRender();
-  CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
+  context.RemoveTransform();
+
+  context.SetClip(scissors);
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }

@@ -16,6 +16,8 @@
 #include "utils/ScraperUrl.h"
 #include "utils/StreamDetails.h"
 #include "video/Bookmark.h"
+#include "video/geometry/ContentGeometryRecord.h"
+#include "video/geometry/EffectiveGeometry.h"
 
 #include <string>
 #include <string_view>
@@ -97,6 +99,21 @@ public:
   std::string GetCast(const std::string& separator, bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool HasNFOStreamDetails() const;
+
+  //! \brief Is there a measured content rectangle attached to this item? Independent of
+  //! HasStreamDetails(): the measurement lives in its own table and survives its refreshes.
+  bool HasContentGeometry() const;
+
+  /*!
+   * \brief The content rectangle in force for this item, resolved as the player resolves it. The
+   *        library-side counterpart of CApplicationContentGeometry::Get().
+   *
+   * \return a default geometry, reporting GeometrySource::Container and no sections, when
+   *         nothing was measured for this item
+   */
+  KODI::VIDEO::GEOMETRY::EffectiveGeometry ResolveContentGeometry() const;
+
+  void SerializeContentGeometry(CVariant& streamdetails) const;
   bool IsEmpty() const;
 
   const std::string& GetPath() const
@@ -427,6 +444,10 @@ public:
   int m_iIdSeason;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
+
+  //! \brief The measured picture rectangle, when one is known. Carried here so that it
+  //! round-trips through NFO export and import like the stream details beside it.
+  KODI::VIDEO::GEOMETRY::ContentGeometryRecord m_contentGeometry;
   CDateTime m_dateAdded;
   MediaType m_type;
   int m_relevance; // Used for actors' number of appearances

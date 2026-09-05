@@ -28,7 +28,7 @@
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Left</include>
-				<visible>Control.IsVisible(50) | Control.Isvisible(54) | [Control.IsVisible(501) + String.IsEqual(Skin.AspectRatio,21:9)]</visible>
+				<visible>Control.IsVisible(50) | Control.Isvisible(54) | [Control.IsVisible(501) + String.IsEqual(Skin.AspectRatio,2.37)]</visible>
 				<include>Visible_Left</include>
 				<include content="ContentPanel">
 					<param name="width" value="656" />

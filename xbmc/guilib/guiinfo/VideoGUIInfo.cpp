@@ -16,6 +16,7 @@
 #include "Util.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
@@ -46,6 +47,7 @@
 #include "video/VideoThumbLoader.h"
 
 #include <math.h>
+#include <mutex>
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
@@ -67,6 +69,92 @@ int GetDescribedAudioStreamIndex(const CStreamDetails& details)
 CVideoGUIInfo::CVideoGUIInfo()
   : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
 {
+}
+
+void CVideoGUIInfo::ResetContentGeometry()
+{
+  std::unique_lock lock(m_geometrySection);
+  m_playerAspectsValid = false;
+  m_playerAspects = {};
+  m_itemAspects.clear();
+}
+
+const VIDEO::GEOMETRY::ContentAspectSet& CVideoGUIInfo::ContentAspects(const CFileItem* item) const
+{
+  // Callers hold m_geometrySection: the reference is into m_itemAspects, which the next
+  // refresh clears.
+  if (!item)
+  {
+    if (!m_playerAspectsValid)
+    {
+      m_playerAspects = VIDEO::GEOMETRY::ContentAspectsOf(
+          CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Get());
+      m_playerAspectsValid = true;
+    }
+    return m_playerAspects;
+  }
+
+  const std::string& key = item->GetPath();
+  for (const auto& [path, held] : m_itemAspects)
+  {
+    if (path == key)
+      return held;
+  }
+
+  const CVideoInfoTag* tag = item->GetVideoInfoTag();
+  VIDEO::GEOMETRY::ContentAspectSet resolved;
+  if (tag)
+    resolved = VIDEO::GEOMETRY::ContentAspectsOf(tag->ResolveContentGeometry());
+
+  // Bounded, because this only has to cover one refresh: a list drawing more items than this
+  // in one refresh re-resolves the ones past the bound rather than being answered wrongly.
+  static constexpr size_t MAX_HELD_ITEMS = 64;
+  if (m_itemAspects.size() >= MAX_HELD_ITEMS)
+    m_itemAspects.clear();
+
+  return m_itemAspects.emplace_back(key, std::move(resolved)).second;
+}
+
+bool CVideoGUIInfo::GetContentAspectLabel(std::string& value,
+                                          const CFileItem* item,
+                                          int id,
+                                          int index) const
+{
+  std::unique_lock lock(m_geometrySection);
+  const VIDEO::GEOMETRY::ContentAspectSet& aspects = ContentAspects(item);
+  const bool held = index >= 0 && static_cast<size_t>(index) < aspects.aspects.size();
+
+  switch (id)
+  {
+    case VIDEOPLAYER_CONTENT_ASPECT:
+    case LISTITEM_CONTENT_ASPECT:
+      // Empty rather than the frame's own ratio when nothing was established; the frame is
+      // published in its own right as VideoAspect.
+      if (held)
+        value = aspects.aspects[index].label;
+      return true;
+    case VIDEOPLAYER_CONTENT_ASPECT_NAME:
+    case LISTITEM_CONTENT_ASPECT_NAME:
+      if (held)
+        value = aspects.aspects[index].name;
+      return true;
+    case VIDEOPLAYER_CONTENT_ASPECT_COUNT:
+    case LISTITEM_CONTENT_ASPECT_COUNT:
+      value = std::to_string(aspects.aspects.size());
+      return true;
+    case VIDEOPLAYER_CONTENT_ASPECT_SOURCE:
+    case LISTITEM_CONTENT_ASPECT_SOURCE:
+      value = VIDEO::GEOMETRY::GeometrySourceName(aspects.source);
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool CVideoGUIInfo::GetContentAspectVaries(const CFileItem* item) const
+{
+  std::unique_lock lock(m_geometrySection);
+  return ContentAspects(item).varies;
 }
 
 int CVideoGUIInfo::GetPercentPlayed(const CVideoInfoTag* tag) const
@@ -497,6 +585,14 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         value =
             CStreamDetails::VideoAspectToAspectDescription(tag->m_streamDetails.GetVideoAspect());
         return true;
+      case LISTITEM_VIDEO_ASPECT_NAME:
+        value = CStreamDetails::VideoAspectToAspectName(tag->m_streamDetails.GetVideoAspect());
+        return true;
+      case LISTITEM_CONTENT_ASPECT:
+      case LISTITEM_CONTENT_ASPECT_NAME:
+      case LISTITEM_CONTENT_ASPECT_COUNT:
+      case LISTITEM_CONTENT_ASPECT_SOURCE:
+        return GetContentAspectLabel(value, item, info.GetInfo(), info.GetData4());
       case LISTITEM_VIDEO_WIDTH:
       {
         const int val = tag->m_streamDetails.GetVideoWidth();
@@ -666,6 +762,18 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       value = CStreamDetails::VideoAspectToAspectDescription(
           CServiceBroker::GetDataCacheCore().GetVideoDAR());
       return true;
+    case VIDEOPLAYER_VIDEO_ASPECT_NAME:
+      value =
+          CStreamDetails::VideoAspectToAspectName(CServiceBroker::GetDataCacheCore().GetVideoDAR());
+      return true;
+    case VIDEOPLAYER_CONTENT_ASPECT:
+    case VIDEOPLAYER_CONTENT_ASPECT_NAME:
+    case VIDEOPLAYER_CONTENT_ASPECT_COUNT:
+    case VIDEOPLAYER_CONTENT_ASPECT_SOURCE:
+      // Off the application's resolution rather than the item's: a live reading and a declared
+      // ratio both reach it, and neither is in the library record.
+      return GetContentAspectLabel(value, nullptr, info.GetInfo(),
+                                   static_cast<int>(info.GetData1()));
     case VIDEOPLAYER_STEREOSCOPIC_MODE:
       value = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
       return true;
@@ -916,6 +1024,11 @@ bool CVideoGUIInfo::GetBool(bool& value,
       case VIDEOPLAYER_HAS_VIDEOVERSIONS:
       case LISTITEM_HASVIDEOVERSIONS:
         value = tag->HasVideoVersions();
+        return true;
+      case VIDEOPLAYER_CONTENT_ASPECT_VARIES:
+      case LISTITEM_CONTENT_ASPECT_VARIES:
+        value = GetContentAspectVaries(info.GetInfo() == VIDEOPLAYER_CONTENT_ASPECT_VARIES ? nullptr
+                                                                                           : item);
         return true;
 
       /////////////////////////////////////////////////////////////////////////////////////////////

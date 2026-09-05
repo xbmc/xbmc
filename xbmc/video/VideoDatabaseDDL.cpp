@@ -62,7 +62,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
       "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, "
       "VideoStream integer,"
-      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer)\n");
+      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer,"
+      "DeclaredAspect float, DeclaredOn text, DetectedWhenDeclared float)\n");
 
   CLog::Log(LOGINFO, "create stacktimes table");
   db.ExecuteQuery("CREATE TABLE stacktimes (idFile integer, times text)\n");
@@ -194,6 +195,30 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery(
       "CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type "
       "TEXT, itemType INTEGER, idType INTEGER)");
+
+  CreateContentGeometryTable(db);
+}
+
+void CVideoDatabaseDDL::CreateContentGeometryTable(CDatabase& db)
+{
+  CLog::Log(LOGINFO, "create contentgeometry table");
+
+  // fileSize and fileMTime are BIGINT because MySQL's INTEGER is signed 32-bit and a file
+  // size passes that routinely. SQLite gives BIGINT integer affinity.
+  db.ExecuteQuery("CREATE TABLE contentgeometry (idFile INTEGER PRIMARY KEY, "
+                  "codedWidth INTEGER, codedHeight INTEGER, "
+                  "rectX INTEGER, rectY INTEGER, rectWidth INTEGER, rectHeight INTEGER, "
+                  "envelopeX INTEGER, envelopeY INTEGER, envelopeWidth INTEGER, "
+                  "envelopeHeight INTEGER, displayAspect FLOAT, "
+                  "varies BOOL, hasReading BOOL, confidence FLOAT, outcome INTEGER, "
+                  "algorithmVersion INTEGER, fileSize BIGINT, fileMTime BIGINT, "
+                  "dateComputed TEXT, sections TEXT)");
+
+  // Its own table because it is several kB of readings nothing reads back, and the row above is
+  // read for every item a listing fills. Sharing one row would put the blob on that path the
+  // moment anything did a SELECT *.
+  db.ExecuteQuery("CREATE TABLE contentgeometrydetails (idFile INTEGER PRIMARY KEY, "
+                  "details TEXT)");
 }
 
 void CVideoDatabaseDDL::CreateLinkIndex(CDatabase& db, const std::string& table)
@@ -370,6 +395,8 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM stacktimes WHERE idFile=old.idFile; "
                   "DELETE FROM streamdetails WHERE idFile=old.idFile; "
                   "DELETE FROM videoversion WHERE idFile=old.idFile; "
+                  "DELETE FROM contentgeometry WHERE idFile=old.idFile; "
+                  "DELETE FROM contentgeometrydetails WHERE idFile=old.idFile; "
                   "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
                   "END");
   db.ExecuteQuery(

@@ -40,6 +40,7 @@
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "application/ApplicationActionListeners.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationMessageHandling.h"
 #include "application/ApplicationPlay.h"
 #include "application/ApplicationPlayer.h"
@@ -135,6 +136,7 @@
 #include "speech/ISpeechRecognition.h"
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/CPUInfo.h"
 #include "utils/CharsetConverter.h"
 #include "utils/ContentUtils.h"
@@ -152,6 +154,8 @@
 #include "video/PlayerController.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
+#include "video/geometry/ContentGeometryScanner.h"
+#include "video/geometry/EffectiveGeometry.h"
 #ifdef TARGET_WINDOWS
 #include "win32util.h"
 #endif
@@ -233,6 +237,7 @@ CApplication::CApplication(void)
 
   // register application components
   RegisterComponent(std::make_shared<CApplicationActionListeners>(m_critSection));
+  RegisterComponent(std::make_shared<CApplicationContentGeometry>());
   RegisterComponent(std::make_shared<CApplicationPlayer>());
   RegisterComponent(std::make_shared<CApplicationPowerHandling>());
   RegisterComponent(std::make_shared<CApplicationSkinHandling>(this, this, m_bInitializing));
@@ -473,6 +478,10 @@ bool CApplication::CreateGUI()
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   CServiceBroker::GetWinSystem()->SetWindowResolution(settings->GetInt(CSettings::SETTING_WINDOW_WIDTH), settings->GetInt(CSettings::SETTING_WINDOW_HEIGHT));
 
+  // The raster settings were registered before a window system existed, so their startup apply
+  // had nothing to push into; the change callback only covers a value changed mid-session.
+  ApplyRasterSettings();
+
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen && CDisplaySettings::GetInstance().GetCurrentResolution() == RES_WINDOW)
   {
     // defer saving resolution after window was created
@@ -583,6 +592,13 @@ bool CApplication::Initialize()
       "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
   m_ServiceManager->GetNetwork().WaitForNet();
+
+  // Before the databases, reading a video row labelling its aspect ratio.
+  KODI::UTILS::CAspectRatioVocabulary::Load();
+
+  // The resting shape was published before the stored settings were read and before the
+  // definition above was in force, so it still describes the built-in default.
+  GetComponent<CApplicationContentGeometry>()->RefreshAtRest();
 
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
@@ -812,6 +828,10 @@ bool CApplication::Initialize()
   CServiceBroker::GetRepositoryUpdater().Start();
   if (!profileManager->UsingLoginScreen())
     CServiceBroker::GetServiceAddons().Start();
+
+  // Picks up wherever the last run stopped, the outstanding work being derived from the
+  // database rather than remembered.
+  VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
 
   CLog::Log(LOGINFO, "initialize done");
 
@@ -1533,6 +1553,42 @@ void CApplication::UnlockFrameMoveGuard()
   m_frameMoveGuard.unlock();
 }
 
+void CApplication::UpdateDrawnPicture()
+{
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  const auto geometry = GetComponent<CApplicationContentGeometry>();
+
+  // This runs per frame, so a menu skips the work entirely. The frame playback ends on still
+  // runs: it is the one that withdraws the rectangle.
+  const bool playing = context.IsFullScreenVideo();
+  if (!playing && !m_drawnPictureLive)
+    return;
+
+  m_drawnPictureLive = playing;
+
+  // Only while a video is on the screen; outside playback the screen shows the whole raster.
+  VIDEO::GEOMETRY::DrawnGeometry drawn;
+  CRect source;
+  CRect video;
+  CRect view;
+  if (playing && GetComponent<CApplicationPlayer>()->GetRects(source, video, view))
+  {
+    // From what the renderer drew rather than from the frame: with a raster stated it samples
+    // the content region only, and insetting its destination would count the bars twice.
+    drawn.picture = VIDEO::GEOMETRY::PictureOnScreen(geometry->Get(), source, video);
+    drawn.raster = context.GetRasterRect();
+  }
+
+  geometry->SetDrawn(drawn);
+
+  // The interface confinement is the same rectangle under one of the two placements, and can
+  // otherwise stay drawn where it was.
+  const bool confineToPicture =
+      geometry->OsdPlacementInForce() == VIDEO::GEOMETRY::OsdPlacement::Picture;
+  if (context.SetGuiContentRect(confineToPicture ? drawn.picture : CRect{}))
+    CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+}
+
 void CApplication::FrameMove(bool processEvents, bool processGUI)
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
@@ -1620,6 +1676,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_REFRESH_TIMER, 0, 0);
       m_guiRefreshTimer.Set(500ms);
     }
+
+    UpdateDrawnPicture();
 
     if (!m_bStop)
       CServiceBroker::GetGUI()->GetWindowManager().Process(CTimeUtils::GetFrameTime());
@@ -1900,6 +1958,10 @@ bool CApplication::Stop(int exitCode)
     CMusicLibraryQueue::GetInstance().CancelAllJobs();
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
+    // For the same reason: CancelJobs() waits for its workers to leave and tells a job already
+    // running nothing.
+    VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().StopSweep();
+
     // cancel any jobs from the jobmanager
     CServiceBroker::GetJobManager()->CancelJobs();
 
@@ -2092,12 +2154,21 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
   using enum CApplicationPlay::GatherPlaybackDetailsResult;
 
+  // Every return below this reaches no player, so nothing announces that the request stopped and
+  // nothing else disarms the geometry armed with it. Left armed it would land on whatever plays
+  // next, which never asked for it.
+  const auto contentGeometry{GetComponent<CApplicationContentGeometry>()};
+
   CApplicationPlay appPlay{*stackHelper};
   if (const auto result{appPlay.GatherPlaybackDetails(item, player, bRestart)};
       result == RESULT_ERROR)
+  {
+    contentGeometry->ClearPendingOverrides();
     return false;
+  }
   else if (result == RESULT_NO_PLAYLIST_SELECTED)
   {
+    contentGeometry->ClearPendingOverrides();
     m_cancelPlayback = true;
     return true; // Special case; not to be treated as error.
   }
@@ -2106,7 +2177,10 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   //! @todo Shouldn't disc stubs also be handled via appPlayer->OpenFile()?
   const CFileItem& resolvedItem{appPlay.GetResolvedItem()};
   if (VIDEO::IsDiscStub(resolvedItem))
+  {
+    contentGeometry->ClearPendingOverrides();
     return CServiceBroker::GetMediaManager().playStubFile(resolvedItem);
+  }
 
   // Reset VideoStartWindowed as it's a temp setting
   CMediaSettings::GetInstance().SetMediaStartWindowed(false);
@@ -2130,8 +2204,22 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       dMsgCount > 0)
     CLog::LogF(LOGDEBUG, "Ignored {} playback thread messages", dMsgCount);
 
+  // The sweep is measuring some other file across the same share, and nothing it watches turns
+  // true until the player reports playing - by which time this has already competed with it for
+  // the disk for seconds. Held for the whole open, so the sweep abandons the file it is on now.
+  auto& geometryScanner{VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance()};
+  geometryScanner.SetOpeningForPlayback(true);
+
+  // Before playback rather than once it is under way, a consumer driving a mask or a lens
+  // acting on the first answer it is given.
+  VIDEO::GEOMETRY::MeasureContentGeometryBeforePlaybackBlocking(resolvedItem);
+
   appPlayer->OpenFile(resolvedItem, appPlay.GetPlayerOptions(),
                       m_ServiceManager->GetPlayerCoreFactory(), appPlay.GetResolvedPlayer(), *this);
+
+  // Whether the file opened or not: the player is what the sweep watches from here, and a failed
+  // open would otherwise leave it suspended for the rest of the session.
+  geometryScanner.SetOpeningForPlayback(false);
 
   const auto appVolume{GetComponent<CApplicationVolumeHandling>()};
   appPlayer->SetVolume(appVolume->GetVolumeRatio());

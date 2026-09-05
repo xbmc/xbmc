@@ -14,6 +14,7 @@
 #include "DVDOverlayContainer.h"
 #include "DVDStreamInfo.h"
 #include "IVideoPlayer.h"
+#include "LiveGeometryMonitor.h"
 #include "PTSTracker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "threads/Thread.h"
@@ -73,6 +74,7 @@ public:
   std::string GetPlayerInfo() override;
   int GetVideoBitrate() override;
   void SetSpeed(int iSpeed) override;
+  std::string GetContentGeometryInfo() override { return m_liveGeometry.GetDebugInfo(); }
 
   // classes
   CDVDOverlayContainer* m_pOverlayContainer;
@@ -98,7 +100,9 @@ protected:
                                 std::chrono::milliseconds timeout,
                                 int& priority);
 
-  EOutputState OutputPicture(const VideoPicture* src);
+  //! \brief Non-const: the picture is stamped with the shape it was measured to be, which
+  //! then travels with it to the renderer.
+  EOutputState OutputPicture(VideoPicture* src);
   void ProcessOverlays(const VideoPicture* pSource, double pts);
   void OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVideoCodec> codec);
 
@@ -141,6 +145,7 @@ protected:
   CDroppingStats m_droppingStats;
   CRenderManager& m_renderManager;
   VideoPicture m_picture;
+  CLiveGeometryMonitor m_liveGeometry;
 
   EOutputState m_outputSate{OUTPUT_NORMAL};
 };

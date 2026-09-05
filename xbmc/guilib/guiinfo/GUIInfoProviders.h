@@ -140,6 +140,12 @@ public:
    */
   CLibraryGUIInfo& GetLibraryInfoProvider() { return m_libraryGUIInfo; }
 
+  /*!
+   * @brief Get the video guiinfo provider.
+   * @return The video guiinfo provider.
+   */
+  CVideoGUIInfo& GetVideoInfoProvider() { return m_videoGUIInfo; }
+
 private:
   std::vector<IGUIInfoProvider*> m_providers;
 

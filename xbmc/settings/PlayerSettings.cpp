@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/StringUtils.h"
 
 void CPlayerSettings::SettingOptionsQueueTimeSizesFiller(const SettingConstPtr& setting,
@@ -59,4 +60,19 @@ void CPlayerSettings::SettingOptionsFastForwardSpeeds(const SettingConstPtr& set
   list.emplace_back(StringUtils::Format(x, 8), 8);
   list.emplace_back(StringUtils::Format(x, 16), 16);
   list.emplace_back(StringUtils::Format(x, 32), 32);
+}
+
+void CPlayerSettings::SettingOptionsRasterAspectRatios(const SettingConstPtr& /*setting*/,
+                                                       std::vector<IntegerSettingOption>& list,
+                                                       int& /*current*/)
+{
+  using namespace KODI::UTILS;
+
+  // The display's own shape leads and is the default. It states nothing to hold Kodi to, so it
+  // is inert on every display, window and calibration.
+  list.emplace_back(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40834), 0);
+
+  // Declarable rather than detectable: a viewer stating the shape of their room, not a
+  // measurement that could have gone wrong.
+  CAspectRatioVocabulary::AppendDeclareChoices(list);
 }
