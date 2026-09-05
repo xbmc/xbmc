@@ -73,9 +73,9 @@ bool CAutorun::ExecuteAutorun(const std::string& path)
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return false;
 
-  CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(path);
+  const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo(path)};
 
-  if ( pInfo == NULL )
+  if (!pInfo)
     return false;
 
   auto& components = CServiceBroker::GetAppComponents();
@@ -119,7 +119,7 @@ bool CAutorun::PlayDisc(const std::string& path, const PlayDiscOptions& options)
 
   std::string mediaPath;
 
-  CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(path);
+  const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo(path)};
 
   if (pInfo && pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
