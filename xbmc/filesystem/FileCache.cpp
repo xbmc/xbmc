@@ -10,7 +10,6 @@
 
 #include "CircularCache.h"
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/Thread.h"
@@ -97,6 +96,7 @@ bool CFileCache::Open(const CURL& url)
 
   std::unique_lock lock(m_sync);
 
+  m_sourceUrl = url;
   m_sourcePath = url.GetRedacted();
 
   CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> opening", __FUNCTION__, m_sourcePath);
@@ -133,7 +133,8 @@ bool CFileCache::Open(const CURL& url)
             "CFileCache::{} - <{}> source chunk size is {}, setting cache chunk size to {}",
             __FUNCTION__, m_sourcePath, m_source.GetChunkSize(), m_chunkSize);
 
-  m_fileSize = m_source.GetLength();
+  // A negative length means unknown size, not past the end
+  m_fileSize = std::max<int64_t>(0, m_source.GetLength());
 
   if (!m_pCache)
   {
@@ -248,8 +249,10 @@ void CFileCache::Process()
 
   while (!m_bStop)
   {
-    // Update filesize
-    m_fileSize = m_source.GetLength();
+    // A dead source reports no length, which must not erase the real one mid-file
+    const int64_t sourceLength = m_source.GetLength();
+    if (sourceLength > 0)
+      m_fileSize = sourceLength;
 
     // check for seek events
     if (m_seekEvent.Wait(0ms))
@@ -341,6 +344,39 @@ void CFileCache::Process()
       iRead = m_source.Read(buffer.get(), maxSourceRead);
     if (iRead <= 0)
     {
+      // Mid-file on a seekable source this is a stalled or dropped connection, not the end
+      if (!m_bStop && m_seekPossible && m_fileSize > 0 && m_writePos < m_fileSize)
+      {
+        CLog::LogF(LOGWARNING, "<{}> source read returned {} at {} of {}, reconnecting",
+                   m_sourcePath, iRead, m_writePos, m_fileSize.load());
+
+        if (m_seekEvent.Wait(2000ms))
+        {
+          if (!m_bStop)
+            m_seekEvent.Set(); // hack so that later we realize seek is needed
+        }
+        else
+        {
+          m_source.Close();
+          if (m_source.Open(m_sourceUrl.Get(), READ_NO_CACHE | READ_TRUNCATED | READ_NO_BUFFER))
+          {
+            // A reopened source is a fresh protocol instance, so the source controls are
+            // reapplied
+            m_source.IoControl(IOControl::SET_CACHE, this);
+            bool retry = false;
+            m_source.IoControl(IOControl::SET_RETRY, &retry);
+            m_seekPossible = m_source.IoControl(IOControl::SEEK_POSSIBLE, nullptr);
+
+            if (m_seekPossible && m_source.Seek(m_writePos, SEEK_SET) == m_writePos)
+              CLog::LogF(LOGINFO, "<{}> source reconnected at {}", m_sourcePath, m_writePos);
+            else
+              m_source.Close();
+          }
+        }
+
+        continue; // while (!m_bStop)
+      }
+
       // Check for actual EOF and retry as long as we still have data in our cache
       if (m_writePos < m_fileSize && m_pCache->WaitForData(0, 0ms) > 0)
       {
@@ -495,6 +531,14 @@ retry:
     iRc = m_pCache->WaitForData(1, 10s);
     if (iRc > 0)
       goto retry;
+
+    // Zero means end-of-file to every caller, so starvation has to surface as an error
+    if (iRc == 0 && m_readPos < m_fileSize)
+    {
+      CLog::LogF(LOGWARNING, "<{}> timeout waiting for data at {} of {}", m_sourcePath, m_readPos,
+                 m_fileSize.load());
+      return -1;
+    }
   }
 
   if (iRc == CACHE_RC_TIMEOUT)

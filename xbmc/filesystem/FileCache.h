@@ -11,6 +11,7 @@
 #include "CacheStrategy.h"
 #include "File.h"
 #include "IFile.h"
+#include "URL.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
@@ -61,6 +62,7 @@ namespace XFILE
     std::unique_ptr<CCacheStrategy> m_pCache;
     int m_seekPossible = 0;
     CFile m_source;
+    CURL m_sourceUrl;
     std::string m_sourcePath;
     CEvent m_seekEvent;
     CEvent m_seekEnded;
