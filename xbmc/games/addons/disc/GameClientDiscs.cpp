@@ -222,15 +222,7 @@ bool CGameClientDiscs::AddDisc(const std::string& filePath)
     if (!m_transport->ReplaceImageIndex(static_cast<unsigned int>(*removedIndex), filePath))
       return false;
 
-    const auto selected = m_discModel->GetSelectedDiscIndex();
-    auto discs = m_discModel->GetDiscs();
-    discs[*removedIndex] = {GameClientDiscEntry::DiscSlotType::Disc,
-                            filePath,
-                            CGameClientDiscModel::DeriveBasename(filePath),
-                            {}};
-    m_discModel->SetDiscs(discs);
-    if (selected)
-      m_discModel->SetSelectedDiscByIndex(*selected);
+    m_discModel->SetDiscByIndex(*removedIndex, filePath);
   }
   else
   {
@@ -293,7 +285,7 @@ bool CGameClientDiscs::RemoveDiscByIndex(size_t index)
   const bool wasSelected = selectedIndex.has_value() && *selectedIndex == index;
   bool selectionUpdated = true;
 
-  // Remove from the core by current index
+  const unsigned int previousImageCount = m_transport->GetImageCount();
   if (!m_transport->RemoveImageIndex(static_cast<unsigned int>(index)))
     return false;
 
@@ -306,7 +298,11 @@ bool CGameClientDiscs::RemoveDiscByIndex(size_t index)
     selectionUpdated = m_transport->SetImageIndex(noDiscIndex);
   }
 
-  m_discModel->MarkRemovedByIndex(index);
+  const unsigned int imageCount = m_transport->GetImageCount();
+  if (previousImageCount > 0 && imageCount == previousImageCount - 1)
+    m_discModel->EraseDiscByIndex(index);
+  else
+    m_discModel->MarkRemovedByIndex(index);
 
   RefreshDiscState();
 

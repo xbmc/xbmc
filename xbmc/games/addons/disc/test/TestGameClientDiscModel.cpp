@@ -104,3 +104,51 @@ TEST(TestGameClientDiscModel, SnapshotEqualityIncludesAllMachineDiscState)
   second.UpdateCachedLabel("/roms/disc1.chd", "Changed");
   EXPECT_FALSE(first == second);
 }
+
+TEST(TestGameClientDiscModel, IndexedReplacementReusesSlotAndPreservesOtherSelection)
+{
+  const std::string oldPath = "/roms/old.chd";
+  const std::string newPath = "/roms/new.chd";
+  CGameClientDiscModel model;
+  model.AddDisc("/roms/first.chd");
+  model.AddDisc(oldPath, "Old disc");
+  ASSERT_TRUE(model.MarkRemovedByIndex(1));
+
+  ASSERT_TRUE(model.SetDiscByIndex(1, newPath, "Replacement"));
+  EXPECT_EQ(model.Size(), 2U);
+  EXPECT_EQ(model.GetSelectedDiscIndex(), 0U);
+  EXPECT_FALSE(model.IsRemovedSlotByIndex(1));
+  EXPECT_EQ(model.GetPathByIndex(1), newPath);
+  EXPECT_EQ(model.GetLabelByIndex(1), "Replacement");
+  EXPECT_EQ(model.GetDiscByIndex(1)->basename, CGameClientDiscModel::DeriveBasename(newPath));
+}
+
+TEST(TestGameClientDiscModel, IndexedReplacementPreservesNoDiscAndSelectedSlot)
+{
+  CGameClientDiscModel model;
+  model.AddRemovedSlot();
+  model.SetEjected(true);
+  ASSERT_TRUE(model.SetDiscByIndex(0, "/roms/first.chd"));
+  EXPECT_TRUE(model.IsSelectedNoDisc());
+  EXPECT_TRUE(model.IsEjected());
+
+  ASSERT_TRUE(model.SetSelectedDiscByIndex(0));
+  const std::string path = "/roms/replacement.chd";
+  ASSERT_TRUE(model.SetDiscByIndex(0, path));
+  EXPECT_EQ(model.Size(), 1U);
+  EXPECT_EQ(model.GetSelectedDiscIndex(), 0U);
+  EXPECT_EQ(model.GetSelectedDiscPath(), path);
+  EXPECT_TRUE(model.IsEjected());
+}
+
+TEST(TestGameClientDiscModel, InvalidIndexedReplacementLeavesModelUnchanged)
+{
+  CGameClientDiscModel model;
+  model.AddDisc("/roms/first.chd");
+  const CGameClientDiscModel previous = model;
+  const std::string newPath = "/roms/new.chd";
+
+  EXPECT_FALSE(model.SetDiscByIndex(model.Size(), newPath));
+  EXPECT_FALSE(model.SetDiscByIndex(0, ""));
+  EXPECT_TRUE(model == previous);
+}
