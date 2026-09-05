@@ -134,3 +134,17 @@ TEST_F(TestGameClientDiscMutations, ReusedRemovedSlotKeepsIdentityWithoutCoreMet
   EXPECT_FALSE(model.IsRemovedSlotByIndex(1));
   EXPECT_EQ(model.GetPathByIndex(1), "/roms/disc3.chd");
 }
+
+TEST_F(TestGameClientDiscMutations,
+       FailedNoDiscSelectionAfterRemovalReportsFailureAndRefreshesModel)
+{
+  m_core.failSetImageIndex = true;
+
+  EXPECT_FALSE(m_client->Discs().RemoveDiscByIndex(0));
+
+  const CGameClientDiscModel model = m_client->Discs().GetDiscs();
+  ASSERT_EQ(model.Size(), 2U);
+  EXPECT_TRUE(model.IsRemovedSlotByIndex(0));
+  EXPECT_TRUE(model.IsSelectedNoDisc());
+  EXPECT_TRUE(m_core.slots[0].empty());
+}
