@@ -375,6 +375,38 @@ public:
   static constexpr auto SETTING_SMB_LEGACYSECURITY = "smb.legacysecurity";
   static constexpr auto SETTING_SMB_CHUNKSIZE = "smb.chunksize";
   static constexpr auto SETTING_SERVICES_WSDISCOVERY = "services.wsdiscovery";
+  // The content-geometry feature's own page, the screengeometry category under System. Its ids
+  // share the videoscreen prefix wherever they act.
+  static constexpr auto SETTING_VIDEOSCREEN_VARIABLECONTENTGEOMETRY =
+      "videoscreen.variablecontentgeometry";
+  static constexpr auto SETTING_VIDEOSCREEN_CONTENTGEOMETRYSAMPLES =
+      "videoscreen.contentgeometrysamples";
+  static constexpr auto SETTING_VIDEOSCREEN_CONTENTGEOMETRYLEADIN =
+      "videoscreen.contentgeometryleadin";
+  static constexpr auto SETTING_VIDEOSCREEN_CONTENTGEOMETRYLEADOUT =
+      "videoscreen.contentgeometryleadout";
+  static constexpr auto SETTING_VIDEOSCREEN_LIVECONTENTGEOMETRY =
+      "videoscreen.livecontentgeometry";
+  static constexpr auto SETTING_VIDEOSCREEN_LIVEGEOMETRYNARROW = "videoscreen.livegeometrynarrow";
+  static constexpr auto SETTING_VIDEOSCREEN_LIVEGEOMETRYLEADIN = "videoscreen.livegeometryleadin";
+  static constexpr auto SETTING_VIDEOSCREEN_LIVEGEOMETRYLEADOUT = "videoscreen.livegeometryleadout";
+  static constexpr auto SETTING_VIDEOSCREEN_SCREENALIGNMENT = "videoscreen.screenalignment";
+
+  //! \brief The same tool as SETTING_VIDEOSCREEN_SCREENALIGNMENT, reached from the calibration
+  //! group under Display - a setting belongs to one group, so a second way in is a second entry.
+  static constexpr auto SETTING_VIDEOSCREEN_CALIBRATIONALIGNMENT =
+      "videoscreen.calibrationalignment";
+  static constexpr auto SETTING_VIDEOSCREEN_RASTERASPECT = "videoscreen.rasteraspect";
+  static constexpr auto SETTING_VIDEOSCREEN_GUIKEEPSHAPE = "videoscreen.guikeepshape";
+  static constexpr auto SETTING_VIDEOSCREEN_GUISURROUND = "videoscreen.guisurround";
+  static constexpr auto SETTING_VIDEOSCREEN_GUISURROUNDCOLOUR = "videoscreen.guisurroundcolour";
+  static constexpr auto SETTING_VIDEOSCREEN_GUISURROUNDIMAGE = "videoscreen.guisurroundimage";
+  static constexpr auto SETTING_VIDEOSCREEN_OSDPLAYING = "videoscreen.osdplaying";
+  static constexpr auto SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY =
+      "videoscreen.extractcontentgeometry";
+  static constexpr auto SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN =
+      "videoscreen.contentgeometryonscan";
+  static constexpr auto SETTING_VIDEOSCREEN_SCANCONTENTGEOMETRY = "videoscreen.scancontentgeometry";
   static constexpr auto SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor";
   static constexpr auto SETTING_VIDEOSCREEN_SCREEN = "videoscreen.screen";
   static constexpr auto SETTING_VIDEOSCREEN_WHITELIST = "videoscreen.whitelist";

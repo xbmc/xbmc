@@ -31,6 +31,12 @@ public:
    */
   static void CreateAnalytics(CDatabase& db);
 
+  /*!
+   * \brief Create the content geometry table
+   * \param[in] db the database
+   */
+  static void CreateContentGeometryTable(CDatabase& db);
+
 private:
   static void CreateLinkIndex(CDatabase& db, const std::string& table);
   static void CreateForeignLinkIndex(CDatabase& db,

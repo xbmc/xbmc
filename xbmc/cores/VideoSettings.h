@@ -11,6 +11,7 @@
 #include "utils/Map.h"
 
 #include <optional>
+#include <string>
 #include <string_view>
 
 #include <fmt/format.h>
@@ -247,6 +248,24 @@ public:
   float m_ToneMapParam;
   int m_Orientation;
   int m_CenterMixLevel; // relative to metadata or default
+
+  //! \brief Display aspect ratio the viewer declared for this file, or 0 for none. Overrides
+  //! anything measured, with no plausibility check applied to it.
+  float m_declaredAspect{0.0f};
+
+  //! \brief When m_declaredAspect was set, so a declaration can later be compared against what
+  //! detection has since come to report. Empty when there is no declaration.
+  std::string m_declaredOn;
+
+  //! \brief What detection reported at the moment of declaring, or 0 if it had no answer.
+  float m_detectedWhenDeclared{0.0f};
+
+  //! \brief Declare \p ratio as what the content is, stamping the two members above.
+  void DeclareAspect(float ratio, float detectedNow);
+
+  //! \brief Withdraw the declaration and the provenance that travelled with it.
+  void ClearDeclaredAspect();
+
   std::optional<bool>
       m_isDefaultVideoSettings; //!< true: default video settings, false: video specific
 };
