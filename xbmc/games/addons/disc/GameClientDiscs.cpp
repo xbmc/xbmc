@@ -221,6 +221,16 @@ bool CGameClientDiscs::AddDisc(const std::string& filePath)
   {
     if (!m_transport->ReplaceImageIndex(static_cast<unsigned int>(*removedIndex), filePath))
       return false;
+
+    const auto selected = m_discModel->GetSelectedDiscIndex();
+    auto discs = m_discModel->GetDiscs();
+    discs[*removedIndex] = {GameClientDiscEntry::DiscSlotType::Disc,
+                            filePath,
+                            CGameClientDiscModel::DeriveBasename(filePath),
+                            {}};
+    m_discModel->SetDiscs(discs);
+    if (selected)
+      m_discModel->SetSelectedDiscByIndex(*selected);
   }
   else
   {

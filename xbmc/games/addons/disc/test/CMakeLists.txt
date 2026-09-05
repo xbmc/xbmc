@@ -1,6 +1,7 @@
 set(SOURCES TestGameClientDiscM3U.cpp
             TestGameClientDiscMergeUtils.cpp
             TestGameClientDiscModel.cpp
+            TestGameClientDiscMutations.cpp
             TestGameClientDiscXML.cpp
 )
 
