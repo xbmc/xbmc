@@ -42,4 +42,14 @@ public:
   static void ViewModesFiller(const std::shared_ptr<const CSetting>& setting,
                               std::vector<IntegerSettingOption>& list,
                               int& current);
+
+  /*!
+   * \brief Does this view mode survive a stated screen shape? Answers both what a viewer is
+   *        offered and what the renderer honours.
+   *
+   * A computed mode zooms the coded frame's bars away, which with a shape stated would carry
+   * real picture past the raster. Normal survives as the absence of a zoom, Custom as the
+   * viewer's own statement.
+   */
+  static bool SurvivesStatedShape(int viewMode);
 };

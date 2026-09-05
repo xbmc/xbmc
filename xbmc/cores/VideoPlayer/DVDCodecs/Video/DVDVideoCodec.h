@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "utils/Geometry.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -80,6 +81,15 @@ public:
   unsigned int iHeight;
   unsigned int iDisplayWidth;           //< width of the picture without black bars
   unsigned int iDisplayHeight;          //< height of the picture without black bars
+
+  /*!
+   * \brief Where the picture is inside the coded frame, empty when nothing measured it.
+   *
+   * Carried on the picture because the measurement is taken on the decode side, several frames
+   * before this picture reaches the screen. Sent any other way it would arrive while earlier
+   * frames are still showing and re-scale them, changing shape on the wrong side of a cut.
+   */
+  CRectInt contentRect;
 
 private:
   VideoPicture(VideoPicture const&) = default;

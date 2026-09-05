@@ -9,6 +9,8 @@
 #include "ApplicationPlayer.h"
 
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
@@ -1038,7 +1040,11 @@ void CApplicationPlayer::SetVideoSettings(CVideoSettings& settings)
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
   {
-    return player->SetVideoSettings(settings);
+    player->SetVideoSettings(settings);
+
+    // A declared ratio outranks everything the resolver knows and a rotation moves where the
+    // picture lands, so both re-resolve now rather than at the next stream change.
+    CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Refresh();
   }
 }
 

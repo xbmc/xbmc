@@ -43,7 +43,9 @@ RESOLUTION_INFO::RESOLUTION_INFO(int width, int height, float aspect, const std:
   iBlanking = 0;
   iScreenWidth = width;
   iScreenHeight = height;
-  fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
+  // The declaration over the pixel shape. Written the other way round it compounds instead of
+  // correcting, and DisplayRatio() then answers (w/h) squared over the declaration.
+  fPixelRatio = aspect ? aspect / (((float)width) / height) : 1.0f;
   bFullScreen = true;
   fRefreshRate = 0;
   dwFlags = iSubtitles = 0;

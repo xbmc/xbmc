@@ -374,17 +374,11 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     useFrameMargins = opts.marginsMode == MarginsMode::INSIDE_VIDEO;
   }
 
-  int marginTop{0};
-  int marginLeft{0};
+  FrameMargins margins;
   if (useFrameMargins)
-  {
-    marginTop =
-        static_cast<int>((opts.frameHeight - std::min(opts.videoHeight, opts.frameHeight)) / 2);
-    marginLeft =
-        static_cast<int>((opts.frameWidth - std::min(opts.videoWidth, opts.frameWidth)) / 2);
-  }
+    margins = InsideVideoMargins(opts);
 
-  ass_set_margins(m_renderer, marginTop, marginTop, marginLeft, marginLeft);
+  ass_set_margins(m_renderer, margins.top, margins.top, margins.left, margins.left);
   ass_set_use_margins(m_renderer, 0);
 
   float fontScale{1.0f};
@@ -393,6 +387,9 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     // Make font size relative to window size instead of video,
     // to show same font size even if the video do not cover in full the
     // window (e.g. cropped videos, zoom effect) and player add black bars.
+    //
+    // The video and not the picture: this asks how much of the window the video occupies, which
+    // the bars coded into it are part of.
     fontScale *= std::max(opts.frameHeight / opts.videoHeight, 1.0f);
   }
 

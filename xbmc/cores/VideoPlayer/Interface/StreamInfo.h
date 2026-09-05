@@ -75,6 +75,11 @@ struct SubtitleStreamInfo : StreamInfo
 struct VideoStreamInfo : StreamInfo
 {
   float videoAspectRatio = 0.0f;
+
+  //! \brief Clockwise rotation the container asks for, in degrees. The coded width and height
+  //! below are as coded, so a quarter turn swaps them on the screen.
+  int orientation = 0;
+
   int height = 0;
   int width = 0;
   CRect SrcRect;
