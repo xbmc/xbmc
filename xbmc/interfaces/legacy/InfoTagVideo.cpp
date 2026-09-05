@@ -110,6 +110,28 @@ namespace XBMCAddon
       return streamDetail;
     }
 
+    ContentGeometrySection::ContentGeometrySection(
+        const KODI::VIDEO::GEOMETRY::GeometrySection& section)
+      : m_section(section)
+    {
+    }
+
+    ContentGeometry::ContentGeometry(const KODI::VIDEO::GEOMETRY::EffectiveGeometry& geometry)
+      : m_geometry(geometry)
+    {
+    }
+
+    std::vector<ContentGeometrySection*> ContentGeometry::getSections() const
+    {
+      std::vector<ContentGeometrySection*> sections;
+      sections.reserve(m_geometry.sections.size());
+
+      for (const KODI::VIDEO::GEOMETRY::GeometrySection& section : m_geometry.sections)
+        sections.push_back(new ContentGeometrySection(section));
+
+      return sections;
+    }
+
     InfoTagVideo::InfoTagVideo(bool offscreen /* = false */)
       : infoTag(new CVideoInfoTag), offscreen(offscreen), owned(true)
     {
@@ -232,6 +254,11 @@ namespace XBMCAddon
         actors.push_back(new Actor(cast.strName, cast.strRole, cast.order, cast.thumbUrl.GetFirstUrlByType().m_url));
 
       return actors;
+    }
+
+    ContentGeometry* InfoTagVideo::getContentGeometry()
+    {
+      return new ContentGeometry(infoTag->ResolveContentGeometry());
     }
 
     String InfoTagVideo::getFile()

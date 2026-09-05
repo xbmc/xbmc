@@ -29,6 +29,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "threads/Timer.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -40,6 +41,7 @@
 #include <algorithm>
 #include <charconv>
 #include <chrono>
+#include <cmath>
 #include <map>
 #include <memory>
 #include <set>
@@ -161,6 +163,47 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
+//! \brief The ratio a layout's aspect attribute declares; zero when nothing usable is stated.
+static float ParseDeclaredAspect(const std::string& strAspect,
+                                 int width,
+                                 int height,
+                                 const std::string& skinId)
+{
+  float aspect = 0;
+
+  if (strAspect.find(':') != std::string::npos)
+  {
+    const std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
+    if (fracs.size() == 2)
+    {
+      const float w = StringUtils::ToFloat(fracs[0]);
+      const float h = StringUtils::ToFloat(fracs[1]);
+      if (h > 0.0f)
+        aspect = w / h;
+    }
+
+    const bool matchesPixels =
+        height > 0 && std::fabs(aspect - (static_cast<float>(width) / height)) < 0.005f;
+
+    CLog::Log(LOGDEBUG,
+              "Skin {}: the {}x{} layout declares aspect=\"{}\", which is {}. Fractions are "
+              "deprecated - declare the ratio itself, as aspect=\"{:.2f}\".",
+              skinId, width, height, strAspect,
+              matchesPixels ? "the shape it already is" : "not the shape its pixels are", aspect);
+  }
+  else if (!strAspect.empty())
+  {
+    aspect = StringUtils::ToFloat(strAspect);
+
+    const float canonical = KODI::UTILS::CAspectRatioVocabulary::RatioForKey(
+        KODI::UTILS::CAspectRatioVocabulary::Key(aspect));
+    if (canonical > 0.0f)
+      aspect = canonical;
+  }
+
+  return aspect;
+}
+
 CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo,
                      const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
   : CAddon(addonInfo, AddonType::SKIN),
@@ -175,6 +218,13 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonTyp
 {
   for (const auto& [name, values] : Type(AddonType::SKIN)->GetValues())
   {
+    if (name == "surround")
+    {
+      m_surroundColour = values.GetValue("surround@colour").asString();
+      m_surroundImage = values.GetValue("surround@image").asString();
+      continue;
+    }
+
     if (name != "res")
       continue;
 
@@ -183,11 +233,8 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonTyp
     const bool defRes = values.GetValue("res@default").asBoolean();
     const std::string folder = values.GetValue("res@folder").asString();
     const std::string strAspect = values.GetValue("res@aspect").asString();
-    float aspect = 0;
+    const float aspect = ParseDeclaredAspect(strAspect, width, height, ID());
 
-    const std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
-    if (fracs.size() == 2)
-      aspect = static_cast<float>(std::atof(fracs[0].c_str()) / std::atof(fracs[1].c_str()));
     if (width > 0 && height > 0)
     {
       RESOLUTION_INFO res(width, height, aspect, folder);
@@ -252,8 +299,9 @@ void CSkinInfo::Start()
 
   if (!m_resolutions.empty())
   {
-    // find the closest resolution
-    const RESOLUTION_INFO& target = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+    // find the closest resolution to the raster
+    const RESOLUTION_INFO target =
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetRasterResInfo();
     const RESOLUTION_INFO& res = *std::ranges::min_element(m_resolutions, closestRes(target));
     m_currentAspect = res.strId;
   }
@@ -275,8 +323,8 @@ std::string CSkinInfo::GetSkinPath(const std::string& strFile,
   if (!res)
     res = &tempRes;
 
-  // find the closest resolution
-  const RESOLUTION_INFO &target = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  // find the closest resolution to the raster
+  const RESOLUTION_INFO target = CServiceBroker::GetWinSystem()->GetGfxContext().GetRasterResInfo();
   *res = *std::ranges::min_element(m_resolutions, closestRes(target));
 
   std::string strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode, strFile);

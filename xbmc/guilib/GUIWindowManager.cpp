@@ -9,6 +9,7 @@
 #include "GUIWindowManager.h"
 
 #include "GUIAudioManager.h"
+#include "GUIComponent.h"
 #include "GUIDialog.h"
 #include "GUIInfoManager.h"
 #include "GUIPassword.h"
@@ -56,6 +57,7 @@
 #include "video/windows/GUIWindowVideoNav.h"
 #include "video/windows/GUIWindowVideoPlaylist.h"
 #include "weather/GUIWindowWeather.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windows/GUIWindowDebugInfo.h"
 #include "windows/GUIWindowFileManager.h"
@@ -1341,6 +1343,7 @@ void CGUIWindowManager::RenderPassSingle() const
   if (pWindow)
   {
     pWindow->ClearBackground();
+    m_guiSurround.Render();
     pWindow->DoRender();
   }
 
@@ -1359,7 +1362,10 @@ void CGUIWindowManager::RenderPassDual() const
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
+  {
     pWindow->ClearBackground();
+    m_guiSurround.Render();
+  }
 
   auto renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
@@ -1575,6 +1581,11 @@ void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
 void CGUIWindowManager::DeInitialize()
 {
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+  // Unloading the skin is what brings us here, and the skin is one of the two things the
+  // surround is painted from.
+  m_guiSurround.ReleaseResources();
+  m_guiSurround.Invalidate();
 
   // Need a copy because addon-dialogs removes itself on Close()
   // Copy shared_ptrs to keep windows alive during cleanup

@@ -21,6 +21,7 @@
 #include "VideoLibrary.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -50,13 +51,17 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/MathUtils.h"
 #include "utils/PlayerUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/geometry/GeometryPublication.h"
 
+#include <cmath>
 #include <map>
+#include <optional>
 #include <tuple>
 
 using namespace KODI;
@@ -65,6 +70,11 @@ using namespace PVR;
 
 namespace
 {
+
+std::shared_ptr<CApplicationContentGeometry> ContentGeometryComponent()
+{
+  return CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>();
+}
 
 void AppendAudioStreamFlagsAsBooleans(CVariant& list, StreamFlags flags)
 {
@@ -831,6 +841,48 @@ JSONRPC_STATUS CPlayerOperations::SetViewMode(const std::string &method, ITransp
   return jsonStatus;
 }
 
+JSONRPC_STATUS CPlayerOperations::SetGeometry(const std::string& method,
+                                              ITransportLayer* transport,
+                                              IClient* client,
+                                              const CVariant& parameterObject,
+                                              CVariant& result)
+{
+  const auto contentGeometry = ContentGeometryComponent();
+  if (!contentGeometry)
+    return FailedToExecute;
+
+  KODI::VIDEO::GEOMETRY::GeometryOverrides overrides = contentGeometry->GetOverrides();
+  KODI::VIDEO::GEOMETRY::ParseGeometryOverrides(parameterObject["geometry"], overrides);
+  contentGeometry->SetOverrides(overrides);
+
+  return ACK;
+}
+
+JSONRPC_STATUS CPlayerOperations::GetGeometry(const std::string& method,
+                                              ITransportLayer* transport,
+                                              IClient* client,
+                                              const CVariant& parameterObject,
+                                              CVariant& result)
+{
+  const auto contentGeometry = ContentGeometryComponent();
+  if (!contentGeometry)
+    return FailedToExecute;
+
+  KODI::VIDEO::GEOMETRY::SerializeGeometryOverrides(contentGeometry->GetOverrides(),
+                                                    result["stated"]);
+
+  result["raster"] = KODI::VIDEO::GEOMETRY::PublishedAspect(contentGeometry->RasterAspect());
+  result["osdplacement"] =
+      KODI::VIDEO::GEOMETRY::OsdPlacementName(contentGeometry->OsdPlacementInForce());
+
+  // Absent while nothing is drawn.
+  const KODI::VIDEO::GEOMETRY::DrawnGeometry drawn = contentGeometry->Drawn();
+  if (drawn.Drawn())
+    KODI::VIDEO::GEOMETRY::SerializeDrawnGeometry(drawn, result["screen"]);
+
+  return OK;
+}
+
 JSONRPC_STATUS CPlayerOperations::GetViewMode(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   const auto& components = CServiceBroker::GetAppComponents();
@@ -844,6 +896,69 @@ JSONRPC_STATUS CPlayerOperations::GetViewMode(const std::string &method, ITransp
   result["pixelratio"] = CDisplaySettings::GetInstance().GetPixelRatio();
   result["verticalshift"] = CDisplaySettings::GetInstance().GetVerticalShift();
   result["nonlinearstretch"] = CDisplaySettings::GetInstance().IsNonLinearStretched();
+  return OK;
+}
+
+JSONRPC_STATUS CPlayerOperations::SetDeclaredAspectRatio(const std::string& method,
+                                                         ITransportLayer* transport,
+                                                         IClient* client,
+                                                         const CVariant& parameterObject,
+                                                         CVariant& result)
+{
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  if (!appPlayer || !appPlayer->IsPlayingVideo())
+    return FailedToExecute;
+
+  const CVariant& ratio = parameterObject["aspectratio"];
+
+  if (ratio.isString())
+  {
+    if (ratio.asString() != "auto")
+      return InvalidParams;
+
+    ContentGeometryComponent()->ApplyDeclaredAspect(*appPlayer, 0.0f);
+    return ACK;
+  }
+
+  // Anything further than the tolerance from a ratio Kodi knows is a bad request.
+  const std::optional<KODI::UTILS::AspectRatioEntry> entry =
+      KODI::UTILS::CAspectRatioVocabulary::Match(static_cast<float>(ratio.asDouble()),
+                                                 KODI::UTILS::AspectRatioUse::Declare);
+  if (!entry)
+    return InvalidParams;
+
+  ContentGeometryComponent()->ApplyDeclaredAspect(*appPlayer, entry->ratio);
+  return ACK;
+}
+
+JSONRPC_STATUS CPlayerOperations::GetDeclaredAspectRatio(const std::string& method,
+                                                         ITransportLayer* transport,
+                                                         IClient* client,
+                                                         const CVariant& parameterObject,
+                                                         CVariant& result)
+{
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  const CVideoSettings vs = appPlayer->GetVideoSettings();
+
+  if (vs.m_declaredAspect <= 0.0f)
+  {
+    // "Auto" is the absence of a declaration, so there is no ratio to report.
+    result["declared"] = false;
+    return OK;
+  }
+
+  const std::optional<KODI::UTILS::AspectRatioEntry> entry =
+      KODI::UTILS::CAspectRatioVocabulary::Nearest(vs.m_declaredAspect);
+
+  result["declared"] = true;
+  result["aspectratio"] = KODI::VIDEO::GEOMETRY::PublishedAspect(vs.m_declaredAspect);
+  result["label"] = entry ? entry->label : "";
+  result["name"] = entry ? entry->name : "";
+  result["declaredon"] = vs.m_declaredOn;
   return OK;
 }
 
@@ -873,6 +988,14 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   CVariant optionRepeat = options["repeat"];
   CVariant optionResume = options["resume"];
   CVariant optionPlayer = options["playername"];
+
+  if (const auto contentGeometry = ContentGeometryComponent(); contentGeometry)
+  {
+    KODI::VIDEO::GEOMETRY::GeometryOverrides overrides;
+    if (options.isMember("geometry"))
+      KODI::VIDEO::GEOMETRY::ParseGeometryOverrides(options["geometry"], overrides);
+    contentGeometry->SetPendingOverrides(overrides);
+  }
 
   if (parameterObject["item"].isMember("playlistid"))
   {
@@ -2130,6 +2253,15 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       result = CVariant(CVariant::VariantTypeNull);
       break;
     }
+  }
+  else if (property == "contentrect")
+  {
+    // Served for every player, describing what is on the screen rather than a stream.
+    const auto contentGeometry = ContentGeometryComponent();
+    if (!contentGeometry)
+      return FailedToExecute;
+
+    KODI::VIDEO::GEOMETRY::SerializeEffectiveGeometry(contentGeometry->Get(), result);
   }
   else if (property == "videostreams")
   {

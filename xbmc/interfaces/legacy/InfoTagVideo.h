@@ -14,6 +14,8 @@
 #include "utils/StreamDetails.h"
 #include "video/VideoInfoTag.h"
 
+#include <vector>
+
 namespace XBMCAddon
 {
   namespace xbmc
@@ -834,6 +836,527 @@ namespace XBMCAddon
     /// @}
 
     ///
+    /// \defgroup python_xbmc_contentgeometrysection ContentGeometrySection
+    /// \ingroup python_xbmc
+    /// @{
+    /// @brief **One of the geometries a title was measured in.**
+    ///
+    /// \python_class{ xbmc.ContentGeometrySection() }
+    ///
+    /// Carried by ContentGeometry for a title whose picture changes shape partway through.
+    /// Obtained from ContentGeometry.getSections() rather than created.
+    ///
+    ///
+    ///-------------------------------------------------------------------------
+    /// @python_v22 New class added.
+    ///
+    class ContentGeometrySection : public AddonClass
+    {
+    public:
+#ifndef SWIG
+      explicit ContentGeometrySection(const KODI::VIDEO::GEOMETRY::GeometrySection& section);
+#endif
+      ContentGeometrySection() = default;
+      ~ContentGeometrySection() override = default;
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometrysection
+      /// @brief \python_func{ getX() }
+      /// Get the left edge of the section, in display space.
+      ///
+      /// @return [float] Left edge in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getX();
+#else
+      float getX() const { return m_section.displayRect.x1; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometrysection
+      /// @brief \python_func{ getY() }
+      /// Get the top edge of the section, in display space.
+      ///
+      /// @return [float] Top edge in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getY();
+#else
+      float getY() const { return m_section.displayRect.y1; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometrysection
+      /// @brief \python_func{ getWidth() }
+      /// Get the width of the section, in display space.
+      ///
+      /// @return [float] Width in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getWidth();
+#else
+      float getWidth() const { return m_section.displayRect.Width(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometrysection
+      /// @brief \python_func{ getHeight() }
+      /// Get the height of the section, in display space.
+      ///
+      /// @return [float] Height in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getHeight();
+#else
+      float getHeight() const { return m_section.displayRect.Height(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometrysection
+      /// @brief \python_func{ getAspect() }
+      /// Get the ratio the section was shot at.
+      ///
+      /// @return [float] Aspect ratio of the section
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getAspect();
+#else
+      float getAspect() const { return m_section.aspect; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometrysection
+      /// @brief \python_func{ getLabel() }
+      /// Get the section's ratio as Kodi writes it, e.g. `2.35`.
+      ///
+      /// @return [string] Aspect ratio label
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getLabel();
+#else
+      String getLabel() const { return m_section.label; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometrysection
+      /// @brief \python_func{ getName() }
+      /// Get what the section's ratio is called, e.g. `Scope`. Empty when it has no name.
+      /// Not translated.
+      ///
+      /// @return [string] Aspect ratio name
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getName();
+#else
+      String getName() const { return m_section.name; }
+#endif
+
+    private:
+#ifndef SWIG
+      KODI::VIDEO::GEOMETRY::GeometrySection m_section;
+#endif
+    };
+    /// @}
+
+    ///
+    /// \defgroup python_xbmc_contentgeometry ContentGeometry
+    /// \ingroup python_xbmc
+    /// @{
+    /// @brief **Where the picture is inside the frame carrying it.**
+    ///
+    /// \python_class{ xbmc.ContentGeometry() }
+    ///
+    /// A snapshot of the content rectangle in force, taken when it was asked for and never
+    /// changing afterwards. Every member of one describes the same resolution.
+    ///
+    /// The rectangle is zero wherever there is no frame behind it - nothing playing, or a
+    /// library item nothing was measured for. The ratio is still answered while nothing is
+    /// playing; getFrameWidth() is what separates the two.
+    ///
+    /// Obtained from xbmc.Player().getContentGeometry() for what is playing, or from
+    /// InfoTagVideo.getContentGeometry() for a library item, rather than created.
+    ///
+    ///
+    ///-------------------------------------------------------------------------
+    /// @python_v22 New class added.
+    ///
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ...
+    /// geometry = xbmc.Player().getContentGeometry()
+    /// if geometry.getSource() != 'container':
+    ///     lens.select(geometry.getAspect())
+    /// ...
+    /// ~~~~~~~~~~~~~
+    ///
+    class ContentGeometry : public AddonClass
+    {
+    public:
+#ifndef SWIG
+      explicit ContentGeometry(const KODI::VIDEO::GEOMETRY::EffectiveGeometry& geometry);
+#endif
+      ContentGeometry() = default;
+      ~ContentGeometry() override = default;
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getX() }
+      /// Get the left edge of the picture, in display space.
+      ///
+      /// @return [float] Left edge in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getX();
+#else
+      float getX() const { return m_geometry.displayRect.x1; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getY() }
+      /// Get the top edge of the picture, in display space.
+      ///
+      /// @return [float] Top edge in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getY();
+#else
+      float getY() const { return m_geometry.displayRect.y1; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getWidth() }
+      /// Get the width of the picture, in display space.
+      ///
+      /// @return [float] Width in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getWidth();
+#else
+      float getWidth() const { return m_geometry.displayRect.Width(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getHeight() }
+      /// Get the height of the picture, in display space.
+      ///
+      /// @return [float] Height in display pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getHeight();
+#else
+      float getHeight() const { return m_geometry.displayRect.Height(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getFrameWidth() }
+      /// Get the width of the whole frame the picture sits in, in display space.
+      ///
+      /// @return [float] Frame width in display pixels\, zero when nothing is playing
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getFrameWidth();
+#else
+      float getFrameWidth() const { return m_geometry.displayFrame.Width(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getFrameHeight() }
+      /// Get the height of the whole frame the picture sits in, in display space.
+      ///
+      /// @return [float] Frame height in display pixels\, zero when nothing is playing
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getFrameHeight();
+#else
+      float getFrameHeight() const { return m_geometry.displayFrame.Height(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getCodedWidth() }
+      /// Get the width of the coded frame, before pixel aspect correction and before rotation.
+      ///
+      /// @return [integer] Coded width in pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getCodedWidth();
+#else
+      int getCodedWidth() const { return m_geometry.codedFrame.Width(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getCodedHeight() }
+      /// Get the height of the coded frame, before pixel aspect correction and before rotation.
+      ///
+      /// @return [integer] Coded height in pixels
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getCodedHeight();
+#else
+      int getCodedHeight() const { return m_geometry.codedFrame.Height(); }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getPixelAspect() }
+      /// Get the width of a coded pixel in display pixels. One for content with no anamorphic
+      /// coding.
+      ///
+      /// @return [float] Pixel aspect ratio
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getPixelAspect();
+#else
+      float getPixelAspect() const { return m_geometry.par; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getOrientation() }
+      /// Get the clockwise rotation applied to the picture for display, in degrees.
+      ///
+      /// @return [integer] Rotation in degrees
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getOrientation();
+#else
+      int getOrientation() const { return m_geometry.orientation; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getAspect() }
+      /// Get the ratio the content was shot at. The picture's own ratio except when it is
+      /// rotated, where it is the upright one.
+      ///
+      /// @return [float] Aspect ratio of the content
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getAspect();
+#else
+      float getAspect() const { return m_geometry.aspect; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getLabel() }
+      /// Get the ratio as Kodi writes it, e.g. `2.35`.
+      ///
+      /// @return [string] Aspect ratio label
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getLabel();
+#else
+      String getLabel() const { return m_geometry.label; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getName() }
+      /// Get what the ratio is called, e.g. `Scope`. Empty when it has no name. Not
+      /// translated.
+      ///
+      /// @return [string] Aspect ratio name
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getName();
+#else
+      String getName() const { return m_geometry.name; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getSource() }
+      /// Get where the answer came from.
+      ///
+      /// @return [string] One of:
+      ///  - <b>container</b> - nothing is known\, so the coded frame is the answer
+      ///  - <b>cached</b> - a stored measurement
+      ///  - <b>live</b> - measured during playback
+      ///  - <b>declared</b> - stated by the viewer\, which pins
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getSource();
+#else
+      String getSource() const
+      {
+        return KODI::VIDEO::GEOMETRY::GeometrySourceName(m_geometry.source);
+      }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getVaries() }
+      /// Whether the title's geometry changes partway through, so that one rectangle cannot
+      /// describe all of it. What the others are is at getSections().
+      ///
+      /// @return [bool] True when the title varies
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getVaries();
+#else
+      bool getVaries() const { return m_geometry.varies; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getStale() }
+      /// Whether the measurement came from a superseded detector, and is served rather than
+      /// discarded.
+      ///
+      /// @return [bool] True when the measurement is stale
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getStale();
+#else
+      bool getStale() const { return m_geometry.stale; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getRejected() }
+      /// Whether a measurement existed and the plausibility gate refused it, so the frame is
+      /// being served instead. Never having measured at all reports the same `container`.
+      ///
+      /// @return [bool] True when a measurement was refused
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getRejected();
+#else
+      bool getRejected() const { return m_geometry.rejected; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_contentgeometry
+      /// @brief \python_func{ getSections() }
+      /// Get every geometry the title was measured in, dominant first. Empty unless the answer
+      /// came from a measurement.
+      ///
+      /// @return [list] List of ContentGeometrySection
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getSections();
+#else
+      std::vector<ContentGeometrySection*> getSections() const;
+#endif
+
+    private:
+#ifndef SWIG
+      //! \brief Default-constructed means container: an object nobody resolved into
+      //! describes a stream nothing is known about.
+      KODI::VIDEO::GEOMETRY::EffectiveGeometry m_geometry;
+#endif
+    };
+    /// @}
+
+    ///
     /// \defgroup python_InfoTagVideo InfoTagVideo
     /// \ingroup python_xbmc
     /// @{
@@ -1233,6 +1756,39 @@ namespace XBMCAddon
       getActors();
 #else
       std::vector<Actor*> getActors();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ getContentGeometry() }
+      /// Get where the picture is inside the frame carrying it, for this item.
+      ///
+      /// Resolved from what was measured for the file, the same way the player resolves it and
+      /// the same way it is published over JSON-RPC. A ratio the viewer declared is not applied
+      /// here\, living in the per-file settings the library does not read. Use
+      /// xbmc.Player().getContentGeometry() during playback\, where it is.
+      ///
+      /// @return [ContentGeometry] A snapshot. When nothing was measured for the item it
+      ///                           reports source `container` with an empty rectangle and no
+      ///                           ratio - the library has no stream open to fall back to\,
+      ///                           where the player answers with the coded frame.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// geometry = listitem.getVideoInfoTag().getContentGeometry()
+      /// shot_at = geometry.getLabel() if geometry.getSource() != 'container' else None
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      getContentGeometry();
+#else
+      ContentGeometry* getContentGeometry();
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

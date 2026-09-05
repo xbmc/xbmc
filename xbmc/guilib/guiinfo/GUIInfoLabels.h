@@ -302,6 +302,13 @@ constexpr uint32_t VIDEOPLAYER_AUDIOSTREAMCOUNT      = 295;
 constexpr uint32_t VIDEOPLAYER_VIDEOVERSION_NAME     = 296;
 constexpr uint32_t VIDEOPLAYER_VIDEOSTREAMCOUNT      = 297;
 constexpr uint32_t VIDEOPLAYER_HDR_DETAIL            = 298;
+constexpr uint32_t VIDEOPLAYER_VIDEO_ASPECT_NAME     = 299;
+
+// The infolabel numbering is one flat space shared by every group.
+constexpr uint32_t VIDEOPLAYER_CONTENT_ASPECT        = 425;
+constexpr uint32_t VIDEOPLAYER_CONTENT_ASPECT_NAME   = 426;
+constexpr uint32_t VIDEOPLAYER_CONTENT_ASPECT_COUNT  = 427;
+constexpr uint32_t VIDEOPLAYER_CONTENT_ASPECT_SOURCE = 428;
 
 // Videoplayer infobools
 constexpr uint32_t VIDEOPLAYER_HASSUBTITLES          = 300;
@@ -316,6 +323,7 @@ constexpr uint32_t VIDEOPLAYER_HAS_INFO              = 308;
 constexpr uint32_t VIDEOPLAYER_HASTELETEXT           = 309;
 constexpr uint32_t VIDEOPLAYER_IS_STEREOSCOPIC       = 310;
 constexpr uint32_t VIDEOPLAYER_HAS_VIDEOVERSIONS     = 311;
+constexpr uint32_t VIDEOPLAYER_CONTENT_ASPECT_VARIES = 429;
 
 // PVR infolabels
 constexpr uint32_t VIDEOPLAYER_TITLE_EXTRAINFO       = 312;
@@ -1070,6 +1078,12 @@ constexpr uint32_t LISTITEM_FIRST_AUDIO_LANGUAGE   = LISTITEM_START + 228;
 constexpr uint32_t LISTITEM_FIRST_SUBTITLE_LANGUAGE = LISTITEM_START + 229;
 constexpr uint32_t LISTITEM_FIRST_AUDIO_CODEC      = LISTITEM_START + 230;
 constexpr uint32_t LISTITEM_FIRST_AUDIO_CHANNELS   = LISTITEM_START + 231;
+constexpr uint32_t LISTITEM_VIDEO_ASPECT_NAME        = LISTITEM_START + 232;
+constexpr uint32_t LISTITEM_CONTENT_ASPECT           = LISTITEM_START + 233;
+constexpr uint32_t LISTITEM_CONTENT_ASPECT_NAME      = LISTITEM_START + 234;
+constexpr uint32_t LISTITEM_CONTENT_ASPECT_COUNT     = LISTITEM_START + 235;
+constexpr uint32_t LISTITEM_CONTENT_ASPECT_SOURCE    = LISTITEM_START + 236;
+constexpr uint32_t LISTITEM_CONTENT_ASPECT_VARIES    = LISTITEM_START + 237;
 
 constexpr int      LISTITEM_END                      = LISTITEM_START + 2500;
 

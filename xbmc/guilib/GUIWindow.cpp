@@ -30,6 +30,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include <mutex>
@@ -357,11 +358,16 @@ void CGUIWindow::DoRender()
   // to occur.
   if (!m_bAllocated) return;
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  context.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().AddGUITransform();
+  const CRect scissors = context.ClipToGui();
+
+  context.AddGUITransform();
   CGUIControlGroup::DoRender();
-  CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
+  context.RemoveTransform();
+
+  context.SetClip(scissors);
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
