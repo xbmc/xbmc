@@ -46,6 +46,13 @@ int64_t CurrentHostCounter(void)
 #endif
 }
 
+int64_t CTimeUtils::MonotonicMs()
+{
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+             std::chrono::steady_clock::now().time_since_epoch())
+      .count();
+}
+
 int64_t CurrentHostFrequency(void)
 {
 #if defined(TARGET_DARWIN)

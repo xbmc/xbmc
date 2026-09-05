@@ -11,6 +11,7 @@
 #include "LangInfo.h"
 #include "StreamUtils.h"
 #include "utils/Archive.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/LanguageTag.h"
 #include "utils/StringUtils.h"
@@ -786,25 +787,15 @@ std::string CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHe
 
 std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
 {
-  if (fAspect <= 0.0f)
-    return "";
-
   // Given that we're never going to be able to handle every single possibility in
   // aspect ratios, particularly when cropping prior to video encoding is taken into account
   // the best we can do is take the "common" aspect ratios, and return the closest one available.
-  // The cutoff between two adjacent ratios is their geometric mean.
-  //
-  // Comparing squares avoids a square root per entry, and keeps the cutoffs derived from the
-  // table rather than hand-computed alongside it: for positive values,
-  //   fAspect < sqrt(a*b)  is equivalent to  fAspect*fAspect < a*b
-  const float squared = fAspect * fAspect;
-  for (size_t i = 0; i + 1 < COMMON_ASPECT_RATIOS.size(); ++i)
-  {
-    if (squared < COMMON_ASPECT_RATIOS[i].ratio * COMMON_ASPECT_RATIOS[i + 1].ratio)
-      return std::string(COMMON_ASPECT_RATIOS[i].label);
-  }
+  return KODI::UTILS::CAspectRatioVocabulary::Label(fAspect);
+}
 
-  return std::string(COMMON_ASPECT_RATIOS.back().label);
+std::string CStreamDetails::VideoAspectToAspectName(float fAspect)
+{
+  return KODI::UTILS::CAspectRatioVocabulary::Name(fAspect);
 }
 
 bool CStreamDetails::SetStreams(const VideoStreamInfo& videoInfo,
