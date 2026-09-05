@@ -21,6 +21,7 @@
 #include "utils/log.h"
 
 #include <chrono>
+#include <cstdlib>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -29,6 +30,51 @@
 
 using namespace dbiplus;
 using namespace PVR;
+
+namespace
+{
+/*!
+ * @brief The value a time column stores for a given count of seconds.
+ * @param seconds The seconds since the epoch.
+ * @return The value to write.
+ */
+unsigned int ToStoredTime(time_t seconds)
+{
+  return static_cast<unsigned int>(seconds);
+}
+
+/*!
+ * @brief The value a time column stores for a given time.
+ * @param time The time to store.
+ * @return The value to write.
+ */
+unsigned int ToStoredTime(const CDateTime& time)
+{
+  time_t seconds{};
+  time.GetAsTime(seconds);
+  return ToStoredTime(seconds);
+}
+
+/*!
+ * @brief The time a value read back from a time column holds.
+ * @param value The value as a single-value query returned it.
+ * @return The time it holds.
+ */
+CDateTime FromStoredTime(const std::string& value)
+{
+  return CDateTime(static_cast<time_t>(std::strtoll(value.c_str(), nullptr, 10)));
+}
+
+/*!
+ * @brief The time a value read back from a time column holds.
+ * @param value The field as the dataset holds it.
+ * @return The time it holds.
+ */
+CDateTime FromStoredTime(const field_value& value)
+{
+  return CDateTime(static_cast<time_t>(value.get_asInt64()));
+}
+} // unnamed namespace
 
 CPVREpgDatabase::CPVREpgDatabase() : CDatabase(KODI::DATABASE::TYPE_EPG)
 {
@@ -443,13 +489,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(dbiplus::Dataset& 
         m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString(),
         m_pDS->fv("sParentalRatingIcon").get_asString())};
 
-    auto iStartTime{static_cast<time_t>(m_pDS->fv("iStartTime").get_asInt())};
-    const CDateTime startTime(iStartTime);
-    newTag->m_startTime = startTime;
-
-    auto iEndTime{static_cast<time_t>(m_pDS->fv("iEndTime").get_asInt())};
-    const CDateTime endTime(iEndTime);
-    newTag->m_endTime = endTime;
+    newTag->m_startTime = FromStoredTime(m_pDS->fv("iStartTime"));
+    newTag->m_endTime = FromStoredTime(m_pDS->fv("iEndTime"));
 
     const std::string sFirstAired = m_pDS->fv("sFirstAired").get_asString();
     if (!sFirstAired.empty())
@@ -505,7 +546,7 @@ CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID) const
       PrepareSQL("SELECT MAX(iEndTime) FROM epgtags WHERE idEpg = %u;", iEpgID);
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    return FromStoredTime(strValue);
 
   return {};
 }
@@ -522,48 +563,42 @@ std::pair<CDateTime, CDateTime> CPVREpgDatabase::GetFirstAndLastEPGDate() const
 
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    first = CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    first = FromStoredTime(strValue);
 
   // 2nd query: get max end time
   strQuery = PrepareSQL("SELECT MAX(iEndTime) FROM epgtags;");
 
   strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    last = CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    last = FromStoredTime(strValue);
 
   return {first, last};
 }
 
 CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart) const
 {
-  time_t t;
-  minStart.GetAsTime(t);
-
   std::unique_lock lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT MIN(iStartTime) "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND iStartTime > %u;",
-                                          iEpgID, static_cast<unsigned int>(t));
+                                          iEpgID, ToStoredTime(minStart));
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    return FromStoredTime(strValue);
 
   return {};
 }
 
 CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd) const
 {
-  time_t t;
-  maxEnd.GetAsTime(t);
-
   std::unique_lock lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT MAX(iEndTime) "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND iEndTime <= %u;",
-                                          iEpgID, static_cast<unsigned int>(t));
+                                          iEpgID, ToStoredTime(maxEnd));
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
-    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+    return FromStoredTime(strValue);
 
   return {};
 }
@@ -712,20 +747,16 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
 
   if (searchData.m_startDateTime.IsValid())
   {
-    time_t minStart;
-    searchData.m_startDateTime.GetAsTime(minStart);
+    const unsigned int minStart{ToStoredTime(searchData.m_startDateTime)};
 
     if (searchData.m_startAnyTime)
     {
-      filter.AppendWhere(PrepareSQL("iStartTime >= %u", static_cast<unsigned int>(minStart)));
+      filter.AppendWhere(PrepareSQL("iStartTime >= %u", minStart));
     }
     else
     {
-      const unsigned int startDate{static_cast<unsigned int>(minStart) / ONE_DAY};
-      filter.AppendWhere(PrepareSQL("(iStartTime / %u) >= %u", ONE_DAY, startDate));
-
-      const unsigned int startTime{static_cast<unsigned int>(minStart) % ONE_DAY};
-      filter.AppendWhere(PrepareSQL("(iStartTime %% %u) >= %u", ONE_DAY, startTime));
+      filter.AppendWhere(PrepareSQL("(iStartTime / %u) >= %u", ONE_DAY, minStart / ONE_DAY));
+      filter.AppendWhere(PrepareSQL("(iStartTime %% %u) >= %u", ONE_DAY, minStart % ONE_DAY));
     }
   }
 
@@ -735,20 +766,16 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
 
   if (searchData.m_endDateTime.IsValid())
   {
-    time_t maxEnd;
-    searchData.m_endDateTime.GetAsTime(maxEnd);
+    const unsigned int maxEnd{ToStoredTime(searchData.m_endDateTime)};
 
     if (searchData.m_endAnyTime)
     {
-      filter.AppendWhere(PrepareSQL("iEndTime <= %u", static_cast<unsigned int>(maxEnd)));
+      filter.AppendWhere(PrepareSQL("iEndTime <= %u", maxEnd));
     }
     else
     {
-      const unsigned int endDate{static_cast<unsigned int>(maxEnd) / ONE_DAY};
-      filter.AppendWhere(PrepareSQL("(iEndTime / %u) <= %u", ONE_DAY, endDate));
-
-      const unsigned int endTime{static_cast<unsigned int>(maxEnd) % ONE_DAY};
-      filter.AppendWhere(PrepareSQL("(iEndTime %% %u) <= %u", ONE_DAY, endTime));
+      filter.AppendWhere(PrepareSQL("(iEndTime / %u) <= %u", ONE_DAY, maxEnd / ONE_DAY));
+      filter.AppendWhere(PrepareSQL("(iEndTime %% %u) <= %u", ONE_DAY, maxEnd % ONE_DAY));
     }
   }
 
@@ -759,8 +786,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
   if (searchData.m_bIgnoreFinishedBroadcasts)
   {
     const auto now{std::chrono::system_clock::now()};
-    filter.AppendWhere(PrepareSQL(
-        "iEndTime > %u", static_cast<unsigned int>(std::chrono::system_clock::to_time_t(now))));
+    filter.AppendWhere(
+        PrepareSQL("iEndTime > %u", ToStoredTime(std::chrono::system_clock::to_time_t(now))));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -770,8 +797,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
   if (searchData.m_bIgnoreFutureBroadcasts)
   {
     const auto now{std::chrono::system_clock::now()};
-    filter.AppendWhere(PrepareSQL(
-        "iStartTime < %u", static_cast<unsigned int>(std::chrono::system_clock::to_time_t(now))));
+    filter.AppendWhere(
+        PrepareSQL("iStartTime < %u", ToStoredTime(std::chrono::system_clock::to_time_t(now))));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -900,14 +927,11 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByDatabaseID(int iEpgI
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(
     int iEpgID, const CDateTime& startTime) const
 {
-  time_t start;
-  startTime.GetAsTime(start);
-
   std::unique_lock lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT * "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND iStartTime = %u;",
-                                          iEpgID, static_cast<unsigned int>(start));
+                                          iEpgID, ToStoredTime(startTime));
 
   if (ResultQuery(strQuery))
   {
@@ -930,15 +954,12 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
     int iEpgID, const CDateTime& minStartTime) const
 {
-  time_t minStart;
-  minStartTime.GetAsTime(minStart);
-
   std::unique_lock lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
                  "WHERE idEpg = %u AND iStartTime >= %u ORDER BY iStartTime ASC LIMIT 1;",
-                 iEpgID, static_cast<unsigned int>(minStart));
+                 iEpgID, ToStoredTime(minStartTime));
 
   if (ResultQuery(strQuery))
   {
@@ -961,15 +982,12 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(
     int iEpgID, const CDateTime& maxEndTime) const
 {
-  time_t maxEnd;
-  maxEndTime.GetAsTime(maxEnd);
-
   std::unique_lock lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
                  "WHERE idEpg = %u AND iEndTime <= %u ORDER BY iStartTime DESC LIMIT 1;",
-                 iEpgID, static_cast<unsigned int>(maxEnd));
+                 iEpgID, ToStoredTime(maxEndTime));
 
   if (ResultQuery(strQuery))
   {
@@ -992,18 +1010,12 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinStartMaxEndTime(
     int iEpgID, const CDateTime& minStartTime, const CDateTime& maxEndTime) const
 {
-  time_t minStart;
-  minStartTime.GetAsTime(minStart);
-
-  time_t maxEnd;
-  maxEndTime.GetAsTime(maxEnd);
-
   std::unique_lock lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
                  "WHERE idEpg = %u AND iStartTime >= %u AND iEndTime <= %u ORDER BY iStartTime;",
-                 iEpgID, static_cast<unsigned int>(minStart), static_cast<unsigned int>(maxEnd));
+                 iEpgID, ToStoredTime(minStartTime), ToStoredTime(maxEndTime));
 
   if (ResultQuery(strQuery))
   {
@@ -1032,18 +1044,12 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinSta
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEndMaxStartTime(
     int iEpgID, const CDateTime& minEndTime, const CDateTime& maxStartTime) const
 {
-  time_t minEnd;
-  minEndTime.GetAsTime(minEnd);
-
-  time_t maxStart;
-  maxStartTime.GetAsTime(maxStart);
-
   std::unique_lock lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
                  "WHERE idEpg = %u AND iEndTime >= %u AND iStartTime <= %u ORDER BY iStartTime;",
-                 iEpgID, static_cast<unsigned int>(minEnd), static_cast<unsigned int>(maxStart));
+                 iEpgID, ToStoredTime(minEndTime), ToStoredTime(maxStartTime));
 
   if (ResultQuery(strQuery))
   {
@@ -1073,18 +1079,11 @@ bool CPVREpgDatabase::QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(int iEpgID,
                                                                   const CDateTime& minEndTime,
                                                                   const CDateTime& maxStartTime)
 {
-  time_t minEnd;
-  minEndTime.GetAsTime(minEnd);
-
-  time_t maxStart;
-  maxStartTime.GetAsTime(maxStart);
-
   Filter filter;
 
   std::unique_lock lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime >= %u AND iStartTime <= %u", iEpgID,
-                                static_cast<unsigned int>(minEnd),
-                                static_cast<unsigned int>(maxStart)));
+                                ToStoredTime(minEndTime), ToStoredTime(maxStartTime)));
 
   std::string strQuery;
   if (BuildSQL("DELETE FROM epgtags", filter, strQuery))
@@ -1251,14 +1250,10 @@ int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
 
 bool CPVREpgDatabase::DeleteEpgTags(int iEpgId, const CDateTime& maxEndTime)
 {
-  time_t iMaxEndTime;
-  maxEndTime.GetAsTime(iMaxEndTime);
-
   Filter filter;
 
   std::unique_lock lock(m_critSection);
-  filter.AppendWhere(
-      PrepareSQL("idEpg = %u AND iEndTime < %u", iEpgId, static_cast<unsigned int>(iMaxEndTime)));
+  filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime < %u", iEpgId, ToStoredTime(maxEndTime)));
   return DeleteValues("epgtags", filter);
 }
 
@@ -1291,11 +1286,8 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
     return false;
   }
 
-  time_t iStartTime{0};
-  tag.StartAsUTC().GetAsTime(iStartTime);
-
-  time_t iEndTime{0};
-  tag.EndAsUTC().GetAsTime(iEndTime);
+  const unsigned int iStartTime{ToStoredTime(tag.StartAsUTC())};
+  const unsigned int iEndTime{ToStoredTime(tag.EndAsUTC())};
 
   std::string sFirstAired;
   if (tag.FirstAired().IsValid())
@@ -1318,9 +1310,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "iBroadcastUid, sParentalRatingIcon, sParentalRatingSource, sTitleExtraInfo) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
         "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, '%s', '%s', '%s');",
-        tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
-        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
-        tag.OriginalTitle().c_str(), CPVREpgInfoTag::DeTokenize(tag.Cast()).c_str(),
+        tag.EpgID(), iStartTime, iEndTime, tag.Title().c_str(), tag.PlotOutline().c_str(),
+        tag.Plot().c_str(), tag.OriginalTitle().c_str(),
+        CPVREpgInfoTag::DeTokenize(tag.Cast()).c_str(),
         CPVREpgInfoTag::DeTokenize(tag.Directors()).c_str(),
         CPVREpgInfoTag::DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
@@ -1342,9 +1334,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "iBroadcastUid, idBroadcast, sParentalRatingIcon, sParentalRatingSource, sTitleExtraInfo) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
         "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i, '%s', '%s', '%s');",
-        tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
-        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
-        tag.OriginalTitle().c_str(), CPVREpgInfoTag::DeTokenize(tag.Cast()).c_str(),
+        tag.EpgID(), iStartTime, iEndTime, tag.Title().c_str(), tag.PlotOutline().c_str(),
+        tag.Plot().c_str(), tag.OriginalTitle().c_str(),
+        CPVREpgInfoTag::DeTokenize(tag.Cast()).c_str(),
         CPVREpgInfoTag::DeTokenize(tag.Directors()).c_str(),
         CPVREpgInfoTag::DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
         tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),

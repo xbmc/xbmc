@@ -29,6 +29,22 @@ class CDisplaySettings : public ISettingCallback, public ISubSettings,
 public:
   static CDisplaySettings& GetInstance();
 
+  /*!
+   \brief While alive, a display mode change on this thread skips the confirmation prompt.
+   The caller vouches that the display can show the mode.
+   */
+  class CConfirmedChange
+  {
+  public:
+    CConfirmedChange();
+    ~CConfirmedChange();
+    CConfirmedChange(const CConfirmedChange&) = delete;
+    CConfirmedChange& operator=(const CConfirmedChange&) = delete;
+  };
+
+  //! \brief Whether a CConfirmedChange is alive on this thread
+  static bool IsChangeConfirmed();
+
   bool Load(const TiXmlNode *settings) override;
   bool Save(TiXmlNode *settings) const override;
   void Clear() override;

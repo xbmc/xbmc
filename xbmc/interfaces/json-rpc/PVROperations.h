@@ -11,12 +11,17 @@
 #include "FileItemHandler.h"
 
 #include <memory>
+#include <vector>
 
+class CDateTime;
 class CVariant;
 
 namespace PVR
 {
 class CPVRChannelGroup;
+class CPVREpg;
+class CPVREpgInfoTag;
+class CPVRProvider;
 }
 
 namespace JSONRPC
@@ -34,7 +39,22 @@ namespace JSONRPC
                                      IClient* client,
                                      const CVariant& parameterObject,
                                      CVariant& result);
+    static JSONRPC_STATUS GetProviders(const std::string& method,
+                                       ITransportLayer* transport,
+                                       IClient* client,
+                                       const CVariant& parameterObject,
+                                       CVariant& result);
+    static JSONRPC_STATUS GetProviderDetails(const std::string& method,
+                                             ITransportLayer* transport,
+                                             IClient* client,
+                                             const CVariant& parameterObject,
+                                             CVariant& result);
     static JSONRPC_STATUS GetBroadcasts(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetBroadcastsByChannelGroup(const std::string& method,
+                                                      ITransportLayer* transport,
+                                                      IClient* client,
+                                                      const CVariant& parameterObject,
+                                                      CVariant& result);
     static JSONRPC_STATUS GetBroadcastDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS GetBroadcastIsPlayable(const std::string& method,
                                                  ITransportLayer* transport,
@@ -60,6 +80,24 @@ namespace JSONRPC
 
     static std::shared_ptr<CFileItem> GetRecordingFileItem(int recordingId);
 
+  protected:
+    /*!
+     \brief Read the optional or required starttime/endtime pair of a request
+
+     Both absent leaves start and end invalid (no range) when not required; otherwise both
+     must parse and end must not precede start.
+     */
+    static JSONRPC_STATUS ParseTimeRange(const CVariant& parameterObject,
+                                         bool required,
+                                         CDateTime& start,
+                                         CDateTime& end);
+
+    /*!
+     \brief The broadcasts of an EPG overlapping [start, end), or all of them for an invalid range
+     */
+    static std::vector<std::shared_ptr<PVR::CPVREpgInfoTag>> GetBroadcastsInRange(
+        const PVR::CPVREpg& epg, const CDateTime& start, const CDateTime& end);
+
   private:
     static JSONRPC_STATUS GetPropertyValue(const std::string &property, CVariant &result);
     static void FillChannelGroupDetails(
@@ -67,5 +105,9 @@ namespace JSONRPC
         const CVariant& parameterObject,
         CVariant& result,
         bool append = false);
+    static void FillProviderDetails(const std::shared_ptr<const PVR::CPVRProvider>& provider,
+                                    const CVariant& parameterObject,
+                                    CVariant& result,
+                                    bool append = false);
   };
 }

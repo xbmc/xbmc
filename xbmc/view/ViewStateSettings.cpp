@@ -8,8 +8,11 @@
 
 #include "ViewStateSettings.h"
 
+#include "ServiceBroker.h"
 #include "SortFileItem.h"
+#include "interfaces/AnnouncementManager.h"
 #include "utils/SortUtils.h"
+#include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -224,16 +227,24 @@ CViewState* CViewStateSettings::Get(const std::string &viewState)
 void CViewStateSettings::SetSettingLevel(SettingLevel settingLevel)
 {
   if (settingLevel < SettingLevel::Basic)
-    m_settingLevel = SettingLevel::Basic;
-  if (settingLevel > SettingLevel::Expert)
-    m_settingLevel = SettingLevel::Expert;
-  else
-    m_settingLevel = settingLevel;
+    settingLevel = SettingLevel::Basic;
+  else if (settingLevel > SettingLevel::Expert)
+    settingLevel = SettingLevel::Expert;
+
+  if (settingLevel == m_settingLevel)
+    return;
+
+  m_settingLevel = settingLevel;
+
+  CVariant data(CVariant::VariantTypeObject);
+  data["level"] = SettingLevelToString(m_settingLevel);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Settings, "OnLevelChanged",
+                                                     data);
 }
 
 void CViewStateSettings::CycleSettingLevel()
 {
-  m_settingLevel = GetNextSettingLevel();
+  SetSettingLevel(GetNextSettingLevel());
 }
 
 SettingLevel CViewStateSettings::GetNextSettingLevel() const

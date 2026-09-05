@@ -10,9 +10,11 @@
 
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
+#include "PlayerIds.h"
 
 #include <string>
 
+class CFileItemList;
 class CVariant;
 
 namespace PVR
@@ -21,24 +23,8 @@ class CPVRChannelGroup;
 class CPVREpgInfoTag;
 }
 
-namespace KODI::PLAYLIST
-{
-enum class Id;
-enum class RepeatState;
-} // namespace PLAYLIST
-
 namespace JSONRPC
 {
-  enum PlayerType
-  {
-    None = 0,
-    Video = 0x1,
-    Audio = 0x2,
-    Picture = 0x4,
-    External = 0x8,
-    Remote = 0x10
-  };
-
   static const int PlayerImplicit = (Video | Audio | Picture);
 
   class CPlayerOperations : CFileItemHandler
@@ -92,15 +78,29 @@ namespace JSONRPC
                                       const CVariant& parameterObject,
                                       CVariant& result);
 
+  protected:
+    /*!
+     \brief List a directory as a slideshow would, split into its pictures and its playable media
+     \param path The directory
+     \param recursive Whether to descend into subdirectories
+     \param pictures Receives the picture files
+     \param media Receives the video and audio files, in file order
+     \return false if the directory could not be listed
+     */
+    static bool ListSlideshowDirectory(const std::string& path,
+                                       bool recursive,
+                                       CFileItemList& pictures,
+                                       CFileItemList& media);
+
   private:
+    static JSONRPC_STATUS PlayFileItemList(CFileItemList& list, const CVariant& options);
     static int GetActivePlayers();
-    static PlayerType GetPlayer(const CVariant &player);
+    static PlayerState GetPlayerState();
+    static JSONRPC_STATUS ResolvePlayer(const CVariant& parameterObject, PlayerType& player);
     static KODI::PLAYLIST::Id GetPlaylist(PlayerType player);
     static JSONRPC_STATUS StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath = "");
     static void SendSlideshowAction(int actionID);
     static JSONRPC_STATUS GetPropertyValue(PlayerType player, const std::string &property, CVariant &result);
-
-    static KODI::PLAYLIST::RepeatState ParseRepeatState(const CVariant& repeat);
     static bool IsPVRChannel();
     static std::shared_ptr<PVR::CPVREpgInfoTag> GetCurrentEpg();
   };

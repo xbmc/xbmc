@@ -9,6 +9,7 @@
 #pragma once
 
 #include "JSONRPCUtils.h"
+#include "dbwrappers/Database.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
@@ -16,8 +17,10 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include <set>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include <vector>
 
 class CDateTime;
@@ -64,6 +67,36 @@ namespace JSONRPC
     }
 
   protected:
+    /*!
+     \brief The property names in a list of properties
+
+     \param properties A "properties" array
+     \return Its members, empty when it is not an array
+     */
+    static std::set<std::string> FieldNames(const CVariant& properties)
+    {
+      std::set<std::string> fields;
+      if (properties.isArray())
+      {
+        for (CVariant::const_iterator_array field = properties.begin_array();
+             field != properties.end_array(); ++field)
+          fields.insert(field->asString());
+      }
+
+      return fields;
+    }
+
+    /*!
+     \brief The property names a request asks to have filled in
+
+     \param parameterObject The parameters of the call
+     \return The members of its "properties" parameter, empty when it has none
+     */
+    static std::set<std::string> RequestedFields(const CVariant& parameterObject)
+    {
+      return FieldNames(parameterObject["properties"]);
+    }
+
     static void HandleLimits(const CVariant &parameterObject, CVariant &result, int size, int &start, int &end)
     {
       if (size < 0)
@@ -445,6 +478,23 @@ namespace JSONRPC
     static inline bool ParameterNotNull(const CVariant& parameterObject, const std::string& key)
     {
       return parameterObject.isMember(key) && !parameterObject[key].isNull();
+    }
+
+    /*!
+     \brief The status a method answers for the outcome of a by-id database lookup.
+     */
+    static JSONRPC_STATUS StatusFor(CDatabase::GetResult lookup)
+    {
+      switch (lookup)
+      {
+        case CDatabase::GetResult::Ok:
+          return OK;
+        case CDatabase::GetResult::NotFound:
+          return NotFound;
+        case CDatabase::GetResult::Error:
+          break;
+      }
+      return InternalError;
     }
 
     /*!

@@ -9,6 +9,7 @@
 #include "GUIOperations.h"
 
 #include "GUIInfoManager.h"
+#include "MessengerPayload.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
@@ -24,11 +25,18 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "powermanagement/PowerManager.h"
 #include "rendering/RenderSystem.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Screenshot.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <memory>
+#include <string>
+#include <vector>
 
 using namespace JSONRPC;
 using namespace ADDON;
@@ -98,8 +106,9 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const std::string &method, ITranspo
       (parameterObject["fullscreen"].isBoolean() &&
        parameterObject["fullscreen"].asBoolean() != g_application.IsFullScreen()))
   {
-    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               static_cast<void*>(new CAction(ACTION_SHOW_GUI)));
+    CServiceBroker::GetAppMessenger()->SendMsg(
+        TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+        TransferToMessenger(std::make_unique<CAction>(ACTION_SHOW_GUI)));
   }
   else if (!parameterObject["fullscreen"].isBoolean() && !parameterObject["fullscreen"].isString())
     return InvalidParams;
@@ -112,8 +121,9 @@ JSONRPC_STATUS CGUIOperations::SetStereoscopicMode(const std::string &method, IT
   CAction action = CStereoscopicsManager::ConvertActionCommandToAction("SetStereoMode", parameterObject["mode"].asString());
   if (action.GetID() != ACTION_NONE)
   {
-    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               static_cast<void*>(new CAction(action)));
+    CServiceBroker::GetAppMessenger()->SendMsg(
+        TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+        TransferToMessenger(std::make_unique<CAction>(action)));
     return ACK;
   }
 
@@ -161,14 +171,62 @@ JSONRPC_STATUS CGUIOperations::TakeScreenshot(const std::string& method,
       return FailedToExecute;
   }
 
-  if (content == "video")
-    CScreenShot::TakeScreenshot(CaptureContent::VIDEO);
-  else if (content == "both")
-    CScreenShot::TakeScreenshotBoth();
-  else
-    CScreenShot::TakeScreenshot(CaptureContent::COMPOSITE);
+  const CaptureContent capture = content == "video"  ? CaptureContent::VIDEO
+                                 : content == "both" ? CaptureContent::BOTH
+                                                     : CaptureContent::COMPOSITE;
 
-  return ACK;
+  const CScreenShot::ScreenshotFiles files =
+      CScreenShot::TakeScreenshotSync(capture, parameterObject["target"].asString());
+
+  switch (files.error)
+  {
+    case CScreenShot::ScreenshotError::NO_FOLDER:
+      return Unavailable;
+    case CScreenShot::ScreenshotError::BAD_TARGET:
+      return InvalidParams;
+    case CScreenShot::ScreenshotError::NOT_FOUND:
+    case CScreenShot::ScreenshotError::FAILED:
+      return FailedToExecute;
+    case CScreenShot::ScreenshotError::NONE:
+      break;
+  }
+
+  if (!files.composite.empty())
+    result["composite"] = files.composite;
+  if (!files.video.empty())
+    result["video"] = files.video;
+
+  return OK;
+}
+
+JSONRPC_STATUS CGUIOperations::DeleteScreenshots(const std::string& method,
+                                                 ITransportLayer* transport,
+                                                 IClient* client,
+                                                 const CVariant& parameterObject,
+                                                 CVariant& result)
+{
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonAllowScreenshotDeletion)
+    return Unavailable;
+
+  const CScreenShot::ScreenshotDeletion removed =
+      CScreenShot::DeleteScreenshots(parameterObject["file"].asString());
+
+  switch (removed.error)
+  {
+    case CScreenShot::ScreenshotError::BAD_TARGET:
+      return InvalidParams;
+    case CScreenShot::ScreenshotError::NOT_FOUND:
+      return NotFound;
+    case CScreenShot::ScreenshotError::NO_FOLDER:
+      return Unavailable;
+    case CScreenShot::ScreenshotError::FAILED:
+      return FailedToExecute;
+    case CScreenShot::ScreenshotError::NONE:
+      break;
+  }
+
+  result["deleted"] = removed.deleted;
+  return OK;
 }
 
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVariant &result)
@@ -198,6 +256,9 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
   }
   else if (property == "fullscreen")
     result = g_application.IsFullScreen();
+  else if (property == "ready")
+    result =
+        g_application.IsInitialized() && CServiceBroker::GetGUI()->GetWindowManager().Initialized();
   else if (property == "stereoscopicmode")
   {
     const CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetGUI()->GetStereoscopicsManager();
@@ -206,6 +267,88 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
   }
   else
     return InvalidParams;
+
+  return OK;
+}
+
+JSONRPC_STATUS CGUIOperations::GetInfoLabels(const std::string& method,
+                                             ITransportLayer* transport,
+                                             IClient* client,
+                                             const CVariant& parameterObject,
+                                             CVariant& result)
+{
+  std::vector<std::string> info;
+
+  for (unsigned int i = 0; i < parameterObject["labels"].size(); i++)
+  {
+    std::string field = parameterObject["labels"][i].asString();
+    StringUtils::ToLower(field);
+
+    info.push_back(parameterObject["labels"][i].asString());
+  }
+
+  if (!info.empty())
+  {
+    std::vector<std::string> infoLabels;
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_INFOLABEL, -1, -1,
+                                               LendToMessenger(infoLabels), "", info);
+
+    for (unsigned int i = 0; i < info.size(); i++)
+    {
+      if (i >= infoLabels.size())
+        break;
+      result[info[i]] = infoLabels[i];
+    }
+  }
+
+  return OK;
+}
+
+JSONRPC_STATUS CGUIOperations::GetInfoBooleans(const std::string& method,
+                                               ITransportLayer* transport,
+                                               IClient* client,
+                                               const CVariant& parameterObject,
+                                               CVariant& result)
+{
+  std::vector<std::string> info;
+
+  bool CanControlPower = (client->GetPermissionFlags() & ControlPower) > 0;
+
+  for (unsigned int i = 0; i < parameterObject["booleans"].size(); i++)
+  {
+    std::string field = parameterObject["booleans"][i].asString();
+    StringUtils::ToLower(field);
+
+    // Need to override power management of whats in infomanager since jsonrpc
+    // have a security layer aswell.
+    if (field == "system.canshutdown" || field == "system.canpowerdown")
+      result[parameterObject["booleans"][i].asString()] =
+          (CServiceBroker::GetPowerManager().CanPowerdown() && CanControlPower);
+    else if (field == "system.cansuspend")
+      result[parameterObject["booleans"][i].asString()] =
+          (CServiceBroker::GetPowerManager().CanSuspend() && CanControlPower);
+    else if (field == "system.canhibernate")
+      result[parameterObject["booleans"][i].asString()] =
+          (CServiceBroker::GetPowerManager().CanHibernate() && CanControlPower);
+    else if (field == "system.canreboot")
+      result[parameterObject["booleans"][i].asString()] =
+          (CServiceBroker::GetPowerManager().CanReboot() && CanControlPower);
+    else
+      info.push_back(parameterObject["booleans"][i].asString());
+  }
+
+  if (!info.empty())
+  {
+    std::vector<bool> infoLabels;
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_INFOBOOL, -1, -1,
+                                               LendToMessenger(infoLabels), "", info);
+    for (unsigned int i = 0; i < info.size(); i++)
+    {
+      if (i >= infoLabels.size())
+        break;
+      result[info[i].c_str()] = CVariant(infoLabels[i]);
+    }
+  }
 
   return OK;
 }

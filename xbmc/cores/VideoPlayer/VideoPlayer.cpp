@@ -43,6 +43,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/json-rpc/PlayerIds.h"
 #include "jobs/JobQueue.h"
 #include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
@@ -914,6 +915,11 @@ void CVideoPlayer::OnStartup()
   m_CurrentTeletext.Clear();
   m_CurrentRadioRDS.Clear();
   m_CurrentAudioID3.Clear();
+
+  {
+    std::unique_lock lock(m_content.m_section);
+    m_content.m_selectedSubtitleIndex = -1;
+  }
 
   UTILS::FONT::ClearTemporaryFonts();
 }
@@ -3961,7 +3967,9 @@ void CVideoPlayer::SetSubtitleVisible(bool bVisible)
       std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
   m_processInfo->GetVideoSettingsLocked().SetSubtitleVisible(bVisible);
   CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
+  JSONRPC::DescribePlayer(
+      data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio,
+      KODI::PLAYLIST::Id{m_item.GetProperty("playlist_type_hint").asInteger32(-1)});
   data["property"]["subtitleenabled"] = bVisible;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                      data);
@@ -6086,8 +6094,8 @@ void CVideoPlayer::UpdateContentState()
       m_SelectionStreams.TypeIndexOf(StreamType::SUBTITLE, m_CurrentSubtitle.source,
                                      m_CurrentSubtitle.demuxerId, m_CurrentSubtitle.id);
 
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) && m_content.m_videoIndex == -1 &&
-      m_content.m_audioIndex == -1)
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) &&
+      m_content.m_videoIndex == -1 && m_content.m_audioIndex == -1)
   {
     std::shared_ptr<CDVDInputStreamNavigator> nav =
           std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
@@ -6106,7 +6114,15 @@ void CVideoPlayer::UpdateContentState()
     }
   }
 
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) && m_State.menuType == MenuType::NATIVE)
+  // A hidden subtitle's stream is closed but it stays selected; carry the selection across.
+  if (m_content.m_subtitleIndex >= 0)
+    m_content.m_selectedSubtitleIndex = m_content.m_subtitleIndex;
+  else if (m_content.m_selectedSubtitleIndex >= 0 &&
+           m_content.m_selectedSubtitleIndex < m_SelectionStreams.CountType(StreamType::SUBTITLE))
+    m_content.m_subtitleIndex = m_content.m_selectedSubtitleIndex;
+
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) &&
+      m_State.menuType == MenuType::NATIVE)
   {
     // Update settings with changes made in bluray menu
     CVideoSettings settings{m_processInfo->GetVideoSettings()};
@@ -6311,7 +6327,9 @@ void CVideoPlayer::SetUpdateStreamDetails()
 void CVideoPlayer::NotifySubtitleUpdate(int flags)
 {
   CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
+  JSONRPC::DescribePlayer(
+      data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio,
+      KODI::PLAYLIST::Id{m_item.GetProperty("playlist_type_hint").asInteger32(-1)});
   if ((flags & SubtitleChange::FLAG_STATUS_CHANGE) != 0)
   {
     data["property"]["subtitleenabled"] = m_processInfo->GetVideoSettings().m_SubtitleOn;
@@ -6332,7 +6350,7 @@ void CVideoPlayer::NotifySubtitleUpdate(int flags)
       // Only add stream info if valid
       CVariant contentEntry(CVariant::VariantTypeObject);
       contentEntry["index"] = stream;
-      contentEntry["codec"] = info.codecDesc;
+      contentEntry["codec"] = info.codecName;
       contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
       contentEntry["isforced"] = (info.flags & StreamFlags::FLAG_FORCED) != 0;
       contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0;
@@ -6353,17 +6371,21 @@ void CVideoPlayer::NotifyAudioUpdate()
   if (!info.valid)
     return;
   CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
+  JSONRPC::DescribePlayer(
+      data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio,
+      KODI::PLAYLIST::Id{m_item.GetProperty("playlist_type_hint").asInteger32(-1)});
   CVariant contentEntry(CVariant::VariantTypeObject);
   contentEntry["index"] = stream;
   contentEntry["bitrate"] = info.bitrate;
   contentEntry["channels"] = info.channels;
-  contentEntry["codec"] = info.codecDesc;
+  contentEntry["codec"] = info.codecName;
   contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
   contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0;
   contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) != 0;
   contentEntry["language"] = info.language.AsBcp47();
   contentEntry["name"] = info.name;
+  contentEntry["samplerate"] = info.samplerate;
+  contentEntry["bitspersample"] = info.bitspersample;
   data["property"]["currentaudiostream"] = contentEntry;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                      data);
@@ -6377,7 +6399,9 @@ void CVideoPlayer::NotifyVideoUpdate()
   if (!info.valid)
     return;
   CVariant data;
-  data["player"]["playerid"] = m_item.GetProperty("playlist_type_hint").asInteger32(-1);
+  JSONRPC::DescribePlayer(
+      data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio,
+      KODI::PLAYLIST::Id{m_item.GetProperty("playlist_type_hint").asInteger32(-1)});
   CVariant contentEntry(CVariant::VariantTypeObject);
   contentEntry["index"] = stream;
   contentEntry["codec"] = info.codecName;

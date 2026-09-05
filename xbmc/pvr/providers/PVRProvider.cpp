@@ -89,12 +89,12 @@ void CPVRProvider::Serialize(CVariant& value) const
       value["providertype"] = "other";
       break;
     default:
-      value["state"] = "unknown";
+      value["providertype"] = "unknown";
       break;
   }
-  value["iconpath"] = GetClientIconPath();
-  value["countries"] = m_strCountries;
-  value["languages"] = m_strLanguages;
+  value["iconpath"] = GetIconPath();
+  value["countries"] = GetCountries();
+  value["languages"] = GetLanguages();
 }
 
 int CPVRProvider::GetDatabaseId() const

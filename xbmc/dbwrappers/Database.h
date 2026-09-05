@@ -96,6 +96,16 @@ public:
     std::string where;
   };
 
+  /*!
+   \brief The outcome of a query for a single record.
+   */
+  enum class GetResult
+  {
+    Ok, ///< the record was found and has been returned
+    NotFound, ///< the database was queried successfully and holds no such record
+    Error, ///< the record could not be returned, so whether it exists may be unknown
+  };
+
   explicit CDatabase(const std::string& dbType);
   virtual ~CDatabase();
 
