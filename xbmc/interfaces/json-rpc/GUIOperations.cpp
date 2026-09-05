@@ -20,6 +20,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
+#include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -27,11 +28,28 @@
 #include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/windows/GUIWindowScreenAlignment.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/Screenshot.h"
 #include "utils/Variant.h"
+#include "video/geometry/GeometryPublication.h"
+
+#include <vector>
 
 using namespace JSONRPC;
 using namespace ADDON;
+
+namespace
+{
+CGUIWindowScreenAlignment* GetScreenAlignmentWindow()
+{
+  auto* const gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return nullptr;
+
+  return gui->GetWindowManager().GetWindow<CGUIWindowScreenAlignment>(WINDOW_SCREEN_ALIGNMENT);
+}
+} // namespace
 
 JSONRPC_STATUS CGUIOperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -169,6 +187,85 @@ JSONRPC_STATUS CGUIOperations::TakeScreenshot(const std::string& method,
     CScreenShot::TakeScreenshot(CaptureContent::COMPOSITE);
 
   return ACK;
+}
+
+JSONRPC_STATUS CGUIOperations::SetScreenAlignment(const std::string& method,
+                                                  ITransportLayer* transport,
+                                                  IClient* client,
+                                                  const CVariant& parameterObject,
+                                                  CVariant& result)
+{
+  CGUIWindowScreenAlignment* const window = GetScreenAlignmentWindow();
+  if (!window)
+    return FailedToExecute;
+
+  // Stated before the tool is shown, so it comes up carrying the frame that was asked for
+  // rather than the previous one.
+  if (parameterObject["ratios"].isArray())
+  {
+    std::vector<float> ratios;
+    for (CVariant::const_iterator_array ratio = parameterObject["ratios"].begin_array();
+         ratio != parameterObject["ratios"].end_array(); ++ratio)
+      ratios.push_back(ratio->asFloat());
+
+    window->SetShownRatios(ratios);
+  }
+
+  if (parameterObject["show"].isBoolean())
+  {
+    CGUIWindowManager& windowManager = CServiceBroker::GetGUI()->GetWindowManager();
+    const bool show = parameterObject["show"].asBoolean();
+
+    if (show != windowManager.IsWindowActive(WINDOW_SCREEN_ALIGNMENT))
+    {
+      // Sent rather than posted, so what is answered below is what is on the screen rather than
+      // what has been asked for.
+      if (show)
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTIVATE_WINDOW,
+                                                   WINDOW_SCREEN_ALIGNMENT, 0);
+      else
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_PREVIOUS_WINDOW);
+    }
+  }
+
+  result = GetScreenAlignmentState();
+  return OK;
+}
+
+JSONRPC_STATUS CGUIOperations::GetScreenAlignment(const std::string& method,
+                                                  ITransportLayer* transport,
+                                                  IClient* client,
+                                                  const CVariant& parameterObject,
+                                                  CVariant& result)
+{
+  if (!GetScreenAlignmentWindow())
+    return FailedToExecute;
+
+  result = GetScreenAlignmentState();
+  return OK;
+}
+
+CVariant CGUIOperations::GetScreenAlignmentState()
+{
+  CVariant state(CVariant::VariantTypeObject);
+
+  state["showing"] =
+      CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SCREEN_ALIGNMENT);
+
+  state["ratios"] = CVariant(CVariant::VariantTypeArray);
+  if (const CGUIWindowScreenAlignment* const window = GetScreenAlignmentWindow())
+  {
+    for (const float ratio : window->ShownRatios())
+      state["ratios"].push_back(KODI::VIDEO::GEOMETRY::PublishedAspect(ratio));
+  }
+
+  // The vocabulary is the list of frames there are, and is a data file a viewer may add to.
+  // Answered here because nothing else on the API enumerates it.
+  state["available"] = CVariant(CVariant::VariantTypeArray);
+  for (const KODI::UTILS::AspectRatioEntry& entry : KODI::UTILS::CAspectRatioVocabulary::Entries())
+    state["available"].push_back(KODI::VIDEO::GEOMETRY::PublishedAspect(entry.ratio));
+
+  return state;
 }
 
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVariant &result)

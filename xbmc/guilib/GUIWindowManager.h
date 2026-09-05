@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DirtyRegionTracker.h"
+#include "GUISurroundRenderer.h"
 #include "GUIWindow.h"
 #include "IMsgTargetCallback.h"
 #include "IWindowManagerCallback.h"
@@ -303,6 +304,8 @@ private:
   bool m_initialized;
   mutable bool m_touchGestureActive{false};
   mutable bool m_inhibitTouchGestureEvents{false};
+
+  mutable CGUISurroundRenderer m_guiSurround;
 
   CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;
