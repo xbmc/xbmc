@@ -15,9 +15,11 @@
 #include "filesystem/UDFContext.h"
 #endif
 
+#include <atomic>
 #include <chrono>
 #include <list>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 
@@ -48,6 +50,7 @@ extern "C"
 #define HDMV_PID_IG_LAST          0x141f
 
 class CDVDOverlayImage;
+class CBlurayIsoCache;
 class IVideoPlayer;
 
 class CDVDInputStreamBluray
@@ -207,7 +210,9 @@ protected:
 
   private:
     bool OpenStream(CFileItem &item);
-    void SetupPlayerSettings();
+    int ReadBlocksDirect(uint8_t* buf, int lba, int num_blocks);
+    int64_t ReadRaw(int64_t offset, uint8_t* buffer, size_t size);
+    void SetupPlayerSettings() const;
     void FreeTitleInfo();
     void FreeClipInfo();
 
@@ -232,6 +237,9 @@ protected:
      * \return True if the clip carries the stream, false otherwise
      */
     bool GetClipStreamLanguage(int pid, std::string& language) const;
+    std::atomic<unsigned int> m_isoCacheFallbacks{0};
+    std::mutex m_isoCacheMutex;
+    std::shared_ptr<CBlurayIsoCache> m_isoCache;
     std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;
 
