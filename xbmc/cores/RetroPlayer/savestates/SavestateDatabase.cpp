@@ -219,6 +219,8 @@ std::unique_ptr<ISavestate> CSavestateDatabase::RenameSavestate(const std::strin
   if (!savestate->CopyMemoryDataTo(*newSavestate))
     return {};
 
+  newSavestate->SetDiscState(savestate->GetDiscState());
+
   // Carried separately from the emulator's memory, which is all the copy above
   // moves; without this a rename would drop the player's achievement progress
   if (const size_t achievementSize = savestate->GetAchievementSize(); achievementSize > 0)

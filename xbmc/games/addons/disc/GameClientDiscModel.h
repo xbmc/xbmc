@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "GameClientDiscState.h"
+
 #include <cstddef>
 #include <optional>
 #include <string>
@@ -37,6 +39,10 @@ struct GameClientDiscEntry
 class CGameClientDiscModel
 {
 public:
+  bool operator==(const CGameClientDiscModel& rhs) const;
+  GameClientDiscState GetState() const;
+  bool ResolveState(const GameClientDiscState& state, CGameClientDiscModel& model) const;
+
   // Selected disc state used by the frontend selector/workflow.
   // "No disc" is explicit and distinct from any real disc entry.
   enum class DiscSelectionType
@@ -60,6 +66,7 @@ public:
   void SetDiscs(const std::vector<GameClientDiscEntry>& discs);
 
   void AddDisc(const std::string& path, const std::string& cachedLabel = "");
+  bool SetDiscByIndex(size_t index, const std::string& path, const std::string& cachedLabel = "");
   void AddRemovedSlot();
   bool RemoveDiscByPath(const std::string& path);
   bool RemoveDiscByIndex(size_t index);
@@ -67,6 +74,9 @@ public:
   bool EraseDiscByIndex(size_t index);
 
   const std::vector<GameClientDiscEntry>& GetDiscs() const { return m_discs; }
+  const std::vector<std::string>& GetKnownDiscPaths() const { return m_knownDiscPaths; }
+  void RememberDiscPath(const std::string& path);
+  void RememberDiscs(const CGameClientDiscModel& model);
 
   std::optional<size_t> GetDiscIndexByPath(const std::string& path) const;
   std::optional<size_t> GetDiscIndexByBasename(const std::string& basename) const;
@@ -96,6 +106,7 @@ public:
 
 private:
   std::vector<GameClientDiscEntry> m_discs;
+  std::vector<std::string> m_knownDiscPaths;
   DiscSelectionType m_selectedType{DiscSelectionType::NoDisc};
   std::optional<size_t> m_selectedDiscIndex;
   bool m_isEjected{false};

@@ -12,6 +12,7 @@
 
 #include <atomic>
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <set>
@@ -60,15 +61,25 @@ public:
 
   // Game client capabilities
   bool SupportsDiscControl() const;
+  bool IsMediaSupported(const CGameClientDiscModel& model) const;
 
   // Lifecycle interface
-  void Initialize(const std::string& gamePath);
+  void Initialize(const std::string& gamePath, bool usePersistedState = true);
   void Deinitialize();
+  bool HasPersistedState() const { return m_hasPersistedState; }
 
   // Disc interface
-  void RestoreDiscList();
+  bool RestoreDiscList();
+  bool PrepareForDeserialize();
+  void InvalidateRestoreCache();
   void RefreshDiscState();
-  const CGameClientDiscModel& GetDiscs() const { return *m_discModel; }
+  void RefreshDiscStateLive();
+  CGameClientDiscModel GetDiscs() const;
+  // The caller must hold CGameClient::LockForSnapshot() while using this reference.
+  const CGameClientDiscModel& GetDiscsForSnapshot() const { return *m_discModel; }
+  void SetDiscModel(const CGameClientDiscModel& model);
+  uint64_t GetRestoreGeneration() const { return m_restoreGeneration; }
+  void SaveDiscState() const;
   bool IsEjected() const { return m_isEjected; }
   std::string GetDiscLabel() const;
   bool IsTrayEmpty() const;
@@ -91,7 +102,6 @@ private:
   void ResetSessionState();
 
   void LoadModelFromCore(CGameClientDiscModel& model) const;
-  void SaveDiscState() const;
 
   static void PruneRemovedDiscs(CGameClientDiscModel& model);
   static void PruneExtensions(CGameClientDiscModel& model,
@@ -105,6 +115,11 @@ private:
   // Game parameters
   std::unique_ptr<CGameClientDiscModel> m_discModel;
   std::atomic<bool> m_isEjected{false};
+  std::atomic<uint64_t> m_restoreGeneration{0};
+  bool m_preserveSlotTopology{false};
+  bool m_hasPersistedState{false};
+  bool m_initialHintAttempted{false};
+  std::optional<unsigned int> m_restoredImageCount;
 };
 } // namespace GAME
 } // namespace KODI

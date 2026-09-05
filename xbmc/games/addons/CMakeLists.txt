@@ -8,6 +8,7 @@ set(HEADERS GameClient.h
             GameClientCallbacks.h
             GameClientInGameSaves.h
             GameClientProperties.h
+            GameClientRestoreResult.h
             GameClientSubsystem.h
             GameClientTranslator.h)
 
