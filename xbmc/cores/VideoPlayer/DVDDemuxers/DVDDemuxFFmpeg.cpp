@@ -20,7 +20,6 @@
 #include "commons/Exception.h"
 #include "cores/FFmpeg.h"
 #include "cores/MenuType.h"
-#include "cores/VideoPlayer/Interface/TimingConstants.h" // for DVD_TIME_BASE
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -234,6 +233,25 @@ bool CDVDDemuxFFmpeg::Aborted()
   std::shared_ptr<CDVDInputStreamFFmpeg> input = std::dynamic_pointer_cast<CDVDInputStreamFFmpeg>(m_pInput);
   if (input && input->Aborted())
     return true;
+
+  return false;
+}
+
+bool CDVDDemuxFFmpeg::IsStreaming() const
+{
+  if (m_pInput && m_pInput->IsStreaming())
+    return true;
+
+  if (m_pFormatContext && m_pFormatContext->iformat)
+  {
+    auto names = StringUtils::Split(m_pFormatContext->iformat->name, ",");
+    return std::ranges::any_of(names,
+                               [](const std::string& name)
+                               {
+                                 return name == "hls" || name == "applehttp" || name == "dash" ||
+                                        name == "rtsp" || name == "live_flv";
+                               });
+  }
 
   return false;
 }

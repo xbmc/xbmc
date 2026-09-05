@@ -11,6 +11,7 @@
 #include "DVDFactoryInputStream.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <map>
 
 using namespace XFILE;
@@ -138,4 +139,10 @@ void CInputStreamMultiSource::SetReadRate(uint32_t rate)
 {
   for (const auto& iter : m_InputStreams)
     iter->SetReadRate(rate);
+}
+
+bool CInputStreamMultiSource::IsStreaming() const
+{
+  return std::ranges::any_of(m_InputStreams,
+                             [](const auto& ptr) { return ptr != nullptr && ptr->IsStreaming(); });
 }

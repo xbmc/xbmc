@@ -175,37 +175,9 @@ SubtitleStreamInfoExt::SubtitleStreamInfoExt(int id, const SubtitleStreamInfo& i
 
 namespace
 {
-// This attempts to distinguish videos files, with may have streams muxed in a meaningful order,
-// from videos where stream order is more random and always benefits from reordering, for example
-// internet streaming protocols.
-bool IsTrackOrderMeaningful()
+CVideoStreamSelect::TrackOrder GetTrackOrder(const CApplicationPlayer& appPlayer)
 {
-  //! @todo improve accuracy with detection in VideoPlayer
-
-  const auto item = g_application.CurrentFileItemPtr();
-
-  if (!item)
-    return true;
-
-  const std::string dynPath = item->GetDynPath();
-
-  // Detect file-based all protocols discretly since the macro test "IsNetworkFilesystem" interprets
-  // http as always file-based, which misidentifies masqueraded streaming
-  if (URIUtils::IsHD(dynPath) || URIUtils::IsSmb(dynPath) || URIUtils::IsNfs(dynPath) ||
-      URIUtils::IsFTP(dynPath) || URIUtils::IsProtocol(dynPath, "sftp") ||
-      URIUtils::IsProtocol(dynPath, "ssh") || URIUtils::IsDAV(dynPath))
-    return true;
-
-  const std::string path = item->GetPath();
-  if (URIUtils::IsUPnP(path))
-    return true;
-
-  return false;
-}
-
-CVideoStreamSelect::TrackOrder GetTrackOrder()
-{
-  if (!IsTrackOrderMeaningful())
+  if (appPlayer.IsStreaming() || appPlayer.IsLiveStream())
     return CVideoStreamSelect::TrackOrder::SORTED;
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -258,7 +230,7 @@ std::vector<StreamInfoExtT> GetStreams(const CApplicationPlayer* appPlayer,
   }
 
   // Sort the streams
-  std::invoke(orderer, streams, GetTrackOrder());
+  std::invoke(orderer, streams, GetTrackOrder(*appPlayer));
 
   return streams;
 }
