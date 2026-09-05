@@ -1,0 +1,19 @@
+{
+  "title": "Start playback of a movie from the video library",
+  "method": "Player.Open",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "Player.Open",
+    "params": {
+      "item": {
+        "movieid": 42
+      }
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": "OK"
+  }
+}
