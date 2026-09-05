@@ -247,9 +247,9 @@ bool CPVRGUIActionsRecordings::EditRecording(const CFileItem& item) const
   if (!ShowRecordingSettings(recording))
     return false;
 
-  if (origRecording->m_strTitle != recording->m_strTitle)
+  if (origRecording->ProgrammeTitle() != recording->ProgrammeTitle())
   {
-    if (!AsyncRenameRecording(recording->m_strTitle).Execute(item))
+    if (!AsyncRenameRecording(recording->ProgrammeTitle()).Execute(item))
       CLog::LogF(LOGERROR, "Renaming recording failed!");
   }
 

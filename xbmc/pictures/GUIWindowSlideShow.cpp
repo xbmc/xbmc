@@ -29,6 +29,7 @@
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseEvent.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/json-rpc/PlayerIds.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pictures/SlideShowDelegator.h"
@@ -178,7 +179,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
 {
   CVariant param;
   param["player"]["speed"] = m_bSlideShow && !m_bPause ? 1 : 0;
-  param["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
+  JSONRPC::DescribePlayer(param["player"], JSONRPC::Picture, PLAYLIST::Id::TYPE_PICTURE);
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay", item, param);
 }
 
@@ -186,14 +187,14 @@ void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
 {
   CVariant param;
   param["player"]["speed"] = 0;
-  param["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
+  JSONRPC::DescribePlayer(param["player"], JSONRPC::Picture, PLAYLIST::Id::TYPE_PICTURE);
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause", item, param);
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 {
   CVariant param;
-  param["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
+  JSONRPC::DescribePlayer(param["player"], JSONRPC::Picture, PLAYLIST::Id::TYPE_PICTURE);
   param["end"] = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop", item, param);
 }
@@ -219,7 +220,7 @@ void CGUIWindowSlideShow::AnnouncePropertyChanged(const std::string &strProperty
     return;
 
   CVariant data;
-  data["player"]["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
+  JSONRPC::DescribePlayer(data["player"], JSONRPC::Picture, PLAYLIST::Id::TYPE_PICTURE);
   data["property"][strProperty] = value;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                      data);

@@ -103,33 +103,55 @@ void CJobManager::Restart()
 
 void CJobManager::CancelJobs()
 {
-  std::unique_lock lock(m_section);
-  m_running = false;
-
-  // clear any pending jobs
-  for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED;
-       ++priority)
   {
-    std::ranges::for_each(m_jobQueue[priority],
+    std::unique_lock lock(m_section);
+    m_running = false;
+
+    // queued jobs are aborted below, outside the lock; CancelJob still finds them in m_aborting
+    for (auto& queue : m_jobQueue)
+    {
+      for (auto& wi : queue)
+        m_aborting.emplace_back(std::move(wi));
+      queue.clear();
+    }
+
+    // cancel any callbacks on jobs still processing
+    std::ranges::for_each(m_processing,
                           [](CWorkItem& wi)
                           {
                             for (auto* callback : wi.GetCallbacks())
                               callback->OnJobAbort(wi.GetId(), wi.GetJob());
-                            wi.FreeJob();
+                            wi.Cancel();
                           });
-    m_jobQueue[priority].clear();
   }
 
-  // cancel any callbacks on jobs still processing
-  std::ranges::for_each(m_processing,
-                        [](CWorkItem& wi)
-                        {
-                          for (auto* callback : wi.GetCallbacks())
-                            callback->OnJobAbort(wi.GetId(), wi.GetJob());
-                          wi.Cancel();
-                        });
+  while (true)
+  {
+    std::optional<CWorkItem> item;
+    {
+      std::unique_lock lock(m_section);
+      if (m_aborting.empty())
+        break;
+
+      item.emplace(std::move(m_aborting.front()));
+      m_aborting.pop_front();
+      m_abortingId = item->GetId();
+      m_abortingThread = std::this_thread::get_id();
+    }
+
+    for (auto* callback : item->GetCallbacks())
+      callback->OnJobAbort(item->GetId(), item->GetJob());
+    item->FreeJob();
+
+    {
+      std::unique_lock lock(m_section);
+      m_abortingId.reset();
+    }
+    m_abortDone.notify_all();
+  }
 
   // tell our workers to finish
+  std::unique_lock lock(m_section);
   while (!m_workers.empty())
   {
     lock.unlock();
@@ -203,6 +225,22 @@ void CJobManager::CancelJob(unsigned int jobID)
       return;
     }
   }
+  // or CancelJobs holds it for its abort callback
+  const auto aborting =
+      std::ranges::find_if(m_aborting, [jobID](const auto& wi) { return wi.GetId() == jobID; });
+  if (aborting != m_aborting.cend())
+  {
+    aborting->Cancel();
+    return;
+  }
+
+  // or its abort callback is running on another thread, which the owner must outlive
+  if (m_abortingId == jobID && m_abortingThread != std::this_thread::get_id())
+  {
+    m_abortDone.wait(lock, [this, jobID] { return m_abortingId != jobID; });
+    return;
+  }
+
   // or if we're processing it
   const auto it =
       std::ranges::find_if(m_processing, [jobID](const auto& wi) { return wi.GetId() == jobID; });
@@ -215,15 +253,18 @@ void CJobManager::StartWorkers(CJob::PRIORITY priority)
   std::unique_lock lock(m_section);
 
   // check how many free threads we have
-  if (m_processing.size() >= GetMaxWorkers(priority))
+  if (GetBusyCount() >= GetMaxWorkers(priority))
     return;
 
   // do we have any sleeping threads?
-  if (m_processing.size() < m_workers.size())
+  if (m_idleWorkers > 0)
   {
     m_jobEvent.Set();
     return;
   }
+
+  if (m_workers.size() >= GetMaxWorkers(priority))
+    return;
 
   // everyone is busy - we need more workers
   m_workers.emplace_back(new CJobWorker(*this));
@@ -238,8 +279,7 @@ CJob* CJobManager::PopJob()
     if (priority == CJob::PRIORITY_LOW_PAUSABLE && m_pauseJobs)
       continue;
 
-    if (!m_jobQueue[priority].empty() &&
-        m_processing.size() < GetMaxWorkers(CJob::PRIORITY(priority)))
+    if (!m_jobQueue[priority].empty() && GetBusyCount() < GetMaxWorkers(CJob::PRIORITY(priority)))
     {
       // pop the job off the queue
       const CWorkItem job{m_jobQueue[priority].front()};
@@ -300,9 +340,11 @@ CJob* CJobManager::GetNextJob()
     if (job)
       return job;
     // no jobs are left - sleep for 30 seconds to allow new jobs to come in
+    ++m_idleWorkers;
     lock.unlock();
     bool newJob = m_jobEvent.Wait(30000ms);
     lock.lock();
+    --m_idleWorkers;
     if (!newJob)
       break;
   }
@@ -343,6 +385,7 @@ void CJobManager::OnJobComplete(bool success, CJob* job)
       // when another thread modifies m_processing during callback execution
       item.emplace(std::move(*i));
       m_processing.erase(i);
+      ++m_completing;
     }
     return item;
   }();
@@ -385,6 +428,9 @@ void CJobManager::OnJobComplete(bool success, CJob* job)
     }
 
     item->FreeJob();
+
+    std::unique_lock lock(m_section);
+    --m_completing;
   }
 }
 

@@ -19,9 +19,9 @@ using namespace JSONRPC;
 namespace
 {
 //! Every JSONRPC_STATUS that reaches a client as an error. OK and ACK produce a result.
-constexpr std::array<JSONRPC_STATUS, 9> ERROR_STATUSES{
+constexpr std::array<JSONRPC_STATUS, 10> ERROR_STATUSES{
     ParseError,      InvalidRequest, MethodNotFound, InvalidParams, InternalError,
-    FailedToExecute, BadPermission,  NotFound,       Unavailable};
+    FailedToExecute, BadPermission,  NotFound,       Unavailable,   AccessDenied};
 } // namespace
 
 //! \brief A status added to JSONRPC_STATUS must also be described, or clients cannot discover it

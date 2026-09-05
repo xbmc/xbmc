@@ -52,6 +52,24 @@ public:
 
   void SetCurrentVideoId(int id) { m_CurrentVideo.id = id; }
   void SetCurrentAudioId(int id) { m_CurrentAudio.id = id; }
+
+  void AddSubtitleStream(int typeIndex, int id, int source)
+  {
+    SelectionStream s;
+    s.type = StreamType::SUBTITLE;
+    s.type_index = typeIndex;
+    s.id = id;
+    s.source = source;
+    m_SelectionStreams.m_Streams.emplace_back(s);
+  }
+  void SetCurrentSubtitle(int id, int source)
+  {
+    m_CurrentSubtitle.id = id;
+    m_CurrentSubtitle.source = source;
+    m_CurrentSubtitle.demuxerId = -1;
+  }
+  void InvokeUpdateContentState() { UpdateContentState(); }
+  void InvokeOnStartup() { OnStartup(); }
   void SetHasVideo(bool hasVideo) { m_HasVideo = hasVideo; }
   void SetHasAudio(bool hasAudio) { m_HasAudio = hasAudio; }
   bool GetHasVideo() const { return m_HasVideo; }
@@ -209,6 +227,44 @@ TEST_F(TestVideoPlayer, UpdateHasVideoAudioKeepsFlagsWhenStreamsOpen)
 
   EXPECT_TRUE(player.GetHasVideo());
   EXPECT_TRUE(player.GetHasAudio());
+}
+
+TEST_F(TestVideoPlayer, SubtitleSelectionSurvivesTheStreamBeingClosed)
+{
+  // Hiding a bitmap subtitle closes its stream while it stays the selected one;
+  // recomputing indices on the next open must not drop that selection.
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  player.AddSubtitleStream(0, 7, STREAM_SOURCE_DEMUX);
+  player.AddSubtitleStream(1, 8, STREAM_SOURCE_DEMUX);
+
+  player.SetCurrentSubtitle(8, STREAM_SOURCE_DEMUX);
+  player.InvokeUpdateContentState();
+  ASSERT_EQ(1, player.GetSubtitle());
+
+  player.SetCurrentSubtitle(-1, STREAM_SOURCE_NONE);
+  player.InvokeUpdateContentState();
+
+  EXPECT_EQ(1, player.GetSubtitle());
+}
+
+TEST_F(TestVideoPlayer, SubtitleSelectionDoesNotLeakIntoTheNextPlayback)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  player.AddSubtitleStream(0, 7, STREAM_SOURCE_DEMUX);
+  player.SetCurrentSubtitle(7, STREAM_SOURCE_DEMUX);
+  player.InvokeUpdateContentState();
+  ASSERT_EQ(0, player.GetSubtitle());
+
+  // a new playback starts with no subtitle open; the previous item's selection
+  // must not be reported against it
+  player.InvokeOnStartup();
+  player.InvokeUpdateContentState();
+
+  EXPECT_EQ(-1, player.GetSubtitle());
 }
 
 TEST_F(TestVideoPlayer, CalcTimeOrPercentSeekTargetCompat)

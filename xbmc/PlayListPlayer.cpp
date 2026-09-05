@@ -27,6 +27,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/json-rpc/PlayerIds.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicFileItemClassify.h"
@@ -49,6 +50,17 @@ using namespace KODI::VIDEO;
 
 namespace KODI::PLAYLIST
 {
+
+namespace
+{
+void AnnouncePlaybackFailed(const std::shared_ptr<const CFileItem>& item, const char* reason)
+{
+  CVariant data{CVariant::VariantTypeObject};
+  data["reason"] = reason;
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlaybackFailed", item,
+                                                     data);
+}
+} // unnamed namespace
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
@@ -368,6 +380,7 @@ bool CPlayListPlayer::Play(int iSong,
     CLog::Log(LOGERROR, "Playlist Player: skipping unplayable item: {}, path [{}]", m_iCurrentSong,
               CURL::GetRedacted(item->GetDynPath()));
     playlist.SetUnPlayable(m_iCurrentSong);
+    AnnouncePlaybackFailed(item, "unplayable");
 
     // abort on 100 failed CONSECUTIVE songs
     if (!m_iFailedSongs)
@@ -556,6 +569,15 @@ bool CPlayListPlayer::RepeatedOne(Id playlistId) const
   if (repStatePos != m_repeatState.end())
     return (repStatePos->second == RepeatState::ONE);
   return false;
+}
+
+bool CPlayListPlayer::CurrentItemIsInStack() const
+{
+  const CPlayList& playlist{GetPlaylist(m_iCurrentPlayList)};
+  if (m_iCurrentSong < 0 || m_iCurrentSong >= playlist.size())
+    return false;
+
+  return URIUtils::IsStack(playlist[m_iCurrentSong]->GetDynPath());
 }
 
 void CPlayListPlayer::SetShuffle(Id playlistId, bool bYesNo, bool bNotify /* = false */)
@@ -847,16 +869,26 @@ void CPlayListPlayer::AnnouncePropertyChanged(Id playlistId,
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  if (strProperty.empty() || value.isNull() ||
-      (playlistId == Id::TYPE_VIDEO && !appPlayer->IsPlayingVideo()) ||
+  if (strProperty.empty() || value.isNull())
+    return;
+
+  CVariant playlistData;
+  playlistData["playlistid"] = static_cast<int>(playlistId);
+  playlistData["property"][strProperty] = value;
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnPropertyChanged",
+                                                     playlistData);
+
+  if ((playlistId == Id::TYPE_VIDEO && !appPlayer->IsPlayingVideo()) ||
       (playlistId == Id::TYPE_MUSIC && !appPlayer->IsPlayingAudio()))
     return;
 
-  CVariant data;
-  data["player"]["playerid"] = static_cast<int>(playlistId);
-  data["property"][strProperty] = value;
+  CVariant playerData;
+  JSONRPC::DescribePlayer(playerData["player"],
+                          playlistId == Id::TYPE_VIDEO ? JSONRPC::Video : JSONRPC::Audio,
+                          playlistId);
+  playerData["property"][strProperty] = value;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
-                                                     data);
+                                                     playerData);
 }
 
 int PLAYLIST::CPlayListPlayer::GetMessageMask()
@@ -970,16 +1002,12 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       // Discard the current playlist, if TMSG_MEDIA_PLAY gets posted with just a single item.
       // Otherwise items may fail to play, when started while a playlist is playing.
       // But a single item in a stack is allowed.
-      if (m_iCurrentPlayList != Id::TYPE_NONE)
-      {
-
-        CPlayList& playlist{GetPlaylist(m_iCurrentPlayList)};
-        if (!URIUtils::IsStack(playlist[m_iCurrentSong]->GetDynPath()))
-          Reset();
-      }
+      if (m_iCurrentPlayList != Id::TYPE_NONE && !CurrentItemIsInStack())
+        Reset();
 
       CFileItem *item = static_cast<CFileItem*>(pMsg->lpVoid);
-      g_application.PlayFile(*item, "", pMsg->param1 != 0);
+      if (!g_application.PlayFile(*item, "", pMsg->param1 != 0))
+        AnnouncePlaybackFailed(std::make_shared<CFileItem>(*item), "unplayable");
       delete item;
       return;
     }
@@ -1011,6 +1039,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
           if (URIUtils::HasPluginPath(*item) &&
               !XFILE::CPluginDirectory::GetResolvedPluginResult(*item))
           {
+            AnnouncePlaybackFailed(item, "unresolved");
             return;
           }
           const bool isVideo{VIDEO::IsVideo(*item)};
@@ -1023,12 +1052,14 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
               CLog::LogF(LOGERROR,
                          "MasterCode or MediaSource-code is wrong: {} will not be played.",
                          item->GetPath());
+              AnnouncePlaybackFailed(item, "locked");
               return;
             }
             Play(item, pMsg->strParam);
           }
-          else
-            g_application.PlayMedia(*item, pMsg->strParam, playlistId);
+          // PVR playback prompts and can be declined, which is not a failure
+          else if (!g_application.PlayMedia(*item, pMsg->strParam, playlistId) && !item->IsPVR())
+            AnnouncePlaybackFailed(item, "unplayable");
         }
         else
         {

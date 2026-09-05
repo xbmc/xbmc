@@ -498,6 +498,7 @@ void CAdvancedSettings::Initialize()
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
+  m_jsonAllowScreenshotDeletion = false;
 
   m_enableMultimediaKeys = false;
 
@@ -965,6 +966,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     XMLUtils::GetBoolean(pElement, "compactoutput", m_jsonOutputCompact);
     XMLUtils::GetUInt(pElement, "tcpport", m_jsonTcpPort);
+    XMLUtils::GetBoolean(pElement, "allowscreenshotdeletion", m_jsonAllowScreenshotDeletion);
   }
 
   pElement = pRootElement->FirstChildElement("samba");

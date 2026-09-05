@@ -11,17 +11,26 @@
 #include "CompileInfo.h"
 #include "InputOperations.h"
 #include "LangInfo.h"
+#include "MessengerPayload.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
+#include <array>
 #include <cmath>
+#include <memory>
 #include <string.h>
+#include <utility>
+#include <vector>
 
 using namespace JSONRPC;
 
@@ -95,12 +104,110 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const std::string &method, ITrans
        parameterObject["mute"].asString().compare("toggle") == 0) ||
       (parameterObject["mute"].isBoolean() &&
        parameterObject["mute"].asBoolean() != appVolume->IsMuted()))
-    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               static_cast<void*>(new CAction(ACTION_MUTE)));
+    CServiceBroker::GetAppMessenger()->SendMsg(
+        TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+        TransferToMessenger(std::make_unique<CAction>(ACTION_MUTE)));
   else if (!parameterObject["mute"].isBoolean() && !parameterObject["mute"].isString())
     return InvalidParams;
 
   return GetPropertyValue("muted", result);
+}
+
+namespace
+{
+constexpr std::array<std::pair<int, const char*>, 4> LOG_LEVEL_NAMES{{
+    {LOG_LEVEL_NONE, "none"},
+    {LOG_LEVEL_NORMAL, "normal"},
+    {LOG_LEVEL_DEBUG, "debug"},
+    {LOG_LEVEL_DEBUG_FREEMEM, "debugfreemem"},
+}};
+} // unnamed namespace
+
+JSONRPC_STATUS CApplicationOperations::SetLogLevel(const std::string& method,
+                                                   ITransportLayer* transport,
+                                                   IClient* client,
+                                                   const CVariant& parameterObject,
+                                                   CVariant& result)
+{
+  const CVariant& levelParam{parameterObject["level"]};
+  const CVariant& componentsParam{parameterObject["components"]};
+
+  std::optional<int> level;
+  if (!levelParam.isNull())
+  {
+    level = LogLevelFromName(levelParam.asString());
+    if (!level)
+      return InvalidParams;
+  }
+
+  std::vector<CVariant> componentIds;
+  if (!componentsParam.isNull())
+  {
+    for (auto it = componentsParam.begin_array(); it != componentsParam.end_array(); ++it)
+    {
+      const uint32_t id{CLog::GetComponentByName(it->asString())};
+      if (id == CLog::LOG_COMPONENT_GENERAL)
+        return InvalidParams;
+      componentIds.emplace_back(static_cast<int>(id));
+    }
+  }
+
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+
+  if (level)
+  {
+    // SetDebugMode cannot express none or debugfreemem, so the exact level is applied after it.
+    settings->SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, *level >= LOG_LEVEL_DEBUG);
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel = *level;
+    CServiceBroker::GetLogging().SetLogLevel(*level);
+  }
+
+  if (!componentsParam.isNull())
+  {
+    // CLog listens to both settings, so there is nothing to tell it directly
+    settings->SetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL, componentIds);
+    settings->SetBool(CSettings::SETTING_DEBUG_EXTRALOGGING, !componentIds.empty());
+  }
+
+  result = LogLevelValue();
+  return OK;
+}
+
+std::string CApplicationOperations::LogLevelName(int level)
+{
+  for (const auto& [value, name] : LOG_LEVEL_NAMES)
+  {
+    if (value == level)
+      return name;
+  }
+  return {};
+}
+
+std::optional<int> CApplicationOperations::LogLevelFromName(const std::string& name)
+{
+  for (const auto& [value, levelName] : LOG_LEVEL_NAMES)
+  {
+    if (name == levelName)
+      return value;
+  }
+  return std::nullopt;
+}
+
+CVariant CApplicationOperations::LogLevelValue()
+{
+  CVariant value{CVariant::VariantTypeObject};
+  value["level"] = LogLevelName(CServiceBroker::GetLogging().GetLogLevel());
+
+  value["components"] = CVariant{CVariant::VariantTypeArray};
+  for (const std::string& name : CLog::GetComponentNames())
+  {
+    CVariant component{CVariant::VariantTypeObject};
+    component["name"] = name;
+    component["enabled"] =
+        CServiceBroker::GetLogging().CanLogComponent(CLog::GetComponentByName(name));
+    value["components"].append(std::move(component));
+  }
+  return value;
 }
 
 JSONRPC_STATUS CApplicationOperations::Quit(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -158,6 +265,8 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &prope
   }
   else if (property == "language")
     result = g_langInfo.GetLocale().ToShortString();
+  else if (property == "loglevel")
+    result = LogLevelValue();
   else
     return InvalidParams;
 

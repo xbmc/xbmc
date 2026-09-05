@@ -36,6 +36,17 @@ namespace JSONRPC
   class CSettingsOperations
   {
   public:
+    static JSONRPC_STATUS GetLevel(const std::string& method,
+                                   ITransportLayer* transport,
+                                   IClient* client,
+                                   const CVariant& parameterObject,
+                                   CVariant& result);
+    static JSONRPC_STATUS SetLevel(const std::string& method,
+                                   ITransportLayer* transport,
+                                   IClient* client,
+                                   const CVariant& parameterObject,
+                                   CVariant& result);
+
     static JSONRPC_STATUS GetSections(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS GetCategories(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS GetSettings(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);

@@ -16,8 +16,11 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <condition_variable>
+#include <optional>
 #include <queue>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -226,6 +229,8 @@ private:
    */
   CJob* PopJob();
 
+  size_t GetBusyCount() const { return m_processing.size() + m_completing; }
+
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker* worker);
   static unsigned int GetMaxWorkers(CJob::PRIORITY priority);
@@ -239,7 +244,16 @@ private:
   std::array<JobQueue, CJob::PRIORITY_DEDICATED + 1> m_jobQueue;
   bool m_pauseJobs{false};
   Processing m_processing;
+  size_t m_completing{0};
   Workers m_workers;
+  size_t m_idleWorkers{0};
+
+  // Jobs CancelJobs has taken off the queues whose abort callbacks have not run yet, and the
+  // one whose callback is running now.
+  JobQueue m_aborting;
+  std::optional<unsigned int> m_abortingId;
+  std::thread::id m_abortingThread;
+  std::condition_variable_any m_abortDone;
 
   mutable CCriticalSection m_section;
   CEvent m_jobEvent;

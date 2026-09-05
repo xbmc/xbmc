@@ -16,6 +16,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
+#include "utils/Screenshot.h"
 #include "utils/URIUtils.h"
 
 CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
@@ -32,6 +33,8 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
     {
       bool accessible = false;
       if (file.substr(0, 8) == "image://")
+        accessible = true;
+      else if (CScreenShot::IsScreenshotPath(file))
         accessible = true;
       else
       {
