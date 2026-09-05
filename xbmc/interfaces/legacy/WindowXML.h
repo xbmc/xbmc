@@ -57,7 +57,64 @@ namespace XBMCAddon
     /// window.
     ///
     ///--------------------------------------------------------------------------
+    /// ### Add-on fonts
+    ///
+    /// A `<font>` name used by a control in your window xml is normally resolved
+    /// against the **active skin**. A skin that does not define the name you used
+    /// falls back to `font13`, so the same add-on renders differently from one
+    /// skin to the next.
+    ///
+    /// To fix that, place a **Font.xml** next to your window xml. The fonts it
+    /// declares are scoped to that one window: controls in the window resolve a
+    /// `<font>` name against this file first, then against the active skin, then
+    /// `font13`. A skin never sees your fonts, and you may safely reuse a name
+    /// the skin also defines.
+    ///
+    /// Declare only the **size** and the **style**. The typeface is always the
+    /// active skin's, so your window looks native on every skin and keeps
+    /// whatever script coverage the skinner chose.
+    ///
+    /// ~~~~~~~~~~~~~{.xml}
+    /// resources/skins/default/1080i/MyWindow.xml
+    /// resources/skins/default/1080i/Font.xml
+    ///
+    /// <!-- Font.xml -->
+    /// <fonts>
+    ///   <fontset id="Default">
+    ///     <font>
+    ///       <name>title</name>
+    ///       <size>46</size>
+    ///       <style>bold</style>
+    ///     </font>
+    ///   </fontset>
+    /// </fonts>
+    /// ~~~~~~~~~~~~~
+    ///
+    /// The `Default` fontset is used, or the first one declared if there is no
+    /// fontset with that id. The schema is the skin's, so `<style>`, `<aspect>`,
+    /// `<linespacing>`, `<color>` and `<shadow>` all work.
+    ///
+    /// The typeface is the file behind the skin's `font13`, or the first font the
+    /// skin loaded. Only the file is taken, never the skin's size, style or
+    /// colour, and it follows the fontset the user chose in settings. Bold and
+    /// italic are rendered from that same face, so `<style>` keeps working.
+    ///
+    /// \note An add-on cannot ship its own `.ttf`. A `<filename>` element is
+    /// ignored and a warning is logged. Which typeface a skin uses is the
+    /// skinner's decision, and an add-on cannot know which scripts a given user
+    /// needs covered.
+    ///
+    /// \note `<include>` elements are ignored.
+    ///
+    /// \note A `<font>` name that neither your Font.xml nor the skin defines
+    /// still falls back to `font13`, and now logs one warning per window load.
+    ///
+    /// An add-on that ships no Font.xml is unaffected.
+    ///
+    ///--------------------------------------------------------------------------
     /// @python_v18 New param added **isMedia**.
+    /// @python_v22 A **Font.xml** placed beside the window xml now registers
+    /// fonts scoped to that window.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -429,7 +486,13 @@ namespace XBMCAddon
       void SetupShares();
       String m_scriptPath;
       String m_mediaDir;
+      //! Resolved window XML path. The scope key: unique per window, stable
+      //! across reopens. NOT m_scriptPath, which every window of one addon
+      //! shares, which would make them share and prematurely free fonts.
+      String m_fontScopeKey;
       bool m_isMedia;
+
+      String GetFontScopeKey() const override { return m_fontScopeKey; }
 
       friend class WindowXMLInterceptor;
 #endif
@@ -458,6 +521,10 @@ namespace XBMCAddon
     /// \python_class{ xbmcgui.WindowXMLDialog(xmlFilename, scriptPath[, defaultSkin, defaultRes]) }
     ///
     /// Creates a new xml file based window dialog class.
+    ///
+    /// \note A **Font.xml** beside this dialog's xml registers fonts scoped to
+    /// the dialog, exactly as for \ref python_xbmcgui_window_xml. A dialog owns
+    /// its fonts independently of the window that opened it.
     ///
     /// @param xmlFilename              string - the name of the xml file to
     ///                                 look for.
