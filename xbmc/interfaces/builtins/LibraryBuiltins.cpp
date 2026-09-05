@@ -11,6 +11,7 @@
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "addons/Scraper.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
@@ -365,7 +366,8 @@ static int RefreshArtist(const std::vector<std::string>& params)
   musicUrl.AddOption("artistid", params.front());
 
   // Start rescraping additional information for the given artist
-  CMusicLibraryQueue::GetInstance().StartArtistScan(musicUrl.ToString(), true);
+  CMusicLibraryQueue::GetInstance().StartScan(ADDON::ContentType::ARTISTS, musicUrl.ToString(),
+                                              true);
   return 0;
 }
 
@@ -386,7 +388,8 @@ static int RefreshAlbum(const std::vector<std::string>& params)
   musicUrl.AddOption("albumid", params.front());
 
   // Start rescraping additional information for the given album
-  CMusicLibraryQueue::GetInstance().StartAlbumScan(musicUrl.ToString(), true);
+  CMusicLibraryQueue::GetInstance().StartScan(ADDON::ContentType::ALBUMS, musicUrl.ToString(),
+                                              true);
   return 0;
 }
 
