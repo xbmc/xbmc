@@ -274,9 +274,9 @@ COverlayGlyphGLES::COverlayGlyphGLES(ASS_Image* images, float width, float heigh
   float scale_x = 1.0f / width;
   float scale_y = 1.0f / height;
 
-  m_vertex.resize(quads.quad.size() * 4);
+  std::vector<VERTEX> quadVertices(quads.quad.size() * 4);
 
-  VERTEX* vt = m_vertex.data();
+  VERTEX* vt = quadVertices.data();
   SQuad* vs = quads.quad.data();
 
   for (size_t i = 0; i < quads.quad.size(); i++)
@@ -321,34 +321,29 @@ COverlayGlyphGLES::COverlayGlyphGLES(ASS_Image* images, float width, float heigh
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  // Expand quads to triangles and upload to VBO once
-  std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
+  // Expand quads to triangles and upload once: glyph vertices never change after construction.
+  std::vector<VERTEX> vecVertices(6 * quadVertices.size() / 4);
   VERTEX* vertices = vecVertices.data();
 
-  for (size_t i = 0; i < m_vertex.size(); i += 4)
+  for (size_t i = 0; i < quadVertices.size(); i += 4)
   {
-    *vertices++ = m_vertex[i];
-    *vertices++ = m_vertex[i + 1];
-    *vertices++ = m_vertex[i + 2];
+    *vertices++ = quadVertices[i];
+    *vertices++ = quadVertices[i + 1];
+    *vertices++ = quadVertices[i + 2];
 
-    *vertices++ = m_vertex[i + 1];
-    *vertices++ = m_vertex[i + 3];
-    *vertices++ = m_vertex[i + 2];
+    *vertices++ = quadVertices[i + 1];
+    *vertices++ = quadVertices[i + 3];
+    *vertices++ = quadVertices[i + 2];
   }
 
-  glGenBuffers(1, &m_VBO);
-  glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(VERTEX) * vecVertices.size(), vecVertices.data(),
-               GL_STATIC_DRAW);
+  m_VBO.SetData(vecVertices.data(), vecVertices.size(), GL_STATIC_DRAW);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  m_vertexCount = vecVertices.size();
+  m_vertexCount = static_cast<GLsizei>(vecVertices.size());
 }
 
 COverlayGlyphGLES::~COverlayGlyphGLES()
 {
   glDeleteTextures(1, &m_texture);
-  glDeleteBuffers(1, &m_VBO);
 }
 
 void COverlayGlyphGLES::Render(SRenderState& state)
@@ -384,14 +379,14 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   matrix.MultMatrixf(glMatrixModview.Get());
   glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+  m_VBO.Bind();
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, x)));
+                        reinterpret_cast<GLvoid*>(offsetof(VERTEX, x)));
   glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX),
-                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, r)));
+                        reinterpret_cast<GLvoid*>(offsetof(VERTEX, r)));
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, u)));
+                        reinterpret_cast<GLvoid*>(offsetof(VERTEX, u)));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
@@ -477,12 +472,6 @@ void COverlayTextureGLES::Render(SRenderState& state)
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2}; //determines order of triangle strip
 
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
   glUniform1f(depthLoc, 1.0f);
   // Setup vertex position values
   ver[0][0] = ver[3][0] = rd.x1;
@@ -495,11 +484,24 @@ void COverlayTextureGLES::Render(SRenderState& state)
   tex[1][0] = tex[2][0] = m_u;
   tex[2][1] = tex[3][1] = m_v;
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  m_posVBO.SetData(ver, GL_STREAM_DRAW);
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(posLoc);
+
+  m_texVBO.SetData(tex, GL_STREAM_DRAW);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(tex0Loc);
+
+  m_IBO.SetDataOnce(idx);
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
   CRenderSystemBase::m_GUIElementCount++;
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(tex0Loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   renderSystem->DisableGUIShader();
 

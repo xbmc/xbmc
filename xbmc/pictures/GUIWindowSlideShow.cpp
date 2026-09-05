@@ -302,6 +302,14 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
 
+void CGUIWindowSlideShow::FreeResources(bool forceUnLoad)
+{
+  m_Image[0]->Free();
+  m_Image[1]->Free();
+
+  CGUIDialog::FreeResources(forceUnLoad);
+}
+
 void CGUIWindowSlideShow::Add(const CFileItem *picture)
 {
   CFileItemPtr item(new CFileItem(*picture));

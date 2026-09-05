@@ -19,6 +19,13 @@ std::unique_ptr<CSlideShowPic> CSlideShowPic::CreateSlideShowPicture()
   return std::make_unique<CSlideShowPicGLES>();
 }
 
+void CSlideShowPicGLES::Free()
+{
+  m_posVBO.Destroy();
+  m_texVBO.Destroy();
+  m_IBO.Destroy();
+}
+
 void CSlideShowPicGLES::Render(float* x,
                                float* y,
                                CTexture* pTexture,
@@ -58,12 +65,6 @@ void CSlideShowPicGLES::Render(float* x,
   GLint uniColLoc = renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
   // Setup Colour values
   col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
   col[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
@@ -90,13 +91,26 @@ void CSlideShowPicGLES::Render(float* x,
   tex[1][0] = tex[2][0] = u2;
   tex[2][1] = tex[3][1] = v2;
 
+  m_posVBO.SetData(ver, GL_STREAM_DRAW);
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(posLoc);
+
+  m_texVBO.SetData(tex, GL_STREAM_DRAW);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, 0);
+  glEnableVertexAttribArray(tex0Loc);
+
+  m_IBO.SetDataOnce(idx);
+
   glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
               (col[3] / 255.0f));
   glUniform1f(depthLoc, -1.0f);
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(tex0Loc);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   renderSystem->DisableGUIShader();
 }
