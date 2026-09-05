@@ -36,6 +36,7 @@
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/geometry/ContentGeometryScanner.h"
 
 #include <algorithm>
 #include <memory>
@@ -1024,6 +1025,10 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
       return false;
 
     m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::VERSION, item);
+
+    // A version is its own file and needs its own measurement. Handed to the background sweep
+    // rather than taken here: sampling is seconds, and the user is standing in front of this.
+    KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
 
     return true;
   }

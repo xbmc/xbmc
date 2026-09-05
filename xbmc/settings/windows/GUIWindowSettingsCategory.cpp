@@ -80,6 +80,13 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     case GUI_MSG_WINDOW_INIT:
     {
       m_iSection = message.GetParam2() - CGUIDialogSettingsManagerBase::GetID();
+
+      // A skin reload restores this window as a fresh activation, but for the viewer it is a
+      // return, and marking it as one keeps the category and control states through the base
+      // init. Otherwise changing a setting that reloads the skin dumps them on the first page.
+      if (m_returningFromSkinLoad)
+        message.SetParam1(WINDOW_INVALID);
+
       CGUIDialogSettingsManagerBase::OnMessage(message);
       m_returningFromSkinLoad = false;
 
