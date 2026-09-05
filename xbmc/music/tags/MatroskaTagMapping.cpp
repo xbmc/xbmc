@@ -9,6 +9,7 @@
 #include "MatroskaTagMapping.h"
 
 #include "MusicInfoTag.h"
+#include "ReplayGain.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
@@ -143,6 +144,20 @@ void MUSIC_INFO::MatroskaTagMapping::MapTag(const std::string& key,
 
       // The album's artist is the song's until the song says otherwise.
       tag.SetArtist(artists);
+      return;
+    }
+    if (key == "REPLAYGAIN_GAIN")
+    {
+      ReplayGain replayGainInfo = tag.GetReplayGain();
+      replayGainInfo.ParseGain(ReplayGain::Type::ALBUM, value);
+      tag.SetReplayGain(replayGainInfo);
+      return;
+    }
+    if (key == "REPLAYGAIN_PEAK")
+    {
+      ReplayGain replayGainInfo = tag.GetReplayGain();
+      replayGainInfo.ParsePeak(ReplayGain::Type::ALBUM, value);
+      tag.SetReplayGain(replayGainInfo);
       return;
     }
   }
@@ -307,6 +322,18 @@ bool Map(const std::string& key,
     std::vector<std::string> tagdata = StringUtils::Split(value, ",");
 
     AddCommaDelimitedString(tagdata, separators, tag);
+  }
+  else if (key == "REPLAYGAIN_GAIN")
+  {
+    ReplayGain replayGainInfo = tag.GetReplayGain();
+    replayGainInfo.ParseGain(ReplayGain::Type::TRACK, value);
+    tag.SetReplayGain(replayGainInfo);
+  }
+  else if (key == "REPLAYGAIN_PEAK")
+  {
+    ReplayGain replayGainInfo = tag.GetReplayGain();
+    replayGainInfo.ParsePeak(ReplayGain::Type::TRACK, value);
+    tag.SetReplayGain(replayGainInfo);
   }
   else
     return false;
