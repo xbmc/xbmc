@@ -40,11 +40,16 @@
 #include "platform/win32/powermanagement/Win32PowerSyscall.h"
 #include "platform/win32/storage/Win32StorageProvider.h"
 
+#include <algorithm>
 #include <array>
+#include <iterator>
+#include <map>
 #include <math.h>
 
 #include <Shlobj.h>
 #include <dbt.h>
+#include <initguid.h>
+#include <ioevent.h>
 
 HWND g_hWnd = nullptr;
 
@@ -83,29 +88,166 @@ SHChangeNotifyEntry shcne;
 
 namespace
 {
-/*! \brief Queue an optical media change reported by the shell notification
- *
- * WM_DEVICECHANGE is the preferred channel for optical media because it does not need
- * explorer.exe, but some systems don't broadcast it - in which case this is the only
- * notification Kodi gets. Feed it from here as well; QueueStorageEvent() deduplicates.
- *
- * \param drivePath The drive root as reported by the shell (e.g. "D:\")
- * \param bArrived true for media inserted, false for media removed
- */
-void QueueOpticalStorageEvent(const wchar_t* drivePath, const bool bArrived)
+struct OpticalDriveNotification
 {
-  std::string strDrive{KODI::PLATFORM::WINDOWS::FromW(drivePath)};
-  URIUtils::RemoveSlashAtEnd(strDrive); // "D:\" -> "D:"
+  char letter{'\0'};
+  HANDLE device{INVALID_HANDLE_VALUE};
+};
 
-  MEDIA_DETECT::STORAGE::StorageDevice device{CWin32StorageProvider::GetStorageDevice(strDrive)};
+std::map<HDEVNOTIFY, OpticalDriveNotification> g_opticalDriveNotifications;
+
+std::string DriveFromShellPath(const wchar_t* drivePath)
+{
+  std::string drive{KODI::PLATFORM::WINDOWS::FromW(drivePath)};
+  URIUtils::RemoveSlashAtEnd(drive);
+  return drive;
+}
+
+/*! \brief Queue an optical media change
+ *
+ * Optical media changes reach Kodi over more than one channel: the volume broadcast, the shell
+ * notification (which needs explorer.exe) and the drive's own device notification.
+ * QueueStorageEvent() drops repeats.
+ *
+ * \param drive The drive (e.g. "D:")
+ * \param bArrived true for media inserted, false for media removed
+ * \param channel Which notification this came from, for the log
+ */
+void QueueOpticalStorageEvent(const std::string& drive, const bool bArrived, const char* channel)
+{
+  MEDIA_DETECT::STORAGE::StorageDevice device{CWin32StorageProvider::GetStorageDevice(drive)};
   device.type = MEDIA_DETECT::STORAGE::Type::OPTICAL;
 
-  CLog::Log(LOGDEBUG, "CWinEventsWin32: Drive {} Media {} (shell notification).", strDrive,
-            bArrived ? "has arrived" : "was removed");
+  CLog::Log(LOGDEBUG, "CWinEventsWin32: Drive {} Media {} ({}).", drive,
+            bArrived ? "has arrived" : "was removed", channel);
   CWin32StorageProvider::QueueStorageEvent(
       bArrived ? CWin32StorageProvider::StorageEventType::ADDED
                : CWin32StorageProvider::StorageEventType::SAFELY_REMOVED,
       device);
+}
+
+void RegisterOpticalDrive(HWND hWnd, char letter)
+{
+  if (std::ranges::any_of(g_opticalDriveNotifications,
+                          [letter](const auto& entry) { return entry.second.letter == letter; }))
+    return;
+
+  const std::wstring path{
+      KODI::PLATFORM::WINDOWS::ToW(StringUtils::Format("\\\\.\\{}:", letter))};
+  HANDLE device{CreateFileW(path.c_str(), 0, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
+                            OPEN_EXISTING, 0, nullptr)};
+  if (device == INVALID_HANDLE_VALUE)
+  {
+    CLog::LogF(LOGDEBUG, "Could not open drive {}: for media notifications ({})", letter,
+               GetLastError());
+    return;
+  }
+
+  DEV_BROADCAST_HANDLE filter{};
+  filter.dbch_size = sizeof(filter);
+  filter.dbch_devicetype = DBT_DEVTYP_HANDLE;
+  filter.dbch_handle = device;
+  HDEVNOTIFY notify{RegisterDeviceNotification(hWnd, &filter, DEVICE_NOTIFY_WINDOW_HANDLE)};
+  if (!notify)
+  {
+    CLog::LogF(LOGDEBUG, "Could not register drive {}: for media notifications ({})", letter,
+               GetLastError());
+    CloseHandle(device);
+    return;
+  }
+
+  g_opticalDriveNotifications.emplace(notify, OpticalDriveNotification{letter, device});
+  CLog::LogF(LOGDEBUG, "Registered drive {}: for media notifications", letter);
+}
+
+void RegisterOpticalDrives(HWND hWnd)
+{
+  DWORD drives{GetLogicalDrives()};
+  for (char letter = 'A'; letter <= 'Z'; ++letter, drives >>= 1)
+  {
+    if (!(drives & 1))
+      continue;
+
+    const std::wstring root{KODI::PLATFORM::WINDOWS::ToW(StringUtils::Format("{}:\\", letter))};
+    if (GetDriveTypeW(root.c_str()) == DRIVE_CDROM)
+      RegisterOpticalDrive(hWnd, letter);
+  }
+}
+
+void UnregisterOpticalDrive(HDEVNOTIFY notify)
+{
+  const auto it{g_opticalDriveNotifications.find(notify)};
+  if (it == g_opticalDriveNotifications.end())
+    return;
+
+  UnregisterDeviceNotification(it->first);
+  if (it->second.device != INVALID_HANDLE_VALUE)
+    CloseHandle(it->second.device);
+  CLog::LogF(LOGDEBUG, "Unregistered drive {}: from media notifications", it->second.letter);
+  g_opticalDriveNotifications.erase(it);
+}
+
+void UnregisterOpticalDrives()
+{
+  while (!g_opticalDriveNotifications.empty())
+    UnregisterOpticalDrive(g_opticalDriveNotifications.begin()->first);
+}
+
+/*! \brief Handle a WM_DEVICECHANGE about a drive registered with RegisterOpticalDrive()
+ * \return Whether the message concerned one of those drives
+ */
+bool OnOpticalDriveNotification(HWND hWnd, WPARAM wParam, const DEV_BROADCAST_HANDLE& hdr)
+{
+  const auto it{g_opticalDriveNotifications.find(hdr.dbch_hdevnotify)};
+  if (it == g_opticalDriveNotifications.end())
+    return false;
+
+  const char letter{it->second.letter};
+  const std::string drive{StringUtils::Format("{}:", letter)};
+
+  switch (wParam)
+  {
+    case DBT_CUSTOMEVENT:
+      if (IsEqualGUID(hdr.dbch_eventguid, GUID_IO_MEDIA_REMOVAL))
+      {
+        QueueOpticalStorageEvent(drive, false, "device notification");
+      }
+      else if (IsEqualGUID(hdr.dbch_eventguid, GUID_IO_MEDIA_ARRIVAL))
+      {
+        // Raised before the volume is mounted, so the disc cannot be identified from here - the
+        // volume broadcast does that. Refreshing the drive state is enough for the GUI to show
+        // the disc should that broadcast never come.
+        CLog::LogF(LOGDEBUG, "Drive {} Media has arrived (device notification).", drive);
+        CWin32StorageProvider::SetEvent();
+      }
+      else
+      {
+        wchar_t guid[40]{};
+        StringFromGUID2(hdr.dbch_eventguid, guid, static_cast<int>(std::size(guid)));
+        CLog::LogF(LOGDEBUG, "Drive {} device notification {} ignored", drive,
+                   KODI::PLATFORM::WINDOWS::FromW(guid));
+      }
+      break;
+    case DBT_DEVICEQUERYREMOVE:
+      CLog::LogF(LOGDEBUG, "Drive {} is being removed - releasing it", drive);
+      if (it->second.device != INVALID_HANDLE_VALUE)
+      {
+        CloseHandle(it->second.device);
+        it->second.device = INVALID_HANDLE_VALUE;
+      }
+      break;
+    case DBT_DEVICEQUERYREMOVEFAILED:
+      CLog::LogF(LOGDEBUG, "Drive {} removal was cancelled", drive);
+      UnregisterOpticalDrive(hdr.dbch_hdevnotify);
+      RegisterOpticalDrive(hWnd, letter);
+      break;
+    case DBT_DEVICEREMOVECOMPLETE:
+      UnregisterOpticalDrive(hdr.dbch_hdevnotify);
+      break;
+    default:
+      break;
+  }
+  return true;
 }
 } // unnamed namespace
 
@@ -279,6 +421,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     long fEvents = SHCNE_DRIVEADD | SHCNE_DRIVEREMOVED | SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED;
     SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel | SHCNRF_NewDelivery, fEvents, WM_MEDIA_CHANGE, 1, &shcne);
     RegisterDeviceInterfaceToHwnd(USB_HID_GUID, hWnd, &hDeviceNotify);
+    RegisterOpticalDrives(hWnd);
     return 0;
   }
 
@@ -302,6 +445,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         else
           CLog::LogF(LOGINFO, "UnregisterDeviceNotification failed ({})", GetLastError());
       }
+      UnregisterOpticalDrives();
       newEvent.type = XBMC_QUIT;
       if (appPort)
         appPort->OnEvent(newEvent);
@@ -776,7 +920,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                 CWin32StorageProvider::SetEvent();
               }
               else
-                QueueOpticalStorageEvent(drivePath, true);
+                QueueOpticalStorageEvent(DriveFromShellPath(drivePath), true, "shell notification");
               break;
 
             case SHCNE_DRIVEREMOVED:
@@ -787,7 +931,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                 CWin32StorageProvider::SetEvent();
               }
               else
-                QueueOpticalStorageEvent(drivePath, false);
+                QueueOpticalStorageEvent(DriveFromShellPath(drivePath), false, "shell notification");
               break;
             default:;
           }
@@ -814,8 +958,21 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           case DBT_DEVNODES_CHANGED:
             CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_USB);
             break;
+          case DBT_CUSTOMEVENT:
+          case DBT_DEVICEQUERYREMOVE:
+          case DBT_DEVICEQUERYREMOVEFAILED:
+            if (lParam && ((_DEV_BROADCAST_HEADER*)lParam)->dbcd_devicetype == DBT_DEVTYP_HANDLE)
+              OnOpticalDriveNotification(hWnd, wParam,
+                                         *reinterpret_cast<DEV_BROADCAST_HANDLE*>(lParam));
+            break;
           case DBT_DEVICEARRIVAL:
           case DBT_DEVICEREMOVECOMPLETE:
+            if (((_DEV_BROADCAST_HEADER*)lParam)->dbcd_devicetype == DBT_DEVTYP_HANDLE)
+            {
+              OnOpticalDriveNotification(hWnd, wParam,
+                                         *reinterpret_cast<DEV_BROADCAST_HANDLE*>(lParam));
+              break;
+            }
             if (((_DEV_BROADCAST_HEADER*) lParam)->dbcd_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
             {
               CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERALS::PERIPHERAL_BUS_USB);
@@ -825,15 +982,23 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             {
               PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)((_DEV_BROADCAST_HEADER*)lParam);
 
-              std::string strdrive =
-                  StringUtils::Format("{}:", CWIN32Util::FirstDriveFromMask(lpdbv->dbcv_unitmask));
+              const char letter{CWIN32Util::FirstDriveFromMask(lpdbv->dbcv_unitmask)};
+              std::string strdrive = StringUtils::Format("{}:", letter);
 
               MEDIA_DETECT::STORAGE::StorageDevice device =
                   CWin32StorageProvider::GetStorageDevice(strdrive);
 
               // DBTF_MEDIA set => optical disc (media) change rather than a USB volume
               if (lpdbv->dbcv_flags & DBTF_MEDIA)
+              {
                 device.type = MEDIA_DETECT::STORAGE::Type::OPTICAL;
+              }
+              else if (wParam == DBT_DEVICEARRIVAL &&
+                       GetDriveTypeW(KODI::PLATFORM::WINDOWS::ToW(strdrive + "\\").c_str()) ==
+                           DRIVE_CDROM)
+              {
+                RegisterOpticalDrive(hWnd, letter);
+              }
 
               if (wParam == DBT_DEVICEARRIVAL)
               {

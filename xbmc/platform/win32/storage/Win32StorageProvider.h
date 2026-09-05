@@ -56,9 +56,8 @@ public:
 
   /*! \brief Called from the windowing thread to queue a change
    *
-   * Optical media changes can reach us over both WM_DEVICECHANGE and the shell's
-   * WM_MEDIA_CHANGE. A change matching the last one queued for the same drive is dropped,
-   * until ForgetLastEvent() says otherwise.
+   * Optical media changes can reach us over more than one channel. A change matching the last
+   * one queued for the same drive is dropped, until ForgetLastEvent() says otherwise.
    * \sa ForgetLastEvent
    */
   static void QueueStorageEvent(StorageEventType type,
