@@ -205,7 +205,16 @@
           "Input": {
             "$ref": "Optional.Boolean"
           },
+          "PVR": {
+            "$ref": "Optional.Boolean"
+          },
           "Other": {
+            "$ref": "Optional.Boolean"
+          },
+          "Info": {
+            "$ref": "Optional.Boolean"
+          },
+          "Sources": {
             "$ref": "Optional.Boolean"
           }
         }
