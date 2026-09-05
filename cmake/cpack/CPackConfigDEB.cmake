@@ -36,9 +36,7 @@ function(userstamp)
                     OUTPUT_STRIP_TRAILING_WHITESPACE
                     ERROR_QUIET)
   endif()
-  # A git user named No, N or False is a CMake false constant; only an empty
-  # field means it is unset.
-  if(NOT username STREQUAL "" AND NOT useremail STREQUAL "")
+  if(NOT "${username}" STREQUAL "" AND NOT "${useremail}" STREQUAL "")
     set(PACKAGE_MAINTAINER "${username} <${useremail}>" PARENT_SCOPE)
   else()
     set(PACKAGE_MAINTAINER "nobody <nobody@example.com>" PARENT_SCOPE)
