@@ -17,13 +17,12 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
 class CRenderVideoSettings;
 
 class CRenderBufferPoolOpenGLES : public CBaseRenderBufferPool
 {
 public:
-  CRenderBufferPoolOpenGLES(CRenderContext& context);
+  CRenderBufferPoolOpenGLES() = default;
   ~CRenderBufferPoolOpenGLES() override = default;
 
   // Implementation of IRenderBufferPool via CBaseRenderBufferPool
@@ -35,9 +34,6 @@ protected:
   bool ConfigureInternal() override;
 
 private:
-  // Construction parameters
-  CRenderContext& m_context;
-
   // Configuration parameters
   GLuint m_pixelType = 0;
   GLuint m_internalFormat = 0;

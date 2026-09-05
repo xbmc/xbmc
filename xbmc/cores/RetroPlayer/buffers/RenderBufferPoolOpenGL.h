@@ -17,7 +17,6 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
 class CRenderVideoSettings;
 
 class CRenderBufferPoolOpenGL : public CBaseRenderBufferPool

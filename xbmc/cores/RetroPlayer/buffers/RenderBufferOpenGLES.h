@@ -16,16 +16,10 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 class CRenderBufferOpenGLES : public CRenderBufferSysMem
 {
 public:
-  CRenderBufferOpenGLES(CRenderContext& context,
-                        GLuint pixelType,
-                        GLuint internalFormat,
-                        GLuint pixelFormat,
-                        GLuint bpp);
+  CRenderBufferOpenGLES(GLuint pixelType, GLuint internalFormat, GLuint pixelFormat, GLuint bpp);
   ~CRenderBufferOpenGLES() override;
 
   // Implementation of IRenderBuffer via CRenderBufferSysMem
@@ -35,7 +29,6 @@ public:
 
 private:
   // Construction parameters
-  CRenderContext& m_context;
   const GLuint m_pixelType;
   const GLuint m_internalFormat;
   const GLuint m_pixelFormat;

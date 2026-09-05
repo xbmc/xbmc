@@ -14,21 +14,16 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 class CRenderBufferDMAOpenGLES : public CRenderBufferDMA
 {
 public:
-  CRenderBufferDMAOpenGLES(CRenderContext& context, int fourcc);
+  explicit CRenderBufferDMAOpenGLES(int fourcc);
   ~CRenderBufferDMAOpenGLES() override = default;
 
 protected:
   // Implementation of CRenderBufferDMA
   bool UploadFromMemory() override;
   void ConfigureTexture() override;
-
-private:
-  CRenderContext& m_context;
 };
 } // namespace RETRO
 } // namespace KODI

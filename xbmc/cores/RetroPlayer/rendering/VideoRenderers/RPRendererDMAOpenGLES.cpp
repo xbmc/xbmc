@@ -37,12 +37,12 @@ CRPBaseRenderer* CRendererFactoryDMAOpenGLES::CreateRenderer(
   return new CRPRendererDMAOpenGLES(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryDMAOpenGLES::CreateBufferPools(CRenderContext& context)
+RenderBufferPoolVector CRendererFactoryDMAOpenGLES::CreateBufferPools(CRenderContext&)
 {
   if (!CBufferObjectFactory::CreateBufferObject(false))
     return {};
 
-  return {std::make_shared<CRenderBufferPoolDMAOpenGLES>(context)};
+  return {std::make_shared<CRenderBufferPoolDMAOpenGLES>()};
 }
 
 CRPRendererDMAOpenGLES::CRPRendererDMAOpenGLES(const CRenderSettings& renderSettings,
