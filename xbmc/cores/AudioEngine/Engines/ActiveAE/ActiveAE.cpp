@@ -1229,6 +1229,9 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     m_currentDeviceFollowsDefault =
         requestedDefaultDevice || !IsSameDevice(m_openedDriver, m_openedDevice, dev);
     initSink = true;
+    // The wire format changed, so a downstream device has to acquire it again.
+    for (auto* activeStream : m_streams)
+      activeStream->m_sinkFormatChanged = true;
     m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
     m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
 
