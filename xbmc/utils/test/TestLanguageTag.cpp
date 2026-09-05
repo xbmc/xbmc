@@ -6,7 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceManager.h"
+#include "application/Application.h"
 #include "utils/LanguageTag.h"
+
+#include <memory>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -286,4 +291,35 @@ TEST(TestLanguageTag, NarrowingDropsTheRegionFromTheEnglishName)
 
   // A tag with nothing to drop names the same language either way
   EXPECT_EQ(CLanguageTag::Parse("eng").GetEnglishLanguageName(), "English");
+}
+
+namespace
+{
+//! \brief Stands an uninitialised service manager in, and puts the real one back on every path
+class CServiceManagerSwap
+{
+public:
+  CServiceManagerSwap() { std::swap(m_saved, g_application.m_ServiceManager); }
+  ~CServiceManagerSwap() { std::swap(m_saved, g_application.m_ServiceManager); }
+
+  CServiceManagerSwap(const CServiceManagerSwap&) = delete;
+  CServiceManagerSwap& operator=(const CServiceManagerSwap&) = delete;
+
+private:
+  std::unique_ptr<CServiceManager> m_saved{std::make_unique<CServiceManager>()};
+};
+} // namespace
+
+TEST(TestLanguageTag, ParsesBeforeAnyServiceExists)
+{
+  // A disc in the drive at startup is probed while the service manager is still initialising,
+  // so a language must parse with no service available
+  CLanguageTag tag;
+  {
+    const CServiceManagerSwap noServices;
+    tag = CLanguageTag::Parse("en-GB");
+  }
+
+  EXPECT_EQ(tag.AsBcp47(), "en-GB");
+  EXPECT_EQ(tag.AsIso6391(), "en");
 }
