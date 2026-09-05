@@ -93,6 +93,12 @@ public:
   void SetSpeed(int iSpeed) override;
   std::string GetFileName() override;
 
+  /*! \brief How long a stalled input is polled before playback ends. */
+  void SetStallRecoveryWindow(std::chrono::milliseconds window) { m_stallRecoveryWindow = window; }
+
+  /*! \brief How long one read is given before it counts as pacing rather than an abort. */
+  void SetReadTimeout(std::chrono::milliseconds timeout) { m_readTimeout = timeout; }
+
   DemuxPacket* Read() override;
   DemuxPacket* ReadInternal(bool keep);
 
@@ -134,6 +140,7 @@ protected:
   AVDictionary* GetFFMpegOptionsFromInput();
   double ConvertTimestamp(int64_t pts, int den, int num);
   bool IsProgramChange();
+  bool WaitingOutInputStall(bool readPacingExpired);
   unsigned int HLSSelectProgram();
 
   std::string GetStereoModeFromMetadata(AVDictionary* pMetadata);
@@ -162,6 +169,19 @@ protected:
   int m_seekStream;
 
   XbmcThreads::EndTime<> m_timeout;
+
+  // Long enough to ride out a network share dropping individual connections for a minute or two
+  static constexpr auto STALL_RECOVERY_WINDOW{std::chrono::minutes(2)};
+  static constexpr auto READ_TIMEOUT{std::chrono::seconds(20)};
+  // The recovery probe blocks until the source fails and holds m_critSection while it does,
+  // so it is paced rather than run on every read
+  static constexpr auto STALL_PROBE_INTERVAL{std::chrono::seconds(1)};
+
+  bool m_inputStalled = false;
+  XbmcThreads::EndTime<> m_stallDeadline;
+  XbmcThreads::EndTime<> m_nextStallProbe;
+  std::chrono::milliseconds m_stallRecoveryWindow{STALL_RECOVERY_WINDOW};
+  std::chrono::milliseconds m_readTimeout{READ_TIMEOUT};
 
   // Due to limitations of ffmpeg, we only can detect a program change
   // with a packet. This struct saves the packet for the next read and
