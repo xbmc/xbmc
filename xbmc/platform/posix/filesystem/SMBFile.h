@@ -14,7 +14,6 @@
 
 //////////////////////////////////////////////////////////////////////
 
-
 #include "URL.h"
 #include "filesystem/IFile.h"
 #include "threads/CriticalSection.h"
@@ -64,6 +63,32 @@ namespace XFILE
 {
 namespace SMBFileRecovery
 {
+class ISMBFileOperations
+{
+public:
+  virtual ~ISMBFileOperations() = default;
+
+  virtual void Init() = 0;
+  virtual void AddActiveConnection() = 0;
+  virtual void AddIdleConnection() = 0;
+  virtual void SetActivityTime() = 0;
+  virtual bool IsValid() const = 0;
+  virtual CCriticalSection& GetCriticalSection() = 0;
+  virtual CURL Resolve(const CURL& url) = 0;
+  virtual std::string URLEncode(const CURL& url) = 0;
+
+  virtual int Open(const std::string& path, int flags) = 0;
+  virtual int Create(const std::string& path) = 0;
+  virtual int Close(int fd) = 0;
+  virtual ssize_t Read(int fd, void* buffer, size_t size) = 0;
+  virtual ssize_t Write(int fd, const void* buffer, size_t size) = 0;
+  virtual int64_t Seek(int fd, int64_t offset, int whence) = 0;
+  virtual int Stat(const std::string& path, struct stat* buffer) = 0;
+  virtual int FStat(int fd, struct stat* buffer) = 0;
+  virtual int Unlink(const std::string& path) = 0;
+  virtual int Rename(const std::string& from, const std::string& to) = 0;
+};
+
 constexpr bool IsReconnectableReadError(int error) noexcept
 {
   switch (error)
@@ -113,6 +138,7 @@ public:
   int IoControl(IOControl request, void* param) override;
 
 protected:
+  explicit CSMBFile(SMBFileRecovery::ISMBFileOperations& fileOperations);
   CURL m_url;
   bool IsValidFile(const std::string& strFileName);
   std::string GetAuthenticatedPath(const CURL &url);
@@ -121,10 +147,21 @@ protected:
   bool m_allowRetry;
 
 private:
-  bool ReopenAtPositionLocked(int64_t offset, const std::string& reopenPath);
+  bool CanAttemptRecoveryLocked();
+  bool BeginRecoveryAttemptLocked();
+  void ResetRecoveryStateLocked();
+  bool ReopenAtPositionLocked(int64_t offset,
+                              int whence,
+                              const std::string& reopenPath,
+                              int64_t& resolvedPosition);
 
+  SMBFileRecovery::ISMBFileOperations& m_fileOperations;
   bool m_reopenEnabled{false};
   bool m_reopenOnNextRead{false};
   int64_t m_readPosition{0};
+  uint64_t m_positionGeneration{0};
+  uint64_t m_reopenInProgressGeneration{0};
+  unsigned int m_recoveryAttempts{0};
+  int m_lastRecoveryError{0};
 };
 }
