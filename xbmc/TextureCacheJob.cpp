@@ -65,7 +65,9 @@ bool CTextureCacheJob::DoWork()
   std::string path(CServiceBroker::GetTextureCache()->CheckCachedImage(m_url, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
-  if (CServiceBroker::GetTextureCache()->StartCacheImage(m_url))
+
+  m_holdsProcessingClaim = CServiceBroker::GetTextureCache()->StartCacheImage(m_url);
+  if (m_holdsProcessingClaim)
     return CacheTexture();
 
   return false;
@@ -181,7 +183,9 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
 
   // Validate file URL to see if it is an image
   CFileItem file(imageURL.GetTargetFile(), false);
-  file.FillInMimeType();
+
+  // Only lookup mime type when cannot be determined from file extension
+  file.FillInMimeType(!file.IsPicture());
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) &&
       !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") &&
       !StringUtils::EqualsNoCase(file.GetMimeType(),
@@ -192,6 +196,14 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
 
   auto texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, CAspectRatio::CENTER,
                                         file.GetMimeType());
+  if (!texture && file.GetMimeType().empty())
+  {
+    // The extension named a type the decoder couldn't read, so the source may be serving another
+    // and only it knows which. Formats the decoder recognises from a header don't reach here.
+    file.FillInMimeType();
+    texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, CAspectRatio::CENTER,
+                                     file.GetMimeType());
+  }
   if (!texture)
     return {};
 

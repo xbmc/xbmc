@@ -98,6 +98,12 @@ public:
   CTextureDetails m_oldDetails;
   CTextureDetails m_details;
 
+  /*! \brief Whether this job is the one that reserved m_url in the texture cache.
+   Only the reserver may release it.
+   \sa CTextureCache::StartCacheImage, CTextureCache::OnCachingComplete
+   */
+  bool m_holdsProcessingClaim{false};
+
 private:
   /*! \brief Whether the copy this image was previously cached to is still present
    Revalidating leaves that copy in place rather than writing it again, so it has to still be

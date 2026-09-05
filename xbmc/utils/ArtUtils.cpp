@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "TextureCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -25,10 +26,24 @@
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoThumbLoader.h"
 
 #include <fmt/format.h>
 
 using namespace XFILE;
+
+namespace
+{
+std::string GetArtTypeFromSize(unsigned int width, unsigned int height)
+{
+  std::string type = "thumb";
+  if (width * 5 < height * 4)
+    type = "poster";
+  else if (width > height * 4)
+    type = "banner";
+  return type;
+}
+} // unnamed namespace
 
 namespace KODI::ART
 {
@@ -434,6 +449,71 @@ std::string GetTBNFile(const CFileItem& item, int season /* = - 1 */, int episod
     thumbFile = url.Get();
   }
   return thumbFile;
+}
+
+void AddLocalItemArtwork(Artwork& itemArt,
+                         const std::vector<std::string>& wantedArtTypes,
+                         const std::string& itemPath,
+                         bool addAll,
+                         bool exactName,
+                         bool isInFolder)
+{
+  std::string path = URIUtils::GetDirectory(itemPath);
+  if (path.empty())
+    return;
+
+  CFileItemList availableArtFiles;
+  CDirectory::GetDirectory(path, availableArtFiles,
+                           CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
+                           DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+
+  std::string baseFilename{URIUtils::GetFileName(itemPath)};
+  if (!baseFilename.empty())
+  {
+    URIUtils::RemoveExtension(baseFilename);
+    baseFilename.append("-");
+  }
+
+  const bool caseSensitive{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_caseSensitiveLocalArtMatch};
+
+  for (const auto& artFile : availableArtFiles)
+  {
+    std::string candidate{URIUtils::GetFileName(artFile->GetPath())};
+
+    bool matchesFilename{!baseFilename.empty() &&
+                         (caseSensitive ? StringUtils::StartsWith(candidate, baseFilename)
+                                        : StringUtils::StartsWithNoCase(candidate, baseFilename))};
+
+    if (!baseFilename.empty() && !matchesFilename && !isInFolder)
+      continue;
+
+    if (matchesFilename)
+      candidate.erase(0, baseFilename.length());
+    URIUtils::RemoveExtension(candidate);
+    StringUtils::ToLower(candidate);
+
+    // move 'folder' to thumb / poster / banner based on aspect ratio
+    // if such artwork doesn't already exist
+    if (!matchesFilename && StringUtils::EqualsNoCase(candidate, "folder") &&
+        !CVideoThumbLoader::IsArtTypeInWhitelist("folder", wantedArtTypes, exactName))
+    {
+      // cache the image to determine sizing
+      CTextureDetails details;
+      if (CServiceBroker::GetTextureCache()->CacheImage(artFile->GetPath(), details))
+      {
+        candidate = GetArtTypeFromSize(details.width, details.height);
+        if (itemArt.contains(candidate))
+          continue;
+      }
+    }
+
+    if ((addAll && CVideoThumbLoader::IsValidArtType(candidate)) ||
+        CVideoThumbLoader::IsArtTypeInWhitelist(candidate, wantedArtTypes, exactName))
+    {
+      itemArt[candidate] = artFile->GetPath();
+    }
+  }
 }
 
 } // namespace KODI::ART
