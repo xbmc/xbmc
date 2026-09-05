@@ -391,6 +391,7 @@ public:
     int idFile{-1};
     VideoDbContentType mediaType{-1};
     int idMedia{-1};
+    std::string title;
   };
 
   /*!

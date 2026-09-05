@@ -10,6 +10,7 @@
 
 #include "Directory.h"
 #include "video/Episode.h"
+#include "bluray/ProjectParser.h"
 #include "video/VideoInfoTag.h"
 
 #include <chrono>
@@ -144,6 +145,10 @@ struct ClipInfo
 };
 
 using PlaylistMap = std::map<unsigned int, PlaylistInformation>;
+
+//! What the disc's authoring project called each playlist, where it left one behind. Shown
+//! alongside the playlist number so a listing says what the disc calls a title, not just which it is.
+using PlaylistNames = std::map<unsigned int, std::string>;
 using ClipMap = std::map<unsigned int, ClipInfo>;
 using Episode = KODI::VIDEO::EPISODE;
 using Episodes = std::vector<KODI::VIDEO::EPISODE>;
@@ -226,6 +231,13 @@ public:
    *        returned items carry no stream details.
    */
   explicit CDiscDirectoryHelper(StreamDetailsProvider getStreamDetails);
+
+  void SetProjectInformation(const ProjectInformation& projectInformation);
+
+  void SetMenuPlaylists(const std::set<unsigned int>& menuPlaylists)
+  {
+    m_menuPlaylists = menuPlaylists;
+  }
 
   CDiscDirectoryHelper(const CDiscDirectoryHelper&) = delete;
   CDiscDirectoryHelper& operator=(const CDiscDirectoryHelper&) = delete;
@@ -390,13 +402,26 @@ private:
                                       int episodeIndex,
                                       const Episodes& episodesOnDisc) const;
   bool FilterAllEpisodesPlaylists(std::vector<PlaylistInformation>& playlists, GetTitle job);
+ 
+  /*!
+   * \brief Generate a FileItem for a given playlist
+   * \param originalItem FileItem containing details of desired movie/episode.
+   * \param selectedItem FileItem containing details of the selected playlist.
+   * \return a FileItem for the selected playlist
+   */
+  static std::shared_ptr<CFileItem> GenerateItem(const CFileItem& originalItem,
+                                                 const CFileItem& selectedItem);
 
   //! Describes the streams of a title, supplied by the disc's directory implementation
+  ProjectInformation m_projectInformation;
+  std::set<unsigned int> m_menuPlaylists;
+
   StreamDetailsProvider m_getStreamDetails;
 
   std::chrono::milliseconds m_minEpisodeDuration{0ms};
 
   AllEpisodes m_allEpisodes{AllEpisodes::SINGLE};
+  PlaylistNames m_playlistNames;
   IsSpecial m_isSpecial{IsSpecial::EPISODE};
   unsigned int m_numEpisodes{0};
   unsigned int m_numSpecials{0};

@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "bluray/M2TSParser.h"
+#include "bluray/MovieObjectParser.h"
 #include "bluray/MPLSParser.h"
 #include "bluray/PlaylistStructure.h"
 #include "bluray/StreamParser.h"
@@ -312,7 +313,6 @@ int GetMainPlaylistFromDisc(const CURL& url)
   }
   return playlist;
 }
-
 } // namespace
 
 bool CBlurayDirectory::FilterPlaylists(std::vector<PlaylistInformation>& playlists)
@@ -322,8 +322,8 @@ bool CBlurayDirectory::FilterPlaylists(std::vector<PlaylistInformation>& playlis
   const auto Remove{[&playlists](std::string_view reason, const auto& shouldRemove)
                     {
                       for (const auto& playlist : playlists | std::views::filter(shouldRemove))
-                        CLog::LogF(LOGDEBUG, "Discarding playlist {} - {}", playlist.playlist,
-                                   reason);
+                        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Discarding playlist {} - {}",
+                                    playlist.playlist, reason);
                       std::erase_if(playlists, shouldRemove);
                     }};
 
@@ -692,6 +692,14 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     m_url.RemoveOption("duration");
   }
 
+  // What the scraper calls the episode
+  std::string title;
+  if (m_url.HasOption("title"))
+  {
+    title = m_url.GetOption("title");
+    m_url.RemoveOption("title");
+  }
+
   std::string root{m_url.GetHostName()};
   std::string file{m_url.GetFileName()};
   URIUtils::RemoveSlashAtEnd(file);
@@ -726,8 +734,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     CFileItemList allTitles;
     GetPlaylistsInformation(m_url, m_realPath, m_flags, allTitles, clips, playlists, m_clipCache);
 
+    MovieObjectInformation movieObjectInformation;
+    GetMovieObjectInformation(movieObjectInformation);
+    ProjectInformation projectInformation;
+    GetProjectInformation(projectInformation);
+
     CDiscDirectoryHelper helper{[this](unsigned int playlist, CFileItem& item)
                                 { SetPlaylistStreamDetails(playlist, item); }};
+    helper.SetProjectInformation(projectInformation);
+    helper.SetMenuPlaylists(movieObjectInformation.menuTargetPlaylists);
 
     if (StringUtils::StartsWith(file, "root/titles") && file != "root/titles/episodes")
     {
@@ -756,8 +771,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     if (StringUtils::StartsWith(file, "root/main"))
     {
       if (file == "root/main")
-        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::SINGLE,
-                                 clips, playlists);
+        helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::SINGLE, clips,
+                                 playlists);
       else if (file == "root/main/all")
         helper.GetMoviePlaylists(m_url, items, allTitles, GetMainPlaylist(), GetTitle::MAIN, clips,
                                  playlists);
@@ -815,8 +830,11 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
           return false; // Episode not on disc
         episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
 
-        // Add duration from scraper
-        it->duration = duration;
+        // Add duration and title from scraper
+        if (duration > 0)
+          it->duration = duration;
+        if (!title.empty())
+          it->strTitle = title;
       }
 
       // Get episode playlists
@@ -956,6 +974,34 @@ bool CBlurayDirectory::HasMenuSupport()
              menuSupport ? "supports" : "does not support");
 
   return menuSupport;
+}
+
+bool CBlurayDirectory::GetProjectInformation(ProjectInformation& information) const
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (CServiceBroker::GetBlurayDiscCache()->GetProject(path, information))
+    return true;
+
+  CProjectParser::GetProject(m_url, information);
+  CServiceBroker::GetBlurayDiscCache()->SetProject(path, information);
+
+  CProjectParser::LogProject(information);
+  return true;
+}
+
+bool CBlurayDirectory::GetMovieObjectInformation(MovieObjectInformation& information) const
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (CServiceBroker::GetBlurayDiscCache()->GetMovieObject(path, information))
+    return true;
+
+  CMovieObjectParser::GetMovieObject(m_url, information);
+  CServiceBroker::GetBlurayDiscCache()->SetMovieObject(path, information);
+
+  CMovieObjectParser::LogMovieObject(information);
+  return true;
 }
 
 int CBlurayDirectory::GetMainPlaylist()

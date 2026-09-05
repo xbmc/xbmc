@@ -3367,11 +3367,13 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
       return playlists;
 
     const std::string strSQL{PrepareSQL(
-        "SELECT files.strFilename, files.idFile, episode.idEpisode, vv.idMedia FROM files "
+        "SELECT files.strFilename, files.idFile, episode.idEpisode, vv.idMedia, vv.itemType, "
+        "episode.c%02d AS episodeSeason, episode.c%02d AS episodeNumber FROM files "
         "LEFT JOIN episode ON episode.idFile=files.idFile "
         "LEFT JOIN videoversion vv ON vv.idFile = files.idFile AND vv.media_type='%s' "
         "INNER JOIN path ON path.idPath=files.idPath "
         "WHERE path.strPath='%s'",
+        VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE,
         MediaTypeMovie, path.c_str())};
     m_pDS->query(strSQL);
 
@@ -3390,15 +3392,30 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
         if (filename.size() == 5)
         {
           if (idEpisode > 0)
+          {
+            const std::string title{StringUtils::Format("S{:02}E{:02}",
+                                                        m_pDS->fv("episodeSeason").get_asInt(),
+                                                        m_pDS->fv("episodeNumber").get_asInt())};
             playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
                                                 .idFile = m_pDS->fv(idFileIndex).get_asInt(),
                                                 .mediaType = VideoDbContentType::EPISODES,
-                                                .idMedia = idEpisode});
+                                                .idMedia = idEpisode,
+                                                .title = title});
+          }
           if (idMovie > 0)
+          {
+            const VideoAssetType itemType{m_pDS->fv("itemType").get_asInt()};
+            std::string title;
+            if (itemType == VideoAssetType::VERSION)
+              title = "movie";
+            else if (itemType == VideoAssetType::EXTRA)
+              title = "extra";
             playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
                                                 .idFile = m_pDS->fv(idFileIndex).get_asInt(),
                                                 .mediaType = VideoDbContentType::MOVIES,
-                                                .idMedia = idMovie});
+                                                .idMedia = idMovie,
+                                                .title = title});
+          }
         }
       }
       m_pDS->next();

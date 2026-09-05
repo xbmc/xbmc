@@ -9,6 +9,7 @@
 #include "M2TSParser.h"
 
 #include "BitReader.h"
+#include "NavigationCommand.h"
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/File.h"
@@ -49,6 +50,30 @@ constexpr unsigned int MAX_PACKETS_TO_PARSE =
     60000; // Some clips need considerably more data before all streams can be analysed
 constexpr unsigned int BUFFER_SIZE{BDAV_PACKET_SIZE * PACKETS_TO_PARSE};
 constexpr int TIMESTAMP_SIZE = 4;
+
+// Interactive graphics parsing constants
+constexpr unsigned int IG_PID_FIRST = 0x1400;
+constexpr unsigned int IG_PID_LAST = 0x141F;
+
+// Presentation graphics segment header - type and length
+constexpr unsigned int SEGMENT_HEADER_SIZE = 3;
+constexpr uint8_t SEGMENT_INTERACTIVE_COMPOSITION = 0x18;
+
+// Layout of an interactive composition segment, from the segment type byte
+constexpr unsigned int OFFSET_ICS_VIDEO_WIDTH = 3;
+constexpr unsigned int OFFSET_ICS_VIDEO_HEIGHT = 5;
+constexpr unsigned int OFFSET_ICS_COMPOSITION_NUMBER = 8;
+constexpr unsigned int OFFSET_ICS_SEQUENCE_DESCRIPTOR = 11;
+constexpr unsigned int OFFSET_ICS_COMPOSITION = 12;
+constexpr uint8_t SEQUENCE_FIRST_IN_SEQUENCE = 0x80;
+constexpr uint8_t SEQUENCE_LAST_IN_SEQUENCE = 0x40;
+
+constexpr unsigned int BUTTON_FIXED_SIZE = 35; // up to and including the navigation command count
+constexpr unsigned int WINDOW_SIZE = 9;
+
+// A menu is at the start of its clip's graphics stream, so this only has to be large enough to
+// rule a clip out - it guards against scanning a whole feature that turns out to carry no menu.
+constexpr unsigned int MAX_MENU_PACKETS_TO_PARSE = 400000; // roughly 75MB of transport stream
 
 // PSI parsing constants
 constexpr int PSI_HEADER_SIZE = 3;
@@ -382,6 +407,12 @@ public:
       buffer.insert(buffer.end(), tsPacket.payload.begin(), tsPacket.payload.end());
 
     return section;
+  }
+
+  std::vector<std::byte> flush()
+  {
+    started = false;
+    return std::move(buffer);
   }
 };
 
@@ -2053,6 +2084,267 @@ bool ParseTSPacket(const std::span<std::byte>& packet,
 
   return true;
 }
+
+/*! \brief Skip an effect sequence - windows and animation steps carry no navigation. */
+void SkipEffectSequence(const std::span<const std::byte> data, unsigned int& offset)
+{
+  const uint8_t numberOfWindows{GetByte(data, offset++)};
+  offset += numberOfWindows * WINDOW_SIZE;
+
+  const uint8_t numberOfEffects{GetByte(data, offset++)};
+  for (uint8_t effect = 0; effect < numberOfEffects; ++effect)
+  {
+    offset += 4; // duration and palette
+    const uint8_t numberOfObjects{GetByte(data, offset++)};
+    for (uint8_t object = 0; object < numberOfObjects; ++object)
+    {
+      offset += 3; // object and window references
+      const bool cropped{(GetByte(data, offset++) & 0x80) != 0};
+      offset += 4; // position
+      if (cropped)
+        offset += 8; // crop rectangle
+    }
+  }
+}
+
+IGButtonInformation ParseButton(const std::span<const std::byte> data, unsigned int& offset)
+{
+  IGButtonInformation information;
+  information.button = GetWord(data, offset);
+  information.autoAction = (GetByte(data, offset + 4) & 0x80) != 0;
+
+  const uint16_t numberOfCommands{GetWord(data, offset + BUTTON_FIXED_SIZE - 2)};
+  offset += BUTTON_FIXED_SIZE;
+
+  CRegisterFile registers;
+  for (uint16_t i = 0; i < numberOfCommands; ++i, offset += NAVIGATION_COMMAND_SIZE)
+  {
+    // Bounds-checked before decoding, as DecodeNavigationCommand reads raw bytes
+    if (data.size() < static_cast<uint64_t>(offset) + NAVIGATION_COMMAND_SIZE)
+      throw std::out_of_range("Not enough bytes for a navigation command");
+
+    const NavigationCommand command{DecodeNavigationCommand(data.data() + offset)};
+
+    if (command.IsPlayPlaylist())
+    {
+      information.playlist = registers.Resolve(command.immediateDestination, command.destination);
+      if (command.IsPlayPlaylistAtPlayItem())
+        information.playItem = registers.Resolve(command.immediateSource, command.source);
+      else if (command.IsPlayPlaylistAtPlayMark())
+        information.playMark = registers.Resolve(command.immediateSource, command.source);
+    }
+    else if (command.IsLinkPlayItem())
+    {
+      information.linkPlayItem =
+          registers.Resolve(command.immediateDestination, command.destination);
+    }
+    else if (command.IsLinkPlayMark())
+    {
+      information.linkPlayMark =
+          registers.Resolve(command.immediateDestination, command.destination);
+    }
+    else if (command.IsJumpTitle())
+    {
+      information.title = registers.Resolve(command.immediateDestination, command.destination);
+    }
+    else
+    {
+      registers.Apply(command);
+    }
+  }
+
+  // What the button set on its way to the branch is what tells its page's buttons apart
+  information.registers = registers.GetValues();
+
+  return information;
+}
+
+/*! \brief Parse the interactive composition, which starts at its own 24 bit length. */
+bool ParseInteractiveComposition(const std::span<const std::byte> data, IGMenuInformation& menu)
+{
+  unsigned int offset{3}; // composition length
+
+  const uint8_t models{GetByte(data, offset++)};
+  const bool multiplexedStream{(models & 0x80) == 0};
+  menu.popup = (models & 0x40) != 0;
+
+  if (multiplexedStream)
+    offset += 10; // composition and selection timeout presentation timestamps
+  offset += 3; // user timeout duration
+
+  const uint8_t numberOfPages{GetByte(data, offset++)};
+  menu.pages.reserve(numberOfPages);
+
+  for (uint8_t i = 0; i < numberOfPages; ++i)
+  {
+    IGPageInformation page;
+    page.page = GetByte(data, offset);
+    offset += 2; // page identifier and version
+    offset += 8; // user operation mask
+
+    SkipEffectSequence(data, offset); // in effects
+    SkipEffectSequence(data, offset); // out effects
+
+    offset += 1; // animation frame rate
+    page.defaultSelectedButton = GetWord(data, offset);
+    offset += 2;
+    page.defaultActivatedButton = GetWord(data, offset);
+    offset += 2;
+    offset += 1; // palette
+
+    // Buttons are grouped so that overlapping ones can share a screen position - the grouping
+    // matters to the player's selection model, not to where the buttons lead.
+    const uint8_t numberOfGroups{GetByte(data, offset++)};
+    for (uint8_t group = 0; group < numberOfGroups; ++group)
+    {
+      offset += 2; // default valid button
+      const uint8_t numberOfButtons{GetByte(data, offset++)};
+      for (uint8_t button = 0; button < numberOfButtons; ++button)
+        page.buttons.emplace_back(ParseButton(data, offset));
+    }
+
+    menu.pages.emplace_back(std::move(page));
+  }
+
+  return !menu.pages.empty();
+}
+
+/*!
+ \brief Accumulates the interactive composition segments of one elementary stream.
+
+ A composition too large for one segment is split into a sequence of them, each repeating the
+ descriptors and carrying the next chunk of the composition.
+ */
+class CCompositionAssembler
+{
+public:
+  /*! \brief Add one segment. Returns true once a whole composition has been decoded. */
+  bool Add(const std::span<const std::byte> segment, IGMenuInformation& menu)
+  {
+    if (segment.size() < OFFSET_ICS_COMPOSITION)
+      return false;
+
+    const uint8_t sequence{GetByte(segment, OFFSET_ICS_SEQUENCE_DESCRIPTOR)};
+
+    if ((sequence & SEQUENCE_FIRST_IN_SEQUENCE) != 0)
+    {
+      m_composition.clear();
+      m_width = GetWord(segment, OFFSET_ICS_VIDEO_WIDTH);
+      m_height = GetWord(segment, OFFSET_ICS_VIDEO_HEIGHT);
+      m_compositionNumber = GetWord(segment, OFFSET_ICS_COMPOSITION_NUMBER);
+    }
+    else if (m_composition.empty() ||
+             GetWord(segment, OFFSET_ICS_COMPOSITION_NUMBER) != m_compositionNumber)
+    {
+      return false; // a continuation of something never seen the start of
+    }
+
+    m_composition.insert(m_composition.end(), segment.begin() + OFFSET_ICS_COMPOSITION,
+                         segment.end());
+
+    if ((sequence & SEQUENCE_LAST_IN_SEQUENCE) == 0)
+      return false;
+
+    menu.width = m_width;
+    menu.height = m_height;
+    const bool parsed{ParseInteractiveComposition(m_composition, menu)};
+    m_composition.clear();
+    return parsed;
+  }
+
+private:
+  std::vector<std::byte> m_composition;
+  unsigned int m_width{0};
+  unsigned int m_height{0};
+  unsigned int m_compositionNumber{0};
+};
+
+/*! \brief Walk the graphics segments of a completed elementary stream packet. */
+bool ParseGraphicsSegments(const std::span<const std::byte> payload,
+                           CCompositionAssembler& assembler,
+                           IGMenuInformation& menu)
+{
+  unsigned int offset{0};
+  while (offset + SEGMENT_HEADER_SIZE <= payload.size())
+  {
+    const uint8_t type{GetByte(payload, offset)};
+    const uint16_t length{GetWord(payload, offset + 1)};
+    const unsigned int start{offset + SEGMENT_HEADER_SIZE};
+    if (start + length > payload.size())
+      break; // truncated segment
+
+    if (type == SEGMENT_INTERACTIVE_COMPOSITION &&
+        assembler.Add(payload.subspan(offset, SEGMENT_HEADER_SIZE + length), menu))
+      return true;
+
+    offset = start + length;
+  }
+  return false;
+}
+
+/*! \brief Parse a completed elementary stream packet, header and all. */
+bool ParseGraphicsPES(std::span<std::byte> packet,
+                      CCompositionAssembler& assembler,
+                      IGMenuInformation& menu)
+{
+  if (packet.size() < PES_HEADER_SIZE)
+    return false;
+  const std::optional<PESPacket> pesPacket{ParsePESPacket(packet)};
+  return pesPacket && ParseGraphicsSegments(pesPacket->data, assembler, menu);
+}
+
+bool ParseMenu(CFile& file, const std::string& clipFile, IGMenuInformation& menu)
+{
+  std::vector<std::byte> buffer(BUFFER_SIZE);
+  std::unordered_map<unsigned int, PESAssembler> pesAssemblers;
+  std::unordered_map<unsigned int, CCompositionAssembler> compositionAssemblers;
+
+  unsigned int packetCount{0};
+  while (packetCount < MAX_MENU_PACKETS_TO_PARSE)
+  {
+    const ssize_t bytesRead{file.Read(buffer.data(), BUFFER_SIZE)};
+    if (bytesRead < 0)
+    {
+      CLog::LogF(LOGERROR, "Error reading clip file {}", clipFile);
+      return false;
+    }
+    if (bytesRead == 0)
+      break; // End of file
+
+    const int size{static_cast<int>(bytesRead)};
+    for (int offset{0}; offset + BDAV_PACKET_SIZE <= size; offset += BDAV_PACKET_SIZE)
+    {
+      ++packetCount;
+
+      std::span packet{buffer.data() + offset + TIMESTAMP_SIZE, TS_PACKET_SIZE};
+      const std::optional<TSPacket> tsPacket{ParseTSPacket(packet)};
+      if (!tsPacket || tsPacket->pid < IG_PID_FIRST || tsPacket->pid > IG_PID_LAST ||
+          tsPacket->payload.empty())
+        continue;
+
+      for (std::vector<std::byte>& pes : pesAssemblers[tsPacket->pid].push(*tsPacket))
+      {
+        if (ParseGraphicsPES(pes, compositionAssemblers[tsPacket->pid], menu))
+          return true;
+      }
+    }
+
+    // CFile::Read returns less than requested only at the end of the file or on error. Any bytes
+    // after the last whole packet in the chunk would misalign the next one, so do not continue.
+    if (bytesRead < static_cast<ssize_t>(BUFFER_SIZE))
+      break;
+  }
+
+  // The last packet of each stream is only completed by a start indicator that never came
+  for (auto& [pid, assembler] : pesAssemblers)
+  {
+    std::vector<std::byte> pes{assembler.flush()};
+    if (ParseGraphicsPES(pes, compositionAssemblers[pid], menu))
+      return true;
+  }
+
+  return false;
+}
 } // namespace
 
 Descriptor::Descriptor(unsigned int newTag, int newLength, std::vector<std::byte>&& newData)
@@ -2060,6 +2352,30 @@ Descriptor::Descriptor(unsigned int newTag, int newLength, std::vector<std::byte
     length(newLength),
     data(std::move(newData))
 {
+}
+
+bool CM2TSParser::GetMenu(const CURL& url, unsigned int clip, IGMenuInformation& menu)
+{
+  const std::string clipFile{URIUtils::AddFileToFolder(url.GetHostName(), "BDMV", "STREAM",
+                                                       fmt::format("{:05}.m2ts", clip))};
+  CFile file;
+  if (!file.Open(clipFile))
+  {
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Could not open clip file {}", clipFile);
+    return false;
+  }
+
+  CLog::LogFC(LOGDEBUG, LOGBLURAY, "Analysing file {} for an interactive graphics menu.", clipFile);
+
+  try
+  {
+    return ParseMenu(file, clipFile, menu);
+  }
+  catch (const std::exception& e)
+  {
+    CLog::LogF(LOGERROR, "Interactive graphics parsing failed - error {}", e.what());
+    return false;
+  }
 }
 
 bool CM2TSParser::GetStreamsFromFile(const std::string& path,

@@ -34,7 +34,7 @@ constexpr uint64_t GetBits64(uint64_t value, unsigned int firstBit, unsigned int
   return (value >> (firstBit - numBits)) & ((1ULL << numBits) - 1);
 }
 
-constexpr uint64_t GetQWord(const std::span<std::byte> bytes, unsigned int offset)
+constexpr uint64_t GetQWord(const std::span<const std::byte> bytes, unsigned int offset)
 {
   if (bytes.size() < offset + 8)
     throw std::out_of_range("Not enough bytes to extract a QWORD");
@@ -48,7 +48,7 @@ constexpr uint64_t GetQWord(const std::span<std::byte> bytes, unsigned int offse
          std::to_integer<uint64_t>(bytes[offset]) << 56;
 }
 
-constexpr uint32_t GetDWord(const std::span<std::byte> bytes, unsigned int offset)
+constexpr uint32_t GetDWord(const std::span<const std::byte> bytes, unsigned int offset)
 {
   if (bytes.size() < offset + 4)
     throw std::out_of_range("Not enough bytes to extract a DWORD");
@@ -58,7 +58,7 @@ constexpr uint32_t GetDWord(const std::span<std::byte> bytes, unsigned int offse
          std::to_integer<uint32_t>(bytes[offset]) << 24;
 }
 
-constexpr uint16_t GetWord(const std::span<std::byte> bytes, unsigned int offset)
+constexpr uint16_t GetWord(const std::span<const std::byte> bytes, unsigned int offset)
 {
   if (bytes.size() < offset + 2)
     throw std::out_of_range("Not enough bytes to extract a WORD");
@@ -66,14 +66,14 @@ constexpr uint16_t GetWord(const std::span<std::byte> bytes, unsigned int offset
                                std::to_integer<uint16_t>(bytes[offset]) << 8);
 }
 
-constexpr uint8_t GetByte(const std::span<std::byte> bytes, unsigned int offset)
+constexpr uint8_t GetByte(const std::span<const std::byte> bytes, unsigned int offset)
 {
   if (bytes.size() < offset + 1)
     throw std::out_of_range("Not enough bytes to extract a BYTE");
   return std::to_integer<uint8_t>(bytes[offset]);
 }
 
-inline std::string GetString(const std::span<std::byte> bytes,
+inline std::string GetString(const std::span<const std::byte> bytes,
                              unsigned int offset,
                              unsigned int length)
 {
@@ -85,7 +85,7 @@ inline std::string GetString(const std::span<std::byte> bytes,
 class BitReader
 {
 public:
-  explicit BitReader(std::span<std::byte> buffer)
+  explicit BitReader(std::span<const std::byte> buffer)
     : m_data(buffer.data()),
       m_size(static_cast<uint32_t>(buffer.size()))
   {
