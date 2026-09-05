@@ -74,50 +74,40 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       const int actionId = message.GetParam1();
+      const int controlId = message.GetSenderId();
+      if (!m_viewControl->HasControl(controlId))
+        break;
+
+      const int selectedItem = m_viewControl->GetSelectedItem();
+      if (selectedItem < 0)
+        break;
+
+      OnItemFocus(static_cast<unsigned int>(selectedItem));
+
       if (actionId == ACTION_SELECT_ITEM || actionId == ACTION_MOUSE_LEFT_CLICK)
       {
-        const int controlId = message.GetSenderId();
-        if (m_viewControl->HasControl(controlId))
-        {
-          if (OnClickAction())
-            return true;
-        }
+        if (OnClickAction())
+          return true;
       }
       else if (actionId == ACTION_CONTEXT_MENU || actionId == ACTION_MOUSE_RIGHT_CLICK)
       {
-        const int controlId = message.GetSenderId();
-        if (m_viewControl->HasControl(controlId))
-        {
-          if (OnMenuAction())
-            return true;
-        }
+        if (OnMenuAction())
+          return true;
       }
       else if (actionId == ACTION_CREATE_BOOKMARK)
       {
-        const int controlId = message.GetSenderId();
-        if (m_viewControl->HasControl(controlId))
-        {
-          if (OnOverwriteAction())
-            return true;
-        }
+        if (OnOverwriteAction())
+          return true;
       }
       else if (actionId == ACTION_RENAME_ITEM)
       {
-        const int controlId = message.GetSenderId();
-        if (m_viewControl->HasControl(controlId))
-        {
-          if (OnRenameAction())
-            return true;
-        }
+        if (OnRenameAction())
+          return true;
       }
       else if (actionId == ACTION_DELETE_ITEM)
       {
-        const int controlId = message.GetSenderId();
-        if (m_viewControl->HasControl(controlId))
-        {
-          if (OnDeleteAction())
-            return true;
-        }
+        if (OnDeleteAction())
+          return true;
       }
 
       break;
