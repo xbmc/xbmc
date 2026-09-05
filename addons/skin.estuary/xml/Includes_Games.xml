@@ -952,213 +952,883 @@
 		</control>
 	</include>
 	<variable name="GameAchievementBadgeTintVar">
-		<description>
-			Dims the badge of an achievement the player hasn't earned. The add-on
-			supplies a separate greyscale badge, but not every achievement has one.
-		</description>
-		<value condition="String.IsEmpty(ListItem.Property(achievement.earned))">60FFFFFF</value>
+		<value condition="String.IsEmpty(ListItem.Property(achievement.earned))">70FFFFFF</value>
 		<value>FFFFFFFF</value>
 	</variable>
+	<variable name="GameAchievementProgressLabelVar">
+		<value condition="!String.IsEmpty(ListItem.Property(achievement.measuredzero))">[COLOR 48FFFFFF]$INFO[ListItem.Property(achievement.measuredprogress)][/COLOR]</value>
+		<value>[COLOR blue]$INFO[ListItem.Property(achievement.measuredprogress)][/COLOR]</value>
+	</variable>
+	<variable name="GameAchievementRarityLabelVar">
+		<value condition="String.IsEqual(ListItem.Property(achievement.raritycategory),$LOCALIZE[35291])">[COLOR FF8ED6A0]$INFO[ListItem.Property(achievement.raritycategory)][/COLOR]</value>
+		<value condition="String.IsEqual(ListItem.Property(achievement.raritycategory),$LOCALIZE[35292])">[COLOR FFC4A5F5]$INFO[ListItem.Property(achievement.raritycategory)][/COLOR]</value>
+		<value condition="String.IsEqual(ListItem.Property(achievement.raritycategory),$LOCALIZE[35293])">[COLOR selected]$INFO[ListItem.Property(achievement.raritycategory)][/COLOR]</value>
+		<value>$INFO[ListItem.Property(achievement.raritycategory),[COLOR FFE8B18B],[/COLOR]]</value>
+	</variable>
 	<include name="GameAchievementItem">
-		<description>
-			Only the focused row scrolls its title and criteria. Scrolling every
-			row at once is unreadable, and the criteria are frequently longer than
-			the column.
-		</description>
 		<param name="scroll" default="false" />
 		<definition>
-		<control type="image">
-			<description>Achievement badge, dimmed while the achievement is locked</description>
-			<left>15</left>
-			<top>20</top>
-			<width>80</width>
-			<height>80</height>
-			<texture background="true" colordiffuse="$VAR[GameAchievementBadgeTintVar]">$INFO[ListItem.Icon]</texture>
-			<aspectratio>keep</aspectratio>
-		</control>
-		<control type="label">
-			<description>Achievement title</description>
-			<left>110</left>
-			<top>12</top>
-			<width>860</width>
-			<height>40</height>
-			<label>$INFO[ListItem.Label]</label>
-			<font>font25_title</font>
-			<align>left</align>
-			<aligny>center</aligny>
-			<shadowcolor>text_shadow</shadowcolor>
-			<scroll>$PARAM[scroll]</scroll>
-		</control>
-		<control type="label">
-			<description>How the achievement is earned</description>
-			<left>110</left>
-			<top>52</top>
-			<width>860</width>
-			<height>32</height>
-			<label>$INFO[ListItem.Label2]</label>
-			<font>font12</font>
-			<align>left</align>
-			<aligny>center</aligny>
-			<textcolor>grey</textcolor>
-			<scroll>$PARAM[scroll]</scroll>
-			<scrollsuffix>   </scrollsuffix>
-		</control>
-		<control type="label">
-			<description>How rare the achievement is</description>
-			<left>110</left>
-			<top>84</top>
-			<width>860</width>
-			<height>28</height>
-			<label>$INFO[ListItem.Property(achievement.raritystars)] $INFO[ListItem.Property(achievement.raritycategory)]</label>
-			<font>font12</font>
-			<align>left</align>
-			<aligny>center</aligny>
-			<textcolor>button_focus</textcolor>
-		</control>
-		<control type="label">
-			<description>Point value</description>
-			<right>25</right>
-			<top>12</top>
-			<width>260</width>
-			<height>40</height>
-			<label>$INFO[ListItem.Property(achievement.points)]</label>
-			<font>font25_title</font>
-			<align>right</align>
-			<aligny>center</aligny>
-			<textcolor>button_focus</textcolor>
-		</control>
-		<control type="label">
-			<description>Unlock date, shown only for earned achievements</description>
-			<right>25</right>
-			<top>52</top>
-			<width>380</width>
-			<height>32</height>
-			<label>$INFO[ListItem.Property(achievement.unlockeddate)]</label>
-			<font>font12</font>
-			<align>right</align>
-			<aligny>center</aligny>
-			<textcolor>green</textcolor>
-			<visible>!String.IsEmpty(ListItem.Property(achievement.earned))</visible>
-		</control>
-		<control type="label">
-			<description>
-				Progress towards a counting achievement, such as "45/100". Supplied
-				by the add-on rather than built here, because only it knows what is
-				being counted.
-			</description>
-			<right>25</right>
-			<top>52</top>
-			<width>380</width>
-			<height>32</height>
-			<label>$INFO[ListItem.Property(achievement.measuredprogress)]</label>
-			<font>font12</font>
-			<align>right</align>
-			<aligny>center</aligny>
-			<textcolor>button_focus</textcolor>
-			<visible>!String.IsEmpty(ListItem.Property(achievement.measured))</visible>
-		</control>
-		<control type="progress">
-			<description>
-				Progress bar for counting achievements. Sits on the rarity line,
-				which is free on the right-hand side, and only ever shows for
-				achievements the player hasn't earned yet.
-			</description>
-			<right>25</right>
-			<top>92</top>
-			<width>260</width>
-			<height>10</height>
-			<texturebg colordiffuse="44FFFFFF">colors/white.png</texturebg>
-			<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
-			<lefttexture></lefttexture>
-			<righttexture></righttexture>
-			<overlaytexture></overlaytexture>
-			<info>ListItem.Property(achievement.measuredpercent)</info>
-			<visible>!String.IsEmpty(ListItem.Property(achievement.measured))</visible>
-		</control>
+			<control type="image">
+				<left>18</left>
+				<top>18</top>
+				<width>80</width>
+				<height>80</height>
+				<texture background="true" colordiffuse="$VAR[GameAchievementBadgeTintVar]">$INFO[ListItem.Icon]</texture>
+				<imagefilter>nearest</imagefilter>
+				<diffusefilter>nearest</diffusefilter>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<left>116</left>
+				<top>10</top>
+				<width>984</width>
+				<height>38</height>
+				<label>$INFO[ListItem.Label]</label>
+				<scroll>$PARAM[scroll]</scroll>
+				<font>font25_title</font>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+			</control>
+			<control type="label">
+				<left>116</left>
+				<top>48</top>
+				<width>984</width>
+				<height>34</height>
+				<label>$INFO[ListItem.Label2]</label>
+				<scroll>$PARAM[scroll]</scroll>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<aligny>center</aligny>
+				<scrollsuffix> • </scrollsuffix>
+			</control>
+			<control type="group">
+				<left>116</left>
+				<top>82</top>
+				<width>984</width>
+				<height>28</height>
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>490</width>
+					<height>28</height>
+					<label>$INFO[ListItem.Property(achievement.points)]$VAR[GameAchievementRarityLabelVar,  [COLOR white]•[/COLOR]  ,]</label>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<aligny>center</aligny>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>944</width>
+					<height>28</height>
+					<label>$INFO[ListItem.Property(achievement.unlockeddate)]</label>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<visible>!String.IsEmpty(ListItem.Property(achievement.earned))</visible>
+				</control>
+				<control type="label">
+					<left>494</left>
+					<top>0</top>
+					<width>230</width>
+					<height>28</height>
+					<label>$VAR[GameAchievementProgressLabelVar]</label>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<aligny>center</aligny>
+					<align>right</align>
+					<visible>!String.IsEmpty(ListItem.Property(achievement.measured))</visible>
+				</control>
+				<control type="image">
+					<left>744</left>
+					<top>10</top>
+					<width>240</width>
+					<height>10</height>
+					<texture colordiffuse="30FFFFFF">colors/white50.png</texture>
+					<visible>!String.IsEmpty(ListItem.Property(achievement.measuredzero))</visible>
+				</control>
+				<control type="progress">
+					<left>744</left>
+					<top>10</top>
+					<width>240</width>
+					<height>10</height>
+					<texturebg colordiffuse="button_alt_focus">colors/white50.png</texturebg>
+					<midtexture colordiffuse="blue">colors/white.png</midtexture>
+					<lefttexture />
+					<righttexture />
+					<overlaytexture />
+					<info>ListItem.Property(achievement.measuredpercent)</info>
+					<visible>!String.IsEmpty(ListItem.Property(achievement.measured)) + String.IsEmpty(ListItem.Property(achievement.measuredzero))</visible>
+				</control>
+				<control type="image">
+					<left>954</left>
+					<top>0</top>
+					<width>28</width>
+					<height>28</height>
+					<texture colordiffuse="blue">icons/menumarks/tick.png</texture>
+					<aspectratio>keep</aspectratio>
+					<visible>!String.IsEmpty(ListItem.Property(achievement.earned))</visible>
+				</control>
+			</control>
 		</definition>
 	</include>
+	<!-- The corner indicators shown over a running game: the achievement being
+	     attempted, how far along a measured one is, and the live value of a
+	     leaderboard attempt.
+
+	     This has to stay a dialog: over a game with its own DRM plane the GUI
+	     layer is not composited unless one is up. -->
+	<include name="GameDialogIndicators">
+		<control type="grouplist">
+			<description>
+				An indicator that is not showing takes no room, so the rest close
+				up on their own.
+			</description>
+			<right>40</right>
+			<top>40</top>
+			<width>420</width>
+			<height>400</height>
+			<orientation>vertical</orientation>
+			<itemgap>10</itemgap>
+			<align>right</align>
+
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle)" />
+				<param name="badge" value="RetroPlayer.AchievementsChallengeBadge" />
+				<param name="title" value="RetroPlayer.AchievementsChallengeTitle" />
+			</include>
+
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsIndicatorTitle)" />
+				<param name="badge" value="RetroPlayer.AchievementsIndicatorBadge" />
+				<param name="title" value="RetroPlayer.AchievementsIndicatorTitle" />
+				<param name="detail" value="RetroPlayer.AchievementsIndicatorProgress" />
+				<param name="bar" value="RetroPlayer.AchievementsIndicatorPercent" />
+			</include>
+
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.LeaderboardTracker)" />
+				<param name="title" value="RetroPlayer.LeaderboardTracker" />
+				<param name="height" value="56" />
+			</include>
+		</control>
+	</include>
+
 	<include name="GameDialogAchievements">
+		<param name="width" default="1600" />
+		<param name="height" default="900" />
+		<definition>
+			<control type="image">
+				<width>1920</width>
+				<height>1080</height>
+				<texture colordiffuse="CC000000">colors/white.png</texture>
+			</control>
+			<control type="group">
+				<centertop>50%</centertop>
+				<centerleft>50%</centerleft>
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
+				<include content="DialogBackgroundCommons">
+					<param name="width" value="$PARAM[width]" />
+					<param name="height" value="$PARAM[height]" />
+					<param name="header_label" value="$LOCALIZE[35287]" />
+					<param name="header_id" value="108339" />
+				</include>
+				<control type="group">
+					<visible>[!RetroPlayer.AchievementsLoggedIn | !Player.HasGame]</visible>
+					<top>90</top>
+					<bottom>30</bottom>
+					<left>30</left>
+					<right>30</right>
+					<control type="label">
+						<top>5</top>
+						<height>75</height>
+						<align>center</align>
+						<font>font40_title</font>
+						<label>$LOCALIZE[35367]</label>
+					</control>
+					<control type="image">
+						<top>90</top>
+						<width>720</width>
+						<height>720</height>
+						<centerleft>50%</centerleft>
+						<aspectratio>keep</aspectratio>
+						<texture>special://xbmc/media/qr/games/retroachievements.png</texture>
+					</control>
+					<control type="label">
+						<top>830</top>
+						<height>50</height>
+						<align>center</align>
+						<font>font37</font>
+						<textcolor>FFC8C8C8</textcolor>
+						<label>$LOCALIZE[35368]</label>
+					</control>
+				</control>
+				<control type="group">
+					<visible>RetroPlayer.AchievementsLoggedIn + Player.HasGame</visible>
+					<control type="label">
+						<left>40</left>
+						<top>83</top>
+						<width>680</width>
+						<height>45</height>
+						<label>$INFO[Window.Property(Achievements.GameTitle)]</label>
+						<font>font32</font>
+						<textcolor>white</textcolor>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<left>740</left>
+						<top>83</top>
+						<width>410</width>
+						<height>45</height>
+						<align>right</align>
+						<label>$INFO[RetroPlayer.AchievementsProgress]$INFO[Window.Property(Achievements.Progress),  [COLOR white]•[/COLOR]  ,]</label>
+						<font>font13</font>
+						<textcolor>blue</textcolor>
+						<aligny>center</aligny>
+					</control>
+					<control type="list" id="3">
+						<left>30</left>
+						<top>140</top>
+						<width>1120</width>
+						<height>720</height>
+						<onleft>108334</onleft>
+						<onright>108334</onright>
+						<onup>3</onup>
+						<ondown>3</ondown>
+						<pagecontrol>108335</pagecontrol>
+						<scrolltime tween="sine">200</scrolltime>
+						<orientation>vertical</orientation>
+						<itemlayout width="1120" height="120">
+							<include content="GameAchievementItem" />
+						</itemlayout>
+						<focusedlayout width="1120" height="120">
+							<control type="image">
+								<texture colordiffuse="18FFFFFF">lists/focus.png</texture>
+							</control>
+							<control type="image">
+								<width>5</width>
+								<texture colordiffuse="button_focus">colors/white.png</texture>
+								<visible>Control.HasFocus(3)</visible>
+							</control>
+							<include content="GameAchievementItem">
+								<param name="scroll" value="true" />
+							</include>
+						</focusedlayout>
+					</control>
+					<control type="scrollbar" id="108335">
+						<left>1160</left>
+						<top>140</top>
+						<width>10</width>
+						<texturesliderbackground colordiffuse="14FFFFFF">colors/white.png</texturesliderbackground>
+						<height>720</height>
+						<onleft>3</onleft>
+						<onright>108334</onright>
+						<orientation>vertical</orientation>
+						<showonepage>false</showonepage>
+					</control>
+					<control type="grouplist" id="108334">
+						<left>1190</left>
+						<top>130</top>
+						<width>380</width>
+						<height>720</height>
+						<orientation>vertical</orientation>
+						<itemgap>-10</itemgap>
+						<onleft>3</onleft>
+						<onright>3</onright>
+						<onup>108334</onup>
+						<ondown>108334</ondown>
+						<control type="button" id="108333">
+							<width>380</width>
+							<include>SettingsItemCommon</include>
+							<font>font25_title</font>
+							<label>$LOCALIZE[35331]</label>
+							<onclick>ActivateWindow(gameleaderboards)</onclick>
+						</control>
+						<control type="label" id="108336">
+							<width>380</width>
+							<height>60</height>
+							<textoffsetx>24</textoffsetx>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<textcolor>button_focus</textcolor>
+							<label>$LOCALIZE[5]</label>
+						</control>
+						<control type="radiobutton" id="108331">
+							<width>380</width>
+							<include>SettingsItemCommon</include>
+							<font>font12</font>
+							<label>$LOCALIZE[35303]</label>
+							<radiowidth>112</radiowidth>
+							<radioheight>76</radioheight>
+							<radioposx>254</radioposx>
+							<radioposy>12</radioposy>
+							<selected>System.GetBool(gamesachievements.encore)</selected>
+						</control>
+						<control type="radiobutton" id="108332">
+							<width>380</width>
+							<include>SettingsItemCommon</include>
+							<font>font12</font>
+							<label>$LOCALIZE[35365]</label>
+							<radiowidth>112</radiowidth>
+							<radioheight>76</radioheight>
+							<radioposx>254</radioposx>
+							<radioposy>12</radioposy>
+							<selected>System.GetBool(gamesachievements.challengeindicator)</selected>
+						</control>
+						<control type="group" id="108337">
+							<height>400</height>
+							<visible>Control.HasFocus(108331)</visible>
+							<control type="textbox">
+								<left>20</left>
+								<top>30</top>
+								<width>340</width>
+								<height>370</height>
+								<font>font12</font>
+								<textcolor>grey</textcolor>
+								<label>$LOCALIZE[35304]</label>
+								<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+							</control>
+						</control>
+						<control type="group" id="108338">
+							<height>400</height>
+							<visible>Control.HasFocus(108332)</visible>
+							<control type="textbox">
+								<left>20</left>
+								<top>30</top>
+								<width>340</width>
+								<height>370</height>
+								<font>font12</font>
+								<textcolor>grey</textcolor>
+								<label>$LOCALIZE[35366]</label>
+								<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<include name="GameDialogLeaderboards">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="CC000000">colors/white.png</texture>
+		</control>
 		<control type="group">
-			<animation effect="fade" time="200">VisibleChange</animation>
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<width>1480</width>
-			<height>860</height>
+			<width>1200</width>
+			<height>740</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1480" />
-				<param name="height" value="860" />
-				<param name="header_label" value="" />
+				<param name="width" value="1200" />
+				<param name="height" value="740" />
+				<param name="header_label" value="$LOCALIZE[35331]" />
 				<param name="header_id" value="2" />
 			</include>
 			<control type="label">
-				<description>
-					Game title and progress. DialogBackgroundCommons draws a static
-					header label, so an empty one is passed above and this scrolling
-					label takes its place for titles too long to fit.
-				</description>
-				<left>40</left>
-				<top>0</top>
-				<right>100</right>
-				<height>70</height>
-				<font>font32_title</font>
-				<label>$INFO[Window.Property(Header)]</label>
+				<left>45</left>
+				<top>83</top>
+				<width>1090</width>
+				<height>45</height>
+				<align>left</align>
+				<font>font32</font>
+				<textcolor>white</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.GameTitle)]</label>
+				<visible>!String.IsEmpty(Window.Property(Leaderboards.GameTitle))</visible>
 				<aligny>center</aligny>
-				<shadowcolor>black</shadowcolor>
 				<scroll>true</scroll>
-				<scrollsuffix> - </scrollsuffix>
 			</control>
-			<control type="group">
-				<description>Content area</description>
-				<top>90</top>
-				<bottom>30</bottom>
+			<control type="label">
+				<description>
+					Said in place of the list: the boards are fetched when the dialog
+					first opens, and a game may have none at all
+				</description>
+				<left>45</left>
+				<top>320</top>
+				<width>1090</width>
+				<height>60</height>
+				<align>center</align>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.Status)]</label>
+				<visible>!String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+			</control>
+			<control type="list" id="3">
+				<top>140</top>
 				<left>30</left>
-				<right>30</right>
-				<control type="image">
-					<description>List background</description>
-					<top>-10</top>
-					<bottom>-10</bottom>
-					<left>-10</left>
-					<right>-10</right>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
-				</control>
-				<control type="list" id="3">
-					<description>Achievement list</description>
-					<onright>62</onright>
-					<pagecontrol>62</pagecontrol>
-					<scrolltime tween="sine">200</scrolltime>
-					<orientation>vertical</orientation>
-					<itemlayout width="1400" height="120">
-						<include content="GameAchievementItem">
-							<param name="scroll" value="false" />
-						</include>
-					</itemlayout>
-					<focusedlayout width="1400" height="120">
-						<control type="image">
-							<description>
-								Focus fills the whole row so that no text falls outside it. This
-								must be a uniform, stretchable texture. The bordered button
-								textures are shaped for an 80px button, and a border draws its
-								edge strips unstretched, so their transparent margins land at the
-								row's edges and leave the bottom line of text uncovered.
-							</description>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<visible>Control.HasFocus(3)</visible>
-						</control>
-						<include content="GameAchievementItem">
-							<param name="scroll" value="true" />
-						</include>
-					</focusedlayout>
-				</control>
-				<control type="scrollbar" id="62">
-					<description>Focusable so that the list can be paged from the keyboard</description>
-					<right>0</right>
-					<width>12</width>
-					<onleft>3</onleft>
-					<onright>3</onright>
-					<orientation>vertical</orientation>
-					<showonepage>false</showonepage>
-				</control>
+				<width>1120</width>
+				<visible>String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+				<height>480</height>
+				<orientation>vertical</orientation>
+				<pagecontrol>62</pagecontrol>
+				<scrolltime tween="sine" easing="out">200</scrolltime>
+				<itemlayout width="1120" height="120">
+					<include content="GameLeaderboardRow" />
+				</itemlayout>
+				<focusedlayout width="1120" height="120">
+					<control type="image">
+						<top>2</top>
+						<width>1120</width>
+						<height>116</height>
+						<texture colordiffuse="18FFFFFF">lists/focus.png</texture>
+					</control>
+					<include content="GameLeaderboardRow">
+						<param name="scroll" value="true" />
+					</include>
+					<control type="image">
+						<top>2</top>
+						<width>5</width>
+						<height>116</height>
+						<visible>Control.HasFocus(3)</visible>
+						<texture colordiffuse="button_focus">colors/white.png</texture>
+					</control>
+				</focusedlayout>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<onleft>3</onleft>
+				<onright>62</onright>
+			</control>
+			<control type="scrollbar" id="62">
+				<left>1160</left>
+				<top>140</top>
+				<width>10</width>
+				<height>480</height>
+				<orientation>vertical</orientation>
+				<showonepage>false</showonepage>
+				<onleft>3</onleft>
+				<onright>3</onright>
+				<texturesliderbackground colordiffuse="14FFFFFF">colors/white.png</texturesliderbackground>
+			</control>
+			<control type="label">
+				<left>45</left>
+				<top>662</top>
+				<width>1090</width>
+				<height>55</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<label>$LOCALIZE[35332]</label>
+				<wrapmultiline>true</wrapmultiline>
+			</control>
+			<control type="image">
+				<left>45</left>
+				<top>647</top>
+				<width>1090</width>
+				<height>1</height>
+				<texture colordiffuse="20FFFFFF">colors/white.png</texture>
 			</control>
 		</control>
 	</include>
+
+	<include name="GameDialogLeaderboardEntries">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="CC000000">colors/white.png</texture>
+		</control>
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<width>1200</width>
+			<height>810</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1200" />
+				<param name="height" value="810" />
+				<param name="header_label" value="$INFO[Window.Property(Leaderboards.Title)]" />
+				<param name="header_id" value="2" />
+			</include>
+			<control type="label">
+				<left>45</left>
+				<top>84</top>
+				<width>1090</width>
+				<height>35</height>
+				<align>left</align>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.Description)]</label>
+				<scroll>true</scroll>
+			</control>
+			<control type="group">
+				<top>194</top>
+				<left>30</left>
+				<visible>String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+				<control type="label">
+					<left>15</left>
+					<top>0</top>
+					<width>80</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<label>$LOCALIZE[35344]</label>
+				</control>
+				<control type="label">
+					<left>158</left>
+					<top>0</top>
+					<width>440</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<label>$LOCALIZE[14200]</label>
+				</control>
+				<control type="label">
+					<left>600</left>
+					<top>0</top>
+					<width>280</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<label>$LOCALIZE[35375]</label>
+				</control>
+				<control type="label">
+					<right>15</right>
+					<top>0</top>
+					<width>220</width>
+					<height>30</height>
+					<align>right</align>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<label>$LOCALIZE[35345]</label>
+				</control>
+				<width>1120</width>
+				<height>30</height>
+			</control>
+			<control type="label">
+				<left>20</left>
+				<top>300</top>
+				<width>1148</width>
+				<height>40</height>
+				<align>center</align>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<label>$INFO[Window.Property(Leaderboards.Status)]</label>
+				<visible>!String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+			</control>
+			<control type="list" id="3">
+				<top>230</top>
+				<left>30</left>
+				<width>1120</width>
+				<height>520</height>
+				<orientation>vertical</orientation>
+				<pagecontrol>62</pagecontrol>
+				<visible>String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+				<scrolltime tween="sine" easing="out">200</scrolltime>
+				<itemlayout width="1120" height="52">
+					<include content="GameLeaderboardEntryRow" />
+				</itemlayout>
+				<focusedlayout width="1120" height="52">
+					<control type="image">
+						<top>1</top>
+						<width>1120</width>
+						<height>50</height>
+						<texture colordiffuse="18FFFFFF">lists/focus.png</texture>
+					</control>
+					<control type="image">
+						<top>1</top>
+						<width>5</width>
+						<height>50</height>
+						<visible>Control.HasFocus(3)</visible>
+						<texture colordiffuse="button_focus">colors/white.png</texture>
+					</control>
+					<include content="GameLeaderboardEntryRow">
+						<param name="scroll" value="true" />
+					</include>
+				</focusedlayout>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<onleft>3</onleft>
+				<onright>62</onright>
+			</control>
+			<control type="scrollbar" id="62">
+				<left>1160</left>
+				<top>230</top>
+				<width>10</width>
+				<height>520</height>
+				<orientation>vertical</orientation>
+				<showonepage>false</showonepage>
+				<onleft>3</onleft>
+				<onright>3</onright>
+				<texturesliderbackground colordiffuse="14FFFFFF">colors/white.png</texturesliderbackground>
+			</control>
+			<control type="group">
+				<left>30</left>
+				<top>130</top>
+				<width>1120</width>
+				<height>54</height>
+				<control type="image">
+					<width>1120</width>
+					<height>54</height>
+					<texture colordiffuse="0AFFFFFF">colors/white.png</texture>
+				</control>
+				<control type="label">
+					<label>$LOCALIZE[35374]</label>
+					<left>15</left>
+					<top>0</top>
+					<width>240</width>
+					<height>54</height>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+				</control>
+				<control type="label">
+					<label>$INFO[Window.Property(Leaderboards.PlayerBest)]</label>
+					<right>15</right>
+					<top>0</top>
+					<width>800</width>
+					<height>54</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+				</control>
+			</control>
+			<control type="label">
+				<label>$LOCALIZE[552]: $INFO[Container(3).ListItem.Property(Date)]</label>
+				<left>45</left>
+				<top>769</top>
+				<width>1090</width>
+				<height>28</height>
+				<align>right</align>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<visible>Control.HasFocus(3) + !String.IsEmpty(Container(3).ListItem.Property(Date))</visible>
+			</control>
+			<control type="image">
+				<left>45</left>
+				<top>762</top>
+				<width>1090</width>
+				<height>1</height>
+				<texture colordiffuse="20FFFFFF">colors/white.png</texture>
+				<visible>String.IsEmpty(Window.Property(Leaderboards.Status))</visible>
+			</control>
+		</control>
+	</include>
+
+	<include name="GameLeaderboardRow">
+		<param name="scroll" default="false" />
+		<definition>
+			<control type="label">
+				<label>$INFO[ListItem.Label]</label>
+				<left>15</left>
+				<top>8</top>
+				<width>770</width>
+				<height>36</height>
+				<font>font25_title</font>
+				<textcolor>white</textcolor>
+				<scroll>$PARAM[scroll]</scroll>
+			</control>
+			<control type="label">
+				<label>$INFO[ListItem.Property(TopScore)]</label>
+				<right>15</right>
+				<top>8</top>
+				<width>300</width>
+				<height>36</height>
+				<align>right</align>
+				<font>font25_title</font>
+				<textcolor>blue</textcolor>
+			</control>
+			<control type="label">
+				<label>$INFO[ListItem.Label2]</label>
+				<left>15</left>
+				<top>46</top>
+				<width>770</width>
+				<height>30</height>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<scroll>$PARAM[scroll]</scroll>
+			</control>
+			<control type="label">
+				<label>$INFO[ListItem.Property(TopUsername)]</label>
+				<right>15</right>
+				<top>46</top>
+				<width>300</width>
+				<height>30</height>
+				<align>right</align>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<scroll>$PARAM[scroll]</scroll>
+			</control>
+			<control type="label">
+				<label>$LOCALIZE[35377] $INFO[ListItem.Property(PlayerStanding),[COLOR blue],[/COLOR]]$INFO[ListItem.Property(PlayerScore),[COLOR white]  ·  [/COLOR][COLOR blue],[/COLOR]]$INFO[ListItem.Property(TotalEntries),[COLOR white]  ·  [/COLOR][COLOR blue],[/COLOR]]</label>
+				<visible>!String.IsEmpty(ListItem.Property(PlayerStanding))</visible>
+				<left>15</left>
+				<top>80</top>
+				<width>1090</width>
+				<height>28</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+		</definition>
+	</include>
+
+	<include name="GameLeaderboardEntryRow">
+		<param name="scroll" default="false" />
+		<definition>
+			<control type="image">
+				<top>1</top>
+				<width>1120</width>
+				<height>50</height>
+				<texture colordiffuse="0CFFFFFF">colors/white.png</texture>
+				<visible>!String.IsEmpty(ListItem.Property(IsPlayer))</visible>
+			</control>
+			<include content="GameLeaderboardRank">
+				<param name="medal" value="gold" />
+				<param name="color" value="FFFFD24A" />
+				<param name="suffix" value=" ★" />
+			</include>
+			<include content="GameLeaderboardRank">
+				<param name="medal" value="silver" />
+				<param name="color" value="FFB9C6D2" />
+				<param name="suffix" value=" ★" />
+			</include>
+			<include content="GameLeaderboardRank">
+				<param name="medal" value="bronze" />
+				<param name="color" value="FFCD8B45" />
+				<param name="suffix" value=" ★" />
+			</include>
+			<include content="GameLeaderboardRank">
+				<param name="medal" value="" />
+				<param name="color" value="white" />
+			</include>
+			<control type="image">
+				<left>104</left>
+				<top>6</top>
+				<width>40</width>
+				<height>40</height>
+				<aspectratio>keep</aspectratio>
+				<texture background="true" fallback="DefaultUser.png">$INFO[ListItem.Icon]</texture>
+			</control>
+			<control type="label">
+				<left>158</left>
+				<top>0</top>
+				<width>420</width>
+				<height>52</height>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>$INFO[ListItem.Label]</label>
+				<scroll>$PARAM[scroll]</scroll>
+			</control>
+			<control type="label">
+				<left>600</left>
+				<top>0</top>
+				<width>270</width>
+				<height>52</height>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>FFC8C8C8</textcolor>
+				<label>$INFO[ListItem.Property(DateRelative)]</label>
+			</control>
+			<control type="label">
+				<right>15</right>
+				<top>0</top>
+				<width>220</width>
+				<height>52</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font25_title</font>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+			<control type="image">
+				<right>0</right>
+				<top>15</top>
+				<width>3</width>
+				<height>22</height>
+				<visible>!String.IsEmpty(ListItem.Property(IsPlayer))</visible>
+				<texture colordiffuse="button_focus">colors/white.png</texture>
+			</control>
+		</definition>
+	</include>
+
+	<include name="GameLeaderboardRank">
+		<param name="medal" default="" />
+		<param name="color" default="white" />
+		<param name="suffix" default="" />
+		<definition>
+			<control type="label">
+				<left>15</left>
+				<top>0</top>
+				<width>80</width>
+				<height>52</height>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textcolor>$PARAM[color]</textcolor>
+				<label>$INFO[ListItem.Property(RankLabel)]$PARAM[suffix]</label>
+				<visible>String.IsEqual(ListItem.Property(Medal),$PARAM[medal])</visible>
+			</control>
+		</definition>
+	</include>
+
+	<!-- One corner indicator over a running game. The three of them are the
+	     same shape - a backdrop, something to look at, something to read - so
+	     they are described once here and differ only by what they are told. -->
+	<include name="GameIndicator">
+		<param name="condition" default="" />
+		<param name="badge" default="" />
+		<param name="title" default="" />
+		<param name="detail" default="" />
+		<param name="bar" default="" />
+		<param name="height" default="72" />
+		<definition>
+			<control type="group">
+				<visible>$PARAM[condition]</visible>
+				<width>420</width>
+				<height>$PARAM[height]</height>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<control type="image">
+					<description>Backdrop, so it stays readable over any game</description>
+					<left>0</left><top>0</top>
+					<width>420</width><height>$PARAM[height]</height>
+					<texture border="10" colordiffuse="BB000000">dialogs/dialog-bg-nobo.png</texture>
+				</control>
+				<control type="image">
+					<description>Badge, where there is one to show</description>
+					<left>10</left><top>10</top>
+					<width>52</width><height>52</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[$PARAM[badge]]</texture>
+					<visible>!String.IsEmpty($PARAM[badge])</visible>
+				</control>
+				<control type="label">
+					<left>72</left><top>6</top>
+					<width>270</width><height>32</height>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>$INFO[$PARAM[title]]</label>
+					<scroll>true</scroll>
+					<scrollsuffix>   </scrollsuffix>
+				</control>
+				<control type="label">
+					<description>How far along, where that is counted</description>
+					<right>14</right><top>6</top>
+					<width>90</width><height>32</height>
+					<align>right</align><aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>$INFO[$PARAM[detail]]</label>
+					<visible>!String.IsEmpty($PARAM[detail])</visible>
+				</control>
+				<control type="progress">
+					<description>
+						Driven by the percentage Kodi sends alongside the text, rather
+						than parsing "13/180" back into numbers.
+					</description>
+					<left>72</left><top>44</top>
+					<width>336</width><height>10</height>
+					<info>$PARAM[bar]</info>
+					<visible>!String.IsEmpty($PARAM[bar])</visible>
+				</control>
+			</control>
+		</definition>
+	</include>
+
 </includes>
