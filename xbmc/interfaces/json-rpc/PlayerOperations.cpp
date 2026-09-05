@@ -35,6 +35,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/SlideShowDelegator.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
@@ -1512,19 +1513,38 @@ JSONRPC_STATUS CPlayerOperations::SetVideoStream(const std::string &method, ITra
   return ACK;
 }
 
+PLAYLIST::Id CPlayerOperations::GetPlayingPlaylistId()
+{
+  const PLAYLIST::Id fromItem{PLAYLIST::PlaylistIdOf(g_application.CurrentFileItem())};
+  if (fromItem != PLAYLIST::Id::TYPE_NONE)
+    return fromItem;
+
+  const auto& components = CServiceBroker::GetAppComponents();
+  return components.GetComponent<CApplicationPlayer>()->GetPreferredPlaylist();
+}
+
 int CPlayerOperations::GetActivePlayers()
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   int activePlayers = 0;
-  if (appPlayer->IsPlayingVideo() ||
-      CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() ||
-      CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRecording())
-    activePlayers |= Video;
-  if (appPlayer->IsPlayingAudio() ||
-      CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
-    activePlayers |= Audio;
+  if (appPlayer->IsPlaying())
+  {
+    switch (GetPlayingPlaylistId())
+    {
+      case PLAYLIST::Id::TYPE_VIDEO:
+        activePlayers |= Video;
+        break;
+
+      case PLAYLIST::Id::TYPE_MUSIC:
+        activePlayers |= Audio;
+        break;
+
+      default:
+        break;
+    }
+  }
   if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SLIDESHOW))
     activePlayers |= Picture;
   if (appPlayer->IsExternalPlaying())
@@ -1568,12 +1588,8 @@ PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
 PLAYLIST::Id CPlayerOperations::GetPlaylist(PlayerType player)
 {
   PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (playlistId == PLAYLIST::Id::TYPE_NONE) // No active playlist, try guessing
-  {
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    playlistId = appPlayer->GetPreferredPlaylist();
-  }
+  if (playlistId == PLAYLIST::Id::TYPE_NONE)
+    playlistId = GetPlayingPlaylistId();
 
   switch (player)
   {
