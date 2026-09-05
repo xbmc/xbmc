@@ -4,6 +4,7 @@ set(SOURCES Bookmark.cpp
             geometry/ContentBarDetector.cpp
             geometry/ContentGeometryCombiner.cpp
             geometry/ContentGeometryRecord.cpp
+            geometry/ContentGeometryScanner.cpp
             geometry/EffectiveGeometry.cpp
             geometry/FrameReduction.cpp
             geometry/FrameSampling.cpp
@@ -43,6 +44,7 @@ set(HEADERS Bookmark.h
             geometry/ContentBarHistogram.h
             geometry/ContentGeometryCombiner.h
             geometry/ContentGeometryRecord.h
+            geometry/ContentGeometryScanner.h
             geometry/EffectiveGeometry.h
             geometry/FrameReduction.h
             geometry/FrameSampling.h

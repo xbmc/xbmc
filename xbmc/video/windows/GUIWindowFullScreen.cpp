@@ -400,7 +400,9 @@ void CGUIWindowFullScreen::RenderPicture(bool clear, bool gui)
   context.SetRenderingResolution(context.GetVideoResolution(), false);
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  const CRect clip = context.ClipToVideo();
   appPlayer->Render(clear, 255, gui);
+  context.SetClip(clip);
   context.SetRenderingResolution(m_coordsRes, m_needsScaling);
 }
 

@@ -22,6 +22,13 @@ class CApplicationSettingsHandling : public ISettingCallback,
                                      public ISettingsHandler,
                                      public ISubSettings
 {
+public:
+  //! \brief Push the raster's shape and the interface's fill policy into the graphics context.
+  static void ApplyRasterSettings();
+
+  //! \brief Carry a moved raster to the layout by posting a skin reload.
+  static void ApplyRasterChange();
+
 protected:
   void RegisterSettings();
   void UnregisterSettings();

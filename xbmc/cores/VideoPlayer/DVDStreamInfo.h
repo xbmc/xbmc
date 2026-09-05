@@ -19,6 +19,9 @@ extern "C"
 #define CODEC_FORCE_SOFTWARE 0x01
 #define CODEC_ALLOW_FALLBACK 0x02
 
+//! \brief Export film grain parameters as side data instead of applying them.
+#define CODEC_EXPORT_FILM_GRAIN 0x04
+
 class CDemuxStream;
 struct DemuxCryptoSession;
 
@@ -56,6 +59,9 @@ public:
   int codecOptions;
 
   // VIDEO
+  //! \brief The playing item permits live content geometry detection. Not part of Equal().
+  bool liveContentGeometry = false;
+
   int fpsscale; // scale of 1001 and a rate of 60000 will result in 59.94 fps
   int fpsrate;
   bool interlaced;

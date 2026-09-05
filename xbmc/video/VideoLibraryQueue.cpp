@@ -13,6 +13,7 @@
 #include "Util.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "video/geometry/ContentGeometryScanner.h"
 #include "video/jobs/VideoLibraryCleaningJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
@@ -20,6 +21,7 @@
 #include "video/jobs/VideoLibraryResetResumePointJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
+#include <cstring>
 #include <mutex>
 #include <ranges>
 #include <utility>
@@ -253,6 +255,9 @@ void CVideoLibraryQueue::OnJobComplete(unsigned int jobID, bool success, CJob *j
   {
     if (QueueEmpty())
       Refresh();
+
+    if (std::strcmp(job->GetType(), CVideoLibraryScanningJob::TYPE) == 0)
+      KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
   }
 
   {

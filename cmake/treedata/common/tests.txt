@@ -1,5 +1,6 @@
 xbmc/addons/gui/skin/test         test/skin
 xbmc/addons/test                  test/addons
+xbmc/application/test             test/application
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
 xbmc/cores/RetroPlayer/playback/test test/retroplayer_playback
 xbmc/cores/RetroPlayer/rendering/test test/retroplayer_rendering
@@ -40,3 +41,4 @@ xbmc/utils/i18n/Bcp47Registry/test test/utils/i18n/Bcp47Registry
 xbmc/utils/test                   test/utils
 xbmc/video/geometry/test          test/video/geometry
 xbmc/video/test                   test/video
+xbmc/windowing/test               test/windowing

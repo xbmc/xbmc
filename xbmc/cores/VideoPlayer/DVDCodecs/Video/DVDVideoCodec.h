@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "utils/Geometry.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -80,6 +81,9 @@ public:
   unsigned int iHeight;
   unsigned int iDisplayWidth;           //< width of the picture without black bars
   unsigned int iDisplayHeight;          //< height of the picture without black bars
+
+  //! \brief Where the picture is inside the coded frame, empty when nothing measured it.
+  CRectInt contentRect;
 
 private:
   VideoPicture(VideoPicture const&) = default;
