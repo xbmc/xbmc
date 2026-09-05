@@ -12,6 +12,7 @@
 #include "games/addons/disc/GameClientDiscModel.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <string>
@@ -48,6 +49,7 @@ private:
   // Game parameters
   GameClientPtr m_gameClient;
   std::optional<CGameClientDiscModel> m_pendingDiscModel;
+  uint64_t m_pendingRestoreGeneration{0};
 };
 } // namespace GAME
 } // namespace KODI

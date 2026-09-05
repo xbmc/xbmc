@@ -23,6 +23,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"
 #include "games/addons/cheevos/GameClientCheevos.h"
+#include "games/addons/disc/GameClientDiscModel.h"
 #include "games/addons/disc/GameClientDiscs.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/streams/GameClientStreams.h"
@@ -264,13 +265,28 @@ bool CGameClient::OpenFile(const CFileItem& file,
   // Before the game loads: the client signs in as part of identifying it
   Cheevos().SendCredentials();
 
-  try
+  const auto loadGame = [this, &path]()
   {
-    LogError(error = m_ifc.game->toAddon->LoadGame(m_ifc.game, path.c_str()), "LoadGame()");
-  }
-  catch (...)
+    GAME_ERROR loadError = GAME_ERROR_FAILED;
+    try
+    {
+      LogError(loadError = m_ifc.game->toAddon->LoadGame(m_ifc.game, path.c_str()), "LoadGame()");
+    }
+    catch (...)
+    {
+      LogException("LoadGame()");
+    }
+    return loadError;
+  };
+
+  error = loadGame();
+
+  if (error != GAME_ERROR_NO_ERROR && SupportsDiscControl() && Discs().HasPersistedState())
   {
-    LogException("LoadGame()");
+    CLog::Log(LOGWARNING,
+              "GameClient: Load with persisted disc hint failed; retrying original source media");
+    Discs().Initialize(path, false);
+    error = loadGame();
   }
 
   if (error != GAME_ERROR_NO_ERROR)
@@ -341,28 +357,66 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
                                      RETRO::IStreamManager& streamManager,
                                      IGameInputCallback* input)
 {
-  if (LoadGameInfo())
+  const auto unloadGame = [this]()
   {
-    if (SupportsDiscControl())
+    try
     {
-      Discs().RestoreDiscList();
-      Discs().RefreshDiscState();
+      return LogError(m_ifc.game->toAddon->UnloadGame(m_ifc.game), "UnloadGame()");
     }
+    catch (...)
+    {
+      LogException("UnloadGame()");
+      return false;
+    }
+  };
 
-    Input().Start(input);
+  bool gameInfoLoaded = LoadGameInfo();
+  if (SupportsDiscControl() && Discs().HasPersistedState() &&
+      (!gameInfoLoaded || !Discs().RestoreDiscList()))
+  {
+    CLog::Log(
+        LOGWARNING,
+        "GameClient: Startup with persisted disc state failed; reloading original source media");
+    if (!unloadGame() || gamePath.empty())
+      return false;
 
-    m_bIsPlaying = true;
-    m_hasFrameRun = false;
-    m_gamePath = gamePath;
-    m_input = input;
-
-    m_inGameSaves = std::make_unique<CGameClientInGameSaves>(this, m_ifc.game);
-    m_inGameSaves->Load();
-
-    return true;
+    Discs().Initialize(gamePath, false);
+    GAME_ERROR error = GAME_ERROR_FAILED;
+    try
+    {
+      LogError(error = m_ifc.game->toAddon->LoadGame(m_ifc.game, gamePath.c_str()), "LoadGame()");
+    }
+    catch (...)
+    {
+      LogException("LoadGame()");
+    }
+    if (error != GAME_ERROR_NO_ERROR)
+      return false;
+    gameInfoLoaded = LoadGameInfo();
   }
 
-  return false;
+  if (!gameInfoLoaded)
+  {
+    unloadGame();
+    return false;
+  }
+  if (SupportsDiscControl())
+    Discs().RefreshDiscStateLive();
+
+  Input().Start(input);
+
+  m_bIsPlaying = true;
+  m_hasFrameRun = false;
+  m_gamePath = gamePath;
+  m_input = input;
+
+  if (SupportsDiscControl())
+    Discs().SaveDiscState();
+
+  m_inGameSaves = std::make_unique<CGameClientInGameSaves>(this, m_ifc.game);
+  m_inGameSaves->Load();
+
+  return true;
 }
 
 bool CGameClient::LoadGameInfo()
@@ -551,7 +605,7 @@ void CGameClient::CloseFile()
   }
 }
 
-void CGameClient::RunFrame()
+void CGameClient::PollInput()
 {
   IGameInputCallback* input;
 
@@ -560,8 +614,15 @@ void CGameClient::RunFrame()
     input = m_input;
   }
 
+  // The event scanner calls back into the client on another thread while this waits.
   if (input)
     input->PollInput();
+}
+
+void CGameClient::RunFrame(bool pollInput)
+{
+  if (pollInput)
+    PollInput();
 
   std::unique_lock lock(m_critSection);
 
@@ -613,53 +674,94 @@ bool CGameClient::Serialize(uint8_t* data, size_t size)
   return bSuccess;
 }
 
-bool CGameClient::Deserialize(const uint8_t* data, size_t size)
+RestoreResult CGameClient::Deserialize(const uint8_t* data,
+                                       size_t size,
+                                       const CGameClientDiscModel* discState)
 {
   if (data == nullptr || size == 0)
-    return false;
+    return RestoreResult::Rejected;
 
-  bool bSuccess = false;
-  if (m_bIsPlaying)
+  std::unique_lock lock(m_critSection);
+  if (!m_bIsPlaying || (discState && !SupportsDiscControl()))
+    return RestoreResult::Rejected;
+
+  std::optional<CGameClientDiscModel> previousDiscs;
+  const auto restorePreviousDiscs = [&]()
   {
-    // Deserialization may result in stale disc state, so insert disc now
-    if (SupportsDiscControl())
-      Discs().SetEjected(false);
+    if (previousDiscs)
+      Discs().SetDiscModel(*previousDiscs);
+    if (!Discs().RestoreDiscList())
+    {
+      CLog::Log(LOGERROR,
+                "RetroPlayer[DISC]: Failed to roll back disc state after restore failure");
+      return false;
+    }
+    return true;
+  };
 
-    std::unique_lock lock(m_critSection);
+  if (discState)
+  {
+    if (!(Discs().GetDiscsForSnapshot() == *discState))
+      previousDiscs = Discs().GetDiscsForSnapshot();
+    Discs().SetDiscModel(*discState);
+
+    // Cores can validate saved media against their current image list.
+    if (!Discs().RestoreDiscList() || (!discState->IsEjected() && !Discs().PrepareForDeserialize()))
+    {
+      CLog::Log(LOGERROR, "RetroPlayer[DISC]: Failed to prepare media before deserializing");
+      return restorePreviousDiscs() ? RestoreResult::Rejected : RestoreResult::StateUncertain;
+    }
+  }
+  else if (SupportsDiscControl())
+  {
+    Discs().SetEjected(false);
+  }
+
+  const auto deserialize = [&]()
+  {
+    // The core may rebuild its image list while loading machine state.
+    if (SupportsDiscControl())
+      Discs().InvalidateRestoreCache();
 
     try
     {
-      bSuccess =
-          LogError(m_ifc.game->toAddon->Deserialize(m_ifc.game, data, size), "Deserialize()");
+      return LogError(m_ifc.game->toAddon->Deserialize(m_ifc.game, data, size), "Deserialize()");
     }
     catch (...)
     {
       LogException("Deserialize()");
+      return false;
     }
-  }
+  };
 
-  // Some cores, like Mupen64Plus-NX, initialize on the first frame, so run
-  // a frame and try again
+  bool bSuccess = deserialize();
+  // Some disc cores only accept machine states with the tray closed. Preserve the target model.
+  if (!bSuccess && discState && Discs().PrepareForDeserialize())
+    bSuccess = deserialize();
+
+  // Some cores initialize on their first frame.
   if (!bSuccess && !m_hasFrameRun)
   {
-    RunFrame();
-
-    std::unique_lock lock(m_critSection);
-
-    bSuccess = LogError(m_ifc.game->toAddon->Deserialize(m_ifc.game, data, size), "Deserialize()");
+    RunFrame(false);
+    bSuccess = deserialize();
   }
 
-  if (bSuccess)
+  if (bSuccess && SupportsDiscControl())
   {
-    // Deserialization may reset disc information, so restore it now
-    if (SupportsDiscControl())
+    bSuccess = Discs().RestoreDiscList();
+    if (discState)
     {
-      Discs().RestoreDiscList();
-      Discs().RefreshDiscState();
+      if (bSuccess && previousDiscs)
+        Discs().SaveDiscState();
     }
+    else if (bSuccess)
+      Discs().RefreshDiscState();
   }
 
-  return bSuccess;
+  if (!bSuccess && discState)
+    restorePreviousDiscs();
+  // Media rollback cannot undo machine memory changed by a failed deserialize.
+  return bSuccess ? RestoreResult::Restored : RestoreResult::StateUncertain;
 }
 
 bool CGameClient::SerializeAchievementState(std::vector<uint8_t>& data)

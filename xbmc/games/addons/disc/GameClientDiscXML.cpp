@@ -30,6 +30,8 @@ namespace
 constexpr auto XML_ROOT = "discstate";
 constexpr auto XML_SLOTS = "slots";
 constexpr auto XML_SLOT = "slot";
+constexpr auto XML_KNOWN_MEDIA = "knownmedia";
+constexpr auto XML_DISC = "disc";
 constexpr auto XML_SELECTED = "selected";
 constexpr auto XML_TRAY = "tray";
 constexpr auto XML_ATTR_TYPE = "type";
@@ -97,6 +99,7 @@ bool CGameClientDiscXML::Load(const std::string& gamePath, CGameClientDiscModel&
     return false;
   }
   ReadTrayFromXML(rootElement, model);
+  ReadKnownMediaFromXML(rootElement, model);
 
   return true;
 }
@@ -134,6 +137,7 @@ bool CGameClientDiscXML::Save(const std::string& gamePath, const CGameClientDisc
   WriteSlotsToXML(xmlDoc, rootElement, model);
   WriteSelectedToXML(xmlDoc, rootElement, model);
   WriteTrayToXML(xmlDoc, rootElement, model);
+  WriteKnownMediaToXML(xmlDoc, rootElement, model);
 
   if (!xmlDoc.SaveFile(xmlPath))
   {
@@ -214,6 +218,36 @@ void CGameClientDiscXML::WriteSlotsToXML(CXBMCTinyXML2& xmlDoc,
     }
 
     slotsElement->InsertEndChild(slotElement);
+  }
+}
+
+void CGameClientDiscXML::ReadKnownMediaFromXML(const tinyxml2::XMLElement* rootElement,
+                                               CGameClientDiscModel& model)
+{
+  const tinyxml2::XMLElement* mediaElement = rootElement->FirstChildElement(XML_KNOWN_MEDIA);
+  if (mediaElement == nullptr)
+    return;
+
+  for (const tinyxml2::XMLElement* discElement = mediaElement->FirstChildElement(XML_DISC);
+       discElement != nullptr; discElement = discElement->NextSiblingElement(XML_DISC))
+  {
+    if (const char* path = discElement->Attribute(XML_ATTR_PATH))
+      model.RememberDiscPath(path);
+  }
+}
+
+void CGameClientDiscXML::WriteKnownMediaToXML(CXBMCTinyXML2& xmlDoc,
+                                              tinyxml2::XMLElement* rootElement,
+                                              const CGameClientDiscModel& model)
+{
+  tinyxml2::XMLElement* mediaElement = xmlDoc.NewElement(XML_KNOWN_MEDIA);
+  rootElement->InsertEndChild(mediaElement);
+
+  for (const std::string& path : model.GetKnownDiscPaths())
+  {
+    tinyxml2::XMLElement* discElement = xmlDoc.NewElement(XML_DISC);
+    discElement->SetAttribute(XML_ATTR_PATH, path.c_str());
+    mediaElement->InsertEndChild(discElement);
   }
 }
 

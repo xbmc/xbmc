@@ -8,7 +8,9 @@
 
 #include "GameClientDiscModel.h"
 
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 
@@ -23,8 +25,82 @@ bool GameClientDiscEntry::operator==(const GameClientDiscEntry& rhs) const
 
 bool CGameClientDiscModel::operator==(const CGameClientDiscModel& rhs) const
 {
+  // Resolver history does not affect reconciliation of the active disc state.
   return m_discs == rhs.m_discs && m_selectedType == rhs.m_selectedType &&
          m_selectedDiscIndex == rhs.m_selectedDiscIndex && m_isEjected == rhs.m_isEjected;
+}
+
+GameClientDiscState CGameClientDiscModel::GetState() const
+{
+  GameClientDiscState state;
+  for (size_t i = 0; i < Size(); ++i)
+  {
+    if (IsRemovedSlotByIndex(i))
+      state.slots.push_back({DiscSlotType::Removed, {}, {}});
+    else
+      state.slots.push_back(
+          {DiscSlotType::Disc, DeriveBasename(GetPathByIndex(i)), GetLabelByIndex(i)});
+  }
+  if (const auto selected = GetSelectedDiscIndex())
+    state.selectedSlot = static_cast<int32_t>(*selected);
+  state.trayEjected = IsEjected();
+  return state;
+}
+
+bool CGameClientDiscModel::ResolveState(const GameClientDiscState& state,
+                                        CGameClientDiscModel& model) const
+{
+  CGameClientDiscModel resolved;
+  resolved.RememberDiscs(*this);
+  for (size_t i = 0; i < state.slots.size(); ++i)
+  {
+    const DiscSlot& slot = state.slots[i];
+    if (slot.type == DiscSlotType::Removed)
+    {
+      resolved.AddRemovedSlot();
+      continue;
+    }
+    if (slot.type != DiscSlotType::Disc || slot.fileName.empty() ||
+        slot.fileName != DeriveBasename(slot.fileName))
+    {
+      CLog::Log(LOGERROR, "RetroPlayer[DISC]: Invalid saved disc in slot {}: '{}'", i,
+                slot.fileName);
+      return false;
+    }
+
+    const std::string* match = nullptr;
+    for (const std::string& path : m_knownDiscPaths)
+    {
+      if (DeriveBasename(path) != slot.fileName)
+        continue;
+      if (match && !URIUtils::PathEquals(*match, path))
+      {
+        CLog::Log(LOGERROR, "RetroPlayer[DISC]: Ambiguous saved disc in slot {}: '{}' ({})", i,
+                  slot.fileName, slot.label);
+        return false;
+      }
+      match = &path;
+    }
+    if (!match || !CFileUtils::Exists(*match, false))
+    {
+      CLog::Log(LOGERROR, "RetroPlayer[DISC]: Missing saved disc in slot {}: '{}' ({})", i,
+                slot.fileName, slot.label);
+      return false;
+    }
+    resolved.AddDisc(*match, slot.label);
+  }
+
+  resolved.SetSelectedNoDisc();
+  if (state.selectedSlot < -1 ||
+      (state.selectedSlot >= 0 &&
+       !resolved.SetSelectedDiscByIndex(static_cast<size_t>(state.selectedSlot))))
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[DISC]: Invalid saved selection {}", state.selectedSlot);
+    return false;
+  }
+  resolved.SetEjected(state.trayEjected);
+  model = std::move(resolved);
+  return true;
 }
 
 size_t CGameClientDiscModel::Size() const
@@ -40,6 +116,7 @@ bool CGameClientDiscModel::Empty() const
 void CGameClientDiscModel::Clear()
 {
   m_discs.clear();
+  m_knownDiscPaths.clear();
   m_selectedType = DiscSelectionType::NoDisc;
   m_selectedDiscIndex.reset();
   m_isEjected = false;
@@ -47,6 +124,8 @@ void CGameClientDiscModel::Clear()
 
 void CGameClientDiscModel::SetDiscs(const std::vector<GameClientDiscEntry>& discs)
 {
+  for (const GameClientDiscEntry& disc : discs)
+    RememberDiscPath(disc.path);
   m_discs = discs;
   m_selectedType = DiscSelectionType::NoDisc;
   m_selectedDiscIndex.reset();
@@ -54,6 +133,7 @@ void CGameClientDiscModel::SetDiscs(const std::vector<GameClientDiscEntry>& disc
 
 void CGameClientDiscModel::AddDisc(const std::string& path, const std::string& cachedLabel)
 {
+  RememberDiscPath(path);
   m_discs.emplace_back(GameClientDiscEntry{GameClientDiscEntry::DiscSlotType::Disc, path,
                                            DeriveBasename(path), cachedLabel});
 
@@ -71,9 +151,32 @@ bool CGameClientDiscModel::SetDiscByIndex(size_t index,
   if (index >= m_discs.size() || path.empty())
     return false;
 
+  RememberDiscPath(path);
   m_discs[index] = {GameClientDiscEntry::DiscSlotType::Disc, path, DeriveBasename(path),
                     cachedLabel};
   return true;
+}
+
+void CGameClientDiscModel::RememberDiscPath(const std::string& path)
+{
+  if (path.empty())
+    return;
+
+  if (std::none_of(m_knownDiscPaths.begin(), m_knownDiscPaths.end(),
+                   [&path](const std::string& knownPath)
+                   { return URIUtils::PathEquals(knownPath, path); }))
+    m_knownDiscPaths.push_back(path);
+}
+
+void CGameClientDiscModel::RememberDiscs(const CGameClientDiscModel& model)
+{
+  if (this == &model)
+    return;
+
+  for (const std::string& path : model.m_knownDiscPaths)
+    RememberDiscPath(path);
+  for (const GameClientDiscEntry& disc : model.m_discs)
+    RememberDiscPath(disc.path);
 }
 
 void CGameClientDiscModel::AddRemovedSlot()

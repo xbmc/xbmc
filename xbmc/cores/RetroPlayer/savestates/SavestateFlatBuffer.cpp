@@ -14,6 +14,7 @@
 #include "utils/log.h"
 #include "video_generated.h"
 
+#include <cctype>
 #include <cmath>
 #include <limits>
 #include <memory>
@@ -208,6 +209,56 @@ unsigned int TranslateRotation(SAVESTATE::VideoRotation rotationCCW)
 
   return 0;
 }
+
+SAVESTATE::DiscSlotType TranslateDiscSlotType(GAME::DiscSlotType type)
+{
+  switch (type)
+  {
+    case GAME::DiscSlotType::Disc:
+      return SAVESTATE::DiscSlotType_Disc;
+    case GAME::DiscSlotType::Removed:
+      return SAVESTATE::DiscSlotType_Removed;
+    case GAME::DiscSlotType::Unknown:
+    default:
+      return SAVESTATE::DiscSlotType_Unknown;
+  }
+}
+
+GAME::DiscSlotType TranslateDiscSlotType(SAVESTATE::DiscSlotType type)
+{
+  switch (type)
+  {
+    case SAVESTATE::DiscSlotType_Disc:
+      return GAME::DiscSlotType::Disc;
+    case SAVESTATE::DiscSlotType_Removed:
+      return GAME::DiscSlotType::Removed;
+    case SAVESTATE::DiscSlotType_Unknown:
+    default:
+      return GAME::DiscSlotType::Unknown;
+  }
+}
+
+std::string PortableFileName(const std::string& value)
+{
+  const size_t lastSeparator = value.find_last_of("/\\");
+  if (lastSeparator == std::string::npos)
+    return value;
+
+  return value.substr(lastSeparator + 1);
+}
+
+bool IsPathLabel(const std::string& value)
+{
+  if (value.empty())
+    return false;
+
+  if (value.front() == '/' || value.front() == '\\' || value.find("://") != std::string::npos ||
+      value.find('\\') != std::string::npos)
+    return true;
+
+  return value.size() >= 3 && std::isalpha(static_cast<unsigned char>(value[0])) &&
+         value[1] == ':' && (value[2] == '/' || value[2] == '\\');
+}
 } // namespace
 
 CSavestateFlatBuffer::CSavestateFlatBuffer()
@@ -247,6 +298,7 @@ void CSavestateFlatBuffer::Reset()
   m_rotationCCW = 0;
   m_memoryData.Clear();
   m_memoryDataDecompressed.clear();
+  m_discState.reset();
 }
 
 bool CSavestateFlatBuffer::Serialize(const uint8_t*& data, size_t& size) const
@@ -739,6 +791,50 @@ size_t CSavestateFlatBuffer::GetAchievementSize() const
   return 0;
 }
 
+std::optional<GAME::GameClientDiscState> CSavestateFlatBuffer::GetDiscState() const
+{
+  if (m_discState.has_value())
+    return m_discState;
+
+  if (m_savestate == nullptr || m_savestate->disc_state() == nullptr)
+    return std::nullopt;
+
+  const SAVESTATE::DiscState& storedState = *m_savestate->disc_state();
+  GAME::GameClientDiscState state;
+  state.selectedSlot = storedState.selected_slot();
+  state.trayEjected = storedState.tray_ejected();
+
+  if (const auto* slots = storedState.slots())
+  {
+    state.slots.reserve(slots->size());
+    for (const SAVESTATE::DiscSlot* slot : *slots)
+    {
+      if (slot == nullptr)
+        continue;
+
+      state.slots.emplace_back(TranslateDiscSlotType(slot->type()),
+                               slot->file_name() ? slot->file_name()->str() : std::string{},
+                               slot->label() ? slot->label()->str() : std::string{});
+    }
+  }
+
+  return state;
+}
+
+void CSavestateFlatBuffer::SetDiscState(const std::optional<GAME::GameClientDiscState>& discState)
+{
+  m_discState = discState;
+  if (!m_discState.has_value())
+    return;
+
+  for (GAME::DiscSlot& slot : m_discState->slots)
+  {
+    slot.fileName = PortableFileName(slot.fileName);
+    if (IsPathLabel(slot.label))
+      slot.label = PortableFileName(slot.label);
+  }
+}
+
 uint8_t* CSavestateFlatBuffer::GetAchievementBuffer(size_t size)
 {
   m_achievementData.assign(size, 0);
@@ -760,6 +856,24 @@ void CSavestateFlatBuffer::Finalize()
   if (!m_achievementData.empty())
     achievementBlob = m_builder->CreateVector(m_achievementData);
 
+  flatbuffers::Offset<SAVESTATE::DiscState> discStateOffset = 0;
+  if (m_discState.has_value())
+  {
+    std::vector<flatbuffers::Offset<SAVESTATE::DiscSlot>> slotOffsets;
+    slotOffsets.reserve(m_discState->slots.size());
+    for (const GAME::DiscSlot& slot : m_discState->slots)
+    {
+      const auto fileName = m_builder->CreateString(slot.fileName);
+      const auto label = m_builder->CreateString(slot.label);
+      slotOffsets.emplace_back(
+          SAVESTATE::CreateDiscSlot(*m_builder, TranslateDiscSlotType(slot.type), fileName, label));
+    }
+
+    const auto slots = m_builder->CreateVector(slotOffsets);
+    discStateOffset = SAVESTATE::CreateDiscState(*m_builder, slots, m_discState->selectedSlot,
+                                                 m_discState->trayEjected);
+  }
+
   // Helper class to build the nested Savestate table
   SAVESTATE::SavestateBuilder savestateBuilder(*m_builder);
 
@@ -767,6 +881,9 @@ void CSavestateFlatBuffer::Finalize()
 
   if (!achievementBlob.IsNull())
     savestateBuilder.add_achievement_data(achievementBlob);
+
+  if (!discStateOffset.IsNull())
+    savestateBuilder.add_disc_state(discStateOffset);
 
   savestateBuilder.add_type(TranslateType(m_type));
 

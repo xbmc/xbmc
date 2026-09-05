@@ -6,7 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "filesystem/File.h"
 #include "games/addons/disc/GameClientDiscMergeUtils.h"
+#include "test/TestUtils.h"
+
+#include <memory>
 
 #include <gtest/gtest.h>
 
@@ -168,4 +172,47 @@ TEST(TestGameClientDiscMergeUtils, InvalidCoreSelectionIndexCanUnexpectedlyForce
   EXPECT_TRUE(mergedDiscs.IsSelectedNoDisc());
   EXPECT_FALSE(mergedDiscs.GetSelectedDiscIndex().has_value());
   EXPECT_EQ(mergedDiscs.GetSelectedDiscPath(), "");
+}
+
+TEST(TestGameClientDiscMergeUtils, EmptyCoreRetainsHistoricalFrontendMedia)
+{
+  const auto deleteFile = [](XFILE::CFile* file) { XBMC_DELETETEMPFILE(file); };
+  std::unique_ptr<XFILE::CFile, decltype(deleteFile)> file(XBMC_CREATETEMPFILE(".chd"), deleteFile);
+  ASSERT_NE(file, nullptr);
+  file->Close();
+  const std::string path = XBMC_TEMPFILEPATH(file.get());
+  CGameClientDiscModel frontend;
+  frontend.AddDisc(path);
+  const auto saved = frontend.GetState();
+  ASSERT_TRUE(frontend.MarkRemovedByIndex(0));
+  CGameClientDiscModel core;
+  core.SetEjected(true);
+
+  const auto merged = CGameClientDiscMergeUtils::ReconcileModels(frontend, core);
+  EXPECT_TRUE(merged.Empty());
+  EXPECT_TRUE(merged.IsSelectedNoDisc());
+  EXPECT_TRUE(merged.IsEjected());
+  CGameClientDiscModel restored;
+  ASSERT_TRUE(merged.ResolveState(saved, restored));
+  EXPECT_EQ(restored.GetSelectedDiscPath(), path);
+}
+
+TEST(TestGameClientDiscMergeUtils, EmptyFrontendRetainsHistoricalCoreMedia)
+{
+  const auto deleteFile = [](XFILE::CFile* file) { XBMC_DELETETEMPFILE(file); };
+  std::unique_ptr<XFILE::CFile, decltype(deleteFile)> file(XBMC_CREATETEMPFILE(".chd"), deleteFile);
+  ASSERT_NE(file, nullptr);
+  file->Close();
+  const std::string path = XBMC_TEMPFILEPATH(file.get());
+  CGameClientDiscModel core;
+  core.AddDisc(path);
+  const auto saved = core.GetState();
+  ASSERT_TRUE(core.EraseDiscByIndex(0));
+
+  const auto merged = CGameClientDiscMergeUtils::ReconcileModels(CGameClientDiscModel{}, core);
+  EXPECT_TRUE(merged.Empty());
+  EXPECT_TRUE(merged.IsSelectedNoDisc());
+  CGameClientDiscModel restored;
+  ASSERT_TRUE(merged.ResolveState(saved, restored));
+  EXPECT_EQ(restored.GetSelectedDiscPath(), path);
 }

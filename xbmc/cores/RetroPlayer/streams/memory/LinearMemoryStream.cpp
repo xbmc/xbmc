@@ -24,7 +24,7 @@ void CLinearMemoryStream::Init(size_t frameSize, uint64_t maxFrameCount)
   Reset();
 
   m_frameSize = frameSize;
-  m_paddedFrameSize = PAD_TO_CEIL(m_frameSize, sizeof(uint32_t));
+  m_paddedFrameSize = PAD_TO_CEIL(m_frameSize, sizeof(uint32_t)) / sizeof(uint32_t);
   m_maxFrames = maxFrameCount;
 }
 
@@ -64,12 +64,12 @@ uint8_t* CLinearMemoryStream::BeginFrame()
   if (!m_bHasCurrentFrame)
   {
     if (!m_currentFrame)
-      m_currentFrame.reset(new uint32_t[m_paddedFrameSize]);
+      m_currentFrame.reset(new uint32_t[m_paddedFrameSize]{});
     return reinterpret_cast<uint8_t*>(m_currentFrame.get());
   }
 
   if (!m_nextFrame)
-    m_nextFrame.reset(new uint32_t[m_paddedFrameSize]);
+    m_nextFrame.reset(new uint32_t[m_paddedFrameSize]{});
   return reinterpret_cast<uint8_t*>(m_nextFrame.get());
 }
 

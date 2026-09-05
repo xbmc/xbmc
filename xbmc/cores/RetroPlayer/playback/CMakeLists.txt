@@ -1,7 +1,9 @@
-set(SOURCES GameLoop.cpp
+set(SOURCES DiscStateHistory.cpp
+            GameLoop.cpp
             ReversiblePlayback.cpp)
 
-set(HEADERS GameLoop.h
+set(HEADERS DiscStateHistory.h
+            GameLoop.h
             IPlayback.h
             IPlaybackControl.h
             RealtimePlayback.h

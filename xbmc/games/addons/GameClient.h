@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "GameClientRestoreResult.h"
 #include "GameClientSubsystem.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
@@ -33,6 +34,7 @@ class IStreamManager;
 
 namespace GAME
 {
+class CGameClientDiscModel;
 
 class CGameClientCheevos;
 class CGameClientInGameSaves;
@@ -170,7 +172,8 @@ public:
   size_t GetSerializeSize() const { return m_serializeSize; }
   double GetFrameRate() const { return m_framerate.load(); }
   double GetSampleRate() const { return m_samplerate.load(); }
-  void RunFrame();
+  void PollInput();
+  void RunFrame(bool pollInput = true);
 
   /*!
    * \brief Tell the client what speed the player is running at
@@ -188,7 +191,9 @@ public:
   // Access memory
   size_t SerializeSize() const { return m_serializeSize; }
   bool Serialize(uint8_t* data, size_t size);
-  bool Deserialize(const uint8_t* data, size_t size);
+  RestoreResult Deserialize(const uint8_t* data,
+                            size_t size,
+                            const CGameClientDiscModel* discState = nullptr);
 
   /*!
    * \brief Hold the client still for the duration of a savestate snapshot

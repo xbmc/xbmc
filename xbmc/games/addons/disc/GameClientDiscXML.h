@@ -42,6 +42,12 @@ private:
                               tinyxml2::XMLElement* rootElement,
                               const CGameClientDiscModel& model);
 
+  static void ReadKnownMediaFromXML(const tinyxml2::XMLElement* rootElement,
+                                    CGameClientDiscModel& model);
+  static void WriteKnownMediaToXML(CXBMCTinyXML2& xmlDoc,
+                                   tinyxml2::XMLElement* rootElement,
+                                   const CGameClientDiscModel& model);
+
   static void ReadTrayFromXML(const tinyxml2::XMLElement* rootElement, CGameClientDiscModel& model);
   static void WriteTrayToXML(CXBMCTinyXML2& xmlDoc,
                              tinyxml2::XMLElement* rootElement,
