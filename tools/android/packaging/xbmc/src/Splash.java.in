@@ -79,11 +79,15 @@ public class Splash extends Activity
   private String sXbmcHome = "";
   private File fPackagePath = null;
   private File fXbmcHome = null;
+  private File fCacheStamp = null;
 
   private BroadcastReceiver mExternalStorageReceiver = null;
   private boolean mExternalStorageChecked = false;
   private boolean mCachingDone = false;
   private boolean mPermissionOK = false;
+  // Runs every unpack on one worker, so a Splash re-created mid-unpack queues
+  // behind the running one and cannot delete the tree it is filling.
+  private static final ExecutorService sCacheExecutor = Executors.newSingleThreadExecutor();
 
   private class StateMachine extends Handler
   {
@@ -199,7 +203,7 @@ public class Splash extends Activity
             {
               sendEmptyMessage(InError);
             }
-            if (fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
+            if (isCacheUpToDate())
             {
               mState = CachingDone;
               mCachingDone = true;
@@ -230,19 +234,17 @@ public class Splash extends Activity
   {
     private final Splash mSplash;
     private int mProgressStatus = 0;
-    private final ExecutorService executor;
     private final Handler handler;
 
     public FillCache(Splash splash)
     {
       mSplash = splash;
-      executor = Executors.newSingleThreadExecutor();
       handler = new Handler(Looper.getMainLooper());
     }
 
     public void execute()
     {
-      executor.execute(() -> {
+      sCacheExecutor.execute(() -> {
         Integer result = doInBackground();
         handler.post(() -> onPostExecute(result));
       });
@@ -267,6 +269,13 @@ public class Splash extends Activity
 
     protected Integer doInBackground()
     {
+      // Queued behind an unpack that has since completed.
+      if (isCacheUpToDate())
+      {
+        mState = CachingDone;
+        publishProgress(0);
+        return 0;
+      }
       if (fXbmcHome.exists())
       {
         // Remove existing files
@@ -342,9 +351,6 @@ public class Splash extends Activity
         }
 
         zip.close();
-
-        fXbmcHome.setLastModified(fPackagePath.lastModified());
-
       }
       catch (FileNotFoundException e1)
       {
@@ -360,6 +366,20 @@ public class Splash extends Activity
         obb.delete();
         return -1;
       }
+
+      // Kept out of the block above: its handlers blame, and may delete, the APK.
+      try
+      {
+        new FileOutputStream(fCacheStamp).close();
+      }
+      catch (IOException e)
+      {
+        Log.e(TAG, "Exception: " + e.getMessage());
+        mErrorMsg = getString(R.string.no_write_cache);
+        return -1;
+      }
+      if (!fCacheStamp.setLastModified(fPackagePath.lastModified()))
+        Log.w(TAG, "Could not set the timestamp of " + fCacheStamp);
 
       mState = CachingDone;
       publishProgress(0);
@@ -432,6 +452,14 @@ public class Splash extends Activity
     dialog.show();
   }
 
+  // Written by FillCache after the last entry, so a tree an unpack is still
+  // filling, or one a crash cut short, never counts as current.
+  private boolean isCacheUpToDate()
+  {
+    return fCacheStamp != null && fCacheStamp.exists() &&
+           fCacheStamp.lastModified() >= fPackagePath.lastModified();
+  }
+
   private void SetupEnvironment()
   {
     sXbmcHome = XBMCProperties.getStringProperty("xbmc.home", "");
@@ -464,6 +492,7 @@ public class Splash extends Activity
       sXbmcHome = fCacheDir.getAbsolutePath() + "/apk";
       fXbmcHome = new File(sXbmcHome);
     }
+    fCacheStamp = new File(fXbmcHome, ".unpacked");
     File fLibCache = new File(fCacheDir.getAbsolutePath() + "/lib");
     fLibCache.mkdirs();
 
@@ -705,7 +734,7 @@ public class Splash extends Activity
 
         SetupEnvironment();
 
-        if (mState != InError && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
+        if (mState != InError && isCacheUpToDate())
         {
           mState = CachingDone;
           mCachingDone = true;
