@@ -762,6 +762,24 @@ static int SubtitleShiftUp(const std::vector<std::string>& params)
   return 0;
 }
 
+static int SubtitleBitmapZoomIn(const std::vector<std::string>& params)
+{
+  CPlayerController::GetInstance().OnAction(CAction{ACTION_SUBTITLE_BITMAP_ZOOM_IN});
+  return 0;
+}
+
+static int SubtitleBitmapZoomOut(const std::vector<std::string>& params)
+{
+  CPlayerController::GetInstance().OnAction(CAction{ACTION_SUBTITLE_BITMAP_ZOOM_OUT});
+  return 0;
+}
+
+static int SubtitleBitmapPosition(const std::vector<std::string>& params)
+{
+  CPlayerController::GetInstance().OnAction(CAction{ACTION_SUBTITLE_BITMAP_POSITION});
+  return 0;
+}
+
 static int SubtitleShiftDown(const std::vector<std::string>& params)
 {
   CAction action{ACTION_SUBTITLE_VSHIFT_DOWN};
@@ -888,6 +906,24 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     @param[in] save                  "save" to keep the change permanently (optional)
 ///   }
 ///   \table_row2_l{
+///     <b>`SubtitleBitmapZoomIn()`</b>
+///     ,
+///     Enlarge picture based subtitles (PGS\, VobSub) by one step of the
+///     "Bitmap subtitle zoom" setting. Has no effect on text based subtitles.
+///   }
+///   \table_row2_l{
+///     <b>`SubtitleBitmapZoomOut()`</b>
+///     ,
+///     Shrink picture based subtitles (PGS\, VobSub) by one step of the
+///     "Bitmap subtitle zoom" setting. Has no effect on text based subtitles.
+///   }
+///   \table_row2_l{
+///     <b>`SubtitleBitmapPosition()`</b>
+///     ,
+///     Toggle whether "Position on screen" and "Vertical margin" are applied to
+///     picture based subtitles (PGS\, VobSub).
+///   }
+///   \table_row2_l{
 ///     <b>`Seek(seconds)`</b>
 ///     ,
 ///     Seeks to the specified relative amount of seconds within the current
@@ -934,6 +970,9 @@ CBuiltins::CommandMap CPlayerBuiltins::GetOperations() const
            {"seek",                {"Performs a seek in seconds on the current playing media file", 1, Seek}},
            {"subtitleshiftup",     {"Shift up the subtitle position", 0, SubtitleShiftUp}},
            {"subtitleshiftdown",   {"Shift down the subtitle position", 0, SubtitleShiftDown}},
+           {"subtitlebitmapzoomin", {"Enlarge picture based subtitles", 0, SubtitleBitmapZoomIn}},
+           {"subtitlebitmapzoomout", {"Shrink picture based subtitles", 0, SubtitleBitmapZoomOut}},
+           {"subtitlebitmapposition", {"Toggle applying the subtitle position to picture based subtitles", 0, SubtitleBitmapPosition}},
          };
 }
 // clang-format on

@@ -442,6 +442,15 @@ constexpr const int ACTION_VIDEO_NEXT_STREAM = 250;
 //! Used to queue an item to the next position in the playlist
 constexpr const int ACTION_QUEUE_ITEM_NEXT = 251;
 
+//! Enlarge picture based subtitles (PGS, VobSub). Used in videofullscreen.
+constexpr const int ACTION_SUBTITLE_BITMAP_ZOOM_IN = 252;
+
+//! Shrink picture based subtitles (PGS, VobSub). Used in videofullscreen.
+constexpr const int ACTION_SUBTITLE_BITMAP_ZOOM_OUT = 253;
+
+//! Toggle whether the subtitle position applies to picture based subtitles
+constexpr const int ACTION_SUBTITLE_BITMAP_POSITION = 254;
+
 constexpr const int ACTION_HDR_TOGGLE = 260; //!< Toggle display HDR on/off
 
 constexpr const int ACTION_CYCLE_TONEMAP_METHOD = 261; //!< Switch to next tonemap method

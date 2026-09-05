@@ -24719,7 +24719,37 @@ msgctxt "#39212"
 msgid "Do not turn on subtitles that are in the same language as the audio being played. Forced subtitles are not affected."
 msgstr ""
 
-#empty strings from id 39213 to 39899
+#. Title of the bitmap subtitle zoom setting
+#: system/settings/settings.xml
+msgctxt "#39213"
+msgid "Bitmap subtitle zoom"
+msgstr ""
+
+#. Help text for setting "Bitmap subtitle zoom" of label #39213
+#: system/settings/settings.xml
+msgctxt "#39214"
+msgid "Resize picture-based subtitles such as PGS (Blu-ray) and VobSub. 100% is the authored size."
+msgstr ""
+
+#. Title of the setting that applies the subtitle position and vertical margin to bitmap subtitles
+#: system/settings/settings.xml
+msgctxt "#39215"
+msgid "Apply position to bitmap subtitles"
+msgstr ""
+
+#. Help text for setting "Apply position to bitmap subtitles" of label #39215
+#: system/settings/settings.xml
+msgctxt "#39216"
+msgid "Move picture-based subtitles such as PGS (Blu-ray) and VobSub to the position set by \"Position on screen\" and \"Vertical margin\"."
+msgstr ""
+
+#. Group label for the settings that apply to picture based subtitles
+#: system/settings/settings.xml
+msgctxt "#39217"
+msgid "Image based subtitles"
+msgstr ""
+
+#empty strings from id 39218 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO

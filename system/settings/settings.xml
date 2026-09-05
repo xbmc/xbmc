@@ -870,6 +870,26 @@
           <control type="list" format="string" />
         </setting>
       </group>
+      <group id="2" label="39217">
+        <setting id="subtitles.bitmapzoom" type="integer" label="39213" help="39214">
+          <level>2</level>
+          <default>100</default>
+          <constraints>
+            <minimum>10</minimum>
+            <step>1</step>
+            <maximum>200</maximum>
+          </constraints>
+          <!-- Not format="percentage": a percentage slider is hard clamped to 0-100 -->
+          <control type="slider" format="integer">
+            <formatlabel>14047</formatlabel>
+          </control>
+        </setting>
+        <setting id="subtitles.bitmapposition" type="boolean" label="39215" help="39216">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
       <group id="3" label="39187">
         <setting id="subtitles.parsecaptions" type="boolean" label="24130" help="24131">
           <level>1</level>

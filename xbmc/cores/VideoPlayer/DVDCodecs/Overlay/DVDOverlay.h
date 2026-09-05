@@ -37,6 +37,7 @@ public:
     m_enableTextAlign = false;
     m_overlayContainerFlushable = true;
     m_setForcedMargins = false;
+    m_isBitmapSubtitle = false;
   }
 
   CDVDOverlay(const CDVDOverlay& src) : std::enable_shared_from_this<CDVDOverlay>(src)
@@ -50,6 +51,7 @@ public:
     m_enableTextAlign = src.m_enableTextAlign;
     m_overlayContainerFlushable = src.m_overlayContainerFlushable;
     m_setForcedMargins = src.m_setForcedMargins;
+    m_isBitmapSubtitle = src.m_isBitmapSubtitle;
   }
 
   virtual ~CDVDOverlay() = default;
@@ -104,6 +106,12 @@ public:
    */
   bool IsForcedMargins() const { return m_setForcedMargins; }
 
+  /*! \brief Mark the overlay as a picture of subtitle text, as opposed to menu graphics */
+  void SetBitmapSubtitle(bool isBitmapSubtitle) { m_isBitmapSubtitle = isBitmapSubtitle; }
+
+  /*! \brief Whether the overlay is a picture of subtitle text */
+  bool IsBitmapSubtitle() const { return m_isBitmapSubtitle; }
+
   double iPTSStartTime;
   double iPTSStopTime;
   bool bForced; // display, no matter what
@@ -115,6 +123,7 @@ protected:
   bool m_enableTextAlign;
   bool m_overlayContainerFlushable;
   bool m_setForcedMargins;
+  bool m_isBitmapSubtitle;
 };
 
 using VecOverlays = std::vector<std::shared_ptr<CDVDOverlay>>;
