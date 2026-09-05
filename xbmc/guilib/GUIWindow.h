@@ -244,6 +244,17 @@ protected:
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect);
 
   std::vector<int> m_idRange;
+
+  /*!
+   * \brief The ids this window answered to before its XML went missing
+   *
+   * A skin without the file leaves the window as WINDOW_INVALID, which it
+   * cannot come back from on its own. The whole range is kept rather than one
+   * id: a window can be registered under several, and can be given a different
+   * one after it was constructed.
+   */
+  std::vector<int> m_idRangeBeforeLoadFailure;
+
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
   bool m_needsScaling;
   bool m_windowLoaded;  // true if the window's xml file has been loaded
