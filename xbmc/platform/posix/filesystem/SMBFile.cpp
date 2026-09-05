@@ -31,6 +31,7 @@
 #include <chrono>
 #include <cstring>
 #include <inttypes.h>
+#include <limits>
 #include <list>
 #include <mutex>
 #include <regex>
@@ -73,6 +74,116 @@ namespace
 constexpr size_t MAX_CACHED_SERVERS = 15;
 constexpr std::array<std::chrono::milliseconds, 3> SMB_RECONNECT_BACKOFF{
     std::chrono::milliseconds{100}, std::chrono::milliseconds{250}, std::chrono::milliseconds{500}};
+
+class CLibsmbFileOperations final : public SMBFileRecovery::ISMBFileOperations
+{
+public:
+  void Init() override { smb.Init(); }
+  void AddActiveConnection() override { smb.AddActiveConnection(); }
+  void AddIdleConnection() override { smb.AddIdleConnection(); }
+  void SetActivityTime() override { smb.SetActivityTime(); }
+  bool IsValid() const override { return smb.IsSmbValid(); }
+  CCriticalSection& GetCriticalSection() override { return smb; }
+  CURL Resolve(const CURL& url) override { return CSMB::GetResolvedUrl(url); }
+  std::string URLEncode(const CURL& url) override { return smb.URLEncode(url); }
+
+  int Open(const std::string& path, int flags) override
+  {
+    return smbc_open(path.c_str(), flags, 0);
+  }
+  int Create(const std::string& path) override { return smbc_creat(path.c_str(), 0); }
+  int Close(int fd) override { return smbc_close(fd); }
+  ssize_t Read(int fd, void* buffer, size_t size) override { return smbc_read(fd, buffer, size); }
+  ssize_t Write(int fd, const void* buffer, size_t size) override
+  {
+    return smbc_write(fd, buffer, size);
+  }
+  int64_t Seek(int fd, int64_t offset, int whence) override
+  {
+    return smbc_lseek(fd, offset, whence);
+  }
+  int Stat(const std::string& path, struct stat* buffer) override
+  {
+    return smbc_stat(path.c_str(), buffer);
+  }
+  int FStat(int fd, struct stat* buffer) override { return smbc_fstat(fd, buffer); }
+  int Unlink(const std::string& path) override { return smbc_unlink(path.c_str()); }
+  int Rename(const std::string& from, const std::string& to) override
+  {
+    return smbc_rename(from.c_str(), to.c_str());
+  }
+};
+
+SMBFileRecovery::ISMBFileOperations& GetDefaultFileOperations()
+{
+  static CLibsmbFileOperations operations;
+  return operations;
+}
+
+bool AddOffset(int64_t base, int64_t offset, int64_t& result)
+{
+  if ((offset > 0 && base > std::numeric_limits<int64_t>::max() - offset) ||
+      (offset < 0 && base < std::numeric_limits<int64_t>::min() - offset))
+    return false;
+
+  result = base + offset;
+  return true;
+}
+
+enum class SeekStatus
+{
+  SUCCESS,
+  ERROR,
+  POSITION_INVALID,
+};
+
+SeekStatus SeekFileExactly(SMBFileRecovery::ISMBFileOperations& fileOperations,
+                           int fd,
+                           int64_t offset,
+                           int whence,
+                           int64_t& resolvedPosition)
+{
+  errno = 0;
+  resolvedPosition = fileOperations.Seek(fd, offset, whence);
+  if (resolvedPosition < 0)
+  {
+    if (errno == 0)
+      errno = EIO;
+    return SeekStatus::ERROR;
+  }
+
+  if (whence == SEEK_SET)
+  {
+    if (resolvedPosition != offset)
+    {
+      errno = EIO;
+      return SeekStatus::POSITION_INVALID;
+    }
+
+    errno = 0;
+    return SeekStatus::SUCCESS;
+  }
+
+  if (whence != SEEK_END)
+  {
+    errno = EINVAL;
+    return SeekStatus::ERROR;
+  }
+
+  errno = 0;
+  const int64_t validatedPosition = fileOperations.Seek(fd, resolvedPosition, SEEK_SET);
+  if (validatedPosition != resolvedPosition)
+  {
+    if (validatedPosition >= 0)
+      errno = EIO;
+    else if (errno == 0)
+      errno = EIO;
+    return SeekStatus::POSITION_INVALID;
+  }
+
+  errno = 0;
+  return SeekStatus::SUCCESS;
+}
 
 // Cached remove_unused_server function pointer, obtained once during Init.
 smbc_remove_unused_server_fn g_removeUnusedFn = nullptr;
@@ -650,33 +761,37 @@ CURL CSMB::GetResolvedUrl(const CURL& url)
 
 CSMB smb;
 
-CSMBFile::CSMBFile()
+CSMBFile::CSMBFile() : CSMBFile(GetDefaultFileOperations())
 {
-  smb.Init();
+}
+
+CSMBFile::CSMBFile(SMBFileRecovery::ISMBFileOperations& fileOperations)
+  : m_fileOperations(fileOperations)
+{
+  m_fileOperations.Init();
   m_fd = -1;
-  smb.AddActiveConnection();
+  m_fileOperations.AddActiveConnection();
   m_allowRetry = true;
 }
 
 CSMBFile::~CSMBFile()
 {
   Close();
-  smb.AddIdleConnection();
+  m_fileOperations.AddIdleConnection();
 }
 
 int64_t CSMBFile::GetPosition()
 {
-  if (m_fd == -1)
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (m_fd == -1 || !m_fileOperations.IsValid())
     return -1;
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
-    return -1;
-  return smbc_lseek(m_fd, 0, SEEK_CUR);
+  return m_fileOperations.Seek(m_fd, 0, SEEK_CUR);
 }
 
 int64_t CSMBFile::GetLength()
 {
-  if (m_fd == -1)
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (m_fd == -1 && !m_reopenOnNextRead)
     return -1;
   return m_fileSize;
 }
@@ -719,13 +834,13 @@ bool CSMBFile::Open(const CURL& url)
     CPasswordManager& passwordManager = CPasswordManager::GetInstance();
     passwordManager.SaveAuthenticatedURL(url, false);
 
-    const CURL resolvedUrl = CSMB::GetResolvedUrl(url);
+    const CURL resolvedUrl = m_fileOperations.Resolve(url);
     if (resolvedUrl.GetHostName() != url.GetHostName())
       passwordManager.SaveAuthenticatedURL(resolvedUrl, false);
   }
 
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (!m_fileOperations.IsValid())
   {
     // Deinit() closes open files when destroying the SMB context, so only
     // the now-invalid descriptor needs to be reset here.
@@ -733,25 +848,29 @@ bool CSMBFile::Open(const CURL& url)
     return false;
   }
   struct stat tmpBuffer;
-  if (smbc_stat(strFileName.c_str(), &tmpBuffer) < 0)
+  if (m_fileOperations.Stat(strFileName, &tmpBuffer) < 0)
   {
-    smbc_close(m_fd);
+    m_fileOperations.Close(m_fd);
     m_fd = -1;
     return false;
   }
 
   m_fileSize = tmpBuffer.st_size;
 
-  int64_t ret = smbc_lseek(m_fd, 0, SEEK_SET);
+  int64_t ret = m_fileOperations.Seek(m_fd, 0, SEEK_SET);
   if (ret < 0)
   {
-    smbc_close(m_fd);
+    m_fileOperations.Close(m_fd);
     m_fd = -1;
     return false;
   }
 
   m_reopenEnabled = true;
+  m_reopenOnNextRead = false;
   m_readPosition = ret;
+  ++m_positionGeneration;
+  m_reopenInProgressGeneration = 0;
+  ResetRecoveryStateLocked();
 
   // We've successfully opened the file!
   return true;
@@ -760,16 +879,16 @@ bool CSMBFile::Open(const CURL& url)
 int CSMBFile::OpenFile(const CURL& url, std::string& strAuth)
 {
   int fd = -1;
-  smb.Init();
+  m_fileOperations.Init();
 
-  strAuth = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
+  strAuth = GetAuthenticatedPath(m_fileOperations.Resolve(url));
   std::string strPath = strAuth;
 
   {
-    std::unique_lock lock(smb);
-    if (!smb.IsSmbValid())
+    std::unique_lock lock(m_fileOperations.GetCriticalSection());
+    if (!m_fileOperations.IsValid())
       return -1;
-    fd = smbc_open(strPath.c_str(), O_RDONLY, 0);
+    fd = m_fileOperations.Open(strPath, O_RDONLY);
   }
 
   if (fd >= 0)
@@ -785,15 +904,15 @@ bool CSMBFile::Exists(const CURL& url)
   if (!IsValidFile(url.GetFileName()))
     return false;
 
-  smb.Init();
-  std::string strFileName = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
+  m_fileOperations.Init();
+  std::string strFileName = GetAuthenticatedPath(m_fileOperations.Resolve(url));
 
   struct stat info;
 
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (!m_fileOperations.IsValid())
     return false;
-  int iResult = smbc_stat(strFileName.c_str(), &info);
+  int iResult = m_fileOperations.Stat(strFileName, &info);
 
   if (iResult < 0)
     return false;
@@ -802,29 +921,28 @@ bool CSMBFile::Exists(const CURL& url)
 
 int CSMBFile::Stat(struct __stat64* buffer)
 {
-  if (m_fd == -1)
-    return -1;
-
   struct stat tmpBuffer = {};
 
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (m_fd == -1 || !m_fileOperations.IsValid())
     return -1;
-  int iResult = smbc_fstat(m_fd, &tmpBuffer);
+  int iResult = m_fileOperations.FStat(m_fd, &tmpBuffer);
+  if (iResult == 0)
+    m_fileSize = tmpBuffer.st_size;
   CUtil::StatToStat64(buffer, &tmpBuffer);
   return iResult;
 }
 
 int CSMBFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  smb.Init();
-  std::string strFileName = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
-  std::unique_lock lock(smb);
+  m_fileOperations.Init();
+  std::string strFileName = GetAuthenticatedPath(m_fileOperations.Resolve(url));
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
 
-  if (!smb.IsSmbValid())
+  if (!m_fileOperations.IsValid())
     return -1;
   struct stat tmpBuffer = {};
-  int iResult = smbc_stat(strFileName.c_str(), &tmpBuffer);
+  int iResult = m_fileOperations.Stat(strFileName, &tmpBuffer);
   CUtil::StatToStat64(buffer, &tmpBuffer);
   return iResult;
 }
@@ -849,9 +967,39 @@ int CSMBFile::Truncate(int64_t size)
   return 0;
 }
 
-bool CSMBFile::ReopenAtPositionLocked(int64_t offset, const std::string& reopenPath)
+bool CSMBFile::CanAttemptRecoveryLocked()
 {
-  if (!smb.IsSmbValid())
+  if (!m_reopenEnabled || m_recoveryAttempts >= SMB_RECONNECT_BACKOFF.size())
+  {
+    m_reopenEnabled = false;
+    m_reopenOnNextRead = false;
+    errno = m_lastRecoveryError != 0 ? m_lastRecoveryError : EIO;
+    return false;
+  }
+
+  return true;
+}
+
+bool CSMBFile::BeginRecoveryAttemptLocked()
+{
+  if (!CanAttemptRecoveryLocked())
+    return false;
+  ++m_recoveryAttempts;
+  return true;
+}
+
+void CSMBFile::ResetRecoveryStateLocked()
+{
+  m_recoveryAttempts = 0;
+  m_lastRecoveryError = 0;
+}
+
+bool CSMBFile::ReopenAtPositionLocked(int64_t offset,
+                                      int whence,
+                                      const std::string& reopenPath,
+                                      int64_t& resolvedPosition)
+{
+  if (!m_fileOperations.IsValid())
   {
     errno = ENOTCONN;
     return false;
@@ -864,7 +1012,7 @@ bool CSMBFile::ReopenAtPositionLocked(int64_t offset, const std::string& reopenP
   }
 
   errno = 0;
-  const int newFd = smbc_open(reopenPath.c_str(), O_RDONLY, 0);
+  const int newFd = m_fileOperations.Open(reopenPath, O_RDONLY);
   if (newFd < 0)
   {
     if (errno == 0)
@@ -874,20 +1022,19 @@ bool CSMBFile::ReopenAtPositionLocked(int64_t offset, const std::string& reopenP
 
   struct stat tmpBuffer = {};
   errno = 0;
-  const bool fileSizeAvailable = smbc_fstat(newFd, &tmpBuffer) == 0;
+  const bool fileSizeAvailable = m_fileOperations.FStat(newFd, &tmpBuffer) == 0;
+  if (fileSizeAvailable)
+    m_fileSize = tmpBuffer.st_size;
 
-  errno = 0;
-  const int64_t actualOffset = smbc_lseek(newFd, offset, SEEK_SET);
-  if (actualOffset != offset)
+  if (SeekFileExactly(m_fileOperations, newFd, offset, whence, resolvedPosition) !=
+      SeekStatus::SUCCESS)
   {
-    const int seekErrno = actualOffset < 0 && errno != 0 ? errno : EIO;
-    smbc_close(newFd);
+    const int seekErrno = errno;
+    m_fileOperations.Close(newFd);
     errno = seekErrno;
     return false;
   }
 
-  if (fileSizeAvailable)
-    m_fileSize = tmpBuffer.st_size;
   m_fd = newFd;
   return true;
 }
@@ -902,36 +1049,64 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
   // libsmbclient always return "-1" if called with null buffer
   // regardless of buffer size.
   // To overcome this, force return "0" in that case.
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
   if (uiBufSize == 0 && lpBuf == NULL)
     return m_fd == -1 ? -1 : 0;
-
-  std::unique_lock lock(smb); // Init not called since it has to be "inited" by now
-  if (!smb.IsSmbValid())
+  if (!m_fileOperations.IsValid())
     return -1;
 
   if (m_fd == -1)
   {
     if (!m_reopenOnNextRead)
       return -1;
+    if (m_reopenInProgressGeneration != 0)
+    {
+      errno = EAGAIN;
+      return -1;
+    }
 
     const CURL reopenUrl = m_url;
     const int64_t reopenOffset = m_readPosition;
+    const uint64_t reopenGeneration = m_positionGeneration;
+    m_reopenInProgressGeneration = reopenGeneration;
     lock.unlock();
     const std::string reopenPath = GetAuthenticatedPath(reopenUrl);
     lock.lock();
 
-    if (!m_reopenOnNextRead || !ReopenAtPositionLocked(reopenOffset, reopenPath))
+    if (!m_reopenOnNextRead || m_positionGeneration != reopenGeneration ||
+        m_reopenInProgressGeneration != reopenGeneration)
+    {
+      errno = ECANCELED;
       return -1;
+    }
+
+    int64_t resolvedPosition = -1;
+    if (!BeginRecoveryAttemptLocked() ||
+        !ReopenAtPositionLocked(reopenOffset, SEEK_SET, reopenPath, resolvedPosition))
+    {
+      const int reopenErrno = errno != 0 ? errno : EIO;
+      m_lastRecoveryError = reopenErrno;
+      if (!SMBFileRecovery::IsReconnectableReadError(reopenErrno))
+      {
+        m_reopenEnabled = false;
+        m_reopenOnNextRead = false;
+      }
+      if (m_reopenInProgressGeneration == reopenGeneration)
+        m_reopenInProgressGeneration = 0;
+      errno = reopenErrno;
+      return -1;
+    }
     m_reopenOnNextRead = false;
+    m_reopenInProgressGeneration = 0;
   }
 
-  smb.SetActivityTime();
+  m_fileOperations.SetActivityTime();
 
   const int64_t failedReadOffset = m_readPosition;
   auto readLocked = [&]()
   {
     errno = 0;
-    ssize_t result = smbc_read(m_fd, lpBuf, uiBufSize);
+    ssize_t result = m_fileOperations.Read(m_fd, lpBuf, uiBufSize);
     int readErrno = result < 0 ? errno : 0;
 
     if (m_allowRetry && result < 0 && readErrno == EINVAL)
@@ -939,7 +1114,7 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
       CLog::Log(LOGERROR, "{} - Error( {}, {}, {} ) - Retrying", __FUNCTION__, result, readErrno,
                 strerror(readErrno));
       errno = 0;
-      result = smbc_read(m_fd, lpBuf, uiBufSize);
+      result = m_fileOperations.Read(m_fd, lpBuf, uiBufSize);
       readErrno = result < 0 ? errno : 0;
     }
 
@@ -953,6 +1128,7 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
   if (bytesRead > 0)
   {
     m_readPosition += bytesRead;
+    ResetRecoveryStateLocked();
     return bytesRead;
   }
 
@@ -961,6 +1137,8 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
       bytesRead == 0 && !SMBFileRecovery::IsValidEof(failedReadOffset, m_fileSize);
   if (!m_reopenEnabled || (!unexpectedEof && !SMBFileRecovery::IsReconnectableReadError(readErrno)))
   {
+    if (bytesRead == 0 && !unexpectedEof)
+      ResetRecoveryStateLocked();
     if (bytesRead < 0)
       CLog::Log(LOGERROR, "{} - Error( {}, {}, {} )", __FUNCTION__, bytesRead, readErrno,
                 strerror(readErrno));
@@ -969,6 +1147,8 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
   }
 
   const int originalReadErrno = unexpectedEof ? EIO : readErrno;
+  m_lastRecoveryError = originalReadErrno;
+  const uint64_t recoveryGeneration = m_positionGeneration;
 
   if (!m_allowRetry)
   {
@@ -977,7 +1157,8 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
     const int failedFd = m_fd;
     m_fd = -1;
     m_reopenOnNextRead = true;
-    smbc_close(failedFd);
+    m_reopenInProgressGeneration = 0;
+    m_fileOperations.Close(failedFd);
     errno = originalReadErrno;
     return bytesRead;
   }
@@ -986,21 +1167,60 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
   const CURL reopenUrl = m_url;
   const int failedFd = m_fd;
   m_fd = -1;
-  smbc_close(failedFd);
+  m_reopenOnNextRead = true;
+  m_reopenInProgressGeneration = recoveryGeneration;
+  m_fileOperations.Close(failedFd);
   errno = originalReadErrno;
   lock.unlock();
 
   unsigned int attempts = 0;
-  for (const auto backoff : SMB_RECONNECT_BACKOFF)
+  while (true)
   {
-    ++attempts;
+    lock.lock();
+    if (!m_reopenOnNextRead || m_positionGeneration != recoveryGeneration || m_fd != -1 ||
+        m_reopenInProgressGeneration != recoveryGeneration)
+    {
+      lock.unlock();
+      errno = ECANCELED;
+      return -1;
+    }
+
+    if (!CanAttemptRecoveryLocked())
+    {
+      finalErrno = errno;
+      attempts = m_recoveryAttempts;
+      lock.unlock();
+      break;
+    }
+
+    const auto backoff = SMB_RECONNECT_BACKOFF[m_recoveryAttempts];
+    lock.unlock();
     std::this_thread::sleep_for(backoff);
     const std::string reopenPath = GetAuthenticatedPath(reopenUrl);
     lock.lock();
 
-    if (!ReopenAtPositionLocked(failedReadOffset, reopenPath))
+    if (!m_reopenOnNextRead || m_positionGeneration != recoveryGeneration || m_fd != -1 ||
+        m_reopenInProgressGeneration != recoveryGeneration)
+    {
+      lock.unlock();
+      errno = ECANCELED;
+      return -1;
+    }
+
+    if (!BeginRecoveryAttemptLocked())
+    {
+      finalErrno = errno;
+      attempts = m_recoveryAttempts;
+      lock.unlock();
+      break;
+    }
+    attempts = m_recoveryAttempts;
+
+    int64_t resolvedPosition = -1;
+    if (!ReopenAtPositionLocked(failedReadOffset, SEEK_SET, reopenPath, resolvedPosition))
     {
       finalErrno = errno != 0 ? errno : EIO;
+      m_lastRecoveryError = finalErrno;
       lock.unlock();
       if (!SMBFileRecovery::IsReconnectableReadError(finalErrno))
         break;
@@ -1011,7 +1231,10 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
     readErrno = errno;
     if (bytesRead > 0)
     {
+      m_reopenOnNextRead = false;
+      m_reopenInProgressGeneration = 0;
       m_readPosition += bytesRead;
+      ResetRecoveryStateLocked();
       CLog::Log(LOGWARNING, "SMB read recovered at offset {} on attempt {}", failedReadOffset,
                 attempts);
       errno = 0;
@@ -1020,6 +1243,9 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
 
     if (bytesRead == 0 && SMBFileRecovery::IsValidEof(failedReadOffset, m_fileSize))
     {
+      m_reopenOnNextRead = false;
+      m_reopenInProgressGeneration = 0;
+      ResetRecoveryStateLocked();
       CLog::Log(LOGWARNING, "SMB read recovered at offset {} on attempt {}", failedReadOffset,
                 attempts);
       errno = 0;
@@ -1028,9 +1254,10 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
 
     const bool retryUnexpectedEof = bytesRead == 0;
     finalErrno = retryUnexpectedEof ? originalReadErrno : readErrno;
+    m_lastRecoveryError = finalErrno;
     const int replacementFd = m_fd;
     m_fd = -1;
-    smbc_close(replacementFd);
+    m_fileOperations.Close(replacementFd);
     errno = finalErrno;
     lock.unlock();
 
@@ -1039,10 +1266,18 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
   }
 
   lock.lock();
+  if (m_positionGeneration != recoveryGeneration)
+  {
+    lock.unlock();
+    errno = ECANCELED;
+    return -1;
+  }
   m_fd = -1;
   m_reopenEnabled = false;
   m_reopenOnNextRead = false;
-  m_readPosition = 0;
+  if (m_reopenInProgressGeneration == recoveryGeneration)
+    m_reopenInProgressGeneration = 0;
+  m_lastRecoveryError = finalErrno;
   lock.unlock();
 
   CLog::Log(LOGERROR, "SMB read recovery failed at offset {} after {} attempts: errno {}",
@@ -1054,67 +1289,202 @@ ssize_t CSMBFile::Read(void* lpBuf, size_t uiBufSize)
 
 int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
 {
-  if (m_fd == -1)
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (!m_fileOperations.IsValid())
     return -1;
+  m_fileOperations.SetActivityTime();
 
-  std::unique_lock lock(smb); // Init not called since it has to be "inited" by now
-  if (!smb.IsSmbValid())
-    return -1;
-  smb.SetActivityTime();
-  int64_t pos = smbc_lseek(m_fd, iFilePosition, iWhence);
+  if (m_fd != -1 && !m_reopenEnabled)
+    return m_fileOperations.Seek(m_fd, iFilePosition, iWhence);
 
-  if (pos < 0)
+  const bool seekFromEnd = iWhence == SEEK_END;
+  int64_t target = iFilePosition;
+  if (iWhence == SEEK_CUR)
   {
-    CLog::Log(LOGERROR, "{} - Error( {}, {}, {} )", __FUNCTION__, pos, errno, strerror(errno));
+    if (!AddOffset(m_readPosition, iFilePosition, target))
+    {
+      errno = EOVERFLOW;
+      return -1;
+    }
+  }
+  else if (iWhence != SEEK_SET && !seekFromEnd)
+  {
+    errno = EINVAL;
     return -1;
   }
 
-  if (m_reopenEnabled)
-    m_readPosition = pos;
+  if (!seekFromEnd && target < 0)
+  {
+    errno = EINVAL;
+    return -1;
+  }
 
-  return pos;
+  if (m_fd != -1)
+  {
+    int64_t resolvedPosition = -1;
+    const SeekStatus seekStatus =
+        SeekFileExactly(m_fileOperations, m_fd, seekFromEnd ? iFilePosition : target,
+                        seekFromEnd ? SEEK_END : SEEK_SET, resolvedPosition);
+    if (seekStatus == SeekStatus::SUCCESS)
+    {
+      target = resolvedPosition;
+      if (seekFromEnd)
+      {
+        struct stat tmpBuffer = {};
+        if (m_fileOperations.FStat(m_fd, &tmpBuffer) == 0)
+          m_fileSize = tmpBuffer.st_size;
+      }
+      m_readPosition = target;
+      ++m_positionGeneration;
+      errno = 0;
+      return target;
+    }
+
+    const int seekErrno = errno != 0 ? errno : EIO;
+    if (seekStatus == SeekStatus::POSITION_INVALID &&
+        !SMBFileRecovery::IsReconnectableReadError(seekErrno))
+    {
+      const int failedFd = m_fd;
+      m_fd = -1;
+      m_reopenEnabled = false;
+      m_reopenOnNextRead = false;
+      m_reopenInProgressGeneration = 0;
+      m_lastRecoveryError = seekErrno;
+      ++m_positionGeneration;
+      m_fileOperations.Close(failedFd);
+      errno = seekErrno;
+      return -1;
+    }
+
+    if (!SMBFileRecovery::IsReconnectableReadError(seekErrno))
+    {
+      CLog::Log(LOGERROR, "{} - Error( {}, {}, {} )", __FUNCTION__, resolvedPosition, seekErrno,
+                strerror(seekErrno));
+      errno = seekErrno;
+      return -1;
+    }
+
+    const int failedFd = m_fd;
+    m_lastRecoveryError = seekErrno;
+    m_fd = -1;
+    m_reopenOnNextRead = true;
+    m_fileOperations.Close(failedFd);
+  }
+  else if (!m_reopenEnabled || !m_reopenOnNextRead)
+  {
+    return -1;
+  }
+
+  const uint64_t seekGeneration = ++m_positionGeneration;
+  m_reopenInProgressGeneration = seekGeneration;
+  const CURL reopenUrl = m_url;
+  int finalErrno = m_lastRecoveryError != 0 ? m_lastRecoveryError : EIO;
+  unsigned int attempts = 0;
+
+  while (true)
+  {
+    if (!CanAttemptRecoveryLocked())
+    {
+      finalErrno = errno;
+      attempts = m_recoveryAttempts;
+      break;
+    }
+
+    const auto backoff = SMB_RECONNECT_BACKOFF[m_recoveryAttempts];
+    lock.unlock();
+    std::this_thread::sleep_for(backoff);
+    const std::string reopenPath = GetAuthenticatedPath(reopenUrl);
+    lock.lock();
+
+    if (!m_reopenOnNextRead || m_positionGeneration != seekGeneration || m_fd != -1 ||
+        m_reopenInProgressGeneration != seekGeneration)
+    {
+      errno = ECANCELED;
+      return -1;
+    }
+
+    if (!BeginRecoveryAttemptLocked())
+    {
+      finalErrno = errno;
+      attempts = m_recoveryAttempts;
+      break;
+    }
+    attempts = m_recoveryAttempts;
+
+    int64_t resolvedPosition = -1;
+    if (ReopenAtPositionLocked(seekFromEnd ? iFilePosition : target,
+                               seekFromEnd ? SEEK_END : SEEK_SET, reopenPath, resolvedPosition))
+    {
+      target = resolvedPosition;
+      m_readPosition = target;
+      m_reopenOnNextRead = false;
+      m_reopenInProgressGeneration = 0;
+      CLog::Log(LOGWARNING, "SMB seek recovered at offset {} on attempt {}", target, attempts);
+      errno = 0;
+      return target;
+    }
+
+    finalErrno = errno != 0 ? errno : EIO;
+    m_lastRecoveryError = finalErrno;
+    if (!SMBFileRecovery::IsReconnectableReadError(finalErrno))
+    {
+      m_reopenEnabled = false;
+      m_reopenOnNextRead = false;
+      break;
+    }
+  }
+
+  m_fd = -1;
+  m_reopenEnabled = false;
+  m_reopenOnNextRead = false;
+  if (m_reopenInProgressGeneration == seekGeneration)
+    m_reopenInProgressGeneration = 0;
+  m_lastRecoveryError = finalErrno;
+  CLog::Log(LOGERROR, "SMB seek recovery failed at offset {} after {} attempts: errno {}", target,
+            attempts, finalErrno);
+  errno = finalErrno;
+  return -1;
 }
 
 void CSMBFile::Close()
 {
-  std::unique_lock lock(smb);
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
 
   const int fd = m_fd;
   m_fd = -1;
   m_reopenEnabled = false;
   m_reopenOnNextRead = false;
+  m_reopenInProgressGeneration = 0;
   m_readPosition = 0;
+  ++m_positionGeneration;
+  ResetRecoveryStateLocked();
 
-  if (fd != -1 && smb.IsSmbValid())
+  if (fd != -1 && m_fileOperations.IsValid())
   {
     CLog::Log(LOGDEBUG, "CSMBFile::Close closing fd {}", fd);
-    smbc_close(fd);
+    m_fileOperations.Close(fd);
   }
 }
 
 ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
 {
-  if (m_fd == -1)
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (m_fd == -1 || !m_fileOperations.IsValid())
     return -1;
 
-  // lpBuf can be safely casted to void* since xbmc_write will only read from it.
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
-    return -1;
-
-  return smbc_write(m_fd, lpBuf, uiBufSize);
+  return m_fileOperations.Write(m_fd, lpBuf, uiBufSize);
 }
 
 bool CSMBFile::Delete(const CURL& url)
 {
-  smb.Init();
-  std::string strFile = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
+  m_fileOperations.Init();
+  std::string strFile = GetAuthenticatedPath(m_fileOperations.Resolve(url));
 
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (!m_fileOperations.IsValid())
     return false;
 
-  int result = smbc_unlink(strFile.c_str());
+  int result = m_fileOperations.Unlink(strFile);
 
   if (result != 0)
     CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
@@ -1124,14 +1494,14 @@ bool CSMBFile::Delete(const CURL& url)
 
 bool CSMBFile::Rename(const CURL& url, const CURL& urlnew)
 {
-  smb.Init();
-  std::string strFile = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
-  std::string strFileNew = GetAuthenticatedPath(CSMB::GetResolvedUrl(urlnew));
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
+  m_fileOperations.Init();
+  std::string strFile = GetAuthenticatedPath(m_fileOperations.Resolve(url));
+  std::string strFileNew = GetAuthenticatedPath(m_fileOperations.Resolve(urlnew));
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (!m_fileOperations.IsValid())
     return false;
 
-  int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
+  int result = m_fileOperations.Rename(strFile, strFileNew);
 
   if (result != 0)
     CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
@@ -1150,20 +1520,20 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
   if (!IsValidFile(url.GetFileName()))
     return false;
 
-  std::string strFileName = GetAuthenticatedPath(CSMB::GetResolvedUrl(url));
-  std::unique_lock lock(smb);
-  if (!smb.IsSmbValid())
+  std::string strFileName = GetAuthenticatedPath(m_fileOperations.Resolve(url));
+  std::unique_lock lock(m_fileOperations.GetCriticalSection());
+  if (!m_fileOperations.IsValid())
     return false;
 
   if (bOverWrite)
   {
     CLog::Log(LOGWARNING, "SMBFile::OpenForWrite() called with overwriting enabled! - {}",
               CURL::GetRedacted(strFileName));
-    m_fd = smbc_creat(strFileName.c_str(), 0);
+    m_fd = m_fileOperations.Create(strFileName);
   }
   else
   {
-    m_fd = smbc_open(strFileName.c_str(), O_RDWR, 0);
+    m_fd = m_fileOperations.Open(strFileName, O_RDWR);
   }
 
   if (m_fd == -1)
@@ -1189,9 +1559,9 @@ bool CSMBFile::IsValidFile(const std::string& strFileName)
 
 std::string CSMBFile::GetAuthenticatedPath(const CURL& url)
 {
-  CURL authURL(CSMB::GetResolvedUrl(url));
+  CURL authURL(m_fileOperations.Resolve(url));
   CPasswordManager::GetInstance().AuthenticateURL(authURL);
-  return smb.URLEncode(authURL);
+  return m_fileOperations.URLEncode(authURL);
 }
 
 int CSMBFile::IoControl(IOControl request, void* param)
