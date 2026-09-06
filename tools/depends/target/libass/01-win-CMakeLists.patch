@@ -244,7 +244,7 @@
 +)
 --- /dev/null
 +++ b/cmake/FindFriBidi.cmake
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,48 @@
 +#.rst:
 +# FindFribidi
 +# -----------
@@ -283,7 +283,8 @@
 +        add_library(FriBidi::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
 +        set_target_properties(FriBidi::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
 +                                                                         IMPORTED_LOCATION "${FRIBIDI_LIBRARY}"
-+                                                                         INTERFACE_INCLUDE_DIRECTORIES "${FRIBIDI_INCLUDE_DIR}")
++                                                                         INTERFACE_INCLUDE_DIRECTORIES "${FRIBIDI_INCLUDE_DIR}"
++                                                                         INTERFACE_COMPILE_DEFINITIONS "FRIBIDI_STATIC")
 +    endif()
 +  else()
 +    if(FriBidi_FIND_REQUIRED)
