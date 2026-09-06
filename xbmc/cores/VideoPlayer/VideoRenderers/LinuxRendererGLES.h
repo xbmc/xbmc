@@ -244,6 +244,9 @@ protected:
   KODI::UTILS::GL::CGLBufferObject m_fromFboTexVBO{GL_ARRAY_BUFFER};
   KODI::UTILS::GL::CGLBufferObject m_fromFboIBO{GL_ELEMENT_ARRAY_BUFFER};
 
+  KODI::UTILS::GL::CGLBufferObject m_clearQuadVBO{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_blackBarsVBO{GL_ARRAY_BUFFER};
+
 private:
   void ClearBackBuffer();
   void ClearBackBufferQuad();
