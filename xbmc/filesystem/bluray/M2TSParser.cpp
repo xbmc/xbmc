@@ -171,6 +171,7 @@ constexpr unsigned int DOLBY_VISION_RPU_HEADER = 0x7C01;
 constexpr unsigned int DOLBY_VISION_EL_HEADER = 0x7E01;
 
 constexpr unsigned int H265_EXTENDED_SAR = 255;
+// Table E-1 - sample aspect ratios (width:height of a sample), indexed by aspect_ratio_idc
 inline constexpr std::array ASPECT_RATIOS{
     0.0f,          1.0f,           12.0f / 11.0f, 10.0f / 11.0f, 16.0f / 11.0f, 40.0f / 33.0f,
     24.0f / 11.0f, 20.0f / 11.0f,  32.0f / 11.0f, 80.0f / 33.0f, 18.0f / 11.0f, 15.0f / 11.0f,
@@ -192,6 +193,7 @@ inline constexpr std::array VC1_SEQUENCE_HEADER_START_CODE = {std::byte{0x00}, s
                                                               std::byte{0x01}, std::byte{0x0F}};
 
 constexpr unsigned int VC1_EXTENDED_SAR = 15;
+// Table 44 - sample aspect ratios (width:height of a sample), indexed by ASPECT_RATIO
 inline constexpr std::array VC1_ASPECT_RATIOS{
     0.0f,          1.0f,           12.0f / 11.0f, 10.0f / 11.0f, 16.0f / 11.0f, 40.0f / 33.0f,
     24.0f / 11.0f, 20.0f / 11.0f,  32.0f / 11.0f, 80.0f / 33.0f, 18.0f / 11.0f, 15.0f / 11.0f,
@@ -201,8 +203,12 @@ inline constexpr std::array VC1_ASPECT_RATIOS{
 inline constexpr std::array MPEG2_SEQUENCE_HEADER_START_CODE = {std::byte{0x00}, std::byte{0x00},
                                                                 std::byte{0x01}, std::byte{0xB3}};
 
-inline constexpr std::array MPEG2_DISPLAY_ASPECT_RATIOS{0.0f, 1.0f, 3.0f / 4.0f, 9.0f / 16.0f,
-                                                        1.0f / 2.21f};
+// Table 6-3 - unlike H.264/HEVC/VC-1, MPEG-2 signals the display aspect ratio the coded frame is
+// to be shown at (index 1 being square samples rather than a ratio), so the sample aspect ratio
+// has to be derived from it and the coded frame size
+constexpr unsigned int MPEG2_SQUARE_SAMPLES = 1;
+inline constexpr std::array MPEG2_DISPLAY_ASPECT_RATIOS{0.0f, 0.0f, 4.0f / 3.0f, 16.0f / 9.0f,
+                                                        2.21f};
 
 // Structures for parsers
 
@@ -1287,19 +1293,38 @@ void ParseScalingListData(BitReader& br)
   }
 }
 
-void ParseShortTermRefPicSet(BitReader& br, unsigned int idx, unsigned int numSets)
+// A set coded as a prediction of an earlier one ends with a flag per delta POC of the set it
+// references, so skipping it needs that set's NumDeltaPocs. That count is only known for sets coded
+// explicitly - deriving it for a predicted set means reproducing the DeltaPoc derivation of the
+// H.265 specification (7.4.8), which this parser has no other use for. Returns false when the count
+// is needed but unknown, leaving the reader mid-set with nothing after it readable.
+bool ParseShortTermRefPicSet(BitReader& br,
+                             unsigned int idx,
+                             unsigned int numSets,
+                             std::vector<std::optional<unsigned int>>& numDeltaPocs)
 {
   if (idx != 0 && br.ReadBits(1) == 1) // inter_ref_pic_set_prediction_flag
   {
+    unsigned int refIdx{idx - 1};
     if (idx == numSets)
-      br.SkipUE(); // delta_idx_minus1
+      refIdx = idx - (br.ReadUE() + 1); // delta_idx_minus1
     br.SkipBits(1); // delta_rps_sign
     br.SkipUE(); // abs_delta_rps_minus1
-    return;
+
+    if (refIdx >= numDeltaPocs.size() || !numDeltaPocs[refIdx])
+      return false;
+
+    for (unsigned int j = 0; j <= *numDeltaPocs[refIdx]; j++)
+    {
+      if (br.ReadBits(1) == 0) // used_by_curr_pic_flag
+        br.SkipBits(1); // use_delta_flag
+    }
+
+    return true;
   }
 
-  unsigned int numNegative{br.ReadUE()};
-  unsigned int numPositive{br.ReadUE()};
+  const unsigned int numNegative{br.ReadUE()};
+  const unsigned int numPositive{br.ReadUE()};
 
   for (unsigned int i = 0; i < numNegative; i++)
   {
@@ -1312,6 +1337,11 @@ void ParseShortTermRefPicSet(BitReader& br, unsigned int idx, unsigned int numSe
     br.SkipUE(); // delta_poc_s1_minus1
     br.SkipBits(1); // used_by_curr_pic_s1_flag
   }
+
+  if (idx < numDeltaPocs.size())
+    numDeltaPocs[idx] = numNegative + numPositive;
+
+  return true;
 }
 
 float ParseVUI(BitReader& br)
@@ -1323,9 +1353,9 @@ float ParseVUI(BitReader& br)
     unsigned int aspectRatioIdc{br.ReadBits(8)};
     if (aspectRatioIdc == H265_EXTENDED_SAR)
     {
-      unsigned int width{br.ReadBits(16)};
-      unsigned int height{br.ReadBits(16)};
-      ar = (width > 0) ? static_cast<float>(height) / static_cast<float>(width) : 0.0f;
+      unsigned int sarWidth{br.ReadBits(16)};
+      unsigned int sarHeight{br.ReadBits(16)};
+      ar = (sarHeight > 0) ? static_cast<float>(sarWidth) / static_cast<float>(sarHeight) : 0.0f;
     }
     else if (aspectRatioIdc < ASPECT_RATIOS.size())
       ar = ASPECT_RATIOS[aspectRatioIdc];
@@ -1407,9 +1437,18 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     br.SkipBits(1); // pcm_loop_filter_disabled_flag
   }
 
-  unsigned int num_short_term_ref_pic_sets{br.ReadUE()};
+  const unsigned int num_short_term_ref_pic_sets{br.ReadUE()};
+  std::vector<std::optional<unsigned int>> numDeltaPocs(num_short_term_ref_pic_sets);
   for (unsigned int i = 0; i < num_short_term_ref_pic_sets; i++)
-    ParseShortTermRefPicSet(br, i, num_short_term_ref_pic_sets);
+  {
+    if (!ParseShortTermRefPicSet(br, i, num_short_term_ref_pic_sets, numDeltaPocs))
+    {
+      // The frame size and bit depth read above still stand, but the VUI can no longer be located
+      // and a sample aspect ratio read from the wrong position would override the .clpi's
+      streamInfo->completed = true;
+      return true;
+    }
+  }
 
   if (br.ReadBits(1) == 1) // long_term_ref_pics_present_flag
   {
@@ -1425,7 +1464,7 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
   br.SkipBits(1); // strong_intra_smoothing_enabled_flag
 
   if (br.ReadBits(1) == 1) // vui_parameters_present_flag
-    streamInfo->aspectRatio = ParseVUI(br);
+    streamInfo->sampleAspectRatio = ParseVUI(br);
 
   streamInfo->completed = true;
 
@@ -1527,7 +1566,7 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
                        (frame_crop_top_offset + frame_crop_bottom_offset) * cropUnitY;
 
   if (br.ReadBits(1) == 1) // vui_parameters_present_flag
-    streamInfo->aspectRatio = ParseVUI(br);
+    streamInfo->sampleAspectRatio = ParseVUI(br);
 
   streamInfo->completed = true;
 
@@ -1898,14 +1937,14 @@ bool ParseVC1(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
       if (aspect_ratio == VC1_EXTENDED_SAR)
       {
         header = GetDWord(buffer, offset + 10);
-        unsigned int aspect_horiz_size{GetBits(header, 32, 8)};
-        unsigned int aspect_vert_size{GetBits(header, 24, 8)};
-        streamInfo->aspectRatio = (aspect_vert_size > 0) ? static_cast<float>(aspect_horiz_size) /
-                                                               static_cast<float>(aspect_vert_size)
-                                                         : 0.0f;
+        // Both fields are the ratio's terms minus one, so neither can be zero
+        const unsigned int aspect_horiz_size{GetBits(header, 32, 8) + 1};
+        const unsigned int aspect_vert_size{GetBits(header, 24, 8) + 1};
+        streamInfo->sampleAspectRatio =
+            static_cast<float>(aspect_horiz_size) / static_cast<float>(aspect_vert_size);
       }
       else
-        streamInfo->aspectRatio = VC1_ASPECT_RATIOS[aspect_ratio];
+        streamInfo->sampleAspectRatio = VC1_ASPECT_RATIOS[aspect_ratio];
     }
   }
 
@@ -1918,26 +1957,29 @@ bool ParseVC1(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 
 bool ParseMPEG2(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamInfo)
 {
-  if (auto result{std::ranges::search(buffer, MPEG2_SEQUENCE_HEADER_START_CODE)};
-      result.empty() || buffer.end() - result.begin() < 8)
+  auto result{std::ranges::search(buffer, MPEG2_SEQUENCE_HEADER_START_CODE)};
+  if (result.empty() || buffer.end() - result.begin() < 8)
     return false;
 
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing MPEG2 Sequence Header");
 
-  unsigned int header{GetDWord(buffer, 4)};
+  const unsigned int offset{static_cast<unsigned int>(result.begin() - buffer.begin()) + 4};
+
+  unsigned int header{GetDWord(buffer, offset)};
   unsigned int horizontal_size_value{GetBits(header, 32, 12)};
   unsigned int vertical_size_value{GetBits(header, 20, 12)};
   streamInfo->width = horizontal_size_value;
   streamInfo->height = vertical_size_value;
 
-  if (unsigned int aspect_ratio_information{GetBits(header, 8, 4)}; aspect_ratio_information < 2)
-    streamInfo->aspectRatio = MPEG2_DISPLAY_ASPECT_RATIOS[aspect_ratio_information];
+  if (const unsigned int aspect_ratio_information{GetBits(header, 8, 4)};
+      aspect_ratio_information == MPEG2_SQUARE_SAMPLES)
+    streamInfo->sampleAspectRatio = 1.0f;
   else if (aspect_ratio_information < MPEG2_DISPLAY_ASPECT_RATIOS.size())
-    streamInfo->aspectRatio = vertical_size_value > 0
-                                  ? MPEG2_DISPLAY_ASPECT_RATIOS[aspect_ratio_information] *
-                                        static_cast<float>(horizontal_size_value) /
-                                        static_cast<float>(vertical_size_value)
-                                  : 0.0f;
+    streamInfo->sampleAspectRatio = horizontal_size_value > 0
+                                        ? MPEG2_DISPLAY_ASPECT_RATIOS[aspect_ratio_information] *
+                                              static_cast<float>(vertical_size_value) /
+                                              static_cast<float>(horizontal_size_value)
+                                        : 0.0f;
 
   streamInfo->bitDepth = 8;
 
@@ -2159,6 +2201,33 @@ bool CM2TSParser::GetStreamsFromFile(const std::string& path,
                  "Not all stream details determined from {} after {} packets ({} bytes) - may "
                  "need MAX_PACKETS_TO_PARSE ({}) increase.",
                  clipFile, packetCount, totalBytesRead, MAX_PACKETS_TO_PARSE);
+
+    for (const TSVideoStreamInfo& videoStream : GetVideoStreams(streams))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY,
+                  "Clip {} - video stream PID 0x{} type 0x{} ({}) - {}x{}, sample aspect ratio "
+                  "{:.4f} (display aspect ratio {:.4f}), {} bit, HDR10 {}, HDR10+ {}, Dolby Vision "
+                  "{}, enhancement layer {}, 3D {}, headers parsed {}",
+                  clip, fmt::format("{:04x}", videoStream.pid),
+                  fmt::format("{:02x}", static_cast<int>(videoStream.streamType)),
+                  GetStreamTypeName(videoStream.streamType), videoStream.width, videoStream.height,
+                  videoStream.sampleAspectRatio, GetDisplayAspectRatio(videoStream),
+                  videoStream.bitDepth, videoStream.hdr10, videoStream.hdr10Plus,
+                  videoStream.dolbyVision, videoStream.isEnhancementLayer, videoStream.is3d,
+                  videoStream.seen);
+
+      // A zero sample aspect ratio means the sequence/picture parameter set was never successfully
+      // parsed - the parsers have several early exits (no start code found, truncated header,
+      // unsupported profile) and some streams simply do not signal one
+      if (videoStream.sampleAspectRatio == 0.0f)
+        CLog::LogF(LOGDEBUG,
+                   "Clip {} - no sample aspect ratio determined for video stream PID 0x{} type "
+                   "0x{} ({}) - headers parsed {}, completed {}",
+                   clip, fmt::format("{:04x}", videoStream.pid),
+                   fmt::format("{:02x}", static_cast<int>(videoStream.streamType)),
+                   GetStreamTypeName(videoStream.streamType), videoStream.seen,
+                   videoStream.completed);
+    }
 
     // Report the details determined for each audio stream
     for (const TSAudioStreamInfo& audioStream : GetAudioStreams(streams))

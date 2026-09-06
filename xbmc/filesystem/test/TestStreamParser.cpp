@@ -10,6 +10,7 @@
 #include "filesystem/bluray/PlaylistStructure.h"
 #include "filesystem/bluray/StreamParser.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -36,7 +37,9 @@ ClipInformation MakeClip(unsigned int clip)
   clipInfo.streamsRead = true;
 
   ProgramInformation program;
-  program.streams.emplace_back(MakeStream(ENCODING_TYPE::VIDEO_H264, 0x1011, ""));
+  StreamInformation video{MakeStream(ENCODING_TYPE::VIDEO_H264, 0x1011, "")};
+  video.aspect = ASPECT_RATIO::RATIO_16_9; // only the .clpi carries this
+  program.streams.emplace_back(std::move(video));
   program.streams.emplace_back(MakeStream(ENCODING_TYPE::AUDIO_DTSHD_MASTER, 0x1100, "eng"));
   program.streams.emplace_back(MakeStream(ENCODING_TYPE::AUDIO_AC3, 0x1101, "jpn"));
   program.streams.emplace_back(MakeStream(ENCODING_TYPE::SUB_PG, 0x1200, "eng"));
@@ -188,4 +191,48 @@ TEST(TestStreamParser, PlaylistWithoutAStreamNumberTableFallsBackToTheClip)
   CStreamParser::ConvertBlurayPlaylistInformation(b, deferred, {}, StreamDetails::DEFER);
   EXPECT_TRUE(deferred.audioStreams.empty());
   EXPECT_TRUE(deferred.pgStreams.empty());
+}
+
+TEST(TestStreamParser, AspectRatioComesFromTheClipWhenTheM2TSHasNotBeenAnalysed)
+{
+  // The aspect ratio is carried by the .clpi's program information and not by the play item's
+  // stream number table, so the video stream the table describes has to pick it up from the clip
+  BlurayPlaylistInformation b{MakePlaylist(100, 30, {}, {})};
+
+  PlaylistInformation p;
+  CStreamParser::ConvertBlurayPlaylistInformation(b, p, {}, StreamDetails::INCLUDE);
+
+  ASSERT_EQ(p.videoStreams.size(), 1U);
+  EXPECT_FLOAT_EQ(p.videoStreams[0].videoAspectRatio, 16.0f / 9.0f);
+}
+
+TEST(TestStreamParser, TheM2TSDisplayAspectRatioIsPreferredToTheClipsFrameFlag)
+{
+  // 2.35:1 anamorphically encoded in a 1920x1080 frame - the .clpi can only say the frame is 16:9,
+  // so the ratio the elementary stream signals is the one to report
+  BlurayPlaylistInformation b{MakePlaylist(100, 30, {}, {})};
+
+  auto video{std::make_shared<TSVideoStreamInfo>()};
+  video->pid = 0x1011;
+  video->streamType = ENCODING_TYPE::VIDEO_H264;
+  video->width = 1920;
+  video->height = 1080;
+  video->sampleAspectRatio = 4.0f / 3.0f;
+
+  const StreamMap streams{{video->pid, video}};
+
+  PlaylistInformation p;
+  CStreamParser::ConvertBlurayPlaylistInformation(b, p, streams, StreamDetails::INCLUDE);
+
+  ASSERT_EQ(p.videoStreams.size(), 1U);
+  EXPECT_FLOAT_EQ(p.videoStreams[0].videoAspectRatio, 1920.0f / 1080.0f * 4.0f / 3.0f);
+
+  // A stream that signals no sample aspect ratio falls back to the clip's frame flag
+  video->sampleAspectRatio = 0.0f;
+
+  PlaylistInformation unsignalled;
+  CStreamParser::ConvertBlurayPlaylistInformation(b, unsignalled, streams, StreamDetails::INCLUDE);
+
+  ASSERT_EQ(unsignalled.videoStreams.size(), 1U);
+  EXPECT_FLOAT_EQ(unsignalled.videoStreams[0].videoAspectRatio, 16.0f / 9.0f);
 }

@@ -31,6 +31,7 @@ namespace XFILE
 namespace
 {
 VideoStreamInfo PopulateVideoStreamInfo(const StreamInformation& stream,
+                                        ASPECT_RATIO aspect,
                                         const TSVideoStreamInfo* bsvi)
 {
   VideoStreamInfo vsi{};
@@ -127,18 +128,28 @@ VideoStreamInfo PopulateVideoStreamInfo(const StreamInformation& stream,
     vsi.hdrType = StreamHdrType::HDR_TYPE_NONE; // Not stored in BLURAY_TITLE_INFO
   }
 
-  switch (stream.aspect)
+  // The display aspect ratio the elementary stream signals is the accurate one, as it accounts for
+  // anamorphic encodings the .clpi's 4:3/16:9 frame flag cannot express. Fall back to that flag
+  // when the m2ts has not been analysed or the stream signalled no sample aspect ratio.
+  if (const float dar{bsvi ? GetDisplayAspectRatio(*bsvi) : 0.0f}; dar > 0.0f)
   {
-    using enum ASPECT_RATIO;
-    case RATIO_4_3:
-      vsi.videoAspectRatio = 4.0f / 3.0f;
-      break;
-    case RATIO_16_9:
-      vsi.videoAspectRatio = 16.0f / 9.0f;
-      break;
-    default:
-      vsi.videoAspectRatio = 0.0f;
-      break;
+    vsi.videoAspectRatio = dar;
+  }
+  else
+  {
+    switch (aspect)
+    {
+      using enum ASPECT_RATIO;
+      case RATIO_4_3:
+        vsi.videoAspectRatio = 4.0f / 3.0f;
+        break;
+      case RATIO_16_9:
+        vsi.videoAspectRatio = 16.0f / 9.0f;
+        break;
+      default:
+        vsi.videoAspectRatio = 0.0f;
+        break;
+    }
   }
 
   return vsi;
@@ -273,10 +284,42 @@ void LogDefaultStreams(const BlurayPlaylistInformation& b)
   logStream(playItem->presentationGraphicStreams, "subtitle");
 }
 
+// The aspect ratio is carried by the .clpi's program information and not by the play item's stream
+// number table, so the streams taken from the table have to pick it up from the clip they belong
+// to. Keyed by packet identifier, which is what the two have in common.
+using AspectRatioMap = std::map<unsigned int, ASPECT_RATIO>;
+
+AspectRatioMap GetClipAspectRatios(const BlurayPlaylistInformation& b)
+{
+  AspectRatioMap aspectRatios;
+
+  // Must be the clip the stream number table (and the M2TS analysis) describes, otherwise the
+  // packet identifiers will not correspond - see GetLongestPlayItem.
+  const ClipInformation* playItemClip{GetLongestPlayItemClip(b)};
+  if (!playItemClip)
+    return aspectRatios;
+
+  const auto it{std::ranges::find(b.clips, playItemClip->clip, &ClipInformation::clip)};
+  if (it == b.clips.end())
+    return aspectRatios;
+
+  for (const ProgramInformation& program : it->programs)
+  {
+    for (const StreamInformation& stream : program.streams)
+    {
+      if (stream.aspect != ASPECT_RATIO{})
+        aspectRatios.try_emplace(stream.packetIdentifier, stream.aspect);
+    }
+  }
+
+  return aspectRatios;
+}
+
 // Add one elementary stream to the playlist, refined by the M2TS analysis in s where it has been
 // done (s is empty when stream details were deferred).
 void AddStream(const StreamInformation& stream,
                const StreamMap& s,
+               const AspectRatioMap& aspectRatios,
                unsigned int playlist,
                const DefaultStreams& defaults,
                PlaylistInformation& p)
@@ -291,9 +334,20 @@ void AddStream(const StreamInformation& stream,
     case VIDEO_H264:
     case VIDEO_H264_MVC:
     case VIDEO_HEVC:
+    {
+      // The stream carries the aspect ratio itself when it came from the .clpi
+      ASPECT_RATIO aspect{stream.aspect};
+      if (aspect == ASPECT_RATIO{})
+      {
+        if (const auto ar{aspectRatios.find(stream.packetIdentifier)}; ar != aspectRatios.end())
+          aspect = ar->second;
+      }
+
       p.videoStreams.emplace_back(PopulateVideoStreamInfo(
-          stream, bs != s.end() ? dynamic_cast<TSVideoStreamInfo*>(bs->second.get()) : nullptr));
+          stream, aspect,
+          bs != s.end() ? dynamic_cast<TSVideoStreamInfo*>(bs->second.get()) : nullptr));
       break;
+    }
     case AUDIO_LPCM:
     case AUDIO_AC3:
     case AUDIO_DTS:
@@ -361,6 +415,7 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
   }
 
   const DefaultStreams defaults{GetDefaultStreams(b)};
+  const AspectRatioMap aspectRatios{GetClipAspectRatios(b)};
 
   // The PlayItem's stream number table is what the playlist exposes, and in stream number order.
   // The clip's program list is everything the m2ts carries.
@@ -379,7 +434,7 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
          {&playItem->videoStreams, &playItem->audioStreams, &playItem->presentationGraphicStreams})
     {
       for (const StreamInformation& stream : *streams)
-        AddStream(stream, s, b.playlist, defaults, p);
+        AddStream(stream, s, aspectRatios, b.playlist, defaults, p);
     }
     return;
   }
@@ -411,7 +466,7 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
   if (streamClip && !streamClip->programs.empty())
   {
     for (const StreamInformation& stream : streamClip->programs[0].streams)
-      AddStream(stream, s, b.playlist, defaults, p);
+      AddStream(stream, s, aspectRatios, b.playlist, defaults, p);
   }
 }
 } // namespace XFILE
