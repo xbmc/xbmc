@@ -456,27 +456,6 @@ bool CRetroPlayer::OnAction(const CAction& action)
   return false;
 }
 
-std::string CRetroPlayer::GetPlayerState()
-{
-  std::string savestatePath;
-
-  if (m_autoSave)
-  {
-    savestatePath = m_playback->CreateSavestate(true);
-    if (savestatePath.empty())
-    {
-      CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Continuing without saving");
-      m_autoSave.reset();
-    }
-  }
-  return savestatePath;
-}
-
-bool CRetroPlayer::SetPlayerState(const std::string& state)
-{
-  return m_playback->LoadSavestate(state);
-}
-
 void CRetroPlayer::FrameMove()
 {
   if (m_renderManager)
@@ -625,9 +604,9 @@ bool CRetroPlayer::IsAutoSaveEnabled() const
   return m_playback->GetSpeed() > 0.0;
 }
 
-std::string CRetroPlayer::CreateAutosave()
+void CRetroPlayer::RequestAutosave()
 {
-  return m_playback->CreateSavestate(true);
+  m_playback->RequestAutosave();
 }
 
 void CRetroPlayer::SetSpeedInternal(double speed)
@@ -673,7 +652,7 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Loading savestate");
 
-      if (!SetPlayerState(savestatePath))
+      if (!LoadSavestate(savestatePath))
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to load savestate");
     }
   }

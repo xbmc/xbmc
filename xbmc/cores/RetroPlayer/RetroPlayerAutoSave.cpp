@@ -8,7 +8,6 @@
 
 #include "RetroPlayerAutoSave.h"
 
-#include "URL.h"
 #include "games/GameSettings.h"
 #include "utils/log.h"
 
@@ -54,11 +53,7 @@ void CRetroPlayerAutoSave::Process()
       continue;
 
     if (m_callback.IsAutoSaveEnabled())
-    {
-      std::string savePath = m_callback.CreateAutosave();
-      if (!savePath.empty())
-        CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to {}", CURL::GetRedacted(savePath));
-    }
+      m_callback.RequestAutosave();
   }
 
   CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Autosave thread ended");

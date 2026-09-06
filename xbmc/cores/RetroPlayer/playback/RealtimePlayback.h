@@ -31,6 +31,7 @@ public:
   double GetSpeed() const override { return 1.0; }
   void SetSpeed(double speedFactor) override {}
   void PauseAsync() override {}
+  void RequestAutosave() override {}
   std::string CreateSavestate(bool autosave, const std::string& savestatePath = "") override
   {
     return "";
