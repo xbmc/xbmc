@@ -104,11 +104,15 @@ public:
 
   PyThreadState* GetMainThreadState() const { return m_mainThreadState; }
 
+  // false means an inconsistent binding runtime: types would be created by a sub-interpreter
+  bool BindingModulesLoaded() const { return m_bindingModulesLoaded; }
+
   bool WaitForEvent(CEvent& hEvent, unsigned int milliseconds);
 
 private:
   CCriticalSection m_critSection;
   PyThreadState* m_mainThreadState{nullptr};
+  bool m_bindingModulesLoaded{true};
   int m_iDllScriptCounter{0}; // to keep track of the total scripts running that need the dll
 
   //Vector with list of threads used for running scripts

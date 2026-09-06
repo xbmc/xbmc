@@ -50,7 +50,12 @@ function(generate_file file)
   add_custom_command(OUTPUT ${CPP_FILE}
                      COMMAND SWIG::SWIG
                      ARGS ${SWIG_ARGS}
-                     DEPENDS SWIG::SWIG ${swig_deps})
+                     COMMAND ${CMAKE_COMMAND}
+                             -DFILE=${CMAKE_CURRENT_BINARY_DIR}/${CPP_FILE}
+                             -DSWIG_VERSION=${_swig_version}
+                             -P ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake
+                     DEPENDS SWIG::SWIG ${swig_deps}
+                             ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake)
 
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
@@ -72,12 +77,22 @@ foreach(INPUT IN LISTS INPUTS)
   generate_file(${INPUT})
 endforeach()
 
+# swigpyrun.h gives SwigRuntime.cpp the swig_module_info definition matching the generated modules
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/swigpyrun.h
+                   COMMAND SWIG::SWIG
+                   ARGS -python -c++ -external-runtime ${CMAKE_CURRENT_BINARY_DIR}/swigpyrun.h
+                   DEPENDS SWIG::SWIG)
+list(APPEND SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/SwigRuntime.cpp
+                    ${CMAKE_CURRENT_BINARY_DIR}/swigpyrun.h)
+
 add_library(python_binding STATIC ${SOURCES})
+target_include_directories(python_binding PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
 
 # director-enabled modules in one binary otherwise collide on Swig::Director symbols
-target_compile_definitions(python_binding PRIVATE SWIG_DIRECTOR_STATIC)
+# SWIG_LINK_RUNTIME: modules find the shared type table via SwigRuntime.cpp instead of a Python capsule owned by one interpreter
+target_compile_definitions(python_binding PRIVATE SWIG_DIRECTOR_STATIC SWIG_LINK_RUNTIME)
 
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   set_target_properties(python_binding PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
