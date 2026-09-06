@@ -8,18 +8,20 @@
 
 #pragma once
 
+#include "AutosaveCapture.h"
 #include "GameLoop.h"
 #include "IPlayback.h"
+#include "SavestateWorker.h"
+#include "XBDateTime.h"
+#include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
 #include <atomic>
-#include <future>
 #include <memory>
 #include <stddef.h>
 #include <stdint.h>
-
-class CDateTime;
+#include <vector>
 
 namespace KODI
 {
@@ -31,7 +33,6 @@ class CGameClient;
 namespace RETRO
 {
 class CGUIGameMessenger;
-class CRPRenderManager;
 class CSavestateDatabase;
 class IMemoryStream;
 
@@ -48,7 +49,9 @@ public:
 
   // implementation of IPlayback
   void Initialize() override;
+  void Quiesce() override;
   void Deinitialize() override;
+  bool WaitForSavestates() override;
   bool CanPause() const override { return true; }
   bool CanSeek() const override { return true; }
   unsigned int GetTimeMs() const override { return m_playTimeMs; }
@@ -58,7 +61,7 @@ public:
   double GetSpeed() const override;
   void SetSpeed(double speedFactor) override;
   void PauseAsync() override;
-  void RequestAutosave() override { m_autosaveRequested.store(true); }
+  void RequestAutosave() override { m_autosaveCapture.Request(); }
   std::string CreateSavestate(bool autosave, const std::string& savestatePath = "") override;
   bool LoadSavestate(const std::string& savestatePath) override;
 
@@ -77,10 +80,28 @@ private:
   void AdvanceFrames(uint64_t frames);
   void UpdatePlaybackStats();
   void UpdateMemoryStream();
-  void CommitSavestate(bool autosave,
-                       const std::string& savePath,
-                       const CDateTime& nowUTC,
-                       uint64_t timestampFrames);
+  struct Snapshot
+  {
+    std::unique_ptr<uint32_t[]> memory;
+    std::vector<uint8_t> achievements;
+    CRPRenderManager::VideoFrame video;
+    CDateTime created;
+    uint64_t frames{0};
+    double wallClock{0.0};
+    std::string path;
+    bool autosave{true};
+    bool rewind{false};
+    bool discarded{false};
+    int64_t serializeUs{0};
+    int64_t captureUs{0};
+  };
+
+  void CaptureMetadata(Snapshot& snapshot);
+  void ProcessAutosave(bool serialized, int64_t serializeUs);
+  void CancelAutosave();
+  void InvalidateAutosave();
+  bool CommitSavestate(const Snapshot& snapshot);
+  std::string GetSavestatePath(bool autosave, const std::string& path, const CDateTime& created);
 
   // Construction parameter
   GAME::CGameClient* const m_gameClient;
@@ -93,10 +114,17 @@ private:
   CCriticalSection m_mutex;
 
   // Savestate functionality
-  std::atomic<bool> m_autosaveRequested{false};
+  CAutosaveCapture m_autosaveCapture;
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
   std::string m_autosavePath{};
-  std::vector<std::future<void>> m_savestateThreads;
+  const size_t m_memorySize;
+  const std::string m_gamePath;
+  const std::string m_gameClientId;
+  const std::string m_gameClientVersion;
+  std::unique_ptr<CSavestateWorker<Snapshot>> m_saveWorker;
+  std::unique_ptr<Snapshot> m_pendingSnapshot;
+  bool m_snapshotReady{false};
+  std::atomic<bool> m_saveSucceeded{true};
   CCriticalSection m_savestateMutex;
 
   // Playback stats

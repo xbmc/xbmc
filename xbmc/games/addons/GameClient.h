@@ -193,11 +193,8 @@ public:
   /*!
    * \brief Hold the client still for the duration of a savestate snapshot
    *
-   * The emulator's memory and the achievement state have to describe the same
-   * frame. Both are read from a worker thread while the game loop runs, so
-   * locking each read on its own is not enough - RunFrame() would still be
-   * free to advance between them, pairing one frame's memory with another
-   * frame's achievement progress.
+   * Callers combining core and achievement state hold this lock across both
+   * operations. Acquire the playback lock first when both locks are needed.
    *
    * The lock is recursive, so the calls made while holding it may take it
    * again.

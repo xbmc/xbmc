@@ -23,10 +23,16 @@ void CLinearMemoryStream::Init(size_t frameSize, uint64_t maxFrameCount)
   m_frameSize = frameSize;
   m_paddedFrameSize = (m_frameSize + sizeof(uint32_t) - 1) / sizeof(uint32_t);
   m_maxFrames = maxFrameCount;
+  if (m_paddedFrameSize != 0)
+  {
+    m_currentFrame = std::make_unique<uint32_t[]>(m_paddedFrameSize);
+    m_nextFrame = std::make_unique<uint32_t[]>(m_paddedFrameSize);
+  }
 }
 
 void CLinearMemoryStream::Reset()
 {
+  m_hasRetiredFrame = false;
   m_frameSize = 0;
   m_paddedFrameSize = 0;
   m_maxFrames = 0;
@@ -55,18 +61,15 @@ void CLinearMemoryStream::SetMaxFrameCount(uint64_t maxFrameCount)
 
 uint8_t* CLinearMemoryStream::BeginFrame()
 {
+  m_hasRetiredFrame = false;
   if (m_paddedFrameSize == 0)
     return nullptr;
 
   if (!m_bHasCurrentFrame)
   {
-    if (!m_currentFrame)
-      m_currentFrame = std::make_unique<uint32_t[]>(m_paddedFrameSize);
     return reinterpret_cast<uint8_t*>(m_currentFrame.get());
   }
 
-  if (!m_nextFrame)
-    m_nextFrame = std::make_unique<uint32_t[]>(m_paddedFrameSize);
   return reinterpret_cast<uint8_t*>(m_nextFrame.get());
 }
 
@@ -92,10 +95,21 @@ void CLinearMemoryStream::SubmitFrame()
   if (m_bHasNextFrame)
   {
     SubmitFrameInternal();
+    m_hasRetiredFrame = true;
   }
 }
 
 uint64_t CLinearMemoryStream::BufferSize() const
 {
   return PastFramesAvailable() + (m_bHasCurrentFrame ? 1 : 0);
+}
+
+bool CLinearMemoryStream::ExchangeRetiredFrame(std::unique_ptr<uint32_t[]>& replacement)
+{
+  if (!replacement || !m_hasRetiredFrame)
+    return false;
+
+  m_nextFrame.swap(replacement);
+  m_hasRetiredFrame = false;
+  return true;
 }

@@ -32,6 +32,7 @@ public:
   void SetMaxFrameCount(uint64_t maxFrameCount) override;
   uint8_t* BeginFrame() override;
   void SubmitFrame() override;
+  bool ExchangeRetiredFrame(std::unique_ptr<uint32_t[]>& replacement) override;
   const uint8_t* CurrentFrame() const override;
   uint64_t FutureFramesAvailable() const override { return 0; }
   uint64_t AdvanceFrames(uint64_t frameCount) override { return 0; }
@@ -64,6 +65,7 @@ protected:
 
 private:
   size_t m_frameSize;
+  bool m_hasRetiredFrame{false};
 };
 } // namespace RETRO
 } // namespace KODI

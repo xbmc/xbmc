@@ -229,15 +229,21 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   std::unique_lock lock(m_mutex);
 
-  if (m_gameClient && m_gameServices.GameSettings().AutosaveEnabled())
+  if (m_playback)
+    m_playback->Quiesce();
+
+  if (m_gameClient && m_playback && m_gameServices.GameSettings().AutosaveEnabled())
   {
     std::string savePath = m_playback->CreateSavestate(true);
-    if (!savePath.empty())
+    const bool saved = m_playback->WaitForSavestates();
+    if (!savePath.empty() && saved)
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to {}", CURL::GetRedacted(savePath));
     else
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Failed to save state at close");
   }
 
+  if (m_playback)
+    m_playback->Deinitialize();
   m_playback.reset();
 
   if (m_input)
