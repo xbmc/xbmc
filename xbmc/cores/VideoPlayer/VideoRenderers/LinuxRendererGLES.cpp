@@ -487,10 +487,7 @@ void CLinuxRendererGLES::ClearBackBufferQuad()
   glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1);
 
-  GLuint vertexVBO;
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+  m_clearQuadVBO.SetData(vertices.data(), vertices.size(), GL_STREAM_DRAW);
 
   glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
   glEnableVertexAttribArray(posLoc);
@@ -499,7 +496,6 @@ void CLinuxRendererGLES::ClearBackBufferQuad()
 
   glDisableVertexAttribArray(posLoc);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
 
   m_renderSystem->DisableGUIShader();
 }
@@ -551,10 +547,7 @@ void CLinuxRendererGLES::DrawBlackBars()
   glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1);
 
-  GLuint vertexVBO;
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+  m_blackBarsVBO.SetData(vertices.data(), vertices.size(), GL_STREAM_DRAW);
 
   glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
   glEnableVertexAttribArray(posLoc);
@@ -563,7 +556,6 @@ void CLinuxRendererGLES::DrawBlackBars()
 
   glDisableVertexAttribArray(posLoc);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
 
   renderSystem->DisableGUIShader();
 }
