@@ -176,6 +176,18 @@ install(FILES ${CORE_ADDON_BINDINGS_FILES}
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev)
 
+# Install kodi-addon-dev python api stub files
+set(python_stubs "")
+foreach(module xbmc xbmcaddon xbmcdrm xbmcgui xbmcplugin xbmcvfs)
+  list(APPEND python_stubs ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/swig/${module}.pyi)
+endforeach()
+if(TARGET ${APP_NAME_LC}::MicroHttpd)
+  list(APPEND python_stubs ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/swig/xbmcwsgi.pyi)
+endif()
+install(FILES ${python_stubs}
+        DESTINATION ${datarootdir}/${APP_NAME_LC}/python-stubs
+        COMPONENT kodi-addon-dev)
+
 # Install kodi-addon-dev add-on bindings
 install(FILES ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddOptions.cmake

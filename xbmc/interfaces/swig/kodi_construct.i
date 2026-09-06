@@ -74,6 +74,8 @@
 %define KODI_CONSTRUCT(NS, NAME)
 %feature("python:tp_new") NS::NAME "KodiTpNew_" #NAME;
 %feature("python:tp_init") NS::NAME "KodiSwig_tpInitNoop";
+// autodoc would install an __init__ descriptor that reactivates tp_init over the thunk above
+%feature("noautodoc") NS::NAME::NAME;
 %wrapper %{
 static int _wrap_new_##NAME(PyObject*, PyObject*, PyObject*);
 static PyObject* KodiTpNew_##NAME(PyTypeObject* type, PyObject* args, PyObject* kwargs)

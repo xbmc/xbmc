@@ -48,6 +48,9 @@
 %include "kodi_addonclass.i"
 %include "kodi_construct.i"
 
+/* 7d. PEP 484 annotations for the -pyi stubs */
+%include "kodi_typing.i"
+
 /* 7c. The Groovy generator published these five per module via
    PyModule_AddStringConstant. No bundled addon reads them, but they are cheap
    and third-party code may. Values copied from PythonSwig.cpp.template. */

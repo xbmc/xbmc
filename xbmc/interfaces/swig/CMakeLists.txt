@@ -23,7 +23,8 @@ function(generate_file file)
   # -w401/514: AddonClass base is deliberately unreflected; 389: operator[]; 362: operator= in %imported Tuple.h
   # 302: kodi_generics.i declares Tuple/Alternative/Dictionary to carry their typemaps, so
   # SWIG ignores the header definitions it later sees. That is the intent, not a collision.
-  set(SWIG_ARGS -python -c++ -builtin -interface ${module_name}
+  # -pyi: PEP 484 stub files for addon authors, a build artifact beside the wrappers
+  set(SWIG_ARGS -python -c++ -builtin -interface ${module_name} -pyi
                 -w401,389,514,362,302 -o ${CPP_FILE}
                 -I${CMAKE_SOURCE_DIR}/xbmc
                 ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file})

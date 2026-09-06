@@ -34,3 +34,10 @@ measures here make it safe:
 XBPython::Initialize imports all seven modules in the main interpreter at
 startup so first registration happens in an interpreter that never exits.
 
+## Type stubs
+
+Generation runs with -pyi, producing PEP 484 stub files (xbmc.pyi, ...) next
+to the wrappers in the build tree. kodi_typing.i supplies the annotations for
+Kodi's generic types via pytyping typemaps; the stubs never affect the
+compiled wrappers. On Linux the kodi-addon-dev component installs them to
+${datarootdir}/kodi/python-stubs for addon developers.
