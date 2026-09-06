@@ -10,9 +10,10 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 
-#include <gtest/gtest.h>
 #include <set>
 #include <string>
+
+#include <gtest/gtest.h>
 
 namespace
 {
