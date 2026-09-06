@@ -16,8 +16,6 @@
 
 #include <memory>
 #include <string>
-#include <string_view>
-#include <utility>
 
 class PLT_MediaController;
 
@@ -25,34 +23,6 @@ namespace UPNP
 {
 
 class CUPnPPlayerController;
-
-//! \brief Tracks whether a transport state reported by a renderer ends the file Kodi asked it for.
-//!
-//! Starting a file on a renderer that is already playing stops it first, so a state of STOPPED is
-//! the end of playback only once it is known to belong to the file being watched.
-class CPlaybackState
-{
-public:
-  //! \brief An open is in flight, so the renderer still reports states belonging to the last file.
-  void Opening() { m_started = false; }
-
-  //! \brief The renderer is playing the file that was opened.
-  void Started() { m_started = true; }
-
-  //! \brief Stops watching, returning whether playback was being watched.
-  bool Finish() { return std::exchange(m_started, false); }
-
-  bool IsStarted() const { return m_started; }
-
-  //! \brief Whether \a transportState ends the file being watched.
-  bool HasEnded(std::string_view transportState) const
-  {
-    return m_started && transportState == "STOPPED";
-  }
-
-private:
-  bool m_started{false};
-};
 
 class CUPnPPlayer : public IPlayer, public CThread
 {
@@ -96,7 +66,7 @@ private:
 
   PLT_MediaController* m_control = nullptr;
   std::unique_ptr<CUPnPPlayerController> m_delegate;
-  CPlaybackState m_playback;
+  bool m_started = false;
   bool m_stopremote = false;
   bool m_hasVideo{false};
   bool m_hasAudio{false};

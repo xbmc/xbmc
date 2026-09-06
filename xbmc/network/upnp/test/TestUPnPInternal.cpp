@@ -191,13 +191,6 @@ void AddResource(PLT_MediaObject& object, const char* uri, const char* protocolI
   object.m_Resources.Add(resource);
 }
 
-NPT_UInt32 AddressOf(const char* literal)
-{
-  NPT_IpAddress address;
-  address.Parse(literal);
-  return address.AsLong();
-}
-
 bool HasContentType(const PLT_MediaObject& object, const char* contentType)
 {
   for (NPT_Cardinal i = 0; i < object.m_Resources.GetItemCount(); i++)
@@ -210,7 +203,6 @@ bool HasContentType(const PLT_MediaObject& object, const char* contentType)
 
 } // namespace
 
-//! \brief A renderer naming only the registered type can select a FLAC Kodi offers.
 TEST(TestUPnPInternal, AddAlternateMimeResourcesOffersRegisteredFlacSpelling)
 {
   PLT_MediaItem object = MakeObjectWithResource("http-get:*:audio/x-flac:*");
@@ -222,7 +214,6 @@ TEST(TestUPnPInternal, AddAlternateMimeResourcesOffersRegisteredFlacSpelling)
   EXPECT_TRUE(HasContentType(object, "audio/flac"));
 }
 
-//! \brief The mapping runs both ways, so a server offering only the registered type also matches.
 TEST(TestUPnPInternal, AddAlternateMimeResourcesOffersLegacyFlacSpelling)
 {
   PLT_MediaItem object = MakeObjectWithResource("http-get:*:audio/flac:*");
@@ -234,7 +225,6 @@ TEST(TestUPnPInternal, AddAlternateMimeResourcesOffersLegacyFlacSpelling)
   EXPECT_TRUE(HasContentType(object, "audio/x-flac"));
 }
 
-//! \brief The added resource is the same stream, so only the content type differs.
 TEST(TestUPnPInternal, AddAlternateMimeResourcesKeepsUriAndProtocol)
 {
   PLT_MediaItem object = MakeObjectWithResource("http-get:*:audio/x-flac:DLNA.ORG_PN=FLAC");
@@ -247,21 +237,6 @@ TEST(TestUPnPInternal, AddAlternateMimeResourcesKeepsUriAndProtocol)
   EXPECT_STREQ("audio/flac", object.m_Resources[1].m_ProtocolInfo.GetContentType().GetChars());
 }
 
-//! \brief An object already carrying both spellings is left alone rather than duplicated.
-TEST(TestUPnPInternal, AddAlternateMimeResourcesDoesNotDuplicate)
-{
-  PLT_MediaItem object = MakeObjectWithResource("http-get:*:audio/x-flac:*");
-  PLT_MediaItemResource other;
-  other.m_Uri = "http://192.0.2.1:8080/song";
-  other.m_ProtocolInfo = PLT_ProtocolInfo("http-get:*:audio/flac:*");
-  object.m_Resources.Add(other);
-
-  AddAlternateMimeResources(object);
-
-  EXPECT_EQ(2u, object.m_Resources.GetItemCount());
-}
-
-//! \brief A content type with no alternate spelling is untouched.
 TEST(TestUPnPInternal, AddAlternateMimeResourcesLeavesUnrelatedTypes)
 {
   PLT_MediaItem object = MakeObjectWithResource("http-get:*:audio/mpeg:*");
@@ -272,53 +247,6 @@ TEST(TestUPnPInternal, AddAlternateMimeResourcesLeavesUnrelatedTypes)
   EXPECT_TRUE(HasContentType(object, "audio/mpeg"));
 }
 
-/*!
- * One resource is built per local address, in host enumeration order, so the first is routinely a
- * virtual adapter the renderer cannot reach.
- */
-TEST(TestUPnPInternal, PreferResourceAddressesPutsAReachableAddressFirst)
-{
-  PLT_MediaItem object;
-  AddResource(object, "http://10.20.100.8:1298/song", "http-get:*:audio/x-flac:*");
-  AddResource(object, "http://192.0.2.1:1298/song", "http-get:*:audio/x-flac:*");
-  AddResource(object, "http://169.254.96.137:1298/song", "http-get:*:audio/x-flac:*");
-
-  PreferResourceAddresses(object, {AddressOf("192.0.2.1")});
-
-  ASSERT_EQ(3u, object.m_Resources.GetItemCount());
-  EXPECT_STREQ("http://192.0.2.1:1298/song", object.m_Resources[0].m_Uri.GetChars());
-}
-
-//! rief The rest keep their order behind it, so nothing is lost or reshuffled.
-TEST(TestUPnPInternal, PreferResourceAddressesKeepsTheRestInOrder)
-{
-  PLT_MediaItem object;
-  AddResource(object, "http://10.20.100.8:1298/song", "http-get:*:audio/x-flac:*");
-  AddResource(object, "http://192.0.2.1:1298/song", "http-get:*:audio/x-flac:*");
-  AddResource(object, "http://169.254.96.137:1298/song", "http-get:*:audio/x-flac:*");
-
-  PreferResourceAddresses(object, {AddressOf("192.0.2.1")});
-
-  EXPECT_STREQ("http://10.20.100.8:1298/song", object.m_Resources[1].m_Uri.GetChars());
-  EXPECT_STREQ("http://169.254.96.137:1298/song", object.m_Resources[2].m_Uri.GetChars());
-}
-
-//! rief With nothing known to be reachable the order is left alone rather than guessed at.
-TEST(TestUPnPInternal, PreferResourceAddressesLeavesTheOrderAloneWhenNoneMatch)
-{
-  PLT_MediaItem object;
-  AddResource(object, "http://10.20.100.8:1298/song", "http-get:*:audio/x-flac:*");
-  AddResource(object, "http://192.0.2.1:1298/song", "http-get:*:audio/x-flac:*");
-
-  PreferResourceAddresses(object, {AddressOf("203.0.113.9")});
-
-  EXPECT_STREQ("http://10.20.100.8:1298/song", object.m_Resources[0].m_Uri.GetChars());
-}
-
-/*!
- * The alternate carries the uri of the resource it was cloned from, so each address needs its own
- * or the only spelling the renderer understands may name an address it cannot reach.
- */
 TEST(TestUPnPInternal, AddAlternateMimeResourcesOffersEveryAddress)
 {
   PLT_MediaItem object;

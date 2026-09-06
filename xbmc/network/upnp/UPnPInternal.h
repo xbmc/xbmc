@@ -10,9 +10,7 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
-#include <Neptune/Source/Core/NptNetwork.h>
 #include <Neptune/Source/Core/NptReferences.h>
 #include <Neptune/Source/Core/NptStrings.h>
 #include <Neptune/Source/Core/NptTypes.h>
@@ -80,18 +78,8 @@ namespace UPNP
   NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = NULL);
   const NPT_String GetProtocolInfo(const CFileItem& item, const char* protocol, const PLT_HttpRequestContext* context = NULL);
 
-  /*! \brief Offer each resource under every spelling its content type is known by.
-      Renderers match a resource against the protocolInfo they advertise, so a resource carrying
-      only one of two names in common use cannot be selected by a renderer naming the other. */
+  /*! \brief Add each resource again under the other common spelling of its content type. */
   void AddAlternateMimeResources(PLT_MediaObject& object);
-
-  /*! rief Move the resources reachable from `preferred` to the front, order preserved. */
-  void PreferResourceAddresses(PLT_MediaObject& object, const std::vector<NPT_UInt32>& preferred);
-
-  /*! rief Order an object's resources so a renderer is offered an address it can route to.
-      One resource is built per local address, in host enumeration order, and a renderer can only
-      fetch from one on its own network. */
-  void SortResourcesForRenderer(PLT_MediaObject& object, const NPT_IpAddress& renderer);
 
   const std::string& CorrectAllItemsSortHack(const std::string &item);
 
