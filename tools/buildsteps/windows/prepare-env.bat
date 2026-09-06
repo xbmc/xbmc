@@ -25,3 +25,14 @@ SET GIT_CLEAN_CMD=git clean -xffd -e "project/BuildDependencies/downloads" -e "p
 
 ECHO running %GIT_CLEAN_CMD%
 %GIT_CLEAN_CMD%
+
+IF NOT ERRORLEVEL 1 GOTO :eof
+
+ECHO WARNING: git clean reported errors, an attempt will be made to recover by killing possible zombie processes...
+
+TASKKILL /IM "cmake.exe" /F >nul 2>&1
+TASKKILL /IM "link.exe" /F >nul 2>&1
+TASKKILL /IM "msbuild.exe" /F >nul 2>&1
+
+ECHO running %GIT_CLEAN_CMD%
+%GIT_CLEAN_CMD%
