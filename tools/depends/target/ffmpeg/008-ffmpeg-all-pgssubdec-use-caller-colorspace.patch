@@ -1,0 +1,79 @@
+diff --git a/libavutil/colorspace.h b/libavutil/colorspace.h
+--- a/libavutil/colorspace.h
++++ b/libavutil/colorspace.h
+@@ -51,6 +51,18 @@
+         b_add = ONE_HALF + FIX(1.8556 * 255.0 / 224.0) * cb;  \
+     }
+ 
++// Derived from ITU-R BT.2020-2 Table 4, non-constant luminance.
++// Kr = 0.2627, Kb = 0.0593.
++#define YUV_TO_RGB1_CCIR_BT2020_NCL(cb1, cr1)                     \
++    {                                                             \
++        cb    = (cb1) - 128;                                      \
++        cr    = (cr1) - 128;                                      \
++        r_add = ONE_HALF + FIX(1.474600 * 255.0 / 224.0) * cr;    \
++        g_add = ONE_HALF - FIX(0.164553 * 255.0 / 224.0) * cb -   \
++                           FIX(0.571353 * 255.0 / 224.0) * cr;    \
++        b_add = ONE_HALF + FIX(1.881400 * 255.0 / 224.0) * cb;    \
++    }
++
+ // To be used for the BT709 variant as well
+ #define YUV_TO_RGB2_CCIR(r, g, b, y1)\
+ {\
+diff --git a/libavcodec/pgssubdec.c b/libavcodec/pgssubdec.c
+--- a/libavcodec/pgssubdec.c
++++ b/libavcodec/pgssubdec.c
+@@ -336,6 +336,7 @@
+     int y, cb, cr, alpha;
+     int r, g, b, r_add, g_add, b_add;
+     int id;
++    enum AVColorSpace csp = avctx->colorspace;
+ 
+     id  = bytestream_get_byte(&buf);
+     palette = find_palette(id, &ctx->palettes);
+@@ -351,6 +352,23 @@
+     /* Skip palette version */
+     buf += 1;
+ 
++    /* A PGS palette carries no colorimetry of its own; it is authored to
++     * match the associated video stream, so only the caller can know it.
++     * A matrix with no conversion here, such as BT.2020 constant luminance
++     * or SMPTE 240M, keeps the frame-height guess rather than being decoded
++     * with a different matrix. */
++    switch (csp) {
++    case AVCOL_SPC_BT709:
++    case AVCOL_SPC_BT470BG:
++    case AVCOL_SPC_SMPTE170M:
++    case AVCOL_SPC_BT2020_NCL:
++        break;
++    default:
++        csp = (avctx->height <= 0 || avctx->height > 576) ? AVCOL_SPC_BT709
++                                                         : AVCOL_SPC_SMPTE170M;
++        break;
++    }
++
+     while (buf < buf_end) {
+         color_id  = bytestream_get_byte(&buf);
+         y         = bytestream_get_byte(&buf);
+@@ -358,11 +376,17 @@
+         cb        = bytestream_get_byte(&buf);
+         alpha     = bytestream_get_byte(&buf);
+ 
+-        /* Default to BT.709 colorspace. In case of <= 576 height use BT.601 */
+-        if (avctx->height <= 0 || avctx->height > 576) {
+-            YUV_TO_RGB1_CCIR_BT709(cb, cr);
+-        } else {
++        switch (csp) {
++        case AVCOL_SPC_BT2020_NCL:
++            YUV_TO_RGB1_CCIR_BT2020_NCL(cb, cr);
++            break;
++        case AVCOL_SPC_BT470BG:
++        case AVCOL_SPC_SMPTE170M:
+             YUV_TO_RGB1_CCIR(cb, cr);
++            break;
++        default:
++            YUV_TO_RGB1_CCIR_BT709(cb, cr);
++            break;
+         }
+ 
+         YUV_TO_RGB2_CCIR(r, g, b, y);

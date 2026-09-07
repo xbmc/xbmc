@@ -199,6 +199,9 @@ macro(buildFFMPEG)
                       COMMAND ${CMAKE_COMMAND} -E copy
                       ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/002-ffmpeg-libavutil-common-h-cpp11-constant-macros.patch
                       <SOURCE_DIR>
+                      COMMAND ${CMAKE_COMMAND} -E copy
+                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/008-ffmpeg-all-pgssubdec-use-caller-colorspace.patch
+                      <SOURCE_DIR>
     )
 
     if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
