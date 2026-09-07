@@ -46,6 +46,7 @@ public:
 
   void Initialize();
   void Stop();
+  void ScanForPresentMedia();
 
   void LoadSources();
   bool SaveSources();

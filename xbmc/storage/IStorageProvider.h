@@ -70,6 +70,10 @@ public:
   virtual void Initialize() = 0;
   virtual void Stop() = 0;
 
+  //! Add the media already in the drives as sources. Separate from Initialize() because reading
+  //! a disc spins the drive up, and this runs after the splash is shown
+  virtual void ScanForPresentMedia() {}
+
   virtual void GetLocalDrives(std::vector<CMediaSource>& localDrives) = 0;
   virtual void GetRemovableDrives(std::vector<CMediaSource>& removableDrives) = 0;
   virtual std::string GetFirstOpticalDeviceFileName()

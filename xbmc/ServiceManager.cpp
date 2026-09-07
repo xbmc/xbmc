@@ -243,6 +243,8 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
     return false;
 
   init_level = 3;
+
+  m_mediaManager->ScanForPresentMedia();
   return true;
 }
 
