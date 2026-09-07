@@ -8,18 +8,16 @@
 
 #include "RenderBufferOpenGLES.h"
 
-#include "cores/RetroPlayer/rendering/RenderContext.h"
+#include "rendering/GLExtensions.h"
 
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferOpenGLES::CRenderBufferOpenGLES(CRenderContext& context,
-                                             GLuint pixelType,
+CRenderBufferOpenGLES::CRenderBufferOpenGLES(GLuint pixelType,
                                              GLuint internalFormat,
                                              GLuint pixelFormat,
                                              GLuint bpp)
-  : m_context(context),
-    m_pixelType(pixelType),
+  : m_pixelType(pixelType),
     m_internalFormat(internalFormat),
     m_pixelFormat(pixelFormat),
     m_bpp(bpp)
@@ -76,7 +74,7 @@ bool CRenderBufferOpenGLES::UploadTexture()
       glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelFormat, m_pixelType, pixels);
     }
   }
-  else if (m_context.IsExtSupported("GL_EXT_unpack_subimage"))
+  else if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_unpack_subimage))
   {
 #ifdef GL_UNPACK_ROW_LENGTH_EXT
     glPixelStorei(GL_UNPACK_ROW_LENGTH_EXT, stride / m_bpp);

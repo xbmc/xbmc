@@ -46,7 +46,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   std::tie(m_useDithering, m_ditherDepth) = CServiceBroker::GetWinSystem()->GetDitherSettings();
   if (m_useDithering)
   {
-    if (m_renderSystem && !m_renderSystem->IsExtSupported("GL_EXT_texture_norm16"))
+    if (m_renderSystem && !CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_norm16))
     {
       CLog::Log(LOGWARNING,
                 "GLES: dithering requested but GL_EXT_texture_norm16 not supported, disabling");
@@ -1997,7 +1997,7 @@ void CLinuxRendererGLES::DeletePackedYUVTexture(int index)
 
 bool CLinuxRendererGLES::CreatePackedYUVTexture(int index)
 {
-  if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888"))
+  if (!CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_format_BGRA8888))
   {
     CLog::Log(LOGERROR, "CLinuxRendererGLES::CreatePackedYUVTexture - "
                         "GL_EXT_texture_format_BGRA8888 not supported");

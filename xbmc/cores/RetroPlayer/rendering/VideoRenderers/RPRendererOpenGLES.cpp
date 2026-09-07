@@ -37,9 +37,9 @@ CRPBaseRenderer* CRendererFactoryOpenGLES::CreateRenderer(
   return new CRPRendererOpenGLES(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContext& context)
+RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContext&)
 {
-  return {std::make_shared<CRenderBufferPoolOpenGLES>(context)};
+  return {std::make_shared<CRenderBufferPoolOpenGLES>()};
 }
 
 // --- CRPRendererOpenGLES -----------------------------------------------------
