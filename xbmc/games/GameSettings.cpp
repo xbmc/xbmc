@@ -196,10 +196,15 @@ std::string CGameSettings::LoginToRA(const std::string& username,
 
   CLog::Log(LOGDEBUG, "CGameSettings::LoginToRA -- logging in as '{}'", username);
 
+  // The server names the reason in the body of a 401, which CCurlFile
+  // discards for any error status unless asked not to
+  CURL url{LOGIN_TO_RETRO_ACHIEVEMENTS_URL};
+  url.SetProtocolOption("failonerror", "false");
+
   XFILE::CCurlFile request;
   request.SetRequestHeader("User-Agent", CSysInfo::GetUserAgent());
   std::string strResponse;
-  if (request.Post(LOGIN_TO_RETRO_ACHIEVEMENTS_URL, postData, strResponse))
+  if (request.Post(url.Get(), postData, strResponse))
   {
     CVariant data(CVariant::VariantTypeObject);
     if (CJSONVariantParser::Parse(strResponse, data))
