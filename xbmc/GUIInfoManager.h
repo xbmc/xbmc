@@ -222,6 +222,16 @@ private:
 
   int AddMultiInfo(const KODI::GUILIB::GUIINFO::CGUIInfo& info);
 
+  /*!
+   \brief One registered multi-info block, by value.
+
+   A reference into m_multiInfo cannot be held: any thread translating an info
+   string it has not seen before appends to the vector, and the reallocation
+   that follows frees what the reference points at. Callers get a copy taken
+   under the lock instead.
+   */
+  KODI::GUILIB::GUIINFO::CGUIInfo GetMultiInfo(int id) const;
+
   int ResolveMultiInfo(int info) const;
   bool IsListItemInfo(int info) const;
 
@@ -230,6 +240,7 @@ private:
 
   // Vector of multiple information mapped to a single integer lookup
   std::vector<KODI::GUILIB::GUIINFO::CGUIInfo> m_multiInfo;
+  mutable CCriticalSection m_critMultiInfo;
 
   // Current playing stuff
   std::unique_ptr<CFileItem> m_currentFile;
