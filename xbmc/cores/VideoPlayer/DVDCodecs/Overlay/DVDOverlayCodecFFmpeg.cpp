@@ -57,6 +57,9 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->codec_tag = hints.codec_tag;
+  m_pCodecContext->colorspace = hints.colorSpace;
+  m_pCodecContext->color_primaries = hints.colorPrimaries;
+  m_pCodecContext->color_trc = hints.colorTransferCharacteristic;
   m_pCodecContext->time_base.num = 1;
   m_pCodecContext->time_base.den = DVD_TIME_BASE;
   m_pCodecContext->pkt_timebase.num = 1;
