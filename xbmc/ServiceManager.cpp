@@ -220,6 +220,7 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
   CLog::Log(LOGINFO, "[Media Detection] starting service for optical media detection");
   m_DetectDVDType->Create(false);
 #endif
+  m_mediaManager->ScanForPresentMedia();
 
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
@@ -254,6 +255,7 @@ void CServiceManager::DeinitStageThree()
   m_DetectDVDType->StopThread();
   m_DetectDVDType.reset();
 #endif
+  m_mediaManager->StopScanForPresentMedia();
   m_playerCoreFactory.reset();
   m_PVRManager->Deinit();
   m_contextMenuManager->Deinit();

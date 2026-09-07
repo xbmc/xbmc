@@ -70,6 +70,22 @@ public:
   virtual void Initialize() = 0;
   virtual void Stop() = 0;
 
+  /*!
+   * \brief Start making the media already in the drives at startup available as sources.
+   *
+   * Reading a disc spins the drive up and opens it with two libraries in turn, so a platform
+   * that answers here does the reading in the background and the sources appear once it has.
+   * Platforms whose media detection runs on a thread already have nothing to do here.
+   */
+  virtual void ScanForPresentMedia() {}
+
+  /*!
+   * \brief Wait for any scan started by ScanForPresentMedia() to finish.
+   *
+   * Called before the services the scan uses (GUI, localized strings, disc caches) go away.
+   */
+  virtual void StopScanForPresentMedia() {}
+
   virtual void GetLocalDrives(std::vector<CMediaSource>& localDrives) = 0;
   virtual void GetRemovableDrives(std::vector<CMediaSource>& removableDrives) = 0;
   virtual std::string GetFirstOpticalDeviceFileName()

@@ -10,7 +10,9 @@
 
 #include "storage/IStorageProvider.h"
 #include "threads/CriticalSection.h"
+#include "threads/Thread.h"
 
+#include <memory>
 #include <vector>
 
 #include <Cfgmgr32.h>
@@ -31,6 +33,13 @@ public:
   virtual void Initialize();
   virtual void Stop() { }
 
+  virtual void ScanForPresentMedia();
+  virtual void StopScanForPresentMedia();
+
+  // Reads the discs the drives hold at startup. Runs on m_presentMediaScanner, and so touches
+  // nothing of this object's own.
+  static void ScanDrivesForPresentMedia();
+
   virtual void GetLocalDrives(std::vector<CMediaSource>& localDrives);
   virtual void GetRemovableDrives(std::vector<CMediaSource>& removableDrives);
   virtual std::string GetFirstOpticalDeviceFileName();
@@ -47,6 +56,8 @@ public:
     ADDED,
     SAFELY_REMOVED,
     UNSAFELY_REMOVED,
+    //! A disc that was already in the drive when Kodi started
+    PRESENT_AT_STARTUP,
   };
 
   // Build a StorageDevice descriptor from a drive root (eg. "D:")
@@ -73,4 +84,6 @@ private:
 
   inline static std::vector<StorageEvent> m_events;
   inline static CCriticalSection m_eventsSection;
+
+  std::unique_ptr<CThread> m_presentMediaScanner;
 };

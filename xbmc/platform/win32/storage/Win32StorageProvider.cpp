@@ -25,6 +25,17 @@
 
 bool CWin32StorageProvider::xbevent = false;
 
+namespace
+{
+class CPresentMediaScanner : public CThread
+{
+public:
+  CPresentMediaScanner() : CThread("PresentMediaScanner") {}
+
+  void Process() override { CWin32StorageProvider::ScanDrivesForPresentMedia(); }
+};
+} // namespace
+
 std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
   return std::make_unique<CWin32StorageProvider>();
@@ -39,17 +50,38 @@ void CWin32StorageProvider::Initialize()
     CServiceBroker::GetMediaManager().SetHasOpticalDrive(true);
   else
     CLog::LogF(LOGDEBUG, "No optical drive found.");
+}
 
+void CWin32StorageProvider::ScanForPresentMedia()
+{
 #ifdef HAS_OPTICAL_DRIVE
-  // A disc already present in a drive at startup is added as a source but does
-  // NOT autorun, matching Linux
+  m_presentMediaScanner = std::make_unique<CPresentMediaScanner>();
+  m_presentMediaScanner->Create(false);
+#endif
+}
+
+void CWin32StorageProvider::StopScanForPresentMedia()
+{
+  // Destroying the thread waits for the scan to finish
+  m_presentMediaScanner.reset();
+}
+
+void CWin32StorageProvider::ScanDrivesForPresentMedia()
+{
+#ifdef HAS_OPTICAL_DRIVE
+  std::vector<CMediaSource> vShare;
+  GetDrivesByType(vShare, DVD_DRIVES);
+
   for (const auto& it : vShare)
   {
-    if (CServiceBroker::GetMediaManager().GetDriveStatus(it.strPath) ==
+    if (CServiceBroker::GetMediaManager().GetDriveStatus(it.strPath) !=
         DriveState::CLOSED_MEDIA_PRESENT)
-    {
-      CServiceBroker::GetMediaManager().AddOpticalSource(it.strPath);
-    }
+      continue;
+
+    // Read the disc here, off the application thread. Adding the source is the application
+    // thread's to do, so the pump does it once this has cached the answers.
+    CServiceBroker::GetMediaManager().GetDiskLabel(it.strPath);
+    QueueStorageEvent(StorageEventType::PRESENT_AT_STARTUP, GetStorageDevice(it.strPath));
   }
 #endif
 }
@@ -429,6 +461,13 @@ bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback* callba
           break;
         case StorageEventType::UNSAFELY_REMOVED:
           callback->OnStorageUnsafelyRemoved(ev.device);
+          break;
+        case StorageEventType::PRESENT_AT_STARTUP:
+#ifdef HAS_OPTICAL_DRIVE
+          // A disc already present in a drive at startup is added as a source but does
+          // NOT autorun, matching Linux
+          CServiceBroker::GetMediaManager().AddOpticalSource(ev.device.path);
+#endif
           break;
       }
     }

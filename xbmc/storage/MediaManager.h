@@ -15,6 +15,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <vector>
@@ -43,6 +44,18 @@ public:
 
   void Initialize();
   void Stop();
+
+  /*!
+   * \brief Make the media already in the drives at startup available as sources.
+   *
+   * The platform decides how: where a drive has to spin up first, it does not happen here.
+   */
+  void ScanForPresentMedia();
+
+  /*!
+   * \brief Wait for the scan started by ScanForPresentMedia() to finish.
+   */
+  void StopScanForPresentMedia();
 
   void LoadSources();
   bool SaveSources();
@@ -136,7 +149,7 @@ protected:
 #ifdef HAS_OPTICAL_DRIVE
   std::map<std::string,MEDIA_DETECT::CCdInfo*> m_mapCdInfo;
 #endif
-  bool m_bOpticalDrivePresent;
+  std::atomic<bool> m_bOpticalDrivePresent;
   std::string m_strFirstAvailDrive;
 
 private:
@@ -166,7 +179,17 @@ private:
 #endif
 
   void RemoveDiscInfo(const std::string& devicePath);
+
+  /*!
+   * \brief The disc in a drive, read on first ask and remembered until the drive is emptied.
+   * \param[in] mediaPath The path the disc is mounted at.
+   * \return What the disc says about itself, empty where it is not a disc Kodi recognizes.
+   */
+  UTILS::DISCS::DiscInfo GetCachedDiscInfo(const std::string& mediaPath);
+
   std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
+  //! Guards the cache, which the startup scan fills while the application thread reads it
+  CCriticalSection m_discInfoSection;
 #ifdef HAVE_LIBBLURAY
   HasBlurayPlaylist m_hasBlurayPlaylist{HasBlurayPlaylist::UNKNOWN};
 #endif
