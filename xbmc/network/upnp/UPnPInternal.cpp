@@ -213,7 +213,7 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
   /* if Platinum couldn't map it, default to Kodi internal mapping */
   if (mime.IsEmpty())
   {
-    NPT_String mime = item.GetMimeType().c_str();
+    mime = item.GetMimeType().c_str();
     if (mime == "application/octet-stream")
       mime = "";
   }
