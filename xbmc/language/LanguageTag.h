@@ -10,8 +10,10 @@
 
 #include "language/Territory.h"
 
+#include <cstddef>
 #include <optional>
 #include <string>
+#include <string_view>
 
 namespace KODI::LANGUAGE
 {
@@ -179,7 +181,7 @@ public:
    * \return The territory, naming no place where the tag states no region, which is true of
    *         most tags.
    */
-  const CTerritory& GetTerritory() const;
+  CTerritory GetTerritory() const;
 
   /*!
    * \brief The 2-Char ISO 639-1 code.
@@ -244,11 +246,22 @@ public:
   std::string ToEnglishLanguageName() const;
 
 private:
-  //! A tag that named a language, with what the parse read out of it
-  CLanguageTag(std::string tag, std::string language, CTerritory territory)
+  /*!
+   * \brief A tag that named a language, with where the parse found its parts.
+   * \param[in] tag The canonical form.
+   * \param[in] languageLength The length of the primary language subtag, which the tag starts
+   *            with.
+   * \param[in] regionOffset Where the region subtag starts, or 0 where there is none.
+   * \param[in] regionLength The length of the region subtag, or 0 where there is none.
+   */
+  CLanguageTag(std::string tag,
+               std::size_t languageLength,
+               std::size_t regionOffset,
+               std::size_t regionLength)
     : m_tag(std::move(tag)),
-      m_language(std::move(language)),
-      m_territory(std::move(territory)),
+      m_languageLength(languageLength),
+      m_regionOffset(regionOffset),
+      m_regionLength(regionLength),
       m_valid(true)
   {
   }
@@ -256,10 +269,17 @@ private:
   //! Text that named no language, kept as it was given
   explicit CLanguageTag(std::string text) : m_tag(std::move(text)) {}
 
+  //! The primary language subtag, as canonical BCP 47 spells it
+  std::string_view Language() const { return {m_tag.data(), m_languageLength}; }
+
+  //! The region subtag, as canonical BCP 47 spells it, or empty where the tag states none
+  std::string_view Region() const { return {m_tag.data() + m_regionOffset, m_regionLength}; }
+
   std::string m_tag;
-  //! The primary language subtag, so that nothing has to take the tag apart to find it
-  std::string m_language;
-  CTerritory m_territory;
+  //! Where the parse found the subtags, so that nothing has to take the tag apart again
+  std::size_t m_languageLength{0};
+  std::size_t m_regionOffset{0};
+  std::size_t m_regionLength{0};
   bool m_valid{false};
 };
 } // namespace KODI::LANGUAGE
