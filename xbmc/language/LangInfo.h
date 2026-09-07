@@ -43,6 +43,14 @@ enum class MeridiemSymbol
   AM
 };
 
+//! Whether the platform's locale collation can order text, found out on first use
+enum class LocaleCollation
+{
+  UNCHECKED,
+  UNAVAILABLE,
+  AVAILABLE
+};
+
 /*!
  * \brief The region profile the user chose, as langinfo.xml states it: date and time formats,
  *        units, number separators and the locale text sorts by.
@@ -206,7 +214,7 @@ protected:
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
   std::locale m_systemLocale; // current locale, matching GUI settings
   std::locale m_originalLocale; // original locale, without changes of collate
-  int m_collationtype;
+  LocaleCollation m_localeCollation{LocaleCollation::UNCHECKED};
 
   std::string m_shortDateFormat;
   std::string m_longDateFormat;

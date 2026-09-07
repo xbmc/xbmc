@@ -9,15 +9,20 @@
 #include "language/i18n/Iso639.h"
 
 #include "language/i18n/Iso639_2.h"
+#include "language/i18n/IsoCodes.h"
 #include "language/i18n/TableLanguageCodes.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
+#include <climits>
 #include <cstdint>
 #include <string>
 
 namespace
 {
+//! The low byte of a packed code, which is its last character
+constexpr uint32_t LONG_CODE_CHAR_MASK{(1u << CHAR_BIT) - 1};
+
 std::string Code(std::string_view text)
 {
   std::string code{StringUtils::ToLower(text)};
@@ -33,13 +38,13 @@ std::string LongCodeToString(uint32_t code)
   // Build the string in reverse order since appending to a string is more efficient than inserting
   // at position 0 and shifting the existing contents
   std::string ret;
-  for (unsigned int j = 0; j < 4; j++)
+  for (std::size_t j = 0; j < LONG_CODE_LENGTH; j++)
   {
-    char c = static_cast<char>(code) & 0xFF;
+    const char c = static_cast<char>(code & LONG_CODE_CHAR_MASK);
     if (c == '\0')
       break;
     ret.push_back(c);
-    code >>= 8;
+    code >>= CHAR_BIT;
   }
   // Reverse the string for the final result
   std::ranges::reverse(ret);
@@ -49,7 +54,7 @@ std::string LongCodeToString(uint32_t code)
 std::optional<std::string> CIso639::Alpha2ToAlpha3B(std::string_view alpha2)
 {
   const std::string code{Code(alpha2)};
-  if (code.length() != 2)
+  if (code.length() != ALPHA2_CODE_LENGTH)
     return std::nullopt;
 
   const auto it = std::ranges::lower_bound(LanguageCodes, code, {}, &ISO639::iso639_1);
@@ -67,7 +72,7 @@ std::optional<std::string> CIso639::Alpha2ToAlpha3B(std::string_view alpha2)
 std::optional<std::string> CIso639::Alpha3ToAlpha2(std::string_view alpha3)
 {
   const std::string code{Code(alpha3)};
-  if (code.length() != 3)
+  if (code.length() != ALPHA3_CODE_LENGTH)
     return std::nullopt;
 
   // The table is keyed by the bibliographic form, so a terminological code is mapped over first

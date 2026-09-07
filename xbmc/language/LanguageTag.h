@@ -17,6 +17,10 @@
 
 namespace KODI::LANGUAGE
 {
+//! Past this a name composed from a tag's subtags is cut short and the tag appended, so that a
+//! list of languages stays readable
+inline constexpr std::size_t MAX_COMPOSED_NAME_LENGTH{30};
+
 /*!
  * \brief A language, carried as a value rather than as a bare string.
  *

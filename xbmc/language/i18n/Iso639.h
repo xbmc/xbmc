@@ -12,6 +12,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <climits>
+#include <cstddef>
 #include <cstdint>
 #include <optional>
 #include <ranges>
@@ -20,6 +22,9 @@
 
 namespace KODI::LANGUAGE::I18N
 {
+//! How many characters a code packed into a 32 bit integer can hold, one per byte
+inline constexpr std::size_t LONG_CODE_LENGTH{4};
+
 /*!
  * \brief Converts a language code given as a 4-byte integer to its string representation.
  * \param[in] code The language code coded as a 4-byte integer
@@ -69,11 +74,11 @@ constexpr uint32_t StringToLongCode(std::string_view a)
 {
   const size_t len = a.length();
 
-  assert(len <= 4);
+  assert(len <= KODI::LANGUAGE::I18N::LONG_CODE_LENGTH);
 
-  return static_cast<uint32_t>(len >= 4 ? a[len - 4] : 0) << 24 |
-         static_cast<uint32_t>(len >= 3 ? a[len - 3] : 0) << 16 |
-         static_cast<uint32_t>(len >= 2 ? a[len - 2] : 0) << 8 |
+  return static_cast<uint32_t>(len >= 4 ? a[len - 4] : 0) << (3 * CHAR_BIT) |
+         static_cast<uint32_t>(len >= 3 ? a[len - 3] : 0) << (2 * CHAR_BIT) |
+         static_cast<uint32_t>(len >= 2 ? a[len - 2] : 0) << CHAR_BIT |
          static_cast<uint32_t>(len >= 1 ? a[len - 1] : 0);
 }
 

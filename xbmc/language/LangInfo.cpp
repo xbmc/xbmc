@@ -30,6 +30,9 @@
 
 namespace
 {
+//! Digits grouped in threes, as std::numpunct::do_grouping states it
+constexpr const char* DEFAULT_DIGIT_GROUPING{"\3"};
+
 std::string GetDateStringWithFormat(const CDateTime& date, const std::string& format)
 {
   // Return the formatted date together with the format used.
@@ -251,7 +254,7 @@ void CLangInfo::CRegion::SetGlobalLocale(CLangInfo& langInfo)
   }
 
   langInfo.m_systemLocale = current_locale; //! @todo move to CLangInfo class
-  langInfo.m_collationtype = 0;
+  langInfo.m_localeCollation = LocaleCollation::UNCHECKED;
   std::locale::global(current_locale);
 #endif
 
@@ -298,7 +301,7 @@ CLangInfo::CLangInfo()
   m_use24HourClock = DetermineUse24HourClockFromTimeFormat(m_defaultRegion.m_strTimeFormat);
   m_temperatureUnit = m_defaultRegion.m_tempUnit;
   m_speedUnit = m_defaultRegion.m_speedUnit;
-  m_collationtype = 0;
+  m_localeCollation = LocaleCollation::UNCHECKED;
 }
 
 CLangInfo::~CLangInfo() = default;
@@ -421,13 +424,13 @@ bool CLangInfo::Load(const std::string& langInfoPath)
           if (pThousandsSep->Attribute("groupingformat"))
             region.m_strGrouping = StringUtils::BinaryStringToString(pThousandsSep->Attribute("groupingformat"));
           else
-            region.m_strGrouping = "\3";
+            region.m_strGrouping = DEFAULT_DIGIT_GROUPING;
         }
       }
       else
       {
         region.m_cThousandsSep = ',';
-        region.m_strGrouping = "\3";
+        region.m_strGrouping = DEFAULT_DIGIT_GROUPING;
       }
 
       const auto* pDecimalSep = pRegion->FirstChildElement("decimalseparator");
@@ -453,11 +456,11 @@ bool CLangInfo::Load(const std::string& langInfoPath)
 
 bool CLangInfo::UseLocaleCollation()
 {
-  if (m_collationtype == 0)
+  if (m_localeCollation == LocaleCollation::UNCHECKED)
   {
     // Determine collation to use. When using MySQL/MariaDB or a platform that does not support
     // locale language collation then use accent folding internal equivalent of utf8_general_ci
-    m_collationtype = 1;
+    m_localeCollation = LocaleCollation::UNAVAILABLE;
     if (!StringUtils::EqualsNoCase(
             CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
             "mysql") &&
@@ -473,10 +476,10 @@ bool CLangInfo::UseLocaleCollation()
       int comp_result = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
       if (comp_result > 0)
         // Latin small letter a with circumflex put before z - collation works
-        m_collationtype = 2;
+        m_localeCollation = LocaleCollation::AVAILABLE;
     }
   }
-  return m_collationtype == 2;
+  return m_localeCollation == LocaleCollation::AVAILABLE;
 }
 
 void CLangInfo::SetDefaults()

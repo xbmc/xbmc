@@ -26,6 +26,11 @@ constexpr std::array DANO_NORWEGIAN{"nb"sv, "nn"sv, "no"sv, "da"sv};
 //! Swedish and Finnish place the same letters there in another order
 constexpr std::array SWEDISH{"sv"sv, "fi"sv};
 
+//! The weights of the three letters an alphabet places after z, in its order
+constexpr wchar_t FIRST_AFTER_Z{L'z' + 1};
+constexpr wchar_t SECOND_AFTER_Z{L'z' + 2};
+constexpr wchar_t THIRD_AFTER_Z{L'z' + 3};
+
 //! Whether a language is one of a named set
 bool IsOneOf(std::span<const std::string_view> languages,
              const KODI::LANGUAGE::CLanguageTag& language)
@@ -51,15 +56,15 @@ wchar_t NordicCollationWeight(const CLanguageTag& language, wchar_t codepoint) n
       case 0x00E6: // AE / ae
       case 0x00C4:
       case 0x00E4: // A-umlaut / a-umlaut
-        return L'z' + 1;
+        return FIRST_AFTER_Z;
       case 0x00D8:
       case 0x00F8: // OE / oe
       case 0x00D6:
       case 0x00F6: // O-umlaut / o-umlaut
-        return L'z' + 2;
+        return SECOND_AFTER_Z;
       case 0x00C5:
       case 0x00E5: // AA / aa
-        return L'z' + 3;
+        return THIRD_AFTER_Z;
       default:
         return 0;
     }
@@ -72,13 +77,13 @@ wchar_t NordicCollationWeight(const CLanguageTag& language, wchar_t codepoint) n
     {
       case 0x00C5:
       case 0x00E5: // AA / aa
-        return L'z' + 1;
+        return FIRST_AFTER_Z;
       case 0x00C4:
       case 0x00E4: // A-umlaut / a-umlaut
-        return L'z' + 2;
+        return SECOND_AFTER_Z;
       case 0x00D6:
       case 0x00F6: // O-umlaut / o-umlaut
-        return L'z' + 3;
+        return THIRD_AFTER_Z;
       default:
         return 0;
     }

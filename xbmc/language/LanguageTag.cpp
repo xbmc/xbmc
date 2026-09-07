@@ -12,6 +12,7 @@
 #include "language/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "language/i18n/Iso639.h"
 #include "language/i18n/Iso639_2.h"
+#include "language/i18n/IsoCodes.h"
 #include "language/i18n/LanguageTable.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -33,9 +34,9 @@ constexpr std::string_view UNDETERMINED{"und"};
 //! The BCP 47 primary subtag for English
 constexpr std::string_view ENGLISH{"en"};
 
-//! Past this a composed name is cut short and the tag appended, so a list stays readable
-constexpr std::size_t MAX_COMPOSED_NAME_LENGTH = 30;
-static_assert(MAX_COMPOSED_NAME_LENGTH > 3);
+//! What a composed name ends with once cut short
+constexpr std::string_view COMPOSED_NAME_ELLIPSIS{"..."};
+static_assert(MAX_COMPOSED_NAME_LENGTH > COMPOSED_NAME_ELLIPSIS.size());
 
 //! The separator between a tag's subtags
 constexpr char SUBTAG_SEPARATOR{'-'};
@@ -52,9 +53,6 @@ constexpr auto POSIX_SCRIPT_MODIFIERS = std::array{
     std::pair<std::string_view, std::string_view>{"cyrillic", "Cyrl"},
     std::pair<std::string_view, std::string_view>{"latin", "Latn"},
 };
-
-//! The length of an ISO 639-2 code
-constexpr std::size_t ISO6392_CODE_LENGTH{3};
 
 /*!
  * \brief Take the codeset and modifier off a POSIX locale name.
@@ -187,8 +185,9 @@ std::string EnglishNameOf(const std::string& code)
   std::string name{tag->Format(Bcp47FormattingStyle::FORMAT_ENGLISH)};
   if (name.size() > MAX_COMPOSED_NAME_LENGTH)
   {
-    name.resize(MAX_COMPOSED_NAME_LENGTH - 3);
-    name.append("... [");
+    name.resize(MAX_COMPOSED_NAME_LENGTH - COMPOSED_NAME_ELLIPSIS.size());
+    name.append(COMPOSED_NAME_ELLIPSIS);
+    name.append(" [");
     name.append(tag->Format(Bcp47FormattingStyle::FORMAT_BCP47));
     name.push_back(']');
   }
@@ -241,7 +240,7 @@ std::optional<Parsed> AsRegisteredTag(const std::string& code)
  */
 std::optional<Parsed> AsIso6392Code(const std::string& code)
 {
-  if (code.size() != ISO6392_CODE_LENGTH)
+  if (code.size() != ALPHA3_CODE_LENGTH)
     return std::nullopt;
 
   const auto alpha2 = CIso639::Alpha3ToAlpha2(code);
@@ -393,12 +392,12 @@ std::string CLanguageTag::AsIso6392B() const
 
   const std::string_view language{Language()};
 
-  if (language.length() == 2)
+  if (language.length() == ALPHA2_CODE_LENGTH)
     return CIso639::Alpha2ToAlpha3B(language).value_or(std::string{language});
 
   // An alpha-3 subtag is already an ISO 639-2 code wherever that standard assigns one, so only
   // the languages spelling their two forms differently have a mapping to follow
-  if (language.length() == ISO6392_CODE_LENGTH)
+  if (language.length() == ALPHA3_CODE_LENGTH)
     return CIso639_2::TCodeToBCode(language).value_or(std::string{language});
 
   return std::string{language};
@@ -409,7 +408,7 @@ std::string CLanguageTag::AsIso6392T() const
   const std::string iso6392B{AsIso6392B()};
 
   // A language with no ISO 639-2 code narrows to the tag itself, which is not a code to map
-  if (iso6392B.length() != ISO6392_CODE_LENGTH)
+  if (iso6392B.length() != ALPHA3_CODE_LENGTH)
     return iso6392B;
 
   // Only the languages whose two forms are spelled differently have a mapping to follow
@@ -430,7 +429,7 @@ std::string CLanguageTag::AsIso6391() const
   const std::string_view language{Language()};
 
   // Canonical BCP 47 already prefers the alpha-2 code wherever a language has one
-  if (language.length() == 2)
+  if (language.length() == ALPHA2_CODE_LENGTH)
     return std::string{language};
 
   return CIso639::Alpha3ToAlpha2(language).value_or(std::string{});

@@ -400,7 +400,7 @@ TEST(TestLanguageTag, ShortensAComposedNameThatIsTooLongToShow)
 
   EXPECT_TRUE(name.starts_with("Chinese (")) << name;
   EXPECT_TRUE(name.ends_with("... [zh-yue-Hant-HK]")) << name;
-  EXPECT_EQ(name.find("... ["), 27u) << name; // 30 characters of name, the last three the dots
+  EXPECT_EQ(name.find(" ["), MAX_COMPOSED_NAME_LENGTH) << name; // the dots count as name
 }
 
 TEST(TestLanguageTag, ResolvesALanguageByAnyNameRecordedForIt)
