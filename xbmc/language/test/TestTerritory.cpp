@@ -12,26 +12,28 @@
 
 using namespace KODI::LANGUAGE;
 
-TEST(TestTerritory, HoldsTheCodeAsBcp47StatesIt)
+TEST(TestTerritory, NamesACountryInEveryNotation)
 {
   const CTerritory territory{CTerritory::FromCode("GB")};
 
+  // The canonical form is the BCP 47 region subtag, and the case a code is written in is not
+  // part of it
   EXPECT_EQ(territory.ToString(), "GB");
-
-  // The case a code is written in is not part of it
   EXPECT_EQ(CTerritory::FromCode("gb"), territory);
   EXPECT_EQ(CTerritory::FromCode(" GB "), territory);
-}
 
-TEST(TestTerritory, NamesTheAlphaForms)
-{
-  const CTerritory territory{CTerritory::FromCode("GB")};
-
+  EXPECT_TRUE(territory.IsCountry());
   EXPECT_EQ(territory.AsIso3166_1Alpha2(), "GB");
   EXPECT_EQ(territory.AsIso3166_1Alpha3(), "GBR");
-
   EXPECT_EQ(CTerritory::FromCode("NL").AsIso3166_1Alpha3(), "NLD");
   EXPECT_EQ(CTerritory::FromCode("mx").AsIso3166_1Alpha3(), "MEX");
+
+  // The ISO 3166-1 table holds that standard's official names, which carry a trailing article
+  // where the English name takes one. They are reproduced rather than tidied, so that the name
+  // a caller shows is the one the standard publishes.
+  EXPECT_EQ(territory.ToEnglishName(),
+            "United Kingdom of Great Britain and Northern Ireland (the)");
+  EXPECT_EQ(CTerritory::FromCode("MX").ToEnglishName(), "Mexico");
 }
 
 TEST(TestTerritory, TakesTheAreasIso3166DoesNotCover)
@@ -42,19 +44,12 @@ TEST(TestTerritory, TakesTheAreasIso3166DoesNotCover)
 
   EXPECT_EQ(latinAmerica.ToString(), "419");
   EXPECT_EQ(latinAmerica.ToEnglishName(), "Latin America and the Caribbean");
-}
 
-TEST(TestTerritory, AWiderAreaIsNotACountryAndHasNoIso3166Code)
-{
   // The question a caller contracting to supply a country has to ask, answered by the type
   // rather than left to each of them
-  const CTerritory latinAmerica{CTerritory::FromCode("419")};
-
   EXPECT_FALSE(latinAmerica.IsCountry());
   EXPECT_EQ(latinAmerica.AsIso3166_1Alpha2(), "");
   EXPECT_EQ(latinAmerica.AsIso3166_1Alpha3(), "");
-
-  EXPECT_TRUE(CTerritory::FromCode("GB").IsCountry());
 }
 
 TEST(TestTerritory, TakesEveryRegionALanguageTagCanState)
@@ -80,16 +75,6 @@ TEST(TestTerritory, TakesEveryRegionALanguageTagCanState)
   EXPECT_NE(CTerritory::FromCode("AA"), CTerritory{});
   EXPECT_NE(CTerritory::FromCode("ZZ"), CTerritory{});
   EXPECT_NE(CTerritory::FromCode("QM"), CTerritory{});
-}
-
-TEST(TestTerritory, NamesThePlaceInEnglish)
-{
-  // The ISO 3166-1 table holds that standard's official names, which carry a trailing article
-  // where the English name takes one. They are reproduced rather than tidied, so that the name
-  // a caller shows is the one the standard publishes.
-  EXPECT_EQ(CTerritory::FromCode("GB").ToEnglishName(),
-            "United Kingdom of Great Britain and Northern Ireland (the)");
-  EXPECT_EQ(CTerritory::FromCode("MX").ToEnglishName(), "Mexico");
 }
 
 TEST(TestTerritory, TextNamingNoPlaceYieldsNoTerritory)

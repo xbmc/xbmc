@@ -259,8 +259,8 @@ TEST(ListFormatter, CreateInstance_Units_FallbackEnglish)
 
 TEST(ListFormatter, CreateInstance_Units_UsesLocalizedSeparator)
 {
-  // Prove CreateInstance reads the localizer for UNITS (previously bypassed).
-  // CAlwaysLocalizer returns the Arabic comma separator for every string id.
+  // UNITS takes its separator from the localizer. CAlwaysLocalizer returns the Arabic comma
+  // separator for every string id.
   const CAlwaysLocalizer localizer(Sv("{0}").append(AR_COMMA).append(" {1}"));
   const CListFormatter fmt = CListFormatter::CreateInstance(localizer, ListFormatType::UNITS);
   EXPECT_EQ(fmt.Format({Sv(AR_A), Sv(AR_B), Sv(AR_C)}),

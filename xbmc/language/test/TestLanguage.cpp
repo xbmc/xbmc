@@ -19,6 +19,7 @@ TEST(TestLanguagePreference, ReadsAStatedLanguage)
   const CLanguagePreference audio{CLanguagePreference::ForAudio("fr")};
 
   EXPECT_TRUE(audio.Is(Kind::Language));
+  EXPECT_EQ(audio.GetKind(), Kind::Language);
   EXPECT_EQ(audio.GetLanguage(), CLanguageTag::Parse("fr"));
 
   EXPECT_EQ(CLanguagePreference::ForAudio("fre").GetLanguage(), CLanguageTag::Parse("fr"));
@@ -36,10 +37,22 @@ TEST(TestLanguagePreference, ReadsTheChoicesThatNameNoLanguage)
   EXPECT_TRUE(CLanguagePreference::ForSubtitles("original").Is(Kind::Original));
   EXPECT_TRUE(CLanguagePreference::ForSubtitles("default").Is(Kind::FollowUI));
 
+  // The kind is what a caller acting on the choice reads, where Is answers one question about it
+  EXPECT_EQ(CLanguagePreference::ForAudio("default").GetKind(), Kind::FollowUI);
+  EXPECT_EQ(CLanguagePreference::ForAudio("mediadefault").GetKind(), Kind::MediaDefault);
+  EXPECT_EQ(CLanguagePreference::ForSubtitles("none").GetKind(), Kind::None);
+  EXPECT_EQ(CLanguagePreference::ForSubtitles("forced_only").GetKind(), Kind::ForcedOnly);
+
+  // A default-constructed preference is the one that states nothing
+  EXPECT_EQ(CLanguagePreference{}.GetKind(), Kind::FollowUI);
+
   EXPECT_TRUE(CLanguagePreference::ForAudio("mediadefault").GetLanguage().IsUndetermined());
   EXPECT_TRUE(CLanguagePreference::ForSubtitles("none").GetLanguage().IsUndetermined());
+
+  // The choices are not interchangeable, so neither are the values holding them
   EXPECT_NE(CLanguagePreference::ForAudio("mediadefault"),
             CLanguagePreference::ForAudio("original"));
+  EXPECT_NE(CLanguagePreference::ForSubtitles("none"), CLanguagePreference::ForSubtitles("fr"));
 }
 
 TEST(TestLanguagePreference, TreatsTextNamingNothingAsNoPreference)
@@ -65,7 +78,7 @@ TEST(TestLanguagePreference, ResolvesOnlyTheChoicesAnsweredByALanguage)
   EXPECT_TRUE(CLanguagePreference::ForSubtitles("forced_only").Resolve(ui).IsUndetermined());
 }
 
-TEST(TestLanguage, HoldsTheThreeSystemValues)
+TEST(TestLanguage, AnswersAStatedLanguageWhateverTheFallback)
 {
   CLanguage language;
   language.SetUI(CLanguageTag::Parse("en-GB"));
@@ -75,6 +88,8 @@ TEST(TestLanguage, HoldsTheThreeSystemValues)
   EXPECT_EQ(language.UI(), CLanguageTag::Parse("en-GB"));
   EXPECT_EQ(language.Audio(), CLanguageTag::Parse("fr"));
   EXPECT_EQ(language.Subtitle(), CLanguageTag::Parse("es"));
+  EXPECT_EQ(language.Audio(false), CLanguageTag::Parse("fr"));
+  EXPECT_EQ(language.Subtitle(false), CLanguageTag::Parse("es"));
 }
 
 TEST(TestLanguage, AnswersAnUnstatedAudioLanguageWithTheInterfaceOne)
@@ -121,39 +136,38 @@ TEST(TestLanguage, AnswersAChoiceThatNamesNoLanguageWithTheInterfaceOne)
     EXPECT_TRUE(language.Subtitle(false).IsUndetermined()) << subtitle;
   }
 
-  // A stated language is the answer whether or not there is a fallback
-  language.SetAudio("fr");
-  language.SetSubtitle("es");
-  EXPECT_EQ(language.Audio(false), CLanguageTag::Parse("fr"));
-  EXPECT_EQ(language.Subtitle(false), CLanguageTag::Parse("es"));
-}
-
-TEST(TestLanguage, KeepsTheChoiceThatNamesNoLanguageReadable)
-{
-  CLanguage language;
-  language.SetUI(CLanguageTag::Parse("en"));
-  language.SetAudio("original");
+  // The choice itself stays readable for the caller that has to act on it
   language.SetSubtitle("forced_only");
-
   EXPECT_TRUE(language.AudioPreference().Is(Kind::Original));
   EXPECT_TRUE(language.SubtitlePreference().Is(Kind::ForcedOnly));
-  EXPECT_TRUE(language.Audio(false).IsUndetermined());
 }
 
-TEST(TestLanguagePreference, StatesWhichChoiceWasMade)
+TEST(TestLanguage, RejectsASettingNamingNoLanguage)
 {
-  // The kind is what a caller acting on the choice reads, where Is answers one question about it
-  EXPECT_EQ(CLanguagePreference::ForAudio("fr").GetKind(), Kind::Language);
-  EXPECT_EQ(CLanguagePreference::ForAudio("default").GetKind(), Kind::FollowUI);
-  EXPECT_EQ(CLanguagePreference::ForAudio("mediadefault").GetKind(), Kind::MediaDefault);
-  EXPECT_EQ(CLanguagePreference::ForSubtitles("none").GetKind(), Kind::None);
-  EXPECT_EQ(CLanguagePreference::ForSubtitles("forced_only").GetKind(), Kind::ForcedOnly);
+  CLanguage language;
 
-  // A default-constructed preference is the one that states nothing
-  EXPECT_EQ(CLanguagePreference{}.GetKind(), Kind::FollowUI);
+  language.SetAudio("french");
+  EXPECT_TRUE(language.AudioPreference().GetLanguage().Matches(CLanguageTag::Parse("fr")));
 
-  // The choices are not interchangeable, so neither are the values holding them
-  EXPECT_NE(CLanguagePreference::ForSubtitles("none"), CLanguagePreference::ForSubtitles("fr"));
+  // The setting can arrive hand-edited or over JSON-RPC; a value naming no language must be
+  // rejected rather than stored, or callers prefer a language no stream can ever match
+  language.SetAudio("not a language");
+  EXPECT_TRUE(language.AudioPreference().GetLanguage().IsUndetermined());
+
+  // Rejected, it is treated as "default", which the interface language answers
+  EXPECT_FALSE(language.Audio().IsUndetermined());
+  EXPECT_TRUE(language.Audio().Matches(language.UI()));
+
+  language.SetSubtitle("not a language");
+  EXPECT_TRUE(language.SubtitlePreference().GetLanguage().IsUndetermined());
+
+  // Subtitles follow the audio preference, and that preference names no language either, so
+  // nothing here answers it - a caller that knows what is playing uses that instead
+  EXPECT_TRUE(language.Subtitle(false).IsUndetermined());
+
+  // Stated, the audio preference is what a subtitle without its own preference follows
+  language.SetAudio("french");
+  EXPECT_TRUE(language.Subtitle().Matches(CLanguageTag::Parse("fr")));
 }
 
 TEST(TestLanguage, WithoutAPackTheCharacterSetsAreTheBuiltInOnes)
@@ -170,10 +184,19 @@ TEST(TestLanguage, WithoutAPackTheSortTokensAreOnlyTheDeclaredOnes)
 {
   // A pack ships the words a sort steps over, and advancedsettings.xml adds to them. With no
   // pack there is nothing to add to, so what comes back is what was declared and nothing else
-  const CLanguage language;
-  const CLanguage::Tokens tokens{language.SortTokens()};
+  CLanguage language;
+  EXPECT_EQ(language.SortTokens(), CLanguage::Tokens{});
 
-  EXPECT_EQ(tokens, CLanguage::Tokens{});
+  language.DeclareSortTokens({"the ", "the."});
+  EXPECT_EQ(language.SortTokens(), (CLanguage::Tokens{"the ", "the."}));
+
+  // A later declaration replaces the earlier one rather than adding to it
+  language.DeclareSortTokens({"le "});
+  EXPECT_EQ(language.SortTokens(), CLanguage::Tokens{"le "});
+
+  // Losing the pack loses its words, not the declared ones
+  language.SetPack(nullptr);
+  EXPECT_EQ(language.SortTokens(), CLanguage::Tokens{"le "});
 }
 
 TEST(TestLanguage, WithoutAPackTheInterfaceIsInTheBuiltInLanguage)

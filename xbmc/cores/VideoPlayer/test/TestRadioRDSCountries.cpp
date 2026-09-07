@@ -97,23 +97,18 @@ TEST(TestRadioRDSCountries, AReservedCellNamesNowhere)
   EXPECT_TRUE(KODI::RDS::Country(0xD0, 4, 3)->ToString().empty());
 }
 
-// The tables are 7 wide. Reading the eighth column used to run off the end of the row, taking
-// the next row's first cell - or, on the last row, whatever followed the table.
-TEST(TestRadioRDSCountries, AnIndexPastTheRowNamesNoCell)
+TEST(TestRadioRDSCountries, ArgumentsNamingNoCellAnswerNothing)
 {
+  // The tables are 7 wide, and the ECC's low nibble can address 16 columns
   EXPECT_FALSE(KODI::RDS::CountryCode(0xA0, 1, KODI::RDS::EXTENDED_COUNTRY_CODE_COUNT).has_value());
   EXPECT_FALSE(KODI::RDS::Country(0xA0, 1, KODI::RDS::EXTENDED_COUNTRY_CODE_COUNT).has_value());
   EXPECT_FALSE(KODI::RDS::Country(0xA0, KODI::RDS::COUNTRY_CODE_COUNT, 7).has_value());
-}
 
-TEST(TestRadioRDSCountries, ACountryCodeOutsideTheTableNamesNoCell)
-{
+  // A PI country code outside 1 to 15
   EXPECT_FALSE(KODI::RDS::Country(0xA0, 0, 0).has_value());
   EXPECT_FALSE(KODI::RDS::Country(0xA0, KODI::RDS::COUNTRY_CODE_COUNT + 1, 0).has_value());
-}
 
-TEST(TestRadioRDSCountries, AnExtendedCountryCodeTheStandardDoesNotDefineNamesNoCell)
-{
+  // An extended country code the standard does not define
   EXPECT_FALSE(KODI::RDS::Country(0x00, 1, 0).has_value());
   EXPECT_FALSE(KODI::RDS::Country(0xB0, 1, 0).has_value());
   EXPECT_FALSE(KODI::RDS::Country(0xFF, 1, 0).has_value());

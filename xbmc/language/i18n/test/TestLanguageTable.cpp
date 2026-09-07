@@ -28,33 +28,21 @@ protected:
 
 } // namespace
 
-TEST_F(LanguageTableTest, NamesIso6391Codes)
+TEST_F(LanguageTableTest, NamesTheStandardLanguages)
 {
   EXPECT_EQ(Table().NameOf("en"), "English");
-}
-
-TEST_F(LanguageTableTest, NamesIso6392CodesInBothForms)
-{
   EXPECT_EQ(Table().NameOf("eng"), "English");
 
   // Both forms of a language that spells its two differently name the same language
   EXPECT_EQ(Table().NameOf("fre"), Table().NameOf("fra"));
-}
 
-TEST_F(LanguageTableTest, NamesDeprecatedCodes)
-{
   // Media tagged with the withdrawn spelling still has to be understood
   EXPECT_EQ(Table().NameOf("iw"), "Hebrew");
-}
 
-TEST_F(LanguageTableTest, IgnoresCaseAndSurroundingSpace)
-{
+  // Case and surrounding space are not part of a code or a name
   EXPECT_EQ(Table().NameOf(" EN "), "English");
   EXPECT_EQ(Table().CodeOf(" ENGLISH "), "en");
-}
 
-TEST_F(LanguageTableTest, AnswersUnknownCodesWithNothing)
-{
   EXPECT_FALSE(Table().NameOf("").has_value());
   EXPECT_FALSE(Table().NameOf("zzz").has_value());
   EXPECT_FALSE(Table().CodeOf("").has_value());
@@ -166,20 +154,17 @@ TEST_F(LanguageTableTest, ResetRestoresTheStandardLanguages)
   EXPECT_FALSE(Table().CodeOf("My French").has_value());
 }
 
-TEST_F(LanguageTableTest, ListsTheLanguagesByTheirAlpha2Code)
+TEST_F(LanguageTableTest, ListsTheLanguagesByTheirAlpha2CodeAndTheDeclaredOnesAsWritten)
 {
   std::map<std::string, std::string> languages;
   Table().List(languages);
 
   EXPECT_EQ(languages["en"], "English");
   EXPECT_FALSE(languages.contains("eng"));
-}
 
-TEST_F(LanguageTableTest, ListsDeclaredLanguagesWhateverNotationTheyUse)
-{
   Table().Declare({{"es-419", "Spanish - Latin America"}, {"en", "My English"}});
 
-  std::map<std::string, std::string> languages;
+  languages.clear();
   Table().List(languages);
 
   EXPECT_EQ(languages["es-419"], "Spanish - Latin America");

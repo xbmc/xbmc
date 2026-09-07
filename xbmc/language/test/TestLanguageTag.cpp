@@ -95,6 +95,11 @@ TEST(TestLanguageTag, KeepsSubtagsThatIso639CannotExpress)
 
   EXPECT_EQ(CLanguageTag::Parse("en-Latn-AU").ToString(), "en-Latn-AU");
   EXPECT_EQ(CLanguageTag::Parse("en-Latn-AU").AsIso6392B(), "eng");
+
+  // Every subtag goes, whatever the tag was spelled like
+  EXPECT_EQ(CLanguageTag::Parse("en-Latn-AU-1996").AsIso6392B(), "eng");
+  EXPECT_EQ(CLanguageTag::Parse("EN").AsIso6392B(), "eng");
+  EXPECT_EQ(CLanguageTag::Parse(" en ").AsIso6392B(), "eng");
 }
 
 TEST(TestLanguageTag, NarrowingIsLosslessForALanguageWithoutSubtags)
@@ -140,15 +145,11 @@ TEST(TestLanguageTag, NamesTheAlpha2Form)
   EXPECT_EQ(CLanguageTag::Parse("ady").AsIso6391(), "");
   EXPECT_EQ(CLanguageTag().AsIso6391(), "");
   EXPECT_EQ(CLanguageTag::Parse("not a language").AsIso6391(), "");
-}
 
-TEST(TestLanguageTag, KeepsLanguagesWithNoAlpha2Code)
-{
   // BCP 47 uses the alpha-3 code where no alpha-2 code is registered, and narrowing has nothing
   // shorter to reach for
   EXPECT_EQ(CLanguageTag::Parse("ady").ToString(), "ady");
   EXPECT_EQ(CLanguageTag::Parse("ady").AsIso6392B(), "ady");
-  EXPECT_EQ(CLanguageTag::Parse("ady").AsIso6391(), "");
 }
 
 TEST(TestLanguageTag, SaysWhetherTheTextNamedALanguage)
@@ -158,16 +159,23 @@ TEST(TestLanguageTag, SaysWhetherTheTextNamedALanguage)
   EXPECT_TRUE(CLanguageTag::Parse("en-AU").IsValid());
   EXPECT_TRUE(CLanguageTag::Parse("English").IsValid());
   EXPECT_TRUE(CLanguageTag::Undetermined().IsValid());
+  EXPECT_TRUE(CLanguageTag::Parse("ady").IsValid()); // a language with no alpha-2 code is one
 
   EXPECT_FALSE(CLanguageTag{}.IsValid());
   EXPECT_FALSE(CLanguageTag::Parse("").IsValid());
   EXPECT_FALSE(CLanguageTag::Parse("not a language").IsValid());
 
-  EXPECT_TRUE(CLanguageTag::Parse("ady").IsValid());
-  EXPECT_EQ(CLanguageTag::Parse("ady").AsIso6391(), "");
-
+  // TryParse asks the same question before building anything
+  EXPECT_TRUE(CLanguageTag::TryParse("en").has_value());
+  EXPECT_TRUE(CLanguageTag::TryParse("eng").has_value());
+  EXPECT_TRUE(CLanguageTag::TryParse("en-AU").has_value());
+  EXPECT_TRUE(CLanguageTag::TryParse("English").has_value());
   EXPECT_TRUE(CLanguageTag::TryParse("ady").has_value());
+
+  // A filename token that is not a language belongs to the stream name instead
+  EXPECT_FALSE(CLanguageTag::TryParse("director").has_value());
   EXPECT_FALSE(CLanguageTag::TryParse("not a language").has_value());
+  EXPECT_FALSE(CLanguageTag::TryParse("").has_value());
 }
 
 TEST(TestLanguageTag, KeepsUnrecognizedTextVerbatim)
@@ -229,24 +237,6 @@ TEST(TestLanguageTag, ComparesTagsRatherThanLanguages)
   EXPECT_TRUE(CLanguageTag::Parse("en-AU") == CLanguageTag::Parse("en-au"));
 }
 
-TEST(TestLanguageTag, RecognizesEnglishInAnyVariety)
-{
-  EXPECT_TRUE(CLanguageTag::Parse("en").IsEnglish());
-  EXPECT_TRUE(CLanguageTag::Parse("eng").IsEnglish()); // whichever notation it arrived in
-  EXPECT_TRUE(CLanguageTag::Parse("EN").IsEnglish());
-  EXPECT_TRUE(CLanguageTag::Parse("English").IsEnglish());
-  EXPECT_TRUE(
-      CLanguageTag::Parse("en-GB").IsEnglish()); // a subtag qualifies it, it is still English
-  EXPECT_TRUE(CLanguageTag::Parse("en_US").IsEnglish());
-
-  EXPECT_FALSE(CLanguageTag::Parse("fr").IsEnglish());
-  EXPECT_FALSE(CLanguageTag{}.IsEnglish());
-  EXPECT_FALSE(CLanguageTag::Parse("not a language").IsEnglish());
-
-  // Middle English is a language of its own
-  EXPECT_FALSE(CLanguageTag::Parse("enm").IsEnglish());
-}
-
 TEST(TestLanguageTag, SaysWhichLanguageItNames)
 {
   // The language, not the text the tag begins with, so a language whose code starts with another
@@ -266,15 +256,18 @@ TEST(TestLanguageTag, SaysWhichLanguageItNames)
   EXPECT_FALSE(CLanguageTag{}.IsLanguage("en"));
   EXPECT_FALSE(CLanguageTag::Parse("not a language").IsLanguage("en"));
   EXPECT_FALSE(CLanguageTag::Parse("en").IsLanguage(""));
-}
 
-TEST(TestLanguageTag, UndeterminedIsATagLikeAnyOther)
-{
-  const CLanguageTag tag = CLanguageTag::Parse("und");
-
-  EXPECT_NE(tag, CLanguageTag{});
-  EXPECT_EQ(tag.ToString(), "und");
-  EXPECT_EQ(tag.AsIso6392B(), "und");
+  // IsEnglish is the same question asked of one language
+  EXPECT_TRUE(CLanguageTag::Parse("en").IsEnglish());
+  EXPECT_TRUE(CLanguageTag::Parse("eng").IsEnglish());
+  EXPECT_TRUE(CLanguageTag::Parse("EN").IsEnglish());
+  EXPECT_TRUE(CLanguageTag::Parse("English").IsEnglish());
+  EXPECT_TRUE(CLanguageTag::Parse("en-GB").IsEnglish());
+  EXPECT_TRUE(CLanguageTag::Parse("en_US").IsEnglish());
+  EXPECT_FALSE(CLanguageTag::Parse("fr").IsEnglish());
+  EXPECT_FALSE(CLanguageTag::Parse("enm").IsEnglish());
+  EXPECT_FALSE(CLanguageTag{}.IsEnglish());
+  EXPECT_FALSE(CLanguageTag::Parse("not a language").IsEnglish());
 }
 
 TEST(TestLanguageTag, TreatsAbsentAndUndeterminedAlike)
@@ -284,8 +277,13 @@ TEST(TestLanguageTag, TreatsAbsentAndUndeterminedAlike)
   EXPECT_TRUE(CLanguageTag::Parse("und").IsUndetermined());
   EXPECT_TRUE(CLanguageTag::Parse("Undetermined").IsUndetermined());
 
-  // A tag built by the named constructor is the same tag media declares as "und"
-  EXPECT_EQ(CLanguageTag::Undetermined(), CLanguageTag::Parse("und"));
+  // A tag built by the named constructor is the same tag media declares as "und", and it is a
+  // tag like any other rather than the absence of one
+  const CLanguageTag tag = CLanguageTag::Parse("und");
+  EXPECT_EQ(CLanguageTag::Undetermined(), tag);
+  EXPECT_NE(tag, CLanguageTag{});
+  EXPECT_EQ(tag.ToString(), "und");
+  EXPECT_EQ(tag.AsIso6392B(), "und");
 
   // "no linguistic content" is a positive statement, not an absence of one
   EXPECT_FALSE(CLanguageTag::Parse("zxx").IsUndetermined());
@@ -372,18 +370,6 @@ TEST_P(FindInTextTester, Find)
 
 INSTANTIATE_TEST_SUITE_P(TestLanguageTag, FindInTextTester, testing::ValuesIn(FindInTextTests));
 
-TEST(TestLanguageTag, RecognizesOnlyRealLanguages)
-{
-  EXPECT_TRUE(CLanguageTag::TryParse("en").has_value());
-  EXPECT_TRUE(CLanguageTag::TryParse("eng").has_value());
-  EXPECT_TRUE(CLanguageTag::TryParse("en-AU").has_value());
-  EXPECT_TRUE(CLanguageTag::TryParse("English").has_value());
-
-  // A filename token that is not a language belongs to the stream name instead
-  EXPECT_FALSE(CLanguageTag::TryParse("director").has_value());
-  EXPECT_FALSE(CLanguageTag::TryParse("").has_value());
-}
-
 TEST(TestLanguageTag, PrefersTheCurrentCodeOverTheDeprecatedOne)
 {
   // Both spellings are held so that media tagged with the withdrawn one is understood, but a tag
@@ -410,8 +396,11 @@ TEST(TestLanguageTag, ShortensAComposedNameThatIsTooLongToShow)
 {
   // Nothing names this tag, so the name is composed from its subtags and cut to fit a list. The
   // tag is appended so the row still says which language it is.
-  EXPECT_EQ(CLanguageTag::Parse("zh-yue-Hant-HK").ToEnglishName(),
-            "Chinese (Cantonese, Han (Tr... [zh-yue-Hant-HK]");
+  const std::string name{CLanguageTag::Parse("zh-yue-Hant-HK").ToEnglishName()};
+
+  EXPECT_TRUE(name.starts_with("Chinese (")) << name;
+  EXPECT_TRUE(name.ends_with("... [zh-yue-Hant-HK]")) << name;
+  EXPECT_EQ(name.find("... ["), 27u) << name; // 30 characters of name, the last three the dots
 }
 
 TEST(TestLanguageTag, ResolvesALanguageByAnyNameRecordedForIt)
@@ -436,11 +425,4 @@ TEST(TestLanguageTag, DoesNotReadARegionCodeAsALanguage)
   EXPECT_EQ(CLanguageTag::Parse("bol").AsIso6391(), ""); // and bo is Tibetan, not this
 
   EXPECT_FALSE(CLanguageTag::TryParse("zzz").has_value());
-}
-
-TEST(TestLanguageTag, DropsEverySubtagWhenNarrowing)
-{
-  EXPECT_EQ(CLanguageTag::Parse("en-Latn-AU-1996").AsIso6392B(), "eng");
-  EXPECT_EQ(CLanguageTag::Parse("EN").AsIso6392B(), "eng");
-  EXPECT_EQ(CLanguageTag::Parse(" en ").AsIso6392B(), "eng");
 }

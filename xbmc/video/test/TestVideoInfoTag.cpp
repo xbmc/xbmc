@@ -334,7 +334,7 @@ TEST_F(AudioSortKeyTester, OrdersByThePreferredLanguageStream)
 {
   const CVideoInfoTag tag{MakeTagWithTwoAudioStreams()};
 
-  // The technically best stream is the German one, so that is what the sort key used to be
+  // The technically best stream is the German one, which the sort key must not follow
   ASSERT_EQ("truehd", tag.m_streamDetails.GetAudioCodec());
 
   PreferLanguage("eng");
