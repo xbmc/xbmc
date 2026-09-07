@@ -43,22 +43,22 @@ wchar_t NordicCollationWeight(const CLanguageTag& language, wchar_t codepoint) n
 {
   if (IsOneOf(DANO_NORWEGIAN, language))
   {
-    // Norwegian/Danish alphabet order: ... x y z æ ø å
-    // ä sorts with æ and ö with ø
+    // Norwegian/Danish alphabet order: ... x y z ae oe aa (U+00E6 U+00F8 U+00E5)
+    // a-umlaut sorts with ae and o-umlaut with oe
     switch (codepoint)
     {
       case 0x00C6:
-      case 0x00E6: // Æ / æ
+      case 0x00E6: // AE / ae
       case 0x00C4:
-      case 0x00E4: // Ä / ä
+      case 0x00E4: // A-umlaut / a-umlaut
         return L'z' + 1;
       case 0x00D8:
-      case 0x00F8: // Ø / ø
+      case 0x00F8: // OE / oe
       case 0x00D6:
-      case 0x00F6: // Ö / ö
+      case 0x00F6: // O-umlaut / o-umlaut
         return L'z' + 2;
       case 0x00C5:
-      case 0x00E5: // Å / å
+      case 0x00E5: // AA / aa
         return L'z' + 3;
       default:
         return 0;
@@ -67,17 +67,17 @@ wchar_t NordicCollationWeight(const CLanguageTag& language, wchar_t codepoint) n
 
   if (IsOneOf(SWEDISH, language))
   {
-    // Swedish/Finnish alphabet order: ... x y z å ä ö
+    // Swedish/Finnish alphabet order: ... x y z aa a-umlaut o-umlaut (U+00E5 U+00E4 U+00F6)
     switch (codepoint)
     {
       case 0x00C5:
-      case 0x00E5: // Å / å
+      case 0x00E5: // AA / aa
         return L'z' + 1;
       case 0x00C4:
-      case 0x00E4: // Ä / ä
+      case 0x00E4: // A-umlaut / a-umlaut
         return L'z' + 2;
       case 0x00D6:
-      case 0x00F6: // Ö / ö
+      case 0x00F6: // O-umlaut / o-umlaut
         return L'z' + 3;
       default:
         return 0;
