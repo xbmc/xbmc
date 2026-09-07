@@ -11,6 +11,9 @@ set(SOURCES TestAudioBookFileDirectory.cpp
 
 if(TARGET ${APP_NAME_LC}::Bluray)
   list(APPEND SOURCES TestBlurayDirectory.cpp
+                      TestBlurayPlaylistHints.cpp
+                      TestDiscDirectoryHelperProject.cpp
+                      TestProjectParser.cpp
                       TestStreamParser.cpp)
 endif()
 
