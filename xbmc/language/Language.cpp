@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "addons/LanguageResource.h"
 #include "language/LangInfo.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -33,11 +32,6 @@ bool Names(const std::string& setting, std::string_view value)
 }
 
 /*!
- * \brief The character set the user chose.
- * \param[in] settingId The setting holding the choice.
- * \return The set, or nothing where the setting is on its default.
- */
-/*!
  * \brief A display name without the qualifier it carries in parentheses - a region profile named
  *        "USA (12h)" becomes "USA".
  * \note Fit for text meant for a reader and nothing else. What a language is, CLanguageTag says.
@@ -53,6 +47,11 @@ std::string WithoutQualifier(const std::string& name)
   return base;
 }
 
+/*!
+ * \brief The character set the user chose.
+ * \param[in] settingId The setting holding the choice.
+ * \return The set, or nothing where the setting is on its default.
+ */
 std::optional<std::string> ChosenCharset(const std::string& settingId)
 {
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -148,6 +147,19 @@ void CLanguage::SetPack(const LanguageResourcePtr& pack)
 {
   m_pack = pack;
   m_ui = m_pack ? m_pack->GetLanguage() : CLanguageTag::English();
+  MergeSortTokens();
+}
+
+void CLanguage::DeclareSortTokens(Tokens tokens)
+{
+  m_declaredTokens = std::move(tokens);
+  MergeSortTokens();
+}
+
+void CLanguage::MergeSortTokens()
+{
+  m_sortTokens = m_pack ? m_pack->GetSortTokens() : Tokens{};
+  m_sortTokens.insert(m_declaredTokens.begin(), m_declaredTokens.end());
 }
 
 std::string CLanguage::PackName() const
@@ -223,14 +235,4 @@ std::string KODI::LANGUAGE::DescribeLanguage(CLanguageTag::Notation notation,
     named += "-" + place;
 
   return named;
-}
-
-CLanguage::Tokens CLanguage::SortTokens() const
-{
-  Tokens tokens{m_pack ? m_pack->GetSortTokens() : Tokens{}};
-
-  const auto& advanced = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_vecTokens;
-  tokens.insert(advanced.begin(), advanced.end());
-
-  return tokens;
 }

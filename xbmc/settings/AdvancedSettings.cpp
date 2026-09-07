@@ -12,6 +12,7 @@
 #include "URL.h"
 #include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
+#include "language/Language.h"
 #include "language/i18n/LanguageTable.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
@@ -1149,8 +1150,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pExts)
     GetCustomExtensions(pExts, m_discStubExtensions);
 
-  m_vecTokens.clear();
-  LoadSortTokens(pRootElement->FirstChild("sorttokens"), m_vecTokens);
+  KODI::LANGUAGE::CLanguage::Tokens sortTokens;
+  LoadSortTokens(pRootElement->FirstChild("sorttokens"), sortTokens);
+  KODI::LANGUAGE::CLanguage::GetInstance().DeclareSortTokens(std::move(sortTokens));
 
   //! @todo Should cache path be given in terms of our predefined paths??
   //! Are we even going to have predefined paths??

@@ -88,8 +88,6 @@ private:
   //! \brief From a region subtag already judged to be one, in the case a canonical tag holds it
   explicit CTerritory(std::string code) : m_code(std::move(code)) {}
 
-  friend class CLanguageTag;
-
   std::string m_code;
 };
 } // namespace KODI::LANGUAGE

@@ -310,8 +310,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bNoRemoteArtWithLocalScraper{false};
     bool m_ignoreFolderNamesInArchives{true};
 
-    KODI::LANGUAGE::CLanguage::Tokens m_vecTokens;
-
     int m_iEpgUpdateCheckInterval;  // seconds
     int m_iEpgCleanupInterval;      // seconds
     int m_iEpgActiveTagCheckInterval; // seconds

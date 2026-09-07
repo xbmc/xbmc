@@ -184,15 +184,21 @@ public:
 
   /*!
    * \brief The leading words a sort steps over - "the", "le", "der".
-   * \return The pack's words, plus the ones advancedsettings.xml adds.
+   * \return The pack's words, plus the declared ones.
    */
-  Tokens SortTokens() const;
+  const Tokens& SortTokens() const { return m_sortTokens; }
 
   /*!
    * \brief Run the interface in the language pack the user chose.
    * \param[in] pack The pack, or nullptr to fall back to English.
    */
   void SetPack(const LanguageResourcePtr& pack);
+
+  /*!
+   * \brief The words advancedsettings.xml asks a sort to step over, alongside the pack's.
+   * \param[in] tokens The words, replacing any declared before.
+   */
+  void DeclareSortTokens(Tokens tokens);
 
   //! \brief The interface language, for the caller that has no pack to take it from.
   void SetUI(const CLanguageTag& language) { m_ui = language; }
@@ -203,11 +209,16 @@ public:
   }
 
 private:
+  void MergeSortTokens();
+
   //! English until a pack states otherwise
   CLanguageTag m_ui{CLanguageTag::English()};
   CLanguagePreference m_audio;
   CLanguagePreference m_subtitle;
   LanguageResourcePtr m_pack;
+  Tokens m_declaredTokens;
+  //! The pack's words and the declared ones, merged once as either changes
+  Tokens m_sortTokens;
 };
 
 /*!

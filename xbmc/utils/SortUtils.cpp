@@ -1119,7 +1119,7 @@ const Fields& SortUtils::GetFieldsForSorting(SortBy sortBy)
 
 std::string SortUtils::RemoveArticles(const std::string &label)
 {
-  const auto sortTokens = KODI::LANGUAGE::CLanguage::GetInstance().SortTokens();
+  const auto& sortTokens = KODI::LANGUAGE::CLanguage::GetInstance().SortTokens();
   const auto match = std::ranges::find_if(sortTokens, [&label](const auto& token)
                                           { return StringUtils::StartsWithNoCase(label, token); });
   return match == sortTokens.end() ? label : label.substr(match->size());

@@ -345,12 +345,13 @@ std::string CLanguageTag::AsIso6391() const
 
 bool CLanguageTag::Matches(const CLanguageTag& other) const
 {
-  // Two tags that are already the same name the same language, without any conversion
+  // Two tags that are already the same name the same language, which is the only way text that
+  // named none can match
   if (StringUtils::EqualsNoCase(m_tag, other.m_tag))
     return true;
 
-  // Narrowing drops the subtags, leaving the language each tag names
-  return StringUtils::EqualsNoCase(AsIso6392B(), other.AsIso6392B());
+  // The primary subtag is the language each tag names, with everything qualifying it dropped
+  return m_valid && other.m_valid && m_language == other.m_language;
 }
 
 std::string CLanguageTag::ToEnglishName() const

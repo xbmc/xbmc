@@ -1406,9 +1406,8 @@ unsigned int CDVDRadioRDSData::DecodeEPPTransmitterInfo(const uint8_t* msgElemen
     }
 
     // The United States, Canada, and Mexico use the RBDS standard
-    m_RDS_IsRBDS = (*territory == KODI::LANGUAGE::CTerritory::FromCode("US") ||
-                    *territory == KODI::LANGUAGE::CTerritory::FromCode("CA") ||
-                    *territory == KODI::LANGUAGE::CTerritory::FromCode("MX"));
+    const std::string& country{territory->ToString()};
+    m_RDS_IsRBDS = (country == "US" || country == "CA" || country == "MX");
 
     m_currentInfoTag->SetCountry(*territory);
   }
