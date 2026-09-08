@@ -216,6 +216,7 @@ protected:
   double m_lastPts;
   double m_lastPtsJump;
   std::chrono::milliseconds m_errorInterval{1000};
+  std::chrono::steady_clock::time_point m_lastSyncErrorLogTime{};
 
   // only accessed by engine
   std::unique_ptr<CActiveAEBufferPool> m_inputBuffers;

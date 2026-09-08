@@ -2106,15 +2106,15 @@ bool CActiveAE::RunStages()
         if (isTrueHDPassthrough)
           error *= 0.45;
 
-        if (error > maxError)
+        if (error > maxError || error < -maxError)
         {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
-          error = maxError;
-        }
-        else if (error < -maxError)
-        {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
-          error = -maxError;
+          auto now = std::chrono::steady_clock::now();
+          if (now - (*it)->m_lastSyncErrorLogTime >= 1s)
+          {
+            CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
+            (*it)->m_lastSyncErrorLogTime = now;
+          }
+          error = (error > maxError) ? maxError : -maxError;
         }
         (*it)->m_syncError.Add(error);
       }
