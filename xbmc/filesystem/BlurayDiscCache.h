@@ -34,6 +34,9 @@ struct Disc
   std::optional<bool> menuSupport;
   std::optional<int> mainPlaylist;
 
+  std::optional<std::string> discTitle;
+  std::optional<std::string> discId;
+
   //! When this disc was last used, to decide which to drop when the cache is full. Mutable as
   //! recency is not part of what the cache holds, so reading a disc's information updates it too.
   mutable uint64_t lastUsed{0};
@@ -65,6 +68,8 @@ public:
                              const StreamMap& streams);
   void SetMenuSupport(const std::string& path, bool menuSupport);
   void SetMainPlaylist(const std::string& path, int mainPlaylist);
+  void SetDiscTitle(const std::string& path, const std::string& title);
+  void SetDiscId(const std::string& path, const std::string& id);
 
   bool GetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
@@ -90,6 +95,20 @@ public:
    \return true if the disc has been examined for a main playlist before
    */
   bool GetMainPlaylist(const std::string& path, int& mainPlaylist) const;
+
+  /*!
+   \brief Get the name the disc gives itself, if already read.
+   \param[out] title set only when true is returned, empty when the disc names itself nothing
+   \return true if the disc has been opened for its name before
+   */
+  bool GetDiscTitle(const std::string& path, std::string& title) const;
+
+  /*!
+   \brief Get the disc's identifier, if already read.
+   \param[out] id set only when true is returned
+   \return true if the disc has been opened for its identifier before
+   */
+  bool GetDiscId(const std::string& path, std::string& id) const;
 
   //! Drop everything held for a disc, as its information no longer describes what is in the drive
   void ClearDisc(const std::string& path);
