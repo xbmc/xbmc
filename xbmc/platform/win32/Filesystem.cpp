@@ -127,7 +127,7 @@ std::string create_temp_directory(std::error_code& ec)
   return win::FromW(lpTempPathBuffer);
 }
 
-std::string temp_file_path(const std::string&, std::error_code& ec)
+std::string temp_file_path(const std::string& suffix, std::error_code& ec)
 {
   wchar_t lpTempPathBuffer[MAX_PATH + 1];
 
@@ -136,24 +136,39 @@ std::string temp_file_path(const std::string&, std::error_code& ec)
   if (ec)
     return std::string();
 
-  if (!GetTempFileNameW(xbmcTempPath.c_str(), L"xbm", 0, lpTempPathBuffer))
+  const auto suffixW = win::ToW(suffix);
+  constexpr unsigned int maxAttempts = 100;
+  for (unsigned int attempt = 0; attempt < maxAttempts; ++attempt)
   {
-    ec.assign(GetLastError(), std::system_category());
-    return std::string();
-  }
+    if (!GetTempFileNameW(xbmcTempPath.c_str(), L"xbm", 0, lpTempPathBuffer))
+    {
+      ec.assign(GetLastError(), std::system_category());
+      return std::string();
+    }
 
-  if (!DeleteFileW(lpTempPathBuffer))
-  {
-    auto err = GetLastError();
-    if (err != ERROR_FILE_NOT_FOUND)
+    const auto path = std::wstring(lpTempPathBuffer) + suffixW;
+    if (suffix.empty() || MoveFileExW(lpTempPathBuffer, path.c_str(), 0))
+    {
+      ec.clear();
+      return win::FromW(path);
+    }
+
+    const auto err = GetLastError();
+    if (!DeleteFileW(lpTempPathBuffer))
+    {
+      ec.assign(GetLastError(), std::system_category());
+      return std::string();
+    }
+
+    if (err != ERROR_ALREADY_EXISTS && err != ERROR_FILE_EXISTS)
     {
       ec.assign(err, std::system_category());
       return std::string();
     }
   }
 
-  ec.clear();
-  return win::FromW(lpTempPathBuffer);
+  ec.assign(ERROR_FILE_EXISTS, std::system_category());
+  return std::string();
 }
 
 } // namespace FILESYSTEM
