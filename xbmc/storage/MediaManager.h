@@ -97,9 +97,21 @@ public:
   void SetHasOpticalDrive(bool bstatus);
 
   bool Eject(const std::string& mountpath);
-  void EjectTray( const bool bEject=true, const char cDriveLetter='\0' );
-  void CloseTray(const char cDriveLetter='\0');
-  void ToggleTray(const char cDriveLetter='\0');
+  /*! \brief Eject or close the tray of an optical drive
+   * \param bEject True to eject the tray, false to close it
+   * \param devicePath Path of the drive, empty for the first available optical drive
+   */
+  void EjectTray(bool bEject = true, const std::string& devicePath = "");
+
+  /*! \brief Close the tray of an optical drive
+   * \param devicePath Path of the drive, empty for the first available optical drive
+   */
+  void CloseTray(const std::string& devicePath = "");
+
+  /*! \brief Eject the tray of an optical drive, or close it when already open
+   * \param devicePath Path of the drive, empty for the first available optical drive
+   */
+  void ToggleTray(const std::string& devicePath = "");
 
   void ProcessEvents();
 

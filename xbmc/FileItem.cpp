@@ -377,6 +377,8 @@ CFileItem::CFileItem(const CMediaSource& share) : m_strPath(share.strPath)
   SetLabel(label);
   m_lockInfo = share.GetLockInfo();
   m_iDriveType = share.m_iDriveType;
+  if (!share.strDevicePath.empty())
+    SetProperty("device_path", share.strDevicePath);
   SetArt("thumb", share.m_strThumbnailImage);
   SetLabelPreformatted(true);
   if (IsDVD())

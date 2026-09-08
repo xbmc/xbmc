@@ -174,6 +174,7 @@ void CUDevProvider::GetDisks(std::vector<CMediaSource>& disks, bool removable)
     CMediaSource share;
     share.strName  = label;
     share.strPath  = mountpoint;
+    share.strDevicePath = devnode;
     share.m_ignore = true;
     if (isRemovable)
     {

@@ -280,6 +280,7 @@ void CWin32StorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDriv
         }
         StringUtils::Replace(share.strName, ":\\", ":");
         StringUtils::Replace(share.strPath, ":\\", ":");
+        share.strDevicePath = share.strPath;
         share.m_ignore= true;
         if( !bUseDCD )
         {
