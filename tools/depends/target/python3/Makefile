@@ -8,7 +8,8 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  13-wasm-em-config-clang.patch \
                                  14-wasm-build-wasm-default.patch \
                                  15-wasm-static-hacl.patch \
-                                 16-ios-platform.patch
+                                 16-ios-platform.patch \
+                                 17-wasm-static-linking.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   ifeq ($(OS), darwin_embedded)
@@ -47,6 +48,17 @@ ifeq ($(OS),wasm)
   EXTRA_CONFIGURE+= ax_cv_c_float_words_bigendian=no \
                     ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no \
                     ac_cv_func_memfd_create=no
+
+  # libpython is linked statically into the Kodi binary, so there is no dlopen()
+  # for extension modules; MODULE_BUILDTYPE=static builds them all into the
+  # archive. Saying so keeps configure from picking dynload_shlib.o, whose
+  # dlopen() emcc provides but which can never succeed here.
+  EXTRA_CONFIGURE+= --disable-wasm-dynamic-linking
+
+  # WebAssembly's indirect calls check the full signature, so the fpcasts
+  # CPython and its modules rely on trap without the call trampoline.
+  CFLAGS+= -DPY_CALL_TRAMPOLINE
+  export CFLAGS
 endif
 
 # Disabled c extension modules for all platforms
@@ -125,6 +137,7 @@ ifeq ($(OS),wasm)
 	cd $(PLATFORM); patch -p1 -i ../13-wasm-em-config-clang.patch
 	cd $(PLATFORM); patch -p1 -i ../14-wasm-build-wasm-default.patch
 	cd $(PLATFORM); patch -p1 -i ../15-wasm-static-hacl.patch
+	cd $(PLATFORM); patch -p1 -i ../17-wasm-static-linking.patch
 endif
 ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
 	cd $(PLATFORM); patch -p1 -i ../16-ios-platform.patch
