@@ -74,6 +74,15 @@ bool CShaderDX::Create(unsigned int passIdx,
     return false;
   }
 
+  if (!m_effect.SetTechnique("TEQ"))
+  {
+    CLog::Log(LOGERROR,
+              "CShaderDX::Create: Shader has no valid FX11 technique: pass={}, alias={}, "
+              "shader={}, technique=TEQ",
+              m_passIdx, m_passAlias, m_shaderPath);
+    return false;
+  }
+
   return true;
 }
 
@@ -134,18 +143,26 @@ void CShaderDX::PrepareParameters(
   v[0].z = 0;
   v[0].tu = 0;
   v[0].tv = 0;
+  v[0].tu2 = 0.0f;
+  v[0].tv2 = 0.0f;
   // top right
   v[1].z = 0;
   v[1].tu = 1;
   v[1].tv = 0;
+  v[1].tu2 = 1.0f;
+  v[1].tv2 = 0.0f;
   // bottom right
   v[2].z = 0;
   v[2].tu = 1;
   v[2].tv = 1;
+  v[2].tu2 = 1.0f;
+  v[2].tv2 = 1.0f;
   // bottom left
   v[3].z = 0;
   v[3].tu = 0;
   v[3].tv = 1;
+  v[3].tu2 = 0.0f;
+  v[3].tv2 = 1.0f;
 
   UnlockVertexBuffer();
   UpdateInputBuffer(frameCount);
@@ -167,7 +184,7 @@ bool CShaderDX::CreateVertexBuffer(unsigned int vertCount, unsigned int vertSize
 
 bool CShaderDX::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC* layout, unsigned int numElements)
 {
-  return CRPWinShader::CreateInputLayout(layout, numElements);
+  return CRPWinShader::CreateInputLayout(layout, numElements, "TEQ");
 }
 
 bool CShaderDX::CreateInputBuffer()

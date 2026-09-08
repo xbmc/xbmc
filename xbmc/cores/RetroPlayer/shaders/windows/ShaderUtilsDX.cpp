@@ -36,3 +36,23 @@ DirectX::XMFLOAT2 CShaderUtilsDX::ToDXVector(const float2& vec)
 {
   return DirectX::XMFLOAT2(static_cast<float>(vec.x), static_cast<float>(vec.y));
 }
+
+bool KODI::SHADER::GetShaderPassDescription(ID3DX11Effect* effect,
+                                            const char* techniqueName,
+                                            unsigned int passIndex,
+                                            D3DX11_PASS_DESC& passDesc)
+{
+  passDesc = {};
+  if (effect == nullptr || techniqueName == nullptr)
+    return false;
+
+  ID3DX11EffectTechnique* technique = effect->GetTechniqueByName(techniqueName);
+  if (technique == nullptr || !technique->IsValid())
+    return false;
+
+  ID3DX11EffectPass* pass = technique->GetPassByIndex(passIndex);
+  if (pass == nullptr || !pass->IsValid())
+    return false;
+
+  return SUCCEEDED(pass->GetDesc(&passDesc));
+}

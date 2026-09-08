@@ -8,17 +8,23 @@
 
 #pragma once
 
-#include <minwindef.h>
+#include <cstddef>
 
 namespace KODI::SHADER
 {
 struct CUSTOMVERTEX
 {
-  FLOAT x;
-  FLOAT y;
-  FLOAT z;
+  float x;
+  float y;
+  float z;
 
-  FLOAT tu;
-  FLOAT tv;
+  float tu;
+  float tv;
+
+  float tu2;
+  float tv2;
 };
+
+static_assert(offsetof(CUSTOMVERTEX, tu2) == 5 * sizeof(float));
+static_assert(sizeof(CUSTOMVERTEX) == 7 * sizeof(float));
 } // namespace KODI::SHADER
