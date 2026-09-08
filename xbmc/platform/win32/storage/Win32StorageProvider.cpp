@@ -226,8 +226,11 @@ void CWin32StorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDriv
         wchar_t cVolumeName[100] = {};
         int nResult = 0;
         // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
-        // no floppy HW is attached which causes huge delays.
-        if (uDriveType != DRIVE_REMOTE && !letter.empty() && letter != L"A:" && letter != L"B:")
+        // no floppy HW is attached which causes huge delays. Nor on optical drives when only the
+        // drive letters are wanted, as it waits on a drive that is spinning up.
+        const bool wantVolumeInfo{eDriveType != DVD_DRIVES || bonlywithmedia};
+        if (wantVolumeInfo && uDriveType != DRIVE_REMOTE && !letter.empty() && letter != L"A:" &&
+            letter != L"B:")
         {
           DWORD len = sizeof(cVolumeName) / sizeof(wchar_t);
           nResult = GetVolumeInformationW(strWdrive.c_str(), cVolumeName, len, 0, 0, 0, nullptr, 0);
