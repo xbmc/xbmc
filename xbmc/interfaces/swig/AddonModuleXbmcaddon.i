@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -28,6 +28,21 @@ using namespace xbmcaddon;
 // This is all about warning suppression. It's OK that these base classes are
 // not part of what swig parses.
 %feature("knownbasetypes") XBMCAddon::xbmcaddon "AddonClass"
+
+%include "kodi_common.i"
+
+// declared before the header that returns it, fully qualified, so SWIG
+// records a name the registering module also uses
+namespace XBMCAddon { namespace xbmcaddon { class Settings; } }
+
+// construction in tp_new; see kodi_construct.i
+KODI_CONSTRUCT(XBMCAddon::xbmcaddon, Addon)
+
+/* one line per shape crossing the boundary in this module */
+%template() std::vector<bool>;
+%template() std::vector<int>;
+%template() std::vector<double>;
+%template() std::vector<std::string>;
 
 %include "interfaces/legacy/swighelper.h"
 %include "interfaces/legacy/AddonString.h"

@@ -94,7 +94,7 @@ def add_artworks(listitem, artworks, IMAGE_LIMIT):
 
     fanart_to_set = [{'image': image['url'], 'preview': image['preview']}
         for image in artworks.get('fanart', ())[:IMAGE_LIMIT]]
-    listitem.setAvailableFanart(fanart_to_set)
+    infotag.setAvailableFanart(fanart_to_set)
 
 def get_details(input_uniqueids, handle, settings, fail_silently=False):
     if not input_uniqueids:

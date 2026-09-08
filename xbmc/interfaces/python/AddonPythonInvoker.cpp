@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2018 Team Kodi
+ *  Copyright (C) 2013-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -62,28 +62,27 @@
 
 #endif
 
-namespace PythonBindings {
-PyObject* PyInit_Module_xbmcdrm(void);
-PyObject* PyInit_Module_xbmcgui(void);
-PyObject* PyInit_Module_xbmc(void);
-PyObject* PyInit_Module_xbmcplugin(void);
-PyObject* PyInit_Module_xbmcaddon(void);
-PyObject* PyInit_Module_xbmcvfs(void);
+extern "C"
+{
+  PyObject* PyInit_xbmcdrm(void);
+  PyObject* PyInit_xbmcgui(void);
+  PyObject* PyInit_xbmc(void);
+  PyObject* PyInit_xbmcplugin(void);
+  PyObject* PyInit_xbmcaddon(void);
+  PyObject* PyInit_xbmcvfs(void);
 }
-
-using namespace PythonBindings;
 
 namespace
 {
 // clang-format off
 const _inittab PythonModules[] =
   {
-    { "xbmcdrm",    PyInit_Module_xbmcdrm    },
-    { "xbmcgui",    PyInit_Module_xbmcgui    },
-    { "xbmc",       PyInit_Module_xbmc       },
-    { "xbmcplugin", PyInit_Module_xbmcplugin },
-    { "xbmcaddon",  PyInit_Module_xbmcaddon  },
-    { "xbmcvfs",    PyInit_Module_xbmcvfs    },
+    { "xbmcdrm",    PyInit_xbmcdrm    },
+    { "xbmcgui",    PyInit_xbmcgui    },
+    { "xbmc",       PyInit_xbmc       },
+    { "xbmcplugin", PyInit_xbmcplugin },
+    { "xbmcaddon",  PyInit_xbmcaddon  },
+    { "xbmcvfs",    PyInit_xbmcvfs    },
     { nullptr,      nullptr }
   };
 // clang-format on
