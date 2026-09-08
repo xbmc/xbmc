@@ -13,6 +13,7 @@
 
 #include <cstdint>
 
+struct AudioStreamInfo;
 struct AEAudioFormat;
 class CFileItem;
 class ICodec;
@@ -45,7 +46,7 @@ public:
   CAudioDecoder();
   ~CAudioDecoder();
 
-  bool Create(const CFileItem &file, int64_t seekOffset);
+  bool Create(const CFileItem& file, int64_t seekOffset, int streamIndex);
   void Destroy();
 
   int ReadSamples(int numsamples);
@@ -67,6 +68,12 @@ public:
   ICodec *GetCodec() const { return m_codec; }
   float GetReplayGain(float &peakVal);
 
+  int GetStreamCount() const;
+  int GetStreamIndex() const;
+  bool IsUsable() const;
+  bool SetStream(int index);
+  void GetStreamInfo(int index, AudioStreamInfo& info) const;
+
 private:
   // pcm buffer
   CRingBuffer m_pcmBuffer;
@@ -86,13 +93,25 @@ private:
   int m_status;
   bool m_canPlay;
 
-  // Cached startup-buffer threshold in bytes, computed once per codec in
-  // Create() from the immutable format (bits/ch/rate). Avoids recomputing a
-  // 64-bit multiply/divide in the ReadSamples hot loop while STATUS_QUEUING.
+  /*! \brief Work out the startup-buffer threshold for the format now being decoded */
+  void UpdateStartThreshold();
+
+  /*! \brief Size the pcm buffer for the format now being decoded
+   *
+   * \return false if the codec describes an invalid format, true if buffer created
+   */
+  bool CreatePcmBuffer();
+
+  // Cached startup-buffer threshold in bytes, computed from the format of the stream being
+  // decoded. Avoids recomputing a 64-bit multiply/divide in the ReadSamples hot loop while
+  // STATUS_QUEUING.
   uint64_t m_startThresholdBytes;
 
   // the codec we're using
   ICodec* m_codec;
 
-  CCriticalSection m_critSection;
+  // current stream
+  int m_streamIndex = 0;
+
+  mutable CCriticalSection m_critSection;
 };

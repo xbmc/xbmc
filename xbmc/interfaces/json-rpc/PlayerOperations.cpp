@@ -1331,6 +1331,7 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITra
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
+    case Audio:
     {
       auto& components = CServiceBroker::GetAppComponents();
       const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -1368,7 +1369,6 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITra
       break;
     }
 
-    case Audio:
     case Picture:
     default:
       return FailedToExecute;

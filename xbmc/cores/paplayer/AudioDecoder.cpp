@@ -63,7 +63,7 @@ void CAudioDecoder::Destroy()
   m_canPlay = false;
 }
 
-bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
+bool CAudioDecoder::Create(const CFileItem& file, int64_t seekOffset, int streamIndex)
 {
   Destroy();
 
@@ -92,17 +92,13 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
     Destroy();
     return false;
   }
-  unsigned int blockSize = (m_codec->m_bitsPerSample >> 3) * m_codec->m_format.m_channelLayout.Count();
+  // select the requested stream before buffer sizing (assumes Init() starts on stream 0)
+  m_streamIndex = 0;
+  if (streamIndex > 0 && streamIndex < m_codec->GetStreamCount() && m_codec->SetStream(streamIndex))
+    m_streamIndex = streamIndex;
 
-  if (blockSize == 0)
-  {
-    CLog::Log(LOGERROR, "CAudioDecoder: Codec provided invalid parameters ({}-bit, {} channels)",
-              m_codec->m_bitsPerSample, GetFormat().m_channelLayout.Count());
+  if (!CreatePcmBuffer())
     return false;
-  }
-
-  /* allocate the pcmBuffer for 2 seconds of audio */
-  m_pcmBuffer.Create(2 * blockSize * m_codec->m_format.m_sampleRate);
 
   if (file.HasMusicInfoTag())
   {
@@ -129,25 +125,51 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
       m_codec->m_tag.SetReplayGain(rgInfo);
   }
 
-  if (seekOffset)
+  // Selecting a stream probes it, which consumes packets, so seek back
+  if (seekOffset || streamIndex > 0)
     m_codec->Seek(seekOffset);
 
-  // Pre-compute the startup-buffer threshold once. Format is immutable for the
-  // lifetime of m_codec, so the per-packet recomputation in ReadSamples is
-  // wasted work. 64-bit intermediate prevents wrap for extreme hi-res
-  // multichannel (see ReadSamples for the original sizing rationale).
-  constexpr unsigned int STARTUP_BUFFER_MS = 200;
-  m_startThresholdBytes = (static_cast<uint64_t>(STARTUP_BUFFER_MS) *
-                           static_cast<uint64_t>(m_codec->m_bitsPerSample >> 3) *
-                           static_cast<uint64_t>(m_codec->m_format.m_channelLayout.Count()) *
-                           static_cast<uint64_t>(m_codec->m_format.m_sampleRate)) /
-                          1000;
+  UpdateStartThreshold();
 
   m_status = STATUS_QUEUING;
 
   m_rawBufferSize = 0;
 
   return true;
+}
+
+bool CAudioDecoder::CreatePcmBuffer()
+{
+  // Enough for two seconds of what is being decoded
+  constexpr unsigned int PCM_BUFFER_SECONDS = 2;
+
+  const unsigned int blockSize =
+      (m_codec->m_bitsPerSample >> 3) * m_codec->m_format.m_channelLayout.Count();
+  if (blockSize == 0)
+  {
+    CLog::Log(LOGERROR, "CAudioDecoder: Codec provided invalid parameters ({}-bit, {} channels)",
+              m_codec->m_bitsPerSample, m_codec->m_format.m_channelLayout.Count());
+    return false;
+  }
+
+  // CRingBuffer::Create() allocates without freeing what it is holding
+  m_pcmBuffer.Destroy();
+  m_pcmBuffer.Create(PCM_BUFFER_SECONDS * blockSize * m_codec->m_format.m_sampleRate);
+
+  return true;
+}
+
+void CAudioDecoder::UpdateStartThreshold()
+{
+  // Pre-compute the startup-buffer threshold, so that the per-packet recomputation in ReadSamples
+  // is not wasted work. 64-bit intermediate prevents wrap for extreme hi-res multichannel (see
+  // ReadSamples for the original sizing rationale).
+  constexpr unsigned int STARTUP_BUFFER_MS = 200;
+  m_startThresholdBytes = (static_cast<uint64_t>(STARTUP_BUFFER_MS) *
+                           static_cast<uint64_t>(m_codec->m_bitsPerSample >> 3) *
+                           static_cast<uint64_t>(m_codec->m_format.m_channelLayout.Count()) *
+                           static_cast<uint64_t>(m_codec->m_format.m_sampleRate)) /
+                          1000;
 }
 
 AEAudioFormat CAudioDecoder::GetFormat()
@@ -202,7 +224,15 @@ unsigned int CAudioDecoder::GetDataSize(bool checkPktSize)
       else if (checkPktSize && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
         m_status = STATUS_ENDED;
     }
-    return std::min(m_pcmBuffer.getMaxReadSize() / (m_codec->m_bitsPerSample >> 3), (unsigned int)OUTPUT_SAMPLES);
+    const unsigned int bytesPerSample = m_codec->m_bitsPerSample >> 3;
+    if (bytesPerSample == 0)
+    {
+      CLog::Log(LOGERROR, "CAudioDecoder::GetDataSize - Codec reports {} bits per sample",
+                m_codec->m_bitsPerSample);
+      return 0;
+    }
+
+    return std::min(m_pcmBuffer.getMaxReadSize() / bytesPerSample, (unsigned int)OUTPUT_SAMPLES);
   }
   else
   {
@@ -421,4 +451,68 @@ float CAudioDecoder::GetReplayGain(float &peakVal)
 
   peakVal = peak;
   return replaygain;
+}
+
+int CAudioDecoder::GetStreamCount() const
+{
+  std::unique_lock lock(m_critSection);
+  if (m_codec)
+    return m_codec->GetStreamCount();
+  return 0;
+}
+
+int CAudioDecoder::GetStreamIndex() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_streamIndex;
+}
+
+bool CAudioDecoder::IsUsable() const
+{
+  std::unique_lock lock(m_critSection);
+
+  // A codec describing neither a rate nor a sample size has nothing to decode through - which is
+  // what one left behind by a failed stream switch reports.
+  return m_codec && m_codec->m_format.m_sampleRate != 0 && m_codec->m_bitsPerSample != 0;
+}
+
+bool CAudioDecoder::SetStream(int index)
+{
+  std::unique_lock lock(m_critSection);
+  if (!m_codec)
+    return false;
+
+  const int64_t totalTime = m_codec->m_TotalTime;
+
+  if (!m_codec->SetStream(index))
+  {
+    m_codec->m_TotalTime = totalTime;
+    return false;
+  }
+
+  m_codec->m_TotalTime = totalTime;
+
+  m_streamIndex = index;
+
+  // Reset for new stream
+  m_eof = false;
+  if (m_status == STATUS_ENDING || m_status == STATUS_ENDED)
+    m_status = STATUS_PLAYING;
+
+  m_rawBufferSize = 0;
+  if (!CreatePcmBuffer())
+    return false;
+
+  UpdateStartThreshold();
+
+  return true;
+}
+
+void CAudioDecoder::GetStreamInfo(int index, AudioStreamInfo& info) const
+{
+  std::unique_lock lock(m_critSection);
+  if (m_codec)
+    m_codec->GetStreamInfo(index, info);
+  else
+    info.valid = false;
 }

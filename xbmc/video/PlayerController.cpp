@@ -269,39 +269,7 @@ bool CPlayerController::OnAction(const CAction &action)
       }
 
       case ACTION_AUDIO_NEXT_LANGUAGE:
-      {
-        if (appPlayer->GetAudioStreamCount() == 1)
-          return true;
-
-        using namespace KODI::VIDEO;
-        const std::vector<AudioStreamInfoExt> streams =
-            CVideoStreamSelect::GetAudioStreams(appPlayer.get());
-
-        // Find the current logical sub track from the internal id
-        const int currentStreamId = appPlayer->GetAudioStream();
-        auto it = std::ranges::find(streams, currentStreamId, &AudioStreamInfoExt::streamId);
-        if (it == streams.end())
-          return true;
-        const int currentIndex = static_cast<int>(std::distance(streams.begin(), it));
-
-        const int newIndex = (currentIndex + 1) % streams.size();
-
-        it = streams.begin() + newIndex;
-        appPlayer->SetAudioStream(it->streamId);
-
-        // Toast
-        std::string textInfo = it->languageDesc;
-        if (!it->name.empty())
-          textInfo += " - " + it->name;
-        if (!it->codecDesc.empty())
-          textInfo += " (" + it->codecDesc + ")";
-
-        std::string caption = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(460);
-        caption += StringUtils::Format(" ({}/{})", newIndex + 1, streams.size());
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, textInfo,
-                                              DisplTime, false, MsgTime);
-        return true;
-      }
+        return NextAudioStream();
 
       case ACTION_DIALOG_SELECT_AUDIO:
       {
@@ -617,7 +585,59 @@ bool CPlayerController::OnAction(const CAction &action)
         break;
     }
   }
+  else if (appPlayer->IsPlayingAudio())
+  {
+    switch (action.GetID())
+    {
+      case ACTION_AUDIO_NEXT_LANGUAGE:
+        return NextAudioStream();
+
+      default:
+        break;
+    }
+  }
   return false;
+}
+
+bool CPlayerController::NextAudioStream()
+{
+  const unsigned int MsgTime = 300;
+  const unsigned int DisplTime = 2000;
+
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  if (appPlayer->GetAudioStreamCount() < 2)
+    return true;
+
+  using namespace KODI::VIDEO;
+  const std::vector<AudioStreamInfoExt> streams =
+      CVideoStreamSelect::GetAudioStreams(appPlayer.get());
+
+  // Find the current logical sub track from the internal id
+  const int currentStreamId = appPlayer->GetAudioStream();
+  auto it = std::ranges::find(streams, currentStreamId, &AudioStreamInfoExt::streamId);
+  if (it == streams.end())
+    return true;
+  const int currentIndex = static_cast<int>(std::distance(streams.begin(), it));
+
+  const int newIndex = (currentIndex + 1) % streams.size();
+
+  it = streams.begin() + newIndex;
+  appPlayer->SetAudioStream(it->streamId);
+
+  // Toast
+  std::string textInfo = it->languageDesc;
+  if (!it->name.empty())
+    textInfo += " - " + it->name;
+  if (!it->codecDesc.empty())
+    textInfo += " (" + it->codecDesc + ")";
+
+  std::string caption = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(460);
+  caption += StringUtils::Format(" ({}/{})", newIndex + 1, streams.size());
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, textInfo, DisplTime,
+                                        false, MsgTime);
+  return true;
 }
 
 void CPlayerController::ShowSlider(int action, int label, float value, float min, float delta, float max, bool modal)

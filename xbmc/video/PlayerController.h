@@ -52,6 +52,11 @@ private:
    */
   void ShowSlider(int action, int label, float value, float min, float delta, float max, bool modal = false);
 
+  /*! \brief switch to the next audio stream of the playing file and notify the user
+   \return true if the action is considered handled
+   */
+  bool NextAudioStream();
+
   int m_sliderAction = 0; ///< \brief set to the action id for a slider being displayed \sa ShowSlider
   KODI::UTILS::MOVING_SPEED::CMovingSpeed m_movingSpeed;
 };
