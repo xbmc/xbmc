@@ -19,6 +19,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPlayEject.h"
 #ifdef HAVE_LIBBLURAY
+#include "filesystem/BlurayDirectory.h"
 #include "filesystem/BlurayDiscCache.h"
 #endif
 #include "filesystem/File.h"
@@ -1214,11 +1215,13 @@ UTILS::DISCS::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
     if (!info.empty())
       return info;
   }
+#ifdef HAVE_LIBBLURAY
   // check for Blu-ray discs
   if (CFileUtils::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
   {
-    info = UTILS::DISCS::ProbeBlurayDiscInfo(mediaPath);
+    info = XFILE::CBlurayDirectory::ProbeDisc(mediaPath);
   }
+#endif
 
   return info;
 }

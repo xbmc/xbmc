@@ -631,14 +631,51 @@ void CBlurayDirectory::SetPlaylistStreamDetails(unsigned int playlist, CFileItem
                CURL::GetRedacted(m_url.Get()));
 }
 
-std::string CBlurayDirectory::GetBlurayTitle()
+std::optional<std::string> CBlurayDirectory::GetBlurayTitle()
 {
-  return GetDiscInfoString(DiscInfo::TITLE);
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (std::string title; CServiceBroker::GetBlurayDiscCache()->GetDiscTitle(path, title))
+    return title;
+
+  const std::string title{GetDiscInfoString(DiscInfo::TITLE)};
+
+  // A disc that failed to open said nothing, so it is retried rather than written off
+  if (!m_blurayInitialized)
+    return std::nullopt;
+
+  CServiceBroker::GetBlurayDiscCache()->SetDiscTitle(path, title);
+  return title;
 }
 
-std::string CBlurayDirectory::GetBlurayID()
+UTILS::DISCS::DiscInfo CBlurayDirectory::ProbeDisc(const std::string& mediaPath)
 {
-  return GetDiscInfoString(DiscInfo::ID);
+  UTILS::DISCS::DiscInfo info;
+  CBlurayDirectory bdDir;
+  bdDir.SetRealPath(mediaPath);
+  const std::optional<std::string> title{bdDir.GetBlurayTitle()};
+  if (!title)
+    return info;
+
+  info.type = UTILS::DISCS::DiscType::BLURAY;
+  info.name = *title;
+  info.serial = bdDir.GetBlurayID().value_or("");
+  return info;
+}
+
+std::optional<std::string> CBlurayDirectory::GetBlurayID()
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (std::string id; CServiceBroker::GetBlurayDiscCache()->GetDiscId(path, id))
+    return id;
+
+  const std::string id{GetDiscInfoString(DiscInfo::ID)};
+  if (!m_blurayInitialized)
+    return std::nullopt;
+
+  CServiceBroker::GetBlurayDiscCache()->SetDiscId(path, id);
+  return id;
 }
 
 std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
@@ -928,12 +965,6 @@ bool CBlurayDirectory::EnsureBlurayOpen()
   m_blurayInitialized = true;
 
   return true;
-}
-
-bool CBlurayDirectory::InitializeBluray(const std::string& root)
-{
-  SetRealPath(root);
-  return EnsureBlurayOpen();
 }
 
 bool CBlurayDirectory::HasMenuSupport()

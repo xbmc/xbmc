@@ -13,6 +13,9 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "cdioSupport.h"
+#ifdef HAVE_LIBBLURAY
+#include "filesystem/BlurayDirectory.h"
+#endif
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "resources/LocalizeStrings.h"
@@ -20,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/DiscsUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -28,6 +32,24 @@
 
 using namespace MEDIA_DETECT;
 using namespace std::chrono_literals;
+
+namespace
+{
+bool GetDiscInfo(UTILS::DISCS::DiscInfo& info, const std::string& mediaPath)
+{
+  info = UTILS::DISCS::ProbeDVDDiscInfo(mediaPath);
+  if (!info.empty())
+    return true;
+
+#ifdef HAVE_LIBBLURAY
+  info = XFILE::CBlurayDirectory::ProbeDisc(mediaPath);
+  if (!info.empty())
+    return true;
+#endif
+
+  return false;
+}
+} // namespace
 
 CCriticalSection CDetectDVDMedia::m_muReadingMedia;
 CCriticalSection CDetectDVDMedia::m_muDetect;
@@ -225,7 +247,7 @@ void CDetectDVDMedia::DetectMediaType()
   bool haveDiscInfo = false;
   if (pCdInfo == nullptr || pCdInfo->HasDataTracks())
   {
-    haveDiscInfo = UTILS::DISCS::GetDiscInfo(discInfo, devicePath);
+    haveDiscInfo = GetDiscInfo(discInfo, devicePath);
   }
   else
   {
