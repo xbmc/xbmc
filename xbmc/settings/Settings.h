@@ -151,6 +151,7 @@ public:
   static constexpr auto SETTING_MYVIDEOS_PLAYACTION = "myvideos.playaction";
   static constexpr auto SETTING_MYVIDEOS_USETAGS = "myvideos.usetags";
   static constexpr auto SETTING_MYVIDEOS_EXTRACTFLAGS = "myvideos.extractflags";
+  static constexpr auto SETTING_MYVIDEOS_EXTRACTFLAGSALWAYS = "myvideos.extractflagsalways";
   static constexpr auto SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS = "myvideos.extractchapterthumbs";
   static constexpr auto SETTING_MYVIDEOS_REPLACELABELS = "myvideos.replacelabels";
   static constexpr auto SETTING_MYVIDEOS_EXTRACTTHUMB = "myvideos.extractthumb";

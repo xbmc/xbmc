@@ -30,6 +30,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/SaveFileStateJob.h"
@@ -56,8 +57,22 @@ void CApplicationPlayerCallback::OnPlayBackEnded()
 
 namespace
 {
+bool AlwaysUpdateStreamDetails()
+{
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  return settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
+         settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGSALWAYS);
+}
+
 bool ShouldUpdateStreamDetails(const CFileItem& file)
 {
+  // Creating a video info tag for an audio item would make its play state be saved as a video
+  if (MUSIC::IsAudio(file) && !VIDEO::IsVideo(file))
+    return false;
+
+  if (AlwaysUpdateStreamDetails() && VIDEO::IsVideo(file))
+    return true;
+
   // If a title/playlist hasn't been selected for a bluray/dvds then the stream details may not be known
   const bool isDiscOrStream{VIDEO::IsBDFile(file) || VIDEO::IsDVDFile(file) || file.IsDiscImage() ||
                             URIUtils::IsBlurayMenuPath(file.GetDynPath()) ||
@@ -321,6 +336,17 @@ void UpdateStackAndItem(const CFileItem& file,
   }
   else
   {
+    if (file.GetProperty("update_stream_details").asBoolean(false))
+    {
+      fileItem.GetVideoInfoTag()->m_streamDetails = file.GetVideoInfoTag()->m_streamDetails;
+
+      // The library displays the duration of the whole stack, not of the part just played
+      fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(
+          0, static_cast<int>(
+                 std::chrono::duration_cast<std::chrono::seconds>(stackHelper->GetStackTotalTime())
+                     .count()));
+    }
+
     stackHelper->SetCurrentPartFinished(
         IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds));
 
@@ -378,6 +404,11 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     // Update the stack
     if (stackHelper->GetStack(file) != nullptr)
       UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
+
+    // Details stored by an earlier scan rank above the player's, so an explicit refresh has to
+    // override the source precedence to have any effect
+    if (AlwaysUpdateStreamDetails() && file.GetProperty("update_stream_details").asBoolean(false))
+      fileItem.SetProperty("force_stream_details_update", true);
 
     if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
         IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))

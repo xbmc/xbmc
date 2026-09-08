@@ -195,13 +195,14 @@ void CSaveFileState::DoWork(CFileItem& item,
             !item.IsLiveTV())
         {
           CFileItem dbItem(item);
+          const bool forceUpdate{item.GetProperty("force_stream_details_update").asBoolean(false)};
 
           // Check whether the item's db streamdetails need updating
           if (!videodatabase.GetStreamDetails(dbItem) ||
               (dbItem.GetVideoInfoTag()->m_streamDetails !=
                    item.GetVideoInfoTag()->m_streamDetails &&
-               dbItem.GetVideoInfoTag()->m_streamDetails.ShouldUpdateWithNewDetails(
-                   item.GetVideoInfoTag()->m_streamDetails)))
+               (forceUpdate || dbItem.GetVideoInfoTag()->m_streamDetails.ShouldUpdateWithNewDetails(
+                                   item.GetVideoInfoTag()->m_streamDetails))))
           {
             videodatabase.BeginTransaction();
 

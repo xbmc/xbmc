@@ -1225,6 +1225,14 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="myvideos.extractflagsalways" type="boolean" label="40805" help="40806" parent="myvideos.extractflags">
+          <dependencies>
+            <dependency type="visible" setting="myvideos.extractflags" operator="is">true</dependency>
+          </dependencies>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="myvideos.extractchapterthumbs" type="boolean" label="37044" help="37045">
           <level>2</level>
           <default>true</default>
