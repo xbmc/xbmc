@@ -67,7 +67,7 @@ public:
               uint8_t alpha = 0xFF);
 
 private:
-  void PrepareParameters(unsigned int sourceWidth,
+  bool PrepareParameters(unsigned int sourceWidth,
                          unsigned int sourceHeight,
                          CRect sourceRect,
                          const KODI::RETRO::ViewportCoordinates& points);

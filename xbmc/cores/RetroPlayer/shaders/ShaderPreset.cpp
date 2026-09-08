@@ -52,7 +52,8 @@ bool CShaderPreset::RenderUpdate(IShaderTexture& sourceTexture, IShaderTexture& 
   if (!Update())
     return false;
 
-  PrepareParameters(sourceTexture);
+  if (!PrepareParameters(sourceTexture))
+    return false;
 
   // Apply all passes
   IShaderTexture* currentTexture = &sourceTexture;
@@ -183,16 +184,18 @@ void CShaderPreset::UpdateMVPs()
     videoShader->UpdateMVP();
 }
 
-void CShaderPreset::PrepareParameters(IShaderTexture& sourceTexture)
+bool CShaderPreset::PrepareParameters(IShaderTexture& sourceTexture)
 {
   // Prepare parameters for all shader passes
   const auto numPasses = static_cast<unsigned int>(m_pShaders.size());
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)
   {
     std::unique_ptr<IShader>& videoShader = m_pShaders[shaderIdx];
-    videoShader->PrepareParameters(sourceTexture, m_pShaderTextures, m_pShaders,
-                                   static_cast<uint64_t>(m_frameCount));
+    if (!videoShader->PrepareParameters(sourceTexture, m_pShaderTextures, m_pShaders,
+                                        static_cast<uint64_t>(m_frameCount)))
+      return false;
   }
+  return true;
 }
 
 void CShaderPreset::CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,

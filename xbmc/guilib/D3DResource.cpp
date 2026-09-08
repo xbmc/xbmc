@@ -799,7 +799,7 @@ bool CD3DEffect::End()
 bool CD3DEffect::CreateEffect()
 {
   HRESULT hr;
-  ID3DBlob* pError = nullptr;
+  ComPtr<ID3DBlob> pError;
 
   std::vector<D3D_SHADER_MACRO> definemacros;
 
@@ -829,8 +829,10 @@ bool CD3DEffect::CreateEffect()
   dwShaderFlags |= D3DCOMPILE_OPTIMIZATION_LEVEL3;
 #endif
 
-  hr = D3DX11CompileEffectFromMemory(m_effectString.c_str(), m_effectString.length(), "", &definemacros[0], this,
-                                     dwShaderFlags, 0, DX::DeviceResources::Get()->GetD3DDevice(), m_effect.ReleaseAndGetAddressOf(), &pError);
+  hr = D3DX11CompileEffectFromMemory(
+      m_effectString.c_str(), m_effectString.length(), "", &definemacros[0], this, dwShaderFlags,
+      0, DX::DeviceResources::Get()->GetD3DDevice(), m_effect.ReleaseAndGetAddressOf(),
+      pError.GetAddressOf());
 
   if(hr == S_OK)
     return true;

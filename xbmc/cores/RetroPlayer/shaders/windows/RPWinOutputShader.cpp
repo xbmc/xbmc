@@ -167,7 +167,11 @@ void CRPWinShader::SetTarget(CD3DTexture* target)
 
 bool CRPWinOutputShader::Create(RETRO::SCALINGMETHOD scalingMethod)
 {
-  CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
+  if (!CreateVertexBuffer(4, sizeof(CUSTOMVERTEX)))
+  {
+    CLog::LogF(LOGERROR, "Failed to create output shader buffers");
+    return false;
+  }
 
   DefinesMap defines;
   switch (scalingMethod)
@@ -204,12 +208,14 @@ void CRPWinOutputShader::Render(CD3DTexture& sourceTexture,
                                 unsigned int range /* = 0 */,
                                 uint8_t alpha /* = 0xFF */)
 {
-  PrepareParameters(sourceTexture.GetWidth(), sourceTexture.GetHeight(), sourceRect, points);
+  if (!PrepareParameters(sourceTexture.GetWidth(), sourceTexture.GetHeight(), sourceRect, points))
+    return;
+
   SetShaderParameters(sourceTexture, range, alpha, viewPort);
   Execute({&target}, 4);
 }
 
-void CRPWinOutputShader::PrepareParameters(unsigned int sourceWidth,
+bool CRPWinOutputShader::PrepareParameters(unsigned int sourceWidth,
                                            unsigned int sourceHeight,
                                            CRect sourceRect,
                                            const KODI::RETRO::ViewportCoordinates& points)
@@ -221,50 +227,53 @@ void CRPWinOutputShader::PrepareParameters(unsigned int sourceWidth,
   if (m_sourceWidth != sourceWidth || m_sourceHeight != sourceHeight ||
       m_sourceRect != sourceRect || changed)
   {
-    m_sourceWidth = sourceWidth;
-    m_sourceHeight = sourceHeight;
-    m_sourceRect = sourceRect;
-
-    for (unsigned int i = 0; i < 4; ++i)
-      m_destPoints[i] = points[i];
-
     CUSTOMVERTEX* v = nullptr;
-    LockVertexBuffer(static_cast<void**>(static_cast<void*>(&v)));
+    if (!LockVertexBuffer(static_cast<void**>(static_cast<void*>(&v))))
+      return false;
 
-    v[0].x = m_destPoints[0].x;
-    v[0].y = m_destPoints[0].y;
+    v[0].x = points[0].x;
+    v[0].y = points[0].y;
     v[0].z = 0.0f;
-    v[0].tu = m_sourceRect.x1 / m_sourceWidth;
-    v[0].tv = m_sourceRect.y1 / m_sourceHeight;
+    v[0].tu = sourceRect.x1 / sourceWidth;
+    v[0].tv = sourceRect.y1 / sourceHeight;
     v[0].tu2 = 0.0f;
     v[0].tv2 = 0.0f;
 
-    v[1].x = m_destPoints[1].x;
-    v[1].y = m_destPoints[1].y;
+    v[1].x = points[1].x;
+    v[1].y = points[1].y;
     v[1].z = 0.0f;
-    v[1].tu = m_sourceRect.x2 / m_sourceWidth;
-    v[1].tv = m_sourceRect.y1 / m_sourceHeight;
+    v[1].tu = sourceRect.x2 / sourceWidth;
+    v[1].tv = sourceRect.y1 / sourceHeight;
     v[1].tu2 = 1.0f;
     v[1].tv2 = 0.0f;
 
-    v[2].x = m_destPoints[2].x;
-    v[2].y = m_destPoints[2].y;
+    v[2].x = points[2].x;
+    v[2].y = points[2].y;
     v[2].z = 0.0f;
-    v[2].tu = m_sourceRect.x2 / m_sourceWidth;
-    v[2].tv = m_sourceRect.y2 / m_sourceHeight;
+    v[2].tu = sourceRect.x2 / sourceWidth;
+    v[2].tv = sourceRect.y2 / sourceHeight;
     v[2].tu2 = 1.0f;
     v[2].tv2 = 1.0f;
 
-    v[3].x = m_destPoints[3].x;
-    v[3].y = m_destPoints[3].y;
+    v[3].x = points[3].x;
+    v[3].y = points[3].y;
     v[3].z = 0.0f;
-    v[3].tu = m_sourceRect.x1 / m_sourceWidth;
-    v[3].tv = m_sourceRect.y2 / m_sourceHeight;
+    v[3].tu = sourceRect.x1 / sourceWidth;
+    v[3].tv = sourceRect.y2 / sourceHeight;
     v[3].tu2 = 0.0f;
     v[3].tv2 = 1.0f;
 
-    UnlockVertexBuffer();
+    if (!UnlockVertexBuffer())
+      return false;
+
+    // Cache only successful updates so the output shader retries after failure
+    m_sourceWidth = sourceWidth;
+    m_sourceHeight = sourceHeight;
+    m_sourceRect = sourceRect;
+    m_destPoints = points;
   }
+
+  return true;
 }
 
 void CRPWinOutputShader::SetShaderParameters(CD3DTexture& sourceTexture,
