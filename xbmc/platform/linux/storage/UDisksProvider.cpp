@@ -50,6 +50,8 @@ void CUDiskDevice::Update()
     m_FileSystem.clear();
   }
 
+  m_DeviceFile = properties["DeviceFile"].asString();
+
   m_isMounted   = properties["DeviceIsMounted"].asBoolean();
   if (m_isMounted && !properties["DeviceMountPaths"].empty())
     m_MountPath   = properties["DeviceMountPaths"][0].asString();
@@ -128,6 +130,7 @@ CMediaSource CUDiskDevice::ToMediaShare() const
 {
   CMediaSource source;
   source.strPath = m_MountPath;
+  source.strDevicePath = m_DeviceFile;
   if (m_Label.empty())
   {
     std::string strSize = StringUtils::SizeToString(m_PartitionSize);
