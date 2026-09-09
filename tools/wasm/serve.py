@@ -6,7 +6,9 @@ Minimal HTTP server for Kodi WASM builds.
 - Serves static files with the COOP/COEP headers required by SharedArrayBuffer.
 - Exposes a same-origin streaming proxy at `/proxy?u=<url-encoded>` so the
   browser can reach http(s) servers that don't send CORS headers. Only loopback
-  clients may use it unless --allow-lan-proxy is given.
+  clients may use it unless --allow-lan-proxy is given. Build with
+  -DENABLE_WASM_DEV_PROXY=ON so the module routes its cross-origin requests
+  through it (tools/wasm/dev_proxy_pre.js).
 
 Usage:
   cd build-wasm

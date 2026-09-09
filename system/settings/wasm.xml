@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings version="1">
+  <section id="system">
+    <category id="input">
+      <group id="1">
+        <setting id="input.usekodikeyboard" type="boolean" label="24162" help="34011">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
   <section id="services">
     <category id="control">
       <group id="2">

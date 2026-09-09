@@ -9,6 +9,8 @@
 #include "GUIDialogKeyboardTouch.h"
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "platform/darwin/ios-common/DarwinEmbedKeyboard.h"
+#elif defined(TARGET_WASM)
+#include "windowing/wasm/WasmKeyboard.h"
 #endif
 
 CGUIDialogKeyboardTouch::CGUIDialogKeyboardTouch()
@@ -23,6 +25,8 @@ bool CGUIDialogKeyboardTouch::ShowAndGetInput(char_callback_t pCallback, const s
 {
 #if defined(TARGET_DARWIN_EMBEDDED)
   m_keyboard.reset(new CDarwinEmbedKeyboard());
+#elif defined(TARGET_WASM)
+  m_keyboard = std::make_unique<KODI::WINDOWING::WASM::CWasmKeyboard>();
 #endif
 
   if (!m_keyboard)
