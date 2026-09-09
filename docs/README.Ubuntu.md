@@ -13,6 +13,7 @@ Several other distributions have **[specific build guides](README.md)** and a ge
   3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**   
   3.3. **[Ubuntu <= 18.04](#33-ubuntu--1804)**
 4. **[Build Kodi](#4-build-kodi)**
+5. **[Build a Debian package](#5-build-a-debian-package)**
 
 ## 1. Document conventions
 This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
@@ -211,6 +212,37 @@ Verify your nasm version by running `nasm -v`. The version displayed should be >
 
 ## 4. Build Kodi
 See the general **[Linux build guide](README.Linux.md)** for reference.
+
+**[back to top](#table-of-contents)**
+
+## 5. Build a Debian package
+Kodi's CMake project can produce Debian packages through CPack. It needs `dpkg-dev`, `fakeroot` and `lsb-release` in addition to the build dependencies from **[section 3](#3-install-the-required-packages)**:
+```
+sudo apt install dpkg-dev fakeroot lsb-release
+```
+
+Configure with `-DCPACK_GENERATOR=DEB` and an install prefix of `/usr`, build, then run `cpack` from the build directory:
+```
+cd $HOME/kodi-build
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr -DCPACK_GENERATOR=DEB
+cmake --build . -- -j$(getconf _NPROCESSORS_ONLN)
+cpack
+```
+
+The packages are written to `packages/` inside the build directory: `kodi` (architecture-independent data), `kodi-bin` (the binary, with its library dependencies computed by `dpkg-shlibdeps`), `kodi-addon-dev`, `kodi-tools-texturepacker` and, when configured with `-DENABLE_EVENTCLIENTS=ON`, the event client packages. Install a runnable Kodi with:
+```
+sudo apt install ./packages/kodi_*.deb ./packages/kodi-bin_*.deb
+```
+
+The package version is `<major>.<minor>~git<timestamp>-<identifier>-<distro codename>` with epoch `2`. The following cache variables adjust it:
+
+| Variable | Effect |
+|----------|--------|
+| `DEBIAN_PACKAGE_TYPE` | `stable` uses `final` as identifier, `unstable` uses the version tag (for instance `beta2`); anything else uses the git revision |
+| `DEBIAN_PACKAGE_VERSION` / `DEBIAN_PACKAGE_REVISION` | Prefix and suffix of the distro part, `0<codename>` by default |
+| `DEBIAN_PACKAGE_EPOCH` | Overrides the epoch (`2` by default); `0` produces a version without epoch |
+| `CPACK_DEBIAN_PACKAGE_MAINTAINER` | Overrides the maintainer, otherwise taken from `git config user.name` and `user.email` |
+| `CPACK_DEBIAN_PACKAGE_ARCHITECTURE` | Overrides the architecture, otherwise `dpkg --print-architecture` for a native build and the target triplet (`arm-linux-gnueabihf` gives `armhf`) for a cross build |
 
 **[back to top](#table-of-contents)**
 
