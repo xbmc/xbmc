@@ -38,6 +38,7 @@
 /xbmc/platform/darwin/ @kambala-decapitator
 /xbmc/platform/darwin/speech/ @ksooo
 /xbmc/platform/linux/ @sundermann
+/xbmc/platform/wasm/ @clementperon
 /xbmc/platform/win10/ @CrystalP @thexai
 /xbmc/platform/win32/ @CrystalP @thexai
 /xbmc/utils/EGL* @reardonia
