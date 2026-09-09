@@ -9,6 +9,7 @@
 #include "MatroskaTagMapping.h"
 
 #include "MusicInfoTag.h"
+#include "ReplayGain.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
@@ -110,6 +111,18 @@ void MUSIC_INFO::MatroskaTagMapping::MapTag(const std::string& key,
                                             const std::string& musicsep,
                                             CMusicInfoTag& tag)
 {
+  if (key == "REPLAYGAIN_GAIN" || key == "REPLAYGAIN_PEAK")
+  {
+    const ReplayGain::Type type =
+        level == TagLevel::Album ? ReplayGain::Type::ALBUM : ReplayGain::Type::TRACK;
+    ReplayGain replayGain = tag.GetReplayGain();
+    if (key == "REPLAYGAIN_GAIN")
+      replayGain.ParseGain(type, value);
+    else
+      replayGain.ParsePeak(type, value);
+    tag.SetReplayGain(replayGain);
+    return;
+  }
   /*!
   * The names whose field the level decides. Everything else means the same thing wherever it
   * sits, and a caller applies album level tags before track level ones so that a song naming
