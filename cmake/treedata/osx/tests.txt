@@ -1,2 +1,1 @@
-xbmc/platform/linux/test platform/linux/test
 xbmc/platform/posix/filesystem/test platform/posix/filesystem/test
