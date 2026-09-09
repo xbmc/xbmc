@@ -22,5 +22,5 @@ Kodi uses CMake as its building system but instructions are highly dependent on 
   <a href="README.Windows.md" title="Windows"><img src="resources/windows.svg" height="78"></a>
 </p>
 
-Experimental platform guide: [WASM (Emscripten)](README.WASM.md)
+Experimental platform guide: [WASM (Emscripten)](README.WASM.md), with [Tizen SDK setup](README.Tizen.md) for deploying it to a Samsung TV
 
