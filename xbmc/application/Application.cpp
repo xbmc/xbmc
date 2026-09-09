@@ -1651,10 +1651,6 @@ int CApplication::Run()
 {
   CLog::Log(LOGINFO, "Running the application...");
 
-  std::chrono::time_point<std::chrono::steady_clock> lastFrameTime;
-  std::chrono::milliseconds frameTime;
-  const unsigned int noRenderFrameTime = 15; // Simulates ~66fps
-
   CFileItemList& playlist = CServiceBroker::GetAppParams()->GetPlaylist();
   if (playlist.Size() > 0)
   {
@@ -1663,37 +1659,40 @@ int CApplication::Run()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
 
-  // Run the app
   while (!m_bStop)
-  {
-    // Animate and render a frame
-
-    lastFrameTime = std::chrono::steady_clock::now();
-    Process();
-
-    bool renderGUI = GetComponent<CApplicationPowerHandling>()->GetRenderGUI();
-    if (!m_bStop)
-    {
-      FrameMove(true, renderGUI);
-    }
-
-    if (renderGUI && !m_bStop)
-    {
-      Render();
-    }
-    else if (!renderGUI)
-    {
-      auto now = std::chrono::steady_clock::now();
-      frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFrameTime);
-      if (frameTime.count() < noRenderFrameTime)
-        KODI::TIME::Sleep(std::chrono::milliseconds(noRenderFrameTime - frameTime.count()));
-    }
-  }
+    RunIteration();
 
   Cleanup();
 
   CLog::Log(LOGINFO, "Exiting the application...");
   return m_ExitCode;
+}
+
+void CApplication::RunIteration()
+{
+  // Animate and render a frame
+
+  const auto lastFrameTime = std::chrono::steady_clock::now();
+  Process();
+
+  bool renderGUI = GetComponent<CApplicationPowerHandling>()->GetRenderGUI();
+  if (!m_bStop)
+  {
+    FrameMove(true, renderGUI);
+  }
+
+  if (renderGUI && !m_bStop)
+  {
+    Render();
+  }
+  else if (!renderGUI)
+  {
+    constexpr std::chrono::milliseconds noRenderFrameTime{15}; // Simulates ~66fps
+    const auto frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - lastFrameTime);
+    if (frameTime < noRenderFrameTime)
+      KODI::TIME::Sleep(noRenderFrameTime - frameTime);
+  }
 }
 
 bool CApplication::Cleanup()
