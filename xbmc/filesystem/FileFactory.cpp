@@ -19,6 +19,11 @@
 #include "CurlFile.h"
 #include "DAVFile.h"
 #include "ShoutcastFile.h"
+#if defined(TARGET_WASM)
+#include "wasm/XhrFile.h"
+
+#include "platform/wasm/network/TizenSockets.h"
+#endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
 #include "platform/win32/filesystem/Win32SMBFile.h"
@@ -154,6 +159,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
 #endif
 
+#if defined(TARGET_WASM)
+  if ((url.IsProtocol("http") || url.IsProtocol("https")) && !kodi_wasm_has_sockets())
+    return new CXhrFile();
+#endif
   if (url.IsProtocol("ftp")
   ||  url.IsProtocol("ftps")
   ||  url.IsProtocol("rss")

@@ -34,6 +34,16 @@
     }
   }
 
+  // The upstream URL a proxied response came from, so the module sees the
+  // address it asked for rather than this server's.
+  function unwrap(url) {
+    var prefix = scope.location.origin + base + '?u=';
+    if (typeof url !== 'string' || url.indexOf(prefix) !== 0) {
+      return url;
+    }
+    return decodeURIComponent(url.slice(prefix.length));
+  }
+
   if (scope.XMLHttpRequest && scope.XMLHttpRequest.prototype &&
       !scope.XMLHttpRequest.prototype.__kodiProxyPatched) {
     var origOpen = scope.XMLHttpRequest.prototype.open;
@@ -41,6 +51,13 @@
       arguments[1] = rewrite(url);
       return origOpen.apply(this, arguments);
     };
+    var responseURL = Object.getOwnPropertyDescriptor(scope.XMLHttpRequest.prototype, 'responseURL');
+    if (responseURL && responseURL.get) {
+      Object.defineProperty(scope.XMLHttpRequest.prototype, 'responseURL', {
+        configurable: true,
+        get: function () { return unwrap(responseURL.get.call(this)); }
+      });
+    }
     scope.XMLHttpRequest.prototype.__kodiProxyPatched = true;
   }
 
