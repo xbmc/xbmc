@@ -109,7 +109,8 @@ enum class FileProperty
   CONTENT_TYPE, /**< Get file content-type  */
   CONTENT_CHARSET, /**< Get file content charset  */
   MIME_TYPE, /**< Get file mime type  */
-  EFFECTIVE_URL /**< Get effective URL for redirected streams  */
+  EFFECTIVE_URL, /**< Get effective URL for redirected streams  */
+  REDIRECT_URL /**< Get the target of a redirect that was not followed */
 };
 
 class IFileCallback

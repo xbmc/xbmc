@@ -2008,11 +2008,6 @@ void CCurlFile::SetRequestHeader(const std::string& header, long value)
   m_requestheaders[header] = std::to_string(value);
 }
 
-std::string CCurlFile::GetRedirectURL()
-{
-  return GetInfoString(CURLINFO_REDIRECT_URL);
-}
-
 std::string CCurlFile::GetInfoString(int infoType)
 {
   char* info{};
@@ -2201,6 +2196,12 @@ const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::st
     {
       char* url = nullptr;
       g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL, &url);
+      return url ? url : "";
+    }
+    case FileProperty::REDIRECT_URL:
+    {
+      char* url = nullptr;
+      g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_REDIRECT_URL, &url);
       return url ? url : "";
     }
   default:
