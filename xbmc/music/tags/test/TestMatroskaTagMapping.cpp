@@ -389,3 +389,80 @@ TEST(TestMatroskaTagMapping, SurvivesNonNumericTrackAndDiscNumbers)
     EXPECT_EQ(Parse("DISCNUMBER", "").GetDiscNumber(), 0);
   });
 }
+
+/*!
+  * Matroska carries ReplayGain as REPLAYGAIN_GAIN / REPLAYGAIN_PEAK and lets the target type level
+  * say whether the figure is the track's or the album's - the same split TITLE and ARTIST get. This
+  * is what foobar2000 and rsgain write.
+  */
+TEST(TestMatroskaTagMapping, MapsReplayGainAgainstItsLevel)
+{
+  constexpr auto album = MatroskaTagMapping::TagLevel::Album;
+  constexpr auto track = MatroskaTagMapping::TagLevel::Track;
+
+  // A GAIN carries only one slot; a PEAK only the matching one.
+  EXPECT_FLOAT_EQ(
+      Parse("REPLAYGAIN_GAIN", "-7.89 dB", album).GetReplayGain().Get(ReplayGain::ALBUM).Gain(),
+      -7.89f);
+  EXPECT_FALSE(
+      Parse("REPLAYGAIN_GAIN", "-7.89 dB", album).GetReplayGain().Get(ReplayGain::TRACK).HasGain());
+
+  EXPECT_FLOAT_EQ(
+      Parse("REPLAYGAIN_GAIN", "-6.94 dB", track).GetReplayGain().Get(ReplayGain::TRACK).Gain(),
+      -6.94f);
+  EXPECT_FALSE(
+      Parse("REPLAYGAIN_GAIN", "-6.94 dB", track).GetReplayGain().Get(ReplayGain::ALBUM).HasGain());
+
+  EXPECT_FLOAT_EQ(
+      Parse("REPLAYGAIN_PEAK", "0.988", album).GetReplayGain().Get(ReplayGain::ALBUM).Peak(),
+      0.988f);
+  EXPECT_FLOAT_EQ(
+      Parse("REPLAYGAIN_PEAK", "0.976", track).GetReplayGain().Get(ReplayGain::TRACK).Peak(),
+      0.976f);
+}
+
+/*!
+  * The four tags arrive one at a time and each has to keep what the others wrote - a fresh
+  * ReplayGain per tag would leave only the last pair. atof stops at the trailing " dB".
+  */
+TEST(TestMatroskaTagMapping, TakesTrackAndAlbumReplayGainFromTheSameFile)
+{
+  constexpr auto album = MatroskaTagMapping::TagLevel::Album;
+  constexpr auto track = MatroskaTagMapping::TagLevel::Track;
+
+  CMusicInfoTag tag;
+  MatroskaTagMapping::MapTag("REPLAYGAIN_GAIN", "-6.94 dB", track, Separators, MusicSep, tag);
+  MatroskaTagMapping::MapTag("REPLAYGAIN_PEAK", "0.976", track, Separators, MusicSep, tag);
+  MatroskaTagMapping::MapTag("REPLAYGAIN_GAIN", "-7.89 dB", album, Separators, MusicSep, tag);
+  MatroskaTagMapping::MapTag("REPLAYGAIN_PEAK", "0.988", album, Separators, MusicSep, tag);
+
+  const ReplayGain& rg = tag.GetReplayGain();
+  ASSERT_TRUE(rg.Get(ReplayGain::TRACK).Valid());
+  ASSERT_TRUE(rg.Get(ReplayGain::ALBUM).Valid());
+  EXPECT_FLOAT_EQ(rg.Get(ReplayGain::TRACK).Gain(), -6.94f);
+  EXPECT_FLOAT_EQ(rg.Get(ReplayGain::TRACK).Peak(), 0.976f);
+  EXPECT_FLOAT_EQ(rg.Get(ReplayGain::ALBUM).Gain(), -7.89f);
+  EXPECT_FLOAT_EQ(rg.Get(ReplayGain::ALBUM).Peak(), 0.988f);
+}
+
+/*!
+  * A file that carries ReplayGain with no target level - older foobar2000 - is read as the track's.
+  */
+TEST(TestMatroskaTagMapping, ReadsUntargetedReplayGainAsTheTracks)
+{
+  constexpr auto file = MatroskaTagMapping::TagLevel::File;
+  EXPECT_FLOAT_EQ(
+      Parse("REPLAYGAIN_GAIN", "-6.94 dB", file).GetReplayGain().Get(ReplayGain::TRACK).Gain(),
+      -6.94f);
+}
+
+/*!
+  * ReplayGain is one of the names whose field the level decides, so it belongs with TITLE and
+  * ARTIST in ReadsANameAgainstItsLevel's "level tells two fields apart" half.
+  */
+TEST(TestMatroskaTagMapping, GainWithNoPeakIsNotYetValid)
+{
+  const CMusicInfoTag tag = Parse("REPLAYGAIN_GAIN", "-6.94 dB");
+  EXPECT_TRUE(tag.GetReplayGain().Get(ReplayGain::TRACK).HasGain());
+  EXPECT_FALSE(tag.GetReplayGain().Get(ReplayGain::TRACK).Valid()); // needs a peak too
+}
