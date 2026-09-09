@@ -36,6 +36,7 @@ protected:
   // hooks for hw dec renderer
   bool LoadShadersHook() override;
   bool RenderHook(int index) override;
+  EShaderFormat GetShaderFormat() override;
 
 private:
   float m_textureMatrix[16];
