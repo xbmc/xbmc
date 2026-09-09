@@ -4,6 +4,7 @@ set(SOURCES TestAudioBookFileDirectory.cpp
             TestDiscDirectoryHelper.cpp
             TestFile.cpp
             TestFileFactory.cpp
+            TestCurlHttpClient.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
 
@@ -13,7 +14,8 @@ if(TARGET ${APP_NAME_LC}::Bluray)
 endif()
 
 if(TARGET ${APP_NAME_LC}::MicroHttpd)
-  list(APPEND SOURCES TestHTTPDirectory.cpp)
+  list(APPEND SOURCES TestHTTPDirectory.cpp
+                      TestCurlHttpClientNetwork.cpp)
 endif()
 
 if(TARGET ${APP_NAME_LC}::NFS)
