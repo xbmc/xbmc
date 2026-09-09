@@ -1054,6 +1054,34 @@ public:
   {
     return GAME_ERROR_NOT_IMPLEMENTED;
   }
+
+  //============================================================================
+  /// @brief Set whether achievements are earned in hardcore mode
+  ///
+  /// The frontend enforces the restrictions hardcore requires. The client is
+  /// told so its runtime agrees, and so that anything the client itself can do
+  /// that hardcore forbids - cheats, for one - can be refused here too.
+  ///
+  /// @param[in] enabled True to earn in hardcore mode
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR on success
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  virtual GAME_ERROR RCSetHardcoreEnabled(bool enabled) { return GAME_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Set whether already-earned achievements can be earned again
+  ///
+  /// @param[in] enabled True to re-earn achievements already unlocked
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR on success
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  virtual GAME_ERROR RCSetEncoreModeEnabled(bool enabled) { return GAME_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
   //============================================================================
   /// @brief Activate an achievement
   ///
@@ -1218,6 +1246,198 @@ public:
   void RCOnConnectionChanged(bool connected)
   {
     m_instanceData->toKodi->RCOnConnectionChanged(m_instanceData->toKodi->kodiInstance, connected);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Show or hide the indicator for an achievement the player is attempting
+  ///
+  /// @param[in] data The achievement being attempted
+  /// @param[in] show True to show the indicator, false to hide it
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnChallengeIndicator(const game_rc_achievement_challenge& data, bool show)
+  {
+    m_instanceData->toKodi->RCOnChallengeIndicator(m_instanceData->toKodi->kodiInstance, &data,
+                                                   show);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Give Kodi a new value for a measured achievement already on screen
+  ///
+  /// @param[in] data The achievement and how far along it is
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnAchievementProgressUpdate(const game_rc_achievement_progress_indicator& data)
+  {
+    m_instanceData->toKodi->RCOnAchievementProgressUpdate(m_instanceData->toKodi->kodiInstance,
+                                                          &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that an attempt at a leaderboard has begun
+  ///
+  /// @param[in] data The leaderboard being attempted
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnLeaderboardStarted(const game_rc_leaderboard& data)
+  {
+    m_instanceData->toKodi->RCOnLeaderboardStarted(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that an attempt at a leaderboard has been abandoned
+  ///
+  /// @param[in] data The leaderboard that was being attempted
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnLeaderboardFailed(const game_rc_leaderboard& data)
+  {
+    m_instanceData->toKodi->RCOnLeaderboardFailed(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that a leaderboard value has been sent to the server
+  ///
+  /// Where it placed arrives later, through
+  /// @ref KodiRCOnLeaderboardScoreboard, and may not arrive at all.
+  ///
+  /// @param[in] data The leaderboard and the value submitted
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnLeaderboardSubmitted(const game_rc_leaderboard& data)
+  {
+    m_instanceData->toKodi->RCOnLeaderboardSubmitted(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Give Kodi a new value for an attempt already on screen
+  ///
+  /// @param[in] data The tracker and its current value
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnLeaderboardTrackerUpdate(const game_rc_leaderboard_tracker& data)
+  {
+    m_instanceData->toKodi->RCOnLeaderboardTrackerUpdate(m_instanceData->toKodi->kodiInstance,
+                                                         &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Tell Kodi where a submitted attempt placed
+  ///
+  /// @param[in] data The new standing
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnLeaderboardScoreboard(const game_rc_leaderboard_scoreboard& data)
+  {
+    m_instanceData->toKodi->RCOnLeaderboardScoreboard(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Ask the frontend to reset the game
+  ///
+  /// Raised when hardcore mode is enabled, because a session started in casual
+  /// mode may not continue into hardcore.
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnReset() { m_instanceData->toKodi->RCOnReset(m_instanceData->toKodi->kodiInstance); }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that every achievement of a subset has been earned
+  ///
+  /// @param[in] title The title of the completed subset
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnSubsetCompleted(const std::string& title)
+  {
+    m_instanceData->toKodi->RCOnSubsetCompleted(m_instanceData->toKodi->kodiInstance,
+                                                title.c_str());
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Show, update or hide how far along a measured achievement is
+  ///
+  /// Some achievements are measured rather than simply locked or unlocked, and
+  /// the runtime reports progress while the player works towards one. Show and
+  /// update are separate events but the same thing on screen, so both set the
+  /// value; hide removes it.
+  ///
+  /// @param[in] data The achievement and how far along it is
+  /// @param[in] show True to show or update it, false to hide it
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnAchievementProgressIndicator(const game_rc_achievement_progress_indicator& data,
+                                        bool show)
+  {
+    if (show)
+      m_instanceData->toKodi->RCOnAchievementProgressShow(m_instanceData->toKodi->kodiInstance,
+                                                          &data);
+    else
+      m_instanceData->toKodi->RCOnAchievementProgressHide(m_instanceData->toKodi->kodiInstance,
+                                                          &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Show, update or hide the live value of an attempt in progress
+  ///
+  /// Show and update are separate events in the runtime but the same thing on
+  /// screen, so both set the value; hide removes it.
+  ///
+  /// @param[in] data The tracker and its current value
+  /// @param[in] show True to show or update it, false to hide it
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  /// @note Added in Game API 8.1.0
+  ///
+  void RCOnLeaderboardTracker(const game_rc_leaderboard_tracker& data, bool show)
+  {
+    if (show)
+      m_instanceData->toKodi->RCOnLeaderboardTrackerShow(m_instanceData->toKodi->kodiInstance,
+                                                         &data);
+    else
+      m_instanceData->toKodi->RCOnLeaderboardTrackerHide(m_instanceData->toKodi->kodiInstance,
+                                                         &data);
   }
 
   //----------------------------------------------------------------------------
@@ -1414,6 +1634,8 @@ private:
 
     instance->game->toAddon->SetRetroAchievementsCredentials =
         ADDON_SetRetroAchievementsCredentials;
+    instance->game->toAddon->RCSetHardcoreEnabled = ADDON_RCSetHardcoreEnabled;
+    instance->game->toAddon->RCSetEncoreModeEnabled = ADDON_RCSetEncoreModeEnabled;
     instance->game->toAddon->ActivateAchievement = ADDON_ActivateAchievement;
     instance->game->toAddon->GetCheevoUrlId = ADDON_GetCheevoUrlId;
 
@@ -1658,6 +1880,20 @@ private:
 
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->SetRetroAchievementsCredentials(username, token);
+  }
+
+  inline static GAME_ERROR ADDON_RCSetHardcoreEnabled(const AddonInstance_Game* instance,
+                                                      bool enabled)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->RCSetHardcoreEnabled(enabled);
+  }
+
+  inline static GAME_ERROR ADDON_RCSetEncoreModeEnabled(const AddonInstance_Game* instance,
+                                                        bool enabled)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->RCSetEncoreModeEnabled(enabled);
   }
 
   inline static GAME_ERROR ADDON_ActivateAchievement(const AddonInstance_Game* instance,
