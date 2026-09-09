@@ -74,9 +74,16 @@ void CFileExtensionProvider::Initialize(ADDON::CAddonMgr& addonManager)
   m_initialized = true;
 }
 
+CFileExtensionProvider::~CFileExtensionProvider()
+{
+  Deinitialize();
+}
+
 void CFileExtensionProvider::Deinitialize()
 {
-  // Both callbacks take m_critSection, so they are detached before it is held here.
+  if (!m_initialized)
+    return;
+
   if (m_callbackId.has_value())
   {
     m_advancedSettings->UnregisterSettingsLoadedCallback(m_callbackId.value());
@@ -89,9 +96,7 @@ void CFileExtensionProvider::Deinitialize()
     m_addonManager = nullptr;
   }
 
-  // A getter that has already passed the unlocked initialized check builds its list under this
-  // lock and checks again once it holds it, so nothing below is dropped while a list is being
-  // built from it.
+  // Lock needed against a concurrent getter
   std::lock_guard lock{m_critSection};
 
   m_initialized = false;
@@ -99,10 +104,8 @@ void CFileExtensionProvider::Deinitialize()
   m_addonExtensions.clear();
   m_addonFileFolderExtensions.clear();
 
+  // Deinitialization drops all lists
   ReleaseSettingsDerivedLists();
-
-  // Not built from the advanced settings, so a settings reload leaves it alone. Deinitialization
-  // is dropping everything, so it goes too.
   std::atomic_store(&m_fileFolderExtensions, {});
 }
 
@@ -462,7 +465,8 @@ bool CFileExtensionProvider::EncodedHostName(const std::string& protocol) const
 
 void CFileExtensionProvider::OnAdvancedSettingsLoaded()
 {
-  // m_fileFolderExtensions is deliberately not released here: it is built from the add-ons
-  // alone, so a settings reload cannot have changed it.
+  // Avoid lost invalidation for a nullptr list built at the same time
+  std::lock_guard lock{m_critSection};
+  // m_fileFolderExtensions is built from the add-ons alone, so a settings reload keeps it.
   ReleaseSettingsDerivedLists();
 }

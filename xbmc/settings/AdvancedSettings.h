@@ -128,15 +128,22 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     /*!
      * \brief Register a callback to receive notifications when the advanced settings are loaded.
-     *        Note: the callback functions are invoked on the thread that loads the settings.
+     * 
      * \param[in] callback
      * \return opaque callback handle
+     * 
+     * \note The callback functions are invoked on the thread that loads the settings.
+     *       Callbacks should perform only fast non-blocking work to avoid holding up the execution
+     *       of other callbacks.
+     *       A callback must not acquire locks that may be held while registering or unregistering.
      */
     int RegisterSettingsLoadedCallback(AdvancedSettingsCallback callback);
 
     /*!
      * \brief Unregister a callback for notifications of advanced settings load.
-     * \param[in] handle of the callback
+     *        Note: unregistering a callback from callback context is not allowed and will cause
+     *              problems.
+     * \param[in] handle callback handle
      */
     void UnregisterSettingsLoadedCallback(int handle);
 
@@ -431,7 +438,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_folderStackStrings;
 
     mutable CCriticalSection m_listCritSection;
-    int m_nextCallbackHandle{0};
     std::map<int, AdvancedSettingsCallback> m_settingsLoadedCallbacks;
     std::string m_metadataSourcesPriv;
 };

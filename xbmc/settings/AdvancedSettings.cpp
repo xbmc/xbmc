@@ -31,6 +31,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <atomic>
 #include <climits>
 #include <regex>
 #include <string>
@@ -95,14 +96,11 @@ void CAdvancedSettings::OnSettingsLoaded()
   }
   CServiceBroker::GetLogging().SetLogLevel(m_logLevel);
 
-  std::vector<AdvancedSettingsCallback> callbacks;
   {
     std::lock_guard lock{m_listCritSection};
-    callbacks.reserve(m_settingsLoadedCallbacks.size());
-    std::ranges::transform(m_settingsLoadedCallbacks, std::back_inserter(callbacks),
-                           [](const auto& pair) { return pair.second; });
+    for (const auto& [handle, callback] : m_settingsLoadedCallbacks)
+      callback();
   }
-  std::ranges::for_each(callbacks, &AdvancedSettingsCallback::operator());
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
@@ -122,12 +120,11 @@ void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& 
 
 int CAdvancedSettings::RegisterSettingsLoadedCallback(AdvancedSettingsCallback callback)
 {
+  static std::atomic<int> nextHandle{0};
   std::lock_guard lock{m_listCritSection};
-  // The handle is read back from the inserted element, so it cannot drift from the key the
-  // callback is stored under and Unregister can never erase a different caller's callback.
-  const auto it =
-      m_settingsLoadedCallbacks.emplace(m_nextCallbackHandle++, std::move(callback)).first;
-  return it->first;
+  const int handle{nextHandle++};
+  m_settingsLoadedCallbacks.emplace(handle, std::move(callback));
+  return handle;
 }
 
 void CAdvancedSettings::UnregisterSettingsLoadedCallback(int handle)
