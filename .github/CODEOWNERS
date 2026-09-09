@@ -13,6 +13,9 @@
 # Repository infrastructure, build system and packaging
 # ----------------------------------------------------------------------------
 /.github/ @keithah @basrieter
+/cmake/scripts/darwin @kambala-decapitator
+/cmake/scripts/darwin_embedded @kambala-decapitator
+/cmake/scripts/osx @kambala-decapitator
 /project/BuildDependencies/ @thexai
 /tools/buildsteps/windows/ @thexai
 /tools/darwin/ @kambala-decapitator
