@@ -37,6 +37,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/AppEnvironment.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "application/ApplicationActionListeners.h"
@@ -181,6 +182,10 @@
 #include <cstdint>
 #include <memory>
 #include <mutex>
+
+#ifdef TARGET_WASM
+#include <emscripten.h>
+#endif
 
 #include <tinyxml.h>
 
@@ -1659,6 +1664,12 @@ int CApplication::Run()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
 
+#ifdef TARGET_WASM
+  // emscripten_set_main_loop() unwinds the stack instead of returning; WasmRunIteration()
+  // handles shutdown once the browser calls it back with m_bStop set.
+  emscripten_set_main_loop([]() { g_application.WasmRunIteration(); }, 0, 1);
+  return m_ExitCode; // unreachable
+#else
   while (!m_bStop)
     RunIteration();
 
@@ -1666,6 +1677,7 @@ int CApplication::Run()
 
   CLog::Log(LOGINFO, "Exiting the application...");
   return m_ExitCode;
+#endif
 }
 
 void CApplication::RunIteration()
@@ -1694,6 +1706,22 @@ void CApplication::RunIteration()
       KODI::TIME::Sleep(noRenderFrameTime - frameTime);
   }
 }
+
+#ifdef TARGET_WASM
+void CApplication::WasmRunIteration()
+{
+  if (!m_bStop)
+  {
+    RunIteration();
+    return;
+  }
+
+  emscripten_cancel_main_loop();
+  Cleanup();
+  CLog::Log(LOGINFO, "Exiting the application...");
+  CAppEnvironment::TearDown();
+}
+#endif
 
 bool CApplication::Cleanup()
 {
