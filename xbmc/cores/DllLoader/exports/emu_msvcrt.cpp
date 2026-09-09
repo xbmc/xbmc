@@ -1494,8 +1494,11 @@ extern "C"
     int ret;
 
     ret = dll_fgetpos64(stream, &tmpPos);
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
+    defined(TARGET_ANDROID)
     *pos = (fpos_t)tmpPos;
+#elif defined(TARGET_WASM)
+    *pos = tmpPos;
 #else
     pos->__pos = (off_t)tmpPos.__pos;
 #endif
@@ -1507,8 +1510,11 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
+    defined(TARGET_ANDROID)
       *pos = pFile->GetPosition();
+#elif defined(TARGET_WASM)
+      pos->__lldata = static_cast<long long>(pFile->GetPosition());
 #else
       pos->__pos = pFile->GetPosition();
 #endif
@@ -1523,8 +1529,11 @@ extern "C"
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
     {
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
+    defined(TARGET_ANDROID)
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
+#elif defined(TARGET_WASM)
+      if (dll_lseeki64(fd, static_cast<__off64_t>(pos->__lldata), SEEK_SET) >= 0)
 #else
       if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
 #endif
@@ -1546,8 +1555,11 @@ extern "C"
     if (fd >= 0)
     {
       fpos64_t tmpPos;
-#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
+    defined(TARGET_ANDROID)
       tmpPos= *pos;
+#elif defined(TARGET_WASM)
+      tmpPos = *pos;
 #else
       tmpPos.__pos = (off64_t)(pos->__pos);
 #endif
