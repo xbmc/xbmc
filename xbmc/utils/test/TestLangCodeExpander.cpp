@@ -260,6 +260,21 @@ const TestBcp47Conversion Bcp47ConversionTests[] = {
     {"bol", true, "bol"},
     {" en ", true, "en"},
     {"EN", true, "en"},
+    // The five alpha-2 codes ISO 639-1 withdrew. BCP 47 names the current spelling, which the
+    // ISO 639 tables reach through the alpha-3 the language kept
+    {"iw", true, "he"},
+    {"in", true, "id"},
+    {"ji", true, "yi"},
+    {"jw", true, "jv"},
+    {"mo", true, "ro"},
+    // A name spelled like another language's code is read as the code: "Ga" names gaa, but ga is
+    // Irish, and a code is what media is tagged with
+    {"Ga", true, "ga"},
+    {"gaa", true, "gaa"},
+    // Kodi's own codes for Brazilian Portuguese have no BCP 47 subtag, so without an addon that
+    // answers for them there is no tag to give
+    {"pb", false, ""},
+    {"pob", false, ""},
 };
 // clang-format on
 

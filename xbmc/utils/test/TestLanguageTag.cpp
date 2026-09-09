@@ -8,6 +8,8 @@
 
 #include "utils/LanguageTag.h"
 
+#include "test/TestUtils.h"
+
 #include <gtest/gtest.h>
 
 using namespace KODI::UTILS;
@@ -286,4 +288,37 @@ TEST(TestLanguageTag, NarrowingDropsTheRegionFromTheEnglishName)
 
   // A tag with nothing to drop names the same language either way
   EXPECT_EQ(CLanguageTag::Parse("eng").GetEnglishLanguageName(), "English");
+}
+
+TEST(TestLanguageTag, ResolvesADiscLanguageFromTheIso639Tables)
+{
+  // A DVD IFO states a track language as ISO 639-1 and the preferences handed to libdvdnav are
+  // ISO 639-2, and a disc is probed before the subtag registry exists
+  CLanguageTag menu;
+  CLanguageTag audio;
+  {
+    const CServiceManagerSwap noServices;
+    menu = CLanguageTag::Parse("en");
+    audio = CLanguageTag::Parse("ger");
+  }
+
+  EXPECT_EQ(menu.AsBcp47(), "en");
+  EXPECT_EQ(menu.AsIso6392B(), "eng");
+  EXPECT_EQ(audio.AsBcp47(), "de");
+  EXPECT_EQ(audio.AsIso6392B(), "ger");
+  EXPECT_EQ(audio.AsIso6391(), "de");
+}
+
+TEST(TestLanguageTag, ResolvesAnEnglishNameFromTheIso639Tables)
+{
+  // langinfo.xml may state its locale as an english name, and that value stands in for the UI
+  // language until a language addon is loaded - so a name is resolved on the same early path
+  CLanguageTag named;
+  {
+    const CServiceManagerSwap noServices;
+    named = CLanguageTag::Parse("English");
+  }
+
+  EXPECT_EQ(named.AsBcp47(), "en");
+  EXPECT_EQ(named.AsIso6392B(), "eng");
 }
