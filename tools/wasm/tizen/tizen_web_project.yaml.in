@@ -1,0 +1,61 @@
+# Project type [web_app, test_runner]
+project_type: web_app
+
+# Default profile, Tizen API version
+profile: @WASM_TIZEN_PROFILE@
+api_version: "@WASM_TIZEN_API_VERSION@"
+
+# Build type [Debug/ Release/ Test]
+build_type: @WASM_TIZEN_BUILD_TYPE@
+
+# Output name for application
+output_name: @WASM_TIZEN_OUTPUT_NAME@
+
+# Output path for build
+output_path: ""
+
+# Enable size optimization of wgt for web workspace
+opt: false
+
+# Signing profile to be used for Tizen package signing
+# If value is empty: "", active signing profile will be used
+# Else If value is ".", default signing profile will be used
+signing_profile: ""
+
+# list of certs in web project (.trust-anchor)
+trust_anchor: []
+
+# list of files in web project (.html,.css etc) and resources
+files:
+  - index.html
+  - media/splash.jpg
+  - kodi.js
+  - kodi.wasm
+  - kodi.data
+
+# list of files to exclude based on the matched patterns
+excludes:
+  - Build/*
+  - Debug/*
+  - Release/*
+  - Test/*
+  - Directory.Build.targets
+  - \.Build/.*
+  - \.buildResult/.*
+  - \.csproj
+  - \.externalToolBuilders/.*
+  - \.gn
+  - \.obj/.*
+  - \.package/.*
+  - \.project
+  - \.rds_delta
+  - \.sdk_delta.info
+  - \.settings/.*
+  - \.sign/.*
+  - \.tizen-ui-builder-tool.xml
+  - \.tproject
+  - \.wgt
+  - webUnitTest/*
+
+# project dependencies
+deps: []
