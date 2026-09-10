@@ -608,6 +608,10 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForPool(
 
   std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
 
+  // Serialize with teardown so an old deferred flush cannot invalidate a new renderer's pool.
+  if (m_bFlush)
+    return renderer;
+
   // Get compatible renderer for this buffer pool
   for (const auto& it : m_renderers)
   {
