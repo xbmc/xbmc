@@ -107,6 +107,11 @@ bool CRendererMediaCodec::LoadShadersHook()
   return true;
 }
 
+EShaderFormat CRendererMediaCodec::GetShaderFormat()
+{
+  return SHADER_RGB;
+}
+
 bool CRendererMediaCodec::RenderHook(int index)
 {
   CYuvPlane &plane = m_buffers[index].fields[0][0];
