@@ -30,7 +30,7 @@ endif
 # one will time each other out. Override to share a warm cache between builds
 # that cannot overlap.
 ifeq ($(GRADLE_USER_HOME),)
-export GRADLE_USER_HOME:=$(CURDIR)/.gradle-home
+export GRADLE_USER_HOME:=$(HOME)/.gradle/$(CPU)
 endif
 
 # libc++
