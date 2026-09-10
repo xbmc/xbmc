@@ -8,8 +8,8 @@ name: E2E (Linux X11)
 # 22.04 rather than 24.04: xbmc/windowing/X11/GLContextEGL.h includes
 # <EGL/eglextchromium.h>, which Mesa stopped shipping when EGL headers moved to
 # libglvnd; 22.04's libegl1-mesa-dev is the newest Ubuntu that still has it.
-# 22.04 is also old enough that ffmpeg, TagLib, fmt, spdlog, exiv2, flatbuffers
-# and dav1d all have to be built internally (without dav1d the internal ffmpeg
+# 22.04 is also old enough that ffmpeg, TagLib, fmt, spdlog, exiv2, flatbuffers,
+# dav1d and SWIG all have to be built internally (without dav1d the internal ffmpeg
 # has no AV1 decoder and TestVideoCodecPictureFormat fails). Once X11 builds
 # without that header this should move to 24.04 and drop most of those flags.
 
@@ -33,7 +33,7 @@ env:
   # cannot read. dpkg-dev, fakeroot and lsb-release are for the DEB generator.
   APT_PACKAGES: >-
     build-essential cmake gawk gperf gettext libtool meson nasm
-    ninja-build pkg-config swig python3-dev unzip zip ccache uuid-dev
+    ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
     dpkg-dev fakeroot lsb-release
     libass-dev libcurl4-openssl-dev libexiv2-dev
     libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev
@@ -75,7 +75,7 @@ jobs:
             -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON \
             -DENABLE_INTERNAL_FMT=ON -DENABLE_INTERNAL_SPDLOG=ON \
             -DENABLE_INTERNAL_EXIV2=ON -DENABLE_INTERNAL_FLATBUFFERS=ON \
-            -DENABLE_INTERNAL_DAV1D=ON -DCPACK_GENERATOR=DEB
+            -DENABLE_INTERNAL_DAV1D=ON -DENABLE_INTERNAL_SWIG=ON -DCPACK_GENERATOR=DEB
 
       - name: Build Kodi
         run: cmake --build build -- -j"$(nproc)"
