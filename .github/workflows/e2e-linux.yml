@@ -9,7 +9,8 @@ name: E2E (Linux GBM/Wayland)
 # builds for desktop GL rather than GLES.
 #
 # ffmpeg is built internally because Kodi needs >= 7.0 and 24.04 ships 6.1;
-# TagLib because Matroska tag support compiles out below 2.3.1.
+# TagLib because Matroska tag support compiles out below 2.3.1; SWIG because the
+# Python bindings need 4.5.0 and 24.04 ships 4.2.0 (bison is for that build).
 
 on:
   workflow_dispatch:
@@ -32,7 +33,7 @@ env:
   # the suite drives never opens. libgif/libjpeg are for TexturePacker.
   APT_PACKAGES: >-
     build-essential cmake gawk gperf gettext libtool meson nasm
-    ninja-build pkg-config swig python3-dev unzip zip ccache uuid-dev
+    ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
     dpkg-dev fakeroot lsb-release
     libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev
     libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev
@@ -81,7 +82,7 @@ jobs:
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr \
             -DCORE_PLATFORM_NAME=${{ matrix.platform }} -DAPP_RENDER_SYSTEM=gles \
             -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON \
-            -DCPACK_GENERATOR=DEB
+            -DENABLE_INTERNAL_SWIG=ON -DCPACK_GENERATOR=DEB
 
       - name: Build Kodi
         run: cmake --build build -- -j"$(nproc)"
