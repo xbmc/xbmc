@@ -181,6 +181,9 @@ Similarly, building for GBM also requires some extra packages:
 sudo apt install libgbm-dev libinput-dev libxkbcommon-dev
 ```
 
+> [!NOTE]  
+> The Python bindings need SWIG 4.5.0 or newer, which no Ubuntu release up to 26.04 (Resolute) packages. Install `bison` and configure Kodi with `-DENABLE_INTERNAL_SWIG=ON` to build the pinned version as part of the Kodi build.
+
 Optional packages that you might want to install for extra functionality (generating doxygen documentation, for instance):
 ```
 sudo apt install doxygen libcap-dev libsndio-dev libmariadbd-dev

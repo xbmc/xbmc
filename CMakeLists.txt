@@ -134,6 +134,7 @@ dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE2 "Enable internal pcre2?")
 dependent_option(ENABLE_INTERNAL_MARIADBCLIENT "Enable internal mariadb-c-connector?")
 dependent_option(ENABLE_INTERNAL_NLOHMANNJSON "Enable internal nlohmannjson?")
+dependent_option(ENABLE_INTERNAL_SWIG "Enable internal swig?")
 dependent_option(ENABLE_INTERNAL_UDFREAD "Enable internal libudfread?")
 dependent_option(ENABLE_INTERNAL_XSLT "Enable internal libxslt?")
 

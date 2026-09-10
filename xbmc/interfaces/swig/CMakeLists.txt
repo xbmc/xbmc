@@ -6,11 +6,12 @@ find_package(SWIG REQUIRED ${SEARCH_QUIET})
 get_target_property(_swig_version SWIG::SWIG VERSION)
 if(_swig_version VERSION_LESS 4.5.0)
   message(FATAL_ERROR "The python bindings require SWIG 4.5.0 or newer "
-                      "(found ${_swig_version})")
+                      "(found ${_swig_version}). -DENABLE_INTERNAL_SWIG=ON builds a suitable one.")
 endif()
 
 function(generate_file file)
   set(CPP_FILE ${file}.cpp)
+  set(DEP_FILE ${CMAKE_CURRENT_BINARY_DIR}/${CPP_FILE}.d)
 
   # AddonModuleXbmcgui.i -> low-level module/init name "xbmcgui"
   get_filename_component(module_name ${file} NAME_WE)
@@ -24,29 +25,13 @@ function(generate_file file)
   # 302: kodi_generics.i declares Tuple/Alternative/Dictionary to carry their typemaps, so
   # SWIG ignores the header definitions it later sees. That is the intent, not a collision.
   # -pyi: PEP 484 stub files for addon authors, a build artifact beside the wrappers
+  # -MMD/-MF/-MT: header dependencies as a depfile, so swig is not needed at configure
+  # time (ENABLE_INTERNAL_SWIG builds it during the build)
   set(SWIG_ARGS -python -c++ -builtin -interface ${module_name} -pyi
                 -w401,389,514,362,302 -o ${CPP_FILE}
+                -MMD -MF ${DEP_FILE} -MT ${CMAKE_CURRENT_BINARY_DIR}/${CPP_FILE}
                 -I${CMAKE_SOURCE_DIR}/xbmc
-                ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file})
-
-  # This generates a file that has the dependencies the swig input finds
-  # execute_process needs explicit use of explicit swig executable location. it is not TARGET aware
-  # retrieve location property from TARGET
-  get_target_property(_swig_exe SWIG::SWIG IMPORTED_LOCATION)
-  execute_process(COMMAND ${_swig_exe} -MM -MF ${CMAKE_BINARY_DIR}/build/swig/${file}.dep ${SWIG_ARGS})
-  file(READ ${CMAKE_BINARY_DIR}/build/swig/${file}.dep swig_deps)
-
-  # Match all lines except the first one until " \"
-  string(REGEX MATCHALL "\n  [^ ]+" temp ${swig_deps})
-  set(swig_deps)
-  foreach(t ${temp})
-    string(STRIP "${t}" t)
-    set(swig_deps ${swig_deps} "${t}")
-  endforeach()
-
-  # We set this to allow cmake to detect if changes in the headers are made
-  # and to force a cmake reconfigure to detect new dependencies that may have been added.
-  set_property(DIRECTORY ${CMAKE_SOURCE_DIR} APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${swig_deps})
+                ${CMAKE_CURRENT_SOURCE_DIR}/${file})
 
   add_custom_command(OUTPUT ${CPP_FILE}
                      COMMAND SWIG::SWIG
@@ -55,8 +40,9 @@ function(generate_file file)
                              -DFILE=${CMAKE_CURRENT_BINARY_DIR}/${CPP_FILE}
                              -DSWIG_VERSION=${_swig_version}
                              -P ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake
-                     DEPENDS SWIG::SWIG ${swig_deps}
-                             ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake)
+                     DEPENDS SWIG::SWIG ${CMAKE_CURRENT_SOURCE_DIR}/${file}
+                             ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake
+                     DEPFILE ${DEP_FILE})
 
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
