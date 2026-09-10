@@ -51,6 +51,16 @@ KODI_CONSTRUCT(XBMCAddon::xbmcvfs, Stat)
     SWIG_fail;
 }
 
+/* Python calls __exit__ with the exception triple, which File.h does not take. */
+%ignore XBMCAddon::xbmcvfs::File::__exit__();
+%extend XBMCAddon::xbmcvfs::File {
+  void __exit__(PyObject* exc_type = nullptr, PyObject* exc_value = nullptr,
+                PyObject* traceback = nullptr)
+  {
+    $self->close();
+  }
+}
+
 %include "interfaces/legacy/File.h"
 
 %rename ("st_atime") XBMCAddon::xbmcvfs::Stat::atime;
