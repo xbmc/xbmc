@@ -22,6 +22,8 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
+#include "games/GameUtils.h"
+#include "games/addons/cheats/GameClientCheats.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -360,6 +362,12 @@ bool CGamesGUIInfo::GetBool(bool& value,
     case RETROPLAYER_ACHIEVEMENTS_LOGGED_IN:
     {
       value = CServiceBroker::GetGameServices().GameSettings().GetAchievementsLoggedIn();
+      return true;
+    }
+    case RETROPLAYER_HAS_CHEATS:
+    {
+      const GameClientPtr gameClient = CGameUtils::GetPlayingGameClient();
+      value = gameClient && gameClient->Cheats().CanOfferCheats();
       return true;
     }
     default:

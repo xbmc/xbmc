@@ -17,6 +17,8 @@
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "addons/addoninfo/AddonType.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "dialogs/GUIDialogOK.h"
@@ -515,4 +517,24 @@ void CGameUtils::LoadInstallableAddons()
     m_installableGameAddons.clear();
     CServiceBroker::GetAddonMgr().GetInstallableAddons(m_installableGameAddons, AddonType::GAMEDLL);
   }
+}
+
+GameClientPtr CGameUtils::GetPlayingGameClient()
+{
+  auto gameSettingsHandle = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+  if (!gameSettingsHandle)
+    return {};
+
+  // A handle is given out whether or not a game is playing, and says so with an
+  // empty id rather than by being null
+  const std::string gameClientId = gameSettingsHandle->GameClientID();
+  if (gameClientId.empty())
+    return {};
+
+  ADDON::AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::AddonType::GAMEDLL,
+                                              ADDON::OnlyEnabled::CHOICE_YES))
+    return {};
+
+  return std::static_pointer_cast<CGameClient>(addon);
 }
