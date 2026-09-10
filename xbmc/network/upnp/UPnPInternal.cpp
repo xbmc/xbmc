@@ -213,7 +213,7 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
   /* if Platinum couldn't map it, default to Kodi internal mapping */
   if (mime.IsEmpty())
   {
-    NPT_String mime = item.GetMimeType().c_str();
+    mime = item.GetMimeType().c_str();
     if (mime == "application/octet-stream")
       mime = "";
   }
@@ -280,121 +280,29 @@ const NPT_String GetProtocolInfo(const CFileItem& item,
 +---------------------------------------------------------------------*/
 void AddAlternateMimeResources(PLT_MediaObject& object)
 {
-  // Content types that are in common use under more than one name. A renderer selects a
-  // resource by matching its protocolInfo against the sink list it advertises, so a resource
-  // offered under one spelling is invisible to a renderer that names the other.
+  // Content types in use under two names; a renderer matching on one cannot select the other.
   static constexpr std::pair<const char*, const char*> alternates[] = {
       {"audio/x-flac", "audio/flac"},
       {"audio/x-ms-wma", "audio/wma"},
   };
 
-  // The loop appends to the list it reads, so the original count is taken first.
   const NPT_Cardinal count = object.m_Resources.GetItemCount();
-
-  for (const auto& [name, alternate] : alternates)
+  for (NPT_Cardinal i = 0; i < count; i++)
   {
-    for (NPT_Cardinal i = 0; i < count; i++)
+    const NPT_String type = object.m_Resources[i].m_ProtocolInfo.GetContentType();
+    for (const auto& [name, alternate] : alternates)
     {
-      const NPT_String contentType = object.m_Resources[i].m_ProtocolInfo.GetContentType();
-
-      NPT_String from;
-      NPT_String to;
-      if (contentType.Compare(name, true) == 0)
-      {
-        from = name;
-        to = alternate;
-      }
-      else if (contentType.Compare(alternate, true) == 0)
-      {
-        from = alternate;
-        to = name;
-      }
-      else
-      {
-        continue;
-      }
-
-      // Per resource, not per object: each carries its own uri, and only the one on the
-      // renderer's network is any use to it.
-      bool present = false;
-      for (NPT_Cardinal j = 0; j < object.m_Resources.GetItemCount(); j++)
-      {
-        if (object.m_Resources[j].m_Uri == object.m_Resources[i].m_Uri &&
-            object.m_Resources[j].m_ProtocolInfo.GetContentType().Compare(to, true) == 0)
-        {
-          present = true;
-          break;
-        }
-      }
-      if (present)
+      const char* to = type == name ? alternate : type == alternate ? name : nullptr;
+      if (!to)
         continue;
 
       PLT_MediaItemResource resource = object.m_Resources[i];
       NPT_String protocolInfo = resource.m_ProtocolInfo.ToString();
-      protocolInfo.Replace(":" + from + ":", ":" + to + ":");
+      protocolInfo.Replace(":" + type + ":", ":" + NPT_String(to) + ":");
       resource.m_ProtocolInfo = PLT_ProtocolInfo(protocolInfo);
       object.m_Resources.Add(resource);
     }
   }
-}
-
-/*----------------------------------------------------------------------
-|   PreferResourceAddresses
-+---------------------------------------------------------------------*/
-void PreferResourceAddresses(PLT_MediaObject& object, const std::vector<NPT_UInt32>& preferred)
-{
-  if (preferred.empty())
-    return;
-
-  NPT_Array<PLT_MediaItemResource> front;
-  NPT_Array<PLT_MediaItemResource> back;
-
-  for (NPT_Cardinal i = 0; i < object.m_Resources.GetItemCount(); i++)
-  {
-    const PLT_MediaItemResource& resource = object.m_Resources[i];
-    NPT_IpAddress host;
-    const bool wanted =
-        NPT_SUCCEEDED(host.Parse(NPT_HttpUrl(resource.m_Uri).GetHost())) &&
-        std::find(preferred.begin(), preferred.end(), host.AsLong()) != preferred.end();
-    if (wanted)
-      front.Add(resource);
-    else
-      back.Add(resource);
-  }
-
-  if (front.GetItemCount() == 0)
-    return;
-
-  for (NPT_Cardinal i = 0; i < back.GetItemCount(); i++)
-    front.Add(back[i]);
-
-  object.m_Resources = front;
-}
-
-/*----------------------------------------------------------------------
-|   SortResourcesForRenderer
-+---------------------------------------------------------------------*/
-void SortResourcesForRenderer(PLT_MediaObject& object, const NPT_IpAddress& renderer)
-{
-  NPT_List<NPT_NetworkInterface*> interfaces;
-  if (NPT_FAILED(NPT_NetworkInterface::GetNetworkInterfaces(interfaces)))
-    return;
-
-  std::vector<NPT_UInt32> reachable;
-  for (NPT_List<NPT_NetworkInterface*>::Iterator it = interfaces.GetFirstItem(); it; ++it)
-  {
-    const NPT_List<NPT_NetworkInterfaceAddress>& addresses = (*it)->GetAddresses();
-    for (NPT_List<NPT_NetworkInterfaceAddress>::Iterator addr = addresses.GetFirstItem(); addr;
-         ++addr)
-    {
-      NPT_NetworkInterfaceAddress candidate = *addr;
-      if (candidate.IsAddressInNetwork(renderer))
-        reachable.push_back(candidate.GetPrimaryAddress().AsLong());
-    }
-  }
-  interfaces.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
-
-  PreferResourceAddresses(object, reachable);
 }
 
 /*----------------------------------------------------------------------
@@ -1063,8 +971,6 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     }
   }
 
-  // Every producer of a DIDL benefits: a control point browsing Kodi, a queued track, and the
-  // item handed to a renderer all reach a device that may name a content type the other way.
   AddAlternateMimeResources(*object);
 
   return object;
