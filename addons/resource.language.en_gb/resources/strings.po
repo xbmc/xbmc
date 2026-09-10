@@ -19557,6 +19557,20 @@ msgctxt "#35299"
 msgid "Still looking this game up..."
 msgstr ""
 
+#. Shown when hardware rendering fails. {0:s} is the requested API/version, such as "OpenGL 4.3"; {1:s} is the available API, such as "OpenGL".
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35300"
+msgid "Kodi couldn't initialize {0:s} rendering for this game. This display supports {1:s}."
+msgstr ""
+
+#. Shown when a game needs the graphics card directly but the display can't provide it
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35301"
+msgid "Kodi couldn't initialize {0:s} rendering for this game on this display."
+msgstr ""
+
+#empty string with id 35302
+
 #. Label of the setting that enables RetroAchievements encore mode
 #: system/settings/settings.xml
 msgctxt "#35303"

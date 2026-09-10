@@ -35,7 +35,16 @@ void CGameClientStreams::Initialize(RETRO::IStreamManager& streamManager)
 
 void CGameClientStreams::Deinitialize()
 {
+  while (!m_streams.empty())
+    CloseStream(m_streams.begin()->first);
+
   m_streamManager = nullptr;
+
+  // Negotiation is per-game: left standing, the next game inherits this one's
+  // context and any refusal, and is asked about or reported on the wrong terms
+  m_hwProperties = {};
+  m_hwRefusedWanted.clear();
+  m_hwRefusedAvailable.clear();
 }
 
 IGameClientStream* CGameClientStreams::OpenStream(const game_stream_properties& properties)
@@ -63,30 +72,74 @@ IGameClientStream* CGameClientStreams::OpenStream(const game_stream_properties& 
   {
     CLog::Log(LOGERROR, "GAME:  Invalid RetroPlayer stream type: {}",
               static_cast<int>(retroStreamType));
+    if (properties.type == GAME_STREAM_HW_FRAMEBUFFER)
+    {
+      RecordHardwareRenderingFailure(m_hwProperties);
+      m_hwProperties = {};
+    }
     return nullptr;
   }
 
   if (!gameStream->OpenStream(retroStream.get(), properties))
   {
     CLog::Log(LOGERROR, "GAME: Failed to open stream");
+    gameStream->CloseStream();
+    m_streamManager->CloseStream(std::move(retroStream));
+    if (properties.type == GAME_STREAM_HW_FRAMEBUFFER)
+    {
+      RecordHardwareRenderingFailure(m_hwProperties);
+      m_hwProperties = {};
+    }
     return nullptr;
   }
 
-  m_streams[gameStream.get()] = std::move(retroStream);
+  IGameClientStream* handle = gameStream.get();
+  m_streams.emplace(handle, StreamEntry{std::move(gameStream), std::move(retroStream)});
+  if (properties.type == GAME_STREAM_VIDEO || properties.type == GAME_STREAM_SW_FRAMEBUFFER)
+  {
+    m_hwRefusedWanted.clear();
+    m_hwRefusedAvailable.clear();
+  }
 
-  return gameStream.release();
+  return handle;
+}
+
+bool CGameClientStreams::StartStream(IGameClientStream* stream)
+{
+  const auto it = m_streams.find(stream);
+  if (it == m_streams.end())
+    return false;
+
+  // Reset can close or replace the stream through the add-on callbacks.
+  const std::shared_ptr<IGameClientStream> streamHolder = it->second.gameStream;
+  if (auto* hwStream = dynamic_cast<CGameClientStreamHwFramebuffer*>(stream))
+  {
+    const bool ready = hwStream->ResetHwContext();
+    if (m_streams.find(stream) == m_streams.end())
+      return false;
+    if (!ready)
+    {
+      RecordHardwareRenderingFailure(m_hwProperties);
+      return false;
+    }
+    m_hwRefusedWanted.clear();
+    m_hwRefusedAvailable.clear();
+  }
+  return true;
 }
 
 void CGameClientStreams::CloseStream(IGameClientStream* stream)
 {
-  if (stream != nullptr)
-  {
-    std::unique_ptr<IGameClientStream> streamHolder(stream);
-    streamHolder->CloseStream();
+  const auto it = m_streams.find(stream);
+  if (it == m_streams.end())
+    return;
 
-    m_streamManager->CloseStream(std::move(m_streams[stream]));
-    m_streams.erase(stream);
-  }
+  std::shared_ptr<IGameClientStream> streamHolder = std::move(it->second.gameStream);
+  RETRO::StreamPtr retroStream = std::move(it->second.retroStream);
+  m_streams.erase(it);
+
+  streamHolder->CloseStream();
+  m_streamManager->CloseStream(std::move(retroStream));
 }
 
 void CGameClientStreams::SetGameTiming(const game_system_timing& timingInfo)
@@ -104,23 +157,136 @@ void CGameClientStreams::SetGameTiming(const game_system_timing& timingInfo)
 
 bool CGameClientStreams::EnableHardwareRendering(const game_hw_rendering_properties& properties)
 {
+  for (const auto& [stream, retroStream] : m_streams)
+  {
+    if (dynamic_cast<CGameClientStreamHwFramebuffer*>(stream) != nullptr)
+      return false;
+  }
+
+  m_hwProperties = {};
+  m_hwRefusedWanted.clear();
+  m_hwRefusedAvailable.clear();
+
   if (properties.context_type == GAME_HW_CONTEXT_NONE)
     return false;
 
-  // Log hardware rendering properties for debugging
+  const std::string wanted = CGameClientStreamHwFramebuffer::GetContextName(
+      properties.context_type, properties.version_major, properties.version_minor);
+
+  // Refuse before the client commits to rendering this way. It asks this long
+  // before the frontend would try to build it a context, and a client told yes
+  // wires itself up to callbacks it will then call regardless.
+  if (m_streamManager == nullptr || !m_streamManager->HasHardwareRendering())
+  {
+    CLog::Log(LOGERROR, "GAME: {} is not available on this display stack", wanted);
+    RecordHardwareRenderingFailure(properties);
+    return false;
+  }
+
+  // The hardware pool creates contexts for the API used by this build.
+#if defined(HAS_GLES) && HAS_GLES >= 3
+  const bool supported = properties.context_type == GAME_HW_CONTEXT_OPENGLES2 ||
+                         properties.context_type == GAME_HW_CONTEXT_OPENGLES3 ||
+                         properties.context_type == GAME_HW_CONTEXT_OPENGLES_VERSION;
+#elif defined(HAS_GL)
+  const bool supported = properties.context_type == GAME_HW_CONTEXT_OPENGL ||
+                         properties.context_type == GAME_HW_CONTEXT_OPENGL_CORE;
+#else
+  const bool supported = false;
+#endif
+
+  if (!supported)
+  {
+    // Debug, not error: a client works through the APIs it can use until one is
+    // accepted, so a refusal here is the ordinary path. The refusal is recorded,
+    // and if nothing is accepted the client tells the user which API it wanted.
+    CLog::Log(LOGDEBUG, "GAME: Client asked for {}, which this build does not provide", wanted);
+    RecordHardwareRenderingFailure(properties);
+    return false;
+  }
+
+  if ((properties.context_type == GAME_HW_CONTEXT_OPENGL_CORE ||
+       properties.context_type == GAME_HW_CONTEXT_OPENGLES_VERSION) &&
+      properties.version_major == 0)
+  {
+    RecordHardwareRenderingFailure(properties);
+    return false;
+  }
+
+  // The GUI context's version is not the driver's maximum; context creation validates it.
   CGameClientStreamHwFramebuffer::LogHwProperties(properties);
 
-  // Store hardware rendering properties
+  // Store hardware rendering properties, and drop any earlier refusal: this
+  // request was granted, so the reason a previous one was turned down no longer
+  // describes the client
   m_hwProperties = properties;
+  m_hwRefusedWanted.clear();
+  m_hwRefusedAvailable.clear();
 
-  //! @todo Finish OpenGL support
-  CLog::Log(LOGERROR, "Hardware rendering not implemented");
-  return false;
+  return true;
+}
+
+void CGameClientStreams::RecordHardwareRenderingFailure(
+    const game_hw_rendering_properties& properties)
+{
+  m_hwRefusedWanted = CGameClientStreamHwFramebuffer::GetContextName(
+      properties.context_type, properties.version_major, properties.version_minor);
+  m_hwRefusedAvailable.clear();
+  if (m_streamManager != nullptr && m_streamManager->HasHardwareRendering())
+  {
+#if defined(HAS_GLES) && HAS_GLES >= 3
+    m_hwRefusedAvailable = "OpenGL ES 3+";
+#elif defined(HAS_GL)
+    m_hwRefusedAvailable = "OpenGL";
+#endif
+  }
+}
+
+bool CGameClientStreams::BeginClientFrame()
+{
+  if (m_streamManager == nullptr)
+    return m_hwProperties.context_type == GAME_HW_CONTEXT_NONE;
+
+  return m_streamManager->BeginClientFrame();
+}
+
+void CGameClientStreams::EndClientFrame()
+{
+  if (m_streamManager != nullptr)
+    m_streamManager->EndClientFrame();
+}
+
+void CGameClientStreams::DestroyHwContext()
+{
+  if (m_hwProperties.context_type == GAME_HW_CONTEXT_NONE)
+    return;
+
+  // Destroy callbacks may close or replace the stream.
+  std::shared_ptr<CGameClientStreamHwFramebuffer> hwStream;
+  for (const auto& streamEntry : m_streams)
+  {
+    hwStream =
+        std::dynamic_pointer_cast<CGameClientStreamHwFramebuffer>(streamEntry.second.gameStream);
+    if (hwStream)
+      break;
+  }
+
+  if (hwStream)
+    hwStream->DestroyHwContext();
+}
+
+void CGameClientStreams::AbandonHwContext()
+{
+  for (const auto& [stream, entry] : m_streams)
+  {
+    if (auto* hwStream = dynamic_cast<CGameClientStreamHwFramebuffer*>(stream))
+      hwStream->AbandonHwContext();
+  }
 }
 
 game_proc_address_t CGameClientStreams::GetHwProcedureAddress(const char* symbol)
 {
-  if (m_streamManager != nullptr)
+  if (symbol != nullptr && m_streamManager != nullptr)
     return m_streamManager->GetHwProcedureAddress(symbol);
 
   return nullptr;
@@ -145,6 +311,15 @@ std::unique_ptr<IGameClientStream> CGameClientStreams::CreateStream(
     }
     case GAME_STREAM_HW_FRAMEBUFFER:
     {
+      if (m_hwProperties.context_type == GAME_HW_CONTEXT_NONE)
+        break;
+
+      for (const auto& [stream, retroStream] : m_streams)
+      {
+        if (dynamic_cast<CGameClientStreamHwFramebuffer*>(stream) != nullptr)
+          return {};
+      }
+
       gameStream = std::make_unique<CGameClientStreamHwFramebuffer>(m_gameClient, m_hwProperties);
       break;
     }

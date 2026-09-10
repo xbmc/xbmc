@@ -190,6 +190,7 @@ public:
   void CloseStream(RETRO::StreamPtr) override {}
   void SetVideoFps(float) override {}
   RETRO::HwProcedureAddress GetHwProcedureAddress(const char*) override { return nullptr; }
+  bool HasHardwareRendering() const override { return false; }
 };
 
 class TestInput : public IGameInputCallback

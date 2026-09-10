@@ -10,6 +10,7 @@
 
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "cores/RetroPlayer/streams/RetroPlayerRendering.h"
+#include "games/addons/GameClientTranslator.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -35,21 +36,59 @@ bool CGameClientStreamHwFramebuffer::OpenStream(RETRO::IRetroPlayerStream* strea
   }
 
   std::unique_ptr<RETRO::HwFramebufferProperties> hwProperties =
-      TranslateProperties(*m_hwProperties);
+      TranslateProperties(*m_hwProperties, properties.hw_framebuffer);
 
   if (stream->OpenStream(*hwProperties))
-  {
     m_stream = stream;
-    m_callback.HardwareContextReset();
-  }
 
-  return m_stream != nullptr;
+  if (m_stream == nullptr)
+    return false;
+
+  m_hwContextEnded = false;
+  m_hwContextResetStarted = false;
+  m_hwContextReady = false;
+  return true;
+}
+
+bool CGameClientStreamHwFramebuffer::ResetHwContext()
+{
+  if (m_stream == nullptr || m_hwContextEnded)
+    return false;
+
+  if (!m_hwContextResetStarted)
+  {
+    m_hwContextResetStarted = true;
+    const bool reset = m_callback.HardwareContextReset();
+    m_hwContextReady = reset && m_stream != nullptr && !m_hwContextEnded;
+  }
+  return m_hwContextReady;
+}
+
+void CGameClientStreamHwFramebuffer::DestroyHwContext()
+{
+  if (m_stream == nullptr || !m_hwContextResetStarted || m_hwContextEnded)
+    return;
+
+  m_hwContextEnded = true;
+
+  // The callback binds the client context before releasing its GPU resources.
+  m_callback.HardwareContextDestroy();
+}
+
+void CGameClientStreamHwFramebuffer::AbandonHwContext()
+{
+  // A lost context must never notify the client after its game state is unloaded.
+  m_hwContextEnded = true;
+  m_hwContextReady = false;
 }
 
 void CGameClientStreamHwFramebuffer::CloseStream()
 {
   if (m_stream != nullptr)
   {
+    // Normally already done, from before the game was unloaded
+    DestroyHwContext();
+
     m_stream->CloseStream();
     m_stream = nullptr;
   }
@@ -65,7 +104,9 @@ bool CGameClientStreamHwFramebuffer::GetBuffer(unsigned int width,
   if (m_stream != nullptr)
   {
     RETRO::HwFramebufferBuffer hwFramebufferBuffer;
-    if (m_stream->GetStreamBuffer(0, 0, static_cast<RETRO::StreamBuffer&>(hwFramebufferBuffer)))
+    if (m_stream->GetStreamBuffer(width, height,
+                                  static_cast<RETRO::StreamBuffer&>(hwFramebufferBuffer)) &&
+        hwFramebufferBuffer.framebuffer != 0)
     {
       buffer.hw_framebuffer.framebuffer = hwFramebufferBuffer.framebuffer;
       return true;
@@ -84,7 +125,10 @@ void CGameClientStreamHwFramebuffer::AddData(const game_stream_packet& packet)
   {
     const game_stream_hw_framebuffer_packet& hwFramebuffer = packet.hw_framebuffer;
 
-    RETRO::HwFramebufferPacket hwFramebufferPacket{hwFramebuffer.framebuffer};
+    RETRO::HwFramebufferPacket hwFramebufferPacket{
+        hwFramebuffer.framebuffer, hwFramebuffer.width, hwFramebuffer.height,
+        hwFramebuffer.display_aspect_ratio,
+        CGameClientTranslator::TranslateRotation(hwFramebuffer.rotation)};
     m_stream->AddStreamData(static_cast<const RETRO::StreamPacket&>(hwFramebufferPacket));
   }
 }
@@ -138,10 +182,12 @@ std::string CGameClientStreamHwFramebuffer::GetContextName(GAME_HW_CONTEXT_TYPE 
 }
 
 std::unique_ptr<RETRO::HwFramebufferProperties> CGameClientStreamHwFramebuffer::TranslateProperties(
-    const game_hw_rendering_properties& hwProperties)
+    const game_hw_rendering_properties& hwProperties,
+    const game_stream_hw_framebuffer_properties& streamProperties)
 {
   return std::make_unique<RETRO::HwFramebufferProperties>(
       hwProperties.context_type, hwProperties.depth, hwProperties.stencil,
       hwProperties.bottom_left_origin, hwProperties.version_major, hwProperties.version_minor,
-      hwProperties.cache_context, hwProperties.debug_context);
+      hwProperties.cache_context, hwProperties.debug_context, streamProperties.max_width,
+      streamProperties.max_height, streamProperties.nominal_display_aspect_ratio);
 }
