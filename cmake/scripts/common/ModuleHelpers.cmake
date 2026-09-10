@@ -537,6 +537,33 @@ macro(BUILD_DEP_TARGET)
                       ${BUILD_BYPRODUCTS}
                       ${BUILD_IN_SOURCE})
 
+  # Fetch ahead of the download step with broader retries, see DownloadWithRetry.cmake.
+  # Pointless for local tarballs, and without a hash the download step re-downloads
+  # regardless. INDEPENDENT like the download step itself, which CMP0114 requires of
+  # anything that step depends on.
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR
+     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH
+     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL MATCHES "^[A-Za-z][A-Za-z0-9+.-]*://")
+    # ExternalProject bakes these into its download script; a cmake -P process would
+    # not see them otherwise
+    set(_download_retry_settings)
+    foreach(_var CMAKE_TLS_VERIFY CMAKE_TLS_CAINFO CMAKE_TLS_VERSION CMAKE_NETRC CMAKE_NETRC_FILE)
+      if(DEFINED ${_var})
+        list(APPEND _download_retry_settings "-D${_var}=${${_var}}")
+      endif()
+    endforeach()
+    externalproject_add_step(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} download-retry
+                             COMMAND ${CMAKE_COMMAND} ${_download_retry_settings}
+                                     -DARCHIVE_URL=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}
+                                     -DARCHIVE_DEST=${TARBALL_DIR}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}
+                                     -DARCHIVE_HASH=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH}
+                                     -P ${PROJECTSOURCE}/cmake/scripts/common/DownloadWithRetry.cmake
+                             DEPENDERS download
+                             INDEPENDENT TRUE
+                             COMMENT "Fetching ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}")
+    unset(_download_retry_settings)
+  endif()
+
   set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES FOLDER "External Projects")
 
   CLEAR_BUILD_VARS()
