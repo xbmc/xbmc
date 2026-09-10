@@ -111,6 +111,29 @@ assert a.getId() == -1, a.getId()
 )py"));
 }
 
+TEST_F(TestPythonBindings, NoneInsideContainers)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+li = xbmcgui.ListItem('none-in-containers', '', '', True)
+
+li.setArt({'thumb': 'a.png', 'poster': None})
+assert li.getArt('thumb') == 'a.png', li.getArt('thumb')
+assert li.getArt('poster') == '', repr(li.getArt('poster'))
+
+li.setProperties({'alpha': '1', 'beta': None})
+assert li.getProperty('beta') == '', repr(li.getProperty('beta'))
+
+li.setCast([{'name': 'A', 'role': 'B', 'thumbnail': None}])
+li.setInfo('video', {'title': 'x', 'plot': None})
+
+li.getVideoInfoTag().setStudios(['a', None])
+)py"));
+}
+
 // an xbmc type passed through an xbmcgui-obtained object crosses the shared type table
 TEST_F(TestPythonBindings, CrossModule)
 {
