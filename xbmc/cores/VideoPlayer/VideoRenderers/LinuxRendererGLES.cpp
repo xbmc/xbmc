@@ -703,7 +703,8 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   // TODO: GL also checks nonLinStretchChanged and cmsChanged in the early exit
   // and the reload check below. Add when non-linear stretch and CMS are ported to GLES.
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
-      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width())
+      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width() &&
+      srcRect.Height() == m_lastSourceRect.Height() && srcRect.Width() == m_lastSourceRect.Width())
   {
     return;
   }
@@ -712,9 +713,11 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   if (m_scalingMethod != m_videoSettings.m_ScalingMethod)
     m_reloadShaders = true;
 
+  const ESCALINGMETHOD previousMethod = m_scalingMethod;
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
   m_lastViewRect = viewRect;
+  m_lastSourceRect = srcRect;
 
   if(!Supports(m_scalingMethod))
   {
@@ -750,6 +753,9 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     else
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
+
+  if (m_scalingMethod != previousMethod)
+    m_reloadShaders = true;
 
   switch (m_scalingMethod)
   {
@@ -2136,8 +2142,10 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
 
 float CLinuxRendererGLES::ScalingAboveThreshold() const
 {
-  float scaleX = m_destRect.Width() / static_cast<float>(m_sourceWidth);
-  float scaleY = m_destRect.Height() / static_cast<float>(m_sourceHeight);
+  // Empty until ManageRenderArea has run, then the per-eye crop of a stereo source
+  CRect source = m_sourceRect.IsEmpty() ? CRect(0, 0, m_sourceWidth, m_sourceHeight) : m_sourceRect;
+  float scaleX = m_destRect.Width() / source.Width();
+  float scaleY = m_destRect.Height() / source.Height();
   float scaleFactor = (scaleX + scaleY) / 2.0f;
   float scalePercent = fabs(1.0f - scaleFactor) * 100;
   int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(

@@ -788,7 +788,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
       viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width() &&
-      !nonLinStretchChanged && !cmsChanged)
+      srcRect.Height() == m_lastSourceRect.Height() &&
+      srcRect.Width() == m_lastSourceRect.Width() && !nonLinStretchChanged && !cmsChanged)
     return;
 
   // Reload shader when the scaling method, non-linear stretch state, or CMS
@@ -816,9 +817,11 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
+  const ESCALINGMETHOD previousMethod = m_scalingMethod;
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
   m_lastViewRect = viewRect;
+  m_lastSourceRect = srcRect;
 
   if (!Supports(m_scalingMethod))
   {
@@ -849,6 +852,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
     else
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
+
+  if (m_scalingMethod != previousMethod)
+    m_reloadShaders = true;
 
   switch (m_scalingMethod)
   {
@@ -2640,8 +2646,11 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method) const
       method == VS_SCALINGMETHOD_LANCZOS3)
   {
     // if scaling is below level, avoid hq scaling
-    float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
-    float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
+    // Empty until ManageRenderArea has run, then the per-eye crop of a stereo source
+    CRect source =
+        m_sourceRect.IsEmpty() ? CRect(0, 0, m_sourceWidth, m_sourceHeight) : m_sourceRect;
+    float scaleX = fabs((source.Width() - m_destRect.Width()) / source.Width()) * 100;
+    float scaleY = fabs((source.Height() - m_destRect.Height()) / source.Height()) * 100;
     int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
     if (scaleX < minScale && scaleY < minScale)
       return false;
