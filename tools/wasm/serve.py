@@ -4,9 +4,12 @@
 Minimal HTTP server for Kodi WASM builds.
 
 - Serves static files with the COOP/COEP headers required by SharedArrayBuffer.
+- Serves static files with byte-range support so a remote Kodi can seek.
 - Exposes a same-origin streaming proxy at `/proxy?u=<url-encoded>` so the
   browser can reach http(s) servers that don't send CORS headers. Only loopback
-  clients may use it unless --allow-lan-proxy is given.
+  clients may use it unless --allow-lan-proxy is given. The proxy is for single
+  files: references inside a proxied HLS/DASH playlist are not rewritten, so
+  relative ones resolve against this server and absolute ones bypass the proxy.
 
 Usage:
   cd build-wasm
@@ -23,6 +26,8 @@ withholds SharedArrayBuffer and the pthread runtime cannot start. Binding to
 
 import http.server
 import ipaddress
+import os
+import re
 import socketserver
 import sys
 import urllib.error
@@ -49,6 +54,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "*")
         self.send_header("Access-Control-Expose-Headers", "*")
         self.send_header("Cache-Control", "no-cache")
+        if not self.path.startswith("/proxy?"):
+            self.send_header("Accept-Ranges", "bytes")
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -58,7 +65,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith("/proxy?"):
             self._proxy(body=True)
-        else:
+        elif not self._send_range():
             super().do_GET()
 
     def do_HEAD(self):
@@ -66,6 +73,48 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._proxy(body=False)
         else:
             super().do_HEAD()
+
+    def _send_range(self) -> bool:
+        """Serve one `bytes=` range of a regular file; False if not applicable."""
+        match = re.fullmatch(r"bytes=(\d*)-(\d*)", self.headers.get("Range", ""))
+        path = self.translate_path(self.path)
+        if not match or not os.path.isfile(path):
+            return False
+        size = os.path.getsize(path)
+        first, last = match.groups()
+        if first:
+            start = int(first)
+            end = min(int(last), size - 1) if last else size - 1
+        elif last:
+            start = max(size - int(last), 0)
+            end = size - 1
+        else:
+            return False
+        if start > end or start >= size:
+            self.send_response(416)
+            self.send_header("Content-Range", f"bytes */{size}")
+            self.end_headers()
+            return True
+
+        with open(path, "rb") as f:
+            self.send_response(206)
+            self.send_header("Content-Type", self.guess_type(path))
+            self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
+            self.send_header("Content-Length", str(end - start + 1))
+            self.send_header("Last-Modified", self.date_time_string(os.fstat(f.fileno()).st_mtime))
+            self.end_headers()
+            f.seek(start)
+            remaining = end - start + 1
+            try:
+                while remaining > 0:
+                    chunk = f.read(min(64 * 1024, remaining))
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+                    remaining -= len(chunk)
+            except (BrokenPipeError, ConnectionResetError):
+                pass
+        return True
 
     def _client_is_loopback(self) -> bool:
         ip = ipaddress.ip_address(self.client_address[0])
