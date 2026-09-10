@@ -207,7 +207,7 @@ void CShaderGLES::SetSizes(const float2& nextSize,
     m_inputTextureSize = prevTextureSize;
 }
 
-void CShaderGLES::PrepareParameters(
+bool CShaderGLES::PrepareParameters(
     IShaderTexture& sourceTexture,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,
@@ -259,6 +259,7 @@ void CShaderGLES::PrepareParameters(
   m_TexCoords[3][1] = 0.0f;
 
   UpdateUniformInputs(sourceTexture, pShaderTextures, pShaders, frameCount);
+  return true;
 }
 
 void CShaderGLES::UpdateMVP()

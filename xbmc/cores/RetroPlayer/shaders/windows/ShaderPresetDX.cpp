@@ -85,7 +85,11 @@ bool CShaderPresetDX::CreateLayouts()
   for (std::unique_ptr<IShader>& videoShader : m_pShaders)
   {
     auto* videoShaderDX = static_cast<CShaderDX*>(videoShader.get());
-    videoShaderDX->CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
+    if (!videoShaderDX->CreateVertexBuffer(4, sizeof(CUSTOMVERTEX)))
+    {
+      CLog::Log(LOGERROR, "CShaderPresetDX::CreateLayouts: Failed to create shader vertex buffers");
+      return false;
+    }
 
     // Create input layout
     D3D11_INPUT_ELEMENT_DESC layout[] = {
@@ -113,7 +117,12 @@ bool CShaderPresetDX::CreateBuffers()
   for (std::unique_ptr<IShader>& videoShader : m_pShaders)
   {
     auto* videoShaderDX = static_cast<CShaderDX*>(videoShader.get());
-    videoShaderDX->CreateInputBuffer();
+    if (!videoShaderDX->CreateInputBuffer())
+    {
+      CLog::Log(LOGERROR,
+                "CShaderPresetDX::CreateBuffers: Failed to create shader constant buffer");
+      return false;
+    }
   }
 
   return true;
@@ -222,12 +231,12 @@ bool CShaderPresetDX::CreateSamplers()
   memcpy(sampDesc.BorderColor, &blackBorder, 4 * sizeof(FLOAT));
 
   ID3D11Device1* pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  if (FAILED(pDevice->CreateSamplerState(&sampDesc, &m_pSampNearest)))
+  if (FAILED(pDevice->CreateSamplerState(&sampDesc, m_pSampNearest.ReleaseAndGetAddressOf())))
     return false;
 
   D3D11_SAMPLER_DESC sampDescLinear = sampDesc;
   sampDescLinear.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-  if (FAILED(pDevice->CreateSamplerState(&sampDescLinear, &m_pSampLinear)))
+  if (FAILED(pDevice->CreateSamplerState(&sampDescLinear, m_pSampLinear.ReleaseAndGetAddressOf())))
     return false;
 
   return true;
