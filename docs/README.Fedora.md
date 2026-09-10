@@ -77,6 +77,9 @@ sudo dnf install alsa-lib-devel autoconf automake avahi-compat-libdns_sd-devel a
 > [!WARNING]  
 > Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
+> [!NOTE]  
+> The Python bindings need SWIG 4.5.0 or newer. If your release ships an older `swig`, install `bison` and configure Kodi with `-DENABLE_INTERNAL_SWIG=ON` to build the pinned version as part of the Kodi build.
+
 Building for Wayland requires some extra packages:
 ```
 sudo dnf install mesa-libGLES-devel wayland-devel waylandpp-devel wayland-protocols-devel
