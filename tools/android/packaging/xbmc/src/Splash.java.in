@@ -287,12 +287,10 @@ public class Splash extends Activity
       Log.d(TAG, "apk: " + sPackagePath);
       Log.d(TAG, "output: " + sXbmcHome);
 
-      ZipFile zip;
       byte[] buf = new byte[4096];
       int n;
-      try
+      try (ZipFile zip = new ZipFile(sPackagePath))
       {
-        zip = new ZipFile(sPackagePath);
         Enumeration<? extends ZipEntry> entries = zip.entries();
         mProgress.setProgress(0);
         mProgress.setMax(zip.size());
@@ -333,23 +331,19 @@ public class Splash extends Activity
           if (parent != null && !parent.exists())
             parent.mkdirs();
 
-          try
+          try (InputStream in = zip.getInputStream(e);
+               FileOutputStream out = new FileOutputStream(sFullPath))
           {
-            InputStream in = zip.getInputStream(e);
-            FileOutputStream out = new FileOutputStream(sFullPath);
             while ((n = in.read(buf)) > 0)
               out.write(buf, 0, n);
-
-            in.close();
-            out.close();
           }
           catch (IOException e1)
           {
             Log.e(TAG, "Exception: " + e1.getMessage());
+            mErrorMsg = getString(R.string.no_write_cache);
+            return -1;
           }
         }
-
-        zip.close();
       }
       catch (FileNotFoundException e1)
       {
@@ -404,12 +398,7 @@ public class Splash extends Activity
 
     protected void onPostExecute(Integer result)
     {
-      if (result < 0)
-      {
-        mState = InError;
-      }
-
-      mStateMachine.sendEmptyMessage(mState);
+      mStateMachine.sendEmptyMessage(result < 0 ? InError : CachingDone);
     }
   }
 
