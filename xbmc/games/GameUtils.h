@@ -63,6 +63,16 @@ public:
   static bool ChooseAndSetDefaultGameClient(const CFileItem& item);
 
   /*!
+   * \brief The game client playing right now, if a game is playing
+   *
+   * For callers outside the player that need the client itself rather than
+   * what it is playing, such as the OSD.
+   *
+   * \return The client, or empty if no game is playing
+   */
+  static GameClientPtr GetPlayingGameClient();
+
+  /*!
    * \brief Check if the file extension is supported by an add-on in
    *        a local or remote repository
    *

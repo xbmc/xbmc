@@ -1881,4 +1881,94 @@
 		</definition>
 	</include>
 
+	<include name="GameDialogCheats">
+		<control type="group">
+			<top>105</top>
+			<centerleft>50%</centerleft>
+			<width>1520</width>
+			<include>Animation_DialogPopupVisible</include>
+			<visible>!Window.IsVisible(sliderdialog)</visible>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1520" />
+				<param name="height" value="890" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1083900" />
+			</include>
+			<control type="image">
+				<left>10</left>
+				<top>80</top>
+				<width>1200</width>
+				<height>810</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="grouplist" id="1083901">
+				<description>control area</description>
+				<left>29</left>
+				<top>100</top>
+				<width>1160</width>
+				<height>770</height>
+				<pagecontrol>1083906</pagecontrol>
+				<onleft>1083908</onleft>
+				<onright>1083906</onright>
+				<onup>1083901</onup>
+				<ondown>1083901</ondown>
+			</control>
+			<control type="button" id="1083903">
+				<description>Default Button</description>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="radiobutton" id="1083904">
+				<description>Default RadioButton</description>
+				<textwidth>992</textwidth>
+				<include>DefaultSettingButton</include>
+			</control>
+			<control type="grouplist" id="1083908">
+				<left>1210</left>
+				<top>92</top>
+				<orientation>vertical</orientation>
+				<width>300</width>
+				<height>280</height>
+				<itemgap>-10</itemgap>
+				<onleft>1083906</onleft>
+				<onright>1083901</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="1083905" />
+					<param name="label" value="" />
+				</include>
+			</control>
+			<control type="label" id="1083907">
+				<description>Heading above what is switched on</description>
+				<left>1210</left>
+				<top>386</top>
+				<width>300</width>
+				<height>40</height>
+				<font>font14</font>
+				<textcolor>white</textcolor>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="textbox" id="1083902">
+				<description>Enabled cheats</description>
+				<left>1210</left>
+				<top>436</top>
+				<width>300</width>
+				<height>394</height>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+				<align>center</align>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+			</control>
+			<control type="scrollbar" id="1083906">
+				<left>1189</left>
+				<top>100</top>
+				<width>12</width>
+				<height>770</height>
+				<orientation>vertical</orientation>
+				<onleft>1083901</onleft>
+				<onright>1083908</onright>
+				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			</control>
+		</control>
+	</include>
 </includes>

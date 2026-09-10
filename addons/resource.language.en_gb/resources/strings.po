@@ -19557,7 +19557,30 @@ msgctxt "#35307"
 msgid "Subset completed"
 msgstr ""
 
-#empty strings from id 35313 to 35330
+#empty strings from id 35313 to 35319
+
+#. Label of the Cheats button in the game OSD, heading of the cheats dialog, and
+#. of the cheats group in settings
+msgctxt "#35320"
+msgid "Cheats"
+msgstr ""
+
+#. Label of the setting that points at the folder holding cheat files
+msgctxt "#35321"
+msgid "Cheats folder"
+msgstr ""
+
+#. Help text for the cheats folder setting
+msgctxt "#35322"
+msgid "Set a custom folder containing libretro cheats, or install cheats in the Add-on Manager."
+msgstr ""
+
+#. Shown when the cheat database is installed but holds nothing for this game
+msgctxt "#35323"
+msgid "No cheats found for this game"
+msgstr ""
+
+#empty strings from id 35324 to 35330
 
 #. Label of the game OSD button that opens the leaderboards
 #: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp

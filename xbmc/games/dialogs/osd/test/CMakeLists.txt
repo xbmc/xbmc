@@ -1,4 +1,5 @@
-set(SOURCES TestDialogInGameSaves.cpp
+set(SOURCES TestDialogGameCheats.cpp
+            TestDialogInGameSaves.cpp
             TestLeaderboardUtils.cpp
 )
 
