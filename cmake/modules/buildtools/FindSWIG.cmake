@@ -8,10 +8,16 @@
 # SWIG::SWIG - the SWIG executable
 
 if(NOT TARGET SWIG::SWIG)
-  find_program(SWIG_EXECUTABLE NAMES swig4.0 swig3.0 swig2.0 swig
+  if(NATIVEPREFIX)
+    set(_swig_hints HINTS ${NATIVEPREFIX}/bin)
+  endif()
+
+  find_program(SWIG_EXECUTABLE NAMES swig swig4.0 swig3.0 swig2.0
                                NO_CACHE
+                               NAMES_PER_DIR
                                PATH_SUFFIXES swig
-                               HINTS ${NATIVEPREFIX}/bin)
+                               ${_swig_hints})
+  unset(_swig_hints)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(SWIG
