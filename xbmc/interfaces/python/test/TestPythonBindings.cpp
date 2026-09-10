@@ -111,6 +111,45 @@ assert a.getId() == -1, a.getId()
 )py"));
 }
 
+TEST_F(TestPythonBindings, NoneInsideContainers)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+li = xbmcgui.ListItem('none-in-containers', '', '', True)
+
+li.setArt({'thumb': 'a.png', 'poster': None})
+assert li.getArt('thumb') == 'a.png', li.getArt('thumb')
+assert li.getArt('poster') == '', repr(li.getArt('poster'))
+
+li.setProperties({'alpha': '1', 'beta': None})
+assert li.getProperty('beta') == '', repr(li.getProperty('beta'))
+
+li.setCast([{'name': 'A', 'role': 'B', 'thumbnail': None}])
+li.setInfo('video', {'title': 'x', 'plot': None})
+
+li.getVideoInfoTag().setStudios(['a', None])
+)py"));
+}
+
+TEST_F(TestPythonBindings, FileContextManager)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcvfs
+p = 'special://temp/swig-ctx.txt'
+with xbmcvfs.File(p, 'w') as f:
+    f.write('hello')
+with xbmcvfs.File(p) as f:
+    assert f.read() == 'hello', repr(f.read())
+xbmcvfs.delete(p)
+)py"));
+}
+
 // an xbmc type passed through an xbmcgui-obtained object crosses the shared type table
 TEST_F(TestPythonBindings, CrossModule)
 {

@@ -25,8 +25,8 @@
       include, because SWIG fragments are first-definition-wins. */
 %include "kodi_list.i"
 
-/* 2. stock library */
-%include <std_string.i>
+/* 2. stock library, included by kodi_string.i around its own definitions */
+%include <stdint.i>
 %include "kodi_string.i"
 
 /* 3. Kodi's generic vocabulary types: Tuple, Alternative, Dictionary */
