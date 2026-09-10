@@ -893,6 +893,14 @@
 			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
+		<include content="DialogBackground">
+			<param name="width" value="$PARAM[width]" />
+			<param name="height" value="$PARAM[height]" />
+			<param name="header_label" value="$PARAM[header_label]" />
+			<param name="header_id" value="$PARAM[header_id]" />
+		</include>
+	</include>
+	<include name="DialogBackground">
 		<control type="group">
 			<width>$PARAM[width]</width>
 			<height>$PARAM[height]</height>
