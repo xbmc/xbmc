@@ -129,7 +129,9 @@ public:
     m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
     m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
-    m_hideSameAudioLang = settings->GetBool(CSettings::SETTING_SUBTITLES_HIDESAMEAUDIOLANGUAGE);
+    // The setting keeps its value while disabled for none and forced_only
+    m_hideSameAudioLang = !m_isSubNone && !m_isPrefForced &&
+                          settings->GetBool(CSettings::SETTING_SUBTITLES_HIDESAMEAUDIOLANGUAGE);
 
     // Prefer the subtitle language setting; none, original and forced_only name no language, so
     // fall back to the audio setting, and default, original and mediadefault name none either,
@@ -149,6 +151,22 @@ public:
   bool MatchesSubtitleLanguage(const CLanguageTag& language) const
   {
     return language.Matches(m_subLang);
+  }
+
+  // \brief Whether a stream is in the language of the audio being played. Both languages must be
+  //        declared, a stream that states none is never assumed to match.
+  bool MatchesPlayedAudioLanguage(const CLanguageTag& language) const
+  {
+    return IsKnownLanguage(m_playedAudioLang) && IsKnownLanguage(language) &&
+           language.Matches(m_playedAudioLang);
+  }
+
+  // \brief Whether a stream is a forced one that takes the place of the subtitles hidden for being
+  //        in the audio language, which is also the language the settings ask for
+  bool IsForcedForHiddenAudioLanguage(const SelectionStream& ss) const
+  {
+    return m_hideSameAudioLang && (ss.flags & FLAG_FORCED) &&
+           MatchesPlayedAudioLanguage(ss.language) && MatchesSubtitleLanguage(ss.language);
   }
 
   // \brief Whether the subtitle language setting is "original"
@@ -179,11 +197,12 @@ public:
     const bool isSameSubLang = MatchesSubtitleLanguage(ss.language);
 
     // The user does not want to read subtitles in a language they are already listening to.
-    // Forced subtitles are kept, as they usually only translate foreign language parts.
-    // Both languages must be declared, a stream that states none is never assumed to match.
+    // Forced subtitles take their place, as they usually only translate foreign language parts.
+    if (IsForcedForHiddenAudioLanguage(ss))
+      return false;
+
     if (m_hideSameAudioLang && (ss.flags & FLAG_FORCED) == 0 &&
-        IsKnownLanguage(m_playedAudioLang) && IsKnownLanguage(ss.language) &&
-        ss.language.Matches(m_playedAudioLang))
+        MatchesPlayedAudioLanguage(ss.language))
     {
       return true;
     }
@@ -326,6 +345,10 @@ public:
   bool operator()(const SelectionStream& lh, const SelectionStream& rh) const
   {
     PREDICATE_RETURN(lh.type_index == m_subStream, rh.type_index == m_subStream);
+
+    // Ahead of external subtitles too, as those in the audio language are hidden as well
+    PREDICATE_RETURN(m_filter.IsForcedForHiddenAudioLanguage(lh),
+                     m_filter.IsForcedForHiddenAudioLanguage(rh));
 
     const bool isLexternal = STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_DEMUX_SUB ||
                              STREAM_SOURCE_MASK(lh.source) == STREAM_SOURCE_TEXT;
