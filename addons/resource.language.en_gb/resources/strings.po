@@ -24975,7 +24975,7 @@ msgstr ""
 #. Help text for setting "Don't show subtitles matching the audio language" of label #39211
 #: system/settings/settings.xml
 msgctxt "#39212"
-msgid "Do not turn on subtitles that are in the same language as the audio being played. Forced subtitles are not affected."
+msgid "Do not turn on subtitles that are in the same language as the audio being played. Forced subtitles in that language are turned on instead, where the video has them."
 msgstr ""
 
 #empty strings from id 39213 to 39899
