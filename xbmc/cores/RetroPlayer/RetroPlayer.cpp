@@ -26,6 +26,7 @@
 #include "cores/RetroPlayer/playback/ReversiblePlayback.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
+#include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RPStreamManager.h"
@@ -253,6 +254,15 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   if (m_gameClient)
     m_gameClient->Unload();
   m_gameClient.reset();
+
+  // A game client that renders on the GPU shares it with Kodi and releases its
+  // resources as it unloads, without restoring the state Kodi left set up. The
+  // global vertex array object matters most: every GUI draw is rejected while
+  // it is unbound, so the screen stays black after the game ends. Put Kodi's
+  // state back now that the client is gone, the same way Kodi does after a
+  // visualisation or screensaver add-on has had the context.
+  if (m_processInfo)
+    m_processInfo->GetRenderContext().ApplyStateBlock();
 
   m_renderManager.reset();
   if (m_processInfo)

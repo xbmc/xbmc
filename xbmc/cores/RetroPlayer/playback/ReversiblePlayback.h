@@ -94,6 +94,9 @@ private:
   bool m_restoreFailed{false};
   bool m_rewindFrameRendered{false};
 
+  //! Retry after each frame until serialization becomes available, or rewind is disabled.
+  bool m_memoryStreamSized{false};
+
   // Savestate functionality
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
   std::string m_autosavePath{};

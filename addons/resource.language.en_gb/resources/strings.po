@@ -19539,6 +19539,20 @@ msgctxt "#35299"
 msgid "Still looking this game up..."
 msgstr ""
 
+#. Shown when a game needs a newer graphics driver than this system has. {0:s} is the version the game needs, {1:s} is the version available, both like "OpenGL 4.3"
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35300"
+msgid "This game renders with {0:s}, but this system only provides {1:s}. It can't be played on this hardware."
+msgstr ""
+
+#. Shown when a game needs the graphics card directly but the display can't provide it
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35301"
+msgid "This game renders with {0:s}, which isn't available on this display. It can't be played."
+msgstr ""
+
+#empty string with id 35302
+
 #. Label of the setting that enables RetroAchievements encore mode
 #: system/settings/settings.xml
 msgctxt "#35303"

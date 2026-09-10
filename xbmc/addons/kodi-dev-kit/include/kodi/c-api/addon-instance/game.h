@@ -391,12 +391,26 @@ extern "C"
   //==============================================================================
   /// @brief **Hardware framebuffer properties**
   ///
-  /// This struct is empty because hardware rendering properties are passed via
-  /// EnableHardwareRendering().
+  /// The remaining hardware rendering properties are passed earlier, via
+  /// EnableHardwareRendering(). Only the frame size is carried here, because it
+  /// comes from the client's system AV info, which is not available that early.
   ///
   typedef struct game_stream_hw_framebuffer_properties
   {
-    char dummy; // Occupier for empty struct
+    /// @brief The largest frame width the client will render, in pixels
+    ///
+    /// The frontend allocates its framebuffer at this size, so the client can
+    /// render any frame into it without it being reallocated mid-game.
+    ///
+    /// The framebuffer must exist before the stream is opened, because clients
+    /// typically ask for it from inside HwContextReset(), which the frontend
+    /// invokes as soon as the stream is open.
+    ///
+    unsigned int max_width;
+
+    /// @brief The largest frame height the client will render, in pixels
+    unsigned int max_height;
+
   } ATTR_PACKED game_stream_hw_framebuffer_properties;
   //----------------------------------------------------------------------------
 
@@ -417,6 +431,14 @@ extern "C"
   {
     /// @brief
     uintptr_t framebuffer;
+
+    /// @brief Size of the image the client just drew
+    ///
+    /// The framebuffer is allocated at the largest size the client said it
+    /// would ever need, and a frame usually fills only part of it. Without
+    /// these the rest of the framebuffer is shown along with the image.
+    unsigned int width;
+    unsigned int height;
   } ATTR_PACKED game_stream_hw_framebuffer_packet;
   //----------------------------------------------------------------------------
 

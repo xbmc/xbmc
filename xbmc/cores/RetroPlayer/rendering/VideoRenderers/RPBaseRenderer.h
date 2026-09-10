@@ -108,6 +108,11 @@ protected:
   bool m_bShadersNeedUpdate = true;
   bool m_bUseShaderPreset = false;
 
+  // Last reported geometry, so the log carries changes rather than every frame
+  CRect m_lastLoggedDestRect;
+  CRect m_lastLoggedFullDestRect;
+  STRETCHMODE m_lastLoggedStretchMode{static_cast<STRETCHMODE>(-1)};
+
 private:
   /*!
    * \brief Calculate driven dimensions

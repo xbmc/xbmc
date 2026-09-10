@@ -251,6 +251,29 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   // Adapt the drawing rect points if we have to rotate
   m_rotatedDestCoords = CRenderUtils::ReorderDrawPoints(destRect, rotationDegCCW);
 
+  // Report the geometry whenever it changes. Every stretch mode resolving to the
+  // same rectangle, or a shader chain told the wrong output size, both show up
+  // here: the stretch mode that was asked for, the view window it was fitted
+  // into, and the two rectangles that come out -- destRect places the picture,
+  // fullDestRect sizes the shader chain's target.
+  if (destRect != m_lastLoggedDestRect || fullDestRect != m_lastLoggedFullDestRect ||
+      stretchMode != m_lastLoggedStretchMode)
+  {
+    CLog::Log(LOGINFO,
+              "RetroPlayer[RENDER]: Stretch mode {}, source {}x{}, view window "
+              "({:.0f},{:.0f})-({:.0f},{:.0f}), viewport ({:.0f},{:.0f})-({:.0f},{:.0f}), "
+              "dest ({:.0f},{:.0f})-({:.0f},{:.0f}), full dest {:.0f}x{:.0f}, zoom {:.3f}, "
+              "pixel ratio {:.3f}",
+              static_cast<int>(stretchMode), sourceWidth, sourceHeight, viewRect.x1, viewRect.y1,
+              viewRect.x2, viewRect.y2, viewPort.x1, viewPort.y1, viewPort.x2, viewPort.y2,
+              destRect.x1, destRect.y1, destRect.x2, destRect.y2, m_fullDestWidth, m_fullDestHeight,
+              zoomAmount, pixelRatio);
+
+    m_lastLoggedDestRect = destRect;
+    m_lastLoggedFullDestRect = fullDestRect;
+    m_lastLoggedStretchMode = stretchMode;
+  }
+
   // Update video shader source size
   if (m_shaderPreset)
     m_shaderPreset->SetVideoSize(sourceWidth, sourceHeight);
