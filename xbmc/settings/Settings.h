@@ -68,6 +68,7 @@ public:
   static constexpr auto SETTING_WINDOW_WIDTH = "window.width";
   static constexpr auto SETTING_WINDOW_HEIGHT = "window.height";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS = "videolibrary.showunwatchedplots";
+  static constexpr auto SETTING_VIDEOLIBRARY_LANGUAGEDETAILS = "videolibrary.languagedetails";
   static constexpr auto SETTING_VIDEOLIBRARY_ACTORTHUMBS = "videolibrary.actorthumbs";
   static constexpr auto SETTING_MYVIDEOS_FLATTEN = "myvideos.flatten";
   static constexpr auto SETTING_VIDEOLIBRARY_FLATTENVERSIONS = "videolibrary.flattenversions";
@@ -495,6 +496,11 @@ public:
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES = 0;
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES = 1;
   static const int VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE = 2;
+  // values for SETTING_VIDEOLIBRARY_LANGUAGEDETAILS
+  // Which audio stream the language, codec and channel count shown against an item describe
+  static const int VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER = 0; // the stream that will be played
+  static const int VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT = 1; // the media default stream
+  static const int VIDEOLIBRARY_LANGUAGE_DETAILS_BEST = 2; // the technically best stream
   // values for SETTING_VIDEOLIBRARY_ARTWORK_LEVEL
   static const int VIDEOLIBRARY_ARTWORK_LEVEL_ALL = 0;
   static const int VIDEOLIBRARY_ARTWORK_LEVEL_BASIC = 1;

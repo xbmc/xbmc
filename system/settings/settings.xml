@@ -1265,6 +1265,18 @@
             <hidevalue>false</hidevalue>
           </control>
         </setting>
+        <setting id="videolibrary.languagedetails" type="integer" label="39213" help="39214">
+          <level>0</level>
+          <default>0</default> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER -->
+          <constraints>
+            <options>
+              <option label="39215">0</option> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER -->
+              <option label="39216">1</option> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT -->
+              <option label="39217">2</option> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_BEST -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
           <level>1</level>
           <default>false</default>
