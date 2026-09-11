@@ -8,6 +8,7 @@
 
 #include "ReversiblePlayback.h"
 
+#include "SavestateCapture.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
@@ -45,8 +46,40 @@ CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient,
     m_renderManager(renderManager),
     m_guiMessenger(guiMessenger),
     m_gameLoop(this, fps),
-    m_savestateDatabase(new CSavestateDatabase)
+    m_savestateDatabase(new CSavestateDatabase),
+    m_memorySize(serializeSize),
+    m_gamePath(gameClient->GetGamePath()),
+    m_gameClientId(gameClient->ID()),
+    m_gameClientVersion(gameClient->Version().asString())
 {
+  if (m_memorySize != 0 && !m_gamePath.empty())
+  {
+    auto snapshot = std::make_unique<Snapshot>();
+    snapshot->memory =
+        std::make_unique<uint32_t[]>((m_memorySize + sizeof(uint32_t) - 1) / sizeof(uint32_t));
+    m_saveWorker = std::make_unique<CSavestateWorker<Snapshot>>(
+        std::move(snapshot),
+        [this](Snapshot& captured)
+        {
+          try
+          {
+            if (!captured.discarded)
+            {
+              m_saveSucceeded.store(false);
+              m_saveSucceeded.store(CommitSavestate(captured));
+            }
+          }
+          catch (const std::exception& e)
+          {
+            CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Save failed: {}", e.what());
+          }
+          catch (...)
+          {
+            CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Save failed");
+          }
+          captured.video.clear();
+        });
+  }
   UpdateMemoryStream();
 
   GAME::CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
@@ -59,6 +92,7 @@ CReversiblePlayback::~CReversiblePlayback()
   gameSettings.UnregisterObserver(this);
 
   Deinitialize();
+  m_saveWorker.reset();
 }
 
 void CReversiblePlayback::Initialize()
@@ -66,13 +100,20 @@ void CReversiblePlayback::Initialize()
   m_gameLoop.Start();
 }
 
+void CReversiblePlayback::Quiesce()
+{
+  m_gameLoop.Quiesce();
+
+  std::unique_lock lock(m_mutex);
+  CancelAutosave();
+  m_autosaveCapture.Reset();
+  if (m_saveWorker)
+    m_saveWorker->Drain();
+}
+
 void CReversiblePlayback::Deinitialize()
 {
-  // Wait for autosave tasks
-  for (std::future<void>& task : m_savestateThreads)
-    task.wait();
-  m_savestateThreads.clear();
-
+  Quiesce();
   m_gameLoop.Stop();
 }
 
@@ -121,168 +162,146 @@ void CReversiblePlayback::PauseAsync()
   m_gameLoop.PauseAsync();
 }
 
-std::string CReversiblePlayback::CreateSavestate(bool autosave,
-                                                 const std::string& savestatePath /* = "" */)
+std::string CReversiblePlayback::GetSavestatePath(bool autosave,
+                                                  const std::string& path,
+                                                  const CDateTime& created)
 {
-  const size_t memorySize = m_gameClient->SerializeSize();
-
-  // Game client must support serialization
-  if (memorySize == 0)
-    return "";
-
-  //! @todo Handle savestates for standalone game clients
-  if (m_gameClient->GetGamePath().empty())
-  {
-    return "";
-  }
-
-  // Take a timestamp of the system clock
-  const CDateTime nowUTC = CDateTime::GetUTCDateTime();
-
-  // Record the frame count
-  const uint64_t timestampFrames = m_totalFrameCount;
-
-  // Get the savestate path
-  std::string savePath(savestatePath);
-  {
-    std::unique_lock lock(m_savestateMutex);
-
-    if (autosave && savePath.empty())
-      savePath = m_autosavePath;
-
-    // Clear autosave path so the next autosave is created in a new slot and
-    // does not overwrite the newly-created manual save
-    if (!autosave && savePath == m_autosavePath)
-      m_autosavePath.clear();
-
-    // If path is still unknown, calculate it now
-    if (savePath.empty())
-      savePath = CSavestateDatabase::MakeSavestatePath(m_gameClient->GetGamePath(), nowUTC);
-
-    // Update autosave path
-    if (autosave)
-      m_autosavePath = savePath;
-  }
-
-  // Capture the current video frame
-  m_renderManager.CacheVideoFrame(savePath);
-
-  {
-    std::unique_lock lock(m_savestateMutex);
-
-    // Prune any finished autosave threads
-    m_savestateThreads.erase(std::remove_if(m_savestateThreads.begin(), m_savestateThreads.end(),
-                                            [](std::future<void>& task) {
-                                              return task.wait_for(std::chrono::seconds(0)) ==
-                                                     std::future_status::ready;
-                                            }),
-                             m_savestateThreads.end());
-
-    // Save async to not block game loop
-    std::future<void> task =
-        std::async(std::launch::async, [this, autosave, savePath, nowUTC, timestampFrames]()
-                   { CommitSavestate(autosave, savePath, nowUTC, timestampFrames); });
-
-    m_savestateThreads.emplace_back(std::move(task));
-  }
-
+  std::unique_lock lock(m_savestateMutex);
+  std::string savePath = path;
+  if (autosave && savePath.empty())
+    savePath = m_autosavePath;
+  if (!autosave && savePath == m_autosavePath)
+    m_autosavePath.clear();
+  if (savePath.empty())
+    savePath = CSavestateDatabase::MakeSavestatePath(m_gamePath, created);
+  if (autosave)
+    m_autosavePath = savePath;
   return savePath;
 }
 
-void CReversiblePlayback::CommitSavestate(bool autosave,
-                                          const std::string& savePath,
-                                          const CDateTime& nowUTC,
-                                          uint64_t timestampFrames)
+std::string CReversiblePlayback::CreateSavestate(bool autosave, const std::string& savestatePath)
 {
-  std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
+  if (!m_saveWorker)
+  {
+    m_saveSucceeded.store(false);
+    return "";
+  }
+
+  // Explicit saves may wait for storage; the periodic path only uses try-locks.
+  std::unique_lock lock(m_mutex);
+  CancelAutosave();
+  auto snapshot = CaptureSavestate(*m_saveWorker, *m_gameClient, m_memorySize,
+                                   [this](Snapshot& captured) { CaptureMetadata(captured); });
+  m_saveSucceeded.store(false);
+  if (!snapshot)
+    return "";
+  snapshot->autosave = autosave;
+  snapshot->rewind = false;
+  snapshot->serializeUs = 0;
+  snapshot->captureUs = 0;
+  snapshot->path = GetSavestatePath(autosave, savestatePath, snapshot->created);
+  const std::string savePath = snapshot->path;
+  m_renderManager.CacheVideoFrame(savePath);
+  m_saveWorker->Submit(snapshot);
+  return savePath;
+}
+
+void CReversiblePlayback::CaptureMetadata(Snapshot& snapshot)
+{
+  snapshot.created = CDateTime::GetUTCDateTime();
+  snapshot.frames = m_totalFrameCount;
+  snapshot.wallClock = snapshot.frames / m_gameLoop.FPS();
+  snapshot.path.clear();
+  snapshot.autosave = true;
+  snapshot.discarded = false;
+  m_gameClient->SerializeAchievementState(snapshot.achievements);
+  m_renderManager.TryCaptureVideoFrame(snapshot.video);
+}
+
+void CReversiblePlayback::InvalidateAutosave()
+{
+  m_autosaveCapture.Cancel(m_pendingSnapshot, m_snapshotReady);
+}
+
+void CReversiblePlayback::CancelAutosave()
+{
+  InvalidateAutosave();
+  if (m_pendingSnapshot)
+    m_saveWorker->Submit(m_pendingSnapshot);
+  m_snapshotReady = false;
+}
+
+bool CReversiblePlayback::WaitForSavestates()
+{
+  std::unique_lock lock(m_mutex);
+  CancelAutosave();
+  if (m_saveWorker && m_saveWorker->Drain())
+  {
+    m_saveSucceeded.store(false);
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Save worker failed");
+    return false;
+  }
+  return m_saveSucceeded.load();
+}
+
+bool CReversiblePlayback::CommitSavestate(const Snapshot& snapshot)
+{
+  const auto started = std::chrono::steady_clock::now();
+  const std::string savePath = snapshot.path.empty()
+                                   ? GetSavestatePath(snapshot.autosave, "", snapshot.created)
+                                   : snapshot.path;
+  auto savestate = CSavestateDatabase::AllocateSavestate();
   std::unique_ptr<ISavestate> loadedSavestate;
-
-  const size_t memorySize = m_gameClient->SerializeSize();
-  uint8_t* const memoryData = savestate->GetMemoryBuffer(memorySize);
-
-  // Separate from the emulator's memory; see savestate.fbs
-  std::vector<uint8_t> achievementState;
-
-  // Both payloads under one client lock, so the game loop cannot advance
-  // between them and pair one frame's memory with another frame's progress.
-  //
-  // m_mutex before the client lock, which is the order the game loop uses:
-  // AddFrame() holds m_mutex across CGameClient::Serialize(), and that takes
-  // the client lock. Taking them the other way round here deadlocks the two
-  // against each other whenever an autosave lands mid-frame, which also hangs
-  // shutdown because Deinitialize() waits on the save.
+  uint8_t* memoryData = savestate->GetMemoryBuffer(m_memorySize);
+  std::memcpy(memoryData, snapshot.memory.get(), m_memorySize);
+  if (!snapshot.achievements.empty())
   {
-    std::unique_lock lock(m_mutex);
-    std::unique_lock clientLock = m_gameClient->LockForSnapshot();
-
-    // Copy the savestate memory
-    if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
-    {
-      std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
-    }
-    else
-    {
-      if (!m_gameClient->Serialize(memoryData, memorySize))
-        return;
-    }
-
-    m_gameClient->SerializeAchievementState(achievementState);
+    if (uint8_t* data = savestate->GetAchievementBuffer(snapshot.achievements.size()))
+      std::memcpy(data, snapshot.achievements.data(), snapshot.achievements.size());
   }
 
-  if (!achievementState.empty())
-  {
-    if (uint8_t* const achievementData = savestate->GetAchievementBuffer(achievementState.size()))
-      std::memcpy(achievementData, achievementState.data(), achievementState.size());
-  }
-
-  // Attempt to get existing properties
   {
     std::unique_lock lock(m_savestateMutex);
-    if (!savePath.empty() && XFILE::CFile::Exists(savePath))
+    if (XFILE::CFile::Exists(savePath))
     {
       loadedSavestate = CSavestateDatabase::AllocateSavestate();
       if (!m_savestateDatabase->GetSavestate(savePath, *loadedSavestate))
         loadedSavestate.reset();
     }
   }
-
-  const std::string caption =
-      CServiceBroker::GetGameServices().AchievementRuntime().GetRichPresence();
-  const std::string gameFileName = URIUtils::GetFileName(m_gameClient->GetGamePath());
-  const double timestampWallClock =
-      (timestampFrames /
-       m_gameClient->GetFrameRate()); //! @todo Accumulate playtime instead of deriving it
-  const std::string gameClientId = m_gameClient->ID();
-  const std::string gameClientVersion = m_gameClient->Version().asString();
-
-  savestate->SetType(autosave ? SAVE_TYPE::AUTO : SAVE_TYPE::MANUAL);
+  savestate->SetType(snapshot.autosave ? SAVE_TYPE::AUTO : SAVE_TYPE::MANUAL);
   savestate->SetLabel(loadedSavestate ? loadedSavestate->Label() : "");
-  savestate->SetCaption(caption);
-  savestate->SetCreated(nowUTC);
-  savestate->SetGameFileName(gameFileName);
-  savestate->SetTimestampFrames(timestampFrames);
-  savestate->SetTimestampWallClock(timestampWallClock);
-  savestate->SetGameClientID(gameClientId);
-  savestate->SetGameClientVersion(gameClientVersion);
+  savestate->SetCaption(CServiceBroker::GetGameServices().AchievementRuntime().GetRichPresence());
+  savestate->SetCreated(snapshot.created);
+  savestate->SetGameFileName(URIUtils::GetFileName(m_gamePath));
+  savestate->SetTimestampFrames(snapshot.frames);
+  savestate->SetTimestampWallClock(snapshot.wallClock);
+  savestate->SetGameClientID(m_gameClientId);
+  savestate->SetGameClientVersion(m_gameClientVersion);
 
-  m_renderManager.SaveVideoFrame(savePath, *savestate);
-
+  if (!snapshot.video.empty())
+    m_renderManager.CacheVideoFrame(savePath, snapshot.video);
+  m_renderManager.SaveVideoFrame(savePath, *savestate, snapshot.video);
   savestate->Finalize();
-
   bool success;
   {
     std::unique_lock lock(m_savestateMutex);
-    success = m_savestateDatabase->AddSavestate(savePath, m_gameClient->GetGamePath(), *savestate);
+    success = m_savestateDatabase->AddSavestate(savePath, m_gamePath, *savestate);
   }
-
   if (success)
-  {
-    std::string thumbnailPath = CSavestateDatabase::MakeThumbnailPath(savePath);
-    m_renderManager.SaveThumbnail(thumbnailPath);
-  }
-
-  // Notify the GUI that the metadata for this savestate should be refreshed
+    m_renderManager.SaveThumbnail(CSavestateDatabase::MakeThumbnailPath(savePath));
+  else
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to write savestate");
   m_guiMessenger.RefreshSavestates(savePath, savestate.get());
+  CLog::Log(LOGDEBUG,
+            "RetroPlayer[SAVE]: Frame {}: reused rewind {}, core {} us, capture/handoff {} us, "
+            "background commit {} ms, success {}",
+            snapshot.frames, snapshot.rewind, snapshot.serializeUs, snapshot.captureUs,
+            std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() -
+                                                                  started)
+                .count(),
+            success);
+  return success;
 }
 
 bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
@@ -293,6 +312,11 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
   if (memorySize == 0)
     return false;
 
+  std::unique_lock playbackLock(m_mutex);
+  CancelAutosave();
+  if (m_saveWorker)
+    m_saveWorker->Drain();
+  auto clientLock = m_gameClient->LockForSnapshot();
   bool bSuccess = false;
 
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
@@ -355,6 +379,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
 
 void CReversiblePlayback::FrameEvent()
 {
+  std::unique_lock lock(m_mutex);
   m_gameClient->RunFrame();
   UpdateFrameRate();
 
@@ -363,6 +388,8 @@ void CReversiblePlayback::FrameEvent()
 
 void CReversiblePlayback::RewindEvent()
 {
+  std::unique_lock lock(m_mutex);
+  InvalidateAutosave();
   RewindFrames(1);
 
   m_gameClient->RunFrame();
@@ -376,18 +403,78 @@ void CReversiblePlayback::EndEvent()
 
 void CReversiblePlayback::AddFrame()
 {
-  std::unique_lock lock(m_mutex);
-
+  // Playback lock precedes the client lock for every snapshot and timeline change.
+  auto clientLock = m_gameClient->LockForSnapshot();
+  int64_t serializeUs = 0;
+  bool serialized = false;
   if (m_memoryStream)
   {
-    if (m_gameClient->Serialize(m_memoryStream->BeginFrame(), m_memoryStream->FrameSize()))
+    const bool measure = m_autosaveCapture.IsPending();
+    const auto started =
+        measure ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
+    serialized = m_gameClient->Serialize(m_memoryStream->BeginFrame(), m_memoryStream->FrameSize());
+    if (measure)
+      serializeUs = std::chrono::duration_cast<std::chrono::microseconds>(
+                        std::chrono::steady_clock::now() - started)
+                        .count();
+    if (serialized)
     {
       m_memoryStream->SubmitFrame();
       UpdatePlaybackStats();
     }
   }
+  ++m_totalFrameCount;
+  ProcessAutosave(serialized, serializeUs);
+}
 
-  m_totalFrameCount++;
+void CReversiblePlayback::ProcessAutosave(bool serialized, int64_t serializeUs)
+{
+  if (!m_saveWorker)
+    return;
+
+  if (m_snapshotReady)
+  {
+    if (m_saveWorker->TrySubmit(m_pendingSnapshot))
+      m_snapshotReady = false;
+    return;
+  }
+  if (!m_autosaveCapture.IsPending())
+    return;
+  if (!m_pendingSnapshot)
+    m_pendingSnapshot = m_saveWorker->TryAcquire();
+  if (!m_pendingSnapshot)
+    return;
+
+  auto& snapshot = *m_pendingSnapshot;
+  const auto started = std::chrono::steady_clock::now();
+  m_snapshotReady = m_autosaveCapture.CaptureFrame(
+      m_memoryStream.get(), serialized, snapshot.memory,
+      [this, &snapshot]
+      {
+        const auto coreStarted = std::chrono::steady_clock::now();
+        const bool success = m_gameClient->Serialize(
+            reinterpret_cast<uint8_t*>(snapshot.memory.get()), m_memorySize);
+        snapshot.serializeUs = std::chrono::duration_cast<std::chrono::microseconds>(
+                                   std::chrono::steady_clock::now() - coreStarted)
+                                   .count();
+        return success;
+      },
+      [this, &snapshot, serialized, serializeUs]
+      {
+        CaptureMetadata(snapshot);
+        snapshot.rewind = serialized;
+        if (serialized)
+          snapshot.serializeUs = serializeUs;
+        snapshot.captureUs = 0;
+      });
+  snapshot.captureUs += std::chrono::duration_cast<std::chrono::microseconds>(
+                            std::chrono::steady_clock::now() - started)
+                            .count();
+  if (m_snapshotReady)
+  {
+    if (m_saveWorker->TrySubmit(m_pendingSnapshot))
+      m_snapshotReady = false;
+  }
 }
 
 void CReversiblePlayback::UpdateFrameRate()
@@ -402,6 +489,7 @@ void CReversiblePlayback::UpdateFrameRate()
 void CReversiblePlayback::RewindFrames(uint64_t frames)
 {
   std::unique_lock lock(m_mutex);
+  InvalidateAutosave();
 
   if (m_memoryStream)
   {
@@ -416,6 +504,7 @@ void CReversiblePlayback::RewindFrames(uint64_t frames)
 void CReversiblePlayback::AdvanceFrames(uint64_t frames)
 {
   std::unique_lock lock(m_mutex);
+  InvalidateAutosave();
 
   if (m_memoryStream)
   {
@@ -497,6 +586,7 @@ void CReversiblePlayback::UpdateMemoryStream()
   }
   else
   {
+    InvalidateAutosave();
     m_memoryStream.reset();
 
     // Reset playback stats

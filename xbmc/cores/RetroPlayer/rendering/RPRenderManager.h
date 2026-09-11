@@ -135,7 +135,12 @@ public:
 
   // Savestate functions
   void CacheVideoFrame(const std::string& savestatePath);
-  void SaveVideoFrame(const std::string& savestatePath, ISavestate& savestate);
+  using VideoFrame = std::vector<std::shared_ptr<IRenderBuffer>>;
+  bool TryCaptureVideoFrame(VideoFrame& frame);
+  void CacheVideoFrame(const std::string& savestatePath, const VideoFrame& frame);
+  void SaveVideoFrame(const std::string& savestatePath,
+                      ISavestate& savestate,
+                      const VideoFrame& frame = {});
   void ClearVideoFrame(const std::string& savestatePath);
 
 private:

@@ -1,6 +1,7 @@
 xbmc/addons/gui/skin/test         test/skin
 xbmc/addons/test                  test/addons
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
+xbmc/cores/RetroPlayer/playback/test test/retroplayer_playback
 xbmc/cores/RetroPlayer/rendering/test test/retroplayer_rendering
 xbmc/cores/RetroPlayer/streams/memory/test test/retroplayer_memory
 xbmc/cores/VideoPlayer/Buffers/test test/videoplayer_buffers

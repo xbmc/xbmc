@@ -229,15 +229,21 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   std::unique_lock lock(m_mutex);
 
-  if (m_gameClient && m_gameServices.GameSettings().AutosaveEnabled())
+  if (m_playback)
+    m_playback->Quiesce();
+
+  if (m_gameClient && m_playback && m_gameServices.GameSettings().AutosaveEnabled())
   {
     std::string savePath = m_playback->CreateSavestate(true);
-    if (!savePath.empty())
+    const bool saved = m_playback->WaitForSavestates();
+    if (!savePath.empty() && saved)
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to {}", CURL::GetRedacted(savePath));
     else
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Failed to save state at close");
   }
 
+  if (m_playback)
+    m_playback->Deinitialize();
   m_playback.reset();
 
   if (m_input)
@@ -456,27 +462,6 @@ bool CRetroPlayer::OnAction(const CAction& action)
   return false;
 }
 
-std::string CRetroPlayer::GetPlayerState()
-{
-  std::string savestatePath;
-
-  if (m_autoSave)
-  {
-    savestatePath = m_playback->CreateSavestate(true);
-    if (savestatePath.empty())
-    {
-      CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Continuing without saving");
-      m_autoSave.reset();
-    }
-  }
-  return savestatePath;
-}
-
-bool CRetroPlayer::SetPlayerState(const std::string& state)
-{
-  return m_playback->LoadSavestate(state);
-}
-
 void CRetroPlayer::FrameMove()
 {
   if (m_renderManager)
@@ -625,9 +610,9 @@ bool CRetroPlayer::IsAutoSaveEnabled() const
   return m_playback->GetSpeed() > 0.0;
 }
 
-std::string CRetroPlayer::CreateAutosave()
+void CRetroPlayer::RequestAutosave()
 {
-  return m_playback->CreateSavestate(true);
+  m_playback->RequestAutosave();
 }
 
 void CRetroPlayer::SetSpeedInternal(double speed)
@@ -673,7 +658,7 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Loading savestate");
 
-      if (!SetPlayerState(savestatePath))
+      if (!LoadSavestate(savestatePath))
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to load savestate");
     }
   }
