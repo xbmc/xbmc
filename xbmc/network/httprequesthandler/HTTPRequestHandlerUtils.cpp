@@ -10,7 +10,41 @@
 
 #include "utils/StringUtils.h"
 
+#include <algorithm>
 #include <map>
+
+namespace
+{
+constexpr const char* HTTPSchemeInsecure = "http";
+constexpr const char* HTTPSchemeSecure = "https";
+constexpr const char* HTTPHeaderForwardedProtocol = "X-Forwarded-Proto";
+} // namespace
+
+std::string HTTPRequestHandlerUtils::GetRequestScheme(struct MHD_Connection* connection)
+{
+  if (connection == nullptr)
+    return HTTPSchemeInsecure;
+
+  std::string forwarded =
+      GetRequestHeaderValue(connection, MHD_HEADER_KIND, HTTPHeaderForwardedProtocol);
+  if (!forwarded.empty())
+  {
+    // a chain of proxies appends to the header, so the client's own scheme comes first
+    forwarded.resize(std::min(forwarded.find(','), forwarded.size()));
+    StringUtils::Trim(forwarded);
+    StringUtils::ToLower(forwarded);
+
+    // the header is whatever the client sent, so anything unrecognised is dropped
+    if (forwarded == HTTPSchemeInsecure || forwarded == HTTPSchemeSecure)
+      return forwarded;
+  }
+
+  // MHD only answers this for a connection it is serving over TLS
+  if (MHD_get_connection_info(connection, MHD_CONNECTION_INFO_PROTOCOL) != nullptr)
+    return HTTPSchemeSecure;
+
+  return HTTPSchemeInsecure;
+}
 
 std::string HTTPRequestHandlerUtils::GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key)
 {

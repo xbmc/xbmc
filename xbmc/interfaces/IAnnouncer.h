@@ -26,11 +26,13 @@ enum AnnouncementFlag
   PVR = 0x100,
   Other = 0x200,
   Info = 0x400,
-  Sources = 0x800
+  Sources = 0x800,
+  Settings = 0x1000
 };
 
-const auto ANNOUNCE_ALL = (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary |
-                           Application | Input | ANNOUNCEMENT::PVR | Other | Info | Sources);
+const auto ANNOUNCE_ALL =
+    (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input |
+     ANNOUNCEMENT::PVR | Other | Info | Sources | Settings);
 
 /*!
     \brief Returns a string representation for the
@@ -66,6 +68,8 @@ inline const char* AnnouncementFlagToString(const AnnouncementFlag& notification
       return "Info";
     case Sources:
       return "Sources";
+    case Settings:
+      return "Settings";
     default:
       return "Unknown";
   }

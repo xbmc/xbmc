@@ -126,9 +126,9 @@ class CAddonRecording : public PVR_RECORDING
 public:
   explicit CAddonRecording(const CPVRRecording& recording)
     : m_recordingId(recording.ClientRecordingID()),
-      m_title(recording.m_strTitle),
+      m_title(recording.ProgrammeTitle()),
       m_titleExtraInfo(recording.TitleExtraInfo()),
-      m_episodeName(recording.m_strShowTitle),
+      m_episodeName(recording.EpisodeName()),
       m_directory(recording.Directory()),
       m_plotOutline(recording.m_strPlotOutline),
       m_plot(recording.m_strPlot),

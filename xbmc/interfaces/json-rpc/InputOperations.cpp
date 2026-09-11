@@ -8,6 +8,7 @@
 
 #include "InputOperations.h"
 
+#include "MessengerPayload.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
@@ -48,11 +49,13 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
       gui->GetAudioManager().PlayActionSound(actionID);
 
     if (waitResult)
-      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(actionID)));
+      CServiceBroker::GetAppMessenger()->SendMsg(
+          TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+          TransferToMessenger(std::make_unique<CAction>(actionID)));
     else
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(actionID)));
+      CServiceBroker::GetAppMessenger()->PostMsg(
+          TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+          TransferToMessenger(std::make_unique<CAction>(actionID)));
   }
   return ACK;
 }
@@ -111,12 +114,13 @@ JSONRPC_STATUS CInputOperations::ButtonEvent(const std::string& method,
     return InvalidParams;
   }
 
-  XBMC_Event* newEvent = new XBMC_Event;
+  auto newEvent = std::make_unique<XBMC_Event>();
   newEvent->type = XBMC_BUTTON;
   newEvent->keybutton.button = keycode;
   newEvent->keybutton.holdtime = holdtime;
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EVENT, -1, -1, static_cast<void*>(newEvent));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EVENT, -1, -1,
+                                             TransferToMessenger(std::move(newEvent)));
 
   return ACK;
 }

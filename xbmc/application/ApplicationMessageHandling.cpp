@@ -38,6 +38,7 @@
 #include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/json-rpc/JSONUtils.h"
+#include "interfaces/json-rpc/PlayerIds.h"
 #include "interfaces/python/XBPython.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
@@ -77,6 +78,14 @@ using namespace KODI;
 
 namespace
 {
+//! \brief The app player and the playlist it works through, as a notification describes them
+void DescribePlayer(CVariant& player)
+{
+  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  JSONRPC::DescribePlayer(player, appPlayer->IsPlayingVideo() ? JSONRPC::Video : JSONRPC::Audio,
+                          CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+}
+
 class CPlaycountIncrementedHandler
 {
 public:
@@ -534,8 +543,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
       CVariant param;
       param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      DescribePlayer(param["player"]);
 
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
                                                          m_app.CurrentFileItemPtr(), param);
@@ -721,8 +729,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     {
       CVariant param;
       param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      DescribePlayer(param["player"]);
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVStart",
                                                          m_app.CurrentFileItemPtr(), param);
       m_app.m_playerEvent.Set();
@@ -743,8 +750,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 #endif
       CVariant param;
       param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      DescribePlayer(param["player"]);
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVChange",
                                                          m_app.CurrentFileItemPtr(), param);
       return true;
@@ -754,8 +760,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     {
       CVariant param;
       param["player"]["speed"] = 0;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      DescribePlayer(param["player"]);
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause",
                                                          m_app.CurrentFileItemPtr(), param);
       return true;
@@ -765,8 +770,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     {
       CVariant param;
       param["player"]["speed"] = 1;
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      DescribePlayer(param["player"]);
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnResume",
                                                          m_app.CurrentFileItemPtr(), param);
       return true;
@@ -781,8 +785,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
                                                     param["player"]["time"]);
       JSONRPC::CJSONUtils::MillisecondsToTimeObject(static_cast<int>(seekOffset),
                                                     param["player"]["seekoffset"]);
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      DescribePlayer(param["player"]);
       const auto& components = CServiceBroker::GetAppComponents();
       const auto appPlayer = components.GetComponent<CApplicationPlayer>();
       param["player"]["speed"] = static_cast<int>(appPlayer->GetPlaySpeed());
@@ -798,8 +801,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     {
       CVariant param;
       param["player"]["speed"] = message.GetParam1();
-      param["player"]["playerid"] =
-          static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+      DescribePlayer(param["player"]);
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSpeedChanged",
                                                          m_app.CurrentFileItemPtr(), param);
 
@@ -807,8 +809,16 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     }
 
     case GUI_MSG_PLAYBACK_ERROR:
+    {
+      // The stop that follows carries no error, so this is the only point the failure can be
+      // announced.
+      CVariant data{CVariant::VariantTypeObject};
+      data["reason"] = "error";
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlaybackFailed",
+                                                         m_app.CurrentFileItemPtr(), data);
       MESSAGING::HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
       return true;
+    }
 
     case GUI_MSG_PLAYLISTPLAYER_STARTED:
     case GUI_MSG_PLAYLISTPLAYER_CHANGED:

@@ -84,29 +84,22 @@ CPVRChannel::~CPVRChannel()
 
 void CPVRChannel::Serialize(CVariant& value) const
 {
+  // add the properties of the current EPG item before the channel's own, which win on a shared key
+  const std::shared_ptr<const CPVREpgInfoTag> epg = GetEPGNow();
+  if (epg)
+    epg->Serialize(value);
+
   value["channelid"] = m_iChannelId;
   value["channeltype"] = m_bIsRadio ? "radio" : "tv";
   value["hidden"] = m_bIsHidden;
   value["locked"] = m_bIsLocked;
-  value["icon"] = ClientIconPath();
+  value["icon"] = IconPath();
+  value["thumbnail"] = IconPath();
   value["channel"] = m_strChannelName;
-  value["uniqueid"] = m_iUniqueId;
+  value["channeluid"] = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
   value["dateadded"] = m_dateTimeAdded.IsValid() ? m_dateTimeAdded.GetAsDBDate() : "";
-
-  std::shared_ptr<CPVREpgInfoTag> epg = GetEPGNow();
-  if (epg)
-  {
-    // add the properties of the current EPG item to the main object
-    epg->Serialize(value);
-    // and add an extra sub-object with only the current EPG details
-    epg->Serialize(value["broadcastnow"]);
-  }
-
-  epg = GetEPGNext();
-  if (epg)
-    epg->Serialize(value["broadcastnext"]);
 
   value["hasarchive"] = m_bHasArchive;
   value["clientid"] = m_iClientId;

@@ -15,6 +15,7 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 
 class CFileItem;
@@ -41,6 +42,7 @@ enum JSONRPC_STATUS
   BadPermission = -32099,
   NotFound = -32098,
   Unavailable = -32097,
+  AccessDenied = -32096,
   FailedToExecute = -32100
 };
 
@@ -69,12 +71,14 @@ struct JsonRpcStatusDescription
  Every JSONRPC_STATUS that reaches a client as an error appears here exactly once. OK and
  ACK are absent because they produce a result rather than an error.
  */
-inline constexpr std::array<JsonRpcStatusDescription, 9> JSONRPC_STATUS_DESCRIPTIONS{{
+inline constexpr std::array<JsonRpcStatusDescription, 10> JSONRPC_STATUS_DESCRIPTIONS{{
     {ParseError, "ParseError", "Parse error.", "The request could not be parsed as JSON.", false},
     {InvalidRequest, "InvalidRequest", "Invalid request.",
      "The request parsed as JSON but is not a well-formed JSON-RPC 2.0 request object.", false},
     {MethodNotFound, "MethodNotFound", "Method not found.",
-     "The requested method does not exist, or the client lacks the permission to see it.", false},
+     "The requested method does not exist, the client lacks the permission to see it, or it is "
+     "not available over the transport the request arrived on.",
+     false},
     {InvalidParams, "InvalidParams", "Invalid params.",
      "The given parameters do not validate against the schema of the method. The \"data\" member "
      "names the offending parameter and the constraint it failed.",
@@ -82,16 +86,18 @@ inline constexpr std::array<JsonRpcStatusDescription, 9> JSONRPC_STATUS_DESCRIPT
     {InternalError, "InternalError", "Internal error.",
      "The method failed for a reason that no other status describes.", false},
     {FailedToExecute, "FailedToExecute", "Failed to execute method.",
-     "The method was called correctly but the operation it requested did not succeed. Note that "
-     "-32100 sits one code point below the -32099..-32000 range that JSON-RPC 2.0 reserves for "
-     "implementation-defined server errors; this is long-standing and is retained for "
-     "compatibility with existing clients.",
+     "The method was called correctly but the operation it requested did not succeed. Its code "
+     "sits one below the -32099..-32000 range JSON-RPC 2.0 reserves for server errors.",
      false},
     {BadPermission, "BadPermission", "Bad client permission.",
      "The client does not hold every permission the method requires.", false},
     {NotFound, "NotFound", "Not found.", "The requested item does not exist.", false},
     {Unavailable, "Unavailable", "Requested item is unavailable.",
      "The requested item exists but cannot be provided at the moment.", false},
+    {AccessDenied, "AccessDenied", "Access denied.",
+     "What was asked for is locked on this installation: a path outside every source shared for "
+     "remote access, or a setting level the profile's settings lock keeps.",
+     false},
 }};
 
 /*!
@@ -141,16 +147,19 @@ enum OperationPermission
   ControlGUI = 0x200,
   ManageAddon = 0x400,
   ExecuteAddon = 0x800,
-  ControlPVR = 0x1000
+  ControlPVR = 0x1000,
+  WriteSetting = 0x2000
 };
 
 const int OPERATION_PERMISSION_ALL =
     (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData |
-     Navigate | WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
+     Navigate | WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR |
+     WriteSetting);
 
 const int OPERATION_PERMISSION_NOTIFICATION =
     (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate |
-     WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
+     WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR |
+     WriteSetting);
 
 /*!
  \brief Returns a string representation for the
@@ -188,19 +197,24 @@ inline const char* PermissionToString(const OperationPermission& permission)
       return "ExecuteAddon";
     case ControlPVR:
       return "ControlPVR";
+    case WriteSetting:
+      return "WriteSetting";
     default:
       return "Unknown";
     }
   }
 
   /*!
-    \brief Returns a OperationPermission value for the given
+    \brief Returns the OperationPermission value for the given
     string representation
     \param permission String representation of the OperationPermission
-    \return OperationPermission value of the given string representation
+    \return OperationPermission value of the given string representation, or
+    nothing for a string that is not the name of a permission
     */
-  inline OperationPermission StringToPermission(const std::string& permission)
+  inline std::optional<OperationPermission> StringToPermission(const std::string& permission)
   {
+    if (permission.compare("ReadData") == 0)
+      return ReadData;
     if (permission.compare("ControlPlayback") == 0)
       return ControlPlayback;
     if (permission.compare("ControlNotify") == 0)
@@ -225,8 +239,10 @@ inline const char* PermissionToString(const OperationPermission& permission)
       return ExecuteAddon;
     if (permission.compare("ControlPVR") == 0)
       return ControlPVR;
+    if (permission.compare("WriteSetting") == 0)
+      return WriteSetting;
 
-    return ReadData;
+    return std::nullopt;
   }
 
   class CJSONRPCUtils

@@ -125,7 +125,7 @@ void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItem& item)
   else if (item.IsUsablePVRRecording())
   {
     SetSearchFilter(std::make_shared<CPVREpgSearchFilter>(IsRadio()));
-    m_searchfilter->SetSearchPhrase(item.GetPVRRecordingInfoTag()->m_strTitle);
+    m_searchfilter->SetSearchPhrase(item.GetPVRRecordingInfoTag()->ProgrammeTitle());
   }
   else
   {

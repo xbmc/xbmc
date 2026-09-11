@@ -62,12 +62,19 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
 
   if (recording.strRecordingId)
     m_strRecordingId = recording.strRecordingId;
-  if (recording.strTitle)
-    m_strTitle = recording.strTitle;
+  const std::string_view title{recording.strTitle ? recording.strTitle : ""};
+  const std::string_view episodeName{recording.strEpisodeName ? recording.strEpisodeName : ""};
+  if (episodeName.empty())
+  {
+    m_strTitle = title;
+  }
+  else
+  {
+    m_strTitle = episodeName;
+    m_strShowTitle = title;
+  }
   if (recording.strTitleExtraInfo)
     m_titleExtraInfo = recording.strTitleExtraInfo;
-  if (recording.strEpisodeName)
-    m_strShowTitle = recording.strEpisodeName;
   m_iSeason = recording.iSeriesNumber;
   m_iEpisode = recording.iEpisodeNumber;
   m_episodePartNumber = recording.iEpisodePartNumber;
@@ -182,7 +189,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["channel"] = m_strChannelName;
   value["lifetime"] = m_iLifetime;
   value["directory"] = m_strDirectory;
-  value["icon"] = ClientIconPath();
+  value["icon"] = IconPath();
   value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
   value["endtime"] = m_recordingTime.IsValid() ? EndTimeAsUTC().GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
@@ -193,17 +200,17 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["genre"] = m_genre;
   value["parentalrating"] = m_parentalRating;
   value["parentalratingcode"] = m_parentalRatingCode;
-  value["parentalratingicon"] = ClientParentalRatingIconPath();
+  value["parentalratingicon"] = GetParentalRatingIcon();
   value["parentalratingsource"] = m_parentalRatingSource;
   value["episodepart"] = m_episodePartNumber;
   value["titleextrainfo"] = m_titleExtraInfo;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
-  if (!ClientThumbnailPath().empty())
-    value["art"]["thumb"] = ClientThumbnailPath();
-  if (!ClientFanartPath().empty())
-    value["art"]["fanart"] = ClientFanartPath();
+  if (!ThumbnailPath().empty())
+    value["art"]["thumb"] = ThumbnailPath();
+  if (!FanartPath().empty())
+    value["art"]["fanart"] = FanartPath();
 
   value["clientid"] = m_iClientId;
 }
@@ -270,7 +277,7 @@ bool CPVRRecording::Undelete() const
 
 bool CPVRRecording::Rename(std::string_view strNewName)
 {
-  m_strTitle = strNewName;
+  SetProgrammeTitle(strNewName);
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   return client && (client->RenameRecording(*this) == PVR_ERROR_NO_ERROR);
 }
@@ -491,21 +498,42 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
     size_t pos = strTitle.rfind('/');
     strTitle.erase(0, pos + 1);
     strEpisode.erase(0, strShow.size());
-    m_strTitle = strTitle;
+    m_strShowTitle = strTitle;
     pos = strEpisode.find('-');
     strEpisode.erase(0, pos + 2);
-    m_strShowTitle = strEpisode;
+    m_strTitle = strEpisode;
   }
 
   UpdatePath();
 }
 
+const std::string& CPVRRecording::ProgrammeTitle() const
+{
+  return m_strShowTitle.empty() ? m_strTitle : m_strShowTitle;
+}
+
+void CPVRRecording::SetProgrammeTitle(std::string_view title)
+{
+  if (m_strShowTitle.empty())
+    m_strTitle = title;
+  else
+    m_strShowTitle = title;
+}
+
+std::string CPVRRecording::EpisodeName() const
+{
+  return m_strShowTitle.empty() ? std::string{} : m_strTitle;
+}
+
 void CPVRRecording::UpdatePath()
 {
-  m_strFileNameAndPath = CPVRRecordingsPath(m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle,
-                                            m_iSeason, m_iEpisode, GetYear(), m_strShowTitle,
-                                            m_strChannelName, m_recordingTime, m_strRecordingId)
-                             .AsString();
+  // The path is the recording's key into the video database, so it keeps the client's
+  // programme title and episode name.
+  m_strFileNameAndPath =
+      CPVRRecordingsPath(m_bIsDeleted, m_bRadio, m_strDirectory, ProgrammeTitle(), m_iSeason,
+                         m_iEpisode, GetYear(), EpisodeName(), m_strChannelName, m_recordingTime,
+                         m_strRecordingId)
+          .AsString();
 }
 
 const CDateTime& CPVRRecording::RecordingTimeAsLocalTime() const
