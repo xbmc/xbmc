@@ -427,6 +427,17 @@ JSONRPC_STATUS CPlayerOperations::GetAudioDelay(const std::string& method,
   return OK;
 }
 
+JSONRPC_STATUS CPlayerOperations::NotifyAudioChainReady(const std::string& method,
+                                                        ITransportLayer* transport,
+                                                        IClient* client,
+                                                        const CVariant& parameterObject,
+                                                        CVariant& result)
+{
+  auto& components = CServiceBroker::GetAppComponents();
+  components.GetComponent<CApplicationPlayer>()->NotifyAudioChainReady();
+  return ACK;
+}
+
 JSONRPC_STATUS CPlayerOperations::SetAudioDelay(const std::string& method,
                                                 ITransportLayer* transport,
                                                 IClient* client,

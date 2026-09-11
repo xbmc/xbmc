@@ -104,6 +104,9 @@ protected:
   int m_synctype;
   int m_prevsynctype;
 
+  bool m_holdPending{false};
+  double m_holdDelivered{0.0};
+
   bool   m_prevskipped;
   double m_maxspeedadjust;
 
