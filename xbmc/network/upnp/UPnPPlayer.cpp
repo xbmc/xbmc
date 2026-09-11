@@ -71,6 +71,16 @@ public:
     m_resevent.Set();
   }
 
+  void OnSetNextAVTransportURIResult(NPT_Result res,
+                                     PLT_DeviceDataReference& device,
+                                     void* userdata) override
+  {
+    if (NPT_FAILED(res))
+      m_logger->error("OnSetNextAVTransportURIResult failed");
+    m_resstatus = res;
+    m_resevent.Set();
+  }
+
   void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     if (NPT_FAILED(res))
@@ -204,31 +214,28 @@ static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime<>& timeout)
   return NPT_SUCCESS;
 }
 
-int CUPnPPlayer::PlayFile(const CFileItem& file,
-                          const CPlayerOptions& options,
-                          XbmcThreads::EndTime<>& timeout)
+bool CUPnPPlayer::BuildResource(const CFileItem& file, std::string& uri, std::string& metadata)
 {
   CFileItem item(file);
   NPT_Reference<CThumbLoader> thumb_loader;
-  NPT_Reference<PLT_MediaObject> obj;
   NPT_String path(file.GetPath().c_str());
-  NPT_String tmp, resource;
-  EMediaControllerQuirks quirks = EMEDIACONTROLLERQUIRKS_NONE;
-
-  NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
 
   if (VIDEO::IsVideoDb(file))
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
   else if (MUSIC::IsMusicDb(item))
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
-  obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);
+  NPT_Reference<PLT_MediaObject> obj(
+      BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer));
   if (obj.IsNull())
-    goto failed;
+  {
+    m_logger->error("BuildResource({}) failed to describe the item", file.GetPath());
+    return false;
+  }
 
   // One resource is built per local address. Put the ones on the address that routes to the
   // renderer first: connecting a UDP socket sends nothing, it only makes the kernel pick that
-  // address. Scoped so the goto below does not cross the declarations.
+  // address.
   {
     const NPT_HttpUrl& rendererUrl = m_delegate->m_device->GetURLBase();
     NPT_IpAddress rendererAddress;
@@ -254,18 +261,22 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
     }
   }
 
-  NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed_todidl);
-  tmp.Insert(didl_header, 0);
-  tmp.Append(didl_footer);
+  NPT_String didl;
+  if (NPT_FAILED(PLT_Didl::ToDidl(*obj, "", didl)))
+  {
+    m_logger->error("BuildResource({}) failed to serialize item into DIDL-Lite", file.GetPath());
+    return false;
+  }
+  didl.Insert(didl_header, 0);
+  didl.Append(didl_footer);
 
-  quirks = GetMediaControllerQuirks(m_delegate->m_device.AsPointer());
-  if (quirks & EMEDIACONTROLLERQUIRKS_X_MKV)
+  if (GetMediaControllerQuirks(m_delegate->m_device.AsPointer()) & EMEDIACONTROLLERQUIRKS_X_MKV)
   {
     for (NPT_Cardinal i = 0; i < obj->m_Resources.GetItemCount(); i++)
     {
       if (obj->m_Resources[i].m_ProtocolInfo.GetContentType().Compare("video/x-matroska") == 0)
       {
-        m_logger->debug("PlayFile({}): applying video/x-mkv quirk", file.GetPath());
+        m_logger->debug("BuildResource({}): applying video/x-mkv quirk", file.GetPath());
         NPT_String protocolInfo = obj->m_Resources[i].m_ProtocolInfo.ToString();
         protocolInfo.Replace(":video/x-matroska:", ":video/x-mkv:");
         obj->m_Resources[i].m_ProtocolInfo = PLT_ProtocolInfo(protocolInfo);
@@ -285,13 +296,31 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
         sinks.GetItemCount() > 0 && !(*sinks.GetFirstItem()).IsEmpty();
 
     if (advertised || obj->m_Resources.GetItemCount() == 0)
-      goto failed_findbestresource;
+    {
+      m_logger->error("BuildResource({}) failed to find a matching resource", file.GetPath());
+      return false;
+    }
 
     res_index = 0;
-    m_logger->warn("PlayFile({}): {} advertises no protocolInfo, offering '{}' unmatched",
+    m_logger->warn("BuildResource({}): {} advertises no protocolInfo, offering '{}' unmatched",
                    file.GetPath(), m_delegate->m_device->GetFriendlyName().GetChars(),
                    obj->m_Resources[res_index].m_ProtocolInfo.ToString().GetChars());
   }
+
+  uri = obj->m_Resources[res_index].m_Uri.GetChars();
+  metadata = didl.GetChars();
+  return true;
+}
+
+int CUPnPPlayer::PlayFile(const CFileItem& file,
+                          const CPlayerOptions& options,
+                          XbmcThreads::EndTime<>& timeout)
+{
+  std::string uri, metadata;
+
+  NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
+  if (!BuildResource(file, uri, metadata))
+    goto failed;
 
   // get the transport info to evaluate the TransportState to be able to
   // determine whether we first need to call Stop()
@@ -330,8 +359,8 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
 
   timeout.Set(timeout.GetInitialTimeoutValue());
   NPT_CHECK_LABEL_SEVERE(m_control->SetAVTransportURI(m_delegate->m_device, m_delegate->m_instance,
-                                                      obj->m_Resources[res_index].m_Uri,
-                                                      (const char*)tmp, m_delegate.get()),
+                                                      uri.c_str(), metadata.c_str(),
+                                                      m_delegate.get()),
                          failed_setavtransporturi);
   NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout), failed_setavtransporturi);
   NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed_setavtransporturi);
@@ -377,12 +406,6 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   }
 
   return NPT_SUCCESS;
-failed_todidl:
-  m_logger->error("PlayFile({}) failed to serialize item into DIDL-Lite", file.GetPath());
-  return NPT_FAILURE;
-failed_findbestresource:
-  m_logger->error("PlayFile({}) failed to find a matching resource", file.GetPath());
-  return NPT_FAILURE;
 failed_gettransportinfo:
   m_logger->error("PlayFile({}): call to GetTransportInfo failed", file.GetPath());
   return NPT_FAILURE;
@@ -462,29 +485,16 @@ failed:
 
 bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
 {
-  CFileItem item(file);
-  NPT_Reference<CThumbLoader> thumb_loader;
-  NPT_Reference<PLT_MediaObject> obj;
-  NPT_String path(file.GetPath().c_str());
-  NPT_String tmp;
+  std::string uri, metadata;
 
-  if (VIDEO::IsVideoDb(file))
-    thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-  else if (MUSIC::IsMusicDb(item))
-    thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
+  NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
+  if (!BuildResource(file, uri, metadata))
+    goto failed;
 
-  obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);
-  if (!obj.IsNull())
-  {
-    NPT_CHECK_LABEL_SEVERE(PLT_Didl::ToDidl(*obj, "", tmp), failed);
-    tmp.Insert(didl_header, 0);
-    tmp.Append(didl_footer);
-  }
-
-  NPT_CHECK_LABEL_WARNING(
-      m_control->SetNextAVTransportURI(m_delegate->m_device, m_delegate->m_instance,
-                                       file.GetPath().c_str(), (const char*)tmp, m_delegate.get()),
-      failed);
+  NPT_CHECK_LABEL_WARNING(m_control->SetNextAVTransportURI(m_delegate->m_device,
+                                                           m_delegate->m_instance, uri.c_str(),
+                                                           metadata.c_str(), m_delegate.get()),
+                          failed);
   if (!m_delegate->m_resevent.Wait(10000ms))
     goto failed;
   NPT_CHECK_LABEL_WARNING(m_delegate->m_resstatus, failed);
