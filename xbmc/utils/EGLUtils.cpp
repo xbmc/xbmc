@@ -466,7 +466,9 @@ void CEGLContextUtils::SurfaceAttrib(EGLint attribute, EGLint value)
   }
 }
 
-bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow, EGLint HDRcolorSpace /* = EGL_NONE */)
+bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow,
+                                     EGLint HDRcolorSpace /* = EGL_NONE */,
+                                     bool hdrConfig /* = false */)
 {
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
@@ -478,14 +480,11 @@ bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow, EGLint HD
   }
 
   CEGLAttributesVec attribs;
-  EGLConfig config = m_eglConfig;
+  const EGLConfig config = hdrConfig ? m_eglHDRConfig : m_eglConfig;
 
 #ifdef EGL_GL_COLORSPACE
   if (HDRcolorSpace != EGL_NONE)
-  {
     attribs.Add({{EGL_GL_COLORSPACE, HDRcolorSpace}});
-    config = m_eglHDRConfig;
-  }
 #endif
 
   m_eglSurface = eglCreateWindowSurface(m_eglDisplay, config, nativeWindow, attribs.Get());

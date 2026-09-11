@@ -11,6 +11,10 @@
 #include "ServiceBroker.h"
 #include "VideoSyncAndroid.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "windowing/WindowSystemFactory.h"
@@ -196,8 +200,12 @@ std::unique_ptr<CVideoSync> CWinSystemAndroidGLESContext::GetVideoSync(CVideoRef
 
 bool CWinSystemAndroidGLESContext::CreateSurface()
 {
+  // The float config is for a surface the video is drawn into; a GUI surface
+  // over a separate video surface keeps the RGBA8 config.
+  const bool hdrConfig = m_HDRColorSpace != EGL_NONE && !m_videoOnSeparateSurface;
+
   if (!m_pGLContext.CreateSurface(static_cast<EGLNativeWindowType>(m_nativeWindow->GetWindow()),
-                                  m_HDRColorSpace))
+                                  m_HDRColorSpace, hdrConfig))
   {
     if (m_HDRColorSpace != EGL_NONE)
     {
@@ -241,54 +249,90 @@ bool CWinSystemAndroidGLESContext::IsHDRDisplay()
          CWinSystemAndroid::IsHDRDisplay();
 }
 
+bool CWinSystemAndroidGLESContext::SetVideoOutput(const VideoPicture* videoPicture)
+{
+  // The MediaCodec surface renderer posts frames to its own SurfaceView, which
+  // the system compositor blends the GUI surface over; every other renderer
+  // draws the video into the GUI surface.
+  const CMediaCodecVideoBuffer* buffer =
+      videoPicture ? dynamic_cast<CMediaCodecVideoBuffer*>(videoPicture->videoBuffer) : nullptr;
+  m_videoOnSeparateSurface = buffer && !buffer->HasSurfaceTexture();
+  return true;
+}
+
 bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 {
-  if (!CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
-    return false;
+  EGLint colorSpace = EGL_NONE;
 
-  EGLint HDRColorSpace = 0;
-
-#if EGL_EXT_gl_colorspace_bt2020_linear
-  if (m_hasHDRConfig && m_hasEGL_BT2020_PQ_Colorspace_Extension && m_hasEGL_ST2086_Extension)
+#if EGL_EXT_gl_colorspace_bt2020_pq
+  if (videoPicture && m_hasEGL_BT2020_PQ_Colorspace_Extension)
   {
-    HDRColorSpace = EGL_NONE;
-    if (videoPicture && videoPicture->hasDisplayMetadata)
-    {
-      switch (videoPicture->color_space)
-      {
-      case AVCOL_SPC_BT2020_NCL:
-      case AVCOL_SPC_BT2020_CL:
-      case AVCOL_SPC_BT709:
-        HDRColorSpace = EGL_GL_COLORSPACE_BT2020_PQ_EXT;
-        break;
-      default:
-        m_displayMetadata = nullptr;
-        m_lightMetadata = nullptr;
-      }
-    }
-    else
-    {
-      m_displayMetadata = nullptr;
-      m_lightMetadata = nullptr;
-    }
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    const bool hdrDisplay = settings && settings->GetBool(SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
+                            CWinSystemAndroid::IsHDRDisplay();
 
-    if (HDRColorSpace != m_HDRColorSpace)
-    {
-      CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::SetHDR: ColorSpace: {}", HDRColorSpace);
+    // PQ and HLG (see SetGuiCompositing) get a PQ GUI surface; Dolby Vision
+    // too when the display supports it
+    const bool hdr = videoPicture->color_transfer == AVCOL_TRC_SMPTE2084 ||
+                     videoPicture->color_transfer == AVCOL_TRC_ARIB_STD_B67 ||
+                     (videoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION &&
+                      GetDisplayHDRCapabilities().SupportsDolbyVision());
 
-      m_HDRColorSpace = HDRColorSpace;
-      m_displayMetadata =
-          m_HDRColorSpace == EGL_NONE
-              ? nullptr
-              : std::make_unique<AVMasteringDisplayMetadata>(videoPicture->displayMetadata);
-      // TODO: discuss with NVIDIA why this prevent turning HDR display off
-      //m_lightMetadata = !videoPicture || m_HDRColorSpace == EGL_NONE ? nullptr : std::unique_ptr<AVContentLightMetadata>(new AVContentLightMetadata(videoPicture->lightMetadata));
-      m_pGLContext.DestroySurface();
-      CreateSurface();
-      m_pGLContext.BindContext();
-    }
+    // A GUI surface over a separate video surface only declares its colorspace;
+    // the video's mastering metadata reached MediaCodec as KEY_HDR_STATIC_INFO.
+    // A surface the video is drawn into needs the float config and also carries
+    // the SMPTE2086 attributes.
+    const bool supported =
+        m_videoOnSeparateSurface || (m_hasHDRConfig && m_hasEGL_ST2086_Extension);
+
+    if (hdrDisplay && hdr && supported)
+      colorSpace = EGL_GL_COLORSPACE_BT2020_PQ_EXT;
   }
 #endif
 
-  return m_HDRColorSpace == HDRColorSpace;
+  if (colorSpace != m_HDRColorSpace)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::SetHDR: ColorSpace: {}", colorSpace);
+
+    const bool copyMetadata =
+        colorSpace != EGL_NONE && !m_videoOnSeparateSurface && videoPicture->hasDisplayMetadata;
+
+    m_HDRColorSpace = colorSpace;
+    m_displayMetadata =
+        copyMetadata ? std::make_unique<AVMasteringDisplayMetadata>(videoPicture->displayMetadata)
+                     : nullptr;
+    //! @todo Light metadata is not passed: with the CTA861.3 attributes set,
+    //! NVIDIA devices did not turn HDR off again.
+    m_pGLContext.DestroySurface();
+    CreateSurface();
+    m_pGLContext.BindContext();
+  }
+
+  return m_HDRColorSpace != EGL_NONE;
+}
+
+bool CWinSystemAndroidGLESContext::SetGuiCompositing(int colorTransfer)
+{
+  //! @todo The EGL headers define no HLG colorspace, so SetHDR declares the GUI
+  //! surface PQ for HLG video too; composite the GUI to PQ to match it.
+  if (colorTransfer == AVCOL_TRC_ARIB_STD_B67)
+    colorTransfer = AVCOL_TRC_SMPTE2084;
+
+  return m_guiComposite.Enable(colorTransfer, UseLimitedColor());
+}
+
+bool CWinSystemAndroidGLESContext::BeginGuiComposite(bool guiWillRender)
+{
+  return m_guiComposite.Begin(guiWillRender, m_nWidth, m_nHeight,
+                              GetEnabledFrontToBackRendering());
+}
+
+void CWinSystemAndroidGLESContext::EndGuiComposite()
+{
+  m_guiComposite.End(m_videoOnSeparateSurface);
+}
+
+void CWinSystemAndroidGLESContext::CompositeGui()
+{
+  m_guiComposite.Composite(m_videoOnSeparateSurface, GetGUIElementCount());
 }
