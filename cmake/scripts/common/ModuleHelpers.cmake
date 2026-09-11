@@ -1013,6 +1013,15 @@ function(create_module_dev_env)
     string(TOLOWER "${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}" _lower_hostarch)
     string(TOLOWER "${CMAKE_GENERATOR_PLATFORM}" _lower_targetarch)
 
+    # Only the Visual Studio generator sets the two above. Under Ninja, ARCH comes
+    # from ArchSetup and the host from the machine, so vcvarsall still gets an arch.
+    if(NOT _lower_hostarch)
+      string(TOLOWER "${CMAKE_HOST_SYSTEM_PROCESSOR}" _lower_hostarch)
+    endif()
+    if(NOT _lower_targetarch)
+      string(TOLOWER "${ARCH}" _lower_targetarch)
+    endif()
+
     if("${_lower_hostarch}" STREQUAL "x64")
       set(_lower_hostarch amd64)
     endif()
