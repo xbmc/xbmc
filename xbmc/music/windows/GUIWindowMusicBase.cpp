@@ -19,6 +19,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/Scraper.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -283,20 +284,18 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 
 void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
+  ADDON::ContentType content{ADDON::ContentType::NONE};
   if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
-  {
-    if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-      return;
-
-    CMusicLibraryQueue::GetInstance().StartAlbumScan(strPath, refresh);
-  }
+    content = ADDON::ContentType::ALBUMS;
   else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
-  {
-    if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-      return;
+    content = ADDON::ContentType::ARTISTS;
+  else
+    return;
 
-    CMusicLibraryQueue::GetInstance().StartArtistScan(strPath, refresh);
-  }
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
+    return;
+
+  CMusicLibraryQueue::GetInstance().StartScan(content, strPath, refresh);
 }
 
 void CGUIWindowMusicBase::OnItemInfo(int iItem)
