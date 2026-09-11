@@ -23,7 +23,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/Event.h"
 #include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoThumbLoader.h"
@@ -120,12 +119,21 @@ public:
 
   void UpdatePositionInfo()
   {
-    if (m_postime == 0 || m_postime > CTimeUtils::GetFrameTime())
-      return;
+    {
+      std::unique_lock lock(m_section);
+      if (m_pollOutstanding || !m_nextPoll.IsTimePast())
+        return;
+      // Set before sending, because the reply that clears it can arrive before these return.
+      m_pollOutstanding = true;
+    }
 
     m_control->GetTransportInfo(m_device, m_instance, this);
-    m_control->GetPositionInfo(m_device, m_instance, this);
-    m_postime = 0;
+    if (NPT_FAILED(m_control->GetPositionInfo(m_device, m_instance, this)))
+    {
+      std::unique_lock lock(m_section);
+      m_pollOutstanding = false;
+      m_nextPoll.Set(500ms);
+    }
   }
 
   void OnGetPositionInfoResult(NPT_Result res,
@@ -142,7 +150,8 @@ public:
     }
     else
       m_posinfo = *info;
-    m_postime = CTimeUtils::GetFrameTime() + 500;
+    m_pollOutstanding = false;
+    m_nextPoll.Set(500ms);
     m_posevnt.Set();
   }
 
@@ -157,8 +166,6 @@ public:
   NPT_Result m_resstatus;
   CEvent m_resevent;
 
-  unsigned int m_postime = 0;
-
   CEvent m_posevnt;
   PLT_PositionInfo m_posinfo;
 
@@ -167,6 +174,9 @@ public:
 
 private:
   mutable CCriticalSection m_section;
+  // Polling starts with the first position reply, which OpenFile asks for.
+  bool m_pollOutstanding = true;
+  XbmcThreads::EndTime<> m_nextPoll;
   Logger m_logger;
 };
 
