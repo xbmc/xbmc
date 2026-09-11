@@ -8,13 +8,12 @@
 
 #include "SpeechRecognitionDarwin.h"
 
-#include "LangInfo.h"
+#include "language/Language.h"
 #include "speech/ISpeechRecognitionListener.h"
 #include "speech/SpeechRecognitionErrors.h"
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
 
-#include <algorithm>
 #include <mutex>
 #include <vector>
 
@@ -46,8 +45,7 @@ API_UNAVAILABLE(tvos) @interface SpeechRecognitionImpl : NSObject<SFSpeechRecogn
   self.owner = owner;
 
   // Get current Kodi GUI locale and use it for speech recognition.
-  std::string kodiLocale = g_langInfo.GetLocale().ToShortString();
-  std::replace(kodiLocale.begin(), kodiLocale.end(), '_', '-');
+  const std::string kodiLocale = KODI::LANGUAGE::CLanguage::GetInstance().UI().ToString();
   NSString* locale = @(kodiLocale.c_str());
 
   self.speechRecognizer =

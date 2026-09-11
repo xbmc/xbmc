@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 #include "utils/StreamDetails.h"
 #include "utils/Variant.h"
 
@@ -17,7 +17,7 @@
 
 #include <gtest/gtest.h>
 
-using KODI::UTILS::CLanguageTag;
+using KODI::LANGUAGE::CLanguageTag;
 
 TEST(TestStreamDetails, General)
 {
@@ -32,15 +32,15 @@ TEST(TestStreamDetails, General)
   video->m_iDuration = 30;
   video->m_strCodec = "h264";
   video->m_strStereoMode = "left_right";
-  video->m_strLanguage = "eng";
+  video->m_language = CLanguageTag::Parse("eng");
   video->SetSource(CStreamDetail::MEDIA);
 
   audio->m_iChannels = 2;
   audio->m_strCodec = "aac";
-  audio->m_strLanguage = "eng";
+  audio->m_language = CLanguageTag::Parse("eng");
   audio->SetSource(CStreamDetail::MEDIA);
 
-  subtitle->m_strLanguage = "eng";
+  subtitle->m_language = CLanguageTag::Parse("eng");
   subtitle->SetSource(CStreamDetail::MEDIA);
 
   a.AddStream(video);
@@ -89,7 +89,7 @@ std::string BestAudioCodecOf(const std::vector<std::pair<std::string, int>>& cod
     auto* audio = new CStreamDetailAudio();
     audio->m_strCodec = codec;
     audio->m_iChannels = channels;
-    audio->m_strLanguage = "eng";
+    audio->m_language = CLanguageTag::Parse("eng");
     audio->SetSource(CStreamDetail::MEDIA);
     details.AddStream(audio);
   }
@@ -106,7 +106,7 @@ int BestAudioChannelsOf(const std::vector<std::pair<std::string, int>>& codecsAn
     auto* audio = new CStreamDetailAudio();
     audio->m_strCodec = codec;
     audio->m_iChannels = channels;
-    audio->m_strLanguage = "eng";
+    audio->m_language = CLanguageTag::Parse("eng");
     audio->SetSource(CStreamDetail::MEDIA);
     details.AddStream(audio);
   }
@@ -373,19 +373,19 @@ CStreamDetails MakeTypicalStreamDetails(CStreamDetail::Source videoSrc,
   video->m_fAspect = 1.78f;
   video->m_iDuration = 5400;
   video->m_strStereoMode = "left_right";
-  video->m_strLanguage = "eng";
+  video->m_language = CLanguageTag::Parse("eng");
   video->SetSource(videoSrc);
   details.AddStream(video);
 
   auto* audio = new CStreamDetailAudio();
   audio->m_strCodec = "aac";
-  audio->m_strLanguage = "eng";
+  audio->m_language = CLanguageTag::Parse("eng");
   audio->m_iChannels = 6;
   audio->SetSource(audioSrc);
   details.AddStream(audio);
 
   auto* subtitle = new CStreamDetailSubtitle();
-  subtitle->m_strLanguage = "eng";
+  subtitle->m_language = CLanguageTag::Parse("eng");
   subtitle->SetSource(subtitleSrc);
   details.AddStream(subtitle);
 
@@ -495,19 +495,19 @@ TEST(TestStreamDetails, Equality_DifferentContentSameSource)
   video->m_fAspect = 1.78f;
   video->m_iDuration = 5400;
   video->m_strStereoMode = "left_right";
-  video->m_strLanguage = "eng";
+  video->m_language = CLanguageTag::Parse("eng");
   video->SetSource(CStreamDetail::MEDIA);
   b.AddStream(video);
 
   auto* audio = new CStreamDetailAudio();
   audio->m_strCodec = "aac";
-  audio->m_strLanguage = "eng";
+  audio->m_language = CLanguageTag::Parse("eng");
   audio->m_iChannels = 6;
   audio->SetSource(CStreamDetail::MEDIA);
   b.AddStream(audio);
 
   auto* subtitle = new CStreamDetailSubtitle();
-  subtitle->m_strLanguage = "eng";
+  subtitle->m_language = CLanguageTag::Parse("eng");
   subtitle->SetSource(CStreamDetail::MEDIA);
   b.AddStream(subtitle);
 
@@ -666,7 +666,7 @@ TEST(TestStreamDetails, Source_SurvivesCopyAssignment)
   EXPECT_EQ(CStreamDetail::STREAM_DETAILS_VERSION, videoCopy.GetVersion());
 
   CStreamDetailSubtitle subtitle;
-  subtitle.m_strLanguage = "eng";
+  subtitle.m_language = CLanguageTag::Parse("eng");
   subtitle.SetSource(CStreamDetail::EXTERNAL);
 
   CStreamDetailSubtitle subtitleCopy;
@@ -688,14 +688,14 @@ CStreamDetails MakeStreamDetailsWithLanguages(const std::vector<std::string>& au
     auto* audio = new CStreamDetailAudio();
     audio->m_strCodec = "dtshd_ma";
     audio->m_iChannels = 6;
-    audio->m_strLanguage = language;
+    audio->m_language = CLanguageTag::Parse(language);
     audio->SetSource(CStreamDetail::MEDIA);
     details.AddStream(audio);
   }
   for (const auto& language : subtitleLanguages)
   {
     auto* subtitle = new CStreamDetailSubtitle();
-    subtitle->m_strLanguage = language;
+    subtitle->m_language = CLanguageTag::Parse(language);
     subtitle->SetSource(CStreamDetail::MEDIA);
     details.AddStream(subtitle);
   }
@@ -709,24 +709,24 @@ TEST(TestStreamDetails, FirstLanguage_IsTheFirstStreamNotTheBestMatch)
   // Two bluray playlists of the same movie differing only in which stream they start on must
   // report different default languages, whatever the user's language preferences make "best".
   const CStreamDetails all{MakeStreamDetailsWithLanguages({"eng", "jpn"}, {"eng", "fra", "jpn"})};
-  EXPECT_EQ("eng", all.GetFirstAudioLanguage());
-  EXPECT_EQ("eng", all.GetFirstSubtitleLanguage());
+  EXPECT_EQ("eng", all.GetFirstAudioLanguage().AsIso6392B());
+  EXPECT_EQ("eng", all.GetFirstSubtitleLanguage().AsIso6392B());
 
   const CStreamDetails japanese{MakeStreamDetailsWithLanguages({"jpn", "eng"}, {"jpn", "eng"})};
-  EXPECT_EQ("jpn", japanese.GetFirstAudioLanguage());
-  EXPECT_EQ("jpn", japanese.GetFirstSubtitleLanguage());
+  EXPECT_EQ("jpn", japanese.GetFirstAudioLanguage().AsIso6392B());
+  EXPECT_EQ("jpn", japanese.GetFirstSubtitleLanguage().AsIso6392B());
 }
 
 TEST(TestStreamDetails, FirstLanguage_EmptyWhenThereIsNoSuchStream)
 {
   const CStreamDetails none{MakeStreamDetailsWithLanguages({}, {})};
-  EXPECT_EQ("", none.GetFirstAudioLanguage());
-  EXPECT_EQ("", none.GetFirstSubtitleLanguage());
+  EXPECT_EQ("", none.GetFirstAudioLanguage().AsIso6392B());
+  EXPECT_EQ("", none.GetFirstSubtitleLanguage().AsIso6392B());
 
   // A playlist can offer audio without subtitles
   const CStreamDetails audioOnly{MakeStreamDetailsWithLanguages({"eng"}, {})};
-  EXPECT_EQ("eng", audioOnly.GetFirstAudioLanguage());
-  EXPECT_EQ("", audioOnly.GetFirstSubtitleLanguage());
+  EXPECT_EQ("eng", audioOnly.GetFirstAudioLanguage().AsIso6392B());
+  EXPECT_EQ("", audioOnly.GetFirstSubtitleLanguage().AsIso6392B());
 }
 
 TEST(TestStreamDetails, FirstLanguage_UnknownLanguageIsReportedAsEmpty)
@@ -734,8 +734,8 @@ TEST(TestStreamDetails, FirstLanguage_UnknownLanguageIsReportedAsEmpty)
   // A stream number table need not name a language, and an empty language must be passed
   // through rather than falling back to another stream.
   const CStreamDetails details{MakeStreamDetailsWithLanguages({"", "eng"}, {"", "eng"})};
-  EXPECT_EQ("", details.GetFirstAudioLanguage());
-  EXPECT_EQ("", details.GetFirstSubtitleLanguage());
+  EXPECT_EQ("", details.GetFirstAudioLanguage().AsIso6392B());
+  EXPECT_EQ("", details.GetFirstSubtitleLanguage().AsIso6392B());
 }
 
 namespace
@@ -749,7 +749,7 @@ CStreamDetails MakeAudioStreams(
   for (const auto& [language, codec, channels] : langsCodecsAndChannels)
   {
     auto* audio = new CStreamDetailAudio();
-    audio->m_strLanguage = language;
+    audio->m_language = CLanguageTag::Parse(language);
     audio->m_strCodec = codec;
     audio->m_iChannels = channels;
     audio->SetSource(CStreamDetail::MEDIA);
@@ -767,11 +767,13 @@ TEST(TestStreamDetails, PreferredAudio_BestStreamInThePreferredLanguage)
   const CStreamDetails details{
       MakeAudioStreams({{"ger", "truehd", 8}, {"eng", "ac3", 6}, {"eng", "dtshd_ma", 6}})};
 
-  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng")));
+  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(
+                            details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng"))));
 
-  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("ger"));
-  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("ger")));
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("ger")));
+  EXPECT_EQ("truehd", details.GetAudioCodec(
+                          details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("ger"))));
 }
 
 TEST(TestStreamDetails, PreferredAudio_IndexCountsAllAudioStreams)
@@ -781,8 +783,11 @@ TEST(TestStreamDetails, PreferredAudio_IndexCountsAllAudioStreams)
   const CStreamDetails details{
       MakeAudioStreams({{"fra", "ac3", 6}, {"jpn", "ac3", 6}, {"eng", "ac3", 6}})};
 
-  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("eng", details.GetAudioLanguage(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(3, details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng")));
+  EXPECT_EQ(
+      "eng",
+      details.GetAudioLanguage(details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng")))
+          .AsIso6392B());
 }
 
 TEST(TestStreamDetails, PreferredAudio_LanguageIsMatchedAcrossISO639Forms)
@@ -791,8 +796,8 @@ TEST(TestStreamDetails, PreferredAudio_LanguageIsMatchedAcrossISO639Forms)
   // the two must be compared rather than string matched.
   const CStreamDetails details{MakeAudioStreams({{"ger", "ac3", 6}, {"en", "truehd", 6}})};
 
-  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex("deu"));
+  EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng")));
+  EXPECT_EQ(1, details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("deu")));
 }
 
 TEST(TestStreamDetails, PreferredAudio_FallsBackToTheBestStream)
@@ -801,19 +806,21 @@ TEST(TestStreamDetails, PreferredAudio_FallsBackToTheBestStream)
 
   // Nothing in the preferred language, so there is no better answer than the best listen the
   // file has to offer, which index 0 is.
-  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng")));
+  EXPECT_EQ("truehd", details.GetAudioCodec(
+                          details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng"))));
 
   // As when the preference cannot be expressed as a language at all
-  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(""));
-  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("")));
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(CLanguageTag{}));
+  EXPECT_EQ("truehd", details.GetAudioCodec(details.GetPreferredAudioStreamIndex(CLanguageTag{})));
 }
 
 TEST(TestStreamDetails, PreferredAudio_NoAudioStreams)
 {
   const CStreamDetails details{MakeAudioStreams({})};
-  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex("eng"));
-  EXPECT_EQ("", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ(0, details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng")));
+  EXPECT_EQ(
+      "", details.GetAudioCodec(details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng"))));
 }
 
 TEST(TestStreamDetails, FirstAudio_CodecAndChannelsComeFromTheFirstStream)
@@ -824,7 +831,7 @@ TEST(TestStreamDetails, FirstAudio_CodecAndChannelsComeFromTheFirstStream)
   const CStreamDetails details{
       MakeAudioStreams({{"jpn", "ac3", 2}, {"ger", "truehd", 8}, {"eng", "dtshd_ma", 6}})};
 
-  EXPECT_EQ("jpn", details.GetFirstAudioLanguage());
+  EXPECT_EQ("jpn", details.GetFirstAudioLanguage().AsIso6392B());
   EXPECT_EQ("ac3", details.GetFirstAudioCodec());
   EXPECT_EQ(2, details.GetFirstAudioChannels());
 
@@ -833,8 +840,10 @@ TEST(TestStreamDetails, FirstAudio_CodecAndChannelsComeFromTheFirstStream)
   EXPECT_EQ(8, details.GetAudioChannels());
 
   // nor the stream the user's language preference would pick
-  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(details.GetPreferredAudioStreamIndex("eng")));
-  EXPECT_EQ(6, details.GetAudioChannels(details.GetPreferredAudioStreamIndex("eng")));
+  EXPECT_EQ("dtshd_ma", details.GetAudioCodec(
+                            details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng"))));
+  EXPECT_EQ(6, details.GetAudioChannels(
+                   details.GetPreferredAudioStreamIndex(CLanguageTag::Parse("eng"))));
 }
 
 TEST(TestStreamDetails, FirstAudio_CodecAndChannelsWhenThereIsNoSuchStream)
@@ -851,7 +860,7 @@ TEST(TestStreamDetails, FirstAudio_UnknownCodecAndChannelsArePassedThrough)
   // A stream number table need not describe the stream fully, and the gap must be passed through
   // rather than falling back to another stream.
   const CStreamDetails details{MakeAudioStreams({{"", "", 0}, {"eng", "truehd", 8}})};
-  EXPECT_EQ("", details.GetFirstAudioLanguage());
+  EXPECT_EQ("", details.GetFirstAudioLanguage().AsIso6392B());
   EXPECT_EQ("", details.GetFirstAudioCodec());
   EXPECT_EQ(0, details.GetFirstAudioChannels());
 }
@@ -998,8 +1007,6 @@ TEST(TestStreamDetails, StreamFlagNames_ReportedAlphabetically)
   EXPECT_EQ(std::vector<std::string>({"comment", "hearingimpaired", "webvttdatapackets"}), all);
 }
 
-// The classes store ISO 639-2/B, because the streamdetails table is filtered by smart playlist
-// SQL, but JSON-RPC is served BCP 47. Serialize is where that widening happens.
 TEST(TestStreamDetails, SerializeWidensLanguageToBcp47)
 {
   CStreamDetailAudio audio;
@@ -1009,26 +1016,48 @@ TEST(TestStreamDetails, SerializeWidensLanguageToBcp47)
   CVariant value;
 
   // BCP 47 prefers the alpha-2 code where the language has one
-  audio.m_strLanguage = "eng";
+  audio.m_language = CLanguageTag::Parse("eng");
   audio.Serialize(value);
   EXPECT_EQ(value["language"].asString(), "en");
 
   // A language whose B and T forms differ still resolves to its alpha-2
-  audio.m_strLanguage = "chi";
+  audio.m_language = CLanguageTag::Parse("chi");
   audio.Serialize(value);
   EXPECT_EQ(value["language"].asString(), "zh");
 
   // One with no alpha-2 keeps its three letter form, so length cannot tell the notations apart
-  subtitle.m_strLanguage = "ady";
+  subtitle.m_language = CLanguageTag::Parse("ady");
   subtitle.Serialize(value);
   EXPECT_EQ(value["language"].asString(), "ady");
 
   // Anything the standards do not know is passed through rather than dropped
-  video.m_strLanguage = "not a language";
+  video.m_language = CLanguageTag::Parse("not a language");
   video.Serialize(value);
   EXPECT_EQ(value["language"].asString(), "not a language");
 
-  subtitle.m_strLanguage = "";
+  subtitle.m_language = CLanguageTag::Parse("");
   subtitle.Serialize(value);
   EXPECT_EQ(value["language"].asString(), "");
+}
+
+TEST(TestStreamDetails, KeepsSubtagsAndNarrowsOnlyWhereTheyCannotBeHeld)
+{
+  CStreamDetailAudio audio;
+  audio.m_language = CLanguageTag::Parse("en-AU");
+
+  CVariant value;
+  audio.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "en-AU");
+  EXPECT_EQ(audio.m_language.AsIso6392B(), "eng"); // as the column and the archive take it
+
+  CStreamDetailSubtitle subtitle;
+  subtitle.m_language = CLanguageTag::Parse("zh-Hant-HK");
+  subtitle.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "zh-Hant-HK");
+  EXPECT_EQ(subtitle.m_language.AsIso6392B(), "chi");
+
+  CStreamDetailAudio persisted;
+  persisted.m_language = CLanguageTag::Parse(audio.m_language.AsIso6392B());
+  persisted.Serialize(value);
+  EXPECT_EQ(value["language"].asString(), "en");
 }

@@ -2197,13 +2197,10 @@ std::optional<StreamFlags> ExternalStreamFlagFromToken(std::string_view token)
  * \param[in] token One token of the filename.
  * \return The language, or nullopt where the token states none.
  */
-std::optional<KODI::UTILS::CLanguageTag> ExternalStreamLanguageFromToken(const std::string& token)
+std::optional<KODI::LANGUAGE::CLanguageTag> ExternalStreamLanguageFromToken(
+    const std::string& token)
 {
-  // _ stands in for the BCP 47 subtag separator, since - separates the filename's own tokens
-  std::string langCode{token};
-  std::ranges::replace(langCode, '_', '-');
-
-  return KODI::UTILS::CLanguageTag::TryParse(langCode);
+  return KODI::LANGUAGE::CLanguageTag::TryParse(token);
 }
 } // namespace
 
@@ -2241,6 +2238,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
 
     // The tokens are read from the end of the filename towards the front, so of several languages
     // the one nearest the extension is the stream's and the rest belong to its name
+    bool languageFound{false};
     for (auto it = tokens.rbegin(); it != tokens.rend(); ++it)
     {
       if (const auto flag = ExternalStreamFlagFromToken(*it); flag.has_value())
@@ -2249,11 +2247,12 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
         continue;
       }
 
-      if (info.language.IsEmpty())
+      if (!languageFound)
       {
         if (const auto tag = ExternalStreamLanguageFromToken(*it); tag.has_value())
         {
           info.language = *tag;
+          languageFound = true;
           continue;
         }
       }
@@ -2269,7 +2268,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
     info.flag = StreamFlags::FLAG_NONE;
 
   CLog::Log(LOGDEBUG, "{} - Language = '{}' / Name = '{}' / Flag = '{}' from {}", __FUNCTION__,
-            info.language.AsBcp47(), info.name, info.flag, CURL::GetRedacted(associatedFile));
+            info.language.ToString(), info.name, info.flag, CURL::GetRedacted(associatedFile));
 
   return info;
 }

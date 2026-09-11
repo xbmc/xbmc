@@ -575,7 +575,8 @@ namespace XBMCAddon
       /// Get the language of the current subtitle stream.
       ///
       /// @return                    BCP 47 language tag of the stream, e.g. **en** or **en-AU**,
-      ///                            or the stream name when it declares no language
+      ///                            or the stream name where it declares no language or one that
+      ///                            names none
       ///
       /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///
@@ -591,7 +592,8 @@ namespace XBMCAddon
       /// Get the languages of the available subtitle streams.
       ///
       /// @return                    List of BCP 47 language tags, e.g. **en** or **en-AU**; a
-      ///                            stream that declares no language is listed by its name
+      ///                            stream declaring no language, or one that names none, is
+      ///                            listed by its name
       ///
       /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///
@@ -748,7 +750,8 @@ namespace XBMCAddon
       /// Get the languages of the available audio streams.
       ///
       /// @return                    List of BCP 47 language tags, e.g. **en** or **en-AU**; a
-      ///                            stream that declares no language is listed by its name
+      ///                            stream declaring no language, or one that names none, is
+      ///                            listed by its name
       ///
       /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///
@@ -787,7 +790,8 @@ namespace XBMCAddon
       /// Get the languages of the available video streams.
       ///
       /// @return                    List of BCP 47 language tags, e.g. **en** or **en-AU**; a
-      ///                            stream that declares no language is listed by its name
+      ///                            stream declaring no language, or one that names none, is
+      ///                            listed by its name
       ///
       /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///

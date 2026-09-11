@@ -176,6 +176,22 @@ TEST_F(TestAddonInfoBuilder, BinaryDetection_RejectsNonSharedLibrary)
   EXPECT_FALSE(GenerateWithLibrary("default.py")->IsBinary());
 }
 
+TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry_Languages)
+{
+  // Repository content is built from the database, where the languages an addon.xml stated
+  // survive only as extrainfo, so they have to come back as languages from there too
+  CAddonInfoBuilderFromDB builder;
+  builder.SetId("video.blablabla.org");
+  InfoMap extrainfo;
+  extrainfo["language"] = "en_GB de nolanguage";
+  builder.SetExtrainfo(extrainfo);
+
+  const AddonInfoPtr addon = builder.get();
+  ASSERT_EQ(addon->Languages().size(), 2u);
+  EXPECT_EQ(addon->Languages()[0].ToString(), "en-GB");
+  EXPECT_EQ(addon->Languages()[1].ToString(), "de");
+}
+
 TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
 {
   CAddonInfoBuilderFromDB builder;

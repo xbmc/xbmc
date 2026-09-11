@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "language/LanguageTag.h"
 #include "utils/Artwork.h"
 
 #include <cstdint>
@@ -104,6 +105,7 @@ public:
   virtual std::string OriginName() const = 0;
   virtual uint64_t PackageSize() const = 0;
   virtual const InfoMap& ExtraInfo() const = 0;
+  virtual const std::vector<KODI::LANGUAGE::CLanguageTag>& Languages() const = 0;
   virtual bool SupportsMultipleInstances() const = 0;
   virtual AddonInstanceSupport InstanceUseType() const = 0;
   virtual std::vector<AddonInstanceId> GetKnownInstanceIds() const = 0;

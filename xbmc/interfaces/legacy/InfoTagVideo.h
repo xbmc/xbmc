@@ -1472,7 +1472,7 @@ namespace XBMCAddon
       /// \brief \python_func{ getOriginalLanguage() }
       /// To retrieve the original language of the video.
       ///
-      /// \return [string] Original language ISO 639-2/B code
+      /// \return [string] Original language as a BCP 47 language tag: e.g. en, en-GB, pt-BR
       ///
       ///
       ///-----------------------------------------------------------------------

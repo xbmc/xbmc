@@ -9,7 +9,6 @@
 #include "guilib/guiinfo/VideoGUIInfo.h"
 
 #include "FileItem.h"
-#include "LangInfo.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -27,6 +26,7 @@
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/guiinfo/GUIInfoUtils.h"
+#include "language/Language.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "resources/LocalizeStrings.h"
@@ -60,7 +60,10 @@ namespace
  */
 int GetDescribedAudioStreamIndex(const CStreamDetails& details)
 {
-  return details.GetPreferredAudioStreamIndex(g_langInfo.GetPreferredAudioLanguage());
+  // No fallback: a viewer who asked for the media's own first track, or the original-language
+  // one, is not asking for the interface language, and neither choice ranks streams by language
+  return details.GetPreferredAudioStreamIndex(
+      KODI::LANGUAGE::CLanguage::GetInstance().Audio(false));
 }
 } // unnamed namespace
 
@@ -529,17 +532,18 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         break;
       }
       case LISTITEM_AUDIO_LANGUAGE:
-        value = tag->m_streamDetails.GetAudioLanguage(
-            GetDescribedAudioStreamIndex(tag->m_streamDetails));
+        value = tag->m_streamDetails
+                    .GetAudioLanguage(GetDescribedAudioStreamIndex(tag->m_streamDetails))
+                    .ToString();
         return true;
       case LISTITEM_SUBTITLE_LANGUAGE:
-        value = tag->m_streamDetails.GetSubtitleLanguage();
+        value = tag->m_streamDetails.GetSubtitleLanguage().ToString();
         return true;
       case LISTITEM_FIRST_AUDIO_LANGUAGE:
-        value = tag->m_streamDetails.GetFirstAudioLanguage();
+        value = tag->m_streamDetails.GetFirstAudioLanguage().ToString();
         return true;
       case LISTITEM_FIRST_SUBTITLE_LANGUAGE:
-        value = tag->m_streamDetails.GetFirstSubtitleLanguage();
+        value = tag->m_streamDetails.GetFirstSubtitleLanguage().ToString();
         return true;
       case LISTITEM_FIRST_AUDIO_CODEC:
         value = tag->m_streamDetails.GetFirstAudioCodec();
@@ -670,7 +674,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       value = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
       return true;
     case VIDEOPLAYER_SUBTITLES_LANG:
-      value = m_subtitleInfo.language.AsIso6392B();
+      // The tag itself. The Ex sibling below is the same language named for a reader
+      value = m_subtitleInfo.language.ToString();
       return true;
     case VIDEOPLAYER_SUBTITLE_CODEC:
       value = m_subtitleInfo.codecName;
@@ -755,7 +760,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       break;
     }
     case VIDEOPLAYER_AUDIO_LANG:
-      value = m_audioInfo.language.AsIso6392B();
+      // The tag itself. The Ex sibling below is the same language named for a reader
+      value = m_audioInfo.language.ToString();
       return true;
     case VIDEOPLAYER_AUDIO_LANG_EX:
     {

@@ -6,12 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "language/Language.h"
+#include "language/LanguageTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
-#include "utils/LanguageTag.h"
 #include "utils/SortUtils.h"
 #include "utils/StreamDetails.h"
 #include "utils/Variant.h"
@@ -24,7 +24,7 @@
 
 #include <gtest/gtest.h>
 
-using KODI::UTILS::CLanguageTag;
+using KODI::LANGUAGE::CLanguageTag;
 
 TEST(TestVideoInfoTag, ReadTVShowSeasons)
 {
@@ -95,6 +95,32 @@ TEST(TestVideoInfoTag, ReadStreamDetailFlags)
 
   // An empty <flags> block is a positive statement that the stream has no flags.
   EXPECT_EQ(StreamFlags::FLAG_NONE, streams.GetSubtitleFlags(3));
+}
+
+TEST(TestVideoInfoTag, ReadStreamDetailLanguageThatNamesNone)
+{
+  const std::string document =
+      R"(<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+         <movie>
+         <fileinfo>
+         <streamdetails>
+         <audio><codec>dts</codec><language> High Valyrian </language><channels>6</channels></audio>
+         <subtitle><language>HIGH VALYRIAN</language></subtitle>
+         </streamdetails>
+         </fileinfo>
+         </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  // Kept as written so the NFO round-trips, but in the form the streamdetails table holds and
+  // smart playlist rules compare against: trimmed and lower case
+  const CStreamDetails& streams = details.m_streamDetails;
+  EXPECT_EQ(streams.GetAudioLanguage(1).AsIso6392B(), "high valyrian");
+  EXPECT_EQ(streams.GetSubtitleLanguage(1).AsIso6392B(), "high valyrian");
 }
 
 TEST(TestVideoInfoTag, WriteStreamDetailFlags)
@@ -264,21 +290,22 @@ protected:
   {
     m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
-    m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false).AsBcp47();
+    m_audioLanguageOriginal =
+        KODI::LANGUAGE::CLanguage::GetInstance().AudioPreference().GetLanguage().ToString();
   }
 
   void TearDown() override
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE, m_settingOriginal);
-    g_langInfo.SetAudioLanguage(m_audioLanguageOriginal);
+    KODI::LANGUAGE::CLanguage::GetInstance().SetAudio(m_audioLanguageOriginal);
   }
 
   static void PreferLanguage(const std::string& language)
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE, language);
-    g_langInfo.SetAudioLanguage(language);
+    KODI::LANGUAGE::CLanguage::GetInstance().SetAudio(language);
   }
 
   // A German TrueHD 7.1 track that outranks an English AC3 5.1 one on quality alone
@@ -289,7 +316,7 @@ protected:
          {std::tuple{"ger", "truehd", 8}, std::tuple{"eng", "ac3", 6}})
     {
       auto* audio = new CStreamDetailAudio();
-      audio->m_strLanguage = language;
+      audio->m_language = CLanguageTag::Parse(language);
       audio->m_strCodec = codec;
       audio->m_iChannels = channels;
       audio->SetSource(CStreamDetail::MEDIA);
@@ -307,7 +334,7 @@ TEST_F(AudioSortKeyTester, OrdersByThePreferredLanguageStream)
 {
   const CVideoInfoTag tag{MakeTagWithTwoAudioStreams()};
 
-  // The technically best stream is the German one, so that is what the sort key used to be
+  // The technically best stream is the German one, which the sort key must not follow
   ASSERT_EQ("truehd", tag.m_streamDetails.GetAudioCodec());
 
   PreferLanguage("eng");
@@ -320,7 +347,7 @@ TEST_F(AudioSortKeyTester, OrdersByThePreferredLanguageStream)
   EXPECT_EQ(6, sortable[Field::AUDIO_CHANNELS].asInteger());
 
   tag.ToSortable(sortable, Field::AUDIO_LANGUAGE);
-  EXPECT_EQ("eng", sortable[Field::AUDIO_LANGUAGE].asString());
+  EXPECT_EQ("en", sortable[Field::AUDIO_LANGUAGE].asString());
 }
 
 TEST_F(AudioSortKeyTester, FallsBackToTheBestStreamWithoutALanguagePreference)

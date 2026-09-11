@@ -11,15 +11,16 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "IVideoPlayer.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/SpecialProtocol.h"
+#include "language/LangInfo.h"
+#include "language/Language.h"
+#include "language/LanguageTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Geometry.h"
-#include "utils/LanguageTag.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
@@ -1366,16 +1367,16 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
   bd_set_player_setting(m_bd, BLURAY_PLAYER_SETTING_PLAYER_PROFILE, BLURAY_PLAYER_PROFILE_5_v2_4);
 #endif
 
-  const std::string audioLang{g_langInfo.GetDVDAudioLanguage().AsIso6392T()};
+  const std::string audioLang{KODI::LANGUAGE::CLanguage::GetInstance().Audio().AsIso6392T()};
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_AUDIO_LANG, audioLang.c_str());
 
-  const std::string subtitleLang{g_langInfo.GetDVDSubtitleLanguage().AsIso6392T()};
+  const std::string subtitleLang{KODI::LANGUAGE::CLanguage::GetInstance().Subtitle().AsIso6392T()};
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_PG_LANG, subtitleLang.c_str());
 
-  const std::string menuLang{g_langInfo.GetDVDMenuLanguage().AsIso6392T()};
+  const std::string menuLang{KODI::LANGUAGE::CLanguage::GetInstance().UI().AsIso6392T()};
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, menuLang.c_str());
 
-  const std::string countryCode{g_langInfo.GetRegionCodeAlpha2()};
+  const std::string countryCode{g_langInfo.GetRegionTerritory().AsIso3166_1Alpha2()};
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, countryCode.c_str());
 
 #ifdef HAVE_LIBBLURAY_BDJ

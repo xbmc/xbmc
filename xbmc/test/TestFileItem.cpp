@@ -8,11 +8,11 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "language/LanguageLoader.h"
 #include "media/MediaType.h"
 #include "platform/Filesystem.h"
 #include "resources/LocalizeStrings.h"
@@ -1172,7 +1172,7 @@ protected:
   void SetUp() override
   {
     ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
-        g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+        KODI::LANGUAGE::CLanguageLoader::GetLanguagePath(), "resource.language.en_gb"));
   }
 
   void TearDown() override { CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear(); }

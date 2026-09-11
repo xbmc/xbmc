@@ -9,11 +9,11 @@
 #include "LibInputKeyboard.h"
 
 #include "EvdevKeyMapping.h"
-#include "LangInfo.h"
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
 #include "XkbCompat.h"
 #include "application/AppInboundProtocol.h"
+#include "language/LangInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Map.h"

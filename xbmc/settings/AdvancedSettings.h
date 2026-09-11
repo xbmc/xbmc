@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LangInfo.h"
+#include "language/Language.h"
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
@@ -309,8 +309,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_disableEpisodeRanges{false};
     bool m_bNoRemoteArtWithLocalScraper{false};
     bool m_ignoreFolderNamesInArchives{true};
-
-    CLangInfo::Tokens m_vecTokens;
 
     int m_iEpgUpdateCheckInterval;  // seconds
     int m_iEpgCleanupInterval;      // seconds

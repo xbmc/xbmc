@@ -25,7 +25,6 @@
 #include "DVDInputStreams/InputStreamPVRBase.h"
 #include "DVDMessage.h"
 #include "FileItem.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -44,6 +43,7 @@
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobQueue.h"
+#include "language/Language.h"
 #include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -75,7 +75,7 @@
 #include <utility>
 
 using namespace KODI;
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 using namespace std::chrono_literals;
 
 //------------------------------------------------------------------------------
@@ -122,22 +122,21 @@ public:
       m_subStream(subStream)
   {
     auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    const std::string subLangSetting =
-        settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-    m_isSubNone = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageNone);
-    m_isPrefOriginal = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageOriginal);
-    m_isPrefForced = StringUtils::EqualsNoCase(subLangSetting, LANGINFO::subLanguageForcedOnly);
+    // Three of the subtitle choices are answered by something other than a language, so they are
+    // asked of the preference itself rather than by reading the setting back
+    const CLanguagePreference& preference{CLanguage::GetInstance().SubtitlePreference()};
+    m_isSubNone = preference.Is(CLanguagePreference::Kind::None);
+    m_isPrefOriginal = preference.Is(CLanguagePreference::Kind::Original);
+    m_isPrefForced = preference.Is(CLanguagePreference::Kind::ForcedOnly);
     m_isPrefHearingImp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
     m_hideSameAudioLang = settings->GetBool(CSettings::SETTING_SUBTITLES_HIDESAMEAUDIOLANGUAGE);
 
-    // Prefer the subtitle language setting; none, original and forced_only name no language, so
-    // fall back to the audio setting, and default, original and mediadefault name none either,
-    // so fall back to the language actually playing
-    m_subLang = g_langInfo.GetSubtitleLanguage(false);
-    if (m_subLang.IsEmpty())
-      m_subLang = g_langInfo.GetAudioLanguage(false);
-    if (m_subLang.IsEmpty())
+    // The subtitle setting, falling back to the audio setting where it names no language. Where
+    // neither does, the language actually playing answers it better than the interface language,
+    // and it is not a setting, so it is supplied here rather than by CLanguage
+    m_subLang = CLanguage::GetInstance().Subtitle(false);
+    if (m_subLang.IsUndetermined())
       m_subLang = m_playedAudioLang;
 
     // Dont allow "forced" setting to be combined with "impaired" setting
@@ -250,13 +249,15 @@ public:
 
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
-                                   LANGINFO::audioLanguageMediaDefault))
+    // Two of the choices are not languages at all: the media's own first track is answered by
+    // ranking nothing, and the original-language track by a stream flag
+    const CLanguagePreference& audioPreference{CLanguage::GetInstance().AudioPreference()};
+
+    if (!audioPreference.Is(CLanguagePreference::Kind::MediaDefault))
     {
-      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE),
-                                     LANGINFO::audioLanguageOriginal))
+      if (!audioPreference.Is(CLanguagePreference::Kind::Original))
       {
-        const CLanguageTag& audioLanguage{g_langInfo.GetAudioLanguage(true)};
+        const CLanguageTag audioLanguage{CLanguage::GetInstance().Audio()};
         PREDICATE_RETURN(lh.language.Matches(audioLanguage), rh.language.Matches(audioLanguage));
       }
       else
@@ -5477,7 +5478,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (stream.name.empty())
         stream.name = info.name;
 
-      if (stream.language.IsEmpty())
+      if (stream.language.IsUndetermined())
         stream.language = info.language;
 
       if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
@@ -6138,11 +6139,11 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   }
 
   const SelectionStream& s = m_content.m_selectionStreams.Get(StreamType::VIDEO, streamId);
-  if (!s.language.IsEmpty())
-    info.language = s.language;
 
-  if (!s.name.empty())
-    info.name = s.name;
+  // Every caller describes a stream into a fresh VideoStreamInfo, so there is nothing here to
+  // preserve by leaving a field as it was
+  info.language = s.language;
+  info.name = s.name;
 
   m_renderManager.GetVideoRect(info.SrcRect, info.DestRect, info.VideoRect);
 
@@ -6344,7 +6345,7 @@ void CVideoPlayer::NotifySubtitleUpdate(int flags)
       contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
       contentEntry["isforced"] = (info.flags & StreamFlags::FLAG_FORCED) != 0;
       contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) != 0;
-      contentEntry["language"] = info.language.AsBcp47();
+      contentEntry["language"] = info.language.ToString();
       contentEntry["name"] = info.name;
       data["property"]["currentsubtitle"] = contentEntry;
     }
@@ -6370,7 +6371,7 @@ void CVideoPlayer::NotifyAudioUpdate()
   contentEntry["isdefault"] = (info.flags & StreamFlags::FLAG_DEFAULT) != 0;
   contentEntry["isimpaired"] = (info.flags & StreamFlags::FLAG_HEARING_IMPAIRED) != 0;
   contentEntry["isoriginal"] = (info.flags & StreamFlags::FLAG_ORIGINAL) != 0;
-  contentEntry["language"] = info.language.AsBcp47();
+  contentEntry["language"] = info.language.ToString();
   contentEntry["name"] = info.name;
   data["property"]["currentaudiostream"] = contentEntry;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
@@ -6391,7 +6392,7 @@ void CVideoPlayer::NotifyVideoUpdate()
   contentEntry["codec"] = info.codecName;
   contentEntry["height"] = info.height;
   contentEntry["width"] = info.width;
-  contentEntry["language"] = info.language.AsBcp47();
+  contentEntry["language"] = info.language.ToString();
   contentEntry["name"] = info.name;
   data["property"]["currentvideostream"] = contentEntry;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",

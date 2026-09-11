@@ -9,8 +9,8 @@
 #pragma once
 
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "utils/Artwork.h"
-#include "utils/Locale.h"
 
 #include <map>
 #include <memory>
@@ -73,7 +73,7 @@ private:
   static bool ParseXMLExtension(CAddonExtensions& addonExt, const tinyxml2::XMLElement* element);
   static bool GetTextList(const tinyxml2::XMLElement* element,
                           const std::string& tag,
-                          CLocale::LocalizedStringsMap& translatedValues);
+                          LocalizedStringsMap& translatedValues);
   static const char* GetPlatformLibraryName(const tinyxml2::XMLElement* element);
   static bool PlatformSupportsAddon(const AddonInfoPtr& addon);
 };

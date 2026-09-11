@@ -544,7 +544,8 @@ void ProcessPMTEntry(std::vector<std::byte>& section,
     int descriptorOffset{offset + indexOffset + 5};
     int end{descriptorOffset + esInfoLength};
     std::vector<Descriptor> descriptors;
-    std::string language{"und"};
+    // A stream that declares no language is undetermined, not empty
+    KODI::LANGUAGE::CLanguageTag language{KODI::LANGUAGE::CLanguageTag::Undetermined()};
     while (descriptorOffset + 2 <= end && descriptorOffset < static_cast<int>(section.size()))
     {
       const unsigned int desc_tag{GetByte(section, descriptorOffset)};
@@ -559,7 +560,8 @@ void ProcessPMTEntry(std::vector<std::byte>& section,
 
       // ISO 639 language descriptor
       if (desc_tag == 0x0A && desc_length >= 4)
-        language = GetString(section, descriptorOffset + 2, 3);
+        language = KODI::LANGUAGE::CLanguageTag::ParseStreamLanguage(
+            GetString(section, descriptorOffset + 2, 3));
 
       descriptorOffset += 2 + desc_length;
     }
@@ -584,7 +586,7 @@ void ProcessPMTEntry(std::vector<std::byte>& section,
                 "Found stream at offset 0x{} - type: {} (0x{}), pid: 0x{}, lang {}",
                 fmt::format("{:06x}", offset + indexOffset), streamTypeName,
                 fmt::format("{:02x}", static_cast<int>(streamType)),
-                fmt::format("{:04x}", elementaryPID), language);
+                fmt::format("{:04x}", elementaryPID), language.ToString());
   }
 
   indexOffset += ELEMENTARY_STREAM_HEADER_SIZE + esInfoLength;

@@ -13,7 +13,6 @@
 #include "FileItemList.h"
 #include "GUIDialogAddonInfo.h"
 #include "GUIUserMessages.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/AddonInstaller.h"
@@ -30,6 +29,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/ActionIDs.h"
+#include "language/LangInfo.h"
+#include "language/Language.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "platform/Platform.h"
 #include "resources/LocalizeStrings.h"
@@ -294,14 +295,19 @@ static bool IsForeign(const std::string& languages)
   if (languages.empty())
     return false;
 
+  const KODI::LANGUAGE::CLanguageTag& interfaceLanguage{
+      KODI::LANGUAGE::CLanguage::GetInstance().UI()};
+  const KODI::LANGUAGE::CLanguageTag norwegian{KODI::LANGUAGE::CLanguageTag::Parse("no")};
+  const KODI::LANGUAGE::CLanguageTag bokmal{KODI::LANGUAGE::CLanguageTag::Parse("nb")};
+
   for (const auto& lang : StringUtils::Split(languages, " "))
   {
-    if (lang == "en" || lang == g_langInfo.GetLocale().GetLanguageCode() ||
-        lang == g_langInfo.GetLocale().ToShortString())
+    const KODI::LANGUAGE::CLanguageTag language{KODI::LANGUAGE::CLanguageTag::Parse(lang)};
+    if (language.IsEnglish() || language.Matches(interfaceLanguage))
       return false;
 
-    // for backwards compatibility
-    if (lang == "no" && g_langInfo.GetLocale().ToShortString() == "nb_NO")
+    //! @todo Norwegian is the macrolanguage Bokmal belongs to; Matches does not consider that
+    if (language.Matches(norwegian) && interfaceLanguage.Matches(bokmal))
       return false;
   }
   return true;

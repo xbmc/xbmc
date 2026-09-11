@@ -6,13 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 #include "video/VideoStreamSelect.h"
 
 #include <gtest/gtest.h>
 
 using namespace KODI::VIDEO;
-using KODI::UTILS::CLanguageTag;
+using KODI::LANGUAGE::CLanguageTag;
 
 namespace
 {
@@ -115,7 +115,7 @@ TEST_P(VideoStreamSelectVideoOrderTest, OrderVideo)
 {
   const auto& params = GetParam();
 
-  // Instantiate SubtitleStreamInfoExt at execution time to avoid possible g_LangCodeExpander
+  // Instantiate SubtitleStreamInfoExt at execution time to avoid possible language table
   // static initialization order issues.
   std::vector<VideoStreamInfoExt> streams;
   streams.reserve(params.inputStreams.size());
@@ -268,7 +268,7 @@ TEST_P(VideoStreamSelectAudioOrderTest, OrderAudio)
 {
   const auto& params = GetParam();
 
-  // Instantiate AudioStreamInfoExt at execution time to avoid possible g_LangCodeExpander
+  // Instantiate AudioStreamInfoExt at execution time to avoid possible language table
   // static initialization order issues.
   std::vector<AudioStreamInfoExt> streams;
   streams.reserve(params.inputStreams.size());
@@ -405,7 +405,7 @@ TEST_P(VideoStreamSelectSubtitleOrderTest, OrderSubtitles)
 {
   const auto& params = GetParam();
 
-  // Instantiate SubtitleStreamInfoExt at execution time to avoid possible g_LangCodeExpander
+  // Instantiate SubtitleStreamInfoExt at execution time to avoid possible language table
   // static initialization order issues.
   std::vector<SubtitleStreamInfoExt> streams;
   streams.reserve(params.inputStreams.size());

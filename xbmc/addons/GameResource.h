@@ -20,9 +20,6 @@ class CGameResource : public CResource
 public:
   explicit CGameResource(const AddonInfoPtr& addonInfo);
   ~CGameResource() override = default;
-
-  // implementation of CResource
-  bool IsAllowed(const std::string& file) const override { return true; }
 };
 
 }

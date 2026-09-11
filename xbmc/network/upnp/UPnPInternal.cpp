@@ -20,6 +20,8 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "imagefiles/ImageFileURL.h"
+#include "language/Language.h"
+#include "language/LanguageTag.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -29,7 +31,6 @@
 #include "settings/lib/Setting.h"
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
-#include "utils/LanguageTag.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -898,17 +899,10 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     }
     else if (!subtitles.empty())
     {
-      std::string preferredLanguage{"en"};
-
-      /* trying to find subtitle with preferred language settings */
-      auto setting = settings->GetSetting("locale.subtitlelanguage");
-      if (!setting)
-        CLog::Log(LOGERROR, "Failed to load setting for: {}", "locale.subtitlelanguage");
-      else
-        preferredLanguage = setting->ToString();
-
-      const KODI::UTILS::CLanguageTag preferredTag{
-          KODI::UTILS::CLanguageTag::Parse(preferredLanguage)};
+      // Resolved by CLanguage: the setting may state a rule - none, forced only, original -
+      // rather than a language
+      const KODI::LANGUAGE::CLanguageTag preferredTag{
+          KODI::LANGUAGE::CLanguage::GetInstance().Subtitle()};
 
       for (unsigned int i = 0; i < subtitles.size(); i++)
       {

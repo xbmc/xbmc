@@ -25,11 +25,13 @@ public:
 
   void OnPreUnInstall() override;
 
-  bool IsAllowed(const std::string &file) const override;
   std::string GetFullPath(const std::string &filePath) const override;
 
   //! \brief Returns type of image collection
   const std::string& GetType() const { return m_type; }
+
+protected:
+  Published PublishedFiles() const override;
 
 private:
   bool HasXbt(CURL& xbtUrl) const;
