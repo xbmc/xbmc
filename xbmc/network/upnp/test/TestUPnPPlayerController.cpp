@@ -62,6 +62,24 @@ TEST_F(TestUPnPPlayerController, AnActionThatNeverRepliedIsNotASuccess)
   EXPECT_NE(NPT_SUCCESS, action->GetStatus());
 }
 
+TEST_F(TestUPnPPlayerController, TransportInfoBelongsToTheActionThatAskedForIt)
+{
+  auto* playing = m_controller.BeginAction();
+  m_controller.EndAction(*playing);
+  auto* stopped = m_controller.BeginAction();
+
+  PLT_TransportInfo playingInfo;
+  playingInfo.cur_transport_state = "PLAYING";
+  playing->OnGetTransportInfoResult(NPT_SUCCESS, m_device, &playingInfo, playing);
+
+  PLT_TransportInfo stoppedInfo;
+  stoppedInfo.cur_transport_state = "STOPPED";
+  stopped->OnGetTransportInfoResult(NPT_SUCCESS, m_device, &stoppedInfo, stopped);
+
+  EXPECT_STREQ("PLAYING", playing->GetTransportState().GetChars());
+  EXPECT_STREQ("STOPPED", stopped->GetTransportState().GetChars());
+}
+
 TEST_F(TestUPnPPlayerController, AFailedSendLeavesNoAction)
 {
   CUPnPPlayerController::CAction* action = nullptr;
