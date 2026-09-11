@@ -624,6 +624,8 @@ void CUPnPPlayer::Process()
         m_callback.OnPlayBackEnded();
       }
     }
+
+    CThread::Sleep(100ms);
   }
 failed:
   CloseFile();
