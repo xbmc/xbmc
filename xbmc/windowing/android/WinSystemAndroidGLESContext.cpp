@@ -42,22 +42,14 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
     return false;
   }
 
-  if (!m_pGLContext.CreateDisplay(m_nativeDisplay))
+  // GLES 3.0 required for sized texture formats (GL_R16F, GL_RGB10_A2, etc.)
+  // Fall back to GLES 2.0 for devices that don't support GLES 3.0
+  if (!InitWindowSystemEGL(EGL_OPENGL_ES3_BIT) && !InitWindowSystemEGL(EGL_OPENGL_ES2_BIT))
   {
     return false;
   }
 
-  if (!m_pGLContext.InitializeDisplay(EGL_OPENGL_ES_API))
-  {
-    return false;
-  }
-
-  if (!m_pGLContext.ChooseConfig(EGL_OPENGL_ES2_BIT))
-  {
-    return false;
-  }
-
-  m_hasHDRConfig = m_pGLContext.ChooseConfig(EGL_OPENGL_ES2_BIT, 0, true);
+  m_hasHDRConfig = m_pGLContext.ChooseConfig(m_renderableType, 0, true);
 
   m_hasEGL_BT2020_PQ_Colorspace_Extension =
       CEGLUtils::HasExtension(m_pGLContext.GetEGLDisplay(), "EGL_EXT_gl_colorspace_bt2020_pq");
@@ -70,14 +62,41 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
             "CWinSystemAndroidGLESContext::InitWindowSystem: HDRConfig: {}, HDRExtensions: {}",
             static_cast<int>(m_hasHDRConfig), static_cast<int>(hasEGLHDRExtensions));
 
-  CEGLAttributesVec contextAttribs;
-  contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
+  return true;
+}
 
-  if (!m_pGLContext.CreateContext(contextAttribs))
+bool CWinSystemAndroidGLESContext::InitWindowSystemEGL(EGLint renderableType)
+{
+  if (!m_pGLContext.CreateDisplay(m_nativeDisplay))
   {
     return false;
   }
 
+  if (!m_pGLContext.InitializeDisplay(EGL_OPENGL_ES_API))
+  {
+    return false;
+  }
+
+  // ChooseConfig destroys the display when no config matches (or on an EGL
+  // error), so the retry with the other renderable type starts again from
+  // CreateDisplay.
+  if (!m_pGLContext.ChooseConfig(renderableType))
+  {
+    return false;
+  }
+
+  const EGLint version = (renderableType == EGL_OPENGL_ES3_BIT) ? 3 : 2;
+
+  CEGLAttributesVec contextAttribs;
+  contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, version}});
+
+  if (!m_pGLContext.CreateContext(contextAttribs))
+  {
+    m_pGLContext.Destroy();
+    return false;
+  }
+
+  m_renderableType = renderableType;
   return true;
 }
 

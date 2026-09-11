@@ -311,6 +311,8 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
   std::vector<EGLConfig> eglConfigs(numMatched);
   if (eglChooseConfig(m_eglDisplay, attribs.Get(), eglConfigs.data(), numMatched, &numMatched) != EGL_TRUE)
     errorMsg = "failed to find EGL configs with appropriate attributes";
+  else if (numMatched == 0)
+    errorMsg = "no EGL config matches the requested attributes";
 
   if (errorMsg)
   {

@@ -50,9 +50,11 @@ protected:
   void PresentRenderImpl(bool rendered) override;
 
 private:
+  bool InitWindowSystemEGL(EGLint renderableType);
   bool CreateSurface();
 
   CEGLContextUtils m_pGLContext;
+  EGLint m_renderableType = 0;
   bool m_hasHDRConfig = false;
 
   std::unique_ptr<AVMasteringDisplayMetadata> m_displayMetadata;
