@@ -14,6 +14,7 @@
 #include "threads/Thread.h"
 #include "utils/logtypes.h"
 
+#include <atomic>
 #include <memory>
 #include <string>
 
@@ -67,7 +68,7 @@ private:
   PLT_MediaController* m_control = nullptr;
   std::unique_ptr<CUPnPPlayerController> m_delegate;
   bool m_started = false;
-  bool m_stopremote = false;
+  std::atomic<bool> m_stopremote{false};
   bool m_hasVideo{false};
   bool m_hasAudio{false};
   XbmcThreads::EndTime<> m_updateTimer;

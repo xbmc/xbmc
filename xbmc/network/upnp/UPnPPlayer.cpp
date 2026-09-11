@@ -497,14 +497,18 @@ failed:
 
 bool CUPnPPlayer::CloseFile(bool reopen)
 {
-  NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
-  if (m_stopremote)
+  bool stopped = true;
+
+  // Also reached from the player thread's exit and the destructor; the renderer is told once.
+  if (m_delegate && m_stopremote.exchange(false))
   {
-    NPT_CHECK_LABEL(m_control->Stop(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
-                    failed);
-    if (!m_delegate->m_resevent.Wait(10000ms))
-      goto failed;
-    NPT_CHECK_LABEL(m_delegate->m_resstatus, failed);
+    if (NPT_FAILED(
+            m_control->Stop(m_delegate->m_device, m_delegate->m_instance, m_delegate.get())) ||
+        !m_delegate->m_resevent.Wait(10000ms) || NPT_FAILED(m_delegate->m_resstatus))
+    {
+      m_logger->error("CloseFile - unable to stop playback");
+      stopped = false;
+    }
   }
 
   if (m_started)
@@ -515,11 +519,7 @@ bool CUPnPPlayer::CloseFile(bool reopen)
 
   StopThread(true);
   CServiceBroker::GetDataCacheCore().Reset();
-  return true;
-failed:
-  m_logger->error("CloseFile - unable to stop playback");
-  CServiceBroker::GetDataCacheCore().Reset();
-  return false;
+  return stopped;
 }
 
 void CUPnPPlayer::Pause()
