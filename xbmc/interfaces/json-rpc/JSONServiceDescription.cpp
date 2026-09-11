@@ -69,7 +69,11 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.Move",                                  CPlayerOperations::Move },
   { "Player.Zoom",                                  CPlayerOperations::Zoom },
   { "Player.SetViewMode",                           CPlayerOperations::SetViewMode },
+  { "Player.SetGeometry",                           CPlayerOperations::SetGeometry },
+  { "Player.GetGeometry",                           CPlayerOperations::GetGeometry },
   { "Player.GetViewMode",                           CPlayerOperations::GetViewMode },
+  { "Player.SetDeclaredAspectRatio",                CPlayerOperations::SetDeclaredAspectRatio },
+  { "Player.GetDeclaredAspectRatio",                CPlayerOperations::GetDeclaredAspectRatio },
   { "Player.Rotate",                                CPlayerOperations::Rotate },
 
   { "Player.Open",                                  CPlayerOperations::Open },
@@ -160,6 +164,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.RefreshTVShow",                   CVideoLibrary::RefreshTVShow },
   { "VideoLibrary.RefreshEpisode",                  CVideoLibrary::RefreshEpisode },
   { "VideoLibrary.RefreshMusicVideo",               CVideoLibrary::RefreshMusicVideo },
+  { "VideoLibrary.RefreshContentGeometry",          CVideoLibrary::RefreshContentGeometry },
   { "VideoLibrary.RemoveMovie",                     CVideoLibrary::RemoveMovie },
   { "VideoLibrary.RemoveTVShow",                    CVideoLibrary::RemoveTVShow },
   { "VideoLibrary.RemoveEpisode",                   CVideoLibrary::RemoveEpisode },
@@ -184,6 +189,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "GUI.GetStereoscopicModes",                     CGUIOperations::GetStereoscopicModes },
   { "GUI.ActivateScreenSaver",                      CGUIOperations::ActivateScreenSaver},
   { "GUI.TakeScreenshot",                           CGUIOperations::TakeScreenshot },
+  { "GUI.SetScreenAlignment",                       CGUIOperations::SetScreenAlignment },
+  { "GUI.GetScreenAlignment",                       CGUIOperations::GetScreenAlignment },
 
 // PVR operations
   { "PVR.GetProperties",                            CPVROperations::GetProperties },

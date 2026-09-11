@@ -60,7 +60,7 @@
 %init %{
   PyModule_AddStringConstant(m, "__author__", "Team Kodi <http://kodi.tv>");
   PyModule_AddStringConstant(m, "__date__", CCompileInfo::GetBuildDate().c_str());
-  PyModule_AddStringConstant(m, "__version__", "3.0.2");
+  PyModule_AddStringConstant(m, "__version__", "3.1.1");
   PyModule_AddStringConstant(m, "__credits__", "Team Kodi");
   PyModule_AddStringConstant(m, "__platform__", "ALL");
 %}

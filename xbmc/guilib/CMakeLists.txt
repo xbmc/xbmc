@@ -50,6 +50,7 @@ set(SOURCES DDSImage.cpp
             GUISpinControl.cpp
             GUISpinControlEx.cpp
             GUIStaticItem.cpp
+            GUISurroundRenderer.cpp
             GUITextBox.cpp
             GUITextLayout.cpp
             GUITexture.cpp
@@ -134,6 +135,7 @@ set(HEADERS AspectRatio.h
             GUISpinControl.h
             GUISpinControlEx.h
             GUIStaticItem.h
+            GUISurroundRenderer.h
             GUITextBox.h
             GUITextLayout.h
             GUITexture.h

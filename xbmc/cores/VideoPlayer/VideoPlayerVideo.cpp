@@ -54,7 +54,8 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock,
     IDVDStreamPlayerVideo(processInfo),
     m_messageQueue("video"),
     m_messageParent(parent),
-    m_renderManager(renderManager)
+    m_renderManager(renderManager),
+    m_liveGeometry(parent, processInfo)
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
@@ -237,6 +238,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVid
   m_packets.clear();
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_renderManager.ShowVideo(false);
+  m_liveGeometry.OnStreamOpened(hint);
 }
 
 void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
@@ -455,6 +457,7 @@ void CVideoPlayerVideo::Process()
       m_syncState = IDVDStreamPlayer::SYNC_STARTING;
       m_renderManager.ShowVideo(false);
       m_rewindStalled = false;
+      m_liveGeometry.OnFlush();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CVideoPlayerVideo::Flush())
     {
@@ -486,6 +489,7 @@ void CVideoPlayerVideo::Process()
 
       m_renderManager.DiscardBuffer();
       FlushMessages();
+      m_liveGeometry.OnFlush();
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
@@ -857,7 +861,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
   }
 }
 
-CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture)
+CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(VideoPicture* pPicture)
 {
   m_bAbortOutput = false;
 
@@ -932,6 +936,8 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
     CLog::Log(LOGDEBUG, "{} - dropped in output", __FUNCTION__);
     return OUTPUT_DROPPED;
   }
+
+  pPicture->contentRect = m_liveGeometry.OnPicture(*pPicture, m_hints, m_speed);
 
   auto timeToDisplay = std::chrono::milliseconds(DVD_TIME_TO_MSEC(pPicture->pts - iPlayingClock));
 

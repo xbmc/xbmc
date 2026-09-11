@@ -15,6 +15,7 @@
 #include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 #include "utils/UrlOptions.h"
+#include "video/geometry/ContentGeometryRecord.h"
 
 #include <array>
 #include <functional>
@@ -149,6 +150,14 @@ using EpisodeFileMap = std::multimap<std::string, EpisodeInformation, std::less<
 using EpisodeFileMapEntry = EpisodeFileMap::value_type;
 
 static constexpr const char* MULTIPLE_EPISODES{"multiple_episodes"};
+
+//! \brief One file the content geometry sweep may have to measure, and what it already holds.
+struct ContentGeometryCandidate
+{
+  int idFile{-1};
+  std::string path;
+  KODI::VIDEO::GEOMETRY::ContentGeometryAttempt attempt;
+};
 
 class CVideoDatabase : public CDatabase
 {
@@ -526,6 +535,40 @@ public:
   bool GetStreamDetails(const std::string& filenameAndPath, CStreamDetails& details);
   bool GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id);
   CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
+
+  /*! \name Content geometry
+   * The measured picture rectangle of a file. Detection results only; a declared ratio
+   * lives in the settings table.
+   */
+  ///@{
+
+  //! \brief Store the content geometry of a file, replacing any previous one. The diagnostics
+  //! are written only when the record states them.
+  bool SetContentGeometry(int idFile, const KODI::VIDEO::GEOMETRY::ContentGeometryRecord& geometry);
+
+  //! \brief Look up the content geometry of a file, checking it still describes that file.
+  //! MISSING both when there is none and when what is stored was measured from other content.
+  KODI::VIDEO::GEOMETRY::ContentGeometryLookup GetContentGeometry(
+      int idFile, const KODI::VIDEO::GEOMETRY::FileIdentity& identity);
+
+  //! \brief Read a stored geometry without checking it still describes the file, for moving
+  //! data about. Anything acting on the rectangle uses GetContentGeometry() instead.
+  bool GetContentGeometryUnverified(int idFile,
+                                    KODI::VIDEO::GEOMETRY::ContentGeometryRecord& geometry);
+
+  //! \brief What has already been attempted for a file. Unlike GetContentGeometry() this does
+  //! see a failed attempt.
+  KODI::VIDEO::GEOMETRY::ContentGeometryAttempt GetContentGeometryAttempt(int idFile);
+
+  //! \brief The file row an item plays, resolving versions and extras as GetVideoSettings()
+  //! does. Negative when the item is not in the library.
+  int GetPlayedFileId(const CFileItem& item);
+
+  //! \brief Every file in the library with whatever content geometry is stored for it,
+  //! unfiltered.
+  std::vector<ContentGeometryCandidate> GetContentGeometryCandidates();
+
+  ///@}
 
   // scraper settings
   struct StringHash

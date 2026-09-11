@@ -1,6 +1,7 @@
 media/*
 sounds/*
 system/addon-manifest.xml
+system/aspectratios.xml
 system/colors.xml
 system/dialogcolors.xml
 system/keyboardlayouts/*

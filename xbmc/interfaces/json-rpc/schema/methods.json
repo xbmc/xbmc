@@ -405,6 +405,11 @@
               }
             ],
             "default": false
+          },
+          "geometry": {
+            "$ref": "Player.Geometry",
+            "description":
+                "Room geometry to apply for this playback. Reverts when it ends."
           }
         }
       }
@@ -883,6 +888,57 @@
     ],
     "returns": "string"
   },
+  "Player.SetGeometry": {
+    "type": "method",
+    "description":
+        "Change the room geometry in force partway through a title, for a system driving a motorised room. Takes effect on the next frame and announces Player.OnContentGeometryChange carrying what Kodi actually did, which is not necessarily what was asked for. A stated raster reaches the layout by the same path the corresponding setting does, so the interface re-selects the layout it holds for the new shape - a change no other field here causes. Everything stated here reverts when playback ends, so an instruction given for one title cannot leave the room in a shape nothing on screen explains. Equivalent to the geometry option of Player.Open, which covers the play-time case without a second call.",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      {
+        "name": "geometry",
+        "$ref": "Player.Geometry",
+        "required": true
+      }
+    ],
+    "returns": "string"
+  },
+  "Player.GetGeometry": {
+    "type": "method",
+    "description":
+        "The room geometry in force. Reports what was stated for this playback separately from what is actually in effect, because the two differ wherever nothing was stated and the viewer's setting is standing in. An automation that reconnects partway through a title needs both: what it previously asked for, and what the room is doing now.",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stated": {
+          "$ref": "Player.Geometry",
+          "required": true,
+          "description":
+              "What was stated for this playback. Zero, and null for osdplacement, mean nothing was stated and the setting applies."
+        },
+        "raster": {
+          "type": "number",
+          "required": true,
+          "description":
+              "The raster in force, whether it came from an override or from the setting. Zero means the same as the display."
+        },
+        "osdplacement": {
+          "$ref": "Player.OsdPlacement",
+          "required": true,
+          "description": "The OSD placement in force, from whichever of the two stated it."
+        },
+        "screen": {
+          "$ref": "Player.ScreenGeometry",
+          "description":
+              "Where the instruction actually put the picture. Absent while nothing is drawn, which is the same moment the rectangle in contentrect is absent and for the same reason."
+        }
+      }
+    }
+  },
   "Player.GetViewMode": {
     "type": "method",
     "description": "Get view mode of video player",
@@ -911,6 +967,63 @@
         "nonlinearstretch": {
           "type": "boolean",
           "required": true
+        }
+      }
+    }
+  },
+  "Player.SetDeclaredAspectRatio": {
+    "type": "method",
+    "description": "Declare the aspect ratio of the content being played, overriding what is detected. Pass \"auto\" to withdraw a declaration",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      {
+        "name": "aspectratio",
+        "required": true,
+        "type": [
+          {
+            "type": "number",
+            "description": "Display aspect ratio. Normalised to the nearest ratio Kodi recognises; a value close to none of them is rejected"
+          },
+          {
+            "type": "string",
+            "enum": [ "auto" ],
+            "description": "Withdraw the declaration and return to detection"
+          }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
+  "Player.GetDeclaredAspectRatio": {
+    "type": "method",
+    "description": "Get the aspect ratio declared for the content being played, if any",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "declared": {
+          "type": "boolean",
+          "required": true,
+          "description": "False when no ratio has been declared and detection applies"
+        },
+        "aspectratio": {
+          "type": "number",
+          "description": "Only present when declared is true"
+        },
+        "label": {
+          "type": "string",
+          "description": "The canonical label Kodi reports for the declared ratio"
+        },
+        "name": {
+          "type": "string",
+          "description": "What that ratio is called, empty when it has no established name"
+        },
+        "declaredon": {
+          "type": "string",
+          "description": "When the declaration was made"
         }
       }
     }
@@ -5174,6 +5287,54 @@
     ],
     "returns": "string"
   },
+  "VideoLibrary.RefreshContentGeometry": {
+    "type": "method",
+    "description": "Measure the content geometry of the file behind the given item again, replacing whatever is stored for it. Unlike the background sweep this does not ask whether the work is needed, so it is the only way to revisit a file that was measured successfully and got the wrong answer. Fails when content geometry detection is disabled, rather than reporting success for work it did not do",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "item",
+        "required": true,
+        "type": [
+          {
+            "type": "object",
+            "properties": {
+              "movieid": { "$ref": "Library.Id", "required": true }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "episodeid": { "$ref": "Library.Id", "required": true }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "musicvideoid": { "$ref": "Library.Id", "required": true }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string",
+                "required": true,
+                "description": "Path to the file itself. Content geometry is stored per file, so this is the only form that can name one version of a movie that has several"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      { "name": "thorough", "type": "boolean", "default": false, "description": "Sample far more densely than the setting asks for. A sequence shot in another ratio can sit entirely between two ordinary sample points, which is how a title cut in three ratios is recorded as having one shape; at this density it cannot. Costs roughly a second per point, so it is meant for one title at a time rather than for a library." }
+    ],
+    "returns": "string"
+  },
   "VideoLibrary.RefreshMusicVideo": {
     "type": "method",
     "description": "Refresh the given music video in the library",
@@ -5617,6 +5778,43 @@
       }
     ],
     "returns": "string"
+  },
+  "GUI.SetScreenAlignment": {
+    "type": "method",
+    "description":
+        "Show or hide the screen alignment frames, and state which aspect ratios are drawn. The frames are drawn at the true shape and at the full size of the display, ignoring the raster, the overscan calibration and the interface's proportions, because they exist to be aligned to rather than corrected. Intended for programming motorised masking or lens memory presets with nobody at the keyboard: state one ratio, read back what is on screen, programme the preset against it, then move to the next. Session state only - nothing here is written to disk, and neither the set nor the tool survives a restart.",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      {
+        "name": "show",
+        "type": "boolean",
+        "description": "Whether the frames are on screen. Omitted leaves that as it is, so a set can be stated before the tool is shown, or changed while it is up"
+      },
+      {
+        "name": "ratios",
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "description":
+            "The ratios whose frames are drawn, replacing whatever was drawn before. A ratio the vocabulary does not hold is dropped rather than approximated: an installer naming 2.40 and being shown 2.35 would programme the wrong mask position. An empty array draws no frames"
+      }
+    ],
+    "returns": {
+      "$ref": "GUI.ScreenAlignment",
+      "description": "The state in force, which is what the answer to GUI.GetScreenAlignment would be"
+    }
+  },
+  "GUI.GetScreenAlignment": {
+    "type": "method",
+    "description": "The state of the screen alignment frames, and every ratio one can be drawn for",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "$ref": "GUI.ScreenAlignment"
+    }
   },
   "Addons.GetAddons": {
     "type": "method",

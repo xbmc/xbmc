@@ -36,6 +36,7 @@
 #include "utils/AlarmClock.h"
 #include "utils/log.h"
 #include "video/VideoLibraryQueue.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 void CApplicationPowerHandling::ResetScreenSaver()
@@ -286,6 +287,9 @@ void CApplicationPowerHandling::CheckScreenSaverAndDPMS()
 
   // When inhibit screensaver is enabled prevent screensaver from kicking in
   if (m_bInhibitScreenSaver)
+    haveIdleActivity = true;
+
+  if (winSystem->GetGfxContext().IsCalibrating())
     haveIdleActivity = true;
 
   // Are we playing a video and it is not paused?

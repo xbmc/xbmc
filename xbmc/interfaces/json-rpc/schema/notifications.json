@@ -71,6 +71,38 @@
     ],
     "returns": null
   },
+  "Player.OnContentGeometryChange": {
+    "type": "notification",
+    "description":
+        "The picture rectangle in force has changed. Sent when playback starts, when a confirmed change occurs partway through a title, when the picture moves on the screen, and when playback ends - the last carrying the geometry of the GUI, because that is then what is on the screen. Carries the rectangles themselves, so that acting on them needs no further call. The picture moving is a change in its own right: an instruction can move it without changing what the content is, and a display mode switch or a resized window moves it with no instruction at all.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "object",
+        "required": true,
+        "properties": {
+          "player": {
+            "$ref": "Player.Notifications.Player"
+          },
+          "contentrect": {
+            "$ref": "Video.ContentRect",
+            "required": true
+          },
+          "screen": {
+            "$ref": "Player.ScreenGeometry",
+            "description":
+                "Where Kodi drew that content, absent while nothing is drawn - which is the case for the announcement playback ends with."
+          }
+        }
+      }
+    ],
+    "returns": null
+  },
   "Player.OnPause": {
     "type": "notification",
     "description":

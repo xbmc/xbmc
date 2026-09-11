@@ -24,8 +24,11 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
+#include "video/geometry/GeometryPublication.h"
+#include "video/geometry/GeometrySettings.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -114,6 +117,7 @@ void CVideoInfoTag::Reset()
   m_showLink.clear();
   m_seasons.clear();
   m_streamDetails.Reset();
+  m_contentGeometry = {};
   m_playCount = PLAYCOUNT_NOT_SET;
   m_EpBookmark.Reset();
   m_EpBookmark.type = CBookmark::EPISODE;
@@ -335,6 +339,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(fileinfo);
   }  /* if has stream details */
 
+  if (HasContentGeometry())
+    KODI::VIDEO::GEOMETRY::SaveContentGeometryXML(*movie, m_contentGeometry);
+
   // cast
   for (auto it = m_cast.begin(); it != m_cast.end(); ++it)
   {
@@ -530,6 +537,8 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_seasons = other.m_seasons;
   if (other.m_streamDetails.HasItems())
     m_streamDetails = other.m_streamDetails;
+  if (other.HasContentGeometry())
+    m_contentGeometry = other.m_contentGeometry;
   if (other.IsPlayCountSet())
     SetPlayCount(other.GetPlayCount());
 
@@ -645,6 +654,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iBookmarkId;
     ar << m_iTrack;
     ar << dynamic_cast<IArchivable&>(m_streamDetails);
+    KODI::VIDEO::GEOMETRY::Archive(ar, m_contentGeometry);
     ar << m_showLink;
     ar << static_cast<int>(m_seasons.size());
     for (const auto& [number, attr] : m_seasons)
@@ -765,6 +775,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
     ar >> dynamic_cast<IArchivable&>(m_streamDetails);
+    KODI::VIDEO::GEOMETRY::Archive(ar, m_contentGeometry);
     ar >> m_showLink;
     int namedSeasonSize;
     ar >> namedSeasonSize;
@@ -874,6 +885,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["track"] = m_iTrack;
   value["showlink"] = m_showLink;
   m_streamDetails.Serialize(value["streamdetails"]);
+  SerializeContentGeometry(value["streamdetails"]);
   CVariant resume{CVariant::VariantTypeObject};
   resume["position"] = m_resumePoint.timeInSeconds;
   resume["total"] = m_resumePoint.totalTimeInSeconds;
@@ -1538,6 +1550,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   }
   SetArtist(artist);
 
+  if (const auto record = KODI::VIDEO::GEOMETRY::LoadContentGeometryXML(*movie))
+    m_contentGeometry = *record;
+
   node = movie->FirstChildElement("fileinfo");
   if (node)
   {
@@ -1677,6 +1692,38 @@ bool CVideoInfoTag::HasNFOStreamDetails() const
     return false;
 
   return m_streamDetails.GetSources() >= CStreamDetail::NFO;
+}
+
+bool CVideoInfoTag::HasContentGeometry() const
+{
+  return m_contentGeometry.IsValid();
+}
+
+KODI::VIDEO::GEOMETRY::EffectiveGeometry CVideoInfoTag::ResolveContentGeometry() const
+{
+  if (!HasContentGeometry())
+    return {};
+
+  // Neither rotation nor a declaration is applied.
+  KODI::VIDEO::GEOMETRY::GeometryInputs inputs;
+  inputs.stream.coded = m_contentGeometry.coded;
+  inputs.stream.displayAspect = m_contentGeometry.displayAspect;
+  inputs.cached.record = m_contentGeometry;
+  inputs.cached.state = KODI::VIDEO::GEOMETRY::StateOf(m_contentGeometry);
+  inputs.sections = m_contentGeometry.sections;
+  inputs.policy = KODI::VIDEO::GEOMETRY::ContentGeometryPolicyFromSettings();
+  inputs.atRestAspect = KODI::VIDEO::GEOMETRY::ContentGeometryAtRestFromSettings();
+
+  return KODI::VIDEO::GEOMETRY::ResolveEffectiveGeometry(inputs);
+}
+
+void CVideoInfoTag::SerializeContentGeometry(CVariant& streamdetails) const
+{
+  if (!HasContentGeometry() || !streamdetails["video"].isArray() || streamdetails["video"].empty())
+    return;
+
+  KODI::VIDEO::GEOMETRY::SerializeEffectiveGeometry(ResolveContentGeometry(),
+                                                    streamdetails["video"][0]["contentrect"]);
 }
 
 bool CVideoInfoTag::IsEmpty() const
