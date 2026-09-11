@@ -61,12 +61,12 @@ static bool LoadTexture(int width, int height, int stride
   return true;
 }
 
-std::shared_ptr<COverlay> COverlay::Create(ASS_Image* images, float width, float height)
+std::shared_ptr<COverlay> COverlay::Create(const SQuads& quads, float width, float height)
 {
-  return std::make_shared<COverlayQuadsDX>(images, width, height);
+  return std::make_shared<COverlayQuadsDX>(quads, width, height);
 }
 
-COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
+COverlayQuadsDX::COverlayQuadsDX(const SQuads& quads, float width, float height)
 {
   m_width  = 1.0;
   m_height = 1.0;
@@ -75,10 +75,6 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
   m_x      = 0.0f;
   m_y      = 0.0f;
   m_count  = 0;
-
-  SQuads quads;
-  if (!convert_quad(images, quads, static_cast<int>(width)))
-    return;
 
   float u, v;
   if (!LoadTexture(quads.size_x, quads.size_y, quads.size_x, DXGI_FORMAT_R8_UNORM,
@@ -89,7 +85,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
 
   Vertex* vt = new Vertex[6 * quads.quad.size()];
   Vertex* vt_orig = vt;
-  SQuad* vs = quads.quad.data();
+  const SQuad* vs = quads.quad.data();
 
   float scale_u = u / quads.size_x;
   float scale_v = v / quads.size_y;
@@ -206,30 +202,26 @@ void COverlayQuadsDX::Render(SRenderState &state)
   pGUIShader->RestoreBuffers();
 }
 
-std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlayImage& o, CRect& rSource)
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlayImage& o,
+                                           const SBitmapRenderResult& decoded,
+                                           CRect& rSource)
 {
-  return std::make_shared<COverlayImageDX>(o, rSource);
+  return std::make_shared<COverlayImageDX>(o, decoded, rSource);
 }
 
 COverlayImageDX::~COverlayImageDX()
 {
 }
 
-COverlayImageDX::COverlayImageDX(const CDVDOverlayImage& o, CRect& rSource)
+COverlayImageDX::COverlayImageDX(const CDVDOverlayImage& o,
+                                 const SBitmapRenderResult& decoded,
+                                 CRect& rSource)
 {
-  if (o.palette.empty())
-  {
-    m_pma = false;
-    const uint32_t* rgba = reinterpret_cast<const uint32_t*>(o.pixels.data());
-    Load(rgba, o.width, o.height, o.linesize);
-  }
-  else
-  {
-    std::vector<uint32_t> rgba(o.width * o.height);
-    m_pma = !!USE_PREMULTIPLIED_ALPHA;
-    convert_rgba(o, m_pma, rgba);
-    Load(rgba.data(), o.width, o.height, o.width * 4);
-  }
+  // Decode already happened on the bitmap async worker (OverlayRenderer.cpp,
+  // RenderBitmapJob); 'decoded.rgba' is always tightly packed regardless of
+  // whether the source was paletted or raw, so stride is always width*4.
+  m_pma = o.palette.empty() ? false : !!USE_PREMULTIPLIED_ALPHA;
+  Load(decoded.rgba.data(), decoded.width, decoded.height, decoded.width * 4);
 
   if (o.source_width > 0 && o.source_height > 0)
   {
@@ -272,18 +264,17 @@ COverlayImageDX::COverlayImageDX(const CDVDOverlayImage& o, CRect& rSource)
   }
 }
 
-std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o)
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o,
+                                           const SBitmapRenderResult& decoded)
 {
-  return std::make_shared<COverlayImageDX>(o);
+  return std::make_shared<COverlayImageDX>(o, decoded);
 }
 
-COverlayImageDX::COverlayImageDX(const CDVDOverlaySpu& o)
+COverlayImageDX::COverlayImageDX(const CDVDOverlaySpu& o, const SBitmapRenderResult& decoded)
 {
-  int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba(o.width * o.height);
-
-  convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
-  Load(rgba.data() + min_x + min_y * o.width, max_x - min_x, max_y - min_y, o.width * 4);
+  const int min_x = decoded.minX, max_x = decoded.maxX, min_y = decoded.minY, max_y = decoded.maxY;
+  Load(decoded.rgba.data() + min_x + min_y * decoded.width, max_x - min_x, max_y - min_y,
+       +decoded.width * 4);
 
   m_align = ALIGN_VIDEO;
   m_pos = POSITION_ABSOLUTE;

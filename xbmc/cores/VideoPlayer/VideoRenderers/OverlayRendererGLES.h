@@ -28,8 +28,10 @@ public:
      *  \param o The overlay image
      *  \param rSource The video source rect size
      */
-  explicit COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSource);
-  explicit COverlayTextureGLES(const CDVDOverlaySpu& o);
+  explicit COverlayTextureGLES(const CDVDOverlayImage& o,
+                               const SBitmapRenderResult& decoded,
+                               CRect& rSource);
+  explicit COverlayTextureGLES(const CDVDOverlaySpu& o, const SBitmapRenderResult& decoded);	 
   ~COverlayTextureGLES() override;
 
   void Render(SRenderState& state) override;
@@ -43,7 +45,7 @@ public:
 class COverlayGlyphGLES : public COverlay
 {
 public:
-  COverlayGlyphGLES(ASS_Image* images, float width, float height);
+  COverlayGlyphGLES(const SQuads& quads, float width, float height);
 
   ~COverlayGlyphGLES() override;
 

@@ -11,6 +11,7 @@ set(HEADERS BaseRenderer.h
             ColorManager.h
             DebugInfo.h
             OverlayRenderer.h
+            OverlayRendererAsync.h
             OverlayRendererUtil.h
             RenderFactory.h
             RenderFlags.h

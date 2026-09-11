@@ -78,12 +78,16 @@ static void LoadTexture(GLenum target
   *v = (GLfloat)height / height2;
 }
 
-std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlayImage& o, CRect& rSource)
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlayImage& o,
+                                           const SBitmapRenderResult& decoded,
+                                           CRect& rSource)
 {
-  return std::make_shared<COverlayTextureGL>(o, rSource);
+  return std::make_shared<COverlayTextureGL>(o, decoded, rSource);
 }
 
-COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
+COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o,
+                                     const SBitmapRenderResult& decoded,
+                                     CRect& rSource)
 {
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -93,19 +97,12 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  if (o.palette.empty())
-  {
-    m_pma = false;
-    const uint32_t* rgba = reinterpret_cast<const uint32_t*>(o.pixels.data());
-    LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.linesize, &m_u, &m_v, false, rgba);
-  }
-  else
-  {
-    std::vector<uint32_t> rgba(o.width * o.height);
-    m_pma = !!USE_PREMULTIPLIED_ALPHA;
-    convert_rgba(o, m_pma, rgba);
-    LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.width * 4, &m_u, &m_v, false, rgba.data());
-  }
+  // Decode already happened on the bitmap async worker (OverlayRenderer.cpp,
+  // RenderBitmapJob); 'decoded.rgba' is always tightly packed regardless of
+  // whether the source was paletted or raw, so stride is always width*4.
+  m_pma = o.palette.empty() ? false : !!USE_PREMULTIPLIED_ALPHA;
+  LoadTexture(GL_TEXTURE_2D, decoded.width, decoded.height, decoded.width * 4, &m_u, &m_v, false,
+              decoded.rgba.data());
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -150,17 +147,18 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
   }
 }
 
-std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o)
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o,
+                                           const SBitmapRenderResult& decoded)
 {
-  return std::make_shared<COverlayTextureGL>(o);
+  return std::make_shared<COverlayTextureGL>(o, decoded);
 }
 
-COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
+COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o, const SBitmapRenderResult& decoded)
 {
-  int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba(o.width * o.height);
-
-  convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
+  const int min_x = decoded.minX;
+  const int max_x = decoded.maxX;
+  const int min_y = decoded.minY;
+  const int max_y = decoded.maxY;
 
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -170,8 +168,8 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  LoadTexture(GL_TEXTURE_2D, max_x - min_x, max_y - min_y, o.width * 4, &m_u, &m_v, false,
-              rgba.data() + min_x + min_y * o.width);
+  LoadTexture(GL_TEXTURE_2D, max_x - min_x, max_y - min_y, decoded.width * 4, &m_u, &m_v, false,
+              decoded.rgba.data() + min_x + min_y * decoded.width);
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -184,12 +182,12 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
   m_pma = !!USE_PREMULTIPLIED_ALPHA;
 }
 
-std::shared_ptr<COverlay> COverlay::Create(ASS_Image* images, float width, float height)
+std::shared_ptr<COverlay> COverlay::Create(const SQuads& quads, float width, float height)
 {
-  return std::make_shared<COverlayGlyphGL>(images, width, height);
+  return std::make_shared<COverlayGlyphGL>(quads, width, height);
 }
 
-COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
+COverlayGlyphGL::COverlayGlyphGL(const SQuads& quads, float width, float height)
 {
   m_width  = 1.0;
   m_height = 1.0;
@@ -197,10 +195,6 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
   m_pos    = POSITION_RELATIVE;
   m_x      = 0.0f;
   m_y      = 0.0f;
-
-  SQuads quads;
-  if (!convert_quad(images, quads, static_cast<int>(width)))
-    return;
 
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -218,7 +212,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
   m_vertex.resize(quads.quad.size() * 4);
 
   VERTEX* vt = m_vertex.data();
-  SQuad* vs = quads.quad.data();
+  const SQuad* vs = quads.quad.data();
 
   for (size_t i = 0; i < quads.quad.size(); i++)
   {

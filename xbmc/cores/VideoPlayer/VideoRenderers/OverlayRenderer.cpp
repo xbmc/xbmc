@@ -7,6 +7,44 @@
  *  See LICENSES/README.md for more information.
  */
 
+// ---------------------------------------------------------------------
+// Design notes: async subtitle decode
+//
+// Complex ASS scripts (heavy \blur, many overlapping drawing/karaoke
+// events) can take libass tens of milliseconds to lay out and rasterize
+// per frame. Large PGS/DVB/DVD-SPU bitmaps can likewise take a non-trivial
+// amount of CPU to decode. Doing this inline on the GUI/render thread once
+// per displayed frame (the historical behaviour) means a single slow
+// subtitle frame stalls the entire GUI/render loop, not just the
+// subtitle.
+//
+// CRenderer now off-loads both decode paths to background workers
+// (OVERLAY::CAsyncSubtitleRenderer, see OverlayRendererAsync.h) and never
+// blocks the GUI thread on them. PrepareOverlays() submits a request and
+// immediately reads back whatever the worker last finished - which may be
+// a frame or more stale under load. This deliberately trades subtitle
+// timing accuracy for guaranteed smooth video/GUI playback.
+//
+// Because "submit, then immediately read" can never observe the result of
+// the request just submitted (the worker hasn't even been scheduled yet),
+// PrepareOverlays() looks one presentation flip ahead: while preparing the
+// slot about to be displayed, it also submits a request for the *next*
+// queued slot's pts (supplied by CRenderManager::FrameMove, which knows
+// the presentation queue), so that request has a full GUI tick to
+// complete before it is actually needed. When no distinct "next" pts is
+// known (paused, trick-play, nothing queued), the current slot's own pts
+// is requested instead.
+//
+// Because a presentation flip does not happen every GUI tick (e.g. video
+// fps below display refresh rate) and because pausing/seeking can leave a
+// lookahead result for a pts that is never actually displayed, the async
+// renderer keeps the last two completed results and CRenderer selects
+// whichever is closest to the pts actually being displayed this frame,
+// within a half-frame-duration tolerance. This one rule handles steady
+// playback, pause, and fps-below-refresh-rate content without any
+// special-casing between them.
+// ---------------------------------------------------------------------
+
 #include "OverlayRenderer.h"
 
 #include "OverlayRendererUtil.h"
@@ -17,11 +55,13 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -31,6 +71,89 @@
 
 using namespace KODI;
 using namespace OVERLAY;
+
+namespace
+{
+// Runs on the ass async worker thread only. 'lastAppliedGeneration' is
+// owned by CRenderer but never touched from any other thread - the worker
+// decides here, from the job's styleGeneration, whether to re-apply style,
+// so a style change is never lost to request coalescing regardless of how
+// many intermediate requests were overwritten before this one ran.
+std::shared_ptr<const SAssRenderResult> RenderAssJob(const SAssRenderJob& job,
+                                                     uint64_t& lastAppliedGeneration)
+{
+  auto result = std::make_shared<SAssRenderResult>();
+  result->pts = job.pts;
+  result->frameWidth = job.opts.frameWidth;
+  result->frameHeight = job.opts.frameHeight;
+
+  const bool updateStyle = job.styleGeneration != lastAppliedGeneration;
+  if (updateStyle)
+    lastAppliedGeneration = job.styleGeneration;
+
+  // The expensive call: layout, shaping, blur, glyph rasterization.
+  ASS_Image* images = job.handler->RenderImage(job.pts, job.opts, updateStyle, job.subStyle);
+
+  // Copies every pixel out of libass's buffers; after this line, 'images'
+  // (owned by libass, valid only until the next ass_render_frame on this
+  // renderer) is never touched again.
+  result->hasImage = convert_quad(images, result->quads, static_cast<int>(job.opts.frameWidth));
+  return result;
+}
+
+// Runs on the bitmap async worker thread only.
+std::shared_ptr<const SBitmapRenderResult> RenderBitmapJob(const SBitmapRenderJob& job)
+{
+  auto result = std::make_shared<SBitmapRenderResult>();
+  if (!job.overlay)
+    return result;
+
+  result->sourceOverlay = job.overlay.get();
+
+  if (job.overlay->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+  {
+    const auto& o = static_cast<const CDVDOverlayImage&>(*job.overlay);
+    result->width = o.width;
+    result->height = o.height;
+    result->minX = 0;
+    result->maxX = o.width;
+    result->minY = 0;
+    result->maxY = o.height;
+    result->rgba.resize(static_cast<size_t>(o.width) * o.height);
+
+    if (o.palette.empty())
+    {
+      // Already RGBA; normalize to a tightly packed buffer here (rather
+      // than in the GPU-upload step) so the render thread never needs to
+      // know about source stride/linesize.
+      const uint8_t* src = o.pixels.data();
+      uint32_t* dst = result->rgba.data();
+      for (int row = 0; row < o.height; ++row)
+      {
+        memcpy(dst, src, static_cast<size_t>(o.width) * 4);
+        src += o.linesize;
+        dst += o.width;
+      }
+    }
+    else
+    {
+      convert_rgba(o, true /*mergealpha*/, result->rgba);
+    }
+    result->hasImage = true;
+  }
+  else if (job.overlay->IsOverlayType(DVDOVERLAY_TYPE_SPU))
+  {
+    const auto& o = static_cast<const CDVDOverlaySpu&>(*job.overlay);
+    result->width = o.width;
+    result->height = o.height;
+    result->rgba.resize(static_cast<size_t>(o.width) * o.height);
+    convert_rgba(o, true /*mergealpha*/, result->minX, result->maxX, result->minY, result->maxY,
+                 result->rgba);
+    result->hasImage = true;
+  }
+  return result;
+}
+} // namespace
 
 COverlay::COverlay()
 {
@@ -63,6 +186,24 @@ CRenderer::~CRenderer()
   Flush();
 }
 
+void CRenderer::PreInit()
+{
+  std::unique_lock lock(m_section);
+  if (!m_assRenderer)
+  {
+    m_assRenderer =
+        std::make_unique<CAsyncSubtitleRenderer<SAssRenderJob, SAssRenderResult>>(
+            "AssSubRenderer", [this](const SAssRenderJob& job)
+            { return RenderAssJob(job, m_assLastAppliedStyleGeneration); });
+  }
+  if (!m_bitmapRenderer)
+  {
+    m_bitmapRenderer =
+        std::make_unique<CAsyncSubtitleRenderer<SBitmapRenderJob, SBitmapRenderResult>>(
+            "BitmapSubRenderer", [](const SBitmapRenderJob& job) { return RenderBitmapJob(job); });
+  }
+}
+
 void CRenderer::AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts, int index)
 {
   std::unique_lock lock(m_section);
@@ -88,6 +229,14 @@ void CRenderer::UnInit()
   }
 
   Flush();
+
+  // Stop and join the workers. No new PrepareOverlays calls can arrive
+  // once the caller has begun tearing down (UnInit is called from
+  // CRenderManager::UnInit, itself gated on the render state), so it is
+  // safe to destroy these now.
+  std::unique_lock lock(m_section);
+  m_assRenderer.reset();
+  m_bitmapRenderer.reset();
 }
 
 void CRenderer::Flush()
@@ -99,6 +248,17 @@ void CRenderer::Flush()
 
   ReleaseCache();
   Reset();
+
+  if (m_assRenderer)
+    m_assRenderer->Flush();
+  if (m_bitmapRenderer)
+    m_bitmapRenderer->Flush();
+  m_lastConvertedAssResult.reset();
+  m_cachedAssOverlay.reset();
+  m_lastConvertedBitmapResult.reset();
+  m_cachedBitmapOverlaySource = nullptr;
+  m_cachedBitmapOverlay.reset();
+  m_lastPreparedAssPts = DVD_NOPTS_VALUE;
 }
 
 void CRenderer::Reset()
@@ -254,6 +414,21 @@ void CRenderer::Render(COverlay* o)
   o->Render(state);
 }
 
+double CRenderer::GetOverlayPts(int idx) const
+{
+  std::unique_lock lock(m_section);
+  if (idx < 0 || idx >= NUM_BUFFERS)
+    return DVD_NOPTS_VALUE;
+
+  for (const auto& e : m_buffers[idx])
+  {
+    if (e.overlay_dvd && (e.overlay_dvd->IsOverlayType(DVDOVERLAY_TYPE_TEXT) ||
+                           e.overlay_dvd->IsOverlayType(DVDOVERLAY_TYPE_SSA)))
+        return e.pts;
+  }
+  return DVD_NOPTS_VALUE;
+}
+
 bool CRenderer::HasVisibleOverlay(int idx) const
 {
   std::unique_lock lock(m_section);
@@ -266,19 +441,15 @@ bool CRenderer::HasVisibleOverlay(int idx) const
       continue;
 
     const CDVDOverlay& o = *e.overlay_dvd;
-    // PGS/DVB and DVD SPU: ProcessOverlays inserts these into m_buffers
-    // only at PTS values where the bitmap is on screen, so finding one
-    // here means it is visible.
     if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
-      return true;
-
-    // libass (TEXT/SSA): the container stays in m_buffers for the whole
-    // video (iPTSStopTime=DVD_NOPTS_VALUE). Visibility means
-    // ass_render_frame returned images for the current PTS, cached by
-    // PrepareOverlays in e.renderedImages.
+    {
+      if (e.bitmapResult && e.bitmapResult->hasImage)
+        return true;
+      continue;
+    }
     if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
     {
-      if (e.renderedImages != nullptr)
+      if (e.assResult && e.assResult->hasImage)
         return true;
     }
   }
@@ -422,35 +593,52 @@ void CRenderer::CreateSubtitlesStyle()
   m_overlayStyle->lineSpacing = settings->GetLineSpacing();
 }
 
-void CRenderer::PrepareOverlays(int idx)
+void CRenderer::PrepareOverlays(int idx, double lookaheadPts)
 {
   std::unique_lock lock(m_section);
   if (idx < 0 || idx >= NUM_BUFFERS)
     return;
+  if (!m_assRenderer || !m_bitmapRenderer)
+    return; // PreInit hasn't run yet (e.g. very first call of a session)
 
   bool doMarkDirty = false;
   bool hasImageSpu = false;
   for (auto& e : m_buffers[idx])
   {
-    // Clear last frame's cached output; libass may have invalidated the
-    // pointer on its next ass_render_frame call.
-    // (assDetectChange is consumed by ConvertLibass, not here.)
-    e.renderedImages = nullptr;
+    std::shared_ptr<const SAssRenderResult> prevAssResult = e.assResult;
+    std::shared_ptr<const SBitmapRenderResult> prevBitmapResult = e.bitmapResult;
+    e.assResult.reset();
+    e.bitmapResult.reset();
 
     if (!e.overlay_dvd)
       continue;
 
     CDVDOverlay& o = *e.overlay_dvd;
 
-    // PGS/DVB and DVD SPU: only added to m_buffers at their visible PTS,
-    // so finding one means it is on screen now. m_textureid == 0 is the
-    // "new arrival" signal (also true every frame for animated PGS where
-    // each frame is a fresh CDVDOverlay). Disappearance is caught after
-    // the loop by the hasImageSpu vs m_prevHadImageSpu check.
     if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {
       hasImageSpu = true;
-      if (o.m_textureid == 0)
+
+      // Static content per event: decode once (submitted the first time
+      // we see this exact overlay object) and reuse thereafter, exactly
+      // like the pre-existing m_textureid gating did on the GUI thread -
+      // the only change is that the decode itself now happens off it.
+      SBitmapRenderJob job;
+      job.overlay = e.overlay_dvd;
+      m_bitmapRenderer->RequestRender(job);
+
+      // GetLatestResult() has no per-job identity of its own - it is just
+      // "the most recent thing the worker finished" - so verify it was
+      // actually decoded from *this* overlay before accepting it. Without
+      // this, a slow decode for a just-superseded overlay object could
+      // complete after a new one has taken its place in m_buffers and get
+      // shown under the new object's placement, however briefly.
+      auto result = m_bitmapRenderer->GetLatestResult();
+
+      if (result && result->sourceOverlay == e.overlay_dvd.get())
+        e.bitmapResult = result;
+
+      if (!prevBitmapResult && e.bitmapResult && e.bitmapResult->hasImage)
         doMarkDirty = true;
       continue;
     }
@@ -462,20 +650,16 @@ void CRenderer::PrepareOverlays(int idx)
     if (!ovAss.GetLibassHandler())
       continue;
 
-    bool updateStyle = !m_overlayStyle || m_isSettingsChanged;
-    if (updateStyle)
+    if (!m_overlayStyle || m_isSettingsChanged)
     {
       m_isSettingsChanged = false;
       LoadSettings();
       CreateSubtitlesStyle();
+      ++m_styleGeneration;
     }
 
-    // rOpts setup moved from CRenderer::ConvertLibass; duplicated in CDebugRenderer::CRenderer::Render.
     SUBTITLES::STYLE::renderOpts rOpts;
 
-    // Three rects: source (subtitle canvas), video (playing size), frame
-    // (render target; may exceed video to include letterbox bars so libass
-    // can place subtitles in them).
     rOpts.sourceWidth = m_rs.Width();
     rOpts.sourceHeight = m_rs.Height();
     rOpts.videoWidth = m_rd.Width();
@@ -483,31 +667,22 @@ void CRenderer::PrepareOverlays(int idx)
     rOpts.frameWidth = m_rv.Width();
     rOpts.frameHeight = m_rv.Height();
 
-    // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
     if (m_stereomode == "left_right" || m_stereomode == "right_left")
     {
-      // only half-sbs video, sbs video don't need to change source size
       if (rOpts.sourceWidth / rOpts.sourceHeight < 1.2f)
         rOpts.sourceWidth = m_rs.Width() * 2;
     }
     else if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
     {
-      // only half-ou video, ou video don't need to change source size
       if (rOpts.sourceWidth / rOpts.sourceHeight > 2.5f)
         rOpts.sourceHeight = m_rs.Height() * 2;
     }
 
-    // Set position of subtitles based on video calibration settings
     RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-    // Keep track of subtitle position value change,
-    // can be changed by GUI Calibration or by window mode/resolution change or
-    // by user manual change (e.g. keyboard shortcut)
     if (m_subtitlePosResInfo != resInfo.iSubtitles)
     {
       if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
       {
-        // m_subtitlePosition has been changed
-        // and has been requested to save the value to resInfo
         resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
         CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
             CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
@@ -519,23 +694,12 @@ void CRenderer::PrepareOverlays(int idx)
 
     rOpts.m_par = resInfo.fPixelRatio;
 
-    // rOpts.position and margins (set to style) can invalidate the text
-    // positions to subtitles type that make use of margins to position text on
-    // the screen (e.g. ASS/WebVTT) then we allow to set them when position
-    // override setting is enabled only
     if (ovAss.IsForcedMargins())
     {
       rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::DISABLED;
     }
     else if (m_subtitleAlign == SUBTITLES::Align::MANUAL)
     {
-      // When vertical margins are used Libass apply a displacement in percentage
-      // of the height available to line position, this displacement causes
-      // problems with subtitle calibration bar on Video Calibration window,
-      // so when you moving the subtitle bar of the GUI the text will no longer
-      // match the bar, this calculation compensates for the displacement.
-      // Note also that the displacement compensation will cause a different
-      // default position of the text, different from the other alignment positions
       double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
 
       int assPlayResY = ovAss.GetLibassHandler()->GetPlayResY();
@@ -549,8 +713,6 @@ void CRenderer::PrepareOverlays(int idx)
     }
     else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
     {
-      // To keep consistent the position of text as other alignment positions
-      // we avoid apply the displacement compensation
       double posPx =
           static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top);
       rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
@@ -561,8 +723,6 @@ void CRenderer::PrepareOverlays(int idx)
       rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
     }
 
-    // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
-    // This setting influence style->alignment property
     if (ovAss.IsTextAlignEnabled())
     {
       if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::LEFT)
@@ -573,25 +733,63 @@ void CRenderer::PrepareOverlays(int idx)
         rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::CENTER;
     }
 
-    e.renderedFrameWidth = rOpts.frameWidth;
-    e.renderedFrameHeight = rOpts.frameHeight;
-
-    // Pull the libass output for this PTS. Cached on the SElement until
-    // ConvertLibass consumes it later in this frame's GUI walk.
-    int currentChange = 0;
-    e.renderedImages = ovAss.GetLibassHandler()->RenderImage(e.pts, rOpts, updateStyle,
-                                                             m_overlayStyle, &currentChange);
-    if (currentChange > 0)
+    // Ordinary frame-to-frame pts deltas are a small fraction of a second;
+    // a jump past this threshold, in either direction, means a seek (or
+    // similar discontinuity) landed since the last call. Any async result
+    // history at that point was rendered for pts values on the wrong side
+    // of the jump - close-in-value-but-stale content that the ordinary
+    // "not in the future" rule would otherwise happily match against the
+    // new position - so it must be discarded here, at the point the jump
+    // is actually observed, rather than only at the seek's own flush call
+    // (DiscardBuffer), which necessarily fires before the presented pts
+    // has caught up to the new position and so cannot see this coming.
+    constexpr double DISCONTINUITY_THRESHOLD = DVD_TIME_BASE; // 1 second
+    if (m_lastPreparedAssPts != DVD_NOPTS_VALUE &&
+        std::fabs(e.pts - m_lastPreparedAssPts) > DISCONTINUITY_THRESHOLD)
     {
-      // Persist on the overlay so a skipped GUI render does not drop the change.
-      ovAss.m_pendingChange = currentChange;
-      doMarkDirty = true;
+      m_assRenderer->Flush();
+      m_lastConvertedAssResult.reset();
+      m_cachedAssOverlay.reset();
     }
+    m_lastPreparedAssPts = e.pts;
+
+    // Submit the lookahead request (next presented slot's pts, when
+    // known) so it has a full GUI tick to complete before it is actually
+    // displayed. Fall back to this slot's own pts when no distinct next
+    // pts is available (paused, trick-play, nothing queued yet).
+    const double requestPts = (lookaheadPts != DVD_NOPTS_VALUE) ? lookaheadPts : e.pts;
+
+    SAssRenderJob job;
+    job.handler = ovAss.GetLibassHandler();
+    job.pts = requestPts;
+    job.opts = rOpts;
+    job.subStyle = m_overlayStyle;
+    job.styleGeneration = m_styleGeneration;
+    m_assRenderer->RequestRender(job);
+
+    // Consume: pick whichever of the last two completed results has the
+    // newest pts not exceeding *this slot's own* pts (not requestPts -
+    // that is only where we are asking the worker to look next). Never
+    // shows a "future" result early; always accepts an arbitrarily stale
+    // "past" one rather than showing nothing while the worker catches up
+    // on a run of slow cues. See file-level design notes.
+    e.assResult = m_assRenderer->GetBestResult(e.pts);
+
+    if (e.assResult.get() != prevAssResult.get())
+    {
+      CLog::Log(LOGDEBUG,
+                "ASYNC_SUB[ass]: display pts={:.3f} now showing result pts={:.3f} (hasImage={})",
+                e.pts / DVD_TIME_BASE, e.assResult ? e.assResult->pts / DVD_TIME_BASE : -1.0,
+                e.assResult && e.assResult->hasImage);
+    }
+
+    if (e.assResult && (!prevAssResult || prevAssResult.get() != e.assResult.get()) &&
+        e.assResult->hasImage)
+      doMarkDirty = true;
+    else if (prevAssResult && prevAssResult->hasImage && (!e.assResult || !e.assResult->hasImage))
+      doMarkDirty = true; // subtitle disappeared
   }
 
-  // PGS/DVB/SPU disappearance: arrival is caught by m_textureid==0 in
-  // the loop above. Without this, a PGS subtitle ending leaves its
-  // cached bitmap on the GUI plane until something else dirties.
   if (hasImageSpu != m_prevHadImageSpu)
     doMarkDirty = true;
   m_prevHadImageSpu = hasImageSpu;
@@ -602,30 +800,46 @@ void CRenderer::PrepareOverlays(int idx)
 
 std::shared_ptr<COverlay> CRenderer::ConvertLibass(SElement& e)
 {
-  // If no images not execute the renderer
-  if (!e.renderedImages)
+  if (!e.assResult || !e.assResult->hasImage)
     return nullptr;
 
-  CDVDOverlayLibass& o = static_cast<CDVDOverlayLibass&>(*e.overlay_dvd);
+  // Pointer-identity cache: the async result is immutable, so if this is
+  // the same object we built a COverlay from last time, reuse it - no
+  // need to re-upload identical pixels to the GPU. Replaces the previous
+  // o.m_textureid/o.m_pendingChange bookkeeping (only ever one libass
+  // container active at a time, so a single cache slot suffices).
+  if (m_cachedAssOverlay && m_lastConvertedAssResult.get() == e.assResult.get())
+    return m_cachedAssOverlay;
 
-  if (o.m_textureid)
-  {
-    if (o.m_pendingChange == 0)
-    {
-      std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
-          m_textureCache.find(o.m_textureid);
-      if (it != m_textureCache.end())
-        return it->second;
-    }
-  }
+  m_cachedAssOverlay =
+      COverlay::Create(e.assResult->quads, e.assResult->frameWidth, e.assResult->frameHeight);
+  m_lastConvertedAssResult = e.assResult;
+  return m_cachedAssOverlay;
+}
 
-  std::shared_ptr<COverlay> overlay =
-      COverlay::Create(e.renderedImages, e.renderedFrameWidth, e.renderedFrameHeight);
+std::shared_ptr<COverlay> CRenderer::ConvertBitmap(SElement& e)
+{
+  if (!e.bitmapResult || !e.bitmapResult->hasImage || !e.overlay_dvd)
+    return nullptr;
 
-  m_textureCache[m_textureid] = overlay;
-  o.m_textureid = m_textureid;
-  m_textureid++;
-  o.m_pendingChange = 0; // consume
+  // Identity check the async mailbox itself cannot provide (it only knows
+  // about jobs/results, not "which overlay object"): if the cached
+  // COverlay was built from a different source overlay, or the decoded
+  // result object has changed, rebuild.
+  if (m_cachedBitmapOverlay && m_cachedBitmapOverlaySource == e.overlay_dvd.get() &&
+      m_lastConvertedBitmapResult.get() == e.bitmapResult.get())
+    return m_cachedBitmapOverlay;
+
+  CDVDOverlay& o = *e.overlay_dvd;
+  std::shared_ptr<COverlay> overlay;
+  if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+    overlay = COverlay::Create(static_cast<CDVDOverlayImage&>(o), *e.bitmapResult, m_rs);
+  else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    overlay = COverlay::Create(static_cast<CDVDOverlaySpu&>(o), *e.bitmapResult);
+
+  m_cachedBitmapOverlay = overlay;
+  m_cachedBitmapOverlaySource = e.overlay_dvd.get();
+  m_lastConvertedBitmapResult = e.bitmapResult;
   return overlay;
 }
 
@@ -635,44 +849,12 @@ std::shared_ptr<COverlay> CRenderer::Convert(SElement& e)
     return nullptr;
 
   CDVDOverlay& o = *e.overlay_dvd;
-  std::shared_ptr<COverlay> r = NULL;
 
   if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
-  {
-    CDVDOverlayLibass& ovAss = static_cast<CDVDOverlayLibass&>(o);
-    if (!ovAss.GetLibassHandler())
-      return nullptr;
-
-    // Build the COverlay from libass output PrepareOverlays cached on e
-    // earlier this frame; avoids re-entering libass during render.
-    r = ConvertLibass(e);
-
-    if (!r)
-      return nullptr;
-  }
-  else if (o.m_textureid)
-  {
-    std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
-        m_textureCache.find(o.m_textureid);
-    if (it != m_textureCache.end())
-      r = it->second;
-  }
-
-  if (r)
-  {
-    return r;
-  }
-
-  if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = COverlay::Create(static_cast<CDVDOverlayImage&>(o), m_rs);
-  else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
-    r = COverlay::Create(static_cast<CDVDOverlaySpu&>(o));
-
-  m_textureCache[m_textureid] = r;
-  o.m_textureid = m_textureid;
-  m_textureid++;
-
-  return r;
+    return ConvertLibass(e);
+  if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE) || o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    return ConvertBitmap(e);
+  return nullptr;
 }
 
 void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)

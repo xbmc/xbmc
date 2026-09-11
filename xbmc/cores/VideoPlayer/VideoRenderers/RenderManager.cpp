@@ -352,13 +352,20 @@ void CRenderManager::FrameMove()
   m_playerPort->UpdateGuiRender(IsGuiLayer() || !m_pRenderer->VideoBypassesFramebuffer() ||
                                 firstFrame);
 
-  // Run libass for the current PTS and cache the output for ConvertLibass
-  // to use during the render pass. PrepareOverlays MarkDirty's on libass
-  // changes and on PGS/DVB/SPU arrival/disappearance.
-  m_overlays.PrepareOverlays(m_presentsource);
+  // Submit this frame's subtitle decode requests to the async workers and
+  // fetch whatever is ready; never blocks. Also hand over the pts of the
+  // next queued slot (if any) so that request has a full tick to
+  // complete before it is actually presented - see design notes at the
+  // top of OverlayRenderer.cpp. No distinct "next" pts is available when
+  // paused/trick-play/nothing queued; PrepareOverlays falls back to the
+  // current slot's own pts in that case.
+  double lookaheadPts = DVD_NOPTS_VALUE;
+  if (!m_queued.empty() && m_queued.front() != m_presentsource)
+    lookaheadPts = m_overlays.GetOverlayPts(m_queued.front());
+  m_overlays.PrepareOverlays(m_presentsource, lookaheadPts);
 }
 
-void CRenderManager::PreInit()
+  void CRenderManager::PreInit()
 {
   {
     std::unique_lock lock(m_statelock);
@@ -382,6 +389,12 @@ void CRenderManager::PreInit()
   {
     CreateRenderer();
   }
+
+  // Create the subtitle async decode worker(s), if not already running
+  // from a previous session on this CRenderManager. Cheap (thread
+  // creation only); deliberately done here rather than lazily on first
+  // use, so the one-time cost lands during session startup.
+  m_overlays.PreInit();
 
   UpdateLatencyTweak();
 

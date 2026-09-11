@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "cores/VideoPlayer/VideoRenderers/OverlayRendererUtil.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -259,7 +260,11 @@ void CDebugRenderer::CRenderer::Render(int idx, float depth)
       if (!images)
         continue;
 
-      std::shared_ptr<COverlay> o = COverlay::Create(images, rOpts.frameWidth, rOpts.frameHeight);
+      SQuads quads;
+      if (!convert_quad(images, quads, static_cast<int>(rOpts.frameWidth)))
+        continue;
+
+      std::shared_ptr<COverlay> o = COverlay::Create(quads, rOpts.frameWidth, rOpts.frameHeight);
 
       if (o)
         OVERLAY::CRenderer::Render(o.get());

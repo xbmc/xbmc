@@ -27,8 +27,10 @@ namespace OVERLAY {
      *  \param o The overlay image
      *  \param rSource The video source rect size
      */
-    explicit COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource);
-    explicit COverlayTextureGL(const CDVDOverlaySpu& o);
+    explicit COverlayTextureGL(const CDVDOverlayImage& o,
+                               const SBitmapRenderResult& decoded,
+                               CRect& rSource);
+    explicit COverlayTextureGL(const CDVDOverlaySpu& o, const SBitmapRenderResult& decoded);	 
     ~COverlayTextureGL() override;
 
     void Render(SRenderState& state) override;
@@ -42,7 +44,7 @@ namespace OVERLAY {
   class COverlayGlyphGL : public COverlay
   {
   public:
-    COverlayGlyphGL(ASS_Image* images, float width, float height);
+    COverlayGlyphGL(const SQuads& quads, float width, float height);
 
     ~COverlayGlyphGL() override;
 

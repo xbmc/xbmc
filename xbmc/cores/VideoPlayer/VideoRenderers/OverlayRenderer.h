@@ -11,17 +11,20 @@
 
 #include "BaseRenderer.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlay.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitlesLibass.h"
 #include "cores/VideoPlayer/DVDSubtitles/SubtitlesStyle.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "OverlayRendererAsync.h"
+#include "OverlayRendererUtil.h"
 #include "settings/SubtitlesSettings.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
 #include <atomic>
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <vector>
-
-typedef struct ass_image ASS_Image;
 
 class CDVDOverlay;
 class CDVDOverlayLibass;
@@ -49,12 +52,101 @@ namespace OVERLAY {
    */
   void MarkDirty();
 
+  /*!
+   * \brief Immutable, self-contained output of one asynchronous libass
+   *  render pass: ass_render_frame() plus the CPU-side glyph-atlas packing
+   *  (convert_quad) that used to run inline on the GUI/render thread.
+   *  convert_quad() copies every pixel it needs out of libass's internal
+   *  ASS_Image list, so this struct owns everything it refers to and
+   *  remains valid indefinitely - in particular, past the point where the
+   *  next ass_render_frame() call on the same renderer would invalidate
+   *  the original ASS_Image list.
+   */
+  struct SAssRenderResult
+  {
+    double pts{0.0};
+    bool hasImage{false};
+    float frameWidth{0.0f};
+    float frameHeight{0.0f};
+    SQuads quads;
+  };
+
+  //! One request for the async libass worker. Equality (used for request
+  //! coalescing) intentionally ignores nothing: an unchanged pts, style
+  //! generation, and geometry means the previous render is still valid.
+  struct SAssRenderJob
+  {
+    std::shared_ptr<CDVDSubtitlesLibass> handler;
+    double pts{0.0};
+    KODI::SUBTITLES::STYLE::renderOpts opts{};
+    std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> subStyle;
+    // Bumped by CRenderer whenever the user's subtitle style settings
+    // change. The worker (not the submitter) decides whether a given
+    // render needs to re-apply style, by comparing generations, so a
+    // style change can never be lost to request coalescing.
+    uint64_t styleGeneration{0};
+
+    bool operator==(const SAssRenderJob& other) const
+    {
+      return handler == other.handler && pts == other.pts && subStyle == other.subStyle &&
+             styleGeneration == other.styleGeneration &&
+             opts.frameWidth == other.opts.frameWidth &&
+             opts.frameHeight == other.opts.frameHeight &&
+             opts.videoWidth == other.opts.videoWidth &&
+             opts.videoHeight == other.opts.videoHeight &&
+             opts.sourceWidth == other.opts.sourceWidth &&
+             opts.sourceHeight == other.opts.sourceHeight && opts.m_par == other.opts.m_par &&
+             opts.marginsMode == other.opts.marginsMode && opts.position == other.opts.position &&
+             opts.horizontalAlignment == other.opts.horizontalAlignment;
+    }
+  };
+
+  /*!
+   * \brief Decoded, CPU-owned output of one bitmap subtitle (PGS/DVB image
+   *  or DVD SPU) decode pass. Unlike libass, the source CDVDOverlay for
+   *  these types is stable/immutable once constructed - there is no
+   *  ephemeral-pointer hazard - so this struct exists purely to move the
+   *  (potentially large) convert_rgba() CPU cost off the GUI thread; the
+   *  render thread still reads placement fields directly off the source
+   *  CDVDOverlayImage/CDVDOverlaySpu object.
+   */
+  struct SBitmapRenderResult
+  {
+    // Not used for pts-matching (bitmap overlays are event-scoped, not
+    // re-evaluated per frame); present for interface uniformity only.
+    double pts{0.0};
+    const CDVDOverlay* sourceOverlay{nullptr}; ///< Identity of the decoded from CDVDOverlay
+    bool hasImage{false};
+    std::vector<uint32_t> rgba; // tightly packed, width*height, row-major
+    int width{0};
+    int height{0};
+    // SPU only: convert_rgba()'s visible-content crop. Image overlays set
+    // these to the full [0,width) x [0,height) rect.
+    int minX{0};
+    int maxX{0};
+    int minY{0};
+    int maxY{0};
+  };
+
+  struct SBitmapRenderJob
+  {
+    std::shared_ptr<CDVDOverlay> overlay; // CDVDOverlayImage or CDVDOverlaySpu
+
+    bool operator==(const SBitmapRenderJob& other) const
+    {
+      return overlay.get() == other.overlay.get();
+    }
+  };
+
   class COverlay
   {
   public:
-    static std::shared_ptr<COverlay> Create(const CDVDOverlayImage& o, CRect& rSource);
-    static std::shared_ptr<COverlay> Create(const CDVDOverlaySpu& o);
-    static std::shared_ptr<COverlay> Create(ASS_Image* images, float width, float height);
+    static std::shared_ptr<COverlay> Create(const CDVDOverlayImage& o,
+                                            const SBitmapRenderResult& decoded,
+                                            CRect& rSource);
+    static std::shared_ptr<COverlay> Create(const CDVDOverlaySpu& o,
+                                            const SBitmapRenderResult& decoded);
+    static std::shared_ptr<COverlay> Create(const SQuads& quads, float width, float height);
 
     COverlay();
     virtual ~COverlay();
@@ -111,14 +203,29 @@ namespace OVERLAY {
     virtual void Render(int idx, float depth = 0.0f);
 
     /*!
-     * \brief Pre-walk hook: render libass output for the present slot.
-     *  Called once per frame on the GUI/main thread before the GUI walk-skip
-     *  decision. Caches the ASS_Image* and detect_change flag on each
-     *  SElement so ConvertLibass can consume them during the walk without
-     *  re-entering libass. Calls MarkDirty internally when libass reports
-     *  a visible or changed subtitle.
+     * \brief Create the background decode worker(s). Called once per
+     *  playback session from CRenderManager::PreInit(), which already
+     *  guarantees a consistent thread regardless of caller; torn down in
+     *  UnInit(). Cheap (thread creation only), deliberately not deferred
+     *  to first use so the one-time cost lands during session startup
+     *  rather than when the first subtitle needs to be shown.
      */
-    void PrepareOverlays(int idx);
+    void PreInit();
+
+    /*!
+     * \brief Pre-walk hook: submit this frame's (and, when available, the
+     *  next presented frame's) subtitle decode requests to the async
+     *  workers, and fetch whatever results are ready. Called once per
+     *  frame on the GUI/main thread; never blocks on libass or bitmap
+     *  decode. Calls MarkDirty internally when the visible/cached result
+     *  changes.
+     * \param idx the buffer slot about to be presented this frame.
+     * \param lookaheadPts pts of the next frame due to be presented after
+     *  this one (already subtitle-delay adjusted, matching e.pts), or
+     *  DVD_NOPTS_VALUE if none is known yet (paused, trick-play, or
+     *  nothing queued) - in which case idx's own pts is used instead.
+     */
+    void PrepareOverlays(int idx, double lookaheadPts);
 
     /*!
      * \brief Release resources
@@ -134,19 +241,23 @@ namespace OVERLAY {
 
     void Release(int idx);
 
+    /*
+     * \brief pts already recorded (by AddOverlay, delay-adjusted) for the
+     *  TEXT/SSA overlay in buffer slot 'idx', or DVD_NOPTS_VALUE if that
+     *  slot has no such overlay. Used by CRenderManager::FrameMove to
+     *  supply PrepareOverlays' lookahead pts from the next queued slot,
+     *  before that slot becomes the presented one.
+     */
+    double GetOverlayPts(int idx)const;
+
     /*!
      * \brief True if any overlay in m_buffers[idx] is visible this frame.
-     *
-     *  PGS/DVB and DVD SPU: ProcessOverlays only inserts at the visible PTS,
-     *  so any entry in m_buffers means visible.
-     *
-     *  libass (TEXT/SSA): the container is added once with no stop PTS and
-     *  stays in m_buffers for the whole video. Visibility means
-     *  ass_render_frame returned images for the current PTS, cached on
-     *  e.renderedImages by PrepareOverlays.
+     *  For libass entries this reflects whichever async result
+     *  PrepareOverlays most recently selected for this SElement, which may
+     *  be a frame or two stale under load - see class-level notes.
      *
      *  Must be called after PrepareOverlays has run this frame; before that
-     *  e.renderedImages reflects the previous frame's state.
+     *  the selected result reflects the previous frame's state.
      */
     bool HasVisibleOverlay(int idx) const;
     void SetVideoRect(CRect &source, CRect &dest, CRect &view);
@@ -176,12 +287,12 @@ namespace OVERLAY {
       SElement() : overlay_dvd(NULL) { pts = 0.0; }
       double pts;
       std::shared_ptr<CDVDOverlay> overlay_dvd;
-      // libass output cached by PrepareOverlays; read by ConvertLibass during
-      // render. libass owns the pointer; valid only until the next
-      // ass_render_frame call.
-      ASS_Image* renderedImages{nullptr};
-      float renderedFrameWidth{0.0f};
-      float renderedFrameHeight{0.0f};
+      // Most recent async result PrepareOverlays selected for this
+      // SElement this frame (libass: closest-pts match within tolerance;
+      // bitmap: latest result matching this overlay's identity). May be
+      // null if no result is available/acceptable yet.
+      std::shared_ptr<const SAssRenderResult> assResult;
+      std::shared_ptr<const SBitmapRenderResult> bitmapResult;
     };
 
     void Render(COverlay* o);
@@ -189,6 +300,9 @@ namespace OVERLAY {
     // Build a COverlay (cached or freshly created) from the libass output
     // already produced by PrepareOverlays. Does not call ass_render_frame.
     std::shared_ptr<COverlay> ConvertLibass(SElement& e);
+    // Build a COverlay (cached or freshly created) from the bitmap decode
+    // already produced by PrepareOverlays. Does not call convert_rgba.
+    std::shared_ptr<COverlay> ConvertBitmap(SElement& e);
 
     void CreateSubtitlesStyle();
 
@@ -215,6 +329,34 @@ namespace OVERLAY {
     CRect m_rs; // Source size
     CRect m_rd; // Video size, may be influenced by video settings (e.g. zoom)
     std::string m_stereomode;
+
+    // Async decode workers. Created in PreInit(), destroyed in UnInit();
+    // null in between playback sessions and briefly at startup.
+    std::unique_ptr<CAsyncSubtitleRenderer<SAssRenderJob, SAssRenderResult>> m_assRenderer;
+    std::unique_ptr<CAsyncSubtitleRenderer<SBitmapRenderJob, SBitmapRenderResult>> m_bitmapRenderer;
+
+    // Worker-thread-only: read/written exclusively from inside the
+    // m_assRenderer render function, never touched from the GUI thread.
+    uint64_t m_assLastAppliedStyleGeneration{~0ULL};
+
+    // Bumped whenever the subtitle style is rebuilt; see SAssRenderJob.
+    uint64_t m_styleGeneration{0};
+
+    // GUI-thread-only pointer-identity caches: avoid re-uploading to the
+    // GPU when the async result driving a slot's overlay hasn't changed
+    // since the last frame.
+    std::shared_ptr<const SAssRenderResult> m_lastConvertedAssResult;
+    std::shared_ptr<COverlay> m_cachedAssOverlay;
+    std::shared_ptr<const SBitmapRenderResult> m_lastConvertedBitmapResult;
+    const CDVDOverlay* m_cachedBitmapOverlaySource{nullptr};
+    std::shared_ptr<COverlay> m_cachedBitmapOverlay;
+
+    // GUI-thread-only: last e.pts seen for the libass container, used to
+    // detect seeks/discontinuities directly at the point pts is consumed
+    // (see PrepareOverlays) rather than relying on a flush call's timing,
+    // which can land before the presented pts actually jumps.
+    double m_lastPreparedAssPts{DVD_NOPTS_VALUE};
+
     // Current subtitle position
     int m_subtitlePosition{0};
     // Current subtitle position from resolution info,

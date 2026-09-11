@@ -22,7 +22,7 @@ namespace OVERLAY {
     : public COverlay
   {
   public:
-    COverlayQuadsDX(ASS_Image* images, float width, float height);
+    COverlayQuadsDX(const SQuads& quads, float width, float height);
     virtual ~COverlayQuadsDX();
 
     void Render(SRenderState& state);
@@ -40,8 +40,10 @@ namespace OVERLAY {
      *  \param o The overlay image
      *  \param rSource The video source rect size
      */
-    explicit COverlayImageDX(const CDVDOverlayImage& o, CRect& rSource);
-    explicit COverlayImageDX(const CDVDOverlaySpu& o);
+    explicit COverlayImageDX(const CDVDOverlayImage& o,
+                             const SBitmapRenderResult& decoded,
+                             CRect& rSource);
+    explicit COverlayImageDX(const CDVDOverlaySpu& o, const SBitmapRenderResult& decoded);
     virtual ~COverlayImageDX();
 
     void Load(const uint32_t* rgba, int width, int height, int stride);
