@@ -12,6 +12,7 @@
 #include "games/addons/disc/GameClientDiscModel.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <string>
@@ -32,6 +33,8 @@ public:
   // Lifecycle functions
   void Initialize(GameClientPtr gameClient);
   void Deinitialize();
+  void NotifyDiscChange();
+  void NotifyTrayChange();
 
   // Game interface
   bool IsEjected() const;
@@ -45,7 +48,8 @@ public:
 private:
   // Game parameters
   GameClientPtr m_gameClient;
-  CGameClientDiscModel m_initialDiscModel;
+  std::optional<CGameClientDiscModel> m_pendingDiscModel;
+  uint64_t m_pendingRestoreGeneration{0};
 };
 } // namespace GAME
 } // namespace KODI

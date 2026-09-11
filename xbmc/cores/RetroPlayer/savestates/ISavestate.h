@@ -9,7 +9,9 @@
 #pragma once
 
 #include "SavestateTypes.h"
+#include "games/addons/disc/GameClientDiscState.h"
 
+#include <optional>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -245,12 +247,15 @@ public:
    */
   virtual size_t GetAchievementSize() const = 0;
 
+  virtual std::optional<GAME::GameClientDiscState> GetDiscState() const = 0;
+
   /*!
    * \brief A buffer to write the achievement runtime's state into
    *
    * Sized by the caller from what the runtime reports, so it is not capped.
    */
   virtual uint8_t* GetAchievementBuffer(size_t size) = 0;
+  virtual void SetDiscState(const std::optional<GAME::GameClientDiscState>& state) = 0;
   virtual void Finalize() = 0;
   ///}
 
