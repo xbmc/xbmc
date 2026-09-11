@@ -15,11 +15,11 @@ ifeq ($(DEBUG_BUILD), yes)
   CONFIGURE+= --enable-asserts
 endif
 
-ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
-  # blanket disable timespec_get use for apple platforms. timespec_get was introduced in
+ifeq ($(OS), darwin_embedded)
+  # blanket disable timespec_get use for darwin_embedded. timespec_get was introduced in
   # __API_AVAILABLE(macosx(10.15), ios(13.0), tvos(13.0), watchos(6.0)) but older platforms
   # are failing to run.
-  CONFIGURE+= mhd_cv_func_timespec_get=no
+  CONFIGURE+= mhd_cv_have_func_timespec_get=no
 endif
 
 LIBDYLIB=$(PLATFORM)/src/microhttpd/.libs/$(LIBNAME).a

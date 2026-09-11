@@ -33,11 +33,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
       find_program(MAKE_EXECUTABLE make REQUIRED)
 
-      if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-        # blanket disable timespec_get use for apple platforms. timespec_get was introduced in
+      if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
+        # blanket disable timespec_get use for darwin_embedded. timespec_get was introduced in
         # __API_AVAILABLE(macosx(10.15), ios(13.0), tvos(13.0), watchos(6.0)) but older platforms
         # are failing to run.
-        set(EXTRA_ARGS mhd_cv_func_timespec_get=no)
+        set(EXTRA_ARGS mhd_cv_have_func_timespec_get=no)
       endif()
 
       set(CONFIGURE_COMMAND ./configure --prefix ${DEPENDS_PATH}
