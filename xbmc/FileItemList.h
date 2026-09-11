@@ -56,8 +56,11 @@ public:
     StackCandidateType type;
     std::string title;
     std::string volume;
+    std::string remainder; // the part of the name after the volume, excluding the extension
     int64_t size;
     int index; // index in m_items
+    std::string playPath; // for a folder candidate: the file inside the folder
+    std::string pattern; // the stack expression that matched, for logging
 
     auto operator<=>(const StackCandidate&) const = default;
   };
@@ -66,6 +69,7 @@ public:
   {
     StackCandidateType type;
     std::string title;
+    std::string remainder;
 
     auto operator<=>(const CountedStackCandidate& other) const = default;
   };
