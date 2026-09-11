@@ -189,6 +189,24 @@ private:
   CTextureCache(const CTextureCache&) = delete;
   CTextureCache const& operator=(CTextureCache const&) = delete;
 
+  /*! \brief Runs the caching jobs, apart from this object's own queue
+
+   The cleanup timer's job shares that one, and takes the images it is about to remove as unused
+   before deleting them. Letting a caching job run alongside it would allow one of those to be
+   written between the two, and then deleted.
+   */
+  class CCachingQueue final : public CJobQueue
+  {
+  public:
+    explicit CCachingQueue(CTextureCache& cache);
+    void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
+
+  private:
+    CTextureCache& m_cache;
+  };
+
+  CCachingQueue m_cachingQueue{*this};
+
   /*! \brief Check if the given image is a cached image
    \param image url of the image
    \return true if this is a cached image, false otherwise.

@@ -12,7 +12,9 @@
 #include "jobs/Job.h"
 #include "jobs/LambdaJob.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 
+#include <chrono>
 #include <queue>
 #include <vector>
 
@@ -93,6 +95,19 @@ public:
   bool IsProcessing() const;
 
   /*!
+   \brief Wait for every job added to this queue to finish
+
+   Returns as soon as nothing is queued or in progress, so a queue that was already idle returns
+   at once. Note that a queue whose priority is currently suspended will not drain: callers should
+   treat a timeout as a reason to check, rather than as a reason to keep waiting.
+
+   \param timeout how long to wait for
+   \return true if the queue is now idle, false if it timed out first
+   \sa IsProcessing
+   */
+  bool WaitForCompletion(std::chrono::milliseconds timeout);
+
+  /*!
    \brief The callback used when a job completes.
 
    CJobQueue implementation will cleanup the internal processing queue and then queue the next
@@ -152,10 +167,23 @@ private:
   void OnJobNotify(const CJob* job);
   void QueueNextJob();
 
+  /*! \brief Match the idle event to what the queue holds
+
+   Call with m_section held, from anywhere either container changes: a job can leave the queue
+   without finishing - cancelled, or refused by the job manager - and something waiting on the
+   queue draining still needs to be told.
+
+   \sa WaitForCompletion
+   */
+  void UpdateIdleState();
+
   using Queue = std::deque<CJobPointer>;
   using Processing = std::vector<CJobPointer>;
   Queue m_jobQueue;
   Processing m_processing;
+
+  //! Set whenever nothing is queued or in progress
+  CEvent m_idleEvent{true, true};
 
   unsigned int m_jobsAtOnce{1};
   CJob::PRIORITY m_priority{CJob::PRIORITY::PRIORITY_LOW};

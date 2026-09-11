@@ -8,8 +8,11 @@
 
 #pragma once
 
+#include "utils/Artwork.h"
+
 #include <cstdint>
 #include <string>
+#include <vector>
 
 class CFileItem;
 
@@ -68,6 +71,22 @@ std::string GetLocalArtBaseFilename(
  \sa GetFolderThumb, GetTBNFile
  */
 std::string GetLocalFanart(const CFileItem& item);
+
+/*! \brief Add the art files sitting alongside an item to its artwork
+ \param itemArt [in/out] the item's artwork, added to
+ \param wantedArtTypes the art types to look for
+ \param itemPath path of the item whose folder is searched
+ \param addAll whether to take any valid art type found, rather than only those wanted
+ \param exactName whether an art type has to match a wanted one exactly
+ \param isInFolder whether the item is alone in its folder, so unprefixed art belongs to it
+ \sa GetLocalArtBaseFilename
+ */
+void AddLocalItemArtwork(Artwork& itemArt,
+                         const std::vector<std::string>& wantedArtTypes,
+                         const std::string& itemPath,
+                         bool addAll,
+                         bool exactName,
+                         bool isInFolder);
 
 /*! \brief Get the .tbn file associated with an item.
  \param item CFileItem containing the item path.
