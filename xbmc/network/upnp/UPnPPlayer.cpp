@@ -160,7 +160,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   NPT_CHECK_LABEL_SEVERE(m_delegate->SendGetTransportInfo(action), failed_gettransportinfo);
   NPT_CHECK_LABEL_SEVERE(m_delegate->WaitForReply(*action, timeout), failed_gettransportinfo);
 
-  if (const NPT_String openingState = m_delegate->GetTransportState();
+  if (const NPT_String openingState = action->GetTransportState();
       openingState != "NO_MEDIA_PRESENT" && openingState != "STOPPED")
   {
     timeout.Set(timeout.GetInitialTimeoutValue());
@@ -178,7 +178,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
       if (!m_delegate->WaitForReplyFor(*action, 500ms))
         continue;
 
-      const NPT_String stoppedState = m_delegate->GetTransportState();
+      const NPT_String stoppedState = action->GetTransportState();
       if (stoppedState == "STOPPED" || stoppedState == "NO_MEDIA_PRESENT")
         break;
     }
@@ -204,8 +204,8 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
     NPT_CHECK_LABEL_SEVERE(m_delegate->SendGetTransportInfo(action), failed_waitplaying);
     NPT_CHECK_LABEL_SEVERE(m_delegate->WaitForReply(*action, timeout), failed_waitplaying);
 
-    const NPT_String transportStatus = m_delegate->GetTransportStatus();
-    const NPT_String transportState = m_delegate->GetTransportState();
+    const NPT_String transportStatus = action->GetTransportStatus();
+    const NPT_String transportState = action->GetTransportState();
     if (transportState == "PLAYING" || transportState == "PAUSED_PLAYBACK")
     {
       break;
@@ -272,7 +272,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
     NPT_CHECK_LABEL_SEVERE(m_delegate->WaitForReply(*action, timeout), failed);
 
     /* make sure the attached player is actually playing */
-    const NPT_String transportState = m_delegate->GetTransportState();
+    const NPT_String transportState = action->GetTransportState();
     if (transportState != "PLAYING" && transportState != "PAUSED_PLAYBACK")
     {
       goto failed;

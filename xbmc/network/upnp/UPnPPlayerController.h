@@ -129,6 +129,18 @@ public:
     void Retire() { m_retired = true; }
     bool IsSpent() const { return m_retired && m_replied; }
 
+    NPT_String GetTransportState() const
+    {
+      std::unique_lock lock(m_section);
+      return m_trainfo.cur_transport_state;
+    }
+
+    NPT_String GetTransportStatus() const
+    {
+      std::unique_lock lock(m_section);
+      return m_trainfo.cur_transport_status;
+    }
+
     void OnSetAVTransportURIResult(NPT_Result res,
                                    PLT_DeviceDataReference& device,
                                    void* userdata) override
@@ -151,6 +163,19 @@ public:
                                   PLT_TransportInfo* info,
                                   void* userdata) override
     {
+      {
+        std::unique_lock lock(m_section);
+        if (NPT_FAILED(res) || info == NULL)
+        {
+          m_trainfo.cur_speed = "0";
+          m_trainfo.cur_transport_state = "STOPPED";
+          m_trainfo.cur_transport_status = "ERROR_OCCURED";
+        }
+        else
+          m_trainfo = *info;
+      }
+      // CUPnPPlayer::Process watches the controller's copy for the end of playback. Left to the
+      // poll, which can be 500ms behind, it still reads STOPPED as playback starts.
       m_owner.OnGetTransportInfoResult(res, device, info, userdata);
       Complete(res, "OnGetTransportInfoResult");
     }
@@ -166,6 +191,8 @@ public:
     }
 
     CUPnPPlayerController& m_owner;
+    mutable CCriticalSection m_section;
+    PLT_TransportInfo m_trainfo;
     CEvent m_event;
     std::atomic<NPT_Result> m_status{NPT_FAILURE};
     std::atomic<bool> m_replied{false};
