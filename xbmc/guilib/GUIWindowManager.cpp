@@ -1278,6 +1278,7 @@ void CGUIWindowManager::Process(unsigned int currentTime)
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_dirtyregions.clear();
+  CServiceBroker::GetWinSystem()->GetGfxContext().ClearStencilBuckets();
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
