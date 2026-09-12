@@ -22,6 +22,13 @@ enum DVDOverlayType
   DVDOVERLAY_TYPE_GROUP   = 5,
 };
 
+enum class DVDOverlayStereoView
+{
+  BOTH,
+  LEFT,
+  RIGHT,
+};
+
 class CDVDOverlay : public std::enable_shared_from_this<CDVDOverlay>
 {
 public:
@@ -37,6 +44,7 @@ public:
     m_enableTextAlign = false;
     m_overlayContainerFlushable = true;
     m_setForcedMargins = false;
+    m_stereoView = DVDOverlayStereoView::BOTH;
   }
 
   CDVDOverlay(const CDVDOverlay& src) : std::enable_shared_from_this<CDVDOverlay>(src)
@@ -50,6 +58,7 @@ public:
     m_enableTextAlign = src.m_enableTextAlign;
     m_overlayContainerFlushable = src.m_overlayContainerFlushable;
     m_setForcedMargins = src.m_setForcedMargins;
+    m_stereoView = src.m_stereoView;
   }
 
   virtual ~CDVDOverlay() = default;
@@ -109,6 +118,7 @@ public:
   bool bForced; // display, no matter what
   bool replace; // replace by next nomatter what stoptime it has
   unsigned long m_textureid;
+  DVDOverlayStereoView m_stereoView;
 
 protected:
   DVDOverlayType m_type;
