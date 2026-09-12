@@ -226,6 +226,7 @@ protected:
   size_t m_planeBufferSize = 0;
 
   CRect m_lastViewRect;
+  CRect m_lastSourceRect;
 
   // HDR FBO compositing: when active, IsGuiLayer() returns false so
   // video renders separately from GUI via RenderUpdateVideo()
