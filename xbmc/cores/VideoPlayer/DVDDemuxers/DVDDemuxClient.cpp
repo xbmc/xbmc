@@ -23,6 +23,7 @@
 extern "C"
 {
 #include <libavcodec/defs.h>
+#include <libavutil/pixdesc.h>
 }
 
 class CDemuxStreamClientInternal
@@ -273,6 +274,18 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
           stv->changes++;
           stv->disabled = false;
         }
+        // no 8-bit default here unlike CDVDDemuxFFmpeg, 0 keeps the depth
+        // unknown so consumers derive it from the pixel format
+        const AVPixFmtDescriptor* desc =
+            av_pix_fmt_desc_get(static_cast<AVPixelFormat>(stream->m_parser->format));
+        if (desc != nullptr && desc->comp[0].depth != 0 && desc->comp[0].depth != stv->bitDepth)
+        {
+          CLog::LogF(LOGDEBUG, "({}) bitdepth changed from {} to {}", st->uniqueId, stv->bitDepth,
+                     desc->comp[0].depth);
+          stv->bitDepth = desc->comp[0].depth;
+          stv->changes++;
+          stv->disabled = false;
+        }
         if (stream->m_context->sample_aspect_ratio.num && stream->m_context->height)
         {
           double fAspect =
@@ -313,6 +326,24 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
   return change;
 }
 
+void CDVDDemuxClient::InvalidateParsedBitDepth()
+{
+  // a parsed bit depth belongs to the coded stream it came from, and after a
+  // stream change with no replacement extradata the stopped parser cannot
+  // re-derive it, so return it to unknown
+  for (auto& st : m_streams)
+  {
+    auto streamVideo =
+        std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamVideo>>(st.second);
+    if (streamVideo && streamVideo->extraData && streamVideo->bitDepth != 0)
+    {
+      CLog::LogF(LOGDEBUG, "({}) parsed bitdepth {} reset to unknown", st.first,
+                 streamVideo->bitDepth);
+      streamVideo->bitDepth = 0;
+    }
+  }
+}
+
 DemuxPacket* CDVDDemuxClient::Read()
 {
   if (!m_IDemux)
@@ -329,12 +360,14 @@ DemuxPacket* CDVDDemuxClient::Read()
 
   if (m_packet->iStreamId == DMX_SPECIALID_STREAMINFO)
   {
+    InvalidateParsedBitDepth();
     RequestStreams();
     CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
     return CDVDDemuxUtils::AllocateDemuxPacket(0);
   }
   else if (m_packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
   {
+    InvalidateParsedBitDepth();
     RequestStreams();
   }
   else if (m_packet->iStreamId >= 0 && m_streams.contains(m_packet->iStreamId))
@@ -486,6 +519,10 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     streamVideo->iBitRate = source->iBitRate;
     if (source->extraData)
     {
+      // a parsed bit depth belongs to the coded stream it came from, reset to
+      // unknown when the add-on replaces the extradata
+      if (source->extraData != streamVideo->extraData)
+        streamVideo->bitDepth = 0;
       streamVideo->extraData = source->extraData;
     }
     streamVideo->colorPrimaries = source->colorPrimaries;
