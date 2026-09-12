@@ -10,6 +10,7 @@
 
 #include "CacheStrategy.h"
 #include "IFile.h"
+#include "URL.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
@@ -90,9 +91,16 @@ public:
     CFileCache(unsigned int flags, std::unique_ptr<IFileCacheSource> source);
 
   private:
+    //! Cancels a source read left unanswered for longer than a healthy source takes
+    void CancelStalledSourceRead();
+    //! Replaces the source with a new connection at the position; false leaves it closed
+    bool ReopenSource(int64_t position);
+
     std::unique_ptr<CCacheStrategy> m_pCache;
-    int m_seekPossible = 0;
+    std::atomic<int> m_seekPossible{0};
     std::unique_ptr<IFileCacheSource> m_source;
+    bool m_sourceOpen = false;
+    CURL m_sourceUrl;
     std::string m_sourcePath;
     CEvent m_seekEvent;
     CEvent m_seekEnded;
@@ -113,6 +121,9 @@ public:
     unsigned int m_flags;
     CCriticalSection m_sync;
     std::chrono::milliseconds m_processWait{100ms};
+    std::atomic<int64_t> m_sourceReadStart{0}; // steady ms, 0 while no source read is outstanding
+    std::atomic<bool> m_sourceReadCancelled{false};
+    mutable CCriticalSection m_sourceSection; // held while the source is replaced
   };
 
 }

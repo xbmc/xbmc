@@ -9,6 +9,7 @@
 #pragma once
 
 #include "filesystem/IFile.h"
+#include "threads/CriticalSection.h"
 
 #include <string>
 
@@ -41,6 +42,7 @@ namespace XFILE
     virtual int Stat(const CURL& url, struct __stat64* statData);
     virtual int Stat(struct __stat64* statData);
     virtual int GetChunkSize();
+    int IoControl(IOControl request, void* param) override;
 
   protected:
     explicit CWin32File(bool asSmbFile);
@@ -51,6 +53,8 @@ namespace XFILE
     std::wstring m_filepathnameW;
     const bool m_smbFile; // true for SMB file, false for local file
     unsigned long m_lastSMBFileErr; // used for SMB file operations
+    HANDLE m_readThread{nullptr}; // thread inside ReadFile, null when no read is outstanding
+    CCriticalSection m_readThreadSection; // guards m_readThread, never held across the read
   };
 
 }
