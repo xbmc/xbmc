@@ -455,15 +455,15 @@ bool CMediaManager::IsAudio(const std::string& devicePath)
   if (!m_bOpticalDrivePresent)
     return false;
 
-  CCdInfo* pCdInfo = GetCdInfo(devicePath);
-  if(pCdInfo != NULL && pCdInfo->IsAudio(1))
+  const std::shared_ptr<CCdInfo> pCdInfo{GetCdInfo(devicePath)};
+  if (pCdInfo && pCdInfo->IsAudio(1))
     return true;
 
   return false;
 #else
   //! @todo switch all ports to use auto sources
-  MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
-  if (pInfo != NULL && pInfo->IsAudio(1))
+  const std::shared_ptr<MEDIA_DETECT::CCdInfo> pInfo{MEDIA_DETECT::CDetectDVDMedia::GetCdInfo()};
+  if (pInfo && pInfo->IsAudio(1))
     return true;
 #endif
 #endif
@@ -497,28 +497,26 @@ DriveState CMediaManager::GetDriveStatus(const std::string& devicePath)
 }
 
 #ifdef HAS_OPTICAL_DRIVE
-CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
+std::shared_ptr<CCdInfo> CMediaManager::GetCdInfo(const std::string& devicePath)
 {
 #ifdef TARGET_WINDOWS
   if (!m_bOpticalDrivePresent)
-    return NULL;
+    return {};
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
-  std::map<std::string,CCdInfo*>::iterator it;
   {
     std::unique_lock waitLock(m_muAutoSource);
-    it = m_mapCdInfo.find(strDevice);
-    if(it != m_mapCdInfo.end())
+    const auto it = m_mapCdInfo.find(strDevice);
+    if (it != m_mapCdInfo.end())
       return it->second;
   }
 
-  CCdInfo* pCdInfo=NULL;
   CCdIoSupport cdio;
-  pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
-  if(pCdInfo!=NULL)
+  std::shared_ptr<CCdInfo> pCdInfo{cdio.GetCdInfo((char*)strDevice.c_str())};
+  if (pCdInfo)
   {
     std::unique_lock waitLock(m_muAutoSource);
-    m_mapCdInfo.insert(std::pair<std::string,CCdInfo*>(strDevice,pCdInfo));
+    m_mapCdInfo.insert({strDevice, pCdInfo});
   }
 
   return pCdInfo;
@@ -534,14 +532,11 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
 
-  std::map<std::string,CCdInfo*>::iterator it;
   std::unique_lock waitLock(m_muAutoSource);
-  it = m_mapCdInfo.find(strDevice);
-  if(it != m_mapCdInfo.end())
+  const auto it = m_mapCdInfo.find(strDevice);
+  if (it != m_mapCdInfo.end())
   {
-    if(it->second != NULL)
-      delete it->second;
-
+    // Any caller still holding this keeps it alive until it is done with it
     m_mapCdInfo.erase(it);
     return true;
   }
@@ -599,8 +594,8 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
 {
   std::string mediaPath;
 
-  CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(devicePath);
-  if (pInfo == NULL)
+  const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo(devicePath)};
+  if (!pInfo)
     return "";
 
   if (pInfo->IsAudio(1))
@@ -825,7 +820,7 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
     const std::shared_ptr<CSettings> settings{
         CServiceBroker::GetSettingsComponent()->GetSettings()};
 
-    CCdInfo* pInfo{GetCdInfo(device.path)};
+    const std::shared_ptr<CCdInfo> pInfo{GetCdInfo(device.path)};
     const bool isAudioDisc{pInfo && // If it returns null, it is likely to be a protected video disc
                            pInfo->IsAudio(1)};
 

@@ -510,7 +510,8 @@ bool CSystemGUIInfo::GetBool(bool& value,
 #ifdef HAS_OPTICAL_DRIVE
       if (CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
-        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
+        const std::shared_ptr<MEDIA_DETECT::CCdInfo> pCdInfo{
+            CServiceBroker::GetMediaManager().GetCdInfo()};
         value =
             pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1));
       }
