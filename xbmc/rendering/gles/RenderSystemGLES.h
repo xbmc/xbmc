@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GLESShader.h"
+#include "GuiCompositeGLES.h"
 #include "rendering/RenderSystem.h"
 #include "utils/ColorUtils.h"
 #include "utils/Map.h"
@@ -160,4 +161,7 @@ protected:
   ShaderMethodGLES m_method = ShaderMethodGLES::SM_DEFAULT;
 
   GLint      m_viewPort[4];
+
+  // Driven by the windowing system's GUI compositing virtuals (CWinSystemBase).
+  CGuiCompositeGLES m_guiComposite;
 };

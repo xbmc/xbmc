@@ -39,7 +39,15 @@ public:
 
   float GetFrameLatencyAdjustment() override;
   bool IsHDRDisplay() override;
+  bool SetVideoOutput(const VideoPicture* videoPicture) override;
   bool SetHDR(const VideoPicture* videoPicture) override;
+
+  // GUI compositing for HDR
+  bool SetGuiCompositing(int colorTransfer) override;
+  bool BeginGuiComposite(bool guiWillRender) override;
+  void EndGuiComposite() override;
+  void CompositeGui() override;
+  bool IsHdrComposite() const override { return m_guiComposite.IsActive(); }
 
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
@@ -50,9 +58,11 @@ protected:
   void PresentRenderImpl(bool rendered) override;
 
 private:
+  bool InitWindowSystemEGL(EGLint renderableType);
   bool CreateSurface();
 
   CEGLContextUtils m_pGLContext;
+  EGLint m_renderableType = 0;
   bool m_hasHDRConfig = false;
 
   std::unique_ptr<AVMasteringDisplayMetadata> m_displayMetadata;
@@ -60,4 +70,7 @@ private:
   EGLint m_HDRColorSpace = EGL_NONE;
   bool m_hasEGL_ST2086_Extension = false;
   bool m_hasEGL_BT2020_PQ_Colorspace_Extension = false;
+  // True while the MediaCodec surface renderer posts the video to its own
+  // SurfaceView, which the system compositor blends the GUI surface over.
+  bool m_videoOnSeparateSurface = false;
 };
