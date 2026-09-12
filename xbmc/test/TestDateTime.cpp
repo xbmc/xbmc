@@ -14,6 +14,7 @@
 #include "resources/ResourcesComponent.h"
 
 #include <array>
+#include <cstdint>
 #include <iostream>
 
 #include <gtest/gtest.h>
@@ -668,6 +669,53 @@ TEST_F(TestDateTime, GetAsTime)
   dateTime.GetAsTime(time);
 
   EXPECT_TRUE(dateTime == time);
+}
+
+//! \brief Whether a rendered date can name the times below. CDateTime renders through gmtime_r on
+//! POSIX, so a 32-bit time_t cannot reach either of them, and only the round trip is assertable.
+constexpr bool RENDERS_BEYOND_32_BITS{sizeof(time_t) >= 8};
+
+TEST_F(TestDateTime, SecondsSinceEpoch)
+{
+  // 2200-01-01 00:00:00 UTC, past the unsigned 32-bit ceiling of 2106-02-07
+  constexpr int64_t seconds{7258118400};
+
+  const CDateTime dateTime{CDateTime::FromSecondsSinceEpoch(seconds)};
+
+  EXPECT_TRUE(dateTime.IsValid());
+  EXPECT_EQ(seconds, dateTime.GetAsSecondsSinceEpoch());
+
+  if constexpr (RENDERS_BEYOND_32_BITS)
+  {
+    EXPECT_EQ("2200-01-01 00:00:00", dateTime.GetAsDBDateTime());
+  }
+}
+
+TEST_F(TestDateTime, SecondsSinceEpochOutOfRange)
+{
+  // a count read out of a database column can be anything, and one this size overflows the
+  // conversion rather than naming a time
+  EXPECT_FALSE(CDateTime::FromSecondsSinceEpoch(9000000000000000000).IsValid());
+  EXPECT_FALSE(CDateTime::FromSecondsSinceEpoch(-9000000000000000000).IsValid());
+
+  // the ends of the range the conversion does hold
+  EXPECT_TRUE(CDateTime::FromSecondsSinceEpoch(-11644473600).IsValid());
+  EXPECT_TRUE(CDateTime::FromSecondsSinceEpoch(910692730085).IsValid());
+}
+
+TEST_F(TestDateTime, SecondsSinceEpochBeforeTheEpoch)
+{
+  constexpr int64_t seconds{-2208988800}; // 1900-01-01 00:00:00 UTC
+
+  const CDateTime dateTime{CDateTime::FromSecondsSinceEpoch(seconds)};
+
+  EXPECT_TRUE(dateTime.IsValid());
+  EXPECT_EQ(seconds, dateTime.GetAsSecondsSinceEpoch());
+
+  if constexpr (RENDERS_BEYOND_32_BITS)
+  {
+    EXPECT_EQ("1900-01-01 00:00:00", dateTime.GetAsDBDateTime());
+  }
 }
 
 TEST_F(TestDateTime, GetAsTm)
