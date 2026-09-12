@@ -26,7 +26,10 @@ int main(int argc, char* argv[])
   appParamParser.GetAppParams()->SetLogTarget("console");
 
   CAppEnvironment::SetUp(appParamParser.GetAppParams());
+
   const int status = XBMC_Run(true);
+  // Only reached when startup fails: once the Emscripten main loop is installed the stack is
+  // unwound and CApplication tears the environment down itself.
   CAppEnvironment::TearDown();
   return status;
 }

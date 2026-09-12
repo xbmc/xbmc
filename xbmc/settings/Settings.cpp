@@ -269,6 +269,9 @@ bool CSettings::InitializeDefinitions()
   if (CFile::Exists(SETTINGS_XML_FOLDER "webos.xml") &&
       !Initialize(SETTINGS_XML_FOLDER "webos.xml"))
     CLog::Log(LOGFATAL, "Unable to load webOS-specific settings definitions");
+#elif defined(TARGET_WASM)
+  if (CFile::Exists(SETTINGS_XML_FOLDER "wasm.xml") && !Initialize(SETTINGS_XML_FOLDER "wasm.xml"))
+    CLog::Log(LOGFATAL, "Unable to load wasm-specific settings definitions");
 #elif defined(TARGET_LINUX)
   if (CFile::Exists(SETTINGS_XML_FOLDER "linux.xml") && !Initialize(SETTINGS_XML_FOLDER "linux.xml"))
     CLog::Log(LOGFATAL, "Unable to load linux-specific settings definitions");

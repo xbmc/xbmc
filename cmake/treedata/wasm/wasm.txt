@@ -9,3 +9,4 @@ xbmc/platform/posix/utils             platform/posix/utils
 xbmc/platform/wasm                    platform/wasm
 xbmc/platform/wasm/network            platform/wasm/network
 xbmc/platform/wasm/storage            platform/wasm/storage
+xbmc/platform/wasm/utils              platform/wasm/utils

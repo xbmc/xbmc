@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0720">
+  <title>Kodi — WebAssembly</title>
+  <style>
+    :root {
+      --bg: #04020b;
+      --piers-cyan: #4dd0e1;
+      --piers-magenta-hi: #e054ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                   'Helvetica Neue', Arial, sans-serif;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      outline: none;
+    }
+
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5vw 8vh;
+      overflow: hidden;
+      background: var(--bg) url('media/splash.jpg') center center / cover no-repeat;
+      transition: opacity .35s ease, visibility 0s linear .35s;
+    }
+
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    #splash.discarded {
+      display: none;
+    }
+
+    .splash-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: min(560px, 72vw);
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 8px;
+      background: rgba(4, 2, 11, .72);
+      transform: translateY(34vh);
+    }
+
+    .progress-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      overflow: hidden;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, .16);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg,
+                                  var(--piers-cyan) 0%,
+                                  var(--piers-magenta-hi) 100%);
+      transition: width .3s ease;
+    }
+
+    .progress-fill.indeterminate {
+      width: 40%;
+      animation: slide 1.6s ease-in-out infinite;
+      transition: none;
+    }
+
+    @keyframes slide {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(260%); }
+    }
+
+    .status-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      width: 100%;
+      color: rgba(255, 255, 255, .55);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-text {
+      max-width: 70%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      letter-spacing: .4px;
+    }
+
+    .status-pct {
+      min-width: 3ch;
+      color: var(--piers-cyan);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    #splash.error .progress-fill {
+      width: 100% !important;
+      animation: none;
+      background: linear-gradient(90deg, #ff5a5a 0%, #ff9b9b 100%);
+    }
+
+    #splash.error .status-text,
+    #splash.error .status-pct {
+      color: #ff9b9b;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .progress-fill.indeterminate {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="splash" role="status" aria-live="polite" aria-label="Loading Kodi">
+    <div class="splash-content">
+      <div class="progress-block">
+        <div class="progress-track">
+          <div class="progress-fill indeterminate" id="progressFill"></div>
+        </div>
+        <div class="status-line">
+          <span class="status-text" id="statusText">Starting up…</span>
+          <span class="status-pct" id="statusPct"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
+
+  <script>
+    var splashEl     = document.getElementById('splash');
+    var statusTextEl = document.getElementById('statusText');
+    var statusPctEl  = document.getElementById('statusPct');
+    var progressFill = document.getElementById('progressFill');
+    var canvas       = document.getElementById('canvas');
+
+    function setProgress(pct) {
+      if (pct == null || isNaN(pct)) {
+        progressFill.classList.add('indeterminate');
+        statusPctEl.textContent = '';
+        return;
+      }
+      pct = Math.max(0, Math.min(100, pct));
+      progressFill.classList.remove('indeterminate');
+      progressFill.style.width = pct.toFixed(1) + '%';
+      statusPctEl.textContent = Math.round(pct) + '%';
+    }
+
+    function setStatusText(text) {
+      statusTextEl.textContent = text || '';
+    }
+
+    function hideSplash() {
+      if (splashEl.classList.contains('hidden')) return;
+      splashEl.classList.add('hidden');
+      setTimeout(function () {
+        if (splashEl.classList.contains('error')) return;
+        splashEl.setAttribute('aria-hidden', 'true');
+        splashEl.classList.add('discarded');
+      }, 900);
+    }
+
+    function showError(message) {
+      splashEl.classList.remove('discarded');
+      splashEl.removeAttribute('aria-hidden');
+      splashEl.classList.add('error');
+      splashEl.classList.remove('hidden');
+      progressFill.classList.remove('indeterminate');
+      setStatusText(message || 'Failed to load Kodi');
+      statusPctEl.textContent = '!';
+    }
+    window.showError = showError;
+
+    // Parse Emscripten setStatus strings. Common forms:
+    //   "Downloading data... (1234567/9876543)"
+    //   "Preparing... (3/7)"
+    //   "Running..."
+    //   ""  (empty → runtime ready)
+    var EMSCRIPTEN_PROGRESS_RE = /\((\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\)/;
+
+    function applyEmscriptenStatus(text) {
+      if (!text) return; // empty string means "ready"
+
+      var m = text.match(EMSCRIPTEN_PROGRESS_RE);
+      var label = text.replace(EMSCRIPTEN_PROGRESS_RE, '').trim();
+      if (m) {
+        var cur = parseFloat(m[1]);
+        var tot = parseFloat(m[2]);
+        if (tot > 0) setProgress((cur / tot) * 100);
+        if (!label) label = 'Loading assets…';
+      } else {
+        setProgress(null);
+      }
+      setStatusText(label || text);
+    }
+
+    var Module = {
+      canvas: canvas,
+      print:    function (t) { console.log(t); },
+      printErr: function (t) { console.error(t); },
+
+      setStatus: function (text) {
+        if (splashEl.classList.contains('error')) return;
+        applyEmscriptenStatus(text);
+      },
+
+      monitorRunDependencies: function (remaining) {
+        if (splashEl.classList.contains('error')) return;
+        if (remaining > 0) {
+          setStatusText('Preparing runtime… (' + remaining + ' left)');
+          setProgress(null);
+        }
+      },
+
+      onAbort: function (what) {
+        showError('Kodi aborted: ' + (what || 'unknown error'));
+      },
+
+      onKodiFirstFramePresented: function () {
+        canvas.focus();
+        hideSplash();
+      },
+
+      onRuntimeInitialized: function () {
+        setStatusText('Starting Kodi…');
+        setProgress(null);
+        canvas.focus();
+      }
+    };
+
+    window.addEventListener('error', function (e) {
+      if (e && e.filename && /kodi\.(js|wasm|data)(\?|$)/i.test(e.filename)) {
+        showError('Failed to load ' + e.filename.split('/').pop());
+      }
+    });
+
+    setStatusText('Downloading Kodi…');
+    setProgress(null);
+  </script>
+
+  <script async src="kodi.js" onerror="showError('Could not load kodi.js')"></script>
+</body>
+</html>
