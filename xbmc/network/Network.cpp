@@ -27,6 +27,8 @@
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 
+#include <mutex>
+
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
 bool in_ether (const char *bufp, unsigned char *addr)
 {
@@ -145,6 +147,7 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
       && StringUtils::EqualsNoCase(hostname, myhostname))
     return true;
 
+  std::unique_lock lock(m_lockInterfaceList);
   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
   while (iter != ifaces.end())
@@ -161,6 +164,7 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
 
 CNetworkInterface* CNetworkBase::GetFirstConnectedInterface()
 {
+  std::unique_lock lock(m_lockInterfaceList);
   CNetworkInterface* fallbackInterface = nullptr;
   for (CNetworkInterface* iface : GetInterfaceList())
   {
@@ -180,6 +184,7 @@ bool CNetworkBase::HasInterfaceForIP(unsigned long address)
 {
    unsigned long subnet;
    unsigned long local;
+   std::unique_lock lock(m_lockInterfaceList);
    std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
    std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
    while (iter != ifaces.end())
@@ -200,6 +205,7 @@ bool CNetworkBase::HasInterfaceForIP(unsigned long address)
 
 bool CNetworkBase::IsAvailable(void)
 {
+  std::unique_lock lock(m_lockInterfaceList);
   const std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
   return (!ifaces.empty());
 }
