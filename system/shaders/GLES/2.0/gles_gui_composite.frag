@@ -33,11 +33,15 @@ void main()
   if (gui.a == 0.0)
     discard;
 
+  // The GUI blends into the FBO premultiplied; the EOTF and the composite blend
+  // below both need the unassociated colour, so divide the coverage back out.
+  vec3 color = min(gui.rgb / gui.a, vec3(1.0));
+
   // sRGB -> linear via LUT (IEC 61966-2-1 EOTF, replaces inline pow)
   vec3 linear = vec3(
-    texture2D(u_lutDegamma, vec2(gui.r, 0.5)).r,
-    texture2D(u_lutDegamma, vec2(gui.g, 0.5)).r,
-    texture2D(u_lutDegamma, vec2(gui.b, 0.5)).r
+    texture2D(u_lutDegamma, vec2(color.r, 0.5)).r,
+    texture2D(u_lutDegamma, vec2(color.g, 0.5)).r,
+    texture2D(u_lutDegamma, vec2(color.b, 0.5)).r
   );
 
   // BT.709 -> BT.2020 gamut mapping
