@@ -92,24 +92,30 @@ void* CWinSystemX11GLContext::GetGlxContext() const
   return GLXGetContext(m_pGLContext);
 }
 
+// X11 creates an EGL context by default, but --gl-interface=glx and the VDPAU
+// fallback both leave a GLX context here instead, which holds no EGL handles.
 EGLDisplay CWinSystemX11GLContext::GetEGLDisplay() const
 {
-  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay;
+  auto* context = dynamic_cast<CGLContextEGL*>(m_pGLContext);
+  return context != nullptr ? context->m_eglDisplay : EGL_NO_DISPLAY;
 }
 
 EGLSurface CWinSystemX11GLContext::GetEGLSurface() const
 {
-  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglSurface;
+  auto* context = dynamic_cast<CGLContextEGL*>(m_pGLContext);
+  return context != nullptr ? context->m_eglSurface : EGL_NO_SURFACE;
 }
 
 EGLContext CWinSystemX11GLContext::GetEGLContext() const
 {
-  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglContext;
+  auto* context = dynamic_cast<CGLContextEGL*>(m_pGLContext);
+  return context != nullptr ? context->m_eglContext : EGL_NO_CONTEXT;
 }
 
 EGLConfig CWinSystemX11GLContext::GetEGLConfig() const
 {
-  return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglConfig;
+  auto* context = dynamic_cast<CGLContextEGL*>(m_pGLContext);
+  return context != nullptr ? context->m_eglConfig : nullptr;
 }
 
 bool CWinSystemX11GLContext::BindTextureUploadContext()
