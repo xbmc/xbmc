@@ -102,5 +102,11 @@ public:
   */
   static void FilterFileDirectories(CFileItemList &items, const std::string &mask,
                                     bool expandImages=false);
+
+private:
+  static bool GetDirectoryInternal(const CURL& url,
+                                   std::shared_ptr<IDirectory> pDirectory,
+                                   CFileItemList& items,
+                                   const CHints& hints);
 };
 }
