@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "bluray/M2TSParser.h"
 #include "bluray/PlaylistStructure.h"
+#include "bluray/ProjectParser.h"
 #include "threads/CriticalSection.h"
 
 #include <cstdint>
@@ -33,6 +34,12 @@ struct Disc
 
   std::optional<bool> menuSupport;
   std::optional<int> mainPlaylist;
+
+  std::optional<std::string> discTitle;
+  std::optional<std::string> discId;
+
+  //! What the disc's authoring project named, where it left one behind
+  std::optional<XFILE::ProjectInformation> project;
 
   //! When this disc was last used, to decide which to drop when the cache is full. Mutable as
   //! recency is not part of what the cache holds, so reading a disc's information updates it too.
@@ -64,7 +71,10 @@ public:
                              unsigned int playlist,
                              const StreamMap& streams);
   void SetMenuSupport(const std::string& path, bool menuSupport);
+  void SetProject(const std::string& path, const ProjectInformation& project);
   void SetMainPlaylist(const std::string& path, int mainPlaylist);
+  void SetDiscTitle(const std::string& path, const std::string& title);
+  void SetDiscId(const std::string& path, const std::string& id);
 
   bool GetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
@@ -90,6 +100,27 @@ public:
    \return true if the disc has been examined for a main playlist before
    */
   bool GetMainPlaylist(const std::string& path, int& mainPlaylist) const;
+
+  /*!
+   \brief Get the name the disc gives itself, if already read.
+   \param[out] title set only when true is returned, empty when the disc names itself nothing
+   \return true if the disc has been opened for its name before
+   */
+  bool GetDiscTitle(const std::string& path, std::string& title) const;
+
+  /*!
+   \brief Get the disc's identifier, if already read.
+   \param[out] id set only when true is returned
+   \return true if the disc has been opened for its identifier before
+   */
+  bool GetDiscId(const std::string& path, std::string& id) const;
+
+  /*!
+   \brief Get what the disc's authoring project named, if already read.
+   \param[out] project set only when true is returned
+   \return true if the disc has been examined for a project before
+   */
+  bool GetProject(const std::string& path, ProjectInformation& project) const;
 
   //! Drop everything held for a disc, as its information no longer describes what is in the drive
   void ClearDisc(const std::string& path);

@@ -173,6 +173,63 @@ bool CBlurayDiscCache::GetPlaylistStreamInfo(const std::string& path,
   return false;
 }
 
+void CBlurayDiscCache::SetDiscTitle(const std::string& path, const std::string& title)
+{
+  std::unique_lock lock(m_cs);
+
+  FindOrCreate(path).discTitle = title;
+}
+
+void CBlurayDiscCache::SetDiscId(const std::string& path, const std::string& id)
+{
+  std::unique_lock lock(m_cs);
+
+  FindOrCreate(path).discId = id;
+}
+
+bool CBlurayDiscCache::GetDiscTitle(const std::string& path, std::string& title) const
+{
+  std::unique_lock lock(m_cs);
+
+  if (const Disc * disc{Find(path)}; disc && disc->discTitle)
+  {
+    title = *disc->discTitle;
+    return true;
+  }
+  return false;
+}
+
+bool CBlurayDiscCache::GetDiscId(const std::string& path, std::string& id) const
+{
+  std::unique_lock lock(m_cs);
+
+  if (const Disc * disc{Find(path)}; disc && disc->discId)
+  {
+    id = *disc->discId;
+    return true;
+  }
+  return false;
+}
+
+void CBlurayDiscCache::SetProject(const std::string& path, const ProjectInformation& project)
+{
+  std::unique_lock lock(m_cs);
+
+  FindOrCreate(path).project = project;
+}
+
+bool CBlurayDiscCache::GetProject(const std::string& path, ProjectInformation& project) const
+{
+  std::unique_lock lock(m_cs);
+
+  if (const Disc * disc{Find(path)}; disc && disc->project)
+  {
+    project = *disc->project;
+    return true;
+  }
+  return false;
+}
+
 bool CBlurayDiscCache::GetMenuSupport(const std::string& path, bool& menuSupport) const
 {
   std::unique_lock lock(m_cs);

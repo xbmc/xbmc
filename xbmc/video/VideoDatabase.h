@@ -10,6 +10,7 @@
 
 #include "Bookmark.h"
 #include "VideoInfoTag.h"
+#include "VideoManagerTypes.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
 #include "utils/Artwork.h"
@@ -36,11 +37,6 @@ class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
 class TiXmlNode;
-
-struct VideoAssetInfo;
-
-enum class VideoAssetTypeOwner;
-enum class VideoAssetType;
 
 namespace dbiplus
 {
@@ -391,6 +387,11 @@ public:
     int idFile{-1};
     VideoDbContentType mediaType{-1};
     int idMedia{-1};
+    std::string title{};
+
+    //! Which of a movie's assets holds the playlist. Only meaningful for a movie, as an episode
+    //! is named by its title instead.
+    VideoAssetType itemType{VideoAssetType::UNKNOWN};
   };
 
   /*!
