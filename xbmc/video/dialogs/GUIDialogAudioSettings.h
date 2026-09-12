@@ -49,10 +49,6 @@ protected:
 
   void AddAudioStreams(const std::shared_ptr<CSettingGroup>& group, const std::string& settingId);
 
-  static bool IsPlayingPassthrough(const std::string& condition,
-                                   const std::string& value,
-                                   const std::shared_ptr<const CSetting>& setting);
-
   static void AudioStreamsOptionFiller(const std::shared_ptr<const CSetting>& setting,
                                        std::vector<IntegerSettingOption>& list,
                                        int& current);

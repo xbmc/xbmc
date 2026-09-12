@@ -54,6 +54,7 @@ public:
     PLAYER_REPORT_STATE,
     PLAYER_FRAME_ADVANCE,
     PLAYER_DISPLAY_RESET,           // report display reset event
+    PLAYER_AUDIO_RECONFIGURE,      // re-check audio passthrough eligibility in place, without a stream/demuxer restart
 
     // demuxer related messages
     DEMUXER_PACKET,                 // data packet
