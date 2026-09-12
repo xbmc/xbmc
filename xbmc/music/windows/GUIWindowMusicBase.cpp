@@ -412,7 +412,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
 
 void CGUIWindowMusicBase::UpdateButtons()
 {
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, CServiceBroker::GetMediaManager().IsAudio());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, CServiceBroker::GetMediaManager().IsAudio("", true));
 
   CONTROL_ENABLE_ON_CONDITION(
       CONTROL_BTNSCAN, !(m_vecItems->IsVirtualDirectoryRoot() || MUSIC::IsMusicDb(*m_vecItems)));
