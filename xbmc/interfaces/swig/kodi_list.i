@@ -6,12 +6,28 @@
  *  See LICENSES/README.md for more information.
  */
 
-/* Kodi returns python lists, not tuples, for sequence-valued results.
-   SWIG fragments are first-definition-wins, so defining StdVectorTraits here,
-   ahead of every stock include, replaces the library's PyTuple_New version. */
+/* Sequences return as python lists, not tuples. Fragments are first-definition-wins,
+   so this must precede every stock include. */
 %fragment("StdVectorTraits","header",fragment="StdSequenceTraits")
 %{
+  #include <type_traits>
+
   namespace swig {
+    // python owns each AddonClass element, as %newobject does for a single return
+    template <class T>
+    PyObject *kodi_from_element(const T& val) {
+      using Pointee = std::remove_cv_t<std::remove_pointer_t<T>>;
+      if constexpr (std::is_pointer_v<T> && std::is_base_of_v<XBMCAddon::AddonClass, Pointee>) {
+        Pointee *obj = const_cast<Pointee *>(val);
+        PyObject *result = traits_from_ptr<Pointee>::from(obj, SWIG_POINTER_OWN);
+        if (result)
+          KodiSwig_acquire(obj);
+        return result;
+      } else {
+        return swig::from<T>(val);
+      }
+    }
+
     template <class T>
     struct traits_reserve<std::vector<T> > {
       static void reserve(std::vector<T> &seq, typename std::vector<T>::size_type n) {
@@ -31,7 +47,7 @@
         if (!lst) return NULL;
         Py_ssize_t i = 0;
         for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it, ++i)
-          PyList_SetItem(lst, i, swig::from<T>(*it));
+          PyList_SetItem(lst, i, kodi_from_element<T>(*it));
         return lst;
       }
     };
