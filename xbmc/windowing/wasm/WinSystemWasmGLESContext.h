@@ -25,6 +25,8 @@ public:
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
 
   CRenderSystemBase* GetRenderSystem() override { return this; }
+  // WebGL 2.0 rejects GL_TEXTURE_SWIZZLE_* with GL_INVALID_ENUM
+  bool SupportsTextureSwizzle() const override { return false; }
 
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;
