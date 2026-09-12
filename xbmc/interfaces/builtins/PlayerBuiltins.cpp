@@ -459,15 +459,14 @@ void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
     MUSIC_UTILS::GetItemsForPlayList(item, queuedItems);
 }
 
-PLAYLIST::Id GetPlayListId(const CFileItem& item)
+//! Video breaks the tie an item's own classifiers cannot, as Play() refuses what it cannot place.
+PLAYLIST::Id HintFor(const CFileItem& item)
 {
-  PLAYLIST::Id playlistId{PLAYLIST::Id::TYPE_NONE};
-  if (VIDEO::IsVideo(item))
-    playlistId = PLAYLIST::Id::TYPE_VIDEO;
-  else if (MUSIC::IsAudio(item))
-    playlistId = PLAYLIST::Id::TYPE_MUSIC;
+  const PLAYLIST::Id playlistId{PLAYLIST::PlaylistIdOf(item)};
+  if (playlistId != PLAYLIST::Id::TYPE_NONE)
+    return playlistId;
 
-  return playlistId;
+  return VIDEO::IsVideo(item) ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_NONE;
 }
 
 int PlayOrQueueMedia(const std::vector<std::string>& params,
@@ -664,13 +663,13 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
         !item.IsPVR())
     {
       if (!item.HasProperty("playlist_type_hint"))
-        item.SetProperty("playlist_type_hint", static_cast<int>(GetPlayListId(item)));
+        item.SetProperty("playlist_type_hint", static_cast<int>(HintFor(item)));
 
       CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
     }
     else
     {
-      g_application.PlayMedia(item, "", GetPlayListId(item));
+      g_application.PlayMedia(item, "", HintFor(item));
     }
   }
   else

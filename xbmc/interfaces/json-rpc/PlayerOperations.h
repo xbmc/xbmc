@@ -93,6 +93,8 @@ namespace JSONRPC
                                       CVariant& result);
 
   private:
+    //! What the item now playing says it is, or failing that, what its open streams say.
+    static KODI::PLAYLIST::Id GetPlayingPlaylistId();
     static int GetActivePlayers();
     static PlayerType GetPlayer(const CVariant &player);
     static KODI::PLAYLIST::Id GetPlaylist(PlayerType player);
