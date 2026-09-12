@@ -63,7 +63,7 @@ constexpr uint32_t PLAYER_CAN_SEEK                   = 51;
 constexpr uint32_t PLAYER_START_TIME                 = 52;
 // unused id 53
 constexpr uint32_t PLAYER_ISINTERNETSTREAM           = 54;
-// unused id 55
+constexpr uint32_t PLAYER_SEEKSTEPVALUE              = 55;
 constexpr uint32_t PLAYER_SEEKSTEPSIZE               = 56;
 constexpr uint32_t PLAYER_IS_CHANNEL_PREVIEW_ACTIVE  = 57;
 constexpr uint32_t PLAYER_SUPPORTS_TEMPO             = 58;

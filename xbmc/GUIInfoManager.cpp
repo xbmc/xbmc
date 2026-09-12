@@ -985,6 +985,17 @@ constexpr std::array<InfoMap, 2> player_param = {{
 ///     @skinning_v15 **[New Infolabel]** \link Player_SeekStepSize `Player.SeekStepSize`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.SeekStepValue([format])`</b>,
+///                  \anchor Player_SeekStepValue_format
+///                  _string_,
+///     @return The current configured seek step value in a given format.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
+///     <hr>
+///     @skinning_v22 **[New Infolabel]** \link Player_SeekStepValue_format `Player.SeekStepValue`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Player.TimeRemaining([format])`</b>,
 ///                  \anchor Player_TimeRemaining_format
 ///                  _string_,
@@ -1040,10 +1051,11 @@ constexpr std::array<InfoMap, 2> player_param = {{
 ///     <p>
 ///   }
 // clang-format off
-constexpr std::array<InfoMap, 10> player_times = {{
+constexpr std::array<InfoMap, 11> player_times = {{
     {"seektime",      PLAYER_SEEKTIME},
     {"seekoffset",    PLAYER_SEEKOFFSET},
     {"seekstepsize",  PLAYER_SEEKSTEPSIZE},
+    {"seekstepvalue", PLAYER_SEEKSTEPVALUE},
     {"timeremaining", PLAYER_TIME_REMAINING},
     {"timespeed",     PLAYER_TIME_SPEED},
     {"time",          PLAYER_TIME},
