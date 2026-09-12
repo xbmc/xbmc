@@ -567,6 +567,21 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
             m_pCodecContext->profile == AV_PROFILE_H264_HIGH_10_INTRA))
     pVideoPicture->colorBits = 10;
 
+  pVideoPicture->hdrType = m_hints.hdrType;
+
+  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+      pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    AVFrameSideData* sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DYNAMIC_HDR_PLUS);
+    if (sd)
+    {
+      if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10)
+        pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HDR10PLUS;
+      else
+        pVideoPicture->hdrTypeAlt = StreamHdrType::HDR_TYPE_HDR10PLUS;
+    }
+  }
+
   pVideoPicture->hasDisplayMetadata = false;
   AVFrameSideData* sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA);
   if (sd)
