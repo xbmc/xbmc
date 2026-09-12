@@ -10,6 +10,7 @@
 #pragma once
 
 #include "cores/IPlayer.h"
+#include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/logtypes.h"
@@ -55,6 +56,8 @@ public:
                XbmcThreads::EndTime<>& timeout);
 
 private:
+  bool BuildResource(const CFileItem& file, std::string& uri, std::string& metadata);
+  void FollowQueue();
   bool IsPaused() const;
   int64_t GetTime();
   int64_t GetTotalTime();
@@ -71,6 +74,13 @@ private:
   bool m_hasVideo{false};
   bool m_hasAudio{false};
   XbmcThreads::EndTime<> m_updateTimer;
+
+  CCriticalSection m_queueSection;
+  bool m_canQueueNext{false};
+  std::string m_trackUri;
+  std::string m_queuedUri;
+  std::unique_ptr<CFileItem> m_queued;
+  bool m_nextRequested{false};
 
   Logger m_logger;
 };

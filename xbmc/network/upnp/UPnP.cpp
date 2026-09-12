@@ -409,6 +409,16 @@ public:
                                                                                    userdata);
   }
 
+  void OnSetNextAVTransportURIResult(NPT_Result res,
+                                     PLT_DeviceDataReference& device,
+                                     void* userdata) override
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
+    static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetNextAVTransportURIResult(res, device,
+                                                                                       userdata);
+  }
+
   void OnSeekResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
   {
     NPT_AutoLock lock(g_UserDataLock);
