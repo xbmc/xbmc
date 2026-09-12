@@ -1,5 +1,6 @@
 if(TARGET ${APP_NAME_LC}::Python)
-  set(SOURCES TestPythonBindings.cpp)
+  set(SOURCES TestPythonBindings.cpp
+              TestWindowGetControl.cpp)
 
   core_add_test_library(python_test)
   if(ENABLE_STATIC_LIBS)
