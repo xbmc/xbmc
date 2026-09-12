@@ -245,6 +245,9 @@ namespace XBMCAddon
 
       SWIGHIDDENVIRTUAL void PulseActionEvent();
       SWIGHIDDENVIRTUAL bool WaitForActionEvent(unsigned int milliseconds);
+
+      //! \brief Font scope key of this window, empty unless it is a WindowXML.
+      virtual String GetFontScopeKey() const { return {}; }
 #endif
 
     public:
