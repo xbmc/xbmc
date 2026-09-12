@@ -1,4 +1,5 @@
-set(SOURCES TestLeaderboardUtils.cpp
+set(SOURCES TestDialogInGameSaves.cpp
+            TestLeaderboardUtils.cpp
 )
 
 # Cleared explicitly: this directory is entered from the one above, which has
