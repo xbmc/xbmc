@@ -22,9 +22,10 @@
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#if defined(TARGET_DARWIN_EMBEDDED)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_WASM)
 #include "dialogs/GUIDialogKeyboardTouch.h"
-
+#endif
+#if defined(TARGET_DARWIN_EMBEDDED)
 #include "platform/darwin/ios-common/DarwinEmbedKeyboard.h"
 #endif
 
@@ -98,16 +99,19 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
 #else
   useKodiKeyboard = CDarwinEmbedKeyboard::hasExternalKeyboard();
 #endif // defined(TARGET_DARWIN_TVOS)
+#elif defined(TARGET_WASM)
+  useKodiKeyboard = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_INPUT_USEKODIKEYBOARD);
 #endif
 
   auto& winManager = CServiceBroker::GetGUI()->GetWindowManager();
   CGUIKeyboard* kb = nullptr;
   if (useKodiKeyboard)
     kb = winManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
-#if defined(TARGET_DARWIN_EMBEDDED)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_WASM)
   else
     kb = winManager.GetWindow<CGUIDialogKeyboardTouch>(WINDOW_DIALOG_KEYBOARD_TOUCH);
-#endif // defined(TARGET_DARWIN_EMBEDDED)
+#endif
 
   if (kb)
   {
