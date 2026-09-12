@@ -68,6 +68,7 @@ public:
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
   bool IsConfigured() override { return m_bConfigured; }
   void AddVideoPicture(const VideoPicture& picture, int index) override;
+  void UpdateLightMetadata(const VideoPicture& picture) override;
   void UnInit() override;
   bool Flush(bool saveBuffers) override;
   void SetBufferSize(int numBuffers) override { m_NumYUVBuffers = numBuffers; }

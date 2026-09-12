@@ -103,3 +103,15 @@ bool VideoPicture::IsSameParams(const VideoPicture& pic) const
          this->color_transfer == pic.color_transfer && this->hdrType == pic.hdrType &&
          CompareDisplayMetadata(pic);
 }
+
+bool VideoPicture::CompareLightMetadata(const VideoPicture& pic) const
+{
+  if (this->hasLightMetadata != pic.hasLightMetadata)
+    return false;
+
+  if (!pic.hasLightMetadata)
+    return true;
+
+  return this->lightMetadata.MaxCLL == pic.lightMetadata.MaxCLL &&
+         this->lightMetadata.MaxFALL == pic.lightMetadata.MaxFALL;
+}

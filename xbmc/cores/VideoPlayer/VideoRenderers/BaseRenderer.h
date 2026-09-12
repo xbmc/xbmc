@@ -66,6 +66,7 @@ public:
   virtual void SetBufferSize(int numBuffers) { }
   virtual void ReleaseBuffer(int idx) { }
   virtual bool NeedBuffer(int idx) { return false; }
+  virtual void UpdateLightMetadata(const VideoPicture& picture) {}
   virtual bool IsGuiLayer() { return true; }
   //! True when video never reaches the framebuffer: a DRM plane, an Android
   //! SurfaceView, the Amlogic video layer. Such a renderer must produce its
