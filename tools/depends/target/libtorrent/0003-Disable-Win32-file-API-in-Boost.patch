@@ -1,0 +1,24 @@
+From 60acd300e042cacf20adf903002e7f74300632f9 Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Wed, 25 Dec 2024 14:41:44 -0800
+Subject: [PATCH 3/3] Disable Win32 file API in Boost
+
+---
+ CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 19a0718a1..277515894 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -560,6 +560,7 @@ target_compile_definitions(torrent-rasterbar
+ 		BOOST_ASIO_NO_DEPRECATED
+ 		BOOST_SYSTEM_USE_UTF8
+ 		_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING
++		BOOST_BEAST_USE_WIN32_FILE=0
+ 	PRIVATE
+ 		TORRENT_BUILDING_LIBRARY
+ 		BOOST_EXCEPTION_DISABLE
+-- 
+2.43.0
+

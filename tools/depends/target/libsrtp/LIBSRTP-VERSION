@@ -1,0 +1,9 @@
+LIBNAME=libsrtp
+VERSION=2.8.0
+ARCHIVE=v$(VERSION).tar.gz
+SHA512=6768f7976e5cc14a3bf2e9fc32042cab0b964f616fe5654516643a649a5d5f2b9ecb9e996467dd6d337777a9051b83a6e95f3cdc27e945062ce6da1cf8a2d462
+BYPRODUCT=libsrtp2.a
+BYPRODUCT_WIN=srtp2.lib
+
+# TODO
+BASE_URL=https://github.com/cisco/libsrtp/archive
