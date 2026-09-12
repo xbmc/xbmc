@@ -1944,7 +1944,7 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */, int dept
 
   URIUtils::RemoveSlashAtEnd(strMovieName);
 
-  strMovieName = CURL::Decode(URIUtils::GetFileName(strMovieName));
+  strMovieName = URIUtils::GetDecodedFileName(strMovieName);
   URIUtils::RemoveExtension(strMovieName);
   return strMovieName;
 }

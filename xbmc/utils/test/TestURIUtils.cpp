@@ -229,6 +229,13 @@ TEST_F(TestURIUtils, GetFileName)
   EXPECT_EQ("movie.avi", URIUtils::GetFileName("/path/to/movie.avi"));
 }
 
+TEST_F(TestURIUtils, GetDecodedFileName)
+{
+  EXPECT_EQ("movie.avi", URIUtils::GetDecodedFileName("/path/to/movie.avi"));
+  EXPECT_EQ("the movie.avi", URIUtils::GetDecodedFileName("davs://host/the%20movie.avi"));
+  EXPECT_EQ("100% proof.avi", URIUtils::GetDecodedFileName("davs://host/100%25%20proof.avi"));
+}
+
 TEST_F(TestURIUtils, RemoveExtension)
 {
   std::string ref;
