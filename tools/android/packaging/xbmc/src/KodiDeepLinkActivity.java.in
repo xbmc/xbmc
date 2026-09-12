@@ -1,0 +1,63 @@
+package @APP_PACKAGE@;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+
+// KodiDeepLinkActivity
+//
+// Class to provide deep links for Kodi as described here:
+//
+// https://developer.android.com/training/app-links/create-deeplinks
+//
+// These are "custom deep links" as defined on that page and start with
+// the prefix "kodi://", with that exact string and "kodi://launch" serving
+// to start Kodi.
+
+public class KodiDeepLinkActivity extends Activity
+{
+  private static final String TAG = "@APP_NAME@";
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+
+    Uri data = getIntent().getData();
+    String host = (data != null) ? data.getHost() : null;
+
+    if (host == null)
+    {
+      finish();
+      return;
+    }
+
+    switch (host)
+    {
+      case "launch":
+      case "":
+        doLaunch();
+        break;
+      default:
+        Log.e(TAG, "Deep link: Unknown action: " + host);
+        break;
+    }
+
+    finish();
+  }
+
+  private void doLaunch()
+  {
+    Log.i(TAG, "Deep link: launch");
+    PackageManager pm = getPackageManager();
+    Intent launch = pm.getLaunchIntentForPackage(getPackageName());
+    if (launch != null)
+    {
+      launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(launch);
+    }
+  }
+}
