@@ -14,7 +14,8 @@
 				!Window.IsActive(InGameSaves) +
 				!Window.IsActive(GameAgents) +
 				!Window.IsActive(GameDiscManager) +
-				!Window.IsActive(GameAchievements)
+				!Window.IsActive(GameAchievements) +
+				!Window.IsActive(GameCheats)
 			</visible>
 			<include>Visible_Fade</include>
 			<control type="group" id="10">
@@ -147,6 +148,13 @@
 							<param name="icon" value="osd/fullscreen/buttons/rating.png" />
 							<description>Always show Achievements; its dialog explains sign-in requirements and missing achievement sets.</description>
 							<onclick>ActivateWindow(GameAchievements)</onclick>
+						</include>
+						<include content="GameOSDMenuButton">
+							<param name="id" value="1118" />
+							<param name="label" value="$LOCALIZE[35320]" />
+							<param name="icon" value="osd/fullscreen/buttons/cheats.png" />
+							<visible>RetroPlayer.HasCheats</visible>
+							<onclick>ActivateWindow(GameCheats)</onclick>
 						</include>
 						<include content="GameOSDMenuButton">
 							<param name="id" value="1115" />
