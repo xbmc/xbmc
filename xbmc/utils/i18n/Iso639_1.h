@@ -43,7 +43,8 @@ public:
   static std::optional<std::string> LookupByName(std::string_view name);
 
   /*!
-   * \brief Provide a list of defined ISO 639-1 languages
+   * \brief Provide the languages offered as a choice: active ISO 639-1 codes and Kodi's
+   *        additions, excluding codes ISO 639-1 has withdrawn.
    * \param[in] langMap map to add languages to
    * \return true for success, false otherwise
    */

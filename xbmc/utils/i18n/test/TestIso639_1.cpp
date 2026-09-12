@@ -9,6 +9,10 @@
 #include "utils/i18n/Iso639.h"
 #include "utils/i18n/Iso639_1.h"
 
+#include <map>
+#include <string>
+#include <string_view>
+
 #include <gtest/gtest.h>
 
 using namespace KODI::UTILS::I18N;
@@ -81,4 +85,22 @@ TEST(TestI18nIso639_1, LookupByName)
 
   result = CIso639_1::LookupByName("not a language");
   EXPECT_FALSE(result.has_value());
+}
+
+TEST(TestI18nIso639_1, ListLanguages)
+{
+  std::map<std::string, std::string> langMap;
+  EXPECT_TRUE(CIso639_1::ListLanguages(langMap));
+
+  ASSERT_TRUE(langMap.contains("aa"));
+  EXPECT_EQ(langMap.at("aa"), "Afar");
+  ASSERT_TRUE(langMap.contains("zu"));
+  EXPECT_EQ(langMap.at("zu"), "Zulu");
+
+  // The codes ISO 639-1 has withdrawn.
+  for (const std::string_view code : {"bh", "in", "iw", "ji", "jw", "mo", "sh"})
+  {
+    EXPECT_FALSE(langMap.contains(std::string{code})) << code;
+    EXPECT_TRUE(CIso639_1::LookupByCode(code).has_value()) << code;
+  }
 }
