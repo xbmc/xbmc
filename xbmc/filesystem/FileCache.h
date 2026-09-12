@@ -90,6 +90,12 @@ public:
     CFileCache(unsigned int flags, std::unique_ptr<IFileCacheSource> source);
 
   private:
+    std::unique_ptr<CCacheStrategy> CreateMemoryCache(size_t cacheSize);
+    //! The per-buffer size holding a minute of content at the given rate, within a memory budget
+    size_t CacheSizeForRate(uint32_t bytesPerSecond) const;
+    //! Grows a default-sized memory cache once the content's rate is known
+    void GrowCacheForRate(uint32_t bytesPerSecond);
+
     std::unique_ptr<CCacheStrategy> m_pCache;
     int m_seekPossible = 0;
     std::unique_ptr<IFileCacheSource> m_source;
@@ -113,6 +119,9 @@ public:
     unsigned int m_flags;
     CCriticalSection m_sync;
     std::chrono::milliseconds m_processWait{100ms};
+    size_t m_memoryCacheSize = 0; // per buffer, 0 when caching to disk
+    size_t m_pendingCacheSize = 0; // size the fill thread rebuilds the cache at, 0 for none
+    bool m_autoSizeCache = false;
   };
 
 }
