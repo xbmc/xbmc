@@ -25,20 +25,6 @@ enum PlayerType
   Remote = 0x10
 };
 
-/*! \brief Everything a playerid is resolved against.
- */
-struct PlayerState
-{
-  //! The players running, as PlayerType flags.
-  int players{None};
-
-  //! The playlist the playlist player is working through, TYPE_NONE when it has none.
-  KODI::PLAYLIST::Id currentPlaylist{KODI::PLAYLIST::Id::TYPE_NONE};
-
-  //! The playlist the running player would belong to, TYPE_NONE when nothing plays.
-  KODI::PLAYLIST::Id preferredPlaylist{KODI::PLAYLIST::Id::TYPE_NONE};
-};
-
 /*! \brief The playerid a client addresses a player by.
 
  Shares a numeric range with the playlist ids but is unrelated to them.
@@ -56,23 +42,15 @@ PlayerType PlayerForId(KODI::PLAYLIST::Id playerid);
 
 /*! \brief The player a playerid names, when that player is running.
  \param playerid the playerid as the client gave it
- \param state the players running and the playlists in force
+ \param activePlayers the players running, as PlayerType flags
  \return the player, or None when the id names none or its player is not running
  */
-PlayerType RunningPlayerForId(KODI::PLAYLIST::Id playerid, const PlayerState& state);
+PlayerType RunningPlayerForId(KODI::PLAYLIST::Id playerid, int activePlayers);
 
 /*! \brief Fill the "player" member of a Player notification with the player's own id.
  \param player the member to fill
  \param type the player the notification is about
  */
 void DescribePlayer(CVariant& player, PlayerType type);
-
-/*! \brief The playlist a player is working through.
-
- \param player the player
- \param state the players running and the playlists in force
- \return the playlist
- */
-KODI::PLAYLIST::Id PlaylistOf(PlayerType player, const PlayerState& state);
 
 } // namespace JSONRPC

@@ -51,37 +51,15 @@ PlayerType PlayerForId(PLAYLIST::Id playerid)
   }
 }
 
-PlayerType RunningPlayerForId(PLAYLIST::Id playerid, const PlayerState& state)
+PlayerType RunningPlayerForId(PLAYLIST::Id playerid, int activePlayers)
 {
   const PlayerType player = PlayerForId(playerid);
-  return (state.players & player) != 0 ? player : None;
+  return (activePlayers & player) != 0 ? player : None;
 }
 
 void DescribePlayer(CVariant& player, PlayerType type)
 {
   player["playerid"] = static_cast<int>(PlayerIdOf(type));
-}
-
-PLAYLIST::Id PlaylistOf(PlayerType player, const PlayerState& state)
-{
-  PLAYLIST::Id playlistId = state.currentPlaylist;
-  if (playlistId == PLAYLIST::Id::TYPE_NONE) // No active playlist, try guessing
-    playlistId = state.preferredPlaylist;
-
-  switch (player)
-  {
-    case Video:
-      return playlistId == PLAYLIST::Id::TYPE_NONE ? PLAYLIST::Id::TYPE_VIDEO : playlistId;
-
-    case Audio:
-      return playlistId == PLAYLIST::Id::TYPE_NONE ? PLAYLIST::Id::TYPE_MUSIC : playlistId;
-
-    case Picture:
-      return PLAYLIST::Id::TYPE_PICTURE;
-
-    default:
-      return playlistId;
-  }
 }
 
 } // namespace JSONRPC

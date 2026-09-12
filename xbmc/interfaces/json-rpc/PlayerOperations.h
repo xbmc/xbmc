@@ -79,8 +79,6 @@ namespace JSONRPC
 
   private:
     static int GetActivePlayers();
-    static PlayerState GetPlaylistState();
-    static PlayerState GetPlayerState();
     static PlayerType GetPlayer(const CVariant &player);
     static KODI::PLAYLIST::Id GetPlaylist(PlayerType player);
     static JSONRPC_STATUS StartSlideshow(const std::string& path, bool recursive, bool random, const std::string &firstPicturePath = "");
