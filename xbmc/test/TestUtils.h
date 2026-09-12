@@ -8,13 +8,36 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
+#include <utility>
 #include <vector>
+
+#include "ServiceManager.h"
+#include "application/Application.h"
 
 namespace XFILE
 {
   class CFile;
 }
+
+/*!
+ * \brief Takes the service manager away for as long as it is in scope, for tests covering the
+ *        work Kodi does before one exists - such as the disc probe the storage provider runs
+ *        while the manager is still being built.
+ */
+class CServiceManagerSwap
+{
+public:
+  CServiceManagerSwap() : m_saved(std::move(g_application.m_ServiceManager)) {}
+  ~CServiceManagerSwap() { g_application.m_ServiceManager = std::move(m_saved); }
+
+  CServiceManagerSwap(const CServiceManagerSwap&) = delete;
+  CServiceManagerSwap& operator=(const CServiceManagerSwap&) = delete;
+
+private:
+  std::unique_ptr<CServiceManager> m_saved;
+};
 
 class CXBMCTestUtils
 {

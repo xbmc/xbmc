@@ -162,6 +162,17 @@ protected:
   */
   static bool ReverseLookup(const std::string& desc, std::string& code);
 
+  /*!
+   * \brief The part of ReverseLookup that the user mappings and the static tables can answer,
+   *        and so the part that does not need the subtag registry.
+   * \note Searched in the same order as ReverseLookup, so that a name resolves to the same code
+   *       whichever of the two is called.
+   * \param[in] desc The english language name for which a code is looked for.
+   * \param[out] code The user defined, ISO 639-1 or ISO 639-2/T code of the given language desc.
+   * \return true if a code was found, false otherwise.
+   */
+  static bool ReverseLookupInTables(const std::string& desc, std::string& code);
+
   /** \brief Looks up the user defined code of the given code or language name.
   *   \param[in] desc The language code or name that should be converted.
   *   \param[out] userCode The user defined language code of the given language desc.
