@@ -34,9 +34,17 @@ constexpr uint64_t GetBits64(uint64_t value, unsigned int firstBit, unsigned int
   return (value >> (firstBit - numBits)) & ((1ULL << numBits) - 1);
 }
 
+//! \brief Whether count bytes can be read from offset.
+constexpr bool Holds(const std::span<std::byte> bytes,
+                     unsigned int offset,
+                     unsigned int count)
+{
+  return static_cast<uint64_t>(offset) + count <= bytes.size();
+}
+
 constexpr uint64_t GetQWord(const std::span<std::byte> bytes, unsigned int offset)
 {
-  if (bytes.size() < offset + 8)
+  if (!Holds(bytes, offset, 8))
     throw std::out_of_range("Not enough bytes to extract a QWORD");
   return std::to_integer<uint64_t>(bytes[offset + 7]) |
          std::to_integer<uint64_t>(bytes[offset + 6]) << 8 |
@@ -50,7 +58,7 @@ constexpr uint64_t GetQWord(const std::span<std::byte> bytes, unsigned int offse
 
 constexpr uint32_t GetDWord(const std::span<std::byte> bytes, unsigned int offset)
 {
-  if (bytes.size() < offset + 4)
+  if (!Holds(bytes, offset, 4))
     throw std::out_of_range("Not enough bytes to extract a DWORD");
   return std::to_integer<uint32_t>(bytes[offset + 3]) |
          std::to_integer<uint32_t>(bytes[offset + 2]) << 8 |
@@ -60,7 +68,7 @@ constexpr uint32_t GetDWord(const std::span<std::byte> bytes, unsigned int offse
 
 constexpr uint16_t GetWord(const std::span<std::byte> bytes, unsigned int offset)
 {
-  if (bytes.size() < offset + 2)
+  if (!Holds(bytes, offset, 2))
     throw std::out_of_range("Not enough bytes to extract a WORD");
   return static_cast<uint16_t>(std::to_integer<uint16_t>(bytes[offset + 1]) |
                                std::to_integer<uint16_t>(bytes[offset]) << 8);
@@ -68,7 +76,7 @@ constexpr uint16_t GetWord(const std::span<std::byte> bytes, unsigned int offset
 
 constexpr uint8_t GetByte(const std::span<std::byte> bytes, unsigned int offset)
 {
-  if (bytes.size() < offset + 1)
+  if (!Holds(bytes, offset, 1))
     throw std::out_of_range("Not enough bytes to extract a BYTE");
   return std::to_integer<uint8_t>(bytes[offset]);
 }
@@ -77,7 +85,7 @@ inline std::string GetString(const std::span<std::byte> bytes,
                              unsigned int offset,
                              unsigned int length)
 {
-  if (bytes.size() < offset + length)
+  if (!Holds(bytes, offset, length))
     throw std::out_of_range("Not enough bytes to extract a STRING");
   return std::string{reinterpret_cast<const char*>(bytes.data() + offset), length};
 }
