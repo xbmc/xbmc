@@ -902,6 +902,19 @@ std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /*
   return strPath;
 }
 
+std::string URIUtils::Protocol(std::string_view url)
+{
+  std::string protocol;
+
+  std::size_t end = url.find("://");
+  if (end == std::string_view::npos)
+    return protocol;
+
+  protocol = url.substr(0, end);
+  StringUtils::ToLower(protocol);
+  return protocol;
+}
+
 bool URIUtils::IsProtocol(const std::string& url, const std::string &type)
 {
   return StringUtils::StartsWithNoCase(url, type + "://");

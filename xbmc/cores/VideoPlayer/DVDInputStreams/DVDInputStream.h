@@ -199,6 +199,8 @@ public:
 
   virtual bool IsRealtime() { return m_realtime; }
 
+  virtual bool IsStreaming() const;
+
   void SetRealtime(bool realtime) { m_realtime = realtime; }
 
   // interfaces

@@ -6,8 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "cores/IPlayerCallback.h"
+#include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
+#include "cores/VideoPlayer/DVDInputStreams/DVDInputStream.h"
+#include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "jobs/JobManager.h"
 #include "settings/AdvancedSettings.h"
@@ -18,8 +22,6 @@
 #include <gtest/gtest.h>
 
 using namespace std::chrono_literals;
-
-class CFileItem;
 
 class CTestPlayerCallback : public IPlayerCallback
 {
@@ -49,6 +51,7 @@ public:
   {
     return GetBookmarkPos(idx);
   }
+  bool InvokeEvaluateIsStreaming() const { return EvaluateIsStreaming(); }
 
   void SetCurrentVideoId(int id) { m_CurrentVideo.id = id; }
   void SetCurrentAudioId(int id) { m_CurrentAudio.id = id; }
@@ -57,6 +60,13 @@ public:
   bool GetHasVideo() const { return m_HasVideo; }
   bool GetHasAudio() const { return m_HasAudio; }
   void InvokeUpdateHasVideoAudio() { UpdateHasVideoAudio(); }
+
+  void SetItem(const CFileItem& item) { m_item = item; }
+  void SetInputStream(std::shared_ptr<CDVDInputStream> inputStream)
+  {
+    m_pInputStream = inputStream;
+  }
+  void SetDemuxer(std::unique_ptr<CDVDDemux> demuxer) { m_pDemuxer = std::move(demuxer); }
 
   constexpr static SeekStep ConvertTestSeekStep(TestSeekStep step)
   {
@@ -364,4 +374,155 @@ TEST_F(TestVideoPlayer, CalcTimeOrPercentSeekTargetSmooth)
   EXPECT_EQ(advancedSettings->m_videoTimeSeekBackward * 1000,
             CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
                                                                 TestSeekStep::NORMAL));
+}
+
+namespace
+{
+class CTestInputStream : public CDVDInputStream
+{
+public:
+  CTestInputStream(DVDStreamType type, const CFileItem& item) : CDVDInputStream(type, item) {}
+  int Read(uint8_t* buf, int buf_size) override { return 0; }
+  int64_t Seek(int64_t offset, int whence) override { return 0; }
+  int64_t GetLength() override { return 0; }
+  bool IsEOF() override { return false; }
+};
+
+class CTestDemux : public CDVDDemux
+{
+public:
+  explicit CTestDemux(bool streaming = false) : m_isStreaming(streaming) {}
+  bool Reset() override { return true; }
+  void Flush() override {}
+  void Abort() override {}
+  DemuxPacket* Read() override { return nullptr; }
+  bool SeekTime(double time, bool backwards = false, double* startpts = nullptr) override
+  {
+    return true;
+  }
+  CDemuxStream* GetStream(int iStreamId) const override { return nullptr; }
+  std::vector<CDemuxStream*> GetStreams() const override { return {}; }
+  int GetNrOfStreams() const override { return 0; }
+  bool IsStreaming() const override { return m_isStreaming; }
+
+private:
+  bool m_isStreaming{false};
+};
+} // namespace
+
+TEST_F(TestVideoPlayer, IsStreamingLocalFileReturnsFalse)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  // Local files
+  player.SetItem(CFileItem("C:\\Videos\\movie.mkv", false));
+  EXPECT_FALSE(player.InvokeEvaluateIsStreaming());
+
+  player.SetItem(CFileItem("/home/user/video.mp4", false));
+  EXPECT_FALSE(player.InvokeEvaluateIsStreaming());
+
+  // Network shares
+  player.SetItem(CFileItem("smb://192.168.1.1/movies/video.mkv", false));
+  EXPECT_FALSE(player.InvokeEvaluateIsStreaming());
+
+  // Direct HTTP file playback
+  player.SetItem(CFileItem("http://example.com/video.mp4", false));
+  EXPECT_FALSE(player.InvokeEvaluateIsStreaming());
+}
+
+TEST_F(TestVideoPlayer, IsStreamingManifestExtensionsReturnsTrue)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  player.SetItem(CFileItem("http://example.com/playlist.m3u8", false));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+
+  player.SetItem(CFileItem("https://example.com/manifest.ism", false));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+
+  player.SetItem(CFileItem("https://example.com/path1/path2.ism/manifest?query=foo", false));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+
+  player.SetItem(CFileItem("http://example.com/PLAYLIST.MPD", false));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+}
+
+TEST_F(TestVideoPlayer, IsStreamingMimeTypesReturnsTrue)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  CFileItem itemHls("http://example.com/stream", false);
+  itemHls.SetMimeType("application/vnd.apple.mpegurl");
+  player.SetItem(itemHls);
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+
+  CFileItem itemDash("http://example.com/stream", false);
+  itemDash.SetMimeType("application/dash+xml");
+  player.SetItem(itemDash);
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+}
+
+TEST_F(TestVideoPlayer, IsStreamingProtocolsReturnsTrue)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  player.SetItem(CFileItem("hls://example.com/live", false));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+
+  player.SetItem(CFileItem("dash://example.com/live", false));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+
+  player.SetItem(CFileItem("rtp://239.255.0.1:5004", false));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+}
+
+TEST_F(TestVideoPlayer, IsStreamingItemPropertiesReturnsTrue)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  CFileItem itemAddon("http://example.com/stream", false);
+  itemAddon.SetProperty(STREAM_PROPERTY_INPUTSTREAM, "inputstream.adaptive");
+  player.SetItem(itemAddon);
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+}
+
+TEST_F(TestVideoPlayer, IsStreamingInputStreamTypes)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+  CFileItem item("http://example.com/generic", false);
+  player.SetItem(item);
+
+  //! @todo should partially move into InputStream unit tests and leave the test of IsStreaming here
+
+  // File inputstream -> false
+  player.SetInputStream(std::make_shared<CTestInputStream>(DVDSTREAM_TYPE_FILE, item));
+  EXPECT_FALSE(player.InvokeEvaluateIsStreaming());
+
+  // Addon inputstream (ex. inputstream.adaptive)
+  player.SetInputStream(std::make_shared<CTestInputStream>(DVDSTREAM_TYPE_ADDON, item));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+
+  // FFmpeg inputstream
+  player.SetInputStream(std::make_shared<CTestInputStream>(DVDSTREAM_TYPE_FFMPEG, item));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+}
+
+TEST_F(TestVideoPlayer, IsStreamingDemuxerReturnsTrue)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+  CFileItem item("http://example.com/generic", false);
+  player.SetItem(item);
+
+  player.SetDemuxer(std::make_unique<CTestDemux>(false));
+  EXPECT_FALSE(player.InvokeEvaluateIsStreaming());
+
+  player.SetDemuxer(std::make_unique<CTestDemux>(true));
+  EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
 }

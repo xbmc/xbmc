@@ -220,6 +220,14 @@ public:
   static CURL SubstitutePath(const CURL& url, bool reverse = false);
   static std::string SubstitutePath(const std::string& strPath, bool reverse = false);
 
+  /*!
+   * \brief Returns the protocol of a url
+   * \param[in] url The url to examine
+   * \return url lowercased scheme when \p url is an URL, empty string otherwise.
+   * \sa IsProtocol
+   */
+  static std::string Protocol(std::string_view url);
+
   /*! \brief Check whether a URL is a given URL scheme.
    Comparison is case-insensitive as per RFC1738
    \param url a std::string path.

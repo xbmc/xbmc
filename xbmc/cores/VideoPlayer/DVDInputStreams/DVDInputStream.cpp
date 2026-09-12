@@ -302,3 +302,8 @@ void CDVDInputStream::UpdateStackItem(CFileItem& item, std::chrono::milliseconds
     }
   }
 }
+
+bool CDVDInputStream::IsStreaming() const
+{
+  return m_streamType == DVDSTREAM_TYPE_ADDON || m_streamType == DVDSTREAM_TYPE_FFMPEG;
+}
