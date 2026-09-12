@@ -98,6 +98,8 @@ public:
   void InvalidateColorBuffer() override;
   bool ClearBuffers(KODI::UTILS::COLOR::Color color) override;
   bool IsExtSupported(const char* extension) const override;
+  // WebGL 2.0 exposes GLES 3.0 without GL_TEXTURE_SWIZZLE_*, so platforms can opt out
+  virtual bool SupportsTextureSwizzle() const { return m_RenderVersionMajor >= 3; }
 
   void SetVSync(bool vsync);
   void ResetVSync() { m_bVsyncInit = false; }
