@@ -38,8 +38,8 @@ namespace CONTEXTMENU
   bool CEjectDisk::Execute(const std::shared_ptr<CFileItem>& item) const
   {
 #ifdef HAS_OPTICAL_DRIVE
-    CServiceBroker::GetMediaManager().ToggleTray(
-        CServiceBroker::GetMediaManager().TranslateDevicePath(item->GetPath())[0]);
+    // The item path can be a mount point or cdda://local/, so use the drive the source carries
+    CServiceBroker::GetMediaManager().ToggleTray(item->GetProperty("device_path").asString());
 #endif
     return true;
   }

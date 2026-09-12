@@ -865,9 +865,10 @@ TEST_P(TestMatchingSource, GetMatchingSource)
   for (const auto& source : Sources)
   {
     const std::string sourcePath{replaceOpticalTestDrive(source.path)};
-    CMediaSource mediaSource{
-        source.name, "",           "",    sourcePath, SourceType::REMOTE, KODI::UTILS::CLockInfo{},
-        "",          {sourcePath}, false, true};
+    CMediaSource mediaSource{.strName = source.name,
+                             .strPath = sourcePath,
+                             .m_iDriveType = SourceType::REMOTE,
+                             .vecPaths = {sourcePath}};
     sources.emplace_back(mediaSource);
   }
 

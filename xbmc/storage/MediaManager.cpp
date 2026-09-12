@@ -716,7 +716,7 @@ bool CMediaManager::Eject(const std::string& mountpath)
   return m_platformStorage->Eject(mountpath);
 }
 
-void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
+void CMediaManager::EjectTray(const bool bEject, const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
@@ -724,12 +724,16 @@ void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 #ifdef HAVE_LIBBLURAY
     m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
 #endif
-    m_platformDiscDriveHander->EjectDriveTray(TranslateDevicePath(""));
+    const std::string trayDevicePath{TranslateDevicePath(devicePath)};
+    if (bEject)
+      m_platformDiscDriveHander->EjectDriveTray(trayDevicePath);
+    else
+      m_platformDiscDriveHander->CloseDriveTray(trayDevicePath);
   }
 #endif
 }
 
-void CMediaManager::CloseTray(const char cDriveLetter)
+void CMediaManager::CloseTray(const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
@@ -737,12 +741,12 @@ void CMediaManager::CloseTray(const char cDriveLetter)
 #ifdef HAVE_LIBBLURAY
     m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
 #endif
-    m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
+    m_platformDiscDriveHander->CloseDriveTray(TranslateDevicePath(devicePath));
   }
 #endif
 }
 
-void CMediaManager::ToggleTray(const char cDriveLetter)
+void CMediaManager::ToggleTray(const std::string& devicePath)
 {
 #ifdef HAS_OPTICAL_DRIVE
   if (m_platformDiscDriveHander)
@@ -750,7 +754,7 @@ void CMediaManager::ToggleTray(const char cDriveLetter)
 #ifdef HAVE_LIBBLURAY
     m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
 #endif
-    m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
+    m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(devicePath));
   }
 #endif
 }
@@ -793,6 +797,7 @@ void CMediaManager::AddOpticalSource(const std::string& devicePath)
 {
   CMediaSource share;
   share.strPath = devicePath;
+  share.strDevicePath = devicePath;
   share.strName = devicePath;
 
   RemoveAutoSource(share);

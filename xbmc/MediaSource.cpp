@@ -43,6 +43,12 @@ void CMediaSource::FromNameAndPaths(std::string_view name, const std::vector<std
   strName = name;
   m_lockInfo = {};
   m_allowSharing = true;
+  strDevicePath.clear();
+#ifdef TARGET_WINDOWS
+  if (URIUtils::IsDOSPath(strPath) && strPath[1] == ':' &&
+      (strPath.size() == 2 || (strPath.size() == 3 && URIUtils::HasSlashAtEnd(strPath))))
+    strDevicePath = strPath.substr(0, 2);
+#endif
 
   if (URIUtils::IsMultiPath(strPath))
     m_iDriveType = SourceType::VPATH;

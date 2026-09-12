@@ -131,6 +131,7 @@ void COSXStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removabl
             CMediaSource share;
 
             share.strPath = mountpoint;
+            share.strDevicePath = devicepath;
             share.m_iDriveType = SourceType::REMOVABLE;
             Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
             share.m_ignore = true;
