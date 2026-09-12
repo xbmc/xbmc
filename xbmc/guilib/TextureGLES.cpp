@@ -410,14 +410,16 @@ TextureFormat CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
   const int formatType = textureFormat & KD_TEX_FMT_TYPE_MASK;
 
   // GLES 2.0 does not support swizzling. But for some Kodi formats+swizzles,
-  // we can map GLES formats (Luminance, Luminance-Alpha, BGRA). The swizzle
-  // "111R" is supported via fragment shaders. Other swizzles would need
-  // additional specialized shaders, or format conversions.
+  // we can map GLES formats (Luminance, Alpha, Luminance-Alpha, BGRA). Other
+  // swizzles would need additional specialized shaders, or format conversions.
 
-  if (m_textureFormat == KD_TEX_FMT_SDR_R8 &&
-      (m_textureSwizzle == KD_TEX_SWIZ_RRR1 || m_textureSwizzle == KD_TEX_SWIZ_111R))
+  if (m_textureFormat == KD_TEX_FMT_SDR_R8 && m_textureSwizzle == KD_TEX_SWIZ_RRR1)
   {
     glFormat.format = glFormat.internalFormat = GL_LUMINANCE;
+  }
+  else if (m_textureFormat == KD_TEX_FMT_SDR_R8 && m_textureSwizzle == KD_TEX_SWIZ_111R)
+  {
+    glFormat.format = glFormat.internalFormat = GL_ALPHA;
   }
   else if (m_textureFormat == KD_TEX_FMT_SDR_RG8 && m_textureSwizzle == KD_TEX_SWIZ_RRRG)
   {
