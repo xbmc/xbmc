@@ -25008,7 +25008,21 @@ msgctxt "#39217"
 msgid "Best"
 msgstr ""
 
-#empty strings from id 39218 to 39899
+#. Label for an Android setting that makes Kodi treat the display as Dolby Vision
+#. capable when Android says it is not. "Dolby Vision" is a trademark, left untranslated.
+#: system/settings/settings.xml
+msgctxt "#39218"
+msgid "Force Dolby Vision display support"
+msgstr ""
+
+#. Help text for label #39218. The quoted string is the "Adjust display refresh rate"
+#. setting, #170, and must match its translation.
+#: system/settings/settings.xml
+msgctxt "#39219"
+msgid "For first generation Dolby Vision TVs, treat the display as Dolby Vision capable when Android reports otherwise. This requires \"Adjust display refresh rate\"."
+msgstr ""
+
+#empty strings from id 39220 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
