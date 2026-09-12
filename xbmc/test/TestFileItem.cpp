@@ -1045,6 +1045,24 @@ TEST(TestFileItem, UpdateInfoKeepsAResolvedDynPath)
   EXPECT_EQ("/resolved/real-stream.mkv", target.GetDynPath());
 }
 
+TEST(TestFileItem, UpdateInfoUpdatesLabelForResolvedStrm)
+{
+  CFileItem target;
+  target.SetPath("/library/movie.strm");
+  target.SetDynPath("https://example.com/movie.mp4");
+  target.SetLabel("Library title");
+
+  CFileItem source;
+  source.SetPath("/library/movie.strm");
+  source.SetDynPath("https://example.com/movie.mp4");
+  source.SetLabel("Updated title");
+
+  target.UpdateInfo(source);
+
+  EXPECT_EQ("Updated title", target.GetLabel());
+  EXPECT_EQ("https://example.com/movie.mp4", target.GetDynPath());
+}
+
 TEST(TestFileItem, UpdateInfoTakesADynPathTheSourceActuallyHas)
 {
   CFileItem target = MakeResolvedPluginItem();
@@ -1064,6 +1082,33 @@ TEST(TestFileItem, MergeInfoKeepsAResolvedDynPath)
   target.MergeInfo(MakeAddonUpdateItem());
 
   EXPECT_EQ("/resolved/real-stream.mkv", target.GetDynPath());
+}
+
+TEST(TestFileItem, GetSubtitleAnchorPathUsesDynPathForRegularFiles)
+{
+  CFileItem item;
+  item.SetPath("/local/path/video.mkv");
+  item.SetDynPath("smb://server/share/video.mkv");
+
+  EXPECT_EQ("smb://server/share/video.mkv", item.GetSubtitleAnchorPath());
+}
+
+TEST(TestFileItem, GetSubtitleAnchorPathUsesPathForStrmFiles)
+{
+  CFileItem item;
+  item.SetPath("/local/path/video.strm");
+  item.SetDynPath("https://example.com/video.m3u8");
+
+  EXPECT_EQ("/local/path/video.strm", item.GetSubtitleAnchorPath());
+}
+
+TEST(TestFileItem, GetSubtitleAnchorPathUsesDynPathForPluginStrmRoutes)
+{
+  CFileItem item;
+  item.SetPath("plugin://plugin.video.example/play/video.strm");
+  item.SetDynPath("https://example.com/video.m3u8");
+
+  EXPECT_EQ("https://example.com/video.m3u8", item.GetSubtitleAnchorPath());
 }
 
 TEST(TestFileItem, TestLabel)

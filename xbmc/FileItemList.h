@@ -174,9 +174,10 @@ public:
 
   /*! \brief Update an item in the item list
    \param item the new item, which we match based on path to an existing item in the list
+   \param replaceLabels whether to replace labels (defaults to true)
    \return true if the item exists in the list (and was thus updated), false otherwise.
    */
-  bool UpdateItem(const CFileItem* item);
+  bool UpdateItem(const CFileItem* item, bool replaceLabels = true);
 
   void AddSortMethod(SortBy sortBy,
                      int buttonLabel,

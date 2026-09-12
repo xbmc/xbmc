@@ -1040,7 +1040,7 @@ void CFileItemList::Swap(unsigned int item1, unsigned int item2)
     std::swap(m_items[item1], m_items[item2]);
 }
 
-bool CFileItemList::UpdateItem(const CFileItem* item)
+bool CFileItemList::UpdateItem(const CFileItem* item, bool replaceLabels /* = true */)
 {
   if (!item)
     return false;
@@ -1049,7 +1049,7 @@ bool CFileItemList::UpdateItem(const CFileItem* item)
   const auto it =
       std::ranges::find_if(m_items, [&item](const auto& pItem) { return pItem->IsSamePath(item); });
   if (it != m_items.end())
-    (*it)->UpdateInfo(*item);
+    (*it)->UpdateInfo(*item, replaceLabels);
 
   return it != m_items.end();
 }
