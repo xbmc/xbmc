@@ -68,6 +68,11 @@ public:
                                 const NPT_HttpRequestContext& context,
                                 NPT_HttpResponse&             response, 
                                 NPT_String                    file_path);
+    static NPT_Result ServeFile(const NPT_HttpRequest&        request,
+                                const NPT_HttpRequestContext& context,
+                                NPT_HttpResponse&             response,
+                                NPT_String                    file_path,
+                                const NPT_String&             mime_path);
     static NPT_Result ServeStream(const NPT_HttpRequest&        request, 
                                   const NPT_HttpRequestContext& context,
                                   NPT_HttpResponse&             response,
