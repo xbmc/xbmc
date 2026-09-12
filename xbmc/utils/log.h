@@ -174,16 +174,25 @@ private:
 
   void SetComponentLogLevel(const std::vector<CVariant>& components);
 
+  bool ReadPersistedFileLoggingSetting() const;
+
+  void SetFileLoggingEnabled(bool enabled);
+
+  void CreateFileSink();
+
   void FormatLineBreaks(std::string& message) const;
 
   std::unique_ptr<IPlatformLog> m_platform;
   std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> m_sinks;
   Logger m_defaultLogger;
 
+  std::string m_logDirectory;
   std::shared_ptr<spdlog::sinks::sink> m_fileSink;
+  bool m_fileSinkAttached{false};
 
   int m_logLevel{LOG_LEVEL_DEBUG};
 
   bool m_componentLogEnabled{false};
   uint32_t m_componentLogLevels{0};
+  bool m_fileLoggingEnabled{true};
 };

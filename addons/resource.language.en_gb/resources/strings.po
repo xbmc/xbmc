@@ -25682,3 +25682,15 @@ msgstr ""
 msgctxt "#40804"
 msgid "{0:.1f} dB"
 msgstr ""
+
+#. Label of setting "Write log file to disk"
+#: system/settings/settings.xml
+msgctxt "#40805"
+msgid "Write log file to disk"
+msgstr ""
+
+#. Description of setting with label #40805 "Write log file to disk"
+#: system/settings/settings.xml
+msgctxt "#40806"
+msgid "If enabled, log messages are written to the kodi.log file. If disabled, no log file is written, but logging to other outputs (such as the debugger or the system log) is unaffected and unrelated logging settings, such as component-specific and debug logging, continue to apply to those outputs."
+msgstr ""

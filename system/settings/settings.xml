@@ -3894,6 +3894,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="debug.enablefilelogging" type="boolean" label="40805" help="40806">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="debug.extralogging" type="boolean" label="666" help="36394">
           <level>1</level>
           <default>false</default>

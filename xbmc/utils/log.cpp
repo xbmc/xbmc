@@ -11,6 +11,8 @@
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
+#include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/SettingUtils.h"
@@ -22,6 +24,7 @@
 #include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <cstring>
 #include <set>
@@ -115,6 +118,7 @@ void CLog::OnSettingsLoaded()
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_componentLogEnabled = settings->GetBool(CSettings::SETTING_DEBUG_EXTRALOGGING);
   SetComponentLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
+  SetFileLoggingEnabled(settings->GetBool(CSettings::SETTING_DEBUG_ENABLEFILELOGGING));
 }
 
 void CLog::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -128,6 +132,8 @@ void CLog::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
   else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
     SetComponentLogLevel(
         CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
+  else if (settingId == CSettings::SETTING_DEBUG_ENABLEFILELOGGING)
+    SetFileLoggingEnabled(std::static_pointer_cast<const CSettingBool>(setting)->GetValue());
 }
 
 void CLog::Initialize(const std::string& path) 
@@ -141,16 +147,45 @@ void CLog::Initialize(const std::string& path)
   settingsManager->RegisterSettingOptionsFiller("loggingcomponents",
                                                 SettingOptionsLoggingComponentsFiller);
   settingsManager->RegisterSettingsHandler(this);
-  settingsManager->RegisterCallback(
-      this, {CSettings::SETTING_DEBUG_EXTRALOGGING, CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL});
+  settingsManager->RegisterCallback(this, {CSettings::SETTING_DEBUG_EXTRALOGGING,
+                                           CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL,
+                                           CSettings::SETTING_DEBUG_ENABLEFILELOGGING});
 
   if (path.empty())
+    return;
+
+  m_logDirectory = path;
+
+  // settings aren't loaded yet at this point, so peek the persisted value directly
+  m_fileLoggingEnabled = ReadPersistedFileLoggingSetting();
+
+  if (m_fileLoggingEnabled)
+    CreateFileSink();
+}
+
+bool CLog::ReadPersistedFileLoggingSetting() const
+{
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  const auto settings = settingsComponent->GetSettings();
+
+  // merge just the one persisted value, as CProfileManager does when switching profiles
+  CXBMCTinyXML doc;
+  if (doc.LoadFile(
+          CSpecialProtocol::TranslatePath(settingsComponent->GetProfileManager()->GetSettingsFile())))
+    settings->LoadSetting(doc.RootElement(), CSettings::SETTING_DEBUG_ENABLEFILELOGGING);
+
+  return settings->GetBool(CSettings::SETTING_DEBUG_ENABLEFILELOGGING);
+}
+
+void CLog::CreateFileSink()
+{
+  if (m_logDirectory.empty())
     return;
 
   // put together the path to the log file(s)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
-  const std::string filePathBase = URIUtils::AddFileToFolder(path, appName);
+  const std::string filePathBase = URIUtils::AddFileToFolder(m_logDirectory, appName);
   const std::string filePath = filePathBase + LogFileExtension;
   const std::string oldFilePath = filePathBase + ".old" + LogFileExtension;
 
@@ -174,8 +209,8 @@ void CLog::Initialize(const std::string& path)
   duplicateFilterSink->add_sink(basicFileSink);
   m_fileSink = duplicateFilterSink;
 
-  // add it to the existing sinks
   m_sinks->add_sink(m_fileSink);
+  m_fileSinkAttached = true;
 }
 
 void CLog::UnregisterFromSettings()
@@ -200,7 +235,11 @@ void CLog::Deinitialize()
   m_fileSink->flush();
 
   // remove and destroy the file sink
-  m_sinks->remove_sink(m_fileSink);
+  if (m_fileSinkAttached)
+  {
+    m_sinks->remove_sink(m_fileSink);
+    m_fileSinkAttached = false;
+  }
   m_fileSink.reset();
 }
 
@@ -354,6 +393,36 @@ void CLog::SetComponentLogLevel(const std::vector<CVariant>& components)
       continue;
 
     m_componentLogLevels |= static_cast<uint32_t>(component.asInteger());
+  }
+}
+
+void CLog::SetFileLoggingEnabled(bool enabled)
+{
+  m_fileLoggingEnabled = enabled;
+
+  if (enabled && !m_fileSinkAttached)
+  {
+    // the sink may not exist yet, e.g. if file logging was off when Initialize() ran
+    if (m_fileSink == nullptr)
+      CreateFileSink();
+    else
+    {
+      m_sinks->add_sink(m_fileSink);
+      m_fileSinkAttached = true;
+    }
+
+    if (m_fileSinkAttached)
+      FormatAndLogInternal(spdlog::level::info, LOG_COMPONENT_GENERAL,
+                           "Log file writing has been enabled", fmt::make_format_args());
+  }
+  else if (!enabled && m_fileSinkAttached)
+  {
+    FormatAndLogInternal(spdlog::level::info, LOG_COMPONENT_GENERAL,
+                         "Log file writing has been disabled, no further messages will be "
+                         "written to the log file",
+                         fmt::make_format_args());
+    m_sinks->remove_sink(m_fileSink);
+    m_fileSinkAttached = false;
   }
 }
 

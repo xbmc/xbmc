@@ -453,6 +453,7 @@ public:
   static constexpr auto SETTING_POWERMANAGEMENT_WAITFORNETWORK = "powermanagement.waitfornetwork";
   static constexpr auto SETTING_POWERMANAGEMENT_RESTARTPLAYER = "powermanagement.restartplayer";
   static constexpr auto SETTING_DEBUG_SHOWLOGINFO = "debug.showloginfo";
+  static constexpr auto SETTING_DEBUG_ENABLEFILELOGGING = "debug.enablefilelogging";
   static constexpr auto SETTING_DEBUG_EXTRALOGGING = "debug.extralogging";
   static constexpr auto SETTING_DEBUG_SETEXTRALOGLEVEL = "debug.setextraloglevel";
   static constexpr auto SETTING_DEBUG_SCREENSHOTPATH = "debug.screenshotpath";
