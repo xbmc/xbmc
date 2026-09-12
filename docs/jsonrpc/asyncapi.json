@@ -1,0 +1,3160 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "Kodi JSON-RPC notifications",
+    "version": "13.1001.0",
+    "description": "Server-initiated notifications of Kodi's JSON-RPC 2.0 API. Kodi pushes these over the WebSocket and raw TCP transports only; they are never delivered over HTTP. Request/response methods are documented separately in openrpc.json.",
+    "license": {
+      "name": "GPL-2.0-or-later"
+    }
+  },
+  "servers": {
+    "websocket": {
+      "host": "{host}:9090",
+      "pathname": "/jsonrpc",
+      "protocol": "ws",
+      "variables": {
+        "host": {
+          "default": "localhost"
+        }
+      }
+    },
+    "tcp": {
+      "host": "{host}:9090",
+      "protocol": "tcp",
+      "description": "Raw TCP transport; newline-free JSON-RPC objects over a plain socket.",
+      "variables": {
+        "host": {
+          "default": "localhost"
+        }
+      }
+    }
+  },
+  "channels": {
+    "jsonrpc": {
+      "description": "The single JSON-RPC channel; every notification is delivered on it.",
+      "messages": {
+        "Player.OnPlay": {
+          "$ref": "#/components/messages/Player.OnPlay"
+        },
+        "Player.OnResume": {
+          "$ref": "#/components/messages/Player.OnResume"
+        },
+        "Player.OnAVStart": {
+          "$ref": "#/components/messages/Player.OnAVStart"
+        },
+        "Player.OnAVChange": {
+          "$ref": "#/components/messages/Player.OnAVChange"
+        },
+        "Player.OnPause": {
+          "$ref": "#/components/messages/Player.OnPause"
+        },
+        "Player.OnStop": {
+          "$ref": "#/components/messages/Player.OnStop"
+        },
+        "Player.OnPlaybackFailed": {
+          "$ref": "#/components/messages/Player.OnPlaybackFailed"
+        },
+        "Player.OnSpeedChanged": {
+          "$ref": "#/components/messages/Player.OnSpeedChanged"
+        },
+        "Player.OnSeek": {
+          "$ref": "#/components/messages/Player.OnSeek"
+        },
+        "Player.OnPropertyChanged": {
+          "$ref": "#/components/messages/Player.OnPropertyChanged"
+        },
+        "Playlist.OnAdd": {
+          "$ref": "#/components/messages/Playlist.OnAdd"
+        },
+        "Playlist.OnRemove": {
+          "$ref": "#/components/messages/Playlist.OnRemove"
+        },
+        "Playlist.OnClear": {
+          "$ref": "#/components/messages/Playlist.OnClear"
+        },
+        "Playlist.OnPropertyChanged": {
+          "$ref": "#/components/messages/Playlist.OnPropertyChanged"
+        },
+        "AudioLibrary.OnUpdate": {
+          "$ref": "#/components/messages/AudioLibrary.OnUpdate"
+        },
+        "AudioLibrary.OnRemove": {
+          "$ref": "#/components/messages/AudioLibrary.OnRemove"
+        },
+        "AudioLibrary.OnScanStarted": {
+          "$ref": "#/components/messages/AudioLibrary.OnScanStarted"
+        },
+        "AudioLibrary.OnScanFinished": {
+          "$ref": "#/components/messages/AudioLibrary.OnScanFinished"
+        },
+        "AudioLibrary.OnCleanStarted": {
+          "$ref": "#/components/messages/AudioLibrary.OnCleanStarted"
+        },
+        "AudioLibrary.OnCleanFinished": {
+          "$ref": "#/components/messages/AudioLibrary.OnCleanFinished"
+        },
+        "AudioLibrary.OnExport": {
+          "$ref": "#/components/messages/AudioLibrary.OnExport"
+        },
+        "VideoLibrary.OnUpdate": {
+          "$ref": "#/components/messages/VideoLibrary.OnUpdate"
+        },
+        "VideoLibrary.OnExport": {
+          "$ref": "#/components/messages/VideoLibrary.OnExport"
+        },
+        "VideoLibrary.OnRemove": {
+          "$ref": "#/components/messages/VideoLibrary.OnRemove"
+        },
+        "VideoLibrary.OnScanStarted": {
+          "$ref": "#/components/messages/VideoLibrary.OnScanStarted"
+        },
+        "VideoLibrary.OnScanFinished": {
+          "$ref": "#/components/messages/VideoLibrary.OnScanFinished"
+        },
+        "VideoLibrary.OnCleanStarted": {
+          "$ref": "#/components/messages/VideoLibrary.OnCleanStarted"
+        },
+        "VideoLibrary.OnCleanFinished": {
+          "$ref": "#/components/messages/VideoLibrary.OnCleanFinished"
+        },
+        "VideoLibrary.OnRefresh": {
+          "$ref": "#/components/messages/VideoLibrary.OnRefresh"
+        },
+        "System.OnQuit": {
+          "$ref": "#/components/messages/System.OnQuit"
+        },
+        "System.OnRestart": {
+          "$ref": "#/components/messages/System.OnRestart"
+        },
+        "System.OnSleep": {
+          "$ref": "#/components/messages/System.OnSleep"
+        },
+        "System.OnWake": {
+          "$ref": "#/components/messages/System.OnWake"
+        },
+        "System.OnLowBattery": {
+          "$ref": "#/components/messages/System.OnLowBattery"
+        },
+        "Application.OnVolumeChanged": {
+          "$ref": "#/components/messages/Application.OnVolumeChanged"
+        },
+        "Input.OnInputRequested": {
+          "$ref": "#/components/messages/Input.OnInputRequested"
+        },
+        "Input.OnInputFinished": {
+          "$ref": "#/components/messages/Input.OnInputFinished"
+        },
+        "GUI.OnScreensaverActivated": {
+          "$ref": "#/components/messages/GUI.OnScreensaverActivated"
+        },
+        "GUI.OnScreensaverDeactivated": {
+          "$ref": "#/components/messages/GUI.OnScreensaverDeactivated"
+        },
+        "GUI.OnDPMSActivated": {
+          "$ref": "#/components/messages/GUI.OnDPMSActivated"
+        },
+        "GUI.OnDPMSDeactivated": {
+          "$ref": "#/components/messages/GUI.OnDPMSDeactivated"
+        },
+        "GUI.OnSkinUnloading": {
+          "$ref": "#/components/messages/GUI.OnSkinUnloading"
+        },
+        "GUI.OnSkinLoaded": {
+          "$ref": "#/components/messages/GUI.OnSkinLoaded"
+        },
+        "GUI.OnSkinLoadFailed": {
+          "$ref": "#/components/messages/GUI.OnSkinLoadFailed"
+        },
+        "Settings.OnLevelChanged": {
+          "$ref": "#/components/messages/Settings.OnLevelChanged"
+        }
+      }
+    }
+  },
+  "operations": {
+    "Player.OnPlay": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnPlay"
+        }
+      ]
+    },
+    "Player.OnResume": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnResume"
+        }
+      ]
+    },
+    "Player.OnAVStart": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnAVStart"
+        }
+      ]
+    },
+    "Player.OnAVChange": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnAVChange"
+        }
+      ]
+    },
+    "Player.OnPause": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnPause"
+        }
+      ]
+    },
+    "Player.OnStop": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnStop"
+        }
+      ]
+    },
+    "Player.OnPlaybackFailed": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnPlaybackFailed"
+        }
+      ]
+    },
+    "Player.OnSpeedChanged": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnSpeedChanged"
+        }
+      ]
+    },
+    "Player.OnSeek": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnSeek"
+        }
+      ]
+    },
+    "Player.OnPropertyChanged": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Player.OnPropertyChanged"
+        }
+      ]
+    },
+    "Playlist.OnAdd": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Playlist.OnAdd"
+        }
+      ]
+    },
+    "Playlist.OnRemove": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Playlist.OnRemove"
+        }
+      ]
+    },
+    "Playlist.OnClear": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Playlist.OnClear"
+        }
+      ]
+    },
+    "Playlist.OnPropertyChanged": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Playlist.OnPropertyChanged"
+        }
+      ]
+    },
+    "AudioLibrary.OnUpdate": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/AudioLibrary.OnUpdate"
+        }
+      ]
+    },
+    "AudioLibrary.OnRemove": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/AudioLibrary.OnRemove"
+        }
+      ]
+    },
+    "AudioLibrary.OnScanStarted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/AudioLibrary.OnScanStarted"
+        }
+      ]
+    },
+    "AudioLibrary.OnScanFinished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/AudioLibrary.OnScanFinished"
+        }
+      ]
+    },
+    "AudioLibrary.OnCleanStarted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/AudioLibrary.OnCleanStarted"
+        }
+      ]
+    },
+    "AudioLibrary.OnCleanFinished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/AudioLibrary.OnCleanFinished"
+        }
+      ]
+    },
+    "AudioLibrary.OnExport": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/AudioLibrary.OnExport"
+        }
+      ]
+    },
+    "VideoLibrary.OnUpdate": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnUpdate"
+        }
+      ]
+    },
+    "VideoLibrary.OnExport": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnExport"
+        }
+      ]
+    },
+    "VideoLibrary.OnRemove": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnRemove"
+        }
+      ]
+    },
+    "VideoLibrary.OnScanStarted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnScanStarted"
+        }
+      ]
+    },
+    "VideoLibrary.OnScanFinished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnScanFinished"
+        }
+      ]
+    },
+    "VideoLibrary.OnCleanStarted": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnCleanStarted"
+        }
+      ]
+    },
+    "VideoLibrary.OnCleanFinished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnCleanFinished"
+        }
+      ]
+    },
+    "VideoLibrary.OnRefresh": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/VideoLibrary.OnRefresh"
+        }
+      ]
+    },
+    "System.OnQuit": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/System.OnQuit"
+        }
+      ]
+    },
+    "System.OnRestart": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/System.OnRestart"
+        }
+      ]
+    },
+    "System.OnSleep": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/System.OnSleep"
+        }
+      ]
+    },
+    "System.OnWake": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/System.OnWake"
+        }
+      ]
+    },
+    "System.OnLowBattery": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/System.OnLowBattery"
+        }
+      ]
+    },
+    "Application.OnVolumeChanged": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Application.OnVolumeChanged"
+        }
+      ]
+    },
+    "Input.OnInputRequested": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Input.OnInputRequested"
+        }
+      ]
+    },
+    "Input.OnInputFinished": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Input.OnInputFinished"
+        }
+      ]
+    },
+    "GUI.OnScreensaverActivated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/GUI.OnScreensaverActivated"
+        }
+      ]
+    },
+    "GUI.OnScreensaverDeactivated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/GUI.OnScreensaverDeactivated"
+        }
+      ]
+    },
+    "GUI.OnDPMSActivated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/GUI.OnDPMSActivated"
+        }
+      ]
+    },
+    "GUI.OnDPMSDeactivated": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/GUI.OnDPMSDeactivated"
+        }
+      ]
+    },
+    "GUI.OnSkinUnloading": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/GUI.OnSkinUnloading"
+        }
+      ]
+    },
+    "GUI.OnSkinLoaded": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/GUI.OnSkinLoaded"
+        }
+      ]
+    },
+    "GUI.OnSkinLoadFailed": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/GUI.OnSkinLoadFailed"
+        }
+      ]
+    },
+    "Settings.OnLevelChanged": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/jsonrpc"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/jsonrpc/messages/Settings.OnLevelChanged"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "Player.OnPlay": {
+        "name": "Player.OnPlay",
+        "summary": "Playback of a media item has been started or the playback speed has changed. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnPlay"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Player.Notifications.Data"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnResume": {
+        "name": "Player.OnResume",
+        "summary": "Playback of a media item has been resumed. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnResume"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Player.Notifications.Data"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnAVStart": {
+        "name": "Player.OnAVStart",
+        "summary": "Playback of a media item has been started and first frame is available. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnAVStart"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Player.Notifications.Data"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnAVChange": {
+        "name": "Player.OnAVChange",
+        "summary": "Audio- or videostream has changed. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnAVChange"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Player.Notifications.Data"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnPause": {
+        "name": "Player.OnPause",
+        "summary": "Playback of a media item has been paused. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnPause"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Player.Notifications.Data"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnStop": {
+        "name": "Player.OnStop",
+        "summary": "Playback of a media item has been stopped. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnStop"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Notifications.Item"
+                    },
+                    "end": {
+                      "type": "boolean",
+                      "description": "Whether the player has reached the end of the playable item(s) or not"
+                    }
+                  },
+                  "required": [
+                    "end"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnPlaybackFailed": {
+        "name": "Player.OnPlaybackFailed",
+        "summary": "Playback of a media item was requested but did not happen. Playback starts asynchronously, so a request that was answered successfully can still fail afterwards.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnPlaybackFailed"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Notifications.Item"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Why the item was not played. \"unplayable\": no player could play it, or the player refused it. \"unresolved\": a plugin did not return a playable item. \"locked\": the master or media source lock refused it. \"error\": the player reported an error after playback had started.",
+                      "enum": [
+                        "unplayable",
+                        "unresolved",
+                        "locked",
+                        "error"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "reason"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnSpeedChanged": {
+        "name": "Player.OnSpeedChanged",
+        "summary": "Speed of the playback of a media item has been changed. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnSpeedChanged"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "$ref": "#/components/schemas/Player.Notifications.Data"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnSeek": {
+        "name": "Player.OnSeek",
+        "summary": "The playback position has been changed. If there is no ID available extra information will be provided.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnSeek"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Notifications.Item"
+                    },
+                    "player": {
+                      "$ref": "#/components/schemas/Player.Notifications.Player.Seek"
+                    }
+                  },
+                  "required": [
+                    "player"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Player.OnPropertyChanged": {
+        "name": "Player.OnPropertyChanged",
+        "summary": "A property of the playing items has changed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Player.OnPropertyChanged"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "property": {
+                      "$ref": "#/components/schemas/Player.Property.Value"
+                    },
+                    "player": {
+                      "$ref": "#/components/schemas/Player.Notifications.Player"
+                    }
+                  },
+                  "required": [
+                    "player"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Playlist.OnAdd": {
+        "name": "Playlist.OnAdd",
+        "summary": "A playlist item has been added.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Playlist.OnAdd"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "playlistid": {
+                      "$ref": "#/components/schemas/Playlist.Id"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Notifications.Item"
+                    },
+                    "position": {
+                      "$ref": "#/components/schemas/Playlist.Position"
+                    }
+                  },
+                  "required": [
+                    "playlistid"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Playlist.OnRemove": {
+        "name": "Playlist.OnRemove",
+        "summary": "A playlist item has been removed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Playlist.OnRemove"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "playlistid": {
+                      "$ref": "#/components/schemas/Playlist.Id"
+                    },
+                    "position": {
+                      "$ref": "#/components/schemas/Playlist.Position"
+                    }
+                  },
+                  "required": [
+                    "playlistid"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Playlist.OnClear": {
+        "name": "Playlist.OnClear",
+        "summary": "A playlist item has been cleared.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Playlist.OnClear"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "playlistid": {
+                      "$ref": "#/components/schemas/Playlist.Id"
+                    }
+                  },
+                  "required": [
+                    "playlistid"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Playlist.OnPropertyChanged": {
+        "name": "Playlist.OnPropertyChanged",
+        "summary": "A property of the playlist has changed. Unlike Player.OnPropertyChanged this is also sent when the playlist is not currently being played.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Playlist.OnPropertyChanged"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "playlistid": {
+                      "$ref": "#/components/schemas/Playlist.Id"
+                    },
+                    "property": {
+                      "$ref": "#/components/schemas/Playlist.Property.Value"
+                    }
+                  },
+                  "required": [
+                    "playlistid",
+                    "property"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "AudioLibrary.OnUpdate": {
+        "name": "AudioLibrary.OnUpdate",
+        "summary": "An audio item has been updated.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "AudioLibrary.OnUpdate"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/components/schemas/Library.Id"
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/Notifications.Library.Audio.Type"
+                    },
+                    "transaction": {
+                      "$ref": "#/components/schemas/Optional.Boolean",
+                      "description": "True if the update is being performed within a transaction."
+                    },
+                    "added": {
+                      "$ref": "#/components/schemas/Optional.Boolean",
+                      "description": "True if the update is for a newly added item."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "AudioLibrary.OnRemove": {
+        "name": "AudioLibrary.OnRemove",
+        "summary": "An audio item has been removed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "AudioLibrary.OnRemove"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/components/schemas/Library.Id"
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/Notifications.Library.Audio.Type"
+                    },
+                    "transaction": {
+                      "$ref": "#/components/schemas/Optional.Boolean",
+                      "description": "True if the removal is being performed within a transaction."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "AudioLibrary.OnScanStarted": {
+        "name": "AudioLibrary.OnScanStarted",
+        "summary": "An audio library scan has started.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "AudioLibrary.OnScanStarted"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "AudioLibrary.OnScanFinished": {
+        "name": "AudioLibrary.OnScanFinished",
+        "summary": "Scanning the audio library has been finished.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "AudioLibrary.OnScanFinished"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "AudioLibrary.OnCleanStarted": {
+        "name": "AudioLibrary.OnCleanStarted",
+        "summary": "An audio library clean operation has started.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "AudioLibrary.OnCleanStarted"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "AudioLibrary.OnCleanFinished": {
+        "name": "AudioLibrary.OnCleanFinished",
+        "summary": "The audio library has been cleaned.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "AudioLibrary.OnCleanFinished"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "AudioLibrary.OnExport": {
+        "name": "AudioLibrary.OnExport",
+        "summary": "An audio library export has finished.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "AudioLibrary.OnExport"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "failcount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "default": 0
+                    }
+                  }
+                }
+              },
+              "required": [
+                "sender"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnUpdate": {
+        "name": "VideoLibrary.OnUpdate",
+        "summary": "A video item has been updated.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnUpdate"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/components/schemas/Library.Id"
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/Notifications.Library.Video.Type"
+                    },
+                    "playcount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "default": -1
+                    },
+                    "transaction": {
+                      "$ref": "#/components/schemas/Optional.Boolean",
+                      "description": "True if the update is being performed within a transaction."
+                    },
+                    "added": {
+                      "$ref": "#/components/schemas/Optional.Boolean",
+                      "description": "True if the update is for a newly added item."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnExport": {
+        "name": "VideoLibrary.OnExport",
+        "summary": "A video library export has finished.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnExport"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "root": {
+                      "type": "string",
+                      "default": ""
+                    },
+                    "failcount": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "default": 0
+                    }
+                  }
+                }
+              },
+              "required": [
+                "sender"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnRemove": {
+        "name": "VideoLibrary.OnRemove",
+        "summary": "A video item has been removed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnRemove"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "$ref": "#/components/schemas/Library.Id"
+                    },
+                    "type": {
+                      "$ref": "#/components/schemas/Notifications.Library.Video.Type"
+                    },
+                    "transaction": {
+                      "$ref": "#/components/schemas/Optional.Boolean",
+                      "description": "True if the removal is being performed within a transaction."
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnScanStarted": {
+        "name": "VideoLibrary.OnScanStarted",
+        "summary": "A video library scan has started.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnScanStarted"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnScanFinished": {
+        "name": "VideoLibrary.OnScanFinished",
+        "summary": "Scanning the video library has been finished.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnScanFinished"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnCleanStarted": {
+        "name": "VideoLibrary.OnCleanStarted",
+        "summary": "A video library clean operation has started.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnCleanStarted"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnCleanFinished": {
+        "name": "VideoLibrary.OnCleanFinished",
+        "summary": "The video library has been cleaned.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnCleanFinished"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "VideoLibrary.OnRefresh": {
+        "name": "VideoLibrary.OnRefresh",
+        "summary": "The video library has been refreshed and a home screen reload might be necessary.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "VideoLibrary.OnRefresh"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "System.OnQuit": {
+        "name": "System.OnQuit",
+        "summary": "Kodi will be closed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "System.OnQuit"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "exitcode": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "exitcode"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "System.OnRestart": {
+        "name": "System.OnRestart",
+        "summary": "The system will be restarted.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "System.OnRestart"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "System.OnSleep": {
+        "name": "System.OnSleep",
+        "summary": "The system will be suspended.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "System.OnSleep"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "System.OnWake": {
+        "name": "System.OnWake",
+        "summary": "The system woke up from suspension.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "System.OnWake"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "System.OnLowBattery": {
+        "name": "System.OnLowBattery",
+        "summary": "The system is on low battery.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "System.OnLowBattery"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Application.OnVolumeChanged": {
+        "name": "Application.OnVolumeChanged",
+        "summary": "The volume of the application has changed.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Application.OnVolumeChanged"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "volume": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    "muted": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "volume",
+                    "muted"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Input.OnInputRequested": {
+        "name": "Input.OnInputRequested",
+        "summary": "The user is requested to provide some information.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Input.OnInputRequested"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "keyboard",
+                        "time",
+                        "date",
+                        "ip",
+                        "password",
+                        "numericpassword",
+                        "number",
+                        "seconds"
+                      ]
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "value"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Input.OnInputFinished": {
+        "name": "Input.OnInputFinished",
+        "summary": "The user has provided the requested input.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Input.OnInputFinished"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "GUI.OnScreensaverActivated": {
+        "name": "GUI.OnScreensaverActivated",
+        "summary": "The screensaver has been activated.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "GUI.OnScreensaverActivated"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "GUI.OnScreensaverDeactivated": {
+        "name": "GUI.OnScreensaverDeactivated",
+        "summary": "The screensaver has been deactivated.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "GUI.OnScreensaverDeactivated"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "shuttingdown": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "shuttingdown"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "GUI.OnDPMSActivated": {
+        "name": "GUI.OnDPMSActivated",
+        "summary": "Energy saving/DPMS has been activated.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "GUI.OnDPMSActivated"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "GUI.OnDPMSDeactivated": {
+        "name": "GUI.OnDPMSDeactivated",
+        "summary": "Energy saving/DPMS has been deactivated.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "GUI.OnDPMSDeactivated"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "GUI.OnSkinUnloading": {
+        "name": "GUI.OnSkinUnloading",
+        "summary": "The current skin is about to be unloaded.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "GUI.OnSkinUnloading"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "GUI.OnSkinLoaded": {
+        "name": "GUI.OnSkinLoaded",
+        "summary": "A skin has been loaded.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "GUI.OnSkinLoaded"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "GUI.OnSkinLoadFailed": {
+        "name": "GUI.OnSkinLoadFailed",
+        "summary": "A skin failed to load.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "GUI.OnSkinLoadFailed"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "null"
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      },
+      "Settings.OnLevelChanged": {
+        "name": "Settings.OnLevelChanged",
+        "summary": "The setting level in force has changed. The profile's settings lock can lower it without the viewer asking for it.",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0"
+            },
+            "method": {
+              "const": "Settings.OnLevelChanged"
+            },
+            "params": {
+              "type": "object",
+              "properties": {
+                "sender": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "level": {
+                      "$ref": "#/components/schemas/Setting.Level"
+                    }
+                  },
+                  "required": [
+                    "level"
+                  ]
+                }
+              },
+              "required": [
+                "sender",
+                "data"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ]
+        }
+      }
+    },
+    "schemas": {
+      "Optional.Boolean": {
+        "type": [
+          "null",
+          "boolean"
+        ],
+        "default": null
+      },
+      "Global.Time": {
+        "type": "object",
+        "description": "A duration.",
+        "properties": {
+          "hours": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minutes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 59
+          },
+          "seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 59
+          },
+          "milliseconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 999
+          }
+        },
+        "required": [
+          "hours",
+          "minutes",
+          "seconds",
+          "milliseconds"
+        ],
+        "additionalProperties": false
+      },
+      "Library.Id": {
+        "type": "integer",
+        "default": -1,
+        "minimum": 1
+      },
+      "PVR.Channel.Type": {
+        "type": "string",
+        "enum": [
+          "tv",
+          "radio"
+        ]
+      },
+      "Playlist.Id": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2,
+        "default": -1
+      },
+      "Playlist.Type": {
+        "type": "string",
+        "enum": [
+          "unknown",
+          "video",
+          "audio",
+          "picture",
+          "mixed"
+        ]
+      },
+      "Playlist.Property.Value": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/Playlist.Type"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "repeat": {
+            "$ref": "#/components/schemas/Player.Repeat"
+          },
+          "shuffled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Playlist.Position": {
+        "type": "integer",
+        "minimum": 0,
+        "default": -1
+      },
+      "Player.Id": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2,
+        "default": -1
+      },
+      "Player.Type": {
+        "type": "string",
+        "enum": [
+          "video",
+          "audio",
+          "picture"
+        ]
+      },
+      "Player.Position.Percentage": {
+        "type": "number",
+        "minimum": 0.0,
+        "maximum": 100.0
+      },
+      "Player.Repeat": {
+        "type": "string",
+        "enum": [
+          "off",
+          "one",
+          "all"
+        ]
+      },
+      "Player.Audio.Stream": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string",
+            "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+          },
+          "codec": {
+            "type": "string"
+          },
+          "bitrate": {
+            "type": "integer"
+          },
+          "channels": {
+            "type": "integer"
+          },
+          "isdefault": {
+            "type": "boolean"
+          },
+          "isoriginal": {
+            "type": "boolean"
+          },
+          "isimpaired": {
+            "type": "boolean"
+          },
+          "samplerate": {
+            "type": "integer"
+          },
+          "bitspersample": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "language",
+          "codec",
+          "bitrate",
+          "channels",
+          "isdefault",
+          "isoriginal",
+          "isimpaired",
+          "samplerate",
+          "bitspersample"
+        ]
+      },
+      "Player.Video.Stream": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string",
+            "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+          },
+          "codec": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "language",
+          "codec",
+          "width",
+          "height"
+        ]
+      },
+      "Player.Subtitle": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string",
+            "description": "BCP 47 language tag (e.g. en, en-AU), empty when the stream declares none, passed through unchanged when unrecognized"
+          },
+          "codec": {
+            "type": "string"
+          },
+          "isdefault": {
+            "type": "boolean"
+          },
+          "isforced": {
+            "type": "boolean"
+          },
+          "isimpaired": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "index",
+          "name",
+          "language",
+          "codec",
+          "isdefault",
+          "isforced",
+          "isimpaired"
+        ]
+      },
+      "Player.Property.Value": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/Player.Type"
+          },
+          "partymode": {
+            "type": "boolean"
+          },
+          "speed": {
+            "type": "integer"
+          },
+          "time": {
+            "$ref": "#/components/schemas/Global.Time"
+          },
+          "percentage": {
+            "$ref": "#/components/schemas/Player.Position.Percentage"
+          },
+          "totaltime": {
+            "$ref": "#/components/schemas/Global.Time"
+          },
+          "playlistid": {
+            "$ref": "#/components/schemas/Playlist.Id"
+          },
+          "position": {
+            "$ref": "#/components/schemas/Playlist.Position"
+          },
+          "repeat": {
+            "$ref": "#/components/schemas/Player.Repeat"
+          },
+          "shuffled": {
+            "type": "boolean"
+          },
+          "canseek": {
+            "type": "boolean"
+          },
+          "canchangespeed": {
+            "type": "boolean"
+          },
+          "canmove": {
+            "type": "boolean"
+          },
+          "canzoom": {
+            "type": "boolean"
+          },
+          "canrotate": {
+            "type": "boolean"
+          },
+          "canshuffle": {
+            "type": "boolean"
+          },
+          "canrepeat": {
+            "type": "boolean"
+          },
+          "currentaudiostream": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Player.Audio.Stream"
+              }
+            ]
+          },
+          "audiostreams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Player.Audio.Stream"
+            }
+          },
+          "currentvideostream": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Player.Video.Stream"
+              }
+            ]
+          },
+          "videostreams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Player.Video.Stream"
+            }
+          },
+          "subtitleenabled": {
+            "type": "boolean"
+          },
+          "currentsubtitle": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Player.Subtitle"
+              }
+            ]
+          },
+          "subtitles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Player.Subtitle"
+            }
+          },
+          "live": {
+            "type": "boolean"
+          },
+          "cachepercentage": {
+            "$ref": "#/components/schemas/Player.Position.Percentage"
+          }
+        }
+      },
+      "Notifications.Item.Type": {
+        "type": "string",
+        "enum": [
+          "unknown",
+          "movie",
+          "episode",
+          "musicvideo",
+          "song",
+          "picture",
+          "channel"
+        ]
+      },
+      "Notifications.Item": {
+        "anyOf": [
+          {
+            "type": "object",
+            "description": "An unknown item does not have any additional information.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "An item known to the database has an identification.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              },
+              "id": {
+                "$ref": "#/components/schemas/Library.Id"
+              }
+            },
+            "required": [
+              "type",
+              "id"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "A movie item has a title and may have a release year.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              },
+              "title": {
+                "type": "string"
+              },
+              "year": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "title"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "A tv episode has a title and may have an episode number, season number and the title of the show it belongs to.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              },
+              "title": {
+                "type": "string"
+              },
+              "episode": {
+                "type": "integer"
+              },
+              "season": {
+                "type": "integer"
+              },
+              "showtitle": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "title"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "A music video has a title and may have an album and an artist.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              },
+              "title": {
+                "type": "string"
+              },
+              "album": {
+                "type": "string"
+              },
+              "artist": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "title"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "A song has a title and may have an album, an artist and a track number.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              },
+              "title": {
+                "type": "string"
+              },
+              "album": {
+                "type": "string"
+              },
+              "artist": {
+                "type": "string"
+              },
+              "track": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "type",
+              "title"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "A picture has a file path.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              },
+              "file": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "file"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "A PVR channel is either a radio or tv channel and has a title.",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/Notifications.Item.Type"
+              },
+              "id": {
+                "$ref": "#/components/schemas/Library.Id"
+              },
+              "title": {
+                "type": "string"
+              },
+              "channeltype": {
+                "$ref": "#/components/schemas/PVR.Channel.Type"
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "title",
+              "channeltype"
+            ]
+          }
+        ]
+      },
+      "Player.Notifications.Player": {
+        "type": "object",
+        "properties": {
+          "playerid": {
+            "$ref": "#/components/schemas/Player.Id"
+          },
+          "playlistid": {
+            "$ref": "#/components/schemas/Playlist.Id"
+          },
+          "speed": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "playerid",
+          "playlistid"
+        ]
+      },
+      "Player.Notifications.Player.Seek": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Player.Notifications.Player"
+          }
+        ],
+        "properties": {
+          "time": {
+            "$ref": "#/components/schemas/Global.Time"
+          },
+          "seekoffset": {
+            "$ref": "#/components/schemas/Global.Time"
+          }
+        }
+      },
+      "Player.Notifications.Data": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Notifications.Item"
+          },
+          "player": {
+            "$ref": "#/components/schemas/Player.Notifications.Player"
+          }
+        },
+        "required": [
+          "item",
+          "player"
+        ]
+      },
+      "Setting.Level": {
+        "type": "string",
+        "enum": [
+          "basic",
+          "standard",
+          "advanced",
+          "expert"
+        ]
+      },
+      "Notifications.Library.Audio.Type": {
+        "type": "string",
+        "enum": [
+          "song"
+        ]
+      },
+      "Notifications.Library.Video.Type": {
+        "type": "string",
+        "enum": [
+          "movie",
+          "tvshow",
+          "episode",
+          "musicvideo"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "title": "Retrieve the JSON-RPC protocol version",
+  "method": "JSONRPC.Version",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "JSONRPC.Version"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "version": {
+        "major": 14,
+        "minor": 0,
+        "patch": 0
+      }
+    }
+  }
+}
