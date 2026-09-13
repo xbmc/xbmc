@@ -1,12 +1,13 @@
 name: E2E (Android emulator)
 
-# Cross-builds the Android APK via tools/depends, boots a hardware-accelerated
-# x86_64 emulator and runs tools/e2e against it over adb-forwarded JSON-RPC.
+# Cross-builds Kodi for Android via tools/depends. The x86_64 debug APK feeds
+# the emulator E2E run below (that is the ABI the emulator runs under KVM on a
+# Linux runner); the arm64-v8a, armeabi-v7a and x86 legs are the release APKs
+# Jenkins ships to test-builds/nightlies and are build-only. Every leg also
+# builds peripheral.joystick, which the APK bundles.
+#
 # Android has no -p/--portable flag, so tools/e2e/driver/android_launcher.py
 # manages a fixed on-device profile instead of the desktop launcher.
-#
-# x86_64 because that is the ABI the emulator runs under KVM on a Linux runner;
-# arm64 would run under binary translation, if at all.
 
 on:
   workflow_dispatch:
@@ -25,16 +26,31 @@ concurrency:
 env:
   # The runner image's preinstalled SDK; the NDK is installed into it below.
   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-  APK: kodiapp-x86_64-debug.apk
+  DEPENDS_PREFIX: /home/runner/xbmc-android-depends
+  BINARY_ADDONS: peripheral.joystick
 
 jobs:
   build:
     # Drafts are skipped; ready_for_review starts the first run.
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-24.04
-    timeout-minutes: 180
-    env:
-      DEPENDS_PREFIX: /home/runner/xbmc-android-depends
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - abi: x86_64
+            host: x86_64-linux-android
+            config: debug
+          - abi: arm64-v8a
+            host: aarch64-linux-android
+            config: release
+          - abi: armeabi-v7a
+            host: arm-linux-androideabi
+            config: release
+          - abi: x86
+            host: i686-linux-android
+            config: release
     steps:
       - uses: actions/checkout@v7
 
@@ -62,27 +78,59 @@ jobs:
             -dname "CN=Android Debug,O=Android,C=US" -keypass android -storepass android \
             -keyalg RSA -keysize 2048 -validity 10000
 
+      # The release keystore only exists for runs that can see secrets, so PR
+      # builds from forks stay signed with the debug key above. The keystore is
+      # stored base64-encoded in ANDROID_KEYSTORE.
+      - name: Set up release signing
+        if: matrix.config == 'release' && github.event_name != 'pull_request'
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "${ANDROID_KEYSTORE}" ]; then
+            echo "No ANDROID_KEYSTORE secret, signing with the debug key"
+            exit 0
+          fi
+          echo "${ANDROID_KEYSTORE}" | base64 -d > "${RUNNER_TEMP}/release.keystore"
+          {
+            echo "KODI_ANDROID_STORE_FILE=${RUNNER_TEMP}/release.keystore"
+            echo "KODI_ANDROID_STORE_PASSWORD=${ANDROID_KEYSTORE_PASSWORD}"
+            echo "KODI_ANDROID_KEY_ALIAS=${ANDROID_KEY_ALIAS}"
+            echo "KODI_ANDROID_KEY_PASSWORD=${ANDROID_KEY_PASSWORD:-${ANDROID_KEYSTORE_PASSWORD}}"
+          } >> "$GITHUB_ENV"
+
       - uses: ./.github/actions/depends-cache-restore
         id: depends-cache
         with:
-          platform: android-${{ runner.arch }}
+          platform: android-${{ matrix.abi }}-${{ matrix.config }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: ./.github/actions/ccache-restore
         with:
-          key: android-${{ runner.arch }}
+          key: android-${{ matrix.abi }}-${{ matrix.config }}
           dir: /home/runner/.cache/kodi-e2e-ccache
 
+      # --disable-debug selects the Release build type in the generated
+      # toolchain, as tools/buildsteps/defaultenv does for Jenkins' Android jobs.
       - name: Configure and build dependencies
         id: depends
         working-directory: tools/depends
         run: |
           ./bootstrap
-          ./configure --host=x86_64-linux-android \
+          ./configure --host=${{ matrix.host }} \
             --with-sdk-path="${ANDROID_SDK_ROOT}" \
             --with-tarballs="${DEPENDS_PREFIX}/xbmc-tarballs" \
-            --prefix="${DEPENDS_PREFIX}"
+            --prefix="${DEPENDS_PREFIX}" \
+            ${{ matrix.config == 'release' && '--disable-debug' || '' }}
           make -j"$(nproc)"
+
+      # Installed into the depends prefix, from where the APK packaging copies
+      # the add-on libraries (tools/android/packaging/Makefile.in).
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ env.BINARY_ADDONS }}
 
       - name: Generate Kodi build system
         run: make -C tools/depends/target/cmakebuildsys
@@ -92,44 +140,50 @@ jobs:
 
       # The apk target lives in the generated build tree and drops the APK at
       # the repo root.
-      - name: Package debug APK
+      - name: Package APK
         run: |
           make -C build apk
-          test -f "${APK}" || { echo "::error::${APK} not found after 'make apk'"; exit 1; }
+          test -f "kodiapp-${{ matrix.abi }}-${{ matrix.config }}.apk" || {
+            echo "::error::kodiapp-${{ matrix.abi }}-${{ matrix.config }}.apk not found after 'make apk'"; exit 1; }
 
       - uses: ./.github/actions/upload-build-logs
         if: always()
         with:
-          name: android
+          name: android-${{ matrix.abi }}
 
       - uses: ./.github/actions/ccache-save
         if: '!cancelled()'
         with:
-          key: android-${{ runner.arch }}
+          key: android-${{ matrix.abi }}-${{ matrix.config }}
           save: ${{ github.event_name != 'pull_request' }}
 
       - uses: ./.github/actions/depends-cache-save
         if: '!cancelled() && steps.depends.outcome == ''success'' && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
         with:
-          platform: android-${{ runner.arch }}
+          platform: android-${{ matrix.abi }}-${{ matrix.config }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: actions/upload-artifact@v7
         with:
-          name: kodi-build-android
-          path: ${{ env.APK }}
+          name: kodi-android-${{ matrix.abi }}
+          path: kodiapp-${{ matrix.abi }}-${{ matrix.config }}.apk
           retention-days: 7
 
   e2e:
     needs: build
+    # The matrix is one job, so this runs once every leg is done; only the
+    # x86_64 artifact is needed and download-artifact fails clearly without it.
+    if: ${{ !cancelled() && needs.build.result != 'skipped' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    env:
+      APK: kodiapp-x86_64-debug.apk
     steps:
       - uses: actions/checkout@v7
 
       - uses: actions/download-artifact@v8
         with:
-          name: kodi-build-android
+          name: kodi-android-x86_64
 
       - name: Install uv
         uses: astral-sh/setup-uv@v8.3.1

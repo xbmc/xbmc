@@ -153,17 +153,21 @@ KODI_APP=/path/to/Kodi.app uv run pytest scenarios -v
 
 ## CI
 
-Six workflows under `.github/workflows/e2e-*.yml` run this suite; two of them are
-two-platform matrices, so a full run is eight platforms. Each workflow has the same
-two jobs:
+Six workflows under `.github/workflows/e2e-*.yml` run this suite; with their
+matrices a full run tests ten platform legs. Two more workflows,
+`build-apple-device.yml` and `build-webos.yml`, build platforms that have no
+emulator to test on. Each `e2e-*.yml` workflow has the same two jobs:
 
-- `build` compiles Kodi from source, runs the unit tests where the platform has
-  them (macOS, Windows, X11), and uploads what the test job needs to run Kodi: on
-  Linux the Debian packages CPack produces (`kodi` and `kodi-bin`, see
-  `docs/README.Ubuntu.md`), on macOS the `Kodi.app` bundle, on Windows `kodi.exe`
-  with the DLLs and the `addons`/`media`/`system`/`userdata` directories cmake
-  mirrors next to it, and the APK or Simulator app on mobile. It is uploaded before
-  the unit tests run, so an E2E result is still produced when a unit test fails.
+- `build` compiles Kodi from source, builds the `peripheral.joystick` binary add-on
+  against the same tree (a failing add-on is reported as a warning, as on Jenkins),
+  runs the unit tests where the platform has them (macOS, Windows, X11), and uploads
+  what the test job needs to run Kodi: on Linux the Debian packages CPack produces
+  (`kodi` and `kodi-bin`, see `docs/README.Ubuntu.md`), on macOS the `Kodi.app`
+  bundle, on Windows the application directory the NSIS installer packs, and the
+  APK or Simulator app on mobile. It is uploaded before the unit tests run, so an
+  E2E result is still produced when a unit test fails. Where the platform has a
+  distributable package (`.dmg`, installer `.exe` and `.pdb`, `.msix`, release APKs,
+  `.ipa` and dSYM, `.ipk`) it is uploaded as a separate artifact.
 - `e2e` downloads that onto a fresh runner, sets up the display, emulator or
   Simulator the platform needs, and runs `tools/e2e` through
   `.github/actions/run-e2e`, which uploads Kodi's log, the screenshots and the
@@ -194,11 +198,16 @@ Triggers and cache policy:
 Per platform:
 
 - `e2e-macos.yml` — builds `Kodi.app` via `tools/depends` on `macos-14` (Apple
-  Silicon) and runs the suite against the bundle.
-- `e2e-linux.yml` — GBM and Wayland (a two-leg matrix), both `APP_RENDER_SYSTEM=gles`,
-  built against Ubuntu 24.04's own packages the way `docs/README.Linux.md` documents
-  rather than `tools/depends`; only ffmpeg and TagLib are built internally, since
-  Ubuntu's are too old for Kodi's minimum and for Matroska tag support respectively.
+  Silicon), runs the suite against the bundle and packages the `.dmg`. On runs that
+  can see secrets (pushes, dispatches) the app and image are signed with the
+  Developer ID certificate in `MACOS_CERTIFICATE_P12` / `MACOS_CERTIFICATE_PASSWORD`
+  and notarised with the App Store Connect key in `MACOS_NOTARYTOOL_KEY`,
+  `MACOS_NOTARYTOOL_KEY_ID` and `MACOS_NOTARYTOOL_ISSUER`; PR builds are unsigned.
+- `e2e-linux.yml` — GBM and Wayland on x86_64 and arm64 runners (a four-leg matrix),
+  all `APP_RENDER_SYSTEM=gles`, built against Ubuntu 24.04's own packages the way
+  `docs/README.Linux.md` documents rather than `tools/depends`; only ffmpeg and
+  TagLib are built internally, since Ubuntu's are too old for Kodi's minimum and for
+  Matroska tag support respectively.
   GBM gets its display from the `vkms` virtual KMS driver (with a newer libdrm built
   on the test runner, since 24.04's cannot see vkms), Wayland from a headless Weston;
   both render through Mesa's llvmpipe, exercising the DRM/GBM/EGL/GLES pipeline on a
@@ -211,15 +220,31 @@ Per platform:
   hardware-accelerated emulator (`reactivecircus/android-emulator-runner`) and runs
   the suite over an adb-forwarded JSON-RPC connection. Logs and screenshots are pulled
   inside the emulator step, since the action shuts the emulator down when it ends.
+  Three more matrix legs build the release APKs for arm64-v8a, armeabi-v7a and x86;
+  they are signed with the release keystore from the `ANDROID_KEYSTORE` (base64),
+  `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` secrets
+  when the run can see them, and with a throwaway debug key otherwise.
 - `e2e-apple-simulator.yml` — cross-builds for the iOS and tvOS Simulator ABIs (a
   two-leg matrix, `--with-platform=ios-simulator`/`tvos-simulator`, then
   `xcodebuild`), creates and boots a Simulator device via `xcrun simctl`, and runs
   the suite over a direct JSON-RPC connection. The Simulator ABIs are far less
   exercised than the device ones, so treat a build failure here as plausibly a
   build-system gap.
-- `e2e-windows.yml` — builds `kodi.exe` with prebuilt dependency packages from
-  `mirrors.kodi.tv` plus MSYS2, per `docs/README.Windows.md`, using the Ninja
-  generator so ccache is actually used (MSBuild ignores compiler launchers).
+- `e2e-windows.yml` — x64, Win32, ARM64 and UWP x64 (a four-leg matrix) built with
+  the same `tools/buildsteps/windows/<arch>/*.bat` scripts Jenkins uses: prebuilt
+  dependency packages from `mirrors.kodi.tv` plus MSYS2, `make-addons.bat` for the
+  add-on, and `BuildSetup.bat` for the Visual Studio build, the staged application
+  directory and the NSIS installer (`KodiSetup-*.exe` with its `.pdb`) or the UWP
+  `.msix`. `BuildSetup.bat` hardcodes the Visual Studio generator, which is why this
+  workflow has no ccache. Unit tests run on x64 and Win32; the x64 application
+  directory feeds the E2E run.
+- `build-apple-device.yml` — cross-builds the iOS and tvOS device ABIs via
+  `tools/depends`, runs the `ipa` target with `CODE_SIGNING_ALLOWED=NO` and uploads
+  the unsigned `.ipa` and the `Kodi.app.dSYM` bundle.
+- `build-webos.yml` — cross-builds for LG webOS with the `openlgtv/buildroot-nc4`
+  toolchain (downloaded from its GitHub release and cached), builds the add-on into
+  the depends prefix and packages the `.ipk` with `ares-package` from
+  `@webos-tools/cli`.
 
 ### Android: reaching the on-device profile
 

@@ -91,6 +91,12 @@ jobs:
           key: linux-x11-ubuntu2204-${{ runner.arch }}
           save: ${{ github.event_name != 'pull_request' }}
 
+      # Native build against the system libraries, installed under the
+      # workspace; proves the add-on still builds against this tree.
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          make-args: PREFIX=${{ github.workspace }}/build-addons
+
       # cmake/cpack/CPackConfigDEB.cmake, see docs/README.Ubuntu.md. The test job
       # installs kodi and kodi-bin with apt, so what runs is the installed binary
       # with the dependencies dpkg-shlibdeps recorded.

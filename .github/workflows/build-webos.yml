@@ -1,0 +1,141 @@
+name: Build (webOS)
+
+# Cross-builds Kodi for LG webOS via tools/depends against the buildroot
+# toolchain docs/README.webOS.md recommends (openlgtv/buildroot-nc4), with
+# peripheral.joystick bundled, and packages the .ipk with LG's ares CLI, as
+# Jenkins' webos-docker job does. Build-only: there is no webOS emulator to
+# run tools/e2e against.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-webos-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DEPENDS_PREFIX: /home/runner/xbmc-webos-depends
+  # Release tag and asset of https://github.com/openlgtv/buildroot-nc4.
+  TOOLCHAIN_RELEASE: webos-a38c582
+  TOOLCHAIN_ASSET: arm-webos-linux-gnueabi_sdk-buildroot-x86_64.tar.gz
+  TOOLCHAIN_DIR: /home/runner/webos-toolchain/arm-webos-linux-gnueabi_sdk-buildroot
+
+jobs:
+  build:
+    # Drafts are skipped; ready_for_review starts the first run.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install build tools and libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            autoconf automake autopoint bison build-essential ccache curl flex gawk gettext gperf \
+            libcurl4-openssl-dev libtool meson nasm ninja-build pkg-config python3 unzip zip zlib1g-dev
+
+      # ares-package, which the ipk target runs (cmake/scripts/webos/Install.cmake).
+      - name: Install webOS CLI
+        run: |
+          sudo npm install -g @webos-tools/cli
+          ares-package --version
+
+      - name: Restore toolchain
+        id: toolchain-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: /home/runner/webos-toolchain
+          key: webos-toolchain-${{ env.TOOLCHAIN_RELEASE }}-${{ env.TOOLCHAIN_ASSET }}
+
+      # Buildroot SDKs embed their build path; relocate-sdk.sh rewrites it for
+      # the extraction directory.
+      - name: Download toolchain
+        if: steps.toolchain-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p /home/runner/webos-toolchain
+          curl -fsSL --retry 5 -o "${RUNNER_TEMP}/toolchain.tar.gz" \
+            "https://github.com/openlgtv/buildroot-nc4/releases/download/${TOOLCHAIN_RELEASE}/${TOOLCHAIN_ASSET}"
+          tar -xzf "${RUNNER_TEMP}/toolchain.tar.gz" -C /home/runner/webos-toolchain
+          "${TOOLCHAIN_DIR}/relocate-sdk.sh"
+
+      - name: Save toolchain cache
+        if: steps.toolchain-cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
+        uses: actions/cache/save@v6
+        with:
+          path: /home/runner/webos-toolchain
+          key: webos-toolchain-${{ env.TOOLCHAIN_RELEASE }}-${{ env.TOOLCHAIN_ASSET }}
+
+      - uses: ./.github/actions/depends-cache-restore
+        id: depends-cache
+        with:
+          platform: webos-${{ runner.arch }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: webos-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      # --disable-debug: Release, as tools/buildsteps/defaultenv and the Jenkins
+      # pipeline select for webOS.
+      - name: Configure and build dependencies
+        id: depends
+        working-directory: tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host=arm-webos-linux-gnueabi \
+            --with-toolchain="${TOOLCHAIN_DIR}" \
+            --with-tarballs="${DEPENDS_PREFIX}/xbmc-tarballs" \
+            --prefix="${DEPENDS_PREFIX}" \
+            --disable-debug
+          make -j"$(nproc)"
+
+      # Installed into the depends prefix's addons/ directory (the webos rule in
+      # tools/depends/xbmc-addons.include), from where the bundle step copies them.
+      - uses: ./.github/actions/build-binary-addons
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      # Stages the app, verifies its dynamic dependencies against the toolchain
+      # sysroot, strips, and runs ares-package (cmake/scripts/webos/Install.cmake).
+      - name: Package .ipk
+        run: |
+          make -C build ipk
+          ls -l build/*.ipk
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: webos
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: webos-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - uses: ./.github/actions/depends-cache-save
+        if: '!cancelled() && steps.depends.outcome == ''success'' && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
+        with:
+          platform: webos-${{ runner.arch }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-webos
+          path: build/*.ipk
+          if-no-files-found: error
+          retention-days: 7

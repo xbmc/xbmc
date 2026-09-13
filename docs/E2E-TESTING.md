@@ -8,7 +8,7 @@ settings loading or startup ordering only surface when someone runs a build by h
 on the affected platform. The end-to-end (E2E) suite in [tools/e2e](../tools/e2e)
 closes that gap: it builds Kodi from source on GitHub Actions, launches it with a
 disposable profile, drives it over JSON-RPC, checks that it renders, and asserts a
-clean shutdown, on eight platforms.
+clean shutdown, across ten platform legs.
 
 This document describes the architecture and the roadmap. How to run the suite and
 what each scenario checks is in [tools/e2e/README.md](../tools/e2e/README.md).
@@ -71,13 +71,17 @@ flowchart TB
 
 ## CI
 
-Six workflows, each with a `build` job and an `e2e` job, cover eight platforms:
-macOS, Linux GBM, Linux Wayland, Linux X11, Windows, Android (emulator), iOS
-(Simulator) and tvOS (Simulator). `build` compiles Kodi (via `tools/depends` where
-the platform needs it, against distro packages on Linux, with prebuilt packages on
-Windows), runs the unit tests where the platform has them, and uploads what the test
-job needs: the Debian packages CPack produces on Linux, the app bundle, exe tree, APK
-or Simulator app elsewhere. `e2e` downloads it onto a fresh runner, installs the
+Six workflows, each with a `build` job and an `e2e` job, cover ten platform legs:
+macOS, Linux GBM and Wayland on x86_64 and arm64, Linux X11, Windows, Android
+(emulator), iOS (Simulator) and tvOS (Simulator). `build` compiles Kodi (via
+`tools/depends` where the platform needs it, against distro packages on Linux, with
+prebuilt packages on Windows), builds the `peripheral.joystick` binary add-on, runs
+the unit tests where the platform has them, and uploads what the test job needs: the
+Debian packages CPack produces on Linux, the app bundle, the staged Windows
+application directory, the APK or the Simulator app elsewhere. The same `build` jobs
+also produce the distributable packages Jenkins uploads today (`.dmg`, NSIS installer,
+`.msix`, release APKs), and two build-only workflows add the iOS/tvOS device `.ipa`
+with dSYM and the webOS `.ipk`. `e2e` downloads it onto a fresh runner, installs the
 packages where there are any, provides a display (vkms, Weston, Xvfb), an emulator or
 a Simulator, and runs the suite. On Linux the binary under test is therefore the
 installed one, with its profile passed through `KODI_DATA`. The shared steps are composite
@@ -106,9 +110,9 @@ master, and a failure is informational until the suite has proven stable.
   sources (need mock backends).
 - Real GPU drivers and hardware decode: every job renders through software
   rasterisation on an emulator, a Simulator or a virtual display.
-- Binary add-ons are not built.
-- Android runs on a phone emulator profile, not Android TV, and x86_64 rather than
-  arm64.
+- Only `peripheral.joystick` is built among the binary add-ons.
+- Android runs on a phone emulator profile, not Android TV, and the E2E run uses the
+  x86_64 debug APK; the arm64 and arm release APKs are build-only.
 
 ## Roadmap
 

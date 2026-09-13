@@ -1,8 +1,9 @@
 name: E2E (Linux GBM/Wayland)
 
 # Builds Kodi's GBM and Wayland backends against Ubuntu's own packages, as
-# docs/README.Linux.md documents, packages them with CPack's DEB generator and
-# runs tools/e2e against the installed packages. GBM gets a display from the
+# docs/README.Linux.md documents, on x86_64 and arm64 runners, packages them
+# with CPack's DEB generator and runs tools/e2e against the installed packages.
+# Each leg also builds peripheral.joystick against the same packages. GBM gets a display from the
 # vkms virtual KMS driver, Wayland from a headless Weston; both render through
 # Mesa's llvmpipe, so the real DRM/GBM/EGL/GLES path is exercised but GPU
 # drivers and hardware decode are not. X11 has its own workflow because it
@@ -49,12 +50,13 @@ jobs:
   build:
     # Drafts are skipped; ready_for_review starts the first run.
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
         platform: [gbm, wayland]
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
     steps:
       - uses: actions/checkout@v7
 
@@ -93,6 +95,13 @@ jobs:
           key: linux-${{ matrix.platform }}-system-${{ runner.arch }}
           save: ${{ github.event_name != 'pull_request' }}
 
+      # Native build against the system libraries, installed under the
+      # workspace; the .deb does not carry add-ons, so this only proves they
+      # still build against this tree.
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          make-args: PREFIX=${{ github.workspace }}/build-addons
+
       # cmake/cpack/CPackConfigDEB.cmake, see docs/README.Ubuntu.md. The test job
       # installs kodi and kodi-bin with apt, so what runs is the installed binary
       # with the dependencies dpkg-shlibdeps recorded.
@@ -102,26 +111,27 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: kodi-deb-linux-${{ matrix.platform }}
+          name: kodi-deb-linux-${{ matrix.platform }}-${{ runner.arch }}
           path: build/packages/*.deb
           retention-days: 7
 
   e2e:
     needs: build
-    # Runs the legs whose build succeeded even if the other leg's failed.
+    # Runs the legs whose build succeeded even if another leg's failed.
     if: ${{ !cancelled() && needs.build.result != 'skipped' }}
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         platform: [gbm, wayland]
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
     steps:
       - uses: actions/checkout@v7
 
       - uses: actions/download-artifact@v8
         with:
-          name: kodi-deb-linux-${{ matrix.platform }}
+          name: kodi-deb-linux-${{ matrix.platform }}-${{ runner.arch }}
           path: packages
 
       # apt resolves the dependencies recorded in the packages. libgl1-mesa-dri
@@ -210,7 +220,7 @@ jobs:
       # is driven over JSON-RPC.
       - uses: ./.github/actions/run-e2e
         with:
-          name: linux-${{ matrix.platform }}
+          name: linux-${{ matrix.platform }}-${{ runner.arch }}
           kodi-binary: ${{ env.KODI_BINARY }}
           kodi-profile-dir: ${{ github.workspace }}/e2e-profile
           log-paths: |

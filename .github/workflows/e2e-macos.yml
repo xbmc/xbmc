@@ -1,7 +1,10 @@
 name: E2E (macOS)
 
-# Builds Kodi.app via tools/depends on a GitHub-hosted macOS runner and runs
-# tools/e2e against it. See tools/e2e/README.md for what the suite covers.
+# Builds Kodi.app via tools/depends on a GitHub-hosted macOS runner, with
+# peripheral.joystick bundled, runs tools/e2e against it and packages the .dmg.
+# On runs that can see secrets (push, schedule, dispatch) the app and the .dmg
+# are signed with the Developer ID certificate and notarised, as on Jenkins;
+# PR builds are unsigned. See tools/e2e/README.md for what the suite covers.
 
 on:
   workflow_dispatch:
@@ -54,11 +57,71 @@ jobs:
           ./configure --host=aarch64-apple-darwin --with-platform=macos --prefix="${DEPENDS_PREFIX}"
           make -j"$(sysctl -n hw.ncpu)"
 
+      # Installed into the source tree's addons/ directory (the darwin default
+      # in tools/depends/xbmc-addons.include), which the app bundle includes.
+      - uses: ./.github/actions/build-binary-addons
+
+      # Imports the Developer ID certificate into a throwaway keychain and
+      # stores the notarytool App Store Connect key in it, then hands the
+      # identity and keychain to cmake the way Jenkins' OSX jobs do. Skipped on
+      # PRs and when the secrets are absent, leaving CMAKE_EXTRA_ARGUMENTS empty.
+      - name: Set up code signing and notarisation
+        id: signing
+        if: github.event_name != 'pull_request'
+        env:
+          MACOS_CERTIFICATE_P12: ${{ secrets.MACOS_CERTIFICATE_P12 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_NOTARYTOOL_KEY: ${{ secrets.MACOS_NOTARYTOOL_KEY }}
+          MACOS_NOTARYTOOL_KEY_ID: ${{ secrets.MACOS_NOTARYTOOL_KEY_ID }}
+          MACOS_NOTARYTOOL_ISSUER: ${{ secrets.MACOS_NOTARYTOOL_ISSUER }}
+        run: |
+          if [ -z "${MACOS_CERTIFICATE_P12}" ]; then
+            echo "No MACOS_CERTIFICATE_P12 secret, building unsigned"
+            exit 0
+          fi
+          keychain="${RUNNER_TEMP}/codesign.keychain-db"
+          keychain_password="$(openssl rand -hex 16)"
+          echo "${MACOS_CERTIFICATE_P12}" | base64 -d > "${RUNNER_TEMP}/cert.p12"
+          security create-keychain -p "${keychain_password}" "${keychain}"
+          security set-keychain-settings -lut 21600 "${keychain}"
+          security unlock-keychain -p "${keychain_password}" "${keychain}"
+          security import "${RUNNER_TEMP}/cert.p12" -P "${MACOS_CERTIFICATE_PASSWORD}" \
+            -f pkcs12 -k "${keychain}" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple: -s -k "${keychain_password}" "${keychain}" > /dev/null
+          security list-keychains -d user -s "${keychain}" login.keychain
+          identity=$(security find-identity -v -p codesigning "${keychain}" | awk 'NR==1 { print $2 }')
+          [ -n "${identity}" ] || { echo "::error::No code signing identity in the imported certificate"; exit 1; }
+          rm -f "${RUNNER_TEMP}/cert.p12"
+          extra="-DCODE_SIGN_IDENTITY=${identity}"
+          if [ -n "${MACOS_NOTARYTOOL_KEY}" ]; then
+            echo "${MACOS_NOTARYTOOL_KEY}" | base64 -d > "${RUNNER_TEMP}/notarytool.p8"
+            xcrun notarytool store-credentials notarytool \
+              --issuer "${MACOS_NOTARYTOOL_ISSUER}" --key-id "${MACOS_NOTARYTOOL_KEY_ID}" \
+              --key "${RUNNER_TEMP}/notarytool.p8" --keychain "${keychain}"
+            rm -f "${RUNNER_TEMP}/notarytool.p8"
+            extra="${extra} -DNOTARYTOOL_KEYCHAIN_PROFILE=notarytool -DNOTARYTOOL_KEYCHAIN_PATH=${keychain}"
+          fi
+          echo "CMAKE_EXTRA_ARGUMENTS=${extra}" >> "$GITHUB_ENV"
+          echo "Signing as ${identity}"
+
       - name: Generate Kodi build system
-        run: make -C tools/depends/target/cmakebuildsys
+        run: make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="${CMAKE_EXTRA_ARGUMENTS:-}"
 
       - name: Build Kodi
         run: make -j"$(sysctl -n hw.ncpu)" -C build
+
+      # tools/darwin/packaging/osx/mkdmg-osx.sh: copies the frameworks in,
+      # signs the app and the image when an identity was configured, and
+      # notarises through notarize.sh when a keychain profile was stored.
+      - name: Package .dmg
+        run: make -C build dmg
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-dmg-macos-${{ runner.arch }}
+          path: build/tools/darwin/packaging/osx/*.dmg
+          if-no-files-found: error
+          retention-days: 7
 
       # kodi-test is EXCLUDE_FROM_ALL and whole-archive links the app, so this
       # is a real link step.

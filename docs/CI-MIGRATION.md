@@ -419,22 +419,23 @@ unchanged under `container:`.
 
 ## 3. What this PR covers and what is missing
 
-This branch adds six workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-macos.yml`,
-`e2e-windows.yml`, `e2e-android.yml`, `e2e-apple-simulator.yml`), shared composite actions
-for ccache and `tools/depends` caching, the pytest E2E driver under `tools/e2e/`, and
+This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-macos.yml`,
+`e2e-windows.yml`, `e2e-android.yml`, `e2e-apple-simulator.yml`), two build-only workflows
+(`build-apple-device.yml`, `build-webos.yml`), shared composite actions for ccache,
+`tools/depends` caching and binary add-ons, the pytest E2E driver under `tools/e2e/`, and
 `docs/E2E-TESTING.md`.
 
 ### 3.1 Coverage against Jenkins
 
 | Jenkins capability | This PR | Gap |
 | --- | --- | --- |
-| Linux x86_64 build (gl + gles) | Yes: GBM gles, Wayland gles, X11 gl against Ubuntu packages, CPack `.deb` | Not built through `tools/depends`, so the unified-deps path Jenkins tests is uncovered; X11 pinned to Ubuntu 22.04 |
-| Linux arm / arm64 cross builds | No | Add `ubuntu-24.04-arm` native or cross legs |
-| Android arm64, arm, x86 | Partly: x86_64 debug APK only (emulator ABI) | arm64-v8a and armeabi-v7a release builds, release signing, AAB |
-| webOS | No | Add a build workflow with the webOS buildroot |
-| macOS arm64 | Yes: `tools/depends`, Kodi.app, unit tests | No `.dmg`, no notarisation, no Intel build |
-| iOS / tvOS device | Simulator ABIs only | Device (`iphoneos`/`appletvos`) builds, `.deb`/`.ipa` packaging, dSYMs |
-| Windows x64 | Yes: prebuilt deps, Ninja, Release, unit tests | Win32, ARM64, UWP x64 (`.msix`), NSIS installer, `.pdb` |
+| Linux x86_64 build (gl + gles) | Yes: GBM gles, Wayland gles, X11 gl against Ubuntu packages, CPack `.deb` | Not built through `tools/depends` (deliberately: the distro-package path is what users build); X11 pinned to Ubuntu 22.04 |
+| Linux arm / arm64 cross builds | arm64: yes, native on `ubuntu-24.04-arm` (GBM and Wayland, with E2E) | 32-bit arm not built |
+| Android arm64, arm, x86 | Yes: release APKs for arm64-v8a, armeabi-v7a and x86 plus the x86_64 debug APK for the emulator; release keystore from secrets on non-PR runs | AAB |
+| webOS | Yes: `build-webos.yml`, buildroot-nc4 toolchain, `.ipk` | No device or emulator test |
+| macOS arm64 | Yes: `tools/depends`, Kodi.app, unit tests, `.dmg`, signing and notarisation from secrets on non-PR runs | No Intel build (dropped: GitHub has no Intel macOS runners) |
+| iOS / tvOS device | Yes: `build-apple-device.yml`, unsigned `.ipa` and dSYM artifacts; Simulator ABIs for E2E | No `.deb` (dropped: only needed for the jailbreak apt repository) |
+| Windows x64 | Yes: x64, Win32, ARM64 and UWP x64 through `BuildSetup.bat`, NSIS installer and `.pdb`, `.msix`, unit tests on x64 and Win32 | Visual Studio generator, so no ccache; a CPack NSIS port would need Windows `install()` rules first |
 | wasm | No | Low priority; Jenkins job produces nothing |
 | FreeBSD | No | Disabled in Jenkins too |
 | Unit tests | Linux X11, macOS, Windows | Linux GBM/Wayland legs skip `kodi-test`; results not published as a check |
@@ -443,7 +444,7 @@ for ccache and `tools/depends` caching, the pytest E2E driver under `tools/e2e/`
 | Inline review comments on printf-style `CLog::Log` | No | A `lint` step grepping added lines in the PR diff and annotating via `::warning file=...` or a review comment |
 | clang-tidy / cppcheck | No | Weekly `schedule` job on the `analyze-*` targets, results as artifacts or SARIF to code scanning |
 | Coverity / coverage | No | Coverity Scan action on schedule; `coverage_xml` target to Codecov or job summary |
-| Binary add-ons built with Kodi | No (documented as out of scope) | `BUILD_BINARY_ADDONS` equivalent for nightlies, `peripheral.joystick` at least |
+| Binary add-ons built with Kodi | Yes: `peripheral.joystick` on every leg, failure reported as a warning like Jenkins | Full add-on set for UWP, iOS and tvOS nightlies |
 | Binary add-on repositories (`buildPlugin`) | No | Reusable workflow, section 2.5 |
 | Nightly schedule and upload to mirrors | No | `nightly.yml` + `publish.yml`, file naming scheme, SSH secret or self-hosted runner |
 | Test builds on request (`BuildMulti-PR-Manually`, `UPLOAD_RESULT`) | No | `workflow_dispatch` or comment trigger |
@@ -469,15 +470,14 @@ for ccache and `tools/depends` caching, the pytest E2E driver under `tools/e2e/`
 
 ### 3.3 Priorities to close the gap
 
-1. Add the missing **build legs**: Android arm64/arm release APK, Windows x86/ARM64/UWP,
-   Linux arm64, webOS, macOS `.dmg`. These are the checks contributors rely on today.
-2. Add the **lint job** (clang-format on the PR range) and publish **unit test results** as
-   checks for every platform that runs them.
-3. Add **`nightly.yml` and `publish.yml`** so GitHub can feed `test-builds/` and
+1. Add the **lint job** (clang-format on the PR range, printf-style logging check) and
+   publish **unit test results** as checks for every platform that runs them.
+2. Add **`nightly.yml` and `publish.yml`** so GitHub can feed `test-builds/` and
    `nightlies/` and Jenkins can be retired for nightlies.
-4. Add the **binary add-on** reusable workflow and the `BUILD_BINARY_ADDONS` option.
-5. Decide **gating**: which jobs become required, and whether Apple legs stay hosted or use
-   the Mac minis as self-hosted runners.
+3. Add the **binary add-on** reusable workflow for the add-on repositories.
+4. Decide **gating**: which jobs become required, and whether the Windows legs (Visual
+   Studio generator on a 4-vCPU runner) and the Apple legs stay hosted or move to
+   self-hosted runners.
 
 ## 4. Open questions for the team
 
