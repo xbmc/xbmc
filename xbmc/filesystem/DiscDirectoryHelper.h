@@ -196,7 +196,6 @@ class CDiscDirectoryHelper
   {
     unsigned int playlist{0};
     unsigned int index{0};
-    unsigned int playAllPlaylistEpisodesStartOffset{0};
     std::chrono::milliseconds duration{0ms};
     std::chrono::milliseconds durationDelta{0ms};
     int multiple{0};
@@ -333,7 +332,6 @@ private:
   void InitialiseEpisodePlaylistSearch(int episodeIndex, const Episodes& episodesOnDisc);
   void StorePlayAllPlaylist(
       unsigned int playlistNumber,
-      unsigned int playAllPlaylistEpisodesStartOffset,
       const PlaylistInformation& playlistInformation,
       const std::map<unsigned int, std::vector<unsigned int>>& playAllPlaylistClipMap);
   void FindPlayAllPlaylists(const ClipMap& clips,
