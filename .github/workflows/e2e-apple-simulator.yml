@@ -41,10 +41,8 @@ jobs:
         include:
           - platform: ios
             depends_platform: ios-simulator
-            cmake_extra_arguments: ""
           - platform: tvos
             depends_platform: tvos-simulator
-            cmake_extra_arguments: "-DENABLE_BLURAY_JAR=OFF"
     steps:
       - uses: actions/checkout@v7
 
@@ -81,7 +79,7 @@ jobs:
           make -j"$(sysctl -n hw.ncpu)"
 
       - name: Generate Xcode project
-        run: make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="${{ matrix.cmake_extra_arguments }}"
+        run: make -C tools/depends/target/cmakebuildsys
 
       # The generated project already disables signing for darwin_embedded, and
       # the Simulator needs no identity anyway; the flag is defensive.

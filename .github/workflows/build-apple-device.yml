@@ -37,10 +37,8 @@ jobs:
         include:
           - platform: ios
             sdk_dir: Debug-iphoneos
-            cmake_extra_arguments: ""
           - platform: tvos
             sdk_dir: Debug-appletvos
-            cmake_extra_arguments: "-DENABLE_BLURAY_JAR=OFF"
     steps:
       - uses: actions/checkout@v7
 
@@ -81,7 +79,7 @@ jobs:
       - uses: ./.github/actions/build-binary-addons
 
       - name: Generate Xcode project
-        run: make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="${{ matrix.cmake_extra_arguments }}"
+        run: make -C tools/depends/target/cmakebuildsys
 
       # The ipa target depends on the app target, so this builds Kodi and then
       # runs CPack for the archive (cmake/scripts/darwin_embedded/Install.cmake).
