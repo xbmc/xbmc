@@ -177,7 +177,9 @@ jobs:
       # conversion: drmGetDevices2() cannot classify the faux bus until 2.4.134
       # and silently drops the card, so Kodi reports "No drm devices found". Same
       # version, mirror and meson options as tools/depends/target/libdrm. Installed
-      # to /usr/local, which the runtime linker searches ahead of /usr.
+      # to /usr/local/lib/<multiarch>, the first directory in the linker's
+      # <multiarch>.conf on every architecture; plain /usr/local/lib only wins on
+      # x86_64, where that file happens to sort after libc.conf.
       - name: Build libdrm 2.4.134
         if: matrix.platform == 'gbm'
         run: |
@@ -187,7 +189,7 @@ jobs:
           mkdir libdrm-src
           tar -xf libdrm.tar.xz -C libdrm-src --strip-components=1
           meson setup libdrm-src libdrm-build \
-            --prefix=/usr/local --libdir=lib --buildtype=release \
+            --prefix=/usr/local --libdir="lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)" --buildtype=release \
             -Ddefault_library=shared -Dnouveau=disabled -Domap=disabled \
             -Dexynos=disabled -Dtegra=disabled -Dintel=disabled \
             -Dradeon=disabled -Damdgpu=disabled -Dvmwgfx=disabled \
