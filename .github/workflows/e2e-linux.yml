@@ -115,6 +115,22 @@ jobs:
           path: build/packages/*.deb
           retention-days: 7
 
+      # After the package upload so the e2e job still gets a build when a unit
+      # test fails. kodi-test is EXCLUDE_FROM_ALL and whole-archive links the
+      # app, so this is a real link step. Run from the build tree: the reference
+      # data the tests read (cmake/installdata/test-reference-data.txt) was
+      # mirrored there.
+      - name: Build and run unit tests
+        working-directory: build
+        run: |
+          cmake --build . --target kodi-test -- -j"$(nproc)"
+          ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - uses: ./.github/actions/report-unit-tests
+        if: always()
+        with:
+          name: linux-${{ matrix.platform }}-${{ runner.arch }}
+
   e2e:
     needs: build
     # Runs the legs whose build succeeded even if another leg's failed.

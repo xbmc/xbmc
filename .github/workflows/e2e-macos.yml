@@ -167,7 +167,12 @@ jobs:
       # system/settings/settings.xml.
       - name: Run unit tests
         working-directory: build
-        run: ./kodi-test
+        run: ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - uses: ./.github/actions/report-unit-tests
+        if: always()
+        with:
+          name: macos-${{ runner.arch }}
 
   e2e:
     needs: build

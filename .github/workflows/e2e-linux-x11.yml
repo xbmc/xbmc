@@ -120,7 +120,12 @@ jobs:
       # (cmake/installdata/test-reference-data.txt) was mirrored there.
       - name: Run unit tests
         working-directory: build
-        run: ./kodi-test
+        run: ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - uses: ./.github/actions/report-unit-tests
+        if: always()
+        with:
+          name: linux-x11-${{ runner.arch }}
 
   e2e:
     needs: build

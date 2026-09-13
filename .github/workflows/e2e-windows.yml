@@ -169,14 +169,11 @@ jobs:
         working-directory: tools\buildsteps\windows\${{ matrix.steps }}
         run: run-tests.bat
 
-      - name: Upload unit test results
+      - uses: ./.github/actions/report-unit-tests
         if: always() && matrix.tests
-        uses: actions/upload-artifact@v7
         with:
-          name: unit-test-results-windows-${{ matrix.name }}
-          path: kodi-build.${{ matrix.platform }}/gtestresults.xml
-          if-no-files-found: warn
-          retention-days: 7
+          name: windows-${{ matrix.name }}
+          results: kodi-build.${{ matrix.platform }}/gtestresults.xml
 
   e2e:
     needs: build
