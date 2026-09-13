@@ -165,10 +165,10 @@ COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSour
   {
     std::vector<uint32_t> convertedPalette;
     const std::vector<uint32_t>* paletteOverride = nullptr;
-    if (OVERLAY::ShouldConvertPgsPaletteToSdr(o.m_isHDROverlay))
+    if (OVERLAY::ShouldConvertPQPaletteToSRGB(o.m_isHDROverlay))
     {
       convertedPalette = o.palette;
-      OVERLAY::ConvertPgsPaletteToSdr(convertedPalette);
+      OVERLAY::ConvertPQPaletteToSRGB(convertedPalette);
       paletteOverride = &convertedPalette;
     }
 

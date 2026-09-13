@@ -281,15 +281,13 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
   return true;
 }
 
-bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay)
+bool ShouldConvertPQPaletteToSRGB(bool isHDROverlay)
 {
   if (!isHDROverlay)
     return false;
 
-  // A PQ overlay is converted when the surface it is drawn into expects
-  // sRGB. Under Kodi's HDR composite it is drawn into the PQ back buffer
-  // after the video; otherwise it is drawn into the GUI layer, whose
-  // encoding is the windowing system's output EOTF.
+  // Convert to sRGB unless the overlay is going to a PQ destination: the HDR
+  // composite, or a GUI layer that is output as an HDR signal.
   const CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
   const bool destinationIsPQ =
       winSystem->IsHdrComposite() || winSystem->GetEotf() != KODI::UTILS::Eotf::TRADITIONAL_SDR;
@@ -321,7 +319,7 @@ float LinearToSrgbComponent(float c)
 }
 } // namespace
 
-void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette)
+void ConvertPQPaletteToSRGB(std::vector<uint32_t>& palette)
 {
   // Linear BT.2020 -> linear BT.709/sRGB primaries, D65 both ends;
   // numerically confirmed to map (1,1,1) to (1,1,1).
