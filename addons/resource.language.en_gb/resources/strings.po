@@ -25008,7 +25008,19 @@ msgctxt "#39217"
 msgid "Best"
 msgstr ""
 
-#empty strings from id 39218 to 39899
+#. Label of setting "HDR PGS subtitle brightness" of category "Videos" in group "Processing" of settings section "Player"
+#: system/settings/settings.xml
+msgctxt "#39218"
+msgid "HDR PGS subtitle brightness"
+msgstr ""
+
+#. Help text for setting "HDR PGS subtitle brightness" of label #39213
+#: system/settings/settings.xml
+msgctxt "#39219"
+msgid "Brightness of HDR PGS (Blu-ray bitmap) subtitles when converted for SDR display. There is no single correct value; adjust until subtitle colours look right on this display."
+msgstr ""
+
+#empty strings from id 39220 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
