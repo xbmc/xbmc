@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/DisplayInfo.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -285,13 +286,14 @@ bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay)
   if (!isHDROverlay)
     return false;
 
-  // Platforms with real HDR GUI compositing already render HDR overlays
-  // correctly; converting here would double-process them.
-  if (CServiceBroker::GetWinSystem()->IsHdrComposite())
-    return false;
-
-  // Only convert where the renderer signals PQ or Dolby Vision output.
-  return CServiceBroker::GetWinSystem()->GetGfxContext().IsTransferPQ();
+  // A PQ overlay is converted when the surface it is drawn into expects
+  // sRGB. Under Kodi's HDR composite it is drawn into the PQ back buffer
+  // after the video; otherwise it is drawn into the GUI layer, whose
+  // encoding is the windowing system's output EOTF.
+  const CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
+  const bool destinationIsPQ =
+      winSystem->IsHdrComposite() || winSystem->GetEotf() != KODI::UTILS::Eotf::TRADITIONAL_SDR;
+  return !destinationIsPQ;
 }
 
 namespace

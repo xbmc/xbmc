@@ -37,13 +37,9 @@ struct SQuads
 };
 
 //! Decides whether a PGS overlay's palette should be converted from
-//! BT.2020 PQ to BT.709/sRGB before texture upload.
-//!
-//! isHDROverlay is set only for PQ video. The additional checks further
-//! narrow where a conversion is needed:
-//!  - IsHdrComposite() excludes platforms that already render HDR overlays
-//!    natively.
-//!  - IsTransferPQ() confirms PQ or Dolby Vision output is active.
+//! BT.2020 PQ to BT.709/sRGB before texture upload: a PQ overlay
+//! (isHDROverlay) is converted when the surface it is drawn into expects
+//! sRGB, and passed through when that surface carries an HDR signal.
 bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay);
 
 //! Converts a PGS palette (CDVDOverlayImage::palette - PIXEL_A/R/G/BSHIFT-
