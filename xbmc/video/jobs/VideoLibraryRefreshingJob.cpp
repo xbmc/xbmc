@@ -41,6 +41,7 @@
 #include "video/tags/VideoTagLoaderNFO.h"
 #include "video/tags/VideoTagLoaderPlugin.h"
 
+#include <array>
 #include <memory>
 #include <utility>
 
@@ -80,6 +81,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 {
   if (m_item == nullptr)
     return false;
+
+  CLog::Log(LOGDEBUG,
+            "CVideoLibraryRefreshingJob: refreshing '{}' (ignore nfo: {}, refresh all: {})",
+            CURL::GetRedacted(m_item->GetPath()), m_ignoreNfo, m_refreshAll);
 
   // determine the scraper for the item's path
   VIDEO::SScanSettings scanSettings;
@@ -215,11 +220,13 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     {
       // check if there's an NFO for the item
       CInfoScanner::InfoType nfoResult = CInfoScanner::InfoType::NONE;
+      bool haveLoader{false};
       if (const std::unique_ptr<VIDEO::IVideoInfoTagLoader> loader{
               VIDEO::CVideoInfoTagLoaderFactory::CreateLoader(
                   *m_item, scraper, scanSettings.parent_name_root, m_forceRefresh)};
           loader)
       {
+        haveLoader = true;
         std::unique_ptr<CVideoInfoTag> tag(new CVideoInfoTag());
         nfoResult = loader->Load(*tag, false);
 
@@ -246,6 +253,14 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         else if (nfoResult == CInfoScanner::InfoType::URL)
           scraperUrl = loader->ScraperUrl();
       }
+
+      static constexpr std::array NFO_RESULTS{"none",     "full",      "url",  "override",
+                                              "combined", "error nfo", "title"};
+      const auto result{static_cast<size_t>(nfoResult)};
+      CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: {} gave '{}' for '{}'",
+                haveLoader ? "a tag loader" : "no tag loader",
+                result < NFO_RESULTS.size() ? NFO_RESULTS[result] : "?",
+                CURL::GetRedacted(m_item->GetPath()));
 
       // if there's no NFO remember it in case we have to refresh again
       if (nfoResult == CInfoScanner::InfoType::ERROR_NFO)
