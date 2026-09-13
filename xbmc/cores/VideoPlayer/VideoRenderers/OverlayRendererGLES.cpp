@@ -165,15 +165,14 @@ COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSour
   {
     // Convert the HDR PGS palette to SDR before upload where
     // the windowing system does not already composite HDR GUI correctly.
-    float sdrWhiteNits = 0.0f;
-    m_pgsConvertedToSdr = OVERLAY::ShouldConvertPgsPaletteToSdr(o.m_isHDROverlay, sdrWhiteNits);
+    m_pgsConvertedToSdr = OVERLAY::ShouldConvertPgsPaletteToSdr(o.m_isHDROverlay);
 
     std::vector<uint32_t> convertedPalette;
     const std::vector<uint32_t>* paletteOverride = nullptr;
     if (m_pgsConvertedToSdr)
     {
       convertedPalette = o.palette;
-      OVERLAY::ConvertPgsPaletteToSdr(convertedPalette, sdrWhiteNits);
+      OVERLAY::ConvertPgsPaletteToSdr(convertedPalette);
       paletteOverride = &convertedPalette;
     }
 

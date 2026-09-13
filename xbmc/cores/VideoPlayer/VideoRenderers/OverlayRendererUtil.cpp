@@ -280,7 +280,7 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
   return true;
 }
 
-bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay, float& sdrWhiteNits)
+bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay)
 {
   if (!isHDROverlay)
     return false;
@@ -291,18 +291,7 @@ bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay, float& sdrWhiteNits)
     return false;
 
   // Only convert where the renderer signals PQ or Dolby Vision output.
-  if (!CServiceBroker::GetWinSystem()->GetGfxContext().IsTransferPQ())
-    return false;
-
-  // Android devices vary in how they map the SDR GUI layer's brightness
-  // against HDR video. Keep this adjustable until the platform reports
-  // its own value.
-  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
-  const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
-  const int brightness =
-      settings ? settings->GetInt(CSettings::SETTING_VIDEOPLAYER_HDRPGSBRIGHTNESS) : 50;
-  sdrWhiteNits = 1050.0f - static_cast<float>(brightness) * 10.0f;
-  return true;
+  return CServiceBroker::GetWinSystem()->GetGfxContext().IsTransferPQ();
 }
 
 namespace
@@ -330,7 +319,7 @@ float LinearToSrgbComponent(float c)
 }
 } // namespace
 
-void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits)
+void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette)
 {
   // Linear BT.2020 -> linear BT.709/sRGB primaries, D65 both ends;
   // numerically confirmed to map (1,1,1) to (1,1,1).
@@ -340,7 +329,7 @@ void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits)
       {-0.018150763f, -0.100578897f, 1.118729660f},
   };
 
-  const float whiteScale = 10000.0f / std::max(sdrWhiteNits, 1.0f);
+  constexpr float whiteScale = 10000.0f / 203.0f; // ITU-R BT.2408 reference white
 
   for (uint32_t& entry : palette)
   {
