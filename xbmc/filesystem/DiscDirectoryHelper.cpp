@@ -3048,7 +3048,52 @@ void LabelUsedPlaylists(CFileItemList& items,
     item->SetLabel(existing.empty() ? label : StringUtils::Format("{} ({})", existing, label));
   }
 }
-} // namespace
+
+// A <playlist> element in an nfo names the playlist the details belong to, which need not be the
+// one already stored
+int PlaylistFromNfo(const CFileItem& item, int storedPlaylist)
+{
+  const int playlist{item.GetProperty("bluray_playlist").asInteger32(-1)};
+  return playlist > -1 ? playlist : storedPlaylist;
+}
+
+void ApplyPlaylistDetails(CFileItem& item, const CFileItem& playlistItem)
+{
+  item.SetDynPath(playlistItem.GetDynPath());
+  const auto tag{item.GetVideoInfoTag()};
+  tag->SetFileNameAndPath(playlistItem.GetDynPath());
+  if (playlistItem.HasVideoInfoTag())
+  {
+    // Don't overwrite streamdetails that came from an nfo
+    if (playlistItem.GetVideoInfoTag()->HasStreamDetails() && !tag->HasNFOStreamDetails())
+      tag->m_streamDetails = playlistItem.GetVideoInfoTag()->m_streamDetails;
+
+    // Episode bookmarks
+    if (const CBookmark & bookmark{playlistItem.GetVideoInfoTag()->m_EpBookmark}; bookmark.IsSet())
+      tag->m_EpBookmark = bookmark;
+
+    // The duration of the playlist, or of the episode's part of it where several share one, is
+    // measured from the disc and so is preferred over the scraper's.
+    // Loose sanity check that the scraper and found durations are similar, to avoid a
+    // mis-identified playlist from overwriting the episode's duration and affecting future
+    // playlist identification.
+    static constexpr int SCRAPED_DURATION_TOLERANCE_PERCENT{50};
+    const unsigned int scrapedDuration{tag->GetStaticDuration()};
+    if (const unsigned int discDuration{playlistItem.GetVideoInfoTag()->GetDuration()};
+        discDuration > 0 &&
+        (scrapedDuration == 0 ||
+         CheckDurationsWithinTolerance(scrapedDuration * 1000ms, discDuration * 1000ms,
+                                       SCRAPED_DURATION_TOLERANCE_PERCENT)))
+      tag->SetDuration(static_cast<int>(discDuration));
+  }
+
+  if (tag->GetAssetInfo().GetTitle().empty())
+    tag->GetAssetInfo().SetTitle(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(VIDEO_VERSION_ID_DEFAULT));
+  if (playlistItem.HasProperty("bluray_playlist"))
+    item.SetProperty("bluray_playlist", playlistItem.GetProperty("bluray_playlist"));
+}
+} // unnamed namespace
 
 bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
                                                       CFileItemList& items,
@@ -3206,41 +3251,7 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
       [](const CFileItem& originalItem, const CFileItem& selectedItem, const CFileItem& item)
       {
         auto newItem{std::make_shared<CFileItem>(originalItem)};
-        newItem->SetDynPath(selectedItem.GetDynPath());
-        const auto tag{newItem->GetVideoInfoTag()};
-        tag->SetFileNameAndPath(selectedItem.GetDynPath());
-        if (selectedItem.HasVideoInfoTag())
-        {
-          // Don't overwrite streamdetails that came from an nfo
-          if (selectedItem.GetVideoInfoTag()->HasStreamDetails() && !tag->HasNFOStreamDetails())
-            tag->m_streamDetails = selectedItem.GetVideoInfoTag()->m_streamDetails;
-
-          // Episode bookmarks
-          if (const CBookmark& bookmark{selectedItem.GetVideoInfoTag()->m_EpBookmark};
-              bookmark.IsSet())
-            tag->m_EpBookmark = bookmark;
-
-          // The duration of the playlist, or of the episode's part of it where several share one, is
-          // measured from the disc and so is preferred over the scraper's.
-          // Loose sanity check that the scraper and found durations are similar, to avoid a
-          // mis-identified playlist from overwriting the episode's duration and affecting future
-          // playlist identification.
-          static constexpr int SCRAPED_DURATION_TOLERANCE_PERCENT{50};
-          const unsigned int scrapedDuration{tag->GetStaticDuration()};
-          if (const unsigned int discDuration{selectedItem.GetVideoInfoTag()->GetDuration()};
-              discDuration > 0 &&
-              (scrapedDuration == 0 ||
-               CheckDurationsWithinTolerance(scrapedDuration * 1000ms, discDuration * 1000ms,
-                                             SCRAPED_DURATION_TOLERANCE_PERCENT)))
-            tag->SetDuration(static_cast<int>(discDuration));
-        }
-
-        if (tag->GetAssetInfo().GetTitle().empty())
-          tag->GetAssetInfo().SetTitle(
-              CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-                  VIDEO_VERSION_ID_DEFAULT));
-        if (selectedItem.HasProperty("bluray_playlist"))
-          newItem->SetProperty("bluray_playlist", selectedItem.GetProperty("bluray_playlist"));
+        ApplyPlaylistDetails(*newItem, selectedItem);
         newItem->SetProperty("original_listitem_url", item.GetDynPath());
         return newItem;
       }};
@@ -3268,6 +3279,29 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
       items.Add(GenerateItem(item, *sourceItem, item));
   }
 
+  return true;
+}
+
+bool CDiscDirectoryHelper::ReadResolvedPlaylist(CFileItem& item)
+{
+  const std::string path{item.GetDynPath()};
+  const int playlist{URIUtils::GetBlurayPlaylistFromPath(path)};
+  if (playlist < 0)
+    return false;
+
+  // The nfo's choice wins over the stored path. Reading the stored playlist first would overwrite
+  // the nfo's with its own and leave nothing for AddVideo() to redirect.
+  const int wanted{PlaylistFromNfo(item, playlist)};
+  const std::string wantedPath{wanted == playlist ? path
+                                                  : URIUtils::GetBlurayPlaylistPath(path, wanted)};
+
+  CFileItemList playlistItems;
+  if (!GetItems(playlistItems, wantedPath, true))
+    return false;
+
+  ApplyPlaylistDetails(item, *playlistItems[0]);
+  CLog::LogF(LOGDEBUG, "Read the details of playlist {} for {}", wanted,
+             CURL::GetRedacted(wantedPath));
   return true;
 }
 

@@ -321,6 +321,15 @@ public:
                                          CFileItemList& items,
                                          MenuDecision playback);
 
+  /*!
+   * \brief Re-read the details the disc holds for an item whose playlist has already been chosen.
+   * Stream details cannot be extracted from a bluray:// path, so they have to be read from the disc
+   * again whenever the library entry is refreshed.
+   * \param item item with a bluray:// playlist path, updated in place.
+   * \return true if the playlist was read.
+   */
+  static bool ReadResolvedPlaylist(CFileItem& item);
+
 protected:
   static bool GetDirectoryItems(const std::string& path,
                                 CFileItemList& items,
