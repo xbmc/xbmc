@@ -574,6 +574,7 @@ case $host in
     platform_includes="-arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path"
 
     platform_ldflags="${platform_ldflags} $platform_includes"
+    platform_cxxflags="$platform_cflags"
 
     deps_dir="${sdk_name}_${use_cpu}-target-${build_type}"
   ;;
