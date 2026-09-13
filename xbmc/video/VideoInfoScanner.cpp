@@ -2037,6 +2037,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       pItem->SetDynPath(path);
     }
 
+    // A bluray:// path means a playlist has been chosen, so get details here (if not present)
+    // Episodes are excluded as several can share a playlist
+    const bool isEpisode{content == ContentType::TVSHOWS &&
+                         pItem->GetVideoInfoTag()->m_iEpisode > -1};
+    if (!libraryImport && !isEpisode && URIUtils::IsBlurayPath(path) &&
+        !pItem->GetVideoInfoTag()->HasStreamDetails() &&
+        CDiscDirectoryHelper::ReadResolvedPlaylist(*pItem))
+      path = pItem->GetDynPath();
+
     if (!libraryImport)
       m_art.GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(),
                        showInfo ? URIUtils::AddFileToFolder(showInfo->m_strPath, ".actors") : "",
