@@ -1,0 +1,45 @@
+name: Add-on build (smoke)
+
+# Exercises the reusable build-addon.yml from this repository against
+# peripheral.joystick, one platform per code path (Android, Apple, Windows), so
+# changes to the add-on build system or the workflow are caught here rather than
+# in the ~250 add-on repositories that call it.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/build-addon.yml
+      - .github/workflows/addon-smoke.yml
+      - cmake/addons/**
+      - tools/depends/**
+      - tools/buildsteps/windows/**
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - .github/workflows/build-addon.yml
+      - .github/workflows/addon-smoke.yml
+      - cmake/addons/**
+      - tools/depends/**
+      - tools/buildsteps/windows/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: addon-smoke-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  joystick:
+    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale'))
+    uses: ./.github/workflows/build-addon.yml
+    with:
+      addon: peripheral.joystick
+      addon_repository: xbmc/peripheral.joystick
+      addon_ref: Piers
+      kodi_repository: ${{ github.repository }}
+      kodi_ref: ${{ github.sha }}
+      platforms: '["android-aarch64","osx-arm64","windows-x86_64"]'
+      retention_days: 7

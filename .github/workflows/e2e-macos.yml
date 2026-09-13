@@ -10,8 +10,22 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/CODEOWNERS'
+      - '.github/FUNDING.yml'
+      - '.github/mergeable.yml'
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/CODEOWNERS'
+      - '.github/FUNDING.yml'
+      - '.github/mergeable.yml'
 
 permissions:
   contents: read
@@ -26,7 +40,7 @@ env:
 jobs:
   build:
     # Drafts are skipped; ready_for_review starts the first run.
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale'))
     # macos-14 is Apple Silicon. Pinned so cache keys and toolchain stay stable.
     runs-on: macos-14
     timeout-minutes: 180

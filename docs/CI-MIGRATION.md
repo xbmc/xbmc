@@ -391,17 +391,34 @@ unchanged under `container:`.
 
 ### 2.5 Binary add-ons
 
-- Provide `build-addon.yml` as a reusable workflow in `xbmc/xbmc` (or a small
-  `xbmc/action-build-addon`): inputs `addon`, `kodi_branch`, `platforms`; per-platform matrix
-  reproducing `buildPlugin`: checkout `xbmc/xbmc` at the branch, restore the cached
-  `tools/depends` native tools (shared cache key with the main build), build with
-  `PACKAGE_ZIP=ON`, upload the zip artifact.
-- Each add-on repository replaces its `Jenkinsfile` with a `build-and-deploy.yml` that
-  calls the reusable workflow on `push` (build only) and on `release`/tag (build, then a
-  `deploy` job that publishes to `addons/<codename>/<addon>+<platform>/` through
-  `jenkins-move-addons.sh`). The existing `release.yml` in the add-on repositories already
-  creates the tag, so the chain stays: dispatch release, tag, build, deploy.
-- The mirrors' `addons/` layout and the repository add-on consuming it are unchanged.
+- `.github/workflows/build-addon.yml` is the reusable workflow replacing `buildPlugin`:
+  inputs `addon`, `addon_repository`/`addon_ref` (default: the caller), `kodi_repository`/
+  `kodi_ref` (default `xbmc/xbmc` master) and a JSON `platforms` list defaulting to the
+  seven Jenkins deploy platforms plus `ios-aarch64` and `tvos-aarch64`. Per platform it
+  checks out Kodi, builds and caches the `tools/depends` native tools on the tree hash,
+  writes the one-line add-on definition, builds with `PACKAGE_ZIP=ON` (`make-addons.bat
+  package` on Windows) and uploads `<addon>-<platform>` zip artifacts. A failed add-on
+  fails the job, unlike the main app legs where it is a warning. An add-on repository
+  calls it with:
+
+  ```yaml
+  jobs:
+    build:
+      uses: xbmc/xbmc/.github/workflows/build-addon.yml@master
+      with:
+        addon: pvr.hts
+        kodi_ref: master
+  ```
+
+  `addon-smoke.yml` in this repository calls it for `peripheral.joystick` on one platform
+  per code path whenever the add-on build system or the workflow changes.
+- Still to do: a `deploy` job on tags that publishes the zips to
+  `addons/<codename>/<addon>+<platform>/` through `jenkins-move-addons.sh`, and the
+  template caller workflow to roll out to the `xbmc`, `kodi-pvr` and `kodi-game`
+  repositories in place of the `Jenkinsfile`. The existing `release.yml` in the add-on
+  repositories already creates the tag, so the chain stays: dispatch release, tag, build,
+  deploy. The mirrors' `addons/` layout and the repository add-on consuming it are
+  unchanged.
 
 ### 2.6 Suggested phases
 
@@ -445,12 +462,12 @@ This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-m
 | clang-tidy / cppcheck | Yes: `static-analysis.yml`, clang-tidy on the changed lines of every PR (annotations), full `analyze-clang-tidy` and `analyze-cppcheck` on master pushes uploaded to code scanning as SARIF | Advisory on PRs |
 | Coverity / coverage | Yes: `coverity.yml` weekly (token and e-mail from secrets, skipped when absent), `coverage.yml` on master pushes with the Cobertura report as artifact and a summary | No coverage service integration |
 | Binary add-ons built with Kodi | Yes: `peripheral.joystick` on every leg, failure reported as a warning like Jenkins | Full add-on set for UWP, iOS and tvOS nightlies |
-| Binary add-on repositories (`buildPlugin`) | No | Reusable workflow, section 2.5 |
+| Binary add-on repositories (`buildPlugin`) | Yes: reusable `build-addon.yml` on nine platforms, exercised by `addon-smoke.yml` | Deploy-on-tag job and roll-out to the add-on repositories |
 | Nightly schedule and upload to mirrors | No | `nightly.yml` + `publish.yml`, file naming scheme, SSH secret or self-hosted runner |
 | Test builds on request (`BuildMulti-PR-Manually`, `UPLOAD_RESULT`) | No | `workflow_dispatch` or comment trigger |
 | Release promotion (`MIRROR-*`) | No | `release.yml` |
 | Build-and-merge phrase | No | Branch protection / merge queue |
-| Path-based skip, `No-Jenkins` / `Stale` labels, target-branch conditions | No | `paths-ignore`, a label guard in `if:`, and `if: github.base_ref` conditions per leg |
+| Path-based skip, `No-Jenkins` / `Stale` labels, target-branch conditions | Yes: `paths-ignore` for docs, Markdown and the non-workflow `.github/` files; `No-Jenkins`, `No Jenkins` and `Stale` labels skip every build job | Narrower than Jenkins on purpose: `addons/`, `system/*.xml` and `system/shaders/` now change E2E results, so they trigger. No per-branch leg conditions yet; a docs-only PR leaves required checks pending once they exist, which needs a skip workflow |
 | PR draft handling | Yes: drafts skipped, `ready_for_review` starts | Jenkins has no equivalent |
 | Cancel superseded runs | Yes: `concurrency` with `cancel-in-progress` | |
 | Dependency and ccache caching | Yes: `tools/depends` cached by tree hash, ccache saved from master only | Cache size against the 10 GB limit with 8 platforms needs measuring |
@@ -472,7 +489,7 @@ This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-m
 
 1. Add **`nightly.yml` and `publish.yml`** so GitHub can feed `test-builds/` and
    `nightlies/` and Jenkins can be retired for nightlies.
-2. Add the **binary add-on** reusable workflow for the add-on repositories.
+2. Add the **add-on deploy** job and roll the reusable workflow out to the add-on repositories.
 3. Add **compiler warning tracking** (per-leg budgets, then a baseline against master).
 4. Decide **gating**: which jobs become required, and whether the Windows legs (Visual
    Studio generator on a 4-vCPU runner) and the Apple legs stay hosted or move to

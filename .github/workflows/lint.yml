@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   clang-format:
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale')
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -91,7 +91,7 @@ jobs:
           exit 1
 
   logging-style:
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
