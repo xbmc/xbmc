@@ -347,19 +347,12 @@ void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette)
                        BT2020_TO_709[i][2] * linearPQ[2],
                    0.0f);
 
-    // Soft-compress out-of-range highlights instead of hard-normalizing.
-    // The exponent trades brightness against saturation:
-    // 0.0 = exact divide-by-max normalization (dimmer, hue-preserving)
-    // 1.0 = no scaling, direct per-channel clipping (brighter, washed out)
-    // 0.5 = middle ground used here.
+    // A colour brighter than reference white is scaled down until its
+    // brightest channel is white, so its hue is kept.
     const float maxChannel = std::max({linear709[0], linear709[1], linear709[2]});
     if (maxChannel > 1.0f)
-    {
-      constexpr float kHighlightKneeExponent = 0.5f;
-      const float scale = std::pow(maxChannel, kHighlightKneeExponent) / maxChannel;
       for (float& c : linear709)
-        c *= scale;
-    }
+        c /= maxChannel;
 
     const int r = static_cast<int>(LinearToSrgbComponent(linear709[0]) * 255.0f + 0.5f);
     const int g = static_cast<int>(LinearToSrgbComponent(linear709[1]) * 255.0f + 0.5f);
