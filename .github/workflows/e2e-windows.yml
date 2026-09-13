@@ -11,41 +11,20 @@ name: E2E (Windows)
 # BuildSetup.bat hardcodes the Visual Studio generator and its Release\ layout,
 # so ccache is not used here; the dependency downloads are cached instead.
 
+# Called from ci.yml, which owns the triggers, path filters and the draft/label
+# gate; workflow_dispatch is kept for manual runs.
 on:
+  workflow_call:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
 
 permissions:
   contents: read
-
-concurrency:
-  group: e2e-windows-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   BINARY_ADDONS: peripheral.joystick
 
 jobs:
   build:
-    # Drafts are skipped; ready_for_review starts the first run.
-    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale'))
     # Pinned so the toolchain stays predictable; VS2022, the Windows 11 SDK,
     # the UWP workload and NSIS are all on the image.
     runs-on: windows-2022

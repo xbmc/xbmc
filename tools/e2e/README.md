@@ -184,9 +184,12 @@ logging).
 
 Triggers and cache policy:
 
-- Every workflow runs on `workflow_dispatch`, on pushes to `master`, and on every
-  commit of a pull request once it is out of draft (`ready_for_review` starts the
-  first run).
+- `ci.yml` is the only workflow with `push` and `pull_request` triggers. It owns the
+  path filters (documentation, Markdown and the non-workflow files under `.github/`
+  do not start builds), skips drafts until `ready_for_review`, skips PRs labelled
+  `No-Jenkins`, `No Jenkins` or `Stale`, and calls every platform workflow through
+  `workflow_call`. The platform workflows keep `workflow_dispatch` for manual runs.
+  A job the gate skips counts as passed for branch protection.
 - Pull-request runs are cancelled by a newer push to the same PR; master runs are
   never cancelled, so their cache saves always complete.
 - Caches are saved from master only. PR runs restore them but do not add entries:

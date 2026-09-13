@@ -410,8 +410,8 @@ unchanged under `container:`.
         kodi_ref: master
   ```
 
-  `addon-smoke.yml` in this repository calls it for `peripheral.joystick` on one platform
-  per code path whenever the add-on build system or the workflow changes.
+  `ci.yml` calls it for `peripheral.joystick` on one platform per code path whenever the
+  add-on build system or the workflow changes.
 - Still to do: a `deploy` job on tags that publishes the zips to
   `addons/<codename>/<addon>+<platform>/` through `jenkins-move-addons.sh`, and the
   template caller workflow to roll out to the `xbmc`, `kodi-pvr` and `kodi-game`
@@ -436,11 +436,13 @@ unchanged under `container:`.
 
 ## 3. What this PR covers and what is missing
 
-This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-macos.yml`,
+This branch adds `ci.yml` as the single entry point for pull requests and master pushes,
+which calls six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-macos.yml`,
 `e2e-windows.yml`, `e2e-android.yml`, `e2e-apple-simulator.yml`), two build-only workflows
-(`build-apple-device.yml`, `build-webos.yml`), shared composite actions for ccache,
-`tools/depends` caching and binary add-ons, the pytest E2E driver under `tools/e2e/`, and
-`docs/E2E-TESTING.md`.
+(`build-apple-device.yml`, `build-webos.yml`), `lint.yml`, `static-analysis.yml` and the
+reusable `build-addon.yml`; plus `coverity.yml` and `coverage.yml` on their own schedules,
+shared composite actions for ccache, `tools/depends` caching, binary add-ons and unit test
+reports, the pytest E2E driver under `tools/e2e/`, and `docs/E2E-TESTING.md`.
 
 ### 3.1 Coverage against Jenkins
 
@@ -462,12 +464,12 @@ This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-m
 | clang-tidy / cppcheck | Yes: `static-analysis.yml`, clang-tidy on the changed lines of every PR (annotations), full `analyze-clang-tidy` and `analyze-cppcheck` on master pushes uploaded to code scanning as SARIF | Advisory on PRs |
 | Coverity / coverage | Yes: `coverity.yml` weekly (token and e-mail from secrets, skipped when absent), `coverage.yml` on master pushes with the Cobertura report as artifact and a summary | No coverage service integration |
 | Binary add-ons built with Kodi | Yes: `peripheral.joystick` on every leg, failure reported as a warning like Jenkins | Full add-on set for UWP, iOS and tvOS nightlies |
-| Binary add-on repositories (`buildPlugin`) | Yes: reusable `build-addon.yml` on nine platforms, exercised by `addon-smoke.yml` | Deploy-on-tag job and roll-out to the add-on repositories |
+| Binary add-on repositories (`buildPlugin`) | Yes: reusable `build-addon.yml` on nine platforms, exercised from `ci.yml` | Deploy-on-tag job and roll-out to the add-on repositories |
 | Nightly schedule and upload to mirrors | No | `nightly.yml` + `publish.yml`, file naming scheme, SSH secret or self-hosted runner |
 | Test builds on request (`BuildMulti-PR-Manually`, `UPLOAD_RESULT`) | No | `workflow_dispatch` or comment trigger |
 | Release promotion (`MIRROR-*`) | No | `release.yml` |
 | Build-and-merge phrase | No | Branch protection / merge queue |
-| Path-based skip, `No-Jenkins` / `Stale` labels, target-branch conditions | Yes: `paths-ignore` for docs, Markdown and the non-workflow `.github/` files; `No-Jenkins`, `No Jenkins` and `Stale` labels skip every build job | Narrower than Jenkins on purpose: `addons/`, `system/*.xml` and `system/shaders/` now change E2E results, so they trigger. No per-branch leg conditions yet; a docs-only PR leaves required checks pending once they exist, which needs a skip workflow |
+| Path-based skip, `No-Jenkins` / `Stale` labels, target-branch conditions | Yes, once, in `ci.yml`: `paths-ignore` for docs, Markdown and the non-workflow `.github/` files; a gate job skips every build on drafts and on the `No-Jenkins`, `No Jenkins` and `Stale` labels, and skipped jobs count as passed for branch protection | Narrower than Jenkins on purpose: `addons/`, `system/*.xml` and `system/shaders/` now change E2E results, so they trigger. No per-branch leg conditions yet |
 | PR draft handling | Yes: drafts skipped, `ready_for_review` starts | Jenkins has no equivalent |
 | Cancel superseded runs | Yes: `concurrency` with `cancel-in-progress` | |
 | Dependency and ccache caching | Yes: `tools/depends` cached by tree hash, ccache saved from master only | Cache size against the 10 GB limit with 8 platforms needs measuring |

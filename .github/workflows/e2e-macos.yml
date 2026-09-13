@@ -6,41 +6,20 @@ name: E2E (macOS)
 # are signed with the Developer ID certificate and notarised, as on Jenkins;
 # PR builds are unsigned. See tools/e2e/README.md for what the suite covers.
 
+# Called from ci.yml, which owns the triggers, path filters and the draft/label
+# gate; workflow_dispatch is kept for manual runs.
 on:
+  workflow_call:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
 
 permissions:
   contents: read
-
-concurrency:
-  group: e2e-macos-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   DEPENDS_PREFIX: /Users/Shared/xbmc-depends
 
 jobs:
   build:
-    # Drafts are skipped; ready_for_review starts the first run.
-    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale'))
     # macos-14 is Apple Silicon. Pinned so cache keys and toolchain stay stable.
     runs-on: macos-14
     timeout-minutes: 180

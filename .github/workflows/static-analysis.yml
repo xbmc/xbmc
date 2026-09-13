@@ -8,33 +8,14 @@ name: Static analysis
 # reintroduces a finding. Both need a built tree because Kodi generates headers
 # during the build.
 
+# Called from ci.yml, which owns the triggers, path filters and the draft/label
+# gate; workflow_dispatch is kept for manual runs.
 on:
+  workflow_call:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
 
 permissions:
   contents: read
-
-concurrency:
-  group: static-analysis-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   # docs/README.Linux.md section 3 for GBM and Wayland, plus the analysers.
@@ -59,7 +40,7 @@ env:
 
 jobs:
   clang-tidy-diff:
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale')
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     steps:

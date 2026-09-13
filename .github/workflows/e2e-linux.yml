@@ -13,33 +13,14 @@ name: E2E (Linux GBM/Wayland)
 # TagLib because Matroska tag support compiles out below 2.3.1; SWIG because the
 # Python bindings need 4.5.0 and 24.04 ships 4.2.0 (bison is for that build).
 
+# Called from ci.yml, which owns the triggers, path filters and the draft/label
+# gate; workflow_dispatch is kept for manual runs.
 on:
+  workflow_call:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
 
 permissions:
   contents: read
-
-concurrency:
-  group: e2e-linux-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   # docs/README.Linux.md section 3 minus optional features, plus what the DEB
@@ -62,8 +43,6 @@ env:
 
 jobs:
   build:
-    # Drafts are skipped; ready_for_review starts the first run.
-    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale'))
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 180
     strategy:

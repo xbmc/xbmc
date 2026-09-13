@@ -10,41 +10,20 @@ name: E2E (iOS/tvOS Simulator)
 # The Simulator ABIs are far less exercised than the device ones: treat a build
 # failure here as plausibly a build-system gap rather than a CI-wiring issue.
 
+# Called from ci.yml, which owns the triggers, path filters and the draft/label
+# gate; workflow_dispatch is kept for manual runs.
 on:
+  workflow_call:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
 
 permissions:
   contents: read
-
-concurrency:
-  group: e2e-apple-simulator-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   DEPENDS_PREFIX: /Users/Shared/xbmc-depends
 
 jobs:
   build:
-    # Drafts are skipped; ready_for_review starts the first run.
-    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && !contains(github.event.pull_request.labels.*.name, 'No-Jenkins') && !contains(github.event.pull_request.labels.*.name, 'No Jenkins') && !contains(github.event.pull_request.labels.*.name, 'Stale'))
     # macos-14 is Apple Silicon; the Simulator ABI for aarch64-apple-darwin is
     # arm64, keeping build and device on one architecture.
     runs-on: macos-14
