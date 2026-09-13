@@ -1129,7 +1129,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const size_t part{partIndex++};
 
       // Only resolve blurays
-      if (!IsBluray(path))
+      const bool playlistChosen{URIUtils::GetBlurayPlaylistFromPath(path) > -1};
+      if (!IsBluray(path) && !playlistChosen)
       {
         fileParts.emplace_back(part);
         playlistPaths.emplace_back(path);
@@ -1140,10 +1141,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
       partItem.SetPath(path);
       partItem.SetDynPath(path);
 
-      // Updates partItem in place to its main playlist
-      CFileItemList partItems;
-      ResolveBlurayPlaylist(&partItem, partItems);
-      if (partItems.IsEmpty())
+      partItem.GetVideoInfoTag()->m_streamDetails.Reset();
+      bool resolved;
+      if (playlistChosen)
+        resolved = CDiscDirectoryHelper::ReadResolvedPlaylist(partItem); // Refresh
+      else
+      {
+        CFileItemList partItems;
+        ResolveBlurayPlaylist(&partItem, partItems);
+        resolved = !partItems.IsEmpty();
+      }
+
+      if (!resolved)
       {
         CLog::LogF(LOGERROR, "Unable to resolve a bluray playlist for {} of {}",
                    CURL::GetRedacted(path), CURL::GetRedacted(originalPath));
@@ -1212,7 +1221,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       if (totalDuration > 0)
         streamDetails.SetVideoDuration(0, totalDuration);
-      tag->m_streamDetails = streamDetails;
+
+      // Nfo streamdetails describe the stack as a whole, so they are what it keeps
+      if (!tag->HasNFOStreamDetails())
+        tag->m_streamDetails = streamDetails;
 
       // Record where each part ends, so that playback does not have to derive the durations again
       // (a resolved bluray:// playlist cannot be demuxed for its duration)
