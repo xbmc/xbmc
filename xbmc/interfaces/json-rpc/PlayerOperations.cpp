@@ -1300,7 +1300,10 @@ JSONRPC_STATUS CPlayerOperations::SetPartymode(const std::string &method, ITrans
       bool toggle = parameterObject["partymode"].isString();
       if (g_partyModeManager.IsEnabled())
       {
-        if (g_partyModeManager.GetType() != context)
+        // A mixed party mode plays songs through the audio player, so what must match is the
+        // playlist being played, not the addressed player's type
+        if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() !=
+            g_partyModeManager.GetPlaylistId())
           return InvalidParams;
 
         if (toggle || parameterObject["partymode"].asBoolean() == false)
