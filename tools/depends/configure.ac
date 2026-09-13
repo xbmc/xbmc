@@ -525,7 +525,7 @@ case $host in
     use_sdk_path=$($use_xcrun --sdk $target_platform --show-sdk-path)
     sdk_name=$target_platform$use_sdk
 
-    platform_cflags="-ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
+    platform_cflags="-ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2 -Werror=unguarded-availability-new -Wunsupported-availability-guard"
     optimize_flags="-O3"
     platform_ldflags="-Wl,-search_paths_first -L$use_sdk_path/usr/lib"
 
