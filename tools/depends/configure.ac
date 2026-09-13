@@ -494,8 +494,6 @@ case $host in
 
     meson_system="darwin"
 
-    platform_ldflags="-Wl,-search_paths_first"
-
     case $use_platform in
       tvos)
         target_platform=appletvos
@@ -526,6 +524,10 @@ case $host in
     use_sdk="${use_sdk:-$found_sdk_version}"
     use_sdk_path=$($use_xcrun --sdk $target_platform --show-sdk-path)
     sdk_name=$target_platform$use_sdk
+
+    platform_cflags="-ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
+    optimize_flags="-O3"
+    platform_ldflags="-Wl,-search_paths_first -L$use_sdk_path/usr/lib"
 
     case $host in
       x86_64-apple-darwin)
@@ -563,20 +565,16 @@ case $host in
         else
           AC_MSG_ERROR(invalid architecture (--with-cpu=$use_cpu))
         fi
-
-        platform_cflags="${platform_cflags} -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings"
-        platform_cflags="${platform_cflags} -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2"
-        optimize_flags="-O3"
-        platform_ldflags="${platform_ldflags} -L$use_sdk_path/usr/lib"
       ;;
     esac
 
     AX_COMPARE_VERSION([$use_sdk], [ge], [$target_minver], , AC_MSG_ERROR("invalid SDK version provided (--with-sdk=$use_sdk) less than minimum supported ($target_minver)"))
 
     platform_min_version="$target_platform-version-min=$target_minver"
-
     platform_includes="-arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path"
+
     platform_ldflags="${platform_ldflags} $platform_includes"
+
     deps_dir="${sdk_name}_${use_cpu}-target-${build_type}"
   ;;
   *)
