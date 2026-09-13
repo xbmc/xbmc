@@ -705,8 +705,8 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
   if ( URIUtils::IsISO9660(strPath) )
   {
 #ifdef HAS_OPTICAL_DRIVE
-    CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
+    const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
+    if (pInfo && pInfo->IsVideoCd(1))
     {
       strIcon = "DefaultVCD.png";
       return ;

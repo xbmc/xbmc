@@ -70,8 +70,8 @@ protected:
   uint64_t CdInfoGeneration() const { return m_manager.m_cdInfoGeneration; }
   uint64_t DiscInfoGeneration() const { return m_manager.m_discInfoGeneration; }
 
-  MEDIA_DETECT::CCdInfo* StoreCdInfo(std::unique_ptr<MEDIA_DETECT::CCdInfo> info,
-                                     uint64_t generation)
+  std::shared_ptr<MEDIA_DETECT::CCdInfo> StoreCdInfo(std::unique_ptr<MEDIA_DETECT::CCdInfo> info,
+                                                     uint64_t generation)
   {
     return m_manager.CacheCdInfo(DEVICE_PATH, std::move(info), generation);
   }
@@ -281,7 +281,7 @@ TEST_F(TestMediaManager, InvalidatedTocReadIsRetriedOnce)
         return SomeToc();
       });
 
-  auto* info{m_manager.GetCdInfo(DEVICE_PATH)};
+  const auto info{m_manager.GetCdInfo(DEVICE_PATH)};
   EXPECT_NE(info, nullptr);
   EXPECT_EQ(m_tocReads, 2);
   EXPECT_TRUE(HasCachedCdInfo());
@@ -339,7 +339,7 @@ TEST_F(TestMediaManager, RemovalClearsFailureAndInvalidatesInFlightRead)
 TEST_F(TestMediaManager, SuccessfulTocReadClearsCachedFailure)
 {
   SeedCachedFailure();
-  auto* info{StoreCdInfo(std::make_unique<MEDIA_DETECT::CCdInfo>(), CdInfoGeneration())};
+  const auto info{StoreCdInfo(std::make_unique<MEDIA_DETECT::CCdInfo>(), CdInfoGeneration())};
 
   ASSERT_NE(info, nullptr);
   EXPECT_FALSE(HasCachedFailure());
@@ -349,7 +349,7 @@ TEST_F(TestMediaManager, SuccessfulTocReadClearsCachedFailure)
 
 TEST_F(TestMediaManager, ConcurrentTocReadsKeepPublishedSuccess)
 {
-  auto* first{StoreCdInfo(std::make_unique<MEDIA_DETECT::CCdInfo>(), CdInfoGeneration())};
+  const auto first{StoreCdInfo(std::make_unique<MEDIA_DETECT::CCdInfo>(), CdInfoGeneration())};
   ASSERT_NE(first, nullptr);
 
   EXPECT_EQ(StoreCdInfo(std::make_unique<MEDIA_DETECT::CCdInfo>(), CdInfoGeneration()), first);
@@ -444,6 +444,17 @@ TEST_F(TestMediaManager, ResetWithoutPathClearsEveryCache)
   EXPECT_FALSE(HasCachedDiscInfo(SECOND_DEVICE_PATH));
   EXPECT_FALSE(HasCachedFailure(DEVICE_PATH));
   EXPECT_FALSE(HasCachedFailure(SECOND_DEVICE_PATH));
+}
+
+TEST_F(TestMediaManager, ResetDropsTheCachedTocWhileACallerStillHoldsIt)
+{
+  const auto info{StoreCdInfo(std::make_unique<MEDIA_DETECT::CCdInfo>(), CdInfoGeneration())};
+  ASSERT_NE(info, nullptr);
+
+  m_manager.ResetDriveCaches(DEVICE_PATH);
+
+  EXPECT_FALSE(HasCachedCdInfo());
+  EXPECT_EQ(info.use_count(), 1);
 }
 
 TEST_F(TestMediaManager, ProbeInvalidatedInFlightIsNotStored)
