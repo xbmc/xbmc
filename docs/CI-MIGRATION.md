@@ -438,12 +438,12 @@ This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-m
 | Windows x64 | Yes: x64, Win32, ARM64 and UWP x64 through `BuildSetup.bat`, NSIS installer and `.pdb`, `.msix`, unit tests on x64 and Win32 | Visual Studio generator, so no ccache; a CPack NSIS port would need Windows `install()` rules first |
 | wasm | No | Low priority; Jenkins job produces nothing |
 | FreeBSD | No | Disabled in Jenkins too |
-| Unit tests | Linux X11, macOS, Windows | Linux GBM/Wayland legs skip `kodi-test`; results not published as a check |
-| Compiler warning tracking with thresholds | No | Problem matchers for gcc/clang/MSVC plus a "no new warnings" comparison |
-| clang-format diff per commit, bot comment with diff links | No | Add a `lint` job running `git-clang-format` on the PR range and failing or annotating |
-| Inline review comments on printf-style `CLog::Log` | No | A `lint` step grepping added lines in the PR diff and annotating via `::warning file=...` or a review comment |
-| clang-tidy / cppcheck | No | Weekly `schedule` job on the `analyze-*` targets, results as artifacts or SARIF to code scanning |
-| Coverity / coverage | No | Coverity Scan action on schedule; `coverage_xml` target to Codecov or job summary |
+| Unit tests | Every leg that can execute its binary: Linux GBM, Wayland and X11 on x86_64 and arm64, macOS, Windows x64 and Win32; gtest XML summarised with inline annotations per failure | Android, iOS, tvOS and webOS cannot run them on the runner, as on Jenkins |
+| Compiler warning tracking with thresholds | No (deferred) | Parse compiler output per leg, annotate, per-leg budgets, later a baseline comparison against master |
+| clang-format diff per commit, bot comment with diff links | Yes: `lint.yml` runs `git clang-format` per commit, uploads the diffs and fails the check | Bot comment replaced by the failing check and the summary |
+| Inline review comments on printf-style `CLog::Log` | Yes: `lint.yml` annotates added `CLog::Log(...%...)` lines | Advisory, as on Jenkins |
+| clang-tidy / cppcheck | Yes: `static-analysis.yml`, clang-tidy on the changed lines of every PR (annotations), full `analyze-clang-tidy` and `analyze-cppcheck` on master pushes uploaded to code scanning as SARIF | Advisory on PRs |
+| Coverity / coverage | Yes: `coverity.yml` weekly (token and e-mail from secrets, skipped when absent), `coverage.yml` on master pushes with the Cobertura report as artifact and a summary | No coverage service integration |
 | Binary add-ons built with Kodi | Yes: `peripheral.joystick` on every leg, failure reported as a warning like Jenkins | Full add-on set for UWP, iOS and tvOS nightlies |
 | Binary add-on repositories (`buildPlugin`) | No | Reusable workflow, section 2.5 |
 | Nightly schedule and upload to mirrors | No | `nightly.yml` + `publish.yml`, file naming scheme, SSH secret or self-hosted runner |
@@ -454,7 +454,7 @@ This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-m
 | PR draft handling | Yes: drafts skipped, `ready_for_review` starts | Jenkins has no equivalent |
 | Cancel superseded runs | Yes: `concurrency` with `cancel-in-progress` | |
 | Dependency and ccache caching | Yes: `tools/depends` cached by tree hash, ccache saved from master only | Cache size against the 10 GB limit with 8 platforms needs measuring |
-| Retry infrastructure failures | No | Job-level retry or `nick-fields/retry` on the depends/download steps |
+| Retry infrastructure failures | Not needed: the dependency downloads retry inside CMake and the emulator action retries its boot | |
 | Slack notification | No | Add to scheduled workflows on failure |
 | Kore | No | Trivial Gradle workflow in `xbmc/Kore` |
 | Conflict checker | No | `actions/labeler`-style job on `push` to master, or GitHub's own conflict indicator |
@@ -470,11 +470,10 @@ This branch adds six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-m
 
 ### 3.3 Priorities to close the gap
 
-1. Add the **lint job** (clang-format on the PR range, printf-style logging check) and
-   publish **unit test results** as checks for every platform that runs them.
-2. Add **`nightly.yml` and `publish.yml`** so GitHub can feed `test-builds/` and
+1. Add **`nightly.yml` and `publish.yml`** so GitHub can feed `test-builds/` and
    `nightlies/` and Jenkins can be retired for nightlies.
-3. Add the **binary add-on** reusable workflow for the add-on repositories.
+2. Add the **binary add-on** reusable workflow for the add-on repositories.
+3. Add **compiler warning tracking** (per-leg budgets, then a baseline against master).
 4. Decide **gating**: which jobs become required, and whether the Windows legs (Visual
    Studio generator on a 4-vCPU runner) and the Apple legs stay hosted or move to
    self-hosted runners.

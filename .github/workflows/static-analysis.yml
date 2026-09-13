@@ -1,0 +1,166 @@
+name: Static analysis
+
+# clang-tidy and cppcheck, replacing Jenkins' LINUX-64-GL-Static-Analysis job.
+# Pull requests get clang-tidy on the lines they change (clang-tidy-diff over
+# the compile database), reported as inline annotations. Pushes to master run
+# the full analyze-clang-tidy and analyze-cppcheck targets and upload the
+# results to GitHub code scanning, which keeps the history and flags a PR that
+# reintroduces a finding. Both need a built tree because Kodi generates headers
+# during the build.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: static-analysis-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # docs/README.Linux.md section 3 for GBM and Wayland, plus the analysers.
+  APT_PACKAGES: >-
+    build-essential cmake gawk gperf gettext libtool meson nasm
+    ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
+    libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev
+    libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev
+    libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev
+    libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev
+    libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev
+    libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev
+    libdbus-1-dev libasound2-dev libdav1d-dev
+    libdrm-dev libxkbcommon-dev libinput-dev libudev-dev libdisplay-info-dev
+    libgbm-dev libwayland-dev wayland-protocols waylandpp-dev
+    libegl-dev libegl1 libegl-mesa0 libgles2-mesa-dev libgl1-mesa-dri
+    clang-tidy-18 clang-tools-18 cppcheck
+  CMAKE_ARGS: >-
+    -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    -DCORE_PLATFORM_NAME="wayland gbm" -DAPP_RENDER_SYSTEM=gles
+    -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON
+
+jobs:
+  clang-tidy-diff:
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      # Full history so the PR's two merge parents are available.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install build tools, libraries and analysers
+        run: |
+          sudo apt-get update
+          # shellcheck disable=SC2086
+          sudo apt-get install -y ${{ env.APT_PACKAGES }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: linux-analysis-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      - name: Configure Kodi
+        run: cmake -S . -B build ${{ env.CMAKE_ARGS }}
+
+      # Generated headers (JSON-RPC schema, add-on bindings) only exist after
+      # a build; clang-tidy on a fresh tree would report missing includes.
+      - name: Build Kodi
+        run: cmake --build build -- -j"$(nproc)"
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: linux-analysis-${{ runner.arch }}
+          save: false
+
+      # Only the changed lines of the changed files under xbmc/, against the
+      # checks in .clang-tidy. Advisory: findings become annotations, the job
+      # does not fail on them.
+      - name: Run clang-tidy on the changed lines
+        run: |
+          git diff -U0 --no-color "$(git rev-parse HEAD^1)" "$(git rev-parse HEAD^2)" -- 'xbmc/*.cpp' 'xbmc/*.h' \
+            | clang-tidy-diff-18.py -p1 -path build -j"$(nproc)" -clang-tidy-binary clang-tidy-18 \
+            | tee clang-tidy-diff.txt
+          python3 .github/scripts/analysis_to_sarif.py --clang-tidy clang-tidy-diff.txt --annotate
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: clang-tidy-diff
+          path: clang-tidy-diff.txt
+          if-no-files-found: ignore
+          retention-days: 14
+
+  full:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install build tools, libraries and analysers
+        run: |
+          sudo apt-get update
+          # shellcheck disable=SC2086
+          sudo apt-get install -y ${{ env.APT_PACKAGES }}
+          sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-18 100
+          sudo update-alternatives --install /usr/bin/run-clang-tidy run-clang-tidy /usr/bin/run-clang-tidy-18 100
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: linux-analysis-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      - name: Configure Kodi
+        run: cmake -S . -B build ${{ env.CMAKE_ARGS }}
+
+      # Both targets depend on kodi and kodi-test (cmake/scripts/common/StaticAnalysis.cmake).
+      - name: Build Kodi and run clang-tidy
+        run: cmake --build build --target analyze-clang-tidy -- -j"$(nproc)"
+
+      - name: Run cppcheck
+        run: cmake --build build --target analyze-cppcheck -- -j"$(nproc)"
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: linux-analysis-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - name: Convert results to SARIF
+        run: |
+          python3 .github/scripts/analysis_to_sarif.py --clang-tidy build/clangtidy-result.xml \
+            --sarif clang-tidy.sarif --tool-version "$(clang-tidy --version | grep -o '[0-9][0-9.]*' | head -1)"
+          python3 .github/scripts/analysis_to_sarif.py --cppcheck build/cppcheck-result.xml \
+            --sarif cppcheck.sarif --tool-version "$(cppcheck --version | grep -o '[0-9][0-9.]*' | head -1)"
+
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: clang-tidy.sarif
+          category: clang-tidy
+
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: cppcheck.sarif
+          category: cppcheck
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: static-analysis-results
+          path: |
+            build/clangtidy-result.xml
+            build/cppcheck-result.xml
+            clang-tidy.sarif
+            cppcheck.sarif
+          if-no-files-found: warn
+          retention-days: 30

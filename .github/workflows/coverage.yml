@@ -1,0 +1,97 @@
+name: Coverage
+
+# Unit test coverage on master, replacing Jenkins' disabled LINUX-64-GL-Coverage
+# job: a Coverage build type (cmake/scripts/linux/CodeCoverage.cmake), kodi-test
+# through the coverage_xml target, and the Cobertura report plus a summary as
+# the result. Expensive, so pushes to master and manual runs only.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  coverage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    env:
+      # docs/README.Linux.md section 3 for GBM and Wayland, plus gcovr.
+      APT_PACKAGES: >-
+        build-essential cmake gawk gperf gettext libtool meson nasm
+        ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
+        libass-dev libcurl4-openssl-dev libexiv2-dev libflatbuffers-dev
+        libfmt-dev libfreetype-dev libfribidi-dev libfstrcmp-dev
+        libharfbuzz-dev liblzo2-dev libpcre2-dev libssl-dev libsqlite3-dev
+        libtinyxml-dev zlib1g-dev libcdio-dev libcdio++-dev libgtest-dev
+        libgif-dev libjpeg-dev nlohmann-json3-dev libmicrohttpd-dev
+        libunistring-dev libspdlog-dev libtinyxml2-dev libcrossguid-dev
+        libdbus-1-dev libasound2-dev libdav1d-dev
+        libdrm-dev libxkbcommon-dev libinput-dev libudev-dev libdisplay-info-dev
+        libgbm-dev libwayland-dev wayland-protocols waylandpp-dev
+        libegl-dev libegl1 libegl-mesa0 libgles2-mesa-dev libgl1-mesa-dri
+        gcovr
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install build tools and libraries
+        run: |
+          sudo apt-get update
+          # shellcheck disable=SC2086
+          sudo apt-get install -y ${{ env.APT_PACKAGES }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: linux-coverage-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      - name: Configure Kodi
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Coverage \
+            -DCORE_PLATFORM_NAME="wayland gbm" -DAPP_RENDER_SYSTEM=gles \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON
+
+      # kodi-test is run by hand so the gcov data exists whether or not ctest
+      # knows about it; coverage_xml then writes build/coverage/coverage.xml with
+      # test and library code excluded.
+      - name: Build and run the unit tests
+        run: |
+          cmake --build build --target kodi kodi-test -- -j"$(nproc)"
+          cd build && ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - uses: ./.github/actions/report-unit-tests
+        if: always()
+        with:
+          name: linux-coverage-${{ runner.arch }}
+
+      - name: Collect coverage
+        run: cmake --build build --target coverage_xml
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: linux-coverage-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - name: Summarise coverage
+        run: |
+          {
+            echo "### Unit test coverage"
+            echo '```'
+            gcovr -r . --object-directory build --exclude '.*/test/.*' --exclude 'lib/.*' --exclude '.*/lib/.*' \
+              --exclude 'build/.*' --print-summary 2>/dev/null | tail -n 4
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: build/coverage/coverage.xml
+          if-no-files-found: error
+          retention-days: 30
