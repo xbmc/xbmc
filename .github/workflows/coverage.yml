@@ -59,9 +59,11 @@ jobs:
 
       # kodi-test is run by hand so the gcov data exists whether or not ctest
       # knows about it; coverage_xml then writes build/coverage/coverage.xml with
-      # test and library code excluded.
+      # test and library code excluded. See e2e-linux.yml for why the
+      # ping_group_range sysctl is widened here.
       - name: Build and run the unit tests
         run: |
+          sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
           cmake --build build --target kodi kodi-test -- -j"$(nproc)"
           cd build && ./kodi-test --gtest_output=xml:gtestresults.xml
 

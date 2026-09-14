@@ -111,9 +111,12 @@ jobs:
 
       # From the build tree: the reference data the tests read
       # (cmake/installdata/test-reference-data.txt) was mirrored there.
+      # See e2e-linux.yml for why the ping_group_range sysctl is widened here.
       - name: Run unit tests
         working-directory: build
-        run: ./kodi-test --gtest_output=xml:gtestresults.xml
+        run: |
+          sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
+          ./kodi-test --gtest_output=xml:gtestresults.xml
 
       - uses: ./.github/actions/report-unit-tests
         if: always()

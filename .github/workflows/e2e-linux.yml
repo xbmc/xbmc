@@ -113,9 +113,16 @@ jobs:
       # app, so this is a real link step. Run from the build tree: the reference
       # data the tests read (cmake/installdata/test-reference-data.txt) was
       # mirrored there.
+      #
+      # PingHost uses an unprivileged Linux "ping socket" (SOCK_DGRAM +
+      # IPPROTO_ICMP), which the kernel only allows for processes whose group
+      # falls inside net.ipv4.ping_group_range; Ubuntu ships that range disabled
+      # (see icmp(7)). Widened here rather than filtering the test out, as
+      # Jenkins does for the same reason on its own network.
       - name: Build and run unit tests
         working-directory: build
         run: |
+          sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
           cmake --build . --target kodi-test -- -j"$(nproc)"
           ./kodi-test --gtest_output=xml:gtestresults.xml
 
