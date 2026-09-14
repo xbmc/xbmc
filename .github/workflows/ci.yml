@@ -2,9 +2,10 @@ name: CI
 
 # Single entry point for pull requests, master pushes and manual runs. Owns the
 # triggers, the path filters, the draft/label gate and the workflow_dispatch
-# inputs, then calls one reusable workflow per platform or check. Jobs skipped
-# by the gate count as passed for branch protection, so a documentation-only PR
-# does not block on required checks.
+# inputs, then calls one reusable workflow per platform or check. Pull requests
+# are path-filtered in the gate rather than with paths-ignore: a workflow that
+# never starts leaves required checks pending, while jobs skipped by the gate
+# count as passed, so a documentation-only PR does not block on them.
 
 on:
   workflow_dispatch:
@@ -40,13 +41,6 @@ on:
       - '.github/mergeable.yml'
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.github/CODEOWNERS'
-      - '.github/FUNDING.yml'
-      - '.github/mergeable.yml'
 
 permissions:
   contents: read
@@ -57,15 +51,20 @@ concurrency:
 
 jobs:
   # Drafts wait for ready_for_review; the No-Jenkins / No Jenkins / Stale labels
-  # skip everything, as they did on Jenkins. Resolves the workflow_dispatch
-  # inputs, which are empty on push and pull_request events, and decides
-  # whether the add-on build system changed, which is the only case worth
-  # exercising the reusable add-on workflow from this repository.
+  # skip everything, as they did on Jenkins, and so does a pull request that
+  # only touches documentation. Resolves the workflow_dispatch inputs, which are
+  # empty on push and pull_request events, and decides whether the add-on build
+  # system changed, which is the only case worth exercising the reusable add-on
+  # workflow from this repository.
   gate:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    # paths-filter reads the pull request's file list.
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
-      run: ${{ steps.decide.outputs.run }}
+      run: ${{ steps.decide.outputs.run == 'true' && (github.event_name != 'pull_request' || steps.filter.outputs.code == 'true') }}
       platform: ${{ steps.decide.outputs.platform }}
       configuration: ${{ steps.decide.outputs.configuration }}
       addons: ${{ steps.decide.outputs.addons }}
@@ -103,7 +102,16 @@ jobs:
         if: steps.decide.outputs.run == 'true'
         id: filter
         with:
+          predicate-quantifier: some-with-excludes
           filters: |
+            code:
+              - '**'
+              - '!docs/**'
+              - '!**/*.md'
+              - '!.github/ISSUE_TEMPLATE/**'
+              - '!.github/CODEOWNERS'
+              - '!.github/FUNDING.yml'
+              - '!.github/mergeable.yml'
             addons:
               - .github/workflows/build-addon.yml
               - cmake/addons/**
