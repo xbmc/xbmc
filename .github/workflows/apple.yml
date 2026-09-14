@@ -65,11 +65,13 @@ jobs:
             depends_platform: ios
             sdk: iphoneos
             xcodebuild_args: -target ipa
+            cmake_args: -DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
           - kind: device
             platform: tvos
             depends_platform: tvos
             sdk: appletvos
             xcodebuild_args: -target ipa
+            cmake_args: -DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
     steps:
       - uses: actions/checkout@v7
 
@@ -159,9 +161,11 @@ jobs:
 
       # macOS generates Makefiles; iOS and tvOS (Simulator and device alike)
       # generate an Xcode project. CMAKE_EXTRA_ARGUMENTS is only ever set by
-      # the signing step above, so it is empty here for every other leg.
+      # the signing step above, so it is empty here for every other leg. The
+      # device legs add dwarf-with-dsym: CMake's Xcode projects default to dwarf
+      # in every configuration, which writes no .dSYM for the collect step.
       - name: Generate Kodi build system
-        run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}" CMAKE_EXTRA_ARGUMENTS="${CMAKE_EXTRA_ARGUMENTS:-}"
+        run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}" CMAKE_EXTRA_ARGUMENTS="${CMAKE_EXTRA_ARGUMENTS:-} ${{ matrix.cmake_args }}"
 
       - name: Build Kodi
         if: matrix.kind == 'macos'
