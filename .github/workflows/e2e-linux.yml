@@ -2,7 +2,7 @@ name: E2E (Linux)
 
 # Builds Kodi's GBM, Wayland and X11 backends, packages each with CPack's DEB
 # generator and runs tools/e2e against the installed packages. GBM and Wayland
-# build against Ubuntu 24.04's own packages on x86_64 and arm64, as
+# build against Ubuntu 26.04's own packages on x86_64 and arm64, as
 # docs/README.Linux.md documents; GBM gets a display from the vkms virtual KMS
 # driver, Wayland from a headless Weston, both rendering GLES through Mesa's
 # llvmpipe, so the real DRM/GBM/EGL/GLES path is exercised but GPU drivers and
@@ -14,7 +14,7 @@ name: E2E (Linux)
 # TagLib, fmt, spdlog, exiv2, flatbuffers, dav1d and SWIG all have to be built
 # internally there (without dav1d the internal ffmpeg has no AV1 decoder and
 # TestVideoCodecPictureFormat fails); once X11 builds without that header this
-# leg should move to 24.04 and drop most of those flags. Every leg also builds
+# leg should move to 26.04 and drop most of those flags. Every leg also builds
 # the requested binary add-ons against the same packages.
 
 # Called from ci.yml, which owns the triggers, path filters, the draft/label
@@ -51,7 +51,7 @@ jobs:
           # undefined and the JSON-RPC port the suite drives never opens.
           # libgif/libjpeg are for TexturePacker.
           - platform: gbm
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             packages: >-
               build-essential cmake gawk gperf gettext libtool meson nasm
               ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
@@ -70,7 +70,7 @@ jobs:
               -DCORE_PLATFORM_NAME=gbm -DAPP_RENDER_SYSTEM=gles
               -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON
           - platform: gbm
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
             packages: >-
               build-essential cmake gawk gperf gettext libtool meson nasm
               ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
@@ -89,7 +89,7 @@ jobs:
               -DCORE_PLATFORM_NAME=gbm -DAPP_RENDER_SYSTEM=gles
               -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON
           - platform: wayland
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
             packages: >-
               build-essential cmake gawk gperf gettext libtool meson nasm
               ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
@@ -108,7 +108,7 @@ jobs:
               -DCORE_PLATFORM_NAME=wayland -DAPP_RENDER_SYSTEM=gles
               -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON
           - platform: wayland
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
             packages: >-
               build-essential cmake gawk gperf gettext libtool meson nasm
               ninja-build pkg-config bison python3-dev unzip zip ccache uuid-dev
@@ -239,13 +239,13 @@ jobs:
       matrix:
         include:
           - platform: gbm
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
           - platform: gbm
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
           - platform: wayland
-            runner: ubuntu-24.04
+            runner: ubuntu-26.04
           - platform: wayland
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-26.04-arm
           - platform: x11
             runner: ubuntu-22.04
     steps:
@@ -282,7 +282,7 @@ jobs:
           sudo chmod 666 /dev/dri/card*
           ls -l /dev/dri
 
-      # Ubuntu 24.04's libdrm 2.4.125 predates the kernel's vkms-to-faux_device
+      # Ubuntu 26.04's libdrm 2.4.131 predates the kernel's vkms-to-faux_device
       # conversion: drmGetDevices2() cannot classify the faux bus until 2.4.134
       # and silently drops the card, so Kodi reports "No drm devices found". Same
       # version, mirror and meson options as tools/depends/target/libdrm. Installed

@@ -452,7 +452,7 @@ key, an environment fix) is fixed once.
 | Jenkins capability | This PR | Gap |
 | --- | --- | --- |
 | Linux x86_64 build (gl + gles) | Yes: GBM gles, Wayland gles, X11 gl against Ubuntu packages, CPack `.deb` | Not built through `tools/depends` (deliberately: the distro-package path is what users build); X11 pinned to Ubuntu 22.04 |
-| Linux arm / arm64 cross builds | arm64: yes, native on `ubuntu-24.04-arm` (GBM and Wayland, with E2E) | 32-bit arm not built |
+| Linux arm / arm64 cross builds | arm64: yes, native on `ubuntu-26.04-arm` (GBM and Wayland, with E2E) | 32-bit arm not built |
 | Android arm64, arm, x86 | Yes: release APKs for arm64-v8a, armeabi-v7a and x86 plus the x86_64 debug APK for the emulator; release keystore from secrets on non-PR runs | AAB |
 | webOS | Yes: `build-webos.yml`, buildroot-nc4 toolchain, `.ipk` | No device or emulator test |
 | macOS arm64 | Yes: `tools/depends`, Kodi.app, unit tests, `.dmg`, signing and notarisation from secrets on non-PR runs | No Intel build (dropped: GitHub has no Intel macOS runners) |

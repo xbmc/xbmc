@@ -57,7 +57,7 @@ env:
 jobs:
   build:
     name: ${{ matrix.platform }}
-    runs-on: ${{ startsWith(matrix.platform, 'windows') && 'windows-2022' || (startsWith(matrix.platform, 'android') && 'ubuntu-24.04' || 'macos-14') }}
+    runs-on: ${{ startsWith(matrix.platform, 'windows') && 'windows-2022' || (startsWith(matrix.platform, 'android') && 'ubuntu-26.04' || 'macos-14') }}
     timeout-minutes: 180
     strategy:
       fail-fast: false

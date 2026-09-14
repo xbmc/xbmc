@@ -34,7 +34,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 240
     strategy:
       fail-fast: false
@@ -183,7 +183,7 @@ jobs:
     # The matrix is one job, so this runs once every leg is done; only the
     # x86_64 artifact is needed and download-artifact fails clearly without it.
     if: ${{ !cancelled() && needs.build.result != 'skipped' }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     env:
       # The x86_64 leg builds debug unless the caller asked for Release.
