@@ -22,6 +22,10 @@ name: Apple (macOS/iOS/tvOS)
 on:
   workflow_call:
     inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
       addons:
         description: Space-separated binary add-on ids or patterns to build and bundle.
         type: string
@@ -39,6 +43,9 @@ jobs:
     # arm64, keeping every leg's build and target on one architecture.
     runs-on: macos-14
     timeout-minutes: 240
+    # Debug, as Jenkins' Apple jobs, unless the caller asks for Release.
+    env:
+      CONFIGURATION: ${{ inputs.configuration || 'Debug' }}
     strategy:
       fail-fast: false
       matrix:
@@ -55,12 +62,12 @@ jobs:
           - kind: device
             platform: ios
             depends_platform: ios
-            sdk_dir: Debug-iphoneos
+            sdk: iphoneos
             xcodebuild_args: -target ipa
           - kind: device
             platform: tvos
             depends_platform: tvos
-            sdk_dir: Debug-appletvos
+            sdk: appletvos
             xcodebuild_args: -target ipa
     steps:
       - uses: actions/checkout@v7
@@ -83,12 +90,12 @@ jobs:
       - uses: ./.github/actions/depends-cache-restore
         id: depends-cache
         with:
-          platform: ${{ matrix.depends_platform }}-${{ runner.arch }}
+          platform: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: ./.github/actions/ccache-restore
         with:
-          key: ${{ matrix.depends_platform }}-${{ runner.arch }}
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           dir: /Users/runner/.cache/kodi-e2e-ccache
 
       - name: Configure and build dependencies
@@ -96,7 +103,8 @@ jobs:
         working-directory: tools/depends
         run: |
           ./bootstrap
-          ./configure --host=aarch64-apple-darwin --with-platform=${{ matrix.depends_platform }} --prefix="${DEPENDS_PREFIX}"
+          ./configure --host=aarch64-apple-darwin --with-platform=${{ matrix.depends_platform }} --prefix="${DEPENDS_PREFIX}" \
+            ${{ env.CONFIGURATION == 'Release' && '--disable-debug' || '' }}
           make -j"$(sysctl -n hw.ncpu)"
 
       # Installed into the source tree's addons/ directory (the darwin default
@@ -152,7 +160,7 @@ jobs:
       # generate an Xcode project. CMAKE_EXTRA_ARGUMENTS is only ever set by
       # the signing step above, so it is empty here for every other leg.
       - name: Generate Kodi build system
-        run: make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="${CMAKE_EXTRA_ARGUMENTS:-}"
+        run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}" CMAKE_EXTRA_ARGUMENTS="${CMAKE_EXTRA_ARGUMENTS:-}"
 
       - name: Build Kodi
         if: matrix.kind == 'macos'
@@ -165,7 +173,7 @@ jobs:
       - name: Build Kodi (xcodebuild)
         if: matrix.kind != 'macos'
         working-directory: build
-        run: xcodebuild -config Debug -jobs "$(sysctl -n hw.ncpu)" ${{ matrix.xcodebuild_args }} CODE_SIGNING_ALLOWED=NO
+        run: xcodebuild -config "${CONFIGURATION}" -jobs "$(sysctl -n hw.ncpu)" ${{ matrix.xcodebuild_args }} CODE_SIGNING_ALLOWED=NO
 
       - uses: ./.github/actions/upload-build-logs
         if: always()
@@ -175,13 +183,13 @@ jobs:
       - uses: ./.github/actions/ccache-save
         if: '!cancelled()'
         with:
-          key: ${{ matrix.depends_platform }}-${{ runner.arch }}
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           save: ${{ github.event_name != 'pull_request' }}
 
       - uses: ./.github/actions/depends-cache-save
         if: '!cancelled() && steps.depends.outcome == ''success'' && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
         with:
-          platform: ${{ matrix.depends_platform }}-${{ runner.arch }}
+          platform: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       # tools/darwin/packaging/osx/mkdmg-osx.sh: copies the frameworks in,
@@ -208,7 +216,7 @@ jobs:
         if: matrix.kind == 'device'
         run: |
           ipa=$(find build/tools/darwin/packaging/darwin_embedded -maxdepth 1 -name '*.ipa' -print -quit)
-          dsym="build/build/${{ matrix.sdk_dir }}/Kodi.app.dSYM"
+          dsym="build/build/${CONFIGURATION}-${{ matrix.sdk }}/Kodi.app.dSYM"
           [ -n "$ipa" ] || { echo "::error::No .ipa produced under build/tools/darwin/packaging/darwin_embedded"; exit 1; }
           [ -d "$dsym" ] || { echo "::error::No dSYM at $dsym"; exit 1; }
           mkdir -p dist
@@ -243,9 +251,9 @@ jobs:
       - name: Package Kodi.app (Simulator)
         if: matrix.kind == 'simulator'
         run: |
-          app_path=$(find build -name 'Kodi.app' -path '*Debug*' -print -quit)
+          app_path=$(find build -name 'Kodi.app' -path "*${CONFIGURATION}*" -print -quit)
           if [ -z "$app_path" ]; then
-            echo "::error::No Debug Kodi.app found under build/ after xcodebuild"
+            echo "::error::No ${CONFIGURATION} Kodi.app found under build/ after xcodebuild"
             exit 1
           fi
           tar -cf kodi-runtime.tar -C "$(dirname "$app_path")" Kodi.app

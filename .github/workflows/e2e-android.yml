@@ -14,6 +14,10 @@ name: E2E (Android emulator)
 on:
   workflow_call:
     inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
       addons:
         description: Space-separated binary add-on ids or patterns to build and bundle.
         type: string
@@ -51,6 +55,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Debug for the x86_64 emulator leg and Release for the shipped ABIs, as
+      # Jenkins builds them, unless the caller asks for one configuration or the
+      # run has debug logging enabled. Lower-cased: the APK name carries it.
+      - name: Select configuration
+        env:
+          CONFIG: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || matrix.config) }}
+        run: echo "CONFIG=${CONFIG,,}" >> "$GITHUB_ENV"
+
       # docs/README.Android.md's package list and NDK pin (r28c).
       - name: Install build tools and libraries
         run: |
@@ -79,7 +91,7 @@ jobs:
       # builds from forks stay signed with the debug key above. The keystore is
       # stored base64-encoded in ANDROID_KEYSTORE.
       - name: Set up release signing
-        if: matrix.config == 'release' && github.event_name != 'pull_request'
+        if: env.CONFIG == 'release' && github.event_name != 'pull_request'
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -101,12 +113,12 @@ jobs:
       - uses: ./.github/actions/depends-cache-restore
         id: depends-cache
         with:
-          platform: android-${{ matrix.abi }}-${{ matrix.config }}
+          platform: android-${{ matrix.abi }}-${{ env.CONFIG }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: ./.github/actions/ccache-restore
         with:
-          key: android-${{ matrix.abi }}-${{ matrix.config }}
+          key: android-${{ matrix.abi }}-${{ env.CONFIG }}
           dir: /home/runner/.cache/kodi-e2e-ccache
 
       # --disable-debug selects the Release build type in the generated
@@ -120,7 +132,7 @@ jobs:
             --with-sdk-path="${ANDROID_SDK_ROOT}" \
             --with-tarballs="${DEPENDS_PREFIX}/xbmc-tarballs" \
             --prefix="${DEPENDS_PREFIX}" \
-            ${{ matrix.config == 'release' && '--disable-debug' || '' }}
+            ${{ env.CONFIG == 'release' && '--disable-debug' || '' }}
           make -j"$(nproc)"
 
       # Installed into the depends prefix, from where the APK packaging copies
@@ -140,8 +152,8 @@ jobs:
       - name: Package APK
         run: |
           make -C build apk
-          test -f "kodiapp-${{ matrix.abi }}-${{ matrix.config }}.apk" || {
-            echo "::error::kodiapp-${{ matrix.abi }}-${{ matrix.config }}.apk not found after 'make apk'"; exit 1; }
+          test -f "kodiapp-${{ matrix.abi }}-${CONFIG}.apk" || {
+            echo "::error::kodiapp-${{ matrix.abi }}-${CONFIG}.apk not found after 'make apk'"; exit 1; }
 
       - uses: ./.github/actions/upload-build-logs
         if: always()
@@ -151,19 +163,19 @@ jobs:
       - uses: ./.github/actions/ccache-save
         if: '!cancelled()'
         with:
-          key: android-${{ matrix.abi }}-${{ matrix.config }}
+          key: android-${{ matrix.abi }}-${{ env.CONFIG }}
           save: ${{ github.event_name != 'pull_request' }}
 
       - uses: ./.github/actions/depends-cache-save
         if: '!cancelled() && steps.depends.outcome == ''success'' && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
         with:
-          platform: android-${{ matrix.abi }}-${{ matrix.config }}
+          platform: android-${{ matrix.abi }}-${{ env.CONFIG }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: actions/upload-artifact@v7
         with:
           name: kodi-android-${{ matrix.abi }}
-          path: kodiapp-${{ matrix.abi }}-${{ matrix.config }}.apk
+          path: kodiapp-${{ matrix.abi }}-${{ env.CONFIG }}.apk
           retention-days: 7
 
   e2e:
@@ -174,7 +186,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
-      APK: kodiapp-x86_64-debug.apk
+      # The x86_64 leg builds debug unless the caller asked for Release.
+      APK: kodiapp-x86_64-${{ inputs.configuration == 'Release' && 'release' || 'debug' }}.apk
     steps:
       - uses: actions/checkout@v7
 

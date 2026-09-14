@@ -8,7 +8,7 @@ name: E2E (Windows)
 # leg's staged application directory feeds the E2E run below through the same
 # desktop launcher as macOS/Linux (kodi.exe supports -p/--portable).
 #
-# BuildSetup.bat hardcodes the Visual Studio generator and its Release\ layout,
+# BuildSetup.bat hardcodes the Visual Studio generator and its <config>\ layout,
 # so ccache is not used here; the dependency downloads are cached instead.
 
 # Called from ci.yml, which owns the triggers, path filters, the draft/label
@@ -16,6 +16,10 @@ name: E2E (Windows)
 on:
   workflow_call:
     inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
       addons:
         description: Space-separated binary add-on ids or patterns to build and bundle.
         type: string
@@ -57,6 +61,15 @@ jobs:
             tests: false
     steps:
       - uses: actions/checkout@v7
+
+      # Release, as Jenkins' WIN-* jobs, unless the caller asks for Debug or the
+      # run has debug logging enabled. BuildSetup.bat and run-tests.bat read
+      # the buildconfig variable.
+      - name: Select configuration
+        shell: bash
+        env:
+          CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || 'Release') }}
+        run: echo "buildconfig=${CONFIGURATION}" >> "$GITHUB_ENV"
 
       # project/BuildDependencies/scripts/*.list pins the package versions and
       # tools/buildsteps/windows pins the MSYS2 revision, so the cache only
@@ -107,8 +120,8 @@ jobs:
             echo "::warning::Binary add-ons failed to build: $(tr '\n' ' ' < cmake/addons/.failure)"
           fi
 
-      # Configures with the Visual Studio generator, builds Release, stages the
-      # application under project\Win32BuildSetup\BUILD_WIN32 and creates the
+      # Configures with the Visual Studio generator, builds buildconfig, stages
+      # the application under project\Win32BuildSetup\BUILD_WIN32 and creates the
       # NSIS installer (desktop) or copies the .msix, .appxsym and .cer (UWP).
       # nobinaryaddons: the add-ons were built above. noclean: keep the tree.
       - name: Build Kodi and create the installer

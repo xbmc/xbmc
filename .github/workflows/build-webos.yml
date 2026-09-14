@@ -11,6 +11,10 @@ name: Build (webOS)
 on:
   workflow_call:
     inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
       addons:
         description: Space-separated binary add-on ids or patterns to build and bundle.
         type: string
@@ -34,6 +38,14 @@ jobs:
     timeout-minutes: 240
     steps:
       - uses: actions/checkout@v7
+
+      # Release, as tools/buildsteps/defaultenv selects for webOS on Jenkins,
+      # unless the caller asks for Debug or the run has debug logging enabled
+      # (ACTIONS_STEP_DEBUG, "Re-run with debug logging").
+      - name: Select configuration
+        env:
+          CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || 'Release') }}
+        run: echo "CONFIGURATION=${CONFIGURATION}" >> "$GITHUB_ENV"
 
       # tools/depends builds its own autotools, cmake, meson, ninja, nasm,
       # gettext and python3; only the bootstrap tools are needed from the host.
@@ -83,16 +95,16 @@ jobs:
       - uses: ./.github/actions/depends-cache-restore
         id: depends-cache
         with:
-          platform: webos-${{ runner.arch }}
+          platform: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: ./.github/actions/ccache-restore
         with:
-          key: webos-${{ runner.arch }}
+          key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
           dir: /home/runner/.cache/kodi-e2e-ccache
 
-      # --disable-debug: Release, as tools/buildsteps/defaultenv and the Jenkins
-      # pipeline select for webOS.
+      # --disable-debug selects the Release build type in the generated
+      # toolchain, as tools/buildsteps/defaultenv does for Configuration=Release.
       - name: Configure and build dependencies
         id: depends
         working-directory: tools/depends
@@ -102,7 +114,7 @@ jobs:
             --with-toolchain="${TOOLCHAIN_DIR}" \
             --with-tarballs="${DEPENDS_PREFIX}/xbmc-tarballs" \
             --prefix="${DEPENDS_PREFIX}" \
-            --disable-debug
+            ${{ env.CONFIGURATION == 'Release' && '--disable-debug' || '' }}
           make -j"$(nproc)"
 
       # Installed into the depends prefix's addons/ directory (the webos rule in
@@ -112,13 +124,14 @@ jobs:
           addons: ${{ inputs.addons }}
 
       - name: Generate Kodi build system
-        run: make -C tools/depends/target/cmakebuildsys
+        run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}"
 
       - name: Build Kodi
         run: make -j"$(nproc)" -C build
 
       # Stages the app, verifies its dynamic dependencies against the toolchain
-      # sysroot, strips, and runs ares-package (cmake/scripts/webos/Install.cmake).
+      # sysroot, strips (Release only), and runs ares-package
+      # (cmake/scripts/webos/Install.cmake).
       - name: Package .ipk
         run: |
           make -C build ipk
@@ -132,13 +145,13 @@ jobs:
       - uses: ./.github/actions/ccache-save
         if: '!cancelled()'
         with:
-          key: webos-${{ runner.arch }}
+          key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
           save: ${{ github.event_name != 'pull_request' }}
 
       - uses: ./.github/actions/depends-cache-save
         if: '!cancelled() && steps.depends.outcome == ''success'' && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
         with:
-          platform: webos-${{ runner.arch }}
+          platform: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
           prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: actions/upload-artifact@v7

@@ -22,6 +22,10 @@ name: E2E (Linux)
 on:
   workflow_call:
     inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
       addons:
         description: Space-separated binary add-on ids or patterns to build and bundle.
         type: string
@@ -34,6 +38,9 @@ jobs:
   build:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 180
+    # Debug, as Jenkins' Linux jobs, unless the caller asks for Release.
+    env:
+      CONFIGURATION: ${{ inputs.configuration || 'Debug' }}
     strategy:
       fail-fast: false
       matrix:
@@ -154,7 +161,7 @@ jobs:
 
       - uses: ./.github/actions/ccache-restore
         with:
-          key: linux-${{ matrix.platform }}-${{ runner.arch }}
+          key: linux-${{ matrix.platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           dir: /home/runner/.cache/kodi-e2e-ccache
 
       # Without KODI_DEPENDSBUILD, FindFFMPEG fails hard instead of falling back
@@ -163,7 +170,7 @@ jobs:
       # install to.
       - name: Configure Kodi
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr \
+          cmake -S . -B build -DCMAKE_BUILD_TYPE="${CONFIGURATION}" -DCMAKE_INSTALL_PREFIX=/usr \
             -DCPACK_GENERATOR=DEB ${{ matrix.cmake_flags }}
 
       - name: Build Kodi
@@ -201,7 +208,7 @@ jobs:
       - uses: ./.github/actions/ccache-save
         if: '!cancelled()'
         with:
-          key: linux-${{ matrix.platform }}-${{ runner.arch }}
+          key: linux-${{ matrix.platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           save: ${{ github.event_name != 'pull_request' }}
 
       # Run from the build tree: the reference data the tests read
