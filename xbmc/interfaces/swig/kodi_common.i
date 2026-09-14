@@ -65,6 +65,23 @@
   PyModule_AddStringConstant(m, "__platform__", "ALL");
 %}
 
+/* 7e. shared types must take process-wide method-cache tags (xbmc/xbmc#29309) */
+%{
+[[maybe_unused]] static void KodiSwig_freeze(PyTypeObject* t)
+{
+#if PY_VERSION_HEX >= 0x030A0000 /* flag is 3.10+ */
+  for (; t && !(t->tp_flags & Py_TPFLAGS_IMMUTABLETYPE); t = t->tp_base)
+  {
+    t->tp_flags |= Py_TPFLAGS_IMMUTABLETYPE;
+    PyType_Modified(t);
+    KodiSwig_freeze(Py_TYPE(t));
+  }
+#else
+  (void)t;
+#endif
+}
+%}
+
 /* 7. every addon call site uses keyword arguments */
 %feature("kwargs");
 
