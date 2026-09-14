@@ -440,8 +440,9 @@ This branch adds `ci.yml` as the single entry point for pull requests and master
 which calls `e2e-linux.yml` (GBM, Wayland and X11, five legs), `apple.yml` (macOS, the
 iOS/tvOS Simulator and the iOS/tvOS device builds, five legs), `e2e-android.yml`,
 `e2e-windows.yml`, `build-webos.yml`, `lint.yml`, `static-analysis.yml` and the reusable
-`build-addon.yml`; plus `coverity.yml` and `coverage.yml` on their own schedules, shared
-composite actions for ccache, `tools/depends` caching, binary add-ons and unit test
+`build-addon.yml`; plus `coverity.yml` and `coverage.yml` on their own schedules,
+`merge-conflicts.yml` on master pushes and pull request updates, shared composite
+actions for ccache, `tools/depends` caching, binary add-ons and unit test
 reports, the pytest E2E driver under `tools/e2e/`, and `docs/E2E-TESTING.md`. The
 platforms that share almost all of their build/test steps are matrix legs of one
 workflow file rather than separate files, so a step common to several legs (a cache
@@ -479,7 +480,7 @@ key, an environment fix) is fixed once.
 | Retry infrastructure failures | Not needed: the dependency downloads retry inside CMake and the emulator action retries its boot | |
 | Slack notification | No | Add to scheduled workflows on failure |
 | Kore | No | Trivial Gradle workflow in `xbmc/Kore` |
-| Conflict checker | No | `actions/labeler`-style job on `push` to master, or GitHub's own conflict indicator |
+| Conflict checker | Yes: `merge-conflicts.yml` labels `Rebase needed` and comments once per conflict, as `GitHub-ConflictChecker` did | Also runs when a pull request is updated, which Jenkins did not; the comment cannot @mention the author |
 
 ### 3.2 What this PR adds that Jenkins never had
 
