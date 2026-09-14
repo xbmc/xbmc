@@ -153,10 +153,16 @@ KODI_APP=/path/to/Kodi.app uv run pytest scenarios -v
 
 ## CI
 
-Six workflows under `.github/workflows/e2e-*.yml` run this suite; with their
-matrices a full run tests ten platform legs. Two more workflows,
-`build-apple-device.yml` and `build-webos.yml`, build platforms that have no
-emulator to test on. Each `e2e-*.yml` workflow has the same two jobs:
+`.github/workflows/ci.yml` is the single entry point for pull requests and
+`master` pushes: it owns the triggers, the documentation/Markdown path filters
+and the draft/label gate, then calls one reusable workflow per platform or
+check via `workflow_call`. `e2e-linux.yml` and `apple.yml` cover every platform
+this suite runs on, each with a matrix spanning several legs (ten across the
+two files) so the platforms that share almost all of their steps - GBM,
+Wayland and X11 on Linux; macOS, the iOS/tvOS Simulator and the iOS/tvOS
+device builds on Apple - live in one file instead of being copy-pasted
+across several. `build-webos.yml` builds a platform with no emulator to test
+on. Every `build` job in these workflows has the same shape:
 
 - `build` compiles Kodi from source, builds the `peripheral.joystick` binary add-on
   against the same tree (a failing add-on is reported as a warning, as on Jenkins),
@@ -200,25 +206,41 @@ Triggers and cache policy:
 
 Per platform:
 
-- `e2e-macos.yml` — builds `Kodi.app` via `tools/depends` on `macos-14` (Apple
-  Silicon), runs the suite against the bundle and packages the `.dmg`. On runs that
+- `e2e-linux.yml` — one `build` job matrixed over five legs (`gbm`/`wayland` on
+  `ubuntu-24.04` and `ubuntu-24.04-arm`, plus `x11` on `ubuntu-22.04`), each with
+  its own package list and CMake flags but otherwise identical steps, and a
+  matching five-leg `e2e` job. GBM and Wayland build `APP_RENDER_SYSTEM=gles`
+  against Ubuntu 24.04's own packages the way `docs/README.Linux.md` documents
+  rather than `tools/depends`, with only ffmpeg, TagLib and SWIG built
+  internally (24.04's are too old for Kodi's minimum, for Matroska tag support
+  and for the Python bindings respectively). GBM gets its display from the
+  `vkms` virtual KMS driver (with a newer libdrm built on the test runner,
+  since 24.04's cannot see vkms), Wayland from a headless Weston; both render
+  through Mesa's llvmpipe, exercising the DRM/GBM/EGL/GLES pipeline on a
+  GPU-less runner. X11 builds `APP_RENDER_SYSTEM=gl` for desktop OpenGL/GLX
+  instead, on Ubuntu 22.04 (see the workflow header for why), under Xvfb, with
+  ffmpeg, TagLib, fmt, spdlog, exiv2, flatbuffers, dav1d and SWIG all built
+  internally since 22.04 is old enough to need it. Every leg tests the
+  installed `.deb`, not the build tree.
+- `apple.yml` — one `build` job matrixed over five legs (macOS; the iOS and
+  tvOS Simulator ABIs, `--with-platform=ios-simulator`/`tvos-simulator`; the
+  iOS and tvOS device ABIs, `--with-platform=ios`/`tvos`) sharing the
+  `tools/depends` configure/build and add-on steps, and a three-leg `e2e` job
+  (macOS and the two Simulator legs; the device legs have no Simulator or
+  hardware to run tools/e2e against). macOS builds through the generated
+  Makefiles on `macos-14` (Apple Silicon) and packages a `.dmg`; on runs that
   can see secrets (pushes, dispatches) the app and image are signed with the
   Developer ID certificate in `MACOS_CERTIFICATE_P12` / `MACOS_CERTIFICATE_PASSWORD`
   and notarised with the App Store Connect key in `MACOS_NOTARYTOOL_KEY`,
-  `MACOS_NOTARYTOOL_KEY_ID` and `MACOS_NOTARYTOOL_ISSUER`; PR builds are unsigned.
-- `e2e-linux.yml` — GBM and Wayland on x86_64 and arm64 runners (a four-leg matrix),
-  all `APP_RENDER_SYSTEM=gles`, built against Ubuntu 24.04's own packages the way
-  `docs/README.Linux.md` documents rather than `tools/depends`; only ffmpeg and
-  TagLib are built internally, since Ubuntu's are too old for Kodi's minimum and for
-  Matroska tag support respectively.
-  GBM gets its display from the `vkms` virtual KMS driver (with a newer libdrm built
-  on the test runner, since 24.04's cannot see vkms), Wayland from a headless Weston;
-  both render through Mesa's llvmpipe, exercising the DRM/GBM/EGL/GLES pipeline on a
-  GPU-less runner. Both legs test the installed `.deb`, not the build tree.
-- `e2e-linux-x11.yml` — the X11 backend built with `APP_RENDER_SYSTEM=gl` for desktop
-  OpenGL/GLX, which is why it is a separate workflow rather than a third matrix leg.
-  Runs on Ubuntu 22.04 (see the workflow header for why) under Xvfb, against the
-  installed `.deb` like the other Linux legs.
+  `MACOS_NOTARYTOOL_KEY_ID` and `MACOS_NOTARYTOOL_ISSUER`; PR builds are
+  unsigned. iOS and tvOS build through the generated Xcode project instead.
+  The Simulator legs boot a device via `xcrun simctl` and run the suite over a
+  direct JSON-RPC connection; they are far less exercised than the device
+  builds, so treat a build failure there as plausibly a build-system gap. The
+  device legs need no signing identity (`CODE_SIGNING_ALLOWED=NO`, since Kodi
+  ships no provisioning profile), run the `ipa` target and upload the unsigned
+  `.ipa` plus the `Kodi.app.dSYM` bundle, matching what Jenkins' `IOS-ARM64`
+  and `TVOS` jobs upload.
 - `e2e-android.yml` — cross-builds the x86_64 debug APK via `tools/depends`, boots a
   hardware-accelerated emulator (`reactivecircus/android-emulator-runner`) and runs
   the suite over an adb-forwarded JSON-RPC connection. Logs and screenshots are pulled
@@ -227,12 +249,6 @@ Per platform:
   they are signed with the release keystore from the `ANDROID_KEYSTORE` (base64),
   `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` secrets
   when the run can see them, and with a throwaway debug key otherwise.
-- `e2e-apple-simulator.yml` — cross-builds for the iOS and tvOS Simulator ABIs (a
-  two-leg matrix, `--with-platform=ios-simulator`/`tvos-simulator`, then
-  `xcodebuild`), creates and boots a Simulator device via `xcrun simctl`, and runs
-  the suite over a direct JSON-RPC connection. The Simulator ABIs are far less
-  exercised than the device ones, so treat a build failure here as plausibly a
-  build-system gap.
 - `e2e-windows.yml` — x64, Win32, ARM64 and UWP x64 (a four-leg matrix) built with
   the same `tools/buildsteps/windows/<arch>/*.bat` scripts Jenkins uses: prebuilt
   dependency packages from `mirrors.kodi.tv` plus MSYS2, `make-addons.bat` for the
@@ -241,9 +257,6 @@ Per platform:
   `.msix`. `BuildSetup.bat` hardcodes the Visual Studio generator, which is why this
   workflow has no ccache. Unit tests run on x64 and Win32; the x64 application
   directory feeds the E2E run.
-- `build-apple-device.yml` — cross-builds the iOS and tvOS device ABIs via
-  `tools/depends`, runs the `ipa` target with `CODE_SIGNING_ALLOWED=NO` and uploads
-  the unsigned `.ipa` and the `Kodi.app.dSYM` bundle.
 - `build-webos.yml` — cross-builds for LG webOS with the `openlgtv/buildroot-nc4`
   toolchain (downloaded from its GitHub release and cached), builds the add-on into
   the depends prefix and packages the `.ipk` with `ares-package` from

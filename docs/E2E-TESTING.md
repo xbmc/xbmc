@@ -71,17 +71,19 @@ flowchart TB
 
 ## CI
 
-Six workflows, each with a `build` job and an `e2e` job, cover ten platform legs:
-macOS, Linux GBM and Wayland on x86_64 and arm64, Linux X11, Windows, Android
-(emulator), iOS (Simulator) and tvOS (Simulator). `build` compiles Kodi (via
-`tools/depends` where the platform needs it, against distro packages on Linux, with
-prebuilt packages on Windows), builds the `peripheral.joystick` binary add-on, runs
-the unit tests where the platform has them, and uploads what the test job needs: the
-Debian packages CPack produces on Linux, the app bundle, the staged Windows
-application directory, the APK or the Simulator app elsewhere. The same `build` jobs
-also produce the distributable packages Jenkins uploads today (`.dmg`, NSIS installer,
-`.msix`, release APKs), and two build-only workflows add the iOS/tvOS device `.ipa`
-with dSYM and the webOS `.ipk`. `e2e` downloads it onto a fresh runner, installs the
+`ci.yml` calls four workflows with a `build` job and an `e2e` job, covering ten
+platform legs between them: `e2e-linux.yml` (Linux GBM and Wayland on x86_64 and
+arm64, plus X11 - five legs), `apple.yml` (macOS plus the iOS and tvOS Simulator -
+three of its five legs run e2e, the iOS/tvOS device legs are build-only), `e2e-windows.yml`
+and `e2e-android.yml`. `build` compiles Kodi (via `tools/depends` where the platform
+needs it, against distro packages on Linux, with prebuilt packages on Windows), builds
+the `peripheral.joystick` binary add-on, runs the unit tests where the platform has
+them, and uploads what the test job needs: the Debian packages CPack produces on
+Linux, the app bundle, the staged Windows application directory, the APK or the
+Simulator app elsewhere. The same `build` jobs also produce the distributable packages
+Jenkins uploads today (`.dmg`, NSIS installer, `.msix`, release APKs), and the
+`apple.yml` device legs plus `build-webos.yml` add the iOS/tvOS device `.ipa` with
+dSYM and the webOS `.ipk`. `e2e` downloads it onto a fresh runner, installs the
 packages where there are any, provides a display (vkms, Weston, Xvfb), an emulator or
 a Simulator, and runs the suite. On Linux the binary under test is therefore the
 installed one, with its profile passed through `KODI_DATA`. The shared steps are composite

@@ -437,12 +437,15 @@ unchanged under `container:`.
 ## 3. What this PR covers and what is missing
 
 This branch adds `ci.yml` as the single entry point for pull requests and master pushes,
-which calls six E2E workflows (`e2e-linux.yml`, `e2e-linux-x11.yml`, `e2e-macos.yml`,
-`e2e-windows.yml`, `e2e-android.yml`, `e2e-apple-simulator.yml`), two build-only workflows
-(`build-apple-device.yml`, `build-webos.yml`), `lint.yml`, `static-analysis.yml` and the
-reusable `build-addon.yml`; plus `coverity.yml` and `coverage.yml` on their own schedules,
-shared composite actions for ccache, `tools/depends` caching, binary add-ons and unit test
-reports, the pytest E2E driver under `tools/e2e/`, and `docs/E2E-TESTING.md`.
+which calls `e2e-linux.yml` (GBM, Wayland and X11, five legs), `apple.yml` (macOS, the
+iOS/tvOS Simulator and the iOS/tvOS device builds, five legs), `e2e-android.yml`,
+`e2e-windows.yml`, `build-webos.yml`, `lint.yml`, `static-analysis.yml` and the reusable
+`build-addon.yml`; plus `coverity.yml` and `coverage.yml` on their own schedules, shared
+composite actions for ccache, `tools/depends` caching, binary add-ons and unit test
+reports, the pytest E2E driver under `tools/e2e/`, and `docs/E2E-TESTING.md`. The
+platforms that share almost all of their build/test steps are matrix legs of one
+workflow file rather than separate files, so a step common to several legs (a cache
+key, an environment fix) is fixed once.
 
 ### 3.1 Coverage against Jenkins
 
@@ -453,7 +456,7 @@ reports, the pytest E2E driver under `tools/e2e/`, and `docs/E2E-TESTING.md`.
 | Android arm64, arm, x86 | Yes: release APKs for arm64-v8a, armeabi-v7a and x86 plus the x86_64 debug APK for the emulator; release keystore from secrets on non-PR runs | AAB |
 | webOS | Yes: `build-webos.yml`, buildroot-nc4 toolchain, `.ipk` | No device or emulator test |
 | macOS arm64 | Yes: `tools/depends`, Kodi.app, unit tests, `.dmg`, signing and notarisation from secrets on non-PR runs | No Intel build (dropped: GitHub has no Intel macOS runners) |
-| iOS / tvOS device | Yes: `build-apple-device.yml`, unsigned `.ipa` and dSYM artifacts; Simulator ABIs for E2E | No `.deb` (dropped: only needed for the jailbreak apt repository) |
+| iOS / tvOS device | Yes: `apple.yml`'s device legs, unsigned `.ipa` and dSYM artifacts; Simulator legs of the same workflow for E2E | No `.deb` (dropped: only needed for the jailbreak apt repository) |
 | Windows x64 | Yes: x64, Win32, ARM64 and UWP x64 through `BuildSetup.bat`, NSIS installer and `.pdb`, `.msix`, unit tests on x64 and Win32 | Visual Studio generator, so no ccache; a CPack NSIS port would need Windows `install()` rules first |
 | wasm | No | Low priority; Jenkins job produces nothing |
 | FreeBSD | No | Disabled in Jenkins too |

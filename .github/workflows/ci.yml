@@ -81,21 +81,11 @@ jobs:
     if: needs.gate.outputs.run == 'true' && github.event_name == 'pull_request'
     uses: ./.github/workflows/lint.yml
 
+  # GBM, Wayland (x86_64 and arm64) and X11.
   linux:
     needs: gate
     if: needs.gate.outputs.run == 'true'
     uses: ./.github/workflows/e2e-linux.yml
-
-  linux-x11:
-    needs: gate
-    if: needs.gate.outputs.run == 'true'
-    uses: ./.github/workflows/e2e-linux-x11.yml
-
-  macos:
-    needs: gate
-    if: needs.gate.outputs.run == 'true'
-    uses: ./.github/workflows/e2e-macos.yml
-    secrets: inherit
 
   windows:
     needs: gate
@@ -108,15 +98,13 @@ jobs:
     uses: ./.github/workflows/e2e-android.yml
     secrets: inherit
 
-  apple-simulator:
+  # macOS (build, unit tests, e2e, signed .dmg), iOS/tvOS Simulator (build,
+  # e2e) and iOS/tvOS device (build, unsigned .ipa + dSYM, no e2e).
+  apple:
     needs: gate
     if: needs.gate.outputs.run == 'true'
-    uses: ./.github/workflows/e2e-apple-simulator.yml
-
-  apple-device:
-    needs: gate
-    if: needs.gate.outputs.run == 'true'
-    uses: ./.github/workflows/build-apple-device.yml
+    uses: ./.github/workflows/apple.yml
+    secrets: inherit
 
   webos:
     needs: gate
