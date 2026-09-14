@@ -2,7 +2,7 @@ name: Build (webOS)
 
 # Cross-builds Kodi for LG webOS via tools/depends against the buildroot
 # toolchain docs/README.webOS.md recommends (openlgtv/buildroot-nc4), with
-# peripheral.joystick bundled, and packages the .ipk with LG's ares CLI, as
+# peripheral.joystick bundled, and packages the .ipk with ares-package, as
 # Jenkins' webos-docker job does. Build-only: there is no webOS emulator to
 # run tools/e2e against.
 
@@ -21,6 +21,8 @@ env:
   TOOLCHAIN_RELEASE: webos-a38c582
   TOOLCHAIN_ASSET: arm-webos-linux-gnueabi_sdk-buildroot-x86_64.tar.gz
   TOOLCHAIN_DIR: /home/runner/webos-toolchain/arm-webos-linux-gnueabi_sdk-buildroot
+  # Release of https://github.com/webosbrew/ares-cli-rs.
+  ARES_CLI_VERSION: 0.7.0
 
 jobs:
   build:
@@ -29,18 +31,25 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # tools/depends builds its own autotools, cmake, meson, ninja, nasm,
+      # gettext and python3; only the bootstrap tools are needed from the host.
       - name: Install build tools and libraries
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            autoconf automake autopoint bison build-essential ccache curl flex gawk gettext gperf \
-            libcurl4-openssl-dev libtool meson nasm ninja-build pkg-config python3 unzip zip zlib1g-dev
+            bison build-essential ccache curl flex gawk \
+            libcurl4-openssl-dev libtool pkg-config unzip
 
       # ares-package, which the ipk target runs (cmake/scripts/webos/Install.cmake).
-      - name: Install webOS CLI
+      # webosbrew's Rust rewrite of LG's CLI is a drop-in replacement and needs
+      # neither Node.js nor npm.
+      - name: Install ares-package
         run: |
-          sudo npm install -g @webos-tools/cli
-          ares-package --version
+          deb="ares-package_${ARES_CLI_VERSION}-1_$(dpkg --print-architecture).deb"
+          curl -fsSL --retry 5 -o "${RUNNER_TEMP}/${deb}" \
+            "https://github.com/webosbrew/ares-cli-rs/releases/download/v${ARES_CLI_VERSION}/${deb}"
+          sudo apt-get install -y "${RUNNER_TEMP}/${deb}"
+          ares-package --help
 
       - name: Restore toolchain
         id: toolchain-cache
