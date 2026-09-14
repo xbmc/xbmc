@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/DisplayInfo.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -280,29 +281,17 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
   return true;
 }
 
-bool ShouldConvertPgsPaletteToSdr(bool isHDROverlay, float& sdrWhiteNits)
+bool ShouldConvertPQPaletteToSRGB(bool isHDROverlay)
 {
   if (!isHDROverlay)
     return false;
 
-  // Platforms with real HDR GUI compositing already render HDR overlays
-  // correctly; converting here would double-process them.
-  if (CServiceBroker::GetWinSystem()->IsHdrComposite())
-    return false;
-
-  // Only convert where the renderer signals PQ or Dolby Vision output.
-  if (!CServiceBroker::GetWinSystem()->GetGfxContext().IsTransferPQ())
-    return false;
-
-  // Android devices vary in how they map the SDR GUI layer's brightness
-  // against HDR video. Keep this adjustable until the platform reports
-  // its own value.
-  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
-  const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
-  const int brightness =
-      settings ? settings->GetInt(CSettings::SETTING_VIDEOPLAYER_HDRPGSBRIGHTNESS) : 50;
-  sdrWhiteNits = 1050.0f - static_cast<float>(brightness) * 10.0f;
-  return true;
+  // Convert to sRGB unless the overlay is going to a PQ destination: the HDR
+  // composite, or a GUI layer that is output as an HDR signal.
+  const CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
+  const bool destinationIsPQ =
+      winSystem->IsHdrComposite() || winSystem->GetEotf() != KODI::UTILS::Eotf::TRADITIONAL_SDR;
+  return !destinationIsPQ;
 }
 
 namespace
@@ -330,7 +319,7 @@ float LinearToSrgbComponent(float c)
 }
 } // namespace
 
-void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits)
+void ConvertPQPaletteToSRGB(std::vector<uint32_t>& palette)
 {
   // Linear BT.2020 -> linear BT.709/sRGB primaries, D65 both ends;
   // numerically confirmed to map (1,1,1) to (1,1,1).
@@ -340,7 +329,7 @@ void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits)
       {-0.018150763f, -0.100578897f, 1.118729660f},
   };
 
-  const float whiteScale = 10000.0f / std::max(sdrWhiteNits, 1.0f);
+  constexpr float whiteScale = 10000.0f / 203.0f; // ITU-R BT.2408 reference white
 
   for (uint32_t& entry : palette)
   {
@@ -358,19 +347,12 @@ void ConvertPgsPaletteToSdr(std::vector<uint32_t>& palette, float sdrWhiteNits)
                        BT2020_TO_709[i][2] * linearPQ[2],
                    0.0f);
 
-    // Soft-compress out-of-range highlights instead of hard-normalizing.
-    // The exponent trades brightness against saturation:
-    // 0.0 = exact divide-by-max normalization (dimmer, hue-preserving)
-    // 1.0 = no scaling, direct per-channel clipping (brighter, washed out)
-    // 0.5 = middle ground used here.
+    // A colour brighter than reference white is scaled down until its
+    // brightest channel is white, so its hue is kept.
     const float maxChannel = std::max({linear709[0], linear709[1], linear709[2]});
     if (maxChannel > 1.0f)
-    {
-      constexpr float kHighlightKneeExponent = 0.5f;
-      const float scale = std::pow(maxChannel, kHighlightKneeExponent) / maxChannel;
       for (float& c : linear709)
-        c *= scale;
-    }
+        c /= maxChannel;
 
     const int r = static_cast<int>(LinearToSrgbComponent(linear709[0]) * 255.0f + 0.5f);
     const int g = static_cast<int>(LinearToSrgbComponent(linear709[1]) * 255.0f + 0.5f);

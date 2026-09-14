@@ -163,17 +163,12 @@ COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSour
   }
   else
   {
-    // Convert the HDR PGS palette to SDR before upload where
-    // the windowing system does not already composite HDR GUI correctly.
-    float sdrWhiteNits = 0.0f;
-    m_pgsConvertedToSdr = OVERLAY::ShouldConvertPgsPaletteToSdr(o.m_isHDROverlay, sdrWhiteNits);
-
     std::vector<uint32_t> convertedPalette;
     const std::vector<uint32_t>* paletteOverride = nullptr;
-    if (m_pgsConvertedToSdr)
+    if (OVERLAY::ShouldConvertPQPaletteToSRGB(o.m_isHDROverlay))
     {
       convertedPalette = o.palette;
-      OVERLAY::ConvertPgsPaletteToSdr(convertedPalette, sdrWhiteNits);
+      OVERLAY::ConvertPQPaletteToSRGB(convertedPalette);
       paletteOverride = &convertedPalette;
     }
 
@@ -497,11 +492,7 @@ void COverlayTextureGLES::Render(SRenderState& state)
 
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-
-  // Converted PGS textures are already SDR and must not receive
-  // the transfer-PQ GUI boost.
-  renderSystem->EnableGUIShader(m_pgsConvertedToSdr ? ShaderMethodGLES::SM_TEXTURE_NOBLEND_HDR_PGS
-                                                    : ShaderMethodGLES::SM_TEXTURE_NOBLEND);
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_NOBLEND);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
