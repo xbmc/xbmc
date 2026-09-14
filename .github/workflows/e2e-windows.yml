@@ -11,11 +11,10 @@ name: E2E (Windows)
 # BuildSetup.bat hardcodes the Visual Studio generator and its Release\ layout,
 # so ccache is not used here; the dependency downloads are cached instead.
 
-# Called from ci.yml, which owns the triggers, path filters and the draft/label
-# gate; workflow_dispatch is kept for manual runs.
+# Called from ci.yml, which owns the triggers, path filters, the draft/label
+# gate and the manual-run inputs.
 on:
   workflow_call:
-  workflow_dispatch:
 
 permissions:
   contents: read

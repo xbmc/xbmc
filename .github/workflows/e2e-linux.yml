@@ -17,11 +17,10 @@ name: E2E (Linux)
 # leg should move to 24.04 and drop most of those flags. Every leg also builds
 # peripheral.joystick against the same packages.
 
-# Called from ci.yml, which owns the triggers, path filters and the draft/label
-# gate; workflow_dispatch is kept for manual runs.
+# Called from ci.yml, which owns the triggers, path filters, the draft/label
+# gate and the manual-run inputs.
 on:
   workflow_call:
-  workflow_dispatch:
 
 permissions:
   contents: read

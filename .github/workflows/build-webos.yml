@@ -6,11 +6,10 @@ name: Build (webOS)
 # Jenkins' webos-docker job does. Build-only: there is no webOS emulator to
 # run tools/e2e against.
 
-# Called from ci.yml, which owns the triggers, path filters and the draft/label
-# gate; workflow_dispatch is kept for manual runs.
+# Called from ci.yml, which owns the triggers, path filters, the draft/label
+# gate and the manual-run inputs.
 on:
   workflow_call:
-  workflow_dispatch:
 
 permissions:
   contents: read

@@ -1,13 +1,19 @@
 name: CI
 
-# Single entry point for pull requests and master pushes. Owns the triggers,
-# the path filters and the draft/label gate, then calls one reusable workflow
-# per platform or check. The platform workflows keep workflow_dispatch for
-# manual runs. Jobs skipped by the gate count as passed for branch protection,
-# so a documentation-only PR does not block on required checks.
+# Single entry point for pull requests, master pushes and manual runs. Owns the
+# triggers, the path filters, the draft/label gate and the workflow_dispatch
+# inputs, then calls one reusable workflow per platform or check. Jobs skipped
+# by the gate count as passed for branch protection, so a documentation-only PR
+# does not block on required checks.
 
 on:
   workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build
+        type: choice
+        options: [all, linux, windows, android, apple, webos]
+        default: all
   push:
     branches: [master]
     paths-ignore:
@@ -36,21 +42,24 @@ concurrency:
 
 jobs:
   # Drafts wait for ready_for_review; the No-Jenkins / No Jenkins / Stale labels
-  # skip everything, as they did on Jenkins. Also decides whether the add-on
-  # build system changed, which is the only case worth exercising the reusable
-  # add-on workflow from this repository.
+  # skip everything, as they did on Jenkins. Resolves the workflow_dispatch
+  # inputs, which are empty on push and pull_request events, and decides
+  # whether the add-on build system changed, which is the only case worth
+  # exercising the reusable add-on workflow from this repository.
   gate:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       run: ${{ steps.decide.outputs.run }}
-      addons: ${{ steps.filter.outputs.addons }}
+      platform: ${{ steps.decide.outputs.platform }}
+      addons_changed: ${{ steps.filter.outputs.addons }}
     steps:
       - id: decide
         env:
           EVENT: ${{ github.event_name }}
           DRAFT: ${{ github.event.pull_request.draft }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, '|') }}
+          PLATFORM: ${{ inputs.platform }}
         run: |
           run=true
           if [ "${EVENT}" = "pull_request" ]; then
@@ -59,8 +68,11 @@ jobs:
               *"|No-Jenkins|"*|*"|No Jenkins|"*|*"|Stale|"*) run=false ;;
             esac
           fi
-          echo "run=${run}" >> "$GITHUB_OUTPUT"
-          echo "run=${run} (event=${EVENT} draft=${DRAFT} labels=${LABELS})"
+          {
+            echo "run=${run}"
+            echo "platform=${PLATFORM:-all}"
+          } >> "$GITHUB_OUTPUT"
+          echo "run=${run} platform=${PLATFORM:-all} (event=${EVENT} draft=${DRAFT} labels=${LABELS})"
 
       - uses: actions/checkout@v7
         if: steps.decide.outputs.run == 'true'
@@ -84,17 +96,17 @@ jobs:
   # GBM, Wayland (x86_64 and arm64) and X11.
   linux:
     needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","linux"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/e2e-linux.yml
 
   windows:
     needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","windows"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/e2e-windows.yml
 
   android:
     needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","android"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/e2e-android.yml
     secrets: inherit
 
@@ -102,18 +114,20 @@ jobs:
   # e2e) and iOS/tvOS device (build, unsigned .ipa + dSYM, no e2e).
   apple:
     needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","apple"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/apple.yml
     secrets: inherit
 
   webos:
     needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","webos"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/build-webos.yml
 
+  # The checks and the add-on smoke build run on full runs only, not when a
+  # manual run targets one platform.
   static-analysis:
     needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: needs.gate.outputs.run == 'true' && needs.gate.outputs.platform == 'all'
     permissions:
       contents: read
       security-events: write
@@ -123,7 +137,7 @@ jobs:
   # build system or the reusable workflow changed.
   addon:
     needs: gate
-    if: needs.gate.outputs.run == 'true' && needs.gate.outputs.addons == 'true'
+    if: needs.gate.outputs.run == 'true' && needs.gate.outputs.platform == 'all' && needs.gate.outputs.addons_changed == 'true'
     uses: ./.github/workflows/build-addon.yml
     with:
       addon: peripheral.joystick

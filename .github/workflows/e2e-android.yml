@@ -9,11 +9,10 @@ name: E2E (Android emulator)
 # Android has no -p/--portable flag, so tools/e2e/driver/android_launcher.py
 # manages a fixed on-device profile instead of the desktop launcher.
 
-# Called from ci.yml, which owns the triggers, path filters and the draft/label
-# gate; workflow_dispatch is kept for manual runs.
+# Called from ci.yml, which owns the triggers, path filters, the draft/label
+# gate and the manual-run inputs.
 on:
   workflow_call:
-  workflow_dispatch:
 
 permissions:
   contents: read
