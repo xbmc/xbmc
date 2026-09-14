@@ -10,13 +10,16 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
+#include "media/MediaType.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
@@ -418,4 +421,79 @@ std::string FindEditionInName(const std::string& name, const std::vector<std::st
   }
   return match;
 }
+bool CanSaveDiscPlaylist(const CFileItem& item)
+{
+  if (!item.HasVideoInfoTag())
+    return false;
+
+  const auto profileManager{CServiceBroker::GetSettingsComponent()->GetProfileManager()};
+  if (!profileManager->GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
+    return false;
+
+  // The path is not a guide, as an item listed in Videos > Files carries the library's tag
+  // (see CGUIWindowVideoBase::LoadVideoInfo) but keeps its file path
+  const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+  return (tag->m_type == MediaTypeMovie || tag->m_type == MediaTypeEpisode) && tag->m_iDbId > 0 &&
+         tag->m_iFileId > 0;
+}
+
+int SaveDiscPlaylistToLibrary(const CFileItem& item, CVideoDatabase& db)
+{
+  return SaveDiscPlaylistToLibrary(item, item.GetVideoContentType(),
+                                   item.GetVideoInfoTag()->m_iDbId, db);
+}
+
+int SaveDiscPlaylistToLibrary(const CFileItem& item,
+                              VideoDbContentType type,
+                              int mediaId,
+                              CVideoDatabase& db)
+{
+  const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+  const int idFile{db.SetFileForMedia(item.GetDynPath(), type, mediaId,
+                                      CVideoDatabase::FileRecord{.m_idFile = tag->m_iFileId,
+                                                                 .m_playCount = tag->GetPlayCount(),
+                                                                 .m_lastPlayed = tag->m_lastPlayed,
+                                                                 .m_dateAdded = tag->m_dateAdded})};
+  if (idFile <= 0)
+  {
+    CLog::LogF(LOGERROR, "Unable to save playlist {}", CURL::GetRedacted(item.GetDynPath()));
+    return -1;
+  }
+
+  db.SetStreamDetailsForFile(tag->m_streamDetails, item.GetDynPath());
+
+  return idFile;
+}
+
+bool SaveDiscPlaylist(CFileItem& item)
+{
+  CVideoDatabase db;
+  if (!db.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database");
+    return false;
+  }
+
+  db.BeginTransaction();
+  const int idFile{SaveDiscPlaylistToLibrary(item, db)};
+  if (idFile < 0)
+  {
+    db.RollbackTransaction();
+    return false;
+  }
+  if (!db.CommitTransaction())
+  {
+    CLog::LogF(LOGERROR, "Failed to commit playlist {}", CURL::GetRedacted(item.GetDynPath()));
+    db.RollbackTransaction();
+    return false;
+  }
+
+  // Cached library listings still hold the old path, and widgets reload on the announcement
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+  CVideoDatabase::AnnounceUpdate(item.GetVideoInfoTag()->m_type, item.GetVideoInfoTag()->m_iDbId);
+
+  item.GetVideoInfoTag()->m_iFileId = idFile;
+  return true;
+}
+
 } // namespace KODI::VIDEO::UTILS

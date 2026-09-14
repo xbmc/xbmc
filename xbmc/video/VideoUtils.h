@@ -19,6 +19,8 @@
 #include <vector>
 
 class CFileItem;
+class CVideoDatabase;
+enum class VideoDbContentType;
 
 namespace KODI::VIDEO::UTILS
 {
@@ -126,5 +128,42 @@ std::string NormaliseEditionName(const std::string& name);
  \return The matched entry of \p editions, empty if none was recognised
  */
 std::string FindEditionInName(const std::string& name, const std::vector<std::string>& editions);
+
+/*!
+ \brief Whether the playlist chosen for an item can be saved to the library, ie. there is a library
+ record to point at it and the profile is allowed to change it.
+ \return True if a chosen playlist can be saved
+ */
+bool CanSaveDiscPlaylist(const CFileItem& item);
+
+/*!
+ \brief Point the library record of a movie or episode at the disc playlist the item now has,
+ replacing the file it was scanned with. The caller owns the database transaction, so that this can
+ be rolled back along with any related change.
+ \param item [in] The library item, already pointed at the chosen playlist
+ \param db [in] An open video database, within a transaction
+ \return The file id that was updated, -1 on failure
+ */
+int SaveDiscPlaylistToLibrary(const CFileItem& item, CVideoDatabase& db);
+
+/*!
+ \brief As above, for an item whose library record is not the one in its tag, eg. a video version
+ whose tag holds the version's file id rather than the movie it belongs to.
+ \param item [in] The item, already pointed at the chosen playlist, whose file is replaced
+ \param db [in] An open video database, within a transaction
+ \return The file id that was updated, -1 on failure
+ */
+int SaveDiscPlaylistToLibrary(const CFileItem& item,
+                              VideoDbContentType type,
+                              int mediaId,
+                              CVideoDatabase& db);
+
+/*!
+ \brief Point the library record at the disc playlist the item now has, in its own transaction.
+ \param item [in,out] The library item, already pointed at the chosen playlist. Its file id is
+ updated to the one saved.
+ \return True if the playlist was saved
+ */
+bool SaveDiscPlaylist(CFileItem& item);
 
 } // namespace KODI::VIDEO::UTILS

@@ -7488,8 +7488,8 @@ msgctxt "#13423"
 msgid "Remember for this path"
 msgstr ""
 
-#. Shown on context menu when a bluray:// or dvd:// playlist has already been saved
-#. Giving the user a chance to select a new one via the simple menu dialog
+#. Shown on context menu for a Blu-ray disc image, BDMV folder or an already saved bluray://
+#. playlist. Giving the user a chance to select a playlist via the simple menu dialog
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13424"
 msgid "Choose playlist"
@@ -7818,7 +7818,28 @@ msgctxt "#13483"
 msgid "8 bit"
 msgstr ""
 
-#empty strings from id 13484 to 13504
+#. Shown on context menu for a Blu-ray disc image, BDMV folder or an already saved bluray://
+#. playlist, when further choices (see #13485 and #13486) will be offered
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#13484"
+msgid "Choose playlist ..."
+msgstr ""
+
+#. Shown on the "Choose playlist ..." context menu of a library item, to assign the chosen
+#. Blu-ray playlist to it
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#13485"
+msgid "and Save"
+msgstr ""
+
+#. Shown on the "Choose playlist ..." context menu of a library item, to assign the chosen
+#. Blu-ray playlist to it and play it
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#13486"
+msgid "and Play"
+msgstr ""
+
+#empty strings from id 13487 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
