@@ -277,6 +277,7 @@ namespace XBMCAddon
       switch(pGUIControl->GetControlType())
       {
       case CGUIControl::GUICONTROL_BUTTON:
+      case CGUIControl::GUICONTROL_TOGGLEBUTTON:
         pControl = new ControlButton();
 
         li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
