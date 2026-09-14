@@ -19,9 +19,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      # Full history: the check walks every commit between the base branch and
-      # the PR head. The checkout is GitHub's merge commit, so its first parent
-      # is the base branch tip and the PR commits are HEAD^1..HEAD^2.
+      # Full history: the check walks every commit of the PR. The checkout is
+      # GitHub's merge commit, so its second parent is the PR head and the merge
+      # base of its parents is where the PR forked; diffing against that rather
+      # than the base branch tip keeps changes master made since out of the check.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -39,8 +40,8 @@ jobs:
       - name: Check formatting of every commit
         id: check
         run: |
-          base=$(git rev-parse HEAD^1)
           head=$(git rev-parse HEAD^2)
+          base=$(git merge-base HEAD^1 "${head}")
           mkdir -p clang-format-diffs
           i=0
           for commit in $(git rev-list --no-merges --reverse "${base}..${head}"); do
@@ -96,5 +97,5 @@ jobs:
 
       - name: Check added CLog::Log calls for printf-style formats
         run: |
-          git diff --unified=0 --no-color "$(git rev-parse HEAD^1)" "$(git rev-parse HEAD^2)" -- xbmc \
+          git diff --unified=0 --no-color "$(git merge-base HEAD^1 HEAD^2)" "$(git rev-parse HEAD^2)" -- xbmc \
             | python3 .github/scripts/check_log_format.py | tee -a "$GITHUB_STEP_SUMMARY"
