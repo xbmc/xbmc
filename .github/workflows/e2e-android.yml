@@ -34,6 +34,7 @@ env:
 
 jobs:
   build:
+    name: build (${{ matrix.abi }})
     runs-on: ubuntu-26.04
     timeout-minutes: 240
     strategy:

@@ -36,6 +36,7 @@ permissions:
 
 jobs:
   build:
+    name: build (${{ matrix.platform }} ${{ endsWith(matrix.runner, '-arm') && 'arm64' || 'x86_64' }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 180
     # Debug, as Jenkins' Linux jobs, unless the caller asks for Release.
@@ -229,6 +230,7 @@ jobs:
           name: linux-${{ matrix.platform }}-${{ runner.arch }}
 
   e2e:
+    name: e2e (${{ matrix.platform }} ${{ endsWith(matrix.runner, '-arm') && 'arm64' || 'x86_64' }})
     needs: build
     # Runs the legs whose build succeeded even if another leg's failed.
     if: ${{ !cancelled() && needs.build.result != 'skipped' }}

@@ -39,6 +39,7 @@ env:
 
 jobs:
   build:
+    name: build (${{ matrix.kind == 'device' && format('{0}-device', matrix.platform) || matrix.depends_platform }})
     # macos-14 is Apple Silicon; the Simulator ABI for aarch64-apple-darwin is
     # arm64, keeping every leg's build and target on one architecture.
     runs-on: macos-14
@@ -281,6 +282,7 @@ jobs:
           name: macos-${{ runner.arch }}
 
   e2e:
+    name: e2e (${{ matrix.platform }})
     needs: build
     # Runs the legs whose build succeeded even if another leg's failed.
     if: ${{ !cancelled() && needs.build.result != 'skipped' }}
