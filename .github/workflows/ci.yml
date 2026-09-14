@@ -14,6 +14,12 @@ on:
         type: choice
         options: [all, linux, windows, android, apple, webos]
         default: all
+      addons:
+        description: >
+          Space-separated binary add-on ids or patterns to build and bundle,
+          e.g. "peripheral.joystick inputstream.adaptive inputstream.ffmpegdirect pvr.*".
+        type: string
+        default: peripheral.joystick
   push:
     branches: [master]
     paths-ignore:
@@ -52,6 +58,7 @@ jobs:
     outputs:
       run: ${{ steps.decide.outputs.run }}
       platform: ${{ steps.decide.outputs.platform }}
+      addons: ${{ steps.decide.outputs.addons }}
       addons_changed: ${{ steps.filter.outputs.addons }}
     steps:
       - id: decide
@@ -60,6 +67,7 @@ jobs:
           DRAFT: ${{ github.event.pull_request.draft }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, '|') }}
           PLATFORM: ${{ inputs.platform }}
+          ADDONS: ${{ inputs.addons }}
         run: |
           run=true
           if [ "${EVENT}" = "pull_request" ]; then
@@ -71,6 +79,7 @@ jobs:
           {
             echo "run=${run}"
             echo "platform=${PLATFORM:-all}"
+            echo "addons=${ADDONS:-peripheral.joystick}"
           } >> "$GITHUB_OUTPUT"
           echo "run=${run} platform=${PLATFORM:-all} (event=${EVENT} draft=${DRAFT} labels=${LABELS})"
 
@@ -98,16 +107,22 @@ jobs:
     needs: gate
     if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","linux"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/e2e-linux.yml
+    with:
+      addons: ${{ needs.gate.outputs.addons }}
 
   windows:
     needs: gate
     if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","windows"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/e2e-windows.yml
+    with:
+      addons: ${{ needs.gate.outputs.addons }}
 
   android:
     needs: gate
     if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","android"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/e2e-android.yml
+    with:
+      addons: ${{ needs.gate.outputs.addons }}
     secrets: inherit
 
   # macOS (build, unit tests, e2e, signed .dmg), iOS/tvOS Simulator (build,
@@ -116,12 +131,16 @@ jobs:
     needs: gate
     if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","apple"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/apple.yml
+    with:
+      addons: ${{ needs.gate.outputs.addons }}
     secrets: inherit
 
   webos:
     needs: gate
     if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","webos"]'), needs.gate.outputs.platform)
     uses: ./.github/workflows/build-webos.yml
+    with:
+      addons: ${{ needs.gate.outputs.addons }}
 
   # The checks and the add-on smoke build run on full runs only, not when a
   # manual run targets one platform.

@@ -15,12 +15,17 @@ name: E2E (Linux)
 # internally there (without dav1d the internal ffmpeg has no AV1 decoder and
 # TestVideoCodecPictureFormat fails); once X11 builds without that header this
 # leg should move to 24.04 and drop most of those flags. Every leg also builds
-# peripheral.joystick against the same packages.
+# the requested binary add-ons against the same packages.
 
 # Called from ci.yml, which owns the triggers, path filters, the draft/label
 # gate and the manual-run inputs.
 on:
   workflow_call:
+    inputs:
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
 
 permissions:
   contents: read
@@ -169,6 +174,7 @@ jobs:
       # still build against this tree.
       - uses: ./.github/actions/build-binary-addons
         with:
+          addons: ${{ inputs.addons }}
           make-args: PREFIX=${{ github.workspace }}/build-addons
 
       # cmake/cpack/CPackConfigDEB.cmake, see docs/README.Ubuntu.md. The e2e job

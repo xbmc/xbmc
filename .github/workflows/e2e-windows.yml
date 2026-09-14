@@ -3,10 +3,10 @@ name: E2E (Windows)
 # Builds Kodi for Windows with the same scripts Jenkins uses
 # (tools/buildsteps/windows/<arch>/*.bat, docs/README.Windows.md): prebuilt
 # dependency packages from mirrors.kodi.tv plus an MSYS2 environment, the
-# Visual Studio generator through BuildSetup.bat, peripheral.joystick through
-# make-addons.bat, and the NSIS installer (or the UWP .msix). The x64 leg's
-# staged application directory feeds the E2E run below through the same desktop
-# launcher as macOS/Linux (kodi.exe supports -p/--portable).
+# Visual Studio generator through BuildSetup.bat, the requested binary add-ons
+# through make-addons.bat, and the NSIS installer (or the UWP .msix). The x64
+# leg's staged application directory feeds the E2E run below through the same
+# desktop launcher as macOS/Linux (kodi.exe supports -p/--portable).
 #
 # BuildSetup.bat hardcodes the Visual Studio generator and its Release\ layout,
 # so ccache is not used here; the dependency downloads are cached instead.
@@ -15,12 +15,17 @@ name: E2E (Windows)
 # gate and the manual-run inputs.
 on:
   workflow_call:
+    inputs:
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
 
 permissions:
   contents: read
 
 env:
-  BINARY_ADDONS: peripheral.joystick
+  BINARY_ADDONS: ${{ inputs.addons }}
 
 jobs:
   build:

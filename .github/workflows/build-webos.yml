@@ -1,8 +1,8 @@
 name: Build (webOS)
 
 # Cross-builds Kodi for LG webOS via tools/depends against the buildroot
-# toolchain docs/README.webOS.md recommends (openlgtv/buildroot-nc4), with
-# peripheral.joystick bundled, and packages the .ipk with ares-package, as
+# toolchain docs/README.webOS.md recommends (openlgtv/buildroot-nc4), bundles
+# the requested binary add-ons and packages the .ipk with ares-package, as
 # Jenkins' webos-docker job does. Build-only: there is no webOS emulator to
 # run tools/e2e against.
 
@@ -10,6 +10,11 @@ name: Build (webOS)
 # gate and the manual-run inputs.
 on:
   workflow_call:
+    inputs:
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
 
 permissions:
   contents: read
@@ -103,6 +108,8 @@ jobs:
       # Installed into the depends prefix's addons/ directory (the webos rule in
       # tools/depends/xbmc-addons.include), from where the bundle step copies them.
       - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ inputs.addons }}
 
       - name: Generate Kodi build system
         run: make -C tools/depends/target/cmakebuildsys

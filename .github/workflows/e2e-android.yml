@@ -4,7 +4,7 @@ name: E2E (Android emulator)
 # the emulator E2E run below (that is the ABI the emulator runs under KVM on a
 # Linux runner); the arm64-v8a, armeabi-v7a and x86 legs are the release APKs
 # Jenkins ships to test-builds/nightlies and are build-only. Every leg also
-# builds peripheral.joystick, which the APK bundles.
+# builds the requested binary add-ons, which the APK bundles.
 #
 # Android has no -p/--portable flag, so tools/e2e/driver/android_launcher.py
 # manages a fixed on-device profile instead of the desktop launcher.
@@ -13,6 +13,11 @@ name: E2E (Android emulator)
 # gate and the manual-run inputs.
 on:
   workflow_call:
+    inputs:
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
 
 permissions:
   contents: read
@@ -21,7 +26,7 @@ env:
   # The runner image's preinstalled SDK; the NDK is installed into it below.
   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
   DEPENDS_PREFIX: /home/runner/xbmc-android-depends
-  BINARY_ADDONS: peripheral.joystick
+  BINARY_ADDONS: ${{ inputs.addons }}
 
 jobs:
   build:

@@ -1,9 +1,10 @@
 name: Apple (macOS/iOS/tvOS)
 
-# Builds Kodi for every Apple target via tools/depends, with peripheral.joystick
-# bundled. macOS builds through the generated Makefiles and packages a signed,
-# notarised .dmg (Developer ID certificate and notarytool key from secrets on
-# runs that can see them; PR builds are unsigned, as on Jenkins). iOS and tvOS
+# Builds Kodi for every Apple target via tools/depends, with the requested
+# binary add-ons bundled. macOS builds through the generated Makefiles and
+# packages a signed, notarised .dmg (Developer ID certificate and notarytool
+# key from secrets on runs that can see them; PR builds are unsigned, as on
+# Jenkins). iOS and tvOS
 # build through the generated Xcode project for both the Simulator ABIs
 # (--with-platform=ios-simulator/tvos-simulator) and the device ABIs
 # (--with-platform=ios/tvos); the device legs need no signing identity
@@ -20,6 +21,11 @@ name: Apple (macOS/iOS/tvOS)
 # gate and the manual-run inputs.
 on:
   workflow_call:
+    inputs:
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
 
 permissions:
   contents: read
@@ -96,6 +102,8 @@ jobs:
       # Installed into the source tree's addons/ directory (the darwin default
       # in tools/depends/xbmc-addons.include), which the app bundle includes.
       - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ inputs.addons }}
 
       # Imports the Developer ID certificate into a throwaway keychain and
       # stores the notarytool App Store Connect key in it, then hands the
