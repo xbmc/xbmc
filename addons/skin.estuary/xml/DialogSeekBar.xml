@@ -50,7 +50,7 @@
 					</control>
 				</control>
 				<control type="group">
-					<top>205</top>
+					<top>185</top>
 					<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
 				</control>
 			</control>
