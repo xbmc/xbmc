@@ -1,0 +1,20 @@
+{
+  "title": "Show a notification in the Kodi GUI",
+  "method": "GUI.ShowNotification",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "method": "GUI.ShowNotification",
+    "params": {
+      "title": "Library update",
+      "message": "The video library scan has finished",
+      "image": "info",
+      "displaytime": 5000
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "result": "OK"
+  }
+}
