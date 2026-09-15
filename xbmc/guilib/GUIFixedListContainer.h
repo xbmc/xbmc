@@ -46,6 +46,7 @@ public:
   CGUIFixedListContainer* Clone() const override { return new CGUIFixedListContainer(*this); }
 
   bool OnAction(const CAction &action) override;
+  bool OnMessage(CGUIMessage& message) override;
 
 protected:
   void Scroll(int amount) override;
@@ -56,6 +57,7 @@ protected:
   bool SelectItemFromPoint(const CPoint &point) override;
   int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const override;
   void SelectItem(int item) override;
+  void UpdatePageControl(int offset) override;
   bool HasNextPage() const override;
   bool HasPreviousPage() const override;
   int GetCurrentPage() const override;
