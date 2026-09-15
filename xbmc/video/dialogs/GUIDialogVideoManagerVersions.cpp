@@ -37,6 +37,7 @@
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/guilib/VideoGUIUtils.h"
 
 #include <algorithm>
 #include <memory>
@@ -489,17 +490,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       {
         m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
                                            item->GetDynPath());
-
-        // Notify all windows to update the file item
-        CFileItem oldItem{*item};
-        oldItem.SetPath(oldPath);
-        CGUIMessage msg{GUI_MSG_NOTIFY_ALL,
-                        0,
-                        0,
-                        GUI_MSG_UPDATE_ITEM,
-                        GUI_MSG_FLAG_FORCE_UPDATE,
-                        std::make_shared<CFileItem>(oldItem)};
-        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+        KODI::VIDEO::UTILS::NotifyItemPathChanged(*item, oldPath);
 
         // A version is known by its file, so it has a new id and Refresh() reselects it by that
         CVideoInfoTag* tag{item->GetVideoInfoTag()};
