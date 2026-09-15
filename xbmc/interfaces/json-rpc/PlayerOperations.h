@@ -10,6 +10,7 @@
 
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
+#include "PlayerIds.h"
 
 #include <string>
 
@@ -21,24 +22,8 @@ class CPVRChannelGroup;
 class CPVREpgInfoTag;
 }
 
-namespace KODI::PLAYLIST
-{
-enum class Id;
-enum class RepeatState;
-} // namespace PLAYLIST
-
 namespace JSONRPC
 {
-  enum PlayerType
-  {
-    None = 0,
-    Video = 0x1,
-    Audio = 0x2,
-    Picture = 0x4,
-    External = 0x8,
-    Remote = 0x10
-  };
-
   static const int PlayerImplicit = (Video | Audio | Picture);
 
   class CPlayerOperations : CFileItemHandler

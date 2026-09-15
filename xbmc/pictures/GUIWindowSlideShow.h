@@ -15,6 +15,7 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
+#include <atomic>
 #include <memory>
 #include <set>
 
@@ -154,7 +155,7 @@ private:
   bool m_bShuffled;
   bool m_bSlideShow;
   bool m_bPause;
-  bool m_bPlayingVideo;
+  std::atomic<bool> m_bPlayingVideo{false};
   int m_iVideoSlide = -1;
   bool m_bErrorMessage;
 

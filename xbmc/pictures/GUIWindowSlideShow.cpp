@@ -166,9 +166,10 @@ void CGUIWindowSlideShow::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                                    const std::string& message,
                                    const CVariant& data)
 {
+  // A video slide is played by the slideshow itself and must not close it
   if (message == "OnPlay" || message == "OnResume")
   {
-    if (data.isMember("player") && data["player"].isMember("playerid") &&
+    if (!m_bPlayingVideo && data.isMember("player") && data["player"].isMember("playerid") &&
         data["player"]["playerid"] == static_cast<int>(PLAYLIST::Id::TYPE_VIDEO))
       Close();
   }
