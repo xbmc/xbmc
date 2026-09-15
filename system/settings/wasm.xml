@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings version="1">
+  <section id="system">
+    <category id="input">
+      <group id="1">
+        <setting id="input.usekodikeyboard" type="boolean" label="24162" help="34011">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
+  <section id="services">
+    <category id="control">
+      <group id="2">
+        <setting id="services.esenabled">
+          <default>false</default>
+          <visible>false</visible>
+        </setting>
+        <setting id="services.esport">
+          <visible>false</visible>
+        </setting>
+        <setting id="services.esportrange">
+          <visible>false</visible>
+        </setting>
+        <setting id="services.esmaxclients">
+          <visible>false</visible>
+        </setting>
+        <setting id="services.esallinterfaces">
+          <visible>false</visible>
+        </setting>
+        <setting id="services.esinitialdelay">
+          <visible>false</visible>
+        </setting>
+        <setting id="services.escontinuousdelay">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

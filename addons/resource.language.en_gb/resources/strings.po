@@ -18118,6 +18118,12 @@ msgctxt "#34010"
 msgid "Siri remote pan gesture vertical sensitivity"
 msgstr ""
 
+#. Help text of setting "input.usekodikeyboard" on WebAssembly
+#: system/settings/wasm.xml
+msgctxt "#34011"
+msgid "When you need to enter some text, Kodi virtual keyboard will show up instead of the browser's or TV's built-in keyboard"
+msgstr ""
+
 #empty strings from id 34011 to 34099
 
 #: system/settings/settings.xml
