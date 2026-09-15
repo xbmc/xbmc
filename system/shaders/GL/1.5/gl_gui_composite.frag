@@ -43,10 +43,14 @@ void main()
   if (gui.a == 0.0)
     discard;
 
+  // The GUI blends into the FBO premultiplied; the EOTF and the composite blend
+  // below both need the unassociated colour, so divide the coverage back out.
+  vec3 color = min(gui.rgb / gui.a, vec3(1.0));
+
   // sRGB -> linear (IEC 61966-2-1 piecewise EOTF)
-  vec3 linear = mix(gui.rgb / 12.92,
-                    pow((gui.rgb + 0.055) / 1.055, vec3(2.4)),
-                    step(0.04045, gui.rgb));
+  vec3 linear = mix(color / 12.92,
+                    pow((color + 0.055) / 1.055, vec3(2.4)),
+                    step(0.04045, color));
 
   // BT.709 -> BT.2020 gamut mapping
   linear = bt709_to_bt2020 * linear;
