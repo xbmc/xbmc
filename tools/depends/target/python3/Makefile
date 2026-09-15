@@ -30,6 +30,10 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   endif
   # required for _localemodule
   EXTRA_CONFIGURE+= ac_cv_lib_intl_textdomain=yes
+
+  # Python already handles older OSs correctly internally
+  # it's the only way to override config.site's values as they come last (actually just CPPFLAGS is enough)
+  EXTRA_CONFIGURE+= CFLAGS=-Wno-error=unguarded-availability-new CPPFLAGS=-Wno-error=unguarded-availability-new
 endif
 
 ifeq ($(OS), linux)
