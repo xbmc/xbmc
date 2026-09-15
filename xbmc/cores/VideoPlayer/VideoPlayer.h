@@ -505,6 +505,7 @@ protected:
   bool OpenDemuxStream();
   void CloseDemuxer();
   void OpenDefaultStreams(bool reset = true);
+  void PrioritizeInitialAudioStream(std::vector<SelectionStream>& streams);
   void UpdateHasVideoAudio();
 
   void UpdatePlayState(double timeout);
