@@ -165,6 +165,27 @@ tag.setCast([xbmc.Actor('a', 'lead'), xbmc.Actor('b')])
 )py"));
 }
 
+// python owns each object in a returned list
+TEST_F(TestPythonBindings, ListElementsAreOwned)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc, xbmcgui
+li = xbmcgui.ListItem('owned', '', '', True)
+tag = li.getVideoInfoTag()
+assert tag.thisown
+tag.setCast([xbmc.Actor('a', 'lead'), xbmc.Actor('b')])
+actors = tag.getActors()
+assert [a.getName() for a in actors] == ['a', 'b'], [a.getName() for a in actors]
+assert all(a.thisown for a in actors), [a.thisown for a in actors]
+del li, tag
+assert actors[0].getRole() == 'lead', actors[0].getRole()
+del actors
+)py"));
+}
+
 // PyType_Ready mirrors tp_init into the class dict as a wrapper_descriptor; autodoc's constructor docstring injection replaces it with a method_descriptor that runs a second construction
 TEST_F(TestPythonBindings, NoInitInjection)
 {
