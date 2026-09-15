@@ -12,8 +12,12 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "threads/IRunnable.h"
+#include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
+
+#include <algorithm>
+#include <optional>
 
 using namespace std::chrono_literals;
 
@@ -71,11 +75,27 @@ bool CGUIDialogBusy::Wait(IRunnable *runnable, unsigned int displaytime, bool al
   return true;
 }
 
-bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 100 */, bool allowCancel /* = true */)
+bool CGUIDialogBusy::WaitOnEvent(CEvent& event,
+                                 unsigned int displaytime /* = 100 */,
+                                 bool allowCancel /* = true */,
+                                 std::optional<std::chrono::milliseconds> timeout /* = {} */)
 {
+  XbmcThreads::EndTime<> deadline;
+  if (timeout)
+    deadline.Set(*timeout);
+
+  const auto initialWait{timeout ? std::min(std::chrono::milliseconds(displaytime), *timeout)
+                                 : std::chrono::milliseconds(displaytime)};
+
   bool cancelled = false;
-  if (!event.Wait(std::chrono::milliseconds(displaytime)))
+  bool timedout = false;
+  if (!event.Wait(initialWait))
   {
+    // Nothing below can change the answer once the deadline has passed, and the dialog is not
+    // worth looking up to abandon it.
+    if (timeout && deadline.IsTimePast())
+      return false;
+
     auto* dialog = static_cast<CGUIDialogBusy*>(
         CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_BUSY));
     if (dialog)
@@ -95,6 +115,11 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
           cancelled = true;
           break;
         }
+        if (timeout && deadline.IsTimePast())
+        {
+          timedout = true;
+          break;
+        }
       }
 
       if (--dialog->m_waiters == 0)
@@ -103,8 +128,12 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
         dialog->ProcessRenderLoop(false); // Force repaint.
       }
     }
+    else if (timeout)
+    {
+      timedout = !event.Wait(deadline.GetTimeLeft());
+    }
   }
-  return !cancelled;
+  return !cancelled && !timedout;
 }
 
 CGUIDialogBusy::CGUIDialogBusy(void)
