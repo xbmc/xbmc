@@ -1,0 +1,25 @@
+name: Save tools/depends prefix
+description: >
+  Saves the tools/depends install prefix under the same key
+  depends-cache-restore uses. Keyed on content, so saving from pull request
+  runs adds one entry per distinct tools/depends tree, not per push.
+inputs:
+  key:
+    description: Cache key prefix, identical to the one given to depends-cache-restore.
+    required: true
+  prefix:
+    description: The --prefix the dependencies were installed to.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Compute cache key
+      id: key
+      shell: bash
+      run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
+
+    - name: Save
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ inputs.prefix }}
+        key: ${{ inputs.key }}-depends-${{ steps.key.outputs.hash }}

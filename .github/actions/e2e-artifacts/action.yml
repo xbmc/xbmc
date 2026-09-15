@@ -1,0 +1,41 @@
+name: Upload E2E artifacts
+description: Uploads the Kodi log, screenshots and JUnit results of an E2E run.
+inputs:
+  name:
+    description: Platform suffix for the artifact names (e.g. linux-gbm).
+    required: true
+  log-paths:
+    description: Newline-separated paths of Kodi's log files.
+    required: true
+  screenshot-glob:
+    description: Glob matching the screenshots Kodi wrote.
+    required: true
+  results:
+    description: Path of the JUnit XML file.
+    default: e2e-results.xml
+runs:
+  using: composite
+  steps:
+    - name: Upload Kodi log
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: kodi-${{ inputs.name }}-log
+        path: ${{ inputs.log-paths }}
+        if-no-files-found: warn
+
+    - name: Upload screenshots
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: kodi-${{ inputs.name }}-screenshot
+        path: ${{ inputs.screenshot-glob }}
+        if-no-files-found: warn
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: e2e-results-${{ inputs.name }}
+        path: ${{ inputs.results }}
+        if-no-files-found: warn

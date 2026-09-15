@@ -1,0 +1,43 @@
+name: Look up tools/depends caches
+description: >
+  Reports which matrix legs have no cached tools/depends prefix for the
+  current tools/depends tree hash, so the depends job runs only for those.
+  A run can restore caches saved from its own ref and from its base branch,
+  which are the two refs queried. Needs actions: read on the token.
+inputs:
+  legs:
+    description: JSON array of matrix legs, each with the "key" given to depends-cache-restore.
+    required: true
+outputs:
+  missing:
+    description: The legs without a cache entry, as a JSON array.
+    value: ${{ steps.lookup.outputs.missing }}
+runs:
+  using: composite
+  steps:
+    - name: Query the cache API
+      id: lookup
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        LEGS: ${{ inputs.legs }}
+        REFS: ${{ github.ref }} refs/heads/${{ github.base_ref || github.event.repository.default_branch }}
+      run: |
+        hash=$(git rev-parse HEAD:tools/depends)
+        missing='[]'
+        while read -r leg; do
+          key="$(jq -r .key <<<"$leg")-depends-${hash}"
+          found=false
+          for ref in $REFS; do
+            keys=$(gh api --method GET "repos/${GITHUB_REPOSITORY}/actions/caches" \
+              -f ref="$ref" -f key="$key" --jq '.actions_caches[].key')
+            if grep -qxF "$key" <<<"$keys"; then found=true; break; fi
+          done
+          if [ "$found" = true ]; then
+            echo "hit  ${key}"
+          else
+            echo "miss ${key}"
+            missing=$(jq -c --argjson leg "$leg" '. + [$leg]' <<<"$missing")
+          fi
+        done < <(jq -c '.[]' <<<"$LEGS")
+        echo "missing=${missing}" >> "$GITHUB_OUTPUT"

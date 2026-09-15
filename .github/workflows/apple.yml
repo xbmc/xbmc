@@ -1,0 +1,452 @@
+name: Apple (macOS/iOS/tvOS)
+
+# Builds Kodi for every Apple target via tools/depends, with the requested
+# binary add-ons bundled. macOS builds through the generated Makefiles and
+# packages a signed, notarised .dmg (Developer ID certificate and notarytool
+# key from secrets on runs that can see them; PR builds are unsigned, as on
+# Jenkins). iOS and tvOS
+# build through the generated Xcode project for both the Simulator ABIs
+# (--with-platform=ios-simulator/tvos-simulator) and the device ABIs
+# (--with-platform=ios/tvos); the device legs need no signing identity
+# (CODE_SIGNING_ALLOWED=NO) since Kodi ships no provisioning profile, and
+# produce the unsigned .ipa plus dSYM that Jenkins' IOS-ARM64 and TVOS jobs
+# upload. tools/e2e runs against macOS directly and against the Simulator
+# through tools/e2e/driver/ios_launcher.py, which the Simulator shares a
+# filesystem and network with, needing no bridging step the way Android does;
+# the Simulator ABIs are far less exercised than the device ones, so treat a
+# build failure there as plausibly a build-system gap rather than a CI-wiring
+# issue. Device builds have no Simulator or hardware to run tools/e2e against.
+#
+# depends-key looks up which legs already have their tools/depends prefix
+# cached for this tools/depends tree, depends builds the missing ones on macOS
+# runners, and build restores the prefix and only re-runs configure before
+# building Kodi. The org has few concurrent macOS slots, so a macOS runner is
+# never started just to discover a cache hit.
+
+# Called from ci.yml, which owns the triggers, path filters, the draft/label
+# gate and the manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+env:
+  DEPENDS_PREFIX: /Users/Shared/xbmc-depends
+
+jobs:
+  # Resolves the matrix once and looks up which legs already have a cached
+  # prefix. The device legs add dwarf-with-dsym: CMake's Xcode projects
+  # default to dwarf in every configuration, which writes no .dSYM for the
+  # collect step; "-target ipa" builds the .ipa there.
+  depends-key:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      legs: ${{ steps.legs.outputs.legs }}
+      missing: ${{ steps.lookup.outputs.missing }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
+
+      # Debug, as Jenkins' Apple jobs, unless the caller asks for Release.
+      - name: Define legs
+        id: legs
+        env:
+          CONFIGURATION: ${{ inputs.configuration || 'Debug' }}
+        run: |
+          legs=$(jq -c --arg config "$CONFIGURATION" '
+            map(.configuration = $config | .key = "apple-\(.depends_platform)-\($config)")' <<'LEGS'
+          [
+            {"kind": "macos",     "platform": "macos", "depends_platform": "macos"},
+            {"kind": "simulator", "platform": "ios",   "depends_platform": "ios-simulator"},
+            {"kind": "simulator", "platform": "tvos",  "depends_platform": "tvos-simulator"},
+            {"kind": "device",    "platform": "ios",   "depends_platform": "ios",  "sdk": "iphoneos",
+             "xcodebuild_args": "-target ipa",
+             "cmake_args": "-DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym"},
+            {"kind": "device",    "platform": "tvos",  "depends_platform": "tvos", "sdk": "appletvos",
+             "xcodebuild_args": "-target ipa",
+             "cmake_args": "-DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym"}
+          ]
+          LEGS
+          )
+          echo "legs=${legs}" >> "$GITHUB_OUTPUT"
+          echo "${legs}" | jq .
+
+      - uses: ./.github/actions/depends-cache-lookup
+        id: lookup
+        with:
+          legs: ${{ steps.legs.outputs.legs }}
+
+  depends:
+    name: depends (${{ matrix.depends_platform }})
+    needs: depends-key
+    if: needs.depends-key.outputs.missing != '[]'
+    # macos-14 is Apple Silicon; the Simulator ABI for aarch64-apple-darwin is
+    # arm64, keeping every leg's build and target on one architecture.
+    runs-on: macos-14
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.missing) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # The image ships several Xcodes; the newest is picked rather than pinning
+      # a version the image may not have. Not needed for the macOS leg, which
+      # builds against whatever Xcode the image already selects by default.
+      - name: Select latest available Xcode
+        if: matrix.kind != 'macos'
+        run: |
+          latest_xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | sort -V | tail -1)
+          if [ -n "$latest_xcode" ]; then
+            sudo xcode-select -s "$latest_xcode"
+          fi
+          xcodebuild -version
+
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=aarch64-apple-darwin --with-platform=${{ matrix.depends_platform }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: "true"
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: ${{ matrix.depends_platform }}-depends
+
+      # Not reached when the build failed, so a half-built prefix is never saved.
+      - uses: ./.github/actions/depends-cache-save
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+  build:
+    name: build (${{ matrix.kind == 'device' && format('{0}-device', matrix.platform) || matrix.depends_platform }})
+    needs: [depends-key, depends]
+    # Runs whether depends built anything or was skipped. A leg whose prefix is
+    # still missing fails at the restore below instead of blocking the others.
+    if: ${{ !cancelled() && needs.depends-key.result == 'success' }}
+    runs-on: macos-14
+    timeout-minutes: 240
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.legs) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select latest available Xcode
+        if: matrix.kind != 'macos'
+        run: |
+          latest_xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | sort -V | tail -1)
+          if [ -n "$latest_xcode" ]; then
+            sudo xcode-select -s "$latest_xcode"
+          fi
+          xcodebuild -version
+
+      - name: Install ccache
+        run: brew install ccache
+
+      - uses: ./.github/actions/depends-cache-restore
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          fail-on-cache-miss: "true"
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          dir: /Users/runner/.cache/kodi-e2e-ccache
+
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=aarch64-apple-darwin --with-platform=${{ matrix.depends_platform }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      # Installed into the source tree's addons/ directory (the darwin default
+      # in tools/depends/xbmc-addons.include), which the app bundle includes.
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ inputs.addons }}
+
+      # Imports the Developer ID certificate into a throwaway keychain and
+      # stores the notarytool App Store Connect key in it, then hands the
+      # identity and keychain to cmake the way Jenkins' OSX jobs do. Skipped on
+      # PRs and when the secrets are absent, leaving CMAKE_EXTRA_ARGUMENTS empty.
+      - name: Set up code signing and notarisation
+        id: signing
+        if: matrix.kind == 'macos' && github.event_name != 'pull_request'
+        env:
+          MACOS_CERTIFICATE_P12: ${{ secrets.MACOS_CERTIFICATE_P12 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_NOTARYTOOL_KEY: ${{ secrets.MACOS_NOTARYTOOL_KEY }}
+          MACOS_NOTARYTOOL_KEY_ID: ${{ secrets.MACOS_NOTARYTOOL_KEY_ID }}
+          MACOS_NOTARYTOOL_ISSUER: ${{ secrets.MACOS_NOTARYTOOL_ISSUER }}
+        run: |
+          if [ -z "${MACOS_CERTIFICATE_P12}" ]; then
+            echo "No MACOS_CERTIFICATE_P12 secret, building unsigned"
+            exit 0
+          fi
+          keychain="${RUNNER_TEMP}/codesign.keychain-db"
+          keychain_password="$(openssl rand -hex 16)"
+          echo "${MACOS_CERTIFICATE_P12}" | base64 -d > "${RUNNER_TEMP}/cert.p12"
+          security create-keychain -p "${keychain_password}" "${keychain}"
+          security set-keychain-settings -lut 21600 "${keychain}"
+          security unlock-keychain -p "${keychain_password}" "${keychain}"
+          security import "${RUNNER_TEMP}/cert.p12" -P "${MACOS_CERTIFICATE_PASSWORD}" \
+            -f pkcs12 -k "${keychain}" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple: -s -k "${keychain_password}" "${keychain}" > /dev/null
+          security list-keychains -d user -s "${keychain}" login.keychain
+          identity=$(security find-identity -v -p codesigning "${keychain}" | awk 'NR==1 { print $2 }')
+          [ -n "${identity}" ] || { echo "::error::No code signing identity in the imported certificate"; exit 1; }
+          rm -f "${RUNNER_TEMP}/cert.p12"
+          extra="-DCODE_SIGN_IDENTITY=${identity}"
+          if [ -n "${MACOS_NOTARYTOOL_KEY}" ]; then
+            echo "${MACOS_NOTARYTOOL_KEY}" | base64 -d > "${RUNNER_TEMP}/notarytool.p8"
+            xcrun notarytool store-credentials notarytool \
+              --issuer "${MACOS_NOTARYTOOL_ISSUER}" --key-id "${MACOS_NOTARYTOOL_KEY_ID}" \
+              --key "${RUNNER_TEMP}/notarytool.p8" --keychain "${keychain}"
+            rm -f "${RUNNER_TEMP}/notarytool.p8"
+            extra="${extra} -DNOTARYTOOL_KEYCHAIN_PROFILE=notarytool -DNOTARYTOOL_KEYCHAIN_PATH=${keychain}"
+          fi
+          echo "CMAKE_EXTRA_ARGUMENTS=${extra}" >> "$GITHUB_ENV"
+          echo "Signing as ${identity}"
+
+      # macOS generates Makefiles; iOS and tvOS (Simulator and device alike)
+      # generate an Xcode project. CMAKE_EXTRA_ARGUMENTS is only ever set by
+      # the signing step above, so it is empty here for every other leg.
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}" CMAKE_EXTRA_ARGUMENTS="${CMAKE_EXTRA_ARGUMENTS:-} ${{ matrix.cmake_args }}"
+
+      - name: Build Kodi
+        if: matrix.kind == 'macos'
+        run: make -j"$(sysctl -n hw.ncpu)" -C build
+
+      # The device legs need no signing identity (Kodi ships no provisioning
+      # profile); CODE_SIGNING_ALLOWED=NO is defensive for the Simulator too,
+      # which needs no identity anyway.
+      - name: Build Kodi (xcodebuild)
+        if: matrix.kind != 'macos'
+        working-directory: build
+        run: xcodebuild -config "${CONFIGURATION}" -jobs "$(sysctl -n hw.ncpu)" ${{ matrix.xcodebuild_args }} CODE_SIGNING_ALLOWED=NO
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: ${{ matrix.platform }}${{ matrix.kind == 'device' && '-device' || '' }}
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      # tools/darwin/packaging/osx/mkdmg-osx.sh: copies the frameworks in,
+      # signs the app and the image when an identity was configured, and
+      # notarises through notarize.sh when a keychain profile was stored.
+      - name: Package .dmg
+        if: matrix.kind == 'macos'
+        run: make -C build dmg
+
+      - uses: actions/upload-artifact@v7
+        if: matrix.kind == 'macos'
+        with:
+          name: kodi-dmg-macos-${{ runner.arch }}
+          path: build/tools/darwin/packaging/osx/*.dmg
+          if-no-files-found: error
+          retention-days: 7
+
+      # The ipa target already built above depends on the app target, so this
+      # only has to locate what CPack produced
+      # (cmake/scripts/darwin_embedded/Install.cmake) and the dSYM Xcode wrote
+      # next to the build; tarred so the bundle's directory structure survives
+      # the artifact round trip, the .ipa is already a zip.
+      - name: Collect .ipa and dSYM
+        if: matrix.kind == 'device'
+        run: |
+          ipa=$(find build/tools/darwin/packaging/darwin_embedded -maxdepth 1 -name '*.ipa' -print -quit)
+          dsym="build/build/${CONFIGURATION}-${{ matrix.sdk }}/Kodi.app.dSYM"
+          [ -n "$ipa" ] || { echo "::error::No .ipa produced under build/tools/darwin/packaging/darwin_embedded"; exit 1; }
+          [ -d "$dsym" ] || { echo "::error::No dSYM at $dsym"; exit 1; }
+          mkdir -p dist
+          cp "$ipa" dist/
+          tar -cf "dist/$(basename "$ipa" .ipa).dSYM.tar" -C "$(dirname "$dsym")" Kodi.app.dSYM
+
+      - uses: actions/upload-artifact@v7
+        if: matrix.kind == 'device'
+        with:
+          name: kodi-${{ matrix.platform }}-device
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 7
+
+      # kodi-test is EXCLUDE_FROM_ALL and whole-archive links the app, so this
+      # is a real link step. Built here, before ccache-save, so its compilation
+      # is cached too; actually run further down, after the runtime upload.
+      # Only macOS runs unit tests among the Apple legs: the Simulator and
+      # device builds have nothing to execute them on in this job.
+      - name: Build unit tests
+        if: matrix.kind == 'macos'
+        run: make -j"$(sysctl -n hw.ncpu)" -C build kodi-test
+
+      # Tarred so permissions and symlinks inside the bundle survive the
+      # artifact round trip.
+      - name: Package Kodi.app
+        if: matrix.kind == 'macos'
+        run: tar -cf kodi-runtime.tar -C build Kodi.app
+
+      # The Xcode-generated build nests the bundle under a per-configuration
+      # directory that shifts with the SDK, unlike macOS's fixed build/Kodi.app.
+      - name: Package Kodi.app (Simulator)
+        if: matrix.kind == 'simulator'
+        run: |
+          app_path=$(find build -name 'Kodi.app' -path "*${CONFIGURATION}*" -print -quit)
+          if [ -z "$app_path" ]; then
+            echo "::error::No ${CONFIGURATION} Kodi.app found under build/ after xcodebuild"
+            exit 1
+          fi
+          tar -cf kodi-runtime.tar -C "$(dirname "$app_path")" Kodi.app
+
+      # Uploaded before the unit tests run so the e2e job still gets a binary
+      # when a unit test fails.
+      - uses: actions/upload-artifact@v7
+        if: matrix.kind == 'macos' || matrix.kind == 'simulator'
+        with:
+          name: kodi-build-${{ matrix.platform }}
+          path: kodi-runtime.tar
+          retention-days: 7
+
+      # From the build tree: with no Resources/Kodi next to the bare test
+      # binary, CUtil::GetHomePath() walks up to the directory holding
+      # system/settings/settings.xml.
+      - name: Run unit tests
+        if: matrix.kind == 'macos'
+        working-directory: build
+        run: ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - uses: ./.github/actions/report-unit-tests
+        if: always() && matrix.kind == 'macos'
+        with:
+          name: macos-${{ runner.arch }}
+
+  e2e:
+    name: e2e (${{ matrix.platform }})
+    needs: build
+    # Runs the legs whose build succeeded even if another leg's failed.
+    if: ${{ !cancelled() && needs.build.result != 'skipped' }}
+    runs-on: macos-14
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - kind: macos
+            platform: macos
+          - kind: simulator
+            platform: ios
+            runtime_prefix: com.apple.CoreSimulator.SimRuntime.iOS-
+            device_pattern: iPhone
+          - kind: simulator
+            platform: tvos
+            runtime_prefix: com.apple.CoreSimulator.SimRuntime.tvOS-
+            device_pattern: Apple TV
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select latest available Xcode
+        if: matrix.kind == 'simulator'
+        run: |
+          latest_xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | sort -V | tail -1)
+          if [ -n "$latest_xcode" ]; then
+            sudo xcode-select -s "$latest_xcode"
+          fi
+          xcodebuild -version
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-build-${{ matrix.platform }}
+
+      - name: Unpack Kodi.app
+        run: mkdir -p build && tar -xf kodi-runtime.tar -C build
+
+      # Runtime and device type are discovered rather than pinned: the
+      # identifiers shift with the image's Xcode, and the device type is taken
+      # from the runtime's own supportedDeviceTypes so the pair is always valid.
+      - name: Create and boot a Simulator device
+        if: matrix.kind == 'simulator'
+        id: sim
+        env:
+          RUNTIME_PREFIX: ${{ matrix.runtime_prefix }}
+          DEVICE_PATTERN: ${{ matrix.device_pattern }}
+        run: |
+          runtime_json=$(xcrun simctl list --json runtimes | jq -c --arg prefix "$RUNTIME_PREFIX" '
+            [.runtimes[] | select(.identifier | startswith($prefix))]
+            | sort_by(.version) | last')
+          runtime_id=$(echo "$runtime_json" | jq -r '.identifier // empty')
+          device_type=$(echo "$runtime_json" | jq -r --arg pattern "$DEVICE_PATTERN" '
+            [.supportedDeviceTypes[]? | select(.name | test($pattern))] | last | .identifier // empty')
+          if [ -z "$device_type" ] || [ -z "$runtime_id" ]; then
+            echo "::error::Could not find a $DEVICE_PATTERN device type / matching runtime via simctl"
+            xcrun simctl list
+            exit 1
+          fi
+          udid=$(xcrun simctl create Kodi-E2E "$device_type" "$runtime_id")
+          xcrun simctl bootstatus "$udid" -b
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+          xcrun simctl list --json devices | jq -r --arg udid "$udid" \
+            '.devices[][] | select(.udid == $udid) | "apps=\(.dataPath)/Containers/Data/Application"' >> "$GITHUB_OUTPUT"
+
+      # portable_data lives under Contents/Resources/Kodi, not next to the
+      # binary - see driver/launcher.py's _resolve_app_root.
+      - uses: ./.github/actions/run-e2e
+        if: matrix.kind == 'macos'
+        with:
+          name: macos
+          kodi-binary: ${{ github.workspace }}/build/Kodi.app/Contents/MacOS/Kodi
+          log-paths: |
+            build/Kodi.app/Contents/Resources/Kodi/portable_data/temp/kodi.log
+            build/Kodi.app/Contents/Resources/Kodi/portable_data/temp/process-output.log
+          screenshot-glob: build/Kodi.app/Contents/Resources/Kodi/portable_data/screenshots/*.png
+
+      # The artifact globs span every app container of the device rather than
+      # the one Kodi has when the run starts: each simctl install of an
+      # already installed app moves its data into a new container UUID, and
+      # the launcher installs once per scenario. kodi.log is globbed across
+      # the whole container because special://logpath does not resolve under
+      # the profile directory on this platform the way settings and
+      # screenshots do.
+      - uses: ./.github/actions/run-e2e
+        if: matrix.kind == 'simulator'
+        with:
+          name: ${{ matrix.platform }}
+          kodi-app: ${{ github.workspace }}/build/Kodi.app
+          kodi-simulator-device: ${{ steps.sim.outputs.udid }}
+          log-paths: ${{ steps.sim.outputs.apps }}/*/**/kodi.log
+          screenshot-glob: ${{ steps.sim.outputs.apps }}/*/Library/Preferences/Kodi/screenshots/*.png
+
+      - name: Delete Simulator device
+        if: always() && matrix.kind == 'simulator' && steps.sim.outputs.udid != ''
+        run: |
+          xcrun simctl shutdown "${{ steps.sim.outputs.udid }}" || true
+          xcrun simctl delete "${{ steps.sim.outputs.udid }}" || true

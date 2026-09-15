@@ -1,0 +1,294 @@
+name: E2E (Android emulator)
+
+# Cross-builds Kodi for Android via tools/depends. The x86_64 debug APK feeds
+# the emulator E2E run below (that is the ABI the emulator runs under KVM on a
+# Linux runner); the arm64-v8a, armeabi-v7a and x86 legs are the release APKs
+# Jenkins ships to test-builds/nightlies and are build-only. Every leg also
+# builds the requested binary add-ons, which the APK bundles.
+#
+# depends-key looks up which ABIs already have their tools/depends prefix
+# cached for this tools/depends tree, depends builds the missing ones, and
+# build restores the prefix and only re-runs configure before building Kodi.
+#
+# Android has no -p/--portable flag, so tools/e2e/driver/android_launcher.py
+# manages a fixed on-device profile instead of the desktop launcher.
+
+# Called from ci.yml, which owns the triggers, path filters, the draft/label
+# gate and the manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+env:
+  # The runner image's preinstalled SDK; the NDK is installed into it below.
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+  DEPENDS_PREFIX: /home/runner/xbmc-android-depends
+  BINARY_ADDONS: ${{ inputs.addons }}
+
+jobs:
+  # Resolves the matrix once, with the configuration per ABI, and looks up
+  # which legs already have a cached prefix.
+  depends-key:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      legs: ${{ steps.legs.outputs.legs }}
+      missing: ${{ steps.lookup.outputs.missing }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
+
+      # Debug for the x86_64 emulator leg and Release for the shipped ABIs, as
+      # Jenkins builds them, unless the caller asks for one configuration or the
+      # run has debug logging enabled. Lower-cased: the APK name carries it.
+      - name: Define legs
+        id: legs
+        env:
+          CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || '') }}
+        run: |
+          legs=$(jq -c --arg config "${CONFIGURATION,,}" '
+            map(if $config != "" then .config = $config else . end
+                | .key = "android-\(.abi)-\(.config)")' <<'LEGS'
+          [
+            {"abi": "x86_64",      "host": "x86_64-linux-android",  "config": "debug"},
+            {"abi": "arm64-v8a",   "host": "aarch64-linux-android", "config": "release"},
+            {"abi": "armeabi-v7a", "host": "arm-linux-androideabi", "config": "release"},
+            {"abi": "x86",         "host": "i686-linux-android",    "config": "release"}
+          ]
+          LEGS
+          )
+          echo "legs=${legs}" >> "$GITHUB_OUTPUT"
+          echo "${legs}" | jq .
+
+      - uses: ./.github/actions/depends-cache-lookup
+        id: lookup
+        with:
+          legs: ${{ steps.legs.outputs.legs }}
+
+  depends:
+    name: depends (${{ matrix.abi }})
+    needs: depends-key
+    if: needs.depends-key.outputs.missing != '[]'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.missing) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-android-build
+
+      # --disable-debug selects the Release build type in the generated
+      # toolchain, as tools/buildsteps/defaultenv does for Jenkins' Android jobs.
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=${{ matrix.host }} --with-sdk-path=${{ env.ANDROID_SDK_ROOT }}
+            ${{ matrix.config == 'release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: "true"
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: android-${{ matrix.abi }}-depends
+
+      # Not reached when the build failed, so a half-built prefix is never saved.
+      - uses: ./.github/actions/depends-cache-save
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+  build:
+    name: build (${{ matrix.abi }})
+    needs: [depends-key, depends]
+    # Runs whether depends built anything or was skipped. A leg whose prefix is
+    # still missing fails at the restore below instead of blocking the others.
+    if: ${{ !cancelled() && needs.depends-key.result == 'success' }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 240
+    env:
+      CONFIG: ${{ matrix.config }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.legs) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-android-build
+
+      # Every build type signs via the "release" signingConfig, which falls back
+      # to this path/alias/password when KODI_ANDROID_* is unset
+      # (tools/android/packaging/Makefile.in, docs/README.Android.md 3.3).
+      - name: Create Android debug signing key
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -keystore ~/.android/debug.keystore -v -alias androiddebugkey \
+            -dname "CN=Android Debug,O=Android,C=US" -keypass android -storepass android \
+            -keyalg RSA -keysize 2048 -validity 10000
+
+      # The release keystore only exists for runs that can see secrets, so PR
+      # builds from forks stay signed with the debug key above. The keystore is
+      # stored base64-encoded in ANDROID_KEYSTORE.
+      - name: Set up release signing
+        if: env.CONFIG == 'release' && github.event_name != 'pull_request'
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "${ANDROID_KEYSTORE}" ]; then
+            echo "No ANDROID_KEYSTORE secret, signing with the debug key"
+            exit 0
+          fi
+          echo "${ANDROID_KEYSTORE}" | base64 -d > "${RUNNER_TEMP}/release.keystore"
+          {
+            echo "KODI_ANDROID_STORE_FILE=${RUNNER_TEMP}/release.keystore"
+            echo "KODI_ANDROID_STORE_PASSWORD=${ANDROID_KEYSTORE_PASSWORD}"
+            echo "KODI_ANDROID_KEY_ALIAS=${ANDROID_KEY_ALIAS}"
+            echo "KODI_ANDROID_KEY_PASSWORD=${ANDROID_KEY_PASSWORD:-${ANDROID_KEYSTORE_PASSWORD}}"
+          } >> "$GITHUB_ENV"
+
+      - uses: ./.github/actions/depends-cache-restore
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          fail-on-cache-miss: "true"
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: android-${{ matrix.abi }}-${{ env.CONFIG }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=${{ matrix.host }} --with-sdk-path=${{ env.ANDROID_SDK_ROOT }}
+            ${{ matrix.config == 'release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      # Installed into the depends prefix, from where the APK packaging copies
+      # the add-on libraries (tools/android/packaging/Makefile.in).
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ env.BINARY_ADDONS }}
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      # The apk target lives in the generated build tree and drops the APK at
+      # the repo root.
+      - name: Package APK
+        run: |
+          make -C build apk
+          test -f "kodiapp-${{ matrix.abi }}-${CONFIG}.apk" || {
+            echo "::error::kodiapp-${{ matrix.abi }}-${CONFIG}.apk not found after 'make apk'"; exit 1; }
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: android-${{ matrix.abi }}
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: android-${{ matrix.abi }}-${{ env.CONFIG }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-android-${{ matrix.abi }}
+          path: kodiapp-${{ matrix.abi }}-${{ env.CONFIG }}.apk
+          retention-days: 7
+
+  e2e:
+    needs: build
+    # The matrix is one job, so this runs once every leg is done; only the
+    # x86_64 artifact is needed and download-artifact fails clearly without it.
+    if: ${{ !cancelled() && needs.build.result != 'skipped' }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    env:
+      # The x86_64 leg builds debug unless the caller asked for Release.
+      APK: kodiapp-x86_64-${{ inputs.configuration == 'Release' && 'release' || 'debug' }}.apk
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-android-x86_64
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: tools/e2e/uv.lock
+
+      # /dev/kvm is not group-writable by default; without this the emulator
+      # falls back to software emulation and blows the job's time budget.
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # API 30 is the lowest level with the MANAGE_EXTERNAL_STORAGE consent flow
+      # the launcher pre-grants its way past; lower levels would skip that path.
+      #
+      # Each line of `script` is its own shell, hence the single chained
+      # command. Logs are pulled here rather than in a later step because the
+      # action shuts the emulator down when the step ends. `adb root` because
+      # nothing less can read the external-storage profile (see the launcher's
+      # module docstring); reading as root is safe, only writing mislabels files.
+      # Repeated here so logs are collected even when pytest never launched Kodi.
+      - name: Run E2E suite on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: >
+            cd tools/e2e &&
+            KODI_APK="${GITHUB_WORKSPACE}/${APK}" uv run pytest scenarios -v --junitxml=../../e2e-results.xml ;
+            test_exit=$? ;
+            mkdir -p ../../android-artifacts/screenshots ;
+            adb root ; adb wait-for-device ;
+            adb pull /storage/emulated/0/Android/data/org.xbmc.kodi/files/.kodi/temp/kodi.log ../../android-artifacts/kodi.log ;
+            for f in $(adb shell ls -1 /storage/emulated/0/Android/data/org.xbmc.kodi/files/.kodi/temp/*.png 2>/dev/null | tr -d '\r'); do adb exec-out cat "$f" > "../../android-artifacts/screenshots/$(basename $f)"; done ;
+            adb logcat -d > ../../android-artifacts/logcat.txt ;
+            exit $test_exit
+
+      - uses: ./.github/actions/e2e-artifacts
+        if: always()
+        with:
+          name: android
+          log-paths: |
+            android-artifacts/kodi.log
+            android-artifacts/logcat.txt
+          screenshot-glob: android-artifacts/screenshots/*.png
