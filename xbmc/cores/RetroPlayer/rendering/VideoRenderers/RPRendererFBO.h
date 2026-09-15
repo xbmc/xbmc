@@ -49,7 +49,7 @@ public:
   RenderBufferPoolVector CreateBufferPools(CRenderContext& context) override;
 };
 
-#if defined(HAS_EGL) && (defined(HAS_GL) || HAS_GLES == 3)
+#if (defined(HAS_EGL) || defined(TARGET_DARWIN_OSX)) && (defined(HAS_GL) || HAS_GLES == 3)
 class CRPRendererFBO : public CRPBaseRenderer
 {
 public:
@@ -110,6 +110,7 @@ protected:
   };
 
   FrameGeometry m_loggedGeometry;
+  bool m_loggedHardwarePresentation{false};
 
   std::string m_lastLoggedPreset{"\0"};
   bool m_bLastLoggedUsePreset{false};

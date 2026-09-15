@@ -8,12 +8,18 @@ elseif(TARGET ${APP_NAME_LC}::OpenGLES)
   endif()
 endif()
 
-if(FBO_GL_SUPPORTED AND TARGET ${APP_NAME_LC}::EGL)
-  set(SOURCES HwRenderingContext.cpp
-              HwRenderingContextEGL.cpp)
-  set(HEADERS IHwRenderingContext.h
-              HwRenderingContextEGL.h
-              HwRenderingContextEGLUtils.h)
+if(FBO_GL_SUPPORTED AND (TARGET ${APP_NAME_LC}::EGL OR CORE_SYSTEM_NAME STREQUAL "osx"))
+  set(SOURCES HwRenderingContext.cpp)
+  set(HEADERS IHwRenderingContext.h)
+
+  if(CORE_SYSTEM_NAME STREQUAL "osx")
+    list(APPEND SOURCES HwRenderingContextOSX.mm)
+    list(APPEND HEADERS HwRenderingContextOSX.h)
+  else()
+    list(APPEND SOURCES HwRenderingContextEGL.cpp)
+    list(APPEND HEADERS HwRenderingContextEGL.h
+                        HwRenderingContextEGLUtils.h)
+  endif()
 
   core_add_library(rp-rendering-contexts)
 endif()

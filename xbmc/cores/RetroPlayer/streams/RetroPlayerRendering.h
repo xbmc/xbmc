@@ -132,6 +132,7 @@ private:
 
   // Stream parameters
   bool m_bOpen = false;
+  bool m_loggedHardwareFrame{false};
   std::unique_ptr<HwFramebufferProperties> m_hwProperties;
   unsigned int m_width = 0;
   unsigned int m_height = 0;
