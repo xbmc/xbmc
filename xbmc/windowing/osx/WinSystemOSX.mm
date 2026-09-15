@@ -1299,6 +1299,11 @@ CGLContextObj CWinSystemOSX::GetCGLContextObj()
   return cglcontex;
 }
 
+NSOpenGLContext* CWinSystemOSX::GetNSOpenGLContext() const
+{
+  return [m_glView getNSOpenGLContext];
+}
+
 bool CWinSystemOSX::FlushBuffer()
 {
   if (m_appWindow)

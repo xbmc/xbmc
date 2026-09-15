@@ -216,6 +216,11 @@
   return [m_glcontext CGLContextObj];
 }
 
+- (NSOpenGLContext*)getNSOpenGLContext
+{
+  return m_glcontext;
+}
+
 - (void)Update
 {
   assert(m_glcontext);
