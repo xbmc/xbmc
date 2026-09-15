@@ -217,8 +217,12 @@ bool CMediaSourceSettings::UpdateSource(std::string_view strType,
         share.m_strThumbnailImage = strUpdateValue;
       else if (strUpdateChild == "path")
       {
+        CMediaSource updatedShare;
+        updatedShare.FromNameAndPaths(share.strName, {strUpdateValue});
         share.vecPaths.clear();
         share.strPath = strUpdateValue;
+        share.strDevicePath = updatedShare.strDevicePath;
+        share.m_iDriveType = updatedShare.m_iDriveType;
         share.vecPaths.emplace_back(strUpdateValue);
       }
       else
@@ -312,6 +316,8 @@ bool CMediaSourceSettings::UpdateShare(std::string_view type,
     {
       currshare.strName = share.strName;
       currshare.strPath = share.strPath;
+      currshare.strDevicePath = share.strDevicePath;
+      currshare.m_iDriveType = share.m_iDriveType;
       currshare.vecPaths = share.vecPaths;
       pShare = &currshare;
       break;
