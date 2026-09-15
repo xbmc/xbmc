@@ -188,6 +188,8 @@ bool CGameClientStreams::EnableHardwareRendering(const game_hw_rendering_propert
   const bool supported = properties.context_type == GAME_HW_CONTEXT_OPENGLES2 ||
                          properties.context_type == GAME_HW_CONTEXT_OPENGLES3 ||
                          properties.context_type == GAME_HW_CONTEXT_OPENGLES_VERSION;
+#elif defined(TARGET_DARWIN_OSX) && defined(HAS_GL)
+  const bool supported = properties.context_type == GAME_HW_CONTEXT_OPENGL_CORE;
 #elif defined(HAS_GL)
   const bool supported = properties.context_type == GAME_HW_CONTEXT_OPENGL ||
                          properties.context_type == GAME_HW_CONTEXT_OPENGL_CORE;

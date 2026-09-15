@@ -444,6 +444,10 @@ protected:
     game_hw_rendering_properties properties{};
 #if defined(HAS_GLES)
     properties.context_type = GAME_HW_CONTEXT_OPENGLES3;
+#elif defined(TARGET_DARWIN_OSX)
+    properties.context_type = GAME_HW_CONTEXT_OPENGL_CORE;
+    properties.version_major = 3;
+    properties.version_minor = 3;
 #else
     properties.context_type = GAME_HW_CONTEXT_OPENGL;
 #endif
@@ -814,6 +818,18 @@ TEST_F(TestGameClientHardwareRendering, ExplicitContextVersionMustBeSpecified)
   EXPECT_EQ(OpenHardwareStream(), nullptr);
   EXPECT_EQ(m_manager.created, 0U);
 }
+
+#if defined(TARGET_DARWIN_OSX) && defined(HAS_GL)
+TEST_F(TestGameClientHardwareRendering, LegacyOpenGLIsRefusedBeforeHardwareSelection)
+{
+  game_hw_rendering_properties properties{};
+  properties.context_type = GAME_HW_CONTEXT_OPENGL;
+  EXPECT_FALSE(m_client->Streams().EnableHardwareRendering(properties));
+  EXPECT_TRUE(m_client->Streams().HardwareRenderingRefused());
+  EXPECT_EQ(OpenHardwareStream(), nullptr);
+  EXPECT_EQ(m_manager.created, 0U);
+}
+#endif
 
 #if defined(HAS_GL)
 TEST_F(TestGameClientHardwareRendering, GuiContextVersionDoesNotLimitClientNegotiation)

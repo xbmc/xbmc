@@ -8,7 +8,7 @@
 
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
 
-#if defined(HAS_EGL) && (defined(HAS_GL) || HAS_GLES == 3)
+#if (defined(HAS_EGL) || defined(TARGET_DARWIN_OSX)) && (defined(HAS_GL) || HAS_GLES == 3)
 
 #include "cores/RetroPlayer/buffers/RenderBufferManager.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolFBO.h"

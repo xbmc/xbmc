@@ -8,7 +8,7 @@
 
 #include "RPRendererFBO.h"
 
-#if defined(HAS_EGL) && (defined(HAS_GL) || HAS_GLES == 3)
+#if (defined(HAS_EGL) || defined(TARGET_DARWIN_OSX)) && (defined(HAS_GL) || HAS_GLES == 3)
 #include "RenderGeometryFBO.h"
 #include "cores/RetroPlayer/buffers/RenderBufferFBO.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolFBO.h"
@@ -38,7 +38,7 @@ using namespace RETRO;
 
 // --- CRendererFactoryFBO ------------------------------------------------
 
-#if defined(HAS_EGL) && (defined(HAS_GL) || HAS_GLES == 3)
+#if (defined(HAS_EGL) || defined(TARGET_DARWIN_OSX)) && (defined(HAS_GL) || HAS_GLES == 3)
 namespace
 {
 // State not covered by CRPBaseRenderer's GUI state block.
@@ -580,6 +580,13 @@ void CRPRendererFBO::Render(uint8_t alpha)
               (colour[3] / 255.0f));
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  if (!m_loggedHardwarePresentation)
+  {
+    CLog::Log(LOGDEBUG,
+              "RetroPlayer[RENDER]: First hardware frame presented from shared texture {}",
+              drawTexture);
+    m_loggedHardwarePresentation = true;
+  }
 
   glDisableVertexAttribArray(vertLoc);
   glDisableVertexAttribArray(loc);

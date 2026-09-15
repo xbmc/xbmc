@@ -308,6 +308,7 @@ private:
   unsigned int m_hwBufferWidth{0};
   unsigned int m_hwBufferHeight{0};
   uintptr_t m_loggedFramebuffer{0};
+  bool m_loggedHardwareCapture{false};
   std::vector<IRenderBuffer*> m_renderBuffers;
   std::map<AVPixelFormat, std::map<AVPixelFormat, SwsContext*>> m_scalers; // From -> to -> context
   std::vector<uint8_t> m_cachedFrame;

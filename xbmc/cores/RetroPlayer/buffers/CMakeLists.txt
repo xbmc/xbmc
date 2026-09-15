@@ -55,7 +55,7 @@ elseif(TARGET ${APP_NAME_LC}::OpenGLES)
     set(FBO_GL_SUPPORTED TRUE)
   endif()
 endif()
-if(FBO_GL_SUPPORTED AND TARGET ${APP_NAME_LC}::EGL)
+if(FBO_GL_SUPPORTED AND (TARGET ${APP_NAME_LC}::EGL OR CORE_SYSTEM_NAME STREQUAL "osx"))
   list(APPEND SOURCES RenderBufferFBO.cpp
                       RenderBufferPoolFBO.cpp)
   list(APPEND HEADERS RenderBufferFBO.h
