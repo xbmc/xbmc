@@ -86,12 +86,12 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                      "-DDEPENDS_PATH=${DEPENDS_PATH}"
                      -DKODI_SOURCE_DIR=${CMAKE_SOURCE_DIR})
 
-      # Create a list with an alternate separator e.g. pipe symbol
-      string(REPLACE ";" "|" string_ARCH_DEFINES "${ARCH_DEFINES}")
+      # Create a list with an alternate separator; a pipe would split the clang-tidy header filter regex
+      string(REPLACE ";" "^^" string_ARCH_DEFINES "${ARCH_DEFINES}")
 
       list(APPEND CMAKE_ARGS -DARCH_DEFINES=${string_ARCH_DEFINES})
       if(ENABLE_CLANGTIDY)
-        string(REPLACE ";" "|" string_CMAKE_CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}")
+        string(REPLACE ";" "^^" string_CMAKE_CXX_CLANG_TIDY "${CMAKE_CXX_CLANG_TIDY}")
         list(APPEND CMAKE_ARGS "-DCMAKE_CXX_CLANG_TIDY=${string_CMAKE_CXX_CLANG_TIDY}")
       else()
         list(APPEND CMAKE_ARGS -UCMAKE_CXX_CLANG_TIDY)
@@ -110,7 +110,7 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
       externalproject_add(buildtexturepacker
                           SOURCE_DIR ${CMAKE_SOURCE_DIR}/tools/depends/native/TexturePacker/src
                           PREFIX ${CORE_BUILD_DIR}/build-texturepacker
-                          LIST_SEPARATOR |
+                          LIST_SEPARATOR ^^
                           INSTALL_COMMAND ""
                           CMAKE_ARGS ${CMAKE_ARGS}
                           BUILD_ALWAYS ON
