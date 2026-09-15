@@ -17,6 +17,7 @@
 #include "platform/win32/WIN32Util.h"
 
 #include <cassert>
+#include <mutex>
 #include <wchar.h>
 
 #include <Windows.h>
@@ -165,6 +166,46 @@ void CWin32File::Close()
   m_filepathnameW.clear();
 }
 
+#ifndef TARGET_WINDOWS_STORE
+namespace
+{
+// Publishes the reading thread for CancelSynchronousIo, the only call that ends a synchronous
+// read issued by another thread. The pseudo-handle from GetCurrentThread is duplicated because it
+// means the calling thread to whoever uses it.
+class CPublishedReadThread
+{
+public:
+  CPublishedReadThread(CCriticalSection& section, HANDLE& slot) : m_section(section), m_slot(slot)
+  {
+    if (!DuplicateHandle(GetCurrentProcess(), GetCurrentThread(), GetCurrentProcess(), &m_thread,
+                         THREAD_TERMINATE, FALSE, 0))
+      m_thread = nullptr;
+
+    std::unique_lock lock(m_section);
+    m_slot = m_thread;
+  }
+
+  ~CPublishedReadThread()
+  {
+    {
+      std::unique_lock lock(m_section);
+      m_slot = nullptr;
+    }
+    if (m_thread)
+      CloseHandle(m_thread);
+  }
+
+  CPublishedReadThread(const CPublishedReadThread&) = delete;
+  CPublishedReadThread& operator=(const CPublishedReadThread&) = delete;
+
+private:
+  CCriticalSection& m_section;
+  HANDLE& m_slot;
+  HANDLE m_thread{nullptr};
+};
+} // unnamed namespace
+#endif
+
 ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
 {
   if (m_hFile == INVALID_HANDLE_VALUE)
@@ -173,6 +214,10 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
   assert(lpBuf != NULL || uiBufSize == 0);
   if (lpBuf == NULL && uiBufSize != 0)
     return -1;
+
+#ifndef TARGET_WINDOWS_STORE
+  const CPublishedReadThread published(m_readThreadSection, m_readThread);
+#endif
 
   if (uiBufSize == 0)
   { // allow "test" read with zero size
@@ -776,4 +821,24 @@ int CWin32File::GetChunkSize()
   }
 
   return 0;
+}
+
+int CWin32File::IoControl(IOControl request, void* param)
+{
+#ifndef TARGET_WINDOWS_STORE
+  if (request == IOControl::CANCEL_IO && m_hFile != INVALID_HANDLE_VALUE)
+  {
+    // The handle has no timeout, so a share that stops answering holds ReadFile until cancelled.
+    // The read then fails with ERROR_OPERATION_ABORTED.
+    std::unique_lock lock(m_readThreadSection);
+    if (m_readThread && !CancelSynchronousIo(m_readThread) && GetLastError() != ERROR_NOT_FOUND)
+    {
+      CLog::LogF(LOGERROR, "Failed to cancel the pending read, error {}", GetLastError());
+      return -1;
+    }
+    return 1;
+  }
+#endif
+
+  return IFile::IoControl(request, param);
 }
