@@ -453,8 +453,11 @@ void CGUIPanelContainer::CalculateLayout()
     m_itemsPerRow = (int)(m_width / m_layout->Size(HORIZONTAL));
     m_itemsPerPage = (int)(m_height / m_layout->Size(VERTICAL));
   }
-  if (m_itemsPerRow < 1) m_itemsPerRow = 1;
-  if (m_itemsPerPage < 1) m_itemsPerPage = 1;
+  if (m_itemsPerRow < 1)
+    m_itemsPerRow = 1;
+  if (m_itemsPerPage < 1)
+    m_itemsPerPage = 1;
+  m_pageSize = m_itemsPerPage;
 
   // ensure that the scroll offset is a multiple of our size
   m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
