@@ -702,19 +702,30 @@ void CLinuxRendererGLES::UpdateVideoFilter()
 
   // TODO: GL also checks nonLinStretchChanged and cmsChanged in the early exit
   // and the reload check below. Add when non-linear stretch and CMS are ported to GLES.
+  const bool hwScaled = IsHwScaled();
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
-      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width())
+      viewRect.Height() == m_lastViewRect.Height() && viewRect.Width() == m_lastViewRect.Width() &&
+      hwScaled == m_lastHwScaled)
   {
     return;
   }
 
-  // Viewport-only change doesn't need shader reload -- only method changes do
-  if (m_scalingMethod != m_videoSettings.m_ScalingMethod)
+  // Reload when the hardware scaling state changes, even if the GUI method
+  // stays the same.
+  if (m_scalingMethod != m_videoSettings.m_ScalingMethod || hwScaled != m_lastHwScaled)
     m_reloadShaders = true;
 
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
   m_lastViewRect = viewRect;
+  m_lastHwScaled = hwScaled;
+
+  if (hwScaled)
+  {
+    // VPP already scaled the texture to the display size, so avoid another
+    // scaling pass.
+    m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  }
 
   if(!Supports(m_scalingMethod))
   {
