@@ -871,6 +871,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
         helper.GetEpisodePlaylists(m_url, items, allTitles, episodeIndex, episodesOnDisc, clips,
                                    playlists);
         success = !items.IsEmpty();
+        AddOptionsAndSortMethods(m_url, items, CDiscDirectoryHelper::AllTitles::EPISODES,
+                                 HasMenuSupport());
       }
 
       return success;

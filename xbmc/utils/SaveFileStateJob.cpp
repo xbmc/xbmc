@@ -239,14 +239,16 @@ void CSaveFileState::DoWork(CFileItem& item,
               return false;
             }()};
 
+        int replacedFileId{-1};
         if (updateNeeded)
         {
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile
           // in the movie table entry if it's a non-default video version
+          const int oldFileId{tag->m_iFileId};
           const int newFileId{videodatabase.SetFileForMedia(
               progressTrackingFile, item.GetVideoContentType(), tag->m_iDbId,
-              CVideoDatabase::FileRecord{.m_idFile = tag->m_iFileId,
+              CVideoDatabase::FileRecord{.m_idFile = oldFileId,
                                          .m_playCount = tag->GetPlayCount(),
                                          .m_lastPlayed = tag->m_lastPlayed,
                                          .m_dateAdded = tag->m_dateAdded})};
@@ -254,6 +256,13 @@ void CSaveFileState::DoWork(CFileItem& item,
           {
             videodatabase.CommitTransaction();
             item.GetVideoInfoTag()->m_iFileId = newFileId;
+            if (newFileId != oldFileId)
+            {
+              CLog::LogF(LOGDEBUG, "{} {} now uses file {} ({}) instead of file {}", tag->m_type,
+                         tag->m_iDbId, newFileId, redactPath, oldFileId);
+              replacedFileId = oldFileId;
+              updateListing = true;
+            }
           }
           else
             videodatabase.RollbackTransaction();
@@ -265,6 +274,8 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItemPtr msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
+          if (replacedFileId > 0)
+            msgItem->SetProperty("replaced_file_id", replacedFileId);
 
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);

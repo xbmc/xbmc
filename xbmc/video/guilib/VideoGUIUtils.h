@@ -11,6 +11,7 @@
 #include "utils/ContentUtils.h"
 
 #include <memory>
+#include <string>
 
 class CFileItem;
 class CFileItemList;
@@ -82,5 +83,12 @@ std::string GetResumeString(const CFileItem& item);
  \return The resume string.
  */
 std::string GetResumeString(int64_t startOffset, unsigned int partNumber);
+
+/*!
+ \brief Tell any open window and playlist that an item's path has changed, so that they update the
+ item.
+ \param oldFileId [in] The library file id the item had before, when the change gave it a new one
+ */
+void NotifyItemPathChanged(const CFileItem& item, const std::string& oldPath, int oldFileId = -1);
 
 } // namespace KODI::VIDEO::UTILS
