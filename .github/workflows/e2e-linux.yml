@@ -272,15 +272,16 @@ jobs:
           sudo apt-get install -y ./packages/kodi_*.deb ./packages/kodi-bin_*.deb libgl1-mesa-dri $extra
           echo "KODI_BINARY=$(dpkg -L kodi-bin | grep -E '/kodi/kodi-${{ matrix.platform }}$')" >> "$GITHUB_ENV"
 
-      # vkms ships in linux-modules-extra. CDRMUtils::OpenDrm() takes the first
-      # card with a connected connector, which vkms reports and the runner's own
+      # The 26.04 Azure kernel ships vkms in its base modules package, older
+      # kernels in linux-modules-extra. CDRMUtils::OpenDrm() takes the first card
+      # with a connected connector, which vkms reports and the runner's own
       # virtual card does not. The node is group "video", which the runner user is
       # not in, hence the chmod; udev creates the node shortly after modprobe
       # returns, so settle first or the chmod misses it.
       - name: Load vkms virtual display driver
         if: matrix.platform == 'gbm'
         run: |
-          sudo apt-get install -y "linux-modules-extra-$(uname -r)"
+          modinfo vkms >/dev/null 2>&1 || sudo apt-get install -y "linux-modules-extra-$(uname -r)"
           sudo modprobe vkms
           sudo udevadm settle
           sudo chmod 666 /dev/dri/card*
