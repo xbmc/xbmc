@@ -446,6 +446,14 @@ void CVideoPlayerAudio::Process()
     {
       m_displayReset = true;
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_AUDIO_RECONFIGURE))
+    {
+      // Apply the recheck immediately (while paused/starved, 
+      // no new DEMUXER_PACKET messages are processed)
+      m_recheckPassthrough = true;
+      if (SwitchCodecIfNeeded())
+        audioframe.nb_frames = 0;
+    }
   }
 }
 
@@ -459,6 +467,13 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
     if (audioframe.nb_frames == 0)
     {
+      // Even if we have no decoded frame, honor any pending passthrough recheck request.
+      // This ensures passthrough toggles apply immediately, even when paused or starved.
+      if (m_displayReset || m_recheckPassthrough)
+      {
+        SwitchCodecIfNeeded();
+      }
+
       return false;
     }
 
@@ -498,9 +513,9 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       }
     }
 
-    // Display reset event has occurred
-    // See if we should enable passthrough
-    if (m_displayReset)
+    // Display reset event has occurred, or the audio passthrough setting was changed while
+    // playing - see if we should enable/disable passthrough, without restarting playback
+    if (m_displayReset || m_recheckPassthrough)
     {
       if (SwitchCodecIfNeeded())
       {
@@ -653,10 +668,13 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
 {
   if (m_displayReset)
     CLog::Log(LOGINFO, "CVideoPlayerAudio: display reset occurred, checking for passthrough");
+  else if (m_recheckPassthrough)
+    CLog::Log(LOGINFO, "CVideoPlayerAudio: passthrough setting changed, checking for passthrough");
   else
     CLog::Log(LOGDEBUG, "CVideoPlayerAudio: stream props changed, checking for passthrough");
 
   m_displayReset = false;
+  m_recheckPassthrough = false;
 
   bool allowpassthrough = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (m_processInfo.IsRealtimeStream() || m_synctype == SYNC_RESAMPLE)
@@ -674,6 +692,16 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   }
 
   m_pAudioCodec = std::move(codec);
+
+  // Update audio metadata to reflect the new codec/passthrough state, matching
+  // the normal initialization path. This ensures GUI info labels and AV-change
+  // callbacks receive updated decoder info immediately.
+  m_processInfo.SetAudioDecoderName(m_pAudioCodec->GetName());
+  {
+    std::unique_lock lock(m_info_section);
+    m_info.passthrough = m_pAudioCodec->NeedPassthrough();
+  }
+  m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
 
   return true;
 }
