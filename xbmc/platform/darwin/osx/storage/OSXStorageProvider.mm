@@ -60,7 +60,7 @@ void COSXStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
   share.m_ignore = true;
   localDrives.push_back(share);
 
-  // This will pick up all local non-removable disks including the Root Disk.
+  // User-visible local non-removable disks, including the root disk.
   DASessionRef session = DASessionCreate(kCFAllocatorDefault);
   if (session)
   {
@@ -71,6 +71,9 @@ void COSXStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
     count = getmntinfo(&buf, 0);
     for (i = 0; i < count; i++)
     {
+      if (buf[i].f_flags & MNT_DONTBROWSE)
+        continue;
+
       mountpoint = buf[i].f_mntonname;
       devicepath = buf[i].f_mntfromname;
 
@@ -85,9 +88,12 @@ void COSXStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
             CMediaSource sharesrc;
 
             sharesrc.strPath = mountpoint;
-            Cocoa_GetVolumeNameFromMountPoint(mountpoint, sharesrc.strName);
-            sharesrc.m_ignore = true;
-            localDrives.push_back(sharesrc);
+            if (Cocoa_GetVolumeNameFromMountPoint(mountpoint, sharesrc.strName) &&
+                !sharesrc.strName.empty())
+            {
+              sharesrc.m_ignore = true;
+              localDrives.push_back(sharesrc);
+            }
           }
           CFRelease(details);
         }
