@@ -658,7 +658,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
     auto skipLeadingSpaces = [&](vecText::const_iterator& it)
     {
       it = std::find_if_not(it, line.m_text.end(),
-                            std::bind_front(&CGUITextLayout::CanWrapAtLetter, this));
+                            std::bind_front(&CGUITextLayout::IsSpace, this));
     };
 
     auto current = line.m_text.begin();
@@ -672,31 +672,38 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
     while (current != line.m_text.end())
     {
       // Find next candidate wrap position
-      auto wordEnd = std::find_if(current, line.m_text.end(),
-                                  std::bind_front(&CGUITextLayout::CanWrapAtLetter, this));
-      const bool hasSpace = (wordEnd != line.m_text.end());
-      const float wordWidth = widthOf(current, wordEnd);
+      auto breakPos = std::find_if(current, line.m_text.end(),
+                                   std::bind_front(&CGUITextLayout::CanWrapAtLetter, this));
+      const bool hasBreakChar = (breakPos != line.m_text.end());
+      const float wordWidth = widthOf(current, breakPos);
 
-      // Try to include word + trailing space
-      if (const float spaceWidth = hasSpace ? widthOf(wordEnd, wordEnd + 1) : 0.0f;
-          currentWidth + wordWidth + spaceWidth <= maxWidth)
+      // Try to include word + trailing break char
+      if (const float breakCharWidth = hasBreakChar ? widthOf(breakPos, breakPos + 1) : 0.0f;
+          currentWidth + wordWidth + breakCharWidth <= maxWidth)
       {
-        currentWidth += wordWidth + spaceWidth;
-        lastNonSpaceInLine = wordEnd; // exclude trailing space
-        current = wordEnd;
-        if (hasSpace)
+        currentWidth += wordWidth + breakCharWidth;
+        lastNonSpaceInLine = hasBreakChar and not IsSpace(*breakPos)
+                                 ? breakPos + 1
+                                 : breakPos; // exclude trailing space
+        current = breakPos;
+        if (hasBreakChar)
           ++current;
         continue;
       }
 
-      // Try to include word without trailing space
-      if (currentWidth + wordWidth <= maxWidth)
+      // Try to include word without trailing break char
+      if (currentWidth + wordWidth <= maxWidth && breakPos != current)
       {
-        m_lines.emplace_back(currentStart, wordEnd, false);
+        // an ideograph right after a space: the line ends before that space
+        const auto emitEnd =
+            current == breakPos && !IsSpace(*breakPos) && lastNonSpaceInLine > currentStart
+                ? lastNonSpaceInLine
+                : breakPos;
+        m_lines.emplace_back(currentStart, emitEnd, false);
         if (m_lines.size() >= nMaxLines)
           return;
 
-        current = wordEnd;
+        current = breakPos;
         skipLeadingSpaces(current);
         currentStart = current;
         currentWidth = 0.0f;
@@ -708,7 +715,7 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
       if (currentWidth > 0.0f)
       {
         const std::vector<character_t>::const_iterator emitEnd =
-            lastNonSpaceInLine > currentStart ? lastNonSpaceInLine : wordEnd;
+            lastNonSpaceInLine > currentStart ? lastNonSpaceInLine : breakPos;
         m_lines.emplace_back(currentStart, emitEnd, false);
         if (m_lines.size() >= nMaxLines)
           return;
@@ -721,8 +728,11 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
         continue;
       }
 
-      if (current == wordEnd)
+      if (current == breakPos && IsSpace(*current))
         break;
+
+      // a lone ideograph wider than maxWidth is the word itself
+      const auto wordEnd = current == breakPos ? std::next(breakPos) : breakPos;
 
       // current line is empty and word is too long: split by character using a safe linear scan.
       // Do not assume monotonic width because shaping/kerning can make width shrink or grow non-linearly.
