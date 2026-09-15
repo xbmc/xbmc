@@ -1,0 +1,13 @@
+--- a/source3/lib/system.c
++++ b/source3/lib/system.c
+@@ -502,7 +502,10 @@ int sys_mknod(const char *path, mode_t mode, SMB_DEV_T dev)
+ int sys_mknodat(int dirfd, const char *path, mode_t mode, SMB_DEV_T dev)
+ {
+ #if defined(HAVE_MKNODAT)
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+ 	return mknodat(dirfd, path, mode, dev);
++#pragma clang diagnostic pop
+ #else
+ 	/* No mknod system call. */
+ 	errno = ENOSYS;
