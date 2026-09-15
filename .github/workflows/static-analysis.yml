@@ -2,11 +2,11 @@ name: Static analysis
 
 # clang-tidy and cppcheck, replacing Jenkins' LINUX-64-GL-Static-Analysis job.
 # Pull requests get clang-tidy on the lines they change (clang-tidy-diff over
-# the compile database), reported as inline annotations. Pushes to master run
-# the full analyze-clang-tidy and analyze-cppcheck targets and upload the
-# results to GitHub code scanning, which keeps the history and flags a PR that
-# reintroduces a finding. Both need a built tree because Kodi generates headers
-# during the build.
+# the compile database), reported as inline annotations. Pushes to master build
+# with ENABLE_CLANGTIDY, which runs clang-tidy on every translation unit next to
+# the compiler, run the analyze-cppcheck target and upload the results to GitHub
+# code scanning, which keeps the history and flags a PR that reintroduces a
+# finding. Both need a built tree because Kodi generates headers during the build.
 
 # Called from ci.yml, which owns the triggers, path filters and the draft/label
 # gate; workflow_dispatch is kept for manual runs.
@@ -108,7 +108,6 @@ jobs:
           # shellcheck disable=SC2086
           sudo apt-get install -y ${{ env.APT_PACKAGES }}
           sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-18 100
-          sudo update-alternatives --install /usr/bin/run-clang-tidy run-clang-tidy /usr/bin/run-clang-tidy-18 100
 
       - uses: ./.github/actions/ccache-restore
         with:
@@ -116,11 +115,14 @@ jobs:
           dir: /home/runner/.cache/kodi-e2e-ccache
 
       - name: Configure Kodi
-        run: cmake -S . -B build ${{ env.CMAKE_ARGS }}
+        run: cmake -S . -B build ${{ env.CMAKE_ARGS }} -DENABLE_CLANGTIDY=ON
 
-      # Both targets depend on kodi and kodi-test (cmake/scripts/common/StaticAnalysis.cmake).
-      - name: Build Kodi and run clang-tidy
-        run: cmake --build build --target analyze-clang-tidy -- -j"$(nproc)"
+      # clang-tidy runs on each translation unit as it is compiled and prints to
+      # the build output, which is kept for the conversion below. kodi-test is
+      # EXCLUDE_FROM_ALL and named so the test sources are analysed too.
+      - name: Build Kodi with clang-tidy
+        shell: bash
+        run: cmake --build build --target kodi kodi-test -- -j"$(nproc)" 2>&1 | tee build/clang-tidy.log
 
       - name: Run cppcheck
         run: cmake --build build --target analyze-cppcheck -- -j"$(nproc)"
@@ -133,7 +135,7 @@ jobs:
 
       - name: Convert results to SARIF
         run: |
-          python3 .github/scripts/analysis_to_sarif.py --clang-tidy build/clangtidy-result.xml \
+          python3 .github/scripts/analysis_to_sarif.py --clang-tidy build/clang-tidy.log \
             --sarif clang-tidy.sarif --tool-version "$(clang-tidy --version | grep -o '[0-9][0-9.]*' | head -1)"
           python3 .github/scripts/analysis_to_sarif.py --cppcheck build/cppcheck-result.xml \
             --sarif cppcheck.sarif --tool-version "$(cppcheck --version | grep -o '[0-9][0-9.]*' | head -1)"
@@ -153,7 +155,7 @@ jobs:
         with:
           name: static-analysis-results
           path: |
-            build/clangtidy-result.xml
+            build/clang-tidy.log
             build/cppcheck-result.xml
             clang-tidy.sarif
             cppcheck.sarif

@@ -33,7 +33,7 @@ def parse_clang_tidy(path: str, root: str):
     with open(path, encoding="utf-8", errors="replace") as fh:
         for line in fh:
             match = CLANG_TIDY_LINE.match(line.rstrip("\n"))
-            if not match:
+            if not match or match["check"].startswith("-W"):  # the compiler's own warnings in a build log
                 continue
             key = (match["file"], match["line"], match["col"], match["check"], match["msg"])
             if key in seen:

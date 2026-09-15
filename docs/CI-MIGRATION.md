@@ -465,7 +465,7 @@ key, an environment fix) is fixed once.
 | Compiler warning tracking with thresholds | No (deferred) | Parse compiler output per leg, annotate, per-leg budgets, later a baseline comparison against master |
 | clang-format diff per commit, bot comment with diff links | Yes: `lint.yml` runs `git clang-format` per commit, uploads the diffs and fails the check | Bot comment replaced by the failing check and the summary |
 | Inline review comments on printf-style `CLog::Log` | Yes: `lint.yml` annotates added `CLog::Log(...%...)` lines | Advisory, as on Jenkins |
-| clang-tidy / cppcheck | Yes: `static-analysis.yml`, clang-tidy on the changed lines of every PR (annotations), full `analyze-clang-tidy` and `analyze-cppcheck` on master pushes uploaded to code scanning as SARIF | Advisory on PRs |
+| clang-tidy / cppcheck | Yes: `static-analysis.yml`, clang-tidy on the changed lines of every PR (annotations), an `ENABLE_CLANGTIDY` build and `analyze-cppcheck` on master pushes uploaded to code scanning as SARIF | Advisory on PRs |
 | Coverity / coverage | Yes: `coverity.yml` weekly (token and e-mail from secrets, skipped when absent), `coverage.yml` on master pushes with the Cobertura report as artifact and a summary | No coverage service integration |
 | Binary add-ons built with Kodi | Yes: `peripheral.joystick` on every leg, failure reported as a warning like Jenkins | Full add-on set for UWP, iOS and tvOS nightlies |
 | Binary add-on repositories (`buildPlugin`) | Yes: reusable `build-addon.yml` on nine platforms, exercised from `ci.yml` | Deploy-on-tag job and roll-out to the add-on repositories |
