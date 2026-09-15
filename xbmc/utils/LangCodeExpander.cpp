@@ -21,10 +21,64 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
+#include <optional>
+#include <string_view>
 
 using namespace KODI::UTILS::I18N;
 
 constexpr std::size_t MAX_BCP47_ENGLISH_NAME_LENGTH = 30;
+
+namespace
+{
+//! Kodi's own codes for Brazilian Portuguese. No standard assigns them, so BCP 47 has no subtag
+//! for them and only an addon can say what they mean.
+constexpr std::array<std::string_view, 2> UNREGISTERED_CODES{"pb", "pob"};
+
+/*!
+ * \brief The BCP 47 language subtag for a bare ISO 639 code, taken from the ISO 639 tables.
+ *
+ * RFC 5646 draws its primary language subtags from ISO 639, and a bare code carries no script,
+ * region or variant for the subtag registry to arbitrate, so the static tables settle it.
+ *
+ * \param[in] code A trimmed, lower-cased ISO 639-1 or ISO 639-2 code.
+ * \return The subtag, or nullopt where the tables do not hold the language, in which case the
+ *         registry is the only thing that can recognize it.
+ */
+std::optional<std::string> Bcp47SubTagFromIso639(const std::string& code)
+{
+  if (std::ranges::find(UNREGISTERED_CODES, code) != UNREGISTERED_CODES.end())
+    return std::nullopt;
+
+  // BCP 47 registers the alpha-2 code for every language that has one, so an alpha-2 is already
+  // the subtag - except for the five ISO 639-1 withdrew, whose current spelling is reached by
+  // going out to the alpha-3 the language kept and back
+  if (code.length() == 2)
+  {
+    if (std::string alpha3; CLangCodeExpander::ConvertISO6391ToISO6392B(code, alpha3))
+    {
+      if (std::string alpha2; CLangCodeExpander::ConvertISO6392ToISO6391(alpha3, alpha2))
+        return alpha2;
+    }
+
+    return std::nullopt;
+  }
+
+  if (code.length() != 3)
+    return std::nullopt;
+
+  if (std::string alpha2; CLangCodeExpander::ConvertISO6392ToISO6391(code, alpha2))
+    return alpha2;
+
+  // A language with no alpha-2 is registered under its ISO 639-2/T code. Only languages that do
+  // have an alpha-2 spell their bibliographic and terminology codes apart, so a code reaching
+  // here is already the /T form
+  if (CIso639_2::LookupByCode(code).has_value())
+    return code;
+
+  return std::nullopt;
+}
+} // namespace
 
 CLangCodeExpander::STRINGLOOKUPTABLE& CLangCodeExpander::GetUserCodes()
 {
@@ -269,7 +323,7 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
   return false;
 }
 
-bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code)
+bool CLangCodeExpander::ReverseLookupInTables(const std::string& desc, std::string& code)
 {
   if (desc.empty())
     return false;
@@ -297,6 +351,20 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     code = *ret;
     return true;
   }
+
+  return false;
+}
+
+bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code)
+{
+  if (desc.empty())
+    return false;
+
+  if (ReverseLookupInTables(desc, code))
+    return true;
+
+  std::string descTmp(desc);
+  StringUtils::Trim(descTmp);
 
   const CSubTagRegistryManager& registry{CServiceBroker::GetSubTagRegistry()};
   if (const auto ret = registry.GetLanguageSubTags().LookupByDescription(descTmp); ret.has_value())
@@ -445,6 +513,13 @@ std::string CLangCodeExpander::AsISO6392B(const std::string& lang)
   if (std::string userCode; LookupUserCode(lang, userCode))
     return userCode;
 
+  // A bare code is already its own primary language subtag, so a tag parse has nothing to strip
+  if (lang.length() == 2 || lang.length() == 3)
+  {
+    if (std::string code; ConvertToISO6392B(lang, code))
+      return code;
+  }
+
   // Region, script and variant subtags have no ISO 639 equivalent, so a tag is represented by its
   // primary language subtag. Anything a tag cannot be made of - an English name, most obviously -
   // is converted as it stands.
@@ -466,6 +541,23 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
   // Search in the user defined map. Bypasses all other validations.
   if (LookupUserCode(code, bcp47Lang))
     return true;
+
+  if (const auto subTag = Bcp47SubTagFromIso639(code); subTag.has_value())
+  {
+    bcp47Lang = *subTag;
+    return true;
+  }
+
+  // Tried after the code, so that a name spelled like another language's code - "Ga" names gaa,
+  // but ga is Irish - resolves as the code
+  if (std::string iso639; ReverseLookupInTables(code, iso639))
+  {
+    if (const auto subTag = Bcp47SubTagFromIso639(iso639); subTag.has_value())
+    {
+      bcp47Lang = *subTag;
+      return true;
+    }
+  }
 
   auto tag = CBcp47::ParseTag(code);
 
