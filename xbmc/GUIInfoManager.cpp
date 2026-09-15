@@ -42,6 +42,7 @@
 #include <iterator>
 #include <memory>
 #include <mutex>
+#include <optional>
 
 using namespace KODI;
 using namespace KODI::GUILIB;
@@ -11880,7 +11881,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string* 
   }
   else if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
+    return GetMultiInfoLabel(GetMultiInfo(info), contextWindow);
   }
   else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
@@ -11901,7 +11902,7 @@ bool CGUIInfoManager::GetInt(int& value,
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow, item);
+    return GetMultiInfoInt(value, GetMultiInfo(info), contextWindow, item);
   }
   else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
@@ -11973,7 +11974,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
-    bReturn = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
+    bReturn = GetMultiInfoBool(GetMultiInfo(condition), contextWindow, item);
   }
   else if (!m_infoProviders.GetBool(bReturn, m_currentFile.get(), contextWindow,
                                     CGUIInfo(condition)))
@@ -12044,8 +12045,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo& info,
             int iResolvedInfo2 = ResolveMultiInfo(info2);
             if (iResolvedInfo2 != 0)
             {
-              const GUIINFO::CGUIInfo& resolvedInfo2 =
-                  m_multiInfo[iResolvedInfo2 - MULTI_INFO_START];
+              const GUIINFO::CGUIInfo resolvedInfo2 = GetMultiInfo(iResolvedInfo2);
               if (resolvedInfo2.GetInfoFlag() & INFOFLAG_LISTITEM_CONTAINER)
                 item2 = GUIINFO::GetCurrentListItem(
                     contextWindow, resolvedInfo2.GetData1()); // data1 contains the container id
@@ -12226,7 +12226,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string* 
   }
   else if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow, fallback);
+    return GetMultiInfoLabel(GetMultiInfo(info), contextWindow, fallback);
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
            info == LISTITEM_OVERLAY || info == LISTITEM_ART)
@@ -12317,6 +12317,7 @@ void CGUIInfoManager::UpdateAVInfo() const
 
 int CGUIInfoManager::AddMultiInfo(const CGUIInfo& info)
 {
+  std::unique_lock lock(m_critMultiInfo);
   // check to see if we have this info already
   for (unsigned int i = 0; i < m_multiInfo.size(); ++i)
     if (m_multiInfo[i] == info)
@@ -12329,6 +12330,26 @@ int CGUIInfoManager::AddMultiInfo(const CGUIInfo& info)
   return id;
 }
 
+int CGUIInfoManager::GetMultiInfoValue(int id) const
+{
+  std::unique_lock lock(m_critMultiInfo);
+  const size_t index = static_cast<size_t>(id) - MULTI_INFO_START;
+  if (index >= m_multiInfo.size())
+    return 0;
+  return m_multiInfo[index].GetInfo();
+}
+
+CGUIInfo CGUIInfoManager::GetMultiInfo(int id) const
+{
+  std::unique_lock lock(m_critMultiInfo);
+  const size_t index = static_cast<size_t>(id) - MULTI_INFO_START;
+  // Guards an id AddMultiInfo never returned: the range is wider than the
+  // vector, and ResolveMultiInfo() feeds a block's own data back in as an id.
+  if (index >= m_multiInfo.size())
+    return CGUIInfo(0); // no info, which every provider declines
+  return m_multiInfo[index];
+}
+
 int CGUIInfoManager::ResolveMultiInfo(int info) const
 {
   int iLastInfo = 0;
@@ -12337,7 +12358,7 @@ int CGUIInfoManager::ResolveMultiInfo(int info) const
   while (iResolvedInfo >= MULTI_INFO_START && iResolvedInfo <= MULTI_INFO_END)
   {
     iLastInfo = iResolvedInfo;
-    iResolvedInfo = m_multiInfo[iResolvedInfo - MULTI_INFO_START].GetInfo();
+    iResolvedInfo = GetMultiInfoValue(iResolvedInfo);
   }
 
   return iLastInfo;
@@ -12347,7 +12368,7 @@ bool CGUIInfoManager::IsListItemInfo(int info) const
 {
   int iResolvedInfo = info;
   while (iResolvedInfo >= MULTI_INFO_START && iResolvedInfo <= MULTI_INFO_END)
-    iResolvedInfo = m_multiInfo[iResolvedInfo - MULTI_INFO_START].GetInfo();
+    iResolvedInfo = GetMultiInfoValue(iResolvedInfo);
 
   return (iResolvedInfo >= LISTITEM_START && iResolvedInfo <= LISTITEM_END);
 }
@@ -12389,8 +12410,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem* item,
   }
   else if (info.GetInfo() >= MULTI_INFO_START && info.GetInfo() <= MULTI_INFO_END)
   {
-    return GetMultiInfoItemLabel(item, contextWindow,
-                                 m_multiInfo[info.GetInfo() - MULTI_INFO_START], fallback);
+    return GetMultiInfoItemLabel(item, contextWindow, GetMultiInfo(info.GetInfo()), fallback);
   }
   else if (!m_infoProviders.GetLabel(value, item, contextWindow, info, fallback))
   {
@@ -12531,8 +12551,7 @@ std::string CGUIInfoManager::GetMultiInfoItemImage(const CFileItem* item,
   }
   else if (info.GetInfo() >= MULTI_INFO_START && info.GetInfo() <= MULTI_INFO_END)
   {
-    return GetMultiInfoItemImage(item, contextWindow,
-                                 m_multiInfo[info.GetInfo() - MULTI_INFO_START], fallback);
+    return GetMultiInfoItemImage(item, contextWindow, GetMultiInfo(info.GetInfo()), fallback);
   }
 
   return GetMultiInfoItemLabel(item, contextWindow, info, fallback);
@@ -12629,6 +12648,8 @@ int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
 
 int CGUIInfoManager::TranslateSkinVariableString(const std::string& name, int context)
 {
+  std::unique_lock lock(m_critInfo);
+
   for (std::vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
        it != m_skinVariableStrings.end(); ++it)
   {
@@ -12644,10 +12665,19 @@ std::string CGUIInfoManager::GetSkinVariableString(int info,
                                                    const CGUIListItem* item /*= nullptr*/) const
 {
   info -= CONDITIONAL_LABEL_START;
-  if (info >= 0 && info < static_cast<int>(m_skinVariableStrings.size()))
-    return m_skinVariableStrings[info].GetValue(contextWindow, preferImage, item);
 
-  return "";
+  std::optional<CSkinVariableString> variable;
+  {
+    std::unique_lock lock(m_critInfo);
+    if (info < 0 || info >= static_cast<int>(m_skinVariableStrings.size()))
+      return "";
+
+    variable = m_skinVariableStrings[info];
+  }
+
+  // Evaluated on the copy, with the lock let go. A skin variable may hold
+  // another, so this reaches back into the manager before it returns.
+  return variable->GetValue(contextWindow, preferImage, item);
 }
 
 bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map) const
