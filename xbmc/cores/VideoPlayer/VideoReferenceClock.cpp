@@ -232,6 +232,16 @@ void CVideoReferenceClock::UpdateRefreshrate()
 {
   std::unique_lock SingleLock(m_CritSection);
   m_RefreshRate = static_cast<double>(m_pVideoSync->GetFps());
+  if (m_RefreshRate <= 0.0)
+  {
+    // A video sync backend should never report an invalid refreshrate, but guard against it
+    // here as well since m_RefreshRate is used as a divisor further down the line.
+    CLog::Log(LOGWARNING,
+              "CVideoReferenceClock: Invalid refreshrate {:.3f} hertz reported, defaulting to "
+              "60 hertz",
+              m_RefreshRate);
+    m_RefreshRate = 60.0;
+  }
   m_ClockSpeed = 1.0;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: {:.3f} hertz", m_RefreshRate);
