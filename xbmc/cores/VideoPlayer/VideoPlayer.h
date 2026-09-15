@@ -377,6 +377,7 @@ public:
   bool IsRenderingVideo() const override;
   bool HasVisibleOverlay() const override;
   bool IsLiveStream() const override;
+  bool IsStreaming() const override;
   bool Supports(EINTERLACEMETHOD method) const override;
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const override;
   bool Supports(ESCALINGMETHOD method) const override;
@@ -551,6 +552,7 @@ protected:
   std::optional<SeekCandidate> GetChapterSeekCandidate(int64_t time, Direction direction);
   std::optional<SeekCandidate> GetBookmarkSeekCandidate(int64_t time, Direction direction);
   void ExecuteTimeSeek(int64_t target, Direction direction, bool accurate);
+  bool EvaluateIsStreaming() const;
 
   bool m_players_created;
 
