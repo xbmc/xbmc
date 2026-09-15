@@ -25,13 +25,16 @@ find_program(RUN_CLANG_TIDY NAMES run-clang-tidy.py run-clang-tidy
                             PATHS /usr/share/clang /usr/bin)
 
 if(RUN_CLANG_TIDY AND CLANG_TIDY_EXECUTABLE)
+  # Kodi's own code only: the compile database also lists lib/ and generated
+  # sources, and the internal dependencies' headers sit below the build tree.
   add_custom_target(analyze-clang-tidy
     DEPENDS ${APP_NAME_LC} ${APP_NAME_LC}-test
     COMMAND ${RUN_CLANG_TIDY}
             -j${CPU_CORES}
             -clang-tidy-binary=${CLANG_TIDY_EXECUTABLE}
             -p=${CMAKE_BINARY_DIR}
-            -header-filter='${CMAKE_BINARY_DIR}/.*/include/.*'
+            -header-filter='^${CMAKE_SOURCE_DIR}/xbmc/'
+            '^${CMAKE_SOURCE_DIR}/xbmc/'
             | tee ${CMAKE_BINARY_DIR}/clangtidy-result.xml
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Static code analysis using clang-tidy")
