@@ -65,7 +65,7 @@ jobs:
         run: |
           sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
           cmake --build build --target kodi kodi-test -- -j"$(nproc)"
-          cd build && ./kodi-test --gtest_output=xml:gtestresults.xml
+          cd build && stdbuf -oL ./kodi-test --gtest_output=xml:gtestresults.xml
 
       - uses: ./.github/actions/report-unit-tests
         if: always()

@@ -217,12 +217,14 @@ jobs:
       # TestNetwork.PingHost probes for an unprivileged Linux "ping socket"
       # (SOCK_DGRAM + IPPROTO_ICMP) and skips itself if the kernel's
       # net.ipv4.ping_group_range excludes the runner; granting it here keeps
-      # that assertion running instead of skipping.
+      # that assertion running instead of skipping. stdout is block-buffered on
+      # a pipe while stderr is not, so without line buffering an assertion
+      # message lands next to the wrong test in the log.
       - name: Run unit tests
         working-directory: build
         run: |
           sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
-          ./kodi-test --gtest_output=xml:gtestresults.xml
+          stdbuf -oL ./kodi-test --gtest_output=xml:gtestresults.xml
 
       - uses: ./.github/actions/report-unit-tests
         if: always()
