@@ -325,7 +325,7 @@
 					<visible>System.AddonIsEnabled(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
 				</control>
 				<control type="image">
-					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
+					<visible>![String.IsEmpty(ListItem.Premiered) + String.IsEmpty(ListItem.Year)]</visible>
 					<top>-2</top>
 					<width>32</width>
 					<height>32</height>
@@ -333,13 +333,13 @@
 					<texture colordiffuse="white">lists/year.png</texture>
 				</control>
 				<control type="label">
-					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
+					<visible>![String.IsEmpty(ListItem.Premiered) + String.IsEmpty(ListItem.Year)]</visible>
 					<left>-10</left>
 					<width>auto</width>
 					<height>32</height>
 					<aligny>center</aligny>
 					<font>font_flag</font>
-					<label>$INFO[ListItem.Premiered]</label>
+					<label fallback="$INFO[ListItem.Year]">$INFO[ListItem.Premiered]</label>
 				</control>
 				<control type="image">
 					<visible>!String.IsEmpty(ListItem.Duration) + !Control.IsVisible(504)</visible>
