@@ -25,10 +25,12 @@ class CWinEventsOSX;
 #ifdef __OBJC__
 @class NSWindowController;
 @class NSWindow;
+@class NSOpenGLContext;
 @class OSXGLView;
 @class NSEvent;
 #else
 struct NSWindow;
+struct NSOpenGLContext;
 struct OSXGLView;
 struct NSEvent;
 struct NSWindowController;
@@ -94,6 +96,7 @@ public:
   void SignalFullScreenStateChanged(bool fullscreenState);
 
   CGLContextObj GetCGLContextObj();
+  NSOpenGLContext* GetNSOpenGLContext() const;
 
   std::vector<std::string> GetConnectedOutputs() override;
 
