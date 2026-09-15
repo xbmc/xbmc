@@ -22,6 +22,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "media/MediaType.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
@@ -468,6 +469,17 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     return false;
   *item = *items[0];
 
+  const CFileItem& owner{item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion ? *m_videoAsset
+                                                                                  : *item};
+  const VideoAssetInfo existing{m_database.GetVideoVersionInfo(item->GetDynPath())};
+  if (existing.m_idFile >= 0 && existing.m_idFile != item->GetVideoInfoTag()->m_iFileId &&
+      existing.m_mediaType == MediaTypeMovie &&
+      existing.m_idMedia == owner.GetVideoInfoTag()->m_iDbId)
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{40047});
+    return false;
+  }
+
   // Add playlist file as bluray://
   bool videoDbSuccess{false};
   try
@@ -477,7 +489,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
       idFile = m_database.SetFileForMedia(
-          item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
+          item->GetDynPath(), owner.GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId,
           CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
                                      .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
       videoDbSuccess = idFile > 0;
@@ -496,6 +508,11 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
                         GUI_MSG_FLAG_FORCE_UPDATE,
                         std::make_shared<CFileItem>(oldItem)};
         CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+        CVideoInfoTag* tag{item->GetVideoInfoTag()};
+        if (tag->m_type == MediaTypeVideoVersion)
+          tag->m_iDbId = idFile;
+        tag->m_iFileId = idFile;
       }
     }
     else
