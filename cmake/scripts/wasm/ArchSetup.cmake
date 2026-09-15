@@ -52,7 +52,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sPROXY_TO_PTHREAD"
     "SHELL:-sMIN_WEBGL_VERSION=2"
     "SHELL:-sMAX_WEBGL_VERSION=2"
-    "SHELL:-sFULL_ES3=1"
     "SHELL:-lidbfs.js"
     "SHELL:-lembind"
   )

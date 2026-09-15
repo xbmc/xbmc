@@ -9,11 +9,15 @@
 #pragma once
 
 #include "GLESShader.h"
+#include "guilib/GUIQuadDrawerGLES.h"
 #include "rendering/RenderSystem.h"
 #include "utils/ColorUtils.h"
+#include "utils/GLBufferObject.h"
 #include "utils/Map.h"
 
+#include <cstddef>
 #include <map>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -145,6 +149,14 @@ public:
   GLint GUIShaderGetDepth();
   GLint GUIShaderGetPma();
 
+  // Shared by all CGUITextureGLES batches, which lay out every quad as 0,1,2 2,3,0.
+  template<typename T>
+  void StreamGUIVertices(const std::vector<T>& vertices)
+  {
+    m_guiVertexBuffer.SetData(vertices.data(), vertices.size(), GL_STREAM_DRAW);
+  }
+  void BindGUIQuadIndices(std::size_t quadCount);
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual void PresentRenderImpl(bool rendered) = 0;
@@ -160,4 +172,10 @@ protected:
   ShaderMethodGLES m_method = ShaderMethodGLES::SM_DEFAULT;
 
   GLint      m_viewPort[4];
+
+  CGUIQuadDrawerGLES m_quadDrawer;
+
+  KODI::UTILS::GL::CGLBufferObject m_guiVertexBuffer{GL_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_guiQuadIndexBuffer{GL_ELEMENT_ARRAY_BUFFER};
+  std::vector<GLushort> m_guiQuadIndices;
 };
