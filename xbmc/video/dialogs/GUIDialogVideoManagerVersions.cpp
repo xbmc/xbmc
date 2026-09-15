@@ -22,6 +22,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "media/MediaType.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
@@ -466,7 +467,23 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
           *item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU) ||
       items.IsEmpty())
     return false;
-  *item = *items[0];
+  const CFileItem& chosen{*items[0]};
+
+  const CFileItem& owner{item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion ? *m_videoAsset
+                                                                                  : *item};
+  const VideoAssetInfo existing{m_database.GetVideoVersionInfo(chosen.GetDynPath())};
+  if (existing.m_idFile >= 0 && existing.m_mediaType == MediaTypeMovie &&
+      existing.m_idMedia == owner.GetVideoInfoTag()->m_iDbId &&
+      (replaceExistingFile == ReplaceExistingFile::NO ||
+       existing.m_idFile != item->GetVideoInfoTag()->m_iFileId))
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{40047});
+    return false;
+  }
+
+  // The list row is item itself, so it is put back on any exit that skips Refresh()
+  const CFileItem original{*item};
+  *item = chosen;
 
   // Add playlist file as bluray://
   bool videoDbSuccess{false};
@@ -477,8 +494,10 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
       idFile = m_database.SetFileForMedia(
-          item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
+          item->GetDynPath(), owner.GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId,
           CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
+                                     .m_playCount = item->GetVideoInfoTag()->GetPlayCount(),
+                                     .m_lastPlayed = item->GetVideoInfoTag()->m_lastPlayed,
                                      .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
       videoDbSuccess = idFile > 0;
       if (videoDbSuccess)
@@ -496,6 +515,11 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
                         GUI_MSG_FLAG_FORCE_UPDATE,
                         std::make_shared<CFileItem>(oldItem)};
         CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+        CVideoInfoTag* tag{item->GetVideoInfoTag()};
+        if (tag->m_type == MediaTypeVideoVersion)
+          tag->m_iDbId = idFile;
+        tag->m_iFileId = idFile;
       }
     }
     else
@@ -505,6 +529,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       if (idVideoVersion < 0)
       {
         m_database.RollbackTransaction();
+        *item = original;
         return false;
       }
 
@@ -517,6 +542,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
                                                 idVideoVersion, VideoAssetType::VERSION))
         {
           m_database.RollbackTransaction();
+          *item = original;
           return false;
         }
       }
@@ -542,6 +568,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     CLog::LogF(LOGERROR, "Exception adding bluray playlist '{}'",
                CURL::GetRedacted(item->GetDynPath()));
     m_database.RollbackTransaction();
+    *item = original;
     return false;
   }
 
