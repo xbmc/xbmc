@@ -1,10 +1,10 @@
-name: Save tools/depends cache
+name: Save tools/depends prefix
 description: >
-  Saves the tools/depends tree under the same key depends-cache-restore used.
-  Callers skip it on an exact hit, on cancelled runs and when the dependency build
-  failed, so a half-built tree is never saved under a key later runs would trust.
+  Saves the tools/depends install prefix under the same key
+  depends-cache-restore uses. Keyed on content, so saving from pull request
+  runs adds one entry per distinct tools/depends tree, not per push.
 inputs:
-  platform:
+  key:
     description: Cache key prefix, identical to the one given to depends-cache-restore.
     required: true
   prefix:
@@ -21,9 +21,5 @@ runs:
     - name: Save
       uses: actions/cache/save@v6
       with:
-        path: |
-          ${{ inputs.prefix }}
-          tools/depends
-          !tools/depends/native/*/*/
-          !tools/depends/target/*/*/
-        key: ${{ inputs.platform }}-depends-${{ steps.key.outputs.hash }}
+        path: ${{ inputs.prefix }}
+        key: ${{ inputs.key }}-depends-${{ steps.key.outputs.hash }}

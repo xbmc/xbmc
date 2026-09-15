@@ -164,6 +164,15 @@ device builds on Apple - live in one file instead of being copy-pasted
 across several. `build-webos.yml` builds a platform with no emulator to test
 on. Every `build` job in these workflows has the same shape:
 
+- Where Kodi builds through `tools/depends` (Android, Apple, webOS), a
+  `depends-key` job on a Linux runner resolves the matrix and asks the cache API
+  which legs already have their dependency prefix for the current `tools/depends`
+  tree hash; a `depends` job then builds only the missing ones on the platform's
+  runner and saves the prefix. `build` restores it and re-runs `configure`
+  alone, which regenerates `Makefile.include` and the toolchain files the Kodi
+  and add-on builds read, so no `make` runs in `tools/depends` on a hit. A leg
+  whose prefix is still missing fails at that restore rather than building the
+  dependencies itself.
 - `build` compiles Kodi from source, builds the `peripheral.joystick` binary add-on
   against the same tree (a failing add-on is reported as a warning, as on Jenkins),
   runs the unit tests where the platform has them (macOS, Windows, X11), and uploads
@@ -183,10 +192,11 @@ on. Every `build` job in these workflows has the same shape:
   `e2e` job reuses the build.
 
 The steps shared between workflows live in `.github/actions/`: `ccache-restore` /
-`ccache-save`, `depends-cache-restore` / `depends-cache-save` for the built
-`tools/depends` tree (keyed on its git tree hash), `run-e2e`, `e2e-artifacts` and
-`upload-build-logs` (autoconf/meson/cmake logs, only on runs started with debug
-logging).
+`ccache-save`, `depends-cache-lookup` / `depends-cache-restore` / `depends-cache-save`
+for the `tools/depends` install prefix (keyed on the tree's git hash),
+`configure-depends`, `setup-android-build` and `setup-webos-build` for the steps the
+`depends` and `build` jobs share, `run-e2e`, `e2e-artifacts` and `upload-build-logs`
+(autoconf/meson/cmake logs, only on runs started with debug logging).
 
 Triggers and cache policy:
 
@@ -198,11 +208,13 @@ Triggers and cache policy:
   A job the gate skips counts as passed for branch protection.
 - Pull-request runs are cancelled by a newer push to the same PR; master runs are
   never cancelled, so their cache saves always complete.
-- Caches are saved from master only. PR runs restore them but do not add entries:
-  ccache is keyed per commit, so a PR save would add an entry per push until the
+- ccache is saved from master only. PR runs restore it but do not add entries:
+  it is keyed per commit, so a PR save would add an entry per push until the
   repository's cache budget evicts the entries that are actually reused.
-- The depends cache is saved only when the dependency build step itself succeeded,
-  so a broken depends build on master cannot poison the key later runs restore.
+- The depends prefix is keyed on content, so PR runs save it too: a PR that
+  changes `tools/depends` adds one entry per distinct tree, which its later pushes
+  and its `build` job reuse. It is saved only when the dependency build succeeded,
+  so a half-built prefix is never stored under a key later runs would trust.
 
 Per platform:
 

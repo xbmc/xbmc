@@ -476,7 +476,7 @@ key, an environment fix) is fixed once.
 | Path-based skip, `No-Jenkins` / `Stale` labels, target-branch conditions | Yes, once, in `ci.yml`: `paths-ignore` for docs, Markdown and the non-workflow `.github/` files; a gate job skips every build on drafts and on the `No-Jenkins`, `No Jenkins` and `Stale` labels, and skipped jobs count as passed for branch protection | Narrower than Jenkins on purpose: `addons/`, `system/*.xml` and `system/shaders/` now change E2E results, so they trigger. No per-branch leg conditions yet |
 | PR draft handling | Yes: drafts skipped, `ready_for_review` starts | Jenkins has no equivalent |
 | Cancel superseded runs | Yes: `concurrency` with `cancel-in-progress` | |
-| Dependency and ccache caching | Yes: `tools/depends` cached by tree hash, ccache saved from master only | Cache size against the 10 GB limit with 8 platforms needs measuring |
+| Dependency and ccache caching | Yes: the `tools/depends` install prefix is cached by tree hash and built in a `depends` job that runs only for the legs a lookup finds missing; the `build` job restores it and re-runs `configure` alone. ccache saved from master only | Cache size against the 10 GB limit with 8 platforms needs measuring; moving the prefix to GHCR as an OCI artifact would lift it |
 | Retry infrastructure failures | Not needed: the dependency downloads retry inside CMake and the emulator action retries its boot | |
 | Slack notification | No | Add to scheduled workflows on failure |
 | Kore | No | Trivial Gradle workflow in `xbmc/Kore` |

@@ -135,18 +135,15 @@ jobs:
 
       # Only the native tools are needed (buildPlugin ran make-native-depends):
       # the add-on's own dependencies are built by cmake/addons/depends with the
-      # generated toolchain. Cached on the tools/depends tree hash of the Kodi
-      # checkout; the build directories are excluded, the stamps kept.
+      # generated toolchain. The prefix is cached on the tools/depends tree hash
+      # of the Kodi checkout; configure alone regenerates what the add-on build
+      # reads from the tree, so make is skipped on a hit.
       - name: Restore native tools
         if: ${{ !startsWith(matrix.platform, 'windows') }}
         id: native-cache
         uses: actions/cache/restore@v6
         with:
-          path: |
-            ${{ steps.cfg.outputs.prefix }}
-            xbmc/tools/depends
-            !xbmc/tools/depends/native/*/*/
-            !xbmc/tools/depends/target/*/*/
+          path: ${{ steps.cfg.outputs.prefix }}
           key: addon-native-${{ matrix.platform }}-${{ steps.cfg.outputs.hash }}
 
       - name: Configure depends and build native tools
@@ -155,19 +152,17 @@ jobs:
         run: |
           ./bootstrap
           ./configure --host=${{ steps.cfg.outputs.host }} ${{ steps.cfg.outputs.extra }} \
-            --prefix="${{ steps.cfg.outputs.prefix }}" --with-tarballs="${{ steps.cfg.outputs.prefix }}/xbmc-tarballs" \
+            --prefix="${{ steps.cfg.outputs.prefix }}" --with-tarballs="${RUNNER_TEMP}/xbmc-tarballs" \
             --disable-debug
-          make -C native -j"$(getconf _NPROCESSORS_ONLN)"
+          if [ "${{ steps.native-cache.outputs.cache-hit }}" != "true" ]; then
+            make -C native -j"$(getconf _NPROCESSORS_ONLN)"
+          fi
 
       - name: Save native tools
         if: ${{ !startsWith(matrix.platform, 'windows') && !cancelled() && steps.native-cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request' }}
         uses: actions/cache/save@v6
         with:
-          path: |
-            ${{ steps.cfg.outputs.prefix }}
-            xbmc/tools/depends
-            !xbmc/tools/depends/native/*/*/
-            !xbmc/tools/depends/target/*/*/
+          path: ${{ steps.cfg.outputs.prefix }}
           key: addon-native-${{ matrix.platform }}-${{ steps.cfg.outputs.hash }}
 
       # PACKAGE=1 runs the package-<addon> target; PACKAGE_ZIP drops the zip in

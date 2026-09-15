@@ -1,14 +1,18 @@
-name: Restore tools/depends cache
+name: Restore tools/depends prefix
 description: >
-  Restores a built tools/depends tree and its install prefix, keyed on the git
-  tree hash of tools/depends so it rebuilds only when the recipes change.
+  Restores the tools/depends install prefix cached under the given key for the
+  current tools/depends tree hash. Only the prefix is cached: configure-depends
+  regenerates everything the Kodi and add-on builds read from the tree itself.
 inputs:
-  platform:
-    description: Cache key prefix, unique per depends platform (e.g. macos-ARM64).
+  key:
+    description: Cache key prefix, unique per depends platform and configuration (e.g. android-x86_64-debug).
     required: true
   prefix:
     description: The --prefix the dependencies were installed to.
     required: true
+  fail-on-cache-miss:
+    description: Fail the job when there is no entry for the key.
+    default: "false"
 outputs:
   cache-hit:
     description: Whether the key was an exact hit ("true" or "false").
@@ -16,26 +20,15 @@ outputs:
 runs:
   using: composite
   steps:
-    # The git tree hash reflects committed files only, so the extracted build
-    # trees that accumulate under tools/depends do not affect the key and
-    # computing it stays instant.
     - name: Compute cache key
       id: key
       shell: bash
       run: echo "hash=$(git rev-parse HEAD:tools/depends)" >> "$GITHUB_OUTPUT"
 
-    # The whole tree is cached, not just the prefix: make's up-to-date checks
-    # compare the .installed-* stamps against the recipe files, which checkout
-    # hands back with mtime "now". tar restores the original mtimes, keeping the
-    # stamps newer. Each recipe's <platform>/ build directory is excluded (the
-    # trailing slash keeps the sibling .installed-<platform> stamp files).
     - name: Restore
       id: restore
       uses: actions/cache/restore@v6
       with:
-        path: |
-          ${{ inputs.prefix }}
-          tools/depends
-          !tools/depends/native/*/*/
-          !tools/depends/target/*/*/
-        key: ${{ inputs.platform }}-depends-${{ steps.key.outputs.hash }}
+        path: ${{ inputs.prefix }}
+        key: ${{ inputs.key }}-depends-${{ steps.key.outputs.hash }}
+        fail-on-cache-miss: ${{ inputs.fail-on-cache-miss }}

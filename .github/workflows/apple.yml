@@ -16,6 +16,12 @@ name: Apple (macOS/iOS/tvOS)
 # the Simulator ABIs are far less exercised than the device ones, so treat a
 # build failure there as plausibly a build-system gap rather than a CI-wiring
 # issue. Device builds have no Simulator or hardware to run tools/e2e against.
+#
+# depends-key looks up which legs already have their tools/depends prefix
+# cached for this tools/depends tree, depends builds the missing ones on macOS
+# runners, and build restores the prefix and only re-runs configure before
+# building Kodi. The org has few concurrent macOS slots, so a macOS runner is
+# never started just to discover a cache hit.
 
 # Called from ci.yml, which owns the triggers, path filters, the draft/label
 # gate and the manual-run inputs.
@@ -38,40 +44,65 @@ env:
   DEPENDS_PREFIX: /Users/Shared/xbmc-depends
 
 jobs:
-  build:
-    name: build (${{ matrix.kind == 'device' && format('{0}-device', matrix.platform) || matrix.depends_platform }})
+  # Resolves the matrix once and looks up which legs already have a cached
+  # prefix. The device legs add dwarf-with-dsym: CMake's Xcode projects
+  # default to dwarf in every configuration, which writes no .dSYM for the
+  # collect step; "-target ipa" builds the .ipa there.
+  depends-key:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      legs: ${{ steps.legs.outputs.legs }}
+      missing: ${{ steps.lookup.outputs.missing }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
+
+      # Debug, as Jenkins' Apple jobs, unless the caller asks for Release.
+      - name: Define legs
+        id: legs
+        env:
+          CONFIGURATION: ${{ inputs.configuration || 'Debug' }}
+        run: |
+          legs=$(jq -c --arg config "$CONFIGURATION" '
+            map(.configuration = $config | .key = "apple-\(.depends_platform)-\($config)")' <<'LEGS'
+          [
+            {"kind": "macos",     "platform": "macos", "depends_platform": "macos"},
+            {"kind": "simulator", "platform": "ios",   "depends_platform": "ios-simulator"},
+            {"kind": "simulator", "platform": "tvos",  "depends_platform": "tvos-simulator"},
+            {"kind": "device",    "platform": "ios",   "depends_platform": "ios",  "sdk": "iphoneos",
+             "xcodebuild_args": "-target ipa",
+             "cmake_args": "-DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym"},
+            {"kind": "device",    "platform": "tvos",  "depends_platform": "tvos", "sdk": "appletvos",
+             "xcodebuild_args": "-target ipa",
+             "cmake_args": "-DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym"}
+          ]
+          LEGS
+          )
+          echo "legs=${legs}" >> "$GITHUB_OUTPUT"
+          echo "${legs}" | jq .
+
+      - uses: ./.github/actions/depends-cache-lookup
+        id: lookup
+        with:
+          legs: ${{ steps.legs.outputs.legs }}
+
+  depends:
+    name: depends (${{ matrix.depends_platform }})
+    needs: depends-key
+    if: needs.depends-key.outputs.missing != '[]'
     # macos-14 is Apple Silicon; the Simulator ABI for aarch64-apple-darwin is
     # arm64, keeping every leg's build and target on one architecture.
     runs-on: macos-14
-    timeout-minutes: 240
-    # Debug, as Jenkins' Apple jobs, unless the caller asks for Release.
-    env:
-      CONFIGURATION: ${{ inputs.configuration || 'Debug' }}
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - kind: macos
-            platform: macos
-            depends_platform: macos
-          - kind: simulator
-            platform: ios
-            depends_platform: ios-simulator
-          - kind: simulator
-            platform: tvos
-            depends_platform: tvos-simulator
-          - kind: device
-            platform: ios
-            depends_platform: ios
-            sdk: iphoneos
-            xcodebuild_args: -target ipa
-            cmake_args: -DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
-          - kind: device
-            platform: tvos
-            depends_platform: tvos
-            sdk: appletvos
-            xcodebuild_args: -target ipa
-            cmake_args: -DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
+        include: ${{ fromJSON(needs.depends-key.outputs.missing) }}
     steps:
       - uses: actions/checkout@v7
 
@@ -87,28 +118,71 @@ jobs:
           fi
           xcodebuild -version
 
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=aarch64-apple-darwin --with-platform=${{ matrix.depends_platform }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: "true"
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: ${{ matrix.depends_platform }}-depends
+
+      # Not reached when the build failed, so a half-built prefix is never saved.
+      - uses: ./.github/actions/depends-cache-save
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+  build:
+    name: build (${{ matrix.kind == 'device' && format('{0}-device', matrix.platform) || matrix.depends_platform }})
+    needs: [depends-key, depends]
+    # Runs whether depends built anything or was skipped. A leg whose prefix is
+    # still missing fails at the restore below instead of blocking the others.
+    if: ${{ !cancelled() && needs.depends-key.result == 'success' }}
+    runs-on: macos-14
+    timeout-minutes: 240
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.legs) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select latest available Xcode
+        if: matrix.kind != 'macos'
+        run: |
+          latest_xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | sort -V | tail -1)
+          if [ -n "$latest_xcode" ]; then
+            sudo xcode-select -s "$latest_xcode"
+          fi
+          xcodebuild -version
+
       - name: Install ccache
         run: brew install ccache
 
       - uses: ./.github/actions/depends-cache-restore
-        id: depends-cache
         with:
-          platform: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          key: ${{ matrix.key }}
           prefix: ${{ env.DEPENDS_PREFIX }}
+          fail-on-cache-miss: "true"
 
       - uses: ./.github/actions/ccache-restore
         with:
           key: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           dir: /Users/runner/.cache/kodi-e2e-ccache
 
-      - name: Configure and build dependencies
-        id: depends
-        working-directory: tools/depends
-        run: |
-          ./bootstrap
-          ./configure --host=aarch64-apple-darwin --with-platform=${{ matrix.depends_platform }} --prefix="${DEPENDS_PREFIX}" \
-            ${{ env.CONFIGURATION == 'Release' && '--disable-debug' || '' }}
-          make -j"$(sysctl -n hw.ncpu)"
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=aarch64-apple-darwin --with-platform=${{ matrix.depends_platform }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
 
       # Installed into the source tree's addons/ directory (the darwin default
       # in tools/depends/xbmc-addons.include), which the app bundle includes.
@@ -161,9 +235,7 @@ jobs:
 
       # macOS generates Makefiles; iOS and tvOS (Simulator and device alike)
       # generate an Xcode project. CMAKE_EXTRA_ARGUMENTS is only ever set by
-      # the signing step above, so it is empty here for every other leg. The
-      # device legs add dwarf-with-dsym: CMake's Xcode projects default to dwarf
-      # in every configuration, which writes no .dSYM for the collect step.
+      # the signing step above, so it is empty here for every other leg.
       - name: Generate Kodi build system
         run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}" CMAKE_EXTRA_ARGUMENTS="${CMAKE_EXTRA_ARGUMENTS:-} ${{ matrix.cmake_args }}"
 
@@ -173,8 +245,7 @@ jobs:
 
       # The device legs need no signing identity (Kodi ships no provisioning
       # profile); CODE_SIGNING_ALLOWED=NO is defensive for the Simulator too,
-      # which needs no identity anyway. matrix.xcodebuild_args adds
-      # "-target ipa" on the device legs, empty otherwise.
+      # which needs no identity anyway.
       - name: Build Kodi (xcodebuild)
         if: matrix.kind != 'macos'
         working-directory: build
@@ -190,12 +261,6 @@ jobs:
         with:
           key: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
           save: ${{ github.event_name != 'pull_request' }}
-
-      - uses: ./.github/actions/depends-cache-save
-        if: '!cancelled() && steps.depends.outcome == ''success'' && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
-        with:
-          platform: ${{ matrix.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
-          prefix: ${{ env.DEPENDS_PREFIX }}
 
       # tools/darwin/packaging/osx/mkdmg-osx.sh: copies the frameworks in,
       # signs the app and the image when an identity was configured, and

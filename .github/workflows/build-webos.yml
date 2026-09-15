@@ -5,6 +5,10 @@ name: Build (webOS)
 # the requested binary add-ons and packages the .ipk with ares-package, as
 # Jenkins' webos-docker job does. Build-only: there is no webOS emulator to
 # run tools/e2e against.
+#
+# depends-key looks up whether the tools/depends prefix is cached for this
+# tools/depends tree, depends builds it when not, and build restores the
+# prefix and only re-runs configure before building Kodi.
 
 # Called from ci.yml, which owns the triggers, path filters, the draft/label
 # gate and the manual-run inputs.
@@ -28,33 +32,107 @@ env:
   # Release tag and asset of https://github.com/openlgtv/buildroot-nc4.
   TOOLCHAIN_RELEASE: webos-a38c582
   TOOLCHAIN_ASSET: arm-webos-linux-gnueabi_sdk-buildroot-x86_64.tar.gz
+  TOOLCHAIN_ROOT: /home/runner/webos-toolchain
   TOOLCHAIN_DIR: /home/runner/webos-toolchain/arm-webos-linux-gnueabi_sdk-buildroot
   # Release of https://github.com/webosbrew/ares-cli-rs.
   ARES_CLI_VERSION: 0.7.0
 
 jobs:
-  build:
-    runs-on: ubuntu-26.04
-    timeout-minutes: 240
+  # One leg, kept in the same matrix shape as the other platforms so depends
+  # and build share its configuration and cache key.
+  depends-key:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      legs: ${{ steps.legs.outputs.legs }}
+      missing: ${{ steps.lookup.outputs.missing }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
 
       # Release, as tools/buildsteps/defaultenv selects for webOS on Jenkins,
       # unless the caller asks for Debug or the run has debug logging enabled
       # (ACTIONS_STEP_DEBUG, "Re-run with debug logging").
-      - name: Select configuration
+      - name: Define legs
+        id: legs
         env:
           CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || 'Release') }}
-        run: echo "CONFIGURATION=${CONFIGURATION}" >> "$GITHUB_ENV"
-
-      # tools/depends builds its own autotools, cmake, meson, ninja, nasm,
-      # gettext and python3; only the bootstrap tools are needed from the host.
-      - name: Install build tools and libraries
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            bison build-essential ccache curl flex gawk \
-            libcurl4-openssl-dev libtool pkg-config unzip
+          legs=$(jq -cn --arg config "$CONFIGURATION" '[{configuration: $config, key: "webos-\($config)"}]')
+          echo "legs=${legs}" >> "$GITHUB_OUTPUT"
+          echo "${legs}" | jq .
+
+      - uses: ./.github/actions/depends-cache-lookup
+        id: lookup
+        with:
+          legs: ${{ steps.legs.outputs.legs }}
+
+  depends:
+    needs: depends-key
+    if: needs.depends-key.outputs.missing != '[]'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.missing) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-webos-build
+        with:
+          toolchain-release: ${{ env.TOOLCHAIN_RELEASE }}
+          toolchain-asset: ${{ env.TOOLCHAIN_ASSET }}
+          toolchain-root: ${{ env.TOOLCHAIN_ROOT }}
+          toolchain-dir: ${{ env.TOOLCHAIN_DIR }}
+
+      # --disable-debug selects the Release build type in the generated
+      # toolchain, as tools/buildsteps/defaultenv does for Configuration=Release.
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=arm-webos-linux-gnueabi --with-toolchain=${{ env.TOOLCHAIN_DIR }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: "true"
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: webos-depends
+
+      # Not reached when the build failed, so a half-built prefix is never saved.
+      - uses: ./.github/actions/depends-cache-save
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+  build:
+    needs: [depends-key, depends]
+    # Runs whether depends built anything or was skipped; a missing prefix
+    # fails at the restore below.
+    if: ${{ !cancelled() && needs.depends-key.result == 'success' }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 240
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.legs) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-webos-build
+        with:
+          toolchain-release: ${{ env.TOOLCHAIN_RELEASE }}
+          toolchain-asset: ${{ env.TOOLCHAIN_ASSET }}
+          toolchain-root: ${{ env.TOOLCHAIN_ROOT }}
+          toolchain-dir: ${{ env.TOOLCHAIN_DIR }}
 
       # ares-package, which the ipk target runs (cmake/scripts/webos/Install.cmake).
       # webosbrew's Rust rewrite of LG's CLI is a drop-in replacement and needs
@@ -67,55 +145,23 @@ jobs:
           sudo apt-get install -y "${RUNNER_TEMP}/${deb}"
           ares-package --help
 
-      - name: Restore toolchain
-        id: toolchain-cache
-        uses: actions/cache/restore@v6
-        with:
-          path: /home/runner/webos-toolchain
-          key: webos-toolchain-${{ env.TOOLCHAIN_RELEASE }}-${{ env.TOOLCHAIN_ASSET }}
-
-      # Buildroot SDKs embed their build path; relocate-sdk.sh rewrites it for
-      # the extraction directory.
-      - name: Download toolchain
-        if: steps.toolchain-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p /home/runner/webos-toolchain
-          curl -fsSL --retry 5 -o "${RUNNER_TEMP}/toolchain.tar.gz" \
-            "https://github.com/openlgtv/buildroot-nc4/releases/download/${TOOLCHAIN_RELEASE}/${TOOLCHAIN_ASSET}"
-          tar -xzf "${RUNNER_TEMP}/toolchain.tar.gz" -C /home/runner/webos-toolchain
-          "${TOOLCHAIN_DIR}/relocate-sdk.sh"
-
-      - name: Save toolchain cache
-        if: steps.toolchain-cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
-        uses: actions/cache/save@v6
-        with:
-          path: /home/runner/webos-toolchain
-          key: webos-toolchain-${{ env.TOOLCHAIN_RELEASE }}-${{ env.TOOLCHAIN_ASSET }}
-
       - uses: ./.github/actions/depends-cache-restore
-        id: depends-cache
         with:
-          platform: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          key: ${{ matrix.key }}
           prefix: ${{ env.DEPENDS_PREFIX }}
+          fail-on-cache-miss: "true"
 
       - uses: ./.github/actions/ccache-restore
         with:
           key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
           dir: /home/runner/.cache/kodi-e2e-ccache
 
-      # --disable-debug selects the Release build type in the generated
-      # toolchain, as tools/buildsteps/defaultenv does for Configuration=Release.
-      - name: Configure and build dependencies
-        id: depends
-        working-directory: tools/depends
-        run: |
-          ./bootstrap
-          ./configure --host=arm-webos-linux-gnueabi \
-            --with-toolchain="${TOOLCHAIN_DIR}" \
-            --with-tarballs="${DEPENDS_PREFIX}/xbmc-tarballs" \
-            --prefix="${DEPENDS_PREFIX}" \
-            ${{ env.CONFIGURATION == 'Release' && '--disable-debug' || '' }}
-          make -j"$(nproc)"
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=arm-webos-linux-gnueabi --with-toolchain=${{ env.TOOLCHAIN_DIR }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
 
       # Installed into the depends prefix's addons/ directory (the webos rule in
       # tools/depends/xbmc-addons.include), from where the bundle step copies them.
@@ -147,12 +193,6 @@ jobs:
         with:
           key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
           save: ${{ github.event_name != 'pull_request' }}
-
-      - uses: ./.github/actions/depends-cache-save
-        if: '!cancelled() && steps.depends.outcome == ''success'' && github.event_name != ''pull_request'' && steps.depends-cache.outputs.cache-hit != ''true'''
-        with:
-          platform: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
-          prefix: ${{ env.DEPENDS_PREFIX }}
 
       - uses: actions/upload-artifact@v7
         with:
