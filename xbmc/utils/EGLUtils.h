@@ -193,7 +193,15 @@ public:
   bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy);
 
   void SurfaceAttrib(EGLint attribute, EGLint value);
-  bool CreateSurface(EGLNativeWindowType nativeWindow, EGLint HDRcolorSpace = EGL_NONE);
+  /**
+   * Create the window surface
+   *
+   * \param HDRcolorSpace EGL_GL_COLORSPACE attribute value, EGL_NONE for none
+   * \param hdrConfig use the config chosen with ChooseConfig(..., hdr = true)
+   */
+  bool CreateSurface(EGLNativeWindowType nativeWindow,
+                     EGLint HDRcolorSpace = EGL_NONE,
+                     bool hdrConfig = false);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool InitializeDisplay(EGLint renderingApi);
   bool ChooseConfig(EGLint renderableType, EGLint visualId = 0, bool hdr = false, int alpha = 8);
