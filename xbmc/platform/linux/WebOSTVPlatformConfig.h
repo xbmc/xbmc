@@ -25,6 +25,7 @@ class WebOSTVPlatformConfig
 private:
   static inline std::unique_ptr<HContext, HContextDeleter> m_requestContextARC{new HContext{}};
   static inline std::atomic<bool> m_eAC3Supported{false};
+  static unsigned int m_webOSVersion;
 
 public:
   static void Load();
