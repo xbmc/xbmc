@@ -21,6 +21,7 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
@@ -351,8 +352,15 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
     }
   }
 
-  if (!InstallOrUpdate(addonID, BackgroundJob::CHOICE_NO, ModalJob::CHOICE_YES))
+  if (!InstallOrUpdate(addonID, BackgroundJob::CHOICE_YES, ModalJob::CHOICE_NO))
     return false;
+
+  auto* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+  if (dialog)
+    dialog->WaitOnEvent(m_idle, 100, false);
+  else
+    m_idle.Wait();
 
   return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, OnlyEnabled::CHOICE_YES);
 }
