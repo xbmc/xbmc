@@ -370,6 +370,12 @@ CApplicationPlay::GatherPlaybackDetailsResult CApplicationPlay::GatherPlaybackDe
     GetOptionsAndUpdateItem();
   }
 
+  const CFileItem& audioStreamItem =
+      m_item.HasProperty("AudioStream") ? m_item : item;
+  if (audioStreamItem.HasProperty("AudioStream"))
+    m_options.initialAudioStream =
+        audioStreamItem.GetProperty("AudioStream").asInteger32(-1);
+
   if (!GetPlaylistIfDisc())
     return GatherPlaybackDetailsResult::
         RESULT_NO_PLAYLIST_SELECTED; // Playlist needed but none selected (ie. user cancelled) so abort playback
