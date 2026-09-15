@@ -26,6 +26,8 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
+#include <chrono>
 #include <memory>
 #include <mutex>
 
@@ -42,6 +44,19 @@ constexpr float MIN_WATER_LEVEL = 0.02f; // min buffer time to prevent underrun
 constexpr float MIN_WATER_LEVEL_RESAMPLE = 0.1f; // min buffer time in resample mode
 constexpr float BUFFER_LEVEL_INCREMENT = 0.0001f; // increment step for ramp-up
 constexpr double MAX_BUFFER_TIME = 0.1; // max time of a buffer in seconds;
+
+//! \brief Retry interval for a sink that will not open, doubling to a ceiling.
+//! A device that returns announces itself, so only a fault that clears by itself needs the
+//! interval to stay short.
+std::chrono::milliseconds ErrorRetryDelay(unsigned int consecutiveFailures)
+{
+  constexpr std::chrono::milliseconds FIRST{500};
+  constexpr std::chrono::milliseconds CEILING{30000};
+
+  const unsigned int doublings = std::min(consecutiveFailures ? consecutiveFailures - 1 : 0u, 8u);
+  const std::chrono::milliseconds delay{FIRST.count() * (1LL << doublings)};
+  return std::min(delay, CEILING);
+}
 
 bool IsDefaultDevice(const AESinkDevice& device)
 {
@@ -516,7 +531,25 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     case AE_TOP_ERROR:
-      if (port == NULL) // timeout
+      if (port == &m_controlPort)
+      {
+        switch (signal)
+        {
+          case CActiveAEControlProtocol::DEVICECHANGE:
+          case CActiveAEControlProtocol::DEFAULTDEVICECHANGE:
+          case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
+            if (m_extTimeout != 0ms)
+            {
+              m_sink.EnumerateSinkList(true, "");
+              m_extErrorRetries = 0;
+              m_extTimeout = 0ms;
+            }
+            return;
+          default:
+            break;
+        }
+      }
+      else if (port == NULL) // timeout
       {
         switch (signal)
         {
@@ -526,13 +559,14 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           Configure();
           if (!m_extError)
           {
+            m_extErrorRetries = 0;
             m_state = AE_TOP_CONFIGURED_PLAY;
             m_extTimeout = 0ms;
           }
           else
           {
             m_state = AE_TOP_ERROR;
-            m_extTimeout = 500ms;
+            m_extTimeout = ErrorRetryDelay(++m_extErrorRetries);
           }
           return;
         default:
@@ -683,6 +717,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_sink.EnumerateSinkList(true, "");
           LoadSettings();
           ValidateOutputDevices(false);
+          m_extErrorRetries = 0;
           m_extError = false;
           Configure();
           if (!m_extError)
@@ -2875,6 +2910,7 @@ void CActiveAE::HandleDeviceCountChange(const std::string& driver, bool defaultD
   UnconfigureSink();
   LoadSettings();
   ValidateOutputDevices(false);
+  m_extErrorRetries = 0;
   m_extError = false;
   Configure();
   if (!m_extError)
