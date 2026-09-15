@@ -52,6 +52,11 @@ public:
   AVPixelFormat GetFormat() const { return m_format; }
   unsigned int GetWidth() const { return m_width; }
   unsigned int GetHeight() const { return m_height; }
+  void SetSize(unsigned int width, unsigned int height)
+  {
+    m_width = width;
+    m_height = height;
+  }
   bool IsLoaded() const { return m_bLoaded; }
   void SetLoaded(bool bLoaded) { m_bLoaded = bLoaded; }
   bool IsRendered() const { return m_bRendered; }

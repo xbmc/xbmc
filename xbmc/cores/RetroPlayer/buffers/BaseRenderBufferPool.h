@@ -30,14 +30,14 @@ public:
   void UnregisterRenderer(CRPBaseRenderer* renderer) override;
   bool HasVisibleRenderer() const override;
   bool Configure(AVPixelFormat format) override;
-  bool IsConfigured() const override { return m_bConfigured; }
+  bool IsConfigured() const override;
   IRenderBuffer* GetBuffer(unsigned int width, unsigned int height) override;
   void Return(IRenderBuffer* buffer) override;
   void Prime(unsigned int width, unsigned int height) override;
   void Flush() override;
 
   // Buffer properties
-  AVPixelFormat Format() const { return m_format; }
+  AVPixelFormat Format() const;
 
 protected:
   virtual IRenderBuffer* CreateRenderBuffer(void* header = nullptr) = 0;
@@ -52,6 +52,7 @@ protected:
 
   // Configuration parameters
   bool m_bConfigured = false;
+  bool m_bConfigureFailed = false;
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
 
 private:
@@ -60,7 +61,7 @@ private:
 
   std::vector<CRPBaseRenderer*> m_renderers;
   mutable CCriticalSection m_rendererMutex;
-  CCriticalSection m_bufferMutex;
+  mutable CCriticalSection m_bufferMutex;
 };
 } // namespace RETRO
 } // namespace KODI

@@ -31,6 +31,9 @@ public:
   void CloseStream(StreamPtr stream) override;
   void SetVideoFps(float fps) override;
   HwProcedureAddress GetHwProcedureAddress(const char* symbol) override;
+  bool HasHardwareRendering() const override;
+  bool BeginClientFrame() override;
+  void EndClientFrame() override;
 
 private:
   // Construction parameters
