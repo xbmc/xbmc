@@ -481,8 +481,9 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
         CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
         if (m_app.CurrentFileItem().IsSamePath(item.get()))
         {
-          m_app.CurrentFileItem().UpdateInfo(*item);
-          CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(*item);
+          const bool replaceLabels = !(message.GetParam2() & GUI_MSG_FLAG_KEEP_CURRENT_LABELS);
+          m_app.CurrentFileItem().UpdateInfo(*item, replaceLabels);
+          CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(*item, replaceLabels);
         }
       }
     }
