@@ -10,7 +10,8 @@
 #include "utils/log.h"
 %}
 
-/* 'None' is accepted as the empty string, including as a dict value or list element. */
+/* 'None' is accepted as the empty string, and bytes are taken verbatim,
+   including as a dict value or list element. */
 //! @todo Drop the 'None' acceptance after v22; kodi_typing.i annotates these as str.
 %fragment(SWIG_AsVal_frag(std::string), "header", fragment=SWIG_AsPtr_frag(std::string)) {
 SWIGINTERN int
@@ -22,6 +23,17 @@ SWIG_AsVal_dec(std::string)(SWIG_Object obj, std::string* val)
                           "removed in future Kodi versions. Please pass an empty string instead.");
     if (val)
       val->clear();
+    return SWIG_OK;
+  }
+
+  /* Stock SWIG_AsCharPtrAndSize takes bytes only when the whole binding is
+     built for them, so a str is all it would accept here, while the typecheck
+     typemap below offers this conversion bytes as well. Add-ons do pass them:
+     anything storing binary through the string API, such as a pickle. */
+  if (PyBytes_Check(obj))
+  {
+    if (val)
+      val->assign(PyBytes_AS_STRING(obj), PyBytes_GET_SIZE(obj));
     return SWIG_OK;
   }
 
