@@ -1067,6 +1067,8 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
 #ifdef HAS_OPTICAL_DRIVE
   if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
+    // Whatever was read from the disc last at this path may describe a different disc
+    RemoveDiscInfo(device.path);
 #ifdef TARGET_WINDOWS
     SetHasOpticalDrive(true); // In case drive appeared after startup (eg. virtual drive)
     {
@@ -1159,6 +1161,8 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
 void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
   ResetDriveCaches(device.path);
+  if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
+    RemoveDiscInfo(device.path);
 #ifdef TARGET_WINDOWS
   if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
@@ -1177,6 +1181,8 @@ void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageD
 void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
   ResetDriveCaches(device.path);
+  if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
+    RemoveDiscInfo(device.path);
 #ifdef TARGET_WINDOWS
   if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
   {
