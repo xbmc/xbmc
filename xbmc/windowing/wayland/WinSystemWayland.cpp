@@ -825,6 +825,10 @@ void CWinSystemWayland::ApplyShellSurfaceState(IShellSurface::StateBitset state)
 {
   m_windowDecorator->SetState(m_configuredSize, m_scale, state);
   m_shellSurfaceState = state;
+  // Enabling or disabling decorations changes the window geometry even when the
+  // configured size stays the same, in which case ApplySizeUpdate() does not
+  // reapply it and a stale decorated geometry would offset the whole window
+  ApplyWindowGeometry();
 }
 
 void CWinSystemWayland::OnConfigure(std::uint32_t serial, CSizeInt size, IShellSurface::StateBitset state)
