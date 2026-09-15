@@ -22,6 +22,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "media/MediaType.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/MediaSourceSettings.h"
@@ -476,8 +477,11 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     m_database.BeginTransaction();
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
+      // A version's tag holds its file id as its db id, so its movie is the record to update
+      const CFileItem& owner{
+          item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion ? *m_videoAsset : *item};
       idFile = m_database.SetFileForMedia(
-          item->GetDynPath(), item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
+          item->GetDynPath(), owner.GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId,
           CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
                                      .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
       videoDbSuccess = idFile > 0;
@@ -496,6 +500,12 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
                         GUI_MSG_FLAG_FORCE_UPDATE,
                         std::make_shared<CFileItem>(oldItem)};
         CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+        // A version is known by its file, so it has a new id and Refresh() reselects it by that
+        CVideoInfoTag* tag{item->GetVideoInfoTag()};
+        if (tag->m_type == MediaTypeVideoVersion)
+          tag->m_iDbId = idFile;
+        tag->m_iFileId = idFile;
       }
     }
     else
