@@ -25,6 +25,10 @@
 #include <vector>
 
 // Forward
+namespace ADDON
+{
+struct AddonEvent;
+}
 class CGUIFont;
 class CGUIFontTTF;
 class CXBMCTinyXML;
@@ -130,8 +134,14 @@ private:
   bool LoadFontsFromFile(const std::string& fontsetFilePath,
                          const std::string& fontSet,
                          std::string& firstFontset);
+  //! \brief Merge in fonts declared by enabled RESOURCE_FONT add-ons; the skin's win
+  void LoadAddonFonts(const std::string& fontSet);
+
+  void OnAddonEvent(const ADDON::AddonEvent& event);
 
   mutable CCriticalSection m_critSection;
+  bool m_addonEventsSubscribed{false};
+  std::set<std::string> m_addonFontIds;
   std::vector<FontMetadata> m_userFontsCache;
 };
 
