@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIComponent.h"
@@ -103,6 +104,8 @@ public:
   CTestGUIComponent() : CGUIComponent(false)
   {
     m_pWindowManager = std::make_unique<CGUIWindowManager>();
+    // The window code under test dereferences it through CServiceBroker::GetGUI()
+    m_guiInfoManager = std::make_unique<CGUIInfoManager>();
     CServiceBroker::RegisterGUI(this);
   }
 };
