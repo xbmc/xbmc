@@ -401,6 +401,24 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
+    const bool isVideoDb = VIDEO::IsVideoDb(items);
+    // The content is already set for videodb paths, set content for the other paths.
+    if (!isVideoDb)
+    {
+      if (URIUtils::PathEquals(items.GetPath(), "special://videoplaylists/"))
+        items.SetContent("playlists");
+      else if (!items.IsVirtualDirectoryRoot())
+      { // load info from the database
+        std::string label;
+        if (items.GetLabel().empty() &&
+            m_rootDir.IsSource(items.GetPath(),
+                               CMediaSourceSettings::GetInstance().GetSources("video"), &label))
+          items.SetLabel(label);
+        if (!items.IsSourcesPath() && !items.IsLibraryFolder())
+          LoadVideoInfo(items, m_database);
+      }
+    }
+
     m_persistWatchedMode = true;
     if (const CVariant prop = items.GetProperty(PROPERTY_WATCHED_MODE); prop.isInteger())
     {
@@ -414,7 +432,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     if (m_persistWatchedMode)
       m_watchedMode = CMediaSettings::GetInstance().GetWatchedMode(items.GetContent());
 
-    if (VIDEO::IsVideoDb(items))
+    if (isVideoDb)
     {
       XFILE::CVideoDatabaseDirectory dir;
       CQueryParams params;
@@ -534,16 +552,6 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           }
         }
       }
-    }
-    else if (URIUtils::PathEquals(items.GetPath(), "special://videoplaylists/"))
-      items.SetContent("playlists");
-    else if (!items.IsVirtualDirectoryRoot())
-    { // load info from the database
-      std::string label;
-      if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"), &label))
-        items.SetLabel(label);
-      if (!items.IsSourcesPath() && !items.IsLibraryFolder())
-        LoadVideoInfo(items, m_database);
     }
 
     CVideoDbUrl videoUrl;
