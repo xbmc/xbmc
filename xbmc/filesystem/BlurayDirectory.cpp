@@ -322,8 +322,8 @@ bool CBlurayDirectory::FilterPlaylists(std::vector<PlaylistInformation>& playlis
   const auto Remove{[&playlists](std::string_view reason, const auto& shouldRemove)
                     {
                       for (const auto& playlist : playlists | std::views::filter(shouldRemove))
-                        CLog::LogF(LOGDEBUG, "Discarding playlist {} - {}", playlist.playlist,
-                                   reason);
+                        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Discarding playlist {} - {}",
+                                    playlist.playlist, reason);
                       std::erase_if(playlists, shouldRemove);
                     }};
 
@@ -633,12 +633,30 @@ void CBlurayDirectory::SetPlaylistStreamDetails(unsigned int playlist, CFileItem
 
 std::string CBlurayDirectory::GetBlurayTitle()
 {
-  return GetDiscInfoString(DiscInfo::TITLE);
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (std::string title; CServiceBroker::GetBlurayDiscCache()->GetDiscTitle(path, title))
+    return title;
+
+  const std::string title{GetDiscInfoString(DiscInfo::TITLE)};
+
+  // A disc that failed to open said nothing, so it is retried rather than written off
+  if (m_blurayInitialized)
+    CServiceBroker::GetBlurayDiscCache()->SetDiscTitle(path, title);
+  return title;
 }
 
 std::string CBlurayDirectory::GetBlurayID()
 {
-  return GetDiscInfoString(DiscInfo::ID);
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (std::string id; CServiceBroker::GetBlurayDiscCache()->GetDiscId(path, id))
+    return id;
+
+  const std::string id{GetDiscInfoString(DiscInfo::ID)};
+  if (m_blurayInitialized)
+    CServiceBroker::GetBlurayDiscCache()->SetDiscId(path, id);
+  return id;
 }
 
 std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
