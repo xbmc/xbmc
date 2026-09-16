@@ -330,6 +330,15 @@ public:
    */
   static bool ReadResolvedPlaylist(CFileItem& item);
 
+  /*!
+   * \brief Re-read the details the disc holds for an episode whose playlist has already been
+   * chosen. Matching the episode against the disc again recovers its own duration and its
+   * bookmark within a multi-episode playlist.
+   * \param item episode with a bluray:// playlist path, updated in place.
+   * \return true if the playlist was read.
+   */
+  static bool ReadEpisodePlaylist(CFileItem& item);
+
 protected:
   static bool GetDirectoryItems(const std::string& path,
                                 CFileItemList& items,

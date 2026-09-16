@@ -2038,13 +2038,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     // A bluray:// path means a playlist has been chosen, so get details here (if not present)
-    // Episodes are excluded as several can share a playlist
-    const bool isEpisode{content == ContentType::TVSHOWS &&
-                         pItem->GetVideoInfoTag()->m_iEpisode > -1};
-    if (!libraryImport && !isEpisode && URIUtils::IsBlurayPath(path) &&
-        !pItem->GetVideoInfoTag()->HasStreamDetails() &&
-        CDiscDirectoryHelper::ReadResolvedPlaylist(*pItem))
-      path = pItem->GetDynPath();
+    // An episode is matched against the disc, as its playlist may hold other episodes too
+    if (!libraryImport && URIUtils::IsBlurayPath(path) &&
+        !pItem->GetVideoInfoTag()->HasStreamDetails())
+    {
+      const bool read{content == ContentType::TVSHOWS && pItem->GetVideoInfoTag()->m_iEpisode > -1
+                          ? CDiscDirectoryHelper::ReadEpisodePlaylist(*pItem)
+                          : CDiscDirectoryHelper::ReadResolvedPlaylist(*pItem)};
+      if (read)
+        path = pItem->GetDynPath();
+    }
 
     if (!libraryImport)
       m_art.GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(),
