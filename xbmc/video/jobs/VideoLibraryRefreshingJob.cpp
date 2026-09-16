@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "video/FilenameAttributes.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
 #include "video/tags/IVideoInfoTagLoader.h"
@@ -447,8 +448,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       items.Add(std::make_shared<CFileItem>(*m_item));
 
     // set the proper path of the list of items to lookup
-    items.SetPath(m_item->IsFolder() ? URIUtils::GetParentPath(path)
-                                     : URIUtils::GetDirectory(path));
+    items.SetPath(VIDEO::IsBrowsableFolder(*m_item) ? URIUtils::GetParentPath(path)
+                                                    : URIUtils::GetDirectory(path));
 
     int headingLabel = 198;
     if (scraper->Content() == ADDON::ContentType::TVSHOWS)
