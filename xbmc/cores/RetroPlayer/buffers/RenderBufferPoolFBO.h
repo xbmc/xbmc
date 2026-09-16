@@ -19,13 +19,11 @@
  */
 #pragma once
 
+#include "BaseRenderBufferPool.h"
 #include "RenderBufferFBO.h"
-#include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 
 #include <mutex>
 #include <thread>
-
-#include "system_gl.h"
 
 namespace KODI
 {
@@ -37,16 +35,9 @@ class IHwRenderingContext;
 /*!
  * \brief Framebuffers for game clients that render on the GPU themselves
  *
- * The pool owns an OpenGL context shared with the one the window system draws
- * with, and hands the client a framebuffer to render each frame into. Kodi then
- * draws the texture that framebuffer is backed by, so the frame never leaves
- * the GPU.
- *
- * \note Desktop OpenGL and OpenGL ES 3.0 or newer. The copy path needs
- *       glBlitFramebuffer and fence syncs, neither of which GLES 2.0 has, so a
- *       GLES 2.0 build has no pool that reports SupportsHardwareRendering() and
- *       such clients are told during negotiation that hardware rendering is
- *       unavailable, and can fall back to software rather than failing later.
+ * The pool owns a shared GL context and a stable client framebuffer. Completed
+ * frames are blitted into separate, pooled capture buffers for the renderer.
+ * Desktop GL or GLES 3 is required for framebuffer blits and fence syncs.
  */
 class CRenderBufferPoolFBO : public CBaseRenderBufferPool
 {
@@ -55,12 +46,8 @@ public:
   CRenderBufferPoolFBO(CRenderContext& context, std::unique_ptr<IHwRenderingContext> hwContext);
   ~CRenderBufferPoolFBO() override;
 
-  // implementation of IRenderBufferPool via CRenderBufferPoolSysMem
+  // Implementation of IRenderBufferPool via CBaseRenderBufferPool
   bool IsCompatible(const CRenderVideoSettings& renderSettings) const override;
-
-  // implementation of CBaseRenderBufferPool via CRenderBufferPoolSysMem
-  IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
-  bool ConfigureInternal() override;
   IRenderBuffer* GetBuffer(unsigned int width, unsigned int height) override;
   void Return(IRenderBuffer* buffer) override;
   void Flush() override;
@@ -76,6 +63,10 @@ public:
                                     unsigned int height) override;
 
 protected:
+  // Implementation of CBaseRenderBufferPool
+  IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
+  bool ConfigureInternal() override;
+
   IRenderBuffer* GetCaptureBuffer(unsigned int width, unsigned int height);
 
   // Construction parameters

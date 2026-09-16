@@ -7,6 +7,7 @@
  */
 
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
+#include "cores/RetroPlayer/buffers/RenderBufferManager.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolFBO.h"
 #include "cores/RetroPlayer/playback/test/PlaybackTestEnvironment.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
@@ -16,13 +17,18 @@
 #include "cores/RetroPlayer/shaders/gl/ShaderPresetGL.h"
 #include "cores/RetroPlayer/shaders/gl/ShaderTextureGL.h"
 #include "cores/RetroPlayer/shaders/gl/ShaderTextureGLRef.h"
+#include "cores/RetroPlayer/streams/RetroPlayerRendering.h"
+#include "games/addons/streams/GameClientStreamHwFramebuffer.h"
+#include "guilib/GUITextureGL.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 
+#include <algorithm>
 #include <array>
 #include <thread>
+#include <vector>
 
 #import <AppKit/NSOpenGL.h>
 #include <OpenGL/OpenGL.h>
@@ -356,6 +362,43 @@ struct CReleaseRenderBuffer
   void operator()(IRenderBuffer* buffer) const { buffer->Release(); }
 };
 using FBOBufferPtr = std::unique_ptr<CRenderBufferFBO, CReleaseRenderBuffer>;
+
+class CControlledContext : public IHwRenderingContext
+{
+public:
+  explicit CControlledContext(std::unique_ptr<IHwRenderingContext> context)
+    : m_context(std::move(context))
+  {
+  }
+  bool SupportsHardwareRendering() const override { return m_context->SupportsHardwareRendering(); }
+  bool Create(const HwContextProperties& properties) override
+  {
+    return m_context->Create(properties);
+  }
+  bool IsCreated() const override { return m_context->IsCreated(); }
+  bool MakeCurrent() override
+  {
+    ++binds;
+    return !failBind && m_context->MakeCurrent();
+  }
+  void RestoreCurrent() override
+  {
+    ++restores;
+    m_context->RestoreCurrent();
+  }
+  void Destroy() override
+  {
+    ++destroys;
+    m_context->Destroy();
+  }
+  bool failBind{false};
+  unsigned int binds{0};
+  unsigned int restores{0};
+  unsigned int destroys{0};
+
+private:
+  std::unique_ptr<IHwRenderingContext> m_context;
+};
 } // namespace
 
 class TestRenderBufferPoolFBOOSX : public TestHwRenderingContextOSX
@@ -368,8 +411,10 @@ protected:
       return;
 
     m_environment = std::make_unique<CPlaybackTestEnvironment>();
+    auto context = std::make_unique<CControlledContext>(CreateHwRenderingContextOSX(m_guiContext));
+    m_native = context.get();
     m_pool = std::make_shared<CRenderBufferPoolFBO>(m_environment->ProcessInfo().GetRenderContext(),
-                                                    CreateHwRenderingContextOSX(m_guiContext));
+                                                    std::move(context));
     ASSERT_TRUE(m_pool->SupportsHardwareRendering());
     ASSERT_TRUE(m_pool->CreateContext({}));
     ASSERT_TRUE(m_pool->Configure(AV_PIX_FMT_NONE));
@@ -397,7 +442,150 @@ protected:
 
   std::unique_ptr<CPlaybackTestEnvironment> m_environment;
   std::shared_ptr<CRenderBufferPoolFBO> m_pool;
+  CControlledContext* m_native{nullptr};
 };
+
+TEST_F(TestRenderBufferPoolFBOOSX, LostContextRetiresSurvivingBuffersAndAllowsRepeatedRecovery)
+{
+  for (unsigned int cycle = 0; cycle < 3; ++cycle)
+  {
+    ASSERT_TRUE(m_pool->BeginClientFrame());
+    auto client = GetClient(4, 4);
+    ASSERT_NE(client, nullptr);
+    auto captured = Capture(client.get(), 4, 4);
+    ASSERT_NE(captured, nullptr);
+    auto freeCapture = Capture(client.get(), 4, 4);
+    ASSERT_NE(freeCapture, nullptr);
+    freeCapture.reset();
+    m_pool->EndClientFrame();
+    captured->WaitForCapture();
+    captured->FinishRender();
+    const GLuint texture = captured->TextureID();
+    const GLuint clientTexture = client->TextureID();
+    const auto restores = m_native->restores;
+    const auto destroys = m_native->destroys;
+
+    m_native->failBind = true;
+    EXPECT_FALSE(m_pool->BeginClientFrame());
+    m_pool->DestroyContext();
+    EXPECT_FALSE(m_native->IsCreated());
+    EXPECT_EQ(m_native->destroys, destroys + 1);
+    EXPECT_EQ(m_native->restores, restores);
+    EXPECT_EQ([NSOpenGLContext currentContext], m_guiContext);
+    EXPECT_EQ(client->GetCurrentFramebuffer(), 0);
+    EXPECT_EQ(captured->TextureID(), 0);
+    EXPECT_FALSE(client->Allocate(AV_PIX_FMT_NONE, 8, 8));
+    EXPECT_FALSE(captured->SetReady());
+    captured->WaitForCapture();
+    captured->FinishRender();
+    EXPECT_TRUE(glIsTexture(texture));
+    EXPECT_TRUE(glIsTexture(clientTexture));
+    m_pool->DestroyContext();
+    EXPECT_EQ(m_native->destroys, destroys + 1);
+
+    m_native->failBind = false;
+    ASSERT_TRUE(m_pool->CreateContext({}));
+    ASSERT_TRUE(m_pool->Configure(AV_PIX_FMT_NONE));
+    ASSERT_TRUE(m_pool->BeginClientFrame());
+    auto next = GetClient(4, 4);
+    ASSERT_NE(next, nullptr);
+    auto nextCapture = Capture(next.get(), 4, 4);
+    ASSERT_NE(nextCapture, nullptr);
+    m_pool->EndClientFrame();
+    client.reset();
+    captured.reset();
+    EXPECT_TRUE(glIsTexture(texture));
+    EXPECT_TRUE(glIsTexture(clientTexture));
+    EXPECT_EQ(glGetError(), GL_NO_ERROR);
+    // These are known shared objects in the controlled, healthy test share group.
+    glDeleteTextures(1, &texture);
+    glDeleteTextures(1, &clientTexture);
+  }
+}
+
+TEST_F(TestRenderBufferPoolFBOOSX, OrdinaryDestructionDeletesResourcesAndRetiresHeldBuffers)
+{
+  ASSERT_TRUE(m_pool->BeginClientFrame());
+  auto client = GetClient(4, 4);
+  ASSERT_NE(client, nullptr);
+  auto captured = Capture(client.get(), 4, 4);
+  ASSERT_NE(captured, nullptr);
+  const GLuint texture = captured->TextureID();
+  m_pool->EndClientFrame();
+  m_pool->DestroyContext();
+  EXPECT_FALSE(m_native->IsCreated());
+  EXPECT_EQ(m_native->destroys, 1);
+  EXPECT_EQ(m_native->restores, 2);
+  EXPECT_FALSE(glIsTexture(texture));
+  EXPECT_EQ(client->GetCurrentFramebuffer(), 0);
+  EXPECT_EQ(captured->TextureID(), 0);
+  captured->FinishRender();
+  EXPECT_FALSE(captured->SetReady());
+  EXPECT_FALSE(client->Allocate(AV_PIX_FMT_NONE, 4, 4));
+  EXPECT_EQ(glGetError(), GL_NO_ERROR);
+}
+
+TEST_F(TestRenderBufferPoolFBOOSX, AbandonedGameStreamReleasesManagerAndPoolForNextGame)
+{
+  class CCallbacks : public KODI::GAME::IHwFramebufferCallback
+  {
+  public:
+    bool HardwareContextReset() override
+    {
+      ++resets;
+      return true;
+    }
+    void HardwareContextDestroy() override { ++destroys; }
+    unsigned int resets{0};
+    unsigned int destroys{0};
+  } callbacks;
+
+  m_pool->DestroyContext();
+  m_environment->ProcessInfo().GetBufferManager().RegisterPools(nullptr, {m_pool});
+  auto& manager = m_environment->Renderer();
+  CRetroPlayerRendering rendering(manager, m_environment->ProcessInfo());
+  game_hw_rendering_properties hardware{};
+  hardware.context_type = GAME_HW_CONTEXT_OPENGL_CORE;
+  hardware.version_major = 3;
+  hardware.version_minor = 2;
+  KODI::GAME::CGameClientStreamHwFramebuffer stream(callbacks, hardware);
+  game_stream_properties properties{};
+  properties.type = GAME_STREAM_HW_FRAMEBUFFER;
+  properties.hw_framebuffer.max_width = properties.hw_framebuffer.max_height = 4;
+
+  for (unsigned int cycle = 0; cycle < 4; ++cycle)
+  {
+    ASSERT_TRUE(stream.OpenStream(&rendering, properties));
+    ASSERT_TRUE(manager.BeginClientFrame());
+    ASSERT_TRUE(stream.ResetHwContext());
+    game_stream_buffer buffer{};
+    buffer.type = GAME_STREAM_HW_FRAMEBUFFER;
+    ASSERT_TRUE(stream.GetBuffer(4, 4, buffer));
+    EXPECT_NE(buffer.hw_framebuffer.framebuffer, 0);
+    manager.RenderFrame(4, 4, 1.0f, 0);
+    if (cycle == 3)
+      stream.DestroyHwContext();
+    manager.EndClientFrame();
+
+    if (cycle != 3)
+    {
+      m_native->failBind = true;
+      EXPECT_FALSE(manager.BeginClientFrame());
+      stream.AbandonHwContext();
+    }
+    const auto restores = m_native->restores;
+    stream.CloseStream();
+    EXPECT_FALSE(m_native->IsCreated());
+    EXPECT_EQ(callbacks.resets, cycle + 1);
+    EXPECT_EQ(callbacks.destroys, cycle == 3 ? 1 : 0);
+    EXPECT_EQ(m_native->restores, restores + (cycle == 3 ? 1 : 0));
+    stream.CloseStream();
+    EXPECT_EQ(m_native->destroys, cycle + 2);
+    m_native->failBind = false;
+  }
+  EXPECT_EQ([NSOpenGLContext currentContext], m_guiContext);
+  EXPECT_EQ(glGetError(), GL_NO_ERROR);
+}
 
 TEST_F(TestRenderBufferPoolFBOOSX, NestedScopesRestoreGuiOnlyAfterOutermostEnd)
 {
@@ -870,6 +1058,8 @@ class CTestFBORenderer : public CRPRendererFBO
 public:
   using CRPRendererFBO::CRPRendererFBO;
 
+  std::vector<GLuint> VertexArrays() const { return {m_mainVAO, m_blackbarsVAO}; }
+
   CDirectionalTestPreset* UseDirectionalPreset()
   {
     auto preset = std::make_unique<CDirectionalTestPreset>(m_context);
@@ -880,11 +1070,11 @@ public:
     return result;
   }
 
-  void Draw(CRenderBufferFBO* buffer, const CRect& crop)
+  void Draw(CRenderBufferFBO* buffer, const CRect& crop, bool clear = false, uint8_t alpha = 128)
   {
     SetBuffer(buffer);
     m_crop = crop;
-    RenderFrame(false, 128);
+    RenderFrame(clear, alpha);
   }
 
 protected:
@@ -901,11 +1091,84 @@ private:
 };
 } // namespace
 
+TEST_F(TestRenderBufferPoolFBOOSX, RendererOwnsInitializedVertexArraysUntilDestruction)
+{
+  CTestGLWindow window;
+  ASSERT_TRUE(window.InitRenderSystem());
+  ASSERT_TRUE(window.ResetRenderSystem(8, 8));
+  CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
+                         CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
+                         CServiceBroker::GetGUI());
+  GLint guiVertexArray = 0;
+  glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &guiVertexArray);
+
+  for (unsigned int cycle = 0; cycle < 20; ++cycle)
+  {
+    SCOPED_TRACE(cycle);
+    std::vector<GLuint> arrays;
+    std::vector<GLuint> buffers;
+    {
+      CTestFBORenderer renderer({}, context, m_pool);
+      arrays = renderer.VertexArrays();
+      ASSERT_EQ(arrays.size(), 2u);
+      EXPECT_NE(arrays[0], arrays[1]);
+      GLint binding = 0;
+      glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &binding);
+      EXPECT_EQ(binding, guiVertexArray);
+      for (size_t i = 0; i < arrays.size(); ++i)
+      {
+        ASSERT_TRUE(glIsVertexArray(arrays[i]));
+        glBindVertexArray(arrays[i]);
+        GLint count = 0;
+        glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &count);
+        unsigned int enabledCount = 0;
+        for (GLint attribute = 0; attribute < count; ++attribute)
+        {
+          GLint enabled = 0;
+          glGetVertexAttribiv(attribute, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &enabled);
+          if (!enabled)
+            continue;
+          ++enabledCount;
+          glGetVertexAttribiv(attribute, GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, &binding);
+          EXPECT_TRUE(glIsBuffer(binding));
+          buffers.push_back(binding);
+        }
+        EXPECT_EQ(enabledCount, i == 0 ? 2u : 1u);
+        glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &binding);
+        if (i == 0)
+        {
+          EXPECT_TRUE(glIsBuffer(binding));
+          buffers.push_back(binding);
+          std::array<GLubyte, 4> indices{};
+          glGetBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size(), indices.data());
+          EXPECT_EQ(indices, (std::array<GLubyte, 4>{0, 1, 3, 2}));
+        }
+        else
+          EXPECT_EQ(binding, 0);
+      }
+      glBindVertexArray(guiVertexArray);
+      std::sort(buffers.begin(), buffers.end());
+      buffers.erase(std::unique(buffers.begin(), buffers.end()), buffers.end());
+      EXPECT_EQ(buffers.size(), 3u);
+    }
+    for (const auto array : arrays)
+      EXPECT_FALSE(glIsVertexArray(array));
+    for (const auto buffer : buffers)
+      EXPECT_FALSE(glIsBuffer(buffer));
+    EXPECT_TRUE(glIsVertexArray(guiVertexArray));
+    EXPECT_EQ(glGetError(), GL_NO_ERROR);
+  }
+}
+
 TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientationCropAndAlpha)
 {
   CTestGLWindow window;
   ASSERT_TRUE(window.InitRenderSystem());
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
+  GLint guiVertexArray = 0;
+  glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &guiVertexArray);
+  std::array<GLuint, 2> guiBuffers{};
+  glGenBuffers(guiBuffers.size(), guiBuffers.data());
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
                          CServiceBroker::GetGUI());
@@ -947,6 +1210,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
       {
         CTestFBORenderer renderer({}, context, m_pool);
         ASSERT_TRUE(renderer.Configure(AV_PIX_FMT_NONE));
+        const auto arrays = renderer.VertexArrays();
         auto* preset = filtered ? renderer.UseDirectionalPreset() : nullptr;
         for (unsigned int rotation : {0u, 90u, 180u, 270u})
         {
@@ -963,15 +1227,47 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
             glViewport(0, 0, 8, 8);
             glClearColor(0, 0, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+            glBindVertexArray(guiVertexArray);
+            glBindBuffer(GL_ARRAY_BUFFER, guiBuffers[0]);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, guiBuffers[1]);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, output.GetTextureID());
+            glActiveTexture(GL_TEXTURE3);
+            glBlendFuncSeparate(GL_ONE, GL_ZERO, GL_ZERO, GL_ONE);
+            glClearColor(0.25f, 0.5f, 0.75f, 1.0f);
+            glScissor(1, 2, 3, 4);
+            glEnable(GL_SCISSOR_TEST);
+            glEnable(GL_FRAMEBUFFER_SRGB);
+            context.EnableGUIShader(GL_SHADER_METHOD::DEFAULT);
             const float inset = cropped ? height / 4.0f : 0.0f;
             captured->SetRotation(rotation);
             captured->SetDisplayAspectRatio(1.0f);
             renderer.Draw(captured.get(), {0, inset, 4, height - inset});
+            EXPECT_EQ(renderer.VertexArrays(), arrays);
+            for (const auto array : arrays)
+              EXPECT_TRUE(glIsVertexArray(array));
             GLint restored = 0;
             glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &restored);
             EXPECT_EQ(restored, framebuffer);
             glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &restored);
-            EXPECT_EQ(restored, framebuffer);
+            EXPECT_EQ(restored, 0);
+            const auto expectBinding = [](GLenum state, GLint expected)
+            {
+              GLint actual = 0;
+              glGetIntegerv(state, &actual);
+              EXPECT_EQ(actual, expected) << "GL state " << state;
+            };
+            expectBinding(GL_VERTEX_ARRAY_BINDING, guiVertexArray);
+            expectBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING, guiBuffers[1]);
+            expectBinding(GL_ACTIVE_TEXTURE, GL_TEXTURE0);
+            EXPECT_TRUE(glIsEnabled(GL_BLEND));
+            EXPECT_TRUE(glIsEnabled(GL_SCISSOR_TEST));
+            EXPECT_TRUE(glIsEnabled(GL_FRAMEBUFFER_SRGB));
+            std::array<GLint, 4> scissor{};
+            glGetIntegerv(GL_SCISSOR_BOX, scissor.data());
+            EXPECT_EQ(scissor, (std::array<GLint, 4>{1, 2, 3, 4}));
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
             std::array<GLint, 4> viewport{};
             glGetIntegerv(GL_VIEWPORT, viewport.data());
             EXPECT_EQ(viewport, (std::array<GLint, 4>{0, 0, 8, 8}));
@@ -995,6 +1291,13 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
                 EXPECT_NEAR(pixel[2], filtered && top ? 191 : 127, 1);
               }
             }
+            std::array<unsigned char, 4> before{}, after{};
+            glReadPixels(2, 3, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, before.data());
+            CGUITextureGL::DrawQuad({0, 0, 8, 8}, 0x8000FF00);
+            glReadPixels(2, 3, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, after.data());
+            EXPECT_NEAR(after[0], before[0] * 127.0f / 255.0f, 1);
+            EXPECT_NEAR(after[1], 128 + before[1] * 127.0f / 255.0f, 1);
+            EXPECT_NEAR(after[2], before[2] * 127.0f / 255.0f, 1);
             EXPECT_EQ(glGetError(), GL_NO_ERROR);
           }
         }
@@ -1002,5 +1305,64 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
       ASSERT_TRUE(m_pool->BeginClientFrame());
     }
     m_pool->EndClientFrame();
+  }
+  glDeleteBuffers(guiBuffers.size(), guiBuffers.data());
+}
+
+TEST_F(TestRenderBufferPoolFBOOSX, OpaqueFramesClearBlackBarsAndAllowSubsequentGuiDrawing)
+{
+  ASSERT_TRUE(m_pool->BeginClientFrame());
+  auto client = GetClient(4, 2);
+  ASSERT_NE(client, nullptr);
+  glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(client->GetCurrentFramebuffer()));
+  glClearColor(1, 0, 0, 1);
+  glClear(GL_COLOR_BUFFER_BIT);
+  auto captured = Capture(client.get(), 4, 2);
+  ASSERT_NE(captured, nullptr);
+  m_pool->EndClientFrame();
+
+  CTestGLWindow window;
+  ASSERT_TRUE(window.InitRenderSystem());
+  ASSERT_TRUE(window.ResetRenderSystem(8, 8));
+  CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
+                         CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
+                         CServiceBroker::GetGUI());
+  context.SetViewWindow(0, 0, 8, 8);
+  glMatrixProject->LoadIdentity();
+  glMatrixProject->Ortho2D(0, 8, 8, 0);
+  glMatrixModview->LoadIdentity();
+  KODI::SHADER::CShaderTextureGL output(8, 8, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA, true);
+  output.CreateTexture();
+
+  for (bool filtered : {false, true})
+  {
+    CTestFBORenderer renderer({}, context, m_pool);
+    ASSERT_TRUE(renderer.Configure(AV_PIX_FMT_NONE));
+    if (filtered)
+      renderer.UseDirectionalPreset();
+    for (unsigned int rotation : {0u, 90u, 180u, 270u})
+    {
+      SCOPED_TRACE(testing::Message() << "filtered=" << filtered << " rotation=" << rotation);
+      ASSERT_TRUE(output.BindFBO());
+      glDisable(GL_DEPTH_TEST);
+      glScissor(0, 0, 8, 8);
+      captured->SetRotation(rotation);
+      renderer.Draw(captured.get(), {0, 0, 4, 2}, true, 255);
+      for (int y : {0, 7})
+      {
+        std::array<unsigned char, 4> pixel{};
+        glReadPixels(0, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel.data());
+        EXPECT_EQ(pixel, (std::array<unsigned char, 4>{0, 0, 0, 255}));
+      }
+      std::array<unsigned char, 4> pixel{};
+      glReadPixels(4, 4, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel.data());
+      EXPECT_EQ(pixel[0], 255);
+      EXPECT_EQ(pixel[3], 255);
+
+      CGUITextureGL::DrawQuad({0, 0, 8, 8}, 0xFF00FF00);
+      glReadPixels(4, 4, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel.data());
+      EXPECT_EQ(pixel, (std::array<unsigned char, 4>{0, 255, 0, 255}));
+      EXPECT_EQ(glGetError(), GL_NO_ERROR);
+    }
   }
 }

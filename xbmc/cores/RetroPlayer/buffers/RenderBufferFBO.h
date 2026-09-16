@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
+#include "BaseRenderBuffer.h"
 
 #include <memory>
 #include <mutex>
@@ -30,9 +30,8 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 class CRenderBufferPoolFBO;
+class CRenderContext;
 
 class CRenderBufferFBO : public CBaseRenderBuffer
 {
@@ -50,14 +49,11 @@ public:
                    Type type = Type::CLIENT);
   ~CRenderBufferFBO() override;
 
-  // implementation of IRenderBuffer via CRenderBufferSysMem
-  bool UploadTexture() override { return true; }
-
-  // implementation of IRenderBuffer
+  // Implementation of IRenderBuffer via CBaseRenderBuffer
   bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
   size_t GetFrameSize() const override { return 0; }
   uint8_t* GetMemory() override { return nullptr; }
-
+  bool UploadTexture() override { return true; }
   uintptr_t GetCurrentFramebuffer() override;
 
   GLuint TextureID() const { return m_resources->texture; }
@@ -68,22 +64,13 @@ public:
   bool SetReady();
   void PrepareForCapture();
 
-  /*!
-   * \brief Size of the texture backing this buffer
-   *
-   * The buffer reports the size of the frame the client drew, which is usually
-   * smaller than the texture holding it, so these are what texture coordinates
-   * have to be measured against.
-   */
+  //! Client attachments can exceed frame size; captures are allocated at frame size.
   unsigned int TextureWidth() const { return m_textureWidth; }
   unsigned int TextureHeight() const { return m_textureHeight; }
 
   //! Captures are normalized to top-left origin; only client buffers can be bottom-left.
   bool BottomLeftOrigin() const { return m_bottomLeftOrigin; }
   bool IsCapture() const { return m_type == Type::CAPTURE; }
-
-protected:
-  CRenderContext& m_context;
 
 private:
   friend class CRenderBufferPoolFBO;
@@ -93,6 +80,7 @@ private:
     // The pool deletes GL objects in their owning context, even when a renderer
     // still holds the CPU buffer. The lock excludes drawing during teardown.
     void Destroy();
+    void Abandon();
     std::mutex mutex;
     GLuint framebuffer{0};
     GLuint texture{0};
@@ -101,13 +89,16 @@ private:
     GLsync rendered{nullptr};
     bool retired{false};
   };
-  std::shared_ptr<Resources> m_resources = std::make_shared<Resources>();
-  unsigned int m_textureWidth{0};
-  unsigned int m_textureHeight{0};
+
+  // Construction parameters
   const bool m_depth;
   const bool m_stencil;
   const bool m_bottomLeftOrigin;
   const Type m_type;
+
+  std::shared_ptr<Resources> m_resources = std::make_shared<Resources>();
+  unsigned int m_textureWidth{0};
+  unsigned int m_textureHeight{0};
 };
 } // namespace RETRO
 } // namespace KODI

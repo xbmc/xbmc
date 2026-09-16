@@ -28,6 +28,7 @@ public:
   // on failure, but must never leave the client context current.
   virtual bool MakeCurrent() = 0;
   virtual void RestoreCurrent() = 0;
+  // Release native ownership without requiring a bind, and always invalidate IsCreated().
   virtual void Destroy() = 0;
 };
 

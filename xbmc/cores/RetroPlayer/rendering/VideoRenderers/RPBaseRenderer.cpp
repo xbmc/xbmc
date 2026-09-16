@@ -43,6 +43,7 @@ bool CRPBaseRenderer::IsCompatible(const CRenderVideoSettings& settings) const
   if (!m_bufferPool->IsCompatible(settings))
     return false;
 
+  // Shader preset must match
   std::string shaderPreset;
   if (m_shaderPreset)
     shaderPreset = m_shaderPreset->GetShaderPreset();
@@ -162,6 +163,7 @@ void CRPBaseRenderer::SetPixels(const std::string& pixelPath)
 
 void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
 {
+  // Get texture parameters
   const unsigned int sourceWidth = renderBuffer.GetWidth();
   const unsigned int sourceHeight = renderBuffer.GetHeight();
   const unsigned int sourceRotationDegCCW = renderBuffer.GetRotation();
@@ -176,19 +178,23 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   const unsigned int rotationDegCCW =
       (sourceRotationDegCCW + m_renderSettings.VideoSettings().GetRenderRotation()) % 360;
 
+  // Get screen parameters
   float screenWidth;
   float screenHeight;
   //! @todo screenPixelRatio unused - Possibly due to display integer scaling according to Garbear
   float screenPixelRatio;
   GetScreenDimensions(screenWidth, screenHeight, screenPixelRatio);
 
+  // Get target rendering area for the game view window (including black bars)
   const CRect viewRect = m_context.GetViewWindow();
 
+  // Calculate pixel ratio and zoom amount
   float pixelRatio = framePixelRatio;
   float zoomAmount = 1.0f;
   CRenderUtils::CalculateStretchMode(stretchMode, rotationDegCCW, sourceWidth, sourceHeight,
                                      screenWidth, screenHeight, pixelRatio, zoomAmount);
 
+  // Calculate destination rectangle for the game view window
   CRect destRect;
   CRenderUtils::CalcNormalRenderRect(viewRect, sourceFrameRatio * pixelRatio, zoomAmount, destRect);
 
@@ -229,17 +235,20 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   m_sourceRect.x2 = static_cast<float>(sourceWidth);
   m_sourceRect.y2 = static_cast<float>(sourceHeight);
 
+  // Clip as needed
   if (!(m_context.IsFullScreenVideo() || m_context.IsCalibrating()))
     CRenderUtils::ClipRect(viewRect, m_sourceRect, destRect);
 
   if (stretchMode == STRETCHMODE::Zoom)
   {
+    // Crop for zoom mode
     CRenderUtils::CropSource(m_sourceRect, rotationDegCCW, viewRect.Width(), viewRect.Height(),
                              static_cast<float>(sourceWidth), static_cast<float>(sourceHeight),
                              destRect.Width(), destRect.Height());
     destRect = viewRect;
   }
 
+  // Adapt the drawing rect points if we have to rotate
   m_rotatedDestCoords = CRenderUtils::ReorderDrawPoints(destRect, rotationDegCCW);
 
   if (destRect != m_lastLoggedDestRect || fullDestRect != m_lastLoggedFullDestRect ||
@@ -260,6 +269,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
     m_lastLoggedStretchMode = stretchMode;
   }
 
+  // Update video shader source size
   if (m_shaderPreset)
     m_shaderPreset->SetVideoSize(sourceWidth, sourceHeight);
 }
@@ -273,7 +283,7 @@ void CRPBaseRenderer::MarkDirty()
  * \brief Updates everything needed for video shaders (shader presets)
  * Needs to be called after m_renderBuffer has been set
  */
-void CRPBaseRenderer::Updateshaders()
+void CRPBaseRenderer::UpdateShaders()
 {
   if (m_bShadersNeedUpdate)
   {
@@ -288,6 +298,7 @@ void CRPBaseRenderer::PreRender(bool clear)
 {
   m_context.CaptureStateBlock();
 
+  // Clear screen
   if (clear)
     m_context.Clear(m_context.UseLimitedColor() ? UTILS::COLOR::LIMITED_BLACK
                                                 : UTILS::COLOR::BLACK);

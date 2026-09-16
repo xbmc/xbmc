@@ -28,7 +28,8 @@
 
 #include <utility>
 
-using namespace KODI::RETRO;
+using namespace KODI;
+using namespace RETRO;
 
 CRenderBufferPoolFBO::CRenderBufferPoolFBO(CRenderContext& context)
   : CRenderBufferPoolFBO(context, CreateHwRenderingContext(context))
@@ -58,16 +59,16 @@ bool CRenderBufferPoolFBO::IsCompatible(const CRenderVideoSettings& renderSettin
   return CRPRendererFBO::SupportsScalingMethod(renderSettings.GetScalingMethod());
 }
 
+IRenderBuffer* CRenderBufferPoolFBO::CreateRenderBuffer(void* header /* = nullptr */)
+{
+  return CreateFBO(CRenderBufferFBO::Type::CAPTURE);
+}
+
 bool CRenderBufferPoolFBO::ConfigureInternal()
 {
   // Hardware-rendered streams carry no CPU-side pixel format. Software ones
   // declare a real one and belong to the DMA and sysmem pools.
   return m_format == AV_PIX_FMT_NONE;
-}
-
-IRenderBuffer* CRenderBufferPoolFBO::CreateRenderBuffer(void* header /* = nullptr */)
-{
-  return CreateFBO(CRenderBufferFBO::Type::CAPTURE);
 }
 
 CRenderBufferFBO* CRenderBufferPoolFBO::CreateFBO(CRenderBufferFBO::Type type)
@@ -141,8 +142,6 @@ void CRenderBufferPoolFBO::Return(IRenderBuffer* buffer)
     if (fbo->IsCapture() && fbo->TextureID() != 0 && !fbo->m_resources->retired &&
         fbo->TextureWidth() == m_captureWidth && fbo->TextureHeight() == m_captureHeight)
     {
-      // Pool matching uses allocation size; published frame size can be smaller.
-      fbo->SetSize(fbo->TextureWidth(), fbo->TextureHeight());
       CBaseRenderBufferPool::Return(buffer);
       return;
     }
@@ -282,16 +281,20 @@ void CRenderBufferPoolFBO::DestroyContext()
   {
     if (!BeginClientFrame())
     {
-      CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Unable to bind context for resource destruction");
-      return;
+      CLog::Log(LOGERROR,
+                "RetroPlayer[RENDER]: Client context lost or unbindable; abandoning GPU resources");
+      for (const auto& resources : m_resources)
+        resources->Abandon();
     }
-
-    // Outstanding buffers remain valid CPU objects, but can no longer be drawn.
-    for (const auto& resources : m_resources)
-      resources->Destroy();
+    else
+    {
+      // Outstanding buffers remain valid CPU objects, but can no longer be drawn.
+      for (const auto& resources : m_resources)
+        resources->Destroy();
+      while (m_clientFrameDepth > 0)
+        EndClientFrame();
+    }
     m_resources.clear();
-    while (m_clientFrameDepth > 0)
-      EndClientFrame();
   }
   {
     std::unique_lock captureLock(m_captureMutex);

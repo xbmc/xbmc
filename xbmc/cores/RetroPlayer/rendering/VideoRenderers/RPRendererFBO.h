@@ -14,7 +14,6 @@
 
 #include <memory>
 #include <stdint.h>
-#include <string>
 
 #include "system_gl.h"
 
@@ -65,6 +64,19 @@ public:
   static bool SupportsScalingMethod(SCALINGMETHOD method);
 
 protected:
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  };
+
+  struct Svertex
+  {
+    float x;
+    float y;
+    float z;
+  };
+
   // implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
   void FlushInternal() override;
@@ -112,11 +124,11 @@ protected:
   FrameGeometry m_loggedGeometry;
   bool m_loggedHardwarePresentation{false};
 
-  std::string m_lastLoggedPreset{"\0"};
-  bool m_bLastLoggedUsePreset{false};
-
-  //! \brief Isolates vertex attributes and index bindings from the GUI
-  GLuint m_vao{0};
+  GLuint m_mainVAO;
+  GLuint m_mainVertexVBO;
+  GLuint m_mainIndexVBO;
+  GLuint m_blackbarsVAO;
+  GLuint m_blackbarsVertexVBO;
 
   std::shared_ptr<SHADER::IShaderTexture> m_shaderTargetTexture;
 
