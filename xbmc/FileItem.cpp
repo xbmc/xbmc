@@ -24,6 +24,7 @@
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "games/GameUtils.h"
 #include "games/tags/GameInfoTag.h"
+#include "media/MediaType.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
@@ -1237,6 +1238,41 @@ void CFileItem::SetMimeTypeForInternetFile()
   }
 }
 
+namespace
+{
+bool IsSameLibraryItem(const CFileItem& item, const CFileItem& other)
+{
+  const CVideoInfoTag& myTag{*item.GetVideoInfoTag()};
+  const CVideoInfoTag& otherTag{*other.GetVideoInfoTag()};
+  if (myTag.m_type != otherTag.m_type)
+    return false;
+
+  const auto SameFile{[&item, &other](int myFile, int otherFile)
+                      {
+                        return myFile == otherFile ||
+                               item.GetProperty("replaced_file_id").asInteger32(-1) == otherFile ||
+                               other.GetProperty("replaced_file_id").asInteger32(-1) == myFile;
+                      }};
+
+  // For a version its db id is a file id
+  if (myTag.m_type == MediaTypeVideoVersion)
+  {
+    if (myTag.m_iFileId == -1 || otherTag.m_iFileId == -1)
+      return myTag.m_iFileId == otherTag.m_iFileId && myTag.m_iDbId == otherTag.m_iDbId;
+    return SameFile(myTag.m_iDbId, otherTag.m_iDbId);
+  }
+
+  if (myTag.m_iDbId != otherTag.m_iDbId)
+    return false;
+
+  // For movies with multiple versions, we need also to check the file id
+  if (myTag.HasVideoVersions() && otherTag.HasVideoVersions() && myTag.m_iFileId != -1 &&
+      otherTag.m_iFileId != -1)
+    return SameFile(myTag.m_iFileId, otherTag.m_iFileId);
+  return true;
+}
+} // namespace
+
 bool CFileItem::IsSamePath(const CFileItem *item) const
 {
   if (!item)
@@ -1248,7 +1284,16 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       return (item->GetProperty("item_start") == GetProperty("item_start"));
     // See if we have associated a bluray playlist
     if (URIUtils::IsBlurayPath(GetDynPath()) || URIUtils::IsBlurayPath(item->GetDynPath()))
+    {
+      if (HasVideoInfoTag() && item->HasVideoInfoTag())
+      {
+        const CVideoInfoTag* myTag{GetVideoInfoTag()};
+        const CVideoInfoTag* otherTag{item->GetVideoInfoTag()};
+        if (myTag->m_iDbId != -1 && otherTag->m_iDbId != -1)
+          return IsSameLibraryItem(*this, *item);
+      }
       return (GetDynPath() == item->GetDynPath());
+    }
     return true;
   }
   if (HasMusicInfoTag() && item->HasMusicInfoTag())
@@ -1262,17 +1307,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
     const CVideoInfoTag* myTag{GetVideoInfoTag()};
     const CVideoInfoTag* otherTag{item->GetVideoInfoTag()};
     if (myTag->m_iDbId != -1 && otherTag->m_iDbId != -1)
-    {
-      if ((myTag->m_iDbId == otherTag->m_iDbId) && (myTag->m_type == otherTag->m_type))
-      {
-        // for movies with multiple versions, wie need also to check the file id
-        if (HasVideoVersions() && item->HasVideoVersions() && myTag->m_iFileId != -1 &&
-            otherTag->m_iFileId != -1)
-          return myTag->m_iFileId == otherTag->m_iFileId;
-        return true;
-      }
-      return false;
-    }
+      return IsSameLibraryItem(*this, *item);
   }
   if (MUSIC::IsMusicDb(*this) && HasMusicInfoTag())
   {
