@@ -270,7 +270,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         hasDetails = true;
 
       // if we are performing a forced refresh ask the user to choose between using a valid NFO and a valid scraper
-      if (needsRefresh && IsModal() && !scraper->IsNoop() &&
+      // a local scraper has nothing to refresh from, so discarding the nfo for it leaves no
+      // source at all
+      if (needsRefresh && IsModal() && !scraper->IsNoop() && scraper->ID() != "metadata.local" &&
           nfoResult != CInfoScanner::InfoType::ERROR_NFO)
       {
         int heading = 20159;
@@ -389,7 +391,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // to prompt and ask the user to input a new search title
     if (!hasDetails && !scraperUrl.HasUrls())
     {
-      if (IsModal())
+      // a local scraper has nothing to search, so another title cannot help and asking for one
+      // would only bring us back here
+      if (IsModal() && scraper->ID() != "metadata.local")
       {
         // ask the user to input a title to use
         if (!CGUIKeyboardFactory::ShowAndGetInput(
