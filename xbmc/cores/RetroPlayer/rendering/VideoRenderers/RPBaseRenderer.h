@@ -102,7 +102,7 @@ protected:
   ViewportCoordinates m_rotatedDestCoords{};
 
   // Video shaders
-  void Updateshaders();
+  void UpdateShaders();
   std::unique_ptr<SHADER::IShaderPreset> m_shaderPreset;
 
   bool m_bShadersNeedUpdate = true;

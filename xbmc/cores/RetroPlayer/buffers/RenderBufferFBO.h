@@ -82,9 +82,6 @@ public:
   bool BottomLeftOrigin() const { return m_bottomLeftOrigin; }
   bool IsCapture() const { return m_type == Type::CAPTURE; }
 
-protected:
-  CRenderContext& m_context;
-
 private:
   friend class CRenderBufferPoolFBO;
 
@@ -93,6 +90,7 @@ private:
     // The pool deletes GL objects in their owning context, even when a renderer
     // still holds the CPU buffer. The lock excludes drawing during teardown.
     void Destroy();
+    void Abandon();
     std::mutex mutex;
     GLuint framebuffer{0};
     GLuint texture{0};

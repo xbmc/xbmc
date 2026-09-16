@@ -29,7 +29,6 @@
 #endif
 
 #include <cmath>
-#include <cstring>
 #include <memory>
 #include <stddef.h>
 
@@ -41,7 +40,7 @@ using namespace RETRO;
 #if (defined(HAS_EGL) || defined(TARGET_DARWIN_OSX)) && (defined(HAS_GL) || HAS_GLES == 3)
 namespace
 {
-// State not covered by CRPBaseRenderer's GUI state block.
+// Restore the GUI render target before presenting the filtered texture.
 class CFramebufferState
 {
 public:
@@ -51,7 +50,6 @@ public:
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &m_drawFbo);
     glGetIntegerv(GL_VIEWPORT, m_viewport);
     glGetIntegerv(GL_SCISSOR_BOX, m_scissorBox);
-    m_scissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
 #if defined(HAS_GL)
     m_sRGBEnabled = glIsEnabled(GL_FRAMEBUFFER_SRGB);
 #endif
@@ -66,10 +64,6 @@ public:
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_drawFbo);
     glViewport(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
     glScissor(m_scissorBox[0], m_scissorBox[1], m_scissorBox[2], m_scissorBox[3]);
-    if (m_scissorEnabled)
-      glEnable(GL_SCISSOR_TEST);
-    else
-      glDisable(GL_SCISSOR_TEST);
 #if defined(HAS_GL)
     if (m_sRGBEnabled)
       glEnable(GL_FRAMEBUFFER_SRGB);
@@ -83,7 +77,6 @@ private:
   GLint m_drawFbo{};
   GLint m_viewport[4]{};
   GLint m_scissorBox[4]{};
-  GLboolean m_scissorEnabled{};
 #if defined(HAS_GL)
   GLboolean m_sRGBEnabled{};
 #endif
@@ -114,21 +107,59 @@ CRPRendererFBO::CRPRendererFBO(const CRenderSettings& renderSettings,
                                std::shared_ptr<IRenderBufferPool> bufferPool)
   : CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
+  m_context.CaptureStateBlock();
+
   m_clearColour = m_context.UseLimitedColor() ? (16.0f / 255.0f) : 0.0f;
 #if defined(HAS_GLES)
   m_shaderPreset = std::make_unique<SHADER::CShaderPresetGLES>(m_context);
 #else
   m_shaderPreset = std::make_unique<SHADER::CShaderPresetGL>(m_context);
 #endif
+
+  m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
+  const GLint posLoc = m_context.GUIShaderGetPos();
+  const GLint tex0Loc = m_context.GUIShaderGetCoord0();
+  const GLubyte idx[4] = {0, 1, 3, 2};
+
+  glGenVertexArrays(1, &m_mainVAO);
+  glBindVertexArray(m_mainVAO);
+  glGenBuffers(1, &m_mainVertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  glEnableVertexAttribArray(posLoc);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(PackedVertex),
+                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+  glEnableVertexAttribArray(tex0Loc);
+  glGenBuffers(1, &m_mainIndexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(idx), idx, GL_STATIC_DRAW);
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  m_context.DisableGUIShader();
+
+  m_context.EnableGUIShader(GL_SHADER_METHOD::DEFAULT);
+  const GLint blackbarsPosLoc = m_context.GUIShaderGetPos();
+  glGenVertexArrays(1, &m_blackbarsVAO);
+  glBindVertexArray(m_blackbarsVAO);
+  glGenBuffers(1, &m_blackbarsVertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
+  glVertexAttribPointer(blackbarsPosLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), nullptr);
+  glEnableVertexAttribArray(blackbarsPosLoc);
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  m_context.DisableGUIShader();
+
+  m_context.ApplyStateBlock();
 }
 
 CRPRendererFBO::~CRPRendererFBO()
 {
-  if (m_vao != 0)
-  {
-    glDeleteVertexArrays(1, &m_vao);
-    m_vao = 0;
-  }
+  glDeleteBuffers(1, &m_mainIndexVBO);
+  glDeleteBuffers(1, &m_mainVertexVBO);
+  glDeleteVertexArrays(1, &m_mainVAO);
+  glDeleteBuffers(1, &m_blackbarsVertexVBO);
+  glDeleteVertexArrays(1, &m_blackbarsVAO);
 
   DestroyShaderResources();
 }
@@ -142,32 +173,6 @@ void CRPRendererFBO::DestroyShaderResources()
 
 void CRPRendererFBO::RenderInternal(bool clear, uint8_t alpha)
 {
-  GLint program;
-  GLint arrayBuffer;
-  GLint unpackBuffer;
-  GLint vertexArray;
-  GLint texture;
-  GLint blendSrcRGB;
-  GLint blendDstRGB;
-  GLint blendSrcAlpha;
-  GLint blendDstAlpha;
-  GLfloat clearColour[4];
-  glGetIntegerv(GL_CURRENT_PROGRAM, &program);
-  glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &arrayBuffer);
-  glGetIntegerv(GL_PIXEL_UNPACK_BUFFER_BINDING, &unpackBuffer);
-  glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &vertexArray);
-  glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture);
-  glGetIntegerv(GL_BLEND_SRC_RGB, &blendSrcRGB);
-  glGetIntegerv(GL_BLEND_DST_RGB, &blendDstRGB);
-  glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrcAlpha);
-  glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDstAlpha);
-  glGetFloatv(GL_COLOR_CLEAR_VALUE, clearColour);
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-
-  if (m_vao == 0)
-    glGenVertexArrays(1, &m_vao);
-  glBindVertexArray(m_vao);
-
   if (clear)
   {
     if (alpha == 255)
@@ -178,14 +183,7 @@ void CRPRendererFBO::RenderInternal(bool clear, uint8_t alpha)
 
   Render(alpha);
 
-  glUseProgram(program);
-  glBindVertexArray(vertexArray);
-  glBindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, unpackBuffer);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  glBlendFuncSeparate(blendSrcRGB, blendDstRGB, blendSrcAlpha, blendDstAlpha);
-  glClearColor(clearColour[0], clearColour[1], clearColour[2], clearColour[3]);
+  glEnable(GL_BLEND);
 }
 
 void CRPRendererFBO::FlushInternal()
@@ -219,18 +217,11 @@ void CRPRendererFBO::DrawBlackBars()
 {
   glDisable(GL_BLEND);
 
-  struct Svertex
-  {
-    float x;
-    float y;
-    float z;
-  };
   Svertex vertices[24];
   GLubyte count = 0;
   const CRect destRect = CRenderGeometryFBO::GetDestinationRect(m_rotatedDestCoords);
 
   m_context.EnableGUIShader(GL_SHADER_METHOD::DEFAULT);
-  GLint posLoc = m_context.GUIShaderGetPos();
   GLint uniCol = m_context.GUIShaderGetUniCol();
 
   glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
@@ -316,21 +307,14 @@ void CRPRendererFBO::DrawBlackBars()
     count += 6;
   }
 
-  glBindVertexArray(m_vao);
-
-  GLuint vertexVBO;
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * count, &vertices[0], GL_STATIC_DRAW);
-
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
-  glEnableVertexAttribArray(posLoc);
+  glBindVertexArray(m_blackbarsVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * count, &vertices[0], GL_DYNAMIC_DRAW);
 
   glDrawArrays(GL_TRIANGLES, 0, count);
 
-  glDisableVertexAttribArray(posLoc);
+  glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
 
   m_context.DisableGUIShader();
 }
@@ -384,22 +368,11 @@ void CRPRendererFBO::Render(uint8_t alpha)
   GLuint drawTexture = renderBuffer->TextureID();
   bool bShaded = false;
 
-  glBindVertexArray(m_vao);
-  Updateshaders();
+  // GLES shader passes configure vertex attributes on the default VAO.
+  glBindVertexArray(0);
+  UpdateShaders();
 
-  {
-    const std::string& presetPath = m_renderSettings.VideoSettings().GetShaderPreset();
-    const size_t passCount = m_shaderPreset ? m_shaderPreset->GetPasses().size() : 0;
-    if (presetPath != m_lastLoggedPreset || m_bUseShaderPreset != m_bLastLoggedUsePreset)
-    {
-      CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Video filter is \"{}\", in use {}, {} passes",
-                presetPath.empty() ? "<none>" : presetPath, m_bUseShaderPreset, passCount);
-      m_lastLoggedPreset = presetPath;
-      m_bLastLoggedUsePreset = m_bUseShaderPreset;
-    }
-  }
-
-  if (m_bUseShaderPreset && !m_shaderPreset->GetPasses().empty())
+  if (m_bUseShaderPreset)
   {
     const CFramebufferState framebufferState;
     const CSize destSize = CRenderGeometryFBO::GetShaderOutputSize(
@@ -435,7 +408,7 @@ void CRPRendererFBO::Render(uint8_t alpha)
       if (targetTexture->BindFBO())
       {
         GLint targetFbo;
-        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &targetFbo);
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &targetFbo);
         targetTexture->UnbindFBO();
         if (targetFbo != 0)
         {
@@ -523,15 +496,8 @@ void CRPRendererFBO::Render(uint8_t alpha)
   m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
   GLubyte colour[4];
-  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-  struct PackedVertex
-  {
-    float x, y, z;
-    float u1, v1;
-  } vertex[4];
+  PackedVertex vertex[4];
 
-  GLint vertLoc = m_context.GUIShaderGetPos();
-  GLint loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
   GLint depthLoc = m_context.GUIShaderGetDepth();
 
@@ -552,25 +518,9 @@ void CRPRendererFBO::Render(uint8_t alpha)
   vertex[1].u1 = vertex[2].u1 = rect.x2;
   vertex[2].v1 = vertex[3].v1 = rect.y2;
 
-  glBindVertexArray(m_vao);
-
-  GLuint vertexVBO;
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
-
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
-
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(loc);
-
-  GLuint indexVBO;
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
+  glBindVertexArray(m_mainVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_DYNAMIC_DRAW);
 
   // The GUI shader positions the quad in depth from this. Leaving it unset
   // draws at whatever the uniform happened to hold.
@@ -588,15 +538,8 @@ void CRPRendererFBO::Render(uint8_t alpha)
     m_loggedHardwarePresentation = true;
   }
 
-  glDisableVertexAttribArray(vertLoc);
-  glDisableVertexAttribArray(loc);
-
+  glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-  glDeleteBuffers(1, &indexVBO);
 
   m_context.DisableGUIShader();
 }

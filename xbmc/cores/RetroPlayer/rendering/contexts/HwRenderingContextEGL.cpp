@@ -8,11 +8,11 @@
 
 #include "HwRenderingContextEGL.h"
 
+#include "EGLClientContext.h"
 #include "HwRenderingContextEGLUtils.h"
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "rendering/RenderSystem.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
@@ -42,18 +42,11 @@ using CWinSystemEGL = KODI::WINDOWING::LINUX::CWinSystemEGL;
 
 #if defined(HAS_GLES)
 constexpr EGLenum CLIENT_API = EGL_OPENGL_ES_API;
+constexpr EGLint CLIENT_RENDERABLE_TYPE = EGL_OPENGL_ES3_BIT;
 #else
 constexpr EGLenum CLIENT_API = EGL_OPENGL_API;
+constexpr EGLint CLIENT_RENDERABLE_TYPE = EGL_OPENGL_BIT;
 #endif
-
-class CRestoreEGLAPI
-{
-public:
-  ~CRestoreEGLAPI() { eglBindAPI(m_api); }
-
-private:
-  const EGLenum m_api{eglQueryAPI()};
-};
 
 bool IsDebugContext()
 {
@@ -90,27 +83,18 @@ class CHwRenderingContextEGL : public IHwRenderingContext
 {
 public:
   explicit CHwRenderingContextEGL(CRenderContext& context) : m_context(context) {}
-  ~CHwRenderingContextEGL() override { Destroy(); }
+  ~CHwRenderingContextEGL() override = default;
 
   bool SupportsHardwareRendering() const override;
   bool Create(const HwContextProperties& properties) override;
-  bool IsCreated() const override { return m_eglContext != EGL_NO_CONTEXT; }
+  bool IsCreated() const override { return m_client.IsCreated(); }
   bool MakeCurrent() override;
   void RestoreCurrent() override;
   void Destroy() override;
 
 private:
-  bool RestorePreviousContext();
-
   CRenderContext& m_context;
-  EGLenum m_prevAPI{EGL_OPENGL_ES_API};
-  EGLDisplay m_prevDisplay{EGL_NO_DISPLAY};
-  EGLSurface m_prevDraw{EGL_NO_SURFACE};
-  EGLSurface m_prevRead{EGL_NO_SURFACE};
-  EGLContext m_prevContext{EGL_NO_CONTEXT};
-  EGLDisplay m_eglDisplay{EGL_NO_DISPLAY};
-  EGLConfig m_eglConfig{};
-  EGLContext m_eglContext{EGL_NO_CONTEXT};
+  CEGLClientContext m_client{CLIENT_API};
 };
 } // namespace
 
@@ -123,26 +107,36 @@ bool CHwRenderingContextEGL::SupportsHardwareRendering() const
     return false;
 
   auto* renderSystem = m_context.Rendering();
-  if (!renderSystem || winSystem->GetEGLDisplay() == EGL_NO_DISPLAY)
+  if (!renderSystem || winSystem->GetEGLDisplay() == EGL_NO_DISPLAY ||
+      winSystem->GetEGLContext() == EGL_NO_CONTEXT)
     return false;
   const EGLDisplay display = winSystem->GetEGLDisplay();
-  if (!SupportsEGLHardwareRendering(eglQueryString(display, EGL_VERSION),
-                                    eglQueryString(display, EGL_EXTENSIONS)))
-    return false;
   unsigned int major = 0, minor = 0;
   renderSystem->GetRenderVersion(major, minor);
 #if defined(HAS_GLES)
-  return major >= 3;
+  constexpr bool embedded = true;
 #else
-  return major > 3 || (major == 3 && minor >= 2);
+  constexpr bool embedded = false;
 #endif
+  const char* version = eglQueryString(display, EGL_VERSION);
+  const char* extensions = eglQueryString(display, EGL_EXTENSIONS);
+  const auto capabilities = GetEGLCapabilities(version, extensions);
+  if (!capabilities.createContext)
+    return false;
+
+  // Creation remains authoritative for the client's version and share group.
+  const bool configAvailable =
+      !GetEGLClientConfigs(display, winSystem->GetEGLConfig(), CLIENT_RENDERABLE_TYPE,
+                           capabilities.surfaceless)
+           .empty();
+  return configAvailable &&
+         SupportsEGLHardwareRendering(version, extensions, embedded, major, minor, configAvailable);
 }
 
 bool CHwRenderingContextEGL::Create(const HwContextProperties& properties)
 {
-  if (m_eglContext != EGL_NO_CONTEXT)
-    Destroy();
-  if (m_eglContext != EGL_NO_CONTEXT || !SupportsHardwareRendering())
+  Destroy();
+  if (!SupportsHardwareRendering())
     return false;
 #if defined(HAS_GLES)
   if (!properties.embedded || properties.versionMajor < 3)
@@ -159,58 +153,17 @@ bool CHwRenderingContextEGL::Create(const HwContextProperties& properties)
     return false;
   }
 
-  m_eglDisplay = winSystem->GetEGLDisplay();
-
-  if (m_eglDisplay == EGL_NO_DISPLAY)
+  const EGLDisplay display = winSystem->GetEGLDisplay();
+  const char* eglVersion = eglQueryString(display, EGL_VERSION);
+  const auto capabilities = GetEGLCapabilities(eglVersion, eglQueryString(display, EGL_EXTENSIONS));
+  const auto configs = GetEGLClientConfigs(display, winSystem->GetEGLConfig(),
+                                           CLIENT_RENDERABLE_TYPE, capabilities.surfaceless);
+  if (configs.empty())
   {
-    CLog::Log(LOGERROR, "failed to get EGL display");
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: No usable EGL client config (EGL error {:#x})",
+              eglGetError());
     return false;
   }
-
-  CRestoreEGLAPI restoreAPI;
-  if (!eglBindAPI(CLIENT_API))
-    return false;
-
-  // clang-format off
-
-  EGLint attribs[] =
-  {
-#if defined(HAS_GLES)
-    // ES3 rather than ES2: the framebuffer objects, the depth and stencil
-    // attachments and the sampling this pool relies on are all core in ES3.
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
-#else
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-#endif
-    // The context is only ever made current without a surface, so the surface
-    // type is a formality -- but eglChooseConfig defaults it to EGL_WINDOW_BIT
-    // and matches on it either way, so it has to name something the platform
-    // really offers. Window is the one every platform Kodi runs on provides.
-    // Pbuffer is not: on GBM, configs come from the GBM formats and advertise
-    // window only, so asking for a pbuffer matches nothing at all and every
-    // hardware core fails to get a context.
-    EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-    EGL_RED_SIZE,   8,
-    EGL_GREEN_SIZE, 8,
-    EGL_BLUE_SIZE,  8,
-    EGL_ALPHA_SIZE, 8,
-    EGL_NONE
-  };
-
-  EGLint neglconfigs;
-  if (!eglChooseConfig(m_eglDisplay, attribs, &m_eglConfig, 1, &neglconfigs))
-  {
-    CLog::Log(LOGERROR, "Failed to query number of EGL configs");
-    return false;
-  }
-
-  if (neglconfigs <= 0)
-  {
-    CLog::Log(LOGERROR, "No suitable EGL configs found");
-    return false;
-  }
-
-  // clang-format on
 
   // In libretro the version a client asks for is a minimum, so try later ones
   // first and fall back to the request. ES only: its minor versions are purely
@@ -240,119 +193,65 @@ bool CHwRenderingContextEGL::Create(const HwContextProperties& properties)
                               : properties.coreProfile ? "OpenGL core profile"
                                                        : "OpenGL compatibility profile";
 
-  // Ask the driver for each in turn rather than keeping a table of what it
-  // supports. A refusal fails the stream cleanly and the client falls back.
-  std::string contextName;
-  const char* eglVersion = eglQueryString(m_eglDisplay, EGL_VERSION);
-  for (const auto& [major, minor] : versions)
+  for (const EGLConfig config : configs)
   {
-    const auto contextAttribs = BuildEGLContextAttributes(properties, major, minor, eglVersion);
+    EGLint configID = 0, renderable = 0, surfaces = 0;
+    eglGetConfigAttrib(display, config, EGL_CONFIG_ID, &configID);
+    eglGetConfigAttrib(display, config, EGL_RENDERABLE_TYPE, &renderable);
+    eglGetConfigAttrib(display, config, EGL_SURFACE_TYPE, &surfaces);
+    CLog::Log(LOGDEBUG,
+              "RetroPlayer[RENDER]: EGL {} client config {} (GUI {}, renderable {:#x}, surfaces "
+              "{:#x}), binding {}",
+              eglVersion, configID, config == winSystem->GetEGLConfig(), renderable, surfaces,
+              capabilities.surfaceless ? "surfaceless" : "pbuffer");
 
-    contextName = apiName;
-    if (major != 0)
-      contextName += StringUtils::Format(" {}.{}", major, minor);
-
-    m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, winSystem->GetEGLContext(),
-                                    contextAttribs.data());
-    if (m_eglContext != EGL_NO_CONTEXT)
+    for (const auto& [major, minor] : versions)
     {
-      if (properties.debugContext)
+      const auto attributes = BuildEGLContextAttributes(properties, major, minor, eglVersion);
+      // EGL validates sharing across configs and ES versions against Kodi's actual context.
+      if (!m_client.Create(display, config, winSystem->GetEGLContext(), attributes.data(),
+                           capabilities.surfaceless))
+        continue;
+
+      const bool bound = m_client.MakeCurrent();
+      const bool debugContext = !properties.debugContext || (bound && IsDebugContext());
+      if (bound)
+        CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Client GL_VERSION = {}",
+                  reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+      const bool restored = !bound || m_client.RestoreCurrent();
+      if (!bound || !debugContext || !restored)
       {
-        const bool bound = MakeCurrent();
-        const bool debugContext = bound && IsDebugContext();
-        const bool restored = !bound || RestorePreviousContext();
-        if (!debugContext || !restored)
-        {
-          CLog::Log(LOGERROR,
-                    "RetroPlayer[RENDER]: Could not verify the requested {} debug context",
-                    contextName);
-          Destroy();
-          return false;
-        }
+        CLog::Log(LOGERROR,
+                  "RetroPlayer[RENDER]: Could not validate or restore the EGL client context");
+        Destroy();
+        return false;
       }
-      CLog::Log(LOGINFO,
-                "RetroPlayer[RENDER]: Created a {} context for the game client, sharing Kodi's "
-                "objects",
-                contextName);
-      break;
+      CLog::Log(
+          LOGINFO,
+          "RetroPlayer[RENDER]: Created a {} {}.{} shared game context using {} (EGL config {})",
+          apiName, major, minor, capabilities.surfaceless ? "surfaceless" : "pbuffer", configID);
+      return true;
     }
   }
 
-  if (m_eglContext == EGL_NO_CONTEXT)
-  {
-    CLog::Log(LOGERROR,
-              "RetroPlayer[RENDER]: Game client asked for a {} context, which this system cannot "
-              "provide (EGL error {:#x})",
-              contextName, eglGetError());
-    return false;
-  }
-
-  // Leave the caller's context and window surfaces current until BeginClientFrame().
-  return true;
+  CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Cannot create the requested shared {} {}.{} context",
+            apiName, properties.versionMajor, properties.versionMinor);
+  return false;
 }
 
 bool CHwRenderingContextEGL::MakeCurrent()
 {
-  if (!IsCreated())
-    return false;
-  m_prevAPI = eglQueryAPI();
-  m_prevDisplay = eglGetCurrentDisplay();
-  m_prevDraw = eglGetCurrentSurface(EGL_DRAW);
-  m_prevRead = eglGetCurrentSurface(EGL_READ);
-  m_prevContext = eglGetCurrentContext();
-
-  if (!eglBindAPI(CLIENT_API) ||
-      !eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, m_eglContext))
-  {
-    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to bind client context (EGL error {:#x})",
-              eglGetError());
-    eglBindAPI(m_prevAPI);
-    return false;
-  }
-  return true;
+  return m_client.MakeCurrent();
 }
 
 void CHwRenderingContextEGL::RestoreCurrent()
 {
-  RestorePreviousContext();
-}
-
-bool CHwRenderingContextEGL::RestorePreviousContext()
-{
-  if (m_prevAPI != CLIENT_API)
-    eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-  eglBindAPI(m_prevAPI);
-  const EGLBoolean restored =
-      m_prevContext != EGL_NO_CONTEXT
-          ? eglMakeCurrent(m_prevDisplay, m_prevDraw, m_prevRead, m_prevContext)
-          : eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-  if (!restored)
-  {
-    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to restore EGL context (error {:#x})",
-              eglGetError());
-    // A failed restore must not leave later Kodi draws on the client context.
-    eglBindAPI(CLIENT_API);
-    eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    eglBindAPI(m_prevAPI);
-  }
-  m_prevDisplay = EGL_NO_DISPLAY;
-  m_prevContext = EGL_NO_CONTEXT;
-  m_prevDraw = m_prevRead = EGL_NO_SURFACE;
-  return restored == EGL_TRUE;
+  m_client.RestoreCurrent();
 }
 
 void CHwRenderingContextEGL::Destroy()
 {
-  if (!IsCreated())
-    return;
-  if (!eglDestroyContext(m_eglDisplay, m_eglContext))
-  {
-    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to destroy EGL context (error {:#x})",
-              eglGetError());
-    return;
-  }
-  m_eglContext = EGL_NO_CONTEXT;
-  m_eglDisplay = EGL_NO_DISPLAY;
+  m_client.Destroy();
 }
 
 std::unique_ptr<IHwRenderingContext> KODI::RETRO::CreateHwRenderingContextEGL(

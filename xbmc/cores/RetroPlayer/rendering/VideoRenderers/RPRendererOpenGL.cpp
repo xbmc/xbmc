@@ -277,7 +277,7 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   if (renderBuffer == nullptr)
     return;
 
-  Updateshaders();
+  UpdateShaders();
 
   // Use video shader preset
   if (m_bUseShaderPreset)

@@ -305,7 +305,7 @@ void CRPWinRenderer::Render(CD3DTexture& target, uint8_t alpha)
   if (renderBufferTarget == nullptr)
     return;
 
-  Updateshaders();
+  UpdateShaders();
 
   CD3DTexture* outputTexture = &renderBufferTarget->GetTexture();
   CRect sourceRect = m_sourceRect;

@@ -166,6 +166,9 @@ TEST(TestRenderBufferPoolFBO, FailedBindingReleasesContextLock)
 }
 
 #if defined(HAS_EGL)
+#include "cores/RetroPlayer/rendering/contexts/EGLClientContext.h"
+#include "cores/RetroPlayer/rendering/contexts/HwRenderingContextEGLUtils.h"
+
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
@@ -174,35 +177,29 @@ namespace
 class CTestEGLContext : public IHwRenderingContext
 {
 public:
-  CTestEGLContext(EGLDisplay display, EGLContext context) : m_display(display), m_context(context)
+  CTestEGLContext(EGLenum api,
+                  EGLDisplay display,
+                  EGLConfig config,
+                  EGLContext shared,
+                  const EGLint* attributes,
+                  bool surfaceless)
+    : m_client(api)
   {
+    m_client.Create(display, config, shared, attributes, surfaceless);
   }
-  ~CTestEGLContext() override { Destroy(); }
   bool SupportsHardwareRendering() const override { return IsCreated(); }
   bool Create(const HwContextProperties&) override { return IsCreated(); }
-  bool IsCreated() const override { return m_context != EGL_NO_CONTEXT; }
-  bool MakeCurrent() override
-  {
-    return eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, m_context) == EGL_TRUE;
-  }
-  void RestoreCurrent() override
-  {
-    eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-  }
-  void Destroy() override
-  {
-    if (IsCreated())
-      eglDestroyContext(m_display, m_context);
-    m_context = EGL_NO_CONTEXT;
-  }
+  bool IsCreated() const override { return m_client.IsCreated(); }
+  bool MakeCurrent() override { return m_client.MakeCurrent(); }
+  void RestoreCurrent() override { m_client.RestoreCurrent(); }
+  void Destroy() override { m_client.Destroy(); }
 
 private:
-  EGLDisplay m_display;
-  EGLContext m_context;
+  CEGLClientContext m_client;
 };
 } // namespace
 
-class TestRenderBufferPoolFBOWithContext : public testing::Test
+class TestRenderBufferPoolFBOWithContext : public testing::TestWithParam<bool>
 {
 protected:
   void SetUp() override
@@ -233,23 +230,27 @@ protected:
 #endif
     if (!eglBindAPI(api))
       GTEST_SKIP() << "The required EGL client API is unavailable";
-    const EGLint configAttributes[] = {EGL_SURFACE_TYPE, EGL_PBUFFER_BIT, EGL_RENDERABLE_TYPE,
-                                       renderable, EGL_NONE};
+    const bool surfaceless = GetParam();
+    if (surfaceless && !GetEGLCapabilities(eglQueryString(m_display, EGL_VERSION),
+                                           eglQueryString(m_display, EGL_EXTENSIONS))
+                            .surfaceless)
+      GTEST_SKIP() << "Surfaceless EGL contexts are unavailable";
+    const EGLint configAttributes[] = {EGL_SURFACE_TYPE, surfaceless ? 0 : EGL_PBUFFER_BIT,
+                                       EGL_RENDERABLE_TYPE, renderable, EGL_NONE};
     EGLConfig config{};
     EGLint count = 0;
     if (!eglChooseConfig(m_display, configAttributes, &config, 1, &count) || count == 0)
       GTEST_SKIP() << "No compatible EGL configuration is available";
-    const EGLContext context =
-        eglCreateContext(m_display, config, EGL_NO_CONTEXT, contextAttributes);
-    if (context == EGL_NO_CONTEXT)
+    m_sharedContext = eglCreateContext(m_display, config, EGL_NO_CONTEXT, contextAttributes);
+    if (m_sharedContext == EGL_NO_CONTEXT)
       GTEST_SKIP() << "The required GL context is unavailable";
 
     m_pool = std::make_shared<CRenderBufferPoolFBO>(
         m_environment.ProcessInfo().GetRenderContext(),
-        std::make_unique<CTestEGLContext>(m_display, context));
+        std::make_unique<CTestEGLContext>(api, m_display, config, m_sharedContext,
+                                          contextAttributes, surfaceless));
     m_current = m_pool->BeginClientFrame();
-    if (!m_current)
-      GTEST_SKIP() << "Surfaceless EGL contexts are unavailable";
+    ASSERT_TRUE(m_current) << "The shared client context must bind using the selected surface mode";
     ASSERT_TRUE(m_pool->Configure(AV_PIX_FMT_NONE));
   }
 
@@ -258,6 +259,8 @@ protected:
     if (m_current)
       m_pool->EndClientFrame();
     m_pool.reset();
+    if (m_sharedContext != EGL_NO_CONTEXT)
+      eglDestroyContext(m_display, m_sharedContext);
     if (m_initialized)
       eglTerminate(m_display);
     if (m_previousAPI != EGL_NONE)
@@ -267,12 +270,13 @@ protected:
   CPlaybackTestEnvironment m_environment;
   std::shared_ptr<CRenderBufferPoolFBO> m_pool;
   EGLDisplay m_display{EGL_NO_DISPLAY};
+  EGLContext m_sharedContext{EGL_NO_CONTEXT};
   EGLenum m_previousAPI{EGL_NONE};
   bool m_initialized{false};
   bool m_current{false};
 };
 
-TEST_F(TestRenderBufferPoolFBOWithContext, CaptureDiscardsAlphaBeforeShaderCopy)
+TEST_P(TestRenderBufferPoolFBOWithContext, CaptureDiscardsAlphaBeforeShaderCopy)
 {
   auto* client = static_cast<CRenderBufferFBO*>(m_pool->GetBuffer(4, 4));
   ASSERT_NE(client, nullptr);
@@ -317,6 +321,26 @@ TEST_F(TestRenderBufferPoolFBOWithContext, CaptureDiscardsAlphaBeforeShaderCopy)
   EXPECT_EQ(glGetError(), GL_NO_ERROR);
   client->Release();
 }
+
+TEST_P(TestRenderBufferPoolFBOWithContext, ClientFramebufferRemainsStableAcrossSizeChanges)
+{
+  auto* client = static_cast<CRenderBufferFBO*>(m_pool->GetBuffer(4, 4));
+  ASSERT_NE(client, nullptr);
+  const auto framebuffer = client->GetCurrentFramebuffer();
+  ASSERT_NE(framebuffer, 0u);
+  EXPECT_TRUE(client->Allocate(AV_PIX_FMT_NONE, 8, 8));
+  EXPECT_EQ(client->GetCurrentFramebuffer(), framebuffer);
+  EXPECT_TRUE(client->Allocate(AV_PIX_FMT_NONE, 2, 2));
+  EXPECT_EQ(client->GetCurrentFramebuffer(), framebuffer);
+  EXPECT_FALSE(client->Allocate(AV_PIX_FMT_NONE, 0, 0));
+  EXPECT_EQ(client->GetCurrentFramebuffer(), framebuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+  EXPECT_EQ(glCheckFramebufferStatus(GL_FRAMEBUFFER), GL_FRAMEBUFFER_COMPLETE);
+  EXPECT_EQ(glGetError(), GL_NO_ERROR);
+  client->Release();
+}
+
+INSTANTIATE_TEST_SUITE_P(BindingModes, TestRenderBufferPoolFBOWithContext, testing::Bool());
 
 #endif
 

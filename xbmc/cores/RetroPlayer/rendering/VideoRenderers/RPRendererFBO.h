@@ -65,6 +65,17 @@ public:
   static bool SupportsScalingMethod(SCALINGMETHOD method);
 
 protected:
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  };
+
+  struct Svertex
+  {
+    float x, y, z;
+  };
+
   // implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
   void FlushInternal() override;
@@ -112,11 +123,11 @@ protected:
   FrameGeometry m_loggedGeometry;
   bool m_loggedHardwarePresentation{false};
 
-  std::string m_lastLoggedPreset{"\0"};
-  bool m_bLastLoggedUsePreset{false};
-
-  //! \brief Isolates vertex attributes and index bindings from the GUI
-  GLuint m_vao{0};
+  GLuint m_mainVAO{0};
+  GLuint m_mainVertexVBO{0};
+  GLuint m_mainIndexVBO{0};
+  GLuint m_blackbarsVAO{0};
+  GLuint m_blackbarsVertexVBO{0};
 
   std::shared_ptr<SHADER::IShaderTexture> m_shaderTargetTexture;
 

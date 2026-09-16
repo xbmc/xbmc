@@ -26,9 +26,8 @@ using namespace KODI;
 using namespace RETRO;
 
 CRenderBufferFBO::CRenderBufferFBO(
-    CRenderContext& context, bool depth, bool stencil, bool bottomLeftOrigin, Type type)
-  : m_context(context),
-    m_depth(depth),
+    CRenderContext&, bool depth, bool stencil, bool bottomLeftOrigin, Type type)
+  : m_depth(depth),
     m_stencil(stencil),
     m_bottomLeftOrigin(type == Type::CLIENT && bottomLeftOrigin),
     m_type(type)
@@ -55,10 +54,22 @@ void CRenderBufferFBO::Resources::Destroy()
   glDeleteTextures(1, &texture);
   glDeleteRenderbuffers(1, &depthStencil);
   framebuffer = texture = depthStencil = 0;
+  retired = true;
+}
+
+void CRenderBufferFBO::Resources::Abandon()
+{
+  std::unique_lock lock(mutex);
+  framebuffer = texture = depthStencil = 0;
+  ready = rendered = nullptr;
+  retired = true;
 }
 
 bool CRenderBufferFBO::Allocate(AVPixelFormat format, unsigned int width, unsigned int height)
 {
+  if (m_resources->retired)
+    return false;
+
   GLint maxTextureSize = 0;
   glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
   if (width == 0 || height == 0 || maxTextureSize <= 0 ||
@@ -175,6 +186,9 @@ void CRenderBufferFBO::PrepareForCapture()
 
 bool CRenderBufferFBO::SetReady()
 {
+  if (m_resources->retired)
+    return false;
+
   m_resources->ready = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
   glFlush();
   return m_resources->ready != nullptr;
@@ -188,6 +202,9 @@ void CRenderBufferFBO::WaitForCapture()
 
 void CRenderBufferFBO::FinishRender()
 {
+  if (m_resources->retired)
+    return;
+
   if (m_resources->rendered)
     glDeleteSync(m_resources->rendered);
   m_resources->rendered = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);

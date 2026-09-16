@@ -273,7 +273,7 @@ void CRPBaseRenderer::MarkDirty()
  * \brief Updates everything needed for video shaders (shader presets)
  * Needs to be called after m_renderBuffer has been set
  */
-void CRPBaseRenderer::Updateshaders()
+void CRPBaseRenderer::UpdateShaders()
 {
   if (m_bShadersNeedUpdate)
   {

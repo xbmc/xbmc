@@ -282,16 +282,20 @@ void CRenderBufferPoolFBO::DestroyContext()
   {
     if (!BeginClientFrame())
     {
-      CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Unable to bind context for resource destruction");
-      return;
+      CLog::Log(LOGERROR,
+                "RetroPlayer[RENDER]: Client context lost or unbindable; abandoning GPU resources");
+      for (const auto& resources : m_resources)
+        resources->Abandon();
     }
-
-    // Outstanding buffers remain valid CPU objects, but can no longer be drawn.
-    for (const auto& resources : m_resources)
-      resources->Destroy();
+    else
+    {
+      // Outstanding buffers remain valid CPU objects, but can no longer be drawn.
+      for (const auto& resources : m_resources)
+        resources->Destroy();
+      while (m_clientFrameDepth > 0)
+        EndClientFrame();
+    }
     m_resources.clear();
-    while (m_clientFrameDepth > 0)
-      EndClientFrame();
   }
   {
     std::unique_lock captureLock(m_captureMutex);

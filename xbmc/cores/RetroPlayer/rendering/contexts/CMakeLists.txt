@@ -16,8 +16,10 @@ if(FBO_GL_SUPPORTED AND (TARGET ${APP_NAME_LC}::EGL OR CORE_SYSTEM_NAME STREQUAL
     list(APPEND SOURCES HwRenderingContextOSX.mm)
     list(APPEND HEADERS HwRenderingContextOSX.h)
   else()
-    list(APPEND SOURCES HwRenderingContextEGL.cpp)
-    list(APPEND HEADERS HwRenderingContextEGL.h
+    list(APPEND SOURCES HwRenderingContextEGL.cpp
+                        EGLClientContext.cpp)
+    list(APPEND HEADERS EGLClientContext.h
+                        HwRenderingContextEGL.h
                         HwRenderingContextEGLUtils.h)
   endif()
 
