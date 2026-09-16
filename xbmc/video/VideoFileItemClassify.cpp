@@ -82,6 +82,11 @@ bool IsProtectedBlurayDisc(const CFileItem& item)
   return CFileUtils::Exists(path);
 }
 
+bool IsBrowsableFolder(const CFileItem& item)
+{
+  return item.IsFolder() && !item.GetProperty("IsHybridFolder").asBoolean(false);
+}
+
 bool IsSubtitle(const CFileItem& item)
 {
   return item.GetURL().HasExtension(
