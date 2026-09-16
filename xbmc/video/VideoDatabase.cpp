@@ -4632,6 +4632,9 @@ bool CVideoDatabase::GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType t
       return false;
   }
 
+  if (details.m_iDbId < 0)
+    return false;
+
   item.SetFromVideoInfoTag(details);
   return true;
 }
