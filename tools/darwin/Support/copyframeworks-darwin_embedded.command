@@ -26,6 +26,14 @@ function build_framework_name
   basename "${1%.*}"
 }
 
+function build_framework_name_python
+{
+  # <site-packages>/Cryptodome/PublicKey/_curve25519.abi3.so -> Cryptodome.PublicKey._curve25519.abi3
+  relativeToSitePackages="${1#"$pythonSitePackagesDir/"}"
+  withoutExtension="${relativeToSitePackages%.*}"
+  echo "${withoutExtension//\//.}"
+}
+
 # "returns" variable FRAMEWORK_BINARY_PATH
 function check_xbmc_dylib_depends
 {
@@ -89,6 +97,15 @@ function check_xbmc_dylib_depends_in_dir
     check_xbmc_dylib_depends "$libPath" "$buildFrameworkNameFunc"
     [ -z "$extraProcessorFunc" ] || "$extraProcessorFunc" "$libPath"
   done < <(find "$dir" -type f \( -iname '*.dylib' -or -iname '*.so' \) -print0)
+}
+
+function package_python_lib
+{
+  log "Creating required files for a python framework lib"
+  libPath="$1"
+  libPathFwork="${libPath%.*}.fwork"
+  echo "${libPathFwork#"$TARGET_CONTENTS/"}" > "$FRAMEWORK_BINARY_PATH.origin"
+  echo "Frameworks/$FRAMEWORK_BINARY_PATH" > "$libPathFwork"
 }
 
 
@@ -163,3 +180,10 @@ for dir in addons system ; do
   log "Checking '$dir' for dylib dependencies"
   check_xbmc_dylib_depends_in_dir "$XBMC_HOME/$dir" build_framework_name
 done
+
+# TODO: enable for tvOS once Python is built as a real tvOS platform
+if [[ $PLATFORM_NAME == iphone* ]] ; then
+  log "Packaging python packages as frameworks"
+  pythonSitePackagesDir="$pythonDst/site-packages"
+  check_xbmc_dylib_depends_in_dir "$pythonSitePackagesDir" build_framework_name_python package_python_lib
+fi
