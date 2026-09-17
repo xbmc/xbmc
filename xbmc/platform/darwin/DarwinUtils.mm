@@ -100,7 +100,7 @@ std::string CDarwinUtils::GetFrameworkPath(bool forPython)
   {
     auto mainBundle = NSBundle.mainBundle;
 #if defined(TARGET_DARWIN_EMBEDDED)
-    return std::string{mainBundle.privateFrameworksPath.UTF8String};
+    return forPython ? std::string{} : std::string{mainBundle.privateFrameworksPath.UTF8String};
 #else
     if ([mainBundle.executablePath containsString:@"Contents"])
     {
