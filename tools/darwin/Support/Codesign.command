@@ -52,11 +52,8 @@ if ! [ -z "${CODE_SIGN_IDENTITY_FOR_ITEMS}" ]; then
 
     for FRAMEWORK_PATH in $(find "${CONTENTS_PATH}" -iname "*.framework" -type d)
     do
-      DYLIB_BASENAME=$(basename "${FRAMEWORK_PATH%.framework}")
-      echo "Signing Framework: ${DYLIB_BASENAME}.framework"
-      FRAMEWORKBUNDLEID="${BUNDLEID}.framework.${DYLIB_BASENAME}"
-      codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" "${FRAMEWORK_PATH}/${DYLIB_BASENAME}"
-      codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv -i "${FRAMEWORKBUNDLEID}" "${FRAMEWORK_PATH}"
+      echo "Signing Framework: $(basename "$FRAMEWORK_PATH")"
+      codesign -s "${CODE_SIGN_IDENTITY_FOR_ITEMS}" -fvvv "${FRAMEWORK_PATH}"
     done
 
     if [ "$MACOS" ]; then
