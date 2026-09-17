@@ -108,7 +108,6 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
     COMMAND "XBMC_DEPENDS=${DEPENDS_PATH}"
             "PYTHON_VERSION=${PYTHON_VERSION}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-darwin_embedded.command
-    COMMAND ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-dylibs2frameworks.command
     COMMAND "XBMC_DEPENDS=${DEPENDS_PATH}"
             "NATIVEPREFIX=${NATIVEPREFIX}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/Codesign.command
