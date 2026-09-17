@@ -367,8 +367,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, "failed to create mastering voice (:X)", hr);
-      return;
+      CLog::LogF(LOGERROR, "failed to create mastering voice for device \"{}\" ({})",
+                 details.strDescription, CWIN32Util::FormatHRESULT(hr));
+      continue;
     }
 
     for (int p = AE_FMT_FLOAT; p > AE_FMT_INVALID; p--)
