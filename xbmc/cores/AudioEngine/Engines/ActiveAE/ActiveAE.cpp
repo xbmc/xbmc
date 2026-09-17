@@ -26,8 +26,10 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
+#include <utility>
 
 using namespace AE;
 using namespace ActiveAE;
@@ -42,6 +44,10 @@ constexpr float MIN_WATER_LEVEL = 0.02f; // min buffer time to prevent underrun
 constexpr float MIN_WATER_LEVEL_RESAMPLE = 0.1f; // min buffer time in resample mode
 constexpr float BUFFER_LEVEL_INCREMENT = 0.0001f; // increment step for ramp-up
 constexpr double MAX_BUFFER_TIME = 0.1; // max time of a buffer in seconds;
+// device changes are handled once notifications have stopped for the settle time,
+// but no later than the max delay after the first one
+constexpr auto DEVICE_CHANGE_SETTLE_TIME = 1000ms;
+constexpr auto DEVICE_CHANGE_MAX_DELAY = 5000ms;
 
 bool IsDefaultDevice(const AESinkDevice& device)
 {
@@ -680,6 +686,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_extLastDeviceChange.push(now);
           UnconfigureSink();
           m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
+          m_pendingDeviceChange = {};
           m_sink.EnumerateSinkList(true, "");
           LoadSettings();
           ValidateOutputDevices(false);
@@ -697,10 +704,10 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           return;
         case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
-          HandleDeviceCountChange(reinterpret_cast<const char*>(msg->data), false);
+          QueueDeviceChange(reinterpret_cast<const char*>(msg->data), false);
           return;
         case CActiveAEControlProtocol::DEFAULTDEVICECHANGE:
-          HandleDeviceCountChange("", true);
+          QueueDeviceChange("", true);
           return;
         case CActiveAEControlProtocol::PAUSESTREAM:
           CActiveAEStream *stream;
@@ -908,6 +915,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEFAULTDEVICECHANGE);
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECOUNTCHANGE);
+            m_pendingDeviceChange = {};
             m_sink.EnumerateSinkList(true, "");
             LoadSettings();
             ValidateOutputDevices(false);
@@ -994,6 +1002,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CActiveAEControlProtocol::TIMEOUT:
+          if (ProcessPendingDeviceChange())
+            return;
           ResampleSounds();
           ClearDiscardedBuffers();
           if (m_extDrain)
@@ -1017,6 +1027,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           else
             m_extTimeout = 5000ms;
+          if (m_pendingDeviceChange.pending)
+            m_extTimeout = std::min(m_extTimeout, GetPendingDeviceChangeTimeout());
           return;
         default:
           break;
@@ -1036,6 +1048,8 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_extTimeout = 100ms;
             return;
           }
+          if (ProcessPendingDeviceChange())
+            return;
           if (RunStages())
           {
             m_extTimeout = 0ms;
@@ -2842,7 +2856,34 @@ void CActiveAE::ValidateOutputDevices(bool saveChanges)
   }
 }
 
-void CActiveAE::HandleDeviceCountChange(const std::string& driver, bool defaultDeviceChanged)
+void CActiveAE::QueueDeviceChange(const std::string& driver, bool defaultDeviceChanged)
+{
+  if (!m_pendingDeviceChange.pending)
+    m_deviceChangeDeadline.Set(DEVICE_CHANGE_MAX_DELAY);
+
+  m_pendingDeviceChange.Add(driver, defaultDeviceChanged);
+  m_deviceChangeSettleTimer.Set(DEVICE_CHANGE_SETTLE_TIME);
+  m_extTimeout = std::min(m_extTimeout, GetPendingDeviceChangeTimeout());
+}
+
+bool CActiveAE::ProcessPendingDeviceChange()
+{
+  if (!m_pendingDeviceChange.pending)
+    return false;
+
+  if (!m_deviceChangeSettleTimer.IsTimePast() && !m_deviceChangeDeadline.IsTimePast())
+    return false;
+
+  const INTERNAL::PendingDeviceChange change = std::exchange(m_pendingDeviceChange, {});
+  return HandleDeviceCountChange(change.driver, change.defaultDeviceChanged);
+}
+
+std::chrono::milliseconds CActiveAE::GetPendingDeviceChangeTimeout() const
+{
+  return std::min(m_deviceChangeSettleTimer.GetTimeLeft(), m_deviceChangeDeadline.GetTimeLeft());
+}
+
+bool CActiveAE::HandleDeviceCountChange(const std::string& driver, bool defaultDeviceChanged)
 {
   if (defaultDeviceChanged)
     CLog::LogF(LOGDEBUG, "default device change event");
@@ -2870,7 +2911,7 @@ void CActiveAE::HandleDeviceCountChange(const std::string& driver, bool defaultD
       IsSameDevice(currentDriver, currentDevice, validated)};
 
   if (!INTERNAL::ShouldReconfigure(decision))
-    return;
+    return false;
 
   UnconfigureSink();
   LoadSettings();
@@ -2887,6 +2928,7 @@ void CActiveAE::HandleDeviceCountChange(const std::string& driver, bool defaultD
     m_state = AE_TOP_ERROR;
     m_extTimeout = 500ms;
   }
+  return true;
 }
 
 void CActiveAE::Start()
