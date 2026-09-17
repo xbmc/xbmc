@@ -153,11 +153,14 @@ extern "C" void __stdcall init_emu_environ()
   }
   else
   {
+    // default PYTHONPATH/PYTHONHOME are correct for darwin_embedded
+#if !defined(TARGET_DARWIN_EMBEDDED)
     dll_putenv(("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib")).c_str());
     dll_putenv(("PYTHONHOME=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
+#endif
     dll_putenv(("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
   }
