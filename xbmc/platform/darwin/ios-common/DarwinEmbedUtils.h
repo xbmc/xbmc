@@ -8,9 +8,16 @@
 
 #pragma once
 
+#include <string>
+
 class CDarwinEmbedUtils
 {
 public:
   static const char* GetAppRootFolder(void);
   static bool IsIosSandboxed(void);
+
+#if !defined(TVOS_TOPSHELF)
+  // AppStore requires all dylibs to be in .app/Frameworks in framework format
+  static std::string GetSharedLibraryPath(const std::string& sharedLibraryPath);
+#endif
 };
