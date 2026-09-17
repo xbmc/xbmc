@@ -16,7 +16,13 @@ ifeq (darwin, $(findstring darwin, $(HOST)))
     CFLAGS+= -target arm64-apple-darwin
     LDFLAGS+= -target arm64-apple-darwin
   endif
-  LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
+  ifeq ($(OS), darwin_embedded)
+    # AppStore Connect doesn't allow files of type bundle
+    OUTPUT_FILE_TYPE_ARG=-dynamiclib
+  else
+    OUTPUT_FILE_TYPE_ARG=-bundle
+  endif
+  LDSHARED:=$(CC) $(OUTPUT_FILE_TYPE_ARG) -undefined dynamic_lookup $(LDFLAGS)
 endif
 
 
