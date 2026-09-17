@@ -3594,7 +3594,7 @@ bool CVideoPlayer::CanPause() const
   return m_State.canpause;
 }
 
-void CVideoPlayer::Pause()
+void CVideoPlayer::Pause(bool /* showOSD */)
 {
   // toggle between pause and normal speed
   if (m_processInfo->GetNewSpeed() == 0)

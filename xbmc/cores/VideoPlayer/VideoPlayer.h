@@ -284,7 +284,7 @@ public:
   bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
   bool CloseFile(bool reopen = false) override;
   bool IsPlaying() const override;
-  void Pause() override;
+  void Pause(bool showOSD = true) override;
   bool HasVideo() const override;
   bool HasAudio() const override;
   bool HasRDS() const override;

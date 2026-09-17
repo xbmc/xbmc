@@ -2,6 +2,7 @@ set(SOURCES TestAutosaveCapture.cpp
             TestDiscStateHistory.cpp
             TestGameLoop.cpp
             TestMemoryStream.cpp
+            TestRetroPlayerPause.cpp
             TestSavestateCapture.cpp
             TestSavestateWorker.cpp)
 

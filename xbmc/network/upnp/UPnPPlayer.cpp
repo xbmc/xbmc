@@ -522,7 +522,7 @@ failed:
   return false;
 }
 
-void CUPnPPlayer::Pause()
+void CUPnPPlayer::Pause(bool /* showOSD */)
 {
   if (IsPaused())
   {

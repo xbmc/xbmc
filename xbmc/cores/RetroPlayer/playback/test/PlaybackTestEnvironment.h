@@ -61,6 +61,7 @@ public:
   CRPRenderManager& Renderer() { return *m_renderer; }
   CRPProcessInfo& ProcessInfo() { return *m_processInfo; }
   CGUIGameMessenger& Messenger() { return *m_messenger; }
+  PERIPHERALS::CPeripherals& Peripherals() { return m_peripherals; }
 
 private:
   class CServices : public CServiceManager

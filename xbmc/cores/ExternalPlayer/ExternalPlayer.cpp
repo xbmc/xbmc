@@ -486,7 +486,7 @@ bool CExternalPlayer::ExecuteAppAndroid(const char* strSwitches,const char* strP
 }
 #endif
 
-void CExternalPlayer::Pause()
+void CExternalPlayer::Pause(bool /* showOSD */)
 {
 }
 
