@@ -20,6 +20,8 @@
 #include "platform/win32/WIN32Util.h"
 
 #include <algorithm>
+#include <map>
+#include <mutex>
 #include <stdint.h>
 
 #include <ksmedia.h>
@@ -68,6 +70,54 @@ HRESULT KXAudio2Create(IXAudio2** ppXAudio2,
     return (*XAudio2CreateFn)(ppXAudio2, Flags, XAudio2Processor);
   else
     return E_FAIL;
+}
+
+// Probing a device means opening it once per sample rate, which costs up to seconds per
+// device, while an enumeration is repeated for every device change notification. Results
+// are kept for devices that report the same identity and default format as before.
+struct ProbedDevice
+{
+  unsigned int channels{0};
+  unsigned int channelMask{0};
+  unsigned long defaultSampleRate{0};
+  std::vector<AEDataFormat> dataFormats;
+  std::vector<unsigned int> sampleRates;
+
+  bool IsFor(const RendererDetail& details) const
+  {
+    return channels == details.nChannels && channelMask == details.uiChannelMask &&
+           defaultSampleRate == details.m_samplesPerSec;
+  }
+};
+
+std::map<std::string, ProbedDevice> g_probedDevices;
+std::mutex g_probedDevicesMutex;
+
+void AddDeviceInfo(AEDeviceInfoList& deviceInfoList,
+                   CAEDeviceInfo& deviceInfo,
+                   const CAEChannelInfo& deviceChannels,
+                   const RendererDetail& details)
+{
+  deviceInfo.m_deviceName = details.strDeviceId;
+  deviceInfo.m_displayName = details.strWinDevType + details.strDescription;
+  deviceInfo.m_displayNameExtra = std::string("XAudio: ").append(details.strDescription);
+  deviceInfo.m_deviceType = details.eDeviceType;
+  deviceInfo.m_channels = deviceChannels;
+  deviceInfo.m_wantsIECPassthrough = true;
+  deviceInfo.m_onlyPCM = true;
+
+  if (!deviceInfo.m_streamTypes.empty())
+    deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
+
+  deviceInfoList.push_back(deviceInfo);
+
+  if (details.bDefault)
+  {
+    deviceInfo.m_deviceName = "default";
+    deviceInfo.m_displayName = "default";
+    deviceInfo.m_displayNameExtra = "";
+    deviceInfoList.push_back(deviceInfo);
+  }
 }
 
 } // namespace
@@ -330,15 +380,25 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
           ? AudioCategory_Media
           : AudioCategory_ForegroundOnlyMedia};
 
-  hr = KXAudio2Create(xaudio2.ReleaseAndGetAddressOf(), eflags);
-  if (FAILED(hr))
+  // created on demand, a cached device needs no capability testing
+  auto ensureXAudio = [&xaudio2, eflags]()
   {
-    CLog::LogF(LOGERROR, "failed to activate XAudio for capability testing ({})",
-               CWIN32Util::FormatHRESULT(hr));
-    return;
-  }
+    if (xaudio2)
+      return true;
 
-  for (RendererDetail& details : CAESinkFactoryWin::GetRendererDetailsWinRT())
+    const HRESULT hr = KXAudio2Create(xaudio2.ReleaseAndGetAddressOf(), eflags);
+    if (FAILED(hr))
+    {
+      CLog::LogF(LOGERROR, "failed to activate XAudio for capability testing ({})",
+                 CWIN32Util::FormatHRESULT(hr));
+      return false;
+    }
+    return true;
+  };
+
+  const auto renderers = CAESinkFactoryWin::GetRendererDetailsWinRT();
+
+  for (const RendererDetail& details : renderers)
   {
     deviceInfo.m_channels.Reset();
     deviceInfo.m_dataFormats.clear();
@@ -352,6 +412,22 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     }
 
     const std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDeviceId);
+
+    {
+      std::unique_lock lock(g_probedDevicesMutex);
+      const auto it = g_probedDevices.find(details.strDeviceId);
+      if (it != g_probedDevices.end() && it->second.IsFor(details))
+      {
+        deviceInfo.m_dataFormats = it->second.dataFormats;
+        deviceInfo.m_sampleRates = it->second.sampleRates;
+        lock.unlock();
+        AddDeviceInfo(deviceInfoList, deviceInfo, deviceChannels, details);
+        continue;
+      }
+    }
+
+    if (!ensureXAudio())
+      return;
 
     /* Test format for PCM format iteration */
     wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
@@ -369,6 +445,10 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     {
       CLog::LogF(LOGERROR, "failed to create mastering voice for device \"{}\" ({})",
                  details.strDescription, CWIN32Util::FormatHRESULT(hr));
+
+      // not remembered, the endpoint may only be temporarily unusable
+      std::lock_guard lock(g_probedDevicesMutex);
+      g_probedDevices.erase(details.strDeviceId);
       continue;
     }
 
@@ -437,31 +517,28 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     SafeDestroyVoice(&mSourceVoice);
     SafeDestroyVoice(&mMasterVoice);
 
-    deviceInfo.m_deviceName = details.strDeviceId;
-    deviceInfo.m_displayName = details.strWinDevType.append(details.strDescription);
-    deviceInfo.m_displayNameExtra = std::string("XAudio: ").append(details.strDescription);
-    deviceInfo.m_deviceType = details.eDeviceType;
-    deviceInfo.m_channels = deviceChannels;
-
-    /* Store the device info */
-    deviceInfo.m_wantsIECPassthrough = true;
-    deviceInfo.m_onlyPCM = true;
-
-    if (!deviceInfo.m_streamTypes.empty())
-      deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
-
-    deviceInfoList.push_back(deviceInfo);
-
-    if (details.bDefault)
     {
-      deviceInfo.m_deviceName = std::string("default");
-      deviceInfo.m_displayName = std::string("default");
-      deviceInfo.m_displayNameExtra = std::string("");
-      deviceInfo.m_wantsIECPassthrough = true;
-      deviceInfo.m_onlyPCM = true;
-      deviceInfoList.push_back(deviceInfo);
+      std::lock_guard lock(g_probedDevicesMutex);
+      g_probedDevices[details.strDeviceId] =
+          ProbedDevice{.channels = details.nChannels,
+                       .channelMask = details.uiChannelMask,
+                       .defaultSampleRate = details.m_samplesPerSec,
+                       .dataFormats = deviceInfo.m_dataFormats,
+                       .sampleRates = deviceInfo.m_sampleRates};
     }
+
+    AddDeviceInfo(deviceInfoList, deviceInfo, deviceChannels, details);
   }
+
+  // forget devices that are gone, their capabilities are tested again if they come back
+  std::lock_guard lock(g_probedDevicesMutex);
+  std::erase_if(g_probedDevices,
+                [&renderers](const auto& probed)
+                {
+                  return std::none_of(renderers.cbegin(), renderers.cend(),
+                                      [&probed](const RendererDetail& details)
+                                      { return details.strDeviceId == probed.first; });
+                });
 }
 
 bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &format)
