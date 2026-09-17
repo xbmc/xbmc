@@ -60,6 +60,7 @@ public:
 
   CRPRenderManager& Renderer() { return *m_renderer; }
   CGUIGameMessenger& Messenger() { return *m_messenger; }
+  PERIPHERALS::CPeripherals& Peripherals() { return m_peripherals; }
 
 private:
   class CServices : public CServiceManager
