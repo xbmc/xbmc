@@ -1,7 +1,8 @@
 include ../../Makefile.include PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include
 DEPS= ../../Makefile.include Makefile PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include \
                              01-revert-ctype.pythonapi-use.patch \
-                             02-android-dlopen.patch
+                             02-android-dlopen.patch \
+							 03-ios-load-shared-lib.patch
 
 LDSHARED=$(CC) -shared
 
@@ -40,6 +41,10 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); patch -p1 -i ../01-revert-ctype.pythonapi-use.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../02-android-dlopen.patch
+endif
+# TODO: enable for tvOS once Python is built as a real tvOS platform
+ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
+	cd $(PLATFORM); patch -p1 -i ../03-ios-load-shared-lib.patch
 endif
 	touch $@
 
