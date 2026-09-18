@@ -10,13 +10,17 @@
 
 #include "platform/posix/GPUInfoPosix.h"
 
+#include <string>
+
 class CGPUInfoLinux : public CGPUInfoPosix
 {
 public:
-  CGPUInfoLinux() = default;
+  CGPUInfoLinux();
   ~CGPUInfoLinux() = default;
 
 private:
   bool SupportsPlatformTemperature() const override;
   bool GetGPUPlatformTemperature(CTemperature& temperature) const override;
+
+  std::string m_tempPath;
 };
