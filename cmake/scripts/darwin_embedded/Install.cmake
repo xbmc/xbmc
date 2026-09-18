@@ -1,47 +1,38 @@
 # IOS/TVOS packaging
-set(COPY_AS_RESOURCES)
+
+set(ASSET_CATALOG "${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/${CORE_PLATFORM_NAME_LC}/Assets.xcassets")
+set(COPY_AS_RESOURCES ${ASSET_CATALOG})
+
 if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
   # asset catalog
-  set(ASSET_CATALOG "${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/tvos/Assets.xcassets")
-  set(ASSET_CATALOG_ASSETS Assets)
+  set(ASSET_CATALOG_APPICON Assets)
   set(ASSET_CATALOG_LAUNCH_IMAGE LaunchImage)
 
   message("generating missing asset catalog images...")
-  execute_process(COMMAND ${CMAKE_SOURCE_DIR}/tools/darwin/Support/GenerateMissingImages-tvos.py "${ASSET_CATALOG}" ${ASSET_CATALOG_ASSETS} ${ASSET_CATALOG_LAUNCH_IMAGE})
-
-  list(APPEND COPY_AS_RESOURCES ${ASSET_CATALOG})
+  execute_process(COMMAND ${CMAKE_SOURCE_DIR}/tools/darwin/Support/GenerateMissingImages-tvos.py "${ASSET_CATALOG}" ${ASSET_CATALOG_APPICON} ${ASSET_CATALOG_LAUNCH_IMAGE})
 
   # entitlements
   set(ENTITLEMENTS_OUT_PATH "${CMAKE_BINARY_DIR}/CMakeFiles/${APP_NAME_LC}.dir/Kodi.entitlements")
   configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/tvos/Kodi.entitlements.in ${ENTITLEMENTS_OUT_PATH} @ONLY)
 
-  set_target_properties(${APP_NAME_LC} PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME ${ASSET_CATALOG_ASSETS}
-                                                  XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME ${ASSET_CATALOG_LAUNCH_IMAGE}
-                                                  XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${ENTITLEMENTS_OUT_PATH})
+  set_target_properties(${APP_NAME_LC} PROPERTIES
+    XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME ${ASSET_CATALOG_LAUNCH_IMAGE}
+    XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${ENTITLEMENTS_OUT_PATH}
+  )
 
 else()
-  list(APPEND COPY_AS_RESOURCES ${CMAKE_SOURCE_DIR}/media/splash.jpg
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon29x29.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon29x29@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon40x40.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon40x40@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon50x50.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon50x50@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon57x57.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon57x57@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon60x60.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon60x60@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon72x72.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon72x72@2x.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon76x76.png
-                       ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon76x76@2x.png)
+  set(ASSET_CATALOG_APPICON AppIcon)
 
   list(APPEND COPY_AS_RESOURCES
+    "${CMAKE_SOURCE_DIR}/media/splash.jpg"
     "${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/LaunchScreen.storyboard"
   )
 
 endif()
 
+set_target_properties(${APP_NAME_LC} PROPERTIES
+  XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME ${ASSET_CATALOG_APPICON}
+)
 target_sources(${APP_NAME_LC} PRIVATE ${COPY_AS_RESOURCES})
 foreach(file IN LISTS COPY_AS_RESOURCES)
   set_source_files_properties(${file} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources") # adds to Copy Bundle Resources build phase
