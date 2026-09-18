@@ -364,10 +364,16 @@ bool CGamesGUIInfo::GetBool(bool& value,
       value = CServiceBroker::GetGameServices().GameSettings().GetAchievementsLoggedIn();
       return true;
     }
+    case RETROPLAYER_SUPPORTS_CHEATS:
+    {
+      const GameClientPtr gameClient = CGameUtils::GetPlayingGameClient();
+      value = gameClient && gameClient->Cheats().SupportsCheats();
+      return true;
+    }
     case RETROPLAYER_HAS_CHEATS:
     {
       const GameClientPtr gameClient = CGameUtils::GetPlayingGameClient();
-      value = gameClient && gameClient->Cheats().CanOfferCheats();
+      value = gameClient && gameClient->Cheats().HasCheats();
       return true;
     }
     default:

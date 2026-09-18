@@ -11,13 +11,14 @@
 #include "games/addons/GameClientSubsystem.h"
 #include "games/cheats/CheatPack.h"
 
+#include <cstdint>
 #include <functional>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <set>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace ADDON
@@ -47,9 +48,6 @@ public:
   /*!
    * \brief Look for cheats for a game and hold what is found
    *
-   * A game with no cheat file, or a cheats folder that has not been set, ends
-   * up with nothing, which is how the OSD knows not to offer them.
-   *
    * \param gamePath The path to the game for which cheats should be loaded
    */
   void Load(const std::string& gamePath);
@@ -60,17 +58,14 @@ public:
   void Clear();
 
   /*!
-   * \brief True while the game being played has cheats to offer
+   * \brief True if an exact matching cheat-pack candidate was discovered for this game
+   *
+   * Independent of pack selection and whether the pack contains usable cheat entries.
    */
   bool HasCheats() const;
 
-  /*!
-   * \brief True when the cheats dialog is worth opening
-   *
-   * Either there are cheats, or the add-on that carries them can still be
-   * fetched, which is the only way the player would find out it exists.
-   */
-  bool CanOfferCheats() const;
+  //! Whether the current game client implements the cheat API.
+  bool SupportsCheats() const;
 
   /*!
    * \brief True while the cheat add-on is missing or switched off
@@ -84,6 +79,7 @@ public:
     FAILED,
     NO_CHEATS,
     CHEATS_FOUND,
+    CHOOSE_PACK,
   };
 
   /*!
@@ -93,6 +89,31 @@ public:
    * Run the task on a job thread.
    */
   std::function<InstallResult()> GetInstallTask();
+
+  struct PackCandidate
+  {
+    std::string id;
+    std::string name;
+    std::string source;
+    std::string path;
+  };
+
+  struct PackState
+  {
+    std::string fileName;
+    std::vector<PackCandidate> candidates;
+    std::string selected;
+    std::vector<Cheat> cheats;
+    uint64_t generation{0};
+
+    bool HasMatch() const { return !candidates.empty(); }
+    bool NeedsSelection() const { return candidates.size() > 1 && selected.empty(); }
+  };
+
+  PackState GetPacks() const;
+
+  // Capture before opening the chooser; run only a confirmed choice on a job thread.
+  std::function<bool(const std::string&)> GetSelectionTask(const PackState& expected);
 
   /*!
    * \brief The cheats found for this game, and whether each is switched on
@@ -107,7 +128,7 @@ public:
    * The whole set is re-sent to the client afterwards. A stale displayed row
    * is rejected if a reload has replaced it.
    */
-  bool SetEnabled(unsigned int index, bool enabled, const Cheat& expected);
+  bool SetEnabled(unsigned int index, bool enabled, const Cheat& expected, uint64_t generation = 0);
 
 protected:
   enum class DatabaseState
@@ -132,31 +153,46 @@ protected:
   virtual bool EnableDatabase();
   virtual std::vector<Source> GetSources() const;
   virtual bool IsResourceAddon(const std::string& id) const;
-  virtual CCheatPack ReadPack(const std::string& path, const std::string& fileName);
+  virtual std::vector<PackCandidate> FindCandidates(const Source& source,
+                                                    const std::string& fileName);
+  virtual CCheatPack ReadPack(const std::string& path);
+  virtual std::string GetSelectionPath(const std::string& gamePath) const;
   virtual void Submit(std::function<void()> job);
   void OnAddonEvent(const ADDON::AddonEvent& event);
 
 private:
   struct Session
   {
-    explicit Session(std::string path) : gamePath(std::move(path)) {}
+    explicit Session(std::string path);
 
     const std::string gamePath;
+    const std::string fileName;
     // Clear invalidates the session without waiting for this worker lock.
     std::mutex workMutex;
     std::set<std::string> changedAddons;
+    std::map<std::string, uint64_t> addonRevisions;
+    // Keep resource IDs recognizable after removal from the add-on manager.
+    std::set<std::string> sourceAddons;
     bool reloadQueued{false};
     bool installQueued{false};
+    std::optional<std::string> choice;
   };
 
   InstallResult InstallCheats(const std::shared_ptr<Session>& session);
-  bool Reload(const std::shared_ptr<Session>& session, bool refreshDialog = true);
+  bool Reload(const std::shared_ptr<Session>& session,
+              bool refreshDialog = true,
+              const std::optional<std::string>& selection = std::nullopt);
+  std::string ReadChoice(const std::string& gamePath) const;
+  void SaveChoice(const std::string& gamePath, const std::string& candidate) const;
   void QueueReload(const std::shared_ptr<Session>& session);
   void ProcessReload(const std::shared_ptr<Session>& session);
+  void OnRepositoryUpdated();
   static void RefreshDialog();
 
   /*!
    * \brief Hand the client a cheat to apply, or take one away
+   *
+   * The caller must hold m_clientAccess.
    *
    * \param index The slot the code occupies, which is how it is turned off again
    * \param enabled Whether the code should be applied
@@ -168,6 +204,8 @@ private:
 
   /*!
    * \brief Drop every cheat the client is holding
+   *
+   * The caller must hold m_clientAccess.
    *
    * \return True if the cheats were successfully dropped, false otherwise
    */
@@ -185,7 +223,8 @@ private:
   mutable std::mutex m_mutex;
   std::shared_ptr<Session> m_session;
   std::optional<std::vector<Source>> m_sources;
-  std::optional<Source> m_packSource;
+  PackState m_packs;
+  uint64_t m_generation{0};
   CCheatPack m_pack;
   std::vector<bool> m_enabled;
 
@@ -193,10 +232,9 @@ private:
   //! one that returns GAME_ERROR_NOT_IMPLEMENTED can never be cheated at.
   bool m_clientTakesCheats{false};
 
-  //! Whether the database add-on could still be fetched. Looking that up
-  //! searches the repositories, and the OSD asks every time the cheats row's
-  //! visibility is evaluated, so the answer is kept until an add-on changes.
+  //! Cache installation availability to avoid repeated repository searches
+  //! until an add-on's installation state or repository metadata changes.
   mutable std::optional<bool> m_canInstall;
-  unsigned int m_availabilityRevision{0};
+  unsigned int m_installabilityRevision{0};
 };
 } // namespace KODI::GAME

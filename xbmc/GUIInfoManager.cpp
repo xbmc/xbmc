@@ -4507,11 +4507,24 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///   \table_row3{   <b>`RetroPlayer.HasCheats`</b>,
 ///                  \anchor RetroPlayer_HasCheats
 ///                  _boolean_,
-///     @return **True** if the cheats dialog has something to show for the
-///     currently-playing game\, either cheats that were found or the offer to
-///     fetch the add-on carrying them\, **False** otherwise.
+///     @return **True** if at least one exact filename match was discovered among
+///     the cheat packs for the currently-playing game\, **False** otherwise.
+///     Multiple matching packs count before selection\, as does a matching pack
+///     containing no usable cheat entries. Use `RetroPlayer.SupportsCheats` to
+///     check the game client's cheat API capability independently of file matches.
 ///     <p><hr>
 ///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_HasCheats `RetroPlayer.HasCheats`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.SupportsCheats`</b>,
+///                  \anchor RetroPlayer_SupportsCheats
+///                  _boolean_,
+///     @return **True** if the currently-playing game client implements the
+///     cheat API\, **False** otherwise. This is independent of whether a matching
+///     cheat file exists and controls the Cheats OSD item's visibility.
+///     Use `RetroPlayer.HasCheats` to check for discovered matching cheat files.
+///     <p><hr>
+///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_SupportsCheats `RetroPlayer.SupportsCheats`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`RetroPlayer.AchievementsProgress`</b>,
@@ -4612,7 +4625,7 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 27> retroplayer = {{
+constexpr std::array<InfoMap, 28> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4625,6 +4638,7 @@ constexpr std::array<InfoMap, 27> retroplayer = {{
     {"richpresence", RETROPLAYER_RICH_PRESENCE},
     {"achievementsloggedin", RETROPLAYER_ACHIEVEMENTS_LOGGED_IN},
     {"hascheats", RETROPLAYER_HAS_CHEATS},
+    {"supportscheats", RETROPLAYER_SUPPORTS_CHEATS},
     {"achievementsprogress", RETROPLAYER_ACHIEVEMENTS_PROGRESS},
     {"achievementschallengetitle", RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE},
     {"achievementschallengebadge", RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE},

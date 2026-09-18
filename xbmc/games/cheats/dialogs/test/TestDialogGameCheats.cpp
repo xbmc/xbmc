@@ -8,11 +8,13 @@
 
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "games/dialogs/osd/DialogGameCheats.h"
+#include "games/cheats/dialogs/DialogGameCheats.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlGroupList.h"
+#include "guilib/GUILabelControl.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIScrollBarControl.h"
@@ -20,6 +22,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
+#include "utils/Variant.h"
 #include "windowing/WinSystem.h"
 
 #include <memory>
@@ -31,10 +36,14 @@
 namespace
 {
 constexpr int LIST = 1083901;
+constexpr int SUMMARY = 1083902;
+constexpr int FILE_NAME = 1083898;
 constexpr int BUTTON_TEMPLATE = 1083903;
 constexpr int RADIO_TEMPLATE = 1083904;
 constexpr int CLOSE = 1083905;
 constexpr int SCROLLBAR = 1083906;
+constexpr int CHOOSE_PACK = 1083907;
+constexpr int ACTIONS = 1083908;
 constexpr int FIRST_CHEAT = 1083909;
 
 // Empty textures let the real button controls run without a renderer.
@@ -124,20 +133,30 @@ public:
                                      0, CScroller(200));
     list->SetAction(ACTION_MOVE_UP, CGUIAction(LIST));
     list->SetAction(ACTION_MOVE_DOWN, CGUIAction(LIST));
-    list->SetAction(ACTION_MOVE_LEFT, CGUIAction(CLOSE));
+    list->SetAction(ACTION_MOVE_LEFT, CGUIAction(ACTIONS));
     list->SetAction(ACTION_MOVE_RIGHT, CGUIAction(SCROLLBAR));
     AddControl(list);
     const CTextureInfo texture;
     const CLabelInfo label;
+    for (int id : {SUMMARY, FILE_NAME})
+      AddControl(new CGUILabelControl(GetID(), id, 0, 0, 300, 100, label, false, false));
     AddControl(new CGUIRadioButtonControl(GetID(), RADIO_TEMPLATE, 0, 0, 1160, 70, texture, texture,
                                           label, texture, texture, texture, texture, texture,
                                           texture));
-    for (int id : {BUTTON_TEMPLATE, CLOSE})
-      AddControl(new CGUIButtonControl(GetID(), id, 0, 0, 1160, 70, texture, texture, label));
+    AddControl(
+        new CGUIButtonControl(GetID(), BUTTON_TEMPLATE, 0, 0, 1160, 70, texture, texture, label));
+    auto* actions = new CGUIControlGroupList(GetID(), ACTIONS, 0, 0, 300, 710, 10, 0, VERTICAL,
+                                             false, 0, CScroller(200));
+    actions->SetAction(ACTION_MOVE_LEFT, CGUIAction(SCROLLBAR));
+    actions->SetAction(ACTION_MOVE_RIGHT, CGUIAction(LIST));
+    for (int id : {CHOOSE_PACK, CLOSE})
+      actions->AddControl(
+          new CGUIButtonControl(GetID(), id, 0, 0, 300, 100, texture, texture, label));
+    AddControl(actions);
     AddControl(new GUIScrollBarControl(GetID(), SCROLLBAR, 0, 0, 20, 770, texture, texture, texture,
                                        texture, texture, VERTICAL, showOnePage));
     GetControl(SCROLLBAR)->SetAction(ACTION_MOVE_LEFT, CGUIAction(LIST));
-    GetControl(SCROLLBAR)->SetAction(ACTION_MOVE_RIGHT, CGUIAction(CLOSE));
+    GetControl(SCROLLBAR)->SetAction(ACTION_MOVE_RIGHT, CGUIAction(ACTIONS));
     GetControl(CLOSE)->SetAction(ACTION_MOVE_LEFT, CGUIAction(SCROLLBAR));
     GetControl(CLOSE)->SetAction(ACTION_MOVE_RIGHT, CGUIAction(LIST));
     SetDefaultControl(3, true);
@@ -182,6 +201,10 @@ public:
   void MarkClosed() { m_active = false; }
   int cheatCount{331};
   bool getMore{false};
+  bool hasChooser{false};
+  bool needsSelection{false};
+  bool hasMatch{true};
+  std::string fileName{"game.cht"};
 
 protected:
   void InitializeControls() override
@@ -189,16 +212,81 @@ protected:
     std::vector<KODI::GAME::Cheat> cheats(cheatCount);
     for (int i = 0; i < cheatCount; ++i)
       cheats[i].description = "Cheat " + std::to_string(i);
-    CreateControls(std::move(cheats), getMore);
+    KODI::GAME::CGameClientCheats::PackState packs;
+    packs.fileName = fileName;
+    packs.cheats = std::move(cheats);
+    if (hasMatch)
+    {
+      packs.candidates.push_back({"first", "First pack", "", ""});
+      if (hasChooser)
+        packs.candidates.push_back({"second", "Second pack", "", ""});
+      if (!needsSelection)
+        packs.selected = "first";
+    }
+    CreateControls(std::move(packs), getMore);
   }
 };
 
 class TestDialogGameCheats : public testing::Test
 {
 protected:
+  void SetUp() override
+  {
+    ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
+        g_langInfo.GetLanguagePath(), LANGUAGE_DEFAULT));
+  }
+
+  void TearDown() override { CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear(); }
+
   CTestGUI m_gui;
 };
 } // namespace
+
+TEST_F(TestDialogGameCheats, NoMatchAndRequiredSelectionHaveDistinctStatus)
+{
+  CTestDialogGameCheats dialog;
+  dialog.cheatCount = 0;
+  dialog.hasMatch = false;
+  dialog.fileName = "Frogger (USA).cht";
+  dialog.OpenForTest();
+  EXPECT_EQ(dialog.GetControl(FILE_NAME)->GetDescription(), "Frogger (USA).cht");
+  EXPECT_FALSE(dialog.GetProperty("GameCheats.HasMatch").asBoolean());
+  EXPECT_EQ(dialog.GetControl(SUMMARY)->GetDescription(), "No cheats found for this game");
+  EXPECT_EQ(dialog.GetFocusedControlID(), CLOSE);
+
+  dialog.hasMatch = true;
+  dialog.hasChooser = true;
+  dialog.needsSelection = true;
+  dialog.Refresh();
+  EXPECT_TRUE(dialog.GetProperty("GameCheats.HasMatch").asBoolean());
+  EXPECT_EQ(dialog.GetControl(SUMMARY)->GetDescription(),
+            "Multiple cheat packs match this game. Choose one to load its cheats.");
+  EXPECT_EQ(dialog.GetControl(CHOOSE_PACK)->GetDescription(), "Cheat pack...");
+
+  dialog.needsSelection = false;
+  dialog.Refresh();
+  EXPECT_TRUE(dialog.GetProperty("GameCheats.HasMatch").asBoolean());
+  EXPECT_EQ(dialog.GetControl(SUMMARY)->GetDescription(), "0 cheats available");
+  EXPECT_EQ(dialog.GetControl(CHOOSE_PACK)->GetDescription(), "Cheat pack...");
+
+  dialog.hasMatch = false;
+  dialog.Refresh();
+  EXPECT_FALSE(dialog.GetProperty("GameCheats.HasMatch").asBoolean());
+  EXPECT_EQ(dialog.GetControl(SUMMARY)->GetDescription(), "No cheats found for this game");
+}
+
+TEST_F(TestDialogGameCheats, SingleMatchingPackWithNoEnabledCheatsStillMatches)
+{
+  for (int count : {0, 2})
+  {
+    CTestDialogGameCheats dialog;
+    dialog.cheatCount = count;
+    dialog.OpenForTest();
+    EXPECT_TRUE(dialog.GetProperty("GameCheats.HasMatch").asBoolean());
+    EXPECT_EQ(dialog.GetControl(SUMMARY)->GetDescription(),
+              count == 0 ? "0 cheats available" : "0 cheats enabled");
+  }
+}
 
 TEST_F(TestDialogGameCheats, LongListKeepsAllRowsAndNavigationDistinctFromSkinControls)
 {
@@ -591,4 +679,94 @@ TEST_F(TestDialogGameCheats, RefreshWhileClosingKeepsFocusAndOffset)
   EXPECT_EQ(dialog.List().ItemCount(), 331);
   EXPECT_EQ(dialog.GetFocusedControlID(), FIRST_CHEAT + 240);
   EXPECT_FLOAT_EQ(dialog.List().ScrollOffset(), offset);
+}
+
+TEST_F(TestDialogGameCheats, RequiredChooserGetsInitialFocusAndNavigatesToClose)
+{
+  CTestDialogGameCheats dialog;
+  dialog.cheatCount = 0;
+  dialog.hasChooser = true;
+  dialog.needsSelection = true;
+  dialog.getMore = true;
+  dialog.OpenForTest();
+  EXPECT_EQ(dialog.List().ItemCount(), 0);
+  EXPECT_EQ(dialog.GetFocusedControlID(), CHOOSE_PACK);
+  EXPECT_TRUE(dialog.OnMove(CHOOSE_PACK, ACTION_MOVE_DOWN));
+  EXPECT_EQ(dialog.GetFocusedControlID(), CLOSE);
+  EXPECT_TRUE(dialog.OnMove(CLOSE, ACTION_MOVE_UP));
+  EXPECT_EQ(dialog.GetFocusedControlID(), CHOOSE_PACK);
+}
+
+TEST_F(TestDialogGameCheats, ChooserRefreshPreservesFocusAndListViewport)
+{
+  CTestDialogGameCheats dialog;
+  dialog.hasChooser = true;
+  dialog.OpenForTest();
+  dialog.Focus(FIRST_CHEAT + 240);
+  dialog.List().FinishScroll();
+  const float offset = dialog.List().ScrollOffset();
+  dialog.Focus(CHOOSE_PACK);
+  dialog.Refresh();
+  EXPECT_EQ(dialog.GetFocusedControlID(), CHOOSE_PACK);
+  EXPECT_FLOAT_EQ(dialog.List().ScrollOffset(), offset);
+  EXPECT_TRUE(dialog.OnMove(CHOOSE_PACK, ACTION_MOVE_RIGHT));
+  EXPECT_EQ(dialog.GetFocusedControlID(), FIRST_CHEAT + 240);
+}
+
+TEST_F(TestDialogGameCheats, CancelWithoutSelectionKeepsChooserFocused)
+{
+  CTestDialogGameCheats dialog;
+  dialog.hasChooser = true;
+  dialog.needsSelection = true;
+  dialog.cheatCount = 0;
+  dialog.OpenForTest();
+  dialog.Refresh();
+  EXPECT_EQ(dialog.GetFocusedControlID(), CHOOSE_PACK);
+  EXPECT_EQ(dialog.List().ItemCount(), 0);
+}
+
+TEST_F(TestDialogGameCheats, ReloadHidingChooserRecoversFocusWithAndWithoutRows)
+{
+  for (int count : {0, 4})
+  {
+    SCOPED_TRACE(count);
+    CTestDialogGameCheats dialog;
+    dialog.hasChooser = true;
+    dialog.needsSelection = true;
+    dialog.cheatCount = 0;
+    dialog.OpenForTest();
+    dialog.hasChooser = false;
+    dialog.needsSelection = false;
+    dialog.cheatCount = count;
+    dialog.Refresh();
+    EXPECT_FALSE(dialog.GetControl(CHOOSE_PACK)->CanFocus());
+    EXPECT_EQ(dialog.GetFocusedControlID(), count ? FIRST_CHEAT : CLOSE);
+    EXPECT_TRUE(dialog.GetControl(dialog.GetFocusedControlID())->HasFocus());
+  }
+}
+
+TEST_F(TestDialogGameCheats, ReloadRemovingSelectedPackFocusesRequiredChooser)
+{
+  CTestDialogGameCheats dialog;
+  dialog.hasChooser = true;
+  dialog.OpenForTest();
+  dialog.Focus(FIRST_CHEAT + 240);
+  dialog.List().FinishScroll();
+  dialog.cheatCount = 0;
+  dialog.needsSelection = true;
+  dialog.Refresh();
+  EXPECT_EQ(dialog.GetFocusedControlID(), CHOOSE_PACK);
+  EXPECT_FLOAT_EQ(dialog.List().ScrollOffset(), 0);
+}
+
+TEST_F(TestDialogGameCheats, ReloadFromScrollbarToAmbiguousMatchesFocusesChooser)
+{
+  CTestDialogGameCheats dialog;
+  dialog.OpenForTest();
+  dialog.Focus(SCROLLBAR);
+  dialog.cheatCount = 0;
+  dialog.hasChooser = true;
+  dialog.needsSelection = true;
+  dialog.Refresh();
+  EXPECT_EQ(dialog.GetFocusedControlID(), CHOOSE_PACK);
 }

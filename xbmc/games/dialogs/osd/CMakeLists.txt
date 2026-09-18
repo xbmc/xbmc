@@ -1,7 +1,6 @@
 set(SOURCES DialogGameIndicators.cpp
             DialogGameAchievements.cpp
             DialogGameAdvancedSettings.cpp
-            DialogGameCheats.cpp
             DialogGameLeaderboards.cpp
             DialogGameLeaderboardEntries.cpp
             LeaderboardUtils.cpp
@@ -19,7 +18,6 @@ set(SOURCES DialogGameIndicators.cpp
 set(HEADERS DialogGameIndicators.h
             DialogGameAchievements.h
             DialogGameAdvancedSettings.h
-            DialogGameCheats.h
             DialogGameLeaderboards.h
             DialogGameLeaderboardEntries.h
             LeaderboardUtils.h
