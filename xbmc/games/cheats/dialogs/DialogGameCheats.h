@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "games/cheats/CheatPack.h"
+#include "games/addons/cheats/GameClientCheats.h"
 #include "guilib/GUIDialog.h"
 
-#include <string>
+#include <cstdint>
 #include <vector>
 
 namespace KODI::GAME
@@ -31,7 +31,7 @@ protected:
   void OnDeinitWindow(int nextWindowID) override;
 
   virtual void InitializeControls();
-  void CreateControls(std::vector<Cheat> cheats, bool getMore);
+  void CreateControls(CGameClientCheats::PackState packs, bool getMore);
 
 private:
   void ClearControls();
@@ -39,10 +39,13 @@ private:
   bool IsListAction(int controlId) const;
   void ToggleCheat(int controlId);
   void GetMore();
+  void ChoosePack();
   void UpdateEnabledSummary();
-  std::string EnabledSummary() const;
 
   std::vector<Cheat> m_cheats;
+  bool m_hasMatch{false};
+  bool m_needsSelection{false};
+  uint64_t m_packGeneration{0};
   int m_getMoreControl{0};
   bool m_restoreListFocus{false};
 };

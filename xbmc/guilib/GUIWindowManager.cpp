@@ -147,11 +147,11 @@
 /* Game related include files */
 #include "cores/RetroPlayer/guiwindows/GameWindowFullScreen.h"
 #include "games/agents/windows/GUIAgentWindow.h"
+#include "games/cheats/dialogs/DialogGameCheats.h"
 #include "games/controllers/windows/GUIControllerWindow.h"
 #include "games/dialogs/disc/DialogGameDiscManager.h"
 #include "games/dialogs/osd/DialogGameAchievements.h"
 #include "games/dialogs/osd/DialogGameAdvancedSettings.h"
-#include "games/dialogs/osd/DialogGameCheats.h"
 #include "games/dialogs/osd/DialogGameIndicators.h"
 #include "games/dialogs/osd/DialogGameLeaderboardEntries.h"
 #include "games/dialogs/osd/DialogGameLeaderboards.h"

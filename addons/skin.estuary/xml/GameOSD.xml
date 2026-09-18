@@ -153,7 +153,7 @@
 							<param name="id" value="1118" />
 							<param name="label" value="$LOCALIZE[35320]" />
 							<param name="icon" value="osd/fullscreen/buttons/cheats.png" />
-							<visible>RetroPlayer.HasCheats</visible>
+							<visible>RetroPlayer.SupportsCheats</visible>
 							<onclick>ActivateWindow(GameCheats)</onclick>
 						</include>
 						<include content="GameOSDMenuButton">

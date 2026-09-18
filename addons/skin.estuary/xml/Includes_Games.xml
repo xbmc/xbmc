@@ -1881,6 +1881,10 @@
 		</definition>
 	</include>
 
+	<variable name="GameCheatsFilenameColor">
+		<value condition="String.IsEqual(Window.Property(GameCheats.HasMatch),true)">FF8ED6A0</value>
+		<value>red</value>
+	</variable>
 	<include name="GameDialogCheats">
 		<control type="group">
 			<top>105</top>
@@ -1894,19 +1898,35 @@
 				<param name="header_label" value="" />
 				<param name="header_id" value="1083900" />
 			</include>
+			<control type="label" id="1083898">
+				<left>40</left>
+				<top>70</top>
+				<width>1440</width>
+				<height>84</height>
+				<font>font13</font>
+				<aligny>center</aligny>
+				<textcolor>$VAR[GameCheatsFilenameColor]</textcolor>
+				<scroll>true</scroll>
+			</control>
 			<control type="image">
 				<left>10</left>
-				<top>80</top>
-				<width>1200</width>
-				<height>810</height>
+				<top>134</top>
+				<width>1160</width>
+				<height>740</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
+			<control type="image">
+				<left>1160</left>
+				<top>154</top>
+				<width>1</width>
+				<height>700</height>
+				<texture colordiffuse="bg_overlay">colors/white.png</texture>
+			</control>
 			<control type="grouplist" id="1083901">
-				<description>control area</description>
-				<left>29</left>
-				<top>100</top>
-				<width>1160</width>
-				<height>770</height>
+				<left>30</left>
+				<top>154</top>
+				<width>1108</width>
+				<height>700</height>
 				<pagecontrol>1083906</pagecontrol>
 				<onleft>1083908</onleft>
 				<onright>1083906</onright>
@@ -1919,50 +1939,58 @@
 			</control>
 			<control type="radiobutton" id="1083904">
 				<description>Default RadioButton</description>
-				<textwidth>992</textwidth>
+				<textwidth>912</textwidth>
+				<radioheight>70</radioheight>
+				<textureradioonnofocus colordiffuse="button_focus">buttons/radio-button-on.png</textureradioonnofocus>
+				<textureradioonfocus>buttons/radio-button-on.png</textureradioonfocus>
 				<include>DefaultSettingButton</include>
 			</control>
 			<control type="grouplist" id="1083908">
-				<left>1210</left>
-				<top>92</top>
+				<left>1185</left>
+				<top>144</top>
 				<orientation>vertical</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
 				<width>300</width>
-				<height>280</height>
-				<itemgap>-10</itemgap>
+				<height>710</height>
+				<itemgap>10</itemgap>
 				<onleft>1083906</onleft>
 				<onright>1083901</onright>
 				<include content="DefaultDialogButton">
+					<param name="id" value="1083907" />
+					<param name="left" value="-20" />
+					<param name="width" value="340" />
+					<param name="label" value="" />
+					<param name="font" value="font12" />
+					<param name="wrapmultiline" value="true" />
+				</include>
+				<control type="textbox" id="1083899">
+					<left>20</left>
+					<width>260</width>
+					<height min="1" max="200">auto</height>
+					<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<visible>Control.IsVisible(1083907) + !String.IsEmpty(Control.GetLabel(1083899))</visible>
+				</control>
+				<include content="DefaultDialogButton">
 					<param name="id" value="1083905" />
+					<param name="left" value="-20" />
+					<param name="width" value="340" />
 					<param name="label" value="" />
 				</include>
-			</control>
-			<control type="label" id="1083907">
-				<description>Heading above what is switched on</description>
-				<left>1210</left>
-				<top>386</top>
-				<width>300</width>
-				<height>40</height>
-				<font>font14</font>
-				<textcolor>white</textcolor>
-				<align>center</align>
-				<aligny>center</aligny>
-			</control>
-			<control type="textbox" id="1083902">
-				<description>Enabled cheats</description>
-				<left>1210</left>
-				<top>436</top>
-				<width>300</width>
-				<height>394</height>
-				<font>font13</font>
-				<textcolor>grey</textcolor>
-				<align>center</align>
-				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+				<control type="textbox" id="1083902">
+					<left>20</left>
+					<width>260</width>
+					<height min="40" max="240">auto</height>
+					<font>font13</font>
+					<textcolor>grey</textcolor>
+				</control>
 			</control>
 			<control type="scrollbar" id="1083906">
-				<left>1189</left>
-				<top>100</top>
+				<left>1138</left>
+				<top>154</top>
 				<width>12</width>
-				<height>770</height>
+				<height>700</height>
 				<orientation>vertical</orientation>
 				<onleft>1083901</onleft>
 				<onright>1083908</onright>

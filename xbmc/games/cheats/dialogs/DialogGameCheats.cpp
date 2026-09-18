@@ -8,9 +8,11 @@
 
 #include "DialogGameCheats.h"
 
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "games/GameUtils.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/cheats/GameClientCheats.h"
@@ -41,7 +43,12 @@ namespace
 {
 constexpr int HEADING_GET_MORE = 21452; // "Get more..."
 constexpr int HEADING_CHEATS = 35320; // "Cheats"
-constexpr int HEADING_ENABLED = 305; // "Enabled"
+constexpr int HEADING_CHEAT_PACK = 35324; // "Cheat pack..."
+// "Multiple cheat packs match this game. Choose one to load its cheats."
+constexpr int HEADING_MULTIPLE_PACKS = 35325;
+constexpr int HEADING_ENABLED_ONE = 35326; // "1 cheat enabled"
+constexpr int HEADING_ENABLED_COUNT = 35327; // "{0:d} cheats enabled"
+constexpr int HEADING_NONE_AVAILABLE = 35328; // "0 cheats available"
 constexpr int HEADING_NO_CHEATS = 35323; // "No cheats found for this game"
 
 constexpr int CONTROL_HEADING = 1083900;
@@ -51,7 +58,9 @@ constexpr int CONTROL_BUTTON_TEMPLATE = 1083903;
 constexpr int CONTROL_RADIO_TEMPLATE = 1083904;
 constexpr int CONTROL_CLOSE = 1083905;
 constexpr int CONTROL_SCROLLBAR = 1083906;
-constexpr int CONTROL_ENABLED_HEADING = 1083907;
+constexpr int CONTROL_CHOOSE_PACK = 1083907;
+constexpr int CONTROL_PACK_NAME = 1083899;
+constexpr int CONTROL_FILE_NAME = 1083898;
 
 // Keep generated rows above the skin controls and away from navigation ID 0.
 constexpr int CONTROL_CHEATS_START = 1083909;
@@ -106,6 +115,11 @@ bool CDialogGameCheats::OnMessage(CGUIMessage& message)
         Close();
         return true;
       }
+      if (controlId == CONTROL_CHOOSE_PACK)
+      {
+        ChoosePack();
+        return true;
+      }
       if (IsCheatControl(controlId))
       {
         ToggleCheat(controlId);
@@ -149,10 +163,12 @@ bool CDialogGameCheats::OnMessage(CGUIMessage& message)
 
         int restoreControl = listFocused ? CONTROL_CHEATS_LIST : focusedControl;
         if (restoreControl == CONTROL_SCROLLBAR && rowCount == 0)
-          restoreControl = CONTROL_CLOSE;
+          restoreControl = m_needsSelection ? CONTROL_CHOOSE_PACK : CONTROL_CLOSE;
         const CGUIControl* control = GetControl(restoreControl);
         if (!control || !control->CanFocus())
-          restoreControl = list && list->CanFocus() ? CONTROL_CHEATS_LIST : CONTROL_CLOSE;
+          restoreControl = m_needsSelection           ? CONTROL_CHOOSE_PACK
+                           : list && list->CanFocus() ? CONTROL_CHEATS_LIST
+                                                      : CONTROL_CLOSE;
         SET_CONTROL_FOCUS(restoreControl, 0);
         return true;
       }
@@ -180,20 +196,36 @@ void CDialogGameCheats::OnDeinitWindow(int nextWindowID)
 void CDialogGameCheats::InitializeControls()
 {
   const GameClientPtr gameClient = CGameUtils::GetPlayingGameClient();
-  CreateControls(gameClient ? gameClient->Cheats().GetCheats() : std::vector<Cheat>{},
-                 gameClient && gameClient->Cheats().CanInstallCheats());
+  auto packs = gameClient ? gameClient->Cheats().GetPacks() : CGameClientCheats::PackState{};
+  CreateControls(std::move(packs), gameClient && gameClient->Cheats().CanInstallCheats());
 }
 
-void CDialogGameCheats::CreateControls(std::vector<Cheat> cheats, bool getMore)
+void CDialogGameCheats::CreateControls(CGameClientCheats::PackState packs, bool getMore)
 {
   ClearControls();
-  m_cheats = std::move(cheats);
-  m_defaultControl = CONTROL_CLOSE;
+  const bool hasChooser = packs.candidates.size() > 1;
+  const auto selected =
+      std::find_if(packs.candidates.begin(), packs.candidates.end(),
+                   [&packs](const auto& pack) { return pack.id == packs.selected; });
+  m_packGeneration = packs.generation;
+  m_cheats = std::move(packs.cheats);
+  m_hasMatch = packs.HasMatch();
+  m_needsSelection = packs.NeedsSelection();
+  m_defaultControl = m_needsSelection ? CONTROL_CHOOSE_PACK : CONTROL_CLOSE;
 
   SET_CONTROL_LABEL(CONTROL_HEADING, HEADING_CHEATS);
+  SET_CONTROL_LABEL(CONTROL_FILE_NAME, packs.fileName);
+  SetProperty("GameCheats.HasMatch", m_hasMatch);
   SET_CONTROL_LABEL(CONTROL_CLOSE, 15067); // "Close"
   SET_CONTROL_HIDDEN(CONTROL_BUTTON_TEMPLATE);
   SET_CONTROL_HIDDEN(CONTROL_RADIO_TEMPLATE);
+  SET_CONTROL_LABEL(CONTROL_CHOOSE_PACK, HEADING_CHEAT_PACK);
+  if (hasChooser)
+    SET_CONTROL_VISIBLE(CONTROL_CHOOSE_PACK);
+  else
+    SET_CONTROL_HIDDEN(CONTROL_CHOOSE_PACK);
+  SET_CONTROL_LABEL(CONTROL_PACK_NAME,
+                    hasChooser && selected != packs.candidates.end() ? selected->name : "");
 
   auto* list = dynamic_cast<CGUIControlGroupList*>(GetControl(CONTROL_CHEATS_LIST));
   auto* radio = dynamic_cast<CGUIRadioButtonControl*>(GetControl(CONTROL_RADIO_TEMPLATE));
@@ -222,7 +254,7 @@ void CDialogGameCheats::CreateControls(std::vector<Cheat> cheats, bool getMore)
         addControl(control, CONTROL_CHEATS_START + static_cast<int>(index));
       }
     }
-    if (getMore && button)
+    if (getMore && !m_needsSelection && button)
     {
       m_getMoreControl = CONTROL_CHEATS_START + static_cast<int>(m_cheats.size());
       auto* control = button->Clone();
@@ -269,7 +301,7 @@ void CDialogGameCheats::ToggleCheat(int controlId)
 
   const auto index = static_cast<unsigned int>(controlId - CONTROL_CHEATS_START);
   Cheat& cheat = m_cheats[index];
-  if (!gameClient->Cheats().SetEnabled(index, !cheat.enabled, cheat))
+  if (!gameClient->Cheats().SetEnabled(index, !cheat.enabled, cheat, m_packGeneration))
   {
     CGUIMessage refresh(GUI_MSG_UPDATE, GetID(), -1);
     OnMessage(refresh);
@@ -281,27 +313,56 @@ void CDialogGameCheats::ToggleCheat(int controlId)
   UpdateEnabledSummary();
 }
 
-std::string CDialogGameCheats::EnabledSummary() const
-{
-  std::vector<std::string> names;
-  for (const Cheat& cheat : m_cheats)
-  {
-    if (cheat.enabled)
-      names.emplace_back(!cheat.description.empty() ? cheat.description : cheat.code);
-  }
-  return StringUtils::Join(names, "[CR]");
-}
-
 void CDialogGameCheats::UpdateEnabledSummary()
 {
-  const std::string summary = EnabledSummary();
-  SET_CONTROL_LABEL(
-      CONTROL_ENABLED_HEADING,
-      summary.empty()
-          ? ""
-          : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(HEADING_ENABLED));
-
+  const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+  const auto count = std::count_if(m_cheats.begin(), m_cheats.end(),
+                                   [](const Cheat& cheat) { return cheat.enabled; });
+  const std::string summary = !m_hasMatch        ? strings.Get(HEADING_NO_CHEATS)
+                              : m_needsSelection ? strings.Get(HEADING_MULTIPLE_PACKS)
+                              : m_cheats.empty() ? strings.Get(HEADING_NONE_AVAILABLE)
+                              : count == 1
+                                  ? strings.Get(HEADING_ENABLED_ONE)
+                                  : StringUtils::Format(strings.Get(HEADING_ENABLED_COUNT), count);
   SET_CONTROL_LABEL(CONTROL_ENABLED_SUMMARY, summary);
+}
+
+void CDialogGameCheats::ChoosePack()
+{
+  const GameClientPtr gameClient = CGameUtils::GetPlayingGameClient();
+  const auto jobs = CServiceBroker::GetJobManager();
+  auto* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+      WINDOW_DIALOG_SELECT);
+  if (!gameClient || !jobs || !dialog)
+    return;
+
+  const auto packs = gameClient->Cheats().GetPacks();
+  auto select = gameClient->Cheats().GetSelectionTask(packs);
+  if (!select)
+    return;
+
+  dialog->Reset();
+  dialog->SetHeading(HEADING_CHEAT_PACK);
+  dialog->SetUseDetails(true);
+  for (const auto& pack : packs.candidates)
+  {
+    CFileItem item(pack.name);
+    item.SetLabel2(pack.source);
+    const int index = dialog->Add(item);
+    if (pack.id == packs.selected)
+      dialog->SetSelected(index);
+  }
+  dialog->Open();
+  const int index = dialog->GetSelectedItem();
+  if (dialog->IsConfirmed() && index >= 0 && static_cast<size_t>(index) < packs.candidates.size())
+  {
+    jobs->Submit([select = std::move(select), id = packs.candidates[index].id] { select(id); });
+  }
+  if (IsDialogRunning() && !m_closing)
+  {
+    CGUIMessage refresh(GUI_MSG_UPDATE, GetID(), -1);
+    OnMessage(refresh);
+  }
 }
 
 void CDialogGameCheats::GetMore()

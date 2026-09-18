@@ -8,6 +8,7 @@ xbmc/games/addons/streams          games/addons/streams
 xbmc/games/agents/input            games/agents/input
 xbmc/games/agents/windows          games/agents/windows
 xbmc/games/cheats                  games/cheats
+xbmc/games/cheats/dialogs          games/cheats/dialogs
 xbmc/games/controllers             games/controllers
 xbmc/games/controllers/dialogs     games/controllers/dialogs
 xbmc/games/controllers/guicontrols games/controllers/guicontrols
