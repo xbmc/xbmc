@@ -9,7 +9,6 @@
 #pragma once
 
 #include "RPBaseRenderer.h"
-#include "cores/GameSettings.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
 #include <memory>
@@ -40,7 +39,7 @@ class CRendererFactoryFBO : public IRendererFactory
 public:
   ~CRendererFactoryFBO() override = default;
 
-  // implementation of IRendererFactory
+  // Implementation of IRendererFactory
   std::string RenderSystemName() const override;
   CRPBaseRenderer* CreateRenderer(const CRenderSettings& settings,
                                   CRenderContext& context,
@@ -57,7 +56,7 @@ public:
                  std::shared_ptr<IRenderBufferPool> bufferPool);
   ~CRPRendererFBO() override;
 
-  // implementation of CRPBaseRenderer
+  // Implementation of CRPBaseRenderer
   bool Supports(RENDERFEATURE feature) const override;
   SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
 
@@ -77,7 +76,7 @@ protected:
     float z;
   };
 
-  // implementation of CRPBaseRenderer
+  // Implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
   void FlushInternal() override;
 
@@ -96,10 +95,8 @@ protected:
 
   virtual void Render(uint8_t alpha);
 
-  void DestroyShaderResources();
-
   GLenum m_textureTarget = GL_TEXTURE_2D;
-  float m_clearColour = 0.0f;
+  float m_clearColor = 0.0f;
 
   struct FrameGeometry
   {
@@ -127,6 +124,7 @@ protected:
   GLuint m_mainVAO;
   GLuint m_mainVertexVBO;
   GLuint m_mainIndexVBO;
+
   GLuint m_blackbarsVAO;
   GLuint m_blackbarsVertexVBO;
 

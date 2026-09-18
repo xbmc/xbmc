@@ -44,23 +44,12 @@ public:
       sourceRect.y1 = frameHeight - sourceRect.y1;
       sourceRect.y2 = frameHeight - sourceRect.y2;
     }
+
     sourceRect.x1 /= textureWidth;
     sourceRect.x2 /= textureWidth;
     sourceRect.y1 /= textureHeight;
     sourceRect.y2 /= textureHeight;
     return sourceRect;
-  }
-
-  static CSize GetShaderOutputSize(const CRect& sourceRect,
-                                   unsigned int frameWidth,
-                                   unsigned int frameHeight,
-                                   const ViewportCoordinates& destCoords)
-  {
-    // The shader processes the full frame, including pixels cropped from the final quad.
-    return {std::hypot(destCoords[1].x - destCoords[0].x, destCoords[1].y - destCoords[0].y) *
-                frameWidth / sourceRect.Width(),
-            std::hypot(destCoords[2].x - destCoords[1].x, destCoords[2].y - destCoords[1].y) *
-                frameHeight / sourceRect.Height()};
   }
 };
 } // namespace KODI::RETRO
