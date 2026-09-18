@@ -200,9 +200,10 @@ std::unique_ptr<CVideoSync> CWinSystemAndroidGLESContext::GetVideoSync(CVideoRef
 
 bool CWinSystemAndroidGLESContext::CreateSurface()
 {
-  // The float config is for a surface the video is drawn into; a GUI surface
-  // over a separate video surface keeps the RGBA8 config.
-  const bool hdrConfig = m_HDRColorSpace != EGL_NONE && !m_videoOnSeparateSurface;
+  // A PQ colorspace needs the float config on every surface: NVIDIA's EGL
+  // refuses EGL_GL_COLORSPACE_BT2020_PQ_EXT on an RGBA8 config (EGL_BAD_MATCH)
+  // and offers no 10-bit window config.
+  const bool hdrConfig = m_HDRColorSpace != EGL_NONE;
 
   if (!m_pGLContext.CreateSurface(static_cast<EGLNativeWindowType>(m_nativeWindow->GetWindow()),
                                   m_HDRColorSpace, hdrConfig))
