@@ -319,6 +319,7 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
     if (m_shaderPreset->GetPasses().front().filterType == SHADER::FilterType::LINEAR)
       filter = GL_LINEAR;
 
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
