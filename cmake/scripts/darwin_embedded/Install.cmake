@@ -1,4 +1,5 @@
 # IOS/TVOS packaging
+set(COPY_AS_RESOURCES)
 if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
   # asset catalog
   set(ASSET_CATALOG "${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/tvos/Assets.xcassets")
@@ -8,8 +9,7 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
   message("generating missing asset catalog images...")
   execute_process(COMMAND ${CMAKE_SOURCE_DIR}/tools/darwin/Support/GenerateMissingImages-tvos.py "${ASSET_CATALOG}" ${ASSET_CATALOG_ASSETS} ${ASSET_CATALOG_LAUNCH_IMAGE})
 
-  target_sources(${APP_NAME_LC} PRIVATE "${ASSET_CATALOG}")
-  set_source_files_properties("${ASSET_CATALOG}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources") # adds to Copy Bundle Resources build phase
+  list(APPEND COPY_AS_RESOURCES ${ASSET_CATALOG})
 
   # entitlements
   set(ENTITLEMENTS_OUT_PATH "${CMAKE_BINARY_DIR}/CMakeFiles/${APP_NAME_LC}.dir/Kodi.entitlements")
@@ -20,7 +20,7 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
                                                   XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${ENTITLEMENTS_OUT_PATH})
 
 else()
-  set(BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/media/splash.jpg
+  list(APPEND COPY_AS_RESOURCES ${CMAKE_SOURCE_DIR}/media/splash.jpg
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon29x29.png
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon29x29@2x.png
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon40x40.png
@@ -36,15 +36,16 @@ else()
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon76x76.png
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/squared/AppIcon76x76@2x.png)
 
-  target_sources(${APP_NAME_LC} PRIVATE ${BUNDLE_RESOURCES})
-  foreach(file IN LISTS BUNDLE_RESOURCES)
-    set_source_files_properties(${file} PROPERTIES MACOSX_PACKAGE_LOCATION .)
-  endforeach()
-
-  target_sources(${APP_NAME_LC} PRIVATE ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/LaunchScreen.storyboard)
-  set_source_files_properties(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/LaunchScreen.storyboard PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+  list(APPEND COPY_AS_RESOURCES
+    "${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/LaunchScreen.storyboard"
+  )
 
 endif()
+
+target_sources(${APP_NAME_LC} PRIVATE ${COPY_AS_RESOURCES})
+foreach(file IN LISTS COPY_AS_RESOURCES)
+  set_source_files_properties(${file} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources") # adds to Copy Bundle Resources build phase
+endforeach()
 
 # setup code signing
 # dev team ID / identity (certificate)
