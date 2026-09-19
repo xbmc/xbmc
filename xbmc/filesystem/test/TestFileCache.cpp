@@ -6,9 +6,15 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/FileCache.h"
+#include "filesystem/IFileTypes.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "threads/Event.h"
+#include "utils/MemUtils.h"
 
 #if !defined(TARGET_WINDOWS)
 #include "platform/posix/ConvUtils.h"
@@ -151,6 +157,50 @@ private:
   CEvent m_seekEntered{true};
 };
 
+//! Serves a large file whose every byte is derived from its position
+class CPatternFileCacheSource : public IFileCacheSource
+{
+public:
+  explicit CPatternFileCacheSource(bool seekable) : m_seekable(seekable) {}
+
+  static unsigned char ByteAt(int64_t position)
+  {
+    return static_cast<unsigned char>(position % 251);
+  }
+
+  bool Open(const CURL& url, unsigned int flags) override
+  {
+    m_position = 0;
+    return true;
+  }
+  void Close() override {}
+  ssize_t Read(void* buffer, size_t size) override
+  {
+    for (size_t index = 0; index < size; ++index)
+      static_cast<unsigned char*>(buffer)[index] = ByteAt(m_position + index);
+    m_position += size;
+    return static_cast<ssize_t>(size);
+  }
+  int64_t Seek(int64_t position, int whence) override
+  {
+    if (!m_seekable)
+      return -1;
+    m_position = position;
+    return position;
+  }
+  int64_t GetLength() override { return int64_t{4} * 1024 * 1024 * 1024; }
+  int GetChunkSize() override { return 64 * 1024; }
+  int IoControl(IOControl request, void* param) override
+  {
+    return request == IOControl::SEEK_POSSIBLE && m_seekable ? 1 : 0;
+  }
+  IFile* GetImplementation() override { return nullptr; }
+
+private:
+  const bool m_seekable;
+  int64_t m_position{0};
+};
+
 class TestFileCache : public CFileCache
 {
 public:
@@ -170,6 +220,32 @@ SeekResult SeekWithError(CFileCache& cache, int64_t position)
 {
   const int64_t result = cache.Seek(position, SEEK_SET);
   return {result, GetLastError()};
+}
+
+bool ReadsPattern(CFileCache& cache, size_t count)
+{
+  std::vector<unsigned char> buffer(64 * 1024);
+  while (count > 0)
+  {
+    const int64_t position = cache.GetPosition();
+    const ssize_t read = cache.Read(buffer.data(), std::min(buffer.size(), count));
+    if (read <= 0)
+      return false;
+    for (ssize_t index = 0; index < read; ++index)
+    {
+      if (buffer[index] != CPatternFileCacheSource::ByteAt(position + index))
+        return false;
+    }
+    count -= read;
+  }
+  return true;
+}
+
+uint64_t ForwardCapacity(CFileCache& cache)
+{
+  SCacheStatus status{};
+  cache.IoControl(IOControl::CACHE_STATUS, &status);
+  return status.maxforward;
 }
 } // namespace
 
@@ -368,4 +444,65 @@ TEST(TestFileCache, ReadFailsPromptlyAfterQuarantinedCacheDrains)
   const auto [readResult, readError] = failedRead.get();
   EXPECT_EQ(-1, readResult);
   EXPECT_EQ(ECONNRESET, readError);
+}
+
+TEST(TestFileCache, DefaultSizedCacheGrowsToTheContentRate)
+{
+  // A minute at this rate is 90 MiB forward, past the 48 MiB a default cache holds
+  uint32_t rate = 1536 * 1024;
+  KODI::MEMORY::MemoryStatus memory{};
+  KODI::MEMORY::GetMemoryStatus(&memory);
+  if (memory.totalPhys / 16 < 128 * 1024 * 1024)
+    GTEST_SKIP() << "not enough installed memory for the cache to grow";
+
+  TestFileCache cache{READ_AUDIO_VIDEO, std::make_unique<CPatternFileCacheSource>(true)};
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+  const bool readsBefore = ReadsPattern(cache, 1024 * 1024);
+  const uint64_t capacityBefore = ForwardCapacity(cache);
+
+  cache.IoControl(IOControl::CACHE_SETRATE, &rate);
+  const uint64_t capacityAfter = ForwardCapacity(cache);
+  const bool readsAfter = ReadsPattern(cache, 1024 * 1024);
+  cache.Close();
+
+  EXPECT_TRUE(readsBefore);
+  EXPECT_GT(capacityAfter, capacityBefore);
+  EXPECT_TRUE(readsAfter);
+}
+
+TEST(TestFileCache, UserChosenCacheSizeIsKept)
+{
+  uint32_t rate = 1536 * 1024;
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  ASSERT_TRUE(settings->SetInt(CSettings::SETTING_FILECACHE_MEMORYSIZE, 96));
+
+  TestFileCache cache{READ_AUDIO_VIDEO, std::make_unique<CPatternFileCacheSource>(true)};
+  const bool opened = cache.Open(CURL{"mock://server/movie.mkv"});
+  const uint64_t capacityBefore = ForwardCapacity(cache);
+  cache.IoControl(IOControl::CACHE_SETRATE, &rate);
+  const uint64_t capacityAfter = ForwardCapacity(cache);
+  cache.Close();
+  settings->GetSetting(CSettings::SETTING_FILECACHE_MEMORYSIZE)->Reset();
+
+  ASSERT_TRUE(opened);
+  EXPECT_EQ(capacityBefore, capacityAfter);
+}
+
+TEST(TestFileCache, UnseekableSourceKeepsItsCache)
+{
+  uint32_t rate = 1536 * 1024;
+
+  TestFileCache cache{READ_AUDIO_VIDEO, std::make_unique<CPatternFileCacheSource>(false)};
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/stream.ts"}));
+  const bool readsBefore = ReadsPattern(cache, 1024 * 1024);
+  const uint64_t capacityBefore = ForwardCapacity(cache);
+
+  cache.IoControl(IOControl::CACHE_SETRATE, &rate);
+  const uint64_t capacityAfter = ForwardCapacity(cache);
+  const bool readsAfter = ReadsPattern(cache, 1024 * 1024);
+  cache.Close();
+
+  EXPECT_TRUE(readsBefore);
+  EXPECT_EQ(capacityBefore, capacityAfter);
+  EXPECT_TRUE(readsAfter);
 }
