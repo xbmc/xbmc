@@ -13,6 +13,7 @@
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINOSX.h"
 #include "cores/RetroPlayer/process/osx/RPProcessInfoOSX.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
@@ -773,6 +774,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   VIDEOPLAYER::CProcessInfoOSX::Register();
   RETRO::CRPProcessInfoOSX::Register();
   RETRO::CRPProcessInfoOSX::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGL);
+  RETRO::CRPProcessInfoOSX::RegisterRendererFactory(new RETRO::CRendererFactoryFBO);
   CScreenshotSurfaceGL::Register();
 
   return true;
@@ -1297,6 +1299,11 @@ CGLContextObj CWinSystemOSX::GetCGLContextObj()
   }
 
   return cglcontex;
+}
+
+NSOpenGLContext* CWinSystemOSX::GetNSOpenGLContext() const
+{
+  return [m_glView getNSOpenGLContext];
 }
 
 bool CWinSystemOSX::FlushBuffer()

@@ -8,6 +8,8 @@
 
 #include "RPProcessInfoOSX.h"
 
+#include <dlfcn.h>
+
 using namespace KODI;
 using namespace RETRO;
 
@@ -23,4 +25,9 @@ std::unique_ptr<CRPProcessInfo> CRPProcessInfoOSX::Create()
 void CRPProcessInfoOSX::Register()
 {
   CRPProcessInfo::RegisterProcessControl(CRPProcessInfoOSX::Create);
+}
+
+HwProcedureAddress CRPProcessInfoOSX::GetHwProcedureAddress(const char* symbol)
+{
+  return symbol ? reinterpret_cast<HwProcedureAddress>(dlsym(RTLD_DEFAULT, symbol)) : nullptr;
 }
