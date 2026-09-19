@@ -1,0 +1,34 @@
+name: Configure tools/depends
+description: >
+  Bootstraps and configures tools/depends for the given prefix. configure
+  alone writes Makefile.include and installs the Toolchain files that
+  cmakebuildsys and binary-addons read, so a build job with a restored prefix
+  needs nothing more; the depends job additionally builds the dependencies.
+inputs:
+  configure-args:
+    description: Arguments for tools/depends/configure other than --prefix and --with-tarballs.
+    required: true
+  prefix:
+    description: Install prefix (--prefix).
+    required: true
+  build:
+    description: Set to "true" to run make after configure.
+    default: "false"
+runs:
+  using: composite
+  steps:
+    # Tarballs go outside the prefix so the cached prefix does not carry them.
+    - name: Configure tools/depends
+      shell: bash
+      working-directory: tools/depends
+      run: |
+        ./bootstrap
+        # shellcheck disable=SC2086
+        ./configure ${{ inputs.configure-args }} \
+          --prefix="${{ inputs.prefix }}" --with-tarballs="${RUNNER_TEMP}/xbmc-tarballs"
+
+    - name: Build tools/depends
+      if: inputs.build == 'true'
+      shell: bash
+      working-directory: tools/depends
+      run: make -j"$(getconf _NPROCESSORS_ONLN)"

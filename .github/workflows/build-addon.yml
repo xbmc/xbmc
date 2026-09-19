@@ -1,0 +1,227 @@
+name: Build add-on
+
+# Reusable workflow for binary add-on repositories, replacing the Jenkins
+# buildPlugin() step: checks out xbmc/xbmc at the matching Kodi branch, builds
+# the native tools of tools/depends (cached on its tree hash), then builds and
+# packages one add-on with PACKAGE_ZIP=ON on the Jenkins deploy platforms plus
+# the iOS and tvOS device ABIs, and uploads the zips. Windows uses the prebuilt
+# dependency packages and make-addons.bat like the WIN-* jobs. Call it from an
+# add-on repository with:
+#
+#   jobs:
+#     build:
+#       uses: xbmc/xbmc/.github/workflows/build-addon.yml@master
+#       with:
+#         addon: pvr.hts
+#         kodi_ref: master
+
+on:
+  workflow_call:
+    inputs:
+      addon:
+        description: Add-on id, which is also the source directory name.
+        required: true
+        type: string
+      addon_repository:
+        description: owner/repo of the add-on; defaults to the calling repository.
+        default: ""
+        type: string
+      addon_ref:
+        description: Ref of the add-on to build; defaults to the calling ref.
+        default: ""
+        type: string
+      kodi_repository:
+        description: owner/repo of Kodi to build against.
+        default: xbmc/xbmc
+        type: string
+      kodi_ref:
+        description: Kodi branch or commit; master for the current development version.
+        default: master
+        type: string
+      platforms:
+        description: JSON list of platforms to build.
+        default: '["android-armv7","android-aarch64","osx-x86_64","osx-arm64","ios-aarch64","tvos-aarch64","windows-i686","windows-x86_64","windows-arm64"]'
+        type: string
+      retention_days:
+        description: Artifact retention.
+        default: 14
+        type: number
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+  ANDROID_NDK_VERSION: 28.2.13676358
+
+jobs:
+  build:
+    name: ${{ matrix.platform }}
+    runs-on: ${{ startsWith(matrix.platform, 'windows') && 'windows-2022' || (startsWith(matrix.platform, 'android') && 'ubuntu-26.04' || 'macos-14') }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJSON(inputs.platforms) }}
+    env:
+      ADDON: ${{ inputs.addon }}
+    steps:
+      # Layout: <workspace>/<addon> (source), <workspace>/xbmc (Kodi),
+      # <workspace>/addon-defs (the one-line definition cmake/addons reads).
+      - name: Checkout add-on
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.addon_repository || github.repository }}
+          ref: ${{ inputs.addon_ref || github.sha }}
+          path: ${{ inputs.addon }}
+
+      - name: Checkout Kodi
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ inputs.kodi_repository }}
+          ref: ${{ inputs.kodi_ref }}
+          path: xbmc
+
+      # cmake/addons builds the add-on named in the definition from
+      # ADDON_SRC_PREFIX/<id>; the URL field is unused in that mode.
+      - name: Write add-on definition
+        shell: bash
+        run: |
+          mkdir -p "addon-defs/${ADDON}"
+          echo "${ADDON} . ." > "addon-defs/${ADDON}/${ADDON}.txt"
+          echo "all" > "addon-defs/${ADDON}/platforms.txt"
+
+      # ---------------------------------------------------------------- Unix
+      - name: Resolve depends configuration
+        if: ${{ !startsWith(matrix.platform, 'windows') }}
+        id: cfg
+        shell: bash
+        run: |
+          case "${{ matrix.platform }}" in
+            android-armv7)   host=arm-linux-androideabi;  extra="--with-sdk-path=${ANDROID_SDK_ROOT}" ;;
+            android-aarch64) host=aarch64-linux-android;  extra="--with-sdk-path=${ANDROID_SDK_ROOT}" ;;
+            osx-x86_64)      host=x86_64-apple-darwin;    extra="--with-platform=macos" ;;
+            osx-arm64)       host=aarch64-apple-darwin;   extra="--with-platform=macos" ;;
+            ios-aarch64)     host=aarch64-apple-darwin;   extra="--with-platform=ios" ;;
+            tvos-aarch64)    host=aarch64-apple-darwin;   extra="--with-platform=tvos" ;;
+            *) echo "::error::unknown platform ${{ matrix.platform }}"; exit 1 ;;
+          esac
+          case "${{ matrix.platform }}" in
+            android-*) prefix=/home/runner/xbmc-addon-depends ;;
+            *)         prefix=/Users/Shared/xbmc-addon-depends ;;
+          esac
+          {
+            echo "host=${host}"
+            echo "extra=${extra}"
+            echo "prefix=${prefix}"
+            echo "hash=$(git -C xbmc rev-parse HEAD:tools/depends)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Install Android build tools
+        if: startsWith(matrix.platform, 'android')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf bison build-essential curl flex gawk gperf \
+            lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zip zlib1g-dev
+          yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" "ndk;${ANDROID_NDK_VERSION}"
+
+      - name: Select latest available Xcode
+        if: startsWith(matrix.platform, 'osx') || startsWith(matrix.platform, 'ios') || startsWith(matrix.platform, 'tvos')
+        run: |
+          latest_xcode=$(find /Applications -maxdepth 1 -name 'Xcode_*.app' | sort -V | tail -1)
+          if [ -n "$latest_xcode" ]; then sudo xcode-select -s "$latest_xcode"; fi
+          xcodebuild -version
+
+      # Only the native tools are needed (buildPlugin ran make-native-depends):
+      # the add-on's own dependencies are built by cmake/addons/depends with the
+      # generated toolchain. The prefix is cached on the tools/depends tree hash
+      # of the Kodi checkout; configure alone regenerates what the add-on build
+      # reads from the tree, so make is skipped on a hit.
+      - name: Restore native tools
+        if: ${{ !startsWith(matrix.platform, 'windows') }}
+        id: native-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ steps.cfg.outputs.prefix }}
+          key: addon-native-${{ matrix.platform }}-${{ steps.cfg.outputs.hash }}
+
+      - name: Configure depends and build native tools
+        if: ${{ !startsWith(matrix.platform, 'windows') }}
+        working-directory: xbmc/tools/depends
+        run: |
+          ./bootstrap
+          ./configure --host=${{ steps.cfg.outputs.host }} ${{ steps.cfg.outputs.extra }} \
+            --prefix="${{ steps.cfg.outputs.prefix }}" --with-tarballs="${RUNNER_TEMP}/xbmc-tarballs" \
+            --disable-debug
+          if [ "${{ steps.native-cache.outputs.cache-hit }}" != "true" ]; then
+            make -C native -j"$(getconf _NPROCESSORS_ONLN)"
+          fi
+
+      - name: Save native tools
+        if: ${{ !startsWith(matrix.platform, 'windows') && !cancelled() && steps.native-cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request' }}
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ steps.cfg.outputs.prefix }}
+          key: addon-native-${{ matrix.platform }}-${{ steps.cfg.outputs.hash }}
+
+      # PACKAGE=1 runs the package-<addon> target; PACKAGE_ZIP drops the zip in
+      # PACKAGE_DIR/<addon>+<platform>/. .success/.failure are written per add-on.
+      - name: Build and package add-on
+        if: ${{ !startsWith(matrix.platform, 'windows') }}
+        run: |
+          rm -f xbmc/cmake/addons/.success xbmc/cmake/addons/.failure
+          make -C xbmc/tools/depends/target/binary-addons -j"$(getconf _NPROCESSORS_ONLN)" \
+            ADDONS="${ADDON}" \
+            ADDONS_DEFINITION_DIR="${GITHUB_WORKSPACE}/addon-defs" \
+            ADDON_SRC_PREFIX="${GITHUB_WORKSPACE}" \
+            EXTRA_CMAKE_ARGS="-DPACKAGE_ZIP=ON -DPACKAGE_DIR=${GITHUB_WORKSPACE}/zips" \
+            PACKAGE=1 V=1 VERBOSE=1
+
+      # ------------------------------------------------------------- Windows
+      - name: Download prebuilt Windows dependencies
+        if: startsWith(matrix.platform, 'windows')
+        shell: cmd
+        working-directory: xbmc\tools\buildsteps\windows\${{ matrix.platform == 'windows-i686' && 'win32' || (matrix.platform == 'windows-x86_64' && 'x64' || 'arm64') }}
+        env:
+          USE_LESSMSI: "YES"
+        run: download-dependencies.bat
+
+      - name: Build and package add-on (Windows)
+        if: startsWith(matrix.platform, 'windows')
+        shell: cmd
+        working-directory: xbmc\tools\buildsteps\windows\${{ matrix.platform == 'windows-i686' && 'win32' || (matrix.platform == 'windows-x86_64' && 'x64' || 'arm64') }}
+        env:
+          ADDONS_DEFINITION_DIR: ${{ github.workspace }}/addon-defs
+          ADDON_SRC_PREFIX: ${{ github.workspace }}
+          _MSPDBSRV_ENDPOINT_: ${{ matrix.platform }}
+        run: |
+          set ADDONS_DEFINITION_DIR=%ADDONS_DEFINITION_DIR:\=/%
+          set ADDON_SRC_PREFIX=%ADDON_SRC_PREFIX:\=/%
+          make-addons.bat package %ADDON%
+
+      # make-addons.bat packages into cmake/addons/build/zips; the Unix make
+      # into PACKAGE_DIR. Both end up under zips/ here.
+      - name: Collect zips and check the result
+        shell: bash
+        run: |
+          mkdir -p zips
+          if [ -d xbmc/cmake/addons/build/zips ]; then cp -R xbmc/cmake/addons/build/zips/. zips/; fi
+          {
+            echo "### ${ADDON} on ${{ matrix.platform }}"
+            if [ -s xbmc/cmake/addons/.success ]; then echo "Built: $(tr '\n' ' ' < xbmc/cmake/addons/.success)"; fi
+            if [ -s xbmc/cmake/addons/.failure ]; then echo "Failed: $(tr '\n' ' ' < xbmc/cmake/addons/.failure)"; fi
+            find zips -name '*.zip' | sed 's/^/- /'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -s xbmc/cmake/addons/.failure ] || ! find zips -name '*.zip' | grep -q .; then
+            echo "::error::${ADDON} failed to build or package on ${{ matrix.platform }}"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ${{ inputs.addon }}-${{ matrix.platform }}
+          path: zips/**/*.zip
+          if-no-files-found: ignore
+          retention-days: ${{ inputs.retention_days }}
