@@ -8,6 +8,8 @@
 
 #include "URL.h"
 #include "filesystem/FileCache.h"
+#include "filesystem/IFileTypes.h"
+#include "filesystem/PipeFile.h"
 #include "threads/Event.h"
 
 #if !defined(TARGET_WINDOWS)
@@ -149,6 +151,127 @@ private:
   CEvent m_firstReadEntered{true};
   CEvent m_allowFirstRead{true};
   CEvent m_seekEntered{true};
+};
+
+/* Behaves as a CFile whose connections stop answering at a given offset. One connection can be
+ * made to fail to open, a closed source answers as a closed CFile does, and the implementation's
+ * property query can be held open.
+ */
+class CStallingFileCacheSource : public IFileCacheSource
+{
+public:
+  static constexpr int64_t FILE_SIZE = 1024 * 1024;
+
+  //! Connections stop answering at stallAt: the first only, or every one
+  CStallingFileCacheSource(int64_t stallAt, bool everyConnection, int failingConnection)
+    : m_stallAt(stallAt),
+      m_everyConnection(everyConnection),
+      m_failingConnection(failingConnection)
+  {
+  }
+
+  bool Open(const CURL& url, unsigned int flags) override
+  {
+    const int connection = ++m_connections;
+    if (connection == m_failingConnection)
+    {
+      m_openFailed.Set();
+      return false;
+    }
+    m_position = 0;
+    m_open = true;
+    return true;
+  }
+
+  void Close() override
+  {
+    if (m_inProperty)
+      m_closedUnderProperty = true;
+    if (m_open.exchange(false))
+      m_closeEntered.Set();
+  }
+
+  ssize_t Read(void* buffer, size_t size) override
+  {
+    if (!m_open)
+      return -1;
+    const int64_t end = m_everyConnection || m_connections == 1 ? m_stallAt : FILE_SIZE;
+    const int64_t count = std::min<int64_t>(size, end - m_position);
+    if (count <= 0)
+      return 0;
+    std::fill_n(static_cast<unsigned char*>(buffer), count, 0x5a);
+    m_position += count;
+    return static_cast<ssize_t>(count);
+  }
+
+  int64_t Seek(int64_t position, int whence) override
+  {
+    if (!m_open)
+      return -1;
+    m_position = position;
+    return position;
+  }
+
+  int64_t GetLength() override { return m_open ? FILE_SIZE : 0; }
+  int GetChunkSize() override { return 16 * 1024; }
+  int IoControl(IOControl request, void* param) override
+  {
+    if (!m_open)
+      return -1;
+    return request == IOControl::SEEK_POSSIBLE ? 1 : 0;
+  }
+  IFile* GetImplementation() override { return &m_implementation; }
+
+  bool WaitForFailedOpen(std::chrono::milliseconds timeout) { return m_openFailed.Wait(timeout); }
+  bool WaitForProperty(std::chrono::milliseconds timeout)
+  {
+    return m_propertyEntered.Wait(timeout);
+  }
+  bool WaitForClose(std::chrono::milliseconds timeout) { return m_closeEntered.Wait(timeout); }
+  void ReleaseProperty() { m_releaseProperty.Set(); }
+  bool ClosedUnderProperty() const { return m_closedUnderProperty; }
+
+private:
+  class CImplementation : public IFile
+  {
+  public:
+    explicit CImplementation(CStallingFileCacheSource& owner) : m_owner(owner) {}
+
+    bool Open(const CURL& url) override { return true; }
+    bool Exists(const CURL& url) override { return true; }
+    int Stat(const CURL& url, struct __stat64* buffer) override { return -1; }
+    ssize_t Read(void* bufPtr, size_t bufSize) override { return -1; }
+    int64_t Seek(int64_t iFilePosition, int iWhence) override { return -1; }
+    void Close() override {}
+    int64_t GetPosition() override { return 0; }
+    int64_t GetLength() override { return 0; }
+
+    const std::string GetProperty(FileProperty type, const std::string& name) const override
+    {
+      m_owner.m_inProperty = true;
+      m_owner.m_propertyEntered.Set();
+      m_owner.m_releaseProperty.Wait();
+      m_owner.m_inProperty = false;
+      return "video/x-matroska";
+    }
+
+  private:
+    CStallingFileCacheSource& m_owner;
+  };
+
+  const int64_t m_stallAt;
+  const bool m_everyConnection;
+  const int m_failingConnection;
+  std::atomic<bool> m_open{false};
+  std::atomic<int> m_connections{0};
+  std::atomic<bool> m_inProperty{false};
+  std::atomic<bool> m_closedUnderProperty{false};
+  int64_t m_position{0};
+  CEvent m_openFailed{true};
+  CEvent m_propertyEntered{true};
+  CEvent m_releaseProperty{true};
+  CEvent m_closeEntered{false};
+  CImplementation m_implementation{*this};
 };
 
 class TestFileCache : public CFileCache
@@ -368,4 +491,148 @@ TEST(TestFileCache, ReadFailsPromptlyAfterQuarantinedCacheDrains)
   const auto [readResult, readError] = failedRead.get();
   EXPECT_EQ(-1, readResult);
   EXPECT_EQ(ECONNRESET, readError);
+}
+
+TEST(TestFileCache, SeekAfterFailedReconnectReopensSource)
+{
+  using namespace std::chrono_literals;
+
+  // The first connection stalls and the reconnect fails
+  auto source = std::make_unique<CStallingFileCacheSource>(64 * 1024, false, 2);
+  auto* sourcePtr = source.get();
+  TestFileCache cache{READ_AUDIO_VIDEO, std::move(source)};
+
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+  const bool reconnectFailed = sourcePtr->WaitForFailedOpen(10s);
+  if (!reconnectFailed)
+  {
+    cache.Close();
+    ASSERT_TRUE(reconnectFailed);
+  }
+
+  constexpr int64_t target = CStallingFileCacheSource::FILE_SIZE / 2;
+  auto seekResult = std::async(std::launch::async, [&]() { return SeekWithError(cache, target); });
+  const bool seekReady = seekResult.wait_for(5s) == std::future_status::ready;
+  SeekResult result{};
+  if (seekReady)
+    result = seekResult.get();
+
+  unsigned char value = 0;
+  const ssize_t bytesRead = seekReady && result.position == target ? cache.Read(&value, 1) : -1;
+  cache.Close();
+
+  ASSERT_TRUE(seekReady);
+  EXPECT_EQ(target, result.position);
+  EXPECT_EQ(1, bytesRead);
+  EXPECT_EQ(0x5a, value);
+}
+
+TEST(TestFileCache, ReconnectWaitsForPropertyQueryOnSource)
+{
+  using namespace std::chrono_literals;
+
+  // Every connection stalls after its first chunk, so the fill thread keeps reconnecting
+  auto source = std::make_unique<CStallingFileCacheSource>(16 * 1024, true, 0);
+  auto* sourcePtr = source.get();
+  TestFileCache cache{READ_AUDIO_VIDEO, std::move(source)};
+
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+  auto property = std::async(std::launch::async,
+                             [&]() { return cache.GetProperty(FileProperty::CONTENT_TYPE); });
+  const bool propertyEntered = sourcePtr->WaitForProperty(5s);
+
+  // The fill thread reconnects about two seconds into the stall
+  sourcePtr->WaitForClose(4s);
+  sourcePtr->ReleaseProperty();
+  const bool propertyReady = property.wait_for(5s) == std::future_status::ready;
+  cache.Close();
+
+  ASSERT_TRUE(propertyEntered);
+  ASSERT_TRUE(propertyReady);
+  EXPECT_EQ("video/x-matroska", property.get());
+  EXPECT_FALSE(sourcePtr->ClosedUnderProperty());
+}
+
+/* A source that merely stops answering must not surface as 0. A pipe stands in for
+ * one: reads block while it is empty and the cache's fill thread parks inside the
+ * read. A pipe is not seekable, so this does not exercise the reconnect path.
+ */
+TEST(TestFileCache, StalledSourceMidFileIsNotEof)
+{
+  const CURL pipeUrl("pipe://filecache-stall-test/");
+
+  CPipeFile writer;
+  ASSERT_TRUE(writer.OpenForWrite(pipeUrl));
+
+  CFileCache cache{static_cast<unsigned int>(READ_AUDIO_VIDEO)};
+  ASSERT_TRUE(cache.Open(pipeUrl));
+
+  // The cache refreshes the source's length every fill pass; report an honest
+  // size so the stall happens mid-file rather than at an unknown position.
+  constexpr int64_t fileSize = 10 * 1024 * 1024;
+  auto* source = static_cast<CPipeFile*>(cache.GetFileImp());
+  ASSERT_NE(nullptr, source);
+  source->SetLength(fileSize);
+
+  constexpr size_t delivered = 1024 * 1024;
+  const std::vector<char> data(delivered, 'x');
+  ASSERT_EQ(static_cast<ssize_t>(delivered), writer.Write(data.data(), delivered));
+
+  std::vector<char> buffer(64 * 1024);
+  size_t total = 0;
+  while (total < delivered)
+  {
+    const ssize_t read = cache.Read(buffer.data(), std::min(buffer.size(), delivered - total));
+    ASSERT_GT(read, 0) << "read failed at offset " << total << " with all data still available";
+    total += read;
+  }
+
+  // The source is now stalled with most of the file outstanding.
+  const ssize_t starved = cache.Read(buffer.data(), buffer.size());
+  EXPECT_NE(0, starved) << "a stalled source was reported as end-of-file at position "
+                        << cache.GetPosition() << " of " << cache.GetLength();
+
+  // Eof must be raised before Close: the fill thread may be blocked inside
+  // the pipe read, and Close waits for it to exit.
+  writer.SetEof();
+  cache.Close();
+  writer.Close();
+}
+
+/* When the source really is exhausted at its stated length, 0 is the correct
+ * answer and must keep being served.
+ */
+TEST(TestFileCache, ExhaustedSourceIsEof)
+{
+  const CURL pipeUrl("pipe://filecache-eof-test/");
+
+  CPipeFile writer;
+  ASSERT_TRUE(writer.OpenForWrite(pipeUrl));
+
+  CFileCache cache{static_cast<unsigned int>(READ_AUDIO_VIDEO)};
+  ASSERT_TRUE(cache.Open(pipeUrl));
+
+  constexpr int64_t fileSize = 256 * 1024;
+  auto* source = static_cast<CPipeFile*>(cache.GetFileImp());
+  ASSERT_NE(nullptr, source);
+  source->SetLength(fileSize);
+
+  const std::vector<char> data(fileSize, 'x');
+  ASSERT_EQ(static_cast<ssize_t>(fileSize), writer.Write(data.data(), fileSize));
+  writer.SetEof();
+
+  std::vector<char> buffer(64 * 1024);
+  int64_t total = 0;
+  while (total < fileSize)
+  {
+    const ssize_t read = cache.Read(buffer.data(), buffer.size());
+    ASSERT_GT(read, 0) << "read failed at offset " << total << " of a complete file";
+    total += read;
+  }
+
+  EXPECT_EQ(0, cache.Read(buffer.data(), buffer.size()))
+      << "a source exhausted at its stated length did not read as end-of-file";
+
+  cache.Close();
+  writer.Close();
 }
