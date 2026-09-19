@@ -119,11 +119,14 @@ bool CApplicationPowerHandling::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPresse
   // First reset DPMS, if active
   if (m_dpmsIsActive)
   {
-    if (m_dpmsIsManual)
+    if (m_dpmsIsManual &&
+        !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_POWERMANAGEMENT_WAKEMANUALDPMS))
       return false;
+
     //! @todo if screensaver lock is specified but screensaver is not active
     //! (DPMS came first), activate screensaver now.
-    ToggleDPMS(false);
+    ToggleDPMS(m_dpmsIsManual);
     ResetScreenSaverTimer();
     result = !m_screensaverActive || WakeUpScreenSaver(bPowerOffKeyPressed);
   }

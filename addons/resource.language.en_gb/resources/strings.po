@@ -8587,7 +8587,12 @@ msgctxt "#14128"
 msgid "Allow double refresh rates"
 msgstr ""
 
-#empty strings from id 14129 to 14186
+#: system/settings/settings.xml
+msgctxt "#14129"
+msgid "Wake a manually switched off display on input"
+msgstr ""
+
+#empty strings from id 14130 to 14186
 
 #: system/settings/settings.xml
 msgctxt "#14187"
@@ -20728,7 +20733,12 @@ msgctxt "#36193"
 msgid "This category contains the settings for how DVD's, Blu-ray, & CD's are handled."
 msgstr ""
 
-#empty strings from id 36194
+#. Description of setting with label #14129 "Wake a manually switched off display on input"
+msgctxt "#36194"
+msgid "Let a key press or a button wake a display that was switched off from the power menu. Motion from a pointing device never wakes it, so a remote or a mouse that reports on its own leaves the display off. When disabled, only switching the display back on from the power menu wakes it."
+msgstr ""
+
+#empty strings from id 36195
 
 #. Description of setting with label #21372 "Forced DVD player region"
 #: system/settings/settings.xml
