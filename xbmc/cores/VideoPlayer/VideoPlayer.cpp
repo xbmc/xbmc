@@ -1571,6 +1571,8 @@ void CVideoPlayer::Process()
 
   Prepare();
 
+  unsigned int emptyPackets = 0;
+
   while (!m_bAbortRequest)
   {
     // check display lost
@@ -1682,8 +1684,15 @@ void CVideoPlayer::Process()
     {
       /* probably a empty packet, just free it and move on */
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
+      /* a source that cannot keep up hands these back as fast as we ask */
+      if (++emptyPackets > 10)
+        CThread::Sleep(10ms);
+
       continue;
     }
+
+    emptyPackets = 0;
 
     if (!pPacket)
     {
