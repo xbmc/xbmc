@@ -27,7 +27,7 @@ public:
   bool IsConfigured() override { return m_bConfigured; }
   bool ConfigChanged(const VideoPicture& picture) override { return false; }
   CRenderInfo GetRenderInfo() override;
-  void UnInit() override{};
+  void UnInit() override;
   void Update() override{};
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   bool SupportsMultiPassRendering() override { return false; }
@@ -47,6 +47,8 @@ private:
   void ReleaseVideoBuffer(int idx, bool render);
 
   bool m_bConfigured = false;
+  bool m_passthroughHDR = false;
+  bool m_hdrFboActive = false;
   CRect m_surfDestRect;
   int m_lastIndex = -1;
 

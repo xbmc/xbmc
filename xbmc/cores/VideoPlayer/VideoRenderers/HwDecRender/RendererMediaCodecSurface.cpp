@@ -31,7 +31,7 @@ CRendererMediaCodecSurface::CRendererMediaCodecSurface()
 
 CRendererMediaCodecSurface::~CRendererMediaCodecSurface()
 {
-  Reset();
+  UnInit();
 }
 
 CBaseRenderer* CRendererMediaCodecSurface::Create(CVideoBuffer *buffer)
@@ -64,19 +64,47 @@ bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fp
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(m_videoSettings.m_ViewMode);
 
-  // Configure GUI/OSD for HDR PQ when display is in HDR PQ mode
-  if (picture.color_transfer == AVCOL_TRC_SMPTE2084)
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+
+  if (!winSystem->SetVideoOutput(&picture))
+    CLog::Log(LOGWARNING, "CRendererMediaCodecSurface::Configure: SetVideoOutput failed");
+
+  winSystem->SetColorimetry(&picture);
+
+  m_passthroughHDR = winSystem->SetHDR(&picture);
+  CLog::Log(LOGDEBUG, "CRendererMediaCodecSurface::Configure: HDR passthrough: {}",
+            m_passthroughHDR ? "on" : "off");
+
+  // Dolby Vision is displayed as PQ, whatever transfer the stream declares
+  AVColorTransferCharacteristic colorTransfer = picture.color_transfer;
+  if (picture.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION &&
+      colorTransfer != AVCOL_TRC_SMPTE2084 && colorTransfer != AVCOL_TRC_ARIB_STD_B67)
+    colorTransfer = AVCOL_TRC_SMPTE2084;
+
+  m_hdrFboActive = m_passthroughHDR && winSystem->SetGuiCompositing(colorTransfer);
+  if (m_passthroughHDR && !m_hdrFboActive)
+    CLog::Log(LOGWARNING, "CRendererMediaCodecSurface::Configure: HDR passthrough active but GUI "
+                          "compositing not supported by windowing system");
+
+  m_bConfigured = true;
+  return true;
+}
+
+void CRendererMediaCodecSurface::UnInit()
+{
+  if (m_bConfigured)
   {
-    if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
-  }
-  else if (picture.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
-  {
-    if (CServiceBroker::GetWinSystem()->GetDisplayHDRCapabilities().SupportsDolbyVision())
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
+    CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+    m_hdrFboActive = false;
+    winSystem->SetGuiCompositing(false);
+    winSystem->SetHDR(nullptr);
+    m_passthroughHDR = false;
+    winSystem->SetColorimetry(nullptr);
+    winSystem->SetVideoOutput(nullptr);
   }
 
-  return true;
+  Reset();
+  m_bConfigured = false;
 }
 
 CRenderInfo CRendererMediaCodecSurface::GetRenderInfo()
@@ -136,14 +164,10 @@ void CRendererMediaCodecSurface::Reset()
   for (int i = 0 ; i < 4 ; ++i)
     ReleaseVideoBuffer(i, false);
   m_lastIndex = -1;
-
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(false);
 }
 
 void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  m_bConfigured = true;
-
   // this hack is needed to get the 2D mode of a 3D movie going
   RenderStereoMode stereo_mode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   if (stereo_mode != RenderStereoMode::OFF)
