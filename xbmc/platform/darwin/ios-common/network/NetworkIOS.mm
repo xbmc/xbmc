@@ -14,6 +14,7 @@
 #import "platform/darwin/ios-common/network/route.h"
 
 #import <array>
+#include <mutex>
 #include <utility>
 
 #import <arpa/inet.h>
@@ -296,6 +297,10 @@ std::vector<CNetworkInterface*>& CNetworkIOS::GetInterfaceList()
 
 CNetworkInterface* CNetworkIOS::GetFirstConnectedInterface()
 {
+  // Guard the rebuild and iteration of m_interfaces against concurrent access from other
+  // threads (e.g. IsLocalHost()/HasInterfaceForIP() resolving URLs). Recursive lock: the
+  // queryInterfaceList() call below re-acquires it.
+  std::unique_lock lock(m_lockInterfaceList);
   // Renew m_interfaces to be able to handle hard interface changes (adapters removed/added)
   // This allows interfaces to be discovered if none are available at start eg. (Airplane mode on)
   queryInterfaceList();
@@ -349,6 +354,9 @@ CNetworkInterface* CNetworkIOS::GetFirstConnectedInterface()
 
 void CNetworkIOS::queryInterfaceList()
 {
+  // Serialize rebuild against readers iterating GetInterfaceList()/m_interfaces on other
+  // threads. Recursive lock so callers already holding it (GetFirstConnectedInterface) are ok.
+  std::unique_lock lock(m_lockInterfaceList);
   m_interfaces.clear();
 
   struct ifaddrs* list;
