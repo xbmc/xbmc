@@ -594,7 +594,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
 
 std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
-  std::string path(item.GetPath());
+  std::string path(item.GetDynPath());
   if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   if (URIUtils::IsStack(path))
