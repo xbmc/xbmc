@@ -2,7 +2,6 @@ package @APP_PACKAGE@;
 
 import @APP_PACKAGE@.util.Storage;
 
-import static android.content.pm.PackageManager.FEATURE_LEANBACK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.Manifest;
@@ -29,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -59,9 +59,18 @@ public class Splash extends Activity
   private static final int RecordAudioInfo = 14;
   private static final int AccessLocalNetworkPermission = 15;
   private static final int AccessLocalNetworkInfo = 16;
+  private static final int MigratingData = 17;
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
+
+  // User data tree, relative to the root of shared/primary external storage.
+  // Must stay in sync with KODI_DATA_SUBDIR in xbmc/platform/android/activity/XBMCApp.cpp.
+  private static final String XBMC_DATA_SUBDIR = "Documents/Kodi";
+
+  // Marker file in the new user data tree; its presence means the one-time
+  // migration from the app-private external directory has already run.
+  private static final String MIGRATION_MARKER = ".migrated";
 
   private static final int RECORDAUDIO_RESULT_CODE = 8946;
   private static final int PERMISSION_RESULT_CODE = 8947;
@@ -80,6 +89,10 @@ public class Splash extends Activity
   private File fPackagePath = null;
   private File fXbmcHome = null;
   private File fCacheStamp = null;
+  private File fXbmcData = null;
+  // Set by SetupEnvironment() when a profile from a pre-migration build is
+  // found and the new location is still unused; null means nothing to do.
+  private File fLegacyData = null;
 
   private BroadcastReceiver mExternalStorageReceiver = null;
   private boolean mExternalStorageChecked = false;
@@ -127,7 +140,10 @@ public class Splash extends Activity
                              LOCAL_NETWORK_RESULT_CODE);
           break;
         case CheckingPermissions:
-          if (Build.VERSION.SDK_INT >= 33 || (Build.VERSION.SDK_INT >= 30 && !isAndroidTV()))
+          // The user data tree lives outside the app sandbox, so from SDK 30 on
+          // "All files access" is required - including on Android TV, where the
+          // app-private fallback used to make it unnecessary.
+          if (Build.VERSION.SDK_INT >= 30)
           {
             try
             {
@@ -203,19 +219,17 @@ public class Splash extends Activity
             {
               sendEmptyMessage(InError);
             }
-            if (isCacheUpToDate())
-            {
-              mState = CachingDone;
-              mCachingDone = true;
-
-              sendEmptyMessage(StartingXBMC);
-            }
+            if (fLegacyData != null)
+              sendEmptyMessage(MigratingData);
             else
-            {
-              new FillCache(mSplash).execute();
-            }
+              mSplash.continueAfterStorageChecked();
           }
 
+          break;
+        case MigratingData:
+          mSplash.mTextView.setText(getString(R.string.migrating_data));
+          mSplash.mProgress.setVisibility(View.INVISIBLE);
+          new MigrateData(mSplash).execute();
           break;
         case StartingXBMC:
           mSplash.mTextView.setText(getString(R.string.starting, "@APP_NAME@"));
@@ -253,18 +267,6 @@ public class Splash extends Activity
     protected void publishProgress(Integer value)
     {
       handler.post(() -> onProgressUpdate(value));
-    }
-
-    void DeleteRecursive(File fileOrDirectory)
-    {
-      if (fileOrDirectory.isDirectory()) {
-        File[] files = fileOrDirectory.listFiles();
-        if (files != null)
-          for (File child : files)
-            DeleteRecursive(child);
-      }
-
-      fileOrDirectory.delete();
     }
 
     protected Integer doInBackground()
@@ -485,29 +487,45 @@ public class Splash extends Activity
     File fLibCache = new File(fCacheDir.getAbsolutePath() + "/lib");
     fLibCache.mkdirs();
 
-    final String sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
-    if (!sXbmcdata.isEmpty())
+    String sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
+    if (sXbmcdata.isEmpty())
     {
-      File fXbmcData = new File(sXbmcdata);
-      int loop = 20;
-      while (!fXbmcData.exists() && loop > 0)
-      {
-        // Wait a while in case of non-primary sdcard
-        try
-        {
-          Thread.sleep(1000);
-        }
-        catch (InterruptedException e)
-        {
-          continue;
-        }
-        loop--;
-      }
+      // Default user data location is a user-visible folder on shared storage
+      // instead of the app-private Android/data sandbox.
+      sXbmcdata = new File(Environment.getExternalStorageDirectory(), XBMC_DATA_SUBDIR)
+                      .getAbsolutePath();
+    }
 
-      if (!fXbmcData.exists())
+    fXbmcData = new File(sXbmcdata);
+    int dataLoop = 20;
+    while (!fXbmcData.exists() && dataLoop > 0)
+    {
+      // Create it ourselves; only wait if the volume is not mounted yet.
+      if (fXbmcData.mkdirs())
+        break;
+
+      // Wait a while in case of non-primary sdcard
+      try
       {
-        System.setProperty("xbmc.data", "");
+        Thread.sleep(1000);
       }
+      catch (InterruptedException e)
+      {
+        dataLoop--;
+        continue;
+      }
+      dataLoop--;
+    }
+
+    if (fXbmcData.exists())
+    {
+      System.setProperty("xbmc.data", sXbmcdata);
+      fLegacyData = findLegacyData();
+    }
+    else
+    {
+      Log.e(TAG, "Unable to create user data folder " + sXbmcdata);
+      System.setProperty("xbmc.data", "");
     }
 
     final String sXbmcTemp = XBMCProperties.getStringProperty("xbmc.temp", "");
@@ -539,10 +557,169 @@ public class Splash extends Activity
     fPackagePath = new File(sPackagePath);
   }
 
+  // Entered once the user data tree is ready, either directly or after the
+  // migration has finished.
+  private void continueAfterStorageChecked()
+  {
+    if (isCacheUpToDate())
+    {
+      mState = CachingDone;
+      mCachingDone = true;
+
+      mStateMachine.sendEmptyMessage(StartingXBMC);
+    }
+    else
+    {
+      new FillCache(this).execute();
+    }
+  }
+
+  // Profile of a build that still stored its data in the app-private external
+  // directory, i.e. Android/data/<package>/files/.kodi. Only this app's own
+  // directory is reachable: since SDK 30, Android/data of *other* packages is
+  // off limits even with "All files access", so a profile of a differently
+  // named Kodi build cannot be picked up here.
+  private File findLegacyData()
+  {
+    if (new File(fXbmcData, MIGRATION_MARKER).exists())
+      return null;
+
+    // Never touch a location that is already in use.
+    if (new File(fXbmcData, "userdata").exists())
+      return null;
+
+    File fExternalFiles = getExternalFilesDir(null);
+    if (fExternalFiles == null)
+      return null;
+
+    File fLegacy = new File(fExternalFiles, ".@APP_NAME_LC@");
+    String[] content = fLegacy.list();
+    if (content == null || content.length == 0)
+      return null;
+
+    Log.i(TAG, "Found legacy user data in " + fLegacy);
+    return fLegacy;
+  }
+
+  private class MigrateData
+  {
+    private final Splash mSplash;
+    private final ExecutorService executor;
+    private final Handler handler;
+    private int mCopied = 0;
+
+    public MigrateData(Splash splash)
+    {
+      mSplash = splash;
+      executor = Executors.newSingleThreadExecutor();
+      handler = new Handler(Looper.getMainLooper());
+    }
+
+    public void execute()
+    {
+      executor.execute(() -> {
+        boolean ok = doInBackground();
+        handler.post(() -> onPostExecute(ok));
+      });
+    }
+
+    private void copyRecursive(File src, File dst) throws IOException
+    {
+      if (src.isDirectory())
+      {
+        if (!dst.exists() && !dst.mkdirs())
+          throw new IOException("Cannot create " + dst);
+
+        File[] children = src.listFiles();
+        if (children != null)
+          for (File child : children)
+            copyRecursive(child, new File(dst, child.getName()));
+
+        return;
+      }
+
+      try (InputStream in = new FileInputStream(src);
+           FileOutputStream out = new FileOutputStream(dst))
+      {
+        byte[] buf = new byte[8192];
+        int n;
+        while ((n = in.read(buf)) != -1)
+          out.write(buf, 0, n);
+      }
+      mCopied++;
+    }
+
+    protected boolean doInBackground()
+    {
+      File fStaging = new File(fXbmcData.getParentFile(), fXbmcData.getName() + ".migrating");
+      DeleteRecursive(fStaging);
+
+      try
+      {
+        copyRecursive(fLegacyData, fStaging);
+        Log.i(TAG, "Migrated " + mCopied + " files");
+      }
+      catch (IOException | SecurityException e)
+      {
+        Log.e(TAG, "Migration failed: " + e.getMessage());
+        DeleteRecursive(fStaging);
+        return false;
+      }
+
+      // Publish only once everything is in place, so an interrupted migration
+      // never leaves a half-populated profile behind.
+      File[] migrated = fStaging.listFiles();
+      if (migrated != null)
+      {
+        for (File child : migrated)
+        {
+          File target = new File(fXbmcData, child.getName());
+          if (!child.renameTo(target))
+            Log.w(TAG, "Could not move " + child.getName() + " into place");
+        }
+      }
+      DeleteRecursive(fStaging);
+      return true;
+    }
+
+    protected void onPostExecute(boolean ok)
+    {
+      if (ok)
+      {
+        try
+        {
+          new File(fXbmcData, MIGRATION_MARKER).createNewFile();
+        }
+        catch (IOException e)
+        {
+          Log.w(TAG, "Cannot write migration marker: " + e.getMessage());
+        }
+      }
+
+      // The old profile is deliberately left in place as a fallback; Android
+      // removes it together with the app.
+      mSplash.fLegacyData = null;
+      mSplash.continueAfterStorageChecked();
+    }
+  }
+
+  private void DeleteRecursive(File fileOrDirectory)
+  {
+    if (fileOrDirectory.isDirectory())
+    {
+      File[] files = fileOrDirectory.listFiles();
+      if (files != null)
+        for (File child : files)
+          DeleteRecursive(child);
+    }
+
+    fileOrDirectory.delete();
+  }
+
   private boolean CheckPermissions()
   {
     boolean retVal = false;
-    if (Build.VERSION.SDK_INT >= 33 || (Build.VERSION.SDK_INT >= 30 && !isAndroidTV()))
+    if (Build.VERSION.SDK_INT >= 30)
     {
       if (Environment.isExternalStorageManager())
       {
@@ -759,20 +936,6 @@ public class Splash extends Activity
         new FillCache(this).execute();
       else
         mStateMachine.sendEmptyMessage(CachingDone);
-    }
-  }
-
-  private boolean isAndroidTV()
-  {
-    if (getPackageManager().hasSystemFeature(FEATURE_LEANBACK))
-    {
-      Log.d(TAG, "Running on an Android TV Device");
-      return true;
-    }
-    else
-    {
-      Log.d(TAG, "Running on a non Android TV Device");
-      return false;
     }
   }
 
