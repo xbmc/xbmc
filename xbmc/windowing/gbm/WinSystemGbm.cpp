@@ -474,6 +474,85 @@ void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
   }
 }
 
+namespace
+{
+void BuildHDRMetadata(const VideoPicture& videoPicture,
+                      KODI::UTILS::Eotf eotf,
+                      hdr_output_metadata& hdr_metadata)
+{
+  hdr_metadata = {};
+  hdr_metadata.metadata_type = KODI::UTILS::HDMI_STATIC_METADATA_TYPE1;
+  hdr_metadata.hdmi_metadata_type1.eotf = static_cast<uint8_t>(eotf);
+  hdr_metadata.hdmi_metadata_type1.metadata_type = KODI::UTILS::HDMI_STATIC_METADATA_TYPE1;
+
+  if (!hdr_metadata.hdmi_metadata_type1.eotf)
+    return;
+
+  const AVMasteringDisplayMetadata* mdmd = KODI::UTILS::GetMasteringDisplayMetadata(videoPicture);
+  if (mdmd && mdmd->has_primaries)
+  {
+    // 0.00002 units; 0x0000 = 0, 0xC350 = 1.0000
+    for (int i = 0; i < 3; i++)
+    {
+      hdr_metadata.hdmi_metadata_type1.display_primaries[i].x =
+          std::round(av_q2d(mdmd->display_primaries[i][0]) * 50000.0);
+      hdr_metadata.hdmi_metadata_type1.display_primaries[i].y =
+          std::round(av_q2d(mdmd->display_primaries[i][1]) * 50000.0);
+
+      CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - display_primaries[{}].x: {}", __FUNCTION__,
+                i, hdr_metadata.hdmi_metadata_type1.display_primaries[i].x);
+      CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - display_primaries[{}].y: {}", __FUNCTION__,
+                i, hdr_metadata.hdmi_metadata_type1.display_primaries[i].y);
+    }
+    hdr_metadata.hdmi_metadata_type1.white_point.x =
+        std::round(av_q2d(mdmd->white_point[0]) * 50000.0);
+    hdr_metadata.hdmi_metadata_type1.white_point.y =
+        std::round(av_q2d(mdmd->white_point[1]) * 50000.0);
+
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - white_point.x: {}", __FUNCTION__,
+              hdr_metadata.hdmi_metadata_type1.white_point.x);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - white_point.y: {}", __FUNCTION__,
+              hdr_metadata.hdmi_metadata_type1.white_point.y);
+  }
+  if (mdmd && mdmd->has_luminance)
+  {
+    // 1 cd/m2 units
+    hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance =
+        std::round(av_q2d(mdmd->max_luminance));
+
+    // 0.0001 cd/m2 units
+    hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance =
+        std::round(av_q2d(mdmd->min_luminance) * 10000.0);
+
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_display_mastering_luminance: {}",
+              __FUNCTION__, hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - min_display_mastering_luminance: {}",
+              __FUNCTION__, hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance);
+  }
+
+  const AVContentLightMetadata* clmd = KODI::UTILS::GetContentLightMetadata(videoPicture);
+  if (clmd)
+  {
+    hdr_metadata.hdmi_metadata_type1.max_cll = clmd->MaxCLL;
+    hdr_metadata.hdmi_metadata_type1.max_fall = clmd->MaxFALL;
+
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_cll: {}", __FUNCTION__,
+              hdr_metadata.hdmi_metadata_type1.max_cll);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_fall: {}", __FUNCTION__,
+              hdr_metadata.hdmi_metadata_type1.max_fall);
+  }
+}
+} // namespace
+
+CDRMPropertyBlob& CWinSystemGbm::PushHDRBlob(int fd, const void* data, std::size_t size)
+{
+  m_hdrBlobs.emplace_back(fd, data, size);
+  while (m_hdrBlobs.size() > 2)
+    m_hdrBlobs.pop_front();
+
+  return m_hdrBlobs.back();
+}
+
 bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
 {
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
@@ -502,8 +581,6 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       CLog::LogF(LOGDEBUG, "clearing HDR_OUTPUT_METADATA");
       drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
       drm->SetActive(true);
-
-      m_hdrBlob.Reset();
     }
 
     m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
@@ -524,82 +601,57 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
   if (connector->SupportsProperty("HDR_OUTPUT_METADATA") && m_info &&
       m_info->SupportsHDRStaticMetadataType1() && m_info->SupportsEOTF(eotf))
   {
-    hdr_output_metadata hdr_metadata = {};
+    hdr_output_metadata hdr_metadata;
+    BuildHDRMetadata(*videoPicture, eotf, hdr_metadata);
 
-    hdr_metadata.metadata_type = KODI::UTILS::HDMI_STATIC_METADATA_TYPE1;
-    hdr_metadata.hdmi_metadata_type1.eotf = static_cast<uint8_t>(eotf);
-    hdr_metadata.hdmi_metadata_type1.metadata_type = KODI::UTILS::HDMI_STATIC_METADATA_TYPE1;
-
-    m_hdrBlob.Reset();
-
+    std::uint32_t blobId = 0;
     if (hdr_metadata.hdmi_metadata_type1.eotf)
-    {
-      const AVMasteringDisplayMetadata* mdmd =
-          KODI::UTILS::GetMasteringDisplayMetadata(*videoPicture);
-      if (mdmd && mdmd->has_primaries)
-      {
-        // Convert to unsigned 16-bit values in units of 0.00002,
-        // where 0x0000 represents zero and 0xC350 represents 1.0000
-        for (int i = 0; i < 3; i++)
-        {
-          hdr_metadata.hdmi_metadata_type1.display_primaries[i].x =
-              std::round(av_q2d(mdmd->display_primaries[i][0]) * 50000.0);
-          hdr_metadata.hdmi_metadata_type1.display_primaries[i].y =
-              std::round(av_q2d(mdmd->display_primaries[i][1]) * 50000.0);
+      blobId = PushHDRBlob(drm->GetFileDescriptor(), &hdr_metadata, sizeof(hdr_metadata)).Get();
 
-          CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - display_primaries[{}].x: {}",
-                    __FUNCTION__, i, hdr_metadata.hdmi_metadata_type1.display_primaries[i].x);
-          CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - display_primaries[{}].y: {}",
-                    __FUNCTION__, i, hdr_metadata.hdmi_metadata_type1.display_primaries[i].y);
-        }
-        hdr_metadata.hdmi_metadata_type1.white_point.x =
-            std::round(av_q2d(mdmd->white_point[0]) * 50000.0);
-        hdr_metadata.hdmi_metadata_type1.white_point.y =
-            std::round(av_q2d(mdmd->white_point[1]) * 50000.0);
-
-        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - white_point.x: {}", __FUNCTION__,
-                  hdr_metadata.hdmi_metadata_type1.white_point.x);
-        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - white_point.y: {}", __FUNCTION__,
-                  hdr_metadata.hdmi_metadata_type1.white_point.y);
-      }
-      if (mdmd && mdmd->has_luminance)
-      {
-        // Convert to unsigned 16-bit value in units of 1 cd/m2,
-        // where 0x0001 represents 1 cd/m2 and 0xFFFF represents 65535 cd/m2
-        hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance =
-            std::round(av_q2d(mdmd->max_luminance));
-
-        // Convert to unsigned 16-bit value in units of 0.0001 cd/m2,
-        // where 0x0001 represents 0.0001 cd/m2 and 0xFFFF represents 6.5535 cd/m2
-        hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance =
-            std::round(av_q2d(mdmd->min_luminance) * 10000.0);
-
-        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_display_mastering_luminance: {}",
-                  __FUNCTION__, hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance);
-        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - min_display_mastering_luminance: {}",
-                  __FUNCTION__, hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance);
-      }
-
-      const AVContentLightMetadata* clmd = KODI::UTILS::GetContentLightMetadata(*videoPicture);
-      if (clmd)
-      {
-        hdr_metadata.hdmi_metadata_type1.max_cll = clmd->MaxCLL;
-        hdr_metadata.hdmi_metadata_type1.max_fall = clmd->MaxFALL;
-
-        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_cll: {}", __FUNCTION__,
-                  hdr_metadata.hdmi_metadata_type1.max_cll);
-        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_fall: {}", __FUNCTION__,
-                  hdr_metadata.hdmi_metadata_type1.max_fall);
-      }
-
-      m_hdrBlob = CDRMPropertyBlob(drm->GetFileDescriptor(), &hdr_metadata, sizeof(hdr_metadata));
-    }
-
-    drm->AddProperty(connector, "HDR_OUTPUT_METADATA", m_hdrBlob.Get());
+    drm->AddProperty(connector, "HDR_OUTPUT_METADATA", blobId);
     drm->SetActive(true);
   }
 
-  return m_hdrBlob.IsValid();
+  return !m_hdrBlobs.empty() && m_hdrBlobs.back().IsValid();
+}
+
+bool CWinSystemGbm::RefreshHDRLightMetadata(const VideoPicture* videoPicture)
+{
+  if (!videoPicture || m_eotf == KODI::UTILS::Eotf::TRADITIONAL_SDR)
+    return false;
+
+  if (videoPicture->color_transfer != AVCOL_TRC_SMPTE2084 &&
+      videoPicture->color_transfer != AVCOL_TRC_ARIB_STD_B67)
+    return false;
+
+  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+  if (!drm)
+    return false;
+
+  auto connector = drm->GetConnector();
+  if (!connector || !connector->SupportsProperty("HDR_OUTPUT_METADATA"))
+    return false;
+
+  if (!m_info || !m_info->SupportsHDRStaticMetadataType1() || !m_info->SupportsEOTF(m_eotf))
+    return false;
+
+  hdr_output_metadata hdr_metadata;
+  BuildHDRMetadata(*videoPicture, m_eotf, hdr_metadata);
+  if (!hdr_metadata.hdmi_metadata_type1.eotf)
+    return false;
+
+  CDRMPropertyBlob& blob =
+      PushHDRBlob(drm->GetFileDescriptor(), &hdr_metadata, sizeof(hdr_metadata));
+  if (!blob.IsValid())
+    return false;
+
+  // No SetActive() - rides the next ordinary FlipPage() commit, no forced modeset.
+  drm->AddProperty(connector, "HDR_OUTPUT_METADATA", blob.Get());
+
+  CLog::LogF(LOGDEBUG, "refreshed HDR light metadata (max_cll: {}, max_fall: {})",
+             hdr_metadata.hdmi_metadata_type1.max_cll, hdr_metadata.hdmi_metadata_type1.max_fall);
+
+  return true;
 }
 
 bool CWinSystemGbm::IsHDRDisplay()
