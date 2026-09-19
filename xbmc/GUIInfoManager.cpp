@@ -12245,9 +12245,9 @@ void CGUIInfoManager::ResetCurrentItem()
   m_infoProviders.InitCurrentItem(nullptr);
 }
 
-void CGUIInfoManager::UpdateCurrentItem(const CFileItem& item)
+void CGUIInfoManager::UpdateCurrentItem(const CFileItem& item, bool replaceLabels /* = true */)
 {
-  m_currentFile->UpdateInfo(item);
+  m_currentFile->UpdateInfo(item, replaceLabels);
 }
 
 void CGUIInfoManager::SetCurrentItem(const CFileItem& item)

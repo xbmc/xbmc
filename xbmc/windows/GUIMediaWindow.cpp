@@ -386,7 +386,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
         if (IsActive() || (flag & GUI_MSG_FLAG_FORCE_UPDATE))
         {
-          m_vecItems->UpdateItem(newItem.get());
+          const bool replaceLabels = !(flag & GUI_MSG_FLAG_KEEP_CURRENT_LABELS);
+          m_vecItems->UpdateItem(newItem.get(), replaceLabels);
 
           if (flag & GUI_MSG_FLAG_UPDATE_LIST)
           { // need the list updated as well
