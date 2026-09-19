@@ -34,6 +34,7 @@
 #include "utils/log.h"
 #include "video/FilenameAttributes.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
 #include "video/tags/IVideoInfoTagLoader.h"
@@ -41,6 +42,7 @@
 #include "video/tags/VideoTagLoaderNFO.h"
 #include "video/tags/VideoTagLoaderPlugin.h"
 
+#include <array>
 #include <memory>
 #include <utility>
 
@@ -80,6 +82,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 {
   if (m_item == nullptr)
     return false;
+
+  CLog::Log(LOGDEBUG,
+            "CVideoLibraryRefreshingJob: refreshing '{}' (ignore nfo: {}, refresh all: {})",
+            CURL::GetRedacted(m_item->GetPath()), m_ignoreNfo, m_refreshAll);
 
   // determine the scraper for the item's path
   VIDEO::SScanSettings scanSettings;
@@ -215,11 +221,13 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     {
       // check if there's an NFO for the item
       CInfoScanner::InfoType nfoResult = CInfoScanner::InfoType::NONE;
+      bool haveLoader{false};
       if (const std::unique_ptr<VIDEO::IVideoInfoTagLoader> loader{
               VIDEO::CVideoInfoTagLoaderFactory::CreateLoader(
                   *m_item, scraper, scanSettings.parent_name_root, m_forceRefresh)};
           loader)
       {
+        haveLoader = true;
         std::unique_ptr<CVideoInfoTag> tag(new CVideoInfoTag());
         nfoResult = loader->Load(*tag, false);
 
@@ -247,6 +255,14 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           scraperUrl = loader->ScraperUrl();
       }
 
+      static constexpr std::array NFO_RESULTS{"none",     "full",      "url",  "override",
+                                              "combined", "error nfo", "title"};
+      const auto result{static_cast<size_t>(nfoResult)};
+      CLog::Log(LOGDEBUG, "CVideoLibraryRefreshingJob: {} gave '{}' for '{}'",
+                haveLoader ? "a tag loader" : "no tag loader",
+                result < NFO_RESULTS.size() ? NFO_RESULTS[result] : "?",
+                CURL::GetRedacted(m_item->GetPath()));
+
       // if there's no NFO remember it in case we have to refresh again
       if (nfoResult == CInfoScanner::InfoType::ERROR_NFO)
         ignoreNfo = true;
@@ -254,7 +270,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         hasDetails = true;
 
       // if we are performing a forced refresh ask the user to choose between using a valid NFO and a valid scraper
-      if (needsRefresh && IsModal() && !scraper->IsNoop() &&
+      // a local scraper has nothing to refresh from, so discarding the nfo for it leaves no
+      // source at all
+      if (needsRefresh && IsModal() && !scraper->IsNoop() && scraper->ID() != "metadata.local" &&
           nfoResult != CInfoScanner::InfoType::ERROR_NFO)
       {
         int heading = 20159;
@@ -373,7 +391,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // to prompt and ask the user to input a new search title
     if (!hasDetails && !scraperUrl.HasUrls())
     {
-      if (IsModal())
+      // a local scraper has nothing to search, so another title cannot help and asking for one
+      // would only bring us back here
+      if (IsModal() && scraper->ID() != "metadata.local")
       {
         // ask the user to input a title to use
         if (!CGUIKeyboardFactory::ShowAndGetInput(
@@ -432,8 +452,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       items.Add(std::make_shared<CFileItem>(*m_item));
 
     // set the proper path of the list of items to lookup
-    items.SetPath(m_item->IsFolder() ? URIUtils::GetParentPath(path)
-                                     : URIUtils::GetDirectory(path));
+    items.SetPath(VIDEO::IsBrowsableFolder(*m_item) ? URIUtils::GetParentPath(path)
+                                                    : URIUtils::GetDirectory(path));
 
     int headingLabel = 198;
     if (scraper->Content() == ADDON::ContentType::TVSHOWS)
