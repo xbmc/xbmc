@@ -280,6 +280,10 @@ public:
   // yields wrong transparency. When true, GUI draws select a compensated
   // alpha blend (see CGUIFontTTFGLES::FirstBegin).
   virtual bool IsHdrComposite() const { return false; }
+  // Whether GUI elements use the squared-alpha blend into the composite FBO.
+  // Defaults to the HDR composite state; a window system whose video is on a
+  // separate surface overrides it to keep coverage alpha for the compositor.
+  virtual bool UseSquaredAlphaBlend() const { return IsHdrComposite(); }
 
   /*!
    * \brief Gets debug info from video renderer for use in "Debug Info OSD" (Alt + O)

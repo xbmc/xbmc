@@ -48,6 +48,13 @@ public:
   void EndGuiComposite() override;
   void CompositeGui() override;
   bool IsHdrComposite() const override { return m_guiComposite.IsActive(); }
+  // TEST: with the video on its own surface the system compositor blends the
+  // GUI buffer as premultiplied, which needs plain coverage alpha, not the
+  // squared-alpha blend tuned for Kodi's own composite over the video.
+  bool UseSquaredAlphaBlend() const override
+  {
+    return m_guiComposite.IsActive() && !m_videoOnSeparateSurface;
+  }
 
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
