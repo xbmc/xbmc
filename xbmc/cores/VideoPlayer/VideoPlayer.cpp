@@ -43,9 +43,9 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
-#include "interfaces/json-rpc/PlayerIds.h"
 #include "jobs/JobQueue.h"
 #include "messaging/ApplicationMessenger.h"
+#include "playlists/PlayListTypes.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -3962,7 +3962,8 @@ void CVideoPlayer::SetSubtitleVisible(bool bVisible)
       std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE, bVisible));
   m_processInfo->GetVideoSettingsLocked().SetSubtitleVisible(bVisible);
   CVariant data;
-  JSONRPC::DescribePlayer(data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio);
+  data["player"]["playerid"] =
+      static_cast<int>(HasVideo() ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_MUSIC);
   data["property"]["subtitleenabled"] = bVisible;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                      data);
@@ -6320,7 +6321,8 @@ void CVideoPlayer::SetUpdateStreamDetails()
 void CVideoPlayer::NotifySubtitleUpdate(int flags)
 {
   CVariant data;
-  JSONRPC::DescribePlayer(data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio);
+  data["player"]["playerid"] =
+      static_cast<int>(HasVideo() ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_MUSIC);
   if ((flags & SubtitleChange::FLAG_STATUS_CHANGE) != 0)
   {
     data["property"]["subtitleenabled"] = m_processInfo->GetVideoSettings().m_SubtitleOn;
@@ -6362,7 +6364,8 @@ void CVideoPlayer::NotifyAudioUpdate()
   if (!info.valid)
     return;
   CVariant data;
-  JSONRPC::DescribePlayer(data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio);
+  data["player"]["playerid"] =
+      static_cast<int>(HasVideo() ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_MUSIC);
   CVariant contentEntry(CVariant::VariantTypeObject);
   contentEntry["index"] = stream;
   contentEntry["bitrate"] = info.bitrate;
@@ -6386,7 +6389,8 @@ void CVideoPlayer::NotifyVideoUpdate()
   if (!info.valid)
     return;
   CVariant data;
-  JSONRPC::DescribePlayer(data["player"], HasVideo() ? JSONRPC::Video : JSONRPC::Audio);
+  data["player"]["playerid"] =
+      static_cast<int>(HasVideo() ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_MUSIC);
   CVariant contentEntry(CVariant::VariantTypeObject);
   contentEntry["index"] = stream;
   contentEntry["codec"] = info.codecName;

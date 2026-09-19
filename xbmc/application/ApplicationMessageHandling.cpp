@@ -38,7 +38,6 @@
 #include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/json-rpc/JSONUtils.h"
-#include "interfaces/json-rpc/PlayerIds.h"
 #include "interfaces/python/XBPython.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
@@ -81,13 +80,15 @@ namespace
 void DescribePlayer(CVariant& player)
 {
   const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
-  JSONRPC::DescribePlayer(player, appPlayer->IsPlayingVideo() ? JSONRPC::Video : JSONRPC::Audio);
+  player["playerid"] = static_cast<int>(appPlayer->IsPlayingVideo() ? PLAYLIST::Id::TYPE_VIDEO
+                                                                    : PLAYLIST::Id::TYPE_MUSIC);
 }
 
 // At playback start the video stream is not open yet, so the player still reports no video.
 void DescribePlayerForItem(CVariant& player, const CFileItem& item)
 {
-  JSONRPC::DescribePlayer(player, VIDEO::IsVideo(item) ? JSONRPC::Video : JSONRPC::Audio);
+  player["playerid"] =
+      static_cast<int>(VIDEO::IsVideo(item) ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_MUSIC);
 }
 
 class CPlaycountIncrementedHandler

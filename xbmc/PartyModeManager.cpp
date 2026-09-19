@@ -19,7 +19,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
-#include "interfaces/json-rpc/PlayerIds.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
@@ -565,8 +564,8 @@ void CPartyModeManager::Announce()
   {
     CVariant data;
 
-    JSONRPC::DescribePlayer(data["player"],
-                            appPlayer->IsPlayingVideo() ? JSONRPC::Video : JSONRPC::Audio);
+    data["player"]["playerid"] = static_cast<int>(
+        appPlayer->IsPlayingVideo() ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_MUSIC);
     data["property"]["partymode"] = m_bEnabled;
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                        data);

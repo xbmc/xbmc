@@ -11,7 +11,6 @@ set(SOURCES AddonsExecuteAddon.cpp
             JSONRPC.cpp
             JSONServiceDescription.cpp
             JSONUtils.cpp
-            PlayerIds.cpp
             PlayerOperations.cpp
             PlaylistOperations.cpp
             ProfilesOperations.cpp
@@ -40,7 +39,6 @@ set(HEADERS AddonsExecuteAddon.h
             JSONRPCUtils.h
             JSONServiceDescription.h
             JSONUtils.h
-            PlayerIds.h
             PlayerOperations.h
             PlaylistOperations.h
             ProfilesOperations.h
