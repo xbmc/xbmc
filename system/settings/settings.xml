@@ -2822,6 +2822,18 @@
           </control>
         </setting>
       </group>
+      <group id="2" label="35320">
+        <setting id="gamesgeneral.cheatspath" type="path" label="35321" help="35322">
+          <level>3</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="path">
+            <heading>35321</heading>
+          </control>
+        </setting>
+      </group>
     </category>
     <category id="gamesachievements" label="15312">
       <group id="1" label="35264">

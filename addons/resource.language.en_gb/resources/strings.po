@@ -19557,7 +19557,61 @@ msgctxt "#35307"
 msgid "Subset completed"
 msgstr ""
 
-#empty strings from id 35313 to 35330
+#empty strings from id 35313 to 35319
+
+#. Label of the Cheats button in the game OSD, heading of the cheats dialog, and
+#. of the cheats group in settings
+msgctxt "#35320"
+msgid "Cheats"
+msgstr ""
+
+#. Label of the setting that points at the folder holding cheat files
+msgctxt "#35321"
+msgid "Cheats folder"
+msgstr ""
+
+#. Help text for the cheats folder setting
+msgctxt "#35322"
+msgid "Set a custom folder containing libretro cheats, or install cheats in the Add-on Manager."
+msgstr ""
+
+#. Shown when no cheat pack matches the current game
+msgctxt "#35323"
+msgid "No cheats found for this game"
+msgstr ""
+
+#. Cheat-pack button and heading of the pack-selection dialog
+#: xbmc/games/cheats/dialogs/DialogGameCheats.cpp
+msgctxt "#35324"
+msgid "Cheat pack..."
+msgstr ""
+
+#. Multiple packs contain the current game's exact cheat filename
+#: xbmc/games/cheats/dialogs/DialogGameCheats.cpp
+msgctxt "#35325"
+msgid "Multiple cheat packs match this game. Choose one to load its cheats."
+msgstr ""
+
+#. Enabled-cheat count, singular
+#: xbmc/games/cheats/dialogs/DialogGameCheats.cpp
+msgctxt "#35326"
+msgid "1 cheat enabled"
+msgstr ""
+
+#. Enabled-cheat count, including zero
+#: xbmc/games/cheats/dialogs/DialogGameCheats.cpp
+#, c++-format
+msgctxt "#35327"
+msgid "{0:d} cheats enabled"
+msgstr ""
+
+#. Shown when a matching pack has no usable cheats
+#: xbmc/games/cheats/dialogs/DialogGameCheats.cpp
+msgctxt "#35328"
+msgid "0 cheats available"
+msgstr ""
+
+#empty strings from id 35329 to 35330
 
 #. Label of the game OSD button that opens the leaderboards
 #: xbmc/games/dialogs/osd/DialogGameLeaderboards.cpp
