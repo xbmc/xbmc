@@ -37,6 +37,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/AppEnvironment.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "application/ApplicationActionListeners.h"
@@ -181,6 +182,10 @@
 #include <cstdint>
 #include <memory>
 #include <mutex>
+
+#ifdef TARGET_WASM
+#include <emscripten.h>
+#endif
 
 #include <tinyxml.h>
 
@@ -1651,10 +1656,6 @@ int CApplication::Run()
 {
   CLog::Log(LOGINFO, "Running the application...");
 
-  std::chrono::time_point<std::chrono::steady_clock> lastFrameTime;
-  std::chrono::milliseconds frameTime;
-  const unsigned int noRenderFrameTime = 15; // Simulates ~66fps
-
   CFileItemList& playlist = CServiceBroker::GetAppParams()->GetPlaylist();
   if (playlist.Size() > 0)
   {
@@ -1663,38 +1664,64 @@ int CApplication::Run()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
 
-  // Run the app
+#ifdef TARGET_WASM
+  // emscripten_set_main_loop() unwinds the stack instead of returning; WasmRunIteration()
+  // handles shutdown once the browser calls it back with m_bStop set.
+  emscripten_set_main_loop([]() { g_application.WasmRunIteration(); }, 0, 1);
+  return m_ExitCode; // unreachable
+#else
   while (!m_bStop)
-  {
-    // Animate and render a frame
-
-    lastFrameTime = std::chrono::steady_clock::now();
-    Process();
-
-    bool renderGUI = GetComponent<CApplicationPowerHandling>()->GetRenderGUI();
-    if (!m_bStop)
-    {
-      FrameMove(true, renderGUI);
-    }
-
-    if (renderGUI && !m_bStop)
-    {
-      Render();
-    }
-    else if (!renderGUI)
-    {
-      auto now = std::chrono::steady_clock::now();
-      frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFrameTime);
-      if (frameTime.count() < noRenderFrameTime)
-        KODI::TIME::Sleep(std::chrono::milliseconds(noRenderFrameTime - frameTime.count()));
-    }
-  }
+    RunIteration();
 
   Cleanup();
 
   CLog::Log(LOGINFO, "Exiting the application...");
   return m_ExitCode;
+#endif
 }
+
+void CApplication::RunIteration()
+{
+  // Animate and render a frame
+
+  const auto lastFrameTime = std::chrono::steady_clock::now();
+  Process();
+
+  bool renderGUI = GetComponent<CApplicationPowerHandling>()->GetRenderGUI();
+  if (!m_bStop)
+  {
+    FrameMove(true, renderGUI);
+  }
+
+  if (renderGUI && !m_bStop)
+  {
+    Render();
+  }
+  else if (!renderGUI)
+  {
+    constexpr std::chrono::milliseconds noRenderFrameTime{15}; // Simulates ~66fps
+    const auto frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - lastFrameTime);
+    if (frameTime < noRenderFrameTime)
+      KODI::TIME::Sleep(noRenderFrameTime - frameTime);
+  }
+}
+
+#ifdef TARGET_WASM
+void CApplication::WasmRunIteration()
+{
+  if (!m_bStop)
+  {
+    RunIteration();
+    return;
+  }
+
+  emscripten_cancel_main_loop();
+  Cleanup();
+  CLog::Log(LOGINFO, "Exiting the application...");
+  CAppEnvironment::TearDown();
+}
+#endif
 
 bool CApplication::Cleanup()
 {
