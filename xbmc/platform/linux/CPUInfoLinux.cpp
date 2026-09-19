@@ -100,10 +100,11 @@ CCPUInfoLinux::CCPUInfoLinux()
   // A hwmon device backed by a device tree thermal zone takes its name from the
   // zone type with hyphens replaced by underscores. Listed in preference order:
   // a platform can expose several of these, e.g. i.MX8MP has both cpu_thermal
-  // and soc_thermal.
-  static constexpr std::array<std::string_view, 7> modules = {
-      "coretemp",    "k10temp",     "scpi_sensors",    "imx_thermal_zone",
-      "cpu_thermal", "soc_thermal", "package_thermal",
+  // and soc_thermal, and Rockchip names one zone per CPU cluster.
+  static constexpr std::array<std::string_view, 11> modules = {
+      "coretemp",         "k10temp",          "scpi_sensors",     "imx_thermal_zone",
+      "cpu_thermal",      "soc_thermal",      "package_thermal",  "littlecore_thermal",
+      "bigcore0_thermal", "bigcore1_thermal", "bigcore2_thermal",
   };
 
   for (const auto& module : modules)
