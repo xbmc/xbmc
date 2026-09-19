@@ -8,6 +8,8 @@
 
 #include "PlatformWasm.h"
 
+#include "windowing/wasm/WinSystemWasmGLESContext.h"
+
 #include <cstdlib>
 
 CPlatform* CPlatform::CreateInstance()
@@ -20,5 +22,10 @@ bool CPlatformWasm::InitStageOne()
   if (!std::getenv("HOME"))
     setenv("HOME", "/home/web_user", 1);
 
-  return CPlatformPosix::InitStageOne();
+  if (!CPlatformPosix::InitStageOne())
+    return false;
+
+  CWinSystemWasmGLESContext::Register();
+
+  return true;
 }
