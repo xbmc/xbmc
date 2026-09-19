@@ -1333,7 +1333,7 @@ void CPeripheralCecAdapter::CecSourceActivated(void* cbParam,
   {
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPower = components.GetComponent<CApplicationPowerHandling>();
-    appPower->WakeUpScreenSaverAndDPMS();
+    appPower->WakeUpOnInput();
   }
 
   if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") != LOCALISED_ID_NONE)

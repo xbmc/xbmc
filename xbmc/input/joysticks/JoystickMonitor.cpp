@@ -105,7 +105,7 @@ bool CJoystickMonitor::ResetTimers(void)
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
   appPower->ResetSystemIdleTimer();
   appPower->ResetScreenSaver();
-  return appPower->WakeUpScreenSaverAndDPMS();
+  return appPower->WakeUpOnInput();
 
   return true;
 }

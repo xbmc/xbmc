@@ -462,7 +462,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
       // If we were currently in the screen saver wake up and don't process the
       // appcommand
-      if (appPower->WakeUpScreenSaverAndDPMS())
+      if (appPower->WakeUpOnInput())
         return true;
 
       // Retrieve the action associated with this appcommand from the mapping table
