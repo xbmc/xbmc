@@ -55,6 +55,9 @@ namespace
 
 constexpr std::string_view DecodeURLSpecialChars{"+%"};
 
+// '+' means a space only in a query string, so a path decodes escape triplets alone
+constexpr std::string_view DecodePathSpecialChars{"%"};
+
 // Lookup table for URL encoding. This is more efficient than using fmt::format
 // for such a simple operation and this function has been identified as a hot path
 // during library scans; especially encoding the contents of nfo files into URL
@@ -95,9 +98,7 @@ std::optional<char> DecodeOctlet(std::string_view& encoded)
   return decimal;
 }
 
-} // Unnamed namespace
-
-std::string URIUtils::URLDecode(std::string_view encoded)
+std::string Decode(std::string_view encoded, std::string_view specialChars)
 {
   /* result will always be less than or equal to source */
   std::string decodedUrl{};
@@ -105,7 +106,7 @@ std::string URIUtils::URLDecode(std::string_view encoded)
 
   while (true)
   {
-    const auto special = encoded.find_first_of(DecodeURLSpecialChars);
+    const auto special = encoded.find_first_of(specialChars);
     decodedUrl += encoded.substr(0, special);
 
     if (special == std::string::npos)
@@ -121,6 +122,18 @@ std::string URIUtils::URLDecode(std::string_view encoded)
   }
 
   return decodedUrl;
+}
+
+} // Unnamed namespace
+
+std::string URIUtils::URLDecode(std::string_view encoded)
+{
+  return Decode(encoded, DecodeURLSpecialChars);
+}
+
+std::string URIUtils::DecodePathEscapes(std::string_view encoded)
+{
+  return Decode(encoded, DecodePathSpecialChars);
 }
 
 std::string URIUtils::URLEncode(std::string_view decoded, std::string_view URLSpec)

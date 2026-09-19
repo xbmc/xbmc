@@ -2725,3 +2725,27 @@ TEST_F(TestURIUtils, GetDecodedPath)
   decoded = "bluray://smb://somepath/path//BDMV/PLAYLIST/00800.mpls";
   EXPECT_EQ(decoded, URIUtils::GetDecodedPath(encoded));
 }
+
+TEST_F(TestURIUtils, DecodePathEscapes)
+{
+  EXPECT_EQ("file name", URIUtils::DecodePathEscapes("file%20name"));
+  EXPECT_EQ("100% proof", URIUtils::DecodePathEscapes("100%25 proof"));
+
+  EXPECT_EQ("C++ Collection", URIUtils::DecodePathEscapes("C++ Collection"));
+  EXPECT_EQ("C   Collection", URIUtils::URLDecode("C++ Collection"));
+}
+
+TEST_F(TestURIUtils, ChangeBasePath)
+{
+  // http/https are the only protocols HasEncodedFilename() treats as encoded, so this is the
+  // decode direction. A subtitle download names the destination this way.
+  EXPECT_EQ("smb://server/share/file name.srt",
+            URIUtils::ChangeBasePath("http://host/videos/", "file%20name.srt",
+                                     "smb://server/share/"));
+
+  // This path decodes each segment with CURL::Decode, so a + becomes a space. Pinned because
+  // it is what the destination has always been given, not because it is the desirable rule.
+  EXPECT_EQ("smb://server/share/C   Collection.srt",
+            URIUtils::ChangeBasePath("http://host/videos/", "C++ Collection.srt",
+                                     "smb://server/share/"));
+}
