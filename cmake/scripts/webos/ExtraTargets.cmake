@@ -1,5 +1,7 @@
 # generate webos wayland protocols
-set(WEBOS_PROTOCOL_XMLS "${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}/webos-shell.xml"
+set(WEBOS_PROTOCOL_XMLS "${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}/input-method.xml"
+                        "${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}/text.xml"
+                        "${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}/webos-shell.xml"
                         "${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}/webos-foreign.xml"
 )
 add_custom_command(OUTPUT "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp"
