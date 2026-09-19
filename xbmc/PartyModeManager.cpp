@@ -564,8 +564,8 @@ void CPartyModeManager::Announce()
   {
     CVariant data;
 
-    data["player"]["playerid"] =
-        static_cast<int>(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
+    data["player"]["playerid"] = static_cast<int>(
+        appPlayer->IsPlayingVideo() ? PLAYLIST::Id::TYPE_VIDEO : PLAYLIST::Id::TYPE_MUSIC);
     data["property"]["partymode"] = m_bEnabled;
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                        data);
