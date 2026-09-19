@@ -17124,7 +17124,25 @@ msgctxt "#25020"
 msgid "Mb/s"
 msgstr ""
 
-#empty strings from id 25021 to 29800
+#: Indicates a playlist shown in the simple menu is already used (and shows what)
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#25021"
+msgid "used by {0:s}"
+msgstr ""
+
+#: Indicates a playlist shown in the simple menu is already used by a movie
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#25022"
+msgid "used by movie"
+msgstr ""
+
+#: Indicates a playlist shown in the simple menu is already used by an extra
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#25023"
+msgid "used by extra"
+msgstr ""
+
+#empty strings from id 25024 to 29800
 
 #: unused
 msgctxt "#29801"
