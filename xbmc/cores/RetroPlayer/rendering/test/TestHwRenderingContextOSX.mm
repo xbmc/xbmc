@@ -1012,7 +1012,7 @@ private:
 class CDirectionalTestPreset : public KODI::SHADER::CShaderPresetGL
 {
 public:
-  explicit CDirectionalTestPreset(CRenderContext& context) : CShaderPresetGL(context)
+  explicit CDirectionalTestPreset(CRenderContext& context, bool sRGBPass) : CShaderPresetGL(context)
   {
     m_presetPath = "directional-alpha-test";
     KODI::SHADER::ShaderPass pass;
@@ -1038,6 +1038,12 @@ void main()
 }
 #endif
 )";
+    if (sRGBPass)
+    {
+      auto intermediate = pass;
+      intermediate.fbo.sRgbFramebuffer = true;
+      m_passes.push_back(std::move(intermediate));
+    }
     m_passes.push_back(std::move(pass));
     EXPECT_TRUE(CreateShaders());
   }
@@ -1053,6 +1059,32 @@ void main()
   bool rendered{false};
 };
 
+class CRecordingTestPreset : public KODI::SHADER::CShaderPresetGL
+{
+public:
+  explicit CRecordingTestPreset(CRenderContext& context) : CShaderPresetGL(context)
+  {
+    m_passes.emplace_back();
+  }
+
+  bool RenderUpdate(KODI::SHADER::IShaderTexture& source,
+                    KODI::SHADER::IShaderTexture& target) override
+  {
+    sourceTexture = &source;
+    targetTexture = &target;
+    ++calls;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glScissor(0, 0, 1, 1);
+    glActiveTexture(GL_TEXTURE3);
+    return succeed;
+  }
+
+  KODI::SHADER::IShaderTexture* sourceTexture{nullptr};
+  KODI::SHADER::IShaderTexture* targetTexture{nullptr};
+  unsigned int calls{0};
+  bool succeed{true};
+};
+
 class CTestFBORenderer : public CRPRendererFBO
 {
 public:
@@ -1060,15 +1092,25 @@ public:
 
   std::vector<GLuint> VertexArrays() const { return {m_mainVAO, m_blackbarsVAO}; }
 
-  CDirectionalTestPreset* UseDirectionalPreset()
+  CDirectionalTestPreset* UseDirectionalPreset(bool sRGBPass = false)
   {
-    auto preset = std::make_unique<CDirectionalTestPreset>(m_context);
+    auto preset = std::make_unique<CDirectionalTestPreset>(m_context, sRGBPass);
     auto* result = preset.get();
     m_shaderPreset = std::move(preset);
     m_bShadersNeedUpdate = false;
     m_bUseShaderPreset = true;
     return result;
   }
+
+  void UsePreset(std::unique_ptr<KODI::SHADER::IShaderPreset> preset)
+  {
+    m_shaderPreset = std::move(preset);
+    m_bShadersNeedUpdate = false;
+    m_bUseShaderPreset = true;
+  }
+
+  size_t CachedTextureCount() const { return m_RBTexturesMap.size(); }
+  CSize TargetSize() const { return {m_fullDestWidth, m_fullDestHeight}; }
 
   void Draw(CRenderBufferFBO* buffer, const CRect& crop, bool clear = false, uint8_t alpha = 128)
   {
@@ -1090,6 +1132,139 @@ private:
   CRect m_crop;
 };
 } // namespace
+
+TEST_F(TestRenderBufferPoolFBOOSX, ShaderTextureCacheTracksBuffersAllocationsAndDestinationSize)
+{
+  CTestGLWindow window;
+  ASSERT_TRUE(window.InitRenderSystem());
+  ASSERT_TRUE(window.ResetRenderSystem(8, 8));
+  CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
+                         CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
+                         CServiceBroker::GetGUI());
+  context.SetViewWindow(0, 0, 8, 8);
+  KODI::SHADER::CShaderTextureGL output(8, 8, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA, true);
+  output.CreateTexture();
+  CTestFBORenderer renderer({}, context, m_pool);
+  ASSERT_TRUE(renderer.Configure(AV_PIX_FMT_NONE));
+  auto preset = std::make_unique<CRecordingTestPreset>(context);
+  auto* recording = preset.get();
+  renderer.UsePreset(std::move(preset));
+  ASSERT_TRUE(output.BindFBO());
+
+  ASSERT_TRUE(m_pool->BeginClientFrame());
+  auto client = GetClient(16, 16);
+  ASSERT_NE(client, nullptr);
+  auto first = Capture(client.get(), 16, 16);
+  auto second = Capture(client.get(), 16, 16);
+  m_pool->EndClientFrame();
+  ASSERT_NE(first, nullptr);
+  ASSERT_NE(second, nullptr);
+  first->SetSize(4, 4);
+  second->SetSize(4, 4);
+  renderer.Draw(first.get(), {0, 0, 4, 4});
+  ASSERT_EQ(renderer.CachedTextureCount(), 1u);
+  EXPECT_EQ(recording->sourceTexture->GetWidth(), 16);
+  EXPECT_EQ(recording->sourceTexture->GetHeight(), 16);
+  auto* firstSource = recording->sourceTexture;
+  auto* firstTarget = recording->targetTexture;
+  EXPECT_EQ(firstTarget->GetWidth(), renderer.TargetSize().Width());
+  EXPECT_EQ(firstTarget->GetHeight(), renderer.TargetSize().Height());
+
+  renderer.Draw(second.get(), {0, 0, 4, 4});
+  EXPECT_EQ(renderer.CachedTextureCount(), 2u);
+  EXPECT_NE(recording->sourceTexture, firstSource);
+  EXPECT_NE(recording->targetTexture, firstTarget);
+  renderer.Draw(first.get(), {0, 0, 4, 4});
+  EXPECT_EQ(recording->sourceTexture, firstSource);
+  EXPECT_EQ(recording->targetTexture, firstTarget);
+
+  first->SetSize(8, 8);
+  renderer.Draw(first.get(), {0, 0, 8, 8});
+  EXPECT_EQ(recording->sourceTexture, firstSource);
+  EXPECT_EQ(recording->targetTexture, firstTarget);
+  EXPECT_EQ(recording->sourceTexture->GetWidth(), 16);
+
+  ASSERT_TRUE(m_pool->BeginClientFrame());
+  first->PrepareForCapture();
+  ASSERT_TRUE(first->Allocate(AV_PIX_FMT_NONE, 32, 16));
+  ASSERT_TRUE(first->SetReady());
+  m_pool->EndClientFrame();
+  first->SetSize(8, 8);
+  renderer.Draw(first.get(), {0, 0, 8, 8});
+  EXPECT_EQ(recording->sourceTexture->GetWidth(), 32);
+  EXPECT_EQ(recording->sourceTexture->GetHeight(), 16);
+  EXPECT_EQ(
+      static_cast<KODI::SHADER::CShaderTextureGLRef*>(recording->sourceTexture)->GetTextureID(),
+      first->TextureID());
+
+  context.SetViewWindow(0, 0, 4, 4);
+  renderer.Draw(first.get(), {0, 0, 8, 8});
+  EXPECT_EQ(renderer.CachedTextureCount(), 2u);
+  EXPECT_EQ(recording->targetTexture->GetWidth(), 8);
+  EXPECT_EQ(recording->targetTexture->GetHeight(), 8);
+
+  context.SetViewPort({0, 0, 4, 4});
+  renderer.Draw(first.get(), {0, 0, 8, 8});
+  EXPECT_EQ(renderer.CachedTextureCount(), 1u);
+  EXPECT_EQ(recording->targetTexture->GetWidth(), 4);
+  EXPECT_EQ(recording->targetTexture->GetHeight(), 4);
+  renderer.Flush();
+  EXPECT_EQ(renderer.CachedTextureCount(), 0u);
+  EXPECT_EQ(glGetError(), GL_NO_ERROR);
+}
+
+TEST_F(TestRenderBufferPoolFBOOSX, FailedShaderPresentsCaptureAndDisablesPreset)
+{
+  CTestGLWindow window;
+  ASSERT_TRUE(window.InitRenderSystem());
+  ASSERT_TRUE(window.ResetRenderSystem(8, 8));
+  CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
+                         CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
+                         CServiceBroker::GetGUI());
+  context.SetViewWindow(0, 0, 8, 8);
+  KODI::SHADER::CShaderTextureGL output(8, 8, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA, true);
+  output.CreateTexture();
+  CTestFBORenderer renderer({}, context, m_pool);
+  ASSERT_TRUE(renderer.Configure(AV_PIX_FMT_NONE));
+  auto preset = std::make_unique<CRecordingTestPreset>(context);
+  auto* recording = preset.get();
+  renderer.UsePreset(std::move(preset));
+  ASSERT_TRUE(output.BindFBO());
+  ASSERT_TRUE(m_pool->BeginClientFrame());
+  auto client = GetClient(4, 4);
+  ASSERT_NE(client, nullptr);
+  auto buffer = Capture(client.get(), 4, 4);
+  m_pool->EndClientFrame();
+  ASSERT_NE(buffer, nullptr);
+
+  renderer.Draw(buffer.get(), {0, 0, 4, 4});
+  GLint texture = 0;
+  glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture);
+  EXPECT_EQ(texture,
+            static_cast<KODI::SHADER::CShaderTextureGL*>(recording->targetTexture)->GetTextureID());
+  recording->succeed = false;
+  GLint framebuffer = 0;
+  glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &framebuffer);
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+  glScissor(1, 2, 3, 4);
+  renderer.Draw(buffer.get(), {0, 0, 4, 4});
+  GLint restored = 0;
+  glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &restored);
+  EXPECT_EQ(restored, framebuffer);
+  glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &restored);
+  EXPECT_EQ(restored, 0);
+  std::array<GLint, 4> scissor{};
+  glGetIntegerv(GL_SCISSOR_BOX, scissor.data());
+  EXPECT_EQ(scissor, (std::array<GLint, 4>{1, 2, 3, 4}));
+  glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture);
+  EXPECT_EQ(texture, buffer->TextureID());
+  EXPECT_EQ(recording->calls, 2u);
+  renderer.Draw(buffer.get(), {0, 0, 4, 4});
+  glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture);
+  EXPECT_EQ(texture, buffer->TextureID());
+  EXPECT_EQ(recording->calls, 2u);
+  EXPECT_EQ(glGetError(), GL_NO_ERROR);
+}
 
 TEST_F(TestRenderBufferPoolFBOOSX, RendererOwnsInitializedVertexArraysUntilDestruction)
 {
@@ -1178,6 +1353,12 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
   glMatrixModview->LoadIdentity();
   KODI::SHADER::CShaderTextureGL output(8, 8, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA, true);
   output.CreateTexture();
+  KODI::SHADER::CShaderTextureGL readback(1, 1, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA, true);
+  readback.CreateTexture();
+  ASSERT_TRUE(readback.BindFBO());
+  GLint readFramebuffer = 0;
+  glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFramebuffer);
+  readback.UnbindFBO();
 
   for (bool bottomLeft : {false, true})
   {
@@ -1206,18 +1387,19 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
       ASSERT_NE(captured, nullptr);
       m_pool->EndClientFrame();
 
-      for (bool filtered : {false, true})
+      for (unsigned int passes : {0u, 1u, 2u})
       {
+        const bool filtered = passes != 0;
         CTestFBORenderer renderer({}, context, m_pool);
         ASSERT_TRUE(renderer.Configure(AV_PIX_FMT_NONE));
         const auto arrays = renderer.VertexArrays();
-        auto* preset = filtered ? renderer.UseDirectionalPreset() : nullptr;
+        auto* preset = filtered ? renderer.UseDirectionalPreset(passes == 2) : nullptr;
         for (unsigned int rotation : {0u, 90u, 180u, 270u})
         {
           for (bool cropped : {false, true})
           {
             SCOPED_TRACE(testing::Message() << "bottomLeft=" << bottomLeft << " height=" << height
-                                            << " filtered=" << filtered << " rotation=" << rotation
+                                            << " passes=" << passes << " rotation=" << rotation
                                             << " cropped=" << cropped);
             ASSERT_TRUE(output.BindFBO());
             GLint framebuffer = 0;
@@ -1227,7 +1409,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
             glViewport(0, 0, 8, 8);
             glClearColor(0, 0, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, readFramebuffer);
             glBindVertexArray(guiVertexArray);
             glBindBuffer(GL_ARRAY_BUFFER, guiBuffers[0]);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, guiBuffers[1]);
@@ -1251,7 +1433,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
             glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &restored);
             EXPECT_EQ(restored, framebuffer);
             glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &restored);
-            EXPECT_EQ(restored, 0);
+            EXPECT_EQ(restored, readFramebuffer);
             const auto expectBinding = [](GLenum state, GLint expected)
             {
               GLint actual = 0;
@@ -1289,12 +1471,16 @@ TEST_F(TestRenderBufferPoolFBOOSX, FilteredAndUnfilteredControlsPreserveOrientat
                 EXPECT_NEAR(pixel[0], top ? 128 : 0, 1);
                 EXPECT_NEAR(pixel[1], top ? 0 : 128, 1);
                 EXPECT_NEAR(pixel[2], filtered && top ? 191 : 127, 1);
+                EXPECT_NEAR(pixel[3], 191, 1);
               }
             }
-            std::array<unsigned char, 4> before{}, after{};
+            std::array<unsigned char, 4> before{}, after{}, outsideBefore{}, outsideAfter{};
             glReadPixels(2, 3, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, before.data());
+            glReadPixels(6, 6, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, outsideBefore.data());
             CGUITextureGL::DrawQuad({0, 0, 8, 8}, 0x8000FF00);
             glReadPixels(2, 3, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, after.data());
+            glReadPixels(6, 6, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, outsideAfter.data());
+            EXPECT_EQ(outsideAfter, outsideBefore);
             EXPECT_NEAR(after[0], before[0] * 127.0f / 255.0f, 1);
             EXPECT_NEAR(after[1], 128 + before[1] * 127.0f / 255.0f, 1);
             EXPECT_NEAR(after[2], before[2] * 127.0f / 255.0f, 1);
