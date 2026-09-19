@@ -15,6 +15,7 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "video/VideoFileItemClassify.h"
@@ -300,6 +301,16 @@ bool CApplicationPlayer::IsLiveStream() const
     return player->IsLiveStream();
 
   return false;
+}
+
+void CApplicationPlayer::OnAudioPassthroughSettingChanged()
+{
+  // Give the current player a chance to reconfigure its audio pipeline in place (e.g.
+  // VideoPlayer can switch a stream between passthrough and decoded without restarting).
+  // Fall back to a full close/reopen of the file if it can't (or there is no player).
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (!player || !player->OnAudioPassthroughSettingChanged())
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_RESTART);
 }
 
 void CApplicationPlayer::Pause()
