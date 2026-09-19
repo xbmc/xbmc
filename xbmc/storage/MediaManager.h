@@ -20,6 +20,8 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <set>
+#include <string>
 #include <vector>
 
 class CFileItem;
@@ -204,6 +206,12 @@ private:
   DiscInfoCacheEntry GetCachedDiscInfo(const std::string& mediaPath);
   /*! Disc identity per drive, read from the disc itself - see GetDiskLabel */
   std::map<std::string, DiscInfoCacheEntry> m_mapDiscInfo;
+  /*! Removable drives at the last storage change, so a drive that has since gone can be forgotten */
+  std::set<std::string> m_removableDrivePaths;
+#ifndef TARGET_WINDOWS
+  //! The caller holds m_CritSecStorageProvider
+  std::set<std::string> GetRemovableDrivePaths() const;
+#endif
   uint64_t m_discInfoGeneration{0};
   CCriticalSection m_discInfoSection;
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)

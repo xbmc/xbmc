@@ -389,6 +389,13 @@ private:
                                       const Episodes& episodesOnDisc) const;
   bool FilterAllEpisodesPlaylists(std::vector<PlaylistInformation>& playlists, GetTitle job);
 
+  /*!
+   * \brief The original item re-pointed at the selected playlist, which supplies the paths, stream
+   * details, duration and episode bookmark. Everything else is the original's.
+   */
+  static std::shared_ptr<CFileItem> GenerateItem(const CFileItem& originalItem,
+                                                 const CFileItem& selectedItem);
+
   //! Describes the streams of a title, supplied by the disc's directory implementation
   StreamDetailsProvider m_getStreamDetails;
 

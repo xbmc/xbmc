@@ -10,6 +10,7 @@
 #include "filesystem/bluray/M2TSParser.h"
 #include "test/TestUtils.h"
 
+#include <limits>
 #include <ranges>
 
 #include <gtest/gtest.h>
@@ -45,6 +46,15 @@ TEST(TestBytes, General)
   EXPECT_THROW(GetWord(data, 7), std::out_of_range);
   EXPECT_THROW(GetDWord(data, 5), std::out_of_range);
   EXPECT_THROW(GetQWord(data, 1), std::out_of_range);
+
+  // An offset read from a file can name anything, including one that would wrap the check
+  constexpr unsigned int top{std::numeric_limits<unsigned int>::max()};
+  EXPECT_THROW(GetByte(data, top), std::out_of_range);
+  EXPECT_THROW(GetWord(data, top - 1), std::out_of_range);
+  EXPECT_THROW(GetDWord(data, top - 3), std::out_of_range);
+  EXPECT_THROW(GetQWord(data, top - 7), std::out_of_range);
+  EXPECT_THROW(GetString(data, top, 1), std::out_of_range);
+  EXPECT_THROW(GetString(data, 0, top), std::out_of_range);
 
   EXPECT_EQ(GetBits(0x12345678, 24, 4), 3);
   EXPECT_EQ(GetBits(0x12345678, 32, 32), 0x12345678); // fast return
