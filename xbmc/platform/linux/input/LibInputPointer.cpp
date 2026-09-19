@@ -11,6 +11,8 @@
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
 #include "input/mouse/MouseStat.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
@@ -18,6 +20,19 @@
 #include <algorithm>
 
 #include <linux/input.h>
+
+void CLibInputPointer::DeviceAdded()
+{
+  const int settle = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_INPUT_POINTERSETTLETIME);
+
+  m_settled = std::chrono::steady_clock::now() + std::chrono::seconds(settle);
+}
+
+bool CLibInputPointer::IsSettling() const
+{
+  return std::chrono::steady_clock::now() < m_settled;
+}
 
 void CLibInputPointer::ProcessButton(libinput_event_pointer *e)
 {
@@ -71,6 +86,9 @@ void CLibInputPointer::ProcessButton(libinput_event_pointer *e)
 
 void CLibInputPointer::ProcessMotion(libinput_event_pointer *e)
 {
+  if (IsSettling())
+    return;
+
   const double dx = libinput_event_pointer_get_dx(e);
   const double dy = libinput_event_pointer_get_dy(e);
 
@@ -102,6 +120,9 @@ void CLibInputPointer::ProcessMotion(libinput_event_pointer *e)
 
 void CLibInputPointer::ProcessMotionAbsolute(libinput_event_pointer *e)
 {
+  if (IsSettling())
+    return;
+
   m_pos.X = static_cast<int>(libinput_event_pointer_get_absolute_x_transformed(e, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()));
   m_pos.Y = static_cast<int>(libinput_event_pointer_get_absolute_y_transformed(e, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()));
 

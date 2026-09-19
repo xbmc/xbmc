@@ -265,6 +265,7 @@ void CLibInputHandler::DeviceAdded(libinput_device *dev)
     CLog::Log(LOGDEBUG, "CLibInputHandler::{} - pointer type device added: {} ({})", __FUNCTION__,
               name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
+    m_pointer->DeviceAdded();
   }
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_KEYBOARD))

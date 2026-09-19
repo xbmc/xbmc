@@ -18544,7 +18544,12 @@ msgctxt "#35022"
 msgid "Nothing to map"
 msgstr ""
 
-#empty strings from id 35023 to 35046
+#: system/settings/settings.xml
+msgctxt "#35023"
+msgid "Ignore pointer motion after a device appears"
+msgstr ""
+
+#empty strings from id 35024 to 35046
 
 #. Name of setting to configure peripheral add-ons
 #: system/settings/settings.xml
@@ -20728,7 +20733,14 @@ msgctxt "#36193"
 msgid "This category contains the settings for how DVD's, Blu-ray, & CD's are handled."
 msgstr ""
 
-#empty strings from id 36194
+#empty string with id 36194
+
+#. Description of setting with label #35023 "Ignore pointer motion after a device appears"
+msgctxt "#36195"
+msgid "Discard motion from a pointing device for this long after it appears. A device that reports where it was when it went away, such as a remote with a motion sensor reconnecting, otherwise moves the cursor and counts as activity the moment it returns."
+msgstr ""
+
+#empty strings from id 36196
 
 #. Description of setting with label #21372 "Forced DVD player region"
 #: system/settings/settings.xml
