@@ -134,6 +134,9 @@ protected:
   virtual bool RenderHook(int idx) { return false; }
   virtual void AfterRenderHook(int idx) {}
 
+  // True if UploadTexture() received a VPP-scaled surface.
+  virtual bool IsHwScaled() const { return false; }
+
   struct
   {
     CFrameBufferObject fbo;
@@ -226,6 +229,7 @@ protected:
   size_t m_planeBufferSize = 0;
 
   CRect m_lastViewRect;
+  bool m_lastHwScaled = false;
 
   // HDR FBO compositing: when active, IsGuiLayer() returns false so
   // video renders separately from GUI via RenderUpdateVideo()
