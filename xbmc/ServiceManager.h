@@ -67,10 +67,6 @@ namespace RETRO
 {
 class CGUIGameRenderManager;
 }
-namespace UTILS::I18N
-{
-class CSubTagRegistryManager;
-} // namespace UTILS::I18N
 } // namespace KODI
 
 namespace MEDIA_DETECT
@@ -220,8 +216,6 @@ public:
   MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
 #endif
 
-  KODI::UTILS::I18N::CSubTagRegistryManager& GetSubTagRegistryManager();
-
 protected:
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonManager> m_binaryAddonManager;
@@ -258,5 +252,4 @@ protected:
   std::unique_ptr<MEDIA_DETECT::CDetectDVDMedia> m_DetectDVDType;
 #endif
   std::unique_ptr<CSlideShowDelegator> m_slideShowDelegator;
-  std::unique_ptr<KODI::UTILS::I18N::CSubTagRegistryManager> m_subTagRegistryManager;
 };
