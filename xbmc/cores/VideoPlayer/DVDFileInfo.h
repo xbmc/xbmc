@@ -54,6 +54,11 @@ public:
   static bool GetFileDuration(const std::string& path, int& duration);
 
 private:
+  static bool ExtractStreamDetailsForPath(const std::string& playablePath,
+                                          const std::string& strFileNameAndPath,
+                                          CStreamDetails& details,
+                                          bool& isPvr);
+
   static bool DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                      CDVDDemux* pDemux,
                                      CStreamDetails& details,
