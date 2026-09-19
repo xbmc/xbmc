@@ -67,3 +67,41 @@ TEST_F(TestLabelFormatter, FormatLabel2)
 
   EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
 }
+
+class TestLabelFormatterHiddenExtensions : public testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    m_showExtensions = settings->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
+    settings->SetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS, false);
+  }
+
+  void TearDown() override
+  {
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+        CSettings::SETTING_FILELISTS_SHOWEXTENSIONS, m_showExtensions);
+  }
+
+  static std::string LabelFor(const std::string& path, const std::string& label)
+  {
+    CFileItem item;
+    item.SetPath(path);
+    item.SetLabel(label);
+    item.SetFolder(false);
+
+    CLabelFormatter formatter("%L", "");
+    formatter.FormatLabel(&item);
+    return item.GetLabel();
+  }
+
+private:
+  bool m_showExtensions{true};
+};
+
+TEST_F(TestLabelFormatterHiddenExtensions, HidesTheExtensionOfAnEscapedName)
+{
+  EXPECT_EQ("file_name", LabelFor("davs://server/files/file_name.mkv", "file_name.mkv"));
+  EXPECT_EQ("file name", LabelFor("davs://server/files/file%20name.mkv", "file name.mkv"));
+}
