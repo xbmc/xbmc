@@ -108,26 +108,7 @@ CCPUInfoLinux::CCPUInfoLinux()
 
   for (const auto& module : modules)
   {
-    for (int i = 0; i < 20; i++)
-    {
-      CSysfsPath path{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/name"};
-      if (!path.Exists())
-        continue;
-
-      auto name = path.Get<std::string>();
-
-      if (!name.has_value() || *name != module)
-        continue;
-
-      std::string tempStr{"/sys/class/hwmon/hwmon" + std::to_string(i) + "/temp1_input"};
-      CSysfsPath tempPath{tempStr};
-      if (!tempPath.Exists())
-        continue;
-
-      m_tempPath = tempStr;
-      break;
-    }
-
+    m_tempPath = HwmonTemperaturePath(module);
     if (!m_tempPath.empty())
       break;
   }
