@@ -166,13 +166,27 @@ void CGUIWindowSlideShow::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                                    const std::string& message,
                                    const CVariant& data)
 {
-  // A video slide is played by the slideshow itself and must not close it
-  if (message == "OnPlay" || message == "OnResume")
+  if (message != "OnPlay" && message != "OnResume")
+    return;
+
+  if (!data.isMember("player") || !data["player"].isMember("playerid") ||
+      data["player"]["playerid"] != static_cast<int>(PLAYLIST::Id::TYPE_VIDEO))
+    return;
+
+  // A video slide is played by the slideshow itself and must not close it. Announcements are
+  // delivered on their own thread, so a slide's OnPlay can arrive after the slide has already
+  // ended; it is matched to the start that caused it rather than to the state of the moment.
+  if (message == "OnPlay" && m_pendingVideoSlidePlays > 0)
   {
-    if (!m_bPlayingVideo && data.isMember("player") && data["player"].isMember("playerid") &&
-        data["player"]["playerid"] == static_cast<int>(PLAYLIST::Id::TYPE_VIDEO))
-      Close();
+    --m_pendingVideoSlidePlays;
+    return;
   }
+
+  // A resume of the slide this one is still playing
+  if (m_bPlayingVideo)
+    return;
+
+  Close();
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
@@ -1213,6 +1227,7 @@ bool CGUIWindowSlideShow::PlayVideo()
   CLog::Log(LOGDEBUG, "Playing current video slide {}", item->GetPath());
   m_bPlayingVideo = true;
   m_iVideoSlide = m_iCurrentSlide;
+  ++m_pendingVideoSlidePlays;
   bool ret = g_application.PlayFile(*item, "");
   if (ret == true)
     return true;
@@ -1221,6 +1236,8 @@ bool CGUIWindowSlideShow::PlayVideo()
     CLog::Log(LOGINFO, "set video {} unplayable", item->GetPath());
     item->SetProperty("unplayable", true);
   }
+  // Nothing was played, so no OnPlay is coming for it
+  --m_pendingVideoSlidePlays;
   m_bPlayingVideo = false;
   m_iVideoSlide = -1;
   return false;

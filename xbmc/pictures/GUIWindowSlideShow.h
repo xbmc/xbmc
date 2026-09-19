@@ -157,6 +157,8 @@ private:
   bool m_bPause;
   std::atomic<bool> m_bPlayingVideo{false};
   int m_iVideoSlide = -1;
+  // Video slides started whose OnPlay has not been delivered yet
+  std::atomic<int> m_pendingVideoSlidePlays{0};
   bool m_bErrorMessage;
 
   std::vector<CFileItemPtr> m_slides;
