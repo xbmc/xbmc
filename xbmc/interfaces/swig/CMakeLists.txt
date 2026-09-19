@@ -76,6 +76,10 @@ add_library(python_binding STATIC ${SOURCES})
 target_include_directories(python_binding PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
+# generated code
+set_target_properties(python_binding PROPERTIES CXX_CLANG_TIDY ""
+                                                CXX_CPPCHECK ""
+                                                CXX_INCLUDE_WHAT_YOU_USE "")
 
 # director-enabled modules in one binary otherwise collide on Swig::Director symbols
 # SWIG_LINK_RUNTIME: modules find the shared type table via SwigRuntime.cpp instead of a Python capsule owned by one interpreter
