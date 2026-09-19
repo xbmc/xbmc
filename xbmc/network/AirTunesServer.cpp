@@ -15,6 +15,7 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -27,6 +28,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/json-rpc/MessengerPayload.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
@@ -43,6 +45,7 @@
 
 #include <cstring>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <utility>
@@ -150,6 +153,21 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
   //update the ui
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+  // The info manager and the application hold separate items; both need the art, while the
+  // application item is the AirTunes pipe.
+  if (ServerInstance != NULL && ServerInstance->m_pPipe != NULL &&
+      g_application.CurrentFileItem().GetPath() == ServerInstance->m_pPipe->GetName())
+  {
+    // UpdateInfo copies the mime type and the art; an empty url clears the previous thumbnail.
+    auto item = std::make_unique<CFileItem>();
+    item->SetPath(ServerInstance->m_pPipe->GetName());
+    item->SetMimeType("audio/x-xbmc-pcm");
+    item->SetArt("thumb", CFile::Exists(coverArtFile) ? coverArtFile : "");
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
+                                               JSONRPC::TransferToMessenger(std::move(item)));
+  }
 }
 
 void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int size)
