@@ -134,6 +134,42 @@ li.getVideoInfoTag().setStudios(['a', None])
 )py"));
 }
 
+TEST_F(TestPythonBindings, BytesAsString)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import pickle
+import xbmcgui
+li = xbmcgui.ListItem('bytes-as-string', '', '', True)
+
+li.setProperty('ascii', b'plain')
+assert li.getProperty('ascii') == 'plain', repr(li.getProperty('ascii'))
+
+li.setProperty('utf8', 'caf\u00e9'.encode('utf-8'))
+assert li.getProperty('utf8') == 'caf\u00e9', repr(li.getProperty('utf8'))
+
+# What add-ons storing a pickle actually pass: protocol 0 is text, which
+# Python 3 hands back as bytes
+blob = pickle.dumps({'a': 1}, protocol=0)
+li.setProperty('pickle', blob)
+assert pickle.loads(li.getProperty('pickle').encode('utf-8')) == {'a': 1}
+
+# As a dict value, which goes through the same conversion
+li.setProperties({'alpha': '1', 'beta': b'two'})
+assert li.getProperty('beta') == 'two', repr(li.getProperty('beta'))
+
+# Bytes that are not text are refused rather than stored
+try:
+    li.setProperty('binary', b'\xff\xfe')
+except TypeError:
+    pass
+else:
+    raise AssertionError('binary bytes were accepted')
+)py"));
+}
+
 TEST_F(TestPythonBindings, FileContextManager)
 {
   if (!s_pythonUp)

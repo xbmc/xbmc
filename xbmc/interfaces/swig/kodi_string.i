@@ -10,8 +10,9 @@
 #include "utils/log.h"
 %}
 
-/* 'None' is accepted as the empty string, including as a dict value or list element. */
-//! @todo Drop the 'None' acceptance after v22; kodi_typing.i annotates these as str.
+/* 'None' is accepted as the empty string, and bytes as the text they decode to,
+   including as a dict value or list element. */
+//! @todo Drop 'None' and bytes after v22; addons pass '' or .decode() first
 %fragment(SWIG_AsVal_frag(std::string), "header", fragment=SWIG_AsPtr_frag(std::string)) {
 SWIGINTERN int
 SWIG_AsVal_dec(std::string)(SWIG_Object obj, std::string* val)
@@ -22,6 +23,37 @@ SWIG_AsVal_dec(std::string)(SWIG_Object obj, std::string* val)
                           "removed in future Kodi versions. Please pass an empty string instead.");
     if (val)
       val->clear();
+    return SWIG_OK;
+  }
+
+  /* Stock SWIG_AsCharPtrAndSize takes str only, while the typecheck typemap
+     below offers this conversion bytes as well. */
+  if (PyBytes_Check(obj))
+  {
+    CLog::Log(LOGWARNING, "Passing bytes where a string is expected is deprecated and will be "
+                          "removed in v23. Please .decode() the value first.");
+
+    PyObject* decoded = PyUnicode_FromEncodedObject(obj, "utf-8", "strict");
+    if (!decoded)
+    {
+      PyErr_Clear();
+      return SWIG_TypeError;
+    }
+
+    if (val)
+    {
+      Py_ssize_t size = 0;
+      const char* text = PyUnicode_AsUTF8AndSize(decoded, &size);
+      if (!text)
+      {
+        Py_DECREF(decoded);
+        PyErr_Clear();
+        return SWIG_TypeError;
+      }
+      val->assign(text, size);
+    }
+
+    Py_DECREF(decoded);
     return SWIG_OK;
   }
 
