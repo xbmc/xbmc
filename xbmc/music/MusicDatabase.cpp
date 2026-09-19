@@ -115,6 +115,67 @@ void AnnounceUpdate(const std::string& content, int id, bool added = false)
     data["added"] = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnUpdate", data);
 }
+
+/*!
+ \brief Owner of a temporary table that CREATE TEMPORARY TABLE can not provide.
+
+ Some queries need a table to hold intermediate results but can not use CREATE TEMPORARY TABLE
+ (see GetArtistDiscography for why), so the table has to be an ordinary one. Being ordinary it
+ survives the call that made it and is visible to every client of a shared library, so this
+ owner drops it when it goes out of scope, on the exceptional path as well as the ordinary
+ ones, giving it the lifetime a real temporary table would have had.
+*/
+class CTemporaryTable
+{
+public:
+  /*!
+   \brief Create the table, replacing one an earlier call may have left behind.
+
+   A crash, or a kill between creating the table and dropping it, is the only way a leftover
+   comes to exist. Failure to provide the table is left to propagate: the caller can not
+   continue without it, and an object that fails to construct is never destroyed, so no
+   half-made table is dropped on the way out.
+
+   \param ds dataset of an open connection, which must outlive this object
+   \param name name of the table
+   \param columns parenthesised column definitions used to create the table
+   \throws dbiplus::DbErrors when the table can not be created
+  */
+  CTemporaryTable(dbiplus::Dataset& ds, std::string name, const std::string& columns)
+    : m_ds(ds),
+      m_name(std::move(name))
+  {
+    m_ds.exec("DROP TABLE IF EXISTS " + m_name);
+    m_ds.exec("CREATE TABLE " + m_name + " " + columns);
+  }
+
+  //! \brief Drop the table. Best effort: the caller is done with it either way, and the next
+  //! call recovers from one left behind.
+  ~CTemporaryTable()
+  {
+    try
+    {
+      m_ds.exec("DROP TABLE IF EXISTS " + m_name);
+    }
+    catch (const dbiplus::DbErrors& e)
+    {
+      CLog::Log(LOGWARNING, "Unable to drop temporary table {}: {}", m_name, e.getMsg());
+    }
+    catch (...)
+    {
+      CLog::Log(LOGWARNING, "Unable to drop temporary table {}", m_name);
+    }
+  }
+
+  CTemporaryTable(const CTemporaryTable&) = delete;
+  CTemporaryTable& operator=(const CTemporaryTable&) = delete;
+  CTemporaryTable(CTemporaryTable&&) = delete;
+  CTemporaryTable& operator=(CTemporaryTable&&) = delete;
+
+private:
+  dbiplus::Dataset& m_ds;
+  const std::string m_name;
+};
 } // unnamed namespace
 
 CMusicDatabase::CMusicDatabase() : CDatabase(KODI::DATABASE::TYPE_MUSIC)
@@ -2130,9 +2191,14 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
         const dbiplus::sql_record* const record = m_pDS->get_sql_record();
         CDiscoAlbum discoAlbum;
         discoAlbum.strAlbum = record->at(discographyOffset + 1).get_asString();
-        discoAlbum.strYear = record->at(discographyOffset + 2).get_asString();
-        discoAlbum.strReleaseGroupMBID = record->at(discographyOffset + 3).get_asString();
-        artist.discography.emplace_back(discoAlbum);
+        // Skip entries with no title: the LEFT JOIN yields one all-NULL row for an artist with
+        // no discography, and a titleless entry is useless to callers regardless.
+        if (!discoAlbum.strAlbum.empty())
+        {
+          discoAlbum.strYear = record->at(discographyOffset + 2).get_asString();
+          discoAlbum.strReleaseGroupMBID = record->at(discographyOffset + 3).get_asString();
+          artist.discography.emplace_back(discoAlbum);
+        }
         m_pDS->next();
       }
     }
@@ -2141,12 +2207,18 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist& artist, bool fetchAll /* =
     artist.videolinks.clear();
     if (fetchAll)
     {
-      strSQL = PrepareSQL("SELECT idSong, strTitle, strMusicBrainzTrackID, strVideoURL, url "
-                          "FROM song JOIN album_artist ON song.idAlbum = album_artist.idAlbum "
-                          "LEFT JOIN art ON art.media_id = song.idSong AND art.type = 'videothumb' "
-                          "WHERE album_artist.idArtist = %i AND "
-                          "song.strVideoURL is not NULL GROUP by song.strVideoURL ORDER BY idSong",
-                          idArtist);
+      // Group by every column that ends up in an ArtistVideoLinks, so that the same video listed
+      // against several copies of a song yields one entry, without collapsing distinct songs that
+      // happen to share a video URL - those are separate links, and UpdateArtist() writes back
+      // exactly what is read here.
+      strSQL =
+          PrepareSQL("SELECT MIN(song.idSong), strTitle, strMusicBrainzTrackID, strVideoURL, url "
+                     "FROM song JOIN album_artist ON song.idAlbum = album_artist.idAlbum "
+                     "LEFT JOIN art ON art.media_id = song.idSong AND art.type = 'videothumb' "
+                     "WHERE album_artist.idArtist = %i AND song.strVideoURL is not NULL "
+                     "GROUP BY strTitle, strMusicBrainzTrackID, strVideoURL, url "
+                     "ORDER BY MIN(song.idSong)",
+                     idArtist);
       debugSQL += strSQL;
       m_pDS->query(strSQL);
       while (!m_pDS->eof())
@@ -2369,22 +2441,26 @@ bool CMusicDatabase::DeleteArtistDiscography(int idArtist)
 
 bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
 {
+  if (nullptr == m_pDB)
+    return false;
+  if (nullptr == m_pDS)
+    return false;
+
+  /* Combine entries from discography and album tables.
+
+     Can not use CREATE TEMPORARY TABLE: MySQL can not refer to a temporary table more than once
+     in the same statement (ERROR 1137 "Can't reopen table"), which the year fixup below does.
+     The workaround MySQL documents for this is a common table expression, needing MySQL 8.0 -
+     above the 5.7.9 minimum this code supports.
+
+     Being ordinary tables they outlive this call, so CTemporaryTable owns them: it creates them,
+     replacing any an earlier failure left behind, and drops them on every exit path below.
+  */
   try
   {
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS)
-      return false;
-
-    /* Combine entries from discography and album tables
-       Can not use CREATE TEMPORARY TABLE as MySQL does not support updates of table using
-       correlated subqueries to a temp table. An updatable join to temp table would work in MySQL
-       but SQLite not support updatable joins.
-    */
-    m_pDS->exec("CREATE TABLE tempDisco "
-                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
-    m_pDS->exec("CREATE TABLE tempAlbum "
-                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
+    const std::string columns{"(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)"};
+    const CTemporaryTable tempDisco{*m_pDS, "tempDisco", columns};
+    const CTemporaryTable tempAlbum{*m_pDS, "tempAlbum", columns};
 
     std::string strSQL;
     strSQL = PrepareSQL("INSERT INTO tempDisco(strAlbum, strYear, mbid, idAlbum) "
@@ -2446,6 +2522,7 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
 
     if (!m_pDS->query(strSQL))
       return false;
+
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -2471,15 +2548,15 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
 
     // cleanup
     m_pDS->close();
-    m_pDS->exec("DROP TABLE tempDisco");
-    m_pDS->exec("DROP TABLE tempAlbum");
 
     return true;
   }
+  catch (const dbiplus::DbErrors& e)
+  {
+    CLog::LogF(LOGERROR, "failed: {}", e.getMsg());
+  }
   catch (...)
   {
-    m_pDS->exec("DROP TABLE tempDisco");
-    m_pDS->exec("DROP TABLE tempAlbum");
     CLog::LogF(LOGERROR, "failed");
   }
   return false;
