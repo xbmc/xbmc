@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "ActiveAEDeviceChange.h"
 #include "ActiveAESink.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
@@ -317,7 +318,10 @@ protected:
   void Dispose();
   void LoadSettings();
   void ValidateOutputDevices(bool saveChanges);
-  void HandleDeviceCountChange(const std::string& driver, bool defaultDeviceChanged);
+  void QueueDeviceChange(const std::string& driver, bool defaultDeviceChanged);
+  bool ProcessPendingDeviceChange();
+  std::chrono::milliseconds GetPendingDeviceChangeTimeout() const;
+  bool HandleDeviceCountChange(const std::string& driver, bool defaultDeviceChanged);
   bool NeedReconfigureBuffers();
   bool NeedReconfigureSink();
   void ApplySettingsToFormat(AEAudioFormat& format,
@@ -359,6 +363,9 @@ protected:
   std::chrono::milliseconds m_extKeepConfig;
   bool m_extDeferData;
   std::queue<time_t> m_extLastDeviceChange;
+  ActiveAE::INTERNAL::PendingDeviceChange m_pendingDeviceChange;
+  XbmcThreads::EndTime<> m_deviceChangeSettleTimer;
+  XbmcThreads::EndTime<> m_deviceChangeDeadline;
   bool m_extSuspended = false;
   bool m_isWinSysReg = false;
 

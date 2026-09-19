@@ -50,3 +50,39 @@ TEST(TestActiveAEDeviceChange, IgnoresDefaultChangeForHealthyExplicitDevice)
   const DeviceChangeDecision decision{true, true, false, false, true, true};
   EXPECT_FALSE(ShouldReconfigure(decision));
 }
+
+TEST(TestActiveAEDeviceChange, MergesBurstFromSameDriver)
+{
+  PendingDeviceChange change;
+  EXPECT_FALSE(change.pending);
+
+  change.Add("PULSE", false);
+  change.Add("PULSE", false);
+
+  EXPECT_TRUE(change.pending);
+  EXPECT_EQ(change.driver, "PULSE");
+  EXPECT_FALSE(change.defaultDeviceChanged);
+}
+
+TEST(TestActiveAEDeviceChange, EnumeratesAllDriversForMixedBurst)
+{
+  PendingDeviceChange change;
+  change.Add("PULSE", false);
+  change.Add("ALSA", false);
+  change.Add("PULSE", false);
+
+  EXPECT_TRUE(change.pending);
+  EXPECT_TRUE(change.driver.empty());
+}
+
+TEST(TestActiveAEDeviceChange, KeepsDefaultChangeFromAnyEventInBurst)
+{
+  PendingDeviceChange change;
+  change.Add("", false);
+  change.Add("", true);
+  change.Add("", false);
+
+  EXPECT_TRUE(change.pending);
+  EXPECT_TRUE(change.driver.empty());
+  EXPECT_TRUE(change.defaultDeviceChanged);
+}
