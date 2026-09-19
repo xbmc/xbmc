@@ -302,6 +302,15 @@ bool CApplicationPlayer::IsLiveStream() const
   return false;
 }
 
+bool CApplicationPlayer::IsStreaming() const
+{
+  std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->IsStreaming();
+
+  return false;
+}
+
 void CApplicationPlayer::Pause()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
