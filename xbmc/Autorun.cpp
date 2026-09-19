@@ -121,17 +121,13 @@ bool CAutorun::PlayDisc(const std::string& path, const PlayDiscOptions& options)
 
   const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo(path)};
 
+  // An audio CD has no filesystem of its own to browse. Every other disc is played from the path
+  // of the drive it is in
   if (pInfo && pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
-
-  if (mediaPath.empty() && (pInfo && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) ||
-                                      pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))))
-    mediaPath = "iso9660://";
-
-  if (mediaPath.empty())
+  else if (!path.empty())
     mediaPath = path;
-
-  if (mediaPath.empty() || mediaPath == "iso9660://")
+  else
     mediaPath = CServiceBroker::GetMediaManager().GetDiscPath();
 
   const CURL pathToUrl(mediaPath);
