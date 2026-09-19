@@ -125,6 +125,13 @@ bool CInputManager::ProcessMouse(int windowId)
   // Reset the screensaver and idle timers
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+
+  // a pointer moving on its own must not end a blank the user asked for
+  if (mousekey == KEY_MOUSE_MOVE && appPower->IsDPMSActive() && appPower->IsDPMSManual() &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_POWERMANAGEMENT_WAKEMANUALDPMS))
+    return true;
+
   appPower->ResetSystemIdleTimer();
   appPower->ResetScreenSaver();
 

@@ -58,6 +58,7 @@ public:
   void ResetNavigationTimer();
 
   bool IsDPMSActive() const { return m_dpmsIsActive; }
+  bool IsDPMSManual() const { return m_dpmsIsManual; }
   bool ToggleDPMS(bool manual);
 
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
