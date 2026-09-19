@@ -3644,6 +3644,21 @@
           <control type="toggle" />
           <default>true</default>
         </setting>
+        <setting id="input.pointersettletime" type="integer" label="35023" help="36195">
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>1</step>
+            <maximum>10</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="input.enablemouse">true</dependency>
+          </dependencies>
+          <control type="spinner" format="string">
+            <formatlabel>14044</formatlabel>
+          </control>
+        </setting>
         <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
           <level>2</level>
           <control type="toggle" />

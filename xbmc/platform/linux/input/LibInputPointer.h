@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <chrono>
+
 #include <libinput.h>
 
 struct pos
@@ -27,6 +29,17 @@ public:
   void ProcessMotionAbsolute(libinput_event_pointer *e);
   void ProcessAxis(libinput_event_pointer *e);
 
+  /*!
+   * \brief Start the settle window in which motion is discarded
+   *
+   * Called when a pointing device appears. The length of the window comes from
+   * input.pointersettletime, and a value of zero leaves motion untouched.
+   */
+  void DeviceAdded();
+
 private:
+  bool IsSettling() const;
+
+  std::chrono::steady_clock::time_point m_settled;
   struct pos m_pos = { 0, 0 };
 };
