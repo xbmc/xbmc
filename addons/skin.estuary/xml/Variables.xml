@@ -908,23 +908,8 @@
 		<value condition="!String.IsEmpty(ListItem.Property(stream.codec))">$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.description), | ]</value>
 		<value>$INFO[ListItem.Property(stream.description)]</value>
 	</variable>
-	<variable name="MediaInfoListLabelVar">
-		<value>$INFO[ListItem.Label]</value>
-	</variable>
-	<variable name="MediaInfoListLabel2Var">
-		<value condition="ListItem.IsStereoscopic">3D$VAR[VideoCodecVar, | ]$INFO[ListItem.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.VideoAspect, | ,:1]$VAR[VideoAssetAudioPropertyVar]$VAR[VideoLanguagesVar]</value>
-		<value>$VAR[VideoCodecVar]$INFO[ListItem.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.VideoAspect, | ,:1]$VAR[VideoAssetAudioPropertyVar]$VAR[VideoLanguagesVar]</value>
-	</variable>
-	<variable name="VideoAssetAudioPropertyVar">
-		<value condition="Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)">$VAR[FirstAudioCodecVar, | ]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]</value>
-		<value>$VAR[AudioCodecVar, | ]$VAR[AudioChannelsVar, ]</value>
-	</variable>
 	<variable name="FirstAudioCodecVar">
 		<value>$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]</value>
-	</variable>
-	<variable name="VideoLanguagesVar">
-		<value condition="!String.IsEqual(ListItem.AudioLanguage,und) + [Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)]">$INFO[ListItem.FirstAudioLanguage, | ]</value>
-		<value condition="!String.IsEqual(ListItem.AudioLanguage,und)">$INFO[ListItem.AudioLanguage, | ]</value>
 	</variable>
 	<variable name="PVRInstanceName">
 		<value condition="Integer.IsGreater(PVR.ClientCount,1)">$INFO[ListItem.PVRClientName,[COLOR grey]$LOCALIZE[31137]:[/COLOR] ,]$INFO[ListItem.PVRInstanceName, (,)]</value>
@@ -961,8 +946,10 @@
 		<value>$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, &#8226; ]$VAR[VideoHDRType2Var, &#8226; ]$VAR[VideoCodecVar, &#8226; ]$INFO[ListItem.VideoAspect, &#8226; ,:1]</value>
 	</variable>
 	<variable name="MediaAudioPropVar">
-		<value condition="Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioLanguage,und)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]</value>
+		<value condition="String.IsEqual(VideoPlayer.AudioLanguage,und) + Window.IsActive(fullscreenvideo)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]</value>
 		<value condition="Window.IsActive(fullscreenvideo)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[VideoPlayer.AudioLanguage, &#8226; ]</value>
+		<value condition="String.IsEqual(ListItem.AudioLanguage,und) + [Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)]">$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]</value>
+		<value condition="Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)">$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]$INFO[ListItem.FirstAudioLanguage, &#8226; ]</value>
 		<value condition="String.IsEqual(ListItem.AudioLanguage,und)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]</value>
 		<value>$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.AudioLanguage, &#8226; ]</value>
 	</variable>
