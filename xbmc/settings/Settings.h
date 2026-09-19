@@ -427,6 +427,7 @@ public:
   static constexpr auto SETTING_INPUT_PERIPHERALS = "input.peripherals";
   static constexpr auto SETTING_INPUT_PERIPHERALLIBRARIES = "input.peripherallibraries";
   static constexpr auto SETTING_INPUT_ENABLEMOUSE = "input.enablemouse";
+  static constexpr auto SETTING_INPUT_POINTERWAKESSCREEN = "input.pointerwakesscreen";
   static constexpr auto SETTING_INPUT_ASKNEWCONTROLLERS = "input.asknewcontrollers";
   static constexpr auto SETTING_INPUT_CONTROLLERCONFIG = "input.controllerconfig";
   static constexpr auto SETTING_INPUT_RUMBLENOTIFY = "input.rumblenotify";
