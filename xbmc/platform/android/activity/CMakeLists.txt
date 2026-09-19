@@ -1,12 +1,14 @@
 set(SOURCES android_main.cpp
             AndroidJoyStick.cpp
             AndroidKey.cpp
+            AndroidKeyboard.cpp
             AndroidMouse.cpp
             AndroidTouch.cpp
             EventLoop.cpp
             JNIMainActivity.cpp
             JNIXBMCMainView.cpp
             JNIXBMCMediaSession.cpp
+            JNIXBMCNativeKeyboard.cpp
             JNIXBMCVideoView.cpp
             JNIXBMCAudioManagerOnAudioFocusChangeListener.cpp
             JNIXBMCSurfaceTextureOnFrameAvailableListener.cpp
@@ -25,6 +27,7 @@ set(SOURCES android_main.cpp
 
 set(HEADERS AndroidJoyStick.h
             AndroidKey.h
+            AndroidKeyboard.h
             AndroidMouse.h
             AndroidTouch.h
             EventLoop.h
@@ -32,6 +35,7 @@ set(HEADERS AndroidJoyStick.h
             JNIMainActivity.h
             JNIXBMCMainView.h
             JNIXBMCMediaSession.h
+            JNIXBMCNativeKeyboard.h
             JNIXBMCVideoView.h
             JNIXBMCAudioManagerOnAudioFocusChangeListener.h
             JNIXBMCSurfaceTextureOnFrameAvailableListener.h
