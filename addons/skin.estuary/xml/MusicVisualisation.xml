@@ -14,22 +14,45 @@
 			<visible>!Skin.HasSetting(hide_background_fanart)</visible>
 			<animation effect="zoom" start="105" end="130" center="auto" time="10000" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animate_background_fanart)">Conditional</animation>
 			<animation effect="slide" start="-30,-30" end="30,30" time="6000" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animate_background_fanart)">Conditional</animation>
-			<control type="image">
-				<aspectratio>scale</aspectratio>
-				<fadetime>400</fadetime>
-				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
-				<texture background="true">$INFO[Player.Art(fanart)]</texture>
-				<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
+			<control type="group">
+				<visible>!PVR.IsPlayingRadio</visible>
+				<control type="image">
+					<aspectratio>scale</aspectratio>
+					<fadetime>400</fadetime>
+					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+					<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
+					<texture background="true">$INFO[Player.Art(fanart)]</texture>
+					<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
+				</control>
+				<control type="image">
+					<aspectratio>scale</aspectratio>
+					<fadetime>400</fadetime>
+					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+					<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
+					<texture background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
+				</control>
 			</control>
-			<control type="image">
-				<aspectratio>scale</aspectratio>
-				<fadetime>400</fadetime>
-				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
-				<texture background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
+			<control type="group">
+				<visible>PVR.IsPlayingRadio</visible>
+				<control type="image">
+					<aspectratio>keep</aspectratio>
+					<fadetime>400</fadetime>
+					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+					<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
+					<texture background="true">$INFO[Player.Art(fanart)]</texture>
+					<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
+				</control>
+				<control type="image">
+					<aspectratio>keep</aspectratio>
+					<fadetime>400</fadetime>
+					<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+					<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+					<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
+					<texture background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
+				</control>
 			</control>
 		</control>
 		<control type="group">
