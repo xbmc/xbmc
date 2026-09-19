@@ -52,6 +52,8 @@ public:
 private:
   AEAudioFormat m_format;
   std::chrono::duration<double, std::ratio<1>> m_latency;
+  uint32_t m_bufferSize{0};
+  uint32_t m_stride{0};
 
   std::unique_ptr<KODI::PIPEWIRE::CPipewireStream> m_stream;
 };
