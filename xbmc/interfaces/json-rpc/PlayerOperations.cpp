@@ -134,7 +134,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Video)
   {
     CVariant video = CVariant(CVariant::VariantTypeObject);
-    video["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_VIDEO);
+    video["playerid"] = static_cast<int>(PlayerIdOf(Video));
     video["type"] = "video";
     video["playertype"] = strPlayerType;
     result.append(video);
@@ -142,7 +142,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Audio)
   {
     CVariant audio = CVariant(CVariant::VariantTypeObject);
-    audio["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
+    audio["playerid"] = static_cast<int>(PlayerIdOf(Audio));
     audio["type"] = "audio";
     audio["playertype"] = strPlayerType;
     result.append(audio);
@@ -150,7 +150,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Picture)
   {
     CVariant picture = CVariant(CVariant::VariantTypeObject);
-    picture["playerid"] = static_cast<int>(PLAYLIST::Id::TYPE_PICTURE);
+    picture["playerid"] = static_cast<int>(PlayerIdOf(Picture));
     picture["type"] = "picture";
     picture["playertype"] = "internal";
     result.append(picture);
@@ -1540,29 +1540,7 @@ int CPlayerOperations::GetActivePlayers()
 
 PlayerType CPlayerOperations::GetPlayer(const CVariant& player)
 {
-  PlayerType playerID;
-
-  switch (PLAYLIST::Id{player.asInteger32()})
-  {
-    case PLAYLIST::Id::TYPE_VIDEO:
-      playerID = Video;
-      break;
-
-    case PLAYLIST::Id::TYPE_MUSIC:
-      playerID = Audio;
-      break;
-
-    case PLAYLIST::Id::TYPE_PICTURE:
-      playerID = Picture;
-      break;
-
-    default:
-      playerID = None;
-      break;
-  }
-
-  // An id names a player only while that player is running
-  return (GetActivePlayers() & playerID) != 0 ? playerID : None;
+  return RunningPlayerForId(PLAYLIST::Id{player.asInteger32()}, GetActivePlayers());
 }
 
 PLAYLIST::Id CPlayerOperations::GetPlaylist(PlayerType player)
