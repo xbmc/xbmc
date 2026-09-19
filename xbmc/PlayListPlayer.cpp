@@ -1109,8 +1109,10 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   case TMSG_MEDIA_PAUSE_IF_PLAYING:
     if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
     {
-      wakeScreensaver();
-      appPlayer->Pause();
+      const bool showOSD = pMsg->param1 != 0;
+      if (showOSD)
+        wakeScreensaver();
+      appPlayer->Pause(showOSD);
     }
     break;
 

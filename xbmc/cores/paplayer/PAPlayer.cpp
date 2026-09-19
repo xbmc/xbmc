@@ -967,7 +967,7 @@ bool PAPlayer::IsPlaying() const
   return m_isPlaying;
 }
 
-void PAPlayer::Pause()
+void PAPlayer::Pause(bool /* showOSD */)
 {
   if (m_isPaused)
   {

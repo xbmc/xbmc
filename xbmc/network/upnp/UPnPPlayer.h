@@ -34,7 +34,7 @@ public:
   bool QueueNextFile(const CFileItem &file) override;
   bool CloseFile(bool reopen = false) override;
   bool IsPlaying() const override;
-  void Pause() override;
+  void Pause(bool showOSD = true) override;
   bool HasVideo() const override { return m_hasVideo; }
   bool HasAudio() const override { return m_hasAudio; }
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;

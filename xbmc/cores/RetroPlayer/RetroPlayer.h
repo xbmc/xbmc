@@ -49,7 +49,7 @@ public:
   bool CloseFile(bool reopen = false) override;
   bool IsPlaying() const override;
   bool CanPause() const override;
-  void Pause() override;
+  void Pause(bool showOSD = true) override;
   bool HasVideo() const override { return true; }
   bool HasAudio() const override { return true; }
   bool HasGame() const override { return true; }
@@ -91,6 +91,9 @@ public:
   std::string CreateAutosave() override;
 
 private:
+  friend class TestRetroPlayerPause;
+
+  void SetSpeed(float speed, bool showOSD);
   void SetSpeedInternal(double speed);
 
   /*!
