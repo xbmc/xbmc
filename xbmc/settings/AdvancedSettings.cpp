@@ -471,6 +471,7 @@ void CAdvancedSettings::Initialize()
 
   m_cpuTempCmd = "";
   m_gpuTempCmd = "";
+  m_cpuTempHwmon = "";
 
   m_powerdownCommand = "";
   m_rebootCommand = "";
@@ -1220,6 +1221,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetString(pRootElement, "cputempcommand", m_cpuTempCmd);
   XMLUtils::GetString(pRootElement, "gputempcommand", m_gpuTempCmd);
+  XMLUtils::GetString(pRootElement, "cputemphwmon", m_cpuTempHwmon);
 
   const TiXmlElement* pPowerManagement = pRootElement->FirstChildElement("powermanagement");
   if (pPowerManagement)
