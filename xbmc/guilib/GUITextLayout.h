@@ -189,13 +189,19 @@ protected:
 private:
   inline bool IsSpace(character_t letter) const XBMC_FORCE_INLINE
   {
-    return (letter & 0xffff) == L' ';
+    character_t ch = letter & 0xffff;
+    return ch == L' ' || ch == L'\u3000';
   };
   inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
   {
     character_t ch = letter & 0xffff;
-    //! @todo: unicode spaces are not handled, to check also all other GUI parts
-    return ch == L' ';
+    if (ch == L' ' || ch == L'\u3000') // spaces
+      return true;
+    if ((ch >= 0x4E00 && ch <= 0x9FFF) || // CJK Unified Ideographs
+        (ch >= 0x3400 && ch <= 0x4DBF) || // CJK Ext-A
+        (ch >= 0xF900 && ch <= 0xFAFF)) // CJK Compatibility Ideographs
+      return true;
+    return false;
   };
   static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
