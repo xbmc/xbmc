@@ -8,7 +8,7 @@ import re
 def allmusic_albumfind(data, artist, album):
     data = data.decode('utf-8')
     albums = []
-    albumlist = re.findall('class="album">\s*(.*?)\s*</li', data, re.S)
+    albumlist = re.findall(r'class="album">\s*(.*?)\s*</li', data, re.S)
     for item in albumlist:
         albumdata = {}
         albumartist = re.search('class="artist">.*?>(.*?)</a', item, re.S)
@@ -25,7 +25,7 @@ def allmusic_albumfind(data, artist, album):
         artistmatch = difflib.SequenceMatcher(None, artist.lower(), albumdata['artist'].lower()).ratio()
         albummatch = difflib.SequenceMatcher(None, album.lower(), albumdata['album'].lower()).ratio()
         if artistmatch > 0.90 and albummatch > 0.90:
-            albumurl = re.search('class="title">\s*<a href="(.*?)"', item)
+            albumurl = re.search(r'class="title">\s*<a href="(.*?)"', item)
             if albumurl:
                 albumdata['url'] = albumurl.group(1)
             else: # not likely to happen, but just in case
@@ -51,38 +51,38 @@ def allmusic_albumdetails(data):
         else:
             # year
             albumdata['releasedate'] = dateformat
-    yeardata = re.search('class="year".*?>\s*(.*?)\s*<', data)
+    yeardata = re.search(r'class="year".*?>\s*(.*?)\s*<', data)
     if yeardata:
         albumdata['year'] = yeardata.group(1)
     genredata = re.search('class="genre">.*?">(.*?)<', data, re.S)
     if genredata:
         albumdata['genre'] = genredata.group(1)
-    styledata = re.search('class="styles">.*?div>\s*(.*?)\s*</div', data, re.S)
+    styledata = re.search(r'class="styles">.*?div>\s*(.*?)\s*</div', data, re.S)
     if styledata:
         stylelist = re.findall('">(.*?)<', styledata.group(1))
         if stylelist:
             albumdata['styles'] =  ' / '.join(stylelist)
-    mooddata = re.search('class="moods">.*?div>\s*(.*?)\s*</div', data, re.S)
+    mooddata = re.search(r'class="moods">.*?div>\s*(.*?)\s*</div', data, re.S)
     if mooddata:
         moodlist = re.findall('">(.*?)<', mooddata.group(1))
         if moodlist:
             albumdata['moods'] =  ' / '.join(moodlist)
-    themedata = re.search('class="themes">.*?div>\s*(.*?)\s*</div', data, re.S)
+    themedata = re.search(r'class="themes">.*?div>\s*(.*?)\s*</div', data, re.S)
     if themedata:
         themelist = re.findall('">(.*?)<', themedata.group(1))
         if themelist:
             albumdata['themes'] =  ' / '.join(themelist)
-    ratingdata = re.search('itemprop="ratingValue">\s*(.*?)\s*</div', data)
+    ratingdata = re.search(r'itemprop="ratingValue">\s*(.*?)\s*</div', data)
     if ratingdata:
         albumdata['rating'] = ratingdata.group(1)
     albumdata['votes'] = ''
-    titledata = re.search('class="album-title".*?>\s*(.*?)\s*<', data, re.S)
+    titledata = re.search(r'class="album-title".*?>\s*(.*?)\s*<', data, re.S)
     if titledata:
         albumdata['album'] = titledata.group(1)
     labeldata = re.search('class="label-catalog".*?<.*?>(.*?)<', data, re.S)
     if labeldata:
         albumdata['label'] = labeldata.group(1)
-    artistdata = re.search('class="album-artist".*?<span.*?>\s*(.*?)\s*</span', data, re.S)
+    artistdata = re.search(r'class="album-artist".*?<span.*?>\s*(.*?)\s*</span', data, re.S)
     if artistdata:
         artistlist = re.findall('">(.*?)<', artistdata.group(1))
         artists = []

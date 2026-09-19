@@ -5,7 +5,7 @@ import re
 def allmusic_artistfind(data, artist):
     data = data.decode('utf-8')
     artists = []
-    artistlist = re.findall('class="artist">\s*(.*?)\s*</li', data, re.S)
+    artistlist = re.findall(r'class="artist">\s*(.*?)\s*</li', data, re.S)
     for item in artistlist:
         artistdata = {}
         artistname = re.search('class="name">.*?>(.*?)</a', item, re.S)
@@ -16,7 +16,7 @@ def allmusic_artistfind(data, artist):
         # filter inaccurate results
         artistmatch = difflib.SequenceMatcher(None, artist.lower(), artistdata['artist'].lower()).ratio()
         if artistmatch > 0.95:
-            artisturl = re.search('class="name">\s*<a href="(.*?)"', item)
+            artisturl = re.search(r'class="name">\s*<a href="(.*?)"', item)
             if artisturl:
                 artistdata['url'] = artisturl.group(1)
             else: # not likely to happen, but just in case
