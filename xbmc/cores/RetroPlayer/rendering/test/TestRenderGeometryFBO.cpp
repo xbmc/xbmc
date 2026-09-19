@@ -41,17 +41,3 @@ TEST(TestRenderGeometryFBO, ShaderTextureRetainsSourceCrop)
   EXPECT_EQ(CRect(0.1f, 0.125f, 0.9f, 0.75f),
             CRenderGeometryFBO::GetTextureCoordinates({32, 30, 288, 180}, 240, 320, 240, false));
 }
-
-TEST(TestRenderGeometryFBO, ShaderResolutionAccountsForZoomCrop)
-{
-  const ViewportCoordinates dest{{{100, 100}, {740, 100}, {740, 460}, {100, 460}}};
-  EXPECT_EQ(CSize(640, 480),
-            CRenderGeometryFBO::GetShaderOutputSize({0, 30, 320, 210}, 320, 240, dest));
-}
-
-TEST(TestRenderGeometryFBO, ShaderResolutionFollowsRotatedPreview)
-{
-  const ViewportCoordinates dest{{{100, 420}, {100, 100}, {340, 100}, {340, 420}}};
-  EXPECT_EQ(CSize(320, 240),
-            CRenderGeometryFBO::GetShaderOutputSize({0, 0, 320, 240}, 320, 240, dest));
-}

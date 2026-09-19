@@ -336,6 +336,15 @@ void CRPRendererFBO::Render(uint8_t alpha)
 
   if (m_bUseShaderPreset)
   {
+    // Preserve the GUI target and clipping across shader target allocation and passes.
+    GLint readFramebuffer, drawFramebuffer, scissorBox[4];
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFramebuffer);
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFramebuffer);
+    glGetIntegerv(GL_SCISSOR_BOX, scissorBox);
+#if defined(HAS_GL)
+    const GLboolean sRGBEnabled = glIsEnabled(GL_FRAMEBUFFER_SRGB);
+#endif
+
     if (m_shaderTargetTexture &&
         (m_shaderTargetWidth != m_fullDestWidth || m_shaderTargetHeight != m_fullDestHeight))
     {
@@ -404,6 +413,16 @@ void CRPRendererFBO::Render(uint8_t alpha)
         m_bUseShaderPreset = false;
       }
     }
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, readFramebuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, drawFramebuffer);
+    glScissor(scissorBox[0], scissorBox[1], scissorBox[2], scissorBox[3]);
+#if defined(HAS_GL)
+    if (sRGBEnabled)
+      glEnable(GL_FRAMEBUFFER_SRGB);
+    else
+      glDisable(GL_FRAMEBUFFER_SRGB);
+#endif
   }
 
   if (alpha < 255)
