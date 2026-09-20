@@ -32,6 +32,7 @@ public:
   void Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items) override;
   bool IsUpdating() const override;
   void Reset() override;
+  void FreeResources(bool immediately) override;
   bool OnClick(const std::shared_ptr<CGUIListItem>& item) override;
   bool OnInfo(const std::shared_ptr<CGUIListItem>& item) override;
   bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) override;
