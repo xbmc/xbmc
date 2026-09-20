@@ -10,7 +10,8 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  15-wasm-static-hacl.patch \
                                  16-ios-static-nonframework.patch \
                                  17-ios-simulator-version-min.patch \
-                                 18-ios-objc-fallback.patch
+                                 18-ios-objc-fallback.patch \
+                                 19-tvos-disable-fork-exec.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   ifeq ($(OS), darwin_embedded)
@@ -142,6 +143,10 @@ ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
 	cd $(PLATFORM); patch -p1 -i ../16-ios-static-nonframework.patch
 	cd $(PLATFORM); patch -p1 -i ../17-ios-simulator-version-min.patch
 	cd $(PLATFORM); patch -p1 -i ../18-ios-objc-fallback.patch
+endif
+ifeq ($(findstring appletv,$(TARGET_PLATFORM)),appletv)
+	# TODO: drop once tvOS is built as a real Python platform
+	cd $(PLATFORM); patch -p1 -i ../19-tvos-disable-fork-exec.patch
 endif
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)
