@@ -11,6 +11,7 @@
 #include "threads/CriticalSection.h"
 
 #include <cstddef>
+#include <functional>
 #include <memory>
 #include <queue>
 #include <string>
@@ -104,7 +105,12 @@ public:
   bool ReceiveInMessage(Message **msg);
   void Purge();
   void PurgeIn(int signal);
-  void PurgeOut(int signal);
+  /*!
+   * \brief Remove queued outgoing messages with this signal
+   * \param onPurged called for each removed message before it is released
+   * \return number of messages removed
+   */
+  size_t PurgeOut(int signal, const std::function<void(const Message&)>& onPurged = {});
   void DeferIn(bool value) { inDefered = value; }
   void DeferOut(bool value) { outDefered = value; }
   void Lock() { criticalSection.lock(); }
