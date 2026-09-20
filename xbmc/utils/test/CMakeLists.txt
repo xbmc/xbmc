@@ -3,6 +3,7 @@ set(SOURCES TestAlarmClock.cpp
             TestArchive.cpp
             TestArtUtils.cpp
             TestBase64.cpp
+            TestBitstreamConverter.cpp
             TestBitstreamStats.cpp
             TestCharsetConverter.cpp
             TestCPUInfo.cpp

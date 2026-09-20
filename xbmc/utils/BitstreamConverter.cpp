@@ -883,7 +883,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
   uint8_t* buf = pData;
   uint32_t buf_size = iSize;
   uint8_t unit_type, nal_sps, nal_pps, nal_sei;
-  int32_t nal_size;
+  uint32_t nal_size;
   uint32_t cumul_size = 0;
   const uint8_t* buf_end = buf + buf_size;
 
@@ -911,13 +911,18 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
 
   do
   {
-    if (buf + m_sps_pps_context.length_size > buf_end)
+    if (buf_end - buf < m_sps_pps_context.length_size)
       goto fail;
 
     for (nal_size = 0, i = 0; i < m_sps_pps_context.length_size; i++)
       nal_size = (nal_size << 8) | buf[i];
 
     buf += m_sps_pps_context.length_size;
+
+    // Validate before reading the NAL header or forming a pointer to its end.
+    if (nal_size == 0 || nal_size > static_cast<uint32_t>(buf_end - buf))
+      goto fail;
+
     if (m_codec == AV_CODEC_ID_H264)
     {
       unit_type = *buf & 0x1f;
@@ -926,9 +931,6 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
     {
       unit_type = (*buf >> 1) & 0x3f;
     }
-
-    if (buf + nal_size > buf_end || nal_size <= 0)
-      goto fail;
 
     // Don't add sps/pps if the unit already contain them
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
