@@ -182,38 +182,21 @@ JSONRPC_STATUS CJSONRPC::GetConfiguration(const std::string &method, ITransportL
 JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   int flags = 0;
-  int oldFlags = client->GetAnnouncementFlags();
+  const int oldFlags = client->GetAnnouncementFlags();
 
   if (parameterObject.isMember("notifications"))
   {
-    CVariant notifications = parameterObject["notifications"];
-    if ((notifications["Player"].isNull() && (oldFlags & ANNOUNCEMENT::Player)) ||
-        (notifications["Player"].isBoolean() && notifications["Player"].asBoolean()))
-      flags |= ANNOUNCEMENT::Player;
-    if ((notifications["Playlist"].isNull() && (oldFlags & ANNOUNCEMENT::Playlist)) ||
-        (notifications["Playlist"].isBoolean() && notifications["Playlist"].asBoolean()))
-      flags |= ANNOUNCEMENT::Playlist;
-    if ((notifications["GUI"].isNull() && (oldFlags & ANNOUNCEMENT::GUI)) ||
-        (notifications["GUI"].isBoolean() && notifications["GUI"].asBoolean()))
-      flags |= ANNOUNCEMENT::GUI;
-    if ((notifications["System"].isNull() && (oldFlags & ANNOUNCEMENT::System)) ||
-        (notifications["System"].isBoolean() && notifications["System"].asBoolean()))
-      flags |= ANNOUNCEMENT::System;
-    if ((notifications["VideoLibrary"].isNull() && (oldFlags & ANNOUNCEMENT::VideoLibrary)) ||
-        (notifications["VideoLibrary"].isBoolean() && notifications["VideoLibrary"].asBoolean()))
-      flags |= ANNOUNCEMENT::VideoLibrary;
-    if ((notifications["AudioLibrary"].isNull() && (oldFlags & ANNOUNCEMENT::AudioLibrary)) ||
-        (notifications["AudioLibrary"].isBoolean() && notifications["AudioLibrary"].asBoolean()))
-      flags |= ANNOUNCEMENT::AudioLibrary;
-    if ((notifications["Application"].isNull() && (oldFlags & ANNOUNCEMENT::Other)) ||
-        (notifications["Application"].isBoolean() && notifications["Application"].asBoolean()))
-      flags |= ANNOUNCEMENT::Application;
-    if ((notifications["Input"].isNull() && (oldFlags & ANNOUNCEMENT::Input)) ||
-        (notifications["Input"].isBoolean() && notifications["Input"].asBoolean()))
-      flags |= ANNOUNCEMENT::Input;
-    if ((notifications["Other"].isNull() && (oldFlags & ANNOUNCEMENT::Other)) ||
-        (notifications["Other"].isBoolean() && notifications["Other"].asBoolean()))
-      flags |= ANNOUNCEMENT::Other;
+    const CVariant& notifications = parameterObject["notifications"];
+    // a namespace the caller does not name keeps its current state
+    for (int flag = 1; flag <= ANNOUNCEMENT::ANNOUNCE_ALL; flag *= 2)
+    {
+      const CVariant& requested = notifications[ANNOUNCEMENT::AnnouncementFlagToString(
+          static_cast<ANNOUNCEMENT::AnnouncementFlag>(flag))];
+      const bool wanted = requested.isNull() ? (oldFlags & flag) != 0
+                                             : requested.isBoolean() && requested.asBoolean();
+      if (wanted)
+        flags |= flag;
+    }
   }
 
   if (!client->SetAnnouncementFlags(flags))
