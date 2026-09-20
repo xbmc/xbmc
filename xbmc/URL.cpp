@@ -842,7 +842,7 @@ bool CURL::HasParentInHostname() const
 bool CURL::HasEncodedHostname() const
 {
   return HasParentInHostname() || IsProtocol("musicsearch") || IsProtocol("image") ||
-         IsProtocol("episodes");
+         IsProtocol("episodes") || IsProtocol("cdda");
 }
 
 bool CURL::HasEncodedFilename() const

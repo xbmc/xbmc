@@ -124,8 +124,18 @@ bool CAutorun::PlayDisc(const std::string& path, const PlayDiscOptions& options)
   // An audio CD has no filesystem of its own to browse. Every other disc is played from the path
   // of the drive it is in
   if (pInfo && pInfo->IsAudio(1))
-    mediaPath = "cdda://local/";
-  else if (!path.empty())
+  {
+    // A mount point does not name the drive, and on posix pInfo always describes the default one
+    const std::string devicePath{CServiceBroker::GetMediaManager().TranslateDevicePath(path)};
+    const bool namesDrive{URIUtils::IsProtocol(path, "cdda") ||
+                          (devicePath.size() == 2 && devicePath[1] == ':')};
+    CURL url;
+    url.SetProtocol("cdda");
+    url.SetHostName(namesDrive && !devicePath.empty() ? devicePath : "local");
+    mediaPath = url.Get();
+  }
+  // udev reports a device node, which cannot be browsed
+  else if (!path.empty() && !StringUtils::StartsWith(path, "/dev/"))
     mediaPath = path;
   else
     mediaPath = CServiceBroker::GetMediaManager().GetDiscPath();

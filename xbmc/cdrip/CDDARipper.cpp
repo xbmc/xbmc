@@ -12,11 +12,13 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/CDDADirectory.h"
+#include "filesystem/CDDAFile.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
@@ -267,8 +269,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
 
 std::string CCDDARipper::GetTrackName(CFileItem* item)
 {
-  // get track number from "cdda://local/01.cdda"
-  int trackNumber = atoi(item->GetPath().substr(13, item->GetPath().size() - 13 - 5).c_str());
+  const int trackNumber = XFILE::CFileCDDA::GetTrackNum(CURL(item->GetPath()));
 
   // Format up our ripped file label
   CFileItem destItem(*item);

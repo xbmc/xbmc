@@ -10,6 +10,8 @@
 
 #include "MusicInfoTag.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "filesystem/CDDAFile.h"
 #include "network/cddb.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
@@ -43,7 +45,8 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
     bool bResult = false;
 
     // Get information for the inserted disc
-    const std::shared_ptr<CCdInfo> pCdInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
+    const std::shared_ptr<CCdInfo> pCdInfo{
+        CServiceBroker::GetMediaManager().GetCdInfo(strFileName)};
     if (!pCdInfo)
       return bResult;
 
@@ -53,7 +56,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
     Xcddb cddb;
     cddb.setCacheDir(profileManager->GetCDDBFolder());
 
-    int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
+    const int iTrack = XFILE::CFileCDDA::GetTrackNum(CURL(strFileName));
 
     // duration is always available
     tag.SetDuration( ( pCdInfo->GetTrackInformation(iTrack).nMins * 60 )

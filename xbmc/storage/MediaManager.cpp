@@ -435,15 +435,16 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 
 /////////////////////////////////////////////////////////////
 // AutoSource status functions:
-//! @todo translate cdda://<device>/
 
 std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice)
 {
   std::unique_lock waitLock(m_muAutoSource);
   std::string strDevice = devicePath;
-  // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_OPTICAL_DRIVE
-  if(devicePath.empty() || StringUtils::StartsWith(devicePath, "cdda://local"))
+  // cdda://<device>/ names the drive, cdda://local/ means the first available one
+  if (URIUtils::IsProtocol(devicePath, "cdda"))
+    strDevice = CURL(devicePath).GetHostName();
+  if (strDevice.empty() || strDevice == "local")
     strDevice = m_strFirstAvailDrive;
 #endif
 
