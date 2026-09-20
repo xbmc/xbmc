@@ -305,6 +305,10 @@ public:
   bool GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile = -1);
 
   int GetPathId(const std::string& strPath);
+  /*! \brief Get the id of a path, also accepting the zip:// or archive:// equivalent of an
+   *         archive path (AddPath() stores these interchangeably).
+   */
+  int GetArchiveOrAliasPathId(const std::string& strPath);
   int GetTvShowId(const std::string& strPath);
   int GetEpisodeId(const std::string& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
   int GetSeasonId(int idShow, int season) const;
