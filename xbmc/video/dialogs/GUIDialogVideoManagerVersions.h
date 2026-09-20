@@ -39,11 +39,15 @@ public:
    * reuse this movie id as the merge target instead - used to apply a merge decision already
    * made for an earlier, related item (e.g. another bluray playlist on the same disc) without
    * re-prompting for the same target.
+   * \param[in] canBecomeDefault when false, the version is added without becoming the default one,
+   * whatever the New Versions Are Default setting says - used for the second and subsequent
+   * playlists of a bluray, which would otherwise each displace the main one as the default
    * \return a pair containing the result of the conversion and the id of the movie ends up attached to as a new version, -1 if not converted
    */
   static std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
                                                                      int dbId,
-                                                                     int targetDbId = -1);
+                                                                     int targetDbId = -1,
+                                                                     bool canBecomeDefault = true);
 
   /*!
    * \brief Strip a trailing part/disc number from a movie's title, if present, and persist the
@@ -87,7 +91,18 @@ private:
    * \return true if a version was added, false otherwise.
    */
   bool AddVideoVersion();
+
+  /*!
+   * \brief Set as default button handler
+   */
   void SetDefault();
+
+  /*!
+   * \brief Ungroup button handler
+   */
+  void Ungroup();
+  bool UngroupImpl();
+
   void UpdateDefaultVideoVersionSelection();
 
   enum class Mode

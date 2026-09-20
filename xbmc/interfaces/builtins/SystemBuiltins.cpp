@@ -169,6 +169,12 @@ static int Suspend(const std::vector<std::string>& params)
 ///     Starts the screensaver
 ///   }
 ///   \table_row2_l{
+///     <b>`ResetScreensaver`</b>
+///     ,
+///     Resets the screensaver timer and dismisses the screensaver if it is
+///     already active.
+///   }
+///   \table_row2_l{
 ///     <b>`InhibitScreensaver(yesNo)`</b>
 ///     ,
 ///     Inhibit the screensaver

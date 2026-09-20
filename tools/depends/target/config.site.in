@@ -1,7 +1,8 @@
 if test "@cross_compiling@" = "yes"; then
 cross_compiling=yes
-host=@use_host@
-host_alias=@use_host@
+# Defaults, not overrides: a package passing its own --host must win.
+: ${host=@use_host@}
+: ${host_alias=@use_host@}
 fi
 
 LD="@LD@"

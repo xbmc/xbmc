@@ -1,5 +1,89 @@
+From ca4f7e6499ea776919f0baaa44145e92b13a4538 Mon Sep 17 00:00:00 2001
+From: Michael Niedermayer <michael@niedermayer.cc>
+Date: Wed, 5 Aug 2026 17:13:52 +0200
+Subject: [PATCH] libpostproc: add postproc back
+
+Restore libpostproc as an FFmpeg source plugin after it was removed in 12497766410135f27012077e78b3bdcfc704f7ca.
+
+Signed-off-by: Michael Niedermayer <michael@niedermayer.cc>
+---
+ LICENSE.md                                 |    2 +
+ MAINTAINERS                                |    2 +
+ Makefile                                   |    2 +
+ configure                                  |   13 +-
+ doc/filters.texi                           |  175 ++
+ fftools/ffprobe.c                          |    3 +
+ fftools/opt_common.c                       |    3 +
+ libavfilter/Makefile                       |    1 +
+ libavfilter/allfilters.c                   |    1 +
+ libavfilter/vf_pp.c                        |  191 ++
+ libavutil/avutil.h                         |    1 +
+ libpostproc/Makefile                       |   23 +
+ libpostproc/libpostproc.v                  |    7 +
+ libpostproc/postprocess.c                  |  992 ++++++
+ libpostproc/postprocess.h                  |  109 +
+ libpostproc/postprocess_altivec_template.c | 1214 ++++++++
+ libpostproc/postprocess_internal.h         |  185 ++
+ libpostproc/postprocess_template.c         | 3293 ++++++++++++++++++++
+ libpostproc/postprocres.rc                 |   55 +
+ libpostproc/tests/.gitignore               |    3 +
+ libpostproc/tests/blocktest.c              |  113 +
+ libpostproc/tests/stripetest.c             |  115 +
+ libpostproc/tests/temptest.c               |  106 +
+ libpostproc/tests/test_utils.c             |   38 +
+ libpostproc/tests/test_utils.h             |   27 +
+ libpostproc/version.c                      |   45 +
+ libpostproc/version.h                      |   48 +
+ libpostproc/version_major.h                |   33 +
+ tests/Makefile                             |    1 +
+ tests/fate/filter-video.mak                |   16 +
+ tests/fate/libpostproc.mak                 |   14 +
+ tests/ref/fate/blocktest                   | 1800 +++++++++++
+ tests/ref/fate/filter-pp                   |   10 +
+ tests/ref/fate/filter-pp1                  |    1 +
+ tests/ref/fate/filter-pp2                  |    1 +
+ tests/ref/fate/filter-pp3                  |    1 +
+ tests/ref/fate/filter-pp4                  |    1 +
+ tests/ref/fate/filter-pp5                  |    1 +
+ tests/ref/fate/filter-pp6                  |    1 +
+ tests/ref/fate/filter-qp                   |    1 +
+ tests/ref/fate/stripetest                  |  360 +++
+ tests/ref/fate/temptest                    |  336 ++
+ tools/gen-rc                               |    1 +
+ 43 files changed, 9344 insertions(+), 1 deletion(-)
+ create mode 100644 libavfilter/vf_pp.c
+ create mode 100644 libpostproc/Makefile
+ create mode 100644 libpostproc/libpostproc.v
+ create mode 100644 libpostproc/postprocess.c
+ create mode 100644 libpostproc/postprocess.h
+ create mode 100644 libpostproc/postprocess_altivec_template.c
+ create mode 100644 libpostproc/postprocess_internal.h
+ create mode 100644 libpostproc/postprocess_template.c
+ create mode 100644 libpostproc/postprocres.rc
+ create mode 100644 libpostproc/tests/.gitignore
+ create mode 100644 libpostproc/tests/blocktest.c
+ create mode 100644 libpostproc/tests/stripetest.c
+ create mode 100644 libpostproc/tests/temptest.c
+ create mode 100644 libpostproc/tests/test_utils.c
+ create mode 100644 libpostproc/tests/test_utils.h
+ create mode 100644 libpostproc/version.c
+ create mode 100644 libpostproc/version.h
+ create mode 100644 libpostproc/version_major.h
+ create mode 100644 tests/fate/libpostproc.mak
+ create mode 100644 tests/ref/fate/blocktest
+ create mode 100644 tests/ref/fate/filter-pp
+ create mode 100644 tests/ref/fate/filter-pp1
+ create mode 100644 tests/ref/fate/filter-pp2
+ create mode 100644 tests/ref/fate/filter-pp3
+ create mode 100644 tests/ref/fate/filter-pp4
+ create mode 100644 tests/ref/fate/filter-pp5
+ create mode 100644 tests/ref/fate/filter-pp6
+ create mode 100644 tests/ref/fate/filter-qp
+ create mode 100644 tests/ref/fate/stripetest
+ create mode 100644 tests/ref/fate/temptest
+
 diff --git a/LICENSE.md b/LICENSE.md
-index 371b0913ce7c1..613070e1b631a 100644
+index 371b0913ce..613070e1b6 100644
 --- a/LICENSE.md
 +++ b/LICENSE.md
 @@ -12,6 +12,7 @@ configure to activate them. In this case, FFmpeg's license changes to GPL v2+.
@@ -19,10 +103,10 @@ index 371b0913ce7c1..613070e1b631a 100644
      - `vf_pullup.c`
      - `vf_repeatfields.c`
 diff --git a/MAINTAINERS b/MAINTAINERS
-index e47f6c98e9b84..708872f8ef9ed 100644
+index 7ffa6982fc..6c21bac784 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -138,6 +138,8 @@ Generic Parts:
+@@ -139,6 +139,8 @@ Generic Parts:
      ratecontrol.c                   [2] Michael Niedermayer
    simple IDCT:
      simple_idct.c, simple_idct.h    [2] Michael Niedermayer
@@ -32,7 +116,7 @@ index e47f6c98e9b84..708872f8ef9ed 100644
      tableprint.c, tableprint.h          Reimar Doeffinger
    fixed point FFT:
 diff --git a/Makefile b/Makefile
-index f296e87ed4fc1..c45c886a122bb 100644
+index ca55556cee..2cd3e95a9a 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -27,6 +27,7 @@ ALLFFLIBS =            \
@@ -52,10 +136,10 @@ index f296e87ed4fc1..c45c886a122bb 100644
  FFLIBS-$(CONFIG_SWSCALE)    += swscale
  
 diff --git a/configure b/configure
-index 17596942749ab..9d8db691a4600 100755
+index 374bd5c151..0436370443 100755
 --- a/configure
 +++ b/configure
-@@ -131,6 +131,7 @@ Component options:
+@@ -132,6 +132,7 @@ Component options:
    --disable-avformat       disable libavformat build
    --disable-swresample     disable libswresample build
    --disable-swscale        disable libswscale build
@@ -63,7 +147,7 @@ index 17596942749ab..9d8db691a4600 100755
    --disable-avfilter       disable libavfilter build
    --disable-pthreads       disable pthreads [autodetect]
    --disable-w32threads     disable Win32 threads [autodetect]
-@@ -2191,6 +2192,7 @@ LIBRARY_LIST="
+@@ -2229,6 +2230,7 @@ LIBRARY_LIST="
      avdevice
      avfilter
      swscale
@@ -71,7 +155,7 @@ index 17596942749ab..9d8db691a4600 100755
      avformat
      avcodec
      swresample
-@@ -4183,6 +4185,7 @@ pan_filter_deps="swresample"
+@@ -4242,6 +4244,7 @@ pan_filter_deps="swresample"
  perspective_filter_deps="gpl"
  phase_filter_deps="gpl"
  pp7_filter_deps="gpl"
@@ -79,16 +163,16 @@ index 17596942749ab..9d8db691a4600 100755
  prewitt_opencl_filter_deps="opencl"
  procamp_vaapi_filter_deps="vaapi"
  program_opencl_filter_deps="opencl"
-@@ -4301,6 +4304,8 @@ avfilter_suggest="libm stdatomic zlib spirv_library"
+@@ -4363,6 +4366,8 @@ avfilter_suggest="libm stdatomic zlib"
  avformat_deps="avcodec avutil"
  avformat_suggest="libm network zlib stdatomic"
- avutil_suggest="clock_gettime ffnvcodec gcrypt libm zlib libdrm libmfx opencl openssl user32 vaapi vulkan videotoolbox corefoundation corevideo coremedia bcrypt stdatomic"
+ avutil_suggest="amf clock_gettime ffnvcodec gcrypt libm zlib libdrm libmfx opencl openssl user32 vaapi vulkan videotoolbox corefoundation corevideo coremedia bcrypt stdatomic"
 +postproc_deps="avutil gpl"
 +postproc_suggest="libm stdatomic"
  swresample_deps="avutil"
  swresample_suggest="libm libsoxr stdatomic"
  swscale_deps="avutil"
-@@ -7914,7 +7919,7 @@ void (^block)(void);
+@@ -7992,7 +7997,7 @@ void (^block)(void);
  EOF
  
  # add some linker flags
@@ -97,7 +181,7 @@ index 17596942749ab..9d8db691a4600 100755
  enabled rpath && add_ldexeflags -Wl,-rpath,$libdir && add_ldsoflags -Wl,-rpath,$libdir
  test_ldflags -Wl,-Bsymbolic && append SHFLAGS -Wl,-Bsymbolic
  
-@@ -8300,6 +8305,7 @@ enabled fsync_filter        && prepend avfilter_deps "avformat"
+@@ -8374,6 +8379,7 @@ enabled fsync_filter        && prepend avfilter_deps "avformat"
  enabled mcdeint_filter      && prepend avfilter_deps "avcodec"
  enabled movie_filter        && prepend avfilter_deps "avformat avcodec"
  enabled pan_filter          && prepend avfilter_deps "swresample"
@@ -105,7 +189,7 @@ index 17596942749ab..9d8db691a4600 100755
  enabled qrencode_filter     && prepend avfilter_deps "swscale"
  enabled qrencodesrc_filter  && prepend avfilter_deps "swscale"
  enabled removelogo_filter   && prepend avfilter_deps "avformat avcodec swscale"
-@@ -8351,6 +8357,9 @@ expand_deps(){
+@@ -8425,6 +8431,9 @@ expand_deps(){
      reorder_by ${1}_deps LIBRARY_LIST  # linking order is expected later
  }
  
@@ -115,7 +199,7 @@ index 17596942749ab..9d8db691a4600 100755
  map 'expand_deps $v' $LIBRARY_LIST
  
  if test "$quiet" != "yes"; then
-@@ -8443,6 +8452,7 @@ echo "optimize for size         ${small-no}"
+@@ -8522,6 +8531,7 @@ echo "optimize for size         ${small-no}"
  echo "optimizations             ${optimizations-no}"
  echo "static                    ${static-no}"
  echo "shared                    ${shared-no}"
@@ -123,7 +207,7 @@ index 17596942749ab..9d8db691a4600 100755
  echo "network support           ${network-no}"
  echo "threading support         ${thread_type-no}"
  echo "safe bitstream reader     ${safe_bitstream_reader-no}"
-@@ -8828,6 +8838,7 @@ extralibs_avcodec="$avcodec_extralibs"
+@@ -8986,6 +8996,7 @@ extralibs_avcodec="$avcodec_extralibs"
  extralibs_avformat="$avformat_extralibs"
  extralibs_avdevice="$avdevice_extralibs"
  extralibs_avfilter="$avfilter_extralibs"
@@ -132,10 +216,10 @@ index 17596942749ab..9d8db691a4600 100755
  extralibs_swresample="$swresample_extralibs"
  EOF
 diff --git a/doc/filters.texi b/doc/filters.texi
-index 5d222c6b96fd3..5a8bf1e18f01c 100644
+index 3534c87c9b..62eac3db47 100644
 --- a/doc/filters.texi
 +++ b/doc/filters.texi
-@@ -19976,6 +19976,181 @@ Set window Y position, relative offset on Y axis.
+@@ -20089,6 +20089,181 @@ Set window Y position, relative offset on Y axis.
  
  This filter supports same @ref{commands} as options.
  
@@ -318,10 +402,10 @@ index 5d222c6b96fd3..5a8bf1e18f01c 100644
  Apply Postprocessing filter 7. It is variant of the @ref{spp} filter,
  similar to spp = 6 with 7 point DCT, where only the center sample is
 diff --git a/fftools/ffprobe.c b/fftools/ffprobe.c
-index 3c29fc255791b..731cfd3620506 100644
+index 31f74106f9..7466fdf857 100644
 --- a/fftools/ffprobe.c
 +++ b/fftools/ffprobe.c
-@@ -63,6 +63,8 @@
+@@ -64,6 +64,8 @@
  #include "libswscale/version.h"
  #include "libswresample/swresample.h"
  #include "libswresample/version.h"
@@ -330,7 +414,7 @@ index 3c29fc255791b..731cfd3620506 100644
  #include "libavfilter/version.h"
  #include "textformat/avtextformat.h"
  #include "cmdutils.h"
-@@ -2697,6 +2699,7 @@ static void ffprobe_show_library_versions(AVTextFormatContext *tfc)
+@@ -2830,6 +2832,7 @@ static void ffprobe_show_library_versions(AVTextFormatContext *tfc)
      SHOW_LIB_VERSION(avfilter,   AVFILTER);
      SHOW_LIB_VERSION(swscale,    SWSCALE);
      SHOW_LIB_VERSION(swresample, SWRESAMPLE);
@@ -339,7 +423,7 @@ index 3c29fc255791b..731cfd3620506 100644
  }
  
 diff --git a/fftools/opt_common.c b/fftools/opt_common.c
-index 2c1f956551db8..57de4b7b89fd7 100644
+index 572cc563e3..5d6224a542 100644
 --- a/fftools/opt_common.c
 +++ b/fftools/opt_common.c
 @@ -61,6 +61,8 @@
@@ -351,7 +435,7 @@ index 2c1f956551db8..57de4b7b89fd7 100644
  
  enum show_muxdemuxers {
      SHOW_DEFAULT,
-@@ -190,6 +192,7 @@ static void print_all_libs_info(int flags, int level)
+@@ -195,6 +197,7 @@ static void print_all_libs_info(int flags, int level)
      PRINT_LIB_INFO(avfilter,   AVFILTER,   flags, level);
      PRINT_LIB_INFO(swscale,    SWSCALE,    flags, level);
      PRINT_LIB_INFO(swresample, SWRESAMPLE, flags, level);
@@ -360,7 +444,7 @@ index 2c1f956551db8..57de4b7b89fd7 100644
  
  static void print_program_info(int flags, int level)
 diff --git a/libavfilter/Makefile b/libavfilter/Makefile
-index a530cfae29be9..de6f6aaea1b7c 100644
+index ce40cf3e65..c09dd54939 100644
 --- a/libavfilter/Makefile
 +++ b/libavfilter/Makefile
 @@ -440,6 +440,7 @@ OBJS-$(CONFIG_PHOTOSENSITIVITY_FILTER)       += vf_photosensitivity.o
@@ -372,7 +456,7 @@ index a530cfae29be9..de6f6aaea1b7c 100644
  OBJS-$(CONFIG_PREMULTIPLY_DYNAMIC_FILTER)    += vf_premultiply.o framesync.o
  OBJS-$(CONFIG_PREMULTIPLY_FILTER)            += vf_premultiply.o framesync.o
 diff --git a/libavfilter/allfilters.c b/libavfilter/allfilters.c
-index e26859e159145..154ea71d97c0e 100644
+index 402b843649..6b9c9201c8 100644
 --- a/libavfilter/allfilters.c
 +++ b/libavfilter/allfilters.c
 @@ -412,6 +412,7 @@ extern const FFFilter ff_vf_photosensitivity;
@@ -385,7 +469,7 @@ index e26859e159145..154ea71d97c0e 100644
  extern const FFFilter ff_vf_premultiply_dynamic;
 diff --git a/libavfilter/vf_pp.c b/libavfilter/vf_pp.c
 new file mode 100644
-index 0000000000000..9e9903eb97461
+index 0000000000..9e9903eb97
 --- /dev/null
 +++ b/libavfilter/vf_pp.c
 @@ -0,0 +1,191 @@
@@ -581,7 +665,7 @@ index 0000000000000..9e9903eb97461
 +    .process_command = pp_process_command,
 +};
 diff --git a/libavutil/avutil.h b/libavutil/avutil.h
-index c8ae114ab6f37..ee709fbb2abe7 100644
+index 003a63b7b1..f73e133177 100644
 --- a/libavutil/avutil.h
 +++ b/libavutil/avutil.h
 @@ -41,6 +41,7 @@
@@ -594,7 +678,7 @@ index c8ae114ab6f37..ee709fbb2abe7 100644
   * @section ffmpeg_versioning Versioning and compatibility
 diff --git a/libpostproc/Makefile b/libpostproc/Makefile
 new file mode 100644
-index 0000000000000..d78fc0277f413
+index 0000000000..d78fc0277f
 --- /dev/null
 +++ b/libpostproc/Makefile
 @@ -0,0 +1,23 @@
@@ -623,7 +707,7 @@ index 0000000000000..d78fc0277f413
 +$(SUBDIR)tests/temptest$(EXESUF):  $(SUBDIR)tests/test_utils.o
 diff --git a/libpostproc/libpostproc.v b/libpostproc/libpostproc.v
 new file mode 100644
-index 0000000000000..27381c6aca3ca
+index 0000000000..27381c6aca
 --- /dev/null
 +++ b/libpostproc/libpostproc.v
 @@ -0,0 +1,7 @@
@@ -636,7 +720,7 @@ index 0000000000000..27381c6aca3ca
 +};
 diff --git a/libpostproc/postprocess.c b/libpostproc/postprocess.c
 new file mode 100644
-index 0000000000000..eab2228919265
+index 0000000000..eab2228919
 --- /dev/null
 +++ b/libpostproc/postprocess.c
 @@ -0,0 +1,992 @@
@@ -1634,7 +1718,7 @@ index 0000000000000..eab2228919265
 +}
 diff --git a/libpostproc/postprocess.h b/libpostproc/postprocess.h
 new file mode 100644
-index 0000000000000..d2adb6ccad754
+index 0000000000..d2adb6ccad
 --- /dev/null
 +++ b/libpostproc/postprocess.h
 @@ -0,0 +1,109 @@
@@ -1749,7 +1833,7 @@ index 0000000000000..d2adb6ccad754
 +#endif /* POSTPROC_POSTPROCESS_H */
 diff --git a/libpostproc/postprocess_altivec_template.c b/libpostproc/postprocess_altivec_template.c
 new file mode 100644
-index 0000000000000..feddab50356b9
+index 0000000000..feddab5035
 --- /dev/null
 +++ b/libpostproc/postprocess_altivec_template.c
 @@ -0,0 +1,1214 @@
@@ -2969,7 +3053,7 @@ index 0000000000000..feddab50356b9
 +}
 diff --git a/libpostproc/postprocess_internal.h b/libpostproc/postprocess_internal.h
 new file mode 100644
-index 0000000000000..5d1aee362ea60
+index 0000000000..5d1aee362e
 --- /dev/null
 +++ b/libpostproc/postprocess_internal.h
 @@ -0,0 +1,185 @@
@@ -3160,7 +3244,7 @@ index 0000000000000..5d1aee362ea60
 +#endif /* POSTPROC_POSTPROCESS_INTERNAL_H */
 diff --git a/libpostproc/postprocess_template.c b/libpostproc/postprocess_template.c
 new file mode 100644
-index 0000000000000..3dfe701b5dce5
+index 0000000000..3dfe701b5d
 --- /dev/null
 +++ b/libpostproc/postprocess_template.c
 @@ -0,0 +1,3293 @@
@@ -6459,7 +6543,7 @@ index 0000000000000..3dfe701b5dce5
 +#undef TEMPLATE_PP_SSE2
 diff --git a/libpostproc/postprocres.rc b/libpostproc/postprocres.rc
 new file mode 100644
-index 0000000000000..e6104ac88bfea
+index 0000000000..e6104ac88b
 --- /dev/null
 +++ b/libpostproc/postprocres.rc
 @@ -0,0 +1,55 @@
@@ -6520,7 +6604,7 @@ index 0000000000000..e6104ac88bfea
 +}
 diff --git a/libpostproc/tests/.gitignore b/libpostproc/tests/.gitignore
 new file mode 100644
-index 0000000000000..60dc67fa74f13
+index 0000000000..60dc67fa74
 --- /dev/null
 +++ b/libpostproc/tests/.gitignore
 @@ -0,0 +1,3 @@
@@ -6529,7 +6613,7 @@ index 0000000000000..60dc67fa74f13
 +/temptest
 diff --git a/libpostproc/tests/blocktest.c b/libpostproc/tests/blocktest.c
 new file mode 100644
-index 0000000000000..e91fb0b569461
+index 0000000000..e91fb0b569
 --- /dev/null
 +++ b/libpostproc/tests/blocktest.c
 @@ -0,0 +1,113 @@
@@ -6648,7 +6732,7 @@ index 0000000000000..e91fb0b569461
 +}
 diff --git a/libpostproc/tests/stripetest.c b/libpostproc/tests/stripetest.c
 new file mode 100644
-index 0000000000000..def7aa3756303
+index 0000000000..def7aa3756
 --- /dev/null
 +++ b/libpostproc/tests/stripetest.c
 @@ -0,0 +1,115 @@
@@ -6769,7 +6853,7 @@ index 0000000000000..def7aa3756303
 +}
 diff --git a/libpostproc/tests/temptest.c b/libpostproc/tests/temptest.c
 new file mode 100644
-index 0000000000000..26414a1ce3a7b
+index 0000000000..26414a1ce3
 --- /dev/null
 +++ b/libpostproc/tests/temptest.c
 @@ -0,0 +1,106 @@
@@ -6881,7 +6965,7 @@ index 0000000000000..26414a1ce3a7b
 +}
 diff --git a/libpostproc/tests/test_utils.c b/libpostproc/tests/test_utils.c
 new file mode 100644
-index 0000000000000..f1642c0c81f68
+index 0000000000..f1642c0c81
 --- /dev/null
 +++ b/libpostproc/tests/test_utils.c
 @@ -0,0 +1,38 @@
@@ -6925,7 +7009,7 @@ index 0000000000000..f1642c0c81f68
 +}
 diff --git a/libpostproc/tests/test_utils.h b/libpostproc/tests/test_utils.h
 new file mode 100644
-index 0000000000000..d73ea6cab84cb
+index 0000000000..d73ea6cab8
 --- /dev/null
 +++ b/libpostproc/tests/test_utils.h
 @@ -0,0 +1,27 @@
@@ -6958,7 +7042,7 @@ index 0000000000000..d73ea6cab84cb
 +#endif /* POSTPROC_TESTS_TEST_UTILS_H */
 diff --git a/libpostproc/version.c b/libpostproc/version.c
 new file mode 100644
-index 0000000000000..304abe08e6ac2
+index 0000000000..304abe08e6
 --- /dev/null
 +++ b/libpostproc/version.c
 @@ -0,0 +1,45 @@
@@ -7009,7 +7093,7 @@ index 0000000000000..304abe08e6ac2
 +}
 diff --git a/libpostproc/version.h b/libpostproc/version.h
 new file mode 100644
-index 0000000000000..111f075536906
+index 0000000000..111f075536
 --- /dev/null
 +++ b/libpostproc/version.h
 @@ -0,0 +1,48 @@
@@ -7063,7 +7147,7 @@ index 0000000000000..111f075536906
 +#endif /* POSTPROC_VERSION_H */
 diff --git a/libpostproc/version_major.h b/libpostproc/version_major.h
 new file mode 100644
-index 0000000000000..b9946912db383
+index 0000000000..b9946912db
 --- /dev/null
 +++ b/libpostproc/version_major.h
 @@ -0,0 +1,33 @@
@@ -7101,10 +7185,10 @@ index 0000000000000..b9946912db383
 +
 +#endif /* POSTPROC_VERSION_MAJOR_H */
 diff --git a/tests/Makefile b/tests/Makefile
-index 4b3fa6a54ab7b..c81a0e7df5bf1 100644
+index 8c7d4539a3..c421bce467 100644
 --- a/tests/Makefile
 +++ b/tests/Makefile
-@@ -214,6 +214,7 @@ include $(SRC_PATH)/tests/fate/libavformat.mak
+@@ -216,6 +216,7 @@ include $(SRC_PATH)/tests/fate/libavformat.mak
  include $(SRC_PATH)/tests/fate/libavutil.mak
  include $(SRC_PATH)/tests/fate/libswresample.mak
  include $(SRC_PATH)/tests/fate/libswscale.mak
@@ -7113,10 +7197,10 @@ index 4b3fa6a54ab7b..c81a0e7df5bf1 100644
  include $(SRC_PATH)/tests/fate/lossless-video.mak
  include $(SRC_PATH)/tests/fate/matroska.mak
 diff --git a/tests/fate/filter-video.mak b/tests/fate/filter-video.mak
-index 07b8632c6f0d6..4436f14a4f64b 100644
+index c71158c7bc..c880e36059 100644
 --- a/tests/fate/filter-video.mak
 +++ b/tests/fate/filter-video.mak
-@@ -555,6 +555,19 @@ fate-filter-idet: CMD = framecrc -flags bitexact -idct simple -i $(SRC) -vf idet
+@@ -581,6 +581,19 @@ fate-filter-idet: CMD = framecrc -flags bitexact -idct simple -i $(SRC) -vf idet
  FATE_FILTER_VSYNTH_VIDEO_FILTER-$(CONFIG_PAD_FILTER) += fate-filter-pad
  fate-filter-pad: CMD = video_filter "pad=iw*1.5:ih*1.5:iw*0.3:ih*0.2"
  
@@ -7136,7 +7220,7 @@ index 07b8632c6f0d6..4436f14a4f64b 100644
  FATE_FILTER_VSYNTH1_MPEG4_QPRD-$(call FILTERDEMDEC, PP7, AVI, MPEG4) += pp7
  fate-filter-pp7: CMD = framecrc -flags bitexact -export_side_data venc_params -idct simple -i $(TARGET_PATH)/tests/data/fate/vsynth1-mpeg4-qprd.avi -frames:v 5 -flags +bitexact -vf "pp7"
  
-@@ -572,6 +585,9 @@ FATE_FILTER_VSYNTH-yes += $(FATE_FILTER_VSYNTH1_MPEG4_QPRD)
+@@ -598,6 +611,9 @@ FATE_FILTER_VSYNTH-yes += $(FATE_FILTER_VSYNTH1_MPEG4_QPRD)
  $(FATE_FILTER_VSYNTH1_MPEG4_QPRD): fate-vsynth1-mpeg4-qprd
  fate-vsynth1-mpeg4-qprd: KEEP_FILES ?= 1
  
@@ -7148,7 +7232,7 @@ index 07b8632c6f0d6..4436f14a4f64b 100644
  
 diff --git a/tests/fate/libpostproc.mak b/tests/fate/libpostproc.mak
 new file mode 100644
-index 0000000000000..07fb3dcd07b2c
+index 0000000000..07fb3dcd07
 --- /dev/null
 +++ b/tests/fate/libpostproc.mak
 @@ -0,0 +1,14 @@
@@ -7168,7 +7252,7 @@ index 0000000000000..07fb3dcd07b2c
 +fate-libpostproc: $(FATE_LIBPOSTPROC)
 diff --git a/tests/ref/fate/blocktest b/tests/ref/fate/blocktest
 new file mode 100644
-index 0000000000000..38cf195c95a9b
+index 0000000000..38cf195c95
 --- /dev/null
 +++ b/tests/ref/fate/blocktest
 @@ -0,0 +1,1800 @@
@@ -8974,7 +9058,7 @@ index 0000000000000..38cf195c95a9b
 +blocktest 224x304 be,vi,ha,va b:16 q:15 result 9B150165
 diff --git a/tests/ref/fate/filter-pp b/tests/ref/fate/filter-pp
 new file mode 100644
-index 0000000000000..5c0e2994c64da
+index 0000000000..5c0e2994c6
 --- /dev/null
 +++ b/tests/ref/fate/filter-pp
 @@ -0,0 +1,10 @@
@@ -8990,56 +9074,56 @@ index 0000000000000..5c0e2994c64da
 +0,          5,          5,        1,   152064, 0x262de352
 diff --git a/tests/ref/fate/filter-pp1 b/tests/ref/fate/filter-pp1
 new file mode 100644
-index 0000000000000..8c6b7ba18e32c
+index 0000000000..8c6b7ba18e
 --- /dev/null
 +++ b/tests/ref/fate/filter-pp1
 @@ -0,0 +1 @@
 +pp1                 1a45041dd20a941e36b7729116950107
 diff --git a/tests/ref/fate/filter-pp2 b/tests/ref/fate/filter-pp2
 new file mode 100644
-index 0000000000000..ed5e77322ab9b
+index 0000000000..ed5e77322a
 --- /dev/null
 +++ b/tests/ref/fate/filter-pp2
 @@ -0,0 +1 @@
 +pp2                 566d48ad25dfa7a9680de933cbdf66d9
 diff --git a/tests/ref/fate/filter-pp3 b/tests/ref/fate/filter-pp3
 new file mode 100644
-index 0000000000000..536bf8e9d2d96
+index 0000000000..536bf8e9d2
 --- /dev/null
 +++ b/tests/ref/fate/filter-pp3
 @@ -0,0 +1 @@
 +pp3                 586fc14a52699540a865c070dd113229
 diff --git a/tests/ref/fate/filter-pp4 b/tests/ref/fate/filter-pp4
 new file mode 100644
-index 0000000000000..efa9c8a2f2082
+index 0000000000..efa9c8a2f2
 --- /dev/null
 +++ b/tests/ref/fate/filter-pp4
 @@ -0,0 +1 @@
 +pp4                 8a072806ae6b5c68c5c3c57197641e4a
 diff --git a/tests/ref/fate/filter-pp5 b/tests/ref/fate/filter-pp5
 new file mode 100644
-index 0000000000000..682e8481ff201
+index 0000000000..682e8481ff
 --- /dev/null
 +++ b/tests/ref/fate/filter-pp5
 @@ -0,0 +1 @@
 +pp5                 5695b8193095a63b9f397fff8343d1a6
 diff --git a/tests/ref/fate/filter-pp6 b/tests/ref/fate/filter-pp6
 new file mode 100644
-index 0000000000000..3280a69004575
+index 0000000000..3280a69004
 --- /dev/null
 +++ b/tests/ref/fate/filter-pp6
 @@ -0,0 +1 @@
 +pp6                 f823b3330935cd1824d526041b429d9a
 diff --git a/tests/ref/fate/filter-qp b/tests/ref/fate/filter-qp
 new file mode 100644
-index 0000000000000..3dd4c958746af
+index 0000000000..3dd4c95874
 --- /dev/null
 +++ b/tests/ref/fate/filter-qp
 @@ -0,0 +1 @@
 +qp                  2d4da13e883e073084d547a6b41ba688
 diff --git a/tests/ref/fate/stripetest b/tests/ref/fate/stripetest
 new file mode 100644
-index 0000000000000..31c30c8e59845
+index 0000000000..31c30c8e59
 --- /dev/null
 +++ b/tests/ref/fate/stripetest
 @@ -0,0 +1,360 @@
@@ -9405,7 +9489,7 @@ index 0000000000000..31c30c8e59845
 +striptest 224x304 T:be,l5 m:15 result 3503C609
 diff --git a/tests/ref/fate/temptest b/tests/ref/fate/temptest
 new file mode 100644
-index 0000000000000..e90fc46f81eea
+index 0000000000..e90fc46f81
 --- /dev/null
 +++ b/tests/ref/fate/temptest
 @@ -0,0 +1,336 @@
@@ -9746,7 +9830,7 @@ index 0000000000000..e90fc46f81eea
 +temptest 88741 88741 88741 40 result FC31041053B7B237
 +temptest 88741 88741 88741 121 result CB3E66FC05552055
 diff --git a/tools/gen-rc b/tools/gen-rc
-index 797e0baafadbc..a28b013aaeb7a 100755
+index 797e0baafa..a28b013aae 100755
 --- a/tools/gen-rc
 +++ b/tools/gen-rc
 @@ -42,6 +42,7 @@ EOF
@@ -9757,3 +9841,6 @@ index 797e0baafadbc..a28b013aaeb7a 100755
  # gen-rc libswscale    "FFmpeg image rescaling library"
  # gen-rc libswresample "FFmpeg audio resampling library"
  
+-- 
+2.49.0
+

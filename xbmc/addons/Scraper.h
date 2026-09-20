@@ -17,6 +17,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 #include <fmt/format.h>
@@ -33,7 +34,7 @@ class CMusicArtistInfo;
 
 namespace XFILE
 {
-class CCurlFile;
+class IHttpClient;
 }
 
 namespace ADDON
@@ -125,13 +126,16 @@ public:
    */
   CScraperUrl ResolveIDToUrl(const std::string &externalID);
 
-  std::vector<CScraperUrl> FindMovie(XFILE::CCurlFile &fcurl,
-    const std::string &movieTitle, int movieYear, bool fFirst);
-  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::CCurlFile &fcurl,
-    const std::string &sAlbum, const std::string &sArtist = "");
-  std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
-    XFILE::CCurlFile &fcurl, const std::string &sArtist);
-  KODI::VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile& fcurl, const CScraperUrl& scurl);
+  std::vector<CScraperUrl> FindMovie(XFILE::IHttpClient& fcurl,
+                                     const std::string& movieTitle,
+                                     int movieYear,
+                                     bool fFirst);
+  std::vector<MUSIC_GRABBER::CMusicAlbumInfo> FindAlbum(XFILE::IHttpClient& fcurl,
+                                                        const std::string& sAlbum,
+                                                        const std::string& sArtist = "");
+  std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(XFILE::IHttpClient& fcurl,
+                                                          const std::string& sArtist);
+  KODI::VIDEO::EPISODELIST GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl);
 
   struct StringHash
   {
@@ -144,16 +148,17 @@ public:
   };
   using UniqueIDs = std::unordered_map<std::string, std::string, StringHash, std::equal_to<>>;
 
-  bool GetVideoDetails(XFILE::CCurlFile& fcurl,
+  bool GetVideoDetails(XFILE::IHttpClient& fcurl,
                        const UniqueIDs& uniqueIDs,
                        const CScraperUrl& scurl,
                        bool fMovie /*else episode*/,
                        CVideoInfoTag& video);
-  bool GetAlbumDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
-    CAlbum &album);
-  bool GetArtistDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
-    const std::string &sSearch, CArtist &artist);
-  bool GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details);
+  bool GetAlbumDetails(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl, CAlbum& album);
+  bool GetArtistDetails(XFILE::IHttpClient& fcurl,
+                        const CScraperUrl& scurl,
+                        const std::string& sSearch,
+                        CArtist& artist);
+  bool GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details);
 
 private:
   CScraper(const CScraper &rhs) = delete;
@@ -175,16 +180,42 @@ private:
   bool Load();
   std::vector<std::string> Run(const std::string& function,
                                const CScraperUrl& url,
-                               XFILE::CCurlFile& http,
+                               XFILE::IHttpClient& http,
                                const std::vector<std::string>* extras = nullptr);
   std::vector<std::string> RunNoThrow(const std::string& function,
                                       const CScraperUrl& url,
-                                      XFILE::CCurlFile& http,
+                                      XFILE::IHttpClient& http,
                                       const std::vector<std::string>* extras = nullptr);
   std::string InternalRun(const std::string& function,
-                         const CScraperUrl& url,
-                         XFILE::CCurlFile& http,
-                         const std::vector<std::string>* extras);
+                          const CScraperUrl& url,
+                          XFILE::IHttpClient& http,
+                          const std::vector<std::string>* extras);
+
+  //! \brief FindMovie without the result cache in front of it
+  std::vector<CScraperUrl> FindMovieUncached(XFILE::IHttpClient& fcurl,
+                                             const std::string& movieTitle,
+                                             int movieYear,
+                                             bool fFirst);
+
+  //! \brief GetVideoDetails without the result cache in front of it
+  bool GetVideoDetailsUncached(XFILE::IHttpClient& fcurl,
+                               const UniqueIDs& uniqueIDs,
+                               const CScraperUrl& scurl,
+                               bool fMovie,
+                               CVideoInfoTag& video);
+
+  /*! \brief Cache scraper results rather than repeating the request.
+
+   Lifetime is this instance.
+   Repeats come from versions, discs and folders of the same title, which are scraped close together.
+   Not synchronised, matching the rest of CScraper: a scraper shared between threads needs the
+   caller to provide that.
+   */
+  static constexpr size_t MAX_CACHED_RESULTS{50};
+  std::unordered_map<std::string, std::vector<CScraperUrl>, StringHash, std::equal_to<>>
+      m_findCache;
+  std::unordered_map<std::string, std::shared_ptr<const CVideoInfoTag>, StringHash, std::equal_to<>>
+      m_detailsCache;
 
   bool m_fLoaded = false;
   bool m_isPython = false;

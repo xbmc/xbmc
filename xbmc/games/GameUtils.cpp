@@ -9,6 +9,7 @@
 #include "GameUtils.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Addon.h"
@@ -18,12 +19,21 @@
 #include "addons/addoninfo/AddonType.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "filesystem/AddonsDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/addons/GameClient.h"
+#include "games/database/GameDatabase.h"
 #include "games/dialogs/GUIDialogSelectGameClient.h"
 #include "games/dialogs/GUIDialogSelectSavestate.h"
 #include "games/tags/GameInfoTag.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -59,6 +69,16 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
         RETRO::CSavestateDatabase db;
         std::unique_ptr<RETRO::ISavestate> save = RETRO::CSavestateDatabase::AllocateSavestate();
         db.GetSavestate(savestatePath, *save);
+
+        //! @todo Remove this when we can load compressed savestates
+        if (save->IsCompressed())
+        {
+          // "Error"
+          // "This savestate is compressed and can't be loaded by this version of Kodi."
+          CGUIDialogOK::ShowAndGetInput(257, 35298);
+          return false;
+        }
+
         item.GetGameInfoTag()->SetGameClient(save->GameClientID());
       }
       else
@@ -67,29 +87,41 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
         GameClientVector candidates;
         GameClientVector installable;
         bool bHasVfsGameClient;
-        GetGameClients(item, candidates, installable, bHasVfsGameClient);
+        GetInstalledGameClients(item, candidates, bHasVfsGameClient);
 
-        if (candidates.empty() && installable.empty())
+        // An emulator remembered for this game, or for a folder above it,
+        // answers the question without asking
+        const std::string defaultClient = GetDefaultGameClient(item.GetPath(), candidates);
+        if (!defaultClient.empty())
         {
-          // if: "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
-          // else: "This game isn't compatible with any available emulators."
-          int errorTextId = bHasVfsGameClient ? 35214 : 35212;
-
-          // "Failed to play game"
-          MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{errorTextId});
-        }
-        else if (candidates.size() == 1 && installable.empty())
-        {
-          // Only 1 option, avoid prompting the user
-          item.GetGameInfoTag()->SetGameClient(candidates[0]->ID());
+          item.GetGameInfoTag()->SetGameClient(defaultClient);
         }
         else
         {
-          std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(
-              item.GetPath(), candidates, installable);
+          GetInstallableGameClients(item, installable, bHasVfsGameClient);
 
-          if (!gameClient.empty())
-            item.GetGameInfoTag()->SetGameClient(gameClient);
+          if (candidates.empty() && installable.empty())
+          {
+            // if: "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
+            // else: "This game isn't compatible with any available emulators."
+            int errorTextId = bHasVfsGameClient ? 35214 : 35212;
+
+            // "Failed to play game"
+            MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{errorTextId});
+          }
+          else if (candidates.size() == 1 && installable.empty())
+          {
+            // Only 1 option, avoid prompting the user
+            item.GetGameInfoTag()->SetGameClient(candidates[0]->ID());
+          }
+          else
+          {
+            std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(
+                item.GetPath(), candidates, installable);
+
+            if (!gameClient.empty())
+              item.GetGameInfoTag()->SetGameClient(gameClient);
+          }
         }
       }
     }
@@ -117,10 +149,131 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
   return !item.GetGameInfoTag()->GetGameClient().empty();
 }
 
-void CGameUtils::GetGameClients(const CFileItem& file,
-                                GameClientVector& candidates,
-                                GameClientVector& installable,
-                                bool& bHasVfsGameClient)
+std::string CGameUtils::GetDefaultGameClient(const std::string& path,
+                                             const GameClientVector& candidates)
+{
+  if (path.empty())
+    return "";
+
+  CGameDatabase db;
+  if (!db.Open())
+    return "";
+
+  const std::string gameClient = db.GameClients().GetGameClientForGame(path);
+  if (gameClient.empty())
+    return "";
+
+  // A remembered emulator is a preference, not an instruction. It is only used
+  // if it can still open this game: one set on a folder has no idea what else
+  // was put in that folder later, and one set before the emulator was
+  // uninstalled would otherwise stop the game loading at all. Where it does not
+  // fit, say so and let the user be asked, which is what would have happened
+  // had nothing been remembered.
+  const bool bCanOpen = std::any_of(candidates.begin(), candidates.end(),
+                                    [&gameClient](const GameClientPtr& candidate)
+                                    { return candidate->ID() == gameClient; });
+  if (!bCanOpen)
+  {
+    CLog::Log(LOGDEBUG, "GAME: Ignoring remembered emulator {} for {}: it can't open this game",
+              gameClient, CURL::GetRedacted(path));
+    return "";
+  }
+
+  CLog::Log(LOGDEBUG, "GAME: Opening {} with remembered emulator {}", CURL::GetRedacted(path),
+            gameClient);
+
+  return gameClient;
+}
+
+bool CGameUtils::ChooseAndSetDefaultGameClient(const CFileItem& item)
+{
+  using namespace ADDON;
+
+  const std::string path = item.GetPath();
+  if (path.empty())
+    return false;
+
+  // A folder can be given anything later, so it offers every emulator that is
+  // installed. A game only offers the ones that can open it.
+  GameClientVector emulators;
+  if (item.IsFolder())
+  {
+    VECADDONS addons;
+    CServiceBroker::GetBinaryAddonCache().GetAddons(addons, AddonType::GAMEDLL);
+    for (const auto& addon : addons)
+      emulators.emplace_back(std::static_pointer_cast<CGameClient>(addon));
+  }
+  else
+  {
+    bool bHasVfsGameClient = false;
+    GetInstalledGameClients(item, emulators, bHasVfsGameClient);
+  }
+
+  CGUIDialogSelect* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+          WINDOW_DIALOG_SELECT);
+  if (dialog == nullptr)
+    return false;
+
+  CGameDatabase db;
+  if (!db.Open())
+    return false;
+
+  const std::string currentGameClient = db.GameClients().GetGameClient(path);
+
+  dialog->Reset();
+  dialog->SetHeading(CVariant{35510}); // "Default emulator"
+  dialog->SetUseDetails(true);
+
+  CFileItemList items;
+
+  // First, so that clearing is as easy to reach as setting
+  {
+    CFileItemPtr noneItem = std::make_shared<CFileItem>(
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231)); // "None"
+    noneItem->SetPath("");
+    items.Add(std::move(noneItem));
+  }
+
+  for (const auto& emulator : emulators)
+  {
+    CFileItemPtr emulatorItem(XFILE::CAddonsDirectory::FileItemFromAddon(emulator, emulator->ID()));
+    if (emulator->ID() == currentGameClient)
+    {
+      emulatorItem->SetLabel2(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35511)); // "Current"
+      emulatorItem->Select(true);
+    }
+    items.Add(std::move(emulatorItem));
+  }
+
+  dialog->SetItems(items);
+  dialog->Open();
+
+  if (!dialog->IsConfirmed())
+    return false;
+
+  const int selectedIndex = dialog->GetSelectedItem();
+  if (selectedIndex < 0 || selectedIndex >= items.Size())
+    return false;
+
+  // An empty path is the "None" entry, which forgets rather than stores
+  const std::string gameClient = items[selectedIndex]->GetPath();
+
+  if (!db.GameClients().SetGameClient(path, gameClient))
+    return false;
+
+  if (gameClient.empty())
+    CLog::Log(LOGDEBUG, "GAME: Forgot the emulator for {}", CURL::GetRedacted(path));
+  else
+    CLog::Log(LOGDEBUG, "GAME: Remembered emulator {} for {}", gameClient, CURL::GetRedacted(path));
+
+  return true;
+}
+
+void CGameUtils::GetInstalledGameClients(const CFileItem& file,
+                                         GameClientVector& candidates,
+                                         bool& bHasVfsGameClient)
 {
   using namespace ADDON;
 
@@ -129,38 +282,57 @@ void CGameUtils::GetGameClients(const CFileItem& file,
   // Try to resolve path to a local file, as not all game clients support VFS
   CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
 
-  // Get local candidates
   VECADDONS localAddons;
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
   addonCache.GetAddons(localAddons, AddonType::GAMEDLL);
 
-  bool bVfs = false;
-  GetGameClients(localAddons, translatedUrl, candidates, bVfs);
-  bHasVfsGameClient |= bVfs;
-
-  // Get remote candidates
-  VECADDONS remoteAddons;
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::GAMEDLL))
-  {
-    GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
-    bHasVfsGameClient |= bVfs;
-  }
+  GetGameClients(localAddons, translatedUrl, candidates, bHasVfsGameClient);
 
   // Sort by name
   //! @todo Move to presentation code
-  auto SortByName = [](const GameClientPtr& lhs, const GameClientPtr& rhs)
-  {
-    std::string lhsName = lhs->Name();
-    std::string rhsName = rhs->Name();
+  std::sort(candidates.begin(), candidates.end(),
+            [](const GameClientPtr& lhs, const GameClientPtr& rhs)
+            {
+              std::string lhsName = lhs->Name();
+              std::string rhsName = rhs->Name();
 
-    StringUtils::ToLower(lhsName);
-    StringUtils::ToLower(rhsName);
+              StringUtils::ToLower(lhsName);
+              StringUtils::ToLower(rhsName);
 
-    return lhsName < rhsName;
-  };
+              return lhsName < rhsName;
+            });
+}
 
-  std::sort(candidates.begin(), candidates.end(), SortByName);
-  std::sort(installable.begin(), installable.end(), SortByName);
+void CGameUtils::GetInstallableGameClients(const CFileItem& file,
+                                           GameClientVector& installable,
+                                           bool& bHasVfsGameClient)
+{
+  using namespace ADDON;
+
+  // Try to resolve path to a local file, as not all game clients support VFS
+  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
+
+  VECADDONS remoteAddons;
+  if (!CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::GAMEDLL))
+    return;
+
+  bool bVfs = false;
+  GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
+  bHasVfsGameClient |= bVfs;
+
+  // Sort by name
+  //! @todo Move to presentation code
+  std::sort(installable.begin(), installable.end(),
+            [](const GameClientPtr& lhs, const GameClientPtr& rhs)
+            {
+              std::string lhsName = lhs->Name();
+              std::string rhsName = rhs->Name();
+
+              StringUtils::ToLower(lhsName);
+              StringUtils::ToLower(rhsName);
+
+              return lhsName < rhsName;
+            });
 }
 
 void CGameUtils::GetGameClients(const ADDON::VECADDONS& addons,

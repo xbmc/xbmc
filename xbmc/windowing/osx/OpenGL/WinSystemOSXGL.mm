@@ -44,6 +44,18 @@ void CWinSystemOSXGL::SetVSyncImpl(bool enable)
   }
 }
 
+bool CWinSystemOSXGL::InitRenderSystem()
+{
+  if (!CRenderSystemGL::InitRenderSystem())
+    return false;
+
+  // Monitor synchronization may reset the video resolution, so the renderer must exist first.
+  if (m_bWindowCreated)
+    SynchronizeCurrentMonitor();
+
+  return true;
+}
+
 bool CWinSystemOSXGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   CWinSystemOSX::ResizeWindow(newWidth, newHeight, newLeft, newTop);

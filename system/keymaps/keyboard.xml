@@ -543,6 +543,7 @@
       <m>OSD</m>
       <menu>OSD</menu>
       <i>Info</i>
+      <language>AudioNextLanguage</language>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
       <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>
@@ -553,6 +554,7 @@
       <right mod="longpress">FastForward</right>
       <up>SkipNext</up>
       <down>SkipPrevious</down>
+      <up mod="longpress">AudioNextLanguage</up>
       <o>PlayerProcessInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>
@@ -568,6 +570,7 @@
       <menu>Back</menu>
       <i>Info</i>
       <o>PlayerProcessInfo</o>
+      <language>AudioNextLanguage</language>
       <p>ActivateWindow(VisualisationPresetList)</p>
       <v>Addon.Default.OpenSettings(xbmc.player.musicviz)</v>
       <text>Addon.Default.OpenSettings(xbmc.player.musicviz)</text>

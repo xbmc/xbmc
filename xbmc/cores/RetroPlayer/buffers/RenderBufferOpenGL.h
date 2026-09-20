@@ -16,8 +16,6 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 class CRenderBufferOpenGL : public CRenderBufferSysMem
 {
 public:

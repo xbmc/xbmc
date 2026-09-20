@@ -30,3 +30,25 @@ constexpr unsigned int CONTROL_SAVES_NEW_BUTTON = 10825;
 constexpr unsigned int CONTROL_SAVES_CANCEL_BUTTON = 10826;
 constexpr unsigned int CONTROL_NUMBER_OF_ITEMS = 10827;
 constexpr unsigned int CONTROL_SAVES_EMULATOR_VERSION = 10828;
+
+// Control ID for the RetroAchievements dialog
+constexpr unsigned int CONTROL_CHEEVOS_LIST = 3; // Kodi list dialogs default to this control ID
+constexpr unsigned int CONTROL_CHEEVOS_ENCORE = 108331;
+constexpr unsigned int CONTROL_CHEEVOS_CHALLENGE_INDICATOR = 108332;
+
+//! Sent as a refresh's second parameter when the standings behind it were
+//! dropped, so the dialog goes and asks for them rather than drawing the empty
+//! list that is left. A plain refresh, after a fetch, carries nothing.
+constexpr unsigned int REFRESH_STANDINGS_INVALIDATED = 1;
+
+// Names of list item properties for achievements
+constexpr auto ACHIEVEMENT_ID = "achievement.id";
+constexpr auto ACHIEVEMENT_POINTS = "achievement.points";
+constexpr auto ACHIEVEMENT_EARNED = "achievement.earned";
+constexpr auto ACHIEVEMENT_UNLOCKED_DATE = "achievement.unlockeddate";
+constexpr auto ACHIEVEMENT_RARITY_CATEGORY = "achievement.raritycategory";
+constexpr auto ACHIEVEMENT_RARITY_STARS = "achievement.raritystars";
+constexpr auto ACHIEVEMENT_MEASURED = "achievement.measured";
+constexpr auto ACHIEVEMENT_MEASURED_ZERO = "achievement.measuredzero";
+constexpr auto ACHIEVEMENT_MEASURED_PERCENT = "achievement.measuredpercent";
+constexpr auto ACHIEVEMENT_MEASURED_PROGRESS = "achievement.measuredprogress";

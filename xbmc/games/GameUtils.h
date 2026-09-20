@@ -51,6 +51,18 @@ public:
   static bool FillInGameClient(CFileItem& item, std::string& savestatePath);
 
   /*!
+   * \brief Ask which emulator to remember for a game or folder
+   *
+   * A folder offers every installed emulator, a game only the ones that can
+   * open it. Choosing "None" forgets the path again.
+   *
+   * \param item The game or folder
+   *
+   * \return True if the choice was stored
+   */
+  static bool ChooseAndSetDefaultGameClient(const CFileItem& item);
+
+  /*!
    * \brief Check if the file extension is supported by an add-on in
    *        a local or remote repository
    *
@@ -79,10 +91,31 @@ public:
   static void UpdateInstallableAddons();
 
 private:
-  static void GetGameClients(const CFileItem& file,
-                             GameClientVector& candidates,
-                             GameClientVector& installable,
-                             bool& bHasVfsGameClient);
+  /*!
+   * \brief The emulator remembered for a game, or for the nearest folder above it
+   *
+   * \param path The game
+   * \param candidates The emulators that can open this game
+   *
+   * \return The add-on ID of the remembered emulator, or empty if there is
+   *         none or it can no longer open this game
+   */
+  static std::string GetDefaultGameClient(const std::string& path,
+                                          const GameClientVector& candidates);
+
+  static void GetInstalledGameClients(const CFileItem& file,
+                                      GameClientVector& candidates,
+                                      bool& bHasVfsGameClient);
+
+  /*!
+   * \brief Get the game clients that could be installed to open a file
+   *
+   * Reads the whole add-on repository, so it is only worth asking once the
+   * installed clients have failed to answer the question.
+   */
+  static void GetInstallableGameClients(const CFileItem& file,
+                                        GameClientVector& installable,
+                                        bool& bHasVfsGameClient);
   static void GetGameClients(const ADDON::VECADDONS& addons,
                              const CURL& translatedUrl,
                              GameClientVector& candidates,

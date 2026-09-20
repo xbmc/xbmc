@@ -35,7 +35,7 @@ public:
    \param id Identifier of the setting group
    \param settingsManager Reference to the settings manager
    */
-  CSettingGroup(const std::string &id, CSettingsManager *settingsManager = nullptr);
+  CSettingGroup(std::string_view id, CSettingsManager* settingsManager = nullptr);
   ~CSettingGroup() override = default;
 
   // implementation of ISetting

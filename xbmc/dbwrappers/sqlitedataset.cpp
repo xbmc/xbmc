@@ -633,31 +633,21 @@ void SqliteDatabase::rollback_transaction()
 std::string SqliteDatabase::vprepare(std::string_view format, va_list args)
 {
   std::string strFormat{format};
-  std::string strResult;
-  char* p;
-  size_t pos;
-
-  //  %q is the sqlite format string for %s.
-  //  Any bad character, like "'", will be replaced with a proper one
-  pos = 0;
-  while ((pos = strFormat.find("%s", pos)) != std::string::npos)
-  {
-    // %%s is meant as a literal % followed by s, skip
-    if (pos == 0 || strFormat[pos - 1] != '%')
-      strFormat.replace(pos, 2, "%q");
-    pos += 2;
-  }
+  //  Transform the %s printf format specifier to the Sqlite specific %q for sql-safe escape of
+  //  quotes in format parameters
+  EscapeStringConversions(strFormat);
 
   //  the %I64 enhancement is not supported by sqlite3_vmprintf
   //  must be %ll instead
-  pos = 0;
+  size_t pos = 0;
   while ((pos = strFormat.find("%I64", pos)) != std::string::npos)
   {
     strFormat.replace(pos, 4, "%ll");
     pos++;
   }
 
-  p = sqlite3_vmprintf(strFormat.c_str(), args);
+  std::string strResult;
+  char* p = sqlite3_vmprintf(strFormat.c_str(), args);
   if (p)
   {
     strResult = p;

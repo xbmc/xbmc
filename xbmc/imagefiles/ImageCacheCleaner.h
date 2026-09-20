@@ -46,6 +46,17 @@ public:
 
   CleanerResult ScanOldestCache(unsigned int imageLimit);
 
+  /*! \brief Which of these images anything still refers to
+
+   A scan adding artwork runs alongside a clean, so an image the scan above found nothing
+   referring to can have come to be referenced before the caller acts on that. Asking again
+   leaves only the moment between this and the removal itself, rather than the whole of it.
+
+   \param images the images to ask about
+   \return those of them that are referenced
+   */
+  std::vector<std::string> GetUsedImages(const std::vector<std::string>& images) const;
+
 private:
   CImageCacheCleaner();
   bool m_valid;

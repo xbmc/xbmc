@@ -19,6 +19,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/Scraper.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -283,20 +284,18 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 
 void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
+  ADDON::ContentType content{ADDON::ContentType::NONE};
   if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
-  {
-    if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-      return;
-
-    CMusicLibraryQueue::GetInstance().StartAlbumScan(strPath, refresh);
-  }
+    content = ADDON::ContentType::ALBUMS;
   else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
-  {
-    if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
-      return;
+    content = ADDON::ContentType::ARTISTS;
+  else
+    return;
 
-    CMusicLibraryQueue::GetInstance().StartArtistScan(strPath, refresh);
-  }
+  if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
+    return;
+
+  CMusicLibraryQueue::GetInstance().StartScan(content, strPath, refresh);
 }
 
 void CGUIWindowMusicBase::OnItemInfo(int iItem)
@@ -413,7 +412,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
 
 void CGUIWindowMusicBase::UpdateButtons()
 {
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, CServiceBroker::GetMediaManager().IsAudio());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, CServiceBroker::GetMediaManager().IsAudio("", true));
 
   CONTROL_ENABLE_ON_CONDITION(
       CONTROL_BTNSCAN, !(m_vecItems->IsVirtualDirectoryRoot() || MUSIC::IsMusicDb(*m_vecItems)));
@@ -464,8 +463,9 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*m_vecItems))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-        if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
+        const std::shared_ptr<MEDIA_DETECT::CCdInfo> pCdInfo{
+            CServiceBroker::GetMediaManager().GetCdInfo()};
+        if (pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1)))
           buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
       }
 #endif

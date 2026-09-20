@@ -1161,6 +1161,8 @@ private:
   std::string m_strConnectionString; /*!< the cached connection string */
   std::string m_strBackendHostname; /*!< the cached backend hostname */
   CPVRClientCapabilities m_clientCapabilities; /*!< the cached add-on's capabilities */
+  mutable std::atomic<bool> m_epgTagPlayableImplemented{
+      true}; /*!< cleared once the add-on has answered that it does not implement IsEPGTagPlayable */
   mutable std::shared_ptr<CPVRClientMenuHooks> m_menuhooks; /*!< the menu hooks for this add-on */
 
   /* stored strings to make sure const char* members in AddonProperties_PVR stay valid */

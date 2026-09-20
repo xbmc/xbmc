@@ -15,4 +15,6 @@
     <string name="exit_button">Kilépés</string>
     <string name="first_run">Felkészülés az első indításra. Kérjük, várj…</string>
     <string name="permission_denied">Az engedély megtagadva!! Kilépés…</string>
+    <string name="networkperm_dialog">A(z) %1$s működéséhez hozzáférés szükséges a hálózati adapterhez. Kérjük, engedélyezd ezt a következő párbeszédpanelen, különben a(z) %1$s kilép.</string>
+    <string name="record_audio_dialog">A %1$s engedélyt kér a hangfelvétel készítésére. Ez csak hangalapú kereséshez használatos. Kérjük, engedélyezd vagy tiltsd le ezt a következő párbeszédpanelen.</string>
 </resources>

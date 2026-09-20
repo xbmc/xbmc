@@ -3,6 +3,8 @@
 # Linux build guide
 This is the general Linux build guide. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
+Builds with VAAPI or DRMPRIME video acceleration require Linux kernel 5.3 or later at runtime: the video player identifies dma-buf memory by inode, which the kernel allocates uniquely from 5.3 on.
+
 Several distribution **[specific build guides](README.md)** are available.
 
 ## Table of Contents
@@ -127,11 +129,14 @@ sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 > Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.
 
 ### 3.2. Enable internal dependencies
-Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `fmt`, `spdlog`, `fstrcmp`, `nlohmann-json` and `dav1d`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
+Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `fmt`, `spdlog`, `fstrcmp`, `nlohmann-json`, `dav1d` and `swig`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
 Internal dependencies that are based on cmake upstream (currently crossguid, ffmpeg, fmt, spdlog) can have their build type overridden by defining `-D<DEPENDENCY_NAME>_BUILD_TYPE=<buildtype>`. Build Type can be one of `Release, RelWithDebInfo, Debug, MinSizeRel`. eg `-DFFMPEG_BUILD_TYPE=RelWithDebInfo`. If not provided, the build type will be the same as the core Kodi project.
 
 > [!NOTE]  
 > fstrcmp requires libtool
+
+> [!NOTE]  
+> The Python bindings need SWIG 4.5.0 or newer, which most distributions do not package yet. `-DENABLE_INTERNAL_SWIG=ON` builds the pinned version during the Kodi build; it needs `bison` and the PCRE2 development package.
 
 ### 3.3. External Dependencies
 

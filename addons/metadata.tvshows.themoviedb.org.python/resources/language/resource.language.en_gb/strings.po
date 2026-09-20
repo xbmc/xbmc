@@ -1,169 +1,158 @@
 # Kodi Media Center language file
-# Addon Name: The Movie Database
-# Addon id: metadata.themoviedb.org
-# Addon Provider: XBMC Foundation
+# Addon Name: TMDb TV Shows python3
+# Addon id: metadata.tvshows.tmdb.python3
+# Addon Provider: MikeSiLVO
 msgid ""
 msgstr ""
-"Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
-"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: metadata.tvshows.tmdb.python3\n"
+"Report-Msgid-Bugs-To: https://github.com/MikeSiLVO/metadata.tvshows.tmdb.python3\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
+"Last-Translator: MikeSiLVO\n"
+"Language-Team: English\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Addon Summary"
-msgid "Fetch TV Show metadata from themoviedb.org"
+# General settings
+msgctxt "#32000"
+msgid "Metadata language"
 msgstr ""
 
-msgctxt "Addon Description"
-msgid "The Movie Database (TMDb) is a community built movie and TV database. Every piece of data has been added by our amazing community dating back to 2008. TMDb's strong international focus and breadth of data is largely unmatched and something we're incredibly proud of. Put simply, we live and breathe community and that's precisely what makes us different."
+msgctxt "#32001"
+msgid "Separate language for images"
 msgstr ""
 
-msgctxt "#30000"
-msgid "Preferred language"
+msgctxt "#32002"
+msgid "Image language"
 msgstr ""
 
-msgctxt "#30001"
-msgid "Preferred certification country"
+msgctxt "#32003"
+msgid "Certification country"
 msgstr ""
 
-msgctxt "#30002"
-msgid "Include certification prefix"
+msgctxt "#32004"
+msgid "Certification prefix"
 msgstr ""
 
-msgctxt "#30003"
-msgid "Prefix"
+msgctxt "#32005"
+msgid "Prefix text"
 msgstr ""
 
-msgctxt "#30004"
-msgid "Keep original title"
+msgctxt "#32006"
+msgid "Use original title"
 msgstr ""
 
-msgctxt "#30005"
-msgid "Categorize fanart with text as landscape art"
+msgctxt "#32007"
+msgid "Keywords as tags"
 msgstr ""
 
-msgctxt "#30006"
-msgid "Include country code with studio"
+msgctxt "#32008"
+msgid "Categorize backdrops with text as landscape"
 msgstr ""
 
-msgctxt "#30007"
-msgid "Add keywords as tags"
+msgctxt "#32009"
+msgid "Categorize textless posters as key art"
 msgstr ""
 
-msgctxt "#30008"
-msgid "Preferred language (Images)"
+msgctxt "#32010"
+msgid "Country of origin in studio name"
 msgstr ""
 
-msgctxt "#30009"
-msgid "Use different language for images"
+msgctxt "#32011"
+msgid "Trailers"
 msgstr ""
 
-# empty strings from 30009 to 30099
-
-msgctxt "#30100"
-msgid "Fanart.tv"
+msgctxt "#32016"
+msgid "Enable trailers"
 msgstr ""
 
-msgctxt "#30101"
-msgid "Client key (optional)"
+msgctxt "#32012"
+msgid "Trailer player"
 msgstr ""
 
-msgctxt "#30102"
-msgid "Enable fanart"
-msgstr ""
-
-msgctxt "#30103"
-msgid "Enable poster"
-msgstr ""
-
-msgctxt "#30104"
-msgid "Enable banner"
-msgstr ""
-
-msgctxt "#30105"
-msgid "Enable clearlogo"
-msgstr ""
-
-msgctxt "#30106"
-msgid "Enable clearart"
-msgstr ""
-
-msgctxt "#30107"
-msgid "Enable landscape"
-msgstr ""
-
-msgctxt "#30108"
-msgid "Enable character art"
-msgstr ""
-
-msgctxt "#30109"
-msgid "Include art from fanart.tv"
-msgstr ""
-
-# empty strings from 30110 to 30149
-
-msgctxt "#30150"
-msgid "Enable season poster"
-msgstr ""
-
-msgctxt "#30151"
-msgid "Enable season banner"
-msgstr ""
-
-msgctxt "#30152"
-msgid "Enable season landscape"
-msgstr ""
-
-# empty strings from 30153 to 30200
-
-msgctxt "#30200"
-msgid "Advanced"
-msgstr ""
-
-msgctxt "#30201"
-msgid "Verbose debug logging"
-msgstr ""
-
-# emptry strings from 30202 to 30299
-
-msgctxt "#30300"
-msgid "Ratings"
-msgstr ""
-
-msgctxt "#30301"
-msgid "Default rating from"
-msgstr ""
-
-msgctxt "#30302"
-msgid "Also add IMDb ratings"
-msgstr ""
-
-msgctxt "#30303"
-msgid "Also add Trakt.tv ratings"
-msgstr ""
-
-msgctxt "#30304"
-msgid "Also add TMDb ratings"
-msgstr ""
-
-msgctxt "#30305"
-msgid "Enable Trailer"
-msgstr ""
-
-msgctxt "#30306"
-msgid "Addon Player"
-msgstr ""
-
-msgctxt "#30307"
+msgctxt "#32013"
 msgid "YouTube"
 msgstr ""
 
-msgctxt "#30308"
+msgctxt "#32014"
 msgid "Tubed"
+msgstr ""
+
+msgctxt "#32015"
+msgid "Prefer highest resolution"
+msgstr ""
+
+# General group headers
+msgctxt "#32020"
+msgid "Language"
+msgstr ""
+
+msgctxt "#32021"
+msgid "Certification"
+msgstr ""
+
+msgctxt "#32022"
+msgid "Content"
+msgstr ""
+
+# Artwork category
+msgctxt "#32050"
+msgid "Artwork"
+msgstr ""
+
+msgctxt "#32051"
+msgid "Preferences"
+msgstr ""
+
+# Ratings settings
+msgctxt "#32100"
+msgid "Ratings"
+msgstr ""
+
+msgctxt "#32101"
+msgid "Primary rating source"
+msgstr ""
+
+msgctxt "#32102"
+msgid "Also fetch IMDb rating"
+msgstr ""
+
+msgctxt "#32103"
+msgid "Also fetch Trakt rating"
+msgstr ""
+
+msgctxt "#32104"
+msgid "Also fetch TMDb rating"
+msgstr ""
+
+# Fanart.tv settings
+msgctxt "#32200"
+msgid "fanart.tv"
+msgstr ""
+
+msgctxt "#32201"
+msgid "Fetch art from fanart.tv"
+msgstr ""
+
+msgctxt "#32202"
+msgid "Personal client key"
+msgstr ""
+
+msgctxt "#32204"
+msgid "Prefer fanart.tv logos"
+msgstr ""
+
+msgctxt "#32205"
+msgid "Prefer fanart.tv artwork"
+msgstr ""
+
+# Advanced settings
+msgctxt "#32300"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#32301"
+msgid "Verbose logging"
 msgstr ""

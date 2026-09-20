@@ -8,8 +8,10 @@
 
 #pragma once
 
+#include "DiscStateHistory.h"
 #include "GameLoop.h"
 #include "IPlayback.h"
+#include "games/addons/GameClientRestoreResult.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
@@ -29,18 +31,16 @@ class CGameClient;
 
 namespace RETRO
 {
-class CCheevos;
 class CGUIGameMessenger;
 class CRPRenderManager;
 class CSavestateDatabase;
-class IMemoryStream;
+class CDeltaPairMemoryStream;
 
 class CReversiblePlayback : public IPlayback, public IGameLoopCallback, public Observer
 {
 public:
   CReversiblePlayback(GAME::CGameClient* gameClient,
                       CRPRenderManager& renderManager,
-                      CCheevos* cheevos,
                       CGUIGameMessenger& guiMessenger,
                       double fps,
                       size_t serializeSize);
@@ -72,25 +72,27 @@ public:
 
 private:
   void AddFrame();
-  void RewindFrames(uint64_t frames);
-  void AdvanceFrames(uint64_t frames);
+  void UpdateFrameRate();
+  GAME::RestoreResult RewindFrames(uint64_t frames);
+  GAME::RestoreResult AdvanceFrames(uint64_t frames);
+  GAME::RestoreResult RestoreFrame();
+  void LatchRestoreFailure();
   void UpdatePlaybackStats();
   void UpdateMemoryStream();
-  void CommitSavestate(bool autosave,
-                       const std::string& savePath,
-                       const CDateTime& nowUTC,
-                       uint64_t timestampFrames);
+  void CommitSavestate(bool autosave, const std::string& savePath, const CDateTime& nowUTC);
 
   // Construction parameter
   GAME::CGameClient* const m_gameClient;
   CRPRenderManager& m_renderManager;
-  CCheevos* const m_cheevos;
   CGUIGameMessenger& m_guiMessenger;
 
   // Gameplay functionality
   CGameLoop m_gameLoop;
-  std::unique_ptr<IMemoryStream> m_memoryStream;
+  std::unique_ptr<CDeltaPairMemoryStream> m_memoryStream;
+  CDiscStateHistory m_discStateHistory;
   CCriticalSection m_mutex;
+  bool m_restoreFailed{false};
+  bool m_rewindFrameRendered{false};
 
   // Savestate functionality
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;

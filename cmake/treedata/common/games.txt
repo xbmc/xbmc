@@ -13,6 +13,7 @@ xbmc/games/controllers/input       games/controllers/input
 xbmc/games/controllers/listproviders games/controllers/listproviders
 xbmc/games/controllers/types       games/controllers/types
 xbmc/games/controllers/windows     games/controllers/windows
+xbmc/games/database                games/database
 xbmc/games/dialogs                 games/dialogs
 xbmc/games/dialogs/disc            games/dialogs/disc
 xbmc/games/dialogs/osd             games/dialogs/osd

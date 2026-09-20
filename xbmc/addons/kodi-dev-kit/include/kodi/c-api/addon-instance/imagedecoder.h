@@ -38,7 +38,7 @@ extern "C"
     /// @brief RGBA 8:8:8:8, with alpha, 32bpp, RGBARGBA...
     ADDON_IMG_FMT_RGBA8 = 3,
 
-    /// @brief RGB 8:8:8, with alpha, 24bpp, RGBRGB...
+    /// @brief RGB 8:8:8, no alpha, 24bpp, RGBRGB...
     ADDON_IMG_FMT_RGB8 = 4
   } ADDON_IMG_FMT;
   ///@}
@@ -418,7 +418,7 @@ extern "C"
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_DECODE_V1)(
       const KODI_ADDON_IMAGEDECODER_HDL hdl,
       uint8_t* pixels,
-      size_t pixels_size,
+      size_t pixel_buffer_size,
       unsigned int width,
       unsigned int height,
       unsigned int pitch,

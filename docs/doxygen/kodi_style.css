@@ -1,0 +1,11 @@
+/* Row background for the reference tables built by the \table_* aliases in
+   kodi_values.doxy.
+
+   The row colour has to follow the page theme rather than be fixed in the
+   alias: doxygen turns its foreground light under prefers-color-scheme: dark,
+   which left light text on a hardcoded white row. Reusing doxygen's own
+   variable renders light mode exactly as before. */
+
+table.kodi-table td {
+    background-color: var(--page-background-color);
+}

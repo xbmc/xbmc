@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -78,6 +78,8 @@ namespace UPNP
   NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = NULL);
   const NPT_String GetProtocolInfo(const CFileItem& item, const char* protocol, const PLT_HttpRequestContext* context = NULL);
 
+  /*! \brief Add each resource again under the other common spelling of its content type. */
+  void AddAlternateMimeResources(PLT_MediaObject& object);
 
   const std::string& CorrectAllItemsSortHack(const std::string &item);
 

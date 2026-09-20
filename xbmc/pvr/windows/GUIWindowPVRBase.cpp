@@ -16,6 +16,7 @@
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -23,7 +24,6 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/PVRThumbLoader.h"
@@ -50,7 +50,6 @@
 using namespace std::chrono_literals;
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
 
 namespace
 {
@@ -419,9 +418,12 @@ bool CGUIWindowPVRBase::CanBeActivated() const
   // check if there is at least one enabled PVR add-on
   if (!CServiceBroker::GetAddonMgr().HasAddons(ADDON::AddonType::PVRDLL))
   {
-    HELPERS::ShowOKDialogText(
-        CVariant{19296},
-        CVariant{19272}); // No PVR add-on enabled, You need a tuner, backend software...
+    // Notify without blocking. A modal dialog would run its own render loop and hold up
+    // whatever asked for this window until someone dismissed it at the device.
+    const CLocalizeStrings& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
+                                          strings.Get(19296), // No PVR add-on enabled
+                                          strings.Get(19272)); // To use PVR you need to install...
     return false;
   }
 

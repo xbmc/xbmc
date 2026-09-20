@@ -62,7 +62,7 @@ protected:
   bool Update();
   void UpdateOutputSize(const float2 outputSize);
   void UpdateMVPs();
-  void PrepareParameters(IShaderTexture& sourceTexture);
+  bool PrepareParameters(IShaderTexture& sourceTexture);
   void CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,
                            const float2& prevSize,
                            float2& scaledSize);

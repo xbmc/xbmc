@@ -67,6 +67,7 @@ if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET @target_minver@)
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
   set(CMAKE_XCODE_ATTRIBUTE_ARCHS ${CPU})
 endif()

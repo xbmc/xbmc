@@ -34,9 +34,9 @@ public:
 /**
  * @brief Special CRPBaseRenderer implementation to handle Direct Memory
  *        Access (DMA) buffer types. For specific use with
- *        CRenderBufferPoolDMA and CRenderBufferDMA. A windowing system
- *        must register use of this renderer and register at least one
- *        CBufferObject types.
+ *        CRenderBufferPoolDMAOpenGLES and CRenderBufferDMAOpenGLES. A windowing
+ *        system must register use of this renderer and register at least one
+ *        CBufferObject type.
  */
 class CRPRendererDMAOpenGLES : public CRPRendererOpenGLES
 {

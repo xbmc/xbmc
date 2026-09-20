@@ -11,21 +11,27 @@
 #include "M2TSParser.h"
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
+#include "utils/LanguageTag.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <map>
+#include <optional>
 #include <ranges>
+#include <string_view>
 #include <vector>
 
 #include <fmt/format.h>
 #include <libbluray/bluray.h>
+
+using namespace KODI::UTILS;
 
 namespace XFILE
 {
 namespace
 {
 VideoStreamInfo PopulateVideoStreamInfo(const StreamInformation& stream,
+                                        ASPECT_RATIO aspect,
                                         const TSVideoStreamInfo* bsvi)
 {
   VideoStreamInfo vsi{};
@@ -122,18 +128,28 @@ VideoStreamInfo PopulateVideoStreamInfo(const StreamInformation& stream,
     vsi.hdrType = StreamHdrType::HDR_TYPE_NONE; // Not stored in BLURAY_TITLE_INFO
   }
 
-  switch (stream.aspect)
+  // The display aspect ratio the elementary stream signals is the accurate one, as it accounts for
+  // anamorphic encodings the .clpi's 4:3/16:9 frame flag cannot express. Fall back to that flag
+  // when the m2ts has not been analysed or the stream signalled no sample aspect ratio.
+  if (const float dar{bsvi ? GetDisplayAspectRatio(*bsvi) : 0.0f}; dar > 0.0f)
   {
-    using enum ASPECT_RATIO;
-    case RATIO_4_3:
-      vsi.videoAspectRatio = 4.0f / 3.0f;
-      break;
-    case RATIO_16_9:
-      vsi.videoAspectRatio = 16.0f / 9.0f;
-      break;
-    default:
-      vsi.videoAspectRatio = 0.0f;
-      break;
+    vsi.videoAspectRatio = dar;
+  }
+  else
+  {
+    switch (aspect)
+    {
+      using enum ASPECT_RATIO;
+      case RATIO_4_3:
+        vsi.videoAspectRatio = 4.0f / 3.0f;
+        break;
+      case RATIO_16_9:
+        vsi.videoAspectRatio = 16.0f / 9.0f;
+        break;
+      default:
+        vsi.videoAspectRatio = 0.0f;
+        break;
+    }
   }
 
   return vsi;
@@ -145,111 +161,167 @@ AudioStreamInfo PopulateAudioStreamInfo(const StreamInformation& stream,
   AudioStreamInfo asi;
   asi.valid = true;
 
-  if (bsai)
-  {
-    asi.channels = bsai->channels > 8
-                       ? 8
-                       : static_cast<int>(bsai->channels); // Limit to max 7.1 for display purposes
+  // The coding in the playlist is the authoritative codec - some discs declare only the core
+  // codec in the M2TS program map.
+  asi.channels = bsai ? (bsai->channels > 8 ? 8 : static_cast<int>(bsai->channels))
+                      : 0; // Limit to max 7.1 for display purposes
 
-    switch (bsai->streamType)
-    {
-      using enum ENCODING_TYPE;
-      case AUDIO_AC3:
-        asi.codecName = "ac3";
-        break;
-      case AUDIO_AC3PLUS:
-      case AUDIO_AC3PLUS_SECONDARY:
-      {
-        if (bsai->isAtmos)
-          asi.codecName = "eac3_ddp_atmos";
-        else
-          asi.codecName = "eac3";
-        break;
-      }
-      case AUDIO_LPCM:
-        asi.codecName = "pcm_bluray";
-        break;
-      case AUDIO_DTS:
-        asi.codecName = "dts";
-        break;
-      case AUDIO_DTSHD:
-      case AUDIO_DTSHD_SECONDARY:
-      {
-        if (bsai->isXLL)
-          asi.codecName = "dtshd_hra";
-        else
-          asi.codecName = "dts";
-        break;
-      }
-      case AUDIO_DTSHD_MASTER:
-      {
-        if (bsai->isXLLXIMAX)
-          asi.codecName = "dtshd_ma_x_imax";
-        else if (bsai->isXLLX)
-          asi.codecName = "dtshd_ma_x";
-        else
-          asi.codecName = "dtshd_ma";
-        break;
-      }
-      case AUDIO_TRUHD:
-      {
-        if (bsai->isAtmos)
-          asi.codecName = "truehd_atmos";
-        else
-          asi.codecName = "truehd";
-        break;
-      }
-      default:
-        asi.codecName = "";
-        break;
-    }
-  }
-  else
+  switch (stream.coding)
   {
-    asi.channels = 0; // Only basic mono/stereo/multichannel is stored in BLURAY_TITLE_INFO
-
-    switch (stream.coding)
+    using enum ENCODING_TYPE;
+    case AUDIO_AC3:
+      asi.codecName = "ac3";
+      break;
+    case AUDIO_AC3PLUS:
+    case AUDIO_AC3PLUS_SECONDARY:
     {
-      using enum ENCODING_TYPE;
-      case AUDIO_AC3:
-        asi.codecName = "ac3";
-        break;
-      case AUDIO_AC3PLUS:
-      case AUDIO_AC3PLUS_SECONDARY:
+      if (bsai && bsai->isAtmos)
+        asi.codecName = "eac3_ddp_atmos";
+      else
         asi.codecName = "eac3";
-        break;
-      case AUDIO_LPCM:
-        asi.codecName = "pcm";
-        break;
-      case AUDIO_DTS:
-        asi.codecName = "dts";
-        break;
-      case AUDIO_DTSHD:
-      case AUDIO_DTSHD_SECONDARY:
-        asi.codecName = "dtshd";
-        break;
-      case AUDIO_DTSHD_MASTER:
-        asi.codecName = "dtshd_ma";
-        break;
-      case AUDIO_TRUHD:
-        asi.codecName = "truehd";
-        break;
-      default:
-        asi.codecName = "";
-        break;
+      break;
     }
+    case AUDIO_LPCM:
+      asi.codecName = bsai ? "pcm_bluray" : "pcm";
+      break;
+    case AUDIO_DTS:
+      asi.codecName = "dts";
+      break;
+    case AUDIO_DTSHD:
+    case AUDIO_DTSHD_SECONDARY:
+    {
+      if (!bsai)
+        asi.codecName = "dtshd";
+      else if (bsai->isXLLXIMAX)
+        asi.codecName = "dtshd_ma_x_imax";
+      else if (bsai->isXLLX)
+        asi.codecName = "dtshd_ma_x";
+      else if (bsai->isXLL)
+        asi.codecName = "dtshd_ma";
+      else
+        asi.codecName = "dtshd_hra";
+      break;
+    }
+    case AUDIO_DTSHD_MASTER:
+    {
+      if (bsai && bsai->isXLLXIMAX)
+        asi.codecName = "dtshd_ma_x_imax";
+      else if (bsai && bsai->isXLLX)
+        asi.codecName = "dtshd_ma_x";
+      else
+        asi.codecName = "dtshd_ma";
+      break;
+    }
+    case AUDIO_TRUHD:
+    {
+      if (bsai && bsai->isAtmos)
+        asi.codecName = "truehd_atmos";
+      else
+        asi.codecName = "truehd";
+      break;
+    }
+    default:
+      asi.codecName = "";
+      break;
   }
 
-  asi.language = stream.language;
+  asi.language = CLanguageTag::Parse(stream.language);
 
   return asi;
+}
+
+// The packet identifiers of the streams a player starts playback with (see GetDefaultStreams)
+struct DefaultStreams
+{
+  std::optional<unsigned int> audio;
+  std::optional<unsigned int> subtitle;
+};
+
+// The play item's stream number table lists the primary streams in stream number order, and a
+// player starts with audio stream number 1 (PSR1) and presentation graphic stream number 1 (PSR2),
+// so the first entry of each is the disc's default. Both are only a starting point - the player
+// moves to another stream number when the user's language preferences (PSR16/PSR18) match one, and
+// HDMV/BD-J code can select whatever it likes. For subtitles the stream number says nothing about
+// whether subtitles are displayed to begin with, as that is a separate flag of PSR2 the .mpls does
+// not carry.
+DefaultStreams GetDefaultStreams(const BlurayPlaylistInformation& b)
+{
+  DefaultStreams defaults;
+
+  const PlayItemInformation* playItem{GetLongestPlayItem(b)};
+  if (!playItem)
+    return defaults;
+
+  if (!playItem->audioStreams.empty())
+    defaults.audio = playItem->audioStreams.front().packetIdentifier;
+  if (!playItem->presentationGraphicStreams.empty())
+    defaults.subtitle = playItem->presentationGraphicStreams.front().packetIdentifier;
+
+  return defaults;
+}
+
+void LogDefaultStreams(const BlurayPlaylistInformation& b)
+{
+  const PlayItemInformation* playItem{GetLongestPlayItem(b)};
+  if (!playItem)
+    return;
+
+  const auto logStream = [&b](const std::vector<StreamInformation>& streams, std::string_view type)
+  {
+    if (streams.empty())
+      return;
+
+    const StreamInformation& stream{streams.front()};
+    CLog::LogF(LOGDEBUG,
+               "Playlist {} - {} stream number 1 (the default) is PID 0x{} coding 0x{} language {}"
+               " - of {} {} streams",
+               b.playlist, type, fmt::format("{:04x}", stream.packetIdentifier),
+               fmt::format("{:02x}", static_cast<int>(stream.coding)),
+               stream.language.empty() ? "unknown" : stream.language, streams.size(), type);
+  };
+
+  logStream(playItem->audioStreams, "audio");
+  logStream(playItem->presentationGraphicStreams, "subtitle");
+}
+
+// The aspect ratio is carried by the .clpi's program information and not by the play item's stream
+// number table, so the streams taken from the table have to pick it up from the clip they belong
+// to. Keyed by packet identifier, which is what the two have in common.
+using AspectRatioMap = std::map<unsigned int, ASPECT_RATIO>;
+
+AspectRatioMap GetClipAspectRatios(const BlurayPlaylistInformation& b)
+{
+  AspectRatioMap aspectRatios;
+
+  // Must be the clip the stream number table (and the M2TS analysis) describes, otherwise the
+  // packet identifiers will not correspond - see GetLongestPlayItem.
+  const ClipInformation* playItemClip{GetLongestPlayItemClip(b)};
+  if (!playItemClip)
+    return aspectRatios;
+
+  const auto it{std::ranges::find(b.clips, playItemClip->clip, &ClipInformation::clip)};
+  if (it == b.clips.end())
+    return aspectRatios;
+
+  for (const ProgramInformation& program : it->programs)
+  {
+    for (const StreamInformation& stream : program.streams)
+    {
+      if (stream.aspect != ASPECT_RATIO{})
+        aspectRatios.try_emplace(stream.packetIdentifier, stream.aspect);
+    }
+  }
+
+  return aspectRatios;
 }
 
 // Add one elementary stream to the playlist, refined by the M2TS analysis in s where it has been
 // done (s is empty when stream details were deferred).
 void AddStream(const StreamInformation& stream,
                const StreamMap& s,
+               const AspectRatioMap& aspectRatios,
                unsigned int playlist,
+               const DefaultStreams& defaults,
                PlaylistInformation& p)
 {
   // Find stream in StreamMap to get accurate details
@@ -262,9 +334,20 @@ void AddStream(const StreamInformation& stream,
     case VIDEO_H264:
     case VIDEO_H264_MVC:
     case VIDEO_HEVC:
+    {
+      // The stream carries the aspect ratio itself when it came from the .clpi
+      ASPECT_RATIO aspect{stream.aspect};
+      if (aspect == ASPECT_RATIO{})
+      {
+        if (const auto ar{aspectRatios.find(stream.packetIdentifier)}; ar != aspectRatios.end())
+          aspect = ar->second;
+      }
+
       p.videoStreams.emplace_back(PopulateVideoStreamInfo(
-          stream, bs != s.end() ? dynamic_cast<TSVideoStreamInfo*>(bs->second.get()) : nullptr));
+          stream, aspect,
+          bs != s.end() ? dynamic_cast<TSVideoStreamInfo*>(bs->second.get()) : nullptr));
       break;
+    }
     case AUDIO_LPCM:
     case AUDIO_AC3:
     case AUDIO_DTS:
@@ -286,7 +369,11 @@ void AddStream(const StreamInformation& stream,
                    bs == s.end() ? "packet identifier not present in stream map"
                                  : "stream in map is not an audio stream");
 
-      p.audioStreams.emplace_back(PopulateAudioStreamInfo(stream, bsai));
+      AudioStreamInfo asi{PopulateAudioStreamInfo(stream, bsai)};
+      if (defaults.audio == stream.packetIdentifier)
+        asi.flags = static_cast<StreamFlags>(asi.flags | StreamFlags::FLAG_DEFAULT);
+
+      p.audioStreams.emplace_back(std::move(asi));
       break;
     }
     case SUB_PG:
@@ -294,7 +381,9 @@ void AddStream(const StreamInformation& stream,
     {
       SubtitleStreamInfo ssi;
       ssi.valid = true;
-      ssi.language = stream.language;
+      ssi.language = CLanguageTag::Parse(stream.language);
+      if (defaults.subtitle == stream.packetIdentifier)
+        ssi.flags = static_cast<StreamFlags>(ssi.flags | StreamFlags::FLAG_DEFAULT);
 
       p.pgStreams.emplace_back(std::move(ssi));
       break;
@@ -325,27 +414,41 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
     p.clipDuration[clip.clip] = clip.duration;
   }
 
-  if (streamDetails == StreamDetails::DEFER)
+  const DefaultStreams defaults{GetDefaultStreams(b)};
+  const AspectRatioMap aspectRatios{GetClipAspectRatios(b)};
+
+  // The PlayItem's stream number table is what the playlist exposes, and in stream number order.
+  // The clip's program list is everything the m2ts carries.
+  const PlayItemInformation* playItem{GetLongestPlayItem(b)};
+  if (playItem && !(playItem->videoStreams.empty() && playItem->audioStreams.empty() &&
+                    playItem->presentationGraphicStreams.empty()))
   {
-    // Neither the .clpi nor the m2ts has been read, so describe the streams from the play item's
-    // stream number table. That gives the coding and language of every stream the playlist
-    // exposes, which is what telling playlists apart and listing their languages needs - only the
-    // details the m2ts carries (channel counts, resolutions) are missing.
-    if (const PlayItemInformation * playItem{GetLongestPlayItem(b)}; playItem)
+    if (streamDetails != StreamDetails::DEFER)
+      LogDefaultStreams(b);
+
+    // The secondary video stream is not one Kodi plays, but it tells the playlist apart from one
+    // presenting the same content without it (see IsPictureInPicturePresentation)
+    p.hasSecondaryVideo = !playItem->secondaryVideoStreams.empty();
+
+    for (const auto* streams :
+         {&playItem->videoStreams, &playItem->audioStreams, &playItem->presentationGraphicStreams})
     {
-      for (const auto* streams : {&playItem->videoStreams, &playItem->audioStreams,
-                                  &playItem->presentationGraphicStreams})
-      {
-        for (const StreamInformation& stream : *streams)
-          AddStream(stream, s, b.playlist, p);
-      }
+      for (const StreamInformation& stream : *streams)
+        AddStream(stream, s, aspectRatios, b.playlist, defaults, p);
     }
     return;
   }
 
-  // Stream information must come from the same clip the M2TS analysis used (see
-  // CM2TSParser::GetStreams), otherwise the packet identifiers will not correspond and no parsed
-  // details will be found for some (or all) streams
+  if (streamDetails == StreamDetails::DEFER)
+    return;
+
+  // If the playlist has no stream number table then fall back to every stream the clip carries.
+  // Stream information must come from the same clip the M2TS analysis used, otherwise the packet
+  // identifiers will not correspond and no parsed details will be found for some (or all) streams.
+  CLog::LogFC(LOGDEBUG, LOGBLURAY,
+              "Playlist {} - no stream number table - falling back to the clip's streams",
+              b.playlist);
+
   const ClipInformation* streamClip{nullptr};
   if (const ClipInformation * playItemClip{GetLongestPlayItemClip(b)}; playItemClip)
   {
@@ -363,7 +466,7 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
   if (streamClip && !streamClip->programs.empty())
   {
     for (const StreamInformation& stream : streamClip->programs[0].streams)
-      AddStream(stream, s, b.playlist, p);
+      AddStream(stream, s, aspectRatios, b.playlist, defaults, p);
   }
 }
 } // namespace XFILE

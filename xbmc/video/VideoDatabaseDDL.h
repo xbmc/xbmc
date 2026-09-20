@@ -9,7 +9,6 @@
 #pragma once
 
 #include "dbwrappers/Database.h"
-#include "dbwrappers/dataset.h"
 
 #include <string>
 

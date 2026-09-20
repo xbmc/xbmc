@@ -56,10 +56,11 @@ void CGUIComponent::Init()
 
 void CGUIComponent::Deinit()
 {
-  CServiceBroker::UnregisterGUI();
-
+  // must precede UnregisterGUI: window teardown releases textures through GetGUI()
   if (m_pWindowManager)
     m_pWindowManager->DeInitialize();
+
+  CServiceBroker::UnregisterGUI();
 
   // Now safe to release skin - all windows deinitialized
   m_skinInfo.reset();

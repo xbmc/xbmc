@@ -88,6 +88,18 @@ msgctxt "#30015"
 msgid "Maximum number of each artwork type - many artwork can cause an error scraping to MySQL database"
 msgstr ""
 
+msgctxt "#30016"
+msgid "Only add whitelisted keywords as tags"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Tag whitelist"
+msgstr ""
+
+msgctxt "#30018"
+msgid "Separate TMDb posters without title to keyart"
+msgstr ""
+
 msgctxt "#30100"
 msgid "Language for Fanart.tv artwork"
 msgstr ""

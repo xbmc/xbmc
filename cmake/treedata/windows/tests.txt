@@ -1,1 +1,2 @@
 xbmc/platform/win32/test test/win32
+xbmc/cores/RetroPlayer/shaders/windows/test test/retroplayer/shaders/windows

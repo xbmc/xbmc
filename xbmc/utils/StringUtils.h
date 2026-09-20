@@ -282,6 +282,25 @@ public:
                                                  const void* pKey1,
                                                  int nKey2,
                                                  const void* pKey2) noexcept;
+
+  /*! \brief Get the Nordic-language-specific collation weight of a codepoint, if any.
+   *
+   * The generic accent-folding fallback used by AlphaNumericCompare()/AlphaNumericCollation()
+   * when locale collation is unavailable (e.g. on Android, which has no working
+   * std::collate<wchar_t> facet) treats æ/ø/å/ä/ö as accented variants of a/o and folds them
+   * accordingly. This is wrong for Nordic languages, which treat them as distinct letters
+   * placed at the end of the alphabet: Norwegian/Danish order z, æ, ø, å (with ä weighted
+   * like æ and ö like ø); Swedish/Finnish order z, å, ä, ö.
+   *
+   * \todo Remove this function and replace with a better solution
+   *
+   * \param languageCode ISO 639-2 language code, as returned by CLangInfo::GetLanguageAs()
+   * \param codepoint the (upper or lower case) unicode codepoint being weighted
+   *
+   * \return an override weight that sorts after 'z', or 0 if no override applies
+   */
+  [[nodiscard]] static wchar_t GetNordicCollationWeight(std::string_view languageCode,
+                                                        wchar_t codepoint) noexcept;
   [[nodiscard]] static long TimeStringToSeconds(std::string_view timeString);
   static void RemoveCRLF(std::string& strLine) noexcept;
 
@@ -324,40 +343,52 @@ public:
   /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
    * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
    * Next functions get parameter as char and don't need double cast ((int)(unsigned char) is required for standard functions). */
-  [[nodiscard]] inline static bool isasciidigit(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciidigit(char chr) noexcept // locale independent
   {
     return chr >= '0' && chr <= '9';
   }
-  [[nodiscard]] inline static bool isasciixdigit(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciixdigit(char chr) noexcept // locale independent
   {
     return (chr >= '0' && chr <= '9') || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
   }
   [[nodiscard]] static int asciidigitvalue(char chr) noexcept; // locale independent
   [[nodiscard]] static int asciixdigitvalue(char chr) noexcept; // locale independent
-  [[nodiscard]] inline static bool isasciiuppercaseletter(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciiuppercaseletter(
+      char chr) noexcept // locale independent
   {
     return (chr >= 'A' && chr <= 'Z');
   }
-  [[nodiscard]] inline static bool isasciilowercaseletter(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciilowercaseletter(
+      char chr) noexcept // locale independent
   {
     return (chr >= 'a' && chr <= 'z');
   }
-  [[nodiscard]] inline static bool isasciiletter(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciiletter(char chr) noexcept // locale independent
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr);
   }
-  [[nodiscard]] inline static bool IsAsciiLetters(
+  [[nodiscard]] constexpr static bool IsAsciiLetters(
       std::string_view str) noexcept // locale independent
   {
     return std::ranges::all_of(str, [](char c) { return StringUtils::isasciiletter(c); }, {});
   }
-  [[nodiscard]] inline static bool isasciialphanum(char chr) noexcept // locale independent
+  [[nodiscard]] constexpr static bool isasciialphanum(char chr) noexcept // locale independent
   {
     return isasciiletter(chr) || isasciidigit(chr);
   }
   [[nodiscard]] constexpr static char ToLowerAscii(char c) noexcept // locale independent
   {
     return 'A' <= c && c <= 'Z' ? c - 'A' + 'a' : c;
+  }
+  [[nodiscard]] constexpr static bool isasciiwhitespace(char chr) noexcept // locale independent
+  {
+    return chr == ' ' || chr == '\t' || chr == '\n' || chr == '\v' || chr == '\f' || chr == '\r';
+  }
+  [[nodiscard]] constexpr static bool IsAsciiTrimmed(
+      std::string_view str) noexcept // locale independent
+  {
+    return str.empty() || (!StringUtils::isasciiwhitespace(str.front()) &&
+                           !StringUtils::isasciiwhitespace(str.back()));
   }
   [[nodiscard]] static std::string SizeToString(int64_t size);
   static const std::string Empty;

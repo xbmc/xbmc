@@ -721,6 +721,7 @@ void CWinSystemWin32::SetMinimized(bool minimized)
 std::vector<std::string> CWinSystemWin32::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
 
   for (auto& display : m_displays)
   {

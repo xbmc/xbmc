@@ -13,9 +13,10 @@
 #include "VideoManagerTypes.h"
 #include "addons/Scraper.h"
 #include "settings/VideoVersionsSettings.h"
-#include "utils/Artwork.h"
 #include "utils/RegExp.h"
+#include "video/VideoInfoScannerArt.h"
 
+#include <atomic>
 #include <cstdint>
 #include <functional>
 #include <set>
@@ -55,14 +56,22 @@ namespace KODI::VIDEO
   class CVideoInfoScanner : public CInfoScanner
   {
   public:
-    enum class UseRemoteArtWithLocalScraper : bool
-    {
-      NO,
-      YES
-    };
-
     CVideoInfoScanner();
     ~CVideoInfoScanner() override;
+
+    /*! \brief Retrieve any artwork associated with an item
+     \sa CVideoInfoScannerArt::GetArtwork
+     */
+    void GetArtwork(CFileItem* pItem,
+                    ADDON::ContentType content,
+                    bool bApplyToDir = false,
+                    bool useLocal = true,
+                    const std::string& actorArtPath = "",
+                    CVideoInfoScannerArt::UseRemoteArtWithLocalScraper useRemoteArt =
+                        CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::YES) const
+    {
+      m_art.GetArtwork(pItem, content, bApplyToDir, useLocal, actorArtPath, useRemoteArt);
+    }
 
     /*! \brief Scan a folder using the background scanner
      \param strDirectory path to scan
@@ -113,7 +122,6 @@ namespace KODI::VIDEO
                            bool fetchEpisodes = true,
                            CGUIDialogProgress* pDlgProgress = nullptr);
 
-    static void ApplyThumbToFolder(const std::string &folder, const std::string &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
     /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
@@ -121,39 +129,6 @@ namespace KODI::VIDEO
      \param tag     info tag
      */
     static bool UpdateSetInTag(CVideoInfoTag& tag);
-
-    /*! \brief Retrieve any artwork associated with an item
-     \param pItem item to find artwork for.
-     \param content content type of the item.
-     \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
-     \param useLocal whether we should use local thumbs. Defaults to true.
-     \param actorArtPath the directory containing actor thumbs. Defaults to empty.
-     \param useRemoteArt use remote art if also using local scraper. Defaults to yes.
-     */
-    void GetArtwork(
-        CFileItem* pItem,
-        ADDON::ContentType content,
-        bool bApplyToDir = false,
-        bool useLocal = true,
-        const std::string& actorArtPath = "",
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
-
-    /*! \brief Get season thumbs for a tvshow.
-     All seasons (regardless of whether the user has episodes) are added to the art map.
-     \param[in] show     tvshow info tag
-     \param[in] art      artwork map to which season thumbs are added.
-     \param[in] useLocal whether to use local thumbs, defaults to true
-     \param[in] useRemoteArt use remote art if also using local scraper. Defaults to yes.
-     \param[in] cache regexp cache to avoid repeated compilations
-     */
-    static void GetSeasonThumbs(
-        const CVideoInfoTag& show,
-        KODI::ART::SeasonsArtwork& art,
-        const std::vector<std::string>& artTypes,
-        bool useLocal = true,
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES,
-        KODI::REGEXP::RegExpCache* cache = nullptr);
-    static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
 
     static std::string GetMovieSetInfoFolder(const std::string& setTitle);
 
@@ -254,18 +229,6 @@ namespace KODI::VIDEO
      */
     bool GetEpisodeTitleFromRegExp(CRegExp& reg, EPISODE& episodeInfo);
 
-    /*! \brief Fetch thumbs for actors
-     Updates each actor with their thumb (local or online)
-     \param actors - vector of SActorInfo
-     \param actorsDir - directory holding the local thumbs (ie. a .actors folder, or the actors
-            folder of a library export). Used as given, nothing is appended.
-     \param useRemoteArt - use remote art (ie. http://) even if derived from local .nfo file. Defaults to yes.
-     */
-    void FetchActorThumbs(
-        std::vector<SActorInfo>& actors,
-        const std::string& actorsDir,
-        UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
-
     static int GetPathHash(const CFileItemList &items, std::string &hash);
 
     /*! \brief Retrieve a "fast" hash of the given directory (if available)
@@ -305,6 +268,14 @@ namespace KODI::VIDEO
      */
     bool CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const;
 
+    /*! \brief Queue a scanned directory to be cleaned, along with the paths holding its media
+     A disc rip or archive is not anchored in the folder that was scanned but under a
+     bluray:// or zip:// path of its own. Those are queued too, otherwise the clean never
+     looks at them and media removed with the disc stays in the library.
+     \param directory the directory that was scanned
+     */
+    void AddPathToClean(const std::string& directory);
+
     /*! \brief Process a series folder, filling in episode details and adding them to the database.
      @todo Ideally we would return InfoRet:HAVE_ALREADY if we don't have to update any episodes
      and we should return InfoRet::NOT_FOUND only if no information is found for any of
@@ -335,9 +306,8 @@ namespace KODI::VIDEO
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
-    static std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
-                                                                       int dbId,
-                                                                       int targetDbId = -1);
+    static std::pair<VersionConversionResult, int> ProcessVideoVersion(
+        VideoDbContentType itemType, int dbId, int targetDbId = -1, bool canBecomeDefault = true);
     static void RemovePartNumberFromTitle(int dbId,
                                           VideoDbContentType itemType,
                                           CVideoDatabase& db);
@@ -358,23 +328,23 @@ namespace KODI::VIDEO
     std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(
         CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag);
 
-    bool m_bStop;
+    //! Sticky - never reset, so a scanner instance is good for one scan only
+    std::atomic<bool> m_bStop{false};
     bool m_scanAll;
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
 
-    enum class ArtRetrievalTiming : uint8_t
-    {
-      SYNCHRONOUS = 0, //!< retrieve art synchronously during scrape
-      BACKGROUND = 1 //!< retrieve art in background after scrape
-    };
+    //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
+    bool m_useFolderNames{false};
 
-    ArtRetrievalTiming m_artRetrievalTiming{ArtRetrievalTiming::BACKGROUND};
     CVideoDatabase m_database;
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+
+    //! The artwork side of the scan
+    CVideoInfoScannerArt m_art;
 
   private:
     /*!
@@ -396,6 +366,20 @@ namespace KODI::VIDEO
                                        std::string_view directory,
                                        std::function<void(const std::string&)> f);
 
+    /*!
+     * \brief Look for the name of an edition known to the library (ex. "Director's Cut") within the
+     *        name of the folder holding a disc. The longest match wins, and a match at the very
+     *        start of the folder name is ignored as that is a movie whose title is an edition name
+     *        (ex. "The Final Cut (2004)") rather than a version of another movie.
+     * \param[in] folderName Name of the folder holding the disc
+     * \return The edition's name as held in the library, empty if none was recognised
+     */
+    std::string GetEditionFromFolderName(const std::string& folderName);
+
     mutable KODI::REGEXP::RegExpCache m_regexpCache;
+
+    //! Editions known to the library, cached for the duration of a scan
+    std::vector<std::string> m_videoVersionTypes;
+    bool m_videoVersionTypesCached{false};
   };
   } // namespace KODI::VIDEO

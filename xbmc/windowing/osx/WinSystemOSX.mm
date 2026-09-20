@@ -53,7 +53,6 @@ using namespace std::chrono_literals;
 namespace
 {
 constexpr int MAX_DISPLAYS = 32;
-constexpr const char* DEFAULT_SCREEN_NAME = "Default";
 } // namespace
 
 static std::array<NSWindowController*, MAX_DISPLAYS> blankingWindowControllers;
@@ -172,12 +171,6 @@ EdgeInsets GetScreenEdgeInsets(NSUInteger screenIdx)
 
 NSString* screenNameForDisplay(NSUInteger screenIdx)
 {
-  // screen id 0 is always called "Default"
-  if (screenIdx == 0)
-  {
-    return @(DEFAULT_SCREEN_NAME);
-  }
-
   const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
   NSString* screenName = GetScreenName(screenIdx);
 
@@ -194,11 +187,15 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
   return screenName;
 }
 
-void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
+void CWinSystemOSX::SynchronizeCurrentMonitor()
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
+  // OUTPUT_NAME_DEFAULT is a placeholder resolving to screen 0, not a stale name.
+  if (storedScreenName == OUTPUT_NAME_DEFAULT && m_lastDisplayNr == 0)
+    return;
+
+  const std::string currentScreenName = screenNameForDisplay(m_lastDisplayNr).UTF8String;
   if (storedScreenName != currentScreenName)
   {
     CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
@@ -743,8 +740,6 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   m_bWindowCreated = true;
 
-  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
-
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
   // becoming key window must happen in completion block.
@@ -1201,7 +1196,7 @@ bool CWinSystemOSX::HasValidResolution() const
 void CWinSystemOSX::OnMove(int x, int y)
 {
   // check if the current screen/monitor settings needs to be updated
-  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
+  SynchronizeCurrentMonitor();
 
   // check if refresh rate needs to be updated
   static double oldRefreshRate = m_refreshRate;
@@ -1241,7 +1236,7 @@ void CWinSystemOSX::OnChangeScreen(unsigned int screenIdx)
   if (lastDisplay != m_lastDisplayNr && m_bFullScreen)
   {
     UnblankDisplay(m_lastDisplayNr);
-    CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
+    SynchronizeCurrentMonitor();
   }
 }
 
@@ -1334,18 +1329,12 @@ std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(CVideoReferenceClock* cl
 std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.emplace_back(DEFAULT_SCREEN_NAME);
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
 
-  // screen 0 is always the "Default" setting, avoid duplicating the available
-  // screens here.
   const NSUInteger numDisplays = NSScreen.screens.count;
-  if (numDisplays > 1)
+  for (NSUInteger disp = 0; disp < numDisplays; disp++)
   {
-    for (NSUInteger disp = 1; disp <= numDisplays - 1; disp++)
-    {
-      NSString* const dispName = screenNameForDisplay(disp);
-      outputs.emplace_back(dispName.UTF8String);
-    }
+    outputs.emplace_back(screenNameForDisplay(disp).UTF8String);
   }
 
   return outputs;

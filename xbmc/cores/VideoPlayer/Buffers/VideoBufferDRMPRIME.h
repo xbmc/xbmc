@@ -37,11 +37,9 @@ public:
   virtual uint32_t GetHeight() const { return GetPicture().iHeight; }
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
-  virtual bool IsValid() const { return true; }
+  virtual bool IsValid() const;
   virtual bool AcquireDescriptor() { return true; }
   virtual void ReleaseDescriptor() {}
-
-  uint32_t m_fb_id = 0;
 
 protected:
   explicit CVideoBufferDRMPRIME(int id);
@@ -61,7 +59,6 @@ public:
   {
     return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]);
   }
-  bool IsValid() const override;
 
 protected:
   AVFrame* m_pFrame = nullptr;
@@ -72,7 +69,7 @@ class CVideoBufferPoolDRMPRIMEFFmpeg : public IVideoBufferPool
 public:
   ~CVideoBufferPoolDRMPRIMEFFmpeg() override;
   void Return(int id) override;
-  CVideoBuffer* Get() override;
+  CVideoBufferDRMPRIMEFFmpeg* Get() override;
 
 protected:
   CCriticalSection m_critSection;

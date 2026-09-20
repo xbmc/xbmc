@@ -74,8 +74,13 @@ bool CShaderGL::Create(unsigned int passIdx,
     glGetShaderiv(vShader, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
     glGetShaderInfoLog(vShader, maxLength, &maxLength, errorLog.data());
-    CLog::Log(LOGERROR, "CShaderGL::Create: Vertex shader compile error:\n{}",
-              std::string(errorLog.begin(), errorLog.end()));
+    CLog::Log(
+        LOGERROR,
+        "CShaderGL::Create: Failed to compile vertex shader: pass={}, alias={}, shader={}\n{}",
+        m_passIdx, m_passAlias.empty() ? "<none>" : m_passAlias, m_shaderPath,
+        std::string(errorLog.begin(), errorLog.end()));
+    glDeleteShader(vShader);
+    return false;
   }
 
   fShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -89,8 +94,14 @@ bool CShaderGL::Create(unsigned int passIdx,
     glGetShaderiv(fShader, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
     glGetShaderInfoLog(fShader, maxLength, &maxLength, errorLog.data());
-    CLog::Log(LOGERROR, "CShaderGL::Create: Fragment shader compile error:\n{}",
-              std::string(errorLog.begin(), errorLog.end()));
+    CLog::Log(
+        LOGERROR,
+        "CShaderGL::Create: Failed to compile fragment shader: pass={}, alias={}, shader={}\n{}",
+        m_passIdx, m_passAlias.empty() ? "<none>" : m_passAlias, m_shaderPath,
+        std::string(errorLog.begin(), errorLog.end()));
+    glDeleteShader(vShader);
+    glDeleteShader(fShader);
+    return false;
   }
 
   glAttachShader(m_shaderProgram, vShader);
@@ -113,9 +124,10 @@ bool CShaderGL::Create(unsigned int passIdx,
     glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
     std::vector<GLchar> errorLog(maxLength);
     glGetProgramInfoLog(m_shaderProgram, maxLength, &maxLength, errorLog.data());
-    CLog::Log(LOGERROR, "CShaderGL::Create: Shader program link error:\n{}",
+    CLog::Log(LOGERROR,
+              "CShaderGL::Create: Failed to link shader program: pass={}, alias={}, shader={}\n{}",
+              m_passIdx, m_passAlias.empty() ? "<none>" : m_passAlias, m_shaderPath,
               std::string(errorLog.begin(), errorLog.end()));
-    CLog::Log(LOGERROR, "CShaderGL::Create: Failed to load video shader: {}", m_shaderPath);
     return false;
   }
 
@@ -199,7 +211,7 @@ void CShaderGL::SetSizes(const float2& nextSize,
     m_inputTextureSize = prevTextureSize;
 }
 
-void CShaderGL::PrepareParameters(
+bool CShaderGL::PrepareParameters(
     IShaderTexture& sourceTexture,
     const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
     const std::vector<std::unique_ptr<IShader>>& pShaders,
@@ -251,6 +263,7 @@ void CShaderGL::PrepareParameters(
   m_TexCoords[3][1] = 0.0f;
 
   UpdateUniformInputs(sourceTexture, pShaderTextures, pShaders, frameCount);
+  return true;
 }
 
 void CShaderGL::UpdateMVP()

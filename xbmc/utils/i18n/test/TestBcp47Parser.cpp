@@ -52,6 +52,8 @@ const TestBcp47Parser ParseBcp47Tests[] = {
     {"ab-abcde-0abc-1def", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {{"abcde"}, {"0abc"}, {"1def"}}, {}, {}, ""}},
     {"ab-abcdefghi", {}, false},
     // Extensions
+    // The shortest an extension can be: a singleton and one two character subtag
+    {"ab-a-bc", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {}, {{'a', {{"bc"}}}}, {}, ""}},
     {"ab-a-bcdefghi-jk", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {}, {{'a', {{"bcdefghi"}, {"jk"}}}}, {}, ""}},
     {"ab-a-bc-de-a-fg-hi", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {}, {{'a', {{"bc"}, {"de"}}}, {'a', {{"fg"}, {"hi"}}}}, {}, ""}},
     {"ab-a-bc-d-ef", {Bcp47TagType::WELL_FORMED, "ab", {}, "", "", {}, {{'a', {{"bc"}}},{'d', {{"ef"}}}}, {}, ""}},

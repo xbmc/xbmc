@@ -79,8 +79,11 @@ function(add_addon_depends addon searchpath)
                        -DBUILD_SHARED_LIBS=0)
         # windows args
         if (CMAKE_SYSTEM_NAME STREQUAL WindowsStore OR CMAKE_SYSTEM_NAME STREQUAL Windows)
-          list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
-                                 -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
+          list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME})
+          if(CMAKE_SYSTEM_NAME STREQUAL Windows AND ADDON_SYSTEM_PROCESSOR AND NOT CMAKE_TOOLCHAIN_FILE)
+            list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_PROCESSOR=${ADDON_SYSTEM_PROCESSOR})
+          endif()
+          list(APPEND BUILD_ARGS -DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION})
         endif()
         # if there are no make rules override files available take care of manually passing on ARCH_DEFINES
         if(NOT CMAKE_USER_MAKE_RULES_OVERRIDE AND NOT CMAKE_USER_MAKE_RULES_OVERRIDE_CXX)
@@ -128,6 +131,7 @@ function(add_addon_depends addon searchpath)
         file(GLOB patches ${dir}/*.patch)
         list(SORT patches)
         foreach(patch ${patches})
+          set(patch_program ${PATCH_PROGRAM})
           if(NOT PATCH_PROGRAM OR "${PATCH_PROGRAM}" STREQUAL "")
             if(NOT PATCH_EXECUTABLE)
               # find the path to the patch executable
@@ -148,23 +152,29 @@ function(add_addon_depends addon searchpath)
               endif()
             endif()
 
-            set(PATCH_PROGRAM ${PATCH_EXECUTABLE})
+            set(patch_program ${PATCH_EXECUTABLE})
 
-            # On Windows "patch.exe" can only handle CR-LF line-endings.
-            # Our patches have LF-only line endings - except when they
-            # have been checked out as part of a dependency hosted on Git
-            # and core.autocrlf=true.
+            # On Windows "patch.exe" converts line endings unless --binary is
+            # used. Do not use --binary for CRLF-only patches, such as patches
+            # checked out with core.autocrlf=true.
             if(WIN32)
               file(READ ${patch} patch_content_hex HEX)
-              # Force handle LF-only line endings
-              if(NOT patch_content_hex MATCHES "0d0a")
-                list(APPEND PATCH_PROGRAM --binary)
-              endif()
+              # Split into exact bytes before looking for bare LF characters.
+              string(REGEX MATCHALL ".." patch_content_bytes "${patch_content_hex}")
+              set(previous_patch_byte "")
+              foreach(patch_byte IN LISTS patch_content_bytes)
+                # Force handling if any LF-only line endings remain
+                if("${patch_byte}" STREQUAL "0a" AND NOT "${previous_patch_byte}" STREQUAL "0d")
+                  list(APPEND patch_program --binary)
+                  break()
+                endif()
+                set(previous_patch_byte "${patch_byte}")
+              endforeach()
             endif()
           endif()
 
           set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${patch})
-          list(APPEND PATCH_COMMAND COMMAND ${PATCH_PROGRAM} -p1 -i ${patch})
+          list(APPEND PATCH_COMMAND COMMAND ${patch_program} -p1 -i ${patch})
         endforeach()
 
 

@@ -99,23 +99,7 @@ void CVAAPIContext::Release(CDecoder *decoder)
     m_decoders.erase(it);
 
   m_refCount--;
-  if (m_refCount <= 0)
-  {
-    Close();
-    delete this;
-    m_context = 0;
-  }
-}
-
-void CVAAPIContext::Close()
-{
-  CLog::Log(LOGINFO, "VAAPI::Close - closing decoder context");
-  if (m_renderNodeFD >= 0)
-  {
-    close(m_renderNodeFD);
-  }
-
-  DestroyContext();
+  CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::{} - refCount now {}", __FUNCTION__, m_refCount);
 }
 
 bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
@@ -225,23 +209,6 @@ bool CVAAPIContext::CreateContext()
     return false;
 
   return true;
-}
-
-void CVAAPIContext::DestroyContext()
-{
-  delete[] m_profiles;
-  if (m_display)
-  {
-    if (CheckSuccess(vaTerminate(m_display), "vaTerminate"))
-    {
-      m_display = NULL;
-    }
-    else
-    {
-      vaSetErrorCallback(m_display, nullptr, nullptr);
-      vaSetInfoCallback(m_display, nullptr, nullptr);
-    }
-  }
 }
 
 void CVAAPIContext::QueryCaps()
@@ -962,6 +929,13 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
   { // we have a new frame from decoder
 
     VASurfaceID surf = (VASurfaceID)(uintptr_t)pFrame->data[3];
+    // surface IDs are only meaningful within the decoder generation that allocated them;
+    // comparing the opaque is safe: FFGetBuffer's Acquire keeps the old decoder alive
+    if (pFrame->buf[0] && av_buffer_get_opaque(pFrame->buf[0]) != this)
+    {
+      CLog::Log(LOGWARNING, "VAAPI::Decode - ignoring frame of a previous decoder generation");
+      return CDVDVideoCodec::VC_BUFFER;
+    }
     // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
     if (!m_videoSurfaces.IsValid(surf))
     {
@@ -1091,15 +1065,10 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
       m_vaapiConfig.context->Release(this);
     m_vaapiConfig.context = 0;
 
-    if (CVAAPIContext::EnsureContext(&m_vaapiConfig.context, this) && ConfigVAAPI())
-    {
-      m_DisplayState = VAAPI_OPEN;
-    }
+    m_vaapiConfigured = false;
+    m_DisplayState = VAAPI_ERROR;
 
-    if (state == VAAPI_RESET)
-      return CDVDVideoCodec::VC_FLUSHED;
-    else
-      return CDVDVideoCodec::VC_ERROR;
+    return CDVDVideoCodec::VC_FATAL;
   }
 
   if (m_getBufferError > 0 && m_getBufferError < 5)

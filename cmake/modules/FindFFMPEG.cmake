@@ -111,6 +111,13 @@ macro(buildFFMPEG)
                                         --win10=${win10})
     set(INSTALL_COMMAND ${CMAKE_COMMAND} -E true)
 
+    foreach(_ffmpeg_pkg IN ITEMS ${FFMPEG_PKGS})
+      string(REGEX REPLACE "[>]?=.*" "" _libname ${_ffmpeg_pkg})
+      string(REGEX REPLACE "^lib" "" _name ${_libname})
+      list(APPEND _ffmpeg_byproducts ${MINGW_LIBS_DIR}/lib/${_name}.lib)
+    endforeach()
+    set(BUILD_BYPRODUCTS ${_ffmpeg_byproducts})
+
     BUILD_DEP_TARGET()
 
     set(FFMPEG_INCLUDE_DIRS ${MINGW_LIBS_DIR}/include)
@@ -192,6 +199,9 @@ macro(buildFFMPEG)
                       COMMAND ${CMAKE_COMMAND} -E copy
                       ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/002-ffmpeg-libavutil-common-h-cpp11-constant-macros.patch
                       <SOURCE_DIR>
+                      COMMAND ${CMAKE_COMMAND} -E copy
+                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/008-ffmpeg-all-pgssubdec-use-caller-colorspace.patch
+                      <SOURCE_DIR>
     )
 
     if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
@@ -265,7 +275,7 @@ macro(buildFFMPEG)
                                                 INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}")
 
       if(WIN32 OR WINDOWS_STORE)
-        string(REPLACE "lib" "" name ${_libname})
+        string(REGEX REPLACE "^lib" "" name ${_libname})
         set_target_properties(ffmpeg::${_libname} PROPERTIES
                                                   IMPORTED_LOCATION "${MINGW_LIBS_DIR}/lib/${name}.lib")
       endif()
@@ -285,13 +295,13 @@ else()
   # have latest version to properly track rebuiling.
   if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
     # required ffmpeg library versions - tools/depends/target/ffmpeg versions
-    set(REQUIRED_FFMPEG_VERSION 8.1.2)
-    set(_avutil_ver "=60.26.102")
-    set(_avcodec_ver "=62.28.102")
-    set(_avformat_ver "=62.12.102")
-    set(_avfilter_ver "=11.14.102")
-    set(_swscale_ver "=9.5.102")
-    set(_swresample_ver "=6.3.102")
+    set(REQUIRED_FFMPEG_VERSION 9.0.1)
+    set(_avutil_ver "=61.1.101")
+    set(_avcodec_ver "=63.1.101")
+    set(_avformat_ver "=63.1.101")
+    set(_avfilter_ver "=12.1.101")
+    set(_swscale_ver "=10.1.101")
+    set(_swresample_ver "=7.1.101")
     set(_postproc_ver "=59.1.100")
   else()
     # required ffmpeg library versions - minimum supported API compat versions

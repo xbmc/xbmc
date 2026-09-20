@@ -27,7 +27,7 @@
           "id": {
             "type": "string",
             "required": true,
-            "description": "Name of a namespace, method or type"
+            "description": "Name of a namespace, method, type, notification or error"
           },
           "type": {
             "type": "string",
@@ -36,7 +36,8 @@
               "method",
               "namespace",
               "type",
-              "notification"
+              "notification",
+              "error"
             ],
             "description": "Type of the given name"
           },
@@ -4670,6 +4671,10 @@
         "$ref": "Optional.String"
       },
       {
+        "name": "trailer",
+        "$ref": "Optional.String"
+      },
+      {
         "name": "sorttitle",
         "$ref": "Optional.String"
       },
@@ -5270,6 +5275,78 @@
         "type": "boolean",
         "default": true,
         "description": "Whether or not to show the progress bar or any other GUI dialog"
+      }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.SetSourceContent": {
+    "type": "method",
+    "description": "Assigns a content type and scraper to a video source path, as the 'Set content' dialog does",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "path",
+        "type": "string",
+        "required": true,
+        "minLength": 1,
+        "description": "Path the content binding applies to. A trailing separator is added if missing"
+      },
+      {
+        "name": "content",
+        "type": "string",
+        "required": true,
+        "enum": [ "movies", "tvshows", "musicvideos", "none" ],
+        "description": "Content type to bind, or \"none\" to clear the binding"
+      },
+      {
+        "name": "scraperid",
+        "type": "string",
+        "default": "",
+        "description": "Addon id of the scraper. Required unless content is \"none\""
+      },
+      {
+        "name": "scrapersettings",
+        "type": "string",
+        "default": "",
+        "description": "Scraper settings as XML. Scraper defaults are used when empty"
+      },
+      {
+        "name": "scanrecursive",
+        "type": "boolean",
+        "default": true,
+        "description": "Scan sub folders. Ignored for tvshows and when containssingleitem is set"
+      },
+      {
+        "name": "usedirectorynames",
+        "type": "boolean",
+        "default": false,
+        "description": "Take the item name from the containing folder. Ignored for tvshows"
+      },
+      {
+        "name": "containssingleitem",
+        "type": "boolean",
+        "default": false,
+        "description": "The path holds one item, named after the folder the scan started in"
+      },
+      {
+        "name": "noupdate",
+        "type": "boolean",
+        "default": false,
+        "description": "Exclude the path from library updates"
+      },
+      {
+        "name": "clearmode",
+        "type": "string",
+        "default": "clear",
+        "enum": [ "clear", "exclude", "remove" ],
+        "description": "Only used when content is \"none\". \"clear\" unbinds the scraper, \"exclude\" also excludes the path from scanning, \"remove\" additionally deletes the items already scraped from it"
+      },
+      {
+        "name": "refresh",
+        "type": "boolean",
+        "default": false,
+        "description": "Scan the path once the binding has been applied"
       }
     ],
     "returns": "string"
@@ -5958,6 +6035,53 @@
       }
     ],
     "returns": "boolean"
+  },
+  "PVR.GetPlayableBroadcasts": {
+    "type": "method",
+    "description": "Retrieves the playable broadcasts of a specific channel within a time range",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      {
+        "name": "channelid",
+        "$ref": "Library.Id",
+        "required": true
+      },
+      {
+        "name": "starttime",
+        "type": "string",
+        "required": true,
+        "description":
+            "start of the time range, in the same format as PVR.Details.Broadcast.starttime"
+      },
+      {
+        "name": "endtime",
+        "type": "string",
+        "required": true,
+        "description": "end of the time range, in the same format as PVR.Details.Broadcast.endtime"
+      },
+      {
+        "name": "limits",
+        "$ref": "List.Limits",
+        "description": "bounds the broadcasts examined, not the ids returned"
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": {
+          "$ref": "List.LimitsReturned",
+          "required": true
+        },
+        "broadcastids": {
+          "type": "array",
+          "required": true,
+          "items": {
+            "$ref": "Library.Id"
+          }
+        }
+      }
+    }
   },
   "PVR.GetTimers": {
     "type": "method",

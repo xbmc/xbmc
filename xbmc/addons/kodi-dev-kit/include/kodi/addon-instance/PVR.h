@@ -288,9 +288,9 @@ namespace addon
 ///   PVR_ERROR GetBackendVersion(std::string& version) override;
 ///
 ///   PVR_ERROR GetProvidersAmount(int& amount) override;
-///   PVR_ERROR GetProviders(std::vector<kodi::addon::PVRProvider>& providers) override;
+///   PVR_ERROR GetProviders(kodi::addon::PVRProvidersResultSet& results) override;
 ///   PVR_ERROR GetChannelsAmount(int& amount) override;
-///   PVR_ERROR GetChannels(bool radio, std::vector<kodi::addon::PVRChannel>& channels) override;
+///   PVR_ERROR GetChannels(bool radio, kodi::addon::PVRChannelsResultSet& results) override;
 ///   PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
 ///                                        PVR_SOURCE source,
 ///                                        std::vector<kodi::addon::PVRStreamProperty>& properties) override;
@@ -333,9 +333,10 @@ namespace addon
 ///   return PVR_ERROR_NO_ERROR;
 /// }
 ///
-/// PVR_ERROR CMyPVRClient::GetProviders(std::vector<kodi::addon::PVRProvider>& providers)
+/// PVR_ERROR CMyPVRClient::GetProviders(kodi::addon::PVRProvidersResultSet& results)
 /// {
-///   providers = m_myProviders;
+///   for (const auto& provider : m_myProviders)
+///     results.Add(provider);
 ///   return PVR_ERROR_NO_ERROR;
 /// }
 ///
@@ -345,9 +346,10 @@ namespace addon
 ///   return PVR_ERROR_NO_ERROR;
 /// }
 ///
-/// PVR_ERROR CMyPVRClient::GetChannels(bool radio, std::vector<kodi::addon::PVRChannel>& channels)
+/// PVR_ERROR CMyPVRClient::GetChannels(bool radio, kodi::addon::PVRChannelsResultSet& results)
 /// {
-///   channels = m_myChannels;
+///   for (const auto& channel : m_myChannels)
+///     results.Add(channel);
 ///   return PVR_ERROR_NO_ERROR;
 /// }
 ///
@@ -1043,9 +1045,10 @@ public:
   /// {
   /// public:
   ///   ...
-  ///   PVR_ERROR SignalStatus(PVRSignalStatus &signalStatus) override
+  ///   PVR_ERROR GetSignalStatus(int channelUid,
+  ///                             kodi::addon::PVRSignalStatus& signalStatus) override
   ///   {
-  ///     signalStatus.SetAapterName("Example adapter 1");
+  ///     signalStatus.SetAdapterName("Example adapter 1");
   ///     signalStatus.SetAdapterStatus("OK");
   ///     signalStatus.SetSignal(0xFFFF); // 100%
   ///

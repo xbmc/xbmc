@@ -23,6 +23,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <memory>
 
 namespace
@@ -122,6 +123,15 @@ bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items,
 {
   const std::string savesFolder = MakePath(gamePath);
 
+  // MakePath() gives back nothing if it couldn't make the folder, and listing
+  // an empty path walks the root of the filesystem instead. Every directory
+  // there then turns up as a savestate to load.
+  if (savesFolder.empty())
+  {
+    CLog::Log(LOGERROR, "Failed to find a savestate folder for {}", CURL::GetRedacted(gamePath));
+    return false;
+  }
+
   XFILE::CDirectory::CHints hints;
   hints.mask = SAVESTATE_EXTENSION;
 
@@ -206,8 +216,18 @@ std::unique_ptr<ISavestate> CSavestateDatabase::RenameSavestate(const std::strin
   newSavestate->SetGameClientID(savestate->GameClientID());
   newSavestate->SetGameClientVersion(savestate->GameClientVersion());
 
-  size_t memorySize = savestate->GetMemorySize();
-  std::memcpy(newSavestate->GetMemoryBuffer(memorySize), savestate->GetMemoryData(), memorySize);
+  if (!savestate->CopyMemoryDataTo(*newSavestate))
+    return {};
+
+  newSavestate->SetDiscState(savestate->GetDiscState());
+
+  // Carried separately from the emulator's memory, which is all the copy above
+  // moves; without this a rename would drop the player's achievement progress
+  if (const size_t achievementSize = savestate->GetAchievementSize(); achievementSize > 0)
+  {
+    if (uint8_t* const achievementData = newSavestate->GetAchievementBuffer(achievementSize))
+      std::memcpy(achievementData, savestate->GetAchievementData(), achievementSize);
+  }
 
   newSavestate->Finalize();
 

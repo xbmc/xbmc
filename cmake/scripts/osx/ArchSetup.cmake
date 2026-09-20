@@ -24,9 +24,14 @@ else()
   endif()
 endif()
 
-# Tahoe seems to be setting environment variables at the xcode project level that
-# causes issues on shell based build objects that we use. Forcefully blank the most
-# problematic variables
+# Xcode sets a deployment target for every Apple platform it knows about, not just the one
+# being built for, and exports them all into Run Script build phases. clang rejects an
+# invocation that sees more than one:
+#   clang: error: conflicting deployment targets, both '26.5' and '25.5' are present in environment
+# which breaks internal dependencies that configure or build through a shell. Blank the
+# platforms we do not build for; MACOSX_DEPLOYMENT_TARGET stays, it is what
+# CMAKE_OSX_DEPLOYMENT_TARGET feeds. Check with:
+#   xcodebuild -target build-<dep> -showBuildSettings | grep _DEPLOYMENT_TARGET
 set(CMAKE_XCODE_ATTRIBUTE_DRIVERKIT_DEPLOYMENT_TARGET "")
 set(CMAKE_XCODE_ATTRIBUTE_WATCHOS_DEPLOYMENT_TARGET "")
 set(CMAKE_XCODE_ATTRIBUTE_XROS_DEPLOYMENT_TARGET "")
@@ -53,11 +58,6 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework GameController" "-framework Speech"
                     "-framework AVFoundation")
 
-if(ARCH STREQUAL aarch64)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
-else()
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
-endif()
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_LINK_OBJC_RUNTIME OFF)
 
 include(cmake/scripts/darwin/Macros.cmake)

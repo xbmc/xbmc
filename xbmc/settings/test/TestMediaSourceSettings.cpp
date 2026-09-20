@@ -15,6 +15,57 @@
 
 #include <gtest/gtest.h>
 
+namespace
+{
+class TestMediaSourceSettingsDevicePath : public testing::Test, protected CMediaSourceSettings
+{
+};
+} // namespace
+
+TEST_F(TestMediaSourceSettingsDevicePath, UpdateSourcePath)
+{
+  CMediaSource source;
+  source.FromNameAndPaths("Disc", {"D:\\"});
+  auto* sources = GetSources("video");
+  sources->push_back(source);
+
+  ASSERT_TRUE(UpdateSource("video", "Disc", "path", "E:\\"));
+#ifdef TARGET_WINDOWS
+  EXPECT_EQ(sources->front().strDevicePath, "E:");
+#else
+  EXPECT_TRUE(sources->front().strDevicePath.empty());
+#endif
+
+  ASSERT_TRUE(UpdateSource("video", "Disc", "path", "smb://server/share/"));
+  EXPECT_TRUE(sources->front().strDevicePath.empty());
+  EXPECT_EQ(sources->front().m_iDriveType, SourceType::REMOTE);
+}
+
+TEST_F(TestMediaSourceSettingsDevicePath, ReloadDriveSource)
+{
+  CMediaSource source;
+  source.FromNameAndPaths("Disc", {"E:\\"});
+  GetSources("video")->push_back(source);
+
+  XFILE::CFile* file = XBMC_CREATETEMPFILE(".xml");
+  ASSERT_NE(file, nullptr);
+  const std::string xmlfile = XBMC_TEMPFILEPATH(file);
+  file->Close();
+
+  EXPECT_TRUE(Save(xmlfile));
+  Clear();
+  EXPECT_TRUE(Load(xmlfile));
+  EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
+
+  const auto* sources = GetSources("video");
+  ASSERT_EQ(sources->size(), 1);
+#ifdef TARGET_WINDOWS
+  EXPECT_EQ(sources->front().strDevicePath, "E:");
+#else
+  EXPECT_TRUE(sources->front().strDevicePath.empty());
+#endif
+}
+
 TEST(TestMediaSourceSettings, LoadString)
 {
   CMediaSourceSettings& ms = CMediaSourceSettings::GetInstance();
@@ -43,7 +94,6 @@ TEST(TestMediaSourceSettings, SaveString)
   XFILE::CFile* file;
   file = XBMC_CREATETEMPFILE(".xml");
   std::string xmlfile = XBMC_TEMPFILEPATH(file);
-  std::cout << "Reference file generated at '" << XBMC_TEMPFILEPATH(file) << "'" << std::endl;
   file->Close();
 
   EXPECT_TRUE(ms.Save(xmlfile));
@@ -65,6 +115,8 @@ TEST(TestMediaSourceSettings, SaveString)
   EXPECT_EQ(picturessources->size(), refpictures);
   auto gamessources = ms.GetSources("games");
   EXPECT_EQ(gamessources->size(), refgames);
+
+  EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
 }
 
 TEST(TestMediaSourceSettings, GetSource)

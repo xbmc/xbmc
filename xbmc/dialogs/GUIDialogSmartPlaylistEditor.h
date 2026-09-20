@@ -41,6 +41,7 @@ protected:
   void OnOrderDirection();
   void OnGroupBy();
   void OnGroupMixed();
+  void OnWatchedMode();
   void OnOK();
   void OnCancel();
   void OnPopupMenu(int item);

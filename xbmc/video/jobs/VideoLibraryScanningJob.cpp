@@ -21,9 +21,7 @@ CVideoLibraryScanningJob::~CVideoLibraryScanningJob() = default;
 
 bool CVideoLibraryScanningJob::Cancel()
 {
-  if (!m_scanner.IsScanning())
-    return true;
-
+  m_cancelled = true;
   m_scanner.Stop();
   return true;
 }
@@ -43,6 +41,9 @@ bool CVideoLibraryScanningJob::Equals(const CJob* job) const
 
 bool CVideoLibraryScanningJob::Work(CVideoDatabase &db)
 {
+  if (m_cancelled)
+    return true;
+
   m_scanner.ShowDialog(m_showProgress);
   m_scanner.Start(m_directory, m_scanAll);
 

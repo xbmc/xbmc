@@ -133,6 +133,9 @@ const auto video_tests = std::array{
     VideoClassifyTest{"pvr://123", false},
     VideoClassifyTest{"dvd://VIDEO_TS/video_ts.ifo", true},
     VideoClassifyTest{"dvd://1", true},
+    VideoClassifyTest{"bluray://%2fhome%2fuser%2fdisc/", true},
+    VideoClassifyTest{"bluray://udf%3a%2f%2f%252Fhome%252Fuser%252Fdisc.iso%2f/", true},
+    VideoClassifyTest{"dvd://%2fhome%2fuser%2fdisc/", true},
     VideoClassifyTest{"/home/user/video.not", true, "application/ogg"},
     VideoClassifyTest{"/home/user/video.not", true, "application/mp4"},
     VideoClassifyTest{"/home/user/video.not", true, "application/mxf"},
@@ -227,10 +230,30 @@ TEST(TestVideoFileItemClassify, IsVideoDb)
   EXPECT_FALSE(VIDEO::IsVideoDb(CFileItem("/videodb/home/foo/Extraordinary/", true)));
 }
 
+TEST(TestVideoFileItemClassify, IsVideoExtrasFolderName)
+{
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("Extras"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("extras"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("Bonus Disc"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("Bonus Disk"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("Bonus Content"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("Bonus Features"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("Bonus Feature"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("bonus_discs"));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolderName("BONUSDISC"));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolderName("Extra"));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolderName("Extraordinary"));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolderName("Bonus"));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolderName("Featurettes"));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolderName("Disc 1"));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolderName(""));
+}
+
 TEST(TestVideoFileItemClassify, IsVideoExtrasFolder)
 {
   EXPECT_TRUE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/Extras/", true)));
   EXPECT_TRUE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/extras/", true)));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/Bonus Disc/", true)));
   EXPECT_FALSE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/Extraordinary/", true)));
   EXPECT_FALSE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/Extras/abc.mkv", false)));
 }

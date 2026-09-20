@@ -47,7 +47,7 @@ protected:
   // Helper function
   uint64_t BufferSize() const;
 
-  size_t m_paddedFrameSize;
+  size_t m_paddedFrameSize; // Number of uint32_t words, including padding
   uint64_t m_maxFrames;
 
   /**

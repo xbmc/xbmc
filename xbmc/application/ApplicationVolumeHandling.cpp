@@ -16,11 +16,15 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/tags/ReplayGain.h"
 #include "peripherals/Peripherals.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+
+#include <cmath>
 
 #include <tinyxml.h>
 
@@ -139,11 +143,13 @@ void CApplicationVolumeHandling::SetVolume(float iValue, bool isPercentage)
 void CApplicationVolumeHandling::CacheReplayGainSettings(const CSettings& settings)
 {
   // initialize m_replayGainSettings
-  m_replayGainSettings.iType = settings.GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
-  m_replayGainSettings.iPreAmp = settings.GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
-  m_replayGainSettings.iNoGainPreAmp =
-      settings.GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
-  m_replayGainSettings.bAvoidClipping =
+  m_replayGainSettings.m_type =
+      static_cast<ReplayGain::Type>(settings.GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE));
+  m_replayGainSettings.m_preAmp =
+      static_cast<float>(settings.GetNumber(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP));
+  m_replayGainSettings.m_noGainPreAmp =
+      static_cast<float>(settings.GetNumber(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP));
+  m_replayGainSettings.m_avoidClipping =
       settings.GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
 }
 
@@ -185,15 +191,29 @@ bool CApplicationVolumeHandling::OnSettingChanged(const CSetting& setting)
   const std::string& settingId = setting.GetId();
 
   if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
-    m_replayGainSettings.iType = static_cast<const CSettingInt&>(setting).GetValue();
-  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP))
-    m_replayGainSettings.iPreAmp = static_cast<const CSettingInt&>(setting).GetValue();
-  else if (StringUtils::EqualsNoCase(settingId,
+    m_replayGainSettings.m_type =
+        static_cast<ReplayGain::Type>(static_cast<const CSettingInt&>(setting).GetValue());
+  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP) ||
+           StringUtils::EqualsNoCase(settingId,
                                      CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
-    m_replayGainSettings.iNoGainPreAmp = static_cast<const CSettingInt&>(setting).GetValue();
+  {
+    const float gain{static_cast<float>(static_cast<const CSettingNumber&>(setting).GetValue())};
+
+    // 0 dB gain value needs to be exactly 0 to avoid unwanted sign flips
+    if (gain != 0.0f && (std::abs(gain) < 0.01f))
+    {
+      CServiceBroker::GetSettingsComponent()->GetSettings()->SetNumber(settingId, 0.0);
+      return true;
+    }
+    if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP))
+      m_replayGainSettings.m_preAmp = gain;
+    else if (StringUtils::EqualsNoCase(settingId,
+                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
+      m_replayGainSettings.m_noGainPreAmp = gain;
+  }
   else if (StringUtils::EqualsNoCase(settingId,
                                      CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
-    m_replayGainSettings.bAvoidClipping = static_cast<const CSettingBool&>(setting).GetValue();
+    m_replayGainSettings.m_avoidClipping = static_cast<const CSettingBool&>(setting).GetValue();
   else
     return false;
 

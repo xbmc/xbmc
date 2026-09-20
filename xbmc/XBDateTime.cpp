@@ -20,6 +20,7 @@
 #include "utils/log.h"
 
 #include <charconv>
+#include <cstdint>
 #include <cstdlib>
 #include <mutex>
 
@@ -865,6 +866,12 @@ void CDateTime::GetAsTime(time_t& time) const
   time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 
+int64_t CDateTime::GetAsSecondsSinceEpoch() const
+{
+  const int64_t ll{(static_cast<int64_t>(m_time.highDateTime) << 32) + m_time.lowDateTime};
+  return (ll - UNIX_BASE_TIME) / 10000000;
+}
+
 void CDateTime::GetAsTm(tm& time) const
 {
   KODI::TIME::SystemTime st;
@@ -939,6 +946,20 @@ bool CDateTime::SetFromUTCDateTime(const time_t &dateTime)
   return SetFromUTCDateTime(tmp);
 }
 
+namespace
+{
+//! \brief Whether broken-down date/time fields are in range for a valid date.
+//!
+//! The POSIX implementation of KODI::TIME::SystemTimeToFileTime() normalizes
+//! out-of-range fields instead of failing, so parsers have to reject them
+//! explicitly to behave the same on every platform.
+bool IsValidDateTimeRange(int year, int month, int day, int hour, int minute, int second)
+{
+  return year >= 1601 && month >= 1 && month <= 12 && day >= 1 && day <= 31 && hour >= 0 &&
+         hour <= 23 && minute >= 0 && minute <= 59 && second >= 0 && second <= 59;
+}
+} // namespace
+
 bool CDateTime::SetFromW3CDate(const std::string &dateTime)
 {
   std::string date;
@@ -959,6 +980,9 @@ bool CDateTime::SetFromW3CDate(const std::string &dateTime)
     month = atoi(date.substr(5, 2).c_str());
     day   = atoi(date.substr(8, 2).c_str());
   }
+
+  if (!IsValidDateTimeRange(year, month, day, 0, 0, 0))
+    return false;
 
   CDateTime tmpDateTime(year, month, day, 0, 0, 0);
   if (tmpDateTime.IsValid())
@@ -1006,6 +1030,9 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
 
   if (time.length() >= 8)
     sec  = atoi(time.substr(6, 2).c_str());
+
+  if (!IsValidDateTimeRange(year, month, day, hour, min, sec))
+    return false;
 
   CDateTime tmpDateTime(year, month, day, hour, min, sec);
   if (!tmpDateTime.IsValid())
@@ -1219,6 +1246,25 @@ CDateTime CDateTime::FromUTCDateTime(const time_t &dateTime)
   CDateTime dt;
   dt.SetFromUTCDateTime(dateTime);
   return dt;
+}
+
+CDateTime CDateTime::FromSecondsSinceEpoch(int64_t seconds)
+{
+  constexpr int64_t FIRST_SECOND{-11644473600}; // 1601-01-01, where a FileTime starts counting
+  constexpr int64_t LAST_SECOND{910692730085}; // 30828-09-14, where the 100ns count leaves int64
+
+  // a count read out of a database column can be anything, and the multiply below overflows
+  // outside this range
+  if (seconds < FIRST_SECOND || seconds > LAST_SECOND)
+    return {};
+
+  const int64_t ll{seconds * 10000000LL + UNIX_BASE_TIME};
+
+  KODI::TIME::FileTime fileTime{};
+  fileTime.lowDateTime = static_cast<uint32_t>(ll & 0xFFFFFFFF);
+  fileTime.highDateTime = static_cast<uint32_t>(ll >> 32);
+
+  return CDateTime(fileTime);
 }
 
 CDateTime CDateTime::FromRFC1123DateTime(const std::string &dateTime)

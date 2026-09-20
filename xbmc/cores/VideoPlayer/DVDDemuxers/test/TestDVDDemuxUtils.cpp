@@ -9,6 +9,7 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 
 #include <algorithm>
+#include <limits>
 #include <string>
 
 #include <gtest/gtest.h>
@@ -35,6 +36,10 @@ struct TestChapter
   std::vector<ChapterFFmpeg> expected;
 };
 
+// So that the case sitting on the boundary keeps testing the boundary if the tolerance moves.
+constexpr auto Tolerance = CDVDDemuxUtils::KEYFRAME_OFFSET_LIMIT;
+constexpr int64_t ToleranceMs = std::chrono::milliseconds{Tolerance}.count();
+
 // clang-format off
 const TestChapter testChapters[] = {
   {{{{1, 1, 0, 1, "A"}, {1, 1, 1, 2, "B"}}},
@@ -53,9 +58,18 @@ const TestChapter testChapters[] = {
   // Out of order chapters
   {{{{1, 1, 10, 20, "B"}, {1, 1, 0, 10, "A"}}},
     {{{0s, 10s, "A"}, {10s, 20s, "B"}}}},
-  // 1st chapter is not at 00:00:00
-  {{{{1, 1, 1, 2, "A"}}},
-    {{{0s, 0s, ""}, {1s, 2s, "A"}}}},
+  // 1st chapter on an early keyframe is tolerated and snapped to 00:00:00
+  {{{{1, 1000, 80, 2000, "A"}}},
+    {{{0s, 2s, "A"}}}},
+  // ... and only the 1st chapter is snapped
+  {{{{1, 1000, 80, 2000, "A"}, {1, 1000, 2080, 4000, "B"}}},
+    {{{0s, 2s, "A"}, {2080ms, 4s, "B"}}}},
+  // ... and a chapter marker stays a marker
+  {{{{1, 1000, 80, 80, "A"}}},
+    {{{0s, 0s, "A"}}}},
+  // First chapter timestamp past tolerance
+  {{{{1, 1000, ToleranceMs, ToleranceMs * 2, "A"}}},
+    {{{0s, 0s, ""}, {Tolerance, Tolerance * 2, "A"}}}},
 };
 // clang-format on
 
@@ -125,8 +139,8 @@ struct TestSnapRate
 
 // clang-format off
 const TestSnapRate testSnapRates[] = {
-  // 42ms header (real 23.976 quantised to whole ms): no statistics -> fractional bias
-  {500, 21, 0.0, true, 24000, 1001},
+  // Missing statistics cannot distinguish fractional and integer rates.
+  {500, 21, 0.0, false, 500, 21},
   // statistics resolve the 42ms tie in either direction
   {500, 21, 23.976, true, 24000, 1001},
   {500, 21, 24.0001, true, 24, 1},
@@ -134,25 +148,37 @@ const TestSnapRate testSnapRates[] = {
   {500, 21, 30.0, false, 500, 21},
   {500, 21, 23.80, false, 500, 21},
   // 33ms sibling (29.97/30) and 17ms sibling (59.94/60)
-  {1000, 33, 0.0, true, 30000, 1001},
+  {1000, 33, 0.0, false, 1000, 33},
   {1000, 33, 30.0001, true, 30, 1},
-  {1000, 17, 0.0, true, 60000, 1001},
+  {1000, 17, 0.0, false, 1000, 17},
   {1000, 17, 59.9401, true, 60000, 1001},
+  {1000, 33, 29.97003, true, 30000, 1001},
+  {1000, 17, 60.0001, true, 60, 1},
+  // Rates between candidates or far from both are not evidence of either cadence.
+  {500, 21, 23.988, false, 500, 21},
+  {1000, 33, 29.985, false, 1000, 33},
+  {1000, 17, 59.97, false, 1000, 17},
+  {500, 21, -1.0, false, 500, 21},
+  {500, 21, std::numeric_limits<double>::quiet_NaN(), false, 500, 21},
+  {500, 21, std::numeric_limits<double>::infinity(), false, 500, 21},
+  {0, 21, 24.0, false, 0, 21},
+  {500, 0, 24.0, false, 500, 0},
+  {-500, 21, 24.0, false, -500, 21},
   // PAL rates quantise to whole milliseconds exactly: already standard
-  {25, 1, 0.0, false, 25, 1},
-  {50, 1, 0.0, false, 50, 1},
+  {25, 1, 25.0, false, 25, 1},
+  {50, 1, 50.0, false, 50, 1},
   // exact and float-rounded declarations are not 1000/N shaped
-  {24000, 1001, 0.0, false, 24000, 1001},
-  {23976, 1000, 0.0, false, 23976, 1000},
+  {24000, 1001, 23.976, false, 24000, 1001},
+  {23976, 1000, 23.976, false, 23976, 1000},
   // near-standard but not millisecond-quantised: not the muxer fingerprint
-  {2497, 100, 0.0, false, 2497, 100},
+  {2497, 100, 25.0, false, 2497, 100},
   // legitimate non-standard rates
-  {48, 1, 0.0, false, 48, 1},
-  {120, 1, 0.0, false, 120, 1},
+  {48, 1, 48.0, false, 48, 1},
+  {120, 1, 120.0, false, 120, 1},
   // whole-millisecond durations that map to no standard rate
-  {1000, 41, 0.0, false, 1000, 41},
-  {1000, 8, 0.0, false, 1000, 8},
-  {20, 1, 0.0, false, 20, 1},
+  {1000, 41, 24.0, false, 1000, 41},
+  {1000, 8, 120.0, false, 1000, 8},
+  {20, 1, 20.0, false, 20, 1},
 };
 // clang-format on
 
@@ -172,3 +198,26 @@ TEST_P(SnapRateTester, TestSnapMsQuantisedFrameRate)
 }
 
 INSTANTIATE_TEST_SUITE_P(TestDVDDemuxUtils, SnapRateTester, testing::ValuesIn(testSnapRates));
+
+TEST(TestDVDDemuxUtils, FrameRateFromStatistics)
+{
+  EXPECT_DOUBLE_EQ(24.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:10.000000000"));
+  EXPECT_NEAR(24000.0 / 1001.0,
+              CDVDDemuxUtils::FrameRateFromStatistics("24000", "00:16:41.000000000"), 1e-12);
+  EXPECT_DOUBLE_EQ(25.0, CDVDDemuxUtils::FrameRateFromStatistics("90000", "01:00:00.000000000"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("0", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("-240", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240junk", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("9223372036854775808", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", ""));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:00"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:10junk"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "-01:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:60:00"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:60"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:nan"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:inf"));
+  EXPECT_DOUBLE_EQ(0.0,
+                   CDVDDemuxUtils::FrameRateFromStatistics("240", "9223372036854775808:00:10"));
+}

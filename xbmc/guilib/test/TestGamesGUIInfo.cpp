@@ -64,6 +64,84 @@ TEST_F(TestGamesGUIInfo, TranslatesRetroPlayerLabels)
   EXPECT_EQ(infoManager.TranslateString("RetroPlayer.RichPresence"), RETROPLAYER_RICH_PRESENCE);
   EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsLoggedIn"),
             RETROPLAYER_ACHIEVEMENTS_LOGGED_IN);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsProgress"),
+            RETROPLAYER_ACHIEVEMENTS_PROGRESS);
+}
+
+namespace
+{
+AchievementState MakeAchievementState()
+{
+  AchievementInfo earned;
+  earned.id = 1;
+  earned.title = "Fated Hour";
+  earned.earned = true;
+
+  AchievementInfo locked;
+  locked.id = 2;
+  locked.title = "The Fall of Guardia";
+
+  AchievementState state;
+  state.gameTitle = "Chrono Trigger";
+  state.totalAchievements = 2;
+  state.unlockedAchievements = 1;
+  state.achievements = {earned, locked};
+  state.loaded = true;
+
+  return state;
+}
+} // namespace
+
+TEST_F(TestGamesGUIInfo, GetsAchievementProgressFromAchievementState)
+{
+  CAchievementRuntime achievementRuntime;
+  achievementRuntime.SetState(MakeAchievementState());
+
+  CGamesGUIInfo gamesGUIInfo{achievementRuntime};
+  std::string value;
+
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_PROGRESS),
+                                    nullptr));
+  EXPECT_EQ(value, "1 / 2");
+}
+
+TEST_F(TestGamesGUIInfo, AchievementProgressIsEmptyWithoutAchievements)
+{
+  CAchievementRuntime achievementRuntime;
+
+  CGamesGUIInfo gamesGUIInfo{achievementRuntime};
+  std::string value{"stale"};
+
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(value, nullptr, 0, CGUIInfo(RETROPLAYER_ACHIEVEMENTS_PROGRESS),
+                                    nullptr));
+  EXPECT_TRUE(value.empty());
+}
+
+TEST_F(TestGamesGUIInfo, MarkEarnedOnlyCountsTheFirstUnlock)
+{
+  CAchievementRuntime achievementRuntime;
+  achievementRuntime.SetState(MakeAchievementState());
+
+  const CDateTime firstUnlock{2026, 8, 5, 19, 20, 0};
+  const CDateTime laterUnlock{2026, 8, 6, 8, 15, 0};
+
+  bool newlyEarned = false;
+  AchievementState state = achievementRuntime.MarkEarned(2, firstUnlock, newlyEarned);
+  EXPECT_TRUE(newlyEarned);
+  EXPECT_EQ(state.unlockedAchievements, 2U);
+  EXPECT_EQ(state.achievements[1].unlockedDate, firstUnlock);
+
+  // The achievement runtime re-reports achievements earned in an earlier
+  // session, which must not inflate the count or replace the unlock date
+  state = achievementRuntime.MarkEarned(2, laterUnlock, newlyEarned);
+  EXPECT_FALSE(newlyEarned);
+  EXPECT_EQ(state.unlockedAchievements, 2U);
+  EXPECT_EQ(state.achievements[1].unlockedDate, firstUnlock);
+
+  // An unknown ID must not change anything
+  state = achievementRuntime.MarkEarned(99, CDateTime{2026, 8, 7, 12, 0, 0}, newlyEarned);
+  EXPECT_FALSE(newlyEarned);
+  EXPECT_EQ(state.unlockedAchievements, 2U);
 }
 
 TEST_F(TestGamesGUIInfo, GetsRichPresenceFromAchievementState)

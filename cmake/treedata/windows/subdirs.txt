@@ -4,7 +4,6 @@ xbmc/cores/VideoPlayer/Process/windows cores/VideoPlayer/Process/windows
 xbmc/cores/VideoPlayer/VideoRenderers/windows cores/VideoPlayer/VideoRenderers/windows
 xbmc/input/touch                       input/touch
 xbmc/input/touch/generic               input/touch/generic
-xbmc/network/mdns                      network/mdns
 xbmc/platform/common/speech            platform/common/speech
 xbmc/platform/win32                    platform/win32
 xbmc/platform/win32/filesystem         platform/win32/filesystem

@@ -140,7 +140,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 {
   m_userOutput = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   XOutput *out = NULL;
-  if (m_userOutput.compare("Default") != 0)
+  if (m_userOutput.compare(OUTPUT_NAME_DEFAULT) != 0)
   {
     out = g_xrandr.GetOutput(m_userOutput);
     if (out)
@@ -178,7 +178,7 @@ void CWinSystemX11::FinishWindowResize(int newWidth, int newHeight)
 {
   m_userOutput = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   XOutput *out = NULL;
-  if (m_userOutput.compare("Default") != 0)
+  if (m_userOutput.compare(OUTPUT_NAME_DEFAULT) != 0)
   {
     out = g_xrandr.GetOutput(m_userOutput);
     if (out)
@@ -311,13 +311,13 @@ void CWinSystemX11::UpdateResolutions()
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   bool switchOnOff = settings->GetBool(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
   m_userOutput = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  if (m_userOutput.compare("Default") == 0)
+  if (m_userOutput.compare(OUTPUT_NAME_DEFAULT) == 0)
     switchOnOff = false;
 
   if(g_xrandr.Query(true, !switchOnOff))
   {
     XOutput *out = NULL;
-    if (m_userOutput.compare("Default") != 0)
+    if (m_userOutput.compare(OUTPUT_NAME_DEFAULT) != 0)
     {
       out = g_xrandr.GetOutput(m_userOutput);
       if (out)
@@ -470,7 +470,7 @@ std::vector<std::string> CWinSystemX11::GetConnectedOutputs()
   std::vector<XOutput> outs;
   g_xrandr.Query(true);
   outs = g_xrandr.GetModes();
-  outputs.emplace_back("Default");
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
   for(unsigned int i=0; i<outs.size(); ++i)
   {
     outputs.emplace_back(outs[i].name);
@@ -481,7 +481,8 @@ std::vector<std::string> CWinSystemX11::GetConnectedOutputs()
 
 bool CWinSystemX11::IsCurrentOutput(const std::string& output)
 {
-  return (StringUtils::EqualsNoCase(output, "Default")) || (m_currentOutput.compare(output.c_str()) == 0);
+  return (StringUtils::EqualsNoCase(output, OUTPUT_NAME_DEFAULT)) ||
+         (m_currentOutput.compare(output.c_str()) == 0);
 }
 
 void CWinSystemX11::ShowOSMouse(bool show)

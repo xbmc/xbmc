@@ -327,6 +327,11 @@ public:
   /// @param[in,out] Structure which contains the necessary data
   /// @return The with @ref VIDEOCODEC_RETVAL return values
   ///
+  /// @note If this returns anything other than @ref VC_PICTURE while
+  /// picture.videoBufferHandle is set, Kodi releases that buffer. An addon
+  /// that releases a buffer itself must clear videoBufferHandle before
+  /// returning.
+  ///
   virtual VIDEOCODEC_RETVAL GetPicture(VIDEOCODEC_PICTURE& picture) { return VC_ERROR; }
   //----------------------------------------------------------------------------
 
@@ -360,7 +365,10 @@ public:
   /// @param[out] picture The buffer, or unmodified if false is returned
   /// @return In case buffer allocation fails, it return false.
   ///
-  /// @note If this returns true, buffer must be freed using @ref ReleaseFrameBuffer().
+  /// @note Ownership: the buffer belongs to the addon until it is either
+  /// handed back to Kodi inside a @ref VC_PICTURE result (as
+  /// @ref VIDEOCODEC_PICTURE::videoBufferHandle) or released with
+  /// @ref ReleaseFrameBuffer(). Buffers may be held across calls.
   ///
   /// @remarks Only called from addon itself
   ///

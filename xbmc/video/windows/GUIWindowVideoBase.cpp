@@ -56,6 +56,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/guilib/GUIContentUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
@@ -232,6 +233,9 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   // "Videos/Video Add-ons" lists addons in the video window
   if (fileItem.HasAddonInfo())
     return CGUIDialogAddonInfo::ShowForItem(std::make_shared<CFileItem>(fileItem));
+
+  if (URIUtils::IsPVR(fileItem.GetPath()))
+    return KODI::UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(fileItem);
 
   // Video version
   if (fileItem.HasVideoInfoTag() && fileItem.GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
@@ -684,7 +688,8 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
 
 void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
                                         CVideoDatabase& database,
-                                        bool allowReplaceLabels)
+                                        bool allowReplaceLabels,
+                                        int getDetails)
 {
   //! @todo this could possibly be threaded as per the music info loading,
   //!       we could also cache the info
@@ -723,7 +728,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   bool fetchedPlayCounts = false;
   if (!content.empty())
   {
-    database.GetItemsForPath(content, items.GetPath(), dbItems);
+    database.GetItemsForPath(content, items.GetPath(), dbItems, getDetails);
 
     // Determine episode ranges for multi-episode items sharing the same basePath (same file).
     if (content == "episodes" && !dbItems.IsEmpty())

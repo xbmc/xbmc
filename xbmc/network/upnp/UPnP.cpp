@@ -477,6 +477,22 @@ public:
                                                                                   userdata);
   }
 
+  // Some renderers event their ConnectionManager variables under the wrong name, which leaves the
+  // sink list empty, so it is asked for directly.
+  void OnGetProtocolInfoResult(NPT_Result res,
+                               PLT_DeviceDataReference& device,
+                               PLT_StringList* sources,
+                               PLT_StringList* sinks,
+                               void* userdata) override
+  {
+    PLT_Service* service = nullptr;
+    if (NPT_FAILED(res) || !sinks || sinks->GetItemCount() == 0 ||
+        NPT_FAILED(
+            device->FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:*", service)))
+      return;
+    service->SetStateVariable("SinkProtocolInfo", NPT_String::Join(*sinks, ","));
+  }
+
   bool OnMRAdded(PLT_DeviceDataReference& device) override
   {
     if (device->GetUUID().IsEmpty() || device->GetUUID().GetChars() == NULL)
@@ -488,6 +504,8 @@ public:
                                          (const char*)device->GetFriendlyName());
 
     m_registeredRenderers.insert(std::string(device->GetUUID().GetChars()));
+
+    GetProtocolInfo(device, nullptr);
     return true;
   }
 

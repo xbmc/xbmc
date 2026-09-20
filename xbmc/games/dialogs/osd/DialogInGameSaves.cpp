@@ -30,6 +30,8 @@
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 using namespace KODI;
 using namespace GAME;
 using namespace RETRO;
@@ -128,7 +130,8 @@ void CDialogInGameSaves::OnItemFocus(unsigned int index)
 
 unsigned int CDialogInGameSaves::GetFocusedItem() const
 {
-  return m_focusedControl;
+  // The leading "Save" item makes the savestate count the last valid index.
+  return std::min(m_focusedItemIndex, static_cast<unsigned int>(m_savestateItems.Size()));
 }
 
 void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath,
@@ -302,6 +305,17 @@ void CDialogInGameSaves::OnLoad(CFileItem& focusedItem)
   }
   else
   {
+    //! @todo Remove this when support for savestate compression is added
+    RETRO::CSavestateDatabase db;
+    std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();
+    if (db.GetSavestate(focusedItem.GetPath(), *savestate) && savestate->IsCompressed())
+    {
+      // "Error"
+      // "This savestate is compressed and can't be loaded by this version of Kodi."
+      CGUIDialogOK::ShowAndGetInput(257, 35298);
+      return;
+    }
+
     // "Error"
     // "An unknown error has occurred."
     CGUIDialogOK::ShowAndGetInput(257, 24071);

@@ -41,9 +41,34 @@ public:
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 
+  /*!
+   * \brief Whether achievements already earned can be triggered again
+   */
+  bool GetAchievementsEncore() const;
+
+  /*!
+   * \brief Whether to show the achievement being attempted over the game
+   *
+   * Some players want to know an attempt is live; others would rather nothing
+   * covered the picture. It is on by default, because an indicator nobody asked
+   * for is easier to turn off than one nobody knew existed.
+   */
+  bool GetChallengeIndicator() const;
+
   bool GetAchievementsLoggedIn() const;
 
+  /*!
+   * \brief Record whether the player is logged in to RetroAchievements
+   *
+   * Reported by the add-on, so a rejected token doesn't leave the UI claiming
+   * the player is logged in.
+   *
+   * \param loggedIn True if the player is logged in
+   */
+  void SetAchievementsLoggedIn(bool loggedIn);
+
   // Inherited from ISettingCallback
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 private:

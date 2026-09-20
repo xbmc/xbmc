@@ -1,6 +1,12 @@
 xbmc/addons/gui/skin/test         test/skin
 xbmc/addons/test                  test/addons
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
+xbmc/cores/AudioEngine/Utils/test test/audioengine_utils
+xbmc/cores/RetroPlayer/playback/test test/retroplayer_playback
+xbmc/cores/RetroPlayer/rendering/test test/retroplayer_rendering
+xbmc/cores/RetroPlayer/savestates/test test/retroplayer_savestates
+xbmc/cores/RetroPlayer/streams/memory/test test/retroplayer_memory
+xbmc/cores/VideoPlayer/Buffers/test test/videoplayer_buffers
 xbmc/cores/VideoPlayer/test       test/videoplayer
 xbmc/cores/VideoPlayer/DVDDemuxers/test test/dvddemuxers
 xbmc/cores/VideoPlayer/Edl/test   test/edl
@@ -8,6 +14,7 @@ xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/dbwrappers/test              test/dbwrappers
 xbmc/filesystem/test              test/filesystem
 xbmc/filesystem/VideoDatabaseDirectory/test test/videodatabasedirectory
+xbmc/games/addons/cheevos/test    test/games/addons/cheevos
 xbmc/games/addons/disc/test       test/games/addons/disc
 xbmc/games/addons/input/test      test/games/addons/input
 xbmc/games/controllers/input/test test/games/controllers/input
@@ -16,6 +23,7 @@ xbmc/games/dialogs/disc/test      test/games/dialogs/disc
 xbmc/guilib/test                  test/guilib
 xbmc/imagefiles/test              test/imagefiles
 xbmc/input/keyboard/test          test/input/keyboard
+xbmc/interfaces/json-rpc/test     test/jsonrpc
 xbmc/interfaces/python/test       test/python
 xbmc/music/tags/test              test/music_tags
 xbmc/music/test                   test/music
@@ -23,8 +31,10 @@ xbmc/network/test                 test/network
 xbmc/pictures/metadata/test       test/pictures/metadata
 xbmc/playlists/test               test/playlists
 xbmc/pvr/channels/test            test/pvrchannels
+xbmc/pvr/epg/test                 test/pvrepg
 xbmc/rendering/capture/test       test/rendering_capture
 xbmc/settings/test                test/settings
+xbmc/settings/lib/test            test/lib/settings
 xbmc/test                         test
 xbmc/threads/test                 test/threads
 xbmc/utils/i18n/test              test/utils/i18n

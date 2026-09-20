@@ -1146,6 +1146,79 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setFileTitle(title) }
+      /// Sets the title of this item's file.
+      ///
+      /// @param title  string - file title
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added. Replaces the setInfo() "title" info label
+      /// for items without a media info tag.
+      ///
+      setFileTitle(...);
+#else
+      void setFileTitle(const String& title);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setCount(count) }
+      /// Sets the item count badge shown for this item, e.g. the number of items
+      /// inside a folder.
+      ///
+      /// @param count  integer - item count
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added. Replaces the setInfo() "count" info label.
+      ///
+      setCount(...);
+#else
+      void setCount(int count);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setSize(size) }
+      /// Sets the file size of this item, in bytes.
+      ///
+      /// @param size  integer - size in bytes
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added. Replaces the setInfo() "size" info label.
+      ///
+      setSize(...);
+#else
+      void setSize(int64_t size);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setOverlay(overlay) }
+      /// Sets the overlay icon of this item, one of the xbmcgui ICON_OVERLAY
+      /// values (0 to 8).
+      ///
+      /// @param overlay  integer - overlay icon
+      /// @throws ListItemException  if overlay is outside 0 to 8
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added. Replaces the setInfo() "overlay" info
+      /// label, which silently ignored invalid values.
+      ///
+      setOverlay(...);
+#else
+      void setOverlay(int overlay);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setSubtitles(subtitleFiles) }
       /// Sets subtitles for this listitem.
       ///

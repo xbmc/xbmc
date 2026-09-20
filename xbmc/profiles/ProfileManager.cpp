@@ -22,7 +22,6 @@
 #include "addons/Service.h" //! @todo Remove me
 #include "addons/Skin.h"
 #include "application/Application.h" //! @todo Remove me
-#include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
@@ -53,7 +52,6 @@
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoLibraryQueue.h" //! @todo Remove me
@@ -461,20 +459,17 @@ void CProfileManager::LogOff()
   if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     CMusicLibraryQueue::GetInstance().StopLibraryScanning();
 
-  if (CVideoLibraryQueue::GetInstance().IsRunning())
-    CVideoLibraryQueue::GetInstance().CancelAllJobs();
+  CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
   // Stop PVR services
   CServiceBroker::GetPVRManager().Stop();
 
-  networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
+  // Only stop the services when the profile switch that follows will start them again.
+  if (m_currentProfile != MASTER_PROFILE_ID)
+  {
+    networkManager.NetworkMessage(CNetworkBase::SERVICES_DOWN, 1);
+  }
 
-  // Reset the database manager so the master profile's databases are
-  // re-initialized cleanly when the login screen is shown again.
-  CServiceBroker::GetDatabaseManager().Deinitialize();
-
-  // LoadMasterProfileForLogin calls LoadProfile, which closes and re-opens
-  // all databases at the correct point in the switch sequence.
   LoadMasterProfileForLogin();
 
   g_passwordManager.bMasterUser = false;

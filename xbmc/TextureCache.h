@@ -72,9 +72,12 @@ public:
    cache the image and add to the database [see CTextureCacheJob]
 
    \param image url of the image to cache
+   \param knownHash hash of the source file, if the caller already knows it. The listing that found
+                    the image carries what the hash is made of, so a caller working from one can
+                    save the job a stat (see CTextureCacheJob::GetImageHash())
    \sa CacheImage
    */
-  void BackgroundCacheImage(const std::string &image);
+  void BackgroundCacheImage(const std::string& image, const std::string& knownHash = "");
 
   /*! \brief Updates the in-process list.
 
@@ -97,6 +100,7 @@ public:
    \param idealWidth the ideal width of the returned texture (defaults to 0, no ideal width). Only matters if texture is not null.
    \param idealHeight the ideal height of the returned texture (defaults to 0, no ideal height). Only matters if texture is not null.
    \param aspectRatio the aspect ratio mode of the texture (defaults to "center"). Only matters if texture is not null.
+   \param knownHash hash of the source file, in the form CTextureCacheJob::GetImageHash() produces, if known.
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
@@ -105,7 +109,8 @@ public:
                          CTextureDetails* details = nullptr,
                          unsigned int idealWidth = 0,
                          unsigned int idealHeight = 0,
-                         CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER);
+                         CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
+                         const std::string& knownHash = "");
 
   /*! \brief Cache an image to image cache if not already cached, returning the image details.
    \param image url of the image to cache.
@@ -114,6 +119,18 @@ public:
    \sa CTextureCacheJob::CacheTexture
    */
   bool CacheImage(const std::string &image, CTextureDetails &details);
+
+  /*! \brief Cache an image whose source file hash the caller already knows
+
+   Saves the texture cache stat'ing the file to build that hash itself
+
+   \param image url of the image to cache
+   \param knownHash hash of the source file, in the form CTextureCacheJob::GetImageHash() produces.
+          Pass empty to have it determined as usual.
+   \return cached url of this image
+   \sa CTextureCacheJob::CacheTexture
+   */
+  std::string CacheImage(const std::string& image, const std::string& knownHash);
 
   /*! \brief Check whether an image is in the cache
    Note: If the image url won't normally be cached (eg a skin image) this function will return false.
@@ -130,7 +147,7 @@ public:
   void ClearCachedImage(const std::string &image, bool deleteSource = false);
 
   /*! \brief clear the cached version of the image with given id
-   \param database id of the image
+   \param textureID id of the image
    \sa GetCachedImage
    */
   bool ClearCachedImage(int textureID);
@@ -172,6 +189,24 @@ private:
   CTextureCache(const CTextureCache&) = delete;
   CTextureCache const& operator=(CTextureCache const&) = delete;
 
+  /*! \brief Runs the caching jobs, apart from this object's own queue
+
+   The cleanup timer's job shares that one, and takes the images it is about to remove as unused
+   before deleting them. Letting a caching job run alongside it would allow one of those to be
+   written between the two, and then deleted.
+   */
+  class CCachingQueue final : public CJobQueue
+  {
+  public:
+    explicit CCachingQueue(CTextureCache& cache);
+    void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
+
+  private:
+    CTextureCache& m_cache;
+  };
+
+  CCachingQueue m_cachingQueue{*this};
+
   /*! \brief Check if the given image is a cached image
    \param image url of the image
    \return true if this is a cached image, false otherwise.
@@ -189,7 +224,7 @@ private:
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
-   \param image url of the original image
+   \param url url of the original image
    \param details [out] texture details from the database (if available)
    \return true if we have a cached version of this image, false otherwise.
    */
@@ -197,7 +232,7 @@ private:
 
   /*! \brief Clear an image from the database
    Thread-safe wrapper of CTextureDatabase::ClearCachedTexture
-   \param image url of the original image
+   \param url url of the original image
    \param cacheFile [out] url of the cached original (if available)
    \return true if we had a cached version of this image, false otherwise.
    */
@@ -212,7 +247,7 @@ private:
 
   /*! \brief Set a previously cached texture as valid in the database
    Thread-safe wrapper of CTextureDatabase::SetCachedTextureValid
-   \param image url of the original image
+   \param url url of the original image
    \param updateable whether this image should be checked for updates
    \return true if successful, false otherwise.
    */

@@ -665,9 +665,10 @@ bool CApplication::Initialize()
 
   const auto skinHandling = GetComponent<CApplicationSkinHandling>();
 
-  bool uiInitializationFinished = false;
+  const bool guiCreated = CServiceBroker::GetGUI()->GetWindowManager().Initialized();
+  bool uiInitializationFinished = !guiCreated;
 
-  if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
+  if (guiCreated)
   {
     const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
@@ -743,6 +744,22 @@ bool CApplication::Initialize()
     // because we need a real window in the background which gets
     // rendered while we load the main window or enter the master lock key
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SPLASH);
+  }
+
+  // Must stay above the window activation below: that can raise a modal dialog, whose nested
+  // render loop reaches anything after it only once the dialog has been dismissed.
+  CJSONRPC::Initialize();
+
+  CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
+
+  if (!m_ServiceManager->InitStageThree(profileManager))
+  {
+    CLog::Log(LOGERROR, "Application - Init3 failed");
+  }
+
+  if (guiCreated)
+  {
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
     if (settings->GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
@@ -771,19 +788,6 @@ bool CApplication::Initialize()
       // the startup window is considered part of the initialization as it most likely switches to the final window
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
     }
-  }
-  else //No GUI Created
-  {
-    uiInitializationFinished = true;
-  }
-
-  CJSONRPC::Initialize();
-
-  CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
-
-  if (!m_ServiceManager->InitStageThree(profileManager))
-  {
-    CLog::Log(LOGERROR, "Application - Init3 failed");
   }
 
   g_sysinfo.Refresh();
@@ -1745,7 +1749,7 @@ bool CApplication::Cleanup()
     //  are still allocated.
 
     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear();
-    g_LangCodeExpander.Clear();
+    CLangCodeExpander::Clear();
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     //CServiceBroker::GetInputManager().ClearKeymaps(); //! @todo
@@ -1891,15 +1895,13 @@ bool CApplication::Stop(int exitCode)
     m_ExitCode = exitCode;
     CLog::Log(LOGINFO, "Stopping all");
 
+    // Stop scanning before the job manager is cancelled below
+    // otherwise scans underway are not stopped
+    CMusicLibraryQueue::GetInstance().CancelAllJobs();
+    CVideoLibraryQueue::GetInstance().CancelAllJobs();
+
     // cancel any jobs from the jobmanager
     CServiceBroker::GetJobManager()->CancelJobs();
-
-    // stop scanning before we kill the network and so on
-    if (CMusicLibraryQueue::GetInstance().IsRunning())
-      CMusicLibraryQueue::GetInstance().CancelAllJobs();
-
-    if (CVideoLibraryQueue::GetInstance().IsRunning())
-      CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
     CServiceBroker::GetAppMessenger()->Cleanup();
 
@@ -2409,6 +2411,10 @@ void CApplication::Process()
   // process messages, even if a movie is playing
   CServiceBroker::GetAppMessenger()->ProcessMessages();
   if (m_bStop) return; //we're done, everything has been unloaded
+
+  // the main loop reaches this with no GUI message handler suspended on the stack, which
+  // is what a deferred skin reload is waiting for
+  GetComponent<CApplicationSkinHandling>()->ProcessPendingSkinReload();
 
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )

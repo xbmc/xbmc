@@ -12,6 +12,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 
+#include <algorithm>
 #include <functional>
 
 CGUIFixedListContainer::CGUIFixedListContainer(int parentID,
@@ -47,13 +48,13 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
   {
   case ACTION_PAGE_UP:
     {
-      Scroll(-m_itemsPerPage);
+      Scroll(-GetPageSize());
       return true;
     }
     break;
   case ACTION_PAGE_DOWN:
     {
-      Scroll(m_itemsPerPage);
+      Scroll(GetPageSize());
       return true;
     }
     break;
@@ -292,15 +293,17 @@ bool CGUIFixedListContainer::HasPreviousPage() const
 
 bool CGUIFixedListContainer::HasNextPage() const
 {
-  return (GetOffset() < (int)m_items.size() - m_itemsPerPage && (int)m_items.size() >= m_itemsPerPage);
+  return (GetOffset() < static_cast<int>(m_items.size()) - GetPageSize() &&
+          static_cast<int>(m_items.size()) >= GetPageSize());
 }
 
 int CGUIFixedListContainer::GetCurrentPage() const
 {
+  const int pageSize = GetPageSize();
   int offset = CorrectOffset(GetOffset(), GetCursor());
-  if (offset + m_itemsPerPage - GetCursor() >= (int)GetRows())  // last page
-    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
-  return offset / m_itemsPerPage + 1;
+  if (offset + pageSize - GetCursor() >= static_cast<int>(GetRows())) // last page
+    return (GetRows() + pageSize - 1) / pageSize;
+  return offset / pageSize + 1;
 }
 
 void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) const

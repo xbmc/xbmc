@@ -16,9 +16,12 @@
 #include "DVDSubtitles/DVDSubtitleStream.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "utils/LanguageTag.h"
 #include "utils/StringUtils.h"
 
 #include <memory>
+
+using namespace KODI::UTILS;
 
 CDVDDemuxVobsub::CDVDDemuxVobsub() = default;
 
@@ -204,9 +207,10 @@ bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
   std::unique_ptr<CStream> stream(new CStream(this));
 
   StringUtils::Trim(line);
-  stream->language = line.substr(0, 2);
-
+  // The language runs up to the stream index, as in "en, index: 0"
   size_t pos = line.find_first_of(',');
+  stream->language = CLanguageTag::Parse(line.substr(0, pos));
+
   if (pos != std::string::npos)
   {
     pos += 1;

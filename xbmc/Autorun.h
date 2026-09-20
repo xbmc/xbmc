@@ -18,6 +18,7 @@
 
 #ifdef HAS_OPTICAL_DRIVE
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <utility>
@@ -32,11 +33,18 @@ namespace XFILE
 
 class CSetting;
 
-enum class AutoCDAction
+enum class AutoCDAction : uint8_t
 {
   NONE = 0,
   PLAY,
   RIP
+};
+
+enum class AutoDVDAction : uint8_t
+{
+  NONE = 0,
+  PLAY,
+  BROWSE
 };
 
 namespace MEDIA_DETECT
@@ -71,6 +79,9 @@ public:
   static void SettingOptionAudioCdActionsFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<IntegerSettingOption>& list,
                                                 int& current);
+  static void SettingOptionVideoDiscActionsFiller(const std::shared_ptr<const CSetting>& setting,
+                                                  std::vector<IntegerSettingOption>& list,
+                                                  int& current);
 
 protected:
   static bool RunDisc(XFILE::IDirectory* pDir,

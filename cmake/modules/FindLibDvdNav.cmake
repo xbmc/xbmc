@@ -34,6 +34,14 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_libType static)
     endif()
 
+    if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+      # webos sysroot is glibc 2.12, which predates _DEFAULT_SOURCE (glibc 2.19). The
+      # libdvd* libraries build with -std=c17, so __STRICT_ANSI__ suppresses the
+      # _BSD_SOURCE/_SVID_SOURCE defaults and strdup/realpath/strcasecmp are never
+      # declared. Define _BSD_SOURCE explicitly to restore them.
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS " -D_BSD_SOURCE")
+    endif()
+
     generate_patchcommand("${patches}")
     unset(patches)
 

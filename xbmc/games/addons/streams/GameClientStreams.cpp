@@ -89,6 +89,19 @@ void CGameClientStreams::CloseStream(IGameClientStream* stream)
   }
 }
 
+void CGameClientStreams::SetGameTiming(const game_system_timing& timingInfo)
+{
+  if (m_streamManager != nullptr)
+    m_streamManager->SetVideoFps(static_cast<float>(timingInfo.fps));
+
+  for (const auto& streamEntry : m_streams)
+  {
+    CGameClientStreamAudio* audioStream = dynamic_cast<CGameClientStreamAudio*>(streamEntry.first);
+    if (audioStream != nullptr)
+      audioStream->SetSampleRate(timingInfo.sample_rate);
+  }
+}
+
 bool CGameClientStreams::EnableHardwareRendering(const game_hw_rendering_properties& properties)
 {
   if (properties.context_type == GAME_HW_CONTEXT_NONE)

@@ -21,6 +21,7 @@
 #include "video/jobs/VideoLibraryScanningJob.h"
 
 #include <mutex>
+#include <ranges>
 #include <utility>
 
 CVideoLibraryQueue::CVideoLibraryQueue()
@@ -217,6 +218,17 @@ void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
 void CVideoLibraryQueue::CancelAllJobs()
 {
   std::unique_lock lock(m_critical);
+
+  // Ask any job that is already being processed to stop to prevent slow shutdown
+  for (const auto& jobs : m_jobs | std::views::values)
+  {
+    for (const auto& job : jobs)
+    {
+      if (job->CanBeCancelled())
+        job->Cancel();
+    }
+  }
+
   CJobQueue::CancelJobs();
 
   // remove all scanning jobs

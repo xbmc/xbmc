@@ -22,6 +22,7 @@
 
 #include <array>
 #include <fstream>
+#include <optional>
 #include <random>
 
 #include <fmt/format.h>
@@ -301,7 +302,8 @@ INSTANTIATE_TEST_SUITE_P(TestArtUtils,
 struct FanartTest
 {
   std::string path;
-  std::string result;
+  std::string result; //!< art file created in the temporary folder (empty for no folder at all)
+  std::optional<std::string> expected{}; //!< expected return value, if not the created art file
 };
 
 class GetLocalFanartTest : public testing::WithParamInterface<FanartTest>, public testing::Test
@@ -322,6 +324,14 @@ const FanartTest local_fanart_tests[] = {
     {"https://some.where/foo.avi", ""},
     {"upnp://some.where/123", ""},
     {"bluray://1", ""},
+    // Blu-ray folder - bluray:// path is converted to <path>/BDMV/index.bdmv and the art is
+    // looked for in the disc root
+    {"bluray://#URLENCODED_DIRECTORY#/BDMV/PLAYLIST/00800.mpls", "fanart.jpg"},
+    // ..but not inside the BDMV folder
+    {"bluray://#URLENCODED_DIRECTORY#/BDMV/PLAYLIST/00800.mpls", "BDMV/fanart.jpg", ""},
+    // Blu-ray ISO - bluray:// path is converted to <path>/movie.iso, so the art is
+    // looked for in the folder containing the ISO
+    {"bluray://udf%3a%2f%2f#DOUBLE_URLENCODED_ISO#%2f/BDMV/PLAYLIST/00800.mpls", "fanart.jpg"},
     {"/home/user/1.pvr", ""},
     {"plugin://random.video/1", ""},
     {"addons://plugins/video/1", ""},
@@ -359,6 +369,13 @@ TEST_P(GetLocalFanartTest, GetLocalFanart)
       file_path = GetParam().path;
       StringUtils::Replace(file_path, "#URLENCODED_DIRECTORY#", CURL::Encode(path));
     }
+    else if (GetParam().path.find("#DOUBLE_URLENCODED_ISO#") != std::string::npos)
+    {
+      // The ISO path is nested twice (bluray://udf://<iso>/), so needs encoding twice
+      const std::string iso{URIUtils::AddFileToFolder(path, "movie.iso")};
+      file_path = GetParam().path;
+      StringUtils::Replace(file_path, "#DOUBLE_URLENCODED_ISO#", CURL::Encode(CURL::Encode(iso)));
+    }
     else if (GetParam().path.starts_with("videodb://"))
     {
       file_path = GetParam().path;
@@ -366,6 +383,14 @@ TEST_P(GetLocalFanartTest, GetLocalFanart)
     else
       file_path =
           URIUtils::AddFileToFolder(URIUtils::AddFileToFolder(tmpdir, uniq), GetParam().path);
+
+    if (URIUtils::IsBlurayPath(file_path))
+    {
+      // Create the underlying disc file (<path>/BDMV/index.bdmv or <path>/movie.iso)
+      const std::string discFile{URIUtils::GetDiscFile(file_path)};
+      XFILE::CDirectory::Create(URIUtils::GetDirectory(discFile));
+      std::ofstream(discFile, std::ios::out);
+    }
   }
 
   CFileItem item(file_path, false);
@@ -375,7 +400,8 @@ TEST_P(GetLocalFanartTest, GetLocalFanart)
   }
   const std::string res = ART::GetLocalFanart(item);
 
-  EXPECT_EQ(URIUtils::GetFileName(res), URIUtils::GetFileName(GetParam().result));
+  const std::string expected{GetParam().expected.value_or(GetParam().result)};
+  EXPECT_EQ(URIUtils::GetFileName(res), URIUtils::GetFileName(expected));
 
   if (!GetParam().result.empty())
     XFILE::CDirectory::RemoveRecursive(path);

@@ -27,6 +27,10 @@
 //! the stored hash; Stack() skips the disc structure probes for such folders
 static constexpr const char* PROPERTY_UNCHANGED{"scanner:unchanged"};
 
+//! item property set by Stack() on a stack: a digest of what each of its parts is,
+//! to allow the scraper to detect changes to any part
+static constexpr const char* PROPERTY_STACK_DIGEST{"scanner:stackdigest"};
+
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem
@@ -52,8 +56,11 @@ public:
     StackCandidateType type;
     std::string title;
     std::string volume;
+    std::string remainder; // the part of the name after the volume, excluding the extension
     int64_t size;
     int index; // index in m_items
+    std::string playPath; // for a folder candidate: the file inside the folder
+    std::string pattern; // the stack expression that matched, for logging
 
     auto operator<=>(const StackCandidate&) const = default;
   };
@@ -62,6 +69,7 @@ public:
   {
     StackCandidateType type;
     std::string title;
+    std::string remainder;
 
     auto operator<=>(const CountedStackCandidate& other) const = default;
   };

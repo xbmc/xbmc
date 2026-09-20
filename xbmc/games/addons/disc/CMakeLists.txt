@@ -10,6 +10,7 @@ set(SOURCES GameClientDiscM3U.cpp
 set(HEADERS GameClientDiscM3U.h
             GameClientDiscPlaylist.h
             GameClientDiscModel.h
+            GameClientDiscState.h
             GameClientDiscMergeUtils.h
             GameClientDiscs.h
             GameClientDiscTransport.h

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.mouse"
         name="Computer Mouse"
-        version="1.0.31"
+        version="1.0.32"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -9,6 +9,7 @@
         <assets>
             <icon>resources/icon.png</icon>
         </assets>
+        <summary lang="cs_CZ">Počítačová myš</summary>
         <summary lang="da_DK">Computermus</summary>
         <summary lang="de_DE">Computermaus</summary>
         <summary lang="en_GB">Computer Mouse</summary>
@@ -21,6 +22,7 @@
         <summary lang="ru_RU">Компьютерная мышь</summary>
         <summary lang="sv_SE">Datormus</summary>
         <summary lang="zh_CN">电脑鼠标</summary>
+        <description lang="cs_CZ">Standardní myš se dvěma tlačítky a prostředním kolečkem.</description>
         <description lang="da_DK">En standardmus med to knapper og et hjul i midten.</description>
         <description lang="de_DE">Eine Standardmaus mit zwei Tasten und einem Mausrad.</description>
         <description lang="en_GB">A standard mouse with two buttons and a middle wheel.</description>

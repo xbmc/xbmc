@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -149,6 +149,31 @@ public:
   static void SetLong(tinyxml2::XMLNode* rootNode, const char* tag, long value);
   static void SetDate(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& date);
   static void SetDateTime(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& dateTime);
+
+  enum class SerializationFormat
+  {
+    PRETTY,
+    COMPACT,
+  };
+
+  static std::string NodeStringSerialization(const TiXmlNode* node, SerializationFormat format);
+  static std::string NodeStringSerialization(const tinyxml2::XMLNode* node,
+                                             SerializationFormat format);
+
+  template<class T>
+  static bool AreNodesSerializationsEqual(const T* node1, const T* node2)
+  {
+    if (node1 == node2)
+      return true;
+    if (!node1 || !node2)
+      return false;
+
+    return NodeStringSerialization(node1, SerializationFormat::COMPACT) ==
+           NodeStringSerialization(node2, SerializationFormat::COMPACT);
+  }
+
+  static bool RemoveNode(TiXmlNode* node);
+  static bool RemoveNode(tinyxml2::XMLNode* node);
 
   static const int path_version = 1;
 };

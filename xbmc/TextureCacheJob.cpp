@@ -13,44 +13,47 @@
 #include "TextureCache.h"
 #include "TextureDatabase.h"
 #include "URL.h"
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audiodecoder.h"
 #include "commons/ilog.h"
 #include "filesystem/File.h"
+#include "filesystem/IDirectory.h"
 #include "guilib/Texture.h"
 #include "imagefiles/ImageFileURL.h"
 #include "imagefiles/SpecialImageLoaderFactory.h"
 #include "pictures/Picture.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
+#include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <cstdlib>
 #include <cstring>
-#include <exception>
 #include <utility>
 
 #include "PlatformDefs.h"
 
-CTextureCacheJob::CTextureCacheJob(const std::string &url, const std::string &oldHash):
-  m_url(url),
-  m_oldHash(oldHash),
-  m_cachePath(CTextureCache::GetCacheFile(m_url))
+CTextureCacheJob::CTextureCacheJob(const std::string& url,
+                                   const CTextureDetails& oldDetails,
+                                   const std::string& knownHash)
+  : m_url(url),
+    m_oldDetails(oldDetails),
+    m_knownHash(knownHash),
+    m_cachePath(CTextureCache::GetCacheFile(m_url))
 {
+}
+
+bool CTextureCacheJob::HasCachedFile() const
+{
+  return !m_oldDetails.file.empty() &&
+         XFILE::CFile::Exists(CTextureCache::GetCachedPath(m_oldDetails.file));
 }
 
 CTextureCacheJob::~CTextureCacheJob() = default;
 
 bool CTextureCacheJob::Equals(const CJob* job) const
 {
-  if (strcmp(job->GetType(),GetType()) == 0)
-  {
-    const CTextureCacheJob* cacheJob = dynamic_cast<const CTextureCacheJob*>(job);
-    if (cacheJob && cacheJob->m_cachePath == m_cachePath)
-      return true;
-  }
-  return false;
+  if (strcmp(job->GetType(), GetType()) != 0)
+    return false;
+
+  return static_cast<const CTextureCacheJob*>(job)->m_cachePath == m_cachePath;
 }
 
 bool CTextureCacheJob::DoWork()
@@ -63,7 +66,9 @@ bool CTextureCacheJob::DoWork()
   std::string path(CServiceBroker::GetTextureCache()->CheckCachedImage(m_url, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
-  if (CServiceBroker::GetTextureCache()->StartCacheImage(m_url))
+
+  m_holdsProcessingClaim = CServiceBroker::GetTextureCache()->StartCacheImage(m_url);
+  if (m_holdsProcessingClaim)
     return CacheTexture();
 
   return false;
@@ -102,12 +107,13 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
 
   if (m_details.updateable)
   {
-    // generate the hash
-    m_details.hash = GetImageHash(image);
+    // generate the hash, unless the caller already knows it (saves a file stat)
+    m_details.hash = m_knownHash.empty() ? GetImageHashFromStat(image) : m_knownHash;
     if (m_details.hash.empty())
       return false;
 
-    if (m_details.hash == m_oldHash)
+    // Unchanged, so the copy already in the cache stands - as long as it is still there
+    if (m_details.hash == m_oldDetails.hash && HasCachedFile())
     {
       m_details.hashRevalidated = true;
       return true;
@@ -122,7 +128,8 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     else
       m_details.file = m_cachePath + ".jpg";
 
-    CLog::Log(LOGDEBUG, "{} image '{}' to '{}':", m_oldHash.empty() ? "Caching" : "Recaching",
+    CLog::Log(LOGDEBUG,
+              "{} image '{}' to '{}':", m_oldDetails.hash.empty() ? "Caching" : "Recaching",
               CURL::GetRedacted(image), m_details.file);
 
     unsigned int cached_width = 0;
@@ -165,6 +172,12 @@ bool CTextureCacheJob::ResizeTexture(const std::string& url,
   return success;
 }
 
+bool CTextureCacheJob::MayBeAnImage(const std::string& mimeType)
+{
+  return StringUtils::StartsWithNoCase(mimeType, "image/") ||
+         StringUtils::EqualsNoCase(mimeType, "application/octet-stream");
+}
+
 std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageFileURL& imageURL)
 {
   if (imageURL.IsSpecialImage())
@@ -177,17 +190,34 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
 
   // Validate file URL to see if it is an image
   CFileItem file(imageURL.GetTargetFile(), false);
+
+  // An extension naming an image type says what asking the source would, so take it from there
+  // and save a round trip. Anything else - a dynamic page, no extension at all - still asks.
+  const std::string namedType{file.IsPicture() ? CMime::GetMimeType(file) : ""};
+  file.SetMimeType(namedType);
   file.FillInMimeType();
+
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) &&
-      !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") &&
-      !StringUtils::EqualsNoCase(file.GetMimeType(),
-                                 "application/octet-stream")) // ignore non-pictures
+      !MayBeAnImage(file.GetMimeType())) // ignore non-pictures
   {
     return {};
   }
 
   auto texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, CAspectRatio::CENTER,
                                         file.GetMimeType());
+  if (!texture && !namedType.empty())
+  {
+    // The extension named a type that couldn't be read, so the source may be serving another and
+    // only it knows which. It may equally not be an image at all, in which case there is nothing
+    // to try again with.
+    file.SetMimeType("");
+    file.FillInMimeType();
+    if (MayBeAnImage(file.GetMimeType()))
+    {
+      texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, CAspectRatio::CENTER,
+                                       file.GetMimeType());
+    }
+  }
   if (!texture)
     return {};
 
@@ -200,7 +230,30 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
   return texture;
 }
 
-std::string CTextureCacheJob::GetImageHash(const std::string &url)
+std::string CTextureCacheJob::FormatImageHash(int64_t modificationTime, int64_t size)
+{
+  if (modificationTime == 0 && size == 0)
+    return "";
+
+  return StringUtils::Format("d{}s{}", modificationTime, size);
+}
+
+std::string CTextureCacheJob::GetImageHash(const CFileItem& listedFile)
+{
+  // The raw values the listing carried, rather than the item's date/time (UTC conversion -> DST issues)
+  int64_t modificationTime{listedFile.GetProperty(XFILE::DIR_PROPERTY_STAT_MTIME).asInteger(0)};
+  if (modificationTime == 0)
+    modificationTime = listedFile.GetProperty(XFILE::DIR_PROPERTY_STAT_CTIME).asInteger(0);
+
+  // Not every VFS layer fills these in. Without a time the size alone would not match a stat-based
+  // hash, so say nothing is known and let the file be stat'ed as usual
+  if (modificationTime == 0)
+    return "";
+
+  return FormatImageHash(modificationTime, listedFile.GetSize());
+}
+
+std::string CTextureCacheJob::GetImageHashFromStat(const std::string& url)
 {
   // silently ignore - we cannot stat these
   // in the case of upnp thumbs are/should be provided when filling the directory list, there's no reason to stat all object ids
@@ -214,8 +267,9 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
     int64_t time = st.st_mtime;
     if (!time)
       time = st.st_ctime;
-    if (time || st.st_size)
-      return StringUtils::Format("d{}s{}", time, st.st_size);
+
+    if (const std::string hash{FormatImageHash(time, st.st_size)}; !hash.empty())
+      return hash;
 
     // the image exists but we couldn't determine the mtime/ctime and/or size
     // so set an obviously bad hash

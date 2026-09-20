@@ -104,6 +104,9 @@ static int RunPlugin(const std::vector<std::string>& params)
   return 0;
 }
 
+template<bool OnlyApple = false>
+static int RunScript(const std::vector<std::string>& params);
+
 /*! \brief Run a script, plugin or game add-on.
  *  \param params The parameters.
  *  \details params[0] = add-on id.
@@ -172,10 +175,10 @@ static int RunAddon(const std::vector<std::string>& params)
              CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT_LIBRARY,
                                                     OnlyEnabled::CHOICE_YES))
     {
-      // Pass the script name (addonid) and all the parameters
-      // (params[1] ... params[x]) separated by a comma to RunScript
-      CBuiltins::GetInstance().Execute(
-          StringUtils::Format("RunScript({})", StringUtils::Join(params, ",")));
+      // RunScript takes the vector as it stands. Routing it through a builtin string would
+      // re-parse it with CUtil::SplitParams, which ends a parameter at any comma not inside
+      // quotes.
+      RunScript(params);
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::GAMEDLL,
                                                     OnlyEnabled::CHOICE_YES))
@@ -221,7 +224,7 @@ static int RunAddon(const std::vector<std::string>& params)
  *           Set the OnlyApple template parameter to true to only attempt
  *           execution of applescripts.
  */
-template<bool OnlyApple=false>
+template<bool OnlyApple>
 static int RunScript(const std::vector<std::string>& params)
 {
 #if defined(TARGET_DARWIN_OSX)

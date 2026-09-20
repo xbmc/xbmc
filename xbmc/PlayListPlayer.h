@@ -90,7 +90,7 @@ public:
   int GetNextItemIdx(int offset) const;
 
   /*! \brief Set the active playlist
-   \param id Id of playlist
+   \param playlistId Id of playlist
    \sa GetCurrentPlaylist
    */
   void SetCurrentPlaylist(Id playlistId);
@@ -102,7 +102,7 @@ public:
   Id GetCurrentPlaylist() const;
 
   /*! \brief Get a particular playlist object
-   \param id Id of playlist
+   \param playlistId Id of playlist
    \return A reference to the CPlayList object.
    \sa GetCurrentPlaylist
    */
@@ -125,7 +125,7 @@ public:
   /*! \brief Set shuffle state of a playlist.
    If the shuffle state changes, the playlist is shuffled or unshuffled.
    Has no effect if Party Mode is enabled.
-   \param playlist the playlist to (un)shuffle, PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO.
+   \param playlistId the playlist to (un)shuffle, PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO.
    \param shuffle set true to shuffle, false to unshuffle.
    \param notify notify the user with a Toast notification (defaults to false)
    \sa IsShuffled
@@ -134,7 +134,7 @@ public:
 
   /*! \brief Return whether a playlist is shuffled.
    If partymode is enabled, this always returns false.
-   \param playlist the playlist to query for shuffle state, PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO.
+   \param playlistId the playlist to query for shuffle state, PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO.
    \return true if the given playlist is shuffled and party mode isn't enabled, false otherwise.
    \sa SetShuffle
    */
@@ -147,7 +147,7 @@ public:
 
   /*! \brief Set repeat state of a playlist.
    If called while in Party Mode, repeat is disabled.
-   \param playlist the playlist to set repeat state for, PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO.
+   \param playlistId the playlist to set repeat state for, PLAYLIST::TYPE_MUSIC or PLAYLIST::TYPE_VIDEO.
    \param state set to RepeatState::NONE, RepeatState::ONE or RepeatState::ALL
    \param notify notify the user with a Toast notification
    \sa GetRepeat
@@ -171,13 +171,13 @@ public:
 
 protected:
   /*! \brief Returns true if the given is set to repeat all
-   \param playlist Playlist to be query
+   \param playlistId Playlist to be query
    \return true if the given playlist is set to repeat all, false otherwise.
    */
   bool Repeated(Id playlistId) const;
 
   /*! \brief Returns true if the given is set to repeat one
-   \param playlist Playlist to be query
+   \param playlistId Playlist to be query
    \return true if the given playlist is set to repeat one, false otherwise.
    */
   bool RepeatedOne(Id playlistId) const;

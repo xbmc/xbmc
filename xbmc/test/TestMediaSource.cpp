@@ -6,8 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "MediaSource.h"
 #include "URL.h"
+#include "utils/Variant.h"
 
 #include <array>
 
@@ -128,6 +130,51 @@ TEST_P(FromNameAndPathTest, FromNameAndPath)
 }
 
 INSTANTIATE_TEST_SUITE_P(TestMediaSource, FromNameAndPathTest, testing::ValuesIn(fromname_tests));
+
+TEST(TestMediaSource, ConfiguredDriveDevicePath)
+{
+  CMediaSource source;
+  for (const auto& path : {"E:", "E:\\", "E:/"})
+  {
+    source.FromNameAndPaths("Disc", {path});
+#ifdef TARGET_WINDOWS
+    EXPECT_EQ(source.strDevicePath, "E:");
+    EXPECT_EQ(CFileItem(source).GetProperty("device_path").asString(), "E:");
+    source.strPath = "cdda://local/";
+    EXPECT_EQ(CFileItem(source).GetProperty("device_path").asString(), "E:");
+#else
+    EXPECT_TRUE(source.strDevicePath.empty());
+#endif
+  }
+
+  source.FromNameAndPaths("Disc", {"D:\\"});
+#ifdef TARGET_WINDOWS
+  EXPECT_EQ(source.strDevicePath, "D:");
+#else
+  EXPECT_TRUE(source.strDevicePath.empty());
+#endif
+}
+
+TEST(TestMediaSource, ClearConfiguredDevicePath)
+{
+  CMediaSource source;
+  for (const auto& path : {"", "smb://server/share/", "\\\\server\\share\\", "dvd://1",
+                           "iso9660://", "udf://", "cdda://local/", "E:\\folder\\"})
+  {
+    source.strDevicePath = "E:";
+    source.FromNameAndPaths("Source", {path});
+    EXPECT_TRUE(source.strDevicePath.empty()) << path;
+    EXPECT_FALSE(CFileItem(source).HasProperty("device_path")) << path;
+  }
+
+  source.strDevicePath = "E:";
+  source.FromNameAndPaths("Source", {});
+  EXPECT_TRUE(source.strDevicePath.empty());
+
+  source.strDevicePath = "E:";
+  source.FromNameAndPaths("Source", {"D:\\", "E:\\"});
+  EXPECT_TRUE(source.strDevicePath.empty());
+}
 
 TEST_P(AddOrReplaceTest, AddOrReplace)
 {

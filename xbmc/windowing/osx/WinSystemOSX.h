@@ -111,6 +111,7 @@ public:
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 
+  void SynchronizeCurrentMonitor();
   ScreenResolution GetScreenResolution(unsigned long screenIdx);
   void EnableVSync(bool enable);
   bool SwitchToVideoMode(RESOLUTION_INFO& res);

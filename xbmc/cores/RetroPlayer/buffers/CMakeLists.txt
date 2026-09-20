@@ -29,6 +29,20 @@ if(("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_
                       RenderBufferPoolDMA.cpp)
   list(APPEND HEADERS RenderBufferDMA.h
                       RenderBufferPoolDMA.h)
+
+  if(TARGET ${APP_NAME_LC}::OpenGl)
+    list(APPEND SOURCES RenderBufferDMAOpenGL.cpp
+                        RenderBufferPoolDMAOpenGL.cpp)
+    list(APPEND HEADERS RenderBufferDMAOpenGL.h
+                        RenderBufferPoolDMAOpenGL.h)
+  endif()
+
+  if(TARGET ${APP_NAME_LC}::OpenGLES)
+    list(APPEND SOURCES RenderBufferDMAOpenGLES.cpp
+                        RenderBufferPoolDMAOpenGLES.cpp)
+    list(APPEND HEADERS RenderBufferDMAOpenGLES.h
+                        RenderBufferPoolDMAOpenGLES.h)
+  endif()
 endif()
 
 core_add_library(rp-buffers)

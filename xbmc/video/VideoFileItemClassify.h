@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <string_view>
+
 class CFileItem;
 
 namespace KODI::VIDEO
@@ -40,6 +42,12 @@ bool IsVideoAssetFile(const CFileItem& item);
 
 //! \brief Check whether an item is a video database item.
 bool IsVideoDb(const CFileItem& item);
+
+//! \brief Check whether a folder name is that of a video extras folder, eg. "Extras",
+//!        "Bonus Disc", "Bonus Content" or "Bonus Features".
+//! \param[in] name the name of the folder, without path or trailing separator
+//! \return true if it is, false otherwise
+bool IsVideoExtrasFolderName(std::string_view name);
 
 //! \brief Check whether an item is a video extras folder item.
 bool IsVideoExtrasFolder(const CFileItem& item);

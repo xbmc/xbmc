@@ -149,7 +149,11 @@
 #include "games/agents/windows/GUIAgentWindow.h"
 #include "games/controllers/windows/GUIControllerWindow.h"
 #include "games/dialogs/disc/DialogGameDiscManager.h"
+#include "games/dialogs/osd/DialogGameAchievements.h"
 #include "games/dialogs/osd/DialogGameAdvancedSettings.h"
+#include "games/dialogs/osd/DialogGameIndicators.h"
+#include "games/dialogs/osd/DialogGameLeaderboardEntries.h"
+#include "games/dialogs/osd/DialogGameLeaderboards.h"
 #include "games/dialogs/osd/DialogGameOSD.h"
 #include "games/dialogs/osd/DialogGameSaves.h"
 #include "games/dialogs/osd/DialogGameStretchMode.h"
@@ -354,6 +358,10 @@ void CGUIWindowManager::CreateWindows()
   Add(new GAME::CDialogInGameSaves);
   Add(new GAME::CGUIAgentWindow);
   Add(new GAME::CDialogGameDiscManager);
+  Add(new GAME::CDialogGameAchievements);
+  Add(new GAME::CDialogGameLeaderboards);
+  Add(new GAME::CDialogGameLeaderboardEntries);
+  Add(new GAME::CDialogGameIndicators);
   Add(new RETRO::CGameWindowFullScreen);
 }
 
@@ -481,6 +489,10 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_IN_GAME_SAVES);
     DestroyWindow(WINDOW_DIALOG_GAME_AGENTS);
     DestroyWindow(WINDOW_DIALOG_GAME_DISC_MANAGER);
+    DestroyWindow(WINDOW_DIALOG_GAME_LEADERBOARDS);
+    DestroyWindow(WINDOW_DIALOG_GAME_LEADERBOARD_ENTRIES);
+    DestroyWindow(WINDOW_DIALOG_GAME_INDICATORS);
+    DestroyWindow(WINDOW_DIALOG_GAME_ACHIEVEMENTS);
     DestroyWindow(WINDOW_FULLSCREEN_GAME);
 
     Remove(WINDOW_SETTINGS_SERVICE);
@@ -1601,6 +1613,11 @@ void CGUIWindowManager::DeInitialize()
   // clear our vectors of windows
   m_vecCustomWindows.clear();
   m_activeDialogs.clear();
+
+  // FrameMove is the only other drain and stops running at shutdown
+  for (const auto& window : m_deleteWindows)
+    window->FreeResources(true);
+  m_deleteWindows.clear();
 
   m_initialized = false;
 }

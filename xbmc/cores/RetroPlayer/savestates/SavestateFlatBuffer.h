@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ISavestate.h"
+#include "SavestateBlob.h"
 
 #include <memory>
 
@@ -49,13 +50,17 @@ public:
   unsigned int GetMaxWidth() const override;
   unsigned int GetMaxHeight() const override;
   const uint8_t* GetVideoData() const override;
+  bool PrepareVideoData() override;
   size_t GetVideoSize() const override;
   unsigned int GetVideoWidth() const override;
   unsigned int GetVideoHeight() const override;
   float GetDisplayAspectRatio() const override;
   unsigned int GetRotationDegCCW() const override;
   const uint8_t* GetMemoryData() const override;
+  bool IsCompressed() const override;
+  bool PrepareMemoryData(size_t expectedSize) override;
   size_t GetMemorySize() const override;
+  bool CopyMemoryDataTo(ISavestate& target) const override;
   void SetType(SAVE_TYPE type) override;
   void SetSlot(uint8_t slot) override;
   void SetLabel(const std::string& label) override;
@@ -78,6 +83,11 @@ public:
   void SetDisplayAspectRatio(float displayAspectRatio) override;
   void SetRotationDegCCW(unsigned int rotationCCW) override;
   uint8_t* GetMemoryBuffer(size_t size) override;
+  const uint8_t* GetAchievementData() const override;
+  size_t GetAchievementSize() const override;
+  std::optional<GAME::GameClientDiscState> GetDiscState() const override;
+  uint8_t* GetAchievementBuffer(size_t size) override;
+  void SetDiscState(const std::optional<GAME::GameClientDiscState>& state) override;
   void Finalize() override;
   bool Deserialize(std::vector<uint8_t> data) override;
 
@@ -102,7 +112,6 @@ private:
   const SAVESTATE::Savestate* m_savestate = nullptr;
 
   using StringOffset = flatbuffers::Offset<flatbuffers::String>;
-  using VectorOffset = flatbuffers::Offset<flatbuffers::Vector<uint8_t>>;
 
   // Temporary deserialization variables
   SAVE_TYPE m_type = SAVE_TYPE::UNKNOWN;
@@ -121,12 +130,19 @@ private:
   float m_nominalDisplayAspectRatio{0.0f};
   unsigned int m_maxWidth{0};
   unsigned int m_maxHeight{0};
-  std::unique_ptr<VectorOffset> m_videoDataOffset;
+  std::vector<uint8_t> m_videoData;
+  std::vector<uint8_t> m_videoDataDecompressed;
   unsigned int m_videoWidth{0};
   unsigned int m_videoHeight{0};
   float m_displayAspectRatio{0.0f};
   unsigned int m_rotationCCW{0};
-  std::unique_ptr<VectorOffset> m_memoryDataOffset;
+  PendingSavestateBlob m_memoryData;
+  std::vector<uint8_t> m_memoryDataDecompressed;
+
+  //! Small and written rarely, so it is stored as-is rather than through the
+  //! compressing blob path the video and memory payloads use
+  std::vector<uint8_t> m_achievementData;
+  std::optional<GAME::GameClientDiscState> m_discState;
 };
 } // namespace RETRO
 } // namespace KODI

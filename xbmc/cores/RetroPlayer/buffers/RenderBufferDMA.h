@@ -21,19 +21,17 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 /**
- * @brief Special IRenderBuffer implementation for use with CBufferObject.
- *        This buffer type uses Direct Memory Access (DMA) sharing via file
- *        descriptors (fds). The file descriptor is then used to create an
- *        EGL image.
+ * @brief Common DMA-buffer allocation, CPU access and EGL import behavior.
+ *
+ * API-specific subclasses provide the upload fallback used for backends that
+ * currently require the coherency workaround.
  *
  */
 class CRenderBufferDMA : public CBaseRenderBuffer
 {
 public:
-  CRenderBufferDMA(CRenderContext& context, int fourcc);
+  explicit CRenderBufferDMA(int fourcc);
   ~CRenderBufferDMA() override;
 
   // Implementation of IRenderBuffer via CBaseRenderBuffer
@@ -46,8 +44,12 @@ public:
   GLuint TextureID() const { return m_textureId; }
 
 protected:
+  virtual bool UploadFromMemory() = 0;
+  virtual void ConfigureTexture() = 0;
+
+  uint32_t GetStride() const;
+
   // Construction parameters
-  CRenderContext& m_context;
   const int m_fourcc = 0;
 
   const GLenum m_textureTarget = GL_TEXTURE_2D;
@@ -56,6 +58,7 @@ protected:
 private:
   void CreateTexture();
   void DeleteTexture();
+  bool RequiresCoherencyWorkaround() const;
 
   std::unique_ptr<CEGLImage> m_egl;
   std::unique_ptr<IBufferObject> m_bo;

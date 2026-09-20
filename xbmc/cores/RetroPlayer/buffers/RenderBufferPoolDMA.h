@@ -8,23 +8,22 @@
 
 #pragma once
 
+#include "IRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 
 namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 /**
- * @brief Special IRenderBufferPool implementation that converts
- *        AVPixelFormat to DRM_FORMAT_* for use with CRenderBufferDMA.
+ * @brief Common DMA buffer-pool configuration that converts AVPixelFormat to
+ *        DRM_FORMAT_* for use by API-specific CRenderBufferDMA subclasses.
  *
  */
 class CRenderBufferPoolDMA : public CBaseRenderBufferPool
 {
 public:
-  CRenderBufferPoolDMA(CRenderContext& context);
+  CRenderBufferPoolDMA() = default;
   ~CRenderBufferPoolDMA() override = default;
 
   // Implementation of IRenderBufferPool via CBaseRenderBufferPool
@@ -32,13 +31,11 @@ public:
 
 protected:
   // Implementation of CBaseRenderBufferPool
-  IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
   bool ConfigureInternal() override;
 
-private:
-  // Construction parameters
-  CRenderContext& m_context;
+  int GetFourcc() const { return m_fourcc; }
 
+private:
   // Configuration parameters
   int m_fourcc = 0;
 };

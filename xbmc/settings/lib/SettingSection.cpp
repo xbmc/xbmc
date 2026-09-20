@@ -63,8 +63,7 @@ void addISetting(const TiXmlNode* node, const T& item, std::vector<T>& items, bo
 
 Logger CSettingGroup::s_logger;
 
-CSettingGroup::CSettingGroup(const std::string& id,
-                             CSettingsManager* settingsManager /* = nullptr */)
+CSettingGroup::CSettingGroup(std::string_view id, CSettingsManager* settingsManager /* = nullptr */)
   : ISetting(id, settingsManager)
 {
   if (!s_logger)

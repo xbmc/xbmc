@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -24,6 +24,14 @@ using namespace xbmcdrm;
 #endif
 
 %}
+
+%include "kodi_common.i"
+
+// construction in tp_new; see kodi_construct.i
+KODI_CONSTRUCT(XBMCAddon::xbmcdrm, CryptoSession)
+
+/* one line per shape crossing the boundary in this module */
+%template() std::map<std::string, std::string>;
 
 %include "interfaces/legacy/swighelper.h"
 %include "interfaces/legacy/AddonString.h"

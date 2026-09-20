@@ -82,6 +82,16 @@ public:
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
+
+  /*!
+   * \brief Get the index of the audio stream to describe this item by.
+   *
+   * Which stream that is follows the "Language details to display" setting, so the label a
+   * list shows and the key it sorts on are chosen once rather than in each caller.
+   *
+   * \return An index into m_streamDetails, as GetAudioCodec() and friends take
+   */
+  int GetDescribedAudioStreamIndex() const;
   int GetDatabaseId() const;
   CRating GetRating(std::string type = "") const;
   const std::string& GetDefaultRating() const;
@@ -96,6 +106,7 @@ public:
   const CDateTime& GetFirstAired() const;
   std::string GetCast(const std::string& separator, bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
+  bool HasNFOStreamDetails() const;
   bool IsEmpty() const;
 
   const std::string& GetPath() const

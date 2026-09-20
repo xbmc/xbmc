@@ -12,6 +12,7 @@
 #include "../addon_base.h"
 
 #include <stddef.h> /* size_t */
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -1149,6 +1150,309 @@ extern "C"
   ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--
+  /// @defgroup cpp_kodi_addon_game_Defs_RetroAchievementsTypes 9. RetroAchievements types
+  /// @ingroup cpp_kodi_addon_game_Defs
+  /// @brief **RetroAchievements types**
+  ///
+  /// The add-on owns the RetroAchievements client and reports events to Kodi
+  /// through the `RCOn*()` callbacks of @ref AddonToKodiFuncTable_Game. Kodi is
+  /// responsible for presentation only; it performs no RetroAchievements
+  /// network I/O and holds no knowledge of the achievement runtime.
+  ///
+  /// @note All pointers handed to Kodi are owned by the add-on and are only
+  /// valid for the duration of the callback. Kodi copies everything it needs to
+  /// retain. Any `const char*` may be `NULL`, which Kodi treats as an empty
+  /// string. Any array pointer may be `NULL`, in which case its count must be
+  /// zero.
+  ///
+  ///@{
+
+  //============================================================================
+  /// @brief **Unlock state of an achievement**
+  ///
+  typedef enum GAME_RC_UNLOCK_STATE
+  {
+    /// @brief The achievement has not been earned by this player
+    GAME_RC_UNLOCK_STATE_LOCKED = 0,
+
+    /// @brief The achievement was earned outside of hardcore mode
+    GAME_RC_UNLOCK_STATE_SOFTCORE = 1,
+
+    /// @brief The achievement was earned in hardcore mode
+    GAME_RC_UNLOCK_STATE_HARDCORE = 2,
+  } GAME_RC_UNLOCK_STATE;
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **A single achievement belonging to the loaded game**
+  ///
+  typedef struct game_rc_achievement
+  {
+    /// @brief Unique RetroAchievements ID of the achievement
+    unsigned int id;
+
+    /// @brief Title of the achievement, or `NULL` if unknown
+    const char* title;
+
+    /// @brief Description of how the achievement is earned, or `NULL`
+    const char* description;
+
+    /// @brief URL of the unlocked (full colour) badge, or `NULL`
+    const char* badge_url;
+
+    /// @brief URL of the locked (greyscale) badge, or `NULL`
+    const char* badge_locked_url;
+
+    /// @brief Point value of the achievement
+    unsigned int points;
+
+    /// @brief Whether and how the player has earned this achievement
+    GAME_RC_UNLOCK_STATE unlock_state;
+
+    /// @brief Unix time the achievement was earned, or 0 if it was not
+    int64_t unlock_time;
+
+    /// @brief Percentage of players who earned this achievement, 0.0 if unknown
+    float rarity;
+
+    /// @brief Percentage of players who earned this in hardcore, 0.0 if unknown
+    float rarity_hardcore;
+  } ATTR_PACKED game_rc_achievement;
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **Payload of @ref AddonToKodiFuncTable_Game::RCOnGameLoaded**
+  ///
+  /// Sent once the add-on has identified the loaded game and resolved its
+  /// achievement set.
+  ///
+  typedef struct game_rc_game_loaded
+  {
+    /// @brief Unique RetroAchievements ID of the game
+    unsigned int game_id;
+
+    /// @brief Title of the game as known to RetroAchievements, or `NULL`
+    const char* title;
+
+    /// @brief URL of the game's icon, or `NULL`
+    const char* icon_url;
+
+    /// @brief Achievements of the game, or `NULL` if @ref achievement_count is 0
+    const game_rc_achievement* achievements;
+
+    /// @brief Number of elements in @ref achievements
+    unsigned int achievement_count;
+  } ATTR_PACKED game_rc_game_loaded;
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **Payload of @ref AddonToKodiFuncTable_Game::RCOnAchievementTriggered**
+  ///
+  typedef struct game_rc_achievement_triggered
+  {
+    /// @brief Unique RetroAchievements ID of the achievement
+    unsigned int id;
+
+    /// @brief Title of the achievement, or `NULL` if unknown
+    const char* title;
+
+    /// @brief Description of the achievement, or `NULL`
+    const char* description;
+
+    /// @brief URL of the unlocked badge, or `NULL`
+    const char* badge_url;
+
+    /// @brief Point value of the achievement
+    unsigned int points;
+
+    /// @brief True if the achievement was earned in hardcore mode
+    bool hardcore;
+  } ATTR_PACKED game_rc_achievement_triggered;
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **Payload of @ref AddonToKodiFuncTable_Game::RCOnLoginResult**
+  ///
+  typedef struct game_rc_login_result
+  {
+    /// @brief True if the player was logged in
+    bool success;
+
+    /// @brief Account name of the player, or `NULL`
+    const char* username;
+
+    /// @brief Display name of the player, or `NULL`
+    const char* display_name;
+
+    /// @brief URL of the player's avatar, or `NULL` if the add-on has none
+    const char* icon_url;
+
+    /// @brief Total points earned by the player
+    unsigned int points;
+
+    /// @brief Reason the login failed, or `NULL` if it succeeded
+    const char* error_message;
+
+    /// @brief True if the account or token was rejected, rather than the
+    /// attempt failing for some other reason
+    ///
+    /// Kodi drops the saved token only for this. A login that failed because
+    /// RetroAchievements could not be reached leaves it alone, so an outage
+    /// does not sign the player out and leave the add-on nothing to reconnect
+    /// with.
+    bool credentials_rejected;
+  } ATTR_PACKED game_rc_login_result;
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **Progress towards a single measured achievement**
+  ///
+  /// Only achievements whose trigger counts something ("Defeat 50 enemies")
+  /// have progress worth reporting. The add-on omits the rest, so this array
+  /// is usually much shorter than the game's achievement list.
+  ///
+  /// Sent separately from @ref game_rc_game_loaded because progress changes as
+  /// the game is played, whereas the achievement list is resolved once.
+  ///
+  typedef struct game_rc_achievement_progress
+  {
+    /// @brief Unique RetroAchievements ID of the achievement
+    unsigned int id;
+
+    /// @brief Progress towards the achievement, from 0.0 to 100.0
+    float measured_percent;
+
+    /// @brief Human-readable progress such as "45/100", or `NULL`
+    const char* measured_progress;
+  } ATTR_PACKED game_rc_achievement_progress;
+
+  //============================================================================
+  /// @brief **Payload of the leaderboard attempt callbacks**
+  ///
+  /// A leaderboard is a scored challenge within a game - fastest lap, highest
+  /// score on a level. The client watches memory for the conditions that start
+  /// one, and either submits a value or gives up when it ends.
+  ///
+  typedef struct game_rc_leaderboard
+  {
+    /// @brief Unique RetroAchievements ID of the leaderboard
+    unsigned int id;
+
+    /// @brief Title of the leaderboard, or `NULL` if unknown
+    const char* title;
+
+    /// @brief Description of what is being measured, or `NULL`
+    const char* description;
+
+    /// @brief The value as it stands, already formatted for display, or `NULL`
+    ///
+    /// Leaderboards are scored in different units - seconds, points, frames -
+    /// and the client formats the raw value accordingly, so this is shown as
+    /// given rather than interpreted.
+    const char* value;
+  } ATTR_PACKED game_rc_leaderboard;
+
+  //============================================================================
+  /// @brief **Payload of @ref AddonToKodiFuncTable_Game::RCOnLeaderboardScoreboard**
+  ///
+  /// Sent once the server has said where a submitted attempt placed. Separate
+  /// from the submitted callback because it arrives later, and may not arrive.
+  ///
+  typedef struct game_rc_leaderboard_scoreboard
+  {
+    /// @brief Unique RetroAchievements ID of the leaderboard
+    unsigned int id;
+
+    /// @brief The value that was submitted, formatted for display, or `NULL`
+    const char* submitted_score;
+
+    /// @brief The player's best value on this leaderboard, or `NULL`
+    ///
+    /// Not always the value just submitted: a worse attempt still gets a
+    /// scoreboard, and leaves the player's standing where it was.
+    const char* best_score;
+
+    /// @brief The player's rank after the submission, counting from one
+    unsigned int new_rank;
+
+    /// @brief How many entries the leaderboard holds
+    unsigned int num_entries;
+  } ATTR_PACKED game_rc_leaderboard_scoreboard;
+
+  //============================================================================
+  /// @brief **Payload of the leaderboard tracker callbacks**
+  ///
+  /// While an attempt runs the client publishes a live value to show on screen.
+  ///
+  typedef struct game_rc_leaderboard_tracker
+  {
+    /// @brief Identifies the tracker, not the leaderboard
+    ///
+    /// Two leaderboards measuring the same thing share one tracker, so this
+    /// cannot be used to look a leaderboard up.
+    unsigned int id;
+
+    /// @brief The value as it stands, formatted for display, or `NULL`
+    const char* display;
+  } ATTR_PACKED game_rc_leaderboard_tracker;
+
+  //============================================================================
+  /// @brief **Payload of @ref AddonToKodiFuncTable_Game::RCOnChallengeIndicator**
+  ///
+  /// Sent while an achievement's trigger is primed - the player is inside an
+  /// attempt at it. Shown so they know the attempt is live, and hidden when it
+  /// ends, whether or not it was earned.
+  ///
+  typedef struct game_rc_achievement_challenge
+  {
+    /// @brief Unique RetroAchievements ID of the achievement
+    unsigned int id;
+
+    /// @brief Title of the achievement, or `NULL` if unknown
+    const char* title;
+
+    /// @brief URL of the achievement's badge, or `NULL`
+    const char* badge_url;
+  } ATTR_PACKED game_rc_achievement_challenge;
+
+  //============================================================================
+  /// @brief **Payload of the achievement progress indicator callbacks**
+  ///
+  /// Some achievements are measured rather than simply locked or unlocked -
+  /// "collect 180 rings", "survive 120 seconds" - and the runtime reports how
+  /// far along one is while the player is working on it.
+  ///
+  /// Distinct from the challenge indicator, which says an attempt is live
+  /// without saying how far through it is.
+  ///
+  typedef struct game_rc_achievement_progress_indicator
+  {
+    /// @brief Unique RetroAchievements ID of the achievement
+    unsigned int id;
+
+    /// @brief Title of the achievement, or `NULL` if unknown
+    const char* title;
+
+    /// @brief URL of the achievement's badge, or `NULL`
+    const char* badge_url;
+
+    /// @brief How far along, already formatted - "13/180" - or `NULL`
+    ///
+    /// Formatted by the client because only it knows the units, so this is
+    /// shown as given rather than interpreted.
+    const char* measured_progress;
+
+    /// @brief How far along as a percentage, 0.0 to 100.0
+    ///
+    /// Sent alongside the text so a frontend can draw a bar without having to
+    /// parse "13/180" back into numbers.
+    float measured_percent;
+  } ATTR_PACKED game_rc_achievement_progress_indicator;
+  //----------------------------------------------------------------------------
+
+  ///@}
+
+  //--==----==----==----==----==----==----==----==----==----==----==----==----==--
 
   /*!
    * @brief Game properties
@@ -1227,6 +1531,8 @@ extern "C"
 
     bool (*EnableHardwareRendering)(void*, const game_hw_rendering_properties*);
     void (*CloseGame)(KODI_HANDLE kodiInstance);
+    double (*GetPlaybackSpeed)(KODI_HANDLE kodiInstance);
+    void (*SetGameTiming)(KODI_HANDLE kodiInstance, const struct game_system_timing* timing_info);
     KODI_GAME_STREAM_HANDLE (*OpenStream)(KODI_HANDLE, const struct game_stream_properties*);
     bool (*GetStreamBuffer)(KODI_HANDLE,
                             KODI_GAME_STREAM_HANDLE,
@@ -1238,6 +1544,43 @@ extern "C"
     void (*CloseStream)(KODI_HANDLE, KODI_GAME_STREAM_HANDLE);
     game_proc_address_t (*HwGetProcAddress)(KODI_HANDLE kodiInstance, const char* symbol);
     bool (*InputEvent)(KODI_HANDLE kodiInstance, const struct game_input_event* event);
+    void (*RCOnGameLoaded)(KODI_HANDLE kodiInstance, const struct game_rc_game_loaded* data);
+    void (*RCOnAchievementTriggered)(KODI_HANDLE kodiInstance,
+                                     const struct game_rc_achievement_triggered* data);
+    void (*RCOnGameCompleted)(KODI_HANDLE kodiInstance, const char* title, bool hardcore);
+    void (*RCOnRichPresenceUpdated)(KODI_HANDLE kodiInstance, const char* evaluation);
+    void (*RCOnLoginResult)(KODI_HANDLE kodiInstance, const struct game_rc_login_result* data);
+
+    void (*RCOnAchievementProgress)(KODI_HANDLE kodiInstance,
+                                    const struct game_rc_achievement_progress* progress,
+                                    unsigned int count);
+    void (*RCOnServerError)(KODI_HANDLE kodiInstance, const char* message, const char* api);
+    void (*RCOnConnectionChanged)(KODI_HANDLE kodiInstance, bool connected);
+
+    void (*RCOnChallengeIndicator)(KODI_HANDLE kodiInstance,
+                                   const struct game_rc_achievement_challenge* data,
+                                   bool show);
+    void (*RCOnAchievementProgressShow)(KODI_HANDLE kodiInstance,
+                                        const struct game_rc_achievement_progress_indicator* data);
+    void (*RCOnAchievementProgressUpdate)(
+        KODI_HANDLE kodiInstance, const struct game_rc_achievement_progress_indicator* data);
+    void (*RCOnAchievementProgressHide)(KODI_HANDLE kodiInstance,
+                                        const struct game_rc_achievement_progress_indicator* data);
+    void (*RCOnLeaderboardStarted)(KODI_HANDLE kodiInstance,
+                                   const struct game_rc_leaderboard* data);
+    void (*RCOnLeaderboardFailed)(KODI_HANDLE kodiInstance, const struct game_rc_leaderboard* data);
+    void (*RCOnLeaderboardSubmitted)(KODI_HANDLE kodiInstance,
+                                     const struct game_rc_leaderboard* data);
+    void (*RCOnLeaderboardTrackerShow)(KODI_HANDLE kodiInstance,
+                                       const struct game_rc_leaderboard_tracker* data);
+    void (*RCOnLeaderboardTrackerUpdate)(KODI_HANDLE kodiInstance,
+                                         const struct game_rc_leaderboard_tracker* data);
+    void (*RCOnLeaderboardTrackerHide)(KODI_HANDLE kodiInstance,
+                                       const struct game_rc_leaderboard_tracker* data);
+    void (*RCOnLeaderboardScoreboard)(KODI_HANDLE kodiInstance,
+                                      const struct game_rc_leaderboard_scoreboard* data);
+    void (*RCOnReset)(KODI_HANDLE kodiInstance);
+    void (*RCOnSubsetCompleted)(KODI_HANDLE kodiInstance, const char* title);
   } AddonToKodiFuncTable_Game;
 
   /*!
@@ -1262,6 +1605,7 @@ extern "C"
     GAME_ERROR(__cdecl* Reset)(const struct AddonInstance_Game*);
     GAME_ERROR(__cdecl* HwContextReset)(const struct AddonInstance_Game*);
     GAME_ERROR(__cdecl* HwContextDestroy)(const struct AddonInstance_Game*);
+    GAME_ERROR(__cdecl* AudioAvailable)(const AddonInstance_Game*);
     bool(__cdecl* HasFeature)(const struct AddonInstance_Game*, const char*, const char*);
     game_input_topology*(__cdecl* GetTopology)(const struct AddonInstance_Game*);
     void(__cdecl* FreeTopology)(const struct AddonInstance_Game*, struct game_input_topology*);
@@ -1283,30 +1627,6 @@ extern "C"
     (const struct AddonInstance_Game*, enum GAME_MEMORY, uint8_t**, size_t*);
     GAME_ERROR(__cdecl* SetCheat)
     (const struct AddonInstance_Game*, unsigned int, bool, const char*);
-    GAME_ERROR(__cdecl* RCGenerateHashFromFile)
-    (const AddonInstance_Game*, char**, unsigned int, const char*);
-    GAME_ERROR(__cdecl* RCGetGameIDUrl)(const AddonInstance_Game*, char**, const char*);
-    GAME_ERROR(__cdecl* RCGetPatchFileUrl)
-    (const AddonInstance_Game*, char**, const char*, const char*, unsigned int);
-    GAME_ERROR(__cdecl* SetRetroAchievementsCredentials)
-    (const AddonInstance_Game*, const char*, const char*);
-    GAME_ERROR(__cdecl* RCPostRichPresenceUrl)
-    (const AddonInstance_Game*,
-     char**,
-     char**,
-     const char*,
-     const char*,
-     unsigned int,
-     const char*);
-    GAME_ERROR(__cdecl* RCEnableRichPresence)(const AddonInstance_Game*, const char*);
-    GAME_ERROR(__cdecl* RCGetRichPresenceEvaluation)
-    (const AddonInstance_Game*, char**, unsigned int);
-    GAME_ERROR(__cdecl* ActivateAchievement)(const AddonInstance_Game*, unsigned int, const char*);
-    GAME_ERROR(__cdecl* GetCheevoUrlId)
-    (const AddonInstance_Game*,
-     void(__cdecl*)(const void*, const char*, unsigned int),
-     const void*);
-    GAME_ERROR(__cdecl* RCResetRuntime)(const AddonInstance_Game*);
     bool(__cdecl* GetEjectState)(const AddonInstance_Game*);
     GAME_ERROR(__cdecl* SetEjectState)(const AddonInstance_Game*, bool);
     unsigned int(__cdecl* GetImageIndex)(const AddonInstance_Game*);
@@ -1318,6 +1638,20 @@ extern "C"
     GAME_ERROR(__cdecl* SetInitialImage)(const AddonInstance_Game*, unsigned int, const char*);
     char*(__cdecl* GetImagePath)(const AddonInstance_Game*, unsigned int);
     char*(__cdecl* GetImageLabel)(const AddonInstance_Game*, unsigned int);
+    GAME_ERROR(__cdecl* SetRetroAchievementsCredentials)
+    (const AddonInstance_Game*, const char*, const char*);
+    GAME_ERROR(__cdecl* RCSetHardcoreEnabled)(const AddonInstance_Game*, bool);
+    GAME_ERROR(__cdecl* RCSetEncoreModeEnabled)(const AddonInstance_Game*, bool);
+    GAME_ERROR(__cdecl* ActivateAchievement)(const AddonInstance_Game*, unsigned int, const char*);
+    GAME_ERROR(__cdecl* GetCheevoUrlId)
+    (const AddonInstance_Game*,
+     void(__cdecl*)(const void*, const char*, unsigned int),
+     const void*);
+    size_t(__cdecl* AchievementStateSize)(const struct AddonInstance_Game*);
+    GAME_ERROR(__cdecl* SerializeAchievements)
+    (const struct AddonInstance_Game*, uint8_t*, size_t);
+    GAME_ERROR(__cdecl* DeserializeAchievements)
+    (const struct AddonInstance_Game*, const uint8_t*, size_t);
     void(__cdecl* FreeString)(const AddonInstance_Game*, char*);
   } KodiToAddonFuncTable_Game;
 

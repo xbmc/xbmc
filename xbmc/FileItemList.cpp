@@ -24,6 +24,7 @@
 #include "utils/Archive.h"
 #include "utils/ArtUtils.h"
 #include "utils/Crc32.h"
+#include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/Random.h"
 #include "utils/RegExp.h"
@@ -39,6 +40,7 @@
 #include <vector>
 
 using namespace KODI;
+using KODI::UTILITY::CDigest;
 using namespace XFILE;
 
 CFileItemList::CFileItemList() : CFileItem("", true)
@@ -364,8 +366,11 @@ void CFileItemList::Sort(SortDescription sortDescription)
             sortDescription.sortBy == SortBy::MPAA || sortDescription.sortBy == SortBy::YEAR ||
             sortDescription.sortBy == SortBy::PLAYLIST_ORDER ||
             sortDescription.sortBy == SortBy::LAST_PLAYED ||
-            sortDescription.sortBy == SortBy::PLAYCOUNT ||
-            sortDescription.sortBy == SortBy::TIME) ||
+            sortDescription.sortBy == SortBy::PLAYCOUNT || sortDescription.sortBy == SortBy::TIME ||
+            sortDescription.sortBy == SortBy::TOP250 || sortDescription.sortBy == SortBy::VOTES ||
+            sortDescription.sortBy == SortBy::GENRE || sortDescription.sortBy == SortBy::COUNTRY ||
+            sortDescription.sortBy == SortBy::STUDIO || sortDescription.sortBy == SortBy::RANDOM ||
+            sortDescription.sortBy == SortBy::PATH) ||
            m_sortIgnoreFolders)
   {
     sortDescription.sortAttributes =
@@ -747,6 +752,7 @@ void CFileItemList::Stack()
           continue;
 
         bool fileFound{true};
+        std::string playPath;
         if (item->IsFolder())
         {
           // Look for media files in the folder
@@ -759,7 +765,7 @@ void CFileItemList::Stack()
 
           // Only expect one media file per folder (if >1 should be a file stack)
           if (items.GetFileCount() == 1)
-            ChangeFolderToFile(item, items[0]->GetPath());
+            playPath = items[0]->GetPath();
           else
           {
             CLog::LogF(LOGDEBUG,
@@ -773,11 +779,15 @@ void CFileItemList::Stack()
         if (fileFound)
         {
           // Add to stack vector
+          // Folder expressions capture no remainder, so folder parts group on their title alone
           stackCandidates.emplace_back(StackCandidate{.type = StackCandidateType::FOLDER_CANDIDATE,
                                                       .title = regExp.GetMatch(1),
                                                       .volume = regExp.GetMatch(2),
+                                                      .remainder = {},
                                                       .size = item->GetSize(),
-                                                      .index = i});
+                                                      .index = i,
+                                                      .playPath = playPath,
+                                                      .pattern = regExp.GetPattern()});
           break;
         }
       }
@@ -802,8 +812,11 @@ void CFileItemList::Stack()
         stackCandidates.emplace_back(StackCandidate{.type = StackCandidateType::FILE_CANDIDATE,
                                                     .title = regExp.GetMatch(1),
                                                     .volume = regExp.GetMatch(2),
+                                                    .remainder = regExp.GetMatch(3),
                                                     .size = item->GetSize(),
-                                                    .index = i});
+                                                    .index = i,
+                                                    .playPath = {},
+                                                    .pattern = regExp.GetPattern()});
         break;
       }
     }
@@ -817,23 +830,43 @@ void CFileItemList::Stack()
   std::ranges::sort(stackCandidates);
 
   // Count stack candidates
+  // Parts of the same stack should differ only in their volume
   std::map<CountedStackCandidate, int> countedCandidates;
   for (const auto& s : stackCandidates)
-    ++countedCandidates[{s.type, s.title}];
+    ++countedCandidates[{s.type, s.title, s.remainder}];
 
   // Find stacks
   std::vector<int> deleteItems;
   for (const auto& [candidate, count] :
        countedCandidates | std::views::filter([](const auto& c) { return c.second > 1; }))
   {
-    // Find all items in this stack
+    // Find all the parts of this stack (sorted by volume)
+    std::vector<StackCandidate> parts;
+    std::ranges::copy(stackCandidates | std::views::filter(
+                                            [type = candidate.type, title = candidate.title,
+                                             remainder = candidate.remainder](const auto& item) {
+                                              return item.type == type && item.title == title &&
+                                                     item.remainder == remainder;
+                                            }),
+                      std::back_inserter(parts));
+
+    // Every part of a stack should be a different volume
+    if (std::ranges::adjacent_find(parts, {}, &StackCandidate::volume) != parts.end())
+    {
+      CLog::LogF(LOGDEBUG,
+                 "Skipping stack '{}' - {} parts found, but not all of a different volume",
+                 candidate.title, parts.size());
+      continue;
+    }
+
     std::vector<int> stack;
     int64_t size{0};
-    for (const auto& stackItem :
-         stackCandidates |
-             std::views::filter([type = candidate.type, title = candidate.title](const auto& item)
-                                { return item.type == type && item.title == title; }))
+    for (const auto& stackItem : parts)
     {
+      // Now the stack is known to have more than one part
+      if (!stackItem.playPath.empty())
+        ChangeFolderToFile(Get(stackItem.index), stackItem.playPath);
+
       stack.emplace_back(stackItem.index);
       size += stackItem.size;
       if (stack.size() > 1)
@@ -847,6 +880,9 @@ void CFileItemList::Stack()
                                     ? baseItem->GetPath()
                                     : CStackDirectory::ConstructStackPath(*this, stack)};
 
+    CLog::LogF(LOGDEBUG, "Stacked {} parts into '{}' (stack expression '{}')", stack.size(),
+               CURL::GetRedacted(stackPath), parts[0].pattern);
+
     // First item in stack becomes the stack
     std::string stackName{candidate.title};
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -857,6 +893,22 @@ void CFileItemList::Stack()
     baseItem->SetPath(stackPath);
     baseItem->SetLabel(stackName);
     baseItem->SetSize(size);
+
+    // Record a digest of every part so that a change to any part is recognised in the scraper
+    CDigest partsDigest{CDigest::Type::MD5};
+    for (const int i : stack)
+    {
+      const auto& part{Get(i)};
+      partsDigest.Update(part->GetPath());
+
+      const int64_t partSize{part->GetSize()};
+      partsDigest.Update(&partSize, sizeof(partSize));
+
+      time_t partTime{0};
+      part->GetDateTime().GetAsTime(partTime);
+      partsDigest.Update(&partTime, sizeof(partTime));
+    }
+    baseItem->SetProperty(PROPERTY_STACK_DIGEST, partsDigest.Finalize());
   }
 
   // Delete unneeded items

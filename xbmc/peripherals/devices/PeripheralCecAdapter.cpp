@@ -43,6 +43,10 @@ using namespace std::chrono_literals;
 
 #define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 0)
 
+/* SystemAudioModeStatus() was added in libCEC 7.1.0 */
+#define CEC_LIB_HAS_SYSTEM_AUDIO_MODE_STATUS \
+  (CEC_LIB_VERSION_MAJOR > 7 || (CEC_LIB_VERSION_MAJOR == 7 && CEC_LIB_VERSION_MINOR >= 1))
+
 /* time in seconds to ignore standby commands from devices after the screensaver has been activated
  */
 #define SCREENSAVER_TIMEOUT 20
@@ -62,11 +66,20 @@ using namespace std::chrono_literals;
 #define LOCALISED_ID_RECORDING_DEVICE 36051
 #define LOCALISED_ID_PLAYBACK_DEVICE 36052
 #define LOCALISED_ID_TUNER_DEVICE 36053
+#define LOCALISED_ID_ALWAYS 36055
+#define LOCALISED_ID_UNLESS_PLAYING 36056
+#define LOCALISED_ID_VOLUME_ALWAYS 20422
 
 #define LOCALISED_ID_NONE 231
 
 /* time in seconds to suppress source activation after receiving OnStop */
 #define CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP 2
+
+#if CEC_LIB_VERSION_MAJOR < 8
+/* delay in ms before a held button starts repeating. libCEC gained a field of its own for
+   this in 8.0.0; older versions take it from iDoubleTapTimeoutMs */
+#define CEC_BUTTON_REPEAT_DELAY_MS 300
+#endif
 
 CPeripheralCecAdapter::CPeripheralCecAdapter(CPeripherals& manager,
                                              const PeripheralScanResult& scanResult,
@@ -107,14 +120,14 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bStarted = false;
   m_bHasButton = false;
   m_bIsReady = false;
-  m_bHasConnectedAudioSystem = false;
+  m_volumeTarget = CECDEVICE_UNKNOWN;
+  m_tvVolumeTarget = CECDEVICE_UNKNOWN;
   m_strMenuLanguage = "???";
   m_lastKeypress = {};
   m_lastChange = VOLUME_CHANGE_NONE;
   m_iExitCode = EXITCODE_QUIT;
 
-  //! @todo fetch the correct initial value when system audiostatus is
-  //! implemented in libCEC
+  /* replaced by the amp's own mute state once it reports one */
   m_bIsMuted = false;
 
   m_bGoingToStandby = false;
@@ -129,7 +142,6 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_bPowerOnScreensaver = false;
   m_bUseTVMenuLanguage = false;
   m_bSendInactiveSource = false;
-  m_bPowerOffScreensaver = false;
   m_bShutdownOnStandby = false;
 
   m_currentButton.iButton = 0;
@@ -173,13 +185,19 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   else if (flag == ANNOUNCEMENT::GUI && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
            message == "OnScreensaverActivated" && m_bIsReady)
   {
-    // Don't put devices to standby if application is currently playing
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (!appPlayer->IsPlaying() && m_bPowerOffScreensaver)
+    const int iStandbyMode = GetSettingInt("cec_standby_screensaver_mode");
+    if (iStandbyMode != LOCALISED_ID_NONE)
     {
+      // the screensaver doesn't activate while a video is playing, so this mainly keeps the
+      // devices on for audio playback over HDMI. paused playback doesn't count as playing.
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      const bool bPlaying = (appPlayer->IsPlayingVideo() || appPlayer->IsPlayingAudio()) &&
+                            !appPlayer->IsPausedPlayback();
+
       // only power off when we're the active source
-      if (m_cecAdapter->IsLibCECActiveSource())
+      if ((iStandbyMode == LOCALISED_ID_ALWAYS || !bPlaying) &&
+          m_cecAdapter->IsLibCECActiveSource())
         StandbyDevices();
     }
   }
@@ -469,22 +487,80 @@ void CPeripheralCecAdapter::Process(void)
 
 bool CPeripheralCecAdapter::HasAudioControl(void)
 {
-  std::unique_lock lock(m_critSection);
-  return m_bHasConnectedAudioSystem;
+  return GetVolumeTarget() != CECDEVICE_UNKNOWN;
 }
 
-void CPeripheralCecAdapter::SetAudioSystemConnected(bool bSetTo)
+cec_logical_address CPeripheralCecAdapter::GetVolumeTarget(void)
 {
   std::unique_lock lock(m_critSection);
-  m_bHasConnectedAudioSystem = bSetTo;
+  return m_volumeTarget;
+}
+
+void CPeripheralCecAdapter::SetVolumeTarget(cec_logical_address address)
+{
+  {
+    std::unique_lock lock(m_critSection);
+    if (m_volumeTarget == address)
+      return;
+  }
+
+  CLog::Log(LOGDEBUG, "{} - volume will be controlled {}", __FUNCTION__,
+            address == CECDEVICE_AUDIOSYSTEM ? "on the amp"
+            : address == CECDEVICE_TV        ? "on the TV"
+                                             : "by Kodi");
+
+  /* hand Kodi's volume over before the target takes it: from that point on a mute keypress is
+     forwarded over CEC rather than clearing Kodi's own mute, which would leave Kodi muted
+     with no way to unmute it. setting the volume to maximum lets Kodi pass its audio through
+     unchanged, so the target is the only thing attenuating it */
+  if (address != CECDEVICE_UNKNOWN)
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetMute(false);
+    appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
+  }
+
+  std::unique_lock lock(m_critSection);
+  m_volumeTarget = address;
+}
+
+cec_logical_address CPeripheralCecAdapter::GetTvVolumeTarget(void)
+{
+  std::unique_lock lock(m_critSection);
+  return m_tvVolumeTarget;
+}
+
+void CPeripheralCecAdapter::SetTvVolumeTarget(cec_logical_address address)
+{
+  std::unique_lock lock(m_critSection);
+  m_tvVolumeTarget = address;
+}
+
+void CPeripheralCecAdapter::SetAmpControlsVolume(bool bSetTo)
+{
+  /* the setting rules the amp out even while it has system audio mode on */
+  const bool bToAmp = bSetTo && GetSettingInt("volume_control") != LOCALISED_ID_NONE;
+  SetVolumeTarget(bToAmp ? CECDEVICE_AUDIOSYSTEM : GetTvVolumeTarget());
+}
+
+void CPeripheralCecAdapter::SetAmpMuted(bool bSetTo)
+{
+  std::unique_lock lock(m_critSection);
+  /* the mute state belongs to whichever device handles volume, so leave it alone while the amp
+     reports one it is not acting on */
+  if (m_volumeTarget == CECDEVICE_AUDIOSYSTEM)
+    m_bIsMuted = bSetTo;
 }
 
 void CPeripheralCecAdapter::ProcessVolumeChange(void)
 {
   bool bSendRelease(false);
   CecVolumeChange pendingVolumeChange = VOLUME_CHANGE_NONE;
+  cec_logical_address target = CECDEVICE_UNKNOWN;
   {
     std::unique_lock lock(m_critSection);
+    target = m_volumeTarget;
     auto now = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastKeypress);
     if (!m_volumeChangeQueue.empty())
@@ -525,16 +601,20 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
     }
   }
 
+  /* the target can be cleared while changes are queued, so drain the queue but send nothing */
+  if (target == CECDEVICE_UNKNOWN)
+    return;
+
   switch (pendingVolumeChange)
   {
     case VOLUME_CHANGE_UP:
-      m_cecAdapter->SendKeypress(CECDEVICE_AUDIOSYSTEM, CEC_USER_CONTROL_CODE_VOLUME_UP, false);
+      m_cecAdapter->SendKeypress(target, CEC_USER_CONTROL_CODE_VOLUME_UP, false);
       break;
     case VOLUME_CHANGE_DOWN:
-      m_cecAdapter->SendKeypress(CECDEVICE_AUDIOSYSTEM, CEC_USER_CONTROL_CODE_VOLUME_DOWN, false);
+      m_cecAdapter->SendKeypress(target, CEC_USER_CONTROL_CODE_VOLUME_DOWN, false);
       break;
     case VOLUME_CHANGE_MUTE:
-      m_cecAdapter->SendKeypress(CECDEVICE_AUDIOSYSTEM, CEC_USER_CONTROL_CODE_MUTE, false);
+      m_cecAdapter->SendKeypress(target, CEC_USER_CONTROL_CODE_MUTE, false);
       {
         std::unique_lock lock(m_critSection);
         m_bIsMuted = !m_bIsMuted;
@@ -542,7 +622,7 @@ void CPeripheralCecAdapter::ProcessVolumeChange(void)
       break;
     case VOLUME_CHANGE_NONE:
       if (bSendRelease)
-        m_cecAdapter->SendKeyRelease(CECDEVICE_AUDIOSYSTEM, false);
+        m_cecAdapter->SendKeyRelease(target, false);
       break;
   }
 }
@@ -749,6 +829,18 @@ void CPeripheralCecAdapter::CecCommand(void* cbParam, const cec_command* command
             adapter->PushCecKeypress(key);
           }
         }
+        break;
+      case CEC_OPCODE_SET_SYSTEM_AUDIO_MODE:
+      case CEC_OPCODE_SYSTEM_AUDIO_MODE_STATUS:
+        /* the amp only acts on volume keypresses while system audio mode is on, so follow it for
+           as long as it is: volume falls back to Kodi's own the moment the amp bows out */
+        if (command->initiator == CECDEVICE_AUDIOSYSTEM && command->parameters.size == 1)
+          adapter->SetAmpControlsVolume(command->parameters[0] == CEC_SYSTEM_AUDIO_STATUS_ON);
+        break;
+      case CEC_OPCODE_REPORT_AUDIO_STATUS:
+        if (command->initiator == CECDEVICE_AUDIOSYSTEM && command->parameters.size == 1)
+          adapter->SetAmpMuted((command->parameters[0] & CEC_AUDIO_MUTE_STATUS_MASK) ==
+                               CEC_AUDIO_MUTE_STATUS_MASK);
         break;
       default:
         break;
@@ -1470,7 +1562,6 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
   // read the boolean settings
   m_bUseTVMenuLanguage = GetSettingBool("use_tv_menu_language");
   m_configuration.bActivateSource = GetSettingBool("activate_source") ? 1 : 0;
-  m_bPowerOffScreensaver = GetSettingBool("cec_standby_screensaver");
   m_bPowerOnScreensaver = GetSettingBool("cec_wake_screensaver");
   m_bSendInactiveSource = GetSettingBool("send_inactive_source");
   m_configuration.bAutoWakeAVR = GetSettingBool("power_avr_on_as") ? 1 : 0;
@@ -1483,6 +1574,12 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // double tap prevention timeout in ms
   m_configuration.iDoubleTapTimeoutMs = GetSettingInt("double_tap_timeout_ms");
+#if CEC_LIB_VERSION_MAJOR < 8
+  // libCEC before 8.0.0 does no double tap prevention and reads this field as the button
+  // repeat delay instead, where the setting's "off" would make repeats start immediately
+  if (m_configuration.iDoubleTapTimeoutMs == 0)
+    m_configuration.iDoubleTapTimeoutMs = CEC_BUTTON_REPEAT_DELAY_MS;
+#endif
   m_configuration.iButtonRepeatRateMs = GetSettingInt("button_repeat_rate_ms");
   m_configuration.iButtonReleaseDelayMs = GetSettingInt("button_release_delay_ms");
 
@@ -1492,6 +1589,14 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
     // have to be marked as changed
     SetSetting("pause_or_stop_playback_on_deactivate", LOCALISED_ID_PAUSE, false);
     SetSetting("pause_playback_on_deactivate", false, false);
+  }
+
+  if (GetSettingBool("cec_standby_screensaver"))
+  {
+    // migration of a deprecated setting. the new value is read when it's needed, so it doesn't
+    // have to be marked as changed
+    SetSetting("cec_standby_screensaver_mode", LOCALISED_ID_UNLESS_PLAYING, false);
+    SetSetting("cec_standby_screensaver", false, false);
   }
 }
 
@@ -1639,34 +1744,67 @@ void CPeripheralCecAdapterUpdateThread::UpdateMenuLanguage(void)
   }
 }
 
+void CPeripheralCecAdapterUpdateThread::UpdateTvVolumeTarget(void)
+{
+  const int iVolumeControl = m_adapter->GetSettingInt("volume_control");
+  cec_logical_address target = CECDEVICE_UNKNOWN;
+
+  if (iVolumeControl != LOCALISED_ID_NONE)
+  {
+    /* CEC 2.0 is the first version that requires a TV to act on volume commands. TVs that report
+       an older version are only addressed when the user opted in. */
+    const cec_version version = m_adapter->m_cecAdapter->GetDeviceCecVersion(CECDEVICE_TV);
+    if (version >= CEC_VERSION_2_0 || iVolumeControl == LOCALISED_ID_VOLUME_ALWAYS)
+      target = CECDEVICE_TV;
+    else
+      CLog::Log(LOGDEBUG,
+                "{} - the TV reports CEC version {}, which does not require it to act on volume "
+                "commands",
+                __FUNCTION__, m_adapter->m_cecAdapter->ToString(version));
+  }
+
+  m_adapter->SetTvVolumeTarget(target);
+}
+
 std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 {
   std::string strAmpName;
 
-  /* disable the mute setting when an amp is found, because the amp handles the mute setting and
-       set PCM output to 100% */
-  if (m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
-  {
-    // request the OSD name of the amp
-    std::string ampName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM));
-    CLog::Log(LOGDEBUG,
-              "{} - CEC capable amplifier found ({}). volume will be controlled on the amp",
-              __FUNCTION__, ampName);
-    strAmpName += ampName;
+  /* the TV takes over whenever the amp is not handling volume, so settle on it first */
+  UpdateTvVolumeTarget();
 
-    // set amp present
-    m_adapter->SetAudioSystemConnected(true);
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
-    appVolume->SetMute(false);
-    appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
-  }
-  else
+  if (!m_adapter->m_cecAdapter->IsActiveDeviceType(CEC_DEVICE_TYPE_AUDIO_SYSTEM))
   {
-    // set amp present
     CLog::Log(LOGDEBUG, "{} - no CEC capable amplifier found", __FUNCTION__);
-    m_adapter->SetAudioSystemConnected(false);
+    m_adapter->SetAmpControlsVolume(false);
+    return strAmpName;
   }
+
+  // request the OSD name of the amp
+  std::string ampName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM));
+  strAmpName += ampName;
+
+#if CEC_LIB_HAS_SYSTEM_AUDIO_MODE_STATUS
+  /* an amp only acts on volume keypresses while system audio mode is on. handing it the volume
+     while it is off leaves the user with no working volume control at all. */
+  if (m_adapter->m_cecAdapter->SystemAudioModeStatus() != CEC_SYSTEM_AUDIO_STATUS_ON)
+  {
+    CLog::Log(LOGDEBUG, "{} - CEC capable amplifier found ({}), but system audio mode is off",
+              __FUNCTION__, ampName);
+    m_adapter->SetAmpControlsVolume(false);
+    return strAmpName;
+  }
+#endif
+
+  CLog::Log(LOGDEBUG, "{} - CEC capable amplifier found ({})", __FUNCTION__, ampName);
+
+  m_adapter->SetAmpControlsVolume(true);
+
+  /* adopt the amp's mute state, so the first mute keypress does not toggle it the wrong way */
+  const uint8_t audioStatus = m_adapter->m_cecAdapter->AudioStatus();
+  if (audioStatus != CEC_AUDIO_VOLUME_STATUS_UNKNOWN)
+    m_adapter->SetAmpMuted((audioStatus & CEC_AUDIO_MUTE_STATUS_MASK) ==
+                           CEC_AUDIO_MUTE_STATUS_MASK);
 
   return strAmpName;
 }
@@ -1888,8 +2026,13 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 {
   if (!IsRunning())
     return false;
-  if (m_cecAdapter->IsLibCECActiveSource() &&
-      (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
+
+  /* being the active source is what allows us to stand the system down again, so it decides which
+     way a toggle goes. an explicit standby is the user asking for it, and is always honoured. */
+  const bool bStandby = mode == STATE_STANDBY ||
+                        (mode == STATE_SWITCH_TOGGLE && m_cecAdapter->IsLibCECActiveSource());
+
+  if (bStandby)
   {
     CLog::Log(LOGDEBUG, "{} - putting CEC device on standby...", __FUNCTION__);
     StandbyDevices();
@@ -1903,4 +2046,26 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
   }
 
   return false;
+}
+
+CecPowerStatus CPeripheralCecAdapter::GetDevicePowerStatus(void)
+{
+  if (!IsRunning())
+    return CecPowerStatus::NO_ADAPTER;
+
+  // libCEC caches the power status internally and only re-requests it from the device when
+  // needed. So this call is cheap.
+  switch (m_cecAdapter->GetDevicePowerStatus(CECDEVICE_TV))
+  {
+    case CEC_POWER_STATUS_ON:
+      return CecPowerStatus::ON;
+    case CEC_POWER_STATUS_STANDBY:
+      return CecPowerStatus::STANDBY;
+    case CEC_POWER_STATUS_IN_TRANSITION_STANDBY_TO_ON:
+      return CecPowerStatus::TRANSITION_TO_ON;
+    case CEC_POWER_STATUS_IN_TRANSITION_ON_TO_STANDBY:
+      return CecPowerStatus::TRANSITION_TO_STANDBY;
+    default:
+      return CecPowerStatus::UNKNOWN;
+  }
 }

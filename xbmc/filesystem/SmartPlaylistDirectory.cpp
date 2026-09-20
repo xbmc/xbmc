@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -33,6 +33,7 @@
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 #define PROPERTY_GROUP_BY           "group.by"
 #define PROPERTY_GROUP_MIXED        "group.mixed"
+constexpr char PROPERTY_WATCHED_MODE[] = "watchedmode";
 
 using namespace KODI;
 
@@ -315,6 +316,9 @@ namespace XFILE
                        ? SortAttributeIgnoreArticle
                        : SortAttributeNone);
     }
+
+    if (auto watchedMode = playlist.GetWatchedMode(); watchedMode.has_value())
+      items.SetProperty(PROPERTY_WATCHED_MODE, static_cast<int>(watchedMode.value()));
 
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)

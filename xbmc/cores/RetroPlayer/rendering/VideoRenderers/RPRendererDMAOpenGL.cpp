@@ -9,7 +9,7 @@
 #include "RPRendererDMAOpenGL.h"
 
 #include "cores/RetroPlayer/buffers/RenderBufferDMA.h"
-#include "cores/RetroPlayer/buffers/RenderBufferPoolDMA.h"
+#include "cores/RetroPlayer/buffers/RenderBufferPoolDMAOpenGL.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/shaders/gl/ShaderPresetGL.h"
 #include "cores/RetroPlayer/shaders/gl/ShaderTextureGL.h"
@@ -42,7 +42,7 @@ RenderBufferPoolVector CRendererFactoryDMAOpenGL::CreateBufferPools(CRenderConte
   if (!CBufferObjectFactory::CreateBufferObject(false))
     return {};
 
-  return {std::make_shared<CRenderBufferPoolDMA>(context)};
+  return {std::make_shared<CRenderBufferPoolDMAOpenGL>()};
 }
 
 CRPRendererDMAOpenGL::CRPRendererDMAOpenGL(const CRenderSettings& renderSettings,

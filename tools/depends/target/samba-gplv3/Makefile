@@ -3,6 +3,7 @@ DEPS= ../../Makefile.include Makefile SAMBA-GPLV3-VERSION ../../download-files.i
                               01-fix-dependencies.patch 02-cross_compile.patch \
                               03-builtin-heimdal.patch 04-built-static.patch \
                               05-apple-disable-zlib-pkgconfig.patch 06-apple-fix-st_atim.patch \
+                              07-apple-mknodat-availability.patch \
                               samba_android.patch \
                               no_fork_and_exec.patch \
                               crt_extensions.patch
@@ -95,6 +96,7 @@ endif
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
 	cd $(PLATFORM); patch -p1 -i ../05-apple-disable-zlib-pkgconfig.patch
 	cd $(PLATFORM); patch -p1 -i ../06-apple-fix-st_atim.patch
+	cd $(PLATFORM); patch -p1 -i ../07-apple-mknodat-availability.patch
 endif
 ifeq ($(TARGET_PLATFORM),webos)
 	cd $(PLATFORM); patch -p1 -i ../webos-no-readline.patch

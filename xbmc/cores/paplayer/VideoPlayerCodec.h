@@ -38,8 +38,41 @@ public:
   bool NeedConvert(AEDataFormat fmt);
   void SetPassthroughStreamType(CAEStreamInfo::DataType streamType);
 
+  int GetStreamCount() const override;
+  bool SetStream(int index) override;
+  void GetStreamInfo(int index, AudioStreamInfo& info) const override;
+
 private:
   CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate, int profile);
+
+  std::vector<CDemuxStreamAudio*> GetAudioStreams() const;
+  CDemuxStreamAudio* GetAudioStream(int uniqueId) const;
+  /*!
+   * \brief Probe the currently selected stream and derive the output format from it.
+   *
+   * \param allowFormatFallback if the probe yields nothing, assume 44.1kHz stereo rather than
+   *                            failing. Only safe when opening the file - guessing on a stream
+   *                            change means decoding through an invented format.
+   */
+  bool InitFormatFromStream(CDemuxStreamAudio* stream, bool allowFormatFallback);
+
+  /*!
+   * \brief Commit to decoding \p newStream, disabling \p oldStream if given.
+   *
+   * On failure the codec state is undefined and the caller must either switch to another
+   * stream or treat the codec as unusable.
+   */
+  enum class SwitchResult
+  {
+    OK,
+    NOT_STARTED, /* nothing was changed, so the stream being decoded still plays */
+    FAILED,
+  };
+
+  SwitchResult SwitchToStream(CDemuxStreamAudio* newStream, CDemuxStreamAudio* oldStream);
+
+  //! \brief Decide whether \p packet lies entirely before the time the last Seek() asked for.
+  bool PacketIsBeforeSeek(const DemuxPacket& packet);
 
   CDVDDemux* m_pDemuxer{nullptr};
   std::shared_ptr<CDVDInputStream> m_pInputStream;
@@ -49,6 +82,12 @@ private:
   std::string m_strFileName;
   int m_nAudioStream{-1};
   size_t m_nDecodedLen{0};
+
+  //! \brief Time the last Seek() was asked for, until a packet covering it has been read
+  double m_skipToPts{DVD_NOPTS_VALUE};
+
+  //! \brief Whether what the codec is decoding now belongs before that time
+  bool m_skipDecodedOutput{false};
 
   bool m_bInited{false};
   bool m_bCanSeek{false};

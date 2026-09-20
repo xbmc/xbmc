@@ -42,7 +42,7 @@ public:
   void SetSizes(const float2& nextSize,
                 const float2& prevSize = float2{},
                 const float2& prevTextureSize = float2{}) override;
-  void PrepareParameters(IShaderTexture& sourceTexture,
+  bool PrepareParameters(IShaderTexture& sourceTexture,
                          const std::vector<std::unique_ptr<IShaderTexture>>& pShaderTextures,
                          const std::vector<std::unique_ptr<IShader>>& pShaders,
                          uint64_t frameCount) override;

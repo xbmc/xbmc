@@ -168,6 +168,7 @@ macro(SETUP_BUILD_VARS)
 
   # PROJECTSOURCE used in native toolchain to provide core project sourcedir
   # to externalproject_add targets that have a different CMAKE_SOURCE_DIR (eg jsonschema/texturepacker in-tree)
+  # This project-wide source root must outlive nested dependency builds.
   if(NOT PROJECTSOURCE)
     set(PROJECTSOURCE ${CMAKE_SOURCE_DIR})
   endif()
@@ -188,7 +189,6 @@ endmacro()
 macro(CLEAR_BUILD_VARS)
   # unset all generic variables to insure clean state between macro calls
   # Potentially an issue with scope when a macro is used inside a dep that uses a macro
-  unset(PROJECTSOURCE)
   unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
   unset(PATCH_COMMAND)
@@ -496,6 +496,16 @@ macro(BUILD_DEP_TARGET)
     else()
       set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY}")
     endif()
+
+    # For a windows shared dep, LIBRARY is the dll but consumers link the import lib.
+    # Ninja rejects a graph containing a link input that no rule produces, so declare both.
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB)
+      if(DEFINED ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_DEBUG)
+        list(APPEND BUILD_BYPRODUCTS "$<IF:$<CONFIG:Debug,RelWithDebInfo>,${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_DEBUG},${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_RELEASE}>")
+      else()
+        list(APPEND BUILD_BYPRODUCTS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB}")
+      endif()
+    endif()
   endif()
 
   if(NOT INSTALL_DIR)
@@ -526,6 +536,33 @@ macro(BUILD_DEP_TARGET)
                       ${INSTALL_COMMAND}
                       ${BUILD_BYPRODUCTS}
                       ${BUILD_IN_SOURCE})
+
+  # Fetch ahead of the download step with broader retries, see DownloadWithRetry.cmake.
+  # Pointless for local tarballs, and without a hash the download step re-downloads
+  # regardless. INDEPENDENT like the download step itself, which CMP0114 requires of
+  # anything that step depends on.
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR
+     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH
+     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL MATCHES "^[A-Za-z][A-Za-z0-9+.-]*://")
+    # ExternalProject bakes these into its download script; a cmake -P process would
+    # not see them otherwise
+    set(_download_retry_settings)
+    foreach(_var CMAKE_TLS_VERIFY CMAKE_TLS_CAINFO CMAKE_TLS_VERSION CMAKE_NETRC CMAKE_NETRC_FILE)
+      if(DEFINED ${_var})
+        list(APPEND _download_retry_settings "-D${_var}=${${_var}}")
+      endif()
+    endforeach()
+    externalproject_add_step(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} download-retry
+                             COMMAND ${CMAKE_COMMAND} ${_download_retry_settings}
+                                     -DARCHIVE_URL=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}
+                                     -DARCHIVE_DEST=${TARBALL_DIR}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}
+                                     -DARCHIVE_HASH=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH}
+                                     -P ${PROJECTSOURCE}/cmake/scripts/common/DownloadWithRetry.cmake
+                             DEPENDERS download
+                             INDEPENDENT TRUE
+                             COMMENT "Fetching ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}")
+    unset(_download_retry_settings)
+  endif()
 
   set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES FOLDER "External Projects")
 
@@ -798,7 +835,10 @@ function(create_mesonbinaries)
   endif()
 
   if(PKG_CONFIG_EXECUTABLE)
-    list(APPEND binariespairs "pkg-config" "PKG_CONFIG_EXECUTABLE")
+    # Both names, because meson renamed this entry from "pkgconfig" to "pkg-config"
+    # in 1.2.0. Duplicates are accepted as long as the values match.
+    list(APPEND binariespairs "pkg-config" "PKG_CONFIG_EXECUTABLE"
+                              "pkgconfig" "PKG_CONFIG_EXECUTABLE")
   endif()
 
   # Get/set loop limit (Size - 1) from size of binariespairs list
@@ -972,6 +1012,15 @@ function(create_module_dev_env)
 
     string(TOLOWER "${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}" _lower_hostarch)
     string(TOLOWER "${CMAKE_GENERATOR_PLATFORM}" _lower_targetarch)
+
+    # Only the Visual Studio generator sets the two above. Under Ninja, ARCH comes
+    # from ArchSetup and the host from the machine, so vcvarsall still gets an arch.
+    if(NOT _lower_hostarch)
+      string(TOLOWER "${CMAKE_HOST_SYSTEM_PROCESSOR}" _lower_hostarch)
+    endif()
+    if(NOT _lower_targetarch)
+      string(TOLOWER "${ARCH}" _lower_targetarch)
+    endif()
 
     if("${_lower_hostarch}" STREQUAL "x64")
       set(_lower_hostarch amd64)

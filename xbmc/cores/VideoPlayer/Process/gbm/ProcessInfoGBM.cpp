@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferPoolDMA.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -68,7 +69,7 @@ std::vector<AVPixelFormat> CProcessInfoGBM::GetRenderFormats()
     CLog::Log(LOGERROR, "CProcessInfoGBM::GetRenderFormats: render system not initialized");
     return formats;
   }
-  if (renderSystem->IsExtSupported("GL_EXT_texture_norm16"))
+  if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_norm16))
 #endif
   {
     formats.push_back(AV_PIX_FMT_YUV420P9);

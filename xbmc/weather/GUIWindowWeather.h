@@ -27,6 +27,7 @@ protected:
   void UpdateLocations();
   void SetProps();
   void ClearProps();
+  void RefreshImages();
   void SetLocation(int loc);
 
 private:

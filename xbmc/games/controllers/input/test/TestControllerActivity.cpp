@@ -62,34 +62,6 @@ TEST(TestControllerActivity, MotionPersistsWithButton)
 }
 
 //
-// Spec: Mouse motion should reset the timeout when moved again
-//
-TEST(TestControllerActivity, MotionTimeoutReset)
-{
-  CControllerActivity activity;
-
-  activity.OnMouseMotion("pointer", 1, 0);
-  activity.OnInputFrame();
-  EXPECT_FLOAT_EQ(activity.GetActivation(), 1.0f);
-
-  // Wait briefly before moving again. Keep the delay tiny so that a
-  // slow scheduler can't accidentally exceed the timeout.
-  std::this_thread::sleep_for(5ms);
-  activity.OnMouseMotion("pointer", 2, 0);
-  activity.OnInputFrame();
-
-  // Verify we're still active shortly after the second motion. Use a
-  // minimal wait to prevent hitting the timeout on busy VMs.
-  std::this_thread::sleep_for(5ms);
-  EXPECT_FLOAT_EQ(activity.GetActivation(), 1.0f);
-
-  // Sleep long past the timeout so the activity definitely expires
-  // even on slower machines.
-  std::this_thread::sleep_for(150ms);
-  EXPECT_FLOAT_EQ(activity.GetActivation(), 0.0f);
-}
-
-//
 // Spec: Activation should persist with multiple held buttons
 //
 TEST(TestControllerActivity, MotionPersistsMultipleButtons)

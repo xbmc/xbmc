@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -71,6 +71,29 @@ XBPython::XBPython()
 #endif
 
   Py_Initialize();
+
+  // a module adopts types shared with the others only on its first init, so
+  // init them together here rather than in whichever sub-interpreter a script
+  // first imports them from
+  for (const auto& module : {"xbmc", "xbmcaddon", "xbmcdrm", "xbmcgui", "xbmcplugin", "xbmcvfs"
+#ifdef HAS_WEB_INTERFACE
+                             ,
+                             "xbmcwsgi"
+#endif
+       })
+  {
+    PyObject* pyModule = PyImport_ImportModule(module);
+    if (pyModule == nullptr)
+    {
+      CLog::Log(LOGFATAL, "python module {} failed to initialize", module);
+      if (PyErr_Occurred())
+        PyErr_Print();
+      m_bindingModulesLoaded = false;
+    }
+    else
+      Py_DECREF(pyModule);
+  }
+
   m_mainThreadState = PyEval_SaveThread();
 }
 

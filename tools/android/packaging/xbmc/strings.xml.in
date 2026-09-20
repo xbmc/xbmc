@@ -23,4 +23,5 @@
     <string name="permission_denied">Permission denied!! Exiting…</string>
     <string name="no_find_apk">Cannot find package.</string>
     <string name="no_read_apk">Cannot read package.</string>
+    <string name="no_write_cache">Cannot write to the application data directory.</string>
 </resources>

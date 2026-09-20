@@ -1,0 +1,4 @@
+# clang-format has no JSON style of its own, so it formats JSON with the C++ rules. ColumnLimit
+# then breaks long string values onto a line of their own, and JSON has no comments, so the
+# "clang-format off" escape is not available to the schemas that would need it.
+**/*.json

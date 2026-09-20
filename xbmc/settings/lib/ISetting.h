@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2018 Team Kodi
+ *  Copyright (C) 2013-2018, 2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -11,6 +11,7 @@
 #include "SettingRequirement.h"
 
 #include <string>
+#include <string_view>
 
 class CSettingsManager;
 class TiXmlNode;
@@ -28,7 +29,7 @@ public:
    \param id Identifier of the setting object
    \param settingsManager Reference to the settings manager
    */
-  ISetting(const std::string &id, CSettingsManager *settingsManager = nullptr);
+  ISetting(std::string_view id, CSettingsManager* settingsManager = nullptr);
   virtual ~ISetting() = default;
 
   /*!

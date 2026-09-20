@@ -13,6 +13,7 @@
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "application/Application.h"
@@ -35,12 +36,12 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/FileUtils.h"
-#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoStreamSelect.h"
 
 #include <string>
 #include <vector>
@@ -128,6 +129,8 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
       extras += '|' + vfsAddon->GetExtensions();
   }
 
+  std::vector<CMediaSource> shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
+
   const auto currentItem{g_application.CurrentFileItem()};
   std::string strPath{currentItem.GetProperty("BasePath").asString("")};
   if (strPath.empty())
@@ -143,6 +146,15 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
     }
   }
 
+  // A stream belonging to no source has no parent directory worth listing, and trying to list
+  // one is what hangs the dialog. An empty path opens the browser at the root instead.
+  bool isSourceName{false}; // GetMatchingSource requires it; the answer is not used here
+  if (URIUtils::IsInternetStream(strPath) &&
+      CUtil::GetMatchingSource(strPath, shares, isSourceName) < 0)
+  {
+    strPath.clear();
+  }
+
   std::string strMask =
       ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.vtt|.idx|.zip|.sup";
 
@@ -151,7 +163,6 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
 
   strMask += extras;
 
-  std::vector<CMediaSource> shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
   if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
   {
     CMediaSource share;
@@ -381,31 +392,32 @@ void CGUIDialogSubtitleSettings::SubtitleStreamsOptionFiller(
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  int subtitleStreamCount = appPlayer->GetSubtitleCount();
-
-  // cycle through each subtitle and add it to our entry list
-  for (int i = 0; i < subtitleStreamCount; ++i)
+  if (appPlayer != nullptr)
   {
-    SubtitleStreamInfo info;
-    appPlayer->GetSubtitleStreamInfo(i, info);
+    using namespace KODI::VIDEO;
+    const std::vector<SubtitleStreamInfoExt> streams =
+        CVideoStreamSelect::GetSubtitleStreams(appPlayer.get());
+    const int streamCount = streams.size();
 
-    std::string strItem;
-    std::string strLanguage;
+    for (int i = 0; i < streamCount; ++i)
+    {
+      const SubtitleStreamInfoExt& info = streams[i];
 
-    if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
-      strLanguage =
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13205); // Unknown
+      std::string strItem = info.languageDesc;
 
-    if (info.name.empty())
-      strItem = strLanguage;
-    else
-      strItem = StringUtils::Format("{} - {}", strLanguage, info.name);
+      if (!info.name.empty())
+        strItem += " - " + info.name;
 
-    strItem += FormatCodec(info);
-    strItem += FormatFlags(info.flags);
-    strItem += StringUtils::Format(" ({}/{})", i + 1, subtitleStreamCount);
+      strItem += FormatCodec(info);
+      strItem += FormatFlags(info.flags);
+      strItem += StringUtils::Format(" ({}/{})", i + 1, streamCount);
 
-    list.emplace_back(strItem, i);
+      list.emplace_back(strItem, info.streamId);
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "No application player.");
   }
 
   // no subtitle streams - just add a "None" entry

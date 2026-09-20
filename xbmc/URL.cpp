@@ -819,6 +819,9 @@ bool CURL::IsCBR() const
 
 bool CURL::IsDiscImage() const
 {
+  if (IsStack() || IsMultiPath())
+    return false;
+
   return HasExtension(".img|.iso|.nrg|.udf");
 }
 
@@ -857,6 +860,9 @@ bool CURL::IsLibraryContent() const
 
 bool CURL::IsBDFile() const
 {
+  if (IsStack() || IsMultiPath())
+    return false;
+
   const std::string fileName{URIUtils::GetFileName(m_strFileName)};
   return StringUtils::EqualsNoCase(fileName, "index.bdmv") ||
          StringUtils::EqualsNoCase(fileName, "MovieObject.bdmv") ||
@@ -866,6 +872,9 @@ bool CURL::IsBDFile() const
 
 bool CURL::IsDVDFile() const
 {
+  if (IsStack() || IsMultiPath())
+    return false;
+
   const std::string fileName{URIUtils::GetFileName(m_strFileName)};
   return StringUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
          (StringUtils::StartsWithNoCase(fileName, "vts_") &&

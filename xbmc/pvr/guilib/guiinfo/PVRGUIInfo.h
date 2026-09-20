@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "XBDateTime.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
 #include "powermanagement/PowerState.h"
 #include "pvr/PVRDescrambleInfo.h"
@@ -19,7 +20,10 @@
 #include "threads/Thread.h"
 
 #include <atomic>
+#include <map>
+#include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 class CFileItem;
@@ -31,6 +35,8 @@ class CGUIInfo;
 
 namespace PVR
 {
+class CPVREpgInfoTag;
+
 class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider,
                     private CThread,
                     public CPowerState
@@ -88,8 +94,16 @@ private:
   void UpdateNextTimer();
   void UpdateTimeshiftData();
   void UpdateTimeshiftProgressData();
+  void UpdatePlayableCache();
 
   void UpdateTimersToggle();
+
+  /*!
+   * @brief Get whether the given EPG tag is playable, from the playability cache.
+   * @param tag The EPG tag.
+   * @return True if the tag is playable, false otherwise.
+   */
+  bool IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
 
   bool GetListItemAndPlayerLabel(const CFileItem* item,
                                  const KODI::GUILIB::GUIINFO::CGUIInfo& info,
@@ -189,6 +203,22 @@ private:
 
   std::string m_channelNumberInput;
   bool m_previewAndPlayerShowInfo{false};
+
+  /*!
+   * @brief Identity of an EPG tag for the playability cache. Contains the tag's time
+   * boundaries as well as its ids, so that a tag whose times were changed does not match
+   * the answer cached for its previous times.
+   */
+  using PlayableCacheKey = std::tuple<int, unsigned int, CDateTime, CDateTime>;
+
+  struct PlayableCacheEntry
+  {
+    std::shared_ptr<const CPVREpgInfoTag> tag;
+    bool playable{false};
+    bool queried{true}; /*!< whether the value was read since the last cache update */
+  };
+
+  mutable std::map<PlayableCacheKey, PlayableCacheEntry> m_playableCache;
 
   mutable CCriticalSection m_critSection;
 

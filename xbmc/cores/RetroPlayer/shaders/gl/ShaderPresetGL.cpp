@@ -60,7 +60,10 @@ bool CShaderPresetGL::CreateShaders()
     if (!videoShader->Create(shaderIdx, pass.alias, shaderPath, shaderSource,
                              std::move(passParameters), presetLUTsGL, pass.frameCountMod))
     {
-      CLog::Log(LOGERROR, "CShaderPresetGL::CreateShaders: Couldn't create a video shader");
+      CLog::Log(LOGERROR,
+                "CShaderPresetGL::CreateShaders: Failed to create shader: preset={}, pass={}, "
+                "alias={}, shader={}",
+                m_presetPath, shaderIdx, pass.alias.empty() ? "<none>" : pass.alias, shaderPath);
       return false;
     }
     m_pShaders.push_back(std::move(videoShader));

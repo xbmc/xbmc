@@ -17,9 +17,10 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/settings/AddonSettings.h"
-#include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/HttpClientFactory.h"
+#include "filesystem/IHttpClient.h"
 #include "filesystem/PluginDirectory.h"
 #include "music/Album.h"
 #include "music/Artist.h"
@@ -40,6 +41,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <array>
@@ -230,12 +232,12 @@ void CScraper::ClearCache() const
 
 // returns a vector of strings: the first is the XML output by the function; the rest
 // is XML output by chained functions, possibly recursively
-// the CCurlFile object is passed in so that URL fetches can be canceled from other threads
+// the IHttpClient object is passed in so that URL fetches can be canceled from other threads
 // throws CScraperError abort on internal failures (e.g., parse errors)
-std::vector<std::string> CScraper::Run(const std::string &function,
-                                       const CScraperUrl &scrURL,
-                                       CCurlFile &http,
-                                       const std::vector<std::string> *extras)
+std::vector<std::string> CScraper::Run(const std::string& function,
+                                       const CScraperUrl& scrURL,
+                                       XFILE::IHttpClient& http,
+                                       const std::vector<std::string>* extras)
 {
   if (!Load())
     throw CScraperError();
@@ -301,10 +303,10 @@ std::vector<std::string> CScraper::Run(const std::string &function,
 
 // just like Run, but returns an empty list instead of throwing in case of error
 // don't use in new code; errors should be handled appropriately
-std::vector<std::string> CScraper::RunNoThrow(const std::string &function,
-                                              const CScraperUrl &url,
-                                              XFILE::CCurlFile &http,
-                                              const std::vector<std::string> *extras)
+std::vector<std::string> CScraper::RunNoThrow(const std::string& function,
+                                              const CScraperUrl& url,
+                                              XFILE::IHttpClient& http,
+                                              const std::vector<std::string>* extras)
 {
   std::vector<std::string> vcs;
   try
@@ -318,10 +320,10 @@ std::vector<std::string> CScraper::RunNoThrow(const std::string &function,
   return vcs;
 }
 
-std::string CScraper::InternalRun(const std::string &function,
-                                  const CScraperUrl &scrURL,
-                                  CCurlFile &http,
-                                  const std::vector<std::string> *extras)
+std::string CScraper::InternalRun(const std::string& function,
+                                  const CScraperUrl& scrURL,
+                                  XFILE::IHttpClient& http,
+                                  const std::vector<std::string>* extras)
 {
   // walk the list of input URLs and fetch each into parser parameters
   const auto& urls = scrURL.GetUrls();
@@ -464,8 +466,8 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
   std::vector<std::string> vcsIn;
   vcsIn.push_back(sNfoContent);
   CScraperUrl scurl;
-  CCurlFile fcurl;
-  std::vector<std::string> vcsOut = Run("NfoUrl", scurl, fcurl, &vcsIn);
+  auto http = XFILE::CreateHttpClient();
+  std::vector<std::string> vcsOut = Run("NfoUrl", scurl, *http, &vcsIn);
   if (vcsOut.empty() || vcsOut[0].empty())
     return scurlRet;
   if (vcsOut.size() > 1)
@@ -540,8 +542,8 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
   std::vector<std::string> vcsIn;
   vcsIn.push_back(externalID);
   CScraperUrl scurl;
-  CCurlFile fcurl;
-  std::vector<std::string> vcsOut = Run("ResolveIDToUrl", scurl, fcurl, &vcsIn);
+  auto http = XFILE::CreateHttpClient();
+  std::vector<std::string> vcsOut = Run("ResolveIDToUrl", scurl, *http, &vcsIn);
   if (vcsOut.empty() || vcsOut[0].empty())
     return scurlRet;
   if (vcsOut.size() > 1)
@@ -913,13 +915,64 @@ bool PythonDetails(const std::string& ID,
   const ADDON::CScraper::UniqueIDs ids;
   return PythonDetails(ID, key, url, action, pathSettings, ids, result);
 }
+//! \brief Length prefixed, so that no separator can appear in what it is separating
+std::string Keyed(std::string_view value)
+{
+  return StringUtils::Format("{}:{}", value.size(), value);
+}
+
+//! \brief Key a set of unique ids into something a result cache can look up
+std::string SerialiseUniqueIDs(const ADDON::CScraper::UniqueIDs& uniqueIDs)
+{
+  std::vector<std::string> ids;
+  ids.reserve(uniqueIDs.size());
+  for (const auto& [type, value] : uniqueIDs)
+    ids.emplace_back(Keyed(type) + Keyed(value));
+
+  std::ranges::sort(ids); // the ids are unordered, the key cannot be
+  return StringUtils::Join(ids, "");
+}
+
+//! \brief Key every url a scraper would be given, since it fetches each one it is handed
+std::string SerialiseUrls(const CScraperUrl& scurl)
+{
+  std::string key;
+  for (const auto& url : scurl.GetUrls())
+    key += Keyed(url.m_url) + Keyed(url.m_spoof) + Keyed(url.m_cache) +
+           Keyed(url.m_post ? "1" : "") + Keyed(url.m_isgz ? "1" : "");
+
+  return key;
+}
 } // unnamed namespace
 
 // fetch list of matching movies sorted by relevance (may be empty);
 // throws CScraperError on error; first called with fFirst set, then unset if first try fails
-std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
-                                             const std::string &movieTitle, int movieYear,
+std::vector<CScraperUrl> CScraper::FindMovie(XFILE::IHttpClient& fcurl,
+                                             const std::string& movieTitle,
+                                             int movieYear,
                                              bool fFirst)
+{
+  // The title is cleaned below, so the arguments as given identify the search
+  const std::string key{StringUtils::Format("{}\n{}\n{}", movieTitle, movieYear, fFirst)};
+  if (const auto it = m_findCache.find(key); it != m_findCache.end())
+    return it->second;
+
+  auto result = FindMovieUncached(fcurl, movieTitle, movieYear, fFirst);
+
+  if (!result.empty())
+  {
+    if (m_findCache.size() >= MAX_CACHED_RESULTS)
+      m_findCache.clear();
+    m_findCache.emplace(key, result);
+  }
+
+  return result;
+}
+
+std::vector<CScraperUrl> CScraper::FindMovieUncached(XFILE::IHttpClient& fcurl,
+                                                     const std::string& movieTitle,
+                                                     int movieYear,
+                                                     bool fFirst)
 {
   // prepare parameters for URL creation
   std::string sTitle;
@@ -1072,9 +1125,9 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
 // find album by artist, using fcurl for web fetches
 // returns a list of albums (empty if no match or failure)
-std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
-                                                 const std::string &sAlbum,
-                                                 const std::string &sArtist)
+std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
+                                                 const std::string& sAlbum,
+                                                 const std::string& sArtist)
 {
   CLog::LogF(LOGDEBUG,
              "Searching for '{} - {}' using {} scraper (path: '{}', content: '{}', version: '{}')",
@@ -1173,7 +1226,8 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 
 // find artist, using fcurl for web fetches
 // returns a list of artists (empty if no match or failure)
-std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::string &sArtist)
+std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
+                                                   const std::string& sArtist)
 {
   CLog::LogF(LOGDEBUG,
              "Searching for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
@@ -1258,7 +1312,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
 }
 
 // fetch list of episodes from URL (from video database)
-VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScraperUrl& scurl)
+VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl)
 {
   VIDEO::EPISODELIST vcep;
   if (!scurl.HasUrls())
@@ -1356,11 +1410,38 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScra
 }
 
 // takes URL; returns true and populates video details on success, false otherwise
-bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
+bool CScraper::GetVideoDetails(XFILE::IHttpClient& fcurl,
                                const UniqueIDs& uniqueIDs,
                                const CScraperUrl& scurl,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)
+{
+  // The id as well as the url, since an xml scraper is given both and two search results can
+  // carry the same url under different ids
+  const std::string key{Keyed(scurl.GetId()) + SerialiseUrls(scurl) + (fMovie ? "m" : "e") +
+                        SerialiseUniqueIDs(uniqueIDs)};
+  if (const auto it = m_detailsCache.find(key); it != m_detailsCache.end())
+  {
+    // A copy - the caller goes on to fill in where this came from and what art it ended up with
+    video = *it->second;
+    return true;
+  }
+
+  if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
+    return false;
+
+  if (m_detailsCache.size() >= MAX_CACHED_RESULTS)
+    m_detailsCache.clear();
+  m_detailsCache.emplace(key, std::make_shared<const CVideoInfoTag>(video));
+
+  return true;
+}
+
+bool CScraper::GetVideoDetailsUncached(XFILE::IHttpClient& fcurl,
+                                       const UniqueIDs& uniqueIDs,
+                                       const CScraperUrl& scurl,
+                                       bool fMovie,
+                                       CVideoInfoTag& video)
 {
   CLog::LogF(LOGDEBUG,
              "Reading {} '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
@@ -1413,7 +1494,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
 }
 
 // takes a URL; returns true and populates album on success, false otherwise
-bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbum &album)
+bool CScraper::GetAlbumDetails(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl, CAlbum& album)
 {
   CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
@@ -1442,10 +1523,10 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
 
 // takes a URL (one returned from FindArtist), the original search string, and
 // returns true and populates artist on success, false on failure
-bool CScraper::GetArtistDetails(CCurlFile &fcurl,
-                                const CScraperUrl &scurl,
-                                const std::string &sSearch,
-                                CArtist &artist)
+bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
+                                const CScraperUrl& scurl,
+                                const std::string& sSearch,
+                                CArtist& artist)
 {
   if (!scurl.HasUrls())
     return false;
@@ -1482,7 +1563,7 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
   return fRet;
 }
 
-bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
+bool CScraper::GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details)
 {
   if (!details.HasUniqueID())
     return false;

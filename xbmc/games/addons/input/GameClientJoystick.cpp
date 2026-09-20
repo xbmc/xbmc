@@ -199,12 +199,72 @@ void CGameClientJoystick::ClearSource()
   m_sourcePeripheral.reset();
 }
 
+JOYSTICK::IInputReceiver* CGameClientJoystick::InputReceiver(void)
+{
+  // Answer with the port's receiver, not this handler's. CPortInput is what
+  // registers with the peripheral, so it is what the peripheral attaches its
+  // receiver to; this class sits behind it and is never given one, so every
+  // motor event a game produced was dropped, for every core.
+  return m_portInput ? m_portInput->InputReceiver() : nullptr;
+}
+
 bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
 {
   bool bHandled = false;
 
-  if (InputReceiver())
-    bHandled = InputReceiver()->SetRumbleState(feature, magnitude);
+  JOYSTICK::IInputReceiver* receiver = InputReceiver();
+
+  if (receiver != nullptr)
+    bHandled = receiver->SetRumbleState(feature, magnitude);
+
+  // Report the first motor event, and the first that fails, once each. A game
+  // asking for rumble and not producing any is otherwise entirely silent: the
+  // request is well-formed the whole way down and simply stops, either because
+  // no receiver was attached to this handler or because the peripheral's button
+  // map has no motor of that name for the connected device.
+  // Only a non-zero magnitude says anything: a game stopping a motor it never
+  // started is accepted just as readily, and reporting that as success is what
+  // made an unconnected chain look connected.
+  const bool bMeaningful = (magnitude > 0.0f);
+
+  // A flag each, rather than one shared between the failures. The two failures
+  // are not the same event and the harmless one comes first: a game that asks
+  // before its port is wired would otherwise spend the only flag, and the
+  // warning that names a real gap in the button map would never be printed.
+  if (bMeaningful)
+  {
+    if (bHandled)
+    {
+      if (!m_bLoggedRumble)
+      {
+        CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" at {:0.2f} accepted by the peripheral", feature,
+                  magnitude);
+        m_bLoggedRumble = true;
+      }
+    }
+    else if (receiver != nullptr)
+    {
+      // The chain is connected and the request was still turned down, which
+      // means the button map has no motor of that name for this device
+      if (!m_bLoggedRumbleFailure)
+      {
+        CLog::Log(LOGWARNING, "GAME: Rumble \"{}\" went nowhere, the peripheral would not take it",
+                  feature);
+        m_bLoggedRumbleFailure = true;
+      }
+    }
+    else
+    {
+      // Ports are wired up after the client starts, so a game that asks this
+      // early is told no and asks again once there is somewhere to send it.
+      // Reporting that as a warning described a broken chain that then worked.
+      if (!m_bLoggedRumbleUnwired)
+      {
+        CLog::Log(LOGDEBUG, "GAME: Rumble \"{}\" arrived before the port had a receiver", feature);
+        m_bLoggedRumbleUnwired = true;
+      }
+    }
+  }
 
   return bHandled;
 }

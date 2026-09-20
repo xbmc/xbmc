@@ -1,4 +1,9 @@
-set(SOURCES DialogGameAdvancedSettings.cpp
+set(SOURCES DialogGameIndicators.cpp
+            DialogGameAchievements.cpp
+            DialogGameAdvancedSettings.cpp
+            DialogGameLeaderboards.cpp
+            DialogGameLeaderboardEntries.cpp
+            LeaderboardUtils.cpp
             DialogGameOSD.cpp
             DialogGameOSDHelp.cpp
             DialogGameSaves.cpp
@@ -10,7 +15,12 @@ set(SOURCES DialogGameAdvancedSettings.cpp
             DialogInGameSaves.cpp
 )
 
-set(HEADERS DialogGameAdvancedSettings.h
+set(HEADERS DialogGameIndicators.h
+            DialogGameAchievements.h
+            DialogGameAdvancedSettings.h
+            DialogGameLeaderboards.h
+            DialogGameLeaderboardEntries.h
+            LeaderboardUtils.h
             DialogGameOSD.h
             DialogGameOSDHelp.h
             DialogGameSaves.h
@@ -23,3 +33,7 @@ set(HEADERS DialogGameAdvancedSettings.h
 )
 
 core_add_library(gameosddialogs)
+
+if(ENABLE_TESTING)
+  add_subdirectory(test)
+endif()

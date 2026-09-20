@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "utils/StringUtils.h"
 #include "utils/i18n/Iso639.h"
 
 #include <algorithm>
@@ -529,6 +530,11 @@ constexpr std::array<struct LCENTRY, ISO639_2_COUNT> TableISO639_2ByCode = {{
 
 static_assert(std::ranges::is_sorted(TableISO639_2ByCode, {}, &LCENTRY::code));
 
+static_assert(std::ranges::all_of(
+    TableISO639_2ByCode,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &LCENTRY::name));
+
 // Additional names for ISO 639-2 codes that have multiple names
 // 79 from the standard, 3 Kodi additions
 static constexpr int ISO639_2_ADDL_NAMES_COUNT = 79 + 3;
@@ -581,7 +587,7 @@ constexpr std::array<struct LCENTRY, ISO639_2_ADDL_NAMES_COUNT> TableISO639_2_Na
     {StringToLongCode("nds"), "German, Low"},
     {StringToLongCode("nds"), "Saxon Low"},
     {StringToLongCode("new"), "Newari"},
-    {StringToLongCode("nld"), "Flemish "},
+    {StringToLongCode("nld"), "Flemish"},
     {StringToLongCode("nno"), "Nynorsk, Norwegian"},
     {StringToLongCode("nob"), "Norwegian Bokmål"},
     {StringToLongCode("nso"), "Sepedi"},
@@ -622,8 +628,17 @@ constexpr std::array<struct LCENTRY, ISO639_2_ADDL_NAMES_COUNT> TableISO639_2_Na
 
 static_assert(std::ranges::is_sorted(TableISO639_2_Names, {}, &LCENTRY::code));
 
-// 20 pairs of active ISO 639-2/T and /B codes and 2 inactive pairs (deprecated B codes)
-inline static constexpr int ISO639_2_TB_COUNT = 22;
+static_assert(std::ranges::all_of(
+    TableISO639_2_Names,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &LCENTRY::name));
+
+// 20 pairs of active ISO 639-2/T and /B codes.
+//
+// Croatian and Serbian have no pair here: ISO withdrew their bibliographic codes scr and scc on
+// 2008-06-28, leaving hrv and srp as both forms, so neither language has two spellings to map
+// between.
+inline static constexpr int ISO639_2_TB_COUNT = 20;
 
 // clang-format off
 inline constexpr std::array<ISO639_2_TB, ISO639_2_TB_COUNT> ISO639_2_TB_Mappings = {{
@@ -635,7 +650,6 @@ inline constexpr std::array<ISO639_2_TB, ISO639_2_TB_COUNT> ISO639_2_TB_Mappings
     {StringToLongCode("eus"), StringToLongCode("baq")},
     {StringToLongCode("fas"), StringToLongCode("per")},
     {StringToLongCode("fra"), StringToLongCode("fre")},
-    {StringToLongCode("hrv"), StringToLongCode("scr")}, // 2008-06-28 scr was deprecated. The T code remains.
     {StringToLongCode("hye"), StringToLongCode("arm")},
     {StringToLongCode("isl"), StringToLongCode("ice")},
     {StringToLongCode("kat"), StringToLongCode("geo")},
@@ -647,7 +661,6 @@ inline constexpr std::array<ISO639_2_TB, ISO639_2_TB_COUNT> ISO639_2_TB_Mappings
     {StringToLongCode("ron"), StringToLongCode("rum")},
     {StringToLongCode("slk"), StringToLongCode("slo")},
     {StringToLongCode("sqi"), StringToLongCode("alb")},
-    {StringToLongCode("srp"), StringToLongCode("scc")}, // 2008-06-28 scc was deprecated. The T code remains.
     {StringToLongCode("zho"), StringToLongCode("chi")},
 }};
 // clang-format on

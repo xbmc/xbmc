@@ -9,7 +9,7 @@
 			<width>1700</width>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1700" />
-				<param name="height" value="790" />
+				<param name="height" value="870" />
 				<param name="header_label" value="" />
 				<param name="header_id" value="2" />
 			</include>
@@ -67,6 +67,11 @@
 					<width>700</width>
 					<include>SettingsItemCommon</include>
 					<label>$LOCALIZE[467]: $LOCALIZE[21459]</label>
+				</control>
+				<control type="button" id="25">
+					<width>700</width>
+					<label>$LOCALIZE[20479]</label>
+					<include>SettingsItemCommon</include>
 				</control>
 			</control>
 			<control type="image">

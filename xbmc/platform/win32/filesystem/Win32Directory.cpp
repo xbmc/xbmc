@@ -111,13 +111,11 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
     if (isHidden)
       item->SetProperty("file:hidden", true);
 
-    if (isDir)
-    { // raw values; the DateTime above is local-time converted
-      item->SetProperty(DIR_PROPERTY_STAT_MTIME, static_cast<int64_t>(CWIN32Util::fileTimeToTimeT(
-                                                     findData.ftLastWriteTime)));
-      item->SetProperty(DIR_PROPERTY_STAT_CTIME,
-                        static_cast<int64_t>(CWIN32Util::fileTimeToTimeT(findData.ftCreationTime)));
-    }
+    // raw values; the DateTime above is local-time converted
+    item->SetProperty(DIR_PROPERTY_STAT_MTIME,
+                      static_cast<int64_t>(CWIN32Util::fileTimeToTimeT(findData.ftLastWriteTime)));
+    item->SetProperty(DIR_PROPERTY_STAT_CTIME,
+                      static_cast<int64_t>(CWIN32Util::fileTimeToTimeT(findData.ftCreationTime)));
 
   } while (FindNextFileW(hSearch, &findData));
 

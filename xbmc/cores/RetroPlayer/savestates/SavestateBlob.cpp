@@ -1,0 +1,272 @@
+/*
+ *  Copyright (C) 2026 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+#include "SavestateBlob.h"
+
+#include "utils/log.h"
+
+#include <limits>
+
+using namespace KODI;
+using namespace RETRO;
+
+namespace
+{
+constexpr size_t MAX_SAVESTATE_MEMORY_SIZE = 512 * 1024 * 1024;
+constexpr size_t MAX_SAVESTATE_VIDEO_SIZE = 128 * 1024 * 1024;
+
+/*!
+ * \brief Get the number of bytes used by one pixel in a savestate pixel format
+ *
+ * \param pixelFormat The savestate pixel format
+ * \param bytesPerPixel Receives the number of bytes per pixel for a supported format
+ *
+ * \return True if the pixel format is supported, false otherwise
+ */
+bool GetVideoBytesPerPixel(SAVESTATE::PixelFormat pixelFormat, size_t& bytesPerPixel)
+{
+  switch (pixelFormat)
+  {
+    case SAVESTATE::PixelFormat_RGBA_8888:
+    case SAVESTATE::PixelFormat_XRGB_8888:
+    case SAVESTATE::PixelFormat_BGRX_8888:
+      bytesPerPixel = 4;
+      return true;
+
+    case SAVESTATE::PixelFormat_RGB_565_BE:
+    case SAVESTATE::PixelFormat_RGB_565_LE:
+    case SAVESTATE::PixelFormat_RGB_555_BE:
+    case SAVESTATE::PixelFormat_RGB_555_LE:
+      bytesPerPixel = 2;
+      return true;
+
+    default:
+      break;
+  }
+
+  return false;
+}
+
+/*!
+ * \brief Calculate the minimum packed size of a savestate video frame
+ *
+ * The calculation validates the pixel format and dimensions, guards against
+ * overflow, and enforces the maximum supported savestate video size.
+ *
+ * \param savestate The savestate containing the video metadata
+ * \param packedMinimumSize Receives the minimum packed video size in bytes
+ *
+ * \return True if the metadata is valid and the size is supported, false otherwise
+ */
+bool GetPackedMinimumVideoSize(const SAVESTATE::Savestate& savestate, size_t& packedMinimumSize)
+{
+  const unsigned int width = savestate.video_width();
+  const unsigned int height = savestate.video_height();
+  size_t bytesPerPixel = 0;
+
+  if (width == 0 || height == 0 || !GetVideoBytesPerPixel(savestate.pixel_format(), bytesPerPixel))
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid video metadata in savestate");
+    return false;
+  }
+
+  if (width > std::numeric_limits<size_t>::max() / height)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Video dimensions overflow size calculation");
+    return false;
+  }
+
+  const size_t pixels = static_cast<size_t>(width) * height;
+  if (pixels > std::numeric_limits<size_t>::max() / bytesPerPixel)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Video size overflows size calculation");
+    return false;
+  }
+
+  packedMinimumSize = pixels * bytesPerPixel;
+  if (packedMinimumSize == 0 || packedMinimumSize > MAX_SAVESTATE_VIDEO_SIZE)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Video minimum size {} exceeds limit {}",
+              packedMinimumSize, MAX_SAVESTATE_VIDEO_SIZE);
+    return false;
+  }
+
+  return true;
+}
+} // namespace
+
+void PendingSavestateBlob::Clear()
+{
+  raw.clear();
+  compressed.clear();
+  uncompressedSize = 0;
+  compression = SAVESTATE::CompressionType_None;
+}
+
+bool PendingSavestateBlob::HasCompressedData() const
+{
+  //! @todo Add support for new compression types
+  switch (compression)
+  {
+    case SAVESTATE::CompressionType_None:
+      return false;
+    default:
+      break;
+  }
+
+  return false;
+}
+
+SavestateBlobOffsets CSavestateBlob::CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
+                                                        const std::vector<uint8_t>& rawData,
+                                                        const char* /* fieldName */)
+{
+  SavestateBlobOffsets offsets;
+
+  //! @todo Compress rawData with zstd if a smaller representation is available
+
+  offsets.raw = builder.CreateVector(rawData);
+  return offsets;
+}
+
+SavestateBlobOffsets CSavestateBlob::CreateWriteOffsets(flatbuffers::FlatBufferBuilder& builder,
+                                                        const PendingSavestateBlob& pending,
+                                                        const char* fieldName)
+{
+  if (!pending.HasCompressedData())
+    return CreateWriteOffsets(builder, pending.raw, fieldName);
+
+  if (pending.uncompressedSize == 0 || pending.compressed.size() > pending.uncompressedSize)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid compressed {} pending blob",
+              fieldName ? fieldName : "blob");
+    return CreateWriteOffsets(builder, pending.raw, fieldName);
+  }
+
+  SavestateBlobOffsets offsets;
+
+  const std::vector<uint8_t> emptyData;
+  offsets.raw = builder.CreateVector(emptyData);
+  offsets.compressed = builder.CreateVector(pending.compressed);
+  offsets.compressionType = pending.compression;
+  offsets.uncompressedSize = pending.uncompressedSize;
+
+  return offsets;
+}
+
+bool CSavestateBlob::PrepareMemoryData(const SAVESTATE::Savestate& savestate,
+                                       size_t expectedSize,
+                                       std::vector<uint8_t>& decompressedMemoryData)
+{
+  decompressedMemoryData.clear();
+
+  if (!IsSupportedMemorySize(expectedSize))
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid memory size: {}", expectedSize);
+    return false;
+  }
+
+  if (savestate.memory_data_uncompressed_size() != expectedSize)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid compressed memory size {}, expected {}",
+              savestate.memory_data_uncompressed_size(), expectedSize);
+    return false;
+  }
+
+  const auto* compressed = savestate.memory_data_compressed();
+  if (compressed == nullptr || compressed->size() == 0 || compressed->size() > expectedSize ||
+      compressed->size() > MAX_SAVESTATE_MEMORY_SIZE)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid compressed memory data size");
+    return false;
+  }
+
+  //! @todo Decompress the memory data into decompressedMemoryData
+  CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Compressed memory data is not supported by this version");
+
+  return false;
+}
+
+bool CSavestateBlob::PrepareVideoData(const SAVESTATE::Savestate& savestate,
+                                      std::vector<uint8_t>& decompressedVideoData)
+{
+  decompressedVideoData.clear();
+
+  size_t packedMinimumSize = 0;
+  if (!GetPackedMinimumVideoSize(savestate, packedMinimumSize))
+    return false;
+
+  const uint64_t uncompressedSize = savestate.video_data_uncompressed_size();
+  if (uncompressedSize == 0 || uncompressedSize > MAX_SAVESTATE_VIDEO_SIZE ||
+      uncompressedSize < packedMinimumSize)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid compressed video size {}", uncompressedSize);
+    return false;
+  }
+
+  const size_t expectedSize = static_cast<size_t>(uncompressedSize);
+  const auto* compressed = savestate.video_data_compressed();
+  if (compressed == nullptr || compressed->size() == 0 || compressed->size() > expectedSize ||
+      compressed->size() > MAX_SAVESTATE_VIDEO_SIZE)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid compressed video data size");
+    return false;
+  }
+
+  //! @todo Decompress the video data into decompressedVideoData
+
+  CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Compressed video data is not supported by this version");
+  return false;
+}
+
+bool CSavestateBlob::IsValidRawMemoryData(const SAVESTATE::Savestate& savestate,
+                                          size_t expectedSize)
+{
+  if (!IsSupportedMemorySize(expectedSize))
+    return false;
+
+  const auto* memoryData = savestate.memory_data();
+  return memoryData != nullptr && memoryData->size() == expectedSize;
+}
+
+bool CSavestateBlob::HasRawVideoData(const SAVESTATE::Savestate& savestate)
+{
+  return savestate.video_data() != nullptr && savestate.video_data()->size() > 0;
+}
+
+bool CSavestateBlob::IsValidCopiedCompressedMemoryData(const SAVESTATE::Savestate& savestate)
+{
+  const auto* compressed = savestate.memory_data_compressed();
+  const uint64_t uncompressedSize = savestate.memory_data_uncompressed_size();
+
+  if (compressed == nullptr || compressed->size() == 0 ||
+      compressed->size() > MAX_SAVESTATE_MEMORY_SIZE || uncompressedSize == 0 ||
+      uncompressedSize > MAX_SAVESTATE_MEMORY_SIZE || compressed->size() > uncompressedSize)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid compressed memory data size");
+    return false;
+  }
+
+  return true;
+}
+
+bool CSavestateBlob::IsValidMemoryDataSize(size_t size)
+{
+  if (size > MAX_SAVESTATE_MEMORY_SIZE)
+    return false;
+
+  return true;
+}
+
+bool CSavestateBlob::IsSupportedMemorySize(size_t expectedSize)
+{
+  if (expectedSize == 0 || expectedSize > MAX_SAVESTATE_MEMORY_SIZE)
+    return false;
+
+  return true;
+}

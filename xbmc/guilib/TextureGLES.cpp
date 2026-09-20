@@ -13,6 +13,7 @@
 #include "guilib/TextureManager.h"
 #include "rendering/GLExtensions.h"
 #include "rendering/RenderSystem.h"
+#include "rendering/gles/RenderSystemGLES.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/GLUtils.h"
@@ -182,10 +183,9 @@ std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
 CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format)
   : CTexture(width, height, format)
 {
-  unsigned int major, minor;
-  CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
 #if defined(GL_ES_VERSION_3_0)
-  m_isGLESVersion30orNewer = major >= 3;
+  m_isGLESVersion30orNewer =
+      static_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem())->SupportsTextureSwizzle();
 #endif
 }
 

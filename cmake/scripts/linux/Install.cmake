@@ -176,6 +176,18 @@ install(FILES ${CORE_ADDON_BINDINGS_FILES}
         DESTINATION ${includedir}/${APP_NAME_LC}
         COMPONENT kodi-addon-dev)
 
+# Install kodi-addon-dev python api stub files
+set(python_stubs "")
+foreach(module xbmc xbmcaddon xbmcdrm xbmcgui xbmcplugin xbmcvfs)
+  list(APPEND python_stubs ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/swig/${module}.pyi)
+endforeach()
+if(TARGET ${APP_NAME_LC}::MicroHttpd)
+  list(APPEND python_stubs ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/swig/xbmcwsgi.pyi)
+endif()
+install(FILES ${python_stubs}
+        DESTINATION ${datarootdir}/${APP_NAME_LC}/python-stubs
+        COMPONENT kodi-addon-dev)
+
 # Install kodi-addon-dev add-on bindings
 install(FILES ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddOptions.cmake
@@ -296,29 +308,6 @@ foreach(texture ${XBT_FILES})
   install(FILES ${texture}
           DESTINATION ${datarootdir}/${APP_NAME_LC}/${dir}
           COMPONENT kodi)
-endforeach()
-
-# Install extra stuff if it exists
-if(EXISTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/extra-installs)
-  install(CODE "file(STRINGS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/extra-installs dirs)
-              foreach(dir \${dirs})
-                file(GLOB_RECURSE FILES RELATIVE ${CMAKE_BINARY_DIR} \${dir}/*)
-                foreach(file \${FILES})
-                  get_filename_component(dir \${file} DIRECTORY)
-                  file(INSTALL \${file} DESTINATION ${datarootdir}/${APP_NAME_LC}/\${dir})
-                endforeach()
-              endforeach()")
-endif()
-
-if(NOT "$ENV{DESTDIR}" STREQUAL "")
-  set(DESTDIR ${CMAKE_BINARY_DIR}/$ENV{DESTDIR})
-endif()
-foreach(subdir ${build_dirs})
-  if(NOT subdir MATCHES kodi-platform)
-    string(REPLACE " " ";" subdir ${subdir})
-    list(GET subdir 0 id)
-    install(CODE "execute_process(COMMAND ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${id}/src/${id}-build install DESTDIR=${DESTDIR})")
-  endif()
 endforeach()
 
 # generate packages? yes please, if everything checks out

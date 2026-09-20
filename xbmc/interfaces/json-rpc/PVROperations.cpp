@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "XBDateTime.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClients.h"
@@ -30,6 +31,7 @@
 #include "utils/Variant.h"
 
 #include <memory>
+#include <vector>
 
 using namespace JSONRPC;
 using namespace PVR;
@@ -284,6 +286,66 @@ JSONRPC_STATUS CPVROperations::GetBroadcastIsPlayable(const std::string& method,
     return InvalidParams;
 
   result = epgTag->IsPlayable();
+
+  return OK;
+}
+
+JSONRPC_STATUS CPVROperations::GetPlayableBroadcasts(const std::string& method,
+                                                     ITransportLayer* transport,
+                                                     IClient* client,
+                                                     const CVariant& parameterObject,
+                                                     CVariant& result)
+{
+  if (!CServiceBroker::GetPVRManager().IsStarted())
+    return FailedToExecute;
+
+  const std::shared_ptr<const CPVRChannelGroupsContainer> channelGroupContainer{
+      CServiceBroker::GetPVRManager().ChannelGroups()};
+  if (!channelGroupContainer)
+    return FailedToExecute;
+
+  CDateTime start;
+  CDateTime end;
+  if (!start.SetFromDBDateTime(parameterObject["starttime"].asString()) ||
+      !end.SetFromDBDateTime(parameterObject["endtime"].asString()) || end < start)
+  {
+    return InvalidParams;
+  }
+
+  const std::shared_ptr<const CPVRChannel> channel{channelGroupContainer->GetChannelById(
+      static_cast<int>(parameterObject["channelid"].asInteger()))};
+  if (!channel)
+    return InvalidParams;
+
+  const std::shared_ptr<const CPVREpg> channelEpg{channel->GetEPG()};
+  if (!channelEpg)
+    return InternalError;
+
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> tagsInRange;
+  for (const auto& tag : channelEpg->GetTags())
+  {
+    if (tag->EndAsUTC() > start && tag->StartAsUTC() < end)
+    {
+      tagsInRange.emplace_back(tag);
+    }
+  }
+
+  // Resolving playability costs a call into the client per tag, so bound how many are
+  // examined rather than how many are returned.
+  int first{0};
+  int last{0};
+  HandleLimits(parameterObject, result, static_cast<int>(tagsInRange.size()), first, last);
+
+  result["broadcastids"] = CVariant{CVariant::VariantTypeArray};
+
+  for (int index = first; index < last; ++index)
+  {
+    const std::shared_ptr<const CPVREpgInfoTag>& tag{tagsInRange[index]};
+    if (tag->IsPlayable())
+    {
+      result["broadcastids"].append(tag->DatabaseID());
+    }
+  }
 
   return OK;
 }

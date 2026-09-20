@@ -8,12 +8,10 @@ all: .installed-$(PLATFORM)
 .configured-$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py config
 	touch $@
 
 .installed-$(PLATFORM): .configured-$(PLATFORM)
-	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build
-	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py install --prefix="$(NATIVEPREFIX)"
+	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 -m pip install --no-deps --no-build-isolation --prefix="$(NATIVEPREFIX)" .
 	touch $@
 
 clean:

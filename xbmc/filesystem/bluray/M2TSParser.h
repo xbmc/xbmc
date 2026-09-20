@@ -71,7 +71,7 @@ struct TSVideoStreamInfo : TSStreamInfo
   unsigned int height{0};
   unsigned int width{0};
   unsigned int bitDepth{0};
-  float aspectRatio{0.0};
+  float sampleAspectRatio{0.0}; // width:height of a sample, not the display aspect ratio
   bool is3d{false};
 
   bool hdr10{false};
@@ -79,6 +79,18 @@ struct TSVideoStreamInfo : TSStreamInfo
   bool dolbyVision{false};
   bool isEnhancementLayer{false};
 };
+
+// The ratio the frame is to be displayed at, which is the coded frame's ratio scaled by the shape
+// of a sample (see DVDDemuxFFmpeg, which derives fAspect the same way). Zero when the elementary
+// stream did not signal a sample aspect ratio or the frame size is unknown.
+inline float GetDisplayAspectRatio(const TSVideoStreamInfo& videoStream)
+{
+  if (videoStream.sampleAspectRatio <= 0.0f || videoStream.width == 0 || videoStream.height == 0)
+    return 0.0f;
+
+  return static_cast<float>(videoStream.width) / static_cast<float>(videoStream.height) *
+         videoStream.sampleAspectRatio;
+}
 
 using StreamMap = std::unordered_map<unsigned int, std::shared_ptr<TSStreamInfo>>;
 

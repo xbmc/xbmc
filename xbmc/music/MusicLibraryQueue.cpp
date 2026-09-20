@@ -25,6 +25,7 @@
 #include "utils/Variant.h"
 
 #include <mutex>
+#include <ranges>
 #include <utility>
 
 CMusicLibraryQueue::CMusicLibraryQueue()
@@ -138,19 +139,21 @@ void CMusicLibraryQueue::ScanLibrary(const std::string& strDirectory,
   AddJob(new CMusicLibraryScanningJob(strDirectory, flags, showProgress));
 }
 
-void CMusicLibraryQueue::StartAlbumScan(const std::string & strDirectory, bool refresh)
+void CMusicLibraryQueue::StartScan(ADDON::ContentType content,
+                                   const std::string& strDirectory,
+                                   bool refresh)
 {
-  int flags = MUSIC_INFO::CMusicInfoScanner::SCAN_ALBUMS;
-  if (refresh)
-    flags |= MUSIC_INFO::CMusicInfoScanner::SCAN_RESCAN;
-  AddJob(new CMusicLibraryScanningJob(strDirectory, flags, true));
-}
+  int flags = 0;
+  if (content == ADDON::ContentType::ALBUMS)
+    flags = MUSIC_INFO::CMusicInfoScanner::SCAN_ALBUMS;
+  else if (content == ADDON::ContentType::ARTISTS)
+    flags = MUSIC_INFO::CMusicInfoScanner::SCAN_ARTISTS;
+  else
+    return;
 
-void CMusicLibraryQueue::StartArtistScan(const std::string& strDirectory, bool refresh)
-{
-  int flags = MUSIC_INFO::CMusicInfoScanner::SCAN_ARTISTS;
   if (refresh)
     flags |= MUSIC_INFO::CMusicInfoScanner::SCAN_RESCAN;
+
   AddJob(new CMusicLibraryScanningJob(strDirectory, flags, true));
 }
 
@@ -263,6 +266,17 @@ void CMusicLibraryQueue::CancelJob(CMusicLibraryJob *job)
 void CMusicLibraryQueue::CancelAllJobs()
 {
   std::unique_lock lock(m_critical);
+
+  // Ask any job that is already being processed to stop to prevent slow shutdown
+  for (const auto& jobs : m_jobs | std::views::values)
+  {
+    for (const auto& job : jobs)
+    {
+      if (job->CanBeCancelled())
+        job->Cancel();
+    }
+  }
+
   CJobQueue::CancelJobs();
 
   // remove all scanning jobs

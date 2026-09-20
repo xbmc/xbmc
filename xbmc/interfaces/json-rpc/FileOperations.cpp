@@ -28,8 +28,10 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/windows/GUIWindowVideoBase.h"
 
 #include <memory>
+#include <set>
 
 using namespace KODI;
 using namespace KODI::REGEXP;
@@ -112,6 +114,17 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
       JSONRPC_STATUS status = CAudioLibrary::GetAdditionalDetails(parameterObject, items);
       if (status != OK)
         return status;
+    }
+    else if (media == "files" && NeedsLibraryLookup(parameterObject))
+    {
+      CVideoDatabase videoDatabase;
+      if (videoDatabase.Open())
+      {
+        // Matched folder paths may be rewritten according to the GUI stacking setting.
+        CGUIWindowVideoBase::LoadVideoInfo(
+            items, videoDatabase, false,
+            CVideoLibrary::GetDetailsFromJsonParameters(parameterObject));
+      }
     }
 
     CFileItemList filteredFiles;
@@ -422,6 +435,24 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
         return true;
       }
     }
+  }
+
+  return false;
+}
+
+bool CFileOperations::NeedsLibraryLookup(const CVariant& parameterObject)
+{
+  if (!parameterObject.isMember("properties") || !parameterObject["properties"].isArray())
+    return false;
+
+  static const std::set<std::string> fileProperties = {"file",     "filetype", "label",
+                                                       "mimetype", "size",     "lastmodified"};
+
+  for (CVariant::const_iterator_array property = parameterObject["properties"].begin_array();
+       property != parameterObject["properties"].end_array(); ++property)
+  {
+    if (property->isString() && !fileProperties.contains(property->asString()))
+      return true;
   }
 
   return false;

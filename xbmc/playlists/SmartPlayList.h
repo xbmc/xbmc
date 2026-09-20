@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,6 +12,7 @@
 #include "utils/SortUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+#include <optional>
 #include <set>
 #include <string>
 #include <vector>
@@ -20,6 +21,7 @@ class CGUIDialogSmartPlaylistEditor;
 class CGUIDialogMediaFilter;
 class CURL;
 class CVariant;
+enum class WatchedMode;
 
 namespace KODI::PLAYLIST
 {
@@ -151,6 +153,9 @@ public:
   void SetGroupMixed(bool mixed) { m_groupMixed = mixed; }
   bool IsGroupMixed() const { return m_groupMixed; }
 
+  std::optional<WatchedMode> GetWatchedMode() const { return m_watchedMode; }
+  void SetWatchedMode(std::optional<WatchedMode> mode) { m_watchedMode = mode; }
+
   /*! \brief get the where clause for a playlist
    We handle playlists inside playlists separately in order to ensure we don't introduce infinite loops
    by playlist A including playlist B which also (perhaps via other playlists) then includes playlistA.
@@ -197,6 +202,7 @@ private:
   SortAttribute m_orderAttributes;
   std::string m_group;
   bool m_groupMixed;
+  std::optional<WatchedMode> m_watchedMode;
 
   CXBMCTinyXML m_xmlDoc;
 };

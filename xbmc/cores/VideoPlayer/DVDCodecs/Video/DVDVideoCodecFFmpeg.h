@@ -49,6 +49,7 @@ public:
 
 protected:
   void Dispose();
+  CDVDVideoCodec::VCReturn HandleHwFatal();
   static enum AVPixelFormat GetFormat(struct AVCodecContext * avctx, const AVPixelFormat * fmt);
 
   int  FilterOpen(const std::string& filters, bool scale);
@@ -85,6 +86,7 @@ protected:
 
   std::string m_name;
   int m_decoderState;
+  int m_hwFailedCount = 0;
   IHardwareDecoder *m_pHardware = nullptr;
   int m_iLastKeyframe = 0;
   double m_dts = DVD_NOPTS_VALUE;

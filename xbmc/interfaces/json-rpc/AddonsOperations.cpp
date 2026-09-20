@@ -8,6 +8,7 @@
 
 #include "AddonsOperations.h"
 
+#include "AddonsExecuteAddon.h"
 #include "JSONUtils.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
@@ -182,42 +183,18 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
       addon->Type() >= AddonType::MAX_TYPES)
     return InvalidParams;
 
-  std::string argv;
-  CVariant params = parameterObject["params"];
-  if (params.isObject())
-  {
-    for (CVariant::const_iterator_map it = params.begin_map(); it != params.end_map(); ++it)
-    {
-      if (it != params.begin_map())
-        argv += ",";
-      argv += it->first + "=" + it->second.asString();
-    }
-  }
-  else if (params.isArray())
-  {
-    for (CVariant::const_iterator_array it = params.begin_array(); it != params.end_array(); ++it)
-    {
-      if (it != params.begin_array())
-        argv += ",";
-      argv += StringUtils::Paramify(it->asString());
-    }
-  }
-  else if (params.isString())
-  {
-    if (!params.empty())
-      argv = StringUtils::Paramify(params.asString());
-  }
+  const ParsedExecuteAddon parsed = ParseExecuteAddonParams(parameterObject);
 
-  std::string cmd;
-  if (params.empty())
-    cmd = StringUtils::Format("RunAddon({})", id);
+  if (parsed.wait)
+  {
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               parsed.command);
+  }
   else
-    cmd = StringUtils::Format("RunAddon({}, {})", id, argv);
-
-  if (params["wait"].asBoolean())
-    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
-  else
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  {
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               parsed.command);
+  }
 
   return ACK;
 }

@@ -143,10 +143,15 @@ void CVideoItemArtworkHandler::PersistArt(const std::string& art)
     return;
   }
 
-  videodb.SetArtForItem(m_item->GetVideoInfoTag()->m_iDbId, m_item->GetVideoInfoTag()->m_type,
-                        m_artType, art);
+  const CVideoInfoTag* tag = m_item->GetVideoInfoTag();
 
-  videodb.UpdateArtForItem(m_item->GetVideoInfoTag()->m_iDbId, m_artType);
+  const bool isAssetArt{VIDEO::IsVideoAssetFile(*m_item)};
+  const int mediaId = isAssetArt ? tag->m_iFileId : tag->m_iDbId;
+  const MediaType mediaType = isAssetArt ? MediaTypeVideoVersion : tag->m_type;
+
+  videodb.SetArtForItem(mediaId, mediaType, m_artType, art);
+
+  videodb.UpdateArtForItem(tag->m_iDbId, tag->m_type);
 }
 
 void CVideoItemArtworkHandler::AddItemPathStringToFileBrowserSources(

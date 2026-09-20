@@ -130,6 +130,24 @@ protected:
   virtual void Reset();
   virtual size_t GetNumItems() const { return m_items.size(); }
   virtual int GetCurrentPage() const;
+  /*!
+   * \brief Get the number of fully visible items in the container area.
+   * \note Use for page navigation, not for layout/rendering where partially visible items matter.
+   * \return Cached number of items fully visible in the current viewport when the screen range can
+   *         be determined. Falls back to the calculated item count, which can include partially
+   *         visible items.
+   */
+  int GetPageSize() const;
+  /*! \brief Calculate and cache the page navigation size. */
+  void CalculatePageSize();
+  /*! \brief Calculate and cache the visible screen range for this container. */
+  virtual bool CalculateScreenRange();
+  /*! \brief Get the visible screen range for this container's scroll orientation in skin coordinates.
+   \param screenStart start of the visible screen range.
+   \param screenEnd end of the visible screen range.
+   \return true if the cached screen range was determined, false otherwise.
+   */
+  bool GetScreenRange(float& screenStart, float& screenEnd) const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   void OnFocus() override;
   void OnUnFocus() override;
@@ -146,7 +164,11 @@ protected:
   unsigned int m_lastHoldTime;
 
   ORIENTATION m_orientation;
-  int m_itemsPerPage;
+  int m_itemsPerPage; ///< \brief number of layout slots in the container area, including partial slots
+  int m_pageSize; ///< \brief cached number of fully visible items used for page navigation
+  bool m_hasScreenRange;
+  float m_screenStart;
+  float m_screenEnd;
 
   std::vector<std::shared_ptr<CGUIListItem>> m_items;
   typedef std::vector<std::shared_ptr<CGUIListItem>>::iterator iItems;

@@ -120,7 +120,6 @@ endif()
 if(CMAKE_TOOLCHAIN_FILE)
   list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
   message(STATUS "Toolchain specified")
-  message(STATUS ${BUILD_ARGS})
 endif()
 
 # used for addons where need special folders to store there content (if
@@ -187,6 +186,9 @@ if(NOT WIN32)
     message(STATUS "NEED_SUDO: ${NEED_SUDO} (no write permission for ${CMAKE_INSTALL_PREFIX})")
   endif()
 endif()
+
+# show the final build args
+message(DEBUG "Addon build args:\n${BUILD_ARGS}")
 
 ### prepare the build environment for the binary addons
 # copy the PrepareEnv.cmake script to the depends path so that we can include it

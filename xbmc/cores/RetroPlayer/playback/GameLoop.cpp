@@ -22,6 +22,10 @@ constexpr double DEFAULT_FPS = 60.0;
 
 // Duration to sleep while the game loop is paused
 constexpr auto PAUSE_SLEEP = 5s;
+
+// How many frames the loop may fall behind before it gives up the deficit
+// rather than trying to run them back to back
+constexpr unsigned int MAX_FRAME_DEFICIT = 2;
 } // namespace
 
 CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps)
@@ -62,6 +66,11 @@ void CGameLoop::SetSpeed(double speedFactor)
 
   // Wake up the thread to apply the new speed immediately
   m_sleepEvent.Set();
+}
+
+void CGameLoop::SetFrameRate(double fps)
+{
+  m_fps.store(fps != 0.0 ? fps : DEFAULT_FPS);
 }
 
 void CGameLoop::PauseAsync()
@@ -116,7 +125,21 @@ void CGameLoop::Process(void)
       m_lastFrameUs = nextFrameUs;
 
       // Calculate how much time to sleep before the next frame should be processed
-      const std::chrono::microseconds sleepTimeUs = (nextFrameUs - NowUs());
+      std::chrono::microseconds sleepTimeUs = (nextFrameUs - NowUs());
+
+      // A frame that overruns leaves the loop behind, and the deficit is
+      // carried into the next one so that ordinary jitter averages out to the
+      // right rate. A long stall is not jitter: opening a game leaves hundreds
+      // of milliseconds owed, and carrying that makes the loop repay it by
+      // running frames back to back with no sleep at all, which the player sees
+      // as the game fast-forwarding. Past a few frames, give the deficit up and
+      // carry on from now -- those frames are late whatever happens, and
+      // running them early does not make them less so.
+      if (-sleepTimeUs > FrameTimeUs() * MAX_FRAME_DEFICIT)
+      {
+        m_lastFrameUs = NowUs();
+        sleepTimeUs = std::chrono::microseconds::zero();
+      }
 
       // Only sleep if there is time left before the next frame
       if (sleepTimeUs > std::chrono::microseconds::zero())
@@ -133,7 +156,7 @@ std::chrono::microseconds CGameLoop::FrameTimeUs() const
   // Calculate the duration of one frame in microseconds based on the FPS and
   // speed factor
   const double factor = m_loopSpeedFactor != 0.0 ? std::abs(m_loopSpeedFactor) : 1.0;
-  return std::chrono::duration_cast<std::chrono::microseconds>(1s / m_fps / factor);
+  return std::chrono::duration_cast<std::chrono::microseconds>(1s / m_fps.load() / factor);
 }
 
 std::chrono::microseconds CGameLoop::NowUs() const

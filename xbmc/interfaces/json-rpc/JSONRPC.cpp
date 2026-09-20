@@ -340,44 +340,18 @@ inline void CJSONRPC::BuildResponse(const CVariant& request, JSONRPC_STATUS code
     case ACK:
       response["result"] = "OK";
       break;
-    case NotFound:
-      response["error"]["code"] = NotFound;
-      response["error"]["message"] = "Not found.";
-      break;
-    case Unavailable:
-      response["error"]["code"] = Unavailable;
-      response["error"]["message"] = "Requested item is unavailable.";
-      break;
-    case InvalidRequest:
-      response["error"]["code"] = InvalidRequest;
-      response["error"]["message"] = "Invalid request.";
-      break;
-    case InvalidParams:
-      response["error"]["code"] = InvalidParams;
-      response["error"]["message"] = "Invalid params.";
-      if (!result.isNull())
+    default:
+    {
+      const JsonRpcStatusDescription* status = StatusToDescription(code);
+      if (status == nullptr)
+        status = StatusToDescription(InternalError);
+
+      response["error"]["code"] = status->status;
+      response["error"]["message"] = status->message;
+      if (status->hasData && !result.isNull())
         response["error"]["data"] = result;
       break;
-    case MethodNotFound:
-      response["error"]["code"] = MethodNotFound;
-      response["error"]["message"] = "Method not found.";
-      break;
-    case ParseError:
-      response["error"]["code"] = ParseError;
-      response["error"]["message"] = "Parse error.";
-      break;
-    case BadPermission:
-      response["error"]["code"] = BadPermission;
-      response["error"]["message"] = "Bad client permission.";
-      break;
-    case FailedToExecute:
-      response["error"]["code"] = FailedToExecute;
-      response["error"]["message"] = "Failed to execute method.";
-      break;
-    default:
-      response["error"]["code"] = InternalError;
-      response["error"]["message"] = "Internal error.";
-      break;
+    }
   }
 }
 

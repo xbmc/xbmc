@@ -14,7 +14,7 @@
 class TiXmlElement;
 namespace XFILE
 {
-class CCurlFile;
+class IHttpClient;
 }
 
 class CScraperUrl
@@ -104,7 +104,7 @@ public:
 
   static bool Get(const SUrlEntry& scrURL,
                   std::string& strHTML,
-                  XFILE::CCurlFile& http,
+                  XFILE::IHttpClient& http,
                   const std::string& cacheContext);
 
   // ATTENTION: this member MUST NOT be used directly except from databases

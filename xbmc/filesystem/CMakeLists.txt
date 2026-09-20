@@ -3,6 +3,7 @@ set(SOURCES AddonsDirectory.cpp
             CacheStrategy.cpp
             CircularCache.cpp
             CurlFile.cpp
+            CurlHttpClient.cpp
             DAVCommon.cpp
             DAVDirectory.cpp
             DAVFile.cpp
@@ -15,10 +16,12 @@ set(SOURCES AddonsDirectory.cpp
             EpisodesDirectory.cpp
             EventsDirectory.cpp
             FavouritesDirectory.cpp
+            FFmpegVfsContext.cpp
             FileCache.cpp
             File.cpp
             FileDirectoryFactory.cpp
             FileFactory.cpp
+            HttpClientFactory.cpp
             FTPDirectory.cpp
             FTPParse.cpp
             HTTPDirectory.cpp
@@ -66,6 +69,7 @@ set(HEADERS AddonsDirectory.h
             CacheStrategy.h
             CircularCache.h
             CurlFile.h
+            CurlHttpClient.h
             DAVCommon.h
             DAVDirectory.h
             DAVFile.h
@@ -81,13 +85,16 @@ set(HEADERS AddonsDirectory.h
             FTPDirectory.h
             FTPParse.h
             FavouritesDirectory.h
+            FFmpegVfsContext.h
             File.h
             FileCache.h
             FileDirectoryFactory.h
             FileFactory.h
+            HttpClientFactory.h
             HTTPDirectory.h
             IDirectory.h
             IFile.h
+            IHttpClient.h
             IFileDirectory.h
             IFileTypes.h
             ImageFile.h

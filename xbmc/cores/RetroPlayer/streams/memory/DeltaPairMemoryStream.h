@@ -29,8 +29,16 @@ public:
 
   // implementation of IMemoryStream via CLinearMemoryStream
   void Reset() override;
+  void SetMaxFrameCount(uint64_t maxFrameCount) override;
+  void SubmitFrame() override;
+  void SubmitFrame(uint32_t discStateId);
+  void SubmitFrame(uint32_t discStateId, uint64_t frameCounter);
+  uint64_t FutureFramesAvailable() const override;
+  uint64_t AdvanceFrames(uint64_t frameCount) override;
   uint64_t PastFramesAvailable() const override;
   uint64_t RewindFrames(uint64_t frameCount) override;
+
+  uint32_t GetDiscStateID() const { return m_currentDiscStateId; }
 
 protected:
   // implementation of CLinearMemoryStream
@@ -58,10 +66,17 @@ protected:
   struct MemoryFrame
   {
     DeltaPairVector buffer;
-    uint64_t frameHistoryCount;
+    uint64_t beforeFrameHistoryCount;
+    uint64_t afterFrameHistoryCount;
+    uint32_t beforeDiscStateId;
+    uint32_t afterDiscStateId;
   };
 
   std::deque<MemoryFrame> m_rewindBuffer;
+  std::deque<MemoryFrame> m_advanceBuffer;
+  uint32_t m_currentDiscStateId{0};
+  uint32_t m_nextDiscStateId{0};
+  uint64_t m_nextFrameHistory{0};
 };
 } // namespace RETRO
 } // namespace KODI

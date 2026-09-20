@@ -77,6 +77,7 @@ namespace XBMCAddon
     inline Tuple(T1 p1, T2 p2) : Tuple<T1,T2>(p1,p2) {}
     explicit inline Tuple(T1 p1) : Tuple<T1,T2>(p1) {}
     inline Tuple() = default;
+    Tuple<T1, T2, T3>& operator=(const Tuple<T1, T2, T3>& other) = default;
     inline Tuple(const Tuple<T1,T2,T3>& o) : Tuple<T1,T2>(o), v3(o.v3) {}
 
     inline T3& third() { TupleBase::nvs(3); return v3; }
@@ -95,6 +96,7 @@ namespace XBMCAddon
     inline Tuple(T1 p1, T2 p2) : Tuple<T1,T2,T3>(p1,p2) {}
     explicit inline Tuple(T1 p1) : Tuple<T1,T2,T3>(p1) {}
     inline Tuple() = default;
+    Tuple<T1, T2, T3, T4>& operator=(const Tuple<T1, T2, T3, T4>& other) = default;
     inline Tuple(const Tuple<T1,T2,T3,T4>& o) : Tuple<T1,T2,T3>(o), v4(o.v4) {}
 
     inline T4& fourth() { TupleBase::nvs(4); return v4; }

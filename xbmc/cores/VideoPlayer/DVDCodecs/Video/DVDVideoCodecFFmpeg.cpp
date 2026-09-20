@@ -676,12 +676,17 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     if (ret == VC_PICTURE)
     {
       if (m_pHardware->GetPicture(m_pCodecContext, pVideoPicture))
+      {
+        m_hwFailedCount = 0;
         return VC_PICTURE;
+      }
       else
         return VC_ERROR;
     }
     else if (ret == VC_BUFFER)
       ;
+    else if (ret == VC_FATAL)
+      return HandleHwFatal();
     else
       return ret;
   }
@@ -739,7 +744,10 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
       if (ret == VC_PICTURE)
       {
         if (m_pHardware->GetPicture(m_pCodecContext, pVideoPicture))
+        {
+          m_hwFailedCount = 0;
           return VC_PICTURE;
+        }
         else
           return VC_ERROR;
       }
@@ -851,13 +859,15 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     }
     else if (ret == VC_FATAL)
     {
-      m_decoderState = STATE_HW_FAILED;
-      return VC_REOPEN;
+      return HandleHwFatal();
     }
     else if (ret == VC_PICTURE)
     {
       if (m_pHardware->GetPicture(m_pCodecContext, pVideoPicture))
+      {
+        m_hwFailedCount = 0;
         return VC_PICTURE;
+      }
       else
         return VC_ERROR;
     }
@@ -972,6 +982,16 @@ void CDVDVideoCodecFFmpeg::Reopen()
   }
 }
 
+CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::HandleHwFatal()
+{
+  m_hwFailedCount++;
+  CLog::Log(LOGWARNING,
+            "CDVDVideoCodecFFmpeg::{} - hw decode failure {} (consecutive), retrying hardware",
+            __FUNCTION__, m_hwFailedCount);
+  m_decoderState = STATE_NONE;
+  return VC_REOPEN;
+}
+
 bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
 {
   if (!m_pFrame)
@@ -1039,17 +1059,26 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
     pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
   }
 
+  // sw_pix_fmt is unset for a decoder that allocates its own frames, since it reaches neither
+  // place libavcodec assigns it. Fall back to the frame, which is the picture actually handed to
+  // the renderer, but never to a hardware surface, which describes no layout.
   pVideoPicture->pixelFormat = m_pCodecContext->sw_pix_fmt;
+  if (pVideoPicture->pixelFormat == AV_PIX_FMT_NONE)
+  {
+    const auto frameFormat = static_cast<AVPixelFormat>(m_pFrame->format);
+    const AVPixFmtDescriptor* frameDesc = av_pix_fmt_desc_get(frameFormat);
+    if (frameDesc && !(frameDesc->flags & AV_PIX_FMT_FLAG_HWACCEL))
+    {
+      pVideoPicture->pixelFormat = frameFormat;
+    }
+  }
 
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries == AVCOL_PRI_UNSPECIFIED ? m_hints.colorPrimaries : m_pCodecContext->color_primaries;
   pVideoPicture->m_originalColorPrimaries = pVideoPicture->color_primaries;
   pVideoPicture->color_transfer = m_pCodecContext->color_trc == AVCOL_TRC_UNSPECIFIED ? m_hints.colorTransferCharacteristic : m_pCodecContext->color_trc;
   pVideoPicture->color_space = m_pCodecContext->colorspace == AVCOL_SPC_UNSPECIFIED ? m_hints.colorSpace : m_pCodecContext->colorspace;
-  // sw_pix_fmt always describes the actual pixel layout (pix_fmt is opaque
-  // for hwaccel paths like AV_PIX_FMT_VAAPI). libavutil api covers every
-  // codec, chroma layout, and bit depth without per-profile enumeration.
-  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_pCodecContext->sw_pix_fmt);
+  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(pVideoPicture->pixelFormat);
   pVideoPicture->colorBits = desc ? desc->comp[0].depth : 8;
 
   if (m_pCodecContext->color_range == AVCOL_RANGE_JPEG ||

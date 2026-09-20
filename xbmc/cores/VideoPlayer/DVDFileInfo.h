@@ -8,23 +8,40 @@
 
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
 class CFileItem;
 class CDVDDemux;
+class CDVDVideoCodec;
 class CStreamDetails;
 class CStreamDetailSubtitle;
 class CDVDInputStream;
 class CTexture;
 class CTextureDetails;
+struct VideoPicture;
 
 class CDVDFileInfo
 {
 public:
   static std::unique_ptr<CTexture> ExtractThumbToTexture(const CFileItem& fileItem,
                                                          int chapterNumber = 0);
+
+  /*!
+   * @brief Seek the demuxer to a position and decode the first picture that is not dropped.
+   * @param seekTo_ms position to seek to, in milliseconds
+   * @param[out] picture the decoded picture
+   * @param[out] packetsTried incremented once per packet read
+   * @return true when a picture was decoded
+   */
+  static bool SeekAndDecodeFirstPicture(CDVDDemux& demuxer,
+                                        CDVDVideoCodec& codec,
+                                        int videoStream,
+                                        int64_t seekTo_ms,
+                                        VideoPicture& picture,
+                                        int& packetsTried);
 
   /*!
    * @brief Can a thumbnail image and file stream details be extracted from this file item?

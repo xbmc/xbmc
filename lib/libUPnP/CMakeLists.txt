@@ -85,8 +85,7 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windo
     list(APPEND SOURCES Neptune/Source/System/Null/NptNullAutoreleasePool.cpp)
   endif()
 else()
-  list(APPEND SOURCES Neptune/Source/System/Win32/NptWin32Console.cpp
-                      Neptune/Source/System/Win32/NptWin32Debug.cpp
+  list(APPEND SOURCES Neptune/Source/System/Win32/NptWin32Debug.cpp
                       Neptune/Source/System/Win32/NptWin32DynamicLibraries.cpp
                       Neptune/Source/System/Win32/NptWin32MessageQueue.cpp
                       Neptune/Source/System/Win32/NptWin32Network.cpp

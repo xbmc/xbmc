@@ -73,6 +73,7 @@ public:
                         float position,
                         unsigned int motionTimeMs) override;
   void OnInputFrame() override {}
+  JOYSTICK::IInputReceiver* InputReceiver(void) override;
 
   // Input accessors
   const std::string& GetPortAddress() const { return m_portAddress; }
@@ -98,6 +99,11 @@ private:
   // Input parameters
   std::unique_ptr<CPortInput> m_portInput;
   PERIPHERALS::PeripheralPtr m_sourcePeripheral;
+
+  // Motor events are reported once each, not once per frame of rumble
+  bool m_bLoggedRumble{false};
+  bool m_bLoggedRumbleFailure{false};
+  bool m_bLoggedRumbleUnwired{false};
 };
 } // namespace GAME
 } // namespace KODI

@@ -38,7 +38,7 @@ GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient& gameCli
 {
   GameClientSubsystems subsystems = {};
 
-  subsystems.Cheevos = std::make_unique<CGameClientCheevos>(gameClient, gameStruct);
+  subsystems.Cheevos = std::make_unique<CGameClientCheevos>(gameClient, gameStruct, clientAccess);
   subsystems.Discs = std::make_unique<CGameClientDiscs>(gameClient, gameStruct, clientAccess);
   subsystems.Input = std::make_unique<CGameClientInput>(gameClient, gameStruct, clientAccess);
   subsystems.AddonProperties =

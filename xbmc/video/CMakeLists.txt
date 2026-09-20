@@ -3,6 +3,7 @@ set(SOURCES Bookmark.cpp
             FilenameAttributes.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
+            PlayerControllerActions.cpp
             SetInfoTag.cpp
             Teletext.cpp
             VideoDatabase.cpp
@@ -14,9 +15,11 @@ set(SOURCES Bookmark.cpp
             VideoGeneratedImageFileLoader.cpp
             VideoInfoDownloader.cpp
             VideoInfoScanner.cpp
+            VideoInfoScannerArt.cpp
             VideoInfoTag.cpp
             VideoItemArtworkHandler.cpp
             VideoLibraryQueue.cpp
+            VideoStreamSelect.cpp
             VideoThumbLoader.cpp
             VideoUtils.cpp
             ViewModeSettings.cpp)
@@ -27,6 +30,7 @@ set(HEADERS Bookmark.h
             FilenameAttributes.h
             GUIViewStateVideo.h
             PlayerController.h
+            PlayerControllerActions.h
             SetInfoTag.h
             Teletext.h
             TeletextDefines.h
@@ -39,9 +43,11 @@ set(HEADERS Bookmark.h
             VideoGeneratedImageFileLoader.h
             VideoInfoDownloader.h
             VideoInfoScanner.h
+            VideoInfoScannerArt.h
             VideoInfoTag.h
             VideoItemArtworkHandler.h
             VideoLibraryQueue.h
+            VideoStreamSelect.h
             VideoThumbLoader.h
             VideoUtils.h
             VideoManagerTypes.h

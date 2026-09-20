@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2012-2018 Team Kodi
+ *  Copyright (C) 2012-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -51,6 +51,11 @@ private:
    \param modal true if we should wait for the slider to finish. Defaults to false
    */
   void ShowSlider(int action, int label, float value, float min, float delta, float max, bool modal = false);
+
+  /*! \brief switch to the next audio stream of the playing file and notify the user
+   \return true if the action is considered handled
+   */
+  bool NextAudioStream();
 
   int m_sliderAction = 0; ///< \brief set to the action id for a slider being displayed \sa ShowSlider
   KODI::UTILS::MOVING_SPEED::CMovingSpeed m_movingSpeed;

@@ -8,21 +8,21 @@
 
 #include "RenderBufferOpenGLES.h"
 
-#include "cores/RetroPlayer/rendering/RenderContext.h"
+#include "rendering/GLExtensions.h"
 
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferOpenGLES::CRenderBufferOpenGLES(CRenderContext& context,
-                                             GLuint pixelType,
+CRenderBufferOpenGLES::CRenderBufferOpenGLES(GLuint pixelType,
                                              GLuint internalFormat,
                                              GLuint pixelFormat,
-                                             GLuint bpp)
-  : m_context(context),
-    m_pixelType(pixelType),
+                                             GLuint bpp,
+                                             bool supportsTextureSwizzle)
+  : m_pixelType(pixelType),
     m_internalFormat(internalFormat),
     m_pixelFormat(pixelFormat),
-    m_bpp(bpp)
+    m_bpp(bpp),
+    m_swizzle(supportsTextureSwizzle && bpp == 4)
 {
 }
 
@@ -43,8 +43,13 @@ void CRenderBufferOpenGLES::CreateTexture()
 
   // Force alpha to 1, because game client can leave it undefined
 #if defined(GL_ES_VERSION_3_0)
-  if (m_internalFormat == GL_RGBA || m_internalFormat == GL_BGRA_EXT)
+  if (m_swizzle)
+  {
+    // XRGB bytes are uploaded unchanged; X is not alpha.
+    glTexParameteri(m_textureTarget, GL_TEXTURE_SWIZZLE_R, GL_BLUE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_SWIZZLE_B, GL_RED);
     glTexParameteri(m_textureTarget, GL_TEXTURE_SWIZZLE_A, GL_ONE);
+  }
 #endif
 
   glTexImage2D(m_textureTarget, 0, m_internalFormat, m_width, m_height, 0, m_pixelFormat,
@@ -64,7 +69,7 @@ bool CRenderBufferOpenGLES::UploadTexture()
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, m_bpp);
 
-  if (m_bpp == 4 && m_pixelFormat == GL_RGBA)
+  if (m_bpp == 4 && m_pixelFormat == GL_RGBA && !m_swizzle)
   {
     // XOR Swap RGBA -> BGRA
     // GLES 2.0 doesn't support strided textures (unless GL_UNPACK_ROW_LENGTH_EXT is supported)
@@ -76,7 +81,7 @@ bool CRenderBufferOpenGLES::UploadTexture()
       glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelFormat, m_pixelType, pixels);
     }
   }
-  else if (m_context.IsExtSupported("GL_EXT_unpack_subimage"))
+  else if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_unpack_subimage))
   {
 #ifdef GL_UNPACK_ROW_LENGTH_EXT
     glPixelStorei(GL_UNPACK_ROW_LENGTH_EXT, stride / m_bpp);

@@ -465,6 +465,10 @@ extern "C"
   typedef struct AddonToKodiFuncTable_VideoCodec
   {
     KODI_HANDLE kodiInstance;
+    //! @brief Obtain a frame buffer. Owned by the addon until returned in a
+    //! VC_PICTURE picture or passed to release_frame_buffer; a buffer still in
+    //! picture->videoBufferHandle on any other get_picture return is released
+    //! by Kodi.
     bool (*get_frame_buffer)(void* kodiInstance, struct VIDEOCODEC_PICTURE* picture);
     void (*release_frame_buffer)(void* kodiInstance, void* buffer);
     bool (*get_frame_buffer_platform_handle)(void* kodiInstance,

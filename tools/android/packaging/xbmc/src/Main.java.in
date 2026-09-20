@@ -20,6 +20,7 @@ import android.view.Choreographer;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -119,6 +120,10 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
     super.onCreate(savedInstanceState);
 
+    // Kodi's main rendering window does not host an Android text editor. Prevent controller
+    // motion events from being dispatched to the IME before NativeActivity.
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
     setContentView(R.layout.activity_main);
     setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -126,9 +131,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     getApplicationContext().getContentResolver().registerContentObserver(android.provider.Settings.System.CONTENT_URI, true, mSettingsContentObserver);
 
     // Delayed Intent
+    // savedInstanceState is non-null when the Activity is being recreated
+    // rather than started with a new intent, so we treat the old intent as
+    // expired and don't replay it.
     if (getIntent().getData() != null)
     {
-      mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
+      if (savedInstanceState == null)
+      {
+        mDelayedIntents.add(new DelayedIntent(new Intent(getIntent()), 5000));
+      }
       getIntent().setData(null);
     }
 

@@ -24,7 +24,10 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
     if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
       # PATH_MAX not defined in limits.h. Just match windows size libdvdcss uses.
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS "-DPATH_MAX=2048")
+      # webos sysroot is glibc 2.12, which predates _DEFAULT_SOURCE (glibc 2.19). libdvdcss
+      # builds with -std=c17, so __STRICT_ANSI__ suppresses the _BSD_SOURCE/_SVID_SOURCE
+      # defaults and strdup is never declared. Define _BSD_SOURCE explicitly to restore it.
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS "-DPATH_MAX=2048 -D_BSD_SOURCE")
     endif()
 
     if(WIN32 OR WINDOWS_STORE)

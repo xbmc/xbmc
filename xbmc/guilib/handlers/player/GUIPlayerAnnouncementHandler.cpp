@@ -14,6 +14,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -62,8 +63,9 @@ void CGUIPlayerAnnouncementHandler::Announce(ANNOUNCEMENT::AnnouncementFlag flag
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() !=
         WINDOW_DIALOG_PLAYER_PROCESS_INFO)
     {
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(
-          WINDOW_DIALOG_PLAYER_PROCESS_INFO);
+      // post: a synchronous activation blocks this thread until the dialog closes
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTIVATE_WINDOW,
+                                                 WINDOW_DIALOG_PLAYER_PROCESS_INFO, 0);
     }
   }
   else if (message == "OnPlaybackFailed")

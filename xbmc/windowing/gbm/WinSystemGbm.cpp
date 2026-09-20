@@ -321,10 +321,18 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
 
   m_DRM->FlipPage(bo, rendered, videoLayer, async);
 
-  if (m_videoLayerBridge && !videoLayer)
+  // !videoLayer alone cannot gate teardown: FlipPage also runs with videoLayer
+  // false during a mode switch or renderer swap. use_count reaches 1 only when
+  // CRendererDRMPRIME drops its bridge reference, which happens at video stop.
+  if (m_videoLayerBridge && !videoLayer && m_videoLayerBridge.use_count() == 1)
   {
     // delete video layer bridge when video layer no longer is active
     m_videoLayerBridge.reset();
+
+    //! @todo unify D2P and single-plane teardown behind one winsystem plane API
+    m_DRM->ReleaseVideoPlane();
+    auto* gui = m_DRM->GetGuiPlane();
+    m_DRM->FindGuiPlane(gui->GetFormat(), gui->GetModifier());
   }
 }
 
@@ -381,7 +389,13 @@ std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(CVideoReferenceClock* cl
 
 std::vector<std::string> CWinSystemGbm::GetConnectedOutputs()
 {
-  return m_DRM->GetConnectedConnectorNames();
+  std::vector<std::string> outputs;
+  outputs.emplace_back(OUTPUT_NAME_DEFAULT);
+  for (const auto& name : m_DRM->GetConnectedConnectorNames())
+  {
+    outputs.emplace_back(name);
+  }
+  return outputs;
 }
 
 bool CWinSystemGbm::SetVideoOutput(const VideoPicture* videoPicture)

@@ -62,12 +62,15 @@ CUDMABufferObject::~CUDMABufferObject()
   ReleaseMemory();
   DestroyBufferObject();
 
-  int ret = close(m_udmafd);
-  if (ret < 0)
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - close /dev/udmabuf failed, errno={}", __FUNCTION__,
-              strerror(errno));
+  if (m_udmafd >= 0)
+  {
+    int ret = close(m_udmafd);
+    if (ret < 0)
+      CLog::Log(LOGERROR, "CUDMABufferObject::{} - close /dev/udmabuf failed, errno={}",
+                __FUNCTION__, strerror(errno));
 
-  m_udmafd = -1;
+    m_udmafd = -1;
+  }
 }
 
 bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint32_t height)
@@ -203,7 +206,8 @@ uint8_t* CUDMABufferObject::GetMemory()
     return m_map;
   }
 
-  m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_WRITE, MAP_SHARED, m_memfd, 0));
+  m_map =
+      static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_READ | PROT_WRITE, MAP_SHARED, m_memfd, 0));
   if (m_map == MAP_FAILED)
   {
     CLog::Log(LOGERROR, "CUDMABufferObject::{} - mmap failed, errno={}", __FUNCTION__,

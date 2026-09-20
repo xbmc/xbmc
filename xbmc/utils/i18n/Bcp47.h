@@ -43,6 +43,13 @@ public:
   bool IsValid() const { return m_isValid; }
 
   /*!
+   * \brief Return the primary language subtag of the tag.
+   * \return The primary language subtag. Empty for grandfathered and private-use tags, which
+   *         carry no primary language subtag.
+   */
+  const std::string& GetLanguage() const { return m_language; }
+
+  /*!
    * \brief Transform the tag into its canonical from per RFC 5646 rules.
    */
   void Canonicalize();
@@ -84,5 +91,9 @@ private:
   //! @todo when the implementation is mature, revisit whether to keep all fields of the subtags
   //! or just the descriptions, and whether to use std::optional or a smart pointer
   std::optional<TagSubTags> m_registrySubTags;
+
+  //! The registry the tag was parsed against, so canonicalization resolves a replacement subtag
+  //! against the same one. Not owned - a registry outlives the tags parsed from it.
+  const CSubTagRegistryManager* m_registry{nullptr};
 };
 } // namespace KODI::UTILS::I18N

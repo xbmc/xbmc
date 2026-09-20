@@ -46,7 +46,12 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
     if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
       # PATH_MAX not defined in limits.h. Just match windows size libdvdcss uses.
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS "-DPATH_MAX=2048")
+      # webos sysroot is glibc 2.12, which predates _DEFAULT_SOURCE (glibc 2.19). The
+      # libdvd* libraries build with -std=c17, so __STRICT_ANSI__ suppresses the
+      # _BSD_SOURCE/_SVID_SOURCE defaults and strdup/realpath/strcasecmp are never
+      # declared. Define _BSD_SOURCE explicitly to restore them.
+      # Append, as -D_XBMC set above selects the kodi code paths in dvd_reader.c
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS " -DPATH_MAX=2048 -D_BSD_SOURCE")
     endif()
 
     if(${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26)

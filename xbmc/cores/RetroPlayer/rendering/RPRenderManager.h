@@ -247,7 +247,21 @@ private:
   std::set<std::shared_ptr<CRPBaseRenderer>> m_renderers;
   std::set<std::shared_ptr<CRPBaseRenderer>> m_oldRenderers;
   mutable std::mutex m_oldRenderersMutex;
-  std::vector<IRenderBuffer*> m_pendingBuffers; // Only access from game thread
+  /*!
+   * \brief A buffer lent to the game client to draw its next frame into
+   *
+   * The memory the client was given is recorded alongside the buffer, because
+   * that is how the frame it hands back is recognized as the one it was lent,
+   * and asking the buffer for its memory again would start another round of
+   * CPU access. A null memory pointer means no CPU access was started, as with
+   * a framebuffer lent by GetCurrentFramebuffer().
+   */
+  struct PendingBuffer
+  {
+    IRenderBuffer* buffer;
+    uint8_t* memory;
+  };
+  std::vector<PendingBuffer> m_pendingBuffers; // Only access from game thread
   std::vector<IRenderBuffer*> m_renderBuffers;
   std::map<AVPixelFormat, std::map<AVPixelFormat, SwsContext*>> m_scalers; // From -> to -> context
   std::vector<uint8_t> m_cachedFrame;

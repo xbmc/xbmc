@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2018 Team Kodi
+ *  Copyright (C) 2016-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -42,6 +42,12 @@ bool CVideoDbUrl::parse()
     case NodeType::TITLE_MOVIES:
     case NodeType::SETS:
       m_type = "movies";
+      break;
+
+    // Leaf node
+    case NodeType::MOVIE_ASSETS:
+      m_type = "movies";
+      m_itemType = "movies";
       break;
 
     case NodeType::TVSHOWS_OVERVIEW:
@@ -141,6 +147,11 @@ bool CVideoDbUrl::parse()
 
     case NodeType::VIDEOVERSIONS:
       m_itemType = "videoversions";
+      break;
+
+    case NodeType::NONE:
+      if (m_type.empty() || m_itemType.empty())
+        return false;
       break;
 
     case NodeType::ROOT:

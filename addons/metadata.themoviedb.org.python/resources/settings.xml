@@ -153,6 +153,11 @@
 					<default>true</default>
 					<control type="toggle"/>
 				</setting>
+				<setting id="keyart" type="boolean" label="30018" help="">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
 				<setting id="trailer" type="boolean" label="30004" help="">
 					<level>0</level>
 					<default>true</default>
@@ -260,6 +265,34 @@
 					<level>0</level>
 					<default>true</default>
 					<control type="toggle"/>
+				</setting>
+				<setting id="enable_tag_whitelist" parent="add_tags" type="boolean" label="30016" help="">
+					<level>0</level>
+					<default>false</default>
+					<control type="toggle"/>
+					<dependencies>
+						<dependency type="enable" setting="add_tags" operator="is">true</dependency>
+					</dependencies>
+				</setting>
+				<setting id="tag_whitelist" parent="add_tags" type="list[string]" label="30017" help="">
+					<level>0</level>
+					<default>aftercreditsstinger, duringcreditsstinger</default>
+					<constraints>
+						<options>
+							<option>aftercreditsstinger</option>
+							<option>duringcreditsstinger</option>
+						</options>
+						<delimiter>, </delimiter>
+						<allownewoption>true</allownewoption>
+					</constraints>
+					<dependencies>
+						<dependency type="enable" setting="add_tags" operator="is">true</dependency>
+						<dependency type="visible" setting="enable_tag_whitelist" operator="is">true</dependency>
+					</dependencies>
+					<control type="list" format="string">
+						<multiselect>true</multiselect>
+						<addbuttonlabel>15019</addbuttonlabel>
+					</control>
 				</setting>
 				<setting id="lastUpdated" type="string" help="">
 					<level>4</level>

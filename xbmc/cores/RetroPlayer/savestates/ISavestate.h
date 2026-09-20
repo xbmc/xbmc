@@ -9,7 +9,9 @@
 #pragma once
 
 #include "SavestateTypes.h"
+#include "games/addons/disc/GameClientDiscState.h"
 
+#include <optional>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -148,6 +150,11 @@ public:
   virtual const uint8_t* GetVideoData() const = 0;
 
   /*!
+   * \brief Validate and prepare the frame's video data for reading
+   */
+  virtual bool PrepareVideoData() = 0;
+
+  /*!
    * \brief The size of the frame's video data, in bytes
    */
   virtual size_t GetVideoSize() const = 0;
@@ -183,9 +190,24 @@ public:
   virtual const uint8_t* GetMemoryData() const = 0;
 
   /*!
+   * \brief Return true if any savestate data uses compression
+   */
+  virtual bool IsCompressed() const = 0;
+
+  /*!
+   * \brief Validate and prepare the memory data for reading
+   */
+  virtual bool PrepareMemoryData(size_t expectedSize) = 0;
+
+  /*!
    * \brief The size of the memory region returned by GetMemoryData()
    */
   virtual size_t GetMemorySize() const = 0;
+
+  /*!
+   * \brief Copy the memory data to another savestate without requiring decompression
+   */
+  virtual bool CopyMemoryDataTo(ISavestate& target) const = 0;
   ///}
 
   /// @name Builders for setting individual fields
@@ -212,6 +234,28 @@ public:
   virtual void SetDisplayAspectRatio(float displayAspectRatio) = 0;
   virtual void SetRotationDegCCW(unsigned int rotationCCW) = 0;
   virtual uint8_t* GetMemoryBuffer(size_t size) = 0;
+
+  /*!
+   * \brief The achievement runtime's state, if the savestate carries any
+   *
+   * \return The state, or nullptr when the savestate was written without it
+   */
+  virtual const uint8_t* GetAchievementData() const = 0;
+
+  /*!
+   * \brief The size of the region returned by GetAchievementData()
+   */
+  virtual size_t GetAchievementSize() const = 0;
+
+  virtual std::optional<GAME::GameClientDiscState> GetDiscState() const = 0;
+
+  /*!
+   * \brief A buffer to write the achievement runtime's state into
+   *
+   * Sized by the caller from what the runtime reports, so it is not capped.
+   */
+  virtual uint8_t* GetAchievementBuffer(size_t size) = 0;
+  virtual void SetDiscState(const std::optional<GAME::GameClientDiscState>& state) = 0;
   virtual void Finalize() = 0;
   ///}
 

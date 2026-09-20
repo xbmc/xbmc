@@ -8,11 +8,17 @@
 
 #include "StreamUtils.h"
 
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 
+#include <algorithm>
 #include <array>
+#include <string>
 
 extern "C"
 {
@@ -20,34 +26,289 @@ extern "C"
 #include <libavcodec/defs.h>
 }
 
+namespace
+{
+/*!
+ * \brief Decide one tier of CompareAudioPreference().
+ *
+ * Mirrors the player's PREDICATE_RETURN: a tier only has an opinion when the two streams
+ * differ on it, and the stream the property holds for comes first.
+ */
+int CompareTier(bool lh, bool rh)
+{
+  if (lh == rh)
+    return 0;
+  return lh ? 1 : -1;
+}
+} // unnamed namespace
+
+StreamUtils::AudioPreferences StreamUtils::AudioPreferences::Current()
+{
+  const std::shared_ptr<CSettings> settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const std::string setting{settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE)};
+
+  AudioPreferences preferences;
+  preferences.mediaDefault =
+      StringUtils::EqualsNoCase(setting, KODI::LANGINFO::audioLanguageMediaDefault);
+  preferences.preferOriginal =
+      StringUtils::EqualsNoCase(setting, KODI::LANGINFO::audioLanguageOriginal);
+
+  // Only a preference naming a language has one to match on, and the two above do not, which is
+  // why they are read separately. GetAudioLanguage() resolves "default" to the UI language.
+  if (!preferences.mediaDefault && !preferences.preferOriginal)
+    preferences.language = g_langInfo.GetAudioLanguage(true);
+
+  preferences.preferHearingImpaired =
+      settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);
+  preferences.preferVisualImpaired =
+      settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOVISUAL);
+  preferences.preferDefaultFlag =
+      settings->GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG);
+
+  return preferences;
+}
+
+int StreamUtils::CompareAudioPreference(const AudioCandidate& lh,
+                                        const AudioCandidate& rh,
+                                        const AudioPreferences& preferences)
+{
+  int result{0};
+
+  // "Media default" means the user has asked for none of this to be considered
+  if (!preferences.mediaDefault)
+  {
+    if (preferences.preferOriginal)
+    {
+      result =
+          CompareTier(lh.flags & StreamFlags::FLAG_ORIGINAL, rh.flags & StreamFlags::FLAG_ORIGINAL);
+    }
+    else
+    {
+      result = CompareTier(lh.language.Matches(preferences.language),
+                           rh.language.Matches(preferences.language));
+    }
+    if (result != 0)
+      return result;
+
+    // The impaired flags cut both ways: a listener who has not asked for a described or
+    // captioned mix should be steered away from one just as firmly
+    result = CompareTier(static_cast<bool>(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) ==
+                             preferences.preferHearingImpaired,
+                         static_cast<bool>(rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) ==
+                             preferences.preferHearingImpaired);
+    if (result != 0)
+      return result;
+
+    result = CompareTier(static_cast<bool>(lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) ==
+                             preferences.preferVisualImpaired,
+                         static_cast<bool>(rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) ==
+                             preferences.preferVisualImpaired);
+    if (result != 0)
+      return result;
+  }
+
+  if (preferences.preferDefaultFlag)
+  {
+    result =
+        CompareTier(lh.flags & StreamFlags::FLAG_DEFAULT, rh.flags & StreamFlags::FLAG_DEFAULT);
+    if (result != 0)
+      return result;
+  }
+
+  if (preferences.preferStereo)
+  {
+    result = CompareTier(lh.channels == 2, rh.channels == 2);
+    if (result != 0)
+      return result;
+  }
+
+  result =
+      CompareAudioQuality(std::string{lh.codec}, lh.channels, std::string{rh.codec}, rh.channels);
+  if (result != 0)
+    return result;
+
+  // Two equally good streams, so let the media's own idea of a default settle it
+  return CompareTier(lh.flags & StreamFlags::FLAG_DEFAULT, rh.flags & StreamFlags::FLAG_DEFAULT);
+}
+
 int StreamUtils::GetCodecPriority(const std::string &codec)
 {
   /*
-   * Technically flac, truehd, and dtshd_ma are equivalently good as they're all lossless. However,
-   * ffmpeg can't decode dtshd_ma losslessy yet.
+   * Every name StreamUtils::GetCodecName() and the bluray stream parser can produce is ranked, so
+   * that 0 means a codec genuinely nobody knows rather than a common one nobody listed. See
+   * CompareAudioQuality(), which orders codec before channel count for surround streams and so
+   * relies on the ranks being meaningful.
+   *
+   * Priority   Codecs
+   * 13         truehd_atmos, dtshd_ma_x_imax, dtshd_ma_x — lossless + objects
+   * 12         truehd, dtshd_ma, mlp - lossless, can be bit-streamed (offload processing)
+   * 11         flac, alac, ape, wavpack, pcm_bluray and any LPCM of 24 bit or better - lossless. pcm_bluray carries no bit depth in its name and can be 16, 20 or 24 bit,
+   *            but a primary disc track is 24 and nothing records the real depth, so it is ranked
+   *            here rather than guessed downwards. flac, alac and wavpack carry no depth either
+   * 10         dtshd_hra - lossy, high resolution
+   * 9          dtshd - DTS-HD of an undetermined flavour, so the poorest one it could be
+   * 8          eac3_ddp_atmos - lossy + objects
+   * 7          pcm, pcm_dvd, and any LPCM of 16 bit - lossless, or with nothing known about it
+   * 6          ac4, dts_es, dts_96_24 - Dolby AC-4, and DTS carrying extended surround or
+   *            96kHz/24-bit, which at the bitrates they are shipped at outweigh Dolby Digital Plus
+   * 5          eac3, opus - the efficient modern lossy codecs
+   * 4          dts
+   * 3          aac_lc, aac, aac_latm, aac_ltp, aac_ssr, vorbis, wmapro. A bare aac is ranked with aac_lc
+   *            rather than at the family floor, as that is overwhelmingly what it turns out to be
+   * 2          ac3, he_aac, he_aac_v2 - the HE profiles signal low bitrate content
+   * 1          mp3, mp2, mp1, wmav2, dts_express, and 8 bit LPCM - oldest, built for low bitrate
+   *            secondary audio, or genuinely poor
+   * 0          anything else - genuinely unknown
    */
   if (codec == "truehd_atmos") // Dolby TrueHD with Atmos
-    return 11;
+    return 13;
   if (codec == "dtshd_ma_x_imax") // DTS:X IMAX Enhanced
-    return 10;
+    return 13;
   if (codec == "dtshd_ma_x") // DTS:X
-    return 9;
-  if (codec == "flac") // Lossless FLAC
-    return 8;
+    return 13;
   if (codec == "truehd") // Dolby TrueHD
-    return 7;
+    return 12;
   if (codec == "dtshd_ma") // DTS-HD Master Audio (previously known as DTS++)
-    return 6;
+    return 12;
+  if (codec == "mlp") // Meridian Lossless Packing, Dolby TrueHD's predecessor
+    return 12;
+  if (codec == "flac") // Lossless FLAC
+    return 11;
+  if (codec == "alac") // Apple Lossless
+    return 11;
+  if (codec == "ape") // Monkey's Audio
+    return 11;
+  if (codec == "wavpack") // WavPack, lossless outside its hybrid mode
+    return 11;
+  if (codec == "pcm_bluray") // Uncompressed LPCM from a disc, taken to be 24 bit - see above
+    return 11;
   if (codec == "dtshd_hra") // DTS-HD High Resolution Audio
-    return 5;
+    return 10;
+  if (codec == "dtshd") // DTS-HD, flavour undetermined - a better one would have been detected
+    return 9;
   if (codec == "eac3_ddp_atmos") // Dolby Digital Plus with Atmos
-    return 4;
+    return 8;
+  if (codec == "pcm_dvd") // Uncompressed LPCM from a DVD, usually 16 bit
+    return 7;
+  if (codec == "pcm") // LPCM with no parsed substream information, so an unknown channel count
+    return 7;
+  if (codec == "ac4") // Dolby AC-4
+    return 6;
+  if (codec == "dts_es") // DTS Extended Surround
+    return 6;
+  if (codec == "dts_96_24") // DTS 96kHz/24-bit
+    return 6;
   if (codec == "eac3") // Dolby Digital Plus
-    return 3;
+    return 5;
+  if (codec == "opus") // Opus
+    return 5;
   if (codec == "dts") // DTS
-    return 2;
+    return 4;
+  if (codec == "aac_lc") // AAC Low Complexity
+    return 3;
+  if (codec == "aac_latm") // AAC Low Complexity in LATM framing, as broadcast streams carry it
+    return 3;
+  if (codec == "aac") // AAC of an unstated profile, which is Low Complexity in all but name
+    return 3;
+  if (codec == "aac_ltp") // AAC Long Term Prediction
+    return 3;
+  if (codec == "aac_ssr") // AAC Scalable Sample Rate
+    return 3;
+  if (codec == "vorbis") // Ogg Vorbis
+    return 3;
+  if (codec == "wmapro") // Windows Media Audio Professional
+    return 3;
   if (codec == "ac3") // Dolby Digital
+    return 2;
+  if (codec == "he_aac") // AAC High Efficiency
+    return 2;
+  if (codec == "he_aac_v2") // AAC High Efficiency v2
+    return 2;
+  if (codec == "mp3") // MPEG-1 Audio Layer III
     return 1;
+  if (codec == "mp2") // MPEG-1 Audio Layer II
+    return 1;
+  if (codec == "mp1") // MPEG-1 Audio Layer I
+    return 1;
+  if (codec == "wmav2") // Windows Media Audio 2
+    return 1;
+  if (codec == "dts_express") // DTS Express, a low bitrate secondary audio format
+    return 1;
+  // CDemuxStreamAudio::GetStreamType() recognises every ffmpeg PCM codec as one range, so the
+  // family is matched on prefix rather than spelled out. Byte order and planarity say nothing
+  // about quality - pcm_s24be is the same audio as pcm_s24le - and new spellings appear from time
+  // to time, so only the bit depth is read.
+  if (codec.starts_with("pcm_"))
+  {
+    for (const auto* prefix : {"pcm_s24", "pcm_u24", "pcm_s32", "pcm_u32", "pcm_s64", "pcm_u64",
+                               "pcm_f24", "pcm_f32", "pcm_f64"})
+    {
+      if (codec.starts_with(prefix))
+        return 11;
+    }
+
+    for (const auto* prefix : {"pcm_s16", "pcm_u16", "pcm_f16"})
+    {
+      if (codec.starts_with(prefix))
+        return 7;
+    }
+
+    // 8 bit, or companded down to 8 bit, which is the one LPCM form that is genuinely poor
+    for (const auto* name : {"pcm_s8", "pcm_u8", "pcm_alaw", "pcm_mulaw"})
+    {
+      if (codec == name)
+        return 1;
+    }
+  }
+
+  return 0;
+}
+
+int StreamUtils::CompareAudioQuality(const std::string& codecA,
+                                     int channelsA,
+                                     const std::string& codecB,
+                                     int channelsB)
+{
+  const int priorityA{GetCodecPriority(codecA)};
+  const int priorityB{GetCodecPriority(codecB)};
+
+  // A channel count of zero or less means unknown, and the sources disagree on which of those to
+  // use, so normalise them to compare equal rather than ranking one unknown above another.
+  const int knownChannelsA{std::max(0, channelsA)};
+  const int knownChannelsB{std::max(0, channelsB)};
+
+  // The comparison has to be a strict weak ordering, because VideoPlayer hands it to
+  // std::stable_sort. Streams are therefore split into surround and not-surround, which each
+  // stream decides for itself, and then ranked within that group on a fixed pair of keys. Nothing
+  // here may depend on which two streams are being compared, or the ordering can cycle.
+  const bool surroundA{knownChannelsA > 2};
+  const bool surroundB{knownChannelsB > 2};
+  if (surroundA != surroundB)
+    return surroundA ? 1 : -1;
+
+  if (surroundA)
+  {
+    // Beyond stereo the codec describes the stream better than the channel count does, so 5.1
+    // TrueHD is a better listen than 7.1 AC3. Every codec the stream details can carry is ranked,
+    // so a rank of 0 really is an unknown codec and belongs at the bottom.
+    if (priorityA != priorityB)
+      return priorityA > priorityB ? 1 : -1;
+
+    // Codecs of equal rank are equally good, so the wider presentation wins
+    if (knownChannelsA != knownChannelsB)
+      return knownChannelsA > knownChannelsB ? 1 : -1;
+
+    return 0;
+  }
+
+  // At or below stereo the step up towards surround outweighs any codec difference
+  if (knownChannelsA != knownChannelsB)
+    return knownChannelsA > knownChannelsB ? 1 : -1;
+
+  // In case of a tie, revert to codec priority
+  if (priorityA != priorityB)
+    return priorityA > priorityB ? 1 : -1;
+
   return 0;
 }
 
@@ -115,6 +376,16 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
     codecName = avcodec_get_name(codec->id);
 
   return codecName;
+}
+
+std::string StreamUtils::NormalizeAudioCodecName(const std::string& codec)
+{
+  // 'dca' (name of ffmpeg's DTS decoder) was previously used in error for 'dts'
+  // Corrected in database schema v145
+  if (codec == "dca")
+    return "dts";
+
+  return codec;
 }
 
 std::string StreamUtils::GetDefaultLayout(unsigned int channels)

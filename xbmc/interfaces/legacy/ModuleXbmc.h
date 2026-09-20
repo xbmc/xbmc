@@ -309,14 +309,25 @@ namespace XBMCAddon
     /// | xbmc.ISO_639_1    | Two letter code as defined in ISO 639-1
     /// | xbmc.ISO_639_2    | Three letter code as defined in ISO 639-2/T or ISO 639-2/B
     /// | xbmc.ENGLISH_NAME | Full language name in English (default)
+    /// | xbmc.ISO_NAME     | Language name in English without qualifiers, "English" rather than "English (Australia)"
     /// @param region               [opt] append the region delimited by "-"
     ///                             of the language (setting) to the
-    ///                             returned language string
-    /// @return                     The active language as a string
+    ///                             returned language string. The ISO 639
+    ///                             formats name the region as an ISO 3166-1
+    ///                             code, uppercase, for example **en-AU**
+    /// @return                     The active language as a string, or an empty string where the
+    ///                             language has no code in the requested format. The region is
+    ///                             never returned on its own, so the result is empty rather than
+    ///                             a bare **-AU**.
+    ///
+    /// @note Not every language has an ISO 639-1 code - Filipino and Asturian are two that do
+    /// not - so **xbmc.ISO_639_2** answers for more languages than **xbmc.ISO_639_1**.
     ///
     ///
     /// ------------------------------------------------------------------------
     /// @python_v13 Added new options **format** and **region**.
+    /// @python_v22 Added the **xbmc.ISO_NAME** format. A language with no code in the requested
+    /// format returns an empty string; previously the region could be returned on its own.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -618,6 +629,79 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getDevicePowerStatus([adapterName]) }
+    /// Get the power status of the device attached via HDMI-CEC.
+    ///
+    /// @param adapterName           [opt] string - the CEC adapter to query, either its name
+    ///                              (e.g. `HDMI 1`) or, for an adapter that the driver didn't
+    ///                              name, its port. Defaults to empty, which queries the first
+    ///                              adapter that reports a status.
+    /// @return int - one of the following constants:
+    /// | Value                                   | Description                          |
+    /// |----------------------------------------:|:-------------------------------------|
+    /// | xbmc.DEVICE_POWER_NO_ADAPTER            | No CEC adapter present               |
+    /// | xbmc.DEVICE_POWER_ON                    | Device is powered on                 |
+    /// | xbmc.DEVICE_POWER_STANDBY               | Device is in standby                 |
+    /// | xbmc.DEVICE_POWER_TRANSITION_TO_ON      | Device is powering on                |
+    /// | xbmc.DEVICE_POWER_TRANSITION_TO_STANDBY | Device is going to standby           |
+    /// | xbmc.DEVICE_POWER_UNKNOWN               | Power status could not be determined |
+    ///
+    /// @note This is the result of calling libCEC's GetDevicePowerStatus.
+    /// `DEVICE_POWER_UNKNOWN` means the device could not be found or queried on the CEC
+    /// bus. `DEVICE_POWER_NO_ADAPTER` means no CEC adapter is present, no adapter matches
+    /// the given name, or the matching adapter isn't running.
+    ///
+    /// @note The name is matched case insensitively.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    /// @python_v22 New function added.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// if xbmc.getDevicePowerStatus() == xbmc.DEVICE_POWER_ON:
+    ///     xbmc.log('Device is on')
+    ///
+    /// if xbmc.getDevicePowerStatus('HDMI 2') == xbmc.DEVICE_POWER_STANDBY:
+    ///     xbmc.log('The device on HDMI 2 is in standby')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getDevicePowerStatus(...);
+#else
+    int getDevicePowerStatus(const String& adapterName = emptyString);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getCecAdapterNames() }
+    /// Get the names of the HDMI-CEC adapters that are present.
+    ///
+    /// @return list - the name of each adapter, in the form that
+    /// \ref getDevicePowerStatus accepts.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    /// @python_v22 New function added.
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// for adapter in xbmc.getCecAdapterNames():
+    ///     xbmc.log(f'{adapter}: {xbmc.getDevicePowerStatus(adapter)}')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getCecAdapterNames();
+#else
+    std::vector<String> getCecAdapterNames();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
     /// @brief \python_func{ xbmc.getCacheThumbName(path) }
     /// Get thumb cache filename.
     ///
@@ -866,19 +950,28 @@ namespace XBMCAddon
     /// string.
     ///
     /// @param language              string either as name in English, two
-    ///                              letter code (ISO 639-1), or three
-    ///                              letter code (ISO 639-2/T(B)
+    ///                              letter code (ISO 639-1), three letter code
+    ///                              (ISO 639-2/T(B), or a BCP 47 language tag
     /// @param format                format of the returned language string
     /// | Value             | Description
     /// |------------------:|:-------------------------------------------------|
     /// | xbmc.ISO_639_1    | Two letter code as defined in ISO 639-1
     /// | xbmc.ISO_639_2    | Three letter code as defined in ISO 639-2/T or ISO 639-2/B
     /// | xbmc.ENGLISH_NAME | Full language name in English (default)
-    /// @return                          Converted Language string
+    /// | xbmc.ISO_NAME     | Language name in English without qualifiers, "English" rather than "English (Australia)"
+    /// @return                          Converted Language string, or an empty string where the
+    ///                                  language is not recognized or has no code in the
+    ///                                  requested format
+    ///
+    /// @note Not every language has an ISO 639-1 code, so **xbmc.ISO_639_2** answers for more
+    /// languages than **xbmc.ISO_639_1**.
     ///
     ///
     /// ------------------------------------------------------------------------
     /// @python_v13 New function added.
+    /// @python_v22 A BCP 47 tag is accepted as input, for example **en-AU**, which the stream
+    /// language functions of \ref python_Player "Player" return. Added the **xbmc.ISO_NAME**
+    /// format.
     ///
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
@@ -917,6 +1010,14 @@ namespace XBMCAddon
     SWIG_CONSTANT_FROM_GETTER(int, ISO_639_1);
     SWIG_CONSTANT_FROM_GETTER(int, ISO_639_2);
     SWIG_CONSTANT_FROM_GETTER(int, ENGLISH_NAME);
+    SWIG_CONSTANT_FROM_GETTER(int, ISO_NAME);
+
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_NO_ADAPTER);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_ON);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_STANDBY);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_TRANSITION_TO_ON);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_TRANSITION_TO_STANDBY);
+    SWIG_CONSTANT_FROM_GETTER(int, DEVICE_POWER_UNKNOWN);
 #if 0
     void registerMonitor(Monitor* monitor);
     void unregisterMonitor(Monitor* monitor);

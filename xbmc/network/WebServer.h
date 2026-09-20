@@ -28,9 +28,20 @@ public:
   CWebServer();
   virtual ~CWebServer() = default;
 
+  /*!
+   \brief Start listening on the given port
+   \param port port to listen on, or 0 to let the operating system assign a free one
+   \return true if at least one daemon is listening
+   */
   bool Start(uint16_t port, const std::string &username, const std::string &password);
   bool Stop();
   bool IsStarted();
+
+  /*!
+   \brief The port being listened on, which is only known after a successful Start()
+   \return the port, or 0 if the server is not running
+   */
+  uint16_t GetPort() const;
   static bool WebServerSupportsSSL();
   void SetCredentials(const std::string &username, const std::string &password);
 

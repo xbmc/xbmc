@@ -147,6 +147,12 @@ static int Update(const std::vector<std::string>& params)
 ///     @param[in] url                   The URL to refresh window at.
 ///   }
 ///   \table_row2_l{
+///     <b>`Container.SetSortDirection`</b>
+///     ,
+///     Toggle the sort direction of the current listing between ascending and
+///     descending.
+///   }
+///   \table_row2_l{
 ///     <b>`Container.SetSortMethod(id)`</b>
 ///     ,
 ///     Change to the specified sort method. (For list of ID's \ref SortBy "see List" of sort methods below)
@@ -157,11 +163,6 @@ static int Update(const std::vector<std::string>& params)
 ///     ,
 ///     Set the current view mode (list\, icons etc.) to the given container id.
 ///     @param[in] id                    ID of view mode.
-///   }
-///   \table_row2_l{
-///     <b>`Container.SortDirection`</b>
-///     ,
-///     Toggle the sort direction
 ///   }
 ///   \table_row2_l{
 ///     <b>`Container.Update(url\,[replace])`</b>

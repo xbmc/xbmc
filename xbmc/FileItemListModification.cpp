@@ -10,6 +10,7 @@
 
 #include "music/windows/MusicFileItemListModifier.h"
 #include "playlists/SmartPlaylistFileItemListModifier.h"
+#include "pvr/guilib/PVRFileItemListModifier.h"
 #include "video/windows/VideoFileItemListModifier.h"
 
 #include <algorithm>
@@ -21,6 +22,7 @@ CFileItemListModification::CFileItemListModification()
   m_modifiers.push_back(std::make_unique<PLAYLIST::CSmartPlaylistFileItemListModifier>());
   m_modifiers.push_back(std::make_unique<CMusicFileItemListModifier>());
   m_modifiers.push_back(std::make_unique<CVideoFileItemListModifier>());
+  m_modifiers.push_back(std::make_unique<PVR::CPVRFileItemListModifier>());
 }
 
 CFileItemListModification& CFileItemListModification::GetInstance()

@@ -133,6 +133,14 @@ public:
 
   void GetStreamInfo(int pid, std::string &language);
 
+  /*!
+   * \brief Check whether a stream is the default of the playlist being played, ie. audio stream
+   *        number 1 or presentation graphic stream number 1 of the current clip.
+   * \param pid The packet identifier of the stream
+   * \return True if the stream is the default audio or subtitle stream, false otherwise
+   */
+  bool IsDefaultStream(int pid) const;
+
   void OverlayCallback(const BD_OVERLAY * const);
 #ifdef HAVE_LIBBLURAY_BDJ
   void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);
@@ -162,6 +170,10 @@ protected:
   BLURAY_TITLE_INFO* m_titleInfo = nullptr;
   uint32_t m_playlist = MAX_PLAYLIST_ID + 1;
   BLURAY_CLIP_INFO* m_clip = nullptr;
+
+  //! The clip information of the play item being played, ie. every stream its m2ts carries (see
+  //! GetStreamInfo). Owned, and only valid while m_clip refers to the same play item.
+  struct clpi_cl* m_clipInfo = nullptr;
   uint32_t m_angle = 0;
   bool m_menu = false;
   bool m_isInMainMenu = false;
@@ -197,6 +209,29 @@ protected:
     bool OpenStream(CFileItem &item);
     void SetupPlayerSettings();
     void FreeTitleInfo();
+    void FreeClipInfo();
+
+    /*!
+     * \brief Read the clip information of a play item of the playlist being played.
+     * \param playItem The index of the play item, as BD_EVENT_PLAYITEM reports it
+     */
+    void UpdateClipInfo(unsigned int playItem);
+
+    /*!
+     * \brief Find the language of a stream in the stream number table of the current play item.
+     * \param pid The packet identifier of the stream
+     * \param language Filled in with the language of the stream, if it is found
+     * \return True if the playlist presents the stream, false otherwise
+     */
+    bool GetPlaylistStreamLanguage(int pid, std::string& language) const;
+
+    /*!
+     * \brief Find the language of a stream in the clip information of the current play item.
+     * \param pid The packet identifier of the stream
+     * \param language Filled in with the language of the stream, if it is found
+     * \return True if the clip carries the stream, false otherwise
+     */
+    bool GetClipStreamLanguage(int pid, std::string& language) const;
     std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;
 

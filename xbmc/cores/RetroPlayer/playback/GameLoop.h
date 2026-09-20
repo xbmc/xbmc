@@ -72,7 +72,8 @@ public:
   void Start();
   void Stop();
 
-  double FPS() const { return m_fps; }
+  double FPS() const { return m_fps.load(); }
+  void SetFrameRate(double fps);
 
   double GetSpeed() const { return m_speedFactor.load(); }
   void SetSpeed(double speedFactor);
@@ -87,7 +88,7 @@ private:
   std::chrono::microseconds NowUs() const;
 
   IGameLoopCallback* const m_callback;
-  const double m_fps;
+  std::atomic<double> m_fps;
   std::atomic<double> m_speedFactor{0.0};
   double m_loopSpeedFactor{0.0};
   std::chrono::microseconds m_lastFrameUs{std::chrono::microseconds::zero()};

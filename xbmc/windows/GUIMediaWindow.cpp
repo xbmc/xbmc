@@ -1489,6 +1489,10 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
       strPath = strParentPath;
       URIUtils::RemoveSlashAtEnd(strPath);
     }
+
+    // A directory without a parent, such as a top-level special:// path, still goes on the stack
+    if (originalPath)
+      m_history.AddPathFront(strDirectory, m_strFilterPath);
   }
   else
     m_history.ClearPathHistory();

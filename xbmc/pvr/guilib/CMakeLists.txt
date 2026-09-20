@@ -1,5 +1,6 @@
 set(SOURCES GUIEPGGridContainer.cpp
             GUIEPGGridContainerModel.cpp
+            PVRFileItemListModifier.cpp
             PVRGUIActionListener.cpp
             PVRGUIActionsChannels.cpp
             PVRGUIActionsClients.cpp
@@ -17,6 +18,7 @@ set(SOURCES GUIEPGGridContainer.cpp
 
 set(HEADERS GUIEPGGridContainer.h
             GUIEPGGridContainerModel.h
+            PVRFileItemListModifier.h
             PVRGUIActionListener.h
             PVRGUIActionsChannels.h
             PVRGUIActionsClients.h

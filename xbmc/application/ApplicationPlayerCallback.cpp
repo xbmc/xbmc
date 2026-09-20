@@ -136,16 +136,14 @@ void UpdateRemovableBlurayPath(CFileItem& fileItem, bool updateStreamDetails)
       {
 #ifdef HAS_OPTICAL_DRIVE
         // Played through Video->Files or Movie/TV Shows etc..
-        // Only check if system supports optical (physical/mounted) drives
-        ::UTILS::DISCS::DiscInfo info{
-            CServiceBroker::GetMediaManager().GetDiscInfo(fileUrl.GetHostName())};
-        if (!info.empty() && info.type == ::UTILS::DISCS::DiscType::BLURAY)
-        {
-          url.Parse(CServiceBroker::GetMediaManager().GetDiskUniqueId(fileUrl.GetHostName()));
-        }
+        // GetDiskUniqueId() returns a bluray://... URL for physical Blu-ray media; it may return
+        // an empty string (or a non-bluray URL) for other media / failure cases.
+        url.Parse(CServiceBroker::GetMediaManager().GetDiskUniqueId(fileUrl.GetHostName()));
+        if (!url.IsProtocol("bluray")) // Not a bluray (ie. a DVD or CD)
+          url.Reset();
 #endif
       }
-      // Will be empty if not a physical/mounted disc (ie. an ISO file)
+      // Will be empty if not a physical/mounted disc (ie. a mounted ISO file)
       if (!url.Get().empty())
       {
         url.SetFileName(fileUrl.GetFileName());

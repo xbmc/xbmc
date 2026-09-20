@@ -33,6 +33,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicFileItemClassify.h"
+#include "music/tags/MusicInfoTag.h"
 #include "pictures/SlideShowDelegator.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
@@ -93,6 +94,28 @@ bool IsReachable(const CFileItem& item)
 
   // Bypass the directory cache; a cached hit would mask a share that has gone away.
   return XFILE::CFile::Exists(path, false);
+}
+
+void OverlayCurrentSongTag(CFileItem& item)
+{
+  const MUSIC_INFO::CMusicInfoTag* current{
+      CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag()};
+  if (!current)
+    return;
+
+  // Only copy what the source actually supplied, so anything the item already carries in its
+  // own right survives.
+  MUSIC_INFO::CMusicInfoTag& tag{*item.GetMusicInfoTag()};
+  if (!current->GetTitle().empty())
+    tag.SetTitle(current->GetTitle());
+  if (!current->GetArtist().empty())
+    tag.SetArtist(current->GetArtist());
+  if (!current->GetAlbum().empty())
+    tag.SetAlbum(current->GetAlbum());
+  if (!current->GetGenre().empty())
+    tag.SetGenre(current->GetGenre());
+  if (!current->GetStationName().empty())
+    tag.SetStationName(current->GetStationName());
 }
 
 } // namespace
@@ -204,7 +227,12 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
     {
       fileItem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       if (IsPVRChannel())
+      {
+        // Metadata that arrives mid-stream reaches only the item held by the GUI, so overlay
+        // it here. The channel item stays authoritative for identity, path and artwork.
+        OverlayCurrentSongTag(*fileItem);
         break;
+      }
 
       if (player == Video)
       {
@@ -1303,6 +1331,7 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITra
   switch (GetPlayer(parameterObject["playerid"]))
   {
     case Video:
+    case Audio:
     {
       auto& components = CServiceBroker::GetAppComponents();
       const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -1340,7 +1369,6 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITra
       break;
     }
 
-    case Audio:
     case Picture:
     default:
       return FailedToExecute;
@@ -2011,7 +2039,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
 
             result["index"] = index;
             result["name"] = info.name;
-            result["language"] = info.language;
+            result["language"] = info.language.AsBcp47();
             result["codec"] = info.codecName;
             result["bitrate"] = info.bitrate;
             result["channels"] = info.channels;
@@ -2051,7 +2079,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             CVariant audioStream(CVariant::VariantTypeObject);
             audioStream["index"] = index;
             audioStream["name"] = info.name;
-            audioStream["language"] = info.language;
+            audioStream["language"] = info.language.AsBcp47();
             audioStream["codec"] = info.codecName;
             audioStream["bitrate"] = info.bitrate;
             audioStream["channels"] = info.channels;
@@ -2087,7 +2115,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
 
         result["index"] = index;
         result["name"] = info.name;
-        result["language"] = info.language;
+        result["language"] = info.language.AsBcp47();
         result["codec"] = info.codecName;
         result["width"] = info.width;
         result["height"] = info.height;
@@ -2123,7 +2151,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           CVariant videoStream(CVariant::VariantTypeObject);
           videoStream["index"] = index;
           videoStream["name"] = info.name;
-          videoStream["language"] = info.language;
+          videoStream["language"] = info.language.AsBcp47();
           videoStream["codec"] = info.codecName;
           videoStream["width"] = info.width;
           videoStream["height"] = info.height;
@@ -2177,7 +2205,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
 
             result["index"] = index;
             result["name"] = info.name;
-            result["language"] = info.language;
+            result["language"] = info.language.AsBcp47();
             AppendSubtitleStreamFlagsAsBooleans(result, info.flags);
           }
         }
@@ -2212,7 +2240,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
             CVariant subtitle(CVariant::VariantTypeObject);
             subtitle["index"] = index;
             subtitle["name"] = info.name;
-            subtitle["language"] = info.language;
+            subtitle["language"] = info.language.AsBcp47();
             AppendSubtitleStreamFlagsAsBooleans(subtitle, info.flags);
 
             result.append(subtitle);

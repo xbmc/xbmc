@@ -1,4 +1,4 @@
-From 4ff87f344290ab888599e5ca0135bbaac2bf49dd Mon Sep 17 00:00:00 2001
+From 919e2fed40868a439a77c2c02a925202be4c1e0f Mon Sep 17 00:00:00 2001
 From: Lukas Rusak <lorusak@gmail.com>
 Date: Sat, 10 Apr 2021 08:16:11 -0700
 Subject: [PATCH] ffmpeg: windows: configure: detect openssl
@@ -8,10 +8,10 @@ Subject: [PATCH] ffmpeg: windows: configure: detect openssl
  1 file changed, 2 insertions(+)
 
 diff --git a/configure b/configure
-index 9d8db691a4..176ffac998 100755
+index 0436370443..3a5671a7f0 100755
 --- a/configure
 +++ b/configure
-@@ -7500,6 +7500,8 @@ enabled openssl           && { { check_pkg_config openssl "openssl >= 3.0.0" ope
+@@ -7559,6 +7559,8 @@ enabled openssl           && { { check_pkg_config openssl "openssl >= 3.0.0" ope
                                 check_pkg_config openssl "openssl >= 1.1.1" openssl/ssl.h DTLS_get_data_mtu ||
                                 check_lib openssl openssl/ssl.h DTLS_get_data_mtu -lssl -lcrypto ||
                                 check_lib openssl openssl/ssl.h DTLS_get_data_mtu -lssl -lcrypto -lws2_32 -lgdi32 ||

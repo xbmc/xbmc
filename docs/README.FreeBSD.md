@@ -89,6 +89,9 @@ sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2
 > Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
 > [!NOTE]  
+> The Python bindings need SWIG 4.5.0 or newer. If your release ships an older `swig`, install `bison` and configure Kodi with `-DENABLE_INTERNAL_SWIG=ON` to build the pinned version as part of the Kodi build.
+
+> [!NOTE]  
 > For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
 
 You can install it with:

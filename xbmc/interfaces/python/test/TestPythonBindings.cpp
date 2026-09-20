@@ -1,0 +1,274 @@
+/*
+ *  Copyright (C) 2026 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+// python.h should always be included first before any other includes
+#include <Python.h>
+
+#include "filesystem/SpecialProtocol.h"
+#include "interfaces/python/AddonPythonInvoker.h"
+
+#include <gtest/gtest.h>
+
+#include <string>
+
+namespace
+{
+
+// on failure the traceback goes to stderr
+bool RunPy(const char* code)
+{
+  return PyRun_SimpleString(code) == 0;
+}
+
+class TestPythonBindings : public ::testing::Test
+{
+protected:
+  static void SetUpTestSuite()
+  {
+    CAddonPythonInvoker::GlobalInitializeModules();
+
+    PyConfig config;
+    PyConfig_InitPythonConfig(&config);
+#if defined(TARGET_WINDOWS)
+    // same stdlib location init_emu_environ hands the running app
+    const std::string home = CSpecialProtocol::TranslatePath("special://xbmc/system/python");
+    PyConfig_SetBytesString(&config, &config.home, home.c_str());
+#endif
+    const PyStatus status = Py_InitializeFromConfig(&config);
+    PyConfig_Clear(&config);
+
+    // a failed init leaves no usable interpreter; the tests skip rather than run in that process state
+    s_pythonUp = !PyStatus_Exception(status);
+    // first import must run in the main interpreter: the binding types are created once per process and the main interpreter is the one never destroyed
+    if (s_pythonUp)
+      s_mainImportOk = RunPy("import xbmc, xbmcgui, xbmcplugin, xbmcaddon, xbmcvfs, xbmcdrm\n");
+  }
+
+  // no TearDownTestSuite: Py_Finalize would destroy the process-wide binding types
+  static bool s_pythonUp;
+  static bool s_mainImportOk;
+};
+
+bool TestPythonBindings::s_pythonUp = false;
+bool TestPythonBindings::s_mainImportOk = false;
+
+TEST_F(TestPythonBindings, ImportModules)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  EXPECT_TRUE(s_mainImportOk);
+}
+
+// there is no window system in this environment, so every object a test calls methods on must be offscreen
+TEST_F(TestPythonBindings, DirectConstructWithKwargs)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+li = xbmcgui.ListItem('direct', offscreen=True)
+assert li.getLabel() == 'direct', li.getLabel()
+)py"));
+}
+
+// construction happens in tp_new, which drops keyword arguments when retrying for a subclass, so offscreen must be positional here
+TEST_F(TestPythonBindings, SubclassExtraKwargs)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+class Item(xbmcgui.ListItem):
+    def __init__(self, label, label2, path, offscreen, extra=None):
+        super().__init__(label, label2, path, offscreen)
+        self.extra = extra
+li = Item('sub', '', '', True, extra=7)
+assert li.getLabel() == 'sub', li.getLabel()
+assert li.extra == 7
+)py"));
+}
+
+// the service addon idiom: an __init__ that never calls super() must still yield a constructed C++ object
+TEST_F(TestPythonBindings, SubclassNeverCallsSuper)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+class A(xbmcgui.Action):
+    def __init__(self):
+        pass
+a = A()
+assert a.getId() == -1, a.getId()
+)py"));
+}
+
+TEST_F(TestPythonBindings, NoneInsideContainers)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+li = xbmcgui.ListItem('none-in-containers', '', '', True)
+
+li.setArt({'thumb': 'a.png', 'poster': None})
+assert li.getArt('thumb') == 'a.png', li.getArt('thumb')
+assert li.getArt('poster') == '', repr(li.getArt('poster'))
+
+li.setProperties({'alpha': '1', 'beta': None})
+assert li.getProperty('beta') == '', repr(li.getProperty('beta'))
+
+li.setCast([{'name': 'A', 'role': 'B', 'thumbnail': None}])
+li.setInfo('video', {'title': 'x', 'plot': None})
+
+li.getVideoInfoTag().setStudios(['a', None])
+)py"));
+}
+
+TEST_F(TestPythonBindings, FileContextManager)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcvfs
+p = 'special://temp/swig-ctx.txt'
+with xbmcvfs.File(p, 'w') as f:
+    f.write('hello')
+with xbmcvfs.File(p) as f:
+    assert f.read() == 'hello', repr(f.read())
+xbmcvfs.delete(p)
+)py"));
+}
+
+// an xbmc type passed through an xbmcgui-obtained object crosses the shared type table
+TEST_F(TestPythonBindings, CrossModule)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc, xbmcgui
+li = xbmcgui.ListItem('cast', '', '', True)
+tag = li.getVideoInfoTag()
+assert isinstance(tag, xbmc.InfoTagVideo)
+tag.setCast([xbmc.Actor('a', 'lead'), xbmc.Actor('b')])
+)py"));
+}
+
+// python owns each object in a returned list
+TEST_F(TestPythonBindings, ListElementsAreOwned)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc, xbmcgui
+li = xbmcgui.ListItem('owned', '', '', True)
+tag = li.getVideoInfoTag()
+assert tag.thisown
+tag.setCast([xbmc.Actor('a', 'lead'), xbmc.Actor('b')])
+actors = tag.getActors()
+assert [a.getName() for a in actors] == ['a', 'b'], [a.getName() for a in actors]
+assert all(a.thisown for a in actors), [a.thisown for a in actors]
+del li, tag
+assert actors[0].getRole() == 'lead', actors[0].getRole()
+del actors
+)py"));
+}
+
+// PyType_Ready mirrors tp_init into the class dict as a wrapper_descriptor; autodoc's constructor docstring injection replaces it with a method_descriptor that runs a second construction
+TEST_F(TestPythonBindings, NoInitInjection)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc, xbmcaddon, xbmcdrm, xbmcgui, xbmcvfs
+for cls in (xbmcgui.ListItem, xbmcgui.Action, xbmcgui.Window, xbmcgui.Dialog,
+            xbmc.Actor, xbmcvfs.File, xbmcvfs.Stat, xbmcaddon.Addon,
+            xbmcdrm.CryptoSession):
+    kind = type(vars(cls)['__init__']).__name__
+    assert kind == 'wrapper_descriptor', (cls, kind)
+assert xbmcgui.ListItem.setLabel.__doc__
+)py"));
+}
+
+// two live sub-interpreters: unpatched SWIG re-creates the builtin types per interpreter and repoints the process-wide clientdata (swig/swig#3535)
+TEST_F(TestPythonBindings, TwoSubInterpreters)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  PyThreadState* mainState = PyThreadState_Get();
+
+  PyThreadState* first = Py_NewInterpreter();
+  ASSERT_NE(first, nullptr);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+li = xbmcgui.ListItem('first', '', '', True)
+assert li.getLabel() == 'first'
+)py"));
+
+  PyThreadState_Swap(mainState);
+  PyThreadState* second = Py_NewInterpreter();
+  ASSERT_NE(second, nullptr);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+li = xbmcgui.ListItem('second', '', '', True)
+assert li.getLabel() == 'second'
+del li
+)py"));
+  Py_EndInterpreter(second);
+
+  PyThreadState_Swap(first);
+  EXPECT_TRUE(RunPy(R"py(
+li2 = xbmcgui.ListItem('again', '', '', True)
+assert li2.getLabel() == 'again'
+assert type(li2) is type(li)
+del li, li2
+)py"));
+  Py_EndInterpreter(first);
+
+  PyThreadState_Swap(mainState);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmcgui
+assert xbmcgui.ListItem('main', '', '', True).getLabel() == 'main'
+)py"));
+}
+
+// shared types must take process-wide method-cache tags; Player.__init__ consults the metatype first, so base and metatype count too (xbmc/xbmc#29309)
+TEST_F(TestPythonBindings, SharedTypesImmutable)
+{
+#if PY_VERSION_HEX < 0x030A0000
+  GTEST_SKIP() << "Py_TPFLAGS_IMMUTABLETYPE is 3.10+";
+#else
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  PyThreadState* mainState = PyThreadState_Get();
+
+  PyThreadState* sub = Py_NewInterpreter();
+  ASSERT_NE(sub, nullptr);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc, xbmcgui
+IMMUTABLE = 1 << 8
+for cls in (xbmc.Player, xbmc.Monitor, xbmcgui.WindowXMLDialog):
+    for t in (type(cls), *cls.__mro__):
+        assert t.__flags__ & IMMUTABLE, t
+)py"));
+  Py_EndInterpreter(sub);
+  PyThreadState_Swap(mainState);
+#endif
+}
+
+} // namespace

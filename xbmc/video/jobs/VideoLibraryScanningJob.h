@@ -11,6 +11,7 @@
 #include "video/VideoInfoScanner.h"
 #include "video/jobs/VideoLibraryJob.h"
 
+#include <atomic>
 #include <string>
 
 /*!
@@ -46,6 +47,7 @@ protected:
 
 private:
   KODI::VIDEO::CVideoInfoScanner m_scanner;
+  std::atomic<bool> m_cancelled{false};
   std::string m_directory;
   bool m_showProgress;
   bool m_scanAll;

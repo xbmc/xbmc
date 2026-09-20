@@ -13,6 +13,7 @@
 #include "interfaces/legacy/Exception.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -52,7 +53,8 @@ namespace XBMCAddon
                                          const String& codec /* = emptyString */,
                                          const String& stereoMode /* = emptyString */,
                                          const String& language /* = emptyString */,
-                                         const String& hdrType /* = emptyString */)
+                                         const String& hdrType /* = emptyString */,
+                                         const String& hdrDetail /* = emptyString */)
       : m_width(width),
         m_height(height),
         m_aspect(aspect),
@@ -60,7 +62,8 @@ namespace XBMCAddon
         m_codec(codec),
         m_stereoMode(stereoMode),
         m_language(language),
-        m_hdrType(hdrType)
+        m_hdrType(hdrType),
+        m_hdrDetail(hdrDetail)
     {
     }
 
@@ -73,8 +76,9 @@ namespace XBMCAddon
       streamDetail->m_iDuration = m_duration;
       streamDetail->m_strCodec = m_codec;
       streamDetail->m_strStereoMode = m_stereoMode;
-      streamDetail->m_strLanguage = m_language;
+      streamDetail->m_strLanguage = CLangCodeExpander::AsISO6392B(m_language);
       streamDetail->m_strHdrType = m_hdrType;
+      streamDetail->m_strHdrDetail = m_hdrDetail;
 
       return streamDetail;
     }
@@ -91,7 +95,7 @@ namespace XBMCAddon
       auto streamDetail = new CStreamDetailAudio();
       streamDetail->m_iChannels = m_channels;
       streamDetail->m_strCodec = m_codec;
-      streamDetail->m_strLanguage = m_language;
+      streamDetail->m_strLanguage = CLangCodeExpander::AsISO6392B(m_language);
 
       return streamDetail;
     }
@@ -104,7 +108,7 @@ namespace XBMCAddon
     CStreamDetailSubtitle* SubtitleStreamDetail::ToStreamDetailSubtitle() const
     {
       auto streamDetail = new CStreamDetailSubtitle();
-      streamDetail->m_strLanguage = m_language;
+      streamDetail->m_strLanguage = CLangCodeExpander::AsISO6392B(m_language);
 
       return streamDetail;
     }
@@ -1085,6 +1089,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::addStreamRaw(CVideoInfoTag* infoTag, CStreamDetail* stream)
     {
+      stream->SetSource(CStreamDetail::EXTERNAL);
       infoTag->m_streamDetails.AddStream(stream);
     }
 

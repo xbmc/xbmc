@@ -572,9 +572,12 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getSubtitles() }
-      /// Get subtitle stream name.
+      /// Get the language of the current subtitle stream.
       ///
-      /// @return                    Stream name
+      /// @return                    BCP 47 language tag of the stream, e.g. **en** or **en-AU**,
+      ///                            or the stream name when it declares no language
+      ///
+      /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///
       getSubtitles();
 #else
@@ -585,9 +588,12 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getAvailableSubtitleStreams() }
-      /// Get Subtitle stream names.
+      /// Get the languages of the available subtitle streams.
       ///
-      /// @return                    List of subtitle streams as name
+      /// @return                    List of BCP 47 language tags, e.g. **en** or **en-AU**; a
+      ///                            stream that declares no language is listed by its name
+      ///
+      /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///
       getAvailableSubtitleStreams();
 #else
@@ -739,9 +745,12 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getAvailableAudioStreams() }
-      /// Get Audio stream names
+      /// Get the languages of the available audio streams.
       ///
-      /// @return                    List of audio streams as name
+      /// @return                    List of BCP 47 language tags, e.g. **en** or **en-AU**; a
+      ///                            stream that declares no language is listed by its name
+      ///
+      /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///
       getAvailableAudioStreams();
 #else
@@ -775,9 +784,12 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getAvailableVideoStreams() }
-      /// Get Video stream names
+      /// Get the languages of the available video streams.
       ///
-      /// @return                    List of video streams as name
+      /// @return                    List of BCP 47 language tags, e.g. **en** or **en-AU**; a
+      ///                            stream that declares no language is listed by its name
+      ///
+      /// @python_v22 Language values are BCP 47 tags; previously ISO 639-2 three letter codes.
       ///
       getAvailableVideoStreams();
 #else

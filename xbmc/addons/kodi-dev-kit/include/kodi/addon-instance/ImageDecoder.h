@@ -33,10 +33,10 @@ namespace addon
 /// @defgroup cpp_kodi_addon_imagedecoder_Defs_ImageDecoderInfoTag class ImageDecoderInfoTag
 /// @ingroup cpp_kodi_addon_imagedecoder_Defs
 /// @brief **Info tag data structure**\n
-/// Representation of available information of processed audio file.
+/// Representation of available information of a processed image file.
 ///
-/// This is used to get all the necessary data of audio stream and to have on
-/// created files by encoders.
+/// This is used to get the metadata of an image, e.g. the EXIF data of a
+/// photo.
 ///
 /// ----------------------------------------------------------------------------
 ///
@@ -459,12 +459,14 @@ private:
 /// public:
 ///   CMyImageDecoder(const kodi::addon::IInstanceInfo& instance);
 ///
-///   bool LoadImageFromMemory(const uint8_t* buffer,
+///   bool LoadImageFromMemory(const std::string& mimetype,
+///                            const uint8_t* buffer,
 ///                            size_t bufSize,
 ///                            unsigned int& width,
 ///                            unsigned int& height) override;
 ///
 ///   bool Decode(uint8_t* pixels,
+///               size_t pixelBufferSize,
 ///               unsigned int width,
 ///               unsigned int height,
 ///               unsigned int pitch,
@@ -479,7 +481,8 @@ private:
 ///   ...
 /// }
 ///
-/// bool CMyImageDecoder::LoadImageFromMemory(const uint8_t* buffer,
+/// bool CMyImageDecoder::LoadImageFromMemory(const std::string& mimetype,
+///                                           const uint8_t* buffer,
 ///                                           size_t bufSize,
 ///                                           unsigned int& width,
 ///                                           unsigned int& height)
@@ -489,10 +492,11 @@ private:
 /// }
 ///
 /// bool CMyImageDecoder::Decode(uint8_t* pixels,
+///                              size_t pixelBufferSize,
 ///                              unsigned int width,
 ///                              unsigned int height,
 ///                              unsigned int pitch,
-///                              ADDON_IMG_FMT format) override;
+///                              ADDON_IMG_FMT format)
 /// {
 ///   ...
 ///   return true;
@@ -588,16 +592,22 @@ public:
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_imagedecoder
-  /// @brief Initialize an encoder.
+  /// @brief Load an image from a memory buffer.
   ///
   /// @param[in] mimetype The mimetype wanted from Kodi
   /// @param[in] buffer The data to read from memory
   /// @param[in] bufSize The buffer size
-  /// @param[in,out] width The optimal width of image on entry, obtained width
-  ///                      on return
-  /// @param[in,out] height The optimal height of image, actual obtained height
-  ///                       on return
+  /// @param[in,out] width Upper bound for the width on entry, the width actually
+  ///                      produced on return
+  /// @param[in,out] height Upper bound for the height on entry, the height
+  ///                       actually produced on return
   /// @return true if successful done, false on error
+  ///
+  /// @note `width` and `height` are a **maximum**, not a request. Kodi passes
+  /// the renderer's maximum texture size here when the caller has no preferred
+  /// size, so returning them unchanged as the image's natural size can ask for
+  /// an allocation of several thousand pixels square. Report the size the image
+  /// actually has.
   ///
   virtual bool LoadImageFromMemory(const std::string& mimetype,
                                    const uint8_t* buffer,
@@ -610,14 +620,23 @@ public:
   /// @ingroup cpp_kodi_addon_imagedecoder
   /// @brief Decode previously loaded image.
   ///
-  /// @param[in] pixels Output buffer
+  /// @param[out] pixels Output buffer
+  /// @param[in] pixelBufferSize Size of the output buffer in bytes
   /// @param[in] width Width of output image
   /// @param[in] height Height of output image
-  /// @param[in] pitch Pitch of output image
+  /// @param[in] pitch Byte offset between the start of one output row and the next
   /// @param[in] format Format of output image
   /// @return true if successful done, false on error
   ///
+  /// @note The buffer holds `height` rows of `pitch` bytes, `pixelBufferSize` in
+  /// total. `pitch` already accounts for `format`, so an add-on that writes a
+  /// fixed number of bytes per pixel regardless of `format` will overrun the
+  /// buffer for any format narrower than the one it assumes. Return false for
+  /// a `format` the add-on does not implement rather than falling through to a
+  /// default.
+  ///
   virtual bool Decode(uint8_t* pixels,
+                      size_t pixelBufferSize,
                       unsigned int width,
                       unsigned int height,
                       unsigned int pitch,
@@ -696,13 +715,14 @@ private:
 
   inline static bool ADDON_decode(const KODI_ADDON_IMAGEDECODER_HDL hdl,
                                   uint8_t* pixels,
-                                  size_t pixels_size,
+                                  size_t pixel_buffer_size,
                                   unsigned int width,
                                   unsigned int height,
                                   unsigned int pitch,
                                   enum ADDON_IMG_FMT format)
   {
-    return static_cast<CInstanceImageDecoder*>(hdl)->Decode(pixels, width, height, pitch, format);
+    return static_cast<CInstanceImageDecoder*>(hdl)->Decode(pixels, pixel_buffer_size, width,
+                                                            height, pitch, format);
   }
 };
 

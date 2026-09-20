@@ -51,6 +51,9 @@ jboolean CJNIXBMCFile::_open(JNIEnv *env, jobject thiz, jstring path)
   if (find_instance(thiz))
     return false;
 
+  if (!CFileUtils::CheckFileAccessAllowed(strPath))
+    return false;
+
   if (!XFILE::CFile::Exists(strPath))
     return false;
 

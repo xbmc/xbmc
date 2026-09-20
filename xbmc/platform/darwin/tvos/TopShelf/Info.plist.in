@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>@TOPSHELF_EXTENSION_NAME@</string>
 	<key>CFBundleIdentifier</key>
-	<string>@PLATFORM_BUNDLE_IDENTIFIER@.topshelf</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

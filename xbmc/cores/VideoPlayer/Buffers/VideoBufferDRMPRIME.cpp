@@ -57,6 +57,12 @@ CVideoBufferDRMPRIME::CVideoBufferDRMPRIME(int id) : CVideoBuffer(id)
   m_pixFormat = AV_PIX_FMT_DRM_PRIME;
 }
 
+bool CVideoBufferDRMPRIME::IsValid() const
+{
+  AVDRMFrameDescriptor* descriptor = GetDescriptor();
+  return descriptor && descriptor->nb_layers;
+}
+
 CVideoBufferDRMPRIMEFFmpeg::CVideoBufferDRMPRIMEFFmpeg(IVideoBufferPool& pool, int id)
   : CVideoBufferDRMPRIME(id)
 {
@@ -79,19 +85,13 @@ void CVideoBufferDRMPRIMEFFmpeg::Unref()
   av_frame_unref(m_pFrame);
 }
 
-bool CVideoBufferDRMPRIMEFFmpeg::IsValid() const
-{
-  AVDRMFrameDescriptor* descriptor = GetDescriptor();
-  return descriptor && descriptor->nb_layers;
-}
-
 CVideoBufferPoolDRMPRIMEFFmpeg::~CVideoBufferPoolDRMPRIMEFFmpeg()
 {
   for (auto buf : m_all)
     delete buf;
 }
 
-CVideoBuffer* CVideoBufferPoolDRMPRIMEFFmpeg::Get()
+CVideoBufferDRMPRIMEFFmpeg* CVideoBufferPoolDRMPRIMEFFmpeg::Get()
 {
   std::unique_lock lock(m_critSection);
 

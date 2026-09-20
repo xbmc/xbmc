@@ -192,6 +192,7 @@ struct PlayItemInformation
   std::vector<StreamInformation> videoStreams;
   std::vector<StreamInformation> audioStreams;
   std::vector<StreamInformation> presentationGraphicStreams;
+  std::vector<StreamInformation> pictureInPictureSubtitleStreams;
   std::vector<StreamInformation> interactiveGraphicStreams;
   std::vector<StreamInformation> secondaryAudioStreams;
   std::vector<StreamInformation> secondaryVideoStreams;

@@ -30,6 +30,10 @@ struct ChapterFFmpeg
 class CDVDDemuxUtils
 {
 public:
+  //! How far in a first chapter may start and still count as starting at zero: longer than a
+  //! keyframe interval, shorter than anything worth seeking to.
+  static constexpr std::chrono::milliseconds KEYFRAME_OFFSET_LIMIT{1000};
+
   static void FreeDemuxPacket(DemuxPacket* pPacket);
   static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
   static DemuxPacket* AllocateDemuxPacket(unsigned int iDataSize,
@@ -39,15 +43,16 @@ public:
 
   /*!
    * \brief Snap a container-declared frame rate that is exactly 1000/N fps
-   * (a whole number of milliseconds N per frame, the fingerprint of a rate
-   * derived from millisecond-quantised Matroska timestamps) to the standard
-   * rate whose millisecond-rounded frame duration equals N.
+   * (a whole number of milliseconds N per frame) to a standard rate whose
+   * millisecond-rounded duration equals N and agrees with the statistics.
    * \param[in,out] fpsRate frame rate numerator, rewritten on success
    * \param[in,out] fpsScale frame rate denominator, rewritten on success
    * \param hintFps measured rate from container statistics (frame count /
    * duration) used to resolve rates that quantise to the same duration
-   * (23.976 vs 24); pass 0 when unknown to prefer the fractional rate
+   * (23.976 vs 24). Missing or ambiguous statistics leave the rate unchanged.
    * \return true when the rate was rewritten
    */
   static bool SnapMsQuantisedFrameRate(int& fpsRate, int& fpsScale, double hintFps);
+  //! Average rate from Matroska NUMBER_OF_FRAMES and DURATION tags, or 0 if invalid.
+  static double FrameRateFromStatistics(const std::string& frames, const std::string& duration);
 };

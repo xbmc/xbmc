@@ -56,6 +56,25 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # Promote to cache variables so all code can access it
   set(WAYLANDPP_PROTOCOLS_DIR "${PC_WAYLANDPP_PKGDATADIR}/protocols" CACHE INTERNAL "")
 
+  set(WAYLANDPP_PROTOCOLS_XMLS "${WAYLANDPP_PROTOCOLS_DIR}/presentation-time.xml"
+                               "${WAYLANDPP_PROTOCOLS_DIR}/xdg-shell.xml")
+
+  # pkg-config finding the package is not evidence the descriptions were installed with it
+  foreach(xml IN LISTS WAYLANDPP_PROTOCOLS_XMLS)
+    if(NOT EXISTS "${xml}")
+      list(APPEND _missing_xmls "${xml}")
+    endif()
+  endforeach()
+
+  if(_missing_xmls)
+    list(JOIN _missing_xmls "\n    " _missing_xmls)
+    set(WAYLANDPP_REASON "waylandpp was found via pkg-config, but these protocol descriptions are not installed:\n    ${_missing_xmls}")
+    unset(WAYLANDPP_PROTOCOLS_XMLS)
+    unset(_missing_xmls)
+  endif()
+
+  set(WAYLANDPP_PROTOCOLS_XMLS ${WAYLANDPP_PROTOCOLS_XMLS} CACHE INTERNAL "")
+
   if(NOT VERBOSE_FIND)
      set(${CMAKE_FIND_PACKAGE_NAME}_FIND_QUIETLY TRUE)
    endif()
@@ -66,7 +85,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                   WAYLANDPP_CLIENT_LIBRARY
                                                   WAYLANDPP_CURSOR_LIBRARY
                                                   WAYLANDPP_EGL_LIBRARY
-                                    VERSION_VAR WAYLANDPP_wayland-client++_VERSION)
+                                                  WAYLANDPP_PROTOCOLS_XMLS
+                                    VERSION_VAR WAYLANDPP_wayland-client++_VERSION
+                                    REASON_FAILURE_MESSAGE "${WAYLANDPP_REASON}")
 
   if(WAYLANDPP_FOUND)
 

@@ -17,12 +17,16 @@
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <cmath>
 
 using namespace KODI;
 using namespace RETRO;
 
 const double MAX_DELAY = 0.3; // seconds
+
+// How long to stay quiet between log lines.
+const std::chrono::seconds DROP_LOG_INTERVAL{10};
 
 CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo) : m_processInfo(processInfo)
 {
@@ -125,7 +129,29 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
                   delaySecs * 1000);
       }
 
-      m_pAudioStream->AddData(&audioPacket.data, 0, frameCount, nullptr);
+      const unsigned int accepted =
+          m_pAudioStream->AddData(&audioPacket.data, 0, frameCount, nullptr);
+
+      // Dropping what the sink won't take is deliberate; being silent about it
+      // is not.
+      if (accepted < frameCount)
+      {
+        m_droppedFrames += frameCount - accepted;
+        ++m_dropEvents;
+
+        const auto now = std::chrono::steady_clock::now();
+
+        if (!m_lastDropLog || now - *m_lastDropLog >= DROP_LOG_INTERVAL)
+        {
+          CLog::Log(LOGDEBUG,
+                    "RetroPlayer[AUDIO]: Sink accepted {} of {} frames, {} refusals since the last "
+                    "message, {} frames dropped so far",
+                    accepted, frameCount, m_dropEvents, m_droppedFrames);
+
+          m_lastDropLog = now;
+          m_dropEvents = 0;
+        }
+      }
     }
   }
 }

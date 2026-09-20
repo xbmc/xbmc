@@ -16,16 +16,14 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRenderContext;
-
 class CRenderBufferOpenGLES : public CRenderBufferSysMem
 {
 public:
-  CRenderBufferOpenGLES(CRenderContext& context,
-                        GLuint pixelType,
+  CRenderBufferOpenGLES(GLuint pixelType,
                         GLuint internalFormat,
                         GLuint pixelFormat,
-                        GLuint bpp);
+                        GLuint bpp,
+                        bool supportsTextureSwizzle);
   ~CRenderBufferOpenGLES() override;
 
   // Implementation of IRenderBuffer via CRenderBufferSysMem
@@ -35,11 +33,11 @@ public:
 
 private:
   // Construction parameters
-  CRenderContext& m_context;
   const GLuint m_pixelType;
   const GLuint m_internalFormat;
   const GLuint m_pixelFormat;
   const GLuint m_bpp;
+  const bool m_swizzle;
 
   const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
   GLuint m_textureId = 0;

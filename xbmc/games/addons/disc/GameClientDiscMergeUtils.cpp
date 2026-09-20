@@ -17,6 +17,8 @@ CGameClientDiscModel CGameClientDiscMergeUtils::ReconcileModels(
     const CGameClientDiscModel& frontendDiscs, const CGameClientDiscModel& coreDiscs)
 {
   CGameClientDiscModel mergedDiscs;
+  mergedDiscs.RememberDiscs(frontendDiscs);
+  mergedDiscs.RememberDiscs(coreDiscs);
 
   // Set ejected
   mergedDiscs.SetEjected(coreDiscs.IsEjected());

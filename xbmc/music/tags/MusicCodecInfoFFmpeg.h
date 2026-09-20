@@ -10,6 +10,8 @@
 
 #include <string>
 
+struct AVFormatContext;
+
 struct musicCodecInfo
 {
 public:
@@ -24,5 +26,14 @@ public:
 class CMusicCodecInfoFFmpeg
 {
 public:
+  /*!
+   * \brief Fill codec_info from a context the caller already opened.
+   * \param fctx A context on which avformat_find_stream_info() has been called.
+   * \param codec_info Filled from the default audio stream, or the first one.
+   * \return Whether an audio stream was found.
+   */
+  static bool GetMusicCodecInfo(AVFormatContext* fctx, musicCodecInfo& codec_info);
+
+  //! Convenience overload for a caller with no context of its own; opens the file itself.
   static bool GetMusicCodecInfo(const std::string& strFileName, musicCodecInfo& codec_info);
 };

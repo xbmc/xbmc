@@ -11,6 +11,7 @@
 #include "IGameClientStream.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 
+#include <memory>
 #include <vector>
 
 namespace KODI
@@ -31,7 +32,9 @@ class CGameClientStreamAudio : public IGameClientStream
 {
 public:
   CGameClientStreamAudio(double sampleRate);
-  ~CGameClientStreamAudio() override { CloseStream(); }
+  ~CGameClientStreamAudio() override;
+
+  void SetSampleRate(double sampleRate);
 
   // Implementation of IGameClientStream
   bool OpenStream(RETRO::IRetroPlayerStream* stream,
@@ -45,10 +48,11 @@ private:
       const game_stream_audio_properties& properties, double sampleRate);
 
   // Construction parameters
-  const double m_sampleRate;
+  double m_sampleRate;
 
   // Stream parameters
   RETRO::IRetroPlayerStream* m_stream = nullptr;
+  std::unique_ptr<RETRO::AudioStreamProperties> m_properties;
 };
 
 } // namespace GAME

@@ -23,6 +23,10 @@ if(CROSSCOMPILING)
                           --ar=${CMAKE_AR}
                           --ranlib=${CMAKE_RANLIB}
                           --strip=${CMAKE_STRIP}
+                          --host-cc=${CC_FOR_BUILD}
+                          --host-ld=${CC_FOR_BUILD}
+                          "--host-cflags=${CFLAGS_FOR_BUILD}"
+                          "--host-ldflags=${LDFLAGS_FOR_BUILD}"
               )
 
   message(STATUS "CROSS: ${ffmpeg_conf}")
@@ -158,6 +162,7 @@ if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
 else()
   set(sourceplugin_patch PATCH_COMMAND patch -p1 -i <SOURCE_DIR>/002-ffmpeg-libavutil-common-h-cpp11-constant-macros.patch)
 endif()
+list(APPEND sourceplugin_patch COMMAND patch -p1 -i <SOURCE_DIR>/008-ffmpeg-all-pgssubdec-use-caller-colorspace.patch)
 
 include(ExternalProject)
 externalproject_add(ffmpeg

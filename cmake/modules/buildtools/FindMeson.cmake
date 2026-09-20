@@ -16,7 +16,7 @@ if(NOT TARGET Meson::Meson)
                                       ${NATIVEPREFIX}/bin/Meson)
 
   if(MESON_EXECUTABLE)
-    execute_process(COMMAND ${MESON_EXECUTABLE} -version
+    execute_process(COMMAND ${MESON_EXECUTABLE} --version
                     OUTPUT_VARIABLE MESON_VERSION
                     ERROR_QUIET
                     OUTPUT_STRIP_TRAILING_WHITESPACE)

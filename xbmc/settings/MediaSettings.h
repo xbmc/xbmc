@@ -24,11 +24,14 @@ constexpr int VOLUME_DRC_MAXIMUM = 6000; // 60dB
 
 class TiXmlNode;
 
-enum WatchedMode
+enum class WatchedMode
 {
-  WatchedModeAll = 0,
-  WatchedModeUnwatched,
-  WatchedModeWatched
+  // Cycling the watched mode follows the declaration order. Enum values must be consecutive.
+  ALL = 0,
+  UNWATCHED,
+  WATCHED,
+  // add new values here
+  COUNT // do not use. sentinel value, must always be last.
 };
 
 class CMediaSettings : public ISettingCallback, public ISettingsHandler, public ISubSettings
@@ -55,7 +58,7 @@ public:
    \return the current watch mode for this content type, WATCH_MODE_ALL if the content type is unknown.
    \sa SetWatchMode
    */
-  int GetWatchedMode(const std::string &content) const;
+  WatchedMode GetWatchedMode(const std::string& content) const;
 
   /*! \brief Set the watched mode for the given content type
    \param content Current content type
@@ -69,6 +72,13 @@ public:
    \sa GetWatchMode, SetWatchMode
    */
   void CycleWatchedMode(const std::string &content);
+
+  /*!
+   * \brief Returns the localized name of the watched mode \p mode
+   * \param[in] mode The watch mode to localize
+   * \return localized name
+   */
+  std::string LocalizeWatchedMode(WatchedMode mode);
 
   void SetMusicPlaylistRepeat(bool repeats) { m_musicPlaylistRepeat = repeats; }
   void SetMusicPlaylistShuffled(bool shuffled) { m_musicPlaylistShuffle = shuffled; }
@@ -86,6 +96,18 @@ public:
   int GetVideoNeedsUpdate() const { return m_videoNeedsUpdate; }
   void SetVideoNeedsUpdate(int version) { m_videoNeedsUpdate = version; }
 
+  // Centralized WatchedMode logic for pseudo-encapsulation
+  /*!
+   * \brief Cycle the watched mode \p mode
+   * \param[in] mode
+   * \sa GetWatchMode, SetWatchMode
+   */
+  static void CycleWatchedMode(WatchedMode& mode);
+
+  static bool IsValidWatchedMode(int value);
+  static std::optional<WatchedMode> ToWatchedMode(int value);
+  static int WatchedModesCount();
+
 protected:
   CMediaSettings() = default;
   CMediaSettings(const CMediaSettings&) = delete;
@@ -101,11 +123,11 @@ private:
   CGameSettings m_currentGameSettings;
 
   using WatchedModes = std::map<std::string, WatchedMode, std::less<>>;
-  WatchedModes m_watchedModes{{"files", WatchedModeAll},
-                              {"movies", WatchedModeAll},
-                              {"tvshows", WatchedModeAll},
-                              {"musicvideos", WatchedModeAll},
-                              {"recordings", WatchedModeAll}};
+  WatchedModes m_watchedModes{{"files", WatchedMode::ALL},
+                              {"movies", WatchedMode::ALL},
+                              {"tvshows", WatchedMode::ALL},
+                              {"musicvideos", WatchedMode::ALL},
+                              {"recordings", WatchedMode::ALL}};
 
   bool m_musicPlaylistRepeat{false};
   bool m_musicPlaylistShuffle{false};

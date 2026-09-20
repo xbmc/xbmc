@@ -10,6 +10,7 @@
 
 #include "Interface/StreamInfo.h"
 #include "cores/FFmpeg.h"
+#include "utils/LanguageTag.h"
 
 #include <chrono>
 #include <memory>
@@ -135,7 +136,7 @@ public:
   FFmpegExtraData extraData;
 
   StreamFlags flags{StreamFlags::FLAG_NONE};
-  std::string language; // RFC 5646 language code (empty string if undefined)
+  KODI::UTILS::CLanguageTag language; // empty when the container declares no language at all
   bool disabled{false}; // set when stream is disabled. (when no decoder exists)
 
   std::string name;
