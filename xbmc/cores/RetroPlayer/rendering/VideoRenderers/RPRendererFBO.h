@@ -11,6 +11,7 @@
 #include "RPBaseRenderer.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
+#include <map>
 #include <memory>
 #include <stdint.h>
 
@@ -20,8 +21,14 @@ namespace KODI
 {
 namespace SHADER
 {
-class IShaderTexture;
-}
+#if defined(HAS_GL)
+class CShaderTextureGL;
+class CShaderTextureGLRef;
+#elif defined(HAS_GLES)
+class CShaderTextureGLES;
+class CShaderTextureGLESRef;
+#endif
+} // namespace SHADER
 
 namespace RETRO
 {
@@ -76,6 +83,17 @@ protected:
     float z;
   };
 
+  struct RenderBufferTextures
+  {
+#if defined(HAS_GL)
+    std::shared_ptr<SHADER::CShaderTextureGLRef> sourceTexture;
+    std::shared_ptr<SHADER::CShaderTextureGL> targetTexture;
+#elif defined(HAS_GLES)
+    std::shared_ptr<SHADER::CShaderTextureGLESRef> sourceTexture;
+    std::shared_ptr<SHADER::CShaderTextureGLES> targetTexture;
+#endif
+  };
+
   // Implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
   void FlushInternal() override;
@@ -95,8 +113,7 @@ protected:
 
   virtual void Render(uint8_t alpha);
 
-  GLenum m_textureTarget = GL_TEXTURE_2D;
-  float m_clearColor = 0.0f;
+  std::map<CRenderBufferFBO*, std::unique_ptr<RenderBufferTextures>> m_RBTexturesMap;
 
   struct FrameGeometry
   {
@@ -128,10 +145,8 @@ protected:
   GLuint m_blackbarsVAO;
   GLuint m_blackbarsVertexVBO;
 
-  std::shared_ptr<SHADER::IShaderTexture> m_shaderTargetTexture;
-
-  unsigned int m_shaderTargetWidth{0};
-  unsigned int m_shaderTargetHeight{0};
+  const GLenum m_textureTarget = GL_TEXTURE_2D;
+  float m_clearColor = 0.0f;
 };
 #endif
 } // namespace RETRO

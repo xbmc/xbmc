@@ -28,7 +28,6 @@
 #include "utils/log.h"
 #endif
 
-#include <cmath>
 #include <cstddef>
 
 using namespace KODI;
@@ -70,8 +69,8 @@ CRPRendererFBO::CRPRendererFBO(const CRenderSettings& renderSettings,
   m_shaderPreset = std::make_unique<SHADER::CShaderPresetGL>(m_context);
 #endif
 
-  // Initialize CRPRendererOpenGL
-  m_clearColor = m_context.UseLimitedColor() ? (16.0f / 255.0f) : 0.0f;
+  // Initialize CRPRendererFBO
+  m_clearColor = m_context.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
   m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
@@ -152,6 +151,8 @@ void CRPRendererFBO::RenderInternal(bool clear, uint8_t alpha)
 
 void CRPRendererFBO::FlushInternal()
 {
+  m_RBTexturesMap.clear();
+
   if (!m_bConfigured)
     return;
 
@@ -186,7 +187,6 @@ void CRPRendererFBO::DrawBlackBars()
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
 
   glUniform4f(uniColLoc, m_clearColor / 255.0f, m_clearColor / 255.0f, m_clearColor / 255.0f, 1.0f);
-  glUniform1f(m_context.GUIShaderGetDepth(), -1.0f);
 
   Svertex vertices[24];
   GLubyte count = 0;
@@ -336,80 +336,93 @@ void CRPRendererFBO::Render(uint8_t alpha)
   const UTILS::CScopeGuard<CRenderBufferFBO*, nullptr, void(CRenderBufferFBO*)> finishRender(
       [](CRenderBufferFBO* buffer) { buffer->FinishRender(); }, renderBuffer);
 
-  GLuint drawTexture = renderBuffer->TextureID();
-
   UpdateShaders();
 
+  // Use video shader preset
   if (m_bUseShaderPreset)
   {
-    if (m_shaderTargetTexture &&
-        (m_shaderTargetWidth != m_fullDestWidth || m_shaderTargetHeight != m_fullDestHeight))
+    RenderBufferTextures* rbTextures;
+
+    // Drop cached textures if target size is changed
+    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight)
     {
-      m_shaderTargetTexture.reset();
+      m_RBTexturesMap.clear();
+      m_lastTargetWidth = m_fullDestWidth;
+      m_lastTargetHeight = m_fullDestHeight;
     }
 
-    if (!m_shaderTargetTexture && m_fullDestWidth > 0 && m_fullDestHeight > 0)
+    const auto it = m_RBTexturesMap.find(renderBuffer);
+    if (it != m_RBTexturesMap.end())
     {
-#if defined(HAS_GLES)
-      auto targetTexture = std::make_shared<SHADER::CShaderTextureGLES>(
-          destWidth, destHeight, GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA, false);
-#else
-      auto targetTexture = std::make_shared<SHADER::CShaderTextureGL>(
-          m_fullDestWidth, m_fullDestHeight, GL_UNSIGNED_BYTE, GL_RGBA8, GL_BGRA, false);
+      rbTextures = it->second.get();
+    }
+    else
+    {
+      rbTextures = new RenderBufferTextures{
+#if defined(HAS_GL)
+          // Source texture
+          std::make_shared<SHADER::CShaderTextureGLRef>(renderBuffer->TextureWidth(),
+                                                        renderBuffer->TextureHeight(),
+                                                        renderBuffer->TextureID()),
+          // Target texture
+          std::make_shared<SHADER::CShaderTextureGL>(static_cast<unsigned int>(m_fullDestWidth),
+                                                     static_cast<unsigned int>(m_fullDestHeight),
+                                                     GL_UNSIGNED_BYTE, GL_RGBA8, GL_BGRA, false)
+#elif defined(HAS_GLES)
+          // Source texture
+          std::make_shared<SHADER::CShaderTextureGLESRef>(renderBuffer->TextureWidth(),
+                                                          renderBuffer->TextureHeight(),
+                                                          renderBuffer->TextureID()),
+          // Target texture
+          std::make_shared<SHADER::CShaderTextureGLES>(static_cast<unsigned int>(m_fullDestWidth),
+                                                       static_cast<unsigned int>(m_fullDestHeight),
+                                                       GL_UNSIGNED_BYTE, GL_RGBA, GL_RGBA, false)
 #endif
-      targetTexture->CreateTexture();
-      if (targetTexture->BindFBO())
-      {
-        GLint targetFbo;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &targetFbo);
-        targetTexture->UnbindFBO();
-        if (targetFbo != 0)
-        {
-          m_shaderTargetTexture = std::move(targetTexture);
-          m_shaderTargetWidth = m_fullDestWidth;
-          m_shaderTargetHeight = m_fullDestHeight;
-        }
-      }
+      };
+      rbTextures->targetTexture->CreateTexture(); // Create new internal texture
+      m_RBTexturesMap.emplace(renderBuffer, rbTextures);
     }
 
-    if (m_shaderTargetTexture)
+    const auto& sourceTexture = rbTextures->sourceTexture;
+    const auto& targetTexture = rbTextures->targetTexture;
+
+    GLint filter = GL_NEAREST;
+    if (m_shaderPreset->GetPasses().front().filterType == SHADER::FilterType::LINEAR)
+      filter = GL_LINEAR;
+
+    glBindTexture(m_textureTarget, sourceTexture->GetTextureID());
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    if (!m_shaderPreset->RenderUpdate(*sourceTexture, *targetTexture))
     {
-#if defined(HAS_GLES)
-      SHADER::CShaderTextureGLESRef sourceTexture(
-          renderBuffer->GetWidth(), renderBuffer->GetHeight(), renderBuffer->TextureID());
-      auto* target = static_cast<SHADER::CShaderTextureGLES*>(m_shaderTargetTexture.get());
-#else
-      SHADER::CShaderTextureGLRef sourceTexture(renderBuffer->GetWidth(), renderBuffer->GetHeight(),
-                                                renderBuffer->TextureID());
-      auto* target = static_cast<SHADER::CShaderTextureGL*>(m_shaderTargetTexture.get());
-#endif
-
-      GLint filter = GL_NEAREST;
-      if (m_shaderPreset->GetPasses().front().filterType == SHADER::FilterType::LINEAR)
-        filter = GL_LINEAR;
-
-      glActiveTexture(GL_TEXTURE0);
-      glBindTexture(m_textureTarget, renderBuffer->TextureID());
-      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-      if (m_shaderPreset->RenderUpdate(sourceTexture, *target))
-      {
-        drawTexture = target->GetTextureID();
-        rect = CRenderGeometryFBO::GetTextureCoordinates(m_sourceRect, renderBuffer->GetHeight(),
-                                                         renderBuffer->GetWidth(),
-                                                         renderBuffer->GetHeight(), false);
-      }
-      else
-      {
-        CLog::Log(LOGERROR,
-                  "RetroPlayer[RENDER]: Video filter failed, drawing the frame unfiltered");
-        m_bShadersNeedUpdate = false;
-        m_bUseShaderPreset = false;
-      }
+      m_bShadersNeedUpdate = false;
+      m_bUseShaderPreset = false;
     }
+    else
+    {
+      glActiveTexture(GL_TEXTURE0); // GUI shader samples from texture unit 0
+      glBindTexture(m_textureTarget, targetTexture->GetTextureID());
+      rect = CRenderGeometryFBO::GetTextureCoordinates(m_sourceRect, renderBuffer->GetHeight(),
+                                                       renderBuffer->GetWidth(),
+                                                       renderBuffer->GetHeight(), false);
+    }
+  }
+
+  if (!m_bUseShaderPreset)
+  {
+    GLint filter = GL_NEAREST;
+    if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
+      filter = GL_LINEAR;
+
+    glActiveTexture(GL_TEXTURE0); // GUI shader samples from texture unit 0
+    glBindTexture(m_textureTarget, renderBuffer->TextureID());
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
   if (alpha < 255)
@@ -422,25 +435,13 @@ void CRPRendererFBO::Render(uint8_t alpha)
     glDisable(GL_BLEND);
   }
 
-  // Unit 0, because that is where the GUI shader samples from. Binding without
-  // selecting it leaves the texture on whichever unit something else last made
-  // active, and the shader then reads a unit this renderer never wrote to.
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, drawTexture);
-
-  GLint filter = GL_NEAREST;
-  if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
-    filter = GL_LINEAR;
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
+  // Use GUI shader
   m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
   GLint depthLoc = m_context.GUIShaderGetDepth();
 
+  // Setup color values
   GLubyte col[4];
   const uint32_t color = (alpha << 24) | 0xFFFFFF;
   col[0] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::R, color);
