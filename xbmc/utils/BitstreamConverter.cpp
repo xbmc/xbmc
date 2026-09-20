@@ -605,13 +605,11 @@ bool CBitstreamConverter::Convert(uint8_t* pData, int iSize)
           uint32_t nal_size;
           uint8_t* end = pData + iSize;
           uint8_t* nal_start = pData;
-          while (end - nal_start >= 3)
+          while (nal_start < end)
           {
             nal_size = AV_RB24(nal_start);
-            nal_start += 3;
-            // clamp corrupt length fields to the remaining packet size
-            nal_size = std::min<uint32_t>(nal_size, end - nal_start);
             avio_wb32(pb, nal_size);
+            nal_start += 3;
             avio_write(pb, nal_start, nal_size);
             nal_start += nal_size;
           }
@@ -885,7 +883,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
   uint8_t* buf = pData;
   uint32_t buf_size = iSize;
   uint8_t unit_type, nal_sps, nal_pps, nal_sei;
-  int32_t nal_size;
+  uint32_t nal_size;
   uint32_t cumul_size = 0;
   const uint8_t* buf_end = buf + buf_size;
 
@@ -913,7 +911,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
 
   do
   {
-    if (buf + m_sps_pps_context.length_size > buf_end)
+    if (buf_end - buf < m_sps_pps_context.length_size)
       goto fail;
 
     for (nal_size = 0, i = 0; i < m_sps_pps_context.length_size; i++)
@@ -921,9 +919,8 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
 
     buf += m_sps_pps_context.length_size;
 
-    // compare against the remaining size instead of buf + nal_size, which can
-    // wrap around the 32-bit address space on a corrupt length field
-    if (nal_size <= 0 || nal_size > buf_end - buf)
+    // Validate before reading the NAL header or forming a pointer to its end.
+    if (nal_size == 0 || nal_size > static_cast<uint32_t>(buf_end - buf))
       goto fail;
 
     if (m_codec == AV_CODEC_ID_H264)
