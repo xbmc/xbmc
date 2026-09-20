@@ -697,11 +697,25 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           return;
         case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
-          HandleDeviceCountChange(reinterpret_cast<const char*>(msg->data), false);
-          return;
         case CActiveAEControlProtocol::DEFAULTDEVICECHANGE:
-          HandleDeviceCountChange("", true);
+        {
+          // endpoints report several changes for one event, e.g. display audio during a
+          // display mode switch, and each of them would enumerate all sinks again
+          const bool defaultDeviceChanged =
+              m_controlPort.PurgeOut(CActiveAEControlProtocol::DEFAULTDEVICECHANGE) > 0 ||
+              signal == CActiveAEControlProtocol::DEFAULTDEVICECHANGE;
+
+          std::string driver;
+          if (signal == CActiveAEControlProtocol::DEVICECOUNTCHANGE)
+            driver = reinterpret_cast<const char*>(msg->data);
+
+          // queued events may come from other drivers, then enumerate all of them
+          if (m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECOUNTCHANGE) > 0)
+            driver.clear();
+
+          HandleDeviceCountChange(driver, defaultDeviceChanged);
           return;
+        }
         case CActiveAEControlProtocol::PAUSESTREAM:
           CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
