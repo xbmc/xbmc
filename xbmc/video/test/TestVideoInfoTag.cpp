@@ -265,6 +265,8 @@ protected:
     m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
     m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false).AsBcp47();
+    m_languageDetailsOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS);
   }
 
   void TearDown() override
@@ -272,6 +274,13 @@ protected:
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE, m_settingOriginal);
     g_langInfo.SetAudioLanguage(m_audioLanguageOriginal);
+    DescribeStream(m_languageDetailsOriginal);
+  }
+
+  static void DescribeStream(int languageDetails)
+  {
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetInt(
+        CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS, languageDetails);
   }
 
   static void PreferLanguage(const std::string& language)
@@ -299,8 +308,31 @@ protected:
     return tag;
   }
 
+  // Three tracks that give each setting a different answer: the disc nominates the French one,
+  // the German one is technically the best, and an English speaker would hear the English one.
+  static CVideoInfoTag MakeTagWhereEverySettingDiffers()
+  {
+    CVideoInfoTag tag;
+    for (const auto& [language, codec, channels, flags] :
+         {std::tuple{"ger", "truehd", 8, StreamFlags::FLAG_NONE},
+          std::tuple{"fra", "ac3", 2, StreamFlags::FLAG_DEFAULT},
+          std::tuple{"eng", "dts", 6, StreamFlags::FLAG_NONE}})
+    {
+      auto* audio = new CStreamDetailAudio();
+      audio->m_strLanguage = language;
+      audio->m_strCodec = codec;
+      audio->m_iChannels = channels;
+      audio->m_flags = flags;
+      audio->SetSource(CStreamDetail::MEDIA);
+      tag.m_streamDetails.AddStream(audio);
+    }
+    tag.m_streamDetails.DetermineBestStreams();
+    return tag;
+  }
+
   std::string m_settingOriginal;
   std::string m_audioLanguageOriginal;
+  int m_languageDetailsOriginal{CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER};
 };
 
 TEST_F(AudioSortKeyTester, OrdersByThePreferredLanguageStream)
@@ -332,4 +364,50 @@ TEST_F(AudioSortKeyTester, FallsBackToTheBestStreamWithoutALanguagePreference)
   SortItem sortable;
   tag.ToSortable(sortable, Field::AUDIO_CODEC);
   EXPECT_EQ("truehd", sortable[Field::AUDIO_CODEC].asString());
+}
+
+TEST_F(AudioSortKeyTester, DescribedStreamFollowsTheLanguageDetailsSetting)
+{
+  // Each option names a different one of the three tracks, so a wrong reading of the setting
+  // cannot pass by coincidence.
+  const CVideoInfoTag tag{MakeTagWhereEverySettingDiffers()};
+  PreferLanguage("eng");
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER);
+  EXPECT_EQ("eng", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT);
+  EXPECT_EQ("fra", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_BEST);
+  EXPECT_EQ("ger", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+}
+
+TEST_F(AudioSortKeyTester, DefaultFallsBackToTheBestStreamWhenNothingIsNominated)
+{
+  // Neither track carries the default flag, so "Default" has nothing to name and the best
+  // stream is the only answer left.
+  const CVideoInfoTag tag{MakeTagWithTwoAudioStreams()};
+  PreferLanguage("eng");
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT);
+  EXPECT_EQ("ger", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+}
+
+TEST_F(AudioSortKeyTester, SortKeyFollowsTheLanguageDetailsSetting)
+{
+  // The sort key has to move with the label, or a list orders on a value it does not show.
+  const CVideoInfoTag tag{MakeTagWhereEverySettingDiffers()};
+  PreferLanguage("eng");
+  SortItem sortable;
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT);
+  tag.ToSortable(sortable, Field::AUDIO_CODEC);
+  EXPECT_EQ("ac3", sortable[Field::AUDIO_CODEC].asString());
+  tag.ToSortable(sortable, Field::AUDIO_CHANNELS);
+  EXPECT_EQ(2, sortable[Field::AUDIO_CHANNELS].asInteger());
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_BEST);
+  tag.ToSortable(sortable, Field::AUDIO_LANGUAGE);
+  EXPECT_EQ("ger", sortable[Field::AUDIO_LANGUAGE].asString());
 }

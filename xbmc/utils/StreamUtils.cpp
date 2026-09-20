@@ -8,17 +8,127 @@
 
 #include "StreamUtils.h"
 
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 
 #include <algorithm>
 #include <array>
+#include <string>
 
 extern "C"
 {
 #include <libavcodec/avcodec.h>
 #include <libavcodec/defs.h>
+}
+
+namespace
+{
+/*!
+ * \brief Decide one tier of CompareAudioPreference().
+ *
+ * Mirrors the player's PREDICATE_RETURN: a tier only has an opinion when the two streams
+ * differ on it, and the stream the property holds for comes first.
+ */
+int CompareTier(bool lh, bool rh)
+{
+  if (lh == rh)
+    return 0;
+  return lh ? 1 : -1;
+}
+} // unnamed namespace
+
+StreamUtils::AudioPreferences StreamUtils::AudioPreferences::Current()
+{
+  const std::shared_ptr<CSettings> settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const std::string setting{settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE)};
+
+  AudioPreferences preferences;
+  preferences.mediaDefault =
+      StringUtils::EqualsNoCase(setting, KODI::LANGINFO::audioLanguageMediaDefault);
+  preferences.preferOriginal =
+      StringUtils::EqualsNoCase(setting, KODI::LANGINFO::audioLanguageOriginal);
+
+  // Only a preference naming a language has one to match on, and the two above do not, which is
+  // why they are read separately. GetAudioLanguage() resolves "default" to the UI language.
+  if (!preferences.mediaDefault && !preferences.preferOriginal)
+    preferences.language = g_langInfo.GetAudioLanguage(true);
+
+  preferences.preferHearingImpaired =
+      settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);
+  preferences.preferVisualImpaired =
+      settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOVISUAL);
+  preferences.preferDefaultFlag =
+      settings->GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG);
+
+  return preferences;
+}
+
+int StreamUtils::CompareAudioPreference(const AudioCandidate& lh,
+                                        const AudioCandidate& rh,
+                                        const AudioPreferences& preferences)
+{
+  int result{0};
+
+  // "Media default" means the user has asked for none of this to be considered
+  if (!preferences.mediaDefault)
+  {
+    if (preferences.preferOriginal)
+    {
+      result =
+          CompareTier(lh.flags & StreamFlags::FLAG_ORIGINAL, rh.flags & StreamFlags::FLAG_ORIGINAL);
+    }
+    else
+    {
+      result = CompareTier(lh.language.Matches(preferences.language),
+                           rh.language.Matches(preferences.language));
+    }
+    if (result != 0)
+      return result;
+
+    // The impaired flags cut both ways: a listener who has not asked for a described or
+    // captioned mix should be steered away from one just as firmly
+    result = CompareTier(static_cast<bool>(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) ==
+                             preferences.preferHearingImpaired,
+                         static_cast<bool>(rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) ==
+                             preferences.preferHearingImpaired);
+    if (result != 0)
+      return result;
+
+    result = CompareTier(static_cast<bool>(lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) ==
+                             preferences.preferVisualImpaired,
+                         static_cast<bool>(rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) ==
+                             preferences.preferVisualImpaired);
+    if (result != 0)
+      return result;
+  }
+
+  if (preferences.preferDefaultFlag)
+  {
+    result =
+        CompareTier(lh.flags & StreamFlags::FLAG_DEFAULT, rh.flags & StreamFlags::FLAG_DEFAULT);
+    if (result != 0)
+      return result;
+  }
+
+  if (preferences.preferStereo)
+  {
+    result = CompareTier(lh.channels == 2, rh.channels == 2);
+    if (result != 0)
+      return result;
+  }
+
+  result =
+      CompareAudioQuality(std::string{lh.codec}, lh.channels, std::string{rh.codec}, rh.channels);
+  if (result != 0)
+    return result;
+
+  // Two equally good streams, so let the media's own idea of a default settle it
+  return CompareTier(lh.flags & StreamFlags::FLAG_DEFAULT, rh.flags & StreamFlags::FLAG_DEFAULT);
 }
 
 int StreamUtils::GetCodecPriority(const std::string &codec)

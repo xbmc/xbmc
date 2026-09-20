@@ -969,20 +969,6 @@ const CLanguageTag& CLangInfo::GetAudioLanguage(bool allowFallback) const
   return m_audioLanguage;
 }
 
-std::string CLangInfo::GetPreferredAudioLanguage() const
-{
-  const std::string setting{CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-      CSettings::SETTING_LOCALE_AUDIOLANGUAGE)};
-
-  if (StringUtils::EqualsNoCase(setting, audioLanguageMediaDefault) ||
-      StringUtils::EqualsNoCase(setting, audioLanguageOriginal))
-    return "";
-
-  // Resolves "default" to the UI language. Narrowed to the notation the stream details
-  // carry, which is what the caller compares against.
-  return GetAudioLanguage(true).AsIso6392B();
-}
-
 void CLangInfo::SetAudioLanguage(const std::string& language)
 {
   m_audioLanguage = LanguageFromSetting(language, specialAudioLangSettings);

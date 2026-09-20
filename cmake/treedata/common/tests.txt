@@ -1,6 +1,7 @@
 xbmc/addons/gui/skin/test         test/skin
 xbmc/addons/test                  test/addons
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
+xbmc/cores/AudioEngine/Utils/test test/audioengine_utils
 xbmc/cores/RetroPlayer/playback/test test/retroplayer_playback
 xbmc/cores/RetroPlayer/rendering/test test/retroplayer_rendering
 xbmc/cores/RetroPlayer/savestates/test test/retroplayer_savestates
@@ -30,6 +31,7 @@ xbmc/network/test                 test/network
 xbmc/pictures/metadata/test       test/pictures/metadata
 xbmc/playlists/test               test/playlists
 xbmc/pvr/channels/test            test/pvrchannels
+xbmc/pvr/epg/test                 test/pvrepg
 xbmc/rendering/capture/test       test/rendering_capture
 xbmc/settings/test                test/settings
 xbmc/settings/lib/test            test/lib/settings

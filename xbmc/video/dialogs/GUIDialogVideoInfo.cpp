@@ -56,6 +56,7 @@
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoItemArtworkHandler.h"
 #include "video/VideoLibraryQueue.h"
@@ -1993,8 +1994,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   if (item->HasProperty("set_folder_thumb"))
   {
     // have a folder thumb to set as well
-    VIDEO::CVideoInfoScanner::ApplyThumbToFolder(item->GetProperty("set_folder_thumb").asString(),
-                                                 result);
+    VIDEO::CVideoInfoScannerArt::ApplyThumbToFolder(
+        item->GetProperty("set_folder_thumb").asString(), result);
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();

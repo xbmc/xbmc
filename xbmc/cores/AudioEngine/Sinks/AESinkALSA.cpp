@@ -979,6 +979,9 @@ void CAESinkALSA::HandleError(const char* name, int err)
     default:
       CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - snd_pcm_writei returned {} ({})", name,
                 err, snd_strerror(err));
+      if ((err = snd_pcm_prepare(m_pcm)) < 0)
+        CLog::Log(LOGERROR, "CAESinkALSA::HandleError({}) - snd_pcm_prepare returned {} ({})", name,
+                  err, snd_strerror(err));
       break;
   }
 }

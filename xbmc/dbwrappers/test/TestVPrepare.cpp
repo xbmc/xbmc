@@ -12,6 +12,7 @@
 #endif
 
 #include <array>
+#include <cstdint>
 #include <string>
 
 #include <gtest/gtest.h>
@@ -196,3 +197,67 @@ TEST_P(VPrepareStringParamTester, Sqlite)
 INSTANTIATE_TEST_SUITE_P(TestDbWrappers,
                          VPrepareStringParamTester,
                          testing::ValuesIn(VPrepareStringParamTests));
+
+/*!
+ * Both backends, because a column holding a count of seconds is written on both, and a conversion
+ * narrower than the value moves the row it names to another date without saying so.
+ */
+struct VPrepareInt64ParamTest
+{
+  std::string format;
+  int64_t param;
+  std::string expected;
+};
+
+const auto VPrepareInt64ParamTests = std::array{
+    VPrepareInt64ParamTest{"WHERE iEndTime > %lld", 0, "WHERE iEndTime > 0"},
+    // past the signed 32-bit ceiling of 2038-01-19
+    VPrepareInt64ParamTest{"WHERE iEndTime > %lld", 4102444740, "WHERE iEndTime > 4102444740"},
+    // past the unsigned one of 2106-02-07
+    VPrepareInt64ParamTest{"WHERE iEndTime > %lld", 7258118400, "WHERE iEndTime > 7258118400"},
+    // and below the epoch, which a conversion read as unsigned would wrap
+    VPrepareInt64ParamTest{"WHERE iEndTime > %lld", -2208988800, "WHERE iEndTime > -2208988800"},
+};
+
+class VPrepareInt64ParamTester : public testing::WithParamInterface<VPrepareInt64ParamTest>,
+                                 public testing::Test
+{
+};
+
+TEST_P(VPrepareInt64ParamTester, Sqlite)
+{
+  const auto params = GetParam();
+  EXPECT_EQ(params.expected, TestPrepareSQL<dbiplus::SqliteDatabase>(params.format, params.param));
+}
+
+#if defined(HAS_MYSQL) || defined(HAS_MARIADB)
+TEST_P(VPrepareInt64ParamTester, MySql)
+{
+  const auto params = GetParam();
+  EXPECT_EQ(params.expected, TestPrepareSQL<dbiplus::MysqlDatabase>(params.format, params.param));
+}
+#endif
+
+INSTANTIATE_TEST_SUITE_P(TestDbWrappers,
+                         VPrepareInt64ParamTester,
+                         testing::ValuesIn(VPrepareInt64ParamTests));
+
+/*!
+ * A literal percent next to two 64-bit conversions: the escaping pass steps over a conversion two
+ * characters at a time, so this is where it would lose its place and swap the arguments.
+ */
+TEST(VPrepareInt64Param, ALiteralPercentBetweenConversionsSqlite)
+{
+  EXPECT_EQ("(iStartTime % 86400) >= 7258118400",
+            TestPrepareSQL<dbiplus::SqliteDatabase>("(iStartTime %% %lld) >= %lld", int64_t{86400},
+                                                    int64_t{7258118400}));
+}
+
+#if defined(HAS_MYSQL) || defined(HAS_MARIADB)
+TEST(VPrepareInt64Param, ALiteralPercentBetweenConversionsMySql)
+{
+  EXPECT_EQ("(iStartTime % 86400) >= 7258118400",
+            TestPrepareSQL<dbiplus::MysqlDatabase>("(iStartTime %% %lld) >= %lld", int64_t{86400},
+                                                   int64_t{7258118400}));
+}
+#endif

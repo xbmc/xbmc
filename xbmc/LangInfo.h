@@ -134,14 +134,6 @@ public:
   const KODI::UTILS::CLanguageTag& GetAudioLanguage(bool allowFallback) const;
 
   /*!
-   * \brief Get the audio language the user prefers, as an ISO 639 code
-   *
-   * \return The preferred language, or an empty string when the preference cannot be expressed
-   *         as a language, ie. when it is "media default" or "original language"
-   */
-  std::string GetPreferredAudioLanguage() const;
-
-  /*!
    * \brief Set the audio language.
    * \param language The language can either be a two char language code,
    *        or a three char language code, or a language name in english,

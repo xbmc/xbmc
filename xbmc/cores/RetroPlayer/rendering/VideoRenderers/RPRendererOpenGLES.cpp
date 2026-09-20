@@ -14,6 +14,7 @@
 #include "cores/RetroPlayer/shaders/gles/ShaderPresetGLES.h"
 #include "cores/RetroPlayer/shaders/gles/ShaderTextureGLES.h"
 #include "cores/RetroPlayer/shaders/gles/ShaderTextureGLESRef.h"
+#include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
@@ -37,9 +38,14 @@ CRPBaseRenderer* CRendererFactoryOpenGLES::CreateRenderer(
   return new CRPRendererOpenGLES(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContext&)
+RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContext& context)
 {
-  return {std::make_shared<CRenderBufferPoolOpenGLES>()};
+  bool supportsTextureSwizzle = false;
+#if defined(GL_ES_VERSION_3_0)
+  auto* renderSystem = static_cast<CRenderSystemGLES*>(context.Rendering());
+  supportsTextureSwizzle = renderSystem && renderSystem->SupportsTextureSwizzle();
+#endif
+  return {std::make_shared<CRenderBufferPoolOpenGLES>(supportsTextureSwizzle)};
 }
 
 // --- CRPRendererOpenGLES -----------------------------------------------------

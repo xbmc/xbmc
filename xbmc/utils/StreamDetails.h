@@ -11,6 +11,7 @@
 #include "ISerializable.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "utils/IArchivable.h"
+#include "utils/StreamUtils.h"
 
 #include <algorithm>
 #include <array>
@@ -302,13 +303,24 @@ public:
   StreamFlags GetSubtitleFlags(int idx = 0) const;
 
   /*!
-   * \brief Get the index of the best audio stream in the given language.
+   * \brief Get the index of the audio stream playback is likely to start on.
    *
-   * \param language The preferred audio language as an ISO 639 code, empty for no preference
-   * \return The 1-based index of the best stream in that language, or 0 (meaning the technically
-   *         best stream, see GetAudioCodec()) when no preference was given or no stream matches
+   * Applies StreamUtils::CompareAudioPreference(), so the stream named here is the stream the
+   * player picks, save for the two tiers the library cannot see: a stream remembered from a
+   * previous watch, and a stereo audio layout.
+   *
+   * \param preferences The settings in force, see StreamUtils::AudioPreferences::Current()
+   * \return The 1-based index of that stream, or 0 when there are no audio streams
    */
-  int GetPreferredAudioStreamIndex(const std::string& language) const;
+  int GetPreferredAudioStreamIndex(const StreamUtils::AudioPreferences& preferences) const;
+
+  /*!
+   * \brief Get the index of the audio stream the media nominates as its default.
+   *
+   * \return The 1-based index of the first stream flagged as default, or 0 (meaning the
+   *         technically best stream, see GetAudioCodec()) when the media nominates none
+   */
+  int GetDefaultAudioStreamIndex() const;
 
   /*!
    * \brief Get the language of the first audio stream in the order the source lists them.

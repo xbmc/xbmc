@@ -58,6 +58,7 @@ void CJobQueue::CancelJob(const CJob* job)
   {
     i->CancelJob();
     m_processing.erase(i);
+    UpdateIdleState();
     return;
   }
   const auto j = std::ranges::find_if(m_jobQueue, JobFinder(job));
@@ -65,6 +66,7 @@ void CJobQueue::CancelJob(const CJob* job)
   {
     j->FreeJob();
     m_jobQueue.erase(j);
+    UpdateIdleState();
   }
 }
 
@@ -112,13 +114,19 @@ void CJobQueue::QueueNextJob()
     CJobPointer& job = m_jobQueue.back();
     job.SetId(CServiceBroker::GetJobManager()->AddJob(job.GetJob(), this, m_priority));
     if (job.GetId() > 0)
-    {
       m_processing.emplace_back(job);
-      m_jobQueue.pop_back();
-      return;
-    }
     m_jobQueue.pop_back();
   }
+
+  UpdateIdleState();
+}
+
+void CJobQueue::UpdateIdleState()
+{
+  if (m_jobQueue.empty() && m_processing.empty())
+    m_idleEvent.Set();
+  else
+    m_idleEvent.Reset();
 }
 
 void CJobQueue::CancelJobs()
@@ -128,12 +136,25 @@ void CJobQueue::CancelJobs()
   std::ranges::for_each(m_jobQueue, [](CJobPointer& jp) { jp.FreeJob(); });
   m_jobQueue.clear();
   m_processing.clear();
+  UpdateIdleState();
 }
 
 bool CJobQueue::IsProcessing() const
 {
-  return CServiceBroker::GetJobManager()->IsRunning() &&
-         (!m_processing.empty() || !m_jobQueue.empty());
+  // What the queue holds is read under its own lock, the job manager asked outside it, so that
+  // the two are never held at once
+  const bool hasJobs{[this]
+                     {
+                       std::unique_lock lock(m_section);
+                       return !m_processing.empty() || !m_jobQueue.empty();
+                     }()};
+
+  return hasJobs && CServiceBroker::GetJobManager()->IsRunning();
+}
+
+bool CJobQueue::WaitForCompletion(std::chrono::milliseconds timeout)
+{
+  return m_idleEvent.Wait(timeout);
 }
 
 bool CJobQueue::QueueEmpty() const

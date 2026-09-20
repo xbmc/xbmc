@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+	<include name="GameOSDMenuButton">
+		<param name="label2"></param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>700</width>
+				<height>80</height>
+				<label>$PARAM[label]</label>
+				<label2>$PARAM[label2]</label2>
+				<font></font>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<texturenofocus />
+				<nested />
+			</control>
+			<!-- Overlay the preceding button without adding another row to the grouplist. -->
+			<control type="group" id="1$PARAM[id]">
+				<top>0</top>
+				<width>700</width>
+				<height>0</height>
+				<visible>Control.IsVisible($PARAM[id])</visible>
+				<control type="image">
+					<left>8</left>
+					<top>-72</top>
+					<width>64</width>
+					<height>64</height>
+					<texture>$PARAM[icon]</texture>
+				</control>
+				<control type="label">
+					<left>80</left>
+					<top>-80</top>
+					<width>600</width>
+					<height>80</height>
+					<label>$PARAM[label]</label>
+					<font>font13</font>
+					<align>left</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="label">
+					<right>20</right>
+					<top>-80</top>
+					<width>600</width>
+					<height>80</height>
+					<label>$PARAM[label2]</label>
+					<font>font13</font>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>grey</textcolor>
+				</control>
+			</control>
+		</definition>
+	</include>
 	<include name="GameDialogControllers">
 		<control type="group">
 			<centertop>50%</centertop>

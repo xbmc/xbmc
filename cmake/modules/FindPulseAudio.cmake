@@ -7,7 +7,6 @@
 #
 #   ${APP_NAME_LC}::PulseAudio - The PulseAudio library
 #   ${APP_NAME_LC}::PulseAudioSimple - The PulseAudio simple library
-#   ${APP_NAME_LC}::PulseAudioMainloop - The PulseAudio mainloop library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -17,7 +16,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_PULSEAUDIO libpulse${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
-    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
     pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
   endif()
 
@@ -29,9 +27,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   find_library(PULSEAUDIO_SIMPLE_LIBRARY NAMES pulse-simple libpulse-simple
                                          HINTS ${PC_PULSEAUDIO_LIBDIR} ${PC_PULSEAUDIO_LIBRARY_DIRS})
-
-  find_library(PULSEAUDIO_MAINLOOP_LIBRARY NAMES pulse-mainloop pulse-mainloop-glib libpulse-mainloop-glib
-                                           HINTS ${PC_PULSEAUDIO_LIBDIR} ${PC_PULSEAUDIO_LIBRARY_DIRS})
 
   if(PC_PULSEAUDIO_VERSION)
     set(PULSEAUDIO_VERSION_STRING ${PC_PULSEAUDIO_VERSION})
@@ -47,7 +42,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(PulseAudio
-                                    REQUIRED_VARS PULSEAUDIO_LIBRARY PULSEAUDIO_MAINLOOP_LIBRARY PULSEAUDIO_SIMPLE_LIBRARY PULSEAUDIO_INCLUDE_DIR
+                                    REQUIRED_VARS PULSEAUDIO_LIBRARY PULSEAUDIO_SIMPLE_LIBRARY PULSEAUDIO_INCLUDE_DIR
                                     VERSION_VAR PULSEAUDIO_VERSION_STRING)
 
   if(PULSEAUDIO_FOUND)
@@ -58,15 +53,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set_target_properties(${APP_NAME_LC}::PulseAudioSimple PROPERTIES
                                                            IMPORTED_LOCATION "${PULSEAUDIO_SIMPLE_LIBRARY}")
 
-    add_library(${APP_NAME_LC}::PulseAudioMainloop UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::PulseAudioMainloop PROPERTIES
-                                                             IMPORTED_LOCATION "${PULSEAUDIO_MAINLOOP_LIBRARY}")
-
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                      IMPORTED_LOCATION "${PULSEAUDIO_LIBRARY}"
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${PULSEAUDIO_INCLUDE_DIR}"
                                                                      INTERFACE_COMPILE_DEFINITIONS HAS_PULSEAUDIO
-                                                                     INTERFACE_LINK_LIBRARIES "${APP_NAME_LC}::PulseAudioMainloop;${APP_NAME_LC}::PulseAudioSimple")
+                                                                     INTERFACE_LINK_LIBRARIES "${APP_NAME_LC}::PulseAudioSimple")
   endif()
 endif()
