@@ -134,6 +134,7 @@ public:
   unsigned int packets;
   IDVDStreamPlayer::ESyncState syncState;
   double starttime;
+  bool starttimePending;
   double cachetime;
   double cachetotal;
   const StreamType type;
@@ -171,6 +172,7 @@ public:
     packets = 0;
     syncState = IDVDStreamPlayer::SYNC_STARTING;
     starttime = DVD_NOPTS_VALUE;
+    starttimePending = false;
     startpts = DVD_NOPTS_VALUE;
     lastdts = DVD_NOPTS_VALUE;
     avsync = AV_SYNC_FORCE;
@@ -415,6 +417,7 @@ protected:
   void DestroyPlayers();
 
   void Prepare();
+  bool ShouldDeferSync(bool ready, std::chrono::steady_clock::time_point now);
   bool OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset = true);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
@@ -656,10 +659,7 @@ protected:
   mutable CCriticalSection m_StateSection;
   XbmcThreads::EndTime<> m_syncTimer;
 
-  // HandlePlaySpeed: bounded wait for a real start PTS before anchoring the
-  // master clock after a (re)sync, so a transient all-NOPTS start does not pin
-  // the clock far behind the real stream position. Reset on flush.
-  std::chrono::steady_clock::time_point m_syncStartPtsWait{};
+  std::optional<std::chrono::steady_clock::time_point> m_syncStartPtsWait;
 
   CEdl m_Edl;
   bool m_SkipCommercials;

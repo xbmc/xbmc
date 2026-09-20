@@ -43,6 +43,18 @@ public:
   explicit CTestVideoPlayer(IPlayerCallback& c) : CVideoPlayer(c) {}
   virtual ~CTestVideoPlayer() {}
 
+  bool InvokeShouldDeferSync(bool ready,
+                             bool timestampPending,
+                             double audioPts,
+                             double videoPts,
+                             std::chrono::steady_clock::time_point now)
+  {
+    m_CurrentAudio.starttime = audioPts;
+    m_CurrentVideo.starttime = videoPts;
+    m_CurrentVideo.starttimePending = timestampPending;
+    return ShouldDeferSync(ready, now);
+  }
+
   int InvokeGetPreviousBookmark(std::chrono::milliseconds ts) { return GetPreviousBookmark(ts); }
   int InvokeGetNextBookmark(std::chrono::milliseconds ts) { return GetNextBookmark(ts); }
   std::optional<std::chrono::milliseconds> InvokeGetBookmarkPos(int idx)
@@ -364,4 +376,62 @@ TEST_F(TestVideoPlayer, CalcTimeOrPercentSeekTargetSmooth)
   EXPECT_EQ(advancedSettings->m_videoTimeSeekBackward * 1000,
             CTestVideoPlayer::InvokeCalcTimeOrPercentSeekTarget(0, maxTime, Direction::BACKWARD,
                                                                 TestSeekStep::NORMAL));
+}
+
+TEST_F(TestVideoPlayer, SyncWaitOnlyForPendingTimestamp)
+{
+  CTestPlayerCallback callback;
+  CTestVideoPlayer player(callback);
+  const std::chrono::steady_clock::time_point now{};
+  EXPECT_FALSE(player.InvokeShouldDeferSync(true, false, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now));
+  EXPECT_FALSE(player.InvokeShouldDeferSync(true, true, 1000000.0, DVD_NOPTS_VALUE, now));
+  EXPECT_FALSE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, 1000000.0, now));
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now));
+}
+
+TEST_F(TestVideoPlayer, SyncWaitStartsWhenAnchorReady)
+{
+  CTestPlayerCallback callback;
+  CTestVideoPlayer player(callback);
+  const std::chrono::steady_clock::time_point now{};
+  EXPECT_FALSE(player.InvokeShouldDeferSync(false, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now));
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 5s));
+  EXPECT_TRUE(
+      player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 6999ms));
+  EXPECT_FALSE(
+      player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 7s));
+  EXPECT_TRUE(
+      player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 10s));
+}
+
+TEST_F(TestVideoPlayer, SyncWaitClearsWhenTimestampArrives)
+{
+  CTestPlayerCallback callback;
+  CTestVideoPlayer player(callback);
+  const std::chrono::steady_clock::time_point now{};
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now));
+  EXPECT_FALSE(player.InvokeShouldDeferSync(true, false, DVD_NOPTS_VALUE, 1000000.0, now + 1s));
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 5s));
+}
+
+TEST_F(TestVideoPlayer, SyncWaitClearsWhenReadinessIsLost)
+{
+  CTestPlayerCallback callback;
+  CTestVideoPlayer player(callback);
+  const std::chrono::steady_clock::time_point now{};
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now));
+  EXPECT_FALSE(
+      player.InvokeShouldDeferSync(false, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 1s));
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 5s));
+}
+
+TEST_F(TestVideoPlayer, SyncWaitEndsForOrdinaryNoptsOutput)
+{
+  CTestPlayerCallback callback;
+  CTestVideoPlayer player(callback);
+  const std::chrono::steady_clock::time_point now{};
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now));
+  EXPECT_FALSE(
+      player.InvokeShouldDeferSync(true, false, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 1s));
+  EXPECT_TRUE(player.InvokeShouldDeferSync(true, true, DVD_NOPTS_VALUE, DVD_NOPTS_VALUE, now + 5s));
 }

@@ -878,6 +878,7 @@ bool CVideoPlayer::IsPlaying() const
 
 void CVideoPlayer::OnStartup()
 {
+  m_syncStartPtsWait.reset();
   m_CurrentVideo.Clear();
   m_CurrentAudio.Clear();
   m_CurrentSubtitle.Clear();
@@ -1734,6 +1735,7 @@ void CVideoPlayer::Process()
         CloseStream(m_CurrentAudio, true);
         CloseStream(m_CurrentVideo, true);
 
+        m_syncStartPtsWait.reset();
         m_CurrentAudio.Clear();
         m_CurrentVideo.Clear();
         m_CurrentSubtitle.Clear();
@@ -2075,6 +2077,29 @@ CacheInfo CVideoPlayer::GetCachingTimes()
   return info;
 }
 
+bool CVideoPlayer::ShouldDeferSync(bool ready, std::chrono::steady_clock::time_point now)
+{
+  // EOF can report a NOPTS start while the video worker keeps decoding. Ordinary
+  // PLAYER_STARTED messages put the worker in WAITSYNC, where waiting cannot help.
+  if (!ready || !m_CurrentVideo.starttimePending || m_CurrentAudio.starttime != DVD_NOPTS_VALUE ||
+      m_CurrentVideo.starttime != DVD_NOPTS_VALUE)
+  {
+    m_syncStartPtsWait.reset();
+    return false;
+  }
+
+  if (!m_syncStartPtsWait)
+    m_syncStartPtsWait = now;
+  else if (now - *m_syncStartPtsWait >= 2000ms)
+  {
+    m_syncStartPtsWait.reset();
+    CLog::Log(LOGWARNING,
+              "VideoPlayer::Sync - no valid start pts after 2000ms, anchoring clock anyway");
+    return false;
+  }
+  return true;
+}
+
 void CVideoPlayer::HandlePlaySpeed()
 {
   const bool isInMenu = IsInMenuInternal();
@@ -2245,52 +2270,27 @@ void CVideoPlayer::HandlePlaySpeed()
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold) ||
                  (!m_VideoPlayerVideo->AcceptsData() && m_VideoPlayerAudio->GetLevel() < 10);
 
-    // Bounded wait for a real start PTS before anchoring the master clock.
-    // If neither stream has a valid start time yet, the "video && audio" branch
-    // below falls through to m_clock.Discontinuity(0) and pins the master clock
-    // far behind the real stream position: every decoded frame then gets a huge
-    // time-to-display, the renderer holds the entire output-buffer pool, the
-    // decoder starves for a free buffer, and (on hardware decoders that reset on
-    // a frame timeout) a reset loop produces a long picture freeze while audio
-    // keeps running -- only another seek escapes it. A transient all-NOPTS start
-    // happens in practice when the demuxer hands NOPTS on the first post-seek
-    // packet and the decoder reports no start time for a few frames (e.g. an
-    // empty hardware codec answering the brief post-flush drain with EOF). Defer
-    // anchoring until a real PTS arrives (it lands within a few frames); bound
-    // the wait so a genuinely timestamp-less stream still starts, then anchor
-    // exactly as before. The timer is reset on every flush.
-    bool deferNoPts = (m_CurrentAudio.starttime == DVD_NOPTS_VALUE &&
-                       m_CurrentVideo.starttime == DVD_NOPTS_VALUE);
-    if (deferNoPts)
-    {
-      if (m_syncStartPtsWait == std::chrono::steady_clock::time_point{})
-        m_syncStartPtsWait = std::chrono::steady_clock::now();
-      else if (std::chrono::steady_clock::now() - m_syncStartPtsWait >=
-               std::chrono::milliseconds(2000))
-      {
-        CLog::Log(LOGWARNING, "VideoPlayer::Sync - no valid start pts after 2000ms, "
-                              "anchoring clock anyway");
-        deferNoPts = false;
-      }
-    }
-    else
-      m_syncStartPtsWait = {};
+    const bool syncAudio = m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
+                           (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
+                            m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC);
+    const bool syncVideo = m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
+                           (m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CONT ||
+                            m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC);
+    const bool deferNoPts = ShouldDeferSync(video && audio && !syncAudio && !syncVideo,
+                                            std::chrono::steady_clock::now());
 
-    if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
-        (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
-         m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC))
+    if (syncAudio)
     {
       m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
       m_VideoPlayerAudio->SendMessage(
           std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
     }
-    else if (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
-             (m_CurrentVideo.avsync == CCurrentStream::AV_SYNC_CONT ||
-             m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC))
+    else if (syncVideo)
     {
       m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
+      m_CurrentVideo.starttimePending = false;
       m_VideoPlayerVideo->SendMessage(
           std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, m_clock.GetClock()), 1);
     }
@@ -2340,11 +2340,13 @@ void CVideoPlayer::HandlePlaySpeed()
         clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
       }
 
+      m_syncStartPtsWait.reset();
       m_clock.Discontinuity(clock);
       m_CurrentAudio.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
       m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_NONE;
+      m_CurrentVideo.starttimePending = false;
       m_VideoPlayerAudio->SendMessage(
           std::make_shared<CDVDMsgDouble>(CDVDMsg::GENERAL_RESYNC, clock), 1);
       m_VideoPlayerVideo->SendMessage(
@@ -2388,6 +2390,8 @@ void CVideoPlayer::HandlePlaySpeed()
       }
     }
   }
+  else
+    m_syncStartPtsWait.reset();
 
   // handle ff/rw
   if (m_playSpeed != DVD_PLAYSPEED_NORMAL && m_playSpeed != DVD_PLAYSPEED_PAUSE)
@@ -3523,6 +3527,7 @@ void CVideoPlayer::HandleMessages()
         m_CurrentVideo.cachetime = msg.cachetime;
         m_CurrentVideo.cachetotal = msg.cachetotal;
         m_CurrentVideo.starttime = msg.timestamp;
+        m_CurrentVideo.starttimePending = msg.timestampPending;
       }
       CLog::Log(LOGDEBUG, "CVideoPlayer::HandleMessages - player started {}", msg.player);
     }
@@ -4319,6 +4324,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
 
 bool CVideoPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
 {
+  m_syncStartPtsWait.reset();
   IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentAudio.player);
   if(player == nullptr)
     return false;
@@ -4348,6 +4354,8 @@ bool CVideoPlayer::OpenAudioStream(CDVDStreamInfo& hint, bool reset)
 
 bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
 {
+  m_syncStartPtsWait.reset();
+  m_CurrentVideo.starttimePending = false;
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     /* set aspect ratio as requested by navigator for dvd's */
@@ -4597,6 +4605,7 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
 
 void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
 {
+  m_syncStartPtsWait.reset();
   CLog::Log(LOGDEBUG, "CVideoPlayer::FlushBuffers - flushing buffers");
 
   double startpts;
@@ -4615,7 +4624,7 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
     m_CurrentVideo.inited = false;
     m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_FORCE;
     m_CurrentVideo.starttime = DVD_NOPTS_VALUE;
-    m_syncStartPtsWait = {};
+    m_CurrentVideo.starttimePending = false;
     m_CurrentSubtitle.inited = false;
     m_CurrentTeletext.inited = false;
     m_CurrentRadioRDS.inited  = false;
