@@ -117,6 +117,13 @@ void CMediaManager::Stop()
   m_platformStorage.reset();
 }
 
+void CMediaManager::ScanForPresentMedia()
+{
+  std::unique_lock lock(m_CritSecStorageProvider);
+  if (m_platformStorage)
+    m_platformStorage->ScanForPresentMedia();
+}
+
 void CMediaManager::Initialize()
 {
   if (!m_platformStorage)
