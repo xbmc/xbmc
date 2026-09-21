@@ -78,7 +78,7 @@ public:
 
   /*!
    * @brief Get a channel group member given its path
-   * @param strPath The path to the channel group member
+   * @param path The path to the channel group member
    * @return The channel group member, or nullptr if not found
    */
   std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMemberByPath(
@@ -142,7 +142,6 @@ public:
 
   /*!
    * @brief Get the list of groups.
-   * @param groups The list to store the results in.
    * @param bExcludeHidden Whenever to exclude hidden channel groups.
    * @return The amount of items that were added.
    */

@@ -90,7 +90,7 @@ public:
 
   /*!
    * @brief Queue the deletion of the given EPG tables from this container.
-   * @param epg The tables to delete.
+   * @param epgs The tables to delete.
    * @return True on success, false otherwise.
    */
   bool QueueDeleteEpgs(const std::vector<std::shared_ptr<CPVREpg>>& epgs);

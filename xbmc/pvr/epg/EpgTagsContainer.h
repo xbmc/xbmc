@@ -185,7 +185,7 @@ private:
 
   /*!
    * @brief Complete the instance data for the given tag.
-   * @param tags The tag to complete.
+   * @param tag The tag to complete.
    * @return The completed tag.
    */
   std::shared_ptr<CPVREpgInfoTag> CreateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag) const;

@@ -106,7 +106,7 @@ public:
    * Set to true to hide this channel. Set to false to unhide it.
    * The EPG of hidden channels won't be updated.
    * @param bIsHidden The new setting.
-   * @param bIsUserSetIcon true if user changed the hidden flag via GUI, false otherwise.
+   * @param bIsUserSetHidden true if user changed the hidden flag via GUI, false otherwise.
    * @return True if something changed, false otherwise.
    */
   bool SetHidden(bool bIsHidden, bool bIsUserSetHidden = false);
