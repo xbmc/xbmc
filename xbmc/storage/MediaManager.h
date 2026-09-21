@@ -69,8 +69,10 @@ public:
   /*! \brief Build and register an optical-disc auto source for the given device path.
    * Adds the source WITHOUT triggering autorun.
    * \param devicePath The optical drive path (e.g. "D:")
+   * \param generation What the drive was on when the caller looked
+   * \sa IsDiscCurrent
    */
-  void AddOpticalSource(const std::string& devicePath);
+  void AddOpticalSource(const std::string& devicePath, uint64_t generation);
 #endif
 
   bool IsDiscInDrive(const std::string& devicePath="");
@@ -95,6 +97,28 @@ public:
    * \sa GetDriveStatus
    */
   DriveState GetDriveStatusNow(const std::string& devicePath = "");
+#endif
+
+#ifdef HAS_OPTICAL_DRIVE
+  /*! \brief Note that the disc in a drive has changed
+   * \param devicePath The optical drive path
+   * \return The generation the drive is now on
+   */
+  uint64_t BumpDiscGeneration(const std::string& devicePath);
+
+  /*! \brief The generation a drive is on now, or 0 if nothing has happened to it yet
+   * \param devicePath The optical drive path
+   */
+  uint64_t DiscGeneration(const std::string& devicePath);
+
+  /*! \brief Whether a drive still holds the disc it did when a job was queued
+   * Reading a disc takes seconds and a job cannot be cancelled, so one can still be running
+   * after its disc has been ejected or swapped. Its findings describe a disc that is no longer
+   * there and must not be applied.
+   * \param devicePath The optical drive path
+   * \param generation The generation the caller was queued on
+   */
+  bool IsDiscCurrent(const std::string& devicePath, uint64_t generation);
 #endif
 #ifdef HAS_OPTICAL_DRIVE
   /*! \brief Get the disc TOC, reusing successful reads.
@@ -217,10 +241,20 @@ private:
 #ifdef HAS_OPTICAL_DRIVE
   /*! \brief Identify a newly inserted disc and act on it
    * Runs as a job - reading the disc is slow enough to be seen as a GUI freeze if done on the
-   * thread OnStorageAdded() is called from. \sa OnStorageAdded
+   * thread OnStorageAdded() is called from.
    * \param device the optical storage device
+   * \param generation What the drive was on when the job was queued
+   * \sa OnStorageAdded
    */
-  void ProcessAddedOpticalDevice(const MEDIA_DETECT::STORAGE::StorageDevice& device);
+  void ProcessAddedOpticalDevice(const MEDIA_DETECT::STORAGE::StorageDevice& device,
+                                 uint64_t generation);
+
+  /*! \brief The generation of a drive, for a caller already holding m_muAutoSource
+   * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
+   */
+  uint64_t DiscGenerationLocked(const std::string& translatedDevicePath) const;
+
+  std::map<std::string, uint64_t> m_discGeneration;
 #endif
 
   struct DiscInfoCacheEntry
@@ -273,6 +307,9 @@ private:
   /*! Last state logged per drive. Deliberately survives ResetDriveCaches() so a re-probe that
       lands on the same state stays quiet - only transitions are logged */
   std::map<std::string, DriveState> m_driveStatusLogged;
+  /*! Drives last seen holding a disc, so that the disc going is noticed whatever the probes
+      in between answered */
+  std::set<std::string> m_discSeen;
   /*! Bumped by every ResetDriveCaches() so a probe that was invalidated while it was in
       flight can discard its now stale result instead of caching it - see GetDriveStatus */
   uint64_t m_driveStatusGeneration{0};

@@ -12,6 +12,7 @@
 
 #include "ServiceBroker.h"
 #include "jobs/JobManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "storage/cdioSupport.h"
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/Event.h"
@@ -186,6 +187,17 @@ protected:
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     FAIL() << "The refresh never finished";
+  }
+  /*! Run what a job posted to the application thread, which nothing pumps in the test binary,
+      until the drive reaches a generation */
+  void WaitForGeneration(const std::string& devicePath, uint64_t generation)
+  {
+    const auto deadline{Clock::now() + std::chrono::seconds(10)};
+    while (m_manager.DiscGeneration(devicePath) != generation && Clock::now() < deadline)
+    {
+      CServiceBroker::GetAppMessenger()->ProcessMessages();
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
   }
 
   /*! Hold the next probe in the drive until ReleaseProbe(), so in-flight state can be asserted */
@@ -447,6 +459,8 @@ TEST_F(TestMediaManager, UnreportedEjectIsNoticedAfterRefresh)
   m_manager.GetDriveStatus(DEVICE_PATH);
   WaitForRefresh();
   EXPECT_TRUE(m_manager.IsDiscInDrive(DEVICE_PATH));
+  // The generation is keyed by the drive letter, which the test path only yields in its device form
+  const uint64_t generation{m_manager.DiscGeneration(DeviceKey(DEVICE_PATH))};
 
   // The user presses the drive's eject button and no storage event arrives
   m_drive->state = DriveState::CLOSED_NO_MEDIA;
@@ -463,6 +477,10 @@ TEST_F(TestMediaManager, UnreportedEjectIsNoticedAfterRefresh)
   WaitForRefresh();
   EXPECT_FALSE(m_manager.IsDiscInDrive(DEVICE_PATH));
   EXPECT_EQ(m_drive->probes, 2);
+
+  // Seeing the disc go is what stops a job still identifying it
+  WaitForGeneration(DeviceKey(DEVICE_PATH), generation + 1);
+  EXPECT_TRUE(m_manager.IsDiscCurrent(DeviceKey(DEVICE_PATH), generation + 1));
 }
 
 TEST_F(TestMediaManager, EmptyDriveIsReprobedOnlyAfterExpiry)

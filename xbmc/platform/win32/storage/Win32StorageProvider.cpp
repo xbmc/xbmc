@@ -55,12 +55,13 @@ void CWin32StorageProvider::ScanForPresentMedia()
     // Asking the drive and then reading the disc both wait on the hardware, so hand each drive
     // to a job rather than hold up initialisation
     const std::string path{it.strPath};
+    const uint64_t generation{CServiceBroker::GetMediaManager().DiscGeneration(path)};
     CServiceBroker::GetJobManager()->Submit(
-        [path]()
+        [path, generation]()
         {
           auto& mediaManager{CServiceBroker::GetMediaManager()};
           if (mediaManager.GetDriveStatusNow(path) == DriveState::CLOSED_MEDIA_PRESENT)
-            mediaManager.AddOpticalSource(path);
+            mediaManager.AddOpticalSource(path, generation);
         },
         CJob::PRIORITY_HIGH);
   }
