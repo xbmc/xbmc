@@ -42,9 +42,9 @@ public:
     return state;
   }
   TrayState GetTrayState(const std::string& devicePath) override { return TrayState::UNDEFINED; }
-  void EjectDriveTray(const std::string& devicePath) override {}
-  void CloseDriveTray(const std::string& devicePath) override {}
-  void ToggleDriveTray(const std::string& devicePath) override {}
+  bool EjectDriveTray(const std::string& devicePath) override { return true; }
+  bool CloseDriveTray(const std::string& devicePath) override { return true; }
+  bool ToggleDriveTray(const std::string& devicePath) override { return true; }
 
   DriveState state{DriveState::CLOSED_MEDIA_PRESENT};
   int probes{0};

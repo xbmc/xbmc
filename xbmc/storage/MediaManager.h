@@ -253,12 +253,12 @@ private:
    * Both deciding what to do and doing it wait on the drive, so neither can happen on the
    * application thread. \sa EjectTray \sa CloseTray \sa ToggleTray
    * \param devicePath Path of the drive, empty for the first available optical drive
-   * \param operation What to ask the handler to do
+   * \param operation What to ask the handler to do, reporting whether the drive moved
    * \param eject Passed to the operation, for the one that needs to know
    */
   void OperateTray(
       const std::string& devicePath,
-      const std::function<void(IDiscDriveHandler&, const std::string&, bool)>& operation,
+      const std::function<bool(IDiscDriveHandler&, const std::string&, bool)>& operation,
       bool eject = true);
 
   /*! \brief The generation of a drive, for a caller already holding m_muAutoSource
