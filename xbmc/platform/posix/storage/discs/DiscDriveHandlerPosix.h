@@ -38,13 +38,13 @@ public:
   /*! \brief Eject the provided drive device
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
   */
-  void EjectDriveTray(const std::string& devicePath) override;
+  bool EjectDriveTray(const std::string& devicePath) override;
 
   /*! \brief Close the provided drive device
   * \note Some drives support closing apart from opening/eject
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
   */
-  void CloseDriveTray(const std::string& devicePath) override;
+  bool CloseDriveTray(const std::string& devicePath) override;
 
   /*! \brief Toggle the state of a given drive device
   *
@@ -54,5 +54,5 @@ public:
   *
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
   */
-  void ToggleDriveTray(const std::string& devicePath) override;
+  bool ToggleDriveTray(const std::string& devicePath) override;
 };
