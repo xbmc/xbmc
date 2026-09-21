@@ -249,12 +249,26 @@ private:
   void ProcessAddedOpticalDevice(const MEDIA_DETECT::STORAGE::StorageDevice& device,
                                  uint64_t generation);
 
+  /*! \brief Work a drive's tray as a job
+   * Both deciding what to do and doing it wait on the drive, so neither can happen on the
+   * application thread. \sa EjectTray \sa CloseTray \sa ToggleTray
+   * \param devicePath Path of the drive, empty for the first available optical drive
+   * \param operation What to ask the handler to do
+   * \param eject Passed to the operation, for the one that needs to know
+   */
+  void OperateTray(
+      const std::string& devicePath,
+      const std::function<void(IDiscDriveHandler&, const std::string&, bool)>& operation,
+      bool eject = true);
+
   /*! \brief The generation of a drive, for a caller already holding m_muAutoSource
    * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
    */
   uint64_t DiscGenerationLocked(const std::string& translatedDevicePath) const;
 
   std::map<std::string, uint64_t> m_discGeneration;
+  /*! Drives whose tray a job is working, guarded by m_muAutoSource */
+  std::set<std::string> m_trayBusy;
 #endif
 
   struct DiscInfoCacheEntry
