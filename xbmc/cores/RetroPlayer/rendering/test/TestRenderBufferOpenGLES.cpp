@@ -8,8 +8,11 @@
 
 #if defined(HAS_EGL) && HAS_GLES == 3
 
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/buffers/RenderBufferOpenGLES.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolOpenGLES.h"
+#include "rendering/gles/RenderSystemGLES.h"
+#include "windowing/WinSystem.h"
 
 #include <array>
 #include <cstring>
@@ -25,6 +28,39 @@ using namespace KODI::RETRO;
 
 namespace
 {
+class CTestWinSystem : public CWinSystemBase, public CRenderSystemGLES
+{
+public:
+  explicit CTestWinSystem(const char* extensions)
+    : m_previousWinSystem(CServiceBroker::GetWinSystem())
+  {
+    m_RenderExtensions = " ";
+    m_RenderExtensions += extensions;
+    m_RenderExtensions += " ";
+    CServiceBroker::RegisterWinSystem(this);
+  }
+
+  ~CTestWinSystem() override
+  {
+    if (m_previousWinSystem)
+      CServiceBroker::RegisterWinSystem(m_previousWinSystem);
+    else
+      CServiceBroker::UnregisterWinSystem();
+  }
+
+  CRenderSystemBase* GetRenderSystem() override { return this; }
+  bool CreateNewWindow(const std::string&, bool, RESOLUTION_INFO&) override { return true; }
+  bool ResizeWindow(int, int, int, int) override { return true; }
+  bool SetFullScreen(bool, RESOLUTION_INFO&, bool) override { return true; }
+  void Register(IDispResource*) override {}
+  void Unregister(IDispResource*) override {}
+  void SetVSyncImpl(bool) override {}
+  void PresentRenderImpl(bool) override {}
+
+private:
+  CWinSystemBase* m_previousWinSystem;
+};
+
 class TestRenderBufferOpenGLES : public testing::Test
 {
 protected:
@@ -58,6 +94,10 @@ protected:
     m_surface = eglCreatePbufferSurface(m_display, config, surfaceAttributes);
     ASSERT_NE(m_surface, EGL_NO_SURFACE);
     ASSERT_EQ(eglMakeCurrent(m_display, m_surface, m_surface, m_context), EGL_TRUE);
+
+    const auto* extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+    ASSERT_NE(extensions, nullptr);
+    m_winSystem = std::make_unique<CTestWinSystem>(extensions);
 
     const char* vertexSource =
         "attribute vec2 position; varying vec2 uv;"
@@ -113,6 +153,7 @@ protected:
       glDeleteBuffers(1, &m_vertices);
       glDeleteProgram(m_program);
     }
+    m_winSystem.reset();
     if (m_display != EGL_NO_DISPLAY)
     {
       eglMakeCurrent(m_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
@@ -154,6 +195,7 @@ protected:
   }
 
 private:
+  std::unique_ptr<CTestWinSystem> m_winSystem;
   EGLDisplay m_display{EGL_NO_DISPLAY};
   EGLContext m_context{EGL_NO_CONTEXT};
   EGLSurface m_surface{EGL_NO_SURFACE};
