@@ -240,11 +240,12 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 
   Append(itemlist);
 
-  //! @todo Is it intentional not to copy CFileItem properties, except path, label and property map?
+  //! @todo Is it intentional not to copy CFileItem properties, except path, label, art and property map?
   //! This is different from CFileItemList::Copy. Why?
   SetPath(itemlist.GetPath());
   SetLabel(itemlist.GetLabel());
   SetProperties(itemlist.GetProperties());
+  SetArt(itemlist.GetArt());
 
   //! @todo Is it intentional not to copy m_ignoreURLOptions, m_fastLookup, m_sortIgnoreFolders, m_content?
   //! This is (partly) different from CFileItemList::Copy. Why?
