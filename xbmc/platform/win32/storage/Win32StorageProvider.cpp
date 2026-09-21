@@ -55,12 +55,15 @@ void CWin32StorageProvider::ScanForPresentMedia()
     // Asking the drive and then reading the disc both wait on the hardware, so hand each drive
     // to a job rather than hold up initialisation
     const std::string path{it.strPath};
+    // Bumped rather than read, so the drive is known to the removal handling and can be
+    // invalidated while its job runs
+    const uint64_t generation{CServiceBroker::GetMediaManager().BumpDiscGeneration(path)};
     CServiceBroker::GetJobManager()->Submit(
-        [path]()
+        [path, generation]()
         {
           auto& mediaManager{CServiceBroker::GetMediaManager()};
           if (mediaManager.GetDriveStatusNow(path) == DriveState::CLOSED_MEDIA_PRESENT)
-            mediaManager.AddOpticalSource(path);
+            mediaManager.AddOpticalSource(path, generation);
         },
         CJob::PRIORITY_HIGH);
   }
