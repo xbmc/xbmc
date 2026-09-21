@@ -540,6 +540,7 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
     {
       m_children.erase(it);
       RemoveLookup(child);
+      child->SetParentControl(nullptr);
       SetInvalid();
       return true;
     }
