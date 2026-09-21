@@ -36,6 +36,7 @@ namespace GAME
 {
 class CGameClientDiscModel;
 
+class CGameClientCheats;
 class CGameClientCheevos;
 class CGameClientInGameSaves;
 class CGameClientInput;
@@ -127,6 +128,7 @@ public:
   ~CGameClient() override;
 
   // Game subsystems (const)
+  const CGameClientCheats& Cheats() const { return *m_subsystems.Cheats; }
   const CGameClientCheevos& Cheevos() const { return *m_subsystems.Cheevos; }
   const CGameClientDiscs& Discs() const { return *m_subsystems.Discs; }
   const CGameClientInput& Input() const { return *m_subsystems.Input; }
@@ -134,6 +136,7 @@ public:
   const CGameClientStreams& Streams() const { return *m_subsystems.Streams; }
 
   // Game subsystems (mutable)
+  CGameClientCheats& Cheats() { return *m_subsystems.Cheats; }
   CGameClientCheevos& Cheevos() { return *m_subsystems.Cheevos; }
   CGameClientDiscs& Discs() { return *m_subsystems.Discs; }
   CGameClientInput& Input() { return *m_subsystems.Input; }

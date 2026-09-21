@@ -22,6 +22,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"
+#include "games/addons/cheats/GameClientCheats.h"
 #include "games/addons/cheevos/GameClientCheevos.h"
 #include "games/addons/disc/GameClientDiscModel.h"
 #include "games/addons/disc/GameClientDiscs.h"
@@ -322,6 +323,9 @@ bool CGameClient::OpenFile(const CFileItem& file,
     return false;
   }
 
+  // After the game is up, so a cheat is applied to something that can take it
+  Cheats().Load(path);
+
   return true;
 }
 
@@ -595,6 +599,9 @@ void CGameClient::CloseFile()
 
   if (m_bIsPlaying)
   {
+    // While the client is still up, so the cheats can be switched off on it
+    Cheats().Clear();
+
     m_inGameSaves->Save();
     m_inGameSaves.reset();
 

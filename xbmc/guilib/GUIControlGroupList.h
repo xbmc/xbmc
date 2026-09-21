@@ -58,6 +58,8 @@ public:
    * Calculate total size of child controls area (including gaps between controls)
    */
   float GetTotalSize() const;
+  float GetScrollOffset() const { return m_scroller.GetValue(); }
+  void SetScrollOffset(float offset);
   ORIENTATION GetOrientation() const { return m_orientation; }
 
   // based on grouplist orientation pick one value as minSize;
