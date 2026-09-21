@@ -595,27 +595,37 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
     return false;
 
   const CFileItemPtr playlistItem = playlist[index];
-  if (playlistItem->HasMusicInfoTag() && !playlistItem->GetMusicInfoTag()->Loaded())
-  {
-    playlistItem->LoadMusicTag();
-    playlistItem->GetMusicInfoTag()->SetLoaded();
-  }
-  // try to set a thumbnail
-  if (!playlistItem->HasArt("thumb"))
-  {
-    CMusicThumbLoader loader;
-    loader.LoadItem(playlistItem.get());
-    // still no thumb? then just the set the default cover
-    if (!playlistItem->HasArt("thumb"))
-      playlistItem->SetArt("thumb", "DefaultAlbumCover.png");
-  }
+
+  // The playlist position is known without inspecting the item at all.
   if (info.GetInfo() == MUSICPLAYER_PLAYLISTPOS)
   {
     value = std::to_string(index + 1);
     return true;
   }
-  else if (info.GetInfo() == MUSICPLAYER_COVER)
+
+  // The path labels are answered from the item itself. Loading the tag for them opens a database
+  // connection, which is expensive on a remote database and yields nothing for items that are not
+  // part of the music library.
+  const bool needsTag = info.GetInfo() != PLAYER_PATH && info.GetInfo() != PLAYER_FILEPATH &&
+                        info.GetInfo() != PLAYER_FILENAME;
+
+  if (needsTag && playlistItem->HasMusicInfoTag() && !playlistItem->GetMusicInfoTag()->Loaded())
   {
+    playlistItem->LoadMusicTag();
+    playlistItem->GetMusicInfoTag()->SetLoaded();
+  }
+
+  if (info.GetInfo() == MUSICPLAYER_COVER)
+  {
+    // try to set a thumbnail
+    if (!playlistItem->HasArt("thumb"))
+    {
+      CMusicThumbLoader loader;
+      loader.LoadItem(playlistItem.get());
+      // still no thumb? then just the set the default cover
+      if (!playlistItem->HasArt("thumb"))
+        playlistItem->SetArt("thumb", "DefaultAlbumCover.png");
+    }
     value = playlistItem->GetArt("thumb");
     return true;
   }
