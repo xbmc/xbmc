@@ -9,6 +9,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+#include "video/VideoInfoTag.h"
 
 #include <map>
 #include <memory>
@@ -139,6 +140,15 @@ private:
   CVideoDatabase& GetVideoDatabase();
 
   /*!
+   * @brief Get the video database metadata for the given recording.
+   * On first access to a recording's folder the metadata of all recordings in that folder is
+   * obtained and cached, to not query the video database once per recording.
+   * @param fileNameAndPath The path of the recording.
+   * @return The metadata, or nullptr if the recording is unknown to the video database.
+   */
+  const CVideoInfoTag* GetVideoDatabaseMetadata(const std::string& fileNameAndPath);
+
+  /*!
    * @brief Set a recording's play count
    * @param recording The recording
    * @param count The new play count
@@ -171,6 +181,8 @@ private:
   std::map<CPVRRecordingUid, std::shared_ptr<CPVRRecording>> m_recordings;
   unsigned int m_iLastId = 0;
   std::unique_ptr<CVideoDatabase> m_database;
+  // video database metadata of the recordings, by folder, then by file name
+  std::map<std::string, std::map<std::string, CVideoInfoTag>> m_videoDatabaseMetadata;
   bool m_bDeletedTVRecordings = false;
   bool m_bDeletedRadioRecordings = false;
   unsigned int m_iTVRecordings = 0;
