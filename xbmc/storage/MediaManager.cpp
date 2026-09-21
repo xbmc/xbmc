@@ -26,6 +26,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "jobs/JobManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"
@@ -57,6 +58,7 @@
 #include <cctype>
 #include <chrono>
 #include <string>
+#include <thread>
 #include <vector>
 
 #ifdef HAS_OPTICAL_DRIVE
@@ -79,6 +81,10 @@ constexpr auto MOUNTING_DISC_RETRY_INTERVAL{std::chrono::seconds(5)};
 constexpr auto UNIDENTIFIED_DISC_RETRY_INTERVAL{std::chrono::seconds(60)};
 /*! How long a disc whose TOC could not be read is left alone before trying again - see GetCdInfo */
 constexpr auto CDINFO_RETRY_INTERVAL{std::chrono::seconds(30)};
+/*! A drive answers NOT_READY while it is busy, and goes on answering it once the drive itself
+    has gone, so an arrival is given this long to resolve into a disc */
+constexpr auto DRIVE_SETTLE_TIMEOUT{std::chrono::seconds(10)};
+constexpr auto DRIVE_SETTLE_INTERVAL{std::chrono::milliseconds(500)};
 
 const char* DriveStateName(DriveState state)
 {
@@ -101,6 +107,73 @@ const char* DriveStateName(DriveState state)
       return "closed, media undefined";
   }
   return "unknown";
+}
+} // namespace
+#endif
+
+#ifdef HAS_OPTICAL_DRIVE
+namespace
+{
+struct PostedWork
+{
+  KODI::MESSAGING::ThreadMessageCallback message;
+  std::function<void()> work;
+};
+
+void RunCallback(void* userptr)
+{
+  const std::unique_ptr<PostedWork> posted{static_cast<PostedWork*>(userptr)};
+  posted->work();
+}
+
+/*! \brief Run something on the application thread, without waiting for it
+ *
+ * The work is posted rather than sent, so a job thread never blocks on the application thread -
+ * which would deadlock at shutdown, where the job manager is drained before the message queue.
+ */
+void RunOnAppThread(std::function<void()> work)
+{
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
+  {
+    work();
+    return;
+  }
+
+  auto* posted{new PostedWork};
+  posted->work = std::move(work);
+  posted->message = {&RunCallback, posted};
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1,
+                                             static_cast<void*>(&posted->message));
+}
+
+/*! \brief Run autorun for a disc on the application thread
+ *
+ * CAutorun::RunDisc() reaches CApplication::PlayFile() directly rather than through the
+ * messenger, so it has to be marshalled back rather than run on the job thread.
+ */
+void ExecuteAutorunOnAppThread(const std::string& path,
+                               const std::string& label,
+                               bool audio,
+                               bool hasToc)
+{
+  RunOnAppThread(
+      [path, label, audio, hasToc]()
+      {
+        // No TOC means ExecuteAutorun() would read the disc again, on this thread
+        if (hasToc && MEDIA_DETECT::CAutorun::ExecuteAutorun(path))
+          return;
+
+        if (audio)
+          CLog::LogF(LOGDEBUG, "Could not execute autorun (rip/play) for audio CD with path {}",
+                     path);
+        else
+          CLog::LogF(LOGDEBUG, "Could not execute autorun for video disc with path {}", path);
+
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Info,
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), label,
+            TOAST_DISPLAY_TIME, false);
+      });
 }
 } // namespace
 #endif
@@ -413,6 +486,14 @@ CMediaSource CMediaManager::ComputeRootAddonTypeSource(const std::string& type,
 
 void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 {
+#ifdef HAS_OPTICAL_DRIVE
+  if (!CServiceBroker::GetAppMessenger()->IsProcessThread())
+  {
+    RunOnAppThread([this, share, bAutorun]() { AddAutoSource(share, bAutorun); });
+    return;
+  }
+#endif
+
   CMediaSourceSettings::GetInstance().AddShare("files", share);
   CMediaSourceSettings::GetInstance().AddShare("video", share);
   CMediaSourceSettings::GetInstance().AddShare("pictures", share);
@@ -431,6 +512,25 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 
 void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 {
+#ifdef HAS_OPTICAL_DRIVE
+  if (!CServiceBroker::GetAppMessenger()->IsProcessThread())
+  {
+    RunOnAppThread([this, share]() { RemoveAutoSource(share); });
+    return;
+  }
+#endif
+
+  DeleteAutoSource(share);
+
+#ifdef HAS_OPTICAL_DRIVE
+  // delete cached CdInfo if any
+  RemoveCdInfo(TranslateDevicePath(share.strPath, true));
+  RemoveDiscInfo(TranslateDevicePath(share.strPath, true));
+#endif
+}
+
+void CMediaManager::DeleteAutoSource(const CMediaSource& share)
+{
   CMediaSourceSettings::GetInstance().DeleteSource("files", share.strName, share.strPath, true);
   CMediaSourceSettings::GetInstance().DeleteSource("video", share.strName, share.strPath, true);
   CMediaSourceSettings::GetInstance().DeleteSource("pictures", share.strName, share.strPath, true);
@@ -440,12 +540,6 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
     gui->GetWindowManager().SendThreadMessage(msg);
-
-#ifdef HAS_OPTICAL_DRIVE
-  // delete cached CdInfo if any
-  RemoveCdInfo(TranslateDevicePath(share.strPath, true));
-  RemoveDiscInfo(TranslateDevicePath(share.strPath, true));
-#endif
 }
 
 /////////////////////////////////////////////////////////////
@@ -540,43 +634,37 @@ DriveState CMediaManager::GetDriveStatus(const std::string& devicePath)
 
   const std::string translatedDevicePath{TranslateDevicePath(devicePath, true)};
 
-  // GUI labels query this every frame. Reuse the last state until expiry or a storage/tray event.
-  uint64_t generation{0};
+  // GUI labels query this every frame, and asking a drive that is spinning up blocks for
+  // seconds, so this never waits. It answers with the last state seen and has a job refresh it
+  // once that has expired. \sa RefreshDriveStatus
+  bool refresh{false};
+  DriveState state{DriveState::NOT_READY};
   {
     std::unique_lock lock(m_driveStatusSection);
     const auto it{m_driveStatusCache.find(translatedDevicePath)};
-    if (it != m_driveStatusCache.end() && std::chrono::steady_clock::now() < it->second.expires)
-      return it->second.state;
-    generation = m_driveStatusGeneration;
-  }
-
-  // Deliberately queried without holding m_driveStatusSection - this can block for seconds on a
-  // drive that is spinning up, and no other caller should have to wait behind it.
-  const DriveState state{m_platformDiscDriveHander->GetDriveState(translatedDevicePath)};
-
-  {
-    std::unique_lock lock(m_driveStatusSection);
-
-    // Do not cache a probe invalidated by a storage or tray event while it was in flight.
-    if (generation == m_driveStatusGeneration)
+    if (it != m_driveStatusCache.end())
     {
-      // Failed probes and no-media answers may recover without an event. Throttle retries,
-      // including when an empty drive cannot be distinguished from a disc spinning up.
-      const auto expires{std::chrono::steady_clock::now() +
-                         (state == DriveState::NOT_READY || state == DriveState::CLOSED_NO_MEDIA
-                              ? DRIVE_STATUS_RETRY_INTERVAL
-                              : DRIVE_STATUS_REFRESH_INTERVAL)};
-      m_driveStatusCache.insert_or_assign(translatedDevicePath,
-                                          DriveStatusCacheEntry{state, expires});
+      state = it->second.state;
+      if (std::chrono::steady_clock::now() < it->second.expires)
+        return state;
     }
 
-    const auto logged{m_driveStatusLogged.find(translatedDevicePath)};
-    if (logged == m_driveStatusLogged.end() || logged->second != state)
-    {
-      m_driveStatusLogged.insert_or_assign(translatedDevicePath, state);
-      CLog::LogF(LOGDEBUG, "Drive {} state is now {}", translatedDevicePath, DriveStateName(state));
-    }
+    refresh = m_refreshingDrives.insert(translatedDevicePath).second;
   }
+
+  if (refresh)
+    CServiceBroker::GetJobManager()->Submit(
+        [this, translatedDevicePath]()
+        {
+          // GetDriveStatusNow() may have asked the drive while this was queued
+          {
+            std::unique_lock lock(m_driveStatusSection);
+            if (!m_refreshingDrives.contains(translatedDevicePath))
+              return;
+          }
+          RefreshDriveStatus(translatedDevicePath);
+        },
+        CJob::PRIORITY_HIGH);
 
   return state;
 #else
@@ -586,6 +674,60 @@ DriveState CMediaManager::GetDriveStatus(const std::string& devicePath)
   return DriveState::NOT_READY;
 #endif
 }
+
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+DriveState CMediaManager::RefreshDriveStatus(const std::string& translatedDevicePath)
+{
+  uint64_t generation{0};
+  {
+    std::unique_lock lock(m_driveStatusSection);
+    generation = m_driveStatusGeneration;
+  }
+
+  // Deliberately queried without holding m_driveStatusSection - this can block for seconds on a
+  // drive that is spinning up, and no other caller should have to wait behind it.
+  const DriveState state{m_platformDiscDriveHander->GetDriveState(translatedDevicePath)};
+
+  std::unique_lock lock(m_driveStatusSection);
+  m_refreshingDrives.erase(translatedDevicePath);
+
+  // Do not cache a probe invalidated by a storage or tray event while it was in flight.
+  if (generation == m_driveStatusGeneration)
+  {
+    // Failed probes and no-media answers may recover without an event. Throttle retries,
+    // including when an empty drive cannot be distinguished from a disc spinning up.
+    const auto expires{std::chrono::steady_clock::now() +
+                       (state == DriveState::NOT_READY || state == DriveState::CLOSED_NO_MEDIA
+                            ? DRIVE_STATUS_RETRY_INTERVAL
+                            : DRIVE_STATUS_REFRESH_INTERVAL)};
+    m_driveStatusCache.insert_or_assign(translatedDevicePath,
+                                        DriveStatusCacheEntry{state, expires});
+  }
+
+  const auto logged{m_driveStatusLogged.find(translatedDevicePath)};
+  if (logged == m_driveStatusLogged.end() || logged->second != state)
+  {
+    m_driveStatusLogged.insert_or_assign(translatedDevicePath, state);
+    CLog::LogF(LOGDEBUG, "Drive {} state is now {}", translatedDevicePath, DriveStateName(state));
+  }
+
+  return state;
+}
+
+DriveState CMediaManager::GetDriveStatusNow(const std::string& devicePath)
+{
+  if (!IsOpticalDrivePresent() || !m_platformDiscDriveHander)
+    return DriveState::NOT_READY;
+
+  const std::string translatedDevicePath{TranslateDevicePath(devicePath, true)};
+  {
+    std::unique_lock lock(m_driveStatusSection);
+    m_refreshingDrives.insert(translatedDevicePath);
+  }
+
+  return RefreshDriveStatus(translatedDevicePath);
+}
+#endif
 
 bool CMediaManager::IsOpticalDrivePresent()
 {
@@ -606,10 +748,19 @@ void CMediaManager::ResetDriveCaches(const std::string& devicePath)
   {
     std::unique_lock lock(m_driveStatusSection);
     ++m_driveStatusGeneration;
+    // Expired rather than dropped, so the last answer stands while a job asks the drive again
+    const auto now{std::chrono::steady_clock::now()};
     if (translatedDevicePath.empty())
-      m_driveStatusCache.clear();
+    {
+      for (auto& entry : m_driveStatusCache)
+        entry.second.expires = now;
+    }
     else
-      m_driveStatusCache.erase(translatedDevicePath);
+    {
+      const auto it{m_driveStatusCache.find(translatedDevicePath)};
+      if (it != m_driveStatusCache.end())
+        it->second.expires = now;
+    }
   }
 
   {
@@ -1097,7 +1248,11 @@ void CMediaManager::AddOpticalSource(const std::string& devicePath)
   share.strDevicePath = devicePath;
   share.strName = devicePath;
 
-  RemoveAutoSource(share);
+  // Cleared here, before the disc is read, so what the reads store is what stays cached. Only
+  // the sources need the application thread
+  RemoveCdInfo(TranslateDevicePath(devicePath, true));
+  RemoveDiscInfo(TranslateDevicePath(devicePath, true));
+  RunOnAppThread([this, share]() { DeleteAutoSource(share); });
 
   share.strStatus = GetDiskLabel(share.strPath);
   share.strDiskUniqueId = GetDiskUniqueId(share.strPath);
@@ -1126,76 +1281,13 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
       if (m_strFirstAvailDrive.empty())
         m_strFirstAvailDrive = device.path;
     }
-
-    AddOpticalSource(device.path);
 #endif
 
-    // Source creation clears the previous TOC; classification retries any failed read.
-    const std::shared_ptr<CCdInfo> pInfo{GetCdInfo(device.path)};
-    // No TOC is likely to mean a protected video disc
-    const bool isAudioDisc{pInfo && pInfo->IsAudio(1)};
-
-    const std::shared_ptr<CSettings> settings{
-        CServiceBroker::GetSettingsComponent()->GetSettings()};
-
-    if (isAudioDisc)
-    {
-      const auto cdAutoAction{
-          static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION))};
-      CLog::LogF(LOGDEBUG, "Audio CD detected with path {}, auto action is {}", device.path,
-                 static_cast<int>(cdAutoAction));
-
-      bool processed{true};
-      using enum AutoCDAction;
-      if (cdAutoAction == RIP || cdAutoAction == PLAY)
-      {
-        // Will fallback to play if HAS_CDDA_RIPPER not defined
-        if (!MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
-        {
-          CLog::LogF(LOGDEBUG, "Could not execute autorun (rip/play) for audio CD with path {}",
-                     device.path);
-          processed = false;
-        }
-      }
-      if (cdAutoAction == NONE || !processed)
-      {
-        CGUIDialogKaiToast::QueueNotification(
-            CGUIDialogKaiToast::Info,
-            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
-            TOAST_DISPLAY_TIME, false);
-      }
-    }
-    else
-    {
-      const auto dvdAutoAction{
-          static_cast<AutoDVDAction>(settings->GetInt(CSettings::SETTING_DVDS_AUTOACTION))};
-      CLog::LogF(LOGDEBUG, "Video disc detected with path {}, auto action is {}", device.path,
-                 static_cast<int>(dvdAutoAction));
-
-      bool processed{true};
-      using enum AutoDVDAction;
-      if (dvdAutoAction == BROWSE)
-      {
-        CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path),
-                                                this, CJob::PRIORITY_HIGH);
-      }
-      else if (dvdAutoAction == PLAY)
-      {
-        if (!MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
-        {
-          CLog::LogF(LOGDEBUG, "Could not execute autorun for video disc with path {}",
-                     device.path);
-          processed = false;
-        }
-      }
-      if (dvdAutoAction == NONE || !processed)
-      {
-        CGUIDialogKaiToast::QueueNotification(
-            CGUIDialogKaiToast::Info,
-            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
-            TOAST_DISPLAY_TIME, false);
-      }
-    }
+    // Identifying the disc reads it, and on an AACS Blu-ray loading libaacs alone takes well
+    // over a second. This is called from CApplication::ProcessSlow(), so doing it here freezes
+    // the GUI for as long as the read takes - hand it to a job instead.
+    CServiceBroker::GetJobManager()->Submit([this, device]() { ProcessAddedOpticalDevice(device); },
+                                            CJob::PRIORITY_HIGH);
   }
   else
 #endif
@@ -1207,6 +1299,85 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
         TOAST_DISPLAY_TIME, false);
   }
 }
+
+#ifdef HAS_OPTICAL_DRIVE
+void CMediaManager::ProcessAddedOpticalDevice(const MEDIA_DETECT::STORAGE::StorageDevice& device)
+{
+#ifdef TARGET_WINDOWS
+  // Windows reports a tray closing on nothing as an arrival, and a busy drive answers neither
+  // yes nor no, so wait for an answer rather than announce a disc on the strength of the event
+  // alone. On a job, so it can wait.
+  DriveState state{GetDriveStatusNow(device.path)};
+  for (std::chrono::milliseconds waited{0};
+       state == DriveState::NOT_READY && waited < DRIVE_SETTLE_TIMEOUT;
+       waited += DRIVE_SETTLE_INTERVAL)
+  {
+    std::this_thread::sleep_for(DRIVE_SETTLE_INTERVAL);
+    state = GetDriveStatusNow(device.path);
+  }
+
+  // A drive that never says it holds a disc has none, or is no longer there at all
+  if (state != DriveState::CLOSED_MEDIA_PRESENT)
+    return;
+
+  AddOpticalSource(device.path);
+#endif
+
+  // Source creation clears the previous TOC; classification retries any failed read.
+  const std::shared_ptr<CCdInfo> pInfo{GetCdInfo(device.path)};
+  // No TOC is likely to mean a protected video disc
+  const bool isAudioDisc{pInfo && pInfo->IsAudio(1)};
+
+  const std::shared_ptr<CSettings> settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+
+  if (isAudioDisc)
+  {
+    const auto cdAutoAction{
+        static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION))};
+    CLog::LogF(LOGDEBUG, "Audio CD detected with path {}, auto action is {}", device.path,
+               static_cast<int>(cdAutoAction));
+
+    using enum AutoCDAction;
+    if (cdAutoAction == RIP || cdAutoAction == PLAY)
+    {
+      // Will fallback to play if HAS_CDDA_RIPPER not defined
+      ExecuteAutorunOnAppThread(device.path, device.label, true, pInfo != nullptr);
+    }
+    else if (cdAutoAction == NONE)
+    {
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
+          TOAST_DISPLAY_TIME, false);
+    }
+  }
+  else
+  {
+    const auto dvdAutoAction{
+        static_cast<AutoDVDAction>(settings->GetInt(CSettings::SETTING_DVDS_AUTOACTION))};
+    CLog::LogF(LOGDEBUG, "Video disc detected with path {}, auto action is {}", device.path,
+               static_cast<int>(dvdAutoAction));
+
+    using enum AutoDVDAction;
+    if (dvdAutoAction == BROWSE)
+    {
+      CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path), this,
+                                              CJob::PRIORITY_HIGH);
+    }
+    else if (dvdAutoAction == PLAY)
+    {
+      ExecuteAutorunOnAppThread(device.path, device.label, false, pInfo != nullptr);
+    }
+    else if (dvdAutoAction == NONE)
+    {
+      CGUIDialogKaiToast::QueueNotification(
+          CGUIDialogKaiToast::Info,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13019), device.label,
+          TOAST_DISPLAY_TIME, false);
+    }
+  }
+}
+#endif
 
 void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
