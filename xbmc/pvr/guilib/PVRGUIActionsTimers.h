@@ -177,7 +177,7 @@ private:
    * @param bCreateRule denotes whether to create a one-shot timer or a timer rule.
    * @param bShowTimerSettings is used to control whether a settings dialog will be opened prior
    * creating the timer or timer rule.
-   * @param bFallbackToOneShotTimer if bCreateteRule is true and no timer rule can be created, try
+   * @param bFallbackToOneShotTimer if bCreateRule is true and no timer rule can be created, try
    * to create a one-shot timer instead.
    * @return true, if the timer or timer rule was created successfully, false otherwise.
    */

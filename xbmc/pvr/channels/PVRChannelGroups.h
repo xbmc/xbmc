@@ -143,7 +143,7 @@ public:
   /*!
    * @brief Get the list of groups.
    * @param bExcludeHidden Whenever to exclude hidden channel groups.
-   * @return The amount of items that were added.
+   * @return The groups.
    */
   std::vector<std::shared_ptr<CPVRChannelGroup>> GetMembers(bool bExcludeHidden = false) const;
 
