@@ -18,7 +18,6 @@
 #include "games/GameServices.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/InputManager.h"
-#include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
 #include "settings/SettingsComponent.h"
 #include "windowing/WinSystem.h"
@@ -89,27 +88,6 @@ private:
     CProcessInfo() : CRPProcessInfo("test") {}
   };
 
-  class CAnnouncements
-  {
-  public:
-    CAnnouncements() : m_previous(CServiceBroker::GetAnnouncementManager())
-    {
-      CServiceBroker::RegisterAnnouncementManager(
-          std::make_shared<ANNOUNCEMENT::CAnnouncementManager>());
-    }
-    ~CAnnouncements()
-    {
-      if (m_previous)
-        CServiceBroker::RegisterAnnouncementManager(m_previous);
-      else
-        CServiceBroker::UnregisterAnnouncementManager();
-    }
-
-  private:
-    std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previous;
-  };
-
-  CAnnouncements m_announcements;
   CInputManager m_input;
   GAME::CControllerManager m_controllers;
   PERIPHERALS::CPeripherals m_peripherals;
