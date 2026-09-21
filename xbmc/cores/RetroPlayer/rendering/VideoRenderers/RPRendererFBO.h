@@ -1,0 +1,153 @@
+/*
+ *  Copyright (C) 2017-2018 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+#pragma once
+
+#include "RPBaseRenderer.h"
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
+
+#include <map>
+#include <memory>
+#include <stdint.h>
+
+#include "system_gl.h"
+
+namespace KODI
+{
+namespace SHADER
+{
+#if defined(HAS_GL)
+class CShaderTextureGL;
+class CShaderTextureGLRef;
+#elif defined(HAS_GLES)
+class CShaderTextureGLES;
+class CShaderTextureGLESRef;
+#endif
+} // namespace SHADER
+
+namespace RETRO
+{
+class CRenderBufferFBO;
+
+/*!
+ * \brief Renderer factory for game clients that render on the GPU
+ *
+ * Register this last. Buffer pools are tried in registration order and the
+ * search stops at the first match, so software streams settle on DMA or sysmem
+ * without ever consulting this hardware-only pool.
+ */
+class CRendererFactoryFBO : public IRendererFactory
+{
+public:
+  ~CRendererFactoryFBO() override = default;
+
+  // Implementation of IRendererFactory
+  std::string RenderSystemName() const override;
+  CRPBaseRenderer* CreateRenderer(const CRenderSettings& settings,
+                                  CRenderContext& context,
+                                  std::shared_ptr<IRenderBufferPool> bufferPool) override;
+  RenderBufferPoolVector CreateBufferPools(CRenderContext& context) override;
+};
+
+#if (defined(HAS_EGL) || defined(TARGET_DARWIN_OSX)) && (defined(HAS_GL) || HAS_GLES == 3)
+class CRPRendererFBO : public CRPBaseRenderer
+{
+public:
+  CRPRendererFBO(const CRenderSettings& renderSettings,
+                 CRenderContext& context,
+                 std::shared_ptr<IRenderBufferPool> bufferPool);
+  ~CRPRendererFBO() override;
+
+  // Implementation of CRPBaseRenderer
+  bool Supports(RENDERFEATURE feature) const override;
+  SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
+
+  static bool SupportsScalingMethod(SCALINGMETHOD method);
+
+protected:
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  };
+
+  struct Svertex
+  {
+    float x;
+    float y;
+    float z;
+  };
+
+  struct RenderBufferTextures
+  {
+#if defined(HAS_GL)
+    std::shared_ptr<SHADER::CShaderTextureGLRef> sourceTexture;
+    std::shared_ptr<SHADER::CShaderTextureGL> targetTexture;
+#elif defined(HAS_GLES)
+    std::shared_ptr<SHADER::CShaderTextureGLESRef> sourceTexture;
+    std::shared_ptr<SHADER::CShaderTextureGLES> targetTexture;
+#endif
+  };
+
+  // Implementation of CRPBaseRenderer
+  void RenderInternal(bool clear, uint8_t alpha) override;
+  void FlushInternal() override;
+
+  /*!
+   * \brief Set the entire backbuffer to black
+   */
+  void ClearBackBuffer();
+
+  /*!
+   * \brief Draw black bars around the video quad
+   *
+   * This is more efficient than glClear() since it only sets pixels to
+   * black that aren't going to be overwritten by the game.
+   */
+  void DrawBlackBars();
+
+  virtual void Render(uint8_t alpha);
+
+  std::map<CRenderBufferFBO*, std::unique_ptr<RenderBufferTextures>> m_RBTexturesMap;
+
+  struct FrameGeometry
+  {
+    unsigned int frameWidth{0};
+    unsigned int frameHeight{0};
+    unsigned int textureWidth{0};
+    unsigned int textureHeight{0};
+    CRect sourceRect;
+    CRect samplingRect;
+    bool bottomLeftOrigin{false};
+
+    bool operator==(const FrameGeometry& rhs) const
+    {
+      return frameWidth == rhs.frameWidth && frameHeight == rhs.frameHeight &&
+             textureWidth == rhs.textureWidth && textureHeight == rhs.textureHeight &&
+             sourceRect == rhs.sourceRect && samplingRect == rhs.samplingRect &&
+             bottomLeftOrigin == rhs.bottomLeftOrigin;
+    }
+    bool operator!=(const FrameGeometry& rhs) const { return !(*this == rhs); }
+  };
+
+  FrameGeometry m_loggedGeometry;
+  bool m_loggedHardwarePresentation{false};
+
+  GLuint m_mainVAO;
+  GLuint m_mainVertexVBO;
+  GLuint m_mainIndexVBO;
+
+  GLuint m_blackbarsVAO;
+  GLuint m_blackbarsVertexVBO;
+
+  const GLenum m_textureTarget = GL_TEXTURE_2D;
+  float m_clearColor = 0.0f;
+};
+#endif
+} // namespace RETRO
+} // namespace KODI

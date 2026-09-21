@@ -105,6 +105,8 @@ void CRPRendererOpenGLES::RenderInternal(bool clear, uint8_t alpha)
 
 void CRPRendererOpenGLES::FlushInternal()
 {
+  m_RBTexturesMap.clear();
+
   if (!m_bConfigured)
     return;
 
@@ -251,7 +253,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   if (renderBuffer == nullptr)
     return;
 
-  Updateshaders();
+  UpdateShaders();
 
   // Use video shader preset
   if (m_bUseShaderPreset)

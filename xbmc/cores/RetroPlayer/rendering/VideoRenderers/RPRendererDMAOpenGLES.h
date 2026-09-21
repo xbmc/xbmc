@@ -48,6 +48,7 @@ public:
 
 protected:
   // Implementation of CRPRendererOpenGLES
+  void FlushInternal() override;
   void Render(uint8_t alpha) override;
 
   std::map<CRenderBufferDMA*, std::unique_ptr<RenderBufferTextures>> m_RBTexturesMap;

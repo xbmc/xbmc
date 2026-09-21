@@ -18,6 +18,7 @@ xbmc/games/addons/cheats/test     test/games/addons/cheats
 xbmc/games/addons/cheevos/test    test/games/addons/cheevos
 xbmc/games/addons/disc/test       test/games/addons/disc
 xbmc/games/addons/input/test      test/games/addons/input
+xbmc/games/addons/streams/test    test/games/addons/streams
 xbmc/games/controllers/input/test test/games/controllers/input
 xbmc/games/controllers/test       test/games/controllers
 xbmc/games/dialogs/disc/test      test/games/dialogs/disc

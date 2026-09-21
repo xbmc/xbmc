@@ -251,6 +251,24 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   // Adapt the drawing rect points if we have to rotate
   m_rotatedDestCoords = CRenderUtils::ReorderDrawPoints(destRect, rotationDegCCW);
 
+  if (destRect != m_lastLoggedDestRect || fullDestRect != m_lastLoggedFullDestRect ||
+      stretchMode != m_lastLoggedStretchMode)
+  {
+    CLog::Log(LOGDEBUG,
+              "RetroPlayer[RENDER]: Stretch mode {}, source {}x{}, view window "
+              "({:.0f},{:.0f})-({:.0f},{:.0f}), viewport ({:.0f},{:.0f})-({:.0f},{:.0f}), "
+              "dest ({:.0f},{:.0f})-({:.0f},{:.0f}), full dest {:.0f}x{:.0f}, zoom {:.3f}, "
+              "pixel ratio {:.3f}",
+              static_cast<int>(stretchMode), sourceWidth, sourceHeight, viewRect.x1, viewRect.y1,
+              viewRect.x2, viewRect.y2, viewPort.x1, viewPort.y1, viewPort.x2, viewPort.y2,
+              destRect.x1, destRect.y1, destRect.x2, destRect.y2, m_fullDestWidth, m_fullDestHeight,
+              zoomAmount, pixelRatio);
+
+    m_lastLoggedDestRect = destRect;
+    m_lastLoggedFullDestRect = fullDestRect;
+    m_lastLoggedStretchMode = stretchMode;
+  }
+
   // Update video shader source size
   if (m_shaderPreset)
     m_shaderPreset->SetVideoSize(sourceWidth, sourceHeight);
@@ -265,7 +283,7 @@ void CRPBaseRenderer::MarkDirty()
  * \brief Updates everything needed for video shaders (shader presets)
  * Needs to be called after m_renderBuffer has been set
  */
-void CRPBaseRenderer::Updateshaders()
+void CRPBaseRenderer::UpdateShaders()
 {
   if (m_bShadersNeedUpdate)
   {

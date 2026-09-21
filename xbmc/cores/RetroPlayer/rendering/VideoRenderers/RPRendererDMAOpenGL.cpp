@@ -52,13 +52,19 @@ CRPRendererDMAOpenGL::CRPRendererDMAOpenGL(const CRenderSettings& renderSettings
 {
 }
 
+void CRPRendererDMAOpenGL::FlushInternal()
+{
+  m_RBTexturesMap.clear();
+  CRPRendererOpenGL::FlushInternal();
+}
+
 void CRPRendererDMAOpenGL::Render(uint8_t alpha)
 {
   auto renderBuffer = static_cast<CRenderBufferDMA*>(m_renderBuffer);
   if (renderBuffer == nullptr)
     return;
 
-  Updateshaders();
+  UpdateShaders();
 
   // Use video shader preset
   if (m_bUseShaderPreset)

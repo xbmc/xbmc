@@ -11,7 +11,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRPProcessInfoAndroid::CRPProcessInfoAndroid() : CRPProcessInfo("Android")
+CRPProcessInfoAndroid::CRPProcessInfoAndroid() : CRPProcessInfoEGL("Android")
 {
 }
 

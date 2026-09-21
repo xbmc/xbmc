@@ -10,6 +10,7 @@
 
 #include "IRenderManager.h"
 #include "RenderVideoSettings.h"
+#include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/guibridge/IRenderCallback.h"
 #include "threads/CriticalSection.h"
 
@@ -102,15 +103,23 @@ public:
                 float displayAspectRatio,
                 unsigned int orientationDegCW);
   void Flush();
+  bool CreateContext(const HwContextProperties& properties);
+  bool BeginClientFrame();
+  void EndClientFrame();
   void DestroyContext();
 
   // Hardware rendering functions
-  //! @todo These are only examples pulled from the history of the OpenGL
-  //! effort and the required redesign will probably remove or change these
-  //! functions.
   bool Create(unsigned int width, unsigned int height);
   uintptr_t GetCurrentFramebuffer(unsigned int width, unsigned int height);
-  void RenderFrame();
+  void RenderFrame(unsigned int width,
+                   unsigned int height,
+                   float displayAspectRatio,
+                   unsigned int orientationDegCCW);
+
+  /*!
+   * \brief Release the framebuffer the game client renders into
+   */
+  void ReleaseHwRenderBuffer();
 
   // Functions called from the player
   void SetSpeed(double speed);
@@ -221,6 +230,17 @@ private:
   CRenderVideoSettings GetEffectiveSettings(const IGUIRenderSettings* settings) const;
 
   void CheckFlush();
+  void DestroyContextInternal();
+
+  /*!
+   * \brief True if the game client renders its own frames on the GPU
+   *
+   * Hardware-rendered frames live in a GPU framebuffer and are never read back
+   * to system memory, so anything that works on frame pixels has nothing to
+   * work with. Asking the buffer, rather than the pixel format, keeps a
+   * software stream that hasn't configured itself yet from looking like one.
+   */
+  bool IsHardwareRendering() const { return m_hasHardwareContext; }
 
   void GetVideoFrame(IRenderBuffer*& readableBuffer, std::vector<uint8_t>& cachedFrame);
   void FreeVideoFrame(IRenderBuffer* readableBuffer, std::vector<uint8_t> cachedFrame);
@@ -262,6 +282,33 @@ private:
     uint8_t* memory;
   };
   std::vector<PendingBuffer> m_pendingBuffers; // Only access from game thread
+
+  // The framebuffer a hardware-rendering client draws into, held for the life
+  // of the stream, and the pool that owns its context.
+  //
+  // Exactly one, deliberately. Clients treat the framebuffer they are given as
+  // theirs for the whole session and many do not clear it, drawing over what
+  // the last frame left behind. Handing them alternate buffers gives each only
+  // every other frame's drawing, and the frames in between show through.
+  // Held across each client call, including calls made before negotiation.
+  std::recursive_mutex m_hwMutex;
+  unsigned int m_clientFrameDepth{0};
+  bool m_hwContextBound{false};
+  bool m_destroyContextPending{false};
+  std::atomic<bool> m_hasHardwareContext{false};
+  IRenderBuffer* m_hwRenderBuffer{nullptr};
+  IRenderBufferPool* m_hwBufferPool{nullptr};
+
+  //! \brief Size the client's framebuffer was allocated at
+  //!
+  //! Kept apart from the buffer's own width and height, which are set to the
+  //! size of each frame the client draws so the renderer knows what part of the
+  //! framebuffer to sample. Asking the buffer how large it is would then give
+  //! the last frame's size, not the space available.
+  unsigned int m_hwBufferWidth{0};
+  unsigned int m_hwBufferHeight{0};
+  uintptr_t m_loggedFramebuffer{0};
+  bool m_loggedHardwareCapture{false};
   std::vector<IRenderBuffer*> m_renderBuffers;
   std::map<AVPixelFormat, std::map<AVPixelFormat, SwsContext*>> m_scalers; // From -> to -> context
   std::vector<uint8_t> m_cachedFrame;

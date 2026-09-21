@@ -172,7 +172,6 @@ public:
   // Playback control
   bool RequiresGameLoop() const { return m_bRequiresGameLoop; }
   bool IsPlaying() const { return m_bIsPlaying; }
-  size_t GetSerializeSize() const { return m_serializeSize; }
   double GetFrameRate() const { return m_framerate.load(); }
   double GetSampleRate() const { return m_samplerate.load(); }
   void PollInput();
@@ -192,7 +191,12 @@ public:
   void SetPlaybackSpeed(double speed) { m_playbackSpeed = speed; }
 
   // Access memory
-  size_t SerializeSize() const { return m_serializeSize; }
+  enum class SerializeSizeMode
+  {
+    Lazy,
+    Restore,
+  };
+  size_t GetSerializeSize(SerializeSizeMode mode = SerializeSizeMode::Lazy) const;
   bool Serialize(uint8_t* data, size_t size);
   RestoreResult Deserialize(const uint8_t* data,
                             size_t size,
@@ -233,7 +237,8 @@ public:
   bool DeserializeAchievements(const uint8_t* data, size_t size);
 
   // Implementation of IHwFramebufferCallback
-  void HardwareContextReset() override;
+  bool HardwareContextReset() override;
+  void HardwareContextDestroy() override;
 
   /*!
    * @brief To get the interface table used between addon and kodi
@@ -252,6 +257,7 @@ private:
                           RETRO::IStreamManager& streamManager,
                           IGameInputCallback* input);
   bool LoadGameInfo();
+  bool UnloadGame();
   void NotifyError(GAME_ERROR error);
   std::string GetMissingResource();
 
@@ -267,6 +273,7 @@ private:
   static void cb_close_game(KODI_HANDLE kodiInstance);
   static double cb_get_playback_speed(KODI_HANDLE kodiInstance);
   static void cb_set_game_timing(KODI_HANDLE kodiInstance, const game_system_timing* timingInfo);
+  static bool cb_start_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HANDLE stream);
   static KODI_GAME_STREAM_HANDLE cb_open_stream(KODI_HANDLE kodiInstance,
                                                 const game_stream_properties* properties);
   static bool cb_get_stream_buffer(KODI_HANDLE kodiInstance,
@@ -367,7 +374,7 @@ private:
   std::atomic<double> m_playbackSpeed{1.0};
   std::string m_gamePath;
   bool m_bRequiresGameLoop = false;
-  size_t m_serializeSize = 0;
+  mutable size_t m_serializeSize = 0;
   IGameInputCallback* m_input = nullptr; // The input callback passed to OpenFile()
   std::atomic<double> m_framerate{0.0}; // Video frame rate (fps)
   std::atomic<double> m_samplerate{0.0}; // Audio sample rate (Hz)
@@ -376,7 +383,7 @@ private:
   // In-game saves
   std::unique_ptr<CGameClientInGameSaves> m_inGameSaves;
 
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
 };
 
 } // namespace GAME
