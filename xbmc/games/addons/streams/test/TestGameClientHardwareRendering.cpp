@@ -7,8 +7,11 @@
  */
 
 #include "ServiceBroker.h"
+#include "ServiceManager.h"
 #include "addons/Repository.h"
+#include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
+#include "application/Application.h"
 #include "cores/RetroPlayer/playback/ReversiblePlayback.h"
 #include "cores/RetroPlayer/playback/test/PlaybackTestEnvironment.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
@@ -110,6 +113,13 @@ struct InGameSaves
   friend Type GetMember(InGameSaves);
 };
 template struct MemberAccess<InGameSaves, &CGameClient::m_inGameSaves>;
+
+struct RepositoryUpdater
+{
+  using Type = std::unique_ptr<ADDON::CRepositoryUpdater> CServiceManager::*;
+  friend Type GetMember(RepositoryUpdater);
+};
+template struct MemberAccess<RepositoryUpdater, &CServiceManager::m_repositoryUpdater>;
 
 struct InitializeGameplay
 {
@@ -334,6 +344,11 @@ class TestGameClientHardwareRendering : public testing::Test
 protected:
   void SetUp() override
   {
+    auto& repositoryUpdater =
+        g_application.m_ServiceManager.get()->*GetMember(RepositoryUpdater{});
+    m_previousRepositoryUpdater = std::move(repositoryUpdater);
+    repositoryUpdater = std::make_unique<ADDON::CRepositoryUpdater>(CServiceBroker::GetAddonMgr());
+
     CXBMCTinyXML2 xml;
     const std::string addonXml =
         R"(<addon id="game.test.hardware" name="Hardware test" version="1.0.0">
@@ -436,6 +451,8 @@ protected:
     m_client.get()->*GetMember(Playing{}) = false;
     m_client.get()->*GetMember(Initialized{}) = false;
     m_client.reset();
+    g_application.m_ServiceManager.get()->*GetMember(RepositoryUpdater{}) =
+        std::move(m_previousRepositoryUpdater);
     EXPECT_EQ(m_manager.depth, 0U);
   }
 
@@ -568,6 +585,7 @@ protected:
     EXPECT_EQ(state.deleted, 2U);
   }
 
+  std::unique_ptr<ADDON::CRepositoryUpdater> m_previousRepositoryUpdater;
   Core m_core;
   StreamManager m_manager;
   std::unique_ptr<CGameClient> m_client;
