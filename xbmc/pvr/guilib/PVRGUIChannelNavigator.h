@@ -132,7 +132,7 @@ private:
    * currently selected channel group member.
    * @param bNext True to get the next channel group member, false to get the previous channel group
    * member.
-   * @param return The channel or nullptr if not found.
+   * @return The channel or nullptr if not found.
    */
   std::shared_ptr<CPVRChannelGroupMember> GetNextOrPrevChannel(bool bNext);
 

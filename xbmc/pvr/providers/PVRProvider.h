@@ -89,7 +89,7 @@ public:
 
   /*!
    * @brief Set the name of the provider.
-   * @param name The new name of the provider.
+   * @param iName The new name of the provider.
    * @return True if the something changed, false otherwise.
    */
   bool SetName(std::string_view iName);

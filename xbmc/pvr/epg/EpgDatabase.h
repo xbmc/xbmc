@@ -85,7 +85,7 @@ public:
 
   /*!
    * @brief Queue deletionof an EPG table.
-   * @param tag The table to queue for deletion.
+   * @param table The table to queue for deletion.
    * @return True on success, false otherwise.
    */
   bool QueueDeleteEpgQuery(const CPVREpg& table);
@@ -113,7 +113,7 @@ public:
   /*!
    * @brief Get all icon paths for a given EPG id.
    * @param iEpgID The ID of the EPG.
-   * @param path The paths returned.
+   * @param paths The paths returned.
    * @return True on success, false otherwise.
    */
   bool GetAllIconPaths(int iEpgID, std::vector<std::string>& paths) const;
@@ -121,7 +121,7 @@ public:
   /*!
    * @brief Get all parental rating icon paths for a given EPG id.
    * @param iEpgID The ID of the EPG.
-   * @param path The paths returned.
+   * @param paths The paths returned.
    * @return True on success, false otherwise.
    */
   bool GetAllParentalRatingIconPaths(int iEpgID, std::vector<std::string>& paths) const;
@@ -263,7 +263,7 @@ public:
 
   /*!
    * @brief Write the query to delete the last scan time for the given EPG to db query queue.
-   * @param iEpgId The table to delete the time for.
+   * @param table The table to delete the time for.
    * @return True on success, false otherwise.
    */
   bool QueueDeleteLastEpgScanTimeQuery(const CPVREpg& table);
