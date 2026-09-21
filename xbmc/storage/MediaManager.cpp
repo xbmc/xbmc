@@ -114,6 +114,14 @@ const char* DriveStateName(DriveState state)
 #ifdef HAS_OPTICAL_DRIVE
 namespace
 {
+/*! Elsewhere CDetectDVDMedia notices a new disc itself and raises the autorun that
+    CAutorun::HandleAutorun() executes, so the storage event must not run it as well */
+#ifdef TARGET_WINDOWS
+constexpr bool AUTORUN_FROM_STORAGE_EVENT{true};
+#else
+constexpr bool AUTORUN_FROM_STORAGE_EVENT{false};
+#endif
+
 struct PostedWork
 {
   KODI::MESSAGING::ThreadMessageCallback message;
@@ -1455,7 +1463,7 @@ void CMediaManager::ProcessAddedOpticalDevice(const MEDIA_DETECT::STORAGE::Stora
                static_cast<int>(cdAutoAction));
 
     using enum AutoCDAction;
-    if (cdAutoAction == RIP || cdAutoAction == PLAY)
+    if (AUTORUN_FROM_STORAGE_EVENT && (cdAutoAction == RIP || cdAutoAction == PLAY))
     {
       // Will fallback to play if HAS_CDDA_RIPPER not defined
       ExecuteAutorunOnAppThread(device.path, device.label, true, pInfo != nullptr, generation);
@@ -1481,7 +1489,7 @@ void CMediaManager::ProcessAddedOpticalDevice(const MEDIA_DETECT::STORAGE::Stora
       CServiceBroker::GetJobManager()->AddJob(
           new CAutorunMediaJob(device.label, device.path, generation), this, CJob::PRIORITY_HIGH);
     }
-    else if (dvdAutoAction == PLAY)
+    else if (AUTORUN_FROM_STORAGE_EVENT && dvdAutoAction == PLAY)
     {
       ExecuteAutorunOnAppThread(device.path, device.label, false, pInfo != nullptr, generation);
     }
