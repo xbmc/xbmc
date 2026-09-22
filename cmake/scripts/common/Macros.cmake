@@ -943,3 +943,9 @@ function(core_target_add_dependencies core_target)
     endif()
   endforeach()
 endfunction()
+
+# Escape a string so that a regular expression matches it literally
+function(core_regex_escape outvar value)
+  string(REGEX REPLACE "([][.^$*+?(){}|])" "\\\\\\1" value "${value}")
+  set(${outvar} "${value}" PARENT_SCOPE)
+endfunction()
