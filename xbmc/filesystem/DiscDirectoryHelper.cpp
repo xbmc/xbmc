@@ -3281,20 +3281,19 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     }
   }
 
-  auto GenerateItem{
-      [](const CFileItem& originalItem, const CFileItem& selectedItem, const CFileItem& item)
-      {
-        auto newItem{std::make_shared<CFileItem>(originalItem)};
-        ApplyPlaylistDetails(*newItem, selectedItem);
-        newItem->SetProperty("original_listitem_url", item.GetDynPath());
-        return newItem;
-      }};
+  auto GenerateItem{[](const CFileItem& originalItem, const CFileItem& selectedItem)
+                    {
+                      auto newItem{std::make_shared<CFileItem>(originalItem)};
+                      ApplyPlaylistDetails(*newItem, selectedItem);
+                      newItem->SetProperty("original_listitem_url", originalItem.GetDynPath());
+                      return newItem;
+                    }};
 
   items.Clear();
   if (!selectedItem.GetPath().empty())
   {
     // If SelectedItem is not empty then we have a user selected playlist, so return it
-    const auto newItem{GenerateItem(item, selectedItem, item)};
+    const auto newItem{GenerateItem(item, selectedItem)};
 
     // GenerateItem points the paths in the tag at the newly selected playlist
     // Flag so CSaveFileStateJob can tell playlist has changed
@@ -3305,12 +3304,12 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   }
   else if (!returnMultipleItems)
     // Return single item
-    items.Add(GenerateItem(item, *sourceItems[0], item));
+    items.Add(GenerateItem(item, *sourceItems[0]));
   else
   {
     // Return all items
     for (const auto& sourceItem : sourceItems)
-      items.Add(GenerateItem(item, *sourceItem, item));
+      items.Add(GenerateItem(item, *sourceItem));
   }
 
   return true;
