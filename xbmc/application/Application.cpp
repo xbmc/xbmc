@@ -2548,6 +2548,11 @@ void CApplication::Restart(bool bSamePosition)
 
   // first check if we're playing a file
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+
+  // Game clients output PCM and do not need a passthrough restart.
+  if (appPlayer->IsPlayingGame())
+    return;
+
   if (!appPlayer->IsPlayingVideo() && !appPlayer->IsPlayingAudio())
     return ;
 
