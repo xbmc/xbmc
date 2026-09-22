@@ -1,0 +1,202 @@
+name: Build (webOS)
+
+# Cross-builds Kodi for LG webOS via tools/depends against the buildroot
+# toolchain docs/README.webOS.md recommends (openlgtv/buildroot-nc4), bundles
+# the requested binary add-ons and packages the .ipk with ares-package, as
+# Jenkins' webos-docker job does. Build-only: there is no webOS emulator to
+# run tools/e2e against.
+#
+# depends-key looks up whether the tools/depends prefix is cached for this
+# tools/depends tree, depends builds it when not, and build restores the
+# prefix and only re-runs configure before building Kodi.
+
+# Called from ci.yml, which owns the triggers, path filters, the draft/label
+# gate and the manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+env:
+  DEPENDS_PREFIX: /home/runner/xbmc-webos-depends
+  # Release tag and asset of https://github.com/openlgtv/buildroot-nc4.
+  TOOLCHAIN_RELEASE: webos-a38c582
+  TOOLCHAIN_ASSET: arm-webos-linux-gnueabi_sdk-buildroot-x86_64.tar.gz
+  TOOLCHAIN_ROOT: /home/runner/webos-toolchain
+  TOOLCHAIN_DIR: /home/runner/webos-toolchain/arm-webos-linux-gnueabi_sdk-buildroot
+  # Release of https://github.com/webosbrew/ares-cli-rs.
+  ARES_CLI_VERSION: 0.7.0
+
+jobs:
+  # One leg, kept in the same matrix shape as the other platforms so depends
+  # and build share its configuration and cache key.
+  depends-key:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      legs: ${{ steps.legs.outputs.legs }}
+      missing: ${{ steps.lookup.outputs.missing }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github
+
+      # Release, as tools/buildsteps/defaultenv selects for webOS on Jenkins,
+      # unless the caller asks for Debug or the run has debug logging enabled
+      # (ACTIONS_STEP_DEBUG, "Re-run with debug logging").
+      - name: Define legs
+        id: legs
+        env:
+          CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || 'Release') }}
+        run: |
+          legs=$(jq -cn --arg config "$CONFIGURATION" '[{configuration: $config, key: "webos-\($config)"}]')
+          echo "legs=${legs}" >> "$GITHUB_OUTPUT"
+          echo "${legs}" | jq .
+
+      - uses: ./.github/actions/depends-cache-lookup
+        id: lookup
+        with:
+          legs: ${{ steps.legs.outputs.legs }}
+
+  depends:
+    needs: depends-key
+    if: needs.depends-key.outputs.missing != '[]'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.missing) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-webos-build
+        with:
+          toolchain-release: ${{ env.TOOLCHAIN_RELEASE }}
+          toolchain-asset: ${{ env.TOOLCHAIN_ASSET }}
+          toolchain-root: ${{ env.TOOLCHAIN_ROOT }}
+          toolchain-dir: ${{ env.TOOLCHAIN_DIR }}
+
+      # --disable-debug selects the Release build type in the generated
+      # toolchain, as tools/buildsteps/defaultenv does for Configuration=Release.
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=arm-webos-linux-gnueabi --with-toolchain=${{ env.TOOLCHAIN_DIR }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: "true"
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: webos-depends
+
+      # Not reached when the build failed, so a half-built prefix is never saved.
+      - uses: ./.github/actions/depends-cache-save
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+  build:
+    needs: [depends-key, depends]
+    # Runs whether depends built anything or was skipped; a missing prefix
+    # fails at the restore below.
+    if: ${{ !cancelled() && needs.depends-key.result == 'success' }}
+    runs-on: ubuntu-26.04
+    timeout-minutes: 240
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.depends-key.outputs.legs) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-webos-build
+        with:
+          toolchain-release: ${{ env.TOOLCHAIN_RELEASE }}
+          toolchain-asset: ${{ env.TOOLCHAIN_ASSET }}
+          toolchain-root: ${{ env.TOOLCHAIN_ROOT }}
+          toolchain-dir: ${{ env.TOOLCHAIN_DIR }}
+
+      # ares-package, which the ipk target runs (cmake/scripts/webos/Install.cmake).
+      # webosbrew's Rust rewrite of LG's CLI is a drop-in replacement and needs
+      # neither Node.js nor npm.
+      - name: Install ares-package
+        run: |
+          deb="ares-package_${ARES_CLI_VERSION}-1_$(dpkg --print-architecture).deb"
+          curl -fsSL --retry 5 -o "${RUNNER_TEMP}/${deb}" \
+            "https://github.com/webosbrew/ares-cli-rs/releases/download/v${ARES_CLI_VERSION}/${deb}"
+          sudo apt-get install -y "${RUNNER_TEMP}/${deb}"
+          ares-package --help
+
+      - uses: ./.github/actions/depends-cache-restore
+        with:
+          key: ${{ matrix.key }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          fail-on-cache-miss: "true"
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          dir: /home/runner/.cache/kodi-e2e-ccache
+
+      - uses: ./.github/actions/configure-depends
+        with:
+          configure-args: >-
+            --host=arm-webos-linux-gnueabi --with-toolchain=${{ env.TOOLCHAIN_DIR }}
+            ${{ matrix.configuration == 'Release' && '--disable-debug' || '' }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      # Installed into the depends prefix's addons/ directory (the webos rule in
+      # tools/depends/xbmc-addons.include), from where the bundle step copies them.
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ inputs.addons }}
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}"
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      # Stages the app, verifies its dynamic dependencies against the toolchain
+      # sysroot, strips (Release only), and runs ares-package
+      # (cmake/scripts/webos/Install.cmake).
+      - name: Package .ipk
+        run: |
+          make -C build ipk
+          ls -l build/*.ipk
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: webos
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-webos
+          path: build/*.ipk
+          if-no-files-found: error
+          retention-days: 7

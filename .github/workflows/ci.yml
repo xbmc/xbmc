@@ -1,0 +1,204 @@
+name: CI
+
+# Single entry point for pull requests, master pushes and manual runs. Owns the
+# triggers, the path filters, the draft/label gate and the workflow_dispatch
+# inputs, then calls one reusable workflow per platform or check. Pull requests
+# are path-filtered in the gate rather than with paths-ignore: a workflow that
+# never starts leaves required checks pending, while jobs skipped by the gate
+# count as passed, so a documentation-only PR does not block on them.
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build
+        type: choice
+        options: [all, linux, windows, android, apple, webos]
+        default: all
+      configuration:
+        description: >
+          Debug or Release for every platform. Default keeps what Jenkins builds
+          (Debug on Linux and Apple, Release on Windows and webOS, per ABI on
+          Android); on the Release-default platforms a run with debug logging
+          enabled builds Debug.
+        type: choice
+        options: [Default, Debug, Release]
+        default: Default
+      addons:
+        description: >
+          Space-separated binary add-on ids or patterns to build and bundle,
+          e.g. "peripheral.joystick inputstream.adaptive inputstream.ffmpegdirect pvr.*".
+        type: string
+        default: peripheral.joystick
+  push:
+    branches: [master]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/CODEOWNERS'
+      - '.github/FUNDING.yml'
+      - '.github/mergeable.yml'
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Drafts wait for ready_for_review; the No-Jenkins / No Jenkins / Stale labels
+  # skip everything, as they did on Jenkins, and so does a pull request that
+  # only touches documentation. Resolves the workflow_dispatch inputs, which are
+  # empty on push and pull_request events, and decides whether the add-on build
+  # system changed, which is the only case worth exercising the reusable add-on
+  # workflow from this repository.
+  gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # paths-filter reads the pull request's file list.
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.decide.outputs.run == 'true' && (github.event_name != 'pull_request' || steps.filter.outputs.code == 'true') }}
+      platform: ${{ steps.decide.outputs.platform }}
+      configuration: ${{ steps.decide.outputs.configuration }}
+      addons: ${{ steps.decide.outputs.addons }}
+      addons_changed: ${{ steps.filter.outputs.addons }}
+    steps:
+      - id: decide
+        env:
+          EVENT: ${{ github.event_name }}
+          DRAFT: ${{ github.event.pull_request.draft }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, '|') }}
+          PLATFORM: ${{ inputs.platform }}
+          CONFIGURATION: ${{ inputs.configuration }}
+          ADDONS: ${{ inputs.addons }}
+        run: |
+          run=true
+          if [ "${EVENT}" = "pull_request" ]; then
+            [ "${DRAFT}" = "true" ] && run=false
+            case "|${LABELS}|" in
+              *"|No-Jenkins|"*|*"|No Jenkins|"*|*"|Stale|"*) run=false ;;
+            esac
+          fi
+          if [ "${CONFIGURATION}" = Default ]; then CONFIGURATION=""; fi
+          {
+            echo "run=${run}"
+            echo "platform=${PLATFORM:-all}"
+            echo "configuration=${CONFIGURATION}"
+            echo "addons=${ADDONS:-peripheral.joystick}"
+          } >> "$GITHUB_OUTPUT"
+          echo "run=${run} platform=${PLATFORM:-all} (event=${EVENT} draft=${DRAFT} labels=${LABELS})"
+
+      - uses: actions/checkout@v7
+        if: steps.decide.outputs.run == 'true'
+
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        if: steps.decide.outputs.run == 'true'
+        id: filter
+        with:
+          predicate-quantifier: some-with-excludes
+          filters: |
+            code:
+              - '**'
+              - '!docs/**'
+              - '!**/*.md'
+              - '!.github/ISSUE_TEMPLATE/**'
+              - '!.github/CODEOWNERS'
+              - '!.github/FUNDING.yml'
+              - '!.github/mergeable.yml'
+            addons:
+              - .github/workflows/build-addon.yml
+              - cmake/addons/**
+              - tools/depends/**
+              - tools/buildsteps/windows/**
+
+  lint:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && github.event_name == 'pull_request'
+    uses: ./.github/workflows/lint.yml
+
+  # GBM, Wayland (x86_64 and arm64) and X11.
+  linux:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","linux"]'), needs.gate.outputs.platform)
+    uses: ./.github/workflows/e2e-linux.yml
+    with:
+      configuration: ${{ needs.gate.outputs.configuration }}
+      addons: ${{ needs.gate.outputs.addons }}
+
+  windows:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","windows"]'), needs.gate.outputs.platform)
+    uses: ./.github/workflows/e2e-windows.yml
+    with:
+      configuration: ${{ needs.gate.outputs.configuration }}
+      addons: ${{ needs.gate.outputs.addons }}
+
+  android:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","android"]'), needs.gate.outputs.platform)
+    # actions: read lets the depends-key job query the cache API.
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/e2e-android.yml
+    with:
+      configuration: ${{ needs.gate.outputs.configuration }}
+      addons: ${{ needs.gate.outputs.addons }}
+    secrets: inherit
+
+  # macOS (build, unit tests, e2e, signed .dmg), iOS/tvOS Simulator (build,
+  # e2e) and iOS/tvOS device (build, unsigned .ipa + dSYM, no e2e).
+  apple:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","apple"]'), needs.gate.outputs.platform)
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/apple.yml
+    with:
+      configuration: ${{ needs.gate.outputs.configuration }}
+      addons: ${{ needs.gate.outputs.addons }}
+    secrets: inherit
+
+  webos:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && contains(fromJSON('["all","webos"]'), needs.gate.outputs.platform)
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/build-webos.yml
+    with:
+      configuration: ${{ needs.gate.outputs.configuration }}
+      addons: ${{ needs.gate.outputs.addons }}
+
+  # The checks and the add-on smoke build run on full runs only, not when a
+  # manual run targets one platform.
+  static-analysis:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && needs.gate.outputs.platform == 'all'
+    permissions:
+      contents: read
+      security-events: write
+    uses: ./.github/workflows/static-analysis.yml
+
+  # peripheral.joystick on one platform per code path, only when the add-on
+  # build system or the reusable workflow changed.
+  addon:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' && needs.gate.outputs.platform == 'all' && needs.gate.outputs.addons_changed == 'true'
+    uses: ./.github/workflows/build-addon.yml
+    with:
+      addon: peripheral.joystick
+      addon_repository: xbmc/peripheral.joystick
+      addon_ref: Piers
+      kodi_repository: ${{ github.repository }}
+      kodi_ref: ${{ github.sha }}
+      platforms: '["android-aarch64","osx-arm64","windows-x86_64"]'
+      retention_days: 7

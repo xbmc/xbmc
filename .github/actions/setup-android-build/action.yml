@@ -1,0 +1,23 @@
+name: Set up the Android build environment
+description: >
+  Installs the host packages and SDK components docs/README.Android.md lists
+  (NDK r28c) into the runner image's preinstalled SDK at ANDROID_SDK_ROOT.
+runs:
+  using: composite
+  steps:
+    - name: Install build tools and libraries
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          autoconf bison build-essential ccache curl flex gawk gperf \
+          lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zip zlib1g-dev
+
+    # Composite steps run with pipefail, under which `yes |` fails the step
+    # once sdkmanager closes its input; a finite list of answers does not.
+    - name: Install Android SDK components
+      shell: bash
+      run: |
+        printf 'y\n%.0s' $(seq 1 100) | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+        "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" \
+          "platform-tools" "platforms;android-37.0" "build-tools;37.0.0" "ndk;28.2.13676358"
