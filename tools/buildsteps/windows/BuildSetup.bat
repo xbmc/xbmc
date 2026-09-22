@@ -34,6 +34,7 @@ SET promptlevel=prompt
 SET buildbinaryaddons=true
 SET exitcode=0
 SET useshell=rxvt
+SET MSBUILDDISABLENODEREUSE=1
 FOR %%b in (%*) DO (
   IF %%b==clean SET buildmode=clean
   IF %%b==noclean SET buildmode=noclean
