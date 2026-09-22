@@ -15,6 +15,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
+#include <atomic>
 #include <future>
 #include <memory>
 #include <stddef.h>
@@ -59,6 +60,7 @@ public:
   double GetSpeed() const override;
   void SetSpeed(double speedFactor) override;
   void PauseAsync() override;
+  void RequestAutosave() override { m_autosaveRequested.store(true); }
   std::string CreateSavestate(bool autosave, const std::string& savestatePath = "") override;
   bool LoadSavestate(const std::string& savestatePath) override;
 
@@ -98,6 +100,7 @@ private:
   bool m_memoryStreamSized{false};
 
   // Savestate functionality
+  std::atomic<bool> m_autosaveRequested{false};
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
   std::string m_autosavePath{};
   std::vector<std::future<void>> m_savestateThreads;

@@ -37,6 +37,7 @@ public:
   virtual void PauseAsync() = 0; // Pauses after the following frame
 
   // Savestates
+  virtual void RequestAutosave() = 0;
   virtual std::string CreateSavestate(
       bool autosave,
       const std::string& savestatePath = "") = 0; // Returns the path of savestate on success

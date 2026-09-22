@@ -471,6 +471,9 @@ void CReversiblePlayback::FrameEvent()
   }
 
   AddFrame();
+
+  if (m_autosaveRequested.exchange(false))
+    CreateSavestate(true);
 }
 
 void CReversiblePlayback::RewindEvent()

@@ -10,8 +10,6 @@
 
 #include "threads/Thread.h"
 
-#include <string>
-
 namespace KODI
 {
 namespace GAME
@@ -28,7 +26,7 @@ public:
   virtual ~IAutoSaveCallback() = default;
 
   virtual bool IsAutoSaveEnabled() const = 0;
-  virtual std::string CreateAutosave() = 0;
+  virtual void RequestAutosave() = 0;
 };
 
 class CRetroPlayerAutoSave : protected CThread
