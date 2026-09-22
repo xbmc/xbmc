@@ -21,6 +21,7 @@ public:
 
   // Lifetime management
   virtual void Initialize() = 0;
+  virtual void Quiesce() = 0;
   virtual void Deinitialize() = 0;
 
   // Playback capabilities
@@ -37,6 +38,7 @@ public:
   virtual void PauseAsync() = 0; // Pauses after the following frame
 
   // Savestates
+  virtual bool WaitForSavestates() = 0;
   virtual void RequestAutosave() = 0;
   virtual std::string CreateSavestate(
       bool autosave,

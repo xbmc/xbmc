@@ -10,6 +10,8 @@
 
 #include "threads/Thread.h"
 
+#include <chrono>
+
 namespace KODI
 {
 namespace GAME
@@ -32,9 +34,15 @@ public:
 class CRetroPlayerAutoSave : protected CThread
 {
 public:
-  explicit CRetroPlayerAutoSave(IAutoSaveCallback& callback, GAME::CGameSettings& settings);
+  explicit CRetroPlayerAutoSave(
+      IAutoSaveCallback& callback,
+      GAME::CGameSettings& settings,
+      std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now());
 
   ~CRetroPlayerAutoSave() override;
+
+  bool HasInitialDelayElapsed(
+      std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now()) const;
 
 protected:
   // implementation of CThread
@@ -44,6 +52,7 @@ private:
   // Construction parameters
   IAutoSaveCallback& m_callback;
   GAME::CGameSettings& m_settings;
+  const std::chrono::steady_clock::time_point m_firstAutosaveTime;
 };
 } // namespace RETRO
 } // namespace KODI

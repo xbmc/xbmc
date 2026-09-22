@@ -26,7 +26,6 @@
 
 #include <algorithm>
 #include <cstring>
-#include <future>
 #include <limits>
 #include <memory>
 #include <utility>
@@ -142,14 +141,6 @@ struct PlaybackStats
 };
 template struct TestMemberAccess<PlaybackStats,
                                  &KODI::RETRO::CReversiblePlayback::UpdatePlaybackStats>;
-
-struct PlaybackSaveTasks
-{
-  using Type = std::vector<std::future<void>> KODI::RETRO::CReversiblePlayback::*;
-  friend Type GetMember(PlaybackSaveTasks);
-};
-template struct TestMemberAccess<PlaybackSaveTasks,
-                                 &KODI::RETRO::CReversiblePlayback::m_savestateThreads>;
 
 struct DiscCore
 {
@@ -499,12 +490,11 @@ protected:
     return path;
   }
 
-  std::string CaptureSavestate()
+  std::string CaptureSavestate(bool expectedSuccess = true)
   {
     const auto path = CreateFile(".sav");
-    EXPECT_EQ(m_playback->CreateSavestate(false, path), path);
-    for (auto& task : TestMember<PlaybackSaveTasks>(*m_playback))
-      task.wait();
+    EXPECT_EQ(m_playback->CreateSavestate(false, path), expectedSuccess ? path : "");
+    EXPECT_EQ(m_playback->WaitForSavestates(), expectedSuccess);
     return path;
   }
 
@@ -623,7 +613,7 @@ protected:
     const auto mutations = m_core.mutations;
     const auto calls = m_core.deserializeCalls;
 
-    const auto path = CaptureSavestate();
+    const auto path = CaptureSavestate(false);
 
     XFILE::CFile file;
     ASSERT_TRUE(file.Open(path));
@@ -2013,7 +2003,7 @@ TEST_F(TestGameClientDiscs, RewindPreviewSaveWithoutHistoricalFrameIsRejected)
   ASSERT_EQ(m_core.machineFrame, 3);
   TestMember<PlaybackMemory>(*m_playback).reset();
 
-  const auto path = CaptureSavestate();
+  const auto path = CaptureSavestate(false);
 
   RETRO::CSavestateFlatBuffer saved;
   EXPECT_FALSE(RETRO::CSavestateDatabase().GetSavestate(path, saved));

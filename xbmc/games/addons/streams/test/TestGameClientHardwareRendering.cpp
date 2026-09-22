@@ -1075,7 +1075,7 @@ TEST_F(TestGameClientHardwareRendering, RewindRetriesUntilSerializationBecomesAv
     EXPECT_EQ(m_core.serializations, 1U);
     playback.FrameEvent();
     EXPECT_EQ(m_core.serializations, 2U);
-    EXPECT_EQ(m_core.sizeQueries, 3U);
+    EXPECT_EQ(m_core.sizeQueries, 5U);
   }
   settings->SetBool("gamesgeneral.enablerewind", rewindEnabled);
 }
