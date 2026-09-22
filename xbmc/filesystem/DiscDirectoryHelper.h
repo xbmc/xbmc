@@ -31,6 +31,10 @@ using namespace std::chrono_literals;
 
 static constexpr int ALL_PLAYLISTS{-1};
 
+//! Property set on each returned special (S00) title when the disc holds several specials and
+//! nothing distinguishes them, so a library scan does not store a guess
+static constexpr const char* MULTIPLE_SPECIALS_PROPERTY{"bluray_multiple_specials"};
+
 enum class GetTitle : uint8_t
 {
   SINGLE,
@@ -416,6 +420,7 @@ private:
   IsSpecial m_isSpecial{IsSpecial::EPISODE};
   unsigned int m_numEpisodes{0};
   unsigned int m_numSpecials{0};
+  bool m_multipleSpecials{false};
 
   struct Compare
   {

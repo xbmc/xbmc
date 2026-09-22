@@ -94,6 +94,7 @@ void CDiscDirectoryHelper::Reset()
   m_isSpecial = IsSpecial::EPISODE;
   m_numEpisodes = 0;
   m_numSpecials = 0;
+  m_multipleSpecials = false;
   m_playAllPlaylists.clear();
   m_playAllPlaylistsMap.clear();
   m_playAllPlaylistEpisodeMap.clear();
@@ -1949,6 +1950,13 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
   if (m_numSpecials == 0)
     return;
 
+  // Nothing on the disc tells one special from another, so all candidates are offered
+  if (m_isSpecial == IsSpecial::SPECIAL && m_numSpecials > 1)
+  {
+    CLog::LogF(LOGDEBUG, "Disc holds {} specials and nothing to tell them apart", m_numSpecials);
+    m_multipleSpecials = true;
+  }
+
   // Specials
   //
   // These are more difficult - as there may only be one per disc and we can't make assumptions about playlists.
@@ -2190,6 +2198,9 @@ void CDiscDirectoryHelper::PopulateEpisodeFileItems(const CURL& url,
       }
 
       AddStreamDetails(m_getStreamDetails, allTitles, playlist, *newItem);
+
+      if (m_multipleSpecials)
+        newItem->SetProperty(MULTIPLE_SPECIALS_PROPERTY, true);
 
       items.Add(newItem);
     }
@@ -3273,6 +3284,14 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   else
   {
     // Silent
+    // A scan must not store a guess, or later playback would use it without asking
+    if (sourceItems[0]->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false))
+    {
+      CLog::LogF(LOGDEBUG, "Not choosing between the {} specials offered for {}",
+                 sourceItems.Size(), CURL::GetRedacted(directory));
+      return false;
+    }
+
     if (sourceItems.Size() > 1 && !returnMultipleItems)
     {
       CLog::LogF(LOGDEBUG, "Automatically selected playlist {} of the {} offered for {}",
