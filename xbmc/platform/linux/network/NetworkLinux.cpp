@@ -12,11 +12,15 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <chrono>
 #include <errno.h>
+#include <signal.h>
+#include <thread>
 #include <utility>
 
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <net/if.h>
 #include <net/if_arp.h>
 #include <netinet/ip_icmp.h>
@@ -24,6 +28,7 @@
 #include <sys/epoll.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 using namespace KODI::UTILS::POSIX;
@@ -33,6 +38,69 @@ namespace
 
 constexpr unsigned int ICMP_PACKET_SIZE{64};
 constexpr unsigned int TTL{64};
+
+bool PingWithCommand(unsigned long remoteIp, unsigned int timeoutMs)
+{
+  // A zero timeout is a nonblocking probe; a new child cannot provide a result yet.
+  if (timeoutMs == 0)
+    return false;
+
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeoutMs);
+  in_addr address{};
+  address.s_addr = remoteIp;
+  char host[INET_ADDRSTRLEN];
+  if (!inet_ntop(AF_INET, &address, host, sizeof(host)))
+    return false;
+
+  const pid_t child = fork();
+  if (child < 0)
+  {
+    CLog::Log(LOGERROR, "ping fork failed: {} ({})", strerror(errno), errno);
+    return false;
+  }
+  if (child == 0)
+  {
+    const int nullFd = open("/dev/null", O_RDWR);
+    if (nullFd < 0 || dup2(nullFd, STDIN_FILENO) < 0 || dup2(nullFd, STDOUT_FILENO) < 0 ||
+        dup2(nullFd, STDERR_FILENO) < 0)
+      _exit(127);
+    if (nullFd > STDERR_FILENO)
+      close(nullFd);
+
+    // Avoid ping-specific timeout options; their syntax and resolution vary by implementation.
+    execlp("ping", "ping", "-n", "-c", "1", host, static_cast<char*>(nullptr));
+    _exit(127);
+  }
+
+  int status;
+  while (true)
+  {
+    const pid_t result = waitpid(child, &status, WNOHANG);
+    if (result == child)
+    {
+      if (!WIFEXITED(status) || WEXITSTATUS(status) > 1)
+        CLog::Log(LOGERROR, "ping failed for {}: status={}", host, status);
+      return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+    }
+    if (result < 0 && errno != EINTR)
+    {
+      CLog::Log(LOGERROR, "ping waitpid failed: {} ({})", strerror(errno), errno);
+      return false;
+    }
+
+    const auto now = std::chrono::steady_clock::now();
+    if (now >= deadline)
+      break;
+    std::this_thread::sleep_until(std::min(deadline, now + std::chrono::milliseconds(10)));
+  }
+
+  // Kodi owns the timeout, so terminate and reap ping if it outlives the deadline.
+  kill(child, SIGKILL);
+  while (waitpid(child, &status, 0) < 0 && errno == EINTR)
+  {
+  }
+  return false;
+}
 
 struct IcmpPacket
 {
@@ -248,6 +316,11 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   CFileHandle fd(socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_ICMP));
   if (!fd)
   {
+    if (errno == EACCES || errno == EPERM)
+    {
+      CLog::Log(LOGDEBUG, "ICMP socket permission denied, falling back to ping");
+      return PingWithCommand(remote_ip, timeout_ms);
+    }
     CLog::Log(LOGERROR, "socket failed: {} ({})", strerror(errno), errno);
     return false;
   }
