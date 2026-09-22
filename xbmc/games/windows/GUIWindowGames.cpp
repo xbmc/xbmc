@@ -15,7 +15,6 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
-#include "application/Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -26,6 +25,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/actions/ActionIDs.h"
 #include "media/MediaLockState.h"
+#include "messaging/ApplicationMessenger.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/MediaSourceSettings.h"
@@ -399,7 +399,9 @@ bool CGUIWindowGames::PlayGame(const CFileItem& item)
   if (PLAYLIST::IsPlayList(item))
     playlistId = PLAYLIST::Id::TYPE_GAME;
 
-  return g_application.PlayMedia(itemCopy, "", playlistId);
+  CServiceBroker::GetAppMessenger()->PostMsg(
+      TMSG_APPLICATION_PLAY_MEDIA, static_cast<int>(playlistId), -1, new CFileItem(itemCopy), "");
+  return true;
 }
 
 bool CGUIWindowGames::CanPlay(const CFileItem& item) const
