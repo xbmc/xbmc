@@ -44,6 +44,8 @@ function(generate_file file)
                              ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake
                      DEPFILE ${DEP_FILE})
 
+  set_source_files_properties(${CPP_FILE} PROPERTIES SKIP_LINTING ON)
+
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
 
@@ -76,10 +78,6 @@ add_library(python_binding STATIC ${SOURCES})
 target_include_directories(python_binding PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
-# generated code
-set_target_properties(python_binding PROPERTIES CXX_CLANG_TIDY ""
-                                                CXX_CPPCHECK ""
-                                                CXX_INCLUDE_WHAT_YOU_USE "")
 
 # director-enabled modules in one binary otherwise collide on Swig::Director symbols
 # SWIG_LINK_RUNTIME: modules find the shared type table via SwigRuntime.cpp instead of a Python capsule owned by one interpreter
