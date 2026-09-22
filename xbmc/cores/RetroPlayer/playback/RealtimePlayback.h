@@ -21,6 +21,7 @@ public:
 
   // implementation of IPlayback
   void Initialize() override {}
+  void Quiesce() override {}
   void Deinitialize() override {}
   bool CanPause() const override { return false; }
   bool CanSeek() const override { return false; }
@@ -31,6 +32,8 @@ public:
   double GetSpeed() const override { return 1.0; }
   void SetSpeed(double speedFactor) override {}
   void PauseAsync() override {}
+  bool WaitForSavestates() override { return true; }
+  void RequestAutosave() override {}
   std::string CreateSavestate(bool autosave, const std::string& savestatePath = "") override
   {
     return "";

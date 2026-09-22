@@ -1160,7 +1160,43 @@ void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath)
     renderBuffer->Acquire();
 }
 
-void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavestate& savestate)
+bool CRPRenderManager::TryCaptureVideoFrame(VideoFrame& frame)
+{
+  if (IsHardwareRendering() || !frame.empty())
+    return false;
+
+  std::unique_lock lock(m_bufferMutex, std::try_to_lock);
+  if (!lock.owns_lock())
+    return false;
+
+  for (IRenderBuffer* buffer : m_renderBuffers)
+  {
+    buffer->Acquire();
+    frame.emplace_back(buffer, [](IRenderBuffer* acquired) { acquired->Release(); });
+  }
+  return true;
+}
+
+void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath, const VideoFrame& frame)
+{
+  if (IsHardwareRendering())
+    return;
+
+  std::unique_lock lock(m_bufferMutex);
+  auto& buffers = m_savestateBuffers[savestatePath];
+  for (IRenderBuffer* buffer : buffers)
+    buffer->Release();
+  buffers.clear();
+  for (const auto& buffer : frame)
+  {
+    buffer->Acquire();
+    buffers.push_back(buffer.get());
+  }
+}
+
+void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath,
+                                      ISavestate& savestate,
+                                      const VideoFrame& frame)
 {
   // A hardware-rendered savestate carries the game's state but no video frame,
   // so it restores without a preview of the moment it was taken
@@ -1172,7 +1208,17 @@ void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavesta
   IRenderBuffer* readableBuffer = nullptr;
   std::vector<uint8_t> cachedFrame;
 
-  GetVideoFrame(readableBuffer, cachedFrame);
+  for (const auto& buffer : frame)
+  {
+    if (buffer->GetMemoryAccess() != DataAccess::WRITE_ONLY)
+    {
+      readableBuffer = buffer.get();
+      readableBuffer->Acquire();
+      break;
+    }
+  }
+  if (!readableBuffer)
+    GetVideoFrame(readableBuffer, cachedFrame);
 
   // Video frame properties
   AVPixelFormat targetFormat = AV_PIX_FMT_NONE;

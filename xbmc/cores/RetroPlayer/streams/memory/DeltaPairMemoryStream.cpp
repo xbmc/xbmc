@@ -77,6 +77,7 @@ void CDeltaPairMemoryStream::SubmitFrame(uint32_t discStateId, uint64_t frameCou
   m_nextDiscStateId = discStateId;
   m_nextFrameHistory = frameCounter;
   SubmitFrameInternal();
+  m_hasRetiredFrame = true;
 }
 
 void CDeltaPairMemoryStream::SubmitFrameInternal()
