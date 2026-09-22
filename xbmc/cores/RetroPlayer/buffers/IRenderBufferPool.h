@@ -38,6 +38,15 @@ public:
 
   virtual bool Configure(AVPixelFormat format) = 0;
 
+  /*!
+   * \brief Supply hardware-rendering attachment requirements before buffers are created
+   *
+   * Called for hardware (OpenGL) rendering so the pool can create FBOs with the
+   * depth/stencil attachments the game core requested. No-op for pools that do
+   * not support hardware rendering.
+   */
+  virtual void ConfigureHardware(bool depth, bool stencil) {}
+
   virtual bool IsConfigured() const = 0;
 
   virtual bool IsCompatible(const CRenderVideoSettings& renderSettings) const = 0;

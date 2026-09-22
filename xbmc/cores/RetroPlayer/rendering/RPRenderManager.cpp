@@ -286,14 +286,21 @@ void CRPRenderManager::DestroyContext()
     bufferPool->DestroyContext();
 }
 
+void CRPRenderManager::SetHardwareContext(bool depth, bool stencil)
+{
+  m_hwDepth = depth;
+  m_hwStencil = stencil;
+}
+
 bool CRPRenderManager::Create(unsigned int width, unsigned int height)
 {
   // This must be called from the rendering thread where the GL context is current.
   // It is invoked by FrameMove() when hardware rendering (AV_PIX_FMT_NONE) is detected.
   //
-  // For hardware rendering, renderers are created lazily via GetRendererForSettings()
-  // and the GL framebuffer that the game core renders into is managed by the buffer
-  // pool and returned on demand via GetCurrentFramebuffer().
+  // For hardware rendering, the game core renders into a Kodi-owned FBO managed by
+  // the buffer pool and returned on demand via GetCurrentFramebuffer(). Here we
+  // configure the compatible pool(s) for the hardware format and forward the
+  // requested depth/stencil attachments so the FBO is created correctly.
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Initializing hardware rendering context {}x{}", width,
             height);
 
@@ -302,11 +309,17 @@ bool CRPRenderManager::Create(unsigned int width, unsigned int height)
   for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
   {
     CRenderVideoSettings renderSettings;
-    if (bufferPool->IsCompatible(renderSettings))
+    if (!bufferPool->IsCompatible(renderSettings))
+      continue;
+
+    // Forward depth/stencil requirements, then configure the pool for the
+    // hardware format so it can hand out FBO-backed render buffers.
+    bufferPool->ConfigureHardware(m_hwDepth, m_hwStencil);
+    if (bufferPool->Configure(AV_PIX_FMT_NONE))
     {
-      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Compatible buffer pool found for hardware rendering");
+      CLog::Log(LOGDEBUG,
+                "RetroPlayer[RENDER]: Compatible buffer pool configured for hardware rendering");
       bSuccess = true;
-      break;
     }
   }
 
@@ -319,9 +332,14 @@ bool CRPRenderManager::Create(unsigned int width, unsigned int height)
 
 uintptr_t CRPRenderManager::GetCurrentFramebuffer(unsigned int width, unsigned int height)
 {
+  const bool bHardware = (m_format == AV_PIX_FMT_NONE);
+
   for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
   {
-    if (!bufferPool->HasVisibleRenderer())
+    // For hardware rendering the game core needs a valid FBO from the very first
+    // frame, before any renderer has become visible, so skip the visibility gate
+    // (which only applies to the software copy-to-visible-pools path).
+    if (!bHardware && !bufferPool->HasVisibleRenderer())
       continue;
 
     IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);

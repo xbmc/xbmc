@@ -112,6 +112,15 @@ public:
   uintptr_t GetCurrentFramebuffer(unsigned int width, unsigned int height);
   void RenderFrame();
 
+  /*!
+   * \brief Set the hardware-rendering context requirements from the game core
+   *
+   * Called by the hardware framebuffer stream on OpenStream(), before the first
+   * frame, so the FBO created for hardware rendering carries the requested
+   * depth/stencil attachments.
+   */
+  void SetHardwareContext(bool depth, bool stencil);
+
   // Functions called from the player
   void SetSpeed(double speed);
 
@@ -242,6 +251,10 @@ private:
   float m_nominalDisplayAspectRatio{0.0f}; // 0.0f means square pixels
   unsigned int m_maxWidth = 0;
   unsigned int m_maxHeight = 0;
+
+  // Hardware-rendering properties (from the game core's HW context)
+  bool m_hwDepth = false;
+  bool m_hwStencil = false;
 
   // Render resources
   std::set<std::shared_ptr<CRPBaseRenderer>> m_renderers;

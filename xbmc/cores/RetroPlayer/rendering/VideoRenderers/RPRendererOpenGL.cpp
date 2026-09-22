@@ -393,11 +393,16 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
     vertex[i].z = 0.0f;
   }
 
-  // Setup texture coordinates
+  // Setup texture coordinates. Hardware-rendered FBOs have a bottom-left origin,
+  // so flip the vertical texture coordinates when presenting them.
+  const bool flipV = renderBuffer->IsHardware();
+  const float v1 = flipV ? rect.y2 : rect.y1;
+  const float v2 = flipV ? rect.y1 : rect.y2;
+
   vertex[0].u1 = vertex[3].u1 = rect.x1;
-  vertex[0].v1 = vertex[1].v1 = rect.y1;
+  vertex[0].v1 = vertex[1].v1 = v1;
   vertex[1].u1 = vertex[2].u1 = rect.x2;
-  vertex[2].v1 = vertex[3].v1 = rect.y2;
+  vertex[2].v1 = vertex[3].v1 = v2;
 
   glBindVertexArray(m_mainVAO);
 

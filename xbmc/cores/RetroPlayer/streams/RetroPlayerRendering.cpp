@@ -55,6 +55,10 @@ bool CRetroPlayerRendering::OpenStream(const StreamProperties& properties)
 
   m_contextType = hwProperties.contextType;
 
+  // Forward the requested depth/stencil attachments so the hardware framebuffer
+  // is created with them (3D cores need a depth buffer for correct occlusion).
+  m_renderManager.SetHardwareContext(hwProperties.depth, hwProperties.stencil);
+
   m_processInfo.SetVideoPixelFormat(pixelFormat);
   m_processInfo.SetVideoDimensions(width, height);
 
