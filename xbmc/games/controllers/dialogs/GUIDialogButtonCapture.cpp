@@ -64,7 +64,7 @@ void CGUIDialogButtonCapture::Process()
       break;
 
     //! @todo Move to rendering thread when there is a rendering thread
-    MESSAGING::HELPERS::UpdateOKDialogText(CVariant{35013}, CVariant{GetDialogText()});
+    MESSAGING::HELPERS::UpdateOKDialogText(CVariant{GetDialogHeader()}, CVariant{GetDialogText()});
   }
 }
 
