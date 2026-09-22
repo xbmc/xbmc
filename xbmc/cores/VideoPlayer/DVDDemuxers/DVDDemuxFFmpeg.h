@@ -127,6 +127,9 @@ protected:
   void CreateStreams(unsigned int program = UINT_MAX);
   void DisposeStreams();
   void ParsePacket(AVPacket* pkt);
+  void SaveProbedStreamParameters();
+  void RestoreProbedStreamParameters();
+  void ClearProbedStreamParameters();
   TRANSPORT_STREAM_STATE TransportStreamAudioState();
   TRANSPORT_STREAM_STATE TransportStreamVideoState();
   bool IsTransportStreamReady();
@@ -171,6 +174,21 @@ protected:
     AVPacket pkt;       // packet ffmpeg returned
     int      result;    // result from av_read_packet
   }m_pkt;
+
+  struct AVCodecParametersDeleter
+  {
+    void operator()(AVCodecParameters* codecpar) const { avcodec_parameters_free(&codecpar); }
+  };
+
+  struct ProbedStream
+  {
+    std::unique_ptr<AVCodecParameters, AVCodecParametersDeleter> codecpar;
+    AVRational rFrameRate{0, 0};
+    AVRational avgFrameRate{0, 0};
+    AVRational sampleAspectRatio{0, 0};
+  };
+  // What avformat_find_stream_info() established, kept across the transport stream re-open.
+  std::map<int, ProbedStream> m_probedStreams;
 
   bool m_streaminfo;
   bool m_reopen = false;
