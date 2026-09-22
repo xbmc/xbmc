@@ -1737,7 +1737,7 @@
 					<height>60</height>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
-					<label>$VAR[MediaInfoListLabelVar]</label>
+					<label>$INFO[ListItem.Label]</label>
 				</control>
 				<control type="label">
 					<left>135</left>
@@ -1747,7 +1747,7 @@
 					<font>font10</font>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
-					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[MediaInfoListLabel2Var]</label>
+					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[MediaVideoPropVar]$VAR[MediaAudioPropVar, | ]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="$PARAM[height]" width="$PARAM[width]">
@@ -1774,7 +1774,7 @@
 					<height>60</height>
 					<aligny>center</aligny>
 					<scroll>true</scroll>
-					<label>$VAR[MediaInfoListLabelVar]</label>
+					<label>$INFO[ListItem.Label]</label>
 				</control>
 				<control type="label">
 					<left>135</left>
@@ -1783,7 +1783,7 @@
 					<height>65</height>
 					<font>font10</font>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[MediaInfoListLabel2Var]</label>
+					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[MediaVideoPropVar]$VAR[MediaAudioPropVar, | ]</label>
 				</control>
 			</focusedlayout>
 		</definition>
