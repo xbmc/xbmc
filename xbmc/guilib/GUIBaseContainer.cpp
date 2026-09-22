@@ -1345,6 +1345,8 @@ int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
 void CGUIBaseContainer::Reset()
 {
   m_wasReset = true;
+  for (const auto& item : m_items)
+    item->FreeMemory();
   m_items.clear();
   m_lastItem.reset();
   ResetAutoScrolling();
