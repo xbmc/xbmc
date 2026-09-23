@@ -36,6 +36,7 @@
   "expectedGetWithoutOptions": "cdda://user:pass@host:5001/",
   "expectedGetWithoutUserDetails_redacted": "cdda://USERNAME:PASSWORD@host:5001/",
   "expectedGetWithoutUserDetails_removed": "cdda://host:5001/",
+  "expectedHasEncodedHostname": true,
   "expectedHasParentPath": "cdda://user:pass@",
   "expectedHasSlashAtEndURL": true,
   "expectedIsCDDA": true,
@@ -50,5 +51,5 @@
   "expectedReplacedExtension": "cdda://user:pass@host:5001/xyz",
   "expectedSplitFileName": "user:pass@host:5001",
   "expectedSplitPath": "cdda://",
-  "expectedUpdateUrlEncoding": "cdda://user:pass@host:5001"
+  "expectedUpdateUrlEncoding": "cdda://user:pass@host:5001/"
 }

@@ -13,10 +13,12 @@
 #include "EncoderFFmpeg.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "filesystem/CDDAFile.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
@@ -96,7 +98,7 @@ bool CCDDARipJob::DoWork()
   CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(605));
 
-  const int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
+  const int iTrack = XFILE::CFileCDDA::GetTrackNum(CURL(m_input));
   const std::string strLine0 =
       StringUtils::Format("{:02}. {} - {}", iTrack, m_tag.GetArtistString(), m_tag.GetTitle());
   handle->SetText(strLine0);
@@ -206,8 +208,7 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
     return {};
 
   // we have to set the tags before we init the Encoder
-  const std::string strTrack = StringUtils::Format(
-      "{}", std::stol(m_input.substr(13, m_input.size() - 13 - 5), nullptr, 10));
+  const std::string strTrack = std::to_string(XFILE::CFileCDDA::GetTrackNum(CURL(m_input)));
 
   const std::string& itemSeparator =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;

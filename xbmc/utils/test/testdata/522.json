@@ -35,6 +35,7 @@
   "expectedGetWithoutOptions": "cdda://path/to/file",
   "expectedGetWithoutUserDetails_redacted": "cdda://path/to/file",
   "expectedGetWithoutUserDetails_removed": "cdda://path/to/file",
+  "expectedHasEncodedHostname": true,
   "expectedHasParentPath": "cdda://path/to/",
   "expectedIsCDDA": true,
   "expectedIsFixSlashesAndDupsUnix": "cdda:/path/to/file",

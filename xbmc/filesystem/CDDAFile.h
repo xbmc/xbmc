@@ -29,12 +29,14 @@ public:
   int64_t GetLength() override;
   int GetChunkSize() override;
 
+  static int GetTrackNum(const CURL& url);
+
 protected:
   bool IsValidFile(const CURL& url);
-  int GetTrackNum(const CURL& url);
 
 protected:
   CdIo_t* m_pCdIo;
+  std::string m_devicePath;
   lsn_t m_lsnStart = CDIO_INVALID_LSN; // Start of m_iTrack in logical sector number
   lsn_t m_lsnCurrent = CDIO_INVALID_LSN; // Position inside the track in logical sector number
   lsn_t m_lsnEnd = CDIO_INVALID_LSN; // End of m_iTrack in logical sector number

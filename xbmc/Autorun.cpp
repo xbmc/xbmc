@@ -121,17 +121,23 @@ bool CAutorun::PlayDisc(const std::string& path, const PlayDiscOptions& options)
 
   const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo(path)};
 
+  // An audio CD has no filesystem of its own to browse. Every other disc is played from the path
+  // of the drive it is in
   if (pInfo && pInfo->IsAudio(1))
-    mediaPath = "cdda://local/";
-
-  if (mediaPath.empty() && (pInfo && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) ||
-                                      pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))))
-    mediaPath = "iso9660://";
-
-  if (mediaPath.empty())
+  {
+    // A mount point does not name the drive, and on posix pInfo always describes the default one
+    const std::string devicePath{CServiceBroker::GetMediaManager().TranslateDevicePath(path)};
+    const bool namesDrive{URIUtils::IsProtocol(path, "cdda") ||
+                          (devicePath.size() == 2 && devicePath[1] == ':')};
+    CURL url;
+    url.SetProtocol("cdda");
+    url.SetHostName(namesDrive && !devicePath.empty() ? devicePath : "local");
+    mediaPath = url.Get();
+  }
+  // udev reports a device node, which cannot be browsed
+  else if (!path.empty() && !StringUtils::StartsWith(path, "/dev/"))
     mediaPath = path;
-
-  if (mediaPath.empty() || mediaPath == "iso9660://")
+  else
     mediaPath = CServiceBroker::GetMediaManager().GetDiscPath();
 
   const CURL pathToUrl(mediaPath);

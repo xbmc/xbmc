@@ -25,6 +25,7 @@
   "expectedGetWithoutOptions": "cdda://",
   "expectedGetWithoutUserDetails_redacted": "cdda://",
   "expectedGetWithoutUserDetails_removed": "cdda://",
+  "expectedHasEncodedHostname": true,
   "expectedHasSlashAtEnd": true,
   "expectedHasSlashAtEndURL": true,
   "expectedIsCDDA": true,
