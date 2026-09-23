@@ -69,9 +69,11 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
       {
         if (std::shared_ptr<CDVDOverlay> overlay{m_pOverlayCodec->GetOverlay()}; overlay != nullptr)
         {
+          overlay->SetSubtitleStream(m_subtitleStream);
           auto group{InitialiseNewOverlayGroup(overlay)};
           while ((overlay = m_pOverlayCodec->GetOverlay()) != nullptr)
           {
+            overlay->SetSubtitleStream(m_subtitleStream);
             if (*group->m_overlays.back() == *overlay)
               group->m_overlays.emplace_back(overlay);
             else
@@ -93,6 +95,7 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
         CLog::Log(LOGDEBUG, "CVideoPlayer::ProcessSubData: Got complete SPU packet");
         // A forced SPU here is a menu button highlight, not a subtitle (FSTA_DSP)
         pSPUInfo->SetBitmapSubtitle(!pSPUInfo->bForced);
+        pSPUInfo->SetSubtitleStream(m_subtitleStream);
         m_pOverlayContainer->ProcessAndAddOverlayIfValid(pSPUInfo);
       }
     }
@@ -146,6 +149,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
   m_processInfo.ResetSubtitleCodecInfo();
   CloseStream(false);
   m_streaminfo = hints;
+  ++m_subtitleStream;
 
   // okey check if this is a filesubtitle
   if (!filename.empty() && filename != "dvd")
