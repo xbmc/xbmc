@@ -63,7 +63,7 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
     }
     else
     {
-      if (!CGUIDialogSelectSavestate::ShowAndGetSavestate(item.GetPath(), savestatePath))
+      if (!CGUIDialogSelectSavestate::ShowAndGetSavestate(item.GetDynPath(), savestatePath))
         return false;
 
       if (!savestatePath.empty())
@@ -119,7 +119,7 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
           else
           {
             std::string gameClient = CGUIDialogSelectGameClient::ShowAndGetGameClient(
-                item.GetPath(), candidates, installable);
+                item.GetDynPath(), candidates, installable);
 
             if (!gameClient.empty())
               item.GetGameInfoTag()->SetGameClient(gameClient);
@@ -282,7 +282,7 @@ void CGameUtils::GetInstalledGameClients(const CFileItem& file,
   bHasVfsGameClient = false;
 
   // Try to resolve path to a local file, as not all game clients support VFS
-  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
+  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetDynPath()));
 
   VECADDONS localAddons;
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
@@ -312,7 +312,7 @@ void CGameUtils::GetInstallableGameClients(const CFileItem& file,
   using namespace ADDON;
 
   // Try to resolve path to a local file, as not all game clients support VFS
-  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
+  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetDynPath()));
 
   VECADDONS remoteAddons;
   if (!CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::GAMEDLL))
