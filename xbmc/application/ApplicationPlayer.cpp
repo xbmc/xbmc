@@ -964,6 +964,15 @@ bool CApplicationPlayer::Supports(EINTERLACEMETHOD method) const
     return false;
 }
 
+bool CApplicationPlayer::Supports(ETONEMAPMETHOD method) const
+{
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->Supports(method);
+  else
+    return false;
+}
+
 EINTERLACEMETHOD CApplicationPlayer::GetDeinterlacingMethodDefault() const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();

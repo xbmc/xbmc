@@ -1089,6 +1089,11 @@ bool CApplication::OnAction(const CAction &action)
         vs.m_ToneMapMethod =
             static_cast<ETONEMAPMETHOD>(static_cast<int>(VS_TONEMAPMETHOD_OFF) + 1);
 
+      if (vs.m_ToneMapMethod == VS_TONEMAPMETHOD_VAAPI &&
+          !appPlayer->Supports(VS_TONEMAPMETHOD_VAAPI))
+        vs.m_ToneMapMethod =
+            static_cast<ETONEMAPMETHOD>(static_cast<int>(VS_TONEMAPMETHOD_OFF) + 1);
+
       appPlayer->SetVideoSettings(vs);
 
       int code = 0;
@@ -1102,6 +1107,9 @@ bool CApplication::OnAction(const CAction &action)
           break;
         case VS_TONEMAPMETHOD_HABLE:
           code = 36558;
+          break;
+        case VS_TONEMAPMETHOD_VAAPI:
+          code = 36559;
           break;
         default:
           throw std::logic_error("Tonemapping method not found. Did you forget to add a mapping?");

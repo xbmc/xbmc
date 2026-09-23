@@ -27,12 +27,14 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include <va/va.h>
+#include <va/va_vpp.h>
 
 extern "C"
 {
@@ -205,6 +207,7 @@ struct CVaapiConfig
   // VPP output size. 0/0 disables scaling.
   int scaleWidth{};
   int scaleHeight{};
+  bool toneMap{false};
 };
 
 /**
@@ -383,6 +386,7 @@ protected:
   void EnsureBufferPool();
   void ReleaseBufferPool(bool precleanup = false);
   void ReadyForDisposal(CPostproc *pp);
+  bool WantsToneMapping(const VideoPicture& pic) const;
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
   int m_state;
@@ -403,6 +407,7 @@ protected:
   bool m_hwScalingSuppressed = false;
   bool m_hwScalingRetryPending = false;
   CPostproc* m_hwScalingRetryDiscardedPp = nullptr;
+  bool m_vppToneMapping = false;
 };
 
 //-----------------------------------------------------------------------------
@@ -498,6 +503,16 @@ inline constexpr VaFormatEntry kVaFormatTable[] = {
     {VA_FOURCC_Y416, VA_RT_FORMAT_YUV444_12, AV_PIX_FMT_XV48},
 #endif
 };
+
+inline constexpr std::optional<unsigned> VaRtFormatForFourcc(std::uint32_t vaFourcc)
+{
+  for (const auto& entry : kVaFormatTable)
+  {
+    if (entry.vaFourcc == vaFourcc)
+      return entry.vaRtFormat;
+  }
+  return std::nullopt;
+}
 
 /*!
  * \brief Tracks which VA surface formats the EGL interop layer can import.
@@ -662,6 +677,8 @@ public:
   virtual void ClearRef(CVaapiProcessedPicture &pic) = 0;
   virtual void Flush() = 0;
   virtual bool UpdateDeintMethod(EINTERLACEMETHOD method) = 0;
+  virtual bool UpdateToneMapping(bool enable) { return !enable; }
+  virtual bool DoesToneMap() const { return false; }
   virtual bool DoesSync() = 0;
   virtual bool WantsPic() {return true;}
   virtual bool UseVideoSurface() = 0;
@@ -710,14 +727,23 @@ public:
   void ClearRef(CVaapiProcessedPicture &pic) override;
   void Flush() override;
   bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
+  bool UpdateToneMapping(bool enable) override;
+  bool DoesToneMap() const override { return m_toneMap; }
   bool DoesSync() override;
   bool WantsPic() override;
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
+
+  bool SupportsHdrToSdr() const { return m_hdrToSdrSupported; }
+
 protected:
   bool CheckSuccess(VAStatus status, const std::string& function);
   void Dispose();
   void Advance();
+  void QueryHdrCaps();
+  bool CreateToneMapFilter();
+  void DestroyToneMapFilter();
+  bool UpdateHdrMetadata(const VideoPicture& pic);
   VAConfigID m_configId = VA_INVALID_ID;
   VAContextID m_contextId = VA_INVALID_ID;
   CVideoSurfaces m_videoSurfaces;
@@ -733,6 +759,12 @@ protected:
   bool m_scalingRequested = false;
   ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut = nullptr;
+  bool m_hdrToSdrSupported = false;
+  bool m_toneMap = false;
+#if VA_CHECK_VERSION(1, 7, 0)
+  VABufferID m_hdrFilter = VA_INVALID_ID;
+  VAHdrMetaDataHDR10 m_hdrMetaData{};
+#endif
 };
 
 /**

@@ -81,6 +81,9 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
+  m_toneMapMethods = {
+      ETONEMAPMETHOD::VS_TONEMAPMETHOD_OFF, ETONEMAPMETHOD::VS_TONEMAPMETHOD_REINHARD,
+      ETONEMAPMETHOD::VS_TONEMAPMETHOD_ACES, ETONEMAPMETHOD::VS_TONEMAPMETHOD_HABLE};
   m_stateSeeking = false;
 
   if (m_dataCache)
@@ -337,6 +340,24 @@ bool CProcessInfo::Supports(EINTERLACEMETHOD method) const
     return true;
 
   return false;
+}
+
+void CProcessInfo::UpdateToneMappingMethods(const std::list<ETONEMAPMETHOD>& methods)
+{
+  std::unique_lock lock(m_videoCodecSection);
+
+  for (const auto& method : methods)
+  {
+    if (std::ranges::find(m_toneMapMethods, method) == m_toneMapMethods.end())
+      m_toneMapMethods.push_back(method);
+  }
+}
+
+bool CProcessInfo::Supports(ETONEMAPMETHOD method) const
+{
+  std::unique_lock lock(m_videoCodecSection);
+
+  return std::ranges::find(m_toneMapMethods, method) != m_toneMapMethods.end();
 }
 
 void CProcessInfo::SetDeinterlacingMethodDefault(EINTERLACEMETHOD method)

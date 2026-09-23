@@ -380,6 +380,7 @@ public:
   bool HasVisibleOverlay() const override;
   bool IsLiveStream() const override;
   bool Supports(EINTERLACEMETHOD method) const override;
+  bool Supports(ETONEMAPMETHOD method) const override;
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const override;
   bool Supports(ESCALINGMETHOD method) const override;
   bool Supports(ERENDERFEATURE feature) const override;

@@ -2232,7 +2232,10 @@ bool CLinuxRendererGLES::IsGuiLayer()
 void CLinuxRendererGLES::CheckVideoParameters(int index)
 {
   const CPictureBuffer& buf = m_buffers[index];
-  const ETONEMAPMETHOD& toneMapMethod = m_videoSettings.m_ToneMapMethod;
+  ETONEMAPMETHOD toneMapMethod = m_videoSettings.m_ToneMapMethod;
+
+  if (toneMapMethod == VS_TONEMAPMETHOD_VAAPI)
+    toneMapMethod = VS_TONEMAPMETHOD_HABLE;
 
   if (buf.m_srcPrimaries != m_srcPrimaries)
   {

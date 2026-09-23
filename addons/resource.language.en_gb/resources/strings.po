@@ -22562,7 +22562,11 @@ msgctxt "#36558"
 msgid "Hable"
 msgstr ""
 
-#empty string with id 36559
+#. label of a setting, tone mapping method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36559"
+msgid "VAAPI (hardware)"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36560"
