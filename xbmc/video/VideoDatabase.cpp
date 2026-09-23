@@ -3392,7 +3392,8 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
       return playlists;
 
     const std::string strSQL{PrepareSQL(
-        "SELECT files.strFilename, files.idFile, episode.idEpisode, vv.idMedia, vv.itemType, "
+        "SELECT files.strFilename, files.idFile, files.dateAdded, episode.idEpisode, vv.idMedia, "
+        "vv.itemType, "
         "episode.c%02d AS episodeSeason, episode.c%02d AS episodeNumber FROM files "
         "LEFT JOIN episode ON episode.idFile=files.idFile "
         "LEFT JOIN videoversion vv ON vv.idFile = files.idFile AND vv.media_type='%s' "
@@ -3412,6 +3413,8 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
         const int idMovieIndex{m_pDS->fieldIndex("idMedia")};
         const int idEpisode{m_pDS->fv(idEpisodeIndex).get_asInt()};
         const int idMovie{m_pDS->fv(idMovieIndex).get_asInt()};
+        CDateTime dateAdded;
+        dateAdded.SetFromDBDateTime(m_pDS->fv("dateAdded").get_asString());
         filename.erase(filename.size() - 5); // remove extension
         if (filename.size() == 5)
         {
@@ -3429,7 +3432,8 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
                                                 .idFile = m_pDS->fv(idFileIndex).get_asInt(),
                                                 .mediaType = VideoDbContentType::EPISODES,
                                                 .idMedia = idEpisode,
-                                                .title = title});
+                                                .title = title,
+                                                .dateAdded = dateAdded});
           }
           else if (idMovie > 0)
           {
@@ -3438,7 +3442,8 @@ std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
                 .idFile = m_pDS->fv(idFileIndex).get_asInt(),
                 .mediaType = VideoDbContentType::MOVIES,
                 .idMedia = idMovie,
-                .itemType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt())});
+                .itemType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt()),
+                .dateAdded = dateAdded});
           }
         }
       }

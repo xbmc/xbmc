@@ -401,6 +401,7 @@ public:
     //! Which of a movie's assets holds the playlist. Unset for an episode, which is named by its
     //! title instead.
     std::optional<VideoAssetType> itemType{};
+    CDateTime dateAdded{};
   };
 
   /*!
@@ -409,6 +410,12 @@ public:
    * \return vector array of playlist numbers and idFiles
    */
   std::vector<PlaylistInfo> GetPlaylistsByPath(const std::string& path);
+
+  /*!
+   * \brief Announce that a library item has changed, so that widgets and other listeners reload it
+   * \param[in] content The item's media type
+   */
+  static void AnnounceUpdate(const std::string& content, int id);
 
   void SetTrailerForMovie(int idMovie, const std::string& trailer);
 
@@ -1307,7 +1314,6 @@ private:
                                   std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent);
 
   static void AnnounceRemove(const std::string& content, int id, bool scanning = false);
-  static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
 };

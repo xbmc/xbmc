@@ -17087,11 +17087,7 @@ msgctxt "#25014"
 msgid "Manual"
 msgstr ""
 
-#. Used to ask user if they want to use a playlist already assigned to an episode
-#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
-msgctxt "#25015"
-msgid "Selected playlist is already in use. Associate with this episode instead?"
-msgstr ""
+#empty string with id 25015
 
 #. Inform user that no valid movie playlist has been found on disc
 #: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
@@ -25438,7 +25434,38 @@ msgctxt "#40046"
 msgid "Ungroup"
 msgstr ""
 
-#empty strings with id 40047 to 40201
+#. Shown when the playlist chosen for a movie version already belongs to another version of it
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40047"
+msgid "This playlist already belongs to another version of this movie."
+msgstr ""
+
+#. Asked before a playlist already assigned to another episode is taken away from it
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40048"
+msgid "The selected playlist is already assigned to another episode. Reassign it?"
+msgstr ""
+
+#. Asked before a playlist already assigned to another movie version is taken away from it
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40049"
+msgid "The selected playlist is already assigned to another movie version. Reassign it?"
+msgstr ""
+
+#. Asked before an episode joins a playlist that several episodes already share
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40050"
+msgid "The selected playlist is shared by several episodes. Use it for this item as well?"
+msgstr ""
+
+#. Shown when a playlist cannot be given up because a movie version still uses its file
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40051"
+msgid "This playlist is still in use by another movie version and could not be reassigned."
+msgstr ""
+
+#empty strings with id 40052 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml

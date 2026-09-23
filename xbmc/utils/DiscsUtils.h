@@ -52,24 +52,11 @@ struct DiscInfo
   }
 };
 
-/*! \brief Try to obtain the disc info (type, name, serial) of a given media path
-    \param[in, out] info The disc info struct
-    \param mediaPath The disc mediapath (e.g. /dev/cdrom, D\://, etc)
-    \return true if getting the disc info was successful
-*/
-bool GetDiscInfo(DiscInfo& info, const std::string& mediaPath);
-
 /*! \brief Try to probe the provided media path as a DVD
     \param mediaPath The disc mediapath (e.g. /dev/cdrom, D\://, etc)
     \return the DiscInfo for the given media path (might be an empty struct)
 */
 DiscInfo ProbeDVDDiscInfo(const std::string& mediaPath);
-
-/*! \brief Try to probe the provided media path as a Bluray
-    \param mediaPath The disc mediapath (e.g. /dev/cdrom, D\://, etc)
-    \return the DiscInfo for the given media path (might be an empty struct)
-*/
-DiscInfo ProbeBlurayDiscInfo(const std::string& mediaPath);
 
 /*! \brief Probe a FileItem to see it is a bluray disc image
     \param item The FileItem to probe
