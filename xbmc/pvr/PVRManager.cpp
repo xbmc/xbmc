@@ -636,7 +636,8 @@ void CPVRManager::OnSleep()
   m_wakeEvent.Reset();
   m_sleepConfirmedEvent.Reset();
   CPowerState::OnSleep();
-  if (!m_sleepConfirmedEvent.Wait(5s))
+  // The worker thread, which confirms the sleep, only exists if there is a created client.
+  if (IsRunning() && !m_sleepConfirmedEvent.Wait(5s))
     CLog::LogFC(LOGWARNING, LOGPVR, "Timeout waiting for sleep confirmed event");
 
   m_guiInfo->OnSleep();
