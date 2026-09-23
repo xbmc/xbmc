@@ -1276,3 +1276,20 @@ TEST(TestFileItemList, StackSkipsUnchangedFolders)
 
   XFILE::CDirectory::RemoveRecursive(tempPath);
 }
+
+TEST(TestFileItemList, AssignKeepsTheListsOwnArt)
+{
+  // A directory provider can describe what is being browsed with art on the
+  // list itself; xbmcplugin.setPluginFanart() is one
+  CFileItemList source("plugin://plugin.test/");
+  source.SetArt("fanart", "special://temp/fanart.jpg");
+  source.Add(std::make_shared<CFileItem>("item"));
+
+  CFileItemList assigned;
+  assigned.Assign(source);
+  EXPECT_EQ(assigned.GetArt("fanart"), "special://temp/fanart.jpg");
+
+  CFileItemList appended;
+  appended.Assign(source, true);
+  EXPECT_EQ(appended.GetArt("fanart"), "special://temp/fanart.jpg");
+}
