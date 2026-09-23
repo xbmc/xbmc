@@ -336,14 +336,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   int profile(0);
   CJNIUUID uuid(0, 0);
 
-  m_opened = false;
-  m_needSecureDecoder = false;
   // allow only 1 instance here
   if (m_InstanceGuard.exchange(true))
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - InstanceGuard locked");
     return false;
   }
+  m_opened = false;
+  m_needSecureDecoder = false;
 
   // mediacodec crashes with null size. Trap this...
   if (!hints.width || !hints.height)
