@@ -177,6 +177,8 @@ void CRenderer::Flush()
 
 void CRenderer::Reset()
 {
+  m_bitmapTallestContent = 0.0f;
+  m_bitmapSubtitleStream = 0;
   m_subtitlePosition = 0;
   m_subtitlePosResInfo = -1;
 }
@@ -363,7 +365,10 @@ void CRenderer::GetRenderState(COverlay* o, SRenderState& state) const
     }
   }
 
-  if (o->m_isBitmapSubtitle && m_bitmapZoomPerc != 100)
+  if (o->m_isBitmapSubtitle)
+    NoteBitmapContentHeight(*o, GetContentRect(*o, state).Height());
+
+  if (o->m_isBitmapSubtitle && m_bitmapZoomPerc != 100 && IsLineOfText())
   {
     const float zoom = static_cast<float>(m_bitmapZoomPerc) / 100.0f;
     const CRect before = GetContentRect(*o, state);
@@ -380,6 +385,30 @@ void CRenderer::GetRenderState(COverlay* o, SRenderState& state) const
   }
 
   state.x += GetStereoscopicDepth();
+}
+
+void CRenderer::NoteBitmapContentHeight(const COverlay& o, float height) const
+{
+  if (o.m_subtitleStream != m_bitmapSubtitleStream)
+  {
+    m_bitmapSubtitleStream = o.m_subtitleStream;
+    m_bitmapTallestContent = 0.0f;
+  }
+
+  CRect picture{m_rd};
+  picture.Intersect(m_rv);
+  if (picture.Height() <= 0.0f)
+    picture = m_rv;
+
+  if (picture.Height() > 0.0f)
+    m_bitmapTallestContent = std::max(m_bitmapTallestContent, height / picture.Height());
+}
+
+bool CRenderer::IsLineOfText() const
+{
+  // A disc that composes its subtitles into one growing bitmap crosses this test
+  // mid-presentation, so the tallest content seen in the stream decides.
+  return m_bitmapTallestContent > 0.0f && m_bitmapTallestContent <= 1.0f / 3.0f;
 }
 
 CRect CRenderer::GetContentRect(const COverlay& o, const SRenderState& state)
@@ -421,8 +450,6 @@ void CRenderer::RepositionBitmapSubtitles(std::vector<SRenderItem>& items) const
   // Group only objects close enough to be one block of text, so a translated
   // sign is not dragged along with the dialogue
   const float groupGap = picture.Height() * 0.15f;
-  // Taller than this is a graphic, not a line of text
-  const float maxHeight = picture.Height() / 3.0f;
   const float pictureMiddle = picture.y1 + picture.Height() * 0.5f;
 
   const RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
@@ -466,7 +493,7 @@ void CRenderer::RepositionBitmapSubtitles(std::vector<SRenderItem>& items) const
     const bool straddles = group.y1 < pictureMiddle && group.y2 > pictureMiddle;
 
     // A cue the disc put at the top stays there, clear of whatever it avoids at the bottom
-    if (group.Height() <= maxHeight && !straddles)
+    if (IsLineOfText() && !straddles)
       groups.push_back({first, last, group, topPosition || !lowerHalf});
 
     first = last + 1;
@@ -928,6 +955,7 @@ std::shared_ptr<COverlay> CRenderer::Convert(SElement& e)
     if (r && o.IsBitmapSubtitle())
     {
       r->m_isBitmapSubtitle = true;
+      r->m_subtitleStream = o.GetSubtitleStream();
       r->m_contentInset = MeasureContentInset(ovImage);
     }
   }
@@ -936,7 +964,10 @@ std::shared_ptr<COverlay> CRenderer::Convert(SElement& e)
     r = COverlay::Create(static_cast<CDVDOverlaySpu&>(o));
     // COverlayTexture already crops an SPU to its visible pixels
     if (r && o.IsBitmapSubtitle())
+    {
       r->m_isBitmapSubtitle = true;
+      r->m_subtitleStream = o.GetSubtitleStream();
+    }
   }
 
   m_textureCache[m_textureid] = r;

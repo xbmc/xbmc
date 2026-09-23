@@ -103,6 +103,7 @@ namespace OVERLAY {
     bool m_isHDROverlay{false};
     // Picture of subtitle text (PGS, VobSub), as opposed to e.g. menu graphics
     bool m_isBitmapSubtitle{false};
+    unsigned int m_subtitleStream{0};
     SContentInset m_contentInset;
 
   protected:
@@ -219,6 +220,12 @@ namespace OVERLAY {
     /*! \brief The rectangle covered by an overlay's visible pixels, in screen pixels */
     static CRect GetContentRect(const COverlay& o, const SRenderState& state);
 
+    /*! \brief Record the height of a bitmap subtitle's content, in screen pixels */
+    void NoteBitmapContentHeight(const COverlay& o, float height) const;
+
+    /*! \brief Whether the bitmap subtitles of the current stream are text, not a graphic */
+    bool IsLineOfText() const;
+
     /*! \brief Move bitmap subtitles onto the line set by the position and margin settings */
     void RepositionBitmapSubtitles(std::vector<SRenderItem>& items) const;
 
@@ -268,6 +275,9 @@ namespace OVERLAY {
         KODI::SUBTITLES::HorizontalAlign::CENTER};
     KODI::SUBTITLES::Align m_subtitleAlign{KODI::SUBTITLES::Align::BOTTOM_OUTSIDE};
     int m_bitmapZoomPerc{100};
+    // Share of the picture height, so a change of view size does not reclassify
+    mutable float m_bitmapTallestContent{0.0f};
+    mutable unsigned int m_bitmapSubtitleStream{0};
     // Whether the subtitle position and margin also apply to bitmap subtitles
     bool m_bitmapPosition{false};
 
