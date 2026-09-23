@@ -62,6 +62,8 @@ struct SStartMsg
   int player;
   double cachetime;
   double cachetotal;
+  // The worker is still starting and can send an updated timestamp.
+  bool timestampPending{false};
 };
 
 struct SStateMsg
