@@ -22,6 +22,7 @@
 #include "filesystem/BlurayDiscCache.h"
 #endif
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "jobs/JobManager.h"
@@ -53,6 +54,7 @@
 #endif
 #endif
 
+#include <algorithm>
 #include <cctype>
 #include <chrono>
 #include <string>
@@ -216,6 +218,30 @@ void CMediaManager::GetLocalDrives(std::vector<CMediaSource>& localDrives, bool 
 {
   std::unique_lock lock(m_CritSecStorageProvider);
   m_platformStorage->GetLocalDrives(localDrives);
+
+  const std::string profilePath =
+      URIUtils::GetRealPath(CSpecialProtocol::TranslatePath("special://profile/"));
+  const std::string parentPath = URIUtils::GetParentPath(profilePath);
+  if (profilePath.empty() || parentPath.empty() ||
+      URIUtils::PathEquals(profilePath, parentPath, true))
+    return;
+
+  if (std::any_of(localDrives.begin(), localDrives.end(),
+                  [&profilePath](const CMediaSource& source)
+                  {
+                    return URIUtils::PathEquals(
+                        profilePath,
+                        URIUtils::GetRealPath(CSpecialProtocol::TranslatePath(source.strPath)),
+                        true);
+                  }))
+    return;
+
+  CMediaSource profile;
+  profile.strPath = profilePath;
+  profile.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20070);
+  profile.m_ignore = true;
+  profile.m_iDriveType = SourceType::LOCAL;
+  localDrives.insert(localDrives.begin(), profile);
 }
 
 void CMediaManager::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
