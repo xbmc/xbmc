@@ -545,6 +545,10 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
               m_extTimeout = 0ms;
             }
             return;
+          case CActiveAEControlProtocol::RECONFIGURE:
+            m_extErrorRetries = 0;
+            m_extTimeout = 0ms;
+            return;
           default:
             break;
         }
