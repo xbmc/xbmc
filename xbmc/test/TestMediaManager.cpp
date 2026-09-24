@@ -123,6 +123,8 @@ protected:
     return m_manager.m_mapDiscInfo.contains(mediaPath);
   }
   auto ReadCachedDiscInfo() { return m_manager.GetCachedDiscInfo(DEVICE_PATH); }
+  auto PollCachedDiscInfo() { return m_manager.GetCachedDiscInfo(DEVICE_PATH, true); }
+  std::string CachedDiscLabel() const { return m_manager.m_mapDiscInfo.at(DEVICE_PATH).label; }
 #ifdef HAVE_LIBBLURAY
   auto PlaylistStatus() const { return m_manager.m_hasBlurayPlaylist; }
 #endif
@@ -187,6 +189,27 @@ protected:
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     FAIL() << "The refresh never finished";
+  }
+  /*! Let the job queued for a polling miss read the disc, so the cache can then be inspected */
+  void WaitForFill()
+  {
+    const auto deadline{Clock::now() + std::chrono::seconds(10)};
+    while (Clock::now() < deadline)
+    {
+      bool filling{false};
+      {
+        std::unique_lock lock(m_manager.m_muAutoSource);
+        filling = !m_manager.m_cdInfoFilling.empty();
+      }
+      {
+        std::unique_lock lock(m_manager.m_discInfoSection);
+        filling = filling || !m_manager.m_discInfoFilling.empty();
+      }
+      if (!filling)
+        return;
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    FAIL() << "The read never finished";
   }
   /*! Run what a job posted to the application thread, which nothing pumps in the test binary,
       until the drive reaches a generation */
@@ -261,6 +284,15 @@ TEST_F(TestMediaManager, ExpiredDiscInfoIsReadAgain)
   EXPECT_NE(ReadCachedDiscInfo().label, "Stale label");
 }
 
+TEST_F(TestMediaManager, PollingAnswersFromExpiredDiscInfoWhileAJobReadsIt)
+{
+  SeedDiscInfo("Stale label", Clock::now() - std::chrono::seconds(1));
+
+  EXPECT_EQ(PollCachedDiscInfo().label, "Stale label");
+  WaitForFill();
+  EXPECT_NE(CachedDiscLabel(), "Stale label");
+}
+
 TEST_F(TestMediaManager, ResetRejectsInFlightDiscIdentification)
 {
   const auto generation{DiscInfoGeneration()};
@@ -305,12 +337,31 @@ TEST_F(TestMediaManager, OnlyPollingReusesCachedTocFailure)
   EXPECT_LE(FailureExpiry(), Clock::now() + std::chrono::seconds(30));
 }
 
+TEST_F(TestMediaManager, PollingLeavesTheTocReadToAJob)
+{
+  std::thread::id reader;
+  ReadTocWith(
+      [&reader]
+      {
+        reader = std::this_thread::get_id();
+        return SomeToc();
+      });
+
+  EXPECT_EQ(m_manager.GetCdInfo(DEVICE_PATH, true, true), nullptr);
+  WaitForFill();
+  EXPECT_EQ(m_tocReads, 1);
+  EXPECT_NE(reader, std::this_thread::get_id());
+  EXPECT_NE(m_manager.GetCdInfo(DEVICE_PATH, true, true), nullptr);
+  EXPECT_EQ(m_tocReads, 1);
+}
+
 TEST_F(TestMediaManager, ExpiredTocFailureIsReadAgain)
 {
   ReadTocWith(NoToc);
   SeedCachedFailure(DEVICE_PATH, Clock::now() - std::chrono::seconds(1));
 
-  EXPECT_EQ(m_manager.GetCdInfo(DEVICE_PATH, true), nullptr);
+  EXPECT_EQ(m_manager.GetCdInfo(DEVICE_PATH, true, true), nullptr);
+  WaitForFill();
   EXPECT_EQ(m_tocReads, 1);
   EXPECT_GT(FailureExpiry(), Clock::now());
 }
