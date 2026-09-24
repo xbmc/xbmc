@@ -252,7 +252,7 @@ inline void convert_yuv420_p01x_chrome(uint8_t *const *src, const int *srcStride
 
   // Convert to P01x - Chroma
   const size_t chromaWidth = (width + 1) >> 1;
-  const size_t chromaHeight = height >> 1;
+  const size_t chromaHeight = (height + 1) >> 1;
   size_t line, i;
 
   for (line = 0; line < chromaHeight; ++line)

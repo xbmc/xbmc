@@ -23,10 +23,12 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CPUInfo.h"
+#include "utils/DolbyVisionRpu.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <iterator>
 #include <memory>
 #include <mutex>
 
@@ -336,6 +338,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_hints = hints;
   m_options = options;
 
+  const int doviProfile = hints.dovi.dv_profile;
+  m_exportDoviRpu =
+      (doviProfile == 5 || doviProfile == 7 || doviProfile == 8 || doviProfile == 10) &&
+      m_processInfo.WantsDolbyVisionRpu();
+  m_av1DoviRpus.clear();
+
   const AVCodec* pCodec = nullptr;
 
   m_iOrientation = hints.orientation;
@@ -620,6 +628,18 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
                    : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
   avpkt->side_data = static_cast<AVPacketSideData*>(packet.pSideData);
   avpkt->side_data_elems = packet.iSideDataElems;
+
+  // FFmpeg doesn't export the AV1 RPU, so keep it for the frame with the same pts
+  if (m_exportDoviRpu && m_hints.codec == AV_CODEC_ID_AV1 && avpkt->pts != AV_NOPTS_VALUE)
+  {
+    std::vector<uint8_t> rpu = KODI::UTILS::DOLBYVISION::ExtractAv1Rpu(packet.pData, packet.iSize);
+    if (!rpu.empty())
+    {
+      m_av1DoviRpus[avpkt->pts] = std::move(rpu);
+      if (m_av1DoviRpus.size() > 64)
+        m_av1DoviRpus.erase(m_av1DoviRpus.begin());
+    }
+  }
 
   int ret = avcodec_send_packet(m_pCodecContext, avpkt);
 
@@ -971,6 +991,8 @@ void CDVDVideoCodecFFmpeg::Reset()
   if (m_pHardware)
     m_pHardware->Reset();
 
+  m_av1DoviRpus.clear();
+
   m_filters = "";
   FilterClose();
   m_dropCtrl.Reset(false);
@@ -1153,6 +1175,31 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   {
     pVideoPicture->lightMetadata = *m_hints.contentLightMetadata.get();
     pVideoPicture->hasLightMetadata = true;
+  }
+
+  pVideoPicture->doviRpu.reset();
+  if (m_exportDoviRpu)
+  {
+    std::vector<uint8_t> rpu;
+    if (m_hints.codec == AV_CODEC_ID_AV1)
+    {
+      const auto it = m_av1DoviRpus.find(m_pFrame->pts);
+      if (it != m_av1DoviRpus.end())
+      {
+        rpu = std::move(it->second);
+        m_av1DoviRpus.erase(m_av1DoviRpus.begin(), std::next(it));
+      }
+    }
+    else
+    {
+      sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_DOVI_RPU_BUFFER);
+      if (sd && sd->size > 0)
+        rpu = KODI::UTILS::DOLBYVISION::HevcRpuToNal(sd->data, sd->size);
+    }
+
+    if (!rpu.empty())
+      pVideoPicture->doviRpu = std::make_shared<DoviRpu>(DoviRpu{
+          m_hints.dovi.dv_profile, m_hints.dovi.dv_bl_signal_compatibility_id, std::move(rpu)});
   }
 
   if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)

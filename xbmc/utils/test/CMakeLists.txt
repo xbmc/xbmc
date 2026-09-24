@@ -14,6 +14,7 @@ set(SOURCES TestAlarmClock.cpp
             TestCrc32.cpp
             TestDatabaseUtils.cpp
             TestDigest.cpp
+            TestDolbyVisionRpu.cpp
             TestEndianSwap.cpp
             TestExecString.cpp
             TestFileExtensionProvider.cpp
