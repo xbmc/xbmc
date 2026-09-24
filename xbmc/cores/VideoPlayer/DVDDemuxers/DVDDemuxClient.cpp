@@ -374,6 +374,7 @@ DemuxPacket* CDVDDemuxClient::Read()
     {
       m_packet->dispTime = m_displayTime;
       m_packet->dispTime += DVD_TIME_TO_MSEC(m_packet->dts - m_dtsAtDisplayTime);
+      m_packet->m_hasDisplayTime = true;
     }
   }
 
