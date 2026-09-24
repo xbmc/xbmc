@@ -1435,6 +1435,8 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
     // over a second. This is called from CApplication::ProcessSlow(), so doing it here freezes
     // the GUI for as long as the read takes - hand it to a job instead.
     const uint64_t generation{BumpDiscGeneration(device.path)};
+    // A disc swapped using the drive's own button never passes through Eject()
+    ResetBlurayPlaylistStatus();
     CServiceBroker::GetJobManager()->Submit([this, device, generation]()
                                             { ProcessAddedOpticalDevice(device, generation); },
                                             CJob::PRIORITY_HIGH);
