@@ -11632,6 +11632,19 @@ void CVideoDatabase::ExportActorThumbs(const std::string& path,
 namespace
 {
 /*!
+ \brief Copy the art resolved by GetArtwork() onto the item that will be saved.
+ Remove the default icon created with the temporary item.
+ \param artItem the temporary item GetArtwork() was called on.
+ \param item the item that will be saved to the database.
+ */
+void CopyArt(const CFileItem& artItem, CFileItem& item)
+{
+  KODI::ART::Artwork art{artItem.GetArt()};
+  art.erase("icon");
+  item.SetArt(art);
+}
+
+/*!
  \brief Copy the actor thumbs resolved by GetArtwork() onto the item that will be saved.
  \param artItem the temporary item GetArtwork() was called on.
  \param item the item that will be saved to the database.
@@ -11773,9 +11786,9 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           filename += StringUtils::Format("_{}", info.GetYear());
         CFileItem artItem(item);
         artItem.SetPath(GetSafeFile(moviesDir, filename) + ".avi");
-        scanner.GetArtwork(&artItem, ContentType::MOVIES, useFolders, true, actorsDir,
-                           useRemoteArt);
-        item.SetArt(artItem.GetArt());
+        scanner.GetArtwork(&artItem, ContentType::MOVIES, useFolders, true, actorsDir, useRemoteArt,
+                           &item);
+        CopyArt(artItem, item);
         CopyActorThumbs(artItem, item);
         if (item.GetVideoInfoTag()->m_set.HasTitle())
         {
@@ -11832,8 +11845,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         CFileItem artItem(item);
         artItem.SetPath(GetSafeFile(musicvideosDir, filename) + ".avi");
         scanner.GetArtwork(&artItem, ContentType::MUSICVIDEOS, useFolders, true, actorsDir,
-                           useRemoteArt);
-        item.SetArt(artItem.GetArt());
+                           useRemoteArt, &item);
+        CopyArt(artItem, item);
         CopyActorThumbs(artItem, item);
         scanner.AddVideo(&item, nullptr, useFolders, true, nullptr, true, ContentType::MUSICVIDEOS);
         current++;
@@ -11855,8 +11868,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         URIUtils::AddSlashAtEnd(artPath);
         artItem.SetPath(artPath);
         scanner.GetArtwork(&artItem, ContentType::TVSHOWS, useFolders, true, actorsDir,
-                           useRemoteArt);
-        showItem.SetArt(artItem.GetArt());
+                           useRemoteArt, &showItem);
+        CopyArt(artItem, showItem);
         // Before AddVideo(), as that is what saves the show's cast
         CopyActorThumbs(artItem, showItem);
         const int showID{static_cast<int>(scanner.AddVideo(&showItem, nullptr, useFolders, true,
@@ -11886,8 +11899,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           CFileItem artItem2(item);
           artItem2.SetPath(GetSafeFile(artPath, filename));
           scanner.GetArtwork(&artItem2, ContentType::TVSHOWS, useFolders, true, actorsDir,
-                             useRemoteArt);
-          item.SetArt(artItem2.GetArt());
+                             useRemoteArt, &item);
+          CopyArt(artItem2, item);
           CopyActorThumbs(artItem2, item);
           scanner.AddVideo(&item, nullptr, false, false, showItem.GetVideoInfoTag(), true,
                            ContentType::TVSHOWS);
