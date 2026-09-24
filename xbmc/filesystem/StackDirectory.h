@@ -15,6 +15,12 @@
 
 namespace XFILE
 {
+struct StackPartPlaylist
+{
+  std::string file;
+  int playlist{-1};
+};
+
   class CStackDirectory : public IDirectory
   {
     typedef struct StackPart
@@ -97,6 +103,15 @@ namespace XFILE
     \return The base/parent path
     */
     static std::string GetBasePath(const std::string& stackPath);
+
+    /*!
+    \brief Get the disc and bluray playlist of each part of a resolved stack.
+    The discs are relative to the stack's base path, which is where its nfo is written. The disc
+    is given rather than the playlist url as that is what stacking rediscovers.
+    \param stackPath The resolved stack:// path
+    \return One entry per part that has a playlist, empty if none do
+    */
+    static std::vector<StackPartPlaylist> GetRelativePartPlaylists(const std::string& stackPath);
     static std::string GetParentPath(const std::string& stackPath);
   };
 }

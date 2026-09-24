@@ -54,6 +54,31 @@ int CNfoFile::GetBlurayPlaylist() const
   return playlist;
 }
 
+std::vector<XFILE::StackPartPlaylist> CNfoFile::GetStackParts() const
+{
+  std::vector<XFILE::StackPartPlaylist> parts;
+
+  const TiXmlElement* root{GetRootElement()};
+  if (!root)
+    return parts;
+
+  const TiXmlElement* stack{root->FirstChildElement("stack")};
+  if (!stack)
+    return parts;
+
+  for (const TiXmlElement* part{stack->FirstChildElement("part")}; part;
+       part = part->NextSiblingElement("part"))
+  {
+    XFILE::StackPartPlaylist stackPart;
+    if (!XMLUtils::GetString(part, "file", stackPart.file) || stackPart.file.empty())
+      continue;
+    if (!XMLUtils::GetInt(part, "playlist", stackPart.playlist) || stackPart.playlist < 0)
+      continue;
+    parts.emplace_back(std::move(stackPart));
+  }
+  return parts;
+}
+
 CInfoScanner::InfoType CNfoFile::TryParsing(ADDON::AddonType addonType) const
 {
   using enum CInfoScanner::InfoType;

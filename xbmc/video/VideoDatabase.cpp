@@ -10987,8 +10987,35 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             XMLUtils::SetString(&additionalNode, type.c_str(), url);
           movie.Save(pMain, "movie", true, &additionalNode);
         }
+        else if (!singleFile && URIUtils::IsStack(movie.m_strFileNameAndPath))
+        {
+          // Separate nfos have no paths and <playlist> holds one, so record each part's playlist
+          TiXmlElement stackNode("stack");
+          const std::vector<XFILE::StackPartPlaylist> parts{
+              XFILE::CStackDirectory::GetRelativePartPlaylists(movie.m_strFileNameAndPath)};
+          for (const auto& [file, playlist] : parts)
+          {
+            TiXmlElement part("part");
+            XMLUtils::SetString(&part, "file", file);
+            XMLUtils::SetInt(&part, "playlist", playlist);
+            stackNode.InsertEndChild(part);
+          }
+          movie.Save(pMain, "movie", singleFile, parts.empty() ? nullptr : &stackNode);
+        }
         else
           movie.Save(pMain, "movie", singleFile);
+
+        // A resolved bluray:// playlist cannot be demuxed for its duration
+        if (std::vector<std::chrono::milliseconds> times;
+            singleFile && URIUtils::IsStack(movie.m_strFileNameAndPath) &&
+            GetStackTimes(movie.m_strFileNameAndPath, times))
+        {
+          std::vector<std::string> ends;
+          for (const auto time : times)
+            ends.emplace_back(std::to_string(time.count()));
+          XMLUtils::SetString(pMain->LastChild("movie"), "stacktimes",
+                              StringUtils::Join(ends, ","));
+        }
 
         if (progress)
         {
@@ -11821,6 +11848,24 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           lastMovieId = static_cast<int>(scanner.AddVideo(&item, nullptr, useFolders, true, nullptr,
                                                           true, ContentType::MOVIES));
           lastTitle = currentTitle;
+        }
+        if (std::string stackTimes; URIUtils::IsStack(info.m_strFileNameAndPath) &&
+                                    XMLUtils::GetString(movie, "stacktimes", stackTimes))
+        {
+          std::vector<std::string> paths;
+          CStackDirectory::GetPaths(info.m_strFileNameAndPath, paths);
+          std::vector<std::chrono::milliseconds> times;
+          for (std::string end : StringUtils::Split(stackTimes, ","))
+          {
+            const std::chrono::milliseconds time{
+                static_cast<int64_t>(StringUtils::ToUint64(StringUtils::Trim(end)))};
+            if (time <= (times.empty() ? 0ms : times.back()))
+              break;
+            times.emplace_back(time);
+          }
+          // Playback indexes the parts by these times
+          if (!times.empty() && times.size() == paths.size())
+            SetStackTimes(info.m_strFileNameAndPath, times);
         }
         if (item.HasVideoVersions())
         {
