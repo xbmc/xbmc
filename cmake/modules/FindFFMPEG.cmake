@@ -234,8 +234,7 @@ macro(buildFFMPEG)
     ${postproc_pkg_config_search}
     swscale=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswscale`
     swresample=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libswresample`
-    gnutls=`PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig/ ${PKG_CONFIG_EXECUTABLE}  --libs-only-l --static --silence-errors gnutls`
-    ${xcode_linker} $@ $avcodec $avformat $avfilter $avutil $swscale $swresample $postproc $gnutls
+    ${xcode_linker} $@ $avcodec $avformat $avfilter $avutil $swscale $swresample $postproc
   else
     ${xcode_linker} $@
   fi")

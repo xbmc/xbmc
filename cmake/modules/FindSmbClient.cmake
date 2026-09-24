@@ -27,11 +27,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       # pkg_check_modules does not populate a variable of the found library explicitly
       list(GET SMBCLIENT_LINK_LIBRARIES 0 SMBCLIENT_LIBRARY)
 
-      # Add link libraries for static lib usage
+      # Preserve pkg-config's library order and repetitions for static linking.
       if(${SMBCLIENT_LIBRARY} MATCHES ".+\.a$" AND SMBCLIENT_LINK_LIBRARIES)
-        # Remove duplicates
-        list(REMOVE_DUPLICATES SMBCLIENT_LINK_LIBRARIES)
-
         # Remove own library
         list(FILTER SMBCLIENT_LINK_LIBRARIES EXCLUDE REGEX ".*smbclient.*\.a$")
         set(PC_SMBCLIENT_LINK_LIBRARIES ${SMBCLIENT_LINK_LIBRARIES})
