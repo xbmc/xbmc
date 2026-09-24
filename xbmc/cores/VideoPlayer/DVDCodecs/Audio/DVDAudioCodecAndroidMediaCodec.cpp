@@ -481,6 +481,7 @@ bool CDVDAudioCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
     newPkt.pSideData = packet.pSideData;
     newPkt.duration = packet.duration;
     newPkt.dispTime = packet.dispTime;
+    newPkt.m_hasDisplayTime = packet.m_hasDisplayTime;
     newPkt.recoveryPoint = packet.recoveryPoint;
     if (!packet.pData || newPkt.iSize)
       m_decryptCodec->AddData(newPkt);
