@@ -21,9 +21,11 @@ public:
   void Initialize();
   void Disconnect();
   bool IsRemoteDevice(const std::wstring &deviceId) const;
+  void HandleAcceleratorKey(const winrt::Windows::UI::Core::CoreDispatcher&,
+                            const winrt::Windows::UI::Core::AcceleratorKeyEventArgs&);
+  static bool IsGamepadVirtualKey(winrt::Windows::System::VirtualKey vk);
 
 private:
-  void HandleAcceleratorKey(const winrt::Windows::UI::Core::CoreDispatcher&, const winrt::Windows::UI::Core::AcceleratorKeyEventArgs&);
   void HandleMediaButton(const winrt::Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs&);
   int32_t TranslateVirtualKey(winrt::Windows::System::VirtualKey vk);
   int32_t TranslateMediaKey(winrt::Windows::Media::SystemMediaTransportControlsButton mk);
