@@ -735,7 +735,20 @@ bool CDRMUtils::RestoreOriginalMode()
 {
   if (!m_orig_crtc)
   {
-    return false;
+    // Nothing had driven the connector before us, so there is no mode to
+    // put back. Leaving ours up would leak the last frame to whatever
+    // comes next, so switch the output off instead.
+    if (!m_crtc)
+      return false;
+
+    if (drmModeSetCrtc(m_fd, m_crtc->GetCrtcId(), 0, 0, 0, nullptr, 0, nullptr))
+    {
+      CLog::LogF(LOGERROR, "Failed to disable crtc {}", m_crtc->GetCrtcId());
+      return false;
+    }
+
+    CLog::LogF(LOGDEBUG, "Disabled crtc {}, nothing to restore", m_crtc->GetCrtcId());
+    return true;
   }
 
   auto ret = drmModeSetCrtc(m_fd, m_orig_crtc->GetCrtcId(), m_orig_crtc->GetBufferId(),
