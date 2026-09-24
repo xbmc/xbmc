@@ -262,6 +262,8 @@ void CVideoPlayerAudio::Process()
     if (m_paused)
       priority = 1;
 
+    // A poll for priority messages after decoder output, not a sink with nothing cached
+    const bool polledAfterOutput{onlyPrioMsgs};
     if (onlyPrioMsgs)
     {
       priority = 1;
@@ -290,7 +292,7 @@ void CVideoPlayerAudio::Process()
       // if we only wanted priority messages, this isn't a stall
       if (priority)
       {
-        if (timeout == 0ms)
+        if (timeout == 0ms && !polledAfterOutput)
           CThread::Sleep(10ms);
 
         continue;
