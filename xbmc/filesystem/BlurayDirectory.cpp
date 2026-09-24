@@ -14,6 +14,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "bluray/BlurayPlaylistHints.h"
 #include "bluray/M2TSParser.h"
 #include "bluray/MPLSParser.h"
 #include "bluray/PlaylistStructure.h"
@@ -729,6 +730,14 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     m_url.RemoveOption("duration");
   }
 
+  // What the scraper calls the episode
+  std::string title;
+  if (m_url.HasOption("title"))
+  {
+    title = m_url.GetOption("title");
+    m_url.RemoveOption("title");
+  }
+
   std::string root{m_url.GetHostName()};
   std::string file{m_url.GetFileName()};
   URIUtils::RemoveSlashAtEnd(file);
@@ -763,8 +772,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     CFileItemList allTitles;
     GetPlaylistsInformation(m_url, m_realPath, m_flags, allTitles, clips, playlists, m_clipCache);
 
+    // A disc whose playlists could not be read says nothing about its project either, as every
+    // record would be rejected as naming a playlist the disc does not have
+    ProjectInformation projectInformation;
+    if (!playlists.empty())
+      GetProjectInformation(playlists, projectInformation);
+
     CDiscDirectoryHelper helper{[this](unsigned int playlist, CFileItem& item)
                                 { SetPlaylistStreamDetails(playlist, item); }};
+    helper.SetPlaylistHints(std::make_shared<CBlurayPlaylistHints>(projectInformation));
 
     if (StringUtils::StartsWith(file, "root/titles") && file != "root/titles/episodes")
     {
@@ -852,8 +868,10 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
           return false; // Episode not on disc
         episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
 
-        // Add duration from scraper
+        // Add duration and title from scraper
         it->duration = duration;
+        if (!title.empty())
+          it->strTitle = title;
       }
 
       // Get episode playlists
@@ -989,6 +1007,31 @@ bool CBlurayDirectory::HasMenuSupport()
              menuSupport ? "supports" : "does not support");
 
   return menuSupport;
+}
+
+bool CBlurayDirectory::GetProjectInformation(const PlaylistMap& playlists,
+                                             ProjectInformation& information) const
+{
+  const std::string path{GetCachePath(m_url, m_realPath)};
+
+  if (CServiceBroker::GetBlurayDiscCache()->GetProject(path, information))
+    return true;
+
+  // The disc says which playlists it has and how long they are, so a record naming one it does not
+  // have, or giving it another length, is not a record
+  DiscPlaylistDurations discPlaylists;
+  for (const auto& [playlist, information] : playlists)
+    discPlaylists.emplace(playlist, information.duration);
+
+  const ProjectReadResult result{CProjectParser::GetProject(m_url, discPlaylists, information)};
+
+  // A disc that could not be read has not said it has no project, so it is asked again rather
+  // than written off for as long as it stays in the drive
+  if (result != ProjectReadResult::FAILED)
+    CServiceBroker::GetBlurayDiscCache()->SetProject(path, information);
+
+  CProjectParser::LogProject(information);
+  return result != ProjectReadResult::FAILED;
 }
 
 int CBlurayDirectory::GetMainPlaylist()

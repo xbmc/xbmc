@@ -12,6 +12,7 @@
 #include "IDirectory.h"
 #include "URL.h"
 #include "bluray/MPLSParser.h"
+#include "bluray/ProjectParser.h"
 #include "utils/DiscsUtils.h"
 #if defined(HAS_UDFREAD)
 #include "filesystem/UDFContext.h"
@@ -155,6 +156,11 @@ private:
    \return the playlist number, or -1 if the disc names none
    */
   int GetMainPlaylist();
+
+  /*!
+   \brief Get what the disc's authoring project named, where it left one behind.
+   */
+  bool GetProjectInformation(const PlaylistMap& playlists, ProjectInformation& information) const;
 
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info);

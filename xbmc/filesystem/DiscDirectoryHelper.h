@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Directory.h"
+#include "IPlaylistHints.h"
 #include "video/Episode.h"
 #include "video/VideoInfoTag.h"
 
@@ -16,6 +17,7 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -148,6 +150,10 @@ struct ClipInfo
 };
 
 using PlaylistMap = std::map<unsigned int, PlaylistInformation>;
+
+//! What the disc calls each playlist, where it says. Shown alongside the playlist number so a
+//! listing says what the disc calls a title, not just which it is.
+using PlaylistNames = std::map<unsigned int, std::string>;
 using ClipMap = std::map<unsigned int, ClipInfo>;
 using Episode = KODI::VIDEO::EPISODE;
 using Episodes = std::vector<KODI::VIDEO::EPISODE>;
@@ -229,6 +235,12 @@ public:
    *        returned items carry no stream details.
    */
   explicit CDiscDirectoryHelper(StreamDetailsProvider getStreamDetails);
+
+  /*!
+   * \brief Supply what the disc says its playlists hold, to be preferred over the heuristics.
+   * \param hints may be empty, in which case the heuristics alone decide
+   */
+  void SetPlaylistHints(std::shared_ptr<const IPlaylistHints> hints);
 
   CDiscDirectoryHelper(const CDiscDirectoryHelper&) = delete;
   CDiscDirectoryHelper& operator=(const CDiscDirectoryHelper&) = delete;
@@ -411,12 +423,44 @@ private:
                                       const Episodes& episodesOnDisc) const;
   bool FilterAllEpisodesPlaylists(std::vector<PlaylistInformation>& playlists, GetTitle job);
 
+  /*!
+   * \brief Put the playlists the disc names as the movie ahead of those the heuristics chose,
+   * where it names any and they survive the filtering every playlist goes through.
+   *
+   * The main title disc.inf names stands, leading every version. Otherwise a single title is the
+   * disc's alone. Every version keeps what the heuristics found as well, as a disc can hold an
+   * edition under a name the convention does not recognise.
+   */
+  void ApplyPlaylistHintsToMovie(const CURL& url,
+                                 CFileItemList& items,
+                                 const CFileItemList& allTitles,
+                                 int mainPlaylist,
+                                 GetTitle job,
+                                 const ClipMap& clips,
+                                 const PlaylistMap& playlistMap) const;
+
+  /*!
+   * \brief Replace the episode playlists the heuristics chose with those the disc names as the
+   * episode(s), where its numbering can be matched to the episodes on the disc.
+   * \param episodeIndex index into episodesOnDisc, or ALL_PLAYLISTS for every episode
+   */
+  void ApplyPlaylistHintsToEpisodes(const CURL& url,
+                                    CFileItemList& items,
+                                    const CFileItemList& allTitles,
+                                    int episodeIndex,
+                                    const Episodes& episodesOnDisc,
+                                    const PlaylistMap& playlists) const;
+
+  //! What the disc says its playlists hold, if anything
+  std::shared_ptr<const IPlaylistHints> m_hints;
+
   //! Describes the streams of a title, supplied by the disc's directory implementation
   StreamDetailsProvider m_getStreamDetails;
 
   std::chrono::milliseconds m_minEpisodeDuration{0ms};
 
   AllEpisodes m_allEpisodes{AllEpisodes::SINGLE};
+  PlaylistNames m_playlistNames;
   IsSpecial m_isSpecial{IsSpecial::EPISODE};
   unsigned int m_numEpisodes{0};
   unsigned int m_numSpecials{0};
