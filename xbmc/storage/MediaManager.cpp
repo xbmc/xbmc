@@ -604,14 +604,14 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 #endif
 }
 
-bool CMediaManager::IsAudio(const std::string& devicePath, bool allowCachedFailure)
+bool CMediaManager::IsAudio(const std::string& devicePath, bool allowCachedFailure, bool polling)
 {
 #ifdef HAS_OPTICAL_DRIVE
 #ifdef TARGET_WINDOWS
   if (!IsOpticalDrivePresent())
     return false;
 
-  const std::shared_ptr<CCdInfo> pCdInfo{GetCdInfo(devicePath, allowCachedFailure)};
+  const std::shared_ptr<CCdInfo> pCdInfo{GetCdInfo(devicePath, allowCachedFailure, polling)};
   if (pCdInfo && pCdInfo->IsAudio(1))
     return true;
 
@@ -843,7 +843,8 @@ void CMediaManager::ResetDriveCaches(const std::string& devicePath)
 
 #ifdef HAS_OPTICAL_DRIVE
 std::shared_ptr<CCdInfo> CMediaManager::GetCdInfo(const std::string& devicePath,
-                                                  bool allowCachedFailure)
+                                                  bool allowCachedFailure,
+                                                  bool polling)
 {
 #ifdef TARGET_WINDOWS
   if (!IsOpticalDrivePresent())
@@ -867,6 +868,20 @@ std::shared_ptr<CCdInfo> CMediaManager::GetCdInfo(const std::string& devicePath,
       if (allowCachedFailure && unavailable != m_cdInfoUnavailable.end() &&
           std::chrono::steady_clock::now() < unavailable->second)
         return {};
+
+      if (polling)
+      {
+        if (m_cdInfoFilling.insert(strDevice).second)
+          CServiceBroker::GetJobManager()->Submit(
+              [this, strDevice]()
+              {
+                GetCdInfo(strDevice);
+                std::unique_lock lock(m_muAutoSource);
+                m_cdInfoFilling.erase(strDevice);
+              },
+              CJob::PRIORITY_HIGH);
+        return {};
+      }
       generation = m_cdInfoGeneration;
     }
 
@@ -945,7 +960,8 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
   return false;
 }
 
-CMediaManager::DiscInfoCacheEntry CMediaManager::GetCachedDiscInfo(const std::string& mediaPath)
+CMediaManager::DiscInfoCacheEntry CMediaManager::GetCachedDiscInfo(const std::string& mediaPath,
+                                                                   bool polling)
 {
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   uint64_t generation{0};
@@ -954,6 +970,20 @@ CMediaManager::DiscInfoCacheEntry CMediaManager::GetCachedDiscInfo(const std::st
     const auto cached{m_mapDiscInfo.find(mediaPath)};
     if (cached != m_mapDiscInfo.end() && std::chrono::steady_clock::now() < cached->second.expires)
       return cached->second;
+
+    if (polling)
+    {
+      if (m_discInfoFilling.insert(mediaPath).second)
+        CServiceBroker::GetJobManager()->Submit(
+            [this, mediaPath]()
+            {
+              GetCachedDiscInfo(mediaPath);
+              std::unique_lock lock(m_discInfoSection);
+              m_discInfoFilling.erase(mediaPath);
+            },
+            CJob::PRIORITY_HIGH);
+      return cached != m_mapDiscInfo.end() ? cached->second : DiscInfoCacheEntry{};
+    }
     generation = m_discInfoGeneration;
   }
 #endif
@@ -1010,7 +1040,7 @@ void CMediaManager::CacheDiscInfo(const std::string& mediaPath,
 }
 #endif
 
-std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
+std::string CMediaManager::GetDiskLabel(const std::string& devicePath, bool polling)
 {
 #ifdef TARGET_WINDOWS_STORE
   return ""; // GetVolumeInformationW nut support in UWP app
@@ -1024,7 +1054,7 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   if (GetDriveStatus(mediaPath) != DriveState::CLOSED_MEDIA_PRESENT)
     return "";
 
-  return GetCachedDiscInfo(mediaPath).label;
+  return GetCachedDiscInfo(mediaPath, polling).label;
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
@@ -1086,7 +1116,7 @@ bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
     return m_hasBlurayPlaylist == HasBlurayPlaylist::YES;
 
   const std::string mediaPath{TranslateDevicePath(devicePath)};
-  UTILS::DISCS::DiscInfo info{GetCachedDiscInfo(mediaPath).info};
+  UTILS::DISCS::DiscInfo info{GetCachedDiscInfo(mediaPath, true).info};
 #ifdef TARGET_WINDOWS
   // Let the timed identification cache retry before remembering that no playlist exists.
   if (info.empty())
@@ -1094,6 +1124,11 @@ bool CMediaManager::HasMediaBlurayPlaylist(const std::string& devicePath)
 #endif
   if (!info.empty() && info.type == UTILS::DISCS::DiscType::BLURAY)
   {
+#ifdef TARGET_WINDOWS
+    // GetDiskUniqueId() reads the TOC, so leave that to a job and ask again once it is cached
+    if (!GetCdInfo("", true, true))
+      return false;
+#endif
     const std::string blurayPath{GetDiskUniqueId()};
     CVideoDatabase db;
     if (db.Open())

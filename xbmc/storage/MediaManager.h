@@ -79,8 +79,12 @@ public:
   /*! \brief Whether the disc in a drive is an audio CD
    * \param allowCachedFailure Allow GUI polling to reuse a recent failed TOC read on Windows.
    *        Explicit actions such as ripping must leave this false so they read the disc again.
+   * \param polling For GUI polling on Windows - answer from the cache alone while a job reads
+   *        the disc
    */
-  bool IsAudio(const std::string& devicePath = "", bool allowCachedFailure = false);
+  bool IsAudio(const std::string& devicePath = "",
+               bool allowCachedFailure = false,
+               bool polling = false);
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
   DriveState GetDriveStatus(const std::string& devicePath = "");
@@ -123,11 +127,18 @@ public:
 #ifdef HAS_OPTICAL_DRIVE
   /*! \brief Get the disc TOC, reusing successful reads.
    * \param allowCachedFailure Allow GUI polling to reuse a recent failed read on Windows.
+   * \param polling For GUI polling on Windows - answer from the cache alone while a job reads
+   *        the disc
    */
   std::shared_ptr<MEDIA_DETECT::CCdInfo> GetCdInfo(const std::string& devicePath = "",
-                                                   bool allowCachedFailure = false);
+                                                   bool allowCachedFailure = false,
+                                                   bool polling = false);
   bool RemoveCdInfo(const std::string& devicePath = "");
-  std::string GetDiskLabel(const std::string& devicePath = "");
+  /*! \brief The name to show for the disc in a drive
+   * \param polling For GUI polling on Windows - answer from the cache alone while a job reads
+   *        the disc
+   */
+  std::string GetDiskLabel(const std::string& devicePath = "", bool polling = false);
   std::string GetDiskUniqueId(const std::string& devicePath="");
   bool HasMediaBlurayPlaylist(const std::string& devicePath = "");
 
@@ -285,9 +296,10 @@ private:
    * Reading a disc is slow - it can spin the drive up and, for a Blu-ray, load libaacs - so
    * everything that needs to identify a disc shares the one read.
    * \param mediaPath The drive holding the disc (eg. "D:")
+   * \param polling Answer from the cache alone, even when expired, while a job reads the disc
    * \return What the disc reported, and the name to show for it
    */
-  DiscInfoCacheEntry GetCachedDiscInfo(const std::string& mediaPath);
+  DiscInfoCacheEntry GetCachedDiscInfo(const std::string& mediaPath, bool polling = false);
   /*! Disc identity per drive, read from the disc itself - see GetDiskLabel */
   std::map<std::string, DiscInfoCacheEntry> m_mapDiscInfo;
   /*! Removable drives at the last storage change, so a drive that has since gone can be forgotten */
@@ -340,6 +352,10 @@ private:
       m_muAutoSource like m_mapCdInfo - see GetCdInfo */
   std::map<std::string, std::chrono::steady_clock::time_point> m_cdInfoUnavailable;
   uint64_t m_cdInfoGeneration{0};
+  /*! Drives a job is reading for GUI polling, so only one is submitted per drive. Guarded by
+      m_muAutoSource for the TOC and m_discInfoSection for the disc identity */
+  std::set<std::string> m_cdInfoFilling;
+  std::set<std::string> m_discInfoFilling;
 #endif
 #ifdef HAVE_LIBBLURAY
   HasBlurayPlaylist m_hasBlurayPlaylist{HasBlurayPlaylist::UNKNOWN};
