@@ -101,13 +101,6 @@ public:
 
   virtual void OnException(){} // signal termination handler
 
-protected:
-  virtual void OnStartup() {}
-  virtual void OnExit() {}
-  virtual void Process();
-
-  std::atomic<bool> m_bStop;
-
   enum WaitResponse { WAIT_INTERRUPTED = -1, WAIT_SIGNALED = 0, WAIT_TIMEDOUT = 1 };
 
   /**
@@ -125,6 +118,13 @@ protected:
     return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
   }
+
+protected:
+  virtual void OnStartup() {}
+  virtual void OnExit() {}
+  virtual void Process();
+
+  std::atomic<bool> m_bStop;
 
 private:
   void Action();

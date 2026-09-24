@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -53,7 +54,26 @@ public:
 
   static bool GetFileDuration(const std::string& path, int& duration);
 
+  /*!
+   * \brief Run work on a detached thread, for work that can block indefinitely on an unresponsive
+   *        share. The caller never waits and nothing joins the thread, so a blocked run cannot
+   *        stall the caller or shutdown.
+   * \param key Only one run per key at a time
+   * \param path Path the work accesses; runs are budgeted per storage host
+   * \param work The work to run
+   * \return false if work was not started because key is already running or the host's budget is
+   *         used up
+   */
+  static bool RunDetached(const std::string& key,
+                          const std::string& path,
+                          std::function<void()> work);
+
 private:
+  static bool ExtractStreamDetailsForPath(const std::string& playablePath,
+                                          const std::string& strFileNameAndPath,
+                                          CStreamDetails& details,
+                                          bool& isPvr);
+
   static bool DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                      CDVDDemux* pDemux,
                                      CStreamDetails& details,
@@ -72,9 +92,10 @@ private:
   */
   static bool AddExternalSubtitleToDetails(const std::string &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename = "");
 
-  /** \brief Checks external subtitles for a given item and adds any existing ones to the item stream details
-  *   \param item The video item
+  /** \brief Checks external subtitles for a given video and adds any existing ones to the stream details
+  *   \param videoPath The path of the video
+  *   \param[in,out] details The stream details to add the subtitles to
   *   \sa AddExternalSubtitleToDetails
   */
-  static void ProcessExternalSubtitles(CFileItem* item);
+  static void ProcessExternalSubtitles(const std::string& videoPath, CStreamDetails& details);
 };

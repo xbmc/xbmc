@@ -17,6 +17,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -26,6 +27,7 @@
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/guiinfo/GUIInfoUtils.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "resources/LocalizeStrings.h"
@@ -35,6 +37,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/Artwork.h"
 #include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -45,10 +48,54 @@
 #include "video/VideoThumbLoader.h"
 
 #include <math.h>
+#include <memory>
+#include <string>
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace KODI;
+
+namespace
+{
+// Filesystem art lookups can block indefinitely on an unresponsive share, so they run detached
+// from the GUI thread, the job manager and shutdown. Only the art that changed is handed back.
+void StartArtLookup(const CFileItem& item, bool lookupItem, const std::string& playlistFile)
+{
+  const std::string path = item.GetPath();
+  CDVDFileInfo::RunDetached(path, path,
+                            [original = CFileItem(item), lookupItem, playlistFile]()
+                            {
+                              CFileItem found(original);
+                              CVideoThumbLoader loader;
+                              if (lookupItem)
+                                loader.LoadItemLookup(&found);
+
+                              if (!playlistFile.empty())
+                              {
+                                CFileItem thumbItem(playlistFile, false);
+                                if (loader.FillThumb(thumbItem))
+                                  found.SetArt("thumb", thumbItem.GetArt("thumb"));
+                              }
+
+                              const ART::Artwork& before = original.GetArt();
+                              ART::Artwork changed;
+                              for (const auto& [type, url] : found.GetArt())
+                              {
+                                const auto it = before.find(type);
+                                if (it == before.end() || it->second != url)
+                                  changed.emplace(type, url);
+                              }
+                              if (changed.empty())
+                                return;
+
+                              auto update = std::make_unique<CFileItem>(original.GetPath(), false);
+                              update->SetArt(changed);
+                              if (const auto messenger = CServiceBroker::GetAppMessenger())
+                                messenger->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 3, -1,
+                                                   static_cast<void*>(update.release()));
+                            });
+}
+} // namespace
 
 CVideoGUIInfo::CVideoGUIInfo()
   : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
@@ -75,27 +122,23 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem* item)
 
     CLog::Log(LOGDEBUG, "CVideoGUIInfo::InitCurrentItem({})", CURL::GetRedacted(item->GetPath()));
 
-    // Find a thumb for this file.
-    if (!item->HasArt("thumb"))
+    // Find a thumb for this file. Database only: filesystem lookups run in StartArtLookup().
+    const bool needsThumb = !item->HasArt("thumb");
+    if (needsThumb)
     {
       CVideoThumbLoader loader;
-      loader.LoadItem(item);
+      loader.LoadItemCached(item);
     }
 
     // find a thumb for this stream
-    if (NETWORK::IsInternetStream(*item))
-    {
-      if (!g_application.m_strPlayListFile.empty())
-      {
-        CLog::Log(LOGDEBUG, "Streaming media detected... using {} to find a thumb",
-                  g_application.m_strPlayListFile);
-        CFileItem thumbItem(g_application.m_strPlayListFile, false);
+    const std::string playlistFile =
+        NETWORK::IsInternetStream(*item) ? g_application.m_strPlayListFile : std::string{};
+    if (!playlistFile.empty())
+      CLog::Log(LOGDEBUG, "Streaming media detected... using {} to find a thumb",
+                CURL::GetRedacted(playlistFile));
 
-        CVideoThumbLoader loader;
-        if (loader.FillThumb(thumbItem))
-          item->SetArt("thumb", thumbItem.GetArt("thumb"));
-      }
-    }
+    if (needsThumb || !playlistFile.empty())
+      StartArtLookup(*item, needsThumb, playlistFile);
     return true;
   }
   return false;
