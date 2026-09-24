@@ -35,6 +35,8 @@
 #include <utility>
 #include <vector>
 
+struct DemuxPacket;
+
 struct SPlayerState
 {
   SPlayerState() { Clear(); }
@@ -424,6 +426,7 @@ protected:
   void UpdateRenderBuffers(int queued, int discard, int free) override;
   void UpdateGuiRender(bool gui) override;
   void UpdateVideoRender(bool video) override;
+  static void DeriveTeletextDisplayTime(DemuxPacket* packet, double timeOffset);
 
   virtual void CreatePlayers();
   void DestroyPlayers();
