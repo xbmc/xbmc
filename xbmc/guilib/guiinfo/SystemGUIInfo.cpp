@@ -251,7 +251,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
       return true;
 #ifdef HAS_OPTICAL_DRIVE
     case SYSTEM_DVD_LABEL:
-      value = CServiceBroker::GetMediaManager().GetDiskLabel();
+      value = CServiceBroker::GetMediaManager().GetDiskLabel("", true);
       return true;
 #endif
     case SYSTEM_ALARM_POS:
@@ -511,7 +511,7 @@ bool CSystemGUIInfo::GetBool(bool& value,
       if (CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
         const std::shared_ptr<MEDIA_DETECT::CCdInfo> pCdInfo{
-            CServiceBroker::GetMediaManager().GetCdInfo("", true)};
+            CServiceBroker::GetMediaManager().GetCdInfo("", true, true)};
         value =
             pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1));
       }
