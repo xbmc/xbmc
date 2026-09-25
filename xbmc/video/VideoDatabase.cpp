@@ -11057,9 +11057,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           for (const auto& [type, url] : artwork)
           {
             std::string savedThumb = ART::GetLocalArt(item, type, false);
-            CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite);
-            CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", type, savedThumb,
-                      overwrite);
+            if (CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite))
+              CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", type, savedThumb,
+                        overwrite);
           }
           if (actorThumbs)
             ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
@@ -11175,9 +11175,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             for (const auto& [arttype, arturl] : aw)
             {
               const std::string savedThumb = URIUtils::AddFileToFolder(itemPath, arttype);
-              CServiceBroker::GetTextureCache()->Export(arturl, savedThumb, overwrite);
-              CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", arturl,
-                        savedThumb, overwrite);
+              if (CServiceBroker::GetTextureCache()->Export(arturl, savedThumb, overwrite))
+                CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", arturl,
+                          savedThumb, overwrite);
             }
           }
         }
@@ -11276,9 +11276,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         for (const auto& [type, url] : artwork)
         {
           const std::string savedThumb = ART::GetLocalArt(item, type, false);
-          CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite);
-          CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
-                    overwrite);
+          if (CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite))
+            CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
+                      overwrite);
         }
       }
       m_pDS->next();
@@ -11403,10 +11403,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           for (const auto& [type, url] : art)
           {
             const std::string savedThumb(ART::GetLocalArt(item, seasonThumb + "-" + type, true));
-            if (!art.empty())
-              CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite);
-            CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
-                      overwrite);
+            if (!art.empty() &&
+                CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite))
+              CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
+                        overwrite);
           }
         }
       }
@@ -11589,9 +11589,9 @@ void CVideoDatabase::ExportArt(const CFileItem& item,
                          item.GetProperty(MULTIPLE_EPISODES).asBoolean(false)
                              ? ART::AdditionalIdentifiers::SEASON_AND_EPISODE
                              : ART::AdditionalIdentifiers::NONE)};
-    CServiceBroker::GetTextureCache()->Export(artPath, savedThumb, overwrite);
-    CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", artPath, savedThumb,
-              overwrite);
+    if (CServiceBroker::GetTextureCache()->Export(artPath, savedThumb, overwrite))
+      CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", artPath, savedThumb,
+                overwrite);
   }
 }
 
@@ -11622,9 +11622,9 @@ void CVideoDatabase::ExportActorThumbs(const std::string& path,
     if (!i.thumb.empty())
     {
       std::string thumbFile(GetSafeFile(strPath, i.strName));
-      CServiceBroker::GetTextureCache()->Export(i.thumb, thumbFile, overwrite);
-      CLog::Log(LOGDEBUG, "Exported actor thumb '{}' to '{}' - overwrite {}", i.thumb, thumbFile,
-                overwrite);
+      if (CServiceBroker::GetTextureCache()->Export(i.thumb, thumbFile, overwrite))
+        CLog::Log(LOGDEBUG, "Exported actor thumb '{}' to '{}' - overwrite {}", i.thumb, thumbFile,
+                  overwrite);
     }
   }
 }
