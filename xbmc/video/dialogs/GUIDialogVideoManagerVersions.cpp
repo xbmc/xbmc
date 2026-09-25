@@ -13,6 +13,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
@@ -41,6 +42,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -491,6 +493,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
   try
   {
     int idFile{-1};
+    std::optional<std::pair<std::string, int>> announce;
     m_database.BeginTransaction();
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
@@ -511,6 +514,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
           tag->m_iDbId = idFile;
         tag->m_iFileId = idFile;
         KODI::VIDEO::UTILS::NotifyItemPathChanged(*item, oldPath, oldFileId);
+        announce = {owner.GetVideoInfoTag()->m_type, owner.GetVideoInfoTag()->m_iDbId};
       }
     }
     else
@@ -550,6 +554,13 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
       m_database.SetArtForItem(idFile, MediaTypeVideoVersion, item->GetArt());
 
       m_database.CommitTransaction();
+
+      // Widgets reload on the announcement
+      if (announce)
+      {
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        CVideoDatabase::AnnounceUpdate(announce->first, announce->second);
+      }
     }
     else
       m_database.RollbackTransaction();
