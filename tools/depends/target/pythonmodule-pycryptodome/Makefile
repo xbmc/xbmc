@@ -1,7 +1,8 @@
 include ../../Makefile.include PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include
 DEPS= ../../Makefile.include Makefile PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include \
                              01-revert-ctype.pythonapi-use.patch \
-                             02-android-dlopen.patch
+                             02-android-dlopen.patch \
+							 03-ios-load-shared-lib.patch
 
 LDSHARED=$(CC) -shared
 
@@ -16,7 +17,13 @@ ifeq (darwin, $(findstring darwin, $(HOST)))
     CFLAGS+= -target arm64-apple-darwin
     LDFLAGS+= -target arm64-apple-darwin
   endif
-  LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
+  ifeq ($(OS), darwin_embedded)
+    # AppStore Connect doesn't allow files of type bundle
+    OUTPUT_FILE_TYPE_ARG=-dynamiclib
+  else
+    OUTPUT_FILE_TYPE_ARG=-bundle
+  endif
+  LDSHARED:=$(CC) $(OUTPUT_FILE_TYPE_ARG) -undefined dynamic_lookup $(LDFLAGS)
 endif
 
 
@@ -34,6 +41,10 @@ all: .installed-$(PLATFORM)
 	cd $(PLATFORM); patch -p1 -i ../01-revert-ctype.pythonapi-use.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../02-android-dlopen.patch
+endif
+# TODO: enable for tvOS once Python is built as a real tvOS platform
+ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
+	cd $(PLATFORM); patch -p1 -i ../03-ios-load-shared-lib.patch
 endif
 	touch $@
 

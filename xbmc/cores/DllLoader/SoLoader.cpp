@@ -9,7 +9,12 @@
 #include "SoLoader.h"
 
 #include "filesystem/SpecialProtocol.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
+
+#if defined(TARGET_DARWIN_EMBEDDED)
+#include "platform/darwin/ios-common/DarwinEmbedUtils.h"
+#endif
 
 #include <dlfcn.h>
 
@@ -31,7 +36,7 @@ bool SoLoader::Load()
   if (m_soHandle != NULL)
     return true;
 
-  std::string strFileName= CSpecialProtocol::TranslatePath(GetFileName());
+  const std::string strFileName = CSpecialProtocol::TranslatePath(GetFileName());
   if (strFileName == "xbmc.so")
   {
     CLog::Log(LOGDEBUG, "Loading Internal Library");
@@ -39,13 +44,14 @@ bool SoLoader::Load()
   }
   else
   {
-    CLog::Log(LOGDEBUG, "Loading: {}", strFileName);
-    int flags = RTLD_LAZY;
-    m_soHandle = dlopen(strFileName.c_str(), flags);
-    if (!m_soHandle)
+    if (!PerformLoad(strFileName))
     {
-      CLog::Log(LOGERROR, "Unable to load {}, reason: {}", strFileName, dlerror());
+#if defined(TARGET_DARWIN_EMBEDDED)
+      if (!PerformLoad(CDarwinEmbedUtils::GetSharedLibraryPath(strFileName)))
+        return false;
+#else
       return false;
+#endif
     }
   }
   m_bLoaded = true;
@@ -54,7 +60,6 @@ bool SoLoader::Load()
 
 void SoLoader::Unload()
 {
-
   if (m_soHandle)
   {
     if (dlclose(m_soHandle) != 0)
@@ -98,4 +103,14 @@ HMODULE SoLoader::GetHModule()
 bool SoLoader::HasSymbols()
 {
   return false;
+}
+
+bool SoLoader::PerformLoad(const std::string& libPath)
+{
+  CLog::Log(LOGDEBUG, "Loading: {}", libPath);
+  const int flags = RTLD_LAZY;
+  m_soHandle = dlopen(libPath.c_str(), flags);
+  if (m_soHandle == nullptr)
+    CLog::Log(LOGERROR, "Unable to load {}, reason: {}", libPath, dlerror());
+  return m_soHandle != nullptr;
 }

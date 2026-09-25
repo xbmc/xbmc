@@ -230,13 +230,13 @@ bool InitDirectoriesOSX(UserDirectoriesLocation)
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/" + appName + "/userdata");
 #endif
 
-    std::string dotLowerAppName = "." + appName;
-    StringUtils::ToLower(dotLowerAppName);
     // location for temp files
 #if defined(TARGET_DARWIN_EMBEDDED)
     std::string strTempPath = URIUtils::AddFileToFolder(
         userHome, std::string(CDarwinEmbedUtils::GetAppRootFolder()) + "/" + appName + "/temp");
 #else
+    std::string dotLowerAppName = "." + appName;
+    StringUtils::ToLower(dotLowerAppName);
     std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
     XFILE::CDirectory::Create(strTempPath);
     strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");

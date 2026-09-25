@@ -27,6 +27,10 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#if defined(TARGET_DARWIN_EMBEDDED)
+#include "platform/darwin/ios-common/DarwinEmbedUtils.h"
+#endif
+
 #include <algorithm>
 #include <utility>
 
@@ -90,6 +94,11 @@ std::string CAddonDll::GetDllPath(const std::string &libPath)
   {
     std::string tempbin = getenv("KODI_ANDROID_LIBS");
     strFileName = tempbin + "/" + strLibName;
+  }
+#elif defined(TARGET_DARWIN_EMBEDDED)
+  if (!XFILE::CFile::Exists(strFileName))
+  {
+    strFileName = CDarwinEmbedUtils::GetSharedLibraryPath(strFileName);
   }
 #endif
 

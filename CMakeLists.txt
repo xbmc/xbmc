@@ -421,12 +421,15 @@ if(NOT ${CORE_SYSTEM_NAME} MATCHES "windows")
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 endif()
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
-  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
-                 ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
-elseif(CORE_SYSTEM_NAME STREQUAL android)
+if(CORE_SYSTEM_NAME STREQUAL android)
   configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated_android.h.in
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
+elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
+  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated_darwin_embedded.h.in
+                 ${CORE_BUILD_DIR}/DllPaths_generated_darwin_embedded.h @ONLY)
+elseif(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
+  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
+                 ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
 endif()
 
 # main library (used for main binary and tests)
