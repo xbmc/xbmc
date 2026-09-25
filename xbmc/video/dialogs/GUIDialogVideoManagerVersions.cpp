@@ -299,6 +299,10 @@ void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& ver
   CGUIMessage msg{GUI_MSG_NOTIFY_ALL,        0,           0, GUI_MSG_UPDATE_ITEM,
                   GUI_MSG_FLAG_FORCE_UPDATE, m_videoAsset};
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+  // Widgets reload on the announcement
+  CUtil::DeleteVideoDatabaseDirectoryCache();
+  CVideoDatabase::AnnounceUpdate(m_videoAsset->GetVideoInfoTag()->m_type, dbId);
 }
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersion()
