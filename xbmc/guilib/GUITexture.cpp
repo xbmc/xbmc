@@ -43,6 +43,11 @@ void CGUITexture::Register(const CreateGUITextureFunc& createFunction,
   m_drawQuadFunc = drawQuadFunction;
 }
 
+void CGUITexture::UnregisterDrawQuad()
+{
+  m_drawQuadFunc = nullptr;
+}
+
 CGUITexture* CGUITexture::CreateTexture(
     float posX, float posY, float width, float height, const CTextureInfo& texture)
 {

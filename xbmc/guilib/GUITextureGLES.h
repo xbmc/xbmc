@@ -24,21 +24,15 @@ struct PackedVertex
 };
 typedef std::vector<PackedVertex> PackedVertices;
 
+class CGUIQuadDrawerGLES;
 class CRenderSystemGLES;
 
 class CGUITextureGLES : public CGUITexture
 {
 public:
-  static void Register();
+  static void Register(CGUIQuadDrawerGLES& quadDrawer);
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
-
-  static void DrawQuad(const CRect& coords,
-                       KODI::UTILS::COLOR::Color color,
-                       CTexture* texture = nullptr,
-                       const CRect* texCoords = nullptr,
-                       const float depth = 1.0,
-                       const bool blending = true);
 
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
   ~CGUITextureGLES() override = default;
@@ -56,7 +50,6 @@ private:
   std::array<GLubyte, 4> m_col;
 
   PackedVertices m_packedVertices;
-  std::vector<GLushort> m_idx;
   CRenderSystemGLES *m_renderSystem;
   bool m_isGLES20{true};
 };
