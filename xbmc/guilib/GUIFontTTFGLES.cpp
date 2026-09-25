@@ -135,7 +135,7 @@ bool CGUIFontTTFGLES::FirstBegin()
   // alpha blend that approximately matches SDR perceived translucency. It
   // is a "close enough" compromise; a mathematically correct fix would
   // require linear-light compositing (too expensive on typical ARM GPUs).
-  if (CServiceBroker::GetWinSystem()->IsHdrComposite())
+  if (CServiceBroker::GetWinSystem()->UseSquaredAlphaBlend())
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   else
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
