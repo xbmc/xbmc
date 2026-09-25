@@ -123,6 +123,7 @@ protected:
   virtual void UpdateLayout(bool refreshAllItems = false);
   virtual void SetPageControlRange();
   virtual void UpdatePageControl(int offset);
+  void StartPageChangeTimer();
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {}
   virtual bool SelectItemFromPoint(const CPoint& point) { return false; }
