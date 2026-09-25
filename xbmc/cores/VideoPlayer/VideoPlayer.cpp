@@ -4434,7 +4434,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     if (gui != nullptr)
     {
       const CStereoscopicsManager &stereoscopicsManager = gui->GetStereoscopicsManager();
-      hint.stereo_mode = stereoscopicsManager.DetectStereoModeByString(m_item.GetPath());
+      hint.stereo_mode = stereoscopicsManager.DetectStereoModeByString(m_item.GetDynPath());
     }
   }
 
