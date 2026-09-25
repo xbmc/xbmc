@@ -172,9 +172,23 @@ void CRenderBufferPoolFBO::RenderedBuffers::Flush(std::optional<uint64_t> expect
   if (buffers.empty() || (expectedGeneration && *expectedGeneration != generation))
     return;
 
-  buffers.front()->sync->flush();
   for (const auto& resources : buffers)
+  {
     resources->guiPending = false;
+
+    if (resources->retired)
+      continue;
+
+    if (resources->rendered)
+      resources->sync->destroy(resources->rendered);
+
+    resources->rendered = resources->sync->fence();
+
+    if (!resources->rendered)
+      resources->retired = true;
+  }
+
+  buffers.front()->sync->flush();
   buffers.clear();
   ++generation;
   submitted.notify_all();
@@ -354,12 +368,14 @@ void CRenderBufferPoolFBO::DestroyContext()
 
   while (m_clientFrameDepth > 0)
     EndClientFrame();
+
+  FlushRendered();
+
   for (const auto& resources : m_resources)
   {
     std::unique_lock resourceLock(resources->mutex);
     resources->retired = true;
   }
-  FlushRendered();
 
   if (!m_resources.empty())
   {

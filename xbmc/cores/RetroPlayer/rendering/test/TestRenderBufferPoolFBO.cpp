@@ -15,6 +15,7 @@
 #include "cores/RetroPlayer/buffers/RenderBufferPoolFBO.h"
 #include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
 #include "cores/RetroPlayer/playback/test/PlaybackTestEnvironment.h"
+#include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/contexts/IHwRenderingContext.h"
 #include "messaging/ApplicationMessenger.h"
 
@@ -319,7 +320,7 @@ protected:
   {
     auto lock = buffer->Lock();
     buffer->WaitForCapture();
-    buffer->FinishRender();
+    buffer->MarkRendered();
   }
 
   bool BindGUI()
@@ -477,10 +478,11 @@ TEST_P(TestRenderBufferPoolFBOWithContext, RepeatedSamplesSubmitOnceAtGUIHandoff
 
   for (unsigned int sample = 0; sample < 5; ++sample)
     Sample(captured);
-  EXPECT_EQ(m_fences.size(), 5u);
+  EXPECT_EQ(m_fences.size(), 0u);
   EXPECT_EQ(m_flushes, 0u);
   captured->Release();
   m_pool->FlushRendered();
+  EXPECT_EQ(m_fences.size(), 1u);
   EXPECT_EQ(m_flushes, 1u);
   EXPECT_EQ(m_flushContext.load(), m_sharedContext);
   m_pool->FlushRendered();
@@ -500,7 +502,7 @@ TEST_P(TestRenderBufferPoolFBOWithContext, BothDisplayedBuffersWaitForLatestFenc
 
   Sample(old);
   Sample(old);
-  const GLsync oldLatest = m_fences.back();
+  EXPECT_TRUE(m_fences.empty());
   ASSERT_TRUE(BindClient());
   auto* current = Capture(client);
   ASSERT_NE(current, nullptr);
@@ -516,6 +518,8 @@ TEST_P(TestRenderBufferPoolFBOWithContext, BothDisplayedBuffersWaitForLatestFenc
   ASSERT_TRUE(BindGUI());
 
   m_pool->FlushRendered();
+  ASSERT_EQ(m_fences.size(), 2u);
+  const GLsync oldFence = m_fences[m_fences.size() - 2];
   EXPECT_EQ(m_flushes, 1u);
   EXPECT_EQ(m_flushContext.load(), m_sharedContext);
   ASSERT_TRUE(BindClient());
@@ -523,7 +527,7 @@ TEST_P(TestRenderBufferPoolFBOWithContext, BothDisplayedBuffersWaitForLatestFenc
   ASSERT_NE(reused, nullptr);
   EXPECT_EQ(reused->TextureID(), oldTexture);
   ASSERT_FALSE(m_waited.empty());
-  EXPECT_EQ(m_waited.back(), oldLatest);
+  EXPECT_EQ(m_waited.back(), oldFence);
   reused->Release();
   beforeHandoff->Release();
   current->Release();
@@ -545,11 +549,13 @@ TEST_P(TestRenderBufferPoolFBOWithContext, PausedFrameSamplesReuseOneCapture)
       Sample(captured);
       EXPECT_EQ(captured->TextureID(), texture);
     }
+    EXPECT_EQ(m_fences.size(), tick);
     EXPECT_EQ(m_flushes, tick);
     m_pool->FlushRendered();
+    EXPECT_EQ(m_fences.size(), tick + 1);
     EXPECT_EQ(m_flushes, tick + 1);
   }
-  ASSERT_EQ(m_fences.size(), 300u);
+  ASSERT_EQ(m_fences.size(), 60u);
   const GLsync latest = m_fences.back();
   captured->Release();
   m_pool->FlushRendered();

@@ -73,7 +73,7 @@ public:
 
   std::unique_lock<std::mutex> Lock() const { return std::unique_lock(m_resources->mutex); }
   void WaitForCapture();
-  void FinishRender();
+  void MarkRendered();
   bool SetReady();
   void PrepareForCapture();
 

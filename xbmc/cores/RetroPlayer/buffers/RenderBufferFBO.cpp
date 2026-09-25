@@ -203,19 +203,18 @@ bool CRenderBufferFBO::SetReady()
 void CRenderBufferFBO::WaitForCapture()
 {
   if (m_resources->ready)
+  {
     glWaitSync(m_resources->ready, 0, GL_TIMEOUT_IGNORED);
+    glDeleteSync(m_resources->ready);
+    m_resources->ready = nullptr;
+  }
 }
 
-void CRenderBufferFBO::FinishRender()
+void CRenderBufferFBO::MarkRendered()
 {
   if (m_resources->retired)
     return;
 
-  if (m_resources->rendered)
-    m_resources->sync->destroy(m_resources->rendered);
-  m_resources->rendered = m_resources->sync->fence();
-  if (!m_resources->rendered)
-    m_resources->retired = true;
   if (auto* pool = static_cast<CRenderBufferPoolFBO*>(GetPool());
       pool && !m_resources->guiPending.exchange(true))
     pool->MarkRendered(m_resources);
