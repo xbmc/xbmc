@@ -602,6 +602,11 @@ namespace XBMCAddon
 #endif
 
 #ifndef SWIG
+    protected:
+      //! \brief Font scope key of the window that owns this control.
+      String GetParentWindowFontScopeKey() const;
+
+    public:
       int iControlId = 0;
       int iParentId = 0;
       int dwPosX = 0;
