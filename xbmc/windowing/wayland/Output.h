@@ -72,12 +72,12 @@ public:
     std::unique_lock lock(m_geometryCriticalSection);
     return m_model;
   }
-  std::string const& GetName() const
+  std::string GetName() const
   {
     std::unique_lock lock(m_geometryCriticalSection);
     return m_name;
   }
-  std::string const& GetDescription() const
+  std::string GetDescription() const
   {
     std::unique_lock lock(m_geometryCriticalSection);
     return m_description;
@@ -146,7 +146,9 @@ private:
 
   CPointInt m_position;
   CSizeInt m_physicalSize;
-  std::string m_make, m_model, m_name, m_description;
+  std::string m_make, m_model;
+  std::string m_name;
+  std::string m_description;
   std::atomic<std::int32_t> m_scale{1}; // default scale of 1 if no wl_output::scale is sent
 
   std::set<Mode> m_modes;

@@ -171,7 +171,7 @@ bool CWinSystemWayland::InitWindowSystem()
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
-  // version 4 adds name() and description() -> optional, used for connector names (HDMI-A-1 etc.)
+  // version 4 adds name() and description() -> optional
   m_registry->Request<wayland::output_t>(2, 4, std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
 
   m_registry->Bind();
@@ -1106,17 +1106,13 @@ CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
 std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> const& output)
 {
   std::vector<std::string> parts;
-
-  // Prefer wl_output.description (v4, e.g. "Samsung Electric Company QBQ90S
-  // 0x01000E00") over wl_output.name (v4, e.g. "HDMI-A-1") over legacy
-  // make/model from wl_output.geometry.
-  if (!output->GetDescription().empty())
+  if (auto description = output->GetDescription(); !description.empty())
   {
-    parts.emplace_back(output->GetDescription());
+    parts.emplace_back(std::move(description));
   }
-  else if (!output->GetName().empty())
+  else if (auto name = output->GetName(); !name.empty())
   {
-    parts.emplace_back(output->GetName());
+    parts.emplace_back(std::move(name));
   }
   else
   {
@@ -1129,7 +1125,6 @@ std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> c
       parts.emplace_back(output->GetModel());
     }
   }
-
   if (parts.empty())
   {
     // Fallback to "unknown" if no name received from compositor
