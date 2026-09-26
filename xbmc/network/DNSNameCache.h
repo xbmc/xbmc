@@ -15,6 +15,13 @@
 #include <string>
 #include <unordered_map>
 
+struct addrinfo;
+
+namespace KODI::NETWORK
+{
+std::string SelectDNSAddress(const addrinfo* results);
+}
+
 class CDNSNameCache final
 {
 public:
