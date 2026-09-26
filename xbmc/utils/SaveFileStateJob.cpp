@@ -277,7 +277,15 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (replacedFileId > 0)
             msgItem->SetProperty("replaced_file_id", replacedFileId);
 
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
+          int64_t updateFlags = 0;
+          if (item.IsStrm() && !item.IsPlugin() && item.GetDynPath() != item.GetPath())
+          {
+            // Prevent replacing the library title with the remote resource name.
+            updateFlags |= GUI_MSG_FLAG_KEEP_CURRENT_LABELS;
+          }
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL,
+                              CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0,
+                              GUI_MSG_UPDATE_ITEM, updateFlags, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
         }
 
