@@ -3656,6 +3656,14 @@
           <control type="toggle" />
           <default>true</default>
         </setting>
+        <setting id="input.pointerwakesscreen" type="boolean" label="14130" help="36283">
+          <level>2</level>
+          <control type="toggle" />
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="input.enablemouse">true</dependency>
+          </dependencies>
+        </setting>
         <setting id="input.enablejoystick" type="boolean" label="35100" help="36378">
           <level>2</level>
           <control type="toggle" />
