@@ -253,7 +253,8 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
                                       bool bApplyToDir,
                                       bool useLocal,
                                       const std::string& actorArtPath,
-                                      UseRemoteArtWithLocalScraper useRemoteArt /* = yes */) const
+                                      UseRemoteArtWithLocalScraper useRemoteArt /* = yes */,
+                                      const CFileItem* mediaItem /* = nullptr */) const
 {
   int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -382,9 +383,9 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
   if (!art.contains("thumb") &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
-      CDVDFileInfo::CanExtract(*pItem))
+      CDVDFileInfo::CanExtract(mediaItem ? *mediaItem : *pItem))
   {
-    art["thumb"] = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
+    art["thumb"] = CVideoThumbLoader::GetEmbeddedThumbURL(mediaItem ? *mediaItem : *pItem);
   }
 
   std::vector<ArtToCache> artToCache;

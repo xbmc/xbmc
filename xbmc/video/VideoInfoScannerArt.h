@@ -74,14 +74,16 @@ public:
    \param useLocal whether we should use local thumbs. Defaults to true.
    \param actorArtPath the directory containing actor thumbs. Defaults to empty.
    \param useRemoteArt use remote art if also using local scraper. Defaults to yes.
+   \param mediaItem the item a thumb is extracted from, where pItem only locates the art (a library
+          import). Defaults to pItem.
    */
-  void GetArtwork(
-      CFileItem* pItem,
-      ADDON::ContentType content,
-      bool bApplyToDir = false,
-      bool useLocal = true,
-      const std::string& actorArtPath = "",
-      UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES) const;
+  void GetArtwork(CFileItem* pItem,
+                  ADDON::ContentType content,
+                  bool bApplyToDir = false,
+                  bool useLocal = true,
+                  const std::string& actorArtPath = "",
+                  UseRemoteArtWithLocalScraper useRemoteArt = UseRemoteArtWithLocalScraper::YES,
+                  const CFileItem* mediaItem = nullptr) const;
 
   /*! \brief Fetch thumbs for actors
    Updates each actor with their thumb (local or online)
