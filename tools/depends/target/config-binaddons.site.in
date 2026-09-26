@@ -23,7 +23,7 @@ fi
 CFLAGS="@platform_cflags@ @platform_includes@ $CFLAGS"
 LDFLAGS="@platform_ldflags@ $LDFLAGS"
 CXXFLAGS="@platform_cxxflags@ @platform_includes@ $CXXFLAGS"
-CPPFLAGS="@platform_cflags@ @platform_includes@ $CPPFLAGS"
+CPPFLAGS="@platform_cppflags@ @platform_includes@ $CPPFLAGS"
 
 export PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
 export NASM=@prefix@/@tool_dir@/bin/nasm
