@@ -14,7 +14,9 @@
 #include "URL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "threads/Thread.h"
+#include "utils/MemUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -125,6 +127,79 @@ IFile *CFileCache::GetFileImp()
   return m_source->GetImplementation();
 }
 
+std::unique_ptr<CCacheStrategy> CFileCache::CreateMemoryCache(size_t cacheSize)
+{
+  if (m_flags & READ_MULTI_STREAM)
+    CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> using double memory cache each sized {} bytes",
+              __FUNCTION__, m_sourcePath, cacheSize);
+  else
+    CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> using single memory cache sized {} bytes",
+              __FUNCTION__, m_sourcePath, cacheSize);
+
+  const size_t back = cacheSize / 4;
+  const size_t front = cacheSize - back;
+
+  std::unique_ptr<CCacheStrategy> cache = std::make_unique<CCircularCache>(front, back);
+
+  // NOTE: READ_MULTI_STREAM is only used with READ_AUDIO_VIDEO
+  if (m_flags & READ_MULTI_STREAM)
+  {
+    // If READ_MULTI_STREAM flag is set: Double buffering is required
+    cache = std::make_unique<CDoubleCache>(cache.release());
+  }
+
+  m_forwardCacheSize = front;
+  m_maxForward = m_forwardCacheSize;
+  m_memoryCacheSize = cacheSize;
+
+  return cache;
+}
+
+size_t CFileCache::CacheSizeForRate(uint32_t bytesPerSecond) const
+{
+  constexpr int64_t secondsForward = 60;
+
+  // Only three quarters of the cache is forward
+  const int64_t wanted = static_cast<int64_t>(bytesPerSecond) * secondsForward * 4 / 3;
+
+  // Bounded by installed memory, so the size does not depend on what is resident at the time
+  KODI::MEMORY::MemoryStatus memory{};
+  KODI::MEMORY::GetMemoryStatus(&memory);
+  int64_t budget = static_cast<int64_t>(memory.totalPhys / 16);
+  if (m_flags & READ_MULTI_STREAM)
+    budget /= 2;
+
+  return static_cast<size_t>(std::min(wanted, budget));
+}
+
+void CFileCache::GrowCacheForRate(uint32_t bytesPerSecond)
+{
+  // Rebuilding refetches the cached content, which needs a source that can seek back to it
+  if (!m_autoSizeCache || !m_seekPossible || bytesPerSecond == 0 || m_memoryCacheSize == 0 ||
+      !CThread::IsRunning())
+    return;
+
+  const size_t wanted = CacheSizeForRate(bytesPerSecond);
+  if (wanted <= m_memoryCacheSize)
+    return;
+
+  // Rebuilt by the fill thread at the read position, the way a seek rebuilds it
+  std::unique_lock lock(m_sync);
+
+  CLog::LogF(LOGINFO, "<{}> growing the cache from {} to {} bytes for {} bytes per second",
+             m_sourcePath, m_memoryCacheSize, wanted, bytesPerSecond);
+
+  m_pendingCacheSize = wanted;
+  m_seekPos = m_readPos;
+  m_seekEnded.Reset();
+  m_seekEvent.Set();
+  while (!m_seekEnded.Wait(100ms))
+  {
+    if (!CThread::IsRunning())
+      return;
+  }
+}
+
 bool CFileCache::Open(const CURL& url)
 {
   Close();
@@ -177,6 +252,12 @@ bool CFileCache::Open(const CURL& url)
       m_pCache = std::make_unique<CSimpleFileCache>();
       m_forwardCacheSize = 0;
       m_maxForward = m_fileSize;
+
+      if (m_flags & READ_MULTI_STREAM)
+      {
+        // If READ_MULTI_STREAM flag is set: Double buffering is required
+        m_pCache = std::make_unique<CDoubleCache>(m_pCache.release());
+      }
     }
     else
     {
@@ -207,25 +288,11 @@ bool CFileCache::Open(const CURL& url)
           cacheSize = m_chunkSize * 2;
       }
 
-      if (m_flags & READ_MULTI_STREAM)
-        CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> using double memory cache each sized {} bytes",
-                  __FUNCTION__, m_sourcePath, cacheSize);
-      else
-        CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> using single memory cache sized {} bytes",
-                  __FUNCTION__, m_sourcePath, cacheSize);
+      m_pCache = CreateMemoryCache(cacheSize);
 
-      const size_t back = cacheSize / 4;
-      const size_t front = cacheSize - back;
-
-      m_pCache = std::make_unique<CCircularCache>(front, back);
-      m_forwardCacheSize = front;
-      m_maxForward = m_forwardCacheSize;
-    }
-
-    if (m_flags & READ_MULTI_STREAM)
-    {
-      // If READ_MULTI_STREAM flag is set: Double buffering is required
-      m_pCache = std::make_unique<CDoubleCache>(m_pCache.release());
+      // A size the user chose is left as chosen
+      const auto sizeSetting = settings->GetSetting(CSettings::SETTING_FILECACHE_MEMORYSIZE);
+      m_autoSizeCache = sizeSetting && sizeSetting->IsDefault();
     }
   }
 
@@ -299,6 +366,20 @@ void CFileCache::Process()
     // check for seek events
     if (seekRequested)
     {
+      // Only safe here: the reader is held in Seek or GrowCacheForRate until the seek completes
+      if (m_pendingCacheSize)
+      {
+        m_pCache = CreateMemoryCache(m_pendingCacheSize);
+        m_pendingCacheSize = 0;
+        if (m_pCache->Open() != CACHE_RC_OK)
+        {
+          CLog::LogF(LOGERROR, "<{}> failed to open the grown cache", m_sourcePath);
+          m_pCache.reset();
+          m_seekEnded.Set();
+          break;
+        }
+      }
+
       const int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
       const bool cacheReachEOF = (cacheMaxPos == m_fileSize);
 
@@ -746,6 +827,8 @@ int CFileCache::IoControl(IOControl request, void* param)
     CLog::Log(LOGDEBUG,
               "CFileCache::IoControl - setting maxRate to {:.2f} Mbit/s with processWait of {} ms",
               mBits, wait);
+
+    GrowCacheForRate(m_writeRate);
     return 0;
   }
 
