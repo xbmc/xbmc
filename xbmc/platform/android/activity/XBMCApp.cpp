@@ -366,8 +366,7 @@ void CXBMCApp::onPause()
     {
       if (!appPlayer->IsPaused() && !m_hasReqVisible)
       {
-        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                   static_cast<void*>(new CAction(ACTION_PAUSE)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING, 0);
         m_bResumePlayback = true;
       }
     }
@@ -396,8 +395,7 @@ void CXBMCApp::onStop()
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                  static_cast<void*>(new CAction(ACTION_STOP)));
     else if (m_playback_state & PLAYBACK_STATE_VIDEO)
-      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(ACTION_PAUSE)));
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING, 0);
   }
 }
 
@@ -1476,8 +1474,7 @@ void CXBMCApp::onVisibleBehindCanceled()
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                  static_cast<void*>(new CAction(ACTION_STOP)));
     else if (m_playback_state & PLAYBACK_STATE_VIDEO)
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(ACTION_PAUSE)));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PAUSE_IF_PLAYING, 0);
   }
 }
 
@@ -1499,8 +1496,7 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                    static_cast<void*>(new CAction(ACTION_STOP)));
       else
-        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                   static_cast<void*>(new CAction(ACTION_PAUSE)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING, 0);
     }
   }
 }

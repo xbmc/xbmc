@@ -97,7 +97,8 @@ public:
   virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
   virtual bool CanPause() const { return true; }
-  virtual void Pause() = 0;
+  /// Toggle pause; system transitions can suppress player UI.
+  virtual void Pause(bool showOSD = true) = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
   virtual bool HasGame() const { return false; }

@@ -139,7 +139,7 @@ public:
   void LoadPage(int p, int sp, unsigned char* buffer);
   bool OnAction(const CAction &action);
   void OnNothingToQueueNotify();
-  void Pause();
+  void Pause(bool showOSD = true);
   bool QueueNextFile(const CFileItem &file);
   void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
   int SeekChapter(int iChapter);

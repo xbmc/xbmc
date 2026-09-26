@@ -305,12 +305,12 @@ bool CApplicationPlayer::IsLiveStream() const
   return false;
 }
 
-void CApplicationPlayer::Pause()
+void CApplicationPlayer::Pause(bool showOSD)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
   {
-    player->Pause();
+    player->Pause(showOSD);
   }
 }
 
