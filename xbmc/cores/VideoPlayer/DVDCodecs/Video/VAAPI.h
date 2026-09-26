@@ -11,6 +11,7 @@
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoSettings.h"
+#include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/SharedSection.h"
@@ -20,17 +21,20 @@
 
 #include "platform/linux/sse4/DllLibSSE4.h"
 
+#include <atomic>
 #include <cstdint>
 #include <list>
 #include <map>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include <va/va.h>
+#include <va/va_vpp.h>
 
 extern "C"
 {
@@ -200,6 +204,10 @@ struct CVaapiConfig
   // pictures so the renderer can pick its sampling path per-fourcc without
   // re-inspecting the surface.
   std::int32_t pixelFormat{};
+  // VPP output size. 0/0 disables scaling.
+  int scaleWidth{};
+  int scaleHeight{};
+  bool toneMap{false};
 };
 
 /**
@@ -245,6 +253,8 @@ struct CVaapiProcessedPicture
     source = rhs.source;
     crop = rhs.crop;
     fourcc = rhs.fourcc;
+    outWidth = rhs.outWidth;
+    outHeight = rhs.outHeight;
     return *this;
   };
 
@@ -257,6 +267,9 @@ struct CVaapiProcessedPicture
   // VA fourcc of the underlying surface. Set by COutput from
   // CVaapiConfig::pixelFormat.
   std::int32_t fourcc{};
+  // Actual output surface size. 0/0 uses the decoded picture size.
+  unsigned int outWidth = 0;
+  unsigned int outHeight = 0;
 };
 
 class CVaapiRenderPicture : public CVideoBuffer
@@ -290,6 +303,8 @@ public:
     FLUSH,
     PRECLEANUP,
     TIMEOUT,
+    // Display resolution changed; payload is SScaleTarget.
+    SETSCALETARGET,
   };
   enum InSignal
   {
@@ -297,6 +312,13 @@ public:
     ERROR,
     STATS,
   };
+};
+
+// Payload for SETSCALETARGET.
+struct SScaleTarget
+{
+  int width;
+  int height;
 };
 
 class COutputDataProtocol : public Protocol
@@ -341,7 +363,7 @@ public:
   COutput(CDecoder &decoder, CEvent *inMsgEvent);
   ~COutput() override;
   void Start();
-  void Dispose();
+  void Dispose(bool force = false);
   COutputControlProtocol m_controlPort;
   COutputDataProtocol m_dataPort;
 protected:
@@ -364,6 +386,7 @@ protected:
   void EnsureBufferPool();
   void ReleaseBufferPool(bool precleanup = false);
   void ReadyForDisposal(CPostproc *pp);
+  bool WantsToneMapping(const VideoPicture& pic) const;
   CEvent m_outMsgEvent;
   CEvent *m_inMsgEvent;
   int m_state;
@@ -380,6 +403,11 @@ protected:
   CPostproc *m_pp;
   std::list<std::shared_ptr<CPostproc>> m_discardedPostprocs;
   SDiMethods m_diMethods;
+  bool m_scaleTargetChanged = false;
+  bool m_hwScalingSuppressed = false;
+  bool m_hwScalingRetryPending = false;
+  CPostproc* m_hwScalingRetryDiscardedPp = nullptr;
+  bool m_vppToneMapping = false;
 };
 
 //-----------------------------------------------------------------------------
@@ -476,6 +504,16 @@ inline constexpr VaFormatEntry kVaFormatTable[] = {
 #endif
 };
 
+inline constexpr std::optional<unsigned> VaRtFormatForFourcc(std::uint32_t vaFourcc)
+{
+  for (const auto& entry : kVaFormatTable)
+  {
+    if (entry.vaFourcc == vaFourcc)
+      return entry.vaRtFormat;
+  }
+  return std::nullopt;
+}
+
 /*!
  * \brief Tracks which VA surface formats the EGL interop layer can import.
  *
@@ -532,8 +570,7 @@ public:
 // VAAPI main class
 //-----------------------------------------------------------------------------
 
-class CDecoder
- : public IHardwareDecoder
+class CDecoder : public IHardwareDecoder, public IDispResource
 {
    friend class CVaapiBufferPool;
 
@@ -555,6 +592,9 @@ public:
   const std::string Name() override { return "vaapi"; }
   void SetCodecControl(int flags) override;
 
+  // Update the VPP scaling target when the display mode changes.
+  void OnResetDisplay() override;
+
   void FFReleaseBuffer(uint8_t *data);
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
@@ -570,8 +610,13 @@ public:
 protected:
   void SetWidthHeight(int width, int height);
   bool ConfigVAAPI();
+
+  // Returns the VPP scaling target, or 0/0 if disabled.
+  static void GetScaleTarget(
+      int vidWidth, int vidHeight, AVRational aspect, int& scaleWidth, int& scaleHeight);
+
   bool CheckStatus(VAStatus vdp_st, int line);
-  void FiniVAAPIOutput();
+  void FiniVAAPIOutput(bool force = false);
   void ReturnRenderPicture(CVaapiRenderPicture *renderPic);
   long ReleasePicReference();
   bool CheckSuccess(VAStatus status, const std::string& function);
@@ -590,6 +635,9 @@ protected:
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;
   int m_getBufferError;
+
+  std::atomic<bool> m_registeredDispResource{false};
+  std::atomic<int> m_activeResetDisplayCalls{0};
 
   COutput m_vaapiOutput;
   CVaapiBufferStats m_bufferStats;
@@ -629,6 +677,8 @@ public:
   virtual void ClearRef(CVaapiProcessedPicture &pic) = 0;
   virtual void Flush() = 0;
   virtual bool UpdateDeintMethod(EINTERLACEMETHOD method) = 0;
+  virtual bool UpdateToneMapping(bool enable) { return !enable; }
+  virtual bool DoesToneMap() const { return false; }
   virtual bool DoesSync() = 0;
   virtual bool WantsPic() {return true;}
   virtual bool UseVideoSurface() = 0;
@@ -677,14 +727,23 @@ public:
   void ClearRef(CVaapiProcessedPicture &pic) override;
   void Flush() override;
   bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
+  bool UpdateToneMapping(bool enable) override;
+  bool DoesToneMap() const override { return m_toneMap; }
   bool DoesSync() override;
   bool WantsPic() override;
   bool UseVideoSurface() override;
   void Discard(COutput *output, ReadyToDispose cb) override;
+
+  bool SupportsHdrToSdr() const { return m_hdrToSdrSupported; }
+
 protected:
   bool CheckSuccess(VAStatus status, const std::string& function);
   void Dispose();
   void Advance();
+  void QueryHdrCaps();
+  bool CreateToneMapFilter();
+  void DestroyToneMapFilter();
+  bool UpdateHdrMetadata(const VideoPicture& pic);
   VAConfigID m_configId = VA_INVALID_ID;
   VAContextID m_contextId = VA_INVALID_ID;
   CVideoSurfaces m_videoSurfaces;
@@ -694,8 +753,18 @@ protected:
   int m_currentIdx;
   int m_frameCount;
   EINTERLACEMETHOD m_vppMethod;
+  // Output surface size used by the VPP pipeline.
+  int m_scaleWidth = 0;
+  int m_scaleHeight = 0;
+  bool m_scalingRequested = false;
   ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut = nullptr;
+  bool m_hdrToSdrSupported = false;
+  bool m_toneMap = false;
+#if VA_CHECK_VERSION(1, 7, 0)
+  VABufferID m_hdrFilter = VA_INVALID_ID;
+  VAHdrMetaDataHDR10 m_hdrMetaData{};
+#endif
 };
 
 /**

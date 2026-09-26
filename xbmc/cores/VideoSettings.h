@@ -160,6 +160,7 @@ enum ETONEMAPMETHOD
   VS_TONEMAPMETHOD_REINHARD = 1,
   VS_TONEMAPMETHOD_ACES = 2,
   VS_TONEMAPMETHOD_HABLE = 3,
+  VS_TONEMAPMETHOD_VAAPI = 4,
   VS_TONEMAPMETHOD_MAX
 };
 
@@ -189,6 +190,7 @@ private:
       {VS_TONEMAPMETHOD_REINHARD, "reinhard"},
       {VS_TONEMAPMETHOD_ACES, "aces"},
       {VS_TONEMAPMETHOD_HABLE, "hable"},
+      {VS_TONEMAPMETHOD_VAAPI, "vaapi"},
   });
 
   static_assert(VS_TONEMAPMETHOD_MAX == tonemapMethodMap.size(),

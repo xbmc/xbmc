@@ -60,6 +60,8 @@ public:
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
   bool Supports(EINTERLACEMETHOD method) const;
+  void UpdateToneMappingMethods(const std::list<ETONEMAPMETHOD>& methods);
+  bool Supports(ETONEMAPMETHOD method) const;
   void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const;
   CVideoBufferManager& GetVideoBufferManager();
@@ -159,6 +161,7 @@ protected:
   bool m_videoIsInterlaced;
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
+  std::list<ETONEMAPMETHOD> m_toneMapMethods;
   mutable CCriticalSection m_videoCodecSection;
   CVideoBufferManager m_videoBufferManager;
   std::vector<AVPixelFormat> m_pixFormats;

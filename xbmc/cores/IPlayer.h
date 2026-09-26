@@ -253,6 +253,7 @@ public:
   }
   virtual unsigned int GetOrientation() const { return 0; }
   virtual bool Supports(EINTERLACEMETHOD method) const { return false; }
+  virtual bool Supports(ETONEMAPMETHOD method) const { return false; }
   virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() const
   {
     return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
