@@ -984,10 +984,13 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
     while (!m_pDS->eof())
     {
       AddonPtr addon;
-      GetAddon(m_pDS->fv("id").get_asInt(), addon);
-      if (static_cast<int>(addon->Type()) >= static_cast<int>(AddonType::UNKNOWN) + 1 &&
-          static_cast<int>(addon->Type()) < static_cast<int>(AddonType::SCRAPER_LIBRARY))
-        addons.push_back(addon);
+      const int id = m_pDS->fv("id").get_asInt();
+      if (GetAddon(id, addon) && addon != nullptr)
+      {
+        if (static_cast<int>(addon->Type()) >= static_cast<int>(AddonType::UNKNOWN) + 1 &&
+            static_cast<int>(addon->Type()) < static_cast<int>(AddonType::SCRAPER_LIBRARY))
+          addons.push_back(addon);
+      }
       m_pDS->next();
     }
     m_pDS->close();
