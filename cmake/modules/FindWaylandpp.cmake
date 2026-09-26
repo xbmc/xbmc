@@ -86,7 +86,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                   WAYLANDPP_CURSOR_LIBRARY
                                                   WAYLANDPP_EGL_LIBRARY
                                                   WAYLANDPP_PROTOCOLS_XMLS
-                                    VERSION_VAR WAYLANDPP_wayland-client++_VERSION
+                                    VERSION_VAR PC_WAYLANDPP_wayland-client++_VERSION
                                     REASON_FAILURE_MESSAGE "${WAYLANDPP_REASON}")
 
   if(WAYLANDPP_FOUND)

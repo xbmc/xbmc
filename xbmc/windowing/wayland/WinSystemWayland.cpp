@@ -531,6 +531,14 @@ std::shared_ptr<COutput> CWinSystemWayland::FindOutputByUserFriendlyName(const s
                                  return (name == UserFriendlyOutputName(entry.second));
                                });
 
+  if (outputIt == m_outputs.end())
+  {
+    // Accept monitor selections saved before wl_output v4 names were used.
+    outputIt = std::find_if(m_outputs.begin(), m_outputs.end(),
+                            [this, &name](decltype(m_outputs)::value_type const& entry)
+                            { return name == UserFriendlyOutputName(entry.second, true); });
+  }
+
   return (outputIt == m_outputs.end() ? nullptr : outputIt->second);
 }
 
@@ -1103,14 +1111,18 @@ CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
   return changes;
 }
 
-std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> const& output)
+std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> const& output,
+                                                      bool useLegacyName)
 {
   std::vector<std::string> parts;
-  if (auto description = output->GetDescription(); !description.empty())
+  if (auto description = output->GetDescription(); !useLegacyName && !description.empty())
   {
     parts.emplace_back(std::move(description));
+    // Descriptions and positions can coincide, including on mirrored outputs.
+    if (auto name = output->GetName(); !name.empty())
+      parts.emplace_back(StringUtils::Format("({})", name));
   }
-  else if (auto name = output->GetName(); !name.empty())
+  else if (auto name = output->GetName(); !useLegacyName && !name.empty())
   {
     parts.emplace_back(std::move(name));
   }

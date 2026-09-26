@@ -183,7 +183,8 @@ private:
   void ApplySizeUpdate(SizeUpdateInformation update);
   void ApplyNextState();
 
-  std::string UserFriendlyOutputName(std::shared_ptr<COutput> const& output);
+  std::string UserFriendlyOutputName(std::shared_ptr<COutput> const& output,
+                                     bool useLegacyName = false);
   std::shared_ptr<COutput> FindOutputByUserFriendlyName(std::string const& name);
   std::shared_ptr<COutput> FindOutputByWaylandOutput(wayland::output_t const& output);
 
