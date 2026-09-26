@@ -171,7 +171,8 @@ bool CWinSystemWayland::InitWindowSystem()
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
-  m_registry->Request<wayland::output_t>(2, 3, std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
+  // version 4 adds name() and description() -> optional
+  m_registry->Request<wayland::output_t>(2, 4, std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
 
   m_registry->Bind();
 
@@ -529,6 +530,14 @@ std::shared_ptr<COutput> CWinSystemWayland::FindOutputByUserFriendlyName(const s
                                {
                                  return (name == UserFriendlyOutputName(entry.second));
                                });
+
+  if (outputIt == m_outputs.end())
+  {
+    // Accept monitor selections saved before wl_output v4 names were used.
+    outputIt = std::find_if(m_outputs.begin(), m_outputs.end(),
+                            [this, &name](decltype(m_outputs)::value_type const& entry)
+                            { return name == UserFriendlyOutputName(entry.second, true); });
+  }
 
   return (outputIt == m_outputs.end() ? nullptr : outputIt->second);
 }
@@ -1102,16 +1111,31 @@ CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
   return changes;
 }
 
-std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> const& output)
+std::string CWinSystemWayland::UserFriendlyOutputName(std::shared_ptr<COutput> const& output,
+                                                      bool useLegacyName)
 {
   std::vector<std::string> parts;
-  if (!output->GetMake().empty())
+  if (auto description = output->GetDescription(); !useLegacyName && !description.empty())
   {
-    parts.emplace_back(output->GetMake());
+    parts.emplace_back(std::move(description));
+    // Descriptions and positions can coincide, including on mirrored outputs.
+    if (auto name = output->GetName(); !name.empty())
+      parts.emplace_back(StringUtils::Format("({})", name));
   }
-  if (!output->GetModel().empty())
+  else if (auto name = output->GetName(); !useLegacyName && !name.empty())
   {
-    parts.emplace_back(output->GetModel());
+    parts.emplace_back(std::move(name));
+  }
+  else
+  {
+    if (!output->GetMake().empty())
+    {
+      parts.emplace_back(output->GetMake());
+    }
+    if (!output->GetModel().empty())
+    {
+      parts.emplace_back(output->GetModel());
+    }
   }
   if (parts.empty())
   {

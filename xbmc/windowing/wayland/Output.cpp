@@ -67,6 +67,17 @@ COutput::COutput(std::uint32_t globalName,
     m_scale = scale;
   };
 
+  m_output.on_name() = [this](std::string const& name)
+  {
+    std::unique_lock lock(m_geometryCriticalSection);
+    m_name = name;
+  };
+  m_output.on_description() = [this](std::string const& description)
+  {
+    std::unique_lock lock(m_geometryCriticalSection);
+    m_description = description;
+  };
+
   m_output.on_done() = [this]()
   {
 #ifndef TARGET_WEBOS
@@ -83,6 +94,8 @@ COutput::~COutput() noexcept
   m_output.on_mode() = nullptr;
   m_output.on_done() = nullptr;
   m_output.on_scale() = nullptr;
+  m_output.on_name() = nullptr;
+  m_output.on_description() = nullptr;
 }
 
 const COutput::Mode& COutput::GetCurrentMode() const
