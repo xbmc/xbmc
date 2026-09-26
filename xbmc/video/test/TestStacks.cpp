@@ -410,6 +410,59 @@ TEST_F(TestStacks, TestStackBasePathIsIndependentOfPlaylistResolution)
           R"(bluray://udf%3a%2f%2fD%253a%255cMovies%255cMovie.CD2.iso%2f/BDMV/PLAYLIST/01003.mpls)"));
 }
 
+TEST_F(TestStacks, TestRelativePartPlaylists)
+{
+  // On import the parts are resolved against the nfo's folder, ie. the stack's base path, and have
+  // to give back the paths that stacking finds
+  const auto check = [](const std::string& stackPath, const std::string& base,
+                        const std::vector<StackPartPlaylist>& expected,
+                        const std::vector<std::string>& resolved)
+  {
+    const std::vector<StackPartPlaylist> parts{
+        CStackDirectory::GetRelativePartPlaylists(stackPath)};
+    ASSERT_EQ(parts.size(), expected.size()) << stackPath;
+    EXPECT_EQ(CStackDirectory::GetBasePath(stackPath), base);
+    for (size_t i{0}; i < parts.size(); ++i)
+    {
+      EXPECT_EQ(parts[i].file, expected[i].file);
+      EXPECT_EQ(parts[i].playlist, expected[i].playlist);
+      EXPECT_EQ(URIUtils::AddFileToFolder(base, parts[i].file), resolved[i]);
+    }
+  };
+
+  // Folder stack of disc images
+  check(
+      R"(stack://bluray://udf%3a%2f%2fD%253a%255cMovies%255cMovie_PART1%255cmovie.iso%2f/BDMV/PLAYLIST/01003.mpls , )"
+      R"(bluray://udf%3a%2f%2fD%253a%255cMovies%255cMovie_PART2%255cmovie.iso%2f/BDMV/PLAYLIST/01004.mpls)",
+      R"(D:\Movies\)", {{"Movie_PART1/movie.iso", 1003}, {"Movie_PART2/movie.iso", 1004}},
+      {R"(D:\Movies\Movie_PART1\movie.iso)", R"(D:\Movies\Movie_PART2\movie.iso)"});
+
+  // Folder stack of BDMV folders
+  check(R"(stack://bluray://D%3a%5cMovies%5cMovie_PART1%5c/BDMV/PLAYLIST/00800.mpls , )"
+        R"(bluray://D%3a%5cMovies%5cMovie_PART2%5c/BDMV/PLAYLIST/00801.mpls)",
+        R"(D:\Movies\)",
+        {{"Movie_PART1/BDMV/index.bdmv", 800}, {"Movie_PART2/BDMV/index.bdmv", 801}},
+        {R"(D:\Movies\Movie_PART1\BDMV\index.bdmv)", R"(D:\Movies\Movie_PART2\BDMV\index.bdmv)"});
+
+  // Only the parts with a playlist are recorded
+  check(R"(stack://bluray://D%3a%5cMovies%5cMovie_PART1%5c/BDMV/PLAYLIST/00800.mpls , )"
+        R"(D:\Movies\Movie_PART2\movie.mkv)",
+        R"(D:\Movies\)", {{"Movie_PART1/BDMV/index.bdmv", 800}},
+        {R"(D:\Movies\Movie_PART1\BDMV\index.bdmv)"});
+
+  // File stack of disc images on a network share
+  check(
+      "stack://bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.cd1.iso%2f/BDMV/"
+      "PLAYLIST/00800.mpls , bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.cd2.iso%2f/"
+      "BDMV/PLAYLIST/00800.mpls",
+      "smb://somepath/", {{"movie.cd1.iso", 800}, {"movie.cd2.iso", 800}},
+      {"smb://somepath/movie.cd1.iso", "smb://somepath/movie.cd2.iso"});
+
+  // An unresolved stack has nothing to record
+  check(R"(stack://D:\Movies\Movie_PART1\movie.iso , D:\Movies\Movie_PART2\movie.iso)",
+        R"(D:\Movies\)", {}, {});
+}
+
 TEST_F(TestStacks, TestSameDiscStack)
 {
   const std::string bdStack{
@@ -740,7 +793,15 @@ constexpr TestStackData Stacks[] = {
      .basePath = "smb://somepath/movie/",
      .firstPath =
          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie_part_1%252fmovie.iso%2f/BDMV/"
-         "PLAYLIST/00800.mpls"}};
+         "PLAYLIST/00800.mpls"},
+    {.path = "stack://bluray://"
+             "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%2520disc%25201.iso%2f/BDMV/"
+             "PLAYLIST/01003.mpls , "
+             "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%2520disc%25202.iso%2f/BDMV/"
+             "PLAYLIST/01003.mpls",
+     .basePath = "smb://somepath/movie.iso",
+     .firstPath = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%2520disc%25201.iso%2f/"
+                  "BDMV/PLAYLIST/01003.mpls"}};
 
 TEST_P(TestGetStackedTitlePath, GetStackedTitlePath)
 {

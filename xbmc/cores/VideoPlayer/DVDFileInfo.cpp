@@ -16,13 +16,11 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/Texture.h"
 #include "network/NetworkFileItemClassify.h"
-#include "pictures/Picture.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "pvr/utils/PVRStreamUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/Thread.h"
-#include "utils/MemUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -32,21 +30,18 @@
 #endif
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
-#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDDemuxers/DVDDemuxVobsub.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "Process/ProcessInfo.h"
-#include "TextureCache.h"
 #include "Util.h"
-#include "cores/FFmpeg.h"
 #include "filesystem/File.h"
 
 #include <algorithm>
 #include <chrono>
-#include <cstdlib>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <map>
@@ -302,7 +297,9 @@ bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
         int dur = 0;
         CFileItem item(path, false);
         auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
-        if (input && input->Open())
+        // A DVD can only be read through a navigator driven by a player, and the title that would
+        // give a meaningful duration is not known here anyway
+        if (input && !input->IsStreamType(DVDSTREAM_TYPE_DVD) && input->Open())
         {
           std::unique_ptr<CDVDDemux> demux{CDVDFactoryDemuxer::CreateDemuxer(input, true)};
           if (demux)

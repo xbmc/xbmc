@@ -76,6 +76,14 @@ std::string CStackDirectory::GetStackTitlePath(const std::string& strPath)
         return false;
       }()};
 
+  // A resolved bluray part is named by its disc image rather than by its playlist
+  const auto partFile{[](const CFileItem& part)
+                      {
+                        return URIUtils::IsBlurayPath(part.GetPath())
+                                   ? URIUtils::GetDiscFile(part.GetPath())
+                                   : part.GetPath();
+                      }};
+
   const std::string commonPath{URIUtils::GetParentPath(strPath)};
   std::vector<StackPart> stackParts;
   for (const auto& part : parts)
@@ -100,7 +108,7 @@ std::string CStackDirectory::GetStackTitlePath(const std::string& strPath)
     else
     {
       // File stack
-      std::string fileName{URIUtils::GetFileName(part->GetPath())};
+      std::string fileName{URIUtils::GetFileName(partFile(*part))};
 
       std::vector<CRegExp> fileRegExps =
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
@@ -130,7 +138,7 @@ std::string CStackDirectory::GetStackTitlePath(const std::string& strPath)
     // Create stacked title
     stackTitle = stackParts[0].title + stackParts[0].volume +
                  (isFolderStack ? (URIUtils::IsDOSPath(commonPath) ? "\\" : "/")
-                                : URIUtils::GetExtension(parts[0]->GetPath()));
+                                : URIUtils::GetExtension(partFile(*parts[0])));
 
     // Check if source path uses URL encoding
     if (!isFolderStack && URIUtils::HasEncodedFilename(CURL(commonPath)))
@@ -293,6 +301,35 @@ bool CStackDirectory::IsSameDiscStack(const std::string& stackPath,
       return false;
   }
   return true;
+}
+
+std::vector<StackPartPlaylist> CStackDirectory::GetRelativePartPlaylists(
+    const std::string& stackPath)
+{
+  std::vector<StackPartPlaylist> parts;
+
+  std::vector<std::string> paths;
+  if (!GetPaths(stackPath, paths))
+    return parts;
+
+  const std::string base{GetBasePath(stackPath)};
+
+  for (const std::string& path : paths)
+  {
+    const int playlist{URIUtils::GetBlurayPlaylistFromPath(path)};
+    if (playlist == -1)
+      continue;
+
+    std::string discFile{URIUtils::GetDiscFile(path)};
+    if (!URIUtils::PathHasParent(discFile, base))
+      continue;
+
+    discFile.erase(0, base.size());
+    StringUtils::Replace(discFile, '\\', '/');
+
+    parts.push_back({std::move(discFile), playlist});
+  }
+  return parts;
 }
 
 std::string CStackDirectory::GetBasePath(const std::string& stackPath)

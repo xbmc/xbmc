@@ -196,6 +196,13 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
     if (URIUtils::IsInArchive(file))
       file = CURL(file).GetHostName();
 
+    // A playlist within a disc image has no date of its own, so use the image's
+    if (URIUtils::IsBlurayPath(file))
+    {
+      if (std::string discFile{URIUtils::GetDiscFile(file)}; URIUtils::IsDiscImage(discFile))
+        file = std::move(discFile);
+    }
+
     // Try to get ctime (creation on Windows, metadata change on Linux) and mtime (modification)
     struct __stat64 buffer;
     if (CFile::Stat(file, &buffer) == 0 && (buffer.st_mtime != 0 || buffer.st_ctime != 0))
