@@ -12768,6 +12768,11 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
         SetCurrentSongTag(*item->GetMusicInfoTag());
       else if (pMsg->param1 == 2 && item->HasVideoInfoTag()) // only grab video tag
         SetCurrentVideoTag(*item->GetVideoInfoTag());
+      else if (pMsg->param1 == 3) // only grab art, if still the current item
+      {
+        if (m_currentFile->GetPath() == item->GetPath())
+          m_currentFile->AppendArt(item->GetArt());
+      }
       else
         SetCurrentItem(*item);
 
