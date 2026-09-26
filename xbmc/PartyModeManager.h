@@ -48,6 +48,7 @@ public:
   int GetRelaxedSongs();
   int GetRandomSongs();
   PartyModeContext GetType() const;
+  KODI::PLAYLIST::Id GetPlaylistId() const;
 
 private:
   void Process();
@@ -60,7 +61,6 @@ private:
   void ClearState();
   void UpdateStats();
   void Announce();
-  KODI::PLAYLIST::Id GetPlaylistId() const;
 
   // state
   bool m_bEnabled;

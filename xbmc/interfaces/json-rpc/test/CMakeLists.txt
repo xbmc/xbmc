@@ -2,6 +2,7 @@ set(SOURCES TestAddonsExecuteAddon.cpp
             TestFileOperations.cpp
             TestJSONRPCPermission.cpp
             TestJSONRPCStatus.cpp
+            TestPlayerIds.cpp
             TestSetConfiguration.cpp
             TestVideoLibrarySetSourceContent.cpp)
 
