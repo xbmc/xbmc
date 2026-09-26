@@ -69,6 +69,7 @@ void CApplicationSettingsHandling::RegisterSettings()
                                           CSettings::SETTING_SCREENSAVER_SETTINGS,
                                           CSettings::SETTING_AUDIOCDS_SETTINGS,
                                           CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
+                                          CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT,
                                           CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
                                           CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
                                           CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
@@ -177,6 +178,8 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_CALIBRATION);
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT)
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_ALIGNMENT);
   else if (settingId == CSettings::SETTING_SOURCE_VIDEOS)
   {
     std::vector<std::string> params{"library://video/files.xml", "return"};

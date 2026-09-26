@@ -3,6 +3,7 @@ set(SOURCES ActorProtocol.cpp
             AliasShortcutUtils.cpp
             Archive.cpp
             ArtUtils.cpp
+            AspectRatioVocabulary.cpp
             Base64.cpp
             BitstreamConverter.cpp
             BitstreamReader.cpp
@@ -88,6 +89,7 @@ set(HEADERS ActorProtocol.h
             Archive.h
             ArtUtils.h
             Artwork.h
+            AspectRatioVocabulary.h
             Base64.h
             BitstreamConverter.h
             BitstreamReader.h

@@ -135,6 +135,7 @@
 #include "speech/ISpeechRecognition.h"
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/CPUInfo.h"
 #include "utils/CharsetConverter.h"
 #include "utils/ContentUtils.h"
@@ -583,6 +584,8 @@ bool CApplication::Initialize()
       "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
   m_ServiceManager->GetNetwork().WaitForNet();
+
+  KODI::UTILS::CAspectRatioVocabulary::Load();
 
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
