@@ -114,6 +114,8 @@ bool CSetInfoTag::Save(TiXmlNode* node,
 
   // we start with a <tag> tag
   TiXmlElement setElement(tag.c_str());
+  if (tag == "set")
+    setElement.SetAttribute("version", 0);
   TiXmlNode* set = node->InsertEndChild(setElement);
   if (!set)
     return false;

@@ -136,6 +136,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
 
   // we start with a <tag> tag
   TiXmlElement movieElement(tag.c_str());
+  if (tag == "movie" || tag == "tvshow" || tag == "episodedetails" || tag == "musicvideo")
+    movieElement.SetAttribute("version", 0);
   TiXmlNode *movie = node->InsertEndChild(movieElement);
 
   if (!movie) return false;
