@@ -275,11 +275,11 @@ bool CGameClient::OpenFile(const CFileItem& file,
                            IGameInputCallback* input)
 {
   // Check if we should open in standalone mode
-  if (file.GetPath().empty())
+  if (file.GetDynPath().empty())
     return false;
 
   // Some cores "succeed" to load the file even if it doesn't exist
-  if (!CFileUtils::Exists(file.GetPath()))
+  if (!CFileUtils::Exists(file.GetDynPath()))
   {
     // Failed to play game
     // The required files can't be found.
@@ -290,7 +290,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
   }
 
   // Resolve special:// URLs
-  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
+  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetDynPath()));
 
   // Remove file:// from URLs if add-on doesn't support VFS
   if (!m_bSupportsVFS)
