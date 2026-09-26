@@ -1,7 +1,7 @@
 # from ArchSetup.cmake
 set_source_files_properties(${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp
                             ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp
-                            PROPERTIES GENERATED TRUE)
+                            PROPERTIES GENERATED TRUE SKIP_LINTING ON)
 
 set(SOURCES ColorManager.cpp
             Connection.cpp
@@ -67,7 +67,7 @@ endif()
 if(TARGET_WEBOS)
   set_source_files_properties(${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp
                               ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp
-                              PROPERTIES GENERATED TRUE)
+                              PROPERTIES GENERATED TRUE SKIP_LINTING ON)
 
   list(APPEND SOURCES OSScreenSaverWebOS.cpp
                       SeatWebOS.cpp
