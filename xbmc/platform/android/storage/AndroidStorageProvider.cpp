@@ -37,14 +37,6 @@ CAndroidStorageProvider::CAndroidStorageProvider()
 
 void CAndroidStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 {
-  CMediaSource profile;
-  profile.strPath = "special://profile/";
-  profile.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-      20070); // "Profile directory"
-  profile.m_ignore = true;
-  profile.m_iDriveType = SourceType::LOCAL;
-  localDrives.push_back(profile);
-
   CMediaSource share;
 
   // external directory
