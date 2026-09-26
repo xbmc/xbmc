@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
+
+#include <mutex>
 #include <string>
 #include <vector>
-
-#include "settings/lib/ISettingCallback.h"
 
 #include "PlatformDefs.h"
 
@@ -59,6 +60,10 @@ public:
 
   // Return the list of interfaces
   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
+
+  // Hold this guard throughout access to GetInterfaceList(). Platforms can override
+  // it to synchronize those reads with interface-list refreshes.
+  [[nodiscard]] virtual std::unique_lock<std::mutex> LockInterfaceList() { return {}; }
 
   // Return the first interface which is active
   virtual CNetworkInterface* GetFirstConnectedInterface(void);
