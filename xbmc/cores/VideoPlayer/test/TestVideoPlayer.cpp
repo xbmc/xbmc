@@ -70,6 +70,12 @@ public:
   bool GetHasAudio() const { return m_HasAudio; }
   void InvokeUpdateHasVideoAudio() { UpdateHasVideoAudio(); }
 
+  void SetInitialAudioStream(int stream) { m_playerOptions.initialAudioStream = stream; }
+  void InvokePrioritizeInitialAudioStream(std::vector<SelectionStream>& streams)
+  {
+    PrioritizeInitialAudioStream(streams);
+  }
+
   constexpr static SeekStep ConvertTestSeekStep(TestSeekStep step)
   {
     if (step == TestSeekStep::NORMAL)
@@ -97,6 +103,83 @@ protected:
   }
   static void TearDownTestSuite() { CServiceBroker::UnregisterJobManager(); }
 };
+
+std::vector<SelectionStream> InitialAudioStreams()
+{
+  std::vector<SelectionStream> streams(3);
+  streams[0].type_index = 2;
+  streams[0].demuxerId = 11;
+  streams[1].type_index = 0;
+  streams[1].demuxerId = 37;
+  streams[2].type_index = 1;
+  streams[2].demuxerId = 92;
+  return streams;
+}
+
+std::vector<int> AudioStreamOrdinals(const std::vector<SelectionStream>& streams)
+{
+  std::vector<int> ordinals;
+  ordinals.reserve(streams.size());
+  for (const auto& stream : streams)
+    ordinals.emplace_back(stream.type_index);
+  return ordinals;
+}
+
+TEST_F(TestVideoPlayer, InitialAudioStreamPrioritizesRequestedOrdinal)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+  auto streams = InitialAudioStreams();
+
+  player.SetInitialAudioStream(1);
+  player.InvokePrioritizeInitialAudioStream(streams);
+
+  EXPECT_EQ((std::vector<int>{1, 2, 0}), AudioStreamOrdinals(streams));
+}
+
+TEST_F(TestVideoPlayer, InitialAudioStreamInvalidRequestKeepsDefaultOrder)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+
+  for (const int requested : {-1, -2, 3})
+  {
+    auto streams = InitialAudioStreams();
+    player.SetInitialAudioStream(requested);
+    player.InvokePrioritizeInitialAudioStream(streams);
+
+    EXPECT_EQ((std::vector<int>{2, 0, 1}), AudioStreamOrdinals(streams));
+  }
+}
+
+TEST_F(TestVideoPlayer, InitialAudioStreamIsConsumedAfterFirstCandidates)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+  auto streams = InitialAudioStreams();
+
+  player.SetInitialAudioStream(1);
+  player.InvokePrioritizeInitialAudioStream(streams);
+  EXPECT_EQ((std::vector<int>{1, 2, 0}), AudioStreamOrdinals(streams));
+
+  streams = InitialAudioStreams();
+  player.InvokePrioritizeInitialAudioStream(streams);
+  EXPECT_EQ((std::vector<int>{2, 0, 1}), AudioStreamOrdinals(streams));
+}
+
+TEST_F(TestVideoPlayer, InitialAudioStreamWaitsForCandidates)
+{
+  CTestPlayerCallback playercallback;
+  CTestVideoPlayer player(playercallback);
+  std::vector<SelectionStream> streams;
+
+  player.SetInitialAudioStream(1);
+  player.InvokePrioritizeInitialAudioStream(streams);
+
+  streams = InitialAudioStreams();
+  player.InvokePrioritizeInitialAudioStream(streams);
+  EXPECT_EQ((std::vector<int>{1, 2, 0}), AudioStreamOrdinals(streams));
+}
 
 TEST_F(TestVideoPlayer, GetPreviousBookmark)
 {

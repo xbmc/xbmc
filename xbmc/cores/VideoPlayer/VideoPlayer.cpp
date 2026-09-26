@@ -1060,6 +1060,19 @@ void CVideoPlayer::UpdateHasVideoAudio()
     m_HasAudio = false;
 }
 
+void CVideoPlayer::PrioritizeInitialAudioStream(std::vector<SelectionStream>& streams)
+{
+  if (streams.empty())
+    return;
+
+  const int requestedStream = std::exchange(m_playerOptions.initialAudioStream, -1);
+  const auto requested = std::find_if(
+      streams.begin(), streams.end(),
+      [requestedStream](const SelectionStream& stream) { return stream.type_index == requestedStream; });
+  if (requested != streams.end())
+    std::rotate(streams.begin(), requested, std::next(requested));
+}
+
 void CVideoPlayer::OpenDefaultStreams(bool reset)
 {
   // if input stream dictate, we will open later
@@ -1094,7 +1107,9 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   if (!m_playerOptions.videoOnly)
   {
     PredicateAudioFilter af(m_processInfo->GetVideoSettings().m_AudioStream, m_playerOptions.preferStereo);
-    for (const auto& stream : m_SelectionStreams.Get(StreamType::AUDIO, af))
+    auto streams = m_SelectionStreams.Get(StreamType::AUDIO, af);
+    PrioritizeInitialAudioStream(streams);
+    for (const auto& stream : streams)
     {
       if(OpenStream(m_CurrentAudio, stream.demuxerId, stream.id, stream.source, reset))
       {
