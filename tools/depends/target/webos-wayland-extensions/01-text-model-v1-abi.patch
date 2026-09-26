@@ -1,0 +1,65 @@
+--- a/protocol/text.xml
++++ b/protocol/text.xml
+@@ -168,6 +168,13 @@
+       <entry name="previous" value="7" summary="show a Previous button"/>
+     </enum>
+ 
++    <request name="set_enter_key_type">
++      <description summary="set type of enter key">
++        Sets the type of the enter key on an input panel (virtual keyboard).
++      </description>
++      <arg name="enter_key_type" type="uint"/>
++    </request>
++
+     <request name="invoke_action">
+       <description summary="invoke action">
+         Invokes a button action on a given position.
+@@ -184,6 +191,20 @@
+       </description>
+     </request>
+ 
++    <request name="set_max_text_length">
++      <description summary="set max length of input field">
++        Sets the maximum length of an input field.
++      </description>
++      <arg name="length" type="uint"/>
++    </request>
++
++    <request name="set_platform_data">
++      <description summary="set platform specific data">
++        Sets the platform specific data (text).
++      </description>
++      <arg name="text" type="string"/>
++    </request>
++
+     <event name="commit_string">
+       <description summary="text to commit">
+         Notifies when text should be inserted into the editor widget. The text
+@@ -344,27 +365,6 @@
+       <arg name="height" type="uint"/>
+     </event>
+ 
+-    <request name="set_max_text_length">
+-      <description summary="set max length of input field">
+-        Sets the maximum length of an input field.
+-      </description>
+-      <arg name="length" type="uint"/>
+-    </request>
+-
+-    <request name="set_platform_data">
+-      <description summary="set platform specific data">
+-        Sets the platform specific data (text).
+-      </description>
+-      <arg name="text" type="string"/>
+-    </request>
+-
+-    <request name="set_enter_key_type">
+-      <description summary="set type of enter key">
+-        Sets the type of the enter key on an input panel (virtual keyboard).
+-      </description>
+-      <arg name="enter_key_type" type="uint"/>
+-    </request>
+-
+     <request name="set_input_panel_rect">
+       <description summary="set rect of the input panel">
+         Requests the geometry of the input panel to change. The geometry should
