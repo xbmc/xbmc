@@ -6,13 +6,19 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
+#include <atomic>
+#include <chrono>
+#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <thread>
 
 #include <gtest/gtest.h>
 
@@ -201,4 +207,113 @@ TEST(TestSettingsManager, LocateSettingNull)
 
   elem = CSettingsManager::LocateSetting(doc.RootElement(), "");
   EXPECT_EQ(nullptr, elem);
+}
+
+namespace
+{
+class CConcurrentReadCallback : public ISettingCallback
+{
+public:
+  std::shared_ptr<CSettingBool> m_setting;
+  std::atomic<bool> m_readCompleted{false};
+
+  bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override
+  {
+    const auto s = m_setting;
+    const auto done = std::make_shared<std::atomic<bool>>(false);
+
+    std::thread(
+        [s, done]()
+        {
+          (void)s->GetValue(); // shared_lock on the setting whose value is being changed
+          done->store(true);
+        })
+        .detach();
+
+    // Bounded, so a regression fails the test rather than hanging it
+    for (int i = 0; i < 200 && !done->load(); ++i)
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    m_readCompleted.store(done->load());
+    return true;
+  }
+};
+} // namespace
+
+// A setting change must not prevent another thread from reading the same setting while the
+// OnSettingChanging handler runs. Regression test for xbmc/xbmc#20371 (JSON-RPC deadlock when
+// setting videoscreen.blankdisplays).
+TEST(TestSettingsManager, ValueIsReadableFromAnotherThreadDuringOnSettingChanging)
+{
+  const auto setting = std::make_shared<CSettingBool>("test", nullptr);
+  CConcurrentReadCallback callback;
+  callback.m_setting = setting;
+  setting->SetCallback(&callback);
+
+  setting->SetValue(true);
+
+  EXPECT_TRUE(callback.m_readCompleted.load())
+      << "the setting could not be read from another thread while OnSettingChanging ran - "
+         "SetValue held the setting's exclusive lock across the callback (xbmc/xbmc#20371)";
+}
+
+namespace
+{
+// The write happens once: a rejection re-runs OnSettingChanging to announce the reverted
+// value, and that call must not write again.
+class CRejectAfterConcurrentWriteCallback : public ISettingCallback
+{
+public:
+  std::shared_ptr<CSettingInt> m_setting;
+  int m_concurrentValue{0};
+  std::atomic<bool> m_writeCompleted{false};
+
+  bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override
+  {
+    if (m_written ||
+        std::static_pointer_cast<const CSettingInt>(setting)->GetValue() == m_concurrentValue)
+      return true;
+
+    m_written = true;
+
+    const auto done = std::make_shared<std::atomic<bool>>(false);
+    const auto s = m_setting;
+    const int concurrentValue = m_concurrentValue;
+    std::thread(
+        [s, done, concurrentValue]()
+        {
+          s->SetValue(concurrentValue);
+          done->store(true);
+        })
+        .detach();
+
+    // Bounded, so a lock still held across this callback fails the test rather than hanging it
+    for (int i = 0; i < 200 && !done->load(); ++i)
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    m_writeCompleted.store(done->load());
+    return false;
+  }
+
+private:
+  bool m_written{false};
+};
+} // namespace
+
+// Rejecting a change undoes only that change. A value another thread wrote in the meantime,
+// which its own callbacks accepted, must survive the rejection.
+TEST(TestSettingsManager, RejectedChangeDoesNotUndoAConcurrentWrite)
+{
+  const auto setting = std::make_shared<CSettingInt>("test", nullptr);
+  CRejectAfterConcurrentWriteCallback callback;
+  callback.m_setting = setting;
+  callback.m_concurrentValue = 2;
+  setting->SetCallback(&callback);
+
+  EXPECT_FALSE(setting->SetValue(1));
+
+  ASSERT_TRUE(callback.m_writeCompleted.load())
+      << "the concurrent write never completed - SetValue held the setting's exclusive lock "
+         "across OnSettingChanging";
+  EXPECT_EQ(2, setting->GetValue());
 }
