@@ -134,6 +134,8 @@ public:
   CecPowerStatus GetDevicePowerStatus(void);
 
 private:
+  static const unsigned int HOLD_THRESHOLD_MS = 250;
+
   bool InitialiseFeature(const PeripheralFeature feature) override;
   void ResetMembers(void);
   void Process(void) override;
