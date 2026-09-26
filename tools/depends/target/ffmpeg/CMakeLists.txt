@@ -40,6 +40,8 @@ list(APPEND ffmpeg_conf --disable-doc
                         --disable-sdl2
                         --disable-vulkan
                         --enable-gpl
+                        --enable-version3
+                        --enable-openssl
                         --enable-runtime-cpudetect
                         --enable-pthreads
                         --extra-version="Kodi"
@@ -115,11 +117,6 @@ if(CPU MATCHES arm)
   list(APPEND ffmpeg_conf --disable-armv5te --disable-armv6t2)
 elseif(CPU MATCHES mips)
   list(APPEND ffmpeg_conf --disable-mips32r2 --disable-mipsdsp --disable-mipsdspr2)
-endif()
-
-find_package(GnuTLS)
-if(GNUTLS_FOUND)
-  list(APPEND ffmpeg_conf --enable-gnutls)
 endif()
 
 if(CPU MATCHES x86 OR CPU MATCHES x86_64)
