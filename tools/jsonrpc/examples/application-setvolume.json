@@ -1,0 +1,17 @@
+{
+  "title": "Set the application volume to an absolute level",
+  "method": "Application.SetVolume",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "method": "Application.SetVolume",
+    "params": {
+      "volume": 75
+    }
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": 75
+  }
+}
