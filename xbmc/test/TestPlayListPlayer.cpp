@@ -9,9 +9,7 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
-#include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
-#include "interfaces/AnnouncementManager.h"
 #include "playlists/PlayList.h"
 
 #include <memory>
@@ -23,21 +21,9 @@ using namespace KODI;
 namespace
 {
 
-// CPlayListPlayer reaches the GUI and the application's components on most of its paths, and
-// neither exists under InitForTesting. The index arithmetic under test reaches neither, so the
-// repeat state it reads is set here instead of through SetRepeat(), which ends in
-// AnnouncePropertyChanged() asking the application components for CApplicationPlayer; that
-// component is not registered in a test, and the container throws rather than answering null.
-//
-// m_repeatState, RepeatedOne() and m_bPlaybackStarted are protected, so a subclass reaches them.
 class TestablePlayListPlayer : public PLAYLIST::CPlayListPlayer
 {
 public:
-  void SetRepeatDirectly(PLAYLIST::Id playlistId, PLAYLIST::RepeatState state)
-  {
-    m_repeatState[playlistId] = state;
-  }
-
   bool IsRepeatedOne(PLAYLIST::Id playlistId) const { return RepeatedOne(playlistId); }
 
   bool PlaybackStarted() const { return m_bPlaybackStarted; }
@@ -48,25 +34,6 @@ public:
 class TestPlayListPlayer : public ::testing::Test
 {
 protected:
-  void SetUp() override
-  {
-    // CPlayList::Add() announces every addition, and nothing registers an announcement manager
-    // in the test environment: the accessor hands back a null shared_ptr and Announce()
-    // dereferences it. An unstarted manager is enough, because Announce() only appends to a
-    // queue - without the worker thread nothing drains it, which for a couple of items costs
-    // nothing. Registered per test and taken away again so no other test sees it.
-    m_previous = CServiceBroker::GetAnnouncementManager();
-    CServiceBroker::RegisterAnnouncementManager(
-        std::make_shared<ANNOUNCEMENT::CAnnouncementManager>());
-  }
-
-  void TearDown() override
-  {
-    CServiceBroker::UnregisterAnnouncementManager();
-    if (m_previous)
-      CServiceBroker::RegisterAnnouncementManager(m_previous);
-  }
-
   // Two items, so an index of 0 or 1 is in range and -1 is unambiguously "no current item".
   static void FillWithTwoItems(TestablePlayListPlayer& player, PLAYLIST::Id playlistId)
   {
@@ -75,9 +42,6 @@ protected:
     playlist.Add(std::make_shared<CFileItem>("/video/second.mkv", false));
     ASSERT_EQ(2, playlist.size());
   }
-
-private:
-  std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previous;
 };
 
 // A playlist that has been cleared leaves the current index at -1, and items queued afterwards
@@ -104,7 +68,7 @@ TEST_F(TestPlayListPlayer, GetNextItemIdxFromNoCurrentItemGivesTheFirstItemWithR
   player.SetCurrentItemIdx(-1);
   ASSERT_EQ(-1, player.GetCurrentItemIdx()) << "the no-current-item state under test was not set";
 
-  player.SetRepeatDirectly(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::RepeatState::ONE);
+  player.SetRepeat(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::RepeatState::ONE);
   ASSERT_TRUE(player.IsRepeatedOne(PLAYLIST::Id::TYPE_VIDEO)) << "repeat one was not set";
 
   // Without the fix this answers -1: the repeat-one branch returns the current index unchanged,
@@ -122,7 +86,7 @@ TEST_F(TestPlayListPlayer, GetNextItemIdxWithRepeatOneRepeatsTheCurrentItem)
   player.SetCurrentItemIdx(1);
   ASSERT_EQ(1, player.GetCurrentItemIdx()) << "the current item under test was not set";
 
-  player.SetRepeatDirectly(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::RepeatState::ONE);
+  player.SetRepeat(PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::RepeatState::ONE);
   ASSERT_TRUE(player.IsRepeatedOne(PLAYLIST::Id::TYPE_VIDEO)) << "repeat one was not set";
 
   EXPECT_EQ(1, player.GetNextItemIdx(1));
