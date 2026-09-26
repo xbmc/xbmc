@@ -100,6 +100,16 @@ private:
   int64_t  m_size;
 };
 
+namespace
+{
+int64_t SteadyMilliseconds()
+{
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+             std::chrono::steady_clock::now().time_since_epoch())
+      .count();
+}
+} // unnamed namespace
+
 CFileCache::CFileCache(const unsigned int flags)
   : CFileCache(flags, std::make_unique<CFileCacheSource>())
 {
@@ -131,6 +141,7 @@ bool CFileCache::Open(const CURL& url)
 
   std::unique_lock lock(m_sync);
 
+  m_sourceUrl = url;
   m_sourcePath = url.GetRedacted();
 
   CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> opening", __FUNCTION__, m_sourcePath);
@@ -144,6 +155,7 @@ bool CFileCache::Open(const CURL& url)
     Close();
     return false;
   }
+  m_sourceOpen = true;
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (!settings)
@@ -167,7 +179,8 @@ bool CFileCache::Open(const CURL& url)
             "CFileCache::{} - <{}> source chunk size is {}, setting cache chunk size to {}",
             __FUNCTION__, m_sourcePath, m_source->GetChunkSize(), m_chunkSize);
 
-  m_fileSize = m_source->GetLength();
+  // A negative length means unknown size, not past the end
+  m_fileSize = std::max<int64_t>(0, m_source->GetLength());
 
   if (!m_pCache)
   {
@@ -286,7 +299,10 @@ void CFileCache::Process()
     bool seekRequested = false;
     if (m_sourcePositionValid)
     {
-      m_fileSize = m_source->GetLength();
+      // A dead source reports no length, which must not erase the real one mid-file
+      const int64_t sourceLength = m_source->GetLength();
+      if (sourceLength > 0)
+        m_fileSize = sourceLength;
       seekRequested = m_seekEvent.Wait(0ms);
     }
     else
@@ -305,7 +321,10 @@ void CFileCache::Process()
       bool sourceSeekFailed = false;
       if (!cacheReachEOF || !m_sourcePositionValid)
       {
-        const int64_t sourceSeekResult = m_source->Seek(cacheMaxPos, SEEK_SET);
+        // A source closed by a failed reconnect is reopened rather than sought
+        const int64_t sourceSeekResult = m_sourceOpen
+                                             ? m_source->Seek(cacheMaxPos, SEEK_SET)
+                                             : (ReopenSource(cacheMaxPos) ? cacheMaxPos : -1);
         const DWORD sourceSeekError = GetLastError();
         if (sourceSeekResult != cacheMaxPos)
         {
@@ -315,7 +334,8 @@ void CFileCache::Process()
                     sourceSeekResult);
           m_nSeekResult = -1;
           m_seekError = sourceSeekError != 0 ? sourceSeekError : EIO;
-          m_seekPossible = m_source->IoControl(IOControl::SEEK_POSSIBLE, NULL);
+          if (m_sourceOpen)
+            m_seekPossible = m_source->IoControl(IOControl::SEEK_POSSIBLE, NULL);
           sourceSeekFailed = true;
           m_sourcePositionValid = false;
 
@@ -407,9 +427,34 @@ void CFileCache::Process()
 
     ssize_t iRead = 0;
     if (maxSourceRead > 0)
+    {
+      // Published for CancelStalledSourceRead
+      m_sourceReadStart = SteadyMilliseconds();
       iRead = m_source->Read(buffer.get(), maxSourceRead);
+      m_sourceReadStart = 0;
+      m_sourceReadCancelled = false;
+    }
     if (iRead <= 0)
     {
+      // Mid-file on a seekable source this is a stalled or dropped connection, not the end
+      if (!m_bStop && m_seekPossible && m_fileSize > 0 && m_writePos < m_fileSize)
+      {
+        CLog::LogF(LOGWARNING, "<{}> source read returned {} at {} of {}, reconnecting",
+                   m_sourcePath, iRead, m_writePos, m_fileSize.load());
+
+        if (m_seekEvent.Wait(2000ms))
+        {
+          if (!m_bStop)
+            m_seekEvent.Set(); // hack so that later we realize seek is needed
+        }
+        else if (ReopenSource(m_writePos))
+        {
+          CLog::LogF(LOGINFO, "<{}> source reconnected at {}", m_sourcePath, m_writePos);
+        }
+
+        continue; // while (!m_bStop)
+      }
+
       // Check for actual EOF and retry as long as we still have data in our cache
       if (m_writePos < m_fileSize && m_pCache->WaitForData(0, 0ms) > 0)
       {
@@ -513,6 +558,32 @@ void CFileCache::Process()
   }
 }
 
+bool CFileCache::ReopenSource(int64_t position)
+{
+  // Held so a cancel or a property query cannot reach a handle being closed
+  std::unique_lock sourceLock(m_sourceSection);
+  m_source->Close();
+  m_sourceOpen = false;
+  if (!m_source->Open(m_sourceUrl, READ_NO_CACHE | READ_TRUNCATED | READ_NO_BUFFER))
+    return false;
+
+  // A reopened source is a fresh protocol instance, so the source controls are reapplied
+  m_source->IoControl(IOControl::SET_CACHE, this);
+  bool retry = false;
+  m_source->IoControl(IOControl::SET_RETRY, &retry);
+  m_seekPossible = m_source->IoControl(IOControl::SEEK_POSSIBLE, nullptr);
+
+  // Reading from a misplaced connection would corrupt the cache silently
+  if (!m_seekPossible || m_source->Seek(position, SEEK_SET) != position)
+  {
+    m_source->Close();
+    return false;
+  }
+
+  m_sourceOpen = true;
+  return true;
+}
+
 void CFileCache::OnExit()
 {
   m_bStop = true;
@@ -535,8 +606,46 @@ int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
   return CFile::Stat(url.Get(), buffer);
 }
 
+void CFileCache::CancelStalledSourceRead()
+{
+  // A healthy source answers one chunk in well under a second
+  constexpr auto answerTimeout = 10s;
+
+  // Only a source the fill thread can reconnect and resume is worth cancelling
+  if (!m_seekPossible || m_sourceReadCancelled)
+    return;
+
+  const int64_t startedAt = m_sourceReadStart;
+  if (startedAt == 0 ||
+      SteadyMilliseconds() - startedAt <
+          std::chrono::duration_cast<std::chrono::milliseconds>(answerTimeout).count())
+    return;
+
+  // A held lock means the fill thread is already replacing the connection
+  std::unique_lock sourceLock(m_sourceSection, std::try_to_lock);
+  if (!sourceLock.owns_lock())
+    return;
+
+  // The read may have been answered, and another started, since it was checked
+  if (m_sourceReadStart != startedAt)
+    return;
+
+  m_sourceReadCancelled = true;
+
+  if (m_source->IoControl(IOControl::CANCEL_IO, nullptr) >= 0)
+    CLog::LogF(LOGWARNING,
+               "<{}> source has not answered a read for {} s at {} of {}, cancelling it to "
+               "reconnect",
+               m_sourcePath,
+               std::chrono::duration_cast<std::chrono::seconds>(answerTimeout).count(), m_writePos,
+               m_fileSize.load());
+}
+
 ssize_t CFileCache::Read(void* lpBuf, size_t uiBufSize)
 {
+  // The fill thread cannot notice its own blocked read; this thread can
+  CancelStalledSourceRead();
+
   std::unique_lock lock(m_sync);
   if (!m_pCache)
   {
@@ -573,6 +682,16 @@ retry:
     if (!m_sourcePositionValid)
     {
       SetLastError(m_seekError != 0 ? m_seekError : EIO);
+      return -1;
+    }
+
+    // Zero means end-of-file to every caller, so starvation has to surface as an error
+    if (iRc == 0 && m_readPos < m_fileSize)
+    {
+      CLog::LogF(LOGWARNING, "<{}> timeout waiting for data at {} of {}", m_sourcePath, m_readPos,
+                 m_fileSize.load());
+      // The wait above can outlast the stall timeout
+      CancelStalledSourceRead();
       return -1;
     }
   }
@@ -688,7 +807,9 @@ void CFileCache::Close()
   if (m_pCache)
     m_pCache->Close();
 
+  std::unique_lock sourceLock(m_sourceSection);
   m_source->Close();
+  m_sourceOpen = false;
 }
 
 int64_t CFileCache::GetPosition()
@@ -711,6 +832,8 @@ void CFileCache::StopThread(bool bWait /*= true*/)
 
 const std::string CFileCache::GetProperty(XFILE::FileProperty type, const std::string &name) const
 {
+  // The fill thread may be replacing the source to reconnect
+  std::unique_lock sourceLock(m_sourceSection);
   if (!m_source->GetImplementation())
     return IFile::GetProperty(type, name);
 
