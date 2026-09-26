@@ -607,18 +607,21 @@ EVENT_RESULT CGUIControlGroupList::OnMouseEvent(const CPoint& point,
   if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     // find the current control and move to the next or previous
+    const float target = m_scroller.GetTargetValue();
     float offset = 0;
     for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
     {
       CGUIControl *control = *it;
       if (!control->IsVisible()) continue;
       float nextOffset = offset + Size(control) + m_itemGap;
-      if (event.m_id == ACTION_MOUSE_WHEEL_DOWN && nextOffset > m_scroller.GetValue() && m_scroller.GetValue() < m_totalSize - Size()) // past our current offset
+      if (event.m_id == ACTION_MOUSE_WHEEL_DOWN && nextOffset > target &&
+          target < m_totalSize - Size()) // past our target offset
       {
         ScrollTo(nextOffset);
         return EVENT_RESULT_HANDLED;
       }
-      else if (event.m_id == ACTION_MOUSE_WHEEL_UP && nextOffset >= m_scroller.GetValue() && m_scroller.GetValue() > 0) // at least at our current offset
+      else if (event.m_id == ACTION_MOUSE_WHEEL_UP && nextOffset >= target &&
+               target > 0) // at least at our target offset
       {
         ScrollTo(offset);
         return EVENT_RESULT_HANDLED;
