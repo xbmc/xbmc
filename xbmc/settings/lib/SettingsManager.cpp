@@ -24,7 +24,7 @@
 #include <unordered_set>
 #include <utility>
 
-const uint32_t CSettingsManager::Version = 4;
+const uint32_t CSettingsManager::Version = 5;
 const uint32_t CSettingsManager::MinimumSupportedVersion = 0;
 
 namespace
