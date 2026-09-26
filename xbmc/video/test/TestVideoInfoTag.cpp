@@ -26,6 +26,81 @@
 
 using KODI::UTILS::CLanguageTag;
 
+TEST(TestVideoInfoTag, SaveNfoVersion)
+{
+  for (const auto* root : {"movie", "tvshow", "episodedetails", "musicvideo"})
+  {
+    SCOPED_TRACE(root);
+    CVideoInfoTag details;
+    CXBMCTinyXML doc;
+    ASSERT_TRUE(details.Save(&doc, root));
+    ASSERT_NE(nullptr, doc.RootElement());
+    EXPECT_STREQ(root, doc.RootElement()->Value());
+    EXPECT_STREQ("0", doc.RootElement()->Attribute("version"));
+    int version = -1;
+    EXPECT_EQ(TIXML_SUCCESS, doc.RootElement()->QueryIntAttribute("version", &version));
+    EXPECT_EQ(0, version);
+
+    TiXmlElement container("videodb");
+    ASSERT_TRUE(details.Save(&container, root));
+    EXPECT_EQ(nullptr, container.Attribute("version"));
+    EXPECT_TRUE(
+        XMLUtils::AreNodesSerializationsEqual(doc.RootElement(), container.FirstChildElement()));
+  }
+}
+
+TEST(TestVideoInfoTag, SaveUnrelatedRootWithoutNfoVersion)
+{
+  CVideoInfoTag details;
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(details.Save(&doc, "details"));
+  ASSERT_NE(nullptr, doc.RootElement());
+  EXPECT_EQ(nullptr, doc.RootElement()->Attribute("version"));
+}
+
+TEST(TestVideoInfoTag, NfoVersionZeroPreservesLoadAndRoundTrip)
+{
+  for (const std::string root : {"movie", "tvshow", "episodedetails", "musicvideo"})
+  {
+    SCOPED_TRACE(root);
+    std::string unversionedExport;
+    for (const std::string version : {"", " version=\"0\""})
+    {
+      SCOPED_TRACE(version);
+      CXBMCTinyXML doc;
+      doc.Parse("<" + root + version +
+                "><title>Test title</title><plot>Test plot</plot>"
+                "<id>tt1234567</id><year>2001</year><rating>7.5</rating><votes>123</votes></" +
+                root + ">");
+
+      CVideoInfoTag details;
+      ASSERT_TRUE(details.Load(doc.RootElement(), true, false));
+      EXPECT_EQ("Test title", details.m_strTitle);
+      EXPECT_EQ("Test plot", details.m_strPlot);
+      EXPECT_EQ("tt1234567", details.GetUniqueID());
+      EXPECT_EQ(2001, details.GetYear());
+      EXPECT_FLOAT_EQ(7.5f, details.GetRating().rating);
+      EXPECT_EQ(123, details.GetRating().votes);
+
+      CXBMCTinyXML saved;
+      ASSERT_TRUE(details.Save(&saved, root));
+      const std::string exported = XMLUtils::NodeStringSerialization(
+          saved.RootElement(), XMLUtils::SerializationFormat::COMPACT);
+      if (version.empty())
+        unversionedExport = exported;
+      else
+        EXPECT_EQ(unversionedExport, exported);
+
+      CVideoInfoTag reloaded;
+      ASSERT_TRUE(reloaded.Load(saved.RootElement(), true, false));
+      CXBMCTinyXML resaved;
+      ASSERT_TRUE(reloaded.Save(&resaved, root));
+      EXPECT_EQ(exported, XMLUtils::NodeStringSerialization(
+                              resaved.RootElement(), XMLUtils::SerializationFormat::COMPACT));
+    }
+  }
+}
+
 TEST(TestVideoInfoTag, ReadTVShowSeasons)
 {
   const std::string document =

@@ -577,6 +577,8 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
 
   // we start with a <tag> tag
   TiXmlElement albumElement(tag.c_str());
+  if (tag == "album")
+    albumElement.SetAttribute("version", 0);
   TiXmlNode *album = node->InsertEndChild(albumElement);
 
   if (!album) return false;
