@@ -89,15 +89,7 @@ void CGUITextureGL::Begin(KODI::UTILS::COLOR::Color color)
 
   if (hasAlpha)
   {
-    // See CGUIFontTTFGL::FirstBegin for rationale. SDR uses accumulator
-    // coverage alpha; HDR FBO composite uses a compensated squared-alpha
-    // blend because the FBO is color-transformed to PQ before composite,
-    // and alpha blending in non-linear space is mathematically wrong.
-    if (CServiceBroker::GetWinSystem()->IsHdrComposite())
-      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA,
-                          GL_ONE_MINUS_SRC_ALPHA);
-    else
-      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
     glEnable(GL_BLEND);
   }
   else
@@ -282,7 +274,7 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
 
   if (blending)
   {
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
     glEnable(GL_BLEND);
   }
   else
