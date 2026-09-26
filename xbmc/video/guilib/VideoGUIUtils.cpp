@@ -20,6 +20,7 @@
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "guilib/GUIComponent.h"
@@ -686,6 +687,23 @@ std::string GetResumeString(int64_t startOffset, unsigned int partNumber)
     resumeString += startOffset > 0 ? " (" + partString + ")" : " " + partString;
   }
   return resumeString;
+}
+
+bool ChooseDiscPlaylist(CFileItem& item)
+{
+  item.SetProperty("force_playlist_selection", true);
+
+  CFileItemList items;
+  const bool chosen{XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
+                        item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU) &&
+                    !items.IsEmpty()};
+  if (chosen)
+    item = *items[0];
+
+  // The flag is copied, so clear it as choice made
+  item.ClearProperty("force_playlist_selection");
+
+  return chosen;
 }
 
 void NotifyItemPathChanged(const CFileItem& item, const std::string& oldPath, int oldFileId)
