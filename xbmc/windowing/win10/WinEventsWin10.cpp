@@ -20,6 +20,8 @@
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "peripherals/Peripherals.h"
+#include "peripherals/devices/Peripheral.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "settings/AdvancedSettings.h"
@@ -189,6 +191,14 @@ void CWinEventsWin10::UpdateWindowSize()
   if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
       newEvent.resize.width > 0 && newEvent.resize.height > 0)
     MessagePush(&newEvent);
+}
+
+bool CWinEventsWin10::HasJoystickPeripheral() const
+{
+  if (!CServiceBroker::IsServiceManagerUp())
+    return false;
+
+  return CServiceBroker::GetPeripherals().HasPeripheralWithFeature(FEATURE_JOYSTICK);
 }
 
 void CWinEventsWin10::OnResize(float width, float height)
@@ -450,7 +460,8 @@ void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey,
   MessagePush(&newEvent);
 }
 
-void CWinEventsWin10::OnAcceleratorKeyActivated(const CoreDispatcher&, const AcceleratorKeyEventArgs& args)
+void CWinEventsWin10::OnAcceleratorKeyActivated(const CoreDispatcher& sender,
+                                                const AcceleratorKeyEventArgs& args)
 {
   static auto lockedState = CoreVirtualKeyStates::Locked;
   static VirtualKey keyStore = VirtualKey::None;
@@ -458,6 +469,14 @@ void CWinEventsWin10::OnAcceleratorKeyActivated(const CoreDispatcher&, const Acc
   // skip if device is remote control
   if (m_remote && m_remote->IsRemoteDevice(args.DeviceId().c_str()))
     return;
+
+  // xbox fallback if peripheral.joystick is not initialized yet
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox && m_remote &&
+      CRemoteControlXbox::IsGamepadVirtualKey(args.VirtualKey()) && !HasJoystickPeripheral())
+  {
+    m_remote->HandleAcceleratorKey(sender, args);
+    return;
+  }
 
   bool isDown = false;
   unsigned keyCode = 0;

@@ -154,12 +154,16 @@ int32_t CRemoteControlXbox::TranslateVirtualKey(VirtualKey vk)
   switch (vk)
   {
   case VirtualKey::GamepadDPadLeft:
+  case VirtualKey::GamepadLeftThumbstickLeft:
     return XINPUT_IR_REMOTE_LEFT;
   case VirtualKey::GamepadDPadUp:
+  case VirtualKey::GamepadLeftThumbstickUp:
     return XINPUT_IR_REMOTE_UP;
   case VirtualKey::GamepadDPadRight:
+  case VirtualKey::GamepadLeftThumbstickRight:
     return XINPUT_IR_REMOTE_RIGHT;
   case VirtualKey::GamepadDPadDown:
+  case VirtualKey::GamepadLeftThumbstickDown:
     return XINPUT_IR_REMOTE_DOWN;
   case VirtualKey::GamepadA:
     return XINPUT_IR_REMOTE_SELECT;
@@ -204,6 +208,40 @@ int32_t CRemoteControlXbox::TranslateVirtualKey(VirtualKey vk)
   default:
     CLog::LogF(LOGDEBUG, "unknown vrtual key {}", static_cast<int>(vk));
     return 0;
+  }
+}
+
+bool CRemoteControlXbox::IsGamepadVirtualKey(VirtualKey vk)
+{
+  switch (vk)
+  {
+    case VirtualKey::GamepadA:
+    case VirtualKey::GamepadB:
+    case VirtualKey::GamepadX:
+    case VirtualKey::GamepadY:
+    case VirtualKey::GamepadRightShoulder:
+    case VirtualKey::GamepadLeftShoulder:
+    case VirtualKey::GamepadLeftTrigger:
+    case VirtualKey::GamepadRightTrigger:
+    case VirtualKey::GamepadDPadUp:
+    case VirtualKey::GamepadDPadDown:
+    case VirtualKey::GamepadDPadLeft:
+    case VirtualKey::GamepadDPadRight:
+    case VirtualKey::GamepadMenu:
+    case VirtualKey::GamepadView:
+    case VirtualKey::GamepadLeftThumbstickButton:
+    case VirtualKey::GamepadRightThumbstickButton:
+    case VirtualKey::GamepadLeftThumbstickUp:
+    case VirtualKey::GamepadLeftThumbstickDown:
+    case VirtualKey::GamepadLeftThumbstickRight:
+    case VirtualKey::GamepadLeftThumbstickLeft:
+    case VirtualKey::GamepadRightThumbstickUp:
+    case VirtualKey::GamepadRightThumbstickDown:
+    case VirtualKey::GamepadRightThumbstickRight:
+    case VirtualKey::GamepadRightThumbstickLeft:
+      return true;
+    default:
+      return false;
   }
 }
 
