@@ -3798,6 +3798,11 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
+        <setting id="powermanagement.wakemanualdpms" type="boolean" label="14129" help="36194">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="powermanagement.restartplayer" type="boolean" label="1451" help="36416">
           <level>1</level>
           <default>true</default>
