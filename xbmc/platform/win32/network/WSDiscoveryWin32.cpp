@@ -183,6 +183,20 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::QueryInterface(REFIID riid, v
   return S_OK;
 }
 
+bool CClientNotificationSink::ThereAreServers()
+{
+  std::unique_lock lock(m_criticalSection);
+
+  return !m_serversIPs.empty();
+}
+
+std::vector<std::wstring> CClientNotificationSink::GetServersIPs()
+{
+  std::unique_lock lock(m_criticalSection);
+
+  return m_serversIPs;
+}
+
 ULONG STDMETHODCALLTYPE CClientNotificationSink::AddRef()
 {
   ULONG newRefCount = InterlockedIncrement(&m_cRef);

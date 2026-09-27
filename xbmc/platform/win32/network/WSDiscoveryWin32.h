@@ -34,8 +34,8 @@ public:
   ULONG STDMETHODCALLTYPE AddRef();
   ULONG STDMETHODCALLTYPE Release();
 
-  bool ThereAreServers() { return m_serversIPs.size() > 0; }
-  const std::vector<std::wstring>& GetServersIPs() const { return m_serversIPs; }
+  bool ThereAreServers();
+  std::vector<std::wstring> GetServersIPs();
 
 private:
   std::vector<std::wstring> m_serversIPs;
