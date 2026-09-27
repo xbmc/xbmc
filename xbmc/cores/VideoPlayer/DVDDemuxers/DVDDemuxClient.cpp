@@ -737,6 +737,11 @@ void CDVDDemuxClient::SetVideoResolution(unsigned int width, unsigned int height
   }
 }
 
+bool CDVDDemuxClient::IsStreaming() const
+{
+  return true;
+}
+
 bool CDVDDemuxClient::CodecHasExtraData(AVCodecID id)
 {
   switch (id)
