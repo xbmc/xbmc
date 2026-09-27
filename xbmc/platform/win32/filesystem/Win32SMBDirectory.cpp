@@ -659,9 +659,9 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
   {
     for (const auto& server : wsd.GetServers())
     {
-      std::wstring hostname = wsd.ResolveHostName(server);
       std::string shareNameUtf8;
-      if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
+      if (g_charsetConverter.wToUTF8(server.hostName, shareNameUtf8, true) &&
+          !shareNameUtf8.empty())
       {
         CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
         pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');

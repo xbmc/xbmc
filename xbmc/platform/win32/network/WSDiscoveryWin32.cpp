@@ -15,6 +15,7 @@
 #include "platform/win32/CharsetConverter.h"
 
 #include <algorithm>
+#include <future>
 #include <mutex>
 #include <string_view>
 
@@ -24,6 +25,7 @@
 #include <windns.h>
 #pragma comment(lib, "dnsapi.lib")
 
+#include <wrl/client.h>
 #include <ws2tcpip.h>
 
 using KODI::PLATFORM::WINDOWS::FromW;
@@ -441,6 +443,21 @@ std::vector<WSDServer> CClientNotificationSink::GetServers()
   return m_servers;
 }
 
+void CClientNotificationSink::SetHostName(const WSDServer& server, const std::wstring& hostName)
+{
+  std::unique_lock lock(m_criticalSection);
+
+  // skip if the server has said Bye or moved while it was being resolved
+  auto it = std::ranges::find_if(m_servers,
+                                 [&server](const WSDServer& known)
+                                 {
+                                   return known.endpoint == server.endpoint &&
+                                          known.ip == server.ip && known.xaddr == server.xaddr;
+                                 });
+  if (it != m_servers.end())
+    it->hostName = hostName;
+}
+
 ULONG STDMETHODCALLTYPE CClientNotificationSink::AddRef()
 {
   ULONG newRefCount = InterlockedIncrement(&m_cRef);
@@ -472,6 +489,8 @@ CWSDiscoveryWindows::~CWSDiscoveryWindows()
 
 bool CWSDiscoveryWindows::StartServices()
 {
+  std::unique_lock lock(m_criticalSection);
+
   if (m_initialized)
     return true;
 
@@ -503,6 +522,8 @@ bool CWSDiscoveryWindows::StartServices()
 
 bool CWSDiscoveryWindows::StopServices()
 {
+  std::unique_lock lock(m_criticalSection);
+
   if (m_initialized)
   {
     CLog::Log(LOGINFO, "[WS-Discovery]: terminating");
@@ -524,11 +545,15 @@ bool CWSDiscoveryWindows::StopServices()
 
 bool CWSDiscoveryWindows::IsRunning()
 {
+  std::unique_lock lock(m_criticalSection);
+
   return m_initialized;
 }
 
 bool CWSDiscoveryWindows::ThereAreServers()
 {
+  std::unique_lock lock(m_criticalSection);
+
   if (!m_sink)
     return false;
 
@@ -537,10 +562,37 @@ bool CWSDiscoveryWindows::ThereAreServers()
 
 std::vector<WSDServer> CWSDiscoveryWindows::GetServers()
 {
-  if (!m_sink)
+  Microsoft::WRL::ComPtr<CClientNotificationSink> sink;
+  {
+    std::unique_lock lock(m_criticalSection);
+    sink = m_sink;
+  }
+
+  if (!sink)
     return {};
 
-  return m_sink->GetServers();
+  std::vector<WSDServer> servers = sink->GetServers();
+
+  // in parallel, as a lookup can take as long as a DNS timeout
+  std::vector<std::pair<WSDServer*, std::future<std::wstring>>> lookups;
+  for (auto& server : servers)
+  {
+    if (server.hostName.empty())
+      lookups.emplace_back(&server, std::async(std::launch::async, &ResolveHostName, server));
+  }
+
+  for (auto& [server, lookup] : lookups)
+  {
+    server->hostName = lookup.get();
+
+    // an unresolved name isn't cached, so it's retried on the next browse
+    if (server->hostName.empty())
+      server->hostName = server->ip;
+    else
+      sink->SetHostName(*server, server->hostName);
+  }
+
+  return servers;
 }
 
 std::wstring CWSDiscoveryWindows::ResolveHostName(const WSDServer& server)
@@ -550,6 +602,6 @@ std::wstring CWSDiscoveryWindows::ResolveHostName(const WSDServer& server)
   if (hostName.empty())
     hostName = QueryReverseDNS(server.ip);
 
-  return hostName.empty() ? server.ip : hostName;
+  return hostName;
 }
 } // namespace WSDiscovery
