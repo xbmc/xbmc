@@ -15,6 +15,7 @@
 #include "platform/win32/CharsetConverter.h"
 
 #include <algorithm>
+#include <chrono>
 #include <future>
 #include <mutex>
 #include <string_view>
@@ -597,10 +598,22 @@ std::vector<WSDServer> CWSDiscoveryWindows::GetServers()
 
 std::wstring CWSDiscoveryWindows::ResolveHostName(const WSDServer& server)
 {
+  const auto start = std::chrono::steady_clock::now();
+
+  std::string_view source = "WSD metadata";
   std::wstring hostName = QueryWSDComputerName(server);
 
   if (hostName.empty())
+  {
+    source = "reverse DNS";
     hostName = QueryReverseDNS(server.ip);
+  }
+
+  CLog::Log(LOGDEBUG, LOGWSDISCOVERY, "[WS-Discovery]: '{}' resolved to '{}' by {} in {} ms",
+            FromW(server.ip), FromW(hostName), source,
+            std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() -
+                                                                  start)
+                .count());
 
   return hostName;
 }
