@@ -45,7 +45,8 @@ public:
   void OnPointerExited(const winrt::Windows::UI::Core::CoreWindow&, const winrt::Windows::UI::Core::PointerEventArgs&);
   void OnPointerWheelChanged(const winrt::Windows::UI::Core::CoreWindow&, const winrt::Windows::UI::Core::PointerEventArgs&);
   // keyboard
-  void OnAcceleratorKeyActivated(const winrt::Windows::UI::Core::CoreDispatcher&, const winrt::Windows::UI::Core::AcceleratorKeyEventArgs&);
+  void OnAcceleratorKeyActivated(const winrt::Windows::UI::Core::CoreDispatcher& sender,
+                                 const winrt::Windows::UI::Core::AcceleratorKeyEventArgs&);
 
   // DisplayInformation event handlers.
   static void OnDpiChanged(const winrt::Windows::Graphics::Display::DisplayInformation&, const winrt::Windows::Foundation::IInspectable&);
@@ -69,6 +70,7 @@ private:
   void UpdateWindowSize();
   void Kodi_KeyEvent(unsigned int vkey, uint32_t scancode, unsigned keycode, bool isDown);
   void HandleWindowSizeChanged();
+  bool HasJoystickPeripheral() const;
 
   Concurrency::concurrent_queue<XBMC_Event> m_events;
   winrt::Windows::Media::SystemMediaTransportControls m_smtc{ nullptr };
