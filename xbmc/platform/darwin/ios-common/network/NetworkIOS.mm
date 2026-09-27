@@ -294,8 +294,14 @@ std::vector<CNetworkInterface*>& CNetworkIOS::GetInterfaceList()
   return reinterpret_cast<std::vector<CNetworkInterface*>&>(m_interfaces);
 }
 
+std::unique_lock<std::mutex> CNetworkIOS::LockInterfaceList()
+{
+  return std::unique_lock(m_interfaceMutex);
+}
+
 CNetworkInterface* CNetworkIOS::GetFirstConnectedInterface()
 {
+  [[maybe_unused]] auto interfaceListLock = LockInterfaceList();
   // Renew m_interfaces to be able to handle hard interface changes (adapters removed/added)
   // This allows interfaces to be discovered if none are available at start eg. (Airplane mode on)
   queryInterfaceList();

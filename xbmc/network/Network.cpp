@@ -145,6 +145,7 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
       && StringUtils::EqualsNoCase(hostname, myhostname))
     return true;
 
+  [[maybe_unused]] auto interfaceListLock = LockInterfaceList();
   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
   while (iter != ifaces.end())
@@ -161,6 +162,7 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
 
 CNetworkInterface* CNetworkBase::GetFirstConnectedInterface()
 {
+  [[maybe_unused]] auto interfaceListLock = LockInterfaceList();
   CNetworkInterface* fallbackInterface = nullptr;
   for (CNetworkInterface* iface : GetInterfaceList())
   {
@@ -178,28 +180,30 @@ CNetworkInterface* CNetworkBase::GetFirstConnectedInterface()
 
 bool CNetworkBase::HasInterfaceForIP(unsigned long address)
 {
-   unsigned long subnet;
-   unsigned long local;
-   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
-   std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
-   while (iter != ifaces.end())
-   {
-      CNetworkInterface* iface = *iter;
-      if (iface && iface->IsConnected())
-      {
-         subnet = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
-         local = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
-         if( (address & subnet) == (local & subnet) )
-            return true;
-      }
-      ++iter;
-   }
+  [[maybe_unused]] auto interfaceListLock = LockInterfaceList();
+  unsigned long subnet;
+  unsigned long local;
+  std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+  std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+  while (iter != ifaces.end())
+  {
+    CNetworkInterface* iface = *iter;
+    if (iface && iface->IsConnected())
+    {
+      subnet = ntohl(inet_addr(iface->GetCurrentNetmask().c_str()));
+      local = ntohl(inet_addr(iface->GetCurrentIPAddress().c_str()));
+      if ((address & subnet) == (local & subnet))
+        return true;
+    }
+    ++iter;
+  }
 
    return false;
 }
 
 bool CNetworkBase::IsAvailable(void)
 {
+  [[maybe_unused]] auto interfaceListLock = LockInterfaceList();
   const std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
   return (!ifaces.empty());
 }
