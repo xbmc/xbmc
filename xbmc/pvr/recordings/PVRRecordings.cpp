@@ -53,6 +53,8 @@ bool CPVRRecordings::UpdateFromClients(const std::vector<std::shared_ptr<CPVRCli
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(clients, this, false, failedClients);
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(clients, this, true, failedClients);
 
+  m_videoDatabaseMetadata.clear();
+
   // remove recordings that were deleted at the backend
   for (auto it = m_recordings.cbegin(); it != m_recordings.cend();)
   {
@@ -236,7 +238,7 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
   }
   else
   {
-    tag->UpdateMetadata(GetVideoDatabase(), client);
+    tag->UpdateMetadata(GetVideoDatabaseMetadata(tag->m_strFileNameAndPath), client);
     m_iLastId++;
     tag->SetRecordingID(m_iLastId);
     m_recordings.try_emplace({tag->ClientID(), tag->ClientRecordingID()}, tag);
@@ -377,6 +379,20 @@ CVideoDatabase& CPVRRecordings::GetVideoDatabase()
   }
 
   return *m_database;
+}
+
+const CVideoInfoTag* CPVRRecordings::GetVideoDatabaseMetadata(const std::string& fileNameAndPath)
+{
+  std::string path;
+  std::string fileName;
+  URIUtils::Split(fileNameAndPath, path, fileName);
+
+  const auto [it, inserted] = m_videoDatabaseMetadata.try_emplace(path);
+  if (inserted)
+    GetVideoDatabase().GetFileMetadataForPath(path, (*it).second);
+
+  const auto itFile = (*it).second.find(fileName);
+  return itFile == (*it).second.cend() ? nullptr : &(*itFile).second;
 }
 
 int CPVRRecordings::CleanupCachedImages()

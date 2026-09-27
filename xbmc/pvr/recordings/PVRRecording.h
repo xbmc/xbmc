@@ -165,12 +165,12 @@ public:
   std::vector<EDL::Edit> GetEdl() const;
 
   /*!
-   * @brief Get metadata like the resume point and play count from the database if the
-   * client doesn't handle it itself.
-   * @param db The database to read the data from.
+   * @brief Take over metadata like the resume point and play count obtained from the video
+   * database, for the values the client doesn't handle itself.
+   * @param metadata The metadata, or nullptr if the recording is unknown to the video database.
    * @param client The client this recording belongs to.
    */
-  void UpdateMetadata(CVideoDatabase& db, const CPVRClient& client);
+  void UpdateMetadata(const CVideoInfoTag* metadata, const CPVRClient& client);
 
   /*!
    * @brief Delete metadata like the resume point and play count from the database.

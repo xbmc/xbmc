@@ -18,6 +18,7 @@
 
 #include <array>
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <set>
@@ -542,6 +543,15 @@ public:
   bool GetStreamDetails(CFileItem& item);
   bool GetStreamDetails(CVideoInfoTag& tag);
   bool GetStreamDetails(const std::string& filenameAndPath, CStreamDetails& details);
+  /*! \brief Get play count, last played, resume point and stream details of all files of a path
+   Obtaining the metadata of many files one by one is expensive if the database connection has
+   high latency, as every single value requires its own round trip.
+   \param strPath the path to get the file metadata for
+   \param metadata filled with a tag per file, keyed by file name
+   \return true on success, false otherwise
+   */
+  bool GetFileMetadataForPath(const std::string& strPath,
+                              std::map<std::string, CVideoInfoTag>& metadata);
   bool GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id);
   CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
 
@@ -1282,6 +1292,13 @@ private:
    \sa UpdateLastPlayed
    */
   CDateTime GetLastPlayed(int iFileId);
+
+  /*! \brief Add the stream described by the current row of the given dataset to the given details
+   \param ds dataset whose current row starts with the columns of the streamdetails table
+   \param details stream details to add the stream to
+   \return true if a stream was added, false otherwise
+   */
+  static bool AddStreamDetailFromRow(dbiplus::Dataset& ds, CStreamDetails& details);
 
   bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails, CFileItem* item);
 
