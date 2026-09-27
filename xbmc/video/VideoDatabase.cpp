@@ -10457,6 +10457,41 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           InvalidatePathHash(pathToInvalidate);
         CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
 
+        // The hash of a show folder covers every folder below it, and a show can have more
+        // than one folder. Clear them all for a show that loses episodes, or the scanner skips
+        // the whole show when its files come back unchanged.
+        if (!episodeIDs.empty())
+        {
+          std::string episodes;
+          for (const int idEpisode : episodeIDs)
+            episodes += StringUtils::Format("{},", idEpisode);
+
+          std::vector<std::string> showPaths;
+          m_pDS->query(PrepareSQL("SELECT DISTINCT path.strPath FROM path "
+                                  "JOIN tvshowlinkpath ON tvshowlinkpath.idPath = path.idPath "
+                                  "JOIN episode ON episode.idShow = tvshowlinkpath.idShow "
+                                  "WHERE episode.idEpisode IN (%s)",
+                                  StringUtils::TrimRight(episodes, ",").c_str()));
+          while (!m_pDS->eof())
+          {
+            showPaths.emplace_back(m_pDS->fv(0).get_asString());
+            m_pDS->next();
+          }
+          m_pDS->close();
+
+          size_t cleared = 0;
+          for (const auto& showPath : showPaths)
+          {
+            // A folder that has gone keeps its hash, so the path pass below can still remove it
+            if (CDirectory::Exists(showPath, false))
+            {
+              ClearPathHash(showPath);
+              ++cleared;
+            }
+          }
+          CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} show path hashes", cleared);
+        }
+
         // If a movie is listed for deletion because the file of its default version has gone,
         // promote a different version (first one written) and keep the movie
         for (auto it = movieIDs.begin(); it != movieIDs.end();)
