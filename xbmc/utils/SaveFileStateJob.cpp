@@ -279,6 +279,10 @@ void CSaveFileState::DoWork(CFileItem& item,
 
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
+
+          // Widgets reload on the announcement, which must follow the file change
+          if (replacedFileId > 0)
+            CVideoDatabase::AnnounceUpdate(tag->m_type, tag->m_iDbId);
         }
 
         CLog::LogF(LOGDEBUG, "Finished saving file state for video item {} (listing update {})",
