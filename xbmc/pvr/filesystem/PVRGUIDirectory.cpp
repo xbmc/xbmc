@@ -1068,6 +1068,36 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         channelsItem->SetArt("icon", "DefaultPVRChannels.png");
         channelsItem->SetProperty("totalcount", channelCount);
         results.Add(std::move(channelsItem));
+
+        const auto providerGroups{groups->Get(path.IsRadio())->GetMembers(true)};
+        for (const auto& group : providerGroups)
+        {
+          if (group->GroupType() != PVR_GROUP_TYPE_CLIENT ||
+              group->GetClientID() != path.GetClientId())
+            continue;
+
+          unsigned int visibleChannelCount{0};
+          for (const auto& member : group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE))
+          {
+            const auto& channel = member->Channel();
+            if (channel->ClientID() == path.GetClientId() &&
+                (path.GetProviderUid() == PVR_PROVIDER_INVALID_UID ||
+                 channel->ClientProviderUid() == path.GetProviderUid()))
+              ++visibleChannelCount;
+          }
+          if (visibleChannelCount == 0)
+            continue;
+
+          std::string targetPath{group->GetPath().AsString()};
+          targetPath = StringUtils::Format("{}?clientid={}&providerid={}", targetPath,
+                                           path.GetClientId(), path.GetProviderUid());
+          auto groupItem{std::make_shared<CFileItem>(targetPath, true)};
+          groupItem->SetLabel(group->GroupName());
+          groupItem->SetArt("icon", "DefaultPVRChannels.png");
+          groupItem->SetProperty("provider.channelgroup", true);
+          groupItem->SetProperty("totalcount", visibleChannelCount);
+          results.Add(std::move(groupItem));
+        }
       }
 
       const std::shared_ptr<const CPVRRecordings> recordings{

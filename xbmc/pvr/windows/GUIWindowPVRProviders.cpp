@@ -24,6 +24,7 @@
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 #include <memory>
 #include <string>
@@ -112,6 +113,15 @@ bool CGUIWindowPVRProvidersBase::OnMessage(CGUIMessage& message)
                 }
                 else if (path.IsProvider())
                 {
+                  if (item->GetProperty("provider.channelgroup").asBoolean())
+                  {
+                    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(
+                        path.IsRadio() ? WINDOW_RADIO_CHANNELS : WINDOW_TV_CHANNELS,
+                        item->GetPath());
+                    ret = true;
+                    break;
+                  }
+
                   const CPVRProvidersPath selectedPath{item->GetPath()};
                   if (selectedPath.IsChannels())
                   {
