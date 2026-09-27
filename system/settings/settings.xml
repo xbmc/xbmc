@@ -1027,7 +1027,7 @@
         </setting>
         <setting id="videolibrary.similarvideoaction" type="integer" label="40222" help="40203">
           <level>1</level>
-          <default>0</default>
+          <default>2</default>
           <constraints>
             <options>
               <option label="13551">0</option> <!-- off -->
