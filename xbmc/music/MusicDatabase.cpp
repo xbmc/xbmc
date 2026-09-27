@@ -115,6 +115,43 @@ void AnnounceUpdate(const std::string& content, int id, bool added = false)
     data["added"] = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnUpdate", data);
 }
+
+class CTemporaryTable
+{
+public:
+  CTemporaryTable(dbiplus::Dataset& ds, std::string name, const std::string& columns)
+    : m_ds(ds),
+      m_name(std::move(name))
+  {
+    m_ds.exec("DROP TABLE IF EXISTS " + m_name);
+    m_ds.exec("CREATE TABLE " + m_name + " " + columns);
+  }
+
+  ~CTemporaryTable()
+  {
+    try
+    {
+      m_ds.exec("DROP TABLE IF EXISTS " + m_name);
+    }
+    catch (const dbiplus::DbErrors& e)
+    {
+      CLog::Log(LOGWARNING, "Unable to drop temporary table {}: {}", m_name, e.getMsg());
+    }
+    catch (...)
+    {
+      CLog::Log(LOGWARNING, "Unable to drop temporary table {}", m_name);
+    }
+  }
+
+  CTemporaryTable(const CTemporaryTable&) = delete;
+  CTemporaryTable& operator=(const CTemporaryTable&) = delete;
+  CTemporaryTable(CTemporaryTable&&) = delete;
+  CTemporaryTable& operator=(CTemporaryTable&&) = delete;
+
+private:
+  dbiplus::Dataset& m_ds;
+  const std::string m_name;
+};
 } // unnamed namespace
 
 CMusicDatabase::CMusicDatabase() : CDatabase(KODI::DATABASE::TYPE_MUSIC)
@@ -2376,15 +2413,10 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
     if (nullptr == m_pDS)
       return false;
 
-    /* Combine entries from discography and album tables
-       Can not use CREATE TEMPORARY TABLE as MySQL does not support updates of table using
-       correlated subqueries to a temp table. An updatable join to temp table would work in MySQL
-       but SQLite not support updatable joins.
-    */
-    m_pDS->exec("CREATE TABLE tempDisco "
-                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
-    m_pDS->exec("CREATE TABLE tempAlbum "
-                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
+    // MySQL cannot reference a temporary table twice in one statement, as the year fixup does.
+    const std::string columns{"(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)"};
+    const CTemporaryTable tempDisco{*m_pDS, "tempDisco", columns};
+    const CTemporaryTable tempAlbum{*m_pDS, "tempAlbum", columns};
 
     std::string strSQL;
     strSQL = PrepareSQL("INSERT INTO tempDisco(strAlbum, strYear, mbid, idAlbum) "
@@ -2471,15 +2503,15 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
 
     // cleanup
     m_pDS->close();
-    m_pDS->exec("DROP TABLE tempDisco");
-    m_pDS->exec("DROP TABLE tempAlbum");
 
     return true;
   }
+  catch (const dbiplus::DbErrors& e)
+  {
+    CLog::LogF(LOGERROR, "failed: {}", e.getMsg());
+  }
   catch (...)
   {
-    m_pDS->exec("DROP TABLE tempDisco");
-    m_pDS->exec("DROP TABLE tempAlbum");
     CLog::LogF(LOGERROR, "failed");
   }
   return false;
