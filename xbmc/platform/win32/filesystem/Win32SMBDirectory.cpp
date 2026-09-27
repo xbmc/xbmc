@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "utils/CharsetConverter.h"
+#include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -21,6 +22,7 @@
 #include "platform/win32/WIN32Util.h"
 #include "platform/win32/network/WSDiscoveryWin32.h"
 
+#include <algorithm>
 #include <cstdint>
 
 #include <Windows.h>
@@ -308,7 +310,9 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
     const auto entrVec = entries.GetList();
     for (const auto& it : entrVec)
     {
-      if (it->GetLabel() == searchStr)
+      // a server's label can differ from the host in its path, e.g. "name (IP)"
+      if (url.GetShareName().empty() ? CURL(it->GetPath()).GetHostName() == searchStr
+                                     : it->GetLabel() == searchStr)
         return true;
     }
     return false;
@@ -657,17 +661,36 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
   // Get servers immediately from WSD daemon process
   if (wsd.IsRunning() && wsd.ThereAreServers())
   {
-    for (const auto& server : wsd.GetServers())
+    const auto servers = wsd.GetServers();
+    std::vector<std::string> hostNames;
+    for (const auto& server : servers)
     {
-      std::string shareNameUtf8;
-      if (g_charsetConverter.wToUTF8(server.hostName, shareNameUtf8, true) &&
-          !shareNameUtf8.empty())
+      std::string hostName;
+      if (g_charsetConverter.wToUTF8(server.hostName, hostName, true) && !hostName.empty())
+        hostNames.push_back(hostName);
+    }
+
+    for (const auto& server : servers)
+    {
+      std::string hostName;
+      std::string ip;
+      if (!g_charsetConverter.wToUTF8(server.hostName, hostName, true) || hostName.empty() ||
+          !g_charsetConverter.wToUTF8(server.ip, ip, true))
+        continue;
+
+      // different machines announcing the same name can't share a path
+      std::string label = hostName;
+      if (std::ranges::count_if(hostNames, [&hostName](const std::string& name)
+                                { return StringUtils::EqualsNoCase(name, hostName); }) > 1)
       {
-        CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
-        pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-        pItem->SetFolder(true);
-        items.Add(pItem);
+        label = StringUtils::Format("{} ({})", hostName, ip);
+        hostName = ip;
       }
+
+      CFileItemPtr pItem = std::make_shared<CFileItem>(label);
+      pItem->SetPath(urlPrefixForItems + hostName + '/');
+      pItem->SetFolder(true);
+      items.Add(pItem);
     }
     return true;
   }
