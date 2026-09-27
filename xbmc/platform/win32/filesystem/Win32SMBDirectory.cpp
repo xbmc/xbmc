@@ -659,7 +659,7 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
   {
     for (const auto& server : wsd.GetServers())
     {
-      std::wstring hostname = wsd.ResolveHostName(server.ip);
+      std::wstring hostname = wsd.ResolveHostName(server);
       std::string shareNameUtf8;
       if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
       {

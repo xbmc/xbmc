@@ -16,9 +16,15 @@
 
 #include <algorithm>
 #include <mutex>
+#include <string_view>
+
+#include <winhttp.h>
+#pragma comment(lib, "winhttp.lib")
 
 #include <windns.h>
 #pragma comment(lib, "dnsapi.lib")
+
+#include <ws2tcpip.h>
 
 using KODI::PLATFORM::WINDOWS::FromW;
 using KODI::PLATFORM::WINDOWS::ToW;
@@ -26,6 +32,161 @@ using namespace WSDiscovery;
 
 namespace
 {
+// Same WS-Transfer Get request as the POSIX implementation (SMBWSDiscoveryListener.cpp)
+constexpr std::string_view WSD_GET_MSG =
+    "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    "<soap:Envelope "
+    "xmlns:pnpx=\"http://schemas.microsoft.com/windows/pnpx/2005/10\" "
+    "xmlns:pub=\"http://schemas.microsoft.com/windows/pub/2005/07\" "
+    "xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" "
+    "xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/08/addressing\" "
+    "xmlns:wsd=\"http://schemas.xmlsoap.org/ws/2005/04/discovery\" "
+    "xmlns:wsdp=\"http://schemas.xmlsoap.org/ws/2006/02/devprof\" "
+    "xmlns:wsx=\"http://schemas.xmlsoap.org/ws/2004/09/mex\"> "
+    "<soap:Header> "
+    "<wsa:To>{}</wsa:To> "
+    "<wsa:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</wsa:Action> "
+    "<wsa:MessageID>urn:uuid:{}</wsa:MessageID> "
+    "<wsa:ReplyTo> "
+    "<wsa:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</wsa:Address> "
+    "</wsa:ReplyTo> "
+    "<wsa:From> "
+    "<wsa:Address>urn:uuid:{}</wsa:Address> "
+    "</wsa:From> "
+    "</soap:Header> "
+    "<soap:Body /> "
+    "</soap:Envelope>";
+
+// The server is on the LAN, so no proxy and no redirects. Time and size are bounded so a
+// misbehaving server can't hold up browsing.
+bool PostToServer(const std::wstring& url, const std::string& body, std::string& response)
+{
+  URL_COMPONENTS parts{};
+  parts.dwStructSize = sizeof(parts);
+  parts.dwHostNameLength = static_cast<DWORD>(-1);
+  parts.dwUrlPathLength = static_cast<DWORD>(-1);
+  parts.dwExtraInfoLength = static_cast<DWORD>(-1);
+  if (!WinHttpCrackUrl(url.c_str(), 0, 0, &parts) || parts.nScheme != INTERNET_SCHEME_HTTP ||
+      parts.dwHostNameLength == 0)
+    return false;
+
+  const std::wstring host(parts.lpszHostName, parts.dwHostNameLength);
+  std::wstring path;
+  if (parts.dwUrlPathLength > 0)
+    path.append(parts.lpszUrlPath, parts.dwUrlPathLength);
+  if (parts.dwExtraInfoLength > 0)
+    path.append(parts.lpszExtraInfo, parts.dwExtraInfoLength);
+
+  using Handle = std::unique_ptr<void, decltype(&WinHttpCloseHandle)>;
+  const Handle session(WinHttpOpen(L"wsd", WINHTTP_ACCESS_TYPE_NO_PROXY, WINHTTP_NO_PROXY_NAME,
+                                   WINHTTP_NO_PROXY_BYPASS, 0),
+                       &WinHttpCloseHandle);
+  if (!session || !WinHttpSetTimeouts(session.get(), 2000, 2000, 2000, 2000))
+    return false;
+
+  const Handle connection(WinHttpConnect(session.get(), host.c_str(), parts.nPort, 0),
+                          &WinHttpCloseHandle);
+  if (!connection)
+    return false;
+
+  const Handle request(WinHttpOpenRequest(connection.get(), L"POST",
+                                          path.empty() ? nullptr : path.c_str(), nullptr,
+                                          WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0),
+                       &WinHttpCloseHandle);
+  DWORD redirectPolicy = WINHTTP_OPTION_REDIRECT_POLICY_NEVER;
+  if (!request ||
+      !WinHttpSetOption(request.get(), WINHTTP_OPTION_REDIRECT_POLICY, &redirectPolicy,
+                        sizeof(redirectPolicy)) ||
+      !WinHttpSendRequest(request.get(), L"Content-Type: application/soap+xml\r\n",
+                          static_cast<DWORD>(-1), const_cast<char*>(body.data()),
+                          static_cast<DWORD>(body.size()), static_cast<DWORD>(body.size()), 0) ||
+      !WinHttpReceiveResponse(request.get(), nullptr))
+    return false;
+
+  DWORD status = 0;
+  DWORD statusSize = sizeof(status);
+  if (!WinHttpQueryHeaders(request.get(), WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
+                           WINHTTP_HEADER_NAME_BY_INDEX, &status, &statusSize,
+                           WINHTTP_NO_HEADER_INDEX) ||
+      status != HTTP_STATUS_OK)
+    return false;
+
+  const ULONGLONG deadline = GetTickCount64() + 5000;
+  char buffer[4096];
+  while (true)
+  {
+    // WinHttpReadData waits to fill the buffer, so read only what has arrived
+    DWORD available = 0;
+    if (!WinHttpQueryDataAvailable(request.get(), &available))
+      return false;
+    if (available == 0)
+      return true;
+
+    DWORD read = 0;
+    if (!WinHttpReadData(request.get(), buffer, std::min<DWORD>(available, sizeof(buffer)), &read))
+      return false;
+    response.append(buffer, read);
+    if (response.size() > 64 * 1024 || GetTickCount64() > deadline)
+      return false;
+  }
+}
+
+// The name the server announces itself with, e.g. "MEDIAMASTER" from
+// <pub:Computer>MEDIAMASTER/Workgroup:WORKGROUP</pub:Computer>
+std::wstring QueryWSDComputerName(const WSDServer& server)
+{
+  if (server.endpoint.empty() || !server.xaddr.starts_with(L"http://"))
+    return {};
+
+  const std::string msg = StringUtils::Format(WSD_GET_MSG, FromW(server.endpoint),
+                                              StringUtils::CreateUUID(), StringUtils::CreateUUID());
+  std::string response;
+  if (!PostToServer(server.xaddr, msg, response))
+    return {};
+
+  constexpr std::string_view computerTag = "<pub:Computer>";
+  const size_t start = response.find(computerTag);
+  if (start == std::string::npos)
+    return {};
+
+  const size_t nameStart = start + computerTag.size();
+  const size_t nameEnd = response.find_first_of("/<", nameStart);
+  if (nameEnd == std::string::npos)
+    return {};
+
+  std::string name = response.substr(nameStart, nameEnd - nameStart);
+  const std::wstring hostName = ToW(StringUtils::Trim(name));
+
+  // SMB paths are opened by name, so the name must lead back to this server
+  ADDRINFOW hints{};
+  hints.ai_family = AF_INET;
+  ADDRINFOW* addresses = nullptr;
+  bool matches = false;
+  if (GetAddrInfoW(hostName.c_str(), nullptr, &hints, &addresses) == 0)
+  {
+    // the local machine announces itself on loopback, which its name never resolves to
+    matches = server.ip == L"127.0.0.1";
+    for (const ADDRINFOW* address = addresses; address && !matches; address = address->ai_next)
+    {
+      wchar_t ip[INET_ADDRSTRLEN]{};
+      matches =
+          InetNtopW(AF_INET, &reinterpret_cast<const sockaddr_in*>(address->ai_addr)->sin_addr, ip,
+                    INET_ADDRSTRLEN) &&
+          server.ip == ip;
+    }
+    FreeAddrInfoW(addresses);
+  }
+  if (!matches)
+  {
+    CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+              "[WS-Discovery]: Announced name '{}' doesn't resolve to '{}'", FromW(hostName),
+              FromW(server.ip));
+    return {};
+  }
+
+  return hostName;
+}
+
 std::wstring QueryReverseDNS(const std::wstring& serverIP)
 {
   const std::vector<std::string> ip = StringUtils::Split(FromW(serverIP), '.');
@@ -382,10 +543,13 @@ std::vector<WSDServer> CWSDiscoveryWindows::GetServers()
   return m_sink->GetServers();
 }
 
-std::wstring CWSDiscoveryWindows::ResolveHostName(const std::wstring& serverIP)
+std::wstring CWSDiscoveryWindows::ResolveHostName(const WSDServer& server)
 {
-  const std::wstring hostName = QueryReverseDNS(serverIP);
+  std::wstring hostName = QueryWSDComputerName(server);
 
-  return hostName.empty() ? serverIP : hostName;
+  if (hostName.empty())
+    hostName = QueryReverseDNS(server.ip);
+
+  return hostName.empty() ? server.ip : hostName;
 }
 } // namespace WSDiscovery
