@@ -92,6 +92,8 @@ bool CWinEventsWin10::MessagePump()
   // processes all pending events and exits immediately
   CoreWindow::GetForCurrentThread().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
+  TriggerGamepadScan();
+
   XBMC_Event pumpEvent;
   while (m_events.try_pop(pumpEvent))
   {
@@ -162,6 +164,18 @@ void CWinEventsWin10::InitEventHandlers(const CoreWindow& window)
   }
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
   {
+    using winrt::Windows::Gaming::Input::Gamepad;
+
+    m_gamepadScanRequested = std::make_shared<std::atomic<bool>>(false);
+    // WinRT callbacks can outlive unsubscription; defer service access to the UI thread.
+    const auto onGamepadChanged =
+        [scanRequested = m_gamepadScanRequested](const winrt::IInspectable&, const Gamepad&)
+    { scanRequested->store(true); };
+    m_gamepadAddedRevoker = Gamepad::GamepadAdded(winrt::auto_revoke, onGamepadChanged);
+    m_gamepadRemovedRevoker = Gamepad::GamepadRemoved(winrt::auto_revoke, onGamepadChanged);
+    if (Gamepad::Gamepads().Size() != 0)
+      m_gamepadScanRequested->store(true);
+
     m_remote = std::make_unique<CRemoteControlXbox>();
     m_remote->Initialize();
   }
@@ -198,6 +212,13 @@ bool CWinEventsWin10::HasJoystickPeripheral() const
     return false;
 
   return CServiceBroker::GetPeripherals().HasPeripheralWithFeature(FEATURE_JOYSTICK);
+}
+
+void CWinEventsWin10::TriggerGamepadScan()
+{
+  if (m_gamepadScanRequested && CServiceBroker::IsServiceManagerUp() &&
+      m_gamepadScanRequested->exchange(false))
+    CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
 }
 
 void CWinEventsWin10::OnResize(float width, float height)
@@ -477,6 +498,13 @@ void CWinEventsWin10::OnAcceleratorKeyActivated(const CoreDispatcher& sender,
        args.EventType() == CoreAcceleratorKeyEventType::SystemKeyUp) &&
       CRemoteControlXbox::IsMappedGamepadVirtualKey(args.VirtualKey()) && !HasJoystickPeripheral())
   {
+    if ((!args.KeyStatus().WasKeyDown || args.KeyStatus().IsKeyReleased) &&
+        m_gamepadInputScanTimeout.IsTimePast())
+    {
+      m_gamepadInputScanTimeout.Set(std::chrono::seconds(5));
+      m_gamepadScanRequested->store(true);
+      TriggerGamepadScan();
+    }
     m_remote->HandleAcceleratorKey(sender, args);
     return;
   }
