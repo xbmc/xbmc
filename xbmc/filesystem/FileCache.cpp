@@ -291,7 +291,7 @@ void CFileCache::Process()
     }
     else
     {
-      if (AbortableWait(m_seekEvent) != WAIT_SIGNALED || m_bStop)
+      if (!m_seekEvent.Wait() || m_bStop)
         break;
       seekRequested = true;
     }
