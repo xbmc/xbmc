@@ -64,7 +64,7 @@ public:
   bool ThereAreServers();
   std::vector<WSDServer> GetServers();
 
-  static std::wstring ResolveHostName(const std::wstring& serverIP);
+  static std::wstring ResolveHostName(const WSDServer& server);
 
 private:
   bool m_initialized = false;
