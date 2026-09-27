@@ -99,6 +99,7 @@ public:
   const std::map<std::string, std::string, std::less<>>& GetUniqueIDs() const;
   const std::string& GetDefaultUniqueID() const;
   bool HasUniqueID() const;
+  bool HasConflictingUniqueID(const CVideoInfoTag& other) const;
   virtual bool HasYear() const;
   virtual int GetYear() const;
   bool HasPremiered() const;

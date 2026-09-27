@@ -911,6 +911,21 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessV
              });
   }
 
+  // Without the user to confirm, a title/year match is not enough when the unique ids disagree
+  if (mode == Mode::NON_INTERACTIVE)
+  {
+    erase_if(list,
+             [&item](const std::shared_ptr<CFileItem>& current) {
+               return item.GetVideoInfoTag()->HasConflictingUniqueID(*current->GetVideoInfoTag());
+             });
+
+    if (list.IsEmpty())
+    {
+      CLog::LogF(LOGINFO, "Automated video version creation stopped by conflicting unique ids");
+      return {VersionConversionResult::NOT_NEEDED, NO_VERSION};
+    }
+  }
+
   return ChooseVideoAndConvertToVideoVersion(list, itemType, dbId, videodb, MediaRole::NewVersion,
                                              mode, isDefault);
 }
