@@ -18,10 +18,48 @@
 #include <windns.h>
 #pragma comment(lib, "dnsapi.lib")
 
-#include <ws2tcpip.h>
-
 using KODI::PLATFORM::WINDOWS::FromW;
+using KODI::PLATFORM::WINDOWS::ToW;
 using namespace WSDiscovery;
+
+namespace
+{
+std::wstring QueryReverseDNS(const std::wstring& serverIP)
+{
+  const std::vector<std::string> ip = StringUtils::Split(FromW(serverIP), '.');
+  if (ip.size() != 4)
+    return {};
+
+  const std::string reverse =
+      StringUtils::Format("{}.{}.{}.{}.IN-ADDR.ARPA", ip[3], ip[2], ip[1], ip[0]);
+
+  // No multicast: when unicast DNS fails, mDNS would answer with names such as
+  // "host-4.local" that Avahi generates after a name conflict and that change on restart.
+  PDNS_RECORD pDnsRecord = nullptr;
+  std::wstring hostName;
+
+  if (DnsQuery_W(ToW(reverse).c_str(), DNS_TYPE_PTR, DNS_QUERY_STANDARD | DNS_QUERY_NO_MULTICAST,
+                 nullptr, &pDnsRecord, nullptr) == ERROR_SUCCESS)
+  {
+    for (PDNS_RECORD record = pDnsRecord; record; record = record->pNext)
+    {
+      if (record->wType == DNS_TYPE_PTR && record->Data.PTR.pNameHost)
+      {
+        hostName = record->Data.PTR.pNameHost;
+        break;
+      }
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGWARNING, "DnsQuery_W for '{}' failed", reverse);
+  }
+
+  DnsRecordListFree(pDnsRecord, DnsFreeRecordList);
+
+  return hostName;
+}
+} // namespace
 
 namespace WSDiscovery
 {
@@ -301,42 +339,8 @@ std::vector<std::wstring> CWSDiscoveryWindows::GetServersIPs()
 
 std::wstring CWSDiscoveryWindows::ResolveHostName(const std::wstring& serverIP)
 {
-  std::wstring hostName = serverIP;
+  const std::wstring hostName = QueryReverseDNS(serverIP);
 
-  std::vector<std::string> ip = StringUtils::Split(FromW(serverIP), '.', 4);
-  std::string reverse = StringUtils::Format("{}.{}.{}.{}.IN-ADDR.ARPA", ip[3], ip[2], ip[1], ip[0]);
-
-  PDNS_RECORD pDnsRecord = nullptr;
-
-  if (!DnsQuery_W(KODI::PLATFORM::WINDOWS::ToW(reverse).c_str(), DNS_TYPE_PTR, DNS_QUERY_STANDARD,
-                  nullptr, &pDnsRecord, nullptr) &&
-      pDnsRecord)
-  {
-    hostName = pDnsRecord->Data.PTR.pNameHost;
-  }
-  else
-  {
-    CLog::LogF(LOGWARNING, "DnsQuery_W for '{}' failed. Trying an fallback method...", reverse);
-
-    WCHAR host[NI_MAXHOST] = {};
-    struct sockaddr_in sa = {};
-    sa.sin_family = AF_INET;
-
-    InetPtonW(AF_INET, serverIP.c_str(), &sa.sin_addr);
-
-    if (!GetNameInfoW(reinterpret_cast<const sockaddr*>(&sa), sizeof(sa), host, NI_MAXHOST, nullptr,
-                      0, 0))
-    {
-      hostName = host;
-    }
-    else
-    {
-      CLog::LogF(LOGERROR, "GetNameInfoW failed.");
-    }
-  }
-
-  DnsRecordListFree(pDnsRecord, freetype);
-
-  return hostName;
+  return hostName.empty() ? serverIP : hostName;
 }
 } // namespace WSDiscovery
