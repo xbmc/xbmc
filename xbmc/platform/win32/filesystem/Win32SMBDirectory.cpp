@@ -39,9 +39,9 @@ using KODI::PLATFORM::WINDOWS::FromW;
 // local helper
 static inline bool worthTryToConnect(const DWORD lastErr)
 {
-  return lastErr != ERROR_FILE_NOT_FOUND      && lastErr != ERROR_BAD_NET_NAME  &&
-         lastErr != ERROR_NO_NET_OR_BAD_PATH  && lastErr != ERROR_NO_NETWORK    &&
-         lastErr != ERROR_BAD_NETPATH;
+  return lastErr != ERROR_FILE_NOT_FOUND && lastErr != ERROR_BAD_NET_NAME &&
+         lastErr != ERROR_NO_NET_OR_BAD_PATH && lastErr != ERROR_NO_NETWORK &&
+         lastErr != ERROR_BAD_NETPATH && lastErr != ERROR_PATH_NOT_FOUND;
 }
 
 /**
