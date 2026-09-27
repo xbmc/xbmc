@@ -114,6 +114,8 @@ void CGUIListItemLayout::SetWidth(float width)
     m_group.EnlargeWidth(width - m_width);
     m_width = width;
     SetInvalid();
+    if (m_sizeChangeOwner)
+      m_sizeChangeOwner->SetInvalid();
   }
 }
 
@@ -124,6 +126,8 @@ void CGUIListItemLayout::SetHeight(float height)
     m_group.EnlargeHeight(height - m_height);
     m_height = height;
     SetInvalid();
+    if (m_sizeChangeOwner)
+      m_sizeChangeOwner->SetInvalid();
   }
 }
 

@@ -72,6 +72,7 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID,
   m_lastHoldTime = 0;
   m_itemsPerPage = 10;
   m_pageSize = 10;
+  m_pageSizeCursor = 0;
   m_hasScreenRange = false;
   m_screenStart = 0.0f;
   m_screenEnd = 0.0f;
@@ -98,6 +99,7 @@ CGUIBaseContainer::CGUIBaseContainer(const CGUIBaseContainer& other)
     m_orientation(other.m_orientation),
     m_itemsPerPage(other.m_itemsPerPage),
     m_pageSize(other.m_pageSize),
+    m_pageSizeCursor(other.m_pageSizeCursor),
     m_hasScreenRange(other.m_hasScreenRange),
     m_screenStart(other.m_screenStart),
     m_screenEnd(other.m_screenEnd),
@@ -174,6 +176,8 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
   if (m_bInvalidated)
     UpdateLayout();
+  else if (CalculatePageSize(false))
+    SetPageControlRange();
 
   if (!m_layout || !m_focusedLayout) return;
 
@@ -1198,14 +1202,21 @@ void CGUIBaseContainer::CalculateLayout()
   if (!m_focusedLayout || !m_layout)
     return;
 
-  if (oldLayout == m_layout && oldFocusedLayout == m_focusedLayout)
-    return; // nothing has changed, so don't update stuff
+  m_layout->SetParentControl(this);
+  m_focusedLayout->SetParentControl(this);
 
-  m_itemsPerPage = std::max(static_cast<int>((Size() - m_focusedLayout->Size(m_orientation)) /
-                                             m_layout->Size(m_orientation)) +
-                                1,
-                            1);
+  const int itemsPerPage =
+      std::max(static_cast<int>((Size() - m_focusedLayout->Size(m_orientation)) /
+                                m_layout->Size(m_orientation)) +
+                   1,
+               1);
+  const bool layoutChanged = oldLayout != m_layout || oldFocusedLayout != m_focusedLayout ||
+                             m_itemsPerPage != itemsPerPage;
+  m_itemsPerPage = itemsPerPage;
   CalculatePageSize();
+
+  if (!layoutChanged)
+    return;
 
   // Pre-allocate render items vector to avoid per-frame allocations
   m_renderItems.reserve(m_itemsPerPage + m_cacheItems * 2 + 1);
@@ -1571,14 +1582,26 @@ int CGUIBaseContainer::GetPageSize() const
   return m_pageSize;
 }
 
-void CGUIBaseContainer::CalculatePageSize()
+bool CGUIBaseContainer::CalculatePageSize(bool force)
 {
+  const bool hadScreenRange = m_hasScreenRange;
+  const float previousScreenStart = m_screenStart;
+  const float previousScreenEnd = m_screenEnd;
+  const int previousPageSize = m_pageSize;
+  const int pageSizeCursor = GetCursor();
+
   CalculateScreenRange();
+
+  if (!force && hadScreenRange == m_hasScreenRange && previousScreenStart == m_screenStart &&
+      previousScreenEnd == m_screenEnd && m_pageSizeCursor == pageSizeCursor)
+    return false;
+
+  m_pageSizeCursor = pageSizeCursor;
 
   if (!m_layout || !m_focusedLayout)
   {
     m_pageSize = std::max(m_itemsPerPage, 1);
-    return;
+    return previousPageSize != m_pageSize;
   }
 
   const float listStart = (m_orientation == HORIZONTAL) ? m_posX : m_posY;
@@ -1588,7 +1611,7 @@ void CGUIBaseContainer::CalculatePageSize()
   if (itemSize <= 0.0f || focusedItemSize <= 0.0f)
   {
     m_pageSize = 1;
-    return;
+    return previousPageSize != m_pageSize;
   }
 
   float screenStart = 0.0f;
@@ -1596,7 +1619,7 @@ void CGUIBaseContainer::CalculatePageSize()
   if (!GetScreenRange(screenStart, screenEnd))
   {
     m_pageSize = std::max(m_itemsPerPage, 1);
-    return;
+    return previousPageSize != m_pageSize;
   }
 
   const float visibleStart = std::max(0.0f, screenStart - listStart);
@@ -1617,6 +1640,7 @@ void CGUIBaseContainer::CalculatePageSize()
   }
 
   m_pageSize = std::max(pageSize, 1);
+  return previousPageSize != m_pageSize;
 }
 
 bool CGUIBaseContainer::CalculateScreenRange()
