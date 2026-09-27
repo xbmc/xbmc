@@ -289,12 +289,7 @@ void CVideoPlayerAudio::Process()
 
       // if we only wanted priority messages, this isn't a stall
       if (priority)
-      {
-        if (timeout == 0ms)
-          CThread::Sleep(10ms);
-
         continue;
-      }
 
       if (m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) &&
           !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
