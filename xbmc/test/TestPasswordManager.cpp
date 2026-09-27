@@ -77,6 +77,22 @@ TEST_F(TestPasswordManager, FallsBackToTheServerForAnotherShare)
   ExpectAuthenticated(url);
 }
 
+TEST_F(TestPasswordManager, HostNameIsCaseInsensitive)
+{
+  // a server is reached by the same name in any case, so a source spelled differently must still
+  // pick up the credentials. Windows refuses a second connection to the same server with other
+  // credentials (ERROR_SESSION_CREDENTIAL_CONFLICT)
+  Remember("smb://MediaMaster/Media/");
+
+  CURL url{"smb://MEDIAMASTER/Media/Movies/movie.mkv"};
+  ASSERT_TRUE(CPasswordManager::GetInstance().AuthenticateURL(url));
+  ExpectAuthenticated(url);
+
+  CURL otherShare{"smb://mediamaster/Other/file.mkv"};
+  ASSERT_TRUE(CPasswordManager::GetInstance().AuthenticateURL(otherShare));
+  ExpectAuthenticated(otherShare);
+}
+
 TEST_F(TestPasswordManager, DoesNotAuthenticateAnUnknownServer)
 {
   Remember("http://192.168.0.1:8910/media/");
