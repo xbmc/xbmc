@@ -10,6 +10,7 @@
 
 #include "ISerializable.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
+#include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/StreamUtils.h"
 
@@ -264,12 +265,20 @@ public:
    */
   static StreamFlags StreamFlagFromName(std::string_view name);
 
-  bool HasItems(void) const { return !m_vecItems.empty(); }
+  bool HasItems(void) const;
   int GetStreamCount(CStreamDetail::StreamType type) const;
   int GetVideoStreamCount(void) const;
   int GetAudioStreamCount(void) const;
   int GetSubtitleStreamCount(void) const;
   static std::string HdrTypeToString(StreamHdrType hdrType);
+
+  /*!
+   * \brief Get a stream by type and index.
+   *
+   * \note The stream returned is owned by these details and is only safe to use for as long as
+   * nothing else can change them. Details another thread may write to (anything on a CFileItem
+   * the GUI shows) are best read through the getters below, which hold the lock for the read.
+   */
   const CStreamDetail* GetNthStream(CStreamDetail::StreamType type, int idx) const;
 
   std::string GetVideoCodec(int idx = 0) const;
@@ -401,6 +410,14 @@ public:
 
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
+  static std::unique_ptr<CStreamDetail> CloneStream(const CStreamDetail& stream);
+
+  // The details on an item in a GUI list are filled in by the background loader while the GUI
+  // thread reads them for the list labels, so every access to the members below holds this lock.
+  // Nothing done while it is held takes the GUI lock or waits on the loader, so the GUI can take
+  // it under the GUI lock and the loader can take it instead of the GUI lock - which the loader
+  // must not wait for, see CBackgroundInfoLoader::StopThread().
+  mutable CCriticalSection m_critSection;
   std::vector<std::unique_ptr<CStreamDetail>> m_vecItems;
   const CStreamDetailVideo *m_pBestVideo;
   const CStreamDetailAudio *m_pBestAudio;

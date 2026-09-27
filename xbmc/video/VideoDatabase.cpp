@@ -4780,8 +4780,10 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
 
   bool retVal = false;
 
-  CStreamDetails& details = tag.m_streamDetails;
-  details.Reset();
+  // Filled in here and only then handed to the tag, as the tag may be on an item the GUI is
+  // showing - see CVideoThumbLoader::LoadItemCached() - and would otherwise read as having no
+  // streams for as long as the query runs
+  CStreamDetails details;
 
   std::unique_ptr<Dataset> pDS(m_pDB->CreateDataset());
   try
@@ -4802,6 +4804,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
     CLog::LogF(LOGERROR, "({}) failed", tag.m_iFileId);
   }
   details.DetermineBestStreams();
+  tag.m_streamDetails = details;
 
   if (details.GetVideoDuration() > 0)
     tag.SetDuration(details.GetVideoDuration());
