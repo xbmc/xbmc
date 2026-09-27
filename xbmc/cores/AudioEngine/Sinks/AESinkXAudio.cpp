@@ -557,11 +557,10 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   }
 
   /* Test for incomplete format and provide defaults */
-  if (format.m_sampleRate == 0 ||
-      format.m_channelLayout == CAEChannelInfo(nullptr) ||
-      format.m_dataFormat <= AE_FMT_INVALID ||
-      format.m_dataFormat >= AE_FMT_MAX ||
-      format.m_channelLayout.Count() == 0)
+  if (format.m_sampleRate == 0 || format.m_channelLayout == CAEChannelInfo(nullptr) ||
+      format.m_dataFormat <= AE_FMT_INVALID || format.m_dataFormat >= AE_FMT_MAX ||
+      format.m_channelLayout.Count() == 0 ||
+      (wfxex.dwChannelMask == 0 && format.m_dataFormat <= AE_FMT_FLOAT))
   {
     wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
     wfxex.Format.nChannels = 2;
