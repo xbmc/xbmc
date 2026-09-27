@@ -184,6 +184,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       {
         AddSortMethod(SortBy::LABEL, sortAttributes, 551,
                       LABEL_MASKS("%T", "%R", "%T", "%R")); // Title, Rating | Title, Rating
+        AddSortMethod(SortBy::SORT_TITLE, sortAttributes, 556,
+                      LABEL_MASKS("%T", "%R", "%T", "%R")); // Title, Rating | Title, Rating
 
         AddSortMethod(SortBy::YEAR, 562,
                       LABEL_MASKS("%T", "%Y", "%T", "%Y")); // Title, Year | Title, Year
@@ -194,7 +196,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         AddSortMethod(SortBy::PLAYCOUNT, 567,
                       LABEL_MASKS("%T", "%V", "%T", "%V")); // Title, Playcount | Title, Playcount
 
-        SetSortMethod(SortBy::LABEL);
+        SetSortMethod(SortBy::SORT_TITLE);
 
         const CViewState *viewState = CViewStateSettings::GetInstance().Get("videonavgenres");
         SetViewAsControl(viewState->m_viewMode);
