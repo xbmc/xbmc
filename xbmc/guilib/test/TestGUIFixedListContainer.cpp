@@ -69,6 +69,32 @@ public:
   int GetOffsetForTest() const { return GetOffset(); }
   int GetCursorForTest() const { return GetCursor(); }
 
+  void SetScreenRangeForTest(float screenStart, float screenEnd)
+  {
+    m_screenStart = screenStart;
+    m_screenEnd = screenEnd;
+  }
+
+  void RecalculateLayoutForTest() { CalculateLayout(); }
+  void RefreshPageSizeForTest() { CalculatePageSize(false); }
+  void ValidateOffsetForTest() { ValidateOffset(); }
+  void SetItemWidthForTest(float width) { m_layout->SetWidth(width); }
+
+  void SetItemLayoutCopyWidthForTest(float width)
+  {
+    CGUIListItemLayout itemLayout(*m_layout, this);
+    itemLayout.SetWidth(width);
+  }
+
+  bool IsInvalidatedForTest() const { return m_bInvalidated; }
+
+  void ProcessLayoutForTest()
+  {
+    if (m_bInvalidated)
+      UpdateLayout();
+    m_bInvalidated = false;
+  }
+
   void PrepareForAction()
   {
     m_wasReset = true;
@@ -120,6 +146,92 @@ TEST(TestGUIFixedListContainer, PageActionsSkipPartiallyVisibleSlots)
 
   EXPECT_TRUE(container.OnAction(CAction(ACTION_PAGE_DOWN)));
   EXPECT_EQ(container.GetSelectedItem(), 5);
+}
+
+TEST(TestGUIFixedListContainer, PageSizeUsesProcessedParentCoordinates)
+{
+  TestGUIFixedListContainer container(-716, 1860, 0, 1920, 222, 222, 2);
+  container.AddItems(20);
+  container.PrepareForAction();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 4);
+
+  container.SetScreenRangeForTest(-788, 1132);
+  container.RecalculateLayoutForTest();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 8);
+}
+
+TEST(TestGUIFixedListContainer, PageSizeUpdatesAfterOpeningAnimation)
+{
+  TestGUIFixedListContainer container(0, 2112, -320, 1600, 317, 490, 1);
+  container.AddItems(20);
+  container.PrepareForAction();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 4);
+
+  container.SetScreenRangeForTest(0, 1920);
+  container.RefreshPageSizeForTest();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 5);
+}
+
+TEST(TestGUIFixedListContainer, PageSizeUpdatesAfterContainerResize)
+{
+  TestGUIFixedListContainer container(0, 1000, 0, 1000, 200, 200, 1);
+  container.AddItems(20);
+  container.RecalculateLayoutForTest();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 5);
+
+  container.SetWidth(1200);
+  container.SetScreenRangeForTest(0, 1200);
+  container.RecalculateLayoutForTest();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 6);
+}
+
+TEST(TestGUIFixedListContainer, PageSizeUpdatesAfterCursorClamp)
+{
+  TestGUIFixedListContainer container(0, 200, 0, 100, 50, 100, 2);
+  container.AddItems(20);
+  container.RecalculateLayoutForTest();
+
+  EXPECT_EQ(container.GetCursorForTest(), 2);
+
+  container.SetWidth(150);
+  container.RecalculateLayoutForTest();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 2);
+
+  container.ValidateOffsetForTest();
+  container.RefreshPageSizeForTest();
+
+  EXPECT_EQ(container.GetCursorForTest(), 1);
+  EXPECT_EQ(container.GetPageSizeForTest(), 1);
+}
+
+TEST(TestGUIFixedListContainer, ActiveLayoutResizeInvalidatesPageSize)
+{
+  TestGUIFixedListContainer container(0, 1000, 0, 1000, 200, 200, 1);
+  container.AddItems(20);
+  container.ProcessLayoutForTest();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 5);
+  EXPECT_FALSE(container.IsInvalidatedForTest());
+
+  container.SetItemWidthForTest(100);
+
+  EXPECT_TRUE(container.IsInvalidatedForTest());
+
+  container.ProcessLayoutForTest();
+
+  EXPECT_EQ(container.GetPageSizeForTest(), 9);
+  EXPECT_FALSE(container.IsInvalidatedForTest());
+
+  container.SetItemLayoutCopyWidthForTest(50);
+
+  EXPECT_FALSE(container.IsInvalidatedForTest());
 }
 
 TEST(TestGUIFixedListContainer, PageControlPreservesStartBoundaryOffset)
