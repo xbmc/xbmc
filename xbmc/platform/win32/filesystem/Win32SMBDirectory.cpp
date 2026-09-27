@@ -657,9 +657,9 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
   // Get servers immediately from WSD daemon process
   if (wsd.IsRunning() && wsd.ThereAreServers())
   {
-    for (const auto& ip : wsd.GetServersIPs())
+    for (const auto& server : wsd.GetServers())
     {
-      std::wstring hostname = wsd.ResolveHostName(ip);
+      std::wstring hostname = wsd.ResolveHostName(server.ip);
       std::string shareNameUtf8;
       if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
       {

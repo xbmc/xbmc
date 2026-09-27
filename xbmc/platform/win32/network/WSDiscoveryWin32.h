@@ -14,10 +14,18 @@
 #include <wsdapi.h>
 #pragma comment(lib, "wsdapi.lib")
 
+#include <string>
 #include <vector>
 
 namespace WSDiscovery
 {
+struct WSDServer
+{
+  std::wstring endpoint; // wsa:Address, e.g. urn:uuid:...
+  std::wstring ip;
+  std::wstring xaddr; // metadata URL, e.g. http://192.168.1.25:5357/<uuid>
+};
+
 class CClientNotificationSink : public IWSDiscoveryProviderNotify
 {
 public:
@@ -35,10 +43,10 @@ public:
   ULONG STDMETHODCALLTYPE Release();
 
   bool ThereAreServers();
-  std::vector<std::wstring> GetServersIPs();
+  std::vector<WSDServer> GetServers();
 
 private:
-  std::vector<std::wstring> m_serversIPs;
+  std::vector<WSDServer> m_servers;
   ULONG m_cRef;
   CCriticalSection m_criticalSection;
 };
@@ -54,7 +62,7 @@ public:
   bool IsRunning() override;
 
   bool ThereAreServers();
-  std::vector<std::wstring> GetServersIPs();
+  std::vector<WSDServer> GetServers();
 
   static std::wstring ResolveHostName(const std::wstring& serverIP);
 

@@ -8,11 +8,13 @@
 
 #include "WSDiscoveryWin32.h"
 
+#include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
 
+#include <algorithm>
 #include <mutex>
 
 #include <windns.h>
@@ -126,15 +128,50 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
     // filter Printers and other devices that are not "Computers"
     if (type == L"Computer")
     {
-      const std::wstring ip = addr.substr(0, addr.find(L":", 0));
-      auto it = std::find(m_serversIPs.begin(), m_serversIPs.end(), ip);
+      WSDServer server;
+      server.ip = addr.substr(0, addr.find(L":", 0));
 
-      // inserts server IP if not exist in list
-      if (it == m_serversIPs.end())
+      WSD_ENDPOINT_REFERENCE* endpoint = nullptr;
+      if (SUCCEEDED(service->GetEndpointReference(&endpoint)) && endpoint && endpoint->Address)
+        server.endpoint = endpoint->Address;
+
+      // only ask the announcing server itself for its name
+      WSD_URI_LIST* xaddrs = nullptr;
+      if (SUCCEEDED(service->GetXAddrs(&xaddrs)))
       {
-        m_serversIPs.push_back(ip);
+        for (const WSD_URI_LIST* xaddr = xaddrs; xaddr; xaddr = xaddr->Next)
+        {
+          if (!xaddr->Element)
+            continue;
+
+          const std::wstring uri(xaddr->Element);
+          const CURL url(FromW(uri));
+          if (url.IsProtocol("http") && url.GetHostName() == FromW(server.ip))
+            server.xaddr = uri;
+        }
+      }
+
+      // a multi-homed server announces the same endpoint from each of its addresses
+      auto it = std::ranges::find_if(m_servers,
+                                     [&server](const WSDServer& known) {
+                                       return server.endpoint.empty()
+                                                  ? known.ip == server.ip
+                                                  : known.endpoint == server.endpoint;
+                                     });
+
+      if (it == m_servers.end())
+      {
         CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
-                  "[WS-Discovery]: IP '{}' has been inserted into the server list.", FromW(ip));
+                  "[WS-Discovery]: IP '{}' ({}) has been inserted into the server list.",
+                  FromW(server.ip), FromW(server.endpoint));
+        m_servers.push_back(std::move(server));
+      }
+      else if (it->ip != server.ip || it->xaddr != server.xaddr)
+      {
+        CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+                  "[WS-Discovery]: IP '{}' ({}) has replaced '{}' in the server list.",
+                  FromW(server.ip), FromW(server.endpoint), FromW(it->ip));
+        *it = std::move(server);
       }
     }
   }
@@ -160,12 +197,20 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
               "[WS-Discovery]: BYE packet received: device address = '{}'", FromW(addr));
 
     const std::wstring ip = addr.substr(0, addr.find(L":", 0));
-    auto it = std::find(m_serversIPs.begin(), m_serversIPs.end(), ip);
 
-    // removes server IP from list
-    if (it != m_serversIPs.end())
+    std::wstring endpointAddress;
+    WSD_ENDPOINT_REFERENCE* endpoint = nullptr;
+    if (SUCCEEDED(service->GetEndpointReference(&endpoint)) && endpoint && endpoint->Address)
+      endpointAddress = endpoint->Address;
+
+    auto it = std::ranges::find_if(
+        m_servers, [&](const WSDServer& known)
+        { return endpointAddress.empty() ? known.ip == ip : known.endpoint == endpointAddress; });
+
+    // removes server from list
+    if (it != m_servers.end())
     {
-      m_serversIPs.erase(it);
+      m_servers.erase(it);
       CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
                 "[WS-Discovery]: IP '{}' has been removed from the server list.", FromW(ip));
     }
@@ -191,13 +236,13 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchComplete(LPCWSTR tag)
 
   std::string list;
 
-  for (const auto& ip : GetServersIPs())
-    list.append('\n' + FromW(ip));
+  for (const auto& server : m_servers)
+    list.append('\n' + FromW(server.ip));
 
   CLog::Log(LOGDEBUG,
             "[WS-Discovery]: The initial servers search has completed successfully with {} "
             "server(s) found:{}",
-            m_serversIPs.size(), list);
+            m_servers.size(), list);
 
   return S_OK;
 }
@@ -225,14 +270,14 @@ bool CClientNotificationSink::ThereAreServers()
 {
   std::unique_lock lock(m_criticalSection);
 
-  return !m_serversIPs.empty();
+  return !m_servers.empty();
 }
 
-std::vector<std::wstring> CClientNotificationSink::GetServersIPs()
+std::vector<WSDServer> CClientNotificationSink::GetServers()
 {
   std::unique_lock lock(m_criticalSection);
 
-  return m_serversIPs;
+  return m_servers;
 }
 
 ULONG STDMETHODCALLTYPE CClientNotificationSink::AddRef()
@@ -329,12 +374,12 @@ bool CWSDiscoveryWindows::ThereAreServers()
   return m_sink->ThereAreServers();
 }
 
-std::vector<std::wstring> CWSDiscoveryWindows::GetServersIPs()
+std::vector<WSDServer> CWSDiscoveryWindows::GetServers()
 {
   if (!m_sink)
     return {};
 
-  return m_sink->GetServersIPs();
+  return m_sink->GetServers();
 }
 
 std::wstring CWSDiscoveryWindows::ResolveHostName(const std::wstring& serverIP)
