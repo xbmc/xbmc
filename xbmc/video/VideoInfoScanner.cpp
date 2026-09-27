@@ -1485,6 +1485,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CFileItemList items;
         using enum CVideoDatabase::MatchingMask;
         m_database.GetSameVideoItems(item, items, UniqueId | (bDirNames ? Path : None));
+        erase_if(items, [tag](const std::shared_ptr<CFileItem>& current)
+                 { return tag->HasConflictingUniqueID(*current->GetVideoInfoTag()); });
         if (!items.IsEmpty())
         {
           // Movie already exists
