@@ -143,6 +143,21 @@ int CVideoTagLoaderNFO::GetBlurayPlaylist() const
   return m_nfoReader.GetBlurayPlaylist();
 }
 
+std::vector<XFILE::StackPartPlaylist> CVideoTagLoaderNFO::GetStackParts() const
+{
+  if (!m_nfoParsed)
+    return {};
+
+  std::vector<XFILE::StackPartPlaylist> parts{m_nfoReader.GetStackParts()};
+
+  // Stored relative to the nfo, as every part of a stack lives under the folder it is written to
+  const std::string base{URIUtils::GetDirectory(m_path)};
+  for (XFILE::StackPartPlaylist& part : parts)
+    part.file = URIUtils::AddFileToFolder(base, part.file);
+
+  return parts;
+}
+
 std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
                                         bool movieFolder) const
 {

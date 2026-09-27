@@ -15,6 +15,7 @@
 #include "InfoScanner.h"
 #include "URL.h"
 #include "addons/Scraper.h"
+#include "filesystem/StackDirectory.h"
 #include "utils/XBMCTinyXML.h"
 
 #include <string>
@@ -69,6 +70,12 @@ public:
    \return the playlist number, or -1 if the nfo does not specify one
    */
   int GetBlurayPlaylist() const;
+
+  /*! \brief The parts of a stack given by a <stack> element, if any.
+   Read from the same (indexed) element as GetDetails().
+   \return the parts, empty if the nfo does not describe a stack
+   */
+  std::vector<XFILE::StackPartPlaylist> GetStackParts() const;
 
 private:
   CInfoScanner::InfoType TryParsing(ADDON::AddonType addonType) const;
