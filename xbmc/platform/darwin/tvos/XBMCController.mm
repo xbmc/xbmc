@@ -43,6 +43,10 @@
 #include "platform/darwin/tvos/powermanagement/TVOSPowerSyscall.h"
 
 #import <AVKit/AVDisplayManager.h>
+#import <AVFoundation/AVSampleBufferDisplayLayer.h>
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+#import <AVFoundation/AVSampleBufferVideoRenderer.h>
+#endif
 #import <AVKit/UIWindow.h>
 #include <unistd.h>
 
@@ -56,6 +60,8 @@ XBMCController* g_xbmcController;
 @synthesize displayManager;
 @synthesize inputHandler;
 @synthesize glView;
+@synthesize videoLayer;
+@synthesize videoLayerGeneration;
 
 #pragma mark - UIView Keyboard
 
@@ -157,6 +163,103 @@ XBMCController* g_xbmcController;
     return [glView presentFramebuffer];
   else
     return FALSE;
+}
+
+- (BOOL)enableVideoLayer
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    __block BOOL enabled = NO;
+    void (^configure)(void) = ^{
+      if (self.videoLayer == nil)
+      {
+        self.videoLayerGeneration = self.videoLayerGeneration + 1;
+        self.videoLayer = [AVSampleBufferDisplayLayer layer];
+        self.videoLayer.videoGravity = AVLayerVideoGravityResize;
+        self.videoLayer.frame = self.view.bounds;
+        [self.view.layer insertSublayer:self.videoLayer below:self.glView.layer];
+      }
+      self.glView.opaque = NO;
+      self.glView.layer.opaque = NO;
+      enabled = self.videoLayer != nil;
+    };
+    if ([NSThread isMainThread])
+      configure();
+    else
+      dispatch_sync(dispatch_get_main_queue(), configure);
+    return enabled;
+  }
+#endif
+  return NO;
+}
+
+- (void)disableVideoLayer
+{
+  void (^disable)(void) = ^{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+    if (@available(tvOS 17.0, *))
+      [self.videoLayer.sampleBufferRenderer flush];
+#endif
+    self.videoLayerGeneration = self.videoLayerGeneration + 1;
+    [self.videoLayer removeFromSuperlayer];
+    self.videoLayer = nil;
+    self.glView.layer.opaque = YES;
+    self.glView.opaque = YES;
+  };
+  if ([NSThread isMainThread])
+    disable();
+  else
+    dispatch_sync(dispatch_get_main_queue(), disable);
+}
+
+- (void)setVideoLayerFrame:(CGRect)frame
+{
+  const NSUInteger generation = self.videoLayerGeneration;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (self.videoLayerGeneration == generation)
+      self.videoLayer.frame = frame;
+  });
+}
+
+- (void)enqueueVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    const NSUInteger generation = self.videoLayerGeneration;
+    CFRetain(sampleBuffer);
+    dispatch_async(dispatch_get_main_queue(), ^{
+      AVSampleBufferVideoRenderer* renderer = self.videoLayerGeneration == generation
+                                                  ? self.videoLayer.sampleBufferRenderer
+                                                  : nil;
+      if (renderer != nil)
+      {
+        if (renderer.status == AVQueuedSampleBufferRenderingStatusFailed)
+          [renderer flush];
+        if (renderer.readyForMoreMediaData)
+          [renderer enqueueSampleBuffer:sampleBuffer];
+      }
+      CFRelease(sampleBuffer);
+    });
+  }
+#endif
+}
+
+- (void)flushVideoLayer
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    // Frames submitted before a seek must not arrive after the flush.
+    const NSUInteger generation = self.videoLayerGeneration + 1;
+    self.videoLayerGeneration = generation;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (self.videoLayerGeneration == generation)
+        [self.videoLayer.sampleBufferRenderer flush];
+    });
+  }
+#endif
 }
 
 - (CGRect)fullscreenSubviewFrame

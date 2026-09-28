@@ -20,6 +20,7 @@
 #import "platform/darwin/tvos/XBMCController.h"
 
 #import <AVFoundation/AVDisplayCriteria.h>
+#import <AVFoundation/AVPlayer.h>
 #import <AVKit/AVDisplayManager.h>
 #import <QuartzCore/CADisplayLink.h>
 
@@ -87,6 +88,45 @@
     });
     CLog::Log(LOGDEBUG, "displayRateSwitch request: refreshRate = {}, dynamicRange = {}",
               refreshRate, [self stringFromDynamicRange:dynamicRange]);
+  }
+}
+
+- (BOOL)displayVideoFormatSwitch:(CMFormatDescriptionRef)formatDescription
+                      refreshRate:(float)refreshRate
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    if (formatDescription == nullptr || ![self canMatchVideoDynamicRange])
+      return NO;
+
+    AVDisplayCriteria* criteria =
+        [[AVDisplayCriteria alloc] initWithRefreshRate:refreshRate
+                                    formatDescription:formatDescription];
+    if (criteria == nil)
+      return NO;
+
+    CLog::Log(LOGDEBUG, "TVOSDisplayManager: video format criteria dynamic range {}",
+              [self stringFromDynamicRange:criteria.videoDynamicRange]);
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      auto manager = [g_xbmcController avDisplayManager];
+      [self setDisplayCriteria:manager displayCriteria:criteria];
+    });
+    return YES;
+  }
+#endif
+  return NO;
+}
+
+- (void)displayDynamicRangeReset
+{
+  if (@available(tvOS 11.2, *))
+  {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      auto manager = [g_xbmcController avDisplayManager];
+      [self setDisplayCriteria:manager displayCriteria:nil];
+    });
   }
 }
 
@@ -199,13 +239,38 @@
   {
     case 0 ... 1:
       return "SDR";
-    case 2 ... 3:
+    case 2:
       return "HDR10";
+    case 3:
+      return "HLG";
     case 4:
       return "DolbyVision";
     default:
       return "Unknown";
   }
+}
+
+- (BOOL)supportsHDR
+{
+  if (@available(tvOS 11.2, *))
+    return (AVPlayer.availableHDRModes & AVPlayerHDRModeHDR10) != 0;
+  return NO;
+}
+
+- (BOOL)supportsHLG
+{
+  if (@available(tvOS 11.2, *))
+    return (AVPlayer.availableHDRModes & AVPlayerHDRModeHLG) != 0;
+  return NO;
+}
+
+- (BOOL)canMatchVideoDynamicRange
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+    return [g_xbmcController avDisplayManager].displayCriteriaMatchingEnabled;
+#endif
+  return NO;
 }
 
 - (CGSize)getScreenSize
