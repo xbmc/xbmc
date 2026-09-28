@@ -11947,7 +11947,13 @@ msgctxt "#19357"
 msgid "Delete recording"
 msgstr ""
 
-#empty strings from id 19358 to 19498
+#. Label for the optional provider-scoped channel OSD setting
+#: system/settings/settings.xml
+msgctxt "#19358"
+msgid "Show channels by provider in channel OSD"
+msgstr ""
+
+#empty strings from id 19359 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -22267,7 +22273,13 @@ msgctxt "#36461"
 msgid "Notification event describe regular processes and actions performed by the system or the user."
 msgstr ""
 
-#empty strings from id 36462 to 36499
+#. Description of setting with label #19358 "Show channels by provider in channel OSD"
+#: system/settings/settings.xml
+msgctxt "#36462"
+msgid "Show only channels from the selected provider and group in the channel OSD. Switching groups also cycles through providers. Disable to use the standard channel group list."
+msgstr ""
+
+#empty strings from id 36463 to 36499
 #end reservation
 
 #. label of a setting for the stereoscopic 3D mode of the GUI that is/should be applied
