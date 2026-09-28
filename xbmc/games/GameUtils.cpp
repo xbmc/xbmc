@@ -346,8 +346,11 @@ void CGameUtils::GetGameClients(const ADDON::VECADDONS& addons,
 
   const std::string extension = URIUtils::GetExtension(translatedUrl.Get());
 
-  const bool bIsLocalFile =
-      (translatedUrl.GetProtocol() == "file" || translatedUrl.GetProtocol().empty());
+  // A game inside an archive is copied out for a client that reads only local
+  // files, so it can be offered one
+  const bool bIsLocalFile = translatedUrl.GetProtocol() == "file" ||
+                            translatedUrl.GetProtocol().empty() ||
+                            URIUtils::IsInArchive(translatedUrl.Get());
 
   for (auto& addon : addons)
   {

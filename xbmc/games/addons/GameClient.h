@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <string>
 #include <utility>
+#include <vector>
 
 class CFileItem;
 
@@ -154,6 +155,9 @@ public:
   const std::set<std::string>& GetExtensions() const { return m_extensions; }
   bool SupportsAllExtensions() const { return m_bSupportsAllExtensions; }
   bool IsExtensionValid(const std::string& strExtension) const;
+
+  //! Whether the client boots a whole folder, as a DOS emulator does
+  bool SupportsFolders() const;
   const std::string& GetEmulatorName() const { return m_emulatorName; }
   const std::string& GetPlatforms() const { return m_platforms; }
   bool SupportsDiscControl() const { return m_supportsDiscControl; }
@@ -249,6 +253,23 @@ public:
   void LogException(const char* strFunctionName) const;
 
 private:
+  /*!
+   * \brief Copy a game, and any other disks of it, out of its archive for a
+   *        client that reads only local files
+   *
+   * \return The copy's local path, or empty if it could not be made
+   */
+  std::string ExtractGame(const std::string& archivedPath);
+
+  /*!
+   * \brief Unpack the whole archive a game is in, for a client that boots a
+   *        folder and needs the files beside the one it runs
+   *
+   * \return The local path of the chosen file, or empty if it could not be made
+   */
+  std::string ExtractArchive(const std::string& archivedPath);
+  static bool CopyTree(const std::string& from, const std::string& to);
+
   // Private gameplay functions
   bool InitializeGameplay(const std::string& gamePath,
                           RETRO::IStreamManager& streamManager,
