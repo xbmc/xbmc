@@ -61,6 +61,7 @@ template struct TestMemberAccess<ClientPlaying, &CGameClient::m_bIsPlaying>;
 struct ClientInitializeGameplay
 {
   using Type = bool (CGameClient::*)(const std::string&,
+                                     const std::string&,
                                      RETRO::IStreamManager&,
                                      IGameInputCallback*);
   friend Type GetMember(ClientInitializeGameplay);
@@ -101,6 +102,13 @@ struct ClientGamePath
   friend Type GetMember(ClientGamePath);
 };
 template struct TestMemberAccess<ClientGamePath, &CGameClient::m_gamePath>;
+
+struct ClientMediaPath
+{
+  using Type = std::string CGameClient::*;
+  friend Type GetMember(ClientMediaPath);
+};
+template struct TestMemberAccess<ClientMediaPath, &CGameClient::m_mediaPath>;
 
 struct PlaybackMemory
 {
@@ -379,7 +387,8 @@ protected:
       return GAME_ERROR_NO_ERROR;
     };
     TestStreams streams;
-    return (m_client.get()->*GetMember(ClientInitializeGameplay{}))(gamePath, streams, nullptr);
+    return (m_client.get()->*GetMember(ClientInitializeGameplay{}))(gamePath, gamePath, streams,
+                                                                    nullptr);
   }
 
   void StartPlaying()
@@ -404,6 +413,7 @@ protected:
     TestMember<ClientSerializeSize>(*m_client) = 1;
     TestMember<ClientFrameRate>(*m_client) = 1.0;
     TestMember<ClientGamePath>(*m_client) = m_core.slots.front();
+    TestMember<ClientMediaPath>(*m_client) = m_core.slots.front();
     auto* callbacks = m_client->GetInstanceInterface()->toAddon;
     callbacks->Deserialize = [](const AddonInstance_Game* game, const uint8_t* data, size_t)
     {

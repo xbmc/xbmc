@@ -597,10 +597,12 @@ void CGameClientDiscs::SaveDiscState() const
 {
   std::unique_lock lock(m_clientAccess);
 
-  if (!m_gameClient.GetGamePath().empty())
+  // Under the path Initialize() was given, so a game played from a copy finds
+  // its discs again
+  if (!m_gameClient.GetMediaPath().empty())
   {
-    m_discXml->Save(m_gameClient.GetGamePath(), *m_discModel);
-    m_discM3u->Save(m_gameClient.GetGamePath(), *m_discModel);
+    m_discXml->Save(m_gameClient.GetMediaPath(), *m_discModel);
+    m_discM3u->Save(m_gameClient.GetMediaPath(), *m_discModel);
   }
 }
 
