@@ -91,8 +91,8 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
   if (picture.hasLightMetadata)
   {
     uint16_t values[2] = {
-        CFSwapInt16HostToBig(static_cast<uint16_t>(picture.lightMetadata.MaxCLL)),
-        CFSwapInt16HostToBig(static_cast<uint16_t>(picture.lightMetadata.MaxFALL))};
+        CFSwapInt16HostToBig(static_cast<uint16_t>(std::min(picture.lightMetadata.MaxCLL, 65535u))),
+        CFSwapInt16HostToBig(static_cast<uint16_t>(std::min(picture.lightMetadata.MaxFALL, 65535u)))};
     CFDataRef data =
         CFDataCreate(kCFAllocatorDefault, reinterpret_cast<const UInt8*>(values), sizeof(values));
     CVBufferSetAttachment(pixelBuffer, kCVImageBufferContentLightLevelInfoKey, data,
