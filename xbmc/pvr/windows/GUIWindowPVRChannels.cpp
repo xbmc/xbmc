@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -77,8 +78,16 @@ std::string CGUIWindowPVRChannelsBase::GetDirectoryPath()
                                               GetChannelGroup()->GroupName(),
                                               GetChannelGroup()->GetClientID())
                                  .AsString()};
-  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
-                                                                  : basePath;
+  if (URIUtils::PathHasParent(m_vecItems->GetPath(), basePath))
+    return m_vecItems->GetPath();
+
+  const CURL currentPath{m_vecItems->GetPath()};
+  int clientId{};
+  int providerId{};
+  if (UTILS::GetClientAndProviderFromPath(currentPath, clientId, providerId))
+    return StringUtils::Format("{}?clientid={}&providerid={}", basePath, clientId, providerId);
+
+  return basePath;
 }
 
 std::string CGUIWindowPVRChannelsBase::GetRootPath()
