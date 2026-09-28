@@ -81,38 +81,51 @@ CGEventRef MediaKeyCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
     return;
   }
 
+  // The thread gets its own reference to the source, as disabling may release ours before it runs
   m_mediaKeyTapThread = [[NSThread alloc] initWithTarget:self
-                                                selector:@selector(eventTapThread)
-                                                  object:nil];
+                                                selector:@selector(eventTapThread:)
+                                                  object:(__bridge id)m_sourceRef];
   [m_mediaKeyTapThread start];
 }
 
 - (void)disableMediaKeyTap
 {
-  if (m_tapThreadURL)
+  @synchronized(self)
   {
-    CFRunLoopStop(m_tapThreadURL);
-    m_tapThreadURL = nullptr;
-  }
+    if (m_tapThreadURL)
+    {
+      CFRunLoopStop(m_tapThreadURL);
+      m_tapThreadURL = nullptr;
+    }
 
-  if (m_portRef)
-  {
-    CFMachPortInvalidate(m_portRef);
-    CFRelease(m_portRef);
-    m_portRef = nullptr;
-  }
+    if (m_portRef)
+    {
+      CFMachPortInvalidate(m_portRef);
+      CFRelease(m_portRef);
+      m_portRef = nullptr;
+    }
 
-  if (m_sourceRef)
-  {
-    CFRelease(m_sourceRef);
-    m_sourceRef = nullptr;
+    if (m_sourceRef)
+    {
+      // Tells a tap thread that has yet to start not to
+      CFRunLoopSourceInvalidate(m_sourceRef);
+      CFRelease(m_sourceRef);
+      m_sourceRef = nullptr;
+    }
   }
 }
 
-- (void)eventTapThread
+- (void)eventTapThread:(id)source
 {
-  m_tapThreadURL = CFRunLoopGetCurrent();
-  CFRunLoopAddSource(m_tapThreadURL, m_sourceRef, kCFRunLoopCommonModes);
+  const auto sourceRef = (__bridge CFRunLoopSourceRef)source;
+  @synchronized(self)
+  {
+    if (!CFRunLoopSourceIsValid(sourceRef))
+      return;
+
+    m_tapThreadURL = CFRunLoopGetCurrent();
+    CFRunLoopAddSource(m_tapThreadURL, sourceRef, kCFRunLoopCommonModes);
+  }
   CFRunLoopRun();
 }
 
