@@ -1023,6 +1023,27 @@ bool CPVRGUIDirectory::GetTimersDirectory(CFileItemList& results) const
   return false;
 }
 
+namespace
+{
+unsigned int GetVisibleChannelCountForProvider(const CPVRChannelGroup& group,
+                                               const CPVRProvidersPath& path)
+{
+  if (group.GroupType() != PVR_GROUP_TYPE_CLIENT || group.GetClientID() != path.GetClientId())
+    return 0;
+
+  unsigned int channelCount{0};
+  for (const auto& member : group.GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE))
+  {
+    const auto& channel{member->Channel()};
+    if (channel->ClientID() == path.GetClientId() &&
+        (path.GetProviderUid() == PVR_PROVIDER_INVALID_UID ||
+         channel->ClientProviderUid() == path.GetProviderUid()))
+      ++channelCount;
+  }
+  return channelCount;
+}
+} // unnamed namespace
+
 bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
 {
   const CPVRProvidersPath path(m_url.GetWithoutOptions());
@@ -1072,31 +1093,17 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         const auto providerGroups{groups->Get(path.IsRadio())->GetMembers(true)};
         for (const auto& group : providerGroups)
         {
-          if (group->GroupType() != PVR_GROUP_TYPE_CLIENT ||
-              group->GetClientID() != path.GetClientId())
-            continue;
-
-          unsigned int visibleChannelCount{0};
-          for (const auto& member : group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE))
+          if (GetVisibleChannelCountForProvider(*group, path) > 0)
           {
-            const auto& channel = member->Channel();
-            if (channel->ClientID() == path.GetClientId() &&
-                (path.GetProviderUid() == PVR_PROVIDER_INVALID_UID ||
-                 channel->ClientProviderUid() == path.GetProviderUid()))
-              ++visibleChannelCount;
+            const CPVRProvidersPath groupsPath{path.GetKind(), path.GetClientId(),
+                                               path.GetProviderUid(), CPVRProvidersPath::GROUPS};
+            auto groupsItem{std::make_shared<CFileItem>(groupsPath.AsString(), true)};
+            groupsItem->SetLabel(
+                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19146)); // Groups
+            groupsItem->SetArt("icon", "DefaultPVRChannels.png");
+            results.Add(std::move(groupsItem));
+            break;
           }
-          if (visibleChannelCount == 0)
-            continue;
-
-          std::string targetPath{group->GetPath().AsString()};
-          targetPath = StringUtils::Format("{}?clientid={}&providerid={}", targetPath,
-                                           path.GetClientId(), path.GetProviderUid());
-          auto groupItem{std::make_shared<CFileItem>(targetPath, true)};
-          groupItem->SetLabel(group->GroupName());
-          groupItem->SetArt("icon", "DefaultPVRChannels.png");
-          groupItem->SetProperty("provider.channelgroup", true);
-          groupItem->SetProperty("totalcount", visibleChannelCount);
-          results.Add(std::move(groupItem));
         }
       }
 
@@ -1117,6 +1124,27 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         results.Add(std::move(recordingsItem));
       }
 
+      return true;
+    }
+    else if (path.IsGroups())
+    {
+      const auto providerGroups{
+          CServiceBroker::GetPVRManager().ChannelGroups()->Get(path.IsRadio())->GetMembers(true)};
+      for (const auto& group : providerGroups)
+      {
+        const unsigned int visibleChannelCount{GetVisibleChannelCountForProvider(*group, path)};
+        if (visibleChannelCount == 0)
+          continue;
+
+        const std::string targetPath{
+            StringUtils::Format("{}?clientid={}&providerid={}", group->GetPath().AsString(),
+                                path.GetClientId(), path.GetProviderUid())};
+        auto groupItem{std::make_shared<CFileItem>(targetPath, true)};
+        groupItem->SetLabel(group->GroupName());
+        groupItem->SetArt("icon", "DefaultPVRChannels.png");
+        groupItem->SetProperty("totalcount", visibleChannelCount);
+        results.Add(std::move(groupItem));
+      }
       return true;
     }
     else if (path.IsChannels())
