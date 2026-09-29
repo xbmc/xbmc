@@ -474,7 +474,7 @@ void CRenderer::PrepareOverlays(int idx)
     return;
 
   SubtitleResolution resolution;
-  const bool updateStyle = UpdateSubtitleStyleAndPosition(resolution);
+  UpdateSubtitleStyleAndPosition(resolution);
 
   bool doMarkDirty = false;
   bool hasImageSpu = false;
@@ -599,12 +599,8 @@ void CRenderer::PrepareOverlays(int idx)
     // Pull the libass output for this PTS. Cached on the SElement until
     // ConvertLibass consumes it later in this frame's GUI walk.
     int currentChange = 0;
-    e.renderedImages = ovAss.GetLibassHandler()->RenderImage(e.pts, rOpts, updateStyle,
-                                                             m_overlayStyle, &currentChange);
-    // A handler whose track is not built yet returns without applying the style, so the
-    // request has to stand.
-    if (e.renderedImages)
-      m_stylePendingApply = false;
+    e.renderedImages =
+        ovAss.GetLibassHandler()->RenderImage(e.pts, rOpts, m_overlayStyle, &currentChange);
     if (currentChange > 0)
     {
       // Persist on the overlay so a skipped GUI render does not drop the change.
@@ -727,12 +723,11 @@ void CRenderer::LoadSettings()
   ResetSubtitlePosition();
 }
 
-bool CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
+void CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
 {
   if (!m_overlayStyle || m_isSettingsChanged)
   {
     m_isSettingsChanged = false;
-    m_stylePendingApply = true;
     LoadSettings();
     CreateSubtitlesStyle();
   }
@@ -743,7 +738,7 @@ bool CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
 
   // m_rv is set after this runs on the first frame of a playback.
   if (m_subtitleAlign != SUBTITLES::Align::MANUAL && m_rv.IsEmpty())
-    return m_stylePendingApply;
+    return;
 
   // Keep track of subtitle position value change,
   // can be changed by GUI Calibration or by window mode/resolution change or
@@ -767,6 +762,4 @@ bool CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
     else
       ResetSubtitlePosition();
   }
-
-  return m_stylePendingApply;
 }
