@@ -160,6 +160,7 @@ public:
   double GetMaxDelay() override;
 
   void Pause() override;
+  void Hold() override;
   void Resume() override;
   void Drain(bool wait) override;
   bool IsDraining() override;

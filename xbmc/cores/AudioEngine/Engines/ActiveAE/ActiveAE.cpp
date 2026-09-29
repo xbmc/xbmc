@@ -752,6 +752,14 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           stream->m_paused = true;
           return;
+        case CActiveAEControlProtocol::HOLDSTREAM:
+          // A pause that leaves STREAMING set, so the sink keeps the wire alive for the hold.
+          stream = *(CActiveAEStream**)msg->data;
+          if (!stream->m_paused && m_streams.size() == 1)
+            FlushEngine();
+          stream->m_paused = true;
+          m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::ARMFILLER);
+          return;
         case CActiveAEControlProtocol::RESUMESTREAM:
           stream = *(CActiveAEStream**)msg->data;
           if (stream->m_paused)
@@ -3673,6 +3681,12 @@ void CActiveAE::PauseStream(CActiveAEStream *stream, bool pause)
   else
     m_controlPort.SendOutMessage(CActiveAEControlProtocol::RESUMESTREAM,
                                    &stream, sizeof(CActiveAEStream*));
+}
+
+void CActiveAE::HoldStream(CActiveAEStream* stream)
+{
+  m_controlPort.SendOutMessage(CActiveAEControlProtocol::HOLDSTREAM, &stream,
+                               sizeof(CActiveAEStream*));
 }
 
 void CActiveAE::SetStreamAmplification(CActiveAEStream *stream, float amplify)

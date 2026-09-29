@@ -35,6 +35,7 @@ public:
   void SetVolume(float fVolume);
   void SetDynamicRangeCompression(long drc);
   void Pause();
+  void Hold();
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler);
   bool IsValidFormat(const DVDAudioFrame &audioframe);

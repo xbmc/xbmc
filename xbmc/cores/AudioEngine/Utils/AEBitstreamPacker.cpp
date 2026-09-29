@@ -125,8 +125,8 @@ bool CAEBitstreamPacker::PackLastBurst()
 
 void CAEBitstreamPacker::RetainBurst()
 {
-  // Whole bursts only: DTS-HD and E-AC3 leave m_dataSize at zero while
-  // they accumulate.
+  // Whole bursts only: E-AC3 of fewer than six blocks a frame leaves m_dataSize at zero while a
+  // burst accumulates.
   if (m_dataSize == 0 || m_dataSize > sizeof(m_packedBuffer))
     return;
 
@@ -147,8 +147,6 @@ void CAEBitstreamPacker::Reset()
 {
   m_dataSize = 0;
   m_pauseDuration = 0;
-  // The retained burst belongs to the stream that is ending.
-  m_lastBurst.clear();
   m_packedBuffer[0] = 0;
 }
 

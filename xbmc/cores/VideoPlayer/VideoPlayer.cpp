@@ -6188,7 +6188,11 @@ void CVideoPlayer::HoldForAudioFormatChange()
             static_cast<double>(tenths) / 10.0);
 
   if (m_VideoPlayerAudio->IsInited())
+  {
     m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true), 1);
+    m_VideoPlayerAudio->SendMessage(
+        std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_AUDIO_FORMAT_HOLD, true), 1);
+  }
   if (m_VideoPlayerVideo->IsInited())
     m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true), 1);
   m_clock.Pause(true);
@@ -6214,6 +6218,8 @@ void CVideoPlayer::ReleaseAudioFormatHold()
                                     .count()) /
                 1000.0,
             early ? "chain reported ready" : "timed out");
+  m_VideoPlayerAudio->SendMessage(
+      std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_AUDIO_FORMAT_HOLD, false), 1);
   m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false), 1);
   m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false), 1);
   m_clock.Pause(false);

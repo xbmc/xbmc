@@ -337,6 +337,10 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           m_extStreaming = *(bool*)msg->data;
           return;
 
+        case CSinkControlProtocol::ARMFILLER:
+          m_fillerArmed = m_silenceFiller;
+          return;
+
         case CSinkControlProtocol::SETSILENCETIMEOUT:
           m_silenceTimeOut = std::chrono::minutes(*reinterpret_cast<int*>(msg->data));
           return;
@@ -1046,10 +1050,7 @@ void CActiveAESink::OpenSink()
   const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   const auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
   m_silenceFiller = passthrough && settings && settings->GetBool("audiooutput.silencefiller");
-  m_fillerArmed = m_silenceFiller;
-  m_fillerUsed = false;
-  if (m_silenceFiller)
-    CLog::Log(LOGINFO, "CActiveAESink::OpenSink - content filler armed for the opening hold");
+  m_fillerArmed = false;
 
   m_swapState = CHECK_SWAP;
 }
@@ -1112,33 +1113,26 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         m_packer->Reset();
         m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
         out = RawOut::DATA;
-        // Content after the filler is the film starting: the opening is over.
-        if (m_fillerUsed)
-          m_fillerArmed = false;
+        // Content is the hold over.
+        m_fillerArmed = false;
       }
       else if (samples->pkt->pause_burst_ms > 0)
       {
         // construct a pause burst if we have already output valid audio
         bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
-        // ActiveAE reports STREAMING false for the whole of a hold, so burst
-        // cannot gate this.
-        const bool haveFormat = m_packer->GetBuffer()[0] != 0;
         // Sync gaps request arbitrary lengths and stay as pause bursts.
         bool filled = false;
         const bool wholeFrame = samples->pkt->pause_burst_ms ==
                                 static_cast<int>(m_sinkFormat.m_streamInfo.GetDuration());
-        // The opening only: repeating a burst across a later gap is audible.
-        if (m_silenceFiller && m_fillerArmed && haveFormat && wholeFrame)
+        // Only during a hold: repeating a burst across any other gap is audible.
+        if (m_silenceFiller && m_fillerArmed && wholeFrame)
         {
           filled = m_packer->PackLastBurst();
-          if (filled)
-            m_fillerUsed = true;
           if (!filled)
             why = " [filler: no burst retained]";
         }
         else if (m_silenceFiller)
-          why = !m_fillerArmed ? " [filler: past the opening]"
-                : !haveFormat  ? " [filler: no prior burst]"
+          why = !m_fillerArmed ? " [filler: no hold]"
                 : !wholeFrame  ? " [filler: partial frame]"
                                : "";
         // Not skipSwap: the retained burst is copied in fresh and still needs it.

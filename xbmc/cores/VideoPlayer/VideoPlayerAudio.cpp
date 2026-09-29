@@ -397,6 +397,15 @@ void CVideoPlayerAudio::Process()
       m_paused = std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value;
       CLog::Log(LOGDEBUG, "CVideoPlayerAudio - CDVDMsg::GENERAL_PAUSE: {}", m_paused);
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_AUDIO_FORMAT_HOLD))
+    {
+      // GENERAL_PAUSE only stops this thread; the output has to stop too, or the audio already
+      // buffered downstream plays into a receiver that is still acquiring the format.
+      if (std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value)
+        m_audioSink.Hold();
+      else if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC && m_speed != DVD_PLAYSPEED_PAUSE)
+        m_audioSink.Resume();
+    }
     else if (pMsg->IsType(CDVDMsg::PLAYER_REQUEST_STATE))
     {
       SStateMsg msg;
