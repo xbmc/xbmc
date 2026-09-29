@@ -40,6 +40,7 @@ public:
   CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   const char* GetName() override { return m_name.c_str(); }; // m_name is never changed after open
   unsigned GetConvergeCount() override;
+  bool ReplayPacketsOnReopen() const override { return m_replayOnReopen; }
   unsigned GetAllowedReferences() override;
   bool GetCodecStats(double &pts, int &droppedFrames, int &skippedPics) override;
   void SetCodecControl(int flags) override;
@@ -87,6 +88,7 @@ protected:
   std::string m_name;
   int m_decoderState;
   int m_hwFailedCount = 0;
+  bool m_replayOnReopen = true;
   IHardwareDecoder *m_pHardware = nullptr;
   int m_iLastKeyframe = 0;
   double m_dts = DVD_NOPTS_VALUE;
