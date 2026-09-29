@@ -326,7 +326,6 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf, size_t size)
 
 ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
                                             renderOpts opts,
-                                            bool updateStyle,
                                             const std::shared_ptr<struct style>& subStyle,
                                             int* changes)
 {
@@ -343,9 +342,10 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     return nullptr;
   }
 
-  if (updateStyle || m_currentDefaultStyleId == ASS_NO_ID)
+  if (subStyle != m_appliedStyle)
   {
     ApplyStyle(subStyle, opts);
+    m_appliedStyle = subStyle;
   }
 
   // Reversed par value

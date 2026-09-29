@@ -39,9 +39,14 @@ public:
   */
   void Configure();
 
+  /*!
+  * \brief Render the track at a PTS
+  * \param subStyle Applied when it is a different object from the last one applied, whether
+  * or not anything is on screen; a new style is a new object
+  * \return The images to draw, or nullptr when nothing is on screen
+  */
   ASS_Image* RenderImage(double pts,
                          KODI::SUBTITLES::STYLE::renderOpts opts,
-                         bool updateStyle,
                          const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
                          int* changes = NULL);
 
@@ -159,6 +164,8 @@ private:
   ASS_Renderer* m_renderer = nullptr;
   mutable CCriticalSection m_section;
   ASSSubType m_subtitleType{NATIVE};
+
+  std::shared_ptr<const struct KODI::SUBTITLES::STYLE::style> m_appliedStyle;
 
   // current default style ID of the ASS track
   int m_currentDefaultStyleId{ASS_NO_ID};
