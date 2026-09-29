@@ -210,6 +210,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevCh
 
       const int clientId = provider->GetClientId();
       const int providerUid = provider->GetUniqueId();
+      const auto firstMember = member;
       while (member)
       {
         const auto& channel = member->Channel();
@@ -218,7 +219,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevCh
           return member;
 
         member = nextMember(member);
-        if (member == m_currentChannel)
+        if (member == m_currentChannel || member == firstMember)
           break;
       }
       return {};
