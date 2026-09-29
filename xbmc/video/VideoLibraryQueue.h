@@ -57,6 +57,21 @@ public:
   void StopLibraryScanning();
 
   /*!
+   \brief Check if a refresh of all items in a source is queued or running.
+
+   \param[in] sourcePath Path of the source
+   \return True if the source is being refreshed, false otherwise
+   */
+  bool IsRefreshingSource(const std::string& sourcePath);
+
+  /*!
+   \brief Stop and dequeue the refresh of all items in a source.
+
+   \param[in] sourcePath Path of the source
+   */
+  void StopRefreshingSource(const std::string& sourcePath);
+
+  /*!
    \brief Enqueue a library cleaning job.
 
    \param[in] paths Set with database IDs of paths to be cleaned

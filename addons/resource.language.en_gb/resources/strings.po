@@ -7244,7 +7244,19 @@ msgctxt "#13362"
 msgid "Continue watching"
 msgstr ""
 
-#empty strings from id 13363 to 13374
+#. Label for context menu item on a video source to refresh the library information of all items in it
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
+msgctxt "#13363"
+msgid "Refresh all content"
+msgstr ""
+
+#. Label for context menu item on a video source to stop refreshing the library information of all items in it
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
+msgctxt "#13364"
+msgid "Stop refreshing"
+msgstr ""
+
+#empty strings from id 13365 to 13374
 
 msgctxt "#13375"
 msgid "Enable device"
