@@ -186,6 +186,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     return true;
   }
 
+  if (!scraper)
+    return false;
+
   if (URIUtils::IsPlugin(m_item->GetPath()) &&
       !XFILE::CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(scraper->Content()),
                                                               m_item->GetPath()))
