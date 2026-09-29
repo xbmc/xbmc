@@ -429,9 +429,15 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // put together the list of items to refresh
     std::string path = m_item->GetPath();
+    std::string discFile;
     CFileItemList items;
     if (m_item->HasVideoInfoTag() && m_item->GetVideoInfoTag()->m_iDbId > 0)
     {
+      // a bluray movie is refreshed from its disc, so that its playlists are chosen again
+      if (const std::string & filePath{m_item->GetVideoInfoTag()->m_strFileNameAndPath};
+          scraper->Content() == ADDON::ContentType::MOVIES && URIUtils::IsBlurayPath(filePath))
+        discFile = URIUtils::GetDiscFile(filePath);
+
       // for a tvshow we need to handle all paths of it
       std::vector<std::string> tvshowPaths;
       if (CMediaTypes::IsMediaType(m_item->GetVideoInfoTag()->m_type, MediaTypeTvShow) && m_refreshAll &&
@@ -444,12 +450,14 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           items.Add(tvshowItem);
         }
       }
+      else if (!discFile.empty())
+        items.Add(std::make_shared<CFileItem>(discFile, false));
       // otherwise just add a copy of the item
       else
         items.Add(std::make_shared<CFileItem>(*m_item->GetVideoInfoTag()));
 
       // update the path to the real path (instead of a videodb:// one)
-      path = m_item->GetVideoInfoTag()->m_strPath;
+      path = discFile.empty() ? m_item->GetVideoInfoTag()->m_strPath : discFile;
     }
     else
       items.Add(std::make_shared<CFileItem>(*m_item));
@@ -485,7 +493,21 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     if (origDbId > 0)
     {
       if (scraper->Content() == ADDON::ContentType::MOVIES)
+      {
+        // the disc's other playlists are chosen again along with it
+        if (!discFile.empty())
+        {
+          CFileItemList versions;
+          db.GetVideoVersions(VideoDbContentType::MOVIES, origDbId, versions,
+                              VideoAssetType::VERSION);
+          for (const auto& version : versions)
+          {
+            if (URIUtils::GetDiscFile(version->GetDynPath()) == discFile)
+              db.DeleteVideoAsset(version->GetVideoInfoTag()->m_iDbId);
+          }
+        }
         db.DeleteMovie(origDbId, DeleteMovieCascadeAction::DEFAULT_VERSION);
+      }
       else if (scraper->Content() == ADDON::ContentType::MUSICVIDEOS)
         db.DeleteMusicVideo(origDbId);
       else if (scraper->Content() == ADDON::ContentType::TVSHOWS)
@@ -530,7 +552,13 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // retrieve the updated information from the database
     if (scraper->Content() == ADDON::ContentType::MOVIES)
-      db.GetMovieInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
+    {
+      // the disc's main playlist may differ from the one refreshed
+      if (!discFile.empty() && db.GetMovieInfo(discFile, *m_item->GetVideoInfoTag()))
+        m_item->SetPath(m_item->GetVideoInfoTag()->m_strFileNameAndPath);
+      else
+        db.GetMovieInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
+    }
     else if (scraper->Content() == ADDON::ContentType::MUSICVIDEOS)
       db.GetMusicVideoInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
     else if (scraper->Content() == ADDON::ContentType::TVSHOWS)
