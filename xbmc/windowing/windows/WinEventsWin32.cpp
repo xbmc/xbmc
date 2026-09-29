@@ -34,9 +34,11 @@
 #include "network/ZeroconfBrowser.h"
 #include "peripherals/Peripherals.h"
 #include "rendering/dx/RenderContext.h"
+#include "settings/DisplaySettings.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
@@ -577,6 +579,19 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (appPower->GetRenderGUI() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
       {
         DX::Windowing()->UpdateResolutions();
+
+        // The display may have been changed externally, e.g. by a Remote Desktop session
+        // connecting or disconnecting, which a swapchain resize does not adapt to.
+        if ((DX::Windowing()->GetOSHDRStatus() == HDR_STATUS::HDR_ON) !=
+            DX::Windowing()->IsHDROutput())
+          DX::DeviceResources::Get()->ApplyDisplaySettings();
+
+        const CGraphicContext& gfxContext = DX::Windowing()->GetGfxContext();
+        const RESOLUTION_INFO& desktop =
+            CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+        if (gfxContext.IsFullScreenRoot() &&
+            (gfxContext.GetWidth() != desktop.iWidth || gfxContext.GetHeight() != desktop.iHeight))
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SETVIDEORESOLUTION, RES_DESKTOP, 1);
       }
       return(0);
     }
