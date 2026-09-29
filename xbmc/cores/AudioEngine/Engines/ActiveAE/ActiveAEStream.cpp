@@ -391,6 +391,11 @@ void CActiveAEStream::Pause()
   m_activeAE->PauseStream(this, true);
 }
 
+void CActiveAEStream::Hold()
+{
+  m_activeAE->HoldStream(this);
+}
+
 void CActiveAEStream::Resume()
 {
   m_activeAE->PauseStream(this, false);

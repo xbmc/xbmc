@@ -174,16 +174,31 @@ TEST(TestAEBitstreamPacker, RepeatingABurstDoesNotStrandTheNextPauseOfTheSameLen
   EXPECT_EQ(pause, Snapshot(packer));
 }
 
-TEST(TestAEBitstreamPacker, ResetForgetsTheRetainedBurst)
+// E-AC3 frames of fewer than six blocks fill a burst over several packets, and the sink resets
+// the packer before each one, so the burst completed by an earlier packet must survive them.
+TEST(TestAEBitstreamPacker, AMultiFrameBurstSurvivesTheResetBeforeEachPacket)
 {
   CAEBitstreamPacker packer;
-  CAEStreamInfo info{MakeAc3Info()};
+  CAEStreamInfo info;
+  info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+  info.m_sampleRate = 48000;
+  info.m_repeat = 2;
   const std::vector<uint8_t> frame{MakeAc3Frame(0x10)};
 
-  packer.Pack(info, const_cast<uint8_t*>(frame.data()), static_cast<int>(frame.size()));
-  ASSERT_TRUE(packer.PackLastBurst());
+  const auto packAsTheSinkDoes = [&packer, &info, &frame]()
+  {
+    packer.Reset();
+    packer.Pack(info, const_cast<uint8_t*>(frame.data()), static_cast<int>(frame.size()));
+  };
 
-  // The burst belongs to the stream that is ending, so it must not follow the next one
-  packer.Reset();
-  EXPECT_FALSE(packer.PackLastBurst());
+  packAsTheSinkDoes();
+  packAsTheSinkDoes();
+  ASSERT_NE(0u, packer.GetSize()) << "two frames complete a burst";
+  const std::vector<uint8_t> burst{Snapshot(packer)};
+
+  packAsTheSinkDoes();
+  ASSERT_EQ(0u, packer.GetSize()) << "one frame of the next burst completes nothing";
+
+  ASSERT_TRUE(packer.PackLastBurst());
+  EXPECT_EQ(burst, Snapshot(packer));
 }

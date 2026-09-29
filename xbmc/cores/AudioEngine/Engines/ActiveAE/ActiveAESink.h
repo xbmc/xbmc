@@ -63,6 +63,7 @@ public:
     TIMEOUT,
     SETSILENCETIMEOUT,
     SETNOISETYPE,
+    ARMFILLER,
   };
   enum InSignal
   {
@@ -163,9 +164,8 @@ protected:
   std::unique_ptr<CAEBitstreamPacker> m_packer;
   bool m_needIecPack{false};
   bool m_silenceFiller{false};
-  //! \brief Armed at sink open, dropped once content follows the filler.
+  //! \brief Armed when a stream is held for a format change, dropped by the next content.
   bool m_fillerArmed{false};
-  bool m_fillerUsed{false};
   bool m_streamNoise;
 };
 

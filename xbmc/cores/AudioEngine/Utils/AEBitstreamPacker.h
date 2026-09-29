@@ -30,6 +30,8 @@ public:
   //! yet; the caller skips byte-swapping, as the retained burst is already
   //! swapped.
   bool PackLastBurst();
+  //! Start the next packet. The last complete burst is kept: a packer lives as long as the
+  //! sink it was opened for.
   void Reset();
   uint8_t* GetBuffer();
   unsigned int GetSize() const;
