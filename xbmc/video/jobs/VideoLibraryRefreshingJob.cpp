@@ -454,6 +454,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     else
       items.Add(std::make_shared<CFileItem>(*m_item));
 
+    // an item created from a video info tag is given the default icon, which is not art to save
+    for (const auto& item : items)
+      item->ClearArt();
+
     // set the proper path of the list of items to lookup
     items.SetPath(VIDEO::IsBrowsableFolder(*m_item) ? URIUtils::GetParentPath(path)
                                                     : URIUtils::GetDirectory(path));
