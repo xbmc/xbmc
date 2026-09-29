@@ -1067,9 +1067,9 @@ void CVideoPlayer::PrioritizeInitialAudioStream(std::vector<SelectionStream>& st
     return;
 
   const int requestedStream = std::exchange(m_playerOptions.initialAudioStream, -1);
-  const auto requested = std::find_if(
-      streams.begin(), streams.end(),
-      [requestedStream](const SelectionStream& stream) { return stream.type_index == requestedStream; });
+  const auto requested =
+      std::find_if(streams.begin(), streams.end(), [requestedStream](const SelectionStream& stream)
+                   { return stream.type_index == requestedStream; });
   if (requested != streams.end())
     std::rotate(streams.begin(), requested, std::next(requested));
 }

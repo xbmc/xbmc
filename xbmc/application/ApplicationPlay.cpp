@@ -370,11 +370,9 @@ CApplicationPlay::GatherPlaybackDetailsResult CApplicationPlay::GatherPlaybackDe
     GetOptionsAndUpdateItem();
   }
 
-  const CFileItem& audioStreamItem =
-      m_item.HasProperty("AudioStream") ? m_item : item;
+  const CFileItem& audioStreamItem = m_item.HasProperty("AudioStream") ? m_item : item;
   if (audioStreamItem.HasProperty("AudioStream"))
-    m_options.initialAudioStream =
-        audioStreamItem.GetProperty("AudioStream").asInteger32(-1);
+    m_options.initialAudioStream = audioStreamItem.GetProperty("AudioStream").asInteger32(-1);
 
   if (!GetPlaylistIfDisc())
     return GatherPlaybackDetailsResult::
