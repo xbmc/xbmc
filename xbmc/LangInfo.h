@@ -160,7 +160,6 @@ public:
   KODI::UTILS::CLanguageTag GetDVDMenuLanguage() const;
   KODI::UTILS::CLanguageTag GetDVDAudioLanguage() const;
   KODI::UTILS::CLanguageTag GetDVDSubtitleLanguage() const;
-  const std::string& GetTimeZone() const;
 
   const std::string& GetRegionLocale() const;
 
@@ -193,7 +192,6 @@ public:
   bool ForceUnicodeFont() const { return m_forceUnicodeFont; }
 
   const std::string& GetDateFormat(bool bLongDate = false) const;
-  void SetDateFormat(const std::string& dateFormat, bool bLongDate = false);
   const std::string& GetShortDateFormat() const;
   void SetShortDateFormat(const std::string& shortDateFormat);
   const std::string& GetLongDateFormat() const;
@@ -219,7 +217,6 @@ public:
   void SetSpeedUnit(const std::string& speedUnit);
   const std::string& GetSpeedUnitString() const;
   static const std::string& GetSpeedUnitString(CSpeed::Unit speedUnit);
-  std::string GetSpeedAsString(const CSpeed& speed) const;
 
   void GetRegionNames(std::vector<std::string>& array) const;
   void SetCurrentRegion(const std::string& strName);
@@ -287,7 +284,6 @@ protected:
   bool Load(const std::string& strLanguage);
 
   static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
-  static bool DetermineUseMeridiemFromTimeFormat(const std::string& timeFormat);
   static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
   static void AddLanguages(std::vector<StringSettingOption> &list);
 
@@ -298,7 +294,6 @@ protected:
     void SetDefaults();
     void SetTemperatureUnit(const std::string& strUnit);
     void SetSpeedUnit(const std::string& strUnit);
-    void SetTimeZone(const std::string& strTimeZone);
 
     /*!
      * \brief The language and territory this region describes.
@@ -350,7 +345,6 @@ protected:
     std::string m_strDateFormatShort;
     std::string m_strTimeFormat;
     std::string m_strMeridiemSymbols[2];
-    std::string m_strTimeZone;
     std::string m_strGrouping;
     char m_cDecimalSep{'.'};
     char m_cThousandsSep{'.'};
