@@ -25807,3 +25807,9 @@ msgstr ""
 msgctxt "#40806"
 msgid "Adjust and display the volume level while audio is passed through. The level is not applied to the bitstream, but every change is announced, so an add-on or automation can apply it to an external audio processor."
 msgstr ""
+
+#. Context menu item for navigating to an artist from a music library album or song
+#: xbmc/music/ContextMenus.cpp
+msgctxt "#40807"
+msgid "Go to artist"
+msgstr ""
