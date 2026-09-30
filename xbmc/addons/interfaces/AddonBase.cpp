@@ -38,6 +38,47 @@
 namespace ADDON
 {
 
+namespace
+{
+//! \brief A setting of another add-on, as a Python add-on reads one with xbmcaddon.Addon(id)
+std::shared_ptr<CSetting> GetAddonSetting(const CAddonDll* caller,
+                                          const char* addonId,
+                                          const char* id,
+                                          SettingType type)
+{
+  if (!caller || !addonId || !id)
+  {
+    CLog::LogF(LOGERROR, "Invalid data (addon='{}', addon_id='{}', id='{}')",
+               static_cast<const void*>(caller), static_cast<const void*>(addonId),
+               static_cast<const void*>(id));
+    return nullptr;
+  }
+
+  AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, OnlyEnabled::CHOICE_YES) ||
+      !addon->HasSettings())
+  {
+    CLog::LogF(LOGERROR, "Couldn't get settings for add-on '{}'", addonId);
+    return nullptr;
+  }
+
+  auto setting = addon->GetSettings()->GetSetting(id);
+  if (setting == nullptr)
+  {
+    CLog::LogF(LOGERROR, "Can't find setting '{}' in '{}'", id, addonId);
+    return nullptr;
+  }
+
+  if (setting->GetType() != type)
+  {
+    CLog::LogF(LOGERROR, "Setting '{}' in '{}' is not of the type asked for", id, addonId);
+    return nullptr;
+  }
+
+  return setting;
+}
+} // namespace
+
 std::vector<AddonGetInterface> Interface_Base::s_registeredInterfaces;
 
 bool Interface_Base::InitInterface(CAddonDll* addon,
@@ -77,6 +118,10 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
   addonInterface.toKodi->kodi_addon->get_addon_info = get_addon_info;
   addonInterface.toKodi->kodi_addon->get_type_version = get_type_version;
   addonInterface.toKodi->kodi_addon->get_interface = get_interface;
+  addonInterface.toKodi->kodi_addon->get_addon_setting_bool = get_addon_setting_bool;
+  addonInterface.toKodi->kodi_addon->get_addon_setting_int = get_addon_setting_int;
+  addonInterface.toKodi->kodi_addon->get_addon_setting_float = get_addon_setting_float;
+  addonInterface.toKodi->kodi_addon->get_addon_setting_string = get_addon_setting_string;
 
   // Related parts becomes set from addon headers, make here to nullptr to allow
   // checks for right set of them
@@ -495,6 +540,62 @@ bool Interface_Base::get_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
     CLog::LogF(LOGERROR, "Setting '{}' is not a string in '{}'", id, addon->Name());
     return false;
   }
+
+  *value = strdup(std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+  return true;
+}
+
+bool Interface_Base::get_addon_setting_bool(const KODI_ADDON_BACKEND_HDL hdl,
+                                            const char* addon_id,
+                                            const char* id,
+                                            bool* value)
+{
+  const auto setting =
+      GetAddonSetting(static_cast<const CAddonDll*>(hdl), addon_id, id, SettingType::Boolean);
+  if (!setting || !value)
+    return false;
+
+  *value = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
+  return true;
+}
+
+bool Interface_Base::get_addon_setting_int(const KODI_ADDON_BACKEND_HDL hdl,
+                                           const char* addon_id,
+                                           const char* id,
+                                           int* value)
+{
+  const auto setting =
+      GetAddonSetting(static_cast<const CAddonDll*>(hdl), addon_id, id, SettingType::Integer);
+  if (!setting || !value)
+    return false;
+
+  *value = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
+  return true;
+}
+
+bool Interface_Base::get_addon_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
+                                             const char* addon_id,
+                                             const char* id,
+                                             float* value)
+{
+  const auto setting =
+      GetAddonSetting(static_cast<const CAddonDll*>(hdl), addon_id, id, SettingType::Number);
+  if (!setting || !value)
+    return false;
+
+  *value = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
+  return true;
+}
+
+bool Interface_Base::get_addon_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
+                                              const char* addon_id,
+                                              const char* id,
+                                              char** value)
+{
+  const auto setting =
+      GetAddonSetting(static_cast<const CAddonDll*>(hdl), addon_id, id, SettingType::String);
+  if (!setting || !value)
+    return false;
 
   *value = strdup(std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
   return true;

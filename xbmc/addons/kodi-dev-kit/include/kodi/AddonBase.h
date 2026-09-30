@@ -18,6 +18,7 @@
 
 #include "tools/StringUtils.h"
 
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -1780,6 +1781,220 @@ inline void ATTR_DLL_LOCAL SetSettingEnum(const std::string& settingName, enumTy
   CPrivateBase::m_interface->toKodi->kodi_addon->set_setting_int(
       CPrivateBase::m_interface->toKodi->kodiBase, settingName.c_str(),
       static_cast<int>(settingValue));
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Whether this Kodi can read the settings of another add-on.
+///
+/// Reading them came with main API 2.0.4. An add-on built against it still
+/// loads on an older Kodi, which has nothing to answer the calls with.
+///
+/// @return true if the calls below can be used
+///
+inline bool ATTR_DLL_LOCAL CanReadAddonSettings()
+{
+  using namespace kodi::addon;
+
+  char* str = CPrivateBase::m_interface->toKodi->kodi_addon->get_type_version(
+      CPrivateBase::m_interface->toKodi->kodiBase, ADDON_GLOBAL_MAIN);
+  if (!str)
+    return false;
+  int version[3] = {0, 0, 0};
+  sscanf(str, "%d.%d.%d", &version[0], &version[1], &version[2]);
+  CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
+
+  const int added[3] = {2, 0, 4};
+  for (unsigned int i = 0; i < 3; ++i)
+  {
+    if (version[i] != added[i])
+      return version[i] > added[i];
+  }
+  return true;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Check and get a boolean setting of another add-on.
+///
+/// For a setting kept by another add-on, such as the one a game client is
+/// built on. The add-on must be installed and enabled.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[out] settingValue The value, if it could be read
+/// @return true if the setting was read, false if not
+///
+inline bool ATTR_DLL_LOCAL CheckAddonSettingBoolean(const std::string& addonId,
+                                                    const std::string& settingName,
+                                                    bool& settingValue)
+{
+  using namespace kodi::addon;
+
+  if (!CanReadAddonSettings())
+    return false;
+
+  return CPrivateBase::m_interface->toKodi->kodi_addon->get_addon_setting_bool(
+      CPrivateBase::m_interface->toKodi->kodiBase, addonId.c_str(), settingName.c_str(),
+      &settingValue);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Get a boolean setting of another add-on.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[in] defaultValue [opt] Returned if the setting can't be read
+/// @return The value of the setting, or defaultValue
+///
+inline bool ATTR_DLL_LOCAL GetAddonSettingBoolean(const std::string& addonId,
+                                                  const std::string& settingName,
+                                                  bool defaultValue = false)
+{
+  bool settingValue = defaultValue;
+  CheckAddonSettingBoolean(addonId, settingName, settingValue);
+  return settingValue;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Check and get a integer setting of another add-on.
+///
+/// For a setting kept by another add-on, such as the one a game client is
+/// built on. The add-on must be installed and enabled.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[out] settingValue The value, if it could be read
+/// @return true if the setting was read, false if not
+///
+inline bool ATTR_DLL_LOCAL CheckAddonSettingInt(const std::string& addonId,
+                                                const std::string& settingName,
+                                                int& settingValue)
+{
+  using namespace kodi::addon;
+
+  if (!CanReadAddonSettings())
+    return false;
+
+  return CPrivateBase::m_interface->toKodi->kodi_addon->get_addon_setting_int(
+      CPrivateBase::m_interface->toKodi->kodiBase, addonId.c_str(), settingName.c_str(),
+      &settingValue);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Get a integer setting of another add-on.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[in] defaultValue [opt] Returned if the setting can't be read
+/// @return The value of the setting, or defaultValue
+///
+inline int ATTR_DLL_LOCAL GetAddonSettingInt(const std::string& addonId,
+                                             const std::string& settingName,
+                                             int defaultValue = 0)
+{
+  int settingValue = defaultValue;
+  CheckAddonSettingInt(addonId, settingName, settingValue);
+  return settingValue;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Check and get a floating point setting of another add-on.
+///
+/// For a setting kept by another add-on, such as the one a game client is
+/// built on. The add-on must be installed and enabled.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[out] settingValue The value, if it could be read
+/// @return true if the setting was read, false if not
+///
+inline bool ATTR_DLL_LOCAL CheckAddonSettingFloat(const std::string& addonId,
+                                                  const std::string& settingName,
+                                                  float& settingValue)
+{
+  using namespace kodi::addon;
+
+  if (!CanReadAddonSettings())
+    return false;
+
+  return CPrivateBase::m_interface->toKodi->kodi_addon->get_addon_setting_float(
+      CPrivateBase::m_interface->toKodi->kodiBase, addonId.c_str(), settingName.c_str(),
+      &settingValue);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Get a floating point setting of another add-on.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[in] defaultValue [opt] Returned if the setting can't be read
+/// @return The value of the setting, or defaultValue
+///
+inline float ATTR_DLL_LOCAL GetAddonSettingFloat(const std::string& addonId,
+                                                 const std::string& settingName,
+                                                 float defaultValue = 0.0f)
+{
+  float settingValue = defaultValue;
+  CheckAddonSettingFloat(addonId, settingName, settingValue);
+  return settingValue;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Check and get a string setting of another add-on.
+///
+/// For a setting kept by another add-on, such as the one a game client is
+/// built on. The add-on must be installed and enabled.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[out] settingValue The value, if it could be read
+/// @return true if the setting was read, false if not
+///
+inline bool ATTR_DLL_LOCAL CheckAddonSettingString(const std::string& addonId,
+                                                   const std::string& settingName,
+                                                   std::string& settingValue)
+{
+  using namespace kodi::addon;
+
+  if (!CanReadAddonSettings())
+    return false;
+
+  char* buffer = nullptr;
+  const bool ret = CPrivateBase::m_interface->toKodi->kodi_addon->get_addon_setting_string(
+      CPrivateBase::m_interface->toKodi->kodiBase, addonId.c_str(), settingName.c_str(), &buffer);
+  if (buffer)
+  {
+    if (ret)
+      settingValue = buffer;
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   buffer);
+  }
+  return ret;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @brief Get a string setting of another add-on.
+///
+/// @param[in] addonId The add-on the setting belongs to
+/// @param[in] settingName The name used in that add-on's <b>settings.xml</b>
+/// @param[in] defaultValue [opt] Returned if the setting can't be read
+/// @return The value of the setting, or defaultValue
+///
+inline std::string ATTR_DLL_LOCAL GetAddonSettingString(const std::string& addonId,
+                                                        const std::string& settingName,
+                                                        const std::string& defaultValue = "")
+{
+  std::string settingValue = defaultValue;
+  CheckAddonSettingString(addonId, settingName, settingValue);
+  return settingValue;
 }
 //------------------------------------------------------------------------------
 

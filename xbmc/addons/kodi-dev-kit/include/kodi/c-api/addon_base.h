@@ -318,6 +318,23 @@ extern "C"
 
     char* (*get_type_version)(const KODI_ADDON_BACKEND_HDL hdl, int type);
     void* (*get_interface)(const KODI_ADDON_BACKEND_HDL hdl, const char* name, const char* version);
+
+    bool (*get_addon_setting_bool)(const KODI_ADDON_BACKEND_HDL hdl,
+                                   const char* addon_id,
+                                   const char* id,
+                                   bool* value);
+    bool (*get_addon_setting_int)(const KODI_ADDON_BACKEND_HDL hdl,
+                                  const char* addon_id,
+                                  const char* id,
+                                  int* value);
+    bool (*get_addon_setting_float)(const KODI_ADDON_BACKEND_HDL hdl,
+                                    const char* addon_id,
+                                    const char* id,
+                                    float* value);
+    bool (*get_addon_setting_string)(const KODI_ADDON_BACKEND_HDL hdl,
+                                     const char* addon_id,
+                                     const char* id,
+                                     char** value);
   } AddonToKodiFuncTable_kodi_addon;
 
   /*!

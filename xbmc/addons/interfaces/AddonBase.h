@@ -82,6 +82,23 @@ struct Interface_Base
   static void* get_interface(const KODI_ADDON_BACKEND_HDL hdl,
                              const char* name,
                              const char* version);
+
+  static bool get_addon_setting_bool(const KODI_ADDON_BACKEND_HDL hdl,
+                                     const char* addon_id,
+                                     const char* id,
+                                     bool* value);
+  static bool get_addon_setting_int(const KODI_ADDON_BACKEND_HDL hdl,
+                                    const char* addon_id,
+                                    const char* id,
+                                    int* value);
+  static bool get_addon_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
+                                      const char* addon_id,
+                                      const char* id,
+                                      float* value);
+  static bool get_addon_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
+                                       const char* addon_id,
+                                       const char* id,
+                                       char** value);
   //@}
 };
 
