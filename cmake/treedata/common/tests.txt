@@ -45,4 +45,5 @@ xbmc/settings/lib/test            test/lib/settings
 xbmc/test                         test
 xbmc/threads/test                 test/threads
 xbmc/utils/test                   test/utils
+xbmc/video/geometry/test          test/video/geometry
 xbmc/video/test                   test/video
