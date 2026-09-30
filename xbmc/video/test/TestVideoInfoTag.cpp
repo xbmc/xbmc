@@ -233,6 +233,8 @@ TEST(TestVideoInfoTag, WriteVideoStreamDetails)
   auto* video = new CStreamDetailVideo();
   video->m_strCodec = "hevc";
   video->m_strLanguage = "eng";
+  video->m_strHdrType = "dolbyvision";
+  video->m_strHdrDetail = "7MEL";
   video->SetSource(CStreamDetail::MEDIA);
 
   CVideoInfoTag details;
@@ -246,6 +248,7 @@ TEST(TestVideoInfoTag, WriteVideoStreamDetails)
   ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
 
   EXPECT_EQ("eng", reloaded.m_streamDetails.GetVideoLanguage(1));
+  EXPECT_EQ("7MEL", reloaded.m_streamDetails.GetVideoHdrDetail(1));
 }
 
 // Trick to make protected methods accessible for testing
