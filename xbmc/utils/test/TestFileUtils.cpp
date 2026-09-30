@@ -7,7 +7,10 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -39,6 +42,22 @@ TEST(TestFileUtils, DeleteItemString)
   tmpfile->Close();  //Close tmpfile before we try to delete it
   EXPECT_TRUE(CFileUtils::DeleteItem(XBMC_TEMPFILEPATH(tmpfile)));
   EXPECT_FALSE(XBMC_DELETETEMPFILE(tmpfile));
+}
+
+//! \brief An empty playlists path names no folder, so it shares nothing for remote access
+TEST(TestFileUtils, AnEmptyPlaylistsPathSharesNothing)
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string before = settings->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, "");
+  EXPECT_FALSE(CFileUtils::RemoteAccessAllowed("special://temp/remote-access.txt"));
+
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, "special://temp/playlists/");
+  EXPECT_TRUE(CFileUtils::RemoteAccessAllowed("special://temp/playlists/remote-access.m3u"));
+  EXPECT_FALSE(CFileUtils::RemoteAccessAllowed("special://temp/remote-access.txt"));
+
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, before);
 }
 
 /* Executing RenameFile() requires input from the user */
