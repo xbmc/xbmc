@@ -29,6 +29,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
+#include "utils/DiscsUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -42,6 +43,7 @@
 #include "video/tags/VideoTagLoaderNFO.h"
 #include "video/tags/VideoTagLoaderPlugin.h"
 
+#include <algorithm>
 #include <array>
 #include <memory>
 #include <utility>
@@ -433,10 +435,16 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     CFileItemList items;
     if (m_item->HasVideoInfoTag() && m_item->GetVideoInfoTag()->m_iDbId > 0)
     {
-      // a bluray movie is refreshed from its disc, so that its playlists are chosen again
+      // a bluray movie is refreshed from its disc, so that its playlists are chosen again. Older
+      // versions stored the disc itself (the ISO or index.bdmv) rather than a playlist.
       if (const std::string & filePath{m_item->GetVideoInfoTag()->m_strFileNameAndPath};
-          scraper->Content() == ADDON::ContentType::MOVIES && URIUtils::IsBlurayPath(filePath))
-        discFile = URIUtils::GetDiscFile(filePath);
+          scraper->Content() == ADDON::ContentType::MOVIES)
+      {
+        if (URIUtils::IsBlurayPath(filePath))
+          discFile = URIUtils::GetDiscFile(filePath);
+        else if (::UTILS::DISCS::IsBlurayDiscImage(filePath) || URIUtils::IsBDFile(filePath))
+          discFile = filePath;
+      }
 
       // for a tvshow we need to handle all paths of it
       std::vector<std::string> tvshowPaths;
@@ -488,6 +496,21 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     const bool hasAdditionalAssets{m_item->HasVideoVersions() || m_item->HasVideoExtras()};
     const int origDbId{m_item->GetVideoInfoTag()->m_iDbId};
+
+    // the disc's watched state, carried over if a single playlist is found on it again
+    CVideoDatabase::FileRecord discFileState;
+    CBookmark discResumePoint;
+    VECBOOKMARKS discBookmarks;
+    if (!discFile.empty())
+    {
+      const CVideoInfoTag& tag{*m_item->GetVideoInfoTag()};
+      discFileState = {.m_idFile = tag.m_iFileId,
+                       .m_playCount = tag.GetPlayCount(),
+                       .m_lastPlayed = tag.m_lastPlayed,
+                       .m_dateAdded = tag.m_dateAdded};
+      db.GetResumeBookMark(tag.m_strFileNameAndPath, discResumePoint);
+      db.GetBookMarksForFile(tag.m_strFileNameAndPath, discBookmarks);
+    }
 
     // remove any existing data for the item we're going to refresh
     if (origDbId > 0)
@@ -553,9 +576,49 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // retrieve the updated information from the database
     if (scraper->Content() == ADDON::ContentType::MOVIES)
     {
-      // the disc's main playlist may differ from the one refreshed
-      if (!discFile.empty() && db.GetMovieInfo(discFile, *m_item->GetVideoInfoTag()))
+      // the disc's main playlist may differ from the one refreshed, so the movie is found by the
+      // disc's playlists, as a file left by an older version's disc entry shadows the disc itself
+      const int playlistPathId{
+          discFile.empty() ? -1 : db.GetPathId(URIUtils::GetBlurayPlaylistPath(discFile))};
+      const int idMovie{playlistPathId < 0
+                            ? 0
+                            : db.GetSingleValueInt(db.PrepareSQL(
+                                  "SELECT idMovie FROM movie JOIN files ON files.idFile = "
+                                  "movie.idFile WHERE files.idPath = %i",
+                                  playlistPathId))};
+      if (idMovie > 0 && db.GetMovieInfo({}, *m_item->GetVideoInfoTag(), idMovie))
+      {
+        const CVideoInfoTag& tag{*m_item->GetVideoInfoTag()};
+
+        // it is only known which playlist was watched when the disc has just the one
+        if (discFileState.m_idFile > 0 && tag.m_iFileId != discFileState.m_idFile &&
+            db.GetSingleValueInt(db.PrepareSQL(
+                "SELECT COUNT(1) FROM videoversion "
+                "JOIN files ON files.idFile = videoversion.idFile "
+                "WHERE files.idPath = %i AND videoversion.media_type = '%s' AND "
+                "videoversion.itemType = %i",
+                playlistPathId, MediaTypeMovie, static_cast<int>(VideoAssetType::VERSION))) == 1)
+        {
+          // UNKNOWN, as with MOVIES SetFileForMovie() keeps the old file and its settings when the
+          // new one is already a version of the movie, which the playlist is. This moves the file's
+          // state and settings and removes the old file, which takes its bookmarks with it, so they
+          // are added again before the move is committed.
+          db.BeginTransaction();
+          const std::string path{tag.m_strFileNameAndPath};
+          if (db.SetFileForMedia(path, VideoDbContentType::UNKNOWN, idMovie, discFileState) > 0 &&
+              (!discResumePoint.IsSet() ||
+               db.AddBookMarkToFile(path, discResumePoint, CBookmark::RESUME)) &&
+              std::ranges::all_of(discBookmarks, [&db, &path](const CBookmark& bookmark)
+                                  { return db.AddBookMarkToFile(path, bookmark); }))
+          {
+            db.CommitTransaction();
+            db.GetMovieInfo({}, *m_item->GetVideoInfoTag(), idMovie);
+          }
+          else
+            db.RollbackTransaction();
+        }
         m_item->SetPath(m_item->GetVideoInfoTag()->m_strFileNameAndPath);
+      }
       else
         db.GetMovieInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
     }
