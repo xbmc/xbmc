@@ -98,9 +98,9 @@ bool CMusicGoToArtist::IsVisible(const CFileItem& item) const
 
 namespace
 {
-int SelectArtist(const std::vector<std::string>& artists, const std::vector<int>& artistIds)
+int SelectArtist(CMusicDatabase& database, const std::vector<int>& artistIds)
 {
-  if (artists.size() != artistIds.size() || artists.empty())
+  if (artistIds.empty())
     return -1;
 
   if (artistIds.size() == 1)
@@ -113,10 +113,16 @@ int SelectArtist(const std::vector<std::string>& artists, const std::vector<int>
     return -1;
 
   dialog->Reset();
-  dialog->SetHeading(40807); // Go to artist
+  dialog->SetHeading(40807);
 
-  for (const auto& artist : artists)
-    dialog->Add(artist);
+  for (const auto artistId : artistIds)
+  {
+    CArtist artist;
+    if (!database.GetArtist(artistId, artist))
+      return -1;
+
+    dialog->Add(artist.strArtist);
+  }
 
   dialog->Open();
 
@@ -144,7 +150,7 @@ bool CMusicGoToArtist::Execute(const std::shared_ptr<CFileItem>& item) const
   {
     std::vector<int> artistIds;
     if (database.GetArtistsBySong(tag.GetDatabaseId(), artistIds))
-      idArtist = SelectArtist(tag.GetArtist(), artistIds);
+      idArtist = SelectArtist(database, artistIds);
   }
   else if (tag.GetType() == MediaTypeAlbum &&
            database.GetArtistsByAlbum(tag.GetDatabaseId(), item.get()))
@@ -156,7 +162,7 @@ bool CMusicGoToArtist::Execute(const std::shared_ptr<CFileItem>& item) const
       for (unsigned int i = 0; i < artistIds.size(); ++i)
         ids.push_back(artistIds[i].asInteger());
 
-      idArtist = SelectArtist(tag.GetAlbumArtist(), ids);
+      idArtist = SelectArtist(database, ids);
     }
   }
 
