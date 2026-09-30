@@ -379,6 +379,8 @@ void CAdvancedSettings::Initialize()
 
   m_bShoutcastArt = true;
 
+  m_artworkOffline = false;
+
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
 
   m_bMusicLibraryAllItemsOnBottom = false;
@@ -1188,6 +1190,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   // show art for shoutcast v2 streams (set to false for devices with limited storage)
   XMLUtils::GetBoolean(pRootElement, "shoutcastart", m_bShoutcastArt);
+  XMLUtils::GetBoolean(pRootElement, "artworkoffline", m_artworkOffline);
   // music filename->tag filters
   const TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
   if (filters)
