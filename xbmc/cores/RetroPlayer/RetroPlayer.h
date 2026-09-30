@@ -89,6 +89,8 @@ public:
   void RequestAutosave() override;
 
 private:
+  bool Open(const CFileItem& file, const CPlayerOptions& options);
+
   void SetSpeedInternal(double speed);
 
   /*!
@@ -140,6 +142,7 @@ private:
 
   // Synchronization parameters
   CCriticalSection m_mutex;
+  bool m_opening{false};
 };
 } // namespace RETRO
 } // namespace KODI
