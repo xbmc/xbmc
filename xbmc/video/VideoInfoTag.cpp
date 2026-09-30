@@ -198,7 +198,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetString(movie, "outline", m_strPlotOutline);
   XMLUtils::SetString(movie, "plot", m_strPlot);
   XMLUtils::SetString(movie, "tagline", m_strTagLine);
-  XMLUtils::SetInt(movie, "runtime", GetDuration() / 60);
+  // The stream duration is saved in <fileinfo>, so don't let it replace the scraped runtime
+  if (const unsigned int runtime{(GetStaticDuration() + 30) / 60}; runtime > 0)
+    XMLUtils::SetInt(movie, "runtime", runtime);
   if (m_strPictureURL.HasData())
   {
     CXBMCTinyXML doc;

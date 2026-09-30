@@ -202,6 +202,32 @@ TEST(TestVideoInfoTag, WriteStreamDetailFlags)
   EXPECT_EQ(subtitleInfo.flags, reloaded.m_streamDetails.GetSubtitleFlags(1));
 }
 
+TEST(TestVideoInfoTag, SaveRuntime)
+{
+  CVideoInfoTag details;
+  details.SetDuration(1320);
+  auto* video = new CStreamDetailVideo();
+  video->m_iDuration = 1319;
+  video->SetSource(CStreamDetail::MEDIA);
+  details.m_streamDetails.AddStream(video);
+  details.m_streamDetails.DetermineBestStreams();
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "episodedetails"));
+  int runtime{0};
+  EXPECT_TRUE(XMLUtils::GetInt(xmlDoc.RootElement(), "runtime", runtime));
+  EXPECT_EQ(22, runtime);
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
+  EXPECT_EQ(1320u, reloaded.GetStaticDuration());
+
+  CVideoInfoTag noRuntime;
+  CXBMCTinyXML noRuntimeDoc;
+  ASSERT_TRUE(noRuntime.Save(&noRuntimeDoc, "episodedetails"));
+  EXPECT_EQ(nullptr, noRuntimeDoc.RootElement()->FirstChildElement("runtime"));
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {

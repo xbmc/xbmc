@@ -11017,8 +11017,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     if (nullptr == pDS3)
       return;
 
-    progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
-        WINDOW_DIALOG_PROGRESS);
+    if (CGUIComponent* gui = CServiceBroker::GetGUI())
+      progress = gui->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
     // Sort by idFile
     // Always get the default version first (needed for XML import)
@@ -11119,6 +11119,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       do
       {
         CVideoInfoTag movie = GetDetailsForMovie(*pDS3, VideoDbDetailsAll);
+        // GetStreamDetails() replaces the runtime with the stream duration, so take the stored one
+        movie.SetDuration(GetDetailsForMovie(*pDS3).GetStaticDuration());
         // strip paths to make them relative
         if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
           movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
@@ -11373,6 +11375,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMusicVideo(*m_pDS, VideoDbDetailsAll);
+      movie.SetDuration(GetDetailsForMusicVideo(*m_pDS).GetStaticDuration());
       KODI::ART::Artwork artwork;
       if (GetArtForItem(movie.m_iDbId, movie.m_type, artwork) && !artwork.empty() && singleFile)
       {
@@ -11603,6 +11606,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           break;
 
         CVideoInfoTag episode{GetDetailsForEpisode(*pDS, VideoDbDetailsAll)};
+        episode.SetDuration(GetDetailsForEpisode(*pDS).GetStaticDuration());
         ART::Artwork episodeArtwork;
         GetArtForItem(episode.m_iDbId, MediaTypeEpisode, episodeArtwork);
 
