@@ -299,6 +299,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
       XMLUtils::SetInt(&stream, "height", m_streamDetails.GetVideoHeight(iStream));
       XMLUtils::SetInt(&stream, "durationinseconds", m_streamDetails.GetVideoDuration(iStream));
       XMLUtils::SetString(&stream, "stereomode", m_streamDetails.GetStereoMode(iStream));
+      XMLUtils::SetString(&stream, "language", m_streamDetails.GetVideoLanguage(iStream));
       XMLUtils::SetString(&stream, "hdrtype", m_streamDetails.GetVideoHdrType(iStream));
       XMLUtils::SetString(&stream, "hdrdetail", m_streamDetails.GetVideoHdrDetail(iStream));
       streamdetails.InsertEndChild(stream);
