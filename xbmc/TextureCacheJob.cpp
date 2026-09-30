@@ -131,9 +131,7 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     }
   }
 
-  std::unique_ptr<CTexture> texture;
-  if (!artworkOffline)
-    texture = LoadImage(imageURL);
+  std::unique_ptr<CTexture> texture = LoadImage(imageURL);
   if (texture)
   {
     if (texture->HasAlpha())
