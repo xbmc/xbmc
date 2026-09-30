@@ -11545,6 +11545,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         continue; // Skip processing for this TV show
       }
 
+      // Episodes in the same archive share its name, so are told apart as in a multi-episode file
+      std::map<std::string, int, std::less<>> archiveEpisodes;
+      for (const auto& entry : fileMap)
+      {
+        if (URIUtils::IsInArchive(entry.first))
+          ++archiveEpisodes[CURL(entry.first).GetHostName()];
+      }
+
       for (const auto& [file, episodeInformation] : fileMap)
       {
         pDS->goto_rec(episodeInformation.index);
@@ -11564,7 +11572,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           episode.Save(pMain, "episodedetails", singleFile);
 
           std::string nfoFile;
-          if (const bool multipleEpisodes{fileMap.count(file) > 1}; multipleEpisodes)
+          if (const bool multipleEpisodes{
+                  fileMap.count(file) > 1 ||
+                  (URIUtils::IsInArchive(file) && archiveEpisodes[CURL(file).GetHostName()] > 1)};
+              multipleEpisodes)
           {
             // If multiple episode file then nfo and art will have SxxEyy appended
             nfoFile = URIUtils::ReplaceExtension(

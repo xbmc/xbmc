@@ -269,6 +269,14 @@ const ArtFilenameTest local_art_filename_tests[] = {
      "PLAYLIST/00800.mpls",
      "smb://somepath/tvshow-S03E04.iso", false, false, false,
      ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
+    {"rar://%2fhome%2fuser%2ftvshow.rar/foo.mkv", "/home/user/tvshow-S03E04.avi", false, false,
+     false, ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
+    {"zip://smb%3a%2f%2fhome%2fuser%2ftvshow.zip/foo.mkv", "smb://home/user/tvshow-S03E04.avi",
+     false, false, false, ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
+    {"rar://D%3a%5chome%5cuser%5ctvshow.rar/foo.mkv", "D:\\home\\user\\tvshow-S03E04.avi", false,
+     false, false, ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
+    {"zip://%5c%5cServer%5cuser%5ctvshow.zip/foo.mkv", "\\\\Server\\user\\tvshow-S03E04.avi", false,
+     false, false, ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
     // Playlists
     {"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls",
      "smb://somepath/BDMV/index-00800.bdmv", false, false, false,
@@ -911,6 +919,18 @@ const LocalArtTest local_art_tests[] = {
     {"/home/user/tv_show/tv_show.iso", "thumb.jpg", false,
      "/home/user/tv_show/tv_show-S03E04-thumb.jpg", 3, 4, -1,
      ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
+    {"rar://%2fhome%2fuser%2ftv_show.rar/foo.mkv", "thumb.jpg", false,
+     "/home/user/tv_show-S03E04-thumb.jpg", 3, 4, -1,
+     ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
+    {"zip://smb%3a%2f%2fhome%2fuser%2ftv_show.zip/foo.mkv", "thumb.jpg", false,
+     "smb://home/user/tv_show-S03E04-thumb.jpg", 3, 4, -1,
+     ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
+    {"rar://D%3a%5chome%5cuser%5ctv_show.rar/foo.mkv", "thumb.jpg", false,
+     "D:\\home\\user\\tv_show-S03E04-thumb.jpg", 3, 4, -1,
+     ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
+    {"zip://%5c%5cServer%5cuser%5ctv_show.zip/foo.mkv", "thumb.jpg", false,
+     "\\\\Server\\user\\tv_show-S03E04-thumb.jpg", 3, 4, -1,
+     ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
     // Playlists
     {"/home/user/movies/movie_name/BDMV/index.bdmv", "thumb.jpg", false,
      "/home/user/movies/movie_name/BDMV/index-00800-thumb.jpg", -1, -1, 800,
@@ -1130,7 +1150,14 @@ const TbnTest tbn_tests[] = {
      "smb://somepath/BDMV/index-S03E04.tbn", false, 3, 4},
     {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252ftvshow.iso%2f/BDMV/"
      "PLAYLIST/00800.mpls",
-     "smb://somepath/tvshow-S03E04.tbn", false, 3, 4}};
+     "smb://somepath/tvshow-S03E04.tbn", false, 3, 4},
+    {"rar://%2fhome%2fuser%2ftvshow.rar/foo.mkv", "/home/user/tvshow-S03E04.tbn", false, 3, 4},
+    {"zip://smb%3a%2f%2fhome%2fuser%2ftvshow.zip/foo.mkv", "smb://home/user/tvshow-S03E04.tbn",
+     false, 3, 4},
+    {"rar://D%3a%5chome%5cuser%5ctvshow.rar/foo.mkv", "D:\\home\\user\\tvshow-S03E04.tbn", false, 3,
+     4},
+    {"zip://%5c%5cServer%5cuser%5ctvshow.zip/foo.mkv", "\\\\Server\\user\\tvshow-S03E04.tbn", false,
+     3, 4}};
 
 TEST_P(GetTbnTest, TbnTest)
 {
