@@ -95,6 +95,9 @@ function(add_addon_depends addon searchpath)
           else()
             set(TMP_EXE_LINKER_FLAGS "-L${OUTPUT_DIR}/lib ${CMAKE_EXE_LINKER_FLAGS}")
           endif()
+          if(MSVC AND CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+            string(APPEND TMP_C_FLAGS " /wd4146 /wd4996")
+          endif()
           list(APPEND BUILD_ARGS -DCMAKE_C_FLAGS=${TMP_C_FLAGS}
                                  -DCMAKE_CXX_FLAGS=${TMP_CXX_FLAGS}
                                  -DCMAKE_EXE_LINKER_FLAGS=${TMP_EXE_LINKER_FLAGS})
