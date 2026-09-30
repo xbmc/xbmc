@@ -15,7 +15,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "music/Artist.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
