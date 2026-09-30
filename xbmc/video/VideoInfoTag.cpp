@@ -1654,6 +1654,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       {
         m_strEpisodeGuide = epguide->FirstChild()->Value();
       }
+      // Store plain text (e.g. json) unescaped, as a scraper would
+      else if (!epguide->FirstChildElement() && epguide->GetText())
+      {
+        SetEpisodeGuide(epguide->GetText());
+      }
       else
       {
         std::stringstream stream;

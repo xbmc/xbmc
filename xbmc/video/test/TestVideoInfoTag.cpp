@@ -267,6 +267,23 @@ TEST(TestVideoInfoTag, EpisodeBookmarkRoundTrip)
   EXPECT_DOUBLE_EQ(16066.5, reloaded.m_EpBookmark.totalTimeInSeconds);
 }
 
+TEST(TestVideoInfoTag, ReadTextEpisodeGuide)
+{
+  CXBMCTinyXML doc;
+  doc.Parse(std::string{
+      "<tvshow><episodeguide>{&quot;tmdb&quot;: &quot;1234&quot;}</episodeguide></tvshow>"});
+
+  CVideoInfoTag details;
+  ASSERT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(R"(<episodeguide>{"tmdb": "1234"}</episodeguide>)", details.m_strEpisodeGuide);
+
+  CXBMCTinyXML saved;
+  ASSERT_TRUE(details.Save(&saved, "tvshow"));
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(saved.RootElement(), true, false));
+  EXPECT_EQ(details.m_strEpisodeGuide, reloaded.m_strEpisodeGuide);
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {
