@@ -11607,6 +11607,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
         CVideoInfoTag episode{GetDetailsForEpisode(*pDS, VideoDbDetailsAll)};
         episode.SetDuration(GetDetailsForEpisode(*pDS).GetStaticDuration());
+        // The details include the show's cast, which is exported with the show
+        episode.m_cast.clear();
+        GetCast(episode.m_iDbId, MediaTypeEpisode, episode.m_cast);
         ART::Artwork episodeArtwork;
         GetArtForItem(episode.m_iDbId, MediaTypeEpisode, episodeArtwork);
 
