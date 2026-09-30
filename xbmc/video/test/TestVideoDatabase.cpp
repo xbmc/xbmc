@@ -27,6 +27,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 
 #include <memory>
 #include <set>
@@ -563,4 +564,32 @@ TEST_F(TestVideoDatabase, ExportToXMLWritesStoredRuntime)
   runtime = 0;
   EXPECT_TRUE(XMLUtils::GetInt(exportedEpisode, "runtime", runtime));
   EXPECT_EQ(22, runtime);
+}
+
+// The converted movie's file is kept as the version, so its streamdetails must be kept too
+TEST_F(TestVideoDatabase, ConvertVideoToVersionKeepsStreamDetails)
+{
+  const auto addMovie = [this](const std::string& fileAndPath, int duration)
+  {
+    CVideoInfoTag tag{Tag(fileAndPath)};
+    auto* video = new CStreamDetailVideo();
+    video->m_iDuration = duration;
+    video->SetSource(CStreamDetail::MEDIA);
+    tag.m_streamDetails.AddStream(video);
+    tag.m_streamDetails.DetermineBestStreams();
+    return m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{});
+  };
+
+  const std::string source{"/movies/Movie (2010)/Movie (2010) Standard Edition.mkv"};
+  const int targetId{addMovie("/movies/Movie (2010)/Movie (2010) Extended Edition.mkv", 6500)};
+  const int sourceId{addMovie(source, 6019)};
+  ASSERT_GT(targetId, 0);
+  ASSERT_GT(sourceId, 0);
+
+  ASSERT_TRUE(m_db.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceId, targetId, -1,
+                                         VideoAssetType::VERSION));
+
+  CStreamDetails details;
+  EXPECT_TRUE(m_db.GetStreamDetails(source, details));
+  EXPECT_EQ(6019, details.GetVideoDuration());
 }
