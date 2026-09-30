@@ -221,8 +221,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
           return false;
 
         return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
-                                                idNewVideoVersion, VideoAssetType::EXTRA,
-                                                DeleteMovieCascadeAction::ALL_ASSETS);
+                                                idNewVideoVersion, VideoAssetType::EXTRA);
       }
     }
 
