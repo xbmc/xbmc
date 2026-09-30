@@ -171,6 +171,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   {
     TiXmlElement epbookmark("episodebookmark");
     XMLUtils::SetDouble(&epbookmark, "position", m_EpBookmark.timeInSeconds);
+    if (m_EpBookmark.totalTimeInSeconds > 0)
+      XMLUtils::SetDouble(&epbookmark, "total", m_EpBookmark.totalTimeInSeconds);
     if (!m_EpBookmark.playerState.empty())
     {
       TiXmlElement playerstate("playerstate");
@@ -1282,6 +1284,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (epbookmark)
   {
     XMLUtils::GetDouble(epbookmark, "position", m_EpBookmark.timeInSeconds);
+    XMLUtils::GetDouble(epbookmark, "total", m_EpBookmark.totalTimeInSeconds);
     const TiXmlElement *playerstate = epbookmark->FirstChildElement("playerstate");
     if (playerstate)
     {
