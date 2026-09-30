@@ -228,6 +228,26 @@ TEST(TestVideoInfoTag, SaveRuntime)
   EXPECT_EQ(nullptr, noRuntimeDoc.RootElement()->FirstChildElement("runtime"));
 }
 
+TEST(TestVideoInfoTag, WriteVideoStreamDetails)
+{
+  auto* video = new CStreamDetailVideo();
+  video->m_strCodec = "hevc";
+  video->m_strLanguage = "eng";
+  video->SetSource(CStreamDetail::MEDIA);
+
+  CVideoInfoTag details;
+  details.m_streamDetails.AddStream(video);
+  details.m_streamDetails.DetermineBestStreams();
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "movie"));
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
+
+  EXPECT_EQ("eng", reloaded.m_streamDetails.GetVideoLanguage(1));
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {
