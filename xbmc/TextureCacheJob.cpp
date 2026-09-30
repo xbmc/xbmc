@@ -20,6 +20,8 @@
 #include "imagefiles/ImageFileURL.h"
 #include "imagefiles/SpecialImageLoaderFactory.h"
 #include "pictures/Picture.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -105,6 +107,15 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
   const auto& image = imageURL.GetTargetFile();
   m_details.updateable = ShouldCheckForChanges(imageURL.GetSpecialType(), image);
 
+  const bool artworkOffline{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_artworkOffline};
+
+  if (artworkOffline && HasCachedFile())
+  {
+    m_details.hashRevalidated = true;
+    return true;
+  }
+
   if (m_details.updateable)
   {
     // generate the hash, unless the caller already knows it (saves a file stat)
@@ -120,7 +131,9 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     }
   }
 
-  std::unique_ptr<CTexture> texture = LoadImage(imageURL);
+  std::unique_ptr<CTexture> texture;
+  if (!artworkOffline)
+    texture = LoadImage(imageURL);
   if (texture)
   {
     if (texture->HasAlpha())
