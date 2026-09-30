@@ -495,6 +495,8 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     pictureRGB->format = AV_PIX_FMT_RGB32;
     pictureRGB->width = width;
     pictureRGB->height = height;
+    // let av_frame_get_buffer choose an aligned stride instead of the one from av_image_fill_arrays
+    std::ranges::fill(pictureRGB->linesize, 0);
     // we copy the data manually later so give a chance to intrinsics (e.g. mmx, neon)
     if (av_frame_get_buffer(pictureRGB, 32) < 0)
     {
