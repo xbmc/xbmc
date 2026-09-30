@@ -2,6 +2,7 @@ set(SOURCES TestAlarmClock.cpp
             TestAliasShortcutUtils.cpp
             TestArchive.cpp
             TestArtUtils.cpp
+            TestAspectRatioVocabulary.cpp
             TestBase64.cpp
             TestBitstreamConverter.cpp
             TestBitstreamStats.cpp
