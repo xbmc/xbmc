@@ -75,6 +75,24 @@ CRetroPlayer::~CRetroPlayer()
 
 bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 {
+  // A dialog shown while a game opens, such as the one reporting that it
+  // failed to load, runs the message loop, which can ask this player to open
+  // another game before the first has finished opening or been unloaded
+  if (m_opening)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't open a game while another is opening");
+    return false;
+  }
+
+  m_opening = true;
+  const bool opened = Open(file, options);
+  m_opening = false;
+
+  return opened;
+}
+
+bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
+{
   CFileItem fileCopy(file);
 
   std::string savestatePath;
