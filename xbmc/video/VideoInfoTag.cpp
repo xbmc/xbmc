@@ -1621,7 +1621,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         StringUtils::ToLower(p->m_strStereoMode);
         StringUtils::ToLower(p->m_strLanguage);
         StringUtils::ToLower(p->m_strHdrType);
-        StringUtils::ToLower(p->m_strHdrDetail);
         m_streamDetails.AddStream(p);
       }
       nodeDetail = nullptr;
