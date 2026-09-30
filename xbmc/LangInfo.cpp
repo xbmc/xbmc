@@ -16,6 +16,7 @@
 #include "addons/LanguageResource.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonType.h"
+#include "language/i18n/Iso3166_1.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "resources/LocalizeStrings.h"
@@ -31,7 +32,6 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
-#include "utils/i18n/Iso3166_1.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 
@@ -51,7 +51,7 @@ std::string GetDateStringWithFormat(const CDateTime& date, const std::string& fo
 
 using namespace KODI::LANGINFO;
 using namespace KODI::UTILS;
-using namespace KODI::UTILS::I18N;
+using namespace KODI::LANGUAGE::I18N;
 
 static std::string shortDateFormats[] = {
     // clang-format off

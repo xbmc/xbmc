@@ -77,6 +77,7 @@
 /xbmc/interfaces/builtins/PVR*.* @ksooo
 /xbmc/interfaces/json-rpc/ @malard
 /xbmc/interfaces/json-rpc/PVR*.* @ksooo
+/xbmc/language/i18n/ @CrystalP
 /xbmc/music/ @notspiff
 /xbmc/network/upnp/ @enen92
 /xbmc/peripherals/ @garbear @opdenkamp
@@ -85,7 +86,6 @@
 /xbmc/speech/ @ksooo
 /xbmc/utils/ExecString.* @ksooo
 /xbmc/utils/PlayerUtils.* @ksooo
-/xbmc/utils/i18n/ @CrystalP
 /xbmc/video/ @CrystalP
 /xbmc/video/VideoUtils.* @ksooo
 /xbmc/video/dialogs/ @CrystalP
