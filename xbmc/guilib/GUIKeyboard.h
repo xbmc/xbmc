@@ -54,6 +54,12 @@ class CGUIKeyboard : public ITimerCallback
 
     virtual int GetWindowId() const {return 0;}
 
+    /*! \brief Render platform-specific keyboard content on the GUI thread. */
+    virtual void Render() {}
+
+    /*! \brief Return whether platform-specific keyboard content needs to be redrawn. */
+    virtual bool ConsumeRenderDirty() { return false; }
+
     // CTimer Interface for autoclose
     void OnTimeout() override
     {
