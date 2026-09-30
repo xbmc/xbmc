@@ -14,7 +14,7 @@
 #include <spdlog/sinks/dist_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#if !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN)
+#if !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN) && !defined(TARGET_WASM)
 std::unique_ptr<IPlatformLog> IPlatformLog::CreatePlatformLog()
 {
   return std::make_unique<CPosixInterfaceForCLog>();
