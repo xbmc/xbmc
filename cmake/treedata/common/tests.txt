@@ -30,6 +30,7 @@ xbmc/input/keyboard/test          test/input/keyboard
 xbmc/input/keymaps/test           test/input/keymaps
 xbmc/interfaces/json-rpc/test     test/jsonrpc
 xbmc/interfaces/python/test       test/python
+xbmc/language/test                test/language
 xbmc/language/i18n/test           test/language/i18n
 xbmc/language/i18n/Bcp47Registry/test test/language/i18n/Bcp47Registry
 xbmc/music/tags/test              test/music_tags

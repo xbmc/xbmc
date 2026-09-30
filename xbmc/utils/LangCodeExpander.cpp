@@ -8,8 +8,8 @@
 
 #include "LangCodeExpander.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "language/LangInfo.h"
 #include "language/i18n/Bcp47.h"
 #include "language/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "language/i18n/Iso639.h"

@@ -8,9 +8,9 @@
 
 #include "XBMCTinyXML.h"
 
-#include "LangInfo.h"
 #include "RegExp.h"
 #include "filesystem/File.h"
+#include "language/LangInfo.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CharsetDetection.h"
 #include "utils/StringUtils.h"

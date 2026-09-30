@@ -1094,7 +1094,7 @@ msgstr ""
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 #: xbmc/utils/Systeminfo.cpp
 #: ###this documented usage does not cover all usecases yet###
 msgctxt "#231"
@@ -1478,7 +1478,7 @@ msgstr ""
 
 #. Select option for the setting "Preferred audio language".
 #. Will prefer the stream marked as "default" if available.
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 #: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#307"
 msgid "Media default"
@@ -1486,13 +1486,13 @@ msgstr ""
 
 #. Select option for the setting "Preferred audio language".
 #. Will prefer the stream marked as "original" if available.
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 #: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#308"
 msgid "Original language"
 msgstr ""
 
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 msgctxt "#309"
 msgid "User interface language"
 msgstr ""
@@ -1833,13 +1833,13 @@ msgid "Light"
 msgstr ""
 
 #. Weather token
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 msgctxt "#378"
 msgid "AM"
 msgstr ""
 
 #. Weather token
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 msgctxt "#379"
 msgid "PM"
 msgstr ""
@@ -5073,7 +5073,7 @@ msgstr ""
 
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/xml/DialogSeekBar.xml
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 #: xbmc/addons/Scraper.cpp
 #: xbmc/addons/addons/GUIDialogAddonInfo.cpp
 #: xbmc/guilib/guiinfo/SystemGUIInfo.cpp
@@ -6256,7 +6256,7 @@ msgid "Switch to visualisation on playback"
 msgstr ""
 
 #. time format with meridiem (xx) e.g. "HH:mm:ss xx"
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 msgctxt "#12382"
 msgid "{0:s} xx"
 msgstr ""
@@ -6770,7 +6770,7 @@ msgstr ""
 
 #. generic "unknown" label used in different places
 #: xbmc/GUIInfoManager.cpp
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemux.cpp
 #: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
@@ -6795,7 +6795,7 @@ msgid "Overwrite"
 msgstr ""
 
 #. Subtitle selection to only use forced subtitles
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 msgctxt "#13207"
 msgid "Forced only"
 msgstr ""
@@ -12723,13 +12723,13 @@ msgstr ""
 #empty strings from id 20027 to 20034
 #string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)
 
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 msgctxt "#20035"
 msgid "Regional ({0:s})"
 msgstr ""
 
 #. Used for date/time format settings like "10:00:00 (HH:mm:ss)"
-#: xbmc/LangInfo.cpp
+#: xbmc/language/LangInfo.cpp
 msgctxt "#20036"
 msgid "{0:s} ({1:s})"
 msgstr ""

@@ -8,11 +8,11 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "language/LangInfo.h"
 #include "media/MediaType.h"
 #include "music/tags/MusicInfoTag.h"
 #include "platform/Filesystem.h"

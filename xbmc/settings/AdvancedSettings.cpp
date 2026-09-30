@@ -8,11 +8,11 @@
 
 #include "AdvancedSettings.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
+#include "language/LangInfo.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
 #include "resources/LocalizeStrings.h"

@@ -29,10 +29,10 @@
 #endif
 
 #include "CharsetConverter.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "XBDateTime.h"
+#include "language/LangInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/RegExp.h"

@@ -7,7 +7,6 @@
  */
 
 #include "GUIInfoManager.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIAction.h"
 #include "guilib/GUIColorManager.h"
@@ -16,6 +15,7 @@
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUITexture.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/SystemInfo.h"

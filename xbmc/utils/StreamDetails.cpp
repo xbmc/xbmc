@@ -8,8 +8,8 @@
 
 #include "StreamDetails.h"
 
-#include "LangInfo.h"
 #include "StreamUtils.h"
+#include "language/LangInfo.h"
 #include "utils/Archive.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/LanguageTag.h"

@@ -20,6 +20,7 @@ xbmc/guilib/handlers                            guilib_announcement_handlers
 xbmc/guilib/listproviders                       guilib_listproviders
 xbmc/imagefiles                                 imagefiles
 xbmc/jobs                                       jobs
+xbmc/language                                   language
 xbmc/language/i18n                              language_i18n
 xbmc/language/i18n/Bcp47Registry                language_i18n_Bcp47Registry
 xbmc/messaging                                  messaging

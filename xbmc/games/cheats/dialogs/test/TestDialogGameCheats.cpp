@@ -8,7 +8,6 @@
 
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "games/cheats/dialogs/DialogGameCheats.h"
 #include "guilib/GUIButtonControl.h"
@@ -22,6 +21,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/Variant.h"

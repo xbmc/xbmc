@@ -6,10 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 

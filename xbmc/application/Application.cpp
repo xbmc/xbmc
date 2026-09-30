@@ -18,7 +18,6 @@
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "HDRStatus.h"
-#include "LangInfo.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "SectionLoader.h"
@@ -56,6 +55,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
+#include "language/LangInfo.h"
 #ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDiscCache.h"
 #endif

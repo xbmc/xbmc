@@ -10,7 +10,6 @@
 
 #include "Autorun.h"
 #include "GUIPassword.h"
-#include "LangInfo.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Skin.h"
 #include "application/AppParams.h"
@@ -19,6 +18,7 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/keyboard/KeyboardLayoutManager.h"
+#include "language/LangInfo.h"
 #include "network/WakeOnAccess.h"
 #include "network/upnp/UPnPSettings.h"
 

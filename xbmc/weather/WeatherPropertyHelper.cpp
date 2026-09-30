@@ -8,9 +8,9 @@
 
 #include "WeatherPropertyHelper.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIWindow.h"
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/Map.h"
