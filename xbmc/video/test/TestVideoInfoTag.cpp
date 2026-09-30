@@ -251,6 +251,22 @@ TEST(TestVideoInfoTag, WriteVideoStreamDetails)
   EXPECT_EQ("7MEL", reloaded.m_streamDetails.GetVideoHdrDetail(1));
 }
 
+TEST(TestVideoInfoTag, EpisodeBookmarkRoundTrip)
+{
+  CVideoInfoTag details;
+  details.m_EpBookmark.timeInSeconds = 5479.0;
+  details.m_EpBookmark.totalTimeInSeconds = 16066.5;
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "episodedetails"));
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
+
+  EXPECT_DOUBLE_EQ(5479.0, reloaded.m_EpBookmark.timeInSeconds);
+  EXPECT_DOUBLE_EQ(16066.5, reloaded.m_EpBookmark.totalTimeInSeconds);
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {
