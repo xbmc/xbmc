@@ -16,8 +16,10 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/Scraper.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/PluginDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -27,6 +29,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
 #include "utils/DiscsUtils.h"
@@ -646,8 +649,34 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     if (hasAdditionalAssets)
     {
+      // the versions kept from before the refresh are not scanned, so their stream details are
+      // read again here
+      CFileItemList keptVersions;
+      if (scraper->Content() == ADDON::ContentType::MOVIES &&
+          CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+        db.GetVideoVersions(VideoDbContentType::MOVIES, origDbId, keptVersions,
+                            VideoAssetType::VERSION);
+
       const auto videoTag{m_item->GetVideoInfoTag()};
       db.UpdateAssetsOwner(videoTag->m_type, origDbId, videoTag->m_iDbId);
+
+      for (const auto& version : keptVersions)
+      {
+        CFileItem versionItem{version->GetDynPath(), false};
+        if (URIUtils::IsBlurayPath(versionItem.GetPath())
+                ? XFILE::CDiscDirectoryHelper::ReadResolvedPlaylist(versionItem)
+                : CDVDFileInfo::GetFileStreamDetails(&versionItem))
+        {
+          db.SetStreamDetailsForFileId(versionItem.GetVideoInfoTag()->m_streamDetails,
+                                       version->GetVideoInfoTag()->m_iDbId);
+          CLog::LogF(LOGDEBUG, "Extracted filestream details from video version {}",
+                     CURL::GetRedacted(versionItem.GetPath()));
+        }
+        else
+          CLog::LogF(LOGDEBUG, "No filestream details extracted from video version {}",
+                     CURL::GetRedacted(versionItem.GetPath()));
+      }
     }
 
     // we're finally done
