@@ -266,7 +266,9 @@ void CDialogGameLeaderboards::OnInitWindow()
     // "Leaderboards", "Sign in to RetroAchievements to see leaderboards"
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, strings.Get(35331),
                                           strings.Get(35333));
-    Close();
+    // Forced: Open() makes the dialog active before OnInitWindow() runs, so a
+    // plain Close() would animate out and flash
+    Close(true);
     return;
   }
 
@@ -282,7 +284,7 @@ void CDialogGameLeaderboards::OnInitWindow()
     // "Leaderboards", "This game has no leaderboards"
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35331),
                                           strings.Get(35334));
-    Close();
+    Close(true);
     return;
   }
 
