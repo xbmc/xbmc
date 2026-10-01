@@ -507,6 +507,25 @@ TEST(TestFileCache, UserChosenCacheSizeIsKept)
   EXPECT_EQ(capacityBefore, capacityAfter);
 }
 
+TEST(TestFileCache, ARateThatOnlyLimitsKeepsTheCacheSize)
+{
+  // An external audio file is told the film's rate, which is a ceiling for it, not its own rate
+  uint32_t rate = 1536 * 1024;
+
+  TestFileCache cache{READ_AUDIO_VIDEO, std::make_unique<CPatternFileCacheSource>(true)};
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/audio.mka"}));
+  const uint64_t capacityBefore = ForwardCapacity(cache);
+
+  cache.IoControl(IOControl::CACHE_SETRATE_KEEPSIZE, &rate);
+  const uint64_t capacityAfter = ForwardCapacity(cache);
+  SCacheStatus status{};
+  cache.IoControl(IOControl::CACHE_STATUS, &status);
+  cache.Close();
+
+  EXPECT_EQ(capacityBefore, capacityAfter);
+  EXPECT_EQ(rate, status.maxrate) << "the rate still throttles the fill";
+}
+
 TEST(TestFileCache, UnseekableSourceKeepsItsCache)
 {
   uint32_t rate = 1536 * 1024;
