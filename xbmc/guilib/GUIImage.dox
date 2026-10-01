@@ -87,10 +87,12 @@ For the tags "texture" and "bordertexture", the following attributes are availab
 | background    | Used on the <b>`<imagepath>`</b> tag. When set to "true", this forces the image to be loaded via the large texture manager (except for textures located in Textures.xbt).
 | diffuse       | Specifies a diffuse texture which is "modulated" or multiplied with the texture in order to give specific effects, such as making the image gain transparency, or tint it in various ways. As it's applied per-pixel many effects are possible, the most popular being by a transparent reflection which slowly gets more and more opaque. This is achieved using a WHITE image where the transparency increases as you move down the texture.
 | colordiffuse  | This specifies the color to be used for the texture basis. It's is specified in hexadecimal notation using the AARRGGBB format. If you define <b>`<texture colordiffuse="FFFFAAFF">texture.png</texture>`</b> (magenta), the image will be given a magenta tint when rendered. You can also specify this as a name from the colour theme, or you can also use $VAR and $INFO for dynamic values.
+| subpixel      | When set to "true", the texture keeps its fractional screen position instead of being snapped to whole pixels, so slow zoom and slide animations move smoothly rather than in one pixel steps. Best suited to photos and artwork that move; edges and 1 pixel lines are softer when the position is fractional, and labels drawn over the texture still snap to whole pixels. Defaults to "false".
 
 @skinning_v20 <b>infill</b> New texture attribute added.
 @skinning_v22 <b>imagefilter</b> New tag added.
 @skinning_v22 <b>diffusefilter</b> New tag added.
+@skinning_v23 <b>subpixel</b> New texture attribute added.
 
 --------------------------------------------------------------------------------
 \section Image_Control_sect4 See also
