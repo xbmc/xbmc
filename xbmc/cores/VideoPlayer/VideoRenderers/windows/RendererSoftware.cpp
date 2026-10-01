@@ -92,6 +92,13 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
   if (!m_outputShader)
     return;
 
+  // same picture as last render, the target still holds the converted picture
+  if (m_reuseIntermediate)
+  {
+    ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
+    return;
+  }
+
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
   const AVPixelFormat dstFormat = (target.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM)
                                       ? AV_PIX_FMT_X2BGR10LE
@@ -127,7 +134,10 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
                                         dstFormat, swsFlags, m_srcFilter, nullptr, nullptr);
 
   if (!m_sw_scale_ctx)
+  {
+    m_intermediateState = {};
     return;
+  }
 
   sws_setColorspaceDetails(m_sw_scale_ctx,
     sws_getCoefficients(buf->color_space), buf->full_range,
@@ -150,7 +160,10 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
       CLog::LogF(LOGERROR, "failed to unlock swtarget texture.");
   }
   else
+  {
     CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory.");
+    m_intermediateState = {};
+  }
 
   // rotate initial rect
   ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);

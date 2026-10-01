@@ -123,10 +123,13 @@ void CRendererShaders::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint
   CPoint srcPoints[4];
   sourceRect.GetQuad(srcPoints);
 
-  m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, 
-                           DX::Windowing()->UseLimitedColor());
-  m_colorShader->SetColParams(buf->color_space, buf->bits, !buf->full_range, buf->texBits);
-  m_colorShader->Render(sourceRect, srcPoints, buf, target);
+  if (!m_reuseIntermediate)
+  {
+    m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness,
+                             DX::Windowing()->UseLimitedColor());
+    m_colorShader->SetColParams(buf->color_space, buf->bits, !buf->full_range, buf->texBits);
+    m_colorShader->Render(sourceRect, srcPoints, buf, target);
+  }
 
   if (!HasHQScaler())
     ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
@@ -151,6 +154,7 @@ void CRendererShaders::UpdateVideoFilters()
 
   if (!m_colorShader)
   {
+    m_intermediateState = {};
     m_colorShader = std::make_unique<CYUV2RGBShader>();
 
     AVColorPrimaries dstPrimaries = AVCOL_PRI_BT709;
