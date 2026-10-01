@@ -1021,9 +1021,27 @@ bool ParseMPLS(const CURL& url,
     return false;
 
   // Parse extension data
+  // As libbluray, a bad extension does not invalidate the playlist, as it only holds optional
+  // data. Some discs have an ExtensionData_start_address that does not point to the extension.
   offset = extensionDataPosition;
-  if (offset != 0 && !ParseExtensionData(buffer, offset, playlistInformation))
-    return false;
+  bool extensionValid{true};
+  if (offset != 0)
+  {
+    try
+    {
+      extensionValid = ParseExtensionData(buffer, offset, playlistInformation);
+    }
+    catch (const std::logic_error&) // a read past the buffer, or a clip name that is not a number
+    {
+      extensionValid = false;
+    }
+  }
+  if (!extensionValid)
+  {
+    CLog::LogFC(LOGDEBUG, LOGBLURAY, "Invalid MPLS - extension data at {} ignored",
+                extensionDataPosition);
+    playlistInformation.extensionSubPlayItems.clear();
+  }
 
   DeriveChaptersAndTimings(playlistInformation);
 
