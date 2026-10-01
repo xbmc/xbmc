@@ -380,6 +380,12 @@ TEST_F(TestAspectRatioVocabularyDefinition, ARatioWithNoKeyOfItsOwnIsRejected)
   EXPECT_FALSE(
       CAspectRatioVocabulary::Apply(R"(<aspectratios><ratio value="1e40"/></aspectratios>)"));
 
+  //! Within float's range, but a hundred times either is beyond an int key
+  EXPECT_FALSE(
+      CAspectRatioVocabulary::Apply(R"(<aspectratios><ratio value="1e30"/></aspectratios>)"));
+  EXPECT_FALSE(
+      CAspectRatioVocabulary::Apply(R"(<aspectratios><ratio value="5e7"/></aspectratios>)"));
+
   for (const auto& entry : CAspectRatioVocabulary::Entries())
     EXPECT_GE(CAspectRatioVocabulary::Key(entry.ratio), 1) << entry.label;
 }

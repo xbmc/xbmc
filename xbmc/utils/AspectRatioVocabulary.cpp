@@ -244,9 +244,10 @@ bool MergeRatio(const tinyxml2::XMLElement* element, Vocabulary& vocabulary)
     return false;
   }
 
-  // A value beyond float's range has no defined conversion, and key 0 belongs to Auto
-  const bool convertible = value > 0.0 && value <= std::numeric_limits<float>::max();
-  const float ratio{convertible ? static_cast<float>(value) : 0.0f};
+  // Key() rounds the ratio times 100 into an int, so the value is held far inside that range
+  // before it is converted; key 0 belongs to Auto
+  const bool keyable = value > 0.0 && value <= 1.0e6;
+  const float ratio{keyable ? static_cast<float>(value) : 0.0f};
   if (!IsRatio(ratio) || CAspectRatioVocabulary::Key(ratio) < 1)
   {
     CLog::LogF(LOGERROR, "<ratio> value {} is not a ratio", value);
