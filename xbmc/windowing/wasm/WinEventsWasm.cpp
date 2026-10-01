@@ -365,6 +365,23 @@ EM_BOOL OnMouseButtonUp(int /*eventType*/, const EmscriptenMouseEvent* e, void* 
   return EM_TRUE;
 }
 
+// Like the other backends, each wheel event is one step: DOM deltas vary too
+// much across browsers and devices to scale them.
+EM_BOOL OnWheel(int /*eventType*/, const EmscriptenWheelEvent* e, void* /*userData*/)
+{
+  // Ctrl+wheel zooms the page.
+  if (!g_events || e->deltaY == 0.0 || e->mouse.ctrlKey)
+    return EM_FALSE;
+  XBMC_Event ev{};
+  ev.type = XBMC_MOUSEBUTTONDOWN;
+  TranslateMousePosition(&e->mouse, ev.button.x, ev.button.y);
+  ev.button.button = e->deltaY < 0.0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
+  g_events->MessagePush(ev);
+  ev.type = XBMC_MOUSEBUTTONUP;
+  g_events->MessagePush(ev);
+  return EM_TRUE;
+}
+
 EM_BOOL OnResize(int /*eventType*/, const EmscriptenUiEvent* e, void* /*userData*/)
 {
   if (!g_events)
@@ -393,6 +410,7 @@ CWinEventsWasm::CWinEventsWasm()
   emscripten_set_mousemove_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnMouseMove);
   emscripten_set_mousedown_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnMouseButtonDown);
   emscripten_set_mouseup_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnMouseButtonUp);
+  emscripten_set_wheel_callback(CANVAS_TARGET, nullptr, EM_TRUE, OnWheel);
   emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE, OnResize);
 }
 
