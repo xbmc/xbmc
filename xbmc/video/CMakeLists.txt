@@ -1,6 +1,8 @@
 set(SOURCES Bookmark.cpp
             ContextMenus.cpp
             FilenameAttributes.cpp
+            geometry/FrameReduction.cpp
+            geometry/FrameSampling.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
             PlayerControllerActions.cpp
@@ -28,6 +30,8 @@ set(HEADERS Bookmark.h
             ContextMenus.h
             Episode.h
             FilenameAttributes.h
+            geometry/FrameReduction.h
+            geometry/FrameSampling.h
             GUIViewStateVideo.h
             PlayerController.h
             PlayerControllerActions.h
