@@ -414,6 +414,7 @@ typedef struct TextCacheStruct_t
   bool PageUpdateHasDisplayTime;
   int64_t PageUpdateDisplayTime;
   int PageUpdatePage;
+  unsigned int FlushGeneration;
   int               NationalSubset;
   int               NationalSubsetSecondary;
   bool              ZapSubpageManual;
