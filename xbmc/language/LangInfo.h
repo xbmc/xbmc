@@ -39,7 +39,7 @@ struct StringSettingOption;
 
 namespace ADDON
 {
-  class CLanguageResource;
+class CLanguageResource;
 }
 typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
 
@@ -226,8 +226,8 @@ public:
   Tokens GetSortTokens() const;
 
   static std::string GetLanguagePath() { return "resource://"; }
-  static std::string GetLanguagePath(const std::string &language);
-  static std::string GetLanguageInfoPath(const std::string &language);
+  static std::string GetLanguagePath(const std::string& language);
+  static std::string GetLanguageInfoPath(const std::string& language);
   bool UseLocaleCollation();
 
   static void LoadTokens(const TiXmlNode* pTokens, Tokens& vecTokens);
@@ -285,7 +285,7 @@ protected:
 
   static bool DetermineUse24HourClockFromTimeFormat(const std::string& timeFormat);
   static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
-  static void AddLanguages(std::vector<StringSettingOption> &list);
+  static void AddLanguages(std::vector<StringSettingOption>& list);
 
   class CRegion final
   {
@@ -320,12 +320,20 @@ protected:
     class custom_numpunct : public std::numpunct<char>
     {
     public:
-      custom_numpunct(const char decimal_point, const char thousands_sep, const std::string& grouping)
-        : cDecimalPoint(decimal_point), cThousandsSep(thousands_sep), sGroup(grouping) {}
+      custom_numpunct(const char decimal_point,
+                      const char thousands_sep,
+                      const std::string& grouping)
+        : cDecimalPoint(decimal_point),
+          cThousandsSep(thousands_sep),
+          sGroup(grouping)
+      {
+      }
+
     protected:
       char do_decimal_point() const override { return cDecimalPoint; }
       char do_thousands_sep() const override { return cThousandsSep; }
       std::string do_grouping() const override { return sGroup; }
+
     private:
       const char cDecimalPoint;
       const char cThousandsSep;
@@ -353,14 +361,13 @@ protected:
     CSpeed::Unit m_speedUnit;
   };
 
-
   typedef std::map<std::string, CRegion> MAPREGIONS;
   typedef std::map<std::string, CRegion>::iterator ITMAPREGIONS;
   typedef std::pair<std::string, CRegion> PAIR_REGIONS;
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
-  std::locale m_systemLocale;     // current locale, matching GUI settings
+  std::locale m_systemLocale; // current locale, matching GUI settings
   std::locale m_originalLocale; // original locale, without changes of collate
   int m_collationtype;
   LanguageResourcePtr m_languageAddon;
@@ -385,7 +392,6 @@ protected:
   //! An unset audio or subtitle preference falls back to this
   KODI::UTILS::CLanguageTag m_uiLanguage;
 };
-
 
 XBMC_GLOBAL_REF(CLangInfo, g_langInfo);
 #define g_langInfo XBMC_GLOBAL_USE(CLangInfo)

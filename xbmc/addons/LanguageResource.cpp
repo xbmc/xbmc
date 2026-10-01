@@ -7,12 +7,12 @@
  */
 #include "LanguageResource.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "language/LangInfo.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

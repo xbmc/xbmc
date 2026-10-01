@@ -8,7 +8,7 @@
 
 #include "CharsetDetection.h"
 
-#include "LangInfo.h"
+#include "language/LangInfo.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"

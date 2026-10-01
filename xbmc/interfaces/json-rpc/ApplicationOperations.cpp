@@ -10,12 +10,12 @@
 
 #include "CompileInfo.h"
 #include "InputOperations.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "language/LangInfo.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

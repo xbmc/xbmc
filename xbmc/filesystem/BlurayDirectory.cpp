@@ -11,7 +11,6 @@
 #include "File.h"
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "bluray/BlurayPlaylistHints.h"
@@ -22,6 +21,7 @@
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
+#include "language/LangInfo.h"
 #if defined(HAS_UDFREAD)
 #include "filesystem/UDFContext.h"
 #endif

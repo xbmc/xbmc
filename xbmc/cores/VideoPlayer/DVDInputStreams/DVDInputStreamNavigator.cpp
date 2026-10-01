@@ -9,9 +9,9 @@
 #include "DVDInputStreamNavigator.h"
 
 #include "../DVDDemuxSPU.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "filesystem/IFileTypes.h"
+#include "language/LangInfo.h"
 #if defined(TARGET_WINDOWS_STORE)
 #include "filesystem/SpecialProtocol.h"
 #endif
