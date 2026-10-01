@@ -244,8 +244,10 @@ bool MergeRatio(const tinyxml2::XMLElement* element, Vocabulary& vocabulary)
     return false;
   }
 
-  const float ratio{static_cast<float>(value)};
-  if (!IsRatio(ratio))
+  // A value beyond float's range has no defined conversion, and key 0 belongs to Auto
+  const bool convertible = value > 0.0 && value <= std::numeric_limits<float>::max();
+  const float ratio{convertible ? static_cast<float>(value) : 0.0f};
+  if (!IsRatio(ratio) || CAspectRatioVocabulary::Key(ratio) < 1)
   {
     CLog::LogF(LOGERROR, "<ratio> value {} is not a ratio", value);
     return false;

@@ -372,6 +372,18 @@ TEST_F(TestAspectRatioVocabularyDefinition, AMalformedDocumentIsRejected)
   EXPECT_EQ("1.78", CAspectRatioVocabulary::Label(1920.0f / 1080.0f));
 }
 
+TEST_F(TestAspectRatioVocabularyDefinition, ARatioWithNoKeyOfItsOwnIsRejected)
+{
+  //! Key 0 is Auto's, so a ratio rounding to it would be a second Auto in every choice list.
+  EXPECT_FALSE(
+      CAspectRatioVocabulary::Apply(R"(<aspectratios><ratio value="0.001"/></aspectratios>)"));
+  EXPECT_FALSE(
+      CAspectRatioVocabulary::Apply(R"(<aspectratios><ratio value="1e40"/></aspectratios>)"));
+
+  for (const auto& entry : CAspectRatioVocabulary::Entries())
+    EXPECT_GE(CAspectRatioVocabulary::Key(entry.ratio), 1) << entry.label;
+}
+
 TEST(TestAspectRatioVocabulary, EveryEntryRoundTripsThroughItsKey)
 {
   //! A setting and a list control both store the choice as this integer, so an entry that does
