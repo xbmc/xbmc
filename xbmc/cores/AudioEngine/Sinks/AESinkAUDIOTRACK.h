@@ -72,6 +72,7 @@ private:
   // Moving Average computes the weighted average delay over
   // a fixed size of delay values - current size: 20 values
   double                GetMovingAverageDelay(double newestdelay);
+  double GetRawStartupDelay();
 
   // We maintain our linear weighted average delay counter in here
   // The n-th value (timely oldest value) is weighted with 1/n
@@ -98,6 +99,11 @@ private:
   double m_pause_ms = 0.0;
   double m_delay = 0.0;
   double m_hw_delay = 0.0;
+  bool m_startPending = true;
+  int64_t m_startWriteCounter = 0;
+  double m_startLag = 0.0;
+  int64_t m_startFirstCounter = 0;
+  uint64_t m_startFirstPos = 0;
   CJNIAudioTimestamp m_timestamp;
   XbmcThreads::EndTime<> m_stampTimer;
   bool m_superviseAudioDelay = false;
