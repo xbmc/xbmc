@@ -10,6 +10,7 @@
 
 #include "OSScreenSaverWasm.h"
 #include "VideoSyncWasm.h"
+#include "WasmClipboard.h"
 #include "WasmVsync.h"
 #include "WebGLCommit.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
@@ -275,6 +276,11 @@ float CWinSystemWasmGLESContext::GetDisplayLatency()
 std::unique_ptr<CVideoSync> CWinSystemWasmGLESContext::GetVideoSync(CVideoReferenceClock* clock)
 {
   return std::make_unique<CVideoSyncWasm>(clock);
+}
+
+std::string CWinSystemWasmGLESContext::GetClipboardText()
+{
+  return WASM_CLIPBOARD::ConsumePendingPasteText();
 }
 
 std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemWasmGLESContext::GetOSScreenSaverImpl()

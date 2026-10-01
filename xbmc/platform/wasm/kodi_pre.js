@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 // Copyright (C) 2026 Team Kodi
 //
-// Main-thread setup for Kodi's WASM build: profile persistence and canvas
-// focus. Rendering goes through a WebGL context Emscripten creates on
-// <canvas id="canvas"> and proxies to the Kodi pthread.
+// Main-thread setup for Kodi's WASM build: profile persistence, canvas focus
+// and clipboard paste. Rendering goes through a WebGL context Emscripten
+// creates on <canvas id="canvas"> and proxies to the Kodi pthread.
 
 // Persist Kodi's user profile ($HOME/.kodi) to IndexedDB via IDBFS so that
 // sources.xml, guisettings.xml, the databases, etc. survive a page refresh.
@@ -78,7 +78,7 @@
     console.warn('[kodi] No <canvas id="canvas"> found; rendering disabled.');
     return;
   }
-  // tabindex=0 allows the canvas to receive focus so keyboard input reaches Kodi.
+  // tabindex=0 allows the canvas to receive focus so paste and keyboard reach Kodi.
   if (canvas.getAttribute('tabindex') === '-1' || canvas.getAttribute('tabindex') === null) {
     canvas.setAttribute('tabindex', '0');
   }
@@ -89,6 +89,31 @@
 
   var prevOnRuntime = Module.onRuntimeInitialized;
   Module.onRuntimeInitialized = function () {
+    // Must run on the browser main thread (document is undefined on pthread workers).
+    document.addEventListener(
+        'paste',
+        function (e) {
+          // A paste into a DOM field (the native keyboard's input) is the browser's.
+          var t = e.target;
+          if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) {
+            return;
+          }
+          try {
+            var text = (e.clipboardData && e.clipboardData.getData)
+                ? e.clipboardData.getData('text/plain')
+                : String();
+            if (text === undefined || text === null) {
+              text = String();
+            }
+            e.preventDefault();
+            if (typeof Module.ccall === 'function') {
+              Module.ccall('kodi_wasm_dispatch_paste', null, ['string'], [text]);
+            }
+          } catch (err) {
+            console.error('[kodi] paste handler:', err);
+          }
+        },
+        true);
     try { canvas.focus(); } catch (_) {}
     if (typeof prevOnRuntime === 'function') {
       try { prevOnRuntime(); } catch (e) { console.error(e); }

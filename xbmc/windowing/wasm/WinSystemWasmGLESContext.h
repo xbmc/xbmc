@@ -55,6 +55,8 @@ public:
   float GetDisplayLatency() override;
   std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
 
+  std::string GetClipboardText() override;
+
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   void SetVSyncImpl(bool enable) override;

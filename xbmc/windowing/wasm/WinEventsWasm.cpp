@@ -300,7 +300,10 @@ EM_BOOL OnKeyDown(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* /*u
   g_swallowedKeys.erase(e->keyCode);
   if (IsTextFieldFocused())
     return EM_FALSE;
-  if (IsBrowserShortcut(e))
+  // The browser's "paste" event supplies the clipboard text (see
+  // WasmClipboard.cpp); passed on, the shortcut would also type a "v".
+  const bool isPaste = (e->ctrlKey || e->metaKey) && e->keyCode == DOM_VK_V;
+  if (isPaste || IsBrowserShortcut(e))
   {
     g_swallowedKeys.insert(e->keyCode);
     return EM_FALSE;

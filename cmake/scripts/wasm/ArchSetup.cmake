@@ -59,6 +59,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sGL_SUPPORT_EXPLICIT_SWAP_CONTROL=1"
     "SHELL:-lidbfs.js"
     "SHELL:-lembind"
+    # kodi_pre.js uses Module.ccall('kodi_wasm_dispatch_paste', ...) for clipboard paste.
+    "SHELL:-sEXPORTED_RUNTIME_METHODS=ccall,cwrap"
     "SHELL:--pre-js ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/kodi_pre.js"
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/windowing/wasm/webgl_commit.js"
   )
