@@ -53,8 +53,14 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sMIN_WEBGL_VERSION=2"
     "SHELL:-sMAX_WEBGL_VERSION=2"
     "SHELL:-sFULL_ES3=1"
+    # The WebGL context lives on the browser main thread; GL calls from the Kodi
+    # pthread are proxied to it and presented with wasm_webgl_commit_frame().
+    "SHELL:-sOFFSCREEN_FRAMEBUFFER=1"
+    "SHELL:-sGL_SUPPORT_EXPLICIT_SWAP_CONTROL=1"
     "SHELL:-lidbfs.js"
     "SHELL:-lembind"
+    "SHELL:--pre-js ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/kodi_pre.js"
+    "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/windowing/wasm/webgl_commit.js"
   )
 
   # ---------------------------------------------------------------------------
