@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <functional>
 #include <string>
 
 /*!
@@ -16,15 +17,19 @@
 class CFilesystemInstaller
 {
 public:
+  using ProgressCallback = std::function<void(unsigned int progress, unsigned int total)>;
 
   CFilesystemInstaller();
 
   /*!
    * @param archive Absolute path to zip file to install.
    * @param addonId
+   * @param onProgress Called repeatedly while unpacking, may be empty.
    * @return true on success, otherwise false.
    */
-  bool InstallToFilesystem(const std::string& archive, const std::string& addonId) const;
+  bool InstallToFilesystem(const std::string& archive,
+                           const std::string& addonId,
+                           const ProgressCallback& onProgress) const;
 
   bool UnInstallFromFilesystem(const std::string& addonPath) const;
 

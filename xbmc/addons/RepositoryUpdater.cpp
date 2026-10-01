@@ -52,6 +52,7 @@ public:
   ~CRepositoryUpdateJob() override = default;
   bool DoWork() override;
   const RepositoryPtr& GetAddon() const { return m_repo; }
+  using CProgressJob::SetProgressBar;
 
 private:
   const RepositoryPtr m_repo;
@@ -216,9 +217,8 @@ static void SetProgressIndicator(CRepositoryUpdateJob* job)
 {
   auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
   if (dialog)
-    job->SetProgressIndicators(
-        dialog->GetHandle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24092)),
-        nullptr);
+    job->SetProgressBar(
+        dialog->GetHandle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24092)));
 }
 
 void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool showProgress)
