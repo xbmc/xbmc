@@ -28,6 +28,7 @@
 #include <cstdint>
 #include <future>
 #include <memory>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -200,6 +201,13 @@ public:
 private:
   const bool m_seekable;
   int64_t m_position{0};
+};
+
+class CUnknownLengthPatternSource : public CPatternFileCacheSource
+{
+public:
+  CUnknownLengthPatternSource() : CPatternFileCacheSource(true) {}
+  int64_t GetLength() override { return 0; }
 };
 
 class TestFileCache : public CFileCache
@@ -494,6 +502,40 @@ TEST(TestFileCache, AGrowThatCannotAllocateKeepsTheCacheItHad)
   EXPECT_TRUE(readsBefore);
   EXPECT_EQ(capacityBefore, capacityAfter);
   EXPECT_TRUE(readsAfter) << "playback did not carry on with the cache it had";
+}
+
+TEST(TestFileCache, AGrowBeforeTheFirstReadOfAStreamOfUnknownLengthKeepsItsPlace)
+{
+  using namespace std::chrono_literals;
+
+  uint32_t rate = 1536 * 1024;
+  KODI::MEMORY::MemoryStatus memory{};
+  KODI::MEMORY::GetMemoryStatus(&memory);
+  if (memory.totalPhys / 16 < 128 * 1024 * 1024)
+    GTEST_SKIP() << "not enough installed memory for the cache to grow";
+
+  TestFileCache cache{READ_AUDIO_VIDEO, std::make_unique<CUnknownLengthPatternSource>()};
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/stream.mkv"}));
+
+  // The fill thread reads ahead of position 0 before the rate arrives
+  SCacheStatus status{};
+  for (auto waited = 0ms; waited < 2s; waited += 10ms)
+  {
+    cache.IoControl(IOControl::CACHE_STATUS, &status);
+    if (status.forward >= 256 * 1024)
+      break;
+    std::this_thread::sleep_for(10ms);
+  }
+  ASSERT_GE(status.forward, 256u * 1024);
+  const uint64_t capacityBefore = ForwardCapacity(cache);
+
+  cache.IoControl(IOControl::CACHE_SETRATE, &rate);
+  const uint64_t capacityAfter = ForwardCapacity(cache);
+  const bool reads = ReadsPattern(cache, 1024 * 1024);
+  cache.Close();
+
+  EXPECT_GT(capacityAfter, capacityBefore);
+  EXPECT_TRUE(reads) << "the rebuilt cache did not continue from the start of the stream";
 }
 
 TEST(TestFileCache, DefaultSizedCacheGrowsToTheContentRate)
