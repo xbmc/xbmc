@@ -709,7 +709,20 @@ bool CTeletextDecoder::InitDecoder()
   m_RenderInfo.TranspMode = false;
   m_LastPage              = 0x100;
 
+  std::unique_lock lock(m_txtCache->m_critSection);
+  m_SubtitleFlushGeneration = m_txtCache->FlushGeneration;
+
   return true;
+}
+
+void CTeletextDecoder::InvalidateSubtitleCache()
+{
+  for (TextSubtitleCache_t* const entry : m_RenderInfo.SubtitleCache)
+  {
+    if (entry)
+      entry->Valid = false;
+  }
+  m_RenderInfo.DelayStarted = false;
 }
 
 void CTeletextDecoder::EndDecoder()
@@ -1187,6 +1200,14 @@ void CTeletextDecoder::RenderPage()
 
   std::unique_lock lock(m_txtCache->m_critSection);
 
+  // The demuxer side was flushed (seek, stream change, ...). Any subtitle still waiting for its
+  // display time belongs to the old playback position, so drop it before evaluating anything
+  if (m_txtCache->FlushGeneration != m_SubtitleFlushGeneration)
+  {
+    m_SubtitleFlushGeneration = m_txtCache->FlushGeneration;
+    InvalidateSubtitleCache();
+  }
+
   int StartRow = 0;
   int national_subset_bak = m_txtCache->NationalSubset;
   const int64_t subtitleDelayMs =
@@ -1282,12 +1303,7 @@ void CTeletextDecoder::RenderPage()
         memcpy(m_RenderInfo.PageChar, c->PageChar, 40 * 25);
         memcpy(m_RenderInfo.PageAtrb, c->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
         DoRenderPage(StartRow, national_subset_bak);
-        for (TextSubtitleCache_t* const entry : m_RenderInfo.SubtitleCache)
-        {
-          if (entry)
-            entry->Valid = false;
-        }
-        m_RenderInfo.DelayStarted = false;
+        InvalidateSubtitleCache();
         return;
       }
       m_RenderInfo.DelayStarted = true;
