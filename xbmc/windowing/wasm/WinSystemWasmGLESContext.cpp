@@ -8,6 +8,7 @@
 
 #include "WinSystemWasmGLESContext.h"
 
+#include "VideoSyncWasm.h"
 #include "WasmVsync.h"
 #include "WebGLCommit.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
@@ -268,4 +269,9 @@ int CWinSystemWasmGLESContext::GetBufferAge()
 float CWinSystemWasmGLESContext::GetDisplayLatency()
 {
   return DISPLAY_LATENCY_FRAMES * 1000.0f / static_cast<float>(VSYNC::RefreshRate());
+}
+
+std::unique_ptr<CVideoSync> CWinSystemWasmGLESContext::GetVideoSync(CVideoReferenceClock* clock)
+{
+  return std::make_unique<CVideoSyncWasm>(clock);
 }

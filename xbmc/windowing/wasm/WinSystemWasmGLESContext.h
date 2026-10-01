@@ -53,6 +53,7 @@ public:
   int GetBufferAge() override;
 
   float GetDisplayLatency() override;
+  std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
 
 protected:
   void SetVSyncImpl(bool enable) override;

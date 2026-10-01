@@ -1,7 +1,9 @@
-set(SOURCES WinEventsWasm.cpp
+set(SOURCES VideoSyncWasm.cpp
+            WinEventsWasm.cpp
             WasmVsync.cpp)
 
-set(HEADERS WinEventsWasm.h
+set(HEADERS VideoSyncWasm.h
+            WinEventsWasm.h
             WasmVsync.h
             WebGLCommit.h)
 
