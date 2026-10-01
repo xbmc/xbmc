@@ -199,6 +199,22 @@ protected:
   float m_fps = 0.0f;
   uint64_t m_frameIdx = 0;
 
+  // what was last rendered into m_IntermediateTarget
+  struct IntermediateState
+  {
+    int bufferIndex = -1;
+    CRect sourceRect;
+    unsigned flags = 0;
+    float contrast = 0.0f;
+    float brightness = 0.0f;
+    bool limitedColor = false;
+    bool operator==(const IntermediateState&) const = default;
+  };
+  IntermediateState m_intermediateState;
+  // same picture as last render, renderers that only convert the source picture into
+  // m_IntermediateTarget can skip RenderImpl work (e.g. 30 fps video on a 60 Hz display)
+  bool m_reuseIntermediate = false;
+
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
   CD3DTexture m_IntermediateTarget;
   std::shared_ptr<COutputShader> m_outputShader;
