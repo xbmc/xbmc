@@ -317,7 +317,7 @@ void CInputManager::ProcessQueuedActions()
   }
 
   for (const CAction& action : queuedActions)
-    g_application.OnAction(action);
+    ExecuteInputAction(action);
 
   // Process CEC keys
   std::vector<CKey> queuedCecKeys;
