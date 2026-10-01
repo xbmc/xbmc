@@ -207,6 +207,7 @@ void CDVDTeletextData::ResetTeletextCache()
   m_TXTCache->PageUpdate               = false;
   m_TXTCache->PageUpdateHasDisplayTime = false;
   m_TXTCache->PageUpdateDisplayTime = 0;
+  m_TXTCache->PageUpdatePage = -1;
   m_TXTCache->ADIP_PgMax               = -1;
   m_TXTCache->BTTok                    = false;
   m_TXTCache->CachedPages              = 0;
@@ -629,6 +630,7 @@ void CDVDTeletextData::Process()
               m_TXTCache->PageUpdate = true;
               m_TXTCache->PageUpdateHasDisplayTime = pPacket->m_hasDisplayTime;
               m_TXTCache->PageUpdateDisplayTime = pPacket->dispTime;
+              m_TXTCache->PageUpdatePage = m_TXTCache->CurrentPage[magazine];
               //              doupdate = 0;
               if (!m_TXTCache->ZapSubpageManual)
                 m_TXTCache->SubPage = m_TXTCache->CurrentSubPage[magazine];
