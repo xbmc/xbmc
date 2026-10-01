@@ -8,6 +8,7 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "filesystem/CircularCache.h"
 #include "filesystem/FileCache.h"
 #include "filesystem/IFileTypes.h"
 #include "settings/Settings.h"
@@ -229,6 +230,31 @@ public:
 
 namespace
 {
+class CUnopenableCache : public CCircularCache
+{
+public:
+  CUnopenableCache() : CCircularCache(64 * 1024, 16 * 1024) {}
+  int Open() override { return CACHE_RC_ERROR; }
+};
+
+//! Opens with a working cache, then fails to allocate every larger one
+class TestFileCacheThatCannotGrow : public TestFileCache
+{
+public:
+  using TestFileCache::TestFileCache;
+
+protected:
+  std::unique_ptr<CCacheStrategy> CreateMemoryCache(size_t cacheSize) override
+  {
+    if (m_created++ == 0)
+      return TestFileCache::CreateMemoryCache(cacheSize);
+    return std::make_unique<CUnopenableCache>();
+  }
+
+private:
+  int m_created{0};
+};
+
 struct SeekResult
 {
   int64_t position;
@@ -463,6 +489,30 @@ TEST(TestFileCache, ReadFailsPromptlyAfterQuarantinedCacheDrains)
   const auto [readResult, readError] = failedRead.get();
   EXPECT_EQ(-1, readResult);
   EXPECT_EQ(ECONNRESET, readError);
+}
+
+TEST(TestFileCache, AGrowThatCannotAllocateKeepsTheCacheItHad)
+{
+  uint32_t rate = 1536 * 1024;
+  KODI::MEMORY::MemoryStatus memory{};
+  KODI::MEMORY::GetMemoryStatus(&memory);
+  if (memory.totalPhys / 16 < 128 * 1024 * 1024)
+    GTEST_SKIP() << "not enough installed memory for the cache to try to grow";
+
+  TestFileCacheThatCannotGrow cache{READ_AUDIO_VIDEO,
+                                    std::make_unique<CPatternFileCacheSource>(true)};
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+  const bool readsBefore = ReadsPattern(cache, 1024 * 1024);
+  const uint64_t capacityBefore = ForwardCapacity(cache);
+
+  cache.IoControl(IOControl::CACHE_SETRATE, &rate);
+  const uint64_t capacityAfter = ForwardCapacity(cache);
+  const bool readsAfter = ReadsPattern(cache, 1024 * 1024);
+  cache.Close();
+
+  EXPECT_TRUE(readsBefore);
+  EXPECT_EQ(capacityBefore, capacityAfter);
+  EXPECT_TRUE(readsAfter) << "playback did not carry on with the cache it had";
 }
 
 TEST(TestFileCache, DefaultSizedCacheGrowsToTheContentRate)
