@@ -208,6 +208,7 @@ void CDVDTeletextData::ResetTeletextCache()
   m_TXTCache->PageUpdateHasDisplayTime = false;
   m_TXTCache->PageUpdateDisplayTime = 0;
   m_TXTCache->PageUpdatePage = -1;
+  m_TXTCache->FlushGeneration++;
   m_TXTCache->ADIP_PgMax               = -1;
   m_TXTCache->BTTok                    = false;
   m_TXTCache->CachedPages              = 0;
