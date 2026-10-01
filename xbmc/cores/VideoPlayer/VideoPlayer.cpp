@@ -2030,6 +2030,10 @@ void CVideoPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPack
   if (!pPacket->m_hasDisplayTime)
     DeriveTeletextDisplayTime(pPacket, m_State.time_offset);
 
+  if (pPacket->m_hasDisplayTime)
+    pPacket->dispTime = static_cast<int>(
+        m_Edl.GetTimeWithoutCuts(std::chrono::milliseconds(pPacket->dispTime)).count());
+
   bool drop = false;
   if (CheckPlayerInit(m_CurrentTeletext))
     drop = true;
