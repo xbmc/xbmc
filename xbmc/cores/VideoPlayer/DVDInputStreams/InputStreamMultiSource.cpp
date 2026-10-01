@@ -136,6 +136,12 @@ int64_t CInputStreamMultiSource::Seek(int64_t offset, int whence)
 
 void CInputStreamMultiSource::SetReadRate(uint32_t rate)
 {
-  for (const auto& iter : m_InputStreams)
-    iter->SetReadRate(rate);
+  // The rate is the main file's; for the external files beside it, it is only a ceiling
+  for (size_t i = 0; i < m_InputStreams.size(); ++i)
+  {
+    if (i == 0)
+      m_InputStreams[i]->SetReadRate(rate);
+    else
+      m_InputStreams[i]->SetReadRateLimit(rate);
+  }
 }
