@@ -413,6 +413,7 @@ typedef struct TextCacheStruct_t
   bool              PageUpdate;
   bool PageUpdateHasDisplayTime;
   int64_t PageUpdateDisplayTime;
+  int PageUpdatePage;
   int               NationalSubset;
   int               NationalSubsetSecondary;
   bool              ZapSubpageManual;

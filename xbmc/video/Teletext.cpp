@@ -1201,10 +1201,15 @@ void CTeletextDecoder::RenderPage()
   {
     const bool isSubtitlePage = IsSubtitlePage(m_txtCache->Page);
 
-    /* reset update flag */
-    const bool hasPacketDisplayTime = m_txtCache->PageUpdateHasDisplayTime;
+    // Packet timing is single use and only valid for the page the packet updated.
+    // If the user navigated to another page since the packet was decoded, ignore it.
+    const bool hasPacketDisplayTime =
+        m_txtCache->PageUpdateHasDisplayTime && m_txtCache->PageUpdatePage == m_txtCache->Page;
+
+    // Reset update flag and consume packet timing
     m_txtCache->PageUpdate = false;
     m_txtCache->PageUpdateHasDisplayTime = false;
+    m_txtCache->PageUpdatePage = -1;
 
     if (isSubtitlePage &&
         (hasPacketDisplayTime || m_RenderInfo.SubtitleDelay || m_RenderInfo.Boxed))
