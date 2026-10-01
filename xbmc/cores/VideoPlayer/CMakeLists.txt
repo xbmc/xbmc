@@ -15,6 +15,7 @@ set(SOURCES AudioSinkAE.cpp
             Edl/EdlParsers/PvrEdlParser.cpp
             Edl/EdlParsers/VideoReDoParser.cpp
             PTSTracker.cpp
+            VideoDecodeSession.cpp
             VideoPlayer.cpp
             VideoPlayerAudio.cpp
             VideoPlayerAudioID3.cpp
@@ -44,6 +45,7 @@ set(HEADERS AudioSinkAE.h
             Edl/EdlParsers/VideoReDoParser.h
             IVideoPlayer.h
             PTSTracker.h
+            VideoDecodeSession.h
             VideoPlayer.h
             VideoPlayerAudio.h
             VideoPlayerAudioID3.h
