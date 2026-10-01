@@ -2,12 +2,14 @@ set(SOURCES OSScreenSaverWasm.cpp
             VideoSyncWasm.cpp
             WinEventsWasm.cpp
             WasmClipboard.cpp
+            WasmKeyboard.cpp
             WasmVsync.cpp)
 
 set(HEADERS OSScreenSaverWasm.h
             VideoSyncWasm.h
             WinEventsWasm.h
             WasmClipboard.h
+            WasmKeyboard.h
             WasmVsync.h
             WebGLCommit.h)
 

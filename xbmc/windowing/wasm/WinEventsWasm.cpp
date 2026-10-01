@@ -6,6 +6,7 @@
 #include "WinEventsWasm.h"
 
 #include "ServiceBroker.h"
+#include "WasmKeyboard.h"
 #include "application/AppInboundProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/keyboard/XBMC_keyboard.h"
@@ -296,6 +297,11 @@ EM_BOOL OnKeyDown(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* /*u
 {
   if (!g_events)
     return EM_FALSE;
+  if (KODI::WINDOWING::WASM::CWasmKeyboard::IsActive())
+  {
+    g_swallowedKeys.insert(e->keyCode);
+    return EM_FALSE;
+  }
   // A new press means the release of a swallowed one never reached the page.
   g_swallowedKeys.erase(e->keyCode);
   if (IsTextFieldFocused())
@@ -316,7 +322,7 @@ EM_BOOL OnKeyUp(int /*eventType*/, const EmscriptenKeyboardEvent* e, void* /*use
 {
   if (!g_events)
     return EM_FALSE;
-  if (g_swallowedKeys.erase(e->keyCode) > 0)
+  if (KODI::WINDOWING::WASM::CWasmKeyboard::IsActive() || g_swallowedKeys.erase(e->keyCode) > 0)
     return EM_FALSE;
   if (IsTextFieldFocused())
     return EM_FALSE;
@@ -377,7 +383,8 @@ CWinEventsWasm::CWinEventsWasm()
 {
   g_events = this;
   // Key callbacks run on the browser thread: only there does their return value
-  // cancel the browser's default action.
+  // cancel the browser's default action, and the native keyboard's state must be
+  // read when the key is pressed, not when the Kodi thread gets to the event.
   emscripten_set_keydown_callback_on_thread(EMSCRIPTEN_EVENT_TARGET_WINDOW, nullptr, EM_TRUE,
                                             OnKeyDown,
                                             EM_CALLBACK_THREAD_CONTEXT_MAIN_RUNTIME_THREAD);
