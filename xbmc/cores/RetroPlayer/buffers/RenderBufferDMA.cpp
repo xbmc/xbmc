@@ -70,22 +70,40 @@ uint32_t CRenderBufferDMA::GetStride() const
 
 uint8_t* CRenderBufferDMA::GetMemory()
 {
-  // Map first, then open CPU access over the mapping that will be written
-  uint8_t* const memory = m_bo->GetMemory();
-  if (memory == nullptr)
-    return nullptr;
+  std::unique_lock lock(m_memoryMutex);
 
-  m_bo->SyncStart();
+  // A frame being uploaded can be read at the same time to save it, so they
+  // share one mapping, and it lasts until the last of them is done
+  if (m_memoryUsers == 0)
+  {
+    // Map first, then open CPU access over the mapping that will be written
+    uint8_t* const memory = m_bo->GetMemory();
+    if (memory == nullptr)
+      return nullptr;
 
-  return memory;
+    m_bo->SyncStart();
+
+    m_memory = memory;
+  }
+
+  ++m_memoryUsers;
+
+  return m_memory;
 }
 
 void CRenderBufferDMA::ReleaseMemory()
 {
+  std::unique_lock lock(m_memoryMutex);
+
+  if (m_memoryUsers == 0 || --m_memoryUsers > 0)
+    return;
+
   // Close CPU access while the mapping is still there, then drop it. Ending it
   // after the unmap leaves the writes outside the bracket the GPU relies on.
   m_bo->SyncEnd();
   m_bo->ReleaseMemory();
+
+  m_memory = nullptr;
 }
 
 void CRenderBufferDMA::CreateTexture()

@@ -11,6 +11,7 @@
 #include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
 
 #include <memory>
+#include <mutex>
 
 #include "system_gl.h"
 
@@ -62,6 +63,11 @@ private:
 
   std::unique_ptr<CEGLImage> m_egl;
   std::unique_ptr<IBufferObject> m_bo;
+
+  // CPU access to the buffer
+  std::mutex m_memoryMutex;
+  unsigned int m_memoryUsers{0};
+  uint8_t* m_memory{nullptr};
 };
 } // namespace RETRO
 } // namespace KODI
