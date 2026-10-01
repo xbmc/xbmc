@@ -316,10 +316,16 @@ void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int siz
   XFILE::CFile tmpFile;
   std::string tmpFilename = TMP_COVERART_PATH_PNG;
 
-  if(!size)
-    return;
-
   std::unique_lock lock(m_metadataLock);
+
+  // A track without art, so the previous track's cover must not stay on disk and on screen
+  if (!size)
+  {
+    XFILE::CFile::Delete(TMP_COVERART_PATH_JPG);
+    XFILE::CFile::Delete(TMP_COVERART_PATH_PNG);
+    RefreshCoverArt();
+    return;
+  }
 
   if (IsJPEG(buffer, size))
     tmpFilename = TMP_COVERART_PATH_JPG;
