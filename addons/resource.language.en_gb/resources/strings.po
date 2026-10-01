@@ -16283,7 +16283,6 @@ msgid "Last updated {0:s}"
 msgstr ""
 
 #. Used as a title in the progress dialog when installing an add-on
-#: xbmc/addons/AddonInstaller.cpp
 #: xbmc/games/controllers/windows/ControllerInstaller.cpp
 msgctxt "#24057"
 msgid "Installing {0:s}..."
@@ -16955,7 +16954,19 @@ msgctxt "#24187"
 msgid "Failed to initialise databases - exiting in {} seconds."
 msgstr ""
 
-#empty strings from id 24188 to 24990
+#. Progress text while extracting an add-on package
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24188"
+msgid "Unpacking add-on..."
+msgstr ""
+
+#. Header of the background progress bar when installing an add-on, followed by the percentage
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24189"
+msgid "Installing {0:s}"
+msgstr ""
+
+#empty strings from id 24190 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp

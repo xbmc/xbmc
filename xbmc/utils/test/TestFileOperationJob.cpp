@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "test/TestUtils.h"
@@ -285,6 +286,38 @@ TEST(TestFileOperationJob, GetFunctions)
   std::cout << "GetCurrentOperation(): " << job.GetCurrentOperation() << std::endl;
   std::cout << "GetCurrentFile(): " << job.GetCurrentFile() << std::endl;
   EXPECT_FALSE(job.GetItems().IsEmpty());
+
+  EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
+  EXPECT_TRUE(XFILE::CFile::Delete(destfile));
+  EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
+}
+
+TEST(TestFileOperationJob, ExternalProgressBarStaysOpen)
+{
+  XFILE::CFile* tmpfile;
+  ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
+  const std::string tmpfilepath = XBMC_TEMPFILEPATH(tmpfile);
+  tmpfile->Close();
+
+  CFileItemList items;
+  CFileItemPtr item(new CFileItem(tmpfilepath));
+  item->SetPath(tmpfilepath);
+  item->SetFolder(false);
+  item->Select(true);
+  items.Add(item);
+
+  const std::string destpath =
+      URIUtils::AddFileToFolder(URIUtils::GetDirectory(tmpfilepath), "progress");
+  const std::string destfile =
+      URIUtils::AddFileToFolder(destpath, URIUtils::GetFileName(tmpfilepath));
+
+  CGUIDialogProgressBarHandle progressBar("");
+  {
+    CFileOperationJob job(CFileOperationJob::ActionCopy, items, destpath);
+    job.SetProgressIndicators(&progressBar, nullptr);
+    EXPECT_TRUE(job.DoWork());
+  }
+  EXPECT_FALSE(progressBar.IsFinished());
 
   EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
   EXPECT_TRUE(XFILE::CFile::Delete(destfile));

@@ -21,7 +21,31 @@ using namespace XFILE;
 
 namespace
 {
-bool UnpackArchive(std::string path, const std::string& dest)
+class CUnpackJob : public CFileOperationJob
+{
+public:
+  CUnpackJob(CFileItemList& items,
+             const std::string& dest,
+             const CFilesystemInstaller::ProgressCallback& onProgress)
+    : CFileOperationJob(ActionCopy, items, dest),
+      m_onProgress(onProgress)
+  {
+  }
+
+  bool ShouldCancel(unsigned int progress, unsigned int total) const override
+  {
+    if (m_onProgress)
+      m_onProgress(progress, total);
+    return CFileOperationJob::ShouldCancel(progress, total);
+  }
+
+private:
+  CFilesystemInstaller::ProgressCallback m_onProgress;
+};
+
+bool UnpackArchive(std::string path,
+                   const std::string& dest,
+                   const CFilesystemInstaller::ProgressCallback& onProgress)
 {
   if (!URIUtils::IsProtocol(path, "zip"))
     path = URIUtils::CreateArchivePath("zip", CURL(path), "").Get();
@@ -42,7 +66,7 @@ bool UnpackArchive(std::string path, const std::string& dest)
   for (auto i = 0; i < files.Size(); ++i)
     files[i]->Select(true);
 
-  CFileOperationJob job(CFileOperationJob::ActionCopy, files, dest);
+  CUnpackJob job(files, dest, onProgress);
   return job.DoWork();
 }
 } // unnamed namespace
@@ -54,7 +78,8 @@ CFilesystemInstaller::CFilesystemInstaller()
 }
 
 bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive,
-                                               const std::string& addonId) const
+                                               const std::string& addonId,
+                                               const ProgressCallback& onProgress) const
 {
   const std::string addonFolder = URIUtils::AddFileToFolder(m_addonFolder, addonId);
   const std::string newAddonData =
@@ -65,7 +90,7 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive,
   if (!CDirectory::Create(newAddonData))
     return false;
 
-  if (!UnpackArchive(archive, newAddonData))
+  if (!UnpackArchive(archive, newAddonData, onProgress))
   {
     CLog::Log(LOGERROR, "Failed to unpack archive '{}' to '{}'", archive, newAddonData);
     return false;
