@@ -303,6 +303,8 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
 
         case CSinkControlProtocol::FLUSH:
           ReturnBuffers();
+          if (m_sink && *(bool*)msg->data)
+            m_sink->Flush();
           msg->Reply(CSinkControlProtocol::ACC);
           return;
 
@@ -1181,7 +1183,14 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   }
 
   if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
+  {
+    // A packet dropped for a/v sync has no frames and never enters the loop above. Query the
+    // sink anyway, otherwise the engine is told the sink holds no audio at all and the next
+    // sync error measurements are off by the whole sink delay.
+    if (totalFrames == 0)
+      m_sink->GetDelay(status);
     m_stats->UpdateSinkDelay(status, samples->pool ? 1 : 0);
+  }
 
   return status.delay * 1000;
 }

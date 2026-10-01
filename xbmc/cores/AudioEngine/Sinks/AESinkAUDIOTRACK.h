@@ -38,6 +38,7 @@ public:
   unsigned int AddPackets(uint8_t** data, unsigned int frames, unsigned int offset) override;
   void AddPause(unsigned int millis) override;
   void Drain() override;
+  void Flush() override;
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   static void Register();
   static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);

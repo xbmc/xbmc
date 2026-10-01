@@ -746,7 +746,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           stream = *(CActiveAEStream**)msg->data;
           if (!stream->m_paused && m_streams.size() == 1)
           {
-            FlushEngine();
+            FlushEngine(false);
             streaming = false;
             m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::STREAMING, &streaming, sizeof(bool));
           }
@@ -1649,7 +1649,7 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   m_stats.UpdateStream(stream);
 }
 
-void CActiveAE::FlushEngine()
+void CActiveAE::FlushEngine(bool flushSink)
 {
   if (m_sinkBuffers)
     m_sinkBuffers->Flush();
@@ -1658,7 +1658,8 @@ void CActiveAE::FlushEngine()
 
   // send message to sink
   Message *reply;
-  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s))
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s, &flushSink,
+                                              sizeof(bool)))
   {
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
