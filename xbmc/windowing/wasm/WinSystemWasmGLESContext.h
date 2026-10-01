@@ -56,6 +56,7 @@ public:
   std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
 
 protected:
+  std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   void SetVSyncImpl(bool enable) override;
   void PresentRenderImpl(bool rendered) override;
 

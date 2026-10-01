@@ -8,6 +8,7 @@
 
 #include "WinSystemWasmGLESContext.h"
 
+#include "OSScreenSaverWasm.h"
 #include "VideoSyncWasm.h"
 #include "WasmVsync.h"
 #include "WebGLCommit.h"
@@ -274,4 +275,9 @@ float CWinSystemWasmGLESContext::GetDisplayLatency()
 std::unique_ptr<CVideoSync> CWinSystemWasmGLESContext::GetVideoSync(CVideoReferenceClock* clock)
 {
   return std::make_unique<CVideoSyncWasm>(clock);
+}
+
+std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemWasmGLESContext::GetOSScreenSaverImpl()
+{
+  return std::make_unique<COSScreenSaverWasm>();
 }
