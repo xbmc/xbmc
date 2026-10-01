@@ -57,13 +57,19 @@ void main ()
     cord0 = vec4(m_attrcord0.xy + (m_texSwap.x > 0.0 ? t.yx : t) * (m_attrcord0.zw - m_attrcord0.xy), 0.0, 1.0);
     cord1 = vec4(m_attrcord1.xy + (m_texSwap.y > 0.0 ? t.yx : t) * (m_attrcord1.zw - m_attrcord1.xy), 0.0, 1.0);
 
-    // Round to whole pixels. A bottom corner is pushed one pixel away from the opposite corner if
-    // both round to the same row or column, so that thin quads never vanish.
+    // Round to whole pixels, unless m_snap is 2 for a texture that keeps subpixel positions (then
+    // only the depth is rounded). A bottom corner is pushed one pixel away from the opposite corner
+    // if no pixel centre lies between them on that axis, so that thin quads never vanish.
     float push = (p.y > q.y && all(notEqual(pc, qc))) ? 1.0 : 0.0;
     pos = m_gui * vec4(pc, 0.0, 1.0);
-    pos.xyz = floor(pos.xyz + 0.5);
-    vec2 opposite = floor((m_gui * vec4(qc, 0.0, 1.0)).xy + 0.5);
-    pos.xy += vec2(equal(pos.xy, opposite)) * push;
+    vec2 opposite = (m_gui * vec4(qc, 0.0, 1.0)).xy;
+    if (m_snap < 1.5)
+    {
+      pos.xy = floor(pos.xy + 0.5);
+      opposite = floor(opposite + 0.5);
+    }
+    pos.z = floor(pos.z + 0.5);
+    pos.xy += vec2(equal(ceil(pos.xy - 0.5), ceil(opposite - 0.5))) * push;
   }
   else
   {
