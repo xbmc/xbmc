@@ -1108,12 +1108,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   {
     const bool noDolbyVision = m_hints.dovi.dv_profile == 0;
     if (pVideoPicture->color_transfer == AVCOL_TRC_SMPTE2084 &&
-        (noDolbyVision ||
-         (m_hints.dovi.dv_profile == 8 && m_hints.dovi.dv_bl_signal_compatibility_id == 1)))
+        (noDolbyVision || m_hints.HasHDR10DolbyVisionBaseLayer()))
       pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HDR10;
     else if (pVideoPicture->color_transfer == AVCOL_TRC_ARIB_STD_B67 &&
-             (noDolbyVision ||
-              (m_hints.dovi.dv_profile == 8 && m_hints.dovi.dv_bl_signal_compatibility_id == 4)))
+             (noDolbyVision || m_hints.HasHLGDolbyVisionBaseLayer()))
       pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HLG;
   }
 #endif

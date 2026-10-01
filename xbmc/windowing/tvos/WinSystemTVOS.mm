@@ -55,13 +55,6 @@ using namespace std::chrono_literals;
 
 #define CONST_HDMI "HDMI"
 
-namespace
-{
-constexpr int TVOS_DYNAMIC_RANGE_SDR = 0;
-constexpr int TVOS_DYNAMIC_RANGE_HDR10 = 2;
-constexpr int TVOS_DYNAMIC_RANGE_HLG = 3;
-} // namespace
-
 // if there was a devicelost callback
 // but no device reset for 3 secs
 // a timeout fires the reset callback
@@ -259,14 +252,14 @@ bool CWinSystemTVOS::SwitchToVideoMode(int width, int height, double refreshrate
   }
 
   [g_xbmcController.displayManager displayRateSwitch:refreshrate
-                                    withDynamicRange:TVOS_DYNAMIC_RANGE_SDR];
+                                    withDynamicRange:0 /* SDR */];
   return true;
 }
 
-int CWinSystemTVOS::GetDynamicRangeForHDR(const VideoPicture* videoPicture) const
+StreamHdrType CWinSystemTVOS::GetSupportedHDRType(const VideoPicture* videoPicture) const
 {
   if (!videoPicture)
-    return TVOS_DYNAMIC_RANGE_SDR;
+    return StreamHdrType::HDR_TYPE_NONE;
 
   const CHDRCapabilities caps = GetDisplayHDRCapabilities();
 
@@ -274,24 +267,24 @@ int CWinSystemTVOS::GetDynamicRangeForHDR(const VideoPicture* videoPicture) cons
   // HLG mode bit is clear. Let AVDisplayCriteria select the actual HDMI mode.
   if (videoPicture->hdrType == StreamHdrType::HDR_TYPE_HLG &&
       (caps.SupportsHLG() || caps.SupportsHDR10()))
-    return TVOS_DYNAMIC_RANGE_HLG;
+    return StreamHdrType::HDR_TYPE_HLG;
 
   if (videoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 && caps.SupportsHDR10())
   {
-    return TVOS_DYNAMIC_RANGE_HDR10;
+    return StreamHdrType::HDR_TYPE_HDR10;
   }
 
-  return TVOS_DYNAMIC_RANGE_SDR;
+  return StreamHdrType::HDR_TYPE_NONE;
 }
 
 bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
 {
-  const int dynamicRange = CanUseHDRVideoLayer() ? GetDynamicRangeForHDR(videoPicture)
-                                                  : TVOS_DYNAMIC_RANGE_SDR;
+  const StreamHdrType hdrType = CanUseHDRVideoLayer() ? GetSupportedHDRType(videoPicture)
+                                                      : StreamHdrType::HDR_TYPE_NONE;
   auto* buffer = videoPicture ? dynamic_cast<VTB::CVideoBufferVTB*>(videoPicture->videoBuffer)
                               : nullptr;
   CVPixelBufferRef pixelBuffer = buffer ? buffer->GetPB() : nullptr;
-  if (dynamicRange == TVOS_DYNAMIC_RANGE_SDR || !pixelBuffer ||
+  if (hdrType == StreamHdrType::HDR_TYPE_NONE || !pixelBuffer ||
       CVPixelBufferGetPixelFormatType(pixelBuffer) != kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
   {
     if (m_hdrFormatDescription)
@@ -307,9 +300,11 @@ bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
   }
 
   CMVideoFormatDescriptionRef formatDescription = nullptr;
-  if (CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, pixelBuffer,
-                                                  &formatDescription) != noErr)
+  const OSStatus formatStatus = CMVideoFormatDescriptionCreateForImageBuffer(
+      kCFAllocatorDefault, pixelBuffer, &formatDescription);
+  if (formatStatus != noErr)
   {
+    CLog::Log(LOGERROR, "CWinSystemTVOS::SetHDR: format creation failed ({})", formatStatus);
     SetHDR(nullptr);
     return false;
   }
@@ -325,10 +320,11 @@ bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
     m_hdrFormatDescription = formatDescription;
     m_hdrStatus = HDR_STATUS::HDR_ON;
     CLog::Log(LOGDEBUG, "CWinSystemTVOS::SetHDR: requesting {}",
-              dynamicRange == TVOS_DYNAMIC_RANGE_HLG ? "HLG" : "HDR10");
+              hdrType == StreamHdrType::HDR_TYPE_HLG ? "HLG" : "HDR10");
   }
   else
   {
+    CLog::Log(LOGWARNING, "CWinSystemTVOS::SetHDR: display request rejected");
     CFRelease(formatDescription);
     SetHDR(nullptr);
   }

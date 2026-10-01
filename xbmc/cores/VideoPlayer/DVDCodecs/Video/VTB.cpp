@@ -27,6 +27,14 @@ extern "C" {
 
 using namespace VTB;
 
+namespace
+{
+bool CanDisplayHLG(const CHDRCapabilities& caps)
+{
+  return caps.SupportsHLG() || caps.SupportsHDR10();
+}
+} // namespace
+
 //------------------------------------------------------------------------------
 // Video Buffers
 //------------------------------------------------------------------------------
@@ -150,17 +158,13 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
       const CHDRCapabilities caps = winSystem->GetDisplayHDRCapabilities();
       // InputStream addons can report the HDR transfer without filling in
       // CDVDStreamInfo::bitdepth. The decoder negotiates the actual P010 format.
-      // Dolby Vision profile 8 can carry an HDR10 or HLG compatible base layer.
-      // Use only that base layer; other Dolby Vision profiles need their own path.
-      const bool hdr10BaseLayer = hint.dovi.dv_profile == 8 &&
-                                  hint.dovi.dv_bl_signal_compatibility_id == 1;
-      const bool hlgBaseLayer = hint.dovi.dv_profile == 8 &&
-                                hint.dovi.dv_bl_signal_compatibility_id == 4;
       hdrOutput = canUseHDRVideoLayer &&
-                  (((hint.hdrType == StreamHdrType::HDR_TYPE_HDR10 || hdr10BaseLayer) &&
+                  (((hint.hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+                     hint.HasHDR10DolbyVisionBaseLayer()) &&
                     caps.SupportsHDR10()) ||
-                   ((hint.hdrType == StreamHdrType::HDR_TYPE_HLG || hlgBaseLayer) &&
-                    (caps.SupportsHLG() || caps.SupportsHDR10())));
+                   ((hint.hdrType == StreamHdrType::HDR_TYPE_HLG ||
+                     hint.HasHLGDolbyVisionBaseLayer()) &&
+                    CanDisplayHLG(caps)));
     }
 #endif
     return new VTB::CDecoder(processInfo, hdrOutput, hint.dovi.dv_profile == 0);
@@ -212,8 +216,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     {
       const CHDRCapabilities caps = winSystem->GetDisplayHDRCapabilities();
       m_hdrOutput = (avctx->color_trc == AVCOL_TRC_SMPTE2084 && caps.SupportsHDR10()) ||
-                    (avctx->color_trc == AVCOL_TRC_ARIB_STD_B67 &&
-                     (caps.SupportsHLG() || caps.SupportsHDR10()));
+                    (avctx->color_trc == AVCOL_TRC_ARIB_STD_B67 && CanDisplayHLG(caps));
     }
   }
 #endif

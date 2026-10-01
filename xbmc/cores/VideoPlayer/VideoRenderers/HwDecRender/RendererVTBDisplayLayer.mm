@@ -21,13 +21,38 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <iterator>
+#include <limits>
+#include <type_traits>
 
 #include <CoreMedia/CMSampleBuffer.h>
 #include <CoreVideo/CVImageBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
+#import <Foundation/NSData.h>
 
 namespace
 {
+template<typename T>
+void PutBigEndian(uint8_t* bytes, size_t offset, double value)
+{
+  static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>);
+  const T host = static_cast<T>(std::llround(std::clamp(
+      std::isfinite(value) ? value : 0.0, 0.0,
+      static_cast<double>(std::numeric_limits<T>::max()))));
+  T bigEndian;
+  if constexpr (std::is_same_v<T, uint16_t>)
+    bigEndian = CFSwapInt16HostToBig(host);
+  else
+    bigEndian = CFSwapInt32HostToBig(host);
+  memcpy(bytes + offset, &bigEndian, sizeof(bigEndian));
+}
+
+VTB::CVideoBufferVTB* GetVTBBuffer(CVideoBuffer* buffer)
+{
+  auto* vtb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
+  return vtb && vtb->GetPB() ? vtb : nullptr;
+}
+
 void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& picture)
 {
   if (picture.hdrType != StreamHdrType::HDR_TYPE_HDR10 &&
@@ -54,50 +79,54 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
   if (picture.hasDisplayMetadata && picture.displayMetadata.has_primaries &&
       picture.displayMetadata.has_luminance)
   {
-    // Mastering display colour volume SEI: G, B, R, white point, max/min
-    // luminance, all in big-endian order (ISO/IEC 23008-2 D.2.28).
+    // Mastering display colour volume SEI uses 24 big-endian bytes in G, B, R,
+    // white point, max/min luminance order (ISO/IEC 23008-2 D.2.28).
+    // Chromaticity coordinates use 1/50000 units; luminance uses 1/10000 cd/m^2.
+    constexpr double chromaticityScale = 50000.0;
+    constexpr double luminanceScale = 10000.0;
     uint8_t bytes[24]{};
-    auto put16 = [&bytes](int offset, double value)
+    size_t offset = 0;
+    auto put16 = [&bytes, &offset](double value)
     {
-      const uint16_t be = CFSwapInt16HostToBig(static_cast<uint16_t>(
-          std::lround(std::clamp(std::isfinite(value) ? value : 0.0, 0.0, 65535.0))));
-      memcpy(bytes + offset, &be, sizeof(be));
+      PutBigEndian<uint16_t>(bytes, offset, value);
+      offset += sizeof(uint16_t);
     };
-    auto put32 = [&bytes](int offset, double value)
+    auto put32 = [&bytes, &offset](double value)
     {
-      const uint32_t be = CFSwapInt32HostToBig(static_cast<uint32_t>(
-          std::llround(std::clamp(std::isfinite(value) ? value : 0.0, 0.0, 4294967295.0))));
-      memcpy(bytes + offset, &be, sizeof(be));
+      PutBigEndian<uint32_t>(bytes, offset, value);
+      offset += sizeof(uint32_t);
     };
     const auto& metadata = picture.displayMetadata;
-    for (int i = 0; i < 3; ++i)
+    for (size_t i = 0; i < std::size(metadata.display_primaries); ++i)
     {
-      const int primary = (i + 1) % 3;
-      put16(i * 4, av_q2d(metadata.display_primaries[primary][0]) * 50000.0);
-      put16(i * 4 + 2, av_q2d(metadata.display_primaries[primary][1]) * 50000.0);
+      const size_t primary = (i + 1) % std::size(metadata.display_primaries);
+      put16(av_q2d(metadata.display_primaries[primary][0]) * chromaticityScale);
+      put16(av_q2d(metadata.display_primaries[primary][1]) * chromaticityScale);
     }
-    put16(12, av_q2d(metadata.white_point[0]) * 50000.0);
-    put16(14, av_q2d(metadata.white_point[1]) * 50000.0);
-    put32(16, av_q2d(metadata.max_luminance) * 10000.0);
-    put32(20, av_q2d(metadata.min_luminance) * 10000.0);
-    CFDataRef data = CFDataCreate(kCFAllocatorDefault, bytes, sizeof(bytes));
-    CVBufferSetAttachment(pixelBuffer, kCVImageBufferMasteringDisplayColorVolumeKey, data,
+    put16(av_q2d(metadata.white_point[0]) * chromaticityScale);
+    put16(av_q2d(metadata.white_point[1]) * chromaticityScale);
+    put32(av_q2d(metadata.max_luminance) * luminanceScale);
+    put32(av_q2d(metadata.min_luminance) * luminanceScale);
+    NSData* data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+    CVBufferSetAttachment(pixelBuffer, kCVImageBufferMasteringDisplayColorVolumeKey,
+                          (__bridge CFDataRef)data,
                           kCVAttachmentMode_ShouldPropagate);
-    CFRelease(data);
   }
   else
     CVBufferRemoveAttachment(pixelBuffer, kCVImageBufferMasteringDisplayColorVolumeKey);
 
   if (picture.hasLightMetadata)
   {
+    const unsigned maxContentLight = std::numeric_limits<uint16_t>::max();
     uint16_t values[2] = {
-        CFSwapInt16HostToBig(static_cast<uint16_t>(std::min(picture.lightMetadata.MaxCLL, 65535u))),
-        CFSwapInt16HostToBig(static_cast<uint16_t>(std::min(picture.lightMetadata.MaxFALL, 65535u)))};
-    CFDataRef data =
-        CFDataCreate(kCFAllocatorDefault, reinterpret_cast<const UInt8*>(values), sizeof(values));
-    CVBufferSetAttachment(pixelBuffer, kCVImageBufferContentLightLevelInfoKey, data,
+        CFSwapInt16HostToBig(
+            static_cast<uint16_t>(std::min(picture.lightMetadata.MaxCLL, maxContentLight))),
+        CFSwapInt16HostToBig(
+            static_cast<uint16_t>(std::min(picture.lightMetadata.MaxFALL, maxContentLight)))};
+    NSData* data = [NSData dataWithBytes:values length:sizeof(values)];
+    CVBufferSetAttachment(pixelBuffer, kCVImageBufferContentLightLevelInfoKey,
+                          (__bridge CFDataRef)data,
                           kCVAttachmentMode_ShouldPropagate);
-    CFRelease(data);
   }
   else
     CVBufferRemoveAttachment(pixelBuffer, kCVImageBufferContentLightLevelInfoKey);
@@ -106,12 +135,12 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
 
 CBaseRenderer* CRendererVTBDisplayLayer::Create(CVideoBuffer* buffer)
 {
-  auto* vtb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
-  if (!vtb || !vtb->GetPB() ||
+  auto* vtb = GetVTBBuffer(buffer);
+  if (!vtb ||
       CVPixelBufferGetPixelFormatType(vtb->GetPB()) !=
           kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
     return nullptr;
-  return new CRendererVTBDisplayLayer();
+  return new CRendererVTBDisplayLayer;
 }
 
 bool CRendererVTBDisplayLayer::Register()
@@ -129,9 +158,17 @@ bool CRendererVTBDisplayLayer::Configure(const VideoPicture& picture,
                                          float fps,
                                          unsigned int orientation)
 {
-  auto* vtb = dynamic_cast<VTB::CVideoBufferVTB*>(picture.videoBuffer);
-  if (!vtb || !vtb->GetPB() || ![g_xbmcController enableVideoLayer])
+  auto* vtb = GetVTBBuffer(picture.videoBuffer);
+  if (!vtb)
+  {
+    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::Configure: missing VideoToolbox pixel buffer");
     return false;
+  }
+  if (![g_xbmcController enableVideoLayer])
+  {
+    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::Configure: unable to enable video layer");
+    return false;
+  }
 
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
@@ -160,9 +197,12 @@ void CRendererVTBDisplayLayer::AddVideoPicture(const VideoPicture& picture, int 
   ReleaseBuffer(index);
   if (index == m_lastIndex)
     m_lastIndex = -1;
-  auto* vtb = dynamic_cast<VTB::CVideoBufferVTB*>(picture.videoBuffer);
-  if (!vtb || !vtb->GetPB())
+  auto* vtb = GetVTBBuffer(picture.videoBuffer);
+  if (!vtb)
+  {
+    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::AddVideoPicture: missing VideoToolbox pixel buffer");
     return;
+  }
   SetColorAttachments(vtb->GetPB(), picture);
   m_buffers[index] = picture.videoBuffer;
   m_buffers[index]->Acquire();
@@ -209,9 +249,9 @@ void CRendererVTBDisplayLayer::Update()
   if (m_destRect != m_lastRect)
   {
     const auto& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
-    const CGSize bounds = g_xbmcController.glView.bounds.size;
-    const CGFloat sx = bounds.width / gfx.GetWidth();
-    const CGFloat sy = bounds.height / gfx.GetHeight();
+    const CGSize boundsSize = g_xbmcController.glView.bounds.size;
+    const CGFloat sx = boundsSize.width / gfx.GetWidth();
+    const CGFloat sy = boundsSize.height / gfx.GetHeight();
     [g_xbmcController
         setVideoLayerFrame:CGRectMake(m_destRect.x1 * sx, m_destRect.y1 * sy,
                                       m_destRect.Width() * sx, m_destRect.Height() * sy)];
@@ -225,29 +265,47 @@ void CRendererVTBDisplayLayer::RenderUpdate(
   if (!m_configured || index == m_lastIndex)
     return;
   Update();
-  auto* vtb = dynamic_cast<VTB::CVideoBufferVTB*>(m_buffers[index]);
-  if (!vtb || !vtb->GetPB())
+  auto* vtb = GetVTBBuffer(m_buffers[index]);
+  if (!vtb)
+  {
+    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::RenderUpdate: missing VideoToolbox pixel buffer");
     return;
+  }
 
   CMVideoFormatDescriptionRef format = nullptr;
-  if (CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, vtb->GetPB(), &format) !=
-      noErr)
+  const OSStatus formatStatus =
+      CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, vtb->GetPB(), &format);
+  if (formatStatus != noErr)
+  {
+    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::RenderUpdate: format creation failed ({})",
+              formatStatus);
     return;
+  }
   CMSampleBufferRef sample = nullptr;
   const OSStatus status =
       CMSampleBufferCreateForImageBuffer(kCFAllocatorDefault, vtb->GetPB(), true, nullptr, nullptr,
                                          format, &kCMTimingInfoInvalid, &sample);
   CFRelease(format);
   if (status != noErr || !sample)
+  {
+    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::RenderUpdate: sample creation failed ({})",
+              status);
+    if (sample)
+      CFRelease(sample);
     return;
+  }
 
   CFArrayRef attachments = CMSampleBufferGetSampleAttachmentsArray(sample, true);
-  if (attachments && CFArrayGetCount(attachments) > 0)
+  if (!attachments || CFArrayGetCount(attachments) != 1)
   {
-    auto* dictionary = static_cast<CFMutableDictionaryRef>(
-        const_cast<void*>(CFArrayGetValueAtIndex(attachments, 0)));
-    CFDictionarySetValue(dictionary, kCMSampleAttachmentKey_DisplayImmediately, kCFBooleanTrue);
+    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::RenderUpdate: missing sample attachments");
+    CFRelease(sample);
+    return;
   }
+  // CMSampleBufferCreateForImageBuffer creates one sample with one mutable dictionary.
+  auto dictionary = static_cast<CFMutableDictionaryRef>(
+      const_cast<void*>(CFArrayGetValueAtIndex(attachments, 0)));
+  CFDictionarySetValue(dictionary, kCMSampleAttachmentKey_DisplayImmediately, kCFBooleanTrue);
   [g_xbmcController enqueueVideoSampleBuffer:sample];
   CFRelease(sample);
   m_lastIndex = index;

@@ -236,7 +236,11 @@ XBMCController* g_xbmcController;
       if (renderer != nil)
       {
         if (renderer.status == AVQueuedSampleBufferRenderingStatusFailed)
+        {
+          CLog::Log(LOGWARNING, "XBMCController: video renderer failed (code {}), flushing",
+                    renderer.error.code);
           [renderer flush];
+        }
         if (renderer.readyForMoreMediaData)
           [renderer enqueueSampleBuffer:sampleBuffer];
       }

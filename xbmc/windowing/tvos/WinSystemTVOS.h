@@ -26,6 +26,7 @@
 class IDispResource;
 class CVideoSyncTVos;
 struct CADisplayLinkWrapper;
+enum class StreamHdrType;
 
 class CWinSystemTVOS : public CWinSystemBase, public CRenderSystemGLES, public ITimerCallback
 {
@@ -61,6 +62,7 @@ public:
   bool IsHDRDisplay() override;
   HDR_STATUS GetOSHDRStatus() override { return m_hdrStatus; }
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
+  // The base HDR setting query and IsHDRDisplay() virtual method are non-const.
   bool CanUseHDRVideoLayer();
 
   void ShowOSMouse(bool show) override {}
@@ -112,9 +114,9 @@ private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
   void FillInVideoModes(int screenIdx);
   bool SwitchToVideoMode(int width, int height, double refreshrate);
-  int GetDynamicRangeForHDR(const VideoPicture* videoPicture) const;
+  StreamHdrType GetSupportedHDRType(const VideoPicture* videoPicture) const;
   CADisplayLinkWrapper* m_pDisplayLink;
   HDR_STATUS m_hdrStatus = HDR_STATUS::HDR_OFF;
   CMFormatDescriptionRef m_hdrFormatDescription = nullptr;
-  float m_requestedRefreshRate = 0.0f;
+  float m_requestedRefreshRate{};
 };
