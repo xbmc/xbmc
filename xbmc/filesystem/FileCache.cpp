@@ -369,14 +369,22 @@ void CFileCache::Process()
       // Only safe here: the reader is held in Seek or GrowCacheForRate until the seek completes
       if (m_pendingCacheSize)
       {
-        m_pCache = CreateMemoryCache(m_pendingCacheSize);
+        // CreateMemoryCache records the new size, which a failed allocation must not leave behind
+        const auto forwardCacheSize = m_forwardCacheSize;
+        const auto maxForward = m_maxForward;
+        const auto memoryCacheSize = m_memoryCacheSize;
+
+        std::unique_ptr<CCacheStrategy> grown = CreateMemoryCache(m_pendingCacheSize);
         m_pendingCacheSize = 0;
-        if (m_pCache->Open() != CACHE_RC_OK)
+        if (grown->Open() == CACHE_RC_OK)
+          m_pCache = std::move(grown);
+        else
         {
-          CLog::LogF(LOGERROR, "<{}> failed to open the grown cache", m_sourcePath);
-          m_pCache.reset();
-          m_seekEnded.Set();
-          break;
+          CLog::LogF(LOGERROR, "<{}> could not allocate the grown cache, keeping the current one",
+                     m_sourcePath);
+          m_forwardCacheSize = forwardCacheSize;
+          m_maxForward = maxForward;
+          m_memoryCacheSize = memoryCacheSize;
         }
       }
 
