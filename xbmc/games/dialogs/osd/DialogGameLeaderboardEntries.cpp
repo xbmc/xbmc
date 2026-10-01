@@ -219,7 +219,9 @@ void CDialogGameLeaderboardEntries::OnInitWindow()
   {
     CLog::Log(LOGERROR, "CDialogGameLeaderboardEntries: leaderboard {} is not in this game",
               m_leaderboardId);
-    Close();
+    // Forced: Open() makes the dialog active before OnInitWindow() runs, so a
+    // plain Close() would animate out and flash
+    Close(true);
     return;
   }
 
