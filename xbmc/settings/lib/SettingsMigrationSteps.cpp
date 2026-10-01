@@ -53,11 +53,27 @@ public:
   }
 };
 
+class CSettingsMigrationToV5 : public ISettingsMigrationStep
+{
+public:
+  int TargetVersion() const override { return 5; }
+  bool Apply(TiXmlElement* root) override
+  {
+    constexpr std::string_view oldSettingId = "input.tvosusekodikeyboard";
+    constexpr std::string_view newSettingId = "input.useapplicationkeyboard";
+
+    return FAILURE != impl::ConvertSingleSetting<CSettingBool, CSettingBool>(
+                          root, oldSettingId, newSettingId,
+                          [](bool oldValue) { return std::pair{oldValue, false}; });
+  }
+};
+
 MigrationStepList BuildMigrationSteps()
 {
   return {
       std::make_shared<CSettingsMigrationToV3>(),
       std::make_shared<CSettingsMigrationToV4>(),
+      std::make_shared<CSettingsMigrationToV5>(),
   };
 }
 

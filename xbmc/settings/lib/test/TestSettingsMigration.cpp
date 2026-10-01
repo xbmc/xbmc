@@ -186,3 +186,33 @@ TEST_P(TestSettingsMigrationToV4ReplayGain, MigratesPreampSetting)
 INSTANTIATE_TEST_SUITE_P(TestSettingsMigration,
                          TestSettingsMigrationToV4ReplayGain,
                          testing::ValuesIn(ReplayGainMigrationTests));
+
+class TestSettingsMigrationToV5ApplicationKeyboard : public testing::TestWithParam<std::string>
+{
+};
+
+TEST_P(TestSettingsMigrationToV5ApplicationKeyboard, MigratesTvosKeyboardSetting)
+{
+  const std::string& value = GetParam();
+  const std::string xml = "<settings version=\"4\"><setting id=\"input.tvosusekodikeyboard\">" +
+                          value + "</setting></settings>";
+
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(doc.Parse(xml));
+
+  CSettingsMigration migration;
+  ASSERT_TRUE(migration.UpdateXMLSettings(doc.RootElement(), 4, 5));
+
+  EXPECT_EQ(nullptr,
+            CSettingsManager::LocateSetting(doc.RootElement(), "input.tvosusekodikeyboard"));
+
+  const TiXmlElement* migratedSetting =
+      CSettingsManager::LocateSetting(doc.RootElement(), "input.useapplicationkeyboard");
+  ASSERT_NE(nullptr, migratedSetting);
+  ASSERT_NE(nullptr, migratedSetting->FirstChild());
+  EXPECT_EQ(value, migratedSetting->FirstChild()->ValueStr());
+}
+
+INSTANTIATE_TEST_SUITE_P(TestSettingsMigration,
+                         TestSettingsMigrationToV5ApplicationKeyboard,
+                         testing::Values("true", "false"));
