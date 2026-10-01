@@ -87,5 +87,7 @@ TEST(TestDVDSubtitlesLibass, AStyleIsAppliedOnceNotOnEveryFrame)
   // Only a new style object is a new style, so an edit in place is never applied.
   subStyle->alignment = FontAlign::SUB_CENTER;
 
-  EXPECT_LT(libass.RenderedTop(15, subStyle), FRAME_HEIGHT / 2);
+  const int top{libass.RenderedTop(15, subStyle)};
+  ASSERT_GE(top, 0) << "nothing was rendered, so the placement was not tested";
+  EXPECT_LT(top, FRAME_HEIGHT / 2);
 }
