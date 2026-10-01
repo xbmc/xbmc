@@ -363,7 +363,8 @@ esac
 case $host in
   *-*linux-android*)
     deps_dir="$use_host-$use_ndk_api-$build_type"
-    platform_cflags="-DANDROID -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+    platform_cppflags="-DANDROID -DPIC -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+    platform_cflags="-fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC"
     optimize_flags="-Os"
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
 
@@ -419,7 +420,8 @@ case $host in
       use_cpu="armeabi-v7a"
     fi
     use_toolchain="${use_toolchain:-/usr}"
-    platform_cflags="-fPIC -DPIC -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=softfp -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+    platform_cppflags="-DPIC -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+    platform_cflags="-fPIC -mcpu=cortex-a53 -mtune=cortex-a53 -mfloat-abi=softfp"
     platform_cxxflags="$platform_cflags -static-libstdc++"
     optimize_flags="-Os"
     platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
@@ -441,7 +443,8 @@ case $host in
       use_cpu=$host_cpu
     fi
     use_toolchain="${use_toolchain:-/usr}"
-    platform_cflags="-fPIC -DPIC"
+    platform_cppflags="-DPIC"
+    platform_cflags="-fPIC"
     platform_cxxflags="$platform_cflags"
     optimize_flags="-Os"
     platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
@@ -462,7 +465,8 @@ case $host in
     esac
     use_cpu=$host_cpu
     use_toolchain="${use_toolchain:-/usr}"
-    platform_cflags="-fPIC -DPIC"
+    platform_cppflags="-DPIC"
+    platform_cflags="-fPIC"
     optimize_flags="-O2"
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
@@ -723,39 +727,42 @@ if [ ! `mkdir -p $use_tarballs` ]; then
 fi
 
 # remove unwanted optimization flags
-tmp_cflags=$(echo $CFLAGS $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
-tmp_cxxflags=$(echo $CXXFLAGS $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}//g')
+tmp_cflags=$(echo $CFLAGS $platform_cflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}/ /g')
+tmp_cxxflags=$(echo $CXXFLAGS $platform_cxxflags | sed 's/-O@<:@123@:>@//g;s/-g //g;s/ \{2,\}/ /g')
+tmp_cppflags=$(echo $platform_cppflags $CPPFLAGS)
 
-release_cflags="-DNDEBUG=1"
+release_cppflags="-DNDEBUG=1"
+debug_cppflags="-D_DEBUG"
 
 # newer xcode version accept -Og flag, but debugging doesn't work with it
 if test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
-  debug_cflags="-g -D_DEBUG"
+  debug_cflags="-g"
 else
-  CFLAGS="$tmp_cflags -Og -g -D_DEBUG"
+  CFLAGS="$tmp_cflags -Og -g"
   AC_COMPILE_IFELSE(
     [AC_LANG_SOURCE([int foo;])],
-    [debug_cflags="-Og -g -D_DEBUG"],
-    [debug_cflags="-g -D_DEBUG"])
+    [debug_cflags="-Og -g"],
+    [debug_cflags="-g"])
 fi
 
 # add user supplied flags to the end, so they override our defaults
-platform_cflags_release="$tmp_cflags $release_cflags $optimize_flags $target_cflags"
-platform_cxxflags_release="$tmp_cxxflags $release_cflags $optimize_flags $target_cxxflags"
+platform_cflags_release="$tmp_cflags $optimize_flags $target_cflags"
+platform_cxxflags_release="$tmp_cxxflags $optimize_flags $target_cxxflags"
+platform_cppflags_release="$tmp_cppflags $release_cppflags"
 platform_cflags_debug="$tmp_cflags $debug_cflags $target_cflags"
 platform_cxxflags_debug="$tmp_cxxflags $debug_cflags $target_cxxflags"
+platform_cppflags_debug="$tmp_cppflags $debug_cppflags"
 platform_ldflags="${platform_ldflags} $target_ldflags"
 
 if test "$use_debug" = "yes"; then
   platform_cflags="$platform_cflags_debug"
   platform_cxxflags="$platform_cxxflags_debug"
+  platform_cppflags="$platform_cppflags_debug"
 else
   platform_cflags="$platform_cflags_release"
   platform_cxxflags="$platform_cxxflags_release"
+  platform_cppflags="$platform_cppflags_release"
 fi
-
-# CPPFLAGS preprocesses C++ too, so a C standard from CFLAGS must not reach it.
-platform_cppflags=$(echo " $platform_cflags " | sed 's/ -std=@<:@^ @:>@*//g;s/ \{2,\}/ /g;s/^ //;s/ $//')
 
 CXXFLAGS="$platform_cxxflags $platform_includes"
 CXX_CACHED="$CXX"
@@ -809,8 +816,10 @@ AC_SUBST(platform_cppflags)
 AC_SUBST(platform_cxxflags)
 AC_SUBST(platform_cflags_release)
 AC_SUBST(platform_cxxflags_release)
+AC_SUBST(platform_cppflags_release)
 AC_SUBST(platform_cflags_debug)
 AC_SUBST(platform_cxxflags_debug)
+AC_SUBST(platform_cppflags_debug)
 AC_SUBST(platform_ldflags)
 AC_SUBST(platform_includes)
 AC_SUBST(platform_os)
@@ -838,7 +847,7 @@ fi
 
 # Parse and handle CFLAGS
 read -r CFLAGS_ARRAY << EOF
-$platform_cflags $platform_includes -isystem $prefix/$deps_dir/include
+$platform_cppflags $platform_cflags $platform_includes -isystem $prefix/$deps_dir/include
 EOF
 
 count=1
@@ -859,7 +868,7 @@ fi
 
 # Parse and handle CXXFLAGS
 read -r CXXFLAGS_ARRAY << EOF
-$platform_cxxflags $platform_includes -isystem $prefix/$deps_dir/include
+$platform_cppflags $platform_cxxflags $platform_includes -isystem $prefix/$deps_dir/include
 EOF
 
 count=1
@@ -950,6 +959,7 @@ echo -e "CXX:\t\t $CXX"
 echo -e "asflags:\t\t $platform_asflags"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t\t $platform_cxxflags"
+echo -e "cppflags:\t\t $platform_cppflags"
 echo -e "ldflags:\t\t $platform_ldflags"
 echo -e "target_platform:\t $target_platform"
 echo -e "platform_includes:\t $platform_includes"

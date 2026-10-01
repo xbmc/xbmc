@@ -72,7 +72,6 @@ if test "@platform_os@" = "darwin_embedded"; then
   if test "${ac_unique_file}" = "src/flac/main.c" ; then
     # compiler barfs if we use -O3/O2 for flac
     export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
-    export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
   fi
 
   case "@target_platform@" in
