@@ -138,7 +138,6 @@
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
 #include "utils/CharsetConverter.h"
-#include "utils/ContentUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/PlayerUtils.h"
@@ -171,9 +170,6 @@
 #endif
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
 #include "platform/posix/filesystem/SMBFile.h"
-#endif
-#ifndef TARGET_POSIX
-#include "platform/win32/threads/Win32Exception.h"
 #endif
 
 #include <array>
