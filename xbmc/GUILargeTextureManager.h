@@ -36,6 +36,7 @@ public:
                unsigned int targetWidth,
                unsigned int targetHeight,
                CAspectRatio::AspectRatio aspectRatio,
+               bool mipmap,
                const bool useCache);
   ~CImageLoader() override;
 
@@ -52,6 +53,7 @@ private:
   unsigned int m_targetWidth; ///< target width of the image
   unsigned int m_targetHeight; ///< target height of the image
   CAspectRatio::AspectRatio m_aspectRatio; ///< aspect ratio mode of the image
+  bool m_mipmap; ///< whether to generate mipmaps for the image
 };
 
 /*!
@@ -90,6 +92,7 @@ public:
    \param texture texture object to hold the resulting texture
    \param width target width of the image.
    \param height target height of the image.
+   \param mipmap whether to generate mipmaps, for smooth downscaling.
    \param firstRequest true if this is the first time we are requesting this texture
    \param useCache whether to load from image cache.
    \return true if the image exists, else false.
@@ -100,6 +103,7 @@ public:
                 unsigned int width,
                 unsigned int height,
                 CAspectRatio::AspectRatio aspectRatio,
+                bool mipmap,
                 bool firstRequest,
                 bool useCache = true);
 
@@ -113,6 +117,7 @@ public:
    \param path path of the image to release.
    \param width target width of the image to release.
    \param height target height of the image to release.
+   \param mipmap whether the image to release has mipmaps.
    \param immediately if set true the image is immediately unloaded once its reference count reaches zero
                       rather than being unloaded after a delay.
    */
@@ -120,6 +125,7 @@ public:
                     unsigned int width,
                     unsigned int height,
                     CAspectRatio::AspectRatio aspectRatio,
+                    bool mipmap,
                     bool immediately = false);
 
   /*!
@@ -151,7 +157,8 @@ private:
     explicit CLargeTexture(const std::string& path,
                            unsigned int targetWidth,
                            unsigned int targetHeight,
-                           CAspectRatio::AspectRatio aspectRatio);
+                           CAspectRatio::AspectRatio aspectRatio,
+                           bool mipmap);
     virtual ~CLargeTexture();
 
     void AddRef();
@@ -165,6 +172,7 @@ private:
     unsigned int GetTargetWidth() const { return m_targetWidth; }
     unsigned int GetTargetHeight() const { return m_targetHeight; }
     CAspectRatio::AspectRatio GetAspectRatio() const { return m_aspectRatio; }
+    bool GetMipmap() const { return m_mipmap; }
 
   private:
     static const unsigned int TIME_TO_DELETE = 2000;
@@ -175,6 +183,7 @@ private:
     unsigned int m_targetWidth;
     unsigned int m_targetHeight;
     CAspectRatio::AspectRatio m_aspectRatio;
+    bool m_mipmap;
     unsigned int m_timeToDelete;
   };
 
@@ -182,6 +191,7 @@ private:
                   unsigned int width,
                   unsigned int height,
                   CAspectRatio::AspectRatio aspectRatio,
+                  bool mipmap,
                   bool useCache = true);
 
   std::vector< std::pair<unsigned int, CLargeTexture *> > m_queued;
