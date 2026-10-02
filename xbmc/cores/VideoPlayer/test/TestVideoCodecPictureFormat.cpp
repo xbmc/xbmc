@@ -11,11 +11,11 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDFactoryDemuxer.h"
-#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/VideoPlayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/VideoPlayer/DVDInputStreams/DVDInputStream.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/VideoDecodeSession.h"
 #include "test/TestUtils.h"
 
 #include <memory>
@@ -94,8 +94,7 @@ DecodedPicture DecodeFirstPicture(const std::string& path)
 
   VideoPicture picture = {};
   int packetsTried = 0;
-  if (!CDVDFileInfo::SeekAndDecodeFirstPicture(*demuxer, *codec, videoStream, 0, picture,
-                                               packetsTried))
+  if (!SeekAndDecodePictureAt(*demuxer, *codec, videoStream, 0, path, picture, packetsTried))
     return result;
 
   result.decoded = true;
