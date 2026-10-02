@@ -139,6 +139,18 @@ public:
   bool IsStreaming() const;
   void LoadPage(int p, int sp, unsigned char* buffer);
   bool OnAction(const CAction &action);
+
+  /*!
+   \brief Handle the pause, play, speed, tempo and channel actions for what is playing.
+   \return true if \p action was one of them and has been handled
+   */
+  bool OnPlaybackAction(const CAction& action);
+
+  /*!
+   \brief Handle the HDR toggle and tone map cycling, which depend on whether video is playing.
+   \return true if \p action was one of them and has been handled
+   */
+  bool OnVideoDisplayAction(const CAction& action);
   void OnNothingToQueueNotify();
   void Pause();
   bool QueueNextFile(const CFileItem &file);

@@ -551,9 +551,9 @@ JSONRPC_STATUS CPlayerOperations::SetTempo(const std::string& method,
       else if (parameterObject["tempo"].isString())
       {
         if (parameterObject["tempo"].asString().compare("increment") == 0)
-          CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::INCREASE);
+          CPlayerUtils::AdvanceTempoStep(*appPlayer, TempoStepChange::INCREASE);
         else
-          CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::DECREASE);
+          CPlayerUtils::AdvanceTempoStep(*appPlayer, TempoStepChange::DECREASE);
       }
       else
         return InvalidParams;
