@@ -111,6 +111,38 @@ bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
   // Check if we should open in standalone mode
   const bool bStandalone = fileCopy.GetDynPath().empty();
 
+  // Asked before the game client is set up: the dialog runs the message loop,
+  // and a game started from it once the client is playing would close this
+  // player in the middle of opening
+  if (!bStandalone)
+  {
+    CSavestateDatabase savestateDb;
+
+    std::unique_ptr<ISavestate> save = CSavestateDatabase::AllocateSavestate();
+    if (savestateDb.GetSavestate(savestatePath, *save))
+    {
+      // Check if game client is the same
+      if (save->GameClientID() != fileCopy.GetGameInfoTag()->GetGameClient())
+      {
+        ADDON::AddonPtr addon;
+        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
+                                                   ADDON::OnlyEnabled::CHOICE_YES))
+        {
+          // Warn the user that continuing with a different game client will
+          // overwrite the save
+          bool dummy;
+          if (!CGUIDialogYesNo::ShowAndGetInput(
+                  438,
+                  StringUtils::Format(
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35217),
+                      addon->Name()),
+                  dummy, 222, 35218, 0))
+            return false;
+        }
+      }
+    }
+  }
+
   m_processInfo = CRPProcessInfo::CreateInstance();
   if (!m_processInfo)
   {
@@ -176,35 +208,6 @@ bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
     }
     else
       CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Failed to initialize {}", gameClientId);
-  }
-
-  if (bSuccess && !bStandalone)
-  {
-    CSavestateDatabase savestateDb;
-
-    std::unique_ptr<ISavestate> save = CSavestateDatabase::AllocateSavestate();
-    if (savestateDb.GetSavestate(savestatePath, *save))
-    {
-      // Check if game client is the same
-      if (save->GameClientID() != m_gameClient->ID())
-      {
-        ADDON::AddonPtr addon;
-        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
-                                                   ADDON::OnlyEnabled::CHOICE_YES))
-        {
-          // Warn the user that continuing with a different game client will
-          // overwrite the save
-          bool dummy;
-          if (!CGUIDialogYesNo::ShowAndGetInput(
-                  438,
-                  StringUtils::Format(
-                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35217),
-                      addon->Name()),
-                  dummy, 222, 35218, 0))
-            bSuccess = false;
-        }
-      }
-    }
   }
 
   if (bSuccess)
