@@ -19652,7 +19652,13 @@ msgctxt "#35309"
 msgid "Rewind"
 msgstr ""
 
-#empty strings from id 35310 to 35319
+#. Label of the Manual button in the game OSD, which shows the game's instruction booklet
+#: addons/skin.estuary/xml/GameOSD.xml
+msgctxt "#35310"
+msgid "Manual"
+msgstr ""
+
+#empty strings from id 35311 to 35319
 
 #. Label of the Cheats button in the game OSD, heading of the cheats dialog, and
 #. of the cheats group in settings
