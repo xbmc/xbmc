@@ -19,6 +19,7 @@ set(HEADERS Bcp47.h
             Iso639_1_Table.h
             Iso639_2.h
             Iso639_2_Table.h
+            IsoCodes.h
             ListFormatter.h
             TableLanguageCodes.h)
 

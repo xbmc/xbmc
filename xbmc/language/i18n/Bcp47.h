@@ -13,6 +13,7 @@
 
 #include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace KODI::LANGUAGE::I18N
@@ -43,11 +44,29 @@ public:
   bool IsValid() const { return m_isValid; }
 
   /*!
+   * \brief Whether text is a region subtag RFC 5646 accepts.
+   * \note A region means the same thing inside a language tag as it does standing on its own, so
+   *       this answers for both.
+   * \param[in] region Lower case candidate region subtag.
+   * \param[in] registry Subtag registry used. If not provided, the global registry will be used.
+   * \return true for an accepted region subtag.
+   */
+  static bool IsRegionSubtag(std::string_view region,
+                             const CSubTagRegistryManager* registry = nullptr);
+
+  /*!
    * \brief Return the primary language subtag of the tag.
    * \return The primary language subtag. Empty for grandfathered and private-use tags, which
    *         carry no primary language subtag.
    */
   const std::string& GetLanguage() const { return m_language; }
+
+  /*!
+   * \brief Return the region subtag of the tag.
+   * \return The region subtag, lower case as the tag holds its subtags, where Format renders it
+   *         the upper case BCP 47 recommends. Empty for a tag naming no region.
+   */
+  const std::string& GetRegion() const { return m_region; }
 
   /*!
    * \brief Transform the tag into its canonical from per RFC 5646 rules.
