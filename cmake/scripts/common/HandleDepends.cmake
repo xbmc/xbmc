@@ -90,7 +90,14 @@ function(add_addon_depends addon searchpath)
           # make sure we create strings, not lists
           set(TMP_C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_DEFINES}")
           set(TMP_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_DEFINES}")
-          set(TMP_EXE_LINKER_FLAGS "-L${OUTPUT_DIR}/lib ${CMAKE_EXE_LINKER_FLAGS}")
+          if(MSVC)
+            set(TMP_EXE_LINKER_FLAGS "/LIBPATH:${OUTPUT_DIR}/lib ${CMAKE_EXE_LINKER_FLAGS}")
+          else()
+            set(TMP_EXE_LINKER_FLAGS "-L${OUTPUT_DIR}/lib ${CMAKE_EXE_LINKER_FLAGS}")
+          endif()
+          if(MSVC AND CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+            string(APPEND TMP_C_FLAGS " /wd4146 /wd4996")
+          endif()
           list(APPEND BUILD_ARGS -DCMAKE_C_FLAGS=${TMP_C_FLAGS}
                                  -DCMAKE_CXX_FLAGS=${TMP_CXX_FLAGS}
                                  -DCMAKE_EXE_LINKER_FLAGS=${TMP_EXE_LINKER_FLAGS})
