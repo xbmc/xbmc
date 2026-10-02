@@ -16,8 +16,8 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "cores/VideoPlayer/Process/ios/ProcessInfoIOS.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBDisplayLayer.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "filesystem/SpecialProtocol.h"
@@ -45,8 +45,8 @@
 #include <mutex>
 #include <vector>
 
-#import <Foundation/Foundation.h>
 #import <CoreMedia/CMFormatDescription.h>
+#import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
@@ -246,13 +246,12 @@ bool CWinSystemTVOS::SwitchToVideoMode(int width, int height, double refreshrate
   if (m_hdrStatus == HDR_STATUS::HDR_ON && m_hdrFormatDescription)
   {
     if ([g_xbmcController.displayManager displayVideoFormatSwitch:m_hdrFormatDescription
-                                                       refreshRate:m_requestedRefreshRate])
+                                                      refreshRate:m_requestedRefreshRate])
       return true;
     SetHDR(nullptr);
   }
 
-  [g_xbmcController.displayManager displayRateSwitch:refreshrate
-                                    withDynamicRange:0 /* SDR */];
+  [g_xbmcController.displayManager displayRateSwitch:refreshrate withDynamicRange:0 /* SDR */];
   return true;
 }
 
@@ -279,13 +278,14 @@ StreamHdrType CWinSystemTVOS::GetSupportedHDRType(const VideoPicture* videoPictu
 
 bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
 {
-  const StreamHdrType hdrType = CanUseHDRVideoLayer() ? GetSupportedHDRType(videoPicture)
-                                                      : StreamHdrType::HDR_TYPE_NONE;
-  auto* buffer = videoPicture ? dynamic_cast<VTB::CVideoBufferVTB*>(videoPicture->videoBuffer)
-                              : nullptr;
+  const StreamHdrType hdrType =
+      CanUseHDRVideoLayer() ? GetSupportedHDRType(videoPicture) : StreamHdrType::HDR_TYPE_NONE;
+  auto* buffer =
+      videoPicture ? dynamic_cast<VTB::CVideoBufferVTB*>(videoPicture->videoBuffer) : nullptr;
   CVPixelBufferRef pixelBuffer = buffer ? buffer->GetPB() : nullptr;
   if (hdrType == StreamHdrType::HDR_TYPE_NONE || !pixelBuffer ||
-      CVPixelBufferGetPixelFormatType(pixelBuffer) != kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
+      CVPixelBufferGetPixelFormatType(pixelBuffer) !=
+          kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
   {
     if (m_hdrFormatDescription)
     {
@@ -309,8 +309,9 @@ bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
     return false;
   }
 
-  const float rate = m_requestedRefreshRate > 0.0f ? m_requestedRefreshRate
-                                                    : [g_xbmcController.displayManager getDisplayRate];
+  const float rate = m_requestedRefreshRate > 0.0f
+                         ? m_requestedRefreshRate
+                         : [g_xbmcController.displayManager getDisplayRate];
   const bool accepted = [g_xbmcController.displayManager displayVideoFormatSwitch:formatDescription
                                                                       refreshRate:rate];
   if (accepted)

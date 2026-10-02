@@ -9,8 +9,8 @@
 #include <memory>
 #include <string>
 
-#import <Foundation/Foundation.h>
 #import <CoreMedia/CMSampleBuffer.h>
+#import <Foundation/Foundation.h>
 #import <OpenGLES/EAGL.h>
 #import <UIKit/UIKit.h>
 

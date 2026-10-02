@@ -36,9 +36,9 @@ template<typename T>
 void PutBigEndian(uint8_t* bytes, size_t offset, double value)
 {
   static_assert(std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>);
-  const T host = static_cast<T>(std::llround(std::clamp(
-      std::isfinite(value) ? value : 0.0, 0.0,
-      static_cast<double>(std::numeric_limits<T>::max()))));
+  const T host =
+      static_cast<T>(std::llround(std::clamp(std::isfinite(value) ? value : 0.0, 0.0,
+                                             static_cast<double>(std::numeric_limits<T>::max()))));
   T bigEndian;
   if constexpr (std::is_same_v<T, uint16_t>)
     bigEndian = CFSwapInt16HostToBig(host);
@@ -109,8 +109,7 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
     put32(av_q2d(metadata.min_luminance) * luminanceScale);
     NSData* data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
     CVBufferSetAttachment(pixelBuffer, kCVImageBufferMasteringDisplayColorVolumeKey,
-                          (__bridge CFDataRef)data,
-                          kCVAttachmentMode_ShouldPropagate);
+                          (__bridge CFDataRef)data, kCVAttachmentMode_ShouldPropagate);
   }
   else
     CVBufferRemoveAttachment(pixelBuffer, kCVImageBufferMasteringDisplayColorVolumeKey);
@@ -118,15 +117,13 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
   if (picture.hasLightMetadata)
   {
     const unsigned maxContentLight = std::numeric_limits<uint16_t>::max();
-    uint16_t values[2] = {
-        CFSwapInt16HostToBig(
-            static_cast<uint16_t>(std::min(picture.lightMetadata.MaxCLL, maxContentLight))),
-        CFSwapInt16HostToBig(
-            static_cast<uint16_t>(std::min(picture.lightMetadata.MaxFALL, maxContentLight)))};
+    uint16_t values[2] = {CFSwapInt16HostToBig(static_cast<uint16_t>(
+                              std::min(picture.lightMetadata.MaxCLL, maxContentLight))),
+                          CFSwapInt16HostToBig(static_cast<uint16_t>(
+                              std::min(picture.lightMetadata.MaxFALL, maxContentLight)))};
     NSData* data = [NSData dataWithBytes:values length:sizeof(values)];
     CVBufferSetAttachment(pixelBuffer, kCVImageBufferContentLightLevelInfoKey,
-                          (__bridge CFDataRef)data,
-                          kCVAttachmentMode_ShouldPropagate);
+                          (__bridge CFDataRef)data, kCVAttachmentMode_ShouldPropagate);
   }
   else
     CVBufferRemoveAttachment(pixelBuffer, kCVImageBufferContentLightLevelInfoKey);
@@ -136,9 +133,8 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
 CBaseRenderer* CRendererVTBDisplayLayer::Create(CVideoBuffer* buffer)
 {
   auto* vtb = GetVTBBuffer(buffer);
-  if (!vtb ||
-      CVPixelBufferGetPixelFormatType(vtb->GetPB()) !=
-          kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
+  if (!vtb || CVPixelBufferGetPixelFormatType(vtb->GetPB()) !=
+                  kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
     return nullptr;
   return new CRendererVTBDisplayLayer;
 }
@@ -200,7 +196,8 @@ void CRendererVTBDisplayLayer::AddVideoPicture(const VideoPicture& picture, int 
   auto* vtb = GetVTBBuffer(picture.videoBuffer);
   if (!vtb)
   {
-    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::AddVideoPicture: missing VideoToolbox pixel buffer");
+    CLog::Log(LOGERROR,
+              "CRendererVTBDisplayLayer::AddVideoPicture: missing VideoToolbox pixel buffer");
     return;
   }
   SetColorAttachments(vtb->GetPB(), picture);
@@ -268,7 +265,8 @@ void CRendererVTBDisplayLayer::RenderUpdate(
   auto* vtb = GetVTBBuffer(m_buffers[index]);
   if (!vtb)
   {
-    CLog::Log(LOGERROR, "CRendererVTBDisplayLayer::RenderUpdate: missing VideoToolbox pixel buffer");
+    CLog::Log(LOGERROR,
+              "CRendererVTBDisplayLayer::RenderUpdate: missing VideoToolbox pixel buffer");
     return;
   }
 

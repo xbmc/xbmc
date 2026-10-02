@@ -42,8 +42,8 @@
 #import "platform/darwin/tvos/input/LibInputTouch.h"
 #include "platform/darwin/tvos/powermanagement/TVOSPowerSyscall.h"
 
-#import <AVKit/AVDisplayManager.h>
 #import <AVFoundation/AVSampleBufferDisplayLayer.h>
+#import <AVKit/AVDisplayManager.h>
 #if __TV_OS_VERSION_MAX_ALLOWED >= 170000
 #import <AVFoundation/AVSampleBufferVideoRenderer.h>
 #endif
@@ -230,9 +230,8 @@ XBMCController* g_xbmcController;
     const NSUInteger generation = self.videoLayerGeneration;
     CFRetain(sampleBuffer);
     dispatch_async(dispatch_get_main_queue(), ^{
-      AVSampleBufferVideoRenderer* renderer = self.videoLayerGeneration == generation
-                                                  ? self.videoLayer.sampleBufferRenderer
-                                                  : nil;
+      AVSampleBufferVideoRenderer* renderer =
+          self.videoLayerGeneration == generation ? self.videoLayer.sampleBufferRenderer : nil;
       if (renderer != nil)
       {
         if (renderer.status == AVQueuedSampleBufferRenderingStatusFailed)

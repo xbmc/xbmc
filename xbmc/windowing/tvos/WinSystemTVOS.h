@@ -15,12 +15,11 @@
 #include "windowing/OSScreenSaver.h"
 #include "windowing/WinSystem.h"
 
-#include <CoreMedia/CMFormatDescription.h>
-
 #include <memory>
 #include <string>
 #include <vector>
 
+#include <CoreMedia/CMFormatDescription.h>
 #include <CoreVideo/CVOpenGLESTextureCache.h>
 
 class IDispResource;

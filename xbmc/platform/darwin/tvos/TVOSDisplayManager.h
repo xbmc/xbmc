@@ -8,8 +8,8 @@
 
 #import <CoreGraphics/CGBase.h>
 #import <CoreGraphics/CGGeometry.h>
-#import <Foundation/Foundation.h>
 #import <CoreMedia/CMFormatDescription.h>
+#import <Foundation/Foundation.h>
 
 @class CADisplayLink;
 
@@ -29,7 +29,7 @@ class CWinSystemTVOS;
 - (void)displayLinkTick:(CADisplayLink*)sender;
 - (void)displayRateSwitch:(float)refreshRate withDynamicRange:(int)dynamicRange;
 - (BOOL)displayVideoFormatSwitch:(CMFormatDescriptionRef)formatDescription
-                      refreshRate:(float)refreshRate;
+                     refreshRate:(float)refreshRate;
 - (void)displayDynamicRangeReset;
 - (void)displayRateReset;
 - (void)removeModeSwitchObserver;

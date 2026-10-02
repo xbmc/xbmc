@@ -158,13 +158,13 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
       const CHDRCapabilities caps = winSystem->GetDisplayHDRCapabilities();
       // InputStream addons can report the HDR transfer without filling in
       // CDVDStreamInfo::bitdepth. The decoder negotiates the actual P010 format.
-      hdrOutput = canUseHDRVideoLayer &&
-                  (((hint.hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
-                     hint.HasHDR10DolbyVisionBaseLayer()) &&
-                    caps.SupportsHDR10()) ||
-                   ((hint.hdrType == StreamHdrType::HDR_TYPE_HLG ||
-                     hint.HasHLGDolbyVisionBaseLayer()) &&
-                    CanDisplayHLG(caps)));
+      hdrOutput =
+          canUseHDRVideoLayer &&
+          (((hint.hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+             hint.HasHDR10DolbyVisionBaseLayer()) &&
+            caps.SupportsHDR10()) ||
+           ((hint.hdrType == StreamHdrType::HDR_TYPE_HLG || hint.HasHLGDolbyVisionBaseLayer()) &&
+            CanDisplayHLG(caps)));
     }
 #endif
     return new VTB::CDecoder(processInfo, hdrOutput, hint.dovi.dv_profile == 0);
@@ -179,9 +179,7 @@ bool CDecoder::Register()
   return true;
 }
 
-CDecoder::CDecoder(CProcessInfo& processInfo,
-                   bool hdrOutput,
-                   bool allowColorTransferFallback)
+CDecoder::CDecoder(CProcessInfo& processInfo, bool hdrOutput, bool allowColorTransferFallback)
   : m_processInfo(processInfo),
     m_hdrOutput(hdrOutput),
     m_allowColorTransferFallback(allowColorTransferFallback),
@@ -208,8 +206,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
     return false;
 
 #if defined(TARGET_DARWIN_TVOS)
-  if (!m_hdrOutput && m_allowColorTransferFallback &&
-      avctx->color_primaries == AVCOL_PRI_BT2020)
+  if (!m_hdrOutput && m_allowColorTransferFallback && avctx->color_primaries == AVCOL_PRI_BT2020)
   {
     auto* winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
     if (winSystem && winSystem->CanUseHDRVideoLayer())

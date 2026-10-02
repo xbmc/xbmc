@@ -92,7 +92,7 @@
 }
 
 - (BOOL)displayVideoFormatSwitch:(CMFormatDescriptionRef)formatDescription
-                      refreshRate:(float)refreshRate
+                     refreshRate:(float)refreshRate
 {
 #if __TV_OS_VERSION_MAX_ALLOWED >= 170000
   if (@available(tvOS 17.0, *))
@@ -108,9 +108,8 @@
       return NO;
     }
 
-    AVDisplayCriteria* criteria =
-        [[AVDisplayCriteria alloc] initWithRefreshRate:refreshRate
-                                    formatDescription:formatDescription];
+    AVDisplayCriteria* criteria = [[AVDisplayCriteria alloc] initWithRefreshRate:refreshRate
+                                                               formatDescription:formatDescription];
     if (criteria == nil)
     {
       CLog::Log(LOGERROR, "TVOSDisplayManager: unable to create video display criteria");
