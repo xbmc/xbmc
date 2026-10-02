@@ -8,10 +8,12 @@
 
 #include "music/Album.h"
 #include "music/Artist.h"
+#include "music/tags/MusicInfoTag.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -82,4 +84,11 @@ TEST(TestMusicInfoTag, AlbumNfoVersionZero)
   EXPECT_FLOAT_EQ(7.5f, album.fRating);
   EXPECT_EQ(123, album.iVotes);
   CheckNfoVersion(album, "album");
+}
+
+TEST(TestMusicInfoTag, TrimmingGenresTrimsTheTagsOwnCopies)
+{
+  MUSIC_INFO::CMusicInfoTag tag;
+  tag.SetGenre(std::vector<std::string>{" Rock ", "Pop "}, true);
+  EXPECT_EQ(tag.GetGenre(), (std::vector<std::string>{"Rock", "Pop"}));
 }
