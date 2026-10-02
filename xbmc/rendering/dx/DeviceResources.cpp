@@ -23,6 +23,8 @@
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
 
+#include <dxgi1_6.h>
+
 #ifdef TARGET_WINDOWS_STORE
 #include <winrt/Windows.Graphics.Display.Core.h>
 
@@ -107,6 +109,7 @@ void DX::DeviceResources::Release()
   DestroySwapChain();
 
   m_adapter = nullptr;
+  m_crossAdapter = false;
   m_dxgiFactory = nullptr;
   m_output = nullptr;
   m_deferrContext = nullptr;
@@ -233,6 +236,10 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
 {
   if (!m_bDeviceCreated || !m_swapChain)
     return false;
+
+  // exclusive fullscreen is not possible on a display owned by another GPU
+  if (m_crossAdapter)
+    fullscreen = false;
 
   critical_section::scoped_lock lock(m_criticalSection);
 
@@ -1062,14 +1069,33 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
       {
         output.As(&m_output);
         m_outputDesc = outputDesc;
+
+        // render on the high-performance GPU if wanted, even if it doesn't own the display
+        const DXGI_ADAPTER_DESC outputAdapterDesc = foundDesc;
+        ComPtr<IDXGIAdapter1> highPerfAdapter;
+#if defined(TARGET_WINDOWS_DESKTOP)
+        highPerfAdapter = GetHighPerformanceAdapter(factory.Get());
+#endif
+        if (highPerfAdapter)
+        {
+          adapter = highPerfAdapter;
+          adapter->GetDesc(&foundDesc);
+        }
+        m_crossAdapter = !IsSameAdapter(foundDesc, outputAdapterDesc);
+
         // check if adapter is changed
         if (currentDesc.AdapterLuid.HighPart != foundDesc.AdapterLuid.HighPart
           || currentDesc.AdapterLuid.LowPart != foundDesc.AdapterLuid.LowPart)
         {
           // adapter is changed
           m_adapter = adapter;
-          CLog::LogF(LOGDEBUG, "selected {} adapter. ",
-                     KODI::PLATFORM::WINDOWS::FromW(foundDesc.Description));
+          if (m_crossAdapter)
+            CLog::LogF(LOGINFO, "selected {} adapter, display is on {} adapter (cross-adapter).",
+                       KODI::PLATFORM::WINDOWS::FromW(foundDesc.Description),
+                       KODI::PLATFORM::WINDOWS::FromW(outputAdapterDesc.Description));
+          else
+            CLog::LogF(LOGDEBUG, "selected {} adapter. ",
+                       KODI::PLATFORM::WINDOWS::FromW(foundDesc.Description));
           // (re)init hooks into new driver
           Windowing()->InitHooks(output.Get());
           // recreate d3d11 device on new adapter
@@ -1113,6 +1139,43 @@ void DX::DeviceResources::SetMonitor(HMONITOR monitor)
     return outputDesc.Monitor == monitor;
   });
 }
+
+void DX::DeviceResources::OnGpuPreferenceChanged()
+{
+  SetMonitor(m_outputDesc.Monitor);
+}
+
+bool DX::DeviceResources::IsSameAdapter(const DXGI_ADAPTER_DESC& a, const DXGI_ADAPTER_DESC& b)
+{
+  return a.AdapterLuid.HighPart == b.AdapterLuid.HighPart &&
+         a.AdapterLuid.LowPart == b.AdapterLuid.LowPart;
+}
+
+#if defined(TARGET_WINDOWS_DESKTOP)
+ComPtr<IDXGIAdapter1> DX::DeviceResources::GetHighPerformanceAdapter(IDXGIFactory1* factory)
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (!settings || !settings->GetBool(CSettings::SETTING_VIDEOSCREEN_HIGHPERFORMANCEGPU))
+    return nullptr;
+
+  // needs Windows 10 1803 or newer, both for the API and for cross-adapter presentation
+  ComPtr<IDXGIFactory6> factory6;
+  ComPtr<IDXGIAdapter1> adapter;
+  if (FAILED(factory->QueryInterface(IID_PPV_ARGS(&factory6))) ||
+      FAILED(factory6->EnumAdapterByGpuPreference(0, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
+                                                  IID_PPV_ARGS(&adapter))))
+  {
+    CLog::LogF(LOGWARNING, "high-performance GPU selection is not supported by this system");
+    return nullptr;
+  }
+
+  DXGI_ADAPTER_DESC1 desc;
+  if (FAILED(adapter->GetDesc1(&desc)) || (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
+    return nullptr;
+
+  return adapter;
+}
+#endif
 
 void DX::DeviceResources::RegisterDeviceNotify(IDeviceNotify* deviceNotify)
 {

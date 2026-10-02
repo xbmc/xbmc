@@ -20370,7 +20370,16 @@ msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the user interface. This doesn't change the character set used for subtitles, for that go to Player > Language."
 msgstr ""
 
-#empty strings from id 36117 to 36118
+#: system/settings/win32.xml
+msgctxt "#36117"
+msgid "Render on high-performance GPU"
+msgstr ""
+
+#. Description of setting with label #36117 "Render on high-performance GPU"
+#: system/settings/win32.xml
+msgctxt "#36118"
+msgid "On laptops with two GPUs, render on the high-performance GPU even when the display is connected to the other GPU. Frees the CPU's power and memory bandwidth for decoding, but uses more power. Exclusive fullscreen is not available in this mode and per-title HDR metadata may not reach the display."
+msgstr ""
 
 #. Description of setting with label #285 "Preferred audio language"
 #: system/settings/settings.xml
