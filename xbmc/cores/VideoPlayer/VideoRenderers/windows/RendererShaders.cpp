@@ -9,6 +9,7 @@
 #include "RendererShaders.h"
 
 #include "DVDCodecs/Video/DXVA.h"
+#include "WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/CPUInfo.h"
 #if !defined(_M_ARM) && !defined(_M_ARM64)
@@ -120,18 +121,35 @@ void CRendererShaders::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint
 
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
 
-  CPoint srcPoints[4];
-  sourceRect.GetQuad(srcPoints);
+  // view sized target: convert and scale in one pass, the output pass then copies 1:1
+  const bool viewSized = target.GetWidth() != m_sourceWidth || target.GetHeight() != m_sourceHeight;
+  CRect src = sourceRect;
+  CRect dst = sourceRect;
+  if (viewSized)
+  {
+    dst = CRect(destPoints[0], destPoints[2]);
+    CWIN32Util::CropSource(src, dst,
+                           CRect(0.0f, 0.0f, static_cast<float>(target.GetWidth()),
+                                 static_cast<float>(target.GetHeight())));
+  }
+
+  CPoint dstPoints[4];
+  dst.GetQuad(dstPoints);
 
   if (!m_reuseIntermediate)
   {
     m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness,
                              DX::Windowing()->UseLimitedColor());
     m_colorShader->SetColParams(buf->color_space, buf->bits, !buf->full_range, buf->texBits);
-    m_colorShader->Render(sourceRect, srcPoints, buf, target);
+    m_colorShader->Render(src, dstPoints, buf, target);
   }
 
-  if (!HasHQScaler())
+  if (viewSized)
+  {
+    dst.GetQuad(destPoints);
+    sourceRect = dst;
+  }
+  else if (!HasHQScaler())
     ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
 }
 
@@ -170,6 +188,14 @@ void CRendererShaders::UpdateVideoFilters()
       m_colorShader.reset();
     }
   }
+
+  // when downscaling without HQ scaler, a view sized target saves converting at source size
+  const bool viewSized = !HasHQScaler() && !m_renderOrientation && m_viewWidth <= m_sourceWidth &&
+                         m_viewHeight <= m_sourceHeight &&
+                         (m_viewWidth < m_sourceWidth || m_viewHeight < m_sourceHeight);
+  CreateIntermediateTarget(viewSized ? m_viewWidth : m_sourceWidth,
+                           viewSized ? m_viewHeight : m_sourceHeight, false,
+                           m_IntermediateTarget.GetFormat());
 }
 
 bool CRendererShaders::IsHWPicSupported(const VideoPicture& picture)

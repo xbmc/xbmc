@@ -272,6 +272,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
 
   const IntermediateState state{m_iBufferIndex,
                                 sourceRect,
+                                destRect,
                                 flags,
                                 m_videoSettings.m_Contrast,
                                 m_videoSettings.m_Brightness,

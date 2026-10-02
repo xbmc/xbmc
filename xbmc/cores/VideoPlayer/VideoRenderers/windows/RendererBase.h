@@ -204,6 +204,7 @@ protected:
   {
     int bufferIndex = -1;
     CRect sourceRect;
+    CRect destRect;
     unsigned flags = 0;
     float contrast = 0.0f;
     float brightness = 0.0f;
