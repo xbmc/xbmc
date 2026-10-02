@@ -178,6 +178,8 @@ void CGUIImage::ProcessState()
     if (m_textureCurrent->GetFileName() == fileName && m_nameCurrent != fileName)
       m_nameCurrent = fileName;
 
+    m_textureCurrent->SetUseCache(m_useCacheStaging);
+
     // the current texture is already what we want, so cancel the incoming one
     if (m_isTransitioning)
     {
@@ -198,12 +200,15 @@ void CGUIImage::ProcessState()
     if (m_textureNext->GetFileName() == fileName && m_nameNext != fileName)
       m_nameNext = fileName;
 
+    m_textureNext->SetUseCache(m_useCacheStaging);
+
     m_isTransitioning = true;
     m_hasNewStagingTexture = false;
     return;
   }
 
   // replace the in-flight texture, so the latest request always wins
+  m_textureNext->SetUseCache(m_useCacheStaging);
   m_textureNext->SetFileName(fileName);
   m_nameNext = fileName;
   m_isTransitioning = true;
@@ -501,6 +506,7 @@ void CGUIImage::SetFileName(const std::string& strFileName, bool setConstant, co
   if (setConstant)
     m_info.SetLabel(strFileName, "", GetParentID());
   m_nameStaging = strFileName;
+  m_useCacheStaging = useCache;
   m_hasNewStagingTexture = true;
 }
 

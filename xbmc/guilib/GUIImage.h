@@ -132,6 +132,7 @@ protected:
   std::string m_nameCurrent{};
   std::string m_nameNext{};
   std::string m_nameStaging{};
+  bool m_useCacheStaging{true};
 
   std::string m_currentFallback;
 
