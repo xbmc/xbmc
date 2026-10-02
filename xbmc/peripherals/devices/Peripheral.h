@@ -167,6 +167,11 @@ public:
   virtual void OnDeviceRemoved(void);
 
   /*!
+   * @brief Release the agent controller, which holds a reference to this peripheral.
+   */
+  void ReleaseControllerInput();
+
+  /*!
    * @brief Get all subdevices if this device is multifunctional.
    * @param subDevices The subdevices.
    */
