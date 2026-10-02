@@ -36,7 +36,7 @@ class CMouseEvent;
 } // namespace MOUSE
 } // namespace KODI
 
-enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
+enum ORIENTATION { HORIZONTAL = 0, VERTICAL, HORIZONTAL_REVERSE, VERTICAL_REVERSE };
 
 class CControlState
 {

@@ -194,8 +194,8 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
     FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
 
   CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
-  float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
-  float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
+  float pos = (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE) ? origin.y : origin.x;
+  float end = (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE) ? m_posY + m_height : m_posX + m_width;
 
   // we offset our draw position to take into account scrolling and whether or not our focused
   // item is offscreen "above" the list.
@@ -217,11 +217,25 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
       std::shared_ptr<CGUIListItem> item = m_items[itemNo];
       item->SetCurrentItem(itemNo + 1);
 
-      // render our item
-      if (m_orientation == VERTICAL)
-        ProcessItem(origin.x, pos, item, focused, currentTime, dirtyregions);
+      float itemSize = focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+      float actualX = origin.x;
+      float actualY = origin.y;
+
+      if (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE)
+      {
+        actualY = pos;
+        if (m_orientation == VERTICAL_REVERSE)
+          actualY = m_posY + m_height - (pos - m_posY) - itemSize;
+      }
       else
-        ProcessItem(pos, origin.y, item, focused, currentTime, dirtyregions);
+      {
+        actualX = pos;
+        if (m_orientation == HORIZONTAL_REVERSE)
+          actualX = m_posX + m_width - (pos - m_posX) - itemSize;
+      }
+
+      // render our item
+      ProcessItem(actualX, actualY, item, focused, currentTime, dirtyregions);
     }
     // increment our position
     pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
@@ -305,8 +319,8 @@ void CGUIBaseContainer::Render()
   if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
     CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
-    float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
-    float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
+    float pos = (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE) ? origin.y : origin.x;
+    float end = (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE) ? m_posY + m_height : m_posX + m_width;
 
     // we offset our draw position to take into account scrolling and whether or not our focused
     // item is offscreen "above" the list.
@@ -331,6 +345,23 @@ void CGUIBaseContainer::Render()
       if (itemNo >= 0)
       {
         std::shared_ptr<CGUIListItem> item = m_items[itemNo];
+        float itemSize = focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+        float actualX = origin.x;
+        float actualY = origin.y;
+
+        if (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE)
+        {
+          actualY = pos;
+          if (m_orientation == VERTICAL_REVERSE)
+            actualY = m_posY + m_height - (pos - m_posY) - itemSize;
+        }
+        else
+        {
+          actualX = pos;
+          if (m_orientation == HORIZONTAL_REVERSE)
+            actualX = m_posX + m_width - (pos - m_posX) - itemSize;
+        }
+
         // render our item
         if (focused)
         {
@@ -339,10 +370,7 @@ void CGUIBaseContainer::Render()
         }
         else
         {
-          if (m_orientation == VERTICAL)
-            m_renderItems.emplace_back(origin.x, pos, item, false);
-          else
-            m_renderItems.emplace_back(pos, origin.y, item, false);
+          m_renderItems.emplace_back(actualX, actualY, item, false);
         }
       }
       // increment our position
@@ -352,10 +380,23 @@ void CGUIBaseContainer::Render()
     // render focused item last so it can overlap other items
     if (focusedItem)
     {
-      if (m_orientation == VERTICAL)
-        m_renderItems.emplace_back(origin.x, focusedPos, focusedItem, true);
+      float itemSize = m_focusedLayout->Size(m_orientation);
+      float actualX = origin.x;
+      float actualY = origin.y;
+
+      if (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE)
+      {
+        actualY = focusedPos;
+        if (m_orientation == VERTICAL_REVERSE)
+          actualY = m_posY + m_height - (focusedPos - m_posY) - itemSize;
+      }
       else
-        m_renderItems.emplace_back(focusedPos, origin.y, focusedItem, true);
+      {
+        actualX = focusedPos;
+        if (m_orientation == HORIZONTAL_REVERSE)
+          actualX = m_posX + m_width - (focusedPos - m_posX) - itemSize;
+      }
+      m_renderItems.emplace_back(actualX, actualY, focusedItem, true);
     }
 
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
@@ -427,8 +468,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
       if (!HasFocus()) return false;
 
       if (action.GetHoldTime() > HOLD_TIME_START &&
-        ((m_orientation == VERTICAL && (action.GetID() == ACTION_MOVE_UP || action.GetID() == ACTION_MOVE_DOWN)) ||
-         (m_orientation == HORIZONTAL && (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT))))
+        (((m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE) && (action.GetID() == ACTION_MOVE_UP || action.GetID() == ACTION_MOVE_DOWN)) ||
+         ((m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) && (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
         float speed = std::min(1.0f, (float)(action.GetHoldTime() - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int frameDuration = std::min(CTimeUtils::GetFrameTime() - m_lastHoldTime, 50u); // max 20fps
@@ -446,7 +487,13 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
 
         while (m_scrollItemsPerFrame >= 1)
         {
-          if (action.GetID() == ACTION_MOVE_LEFT || action.GetID() == ACTION_MOVE_UP)
+          bool moveUp = false;
+          if (m_orientation == HORIZONTAL && action.GetID() == ACTION_MOVE_LEFT) moveUp = true;
+          else if (m_orientation == HORIZONTAL_REVERSE && action.GetID() == ACTION_MOVE_RIGHT) moveUp = true;
+          else if (m_orientation == VERTICAL && action.GetID() == ACTION_MOVE_UP) moveUp = true;
+          else if (m_orientation == VERTICAL_REVERSE && action.GetID() == ACTION_MOVE_DOWN) moveUp = true;
+
+          if (moveUp)
             MoveUp(false);
           else
             MoveDown(false);
@@ -616,8 +663,8 @@ void CGUIBaseContainer::OnUp()
 {
   CGUIAction action = GetAction(ACTION_MOVE_UP);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
-  if (m_orientation == VERTICAL && MoveUp(wrapAround))
-    return;
+  if (m_orientation == VERTICAL && MoveUp(wrapAround)) return;
+  if (m_orientation == VERTICAL_REVERSE && MoveDown(wrapAround)) return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
   CGUIControl::OnUp();
 }
@@ -626,8 +673,8 @@ void CGUIBaseContainer::OnDown()
 {
   CGUIAction action = GetAction(ACTION_MOVE_DOWN);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
-  if (m_orientation == VERTICAL && MoveDown(wrapAround))
-    return;
+  if (m_orientation == VERTICAL && MoveDown(wrapAround)) return;
+  if (m_orientation == VERTICAL_REVERSE && MoveUp(wrapAround)) return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
   CGUIControl::OnDown();
 }
@@ -636,9 +683,9 @@ void CGUIBaseContainer::OnLeft()
 {
   CGUIAction action = GetAction(ACTION_MOVE_LEFT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
-  if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
-    return;
-  else if (m_orientation == VERTICAL)
+  if (m_orientation == HORIZONTAL && MoveUp(wrapAround)) return;
+  if (m_orientation == HORIZONTAL_REVERSE && MoveDown(wrapAround)) return;
+  else if (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE)
   {
     CGUIListItemLayout *focusedLayout = GetFocusedLayout();
     if (focusedLayout && focusedLayout->MoveLeft())
@@ -651,9 +698,9 @@ void CGUIBaseContainer::OnRight()
 {
   CGUIAction action = GetAction(ACTION_MOVE_RIGHT);
   bool wrapAround = action.GetNavigation() == GetID() || !action.HasActionsMeetingCondition();
-  if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
-    return;
-  else if (m_orientation == VERTICAL)
+  if (m_orientation == HORIZONTAL && MoveDown(wrapAround)) return;
+  if (m_orientation == HORIZONTAL_REVERSE && MoveUp(wrapAround)) return;
+  else if (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE)
   {
     CGUIListItemLayout *focusedLayout = GetFocusedLayout();
     if (focusedLayout && focusedLayout->MoveRight())
@@ -841,21 +888,20 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
       return EVENT_RESULT_HANDLED;
     }
   }
-  else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+  else if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
-    Scroll(-1);
-    return EVENT_RESULT_HANDLED;
-  }
-  else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
-  {
-    Scroll(1);
+    int scrollDelta = (m_orientation == HORIZONTAL_REVERSE || m_orientation == VERTICAL_REVERSE) ? -1 : 1;
+    if (event.m_id == ACTION_MOUSE_WHEEL_UP)
+      Scroll(-scrollDelta);
+    else
+      Scroll(scrollDelta);
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
     m_waitForScrollEnd = true;
     m_lastScrollValue = m_scroller.GetValue();
-    return (m_orientation == HORIZONTAL) ? EVENT_RESULT_PAN_HORIZONTAL : EVENT_RESULT_PAN_VERTICAL;
+    return (m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) ? EVENT_RESULT_PAN_HORIZONTAL : EVENT_RESULT_PAN_VERTICAL;
   }
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access
@@ -866,7 +912,13 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::C
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
   { // do the drag and validate our offset (corrects for end of scroll)
-    m_scroller.SetValue(m_scroller.GetValue() - ((m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY));
+    float panOffset = 0.0f;
+    if (m_orientation == HORIZONTAL) panOffset = event.m_offsetX;
+    else if (m_orientation == HORIZONTAL_REVERSE) panOffset = -event.m_offsetX;
+    else if (m_orientation == VERTICAL) panOffset = event.m_offsetY;
+    else if (m_orientation == VERTICAL_REVERSE) panOffset = -event.m_offsetY;
+
+    m_scroller.SetValue(m_scroller.GetValue() - panOffset);
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     int offset = MathUtils::round_int(static_cast<double>(m_scroller.GetValue() / size));
     m_lastScrollStartTimer.Stop();
@@ -1256,7 +1308,7 @@ unsigned int CGUIBaseContainer::GetRows() const
 
 inline float CGUIBaseContainer::Size() const
 {
-  return (m_orientation == HORIZONTAL) ? m_width : m_height;
+  return (m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) ? m_width : m_height;
 }
 
 int CGUIBaseContainer::ScrollCorrectionRange() const
@@ -1429,8 +1481,8 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
 bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const
 {
   if (!layout) return false;
-  if ((m_orientation == VERTICAL && (layout->Size(HORIZONTAL) > 1) && point.x > layout->Size(HORIZONTAL)) ||
-      (m_orientation == HORIZONTAL && (layout->Size(VERTICAL) > 1)&& point.y > layout->Size(VERTICAL)))
+  if (((m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE) && (layout->Size(HORIZONTAL) > 1) && point.x > layout->Size(HORIZONTAL)) ||
+      ((m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) && (layout->Size(VERTICAL) > 1) && point.y > layout->Size(VERTICAL)))
     return false;
   return true;
 }
@@ -1453,9 +1505,9 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
   switch (condition)
   {
   case CONTAINER_ROW:
-    return (m_orientation == VERTICAL) ? (GetCursor() == data) : true;
+    return (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE) ? (GetCursor() == data) : true;
   case CONTAINER_COLUMN:
-    return (m_orientation == HORIZONTAL) ? (GetCursor() == data) : true;
+    return (m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) ? (GetCursor() == data) : true;
   case CONTAINER_POSITION:
     return (GetCursor() == data);
   case CONTAINER_HAS_NEXT:
@@ -1604,8 +1656,8 @@ bool CGUIBaseContainer::CalculatePageSize(bool force)
     return previousPageSize != m_pageSize;
   }
 
-  const float listStart = (m_orientation == HORIZONTAL) ? m_posX : m_posY;
-  const float listSize = (m_orientation == HORIZONTAL) ? m_width : m_height;
+  const float listStart = (m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) ? m_posX : m_posY;
+  const float listSize = (m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) ? m_width : m_height;
   const float itemSize = m_layout->Size(m_orientation);
   const float focusedItemSize = m_focusedLayout->Size(m_orientation);
   if (itemSize <= 0.0f || focusedItemSize <= 0.0f)
@@ -1656,9 +1708,9 @@ bool CGUIBaseContainer::CalculateScreenRange()
 
   const CGraphicContext& gfxContext = winSystem->GetGfxContext();
   m_screenStart = 0.0f;
-  m_screenEnd = (m_orientation == HORIZONTAL) ? gfxContext.GetWidth() : gfxContext.GetHeight();
+  m_screenEnd = (m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE) ? gfxContext.GetWidth() : gfxContext.GetHeight();
 
-  if (m_orientation == HORIZONTAL)
+  if (m_orientation == HORIZONTAL || m_orientation == HORIZONTAL_REVERSE)
   {
     float y = m_posY;
     gfxContext.InvertFinalCoords(m_screenStart, y);

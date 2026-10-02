@@ -45,7 +45,16 @@ CGUIFixedListContainer::~CGUIFixedListContainer(void) = default;
 
 bool CGUIFixedListContainer::OnAction(const CAction &action)
 {
-  switch (action.GetID())
+  uint32_t actionID = action.GetID();
+  if (m_orientation == HORIZONTAL_REVERSE || m_orientation == VERTICAL_REVERSE)
+  {
+    if (actionID == ACTION_PAGE_UP) actionID = ACTION_PAGE_DOWN;
+    else if (actionID == ACTION_PAGE_DOWN) actionID = ACTION_PAGE_UP;
+    else if (actionID == ACTION_SCROLL_UP) actionID = ACTION_SCROLL_DOWN;
+    else if (actionID == ACTION_SCROLL_DOWN) actionID = ACTION_SCROLL_UP;
+  }
+
+  switch (actionID)
   {
   case ACTION_PAGE_UP:
     {
@@ -207,7 +216,19 @@ int CGUIFixedListContainer::GetCursorFromPoint(const CPoint &point, CPoint *item
   // see if the point is either side of our focus range
   float start = (minCursor + 0.2f) * m_layout->Size(m_orientation);
   float end = (maxCursor - 0.2f) * m_layout->Size(m_orientation) + m_focusedLayout->Size(m_orientation);
-  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+
+  float pos = point.x;
+  if (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE)
+  {
+    pos = point.y;
+    if (m_orientation == VERTICAL_REVERSE)
+      pos = m_height - pos;
+  }
+  else if (m_orientation == HORIZONTAL_REVERSE)
+  {
+    pos = m_width - pos;
+  }
+
   if (pos >= start && pos <= end)
   { // select the appropriate item
     pos -= minCursor * m_layout->Size(m_orientation);
@@ -241,7 +262,19 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
   // see if the point is either side of our focus range
   float start = (minCursor + 0.2f) * sizeOfItem;
   float end = (maxCursor - 0.2f) * sizeOfItem + m_focusedLayout->Size(m_orientation);
-  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+
+  float pos = point.x;
+  if (m_orientation == VERTICAL || m_orientation == VERTICAL_REVERSE)
+  {
+    pos = point.y;
+    if (m_orientation == VERTICAL_REVERSE)
+      pos = m_height - pos;
+  }
+  else if (m_orientation == HORIZONTAL_REVERSE)
+  {
+    pos = m_width - pos;
+  }
+
   if (pos < start && GetOffset() > -minCursor)
   { // scroll backward
     if (!InsideLayout(m_layout, point))
