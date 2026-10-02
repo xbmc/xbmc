@@ -927,9 +927,31 @@ TEST_P(TestGetTexture, GetTexture)
   EXPECT_EQ(info.m_infill, GetParam().info.m_infill);
   EXPECT_EQ(info.orientation, GetParam().info.orientation);
   EXPECT_EQ(info.useLarge, GetParam().info.useLarge);
+  EXPECT_FALSE(info.m_mipmap);
 }
 
 INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory, TestGetTexture, testing::ValuesIn(TextureTests));
+
+TEST(TestGUIControlFactory, GetTextureMipmap)
+{
+  CGUITestComponent comp;
+  CXBMCTinyXML doc;
+  doc.Parse(R"(<root><test mipmap="true">foo.png</test></root>)"s);
+  CTextureInfo info;
+  EXPECT_TRUE(CGFTestable::GetTexture(doc.RootElement(), "test", info));
+  EXPECT_TRUE(info.m_mipmap);
+}
+
+TEST(TestGUIControlFactory, GetTextureMipmapFalse)
+{
+  CGUITestComponent comp;
+  CXBMCTinyXML doc;
+  doc.Parse(R"(<root><test mipmap="false">foo.png</test></root>)"s);
+  CTextureInfo info;
+  info.m_mipmap = true;
+  EXPECT_TRUE(CGFTestable::GetTexture(doc.RootElement(), "test", info));
+  EXPECT_FALSE(info.m_mipmap);
+}
 
 TEST_P(TestGetType, GetType)
 {
