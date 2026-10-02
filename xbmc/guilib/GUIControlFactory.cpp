@@ -1156,6 +1156,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     StringUtils::ToLower(strTmp);
     if (strTmp == "horizontal")
       orientation = HORIZONTAL;
+    else if (strTmp == "horizontal-reverse")
+      orientation = HORIZONTAL_REVERSE;
+    else if (strTmp == "vertical-reverse")
+      orientation = VERTICAL_REVERSE;
   }
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
 
