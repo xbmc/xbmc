@@ -19,6 +19,7 @@
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationVolumeHandling.h"
+#include "filesystem/LibraryPaths.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -179,12 +180,12 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   else if (settingId == CSettings::SETTING_SOURCE_VIDEOS)
   {
-    std::vector<std::string> params{"library://video/files.xml", "return"};
+    std::vector<std::string> params{KODI::LIBRARY::VIDEO_FILES, "return"};
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV, params);
   }
   else if (settingId == CSettings::SETTING_SOURCE_MUSIC)
   {
-    std::vector<std::string> params{"library://music/files.xml", "return"};
+    std::vector<std::string> params{KODI::LIBRARY::MUSIC_FILES, "return"};
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, params);
   }
   else if (settingId == CSettings::SETTING_SOURCE_PICTURES)

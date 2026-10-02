@@ -15,6 +15,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "filesystem/LibraryPaths.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
@@ -77,9 +78,9 @@ const char* audio_containers[] = {"musicdb://genres/",
                                   "musicdb://years/",
                                   "musicdb://singles/"};
 
-const char* video_containers[] = {
-    "library://video/movies/titles.xml/", "library://video/tvshows/titles.xml/",
-    "videodb://recentlyaddedmovies/", "videodb://recentlyaddedepisodes/"};
+const char* video_containers[] = {LIBRARY::MOVIE_TITLES, LIBRARY::TVSHOW_TITLES,
+                                  "videodb://recentlyaddedmovies/",
+                                  "videodb://recentlyaddedepisodes/"};
 
 /*----------------------------------------------------------------------
 |   CUPnPServer::CUPnPServer
@@ -381,9 +382,9 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
         }
       }
     }
-    else if (file_path.StartsWith("library://") || file_path.StartsWith("videodb://"))
+    else if (file_path.StartsWith(LIBRARY::ROOT) || file_path.StartsWith("videodb://"))
     {
-      if (path == "library://video/")
+      if (path == LIBRARY::VIDEO)
       {
         item->SetLabel("Video Library");
         item->SetLabelPreformatted(true);
@@ -564,17 +565,17 @@ void CUPnPServer::Announce(AnnouncementFlag flag,
       }
       else if (item_type == MediaTypeTvShow)
       {
-        UpdateContainer("library://video/tvshows/titles.xml/");
+        UpdateContainer(LIBRARY::TVSHOW_TITLES);
         UpdateContainer("videodb://recentlyaddedepisodes/");
       }
       else if (item_type == MediaTypeMovie)
       {
-        UpdateContainer("library://video/movies/titles.xml/");
+        UpdateContainer(LIBRARY::MOVIE_TITLES);
         UpdateContainer("videodb://recentlyaddedmovies/");
       }
       else if (item_type == MediaTypeMusicVideo)
       {
-        UpdateContainer("library://video/musicvideos/titles.xml/");
+        UpdateContainer(LIBRARY::MUSICVIDEO_TITLES);
         UpdateContainer("videodb://recentlyaddedmusicvideos/");
       }
     }
@@ -608,7 +609,7 @@ static NPT_String TranslateWMPObjectId(NPT_String id, const Logger& logger)
   else if (id == "15")
   {
     // Xbox 360 asking for videos
-    id = "library://video/";
+    id = LIBRARY::VIDEO;
   }
   else if (id == "16")
   {
@@ -697,7 +698,7 @@ NPT_Result CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
     // attempt to determine the parent of this item
     std::string parent;
     if (URIUtils::IsVideoDb((const char*)id) || URIUtils::IsMusicDb((const char*)id) ||
-        StringUtils::StartsWithNoCase((const char*)id, "library://video/"))
+        StringUtils::StartsWithNoCase((const char*)id, LIBRARY::VIDEO))
     {
       if (!URIUtils::GetParentPath((const char*)id, parent))
       {
@@ -716,9 +717,9 @@ NPT_Result CUPnPServer::OnBrowseMetadata(PLT_ActionReference& action,
       if (StringUtils::StartsWithNoCase(child_id, "special://musicplaylists/"))
         parent = "musicdb://";
       else if (StringUtils::StartsWithNoCase(child_id, "special://videoplaylists/"))
-        parent = "library://video/";
+        parent = LIBRARY::VIDEO;
       else if (StringUtils::StartsWithNoCase(child_id, "sources://video/"))
-        parent = "library://video/";
+        parent = LIBRARY::VIDEO;
       else if (StringUtils::StartsWithNoCase(child_id, "special://profile/playlists/music/"))
         parent = "special://musicplaylists/";
       else if (StringUtils::StartsWithNoCase(child_id, "special://profile/playlists/video/"))
@@ -819,7 +820,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
       items.Add(item);
 
       // video library
-      item = std::make_shared<CFileItem>("library://video/", true);
+      item = std::make_shared<CFileItem>(LIBRARY::VIDEO, true);
       item->SetLabel("Video Library");
       item->SetLabelPreformatted(true);
       items.Add(item);
@@ -862,7 +863,7 @@ NPT_Result CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference& action,
     database.Open();
     if (database.HasContent(VideoDbContentType::MUSICVIDEOS))
     {
-      CFileItemPtr mvideos(new CFileItem("library://video/musicvideos/", true));
+      CFileItemPtr mvideos(new CFileItem(LIBRARY::MUSICVIDEOS, true));
       mvideos->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
       items.Add(mvideos);
     }
@@ -898,7 +899,7 @@ NPT_Result CUPnPServer::BuildResponse(PLT_ActionReference& action,
   NPT_Reference<CThumbLoader> thumb_loader;
 
   if (URIUtils::IsVideoDb(items.GetPath()) ||
-      StringUtils::StartsWithNoCase(items.GetPath(), "library://video/") ||
+      StringUtils::StartsWithNoCase(items.GetPath(), LIBRARY::VIDEO) ||
       StringUtils::StartsWithNoCase(items.GetPath(), "special://profile/playlists/video/"))
   {
 

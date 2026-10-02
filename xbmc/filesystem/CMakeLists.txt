@@ -100,6 +100,7 @@ set(HEADERS AddonsDirectory.h
             IFileTypes.h
             ImageFile.h
             LibraryDirectory.h
+            LibraryPaths.h
             MultiPathDirectory.h
             MultiPathFile.h
             MusicDatabaseDirectory.h
