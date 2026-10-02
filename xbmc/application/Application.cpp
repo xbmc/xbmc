@@ -1425,74 +1425,8 @@ bool CApplication::OnAction(const CAction &action)
   if (CServiceBroker::GetPeripherals().OnAction(action))
     return true;
 
-  if (action.GetID() == ACTION_MUTE)
-  {
-    const auto appVolume = GetComponent<CApplicationVolumeHandling>();
-    appVolume->ToggleMute();
-    appVolume->ShowVolumeBar(&action);
+  if (GetComponent<CApplicationVolumeHandling>()->OnAction(action))
     return true;
-  }
-
-  if (action.GetID() == ACTION_TOGGLE_DIGITAL_ANALOG)
-  {
-    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    bool passthrough = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
-    settings->SetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH, !passthrough);
-
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
-    {
-      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0,0,WINDOW_INVALID,CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
-      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-    }
-    return true;
-  }
-
-  // Check for global volume control
-  if ((action.GetAmount() && (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN)) || action.GetID() == ACTION_VOLUME_SET)
-  {
-    const auto appVolume = GetComponent<CApplicationVolumeHandling>();
-
-    // The level cannot be applied to a bitstream, but with volume control enabled
-    // it is still adjusted and announced, so an external processor can follow it
-    const bool volumeControl = !appPlayer->IsPassthrough() ||
-                               CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                                   CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHVOLUMECONTROL);
-    if (volumeControl)
-    {
-      if (appVolume->IsMuted())
-        appVolume->UnMute();
-      float volume = appVolume->GetVolumeRatio();
-      int volumesteps = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS);
-      // sanity check
-      if (volumesteps == 0)
-        volumesteps = 90;
-
-// Android has steps based on the max available volume level
-#if defined(TARGET_ANDROID)
-      float step = (CApplicationVolumeHandling::VOLUME_MAXIMUM -
-                    CApplicationVolumeHandling::VOLUME_MINIMUM) /
-                   CXBMCApp::GetMaxSystemVolume();
-#else
-      float step = (CApplicationVolumeHandling::VOLUME_MAXIMUM -
-                    CApplicationVolumeHandling::VOLUME_MINIMUM) /
-                   volumesteps;
-
-      if (action.GetRepeat())
-        step *= action.GetRepeat() * 50; // 50 fps
-#endif
-      if (action.GetID() == ACTION_VOLUME_UP)
-        volume += action.GetAmount() * action.GetAmount() * step;
-      else if (action.GetID() == ACTION_VOLUME_DOWN)
-        volume -= action.GetAmount() * action.GetAmount() * step;
-      else
-        volume = action.GetAmount() * step;
-      if (volume != appVolume->GetVolumeRatio())
-        appVolume->SetVolume(volume, false);
-    }
-    // show visual feedback of volume or passthrough indicator
-    appVolume->ShowVolumeBar(&action);
-    return true;
-  }
 
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
   {
