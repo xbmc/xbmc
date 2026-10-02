@@ -621,6 +621,9 @@ void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRe
 
   m_renderContext.SetRenderingResolution(m_renderContext.GetVideoResolution(), false);
 
+  if (bClear && renderBuffer == nullptr)
+    m_renderContext.Clear(UTILS::COLOR::BLACK);
+
   RenderInternal(renderer, renderBuffer, bClear, 255);
 
   m_renderContext.SetRenderingResolution(coordsRes, false);
