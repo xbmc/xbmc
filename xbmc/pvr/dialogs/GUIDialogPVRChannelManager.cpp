@@ -17,6 +17,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/ImageChoices.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIMessage.h"
@@ -398,7 +399,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   // add the current thumb, if available
   if (!pItem->GetProperty(PROPERTY_CHANNEL_ICON).asString().empty())
   {
-    auto current{std::make_shared<CFileItem>("thumb://Current", false)};
+    auto current{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::CURRENT, false)};
     current->SetArt("thumb", pItem->GetPVRChannelInfoTag()->IconPath());
     current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
     items.Add(std::move(current));
@@ -406,14 +407,14 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   else if (pItem->HasArt("thumb"))
   {
     // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
-    auto current{std::make_shared<CFileItem>("thumb://Current", false)};
+    auto current{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::CURRENT, false)};
     current->SetArt("thumb", pItem->GetArt("thumb"));
     current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
     items.Add(std::move(current));
   }
 
   // and add a "no thumb" entry as well
-  auto nothumb{std::make_shared<CFileItem>("thumb://None", false)};
+  auto nothumb{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::NONE, false)};
   nothumb->SetArt("icon", pItem->GetArt("icon"));
   nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19283));
   items.Add(std::move(nothumb));
@@ -434,10 +435,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
           strThumb, nullptr, 19285))
     return false;
 
-  if (strThumb == "thumb://Current")
+  if (strThumb == KODI::IMAGE_CHOICE::CURRENT)
     return true;
 
-  if (strThumb == "thumb://None")
+  if (strThumb == KODI::IMAGE_CHOICE::NONE)
     strThumb = "";
 
   if (pItem->GetProperty(PROPERTY_CHANNEL_ICON).asString() != strThumb)
