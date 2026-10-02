@@ -420,7 +420,7 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
       {
         //Add single artist (id and path) as item to scan
         CFileItemPtr item(new CFileItem(strDirectory, false));
-        item->GetMusicInfoTag()->SetDatabaseId(params.GetAlbumId(), MediaTypeArtist);
+        item->GetMusicInfoTag()->SetDatabaseId(params.GetArtistId(), MediaTypeArtist);
         items.Add(item);
       }
       else
