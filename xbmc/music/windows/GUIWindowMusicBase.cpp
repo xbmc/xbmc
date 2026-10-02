@@ -27,6 +27,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "utils/PlaceholderPaths.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
@@ -849,7 +850,8 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     int iWindow = GetID();
     // Add "New Playlist" items when in the playlists folder, except on playlist editor screen
     if ((iWindow != WINDOW_MUSIC_PLAYLIST_EDITOR) &&
-        (items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
+        (items.GetPath() == "special://musicplaylists/") &&
+        !items.Contains(PLACEHOLDER::NEW_PLAYLIST))
     {
       const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -861,7 +863,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist->SetFolder(true);
       items.Add(newPlaylist);
 
-      newPlaylist = std::make_shared<CFileItem>("newplaylist://", false);
+      newPlaylist = std::make_shared<CFileItem>(PLACEHOLDER::NEW_PLAYLIST, false);
       newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(525));
       newPlaylist->SetArt("icon", "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
@@ -869,7 +871,8 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist->SetCanQueue(false);
       items.Add(newPlaylist);
 
-      newPlaylist = std::make_shared<CFileItem>("newsmartplaylist://music", false);
+      newPlaylist = std::make_shared<CFileItem>(
+          std::string{PLACEHOLDER::NEW_SMART_PLAYLIST} + "music", false);
       newPlaylist->SetLabel(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21437));
       newPlaylist->SetArt("icon", "DefaultAddSource.png");

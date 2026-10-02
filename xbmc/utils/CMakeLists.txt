@@ -158,6 +158,7 @@ set(HEADERS ActorProtocol.h
             Observer.h
             params_check_macros.h
             POUtils.h
+            PlaceholderPaths.h
             PlayerUtils.h
             ProgressJob.h
             RecentlyAddedJob.h

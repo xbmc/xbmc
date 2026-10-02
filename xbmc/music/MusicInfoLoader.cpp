@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -35,6 +36,17 @@
 using namespace KODI;
 using namespace MUSIC_INFO;
 using namespace XFILE;
+
+namespace
+{
+//! Whether \p item is something that carries no music info to load
+bool HasNoMusicInfo(const CFileItem& item)
+{
+  return (item.IsFolder() && !MUSIC::IsAudio(item)) || PLAYLIST::IsPlayList(item) ||
+         PLAYLIST::IsSmartPlayList(item) || PLACEHOLDER::IsNewPlaylist(item.GetPath()) ||
+         item.IsNFO() || (NETWORK::IsInternetStream(item) && !MUSIC::IsMusicDb(item));
+}
+} // namespace
 
 // HACK until we make this threadable - specify 1 thread only for now
 CMusicInfoLoader::CMusicInfoLoader() : CBackgroundInfoLoader()
@@ -161,11 +173,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
 bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 {
-  if ((pItem->IsFolder() && !MUSIC::IsAudio(*pItem)) || PLAYLIST::IsPlayList(*pItem) ||
-      PLAYLIST::IsSmartPlayList(*pItem) ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || pItem->IsNFO() ||
-      (NETWORK::IsInternetStream(*pItem) && !MUSIC::IsMusicDb(*pItem)))
+  if (HasNoMusicInfo(*pItem))
     return false;
 
   // Get thumb for item
@@ -179,11 +187,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
   if (m_pProgressCallback && !pItem->IsFolder())
     m_pProgressCallback->SetProgressAdvance();
 
-  if ((pItem->IsFolder() && !MUSIC::IsAudio(*pItem)) || //
-      PLAYLIST::IsPlayList(*pItem) || PLAYLIST::IsSmartPlayList(*pItem) || //
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //
-      pItem->IsNFO() || (NETWORK::IsInternetStream(*pItem) && !MUSIC::IsMusicDb(*pItem)))
+  if (HasNoMusicInfo(*pItem))
     return false;
 
   if ((!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded()) && MUSIC::IsAudio(*pItem))
