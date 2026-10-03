@@ -308,7 +308,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
           if (p + 4 > pEnd) return NULL;
           uint16_t tfaddr = (p[0] << 8 | p[1]); // offset in packet
           uint16_t bfaddr = (p[2] << 8 | p[3]); // offset in packet
-          if (tfaddr < 4 || bfaddr < 4 || tfaddr > pSPUData->iSize || bfaddr > pSPUData->iSize)
+          if (tfaddr < 4 || bfaddr < 4 || tfaddr >= pSPUData->iSize || bfaddr >= pSPUData->iSize)
             return NULL;
           pSPUInfo->pTFData = (tfaddr - 4); //pSPUInfo->pData + (tfaddr - 4); // pSPUData->data = packet startaddr - 4
           pSPUInfo->pBFData = (bfaddr - 4); //pSPUInfo->pData + (bfaddr - 4); // pSPUData->data = packet startaddr - 4
@@ -348,14 +348,16 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 
   // parse the rle.
   // this should be changed so it gets converted to a yuv overlay
-  return ParseRLE(pSPUInfo, pUnparsedData);
+  return ParseRLE(pSPUInfo, pUnparsedData, pSPUData->iSize > 4 ? pSPUData->iSize - 4 : 0);
 }
 
 /*****************************************************************************
  * AddNibble: read a nibble from a source packet and add it to our integer.
  *****************************************************************************/
-inline unsigned int AddNibble(unsigned int i_code, const uint8_t* p_src, unsigned int* pi_index)
+inline int AddNibble(unsigned int i_code, const uint8_t* p_src, unsigned int* pi_index, unsigned int i_src_size)
 {
+  if ((*pi_index >> 1) >= i_src_size)
+    return -1;
   if ( *pi_index & 0x1 )
   {
     return ( i_code << 4 | ( p_src[(*pi_index)++ >> 1] & 0xf ) );
@@ -374,7 +376,8 @@ inline unsigned int AddNibble(unsigned int i_code, const uint8_t* p_src, unsigne
  * subtitles format, see http://sam.zoy.org/doc/dvd/subtitles/index.html
  *****************************************************************************/
 std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverlaySpu> pSPU,
-                                                       uint8_t* pUnparsedData)
+                                                       uint8_t* pUnparsedData,
+                                                       unsigned int iUnparsedSize)
 {
   uint8_t* p_src = pUnparsedData;
 
@@ -404,19 +407,27 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
 
     for ( i_x = 0 ; i_x < i_width ; i_x += i_code >> 2 )
     {
-      i_code = AddNibble( 0, p_src, pi_offset );
+      int nibble = AddNibble( 0, p_src, pi_offset, iUnparsedSize );
+      if (nibble < 0) return NULL;
+      i_code = nibble;
 
       if ( i_code < 0x04 )
       {
-        i_code = AddNibble( i_code, p_src, pi_offset );
+        nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
+        if (nibble < 0) return NULL;
+        i_code = nibble;
 
         if ( i_code < 0x10 )
         {
-          i_code = AddNibble( i_code, p_src, pi_offset );
+          nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
+          if (nibble < 0) return NULL;
+          i_code = nibble;
 
           if ( i_code < 0x040 )
           {
-            i_code = AddNibble( i_code, p_src, pi_offset );
+            nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
+            if (nibble < 0) return NULL;
+            i_code = nibble;
 
             if ( i_code < 0x0100 )
             {
