@@ -15,6 +15,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "view/ViewState.h"
+#include "view/ViewStateNames.h"
 #include "view/ViewStateSettings.h"
 
 #ifdef TARGET_ANDROID
@@ -34,7 +35,7 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
                     ? SortAttributeIgnoreArticle
                     : SortAttributeNone);
 
-  const CViewState *viewState = CViewStateSettings::GetInstance().Get("programs");
+  const CViewState* viewState = CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PROGRAMS);
   SetSortMethod(viewState->m_sortDescription);
   SetViewAsControl(viewState->m_viewMode);
   SetSortOrder(viewState->m_sortDescription.sortOrder);
@@ -44,7 +45,8 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, CViewStateSettings::GetInstance().Get("programs"));
+  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS,
+               CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PROGRAMS));
 }
 
 std::string CGUIViewStateWindowPrograms::GetLockType()

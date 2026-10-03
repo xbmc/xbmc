@@ -13,6 +13,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "view/ViewStateNames.h"
 
 #include <cstring>
 #include <mutex>
@@ -31,27 +32,27 @@
 
 CViewStateSettings::CViewStateSettings()
 {
-  AddViewState("musicnavartists");
-  AddViewState("musicnavalbums");
-  AddViewState("musicnavsongs", DEFAULT_VIEW_LIST, SortBy::TRACK_NUMBER);
-  AddViewState("musiclastfm");
-  AddViewState("videonavactors");
-  AddViewState("videonavyears");
-  AddViewState("videonavgenres");
-  AddViewState("videonavtitles");
-  AddViewState("videonavepisodes", DEFAULT_VIEW_AUTO, SortBy::EPISODE_NUMBER);
-  AddViewState("videonavtvshows");
-  AddViewState("videonavseasons");
-  AddViewState("videonavmusicvideos");
-  AddViewState("videonavassets");
-  AddViewState("videonavversions");
-  AddViewState("videonavextras");
+  AddViewState(KODI::VIEW_STATE::MUSIC_NAV_ARTISTS);
+  AddViewState(KODI::VIEW_STATE::MUSIC_NAV_ALBUMS);
+  AddViewState(KODI::VIEW_STATE::MUSIC_NAV_SONGS, DEFAULT_VIEW_LIST, SortBy::TRACK_NUMBER);
+  AddViewState(KODI::VIEW_STATE::MUSIC_LASTFM);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_ACTORS);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_YEARS);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_GENRES);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_TITLES);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_EPISODES, DEFAULT_VIEW_AUTO, SortBy::EPISODE_NUMBER);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_TVSHOWS);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_SEASONS);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_MUSICVIDEOS);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_ASSETS);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_VERSIONS);
+  AddViewState(KODI::VIEW_STATE::VIDEO_NAV_EXTRAS);
 
-  AddViewState("programs", DEFAULT_VIEW_AUTO);
-  AddViewState("pictures", DEFAULT_VIEW_AUTO);
-  AddViewState("videofiles", DEFAULT_VIEW_AUTO);
-  AddViewState("musicfiles", DEFAULT_VIEW_AUTO);
-  AddViewState("games", DEFAULT_VIEW_AUTO);
+  AddViewState(KODI::VIEW_STATE::PROGRAMS, DEFAULT_VIEW_AUTO);
+  AddViewState(KODI::VIEW_STATE::PICTURES, DEFAULT_VIEW_AUTO);
+  AddViewState(KODI::VIEW_STATE::VIDEO_FILES, DEFAULT_VIEW_AUTO);
+  AddViewState(KODI::VIEW_STATE::MUSIC_FILES, DEFAULT_VIEW_AUTO);
+  AddViewState(KODI::VIEW_STATE::GAMES, DEFAULT_VIEW_AUTO);
 
   Clear();
 }

@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
 #include "view/ViewState.h"
+#include "view/ViewStateNames.h"
 #include "view/ViewStateSettings.h"
 
 using namespace XFILE;
@@ -47,7 +48,7 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
     AddSortMethod(SortBy::FILE, 561,
                   LABEL_MASKS("%L", "%I", "%L", "")); // Filename, Size | FolderName, empty
 
-    const CViewState *viewState = CViewStateSettings::GetInstance().Get("pictures");
+    const CViewState* viewState = CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PICTURES);
     SetSortMethod(viewState->m_sortDescription);
     SetViewAsControl(viewState->m_viewMode);
     SetSortOrder(viewState->m_sortDescription.sortOrder);
@@ -57,7 +58,8 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
 
 void CGUIViewStateWindowPictures::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), WINDOW_PICTURES, CViewStateSettings::GetInstance().Get("pictures"));
+  SaveViewToDb(m_items.GetPath(), WINDOW_PICTURES,
+               CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PICTURES));
 }
 
 std::string CGUIViewStateWindowPictures::GetLockType()
