@@ -244,6 +244,8 @@ public:
    *
    */
   virtual bool SetHDR(const VideoPicture* videoPicture) { return false; }
+  //! Update MaxCLL/MaxFALL on an already-active HDR output without a full SetHDR().
+  virtual bool RefreshHDRLightMetadata(const VideoPicture* videoPicture) { return false; }
   virtual bool IsHDRDisplay() { return false; }
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
