@@ -318,8 +318,10 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   CDVDDemux* pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
   if (pDemuxer)
   {
-    bool retVal = DemuxerToStreamDetails(
-        pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
+    // Built apart from the item, which the GUI may be showing while this runs
+    CStreamDetails details;
+    bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, details, strFileNameAndPath);
+    pItem->GetVideoInfoTag()->m_streamDetails = details;
 
     if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
       ProcessExternalSubtitles(pItem);
