@@ -30,7 +30,7 @@ public:
   void MigrateSettings(const std::shared_ptr<ADDON::CSkinInfo>& skin);
 
   int TranslateString(const std::string& setting) const;
-  const std::string& GetString(int setting) const;
+  std::string GetString(int setting) const;
   void SetString(int setting, const std::string& label) const;
 
   int TranslateBool(const std::string& setting) const;
