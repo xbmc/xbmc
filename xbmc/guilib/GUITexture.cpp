@@ -385,7 +385,7 @@ bool CGUITexture::AllocResources()
       }
       if (CServiceBroker::GetGUI()->GetLargeTextureManager().GetImage(
               m_info.filename, texture, m_requestWidth, m_requestHeight, m_aspect.ratio,
-              !IsAllocated(), m_use_cache))
+              m_info.m_mipmap, !IsAllocated(), m_use_cache))
       {
         m_isAllocated = LARGE;
 
@@ -533,7 +533,7 @@ void CGUITexture::FreeResources(bool immediately /* = false */)
   if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
   {
     CServiceBroker::GetGUI()->GetLargeTextureManager().ReleaseImage(
-        m_info.filename, m_requestWidth, m_requestHeight, m_aspect.ratio,
+        m_info.filename, m_requestWidth, m_requestHeight, m_aspect.ratio, m_info.m_mipmap,
         immediately || (m_isAllocated == LARGE_FAILED));
     m_requestWidth = REQUEST_SIZE_UNSET;
     m_requestHeight = REQUEST_SIZE_UNSET;
