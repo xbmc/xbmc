@@ -467,7 +467,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       {
         m_bitstream = std::make_unique<CBitstreamConverter>();
         if (!m_bitstream->Open(m_hints.codec, m_hints.extradata.GetData(),
-                               m_hints.extradata.GetSize(), true))
+                               m_hints.extradata.GetSize()))
         {
           m_bitstream.reset();
         }
@@ -593,7 +593,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       {
         m_bitstream = std::make_unique<CBitstreamConverter>();
         if (!m_bitstream->Open(m_hints.codec, m_hints.extradata.GetData(),
-                               m_hints.extradata.GetSize(), true))
+                               m_hints.extradata.GetSize()))
         {
           m_bitstream.reset();
         }
