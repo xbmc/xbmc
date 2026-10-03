@@ -26,8 +26,15 @@ namespace XBMCAddon
     Actor::Actor(const String& name /* = emptyString */,
                  const String& role /* = emptyString */,
                  int order /* = -1 */,
-                 const String& thumbnail /* = emptyString */)
-      : m_name(name), m_role(role), m_order(order), m_thumbnail(thumbnail)
+                 const String& thumbnail /* = emptyString */,
+                 const String& birthdate /* = emptyString */,
+                 const String& deathdate /* = emptyString */)
+      : m_name(name),
+        m_role(role),
+        m_order(order),
+        m_thumbnail(thumbnail),
+        m_birthDate(birthdate),
+        m_deathDate(deathdate)
     {
       if (m_name.empty())
         throw WrongTypeException("Actor: name property must not be empty");
@@ -39,6 +46,8 @@ namespace XBMCAddon
       actorInfo.strName = m_name;
       actorInfo.strRole = m_role;
       actorInfo.order = m_order;
+      actorInfo.SetBirthDate(m_birthDate);
+      actorInfo.SetDeathDate(m_deathDate);
       actorInfo.thumbUrl = CScraperUrl(m_thumbnail);
       if (!actorInfo.thumbUrl.GetFirstThumbUrl().empty())
         actorInfo.thumb = CScraperUrl::GetThumbUrl(actorInfo.thumbUrl.GetFirstUrlByType());
@@ -232,7 +241,9 @@ namespace XBMCAddon
       actors.reserve(infoTag->m_cast.size());
 
       for (const auto& cast : infoTag->m_cast)
-        actors.push_back(new Actor(cast.strName, cast.strRole, cast.order, cast.thumbUrl.GetFirstUrlByType().m_url));
+        actors.push_back(new Actor(cast.strName, cast.strRole, cast.order,
+                                   cast.thumbUrl.GetFirstUrlByType().m_url, cast.birthDate,
+                                   cast.deathDate));
 
       return actors;
     }

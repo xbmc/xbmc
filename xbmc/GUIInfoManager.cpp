@@ -6560,6 +6560,24 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_CastAndRole_separator `ListItem.CastAndRole(separator)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.BirthDate`</b>,
+///                  \anchor ListItem_BirthDate
+///                  _string_,
+///     @return The birth date of the currently selected actor (e.g. in the cast list of the
+///     video info dialog or in the actors node of the video library)\, empty if unknown.
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link ListItem_BirthDate `ListItem.BirthDate`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.DeathDate`</b>,
+///                  \anchor ListItem_DeathDate
+///                  _string_,
+///     @return The death date of the currently selected actor (e.g. in the cast list of the
+///     video info dialog or in the actors node of the video library)\, empty if unknown.
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link ListItem_DeathDate `ListItem.DeathDate`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Studio`</b>,
 ///                  \anchor ListItem_Studio
 ///                  _string_,
@@ -7878,7 +7896,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 233> listitem_labels = {{
+constexpr std::array<InfoMap, 235> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -8105,6 +8123,8 @@ constexpr std::array<InfoMap, 233> listitem_labels = {{
     {"videoversionname",              LISTITEM_VIDEOVERSION_NAME},
     {"hasvideoextras",                LISTITEM_HASVIDEOEXTRAS},
     {"isdefaultvideoversionname",     LISTITEM_ISDEFAULTVIDEOVERSION_NAME},
+    {"birthdate",                     LISTITEM_BIRTHDATE},
+    {"deathdate",                     LISTITEM_DEATHDATE},
     {"pvrclientname",                 LISTITEM_PVR_CLIENT_NAME},
     {"pvrinstancename",               LISTITEM_PVR_INSTANCE_NAME},
     {"pvrgrouporigin",                LISTITEM_PVR_GROUP_ORIGIN},

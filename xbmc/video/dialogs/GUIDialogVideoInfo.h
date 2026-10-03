@@ -85,14 +85,18 @@ protected:
   /**
    * \brief Search the current directory for a string got from the virtual keyboard
    * \param strSearch The search string
+   * \param birthDate The birth date of the searched person, empty if unknown
    */
-  void OnSearch(std::string& strSearch);
+  void OnSearch(std::string& strSearch, const std::string& birthDate = "");
   /**
    * \brief Make the actual search for the OnSearch function.
    * \param strSearch The search string
    * \param items Items Found
+   * \param birthDate The birth date of the searched person, empty if unknown
    */
-  void DoSearch(std::string& strSearch, CFileItemList& items) const;
+  void DoSearch(std::string& strSearch,
+                CFileItemList& items,
+                const std::string& birthDate = "") const;
   /**
    * \brief React on the selected search item
    * \param pItem Search result item

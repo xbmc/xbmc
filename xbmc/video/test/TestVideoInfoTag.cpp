@@ -284,6 +284,71 @@ TEST(TestVideoInfoTag, ReadTextEpisodeGuide)
   EXPECT_EQ(details.m_strEpisodeGuide, reloaded.m_strEpisodeGuide);
 }
 
+TEST(TestVideoInfoTag, ReadAndWriteActorDeathDate)
+{
+  const std::string document =
+      R"(<movie>
+         <actor><name>Dated</name><deathdate>2001-12-31</deathdate></actor>
+         <actor><name>Undated</name></actor>
+         <actor><name>Invalid</name><deathdate>not a date</deathdate></actor>
+         </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  ASSERT_TRUE(details.Load(doc.RootElement(), true, false));
+  ASSERT_EQ(3u, details.m_cast.size());
+  EXPECT_EQ("2001-12-31", details.m_cast[0].deathDate);
+  EXPECT_TRUE(details.m_cast[1].deathDate.empty());
+  EXPECT_TRUE(details.m_cast[2].deathDate.empty());
+
+  CXBMCTinyXML saved;
+  ASSERT_TRUE(details.Save(&saved, "movie"));
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(saved.RootElement(), true, false));
+  ASSERT_EQ(3u, reloaded.m_cast.size());
+  EXPECT_EQ("2001-12-31", reloaded.m_cast[0].deathDate);
+}
+
+TEST(TestVideoInfoTag, ReadAndWriteActorBirthDate)
+{
+  const std::string document =
+      R"(<movie>
+         <actor><name>Dated</name><birthdate>1970-01-31</birthdate></actor>
+         <actor><name>Undated</name></actor>
+         <actor><name>Invalid</name><birthdate>not a date</birthdate></actor>
+         <actor><name>Impossible</name><birthdate>1970-02-30</birthdate></actor>
+         </movie>)";
+
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  ASSERT_TRUE(details.Load(doc.RootElement(), true, false));
+  ASSERT_EQ(4u, details.m_cast.size());
+  EXPECT_EQ("1970-01-31", details.m_cast[0].birthDate);
+  EXPECT_TRUE(details.m_cast[1].birthDate.empty());
+  EXPECT_TRUE(details.m_cast[2].birthDate.empty());
+  EXPECT_TRUE(details.m_cast[3].birthDate.empty());
+
+  CXBMCTinyXML saved;
+  ASSERT_TRUE(details.Save(&saved, "movie"));
+  const TiXmlElement* actor{saved.RootElement()->FirstChildElement("actor")};
+  ASSERT_NE(nullptr, actor);
+  std::string birthDate;
+  EXPECT_TRUE(XMLUtils::GetString(actor, "birthdate", birthDate));
+  EXPECT_EQ("1970-01-31", birthDate);
+  actor = actor->NextSiblingElement("actor");
+  ASSERT_NE(nullptr, actor);
+  EXPECT_EQ(nullptr, actor->FirstChildElement("birthdate"));
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(saved.RootElement(), true, false));
+  ASSERT_EQ(4u, reloaded.m_cast.size());
+  EXPECT_EQ("1970-01-31", reloaded.m_cast[0].birthDate);
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {

@@ -24,7 +24,7 @@ namespace XBMCAddon
     /// @{
     /// @brief **Actor class used in combination with InfoTagVideo.**
     ///
-    /// \python_class{ xbmc.Actor([name, role, order, thumbnail]) }
+    /// \python_class{ xbmc.Actor([name, role, order, thumbnail, birthdate, deathdate]) }
     ///
     /// Represents a single actor in the cast of a video item wrapped by InfoTagVideo.
     ///
@@ -46,17 +46,22 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_actor Actor
-      /// @brief \python_func{ xbmc.Actor([name, role, order, thumbnail]) }
+      /// @brief \python_func{ xbmc.Actor([name, role, order, thumbnail, birthdate, deathdate]) }
       /// Creates a single actor for the cast of a video item wrapped by InfoTagVideo.
       ///
       /// @param name               [opt] string - Name of the actor.
       /// @param role               [opt] string - Role of the actor in the specific video item.
       /// @param order              [opt] integer - Order of the actor in the cast of the specific video item.
       /// @param thumbnail          [opt] string - Path / URL to the thumbnail of the actor.
+      /// @param birthdate          [opt] string - Birth date of the actor (YYYY-MM-DD). Used to tell
+      ///                           apart actors with the same name.
+      /// @param deathdate          [opt] string - Death date of the actor (YYYY-MM-DD). Informational
+      ///                           only.
       ///
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 New function added.
+      /// @python_v23 birthdate and deathdate parameters added.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -70,7 +75,9 @@ namespace XBMCAddon
       explicit Actor(const String& name = emptyString,
                      const String& role = emptyString,
                      int order = -1,
-                     const String& thumbnail = emptyString);
+                     const String& thumbnail = emptyString,
+                     const String& birthdate = emptyString,
+                     const String& deathdate = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -209,6 +216,74 @@ namespace XBMCAddon
       void setThumbnail(const String& thumbnail) { m_thumbnail = thumbnail; }
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_actor
+      /// @brief \python_func{ getBirthDate() }
+      /// Get the birth date of the actor.
+      ///
+      /// @return [string] Birth date of the actor (YYYY-MM-DD), empty if unknown
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v23 New function added.
+      ///
+      getBirthDate();
+#else
+      String getBirthDate() const { return m_birthDate; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_actor
+      /// @brief \python_func{ setBirthDate(birthdate) }
+      /// Set the birth date of the actor.
+      ///
+      /// @param birthdate          string - Birth date of the actor (YYYY-MM-DD).
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v23 New function added.
+      ///
+      setBirthDate(...);
+#else
+      void setBirthDate(const String& birthdate) { m_birthDate = birthdate; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_actor
+      /// @brief \python_func{ getDeathDate() }
+      /// Get the death date of the actor.
+      ///
+      /// @return [string] Death date of the actor (YYYY-MM-DD), empty if unknown
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v23 New function added.
+      ///
+      getDeathDate();
+#else
+      String getDeathDate() const { return m_deathDate; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_actor
+      /// @brief \python_func{ setDeathDate(deathdate) }
+      /// Set the death date of the actor.
+      ///
+      /// @param deathdate          string - Death date of the actor (YYYY-MM-DD).
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v23 New function added.
+      ///
+      setDeathDate(...);
+#else
+      void setDeathDate(const String& deathdate) { m_deathDate = deathdate; }
+#endif
+
 #ifndef SWIG
       SActorInfo ToActorInfo() const;
 #endif
@@ -218,6 +293,8 @@ namespace XBMCAddon
       String m_role;
       int m_order;
       String m_thumbnail;
+      String m_birthDate;
+      String m_deathDate;
     };
     /// @}
 

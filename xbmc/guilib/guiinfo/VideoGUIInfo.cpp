@@ -686,6 +686,26 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
       if (value.empty() && tag)
         value = CStereoscopicsManager::NormalizeStereoMode(tag->m_streamDetails.GetStereoMode());
       return true;
+    case LISTITEM_BIRTHDATE:
+    {
+      CDateTime dateTime;
+      if (dateTime.SetFromDBDate(item->GetProperty("birthdate").asString()))
+      {
+        value = dateTime.GetAsLocalizedDate();
+        return true;
+      }
+      break;
+    }
+    case LISTITEM_DEATHDATE:
+    {
+      CDateTime dateTime;
+      if (dateTime.SetFromDBDate(item->GetProperty("deathdate").asString()))
+      {
+        value = dateTime.GetAsLocalizedDate();
+        return true;
+      }
+      break;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VIDEOPLAYER_*

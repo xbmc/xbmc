@@ -86,7 +86,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
   db.ExecuteQuery(columns);
 
   CLog::Log(LOGINFO, "create actor table");
-  db.ExecuteQuery("CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT, art_urls TEXT )");
+  db.ExecuteQuery("CREATE TABLE actor ( actor_id INTEGER PRIMARY KEY, name TEXT, art_urls TEXT, "
+                  "birth_date TEXT, death_date TEXT )");
   db.ExecuteQuery(
       "CREATE TABLE actor_link(actor_id INTEGER, media_id INTEGER, media_type TEXT, role "
       "TEXT, cast_order INTEGER)");
@@ -283,7 +284,7 @@ void CVideoDatabaseDDL::CreateIndices(CDatabase& db)
   db.ExecuteQuery("CREATE INDEX ix_uniqueid1 ON uniqueid(media_id, media_type(20), type(20))");
   db.ExecuteQuery("CREATE INDEX ix_uniqueid2 ON uniqueid(media_type(20), value(20))");
 
-  db.ExecuteQuery("CREATE UNIQUE INDEX ix_actor_1 ON actor (name(255))");
+  db.ExecuteQuery("CREATE UNIQUE INDEX ix_actor_1 ON actor (name(255), birth_date(10))");
   db.ExecuteQuery("CREATE UNIQUE INDEX ix_actor_link_1 ON "
                   "actor_link (actor_id, media_type(20), media_id, role(255))");
   db.ExecuteQuery("CREATE INDEX ix_actor_link_2 ON "
