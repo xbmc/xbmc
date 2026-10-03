@@ -442,6 +442,12 @@ void CGUIPanelContainer::CalculateLayout()
   GetCurrentLayouts();
 
   if (!m_layout || !m_focusedLayout) return;
+
+  // The selection is held as a row and a column, so a change in the number of
+  // items per row would otherwise land it on a different item
+  const int itemsPerRow = m_itemsPerRow;
+  const int selected = m_items.empty() ? -1 : GetSelectedItem();
+
   // calculate the number of items to display
   if (m_orientation == HORIZONTAL)
   {
@@ -461,6 +467,9 @@ void CGUIPanelContainer::CalculateLayout()
 
   // ensure that the scroll offset is a multiple of our size
   m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
+
+  if (m_itemsPerRow != itemsPerRow && selected >= 0)
+    SelectItem(selected);
 }
 
 unsigned int CGUIPanelContainer::GetRows() const
