@@ -650,11 +650,21 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
 
   if (decoderState == CDVDVideoCodec::VC_REOPEN)
   {
-    while (!m_packets.empty())
+    if (m_pVideoCodec->ReplayPacketsOnReopen())
     {
-      auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.front().message);
-      m_packets.pop_front();
-      SendMessage(msg, 10);
+      while (!m_packets.empty())
+      {
+        auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.front().message);
+        m_packets.pop_front();
+        SendMessage(msg, 10);
+      }
+    }
+    else
+    {
+      CLog::Log(LOGWARNING,
+                "CVideoPlayerVideo - decoder reopen requested, dropping {} buffered packets "
+                "instead of replaying them",
+                m_packets.size());
     }
 
     m_pVideoCodec->Reopen();

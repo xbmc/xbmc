@@ -727,7 +727,10 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   int ret = avcodec_receive_frame(m_pCodecContext, m_pDecodedFrame);
 
   if (m_decoderState == STATE_HW_FAILED && !m_pHardware)
+  {
+    m_replayOnReopen = true;
     return VC_REOPEN;
+  }
 
   if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 2)
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
@@ -989,6 +992,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::HandleHwFatal()
             "CDVDVideoCodecFFmpeg::{} - hw decode failure {} (consecutive), retrying hardware",
             __FUNCTION__, m_hwFailedCount);
   m_decoderState = STATE_NONE;
+  m_replayOnReopen = false;
   return VC_REOPEN;
 }
 
