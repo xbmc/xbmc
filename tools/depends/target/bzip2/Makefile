@@ -22,7 +22,7 @@ all: .installed-$(PLATFORM)
 	touch $@
 
 .installed-$(PLATFORM): .configured-$(PLATFORM)
-	$(MAKE) -C $(PLATFORM) PREFIX=$(PREFIX) CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" AR="$(AR)"
+	$(MAKE) -C $(PLATFORM) PREFIX=$(PREFIX) CC="$(CC)" CFLAGS="$(CPPFLAGS) $(CFLAGS)" LDFLAGS="$(LDFLAGS)" AR="$(AR)"
 	$(MAKE) -C $(PLATFORM) install PREFIX=$(PREFIX)
 	rm $(PREFIX)/bin/bzip2
 	mkdir -p $(PREFIX)/lib/pkgconfig
