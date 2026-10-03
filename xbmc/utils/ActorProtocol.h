@@ -104,7 +104,11 @@ public:
   bool ReceiveInMessage(Message **msg);
   void Purge();
   void PurgeIn(int signal);
-  void PurgeOut(int signal);
+  /*!
+   * \brief Remove queued outgoing messages with this signal
+   * \return number of messages removed
+   */
+  size_t PurgeOut(int signal);
   void DeferIn(bool value) { inDefered = value; }
   void DeferOut(bool value) { outDefered = value; }
   void Lock() { criticalSection.lock(); }
