@@ -151,6 +151,7 @@ public:
   BLURAY_TITLE_INFO* GetTitleFile(const std::string& name);
 
   void ProcessEvent();
+  void NotifyPlayer(void* data, int event);
 
   void SaveCurrentState(const CStreamDetails& details) override;
   UpdateState UpdateItemFromSavedStates(CFileItem& item, double time, bool& closed) override;
