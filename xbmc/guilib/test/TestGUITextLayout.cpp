@@ -157,3 +157,222 @@ TEST(TestGUITextLayoutFilter, DeeplyNested100Levels_OneMissingClose)
   const std::string result = Filter(open + "deep" + close);
   EXPECT_NE(result.find("deep"), std::string::npos);
 }
+
+// ---------------------------------------------------------------------------
+// CGUITextLayout::WrapText
+//
+// Runs the real wrapping code path (UpdateW -> ParseText -> WrapText -> Bidi)
+// against a fixed-width fake font so no window system or FreeType is needed.
+// Latin glyphs are 1 unit wide, CJK glyphs 2 units wide.
+// ---------------------------------------------------------------------------
+
+#include "guilib/GUIFont.h"
+
+#include <span>
+
+namespace
+{
+
+class CFixedWidthFont : public CGUIFont
+{
+public:
+  CFixedWidthFont() : CGUIFont("fixed", 0, 0, 0, 1.0f, 10.0f, nullptr) {}
+
+  static float GlyphWidth(character_t letter) { return (letter & 0xffff) >= 0x2E80 ? 2.0f : 1.0f; }
+
+  float GetTextWidth(std::span<const character_t> text) override
+  {
+    float width = 0.0f;
+    for (character_t letter : text)
+      width += GlyphWidth(letter);
+    return width;
+  }
+  float GetTextHeight(int numLines) const override { return static_cast<float>(numLines); }
+  float GetLineHeight() const override { return 1.0f; }
+};
+
+class CWrapLayout : public CGUITextLayout
+{
+public:
+  CWrapLayout(CGUIFont* font, float maxHeight) : CGUITextLayout(font, true, maxHeight) {}
+
+  std::vector<std::wstring> GetLines() const
+  {
+    std::vector<std::wstring> lines;
+    for (const CGUIString& line : m_lines)
+    {
+      std::wstring text;
+      for (character_t letter : line.m_text)
+        text.push_back(static_cast<wchar_t>(letter & 0xffff));
+      lines.push_back(std::move(text));
+    }
+    return lines;
+  }
+};
+
+std::vector<std::wstring> Wrap(const std::wstring& text, float maxWidth, float maxHeight = 0.0f)
+{
+  CFixedWidthFont font;
+  CWrapLayout layout(&font, maxHeight);
+  layout.UpdateW(text, maxWidth, true, true);
+  return layout.GetLines();
+}
+
+std::wstring StripSpaces(const std::wstring& text)
+{
+  std::wstring out;
+  for (wchar_t ch : text)
+    if (ch != L' ' && ch != L'　' && ch != L'\n')
+      out.push_back(ch);
+  return out;
+}
+
+std::wstring Join(const std::vector<std::wstring>& lines)
+{
+  std::wstring out;
+  for (const std::wstring& line : lines)
+    out += line;
+  return out;
+}
+
+using Lines = std::vector<std::wstring>;
+
+struct WrapTestParam
+{
+  std::string name;
+  std::wstring text;
+  float maxWidth;
+  Lines expected;
+};
+
+// U+4E2D U+6587 = "中文", U+7684 = "的", U+3000 = ideographic space
+const std::wstring kZhongWen = L"中文";
+const std::wstring kDe = L"的";
+const std::wstring kIdeographicSpace = L"　";
+
+const std::vector<WrapTestParam> wrapCases{
+    // Latin behaviour that must not change
+    {"LatinWords", L"hello world foo", 5.0f, {L"hello", L"world", L"foo"}},
+    {"LatinKeepsWordOnLineWhenItFits", L"ab cd ef", 5.0f, {L"ab cd", L"ef"}},
+    {"LatinCollapsesSurroundingSpaces", L"  hello   world  ", 5.0f, {L"hello", L"world"}},
+    {"LatinSplitsOverlongWordByCharacter", L"abcdefgh", 3.0f, {L"abc", L"def", L"gh"}},
+    {"LatinOverlongWordAfterShortWord", L"ab cdefgh", 3.0f, {L"ab", L"cde", L"fgh"}},
+    {"LatinParagraphBreakIsKept", L"hello\nworld", 20.0f, {L"hello", L"world"}},
+    {"LatinUnlimitedWidthIsOneLine", L"hello world", 0.0f, {L"hello world"}},
+    {"EmptyTextHasNoLines", L"", 5.0f, {}},
+
+    // CJK: a break is allowed between any two ideographs
+    {"CjkWrapsBetweenIdeographs",
+     kZhongWen + kZhongWen + kZhongWen,
+     4.0f,
+     {kZhongWen, kZhongWen, kZhongWen}},
+    {"CjkKeepsLatinWordIntact", kZhongWen + L"Kodi", 6.0f, {kZhongWen, L"Kodi"}},
+    {"CjkAfterLatinWordStartsNewLine", L"Kodi" + kZhongWen, 5.0f, {L"Kodi", kZhongWen}},
+    {"CjkAndLatinInterleaved",
+     L"中"
+     L"a"
+     L"文"
+     L"b",
+     3.0f,
+     {L"中a", L"文b"}},
+    {"CjkWithAsciiSpaces", kZhongWen + L" abc", 4.0f, {kZhongWen, L"abc"}},
+    {"CjkIdeographicSpaceIsASeparator",
+     kZhongWen + kIdeographicSpace + kZhongWen,
+     4.0f,
+     {kZhongWen, kZhongWen}},
+    {"CjkLeadingIdeographicSpaceIsStripped", kIdeographicSpace + kZhongWen, 4.0f, {kZhongWen}},
+    {"CjkParagraphBreakIsKept", kZhongWen + L"\n" + kZhongWen, 20.0f, {kZhongWen, kZhongWen}},
+
+    // Wrapped lines never end in a separator
+    {"NoTrailingSpaceBeforeCjk", L"ab " + kZhongWen, 4.0f, {L"ab", kZhongWen}},
+    {"NoTrailingIdeographicSpace",
+     kZhongWen + kIdeographicSpace + L"abcd",
+     6.0f,
+     {kZhongWen, L"abcd"}},
+};
+
+class TestGUITextLayoutWrap : public testing::TestWithParam<WrapTestParam>
+{
+};
+
+TEST_P(TestGUITextLayoutWrap, ProducesExpectedLines)
+{
+  const WrapTestParam& p = GetParam();
+  EXPECT_EQ(p.expected, Wrap(p.text, p.maxWidth));
+}
+
+INSTANTIATE_TEST_SUITE_P(TestGUITextLayout,
+                         TestGUITextLayoutWrap,
+                         testing::ValuesIn(wrapCases),
+                         [](const testing::TestParamInfo<WrapTestParam>& info)
+                         { return info.param.name; });
+
+// A glyph wider than the available width must still be emitted on its own line
+// so that wrapping always makes progress.
+TEST(TestGUITextLayoutWrap, GlyphWiderThanMaxWidthIsEmittedAlone)
+{
+  const Lines lines = Wrap(kZhongWen, 1.5f, /*maxHeight=*/10.0f);
+  EXPECT_EQ(Lines({L"中", L"文"}), lines);
+}
+
+TEST(TestGUITextLayoutWrap, LatinGlyphWiderThanMaxWidthIsEmittedAlone)
+{
+  const Lines lines = Wrap(L"ab", 0.5f, /*maxHeight=*/10.0f);
+  EXPECT_EQ(Lines({L"a", L"b"}), lines);
+}
+
+TEST(TestGUITextLayoutWrap, MaxHeightLimitsLineCount)
+{
+  const Lines lines = Wrap(kZhongWen + kZhongWen + kZhongWen, 4.0f, /*maxHeight=*/2.0f);
+  EXPECT_EQ(Lines({kZhongWen, kZhongWen}), lines);
+}
+
+// Every non-separator character of the input must appear exactly once in the
+// output, in order, and no multi-character line may exceed the width.
+TEST(TestGUITextLayoutWrap, PreservesContent)
+{
+  const std::vector<std::wstring> texts{
+      L"the quick brown fox jumps",
+      kZhongWen + kDe + L"Kodi" + kZhongWen + L" 2024 " + kDe,
+      L"a" + kZhongWen + L"bb" + kZhongWen + L"ccc",
+      kZhongWen + kIdeographicSpace + kZhongWen + L" " + kDe,
+      L"abc" + kZhongWen + L"defgh" + kZhongWen + kZhongWen,
+  };
+  for (const std::wstring& text : texts)
+  {
+    // Start at the widest glyph so every character fits on a line of its own.
+    for (float maxWidth = 2.0f; maxWidth <= 12.0f; maxWidth += 0.5f)
+    {
+      const Lines lines = Wrap(text, maxWidth, /*maxHeight=*/100.0f);
+      EXPECT_EQ(StripSpaces(text), StripSpaces(Join(lines))) << "width " << maxWidth;
+      for (const std::wstring& line : lines)
+      {
+        EXPECT_FALSE(line.empty()) << "width " << maxWidth;
+        if (line.size() > 1)
+        {
+          float width = 0.0f;
+          for (wchar_t ch : line)
+            width += CFixedWidthFont::GlyphWidth(ch);
+          EXPECT_LE(width, maxWidth) << "line overflows at width " << maxWidth;
+        }
+      }
+    }
+  }
+}
+
+// Style and colour bits live above the code point; they must not affect break decisions.
+TEST(TestGUITextLayoutWrap, StyleBitsDoNotAffectBreaks)
+{
+  CFixedWidthFont font;
+  CWrapLayout layout(&font, 0.0f);
+
+  vecText styled;
+  for (wchar_t ch : kZhongWen + L"Kodi")
+    styled.push_back((static_cast<character_t>(FONT_STYLE_BOLD) << 24) | (1u << 16) |
+                     static_cast<character_t>(ch));
+
+  layout.UpdateStyled(styled, {0xffffffff, 0xffffffff}, 6.0f, true);
+  EXPECT_EQ(Lines({kZhongWen, L"Kodi"}), layout.GetLines());
+}
+
+} // namespace

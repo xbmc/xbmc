@@ -167,11 +167,11 @@ public:
 
   bool UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& scrollInfo);
 
-  float GetTextWidth(std::span<const character_t> text);
+  virtual float GetTextWidth(std::span<const character_t> text);
   float GetCharWidth(character_t ch);
-  float GetTextHeight(int numLines) const;
+  virtual float GetTextHeight(int numLines) const;
   float GetTextBaseLine() const;
-  float GetLineHeight() const;
+  virtual float GetLineHeight() const;
 
   //! get font scale factor (rendered height / original height)
   float GetScaleFactor() const;
