@@ -89,7 +89,7 @@ TEST(TestMemoryStream, WorkerPersistsDetachedCoreAndAchievementsForReload)
                     snapshot.achievements.data(), snapshot.achievements.size());
         save->SetType(SAVE_TYPE::AUTO);
         save->SetTimestampFrames(17);
-        save->Finalize();
+        save->Finalize(true);
         EXPECT_TRUE(database.AddSavestate(path, "game.rom", *save));
       });
   CDeltaPairMemoryStream stream;

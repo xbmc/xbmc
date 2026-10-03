@@ -558,7 +558,6 @@ bool CSavestateFlatBuffer::PrepareVideoData()
   if (m_savestate == nullptr)
     return false;
 
-  //! @todo Add support for new compression types
   switch (m_savestate->video_data_compression())
   {
     case SAVESTATE::CompressionType_None:
@@ -569,6 +568,14 @@ bool CSavestateFlatBuffer::PrepareVideoData()
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid video data");
         return false;
       }
+
+      break;
+    }
+    case SAVESTATE::CompressionType_Zstd:
+    {
+      if (!CSavestateBlob::PrepareVideoData(*m_savestate, m_videoDataDecompressed))
+        return false;
+
       break;
     }
     default:
@@ -684,7 +691,6 @@ bool CSavestateFlatBuffer::PrepareMemoryData(size_t expectedSize)
   if (m_savestate == nullptr)
     return false;
 
-  //! @todo Add support for new compression types
   switch (m_savestate->memory_data_compression())
   {
     case SAVESTATE::CompressionType_None:
@@ -694,6 +700,13 @@ bool CSavestateFlatBuffer::PrepareMemoryData(size_t expectedSize)
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Invalid memory size {}", expectedSize);
         return false;
       }
+      break;
+    }
+    case SAVESTATE::CompressionType_Zstd:
+    {
+      if (!CSavestateBlob::PrepareMemoryData(*m_savestate, expectedSize, m_memoryDataDecompressed))
+        return false;
+
       break;
     }
     default:
@@ -727,7 +740,6 @@ bool CSavestateFlatBuffer::CopyMemoryDataTo(ISavestate& target) const
   targetFlatBuffer->m_memoryData.Clear();
   targetFlatBuffer->m_memoryDataDecompressed.clear();
 
-  //! @todo Add support for new compression types
   switch (m_savestate->memory_data_compression())
   {
     case SAVESTATE::CompressionType_None:
@@ -747,6 +759,21 @@ bool CSavestateFlatBuffer::CopyMemoryDataTo(ISavestate& target) const
         targetFlatBuffer->m_memoryData.raw.assign(memoryData->data(),
                                                   memoryData->data() + memoryData->size());
       }
+
+      break;
+    }
+    case SAVESTATE::CompressionType_Zstd:
+    {
+      if (!CSavestateBlob::IsValidCopiedCompressedMemoryData(*m_savestate))
+        return false;
+
+      const auto* compressed = m_savestate->memory_data_compressed();
+
+      targetFlatBuffer->m_memoryData.compressed.assign(compressed->data(),
+                                                       compressed->data() + compressed->size());
+      targetFlatBuffer->m_memoryData.compression = SAVESTATE::CompressionType_Zstd;
+      targetFlatBuffer->m_memoryData.uncompressedSize =
+          m_savestate->memory_data_uncompressed_size();
 
       break;
     }
@@ -842,15 +869,15 @@ uint8_t* CSavestateFlatBuffer::GetAchievementBuffer(size_t size)
   return m_achievementData.empty() ? nullptr : m_achievementData.data();
 }
 
-void CSavestateFlatBuffer::Finalize()
+void CSavestateFlatBuffer::Finalize(bool compress)
 {
   if (m_builder == nullptr)
     return;
 
-  const SavestateBlobOffsets videoBlob =
-      CSavestateBlob::CreateWriteOffsets(*m_builder, m_videoData, SCHEMA_VIDEO_DATA_FIELD_NAME);
-  const SavestateBlobOffsets memoryBlob =
-      CSavestateBlob::CreateWriteOffsets(*m_builder, m_memoryData, SCHEMA_MEMORY_DATA_FIELD_NAME);
+  const SavestateBlobOffsets videoBlob = CSavestateBlob::CreateWriteOffsets(
+      *m_builder, m_videoData, SCHEMA_VIDEO_DATA_FIELD_NAME, compress);
+  const SavestateBlobOffsets memoryBlob = CSavestateBlob::CreateWriteOffsets(
+      *m_builder, m_memoryData, SCHEMA_MEMORY_DATA_FIELD_NAME, compress);
 
   flatbuffers::Offset<flatbuffers::Vector<uint8_t>> achievementBlob = 0;
   if (!m_achievementData.empty())

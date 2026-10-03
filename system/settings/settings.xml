@@ -2822,7 +2822,14 @@
           </control>
         </setting>
       </group>
-      <group id="2" label="35320">
+      <group id="2" label="35174">
+        <setting id="games.compresssavedgames" type="boolean" label="35175" help="35176">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="3" label="35320">
         <setting id="gamesgeneral.cheatspath" type="path" label="35321" help="35322">
           <level>3</level>
           <default></default>
