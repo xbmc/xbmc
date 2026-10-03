@@ -36,7 +36,17 @@ class CMouseEvent;
 } // namespace MOUSE
 } // namespace KODI
 
-enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
+enum ORIENTATION { HORIZONTAL = 0, VERTICAL, HORIZONTAL_REVERSE, VERTICAL_REVERSE };
+
+constexpr bool IsVertical(ORIENTATION o) noexcept { return o == VERTICAL || o == VERTICAL_REVERSE; }
+constexpr bool IsHorizontal(ORIENTATION o) noexcept { return !IsVertical(o); }
+constexpr bool IsReversed(ORIENTATION o) noexcept { return o == VERTICAL_REVERSE || o == HORIZONTAL_REVERSE; }
+
+// Helper for RTL mirroring in containers
+constexpr float MirrorPos(float pos, float itemSize, float start, float extent) noexcept
+{
+  return 2.0f * start + extent - pos - itemSize;
+}
 
 class CControlState
 {

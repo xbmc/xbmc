@@ -22,6 +22,7 @@
 #include <optional>
 #include <utility>
 #include <vector>
+#include <cstdint>
 
 /*!
  \ingroup controls
@@ -102,6 +103,11 @@ public:
   void DumpTextureUse() override;
 #endif
 protected:
+  virtual bool IsScrollAxisMirrored() const { return IsReversed(m_orientation); }
+  bool IsScrollActionFlipped() const { return IsVertical(m_orientation) && IsScrollAxisMirrored(); }
+  uint32_t MapScrollAction(uint32_t actionID) const;
+  float GetListPosFromPoint(const CPoint& point) const;
+
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool OnClick(int actionID);
 
