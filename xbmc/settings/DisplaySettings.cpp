@@ -350,6 +350,16 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
     return true;
 #endif
   }
+#ifdef TARGET_WINDOWS_DESKTOP
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_HIGHPERFORMANCEGPU)
+  {
+    // re-select the rendering GPU, then re-apply the fullscreen mode as exclusive fullscreen is
+    // not possible when rendering on a GPU that doesn't own the display
+    DX::DeviceResources::Get()->OnGpuPreferenceChanged();
+    CGraphicContext& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
+    gfxContext.SetVideoResolution(gfxContext.GetVideoResolution(), true);
+  }
+#endif
 #if defined(HAVE_X11) || defined(TARGET_WINDOWS_DESKTOP) || defined(TARGET_DARWIN_OSX)
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS)
   {

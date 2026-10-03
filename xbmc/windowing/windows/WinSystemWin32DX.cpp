@@ -108,6 +108,12 @@ bool CWinSystemWin32DX::DestroyRenderSystem()
   return true;
 }
 
+bool CWinSystemWin32DX::CanUseExclusiveFullscreen() const
+{
+  // a GPU that doesn't own the display can't take it into exclusive mode
+  return !m_deviceResources || !m_deviceResources->IsCrossAdapter();
+}
+
 void CWinSystemWin32DX::SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res)
 {
   if (m_deviceResources->SetFullScreen(fullScreen, res))

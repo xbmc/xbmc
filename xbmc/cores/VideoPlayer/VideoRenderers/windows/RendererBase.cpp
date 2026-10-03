@@ -244,10 +244,12 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
     return;
 
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  bool uploaded = false;
   if (!buf->IsLoaded())
   {
     if (!buf->UploadBuffer())
       return;
+    uploaded = true;
   }
 
   ProcessHDR(buf);
@@ -267,6 +269,18 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
   CPoint dest[4];
   CRect source = sourceRect;     // can be changed
   CRect(destRect).GetQuad(dest); // can be changed
+
+  const IntermediateState state{m_iBufferIndex,
+                                sourceRect,
+                                destRect,
+                                flags,
+                                m_videoSettings.m_Contrast,
+                                m_videoSettings.m_Brightness,
+                                DX::Windowing()->UseLimitedColor(),
+                                m_videoSettings.m_ToneMapParam};
+  m_reuseIntermediate = !uploaded && state == m_intermediateState;
+  // RenderImpl() clears it if the conversion fails
+  m_intermediateState = state;
 
   RenderImpl(m_IntermediateTarget, source, dest, flags);
 
@@ -366,6 +380,7 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width,
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
+  m_intermediateState = {};
 
   CLog::LogF(LOGDEBUG, "creating intermediate target {}x{} format {}.", width, height,
              DX::DXGIFormatToString(format));
@@ -440,6 +455,7 @@ void CRendererBase::UpdateVideoFilters()
 {
   if (!m_outputShader)
   {
+    m_intermediateState = {};
     m_outputShader = std::make_shared<COutputShader>();
     if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping,
                                 m_toneMapMethod, m_useHLGtoPQ))
