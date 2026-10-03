@@ -1876,19 +1876,8 @@ public:
   ///@}
 
 private:
-  static int compareVersion(const int v1[3], const int v2[3])
-  {
-    for (unsigned i(0); i < 3; ++i)
-      if (v1[i] != v2[i])
-        return v1[i] - v2[i];
-    return 0;
-  }
-
   void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    int api[3] = {0, 0, 0};
-    sscanf(GetInstanceAPIVersion().c_str(), "%d.%d.%d", &api[0], &api[1], &api[2]);
-
     instance->hdl = this;
     instance->inputstream->toAddon->open = ADDON_Open;
     instance->inputstream->toAddon->close = ADDON_Close;
@@ -1930,8 +1919,7 @@ private:
 
     /*
     // Way to include part on new API version
-    int minPartVersion[3] = { 3, 0, 0 };
-    if (compareVersion(api, minPartVersion) >= 0)
+    if (IsInstanceAPIVersionAtLeast(3, 0, 0))
     {
 
     }
