@@ -13,11 +13,15 @@
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "games/AchievementRuntime.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/dialogs/DialogGameDefines.h"
+#include "guilib/GUIMacros.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
 #include "resources/LocalizeStrings.h"
@@ -159,6 +163,9 @@ void CDialogGameAchievements::OnInitWindow()
   m_viewControl->SetCurrentView(DEFAULT_VIEW_LIST);
   RefreshList();
 
+  if (!gameSettings.AchievementsHardcoreOffered())
+    SET_CONTROL_HIDDEN(CONTROL_CHEEVOS_HARDCORE);
+
   CGUIDialog::OnInitWindow();
 }
 
@@ -184,6 +191,11 @@ bool CDialogGameAchievements::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       const int control = message.GetSenderId();
+      if (control == CONTROL_CHEEVOS_HARDCORE)
+      {
+        OnHardcoreToggled();
+        return true;
+      }
       if (control == CONTROL_CHEEVOS_ENCORE || control == CONTROL_CHEEVOS_CHALLENGE_INDICATOR)
       {
         const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -350,4 +362,33 @@ void CDialogGameAchievements::RefreshList()
   SetProperty("Header", header);
   SetProperty("Achievements.GameTitle", state.gameTitle);
   SetProperty("Achievements.Progress", progress);
+}
+
+void CDialogGameAchievements::OnHardcoreToggled()
+{
+  CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
+
+  const bool enabling = !gameSettings.GetAchievementsHardcore();
+
+  // Only turning it on is asked about, and only while a game is up: that is
+  // the case that costs the player the session they are in. The radio button
+  // takes its state from the setting, so a refusal here corrects it.
+  //
+  // "Hardcore mode", "Starting a hardcore session restarts the game...", "Continue?"
+  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  if (enabling && appPlayer->IsPlayingGame() &&
+      !CGUIDialogYesNo::ShowAndGetInput(CVariant{35700},
+                                        CVariant{Localize(35702) + "[CR][CR]" + Localize(19194)}))
+  {
+    return;
+  }
+
+  gameSettings.SetAchievementsHardcore(enabling);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
+
+  // The whole OSD goes, not just this dialog: the player asked for the game to
+  // restart, and leaving them on the menu they opened hides it. An emulator
+  // that refused hardcore doesn't restart.
+  if (enabling && gameSettings.GetAchievementsHardcore())
+    CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog()->CloseOSD();
 }

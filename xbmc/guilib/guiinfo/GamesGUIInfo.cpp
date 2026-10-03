@@ -376,6 +376,11 @@ bool CGamesGUIInfo::GetBool(bool& value,
       value = gameClient && gameClient->Cheats().HasCheats();
       return true;
     }
+    case RETROPLAYER_ACHIEVEMENTS_HARDCORE:
+    {
+      value = CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore();
+      return true;
+    }
     default:
       break;
   }
