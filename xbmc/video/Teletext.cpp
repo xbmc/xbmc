@@ -1337,27 +1337,46 @@ void CTeletextDecoder::RenderPage()
     if (m_RenderInfo.DelayStarted)
     {
       const auto now = std::chrono::steady_clock::now();
-      for (TextSubtitleCache_t* const subtitleCache : m_RenderInfo.SubtitleCache)
+
+      auto isEligible = [&](const TextSubtitleCache_t* c)
       {
-        if (subtitleCache && subtitleCache->Valid)
+        if (c->HasDisplayTime)
+          return hasDisplayClock && currentDisplayTime >= c->DisplayTime;
+
+        return !(!hasDisplayClock && m_RenderInfo.SubtitleDelay &&
+                 std::chrono::duration_cast<std::chrono::seconds>(now - c->Timestamp).count() <
+                     m_RenderInfo.SubtitleDelay);
+      };
+
+      auto isNewer = [](const TextSubtitleCache_t* a, const TextSubtitleCache_t* b)
+      {
+        if (a->HasDisplayTime && b->HasDisplayTime)
+          return a->DisplayTime > b->DisplayTime;
+
+        return a->Timestamp > b->Timestamp; // arrival order as fallback
+      };
+
+      TextSubtitleCache_t* latest = nullptr;
+      for (TextSubtitleCache_t* const c : m_RenderInfo.SubtitleCache)
+      {
+        if (c && c->Valid && isEligible(c) && (!latest || isNewer(c, latest)))
+          latest = c;
+      }
+
+      if (latest)
+      {
+        // Drop overdue entries; keep scheduled future entries
+        for (TextSubtitleCache_t* const c : m_RenderInfo.SubtitleCache)
         {
-          if (subtitleCache->HasDisplayTime)
-          {
-            if (!hasDisplayClock || currentDisplayTime < subtitleCache->DisplayTime)
-              continue;
-          }
-          else if (!hasDisplayClock && m_RenderInfo.SubtitleDelay &&
-                   std::chrono::duration_cast<std::chrono::seconds>(now - subtitleCache->Timestamp)
-                           .count() < m_RenderInfo.SubtitleDelay)
-          {
-            continue;
-          }
-          memcpy(m_RenderInfo.PageChar, subtitleCache->PageChar, 40 * 25);
-          memcpy(m_RenderInfo.PageAtrb, subtitleCache->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
-          DoRenderPage(StartRow, national_subset_bak);
-          subtitleCache->Valid = false;
-          return;
+          if (c && c->Valid && c != latest && isEligible(c))
+            c->Valid = false;
         }
+
+        memcpy(m_RenderInfo.PageChar, latest->PageChar, 40 * 25);
+        memcpy(m_RenderInfo.PageAtrb, latest->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
+        DoRenderPage(StartRow, national_subset_bak);
+        latest->Valid = false;
+        return;
       }
     }
     if (m_RenderInfo.ZoomMode != 2)
