@@ -403,6 +403,7 @@ void CAdvancedSettings::Initialize()
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
   m_minimumEpisodePlaylistDuration = 5 * 60; // 5 minutes
   m_disableEpisodeRanges = false;
+  m_parseBlurayProjectFile = true;
 
   m_caseSensitiveLocalArtMatch = true; // case sensitive local art matching
   m_bNoRemoteArtWithLocalScraper =
@@ -913,6 +914,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "casesensitivelocalartmatch", m_caseSensitiveLocalArtMatch);
     XMLUtils::GetInt(pElement, "minimumepisodeplaylistduration", m_minimumEpisodePlaylistDuration);
     XMLUtils::GetBoolean(pElement, "disableepisoderanges", m_disableEpisodeRanges);
+    XMLUtils::GetBoolean(pElement, "parseblurayprojectfile", m_parseBlurayProjectFile);
     XMLUtils::GetBoolean(pElement, "noremoteartwithlocalscraper", m_bNoRemoteArtWithLocalScraper);
     XMLUtils::GetBoolean(pElement, "ignorefoldernamesinarchives", m_ignoreFolderNamesInArchives);
   }
