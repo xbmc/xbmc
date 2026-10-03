@@ -144,7 +144,7 @@ void CGameLoop::Process(void)
       // Trigger the appropriate callback depending on the direction of time
       // (forward or rewind)
       if (m_loopSpeedFactor > 0.0)
-        m_callback->FrameEvent();
+        RunFrame();
       else if (m_loopSpeedFactor < 0.0)
         m_callback->RewindEvent();
 
@@ -215,13 +215,7 @@ bool CGameLoop::PaceToDisplay()
   if (start > now && m_sleepEvent.Wait(start - now))
     return true; // Woken by a change, such as of speed; look again
 
-  const Clock::time_point begin = Clock::now();
-  m_callback->FrameEvent();
-  const Clock::duration cost = Clock::now() - begin;
-
-  // Follow the slowest recent frame, letting it go slowly, so that one quick
-  // frame doesn't make the next start too late
-  m_frameCost = std::max(cost, m_frameCost - m_frameCost / 64);
+  RunFrame();
 
   m_lastPacedTake = take;
   m_displayPacing->SetPlaybackRate(rate);
@@ -230,6 +224,20 @@ bool CGameLoop::PaceToDisplay()
   m_lastFrameUs = NowUs();
 
   return true;
+}
+
+void CGameLoop::RunFrame()
+{
+  using Clock = CDisplayPacing::Clock;
+
+  const Clock::time_point begin = Clock::now();
+  m_callback->FrameEvent();
+  const Clock::duration cost = Clock::now() - begin;
+
+  // Follow the slowest recent frame, letting it go slowly, so that one quick
+  // frame doesn't make the next start too late. Timed whether or not it was
+  // paced, so that a slow frame which stops pacing is forgotten again.
+  m_frameCost = std::max(cost, m_frameCost - m_frameCost / 64);
 }
 
 void CGameLoop::StopPacing()
