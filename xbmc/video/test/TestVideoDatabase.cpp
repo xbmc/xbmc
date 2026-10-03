@@ -22,6 +22,7 @@
 #include "video/VideoInfoTag.h"
 
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -455,4 +456,42 @@ TEST_F(TestVideoDatabase, GetItemsForPathReturnsArchivedMoviesWithCollapsedPaths
   EXPECT_EQ(archived, archivedItems[0]->GetPath());
   EXPECT_EQ(0, archivedItems[0]->GetVideoInfoTag()->GetPlayCount());
   EXPECT_EQ(1200.0, archivedItems[0]->GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
+TEST_F(TestVideoDatabase, ToStoredPathAddsTheTrailingSeparator)
+{
+  EXPECT_EQ("smb://server/movies/", CVideoDatabase::ToStoredPath("smb://server/movies"));
+  EXPECT_EQ("smb://server/movies/", CVideoDatabase::ToStoredPath("smb://server/movies/"));
+}
+
+TEST_F(TestVideoDatabase, GetPathsForCleaningMatchesADirectoryGivenWithoutItsSeparator)
+{
+  const int idSource{m_db.AddPath("smb://server/movies/")};
+  const int idFilm{m_db.AddPath("smb://server/movies/film/", "smb://server/movies/")};
+  ASSERT_GT(idSource, 0);
+  ASSERT_GT(idFilm, 0);
+
+  // no content named, so the path's own content, here none, does not matter
+  std::set<int> paths;
+  ASSERT_TRUE(m_db.GetPathsForCleaning("smb://server/movies", "", paths));
+  EXPECT_EQ((std::set<int>{idSource, idFilm}), paths);
+}
+
+TEST_F(TestVideoDatabase, GetPathsForCleaningResolvesNothingForAnUnknownDirectory)
+{
+  ASSERT_GT(m_db.AddPath("smb://server/movies/"), 0);
+
+  std::set<int> paths;
+  ASSERT_TRUE(m_db.GetPathsForCleaning("smb://server/shows", "", paths));
+  EXPECT_TRUE(paths.empty());
+}
+
+TEST_F(TestVideoDatabase, GetPathsForCleaningMatchesTheWholeLibraryByContentExactly)
+{
+  ASSERT_GT(m_db.AddPath("smb://server/movies/"), 0);
+
+  // a path with no scraper has no content, so a clean for movies leaves it alone
+  std::set<int> paths;
+  ASSERT_TRUE(m_db.GetPathsForCleaning("", "movies", paths));
+  EXPECT_TRUE(paths.empty());
 }
