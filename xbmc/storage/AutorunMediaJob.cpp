@@ -16,17 +16,27 @@
 #include "interfaces/builtins/Builtins.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-CAutorunMediaJob::CAutorunMediaJob(const std::string &label, const std::string &path):
-  m_path(path),
-  m_label(label)
+CAutorunMediaJob::CAutorunMediaJob(const std::string& label,
+                                   const std::string& path,
+                                   uint64_t generation)
+  : m_path(path),
+    m_label(label),
+    m_generation(generation)
 {
 }
 
 bool CAutorunMediaJob::DoWork()
 {
+#ifdef HAS_OPTICAL_DRIVE
+  // The disc may already have been ejected while this job was queued
+  if (!CServiceBroker::GetMediaManager().IsDiscCurrent(m_path, m_generation))
+    return true;
+#endif
+
   CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
   // wake up and turn off the screensaver if it's active
@@ -47,6 +57,12 @@ bool CAutorunMediaJob::DoWork()
   pDialog->Add(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21335));
 
   pDialog->Open();
+
+#ifdef HAS_OPTICAL_DRIVE
+  // Opening the dialog waits for the user, so the disc may be gone by now
+  if (!CServiceBroker::GetMediaManager().IsDiscCurrent(m_path, m_generation))
+    return true;
+#endif
 
   int selection = pDialog->GetSelectedItem();
   if (selection >= 0)

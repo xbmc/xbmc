@@ -69,16 +69,22 @@ public:
   /*! \brief Build and register an optical-disc auto source for the given device path.
    * Adds the source WITHOUT triggering autorun.
    * \param devicePath The optical drive path (e.g. "D:")
+   * \param generation What the drive was on when the caller looked
+   * \sa IsDiscCurrent
    */
-  void AddOpticalSource(const std::string& devicePath);
+  void AddOpticalSource(const std::string& devicePath, uint64_t generation);
 #endif
 
   bool IsDiscInDrive(const std::string& devicePath="");
   /*! \brief Whether the disc in a drive is an audio CD
    * \param allowCachedFailure Allow GUI polling to reuse a recent failed TOC read on Windows.
    *        Explicit actions such as ripping must leave this false so they read the disc again.
+   * \param polling For GUI polling on Windows - answer from the cache alone while a job reads
+   *        the disc
    */
-  bool IsAudio(const std::string& devicePath = "", bool allowCachedFailure = false);
+  bool IsAudio(const std::string& devicePath = "",
+               bool allowCachedFailure = false,
+               bool polling = false);
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
   DriveState GetDriveStatus(const std::string& devicePath = "");
@@ -87,14 +93,52 @@ public:
    * \param devicePath The optical drive path, empty for every drive
    */
   void ResetDriveCaches(const std::string& devicePath = "");
+
+#if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+  /*! \brief Ask the drive for its state and wait for the answer
+   * Blocks for as long as the drive takes, so only from a job.
+   * \param devicePath The optical drive path
+   * \sa GetDriveStatus
+   */
+  DriveState GetDriveStatusNow(const std::string& devicePath = "");
+#endif
+
+#ifdef HAS_OPTICAL_DRIVE
+  /*! \brief Note that the disc in a drive has changed
+   * \param devicePath The optical drive path
+   * \return The generation the drive is now on
+   */
+  uint64_t BumpDiscGeneration(const std::string& devicePath);
+
+  /*! \brief The generation a drive is on now, or 0 if nothing has happened to it yet
+   * \param devicePath The optical drive path
+   */
+  uint64_t DiscGeneration(const std::string& devicePath);
+
+  /*! \brief Whether a drive still holds the disc it did when a job was queued
+   * Reading a disc takes seconds and a job cannot be cancelled, so one can still be running
+   * after its disc has been ejected or swapped. Its findings describe a disc that is no longer
+   * there and must not be applied.
+   * \param devicePath The optical drive path
+   * \param generation The generation the caller was queued on
+   */
+  bool IsDiscCurrent(const std::string& devicePath, uint64_t generation);
+#endif
 #ifdef HAS_OPTICAL_DRIVE
   /*! \brief Get the disc TOC, reusing successful reads.
    * \param allowCachedFailure Allow GUI polling to reuse a recent failed read on Windows.
+   * \param polling For GUI polling on Windows - answer from the cache alone while a job reads
+   *        the disc
    */
   std::shared_ptr<MEDIA_DETECT::CCdInfo> GetCdInfo(const std::string& devicePath = "",
-                                                   bool allowCachedFailure = false);
+                                                   bool allowCachedFailure = false,
+                                                   bool polling = false);
   bool RemoveCdInfo(const std::string& devicePath = "");
-  std::string GetDiskLabel(const std::string& devicePath = "");
+  /*! \brief The name to show for the disc in a drive
+   * \param polling For GUI polling on Windows - answer from the cache alone while a job reads
+   *        the disc
+   */
+  std::string GetDiskLabel(const std::string& devicePath = "", bool polling = false);
   std::string GetDiskUniqueId(const std::string& devicePath="");
   bool HasMediaBlurayPlaylist(const std::string& devicePath = "");
 
@@ -200,6 +244,44 @@ private:
 
   bool IsOpticalDrivePresent();
 
+  /*! \brief Drop the sources of a disc, leaving what is cached about it alone
+   * \param share The source, as AddAutoSource() was given it
+   */
+  void DeleteAutoSource(const CMediaSource& share);
+
+#ifdef HAS_OPTICAL_DRIVE
+  /*! \brief Identify a newly inserted disc and act on it
+   * Runs as a job - reading the disc is slow enough to be seen as a GUI freeze if done on the
+   * thread OnStorageAdded() is called from.
+   * \param device the optical storage device
+   * \param generation What the drive was on when the job was queued
+   * \sa OnStorageAdded
+   */
+  void ProcessAddedOpticalDevice(const MEDIA_DETECT::STORAGE::StorageDevice& device,
+                                 uint64_t generation);
+
+  /*! \brief Work a drive's tray as a job
+   * Both deciding what to do and doing it wait on the drive, so neither can happen on the
+   * application thread. \sa EjectTray \sa CloseTray \sa ToggleTray
+   * \param devicePath Path of the drive, empty for the first available optical drive
+   * \param operation What to ask the handler to do, reporting whether the drive moved
+   * \param eject Passed to the operation, for the one that needs to know
+   */
+  void OperateTray(
+      const std::string& devicePath,
+      const std::function<bool(IDiscDriveHandler&, const std::string&, bool)>& operation,
+      bool eject = true);
+
+  /*! \brief The generation of a drive, for a caller already holding m_muAutoSource
+   * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
+   */
+  uint64_t DiscGenerationLocked(const std::string& translatedDevicePath) const;
+
+  std::map<std::string, uint64_t> m_discGeneration;
+  /*! Drives whose tray a job is working, guarded by m_muAutoSource */
+  std::set<std::string> m_trayBusy;
+#endif
+
   struct DiscInfoCacheEntry
   {
     /*! What the disc reported about itself, exactly as GetDiscInfo() returned it */
@@ -214,9 +296,10 @@ private:
    * Reading a disc is slow - it can spin the drive up and, for a Blu-ray, load libaacs - so
    * everything that needs to identify a disc shares the one read.
    * \param mediaPath The drive holding the disc (eg. "D:")
+   * \param polling Answer from the cache alone, even when expired, while a job reads the disc
    * \return What the disc reported, and the name to show for it
    */
-  DiscInfoCacheEntry GetCachedDiscInfo(const std::string& mediaPath);
+  DiscInfoCacheEntry GetCachedDiscInfo(const std::string& mediaPath, bool polling = false);
   /*! Disc identity per drive, read from the disc itself - see GetDiskLabel */
   std::map<std::string, DiscInfoCacheEntry> m_mapDiscInfo;
   /*! Removable drives at the last storage change, so a drive that has since gone can be forgotten */
@@ -250,14 +333,29 @@ private:
   /*! Last state logged per drive. Deliberately survives ResetDriveCaches() so a re-probe that
       lands on the same state stays quiet - only transitions are logged */
   std::map<std::string, DriveState> m_driveStatusLogged;
+  /*! Drives last seen holding a disc, so that the disc going is noticed whatever the probes
+      in between answered */
+  std::set<std::string> m_discSeen;
   /*! Bumped by every ResetDriveCaches() so a probe that was invalidated while it was in
       flight can discard its now stale result instead of caching it - see GetDriveStatus */
   uint64_t m_driveStatusGeneration{0};
+  /*! Drives with a probe already queued, so only one job is submitted per drive */
+  std::set<std::string> m_refreshingDrives;
   CCriticalSection m_driveStatusSection;
+
+  /*! \brief Ask the drive for its state and cache it, blocking until it answers
+   * \param translatedDevicePath The optical drive device path (e.g. "\\\\.\\D:")
+   * \return The state the drive reported
+   */
+  DriveState RefreshDriveStatus(const std::string& translatedDevicePath);
   /*! Drives whose disc yielded no CdInfo, and when to try reading it again. Guarded by
       m_muAutoSource like m_mapCdInfo - see GetCdInfo */
   std::map<std::string, std::chrono::steady_clock::time_point> m_cdInfoUnavailable;
   uint64_t m_cdInfoGeneration{0};
+  /*! Drives a job is reading for GUI polling, so only one is submitted per drive. Guarded by
+      m_muAutoSource for the TOC and m_discInfoSection for the disc identity */
+  std::set<std::string> m_cdInfoFilling;
+  std::set<std::string> m_discInfoFilling;
 #endif
 #ifdef HAVE_LIBBLURAY
   HasBlurayPlaylist m_hasBlurayPlaylist{HasBlurayPlaylist::UNKNOWN};

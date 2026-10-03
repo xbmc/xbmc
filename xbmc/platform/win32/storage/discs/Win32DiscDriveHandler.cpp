@@ -78,32 +78,33 @@ TrayState CWin32DiscDriveHandler::GetTrayState(const std::string& devicePath)
   return trayState;
 }
 
-void CWin32DiscDriveHandler::EjectDriveTray(const std::string& devicePath)
+bool CWin32DiscDriveHandler::EjectDriveTray(const std::string& devicePath)
 {
   if (devicePath.empty())
   {
     CLog::LogF(LOGERROR, "Invalid/Empty devicePath provided");
-    return;
+    return false;
   }
-  CWIN32Util::EjectTray(devicePath[0]);
+  // S_FALSE means the tray was already there, the drive refused or the request failed
+  return CWIN32Util::EjectTray(devicePath[0]) == S_OK;
 }
 
-void CWin32DiscDriveHandler::CloseDriveTray(const std::string& devicePath)
+bool CWin32DiscDriveHandler::CloseDriveTray(const std::string& devicePath)
 {
   if (devicePath.empty())
   {
     CLog::LogF(LOGERROR, "Invalid/Empty devicePath provided");
-    return;
+    return false;
   }
-  CWIN32Util::CloseTray(devicePath[0]);
+  return CWIN32Util::CloseTray(devicePath[0]) == S_OK;
 }
 
-void CWin32DiscDriveHandler::ToggleDriveTray(const std::string& devicePath)
+bool CWin32DiscDriveHandler::ToggleDriveTray(const std::string& devicePath)
 {
   if (devicePath.empty())
   {
     CLog::LogF(LOGERROR, "Invalid/Empty devicePath provided");
-    return;
+    return false;
   }
-  CWIN32Util::ToggleTray(devicePath[0]);
+  return CWIN32Util::ToggleTray(devicePath[0]) == S_OK;
 }
