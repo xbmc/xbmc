@@ -94,6 +94,7 @@ private:
    */
   bool PaceToDisplay();
   void StopPacing();
+  void RunFrame();
 
   std::chrono::microseconds FrameTimeUs() const;
   std::chrono::microseconds NowUs() const;
