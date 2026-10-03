@@ -17,6 +17,7 @@
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 
@@ -93,6 +94,8 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   audioFormat.m_sampleRate = iSampleRate;
   audioFormat.m_channelLayout = channelLayout;
   m_pAudioStream = audioEngine->MakeStream(audioFormat);
+  m_playingDelay = 0.0;
+  m_framesToSkip = 0;
 
   if (m_pAudioStream == nullptr)
   {
@@ -122,21 +125,45 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
 
       const unsigned int frameCount = static_cast<unsigned int>(audioPacket.size / frameSize);
 
+      // While the game is paused, muted, rewound or fast-forwarded, the sink
+      // fills the device with silence, and the game's sound would queue behind
+      // it for good. Skip the start of the next packets until the delay is back
+      // to what it was, keeping at least half of each so that the stream never
+      // runs dry and gets padded again.
+      const double sampleRate = m_pAudioStream->GetSampleRate();
+      if (m_restoreDelay.exchange(false) && m_playingDelay > 0.0)
+        m_framesToSkip = static_cast<unsigned int>(MAX_DELAY * sampleRate);
+
+      unsigned int skipFrames = 0;
+      if (m_framesToSkip > 0)
+      {
+        const double excessSecs = delaySecs - m_playingDelay;
+        if (excessSecs > 0.0)
+          skipFrames = std::min(
+              {m_framesToSkip, frameCount / 2, static_cast<unsigned int>(excessSecs * sampleRate)});
+        m_framesToSkip = skipFrames > 0 ? m_framesToSkip - skipFrames : 0;
+      }
+
+      if (m_framesToSkip == 0)
+        m_playingDelay = delaySecs;
+
       if (delaySecs > MAX_DELAY)
       {
         m_pAudioStream->Flush();
+        skipFrames = 0;
+        m_framesToSkip = 0;
         CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay ({:0.2f} ms) is too high - flushing",
                   delaySecs * 1000);
       }
 
       const unsigned int accepted =
-          m_pAudioStream->AddData(&audioPacket.data, 0, frameCount, nullptr);
+          m_pAudioStream->AddData(&audioPacket.data, skipFrames, frameCount - skipFrames, nullptr);
 
       // Dropping what the sink won't take is deliberate; being silent about it
       // is not.
-      if (accepted < frameCount)
+      if (accepted < frameCount - skipFrames)
       {
-        m_droppedFrames += frameCount - accepted;
+        m_droppedFrames += frameCount - skipFrames - accepted;
         ++m_dropEvents;
 
         const auto now = std::chrono::steady_clock::now();
