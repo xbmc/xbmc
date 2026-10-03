@@ -206,11 +206,6 @@ if(TARGET ${APP_NAME_LC}::EGL)
                       EGLFence.h)
 endif()
 
-# The large map trips the clang optimizer
-if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
-  set_source_files_properties(Mime.cpp PROPERTIES COMPILE_FLAGS -O0)
-endif()
-
 if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
   list(APPEND SOURCES GLUtils.cpp)
   list(APPEND HEADERS GLUtils.h)
