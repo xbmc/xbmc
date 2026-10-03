@@ -277,6 +277,18 @@ float CEngineStats::GetWaterLevel()
                               m_sinkFormat.m_streamInfo.GetDuration() / 1000.0);
 }
 
+int CEngineStats::GetBufferedSamples()
+{
+  std::unique_lock lock(m_lock);
+  return m_bufferedSamples;
+}
+
+double CEngineStats::GetSinkDelaySeconds()
+{
+  std::unique_lock lock(m_lock);
+  return m_sinkDelay.delay;
+}
+
 void CEngineStats::SetSuspended(bool state)
 {
   std::unique_lock lock(m_lock);
@@ -2147,12 +2159,22 @@ bool CActiveAE::RunStages()
 
         if (error > maxError)
         {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
+          const double waterLevelMs = static_cast<double>(m_stats.GetWaterLevel()) * 1000.0;
+          CLog::Log(LOGWARNING,
+                    "ActiveAE - large audio sync error: {:.1f} ms "
+                    "(pts={:.1f} delay={:.1f} clock={:.1f} bufSamples={} sinkDelay={:.1f} water={:.1f})",
+                    error, pts, delay, (*it)->m_pClock->GetClock(), m_stats.GetBufferedSamples(),
+                    m_stats.GetSinkDelaySeconds() * 1000.0, waterLevelMs);
           error = maxError;
         }
         else if (error < -maxError)
         {
-          CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
+          const double waterLevelMs = static_cast<double>(m_stats.GetWaterLevel()) * 1000.0;
+          CLog::Log(LOGWARNING,
+                    "ActiveAE - large audio sync error: {:.1f} ms "
+                    "(pts={:.1f} delay={:.1f} clock={:.1f} bufSamples={} sinkDelay={:.1f} water={:.1f})",
+                    error, pts, delay, (*it)->m_pClock->GetClock(), m_stats.GetBufferedSamples(),
+                    m_stats.GetSinkDelaySeconds() * 1000.0, waterLevelMs);
           error = -maxError;
         }
         (*it)->m_syncError.Add(error);
