@@ -234,7 +234,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
 
   const CURL url{file};
   if (URIUtils::IsInArchive(file) || URIUtils::IsArchive(url))
-    strFile = URIUtils::ReplaceExtension(url.GetHostName(), ".avi");
+    file = strFile = URIUtils::ReplaceExtension(url.GetHostName(), ".avi");
 
   if (item.IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(item.GetPath());
