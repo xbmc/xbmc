@@ -755,10 +755,13 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::HOLDSTREAM:
           // A pause that leaves STREAMING set, so the sink keeps the wire alive for the hold.
           stream = *(CActiveAEStream**)msg->data;
+          // The filler repeats the last burst, so only into a gap this stream alone left.
           if (!stream->m_paused && m_streams.size() == 1)
+          {
             FlushEngine();
+            m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::ARMFILLER);
+          }
           stream->m_paused = true;
-          m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::ARMFILLER);
           return;
         case CActiveAEControlProtocol::RESUMESTREAM:
           stream = *(CActiveAEStream**)msg->data;

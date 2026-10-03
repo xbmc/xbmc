@@ -1151,7 +1151,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       {
         static const char* const names[] = {"none", "data", "filler", "pause"};
         CLog::Log(
-            LOGINFO,
+            LOGDEBUG,
             "CActiveAESink::OutputSamples - raw output {} -> {} (type {}, repeat {}, {} ms){}",
             names[static_cast<int>(lastOut)], names[static_cast<int>(out)],
             static_cast<int>(m_sinkFormat.m_streamInfo.m_type), m_sinkFormat.m_streamInfo.m_repeat,
