@@ -8,6 +8,7 @@
 
 #include "DirectoryHistory.h"
 
+#include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -148,7 +149,7 @@ void CDirectoryHistory::ClearPathHistory()
 
 bool CDirectoryHistory::IsMusicSearchUrl(CPathHistoryItem &i)
 {
-  return StringUtils::StartsWith(i.GetPath(), "musicsearch://");
+  return StringUtils::StartsWith(i.GetPath(), KODI::PLACEHOLDER::MUSIC_SEARCH);
 }
 
 void CDirectoryHistory::ClearSearchHistory()

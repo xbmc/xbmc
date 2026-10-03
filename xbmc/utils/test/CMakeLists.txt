@@ -38,6 +38,7 @@ set(SOURCES TestAlarmClock.cpp
             TestMathUtils.cpp
             TestMime.cpp
             TestMp4ChplReader.cpp
+            TestPlaceholderPaths.cpp
             TestPOUtils.cpp
             TestRegExp.cpp
             TestRingBuffer.cpp
