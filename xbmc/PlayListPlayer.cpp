@@ -974,7 +974,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       {
 
         CPlayList& playlist{GetPlaylist(m_iCurrentPlayList)};
-        if (!URIUtils::IsStack(playlist[m_iCurrentSong]->GetDynPath()))
+        if (m_iCurrentSong < 0 || m_iCurrentSong >= playlist.size() ||
+            !URIUtils::IsStack(playlist[m_iCurrentSong]->GetDynPath()))
           Reset();
       }
 
