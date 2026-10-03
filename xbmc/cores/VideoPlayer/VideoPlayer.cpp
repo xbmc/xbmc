@@ -2250,7 +2250,22 @@ void CVideoPlayer::HandlePlaySpeed()
           if (m_VideoPlayerAudio->GetLevel() <= 50 &&
               m_processInfo->GetLevelVQ() <= 50)
           {
-            SetCaching(CACHESTATE_FULL);
+            // Re-sync the clock to the stream instead of playing its lead off at speed. The
+            // flush re-reads nothing, so it waits until neither player holds data it would drop.
+            if (!m_VideoPlayerAudio->HasData() && !m_VideoPlayerVideo->HasData())
+            {
+              const double streamAt =
+                  m_CurrentVideo.dts != DVD_NOPTS_VALUE ? m_CurrentVideo.dts : m_CurrentAudio.dts;
+              CLog::Log(LOGINFO,
+                        "CVideoPlayer::HandlePlaySpeed - streams ran dry {:.1f} s behind "
+                        "the clock, re-syncing",
+                        streamAt != DVD_NOPTS_VALUE
+                            ? (m_clock.GetClock() - streamAt) / DVD_TIME_BASE
+                            : 0.0);
+              FlushBuffers(DVD_NOPTS_VALUE, false, true);
+            }
+            else
+              SetCaching(CACHESTATE_FULL);
           }
           else if (m_CurrentAudio.id >= 0 && m_CurrentAudio.inited &&
                    m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
