@@ -17,6 +17,7 @@
 #include "IGUIContainer.h"
 #include "utils/Stopwatch.h"
 
+#include <cstdint>
 #include <list>
 #include <memory>
 #include <optional>
@@ -102,6 +103,11 @@ public:
   void DumpTextureUse() override;
 #endif
 protected:
+  virtual bool IsScrollAxisMirrored() const { return IsReversed(m_orientation); }
+  bool IsScrollActionFlipped() const { return IsVertical(m_orientation) && IsScrollAxisMirrored(); }
+  uint32_t MapScrollAction(uint32_t actionID) const;
+  float GetListPosFromPoint(const CPoint& point) const;
+
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool OnClick(int actionID);
 
@@ -131,6 +137,7 @@ protected:
   virtual void Reset();
   virtual size_t GetNumItems() const { return m_items.size(); }
   virtual int GetCurrentPage() const;
+  float GetItemTraversalEnd() const;
   /*!
    * \brief Get the number of fully visible items in the container area.
    * \note Use for page navigation, not for layout/rendering where partially visible items matter.
