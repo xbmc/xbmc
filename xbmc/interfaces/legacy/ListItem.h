@@ -999,6 +999,7 @@ namespace XBMCAddon
       /// - **Internal Properties**
       /// | Key           | Description                                     |
       /// |--------------:|:------------------------------------------------|
+      /// | EDLPath       | string (special://temp/video.edl) - Path or URL of an MPlayer-style EDL file for the item
       /// | inputstream   | string (inputstream.adaptive) - Set the inputstream add-on that will be used to play the item
       /// | IsPlayable    | string - "true", "false" - Mark the item as playable, **mandatory for playable items**
       /// | MimeType      | string (application/x-mpegURL) - Set the MimeType of the item before playback
@@ -1017,6 +1018,7 @@ namespace XBMCAddon
       /// @python_v20 **ResumeTime** and **TotalTime** deprecated. Use **InfoTagVideo.setResumePoint()** instead.
       /// @python_v20 ForceResolvePlugin property added
       /// @python_v20 rtsp_transport property added
+      /// @python_v23 EDLPath property added
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
