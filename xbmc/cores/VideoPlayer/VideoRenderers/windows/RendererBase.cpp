@@ -276,7 +276,8 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
                                 flags,
                                 m_videoSettings.m_Contrast,
                                 m_videoSettings.m_Brightness,
-                                DX::Windowing()->UseLimitedColor()};
+                                DX::Windowing()->UseLimitedColor(),
+                                m_videoSettings.m_ToneMapParam};
   m_reuseIntermediate = !uploaded && state == m_intermediateState;
   // RenderImpl() clears it if the conversion fails
   m_intermediateState = state;

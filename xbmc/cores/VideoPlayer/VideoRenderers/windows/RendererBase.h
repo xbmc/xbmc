@@ -209,6 +209,7 @@ protected:
     float contrast = 0.0f;
     float brightness = 0.0f;
     bool limitedColor = false;
+    float toneMapParam = 0.0f;
     bool operator==(const IntermediateState&) const = default;
   };
   IntermediateState m_intermediateState;
