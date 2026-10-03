@@ -3310,7 +3310,8 @@ void CVideoPlayer::HandleMessages()
             m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
           }
         }
-        else
+        else if (st.demuxerId != m_CurrentAudio.demuxerId || st.id != m_CurrentAudio.id ||
+                 st.source != m_CurrentAudio.source)
         {
           CloseStream(m_CurrentAudio, false);
           OpenStream(m_CurrentAudio, st.demuxerId, st.id, st.source);
