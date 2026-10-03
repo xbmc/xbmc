@@ -14,10 +14,12 @@
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "jobs/JobManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
 #include <stdexcept>
+#include <thread>
 
 #include <gtest/gtest.h>
 
@@ -104,8 +106,15 @@ protected:
   static void SetUpTestSuite()
   {
     CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+    // The player is closed on the application thread in Kodi; without that, CRenderManager
+    // waits for a message nothing in the tests processes.
+    CServiceBroker::GetAppMessenger()->SetProcessThread(std::this_thread::get_id());
   }
-  static void TearDownTestSuite() { CServiceBroker::UnregisterJobManager(); }
+  static void TearDownTestSuite()
+  {
+    CServiceBroker::GetAppMessenger()->SetProcessThread({});
+    CServiceBroker::UnregisterJobManager();
+  }
 };
 
 TEST_F(TestVideoPlayer, GetPreviousBookmark)
