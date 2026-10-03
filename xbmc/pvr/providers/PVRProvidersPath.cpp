@@ -19,9 +19,10 @@ using namespace PVR;
 const std::string CPVRProvidersPath::PATH_TV_PROVIDERS = "pvr://providers/tv/";
 const std::string CPVRProvidersPath::PATH_RADIO_PROVIDERS = "pvr://providers/radio/";
 const std::string CPVRProvidersPath::CHANNELS = "channels";
+const std::string CPVRProvidersPath::GROUPS = "groups";
 const std::string CPVRProvidersPath::RECORDINGS = "recordings";
 
-//pvr://providers/(tv|radio)/<provider-uid@client-id>/(channels|recordings)/
+//pvr://providers/(tv|radio)/<provider-uid@client-id>/(channels|groups|recordings)/
 
 CPVRProvidersPath::CPVRProvidersPath(const std::string& path)
 {
@@ -43,6 +44,7 @@ CPVRProvidersPath::CPVRProvidersPath(CPVRProvidersPath::Kind kind,
                                    (m_kind == Kind::RADIO) ? "radio" : "tv", providerUid, clientId);
       m_isProvider = true;
       m_isChannels = false;
+      m_isGroups = false;
       m_isRecordings = false;
     }
     else
@@ -52,6 +54,7 @@ CPVRProvidersPath::CPVRProvidersPath(CPVRProvidersPath::Kind kind,
                                    lastSegment);
       m_isProvider = false;
       m_isChannels = (lastSegment == CHANNELS);
+      m_isGroups = (lastSegment == GROUPS);
       m_isRecordings = (lastSegment == RECORDINGS);
     }
 
@@ -82,6 +85,7 @@ bool CPVRProvidersPath::Init(const std::string& path)
     m_clientId = PVR_CLIENT_INVALID_UID;
     m_isProvider = false;
     m_isChannels = false;
+    m_isGroups = false;
     m_isRecordings = false;
   }
   else
@@ -96,8 +100,9 @@ bool CPVRProvidersPath::Init(const std::string& path)
       if (segments.size() == 5)
       {
         m_isChannels = (segments.at(4) == CHANNELS);
-        m_isRecordings = !m_isChannels && (segments.at(4) == RECORDINGS);
-        m_isValid = (m_isChannels || m_isRecordings);
+        m_isGroups = (segments.at(4) == GROUPS);
+        m_isRecordings = (segments.at(4) == RECORDINGS);
+        m_isValid = (m_isChannels || m_isGroups || m_isRecordings);
       }
     }
     else

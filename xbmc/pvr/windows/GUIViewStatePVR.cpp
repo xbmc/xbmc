@@ -195,19 +195,28 @@ CGUIViewStateWindowPVRProviders::CGUIViewStateWindowPVRProviders(const int windo
                                                                  const CFileItemList& items)
   : CGUIViewStatePVR(windowId, items)
 {
-  AddSortMethod(SortBy::LABEL, 551, // "Name"
-                LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
-
-  if (CPVRProvidersPath(m_items.GetPath()).IsProvidersRoot())
+  const CPVRProvidersPath path{m_items.GetPath()};
+  if (path.IsProvider())
   {
-    AddSortMethod(SortBy::PROVIDER, 19348, // "Provider"
-                  LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
-
-    SetSortMethod(SortBy::PROVIDER, SortOrder::ASCENDING);
+    AddSortMethod(SortBy::NONE, 571, LABEL_MASKS("%L", "", "%L", ""));
+    SetSortMethod(SortBy::NONE);
   }
   else
   {
-    SetSortMethod(SortBy::LABEL, SortOrder::ASCENDING);
+    AddSortMethod(SortBy::LABEL, 551, // "Name"
+                  LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
+
+    if (path.IsProvidersRoot())
+    {
+      AddSortMethod(SortBy::PROVIDER, 19348, // "Provider"
+                    LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
+
+      SetSortMethod(SortBy::PROVIDER, SortOrder::ASCENDING);
+    }
+    else
+    {
+      SetSortMethod(SortBy::LABEL, SortOrder::ASCENDING);
+    }
   }
 
   LoadViewState(m_items.GetPath(), GetWindowId());
