@@ -19,9 +19,6 @@ class CFontResource : public CResource
 public:
   explicit CFontResource(const AddonInfoPtr& addonInfo);
 
-  //! \brief Check whether file is allowed or not (no filters here).
-  bool IsAllowed(const std::string& file) const override { return true; }
-
   //! \brief Get the font path if given font file is served by the add-on.
   //! \param[in] file File name of font.
   //! \param[out] path Full path to font if found.
