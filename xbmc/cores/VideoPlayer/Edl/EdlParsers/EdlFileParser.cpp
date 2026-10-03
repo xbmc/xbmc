@@ -20,8 +20,17 @@
 using namespace EDL;
 using namespace XFILE;
 
+bool CEdlFileParser::CanParse(const CFileItem& item) const
+{
+  // Skip the existence check for EDLPath: for http(s) it is a HEAD request,
+  // which some servers reject even though GET works
+  return item.HasProperty("edlpath") || CEdlFileParserBase::CanParse(item);
+}
+
 std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
 {
+  if (item.HasProperty("edlpath"))
+    return item.GetProperty("edlpath").asString();
   return URIUtils::ReplaceExtension(item.GetDynPath(), ".edl");
 }
 
