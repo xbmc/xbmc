@@ -120,7 +120,7 @@ void CRPBaseRenderer::RenderFrame(bool clear, uint8_t alpha)
 
   PreRender(clear);
   ManageRenderArea(*m_renderBuffer);
-  RenderInternal(clear, alpha);
+  RenderInternal(alpha);
   PostRender();
 
   m_renderBuffer->SetRendered(true);

@@ -95,7 +95,7 @@ bool CRPRendererGuiTexture::Supports(RENDERFEATURE feature) const
          feature == RENDERFEATURE::PIXEL_RATIO || feature == RENDERFEATURE::ROTATION;
 }
 
-void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
+void CRPRendererGuiTexture::RenderInternal(uint8_t alpha)
 {
   CRenderBufferGuiTexture* renderBuffer = static_cast<CRenderBufferGuiTexture*>(m_renderBuffer);
 

@@ -22,7 +22,7 @@ class CRendererFactoryGuiTexture : public IRendererFactory
 public:
   ~CRendererFactoryGuiTexture() override = default;
 
-  // implementation of IRendererFactory
+  // Implementation of IRendererFactory
   std::string RenderSystemName() const override;
   CRPBaseRenderer* CreateRenderer(const CRenderSettings& settings,
                                   CRenderContext& context,
@@ -36,10 +36,10 @@ public:
   CRenderBufferPoolGuiTexture(SCALINGMETHOD scalingMethod);
   ~CRenderBufferPoolGuiTexture() override = default;
 
-  // implementation of IRenderBufferPool via CBaseRenderBufferPool
+  // Implementation of IRenderBufferPool via CBaseRenderBufferPool
   bool IsCompatible(const CRenderVideoSettings& renderSettings) const override;
 
-  // implementation of CBaseRenderBufferPool
+  // Implementation of CBaseRenderBufferPool
   IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
 
 private:
@@ -54,13 +54,13 @@ public:
                         std::shared_ptr<IRenderBufferPool> bufferPool);
   ~CRPRendererGuiTexture() override = default;
 
-  // public implementation of CRPBaseRenderer
+  // Public implementation of CRPBaseRenderer
   bool Supports(RENDERFEATURE feature) const override;
   SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
 
 protected:
-  // protected implementation of CRPBaseRenderer
-  void RenderInternal(bool clear, uint8_t alpha) override;
+  // Protected implementation of CRPBaseRenderer
+  void RenderInternal(uint8_t alpha) override;
 };
 } // namespace RETRO
 } // namespace KODI
