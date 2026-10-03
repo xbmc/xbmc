@@ -7,9 +7,11 @@ Minimal HTTP server for Kodi WASM builds.
 - Serves static files with byte-range support so a remote Kodi can seek.
 - Exposes a same-origin streaming proxy at `/proxy?u=<url-encoded>` so the
   browser can reach http(s) servers that don't send CORS headers. Only loopback
-  clients may use it unless --allow-lan-proxy is given. The proxy is for single
-  files: references inside a proxied HLS/DASH playlist are not rewritten, so
-  relative ones resolve against this server and absolute ones bypass the proxy.
+  clients may use it unless --allow-lan-proxy is given. Build with
+  -DENABLE_WASM_DEV_PROXY=ON so the module routes its cross-origin requests
+  through it (tools/wasm/dev_proxy_pre.js). The proxy is for single files:
+  references inside a proxied HLS/DASH playlist are not rewritten, so relative
+  ones resolve against this server and absolute ones bypass the proxy.
 
 Usage:
   cd build-wasm
