@@ -48,12 +48,11 @@ int CSkinSettings::TranslateString(const std::string& setting) const
   return skin->TranslateString(setting);
 }
 
-const std::string& CSkinSettings::GetString(int setting) const
+std::string CSkinSettings::GetString(int setting) const
 {
   auto skin = CServiceBroker::GetGUI()->GetSkinInfo();
-  static const std::string empty;
   if (!skin)
-    return empty;
+    return {};
   return skin->GetString(setting);
 }
 
