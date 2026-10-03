@@ -290,6 +290,13 @@ void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
 }
 
+float CGUITexture::SnapToPixel(float coord, bool subpixel)
+{
+  if (subpixel)
+    return coord;
+  return static_cast<float>(MathUtils::round_int(static_cast<double>(coord)));
+}
+
 void CGUITexture::Render(float left,
                          float top,
                          float right,
@@ -324,20 +331,23 @@ void CGUITexture::Render(float left,
 
   float x[4], y[4], z[4];
 
-#define ROUND_TO_PIXEL(x) static_cast<float>(MathUtils::round_int(static_cast<double>(x)))
+#define ROUND_TO_PIXEL(x) SnapToPixel((x), m_info.m_subpixel)
+#define ROUND_DEPTH(x) SnapToPixel((x), false)
 
+  // clang-format off
   x[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y1));
   y[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y1));
-  z[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y1));
+  z[0] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y1));
   x[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y1));
   y[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y1));
-  z[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y1));
+  z[1] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y1));
   x[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y2));
   y[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y2));
-  z[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2));
+  z[2] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2));
   x[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y2));
   y[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y2));
-  z[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2));
+  z[3] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2));
+  // clang-format on
 
   if (y[2] == y[0]) y[2] += 1.0f;
   if (x[2] == x[0]) x[2] += 1.0f;
