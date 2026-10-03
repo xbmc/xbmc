@@ -462,7 +462,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, LostContextRetiresSurvivingBuffersAndAllowsRe
     freeCapture.reset();
     m_pool->EndClientFrame();
     captured->WaitForCapture();
-    captured->FinishRender();
+    captured->MarkRendered();
     const GLuint texture = captured->TextureID();
     const GLuint clientTexture = client->TextureID();
     const auto restores = m_native->restores;
@@ -480,7 +480,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, LostContextRetiresSurvivingBuffersAndAllowsRe
     EXPECT_FALSE(client->Allocate(AV_PIX_FMT_NONE, 8, 8));
     EXPECT_FALSE(captured->SetReady());
     captured->WaitForCapture();
-    captured->FinishRender();
+    captured->MarkRendered();
     EXPECT_TRUE(glIsTexture(texture));
     EXPECT_TRUE(glIsTexture(clientTexture));
     m_pool->DestroyContext();
@@ -522,7 +522,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, OrdinaryDestructionDeletesResourcesAndRetires
   EXPECT_FALSE(glIsTexture(texture));
   EXPECT_EQ(client->GetCurrentFramebuffer(), 0);
   EXPECT_EQ(captured->TextureID(), 0);
-  captured->FinishRender();
+  captured->MarkRendered();
   EXPECT_FALSE(captured->SetReady());
   EXPECT_FALSE(client->Allocate(AV_PIX_FMT_NONE, 4, 4));
   EXPECT_EQ(glGetError(), GL_NO_ERROR);
@@ -664,7 +664,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, CapturedTextureIsOpaqueAndReadableThroughGuiF
   EXPECT_EQ(glCheckFramebufferStatus(GL_FRAMEBUFFER), GL_FRAMEBUFFER_COMPLETE);
   glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel.data());
   EXPECT_EQ(pixel, (std::array<unsigned char, 4>{255, 0, 0, 255}));
-  captured->FinishRender();
+  captured->MarkRendered();
   glDeleteFramebuffers(1, &guiFramebuffer);
   EXPECT_EQ(glGetError(), GL_NO_ERROR);
 }
@@ -775,7 +775,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, GuiShaderSamplesCapturedTextureWithNearestAnd
     EXPECT_EQ(pixel, (std::array<unsigned char, 4>{255, 0, 0, 255}));
     EXPECT_EQ(glGetError(), GL_NO_ERROR);
   }
-  captured->FinishRender();
+  captured->MarkRendered();
 }
 
 TEST_F(TestRenderBufferPoolFBOOSX, CaptureNormalizesBothOriginsWithinLargerClientFramebuffer)

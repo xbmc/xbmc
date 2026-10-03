@@ -1,7 +1,6 @@
 set(SOURCES RPBaseRenderer.cpp
             RPRendererGuiTexture.cpp)
-set(HEADERS RenderGeometryFBO.h
-            RPBaseRenderer.h
+set(HEADERS RPBaseRenderer.h
             RPRendererGuiTexture.h)
 
 if(CORE_SYSTEM_NAME STREQUAL windows)

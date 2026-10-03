@@ -22,7 +22,9 @@
 #include "BaseRenderBufferPool.h"
 #include "RenderBufferFBO.h"
 
+#include <condition_variable>
 #include <mutex>
+#include <optional>
 #include <thread>
 
 namespace KODI
@@ -43,7 +45,10 @@ class CRenderBufferPoolFBO : public CBaseRenderBufferPool
 {
 public:
   CRenderBufferPoolFBO(CRenderContext& context);
-  CRenderBufferPoolFBO(CRenderContext& context, std::unique_ptr<IHwRenderingContext> hwContext);
+  CRenderBufferPoolFBO(
+      CRenderContext& context,
+      std::unique_ptr<IHwRenderingContext> hwContext,
+      std::shared_ptr<CRenderBufferFBO::Sync> sync = std::make_shared<CRenderBufferFBO::Sync>());
   ~CRenderBufferPoolFBO() override;
 
   // Implementation of IRenderBufferPool via CBaseRenderBufferPool
@@ -57,6 +62,7 @@ public:
   bool BeginClientFrame() override;
   void EndClientFrame() override;
   void DestroyContext() override;
+  void FlushRendered() override;
 
   IRenderBuffer* CaptureClientFrame(IRenderBuffer* clientBuffer,
                                     unsigned int width,
@@ -81,11 +87,26 @@ protected:
   std::thread::id m_clientThread;
 
 private:
+  friend class CRenderBufferFBO;
+
+  struct RenderedBuffers
+  {
+    void Flush(std::optional<uint64_t> expectedGeneration = {});
+    std::mutex mutex;
+    std::condition_variable submitted;
+    uint64_t generation{0};
+    std::vector<std::shared_ptr<CRenderBufferFBO::Resources>> buffers;
+  };
+
+  void MarkRendered(const std::shared_ptr<CRenderBufferFBO::Resources>& resources);
+  const std::shared_ptr<CRenderBufferFBO::Sync> m_sync;
+  const std::shared_ptr<RenderedBuffers> m_rendered = std::make_shared<RenderedBuffers>();
   std::unique_ptr<IHwRenderingContext> m_hwContext;
   CRenderBufferFBO* CreateFBO(CRenderBufferFBO::Type type);
   void CollectBuffers();
   std::vector<std::shared_ptr<CRenderBufferFBO::Resources>> m_resources;
   std::mutex m_captureMutex;
+  std::vector<std::unique_ptr<IRenderBuffer>> m_pending;
   unsigned int m_captureWidth{0};
   unsigned int m_captureHeight{0};
 };
