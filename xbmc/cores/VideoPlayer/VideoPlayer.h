@@ -407,6 +407,7 @@ public:
    */
   void HoldForAudioFormatChange();
   void ReleaseAudioFormatHold();
+  bool HasPendingPlaybackRequest();
   void NotifyAudioChainReady() override;
 
   bool IsCaching() const override;
@@ -601,9 +602,14 @@ protected:
   ECacheState  m_caching;
   XbmcThreads::EndTime<> m_cachingTimer;
 
+  //! Serialises the pause and unpause of the format hold against display lost and reset, which
+  //! arrive on the windowing thread.
+  CCriticalSection m_holdSection;
   //! Atomic: set on the player thread, read by OnResetDisplay on the windowing thread.
   std::atomic<bool> m_audioFormatHold{false};
   XbmcThreads::EndTime<> m_audioFormatHoldTimer;
+  //! Set by a display reset during the hold; the player thread owns the timer.
+  std::atomic<bool> m_audioFormatHoldRestart{false};
   std::atomic<bool> m_audioChainReady{false};
 
   std::unique_ptr<CProcessInfo> m_processInfo;
