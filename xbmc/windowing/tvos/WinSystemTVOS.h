@@ -11,6 +11,7 @@
 #include "rendering/gles/RenderSystemGLES.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
+#include "utils/HDRCapabilities.h"
 #include "windowing/OSScreenSaver.h"
 #include "windowing/WinSystem.h"
 
@@ -18,11 +19,13 @@
 #include <string>
 #include <vector>
 
+#include <CoreMedia/CMFormatDescription.h>
 #include <CoreVideo/CVOpenGLESTextureCache.h>
 
 class IDispResource;
 class CVideoSyncTVos;
 struct CADisplayLinkWrapper;
+enum class StreamHdrType;
 
 class CWinSystemTVOS : public CWinSystemBase, public CRenderSystemGLES, public ITimerCallback
 {
@@ -54,6 +57,12 @@ public:
   int GetBufferAge() override { return 3; }
   void UpdateResolutions() override;
   bool CanDoWindowed() override { return false; }
+  bool SetHDR(const VideoPicture* videoPicture) override;
+  bool IsHDRDisplay() override;
+  HDR_STATUS GetOSHDRStatus() override { return m_hdrStatus; }
+  CHDRCapabilities GetDisplayHDRCapabilities() const override;
+  // The base HDR setting query and IsHDRDisplay() virtual method are non-const.
+  bool CanUseHDRVideoLayer();
 
   void ShowOSMouse(bool show) override {}
   bool HasCursor() override;
@@ -104,5 +113,9 @@ private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
   void FillInVideoModes(int screenIdx);
   bool SwitchToVideoMode(int width, int height, double refreshrate);
+  StreamHdrType GetSupportedHDRType(const VideoPicture* videoPicture) const;
   CADisplayLinkWrapper* m_pDisplayLink;
+  HDR_STATUS m_hdrStatus = HDR_STATUS::HDR_OFF;
+  CMFormatDescriptionRef m_hdrFormatDescription = nullptr;
+  float m_requestedRefreshRate{};
 };

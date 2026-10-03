@@ -15,6 +15,9 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#if defined(TARGET_DARWIN_TVOS)
+#include "windowing/tvos/WinSystemTVOS.h"
+#endif
 
 #include <mutex>
 
@@ -23,6 +26,14 @@ extern "C" {
 }
 
 using namespace VTB;
+
+namespace
+{
+bool CanDisplayHLG(const CHDRCapabilities& caps)
+{
+  return caps.SupportsHLG() || caps.SupportsHDR10();
+}
+} // namespace
 
 //------------------------------------------------------------------------------
 // Video Buffers
@@ -137,7 +148,27 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
 #endif
 
   if (fmt == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
-    return new VTB::CDecoder(processInfo);
+  {
+    bool hdrOutput = false;
+#if defined(TARGET_DARWIN_TVOS)
+    auto* winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
+    if (winSystem)
+    {
+      const bool canUseHDRVideoLayer = winSystem->CanUseHDRVideoLayer();
+      const CHDRCapabilities caps = winSystem->GetDisplayHDRCapabilities();
+      // InputStream addons can report the HDR transfer without filling in
+      // CDVDStreamInfo::bitdepth. The decoder negotiates the actual P010 format.
+      hdrOutput =
+          canUseHDRVideoLayer &&
+          (((hint.hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+             hint.HasHDR10DolbyVisionBaseLayer()) &&
+            caps.SupportsHDR10()) ||
+           ((hint.hdrType == StreamHdrType::HDR_TYPE_HLG || hint.HasHLGDolbyVisionBaseLayer()) &&
+            CanDisplayHLG(caps)));
+    }
+#endif
+    return new VTB::CDecoder(processInfo, hdrOutput, hint.dovi.dv_profile == 0);
+  }
 
   return nullptr;
 }
@@ -148,8 +179,11 @@ bool CDecoder::Register()
   return true;
 }
 
-CDecoder::CDecoder(CProcessInfo& processInfo)
-  : m_processInfo(processInfo), m_videoBufferPool(std::make_shared<CVideoBufferPoolVTB>())
+CDecoder::CDecoder(CProcessInfo& processInfo, bool hdrOutput, bool allowColorTransferFallback)
+  : m_processInfo(processInfo),
+    m_hdrOutput(hdrOutput),
+    m_allowColorTransferFallback(allowColorTransferFallback),
+    m_videoBufferPool(std::make_shared<CVideoBufferPoolVTB>())
 {
   m_avctx = nullptr;
 }
@@ -171,11 +205,26 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
     return false;
 
+#if defined(TARGET_DARWIN_TVOS)
+  if (!m_hdrOutput && m_allowColorTransferFallback && avctx->color_primaries == AVCOL_PRI_BT2020)
+  {
+    auto* winSystem = dynamic_cast<CWinSystemTVOS*>(CServiceBroker::GetWinSystem());
+    if (winSystem && winSystem->CanUseHDRVideoLayer())
+    {
+      const CHDRCapabilities caps = winSystem->GetDisplayHDRCapabilities();
+      m_hdrOutput = (avctx->color_trc == AVCOL_TRC_SMPTE2084 && caps.SupportsHDR10()) ||
+                    (avctx->color_trc == AVCOL_TRC_ARIB_STD_B67 && CanDisplayHLG(caps));
+    }
+  }
+#endif
+
   AVBufferRef *deviceRef =  av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VIDEOTOOLBOX);
   AVBufferRef *framesRef = av_hwframe_ctx_alloc(deviceRef);
   AVHWFramesContext *framesCtx = (AVHWFramesContext*)framesRef->data;
   framesCtx->format = AV_PIX_FMT_VIDEOTOOLBOX;
-  framesCtx->sw_format = AV_PIX_FMT_NV12;
+  // The tvOS HDR video layer consumes P010 directly. The GLES renderer cannot
+  // preserve this precision, so all other playback keeps the existing NV12 path.
+  framesCtx->sw_format = m_hdrOutput ? AV_PIX_FMT_P010LE : AV_PIX_FMT_NV12;
   avctx->hw_frames_ctx = framesRef;
   m_avctx = avctx;
 
