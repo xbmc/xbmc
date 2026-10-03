@@ -19,6 +19,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/Scraper.h"
+#include "dialogs/ImageChoices.h"
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIComponent.h"
@@ -414,14 +415,14 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       // add the current thumb, if available
       if (!share->m_strThumbnailImage.empty())
       {
-        CFileItemPtr current(new CFileItem("thumb://Current", false));
+        CFileItemPtr current(new CFileItem(IMAGE_CHOICE::CURRENT, false));
         current->SetArt("thumb", share->m_strThumbnailImage);
         current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
       }
       else if (item->HasArt("thumb"))
       { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
-        CFileItemPtr current(new CFileItem("thumb://Current", false));
+        CFileItemPtr current(new CFileItem(IMAGE_CHOICE::CURRENT, false));
         current->SetArt("thumb", item->GetArt("thumb"));
         current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
@@ -430,13 +431,13 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       std::string folderThumb = ART::GetFolderThumb(*item);
       if (CFileUtils::Exists(folderThumb))
       {
-        CFileItemPtr local(new CFileItem("thumb://Local", false));
+        CFileItemPtr local(new CFileItem(IMAGE_CHOICE::LOCAL, false));
         local->SetArt("thumb", folderThumb);
         local->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20017));
         items.Add(local);
       }
       // and add a "no thumb" entry as well
-      CFileItemPtr nothumb(new CFileItem("thumb://None", false));
+      CFileItemPtr nothumb(new CFileItem(IMAGE_CHOICE::NONE, false));
       nothumb->SetArt("icon", item->GetArt("icon"));
       nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
       items.Add(nothumb);
@@ -449,13 +450,13 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
               strThumb))
         return false;
 
-      if (strThumb == "thumb://Current")
+      if (strThumb == IMAGE_CHOICE::CURRENT)
         return true;
 
-      if (strThumb == "thumb://Local")
+      if (strThumb == IMAGE_CHOICE::LOCAL)
         strThumb = folderThumb;
 
-      if (strThumb == "thumb://None")
+      if (strThumb == IMAGE_CHOICE::NONE)
         strThumb = "";
 
       if (!share->m_ignore)

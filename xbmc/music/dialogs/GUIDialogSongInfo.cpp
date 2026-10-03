@@ -16,6 +16,7 @@
 #include "Util.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/ImageChoices.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
@@ -356,7 +357,7 @@ void CGUIDialogSongInfo::OnGetArt()
   if (bHasArt)
   {
     // Add item for current artwork, could a fallback from album/artist
-    CFileItemPtr item(new CFileItem("thumb://Current", false));
+    CFileItemPtr item(new CFileItem(IMAGE_CHOICE::CURRENT, false));
     item->SetArt("thumb", m_song->GetArt(type));
     item->SetArt("icon", "DefaultPicture.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
@@ -368,7 +369,7 @@ void CGUIDialogSongInfo::OnGetArt()
     auto i = primeArt.find("thumb");
     if (i != primeArt.end())
     {
-      CFileItemPtr item(new CFileItem("thumb://Thumb", false));
+      CFileItemPtr item(new CFileItem(IMAGE_CHOICE::THUMB, false));
       item->SetArt("thumb", m_song->GetArt("thumb"));
       item->SetArt("icon", "DefaultAlbumCover.png");
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21371));
@@ -387,7 +388,7 @@ void CGUIDialogSongInfo::OnGetArt()
     }
     if (CFileUtils::Exists(localThumb))
     {
-      CFileItemPtr item(new CFileItem("thumb://Local", false));
+      CFileItemPtr item(new CFileItem(IMAGE_CHOICE::LOCAL, false));
       item->SetArt("thumb", localThumb);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20017));
       items.Add(item);
@@ -407,7 +408,7 @@ void CGUIDialogSongInfo::OnGetArt()
   if (bHasArt && !bFallback)
   { // Actually has this type of art (not a fallback) so
     // allow the user to delete it by selecting "no art".
-    CFileItemPtr item(new CFileItem("thumb://None", false));
+    CFileItemPtr item(new CFileItem(IMAGE_CHOICE::NONE, false));
     item->SetArt("thumb", "DefaultAlbumCover.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
     items.Add(item);
@@ -431,14 +432,14 @@ void CGUIDialogSongInfo::OnGetArt()
   if (CGUIDialogFileBrowser::ShowAndGetImage(
           items, sources, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13511),
           result) &&
-      result != "thumb://Current")
+      result != IMAGE_CHOICE::CURRENT)
   {
     // User didn't choose the one they have, or the fallback image.
     // Overwrite with the new art or clear it
     std::string newArt;
-    if (result == "thumb://Thumb")
+    if (result == IMAGE_CHOICE::THUMB)
       newArt = m_song->GetArt("thumb");
-    else if (result == "thumb://Local")
+    else if (result == IMAGE_CHOICE::LOCAL)
       newArt = localThumb;
 //    else if (result == "thumb://Embedded")
 //      newArt = embeddedArt;
