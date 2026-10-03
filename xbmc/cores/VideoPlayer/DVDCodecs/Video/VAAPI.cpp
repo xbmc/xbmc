@@ -16,6 +16,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/MathUtils.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
@@ -23,7 +24,11 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <array>
+#include <cmath>
+#include <cstring>
+#include <limits>
 #include <mutex>
 #include <optional>
 
@@ -64,6 +69,93 @@ constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVC1 = "videoplayer.usevaapivc1";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVP8 = "videoplayer.usevaapivp8";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIVP9 = "videoplayer.usevaapivp9";
 constexpr auto SETTING_VIDEOPLAYER_PREFERVAAPIRENDER = "videoplayer.prefervaapirender";
+constexpr auto SETTING_VIDEOPLAYER_VAAPIHWSCALING = "videoplayer.vaapihwscaling";
+
+namespace
+{
+
+bool IsHdr10(const VideoPicture& pic)
+{
+  return pic.color_transfer == AVCOL_TRC_SMPTE2084 && pic.color_primaries == AVCOL_PRI_BT2020;
+}
+
+bool IsVaapiDeintMethod(EINTERLACEMETHOD method)
+{
+  return method == VS_INTERLACEMETHOD_VAAPI_BOB || method == VS_INTERLACEMETHOD_VAAPI_MADI ||
+         method == VS_INTERLACEMETHOD_VAAPI_MACI;
+}
+
+#if VA_CHECK_VERSION(1, 7, 0)
+
+uint16_t ToVaChromaticity(AVRational value)
+{
+  const double coord = std::round(av_q2d(value) * 50000.0);
+  return static_cast<uint16_t>(std::clamp(coord, 0.0, 50000.0));
+}
+
+uint32_t ToVaLuminance(AVRational value)
+{
+  const double luminance = std::round(av_q2d(value) * 10000.0);
+  return static_cast<uint32_t>(
+      std::clamp(luminance, 0.0, static_cast<double>(std::numeric_limits<uint32_t>::max())));
+}
+
+VAHdrMetaDataHDR10 GetHdr10MetaData(const VideoPicture& pic)
+{
+  constexpr int vaToFFmpegPrimary[3] = {1, 2, 0};
+
+  VAHdrMetaDataHDR10 metaData{};
+  if (pic.hasDisplayMetadata && pic.displayMetadata.has_primaries)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      metaData.display_primaries_x[i] =
+          ToVaChromaticity(pic.displayMetadata.display_primaries[vaToFFmpegPrimary[i]][0]);
+      metaData.display_primaries_y[i] =
+          ToVaChromaticity(pic.displayMetadata.display_primaries[vaToFFmpegPrimary[i]][1]);
+    }
+    metaData.white_point_x = ToVaChromaticity(pic.displayMetadata.white_point[0]);
+    metaData.white_point_y = ToVaChromaticity(pic.displayMetadata.white_point[1]);
+  }
+  else
+  {
+    constexpr uint16_t bt2020PrimariesX[3] = {8500, 6550, 35400};
+    constexpr uint16_t bt2020PrimariesY[3] = {39850, 2300, 14600};
+
+    for (int i = 0; i < 3; i++)
+    {
+      metaData.display_primaries_x[i] = bt2020PrimariesX[i];
+      metaData.display_primaries_y[i] = bt2020PrimariesY[i];
+    }
+    metaData.white_point_x = 15635;
+    metaData.white_point_y = 16450;
+  }
+
+  if (pic.hasDisplayMetadata && pic.displayMetadata.has_luminance)
+  {
+    metaData.max_display_mastering_luminance = ToVaLuminance(pic.displayMetadata.max_luminance);
+    metaData.min_display_mastering_luminance = ToVaLuminance(pic.displayMetadata.min_luminance);
+  }
+  else
+  {
+    metaData.max_display_mastering_luminance = 10000000;
+    metaData.min_display_mastering_luminance = 1;
+  }
+
+  if (pic.hasLightMetadata)
+  {
+    metaData.max_content_light_level = static_cast<uint16_t>(
+        std::min<unsigned>(pic.lightMetadata.MaxCLL, std::numeric_limits<uint16_t>::max()));
+    metaData.max_pic_average_light_level = static_cast<uint16_t>(
+        std::min<unsigned>(pic.lightMetadata.MaxFALL, std::numeric_limits<uint16_t>::max()));
+  }
+
+  return metaData;
+}
+
+#endif
+
+} // namespace
 
 void VAAPI::VaErrorCallback(void *user_context, const char *message)
 {
@@ -116,6 +208,7 @@ bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
   }
 
   m_context = new CVAAPIContext();
+  m_context->m_refCount = 1;
   *ctx = m_context;
   {
     std::unique_lock gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
@@ -127,8 +220,6 @@ bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
       return false;
     }
   }
-
-  m_context->m_refCount++;
 
   if (!m_context->IsValidDecoder(decoder))
     m_context->m_decoders.push_back(decoder);
@@ -787,9 +878,31 @@ void CDecoder::Close()
 {
   CLog::Log(LOGINFO, "VAAPI::{}", __FUNCTION__);
 
+  if (m_registeredDispResource)
+  {
+    if (auto winSystem = CServiceBroker::GetWinSystem())
+      winSystem->Unregister(this);
+    m_registeredDispResource = false;
+
+    constexpr int MAX_WAIT_MS = 2000;
+    int waitedMs = 0;
+    while (m_activeResetDisplayCalls > 0 && waitedMs < MAX_WAIT_MS)
+    {
+      KODI::TIME::Sleep(1ms);
+      waitedMs++;
+    }
+    if (m_activeResetDisplayCalls > 0)
+    {
+      CLog::Log(LOGWARNING,
+                "VAAPI::{} - timed out after {} ms waiting for OnResetDisplay() to finish, "
+                "proceeding anyway",
+                __FUNCTION__, MAX_WAIT_MS);
+    }
+  }
+
   std::unique_lock lock(m_DecoderSection);
 
-  FiniVAAPIOutput();
+  FiniVAAPIOutput(true);
 
   m_deviceRef.reset();
 
@@ -1269,46 +1382,200 @@ bool CDecoder::ConfigVAAPI()
     m_videoSurfaces.AddSurface(surfaces[i]);
   }
 
-  // initialize output
-  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  m_vaapiConfig.stats = &m_bufferStats;
-  m_bufferStats.Reset();
-  m_vaapiOutput.Start();
-  Message *reply;
-  if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT, &reply, 2s,
-                                                     &m_vaapiConfig, sizeof(m_vaapiConfig)))
   {
-    bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
-    if (!success)
+    // Release the gfx lock before taking decoder/resource locks to avoid
+    // lock-order inversion.
+    std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+    GetScaleTarget(m_vaapiConfig.vidWidth, m_vaapiConfig.vidHeight, m_vaapiConfig.aspect,
+                   m_vaapiConfig.scaleWidth, m_vaapiConfig.scaleHeight);
+    if (m_vaapiConfig.scaleWidth > 0 && m_vaapiConfig.scaleHeight > 0)
     {
+      CLog::Log(LOGINFO, "VAAPI - hardware scaling {}x{} -> {}x{} (VPP, VA_FILTER_SCALING_HQ)",
+                m_vaapiConfig.vidWidth, m_vaapiConfig.vidHeight, m_vaapiConfig.scaleWidth,
+                m_vaapiConfig.scaleHeight);
+    }
+
+    m_vaapiConfig.stats = &m_bufferStats;
+    m_bufferStats.Reset();
+    m_vaapiOutput.Start();
+    Message* reply;
+    if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT, &reply, 2s,
+                                                       &m_vaapiConfig, sizeof(m_vaapiConfig)))
+    {
+      bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
+      if (!success)
+      {
+        reply->Release();
+        CLog::Log(LOGERROR, "VAAPI::{} - vaapi output returned error", __FUNCTION__);
+        m_vaapiOutput.Dispose();
+        return false;
+      }
       reply->Release();
-      CLog::Log(LOGERROR, "VAAPI::{} - vaapi output returned error", __FUNCTION__);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "VAAPI::{} - failed to init output", __FUNCTION__);
       m_vaapiOutput.Dispose();
       return false;
     }
-    reply->Release();
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "VAAPI::{} - failed to init output", __FUNCTION__);
-    m_vaapiOutput.Dispose();
-    return false;
   }
 
   m_inMsgEvent.Reset();
-  m_vaapiConfigured = true;
+  {
+    std::unique_lock decoderLock(m_DecoderSection);
+    m_vaapiConfigured = true;
+  }
   m_ErrorCount = 0;
+
+  if (!m_registeredDispResource)
+  {
+    auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
+    auto winSystem = CServiceBroker::GetWinSystem();
+    if (settings && settings->GetBool(SETTING_VIDEOPLAYER_VAAPIHWSCALING) && winSystem &&
+        winSystem->GetName().rfind(WINDOW_SYSTEM_NAME_GBM, 0) == 0)
+    {
+      winSystem->Register(this);
+      m_registeredDispResource = true;
+    }
+  }
 
   return true;
 }
 
-void CDecoder::FiniVAAPIOutput()
+void CDecoder::GetScaleTarget(
+    int vidWidth, int vidHeight, AVRational sar, int& scaleWidth, int& scaleHeight)
+{
+  scaleWidth = 0;
+  scaleHeight = 0;
+
+#if defined(HAS_GLES)
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  auto settings = settingsComponent ? settingsComponent->GetSettings() : nullptr;
+  auto winSystem = CServiceBroker::GetWinSystem();
+  if (settings && settings->GetBool(SETTING_VIDEOPLAYER_VAAPIHWSCALING) && winSystem &&
+      winSystem->GetName().rfind(WINDOW_SYSTEM_NAME_GBM, 0) == 0 && vidWidth > 0 && vidHeight > 0)
+  {
+    // Read RESOLUTION_INFO under the gfx-context lock.
+    RESOLUTION_INFO resInfo;
+    {
+      std::unique_lock gfxLock(winSystem->GetGfxContext());
+      resInfo = winSystem->GetGfxContext().GetResInfo();
+    }
+
+    // Calculate the aspect-correct destination rectangle.
+    const double effectiveAspect = (sar.num > 0 && sar.den > 0)
+                                       ? (double)vidWidth * sar.num / ((double)vidHeight * sar.den)
+                                       : (double)vidWidth / vidHeight;
+    // Screen resolutions can use non-square pixels (fPixelRatio != 1), so the
+    // on-screen aspect ratio isn't always iScreenWidth/iScreenHeight.
+    const double screenAspect =
+        (resInfo.iScreenHeight > 0)
+            ? static_cast<double>(resInfo.iScreenWidth) *
+                  static_cast<double>(resInfo.fPixelRatio > 0.0f ? resInfo.fPixelRatio : 1.0f) /
+                  resInfo.iScreenHeight
+            : 0.0;
+
+    if (screenAspect > 0.0 && vidWidth > 0 && vidHeight > 0)
+    {
+      int destWidth;
+      int destHeight;
+      if (effectiveAspect > screenAspect)
+      {
+        // Fill width and letterbox vertically.
+        destWidth = resInfo.iScreenWidth;
+        destHeight = MathUtils::round_int(destWidth / effectiveAspect);
+      }
+      else
+      {
+        // Fill height and pillarbox horizontally.
+        destHeight = resInfo.iScreenHeight;
+        destWidth = MathUtils::round_int(destHeight * effectiveAspect);
+      }
+
+      // Tolerance avoids triggering hw scaling for a near-1:1 fit that only
+      // differs by integer-rounding noise (a pixel or two).
+      constexpr double SCALE_RATIO_TOLERANCE = 0.02; // ~2%
+      const double ratioW = (double)destWidth / vidWidth;
+      const double ratioH = (double)destHeight / vidHeight;
+      const bool needsScaling = std::fabs(ratioW - 1.0) > SCALE_RATIO_TOLERANCE ||
+                                std::fabs(ratioH - 1.0) > SCALE_RATIO_TOLERANCE;
+
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "VAAPI - scale check: vid {}x{} sar={}/{} displayAspect={:.4f} fit {}x{} "
+                "(screen {}x{}) needsScaling={}",
+                vidWidth, vidHeight, sar.num, sar.den, effectiveAspect, destWidth, destHeight,
+                resInfo.iScreenWidth, resInfo.iScreenHeight, needsScaling);
+
+      if (needsScaling)
+      {
+        scaleWidth = destWidth;
+        scaleHeight = destHeight;
+      }
+    }
+  }
+#endif
+}
+
+void CDecoder::OnResetDisplay()
+{
+  m_activeResetDisplayCalls++;
+  struct ScopeGuard
+  {
+    std::atomic<int>& counter;
+    ~ScopeGuard() { counter--; }
+  } activeCallGuard{m_activeResetDisplayCalls};
+
+  int vidWidth;
+  int vidHeight;
+  AVRational sar;
+  int curScaleWidth;
+  int curScaleHeight;
+  bool configured;
+  {
+    std::unique_lock lock(m_DecoderSection);
+    configured = m_vaapiConfigured;
+    vidWidth = m_vaapiConfig.vidWidth;
+    vidHeight = m_vaapiConfig.vidHeight;
+    sar = m_vaapiConfig.aspect;
+    curScaleWidth = m_vaapiConfig.scaleWidth;
+    curScaleHeight = m_vaapiConfig.scaleHeight;
+  }
+  if (!configured)
+    return;
+
+  // Avoid lock inversion with the graphics context
+  int scaleWidth;
+  int scaleHeight;
+  GetScaleTarget(vidWidth, vidHeight, sar, scaleWidth, scaleHeight);
+
+  if (scaleWidth == curScaleWidth && scaleHeight == curScaleHeight)
+    return;
+
+  {
+    std::unique_lock lock(m_DecoderSection);
+    if (!m_vaapiConfigured)
+      return;
+    m_vaapiConfig.scaleWidth = scaleWidth;
+    m_vaapiConfig.scaleHeight = scaleHeight;
+
+    CLog::Log(LOGINFO, "VAAPI - display reset, updating hw scale target {}x{} -> {}x{}",
+              curScaleWidth, curScaleHeight, scaleWidth, scaleHeight);
+
+    SScaleTarget target{scaleWidth, scaleHeight};
+    m_vaapiOutput.m_controlPort.SendOutMessage(COutputControlProtocol::SETSCALETARGET, &target,
+                                               sizeof(target));
+  }
+}
+
+void CDecoder::FiniVAAPIOutput(bool force)
 {
   if (!m_vaapiConfigured)
     return;
 
   // uninit output
-  m_vaapiOutput.Dispose();
+  m_vaapiOutput.Dispose(force);
   m_vaapiConfigured = false;
 
   // destroy surfaces
@@ -1596,7 +1863,7 @@ COutput::~COutput()
   Dispose();
 }
 
-void COutput::Dispose()
+void COutput::Dispose(bool force)
 {
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bStop = true;
@@ -1604,6 +1871,13 @@ void COutput::Dispose()
   StopThread();
   m_controlPort.Purge();
   m_dataPort.Purge();
+
+  if (force && !m_discardedPostprocs.empty())
+  {
+    CLog::Log(LOGWARNING, "VAAPI output: force-releasing {} postproc(s) still awaiting disposal",
+              m_discardedPostprocs.size());
+    m_discardedPostprocs.clear();
+  }
 }
 
 void COutput::OnStartup()
@@ -1732,6 +2006,20 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           m_state = O_TOP_UNCONFIGURED;
           m_extTimeout = 10s;
           return;
+        case COutputControlProtocol::SETSCALETARGET:
+        {
+          // Defer postproc recreation until the IDLE state.
+          SScaleTarget* target = reinterpret_cast<SScaleTarget*>(msg->data);
+          if (target &&
+              (target->width != m_config.scaleWidth || target->height != m_config.scaleHeight))
+          {
+            m_config.scaleWidth = target->width;
+            m_config.scaleHeight = target->height;
+            m_scaleTargetChanged = true;
+          }
+          m_extTimeout = 0ms;
+          return;
+        }
         default:
           break;
         }
@@ -1774,6 +2062,34 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputControlProtocol::TIMEOUT:
+          if (m_scaleTargetChanged)
+          {
+            m_scaleTargetChanged = false;
+            if (m_pp)
+            {
+              CLog::Log(LOGDEBUG, LOGVIDEO,
+                        "VAAPI output: scale target changed, discarding postproc");
+              std::shared_ptr<CPostproc> pp(m_pp);
+              m_discardedPostprocs.push_back(pp);
+              m_pp->Discard(this, &COutput::ReadyForDisposal);
+              m_pp = nullptr;
+              m_config.processInfo->SetVideoDeintMethod("unknown");
+            }
+          }
+          if (m_hwScalingRetryPending)
+          {
+            m_hwScalingRetryPending = false;
+            if (m_pp)
+            {
+              CLog::Log(LOGDEBUG, LOGVIDEO,
+                        "VAAPI output: retrying hw scaling, discarding postproc");
+              std::shared_ptr<CPostproc> pp(m_pp);
+              m_discardedPostprocs.push_back(pp);
+              m_hwScalingRetryDiscardedPp = m_pp;
+              m_pp->Discard(this, &COutput::ReadyForDisposal);
+              m_pp = nullptr;
+            }
+          }
           ProcessSyncPicture();
           m_extTimeout = 100ms;
           if (HasWork())
@@ -1992,15 +2308,22 @@ bool COutput::Init()
 {
   m_diMethods.numDiMethods = 0;
 
-  m_pp = new CFFmpegPostproc();
-  m_pp->PreInit(m_config, &m_diMethods);
-  delete m_pp;
+  {
+    CFFmpegPostproc ffmpegPP;
+    ffmpegPP.PreInit(m_config, &m_diMethods);
+  }
 
-  m_pp = new CVppPostproc();
-  m_pp->PreInit(m_config, &m_diMethods);
-  delete m_pp;
+  m_vppToneMapping = false;
+  {
+    CVppPostproc vppPP;
+    if (vppPP.PreInit(m_config, &m_diMethods))
+      m_vppToneMapping = vppPP.SupportsHdrToSdr();
+  }
 
   m_pp = nullptr;
+
+  if (m_vppToneMapping)
+    m_config.processInfo->UpdateToneMappingMethods({VS_TONEMAPMETHOD_VAAPI});
 
   std::list<EINTERLACEMETHOD> deintMethods;
   deintMethods.assign(m_diMethods.diMethods, m_diMethods.diMethods + m_diMethods.numDiMethods);
@@ -2118,6 +2441,20 @@ bool COutput::PreferPP()
   return false;
 }
 
+bool COutput::WantsToneMapping(const VideoPicture& pic) const
+{
+  if (!m_vppToneMapping)
+    return false;
+
+  if (!IsHdr10(pic))
+    return false;
+
+  if (m_config.processInfo->GetVideoSettings().m_ToneMapMethod != VS_TONEMAPMETHOD_VAAPI)
+    return false;
+
+  return !CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled();
+}
+
 void COutput::InitCycle()
 {
   uint64_t latency;
@@ -2128,6 +2465,19 @@ void COutput::InitCycle()
 
   EINTERLACEMETHOD method = m_config.processInfo->GetVideoSettings().m_InterlaceMethod;
   bool interlaced = m_currentPicture.DVDPic.iFlags & DVP_FLAG_INTERLACED;
+
+  const bool toneMap = WantsToneMapping(m_currentPicture.DVDPic);
+
+  if (m_pp && toneMap != m_pp->DoesToneMap() && !m_pp->UpdateToneMapping(toneMap))
+  {
+    CLog::Log(LOGDEBUG, LOGVIDEO,
+              "VAAPI output: Current postproc cannot change tone mapping, removing");
+    std::shared_ptr<CPostproc> pp(m_pp);
+    m_discardedPostprocs.push_back(pp);
+    m_pp->Discard(this, &COutput::ReadyForDisposal);
+    m_pp = nullptr;
+  }
+
   // Remember whether any interlaced frames were encountered already.
   // If this is the case, the deinterlace method will never automatically be switched to NONE again in
   // order to not change deint methods every few frames in PAFF streams.
@@ -2140,6 +2490,13 @@ void COutput::InitCycle()
     if (!m_config.processInfo->Supports(method))
       method = VS_INTERLACEMETHOD_VAAPI_BOB;
 
+    if (toneMap && !IsVaapiDeintMethod(method))
+    {
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "VAAPI output: Tone mapping active, switching deinterlacer to vaapi-bob");
+      method = VS_INTERLACEMETHOD_VAAPI_BOB;
+    }
+
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
       CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Current postproc does not want new deinterlace mode, removing");
@@ -2151,20 +2508,52 @@ void COutput::InitCycle()
     }
     if (!m_pp)
     {
+      bool preInitOk;
       if (method == VS_INTERLACEMETHOD_DEINTERLACE ||
           method == VS_INTERLACEMETHOD_RENDER_BOB)
       {
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
         m_config.stats->SetVpp(false);
+        preInitOk = m_pp->PreInit(m_config);
+        m_hwScalingSuppressed = false;
       }
       else
       {
+        const bool wantsHwScaling = (m_config.scaleWidth > 0 && m_config.scaleHeight > 0);
+        const size_t blockingCount =
+            std::count_if(m_discardedPostprocs.begin(), m_discardedPostprocs.end(),
+                          [this](const std::shared_ptr<CPostproc>& p)
+                          { return p.get() != m_hwScalingRetryDiscardedPp; });
+        m_hwScalingRetryDiscardedPp = nullptr;
+        const bool hwScalingBlocked = wantsHwScaling && blockingCount > 0;
+        if (hwScalingBlocked)
+        {
+          CLog::Log(LOGWARNING,
+                    "VAAPI output: hw scaling deferred for deinterlace postproc - {} "
+                    "postproc(s) still awaiting disposal",
+                    blockingCount);
+        }
+
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc");
         m_pp = new CVppPostproc();
         m_config.stats->SetVpp(true);
+
+        m_config.toneMap = toneMap;
+        const int savedScaleWidth = m_config.scaleWidth;
+        const int savedScaleHeight = m_config.scaleHeight;
+        if (hwScalingBlocked)
+        {
+          m_config.scaleWidth = 0;
+          m_config.scaleHeight = 0;
+        }
+        preInitOk = m_pp->PreInit(m_config);
+        m_config.scaleWidth = savedScaleWidth;
+        m_config.scaleHeight = savedScaleHeight;
+        m_hwScalingSuppressed = preInitOk && hwScalingBlocked;
       }
-      if (m_pp->PreInit(m_config))
+
+      if (preInitOk)
       {
         m_pp->Init(method);
       }
@@ -2194,21 +2583,62 @@ void COutput::InitCycle()
     {
       const bool preferVaapiRender = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
+      // Hardware scaling requires the VAAPI VPP pipeline.
+      const bool wantsHwScaling = (m_config.scaleWidth > 0 && m_config.scaleHeight > 0);
 
-      m_config.stats->SetVpp(false);
-      if (!preferVaapiRender)
+      const size_t blockingCount =
+          std::count_if(m_discardedPostprocs.begin(), m_discardedPostprocs.end(),
+                        [this](const std::shared_ptr<CPostproc>& p)
+                        { return p.get() != m_hwScalingRetryDiscardedPp; });
+      m_hwScalingRetryDiscardedPp = nullptr;
+      const bool hwScalingBlocked = wantsHwScaling && blockingCount > 0;
+      if (hwScalingBlocked)
+      {
+        CLog::Log(LOGWARNING,
+                  "VAAPI output: hw scaling deferred - {} postproc(s) still awaiting disposal",
+                  blockingCount);
+      }
+
+      const bool wantsVpp = toneMap || (wantsHwScaling && !hwScalingBlocked);
+
+      m_config.toneMap = toneMap;
+
+      if (wantsVpp)
+      {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc{}{}",
+                  toneMap ? " for tone mapping" : "",
+                  (wantsHwScaling && !hwScalingBlocked) ? " for hw scaling" : "");
+        m_pp = new CVppPostproc();
+        m_config.stats->SetVpp(true);
+      }
+      else if (!preferVaapiRender)
       {
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
+        m_config.stats->SetVpp(false);
       }
       else
       {
         CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing skip postproc");
         m_pp = new CSkipPostproc();
+        m_config.stats->SetVpp(false);
       }
-      if (m_pp->PreInit(m_config))
+
+      const int savedScaleWidth = m_config.scaleWidth;
+      const int savedScaleHeight = m_config.scaleHeight;
+      if (hwScalingBlocked)
+      {
+        m_config.scaleWidth = 0;
+        m_config.scaleHeight = 0;
+      }
+      const bool preInitOk = m_pp->PreInit(m_config);
+      m_config.scaleWidth = savedScaleWidth;
+      m_config.scaleHeight = savedScaleHeight;
+
+      if (preInitOk)
       {
         m_pp->Init(method);
+        m_hwScalingSuppressed = wantsHwScaling && hwScalingBlocked;
       }
       else
       {
@@ -2220,6 +2650,14 @@ void COutput::InitCycle()
   }
   if (!m_pp) // fallback
   {
+    if (toneMap)
+    {
+      CLog::Log(LOGWARNING,
+                "VAAPI output: vpp tone mapping unavailable, leaving it to the renderer");
+      m_vppToneMapping = false;
+      m_config.toneMap = false;
+    }
+
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing skip postproc as fallback");
     m_pp = new CSkipPostproc();
     m_config.stats->SetVpp(false);
@@ -2258,6 +2696,8 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     av_frame_move_ref(retPic->avFrame, pic.frame);
     pic.source->ClearRef(pic);
     retPic->procPic.videoSurface = VA_INVALID_ID;
+    retPic->procPic.outWidth = 0;
+    retPic->procPic.outHeight = 0;
   }
 
   retPic->DVDPic.dts = DVD_NOPTS_VALUE;
@@ -2352,6 +2792,15 @@ void COutput::ReadyForDisposal(CPostproc *pp)
       m_discardedPostprocs.erase(it);
       break;
     }
+  }
+
+  if (m_discardedPostprocs.empty() && m_hwScalingSuppressed && m_pp && m_config.scaleWidth > 0 &&
+      m_config.scaleHeight > 0)
+  {
+    CLog::Log(LOGDEBUG, LOGVIDEO,
+              "VAAPI output: retrying hw scaling now that pending postproc disposal has completed");
+    m_hwScalingSuppressed = false;
+    m_hwScalingRetryPending = true;
   }
 }
 
@@ -2460,26 +2909,45 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
     return false;
   }
 
+  unsigned int format = VA_RT_FORMAT_YUV420;
+  std::int32_t pixelFormat = VA_FOURCC_NV12;
+  if (const auto rtFormat = VaRtFormatForFourcc(static_cast<std::uint32_t>(m_config.pixelFormat)))
+  {
+    format = *rtFormat;
+    pixelFormat = m_config.pixelFormat;
+  }
+  else if (m_config.profile == VAProfileHEVCMain10)
+  {
+    format = VA_RT_FORMAT_YUV420_10BPP;
+    pixelFormat = VA_FOURCC_P010;
+  }
+
   VASurfaceAttrib attribs[1], *attrib;
   attrib = attribs;
   attrib->flags = VA_SURFACE_ATTRIB_SETTABLE;
   attrib->type = VASurfaceAttribPixelFormat;
   attrib->value.type = VAGenericValueTypeInteger;
-  attrib->value.value.i = VA_FOURCC_NV12;
+  attrib->value.value.i = pixelFormat;
+
+  // Use the VPP target size when scaling.
+  m_scalingRequested = (config.scaleWidth > 0 && config.scaleHeight > 0);
+  if (m_scalingRequested)
+  {
+    m_scaleWidth = config.scaleWidth;
+    m_scaleHeight = config.scaleHeight;
+  }
+  else
+  {
+    m_scaleWidth = m_config.surfaceWidth;
+    m_scaleHeight = m_config.surfaceHeight;
+  }
 
   // create surfaces
   VASurfaceID surfaces[32];
-  unsigned int format = VA_RT_FORMAT_YUV420;
-  if (m_config.profile == VAProfileHEVCMain10)
-  {
-    format = VA_RT_FORMAT_YUV420_10BPP;
-    attrib->value.value.i = VA_FOURCC_P010;
-  }
   int nb_surfaces = NUM_RENDER_PICS;
-  if (!CheckSuccess(
-      vaCreateSurfaces(m_config.dpy, format, m_config.surfaceWidth, m_config.surfaceHeight,
-          surfaces, nb_surfaces,
-          attribs, 1), "vaCreateSurfaces"))
+  if (!CheckSuccess(vaCreateSurfaces(m_config.dpy, format, m_scaleWidth, m_scaleHeight, surfaces,
+                                     nb_surfaces, attribs, 1),
+                    "vaCreateSurfaces"))
   {
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateSurfaces");
 
@@ -2491,10 +2959,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   }
 
   // create vaapi decoder context
-  if (!CheckSuccess(
-      vaCreateContext(m_config.dpy, m_configId, m_config.surfaceWidth, m_config.surfaceHeight, 0,
-          surfaces,
-          nb_surfaces, &m_contextId), "vaCreateContext"))
+  if (!CheckSuccess(vaCreateContext(m_config.dpy, m_configId, m_scaleWidth, m_scaleHeight, 0,
+                                    surfaces, nb_surfaces, &m_contextId),
+                    "vaCreateContext"))
   {
     m_contextId = VA_INVALID_ID;
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateContext");
@@ -2519,9 +2986,9 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
       deinterlacingCaps,
       &numDeinterlacingCaps), "vaQueryVideoProcFilterCaps"))
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaQueryVideoProcFilterCaps");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - no VPP deinterlacing caps");
 
-    return false;
+    numDeinterlacingCaps = 0;
   }
 
   if (methods)
@@ -2548,7 +3015,47 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
       }
     }
   }
+
+#if VA_CHECK_VERSION(1, 7, 0)
+  if (std::find(filters, filters + numFilters, VAProcFilterHighDynamicRangeToneMapping) !=
+      filters + numFilters)
+  {
+    QueryHdrCaps();
+  }
+#endif
+
   return true;
+}
+
+void CVppPostproc::QueryHdrCaps()
+{
+#if VA_CHECK_VERSION(1, 7, 0)
+  m_hdrToSdrSupported = false;
+
+  VAProcFilterCapHighDynamicRange hdrCaps[VAProcHighDynamicRangeMetadataTypeCount];
+  unsigned int numHdrCaps = VAProcHighDynamicRangeMetadataTypeCount;
+
+  if (!CheckSuccess(vaQueryVideoProcFilterCaps(m_config.dpy, m_contextId,
+                                               VAProcFilterHighDynamicRangeToneMapping, hdrCaps,
+                                               &numHdrCaps),
+                    "vaQueryVideoProcFilterCaps"))
+  {
+    return;
+  }
+
+  for (unsigned int i = 0; i < numHdrCaps; i++)
+  {
+    if (hdrCaps[i].metadata_type == VAProcHighDynamicRangeMetadataHDR10 &&
+        (hdrCaps[i].caps_flag & VA_TONE_MAPPING_HDR_TO_SDR))
+    {
+      m_hdrToSdrSupported = true;
+      break;
+    }
+  }
+
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::{} - HDR10 to SDR tone mapping {}", __FUNCTION__,
+            m_hdrToSdrSupported ? "supported" : "not supported");
+#endif
 }
 
 bool CVppPostproc::Init(EINTERLACEMETHOD method)
@@ -2559,9 +3066,94 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
   m_frameCount = 0;
   m_vppMethod = VS_INTERLACEMETHOD_AUTO;
 
+  if (m_config.toneMap && !UpdateToneMapping(true))
+  {
+    CLog::Log(LOGWARNING,
+              "VAAPI::CVppPostproc - HDR to SDR tone mapping requested but not available");
+  }
+
   return UpdateDeintMethod(method);
 }
 
+bool CVppPostproc::UpdateToneMapping(bool enable)
+{
+  if (!enable)
+  {
+    if (m_toneMap)
+      return false;
+
+    return true;
+  }
+
+  if (m_toneMap)
+    return true;
+
+  if (!m_hdrToSdrSupported)
+    return false;
+
+#if VA_CHECK_VERSION(1, 7, 0)
+  m_hdrMetaData = {};
+#endif
+  if (!CreateToneMapFilter())
+    return false;
+
+  m_toneMap = true;
+  CLog::Log(LOGINFO, "VAAPI::CVppPostproc - HDR10 to SDR tone mapping enabled");
+  return true;
+}
+
+bool CVppPostproc::CreateToneMapFilter()
+{
+#if VA_CHECK_VERSION(1, 7, 0)
+  DestroyToneMapFilter();
+
+  VAProcFilterParameterBufferHDRToneMapping filterParams{};
+  filterParams.type = VAProcFilterHighDynamicRangeToneMapping;
+  filterParams.data.metadata_type = VAProcHighDynamicRangeMetadataHDR10;
+  filterParams.data.metadata = &m_hdrMetaData;
+  filterParams.data.metadata_size = sizeof(m_hdrMetaData);
+
+  if (!CheckSuccess(vaCreateBuffer(m_config.dpy, m_contextId, VAProcFilterParameterBufferType,
+                                   sizeof(filterParams), 1, &filterParams, &m_hdrFilter),
+                    "vaCreateBuffer"))
+  {
+    m_hdrFilter = VA_INVALID_ID;
+    return false;
+  }
+
+  return true;
+#else
+  return false;
+#endif
+}
+
+void CVppPostproc::DestroyToneMapFilter()
+{
+#if VA_CHECK_VERSION(1, 7, 0)
+  if (m_hdrFilter != VA_INVALID_ID)
+  {
+    CheckSuccess(vaDestroyBuffer(m_config.dpy, m_hdrFilter), "vaDestroyBuffer");
+    m_hdrFilter = VA_INVALID_ID;
+  }
+#endif
+}
+
+bool CVppPostproc::UpdateHdrMetadata(const VideoPicture& pic)
+{
+#if VA_CHECK_VERSION(1, 7, 0)
+  const VAHdrMetaDataHDR10 metaData = GetHdr10MetaData(pic);
+
+  if (m_hdrFilter != VA_INVALID_ID && std::memcmp(&metaData, &m_hdrMetaData, sizeof(metaData)) == 0)
+  {
+    return true;
+  }
+
+  m_hdrMetaData = metaData;
+  return CreateToneMapFilter();
+#else
+  return false;
+#endif
+}
 
 bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 {
@@ -2617,9 +3209,17 @@ bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
     return false;
   }
 
+  VABufferID pplFilters[2] = {m_filter, VA_INVALID_ID};
+  unsigned int numPplFilters = 1;
+#if VA_CHECK_VERSION(1, 7, 0)
+  if (m_toneMap && m_hdrFilter != VA_INVALID_ID)
+    pplFilters[numPplFilters++] = m_hdrFilter;
+#endif
+
   VAProcPipelineCaps pplCaps;
-  if (!CheckSuccess(vaQueryVideoProcPipelineCaps(m_config.dpy, m_contextId, &m_filter, 1, &pplCaps),
-      "vaQueryVideoProcPipelineCaps"))
+  if (!CheckSuccess(vaQueryVideoProcPipelineCaps(m_config.dpy, m_contextId, pplFilters,
+                                                 numPplFilters, &pplCaps),
+                    "vaQueryVideoProcPipelineCaps"))
   {
     return false;
   }
@@ -2645,6 +3245,7 @@ void CVppPostproc::Dispose()
     CheckSuccess(vaDestroyBuffer(m_config.dpy, m_filter), "vaDestroyBuffer");
     m_filter = VA_INVALID_ID;
   }
+  DestroyToneMapFilter();
   if (m_contextId != VA_INVALID_ID)
   {
     CheckSuccess(vaDestroyContext(m_config.dpy, m_contextId), "vaDestroyContext");
@@ -2723,12 +3324,13 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
     return false;
   }
 
-  // vpp deinterlacing
   VAProcFilterParameterBufferDeinterlacing *filterParams;
   VABufferID pipelineBuf;
   VAProcPipelineParameterBuffer *pipelineParams;
   VARectangle inputRegion;
   VARectangle outputRegion;
+
+  const bool toneMap = m_toneMap && IsHdr10(it->DVDPic) && UpdateHdrMetadata(it->DVDPic);
 
   if (!CheckSuccess(vaBeginPicture(m_config.dpy, m_contextId, surf), "vaBeginPicture"))
   {
@@ -2747,15 +3349,32 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   }
   memset(pipelineParams, 0, sizeof(VAProcPipelineParameterBuffer));
 
-  inputRegion.x = outputRegion.x = 0;
-  inputRegion.y = outputRegion.y = 0;
-  inputRegion.width = outputRegion.width = m_config.surfaceWidth;
-  inputRegion.height = outputRegion.height = m_config.surfaceHeight;
+  const bool scaling = m_scalingRequested;
+
+  inputRegion.x = 0;
+  inputRegion.y = 0;
+  outputRegion.x = 0;
+  outputRegion.y = 0;
+  if (scaling)
+  {
+    // Scale only the visible decoded picture, not codec padding.
+    inputRegion.width = m_config.vidWidth;
+    inputRegion.height = m_config.vidHeight;
+    outputRegion.width = m_scaleWidth;
+    outputRegion.height = m_scaleHeight;
+  }
+  else
+  {
+    inputRegion.width = m_config.surfaceWidth;
+    inputRegion.height = m_config.surfaceHeight;
+    outputRegion.width = m_config.surfaceWidth;
+    outputRegion.height = m_config.surfaceHeight;
+  }
 
   pipelineParams->output_region = &outputRegion;
   pipelineParams->surface_region = &inputRegion;
   pipelineParams->output_background_color = 0xff000000;
-  pipelineParams->filter_flags = 0;
+  pipelineParams->filter_flags = scaling ? VA_FILTER_SCALING_HQ : 0;
 
   VASurfaceID forwardRefs[32];
   VASurfaceID backwardRefs[32];
@@ -2767,6 +3386,9 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   int maxPic = currentIdx + m_backwardRefs;
   int minPic = currentIdx - m_forwardRefs;
   int curPic = currentIdx;
+
+  VABufferID filters[2];
+  unsigned int numFilters = 0;
 
   // deinterlace flag
   if (m_vppMethod != VS_INTERLACEMETHOD_NONE)
@@ -2798,13 +3420,38 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
       return false;
     }
 
-    pipelineParams->filters = &m_filter;
-    pipelineParams->num_filters = 1;
+    filters[numFilters++] = m_filter;
   }
-  else
+
+#if VA_CHECK_VERSION(1, 7, 0)
+  if (toneMap)
   {
-    pipelineParams->num_filters = 0;
+    filters[numFilters++] = m_hdrFilter;
+
+    pipelineParams->surface_color_standard = VAProcColorStandardExplicit;
+    pipelineParams->input_color_properties.colour_primaries =
+        static_cast<uint8_t>(it->DVDPic.color_primaries);
+    pipelineParams->input_color_properties.transfer_characteristics =
+        static_cast<uint8_t>(it->DVDPic.color_transfer);
+    pipelineParams->input_color_properties.matrix_coefficients = static_cast<uint8_t>(
+        it->DVDPic.color_space == AVCOL_SPC_UNSPECIFIED ? AVCOL_SPC_BT2020_NCL
+                                                        : it->DVDPic.color_space);
+    pipelineParams->input_color_properties.color_range =
+        it->DVDPic.color_range ? VA_SOURCE_RANGE_FULL : VA_SOURCE_RANGE_REDUCED;
+
+    pipelineParams->output_color_standard = VAProcColorStandardExplicit;
+    pipelineParams->output_color_properties.colour_primaries =
+        static_cast<uint8_t>(AVCOL_PRI_BT709);
+    pipelineParams->output_color_properties.transfer_characteristics =
+        static_cast<uint8_t>(AVCOL_TRC_BT709);
+    pipelineParams->output_color_properties.matrix_coefficients =
+        static_cast<uint8_t>(AVCOL_SPC_BT709);
+    pipelineParams->output_color_properties.color_range = VA_SOURCE_RANGE_REDUCED;
   }
+#endif
+
+  pipelineParams->filters = numFilters ? filters : nullptr;
+  pipelineParams->num_filters = numFilters;
 
   // references
   double ptsLast = DVD_NOPTS_VALUE;
@@ -2868,6 +3515,26 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
   outPic.DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
                             DVP_FLAG_REPEAT_TOP_FIELD |
                             DVP_FLAG_INTERLACED);
+  if (scaling)
+  {
+    outPic.outWidth = m_scaleWidth;
+    outPic.outHeight = m_scaleHeight;
+  }
+  else
+  {
+    outPic.outWidth = 0;
+    outPic.outHeight = 0;
+  }
+
+  if (toneMap)
+  {
+    outPic.DVDPic.color_primaries = AVCOL_PRI_BT709;
+    outPic.DVDPic.color_transfer = AVCOL_TRC_BT709;
+    outPic.DVDPic.color_space = AVCOL_SPC_BT709;
+    outPic.DVDPic.color_range = 0;
+    outPic.DVDPic.hasDisplayMetadata = false;
+    outPic.DVDPic.hasLightMetadata = false;
+  }
 
   return true;
 }
