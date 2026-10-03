@@ -9,8 +9,17 @@ else()
   set(CORE_USE_PCH FALSE)
 endif()
 
+# Adds the compile options that every target using a PCH needs
+function(core_pch_compile_options target)
+  # Keeps a PCH identical when its headers are only touched, so ccache can reuse what uses it
+  if(CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    target_compile_options(${target} PRIVATE "SHELL:-Xclang -fno-pch-timestamp")
+  endif()
+endfunction()
+
 # Gives a target a PCH of its own
 function(core_target_precompile_headers target)
+  core_pch_compile_options(${target})
   target_precompile_headers(${target} PRIVATE
     $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/xbmc/platform/posix/pch.h>)
 endfunction()
@@ -38,6 +47,8 @@ function(core_add_precompiled_headers)
     if(NOT type STREQUAL STATIC_LIBRARY)
       continue()
     endif()
+
+    core_pch_compile_options(${library})
 
     # A PCH can only be used with the flags it was built with
     get_target_property(source_dir ${library} SOURCE_DIR)
