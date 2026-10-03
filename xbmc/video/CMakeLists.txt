@@ -8,6 +8,7 @@ set(SOURCES Bookmark.cpp
             geometry/FrameSampling.cpp
             geometry/GeometryPublication.cpp
             geometry/GeometryTransforms.cpp
+            geometry/SampledGeometry.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
             PlayerControllerActions.cpp
@@ -42,6 +43,7 @@ set(HEADERS Bookmark.h
             geometry/FrameSampling.h
             geometry/GeometryPublication.h
             geometry/GeometryTransforms.h
+            geometry/SampledGeometry.h
             GUIViewStateVideo.h
             PlayerController.h
             PlayerControllerActions.h
