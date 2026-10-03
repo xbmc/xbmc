@@ -199,6 +199,8 @@ public:
   float GetCacheTotal();
   float GetMaxDelay() const;
   float GetWaterLevel();
+  int GetBufferedSamples();
+  double GetSinkDelaySeconds();
   void SetSuspended(bool state);
   void SetCurrentSinkFormat(const AEAudioFormat& SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
