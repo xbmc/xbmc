@@ -30,6 +30,7 @@ public:
 
   virtual void Initialize();
   virtual void Stop() { }
+  virtual void ScanForPresentMedia();
 
   virtual void GetLocalDrives(std::vector<CMediaSource>& localDrives);
   virtual void GetRemovableDrives(std::vector<CMediaSource>& removableDrives);

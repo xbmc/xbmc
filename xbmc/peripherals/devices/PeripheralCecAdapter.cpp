@@ -2026,8 +2026,13 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 {
   if (!IsRunning())
     return false;
-  if (m_cecAdapter->IsLibCECActiveSource() &&
-      (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
+
+  /* being the active source is what allows us to stand the system down again, so it decides which
+     way a toggle goes. an explicit standby is the user asking for it, and is always honoured. */
+  const bool bStandby = mode == STATE_STANDBY ||
+                        (mode == STATE_SWITCH_TOGGLE && m_cecAdapter->IsLibCECActiveSource());
+
+  if (bStandby)
   {
     CLog::Log(LOGDEBUG, "{} - putting CEC device on standby...", __FUNCTION__);
     StandbyDevices();

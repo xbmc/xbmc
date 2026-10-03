@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  The aspect ratios Kodi recognises.
+
+  This file is the shipped vocabulary. To change it, copy it to your userdata folder and edit
+  the copy - do not edit this one, as it is replaced on every update. The copy is applied over
+  this one rather than instead of it, so it only needs the ratios you want to change:
+
+      <aspectratios>
+        <ratio value="1.50" detect="true"/>
+        <ratio value="1.66" name="European widescreen"/>
+      </aspectratios>
+
+  An entry whose value matches one below at two decimals replaces it; anything else is
+  added. Attributes you leave out keep whatever the entry already had, so you can change one
+  property on its own, and you still receive any ratio a later Kodi adds.
+
+  value    the ratio itself. Required.
+  detect   may be the answer to a measurement. Withheld from a ratio so rare that a
+           measurement landing on it is more likely to be an overshoot on its neighbour -
+           and getting that wrong reports a narrower picture than the truth, which crops it.
+  declare  may be chosen by hand from the aspect ratio list while a video plays. True for
+           everything here: someone who owns the disc knows what is on it.
+  name     what the ratio is called. Reported alongside the number, never instead of it, so a
+           skin or a program can use either. Not translated - it is the same string in every
+           language, so that anything reading it can rely on the value.
+
+  tolerance on the root element is how far a measured ratio may sit from an entry and still
+  be called that entry, as a fraction. Above it, the measurement corresponds to no real ratio
+  and is treated as a failure. The default allows for content that is not coded exactly on a
+  nominal ratio - 1888x1080 is 1.748, which is a correct encode of 16:9 and 1.8% away from it.
+-->
+<aspectratios tolerance="0.02">
+  <!-- A square picture is what a failed measurement looks like, not a ratio anyone delivers. -->
+  <ratio value="1.00" detect="false" declare="true"/>
+  <ratio value="1.19" detect="true"  declare="true" name="Movietone"/>
+  <!-- A ratio that is an exact fraction is given as it, so a full-frame 4:3 or 16:9
+       measurement or declaration resolves to exactly its frame. A userdata copy saying 1.33
+       or 1.78 still changes these entries - values match at two decimals. -->
+  <ratio value="1.3333333" detect="true"  declare="true" name="4:3"/>
+  <ratio value="1.37" detect="true"  declare="true" name="Academy"/>
+  <ratio value="1.43" detect="true"  declare="true" name="IMAX 70mm"/>
+  <!-- 3:2 is a stills ratio. Offering it as an answer mostly gives a failed measurement
+       somewhere to land in the wide gap between 1.43 and 1.66. -->
+  <ratio value="1.50" detect="false" declare="true" name="3:2"/>
+  <ratio value="1.66" detect="true"  declare="true"/>
+  <ratio value="1.7777778" detect="true"  declare="true" name="16:9"/>
+  <ratio value="1.85" detect="true"  declare="true" name="Flat"/>
+  <ratio value="1.90" detect="true"  declare="true" name="IMAX digital"/>
+  <ratio value="2.00" detect="true"  declare="true" name="Univisium"/>
+  <ratio value="2.20" detect="true"  declare="true" name="Todd-AO"/>
+  <ratio value="2.35" detect="true"  declare="true" name="CinemaScope"/>
+  <ratio value="2.40" detect="true"  declare="true" name="Scope"/>
+  <!-- Both are delivered, and both are rare enough that a measurement here is more likely an
+       overshoot on the entry below. -->
+  <ratio value="2.55" detect="false" declare="true" name="CinemaScope 55"/>
+  <ratio value="2.76" detect="false" declare="true" name="Ultra Panavision 70"/>
+</aspectratios>

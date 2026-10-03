@@ -21,8 +21,6 @@ CRetroPlayerVideo::CRetroPlayerVideo(CRPRenderManager& renderManager, CRPProcess
     m_processInfo(processInfo)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Initializing video");
-
-  m_renderManager.Initialize();
 }
 
 CRetroPlayerVideo::~CRetroPlayerVideo()
@@ -30,7 +28,6 @@ CRetroPlayerVideo::~CRetroPlayerVideo()
   CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Deinitializing video");
 
   CloseStream();
-  m_renderManager.Deinitialize();
 }
 
 bool CRetroPlayerVideo::OpenStream(const StreamProperties& properties)
@@ -112,7 +109,6 @@ void CRetroPlayerVideo::CloseStream()
   {
     CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Closing video stream");
 
-    m_renderManager.Flush();
     m_bOpen = false;
   }
 }

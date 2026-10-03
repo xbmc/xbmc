@@ -11,6 +11,7 @@
 #include "RenderContext.h"
 #include "RenderSettings.h"
 #include "RenderTranslator.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/RetroPlayer/buffers/IRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
@@ -25,9 +26,11 @@
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RetroPlayerVideo.h"
 #include "filesystem/File.h"
+#include "games/GameServices.h"
 #include "pictures/Picture.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
+#include "utils/ScopeGuard.h"
 #include "utils/TransformMatrix.h"
 #include "utils/log.h"
 
@@ -67,6 +70,8 @@ void CRPRenderManager::Deinitialize()
     task.wait();
   m_savestateThreads.clear();
 
+  DestroyContext();
+
   for (auto& pixelScalerMap : m_scalers)
   {
     for (auto& pixelScaler : pixelScalerMap.second)
@@ -77,9 +82,15 @@ void CRPRenderManager::Deinitialize()
   }
   m_scalers.clear();
 
-  for (auto renderBuffer : m_renderBuffers)
-    renderBuffer->Release();
-  m_renderBuffers.clear();
+  {
+    std::unique_lock lock(m_bufferMutex);
+    for (auto renderBuffer : m_renderBuffers)
+      renderBuffer->Release();
+    m_renderBuffers.clear();
+    m_cachedFrame.clear();
+    m_bHasCachedFrame = false;
+    m_cachedWidth = m_cachedHeight = 0;
+  }
 
   for (const PendingBuffer& pending : m_pendingBuffers)
   {
@@ -126,6 +137,13 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
   m_maxHeight = maxHeight;
 
   std::unique_lock lock(m_stateMutex);
+
+  if (m_state != RENDER_STATE::UNCONFIGURED)
+  {
+    Flush();
+    std::unique_lock rendererLock(m_oldRenderersMutex);
+    m_oldRenderers.merge(m_renderers);
+  }
 
   m_state = RENDER_STATE::CONFIGURING;
 
@@ -310,41 +328,209 @@ void CRPRenderManager::Flush()
   m_bFlush = true;
 }
 
+bool CRPRenderManager::BeginClientFrame()
+{
+  std::unique_lock lock(m_hwMutex, std::try_to_lock);
+  if (!lock.owns_lock())
+    return false;
+  if (m_clientFrameDepth == 0 && m_hwBufferPool)
+  {
+    if (!m_hwBufferPool->BeginClientFrame())
+      return false;
+    m_hwContextBound = true;
+  }
+  ++m_clientFrameDepth;
+  lock.release();
+  return true;
+}
+
+void CRPRenderManager::EndClientFrame()
+{
+  if (--m_clientFrameDepth == 0)
+  {
+    if (m_destroyContextPending)
+      DestroyContext();
+    else if (m_hwContextBound)
+    {
+      m_hwBufferPool->EndClientFrame();
+      m_hwContextBound = false;
+    }
+  }
+  m_hwMutex.unlock();
+}
+
+bool CRPRenderManager::CreateContext(const HwContextProperties& properties)
+{
+  std::unique_lock lock(m_hwMutex);
+  // An explicit replacement ends the closed stream's context before rebinding.
+  if (m_destroyContextPending)
+    DestroyContextInternal();
+  if (m_hwBufferPool)
+    return false;
+
+  for (IRenderBufferPool* pool : m_processInfo.GetBufferManager().GetBufferPools())
+  {
+    if (!pool->SupportsHardwareRendering())
+      continue;
+    if (!pool->CreateContext(properties))
+    {
+      pool->DestroyContext();
+      continue;
+    }
+
+    // Stream creation can occur inside a call that began before negotiation.
+    if (m_clientFrameDepth > 0 && !pool->BeginClientFrame())
+    {
+      pool->DestroyContext();
+      continue;
+    }
+    m_hwBufferPool = pool;
+    m_hwContextBound = m_clientFrameDepth > 0;
+    m_hasHardwareContext = true;
+    return true;
+  }
+  return false;
+}
+
 void CRPRenderManager::DestroyContext()
 {
-  for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
-    bufferPool->DestroyContext();
+  std::unique_lock lock(m_hwMutex);
+  if (m_clientFrameDepth > 0)
+  {
+    // Closing a stream can reenter from UnloadGame(), which may still use GL.
+    m_destroyContextPending = true;
+    return;
+  }
+  DestroyContextInternal();
+}
+
+void CRPRenderManager::DestroyContextInternal()
+{
+  m_destroyContextPending = false;
+  if (m_hwContextBound)
+  {
+    m_hwBufferPool->EndClientFrame();
+    m_hwContextBound = false;
+  }
+  ReleaseHwRenderBuffer();
+  if (m_hwBufferPool)
+    m_hwBufferPool->DestroyContext();
+  m_hwBufferPool = nullptr;
+  m_hwContextBound = false;
+  m_hasHardwareContext = false;
 }
 
 bool CRPRenderManager::Create(unsigned int width, unsigned int height)
 {
-  //! @todo
-  return false;
+  std::unique_lock lock(m_hwMutex);
+  if (!m_hwBufferPool || width == 0 || height == 0 || !BeginClientFrame())
+    return false;
+  const UTILS::CScopeGuard<CRPRenderManager*, nullptr, void(CRPRenderManager*)> endFrame(
+      [](CRPRenderManager* manager) { manager->EndClientFrame(); }, this);
+
+  width = std::max(width, m_hwBufferWidth);
+  height = std::max(height, m_hwBufferHeight);
+  bool success = false;
+  if (m_hwRenderBuffer)
+  {
+    success = (width == m_hwBufferWidth && height == m_hwBufferHeight) ||
+              m_hwRenderBuffer->Allocate(AV_PIX_FMT_NONE, width, height);
+  }
+  else if (m_hwBufferPool->IsConfigured() || m_hwBufferPool->Configure(AV_PIX_FMT_NONE))
+  {
+    IRenderBuffer* buffer = m_hwBufferPool->GetBuffer(width, height);
+    if (buffer && buffer->GetCurrentFramebuffer() != 0)
+    {
+      m_hwRenderBuffer = buffer;
+      success = true;
+    }
+    else if (buffer)
+      buffer->Release();
+  }
+
+  if (success)
+  {
+    m_hwBufferWidth = width;
+    m_hwBufferHeight = height;
+    CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Allocated a {}x{} framebuffer for the game client",
+              width, height);
+  }
+  else
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to allocate a {}x{} framebuffer", width,
+              height);
+  return success;
+}
+
+void CRPRenderManager::ReleaseHwRenderBuffer()
+{
+  std::unique_lock hwLock(m_hwMutex);
+  if (!m_hwRenderBuffer)
+    return;
+  {
+    std::unique_lock lock(m_bufferMutex);
+    std::erase_if(m_renderBuffers,
+                  [this](IRenderBuffer* renderBuffer)
+                  {
+                    if (renderBuffer->GetPool() != m_hwBufferPool)
+                      return false;
+                    renderBuffer->Release();
+                    return true;
+                  });
+  }
+  m_hwRenderBuffer->Release();
+  m_hwRenderBuffer = nullptr;
+  m_hwBufferWidth = m_hwBufferHeight = 0;
+  m_loggedFramebuffer = 0;
+  m_loggedHardwareCapture = false;
 }
 
 uintptr_t CRPRenderManager::GetCurrentFramebuffer(unsigned int width, unsigned int height)
 {
-  for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+  std::unique_lock lock(m_hwMutex);
+  if (!m_hwRenderBuffer || width == 0 || height == 0)
+    return 0;
+  if ((width > m_hwBufferWidth || height > m_hwBufferHeight) && !Create(width, height))
+    return 0;
+  const uintptr_t framebuffer = m_hwRenderBuffer->GetCurrentFramebuffer();
+  if (framebuffer != m_loggedFramebuffer)
   {
-    if (!bufferPool->HasVisibleRenderer())
-      continue;
-
-    IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);
-    if (renderBuffer != nullptr)
-    {
-      // A framebuffer is lent here, not memory, so there is no CPU access open
-      // on the buffer and nothing for the client to hand back
-      m_pendingBuffers.emplace_back(PendingBuffer{renderBuffer, nullptr});
-      return renderBuffer->GetCurrentFramebuffer();
-    }
+    CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Client is rendering into framebuffer {} ({}x{})",
+              framebuffer, width, height);
+    m_loggedFramebuffer = framebuffer;
   }
-
-  return 0;
+  return framebuffer;
 }
 
-void CRPRenderManager::RenderFrame()
+void CRPRenderManager::RenderFrame(unsigned int width,
+                                   unsigned int height,
+                                   float displayAspectRatio,
+                                   unsigned int orientationDegCCW)
 {
-  //! @todo
+  std::unique_lock hwLock(m_hwMutex);
+  if (m_bFlush || !m_hwContextBound || !m_hwRenderBuffer || width == 0 || height == 0 ||
+      width > m_hwBufferWidth || height > m_hwBufferHeight)
+    return;
+
+  IRenderBuffer* publishBuffer =
+      m_hwBufferPool->CaptureClientFrame(m_hwRenderBuffer, width, height);
+  if (!publishBuffer)
+    return;
+
+  if (!m_loggedHardwareCapture)
+  {
+    CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: First hardware frame captured on GPU ({}x{})", width,
+              height);
+    m_loggedHardwareCapture = true;
+  }
+  publishBuffer->SetSize(width, height);
+  publishBuffer->SetDisplayAspectRatio(displayAspectRatio);
+  publishBuffer->SetRotation(orientationDegCCW);
+  publishBuffer->SetLoaded(true);
+
+  std::unique_lock lock(m_bufferMutex);
+  for (IRenderBuffer* renderBuffer : m_renderBuffers)
+    renderBuffer->Release();
+  m_renderBuffers = {publishBuffer};
 }
 
 void CRPRenderManager::SetSpeed(double speed)
@@ -401,6 +587,7 @@ void CRPRenderManager::CheckFlush()
       std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
       for (const auto& renderer : m_renderers)
         renderer->Flush();
+      m_oldRenderers.clear();
     }
 
     m_processInfo.GetBufferManager().FlushPools();
@@ -606,6 +793,12 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForPool(
     return renderer;
   }
 
+  // Don't build a renderer for a pool that cannot accept the stream's format.
+  // The pool remembers the refusal, so this costs nothing after the first frame
+  // and keeps the software pools quiet while a hardware stream is playing.
+  if (!bufferPool->Configure(m_format))
+    return renderer;
+
   std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
 
   // Serialize with teardown so an old deferred flush cannot invalidate a new renderer's pool.
@@ -736,7 +929,7 @@ IRenderBuffer* CRPRenderManager::GetRenderBufferForSavestate(const std::string& 
 
 void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool* bufferPool)
 {
-  if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
+  if (IsHardwareRendering() || m_bFlush || m_state != RENDER_STATE::CONFIGURED)
     return;
 
   std::unique_lock lock(m_bufferMutex);
@@ -865,6 +1058,10 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(
 
 void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
 {
+  // A hardware-rendered savestate carries no thumbnail
+  if (IsHardwareRendering())
+    return;
+
   // Get a suitable render buffer for capturing the video data, or use the
   // cached frame if a readable buffer can't be found
   IRenderBuffer* renderBuffer = nullptr;
@@ -902,6 +1099,7 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
   if (sourceFormat == AV_PIX_FMT_NONE)
   {
     CLog::Log(LOGERROR, "Failed to get a video frame for savestate thumbnail");
+    FreeVideoFrame(renderBuffer, std::move(cachedFrame));
     return;
   }
 
@@ -939,6 +1137,12 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
 
 void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath)
 {
+  // The game client renders into these buffers itself, and there is only ever
+  // one. Holding a reference to it for a savestate would starve the client of
+  // the framebuffer it is drawing the next frame into.
+  if (IsHardwareRendering())
+    return;
+
   std::unique_lock lock(m_bufferMutex);
 
   // Get the render buffers for this savestate path
@@ -956,14 +1160,65 @@ void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath)
     renderBuffer->Acquire();
 }
 
-void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavestate& savestate)
+bool CRPRenderManager::TryCaptureVideoFrame(VideoFrame& frame)
 {
+  if (IsHardwareRendering() || !frame.empty())
+    return false;
+
+  std::unique_lock lock(m_bufferMutex, std::try_to_lock);
+  if (!lock.owns_lock())
+    return false;
+
+  for (IRenderBuffer* buffer : m_renderBuffers)
+  {
+    buffer->Acquire();
+    frame.emplace_back(buffer, [](IRenderBuffer* acquired) { acquired->Release(); });
+  }
+  return true;
+}
+
+void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath, const VideoFrame& frame)
+{
+  if (IsHardwareRendering())
+    return;
+
+  std::unique_lock lock(m_bufferMutex);
+  auto& buffers = m_savestateBuffers[savestatePath];
+  for (IRenderBuffer* buffer : buffers)
+    buffer->Release();
+  buffers.clear();
+  for (const auto& buffer : frame)
+  {
+    buffer->Acquire();
+    buffers.push_back(buffer.get());
+  }
+}
+
+void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath,
+                                      ISavestate& savestate,
+                                      const VideoFrame& frame)
+{
+  // A hardware-rendered savestate carries the game's state but no video frame,
+  // so it restores without a preview of the moment it was taken
+  if (IsHardwareRendering())
+    return;
+
   // Get a suitable render buffer for capturing the video data, or use the
   // cached frame if a readable buffer can't be found
   IRenderBuffer* readableBuffer = nullptr;
   std::vector<uint8_t> cachedFrame;
 
-  GetVideoFrame(readableBuffer, cachedFrame);
+  for (const auto& buffer : frame)
+  {
+    if (buffer->GetMemoryAccess() != DataAccess::WRITE_ONLY)
+    {
+      readableBuffer = buffer.get();
+      readableBuffer->Acquire();
+      break;
+    }
+  }
+  if (!readableBuffer)
+    GetVideoFrame(readableBuffer, cachedFrame);
 
   // Video frame properties
   AVPixelFormat targetFormat = AV_PIX_FMT_NONE;
@@ -1094,6 +1349,11 @@ void CRPRenderManager::LoadVideoFrameAsync(const std::string& savestatePath)
 
 void CRPRenderManager::LoadVideoFrameSync(const std::string& savestatePath)
 {
+  // Savestates taken while the client renders on the GPU hold no video frame,
+  // and the only buffer to load one into is the one the client is drawing to
+  if (IsHardwareRendering())
+    return;
+
   if (!XFILE::CFile::Exists(savestatePath))
   {
     CLog::Log(LOGERROR, "Failed to load savestate: doesn't exist at path {}",

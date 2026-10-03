@@ -20,7 +20,6 @@
 #include "commons/Exception.h"
 #include "cores/FFmpeg.h"
 #include "cores/MenuType.h"
-#include "cores/VideoPlayer/Interface/TimingConstants.h" // for DVD_TIME_BASE
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -228,6 +227,25 @@ bool CDVDDemuxFFmpeg::Aborted()
   std::shared_ptr<CDVDInputStreamFFmpeg> input = std::dynamic_pointer_cast<CDVDInputStreamFFmpeg>(m_pInput);
   if (input && input->Aborted())
     return true;
+
+  return false;
+}
+
+bool CDVDDemuxFFmpeg::IsStreaming() const
+{
+  if (m_pInput && m_pInput->IsStreaming())
+    return true;
+
+  if (m_pFormatContext && m_pFormatContext->iformat)
+  {
+    auto names = StringUtils::Split(m_pFormatContext->iformat->name, ",");
+    return std::ranges::any_of(names,
+                               [](const std::string& name)
+                               {
+                                 return name == "hls" || name == "applehttp" || name == "dash" ||
+                                        name == "rtsp" || name == "live_flv";
+                               });
+  }
 
   return false;
 }
@@ -622,6 +640,10 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   if (!programProp.isNull())
     m_initialProgramNumber = static_cast<int>(programProp.asInteger());
 
+  // The transport stream re-open below skips avformat_find_stream_info(), so put back what the
+  // first probe established before the streams are built from it.
+  RestoreProbedStreamParameters();
+
   // in case of mpegts and we have not seen pat/pmt, defer creation of streams
   if (!skipCreateStreams || m_pFormatContext->nb_programs > 0)
   {
@@ -684,10 +706,13 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   if (m_checkTransportStream && m_streaminfo)
   {
     int64_t duration = m_pFormatContext->duration;
+    SaveProbedStreamParameters();
     std::shared_ptr<CDVDInputStream> pInputStream = m_pInput;
     Dispose();
     m_reopen = true;
-    if (!Open(pInputStream, false))
+    const bool opened = Open(pInputStream, false);
+    ClearProbedStreamParameters();
+    if (!opened)
       return false;
     m_pFormatContext->duration = duration;
   }
@@ -1349,21 +1374,49 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
   int ret;
   {
     std::unique_lock lock(m_critSection);
-    ret = av_seek_frame(m_pFormatContext, m_seekStream, seek_pts, backwards ? AVSEEK_FLAG_BACKWARD : 0);
+
+    // mp3 and .sup get no start_time added to seek_pts above, so the threshold has none either
+    int64_t starttime = (ismp3 || m_bSup) ? 0 : m_pFormatContext->start_time;
+    if (m_checkTransportStream)
+    {
+      AVStream* st = m_pFormatContext->streams[m_seekStream];
+      starttime =
+          av_rescale(static_cast<int64_t>(m_startTime), st->time_base.num, st->time_base.den);
+    }
+
+    // an unknown timing is AV_NOPTS_VALUE, i.e. INT64_MIN, and would put the threshold
+    // below every possible target
+    const bool timingsKnown =
+        m_pFormatContext->duration > 0 && starttime != static_cast<int64_t>(AV_NOPTS_VALUE);
+    const bool beyondEof = timingsKnown && seek_pts >= (m_pFormatContext->duration + starttime);
+
+    // a duration derived from the bitrate undershoots on VBR content, so it is no boundary
+    // to decide a seek on
+    const bool durationIsMeasured =
+        m_pFormatContext->duration_estimation_method != AVFMT_DURATION_FROM_BITRATE;
+
+    // past the end there is no index entry to seek to, so av_seek_frame() scans the rest of
+    // the file packet by packet before failing - minutes on a network source. The outcome is
+    // known here, so skip it. Not for transport streams (target in ticks vs duration in
+    // AV_TIME_BASE units) or realtime sources (the file may have grown past its duration).
+    const bool skipSeek =
+        beyondEof && durationIsMeasured && !m_checkTransportStream && !m_pInput->IsRealtime();
+
+    if (skipSeek)
+    {
+      CLog::Log(LOGDEBUG,
+                "CDVDDemuxFFmpeg::{} - target {} is past the end of the stream, skipping the seek",
+                __FUNCTION__, seek_pts);
+      ret = -1;
+    }
+    else
+      ret = av_seek_frame(m_pFormatContext, m_seekStream, seek_pts,
+                          backwards ? AVSEEK_FLAG_BACKWARD : 0);
 
     if (ret < 0)
     {
-      int64_t starttime = m_pFormatContext->start_time;
-      if (m_checkTransportStream)
-      {
-        AVStream* st = m_pFormatContext->streams[m_seekStream];
-        starttime =
-            av_rescale(static_cast<int64_t>(m_startTime), st->time_base.num, st->time_base.den);
-      }
-
       // demuxer can return failure, if seeking behind eof
-      if (m_pFormatContext->duration &&
-          seek_pts >= (m_pFormatContext->duration + starttime))
+      if (beyondEof)
       {
         // force eof
         // files of realtime streams may grow
@@ -1627,6 +1680,137 @@ void CDVDDemuxFFmpeg::CreateStreams(unsigned int program)
   }
 }
 
+void CDVDDemuxFFmpeg::SaveProbedStreamParameters()
+{
+  ClearProbedStreamParameters();
+
+  if (!m_pFormatContext)
+    return;
+
+  for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+  {
+    const AVStream* st = m_pFormatContext->streams[i];
+    if (!st || !st->codecpar)
+      continue;
+
+    ProbedStream probed;
+    probed.codecpar.reset(avcodec_parameters_alloc());
+    if (!probed.codecpar)
+      continue;
+
+    if (avcodec_parameters_copy(probed.codecpar.get(), st->codecpar) < 0)
+      continue;
+
+    probed.rFrameRate = st->r_frame_rate;
+    probed.avgFrameRate = st->avg_frame_rate;
+    probed.sampleAspectRatio = st->sample_aspect_ratio;
+    m_probedStreams[static_cast<int>(i)] = std::move(probed);
+  }
+}
+
+void CDVDDemuxFFmpeg::RestoreProbedStreamParameters()
+{
+  if (m_probedStreams.empty() || !m_pFormatContext)
+    return;
+
+  unsigned int restored = 0;
+
+  for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
+  {
+    const auto it = m_probedStreams.find(static_cast<int>(i));
+    if (it == m_probedStreams.end())
+      continue;
+
+    AVStream* st = m_pFormatContext->streams[i];
+    const AVCodecParameters* probed = it->second.codecpar.get();
+    if (!st || !st->codecpar || !probed)
+      continue;
+
+    if (st->codecpar->codec_type != probed->codec_type ||
+        st->codecpar->codec_id != probed->codec_id)
+    {
+      CLog::LogF(LOGDEBUG, "stream {} changed across the re-open, keeping the current parameters",
+                 i);
+      continue;
+    }
+
+    if (probed->codec_type == AVMEDIA_TYPE_VIDEO && (probed->width == 0 || probed->height == 0))
+    {
+      CLog::LogF(LOGDEBUG, "stream {} was not fully probed, leaving it to the demuxer", i);
+      continue;
+    }
+
+    // Only fill in what the re-open does not know, and never extradata or ch_layout:
+    // ResetVideoStreams() clears extradata so that TransportStreamVideoState() waits for the
+    // demuxer to find it again, which is what starts playback on an i-frame; a restored ch_layout
+    // outlives the channel count the demuxer resets from the PMT, which IsProgramChange() then
+    // reads as a change and rebuilds the streams for nothing.
+    AVCodecParameters* cur = st->codecpar;
+
+    if (cur->profile == AV_PROFILE_UNKNOWN)
+      cur->profile = probed->profile;
+    if (cur->level == AV_LEVEL_UNKNOWN)
+      cur->level = probed->level;
+    if (cur->format < 0) // AV_PIX_FMT_NONE / AV_SAMPLE_FMT_NONE
+      cur->format = probed->format;
+    if (cur->bit_rate == 0)
+      cur->bit_rate = probed->bit_rate;
+    if (cur->bits_per_coded_sample == 0)
+      cur->bits_per_coded_sample = probed->bits_per_coded_sample;
+    if (cur->bits_per_raw_sample == 0)
+      cur->bits_per_raw_sample = probed->bits_per_raw_sample;
+
+    if (cur->codec_type == AVMEDIA_TYPE_VIDEO)
+    {
+      if (cur->width == 0 || cur->height == 0)
+      {
+        cur->width = probed->width;
+        cur->height = probed->height;
+      }
+      if (cur->sample_aspect_ratio.num == 0)
+        cur->sample_aspect_ratio = probed->sample_aspect_ratio;
+      if (cur->field_order == AV_FIELD_UNKNOWN)
+        cur->field_order = probed->field_order;
+      if (cur->color_range == AVCOL_RANGE_UNSPECIFIED)
+        cur->color_range = probed->color_range;
+      if (cur->color_primaries == AVCOL_PRI_UNSPECIFIED)
+        cur->color_primaries = probed->color_primaries;
+      if (cur->color_trc == AVCOL_TRC_UNSPECIFIED)
+        cur->color_trc = probed->color_trc;
+      if (cur->color_space == AVCOL_SPC_UNSPECIFIED)
+        cur->color_space = probed->color_space;
+      if (cur->chroma_location == AVCHROMA_LOC_UNSPECIFIED)
+        cur->chroma_location = probed->chroma_location;
+
+      if (st->r_frame_rate.num == 0 || st->r_frame_rate.den == 0)
+        st->r_frame_rate = it->second.rFrameRate;
+      if (st->avg_frame_rate.num == 0 || st->avg_frame_rate.den == 0)
+        st->avg_frame_rate = it->second.avgFrameRate;
+      if (st->sample_aspect_ratio.num == 0)
+        st->sample_aspect_ratio = it->second.sampleAspectRatio;
+    }
+    else if (cur->codec_type == AVMEDIA_TYPE_AUDIO)
+    {
+      if (cur->sample_rate == 0)
+        cur->sample_rate = probed->sample_rate;
+      if (cur->block_align == 0)
+        cur->block_align = probed->block_align;
+      if (cur->frame_size == 0)
+        cur->frame_size = probed->frame_size;
+    }
+
+    restored++;
+  }
+
+  CLog::LogF(LOGDEBUG, "restored the probed parameters of {} of {} streams after the re-open",
+             restored, m_probedStreams.size());
+}
+
+void CDVDDemuxFFmpeg::ClearProbedStreamParameters()
+{
+  m_probedStreams.clear();
+}
+
 void CDVDDemuxFFmpeg::DisposeStreams()
 {
   std::map<int, CDemuxStream*>::iterator it;
@@ -1726,6 +1910,30 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
                          pStream->codecpar->field_order == AV_FIELD_BB ||
                          pStream->codecpar->field_order == AV_FIELD_TB ||
                          pStream->codecpar->field_order == AV_FIELD_BT;
+
+        // Statistics can disambiguate whole-ms DefaultDuration values such as
+        // 42ms (23.976 or 24 fps). This is an initial rate estimate, not a CFR test;
+        // bVFR does not identify variable-rate Matroska streams here.
+        if (m_bMatroska && pStream->codecpar->field_order == AV_FIELD_PROGRESSIVE)
+        {
+          const AVDictionaryEntry* statFrames =
+              av_dict_get(pStream->metadata, "NUMBER_OF_FRAMES", nullptr, AV_DICT_IGNORE_SUFFIX);
+          const AVDictionaryEntry* statDuration =
+              av_dict_get(pStream->metadata, "DURATION", nullptr, AV_DICT_IGNORE_SUFFIX);
+          if (statFrames && statDuration)
+          {
+            const double statsFps =
+                CDVDDemuxUtils::FrameRateFromStatistics(statFrames->value, statDuration->value);
+            const int declaredRate = st->iFpsRate;
+            const int declaredScale = st->iFpsScale;
+            if (CDVDDemuxUtils::SnapMsQuantisedFrameRate(st->iFpsRate, st->iFpsScale, statsFps))
+              CLog::Log(LOGINFO,
+                        "CDVDDemuxFFmpeg::AddStream - stream {}: correcting ms-quantised fps "
+                        "{}/{} to {}/{} (statistics fps: {:.3f})",
+                        pStream->index, declaredRate, declaredScale, st->iFpsRate, st->iFpsScale,
+                        statsFps);
+          }
+        }
 
         st->iWidth = pStream->codecpar->width;
         st->iHeight = pStream->codecpar->height;

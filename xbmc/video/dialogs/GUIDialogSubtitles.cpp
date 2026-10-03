@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -34,6 +33,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/ActionIDs.h"
 #include "jobs/Job.h"
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
@@ -609,6 +609,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   // Extract the language and appropriate extension
   std::string strSubLang;
   CLangCodeExpander::ConvertToISO6391(language, strSubLang);
+  const std::string langSuffix{strSubLang.empty() ? "" : "." + strSubLang};
 
   // Iterate over all items to transfer
   for (unsigned int i = 0; i < vecFiles.size() && i < (unsigned int) items->Size(); i++)
@@ -619,7 +620,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
 
     // construct subtitle path
     std::string strSubExt = URIUtils::GetExtension(strUrl);
-    std::string strSubName = StringUtils::Format("{}.{}{}", strFileName, strSubLang, strSubExt);
+    std::string strSubName = StringUtils::Format("{}{}{}", strFileName, langSuffix, strSubExt);
 
     // Handle URL encoding:
     std::string strDownloadFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubName, strDownloadPath);
@@ -671,7 +672,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
         if(CFile::Exists(strUrl))
         {
-          std::string strSubNameIdx = StringUtils::Format("{}.{}.idx", strFileName, strSubLang);
+          std::string strSubNameIdx = StringUtils::Format("{}{}.idx", strFileName, langSuffix);
           // Handle URL encoding:
           strDestFile = URIUtils::ChangeBasePath(strCurrentFilePath, strSubNameIdx, strDestPath);
           CFile::Copy(strUrl, strDestFile);

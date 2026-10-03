@@ -30,6 +30,7 @@ public:
 
   // Implementation of CGUIControl via CGUIDialog
   bool OnAction(const CAction& action) override;
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
 
   // Implementation of CGUIWindow via CGUIDialog
   void OnDeinitWindow(int nextWindowID) override;

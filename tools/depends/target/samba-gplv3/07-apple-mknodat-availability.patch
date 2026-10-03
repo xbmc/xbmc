@@ -1,0 +1,14 @@
+--- a/source3/lib/system.c
++++ b/source3/lib/system.c
+@@ -502,7 +502,10 @@ int sys_mknod(const char *path, mode_t mode, SMB_DEV_T dev)
+ int sys_mknodat(int dirfd, const char *path, mode_t mode, SMB_DEV_T dev)
+ {
+ #if defined(HAVE_MKNODAT)
+-	return mknodat(dirfd, path, mode, dev);
++	if (__builtin_available(macOS 13.0, iOS 16.0, tvOS 16.0, *))
++		return mknodat(dirfd, path, mode, dev);
++	errno = ENOSYS;
++	return -1;
+ #else
+ 	/* No mknod system call. */
+ 	errno = ENOSYS;

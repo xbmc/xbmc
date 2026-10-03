@@ -183,13 +183,14 @@ private:
   void ApplySizeUpdate(SizeUpdateInformation update);
   void ApplyNextState();
 
-  std::string UserFriendlyOutputName(std::shared_ptr<COutput> const& output);
+  std::string UserFriendlyOutputName(std::shared_ptr<COutput> const& output,
+                                     bool legacyName = false);
   std::shared_ptr<COutput> FindOutputByUserFriendlyName(std::string const& name);
   std::shared_ptr<COutput> FindOutputByWaylandOutput(wayland::output_t const& output);
 
   // Called when wl_output::done is received for an output, i.e. associated
   // information like modes is available
-  void OnOutputDone(std::uint32_t name);
+  void OnOutputDone(std::uint32_t name, bool labelChanged);
   void UpdateBufferScale();
   void ApplyBufferScale();
   void ApplyViewportSizes();

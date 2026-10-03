@@ -8,12 +8,12 @@
 
 #include "VideoInfoTag.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "imagefiles/ImageFileURL.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
 #include "utils/LangCodeExpander.h"
@@ -136,6 +136,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
 
   // we start with a <tag> tag
   TiXmlElement movieElement(tag.c_str());
+  if (tag == "movie" || tag == "tvshow" || tag == "episodedetails" || tag == "musicvideo")
+    movieElement.SetAttribute("version", 0);
   TiXmlNode *movie = node->InsertEndChild(movieElement);
 
   if (!movie) return false;
@@ -886,6 +888,23 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["specialsortepisode"] = m_iSpecialSortEpisode;
 }
 
+int CVideoInfoTag::GetDescribedAudioStreamIndex() const
+{
+  switch (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS))
+  {
+    case CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT:
+      return m_streamDetails.GetDefaultAudioStreamIndex();
+
+    case CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_BEST:
+      return 0; // idx 0 is the technically best stream
+
+    case CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER:
+    default:
+      return m_streamDetails.GetPreferredAudioStreamIndex(StreamUtils::AudioPreferences::Current());
+  }
+}
+
 void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
   switch (field)
@@ -1050,10 +1069,8 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
     case Field::AUDIO_CODEC:
     case Field::AUDIO_LANGUAGE:
     {
-      // Order by the stream the GUI describes, which is the one playback will start with,
-      // rather than by the technically best stream the list does not show
-      const int idx{
-          m_streamDetails.GetPreferredAudioStreamIndex(g_langInfo.GetPreferredAudioLanguage())};
+      // Order by the stream the GUI describes, rather than by a stream the list does not show
+      const int idx{GetDescribedAudioStreamIndex()};
       if (field == Field::AUDIO_CHANNELS)
         sortable[Field::AUDIO_CHANNELS] = m_streamDetails.GetAudioChannels(idx);
       else if (field == Field::AUDIO_CODEC)
@@ -1163,6 +1180,19 @@ const std::string& CVideoInfoTag::GetDefaultUniqueID() const
 bool CVideoInfoTag::HasUniqueID() const
 {
   return !m_uniqueIDs.empty();
+}
+
+bool CVideoInfoTag::HasConflictingUniqueID(const CVideoInfoTag& other) const
+{
+  // Old records may have the type 'unknown', which does not identify the kind of id
+  return std::ranges::any_of(m_uniqueIDs,
+                             [&other](const auto& id)
+                             {
+                               const auto it{other.m_uniqueIDs.find(id.first)};
+                               return id.first != "unknown" && !id.second.empty() &&
+                                      it != other.m_uniqueIDs.end() && !it->second.empty() &&
+                                      it->second != id.second;
+                             });
 }
 
 std::string CVideoInfoTag::GetCast(const std::string& separator,

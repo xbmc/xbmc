@@ -14,7 +14,6 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "Song.h"
 #include "TextureCache.h"
@@ -40,6 +39,7 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
+#include "language/LangInfo.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDbUrl.h"
@@ -115,6 +115,43 @@ void AnnounceUpdate(const std::string& content, int id, bool added = false)
     data["added"] = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnUpdate", data);
 }
+
+class CTemporaryTable
+{
+public:
+  CTemporaryTable(dbiplus::Dataset& ds, std::string name, const std::string& columns)
+    : m_ds(ds),
+      m_name(std::move(name))
+  {
+    m_ds.exec("DROP TABLE IF EXISTS " + m_name);
+    m_ds.exec("CREATE TABLE " + m_name + " " + columns);
+  }
+
+  ~CTemporaryTable()
+  {
+    try
+    {
+      m_ds.exec("DROP TABLE IF EXISTS " + m_name);
+    }
+    catch (const dbiplus::DbErrors& e)
+    {
+      CLog::Log(LOGWARNING, "Unable to drop temporary table {}: {}", m_name, e.getMsg());
+    }
+    catch (...)
+    {
+      CLog::Log(LOGWARNING, "Unable to drop temporary table {}", m_name);
+    }
+  }
+
+  CTemporaryTable(const CTemporaryTable&) = delete;
+  CTemporaryTable& operator=(const CTemporaryTable&) = delete;
+  CTemporaryTable(CTemporaryTable&&) = delete;
+  CTemporaryTable& operator=(CTemporaryTable&&) = delete;
+
+private:
+  dbiplus::Dataset& m_ds;
+  const std::string m_name;
+};
 } // unnamed namespace
 
 CMusicDatabase::CMusicDatabase() : CDatabase(KODI::DATABASE::TYPE_MUSIC)
@@ -2376,15 +2413,10 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
     if (nullptr == m_pDS)
       return false;
 
-    /* Combine entries from discography and album tables
-       Can not use CREATE TEMPORARY TABLE as MySQL does not support updates of table using
-       correlated subqueries to a temp table. An updatable join to temp table would work in MySQL
-       but SQLite not support updatable joins.
-    */
-    m_pDS->exec("CREATE TABLE tempDisco "
-                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
-    m_pDS->exec("CREATE TABLE tempAlbum "
-                "(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)");
+    // MySQL cannot reference a temporary table twice in one statement, as the year fixup does.
+    const std::string columns{"(strAlbum TEXT, strYear VARCHAR(4), mbid TEXT, idAlbum INTEGER)"};
+    const CTemporaryTable tempDisco{*m_pDS, "tempDisco", columns};
+    const CTemporaryTable tempAlbum{*m_pDS, "tempAlbum", columns};
 
     std::string strSQL;
     strSQL = PrepareSQL("INSERT INTO tempDisco(strAlbum, strYear, mbid, idAlbum) "
@@ -2471,15 +2503,15 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
 
     // cleanup
     m_pDS->close();
-    m_pDS->exec("DROP TABLE tempDisco");
-    m_pDS->exec("DROP TABLE tempAlbum");
 
     return true;
   }
+  catch (const dbiplus::DbErrors& e)
+  {
+    CLog::LogF(LOGERROR, "failed: {}", e.getMsg());
+  }
   catch (...)
   {
-    m_pDS->exec("DROP TABLE tempDisco");
-    m_pDS->exec("DROP TABLE tempAlbum");
     CLog::LogF(LOGERROR, "failed");
   }
   return false;
@@ -4800,7 +4832,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
+  const std::shared_ptr<CCdInfo> pCdInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
   if (!pCdInfo)
     return false;
 
@@ -4821,7 +4853,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
   cddb.setCacheDir(m_profileManager.GetCDDBFolder());
 
   // Do we have to look for cddb information
-  if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
+  if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo.get()))
   {
     CGUIDialogProgress* pDialogProgress =
         CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
@@ -4844,7 +4876,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
     pDialogProgress->Open();
 
     // get cddb information
-    if (!cddb.queryCDinfo(pCdInfo))
+    if (!cddb.queryCDinfo(pCdInfo.get()))
     {
       pDialogProgress->Close();
       int lasterror = cddb.getLastError();
@@ -4877,7 +4909,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/) const
         if (iSelectedCD >= 0)
         {
           // ...query cddb for the inexact match
-          if (!cddb.queryCDinfo(pCdInfo, 1 + iSelectedCD))
+          if (!cddb.queryCDinfo(pCdInfo.get(), 1 + iSelectedCD))
             pCdInfo->SetNoCDDBInfo();
         }
         else
@@ -11510,17 +11542,17 @@ int CMusicDatabase::GetSongIDFromPath(const std::string& filePath)
 
 bool CMusicDatabase::CommitTransaction()
 {
-  if (CDatabase::CommitTransaction())
-  { // number of items in the db has likely changed, so reset the infomanager cache
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-    {
-      gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(
-          LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
-      return true;
-    }
+  if (!CDatabase::CommitTransaction())
+    return false;
+
+  // number of items in the db has likely changed, so reset the infomanager cache
+  if (CGUIComponent* gui = CServiceBroker::GetGUI())
+  {
+    gui->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(
+        LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
   }
-  return false;
+
+  return true;
 }
 
 bool CMusicDatabase::SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr& scraper)

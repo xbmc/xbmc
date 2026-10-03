@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
@@ -22,6 +23,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
@@ -684,6 +686,21 @@ std::string GetResumeString(int64_t startOffset, unsigned int partNumber)
     resumeString += startOffset > 0 ? " (" + partString + ")" : " " + partString;
   }
   return resumeString;
+}
+
+void NotifyItemPathChanged(const CFileItem& item, const std::string& oldPath, int oldFileId)
+{
+  CFileItem oldItem{item};
+  oldItem.SetPath(oldPath);
+  if (oldFileId > 0 && item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iFileId != oldFileId)
+    oldItem.SetProperty("replaced_file_id", oldFileId);
+  CGUIMessage msg{GUI_MSG_NOTIFY_ALL,
+                  0,
+                  0,
+                  GUI_MSG_UPDATE_ITEM,
+                  GUI_MSG_FLAG_FORCE_UPDATE,
+                  std::make_shared<CFileItem>(oldItem)};
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 } // namespace KODI::VIDEO::UTILS

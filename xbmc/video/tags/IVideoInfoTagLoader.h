@@ -10,9 +10,10 @@
 
 #include "InfoScanner.h"
 #include "addons/Scraper.h"
+#include "filesystem/StackDirectory.h"
 
-#include <string>
 #include <utility>
+#include <vector>
 
 class CFileItem;
 class CVideoInfoTag;
@@ -64,6 +65,11 @@ public:
   //! Only carried by nfos (a <playlist> element); other loaders have no notion of a playlist.
   //! Valid once Load() has been called.
   virtual int GetBlurayPlaylist() const { return -1; }
+
+  //! \brief Returns the parts of a stack and the bluray playlist chosen for each, empty if the
+  //! loaded info does not describe a stack. Only carried by nfos (a <stack> element).
+  //! Valid once Load() has been called.
+  virtual std::vector<XFILE::StackPartPlaylist> GetStackParts() const { return {}; }
 
   //! \brief Returns current scaper info.
   const ADDON::ScraperPtr GetAddonInfo() const { return m_info; }

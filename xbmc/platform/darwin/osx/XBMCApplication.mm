@@ -67,6 +67,10 @@ static NSDictionary* _windowMenu = @{
 
 // The main class of the application, the application's delegate
 @implementation XBMCDelegate
+{
+  //! Whether AppKit is waiting for the deferred reply to applicationShouldTerminate:.
+  BOOL m_terminationPending;
+}
 
 // Set the working directory to the .app's parent directory
 //! @todo Whats this for, is it required?
@@ -164,8 +168,18 @@ static NSDictionary* _windowMenu = @{
                                          object:xbmcThread
                                           queue:[NSOperationQueue mainQueue]
                                      usingBlock:^(NSNotification* note) {
-                                       [NSApp replyToApplicationShouldTerminate:YES];
-                                       [NSApp terminate:nil];
+                                       if (self->m_terminationPending)
+                                       {
+                                         // Replying completes the termination AppKit started;
+                                         // an extra terminate: would abort it via forced exit.
+                                         self->m_terminationPending = NO;
+                                         [NSApp replyToApplicationShouldTerminate:YES];
+                                       }
+                                       else
+                                       {
+                                         // Kodi quit on its own, no termination in flight.
+                                         [NSApp terminate:nil];
+                                       }
                                        [notifier removeObserver:obs];
                                      }];
 
@@ -181,6 +195,8 @@ static NSDictionary* _windowMenu = @{
 
   XBMC_Event quitEvent{.type = XBMC_QUIT, .quit = {}};
   appPort->OnEvent(quitEvent);
+
+  m_terminationPending = YES;
 
   return NSTerminateLater;
 }

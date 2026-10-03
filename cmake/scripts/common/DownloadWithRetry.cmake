@@ -32,13 +32,18 @@ foreach(_attempt RANGE 1 ${_attempts})
   list(GET _status 1 _error)
 
   if(_code EQUAL 0)
-    file(${_algo} "${ARCHIVE_DEST}" _actual)
-    if(_actual STREQUAL _expected)
-      return()
+    file(SIZE "${ARCHIVE_DEST}" _size)
+    if(_size GREATER 0)
+      file(${_algo} "${ARCHIVE_DEST}" _actual)
+      if(_actual STREQUAL _expected)
+        return()
+      endif()
+      # A complete transfer with the wrong hash is a wrong pin, not a network fault
+      file(REMOVE "${ARCHIVE_DEST}")
+      message(FATAL_ERROR "${ARCHIVE_URL}: ${_algo} mismatch, expected ${_expected}, got ${_actual}")
     endif()
-    # A complete transfer with the wrong hash is a wrong pin, not a network fault
-    file(REMOVE "${ARCHIVE_DEST}")
-    message(FATAL_ERROR "${ARCHIVE_URL}: ${_algo} mismatch, expected ${_expected}, got ${_actual}")
+    # An empty 200 is the server failing mid-request, so it is retried like a dropped connection
+    set(_error "empty response")
   endif()
 
   file(REMOVE "${ARCHIVE_DEST}")

@@ -70,6 +70,8 @@ public:
   ~CGameLoop() override;
 
   void Start();
+  // Park at a frame boundary, preserving the game thread and its render context.
+  void Quiesce();
   void Stop();
 
   double FPS() const { return m_fps.load(); }
@@ -93,6 +95,8 @@ private:
   double m_loopSpeedFactor{0.0};
   std::chrono::microseconds m_lastFrameUs{std::chrono::microseconds::zero()};
   CEvent m_sleepEvent;
+  std::atomic<bool> m_quiesceRequested{false};
+  CEvent m_quiescedEvent{true};
 };
 } // namespace RETRO
 } // namespace KODI

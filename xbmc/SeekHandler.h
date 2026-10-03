@@ -42,15 +42,19 @@ public:
             float duration = 0,
             bool analogSeek = false,
             SeekType type = SeekType::VIDEO);
-  void SeekSeconds(int seconds);
+  void SeekSeconds(int seconds, int seekStepValue = 0);
   void FrameMove();
   void Reset();
   void Configure();
+  void ClearSeekStepValue();
+  void CancelSeekAndClearSeekStepValue();
+  void ResetAndClearSeekStepValue();
 
   int GetSeekSize() const;
+  int GetSeekStepValue() const;
   bool InProgress() const;
 
-  bool HasTimeCode() const { return m_timeCodePosition > 0; }
+  bool HasTimeCode() const;
   int GetTimeCodeSeconds() const;
 
 protected:
@@ -63,7 +67,8 @@ private:
   static const int analogSeekDelay = 500;
 
   void SetSeekSize(double seekSize);
-  int GetSeekStepSize(SeekType type, int step);
+  int GetSeekStepSize(SeekType type, int step) const;
+  int GetSeekStepValue(SeekType type, int step) const;
 
   int m_seekDelay = 500;
   std::map<SeekType, int> m_seekDelays;
@@ -72,6 +77,7 @@ private:
   bool m_analogSeek = false;
   double m_seekSize = 0;
   int m_seekStep = 0;
+  int m_seekStepValue = 0;
   std::map<SeekType, std::vector<int>> m_forwardSeekSteps;
   std::map<SeekType, std::vector<int>> m_backwardSeekSteps;
   CStopWatch m_timer;
@@ -79,5 +85,5 @@ private:
   std::array<int, 6> m_timeCodeStamp{};
   int m_timeCodePosition = 0;
 
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
 };

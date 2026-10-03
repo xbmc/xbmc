@@ -33,8 +33,8 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo(strPath);
-  if (pCdInfo == NULL)
+  const std::shared_ptr<CCdInfo> pCdInfo{CServiceBroker::GetMediaManager().GetCdInfo(strPath)};
+  if (!pCdInfo)
     return false;
 
   //  Preload CDDB info
@@ -59,8 +59,9 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetFolder(false);
-    std::string path = StringUtils::Format("cdda://local/{:02}.cdda", i);
-    pItem->SetPath(path);
+    CURL trackUrl{url};
+    trackUrl.SetFileName(StringUtils::Format("{:02}.cdda", i));
+    pItem->SetPath(trackUrl.Get());
 
     struct __stat64 s64;
     if (CFile::Stat(pItem->GetPath(), &s64) == 0)

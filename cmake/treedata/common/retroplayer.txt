@@ -9,6 +9,7 @@ xbmc/cores/RetroPlayer/guiwindows                               cores/RetroPlaye
 xbmc/cores/RetroPlayer/playback                                 cores/RetroPlayer/playback
 xbmc/cores/RetroPlayer/process                                  cores/RetroPlayer/process
 xbmc/cores/RetroPlayer/rendering                                cores/RetroPlayer/rendering
+xbmc/cores/RetroPlayer/rendering/contexts                       cores/RetroPlayer/rendering/contexts
 xbmc/cores/RetroPlayer/rendering/VideoRenderers                 cores/RetroPlayer/rendering/VideoRenderers
 xbmc/cores/RetroPlayer/savestates                               cores/RetroPlayer/savestates
 xbmc/cores/RetroPlayer/shaders                                  cores/RetroPlayer/shaders

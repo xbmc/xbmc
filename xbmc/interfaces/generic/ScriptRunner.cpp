@@ -123,7 +123,8 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
       CRunningScriptObserver scriptObs(scriptId, m_scriptDone);
 
       auto& wm = CServiceBroker::GetGUI()->GetWindowManager();
-      if (wm.IsModalDialogTopmost(WINDOW_DIALOG_PROGRESS))
+      // A closing progress dialog stops pumping the render loop once it becomes inactive.
+      if (wm.GetTopmostModalDialog(true) == WINDOW_DIALOG_PROGRESS)
       {
         auto progress = wm.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
         if (!progress->WaitOnEvent(m_scriptDone))

@@ -10,6 +10,8 @@
 
 #include "MusicInfoTag.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "filesystem/CDDAFile.h"
 #include "network/cddb.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
@@ -43,8 +45,9 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
     bool bResult = false;
 
     // Get information for the inserted disc
-    CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-    if (pCdInfo == NULL)
+    const std::shared_ptr<CCdInfo> pCdInfo{
+        CServiceBroker::GetMediaManager().GetCdInfo(strFileName)};
+    if (!pCdInfo)
       return bResult;
 
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -53,17 +56,17 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
     Xcddb cddb;
     cddb.setCacheDir(profileManager->GetCDDBFolder());
 
-    int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
+    const int iTrack = XFILE::CFileCDDA::GetTrackNum(CURL(strFileName));
 
     // duration is always available
     tag.SetDuration( ( pCdInfo->GetTrackInformation(iTrack).nMins * 60 )
                      + pCdInfo->GetTrackInformation(iTrack).nSecs );
 
     // Only load cached cddb info in this tag loader, the internet database query is made in CCDDADirectory
-    if (pCdInfo->HasCDDBInfo() && cddb.isCDCached(pCdInfo))
+    if (pCdInfo->HasCDDBInfo() && cddb.isCDCached(pCdInfo.get()))
     {
       // get cddb information
-      if (cddb.queryCDinfo(pCdInfo))
+      if (cddb.queryCDinfo(pCdInfo.get()))
       {
         // Fill the fileitems music tag with cddb information, if available
         const std::string& strTitle = cddb.getTrackTitle(iTrack);

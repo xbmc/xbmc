@@ -13,6 +13,7 @@
 #include "WinEventsAndroid.h"
 #include "addons/interfaces/platform/android/System.h"
 #include "cores/RetroPlayer/process/android/RPProcessInfoAndroid.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/Audio/DVDAudioCodecAndroidMediaCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
@@ -79,6 +80,7 @@ bool CWinSystemAndroid::InitWindowSystem()
   CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfoAndroid::Register();
   RETRO::CRPProcessInfoAndroid::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
+  RETRO::CRPProcessInfoAndroid::RegisterRendererFactory(new RETRO::CRendererFactoryFBO);
   CRendererMediaCodec::Register();
   CRendererMediaCodecSurface::Register();
   ADDON::Interface_Android::Register();

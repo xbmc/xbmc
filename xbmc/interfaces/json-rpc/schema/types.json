@@ -150,6 +150,14 @@
       "Other": {
         "type": "boolean",
         "required": true
+      },
+      "Info": {
+        "type": "boolean",
+        "required": true
+      },
+      "Sources": {
+        "type": "boolean",
+        "required": true
       }
     },
     "additionalProperties": false

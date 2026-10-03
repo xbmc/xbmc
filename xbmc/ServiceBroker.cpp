@@ -20,7 +20,6 @@
 #include <utility>
 
 using namespace KODI;
-using namespace KODI::UTILS::I18N;
 
 CServiceBroker::CServiceBroker()
 {
@@ -512,7 +511,3 @@ std::shared_ptr<XFILE::CBlurayDiscCache> CServiceBroker::GetBlurayDiscCache()
   return g_serviceBroker.m_blurayDiscCache;
 }
 
-CSubTagRegistryManager& CServiceBroker::GetSubTagRegistry()
-{
-  return g_application.m_ServiceManager->GetSubTagRegistryManager();
-}

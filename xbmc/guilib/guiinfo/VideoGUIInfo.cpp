@@ -9,7 +9,6 @@
 #include "guilib/guiinfo/VideoGUIInfo.h"
 
 #include "FileItem.h"
-#include "LangInfo.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -50,19 +49,6 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace KODI;
-
-namespace
-{
-/*!
- * \brief Get the index of the audio stream
- *
- * Playback starts with the best stream in the preferred audio language
- */
-int GetDescribedAudioStreamIndex(const CStreamDetails& details)
-{
-  return details.GetPreferredAudioStreamIndex(g_langInfo.GetPreferredAudioLanguage());
-}
-} // unnamed namespace
 
 CVideoGUIInfo::CVideoGUIInfo()
   : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
@@ -512,14 +498,13 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         return true;
       }
       case LISTITEM_AUDIO_CODEC:
-        value =
-            tag->m_streamDetails.GetAudioCodec(GetDescribedAudioStreamIndex(tag->m_streamDetails));
+        value = tag->m_streamDetails.GetAudioCodec(tag->GetDescribedAudioStreamIndex());
         return true;
       case LISTITEM_AUDIO_CHANNELS:
       {
         const auto formatted{CGUIInfoUtils::FormatAudioChannels(
-            info.GetData3(), tag->m_streamDetails.GetAudioChannels(
-                                 GetDescribedAudioStreamIndex(tag->m_streamDetails)))};
+            info.GetData3(),
+            tag->m_streamDetails.GetAudioChannels(tag->GetDescribedAudioStreamIndex()))};
 
         if (formatted.has_value())
         {
@@ -529,8 +514,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value,
         break;
       }
       case LISTITEM_AUDIO_LANGUAGE:
-        value = tag->m_streamDetails.GetAudioLanguage(
-            GetDescribedAudioStreamIndex(tag->m_streamDetails));
+        value = tag->m_streamDetails.GetAudioLanguage(tag->GetDescribedAudioStreamIndex());
         return true;
       case LISTITEM_SUBTITLE_LANGUAGE:
         value = tag->m_streamDetails.GetSubtitleLanguage();

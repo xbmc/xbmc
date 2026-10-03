@@ -154,7 +154,7 @@ crossguid: $(LIBUUID)
 curl: brotli openssl nghttp2 $(ZLIB)
 dbus: expat
 exiv2: $(ICONV) $(ZLIB) expat
-ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
+ffmpeg: $(ICONV) $(ZLIB) bzip2 openssl dav1d $(LIBVA)
 fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
 freetype2: bzip2 harfbuzz $(ZLIB)
 gettext: $(ICONV)

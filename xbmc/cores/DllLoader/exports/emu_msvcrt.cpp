@@ -144,21 +144,23 @@ extern "C" void __stdcall init_emu_environ()
   {
     // using external python, it's build looking for xxx/lib/python(VERSIONMAJOR.MINOR)
     // so point it to frameworks which is where python is located
-    dll_putenv(("PYTHONPATH=" +
-      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
-    dll_putenv(("PYTHONHOME=" +
-      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
-    dll_putenv(("PATH=.;" +
-      CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
-      CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
+    const auto pythonRootPath = CSpecialProtocol::TranslatePath("special://frameworks");
+    dll_putenv(("PYTHONPATH=" + pythonRootPath).c_str());
+    dll_putenv(("PYTHONHOME=" + pythonRootPath).c_str());
+    dll_putenv(
+        ("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" + pythonRootPath)
+            .c_str());
   }
   else
   {
+    // default PYTHONPATH/PYTHONHOME are correct for darwin_embedded
+#if !defined(TARGET_DARWIN_EMBEDDED)
     dll_putenv(("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib")).c_str());
     dll_putenv(("PYTHONHOME=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
+#endif
     dll_putenv(("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
   }

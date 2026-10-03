@@ -9,6 +9,7 @@
 
 #include "LogindUPowerSyscall.h"
 
+#include "UPowerSyscall.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -33,8 +34,7 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   CLog::Log(LOGINFO, "Selected Logind/UPower as PowerSyscall");
 
   // Check if we have UPower. If not, we avoid any battery related operations.
-  CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
-  m_hasUPower = message.SendSystem() != NULL;
+  m_hasUPower = CUPowerSyscall::HasUPower();
 
   if (!m_hasUPower)
     CLog::Log(LOGINFO, "LogindUPowerSyscall - UPower not found, battery information will not be available");

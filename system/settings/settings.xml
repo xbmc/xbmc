@@ -1027,7 +1027,7 @@
         </setting>
         <setting id="videolibrary.similarvideoaction" type="integer" label="40222" help="40203">
           <level>1</level>
-          <default>0</default>
+          <default>2</default>
           <constraints>
             <options>
               <option label="13551">0</option> <!-- off -->
@@ -1264,6 +1264,18 @@
             <multiselect>true</multiselect>
             <hidevalue>false</hidevalue>
           </control>
+        </setting>
+        <setting id="videolibrary.languagedetails" type="integer" label="39213" help="39214">
+          <level>0</level>
+          <default>0</default> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER -->
+          <constraints>
+            <options>
+              <option label="39215">0</option> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER -->
+              <option label="39216">1</option> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT -->
+              <option label="39217">2</option> <!-- VIDEOLIBRARY_LANGUAGE_DETAILS_BEST -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
         </setting>
         <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
           <level>1</level>
@@ -2790,7 +2802,7 @@
         </setting>
         <setting id="gamesgeneral.enablerewind" type="boolean" label="35203" help="35204">
           <level>0</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="gamesgeneral.rewindtime" type="integer" label="35205" help="35206">
@@ -2807,6 +2819,18 @@
           <control type="slider" format="integer">
             <popup>true</popup>
             <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+      </group>
+      <group id="2" label="35320">
+        <setting id="gamesgeneral.cheatspath" type="path" label="35321" help="35322">
+          <level>3</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="path">
+            <heading>35321</heading>
           </control>
         </setting>
       </group>
@@ -3487,6 +3511,20 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.passthroughvolumecontrol" type="boolean" label="40805" help="40806">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible">
+              <and>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.passthrough">audiooutput.passthrough</condition>
+                <condition on="property" name="aesettingvisible" setting="audiooutput.config">audiooutput.passthrough</condition>
+              </and>
+            </dependency>
+            <dependency type="enable" setting="audiooutput.passthrough" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="audiooutput.passthroughdevice" type="string" label="546" help="36372">
           <level>1</level>
           <default>Default</default> <!-- will be properly set on startup -->
@@ -3668,6 +3706,19 @@
           <dependencies>
             <dependency type="visible" on="property" name="HasPowerOffFeature" />
           </dependencies>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="4" label="35150">
+        <setting id="input.useapplicationkeyboard" type="boolean" label="24162" help="34008">
+          <requirement>
+            <or>
+              <condition>HAVE_ANDROID</condition>
+              <condition>HAVE_TVOS</condition>
+            </or>
+          </requirement>
+          <level>1</level>
           <default>false</default>
           <control type="toggle" />
         </setting>

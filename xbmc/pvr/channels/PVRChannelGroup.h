@@ -120,7 +120,7 @@ public:
 
   /*!
    * @brief Set the path of this group.
-   * @param the path.
+   * @param path The path.
    */
   void SetPath(const CPVRChannelsPath& path);
 

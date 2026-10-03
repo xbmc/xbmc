@@ -39,8 +39,14 @@ void CWin32StorageProvider::Initialize()
     CServiceBroker::GetMediaManager().SetHasOpticalDrive(true);
   else
     CLog::LogF(LOGDEBUG, "No optical drive found.");
+}
 
+void CWin32StorageProvider::ScanForPresentMedia()
+{
 #ifdef HAS_OPTICAL_DRIVE
+  std::vector<CMediaSource> vShare;
+  GetDrivesByType(vShare, DVD_DRIVES);
+
   // A disc already present in a drive at startup is added as a source but does
   // NOT autorun, matching Linux
   for (const auto& it : vShare)
@@ -283,6 +289,7 @@ void CWin32StorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDriv
         }
         StringUtils::Replace(share.strName, ":\\", ":");
         StringUtils::Replace(share.strPath, ":\\", ":");
+        share.strDevicePath = share.strPath;
         share.m_ignore= true;
         if( !bUseDCD )
         {

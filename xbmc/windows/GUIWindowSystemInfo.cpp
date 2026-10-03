@@ -276,6 +276,10 @@ void CGUIWindowSystemInfo::FrameMove()
   {
     SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12389));
   }
+  else if (m_section == CONTROL_BT_DONATE)
+  {
+    SET_CONTROL_LABEL(40, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(12396));
+  }
   CGUIWindow::FrameMove();
 }
 

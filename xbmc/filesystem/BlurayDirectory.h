@@ -12,6 +12,8 @@
 #include "IDirectory.h"
 #include "URL.h"
 #include "bluray/MPLSParser.h"
+#include "bluray/ProjectParser.h"
+#include "utils/DiscsUtils.h"
 #if defined(HAS_UDFREAD)
 #include "filesystem/UDFContext.h"
 #endif
@@ -46,15 +48,29 @@ public:
   bool Resolve(CFileItem& item) const override;
 
   /*!
-   \brief Resolve the underlying path and open the disc with libbluray.
-   Only needed by callers that want the disc's own metadata (see GetBlurayTitle/GetBlurayID).
-   GetDirectory resolves the path but leaves libbluray closed until something needs it.
-   \return true if libbluray could open the disc, ie. this is a bluray
+   \brief Resolve the disc's path through its directory handler, without touching the disc.
    */
-  bool InitializeBluray(const std::string& root);
+  void SetRealPath(const std::string& root);
+
   static std::string GetBasePath(const CURL& url);
-  std::string GetBlurayTitle();
-  std::string GetBlurayID();
+
+  /*!
+   \brief Get the disc title, opening the disc only if it is not already known
+   \return the title, empty when blank; null at all if the disc could not be opened
+   */
+  std::optional<std::string> GetBlurayTitle();
+
+  /*!
+   \brief The disc's identifier, opening the disc only if it is not already known
+   \return the identifier; null if the disc could not be opened, ie. this is not a bluray
+   */
+  std::optional<std::string> GetBlurayID();
+
+  /*!
+   \brief Details from disc, read from the disc only if not already known.
+   \return type, name and identifier; empty if the disc could not be opened, ie. is not a bluray
+   */
+  static UTILS::DISCS::DiscInfo ProbeDisc(const std::string& mediaPath);
 
 private:
   friend class ::TestBlurayDirectory;
@@ -122,11 +138,6 @@ private:
   };
 
   /*!
-   \brief Resolve the disc's path through its directory handler, without touching the disc.
-   */
-  void SetRealPath(const std::string& root);
-
-  /*!
    \brief Open the disc with libbluray, unless already open.
    Opening costs a dozen round trips to the disc (index.bdmv, the BDMV/META localisations,
    CERTIFICATE/id.bdmv and the AACS probe), which is why it is deferred until a caller needs
@@ -145,6 +156,11 @@ private:
    \return the playlist number, or -1 if the disc names none
    */
   int GetMainPlaylist();
+
+  /*!
+   \brief Get what the disc's authoring project named, where it left one behind.
+   */
+  bool GetProjectInformation(const PlaylistMap& playlists, ProjectInformation& information) const;
 
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info);

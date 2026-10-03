@@ -18,6 +18,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <ranges>
@@ -142,12 +143,27 @@ int CVideoTagLoaderNFO::GetBlurayPlaylist() const
   return m_nfoReader.GetBlurayPlaylist();
 }
 
+std::vector<XFILE::StackPartPlaylist> CVideoTagLoaderNFO::GetStackParts() const
+{
+  if (!m_nfoParsed)
+    return {};
+
+  std::vector<XFILE::StackPartPlaylist> parts{m_nfoReader.GetStackParts()};
+
+  // Stored relative to the nfo, as every part of a stack lives under the folder it is written to
+  const std::string base{URIUtils::GetDirectory(m_path)};
+  for (XFILE::StackPartPlaylist& part : parts)
+    part.file = URIUtils::AddFileToFolder(base, part.file);
+
+  return parts;
+}
+
 std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
                                         bool movieFolder) const
 {
   std::string nfoFile;
   // Find a matching .nfo file
-  if (!item.IsFolder())
+  if (!KODI::VIDEO::IsBrowsableFolder(item))
   {
     if (URIUtils::IsInArchive(item.GetPath())) // check outside the archive
     {
@@ -251,12 +267,13 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
   }
 
   // folders (or stacked dvds) can take any nfo file if there's a unique one
-  if (nfoFile.empty() && (item.IsFolder() || item.IsOpticalMediaFile() || movieFolder))
+  if (nfoFile.empty() &&
+      (KODI::VIDEO::IsBrowsableFolder(item) || item.IsOpticalMediaFile() || movieFolder))
   {
     // see if there is a unique nfo file in this folder, and if so, use that
     // if we are looking for a specific episode nfo the file name must end with SxxEyy
     // (otherwise it could match the wrong episode nfo)
-    const std::string strPath{item.IsFolder()  ? item.GetPath()
+    const std::string strPath{KODI::VIDEO::IsBrowsableFolder(item) ? item.GetPath()
                               : item.IsStack() ? CStackDirectory::GetBasePath(item.GetPath())
                                                : URIUtils::GetDirectory(item.GetPath())};
     CFileItemList items;

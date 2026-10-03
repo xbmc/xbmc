@@ -47,7 +47,7 @@ public:
 
   /*!
    * @brief Create a timer type from given timer type id and client id.
-   * @param iTimerType the timer type id.
+   * @param iTypeId the timer type id.
    * @param iClientId the PVR client id.
    * @return A timer type instance.
    */

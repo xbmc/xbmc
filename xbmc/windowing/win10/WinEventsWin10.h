@@ -9,9 +9,14 @@
 #pragma once
 
 #include "interfaces/IAnnouncer.h"
+#include "threads/SystemClock.h"
 #include "windowing/WinEvents.h"
 
+#include <atomic>
+#include <memory>
+
 #include <concurrent_queue.h>
+#include <winrt/Windows.Gaming.Input.h>
 #include <winrt/Windows.Media.h>
 
 class CRemoteControlXbox;
@@ -45,7 +50,8 @@ public:
   void OnPointerExited(const winrt::Windows::UI::Core::CoreWindow&, const winrt::Windows::UI::Core::PointerEventArgs&);
   void OnPointerWheelChanged(const winrt::Windows::UI::Core::CoreWindow&, const winrt::Windows::UI::Core::PointerEventArgs&);
   // keyboard
-  void OnAcceleratorKeyActivated(const winrt::Windows::UI::Core::CoreDispatcher&, const winrt::Windows::UI::Core::AcceleratorKeyEventArgs&);
+  void OnAcceleratorKeyActivated(const winrt::Windows::UI::Core::CoreDispatcher& sender,
+                                 const winrt::Windows::UI::Core::AcceleratorKeyEventArgs&);
 
   // DisplayInformation event handlers.
   static void OnDpiChanged(const winrt::Windows::Graphics::Display::DisplayInformation&, const winrt::Windows::Foundation::IInspectable&);
@@ -69,6 +75,8 @@ private:
   void UpdateWindowSize();
   void Kodi_KeyEvent(unsigned int vkey, uint32_t scancode, unsigned keycode, bool isDown);
   void HandleWindowSizeChanged();
+  bool HasJoystickPeripheral() const;
+  void TriggerGamepadScan();
 
   Concurrency::concurrent_queue<XBMC_Event> m_events;
   winrt::Windows::Media::SystemMediaTransportControls m_smtc{ nullptr };
@@ -80,4 +88,8 @@ private:
   float m_logicalPosX{ 0 };
   float m_logicalPosY{ 0 };
   std::unique_ptr<CRemoteControlXbox> m_remote;
+  std::shared_ptr<std::atomic<bool>> m_gamepadScanRequested;
+  XbmcThreads::EndTime<> m_gamepadInputScanTimeout;
+  winrt::Windows::Gaming::Input::Gamepad::GamepadAdded_revoker m_gamepadAddedRevoker;
+  winrt::Windows::Gaming::Input::Gamepad::GamepadRemoved_revoker m_gamepadRemovedRevoker;
 };

@@ -1,1 +1,2 @@
+xbmc/platform/darwin/osx/storage/test platform/darwin/osx/storage/test
 xbmc/platform/posix/filesystem/test platform/posix/filesystem/test

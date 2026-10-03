@@ -35,6 +35,7 @@
   "expectedGetWithoutOptions": "cdda://username@host:88888/",
   "expectedGetWithoutUserDetails_redacted": "cdda://USERNAME@host:88888/",
   "expectedGetWithoutUserDetails_removed": "cdda://host:88888/",
+  "expectedHasEncodedHostname": true,
   "expectedHasParentPath": "cdda://username@",
   "expectedHasSlashAtEnd": true,
   "expectedHasSlashAtEndURL": true,

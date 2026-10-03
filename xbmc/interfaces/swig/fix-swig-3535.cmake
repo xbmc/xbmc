@@ -42,6 +42,7 @@ endif()
 #     return -1;
 #   }
 #   SwigPyBuiltin__XBMCAddon__xbmcvfs__File_clientdata.pytype = builtin_pytype;
+#   KodiSwig_freeze(builtin_pytype);
 #   SWIG_Py_INCREF((PyObject *)builtin_pytype);
 #   }
 string(REGEX MATCHALL "SWIG_Py_INCREF\\(\\(PyObject \\*\\)builtin_pytype\\)" _increfs "${_content}")
@@ -57,6 +58,7 @@ string(REGEX REPLACE
     return -1;
   }
   SwigPyBuiltin__\\2_clientdata.pytype = builtin_pytype;
+  KodiSwig_freeze(builtin_pytype);
   SWIG_Py_INCREF((PyObject *)builtin_pytype);
   }"
 _content "${_content}")

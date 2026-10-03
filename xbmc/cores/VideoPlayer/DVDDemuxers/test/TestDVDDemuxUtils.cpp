@@ -9,6 +9,7 @@
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 
 #include <algorithm>
+#include <limits>
 #include <string>
 
 #include <gtest/gtest.h>
@@ -124,4 +125,99 @@ TEST(TestDVDDemuxUtils, ReadChaptersInvalid)
   AVChapter* avcptr = &avc;
   output = CDVDDemuxUtils::LoadChapters(std::span<AVChapter*>{&avcptr, 0});
   EXPECT_TRUE(output.empty());
+}
+
+struct TestSnapRate
+{
+  int inRate;
+  int inScale;
+  double hintFps;
+  bool expectSnapped;
+  int expectRate;
+  int expectScale;
+};
+
+// clang-format off
+const TestSnapRate testSnapRates[] = {
+  // Missing statistics cannot distinguish fractional and integer rates.
+  {500, 21, 0.0, false, 500, 21},
+  // statistics resolve the 42ms tie in either direction
+  {500, 21, 23.976, true, 24000, 1001},
+  {500, 21, 24.0001, true, 24, 1},
+  // statistics contradicting every candidate: leave the rate alone
+  {500, 21, 30.0, false, 500, 21},
+  {500, 21, 23.80, false, 500, 21},
+  // 33ms sibling (29.97/30) and 17ms sibling (59.94/60)
+  {1000, 33, 0.0, false, 1000, 33},
+  {1000, 33, 30.0001, true, 30, 1},
+  {1000, 17, 0.0, false, 1000, 17},
+  {1000, 17, 59.9401, true, 60000, 1001},
+  {1000, 33, 29.97003, true, 30000, 1001},
+  {1000, 17, 60.0001, true, 60, 1},
+  // Rates between candidates or far from both are not evidence of either cadence.
+  {500, 21, 23.988, false, 500, 21},
+  {1000, 33, 29.985, false, 1000, 33},
+  {1000, 17, 59.97, false, 1000, 17},
+  {500, 21, -1.0, false, 500, 21},
+  {500, 21, std::numeric_limits<double>::quiet_NaN(), false, 500, 21},
+  {500, 21, std::numeric_limits<double>::infinity(), false, 500, 21},
+  {0, 21, 24.0, false, 0, 21},
+  {500, 0, 24.0, false, 500, 0},
+  {-500, 21, 24.0, false, -500, 21},
+  // PAL rates quantise to whole milliseconds exactly: already standard
+  {25, 1, 25.0, false, 25, 1},
+  {50, 1, 50.0, false, 50, 1},
+  // exact and float-rounded declarations are not 1000/N shaped
+  {24000, 1001, 23.976, false, 24000, 1001},
+  {23976, 1000, 23.976, false, 23976, 1000},
+  // near-standard but not millisecond-quantised: not the muxer fingerprint
+  {2497, 100, 25.0, false, 2497, 100},
+  // legitimate non-standard rates
+  {48, 1, 48.0, false, 48, 1},
+  {120, 1, 120.0, false, 120, 1},
+  // whole-millisecond durations that map to no standard rate
+  {1000, 41, 24.0, false, 1000, 41},
+  {1000, 8, 120.0, false, 1000, 8},
+  {20, 1, 20.0, false, 20, 1},
+};
+// clang-format on
+
+class SnapRateTester : public testing::WithParamInterface<TestSnapRate>, public testing::Test
+{
+};
+
+TEST_P(SnapRateTester, TestSnapMsQuantisedFrameRate)
+{
+  const TestSnapRate& param = GetParam();
+  int rate = param.inRate;
+  int scale = param.inScale;
+  EXPECT_EQ(param.expectSnapped,
+            CDVDDemuxUtils::SnapMsQuantisedFrameRate(rate, scale, param.hintFps));
+  EXPECT_EQ(param.expectRate, rate);
+  EXPECT_EQ(param.expectScale, scale);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestDVDDemuxUtils, SnapRateTester, testing::ValuesIn(testSnapRates));
+
+TEST(TestDVDDemuxUtils, FrameRateFromStatistics)
+{
+  EXPECT_DOUBLE_EQ(24.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:10.000000000"));
+  EXPECT_NEAR(24000.0 / 1001.0,
+              CDVDDemuxUtils::FrameRateFromStatistics("24000", "00:16:41.000000000"), 1e-12);
+  EXPECT_DOUBLE_EQ(25.0, CDVDDemuxUtils::FrameRateFromStatistics("90000", "01:00:00.000000000"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("0", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("-240", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240junk", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("9223372036854775808", "00:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", ""));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:00"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:10junk"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "-01:00:10"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:60:00"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:60"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:nan"));
+  EXPECT_DOUBLE_EQ(0.0, CDVDDemuxUtils::FrameRateFromStatistics("240", "00:00:inf"));
+  EXPECT_DOUBLE_EQ(0.0,
+                   CDVDDemuxUtils::FrameRateFromStatistics("240", "9223372036854775808:00:10"));
 }

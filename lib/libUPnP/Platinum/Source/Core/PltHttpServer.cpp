@@ -185,14 +185,22 @@ PLT_HttpServer::ServeFile(const NPT_HttpRequest&        request,
                           NPT_HttpResponse&             response,
                           NPT_String                    file_path) 
 {
+    return ServeFile(request, context, response, file_path, file_path);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_HttpServer::ServeFile
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_HttpServer::ServeFile(const NPT_HttpRequest&        request,
+                          const NPT_HttpRequestContext& context,
+                          NPT_HttpResponse&             response,
+                          NPT_String                    file_path,
+                          const NPT_String&             mime_path)
+{
     NPT_InputStreamReference stream;
     NPT_File                 file(file_path);
     NPT_FileInfo             file_info;
-    
-    // prevent hackers from accessing files outside of our root
-    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
-        return NPT_ERROR_NO_SUCH_ITEM;
-    }
     
     // check for range requests
     const NPT_String* range_spec = request.GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_RANGE);
@@ -236,7 +244,7 @@ PLT_HttpServer::ServeFile(const NPT_HttpRequest&        request,
     }
     
     PLT_HttpRequestContext tmp_context(request, context);
-    return ServeStream(request, context, response, stream, PLT_MimeType::GetMimeType(file_path, &tmp_context));
+    return ServeStream(request, context, response, stream, PLT_MimeType::GetMimeType(mime_path, &tmp_context));
 }
 
 /*----------------------------------------------------------------------

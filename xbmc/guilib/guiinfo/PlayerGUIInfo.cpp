@@ -279,6 +279,17 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
         value = "+" + strSeekSize;
       return true;
     }
+    case PLAYER_SEEKSTEPVALUE:
+    {
+      const int seekStepValue = m_appPlayer->GetSeekHandler().GetSeekStepValue();
+      const std::string strSeekStepValue = StringUtils::SecondsToTimeString(
+          abs(seekStepValue), static_cast<TIME_FORMAT>(info.GetData1()));
+      if (seekStepValue < 0)
+        value = "-" + strSeekStepValue;
+      if (seekStepValue > 0)
+        value = "+" + strSeekStepValue;
+      return true;
+    }
     case PLAYER_SEEKNUMERIC:
       value = GetSeekTime(static_cast<TIME_FORMAT>(info.GetData1()));
       return !value.empty();

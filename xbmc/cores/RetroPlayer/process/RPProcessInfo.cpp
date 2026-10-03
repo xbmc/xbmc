@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/buffers/RenderBufferManager.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "settings/DisplaySettings.h"
@@ -18,6 +19,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <mutex>
 
 extern "C"
@@ -142,6 +144,14 @@ void CRPProcessInfo::ResetInfo()
   {
     m_dataCache->Reset();
   }
+}
+
+bool CRPProcessInfo::HasHardwareRendering()
+{
+  const std::vector<IRenderBufferPool*> bufferPools = m_renderBufferManager->GetBufferPools();
+
+  return std::ranges::any_of(bufferPools, [](const IRenderBufferPool* bufferPool)
+                             { return bufferPool->SupportsHardwareRendering(); });
 }
 
 bool CRPProcessInfo::HasScalingMethod(SCALINGMETHOD scalingMethod) const

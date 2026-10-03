@@ -70,6 +70,22 @@ CImageCacheCleaner::~CImageCacheCleaner()
     m_textureDB->Close();
 }
 
+std::vector<std::string> CImageCacheCleaner::GetUsedImages(
+    const std::vector<std::string>& images) const
+{
+  auto usedImages = m_videoDB->GetUsedImages(images);
+
+  auto nextUsedImages = m_musicDB->GetUsedImages(images);
+  usedImages.insert(usedImages.end(), std::make_move_iterator(nextUsedImages.begin()),
+                    std::make_move_iterator(nextUsedImages.end()));
+
+  nextUsedImages = m_addonDB->GetUsedImages(images);
+  usedImages.insert(usedImages.end(), std::make_move_iterator(nextUsedImages.begin()),
+                    std::make_move_iterator(nextUsedImages.end()));
+
+  return usedImages;
+}
+
 CleanerResult CImageCacheCleaner::ScanOldestCache(unsigned int imageLimit)
 {
   CLog::LogF(LOGDEBUG, "begin process to clean image cache");
@@ -83,15 +99,7 @@ CleanerResult CImageCacheCleaner::ScanOldestCache(unsigned int imageLimit)
   unsigned int processedCount = images.size();
   CLog::LogF(LOGDEBUG, "found {} old cached images to process", processedCount);
 
-  auto usedImages = m_videoDB->GetUsedImages(images);
-
-  auto nextUsedImages = m_musicDB->GetUsedImages(images);
-  usedImages.insert(usedImages.end(), std::make_move_iterator(nextUsedImages.begin()),
-                    std::make_move_iterator(nextUsedImages.end()));
-
-  nextUsedImages = m_addonDB->GetUsedImages(images);
-  usedImages.insert(usedImages.end(), std::make_move_iterator(nextUsedImages.begin()),
-                    std::make_move_iterator(nextUsedImages.end()));
+  auto usedImages = GetUsedImages(images);
 
   std::erase_if(images, [&usedImages](const std::string& image)
                 { return std::ranges::find(usedImages, image) != usedImages.cend(); });

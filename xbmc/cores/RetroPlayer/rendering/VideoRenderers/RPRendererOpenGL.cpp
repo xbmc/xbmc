@@ -136,6 +136,8 @@ void CRPRendererOpenGL::RenderInternal(bool clear, uint8_t alpha)
 
 void CRPRendererOpenGL::FlushInternal()
 {
+  m_RBTexturesMap.clear();
+
   if (!m_bConfigured)
     return;
 
@@ -277,7 +279,7 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   if (renderBuffer == nullptr)
     return;
 
-  Updateshaders();
+  UpdateShaders();
 
   // Use video shader preset
   if (m_bUseShaderPreset)

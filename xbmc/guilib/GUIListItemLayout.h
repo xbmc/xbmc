@@ -34,7 +34,11 @@ public:
   void ResetAnimation(ANIMATION_TYPE animType);
   void SetInvalid() { m_invalidated = true; }
   void FreeResources(bool immediately = false);
-  void SetParentControl(CGUIControl* control) { m_group.SetParentControl(control); }
+  void SetParentControl(CGUIControl* control)
+  {
+    m_group.SetParentControl(control);
+    m_sizeChangeOwner = control;
+  }
   void AssignDepth();
 
   //#ifdef GUILIB_PYTHON_COMPATIBILITY
@@ -60,6 +64,7 @@ protected:
   float m_height{0};
   bool m_focused{false};
   bool m_invalidated{true};
+  CGUIControl* m_sizeChangeOwner{nullptr};
 
   INFO::InfoPtr m_condition;
   KODI::GUILIB::GUIINFO::CGUIInfoBool m_isPlaying;

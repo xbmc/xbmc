@@ -37,7 +37,13 @@ ifeq (darwin, $(findstring darwin, $(HOST)))
   endif
 
   ifneq ($(OS),android)
-    LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
+    ifeq ($(OS), darwin_embedded)
+      # AppStore Connect doesn't allow files of type bundle
+      OUTPUT_FILE_TYPE_ARG=-dynamiclib
+    else
+      OUTPUT_FILE_TYPE_ARG=-bundle
+    endif
+    LDSHARED:=$(CC) $(OUTPUT_FILE_TYPE_ARG) -undefined dynamic_lookup $(LDFLAGS)
     ZLIB_ROOT=$(SDKROOT)/usr
   endif
 endif

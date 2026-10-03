@@ -8,15 +8,15 @@
 
 #include "utils/LanguageTag.h"
 
+#include "language/i18n/Iso639.h"
+#include "language/i18n/Iso639_2.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
-#include "utils/i18n/Iso639.h"
-#include "utils/i18n/Iso639_2.h"
 
 #include <string_view>
 
 using namespace KODI::UTILS;
-using namespace KODI::UTILS::I18N;
+using namespace KODI::LANGUAGE::I18N;
 
 namespace
 {

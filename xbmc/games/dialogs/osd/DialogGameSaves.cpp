@@ -34,6 +34,8 @@
 #include "view/GUIViewControl.h"
 #include "view/ViewState.h"
 
+#include <algorithm>
+
 using namespace KODI;
 using namespace GAME;
 
@@ -445,10 +447,16 @@ void CDialogGameSaves::OnDelete(const CFileItem& item)
     RETRO::CSavestateDatabase db;
     if (db.DeleteSavestate(savestatePath))
     {
+      const int selectedItem = m_viewControl->GetSelectedItem();
       m_vecList->Remove(&item);
 
       // Refresh thumbnails
       m_viewControl->SetItems(*m_vecList);
+
+      if (!m_vecList->IsEmpty())
+        m_viewControl->SetSelectedItem(std::min(selectedItem, m_vecList->Size() - 1));
+      else
+        SET_CONTROL_FOCUS(CONTROL_SAVES_NEW_BUTTON, 0);
     }
     else
     {

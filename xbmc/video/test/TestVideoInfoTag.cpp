@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "language/LangInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
@@ -25,6 +25,81 @@
 #include <gtest/gtest.h>
 
 using KODI::UTILS::CLanguageTag;
+
+TEST(TestVideoInfoTag, SaveNfoVersion)
+{
+  for (const auto* root : {"movie", "tvshow", "episodedetails", "musicvideo"})
+  {
+    SCOPED_TRACE(root);
+    CVideoInfoTag details;
+    CXBMCTinyXML doc;
+    ASSERT_TRUE(details.Save(&doc, root));
+    ASSERT_NE(nullptr, doc.RootElement());
+    EXPECT_STREQ(root, doc.RootElement()->Value());
+    EXPECT_STREQ("0", doc.RootElement()->Attribute("version"));
+    int version = -1;
+    EXPECT_EQ(TIXML_SUCCESS, doc.RootElement()->QueryIntAttribute("version", &version));
+    EXPECT_EQ(0, version);
+
+    TiXmlElement container("videodb");
+    ASSERT_TRUE(details.Save(&container, root));
+    EXPECT_EQ(nullptr, container.Attribute("version"));
+    EXPECT_TRUE(
+        XMLUtils::AreNodesSerializationsEqual(doc.RootElement(), container.FirstChildElement()));
+  }
+}
+
+TEST(TestVideoInfoTag, SaveUnrelatedRootWithoutNfoVersion)
+{
+  CVideoInfoTag details;
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(details.Save(&doc, "details"));
+  ASSERT_NE(nullptr, doc.RootElement());
+  EXPECT_EQ(nullptr, doc.RootElement()->Attribute("version"));
+}
+
+TEST(TestVideoInfoTag, NfoVersionZeroPreservesLoadAndRoundTrip)
+{
+  for (const std::string root : {"movie", "tvshow", "episodedetails", "musicvideo"})
+  {
+    SCOPED_TRACE(root);
+    std::string unversionedExport;
+    for (const std::string version : {"", " version=\"0\""})
+    {
+      SCOPED_TRACE(version);
+      CXBMCTinyXML doc;
+      doc.Parse("<" + root + version +
+                "><title>Test title</title><plot>Test plot</plot>"
+                "<id>tt1234567</id><year>2001</year><rating>7.5</rating><votes>123</votes></" +
+                root + ">");
+
+      CVideoInfoTag details;
+      ASSERT_TRUE(details.Load(doc.RootElement(), true, false));
+      EXPECT_EQ("Test title", details.m_strTitle);
+      EXPECT_EQ("Test plot", details.m_strPlot);
+      EXPECT_EQ("tt1234567", details.GetUniqueID());
+      EXPECT_EQ(2001, details.GetYear());
+      EXPECT_FLOAT_EQ(7.5f, details.GetRating().rating);
+      EXPECT_EQ(123, details.GetRating().votes);
+
+      CXBMCTinyXML saved;
+      ASSERT_TRUE(details.Save(&saved, root));
+      const std::string exported = XMLUtils::NodeStringSerialization(
+          saved.RootElement(), XMLUtils::SerializationFormat::COMPACT);
+      if (version.empty())
+        unversionedExport = exported;
+      else
+        EXPECT_EQ(unversionedExport, exported);
+
+      CVideoInfoTag reloaded;
+      ASSERT_TRUE(reloaded.Load(saved.RootElement(), true, false));
+      CXBMCTinyXML resaved;
+      ASSERT_TRUE(reloaded.Save(&resaved, root));
+      EXPECT_EQ(exported, XMLUtils::NodeStringSerialization(
+                              resaved.RootElement(), XMLUtils::SerializationFormat::COMPACT));
+    }
+  }
+}
 
 TEST(TestVideoInfoTag, ReadTVShowSeasons)
 {
@@ -265,6 +340,8 @@ protected:
     m_settingOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE);
     m_audioLanguageOriginal = g_langInfo.GetAudioLanguage(false).AsBcp47();
+    m_languageDetailsOriginal = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS);
   }
 
   void TearDown() override
@@ -272,6 +349,13 @@ protected:
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
         CSettings::SETTING_LOCALE_AUDIOLANGUAGE, m_settingOriginal);
     g_langInfo.SetAudioLanguage(m_audioLanguageOriginal);
+    DescribeStream(m_languageDetailsOriginal);
+  }
+
+  static void DescribeStream(int languageDetails)
+  {
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetInt(
+        CSettings::SETTING_VIDEOLIBRARY_LANGUAGEDETAILS, languageDetails);
   }
 
   static void PreferLanguage(const std::string& language)
@@ -299,8 +383,31 @@ protected:
     return tag;
   }
 
+  // Three tracks that give each setting a different answer: the disc nominates the French one,
+  // the German one is technically the best, and an English speaker would hear the English one.
+  static CVideoInfoTag MakeTagWhereEverySettingDiffers()
+  {
+    CVideoInfoTag tag;
+    for (const auto& [language, codec, channels, flags] :
+         {std::tuple{"ger", "truehd", 8, StreamFlags::FLAG_NONE},
+          std::tuple{"fra", "ac3", 2, StreamFlags::FLAG_DEFAULT},
+          std::tuple{"eng", "dts", 6, StreamFlags::FLAG_NONE}})
+    {
+      auto* audio = new CStreamDetailAudio();
+      audio->m_strLanguage = language;
+      audio->m_strCodec = codec;
+      audio->m_iChannels = channels;
+      audio->m_flags = flags;
+      audio->SetSource(CStreamDetail::MEDIA);
+      tag.m_streamDetails.AddStream(audio);
+    }
+    tag.m_streamDetails.DetermineBestStreams();
+    return tag;
+  }
+
   std::string m_settingOriginal;
   std::string m_audioLanguageOriginal;
+  int m_languageDetailsOriginal{CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER};
 };
 
 TEST_F(AudioSortKeyTester, OrdersByThePreferredLanguageStream)
@@ -332,4 +439,50 @@ TEST_F(AudioSortKeyTester, FallsBackToTheBestStreamWithoutALanguagePreference)
   SortItem sortable;
   tag.ToSortable(sortable, Field::AUDIO_CODEC);
   EXPECT_EQ("truehd", sortable[Field::AUDIO_CODEC].asString());
+}
+
+TEST_F(AudioSortKeyTester, DescribedStreamFollowsTheLanguageDetailsSetting)
+{
+  // Each option names a different one of the three tracks, so a wrong reading of the setting
+  // cannot pass by coincidence.
+  const CVideoInfoTag tag{MakeTagWhereEverySettingDiffers()};
+  PreferLanguage("eng");
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_PLAYER);
+  EXPECT_EQ("eng", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT);
+  EXPECT_EQ("fra", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_BEST);
+  EXPECT_EQ("ger", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+}
+
+TEST_F(AudioSortKeyTester, DefaultFallsBackToTheBestStreamWhenNothingIsNominated)
+{
+  // Neither track carries the default flag, so "Default" has nothing to name and the best
+  // stream is the only answer left.
+  const CVideoInfoTag tag{MakeTagWithTwoAudioStreams()};
+  PreferLanguage("eng");
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT);
+  EXPECT_EQ("ger", tag.m_streamDetails.GetAudioLanguage(tag.GetDescribedAudioStreamIndex()));
+}
+
+TEST_F(AudioSortKeyTester, SortKeyFollowsTheLanguageDetailsSetting)
+{
+  // The sort key has to move with the label, or a list orders on a value it does not show.
+  const CVideoInfoTag tag{MakeTagWhereEverySettingDiffers()};
+  PreferLanguage("eng");
+  SortItem sortable;
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_DEFAULT);
+  tag.ToSortable(sortable, Field::AUDIO_CODEC);
+  EXPECT_EQ("ac3", sortable[Field::AUDIO_CODEC].asString());
+  tag.ToSortable(sortable, Field::AUDIO_CHANNELS);
+  EXPECT_EQ(2, sortable[Field::AUDIO_CHANNELS].asInteger());
+
+  DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_BEST);
+  tag.ToSortable(sortable, Field::AUDIO_LANGUAGE);
+  EXPECT_EQ("ger", sortable[Field::AUDIO_LANGUAGE].asString());
 }

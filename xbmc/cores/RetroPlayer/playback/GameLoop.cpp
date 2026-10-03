@@ -43,8 +43,19 @@ CGameLoop::~CGameLoop()
 
 void CGameLoop::Start()
 {
+  m_quiesceRequested.store(false);
+  m_quiescedEvent.Reset();
   // Start the thread by invoking the base class's Create method
   Create();
+}
+
+void CGameLoop::Quiesce()
+{
+  m_quiesceRequested.store(true);
+  m_sleepEvent.Set();
+  while (IsRunning() && !m_quiescedEvent.Wait(100ms))
+  {
+  }
 }
 
 void CGameLoop::Stop()
@@ -84,6 +95,13 @@ void CGameLoop::Process(void)
   // Main game loop that runs until the thread is requested to stop
   while (!m_bStop)
   {
+    if (m_quiesceRequested.load())
+    {
+      m_quiescedEvent.Set();
+      m_sleepEvent.Wait(PAUSE_SLEEP);
+      continue;
+    }
+
     // If the speed factor has changed, reset the last frame time and update
     // the loop speed factor
     const double speed = m_speedFactor.load();

@@ -471,6 +471,77 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleEpisode_MultiplePlayli
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 
+// Two specials on the disc and several candidate playlists. Nothing on the disc says which
+// special is which, so offering the best candidate would give both the same playlist. None is
+// offered instead and the user chooses from the simple menu.
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_MultipleSpecials_AllOfferedAndFlagged)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800), // Special 1
+                    MakeEpisode(0, 2, 1500), // Special 2
+                    MakeEpisode(1, 1, 3600)};
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
+                        {100u, MakePlaylist(100u, 30min, {2u}, {30min})},
+                        {101u, MakePlaylist(101u, 25min, {3u}, {25min})}};
+  ClipMap clips{
+      {1u, MakeClip(60min, {800u})}, {2u, MakeClip(30min, {100u})}, {3u, MakeClip(25min, {101u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  // The episode is unaffected
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800);
+  EXPECT_FALSE(items[0]->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false));
+
+  // Both specials are offered the same candidates, each flagged so that a scan does not guess
+  const std::set<unsigned int> expected{100u, 101u};
+  for (int episodeIndex : {0, 1})
+  {
+    EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, episodeIndex, episodes, clips,
+                                           playlists));
+    EXPECT_TRUE(std::ranges::includes(GetPlaylists(items), expected));
+    for (const auto& item : items)
+      EXPECT_TRUE(item->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false));
+  }
+
+  // The simple menu still lists everything for the user to choose from
+  EXPECT_TRUE(helper.GetAllEpisodePlaylists(url, items, allTitles, GetTitle::MAIN, episodes, clips,
+                                            playlists));
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> allExpected{100u, 101u, 800u};
+  EXPECT_TRUE(std::ranges::includes(returned, allExpected));
+}
+
+// One special on the disc is still offered - there is nothing to confuse it with
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleSpecial_StillOffered)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800), // Special
+                    MakeEpisode(1, 1, 3600)};
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
+                        {100u, MakePlaylist(100u, 30min, {2u}, {30min})},
+                        {101u, MakePlaylist(101u, 25min, {3u}, {25min})}};
+  ClipMap clips{
+      {1u, MakeClip(60min, {800u})}, {2u, MakeClip(30min, {100u})}, {3u, MakeClip(25min, {101u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{100u, 101u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected)); // Either could be the special
+  for (const auto& item : items)
+    EXPECT_FALSE(item->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false));
+}
+
 //
 // ---- GetEpisodePlaylists – play-all playlist method -------------------------
 //
@@ -1051,6 +1122,64 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_ExtraIndivid
   ASSERT_EQ(items.Size(), 6);
   returned = GetPlaylists(items);
   expected = {1u, 10u, 100u, 800u, 802u, 804u};
+  EXPECT_TRUE(std::ranges::includes(returned, expected));
+}
+
+// The play-all playlist wraps every episode in the same short intro and credits clips, rather than
+// carrying them once at the beginning and end of the playlist.
+// (Example Stranger Things (2016) S1D1 UK Bluray, whose play-all playlist 3 is clips
+// 12,0,14,12,1,14,12,2,14 - the episodes being clips 0,1 and 2)
+// Playlist 3 = play-all; 4 = episode 1; 5 = episode 2; 6 = episode 3
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_PlayAllPlaylist_FillerAroundEveryEpisode)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{
+      MakeEpisode(1, 1, 2880),
+      MakeEpisode(1, 2, 3300),
+      MakeEpisode(1, 3, 3060),
+  };
+
+  PlaylistMap playlists{
+      {3u, MakePlaylist(3u, 9203s, {12u, 0u, 14u, 12u, 1u, 14u, 12u, 2u, 14u},
+                        {11s, 2842s, 11s, 11s, 3254s, 11s, 11s, 3041s, 11s})},
+      {4u, MakePlaylist(4u, 2864s, {12u, 0u, 14u}, {11s, 2842s, 11s})},
+      {5u, MakePlaylist(5u, 3276s, {12u, 1u, 14u}, {11s, 3254s, 11s})},
+      {6u, MakePlaylist(6u, 3063s, {12u, 2u, 14u}, {11s, 3041s, 11s})},
+      {11u, MakePlaylist(11u, 28s, {10u, 11u}, {18s, 10s})},
+      {12u, MakePlaylist(12u, 10s, {9u}, {10s})},
+  };
+  ClipMap clips{
+      {0u, MakeClip(2842s, {4u, 3u})},
+      {1u, MakeClip(3254s, {5u, 3u})},
+      {2u, MakeClip(3041s, {6u, 3u})},
+      {9u, MakeClip(10s, {12u})},
+      {10u, MakeClip(18s, {11u})},
+      {11u, MakeClip(10s, {11u})},
+      {12u, MakeClip(11s, {6u, 4u, 5u, 3u})},
+      {14u, MakeClip(11s, {6u, 4u, 5u, 3u})},
+  };
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 4);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 1, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 5);
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 2, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 6);
+
+  EXPECT_TRUE(
+      helper.GetEpisodePlaylists(url, items, allTitles, ALL_PLAYLISTS, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 3); // All episodes
+  const auto returned{GetPlaylists(items)};
+  const std::set<unsigned int> expected{4u, 5u, 6u};
   EXPECT_TRUE(std::ranges::includes(returned, expected));
 }
 

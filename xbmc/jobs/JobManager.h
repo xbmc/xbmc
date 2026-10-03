@@ -129,6 +129,18 @@ public:
    */
   void UnPauseJobs();
 
+  /*! \brief Whether jobs of priority PRIORITY_LOW_PAUSABLE are currently suspended
+   \sa PauseJobs, UnPauseJobs
+   */
+  bool ArePausableJobsPaused() const;
+
+  /*! \brief Maximum jobs to run at once at PRIORITY_LOW_PAUSABLE
+
+   \return the limit
+   \sa CJobQueue
+   */
+  static unsigned int GetMaxPausableWorkers();
+
   /*!
    \brief Checks to see if any jobs with specific priority are currently processing.
    \param priority to search for
@@ -226,9 +238,31 @@ private:
    */
   CJob* PopJob();
 
+  /*! \brief Workers that are unavailable: running a job, or still in its callbacks.
+   Must be called with m_section held.
+   */
+  size_t GetBusyCount() const;
+
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker* worker);
+
+  /*! \brief Number of workers available to a priority
+   Each level leaves headroom for the ones above it, so that a busy background never stops
+   higher-priority work from starting.
+   */
   static unsigned int GetMaxWorkers(CJob::PRIORITY priority);
+
+  /*! \brief How many jobs are waiting to be picked up
+   Excludes those of a priority that is currently suspended, as nothing will take them.
+   \return the count, across every priority
+   */
+  size_t CountQueuedJobs() const;
+
+  /*! \brief Whether another job of this priority may start now
+   \param priority priority of the job wanting to start
+   \return true if there is room for it
+   */
+  bool CanStart(CJob::PRIORITY priority) const;
 
   unsigned int m_jobCounter{0};
 
@@ -239,6 +273,8 @@ private:
   std::array<JobQueue, CJob::PRIORITY_DEDICATED + 1> m_jobQueue;
   bool m_pauseJobs{false};
   Processing m_processing;
+  // Jobs out of m_processing whose callbacks are still running, by priority
+  std::array<size_t, CJob::PRIORITY_DEDICATED + 1> m_completing{};
   Workers m_workers;
 
   mutable CCriticalSection m_section;

@@ -8,10 +8,10 @@
 
 #include "SortUtils.h"
 
-#include "LangInfo.h"
 #include "SortFileItem.h"
 #include "URL.h"
 #include "Util.h"
+#include "language/LangInfo.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

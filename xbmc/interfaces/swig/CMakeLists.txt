@@ -44,6 +44,8 @@ function(generate_file file)
                              ${CMAKE_CURRENT_SOURCE_DIR}/fix-swig-3535.cmake
                      DEPFILE ${DEP_FILE})
 
+  set_source_files_properties(${CPP_FILE} PROPERTIES SKIP_LINTING ON)
+
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
 

@@ -142,7 +142,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   {
     std::string strPlaylistsPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
     URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
-    if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
+    if (!strPlaylistsPath.empty() && StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
       return true;
   }
   bool isSource;
@@ -195,6 +195,13 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
 
     if (URIUtils::IsInArchive(file))
       file = CURL(file).GetHostName();
+
+    // A playlist within a disc image has no date of its own, so use the image's
+    if (URIUtils::IsBlurayPath(file))
+    {
+      if (std::string discFile{URIUtils::GetDiscFile(file)}; URIUtils::IsDiscImage(discFile))
+        file = std::move(discFile);
+    }
 
     // Try to get ctime (creation on Windows, metadata change on Linux) and mtime (modification)
     struct __stat64 buffer;

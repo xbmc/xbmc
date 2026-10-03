@@ -89,7 +89,7 @@ def parse_header(file, group, new_path=''):
     return ""
 
   header_sources = header_sources.replace("\n", "")
-  header_sources = " ".join(re.split("\s+", header_sources, flags=re.UNICODE))
+  header_sources = " ".join(re.split(r"\s+", header_sources, flags=re.UNICODE))
   header_sources = header_sources.replace("}", "}\n")
   header_sources = header_sources.replace("= 0;", "= 0;\n")
   header_sources = header_sources.replace(",", ", ")

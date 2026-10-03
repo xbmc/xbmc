@@ -8,7 +8,7 @@
 
 #include "SpeechRecognitionDarwin.h"
 
-#include "LangInfo.h"
+#include "language/LangInfo.h"
 #include "speech/ISpeechRecognitionListener.h"
 #include "speech/SpeechRecognitionErrors.h"
 #include "threads/CriticalSection.h"

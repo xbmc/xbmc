@@ -200,7 +200,7 @@ public:
 
   /*!
    * @brief Sets the type of this timer.
-   * @param the new timer type.
+   * @param type The new timer type.
    */
   void SetTimerType(const std::shared_ptr<CPVRTimerType>& type);
 
@@ -376,13 +376,13 @@ public:
 
   /*!
    * @brief Set the end date and time from a CDateTime instance carrying the data as UTC.
-   * @param start The end date and time as UTC.
+   * @param end The end date and time as UTC.
    */
   void SetEndFromUTC(const CDateTime& end);
 
   /*!
    * @brief Set the end date and time from a CDateTime instance carrying the data as local time.
-   * @param start The end date and time as local time.
+   * @param end The end date and time as local time.
    */
   void SetEndFromLocalTime(const CDateTime& end);
 
@@ -400,13 +400,13 @@ public:
 
   /*!
    * @brief Set the first dday from a CDateTime instance carrying the data as UTC.
-   * @param start The first day as UTC.
+   * @param firstDay The first day as UTC.
    */
   void SetFirstDayFromUTC(const CDateTime& firstDay);
 
   /*!
    * @brief Set the first dday from a CDateTime instance carrying the data as local time.
-   * @param start The first day as local time.
+   * @param firstDay The first day as local time.
    */
   void SetFirstDayFromLocalTime(const CDateTime& firstDay);
 

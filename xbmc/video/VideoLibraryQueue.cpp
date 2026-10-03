@@ -53,7 +53,7 @@ bool CVideoLibraryQueue::IsScanningLibrary() const
     return true;
 
   // check if the library is being scanned asynchronously
-  VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find("VideoLibraryScanningJob");
+  VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find(CVideoLibraryScanningJob::TYPE);
   if (scanningJobs != m_jobs.end() && !scanningJobs->second.empty())
     return true;
 
@@ -68,7 +68,7 @@ bool CVideoLibraryQueue::IsScanningLibrary() const
 void CVideoLibraryQueue::StopLibraryScanning()
 {
   std::unique_lock lock(m_critical);
-  VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find("VideoLibraryScanningJob");
+  VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find(CVideoLibraryScanningJob::TYPE);
   if (scanningJobs == m_jobs.end())
     return;
 

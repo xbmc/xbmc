@@ -42,7 +42,7 @@ public:
    * @param data The tag's data.
    * @param iClientId The client id.
    * @param channelData The channel data.
-   * @param iEpgId The id of the EPG this tag belongs to.
+   * @param iEpgID The id of the EPG this tag belongs to.
    */
   CPVREpgInfoTag(const EPG_TAG& data,
                  int iClientId,
@@ -52,10 +52,10 @@ public:
   /*!
    * @brief Create a new EPG infotag.
    * @param channelData The channel data.
-   * @param iEpgId The id of the EPG this tag belongs to.
+   * @param iEpgID The id of the EPG this tag belongs to.
    * @param start The start time of the event
    * @param end The end time of the event
-   * @param bIsGapTagTrue if this is a "gap" tag, false if this is a real EPG event
+   * @param bIsGapTag True if this is a "gap" tag, false if this is a real EPG event
    */
   CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channelData,
                  int iEpgID,
@@ -134,7 +134,7 @@ public:
 
   /*!
    * @brief Change the unique broadcast ID of this event.
-   * @param iUniqueBroadcastId The new unique broadcast ID.
+   * @param iUniqueBroadcastID The new unique broadcast ID.
    */
   void SetUniqueBroadcastID(unsigned int iUniqueBroadcastID);
 

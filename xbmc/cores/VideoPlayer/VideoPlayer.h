@@ -134,6 +134,7 @@ public:
   unsigned int packets;
   IDVDStreamPlayer::ESyncState syncState;
   double starttime;
+  bool starttimePending;
   double cachetime;
   double cachetotal;
   const StreamType type;
@@ -171,6 +172,7 @@ public:
     packets = 0;
     syncState = IDVDStreamPlayer::SYNC_STARTING;
     starttime = DVD_NOPTS_VALUE;
+    starttimePending = false;
     startpts = DVD_NOPTS_VALUE;
     lastdts = DVD_NOPTS_VALUE;
     avsync = AV_SYNC_FORCE;
@@ -377,6 +379,7 @@ public:
   bool IsRenderingVideo() const override;
   bool HasVisibleOverlay() const override;
   bool IsLiveStream() const override;
+  bool IsStreaming() const override;
   bool Supports(EINTERLACEMETHOD method) const override;
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const override;
   bool Supports(ESCALINGMETHOD method) const override;
@@ -415,6 +418,7 @@ protected:
   void DestroyPlayers();
 
   void Prepare();
+  bool ShouldDeferSync(bool ready, std::chrono::steady_clock::time_point now);
   bool OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset = true);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
@@ -551,6 +555,7 @@ protected:
   std::optional<SeekCandidate> GetChapterSeekCandidate(int64_t time, Direction direction);
   std::optional<SeekCandidate> GetBookmarkSeekCandidate(int64_t time, Direction direction);
   void ExecuteTimeSeek(int64_t target, Direction direction, bool accurate);
+  bool EvaluateIsStreaming() const;
 
   bool m_players_created;
 
@@ -655,6 +660,8 @@ protected:
   SPlayerState m_State;
   mutable CCriticalSection m_StateSection;
   XbmcThreads::EndTime<> m_syncTimer;
+
+  std::optional<std::chrono::steady_clock::time_point> m_syncStartPtsWait;
 
   CEdl m_Edl;
   bool m_SkipCommercials;

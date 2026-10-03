@@ -38,6 +38,7 @@ std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal()
 
 void CApplicationPlayer::ClosePlayer()
 {
+  m_seekHandler.ResetAndClearSeekStepValue();
   m_nextItem.pItem.reset();
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
@@ -87,6 +88,8 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
                                   const CPlayerCoreFactory &factory,
                                   const std::string &playerName, IPlayerCallback& callback)
 {
+  m_seekHandler.ResetAndClearSeekStepValue();
+
   // get player type
   std::string newPlayer;
   if (!playerName.empty())
@@ -302,6 +305,15 @@ bool CApplicationPlayer::IsLiveStream() const
   return false;
 }
 
+bool CApplicationPlayer::IsStreaming() const
+{
+  std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->IsStreaming();
+
+  return false;
+}
+
 void CApplicationPlayer::Pause()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -327,6 +339,8 @@ void CApplicationPlayer::SetVolume(float volume)
 
 void CApplicationPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
+  m_seekHandler.ResetAndClearSeekStepValue();
+
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->Seek(bPlus, bLargeStep, bChapterOverride);
@@ -334,6 +348,8 @@ void CApplicationPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride
 
 void CApplicationPlayer::SeekPercentage(float fPercent)
 {
+  m_seekHandler.ResetAndClearSeekStepValue();
+
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->SeekPercentage(fPercent);
@@ -353,12 +369,16 @@ bool CApplicationPlayer::CanSeek() const
 
 bool CApplicationPlayer::SeekScene(Direction seekDirection)
 {
+  m_seekHandler.ResetAndClearSeekStepValue();
+
   std::shared_ptr<IPlayer> player = GetInternal();
   return (player && player->SeekScene(seekDirection));
 }
 
 void CApplicationPlayer::SeekTime(int64_t iTime)
 {
+  m_seekHandler.ResetAndClearSeekStepValue();
+
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->SeekTime(iTime);

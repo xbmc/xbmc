@@ -2,7 +2,9 @@ set(SOURCES TestAlarmClock.cpp
             TestAliasShortcutUtils.cpp
             TestArchive.cpp
             TestArtUtils.cpp
+            TestAspectRatioVocabulary.cpp
             TestBase64.cpp
+            TestBitstreamConverter.cpp
             TestBitstreamStats.cpp
             TestCharsetConverter.cpp
             TestCPUInfo.cpp
@@ -24,6 +26,7 @@ set(SOURCES TestAlarmClock.cpp
             TestHttpRangeUtils.cpp
             TestHttpResponse.cpp
             TestJobManager.cpp
+            TestJobQueue.cpp
             TestJSONVariantParser.cpp
             TestJSONVariantWriter.cpp
             TestLabelFormatter.cpp

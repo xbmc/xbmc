@@ -11,7 +11,6 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIPassword.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
@@ -23,6 +22,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "language/LangInfo.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "rendering/RenderSystem.h"
@@ -510,7 +510,8 @@ bool CSystemGUIInfo::GetBool(bool& value,
 #ifdef HAS_OPTICAL_DRIVE
       if (CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
-        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
+        const std::shared_ptr<MEDIA_DETECT::CCdInfo> pCdInfo{
+            CServiceBroker::GetMediaManager().GetCdInfo("", true)};
         value =
             pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1));
       }

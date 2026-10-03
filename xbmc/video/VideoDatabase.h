@@ -18,7 +18,9 @@
 
 #include <array>
 #include <functional>
+#include <map>
 #include <memory>
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <string>
@@ -304,8 +306,13 @@ public:
   bool GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile = -1);
 
   int GetPathId(const std::string& strPath);
+  /*! \brief Get the id of a path, also accepting the zip:// or archive:// equivalent of an
+   *         archive path (AddPath() stores these interchangeably).
+   */
+  int GetArchiveOrAliasPathId(const std::string& strPath);
   int GetTvShowId(const std::string& strPath);
-  int GetEpisodeId(const std::string& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
+  // input value is episode/season number hint - for multiparters
+  int GetEpisodeId(const std::string& strFilenameAndPath, int episode = -1, int season = -1);
   int GetSeasonId(int idShow, int season) const;
 
   void GetEpisodesByBlurayPath(const std::string& path, std::vector<CVideoInfoTag>& episodes);
@@ -391,6 +398,12 @@ public:
     int idFile{-1};
     VideoDbContentType mediaType{-1};
     int idMedia{-1};
+    std::string title{};
+
+    //! Which of a movie's assets holds the playlist. Unset for an episode, which is named by its
+    //! title instead.
+    std::optional<VideoAssetType> itemType{};
+    CDateTime dateAdded{};
   };
 
   /*!
@@ -399,6 +412,12 @@ public:
    * \return vector array of playlist numbers and idFiles
    */
   std::vector<PlaylistInfo> GetPlaylistsByPath(const std::string& path);
+
+  /*!
+   * \brief Announce that a library item has changed, so that widgets and other listeners reload it
+   * \param[in] content The item's media type
+   */
+  static void AnnounceUpdate(const std::string& content, int id);
 
   void SetTrailerForMovie(int idMovie, const std::string& trailer);
 
@@ -520,10 +539,20 @@ public:
   bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark) const;
   void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
+  void DeleteBookMarkForEpisode(int idEpisode);
   bool GetResumePoint(CVideoInfoTag& tag);
   bool GetStreamDetails(CFileItem& item);
   bool GetStreamDetails(CVideoInfoTag& tag);
   bool GetStreamDetails(const std::string& filenameAndPath, CStreamDetails& details);
+  /*! \brief Get play count, last played, resume point and stream details of all files of a path
+   Obtaining the metadata of many files one by one is expensive if the database connection has
+   high latency, as every single value requires its own round trip.
+   \param strPath the path to get the file metadata for
+   \param metadata filled with a tag per file, keyed by file name
+   \return true on success, false otherwise
+   */
+  bool GetFileMetadataForPath(const std::string& strPath,
+                              std::map<std::string, CVideoInfoTag>& metadata);
   bool GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id);
   CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
 
@@ -1265,6 +1294,13 @@ private:
    */
   CDateTime GetLastPlayed(int iFileId);
 
+  /*! \brief Add the stream described by the current row of the given dataset to the given details
+   \param ds dataset whose current row starts with the columns of the streamdetails table
+   \param details stream details to add the stream to
+   \return true if a stream was added, false otherwise
+   */
+  static bool AddStreamDetailFromRow(dbiplus::Dataset& ds, CStreamDetails& details);
+
   bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails, CFileItem* item);
 
   int GetMinSchemaVersion() const override { return 75; }
@@ -1296,7 +1332,6 @@ private:
                                   std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent);
 
   static void AnnounceRemove(const std::string& content, int id, bool scanning = false);
-  static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
 };

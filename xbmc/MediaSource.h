@@ -35,6 +35,9 @@ public:
   std::string strStatus; ///< Status of the share (eg has disk etc.)
   std::string strDiskUniqueId; ///< removable:// + DVD Label + DVD ID for resume point storage, if available
   std::string strPath; ///< Path of the share, eg. iso9660:// or F:
+  /// Device file name of the drive backing the share (eg. D: or /dev/sr0), when the
+  /// platform provides one. strPath may be a mount point or a protocol path instead.
+  std::string strDevicePath;
 
   /*!
   \brief The type of the media source.

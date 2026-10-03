@@ -251,7 +251,8 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
       return false;
     }
 
-    db.CommitTransaction();
+    // The base commit alone: an override may read the views, which are gone until CreateAnalytics().
+    db.CDatabase::CommitTransaction();
     db.BeginTransaction();
 
     try

@@ -8,8 +8,8 @@
 
 #include "WeatherTokenLocalizer.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"

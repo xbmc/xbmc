@@ -11,6 +11,10 @@
 #include "WinSystemWaylandEGLContext.h"
 #include "rendering/gles/RenderSystemGLES.h"
 
+#ifdef TARGET_WEBOS
+#include "rendering/gles/RenderSystemGLESWebOS.h"
+#endif
+
 namespace KODI
 {
 namespace WINDOWING
@@ -20,7 +24,14 @@ namespace WAYLAND
 
 class CVaapiProxy;
 
-class CWinSystemWaylandEGLContextGLES : public CWinSystemWaylandEGLContext, public CRenderSystemGLES
+#ifdef TARGET_WEBOS
+using CRenderSystemGLESImpl = CRenderSystemGLESWebOS;
+#else
+using CRenderSystemGLESImpl = CRenderSystemGLES;
+#endif
+
+class CWinSystemWaylandEGLContextGLES : public CWinSystemWaylandEGLContext,
+                                        public CRenderSystemGLESImpl
 {
 public:
   static void Register();

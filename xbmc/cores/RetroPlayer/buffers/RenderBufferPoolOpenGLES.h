@@ -22,7 +22,7 @@ class CRenderVideoSettings;
 class CRenderBufferPoolOpenGLES : public CBaseRenderBufferPool
 {
 public:
-  CRenderBufferPoolOpenGLES() = default;
+  explicit CRenderBufferPoolOpenGLES(bool supportsTextureSwizzle);
   ~CRenderBufferPoolOpenGLES() override = default;
 
   // Implementation of IRenderBufferPool via CBaseRenderBufferPool
@@ -34,6 +34,8 @@ protected:
   bool ConfigureInternal() override;
 
 private:
+  const bool m_supportsTextureSwizzle;
+
   // Configuration parameters
   GLuint m_pixelType = 0;
   GLuint m_internalFormat = 0;

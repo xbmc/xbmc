@@ -64,7 +64,7 @@
 							<height>30</height>
 							<font>font12</font>
 							<aligny>top</aligny>
-							<label>$VAR[MediaInfoListLabel2Var]</label>
+							<label>$VAR[MediaVideoPropVar]$VAR[MediaAudioPropVar, | ]</label>
 						</control>
 						<control type="label">
 							<left>105</left>
@@ -112,7 +112,7 @@
 							<height>30</height>
 							<font>font12</font>
 							<aligny>top</aligny>
-							<label>$VAR[MediaInfoListLabel2Var]</label>
+							<label>$VAR[MediaVideoPropVar]$VAR[MediaAudioPropVar, | ]</label>
 							<textcolor>grey</textcolor>
 						</control>
 						<control type="label">

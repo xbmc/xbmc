@@ -14,6 +14,7 @@
 
 - (id)initWithFrame:(NSRect)frameRect;
 - (CGLContextObj)getGLContextObj;
+- (NSOpenGLContext*)getNSOpenGLContext;
 
 /**
  * @brief Update the current OpenGL context (view is set before updating)

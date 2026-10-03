@@ -36,9 +36,7 @@ CGUITextureGLES::CGUITextureGLES(
   : CGUITexture(posX, posY, width, height, texture)
 {
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  unsigned int major, minor;
-  m_renderSystem->GetRenderVersion(major, minor);
-  m_isGLES20 = major == 2;
+  m_isGLES20 = !m_renderSystem->SupportsTextureSwizzle();
 }
 
 CGUITextureGLES* CGUITextureGLES::Clone() const

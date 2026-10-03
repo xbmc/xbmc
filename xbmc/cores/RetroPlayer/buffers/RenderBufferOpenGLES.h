@@ -19,7 +19,11 @@ namespace RETRO
 class CRenderBufferOpenGLES : public CRenderBufferSysMem
 {
 public:
-  CRenderBufferOpenGLES(GLuint pixelType, GLuint internalFormat, GLuint pixelFormat, GLuint bpp);
+  CRenderBufferOpenGLES(GLuint pixelType,
+                        GLuint internalFormat,
+                        GLuint pixelFormat,
+                        GLuint bpp,
+                        bool supportsTextureSwizzle);
   ~CRenderBufferOpenGLES() override;
 
   // Implementation of IRenderBuffer via CRenderBufferSysMem
@@ -33,6 +37,7 @@ private:
   const GLuint m_internalFormat;
   const GLuint m_pixelFormat;
   const GLuint m_bpp;
+  const bool m_swizzle;
 
   const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
   GLuint m_textureId = 0;

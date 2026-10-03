@@ -266,7 +266,9 @@ void CDialogGameLeaderboards::OnInitWindow()
     // "Leaderboards", "Sign in to RetroAchievements to see leaderboards"
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, strings.Get(35331),
                                           strings.Get(35333));
-    Close();
+    // Forced: Open() makes the dialog active before OnInitWindow() runs, so a
+    // plain Close() would animate out and flash
+    Close(true);
     return;
   }
 
@@ -275,14 +277,14 @@ void CDialogGameLeaderboards::OnInitWindow()
   const LeaderboardState state = runtime.GetLeaderboardState();
   const unsigned int gameId = runtime.GetState().gameId;
 
-  // Nothing to show and nothing to ask with: no game, or one RetroAchievements
-  // does not know
-  if (state.leaderboards.empty() && gameId == 0)
+  // Nothing to show: no game, one RetroAchievements does not know, or one it
+  // has already said has no leaderboards
+  if (state.leaderboards.empty() && (gameId == 0 || state.loaded))
   {
     // "Leaderboards", "This game has no leaderboards"
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35331),
                                           strings.Get(35334));
-    Close();
+    Close(true);
     return;
   }
 
@@ -515,6 +517,19 @@ bool CDialogGameLeaderboards::OnMessage(CGUIMessage& message)
     {
       if (message.GetParam1() == GUI_MSG_REFRESH_LIST)
       {
+        // The service has answered for a game it knows but has no
+        // leaderboards for. An empty dialog says nothing; the toast says it.
+        const LeaderboardState state =
+            CServiceBroker::GetGameServices().AchievementRuntime().GetLeaderboardState();
+        if (state.loaded && state.leaderboards.empty() && IsActive())
+        {
+          const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+          // "Leaderboards", "This game has no leaderboards"
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35331),
+                                                strings.Get(35334));
+          Close();
+          return true;
+        }
         PopulateList();
         return true;
       }

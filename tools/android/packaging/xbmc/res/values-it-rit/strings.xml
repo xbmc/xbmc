@@ -17,4 +17,5 @@
     <string name="notice_dialog">%1$s richiede l\'accesso ai file e ai contenuti multimediali del dispositivo per funzionare. Consenti l\'accesso nella finestra seguente o %1$s verrà chiuso.</string>
     <string name="record_audio_dialog">%1$s richiede l\'autorizzazione per registrare l\'audio, utilizzata solo per la ricerca vocale. Consenti o nega nella finestra seguente.</string>
     <string name="networkperm_dialog">%1$s richiede l\'accesso alla rete per funzionare. Consenti l\'accesso nella finestra seguente o %1$s verrà chiuso.</string>
+    <string name="no_write_cache">Impossibile scrivere nella cartella dati dell\'applicazione.</string>
 </resources>

@@ -20,5 +20,8 @@ CRPProcessInfoEGL::CRPProcessInfoEGL(std::string platformName)
 
 HwProcedureAddress CRPProcessInfoEGL::GetHwProcedureAddress(const char* symbol)
 {
+  if (symbol == nullptr)
+    return nullptr;
+
   return static_cast<HwProcedureAddress>(eglGetProcAddress(symbol));
 }

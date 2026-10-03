@@ -9,7 +9,6 @@
 #include "General.h"
 
 #include "CompileInfo.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
@@ -20,6 +19,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "input/keyboard/KeyboardLayout.h"
 #include "input/keyboard/KeyboardLayoutManager.h"
+#include "language/LangInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"

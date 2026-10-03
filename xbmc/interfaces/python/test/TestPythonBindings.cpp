@@ -134,6 +134,42 @@ li.getVideoInfoTag().setStudios(['a', None])
 )py"));
 }
 
+TEST_F(TestPythonBindings, BytesAsString)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import pickle
+import xbmcgui
+li = xbmcgui.ListItem('bytes-as-string', '', '', True)
+
+li.setProperty('ascii', b'plain')
+assert li.getProperty('ascii') == 'plain', repr(li.getProperty('ascii'))
+
+li.setProperty('utf8', 'caf\u00e9'.encode('utf-8'))
+assert li.getProperty('utf8') == 'caf\u00e9', repr(li.getProperty('utf8'))
+
+# What add-ons storing a pickle actually pass: protocol 0 is text, which
+# Python 3 hands back as bytes
+blob = pickle.dumps({'a': 1}, protocol=0)
+li.setProperty('pickle', blob)
+assert pickle.loads(li.getProperty('pickle').encode('utf-8')) == {'a': 1}
+
+# As a dict value, which goes through the same conversion
+li.setProperties({'alpha': '1', 'beta': b'two'})
+assert li.getProperty('beta') == 'two', repr(li.getProperty('beta'))
+
+# Bytes that are not text are refused rather than stored
+try:
+    li.setProperty('binary', b'\xff\xfe')
+except TypeError:
+    pass
+else:
+    raise AssertionError('binary bytes were accepted')
+)py"));
+}
+
 TEST_F(TestPythonBindings, FileContextManager)
 {
   if (!s_pythonUp)
@@ -162,6 +198,27 @@ li = xbmcgui.ListItem('cast', '', '', True)
 tag = li.getVideoInfoTag()
 assert isinstance(tag, xbmc.InfoTagVideo)
 tag.setCast([xbmc.Actor('a', 'lead'), xbmc.Actor('b')])
+)py"));
+}
+
+// python owns each object in a returned list
+TEST_F(TestPythonBindings, ListElementsAreOwned)
+{
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc, xbmcgui
+li = xbmcgui.ListItem('owned', '', '', True)
+tag = li.getVideoInfoTag()
+assert tag.thisown
+tag.setCast([xbmc.Actor('a', 'lead'), xbmc.Actor('b')])
+actors = tag.getActors()
+assert [a.getName() for a in actors] == ['a', 'b'], [a.getName() for a in actors]
+assert all(a.thisown for a in actors), [a.thisown for a in actors]
+del li, tag
+assert actors[0].getRole() == 'lead', actors[0].getRole()
+del actors
 )py"));
 }
 
@@ -223,6 +280,31 @@ del li, li2
 import xbmcgui
 assert xbmcgui.ListItem('main', '', '', True).getLabel() == 'main'
 )py"));
+}
+
+// shared types must take process-wide method-cache tags; Player.__init__ consults the metatype first, so base and metatype count too (xbmc/xbmc#29309)
+TEST_F(TestPythonBindings, SharedTypesImmutable)
+{
+#if PY_VERSION_HEX < 0x030A0000
+  GTEST_SKIP() << "Py_TPFLAGS_IMMUTABLETYPE is 3.10+";
+#else
+  if (!s_pythonUp)
+    GTEST_SKIP() << "python runtime not initialized";
+  ASSERT_TRUE(s_mainImportOk);
+  PyThreadState* mainState = PyThreadState_Get();
+
+  PyThreadState* sub = Py_NewInterpreter();
+  ASSERT_NE(sub, nullptr);
+  EXPECT_TRUE(RunPy(R"py(
+import xbmc, xbmcgui
+IMMUTABLE = 1 << 8
+for cls in (xbmc.Player, xbmc.Monitor, xbmcgui.WindowXMLDialog):
+    for t in (type(cls), *cls.__mro__):
+        assert t.__flags__ & IMMUTABLE, t
+)py"));
+  Py_EndInterpreter(sub);
+  PyThreadState_Swap(mainState);
+#endif
 }
 
 } // namespace

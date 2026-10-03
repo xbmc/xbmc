@@ -131,6 +131,7 @@
 		<textcolor>button_focus</textcolor>
 	</include>
 	<include name="DefaultDialogButton">
+		<param name="left">0</param>
 		<param name="width">300</param>
 		<param name="height">100</param>
 		<param name="wrapmultiline">false</param>
@@ -140,6 +141,7 @@
 		<param name="enable">true</param>
 		<definition>
 			<control type="button" id="$PARAM[id]">
+				<left>$PARAM[left]</left>
 				<width>$PARAM[width]</width>
 				<height>$PARAM[height]</height>
 				<label>$PARAM[label]</label>

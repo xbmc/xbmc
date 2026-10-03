@@ -23,7 +23,7 @@ $(LIBDYLIB): .configured-$(PLATFORM)
 	mkdir -p $(PREFIX)/lib/pkgconfig
 	$(MAKE) -C $(PLATFORM) install-include install-libdir
 	rm -f $(PREFIX)/lib/libfstrcmp.so*
-	rm -f $(PREFIX)/lib/libfstrcmp.dylib*
+	rm -f $(PREFIX)/lib/libfstrcmp*.dylib*
 	touch $@
 
 clean:

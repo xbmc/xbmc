@@ -386,6 +386,7 @@ void CGUIControlGroupList::ClearAll()
 {
   m_totalSize = 0;
   CGUIControlGroup::ClearAll();
+  m_scroller.Stop();
   m_scroller.SetValue(0);
   m_lastPageControlSize.reset();
   m_lastPageControlTotalSize.reset();
@@ -436,9 +437,18 @@ void CGUIControlGroupList::SetInvalid()
 
 void CGUIControlGroupList::ScrollTo(float offset)
 {
-  m_scroller.ScrollTo(offset);
+  m_scroller.ScrollTo(std::clamp(offset, 0.0f, std::max(m_totalSize - Size(), 0.0f)));
   if (m_scroller.IsScrolling())
     SetInvalid();
+  MarkDirtyRegion();
+}
+
+void CGUIControlGroupList::SetScrollOffset(float offset)
+{
+  m_scroller.Stop();
+  m_scroller.SetValue(offset);
+  ValidateOffset();
+  SetInvalid();
   MarkDirtyRegion();
 }
 

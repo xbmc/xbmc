@@ -48,6 +48,7 @@
 #include "XBPython.h"
 
 #include <cassert>
+#include <chrono>
 #include <iterator>
 
 #ifdef TARGET_WINDOWS
@@ -144,6 +145,12 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
   std::set<std::string> pythonPath;
 
   CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): start processing", GetId(), m_sourceFile);
+
+  // Useful for add-on performance metrics, and the counterpart to the "script
+  // termination took {}ms" line in stop(): this covers sub-interpreter creation,
+  // sys.path setup and the script body, i.e. what a user perceives as the time
+  // taken for an add-on to start.
+  const auto startTime = std::chrono::steady_clock::now();
 
   std::string realFilename(CSpecialProtocol::TranslatePath(m_sourceFile));
   std::string scriptDir = URIUtils::GetDirectory(realFilename);
@@ -347,13 +354,20 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
   InvokerState stateToSet;
   if (!failed && !PyErr_Occurred())
   {
-    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script successfully run", GetId(), m_sourceFile);
+    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script successfully run in {}ms", GetId(),
+              m_sourceFile,
+              std::chrono::duration_cast<std::chrono::milliseconds>(
+                  std::chrono::steady_clock::now() - startTime)
+                  .count());
     stateToSet = InvokerStateScriptDone;
     onSuccess();
   }
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
-    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script aborted", GetId(), m_sourceFile);
+    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script aborted after {}ms", GetId(), m_sourceFile,
+              std::chrono::duration_cast<std::chrono::milliseconds>(
+                  std::chrono::steady_clock::now() - startTime)
+                  .count());
     stateToSet = InvokerStateFailed;
     onAbort();
   }

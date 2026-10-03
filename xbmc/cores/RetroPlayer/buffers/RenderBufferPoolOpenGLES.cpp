@@ -17,6 +17,11 @@
 using namespace KODI;
 using namespace RETRO;
 
+CRenderBufferPoolOpenGLES::CRenderBufferPoolOpenGLES(bool supportsTextureSwizzle)
+  : m_supportsTextureSwizzle(supportsTextureSwizzle)
+{
+}
+
 bool CRenderBufferPoolOpenGLES::IsCompatible(const CRenderVideoSettings& renderSettings) const
 {
   return CRPRendererOpenGLES::SupportsScalingMethod(renderSettings.GetScalingMethod());
@@ -24,7 +29,8 @@ bool CRenderBufferPoolOpenGLES::IsCompatible(const CRenderVideoSettings& renderS
 
 IRenderBuffer* CRenderBufferPoolOpenGLES::CreateRenderBuffer(void* header /* = nullptr */)
 {
-  return new CRenderBufferOpenGLES(m_pixelType, m_internalFormat, m_pixelFormat, m_bpp);
+  return new CRenderBufferOpenGLES(m_pixelType, m_internalFormat, m_pixelFormat, m_bpp,
+                                   m_supportsTextureSwizzle);
 }
 
 bool CRenderBufferPoolOpenGLES::ConfigureInternal()
@@ -35,8 +41,14 @@ bool CRenderBufferPoolOpenGLES::ConfigureInternal()
     case AV_PIX_FMT_0RGB32:
     {
       m_pixelType = GL_UNSIGNED_BYTE;
-      if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_format_BGRA8888) ||
-          CGLExtensions::IsExtensionSupported(CGLExtensions::IMG_texture_format_BGRA8888))
+      if (m_supportsTextureSwizzle)
+      {
+        // Use core RGBA storage; advertised BGRA support can still sample black.
+        m_internalFormat = GL_RGBA;
+        m_pixelFormat = GL_RGBA;
+      }
+      else if (CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_format_BGRA8888) ||
+               CGLExtensions::IsExtensionSupported(CGLExtensions::IMG_texture_format_BGRA8888))
       {
         m_internalFormat = GL_BGRA_EXT;
         m_pixelFormat = GL_BGRA_EXT;

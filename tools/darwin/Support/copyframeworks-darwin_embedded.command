@@ -2,59 +2,160 @@
 
 set -ux
 
-function check_dyloaded_depends
+EXTERNAL_LIBS="$XBMC_DEPENDS"
+
+TARGET_BINARY="$TARGET_BUILD_DIR/$EXECUTABLE_PATH"
+TARGET_CONTENTS="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
+TARGET_FRAMEWORKS="$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH"
+
+DYLIB_NAMEPATH="@executable_path/Frameworks"
+XBMC_HOME="$TARGET_CONTENTS/AppData/AppHome"
+
+function log
 {
-  b=$(find "$EXTERNAL_LIBS" -name $1 -print)
-  if [ -f "$b" ]; then
-    #echo "Processing $b"
-    if [ ! -f  "$TARGET_FRAMEWORKS/$(basename $b)" ]; then
-      echo "    Packaging $b"
-      cp -f "$b" "$TARGET_FRAMEWORKS/"
-      chmod u+w "$TARGET_FRAMEWORKS/$(basename $b)"
-    fi
-    for a in $(otool -L "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
-      if [ -f "$a" ]; then
-        if [ ! -f  "$TARGET_FRAMEWORKS/$(basename $a)" ]; then
-          echo "    Packaging $a"
-          cp -f "$a" "$TARGET_FRAMEWORKS/"
-          chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
-          install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_FRAMEWORKS/$(basename $b)"
-        fi
+  set +x
+  echo "****************************************"
+  echo "$@"
+  echo "****************************************"
+  set -x
+}
+
+function build_framework_name
+{
+  # stem
+  basename "${1%.*}"
+}
+
+function build_framework_name_python
+{
+  # <site-packages>/Cryptodome/PublicKey/_curve25519.abi3.so -> Cryptodome.PublicKey._curve25519.abi3
+  relativeToSitePackages="${1#"$pythonSitePackagesDir/"}"
+  withoutExtension="${relativeToSitePackages%.*}"
+  echo "${withoutExtension//\//.}"
+}
+
+# "returns" variable FRAMEWORK_BINARY_PATH
+function check_xbmc_dylib_depends
+{
+  local binaryPath="$1"
+  buildFrameworkNameFunc="$2"
+
+  # process dependencies first, check only those that are from external depends
+  # NR>3 skips first 3 static lines, example:
+  # <binary path> [arm64]:
+  #  -linked_dylibs:
+  #      attributes     load path
+  local changeRpathCommands=''
+  while IFS= read -r externalLibPath; do
+    frameworkName=$($buildFrameworkNameFunc "$externalLibPath")
+    changeRpathCommands+="-change $externalLibPath $DYLIB_NAMEPATH/$frameworkName.framework/$frameworkName "
+    # TODO: external libs must be copied to app bundle first
+    # TODO: when processing a python native module, external libs must use static `build_framework_name`
+    check_xbmc_dylib_depends "$externalLibPath" "$buildFrameworkNameFunc"
+  done < <(dyld_info -linked_dylibs "$binaryPath" | awk -v p="$EXTERNAL_LIBS" 'NR>3 && index($1, p) { print $1 }')
+  [ -n "$changeRpathCommands" ] && install_name_tool $changeRpathCommands "$binaryPath"
+
+  # put binary to Frameworks
+  if [ -z "${3:-}" ] ; then
+    frameworkName=$($buildFrameworkNameFunc "$binaryPath")
+    framework="$frameworkName.framework"
+    frameworkBinaryPath="$framework/$frameworkName"
+
+    FRAMEWORK_BINARY_PATH="$frameworkBinaryPath"
+
+    log "'$binaryPath' -> '$frameworkBinaryPath'"
+    if [ ! -d "$framework" ]; then
+      log "framework '$framework' doesn't exist yet, creating it"
+      mkdir "$framework"
+      if [[ $binaryPath == "$EXTERNAL_LIBS"* ]]; then
+        cp "$binaryPath" "$frameworkBinaryPath"
+      else
+        mv "$binaryPath" "$frameworkBinaryPath"
       fi
-    done
+      install_name_tool -id "$DYLIB_NAMEPATH/$frameworkBinaryPath" "$frameworkBinaryPath"
+
+      # bundle ID must contain only dots, hyphens and alphanumerics
+      set +x
+      echo "$frameworkInfoPlistBase
+	<key>CFBundleExecutable</key>
+	<string>$frameworkName</string>
+	<key>CFBundleIdentifier</key>
+	<string>$PRODUCT_BUNDLE_IDENTIFIER.${frameworkName//_/-}</string>
+</dict>
+</plist>" > "$framework/Info.plist"
+      set -x
+    fi
+  else
+    FRAMEWORK_BINARY_PATH=
   fi
 }
 
-function check_xbmc_dylib_depends
+function check_xbmc_dylib_depends_in_dir
 {
-  REWIND="1"
-  while [ $REWIND = "1" ] ; do
-    let REWIND="0"
-    for b in $(find "$1" -type f -name "$2" -print) ; do
-      #echo "Processing $b"
-      install_name_tool -id "$(basename $b)" "$b"
-      for a in $(otool -L "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
-        #echo "    Packaging $a"
-        if [ ! -f  "$TARGET_FRAMEWORKS/$(basename $a)" ]; then
-          echo "    Packaging $a"
-          cp -f "$a" "$TARGET_FRAMEWORKS/"
-          chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
-          let REWIND="1"
-        fi
-        install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$b"
-      done
-    done
-  done
+  dir="$1"
+  buildFrameworkNameFunc="$2"
+  extraProcessorFunc="${3:-}"
+  while IFS= read -r -d '' libPath ; do
+    check_xbmc_dylib_depends "$libPath" "$buildFrameworkNameFunc"
+    [ -z "$extraProcessorFunc" ] || "$extraProcessorFunc" "$libPath"
+  done < <(find "$dir" -type f \( -iname '*.dylib' -or -iname '*.so' \) -print0)
 }
 
-EXTERNAL_LIBS=$XBMC_DEPENDS
+function package_python_lib
+{
+  log "Creating required files for a python framework lib"
+  libPath="$1"
+  libPathFwork="${libPath%.*}.fwork"
+  echo "${libPathFwork#"$TARGET_CONTENTS/"}" > "$FRAMEWORK_BINARY_PATH.origin"
+  echo "Frameworks/$FRAMEWORK_BINARY_PATH" > "$libPathFwork"
+}
 
-TARGET_BINARY=$TARGET_BUILD_DIR/$EXECUTABLE_PATH
-TARGET_CONTENTS=$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME
-TARGET_FRAMEWORKS=$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH
 
-DYLIB_NAMEPATH=@executable_path/Frameworks
-XBMC_HOME=$TARGET_CONTENTS/AppData/AppHome
+# main script
+
+frameworkInfoPlistBase='<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>'
+
+# PLATFORM_DIR=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform
+frameworkInfoPlistBase+="
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>$(basename "$PLATFORM_DIR" .platform)</string>
+	</array>"
+
+# TARGETED_DEVICE_FAMILY=1,2
+frameworkInfoPlistBase+="
+	<key>UIDeviceFamily</key>
+	<array>"
+IFS=, read -ra deviceFamilies <<< "$TARGETED_DEVICE_FAMILY"
+for deviceFamily in "${deviceFamilies[@]}" ; do
+  frameworkInfoPlistBase+="
+		<integer>$deviceFamily</integer>"
+done
+frameworkInfoPlistBase+="
+	</array>"
+
+# just copy entries from the app's Info.plist
+for key in BuildMachineOSBuild DTCompiler DTPlatformBuild DTPlatformName DTPlatformVersion DTSDKBuild DTSDKName DTXcode DTXcodeBuild MinimumOSVersion ; do
+  frameworkInfoPlistBase+="
+	<key>$key</key>
+	<string>$(/usr/libexec/PlistBuddy "$TARGET_BUILD_DIR/$INFOPLIST_PATH" -c "Print :$key")</string>"
+done
+
 
 mkdir -p "$TARGET_CONTENTS"
 mkdir -p "$TARGET_CONTENTS/AppData/AppHome"
@@ -62,39 +163,29 @@ mkdir -p "$TARGET_CONTENTS/AppData/AppHome"
 rm -rf "$TARGET_FRAMEWORKS"
 mkdir -p "$TARGET_FRAMEWORKS"
 
-echo "Package $FULL_PRODUCT_NAME"
+pythonDir="python$PYTHON_VERSION"
+pythonSrc="$EXTERNAL_LIBS/lib/$pythonDir"
+pythonDst="$TARGET_CONTENTS/lib/$pythonDir"
 
-# Copy all of XBMC's dylib dependencies and rename their locations to inside the Framework
-echo "Checking $FULL_PRODUCT_NAME for dylib dependencies"
-for a in $(otool -L "$TARGET_BINARY"  | grep "$EXTERNAL_LIBS\|$DYLIB_NAMEPATH" | awk ' { print $1 } ') ; do
-  echo "    Packaging $a"
-  # Soft Frameworks strip dylib from path. Explicitly add dylib
-  if ! [ -f "$EXTERNAL_LIBS/lib/$(basename $a)" ]; then
-    DYLIBNAME="$(basename $a).dylib"
-  else
-    DYLIBNAME="$(basename $a)"
-  fi
-  cp -f "$EXTERNAL_LIBS/lib/$DYLIBNAME" "$TARGET_FRAMEWORKS/"
-  chmod u+w "$TARGET_FRAMEWORKS/$DYLIBNAME"
-  install_name_tool -change "$a" "$DYLIB_NAMEPATH/$DYLIBNAME" "$TARGET_BINARY"
-done
-
-echo "Package $EXTERNAL_LIBS/lib/python$PYTHON_VERSION"
-mkdir -p "$TARGET_FRAMEWORKS/lib"
+log "Package $pythonSrc"
+rm -rf "$pythonDst"
 PYTHONSYNC="rsync -aq --exclude .DS_Store --exclude *.a --exclude *.exe --exclude test --exclude tests"
-${PYTHONSYNC} "$EXTERNAL_LIBS/lib/python$PYTHON_VERSION" "$TARGET_FRAMEWORKS/lib/"
-rm -rf "$TARGET_FRAMEWORKS/lib/python$PYTHON_VERSION/config"
+${PYTHONSYNC} "$pythonSrc/" "$pythonDst/"
+rm -rf "$pythonDst/config"
 
-echo "Checking python *.so for dylib dependencies"
-check_xbmc_dylib_depends "$TARGET_FRAMEWORKS"/lib/python$PYTHON_VERSION "*.so"
+cd "$TARGET_FRAMEWORKS"
 
-echo "Checking system *.so for dylib dependencies"
-check_xbmc_dylib_depends "$XBMC_HOME"/system "*.so"
+log "Checking $FULL_PRODUCT_NAME for dylib dependencies"
+check_xbmc_dylib_depends "$TARGET_BINARY" build_framework_name 1
 
-echo "Checking addons *.so for dylib dependencies"
-check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.so"
-
-echo "Checking xbmc/DllPaths_generated.h for dylib dependencies"
-for a in $(grep .so "$BUILD_ROOT"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do
-  check_dyloaded_depends $a
+for dir in addons system ; do
+  log "Checking '$dir' for dylib dependencies"
+  check_xbmc_dylib_depends_in_dir "$XBMC_HOME/$dir" build_framework_name
 done
+
+# TODO: enable for tvOS once Python is built as a real tvOS platform
+if [[ $PLATFORM_NAME == iphone* ]] ; then
+  log "Packaging python packages as frameworks"
+  pythonSitePackagesDir="$pythonDst/site-packages"
+  check_xbmc_dylib_depends_in_dir "$pythonSitePackagesDir" build_framework_name_python package_python_lib
+fi

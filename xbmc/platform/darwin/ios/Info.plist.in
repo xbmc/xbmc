@@ -13,6 +13,8 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>Picture</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>@PLATFORM_BUNDLE_IDENTIFIER@.picture</string>
@@ -23,6 +25,8 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>Music</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>@PLATFORM_BUNDLE_IDENTIFIER@.music</string>
@@ -33,6 +37,8 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>Video</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>@PLATFORM_BUNDLE_IDENTIFIER@.video</string>
@@ -43,6 +49,8 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>Subtitle</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>@PLATFORM_BUNDLE_IDENTIFIER@.subtitle</string>
@@ -51,35 +59,6 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>@APP_NAME@</string>
-	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>AppIcon29x29</string>
-				<string>AppIcon40x40</string>
-				<string>AppIcon57x57</string>
-				<string>AppIcon60x60</string>
-			</array>
-		</dict>
-	</dict>
-	<key>CFBundleIcons~ipad</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>AppIcon29x29</string>
-				<string>AppIcon40x40</string>
-				<string>AppIcon57x57</string>
-				<string>AppIcon60x60</string>
-				<string>AppIcon50x50</string>
-				<string>AppIcon72x72</string>
-				<string>AppIcon76x76</string>
-			</array>
-		</dict>
-	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -409,5 +388,9 @@
 	<string>Translate speech to text in virtual keyboard dialog</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Used for speech recognition</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Discover and use sources on the local network</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

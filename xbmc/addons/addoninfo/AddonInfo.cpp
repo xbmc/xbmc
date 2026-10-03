@@ -10,12 +10,12 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
+#include "language/LangInfo.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"

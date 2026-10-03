@@ -16,4 +16,6 @@
     <string name="no_read_apk">Kan inte läsa paket.</string>
     <string name="first_run">Förbereder första körningen. Vänta…</string>
     <string name="record_audio_dialog">%1$s ber om behörighet att spela in ljud. Detta används endast för röstsökning. Godkänn eller neka detta i följande dialogruta.</string>
+    <string name="networkperm_dialog">%1$s behöver åtkomst till nätverket för att fungera. Tillåt detta i följande dialogruta, annars avslutas %1$s.</string>
+    <string name="no_write_cache">Det går inte att skriva till programmets datakatalog.</string>
 </resources>

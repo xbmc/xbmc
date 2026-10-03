@@ -65,9 +65,8 @@ bool CDirectoryNodeMovieAssets::GetContent(CFileItemList& items) const
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40211)); // "Extras"
     item->SetLabelPreformatted(true); //! @todo not sure, but used elsewhere
 
-    //! @todo icon too small for nice display, add new skin icon in bigger size? ex. DefaultAddSource.png
     //! @todo wrong art type? some Estuary views don't show it
-    item->SetArt("icon", "icons/infodialogs/extras.png");
+    item->SetArt("icon", "DefaultVideoExtras.png");
 
     items.Add(item);
   }

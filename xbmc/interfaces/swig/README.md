@@ -29,7 +29,12 @@ measures here make it safe:
 - fix-swig-3535.cmake, run on each generated file after SWIG: rewrites the
   per-class init blocks so each builtin Python type is created once per
   process and shared immortally by every interpreter, matching the semantics
-  of the retired Groovy-generated bindings.
+  of the retired Groovy-generated bindings. KodiSwig_freeze (kodi_common.i)
+  then flags the shared type, its SwigPyObject base and its SwigPyObjectType
+  metatype Py_TPFLAGS_IMMUTABLETYPE, all heap types under SWIG 4.5's default
+  SWIG_HEAPTYPES, so their method-cache version tags come from the
+  process-wide range; a per-interpreter tag would be reissued to an unrelated
+  class in another interpreter (xbmc/xbmc#29309). The flag is Python 3.10+.
 
 XBPython::Initialize imports all seven modules in the main interpreter at
 startup so first registration happens in an interpreter that never exits.

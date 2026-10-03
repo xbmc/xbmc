@@ -42,6 +42,7 @@ set(package_files strings.xml
                   src/XBMCJsonRPC.java
                   src/XBMCMainView.java
                   src/XBMCMediaSession.java
+                  src/XBMCNativeKeyboard.java
                   src/XBMCRecommendationBuilder.java
                   src/XBMCSearchableActivity.java
                   src/XBMCSettingsContentObserver.java
@@ -50,6 +51,7 @@ set(package_files strings.xml
                   src/XBMCFile.java
                   src/XBMCTextureCache.java
                   src/XBMCURIUtils.java
+                  src/KodiDeepLinkActivity.java
                   src/channels/SyncChannelJobService.java
                   src/channels/SyncProgramsJobService.java
                   src/channels/model/XBMCDatabase.java

@@ -10,6 +10,7 @@
 
 #include "network/Network.h"
 
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -48,6 +49,7 @@ public:
 
   // Return the list of interfaces
   std::vector<CNetworkInterface*>& GetInterfaceList() override;
+  [[nodiscard]] std::unique_lock<std::mutex> LockInterfaceList() override;
   CNetworkInterface* GetFirstConnectedInterface() override;
 
   // Ping remote host
@@ -60,7 +62,10 @@ public:
 
 private:
   int GetSocket() { return m_sock; }
+  // After construction, call only while holding m_interfaceMutex.
   void queryInterfaceList();
+
+  std::mutex m_interfaceMutex;
   std::vector<CNetworkInterfaceIOS*> m_interfaces;
   int m_sock;
 };

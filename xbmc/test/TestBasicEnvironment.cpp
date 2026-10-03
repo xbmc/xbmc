@@ -18,6 +18,7 @@
 #include "application/Application.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/Filesystem.h"
 #include "profiles/ProfileManager.h"
@@ -49,6 +50,9 @@ void TestBasicEnvironment::SetUp()
   CAppEnvironment::SetUp(params);
 
   CServiceBroker::RegisterAppMessenger(std::make_shared<KODI::MESSAGING::CApplicationMessenger>());
+
+  CServiceBroker::RegisterAnnouncementManager(
+      std::make_shared<ANNOUNCEMENT::CAnnouncementManager>());
 
   XFILE::CFile *f;
 
@@ -85,6 +89,7 @@ void TestBasicEnvironment::SetUp()
 
   CSpecialProtocol::SetTempPath(m_tempPath);
   CSpecialProtocol::SetProfilePath(m_tempPath);
+  CSpecialProtocol::SetMasterProfilePath(m_tempPath);
 
   /* Create and delete a tempfile to initialize the VFS (really to initialize
    * CLibcdio). This is done so that the initialization of the VFS does not
@@ -121,6 +126,7 @@ void TestBasicEnvironment::TearDown()
   if (ec)
     ADD_FAILURE() << "Failed to remove the test profile at " << m_tempPath << ": " << ec.message();
 
+  CServiceBroker::UnregisterAnnouncementManager();
   CServiceBroker::UnregisterAppMessenger();
 
   CAppEnvironment::TearDown();

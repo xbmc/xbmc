@@ -386,7 +386,7 @@ public:
 
   /*!
    * @brief Get the total amount of providers from the backend.
-   * @param iChannels The total amount of channels on the server or -1 on error.
+   * @param iProviders The total amount of providers on the server or -1 on error.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR GetProvidersAmount(int& iProviders) const;
@@ -816,7 +816,7 @@ public:
   /*!
    * @brief Call one of the channel menu hooks of the client.
    * @param hook The hook to call.
-   * @param tag The channel associated with the hook to be called.
+   * @param channel The channel associated with the hook to be called.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallChannelMenuHook(const CPVRClientMenuHook& hook,
@@ -825,7 +825,7 @@ public:
   /*!
    * @brief Call one of the recording menu hooks of the client.
    * @param hook The hook to call.
-   * @param tag The recording associated with the hook to be called.
+   * @param recording The recording associated with the hook to be called.
    * @param bDeleted True, if the recording is deleted (trashed), false otherwise
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
@@ -836,7 +836,7 @@ public:
   /*!
    * @brief Call one of the timer menu hooks of the client.
    * @param hook The hook to call.
-   * @param tag The timer associated with the hook to be called.
+   * @param timer The timer associated with the hook to be called.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallTimerMenuHook(const CPVRClientMenuHook& hook,

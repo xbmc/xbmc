@@ -15,14 +15,14 @@
 			<control type="image">
 				<left>0</left>
 				<top>80</top>
-				<width>920</width>
+				<width>930</width>
 				<bottom>2</bottom>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
 			<control type="list" id="3">
 				<left>20</left>
 				<top>100</top>
-				<width>880</width>
+				<width>890</width>
 				<bottom>20</bottom>
 				<onup>3</onup>
 				<ondown>3</ondown>
@@ -31,14 +31,14 @@
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<include content="DefaultSimpleListLayout">
-					<param name="width" value="880" />
+					<param name="width" value="890" />
 					<param name="list_id" value="3" />
 				</include>
 			</control>
 			<control type="list" id="6">
 				<left>20</left>
 				<top>100</top>
-				<width>880</width>
+				<width>890</width>
 				<bottom>20</bottom>
 				<onup>6</onup>
 				<ondown>6</ondown>
@@ -46,7 +46,7 @@
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="125" width="880">
+				<itemlayout height="125" width="890">
 					<control type="image">
 						<left>12</left>
 						<top>7</top>
@@ -106,7 +106,7 @@
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="125" width="880">
+				<focusedlayout height="125" width="890">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>

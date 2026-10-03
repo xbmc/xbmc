@@ -180,10 +180,15 @@ void CVirtualDirectory::GetSources(std::vector<CMediaSource>& shares) const
     CMediaSource& share = shares[i];
     if (share.m_iDriveType == SourceType::OPTICAL_DISC)
     {
-      if (CServiceBroker::GetMediaManager().IsAudio(share.strPath))
+      if (CServiceBroker::GetMediaManager().IsAudio(share.strPath, true))
       {
         share.strStatus = "Audio-CD";
-        share.strPath = "cdda://local/";
+        CURL url;
+        url.SetProtocol("cdda");
+        const std::string devicePath{
+            CServiceBroker::GetMediaManager().TranslateDevicePath(share.strPath)};
+        url.SetHostName(devicePath.size() == 2 && devicePath[1] == ':' ? devicePath : "local");
+        share.strPath = url.Get();
         share.strDiskUniqueId = "";
       }
       else

@@ -22,6 +22,7 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
                                                               XCODE_PRODUCT_TYPE com.apple.product-type.tv-app-extension
                                                               XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${ENTITLEMENTS_OUT_PATH})
   target_link_libraries(${TOPSHELF_EXTENSION_NAME} "-framework TVServices" "-framework Foundation")
+  target_compile_definitions(${TOPSHELF_EXTENSION_NAME} PRIVATE TVOS_TOPSHELF)
 
   add_custom_command(TARGET ${TOPSHELF_EXTENSION_NAME} POST_BUILD
     COMMAND "NATIVEPREFIX=${NATIVEPREFIX}"

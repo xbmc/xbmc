@@ -95,6 +95,7 @@ set(HEADERS AddonsDirectory.h
             IDirectory.h
             IFile.h
             IHttpClient.h
+            IPlaylistHints.h
             IFileDirectory.h
             IFileTypes.h
             ImageFile.h

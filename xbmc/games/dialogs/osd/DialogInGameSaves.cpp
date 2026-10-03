@@ -30,6 +30,8 @@
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 using namespace KODI;
 using namespace GAME;
 using namespace RETRO;
@@ -128,7 +130,8 @@ void CDialogInGameSaves::OnItemFocus(unsigned int index)
 
 unsigned int CDialogInGameSaves::GetFocusedItem() const
 {
-  return m_focusedControl;
+  // The leading "Save" item makes the savestate count the last valid index.
+  return std::min(m_focusedItemIndex, static_cast<unsigned int>(m_savestateItems.Size()));
 }
 
 void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath,

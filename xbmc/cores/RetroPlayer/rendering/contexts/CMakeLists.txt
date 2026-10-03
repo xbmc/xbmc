@@ -1,0 +1,27 @@
+set(FBO_GL_SUPPORTED FALSE)
+if(TARGET ${APP_NAME_LC}::OpenGl)
+  set(FBO_GL_SUPPORTED TRUE)
+elseif(TARGET ${APP_NAME_LC}::OpenGLES)
+  get_target_property(FBO_GLES_DEFS ${APP_NAME_LC}::OpenGLES INTERFACE_COMPILE_DEFINITIONS)
+  if(FBO_GLES_DEFS MATCHES "HAS_GLES=3")
+    set(FBO_GL_SUPPORTED TRUE)
+  endif()
+endif()
+
+if(FBO_GL_SUPPORTED AND (TARGET ${APP_NAME_LC}::EGL OR CORE_SYSTEM_NAME STREQUAL "osx"))
+  set(SOURCES HwRenderingContext.cpp)
+  set(HEADERS IHwRenderingContext.h)
+
+  if(CORE_SYSTEM_NAME STREQUAL "osx")
+    list(APPEND SOURCES HwRenderingContextOSX.mm)
+    list(APPEND HEADERS HwRenderingContextOSX.h)
+  else()
+    list(APPEND SOURCES HwRenderingContextEGL.cpp
+                        EGLClientContext.cpp)
+    list(APPEND HEADERS EGLClientContext.h
+                        HwRenderingContextEGL.h
+                        HwRenderingContextEGLUtils.h)
+  endif()
+
+  core_add_library(rp-rendering-contexts)
+endif()

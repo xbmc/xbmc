@@ -63,7 +63,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetailsWinRT()
 
     for (const DeviceInformation& devInfo : devInfoCollection)
     {
-      RendererDetail details;
+      RendererDetail details{};
 
       if (devInfo.Properties().Size() == 0)
         goto failed;
@@ -90,6 +90,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetailsWinRT()
         WAVEFORMATEXTENSIBLE* smpwfxex = (WAVEFORMATEXTENSIBLE*)com_arr.data();
         nChannels = std::max(std::min(smpwfxex->Format.nChannels, (WORD)8), (WORD)2);
         ulChannelMask = smpwfxex->dwChannelMask;
+        details.m_samplesPerSec = smpwfxex->Format.nSamplesPerSec;
       }
       else
       {

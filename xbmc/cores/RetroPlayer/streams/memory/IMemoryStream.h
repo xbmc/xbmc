@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -88,6 +89,9 @@ public:
    *        location returned from BeginFrame()
    */
   virtual void SubmitFrame() = 0;
+
+  // Exchange the retired full frame after submission for equally sized, padded storage.
+  virtual bool ExchangeRetiredFrame(std::unique_ptr<uint32_t[]>& replacement) { return false; }
 
   /*!
    * \brief Get a pointer to the current frame

@@ -247,7 +247,7 @@ CAction CKeyHandler::ProcessAction(const KeymapAction& action,
   {
     // Dispatch action if button was pressed this frame
     if (holdTimeMs == 0)
-      bSendAction = true;
+      bSendAction = !m_bActionSent;
     else
       bSendAction = SendRepeatAction(holdTimeMs);
   }

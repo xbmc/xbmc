@@ -194,6 +194,8 @@ bool CArtist::Save(TiXmlNode *node, const std::string &tag, const std::string& s
 
   // we start with a <tag> tag
   TiXmlElement artistElement(tag.c_str());
+  if (tag == "artist")
+    artistElement.SetAttribute("version", 0);
   TiXmlNode *artist = node->InsertEndChild(artistElement);
 
   if (!artist) return false;

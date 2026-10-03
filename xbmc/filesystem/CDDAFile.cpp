@@ -34,18 +34,18 @@ CFileCDDA::~CFileCDDA(void)
 
 bool CFileCDDA::Open(const CURL& url)
 {
-  std::string strURL = url.GetWithoutFilename();
+  m_devicePath = url.GetWithoutFilename();
 
-  if (!CServiceBroker::GetMediaManager().IsDiscInDrive(strURL) || !IsValidFile(url))
+  if (!CServiceBroker::GetMediaManager().IsDiscInDrive(m_devicePath) || !IsValidFile(url))
     return false;
 
   // Open the dvd drive
 #ifdef TARGET_POSIX
-  m_pCdIo = m_cdio->cdio_open(CServiceBroker::GetMediaManager().TranslateDevicePath(strURL).c_str(),
-                              DRIVER_UNKNOWN);
+  m_pCdIo = m_cdio->cdio_open(
+      CServiceBroker::GetMediaManager().TranslateDevicePath(m_devicePath).c_str(), DRIVER_UNKNOWN);
 #elif defined(TARGET_WINDOWS)
   m_pCdIo = m_cdio->cdio_open_win32(
-      CServiceBroker::GetMediaManager().TranslateDevicePath(strURL, true).c_str());
+      CServiceBroker::GetMediaManager().TranslateDevicePath(m_devicePath, true).c_str());
 #endif
   if (!m_pCdIo)
   {
@@ -102,7 +102,7 @@ int CFileCDDA::Stat(const CURL& url, struct __stat64* buffer)
 
 ssize_t CFileCDDA::Read(void* lpBuf, size_t uiBufSize)
 {
-  if (!m_pCdIo || !CServiceBroker::GetMediaManager().IsDiscInDrive())
+  if (!m_pCdIo || !CServiceBroker::GetMediaManager().IsDiscInDrive(m_devicePath))
     return -1;
 
   if (uiBufSize > SSIZE_MAX)
@@ -213,10 +213,7 @@ bool CFileCDDA::IsValidFile(const CURL& url)
 
 int CFileCDDA::GetTrackNum(const CURL& url)
 {
-  std::string strFileName = url.Get();
-
-  // get track number from "cdda://local/01.cdda"
-  return atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
+  return atoi(url.GetFileName().c_str()); // NN.cdda
 }
 
 #define SECTOR_COUNT 52 // max. sectors that can be read at once

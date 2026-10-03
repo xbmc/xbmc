@@ -367,6 +367,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
                                             -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
+                                            -DAPP_PACKAGE=${APP_PACKAGE}
                                             -DAPP_SCMID=${APP_SCMID}
                                             -DAPP_COPYRIGHT_YEARS=${APP_COPYRIGHT_YEARS}
                                             -DAPP_BUILD_DATE=${APP_BUILD_DATE}
@@ -420,12 +421,15 @@ if(NOT ${CORE_SYSTEM_NAME} MATCHES "windows")
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 endif()
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
-  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
-                 ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
-elseif(CORE_SYSTEM_NAME STREQUAL android)
+if(CORE_SYSTEM_NAME STREQUAL android)
   configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated_android.h.in
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
+elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
+  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated_darwin_embedded.h.in
+                 ${CORE_BUILD_DIR}/DllPaths_generated_darwin_embedded.h @ONLY)
+elseif(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
+  configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
+                 ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
 endif()
 
 # main library (used for main binary and tests)

@@ -7,9 +7,13 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 #include "utils/FileUtils.h"
+#include "utils/URIUtils.h"
 
 #include <gtest/gtest.h>
 
@@ -40,5 +44,40 @@ TEST(TestFileUtils, DeleteItemString)
   EXPECT_FALSE(XBMC_DELETETEMPFILE(tmpfile));
 }
 
+//! \brief An empty playlists path names no folder, so it shares nothing for remote access
+TEST(TestFileUtils, AnEmptyPlaylistsPathSharesNothing)
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string before = settings->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, "");
+  EXPECT_FALSE(CFileUtils::RemoteAccessAllowed("special://temp/remote-access.txt"));
+
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, "special://temp/playlists/");
+  EXPECT_TRUE(CFileUtils::RemoteAccessAllowed("special://temp/playlists/remote-access.m3u"));
+  EXPECT_FALSE(CFileUtils::RemoteAccessAllowed("special://temp/remote-access.txt"));
+
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, before);
+}
+
 /* Executing RenameFile() requires input from the user */
 // static bool RenameFile(const std::string &strFile);
+
+TEST(TestFileUtils, GetModificationDateOfDiscImagePlaylist)
+{
+  // A playlist within a disc image, alone or as the first part of a stack, has the image's date
+  const std::string image{XBMC_REF_FILE_PATH(
+      "xbmc/video/test/testdata/moviestack_blurayiso/Movie_(2001)/Movie_(2001)_part1.iso")};
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(image, 1003)};
+  const std::string otherPlaylist{URIUtils::GetBlurayPlaylistPath(
+      XBMC_REF_FILE_PATH(
+          "xbmc/video/test/testdata/moviestack_blurayiso/Movie_(2001)/Movie_(2001)_part2.iso"),
+      1003)};
+  ASSERT_TRUE(URIUtils::IsBlurayPath(playlist));
+
+  const CDateTime imageDate{CFileUtils::GetModificationDate(0, image)};
+  ASSERT_TRUE(imageDate.IsValid());
+  EXPECT_EQ(CFileUtils::GetModificationDate(0, playlist), imageDate);
+  EXPECT_EQ(CFileUtils::GetModificationDate(0, "stack://" + playlist + " , " + otherPlaylist),
+            imageDate);
+}

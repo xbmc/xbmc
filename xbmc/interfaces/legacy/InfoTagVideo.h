@@ -249,7 +249,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail
-      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereomode, language, hdrtype]) }
+      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereomode, language, hdrtype, hdrdetail]) }
       /// Creates a single video stream details class for a video item wrapped by InfoTagVideo.
       ///
       /// @param width              [opt] integer - Width of the video stream in pixel.
@@ -262,10 +262,14 @@ namespace XBMCAddon
       /// @param hdrtype            [opt] string - HDR type of the video stream.
       ///                           The following types are supported:
       ///                           dolbyvision, hdr10, hlg
+      /// @param hdrdetail          [opt] string - additional HDR type details.
+      ///                           Currently only for Dolby Vision: profile and EL type
+      ///                           for example: 5, 7FEL, 8.4
       ///
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 New function added.
+      /// @python_v22 hdrdetail parameter added.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -283,7 +287,8 @@ namespace XBMCAddon
                                  const String& codec = emptyString,
                                  const String& stereomode = emptyString,
                                  const String& language = emptyString,
-                                 const String& hdrtype = emptyString);
+                                 const String& hdrtype = emptyString,
+                                 const String& hdrdetail = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -425,6 +430,23 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail
+      /// @brief \python_func{ getHDRDetail() }
+      /// Get the HDR detail of the stream.
+      ///
+      /// @return [string] HDR detail of the stream
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      getHDRDetail();
+#else
+      String getHDRDetail() const { return m_hdrDetail; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_videostreamdetail
       /// @brief \python_func{ setWidth(width) }
       /// Set the width of the video stream in pixel.
       ///
@@ -559,6 +581,25 @@ namespace XBMCAddon
       void setHDRType(const String& hdrtype) { m_hdrType = hdrtype; }
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_videostreamdetail
+      /// @brief \python_func{ setHDRDetail(hdrdetail) }
+      /// Set the HDR detail of the stream.
+      ///
+      /// @param hdrdetail         string - additional HDR type details.
+      ///                          Currently only for Dolby Vision: profile and EL type
+      ///                          for example: 5, 7FEL, 8.4
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      setHDRDetail(...);
+#else
+      void setHDRDetail(const String& hdrdetail) { m_hdrDetail = hdrdetail; }
+#endif
+
 #ifndef SWIG
       CStreamDetailVideo* ToStreamDetailVideo() const;
 #endif
@@ -572,6 +613,7 @@ namespace XBMCAddon
       String m_stereoMode;
       String m_language;
       String m_hdrType;
+      String m_hdrDetail;
     };
     /// @}
 

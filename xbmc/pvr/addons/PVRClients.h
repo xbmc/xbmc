@@ -286,7 +286,7 @@ public:
   /*!
    * @brief Get all providers from backends.
    * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
-   * @param group The container to store the providers in.
+   * @param providers The container to store the providers in.
    * @param failedClients in case of errors will contain the ids of the clients for which the providers could not be obtained.
    * @return PVR_ERROR_NO_ERROR if the providers were fetched successfully, last error otherwise.
    */

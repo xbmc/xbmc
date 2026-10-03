@@ -29,7 +29,6 @@ public:
   bool GetFont(const std::string& file, std::string& path) const;
 
   //! \brief Callback executed after installation
-  void OnPostInstall(bool update, bool modal) override;
 };
 
 }

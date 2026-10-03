@@ -52,16 +52,29 @@ bool CBaseRenderBufferPool::HasVisibleRenderer() const
 
 bool CBaseRenderBufferPool::Configure(AVPixelFormat format)
 {
+  std::unique_lock lock(m_bufferMutex);
+
+  // Renderer lookup can request the same format every GUI frame.
+  if (m_format == format && (m_bConfigured || m_bConfigureFailed))
+    return m_bConfigured;
+
   m_format = format;
+  m_bConfigured = ConfigureInternal();
+  m_bConfigureFailed = !m_bConfigured;
 
-  if (ConfigureInternal())
-    m_bConfigured = true;
+  return m_bConfigured;
+}
 
+bool CBaseRenderBufferPool::IsConfigured() const
+{
+  std::unique_lock lock(m_bufferMutex);
   return m_bConfigured;
 }
 
 IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int height)
 {
+  std::unique_lock lock(m_bufferMutex);
+
   if (!m_bConfigured)
     return nullptr;
 
@@ -71,17 +84,15 @@ IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
 
   if (GetHeaderWithTimeout(header))
   {
-    std::unique_lock lock(m_bufferMutex);
-
     for (auto it = m_free.begin(); it != m_free.end(); ++it)
     {
       std::unique_ptr<IRenderBuffer>& buffer = *it;
 
-      // Only return buffers of the same dimensions
+      // Buffers can return after the stream changes format.
       const unsigned int bufferWidth = buffer->GetWidth();
       const unsigned int bufferHeight = buffer->GetHeight();
 
-      if (bufferWidth == width && bufferHeight == height)
+      if (buffer->GetFormat() == m_format && bufferWidth == width && bufferHeight == height)
       {
         renderBuffer = buffer.release();
         renderBuffer->SetHeader(header);
@@ -97,7 +108,7 @@ IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
                 height);
 
       std::unique_ptr<IRenderBuffer> renderBufferPtr(CreateRenderBuffer(header));
-      if (renderBufferPtr->Allocate(m_format, width, height))
+      if (renderBufferPtr && renderBufferPtr->Allocate(m_format, width, height))
         renderBuffer = renderBufferPtr.release();
       else
         CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to allocate render buffer");
@@ -153,4 +164,11 @@ void CBaseRenderBufferPool::Flush()
 
   m_free.clear();
   m_bConfigured = false;
+  m_bConfigureFailed = false;
+}
+
+AVPixelFormat CBaseRenderBufferPool::Format() const
+{
+  std::unique_lock lock(m_bufferMutex);
+  return m_format;
 }

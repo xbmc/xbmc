@@ -20,6 +20,7 @@
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "peripherals/Peripherals.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "settings/AdvancedSettings.h"
@@ -91,6 +92,8 @@ bool CWinEventsWin10::MessagePump()
   // processes all pending events and exits immediately
   CoreWindow::GetForCurrentThread().Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
+  TriggerGamepadScan();
+
   XBMC_Event pumpEvent;
   while (m_events.try_pop(pumpEvent))
   {
@@ -161,6 +164,18 @@ void CWinEventsWin10::InitEventHandlers(const CoreWindow& window)
   }
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
   {
+    using winrt::Windows::Gaming::Input::Gamepad;
+
+    m_gamepadScanRequested = std::make_shared<std::atomic<bool>>(false);
+    // WinRT callbacks can outlive unsubscription; defer service access to the UI thread.
+    const auto onGamepadChanged =
+        [scanRequested = m_gamepadScanRequested](const winrt::IInspectable&, const Gamepad&)
+    { scanRequested->store(true); };
+    m_gamepadAddedRevoker = Gamepad::GamepadAdded(winrt::auto_revoke, onGamepadChanged);
+    m_gamepadRemovedRevoker = Gamepad::GamepadRemoved(winrt::auto_revoke, onGamepadChanged);
+    if (Gamepad::Gamepads().Size() != 0)
+      m_gamepadScanRequested->store(true);
+
     m_remote = std::make_unique<CRemoteControlXbox>();
     m_remote->Initialize();
   }
@@ -189,6 +204,21 @@ void CWinEventsWin10::UpdateWindowSize()
   if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
       newEvent.resize.width > 0 && newEvent.resize.height > 0)
     MessagePush(&newEvent);
+}
+
+bool CWinEventsWin10::HasJoystickPeripheral() const
+{
+  if (!CServiceBroker::IsServiceManagerUp())
+    return false;
+
+  return CServiceBroker::GetPeripherals().HasPeripheralWithFeature(FEATURE_JOYSTICK);
+}
+
+void CWinEventsWin10::TriggerGamepadScan()
+{
+  if (m_gamepadScanRequested && CServiceBroker::IsServiceManagerUp() &&
+      m_gamepadScanRequested->exchange(false))
+    CServiceBroker::GetPeripherals().TriggerDeviceScan(PERIPHERAL_BUS_ADDON);
 }
 
 void CWinEventsWin10::OnResize(float width, float height)
@@ -450,7 +480,8 @@ void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey,
   MessagePush(&newEvent);
 }
 
-void CWinEventsWin10::OnAcceleratorKeyActivated(const CoreDispatcher&, const AcceleratorKeyEventArgs& args)
+void CWinEventsWin10::OnAcceleratorKeyActivated(const CoreDispatcher& sender,
+                                                const AcceleratorKeyEventArgs& args)
 {
   static auto lockedState = CoreVirtualKeyStates::Locked;
   static VirtualKey keyStore = VirtualKey::None;
@@ -458,6 +489,25 @@ void CWinEventsWin10::OnAcceleratorKeyActivated(const CoreDispatcher&, const Acc
   // skip if device is remote control
   if (m_remote && m_remote->IsRemoteDevice(args.DeviceId().c_str()))
     return;
+
+  // Xbox fallback when no joystick peripheral is registered.
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox && m_remote &&
+      (args.EventType() == CoreAcceleratorKeyEventType::KeyDown ||
+       args.EventType() == CoreAcceleratorKeyEventType::SystemKeyDown ||
+       args.EventType() == CoreAcceleratorKeyEventType::KeyUp ||
+       args.EventType() == CoreAcceleratorKeyEventType::SystemKeyUp) &&
+      CRemoteControlXbox::IsMappedGamepadVirtualKey(args.VirtualKey()) && !HasJoystickPeripheral())
+  {
+    if ((!args.KeyStatus().WasKeyDown || args.KeyStatus().IsKeyReleased) &&
+        m_gamepadInputScanTimeout.IsTimePast())
+    {
+      m_gamepadInputScanTimeout.Set(std::chrono::seconds(5));
+      m_gamepadScanRequested->store(true);
+      TriggerGamepadScan();
+    }
+    m_remote->HandleAcceleratorKey(sender, args);
+    return;
+  }
 
   bool isDown = false;
   unsigned keyCode = 0;

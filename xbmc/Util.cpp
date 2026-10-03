@@ -339,7 +339,10 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
   // use above to get the filename
   std::string path(url.Get());
   URIUtils::RemoveSlashAtEnd(path);
-  std::string strFilename = URIUtils::GetFileName(path);
+  // A VFS path carries percent escapes; a local path and the friendly names assigned
+  // below do not, so only this one is decoded.
+  std::string strFilename =
+      URIUtils::IsURL(path) ? URIUtils::GetDecodedFileName(path) : URIUtils::GetFileName(path);
 
 #ifdef HAS_UPNP
   // UPNP
@@ -400,14 +403,11 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = URIUtils::GetFileName(url.GetHostName());
 
   // now remove the extension if needed
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS) && !bIsFolder)
-  {
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_FILELISTS_SHOWEXTENSIONS) &&
+      !bIsFolder)
     URIUtils::RemoveExtension(strFilename);
-    return strFilename;
-  }
 
-  // URLDecode since the original path may be an URL
-  strFilename = CURL::Decode(strFilename);
   return strFilename;
 }
 
@@ -705,8 +705,8 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
   if ( URIUtils::IsISO9660(strPath) )
   {
 #ifdef HAS_OPTICAL_DRIVE
-    CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
+    const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
+    if (pInfo && pInfo->IsVideoCd(1))
     {
       strIcon = "DefaultVCD.png";
       return ;

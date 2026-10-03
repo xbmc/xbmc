@@ -11,6 +11,7 @@
 #include "OptionalsReg.h"
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMAOpenGLES.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
@@ -66,6 +67,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   RETRO::CRPProcessInfoGbm::Register();
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryDMAOpenGLES);
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
+  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryFBO);
 
   // GLES 3.0 required for 10-bit texture format support (GL_RGB10_A2, GL_R16UI, etc.)
   // Fall back to GLES 2.0 for devices that don't support GLES 3.0 (e.g. lima driver)

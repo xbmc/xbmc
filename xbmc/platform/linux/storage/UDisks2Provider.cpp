@@ -184,6 +184,7 @@ CMediaSource CUDisks2Provider::Filesystem::ToMediaShare() const
 {
   CMediaSource source;
   source.strPath = m_mountPoint;
+  source.strDevicePath = m_block->m_device;
   source.strName = GetDisplayName();
   if (IsOptical())
     source.m_iDriveType = SourceType::OPTICAL_DISC;

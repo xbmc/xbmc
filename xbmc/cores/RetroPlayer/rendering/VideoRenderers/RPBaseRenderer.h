@@ -102,11 +102,16 @@ protected:
   ViewportCoordinates m_rotatedDestCoords{};
 
   // Video shaders
-  void Updateshaders();
+  void UpdateShaders();
   std::unique_ptr<SHADER::IShaderPreset> m_shaderPreset;
 
   bool m_bShadersNeedUpdate = true;
   bool m_bUseShaderPreset = false;
+
+  // Last reported geometry, so the log carries changes rather than every frame
+  CRect m_lastLoggedDestRect;
+  CRect m_lastLoggedFullDestRect;
+  STRETCHMODE m_lastLoggedStretchMode{static_cast<STRETCHMODE>(-1)};
 
 private:
   /*!

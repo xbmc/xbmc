@@ -30,6 +30,9 @@ public:
   bool HasSymbols() override;
 
 private:
+  bool PerformLoad(const std::string& libPath);
+
+private:
   void* m_soHandle;
   bool m_bGlobal;
   bool m_bLoaded;

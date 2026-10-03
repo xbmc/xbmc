@@ -26,6 +26,7 @@
 #include "cores/RetroPlayer/playback/ReversiblePlayback.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
+#include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RPStreamManager.h"
@@ -74,6 +75,24 @@ CRetroPlayer::~CRetroPlayer()
 
 bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 {
+  // A dialog shown while a game opens, such as the one reporting that it
+  // failed to load, runs the message loop, which can ask this player to open
+  // another game before the first has finished opening or been unloaded
+  if (m_opening)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't open a game while another is opening");
+    return false;
+  }
+
+  m_opening = true;
+  const bool opened = Open(file, options);
+  m_opening = false;
+
+  return opened;
+}
+
+bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
+{
   CFileItem fileCopy(file);
 
   std::string savestatePath;
@@ -90,7 +109,39 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   }
 
   // Check if we should open in standalone mode
-  const bool bStandalone = fileCopy.GetPath().empty();
+  const bool bStandalone = fileCopy.GetDynPath().empty();
+
+  // Asked before the game client is set up: the dialog runs the message loop,
+  // and a game started from it once the client is playing would close this
+  // player in the middle of opening
+  if (!bStandalone)
+  {
+    CSavestateDatabase savestateDb;
+
+    std::unique_ptr<ISavestate> save = CSavestateDatabase::AllocateSavestate();
+    if (savestateDb.GetSavestate(savestatePath, *save))
+    {
+      // Check if game client is the same
+      if (save->GameClientID() != fileCopy.GetGameInfoTag()->GetGameClient())
+      {
+        ADDON::AddonPtr addon;
+        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
+                                                   ADDON::OnlyEnabled::CHOICE_YES))
+        {
+          // Warn the user that continuing with a different game client will
+          // overwrite the save
+          bool dummy;
+          if (!CGUIDialogYesNo::ShowAndGetInput(
+                  438,
+                  StringUtils::Format(
+                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35217),
+                      addon->Name()),
+                  dummy, 222, 35218, 0))
+            return false;
+        }
+      }
+    }
+  }
 
   m_processInfo = CRPProcessInfo::CreateInstance();
   if (!m_processInfo)
@@ -140,7 +191,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 
       if (!bStandalone)
       {
-        std::string redactedPath = CURL::GetRedacted(fileCopy.GetPath());
+        std::string redactedPath = CURL::GetRedacted(fileCopy.GetDynPath());
         CLog::Log(LOGINFO, "RetroPlayer[PLAYER]: Opening: {}", redactedPath);
         bSuccess = m_gameClient->OpenFile(fileCopy, *m_streamManager, m_input.get());
       }
@@ -157,35 +208,6 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     }
     else
       CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Failed to initialize {}", gameClientId);
-  }
-
-  if (bSuccess && !bStandalone)
-  {
-    CSavestateDatabase savestateDb;
-
-    std::unique_ptr<ISavestate> save = CSavestateDatabase::AllocateSavestate();
-    if (savestateDb.GetSavestate(savestatePath, *save))
-    {
-      // Check if game client is the same
-      if (save->GameClientID() != m_gameClient->ID())
-      {
-        ADDON::AddonPtr addon;
-        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
-                                                   ADDON::OnlyEnabled::CHOICE_YES))
-        {
-          // Warn the user that continuing with a different game client will
-          // overwrite the save
-          bool dummy;
-          if (!CGUIDialogYesNo::ShowAndGetInput(
-                  438,
-                  StringUtils::Format(
-                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35217),
-                      addon->Name()),
-                  dummy, 222, 35218, 0))
-            bSuccess = false;
-        }
-      }
-    }
   }
 
   if (bSuccess)
@@ -208,10 +230,10 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   else
   {
     m_input.reset();
-    m_streamManager.reset();
     if (m_gameClient)
       m_gameClient->Unload();
     m_gameClient.reset();
+    m_streamManager.reset();
   }
 
   return bSuccess;
@@ -221,6 +243,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing file");
 
+  const bool autosaveEligible = m_autoSave && m_autoSave->HasInitialDelayElapsed();
   m_autoSave.reset();
 
   UnregisterWindowCallbacks();
@@ -229,16 +252,21 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   std::unique_lock lock(m_mutex);
 
-  if (m_gameClient && m_gameServices.GameSettings().AutosaveEnabled())
+  if (m_playback)
+    m_playback->Quiesce();
+
+  if (autosaveEligible && m_gameClient && m_playback &&
+      m_gameServices.GameSettings().AutosaveEnabled())
   {
     std::string savePath = m_playback->CreateSavestate(true);
-    if (!savePath.empty())
+    const bool saved = m_playback->WaitForSavestates();
+    if (!savePath.empty() && saved)
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to {}", CURL::GetRedacted(savePath));
     else
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Failed to save state at close");
   }
 
-  m_playback.reset();
+  ResetPlayback();
 
   if (m_input)
     m_input->StopAgentManager();
@@ -254,14 +282,23 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
     m_gameClient->Unload();
   m_gameClient.reset();
 
+  // A game client that renders on the GPU shares it with Kodi and releases its
+  // resources as it unloads, without restoring the state Kodi left set up. The
+  // global vertex array object matters most: every GUI draw is rejected while
+  // it is unbound, so the screen stays black after the game ends. Put Kodi's
+  // state back now that the client is gone, the same way Kodi does after a
+  // visualisation or screensaver add-on has had the context.
+  if (m_processInfo)
+    m_processInfo->GetRenderContext().ApplyStateBlock();
+
   m_renderManager.reset();
   if (m_processInfo)
   {
     m_processInfo->ResetInfo();
   }
   m_processInfo.reset();
-  CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback ended");
-  m_callback.OnPlayBackEnded();
+  CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback stopped");
+  m_callback.OnPlayBackStopped();
 
   return true;
 }
@@ -456,27 +493,6 @@ bool CRetroPlayer::OnAction(const CAction& action)
   return false;
 }
 
-std::string CRetroPlayer::GetPlayerState()
-{
-  std::string savestatePath;
-
-  if (m_autoSave)
-  {
-    savestatePath = m_playback->CreateSavestate(true);
-    if (savestatePath.empty())
-    {
-      CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Continuing without saving");
-      m_autoSave.reset();
-    }
-  }
-  return savestatePath;
-}
-
-bool CRetroPlayer::SetPlayerState(const std::string& state)
-{
-  return m_playback->LoadSavestate(state);
-}
-
 void CRetroPlayer::FrameMove()
 {
   if (m_renderManager)
@@ -625,9 +641,9 @@ bool CRetroPlayer::IsAutoSaveEnabled() const
   return m_playback->GetSpeed() > 0.0;
 }
 
-std::string CRetroPlayer::CreateAutosave()
+void CRetroPlayer::RequestAutosave()
 {
-  return m_playback->CreateSavestate(true);
+  m_playback->RequestAutosave();
 }
 
 void CRetroPlayer::SetSpeedInternal(double speed)
@@ -673,7 +689,7 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Loading savestate");
 
-      if (!SetPlayerState(savestatePath))
+      if (!LoadSavestate(savestatePath))
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to load savestate");
     }
   }

@@ -168,6 +168,7 @@ macro(SETUP_BUILD_VARS)
 
   # PROJECTSOURCE used in native toolchain to provide core project sourcedir
   # to externalproject_add targets that have a different CMAKE_SOURCE_DIR (eg jsonschema/texturepacker in-tree)
+  # This project-wide source root must outlive nested dependency builds.
   if(NOT PROJECTSOURCE)
     set(PROJECTSOURCE ${CMAKE_SOURCE_DIR})
   endif()
@@ -188,7 +189,6 @@ endmacro()
 macro(CLEAR_BUILD_VARS)
   # unset all generic variables to insure clean state between macro calls
   # Potentially an issue with scope when a macro is used inside a dep that uses a macro
-  unset(PROJECTSOURCE)
   unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
   unset(PATCH_COMMAND)

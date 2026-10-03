@@ -8,8 +8,13 @@
 
 #import "DarwinEmbedUtils.h"
 
+#if !defined(TVOS_TOPSHELF)
+#import "../DarwinUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+#endif
+
 #include <mutex>
-#include <string>
 
 #import <Foundation/Foundation.h>
 
@@ -50,3 +55,19 @@ bool CDarwinEmbedUtils::IsIosSandboxed(void)
   });
   return ret;
 }
+
+#if !defined(TVOS_TOPSHELF)
+std::string CDarwinEmbedUtils::GetSharedLibraryPath(const std::string& sharedLibraryPath)
+{
+  const auto stem = URIUtils::ReplaceExtension(URIUtils::GetFileName(sharedLibraryPath), "");
+
+  // technically correct way to find binary in a framework is to read CFBundleExecutable from Info.plist
+  // but since we package dylibs into frameworks ourselves, we already know the layout
+  const auto frameworkBinary =
+      URIUtils::AddFileToFolder(CDarwinUtils::GetFrameworkPath(false), stem + ".framework", stem);
+#if !defined(TVOS_TOPSHELF)
+  CLog::Log(LOGDEBUG, "requested path for {} -> {}", sharedLibraryPath, frameworkBinary);
+#endif
+  return frameworkBinary;
+}
+#endif

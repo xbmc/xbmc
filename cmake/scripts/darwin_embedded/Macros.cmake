@@ -12,7 +12,7 @@ function(core_link_library lib wraplib)
     set(wrapper_obj wrapper.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Objects-$(CURRENT_VARIANT)/${CPU}/wrapper.o)
   endif()
 
-  set(export -bundle -undefined dynamic_lookup
+  set(export -dynamiclib -undefined dynamic_lookup
              -Wl,-alias_list,${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cores/dll-loader/exports/wrapper.def
              ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${wrapper_obj})
   set(extension ${CMAKE_SHARED_MODULE_SUFFIX})

@@ -594,7 +594,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
 
 std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
-  std::string path(item.GetPath());
+  std::string path(item.GetDynPath());
   if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   if (URIUtils::IsStack(path))
@@ -605,8 +605,7 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 
 void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 {
-  // @todo remove exception for hybrid movie/folder of versions
-  if (item.IsFolder() && !item.GetProperty("IsHybridFolder").asBoolean(false))
+  if (VIDEO::IsBrowsableFolder(item))
     return;
 
   if (item.HasVideoInfoTag())

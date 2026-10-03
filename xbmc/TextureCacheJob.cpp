@@ -20,6 +20,7 @@
 #include "imagefiles/ImageFileURL.h"
 #include "imagefiles/SpecialImageLoaderFactory.h"
 #include "pictures/Picture.h"
+#include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -65,7 +66,9 @@ bool CTextureCacheJob::DoWork()
   std::string path(CServiceBroker::GetTextureCache()->CheckCachedImage(m_url, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
-  if (CServiceBroker::GetTextureCache()->StartCacheImage(m_url))
+
+  m_holdsProcessingClaim = CServiceBroker::GetTextureCache()->StartCacheImage(m_url);
+  if (m_holdsProcessingClaim)
     return CacheTexture();
 
   return false;
@@ -169,6 +172,12 @@ bool CTextureCacheJob::ResizeTexture(const std::string& url,
   return success;
 }
 
+bool CTextureCacheJob::MayBeAnImage(const std::string& mimeType)
+{
+  return StringUtils::StartsWithNoCase(mimeType, "image/") ||
+         StringUtils::EqualsNoCase(mimeType, "application/octet-stream");
+}
+
 std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageFileURL& imageURL)
 {
   if (imageURL.IsSpecialImage())
@@ -181,17 +190,34 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
 
   // Validate file URL to see if it is an image
   CFileItem file(imageURL.GetTargetFile(), false);
+
+  // An extension naming an image type says what asking the source would, so take it from there
+  // and save a round trip. Anything else - a dynamic page, no extension at all - still asks.
+  const std::string namedType{file.IsPicture() ? CMime::GetMimeType(file) : ""};
+  file.SetMimeType(namedType);
   file.FillInMimeType();
+
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) &&
-      !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") &&
-      !StringUtils::EqualsNoCase(file.GetMimeType(),
-                                 "application/octet-stream")) // ignore non-pictures
+      !MayBeAnImage(file.GetMimeType())) // ignore non-pictures
   {
     return {};
   }
 
   auto texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, CAspectRatio::CENTER,
                                         file.GetMimeType());
+  if (!texture && !namedType.empty())
+  {
+    // The extension named a type that couldn't be read, so the source may be serving another and
+    // only it knows which. It may equally not be an image at all, in which case there is nothing
+    // to try again with.
+    file.SetMimeType("");
+    file.FillInMimeType();
+    if (MayBeAnImage(file.GetMimeType()))
+    {
+      texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, CAspectRatio::CENTER,
+                                       file.GetMimeType());
+    }
+  }
   if (!texture)
     return {};
 

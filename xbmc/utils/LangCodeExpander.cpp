@@ -8,21 +8,21 @@
 
 #include "LangCodeExpander.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "language/LangInfo.h"
+#include "language/i18n/Bcp47.h"
+#include "language/i18n/Bcp47Registry/SubTagRegistryManager.h"
+#include "language/i18n/Iso639.h"
+#include "language/i18n/Iso639_1.h"
+#include "language/i18n/Iso639_2.h"
+#include "language/i18n/TableLanguageCodes.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/i18n/Bcp47.h"
-#include "utils/i18n/Bcp47Registry/SubTagRegistryManager.h"
-#include "utils/i18n/Iso639.h"
-#include "utils/i18n/Iso639_1.h"
-#include "utils/i18n/Iso639_2.h"
-#include "utils/i18n/TableLanguageCodes.h"
 #include "utils/log.h"
 
 #include <algorithm>
 
-using namespace KODI::UTILS::I18N;
+using namespace KODI::LANGUAGE::I18N;
 
 constexpr std::size_t MAX_BCP47_ENGLISH_NAME_LENGTH = 30;
 
@@ -298,7 +298,7 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     return true;
   }
 
-  const CSubTagRegistryManager& registry{CServiceBroker::GetSubTagRegistry()};
+  const CSubTagRegistryManager& registry{CSubTagRegistryManager::GetInstance()};
   if (const auto ret = registry.GetLanguageSubTags().LookupByDescription(descTmp); ret.has_value())
   {
     code = ret->m_subTag;

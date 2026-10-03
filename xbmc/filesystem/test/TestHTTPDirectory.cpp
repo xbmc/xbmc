@@ -21,6 +21,7 @@
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 
+#include <memory>
 #include <stdlib.h>
 
 #include <gtest/gtest.h>
@@ -72,25 +73,40 @@ protected:
   ~TestHTTPDirectory() override = default;
 
 protected:
+  //! CWebServer's constructor needs the service broker's logger, which does not exist
+  //! during static initialisation.
+  static void SetUpTestSuite()
+  {
+    s_webServer = std::make_unique<CWebServer>();
+    s_vfsHandler = std::make_unique<CHTTPVfsHandler>();
+
+    ASSERT_TRUE(s_webServer->Start(0, "", ""));
+    s_baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", s_webServer->GetPort());
+
+    s_webServer->RegisterRequestHandler(s_vfsHandler.get());
+  }
+
+  static void TearDownTestSuite()
+  {
+    if (s_webServer->IsStarted())
+      s_webServer->Stop();
+
+    s_webServer->UnregisterRequestHandler(s_vfsHandler.get());
+
+    s_vfsHandler.reset();
+    s_webServer.reset();
+    s_baseUrl.clear();
+  }
+
   void SetUp() override
   {
     CServiceBroker::RegisterDNSNameCache(std::make_shared<CDNSNameCache>());
 
     SetupMediaSources();
-
-    ASSERT_TRUE(m_webServer.Start(0, "", ""));
-    m_baseUrl = StringUtils::Format("http://" WEBSERVER_HOST ":{}", m_webServer.GetPort());
-
-    m_webServer.RegisterRequestHandler(&m_vfsHandler);
   }
 
   void TearDown() override
   {
-    if (m_webServer.IsStarted())
-      m_webServer.Stop();
-
-    m_webServer.UnregisterRequestHandler(&m_vfsHandler);
-
     TearDownMediaSources();
 
     CServiceBroker::UnregisterDNSNameCache();
@@ -115,9 +131,9 @@ protected:
   std::string GetUrl(const std::string& path)
   {
     if (path.empty())
-      return m_baseUrl;
+      return s_baseUrl;
 
-    return URIUtils::AddFileToFolder(m_baseUrl, path);
+    return URIUtils::AddFileToFolder(s_baseUrl, path);
   }
 
   std::string GetUrlOfTestFile(const std::string& testFile)
@@ -204,16 +220,20 @@ protected:
     CheckFileItemSizes(items);
   }
 
-  CWebServer m_webServer;
-  std::string m_baseUrl;
+  static std::unique_ptr<CWebServer> s_webServer;
+  static std::string s_baseUrl;
   std::string const m_sourcePath;
-  CHTTPVfsHandler m_vfsHandler;
+  static std::unique_ptr<CHTTPVfsHandler> s_vfsHandler;
   CHTTPDirectory m_httpDirectory;
 };
 
+std::unique_ptr<CWebServer> TestHTTPDirectory::s_webServer;
+std::string TestHTTPDirectory::s_baseUrl;
+std::unique_ptr<CHTTPVfsHandler> TestHTTPDirectory::s_vfsHandler;
+
 TEST_F(TestHTTPDirectory, IsStarted)
 {
-  ASSERT_TRUE(m_webServer.IsStarted());
+  ASSERT_TRUE(s_webServer->IsStarted());
 }
 
 TEST_F(TestHTTPDirectory, ApacheDefaultIndex)

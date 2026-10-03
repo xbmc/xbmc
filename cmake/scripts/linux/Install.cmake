@@ -184,9 +184,11 @@ endforeach()
 if(TARGET ${APP_NAME_LC}::MicroHttpd)
   list(APPEND python_stubs ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/swig/xbmcwsgi.pyi)
 endif()
+# SWIG writes the stubs at build time, so an install from a configured but unbuilt tree has none
 install(FILES ${python_stubs}
         DESTINATION ${datarootdir}/${APP_NAME_LC}/python-stubs
-        COMPONENT kodi-addon-dev)
+        COMPONENT kodi-addon-dev
+        OPTIONAL)
 
 # Install kodi-addon-dev add-on bindings
 install(FILES ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake

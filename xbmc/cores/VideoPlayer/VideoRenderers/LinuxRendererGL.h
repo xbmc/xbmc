@@ -227,6 +227,7 @@ protected:
   bool m_nonLinStretchGui = false;
   float m_pixelRatio = 0.0f;
   CRect m_lastViewRect;
+  CRect m_lastSourceRect;
 
   // color management
   std::unique_ptr<CColorManager> m_ColorManager;

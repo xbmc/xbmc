@@ -80,6 +80,7 @@ private:
   std::string m_UDI;
   std::string m_DeviceKitUDI;
   std::string m_MountPath;
+  std::string m_DeviceFile;
   std::string m_FileSystem;
   std::string m_Label;
   bool m_isMounted;

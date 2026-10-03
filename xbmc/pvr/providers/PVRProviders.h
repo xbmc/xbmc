@@ -25,7 +25,7 @@ class CPVRProvidersContainer
 public:
   /*!
      * @brief Add a provider to this container or update the provider if already present in this container.
-     * @param The provider
+     * @param provider The provider
      * @return True, if the update was successful. False, otherwise.
      */
   bool UpdateFromClient(const std::shared_ptr<CPVRProvider>& provider);

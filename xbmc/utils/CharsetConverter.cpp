@@ -8,8 +8,8 @@
 
 #include "CharsetConverter.h"
 
-#include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "language/LangInfo.h"
 #include "log.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"

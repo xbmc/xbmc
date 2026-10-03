@@ -35,7 +35,7 @@ public:
   /*!
    * @brief Add a timer tag to this container or update the tag if already present in this
    * container.
-   * @param The timer tag
+   * @param timer The timer tag
    * @return True, if the update was successful. False, otherwise.
    */
   bool UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTag>& timer);

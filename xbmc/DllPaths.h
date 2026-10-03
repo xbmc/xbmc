@@ -12,6 +12,8 @@
 #include "DllPaths_win32.h"
 #elif defined (TARGET_ANDROID)
 #include "DllPaths_generated_android.h"
+#elif defined(TARGET_DARWIN_EMBEDDED)
+#include "DllPaths_generated_darwin_embedded.h"
 #else
 #include "DllPaths_generated.h"
 #endif

@@ -19,8 +19,10 @@ using namespace KODI::WINDOWING::WAYLAND;
 
 COutput::COutput(std::uint32_t globalName,
                  wayland::output_t const& output,
-                 std::function<void()> doneHandler)
-  : m_globalName{globalName}, m_output{output}, m_doneHandler{std::move(doneHandler)}
+                 std::function<void(bool)> doneHandler)
+  : m_globalName{globalName},
+    m_output{output},
+    m_doneHandler{std::move(doneHandler)}
 {
   assert(m_output);
 
@@ -59,7 +61,7 @@ COutput::COutput(std::uint32_t globalName,
     }
 #ifdef TARGET_WEBOS
     // on_done() is never executed on webOS 3.x
-    m_doneHandler();
+    m_doneHandler(false);
 #endif
   };
   m_output.on_scale() = [this](std::int32_t scale)
@@ -67,11 +69,33 @@ COutput::COutput(std::uint32_t globalName,
     m_scale = scale;
   };
 
+#if WAYLANDPP_VERSION_MAJOR >= 1
+  m_output.on_name() = [this](std::string const& name)
+  {
+    std::unique_lock lock(m_geometryCriticalSection);
+    m_labelChanged |= m_name != name;
+    m_name = name;
+  };
+
+  m_output.on_description() = [this](std::string const& description)
+  {
+    std::unique_lock lock(m_geometryCriticalSection);
+    m_labelChanged |= m_description != description;
+    m_description = description;
+  };
+#endif
+
   m_output.on_done() = [this]()
   {
-#ifndef TARGET_WEBOS
-    m_doneHandler();
+    bool labelChanged;
+    {
+      std::unique_lock lock(m_geometryCriticalSection);
+      labelChanged = std::exchange(m_labelChanged, false);
+    }
+#ifdef TARGET_WEBOS
+    if (labelChanged)
 #endif
+      m_doneHandler(labelChanged);
   };
 }
 
@@ -83,6 +107,10 @@ COutput::~COutput() noexcept
   m_output.on_mode() = nullptr;
   m_output.on_done() = nullptr;
   m_output.on_scale() = nullptr;
+#if WAYLANDPP_VERSION_MAJOR >= 1
+  m_output.on_name() = nullptr;
+  m_output.on_description() = nullptr;
+#endif
 }
 
 const COutput::Mode& COutput::GetCurrentMode() const

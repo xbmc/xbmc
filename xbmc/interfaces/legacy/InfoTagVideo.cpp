@@ -53,7 +53,8 @@ namespace XBMCAddon
                                          const String& codec /* = emptyString */,
                                          const String& stereoMode /* = emptyString */,
                                          const String& language /* = emptyString */,
-                                         const String& hdrType /* = emptyString */)
+                                         const String& hdrType /* = emptyString */,
+                                         const String& hdrDetail /* = emptyString */)
       : m_width(width),
         m_height(height),
         m_aspect(aspect),
@@ -61,7 +62,8 @@ namespace XBMCAddon
         m_codec(codec),
         m_stereoMode(stereoMode),
         m_language(language),
-        m_hdrType(hdrType)
+        m_hdrType(hdrType),
+        m_hdrDetail(hdrDetail)
     {
     }
 
@@ -76,6 +78,7 @@ namespace XBMCAddon
       streamDetail->m_strStereoMode = m_stereoMode;
       streamDetail->m_strLanguage = CLangCodeExpander::AsISO6392B(m_language);
       streamDetail->m_strHdrType = m_hdrType;
+      streamDetail->m_strHdrDetail = m_hdrDetail;
 
       return streamDetail;
     }
