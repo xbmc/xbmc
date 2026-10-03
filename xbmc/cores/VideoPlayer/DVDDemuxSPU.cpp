@@ -170,6 +170,12 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   // get data length
   uint16_t datalength = p[2] << 8 | p[3]; // datalength + 4 control bytes
 
+  if (datalength > pSPUData->iSize)
+  {
+    DebugLog("GetPacket, datalength %u exceeds packet size %u", datalength, pSPUData->iSize);
+    return NULL;
+  }
+
   pUnparsedData = pSPUData->data + 4;
 
   // if it is set to 0 it means it's a menu overlay by default
@@ -179,10 +185,17 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   //skip data packet and goto control sequence
   p += datalength;
 
+  const uint8_t* pEnd = pSPUData->data + pSPUData->iSize;
+
   bool bHasNewDCSQ = true;
   while (bHasNewDCSQ)
   {
     DebugLog("  starting new SP_DCSQT");
+    if (p + 4 > pEnd)
+    {
+      DebugLog("GetPacket, not enough data for SP_DCSQT header");
+      return NULL;
+    }
     // p is beginning of first SP_DCSQT now
     uint16_t delay = p[0] << 8 | p[1];
     uint16_t next_DCSQ = p[2] << 8 | p[3];
@@ -192,7 +205,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
     // skip 4 bytes
     p += 4;
 
-    while (*p != CMD_END && (unsigned int)(p - pSPUData->data) <= pSPUData->iSize)
+    while ((unsigned int)(p - pSPUData->data) < pSPUData->iSize && *p != CMD_END)
     {
       switch (*p)
       {
@@ -223,6 +236,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_COLOR:
         {
           p++;
+          if (p + 2 > pEnd) return NULL;
 
           if (m_bHasClut)
           {
@@ -252,6 +266,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_CONTR:  // alpha
         {
           p++;
+          if (p + 2 > pEnd) return NULL;
           // 3, 2, 1, 0
           alpha[0] = (p[0] >> 4) & 0x0f;
           alpha[1] = (p[0]) & 0x0f;
@@ -277,6 +292,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_DAREA:
         {
           p++;
+          if (p + 6 > pEnd) return NULL;
           pSPUInfo->x = (p[0] << 4) | (p[1] >> 4);
           pSPUInfo->y = (p[3] << 4) | (p[4] >> 4);
           pSPUInfo->width = (((p[1] & 0x0f) << 8) | p[2]) - pSPUInfo->x + 1;
@@ -289,6 +305,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_DSPXA:
         {
           p++;
+          if (p + 4 > pEnd) return NULL;
           uint16_t tfaddr = (p[0] << 8 | p[1]); // offset in packet
           uint16_t bfaddr = (p[2] << 8 | p[3]); // offset in packet
           pSPUInfo->pTFData = (tfaddr - 4); //pSPUInfo->pData + (tfaddr - 4); // pSPUData->data = packet startaddr - 4
@@ -300,7 +317,9 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case CHG_COLCON:
         {
           p++;
+          if (p + 2 > pEnd) return NULL;
           uint16_t paramlength = p[0] << 8 | p[1];
+          if (p + paramlength > pEnd) return NULL;
           DebugLog("GetPacket, CHG_COLCON, skippin %i bytes", paramlength);
           p += paramlength;
         }
