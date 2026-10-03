@@ -71,6 +71,8 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
     default:
       CLog::Log(LOGERROR, "CAEBitstreamPacker::Pack - no pack function");
   }
+
+  RetainBurst();
 }
 
 bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts)
@@ -108,6 +110,27 @@ bool CAEBitstreamPacker::PackPause(CAEStreamInfo &info, unsigned int millis, boo
   }
 
   return true;
+}
+
+bool CAEBitstreamPacker::PackLastBurst()
+{
+  if (m_lastBurst.empty())
+    return false;
+
+  memcpy(m_packedBuffer, m_lastBurst.data(), m_lastBurst.size());
+  m_dataSize = static_cast<unsigned int>(m_lastBurst.size());
+  m_pauseDuration = 0;
+  return true;
+}
+
+void CAEBitstreamPacker::RetainBurst()
+{
+  // Whole bursts only: E-AC3 of fewer than six blocks a frame leaves m_dataSize at zero while a
+  // burst accumulates.
+  if (m_dataSize == 0 || m_dataSize > sizeof(m_packedBuffer))
+    return;
+
+  m_lastBurst.assign(m_packedBuffer, m_packedBuffer + m_dataSize);
 }
 
 unsigned int CAEBitstreamPacker::GetSize() const

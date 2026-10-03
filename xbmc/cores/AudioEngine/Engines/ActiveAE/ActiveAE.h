@@ -85,6 +85,7 @@ public:
     MUTE,
     VOLUME,
     PAUSESTREAM,
+    HOLDSTREAM,
     RESUMESTREAM,
     FLUSHSTREAM,
     STREAMRGAIN,
@@ -298,6 +299,7 @@ protected:
   float GetMaxDelay() { return m_stats.GetMaxDelay(); }
   void FlushStream(CActiveAEStream *stream);
   void PauseStream(CActiveAEStream *stream, bool pause);
+  void HoldStream(CActiveAEStream* stream);
   void StopSound(CActiveAESound *sound);
   void SetStreamAmplification(CActiveAEStream *stream, float amplify);
   void SetStreamReplaygain(CActiveAEStream *stream, float rgain);
