@@ -23,5 +23,6 @@ public:
 
 private:
   int64_t m_lastVBlankTime{0};
+  bool m_rateSettled{false};
 };
 } // namespace KODI::WINDOWING::WASM

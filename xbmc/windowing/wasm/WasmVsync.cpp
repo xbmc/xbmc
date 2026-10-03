@@ -97,4 +97,9 @@ double RefreshRate()
   const int32_t milliHz = __atomic_load_n(&g_refreshRateMilliHz, __ATOMIC_RELAXED);
   return milliHz > 0 ? milliHz / 1000.0 : DEFAULT_REFRESH_RATE;
 }
+
+bool RefreshRateSettled()
+{
+  return Tick() > RATE_SAMPLES;
+}
 } // namespace KODI::WINDOWING::WASM::VSYNC

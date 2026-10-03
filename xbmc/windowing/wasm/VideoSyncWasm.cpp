@@ -5,13 +5,10 @@
 
 #include "VideoSyncWasm.h"
 
-#include "ServiceBroker.h"
 #include "WasmVsync.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
-#include "windowing/GraphicContext.h"
-#include "windowing/WinSystem.h"
 
 using namespace KODI::WINDOWING::WASM;
 
@@ -35,6 +32,11 @@ void CVideoSyncWasm::Run(CEvent& stop)
   uint32_t seen = VSYNC::Tick();
   while (!stop.Signaled())
   {
+    // A tab started in the background has no measurement yet. Returning makes
+    // the reference clock set up again and pick up the measured rate.
+    if (!m_rateSettled && VSYNC::RefreshRateSettled())
+      return;
+
     const uint32_t tick = VSYNC::WaitForTick(seen, TICK_WAIT_TIMEOUT_MS);
     if (tick == seen)
       continue;
@@ -50,6 +52,7 @@ void CVideoSyncWasm::Run(CEvent& stop)
 
 float CVideoSyncWasm::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
+  m_rateSettled = VSYNC::RefreshRateSettled();
+  m_fps = static_cast<float>(VSYNC::RefreshRate());
   return m_fps;
 }

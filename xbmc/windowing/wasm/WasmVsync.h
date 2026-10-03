@@ -27,4 +27,7 @@ int64_t LastTickHostTime();
 
 // Refresh rate measured by the pump; 60 until enough frames have been seen.
 double RefreshRate();
+
+// Whether the pump has seen enough frames for RefreshRate() to have settled.
+bool RefreshRateSettled();
 } // namespace KODI::WINDOWING::WASM::VSYNC
