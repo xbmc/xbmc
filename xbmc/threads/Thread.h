@@ -68,6 +68,7 @@ public:
   bool IsAutoDelete() const;
   virtual void StopThread(bool bWait = true);
   bool IsRunning() const;
+  bool IsStopRequested() const { return m_bStop; }
 
   bool IsCurrentThread() const;
   bool Join(std::chrono::milliseconds duration);
