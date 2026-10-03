@@ -1346,8 +1346,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
 
     std::string file_path;
     db.GetFilePathById(id, file_path, content_type);
-    CVideoInfoTag tag;
-    db.LoadVideoInfo(file_path, tag);
+    CVideoInfoTag tag{db.GetDetailsByTypeAndId(content_type, id)};
     updated.SetFromVideoInfoTag(tag);
     m_logger->info("Translated to {}", file_path);
 
@@ -1360,8 +1359,14 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
       NPT_UInt32 resume;
       NPT_CHECK_LABEL(position.ToInteger32(resume), args);
 
+      // scope to the updated media item, so other items sharing the same file
+      // (eg. multi-episode files) keep their resume points
+      int idVersion = db.GetVideoVersionIdByPath(file_path);
+      if (idVersion < 0)
+        idVersion = db.GetVideoVersionId(tag.m_iFileId, tag.m_iDbId, tag.m_type);
+
       if (resume <= 0)
-        db.ClearBookMarksOfFile(file_path, CBookmark::RESUME);
+        db.ClearBookMarksOfFile(file_path, CBookmark::RESUME, idVersion);
       else
       {
         CBookmark bookmark;
@@ -1369,7 +1374,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
         bookmark.totalTimeInSeconds = resume + 100; // not required to be correct
         bookmark.playerState = new_vals["lastPlayerState"];
 
-        db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
+        db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME, idVersion);
       }
       if (playCount.IsEmpty())
       {
@@ -1399,7 +1404,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
     // we must load the changed settings before propagating to local UI
     if (updatelisting)
     {
-      db.LoadVideoInfo(file_path, tag);
+      tag = db.GetDetailsByTypeAndId(content_type, id);
       updated.SetFromVideoInfoTag(tag);
       //! TODO: we should find a way to avoid obtaining the artwork just to
       // update the playcount or similar properties. Maybe a flag in the GUI

@@ -16,6 +16,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/Scraper.h"
+#include "cores/VideoSettings.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/PluginDirectory.h"
@@ -474,6 +475,12 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     const bool hasAdditionalAssets{m_item->HasVideoVersions() || m_item->HasVideoExtras()};
     const int origDbId{m_item->GetVideoInfoTag()->m_iDbId};
 
+    // an item sharing its file with other versions loses its own state with its version row,
+    // so it is carried over to the re-added item
+    const CVideoInfoTag oldTag{*m_item->GetVideoInfoTag()};
+    CVideoSettings oldSettings;
+    const bool hasSettings{!m_item->IsFolder() && db.GetVideoSettings(*m_item, oldSettings)};
+
     // remove any existing data for the item we're going to refresh
     if (origDbId > 0)
     {
@@ -544,6 +551,19 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       }
       else
         db.GetEpisodeInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
+    }
+
+    if (const CVideoInfoTag* newTag{m_item->GetVideoInfoTag()};
+        origDbId > 0 && !m_item->IsFolder() && newTag->m_iDbId > 0)
+    {
+      db.SetPlayCount(*m_item, oldTag.GetPlayCount(), oldTag.m_lastPlayed);
+      if (oldTag.GetResumePoint().IsSet())
+        db.AddBookMarkToFile(newTag->m_strFileNameAndPath, oldTag.GetResumePoint(),
+                             CBookmark::RESUME, newTag->GetAssetInfo().GetVersionId());
+      // a single-version file's settings are already read back from its unowned row
+      CVideoSettings settings;
+      if (hasSettings && (!db.GetVideoSettings(*m_item, settings) || settings != oldSettings))
+        db.SetVideoSettings(*m_item, oldSettings);
     }
 
     if (hasAdditionalAssets)

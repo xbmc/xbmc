@@ -335,12 +335,19 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
         CVideoInfoTag* info = pItem->GetVideoInfoTag();
         m_videoDatabase->BeginTransaction();
 
-        if (info->m_iFileId < 0)
+        if (info->m_iFileId < 0 || info->m_iDbId < 0)
           m_videoDatabase->SetStreamDetailsForFile(
               info->m_streamDetails,
               !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : pItem->GetPath());
         else
-          m_videoDatabase->SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
+        {
+          int idVersion{info->GetAssetInfo().GetVersionId()};
+          if (idVersion < 0)
+            idVersion =
+                m_videoDatabase->GetVideoVersionId(info->m_iFileId, info->m_iDbId, info->m_type);
+          m_videoDatabase->SetStreamDetailsForFileId(
+              info->m_streamDetails, info->m_iFileId, idVersion);
+        }
 
         // overwrite the runtime value if the one from streamdetails is available
         if (info->m_iDbId > 0 && info->GetStaticDuration() != info->GetDuration())
@@ -454,7 +461,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     if (VIDEO::IsVideoAssetFile(item))
     {
       if (m_videoDatabase->GetArtForAsset(
-              tag.m_iFileId,
+              tag.GetAssetInfo().GetVersionId(),
               (item.GetProperty("noartfallbacktoowner").asBoolean(false) ||
                item.GetVideoInfoTag()->GetAssetInfo().GetType() != VideoAssetType::VERSION)
                   ? ArtFallbackOptions::NONE

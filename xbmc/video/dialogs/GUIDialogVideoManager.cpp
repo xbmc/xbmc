@@ -251,10 +251,19 @@ void CGUIDialogVideoManager::SetVideoAsset(const std::shared_ptr<CFileItem>& ite
   m_selectedVideoAsset.reset();
   if (m_videoAsset->HasVideoInfoTag())
   {
+    // versions on one disc share its file, so the version tells them apart when known
+    const int idVersion{m_videoAsset->GetVideoInfoTag()->GetAssetInfo().GetVersionId()};
     const int fileId{m_videoAsset->GetVideoInfoTag()->m_iFileId};
     const auto it{std::find_if(
-        m_videoAssetsList->cbegin(), m_videoAssetsList->cend(), [fileId](const auto& entry)
-        { return entry->HasVideoInfoTag() && entry->GetVideoInfoTag()->m_iFileId == fileId; })};
+        m_videoAssetsList->cbegin(), m_videoAssetsList->cend(),
+        [idVersion, fileId](const auto& entry)
+        {
+          if (!entry->HasVideoInfoTag())
+            return false;
+          const CVideoInfoTag* tag{entry->GetVideoInfoTag()};
+          return idVersion >= 0 ? tag->GetAssetInfo().GetVersionId() == idVersion
+                                : tag->m_iFileId == fileId;
+        })};
 
     if (it != m_videoAssetsList->cend())
       m_selectedVideoAsset = (*it);
@@ -371,7 +380,9 @@ void CGUIDialogVideoManager::ChooseArt()
     const auto tag = m_videoAsset->GetVideoInfoTag();
     const auto selTag = m_selectedVideoAsset->GetVideoInfoTag();
 
-    if (tag->m_iFileId > 0 && tag->m_iFileId == selTag->m_iFileId)
+    if (tag->GetAssetInfo().GetVersionId() >= 0
+            ? tag->GetAssetInfo().GetVersionId() == selTag->GetAssetInfo().GetVersionId()
+            : tag->m_iFileId > 0 && tag->m_iFileId == selTag->m_iFileId)
       m_videoAsset->SetArt(m_selectedVideoAsset->GetArt());
   }
 

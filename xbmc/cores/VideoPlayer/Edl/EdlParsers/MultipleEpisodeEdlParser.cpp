@@ -51,7 +51,7 @@ CEdlParserResult CMultipleEpisodeEdlParser::Parse(const CFileItem& item,
       CLog::LogF(LOGERROR, "Failed to open video database");
       return result;
     }
-    success = db.GetEpisodeMap(tag->m_iIdShow, fileMap, tag->m_iFileId);
+    success = db.GetEpisodeMap(tag->m_iIdShow, fileMap, tag->m_iFileId, item.GetDynPath());
     db.Close();
   } // Destroy database if GetEpisodeMap() fails
 

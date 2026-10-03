@@ -1254,21 +1254,28 @@ bool IsSameLibraryItem(const CFileItem& item, const CFileItem& other)
                                other.GetProperty("replaced_file_id").asInteger32(-1) == myFile;
                       }};
 
-  // For a version its db id is a file id
+  // For a version its db id is a version id
   if (myTag.m_type == MediaTypeVideoVersion)
   {
     if (myTag.m_iFileId == -1 || otherTag.m_iFileId == -1)
       return myTag.m_iFileId == otherTag.m_iFileId && myTag.m_iDbId == otherTag.m_iDbId;
-    return SameFile(myTag.m_iDbId, otherTag.m_iDbId);
+    return myTag.m_iDbId == otherTag.m_iDbId;
   }
 
   if (myTag.m_iDbId != otherTag.m_iDbId)
     return false;
 
-  // For movies with multiple versions, we need also to check the file id
-  if (myTag.HasVideoVersions() && otherTag.HasVideoVersions() && myTag.m_iFileId != -1 &&
-      otherTag.m_iFileId != -1)
-    return SameFile(myTag.m_iFileId, otherTag.m_iFileId);
+  // For movies with multiple versions, the version tells them apart (versions on one disc
+  // share its file), else the file id
+  if (myTag.HasVideoVersions() && otherTag.HasVideoVersions())
+  {
+    const int myVersion{myTag.GetAssetInfo().GetVersionId()};
+    const int otherVersion{otherTag.GetAssetInfo().GetVersionId()};
+    if (myVersion != -1 && otherVersion != -1)
+      return myVersion == otherVersion;
+    if (myTag.m_iFileId != -1 && otherTag.m_iFileId != -1)
+      return SameFile(myTag.m_iFileId, otherTag.m_iFileId);
+  }
   return true;
 }
 } // namespace

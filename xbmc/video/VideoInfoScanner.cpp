@@ -1521,9 +1521,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       // Look for default version
-      int defaultVersionFileId{-1};
+      int defaultVersionId{-1};
       if (tag->IsDefaultVideoVersion())
-        defaultVersionFileId = tag->m_iFileId; // Updated in AddMovie()
+      {
+        defaultVersionId = tag->GetAssetInfo().GetVersionId();
+        if (defaultVersionId < 0)
+          defaultVersionId = m_database.GetVideoVersionIdByPath(tag->GetPath());
+        if (defaultVersionId < 0)
+          defaultVersionId =
+              m_database.GetVideoVersionId(tag->m_iFileId, movieId, MediaTypeMovie);
+      }
 
       // Look for versions (ie. subsequent <movie> entries in the .nfo file)
       // These must be versions. Reuse the loader.
@@ -1560,13 +1567,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         // Look for default version
         if (tag->IsDefaultVideoVersion())
-          defaultVersionFileId = tag->m_iFileId; // Updated in AddVideoAsset()
+          defaultVersionId = tag->GetAssetInfo().GetVersionId(); // Updated in AddVideoAsset()
       }
 
       // Set default version
-      if (defaultVersionFileId > -1)
-        m_database.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId,
-                                          defaultVersionFileId);
+      if (defaultVersionId > -1)
+        m_database.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId, defaultVersionId);
 
       return mergedIntoExistingMovie ? InfoRet::HAVE_ALREADY : InfoRet::ADDED;
     }
@@ -2170,7 +2176,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
     }
 
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
+    // an item already in the library is updated in place here, so this is not only an addition
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding or updating item in {}:{}", content,
               CURL::GetRedacted(path));
     long lResult = -1;
 
@@ -2334,7 +2341,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
-        m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME);
+      {
+        int idVersion{movieDetails.GetAssetInfo().GetVersionId()};
+        if (idVersion < 0)
+          idVersion = m_database.GetVideoVersionIdByPath(path);
+        if (idVersion < 0)
+          idVersion = m_database.GetVideoVersionId(
+              movieDetails.m_iFileId, movieDetails.m_iDbId, movieDetails.m_type);
+        m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME,
+                                     idVersion);
+      }
     }
 
     m_database.Close();
@@ -3001,6 +3017,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     int targetDbId{-1};
     for (const auto& item : blurayItems)
     {
+      const bool existed{m_database.GetMovieId(item->GetDynPath()) > 0};
       const int newMovieDbId{static_cast<int>(
           AddVideo(item.get(), scraper, bDirNames, useLocal, nullptr, false, ContentType::MOVIES))};
       if (newMovieDbId < 0)
@@ -3033,12 +3050,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
       else if (result == VersionConversionResult::FAILED ||
                result == VersionConversionResult::CANCELLED)
       {
-        // Declined, or merging was not possible
-        if (m_database.DeleteMovie(newMovieDbId))
-          m_database.DeleteFile(item->GetVideoInfoTag()->m_iFileId);
-        CLog::LogF(LOGDEBUG,
-                   "Not adding bluray playlist '{}' as a version - declined or merge not possible",
-                   CURL::GetRedacted(item->GetDynPath()));
+        // Declined, or merging was not possible. Adding a playlist can land on a movie already
+        // in the library instead of a new one, and removing that would take everything it
+        // already held with it, so only a movie created for this playlist and holding nothing
+        // else is removed.
+        CFileItemList assets;
+        m_database.GetVideoVersions(ContentToVideoDbType(ContentType::MOVIES), newMovieDbId, assets,
+                                    VideoAssetType::VERSION);
+        if (!existed && assets.Size() == 1 && assets[0]->GetDynPath() == item->GetDynPath())
+        {
+          m_database.DeleteMovie(newMovieDbId, DeleteMovieCascadeAction::ALL_ASSETS,
+                                 DeleteMovieHashAction::HASH_DELETE,
+                                 DeleteFileAction::DELETE_IF_UNUSED);
+          CLog::LogF(
+              LOGDEBUG,
+              "Not adding bluray playlist '{}' as a version - declined or merge not possible",
+              CURL::GetRedacted(item->GetDynPath()));
+        }
+        else
+          CLog::LogF(LOGDEBUG,
+                     "Bluray playlist '{}' was not added as a version - declined or merge not "
+                     "possible - and movie id {} it was added to is kept, holding {} version(s)",
+                     CURL::GetRedacted(item->GetDynPath()), newMovieDbId, assets.Size());
       }
     }
 

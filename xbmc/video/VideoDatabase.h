@@ -135,6 +135,19 @@ enum class DeleteMovieHashAction
   HASH_PRESERVE
 };
 
+/*!
+ * \brief Whether removing a media item also removes the file row it leaves behind.
+ * KEEP is for callers that remove an item only to add it back, such as a refresh: the file
+ * row carries state that must outlive the media item (date added, file-level watched state).
+ * DELETE_IF_UNUSED removes the row once nothing references it, so that removing an item from
+ * the library does not leave one behind.
+ */
+enum class DeleteFileAction
+{
+  KEEP,
+  DELETE_IF_UNUSED
+};
+
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
@@ -289,7 +302,7 @@ public:
                     CVideoInfoTag& details,
                     int idMovie = -1,
                     int idVersion = -1,
-                    int idFile = -1,
+                    int idAsset = -1,
                     int getDetails = VideoDbDetailsAll);
   bool GetTvShowInfo(const std::string& strPath,
                      CVideoInfoTag& details,
@@ -303,7 +316,10 @@ public:
   bool GetEpisodeInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idEpisode = -1, int getDetails = VideoDbDetailsAll);
   bool GetMusicVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMVideo = -1, int getDetails = VideoDbDetailsAll);
   bool GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* item = nullptr);
-  bool GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile = -1);
+  bool GetFileInfo(const std::string& strFilenameAndPath,
+                   CVideoInfoTag& details,
+                   int idFile = -1,
+                   int idVersion = -1);
 
   int GetPathId(const std::string& strPath);
   /*! \brief Get the id of a path, also accepting the zip:// or archive:// equivalent of an
@@ -320,12 +336,19 @@ public:
                              std::vector<CVideoInfoTag>& episodes,
                              int idShow = -1);
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
-  void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
-  bool GetEpisodeMap(int idShow, EpisodeFileMap& fileMap, int idFile = -1) const;
+  void GetEpisodesByFileId(int idFile,
+                           std::vector<CVideoInfoTag>& episodes,
+                           const std::string& filePath = {});
+  // filePath, if given, picks the archive member or disc of idFile that was played
+  bool GetEpisodeMap(int idShow,
+                     EpisodeFileMap& fileMap,
+                     int idFile = -1,
+                     const std::string& filePath = {}) const;
   bool GetEpisodeMap(int idShow,
                      EpisodeFileMap& fileMap,
                      dbiplus::Dataset& pDS,
-                     int idFile = -1 /* = -1 */) const;
+                     int idFile = -1 /* = -1 */,
+                     const std::string& filePath = {}) const;
 
   int SetDetailsForMovie(CVideoInfoTag& details,
                          const KODI::ART::Artwork& artwork,
@@ -376,13 +399,15 @@ public:
   int SetFileForMedia(const std::string& fileAndPath,
                       VideoDbContentType type,
                       int mediaId,
-                      const FileRecord& oldFile);
+                      const FileRecord& oldFile,
+                      int idVersion = -1);
 
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
                               int idMVideo = -1);
   bool SetStreamDetailsForFile(const CStreamDetails& details,
-                               const std::string& strFileNameAndPath);
+                               const std::string& strFileNameAndPath,
+                               int idVersion = -1);
 
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
@@ -390,7 +415,7 @@ public:
    * \param[in] idFile Identifier of the file
    * \return operation success. true for success, false for failure
    */
-  bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
+  bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile, int idVersion = -1);
 
   struct PlaylistInfo
   {
@@ -398,6 +423,7 @@ public:
     int idFile{-1};
     VideoDbContentType mediaType{-1};
     int idMedia{-1};
+    int idVersion{-1};
     std::string title{};
 
     //! Which of a movie's assets holds the playlist. Unset for an episode, which is named by its
@@ -439,18 +465,24 @@ public:
    * \param[in] idMovie The id of the movie
    * \param[in] action Versions of the movie to be deleted
    * \param[in] hashAction Preserve or invalidate the hash of the movie path
+   * \param[in] fileAction Whether the file rows left unused by the removal are deleted
    * \return operation success. true for success, false for failure
    */
   bool DeleteMovie(int idMovie,
                    DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS,
-                   DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
+                   DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE,
+                   DeleteFileAction fileAction = DeleteFileAction::KEEP);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
-  void DeleteEpisode(int idEpisode, bool bKeepId = false);
-  void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
+  void DeleteEpisode(int idEpisode,
+                     bool bKeepId = false,
+                     DeleteFileAction fileAction = DeleteFileAction::KEEP);
+  void DeleteMusicVideo(int idMusicVideo,
+                        bool bKeepId = false,
+                        DeleteFileAction fileAction = DeleteFileAction::KEEP);
   void DeleteDetailsForTvShow(int idTvShow);
-  void DeleteStreamDetails(int idFile);
+  void DeleteStreamDetails(int idFile, int idVersion = -1);
   void RemoveContentForPath(const std::string& strPath, CGUIDialogProgress* progress = nullptr);
   void UpdateFanart(const CFileItem& item, VideoDbContentType type);
   void DeleteSet(int idSet);
@@ -462,7 +494,7 @@ public:
    \return true if video settings found, false otherwise
    \sa SetVideoSettings
    */
-  bool GetVideoSettings(int idFile, CVideoSettings &settings);
+  bool GetVideoSettings(int idFile, CVideoSettings& settings, int idVersion = -1);
 
   /*! \brief Get video settings for the specified file item
    \param item item to get the settings for
@@ -488,7 +520,7 @@ public:
    \param fileId to set the settings for
    \sa GetVideoSettings
    */
-  void SetVideoSettings(int idFile, const CVideoSettings &settings);
+  void SetVideoSettings(int idFile, const CVideoSettings& settings, int idVersion = -1);
 
   /**
    * Erases video settings for file item
@@ -526,15 +558,19 @@ public:
   void GetBookMarksForFile(const std::string& strFilenameAndPath, VECBOOKMARKS& bookmarks, CBookmark::EType type = CBookmark::STANDARD, bool bAppend=false, long partNumber=0);
   bool AddBookMarkToFile(const std::string& strFilenameAndPath,
                          const CBookmark& bookmark,
-                         CBookmark::EType type = CBookmark::STANDARD);
+                         CBookmark::EType type = CBookmark::STANDARD,
+                         int idVersion = -1);
   bool GetResumeBookMark(const std::string& strFilenameAndPath, CBookmark &bookmark);
   void DeleteResumeBookMark(const CFileItem& item);
   void ClearBookMarkOfFile(const std::string& strFilenameAndPath,
                            const CBookmark& bookmark,
                            CBookmark::EType type = CBookmark::STANDARD);
   bool ClearBookMarksOfFile(const std::string& strFilenameAndPath,
-                            CBookmark::EType type = CBookmark::STANDARD);
-  bool ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD);
+                            CBookmark::EType type = CBookmark::STANDARD,
+                            int idVersion = -1);
+  bool ClearBookMarksOfFile(int idFile,
+                            CBookmark::EType type = CBookmark::STANDARD,
+                            int idVersion = -1);
   bool GetBookMarkForEpisode(int dbId, CBookmark& bookmark) const;
   bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark) const;
   void AddBookMarkForEpisode(const CVideoInfoTag& tag, const CBookmark& bookmark);
@@ -776,10 +812,15 @@ public:
     ACTION_UPDATE
   };
 
+  /*! \brief Add or update a file
+   \param libraryItem whether the file is added for a library item, which an archive member
+   is stored on its archive for; a member outside the library keeps a row of its own
+   */
   int AddOrUpdateFile(const std::string& fileAndPath,
                       const std::string& parentPath,
                       const FileRecord& fileInfo,
-                      FileExistsAction existsAction);
+                      FileExistsAction existsAction,
+                      bool libraryItem = false);
 
   /*! \brief Add a file to the database, if necessary
    If the file is already in the database, we simply return its id.
@@ -898,7 +939,7 @@ public:
   /*!
    * \brief Retrieve all art for the given video asset, with optional fallback to the art of the
    * parent/owner of the asset
-   * \param assetId id of the file of the asset
+   * \param assetId version id of the asset
    * \param fallback optionally request fallback to the art of the parent/owner for each art type
      that is not defined for the asset
    * \param art collection of the retrieved art
@@ -990,6 +1031,21 @@ public:
   void GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item);
 
   /*!
+   * \brief Get the id of the videoversion row linking a media item and a file
+   * \param idFile id of the file
+   * \param idMedia id of the media item (movie/episode/musicvideo)
+   * \param mediaType type of the media item
+   * \return the version id, -1 if not found
+   */
+  int GetVideoVersionId(int idFile, int idMedia, const MediaType& mediaType) const;
+
+  /*! \brief Get the version id of the media item with the given vfs path
+   \param fileNameAndPath vfs path of the media item within its physical file
+   \return the version id, -1 if not found or not a vfs media path
+   */
+  int GetVideoVersionIdByPath(const std::string& fileNameAndPath) const;
+
+  /*!
    * \brief Remove a video from the library and transfer all of its assets to another video of the
    * same type.
    * \param itemType[in] Type of the video being converted
@@ -1021,10 +1077,11 @@ public:
                                int dbIdSource,
                                int idFile,
                                int idVideoVersion,
-                               VideoAssetType assetType);
+                               VideoAssetType assetType,
+                               const std::string& filePath = "");
 
-  bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
-  void SetVideoVersion(int idFile, int idVideoVersion);
+  bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idVersion);
+  void SetVideoVersion(int idVersion, int idVideoVersion);
   int AddOrValidateVideoVersionType(const std::string& typeVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
@@ -1044,8 +1101,9 @@ public:
                      int idVideoAsset,
                      VideoAssetType videoAssetType,
                      CFileItem& item);
-  bool DeleteVideoAsset(int idFile);
-  bool IsDefaultVideoVersion(int idFile);
+  bool DeleteVideoAsset(int idVersion,
+                        DeleteFileAction fileAction = DeleteFileAction::DELETE_IF_UNUSED);
+  bool IsDefaultVideoVersion(int idVersion);
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType assetType,
                             CFileItemList& items);
@@ -1237,7 +1295,11 @@ protected:
                         int idEpisode,
                         int oldIdFile,
                         int newIdFile);
-  int SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile, int newIdFile);
+  int SetFileForMovie(const std::string& fileAndPath,
+                      int idMovie,
+                      int oldIdFile,
+                      int newIdFile,
+                      int idVersion = -1);
   int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile);
 
 private:
@@ -1251,6 +1313,39 @@ private:
    \return -1 if not found, else a valid database id (i.e. > 0)
    */
   int GetDbId(const std::string& query) const;
+
+  /*! \brief Get the version id of a file that maps to exactly one media item
+   \param idFile id of the file
+   \return the version id, -1 if the file has no version rows or more than one
+   */
+  int GetVideoVersionIdByFile(int idFile) const;
+
+  /*! \brief Create a videoversion row linking a media item and a file.
+   Bookmarks recorded for the file before it was linked to any media item are
+   adopted by the new version, and the only version on a file takes the file's
+   watched state. An archive member's own files row, from play before it entered
+   the library, is folded into the new version. Callers derive filePath from the
+   media item's playable path (m_strFileNameAndPath / dynpath), which must hold the
+   vfs path (playlist, archive member) for media within a physical container.
+   \return the new version id
+   */
+  int AddVideoVersion(int idFile,
+                      int idMedia,
+                      const MediaType& mediaType,
+                      VideoAssetType assetType,
+                      int idType,
+                      bool isDefault,
+                      const std::string& filePath);
+
+  /*! \brief The path of the files row a media path is stored on: the physical container of a
+   disc or of an archive member in the library, the path itself otherwise
+   */
+  std::string GetStoragePath(const std::string& fileNameAndPath) const;
+
+  /*! \brief Hand the resume point and settings of a file's only version back to the file,
+   for the version that replaces it to adopt.
+   */
+  void ReleaseVersionState(int idFile, int idVersion);
 
   /*! \brief Run a query on the main dataset and return the number of rows
    If no rows are found we close the dataset and return 0.
@@ -1286,6 +1381,7 @@ private:
    \sa SetPlayCount, IncrementPlayCount, GetPlayCounts
    */
   int GetPlayCount(int iFileId);
+  int GetPlayCount(int iFileId, int idVersion);
 
   /*! \brief Get the last played time of a filename and path
    \param iFileId file id to get the playcount for
