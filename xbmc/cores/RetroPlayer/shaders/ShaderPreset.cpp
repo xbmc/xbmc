@@ -17,9 +17,30 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <regex>
+#include <cctype>
+#include <string_view>
 
 using namespace KODI::SHADER;
+
+namespace
+{
+bool ContainsIdentifier(std::string_view source, std::string_view identifier)
+{
+  const auto isIdentifierChar = [](char c)
+  { return std::isalnum(static_cast<unsigned char>(c)) != 0 || c == '_'; };
+
+  for (size_t pos = source.find(identifier); pos != std::string_view::npos;
+       pos = source.find(identifier, pos + 1))
+  {
+    const size_t end = pos + identifier.size();
+    if ((pos == 0 || !isIdentifierChar(source[pos - 1])) &&
+        (end == source.size() || !isIdentifierChar(source[end])))
+      return true;
+  }
+
+  return false;
+}
+} // namespace
 
 CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
                              unsigned videoWidth,
@@ -258,35 +279,19 @@ bool CShaderPreset::HasPathFailed(const std::string& path) const
 ShaderParameterMap CShaderPreset::GetShaderParameters(
     const std::vector<ShaderParameter>& parameters, const std::string& sourceStr) const
 {
-  static const std::regex pragmaParamRegex("#pragma parameter ([a-zA-Z_][a-zA-Z0-9_]*)");
-
-  std::vector<std::string> validParams;
-  std::smatch matches;
-
-  auto searchStart(sourceStr.cbegin());
-  while (regex_search(searchStart, sourceStr.cend(), matches, pragmaParamRegex))
-  {
-    validParams.push_back(matches[1].str());
-    searchStart += matches.position() + matches.length();
-  }
-
   ShaderParameterMap matchParams;
 
-  // For each param found in the source code
-  for (const std::string& match : validParams)
+  // Parameters are shared by the whole preset. A pass can use one that only
+  // another pass declares with "#pragma parameter", so match the names the
+  // source uses instead.
+  for (const ShaderParameter& parameter : parameters)
   {
-    // For each param found in the preset file
-    for (const ShaderParameter& parameter : parameters)
+    if (ContainsIdentifier(sourceStr, parameter.strId))
     {
-      // Check if they match
-      if (match == parameter.strId)
-      {
-        // The add-on has already handled parsing and overwriting default
-        // parameter values from the preset file. The final value we
-        // should use is in the 'current' field.
-        matchParams[match] = parameter.current;
-        break;
-      }
+      // The add-on has already handled parsing and overwriting default
+      // parameter values from the preset file. The final value we
+      // should use is in the 'current' field.
+      matchParams[parameter.strId] = parameter.current;
     }
   }
 
