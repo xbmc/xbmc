@@ -35,6 +35,7 @@ constexpr unsigned int CONTROL_SAVES_EMULATOR_VERSION = 10828;
 constexpr unsigned int CONTROL_CHEEVOS_LIST = 3; // Kodi list dialogs default to this control ID
 constexpr unsigned int CONTROL_CHEEVOS_ENCORE = 108331;
 constexpr unsigned int CONTROL_CHEEVOS_CHALLENGE_INDICATOR = 108332;
+constexpr unsigned int CONTROL_CHEEVOS_HARDCORE = 108340;
 
 //! Sent as a refresh's second parameter when the standings behind it were
 //! dropped, so the dialog goes and asks for them rather than drawing the empty

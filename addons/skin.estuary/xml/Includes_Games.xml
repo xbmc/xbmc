@@ -1306,6 +1306,17 @@
 							<textcolor>button_focus</textcolor>
 							<label>$LOCALIZE[5]</label>
 						</control>
+						<control type="radiobutton" id="108340">
+							<width>380</width>
+							<include>SettingsItemCommon</include>
+							<font>font12</font>
+							<label>$LOCALIZE[35700]</label>
+							<radiowidth>112</radiowidth>
+							<radioheight>76</radioheight>
+							<radioposx>254</radioposx>
+							<radioposy>12</radioposy>
+							<selected>System.GetBool(gamesachievements.hardcore)</selected>
+						</control>
 						<control type="radiobutton" id="108331">
 							<width>380</width>
 							<include>SettingsItemCommon</include>
@@ -1327,6 +1338,20 @@
 							<radioposx>254</radioposx>
 							<radioposy>12</radioposy>
 							<selected>System.GetBool(gamesachievements.challengeindicator)</selected>
+						</control>
+						<control type="group" id="108341">
+							<height>400</height>
+							<visible>Control.HasFocus(108340)</visible>
+							<control type="textbox">
+								<left>20</left>
+								<top>30</top>
+								<width>340</width>
+								<height>370</height>
+								<font>font12</font>
+								<textcolor>grey</textcolor>
+								<label>$LOCALIZE[35302]</label>
+								<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+							</control>
 						</control>
 						<control type="group" id="108337">
 							<height>400</height>
@@ -1455,6 +1480,7 @@
 				<texturesliderbackground colordiffuse="14FFFFFF">colors/white.png</texturesliderbackground>
 			</control>
 			<control type="label">
+				<visible>!RetroPlayer.AchievementsHardcore</visible>
 				<left>45</left>
 				<top>662</top>
 				<width>1090</width>
@@ -1467,6 +1493,7 @@
 				<wrapmultiline>true</wrapmultiline>
 			</control>
 			<control type="image">
+				<visible>!RetroPlayer.AchievementsHardcore</visible>
 				<left>45</left>
 				<top>647</top>
 				<width>1090</width>

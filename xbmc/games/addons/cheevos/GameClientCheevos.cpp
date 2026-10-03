@@ -17,6 +17,7 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
+#include "games/addons/cheats/GameClientCheats.h"
 #include "games/dialogs/DialogGameDefines.h"
 #include "games/dialogs/osd/DialogGameIndicators.h"
 #include "games/dialogs/osd/LeaderboardUtils.h"
@@ -99,7 +100,37 @@ CGameClientCheevos::CGameClientCheevos(CGameClient& gameClient,
 {
 }
 
-CGameClientCheevos::~CGameClientCheevos() = default;
+CGameClientCheevos::~CGameClientCheevos()
+{
+  StopObservingSettings();
+}
+
+void CGameClientCheevos::Notify(const Observable& obs, const ObservableMessage msg)
+{
+  if (msg != ObservableMessageSettingsChanged)
+    return;
+
+  // Only hardcore is applied as it changes. Encore is read as a game is
+  // identified, and SendCredentials() sends it with the next one.
+  const bool hardcore = CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore();
+  if (m_hardcoreEnabled.exchange(hardcore) == hardcore)
+    return;
+
+  // Cheats come off before the client hears, so none survive into the reset
+  // that turning hardcore on asks for. Turning it off goes the other way: the
+  // client refuses cheats until it has heard.
+  if (hardcore)
+  {
+    m_gameClient.Cheats().SetHardcore(true);
+    if (!SetHardcoreEnabled(true))
+      DropHardcore();
+  }
+  else
+  {
+    SetHardcoreEnabled(false);
+    m_gameClient.Cheats().SetHardcore(false);
+  }
+}
 
 void CGameClientCheevos::OnGameLoaded(const game_rc_game_loaded& data)
 {
@@ -168,9 +199,16 @@ void CGameClientCheevos::OnGameLoaded(const game_rc_game_loaded& data)
   if (achievementState.totalAchievements == 0)
     return;
 
+  // RetroAchievements asks for the mode to be shown as a game starts. The
+  // setting is the mode in force by now: resuming a save state has already
+  // dropped it to casual.
+  //
+  // "Hardcore mode: {0:d} of {1:d} achievements unlocked" or
   // "{0:d} of {1:d} achievements unlocked"
-  const std::string description = StringUtils::Format(
-      Localize(35284), achievementState.unlockedAchievements, achievementState.totalAchievements);
+  const bool hardcore = CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore();
+  const std::string description =
+      StringUtils::Format(Localize(hardcore ? 35703 : 35284), achievementState.unlockedAchievements,
+                          achievementState.totalAchievements);
 
   // Kodi's texture cache resolves remote URLs; an empty path falls back to
   // the default icon
@@ -353,6 +391,10 @@ bool CGameClientCheevos::SendCredentials()
 
   CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
 
+  // Recorded whether or not anyone is signed in: the cheats go by the same
+  // setting as the game loads, and a later change is judged against this
+  m_hardcoreEnabled = gameSettings.GetAchievementsHardcore();
+
   const std::string username = gameSettings.GetRAUsername();
   const std::string token = gameSettings.GetRAToken();
 
@@ -365,8 +407,12 @@ bool CGameClientCheevos::SendCredentials()
   if (username.empty() || token.empty())
     return SetRetroAchievementsCredentials("", "");
 
-  // Encore goes with them: the client reads it as it identifies the game, and
-  // only a client that accepted it will re-arm anything
+  // The modes go with them: the client has to agree with Kodi about which is in
+  // force before it identifies the game. Only a client that accepted encore
+  // will re-arm anything.
+  if (!SetHardcoreEnabled(m_hardcoreEnabled) && m_hardcoreEnabled)
+    DropHardcore();
+
   const bool encoreModeEnabled = gameSettings.GetAchievementsEncore();
   m_encoreModeEnabled = SetEncoreModeEnabled(encoreModeEnabled) && encoreModeEnabled;
 
@@ -531,6 +577,40 @@ bool CGameClientCheevos::SetRetroAchievementsCredentials(const std::string& user
   return false;
 }
 
+bool CGameClientCheevos::SetHardcoreEnabled(bool enabled)
+{
+  // The lock does more here than serialise the call. Switching hardcore on
+  // makes the client ask for a reset before this returns, and the game loop
+  // holds this same lock for the whole of a frame, so the reset cannot land
+  // while the emulator is running one.
+  std::unique_lock lock(m_clientAccess);
+
+  try
+  {
+    return m_gameClient.LogError(m_struct.toAddon->RCSetHardcoreEnabled(&m_struct, enabled),
+                                 "RCSetHardcoreEnabled()");
+  }
+  catch (...)
+  {
+    m_gameClient.LogException("RCSetHardcoreEnabled()");
+  }
+
+  return false;
+}
+
+void CGameClientCheevos::DropHardcore()
+{
+  CLog::Log(LOGINFO, "GAME: {} refused hardcore mode, turning it off", m_gameClient.ID());
+
+  m_hardcoreEnabled = false;
+  m_gameClient.Cheats().SetHardcore(false);
+  CServiceBroker::GetGameServices().GameSettings().SetAchievementsHardcore(false);
+
+  // "Hardcore mode turned off. Achievements will be earned in casual mode."
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, m_gameClient.Name(),
+                                        Localize(35306));
+}
+
 bool CGameClientCheevos::SetEncoreModeEnabled(bool enabled)
 {
   std::unique_lock lock(m_clientAccess);
@@ -546,4 +626,27 @@ bool CGameClientCheevos::SetEncoreModeEnabled(bool enabled)
   }
 
   return false;
+}
+
+void CGameClientCheevos::ObserveSettings()
+{
+  if (m_observingSettings)
+    return;
+
+  CServiceBroker::GetGameServices().GameSettings().RegisterObserver(this);
+  m_observingSettings = true;
+}
+
+void CGameClientCheevos::StopObservingSettings()
+{
+  if (!m_observingSettings)
+    return;
+
+  // The game client can outlive the services when Kodi is shutting down
+  //! @todo Have the game services invalidate game clients as they are torn
+  //! down, so this check isn't needed
+  if (CServiceBroker::IsServiceManagerUp())
+    CServiceBroker::GetGameServices().GameSettings().UnregisterObserver(this);
+
+  m_observingSettings = false;
 }
