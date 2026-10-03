@@ -9,6 +9,7 @@
 #include "GameClient.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GameClientCallbacks.h"
 #include "GameClientInGameSaves.h"
 #include "GameClientProperties.h"
@@ -20,6 +21,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"
 #include "games/addons/cheats/GameClientCheats.h"
@@ -37,6 +39,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/Digest.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -49,6 +52,7 @@
 #include <memory>
 #include <mutex>
 #include <utility>
+#include <vector>
 
 using namespace KODI;
 using namespace GAME;
@@ -64,6 +68,47 @@ using namespace GAME;
 
 namespace
 {
+//! Where a game kept in an archive is copied for a client that reads only local
+//! files. Copies are kept and never overwritten, because a disk-based game
+//! saves onto its own disks.
+constexpr const char* EXTRACTED_GAMES_FOLDER = "special://profile/games/extracted/";
+
+/*!
+ * \brief The folder an archive's games are copied to
+ *
+ * Named after the archive so it can be recognised, and told apart from any
+ * other archive of the same name by a hash of where it is. The hash has to stay
+ * the same between versions, or a game would lose the saves on its copy.
+ */
+std::string ExtractedFolder(const std::string& archivedPath)
+{
+  const std::string archive = CURL(archivedPath).GetHostName();
+  std::string name = URIUtils::GetFileName(archive);
+  URIUtils::RemoveExtension(name);
+  const std::string hash =
+      KODI::UTILITY::CDigest::Calculate(KODI::UTILITY::CDigest::Type::MD5, archive).substr(0, 8);
+  return URIUtils::AddFileToFolder(EXTRACTED_GAMES_FOLDER, name + "-" + hash) + "/";
+}
+
+//! Whether a name read from an archive stays inside the folder it is copied to
+bool IsSafeName(const std::string& name)
+{
+  return !name.empty() && name != "." && name != ".." &&
+         name.find_first_of("/\\") == std::string::npos;
+}
+
+// Copied under a temporary name and then renamed, so a copy that was
+// interrupted is never taken for a complete one on a later start
+bool CopyWhole(const std::string& from, const std::string& to)
+{
+  const std::string partial = to + ".tmp";
+  if (XFILE::CFile::Copy(from, partial) && XFILE::CFile::Rename(partial, to))
+    return true;
+
+  XFILE::CFile::Delete(partial);
+  return false;
+}
+
 constexpr const char* GAME_PROPERTY_SUPPORTS_DISC_CONTROL = "supports_disc_control";
 constexpr const char* GAME_PROPERTY_PLATFORMS = "platforms";
 
@@ -195,6 +240,12 @@ bool CGameClient::IsExtensionValid(const std::string& strExtension) const
   return m_extensions.contains(NormalizeExtension(strExtension));
 }
 
+bool CGameClient::SupportsFolders() const
+{
+  // Libretro's mark for an emulator that boots a whole folder
+  return m_extensions.contains(NormalizeExtension("/"));
+}
+
 bool CGameClient::Initialize(void)
 {
   using namespace XFILE;
@@ -308,6 +359,18 @@ bool CGameClient::OpenFile(const CFileItem& file,
     return false;
 
   CloseFile();
+
+  if (!m_bSupportsVFS && URIUtils::IsInArchive(file.GetDynPath()))
+  {
+    path = SupportsFolders() ? ExtractArchive(file.GetDynPath()) : ExtractGame(file.GetDynPath());
+    if (path.empty())
+    {
+      // "Failed to play game"
+      // "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
+      MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{35214});
+      return false;
+    }
+  }
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
@@ -671,6 +734,135 @@ void CGameClient::Reset()
       LogException("Reset()");
     }
   }
+}
+
+std::string CGameClient::ExtractGame(const std::string& archivedPath)
+{
+  const std::string folder = ExtractedFolder(archivedPath);
+
+  if (!XFILE::CDirectory::Exists(folder) && !XFILE::CDirectory::Create(folder))
+    return "";
+
+  std::vector<std::string> disks{archivedPath};
+  const std::string extension = URIUtils::GetExtension(archivedPath);
+  CFileItemList siblings;
+  if (XFILE::CDirectory::GetDirectory(URIUtils::GetDirectory(archivedPath), siblings, extension,
+                                      XFILE::DIR_FLAG_DEFAULTS))
+  {
+    for (const auto& sibling : siblings)
+    {
+      // Listed paths need not be spelled as the one asked for, so compare names
+      if (!sibling->IsFolder() &&
+          URIUtils::GetFileName(sibling->GetPath()) != URIUtils::GetFileName(archivedPath))
+        disks.push_back(sibling->GetPath());
+    }
+  }
+  std::sort(disks.begin() + 1, disks.end());
+
+  std::vector<std::string> names;
+  for (const std::string& disk : disks)
+  {
+    const std::string name = URIUtils::GetFileName(disk);
+    if (!IsSafeName(name))
+      return "";
+    const std::string target = URIUtils::AddFileToFolder(folder, name);
+
+    if (!XFILE::CFile::Exists(target) && !CopyWhole(disk, target))
+    {
+      CLog::Log(LOGERROR, "GameClient: Failed to extract {}", CURL::GetRedacted(disk));
+      return "";
+    }
+    names.push_back(name);
+  }
+
+  std::string game = URIUtils::AddFileToFolder(folder, names.front());
+
+  // A playlist lets the emulator swap to the other disks
+  if (names.size() > 1 && IsExtensionValid(".m3u"))
+  {
+    std::string playlist = game;
+    URIUtils::RemoveExtension(playlist);
+    playlist += ".m3u";
+
+    // A playlist is replaced only through a complete copy written aside, so a
+    // failed write never leaves a partial one. Rename can't replace a file on
+    // every platform, so an outdated playlist is removed first.
+    const std::string content = StringUtils::Join(names, "\n") + "\n";
+    std::vector<uint8_t> current;
+    if (XFILE::CFile().LoadFile(playlist, current) < 0 ||
+        std::string(current.begin(), current.end()) != content)
+    {
+      const std::string partial = playlist + ".tmp";
+      XFILE::CFile file;
+      const bool written =
+          file.OpenForWrite(partial, true) &&
+          file.Write(content.data(), content.size()) == static_cast<ssize_t>(content.size());
+      file.Close();
+      if (!written || (XFILE::CFile::Exists(playlist) && !XFILE::CFile::Delete(playlist)) ||
+          !XFILE::CFile::Rename(partial, playlist))
+        XFILE::CFile::Delete(partial);
+    }
+
+    if (XFILE::CFile::Exists(playlist))
+      game = playlist;
+  }
+
+  CLog::Log(LOGDEBUG, "GameClient: Playing {} from its extracted copy", CURL::GetRedacted(game));
+
+  return CSpecialProtocol::TranslatePath(game);
+}
+
+std::string CGameClient::ExtractArchive(const std::string& archivedPath)
+{
+  CURL root(archivedPath);
+  const std::string inside = root.GetFileName();
+  root.SetFileName("");
+
+  if (!std::ranges::all_of(StringUtils::Split(inside, '/'), IsSafeName))
+    return "";
+
+  const std::string folder = ExtractedFolder(archivedPath);
+
+  // Every start fills in what an unpacking cut short left out
+  if ((!XFILE::CDirectory::Exists(folder) && !XFILE::CDirectory::Create(folder)) ||
+      !CopyTree(root.Get(), folder))
+  {
+    CLog::Log(LOGERROR, "GameClient: Failed to extract {}", CURL::GetRedacted(root.Get()));
+    return "";
+  }
+
+  const std::string game = URIUtils::AddFileToFolder(folder, inside);
+  CLog::Log(LOGDEBUG, "GameClient: Playing {} from its extracted folder", CURL::GetRedacted(game));
+
+  return CSpecialProtocol::TranslatePath(game);
+}
+
+bool CGameClient::CopyTree(const std::string& from, const std::string& to)
+{
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(from, items, "", XFILE::DIR_FLAG_NO_FILE_DIRS))
+    return false;
+
+  for (const auto& item : items)
+  {
+    if (!IsSafeName(item->GetLabel()))
+    {
+      CLog::Log(LOGERROR, "GameClient: Refusing archive entry {}",
+                CURL::GetRedacted(item->GetPath()));
+      return false;
+    }
+    const std::string target = URIUtils::AddFileToFolder(to, item->GetLabel());
+    if (item->IsFolder())
+    {
+      if ((!XFILE::CDirectory::Exists(target) && !XFILE::CDirectory::Create(target)) ||
+          !CopyTree(item->GetPath(), URIUtils::AddFileToFolder(target, "")))
+        return false;
+    }
+    else if (!XFILE::CFile::Exists(target) && !CopyWhole(item->GetPath(), target))
+      return false;
+  }
+
+  return true;
 }
 
 void CGameClient::CloseFile()
