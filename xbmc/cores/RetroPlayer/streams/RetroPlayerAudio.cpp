@@ -12,6 +12,7 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/RetroPlayer/audio/AudioTranslator.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
@@ -25,6 +26,9 @@ using namespace KODI;
 using namespace RETRO;
 
 const double MAX_DELAY = 0.3; // seconds
+
+// Smaller changes in the game's speed than this aren't passed to the sound
+const double MIN_RATE_CHANGE = 0.00001;
 
 // How long to stay quiet between log lines.
 const std::chrono::seconds DROP_LOG_INTERVAL{10};
@@ -93,7 +97,10 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   audioFormat.m_dataFormat = pcmFormat;
   audioFormat.m_sampleRate = iSampleRate;
   audioFormat.m_channelLayout = channelLayout;
-  m_pAudioStream = audioEngine->MakeStream(audioFormat);
+  // Resampling follows the game when it runs at the screen's rate instead of
+  // its own
+  m_pAudioStream = audioEngine->MakeStream(audioFormat, AESTREAM_FORCE_RESAMPLE);
+  m_playbackRate = 1.0;
   m_playingDelay = 0.0;
   m_framesToSkip = 0;
 
@@ -118,6 +125,13 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
   {
     if (m_pAudioStream)
     {
+      const double playbackRate = m_processInfo.GetDisplayPacing().PlaybackRate();
+      if (std::abs(playbackRate - m_playbackRate) > MIN_RATE_CHANGE)
+      {
+        m_pAudioStream->SetResampleRatio(1.0 / playbackRate);
+        m_playbackRate = playbackRate;
+      }
+
       const double delaySecs = m_pAudioStream->GetDelay();
 
       const size_t frameSize = m_pAudioStream->GetChannelCount() *

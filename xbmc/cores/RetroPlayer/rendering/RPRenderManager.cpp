@@ -616,6 +616,8 @@ void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRe
   if (!renderer)
     return;
 
+  m_processInfo.GetDisplayPacing().OnFrameTaken(CDisplayPacing::Clock::now());
+
   // Get a render buffer for the renderer
   IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
 

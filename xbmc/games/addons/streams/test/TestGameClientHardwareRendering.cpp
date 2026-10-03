@@ -523,7 +523,8 @@ protected:
     ASSERT_TRUE(database.AddSavestate(path, {}, savestate));
     {
       RETRO::CReversiblePlayback playback(m_client.get(), environment.Renderer(),
-                                          environment.Messenger(), 60.0, 0);
+                                          environment.Messenger(),
+                                          environment.ProcessInfo().GetDisplayPacing(), 60.0, 0);
       EXPECT_EQ(m_core.sizeQueries, 0U);
       EXPECT_TRUE(playback.LoadSavestate(path));
       EXPECT_EQ(m_core.frames, 0U);
@@ -1157,7 +1158,8 @@ TEST_F(TestGameClientHardwareRendering, RewindRetriesUntilSerializationBecomesAv
   m_core.readyFrame = 3;
   {
     RETRO::CReversiblePlayback playback(m_client.get(), environment.Renderer(),
-                                        environment.Messenger(), 60.0, 0);
+                                        environment.Messenger(),
+                                        environment.ProcessInfo().GetDisplayPacing(), 60.0, 0);
     playback.FrameEvent();
     playback.FrameEvent();
     EXPECT_EQ(m_core.serializations, 0U);
