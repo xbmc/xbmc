@@ -8,7 +8,7 @@
 
 #version 150
 
-in vec2 m_attrpos;
+in vec3 m_attrpos;
 in vec4 m_attrcol;
 in vec2 m_attrcord0;
 in vec2 m_attrcord1;
@@ -27,15 +27,15 @@ uniform float m_depth;
 void main()
 {
   // limit the vertices to the clipping area
-  vec4 position = vec4(0., 0., 0., 1.);
-  position.xy = clamp(m_attrpos, m_shaderClip.xy, m_shaderClip.zw);
+  vec4 position = vec4(m_attrpos, 1.);
+  position.xy = clamp(m_attrpos.xy, m_shaderClip.xy, m_shaderClip.zw);
   gl_Position = m_matrix * position;
 
   // set rendering depth
   gl_Position.z = m_depth * gl_Position.w;
 
   // correct texture coordinates for clipped vertices
-  vec2 clipDist = m_attrpos - position.xy;
+  vec2 clipDist = m_attrpos.xy - position.xy;
   m_cord0 = m_attrcord0 - clipDist * m_cordStep.xy;
   m_cord1 = m_attrcord1 - clipDist * m_cordStep.zw;
 
