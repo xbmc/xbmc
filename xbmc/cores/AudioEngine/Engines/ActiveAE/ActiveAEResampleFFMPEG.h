@@ -47,6 +47,7 @@ public:
 protected:
   bool m_loaded;
   bool m_doesResample;
+  double m_compensationRemainder = 0.0;
   uint64_t m_src_chan_layout, m_dst_chan_layout;
   int m_src_rate, m_dst_rate;
   int m_src_channels, m_dst_channels;
