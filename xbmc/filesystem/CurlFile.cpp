@@ -481,6 +481,7 @@ CCurlFile::CCurlFile()
   m_connecttimeout = 0;
   m_redirectlimit = 5;
   m_lowspeedtime = 0;
+  m_transfertimeout = 0;
   m_ftppasvip = false;
   m_bufferSize = 32768;
   m_postdataset = false;
@@ -715,6 +716,9 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
 
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
+
+  if (m_transfertimeout > 0)
+    g_curlInterface.easy_setopt(h, CURLOPT_TIMEOUT, static_cast<long>(m_transfertimeout));
 
   // enable tcp keepalive
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlKeepAliveInterval > 0)
@@ -1399,7 +1403,10 @@ bool CCurlFile::Exists(const CURL& url)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
+  if (m_transfertimeout <= 0)
+    g_curlInterface.easy_setopt(
+        m_state->m_easyHandle, CURLOPT_TIMEOUT,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
 
@@ -1607,7 +1614,10 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
+  if (m_transfertimeout <= 0)
+    g_curlInterface.easy_setopt(
+        m_state->m_easyHandle, CURLOPT_TIMEOUT,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1);
 
@@ -1642,7 +1652,10 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     /* somehow curl doesn't reset CURLOPT_NOBODY properly so reset everything */
     SetCommonOptions(m_state);
     SetRequestHeaders(m_state);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
+    if (m_transfertimeout <= 0)
+      g_curlInterface.easy_setopt(
+          m_state->m_easyHandle, CURLOPT_TIMEOUT,
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
 #if LIBCURL_VERSION_NUM >= 0x072000 // 0.7.32
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_XFERINFOFUNCTION, transfer_abort_callback);

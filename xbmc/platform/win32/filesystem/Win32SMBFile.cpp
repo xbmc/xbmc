@@ -23,9 +23,9 @@ using namespace XFILE;
 static bool worthTryToConnect(const DWORD lastErr)
 {
   return lastErr != ERROR_INVALID_DATA && // used to indicate internal errors
-         lastErr != ERROR_FILE_NOT_FOUND      && lastErr != ERROR_BAD_NET_NAME  &&
-         lastErr != ERROR_NO_NET_OR_BAD_PATH  && lastErr != ERROR_NO_NETWORK    &&
-         lastErr != ERROR_BAD_NETPATH;
+         lastErr != ERROR_FILE_NOT_FOUND && lastErr != ERROR_BAD_NET_NAME &&
+         lastErr != ERROR_NO_NET_OR_BAD_PATH && lastErr != ERROR_NO_NETWORK &&
+         lastErr != ERROR_BAD_NETPATH && lastErr != ERROR_PATH_NOT_FOUND;
 }
 
 

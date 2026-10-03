@@ -14,10 +14,19 @@
 #include <wsdapi.h>
 #pragma comment(lib, "wsdapi.lib")
 
+#include <string>
 #include <vector>
 
 namespace WSDiscovery
 {
+struct WSDServer
+{
+  std::wstring endpoint; // wsa:Address, e.g. urn:uuid:...
+  std::wstring ip;
+  std::wstring xaddr; // metadata URL, e.g. http://192.168.1.25:5357/<uuid>
+  std::wstring hostName; // cached result of CWSDiscoveryWindows::ResolveHostName()
+};
+
 class CClientNotificationSink : public IWSDiscoveryProviderNotify
 {
 public:
@@ -34,11 +43,12 @@ public:
   ULONG STDMETHODCALLTYPE AddRef();
   ULONG STDMETHODCALLTYPE Release();
 
-  bool ThereAreServers() { return m_serversIPs.size() > 0; }
-  const std::vector<std::wstring>& GetServersIPs() const { return m_serversIPs; }
+  bool ThereAreServers();
+  std::vector<WSDServer> GetServers();
+  void SetHostName(const WSDServer& server, const std::wstring& hostName);
 
 private:
-  std::vector<std::wstring> m_serversIPs;
+  std::vector<WSDServer> m_servers;
   ULONG m_cRef;
   CCriticalSection m_criticalSection;
 };
@@ -54,11 +64,18 @@ public:
   bool IsRunning() override;
 
   bool ThereAreServers();
-  std::vector<std::wstring> GetServersIPs();
 
-  static std::wstring ResolveHostName(const std::wstring& serverIP);
+  /*!
+   * \brief Get the discovered servers with their host names resolved.
+   * Unresolved names are looked up in parallel and cached until the server says Bye or
+   * re-announces itself with a different address. If no name can be found, the IP is used.
+   */
+  std::vector<WSDServer> GetServers();
 
 private:
+  static std::wstring ResolveHostName(const WSDServer& server);
+
+  CCriticalSection m_criticalSection;
   bool m_initialized = false;
   IWSDiscoveryProvider* m_provider = nullptr;
   CClientNotificationSink* m_sink = nullptr;
