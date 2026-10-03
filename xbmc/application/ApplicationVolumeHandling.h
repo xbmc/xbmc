@@ -54,6 +54,12 @@ public:
   bool Save(TiXmlNode* settings) const;
   bool OnSettingChanged(const CSetting& setting);
 
+  /*!
+   \brief Handle the mute, passthrough and volume actions.
+   \return true if \p action was one of them and has been handled
+   */
+  bool OnAction(const CAction& action);
+
 protected:
   bool IsMutedInternal() const { return m_muted; }
   void ShowVolumeBar(const CAction* action = nullptr);
@@ -64,6 +70,9 @@ protected:
   void UnMute();
 
   void SetHardwareVolume(float hardwareVolume);
+  void TogglePassthrough();
+  //! Steps or sets the volume as \p action asks, unless a bitstream is playing without volume control
+  void ChangeVolume(const CAction& action);
 
   void VolumeChanged();
 
