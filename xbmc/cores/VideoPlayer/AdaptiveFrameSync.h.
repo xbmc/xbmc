@@ -1,0 +1,26 @@
+#pragma once
+#include <string>
+
+namespace KODI {
+namespace VIDEO {
+
+enum class AFSPolicy { TRUE_MATCH, EXACT_MULTIPLE, NEAR_MULTIPLE, SMOOTH_SYNC, DISABLED };
+
+struct AFSProbe {
+  bool displayHasNative24 = false;
+  bool displayHas120 = false;
+  bool passthroughPossible = false;
+  double contentFps = 0.0;
+  std::string device; // manufacturer/model (best-effort)
+};
+
+class AdaptiveFrameSync {
+public:
+  static bool IsEnabled();                 // temporary: off by default
+  static AFSProbe ProbeCapabilities();     // stub
+  static AFSPolicy SelectPolicy(const AFSProbe& p);
+  static void LogDecision(const AFSProbe& p, AFSPolicy policy);
+};
+
+} // namespace VIDEO
+} // namespace KODI
