@@ -18,7 +18,7 @@ all: .installed-$(PLATFORM)
 	touch $@
 
 $(LIBDYLIB): .configured-$(PLATFORM)
-	$(MAKE) CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" AR=$(AR) RANLIB=$(RANLIB) -C $(PLATFORM) staticlib
+	$(MAKE) CXX="$(CXX)" CXXFLAGS="$(CPPFLAGS) $(CXXFLAGS)" AR=$(AR) RANLIB=$(RANLIB) -C $(PLATFORM) staticlib
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) DEST_PREFIX=$(PREFIX) -C $(PLATFORM) installstaticlib
