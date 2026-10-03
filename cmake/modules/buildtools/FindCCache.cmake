@@ -38,8 +38,25 @@ if(CCACHE_FOUND)
       set(CMAKE_XCODE_ATTRIBUTE_CXX "${CMAKE_BINARY_DIR}/launch-cxx" PARENT_SCOPE)
     endif()
   else()
-    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}" PARENT_SCOPE)
-    set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}" PARENT_SCOPE)
+    set(_launcher "${CCACHE_PROGRAM}")
+    if(CORE_USE_PCH)
+      # Without these ccache doesn't cache anything that uses a precompiled header
+      execute_process(COMMAND "${CCACHE_PROGRAM}" --get-config sloppiness
+                      OUTPUT_VARIABLE _sloppiness
+                      OUTPUT_STRIP_TRAILING_WHITESPACE)
+      if(_sloppiness)
+        string(APPEND _sloppiness ",")
+      endif()
+      string(APPEND _sloppiness "pch_defines,time_macros")
+
+      if(CCACHE_VERSION VERSION_GREATER_EQUAL 4.8)
+        list(APPEND _launcher "sloppiness=${_sloppiness}")
+      else()
+        set(_launcher "${CMAKE_COMMAND}" -E env "CCACHE_SLOPPINESS=${_sloppiness}" "${CCACHE_PROGRAM}")
+      endif()
+    endif()
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${_launcher} PARENT_SCOPE)
+    set(CMAKE_C_COMPILER_LAUNCHER ${_launcher} PARENT_SCOPE)
   endif()
 endif()
 
