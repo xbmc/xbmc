@@ -25,6 +25,7 @@ namespace EDL
 class CEdlFileParser : public CEdlFileParserBase
 {
 public:
+  bool CanParse(const CFileItem& item) const override;
   CEdlParserResult Parse(const CFileItem& item,
                          float fps,
                          std::chrono::milliseconds duration) override;

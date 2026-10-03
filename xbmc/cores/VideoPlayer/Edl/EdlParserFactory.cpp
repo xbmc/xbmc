@@ -33,6 +33,8 @@ std::vector<std::unique_ptr<IEdlParser>> CEdlParserFactory::GetEdlParsersForItem
   else
   {
     // Metadata-based parsers for other items (PVR, streams, etc.)
+    if (item.HasProperty("edlpath"))
+      parsers.emplace_back(std::make_unique<CEdlFileParser>());
     parsers.emplace_back(std::make_unique<CPvrEdlParser>());
   }
 
