@@ -36,6 +36,7 @@ CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& setting
        CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE, CSettings::SETTING_SUBTITLES_SHADOWCOLOR,
        CSettings::SETTING_SUBTITLES_SHADOWOPACITY,  CSettings::SETTING_SUBTITLES_SHADOWSIZE,
        CSettings::SETTING_SUBTITLES_MARGINVERTICAL, CSettings::SETTING_SUBTITLES_CHARSET,
+       CSettings::SETTING_SUBTITLES_BITMAPZOOM,     CSettings::SETTING_SUBTITLES_BITMAPPOSITION,
        CSettings::SETTING_SUBTITLES_OVERRIDEFONTS,  CSettings::SETTING_SUBTITLES_OVERRIDESTYLES,
        CSettings::SETTING_SUBTITLES_LANGUAGES,      CSettings::SETTING_SUBTITLES_STORAGEMODE,
        CSettings::SETTING_SUBTITLES_CUSTOMPATH,     CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
@@ -173,6 +174,16 @@ float CSubtitlesSettings::GetVerticalMarginPerc() const
   // We return the vertical margin as percentage
   // to fit the current screen resolution
   return static_cast<float>(m_settings->GetNumber(CSettings::SETTING_SUBTITLES_MARGINVERTICAL));
+}
+
+int CSubtitlesSettings::GetBitmapZoomPerc() const
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_BITMAPZOOM);
+}
+
+bool CSubtitlesSettings::IsBitmapPositionEnabled() const
+{
+  return m_settings->GetBool(CSettings::SETTING_SUBTITLES_BITMAPPOSITION);
 }
 
 void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr& setting,

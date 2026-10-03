@@ -58,6 +58,7 @@ private:
 
 
   CCriticalSection    m_section;
+  unsigned int m_subtitleStream{0};
 };
 
 
