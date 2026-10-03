@@ -72,34 +72,34 @@ struct RESOLUTION_INFO
   EdgeInsets guiInsets;
 
   //!< Specify if it is a fullscreen resolution, otherwise windowed
-  bool bFullScreen;
+  bool bFullScreen{true};
 
   //!< Width GUI resolution (pixels), may differ from the screen value if GUI resolution limit, 3D is set or in HiDPI screens
-  int iWidth;
+  int iWidth{0};
 
   //!< Height GUI resolution (pixels), may differ from the screen value if GUI resolution limit, 3D is set or in HiDPI screens
-  int iHeight;
+  int iHeight{0};
 
   //!< Number of pixels of padding between stereoscopic frames
-  int iBlanking;
+  int iBlanking{0};
 
   //!< Screen width (logical width in pixels)
-  int iScreenWidth;
+  int iScreenWidth{0};
 
   //!< Screen height (logical height in pixels)
-  int iScreenHeight;
+  int iScreenHeight{0};
 
   //!< The vertical subtitle baseline position, may be changed by Video calibration
-  int iSubtitles;
+  int iSubtitles{0};
 
   //!< Properties of the resolution e.g. interlaced mode
-  uint32_t dwFlags;
+  uint32_t dwFlags{0};
 
   //!< Pixel aspect ratio
-  float fPixelRatio;
+  float fPixelRatio{1.0f};
 
   //!< Refresh rate
-  float fRefreshRate;
+  float fRefreshRate{0.0f};
 
   //!< Resolution mode description
   std::string strMode;
@@ -111,7 +111,10 @@ struct RESOLUTION_INFO
   std::string strId;
 
 public:
-  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = "");
+  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, std::string mode = "");
+  RESOLUTION_INFO(const RESOLUTION_INFO& res) = default;
+  RESOLUTION_INFO& operator=(const RESOLUTION_INFO&) = default;
+
   float DisplayRatio() const;
 };
 
@@ -129,8 +132,7 @@ public:
    */
   static void GetMaxAllowedScreenResolution(unsigned int& width, unsigned int& height);
 
-protected:
+private:
   static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);
-  static bool FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback);
-  static float RefreshWeight(float refresh, float fps);
+  static bool FindResolutionFromOverride(float fps, RESOLUTION& resolution, bool fallback);
 };
