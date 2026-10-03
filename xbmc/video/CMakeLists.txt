@@ -1,8 +1,13 @@
 set(SOURCES Bookmark.cpp
             ContextMenus.cpp
             FilenameAttributes.cpp
+            geometry/ContentGeometryCombiner.cpp
+            geometry/ContentGeometryRecord.cpp
+            geometry/EffectiveGeometry.cpp
             geometry/FrameReduction.cpp
             geometry/FrameSampling.cpp
+            geometry/GeometryPublication.cpp
+            geometry/GeometryTransforms.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
             PlayerControllerActions.cpp
@@ -30,8 +35,13 @@ set(HEADERS Bookmark.h
             ContextMenus.h
             Episode.h
             FilenameAttributes.h
+            geometry/ContentGeometryCombiner.h
+            geometry/ContentGeometryRecord.h
+            geometry/EffectiveGeometry.h
             geometry/FrameReduction.h
             geometry/FrameSampling.h
+            geometry/GeometryPublication.h
+            geometry/GeometryTransforms.h
             GUIViewStateVideo.h
             PlayerController.h
             PlayerControllerActions.h
