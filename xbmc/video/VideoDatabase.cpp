@@ -116,6 +116,28 @@ void FlattenMultiPath(const std::string& path, std::vector<std::string>& paths)
   for (const auto& constituent : constituents)
     FlattenMultiPath(constituent, paths);
 }
+
+// The path of a (possibly multi-path) source that holds the file
+std::string GetSourcePathOfFile(const CMediaSource& source, const std::string& file)
+{
+  std::vector<std::string> paths;
+  FlattenMultiPath(source.strPath, paths);
+
+  std::vector<CMediaSource> sources;
+  for (const auto& path : paths)
+  {
+    CMediaSource constituent;
+    constituent.FromNameAndPaths("", {path});
+    sources.emplace_back(std::move(constituent));
+  }
+
+  bool isSourceName{false};
+  const int index = CUtil::GetMatchingSource(file, sources, isSourceName);
+  if (index >= 0 && static_cast<size_t>(index) < sources.size())
+    return sources[index].strPath;
+
+  return {};
+}
 } // unnamed namespace
 
 CVideoDatabase::FileInformation::FileInformation(std::string&& newPath,
@@ -10299,6 +10321,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
     if (m_pDS2->num_rows() > 0)
     {
       std::string filesToTestForDelete;
+      // missing files in a source, with the path of the source that held them
+      std::map<int, std::string> missingFiles;
       std::vector<CMediaSource> videoSources(
           *CMediaSourceSettings::GetInstance().GetSources("video"));
       CServiceBroker::GetMediaManager().GetRemovableDrives(videoSources);
@@ -10341,8 +10365,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         {
           // Only consider keeping this file if not optical and belonging to a (matching) source
           bool bIsSource;
-          if (!URIUtils::IsOnDVD(fullPath) &&
-              CUtil::GetMatchingSource(fullPath, videoSources, bIsSource) >= 0)
+          const int sourceIndex = URIUtils::IsOnDVD(fullPath)
+                                      ? -1
+                                      : CUtil::GetMatchingSource(fullPath, videoSources, bIsSource);
+          if (sourceIndex >= 0)
           {
             const std::string pathDir = URIUtils::GetDirectory(fullPath);
 
@@ -10358,6 +10384,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
             // Keep existing files
             if (gotDir && CFile::Exists(fullPath, true))
               del = false;
+            // an entry for a folder has no file name, and is still there if it can be listed
+            else if ((!gotDir || !fileName.empty()) && !URIUtils::IsInternetStream(fullPath))
+              missingFiles.try_emplace(m_pDS2->fv("files.idFile").get_asInt(),
+                                       GetSourcePathOfFile(videoSources[sourceIndex], fullPath));
           }
         }
         if (del)
@@ -10424,25 +10454,67 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
                                          pathsDeleteDecisions, filesToDelete, !showProgress);
       }
 
+      // A file outside the library only holds history, such as its watched state and resume
+      // point. Nothing can reach that once the file has gone, so remove it when the source
+      // that held the file is still available.
+      if (!missingFiles.empty())
+      {
+        std::string candidates;
+        for (const auto& [idFile, sourcePath] : missingFiles)
+          candidates += StringUtils::Format("{},", idFile);
+
+        m_pDS->query(PrepareSQL(
+            "SELECT idFile FROM files WHERE idFile IN (%s) "
+            "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.idFile = files.idFile) "
+            "AND NOT EXISTS (SELECT 1 FROM episode WHERE episode.idFile = files.idFile) "
+            "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.idFile = files.idFile) "
+            "AND NOT EXISTS (SELECT 1 FROM videoversion WHERE videoversion.idFile = files.idFile)",
+            StringUtils::TrimRight(candidates, ",").c_str()));
+        std::vector<int> unlinkedFiles;
+        while (!m_pDS->eof())
+        {
+          unlinkedFiles.emplace_back(m_pDS->fv(0).get_asInt());
+          m_pDS->next();
+        }
+        m_pDS->close();
+
+        std::map<std::string, bool> sourceAvailable;
+        int removed = 0;
+        for (const int idFile : unlinkedFiles)
+        {
+          const std::string& sourcePath = missingFiles[idFile];
+          auto available = sourceAvailable.find(sourcePath);
+          if (available == sourceAvailable.end())
+            available =
+                sourceAvailable
+                    .emplace(sourcePath,
+                             !sourcePath.empty() && CDirectory::Exists(sourcePath, false))
+                    .first;
+
+          if (available->second)
+          {
+            filesToDelete += StringUtils::Format("{},", idFile);
+            ++removed;
+          }
+        }
+        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning {} files outside the library that have gone",
+                    removed);
+      }
+
       if (progress)
       {
         progress->SetPercentage(100);
         progress->Progress();
       }
 
+      std::vector<std::string> pathsToInvalidate;
       if (!filesToDelete.empty())
       {
         filesToDelete = "(" + StringUtils::TrimRight(filesToDelete, ",") + ")";
 
-        // Clean hashes of all paths that files are deleted from
-        // Otherwise there is a mismatch between the path contents and the hash in the
-        // database, leading to potentially missed items on re-scan (if deleted files are
-        // later re-added to a source)
-        //
-        // Collect the whole path list before invalidating them as InvalidatePathHash()
-        // overwrites the m_pDS dataset and only first path would be invalidated.
-        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
-        std::vector<std::string> pathsToInvalidate;
+        // Note the paths of the deleted files to have their hashes invalidated once
+        // the paths no longer on disk have been cleaned below - blanking a hash first would
+        // hide a path that no longer exists from the pass that deletes it.
         m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath "
                      "WHERE files.idFile IN " +
                      filesToDelete);
@@ -10452,10 +10524,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           m_pDS->next();
         }
         m_pDS->close();
-
-        for (const auto& pathToInvalidate : pathsToInvalidate)
-          InvalidatePathHash(pathToInvalidate);
-        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
 
         // If a movie is listed for deletion because the file of its default version has gone,
         // promote a different version (first one written) and keep the movie
@@ -10547,7 +10615,11 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
             "WHERE NOT ((strContent IS NULL OR strContent = '') "
             "AND (strSettings IS NULL OR strSettings = '') "
             "AND (strHash IS NULL OR strHash = '') "
-            "AND (exclude IS NULL OR exclude != 1))";
+            "AND (exclude IS NULL OR exclude != 1)) "
+            // Media that still points at a path has not been cleaned, so the path stays
+            "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
+            "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath JOIN episode ON "
+            "episode.idShow = tvshowlinkpath.idShow WHERE tvshowlinkpath.idPath = path.idPath)";
       m_pDS2->query(sql);
       std::string strIds;
       std::map<std::string, bool> sourcesReachable;
@@ -10588,11 +10660,11 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           }
         }
 
-        if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-             (pathsDeleteDecision == pathsDeleteDecisions.end() && !exists)) &&
-            ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() &&
-              pathsDeleteDecisionByParent->second) ||
-             (pathsDeleteDecisionByParent == pathsDeleteDecisions.end())))
+        // A true decision means the media in the path went, not the path itself
+        if (!exists &&
+            (pathsDeleteDecision == pathsDeleteDecisions.end() || pathsDeleteDecision->second) &&
+            (pathsDeleteDecisionByParent == pathsDeleteDecisions.end() ||
+             pathsDeleteDecisionByParent->second))
           strIds += m_pDS2->fv(0).get_asString() + ",";
 
         m_pDS2->next();
@@ -10642,6 +10714,15 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         m_pDS->exec(sql);
       }
 
+      // Clean hashes of all paths that files are deleted from
+      // Otherwise there is a mismatch between the path contents and the hash in the
+      // database, leading to potentially missed items on re-scan (if deleted files are
+      // later re-added to a source)
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
+      for (const auto& path : pathsToInvalidate)
+        InvalidatePathHash(path);
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
+
       CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path table");
       sql = StringUtils::Format(
           "DELETE FROM path "
@@ -10649,8 +10730,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           "AND (strSettings IS NULL OR strSettings = '') "
           "AND (strHash IS NULL OR strHash = '') "
           "AND (exclude IS NULL OR exclude != 1) "
-          "AND (idParentPath IS NULL OR NOT EXISTS (SELECT 1 FROM (SELECT idPath FROM path) as "
+          "AND ((idParentPath IS NULL OR NOT EXISTS (SELECT 1 FROM (SELECT idPath FROM path) as "
           "parentPath WHERE parentPath.idPath = path.idParentPath)) " // MySQL only fix (#5007)
+          "OR NOT EXISTS (SELECT 1 FROM (SELECT idParentPath FROM path) as childPath "
+          "WHERE childPath.idParentPath = path.idPath)) "
           "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = path.idPath) "
           "AND NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idPath = path.idPath) "
           "AND NOT EXISTS (SELECT 1 FROM movie WHERE movie.c{:02} = path.idPath) "
@@ -10658,7 +10741,15 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           "AND NOT EXISTS (SELECT 1 FROM musicvideo WHERE musicvideo.c{:02} = path.idPath)",
           VIDEODB_ID_PARENTPATHID, VIDEODB_ID_EPISODE_PARENTPATHID,
           VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
-      m_pDS->exec(sql);
+      // Removing an entry can leave its parent with nothing hanging off it
+      int pathCount = GetSingleValueInt("SELECT COUNT(*) FROM path");
+      int previousCount;
+      do
+      {
+        previousCount = pathCount;
+        m_pDS->exec(sql);
+        pathCount = GetSingleValueInt("SELECT COUNT(*) FROM path");
+      } while (pathCount > 0 && pathCount < previousCount);
 
       CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning genre table");
       sql =
@@ -10843,7 +10934,10 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
         }
 
         sourcePathsDeleteDecisions.insert(std::make_pair(sourcePathID, std::make_pair(sourcePathNotExists, del)));
-        pathsDeleteDecisions.insert(std::make_pair(sourcePathID, sourcePathNotExists && del));
+
+        // Only a source that has gone carries a decision about its contents
+        if (sourcePathNotExists)
+          pathsDeleteDecisions.insert(std::make_pair(sourcePathID, del));
       }
       // the only reason not to delete the file is if the parent path doesn't
       // exist and the user decided to delete all the items it contained
@@ -12142,11 +12236,7 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
 
   ScraperPtr info = GetScraperForPath(path, settings, foundDirectly);
 
-  // strPath is a known row (it comes from a files/path join), so it can be set directly.
-  // (SetPathHash includes AddPath if the path is not already known)
-  // Subsequently use ClearPathHash to ensure no paths added inadvertently.
-  // SetPathHash (via AddPath) also handles zip:// <-> archive:// aliasing
-  SetPathHash(strPath, "");
+  ClearPathHash(strPath);
   if (path != strPath)
     ClearPathHash(path);
   if (!info)
