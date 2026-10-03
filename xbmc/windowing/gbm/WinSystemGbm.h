@@ -104,6 +104,7 @@ protected:
   std::unique_ptr<CLibInputHandler> m_libinput;
 
 private:
+  void UpdateContentType();
   static void ApplyLimitGuiSize(void* userptr);
 
   KODI::MESSAGING::ThreadMessageCallback m_limitGuiSizeCallback{ApplyLimitGuiSize, this};
@@ -111,6 +112,7 @@ private:
   CDRMPropertyBlob m_hdrBlob;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
   KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;
+  bool m_gameContentType = false;
 
   std::unique_ptr<UTILS::CDisplayInfo> m_info;
 };

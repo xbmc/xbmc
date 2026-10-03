@@ -367,6 +367,8 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
     bo = m_GBM->GetDevice().GetSurface().LockFrontBuffer().Get();
   }
 
+  UpdateContentType();
+
   m_DRM->FlipPage(bo, rendered, videoLayer, async);
 
   // !videoLayer alone cannot gate teardown: FlipPage also runs with videoLayer
@@ -543,6 +545,31 @@ void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
     drm->AddProperty(connector, "Colorspace", colorspace.value());
     drm->SetActive(true);
   }
+}
+
+void CWinSystemGbm::UpdateContentType()
+{
+  const bool game = m_lowLatencyPresentation;
+  if (game == m_gameContentType)
+    return;
+
+  m_gameContentType = game;
+
+  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+  CDRMConnector* connector = m_DRM->GetConnector();
+  if (!drm || !connector)
+    return;
+
+  // A display that is told a game is on screen can switch to its own game
+  // mode, which drops the picture processing that delays what it shows
+  const char* name = game ? "Game" : "No Data";
+  std::optional<uint64_t> contentType = connector->GetPropertyEnumValue("content type", name);
+  if (!contentType)
+    return;
+
+  CLog::LogF(LOGDEBUG, "setting connector content type to {}", name);
+  drm->AddProperty(connector, "content type", contentType.value());
+  drm->SetActive(true);
 }
 
 bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
