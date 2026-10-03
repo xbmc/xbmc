@@ -19,6 +19,8 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
+#include <cmath>
+
 bool CRendererHQ::Supports(ESCALINGMETHOD method) const
 {
   if (method == VS_SCALINGMETHOD_AUTO)
@@ -115,6 +117,7 @@ void CRendererHQ::UpdateVideoFilters()
 
   if (m_bUseHQScaler && !m_scalerShader)
   {
+    m_intermediateState = {};
     // firstly try the more efficient two pass convolution shader
     m_scalerShader = std::make_unique<CConvolutionShaderSeparable>();
 
@@ -149,8 +152,50 @@ void CRendererHQ::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CR
 {
   if (HasHQScaler())
   {
-    const CRect destRect = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CRect(destPoints[0], destPoints[2]));
-    m_scalerShader->Render(source, target, sourceRect, destRect, false);
+    auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+    const CRect destRect = context.StereoCorrection(CRect(destPoints[0], destPoints[2]));
+
+    // the cache is only valid for the back buffer, the scaler binds its depth stencil view
+    if (&target != &DX::Windowing()->GetBackBuffer())
+    {
+      m_scalerShader->Render(source, target, sourceRect, destRect, false);
+      return;
+    }
+
+    const bool cacheFits = m_scaledCache.GetWidth() == target.GetWidth() &&
+                           m_scaledCache.GetHeight() == target.GetHeight() &&
+                           m_scaledCache.GetFormat() == target.GetFormat();
+    if (!cacheFits)
+    {
+      m_scaledCache.Release();
+      if (!m_scaledCache.Create(target.GetWidth(), target.GetHeight(), 1, D3D11_USAGE_DEFAULT,
+                                target.GetFormat()))
+      {
+        m_scalerShader->Render(source, target, sourceRect, destRect, false);
+        return;
+      }
+    }
+
+    if (!m_reuseIntermediate || !cacheFits)
+    {
+      // the copy below is rounded to whole pixels, keep pixels outside the picture black
+      float black[4] = {};
+      DX::DeviceResources::Get()->ClearRenderTarget(m_scaledCache.GetRenderTarget(), black);
+      m_scalerShader->Render(source, m_scaledCache, sourceRect, destRect, false);
+    }
+
+    CRect area = destRect;
+    area.Intersect(context.StereoCorrection(context.GetScissors()));
+    area.Intersect(CRect(0.0f, 0.0f, static_cast<float>(target.GetWidth()),
+                         static_cast<float>(target.GetHeight())));
+    if (area.IsEmpty())
+      return;
+
+    const D3D11_BOX box{
+        static_cast<UINT>(std::floor(area.x1)), static_cast<UINT>(std::floor(area.y1)), 0,
+        static_cast<UINT>(std::ceil(area.x2)),  static_cast<UINT>(std::ceil(area.y2)),  1};
+    DX::DeviceResources::Get()->GetD3DContext()->CopySubresourceRegion(
+        target.Get(), 0, box.left, box.top, 0, m_scaledCache.Get(), 0, &box);
   }
   else
   {
