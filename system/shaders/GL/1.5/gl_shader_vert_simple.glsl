@@ -8,7 +8,7 @@
 
 #version 150
 
-in vec2 m_attrpos;
+in vec3 m_attrpos;
 in vec4 m_attrcol;
 in vec2 m_attrcord0;
 in vec2 m_attrcord1;
@@ -20,7 +20,7 @@ uniform float m_depth;
 
 void main ()
 {
-  gl_Position = m_matrix * vec4(m_attrpos, 0., 1.);
+  gl_Position = m_matrix * vec4(m_attrpos, 1.);
   gl_Position.z = m_depth * gl_Position.w;
   m_colour = m_attrcol;
   m_cord0 = m_attrcord0;
