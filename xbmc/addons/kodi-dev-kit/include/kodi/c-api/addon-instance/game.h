@@ -1548,6 +1548,14 @@ extern "C"
      * @brief Number of extensions provided
      */
     unsigned int extension_count;
+
+    /*!
+     * @brief The <libretro_core> property from addon.xml, such as
+     * "fceumm_libretro", or empty if there is none
+     *
+     * Added in 8.2.1, so an older Kodi's properties end before it.
+     */
+    const char* libretro_core;
   } AddonProps_Game;
 
   typedef void* KODI_GAME_STREAM_HANDLE;

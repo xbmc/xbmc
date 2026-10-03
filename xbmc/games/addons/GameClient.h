@@ -156,6 +156,7 @@ public:
   bool IsExtensionValid(const std::string& strExtension) const;
   const std::string& GetEmulatorName() const { return m_emulatorName; }
   const std::string& GetPlatforms() const { return m_platforms; }
+  const std::string& GetLibretroCore() const { return m_libretroCore; }
   bool SupportsDiscControl() const { return m_supportsDiscControl; }
 
   // Start/stop gameplay
@@ -353,6 +354,7 @@ private:
   bool m_bSupportsAllExtensions = false;
   std::string m_emulatorName;
   std::string m_platforms;
+  std::string m_libretroCore;
   bool m_supportsDiscControl{false};
 
   // Properties of the current playing file
