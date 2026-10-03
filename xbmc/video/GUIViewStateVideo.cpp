@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "VideoDatabase.h"
 #include "filesystem/Directory.h"
+#include "filesystem/LibraryPaths.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
@@ -522,9 +523,9 @@ std::vector<CMediaSource>& CGUIViewStateWindowVideoNav::GetSources()
   m_sources.clear();
   CFileItemList items;
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
-    CDirectory::GetDirectory("library://video_flat/", items, "", DIR_FLAG_DEFAULTS);
+    CDirectory::GetDirectory(LIBRARY::VIDEO_FLAT, items, "", DIR_FLAG_DEFAULTS);
   else
-    CDirectory::GetDirectory("library://video/", items, "", DIR_FLAG_DEFAULTS);
+    CDirectory::GetDirectory(LIBRARY::VIDEO, items, "", DIR_FLAG_DEFAULTS);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];
