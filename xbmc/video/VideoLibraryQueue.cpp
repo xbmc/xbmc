@@ -17,9 +17,11 @@
 #include "video/jobs/VideoLibraryJob.h"
 #include "video/jobs/VideoLibraryMarkWatchedJob.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
+#include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "video/jobs/VideoLibraryResetResumePointJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
+#include <algorithm>
 #include <mutex>
 #include <ranges>
 #include <utility>
@@ -62,22 +64,59 @@ bool CVideoLibraryQueue::IsScanningLibrary() const
   if (cleaningJobs != m_jobs.end() && !cleaningJobs->second.empty())
     return true;
 
+  const auto refreshingJobs = m_jobs.find(CVideoLibraryRefreshingSourceJob::TYPE);
+  if (refreshingJobs != m_jobs.end() && !refreshingJobs->second.empty())
+    return true;
+
   return false;
 }
 
 void CVideoLibraryQueue::StopLibraryScanning()
 {
   std::unique_lock lock(m_critical);
-  VideoLibraryJobMap::const_iterator scanningJobs = m_jobs.find(CVideoLibraryScanningJob::TYPE);
-  if (scanningJobs == m_jobs.end())
+  for (const char* jobType :
+       {CVideoLibraryScanningJob::TYPE, CVideoLibraryRefreshingSourceJob::TYPE})
+  {
+    const auto jobsIt = m_jobs.find(jobType);
+    if (jobsIt == m_jobs.end())
+      continue;
+
+    // Copy the jobs because CancelJob() modifies m_jobs.
+    VideoLibraryJobs jobs{jobsIt->second};
+    for (auto* job : jobs)
+      CancelJob(job);
+  }
+  Refresh();
+}
+
+bool CVideoLibraryQueue::IsRefreshingSource(const std::string& sourcePath)
+{
+  std::unique_lock lock(m_critical);
+  const auto jobsIt = m_jobs.find(CVideoLibraryRefreshingSourceJob::TYPE);
+  return jobsIt != m_jobs.end() &&
+         std::ranges::any_of(
+             jobsIt->second,
+             [&sourcePath](const CVideoLibraryJob* job)
+             {
+               return static_cast<const CVideoLibraryRefreshingSourceJob*>(job)->GetSourcePath() ==
+                      sourcePath;
+             });
+}
+
+void CVideoLibraryQueue::StopRefreshingSource(const std::string& sourcePath)
+{
+  std::unique_lock lock(m_critical);
+  const auto jobsIt = m_jobs.find(CVideoLibraryRefreshingSourceJob::TYPE);
+  if (jobsIt == m_jobs.end())
     return;
 
-  // get a copy of the scanning jobs because CancelJob() will modify m_scanningJobs
-  VideoLibraryJobs tmpScanningJobs(scanningJobs->second.begin(), scanningJobs->second.end());
-
-  // cancel all scanning jobs
-  for (VideoLibraryJobs::const_iterator job = tmpScanningJobs.begin(); job != tmpScanningJobs.end(); ++job)
-    CancelJob(*job);
+  // Copy the jobs because CancelJob() modifies m_jobs.
+  const VideoLibraryJobs jobs{jobsIt->second};
+  for (auto* job : jobs)
+  {
+    if (static_cast<const CVideoLibraryRefreshingSourceJob*>(job)->GetSourcePath() == sourcePath)
+      CancelJob(job);
+  }
   Refresh();
 }
 
@@ -205,6 +244,12 @@ void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
   // check if the job supports cancellation and cancel it
   if (job->CanBeCancelled())
     job->Cancel();
+
+  // A running source refresh finishes its current item before releasing the queue slot. One that
+  // hasn't started is removed now, as it returns at once if it starts after Cancel().
+  if (jobType == CVideoLibraryRefreshingSourceJob::TYPE &&
+      static_cast<CVideoLibraryRefreshingSourceJob*>(job)->HasStarted())
+    return;
 
   // remove the job from the job queue
   CJobQueue::CancelJob(job);
