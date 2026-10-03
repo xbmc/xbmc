@@ -171,6 +171,8 @@ hdr_output_metadata BuildHDRMetadata(const VideoPicture& videoPicture, KODI::UTI
   return hdr_metadata;
 }
 
+// How often a content type the kernel refuses is asked for again
+constexpr int MAX_CONTENT_TYPE_ATTEMPTS = 3;
 } // namespace
 
 CWinSystemGbm::CWinSystemGbm()
@@ -303,6 +305,8 @@ bool CWinSystemGbm::InitWindowSystem()
 bool CWinSystemGbm::DestroyWindowSystem()
 {
   CLog::Log(LOGDEBUG, "CWinSystemGbm::{} - deinitialized DRM", __FUNCTION__);
+
+  ResetContentType();
 
   m_libinput.reset();
 
@@ -589,6 +593,8 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
     bo = m_GBM->GetDevice().GetSurface().LockFrontBuffer().Get();
   }
 
+  UpdateContentType();
+
   m_DRM->FlipPage(bo, rendered, videoLayer, async);
 
   UpdateDriverLimitedRange();
@@ -771,6 +777,62 @@ void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
     drm->AddProperty(connector, "Colorspace", colorspace.value());
     drm->SetActive(true);
   }
+}
+
+void CWinSystemGbm::UpdateContentType()
+{
+  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+  CDRMConnector* connector = m_DRM->GetConnector();
+  if (!drm || !connector)
+    return;
+
+  // A display that is told a game is on screen can switch to its own game
+  // mode, which drops the picture processing that delays what it shows
+  const char* name = m_lowLatencyPresentation ? "Game" : "No Data";
+  const std::optional<uint64_t> contentType = connector->GetPropertyEnumValue("content type", name);
+  if (!contentType)
+    return;
+
+  // The connector holds what the last successful commit set, so a change the
+  // kernel refused is asked for again, a few times
+  if (connector->GetPropertyValue("content type") == contentType)
+  {
+    // An earlier request that never got committed mustn't undo this one
+    if (m_contentTypeRequested != contentType)
+      drm->AddProperty(connector, "content type", *contentType);
+    m_contentTypeRequested = contentType;
+    m_contentTypeAttempts = 0;
+    return;
+  }
+  if (contentType != m_contentTypeRequested)
+  {
+    m_contentTypeRequested = contentType;
+    m_contentTypeAttempts = 0;
+  }
+  if (m_contentTypeAttempts >= MAX_CONTENT_TYPE_ATTEMPTS)
+    return;
+
+  ++m_contentTypeAttempts;
+  CLog::LogF(LOGDEBUG, "setting connector content type to {}", name);
+  drm->AddProperty(connector, "content type", *contentType);
+  drm->RequestModeset();
+}
+
+void CWinSystemGbm::ResetContentType()
+{
+  auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
+  CDRMConnector* connector = drm ? drm->GetConnector() : nullptr;
+  if (!connector)
+    return;
+
+  // No frame follows to carry the change, and a display left in its game mode would stay in it
+  // for whatever uses it after Kodi
+  const std::optional<uint64_t> noData = connector->GetPropertyEnumValue("content type", "No Data");
+  if (!noData || connector->GetPropertyValue("content type") == noData)
+    return;
+
+  CLog::LogF(LOGDEBUG, "setting connector content type to No Data");
+  drm->CommitProperty(connector, "content type", *noData);
 }
 
 bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
