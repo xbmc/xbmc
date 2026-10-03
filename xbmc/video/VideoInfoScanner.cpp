@@ -1735,6 +1735,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     CVideoInfoTag showInfo;
     m_database.GetTvShowInfo("", showInfo, showID);
+
+    // A show can have several folders, and the database returns only one of them. Local
+    // season art and actor thumbs belong to the folder being scanned.
+    std::vector<std::string> showPaths;
+    if (item->IsFolder() && m_database.GetPathsLinkedToTvShow(static_cast<int>(showID), showPaths))
+    {
+      const auto showPath =
+          std::ranges::find_if(showPaths, [item](const std::string& path)
+                               { return URIUtils::PathEquals(path, item->GetPath(), true); });
+      if (showPath != showPaths.end())
+        showInfo.m_strPath = *showPath;
+    }
+
     InfoRet ret = OnProcessSeriesFolder(files, scraper, useLocal, showInfo, progress);
 
     if (ret == InfoRet::ADDED)
