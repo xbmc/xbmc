@@ -173,6 +173,12 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
       item2.SetPath(URIUtils::AddFileToFolder(strPath,
                                             URIUtils::GetFileName(item.GetPath())));
       nfoFile = FindNFO(item2, movieFolder);
+      // else named after the archive, as exported (with -SxxEyy for one of several episodes)
+      if (nfoFile.empty())
+      {
+        item2.SetPath(url.GetHostName());
+        nfoFile = FindNFO(item2, movieFolder);
+      }
       return nfoFile;
     }
 
