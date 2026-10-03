@@ -20,6 +20,7 @@
     <string name="external_ok">External storage OK…</string>
     <string name="starting">Starting %1$s…</string>
     <string name="first_run">Preparing for first run. Please wait…</string>
+    <string name="migrating_data">Moving your user data to Documents/Kodi…</string>
     <string name="permission_denied">Permission denied!! Exiting…</string>
     <string name="no_find_apk">Cannot find package.</string>
     <string name="no_read_apk">Cannot read package.</string>
