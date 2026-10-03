@@ -85,6 +85,7 @@ void TestBasicEnvironment::SetUp()
 
   CSpecialProtocol::SetTempPath(m_tempPath);
   CSpecialProtocol::SetProfilePath(m_tempPath);
+  CSpecialProtocol::SetMasterProfilePath(m_tempPath);
 
   /* Create and delete a tempfile to initialize the VFS (really to initialize
    * CLibcdio). This is done so that the initialization of the VFS does not
