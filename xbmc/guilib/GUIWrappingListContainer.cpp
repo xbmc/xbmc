@@ -36,7 +36,7 @@ void CGUIWrappingListContainer::UpdatePageControl(int offset)
 
 bool CGUIWrappingListContainer::OnAction(const CAction &action)
 {
-  switch (action.GetID())
+  switch (MapScrollAction(action.GetID()))
   {
   case ACTION_PAGE_UP:
     Scroll(-m_itemsPerPage);
@@ -172,7 +172,7 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
   // see if the point is either side of our focused item
   float start = GetCursor() * sizeOfItem;
   float end = start + m_focusedLayout->Size(m_orientation);
-  float pos = (m_orientation == VERTICAL) ? point.y : point.x;
+  const float pos = GetListPosFromPoint(point);
   if (pos < start - 0.5f * sizeOfItem)
   { // scroll backward
     if (!InsideLayout(m_layout, point))
