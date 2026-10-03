@@ -566,6 +566,7 @@
 		<value>$LOCALIZE[19021] / $LOCALIZE[137]$INFO[Control.GetLabel(29), / ]$INFO[Control.GetLabel(30), ]</value>
 	</variable>
 	<variable name="BreadcrumbsPVRChannelsOSDVar">
+		<value condition="!String.IsEmpty(Window.Property(PVRProviderName))">$INFO[Window.Property(PVRProviderName)]$INFO[Window.Property(PVRGroupName),/]</value>
 		<value condition="PVR.IsPlayingTV">$LOCALIZE[19020] / $LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
 		<value condition="PVR.IsPlayingRadio">$LOCALIZE[19021] / $LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
 		<value>$LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>
