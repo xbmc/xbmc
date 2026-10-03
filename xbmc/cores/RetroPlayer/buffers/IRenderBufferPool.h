@@ -175,6 +175,11 @@ public:
    * Implementations must bind the owning context and restore the caller's binding.
    */
   virtual void DestroyContext() {}
+
+  /*!
+   * \brief Submit outstanding GUI sampling before recycling or destroying captures
+   */
+  virtual void FlushRendered() {}
 };
 } // namespace RETRO
 } // namespace KODI

@@ -115,29 +115,6 @@ protected:
 
   std::map<CRenderBufferFBO*, std::unique_ptr<RenderBufferTextures>> m_RBTexturesMap;
 
-  struct FrameGeometry
-  {
-    unsigned int frameWidth{0};
-    unsigned int frameHeight{0};
-    unsigned int textureWidth{0};
-    unsigned int textureHeight{0};
-    CRect sourceRect;
-    CRect samplingRect;
-    bool bottomLeftOrigin{false};
-
-    bool operator==(const FrameGeometry& rhs) const
-    {
-      return frameWidth == rhs.frameWidth && frameHeight == rhs.frameHeight &&
-             textureWidth == rhs.textureWidth && textureHeight == rhs.textureHeight &&
-             sourceRect == rhs.sourceRect && samplingRect == rhs.samplingRect &&
-             bottomLeftOrigin == rhs.bottomLeftOrigin;
-    }
-    bool operator!=(const FrameGeometry& rhs) const { return !(*this == rhs); }
-  };
-
-  FrameGeometry m_loggedGeometry;
-  bool m_loggedHardwarePresentation{false};
-
   GLuint m_mainVAO;
   GLuint m_mainVertexVBO;
   GLuint m_mainIndexVBO;

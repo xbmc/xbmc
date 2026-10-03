@@ -81,6 +81,23 @@ public:
   }
   void EndClientFrame() override { ++ends; }
   void DestroyContext() override { ++destroys; }
+  void FlushRendered() override
+  {
+    if (onFlushRendered)
+      onFlushRendered();
+  }
+  void Return(IRenderBuffer* buffer) override
+  {
+    if (onReturn)
+      onReturn();
+    CBaseRenderBufferPool::Return(buffer);
+  }
+  void Flush() override
+  {
+    if (onFlush)
+      onFlush();
+    CBaseRenderBufferPool::Flush();
+  }
   IRenderBuffer* GetBuffer(unsigned int width, unsigned int height) override
   {
     lastBuffer = static_cast<CTestBuffer*>(CBaseRenderBufferPool::GetBuffer(width, height));
@@ -115,6 +132,11 @@ public:
   unsigned int ends{0};
   unsigned int destroys{0};
   mutable std::function<void()> onCompatibilityCheck;
+  std::function<void()> onFlushRendered;
+  std::function<void()> onReturn;
+  std::function<void()> onFlush;
+  std::function<void()> onRendererFlush;
+  CRPBaseRenderer* renderer{nullptr};
 
 protected:
   bool ConfigureInternal() override
@@ -149,6 +171,12 @@ protected:
   }
 
   void RenderInternal(bool, uint8_t) override {}
+  void FlushInternal() override
+  {
+    const auto& callback = static_cast<CTestPool*>(GetBufferPool())->onRendererFlush;
+    if (callback)
+      callback();
+  }
 };
 
 class CTestHardwareCallback : public KODI::GAME::IHwFramebufferCallback
@@ -167,7 +195,9 @@ public:
                                   CRenderContext& context,
                                   std::shared_ptr<IRenderBufferPool> pool) override
   {
-    return new CTestRenderer(settings, context, std::move(pool));
+    auto* renderer = new CTestRenderer(settings, context, pool);
+    static_cast<CTestPool*>(pool.get())->renderer = renderer;
+    return renderer;
   }
   RenderBufferPoolVector CreateBufferPools(CRenderContext&) override { return m_pools; }
 
@@ -405,6 +435,35 @@ TEST_F(TestRPRenderManager, CapturedFrameOwnsOneReferenceAndCanRemainInUse)
   previous->Release();
   manager.EndClientFrame();
   manager.DestroyContext();
+}
+
+TEST_F(TestRPRenderManager, GUIHandoffPrecedesCaptureReleaseAndPoolFlush)
+{
+  auto& manager = m_environment.Renderer();
+  m_pool->hardware = true;
+  ASSERT_TRUE(manager.CreateContext({}));
+  ASSERT_TRUE(manager.Configure(AV_PIX_FMT_NONE, 320, 240, 0.0f, 320, 240));
+  manager.FrameMove();
+  RenderControl();
+  ASSERT_NE(m_pool->renderer, nullptr);
+  ASSERT_TRUE(manager.Create(320, 240));
+  ASSERT_TRUE(manager.BeginClientFrame());
+  manager.RenderFrame(320, 240, 0.0f, 0);
+  manager.EndClientFrame();
+  m_pool->renderer->SetBuffer(m_pool->captured);
+
+  std::vector<std::string> events;
+  m_pool->onFlushRendered = [&] { events.emplace_back("submit"); };
+  m_pool->onReturn = [&] { events.emplace_back("return"); };
+  m_pool->onFlush = [&] { events.emplace_back("flush pool"); };
+  m_pool->onRendererFlush = [&] { events.emplace_back("flush renderer"); };
+  manager.Flush();
+  manager.FrameMove();
+  EXPECT_EQ(events, (std::vector<std::string>{"submit", "return", "flush renderer", "flush pool"}));
+  m_pool->onFlushRendered = {};
+  m_pool->onReturn = {};
+  m_pool->onFlush = {};
+  m_pool->onRendererFlush = {};
 }
 
 TEST_F(TestRPRenderManager, InvalidAndFailedCapturesKeepPreviousPublication)

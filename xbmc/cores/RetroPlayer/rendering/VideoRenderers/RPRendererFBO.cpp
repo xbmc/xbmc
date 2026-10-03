@@ -9,7 +9,6 @@
 #include "RPRendererFBO.h"
 
 #if (defined(HAS_EGL) || defined(TARGET_DARWIN_OSX)) && (defined(HAS_GL) || HAS_GLES == 3)
-#include "RenderGeometryFBO.h"
 #include "ServiceBroker.h"
 #include "cores/RetroPlayer/buffers/RenderBufferFBO.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolFBO.h"
@@ -24,7 +23,6 @@
 #include "cores/RetroPlayer/shaders/gl/ShaderTextureGLRef.h"
 #endif
 #include "utils/GLUtils.h"
-#include "utils/ScopeGuard.h"
 #include "utils/log.h"
 #endif
 
@@ -191,10 +189,8 @@ void CRPRendererFBO::DrawBlackBars()
   Svertex vertices[24];
   GLubyte count = 0;
 
-  const CRect destRect = CRenderGeometryFBO::GetDestinationRect(m_rotatedDestCoords);
-
   // top quad
-  if (destRect.y1 > 0.0f)
+  if (m_rotatedDestCoords[0].y > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
@@ -204,25 +200,25 @@ void CRPRendererFBO::DrawBlackBars()
     vertices[quad + 1].y = 0;
     vertices[quad + 1].z = 0;
     vertices[quad + 2].x = m_context.GetScreenWidth();
-    vertices[quad + 2].y = destRect.y1;
+    vertices[quad + 2].y = m_rotatedDestCoords[0].y;
     vertices[quad + 2].z = 0;
     vertices[quad + 3] = vertices[quad + 2];
     vertices[quad + 4].x = 0;
-    vertices[quad + 4].y = destRect.y1;
+    vertices[quad + 4].y = m_rotatedDestCoords[0].y;
     vertices[quad + 4].z = 0;
     vertices[quad + 5] = vertices[quad];
     count += 6;
   }
 
   // bottom quad
-  if (destRect.y2 < m_context.GetScreenHeight())
+  if (m_rotatedDestCoords[2].y < m_context.GetScreenHeight())
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
-    vertices[quad].y = destRect.y2;
+    vertices[quad].y = m_rotatedDestCoords[2].y;
     vertices[quad].z = 0;
     vertices[quad + 1].x = m_context.GetScreenWidth();
-    vertices[quad + 1].y = destRect.y2;
+    vertices[quad + 1].y = m_rotatedDestCoords[2].y;
     vertices[quad + 1].z = 0;
     vertices[quad + 2].x = m_context.GetScreenWidth();
     vertices[quad + 2].y = m_context.GetScreenHeight();
@@ -236,42 +232,42 @@ void CRPRendererFBO::DrawBlackBars()
   }
 
   // left quad
-  if (destRect.x1 > 0.0f)
+  if (m_rotatedDestCoords[0].x > 0.0f)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
-    vertices[quad].y = destRect.y1;
+    vertices[quad].y = m_rotatedDestCoords[0].y;
     vertices[quad].z = 0;
-    vertices[quad + 1].x = destRect.x1;
-    vertices[quad + 1].y = destRect.y1;
+    vertices[quad + 1].x = m_rotatedDestCoords[0].x;
+    vertices[quad + 1].y = m_rotatedDestCoords[0].y;
     vertices[quad + 1].z = 0;
-    vertices[quad + 2].x = destRect.x1;
-    vertices[quad + 2].y = destRect.y2;
+    vertices[quad + 2].x = m_rotatedDestCoords[3].x;
+    vertices[quad + 2].y = m_rotatedDestCoords[3].y;
     vertices[quad + 2].z = 0;
     vertices[quad + 3] = vertices[quad + 2];
     vertices[quad + 4].x = 0;
-    vertices[quad + 4].y = destRect.y2;
+    vertices[quad + 4].y = m_rotatedDestCoords[3].y;
     vertices[quad + 4].z = 0;
     vertices[quad + 5] = vertices[quad];
     count += 6;
   }
 
   // right quad
-  if (destRect.x2 < m_context.GetScreenWidth())
+  if (m_rotatedDestCoords[2].x < m_context.GetScreenWidth())
   {
     GLubyte quad = count;
-    vertices[quad].x = destRect.x2;
-    vertices[quad].y = destRect.y1;
+    vertices[quad].x = m_rotatedDestCoords[1].x;
+    vertices[quad].y = m_rotatedDestCoords[1].y;
     vertices[quad].z = 0;
     vertices[quad + 1].x = m_context.GetScreenWidth();
-    vertices[quad + 1].y = destRect.y1;
+    vertices[quad + 1].y = m_rotatedDestCoords[1].y;
     vertices[quad + 1].z = 0;
     vertices[quad + 2].x = m_context.GetScreenWidth();
-    vertices[quad + 2].y = destRect.y2;
+    vertices[quad + 2].y = m_rotatedDestCoords[2].y;
     vertices[quad + 2].z = 0;
     vertices[quad + 3] = vertices[quad + 2];
-    vertices[quad + 4].x = destRect.x2;
-    vertices[quad + 4].y = destRect.y2;
+    vertices[quad + 4].x = m_rotatedDestCoords[1].x;
+    vertices[quad + 4].y = m_rotatedDestCoords[2].y;
     vertices[quad + 4].z = 0;
     vertices[quad + 5] = vertices[quad];
     count += 6;
@@ -302,39 +298,8 @@ void CRPRendererFBO::Render(uint8_t alpha)
       m_sourceRect.Height() <= 0.0f)
     return;
 
-  CRect rect = CRenderGeometryFBO::GetTextureCoordinates(
-      m_sourceRect, renderBuffer->GetHeight(), renderBuffer->TextureWidth(),
-      renderBuffer->TextureHeight(), renderBuffer->BottomLeftOrigin());
-
-  if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
-  {
-    const FrameGeometry geometry{renderBuffer->GetWidth(),
-                                 renderBuffer->GetHeight(),
-                                 renderBuffer->TextureWidth(),
-                                 renderBuffer->TextureHeight(),
-                                 m_sourceRect,
-                                 rect,
-                                 renderBuffer->BottomLeftOrigin()};
-
-    if (geometry != m_loggedGeometry)
-    {
-      CLog::Log(LOGDEBUG,
-                "RetroPlayer[RENDER]: FBO geometry: frame {}x{}, texture {}x{}, source rect "
-                "({:.1f},{:.1f})-({:.1f},{:.1f}), sampling ({:.3f},{:.3f})-({:.3f},{:.3f}), "
-                "bottom-left origin {}",
-                geometry.frameWidth, geometry.frameHeight, geometry.textureWidth,
-                geometry.textureHeight, geometry.sourceRect.x1, geometry.sourceRect.y1,
-                geometry.sourceRect.x2, geometry.sourceRect.y2, geometry.samplingRect.x1,
-                geometry.samplingRect.y1, geometry.samplingRect.x2, geometry.samplingRect.y2,
-                geometry.bottomLeftOrigin ? "yes" : "no");
-
-      m_loggedGeometry = geometry;
-    }
-  }
-
   renderBuffer->WaitForCapture();
-  const UTILS::CScopeGuard<CRenderBufferFBO*, nullptr, void(CRenderBufferFBO*)> finishRender(
-      [](CRenderBufferFBO* buffer) { buffer->FinishRender(); }, renderBuffer);
+  renderBuffer->MarkRendered();
 
   UpdateShaders();
 
@@ -352,27 +317,31 @@ void CRPRendererFBO::Render(uint8_t alpha)
     }
 
     const auto it = m_RBTexturesMap.find(renderBuffer);
-    if (it != m_RBTexturesMap.end())
+    if (it != m_RBTexturesMap.end() &&
+        it->second->sourceTexture->GetTextureID() == renderBuffer->TextureID() &&
+        it->second->sourceTexture->GetWidth() == renderBuffer->GetWidth() &&
+        it->second->sourceTexture->GetHeight() == renderBuffer->GetHeight())
     {
       rbTextures = it->second.get();
     }
     else
     {
+      if (it != m_RBTexturesMap.end())
+        m_RBTexturesMap.erase(it);
+
       rbTextures = new RenderBufferTextures{
 #if defined(HAS_GL)
           // Source texture
-          std::make_shared<SHADER::CShaderTextureGLRef>(renderBuffer->TextureWidth(),
-                                                        renderBuffer->TextureHeight(),
-                                                        renderBuffer->TextureID()),
+          std::make_shared<SHADER::CShaderTextureGLRef>(
+              renderBuffer->GetWidth(), renderBuffer->GetHeight(), renderBuffer->TextureID()),
           // Target texture
           std::make_shared<SHADER::CShaderTextureGL>(static_cast<unsigned int>(m_fullDestWidth),
                                                      static_cast<unsigned int>(m_fullDestHeight),
                                                      GL_UNSIGNED_BYTE, GL_RGBA8, GL_BGRA, false)
 #elif defined(HAS_GLES)
           // Source texture
-          std::make_shared<SHADER::CShaderTextureGLESRef>(renderBuffer->TextureWidth(),
-                                                          renderBuffer->TextureHeight(),
-                                                          renderBuffer->TextureID()),
+          std::make_shared<SHADER::CShaderTextureGLESRef>(
+              renderBuffer->GetWidth(), renderBuffer->GetHeight(), renderBuffer->TextureID()),
           // Target texture
           std::make_shared<SHADER::CShaderTextureGLES>(static_cast<unsigned int>(m_fullDestWidth),
                                                        static_cast<unsigned int>(m_fullDestHeight),
@@ -401,17 +370,11 @@ void CRPRendererFBO::Render(uint8_t alpha)
       m_bShadersNeedUpdate = false;
       m_bUseShaderPreset = false;
     }
-    else
-    {
-      glActiveTexture(GL_TEXTURE0); // GUI shader samples from texture unit 0
-      glBindTexture(m_textureTarget, targetTexture->GetTextureID());
-      rect = CRenderGeometryFBO::GetTextureCoordinates(m_sourceRect, renderBuffer->GetHeight(),
-                                                       renderBuffer->GetWidth(),
-                                                       renderBuffer->GetHeight(), false);
-    }
-  }
 
-  if (!m_bUseShaderPreset)
+    glActiveTexture(GL_TEXTURE0); // GUI shader samples from texture unit 0
+    glBindTexture(m_textureTarget, targetTexture->GetTextureID());
+  }
+  else
   {
     GLint filter = GL_NEAREST;
     if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
@@ -453,6 +416,13 @@ void CRPRendererFBO::Render(uint8_t alpha)
               (col[3] / 255.0f));
   glUniform1f(depthLoc, -1.0f);
 
+  // Setup destination rectangle
+  CRect rect = m_sourceRect;
+  rect.x1 /= renderBuffer->GetWidth();
+  rect.x2 /= renderBuffer->GetWidth();
+  rect.y1 /= renderBuffer->GetHeight();
+  rect.y2 /= renderBuffer->GetHeight();
+
   PackedVertex vertex[4];
 
   // Setup vertex position values
@@ -475,14 +445,6 @@ void CRPRendererFBO::Render(uint8_t alpha)
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_DYNAMIC_DRAW);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
-
-  if (!m_loggedHardwarePresentation)
-  {
-    CLog::Log(LOGDEBUG,
-              "RetroPlayer[RENDER]: First hardware frame presented from shared texture {}",
-              renderBuffer->TextureID());
-    m_loggedHardwarePresentation = true;
-  }
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);

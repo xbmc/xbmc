@@ -227,6 +227,9 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   UnregisterWindowCallbacks();
 
+  if (m_renderManager)
+    m_renderManager->FlushRendered();
+
   m_playbackControl.reset();
 
   std::unique_lock lock(m_mutex);

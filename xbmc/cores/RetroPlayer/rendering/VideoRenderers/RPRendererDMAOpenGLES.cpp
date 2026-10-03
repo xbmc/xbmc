@@ -80,12 +80,18 @@ void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
     }
 
     const auto it = m_RBTexturesMap.find(renderBuffer);
-    if (it != m_RBTexturesMap.end())
+    if (it != m_RBTexturesMap.end() &&
+        it->second->sourceTexture->GetTextureID() == renderBuffer->TextureID() &&
+        it->second->sourceTexture->GetWidth() == renderBuffer->GetWidth() &&
+        it->second->sourceTexture->GetHeight() == renderBuffer->GetHeight())
     {
       rbTextures = it->second.get();
     }
     else
     {
+      if (it != m_RBTexturesMap.end())
+        m_RBTexturesMap.erase(it);
+
       rbTextures = new RenderBufferTextures{
           // Source texture
           std::make_shared<SHADER::CShaderTextureGLESRef>(
