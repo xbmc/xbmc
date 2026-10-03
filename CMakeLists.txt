@@ -108,6 +108,7 @@ option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
+option(ENABLE_PCH         "Enable precompiled headers (non-Windows)?" ON)
 
 # Internal Depends - supported on all platforms
 
@@ -178,6 +179,8 @@ if(NOT CMAKE_GENERATOR MATCHES "Visual Studio" AND NOT CMAKE_GENERATOR STREQUAL 
 else()
   set(ENABLE_STATIC_LIBS FALSE)
 endif()
+
+include(cmake/scripts/common/PrecompiledHeaders.cmake)
 
 core_find_git_rev(APP_SCMID FULL)
 
@@ -473,6 +476,8 @@ set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
 source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CMAKE_SOURCE_DIR}/xbmc)
 if(WIN32)
   add_precompiled_header(lib${APP_NAME_LC} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp)
+elseif(CORE_USE_PCH)
+  core_add_precompiled_headers()
 endif()
 
 # main binary
@@ -593,6 +598,9 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   add_executable(${APP_NAME_LC}-test EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/xbmc/test/xbmc-test.cpp ${test_sources})
 
   add_dependencies(${APP_NAME_LC}-test LIBRARY::Gtest)
+  if(CORE_USE_PCH)
+    core_target_precompile_headers(${APP_NAME_LC}-test)
+  endif()
 
   set_target_properties(PROPERTIES ENABLE_EXPORTS ON)
 
