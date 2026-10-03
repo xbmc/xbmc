@@ -8,6 +8,7 @@
 
 #include "ShaderGLES.h"
 
+#include "ServiceBroker.h"
 #include "ShaderTextureGLES.h"
 #include "ShaderTextureGLESRef.h"
 #include "ShaderUtilsGLES.h"
@@ -16,6 +17,7 @@
 #include "cores/RetroPlayer/shaders/IShaderLut.h"
 #include "cores/RetroPlayer/shaders/ShaderUtils.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -52,6 +54,16 @@ bool CShaderGLES::Create(unsigned int passIdx,
   m_shaderProgram = glCreateProgram();
 
   std::string defineVersion = CShaderUtilsGLES::GetGLSLVersion(m_shaderSource);
+
+  // The shaders are written for desktop GL, where precision qualifiers do
+  // nothing. Drivers that honour mediump render many of them black, and
+  // OpenGL ES 3.0 guarantees highp in fragment shaders.
+  unsigned int major{0};
+  unsigned int minor{0};
+  CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
+  if (major >= 3)
+    StringUtils::Replace(m_shaderSource, "mediump", "highp");
+
   std::string defineVertex = "#define VERTEX\n#define PARAMETER_UNIFORM\n";
   std::string defineFragment = "#define FRAGMENT\n#define PARAMETER_UNIFORM\n";
   std::string vertexShaderSourceStr = defineVersion + defineVertex + m_shaderSource;
