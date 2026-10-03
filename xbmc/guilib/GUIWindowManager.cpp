@@ -1035,8 +1035,11 @@ bool CGUIWindowManager::SwitchToFullScreen(bool force /* = false */)
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   // See if we're playing a game
-  if (activeWindowID != WINDOW_FULLSCREEN_GAME && appPlayer->IsPlayingGame())
-    windowID = WINDOW_FULLSCREEN_GAME;
+  if (appPlayer->IsPlayingGame())
+  {
+    if (activeWindowID != WINDOW_FULLSCREEN_GAME)
+      windowID = WINDOW_FULLSCREEN_GAME;
+  }
 
   // See if we're playing a video
   else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO && appPlayer->IsPlayingVideo())
