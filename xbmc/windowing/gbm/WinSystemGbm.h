@@ -84,6 +84,7 @@ public:
 
 protected:
   void OnLostDevice();
+  void OnResetDisplay();
 
   std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
 
