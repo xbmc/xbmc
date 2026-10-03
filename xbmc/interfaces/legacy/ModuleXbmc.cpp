@@ -267,6 +267,7 @@ namespace XBMCAddon
     String getInfoLabel(const char* cLine)
     {
       XBMC_TRACE;
+      DelayedCallGuard dg;
       if (!cLine)
       {
         String ret;
@@ -286,6 +287,7 @@ namespace XBMCAddon
     String getInfoImage(const char * infotag)
     {
       XBMC_TRACE;
+      DelayedCallGuard dg;
       if (!infotag)
         {
           String ret;
