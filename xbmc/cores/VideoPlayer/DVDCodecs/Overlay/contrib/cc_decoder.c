@@ -488,6 +488,8 @@ void ccmem_tobuf(cc_decoder_t *dec)
           break;
       for (j = f; j <= l; j++)
       {
+        if (dec->textlen >= (int)sizeof(dec->text) - 4)
+          break;
         const char* chbytes =
             get_char_override(buf->rows[i].cells[j].charset, buf->rows[i].cells[j].c);
         if (chbytes != NULL)
@@ -503,7 +505,8 @@ void ccmem_tobuf(cc_decoder_t *dec)
           dec->text[dec->textlen++] = (unsigned char)buf->rows[i].cells[j].c;
         }
       }
-      dec->text[dec->textlen++] = '\n';
+      if (dec->textlen < (int)sizeof(dec->text) - 1)
+        dec->text[dec->textlen++] = '\n';
     }
   }
 
