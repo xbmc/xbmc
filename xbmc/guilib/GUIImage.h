@@ -121,6 +121,7 @@ protected:
 
   bool m_isTransitioning{false};
   bool m_hasNewStagingTexture{false};
+  bool m_useCacheStaging{true};
 
   std::unique_ptr<CGUITexture> m_textureCurrent;
   std::unique_ptr<CGUITexture> m_textureNext;
