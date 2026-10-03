@@ -308,6 +308,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
           if (p + 4 > pEnd) return NULL;
           uint16_t tfaddr = (p[0] << 8 | p[1]); // offset in packet
           uint16_t bfaddr = (p[2] << 8 | p[3]); // offset in packet
+          if (tfaddr < 4 || bfaddr < 4 || tfaddr > pSPUData->iSize || bfaddr > pSPUData->iSize)
+            return NULL;
           pSPUInfo->pTFData = (tfaddr - 4); //pSPUInfo->pData + (tfaddr - 4); // pSPUData->data = packet startaddr - 4
           pSPUInfo->pBFData = (bfaddr - 4); //pSPUInfo->pData + (bfaddr - 4); // pSPUData->data = packet startaddr - 4
           p += 4;
@@ -332,6 +334,11 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       }
     }
     DebugLog("  end off SP_DCSQT");
+    if (p >= pEnd)
+    {
+      DebugLog("GetPacket, reached end of packet without CMD_END");
+      return NULL;
+    }
     if (*p == CMD_END) p++;
     else
     {
