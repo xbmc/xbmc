@@ -19,7 +19,6 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -38,6 +37,7 @@
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
 
 #include <algorithm>
@@ -466,15 +466,11 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
 
   // Select the playlist using the simple menu
   const std::string oldPath{item->GetDynPath()};
-  item->SetProperty("force_playlist_selection", true);
   const int idMovie{m_database.GetMovieId(oldPath)};
 
-  CFileItemList items;
-  if (!XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
-          *item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU) ||
-      items.IsEmpty())
+  CFileItem chosen{*item};
+  if (!KODI::VIDEO::UTILS::ChooseDiscPlaylist(chosen))
     return false;
-  const CFileItem& chosen{*items[0]};
 
   const CFileItem& owner{item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion ? *m_videoAsset
                                                                                   : *item};
@@ -501,17 +497,11 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
     m_database.BeginTransaction();
     if (replaceExistingFile == ReplaceExistingFile::YES)
     {
-      idFile = m_database.SetFileForMedia(
-          item->GetDynPath(), owner.GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId,
-          CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
-                                     .m_playCount = item->GetVideoInfoTag()->GetPlayCount(),
-                                     .m_lastPlayed = item->GetVideoInfoTag()->m_lastPlayed,
-                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
+      idFile = KODI::VIDEO::UTILS::SaveDiscPlaylistToLibrary(
+          *item, owner.GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId, m_database);
       videoDbSuccess = idFile > 0;
       if (videoDbSuccess)
       {
-        m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
-                                           item->GetDynPath());
         CVideoInfoTag* tag{item->GetVideoInfoTag()};
         const int oldFileId{tag->m_iFileId};
         if (tag->m_type == MediaTypeVideoVersion)
