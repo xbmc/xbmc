@@ -28,6 +28,7 @@ xbmc/guilib/test                  test/guilib
 xbmc/imagefiles/test              test/imagefiles
 xbmc/input/keyboard/test          test/input/keyboard
 xbmc/input/keymaps/test           test/input/keymaps
+xbmc/interfaces/test              test/interfaces
 xbmc/interfaces/json-rpc/test     test/jsonrpc
 xbmc/interfaces/python/test       test/python
 xbmc/language/test                test/language
