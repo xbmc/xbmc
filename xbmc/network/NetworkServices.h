@@ -10,6 +10,8 @@
 
 #include "settings/lib/ISettingCallback.h"
 
+#include <memory>
+
 class CSettings;
 #ifdef HAS_WEB_SERVER
 class CWebServer;
@@ -26,6 +28,14 @@ class CHTTPWebinterfaceAddonsHandler;
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
 class TiXmlNode;
+
+namespace KODI
+{
+namespace NETWORK
+{
+class ILibtorrent;
+} // namespace NETWORK
+} // namespace KODI
 
 class CNetworkServices : public ISettingCallback
 {
@@ -52,6 +62,7 @@ public:
     ES_EVENTSERVER,
     ES_ZEROCONF,
     ES_WSDISCOVERY,
+    ES_LIBTORRENT,
   };
 
   bool StartServer(enum ESERVERS server, bool start);
@@ -103,6 +114,11 @@ public:
   bool IsWSDiscoveryRunning();
   bool StopWSDiscovery();
 
+  bool StartLibtorrent();
+  bool IsLibtorrentRunning() const;
+  bool StopLibtorrent(bool bWait);
+  KODI::NETWORK::ILibtorrent* GetLibtorrent();
+
 private:
   CNetworkServices(const CNetworkServices&);
   CNetworkServices const& operator=(CNetworkServices const&);
@@ -128,4 +144,6 @@ private:
   CHTTPWebinterfaceAddonsHandler& m_httpWebinterfaceAddonsHandler;
 #endif
 #endif
+
+  std::unique_ptr<KODI::NETWORK::ILibtorrent> m_libtorrent;
 };
