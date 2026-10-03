@@ -180,6 +180,8 @@ void CGameWindowFullScreen::OnInitWindow()
   // Switch resolution
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true); //! @todo
 
+  CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(true);
+
   CGUIWindow::OnInitWindow();
 
   // Show OSD help
@@ -207,6 +209,8 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
   CServiceBroker::GetGUI()->GetWindowManager().CloseInternalModalDialogs(true);
 
   CGUIWindow::OnDeinitWindow(nextWindowID);
+
+  CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(false);
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false); //! @todo
 }
