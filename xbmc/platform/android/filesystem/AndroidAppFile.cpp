@@ -80,8 +80,14 @@ namespace
 
 CJNIBitmap GetBitmapFromDrawable(CJNIDrawable& drawable)
 {
-  CJNIBitmap bmp = CJNIBitmap::createBitmap(drawable.getIntrinsicWidth(),
-                                            drawable.getIntrinsicHeight(), CJNIBitmap::ARGB_8888);
+  // Adaptive icons without sized layers have no intrinsic size, and
+  // createBitmap() throws for non-positive dimensions.
+  const int width = drawable.getIntrinsicWidth();
+  const int height = drawable.getIntrinsicHeight();
+  if (width <= 0 || height <= 0)
+    return {};
+
+  CJNIBitmap bmp = CJNIBitmap::createBitmap(width, height, CJNIBitmap::ARGB_8888);
   CJNICanvas canvas(bmp);
 
   drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
