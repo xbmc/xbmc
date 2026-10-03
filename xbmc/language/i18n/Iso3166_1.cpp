@@ -9,6 +9,7 @@
 #include "language/i18n/Iso3166_1.h"
 
 #include "language/i18n/Iso3166_1_Table.h"
+#include "language/i18n/IsoCodes.h"
 
 #include <algorithm>
 
@@ -67,9 +68,9 @@ std::optional<std::string> CIso3166_1::LookupByCode(std::string_view code)
 {
   std::optional<ISO3166_1> entry;
 
-  if (code.size() == 2)
+  if (code.size() == ALPHA2_CODE_LENGTH)
     entry = FindAlpha2(code);
-  else if (code.size() == 3)
+  else if (code.size() == ALPHA3_CODE_LENGTH)
     entry = FindAlpha3(code);
 
   if (entry.has_value())

@@ -135,20 +135,30 @@ bool CBcp47::IsValidScript() const
   return m_registrySubTags.has_value() && m_registrySubTags.value().m_script.has_value();
 }
 
+bool CBcp47::IsRegionSubtag(std::string_view region, const CSubTagRegistryManager* registry)
+{
+  if (region.empty())
+    return false;
+
+  // ISO 3166-1 codes reserved for private use
+  // note RFC 5646 doesn't mention the UN M.49 private use codes range 900-999
+  //! @todo is it possible to retrieve the range from the registry?
+  if (region == "aa" || (region >= "qm" && region <= "qz") || (region >= "xa" && region <= "xz") ||
+      region == "zz")
+    return true;
+
+  const CSubTagRegistryManager& subTags{
+      registry != nullptr ? *registry : CSubTagRegistryManager::GetInstance()};
+  return subTags.GetRegionSubTags().Lookup(std::string{region}).has_value();
+}
+
 bool CBcp47::IsValidRegion() const
 {
   // The region subtag is optional
   if (m_region.empty())
     return true;
 
-  // ISO 3166-1 codes reserved for private use
-  // note RFC 5646 doesn't mention the UN M.49 private use codes range 900-999
-  //! @todo is it possible to retrieve the range from the registry?
-  if (m_region == "aa" || (m_region >= "qm" && m_region <= "qz") ||
-      (m_region >= "xa" && m_region <= "xz") || m_region == "zz")
-    return true;
-
-  return m_registrySubTags.has_value() && m_registrySubTags.value().m_region.has_value();
+  return IsRegionSubtag(m_region, m_registry);
 }
 
 bool CBcp47::HasDuplicateVariants() const
