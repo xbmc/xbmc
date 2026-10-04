@@ -86,7 +86,7 @@ public:
   bool IsHDRDisplay() override;
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
 
-  float GetSyncOutputRefreshRate();
+  float GetPresentationRefreshRate();
   float GetDisplayLatency() override;
   float GetFrameLatencyAdjustment() override;
   std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
@@ -267,6 +267,8 @@ private:
   std::uint32_t m_syncOutputID;
   /// Refresh rate of sync output returned by wp_presentation
   std::atomic<float> m_syncOutputRefreshRate{0.0f};
+  /// Refresh rate from the last presented event, falls back to the sync output's
+  std::atomic<float> m_presentationRefreshRate{0.0f};
   static constexpr int LATENCY_MOVING_AVERAGE_SIZE{30};
   std::atomic<float> m_latencyMovingAverage;
   CSignalHandlerList<PresentationFeedbackHandler> m_presentationFeedbackHandlers;
