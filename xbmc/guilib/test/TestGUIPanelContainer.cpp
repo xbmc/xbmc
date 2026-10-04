@@ -48,6 +48,14 @@ public:
   }
 
   int GetPageSizeForTest() const { return GetPageSize(); }
+  void SelectItemForTest(int item) { SelectItem(item); }
+  void RecalculateLayoutForTest() { CalculateLayout(); }
+
+  void SetItemWidthForTest(float width)
+  {
+    m_layout->SetWidth(width);
+    m_focusedLayout->SetWidth(width);
+  }
 
   void PrepareForAction()
   {
@@ -67,4 +75,19 @@ TEST(TestGUIPanelContainer, CalculateLayoutUpdatesPageNavigationSize)
   container.PrepareForAction();
 
   EXPECT_EQ(container.GetPageSizeForTest(), 12);
+}
+
+TEST(TestGUIPanelContainer, CalculateLayoutKeepsSelectedItemWhenRowLengthChanges)
+{
+  TestGUIPanelContainer container(960, 0, 960, 80, 80);
+  container.SetItemWidthForTest(100);
+  container.AddItems(1000);
+  container.PrepareForAction();
+  container.SelectItemForTest(968);
+  ASSERT_EQ(container.GetSelectedItem(), 968);
+
+  container.SetItemWidthForTest(130);
+  container.RecalculateLayoutForTest();
+
+  EXPECT_EQ(container.GetSelectedItem(), 968);
 }
