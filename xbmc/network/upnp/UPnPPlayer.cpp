@@ -8,6 +8,7 @@
  */
 #include "UPnPPlayer.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "ThumbLoader.h"
 #include "UPnP.h"
@@ -40,6 +41,11 @@ NPT_SET_LOCAL_LOGGER("xbmc.upnp.player")
 
 namespace UPNP
 {
+
+namespace
+{
+constexpr std::chrono::milliseconds QUEUE_NEXT_LEAD = 10s;
+} // unnamed namespace
 
 CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   : IPlayer(callback),
@@ -209,6 +215,11 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   NPT_CHECK_LABEL_SEVERE(m_delegate->WaitForReply(*action, timeout), failed_setavtransporturi);
   NPT_CHECK_LABEL_SEVERE(action->GetStatus(), failed_setavtransporturi);
 
+  {
+    std::unique_lock lock(m_queueSection);
+    m_trackUri = uri;
+  }
+
   timeout.Set(timeout.GetInitialTimeoutValue());
   NPT_CHECK_LABEL_SEVERE(m_delegate->SendPlay(action), failed_play);
   NPT_CHECK_LABEL_SEVERE(m_delegate->WaitForReply(*action, timeout), failed_play);
@@ -275,6 +286,13 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   CUPnPPlayerController::CAction* action = nullptr;
 
   m_started = false;
+  {
+    std::unique_lock lock(m_queueSection);
+    m_trackUri.clear();
+    m_queuedUri.clear();
+    m_queued.reset();
+    m_nextRequested = false;
+  }
 
   /* if no path we want to attach to a already playing player */
   if (file.GetPath().empty())
@@ -292,6 +310,12 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   }
   else
     NPT_CHECK_LABEL_SEVERE(PlayFile(file, options, timeout), failed);
+
+  {
+    const bool canQueueNext = m_control->CanSetNextAVTransportURI(m_delegate->m_device);
+    std::unique_lock lock(m_queueSection);
+    m_canQueueNext = canQueueNext;
+  }
 
   if (!IsRunning())
     Create();
@@ -331,11 +355,25 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
   if (!BuildResource(file, uri, metadata))
     goto failed;
 
+  {
+    // Moving to the URI already playing changes nothing the renderer reports, so it could not be
+    // followed. The file opens the ordinary way once this one ends.
+    std::unique_lock lock(m_queueSection);
+    if (uri == m_trackUri)
+      return true;
+  }
+
+  // Not waited on: this runs on the application thread, and a refusal only means the next file is
+  // opened the ordinary way once this one ends.
+  m_delegate->m_nextRefused = false;
   NPT_CHECK_LABEL_WARNING(
       m_delegate->SendSetNextAVTransportURI(action, uri.c_str(), metadata.c_str()), failed);
-  if (!m_delegate->WaitForReplyFor(*action, 10000ms))
-    goto failed;
-  NPT_CHECK_LABEL_WARNING(action->GetStatus(), failed);
+  m_delegate->EndAction(*action);
+  {
+    std::unique_lock lock(m_queueSection);
+    m_queuedUri = uri;
+    m_queued = std::make_unique<CFileItem>(file);
+  }
   return true;
 
 failed:
@@ -427,6 +465,50 @@ void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 
+void CUPnPPlayer::FollowQueue()
+{
+  const PLT_PositionInfo position = m_delegate->GetPosition();
+  const std::string reported = position.track_uri.GetChars();
+  std::unique_ptr<CFileItem> started;
+  bool request = false;
+
+  {
+    std::unique_lock lock(m_queueSection);
+    if (m_queued && m_delegate->m_nextRefused)
+    {
+      m_logger->warn("renderer refused {}; it opens when this file ends", m_queued->GetPath());
+      m_queued.reset();
+    }
+    else if (m_queued && reported == m_queuedUri)
+    {
+      started = std::move(m_queued);
+      m_trackUri = m_queuedUri;
+      m_nextRequested = false;
+    }
+    // The renderer echoing the URI it was given is what lets the move to the next one be seen.
+    else if (m_canQueueNext && !m_nextRequested && !m_trackUri.empty() && reported == m_trackUri)
+    {
+      const int64_t duration = position.track_duration.ToMillis();
+      const int64_t remaining = duration - position.rel_time.ToMillis();
+      if (duration > 0 && remaining <= QUEUE_NEXT_LEAD.count())
+      {
+        m_nextRequested = true;
+        request = true;
+      }
+    }
+  }
+
+  if (started)
+  {
+    m_hasVideo = VIDEO::IsVideo(*started);
+    m_hasAudio = !m_hasVideo && MUSIC::IsAudio(*started);
+    m_callback.OnPlayBackStarted(*started);
+    m_callback.OnAVStarted(*started);
+  }
+  else if (request)
+    m_callback.OnQueueNextItem();
+}
+
 void CUPnPPlayer::Process()
 {
   while (!m_bStop)
@@ -440,6 +522,7 @@ void CUPnPPlayer::Process()
       CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
       if (m_updateTimer.IsTimePast())
       {
+        FollowQueue();
         dataCacheCore.SetPlayTimes(0, GetTime(), 0, GetTotalTime());
         m_updateTimer.Set(500ms);
       }
