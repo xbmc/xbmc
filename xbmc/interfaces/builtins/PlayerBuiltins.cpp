@@ -195,9 +195,9 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (appPlayer->SupportsTempo() && appPlayer->IsPlaying() && !appPlayer->IsPaused())
     {
       if (paramlow == "tempodown")
-        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::DECREASE);
+        CPlayerUtils::AdvanceTempoStep(*appPlayer, TempoStepChange::DECREASE);
       else if (paramlow == "tempoup")
-        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::INCREASE);
+        CPlayerUtils::AdvanceTempoStep(*appPlayer, TempoStepChange::INCREASE);
     }
   }
   else if (StringUtils::StartsWithNoCase(params[0], "tempo"))
