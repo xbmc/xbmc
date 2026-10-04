@@ -51,7 +51,9 @@ public:
   void OnDestroyDevice(bool) override
   {
     std::unique_lock lock(m_section);
-    UnInit();
+    // keep the shared enumerator, it re-opens itself on the new device and is needed by ReInit()
+    m_procCaps.m_valid = false;
+    Close();
   }
 
   static bool IsSuperResolutionSuitable(const VideoPicture& picture);

@@ -133,6 +133,7 @@ protected:
   virtual void ResizeDeviceBuffers() = 0;
   virtual bool IsStereoEnabled() = 0;
   virtual void OnScreenChange(HMONITOR monitor) = 0;
+  virtual bool CanUseExclusiveFullscreen() const { return true; }
   virtual void AdjustWindow(bool forceResize = false);
   void CenterCursor() const;
 

@@ -15,4 +15,15 @@
       </group>
     </category>
   </section>
+  <section id="system">
+    <category id="display">
+      <group id="1">
+        <setting id="videoscreen.highperformancegpu" type="boolean" label="36117" help="36118">
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>
