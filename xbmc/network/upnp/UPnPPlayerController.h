@@ -157,6 +157,13 @@ public:
       Complete(res, "OnSetAVTransportURIResult");
     }
 
+    void OnSetNextAVTransportURIResult(NPT_Result res,
+                                       PLT_DeviceDataReference& device,
+                                       void* userdata) override
+    {
+      Complete(res, "OnSetNextAVTransportURIResult");
+    }
+
     void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
     {
       Complete(res, "OnPlayResult");

@@ -55,6 +55,7 @@ public:
                XbmcThreads::EndTime<>& timeout);
 
 private:
+  bool BuildResource(const CFileItem& file, std::string& uri, std::string& metadata);
   bool IsPaused() const;
   int64_t GetTime();
   int64_t GetTotalTime();
