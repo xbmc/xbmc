@@ -14,11 +14,21 @@
 #include "utils/log.h"
 #include "windowing/wayland/WinSystemWayland.h"
 
+#include "platform/linux/TimeUtils.h"
+
+#include <algorithm>
 #include <cinttypes>
+#include <cmath>
 #include <functional>
 
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
+
+namespace
+{
+// The presented event's refresh is a prediction and may jitter slightly
+constexpr float MAX_REFRESH_RATE_DIFFERENCE{0.01f};
+} // namespace
 
 CVideoSyncWpPresentation::CVideoSyncWpPresentation(CVideoReferenceClock* clock,
                                                    CWinSystemWayland& winSystem)
@@ -29,7 +39,7 @@ CVideoSyncWpPresentation::CVideoSyncWpPresentation(CVideoReferenceClock* clock,
 bool CVideoSyncWpPresentation::Setup()
 {
   m_stopEvent.Reset();
-  m_fps = m_winSystem.GetSyncOutputRefreshRate();
+  m_fps = m_winSystem.GetPresentationRefreshRate();
   if (m_fps <= 0.0f)
   {
     CLog::Log(LOGDEBUG, "VideoSyncWpPresentation: refresh rate unknown");
@@ -60,30 +70,37 @@ float CVideoSyncWpPresentation::GetFps()
 
 void CVideoSyncWpPresentation::HandlePresentation(timespec tv, std::uint32_t refresh, std::uint32_t syncOutputID, float syncOutputRefreshRate, std::uint64_t msc)
 {
-  auto mscDiff = msc - m_lastMsc;
+  std::uint64_t vblanks{1};
+  if (msc != 0 && m_lastMsc != 0)
+  {
+    vblanks = msc - m_lastMsc;
+  }
+  else if (syncOutputRefreshRate > 0.0f && m_lastPresentationTime)
+  {
+    // Without MSC, derive the number of vblanks from the presentation timestamps
+    const auto elapsed = KODI::LINUX::TimespecDifference(*m_lastPresentationTime, tv);
+    vblanks = std::max<std::int64_t>(
+        1, std::llround(elapsed * 1.0e-9 * static_cast<double>(syncOutputRefreshRate)));
+  }
 
   CLog::Log(LOGDEBUG, LOGAVTIMING,
             "VideoSyncWpPresentation: tv {}.{:09} s next refresh in +{} ns (fps {:f}) sync output "
-            "id {} fps {:f} msc {} mscdiff {}",
+            "id {} msc {} vblanks {}",
             static_cast<std::uint64_t>(tv.tv_sec), static_cast<std::uint64_t>(tv.tv_nsec), refresh,
-            1.0e9 / refresh, syncOutputID, syncOutputRefreshRate, msc, mscDiff);
+            syncOutputRefreshRate, syncOutputID, msc, vblanks);
 
-  if (m_fps != syncOutputRefreshRate || (m_syncOutputID != 0 && m_syncOutputID != syncOutputID))
+  if (std::abs(m_fps - syncOutputRefreshRate) > MAX_REFRESH_RATE_DIFFERENCE ||
+      (m_syncOutputID != 0 && m_syncOutputID != syncOutputID))
   {
     // Restart if fps changes or sync output changes (which means that the msc jumps)
     CLog::Log(LOGDEBUG, "fps or sync output changed, restarting Wayland video sync");
     m_stopEvent.Set();
   }
   m_syncOutputID = syncOutputID;
-
-  if (m_lastMsc == 0)
-  {
-    // If this is the first time or MSC is not supported, assume we moved one frame
-    mscDiff = 1;
-  }
   m_lastMsc = msc;
+  m_lastPresentationTime = tv;
 
   // FIXME use timespec instead of currenthostcounter()? Possibly difficult
   // due to different clock base
-  m_refClock->UpdateClock(mscDiff, CurrentHostCounter());
+  m_refClock->UpdateClock(static_cast<int>(vblanks), CurrentHostCounter());
 }
