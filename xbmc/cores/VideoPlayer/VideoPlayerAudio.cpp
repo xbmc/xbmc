@@ -528,6 +528,10 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
       if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
         m_audioSink.Resume();
+
+      // startup reports these itself; refresh them after a codec switch mid-stream
+      if (m_syncState != IDVDStreamPlayer::SYNC_STARTING)
+        UpdateProcessInfo(audioframe);
     }
 
     m_audioSink.SetDynamicRangeCompression(
@@ -581,15 +585,20 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       m_messageParent.Put(std::make_shared<CDVDMsgType<SStartMsg>>(CDVDMsg::PLAYER_STARTED, msg));
 
       m_streaminfo.channels = audioframe.format.m_channelLayout.Count();
-      m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
-      m_processInfo.SetAudioSampleRate(audioframe.format.m_sampleRate);
-      m_processInfo.SetAudioBitsPerSample(audioframe.bits_per_sample);
-      m_processInfo.SetAudioDecoderName(m_pAudioCodec->GetName());
-      m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
+      UpdateProcessInfo(audioframe);
     }
   }
 
   return true;
+}
+
+void CVideoPlayerAudio::UpdateProcessInfo(const DVDAudioFrame& audioframe)
+{
+  m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
+  m_processInfo.SetAudioSampleRate(audioframe.format.m_sampleRate);
+  m_processInfo.SetAudioBitsPerSample(audioframe.bits_per_sample);
+  m_processInfo.SetAudioDecoderName(m_pAudioCodec->GetName());
+  m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
 }
 
 void CVideoPlayerAudio::SetSyncType(bool passthrough)

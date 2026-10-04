@@ -137,6 +137,7 @@ public:
   bool IsPlayingRDS() const;
   bool IsLiveStream() const;
   bool IsStreaming() const;
+  void OnAudioPassthroughSettingChanged();
   void LoadPage(int p, int sp, unsigned char* buffer);
   bool OnAction(const CAction &action);
   void OnNothingToQueueNotify();
