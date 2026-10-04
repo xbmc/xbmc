@@ -17,7 +17,6 @@
 #include "utils/log.h"
 
 #include <cstddef>
-#include <regex>
 
 using namespace KODI::SHADER;
 
