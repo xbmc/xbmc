@@ -24,6 +24,7 @@
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
@@ -487,7 +488,7 @@ bool CVideoShowExtras::Execute(const std::shared_ptr<CFileItem>& item) const
   if (movieId < 0)
     return false;
 
-  const std::string path = StringUtils::Format("videodb://movies/titles/{}/{}/", movieId,
+  const std::string path = StringUtils::Format("{}{}/{}/", VIDEO::DB_PATH::MOVIE_TITLES, movieId,
                                                static_cast<int>(VideoAssetType::EXTRA));
 
   const int target = WINDOW_VIDEO_NAV;

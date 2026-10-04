@@ -13,6 +13,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
@@ -77,7 +78,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       pItem->GetVideoInfoTag()->m_iDbId = set->first;
       pItem->GetVideoInfoTag()->m_type = MediaTypeVideoCollection;
 
-      std::string basePath = StringUtils::Format("videodb://movies/sets/{}/", set->first);
+      std::string basePath = StringUtils::Format("{}{}/", VIDEO::DB_PATH::MOVIE_SETS, set->first);
       CVideoDbUrl videoUrl;
       if (!videoUrl.FromString(basePath))
         pItem->SetPath(basePath);

@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbPaths.h"
 
 #include <utility>
 
@@ -108,7 +109,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   if (PLAYLIST::CSmartPlaylist::IsMusicType(m_type))
     basePath = "musicdb://";
   else
-    basePath = "videodb://";
+    basePath = VIDEO::DB_PATH::ROOT;
 
   VideoDbContentType type = VideoDbContentType::MOVIES;
   if (m_type == "movies")
@@ -150,7 +151,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
         m_type == "mixed")
     {
       CFileItemList items2;
-      videodatabase.GetGenresNav("videodb://musicvideos/genres/", items2,
+      videodatabase.GetGenresNav(VIDEO::DB_PATH::MUSICVIDEO_GENRES, items2,
                                  VideoDbContentType::MUSICVIDEOS);
       items.Append(items2);
     }
@@ -342,7 +343,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == static_cast<int>(Field::SET))
   {
-    videodatabase.GetSetsNav("videodb://movies/sets/", items, VideoDbContentType::MOVIES);
+    videodatabase.GetSetsNav(VIDEO::DB_PATH::MOVIE_SETS, items, VideoDbContentType::MOVIES);
     iLabel = 20434;
   }
   else if (m_rule.m_field == static_cast<int>(Field::TAG))
