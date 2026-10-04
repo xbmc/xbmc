@@ -30,6 +30,11 @@ bool CVideoSyncWpPresentation::Setup()
 {
   m_stopEvent.Reset();
   m_fps = m_winSystem.GetSyncOutputRefreshRate();
+  if (m_fps <= 0.0f)
+  {
+    CLog::Log(LOGDEBUG, "VideoSyncWpPresentation: refresh rate unknown");
+    return false;
+  }
 
   return true;
 }
