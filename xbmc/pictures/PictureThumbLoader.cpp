@@ -26,6 +26,7 @@
 #include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/PlaceholderPaths.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoThumbLoader.h"
@@ -128,7 +129,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     }
   }
   if ((pItem->IsFolder() || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->IsShareOrDrive() &&
-      !pItem->IsParentFolder() && !pItem->IsPath("add"))
+      !pItem->IsParentFolder() && !pItem->IsPath(PLACEHOLDER::ADD_SOURCE))
   {
     // first check for a folder.jpg
     std::string thumb = "folder.jpg";

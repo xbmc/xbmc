@@ -37,6 +37,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
+#include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -558,9 +559,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   // Exclude special items
-  if (StringUtils::StartsWithNoCase(item.GetPath(), "newsmartplaylist://") ||
-      StringUtils::StartsWithNoCase(item.GetPath(), "newplaylist://") ||
-      StringUtils::StartsWithNoCase(item.GetPath(), "newtag://"))
+  if (KODI::PLACEHOLDER::IsNewItem(item.GetPath()))
     return false;
 
   // Include playlists located at one of the possible video/mixed playlist locations
@@ -624,7 +623,7 @@ bool IsItemPlayable(const CFileItem& item)
   {
     // Not a video-specific folder (like file:// or nfs://). Allow play if context is Video window.
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_NAV &&
-        item.GetPath() != "add") // Exclude "Add video source" item
+        item.GetPath() != KODI::PLACEHOLDER::ADD_SOURCE) // Exclude "Add video source" item
       return true;
   }
 

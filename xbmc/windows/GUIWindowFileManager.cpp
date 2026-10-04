@@ -55,6 +55,7 @@
 #include "storage/MediaManager.h"
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
+#include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -325,7 +326,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->IsFolder() && (!pItem->GetSize() || pItem->IsPath("add")))
+    if (pItem->IsFolder() && (!pItem->GetSize() || pItem->IsPath(PLACEHOLDER::ADD_SOURCE)))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -479,7 +480,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     const std::string& strLabel =
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->SetPath("add");
+    pItem->SetPath(PLACEHOLDER::ADD_SOURCE);
     pItem->SetArt("icon", "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
@@ -561,7 +562,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   if ( iItem < 0 || iItem >= m_vecItems[iList]->Size() ) return ;
 
   CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
-  if (pItem->GetPath() == "add" &&
+  if (pItem->GetPath() == PLACEHOLDER::ADD_SOURCE &&
       pItem->GetLabel() == CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                                1026)) // 'add source button' in empty root
   {

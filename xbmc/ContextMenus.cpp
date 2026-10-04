@@ -17,6 +17,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -91,8 +92,9 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
   if (item.GetProperty("hide_add_remove_favourite").asBoolean())
     return false;
 
-  return (!item.GetPath().empty() && !item.IsParentFolder() && !item.IsPath("add") &&
-          !item.IsPath("newplaylist://") && !URIUtils::IsProtocol(item.GetPath(), "favourites") &&
+  return (!item.GetPath().empty() && !item.IsParentFolder() &&
+          !item.IsPath(PLACEHOLDER::ADD_SOURCE) && !item.IsPath(PLACEHOLDER::NEW_PLAYLIST) &&
+          !URIUtils::IsProtocol(item.GetPath(), "favourites") &&
           !URIUtils::IsProtocol(item.GetPath(), "newsmartplaylist") &&
           !URIUtils::IsProtocol(item.GetPath(), "newtag") &&
           !URIUtils::IsProtocol(item.GetPath(), "musicsearch") &&
