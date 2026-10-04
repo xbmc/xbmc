@@ -263,7 +263,7 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
 
           else if (it.first == "TPE1")
           {
-            currentMusic->SetArtist(GetID3v2StringList(it.second));
+            currentMusic->SetArtist(GetID3v2StringList(it.second), true);
             changed = true;
           }
 
