@@ -911,7 +911,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     const std::string& strLabel =
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->SetPath(PLACEHOLDER::ADD_SOURCE);
+    pItem->SetPath(ITEM::PLACEHOLDER::ADD_SOURCE);
     pItem->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
@@ -1029,7 +1029,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     return true;
   }
 
-  if (pItem->GetPath() == PLACEHOLDER::ADD_SOURCE ||
+  if (pItem->GetPath() == ITEM::PLACEHOLDER::ADD_SOURCE ||
       pItem->GetPath() == "sources://add/") // 'add source button' in empty root
   {
     if (profileManager->IsMasterProfile())
@@ -1146,14 +1146,14 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   {
     SaveSelectedItemInHistory();
 
-    if (pItem->GetPath() == PLACEHOLDER::NEW_PLAYLIST)
+    if (pItem->GetPath() == ITEM::PLACEHOLDER::NEW_PLAYLIST)
     {
       m_vecItems->RemoveDiscCache(GetID());
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,
-                                                                  PLACEHOLDER::NEW_PLAYLIST);
+                                                                  ITEM::PLACEHOLDER::NEW_PLAYLIST);
       return true;
     }
-    else if (StringUtils::StartsWithNoCase(pItem->GetPath(), PLACEHOLDER::NEW_SMART_PLAYLIST))
+    else if (StringUtils::StartsWithNoCase(pItem->GetPath(), ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST))
     {
       m_vecItems->RemoveDiscCache(GetID());
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().substr(19)))

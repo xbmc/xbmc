@@ -191,7 +191,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
     files->SetIsShareOrDrive(true);
     items.Add(files);
 
-    CFileItemPtr mdb(new CFileItem(LIBRARY::MUSIC, true));
+    CFileItemPtr mdb(new CFileItem(MEDIA::LIBRARY_PATH::MUSIC, true));
     mdb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(14022));
     mdb->SetLabelPreformatted(true);
     mdb->SetIsShareOrDrive(true);

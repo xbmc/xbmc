@@ -542,7 +542,8 @@ bool IsItemPlayable(const CFileItem& item)
     return true;
 
   // Exclude all music library items
-  if (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::MUSIC))
+  if (MUSIC::IsMusicDb(item) ||
+      StringUtils::StartsWithNoCase(item.GetPath(), MEDIA::LIBRARY_PATH::MUSIC))
     return false;
 
   // Exclude add-ons
@@ -550,7 +551,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   // Exclude special items
-  if (KODI::PLACEHOLDER::IsNewItem(item.GetPath()))
+  if (KODI::ITEM::PLACEHOLDER::IsNewItem(item.GetPath()))
     return false;
 
   // Include playlists located at one of the possible video/mixed playlist locations
@@ -582,8 +583,8 @@ bool IsItemPlayable(const CFileItem& item)
   if (IsNonExistingUserPartyModePlaylist(item))
     return false;
 
-  if (item.IsFolder() &&
-      (IsVideoDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::VIDEO)))
+  if (item.IsFolder() && (IsVideoDb(item) || StringUtils::StartsWithNoCase(
+                                                 item.GetPath(), MEDIA::LIBRARY_PATH::VIDEO)))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
     const auto node = XFILE::CVideoDatabaseDirectory::GetDirectoryParentType(item.GetPath());
@@ -614,7 +615,7 @@ bool IsItemPlayable(const CFileItem& item)
   {
     // Not a video-specific folder (like file:// or nfs://). Allow play if context is Video window.
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_NAV &&
-        item.GetPath() != KODI::PLACEHOLDER::ADD_SOURCE) // Exclude "Add video source" item
+        item.GetPath() != KODI::ITEM::PLACEHOLDER::ADD_SOURCE) // Exclude "Add video source" item
       return true;
   }
 

@@ -856,7 +856,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     // Add "New Playlist" items when in the playlists folder, except on playlist editor screen
     if ((iWindow != WINDOW_MUSIC_PLAYLIST_EDITOR) &&
         (items.GetPath() == "special://musicplaylists/") &&
-        !items.Contains(PLACEHOLDER::NEW_PLAYLIST))
+        !items.Contains(ITEM::PLACEHOLDER::NEW_PLAYLIST))
     {
       const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -868,7 +868,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist->SetFolder(true);
       items.Add(newPlaylist);
 
-      newPlaylist = std::make_shared<CFileItem>(PLACEHOLDER::NEW_PLAYLIST, false);
+      newPlaylist = std::make_shared<CFileItem>(ITEM::PLACEHOLDER::NEW_PLAYLIST, false);
       newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(525));
       newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
@@ -877,7 +877,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       items.Add(newPlaylist);
 
       newPlaylist = std::make_shared<CFileItem>(
-          std::string{PLACEHOLDER::NEW_SMART_PLAYLIST} + "music", false);
+          std::string{ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST} + "music", false);
       newPlaylist->SetLabel(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21437));
       newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");

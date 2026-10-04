@@ -14,7 +14,7 @@
 
 //! \brief The paths of list entries that stand for an action rather than an item, such as creating
 //! a playlist.
-namespace KODI::PLACEHOLDER
+namespace KODI::ITEM::PLACEHOLDER
 {
 
 //! The entry that adds a source
@@ -38,4 +38,4 @@ inline bool IsNewItem(std::string_view path)
   return IsNewPlaylist(path) || StringUtils::StartsWithNoCase(path, NEW_TAG);
 }
 
-} // namespace KODI::PLACEHOLDER
+} // namespace KODI::ITEM::PLACEHOLDER
