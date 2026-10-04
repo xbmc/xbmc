@@ -17,6 +17,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <cmath>
+
 using namespace KODI::SHADER;
 
 CShaderPreset::CShaderPreset(RETRO::CRenderContext& context,
@@ -233,6 +235,11 @@ void CShaderPreset::CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,
           pass.fbo.scaleY.scale != 0.0f ? pass.fbo.scaleY.scale * prevSize.y : prevSize.y;
       break;
   }
+
+  // The pass renders to a texture of whole pixels, so its shaders must be
+  // given that size rather than a fractional one
+  scaledSize.x = std::floor(scaledSize.x);
+  scaledSize.y = std::floor(scaledSize.y);
 }
 
 void CShaderPreset::DisposeShaders()
