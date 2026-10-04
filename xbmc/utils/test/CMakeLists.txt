@@ -32,6 +32,7 @@ set(SOURCES TestAlarmClock.cpp
             TestLabelFormatter.cpp
             TestLangCodeExpander.cpp
             TestLanguageTag.cpp
+            TestLegacyPathTranslation.cpp
             TestLocale.cpp
             Testlog.cpp
             TestMap.cpp
