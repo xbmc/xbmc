@@ -8,18 +8,26 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "URL.h"
+#include "XBDateTime.h"
 #include "cores/VideoSettings.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "interfaces/AnnouncementManager.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Artwork.h"
+#include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 
 #include <memory>
 #include <set>
@@ -41,10 +49,20 @@ protected:
     m_settings.name = DB_NAME;
     m_settings.host = CSpecialProtocol::TranslatePath("special://temp/");
     ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, m_db.Connect(DB_NAME, m_settings, true));
+
+    // The test environment has no announcement manager, and e.g. ExportToXML() announces.
+    // An unstarted one only queues the announcements.
+    m_previousAnnouncementManager = CServiceBroker::GetAnnouncementManager();
+    CServiceBroker::RegisterAnnouncementManager(
+        std::make_shared<ANNOUNCEMENT::CAnnouncementManager>());
   }
 
   void TearDown() override
   {
+    CServiceBroker::UnregisterAnnouncementManager();
+    if (m_previousAnnouncementManager)
+      CServiceBroker::RegisterAnnouncementManager(m_previousAnnouncementManager);
+
     m_db.Close();
     XFILE::CFile::Delete(m_settings.host + DB_NAME + ".db");
   }
@@ -113,6 +131,7 @@ protected:
 
   DatabaseSettings m_settings;
   CVideoDatabase m_db;
+  std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previousAnnouncementManager;
 };
 } // namespace
 
@@ -494,4 +513,83 @@ TEST_F(TestVideoDatabase, GetPathsForCleaningMatchesTheWholeLibraryByContentExac
   std::set<int> paths;
   ASSERT_TRUE(m_db.GetPathsForCleaning("", "movies", paths));
   EXPECT_TRUE(paths.empty());
+}
+
+// The export must write the stored (scraped) runtime, not the stream duration that loading the
+// streamdetails puts in its place
+TEST_F(TestVideoDatabase, ExportToXMLWritesStoredRuntime)
+{
+  // 1289s rounds to 21 minutes, the stored 1320s is 22
+  const auto withRuntime = [](CVideoInfoTag tag)
+  {
+    tag.SetDuration(1320);
+    auto* video = new CStreamDetailVideo();
+    video->m_iDuration = 1289;
+    video->SetSource(CStreamDetail::MEDIA);
+    tag.m_streamDetails.AddStream(video);
+    tag.m_streamDetails.DetermineBestStreams();
+    return tag;
+  };
+
+  CVideoInfoTag movie{withRuntime(Tag("/movies/Movie (2020)/movie.mkv"))};
+  ASSERT_GT(m_db.SetDetailsForMovie(movie, KODI::ART::Artwork{}), 0);
+
+  const int idShow{AddTvShow("/tvshows/Show/")};
+  ASSERT_GT(idShow, 0);
+  CVideoInfoTag episode{withRuntime(Tag("/tvshows/Show/s01e01.mkv"))};
+  episode.m_iSeason = 1;
+  episode.m_iEpisode = 1;
+  ASSERT_GT(m_db.SetDetailsForEpisode(episode, KODI::ART::Artwork{}, idShow), 0);
+
+  const std::string exportPath{CSpecialProtocol::TranslatePath("special://temp/")};
+  const std::string exportRoot{URIUtils::AddFileToFolder(
+      exportPath, "kodi_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate())};
+  m_db.ExportToXML(exportPath, true);
+
+  CXBMCTinyXML doc;
+  const bool loaded{doc.LoadFile(URIUtils::AddFileToFolder(exportRoot, "videodb.xml"))};
+  XFILE::CDirectory::RemoveRecursive(exportRoot);
+  ASSERT_TRUE(loaded);
+
+  const TiXmlElement* exportedMovie{doc.RootElement()->FirstChildElement("movie")};
+  ASSERT_NE(nullptr, exportedMovie);
+  int runtime{0};
+  EXPECT_TRUE(XMLUtils::GetInt(exportedMovie, "runtime", runtime));
+  EXPECT_EQ(22, runtime);
+
+  const TiXmlElement* exportedShow{doc.RootElement()->FirstChildElement("tvshow")};
+  ASSERT_NE(nullptr, exportedShow);
+  const TiXmlElement* exportedEpisode{exportedShow->FirstChildElement("episodedetails")};
+  ASSERT_NE(nullptr, exportedEpisode);
+  runtime = 0;
+  EXPECT_TRUE(XMLUtils::GetInt(exportedEpisode, "runtime", runtime));
+  EXPECT_EQ(22, runtime);
+}
+
+// The converted movie's file is kept as the version, so its streamdetails must be kept too
+TEST_F(TestVideoDatabase, ConvertVideoToVersionKeepsStreamDetails)
+{
+  const auto addMovie = [this](const std::string& fileAndPath, int duration)
+  {
+    CVideoInfoTag tag{Tag(fileAndPath)};
+    auto* video = new CStreamDetailVideo();
+    video->m_iDuration = duration;
+    video->SetSource(CStreamDetail::MEDIA);
+    tag.m_streamDetails.AddStream(video);
+    tag.m_streamDetails.DetermineBestStreams();
+    return m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{});
+  };
+
+  const std::string source{"/movies/Movie (2010)/Movie (2010) Standard Edition.mkv"};
+  const int targetId{addMovie("/movies/Movie (2010)/Movie (2010) Extended Edition.mkv", 6500)};
+  const int sourceId{addMovie(source, 6019)};
+  ASSERT_GT(targetId, 0);
+  ASSERT_GT(sourceId, 0);
+
+  ASSERT_TRUE(m_db.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceId, targetId, -1,
+                                         VideoAssetType::VERSION));
+
+  CStreamDetails details;
+  EXPECT_TRUE(m_db.GetStreamDetails(source, details));
+  EXPECT_EQ(6019, details.GetVideoDuration());
 }
