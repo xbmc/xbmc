@@ -91,6 +91,7 @@
 #include "video/FilenameAttributes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -2514,13 +2515,19 @@ std::string CUtil::GetHexString(const std::span<const uint8_t>& buf, int count)
 
 bool CUtil::UseDynPathForAddOrUpdate(const CFileItem& item)
 {
-  if (item.IsStack() ||
-      (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-       (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-        item.GetVideoContentType() == VideoDbContentType::EPISODES ||
-        item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */)))
-  {
+  if (item.IsStack())
     return true;
+
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
+  {
+    // A disc image played from outside the library keeps its state against the image, as the
+    // image is what is looked up when it is played or listed again
+    const VideoDbContentType type{item.GetVideoContentType()};
+    const bool isLibraryItem{item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0};
+    if (((type == VideoDbContentType::MOVIES || type == VideoDbContentType::EPISODES) &&
+         isLibraryItem) ||
+        type == VideoDbContentType::UNKNOWN /* Removable bluray */)
+      return true;
   }
 
   return URIUtils::IsArchive(CURL(item.GetDynPath()));

@@ -944,7 +944,7 @@ int CVideoDatabase::GetFileId(const CFileItem &item)
 {
   int fileId = -1;
 
-  if (URIUtils::IsBlurayPath(item.GetDynPath()))
+  if (URIUtils::IsBlurayPath(item.GetDynPath()) && CUtil::UseDynPathForAddOrUpdate(item))
     return GetFileId(item.GetDynPath());
 
   if (item.HasVideoInfoTag())
