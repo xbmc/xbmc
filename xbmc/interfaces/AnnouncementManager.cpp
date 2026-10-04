@@ -364,9 +364,17 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
     // The lock is released for the call. Announcers wait on other threads - closing a window
     // waits on the GUI thread - and the GUI thread adds announcers of its own.
     m_announcing = announcer;
+    try
     {
       CSingleExit unlock(m_announcersCritSection);
       announcer->Announce(flag, sender, message, data);
+    }
+    catch (...)
+    {
+      // An exception ends this thread; a removal waiting on the call must not wait for ever
+      m_announcing = nullptr;
+      m_announced.notifyAll();
+      throw;
     }
     m_announcing = nullptr;
     m_announced.notifyAll();

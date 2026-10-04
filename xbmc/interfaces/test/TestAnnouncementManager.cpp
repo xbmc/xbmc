@@ -12,6 +12,8 @@
 
 #include <atomic>
 #include <chrono>
+#include <memory>
+#include <stdexcept>
 #include <string>
 #include <thread>
 
@@ -75,6 +77,21 @@ public:
 
   CAnnouncementManager& m_manager;
   CEvent m_removed;
+};
+
+class CThrowingAnnouncer : public IAnnouncer
+{
+public:
+  void Announce(AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override
+  {
+    m_called.Set();
+    throw std::runtime_error("announcer failed");
+  }
+
+  CEvent m_called;
 };
 } // namespace
 
@@ -148,4 +165,30 @@ TEST_F(TestAnnouncementManager, AnAnnouncerCanRemoveItselfWhileBeingCalled)
 
   EXPECT_TRUE(announcer.m_removed.Wait(TIMEOUT));
   m_manager.Deinitialize();
+}
+
+TEST(TestAnnouncementManagerFailure, RemovingAnAnnouncerWhoseCallThrewDoesNotWait)
+{
+  // Leaked if the removal never returns, so the thread left waiting in it touches nothing freed
+  auto manager = std::make_unique<CAnnouncementManager>();
+  auto announcer = std::make_unique<CThrowingAnnouncer>();
+  manager->Start();
+  manager->AddAnnouncer(announcer.get());
+  manager->Announce(Other, "Test");
+  ASSERT_TRUE(announcer->m_called.Wait(TIMEOUT));
+
+  auto removed = std::make_shared<CEvent>();
+  std::thread remover([m = manager.get(), a = announcer.get(), removed]
+                      {
+                        m->RemoveAnnouncer(a);
+                        removed->Set();
+                      });
+  if (!removed->Wait(TIMEOUT))
+  {
+    remover.detach();
+    manager.release();
+    announcer.release();
+    FAIL() << "RemoveAnnouncer is still waiting on a call that threw";
+  }
+  remover.join();
 }
