@@ -4,7 +4,8 @@ set(SOURCES TestContentGeometryCombiner.cpp
             TestFrameReduction.cpp
             TestFrameSampling.cpp
             TestGeometryPublication.cpp
-            TestGeometryTransforms.cpp)
+            TestGeometryTransforms.cpp
+            TestSampledGeometry.cpp)
 
 set(HEADERS GeometryTestHelpers.h)
 
