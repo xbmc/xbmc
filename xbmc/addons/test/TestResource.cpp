@@ -45,6 +45,25 @@ TEST(TestResource, ResolvesTheResourceRootForEveryType)
   }
 }
 
+TEST(TestResource, ResolvesNothingThroughAParentSegment)
+{
+  for (const AddonType type :
+       {AddonType::RESOURCE_LANGUAGE, AddonType::RESOURCE_UISOUNDS, AddonType::RESOURCE_IMAGES,
+        AddonType::RESOURCE_SKIN, AddonType::RESOURCE_FONT, AddonType::RESOURCE_GAMES})
+  {
+    const std::shared_ptr<CResource> resource{MakeResource(type)};
+    ASSERT_NE(resource, nullptr);
+
+    EXPECT_FALSE(resource->CanResolve("../"));
+    EXPECT_FALSE(resource->CanResolve(".."));
+    EXPECT_FALSE(resource->CanResolve("subdirectory/../../"));
+    EXPECT_FALSE(resource->CanResolve("..\\strings.po"));
+  }
+
+  const std::shared_ptr<CResource> images{MakeResource(AddonType::RESOURCE_IMAGES)};
+  EXPECT_TRUE(images->CanResolve("..28.png"));
+}
+
 TEST(TestResource, ResolvesOnlyTheFilesATypePublishes)
 {
   const std::shared_ptr<CResource> language{MakeResource(AddonType::RESOURCE_LANGUAGE)};

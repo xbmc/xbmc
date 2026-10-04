@@ -33,13 +33,16 @@ public:
    * One rule for every resource type. The resources directory itself and the directories under
    * it always resolve, so any type can be browsed. A type that publishes no set resolves every
    * file; every other type resolves the file names and the extensions it publishes, and nothing
-   * else.
+   * else. A path with a `..` segment never resolves, as it can leave the resources directory.
    *
    * \param[in] file The path, relative to that directory. Empty names the directory itself.
    * \return True where the path resolves.
    */
   bool CanResolve(const std::string& file) const
   {
+    if (HasParentSegment(file))
+      return false;
+
     if (file.empty() || URIUtils::HasSlashAtEnd(file, true))
       return true;
 
@@ -67,8 +70,8 @@ protected:
   //! The files a resource type publishes. Both sets empty publishes every file.
   struct Published
   {
-    std::span<const std::string_view> names; //!< exact file names
-    std::span<const std::string_view> extensions; //!< extensions, leading dot included
+    std::span<const std::string_view> names{}; //!< exact file names
+    std::span<const std::string_view> extensions{}; //!< extensions, leading dot included
   };
 
   explicit CResource(const AddonInfoPtr& addonInfo, AddonType addonType)
@@ -82,6 +85,20 @@ protected:
   std::string GetResourcePath() const
   {
     return URIUtils::AddFileToFolder(Path(), "resources");
+  }
+
+private:
+  static bool HasParentSegment(std::string_view path)
+  {
+    while (true)
+    {
+      const size_t end{path.find_first_of("/\\")};
+      if (path.substr(0, end) == "..")
+        return true;
+      if (end == std::string_view::npos)
+        return false;
+      path.remove_prefix(end + 1);
+    }
   }
 };
 
