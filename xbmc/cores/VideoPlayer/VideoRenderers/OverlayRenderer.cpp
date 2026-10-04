@@ -151,29 +151,8 @@ void CRenderer::Render(int idx, float depth)
 {
   std::unique_lock lock(m_section);
 
-  // during HDR composite the m_isHDROverlay overlays render via
-  // RenderHDROverlays instead
-  const bool hdrComposite = CServiceBroker::GetWinSystem()->IsHdrComposite();
-  const RenderStereoView stereoView =
-      CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
-
-  std::vector<SElement>& list = m_buffers[idx];
-  for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
-  {
-    if (it->overlay_dvd)
-    {
-      std::shared_ptr<COverlay> o = Convert(*it);
-      if (!o)
-        continue;
-
-      if (!KODI::VIDEO::SUBTITLES::ShouldRenderStereoOverlay(it->overlay_dvd->m_stereoView,
-                                                             stereoView, m_stereomode))
-        continue;
-
-      if (!(hdrComposite && o->m_isHDROverlay))
-        Render(o.get());
-    }
-  }
+  for (auto& item : ResolveRenderItems(idx, false))
+    item.overlay->Render(item.state);
 
   ReleaseUnused();
 }
@@ -187,32 +166,47 @@ void CRenderer::RenderHDROverlays(int idx)
 
   std::unique_lock lock(m_section);
 
-  const RenderStereoView stereoView =
-      CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
-
-  std::vector<SElement>& list = m_buffers[idx];
-  for (std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
-  {
-    if (it->overlay_dvd)
-    {
-      std::shared_ptr<COverlay> o = Convert(*it);
-      if (!o || !o->m_isHDROverlay)
-        continue;
-
-      if (!KODI::VIDEO::SUBTITLES::ShouldRenderStereoOverlay(it->overlay_dvd->m_stereoView,
-                                                             stereoView, m_stereomode))
-        continue;
-
-      Render(o.get());
-    }
-  }
+  for (auto& item : ResolveRenderItems(idx, true))
+    item.overlay->Render(item.state);
 
   ReleaseUnused();
 }
 
-void CRenderer::Render(COverlay* o)
+std::vector<CRenderer::SRenderItem> CRenderer::ResolveRenderItems(int idx, bool hdrOverlays)
 {
-  SRenderState state;
+  // during HDR composite the m_isHDROverlay overlays render via
+  // RenderHDROverlays instead
+  const bool hdrComposite = CServiceBroker::GetWinSystem()->IsHdrComposite();
+  const RenderStereoView stereoView =
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView();
+
+  std::vector<SRenderItem> items;
+  items.reserve(m_buffers[idx].size());
+
+  for (auto& e : m_buffers[idx])
+  {
+    if (!e.overlay_dvd)
+      continue;
+
+    std::shared_ptr<COverlay> o = Convert(e);
+    if (!o || (hdrComposite && o->m_isHDROverlay) != hdrOverlays)
+      continue;
+
+    if (!KODI::VIDEO::SUBTITLES::ShouldRenderStereoOverlay(e.overlay_dvd->m_stereoView, stereoView,
+                                                           m_stereomode))
+      continue;
+
+    SRenderItem item;
+    GetRenderState(o.get(), item.state);
+    item.overlay = std::move(o);
+    items.emplace_back(std::move(item));
+  }
+
+  return items;
+}
+
+void CRenderer::GetRenderState(COverlay* o, SRenderState& state) const
+{
   state.x = o->m_x;
   state.y = o->m_y;
   state.width = o->m_width;
@@ -295,8 +289,6 @@ void CRenderer::Render(COverlay* o)
   }
 
   state.x += GetStereoscopicDepth();
-
-  o->Render(state);
 }
 
 bool CRenderer::HasVisibleOverlay(int idx) const
