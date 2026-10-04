@@ -95,16 +95,6 @@ void CSetInfoTag::Merge(const CSetInfoTag& other)
     m_art = other.m_art;
 }
 
-void CSetInfoTag::Copy(const CSetInfoTag& other)
-{
-  m_id = other.GetID();
-  m_title = other.GetTitle();
-  m_originalTitle = other.GetOriginalTitle();
-  m_overview = other.GetOverview();
-  m_updateSetOverview = other.m_updateSetOverview;
-  m_art = other.m_art;
-}
-
 bool CSetInfoTag::Save(TiXmlNode* node,
                        const std::string& tag,
                        const TiXmlElement* additionalNode /* =nullptr */) const

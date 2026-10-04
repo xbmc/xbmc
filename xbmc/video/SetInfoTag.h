@@ -55,7 +55,6 @@ public:
   const KODI::ART::Artwork& GetArt() const { return m_art; }
 
   void Merge(const CSetInfoTag& other);
-  void Copy(const CSetInfoTag& other);
   bool Save(TiXmlNode* node,
             const std::string& tag,
             const TiXmlElement* additionalNode = nullptr) const;
