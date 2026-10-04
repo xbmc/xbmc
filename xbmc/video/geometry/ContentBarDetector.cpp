@@ -49,7 +49,8 @@ public:
   {
     const T* sample =
         reinterpret_cast<const T*>(m_base + m_origin + static_cast<std::ptrdiff_t>(index) * m_step);
-    return static_cast<unsigned int>(*sample) >> m_shift;
+    // A sample above the declared depth reads as the top bucket rather than past the histogram
+    return std::min(static_cast<unsigned int>(*sample) >> m_shift, BUCKET_COUNT - 1);
   }
 
 private:

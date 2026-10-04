@@ -552,6 +552,20 @@ TEST(TestContentBarDetector, TinyFrameDoesNotMisbehave)
   ExpectRect(result.rect, 0, 0, 16, 16);
 }
 
+TEST(TestContentBarDetector, ASampleAboveTheDeclaredDepthIsStillPicture)
+{
+  // 0xFFC0 is a 10-bit white stored in the high bits, as P010 does
+  CSyntheticFrame frame = Letterboxed(640, 360, 60, 10);
+  for (unsigned int y = 60; y < 300; ++y)
+  {
+    for (unsigned int x = 0; x < 640; x += 2)
+      frame.SetLuma(x, y, 0xFFC0);
+  }
+
+  const DetectionResult result = DetectContentRect(frame.Ref());
+  ExpectRect(result.rect, 0, 60, 640, 300);
+}
+
 TEST(TestContentBarDetector, EmptyFrameIsRejected)
 {
   FrameRef reference;
