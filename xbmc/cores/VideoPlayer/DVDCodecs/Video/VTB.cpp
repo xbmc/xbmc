@@ -15,6 +15,7 @@
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
 #if defined(TARGET_DARWIN_TVOS)
 #include "windowing/tvos/WinSystemTVOS.h"
 #endif
@@ -218,6 +219,22 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
       m_hdrOutput = (avctx->color_trc == AVCOL_TRC_SMPTE2084 && caps.SupportsHDR10()) ||
                     (avctx->color_trc == AVCOL_TRC_ARIB_STD_B67 && CanDisplayHLG(caps));
     }
+  }
+#endif
+
+#if defined(TARGET_DARWIN_TVOS) && defined(__TVOS_26_2)
+  if (avctx->codec_id == AV_CODEC_ID_VP9)
+  {
+    if (__builtin_available(tvOS 26.2, *))
+    {
+      VTRegisterSupplementalVideoDecoderIfAvailable(kCMVideoCodecType_VP9);
+      const bool supported = VTIsHardwareDecodeSupported(kCMVideoCodecType_VP9);
+      CLog::Log(LOGDEBUG, "VTB: VP9 hardware decode support after registration: {}", supported);
+      if (!supported)
+        return false;
+    }
+    else
+      return false;
   }
 #endif
 
