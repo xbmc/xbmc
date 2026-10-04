@@ -560,8 +560,8 @@ void CUPnPServer::Announce(AnnouncementFlag flag,
         int show_id = db.GetTvShowForEpisode(item_id);
         int season_id = db.GetSeasonForEpisode(item_id);
         UpdateContainer(StringUtils::Format("{}{}/", VIDEO::DB_PATH::TVSHOW_TITLES, show_id));
-        UpdateContainer(StringUtils::Format("{}{}/{}/?tvshowid={}", VIDEO::DB_PATH::TVSHOW_TITLES,
-                                            show_id, season_id, show_id));
+        UpdateContainer(StringUtils::Format("{}{}/{}/?tvshowid={}", VIDEO::DB_PATH::TVSHOW_TITLES, show_id,
+                                            season_id, show_id));
         UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES);
       }
       else if (item_type == MediaTypeTvShow)
@@ -1183,8 +1183,8 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
     }
 
     CFileItemList items;
-    if (!database.GetTvShowsByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local",
-                                    CDatabase::Filter(), items, SortDescription(),
+    if (!database.GetTvShowsByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local", CDatabase::Filter(), items,
+                                    SortDescription(),
                                     GetRequiredVideoDbDetails(NPT_String(filter))))
     {
       action->SetError(800, "Internal Error");
@@ -1207,7 +1207,7 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
     CFileItemList items;
     if (!database.GetSeasonsByWhere(
             StringUtils::Format("{}-1/?local", VIDEO::DB_PATH::TVSHOW_TITLES), CDatabase::Filter(),
-            items, true))
+                                    items, true))
     {
       action->SetError(800, "Internal Error");
       return NPT_SUCCESS;
@@ -1235,9 +1235,8 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
 
     if (allVideoItems || searchClass.Find("object.item.videoItem.movie") >= 0)
     {
-      if (!database.GetMoviesByWhere(std::string{VIDEO::DB_PATH::MOVIE_TITLES} + "?local",
-                                     CDatabase::Filter(), items, SortDescription(),
-                                     requiredVideoDbDetails))
+      if (!database.GetMoviesByWhere(std::string{VIDEO::DB_PATH::MOVIE_TITLES} + "?local", CDatabase::Filter(), items,
+                                     SortDescription(), requiredVideoDbDetails))
       {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;
@@ -1252,9 +1251,8 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
 
     if (allVideoItems || searchClass.Find("object.item.videoItem.videoBroadcast") >= 0)
     {
-      if (!database.GetEpisodesByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local",
-                                       CDatabase::Filter(), items, true, SortDescription(),
-                                       requiredVideoDbDetails))
+      if (!database.GetEpisodesByWhere(std::string{VIDEO::DB_PATH::TVSHOW_TITLES} + "?local", CDatabase::Filter(),
+                                       items, true, SortDescription(), requiredVideoDbDetails))
       {
         action->SetError(800, "Internal Error");
         return NPT_SUCCESS;

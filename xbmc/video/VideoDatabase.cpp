@@ -2186,8 +2186,8 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason,
         return false;
 
       CFileItemList seasons;
-      if (!GetSeasonsNav(StringUtils::Format("{}{}/", VIDEO::DB_PATH::TVSHOW_TITLES, idShow),
-                         seasons, -1, -1, -1, -1, idShow, false) ||
+      if (!GetSeasonsNav(StringUtils::Format("{}{}/", VIDEO::DB_PATH::TVSHOW_TITLES, idShow), seasons, -1,
+                         -1, -1, -1, idShow, false) ||
           seasons.Size() <= 0)
         return false;
 
@@ -2322,7 +2322,8 @@ bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* it
     Filter filter;
     filter.where = PrepareSQL("`sets`.`idSet`=%d", idSet);
     CFileItemList items;
-    if (!GetSetsByWhere(VIDEO::DB_PATH::MOVIE_SETS, filter, items) || items.Size() != 1 ||
+    if (!GetSetsByWhere(VIDEO::DB_PATH::MOVIE_SETS, filter, items) ||
+        items.Size() != 1 ||
         !items[0]->HasVideoInfoTag())
       return false;
 
@@ -13161,8 +13162,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
         item->SetLabel(name);
 
         CVideoDbUrl itemUrl;
-        if (itemUrl.FromString(
-                StringUtils::Format("{}{}", VIDEO::DB_PATH::MOVIE_VIDEO_VERSIONS, id)))
+        if (itemUrl.FromString(StringUtils::Format("{}{}", VIDEO::DB_PATH::MOVIE_VIDEO_VERSIONS, id)))
         {
           itemUrl.AddOption("mediaid", dbId);
           item->SetPath(itemUrl.ToString());

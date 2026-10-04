@@ -57,8 +57,7 @@ bool CRecentlyAddedJob::UpdateVideo()
 
   videodatabase.Open();
 
-  if (videodatabase.GetRecentlyAddedMoviesNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES, items,
-                                              NUM_ITEMS))
+  if (videodatabase.GetRecentlyAddedMoviesNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES, items, NUM_ITEMS))
   {
     for (; i < items.Size(); ++i)
     {
@@ -101,8 +100,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList  TVShowItems;
 
-  if (videodatabase.GetRecentlyAddedEpisodesNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES,
-                                                TVShowItems, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAddedEpisodesNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES, TVShowItems, NUM_ITEMS))
   {
     for (; i < TVShowItems.Size(); ++i)
     {
@@ -162,8 +160,7 @@ bool CRecentlyAddedJob::UpdateVideo()
   i = 0;
   CFileItemList MusicVideoItems;
 
-  if (videodatabase.GetRecentlyAddedMusicVideosNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS,
-                                                   MusicVideoItems, NUM_ITEMS))
+  if (videodatabase.GetRecentlyAddedMusicVideosNav(KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS, MusicVideoItems, NUM_ITEMS))
   {
     for (; i < MusicVideoItems.Size(); ++i)
     {

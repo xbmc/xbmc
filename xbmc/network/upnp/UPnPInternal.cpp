@@ -400,8 +400,8 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
       object.m_Affiliation.album = tag.m_strAlbum.c_str();
       object.m_Title = tag.m_strTitle.c_str();
       object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
-      object.m_ReferenceID = EncodeObjectId(
-          StringUtils::Format("{}{}", VIDEO::DB_PATH::MUSICVIDEO_TITLES, tag.m_iDbId));
+      object.m_ReferenceID =
+          EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::MUSICVIDEO_TITLES, tag.m_iDbId));
     }
     else if (tag.m_type == MediaTypeMovie)
     {
@@ -438,7 +438,8 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
           object.m_Date = CDateTime(tag.GetYear(), 1, 1, 0, 0, 0).GetAsW3CDate().c_str();
         else
           object.m_Date = tag.m_premiered.GetAsW3CDate().c_str();
-        object.m_ReferenceID = EncodeObjectId(StringUtils::Format(
+        object.m_ReferenceID = EncodeObjectId(
+            StringUtils::Format(
             "{}{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iIdShow, tag.m_iSeason));
       }
       else
@@ -452,9 +453,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         object.m_Recorded.episode_number = tag.m_iEpisode;
         object.m_Recorded.episode_season = tag.m_iSeason;
         object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
-        object.m_ReferenceID =
-            EncodeObjectId(StringUtils::Format("{}{}/{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES,
-                                               tag.m_iIdShow, tag.m_iSeason, tag.m_iDbId));
+        object.m_ReferenceID = EncodeObjectId(StringUtils::Format("{}{}/{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iIdShow, tag.m_iSeason, tag.m_iDbId));
         object.m_Date = tag.m_firstAired.GetAsW3CDate().c_str();
       }
     }
