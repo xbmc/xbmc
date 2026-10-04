@@ -317,24 +317,24 @@ IRenderBuffer* CRenderBufferPoolFBO::CaptureClientFrame(IRenderBuffer* clientBuf
   GLint prevRead = 0, prevDraw = 0;
   glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevRead);
   glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prevDraw);
-  const GLboolean scissorEnabled = glIsEnabled(GL_SCISSOR_TEST);
   glDisable(GL_SCISSOR_TEST);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, client->GetCurrentFramebuffer());
   GLint prevReadBuffer = 0;
   glGetIntegerv(GL_READ_BUFFER, &prevReadBuffer);
   glReadBuffer(GL_COLOR_ATTACHMENT0);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target->GetCurrentFramebuffer());
+
   // Normalize the drawn rectangle before directional shader filters see it.
   const GLint sourceY0 = client->BottomLeftOrigin() ? height : 0;
   const GLint sourceY1 = client->BottomLeftOrigin() ? 0 : height;
+
   glBlitFramebuffer(0, sourceY0, width, sourceY1, 0, 0, width, height, GL_COLOR_BUFFER_BIT,
                     GL_NEAREST);
+
   const bool ready = target->SetReady();
   glReadBuffer(prevReadBuffer);
   glBindFramebuffer(GL_READ_FRAMEBUFFER, prevRead);
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, prevDraw);
-  if (scissorEnabled)
-    glEnable(GL_SCISSOR_TEST);
 
   if (!ready)
   {
