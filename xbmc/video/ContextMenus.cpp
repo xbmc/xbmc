@@ -13,6 +13,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "filesystem/LibraryPaths.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicFileItemClassify.h"
@@ -115,7 +116,7 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
     }
     else if (VIDEO::IsVideoDb(item))
       return true;
-    else if (StringUtils::StartsWithNoCase(item.GetPath(), "library://video/"))
+    else if (StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::VIDEO))
       return true;
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
@@ -154,7 +155,7 @@ bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
     }
     else if (VIDEO::IsVideoDb(item))
       return true;
-    else if (StringUtils::StartsWithNoCase(item.GetPath(), "library://video/"))
+    else if (StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::VIDEO))
       return true;
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;

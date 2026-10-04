@@ -21,6 +21,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/Directory.h"
+#include "filesystem/LibraryPaths.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "guilib/GUIComponent.h"
@@ -899,7 +900,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   // Exclude all video library items
-  if (IsVideoDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/"))
+  if (IsVideoDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::VIDEO))
     return false;
 
   // Exclude other components
@@ -938,7 +939,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   if (item.IsFolder() &&
-      (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))
+      (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::MUSIC)))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
     const auto node = XFILE::CMusicDatabaseDirectory::GetDirectoryParentType(item.GetPath());
