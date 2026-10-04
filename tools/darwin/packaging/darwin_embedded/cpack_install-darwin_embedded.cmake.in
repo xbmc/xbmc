@@ -2,18 +2,8 @@ if(NOT CPACK_BUILD_CONFIG)
   set(CPACK_BUILD_CONFIG "@CORE_BUILD_CONFIG@")
 endif()
 
-string(TOLOWER "${CPACK_BUILD_CONFIG}" _build_config_lc)
-if(_build_config_lc MATCHES "debug")
-  set(_core_build_type Debug)
-elseif(_build_config_lc MATCHES "release")
-  set(_core_build_type Release)
-else()
-  message(FATAL_ERROR "You need to specify the build target")
-endif()
-
 set(_install_prefix "$ENV{CMAKE_INSTALL_PREFIX}")
-set(_app "@CMAKE_BINARY_DIR@/build/${_core_build_type}-@PLATFORM@/@APP_NAME@.app")
-set(_dsym "@CMAKE_BINARY_DIR@/build/${_core_build_type}-@PLATFORM@/@DARWIN_EMBEDDED_DSYM_FILENAME@")
+set(_app "@CMAKE_BINARY_DIR@/build/${CPACK_BUILD_CONFIG}/@APP_NAME@.app")
 
 if(NOT _install_prefix)
   message(FATAL_ERROR "CMAKE_INSTALL_PREFIX is not set by CPack")
@@ -21,18 +11,6 @@ endif()
 
 if(NOT IS_DIRECTORY "${_app}")
   message(FATAL_ERROR "@APP_NAME@.app not found! are you sure you built ${CPACK_BUILD_CONFIG} target?")
-endif()
-
-if(IS_DIRECTORY "${_dsym}" AND IS_DIRECTORY "@DARWIN_EMBEDDED_DSYM_TARGET_DIR@")
-  execute_process(
-    COMMAND "@DARWIN_EMBEDDED_CPACK_DIR@/../gitrev-posix"
-    OUTPUT_VARIABLE _gitrev
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(
-    COMMAND tar -C "${_dsym}/.." -c "@DARWIN_EMBEDDED_DSYM_FILENAME@/"
-    COMMAND bzip2
-    OUTPUT_FILE "@DARWIN_EMBEDDED_DSYM_TARGET_DIR@/${_gitrev}-@DARWIN_EMBEDDED_DSYM_FILENAME@.tar.bz2"
-    COMMAND_ERROR_IS_FATAL ANY)
 endif()
 
 if(DARWIN_EMBEDDED_CPACK_KIND STREQUAL "ipa")
