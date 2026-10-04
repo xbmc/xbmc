@@ -6168,7 +6168,6 @@ void CVideoPlayer::OnResetDisplay()
     return;
 
   CLog::Log(LOGINFO, "VideoPlayer: OnResetDisplay received");
-  m_displayLost = false;
 
   // The format hold still wants playback down, and releases it itself. The HDMI sink was closed
   // with the display, so the chain has the format to acquire again.
@@ -6185,6 +6184,8 @@ void CVideoPlayer::OnResetDisplay()
                                     1);
     m_clock.Pause(false);
   }
+  // Last: the player loop judges the hold as soon as it sees the display back
+  m_displayLost = false;
   m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
 }
 
