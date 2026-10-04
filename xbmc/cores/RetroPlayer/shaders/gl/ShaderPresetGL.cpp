@@ -16,8 +16,6 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/log.h"
 
-#include <regex>
-
 using namespace KODI::SHADER;
 
 CShaderPresetGL::CShaderPresetGL(RETRO::CRenderContext& context,
