@@ -335,6 +335,8 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
 
         case CSinkControlProtocol::STREAMING:
           m_extStreaming = *(bool*)msg->data;
+          // A hold does not send STREAMING; the resume ending it does, as does a stop
+          m_fillerArmed = false;
           return;
 
         case CSinkControlProtocol::ARMFILLER:
@@ -411,6 +413,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkControlProtocol::STREAMING:
           m_extStreaming = *(bool*)msg->data;
+          m_fillerArmed = false;
           SetSilenceTimer();
           if (!m_extSilenceTimer.IsTimePast())
           {
@@ -480,6 +483,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkControlProtocol::STREAMING:
           m_extStreaming = *(bool*)msg->data;
+          m_fillerArmed = false;
           SetSilenceTimer();
           m_extTimeout = 0ms;
           return;
