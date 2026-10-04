@@ -12,3 +12,10 @@ UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-ios64"
 mkdir -p $UPLOAD_DIR
 mv *.deb $UPLOAD_DIR/$UPLOAD_FILENAME.deb
 mv *.ipa $UPLOAD_DIR/$UPLOAD_FILENAME.ipa
+
+# Create AppStore debug symbols
+IOS_APPSTORE_SYMBOLS_DIR=symbols
+mkdir "$IOS_APPSTORE_SYMBOLS_DIR"
+xcrun symbols -arch all -symbolsPackageDir "$IOS_APPSTORE_SYMBOLS_DIR" "$WORKSPACE/build/$Configuration-iphoneos"/*.dSYM
+tar -cf "${UPLOAD_FILENAME}_symbols.txz" --xz "$IOS_APPSTORE_SYMBOLS_DIR"
+rm -rf "$IOS_APPSTORE_SYMBOLS_DIR"
