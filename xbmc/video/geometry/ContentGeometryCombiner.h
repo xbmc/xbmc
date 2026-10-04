@@ -87,8 +87,8 @@ struct CombinedGeometry
 /*!
  * \brief Reduce per-sample readings to one rectangle, plus whether the title varies. Pure.
  *
- * The answer is always a rectangle that occurred: the dominant stationary cluster, not the
- * widest. \p coded is returned when nothing survives.
+ * The answer is the dominant stationary cluster, not the widest, with each edge the median of
+ * that cluster's readings. \p coded is returned when nothing survives.
  */
 CombinedGeometry CombineGeometrySamples(std::span<const GeometrySample> samples,
                                         const CRectInt& coded,
