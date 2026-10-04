@@ -433,7 +433,7 @@ void CMusicInfoTag::SetGenre(const std::vector<std::string>& genres, bool bTrim 
 {
   m_genre = genres;
   if (bTrim)
-    for (auto genre : m_genre)
+    for (std::string& genre : m_genre)
       StringUtils::Trim(genre);
 }
 
