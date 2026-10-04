@@ -19,6 +19,9 @@ extern "C"
 #define CODEC_FORCE_SOFTWARE 0x01
 #define CODEC_ALLOW_FALLBACK 0x02
 
+//! \brief Export film grain parameters as side data instead of applying them.
+#define CODEC_EXPORT_FILM_GRAIN 0x04
+
 class CDemuxStream;
 struct DemuxCryptoSession;
 
