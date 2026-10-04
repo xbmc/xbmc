@@ -19,32 +19,31 @@
 namespace KODI::IMAGE_CHOICE
 {
 
-inline constexpr char CURRENT[] = "thumb://Current";
-inline constexpr char LOCAL[] = "thumb://Local";
-inline constexpr char EMBEDDED[] = "thumb://Embedded";
-inline constexpr char THUMB[] = "thumb://Thumb";
-inline constexpr char NONE[] = "thumb://None";
-inline constexpr char REMOTE[] = "thumb://Remote";
+inline constexpr std::string_view CURRENT = "thumb://Current";
+inline constexpr std::string_view LOCAL = "thumb://Local";
+inline constexpr std::string_view EMBEDDED = "thumb://Embedded";
+inline constexpr std::string_view THUMB = "thumb://Thumb";
+inline constexpr std::string_view NONE = "thumb://None";
+inline constexpr std::string_view REMOTE = "thumb://Remote";
 
 //! The entry the file browser adds itself, to browse for an image file
-inline constexpr char BROWSE[] = "image://Browse";
+inline constexpr std::string_view BROWSE = "image://Browse";
 
 //! \brief The entry for the remote image at \p index.
 inline std::string RemoteOf(std::size_t index)
 {
-  return REMOTE + std::to_string(index);
+  return std::string{REMOTE} + std::to_string(index);
 }
 
 //! \brief The index of the remote image \p path is the entry for, if it is one.
 inline std::optional<std::size_t> RemoteIndexOf(std::string_view path)
 {
-  constexpr std::string_view prefix{REMOTE};
-  if (!path.starts_with(prefix))
+  if (!path.starts_with(REMOTE))
     return std::nullopt;
 
   std::size_t index{};
   const char* const last{path.data() + path.size()};
-  const auto [end, error] = std::from_chars(path.data() + prefix.size(), last, index);
+  const auto [end, error] = std::from_chars(path.data() + REMOTE.size(), last, index);
   if (error != std::errc{} || end != last)
     return std::nullopt;
   return index;
