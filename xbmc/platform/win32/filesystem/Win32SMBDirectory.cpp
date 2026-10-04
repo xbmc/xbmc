@@ -788,6 +788,16 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
       CLog::LogF(LOGINFO, "Network is busy for \"{}\"", serverShareName);
     else if (connRes == ERROR_SESSION_CREDENTIAL_CONFLICT)
     {
+      // Windows already has a session to this server, e.g. from a saved Windows credential.
+      // Use it if it gives access rather than closing its connections.
+      if ((!usernameW.empty() || !passwordW.empty()) &&
+          WNetAddConnection2W(&connInfo, nullptr, nullptr, CONNECT_TEMPORARY) == NO_ERROR)
+      {
+        CLog::LogF(LOGDEBUG, "Connected to \"{}\" with the credentials of the existing session",
+                   serverShareName);
+        return true;
+      }
+
       CLog::LogF(LOGWARNING,
                  "Can't connect to \"{}\" {} because of conflict of credential. Will try to close "
                  "current connections.",
