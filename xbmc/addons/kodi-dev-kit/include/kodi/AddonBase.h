@@ -18,6 +18,7 @@
 
 #include "tools/StringUtils.h"
 
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -583,6 +584,23 @@ public:
   }
 
   std::string GetInstanceAPIVersion() const { return m_instance->info->version; }
+
+  /// @brief Whether Kodi's API for this instance is at least the given version
+  ///
+  /// Kodi allocates an instance's function tables, so an entry added in a later
+  /// version may only be filled in when Kodi has that version too.
+  bool IsInstanceAPIVersionAtLeast(int major, int minor, int patch) const
+  {
+    int version[3] = {0, 0, 0};
+    std::sscanf(GetInstanceAPIVersion().c_str(), "%d.%d.%d", &version[0], &version[1], &version[2]);
+    const int wanted[3] = {major, minor, patch};
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+      if (version[i] != wanted[i])
+        return version[i] > wanted[i];
+    }
+    return true;
+  }
 
   virtual ADDON_STATUS SetInstanceSetting(const std::string& settingName,
                                           const kodi::addon::CSettingValue& settingValue)

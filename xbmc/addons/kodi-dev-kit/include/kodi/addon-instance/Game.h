@@ -279,6 +279,23 @@ public:
   }
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// The <libretro_core> property from addon.xml, such as "fceumm_libretro".
+  ///
+  /// @return The core's name, or an empty string if addon.xml has none or
+  ///         Kodi's game API is older than 8.2.1
+  ///
+  /// @remarks Only called from the add-on itself
+  ///
+  std::string LibretroCore() const
+  {
+    if (!IsInstanceAPIVersionAtLeast(8, 2, 1) || m_instanceData->props->libretro_core == nullptr)
+      return "";
+    return m_instanceData->props->libretro_core;
+  }
+  //----------------------------------------------------------------------------
+
   ///@}
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==--

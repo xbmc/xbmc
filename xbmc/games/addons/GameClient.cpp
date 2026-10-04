@@ -66,6 +66,7 @@ namespace
 {
 constexpr const char* GAME_PROPERTY_SUPPORTS_DISC_CONTROL = "supports_disc_control";
 constexpr const char* GAME_PROPERTY_PLATFORMS = "platforms";
+constexpr const char* GAME_PROPERTY_LIBRETRO_CORE = "libretro_core";
 
 /*!
  * \brief Holds a hardware-rendering client's context current for a call into it
@@ -154,6 +155,9 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
       addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_PLATFORMS).asString();
   if (!platforms.empty())
     m_platforms = platforms;
+
+  m_libretroCore =
+      addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_LIBRETRO_CORE).asString();
 }
 
 CGameClient::~CGameClient(void)
@@ -996,6 +1000,7 @@ void CGameClient::LogAddonProperties(void) const
   CLog::Log(LOGINFO, "GAME: Supports VFS:        {}", m_bSupportsVFS);
   CLog::Log(LOGINFO, "GAME: Supports standalone: {}", m_bSupportsStandalone);
   CLog::Log(LOGINFO, "GAME: Disc control:        {}", m_supportsDiscControl);
+  CLog::Log(LOGINFO, "GAME: Libretro core:       {}", m_libretroCore);
   CLog::Log(LOGINFO, "GAME: ------------------------------------");
 }
 

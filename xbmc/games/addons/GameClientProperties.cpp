@@ -78,6 +78,7 @@ bool CGameClientProperties::InitializeProperties(void)
   m_properties.supports_vfs = m_parent.SupportsVFS();
   m_properties.extensions = GetExtensions();
   m_properties.extension_count = GetExtensionCount();
+  m_properties.libretro_core = m_parent.GetLibretroCore().c_str();
 
   return true;
 }
