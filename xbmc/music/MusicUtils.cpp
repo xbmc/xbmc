@@ -929,8 +929,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   if (item.IsFolder() &&
-      (MUSIC::IsMusicDb(item) ||
-       StringUtils::StartsWithNoCase(item.GetPath(), MEDIA::LIBRARY_PATH::MUSIC)))
+      (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), MEDIA::LIBRARY_PATH::MUSIC)))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
     const auto node = XFILE::CMusicDatabaseDirectory::GetDirectoryParentType(item.GetPath());

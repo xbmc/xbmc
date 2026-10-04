@@ -49,8 +49,7 @@ CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& it
     AddSortMethod(SortBy::FILE, 561,
                   LABEL_MASKS("%L", "%I", "%L", "")); // Filename, Size | FolderName, empty
 
-    const CViewState* viewState =
-        CViewStateSettings::GetInstance().Get(KODI::VIEW::STATE::PICTURES);
+    const CViewState* viewState = CViewStateSettings::GetInstance().Get(KODI::VIEW::STATE::PICTURES);
     SetSortMethod(viewState->m_sortDescription);
     SetViewAsControl(viewState->m_viewMode);
     SetSortOrder(viewState->m_sortDescription.sortOrder);
