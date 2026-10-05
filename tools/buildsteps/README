@@ -7,6 +7,7 @@ $Configuration - its either Debug, Release or Default and should be taken into a
 $SDK_VERSION - the requested SDK_VERSION to be used for building. If "Default" is passed it uses the platform default from <platformdir>/startbuild
 $BUILDTHREADS - number of threads which can be used when building (e.x. use it for make -j$BUILDTHREADS)
 $XBMC_DEPENDS_ROOT - root for installing the xbmc build depends and toolchain helpers. If "Default" is passed it uses the platform default from <platformdir>/startbuild
+$BUILD_CACHE_ENTRIES - number of depends builds of other revisions kept in $WORKSPACE/.build-cache (default 2). 0 disables the cache
 
 Additional ENV variables might be specified by the buildnodes. For android buildslaves these are:
 
