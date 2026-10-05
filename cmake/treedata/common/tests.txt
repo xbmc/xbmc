@@ -17,6 +17,7 @@ xbmc/dbwrappers/test              test/dbwrappers
 xbmc/dialogs/test                 test/dialogs
 xbmc/filesystem/test              test/filesystem
 xbmc/filesystem/VideoDatabaseDirectory/test test/videodatabasedirectory
+xbmc/games/addons/test            test/games/addons
 xbmc/games/addons/cheats/test     test/games/addons/cheats
 xbmc/games/addons/cheevos/test    test/games/addons/cheevos
 xbmc/games/addons/disc/test       test/games/addons/disc
