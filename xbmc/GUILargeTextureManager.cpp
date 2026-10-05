@@ -264,6 +264,29 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
   return true;
 }
 
+bool CGUILargeTextureManager::GetInterimImage(const std::string& path,
+                                              CAspectRatio::AspectRatio aspectRatio,
+                                              CTextureArray& texture)
+{
+  if (aspectRatio == CAspectRatio::CENTER)
+    return false;
+
+  std::unique_lock lock(m_listSection);
+  const CLargeTexture* best = nullptr;
+  for (const CLargeTexture* image : m_allocated)
+  {
+    if (image->GetPath() == path && image->GetAspectRatio() != CAspectRatio::CENTER &&
+        image->GetTexture().size() &&
+        (!best || image->GetTexture().m_width > best->GetTexture().m_width))
+      best = image;
+  }
+  if (!best)
+    return false;
+
+  texture = best->GetTexture();
+  return true;
+}
+
 void CGUILargeTextureManager::ReleaseImage(const std::string& path,
                                            unsigned int width,
                                            unsigned int height,
