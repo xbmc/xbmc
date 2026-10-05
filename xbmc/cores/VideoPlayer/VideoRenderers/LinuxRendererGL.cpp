@@ -998,6 +998,9 @@ void CLinuxRendererGL::LoadShaders(int field)
     EShaderFormat shaderFormat = GetShaderFormat();
     std::shared_ptr<GLSLOutput> out;
     m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
+    // VAAPI tone mapping is not available in GL(ES) shaders, fall back to Hable
+    if (m_toneMapMethod == VS_TONEMAPMETHOD_VAAPI)
+      m_toneMapMethod = VS_TONEMAPMETHOD_HABLE;
     if (m_renderQuality == RQ_SINGLEPASS)
     {
       out = std::make_shared<GLSLOutput>(GLSLOutput(4, m_useDithering, m_ditherDepth,
@@ -2775,7 +2778,10 @@ void CLinuxRendererGL::DeleteCLUT()
 void CLinuxRendererGL::CheckVideoParameters(int index)
 {
   const CPictureBuffer& buf = m_buffers[index];
-  const ETONEMAPMETHOD& toneMapMethod = m_videoSettings.m_ToneMapMethod;
+  ETONEMAPMETHOD toneMapMethod = m_videoSettings.m_ToneMapMethod;
+
+  if (toneMapMethod == VS_TONEMAPMETHOD_VAAPI)
+    toneMapMethod = VS_TONEMAPMETHOD_HABLE;
 
   if (buf.m_srcPrimaries != m_srcPrimaries)
   {

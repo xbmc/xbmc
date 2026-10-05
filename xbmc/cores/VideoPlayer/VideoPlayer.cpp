@@ -6049,6 +6049,13 @@ bool CVideoPlayer::Supports(EINTERLACEMETHOD method) const
   return m_processInfo->Supports(method);
 }
 
+bool CVideoPlayer::Supports(ETONEMAPMETHOD method) const
+{
+  if (!m_processInfo)
+    return false;
+  return m_processInfo->Supports(method);
+}
+
 EINTERLACEMETHOD CVideoPlayer::GetDeinterlacingMethodDefault() const
 {
   if (!m_processInfo)

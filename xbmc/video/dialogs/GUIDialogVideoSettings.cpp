@@ -188,6 +188,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
     vs.m_ToneMapMethod = static_cast<ETONEMAPMETHOD>(
         std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
     appPlayer->SetVideoSettings(vs);
+
+    if (const auto toneMapParamSetting =
+            GetSettingsManager()->GetSetting(SETTING_VIDEO_TONEMAP_PARAM))
+      toneMapParamSetting->SetEnabled(vs.m_ToneMapMethod != VS_TONEMAPMETHOD_VAAPI);
   }
   else if (settingId == SETTING_VIDEO_TONEMAP_PARAM)
   {
@@ -485,12 +489,16 @@ void CGUIDialogVideoSettings::InitializeSettings()
     entries.emplace_back(36555, VS_TONEMAPMETHOD_REINHARD);
     entries.emplace_back(36557, VS_TONEMAPMETHOD_ACES);
     entries.emplace_back(36558, VS_TONEMAPMETHOD_HABLE);
+    if (appPlayer->Supports(VS_TONEMAPMETHOD_VAAPI))
+      entries.emplace_back(36559, VS_TONEMAPMETHOD_VAAPI);
 
     AddSpinner(groupVideo, SETTING_VIDEO_TONEMAP_METHOD, 36553, SettingLevel::Basic,
                videoSettings.m_ToneMapMethod, entries, false, visible);
-    AddSlider(groupVideo, SETTING_VIDEO_TONEMAP_PARAM, 36556, SettingLevel::Basic,
-              videoSettings.m_ToneMapParam, "{:2.2f}", 0.1f, 0.1f, 5.0f, 36556, usePopup, false,
-              visible);
+    const auto toneMapParamSetting = AddSlider(
+        groupVideo, SETTING_VIDEO_TONEMAP_PARAM, 36556, SettingLevel::Basic,
+        videoSettings.m_ToneMapParam, "{:2.2f}", 0.1f, 0.1f, 5.0f, 36556, usePopup, false, visible);
+    if (toneMapParamSetting)
+      toneMapParamSetting->SetEnabled(videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_VAAPI);
   }
 
   // stereoscopic settings

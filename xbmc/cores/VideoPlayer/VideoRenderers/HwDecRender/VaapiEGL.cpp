@@ -218,8 +218,8 @@ namespace
 {
 
 // separate-layers export: one plane per layer, keyed like the DRMPRIME path.
-// width/height are the picture dims because CVaapi2Texture::Import sizes the
-// EGL images from those, not from the aligned surface dims.
+// width/height are the picture dims (or the VPP output dims when scaling) because
+// CVaapi2Texture::Import sizes the EGL images from those, not from the aligned surface dims.
 std::optional<DRMPRIME::DmaBufIdentity> IdentityFromVaDescriptor(
     const VADRMPRIMESurfaceDescriptor& surface, uint32_t width, uint32_t height)
 {
@@ -273,7 +273,10 @@ CVaapi2Texture* CVaapiTexturePool::Get(CVaapiRenderPicture* pic,
   }
 
   // this export only identifies the memory; Import on a miss re-exports its own fds
-  const auto identity = IdentityFromVaDescriptor(surface, pic->DVDPic.iWidth, pic->DVDPic.iHeight);
+  // must match the dimensions CVaapi2Texture::Import sizes the EGL images with
+  const uint32_t width = pic->procPic.outWidth ? pic->procPic.outWidth : pic->DVDPic.iWidth;
+  const uint32_t height = pic->procPic.outHeight ? pic->procPic.outHeight : pic->DVDPic.iHeight;
+  const auto identity = IdentityFromVaDescriptor(surface, width, height);
   for (uint32_t i = 0; i < surface.num_objects; i++)
     close(surface.objects[i].fd);
   if (!identity)

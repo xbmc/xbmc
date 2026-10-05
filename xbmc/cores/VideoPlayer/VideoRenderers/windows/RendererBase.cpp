@@ -461,6 +461,9 @@ void CRendererBase::CheckVideoParameters()
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
   ETONEMAPMETHOD method = m_videoSettings.m_ToneMapMethod;
 
+  if (method == VS_TONEMAPMETHOD_VAAPI)
+    method = VS_TONEMAPMETHOD_HABLE;
+
   bool isHDRPQ = (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020);
 
   bool toneMap = (isHDRPQ && m_HdrType == HDR_TYPE::HDR_NONE_SDR && method != VS_TONEMAPMETHOD_OFF);

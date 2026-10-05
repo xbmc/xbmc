@@ -976,6 +976,9 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
           EShaderFormat shaderFormat = GetShaderFormat();
           m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
+          // VAAPI tone mapping is not available in GL(ES) shaders, fall back to Hable
+          if (m_toneMapMethod == VS_TONEMAPMETHOD_VAAPI)
+            m_toneMapMethod = VS_TONEMAPMETHOD_HABLE;
 
           // Try single-pass filter shader for FAST scalers on GLES 3.1+
           if (m_renderQuality == RQ_SINGLEPASS &&
@@ -2232,7 +2235,10 @@ bool CLinuxRendererGLES::IsGuiLayer()
 void CLinuxRendererGLES::CheckVideoParameters(int index)
 {
   const CPictureBuffer& buf = m_buffers[index];
-  const ETONEMAPMETHOD& toneMapMethod = m_videoSettings.m_ToneMapMethod;
+  ETONEMAPMETHOD toneMapMethod = m_videoSettings.m_ToneMapMethod;
+
+  if (toneMapMethod == VS_TONEMAPMETHOD_VAAPI)
+    toneMapMethod = VS_TONEMAPMETHOD_HABLE;
 
   if (buf.m_srcPrimaries != m_srcPrimaries)
   {
