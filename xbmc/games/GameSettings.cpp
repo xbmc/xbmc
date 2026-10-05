@@ -43,6 +43,7 @@ const std::string SETTING_GAMES_SHOW_OSD_HELP = "gamesgeneral.showosdhelp";
 const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
 const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
+const std::string SETTING_GAMES_SYNC_TO_DISPLAY = "gamesgeneral.synctodisplay";
 const std::string SETTING_GAMES_ACHIEVEMENTS_CREATE_ACCOUNT = "gamesachievements.createaccount";
 const std::string SETTING_GAMES_ACHIEVEMENTS_USERNAME = "gamesachievements.username";
 const std::string SETTING_GAMES_ACHIEVEMENTS_PASSWORD = "gamesachievements.password";
@@ -135,6 +136,11 @@ unsigned int CGameSettings::MaxRewindTimeSec()
   int rewindTimeSec = m_settings->GetInt(SETTING_GAMES_REWINDTIME);
 
   return static_cast<unsigned int>(std::max(rewindTimeSec, 0));
+}
+
+bool CGameSettings::SyncPlaybackToDisplay()
+{
+  return m_settings->GetBool(SETTING_GAMES_SYNC_TO_DISPLAY);
 }
 
 std::string CGameSettings::GetRAUsername() const

@@ -99,7 +99,8 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   audioFormat.m_channelLayout = channelLayout;
   // Resampling follows the game when it runs at the screen's rate instead of
   // its own
-  m_pAudioStream = audioEngine->MakeStream(audioFormat, AESTREAM_FORCE_RESAMPLE);
+  m_pAudioStream = audioEngine->MakeStream(
+      audioFormat, m_processInfo.GetDisplayPacing().Enabled() ? AESTREAM_FORCE_RESAMPLE : 0);
   m_playbackRate = 1.0;
   m_playingDelay = 0.0;
   m_framesToSkip = 0;

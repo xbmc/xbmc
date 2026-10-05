@@ -52,6 +52,12 @@ public:
   Clock::time_point NextTake(Clock::time_point now) const;
 
   /*!
+   * \brief Whether the game may run at the screen's rate instead of its own
+   */
+  bool Enabled() const { return m_enabled.load(); }
+  void SetEnabled(bool enabled) { m_enabled.store(enabled); }
+
+  /*!
    * \brief The speed the game runs at, relative to its own frame rate
    */
   double PlaybackRate() const { return m_playbackRate.load(); }
@@ -65,6 +71,8 @@ private:
   int64_t m_runFrames{0};
   int64_t m_lastTakeLocalNs{0};
   int64_t m_intervalFrames{0};
+
+  std::atomic<bool> m_enabled{true};
 
   // Published for the game loop
   std::atomic<int64_t> m_lastTakeNs{0};

@@ -185,7 +185,7 @@ void CGameLoop::Process(void)
 
 bool CGameLoop::PaceToDisplay()
 {
-  if (m_displayPacing == nullptr)
+  if (m_displayPacing == nullptr || !m_displayPacing->Enabled())
     return false;
 
   using Clock = CDisplayPacing::Clock;

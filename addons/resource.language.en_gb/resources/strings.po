@@ -19031,7 +19031,11 @@ msgctxt "#35201"
 msgid "Gameplay"
 msgstr ""
 
-#empty string with id 35202
+#. Help text for setting "Sync playback to display" of label #13510
+#: system/settings/settings.xml
+msgctxt "#35202"
+msgid "Run the game in step with the display when their rates are close, and resample its sound to match. This avoids repeated frames and lowers input lag."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35203"

@@ -2829,6 +2829,11 @@
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
+        <setting id="gamesgeneral.synctodisplay" type="boolean" label="13510" help="35202">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="35320">
         <setting id="gamesgeneral.cheatspath" type="path" label="35321" help="35322">
