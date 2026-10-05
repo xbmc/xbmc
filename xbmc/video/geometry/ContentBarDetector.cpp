@@ -214,10 +214,13 @@ CSampleLine<T> CDetector<T>::Luma(const LineSpec& line) const
   if (line.row)
   {
     return {m_frame.y, m_shift,
-            static_cast<std::ptrdiff_t>(line.index) * stride + line.begin * bytes, bytes,
-            line.end - line.begin};
+            static_cast<std::ptrdiff_t>(line.index) * stride +
+                static_cast<std::ptrdiff_t>(line.begin) * bytes,
+            bytes, line.end - line.begin};
   }
-  return {m_frame.y, m_shift, static_cast<std::ptrdiff_t>(line.begin) * stride + line.index * bytes,
+  return {m_frame.y, m_shift,
+          static_cast<std::ptrdiff_t>(line.begin) * stride +
+              static_cast<std::ptrdiff_t>(line.index) * bytes,
           stride, line.end - line.begin};
 }
 
@@ -232,15 +235,17 @@ CSampleLine<T> CDetector<T>::Chroma(const PlaneRef& plane, const LineSpec& line)
     const unsigned int cy = line.index >> m_chromaShiftY;
     const unsigned int begin = line.begin >> m_chromaShiftX;
     const unsigned int end = (line.end + (1u << m_chromaShiftX) - 1) >> m_chromaShiftX;
-    return {plane, m_shift, static_cast<std::ptrdiff_t>(cy) * stride + begin * bytes, bytes,
-            end > begin ? end - begin : 0};
+    return {plane, m_shift,
+            static_cast<std::ptrdiff_t>(cy) * stride + static_cast<std::ptrdiff_t>(begin) * bytes,
+            bytes, end > begin ? end - begin : 0};
   }
 
   const unsigned int cx = line.index >> m_chromaShiftX;
   const unsigned int begin = line.begin >> m_chromaShiftY;
   const unsigned int end = (line.end + (1u << m_chromaShiftY) - 1) >> m_chromaShiftY;
-  return {plane, m_shift, static_cast<std::ptrdiff_t>(begin) * stride + cx * bytes, stride,
-          end > begin ? end - begin : 0};
+  return {plane, m_shift,
+          static_cast<std::ptrdiff_t>(begin) * stride + static_cast<std::ptrdiff_t>(cx) * bytes,
+          stride, end > begin ? end - begin : 0};
 }
 
 //! \brief Whether the median chroma of this line is achromatic.
