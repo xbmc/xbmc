@@ -13,8 +13,10 @@
 #include "cores/RetroPlayer/process/ios/RPProcessInfoIOS.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "cores/VideoPlayer/Process/ios/ProcessInfoIOS.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBDisplayLayer.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
@@ -43,6 +45,7 @@
 #include <mutex>
 #include <vector>
 
+#import <CoreMedia/CMFormatDescription.h>
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
@@ -148,6 +151,8 @@ CWinSystemTVOS::CWinSystemTVOS() : CWinSystemBase(), m_lostDeviceTimer(this)
 
 CWinSystemTVOS::~CWinSystemTVOS()
 {
+  if (m_hdrFormatDescription)
+    CFRelease(m_hdrFormatDescription);
   m_pDisplayLink->callbackClass = nil;
   delete m_pDisplayLink;
 }
@@ -194,6 +199,7 @@ bool CWinSystemTVOS::CreateNewWindow(const std::string& name, bool fullScreen, R
   VTB::CDecoder::Register();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGLES::Register();
+  CRendererVTBDisplayLayer::Register();
   CRendererVTB::Register();
   VIDEOPLAYER::CProcessInfoIOS::Register();
   RETRO::CRPProcessInfoIOS::Register();
@@ -236,12 +242,128 @@ bool CWinSystemTVOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool b
 
 bool CWinSystemTVOS::SwitchToVideoMode(int width, int height, double refreshrate)
 {
-  /*! @todo Currently support SDR dynamic range only. HDR shouldn't be done during
-   *  a modeswitch. Look to create supplemental method to handle sdr/hdr enable
-   */
-  [g_xbmcController.displayManager displayRateSwitch:refreshrate
-                                    withDynamicRange:0 /*dynamicRange*/];
+  m_requestedRefreshRate = static_cast<float>(refreshrate);
+  if (m_hdrStatus == HDR_STATUS::HDR_ON && m_hdrFormatDescription)
+  {
+    if ([g_xbmcController.displayManager displayVideoFormatSwitch:m_hdrFormatDescription
+                                                      refreshRate:m_requestedRefreshRate])
+      return true;
+    SetHDR(nullptr);
+  }
+
+  [g_xbmcController.displayManager displayRateSwitch:refreshrate withDynamicRange:0 /* SDR */];
   return true;
+}
+
+StreamHdrType CWinSystemTVOS::GetSupportedHDRType(const VideoPicture* videoPicture) const
+{
+  if (!videoPicture)
+    return StreamHdrType::HDR_TYPE_NONE;
+
+  const CHDRCapabilities caps = GetDisplayHDRCapabilities();
+
+  // A display may accept HLG sample buffers even when AVPlayer's deprecated
+  // HLG mode bit is clear. Let AVDisplayCriteria select the actual HDMI mode.
+  if (videoPicture->hdrType == StreamHdrType::HDR_TYPE_HLG &&
+      (caps.SupportsHLG() || caps.SupportsHDR10()))
+    return StreamHdrType::HDR_TYPE_HLG;
+
+  if (videoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 && caps.SupportsHDR10())
+  {
+    return StreamHdrType::HDR_TYPE_HDR10;
+  }
+
+  return StreamHdrType::HDR_TYPE_NONE;
+}
+
+bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
+{
+  const StreamHdrType hdrType =
+      CanUseHDRVideoLayer() ? GetSupportedHDRType(videoPicture) : StreamHdrType::HDR_TYPE_NONE;
+  auto* buffer =
+      videoPicture ? dynamic_cast<VTB::CVideoBufferVTB*>(videoPicture->videoBuffer) : nullptr;
+  CVPixelBufferRef pixelBuffer = buffer ? buffer->GetPB() : nullptr;
+  if (hdrType == StreamHdrType::HDR_TYPE_NONE || !pixelBuffer ||
+      CVPixelBufferGetPixelFormatType(pixelBuffer) !=
+          kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
+  {
+    if (m_hdrFormatDescription)
+    {
+      CFRelease(m_hdrFormatDescription);
+      m_hdrFormatDescription = nullptr;
+    }
+    if (m_hdrStatus == HDR_STATUS::HDR_ON)
+      [g_xbmcController.displayManager displayDynamicRangeReset];
+    m_hdrStatus = HDR_STATUS::HDR_OFF;
+    m_requestedRefreshRate = 0.0f;
+    return false;
+  }
+
+  CMVideoFormatDescriptionRef formatDescription = nullptr;
+  const OSStatus formatStatus = CMVideoFormatDescriptionCreateForImageBuffer(
+      kCFAllocatorDefault, pixelBuffer, &formatDescription);
+  if (formatStatus != noErr)
+  {
+    CLog::Log(LOGERROR, "CWinSystemTVOS::SetHDR: format creation failed ({})", formatStatus);
+    SetHDR(nullptr);
+    return false;
+  }
+
+  const float rate = m_requestedRefreshRate > 0.0f
+                         ? m_requestedRefreshRate
+                         : [g_xbmcController.displayManager getDisplayRate];
+  const bool accepted = [g_xbmcController.displayManager displayVideoFormatSwitch:formatDescription
+                                                                      refreshRate:rate];
+  if (accepted)
+  {
+    if (m_hdrFormatDescription)
+      CFRelease(m_hdrFormatDescription);
+    m_hdrFormatDescription = formatDescription;
+    m_hdrStatus = HDR_STATUS::HDR_ON;
+    CLog::Log(LOGDEBUG, "CWinSystemTVOS::SetHDR: requesting {}",
+              hdrType == StreamHdrType::HDR_TYPE_HLG ? "HLG" : "HDR10");
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "CWinSystemTVOS::SetHDR: display request rejected");
+    CFRelease(formatDescription);
+    SetHDR(nullptr);
+  }
+  return accepted;
+}
+
+bool CWinSystemTVOS::CanUseHDRVideoLayer()
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    const bool hdrEnabled = IsHDRDisplaySettingEnabled();
+    const bool matchingEnabled = [g_xbmcController.displayManager canMatchVideoDynamicRange];
+    CLog::Log(LOGDEBUG, "CWinSystemTVOS::CanUseHDRVideoLayer: HDR setting {}, display matching {}",
+              hdrEnabled, matchingEnabled);
+    return hdrEnabled && matchingEnabled;
+  }
+#endif
+  return false;
+}
+
+bool CWinSystemTVOS::IsHDRDisplay()
+{
+  const CHDRCapabilities caps = GetDisplayHDRCapabilities();
+  return caps.SupportsHDR10() || caps.SupportsHLG();
+}
+
+CHDRCapabilities CWinSystemTVOS::GetDisplayHDRCapabilities() const
+{
+  CHDRCapabilities caps;
+
+  if ([g_xbmcController.displayManager supportsHDR])
+    caps.SetHDR10();
+
+  if ([g_xbmcController.displayManager supportsHLG])
+    caps.SetHLG();
+
+  return caps;
 }
 
 bool CWinSystemTVOS::GetScreenResolution(int* w, int* h, double* fps, int screenIdx)
