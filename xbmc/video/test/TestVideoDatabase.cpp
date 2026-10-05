@@ -612,3 +612,23 @@ TEST_F(TestVideoDatabase, ConvertVideoToVersionKeepsStreamDetails)
   EXPECT_TRUE(m_db.GetStreamDetails(source, details));
   EXPECT_EQ(6019, details.GetVideoDuration());
 }
+
+// A failed refresh relies on this to remove the assets of the movie it has already deleted
+TEST_F(TestVideoDatabase, DeleteMovieRemovesTheAssetsOfADeletedMovie)
+{
+  const int idMovie{AddMovie("/movies/Movie (2010)/Movie (2010).mkv")};
+  ASSERT_GT(idMovie, 0);
+
+  const std::string version{"/movies/Movie (2010)/Movie (2010) Extended Edition.mkv"};
+  CFileItem item{version, false};
+  const int idType{
+      m_db.AddVideoVersionType("Extended", VideoAssetTypeOwner::USER, VideoAssetType::VERSION)};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                 VideoAssetType::VERSION, item));
+
+  ASSERT_TRUE(m_db.DeleteMovie(idMovie, DeleteMovieCascadeAction::DEFAULT_VERSION));
+  ASSERT_EQ(idMovie, m_db.GetMovieId(version));
+
+  ASSERT_TRUE(m_db.DeleteMovie(idMovie, DeleteMovieCascadeAction::ALL_ASSETS));
+  EXPECT_EQ(-1, m_db.GetMovieId(version));
+}
