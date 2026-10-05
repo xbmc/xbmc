@@ -2256,7 +2256,17 @@ msgctxt "#470"
 msgid "Credits"
 msgstr ""
 
-#empty strings from id 471 to 473
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#471"
+msgid "Hue"
+msgstr ""
+
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#472"
+msgid "Saturation"
+msgstr ""
+
+#empty string with id 473
 
 msgctxt "#474"
 msgid "Off"

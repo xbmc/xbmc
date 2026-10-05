@@ -234,6 +234,8 @@ public:
   bool m_SubtitleOn;
   float m_Brightness;
   float m_Contrast;
+  float m_Hue;
+  float m_Saturation;
   float m_Gamma;
   float m_NoiseReduction;
   bool m_PostProcess;

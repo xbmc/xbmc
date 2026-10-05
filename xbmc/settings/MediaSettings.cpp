@@ -88,6 +88,10 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultVideoSettings.m_Brightness = 50;
     if (!XMLUtils::GetFloat(pElement, "contrast", m_defaultVideoSettings.m_Contrast, 0, 100))
       m_defaultVideoSettings.m_Contrast = 50;
+    if (!XMLUtils::GetFloat(pElement, "hue", m_defaultVideoSettings.m_Hue, 0, 100))
+      m_defaultVideoSettings.m_Hue = 50;
+    if (!XMLUtils::GetFloat(pElement, "saturation", m_defaultVideoSettings.m_Saturation, 0, 100))
+      m_defaultVideoSettings.m_Saturation = 50;
     if (!XMLUtils::GetFloat(pElement, "gamma", m_defaultVideoSettings.m_Gamma, 0, 100))
       m_defaultVideoSettings.m_Gamma = 20;
     if (!XMLUtils::GetFloat(pElement, "audiodelay", m_defaultVideoSettings.m_AudioDelay, -10.0f, 10.0f))
@@ -214,6 +218,8 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetBoolean(pNode, "showsubtitles", m_defaultVideoSettings.m_SubtitleOn);
   XMLUtils::SetFloat(pNode, "brightness", m_defaultVideoSettings.m_Brightness);
   XMLUtils::SetFloat(pNode, "contrast", m_defaultVideoSettings.m_Contrast);
+  XMLUtils::SetFloat(pNode, "hue", m_defaultVideoSettings.m_Hue);
+  XMLUtils::SetFloat(pNode, "saturation", m_defaultVideoSettings.m_Saturation);
   XMLUtils::SetFloat(pNode, "gamma", m_defaultVideoSettings.m_Gamma);
   XMLUtils::SetFloat(pNode, "audiodelay", m_defaultVideoSettings.m_AudioDelay);
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);

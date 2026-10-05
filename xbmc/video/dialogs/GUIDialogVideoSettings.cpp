@@ -40,6 +40,8 @@
 #define SETTING_VIDEO_PIXEL_RATIO         "video.pixelratio"
 #define SETTING_VIDEO_BRIGHTNESS          "video.brightness"
 #define SETTING_VIDEO_CONTRAST            "video.contrast"
+#define SETTING_VIDEO_HUE "video.hue"
+#define SETTING_VIDEO_SATURATION "video.saturation"
 #define SETTING_VIDEO_GAMMA               "video.gamma"
 #define SETTING_VIDEO_NONLIN_STRETCH      "video.nonlinearstretch"
 #define SETTING_VIDEO_POSTPROCESS         "video.postprocess"
@@ -155,6 +157,19 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
   {
     CVideoSettings vs = appPlayer->GetVideoSettings();
     vs.m_Contrast = static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    appPlayer->SetVideoSettings(vs);
+  }
+  else if (settingId == SETTING_VIDEO_HUE)
+  {
+    CVideoSettings vs = appPlayer->GetVideoSettings();
+    vs.m_Hue = static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    appPlayer->SetVideoSettings(vs);
+  }
+  else if (settingId == SETTING_VIDEO_SATURATION)
+  {
+    CVideoSettings vs = appPlayer->GetVideoSettings();
+    vs.m_Saturation =
+        static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
     appPlayer->SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_GAMMA)
@@ -427,6 +442,12 @@ void CGUIDialogVideoSettings::InitializeSettings()
     AddPercentageSlider(groupVideo, SETTING_VIDEO_BRIGHTNESS, 464, SettingLevel::Basic, static_cast<int>(videoSettings.m_Brightness), 14047, 1, 464, usePopup);
   if (appPlayer->Supports(RENDERFEATURE_CONTRAST))
     AddPercentageSlider(groupVideo, SETTING_VIDEO_CONTRAST, 465, SettingLevel::Basic, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 465, usePopup);
+  if (appPlayer->Supports(RENDERFEATURE_HUE))
+    AddPercentageSlider(groupVideo, SETTING_VIDEO_HUE, 471, SettingLevel::Basic,
+                        static_cast<int>(videoSettings.m_Hue), 14047, 1, 471, usePopup);
+  if (appPlayer->Supports(RENDERFEATURE_SATURATION))
+    AddPercentageSlider(groupVideo, SETTING_VIDEO_SATURATION, 472, SettingLevel::Basic,
+                        static_cast<int>(videoSettings.m_Saturation), 14047, 1, 472, usePopup);
   if (appPlayer->Supports(RENDERFEATURE_GAMMA))
     AddPercentageSlider(groupVideo, SETTING_VIDEO_GAMMA, 466, SettingLevel::Basic, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
   if (appPlayer->Supports(RENDERFEATURE_NOISE))
