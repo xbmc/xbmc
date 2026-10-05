@@ -940,29 +940,29 @@
 		<value>FFFFFFFF</value>
 	</variable>
 	<variable name="MediaVideoPropVar">
-		<value condition="VideoPlayer.IsStereoscopic + Window.IsActive(fullscreenvideo)">3D$INFO[VideoPlayer.VideoResolution, &#8226; ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, &#8226; ]$VAR[VideoCodecVar, &#8226; ]$INFO[VideoPlayer.VideoAspect, &#8226; ,:1]</value>
-		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, &#8226; ]$VAR[VideoCodecVar, &#8226; ]$INFO[VideoPlayer.VideoAspect, &#8226; ,:1]</value>
-		<value condition="ListItem.IsStereoscopic">3D$INFO[ListItem.VideoResolution, &#8226; ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, &#8226; ]$VAR[VideoHDRType2Var, &#8226; ]$VAR[VideoCodecVar, &#8226; ]$INFO[ListItem.VideoAspect, &#8226; ,:1]</value>
-		<value>$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, &#8226; ]$VAR[VideoHDRType2Var, &#8226; ]$VAR[VideoCodecVar, &#8226; ]$INFO[ListItem.VideoAspect, &#8226; ,:1]</value>
+		<value condition="VideoPlayer.IsStereoscopic + Window.IsActive(fullscreenvideo)">3D$INFO[VideoPlayer.VideoResolution, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[VideoPlayer.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
+		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRTypeVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[VideoPlayer.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
+		<value condition="ListItem.IsStereoscopic">3D$INFO[ListItem.VideoResolution, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoHDRType2Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[ListItem.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
+		<value>$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]$VAR[VideoHDRType1Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoHDRType2Var, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[VideoCodecVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[ListItem.VideoAspect, [COLOR border_alpha]&#8226;[/COLOR] ,:1]</value>
 	</variable>
 	<variable name="MediaAudioPropVar">
 		<value condition="String.IsEqual(VideoPlayer.AudioLanguage,und) + Window.IsActive(fullscreenvideo)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]</value>
-		<value condition="Window.IsActive(fullscreenvideo)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[VideoPlayer.AudioLanguage, &#8226; ]</value>
+		<value condition="Window.IsActive(fullscreenvideo)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[VideoPlayer.AudioLanguage, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
 		<value condition="String.IsEqual(ListItem.AudioLanguage,und) + [Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)]">$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]</value>
-		<value condition="Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)">$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]$INFO[ListItem.FirstAudioLanguage, &#8226; ]</value>
+		<value condition="Window.IsVisible(managevideoversions) | Window.IsVisible(managevideoextras)">$MAP[DefaultAltAudioMap, ListItem.FirstAudioCodec]$INFO[ListItem.FirstAudioChannels(DefaultLayout), ]$INFO[ListItem.FirstAudioLanguage, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
 		<value condition="String.IsEqual(ListItem.AudioLanguage,und)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]</value>
-		<value>$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.AudioLanguage, &#8226; ]</value>
+		<value>$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.AudioLanguage, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
 	</variable>
 	<variable name="MediaSubtitlePropVar">
 		<value condition="Window.IsActive(fullscreenvideo) + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitleCodec) + [String.IsEmpty(VideoPlayer.SubtitlesLanguage) | String.IsEqual(VideoPlayer.SubtitlesLanguage,und)] ">$VAR[SubtitleCodecVar]</value>
 		<value condition="Window.IsActive(fullscreenvideo) + VideoPlayer.SubtitlesEnabled + String.IsEmpty(VideoPlayer.SubtitleCodec) + ![String.IsEmpty(VideoPlayer.SubtitlesLanguage) | String.IsEqual(VideoPlayer.SubtitlesLanguage,und)]">$INFO[VideoPlayer.SubtitlesLanguage]</value>
-		<value condition="Window.IsActive(fullscreenvideo) + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitleCodec) + ![String.IsEmpty(VideoPlayer.SubtitlesLanguage) | String.IsEqual(VideoPlayer.SubtitlesLanguage,und)]">$VAR[SubtitleCodecVar]$INFO[VideoPlayer.SubtitlesLanguage, &#8226; ]</value>
+		<value condition="Window.IsActive(fullscreenvideo) + VideoPlayer.SubtitlesEnabled + !String.IsEmpty(VideoPlayer.SubtitleCodec) + ![String.IsEmpty(VideoPlayer.SubtitlesLanguage) | String.IsEqual(VideoPlayer.SubtitlesLanguage,und)]">$VAR[SubtitleCodecVar]$INFO[VideoPlayer.SubtitlesLanguage, [COLOR border_alpha]&#8226;[/COLOR] ]</value>
 		<value condition="!String.IsEqual(ListItem.SubtitleLanguage,und)">$INFO[ListItem.SubtitleLanguage]</value>
 	</variable>
 	<variable name="MediaMusicPropVar">
-		<value condition="RDS.HasRDS + Window.IsActive(visualisation)">RDS$VAR[AudioCodecFlagVar, &#8226; ]$VAR[AudioChannelsVar, &#8226; ]$INFO[MusicPlayer.SampleRate, &#8226; ,kHz]$INFO[MusicPlayer.BitRate, &#8226; ,kbps]$VAR[MusicBitsPerSampleVar, &#8226; ,bit]$VAR[MusicBMPVar, &#8226; ,bmp]</value>
-		<value condition="Window.IsActive(visualisation)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, &#8226; ]$INFO[MusicPlayer.SampleRate, &#8226; ,kHz]$INFO[MusicPlayer.BitRate, &#8226; ,kbps]$VAR[MusicBitsPerSampleVar, &#8226; , bit]$VAR[MusicBMPVar, &#8226; ,bmp]</value>
-		<value>$INFO[ListItem.FileExtension]$VAR[AudioChannelsVar, &#8226; ]$INFO[ListItem.Samplerate, &#8226; ,kHz]$INFO[ListItem.BitRate, &#8226; ,kbps]$VAR[MusicBitsPerSampleVar, &#8226; ,bit]$VAR[MusicBMPVar, &#8226; ,bmp]</value>
+		<value condition="RDS.HasRDS + Window.IsActive(visualisation)">RDS$VAR[AudioCodecFlagVar, [COLOR border_alpha]&#8226;[/COLOR] ]$VAR[AudioChannelsVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[MusicPlayer.SampleRate, [COLOR border_alpha]&#8226;[/COLOR] ,kHz]$INFO[MusicPlayer.BitRate, [COLOR border_alpha]&#8226;[/COLOR] ,kbps]$VAR[MusicBitsPerSampleVar, [COLOR border_alpha]&#8226;[/COLOR] ,bit]$VAR[MusicBMPVar, [COLOR border_alpha]&#8226;[/COLOR] ,bmp]</value>
+		<value condition="Window.IsActive(visualisation)">$VAR[AudioCodecFlagVar]$VAR[AudioChannelsVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[MusicPlayer.SampleRate, [COLOR border_alpha]&#8226;[/COLOR] ,kHz]$INFO[MusicPlayer.BitRate, [COLOR border_alpha]&#8226;[/COLOR] ,kbps]$VAR[MusicBitsPerSampleVar, [COLOR border_alpha]&#8226;[/COLOR] , bit]$VAR[MusicBMPVar, [COLOR border_alpha]&#8226;[/COLOR] ,bmp]</value>
+		<value>$INFO[ListItem.FileExtension]$VAR[AudioChannelsVar, [COLOR border_alpha]&#8226;[/COLOR] ]$INFO[ListItem.Samplerate, [COLOR border_alpha]&#8226;[/COLOR] ,kHz]$INFO[ListItem.BitRate, [COLOR border_alpha]&#8226;[/COLOR] ,kbps]$VAR[MusicBitsPerSampleVar, [COLOR border_alpha]&#8226;[/COLOR] ,bit]$VAR[MusicBMPVar, [COLOR border_alpha]&#8226;[/COLOR] ,bmp]</value>
 	</variable>
 	<variable name="MusicBitsPerSampleVar">
 		<value condition="Window.IsActive(visualisation) + !String.IsEmpty(MusicPlayer.BitsPerSample)">$INFO[MusicPlayer.BitsPerSample]</value>
