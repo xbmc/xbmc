@@ -10412,6 +10412,17 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           *CMediaSourceSettings::GetInstance().GetSources("video"));
       CServiceBroker::GetMediaManager().GetRemovableDrives(videoSources);
 
+      // Versions and extras, which can be added from outside the video sources
+      std::unordered_set<int> assetFiles;
+      m_pDS->query("SELECT idFile FROM videoversion WHERE NOT EXISTS "
+                   "(SELECT 1 FROM movie WHERE movie.idFile = videoversion.idFile)");
+      while (!m_pDS->eof())
+      {
+        assetFiles.insert(m_pDS->fv(0).get_asInt());
+        m_pDS->next();
+      }
+      m_pDS->close();
+
       int total = m_pDS2->num_rows();
       int current = 0;
       std::string lastDir;
@@ -10448,12 +10459,14 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         }
         else
         {
-          // Only consider keeping this file if not optical and belonging to a (matching) source
+          // Only consider keeping this file if not optical and belonging to a (matching) source,
+          // or a version or extra
           bool bIsSource;
           const int sourceIndex = URIUtils::IsOnDVD(fullPath)
                                       ? -1
                                       : CUtil::GetMatchingSource(fullPath, videoSources, bIsSource);
-          if (sourceIndex >= 0)
+          if (sourceIndex >= 0 || (!URIUtils::IsOnDVD(fullPath) &&
+                                   assetFiles.contains(m_pDS2->fv("files.idFile").get_asInt())))
           {
             const std::string pathDir = URIUtils::GetDirectory(fullPath);
 
@@ -11091,6 +11104,8 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
 
   // map of parent path ID to boolean pair (if not exists and user choice)
   std::map<int, std::pair<bool, bool> > sourcePathsDeleteDecisions;
+  // Each source path is checked once, as loose assets don't share their decisions
+  std::map<int, bool> sourcePathsExist;
   m_pDS2->query(sql);
   while (!m_pDS2->eof())
   {
@@ -11107,14 +11122,29 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
       bool bIsSourceName;
       bool sourceNotFound = (CUtil::GetMatchingSource(parentPath, videoSources, bIsSourceName) < 0);
 
+      // A non-default version or extra added from outside the sources and the library has its
+      // own folder for a source
+      const bool looseAsset{mediaType == MediaTypeVideoVersion && sourceNotFound &&
+                            sourcePath.empty() &&
+                            !IsDefaultVideoVersion(m_pDS2->fv(1).get_asInt())};
+
       if (sourceNotFound && sourcePath.empty())
         sourcePath = parentPath;
 
       int sourcePathID = GetPathId(sourcePath);
       auto sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
-      if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
+      // A loose asset's decision is its own, not one for a default version in the same folder
+      if (looseAsset || sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
       {
-        bool sourcePathNotExists = (sourceNotFound || !CDirectory::Exists(sourcePath, false));
+        bool sourcePathNotExists{sourceNotFound && !looseAsset};
+        if (!sourcePathNotExists)
+        {
+          auto exists{sourcePathsExist.find(sourcePathID)};
+          if (exists == sourcePathsExist.end())
+            exists =
+                sourcePathsExist.emplace(sourcePathID, CDirectory::Exists(sourcePath, false)).first;
+          sourcePathNotExists = !exists->second;
+        }
         // if the parent path exists, the file will be deleted without asking
         // if the parent path doesn't exist or does not belong to a valid media source,
         // ask the user whether to remove all items it contained
@@ -11146,7 +11176,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
           }
         }
 
-        sourcePathsDeleteDecisions.insert(std::make_pair(sourcePathID, std::make_pair(sourcePathNotExists, del)));
+        if (!looseAsset)
+          sourcePathsDeleteDecisions.insert(
+              std::make_pair(sourcePathID, std::make_pair(sourcePathNotExists, del)));
 
         // Only a source that has gone carries a decision about its contents
         if (sourcePathNotExists)
