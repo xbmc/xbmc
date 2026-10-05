@@ -2840,7 +2840,7 @@
           <constraints>
             <minimum>1</minimum>
             <step>1</step>
-            <maximum>10</maximum>
+            <maximum>20</maximum>
           </constraints>
           <dependencies>
             <dependency type="enable" setting="gamesgeneral.synctodisplay">true</dependency>
