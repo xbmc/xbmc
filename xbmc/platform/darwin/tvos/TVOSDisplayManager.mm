@@ -20,6 +20,7 @@
 #import "platform/darwin/tvos/XBMCController.h"
 
 #import <AVFoundation/AVDisplayCriteria.h>
+#import <AVFoundation/AVPlayer.h>
 #import <AVKit/AVDisplayManager.h>
 #import <QuartzCore/CADisplayLink.h>
 
@@ -88,6 +89,52 @@
     CLog::Log(LOGDEBUG, "displayRateSwitch request: refreshRate = {}, dynamicRange = {}",
               refreshRate, [self stringFromDynamicRange:dynamicRange]);
   }
+}
+
+- (BOOL)displayVideoFormatSwitch:(CMFormatDescriptionRef)formatDescription
+                     refreshRate:(float)refreshRate
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    if (formatDescription == nullptr)
+    {
+      CLog::Log(LOGERROR, "TVOSDisplayManager: video format description is missing");
+      return NO;
+    }
+    if (![self canMatchVideoDynamicRange])
+    {
+      CLog::Log(LOGDEBUG, "TVOSDisplayManager: display criteria matching is disabled");
+      return NO;
+    }
+
+    AVDisplayCriteria* criteria = [[AVDisplayCriteria alloc] initWithRefreshRate:refreshRate
+                                                               formatDescription:formatDescription];
+    if (criteria == nil)
+    {
+      CLog::Log(LOGERROR, "TVOSDisplayManager: unable to create video display criteria");
+      return NO;
+    }
+
+    CLog::Log(LOGDEBUG, "TVOSDisplayManager: video format criteria dynamic range {}",
+              [self stringFromDynamicRange:criteria.videoDynamicRange]);
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+      auto manager = [g_xbmcController avDisplayManager];
+      [self setDisplayCriteria:manager displayCriteria:criteria];
+    });
+    return YES;
+  }
+#endif
+  return NO;
+}
+
+- (void)displayDynamicRangeReset
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    auto manager = [g_xbmcController avDisplayManager];
+    [self setDisplayCriteria:manager displayCriteria:nil];
+  });
 }
 
 - (void)displayRateReset
@@ -199,13 +246,30 @@
   {
     case 0 ... 1:
       return "SDR";
-    case 2 ... 3:
+    case 2:
       return "HDR10";
+    case 3:
+      return "HLG";
     case 4:
       return "DolbyVision";
     default:
       return "Unknown";
   }
+}
+
+- (BOOL)supportsHDR
+{
+  return (AVPlayer.availableHDRModes & AVPlayerHDRModeHDR10) != 0;
+}
+
+- (BOOL)supportsHLG
+{
+  return (AVPlayer.availableHDRModes & AVPlayerHDRModeHLG) != 0;
+}
+
+- (BOOL)canMatchVideoDynamicRange
+{
+  return [g_xbmcController avDisplayManager].displayCriteriaMatchingEnabled;
 }
 
 - (CGSize)getScreenSize

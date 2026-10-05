@@ -68,6 +68,13 @@ Several different strategies are used to draw your attention to certain pieces o
 * **[Xcode](https://developer.apple.com/xcode/)**. Install it from the AppStore or from the **[Apple Developer Homepage](https://developer.apple.com/)**.
 * Device with **tvOS 11.0 or newer** to install Kodi after build.
 
+HDR10 and HLG playback through the system video layer requires an HDR-capable
+Apple TV and display, tvOS 17 or newer, and a build made with the tvOS 17 SDK
+or newer. Enable **Match Dynamic Range** in tvOS Video and Audio settings and
+**Adjust display HDR mode** in Kodi's Player / Videos settings. Builds made with
+older SDKs retain the SDR playback path. Dolby Vision and HDR10+ dynamic
+metadata are not supported by this path.
+
 Building for tvOS should work with the following combinations of Xcode and macOS versions:
   * Xcode 12.4 against tvOS SDK 14.3 on 10.15.7 (Catalina)(recommended)(CI)
   * Xcode 13.x against tvOS SDK 15.4 on 12.x (Monterey)(recommended)
