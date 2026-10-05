@@ -58,6 +58,13 @@ public:
   void SetEnabled(bool enabled) { m_enabled.store(enabled); }
 
   /*!
+   * \brief How far the game's rate may be from the screen's, as a fraction,
+   * for the game to run at the screen's rate
+   */
+  double MaxRateDifference() const { return m_maxRateDifference.load(); }
+  void SetMaxRateDifference(double difference) { m_maxRateDifference.store(difference); }
+
+  /*!
    * \brief The speed the game runs at, relative to its own frame rate
    */
   double PlaybackRate() const { return m_playbackRate.load(); }
@@ -73,6 +80,7 @@ private:
   int64_t m_intervalFrames{0};
 
   std::atomic<bool> m_enabled{true};
+  std::atomic<double> m_maxRateDifference{0.02};
 
   // Published for the game loop
   std::atomic<int64_t> m_lastTakeNs{0};

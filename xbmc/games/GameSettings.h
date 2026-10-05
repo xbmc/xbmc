@@ -40,6 +40,7 @@ public:
   bool RewindEnabled();
   unsigned int MaxRewindTimeSec();
   bool SyncPlaybackToDisplay();
+  double SyncToDisplayLimit();
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 

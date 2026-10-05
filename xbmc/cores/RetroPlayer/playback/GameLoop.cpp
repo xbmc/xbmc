@@ -28,10 +28,6 @@ constexpr auto PAUSE_SLEEP = 5s;
 // rather than trying to run them back to back
 constexpr unsigned int MAX_FRAME_DEFICIT = 2;
 
-// How far the game's own frame rate may be from the screen's for the game to
-// run at the screen's rate instead. Its sound is resampled by as much.
-constexpr double MAX_PACED_RATE_DIFFERENCE = 0.02;
-
 // Time left between a paced frame finishing and the screen taking it, to
 // absorb jitter in when the screen takes frames
 constexpr auto PACING_MARGIN = 2500us;
@@ -196,7 +192,7 @@ bool CGameLoop::PaceToDisplay()
     return false;
 
   const double rate = (1s / std::chrono::duration<double>(interval)) / m_fps.load();
-  if (std::abs(rate - 1.0) > MAX_PACED_RATE_DIFFERENCE)
+  if (std::abs(rate - 1.0) > m_displayPacing->MaxRateDifference())
     return false;
 
   // Started this long before the screen takes it, a frame is ready in time.

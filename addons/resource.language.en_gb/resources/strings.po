@@ -19260,7 +19260,19 @@ msgctxt "#35239"
 msgid "Integer (square pixels)"
 msgstr ""
 
-#empty strings from id 35240 to 35248
+#. Label of setting "Games -> General -> Maximum speed change"
+#: system/settings/settings.xml
+msgctxt "#35240"
+msgid "Maximum speed change"
+msgstr ""
+
+#. Help text for setting "Maximum speed change" of label #35240
+#: system/settings/settings.xml
+msgctxt "#35241"
+msgid "How far a game's own rate may be from the display's and still run in step with it. Its speed and sound change by up to this much."
+msgstr ""
+
+#empty strings from id 35242 to 35248
 
 #. Button to open the savestate manager from the game OSD
 #: addons/skin.estuary/xml/GameOSD.xml
