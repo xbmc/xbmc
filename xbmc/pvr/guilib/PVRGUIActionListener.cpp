@@ -28,7 +28,6 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
-#include "pvr/guilib/PVRGUIActionsClients.h"
 #include "pvr/guilib/PVRGUIActionsDatabase.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
@@ -55,8 +54,8 @@ CPVRGUIActionListener::CPVRGUIActionListener()
        CSettings::SETTING_EPG_RESETEPG, CSettings::SETTING_PVRMANAGER_ADDONS,
        CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES, CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
        CSettings::SETTING_PVRMANAGER_GROUPMANAGER, CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
-       CSettings::SETTING_PVRMENU_SEARCHICONS, CSettings::SETTING_PVRCLIENT_MENUHOOK,
-       CSettings::SETTING_EPG_PAST_DAYSTODISPLAY, CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
+       CSettings::SETTING_PVRMENU_SEARCHICONS, CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
+       CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
        CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME});
 }
 
@@ -411,10 +410,6 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
   {
     CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
-  }
-  else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Clients>().ProcessSettingsMenuHooks();
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_ADDONS)
   {

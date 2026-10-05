@@ -261,7 +261,6 @@ public:
   static constexpr auto SETTING_PVRPARENTAL_ENABLED = "pvrparental.enabled";
   static constexpr auto SETTING_PVRPARENTAL_PIN = "pvrparental.pin";
   static constexpr auto SETTING_PVRPARENTAL_DURATION = "pvrparental.duration";
-  static constexpr auto SETTING_PVRCLIENT_MENUHOOK = "pvrclient.menuhook";
   static constexpr auto SETTING_PVRTIMERS_HIDEDISABLEDTIMERS = "pvrtimers.hidedisabledtimers";
   static constexpr auto SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS =
       "musiclibrary.showcompilationartists";
