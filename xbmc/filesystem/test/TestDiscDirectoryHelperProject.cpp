@@ -542,6 +542,26 @@ TEST_F(TestDiscDirectoryHelperProject, Movie_SingleTitlePrefersThePlainFeatureOv
   EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{800u});
 }
 
+TEST_F(TestDiscDirectoryHelperProject, Movie_SingleTitleIsNotASegmentNamedAsTheFeature)
+{
+  // The feature is only named as an extended cut, and a seconds-long segment is SEG_MainFeature
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 130min, {1u})},
+                        {801u, MakePlaylist(801u, 5s, {2u})}};
+  ClipMap clips{{1u, MakeClip(130min, {800u})}, {2u, MakeClip(5s, {801u})}};
+
+  helper.SetPlaylistHints(MakeProject(
+      {MakeNamed(800u, "FPL_MainFeature_EXT", 130min), MakeNamed(801u, "SEG_MainFeature", 5s)}));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{800u});
+}
+
 TEST_F(TestDiscDirectoryHelperProject, Movie_SingleTitleKeepsTheDiscInfMainPlaylist)
 {
   // disc.inf names playlist 801 as the main title. The project names 800 as the feature
