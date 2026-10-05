@@ -2690,6 +2690,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         // Determine bluray playlist(s) (if possible)
         // Also populates streamdetails if playlist(s) found
+        // Resolved as an episode whether or not the scraper gave the media type
+        scraperItem.GetVideoInfoTag()->m_type = MediaTypeEpisode;
         CFileItemList blurayItems;
         ResolveBlurayPlaylist(&scraperItem, blurayItems);
 
