@@ -2006,7 +2006,7 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
   if (playlistsLength.size() >= m_numSpecials)
   {
     for (unsigned int playlist : playlistsLength | std::views::keys)
-      m_candidateSpecials.emplace(playlist);
+      m_candidateSpecials.emplace_back(playlist);
   }
 }
 

@@ -502,7 +502,7 @@ private:
   std::vector<std::vector<CandidatePlaylistInformation>> m_groups;
   std::vector<std::vector<CandidatePlaylistInformation>> m_allGroups;
   CandidatePlaylistsMap m_candidatePlaylists;
-  std::set<unsigned int> m_candidateSpecials;
+  std::vector<unsigned int> m_candidateSpecials; // Longest first
   std::vector<CandidatePlaylistInformation> m_nthLongestPlaylists;
 
   static bool GetItems(CFileItemList& items, const std::string& directory, bool silent = false);

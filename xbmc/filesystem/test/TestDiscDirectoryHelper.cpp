@@ -542,6 +542,29 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleSpecial_StillOffered)
     EXPECT_FALSE(item->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false));
 }
 
+// A scan stores the first candidate for a single special, so the longest leads
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleSpecial_LongestFirst)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800), // Special
+                    MakeEpisode(1, 1, 3600)};
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
+                        {100u, MakePlaylist(100u, 25min, {2u}, {25min})},
+                        {101u, MakePlaylist(101u, 30min, {3u}, {30min})}};
+  ClipMap clips{
+      {1u, MakeClip(60min, {800u})}, {2u, MakeClip(25min, {100u})}, {3u, MakeClip(30min, {101u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 101);
+  EXPECT_EQ(GetPlaylistFromPath(items[1]->GetPath()), 100);
+}
+
 //
 // ---- GetEpisodePlaylists – play-all playlist method -------------------------
 //
