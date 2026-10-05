@@ -29,6 +29,7 @@ public:
 TEST(TestGUIWindowMusicNav, EveryNamedStartFolderIsALibraryNode)
 {
   CTestGUIWindowMusicNav window;
+  EXPECT_EQ("musicdb://albums/?boxset=true", window.GetStartFolder("boxsets"));
   for (const char* name : {"albums", "artists", "boxsets", "compilations", "genres",
                            "recentlyaddedalbums", "recentlyplayedalbums", "singles", "songs",
                            "top100", "top100albums", "top100songs", "years"})
