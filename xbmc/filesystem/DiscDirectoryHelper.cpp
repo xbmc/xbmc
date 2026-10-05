@@ -3455,10 +3455,20 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToMovie(const CURL& url,
   std::vector<PlaylistInformation> selected;
   if (job == GetTitle::SINGLE)
   {
+    // The plain feature is of comparable length to the longest the disc names, not a seconds-long
+    // segment it also calls SEG_MainFeature
     const PlaylistHintMap& hints{m_hints->GetHints()};
+    const auto longest{std::ranges::max(
+        features | std::views::transform([&playlistMap](unsigned int playlist)
+                                         { return playlistMap.at(playlist).duration; }))};
     std::vector<unsigned int> base{features};
     std::erase_if(base,
-                  [&hints](unsigned int playlist) { return !hints.at(playlist).basePresentation; });
+                  [&hints, &playlistMap, longest](unsigned int playlist)
+                  {
+                    return !hints.at(playlist).basePresentation ||
+                           playlistMap.at(playlist).duration <
+                               longest * MAIN_TITLE_LENGTH_PERCENT / 100;
+                  });
     if (!base.empty())
       selected = select(base);
 
