@@ -873,7 +873,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
         episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
 
         // Add duration and title from scraper
-        it->duration = duration;
+        if (duration > 0)
+          it->duration = duration;
         if (!title.empty())
           it->strTitle = title;
       }
