@@ -227,10 +227,9 @@ void CRendererDXVA::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&d
   CRenderBuffer* views[8] = {};
   FillBuffersSet(views);
 
-  m_processor->Render(src, dst, target.Get(), views,
-                      flags, buf->frameIdx % UINT32_MAX, m_renderOrientation,
-                      m_videoSettings.m_Contrast, 
-                      m_videoSettings.m_Brightness);
+  m_processor->Render(src, dst, target.Get(), views, flags, buf->frameIdx % UINT32_MAX,
+                      m_renderOrientation, m_videoSettings.m_Contrast, m_videoSettings.m_Brightness,
+                      m_videoSettings.m_Hue, m_videoSettings.m_Saturation);
 
   if (!HasHQScaler())
   {
@@ -318,6 +317,7 @@ void CRendererDXVA::FillBuffersSet(CRenderBuffer* (&buffers)[8])
 bool CRendererDXVA::Supports(ERENDERFEATURE feature) const
 {
   if (feature == RENDERFEATURE_BRIGHTNESS || feature == RENDERFEATURE_CONTRAST ||
+      feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION ||
       feature == RENDERFEATURE_ROTATION)
   {
     if (m_processor)
