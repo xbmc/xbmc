@@ -662,8 +662,8 @@ public:
    \param content the content type to clean for ("movies", "tvshows", "musicvideos"),
                   empty for any. With a directory, "tvshows" also matches paths
                   resolving to "seasons" or "episodes".
-   \param paths the matching path ids, including subpaths. Left empty when nothing
-                matches.
+   \param paths the matching path ids, including subpaths and the disc and archive paths
+                below them. Left empty when nothing matches.
    \return true on success (even with no matches), false on a database error
    */
   bool GetPathsForCleaning(const std::string& directory,

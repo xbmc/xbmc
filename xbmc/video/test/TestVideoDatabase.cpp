@@ -496,6 +496,25 @@ TEST_F(TestVideoDatabase, GetPathsForCleaningMatchesADirectoryGivenWithoutItsSep
   EXPECT_EQ((std::set<int>{idSource, idFilm}), paths);
 }
 
+TEST_F(TestVideoDatabase, GetPathsForCleaningIncludesDiscPaths)
+{
+  ASSERT_GT(m_db.AddPath("/movies/"), 0);
+
+  const std::string disc{"/movies/Film/BDMV/index.bdmv"};
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(disc, 800)};
+  ASSERT_GT(m_db.AddFile(disc), 0);
+  ASSERT_GT(m_db.AddFile(playlist), 0);
+  const int idDisc{m_db.GetPathId(URIUtils::GetDirectory(disc))};
+  const int idPlaylist{m_db.GetPathId(URIUtils::GetDirectory(playlist))};
+  ASSERT_GT(idDisc, 0);
+  ASSERT_GT(idPlaylist, 0);
+
+  std::set<int> paths;
+  ASSERT_TRUE(m_db.GetPathsForCleaning("/movies", "", paths));
+  EXPECT_TRUE(paths.contains(idDisc));
+  EXPECT_TRUE(paths.contains(idPlaylist));
+}
+
 TEST_F(TestVideoDatabase, GetPathsForCleaningResolvesNothingForAnUnknownDirectory)
 {
   ASSERT_GT(m_db.AddPath("smb://server/movies/"), 0);
