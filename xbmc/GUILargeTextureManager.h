@@ -133,6 +133,17 @@ public:
    */
   void CleanupUnusedImages(bool immediately = false);
 
+  /*!
+   \brief Get the largest loaded decode of an image, to draw while another size loads.
+   \param path path of the image.
+   \param aspectRatio aspect ratio mode of the control that will draw it.
+   \param texture texture object to hold the decode.
+   \return true if a decode was found, else false.
+   */
+  bool GetInterimImage(const std::string& path,
+                       CAspectRatio::AspectRatio aspectRatio,
+                       CTextureArray& texture);
+
 private:
   class CLargeTexture
   {

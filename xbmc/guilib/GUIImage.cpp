@@ -217,8 +217,10 @@ void CGUIImage::ProcessState()
 
 void CGUIImage::ProcessAllocation()
 {
-  m_textureCurrent->AllocResources();
-  m_textureNext->AllocResources();
+  if (m_textureCurrent->AllocResources())
+    MarkDirtyRegion();
+  if (m_textureNext->AllocResources())
+    MarkDirtyRegion();
 
   if (m_isTransitioning && m_textureNext->FailedToAlloc())
   {
