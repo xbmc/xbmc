@@ -2604,6 +2604,9 @@ const PlaylistInformation& GetBestMoviePlaylist(const std::vector<PlaylistInform
 
 bool IsRicherPresentation(const PlaylistInformation& a, const PlaylistInformation& b)
 {
+  // Streams a picture-in-picture copy adds go with the secondary video, which Kodi does not play
+  if (IsPictureInPicturePresentation(a) != IsPictureInPicturePresentation(b))
+    return !IsPictureInPicturePresentation(a);
   if (a.audioStreams.size() != b.audioStreams.size())
     return a.audioStreams.size() > b.audioStreams.size();
   if (a.pgStreams.size() != b.pgStreams.size())
@@ -2653,7 +2656,6 @@ void RemoveDuplicateMoviePlaylists(std::vector<PlaylistInformation>& playlists,
     for (size_t j = i + 1; j < playlists.size(); ++j)
     {
       if (duplicatePlaylists.contains(playlists[j].playlist) ||
-          playlists[i].hasSecondaryVideo != playlists[j].hasSecondaryVideo ||
           !IsSamePresentation(playlists[i], clipDurations[i], playlists[j], clipDurations[j]))
         continue;
 
