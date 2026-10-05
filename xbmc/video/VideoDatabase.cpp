@@ -481,7 +481,7 @@ bool CVideoDatabase::GetPathsForCleaning(const std::string& directory,
       paths.insert(pathId);
 
     std::vector<std::pair<int, std::string>> sub;
-    if (GetSubPaths(path, sub))
+    if (GetSubPaths(path, sub, false))
     {
       for (const auto& [subPathId, subPath] : sub)
         paths.insert(subPathId);
