@@ -128,6 +128,9 @@ struct PlaylistInformation
   //! picture-in-picture (see IsPictureInPicturePresentation)
   bool hasSecondaryVideo{false};
 
+  //! Whether the playlist carries a Dolby Vision enhancement layer
+  bool hasDolbyVision{false};
+
   void clear()
   {
     playlist = 0;
@@ -140,6 +143,7 @@ struct PlaylistInformation
     pgStreams.clear();
     languages.clear();
     hasSecondaryVideo = false;
+    hasDolbyVision = false;
   }
 };
 

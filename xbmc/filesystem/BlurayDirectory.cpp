@@ -212,12 +212,14 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
   // The duration is compared as well as the chapters, as two playlists can play the same clips
   // from the same chapter starts but to different out times (ie. they are distinct cuts).
   // Kodi does not play the secondary video, so a picture-in-picture copy is a copy all the same -
-  // but it is the one discarded, as it never leads the movie search. Of other copies the lowest
-  // numbered is kept.
+  // but it is the one discarded, as it never leads the movie search. Of other copies the one with
+  // a Dolby Vision enhancement layer is kept, then the lowest numbered.
   const auto isDiscarded{[](const PlaylistInformation& a, const PlaylistInformation& b)
                          {
                            if (a.hasSecondaryVideo != b.hasSecondaryVideo)
                              return a.hasSecondaryVideo;
+                           if (a.hasDolbyVision != b.hasDolbyVision)
+                             return b.hasDolbyVision;
                            return a.playlist > b.playlist;
                          }};
 

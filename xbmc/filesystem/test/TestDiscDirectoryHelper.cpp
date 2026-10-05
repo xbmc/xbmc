@@ -5095,6 +5095,53 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPictureCopyGivesWayTo
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
 }
 
+// 12 Monkeys (2015) offers the feature with a Dolby Vision enhancement layer as playlist 0 and
+// without one as playlist 555, their last chapters differing by a fraction of a second. The Dolby
+// Vision copy is the one offered, whichever is numbered first.
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_DolbyVisionCopyIsPreferred)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 2h, {1u}, {1h, 1h})},
+      {801u, MakePlaylist(801u, 2h, {1u}, {1h - 125ms, 1h + 125ms})},
+  };
+  playlists.at(801u).hasDolbyVision = true;
+  ClipMap clips{{1u, MakeClip(2h, {800u, 801u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+}
+
+// Dolby Vision only settles a tie, so a copy offering more streams is still the one offered
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_FullerCopyIsPreferredToDolbyVision)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 2h, {1u}, {1h, 1h})},
+      {801u, MakePlaylist(801u, 2h, {1u}, {1h - 125ms, 1h + 125ms})},
+  };
+  playlists.at(800u).audioStreams.emplace_back();
+  playlists.at(801u).hasDolbyVision = true;
+  ClipMap clips{{1u, MakeClip(2h, {800u, 801u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
+}
+
 // A disc offering nothing but a picture-in-picture presentation still offers it
 TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationAlone)
 {

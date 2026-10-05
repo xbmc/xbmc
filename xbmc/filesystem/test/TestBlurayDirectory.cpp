@@ -227,6 +227,33 @@ TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesAPictureInPictureCopyKeepingT
   EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{801u});
 }
 
+// A copy with a Dolby Vision enhancement layer is the one kept, even when numbered second
+TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesDuplicatesKeepingTheDolbyVisionOne)
+{
+  std::vector<PlaylistInformation> playlists{
+      MakePlaylist(800u, 2h, {1u}),
+      MakePlaylist(801u, 2h, {1u}),
+  };
+  playlists[1].hasDolbyVision = true;
+
+  EXPECT_TRUE(FilterPlaylists(playlists));
+  EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{801u});
+}
+
+// Being picture-in-picture outweighs carrying Dolby Vision, as such a copy never leads
+TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesAPictureInPictureCopyEvenWithDolbyVision)
+{
+  std::vector<PlaylistInformation> playlists{
+      MakePlaylist(800u, 2h, {1u}),
+      MakePlaylist(801u, 2h, {1u}),
+  };
+  playlists[1].hasSecondaryVideo = true;
+  playlists[1].hasDolbyVision = true;
+
+  EXPECT_TRUE(FilterPlaylists(playlists));
+  EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{800u});
+}
+
 // Three copies must all collapse to one, not just the adjacent pair
 TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesAllCopiesOfADuplicate)
 {
