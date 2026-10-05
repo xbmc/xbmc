@@ -313,6 +313,8 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
                                 flags,
                                 m_videoSettings.m_Contrast,
                                 m_videoSettings.m_Brightness,
+                                m_videoSettings.m_Hue,
+                                m_videoSettings.m_Saturation,
                                 DX::Windowing()->UseLimitedColor(),
                                 m_videoSettings.m_ToneMapParam,
                                 m_lutIsLoading};

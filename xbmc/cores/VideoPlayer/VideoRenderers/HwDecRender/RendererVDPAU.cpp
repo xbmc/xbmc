@@ -130,6 +130,10 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature) const
 
     return (m_renderMethod & RENDER_GLSL);
   }
+  else if (feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION)
+  {
+    return m_isYuv && (m_renderMethod & RENDER_GLSL);
+  }
   else if (feature == RENDERFEATURE_NOISE ||
            feature == RENDERFEATURE_SHARPNESS)
   {

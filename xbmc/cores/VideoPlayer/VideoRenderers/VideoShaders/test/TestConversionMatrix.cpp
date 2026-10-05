@@ -180,4 +180,37 @@ TEST(TestConvertMatrix, ColorSpaceConversion)
   EXPECT_TRUE(CompareMatrices(bt2020_to_bt709_Mat, primMat, 0.0001f));
 }
 
+TEST(TestConvertMatrix, HueSaturation)
+{
+  CConvertMatrix convMat;
+  convMat.SetSourceColorSpace(AVCOL_SPC_BT709)
+         .SetSourceLimitedRange(true)
+         .SetDestinationLimitedRange(false);
+
+  convMat.SetDestinationHue(0.0f)
+         .SetDestinationSaturation(1.0f);
+  Matrix4 yuvMat = convMat.GetYuvMat();
+  EXPECT_TRUE(CompareMatrices(bt709Mat_8bit, yuvMat, 0.0001f));
+
+  // no chroma left, R, G and B must be equal for every input
+  convMat.SetDestinationSaturation(0.0f);
+  yuvMat = convMat.GetYuvMat();
+  DebugPrint(yuvMat);
+
+  for (int i = 0; i < 4; ++i)
+  {
+    EXPECT_NEAR(yuvMat[i][0], yuvMat[i][1], 0.0001f);
+    EXPECT_NEAR(yuvMat[i][0], yuvMat[i][2], 0.0001f);
+  }
+
+  // a half turn of the chroma plane is the same as inverting it
+  convMat.SetDestinationHue(180.0f)
+         .SetDestinationSaturation(1.0f);
+  Matrix4 rotated = convMat.GetYuvMat();
+  convMat.SetDestinationHue(0.0f)
+         .SetDestinationSaturation(-1.0f);
+  yuvMat = convMat.GetYuvMat();
+  EXPECT_TRUE(CompareMatrices(yuvMat, rotated, 0.0001f));
+}
+
 // clang-format on
