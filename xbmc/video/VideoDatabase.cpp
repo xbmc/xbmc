@@ -21,6 +21,7 @@
 #include "VideoInfoScannerArt.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -13452,6 +13453,38 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
                                "WHERE media_id = %i AND media_type = '%s'",
                                NameOf(MEDIA::TYPE::MOVIE).c_str(), dbId, idFile,
                                NameOf(MEDIA::TYPE::VIDEO_VERSION).c_str()));
+
+        // Keep the movie's art of a type the new default version has none of. A frame of the
+        // old default's file is swapped for one of the new default's, where one can be taken,
+        // as none is taken for a movie listed as a folder of its versions. Other images taken
+        // from the old file are left out.
+        KODI::ART::Artwork art;
+        KODI::ART::Artwork oldArt;
+        if (GetArtForItem(dbId, MEDIA::TYPE::MOVIE, art) &&
+            GetArtForItem(idOldFile, MEDIA::TYPE::VIDEO_VERSION, oldArt))
+        {
+          CVideoInfoTag newDefault;
+          GetFileInfo({}, newDefault, idFile);
+          std::string newDefaultFile;
+          if (CDVDFileInfo::CanExtract(CFileItem{newDefault.m_strFileNameAndPath, false}))
+          {
+            newDefaultFile = newDefault.m_strFileNameAndPath;
+            if (URIUtils::IsStack(newDefaultFile))
+              newDefaultFile = CStackDirectory::GetFirstStackedFile(newDefaultFile);
+          }
+          KODI::ART::Artwork missing;
+          for (const auto& [type, url] : oldArt)
+          {
+            if (art.contains(type))
+              continue;
+            const std::string special{IMAGE_FILES::CImageFileURL(url).GetSpecialType()};
+            if (special == "video" && !newDefaultFile.empty())
+              missing.try_emplace(type, IMAGE_FILES::URLFromFile(newDefaultFile, special));
+            else if (!special.starts_with("video"))
+              missing.try_emplace(type, url);
+          }
+          SetArtForItem(dbId, MEDIA::TYPE::MOVIE, missing);
+        }
       }
     }
 
