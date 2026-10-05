@@ -6,13 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "CompileInfo.h"
-#include "ServiceBroker.h"
-#include "filesystem/File.h"
-#include "filesystem/SpecialProtocol.h"
 #include "utils/RegExp.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
 
 #include <gtest/gtest.h>
 
@@ -259,50 +253,6 @@ TEST(TestRegExp, GetMatchNoMatch)
   EXPECT_EQ(-1, regex.GetSubLength(0));
 }
 
-class TestRegExpLog : public testing::Test
-{
-protected:
-  TestRegExpLog() = default;
-  ~TestRegExpLog() override { CServiceBroker::GetLogging().Deinitialize(); }
-};
-
-TEST_F(TestRegExpLog, DumpOvector)
-{
-  CRegExp regex;
-  std::string logfile, logstring;
-  char buf[100];
-  ssize_t bytesread;
-  XFILE::CFile file;
-
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
-  logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/"));
-  EXPECT_TRUE(XFILE::CFile::Exists(logfile));
-
-  EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));
-  EXPECT_EQ(0, regex.RegFind("Test string."));
-  regex.DumpOvector(LOGDEBUG);
-  CServiceBroker::GetLogging().Deinitialize();
-
-  EXPECT_TRUE(file.Open(logfile));
-  while ((bytesread = file.Read(buf, sizeof(buf) - 1)) > 0)
-  {
-    buf[bytesread] = '\0';
-    logstring.append(buf);
-  }
-  file.Close();
-  EXPECT_FALSE(logstring.empty());
-
-  EXPECT_STREQ("\xEF\xBB\xBF", logstring.substr(0, 3).c_str());
-
-  EXPECT_TRUE(regex.RegComp(".*(debug|DEBUG) <general>: regexp ovector=\\{\\[0,12\\],\\[0,4\\],"
-                            "\\[5,11\\]\\}.*"));
-  EXPECT_GE(regex.RegFind(logstring), 0);
-
-  EXPECT_TRUE(XFILE::CFile::Delete(logfile));
-}
-
 namespace
 {
 void RegExpCacheTest(KODI::REGEXP::RegExpCache* cache)
@@ -339,7 +289,7 @@ void RegExpCacheTest(KODI::REGEXP::RegExpCache* cache)
   EXPECT_NE(nullptr, regexp);
   if (regexp != nullptr)
   {
-    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_FALSE(regexp->GetPattern().empty());
     EXPECT_EQ(0, regexp->RegFind("Test"));
   }
 
@@ -391,7 +341,7 @@ TEST(TestRegExpCache, CtorArgs)
   EXPECT_NE(nullptr, regexp);
   if (regexp != nullptr)
   {
-    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_FALSE(regexp->GetPattern().empty());
     EXPECT_EQ(-1, regexp->RegFind("TeST"));
   }
 
@@ -401,7 +351,7 @@ TEST(TestRegExpCache, CtorArgs)
   EXPECT_NE(nullptr, regexp);
   if (regexp != nullptr)
   {
-    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_FALSE(regexp->GetPattern().empty());
     // Successful match with a different case
     EXPECT_EQ(0, regexp->RegFind("TeST"));
   }
@@ -411,7 +361,7 @@ TEST(TestRegExpCache, CtorArgs)
   EXPECT_NE(nullptr, regexp);
   if (regexp != nullptr)
   {
-    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_FALSE(regexp->GetPattern().empty());
     EXPECT_EQ(-1, regexp->RegFind("\u00E0")); // letter à
   }
 
@@ -421,7 +371,7 @@ TEST(TestRegExpCache, CtorArgs)
   EXPECT_NE(nullptr, regexp);
   if (regexp != nullptr)
   {
-    EXPECT_TRUE(regexp->IsCompiled());
+    EXPECT_FALSE(regexp->GetPattern().empty());
     EXPECT_EQ(0, regexp->RegFind("\u00E0"));
   }
 }

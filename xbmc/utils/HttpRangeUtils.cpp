@@ -154,15 +154,6 @@ bool CHttpRanges::GetFirst(CHttpRange& range) const
   return true;
 }
 
-bool CHttpRanges::GetLast(CHttpRange& range) const
-{
-  if (m_ranges.empty())
-    return false;
-
-  range = m_ranges.back();
-  return true;
-}
-
 bool CHttpRanges::GetFirstPosition(uint64_t& position) const
 {
   if (m_ranges.empty())
@@ -188,21 +179,6 @@ uint64_t CHttpRanges::GetLength() const
     length += range->GetLength();
 
   return length;
-}
-
-bool CHttpRanges::GetTotalRange(CHttpRange& range) const
-{
-  if (m_ranges.empty())
-    return false;
-
-  uint64_t firstPosition, lastPosition;
-  if (!GetFirstPosition(firstPosition) || !GetLastPosition(lastPosition))
-    return false;
-
-  range.SetFirstPosition(firstPosition);
-  range.SetLastPosition(lastPosition);
-
-  return range.IsValid();
 }
 
 void CHttpRanges::Add(const CHttpRange& range)

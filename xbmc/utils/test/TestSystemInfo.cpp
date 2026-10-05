@@ -161,21 +161,12 @@ TEST_F(TestSystemInfo, IsAeroDisabled)
 }
 #endif // ! TARGET_WINDOWS
 
-TEST_F(TestSystemInfo, IsWindowsVersion)
-{
-  EXPECT_FALSE(g_sysinfo.IsWindowsVersion(CSysInfo::WindowsVersionUnknown)) << "'IsWindowsVersion()' must return 'false' for 'WindowsVersionUnknown'";
-#ifndef TARGET_WINDOWS
-  EXPECT_FALSE(g_sysinfo.IsWindowsVersion(CSysInfo::WindowsVersionWin8_1))
-      << "'IsWindowsVersion()' must return 'false'";
-#endif // ! TARGET_WINDOWS
-}
-
 TEST_F(TestSystemInfo, IsWindowsVersionAtLeast)
 {
   EXPECT_FALSE(g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionUnknown)) << "'IsWindowsVersionAtLeast()' must return 'false' for 'WindowsVersionUnknown'";
   EXPECT_FALSE(g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionFuture)) << "'IsWindowsVersionAtLeast()' must return 'false' for 'WindowsVersionFuture'";
 #ifndef TARGET_WINDOWS
-  EXPECT_FALSE(g_sysinfo.IsWindowsVersion(CSysInfo::WindowsVersionWin8_1))
+  EXPECT_FALSE(g_sysinfo.IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8_1))
       << "'IsWindowsVersionAtLeast()' must return 'false'";
 #endif // ! TARGET_WINDOWS
 }

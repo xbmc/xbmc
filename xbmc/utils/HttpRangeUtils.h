@@ -74,15 +74,12 @@ public:
   const HttpRanges& Get() const { return m_ranges; }
   bool Get(size_t index, CHttpRange& range) const;
   bool GetFirst(CHttpRange& range) const;
-  bool GetLast(CHttpRange& range) const;
   size_t Size() const { return m_ranges.size(); }
   bool IsEmpty() const { return m_ranges.empty(); }
 
   bool GetFirstPosition(uint64_t& position) const;
   bool GetLastPosition(uint64_t& position) const;
   uint64_t GetLength() const;
-
-  bool GetTotalRange(CHttpRange& range) const;
 
   void Add(const CHttpRange& range);
   void Remove(size_t index);

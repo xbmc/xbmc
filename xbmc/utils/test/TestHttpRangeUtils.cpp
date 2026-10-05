@@ -159,12 +159,10 @@ TEST(TestHttpRanges, Ctor)
 
   EXPECT_FALSE(ranges_empty.Get(0, range));
   EXPECT_FALSE(ranges_empty.GetFirst(range));
-  EXPECT_FALSE(ranges_empty.GetLast(range));
 
   EXPECT_FALSE(ranges_empty.GetFirstPosition(position));
   EXPECT_FALSE(ranges_empty.GetLastPosition(position));
   EXPECT_EQ(0U, ranges_empty.GetLength());
-  EXPECT_FALSE(ranges_empty.GetTotalRange(range));
 }
 
 TEST(TestHttpRanges, GetAll)
@@ -229,24 +227,6 @@ TEST(TestHttpRanges, GetFirst)
   CHttpRange range;
   EXPECT_TRUE(ranges.GetFirst(range));
   EXPECT_EQ(range_0, range);
-}
-
-TEST(TestHttpRanges, GetLast)
-{
-  CHttpRange range_0(0, 2);
-  CHttpRange range_1(4, 6);
-  CHttpRange range_2(8, 10);
-
-  HttpRanges ranges_raw;
-  ranges_raw.push_back(range_0);
-  ranges_raw.push_back(range_1);
-  ranges_raw.push_back(range_2);
-
-  CHttpRanges ranges(ranges_raw);
-
-  CHttpRange range;
-  EXPECT_TRUE(ranges.GetLast(range));
-  EXPECT_EQ(range_2, range);
 }
 
 TEST(TestHttpRanges, Size)
@@ -320,25 +300,6 @@ TEST(TestHttpRanges, GetLength)
   EXPECT_EQ(expectedLength, ranges.GetLength());
 }
 
-TEST(TestHttpRanges, GetTotalRange)
-{
-  CHttpRange range_0(0, 2);
-  CHttpRange range_1(4, 6);
-  CHttpRange range_2(8, 10);
-  CHttpRange range_total_expected(range_0.GetFirstPosition(), range_2.GetLastPosition());
-
-  HttpRanges ranges_raw;
-  ranges_raw.push_back(range_0);
-  ranges_raw.push_back(range_1);
-  ranges_raw.push_back(range_2);
-
-  CHttpRanges ranges(ranges_raw);
-
-  CHttpRange range_total;
-  EXPECT_TRUE(ranges.GetTotalRange(range_total));
-  EXPECT_EQ(range_total_expected, range_total);
-}
-
 TEST(TestHttpRanges, Add)
 {
   CHttpRange range_0(0, 2);
@@ -352,21 +313,21 @@ TEST(TestHttpRanges, Add)
   EXPECT_EQ(1U, ranges.Size());
   EXPECT_TRUE(ranges.GetFirst(range));
   EXPECT_EQ(range_0, range);
-  EXPECT_TRUE(ranges.GetLast(range));
+  EXPECT_TRUE(ranges.Get(ranges.Size() - 1, range));
   EXPECT_EQ(range_0, range);
 
   ranges.Add(range_1);
   EXPECT_EQ(2U, ranges.Size());
   EXPECT_TRUE(ranges.GetFirst(range));
   EXPECT_EQ(range_0, range);
-  EXPECT_TRUE(ranges.GetLast(range));
+  EXPECT_TRUE(ranges.Get(ranges.Size() - 1, range));
   EXPECT_EQ(range_1, range);
 
   ranges.Add(range_2);
   EXPECT_EQ(3U, ranges.Size());
   EXPECT_TRUE(ranges.GetFirst(range));
   EXPECT_EQ(range_0, range);
-  EXPECT_TRUE(ranges.GetLast(range));
+  EXPECT_TRUE(ranges.Get(ranges.Size() - 1, range));
   EXPECT_EQ(range_2, range);
 }
 

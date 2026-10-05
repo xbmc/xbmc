@@ -282,7 +282,6 @@ TEST(TestFileOperationJob, GetFunctions)
   EXPECT_TRUE(XFILE::CFile::Exists(destfile));
 
   std::cout << "GetAverageSpeed(): " << job.GetAverageSpeed() << std::endl;
-  std::cout << "GetCurrentOperation(): " << job.GetCurrentOperation() << std::endl;
   std::cout << "GetCurrentFile(): " << job.GetCurrentFile() << std::endl;
   EXPECT_FALSE(job.GetItems().IsEmpty());
 

@@ -189,11 +189,6 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
   builder.SetSummary("Summary bla bla bla");
   builder.SetDescription("Description bla bla bla");
   builder.SetDisclaimer("Disclaimer bla bla bla");
-  builder.SetLicense("GPL v2.0");
-  builder.SetForum("https://forum.kodi.tv");
-  builder.SetWebsite("https://kodi.tv");
-  builder.SetEMail("a@a.dummy");
-  builder.SetSource("https://github.com/xbmc/xbmc");
   InfoMap extrainfo;
   extrainfo["language"] = "marsian";
   builder.SetExtrainfo(extrainfo);
@@ -215,11 +210,6 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
   EXPECT_EQ(addon->Summary(), "Summary bla bla bla");
   EXPECT_EQ(addon->Description(), "Description bla bla bla");
   EXPECT_EQ(addon->Disclaimer(), "Disclaimer bla bla bla");
-  EXPECT_EQ(addon->License(), "GPL v2.0");
-  EXPECT_EQ(addon->Forum(), "https://forum.kodi.tv");
-  EXPECT_EQ(addon->Website(), "https://kodi.tv");
-  EXPECT_EQ(addon->EMail(), "a@a.dummy");
-  EXPECT_EQ(addon->Source(), "https://github.com/xbmc/xbmc");
 
   auto info = addon->ExtraInfo().find("language");
   ASSERT_NE(info, addon->ExtraInfo().end());

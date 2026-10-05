@@ -22,16 +22,12 @@ public:
   void AddSampleBits(unsigned int nBits);
 
   inline double GetBitrate()    const { return m_dBitrate; }
-  inline double GetMaxBitrate() const { return m_dMaxBitrate; }
-  inline double GetMinBitrate() const { return m_dMinBitrate; }
 
   void Start();
   void CalculateBitrate();
 
 private:
   double m_dBitrate;
-  double m_dMaxBitrate;
-  double m_dMinBitrate;
   unsigned int m_nBitCount;
   unsigned int m_nEstimatedBitrate; // when we reach this amount of bits we check current bitrate.
   int64_t m_tmStart;

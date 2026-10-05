@@ -164,19 +164,6 @@ void CPODocument::ParseEntry(bool bisSourceLang)
   }
 }
 
-const std::string& CPODocument::GetPlurMsgstr(size_t plural) const
-{
-  if (m_Entry.msgStrPlural.size() < plural+1)
-  {
-    CLog::Log(LOGERROR,
-              "POParser: msgstr[{}] plural field requested, but not found in PO file. "
-              "Failed entry: {}",
-              static_cast<int>(plural), m_Entry.Content);
-    plural = m_Entry.msgStrPlural.size()-1;
-  }
-  return m_Entry.msgStrPlural[plural].Str;
-}
-
 std::string CPODocument::UnescapeString(const std::string &strInput)
 {
   std::string strOutput;
