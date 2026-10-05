@@ -2615,6 +2615,8 @@ bool IsRicherPresentation(const PlaylistInformation& a, const PlaylistInformatio
     return a.pgStreams.size() > b.pgStreams.size();
   if (a.chapters.size() != b.chapters.size())
     return a.chapters.size() > b.chapters.size();
+  if (a.hasDolbyVision != b.hasDolbyVision)
+    return a.hasDolbyVision;
   return a.playlist < b.playlist;
 }
 
