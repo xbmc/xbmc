@@ -490,7 +490,7 @@ bool CBlurayDirectory::GetPlaylistsInformation(const CURL& url,
   try
   {
     // Check cache
-    const std::string& path{url.GetHostName()};
+    const std::string path{GetCachePath(url, realPath)};
     if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips, allTitles))
     {
       CLog::LogF(LOGDEBUG, "Playlist information for {} retrieved from cache", path);
@@ -750,6 +750,11 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // Most requests are now served from the disc cache or by parsing a single playlist.
   // Neither needs libbluray or disc.inf, so both are deferred.
   SetRealPath(root);
+
+  // A disc folder or image can be replaced at the same path
+  if (struct __stat64 st{}; CFile::Stat(URIUtils::GetDiscFile(m_url.Get()), &st) == 0)
+    CServiceBroker::GetBlurayDiscCache()->CheckDisc(GetCachePath(m_url, m_realPath),
+                                                    fmt::format("{}:{}", st.st_mtime, st.st_size));
 
   //
   // These options also return 'All Titles' and 'Menu' options (if supported on disc)
