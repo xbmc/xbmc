@@ -632,3 +632,26 @@ TEST_F(TestVideoDatabase, DeleteMovieRemovesTheAssetsOfADeletedMovie)
   ASSERT_TRUE(m_db.DeleteMovie(idMovie, DeleteMovieCascadeAction::ALL_ASSETS));
   EXPECT_EQ(-1, m_db.GetMovieId(version));
 }
+
+// The clean finds the source of a movie through its parent path, which must follow the default
+// version into another source
+TEST_F(TestVideoDatabase, SetDefaultVideoVersionMovesTheParentPath)
+{
+  const int idMovie{AddMovie("/movies/Movie (2010)/Movie (2010).mkv")};
+  ASSERT_GT(idMovie, 0);
+
+  CFileItem item{"/more movies/Movie (2010)/Movie (2010) Extended Edition.mkv", false};
+  const int idType{
+      m_db.AddVideoVersionType("Extended", VideoAssetTypeOwner::USER, VideoAssetType::VERSION)};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                 VideoAssetType::VERSION, item));
+  const int idFile{m_db.AddFile(item.GetPath())};
+  ASSERT_GT(idFile, 0);
+
+  ASSERT_TRUE(m_db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, idMovie, idFile));
+
+  CFileItemList newParent;
+  EXPECT_TRUE(m_db.GetItemsForPath("movies", "/more movies/", newParent));
+  CFileItemList oldParent;
+  EXPECT_FALSE(m_db.GetItemsForPath("movies", "/movies/Movie (2010)/", oldParent));
+}

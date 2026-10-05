@@ -13552,8 +13552,13 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
 
       if (idOldFile != idFile)
       {
-        m_pDS->exec(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i",
-                               idFile, VIDEODB_ID_BASEPATH, path.c_str(), dbId));
+        std::string sourcePath;
+        GetSourcePath(path, sourcePath);
+        const int idParentPath{AddPath(
+            URIUtils::PathEquals(path, sourcePath, true) ? path : URIUtils::GetParentPath(path))};
+        m_pDS->exec(PrepareSQL(
+            "UPDATE movie SET idFile = %i, c%02d = '%s', c%02d = %i WHERE idMovie = %i", idFile,
+            VIDEODB_ID_BASEPATH, path.c_str(), VIDEODB_ID_PARENTPATHID, idParentPath, dbId));
 
         // Swap art
         // media_id is idMovie for movies and idFile for videoversions
