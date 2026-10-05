@@ -11014,8 +11014,14 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
       for (const auto& i : musicVideoIDs)
         AnnounceRemove(MediaTypeMusicVideo, i, true);
 
-      for (const auto& i : videoVersionIDs)
-        AnnounceRemove(MediaTypeVideoVersion, i, true);
+      // videoVersionIDs holds the movies that lost a version or extra. Those still in the
+      // library have changed.
+      std::set<int> changedMovies(videoVersionIDs.begin(), videoVersionIDs.end());
+      for (const auto& i : movieIDs)
+        changedMovies.erase(i);
+
+      for (const auto& i : changedMovies)
+        AnnounceUpdate(MediaTypeMovie, i);
     }
   }
   catch (...)
