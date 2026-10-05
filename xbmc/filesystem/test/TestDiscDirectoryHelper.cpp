@@ -565,6 +565,25 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleSpecial_LongestFirst)
   EXPECT_EQ(GetPlaylistFromPath(items[1]->GetPath()), 100);
 }
 
+// A disc of specials only, eg. a bonus disc, is held to the same minimum length
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SpecialsOnly_ShortPlaylistsAreNotSpecials)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800)}; // Special
+
+  PlaylistMap playlists{{1u, MakePlaylist(1u, 1min, {1u}, {1min})},
+                        {800u, MakePlaylist(800u, 30min, {2u}, {30min})}};
+  ClipMap clips{{1u, MakeClip(1min, {1u})}, {2u, MakeClip(30min, {800u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800);
+}
+
 //
 // ---- GetEpisodePlaylists – play-all playlist method -------------------------
 //
