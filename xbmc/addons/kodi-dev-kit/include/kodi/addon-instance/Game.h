@@ -487,6 +487,28 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Ask Kodi to fast-forward the game, or to stop a fast-forward it asked for
+  ///
+  /// @param[in] fastForward True to fast-forward, false to return to normal speed
+  /// @param[in] ratio The speed asked for if above 1, otherwise Kodi chooses
+  ///
+  /// For a game that wants to pass over a wait of its own, such as loading from
+  /// tape. Kodi leaves a speed the user chose alone: it only fast-forwards from
+  /// normal speed, and only returns to normal speed from the one it set.
+  ///
+  /// @remarks Only called from the add-on itself. It does nothing with a Kodi
+  ///          older than game API 8.4.0.
+  ///
+  void SetFastForwarding(bool fastForward, double ratio)
+  {
+    if (IsInstanceAPIVersionAtLeast(8, 4, 0))
+      m_instanceData->toKodi->SetFastForwarding(m_instanceData->toKodi->kodiInstance, fastForward,
+                                                ratio);
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_game_Operation_CStream Class: CStream
   /// @ingroup cpp_kodi_addon_game_Operation
   /// @brief @cpp_class{ kodi::addon::CInstanceGame::CStream }
