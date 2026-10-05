@@ -5064,7 +5064,9 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationNe
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 100u);
 }
 
-TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPictureIsNotADuplicateOfPlainFeature)
+// Kodi plays a picture-in-picture copy of the feature as the feature, so only the plain one is
+// offered, whichever is numbered first
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPictureCopyGivesWayToPlainFeature)
 {
   CDiscDirectoryHelper helper;
   CURL url("bluray://test/");
@@ -5077,13 +5079,15 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPictureIsNotADuplicat
       {802u, MakePlaylist(802u, 100min, {2u}, {50min, 50min})},
   };
   playlists.at(800u).hasSecondaryVideo = true;
+  playlists.at(800u).pgStreams.emplace_back(); // eg. The Sound of Music (1965) disc 2
   ClipMap clips{{1u, MakeClip(2h, {800u, 801u})}, {2u, MakeClip(100min, {802u})}};
   ASSERT_TRUE(Validate(clips, playlists));
 
   EXPECT_TRUE(
       helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
-  ASSERT_EQ(items.Size(), 3);
+  ASSERT_EQ(items.Size(), 2);
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+  EXPECT_EQ(GetPlaylistFromPath(items[1]->GetPath()), 802u);
 
   EXPECT_TRUE(
       helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
