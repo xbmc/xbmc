@@ -718,34 +718,34 @@ bool ProcessClips(const CURL& url,
 {
   for (const auto& playItem : playlistInformation.playItems)
   {
-    for (const auto& clip : playItem.angleClips)
+    // The first angle only, as the clips are taken one per play item
+    const ClipInformation& clip{playItem.angleClips.front()};
+
+    if (const auto& it = clipCache.find(clip.clip); it != clipCache.end())
     {
-      if (const auto& it = clipCache.find(clip.clip); it != clipCache.end())
-      {
-        // In local cache
-        playlistInformation.clips.push_back(it->second);
-        continue;
-      }
-
-      if (streamDetails == StreamDetails::DEFER)
-      {
-        // The .clpi holds nothing but the clip's stream information, and reading one per clip is
-        // the bulk of the cost of examining a disc. Record the clip as named by the play item -
-        // its timings are derived from the play item anyway (see DeriveChaptersAndTimings).
-        playlistInformation.clips.push_back(clip);
-        continue;
-      }
-
-      // Not in local cache
-      ClipInformation& clipInformation = playlistInformation.clips.emplace_back();
-      if (!ReadCLPI(url, clip.clip, clipInformation))
-      {
-        CLog::LogFC(LOGDEBUG, LOGBLURAY, "Cannot read clip {} information", clip.clip);
-        playlistInformation.clips.pop_back();
-        return false;
-      }
-      clipCache[clip.clip] = clipInformation;
+      // In local cache
+      playlistInformation.clips.push_back(it->second);
+      continue;
     }
+
+    if (streamDetails == StreamDetails::DEFER)
+    {
+      // The .clpi holds nothing but the clip's stream information, and reading one per clip is
+      // the bulk of the cost of examining a disc. Record the clip as named by the play item -
+      // its timings are derived from the play item anyway (see DeriveChaptersAndTimings).
+      playlistInformation.clips.push_back(clip);
+      continue;
+    }
+
+    // Not in local cache
+    ClipInformation& clipInformation = playlistInformation.clips.emplace_back();
+    if (!ReadCLPI(url, clip.clip, clipInformation))
+    {
+      CLog::LogFC(LOGDEBUG, LOGBLURAY, "Cannot read clip {} information", clip.clip);
+      playlistInformation.clips.pop_back();
+      return false;
+    }
+    clipCache[clip.clip] = clipInformation;
   }
   return true;
 }
