@@ -25,7 +25,6 @@ inline constexpr char MOVIE_STUDIOS[] = "videodb://movies/studios/";
 inline constexpr char MOVIE_SETS[] = "videodb://movies/sets/";
 inline constexpr char MOVIE_COUNTRIES[] = "videodb://movies/countries/";
 inline constexpr char MOVIE_TAGS[] = "videodb://movies/tags/";
-inline constexpr char MOVIE_VIDEO_VERSIONS[] = "videodb://movies/videoversions/";
 
 inline constexpr char TVSHOWS[] = "videodb://tvshows/";
 inline constexpr char TVSHOW_GENRES[] = "videodb://tvshows/genres/";

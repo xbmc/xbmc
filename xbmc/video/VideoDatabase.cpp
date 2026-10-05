@@ -13162,7 +13162,8 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
         item->SetLabel(name);
 
         CVideoDbUrl itemUrl;
-        if (itemUrl.FromString(StringUtils::Format("{}{}", VIDEO::DB_PATH::MOVIE_VIDEO_VERSIONS, id)))
+        if (itemUrl.FromString(StringUtils::Format("videodb://{}/videoversions/{}",
+                                                   CMediaTypes::ToPlural(mediaType), id)))
         {
           itemUrl.AddOption("mediaid", dbId);
           item->SetPath(itemUrl.ToString());
