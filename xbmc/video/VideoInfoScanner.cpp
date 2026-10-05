@@ -3066,6 +3066,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         targetDbId = chosenTargetMovieDbId;
         versioned = true;
       }
+      else if (isMainPlaylist)
+      {
+        // Not merged into another movie, so the disc's main title stays one and the other
+        // playlists become versions of it
+        targetDbId = newMovieDbId;
+      }
       else if (result == VersionConversionResult::FAILED ||
                result == VersionConversionResult::CANCELLED)
       {
@@ -3078,7 +3084,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
 
-    if (added && targetDbId >= 0)
+    if (versioned)
       RemovePartNumberFromTitle(targetDbId, VideoDbContentType::MOVIES, m_database);
     return !added ? InfoRet::INFO_ERROR : (versioned ? InfoRet::HAVE_ALREADY : InfoRet::ADDED);
   }
