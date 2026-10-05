@@ -401,6 +401,125 @@ TEST_F(TestVideoDatabase, AMovieIsFoundByItsDirectorsName)
   EXPECT_EQ(idMovie, items[0]->GetVideoInfoTag()->m_iDbId);
 }
 
+TEST_F(TestVideoDatabase, ActorsWithTheSameNameAreToldApartByBirthDate)
+{
+  SActorInfo older;
+  older.strName = "John Smith";
+  older.birthDate = "1950-02-03";
+  SActorInfo younger{older};
+  younger.birthDate = "1985-06-07";
+
+  CVideoInfoTag first{Tag("/videos/first.mkv")};
+  first.m_cast = {older};
+  const int idFirst{m_db.SetDetailsForMovie(first, KODI::ART::Artwork{})};
+  ASSERT_GT(idFirst, 0);
+  CVideoInfoTag second{Tag("/videos/second.mkv")};
+  second.m_cast = {younger};
+  const int idSecond{m_db.SetDetailsForMovie(second, KODI::ART::Artwork{})};
+  ASSERT_GT(idSecond, 0);
+
+  CFileItemList items;
+  m_db.GetMoviesByActor("John Smith", items);
+  EXPECT_EQ(2, items.Size());
+
+  items.Clear();
+  m_db.GetMoviesByActor("John Smith", items, "1985-06-07");
+  ASSERT_EQ(1, items.Size());
+  EXPECT_EQ(idSecond, items[0]->GetVideoInfoTag()->m_iDbId);
+
+  CVideoDbUrl url;
+  ASSERT_TRUE(url.FromString("videodb://movies/titles/"));
+  url.AddOption("actor", "John Smith");
+  url.AddOption("actorbirthdate", "1950-02-03");
+  items.Clear();
+  ASSERT_TRUE(m_db.GetMoviesByWhere(url.ToString(), CDatabase::Filter(), items));
+  ASSERT_EQ(1, items.Size());
+  EXPECT_EQ(idFirst, items[0]->GetVideoInfoTag()->m_iDbId);
+
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetMovieInfo("", details, idFirst));
+  ASSERT_EQ(1u, details.m_cast.size());
+  EXPECT_EQ("1950-02-03", details.m_cast[0].birthDate);
+}
+
+TEST_F(TestVideoDatabase, TheDeathDateOfAnActorIsStoredButNotUsedForMatching)
+{
+  SActorInfo undated;
+  undated.strName = "John Roe";
+  undated.birthDate = "1940-01-02";
+  SActorInfo dated{undated};
+  dated.deathDate = "2010-03-04";
+  SActorInfo redated{undated};
+  redated.deathDate = "2011-05-06";
+
+  CVideoInfoTag first{Tag("/videos/first.mkv")};
+  first.m_cast = {undated};
+  ASSERT_GT(m_db.SetDetailsForMovie(first, KODI::ART::Artwork{}), 0);
+  CVideoInfoTag second{Tag("/videos/second.mkv")};
+  second.m_cast = {dated};
+  const int idSecond{m_db.SetDetailsForMovie(second, KODI::ART::Artwork{})};
+  ASSERT_GT(idSecond, 0);
+  CVideoInfoTag third{Tag("/videos/third.mkv")};
+  third.m_cast = {redated};
+  ASSERT_GT(m_db.SetDetailsForMovie(third, KODI::ART::Artwork{}), 0);
+
+  CFileItemList items;
+  m_db.GetMoviesByActor("John Roe", items, "1940-01-02");
+  EXPECT_EQ(3, items.Size());
+
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetMovieInfo("", details, idSecond));
+  ASSERT_EQ(1u, details.m_cast.size());
+  EXPECT_EQ("2011-05-06", details.m_cast[0].deathDate);
+}
+
+TEST_F(TestVideoDatabase, TheDeathDateIsNotStoredForADatedActorMatchedByNameOnly)
+{
+  SActorInfo older;
+  older.strName = "John Roe";
+  older.birthDate = "1950-02-03";
+  SActorInfo younger{older};
+  younger.birthDate = "1985-06-07";
+  SActorInfo unknown;
+  unknown.strName = "John Roe";
+  unknown.deathDate = "2020-01-02";
+
+  CVideoInfoTag first{Tag("/videos/first.mkv")};
+  first.m_cast = {older};
+  const int idFirst{m_db.SetDetailsForMovie(first, KODI::ART::Artwork{})};
+  ASSERT_GT(idFirst, 0);
+  CVideoInfoTag second{Tag("/videos/second.mkv")};
+  second.m_cast = {younger};
+  ASSERT_GT(m_db.SetDetailsForMovie(second, KODI::ART::Artwork{}), 0);
+  CVideoInfoTag third{Tag("/videos/third.mkv")};
+  third.m_cast = {unknown};
+  ASSERT_GT(m_db.SetDetailsForMovie(third, KODI::ART::Artwork{}), 0);
+
+  CVideoInfoTag details;
+  ASSERT_TRUE(m_db.GetMovieInfo("", details, idFirst));
+  ASSERT_EQ(1u, details.m_cast.size());
+  EXPECT_TRUE(details.m_cast[0].deathDate.empty());
+}
+
+TEST_F(TestVideoDatabase, AnActorWithoutBirthDateGetsTheBirthDateOfTheSameName)
+{
+  SActorInfo undated;
+  undated.strName = "Jane Doe";
+  SActorInfo dated{undated};
+  dated.birthDate = "1960-04-05";
+
+  CVideoInfoTag first{Tag("/videos/first.mkv")};
+  first.m_cast = {undated};
+  ASSERT_GT(m_db.SetDetailsForMovie(first, KODI::ART::Artwork{}), 0);
+  CVideoInfoTag second{Tag("/videos/second.mkv")};
+  second.m_cast = {dated};
+  ASSERT_GT(m_db.SetDetailsForMovie(second, KODI::ART::Artwork{}), 0);
+
+  CFileItemList items;
+  m_db.GetMoviesByActor("Jane Doe", items, "1960-04-05");
+  EXPECT_EQ(2, items.Size());
+}
+
 TEST_F(TestVideoDatabase, GetPlayCountsListingInsideArchiveAcrossZipAndArchiveProtocols)
 {
   MarkPlayed(ArchivePath("zip", "/tv/season.zip", "e01.mkv"), 1);

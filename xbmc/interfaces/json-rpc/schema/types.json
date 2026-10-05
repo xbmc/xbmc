@@ -2081,6 +2081,12 @@
         },
         "thumbnail": {
           "type": "string"
+        },
+        "birthdate": {
+          "type": "string"
+        },
+        "deathdate": {
+          "type": "string"
         }
       },
       "additionalProperties": false

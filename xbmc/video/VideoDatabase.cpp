@@ -1642,7 +1642,11 @@ int CVideoDatabase::AddTag(const std::string& name)
   return AddToTable("tag", "tag_id", "name", name);
 }
 
-int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbURLs, const std::string &thumb)
+int CVideoDatabase::AddActor(const std::string& name,
+                             const std::string& thumbURLs,
+                             const std::string& thumb,
+                             const std::string& birthDate,
+                             const std::string& deathDate)
 {
   try
   {
@@ -1651,31 +1655,66 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     if (nullptr == m_pDS)
       return -1;
     int idActor = -1;
+    bool matchedDatedByNameOnly{false};
 
     // ATTENTION: the trimming of actor names should really not be done here but after the scraping / NFO-parsing
     std::string trimmedName = name;
     StringUtils::Trim(trimmedName);
 
-    std::string strSQL=PrepareSQL("select actor_id from actor where name like '%s'", trimmedName.substr(0, 255).c_str());
+    trimmedName = trimmedName.substr(0, 255);
+
+    // Without a birth date, prefer the person without a birth date over one with the same name.
+    // With one, reuse a person without a birth date before adding another person with that name.
+    std::string strSQL =
+        birthDate.empty()
+            ? PrepareSQL("SELECT actor_id, birth_date FROM actor WHERE name LIKE '%s' "
+                         "ORDER BY CASE WHEN birth_date IS NULL THEN 0 ELSE 1 END, actor_id",
+                         trimmedName.c_str())
+            : PrepareSQL("SELECT actor_id, birth_date FROM actor WHERE name LIKE '%s' "
+                         "AND (birth_date = '%s' OR birth_date IS NULL) "
+                         "ORDER BY CASE WHEN birth_date IS NULL THEN 1 ELSE 0 END, actor_id",
+                         trimmedName.c_str(), birthDate.c_str());
     m_pDS->query(strSQL);
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesn't exists, add it
-      strSQL=PrepareSQL("insert into actor (actor_id, name, art_urls) values(NULL, '%s', '%s')", trimmedName.substr(0,255).c_str(), thumbURLs.c_str());
+      if (birthDate.empty())
+        strSQL = PrepareSQL("INSERT INTO actor (actor_id, name, art_urls) VALUES(NULL, '%s', '%s')",
+                            trimmedName.c_str(), thumbURLs.c_str());
+      else
+        strSQL = PrepareSQL("INSERT INTO actor (actor_id, name, art_urls, birth_date) "
+                            "VALUES(NULL, '%s', '%s', '%s')",
+                            trimmedName.c_str(), thumbURLs.c_str(), birthDate.c_str());
       m_pDS->exec(strSQL);
       idActor = static_cast<int>(m_pDS->lastinsertid());
     }
     else
     {
       idActor = m_pDS->fv(0).get_asInt();
+      const bool hasBirthDate{!m_pDS->fv(1).get_isNull()};
       m_pDS->close();
+      matchedDatedByNameOnly = birthDate.empty() && hasBirthDate;
+      if (!birthDate.empty() && !hasBirthDate)
+      {
+        strSQL = PrepareSQL("UPDATE actor SET birth_date = '%s' WHERE actor_id = %i",
+                            birthDate.c_str(), idActor);
+        m_pDS->exec(strSQL);
+      }
       // update the thumb url's
       if (!thumbURLs.empty())
       {
         strSQL=PrepareSQL("update actor set art_urls = '%s' where actor_id = %i", thumbURLs.c_str(), idActor);
         m_pDS->exec(strSQL);
       }
+    }
+    // The death date is informational only and does not take part in matching the person.
+    // Do not store it on a dated person matched by name alone, it may be someone else.
+    if (!deathDate.empty() && !matchedDatedByNameOnly)
+    {
+      strSQL = PrepareSQL("UPDATE actor SET death_date = '%s' WHERE actor_id = %i",
+                          deathDate.c_str(), idActor);
+      m_pDS->exec(strSQL);
     }
     // add artwork
     if (!thumb.empty())
@@ -1800,7 +1839,7 @@ void CVideoDatabase::AddCast(int mediaId, const char *mediaType, const std::vect
   int order = std::max_element(cast.begin(), cast.end())->order;
   for (const auto &i : cast)
   {
-    int idActor = AddActor(i.strName, i.thumbUrl.GetData(), i.thumb);
+    int idActor = AddActor(i.strName, i.thumbUrl.GetData(), i.thumb, i.birthDate, i.deathDate);
     AddLinkToActor(mediaId, mediaType, idActor, i.strRole, i.order >= 0 ? i.order : ++order);
   }
 }
@@ -1940,37 +1979,53 @@ void CVideoDatabase::DeleteDetailsForTvShow(int idTvShow)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMoviesByActor(const std::string& name, CFileItemList& items)
+std::string CVideoDatabase::GetPersonWhere(const std::string& name,
+                                           const std::string& birthDate) const
+{
+  if (birthDate.empty())
+    return PrepareSQL("a.name='%s' OR d.name='%s'", name.c_str(), name.c_str());
+
+  return PrepareSQL("(a.name='%s' AND a.birth_date='%s') OR (d.name='%s' AND d.birth_date='%s')",
+                    name.c_str(), birthDate.c_str(), name.c_str(), birthDate.c_str());
+}
+
+void CVideoDatabase::GetMoviesByActor(const std::string& name,
+                                      CFileItemList& items,
+                                      const std::string& birthDate)
 {
   Filter filter;
   filter.join  = "LEFT JOIN actor_link ON actor_link.media_id=movie_view.idMovie AND actor_link.media_type='movie' "
                  "LEFT JOIN actor a ON a.actor_id=actor_link.actor_id "
                  "LEFT JOIN director_link ON director_link.media_id=movie_view.idMovie AND director_link.media_type='movie' "
                  "LEFT JOIN actor d ON d.actor_id=director_link.actor_id";
-  filter.where = PrepareSQL("a.name='%s' OR d.name='%s'", name.c_str(), name.c_str());
+  filter.where = GetPersonWhere(name, birthDate);
   filter.group = "movie_view.idMovie";
   GetMoviesByWhere("videodb://movies/titles/", filter, items);
 }
 
-void CVideoDatabase::GetTvShowsByActor(const std::string& name, CFileItemList& items)
+void CVideoDatabase::GetTvShowsByActor(const std::string& name,
+                                       CFileItemList& items,
+                                       const std::string& birthDate)
 {
   Filter filter;
   filter.join  = "LEFT JOIN actor_link ON actor_link.media_id=tvshow_view.idShow AND actor_link.media_type='tvshow' "
                  "LEFT JOIN actor a ON a.actor_id=actor_link.actor_id "
                  "LEFT JOIN director_link ON director_link.media_id=tvshow_view.idShow AND director_link.media_type='tvshow' "
                  "LEFT JOIN actor d ON d.actor_id=director_link.actor_id";
-  filter.where = PrepareSQL("a.name='%s' OR d.name='%s'", name.c_str(), name.c_str());
+  filter.where = GetPersonWhere(name, birthDate);
   GetTvShowsByWhere("videodb://tvshows/titles/", filter, items);
 }
 
-void CVideoDatabase::GetEpisodesByActor(const std::string& name, CFileItemList& items)
+void CVideoDatabase::GetEpisodesByActor(const std::string& name,
+                                        CFileItemList& items,
+                                        const std::string& birthDate)
 {
   Filter filter;
   filter.join  = "LEFT JOIN actor_link ON actor_link.media_id=episode_view.idEpisode AND actor_link.media_type='episode' "
                  "LEFT JOIN actor a ON a.actor_id=actor_link.actor_id "
                  "LEFT JOIN director_link ON director_link.media_id=episode_view.idEpisode AND director_link.media_type='episode' "
                  "LEFT JOIN actor d ON d.actor_id=director_link.actor_id";
-  filter.where = PrepareSQL("a.name='%s' OR d.name='%s'", name.c_str(), name.c_str());
+  filter.where = GetPersonWhere(name, birthDate);
   filter.group = "episode_view.idEpisode";
   GetEpisodesByWhere("videodb://tvshows/titles/", filter, items);
 }
@@ -5338,29 +5393,39 @@ void CVideoDatabase::GetCast(int media_id, const std::string &media_type, std::v
     if (!m_pDS2)
       return;
 
-    std::string sql = PrepareSQL("SELECT actor.name,"
-                                 "  actor_link.role,"
-                                 "  actor_link.cast_order,"
-                                 "  actor.art_urls,"
-                                 "  art.url "
-                                 "FROM actor_link"
-                                 "  JOIN actor ON"
-                                 "    actor_link.actor_id=actor.actor_id"
-                                 "  LEFT JOIN art ON"
-                                 "    art.media_id=actor.actor_id AND art.media_type='actor' AND art.type='thumb' "
-                                 "WHERE actor_link.media_id=%i AND actor_link.media_type='%s'"
-                                 "ORDER BY actor_link.cast_order", media_id, media_type.c_str());
+    std::string sql = PrepareSQL(
+        "SELECT actor.name,"
+        "  actor_link.role,"
+        "  actor_link.cast_order,"
+        "  actor.art_urls,"
+        "  art.url,"
+        "  actor.birth_date,"
+        "  actor.death_date "
+        "FROM actor_link"
+        "  JOIN actor ON"
+        "    actor_link.actor_id=actor.actor_id"
+        "  LEFT JOIN art ON"
+        "    art.media_id=actor.actor_id AND art.media_type='actor' AND art.type='thumb' "
+        "WHERE actor_link.media_id=%i AND actor_link.media_type='%s'"
+        "ORDER BY actor_link.cast_order",
+        media_id, media_type.c_str());
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
       SActorInfo info;
       info.strName = m_pDS2->fv(0).get_asString();
       info.strRole = m_pDS2->fv(1).get_asString();
+      info.birthDate = m_pDS2->fv(5).get_asString();
+      info.deathDate = m_pDS2->fv(6).get_asString();
 
       // ignore identical actors (since cast might already be prefilled)
-      if (std::ranges::none_of(
-              cast, [&info](const SActorInfo& actor)
-              { return actor.strName == info.strName && actor.strRole == info.strRole; }))
+      if (std::ranges::none_of(cast,
+                               [&info](const SActorInfo& actor)
+                               {
+                                 return actor.strName == info.strName &&
+                                        actor.strRole == info.strRole &&
+                                        actor.birthDate == info.birthDate;
+                               }))
       {
         info.order = m_pDS2->fv(2).get_asInt();
         info.thumbUrl.ParseFromData(m_pDS2->fv(3).get_asString());
@@ -7489,6 +7554,8 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
       strSQL = "SELECT {} FROM actor ";
       extFilter.fields = "actor.actor_id, actor.name, actor.art_urls, path.strPath";
       extFilter.AppendField(extraField);
+      extFilter.AppendField("actor.birth_date");
+      extFilter.AppendField("actor.death_date");
       extFilter.AppendJoin(PrepareSQL("JOIN %s_link ON actor.actor_id = %s_link.actor_id", type, type));
       extFilter.AppendJoin(PrepareSQL("JOIN %s_view ON %s_link.media_id = %s_view.%s AND %s_link.media_type='%s'", view.c_str(), type, view.c_str(), view_id.c_str(), type, media_type.c_str()));
       extFilter.AppendJoin(PrepareSQL("JOIN files ON files.idFile = %s_view.idFile", view.c_str()));
@@ -7549,6 +7616,8 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
       strSQL = "SELECT {} FROM actor ";
       extFilter.fields = "actor.actor_id, actor.name, actor.art_urls";
       extFilter.AppendField(extraField);
+      extFilter.AppendField("actor.birth_date");
+      extFilter.AppendField("actor.death_date");
       extFilter.AppendJoin(PrepareSQL("JOIN %s_link on actor.actor_id = %s_link.actor_id", type, type));
       extFilter.AppendJoin(PrepareSQL("JOIN %s_view on %s_link.media_id = %s_view.%s AND %s_link.media_type='%s'", view.c_str(), type, view.c_str(), view_id.c_str(), type, media_type.c_str()));
       extFilter.AppendJoin(extraJoin);
@@ -7607,6 +7676,8 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         CActor actor;
         actor.name = m_pDS->fv(1).get_asString();
         actor.thumb = m_pDS->fv(2).get_asString();
+        actor.birthDate = m_pDS->fv("actor.birth_date").get_asString();
+        actor.deathDate = m_pDS->fv("actor.death_date").get_asString();
         if (idContent != VideoDbContentType::TVSHOWS &&
             idContent != VideoDbContentType::MUSICVIDEOS)
         {
@@ -7644,6 +7715,10 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
         pItem->GetVideoInfoTag()->m_iDbId = actorId;
         pItem->GetVideoInfoTag()->m_type = type;
         pItem->GetVideoInfoTag()->m_relevance = actor.appearances;
+        if (!actor.birthDate.empty())
+          pItem->SetProperty("birthdate", actor.birthDate);
+        if (!actor.deathDate.empty())
+          pItem->SetProperty("deathdate", actor.deathDate);
         if (idContent == VideoDbContentType::MUSICVIDEOS)
         {
           // Get artist bio from music db later if available
@@ -7677,6 +7752,12 @@ bool CVideoDatabase::GetPeopleNav(const std::string& strBaseDir,
             pItem->GetVideoInfoTag()->SetPlayCount((m_pDS->fv(4).get_asInt() == m_pDS->fv(3).get_asInt()) ? 1 : 0);
           }
           pItem->GetVideoInfoTag()->m_relevance = m_pDS->fv(3).get_asInt();
+          const std::string birthDate{m_pDS->fv("actor.birth_date").get_asString()};
+          if (!birthDate.empty())
+            pItem->SetProperty("birthdate", birthDate);
+          const std::string deathDate{m_pDS->fv("actor.death_date").get_asString()};
+          if (!deathDate.empty())
+            pItem->SetProperty("deathdate", deathDate);
           if (idContent == VideoDbContentType::MUSICVIDEOS)
           {
             pItem->GetVideoInfoTag()->m_artist.emplace_back(pItem->GetLabel());
@@ -12568,6 +12649,14 @@ void CVideoDatabase::AppendLinkFilter(const char* field,
   filter.AppendJoin(
       PrepareSQL("JOIN %s ON %s.%s_id=%s_link.%s_id", table, table, table, field, table));
   filter.AppendWhere(PrepareSQL("%s.name like '%s'", table, option->second.asString().c_str()));
+
+  if (std::string_view{field} == "actor")
+  {
+    option = options.find("actorbirthdate");
+    if (option != options.end())
+      filter.AppendWhere(
+          PrepareSQL("%s.birth_date = '%s'", table, option->second.asString().c_str()));
+  }
 }
 
 bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting)

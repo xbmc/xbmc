@@ -54,7 +54,32 @@ StreamFlags ParseStreamFlags(const TiXmlNode* nodeDetail)
 
   return static_cast<StreamFlags>(flags);
 }
+
+/*!
+ * \brief Normalize a YYYY-MM-DD date.
+ * \param date The date to check.
+ * \return The trimmed date, empty if it is not a valid YYYY-MM-DD date.
+ */
+std::string NormalizeDBDate(std::string_view date)
+{
+  std::string trimmed{date};
+  StringUtils::Trim(trimmed);
+  CDateTime dateTime;
+  // SetFromDBDate() also accepts malformed input, so only keep dates that survive a round trip
+  return dateTime.SetFromDBDate(trimmed) && dateTime.GetAsDBDate() == trimmed ? trimmed
+                                                                              : std::string{};
+}
 } // unnamed namespace
+
+void SActorInfo::SetBirthDate(std::string_view date)
+{
+  birthDate = NormalizeDBDate(date);
+}
+
+void SActorInfo::SetDeathDate(std::string_view date)
+{
+  deathDate = NormalizeDBDate(date);
+}
 
 void CVideoInfoTag::Reset()
 {
@@ -351,6 +376,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(actornode, "name", it->strName);
     XMLUtils::SetString(actornode, "role", it->strRole);
     XMLUtils::SetInt(actornode, "order", it->order);
+    if (!it->birthDate.empty())
+      XMLUtils::SetString(actornode, "birthdate", it->birthDate);
+    if (!it->deathDate.empty())
+      XMLUtils::SetString(actornode, "deathdate", it->deathDate);
     XMLUtils::SetString(actornode, "thumb", it->thumbUrl.GetFirstUrlByType().m_url);
   }
   XMLUtils::SetStringArray(movie, "artist", m_artist);
@@ -598,6 +627,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar << castEntry.strName;
       ar << castEntry.strRole;
       ar << castEntry.order;
+      ar << castEntry.birthDate;
+      ar << castEntry.deathDate;
       ar << castEntry.thumb;
       ar << castEntry.thumbUrl.GetData();
     }
@@ -702,6 +733,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar >> info.strName;
       ar >> info.strRole;
       ar >> info.order;
+      ar >> info.birthDate;
+      ar >> info.deathDate;
       ar >> info.thumb;
       std::string strXml;
       ar >> strXml;
@@ -827,6 +860,10 @@ void CVideoInfoTag::Serialize(CVariant& value) const
     actor["name"] = person.strName;
     actor["role"] = person.strRole;
     actor["order"] = person.order;
+    if (!person.birthDate.empty())
+      actor["birthdate"] = person.birthDate;
+    if (!person.deathDate.empty())
+      actor["deathdate"] = person.deathDate;
     if (!person.thumb.empty())
       actor["thumbnail"] = IMAGE_FILES::URLFromFile(person.thumb);
     value["cast"].push_back(std::move(actor));
@@ -1508,6 +1545,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         info.strRole = StringUtils::Trim(value);
 
       XMLUtils::GetInt(node, "order", info.order);
+      if (XMLUtils::GetString(node, "birthdate", value))
+        info.SetBirthDate(value);
+      if (XMLUtils::GetString(node, "deathdate", value))
+        info.SetDeathDate(value);
       const TiXmlElement* thumbnode = node->FirstChildElement("thumb");
       while (thumbnode)
       {

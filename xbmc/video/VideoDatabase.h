@@ -172,6 +172,8 @@ public:
   public:
     std::string name;
     std::string thumb;
+    std::string birthDate;
+    std::string deathDate;
     int playcount;
     int appearances;
   };
@@ -672,9 +674,30 @@ public:
   int GetMatchingMusicVideo(const std::string& strArtist, const std::string& strAlbum = "", const std::string& strTitle = "");
 
   // searching functions
-  void GetMoviesByActor(const std::string& strActor, CFileItemList& items);
-  void GetTvShowsByActor(const std::string& strActor, CFileItemList& items);
-  void GetEpisodesByActor(const std::string& strActor, CFileItemList& items);
+  /*!
+   * \brief Get the movies an actor or director appears in.
+   * \param strActor The name of the person.
+   * \param items [out] The matching movies.
+   * \param birthDate The birth date (YYYY-MM-DD) of the person, used to tell apart people with the
+   * same name. Empty to match by name only.
+   */
+  void GetMoviesByActor(const std::string& strActor,
+                        CFileItemList& items,
+                        const std::string& birthDate = "");
+  /*!
+   * \brief Get the TV shows an actor or director appears in.
+   * \sa GetMoviesByActor
+   */
+  void GetTvShowsByActor(const std::string& strActor,
+                         CFileItemList& items,
+                         const std::string& birthDate = "");
+  /*!
+   * \brief Get the episodes an actor or director appears in.
+   * \sa GetMoviesByActor
+   */
+  void GetEpisodesByActor(const std::string& strActor,
+                          CFileItemList& items,
+                          const std::string& birthDate = "");
 
   void GetMusicVideosByArtist(const std::string& strArtist, CFileItemList& items);
   void GetMusicVideosByAlbum(const std::string& strAlbum, CFileItemList& items);
@@ -1157,7 +1180,30 @@ protected:
                  std::string_view defaultRating);
   int UpdateUniqueIDs(int mediaId, const char *mediaType, const CVideoInfoTag& details);
   int AddUniqueIDs(int mediaId, const char *mediaType, const CVideoInfoTag& details);
-  int AddActor(const std::string& strActor, const std::string& thumbURL, const std::string &thumb = "");
+  /*!
+   * \brief Build the WHERE clause matching titles of an actor (aliased a) or director (aliased d).
+   * \param name The name of the person.
+   * \param birthDate The birth date of the person. Empty to match by name only.
+   */
+  std::string GetPersonWhere(const std::string& name, const std::string& birthDate) const;
+
+  /*!
+   * \brief Get the id of a person, adding them if not yet known.
+   * \param strActor The name of the person.
+   * \param thumbURL The thumb URLs of the person.
+   * \param thumb The thumb of the person.
+   * \param birthDate The birth date (YYYY-MM-DD) of the person. If empty, the person is matched by
+   * name only. Otherwise an existing person with the same name and no birth date is reused and gets
+   * this birth date.
+   * \param deathDate The death date (YYYY-MM-DD) of the person. Not used for matching. If not
+   * empty, it replaces the stored death date.
+   * \return The id of the person, -1 on failure.
+   */
+  int AddActor(const std::string& strActor,
+               const std::string& thumbURL,
+               const std::string& thumb = "",
+               const std::string& birthDate = "",
+               const std::string& deathDate = "");
 
   int AddTvShow();
 

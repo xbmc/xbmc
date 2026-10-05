@@ -55,7 +55,11 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const std::string &method, ITransportLay
   else if (filter.isMember("year"))
     year = (int)filter["year"].asInteger();
   else if (filter.isMember("actor"))
+  {
     videoUrl.AddOption("actor", filter["actor"].asString());
+    if (filter.isMember("actorbirthdate"))
+      videoUrl.AddOption("actorbirthdate", filter["actorbirthdate"].asString());
+  }
   else if (filter.isMember("director"))
     videoUrl.AddOption("director", filter["director"].asString());
   else if (filter.isMember("studio"))
@@ -168,7 +172,11 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const std::string &method, ITransportLa
   else if (filter.isMember("year"))
     videoUrl.AddOption("year", (int)filter["year"].asInteger());
   else if (filter.isMember("actor"))
+  {
     videoUrl.AddOption("actor", filter["actor"].asString());
+    if (filter.isMember("actorbirthdate"))
+      videoUrl.AddOption("actorbirthdate", filter["actorbirthdate"].asString());
+  }
   else if (filter.isMember("studio"))
     videoUrl.AddOption("studio", filter["studio"].asString());
   else if (filter.isMember("tag"))
@@ -271,7 +279,11 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const std::string &method, ITransportL
   else if (filter.isMember("year"))
     videoUrl.AddOption("year", (int)filter["year"].asInteger());
   else if (filter.isMember("actor"))
+  {
     videoUrl.AddOption("actor", filter["actor"].asString());
+    if (filter.isMember("actorbirthdate"))
+      videoUrl.AddOption("actorbirthdate", filter["actorbirthdate"].asString());
+  }
   else if (filter.isMember("director"))
     videoUrl.AddOption("director", filter["director"].asString());
   else if (filter.isObject())
