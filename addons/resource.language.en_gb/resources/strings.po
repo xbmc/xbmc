@@ -2256,7 +2256,19 @@ msgctxt "#470"
 msgid "Credits"
 msgstr ""
 
-#empty strings from id 471 to 473
+#. Option to alter the image hue in video settings
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#471"
+msgid "Hue"
+msgstr ""
+
+#. Option to alter the image saturation in video settings
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#472"
+msgid "Saturation"
+msgstr ""
+
+#empty string with id 473
 
 msgctxt "#474"
 msgid "Off"
