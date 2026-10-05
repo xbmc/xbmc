@@ -32,6 +32,23 @@ using namespace KODI::VIDEO::GEOMETRY;
  *   ffmpeg -f lavfi -i "smptebars=s=320x160:r=10:d=3" -vf "pad=320:240:0:40:black" \
  *          -c:v libx264 -preset veryslow -crf 24 -pix_fmt yuv420p -color_range tv \
  *          -x264-params "range=tv:keyint=10" letterbox_320x240_bars40.mp4
+ *
+ * letterbox_320x240_bars40_12bit.mkv is the same picture as HEVC in yuv420p12, a format the
+ * decoder converts before handing it over:
+ *
+ *   ffmpeg -f lavfi -i "smptebars=s=320x160:r=10:d=3" \
+ *          -vf "pad=320:240:0:40:black,format=yuv420p12le" -c:v libx265 -preset veryslow \
+ *          -crf 24 -color_range tv -x265-params "range=limited:keyint=10" \
+ *          letterbox_320x240_bars40_12bit.mkv
+ *
+ * sbs_640x240_bars40.mkv is that picture twice, side by side, declared left_right by the
+ * Matroska container only, with nothing in the H.264 stream itself:
+ *
+ *   ffmpeg -f lavfi -i "smptebars=s=320x160:r=10:d=3" \
+ *          -filter_complex "[0]pad=320:240:0:40:black,split[a][b];[a][b]hstack" \
+ *          -c:v libx264 -preset veryslow -crf 24 -pix_fmt yuv420p -color_range tv \
+ *          -x264-params "range=tv:keyint=10" -metadata:s:v:0 stereo_mode=left_right \
+ *          sbs_640x240_bars40.mkv
  */
 
 namespace
@@ -41,11 +58,14 @@ constexpr int CODED_WIDTH = 320;
 constexpr int CODED_HEIGHT = 240;
 constexpr int BAR = 40;
 
+CFileItem Clip(const std::string& name)
+{
+  return CFileItem(XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/" + name), false);
+}
+
 CFileItem LetterboxedClip()
 {
-  return CFileItem(
-      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/letterbox_320x240_bars40.mp4"),
-      false);
+  return Clip("letterbox_320x240_bars40.mp4");
 }
 
 } // namespace
@@ -65,6 +85,35 @@ TEST(TestContentGeometrySampler, FindsTheBarsInALetterboxedFile)
 
   EXPECT_TRUE(scan.combined.hasReading);
   EXPECT_FALSE(scan.combined.varies) << "the clip has one geometry throughout";
+}
+
+//! The frame is read in the format the decoder converted it to, not the one it decoded.
+TEST(TestContentGeometrySampler, FindsTheBarsInAFileTheDecoderConverts)
+{
+  const SampledGeometry scan =
+      CVideoFileGeometry::ExtractContentGeometry(Clip("letterbox_320x240_bars40_12bit.mkv"));
+
+  ASSERT_TRUE(scan.succeeded);
+  EXPECT_EQ(0, scan.combined.rect.x1);
+  EXPECT_EQ(BAR, scan.combined.rect.y1);
+  EXPECT_EQ(CODED_WIDTH, scan.combined.rect.x2);
+  EXPECT_EQ(CODED_HEIGHT - BAR, scan.combined.rect.y2);
+}
+
+//! A stereo mode only the container declares still confines the measurement to one view.
+TEST(TestContentGeometrySampler, MeasuresOneViewOfAContainerDeclaredStereoFile)
+{
+  const SampledGeometry scan =
+      CVideoFileGeometry::ExtractContentGeometry(Clip("sbs_640x240_bars40.mkv"));
+
+  ASSERT_TRUE(scan.succeeded);
+  EXPECT_EQ(CODED_WIDTH, scan.coded.Width());
+  EXPECT_EQ(CODED_HEIGHT, scan.coded.Height());
+
+  EXPECT_EQ(0, scan.combined.rect.x1);
+  EXPECT_EQ(BAR, scan.combined.rect.y1);
+  EXPECT_EQ(CODED_WIDTH, scan.combined.rect.x2);
+  EXPECT_EQ(CODED_HEIGHT - BAR, scan.combined.rect.y2);
 }
 
 //! Per-sample readings are retained, because a wrong cached answer can only be explained

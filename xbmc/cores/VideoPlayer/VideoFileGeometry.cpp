@@ -27,6 +27,7 @@
 #include <chrono>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 extern "C"
@@ -45,6 +46,13 @@ static ColorRange GeometryColorRange(const VideoPicture& picture, const CDVDStre
   return picture.color_range ? ColorRange::Full : ColorRange::Unspecified;
 }
 
+// The decoder only reports a stereo mode carried in the stream; one the container declares
+// reaches the hint alone.
+static std::string_view GeometryStereoMode(const VideoPicture& picture, const CDVDStreamInfo& hint)
+{
+  return picture.stereoMode.empty() ? hint.stereo_mode : picture.stereoMode;
+}
+
 // The detector needs planar, little-endian, low-aligned samples; anything else is refused.
 bool CVideoFileGeometry::BuildGeometryFrameRef(const VideoPicture& picture,
                                                const CDVDStreamInfo& hint,
@@ -53,7 +61,9 @@ bool CVideoFileGeometry::BuildGeometryFrameRef(const VideoPicture& picture,
   if (!picture.videoBuffer || picture.iWidth == 0 || picture.iHeight == 0)
     return false;
 
-  const AVPixFmtDescriptor* description = av_pix_fmt_desc_get(picture.pixelFormat);
+  // The buffer, not pixelFormat, names the layout: the decoder converts a format it was not
+  // asked for before handing the frame over.
+  const AVPixFmtDescriptor* description = av_pix_fmt_desc_get(picture.videoBuffer->GetFormat());
   if (!description || description->nb_components < 3)
     return false;
 
@@ -94,7 +104,7 @@ bool CVideoFileGeometry::BuildGeometryFrameRef(const VideoPicture& picture,
 
   frame.range = GeometryColorRange(picture, hint);
 
-  frame.roi = StereoViewRect(picture.stereoMode, picture.iWidth, picture.iHeight);
+  frame.roi = StereoViewRect(GeometryStereoMode(picture, hint), picture.iWidth, picture.iHeight);
   return true;
 }
 
@@ -121,7 +131,7 @@ bool CVideoFileGeometry::BuildGeometryFrameRef(const ReducedFrame& reduction,
 
   frame.range = GeometryColorRange(picture, hint);
 
-  frame.roi = StereoViewRect(picture.stereoMode, reduction.width, reduction.height);
+  frame.roi = StereoViewRect(GeometryStereoMode(picture, hint), reduction.width, reduction.height);
   return true;
 }
 
@@ -167,15 +177,17 @@ void GeometrySampleRun::Sample(const std::vector<double>& schedule)
     if (!CVideoFileGeometry::BuildGeometryFrameRef(picture, session.hint, frame))
     {
       ++scan.unreadable;
-      CLog::LogF(LOGDEBUG, "picture at {:.1f}s is in no format the detector reads ({}) in {}",
-                 offset, picture.pixelFormat, redactPath);
+      CLog::LogF(
+          LOGDEBUG, "picture at {:.1f}s is in no format the detector reads ({}) in {}", offset,
+          picture.videoBuffer ? picture.videoBuffer->GetFormat() : picture.pixelFormat, redactPath);
       continue;
     }
 
     if (!scan.succeeded)
     {
       scan.succeeded = true;
-      scan.coded = MeasuredFrameRect(picture.stereoMode, frame.width, frame.height);
+      scan.coded =
+          MeasuredFrameRect(GeometryStereoMode(picture, session.hint), frame.width, frame.height);
     }
 
     const DetectionResult detected = DetectContentRect(frame);
