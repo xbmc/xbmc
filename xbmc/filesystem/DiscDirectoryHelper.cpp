@@ -2655,6 +2655,7 @@ void RemoveDuplicateMoviePlaylists(std::vector<PlaylistInformation>& playlists,
     for (size_t j = i + 1; j < playlists.size(); ++j)
     {
       if (duplicatePlaylists.contains(playlists[j].playlist) ||
+          playlists[i].hasSecondaryVideo != playlists[j].hasSecondaryVideo ||
           !IsSamePresentation(playlists[i], clipDurations[i], playlists[j], clipDurations[j]))
         continue;
 
@@ -4066,19 +4067,24 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   else
   {
     // Silent
+    // The All titles and Menu options are not playlists
+    const auto playlistCount{std::ranges::count_if(
+        sourceItems, [](const auto& sourceItem)
+        { return sourceItem->HasProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST); })};
+
     // A scan must not store a guess, or later playback would use it without asking
     if (sourceItems[0]->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false))
     {
-      CLog::LogF(LOGDEBUG, "Not choosing between the {} specials offered for {}",
-                 sourceItems.Size(), CURL::GetRedacted(directory));
+      CLog::LogF(LOGDEBUG, "Not choosing between the {} specials offered for {}", playlistCount,
+                 CURL::GetRedacted(directory));
       return false;
     }
 
-    if (sourceItems.Size() > 1 && !returnMultipleItems)
+    if (playlistCount > 1 && !returnMultipleItems)
     {
       CLog::LogF(LOGDEBUG, "Automatically selected playlist {} of the {} offered for {}",
                  sourceItems[0]->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(0),
-                 sourceItems.Size(), CURL::GetRedacted(directory));
+                 playlistCount, CURL::GetRedacted(directory));
     }
   }
 

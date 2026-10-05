@@ -5064,6 +5064,33 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationNe
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 100u);
 }
 
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPictureIsNotADuplicateOfPlainFeature)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 2h, {1u}, {1h, 1h})},
+      {801u, MakePlaylist(801u, 2h, {1u}, {1h, 1h})},
+      {802u, MakePlaylist(802u, 100min, {2u}, {50min, 50min})},
+  };
+  playlists.at(800u).hasSecondaryVideo = true;
+  ClipMap clips{{1u, MakeClip(2h, {800u, 801u})}, {2u, MakeClip(100min, {802u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 3);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+}
+
 // A disc offering nothing but a picture-in-picture presentation still offers it
 TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationAlone)
 {
