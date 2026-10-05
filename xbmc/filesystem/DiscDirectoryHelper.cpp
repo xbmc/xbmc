@@ -1968,28 +1968,25 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
   PlaylistVector playlistsLength;
   playlistsLength.reserve(playlists.size());
   playlistsLength.assign(playlists.begin(), playlists.end());
-  if (m_numEpisodes > 0)
-  {
-    std::erase_if(
-        playlistsLength,
-        [this](const PlaylistVectorEntry& playlist)
-        {
-          const auto& [playlistNumber, playlistInformation] = playlist;
+  std::erase_if(
+      playlistsLength,
+      [this](const PlaylistVectorEntry& playlist)
+      {
+        const auto& [playlistNumber, playlistInformation] = playlist;
 
-          const bool isShort{playlistInformation.duration < MIN_SPECIAL_DURATION};
+        const bool isShort{playlistInformation.duration < MIN_SPECIAL_DURATION};
 
-          const auto candidatePlaylistNumbers{m_candidatePlaylists | std::views::keys};
-          const bool isEpisode{std::ranges::find(candidatePlaylistNumbers, playlistNumber) !=
-                               candidatePlaylistNumbers.end()};
+        const auto candidatePlaylistNumbers{m_candidatePlaylists | std::views::keys};
+        const bool isEpisode{std::ranges::find(candidatePlaylistNumbers, playlistNumber) !=
+                             candidatePlaylistNumbers.end()};
 
-          const auto playAllPlaylistNumbers{
-              m_playAllPlaylists | std::views::transform(&CandidatePlaylistInformation::playlist)};
-          const bool isPlayAll{std::ranges::find(playAllPlaylistNumbers, playlistNumber) !=
-                               playAllPlaylistNumbers.end()};
+        const auto playAllPlaylistNumbers{
+            m_playAllPlaylists | std::views::transform(&CandidatePlaylistInformation::playlist)};
+        const bool isPlayAll{std::ranges::find(playAllPlaylistNumbers, playlistNumber) !=
+                             playAllPlaylistNumbers.end()};
 
-          return isShort || isEpisode || isPlayAll;
-        });
-  }
+        return isShort || isEpisode || isPlayAll;
+      });
 
   // Sort playlists by length
   std::ranges::sort(playlistsLength,
