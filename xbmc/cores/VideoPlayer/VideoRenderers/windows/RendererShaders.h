@@ -33,6 +33,7 @@ class CRendererShaders : public CRendererHQ
 public:
   ~CRendererShaders() override;
 
+  bool Supports(ERENDERFEATURE feature) const override;
   bool Supports(ESCALINGMETHOD method) const override;
   bool Configure(const VideoPicture& picture, float fps, unsigned orientation) override;
 

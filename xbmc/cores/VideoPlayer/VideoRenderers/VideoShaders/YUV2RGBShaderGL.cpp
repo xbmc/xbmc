@@ -43,6 +43,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
   m_format = format;
   m_black = 0.0f;
   m_contrast = 1.0f;
+  m_hue = 0.0f;
+  m_saturation = 1.0f;
   m_stretch = 0.0f;
 
   // get defines from the output stage if used
@@ -158,6 +160,8 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   m_convMatrix.SetDestinationContrast(m_contrast)
       .SetDestinationBlack(m_black)
+      .SetDestinationHue(m_hue)
+      .SetDestinationSaturation(m_saturation)
       .SetDestinationLimitedRange(!m_convertFullRange);
 
   Matrix4 yuvMat = m_convMatrix.GetYuvMat();

@@ -8,6 +8,8 @@
 
 #include "ConversionMatrix.h"
 
+#include <cmath>
+#include <numbers>
 #include <stdexcept>
 #include <string>
 
@@ -409,6 +411,24 @@ CConvertMatrix& CConvertMatrix::SetDestinationBlack(float black)
   return *this;
 }
 
+CConvertMatrix& CConvertMatrix::SetDestinationHue(float hue)
+{
+  if (m_hue != hue)
+    m_mat.reset();
+
+  m_hue = hue;
+  return *this;
+}
+
+CConvertMatrix& CConvertMatrix::SetDestinationSaturation(float saturation)
+{
+  if (m_saturation != saturation)
+    m_mat.reset();
+
+  m_saturation = saturation;
+  return *this;
+}
+
 CConvertMatrix& CConvertMatrix::SetDestinationLimitedRange(bool limited)
 {
   m_limitedDst = limited;
@@ -507,6 +527,13 @@ const CGlMatrix& CConvertMatrix::GenMat()
 
   ConversionToRGB mConvRGB(convYCbCr.Kr, convYCbCr.Kb);
   CGlMatrix mat(mConvRGB);
+
+  // rotate and scale the centred chroma plane, same convention as the DXVA ProcAmp
+  const float hue = m_hue * std::numbers::pi_v<float> / 180.0f;
+  const float hueCos = m_saturation * std::cos(hue);
+  const float hueSin = m_saturation * std::sin(hue);
+  mat *= CGlMatrix(std::array<std::array<float, 3>, 3>{
+      {{1.0f, 0.0f, 0.0f}, {0.0f, hueCos, hueSin}, {0.0f, -hueSin, hueCos}}});
 
   CTranslate trans(0, -0.5, -0.5);
   mat *= trans;

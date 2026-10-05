@@ -218,6 +218,8 @@ protected:
     unsigned flags = 0;
     float contrast = 0.0f;
     float brightness = 0.0f;
+    float hue = 0.0f;
+    float saturation = 0.0f;
     bool limitedColor = false;
     float toneMapParam = 0.0f;
     bool lutLoading = false;

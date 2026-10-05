@@ -192,6 +192,16 @@ public:
   CConvertMatrix& SetDestinationBlack(float black);
 
   /**
+   * @brief Set the hue rotation in degrees.
+   */
+  CConvertMatrix& SetDestinationHue(float hue);
+
+  /**
+   * @brief Set the saturation (chroma gain).
+   */
+  CConvertMatrix& SetDestinationSaturation(float saturation);
+
+  /**
    * @brief Set the destination limited range boolean.
    */
   CConvertMatrix& SetDestinationLimitedRange(bool limited);
@@ -239,4 +249,6 @@ private:
   int m_srcTextureBits = 8;
   float m_contrast = 1.0;
   float m_black = 0.0;
+  float m_hue = 0.0;
+  float m_saturation = 1.0;
 };
