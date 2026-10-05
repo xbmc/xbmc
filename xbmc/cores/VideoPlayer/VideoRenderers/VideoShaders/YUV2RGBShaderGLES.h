@@ -40,6 +40,8 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textureBits);
     void SetBlack(float black) { m_black = black; }
     void SetContrast(float contrast) { m_contrast = contrast; }
+    void SetHue(float hue) { m_hue = hue; }
+    void SetSaturation(float saturation) { m_saturation = saturation; }
     void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
     void SetDitherUniforms(bool enabled,
                            GLuint ditherTex,
@@ -81,6 +83,8 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 
     float m_black;
     float m_contrast;
+    float m_hue;
+    float m_saturation;
 
     std::string m_defines;
 

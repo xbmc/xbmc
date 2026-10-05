@@ -148,7 +148,7 @@ public:
               AVColorPrimaries srcPrimaries,
               const std::shared_ptr<COutputShader>& pOutShader = nullptr);
   void Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture& target);
-  void SetParams(float contrast, float black, bool limited);
+  void SetParams(float contrast, float black, float hue, float saturation, bool limited);
   void SetColParams(AVColorSpace colSpace, int bits, bool limited, int texBits);
 
 protected:

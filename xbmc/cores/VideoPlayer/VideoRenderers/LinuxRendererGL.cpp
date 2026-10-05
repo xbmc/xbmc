@@ -1179,6 +1179,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  m_pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -1371,6 +1373,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
   m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  m_pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
@@ -2602,16 +2606,12 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGL::Supports(ERENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE_STRETCH ||
-      feature == RENDERFEATURE_NONLINSTRETCH ||
-      feature == RENDERFEATURE_ZOOM ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT ||
-      feature == RENDERFEATURE_PIXEL_RATIO ||
-      feature == RENDERFEATURE_POSTPROCESS ||
-      feature == RENDERFEATURE_ROTATION ||
-      feature == RENDERFEATURE_BRIGHTNESS ||
-      feature == RENDERFEATURE_CONTRAST ||
-      feature == RENDERFEATURE_TONEMAP)
+  if (feature == RENDERFEATURE_STRETCH || feature == RENDERFEATURE_NONLINSTRETCH ||
+      feature == RENDERFEATURE_ZOOM || feature == RENDERFEATURE_VERTICAL_SHIFT ||
+      feature == RENDERFEATURE_PIXEL_RATIO || feature == RENDERFEATURE_POSTPROCESS ||
+      feature == RENDERFEATURE_ROTATION || feature == RENDERFEATURE_BRIGHTNESS ||
+      feature == RENDERFEATURE_CONTRAST || feature == RENDERFEATURE_HUE ||
+      feature == RENDERFEATURE_SATURATION || feature == RENDERFEATURE_TONEMAP)
     return true;
 
   return false;

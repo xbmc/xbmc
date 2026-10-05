@@ -1247,6 +1247,8 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
   pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -1385,6 +1387,8 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
 
   pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -2128,14 +2132,11 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature) const
     return false;
   }
 
-  if (feature == RENDERFEATURE_STRETCH ||
-      feature == RENDERFEATURE_ZOOM ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT ||
-      feature == RENDERFEATURE_PIXEL_RATIO ||
-      feature == RENDERFEATURE_POSTPROCESS ||
-      feature == RENDERFEATURE_ROTATION ||
-      feature == RENDERFEATURE_BRIGHTNESS ||
-      feature == RENDERFEATURE_CONTRAST ||
+  if (feature == RENDERFEATURE_STRETCH || feature == RENDERFEATURE_ZOOM ||
+      feature == RENDERFEATURE_VERTICAL_SHIFT || feature == RENDERFEATURE_PIXEL_RATIO ||
+      feature == RENDERFEATURE_POSTPROCESS || feature == RENDERFEATURE_ROTATION ||
+      feature == RENDERFEATURE_BRIGHTNESS || feature == RENDERFEATURE_CONTRAST ||
+      feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION ||
       feature == RENDERFEATURE_TONEMAP)
   {
     return true;

@@ -648,10 +648,13 @@ void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer* vide
   Execute({ &target }, 4);
 }
 
-void CYUV2RGBShader::SetParams(float contrast, float black, bool limited)
+void CYUV2RGBShader::SetParams(
+    float contrast, float black, float hue, float saturation, bool limited)
 {
   m_convMatrix.SetDestinationContrast(contrast * 0.02f)
       .SetDestinationBlack(black * 0.01f - 0.5f)
+      .SetDestinationHue((hue - 50.0f) * 3.6f)
+      .SetDestinationSaturation(saturation * 0.02f)
       .SetDestinationLimitedRange(limited);
 }
 
