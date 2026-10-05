@@ -182,13 +182,6 @@ bool CGUIDialogAddonSettings::ShowForSingleInstance(
     bool saveToDisk,
     ADDON::AddonInstanceId instanceId /* = ADDON::ADDON_SETTINGS_ID */)
 {
-  if (!addon->HasSettings(instanceId))
-  {
-    // addon does not support settings, inform user
-    HELPERS::ShowOKDialogText(CVariant{24000}, CVariant{24030});
-    return false;
-  }
-
   // Create the dialog
   CGUIDialogAddonSettings* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(
@@ -202,7 +195,22 @@ bool CGUIDialogAddonSettings::ShowForSingleInstance(
   dialog->m_addon = addon;
   dialog->m_instanceId = instanceId;
   dialog->m_saveToDisk = saveToDisk;
+
+  dialog->m_actionsOnlySettingsManager.reset();
+  if (!addon->HasSettings(instanceId))
+  {
+    dialog->m_actionsOnlySettingsManager = std::make_shared<CSettingsManager>();
+    dialog->m_actionsOnlySettingsManager->SetInitialized();
+  }
+
   dialog->CreateActionsCategory();
+
+  if (dialog->m_actionsOnlySettingsManager && !dialog->m_actionsCategory)
+  {
+    // addon does not support settings, inform user
+    HELPERS::ShowOKDialogText(CVariant{24000}, CVariant{24030});
+    return false;
+  }
 
   dialog->Open();
 
@@ -432,7 +440,7 @@ void CGUIDialogAddonSettings::SetupView()
     return;
 
   auto settings = m_addon->GetSettings(m_instanceId);
-  if (!settings->IsLoaded())
+  if (!settings->IsLoaded() && !m_actionsOnlySettingsManager)
     return;
 
   CGUIDialogSettingsManagerBase::SetupView();
@@ -520,6 +528,9 @@ std::shared_ptr<CSettingSection> CGUIDialogAddonSettings::GetSection()
 
 CSettingsManager* CGUIDialogAddonSettings::GetSettingsManager() const
 {
+  if (m_actionsOnlySettingsManager)
+    return m_actionsOnlySettingsManager.get();
+
   if (m_addon == nullptr || m_addon->GetSettings(m_instanceId) == nullptr)
     return nullptr;
 
