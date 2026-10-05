@@ -20,6 +20,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
+#include "pvr/addons/PVRClientMenuHooks.h"
 #include "pvr/addons/PVRClientUID.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "resources/LocalizeStrings.h"
@@ -295,6 +296,29 @@ bool CPVRClients::RequestRestart(const std::string& addonId,
         return true;
       });
   return true;
+}
+
+std::vector<AddonSettingsAction> CPVRClients::GetSettingsActions(const std::string& addonId,
+                                                                 AddonInstanceId instanceId) const
+{
+  const int clientId{CPVRClientUID(addonId, instanceId).GetUID()};
+  const std::shared_ptr<const CPVRClient> client{GetCreatedClient(clientId)};
+  if (!client)
+    return {};
+
+  std::vector<AddonSettingsAction> actions;
+  for (const auto& hook : client->GetMenuHooks()->GetSettingsHooks())
+  {
+    actions.push_back({static_cast<int>(hook.GetLabelId()), [clientId, hook]
+                       {
+                         // The client may have been restarted since the actions were created.
+                         const auto createdClient{
+                             CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(clientId)};
+                         if (createdClient)
+                           createdClient->CallSettingsMenuHook(hook);
+                       }});
+  }
+  return actions;
 }
 
 bool CPVRClients::StopClient(int clientId, bool restart)

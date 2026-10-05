@@ -8736,6 +8736,7 @@ msgstr ""
 #empty strings from id 14228 to 14229
 
 #: system/settings/settings.xml
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 msgctxt "#14230"
 msgid "Actions"
 msgstr ""

@@ -88,6 +88,15 @@ public:
                       bool bDataChanged) override;
 
   /*!
+   * @brief Get the settings menu hooks of a created client as add-on settings actions.
+   * @param addonId The add-on id.
+   * @param instanceId The add-on instance id.
+   * @return The actions, or an empty list if the client is not created.
+   */
+  std::vector<ADDON::AddonSettingsAction> GetSettingsActions(
+      const std::string& addonId, ADDON::AddonInstanceId instanceId) const override;
+
+  /*!
    * @brief Stop a client.
    * @param clientId The id of the client to stop.
    * @param restart If true, restart the client.

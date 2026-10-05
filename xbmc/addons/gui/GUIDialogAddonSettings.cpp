@@ -14,6 +14,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddonManagerCallback.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "addons/settings/AddonSettings.h"
@@ -28,8 +29,10 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/SettingControl.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
@@ -199,6 +202,7 @@ bool CGUIDialogAddonSettings::ShowForSingleInstance(
   dialog->m_addon = addon;
   dialog->m_instanceId = instanceId;
   dialog->m_saveToDisk = saveToDisk;
+  dialog->CreateActionsCategory();
 
   dialog->Open();
 
@@ -504,10 +508,14 @@ std::shared_ptr<CSettingSection> CGUIDialogAddonSettings::GetSection()
     return nullptr;
 
   const auto sections = settingsManager->GetSections();
-  if (!sections.empty())
-    return sections.front();
+  if (!m_actionsCategory)
+    return sections.empty() ? nullptr : sections.front();
 
-  return nullptr;
+  const auto section{std::make_shared<CSettingSection>(m_addon->ID(), settingsManager)};
+  if (!sections.empty())
+    section->AddCategories(sections.front()->GetCategories());
+  section->AddCategory(m_actionsCategory);
+  return section;
 }
 
 CSettingsManager* CGUIDialogAddonSettings::GetSettingsManager() const
@@ -520,8 +528,48 @@ CSettingsManager* CGUIDialogAddonSettings::GetSettingsManager() const
 
 void CGUIDialogAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
+  const auto it{m_actions.find(setting->GetId())};
+  if (it != m_actions.end())
+  {
+    it->second();
+    return;
+  }
+
   if (m_addon == nullptr || m_addon->GetSettings(m_instanceId) == nullptr)
     return;
 
   m_addon->GetSettings(m_instanceId)->OnSettingAction(setting);
+}
+
+void CGUIDialogAddonSettings::CreateActionsCategory()
+{
+  m_actionsCategory.reset();
+  m_actions.clear();
+
+  const IAddonMgrCallback* addonTypeManager{
+      CServiceBroker::GetAddonMgr().GetCallbackForType(m_addon->Type())};
+  if (!addonTypeManager)
+    return;
+
+  const auto actions{addonTypeManager->GetSettingsActions(m_addon->ID(), m_instanceId)};
+  if (actions.empty())
+    return;
+
+  CSettingsManager* settingsManager{GetSettingsManager()};
+  const auto group{std::make_shared<CSettingGroup>("0", settingsManager)};
+  for (const auto& action : actions)
+  {
+    const std::string settingId{StringUtils::Format("addonsettingsaction{}", m_actions.size())};
+    const auto setting{std::make_shared<CSettingAction>(settingId, action.label, settingsManager)};
+    const auto control{std::make_shared<CSettingControlButton>()};
+    control->SetFormat("action");
+    setting->SetControl(control);
+    setting->SetCallback(this);
+    group->AddSetting(setting);
+    m_actions.try_emplace(settingId, action.execute);
+  }
+
+  m_actionsCategory = std::make_shared<CSettingCategory>("addonsettingsactions", settingsManager);
+  m_actionsCategory->SetLabel(14230); // Actions
+  m_actionsCategory->AddGroup(group);
 }
