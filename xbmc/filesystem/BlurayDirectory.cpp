@@ -211,6 +211,16 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
   // so two playlists sharing a clip but offering different streams are not seen as identical.
   // The duration is compared as well as the chapters, as two playlists can play the same clips
   // from the same chapter starts but to different out times (ie. they are distinct cuts).
+  // Kodi does not play the secondary video, so a picture-in-picture copy is a copy all the same -
+  // but it is the one discarded, as it never leads the movie search. Of other copies the lowest
+  // numbered is kept.
+  const auto isDiscarded{[](const PlaylistInformation& a, const PlaylistInformation& b)
+                         {
+                           if (a.hasSecondaryVideo != b.hasSecondaryVideo)
+                             return a.hasSecondaryVideo;
+                           return a.playlist > b.playlist;
+                         }};
+
   std::unordered_set<unsigned int> duplicatePlaylists;
   for (size_t i = 0; i + 1 < playlists.size(); ++i)
   {
@@ -222,7 +232,8 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
           playlists[i].chapters == playlists[j].chapters &&
           playlists[i].clips == playlists[j].clips)
       {
-        duplicatePlaylists.emplace(std::max(playlists[i].playlist, playlists[j].playlist));
+        duplicatePlaylists.emplace(isDiscarded(playlists[i], playlists[j]) ? playlists[i].playlist
+                                                                           : playlists[j].playlist);
       }
     }
   }

@@ -214,6 +214,19 @@ TEST_F(TestBlurayDirectory, FilterPlaylists_KeepsPlaylistsDifferingByDuration)
   EXPECT_EQ(PlaylistNumbers(playlists), (std::vector<unsigned int>{800u, 801u}));
 }
 
+// A picture-in-picture copy is the one removed, even when numbered first
+TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesAPictureInPictureCopyKeepingThePlainOne)
+{
+  std::vector<PlaylistInformation> playlists{
+      MakePlaylist(800u, 2h, {1u}),
+      MakePlaylist(801u, 2h, {1u}),
+  };
+  playlists[0].hasSecondaryVideo = true;
+
+  EXPECT_TRUE(FilterPlaylists(playlists));
+  EXPECT_EQ(PlaylistNumbers(playlists), std::vector<unsigned int>{801u});
+}
+
 // Three copies must all collapse to one, not just the adjacent pair
 TEST_F(TestBlurayDirectory, FilterPlaylists_RemovesAllCopiesOfADuplicate)
 {
