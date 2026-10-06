@@ -4085,8 +4085,14 @@ void ApplyPlaylistDetails(CFileItem& item,
   }
 
   if (tag->GetAssetInfo().GetTitle().empty())
-    tag->GetAssetInfo().SetTitle(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(VIDEO_VERSION_ID_DEFAULT));
+  {
+    // An extra the disc does not name is left for whoever adds it to name
+    if (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA)
+      tag->GetAssetInfo().SetTitle(playlistItem.GetProperty(EXTRA_TITLE_PROPERTY).asString());
+    else
+      tag->GetAssetInfo().SetTitle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          VIDEO_VERSION_ID_DEFAULT));
+  }
   if (playlistItem.HasProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST))
     item.SetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST,
                      playlistItem.GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST));
@@ -4101,11 +4107,15 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const auto action = static_cast<SimilarVideoScanAction>(
       settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION));
-  const bool returnMultipleItems{(silent && action != SimilarVideoScanAction::NONE &&
-                                  item.GetVideoContentType() == VideoDbContentType::MOVIES)};
+  const bool isExtra{item.HasVideoInfoTag() &&
+                     item.GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+  // Every extra on a disc is wanted, whether or not versions are
+  const bool returnMultipleItems{
+      silent && (isExtra || (action != SimilarVideoScanAction::NONE &&
+                             item.GetVideoContentType() == VideoDbContentType::MOVIES))};
 
   const std::string directory{
-      [&item, &playback, &returnMultipleItems]
+      [&item, &playback, &returnMultipleItems, isExtra]
       {
         const bool forceSelection{
             item.GetProperty(KODI::ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION).asBoolean(false)};
@@ -4121,9 +4131,12 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
           return URIUtils::GetBlurayEpisodePath(item.GetDynPath(), tag->m_iSeason, tag->m_iEpisode);
         }
 
-        // Playlists > 70% longest
         using enum MenuDecision;
         using enum VideoDbContentType;
+        if (isExtra && (playback == SILENT || playback == SHOW_SIMPLE_MENU))
+          return URIUtils::GetBlurayExtrasPath(item.GetDynPath());
+
+        // Playlists > 70% longest
         if (playback == SHOW_SIMPLE_MENU)
         {
           if (item.GetVideoContentType() == EPISODES || item.GetVideoContentType() == TVSHOWS)
@@ -4176,9 +4189,14 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     directoryDuration = dirUrl.Get();
   }
 
-  // Get items
+  // Get items. A disc naming no extras is no failure, so is not logged as one.
   CFileItemList sourceItems;
-  if (!GetItems(sourceItems, directoryDuration, silent))
+  const bool listingExtras{isExtra &&
+                           directory == URIUtils::GetBlurayExtrasPath(item.GetDynPath())};
+  if (listingExtras
+          ? !GetDirectoryItems(directoryDuration, sourceItems, CDirectory::CHints(), silent) ||
+                sourceItems.IsEmpty()
+          : !GetItems(sourceItems, directoryDuration, silent))
   {
     // No main movie or episode playlist found
     if (silent)
@@ -4199,6 +4217,12 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
           CVariant{item.GetVideoContentType() == VideoDbContentType::EPISODES ? 25017 : 25016});
       return false;
     }
+  }
+  else if (isExtra && !silent)
+  {
+    // The disc may hold an extra it does not name
+    AddRootOptions(CURL{directory}, sourceItems, AllTitles::MOVIES,
+                   AddMenuAndAllTitlesOptions::ADD_ALL_TITLES);
   }
 
   // Select item
