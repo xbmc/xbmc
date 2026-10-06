@@ -400,7 +400,7 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
-    strFilename = URIUtils::GetFileName(url.GetHostName());
+    strFilename = URIUtils::DecodePathEscapes(URIUtils::GetFileName(url.GetHostName()));
 
   // now remove the extension if needed
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
