@@ -898,8 +898,9 @@ bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   const std::string& content = items.GetContent();
   if ((MUSIC::IsMusicDb(items) || CanContainFilter(m_strFilterPath)) &&
-      (StringUtils::EqualsNoCase(content, "artists") ||
-       StringUtils::EqualsNoCase(content, "albums") || StringUtils::EqualsNoCase(content, "songs")))
+      (StringUtils::EqualsNoCase(content, MEDIA::CONTENT::ARTISTS) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::ALBUMS) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::SONGS)))
     return true;
 
   return false;
