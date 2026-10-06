@@ -24,6 +24,7 @@
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -427,7 +428,7 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
       clientProviderInfo["name"] = addonInfo->Name();
       clientProviderInfo["icon"] = addonInfo->Icon();
       auto& artMap = addonInfo->Art();
-      auto thumbEntry = artMap.find("thumb");
+      auto thumbEntry = artMap.find(KODI::ART::TYPE::THUMB);
       if (thumbEntry != artMap.end())
         clientProviderInfo["thumb"] = thumbEntry->second;
 

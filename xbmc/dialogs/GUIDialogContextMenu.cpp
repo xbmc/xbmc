@@ -468,7 +468,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       { // this is some sort of an auto-share, so store in the texture database
         CTextureDatabase db;
         if (db.Open())
-          db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
+          db.SetTextureForPath(item->GetPath(), ART::TYPE::THUMB, strThumb);
       }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);

@@ -366,7 +366,7 @@ void CGUIDialogSongInfo::OnGetArt()
   }
   else if (m_song->HasArt(ART::TYPE::THUMB))
   { // For missing art of that type add the thumb (when it exists and not a fallback)
-    auto i = primeArt.find("thumb");
+    auto i = primeArt.find(ART::TYPE::THUMB);
     if (i != primeArt.end())
     {
       CFileItemPtr item(new CFileItem("thumb://Thumb", false));
@@ -378,7 +378,7 @@ void CGUIDialogSongInfo::OnGetArt()
   }
 
   std::string localThumb;
-  if (type == "thumb")
+  if (type == ART::TYPE::THUMB)
   { // Local thumb type art held in <filename>.tbn (for non-library items)
     localThumb = m_song->GetUserMusicThumb(true);
     if (MUSIC::IsMusicDb(*m_song))

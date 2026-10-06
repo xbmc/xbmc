@@ -11,6 +11,7 @@
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
 #include "tags/MusicInfoTag.h"
+#include "utils/ArtTypes.h"
 #include "utils/EmbeddedArt.h"
 
 #include <map>
@@ -45,7 +46,7 @@ void CMusicEmbeddedCoverLoaderFFmpeg::GetEmbeddedCover(AVFormatContext* fctx,
 
       tag.SetCoverArtInfo(pic_size, mimetype);
       if (art)
-        art->Set(pic, pic_size, mimetype, "thumb");
+        art->Set(pic, pic_size, mimetype, KODI::ART::TYPE::THUMB);
       break; // just need one cover
     }
   }

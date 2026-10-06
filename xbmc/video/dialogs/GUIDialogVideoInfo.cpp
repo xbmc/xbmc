@@ -365,7 +365,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     for (std::vector<std::string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
       int idArtist = database.GetArtistByName(*it);
-      std::string thumb = database.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
+      std::string thumb = database.GetArtForItem(idArtist, MediaTypeArtist, ART::TYPE::THUMB);
       CFileItemPtr item(new CFileItem(*it));
       if (!thumb.empty())
         item->SetArt(ART::TYPE::THUMB, thumb);
@@ -923,9 +923,9 @@ bool CArtTypeChooser::ChooseArtType()
     // maps art types to resource ids
     static constexpr auto name2idMap = make_map<std::string_view, int>({
         {ART::TYPE::BANNER, 20020},
-        {"fanart", 20445},
-        {"poster", 20021},
-        {"thumb", 21371},
+        {ART::TYPE::FANART, 20445},
+        {ART::TYPE::POSTER, 20021},
+        {ART::TYPE::THUMB, 21371},
     });
 
     for (const auto& type : availableArtTypes)
@@ -985,7 +985,8 @@ void CGUIDialogVideoInfo::OnGetArt()
 
 void CGUIDialogVideoInfo::OnGetFanart()
 {
-  if (ManageVideoItemArtwork(m_movieItem, m_movieItem->GetVideoInfoTag()->m_type, "fanart"))
+  if (ManageVideoItemArtwork(m_movieItem, m_movieItem->GetVideoInfoTag()->m_type,
+                             ART::TYPE::FANART))
   {
     m_hasUpdatedThumb = true;
 
@@ -1841,7 +1842,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
                                                  const std::string& mediaType)
 {
   // When not selecting art type, default type to "thumb".
-  return ManageVideoItemArtwork(item, mediaType, "thumb");
+  return ManageVideoItemArtwork(item, mediaType, ART::TYPE::THUMB);
 }
 
 namespace

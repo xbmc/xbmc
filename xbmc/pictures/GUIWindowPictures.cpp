@@ -254,7 +254,7 @@ bool CGUIWindowPictures::Update(const std::string &strDirectory, bool updateFilt
     m_thumbLoader.Load(*m_vecItems);
 
   CPictureThumbLoader thumbLoader;
-  std::string thumb = thumbLoader.GetCachedImage(*m_vecItems, "thumb");
+  std::string thumb = thumbLoader.GetCachedImage(*m_vecItems, ART::TYPE::THUMB);
   m_vecItems->SetArt(ART::TYPE::THUMB, thumb);
 
   return true;

@@ -1240,7 +1240,7 @@ int CMusicDatabase::AddSong(const int idSong,
                  iBPM, iBitRate, iSampleRate, iChannels, songVideoURL);
     }
     if (!strThumb.empty())
-      SetArtForItem(idNew, MediaTypeSong, "thumb", strThumb);
+      SetArtForItem(idNew, MediaTypeSong, ART::TYPE::THUMB, strThumb);
 
     // Song genres added, and genre string updated to use the standardised genre names
     AddSongGenres(idNew, genres);
@@ -7218,13 +7218,15 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string, std::less
                   record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
         }
         if (joinLayout.GetOutput(joinToArtist_thumbnail) &&
-            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() == "thumb")
+            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() ==
+                ART::TYPE::THUMB)
         {
           artistObj["thumbnail"] = IMAGE_FILES::URLFromFile(
               record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
         }
         if (joinLayout.GetOutput(joinToArtist_fanart) &&
-            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() == "fanart")
+            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() ==
+                ART::TYPE::FANART)
         {
           artistObj["fanart"] = IMAGE_FILES::URLFromFile(
               record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
@@ -11320,7 +11322,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string& path1,
           songmap.try_emplace(filename, songs);
           songs.clear();
         }
-        song.strThumb = GetArtForItem(song.idSong, MediaTypeSong, "thumb");
+        song.strThumb = GetArtForItem(song.idSong, MediaTypeSong, ART::TYPE::THUMB);
         songs.emplace_back(song);
         songIds.push_back(PrepareSQL("%i", song.idSong));
         filename = song.strFileName;
@@ -12027,7 +12029,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
               {
                 for (const auto& [type, url] : artwork)
                 {
-                  if (type == "thumb")
+                  if (type == ART::TYPE::THUMB)
                     savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
                   else
                     savedArtfile = URIUtils::AddFileToFolder(strPath, type);
@@ -12168,7 +12170,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                 {
                   for (const auto& [type, url] : artwork)
                   {
-                    if (type == "thumb")
+                    if (type == ART::TYPE::THUMB)
                       savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
                     else
                       savedArtfile = URIUtils::AddFileToFolder(strPath, type);
@@ -13154,7 +13156,7 @@ std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId
   {
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
-      artType = "thumb";
+      artType = ART::TYPE::THUMB;
     if (std::ranges::find(result, artType) == result.end())
       result.push_back(artType);
   }
@@ -13182,7 +13184,7 @@ std::vector<CScraperUrl::SUrlEntry> CMusicDatabase::GetAvailableArtForItem(
   for (auto urlEntry : thumbURL.GetUrls())
   {
     if (urlEntry.m_aspect.empty())
-      urlEntry.m_aspect = "thumb";
+      urlEntry.m_aspect = ART::TYPE::THUMB;
     if (artType.empty() || urlEntry.m_aspect == artType)
       result.push_back(urlEntry);
   }

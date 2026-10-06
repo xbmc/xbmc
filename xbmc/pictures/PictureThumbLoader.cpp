@@ -74,7 +74,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
     CServiceBroker::GetTextureCache()->ClearCachedImage(pItem->GetArt(ART::TYPE::THUMB));
     if (m_textureDatabase->Open())
     {
-      m_textureDatabase->ClearTextureForPath(pItem->GetPath(), "thumb");
+      m_textureDatabase->ClearTextureForPath(pItem->GetPath(), ART::TYPE::THUMB);
       m_textureDatabase->Close();
     }
     pItem->SetArt(ART::TYPE::THUMB, "");
@@ -95,7 +95,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   }
   else if (!pItem->HasArt(ART::TYPE::THUMB))
   { // folder, zip, cbz, rar, cbr, playlist may have a previously cached image
-    thumb = GetCachedImage(*pItem, "thumb");
+    thumb = GetCachedImage(*pItem, ART::TYPE::THUMB);
   }
   if (!thumb.empty())
   {
@@ -123,7 +123,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     std::string strTBN(URIUtils::ReplaceExtension(pItem->GetPath(),".tbn"));
     if (CFileUtils::Exists(strTBN))
     {
-      db.SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
+      db.SetTextureForPath(pItem->GetPath(), ART::TYPE::THUMB, strTBN);
       CServiceBroker::GetTextureCache()->BackgroundCacheImage(strTBN);
       pItem->SetArt(ART::TYPE::THUMB, strTBN);
       return;
@@ -150,7 +150,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     thumb = URIUtils::AddFileToFolder(pathToUrl.Get(), thumb);
     if (CFileUtils::Exists(thumb))
     {
-      db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+      db.SetTextureForPath(pItem->GetPath(), ART::TYPE::THUMB, thumb);
       CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
       pItem->SetArt(ART::TYPE::THUMB, thumb);
       return;
@@ -205,14 +205,14 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       { // less than 4 items, so just grab the first thumb
         items.Sort(SortBy::LABEL, SortOrder::ASCENDING);
         std::string thumb = IMAGE_FILES::URLFromFile(items[0]->GetPath());
-        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+        db.SetTextureForPath(pItem->GetPath(), ART::TYPE::THUMB, thumb);
         CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
         pItem->SetArt(ART::TYPE::THUMB, thumb);
       }
       else
       {
         std::string thumb = IMAGE_FILES::URLFromFile(pItem->GetPath(), "picturefolder");
-        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+        db.SetTextureForPath(pItem->GetPath(), ART::TYPE::THUMB, thumb);
         pItem->SetArt(ART::TYPE::THUMB, thumb);
       }
     }

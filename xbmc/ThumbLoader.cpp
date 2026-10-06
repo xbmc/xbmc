@@ -85,12 +85,12 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
 
   if (thumb.empty())
   { // see whether we have a cached image for this item
-    thumb = GetCachedImage(item, "thumb");
+    thumb = GetCachedImage(item, ART::TYPE::THUMB);
     if (thumb.empty())
     {
       thumb = GetLocalThumb(item);
       if (!thumb.empty())
-        SetCachedImage(item, "thumb", thumb);
+        SetCachedImage(item, ART::TYPE::THUMB, thumb);
     }
   }
 

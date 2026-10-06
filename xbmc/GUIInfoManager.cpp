@@ -11396,7 +11396,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
       else if (prop.Name() == "property")
       {
         if (StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
-          return AddMultiInfo(CGUIInfo(PLAYER_ITEM_ART, "fanart"));
+          return AddMultiInfo(CGUIInfo(PLAYER_ITEM_ART, ART::TYPE::FANART));
 
         return AddMultiInfo(CGUIInfo(MUSICPLAYER_PROPERTY, prop.param()));
       }
@@ -11786,7 +11786,7 @@ int CGUIInfoManager::TranslateListItem(const Property& cat,
     if (prop.Name() == "property" && StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
     {
       ret = LISTITEM_ART;
-      data3 = "fanart";
+      data3 = ART::TYPE::FANART;
     }
     else if (prop.Name() == "property" || prop.Name() == "art" || prop.Name() == "rating" ||
              prop.Name() == "votes" || prop.Name() == "ratingandvotes" || prop.Name() == "uniqueid")

@@ -840,7 +840,7 @@ void CGUIDialogMusicInfo::OnGetArt()
     if (!path.empty())
     {
       CFileItem item(path, true);
-      if (type == "thumb")
+      if (type == ART::TYPE::THUMB)
         // Local music thumbnail images named by <musicthumbs>
         localArt = item.GetUserMusicThumb(true);
       else

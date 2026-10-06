@@ -77,7 +77,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   // Fallback to folder thumb when path has one cached
   if (!pItem->HasArt(KODI::ART::TYPE::THUMB))
   {
-    std::string art = GetCachedImage(*pItem, "thumb");
+    std::string art = GetCachedImage(*pItem, KODI::ART::TYPE::THUMB);
     if (!art.empty())
       pItem->SetArt(KODI::ART::TYPE::THUMB, art);
   }
@@ -87,7 +87,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   // artists) or start caching fanart for folders?
   if (!pItem->HasArt(KODI::ART::TYPE::FANART))
   {
-    std::string art = GetCachedImage(*pItem, "fanart");
+    std::string art = GetCachedImage(*pItem, KODI::ART::TYPE::FANART);
     if (!art.empty())
     {
       pItem->SetArt(KODI::ART::TYPE::FANART, art);
@@ -139,12 +139,12 @@ bool CMusicThumbLoader::FillThumb(CFileItem &item, bool folderThumbs /* = true *
 {
   if (item.HasArt(KODI::ART::TYPE::THUMB))
     return true;
-  std::string thumb = GetCachedImage(item, "thumb");
+  std::string thumb = GetCachedImage(item, KODI::ART::TYPE::THUMB);
   if (thumb.empty())
   {
     thumb = item.GetUserMusicThumb(false, folderThumbs);
     if (!thumb.empty())
-      SetCachedImage(item, "thumb", thumb);
+      SetCachedImage(item, KODI::ART::TYPE::THUMB, thumb);
   }
   if (!thumb.empty())
     item.SetArt(KODI::ART::TYPE::THUMB, thumb);
@@ -311,16 +311,17 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       // Add fallback art for "thumb" and "fanart" art types only
       // Set album thumb as the fallback used when song thumb is missing
       if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum &&
-          artitem.artType == "thumb")
+          artitem.artType == KODI::ART::TYPE::THUMB)
       {
         item.SetArtFallback(artitem.artType, artname);
       }
 
       // For albums and songs set fallback fanart from the artist.
       // For songs prefer primary song artist over primary albumartist fanart as fallback fanart
-      if (artitem.prefix == "artist" && artitem.artType == "fanart")
+      if (artitem.prefix == "artist" && artitem.artType == KODI::ART::TYPE::FANART)
         fanartfallback = artname;
-      if (artitem.prefix == "albumartist" && artitem.artType == "fanart" && fanartfallback.empty())
+      if (artitem.prefix == "albumartist" && artitem.artType == KODI::ART::TYPE::FANART &&
+          fanartfallback.empty())
         fanartfallback = artname;
     }
     if (!fanartfallback.empty())
@@ -343,7 +344,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       {
         // Use disc thumb rather than album as fallback for song thumb
         // (Fallback approach is used to fill missing thumbs).
-        if (discart.first == "thumb")
+        if (discart.first == KODI::ART::TYPE::THUMB)
         {
           it = artmap.find("album.thumb");
           if (it != artmap.end())

@@ -449,7 +449,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
              elementsAssets = elementsAssets->NextSiblingElement())
         {
           std::string value = elementsAssets->Value();
-          if (value == "icon")
+          if (value == KODI::ART::TYPE::ICON)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_icon = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
@@ -459,7 +459,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
             if (elementsAssets->GetText() != nullptr)
               addon->m_screenshots.emplace_back(URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText()));
           }
-          else if (value == "fanart")
+          else if (value == KODI::ART::TYPE::FANART)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
@@ -474,7 +474,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
           }
-          else if (value == "thumb")
+          else if (value == KODI::ART::TYPE::THUMB)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] =

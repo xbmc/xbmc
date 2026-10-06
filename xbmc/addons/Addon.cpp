@@ -18,6 +18,7 @@
 #include "filesystem/File.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -192,7 +193,7 @@ const std::vector<DependencyInfo>& CAddon::GetDependencies() const
 
 std::string CAddon::FanArt() const
 {
-  auto it = m_addonInfo->Art().find("fanart");
+  auto it = m_addonInfo->Art().find(KODI::ART::TYPE::FANART);
   return it != m_addonInfo->Art().end() ? it->second : "";
 }
 

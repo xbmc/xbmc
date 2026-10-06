@@ -57,7 +57,7 @@ void CPVRThumbLoader::ClearCachedImage(CFileItem& item)
     CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
     if (m_textureDatabase->Open())
     {
-      m_textureDatabase->ClearTextureForPath(item.GetPath(), "thumb");
+      m_textureDatabase->ClearTextureForPath(item.GetPath(), KODI::ART::TYPE::THUMB);
       m_textureDatabase->Close();
     }
     item.SetArt(KODI::ART::TYPE::THUMB, "");
@@ -74,7 +74,7 @@ void CPVRThumbLoader::ClearCachedImages(const CFileItemList& items)
 bool CPVRThumbLoader::FillThumb(CFileItem& item)
 {
   // see whether we have a cached image for this item
-  std::string thumb = GetCachedImage(item, "thumb");
+  std::string thumb = GetCachedImage(item, KODI::ART::TYPE::THUMB);
   if (thumb.empty())
   {
     if (item.IsPVRChannelGroup())
@@ -84,7 +84,7 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
 
     if (!thumb.empty())
     {
-      SetCachedImage(item, "thumb", thumb);
+      SetCachedImage(item, KODI::ART::TYPE::THUMB, thumb);
       m_bInvalidated = true;
     }
   }

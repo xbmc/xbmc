@@ -37,9 +37,9 @@ namespace
 {
 std::string GetArtTypeFromSize(unsigned int width, unsigned int height)
 {
-  std::string type = "thumb";
+  std::string type = KODI::ART::TYPE::THUMB;
   if (width * 5 < height * 4)
-    type = "poster";
+    type = KODI::ART::TYPE::POSTER;
   else if (width > height * 4)
     type = KODI::ART::TYPE::BANNER;
   return type;
@@ -368,7 +368,7 @@ std::string GetLocalFanart(const CFileItem& item)
     }
   }
 
-  std::vector<std::string> fanarts = {"fanart"};
+  std::vector<std::string> fanarts = {ART::TYPE::FANART};
 
   file = URIUtils::ReplaceExtension(file, "-fanart");
   fanarts.insert(item.IsFolder() ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(file));
