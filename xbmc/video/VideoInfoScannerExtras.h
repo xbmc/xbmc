@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 class CFileItem;
 class CFileItemList;
@@ -63,9 +64,15 @@ public:
   /*!
    \brief Add the video extras folders of a movie whose folder holds its disc structure. Such a
    folder is listed as the disc's file, so its extras folders are not in the listing scanned.
+   An extras folder is looked at only where it has changed since it was last added.
    \param discFolder the folder holding the movie's disc structure
+   \param discChanged whether that folder has changed, so may hold a new extras folder
+   \param regexps the exclusions, which the fast hash of an extras folder covers
+   \return whether an extras folder was added again, so may have lost an extra
    */
-  void AddVideoExtrasBesideDisc(const std::string& discFolder);
+  bool AddVideoExtrasBesideDisc(const std::string& discFolder,
+                                bool discChanged,
+                                const std::vector<std::string>& regexps);
 
 private:
   /*!
