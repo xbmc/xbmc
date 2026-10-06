@@ -536,7 +536,7 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
 
   CFileItemList items;
   if (!XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
-          *item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU) ||
+          *item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU, /* forPlayback */ false) ||
       items.IsEmpty())
     return false;
   const CFileItem& chosen{*items[0]};

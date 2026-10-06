@@ -360,11 +360,13 @@ public:
    * \brief Either shows simple menu to select playlist, chooses main feature (movie/episode) playlists or returns if disc menu will be used later.
    * \param item FileItem containing details of desired movie/episode.
    * \param playback Determines if the simple dialog should be shown or the main title selected (if possible).
+   * \param forPlayback false where the playlist is chosen to be stored, so the disc menu is not offered.
    * \return true if a playlist was selected or if the disc menu will be used later, false if the user cancelled.
    */
   static bool GetOrShowPlaylistSelection(const CFileItem& item,
                                          CFileItemList& items,
-                                         MenuDecision playback);
+                                         MenuDecision playback,
+                                         bool forPlayback = true);
 
   /*!
    * \brief Re-read the details the disc holds for an item whose playlist has already been chosen.
