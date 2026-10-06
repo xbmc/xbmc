@@ -43,6 +43,7 @@ public:
   std::vector<CMediaSource>& GetSources(KODI::MEDIA::MediaSection section);
   const std::string& GetDefaultSource(KODI::MEDIA::MediaSection section) const;
   void SetDefaultSource(KODI::MEDIA::MediaSection section, std::string_view source);
+  static bool HasDefaultSource(KODI::MEDIA::MediaSection section);
 
   bool UpdateSource(KODI::MEDIA::MediaSection section,
                     std::string_view strOldName,

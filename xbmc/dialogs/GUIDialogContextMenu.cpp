@@ -276,7 +276,7 @@ void CGUIDialogContextMenu::GetContextButtons(MediaSection section, const CFileI
       bool isAddon = ADDON::TranslateContent(url.GetProtocol()) != ADDON::ContentType::NONE;
       if (!share->m_ignore && !isAddon)
         buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
-      if (section != MediaSection::VIDEO)
+      if (CMediaSourceSettings::HasDefaultSource(section))
         buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
       if (!share->m_ignore && !isAddon)
         buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source

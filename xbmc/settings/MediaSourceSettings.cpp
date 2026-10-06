@@ -38,11 +38,6 @@ constexpr const char* XML_SOURCE = "source";
 constexpr std::array<MediaSection, KODI::MEDIA::MEDIA_SECTIONS.size()> SAVE_ORDER{
     MediaSection::PROGRAMS, MediaSection::VIDEO, MediaSection::MUSIC,
     MediaSection::PICTURES, MediaSection::FILES, MediaSection::GAMES};
-
-bool HasDefaultSource(MediaSection section)
-{
-  return section != MediaSection::VIDEO && section != MediaSection::GAMES;
-}
 } // unnamed namespace
 
 CMediaSourceSettings::CMediaSourceSettings()
@@ -160,6 +155,11 @@ std::vector<CMediaSource>& CMediaSourceSettings::GetSources(MediaSection section
 const std::string& CMediaSourceSettings::GetDefaultSource(MediaSection section) const
 {
   return At(section).defaultSource;
+}
+
+bool CMediaSourceSettings::HasDefaultSource(MediaSection section)
+{
+  return section != MediaSection::VIDEO && section != MediaSection::GAMES;
 }
 
 void CMediaSourceSettings::SetDefaultSource(MediaSection section, std::string_view source)
