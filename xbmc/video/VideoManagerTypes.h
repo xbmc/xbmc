@@ -51,6 +51,13 @@ static constexpr int VIDEO_VERSION_ID_END = 40800;
 static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
 static constexpr int VIDEO_VERSION_ID_ALL = 0;
 
+//! The kinds of video extra (eg. "Deleted scenes"), within the range above
+static constexpr int VIDEO_EXTRA_ID_BEGIN = 40500;
+static constexpr int VIDEO_EXTRA_ID_END = 40699;
+//! What an extra of a kind is called (eg. "Deleted scene: {0:s}"), which are not types
+static constexpr int VIDEO_EXTRA_NAME_ID_BEGIN = 40700;
+static constexpr int VIDEO_EXTRA_NAME_ID_END = 40799;
+
 struct VideoAssetInfo
 {
   int m_idFile{-1};
