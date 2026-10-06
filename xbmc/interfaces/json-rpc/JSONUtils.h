@@ -359,29 +359,6 @@ namespace JSONRPC
     }
 
     /*!
-     \brief Checks if the parameter with the given name or at
-     the given position is of a certain type
-     \param parameterObject Object containing all provided parameters
-     \param key Possible name of the parameter
-     \param position Possible position of the parameter
-     \param valueType Expected type of the parameter
-     \return True if the specific parameter is of the given type otherwise false
-     */
-    static inline bool IsParameterType(const CVariant &parameterObject, const char *key, unsigned int position, JSONSchemaType valueType)
-    {
-      if ((valueType & AnyValue) == AnyValue)
-        return true;
-
-      CVariant parameter;
-      if (IsValueMember(parameterObject, key))
-        parameter = parameterObject[key];
-      else if(parameterObject.isArray() && parameterObject.size() > position)
-        parameter = parameterObject[position];
-
-      return IsType(parameter, valueType);
-    }
-
-    /*!
      \brief Checks if the given json value is of the given type
      \param value Json value to check
      \param valueType Expected type of the json value
