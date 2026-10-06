@@ -19,7 +19,10 @@
 #include "filesystem/SpecialProtocol.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
+#include "language/LangInfo.h"
 #include "playlists/SmartPlayList.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/Artwork.h"
@@ -1585,4 +1588,38 @@ TEST_F(TestVideoDatabase, SetDefaultVideoVersionKeepsOnlyTheMovieArt)
                    "SELECT COUNT(*) FROM art WHERE media_id = " + std::to_string(movieId) +
                    " AND media_type = 'movie' AND type = 'fanart'"));
   EXPECT_EQ("old-fanart.jpg", m_db.GetArtForItem(movieId, KODI::MEDIA::TYPE::MOVIE, "fanart"));
+}
+
+TEST_F(TestVideoDatabase, KindsOfExtraAreBuiltInExtraTypes)
+{
+  // The types were named when the database was made, before any strings were loaded
+  auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  m_db.UpdateVideoVersionTypeTable();
+
+  const auto names{[this](VideoAssetType assetType)
+                   {
+                     CFileItemList types;
+                     m_db.GetVideoVersionTypes(VideoDbContentType::MOVIES, assetType, types);
+                     std::set<std::string> labels;
+                     for (const auto& type : types)
+                       labels.emplace(type->GetLabel());
+                     return labels;
+                   }};
+  const std::set<std::string> extras{names(VideoAssetType::EXTRA)};
+  const std::set<std::string> versions{names(VideoAssetType::VERSION)};
+
+  EXPECT_TRUE(extras.contains("Deleted scenes"));
+  EXPECT_TRUE(extras.contains("Play all"));
+  EXPECT_FALSE(versions.contains("Deleted scenes"));
+  EXPECT_TRUE(versions.contains("Standard Edition"));
+  EXPECT_FALSE(extras.contains("Deleted scene: {0:s}"));
+  EXPECT_FALSE(versions.contains("Deleted scene: {0:s}"));
+
+  // A disc's extra known only by its kind takes the built-in type
+  EXPECT_EQ(m_db.AddVideoVersionType("Behind the scenes", VideoAssetTypeOwner::AUTO,
+                                     VideoAssetType::EXTRA),
+            40506);
+
+  strings.Clear();
 }
