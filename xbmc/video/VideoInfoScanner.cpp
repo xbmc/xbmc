@@ -711,23 +711,30 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // lists, has no hashed row, so each parent rescan re-imports the movie
       // from NFO. Store its fast hash here; GetMovieId resolves all anchor
       // forms. ISOs hash normally as plain files and never reach this block.
-      if (content == ContentType::MOVIES && m_advancedSettings->m_bVideoLibraryUseFastHash &&
-          !URIUtils::IsPlugin(strDirectory) && !pItem->IsFolder() &&
-          !URIUtils::IsStack(pItem->GetPath()) && URIUtils::IsOpticalMediaFile(pItem->GetPath()))
+      if (content == ContentType::MOVIES && !URIUtils::IsPlugin(strDirectory) &&
+          !pItem->IsFolder() && !URIUtils::IsStack(pItem->GetPath()) &&
+          URIUtils::IsOpticalMediaFile(pItem->GetPath()))
       {
         std::string discFolder = URIUtils::RemoveDiscPath(pItem->GetPath());
         URIUtils::AddSlashAtEnd(discFolder);
         if (!URIUtils::PathEquals(discFolder, strDirectory, true))
         {
-          int64_t rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
-          if (rawTime == 0)
-            rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
-          const std::string fh =
-              rawTime != 0 ? GetFastHash(regexps, rawTime) : GetFastHash(discFolder, regexps);
+          std::string fh;
+          if (m_advancedSettings->m_bVideoLibraryUseFastHash)
+          {
+            int64_t rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
+            if (rawTime == 0)
+              rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
+            fh = rawTime != 0 ? GetFastHash(regexps, rawTime) : GetFastHash(discFolder, regexps);
+          }
           std::string dbh;
-          if (!fh.empty() &&
-              !(m_database.GetPathHash(discFolder, dbh) && StringUtils::EqualsNoCase(fh, dbh)) &&
-              m_database.HasMovieInfo(pItem->GetDynPath()))
+          const bool unchanged{!fh.empty() && m_database.GetPathHash(discFolder, dbh) &&
+                               StringUtils::EqualsNoCase(fh, dbh)};
+
+          if (!unchanged && settings.parent_name && !m_ignoreVideoExtras)
+            m_extras.AddVideoExtrasBesideDisc(discFolder);
+
+          if (!fh.empty() && !unchanged && m_database.HasMovieInfo(pItem->GetDynPath()))
             m_database.SetPathHash(discFolder, fh);
         }
       }

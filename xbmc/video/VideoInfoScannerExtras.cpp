@@ -10,10 +10,12 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "InfoScanner.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Scraper.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
+#include "filesystem/Directory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/StackDirectory.h"
 #include "resources/LocalizeStrings.h"
@@ -26,6 +28,8 @@
 #include "utils/log.h"
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoScanner.h"
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
@@ -206,6 +210,37 @@ void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
       continue;
 
     AddDiscExtras(path, dbId);
+  }
+}
+
+void CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFolder)
+{
+  CFileItemList folders;
+  if (!CDirectory::GetDirectory(discFolder, folders, "/", DIR_FLAG_DEFAULTS))
+    return;
+
+  for (const auto& folder : folders)
+  {
+    if (!IsVideoExtrasFolder(*folder) || CInfoScanner::HasNoMedia(folder->GetPath()))
+      continue;
+
+    // Leave a folder with content set on it (a source root) alone
+    SScanSettings settings;
+    bool foundDirectly{false};
+    if (m_database.GetScraperForPath(folder->GetPath(), settings, foundDirectly) && foundDirectly)
+      continue;
+
+    const int dbId{m_database.GetMovieIdInFolder(discFolder, folder->GetPath())};
+    if (dbId < 0)
+    {
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: No single movie found for video extras {}",
+                CURL::GetRedacted(folder->GetPath()));
+      continue;
+    }
+
+    AddVideoExtras(dbId, folder->GetPath());
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
+              CURL::GetRedacted(folder->GetPath()));
   }
 }
 
