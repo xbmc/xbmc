@@ -23029,119 +23029,33 @@ msgctxt "#36899"
 msgid "Enables SSL encryption in the webserver. Certificate special://userdata/server.pem and Key special://userdata/server.key must be created manually"
 msgstr ""
 
-#: xbmc/media/MediaType.cpp
-msgctxt "#36900"
-msgid "movie"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36901"
-msgid "movies"
-msgstr ""
+#empty strings from id 36900 to 36901
 
 #: xbmc/media/MediaType.cpp
 msgctxt "#36902"
 msgid "TV show"
 msgstr ""
 
-#: xbmc/media/MediaType.cpp
-msgctxt "#36903"
-msgid "TV shows"
-msgstr ""
+#empty strings from id 36903 to 36904
 
-#: xbmc/media/MediaType.cpp
-msgctxt "#36904"
-msgid "season"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#36905"
 msgid "seasons"
 msgstr ""
 
-#: xbmc/media/MediaType.cpp
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#36906"
 msgid "episode"
 msgstr ""
 
-#: xbmc/media/MediaType.cpp
-msgctxt "#36907"
-msgid "episodes"
-msgstr ""
+#empty strings from id 36907 to 36917
 
-#: xbmc/media/MediaType.cpp
-msgctxt "#36908"
-msgid "music video"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36909"
-msgid "music videos"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36910"
-msgid "set"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36911"
-msgid "sets"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36912"
-msgid "video"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36913"
-msgid "videos"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36914"
-msgid "music"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36915"
-msgid "music"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36916"
-msgid "artist"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36917"
-msgid "artists"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#36918"
 msgid "album"
 msgstr ""
 
-#: xbmc/media/MediaType.cpp
-msgctxt "#36919"
-msgid "albums"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36920"
-msgid "song"
-msgstr ""
-
-#: xbmc/media/MediaType.cpp
-msgctxt "#36921"
-msgid "songs"
-msgstr ""
-
-#empty strings from id 36922 to 36999
+#empty strings from id 36919 to 36999
 
 #: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"
@@ -25204,17 +25118,7 @@ msgctxt "#40009"
 msgid "Found a different version of the movie \"{0:s}\": {1:s}. Would you like to convert it into an additional version of the original?"
 msgstr ""
 
-#. "video version" string in singular format
-#: xbmc/media/MediaType.cpp
-msgctxt "#40010"
-msgid "video version"
-msgstr ""
-
-#. "video version" string in plural format
-#: xbmc/media/MediaType.cpp
-msgctxt "#40011"
-msgid "video versions"
-msgstr ""
+#empty strings from id 40010 to 40011
 
 #. "video version" string in singular capital format
 #: xbmc/media/MediaType.cpp
@@ -25222,11 +25126,7 @@ msgctxt "#40012"
 msgid "Video version"
 msgstr ""
 
-#. "video version" string in plural capital format
-#: xbmc/media/MediaType.cpp
-msgctxt "#40013"
-msgid "Video versions"
-msgstr ""
+#empty string with id 40013
 
 #. Add video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
