@@ -20,4 +20,12 @@ public:
                                  const AVMasteringDisplayMetadata& displayMetadata,
                                  bool hasLightMetadata,
                                  const AVContentLightMetadata& lightMetadata);
+
+  /*!
+   * rief Peak luminance of the content in nits, MaxCLL or else the mastering display peak.
+   */
+  static float GetPeakLuminanceValue(bool hasDisplayMetadata,
+                                     const AVMasteringDisplayMetadata& displayMetadata,
+                                     bool hasLightMetadata,
+                                     const AVContentLightMetadata& lightMetadata);
 };

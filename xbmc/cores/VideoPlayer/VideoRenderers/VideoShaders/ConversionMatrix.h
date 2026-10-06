@@ -231,6 +231,12 @@ public:
    */
   static Matrix3x1 GetRGBYuvCoefs(AVColorSpace colspace);
 
+  /**
+   * @brief Get the matrix rotating hue and scaling saturation of linear RGB
+   *        around the luminance axis, transposed like GetPrimMat().
+   */
+  static Matrix3 GetLinearHueSatMat(AVColorSpace colspace, float hue, float saturation);
+
 private:
   const CGlMatrix& GenMat();
   const CMatrix<3>& GenPrimMat();
