@@ -10,12 +10,23 @@
 
 #include <string>
 
+class CFileItem;
 class CFileItemList;
 class CVideoDatabase;
 
 namespace KODI::VIDEO
 {
 class CVideoInfoScannerArt;
+
+/*!
+ \brief The extra a movie already has that is the same as one of a disc of it. A movie on more than
+ one disc (eg. its 4K and HD editions) may have the same extras on each, named a little differently
+ (eg. Gag Reel and Gagreel), and playing all of a kind of extra under a different code.
+ \param existing the extras the movie has
+ \param extra one of the extras a disc names
+ \return the same extra, one of existing, or nullptr where the movie has none
+ */
+const CFileItem* FindExtraOnAnotherDisc(const CFileItemList& existing, const CFileItem& extra);
 
 /*!
  \brief Adds the video extras a scan finds to the movies they belong to.
@@ -43,7 +54,21 @@ public:
    */
   void AddVideoExtras(int dbId, const std::string& path);
 
+  /*!
+   \brief Add the extras each bluray of a movie names, once the movie is in the library.
+   \param item the movie, which may be a stack of discs
+   */
+  void AddMovieDiscExtras(const CFileItem& item);
+
 private:
+  /*!
+   \brief Add the extras a bluray names as extras of a movie.
+   \param disc path of the disc (index.bdmv, an .iso, or one of its bluray:// playlists)
+   \param dbId the movie
+   \return true if the disc names extras, whether or not they were already in the library
+   */
+  bool AddDiscExtras(const std::string& disc, int dbId);
+
   CVideoDatabase& m_database;
   const CVideoInfoScannerArt& m_art;
 };
