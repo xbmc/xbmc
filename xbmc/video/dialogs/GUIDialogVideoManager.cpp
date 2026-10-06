@@ -532,7 +532,6 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
 
   // Select the playlist using the simple menu
   const std::string oldPath{item->GetDynPath()};
-  item->SetProperty("force_playlist_selection", true);
 
   CFileItemList items;
   if (!XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
