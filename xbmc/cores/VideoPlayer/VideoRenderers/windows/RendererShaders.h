@@ -44,6 +44,7 @@ protected:
   explicit CRendererShaders(CVideoSettings& videoSettings);
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
   void CheckVideoParameters() override;
+  bool HueSaturationInConversion() const override { return true; }
   void UpdateVideoFilters() override;
   CRenderBuffer* CreateBuffer() override;
   static bool IsHWPicSupported(const VideoPicture& picture);
@@ -65,6 +66,7 @@ private:
 
   AVColorPrimaries m_srcPrimaries = AVCOL_PRI_BT709;
   std::unique_ptr<CYUV2RGBShader> m_colorShader;
+  AVColorTransferCharacteristic m_colorShaderHueSat = AVCOL_TRC_UNSPECIFIED;
 };
 
 class CRendererShaders::CRenderBufferImpl : public CRenderBuffer
