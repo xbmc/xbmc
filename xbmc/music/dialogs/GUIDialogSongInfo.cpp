@@ -36,6 +36,7 @@
 #include "utils/FileUtils.h"
 
 using namespace KODI;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTN_REFRESH       6
 #define CONTROL_USERRATING        7
@@ -417,7 +418,8 @@ void CGUIDialogSongInfo::OnGetArt()
 
   // Show list of possible art for user selection
   std::string result;
-  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC));
   // Add album folder as source (could be disc set)
   std::string albumpath = m_song->GetProperty("album_path").asString();
   if (!albumpath.empty())

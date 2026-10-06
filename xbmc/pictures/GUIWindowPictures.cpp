@@ -52,6 +52,7 @@ using namespace KODI::MESSAGING;
 using namespace KODI;
 
 using namespace std::chrono_literals;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTNSLIDESHOW   6
 #define CONTROL_BTNSLIDESHOW_RECURSIVE   7
@@ -102,7 +103,7 @@ bool CGUIWindowPictures::OnMessage(CGUIMessage& message)
     {
       // is this the first time accessing this window?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("pictures"));
+        message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::PICTURES));
 
       m_dlgProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     }
@@ -287,7 +288,8 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
     return false;
 
   std::string label;
-  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("pictures"), &label))
+  if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(),
+                         &CMediaSourceSettings::GetInstance().GetSources(MediaSection::PICTURES), &label))
     items.SetLabel(label);
 
   if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsPlugin())
@@ -444,7 +446,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     if ( m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == "sources://pictures/" )
     {
-      CGUIDialogContextMenu::GetContextButtons("pictures", item, buttons);
+      CGUIDialogContextMenu::GetContextButtons(MediaSection::PICTURES, item, buttons);
     }
     else
     {
@@ -480,7 +482,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
-  if (CGUIDialogContextMenu::OnContextButton("pictures", item, button))
+  if (CGUIDialogContextMenu::OnContextButton(MediaSection::PICTURES, item, button))
   {
     Update("");
     return true;
@@ -510,7 +512,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnRenameItem(itemNumber);
     return true;
   case CONTEXT_BUTTON_SWITCH_MEDIA:
-    CGUIDialogContextMenu::SwitchMedia("pictures", m_vecItems->GetPath());
+    CGUIDialogContextMenu::SwitchMedia(MediaSection::PICTURES, m_vecItems->GetPath());
     return true;
   default:
     break;
@@ -520,7 +522,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowPictures::OnAddMediaSource()
 {
-  return CGUIDialogMediaSource::ShowAndAddMediaSource("pictures");
+  return CGUIDialogMediaSource::ShowAndAddMediaSource(MediaSection::PICTURES);
 }
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
@@ -611,7 +613,7 @@ std::string CGUIWindowPictures::GetStartFolder(const std::string &dir)
     if (iIndex < static_cast<int>(shares.size()) && shares[iIndex].GetLockInfo().IsLocked())
     {
       CFileItem item(shares[iIndex]);
-      if (!g_passwordManager.IsItemUnlocked(&item,"pictures"))
+      if (!g_passwordManager.IsItemUnlocked(&item, MediaSection::PICTURES))
         return "";
     }
     if (bIsSourceName)

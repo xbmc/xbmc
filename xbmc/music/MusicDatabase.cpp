@@ -82,6 +82,7 @@ using namespace KODI::MESSAGING;
 using namespace MUSIC_INFO;
 
 using ADDON::AddonPtr;
+using KODI::MEDIA::MediaSection;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #ifdef HAS_OPTICAL_DRIVE
@@ -10263,7 +10264,8 @@ bool CMusicDatabase::CheckSources(const std::vector<CMediaSource>& sources)
 bool CMusicDatabase::MigrateSources()
 {
   //Fetch music sources from xml
-  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC));
 
   std::string strSQL;
   try
@@ -10303,7 +10305,8 @@ bool CMusicDatabase::MigrateSources()
 bool CMusicDatabase::UpdateSources()
 {
   //Check library and xml sources match
-  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC));
   if (CheckSources(sources))
     return true;
 

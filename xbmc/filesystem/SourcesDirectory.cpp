@@ -39,12 +39,11 @@ bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string type(url.GetFileName());
   URIUtils::RemoveSlashAtEnd(type);
 
-  std::vector<CMediaSource> sources;
-  std::vector<CMediaSource>* sourcesFromType = CMediaSourceSettings::GetInstance().GetSources(type);
-  if (!sourcesFromType)
+  const std::optional<KODI::MEDIA::MediaSection> section{KODI::MEDIA::MediaSectionFromName(type)};
+  if (!section)
     return false;
 
-  sources = *sourcesFromType;
+  std::vector<CMediaSource> sources{CMediaSourceSettings::GetInstance().GetSources(*section)};
   CServiceBroker::GetMediaManager().GetRemovableDrives(sources);
 
   return GetDirectory(sources, items);

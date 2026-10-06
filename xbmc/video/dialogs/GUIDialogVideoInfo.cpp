@@ -77,6 +77,7 @@ using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
@@ -1946,7 +1947,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   items.Add(itemNone);
 
   std::string result;
-  std::vector<CMediaSource> sources = *CMediaSourceSettings::GetInstance().GetSources("video");
+  std::vector<CMediaSource> sources =
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO);
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   artHandler->AddItemPathToFileBrowserSources(sources);
 

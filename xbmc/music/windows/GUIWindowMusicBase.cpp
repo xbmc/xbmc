@@ -87,6 +87,7 @@ using namespace KODI::MESSAGING;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
 using namespace std::chrono_literals;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -492,7 +493,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
-  if (CGUIDialogContextMenu::OnContextButton("music", item, button))
+  if (CGUIDialogContextMenu::OnContextButton(MediaSection::MUSIC, item, button))
   {
     if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
       OnRemoveSource(itemNumber);
@@ -570,7 +571,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowMusicBase::OnAddMediaSource()
 {
-  return CGUIDialogMediaSource::ShowAndAddMediaSource("music");
+  return CGUIDialogMediaSource::ShowAndAddMediaSource(MediaSection::MUSIC);
 }
 
 void CGUIWindowMusicBase::OnRipCD()
@@ -886,7 +887,8 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     items.FilterCueItems();
 
     std::string label;
-    if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("music"), &label))
+    if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(),
+                           &CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC), &label))
       items.SetLabel(label);
   }
 

@@ -23,6 +23,7 @@
 #include "addons/PluginSource.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
+#include "media/MediaSection.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -68,6 +69,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "view/GUIViewState.h"
+
+#include <optional>
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -795,19 +798,20 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
     items.AddFront(pItem, 0);
   }
 
-  int iWindow = GetID();
-  std::vector<std::string> regexps;
-
+  std::optional<KODI::MEDIA::MediaSection> section;
   //! @todo Do we want to limit the directories we apply the video ones to?
-  if (iWindow == WINDOW_VIDEO_NAV)
-    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoExcludeFromListingRegExps;
-  if (iWindow == WINDOW_MUSIC_NAV)
-    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromListingRegExps;
-  if (iWindow == WINDOW_PICTURES)
-    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pictureExcludeFromListingRegExps;
+  if (GetID() == WINDOW_VIDEO_NAV)
+    section = KODI::MEDIA::MediaSection::VIDEO;
+  else if (GetID() == WINDOW_MUSIC_NAV)
+    section = KODI::MEDIA::MediaSection::MUSIC;
+  else if (GetID() == WINDOW_PICTURES)
+    section = KODI::MEDIA::MediaSection::PICTURES;
 
-  if (!regexps.empty())
+  if (section)
   {
+    const std::vector<std::string>& regexps{
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetExcludeFromListingRegExps(
+            *section)};
     KODI::REGEXP::RegExpCache cache;
     for (int i=0; i < items.Size();)
     {
@@ -1084,9 +1088,9 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   {
     if (pItem->IsShareOrDrive())
     {
-      const std::string& strLockType=m_guiState->GetLockType();
+      const std::optional<KODI::MEDIA::MediaSection> lockSection{m_guiState->GetLockType()};
       if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
-        if (!strLockType.empty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
+        if (lockSection && !g_passwordManager.IsItemUnlocked(pItem.get(), *lockSection))
             return true;
 
       if (!HaveDiscOrConnection(pItem->GetPath(), pItem->GetDriveType()))

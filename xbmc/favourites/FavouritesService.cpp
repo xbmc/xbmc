@@ -27,6 +27,7 @@
 #include <mutex>
 
 using namespace KODI;
+using KODI::MEDIA::MediaSection;
 
 namespace
 {
@@ -78,14 +79,14 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
     if (VIDEO::IsVideo(itemToCheck))
     {
       if (!profileManager->GetCurrentProfile().videoLocked())
-        return g_passwordManager.IsMediaFileUnlocked("video", itemToCheck.GetPath());
+        return g_passwordManager.IsMediaFileUnlocked(MediaSection::VIDEO, itemToCheck.GetPath());
 
       return false;
     }
     else if (MUSIC::IsAudio(itemToCheck))
     {
       if (!profileManager->GetCurrentProfile().musicLocked())
-        return g_passwordManager.IsMediaFileUnlocked("music", itemToCheck.GetPath());
+        return g_passwordManager.IsMediaFileUnlocked(MediaSection::MUSIC, itemToCheck.GetPath());
 
       return false;
     }
@@ -93,7 +94,7 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
   else if (action == CFavouritesURL::Action::SHOW_PICTURE && itemToCheck.IsPicture())
   {
     if (!profileManager->GetCurrentProfile().picturesLocked())
-      return g_passwordManager.IsMediaFileUnlocked("pictures", itemToCheck.GetPath());
+      return g_passwordManager.IsMediaFileUnlocked(MediaSection::PICTURES, itemToCheck.GetPath());
 
     return false;
   }
