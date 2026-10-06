@@ -132,7 +132,8 @@ void CRendererShaders::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint
   sourceRect.GetQuad(srcPoints);
 
   m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness,
-                           m_videoSettings.m_Hue, m_videoSettings.m_Saturation,
+                           m_hdrStream ? 50.0f : m_videoSettings.m_Hue,
+                           m_hdrStream ? 50.0f : m_videoSettings.m_Saturation,
                            DX::Windowing()->UseLimitedColor());
   m_colorShader->SetColParams(buf->color_space, buf->bits, !buf->full_range, buf->texBits);
   m_colorShader->Render(sourceRect, srcPoints, buf, target);
