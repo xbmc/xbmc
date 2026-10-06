@@ -34,6 +34,7 @@
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
@@ -273,7 +274,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
         if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20195 }, msgctxt)) // Change information provider, confirm for all shown
         {
           // Set scraper for all items on current view.
-          std::string strPath = "musicdb://";
+          std::string strPath = MUSIC::DB_PATH::ROOT;
           if (content == ADDON::ContentType::ARTISTS)
             strPath += "artists";
           else
@@ -309,9 +310,9 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
           settings->Save();
           // Clear all item specific settings
           if (content == ADDON::ContentType::ARTISTS)
-            result = m_musicdatabase.SetScraperAll("musicdb://artists/", nullptr);
+            result = m_musicdatabase.SetScraperAll(MUSIC::DB_PATH::ARTISTS, nullptr);
           else
-            result = m_musicdatabase.SetScraperAll("musicdb://albums/", nullptr);
+            result = m_musicdatabase.SetScraperAll(MUSIC::DB_PATH::ALBUMS, nullptr);
         }
       }
     default:
@@ -332,9 +333,9 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
       // Change information provider, selected artist or album
       if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, CVariant{38073}))
       {
-        std::string itempath = StringUtils::Format("musicdb://albums/{}/", id);
+        std::string itempath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ALBUMS, id);
         if (content == ADDON::ContentType::ARTISTS)
-          itempath = StringUtils::Format("musicdb://artists/{}/", id);
+          itempath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ARTISTS, id);
         OnItemInfoAll(itempath, true);
       }
     }
@@ -743,7 +744,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         int idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
-        std::string path = StringUtils::Format("musicdb://artists/{}/", idArtist);
+        std::string path = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ARTISTS, idArtist);
         CArtist artist;
         m_musicdatabase.GetArtist(idArtist, artist, false);
         *item = CFileItem(artist);
@@ -760,7 +761,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         int idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
           return false;
-        std::string path = StringUtils::Format("musicdb://albums/{}/", idAlbum);
+        std::string path = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ALBUMS, idAlbum);
         CAlbum album;
         m_musicdatabase.GetAlbum(idAlbum, album, false);
         *item = CFileItem(path,album);
@@ -962,20 +963,20 @@ void CGUIWindowMusicNav::AddSearchFolder()
 std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
   static const auto map = std::map<std::string, std::string>{
-      {"albums", "musicdb://albums/"},
-      {"artists", "musicdb://artists/"},
+      {"albums", MUSIC::DB_PATH::ALBUMS},
+      {"artists", MUSIC::DB_PATH::ARTISTS},
       {"boxsets", "musicdb://boxsets/"},
       {"compilations", "musicdb://compilations/"},
       {"files", "sources://music/"},
-      {"genres", "musicdb://genres/"},
-      {"recentlyaddedalbums", "musicdb://recentlyaddedalbums/"},
-      {"recentlyplayedalbums", "musicdb://recentlyplayedalbums/"},
-      {"singles", "musicdb://singles/"},
-      {"songs", "musicdb://songs/"},
-      {"top100", "musicdb://top100/"},
-      {"top100albums", "musicdb://top100/albums/"},
-      {"top100songs", "musicdb://top100/songs/"},
-      {"years", "musicdb://years/"},
+      {"genres", MUSIC::DB_PATH::GENRES},
+      {"recentlyaddedalbums", MUSIC::DB_PATH::RECENTLY_ADDED_ALBUMS},
+      {"recentlyplayedalbums", MUSIC::DB_PATH::RECENTLY_PLAYED_ALBUMS},
+      {"singles", MUSIC::DB_PATH::SINGLES},
+      {"songs", MUSIC::DB_PATH::SONGS},
+      {"top100", MUSIC::DB_PATH::TOP100},
+      {"top100albums", MUSIC::DB_PATH::TOP100_ALBUMS},
+      {"top100songs", MUSIC::DB_PATH::TOP100_SONGS},
+      {"years", MUSIC::DB_PATH::YEARS},
   };
 
   const auto it = map.find(StringUtils::ToLower(dir));

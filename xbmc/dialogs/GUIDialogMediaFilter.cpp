@@ -17,6 +17,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicDbUrl.h"
 #include "playlists/SmartPlayList.h"
 #include "resources/LocalizeStrings.h"
@@ -577,7 +578,7 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
     m_dbUrl = new CVideoDbUrl();
     video = true;
   }
-  else if (path.starts_with("musicdb://"))
+  else if (path.starts_with(MUSIC::DB_PATH::ROOT))
     m_dbUrl = new CMusicDbUrl();
   else
   {

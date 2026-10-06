@@ -39,6 +39,7 @@
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/AudioType.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
@@ -340,7 +341,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
   if (strDirectory.empty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetAlbumsNav("musicdb://albums/", items, SortDescription());
+    m_musicDatabase.GetAlbumsNav(MUSIC::DB_PATH::ALBUMS, items, SortDescription());
     m_musicDatabase.Close();
   }
   else
@@ -404,7 +405,7 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
     m_musicDatabase.Open();
     const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     m_musicDatabase.GetArtistsNav(
-        "musicdb://artists/", items, SortDescription(),
+        MUSIC::DB_PATH::ARTISTS, items, SortDescription(),
         !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
     m_musicDatabase.Close();
   }
