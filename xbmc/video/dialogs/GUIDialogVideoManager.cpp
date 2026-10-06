@@ -13,10 +13,13 @@
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DiscDirectoryHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -30,10 +33,14 @@
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/dialogs/GUIDialogVideoManagerVersions.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <algorithm>
+#include <optional>
 #include <string>
+#include <utility>
 
 using namespace KODI;
 
@@ -511,6 +518,140 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
   }
 
   return assetId;
+}
+
+bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& item,
+                                            ReplaceExistingFile replaceExistingFile)
+{
+  // Open database
+  if (!m_database.IsOpen() && !m_database.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+    return false;
+  }
+
+  // Select the playlist using the simple menu
+  const std::string oldPath{item->GetDynPath()};
+  item->SetProperty("force_playlist_selection", true);
+
+  CFileItemList items;
+  if (!XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
+          *item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU) ||
+      items.IsEmpty())
+    return false;
+  const CFileItem& chosen{*items[0]};
+
+  const CFileItem& owner{item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion ? *m_videoAsset
+                                                                                  : *item};
+  const VideoAssetInfo existing{m_database.GetVideoVersionInfo(chosen.GetDynPath())};
+  if (existing.m_idFile >= 0 && existing.m_mediaType == MediaTypeMovie &&
+      existing.m_idMedia == owner.GetVideoInfoTag()->m_iDbId &&
+      (replaceExistingFile == ReplaceExistingFile::NO ||
+       existing.m_idFile != item->GetVideoInfoTag()->m_iFileId))
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{40047});
+    return false;
+  }
+
+  // The list row is item itself, so it is put back on any exit that skips Refresh()
+  const CFileItem original{*item};
+  *item = chosen;
+
+  // Add playlist file as bluray://
+  bool videoDbSuccess{false};
+  try
+  {
+    int idFile{-1};
+    std::optional<std::pair<std::string, int>> announce;
+    m_database.BeginTransaction();
+    if (replaceExistingFile == ReplaceExistingFile::YES)
+    {
+      idFile = m_database.SetFileForMedia(
+          item->GetDynPath(), owner.GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId,
+          CVideoDatabase::FileRecord{.m_idFile = item->GetVideoInfoTag()->m_iFileId,
+                                     .m_playCount = item->GetVideoInfoTag()->GetPlayCount(),
+                                     .m_lastPlayed = item->GetVideoInfoTag()->m_lastPlayed,
+                                     .m_dateAdded = item->GetVideoInfoTag()->m_dateAdded});
+      videoDbSuccess = idFile > 0;
+      if (videoDbSuccess)
+      {
+        m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
+                                           item->GetDynPath());
+        CVideoInfoTag* tag{item->GetVideoInfoTag()};
+        const int oldFileId{tag->m_iFileId};
+        if (tag->m_type == MediaTypeVideoVersion)
+          tag->m_iDbId = idFile;
+        tag->m_iFileId = idFile;
+        KODI::VIDEO::UTILS::NotifyItemPathChanged(*item, oldPath, oldFileId);
+        announce = {owner.GetVideoInfoTag()->m_type, owner.GetVideoInfoTag()->m_iDbId};
+      }
+    }
+    else
+    {
+      // Choose a video version for the video
+      const int idVideoVersion{ChooseVideoAsset(item, GetVideoAssetType(), "")};
+      if (idVideoVersion < 0)
+      {
+        m_database.RollbackTransaction();
+        *item = original;
+        return false;
+      }
+
+      idFile = m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded);
+      if (idFile > 0)
+      {
+        videoDbSuccess = true;
+        m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
+        if (!m_database.AddOrUpdateVideoVersion(item->GetVideoContentType(),
+                                                owner.GetVideoInfoTag()->m_iDbId, idFile,
+                                                idVideoVersion, GetVideoAssetType()))
+        {
+          m_database.RollbackTransaction();
+          *item = original;
+          return false;
+        }
+      }
+    }
+
+    if (videoDbSuccess)
+    {
+      // Remove (Disc n) from title if we are now spanning discs or folders
+      if (GetVideoAssetType() == VideoAssetType::VERSION &&
+          !URIUtils::CompareDiscPaths(m_videoAsset->GetDynPath(), item->GetDynPath()))
+        CGUIDialogVideoManagerVersions::RemovePartNumberFromTitle(
+            m_videoAsset->GetVideoInfoTag()->m_iDbId, m_videoAsset->GetVideoContentType(),
+            m_database);
+
+      // New disc video version will not have any art so use the art from the disc
+      m_database.SetArtForItem(idFile, MediaTypeVideoVersion, item->GetArt());
+
+      m_database.CommitTransaction();
+
+      // Widgets reload on the announcement
+      if (announce)
+      {
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        CVideoDatabase::AnnounceUpdate(announce->first, announce->second);
+      }
+    }
+    else
+      m_database.RollbackTransaction();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Exception adding bluray playlist '{}'",
+               CURL::GetRedacted(item->GetDynPath()));
+    m_database.RollbackTransaction();
+    *item = original;
+    return false;
+  }
+
+  // refresh data and controls
+  Refresh();
+  UpdateControls();
+  m_hasUpdatedItems = true;
+
+  return videoDbSuccess;
 }
 
 void CGUIDialogVideoManager::AppendItemFolderToFileBrowserSources(

@@ -25501,7 +25501,7 @@ msgstr ""
 
 #. Shown when the playlist chosen for a movie version already belongs to another version of it
 #: xbmc/dialogs/GUIDialogSimpleMenu.cpp
-#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40047"
 msgid "This playlist already belongs to another version of this movie."
 msgstr ""
