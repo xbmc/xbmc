@@ -132,9 +132,8 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
     if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
-      // The video already is an extra of the movie
-      if (newAsset.m_idMedia == dbId && newAsset.m_mediaType == mediaType &&
-          newAsset.m_assetType == VideoAssetType::EXTRA)
+      // The video already is an asset of the movie
+      if (newAsset.m_idMedia == dbId && newAsset.m_mediaType == mediaType)
       {
         unsigned int msgid{};
 
