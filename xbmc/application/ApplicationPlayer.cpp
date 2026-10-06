@@ -142,21 +142,15 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
 
       CloseFile();
       if (player->m_name != newPlayer)
-      {
-        std::unique_lock lock(m_playerLock);
-        m_pPlayer.reset();
-      }
+        ResetPlayer();
       return true;
     }
   }
   else if (player && player->m_name != newPlayer)
   {
     CloseFile();
-    {
-      std::unique_lock lock(m_playerLock);
-      m_pPlayer.reset();
-      player.reset();
-    }
+    ResetPlayer();
+    player.reset();
   }
 
   if (!player)

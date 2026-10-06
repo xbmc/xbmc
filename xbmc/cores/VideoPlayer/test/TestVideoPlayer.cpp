@@ -86,7 +86,7 @@ public:
     m_CurrentSubtitle.demuxerId = -1;
   }
   void InvokeUpdateContentState() { UpdateContentState(); }
-  void InvokeOnStartup() { OnStartup(); }
+  void InvokeForgetSubtitleSelection() { ForgetSubtitleSelection(); }
   void SetHasVideo(bool hasVideo) { m_HasVideo = hasVideo; }
   void SetHasAudio(bool hasAudio) { m_HasAudio = hasAudio; }
   bool GetHasVideo() const { return m_HasVideo; }
@@ -290,9 +290,10 @@ TEST_F(TestVideoPlayer, SubtitleSelectionDoesNotLeakIntoTheNextPlayback)
   player.InvokeUpdateContentState();
   ASSERT_EQ(0, player.GetSubtitle());
 
-  // a new playback starts with no subtitle open; the previous item's selection
-  // must not be reported against it
-  player.InvokeOnStartup();
+  // a new item, whether in a new player or opened in place, has no subtitle open when its first
+  // stream opens; the previous item's selection must not be reported against it
+  player.InvokeForgetSubtitleSelection();
+  player.SetCurrentSubtitle(-1, STREAM_SOURCE_NONE);
   player.InvokeUpdateContentState();
 
   EXPECT_EQ(-1, player.GetSubtitle());
