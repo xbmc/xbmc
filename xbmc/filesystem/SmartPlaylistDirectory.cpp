@@ -20,6 +20,7 @@
 #include "playlists/SmartPlayList.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -100,9 +101,9 @@ namespace XFILE
       }
     }
 
-    if (playlist.GetType() == "movies" ||
-        playlist.GetType() == "tvshows" ||
-        playlist.GetType() == "episodes")
+    if (playlist.GetType() == MEDIA::CONTENT::MOVIES ||
+        playlist.GetType() == MEDIA::CONTENT::TVSHOWS ||
+        playlist.GetType() == MEDIA::CONTENT::EPISODES)
     {
       playlistTypeHint = PLAYLIST::Id::TYPE_VIDEO;
       CVideoDatabase db;
@@ -165,8 +166,8 @@ namespace XFILE
       if (db.Open())
       {
         PLAYLIST::CSmartPlaylist plist(playlist);
-        if (playlist.GetType() == "mixed" || playlist.GetType().empty())
-          plist.SetType("songs");
+        if (playlist.GetType() == MEDIA::CONTENT::MIXED || playlist.GetType().empty())
+          plist.SetType(MEDIA::CONTENT::SONGS);
 
         MediaType mediaType = CMediaTypes::FromString(plist.GetType());
 
@@ -216,15 +217,15 @@ namespace XFILE
       }
     }
 
-    if (playlist.GetType() == "musicvideos" || playlist.GetType() == "mixed")
+    if (playlist.GetType() == MEDIA::CONTENT::MUSICVIDEOS || playlist.GetType() == MEDIA::CONTENT::MIXED)
     {
       playlistTypeHint = PLAYLIST::Id::TYPE_VIDEO;
       CVideoDatabase db;
       if (db.Open())
       {
         PLAYLIST::CSmartPlaylist mvidPlaylist(playlist);
-        if (playlist.GetType() == "mixed")
-          mvidPlaylist.SetType("musicvideos");
+        if (playlist.GetType() == MEDIA::CONTENT::MIXED)
+          mvidPlaylist.SetType(MEDIA::CONTENT::MUSICVIDEOS);
 
         std::string baseDir = strBaseDir;
         if (baseDir.empty())
@@ -303,7 +304,7 @@ namespace XFILE
     if (items.Size() > 1 && !group.empty())
     {
       if (playlist.GetOrder() == SortBy::RANDOM && group == "actors" &&
-          playlist.GetType() == "musicvideos")
+          playlist.GetType() == MEDIA::CONTENT::MUSICVIDEOS)
         items.Sort(SortBy::RANDOM, SortOrder::ASCENDING,
                    CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                        CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
@@ -328,9 +329,9 @@ namespace XFILE
       item->SetProperty("playlist_type_hint", static_cast<int>(playlistTypeHint));
     }
 
-    if (playlist.GetType() == "mixed")
+    if (playlist.GetType() == MEDIA::CONTENT::MIXED)
       return success || success2;
-    else if (playlist.GetType() == "musicvideos")
+    else if (playlist.GetType() == MEDIA::CONTENT::MUSICVIDEOS)
       return success2;
     else
       return success;

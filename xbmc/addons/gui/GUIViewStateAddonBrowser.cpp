@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "filesystem/File.h"
 #include "guilib/WindowIDs.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "view/ViewState.h"
@@ -43,7 +44,7 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
                     SortAttributeIgnoreFolders, SortOrder::DESCENDING); //Label, Last used
 
     if (StringUtils::StartsWith(items.GetPath(), "addons://user/") &&
-        items.GetContent() == "addons")
+        items.GetContent() == KODI::MEDIA::CONTENT::ADDONS)
       AddSortMethod(SortBy::INSTALL_DATE, 12013, LABEL_MASKS("%L", "%i", "%L", "%i"),
                     SortAttributeIgnoreFolders, SortOrder::DESCENDING);
 
