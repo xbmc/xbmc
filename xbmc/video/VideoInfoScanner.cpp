@@ -587,6 +587,46 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
 
+    // Video extras folders whose movie is found once this listing has been scanned. Stack() lists
+    // an extras folder holding a disc structure as the disc's file, which is taken out here rather
+    // than scraped as a movie.
+    std::vector<std::string> extrasFolders;
+    // As Process() does for the folders a scan leaves
+    const auto removeExtrasFolder{
+        [this](const std::string& folder)
+        {
+          RemoveSubDirectories(m_pathsToScan, folder,
+                               [this](const std::string& dir)
+                               {
+                                 if (m_bClean)
+                                   m_pathsToClean.insert(m_database.GetPathId(dir));
+                               });
+        }};
+    if (!m_ignoreVideoExtras && content == ContentType::MOVIES && settings.parent_name)
+    {
+      for (int i = items.Size() - 1; i >= 0; --i)
+      {
+        if (items[i]->IsFolder())
+          continue;
+
+        const std::string extrasFolder{GetExtrasFolder(strDirectory, items[i]->GetPath())};
+        if (extrasFolder.empty())
+          continue;
+
+        SScanSettings extrasSettings;
+        bool extrasFoundDirectly{false};
+        if (m_database.GetScraperForPath(extrasFolder, extrasSettings, extrasFoundDirectly,
+                                         &m_scraperCache) &&
+            extrasFoundDirectly)
+          continue;
+
+        removeExtrasFolder(extrasFolder);
+        if (!bSkip)
+          extrasFolders.emplace_back(extrasFolder);
+        items.Remove(i);
+      }
+    }
+
     bool foundSomething = false;
     if (!bSkip)
     {
@@ -637,7 +677,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       OnDirectoryScanned(strDirectory);
 
     bool foundSomethingInArchive = false;
-    std::vector<std::string> extrasFolders;
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -659,13 +698,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       if (addAsExtras)
       {
-        // As Process() does for the folders a scan leaves
-        RemoveSubDirectories(m_pathsToScan, pItem->GetPath(),
-                             [this](const std::string& dir)
-                             {
-                               if (m_bClean)
-                                 m_pathsToClean.insert(m_database.GetPathId(dir));
-                             });
+        removeExtrasFolder(pItem->GetPath());
         if (foundSomething)
         {
           if (m_extras.AddVideoExtras(items, pItem->GetPath()))

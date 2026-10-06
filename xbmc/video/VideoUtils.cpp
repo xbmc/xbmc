@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIPassword.h"
+#include "InfoScanner.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -165,6 +166,34 @@ std::string GetOpticalMediaPath(const CFileItem& item)
     }
   }
   return std::string{};
+}
+
+void EnumerateVideoExtras(const std::string& folder,
+                          const std::function<void(const std::shared_ptr<CFileItem>&)>& callback)
+{
+  if (const std::string disc{GetOpticalMediaPath(CFileItem{folder, true})}; !disc.empty())
+  {
+    callback(std::make_shared<CFileItem>(disc, false));
+    return;
+  }
+
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(
+          folder, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+          XFILE::DIR_FLAG_DEFAULTS))
+    return;
+
+  for (const auto& item : items)
+  {
+    if (!item->IsFolder())
+      callback(item);
+  }
+
+  for (const auto& item : items)
+  {
+    if (item->IsFolder() && !CInfoScanner::HasNoMedia(item->GetPath()))
+      EnumerateVideoExtras(item->GetPath(), callback);
+  }
 }
 
 bool IsAutoPlayNextItem(const CFileItem& item)
