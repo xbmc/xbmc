@@ -937,6 +937,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("broadcastid"))
   {
+    if (!CServiceBroker::GetPVRManager().IsStarted())
+      return FailedToExecute;
+
     const std::shared_ptr<CPVREpgInfoTag> epgTag =
         CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
             static_cast<unsigned int>(parameterObject["item"]["broadcastid"].asInteger()));
@@ -953,7 +956,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   {
     const std::shared_ptr<const CPVRChannelGroupsContainer> channelGroupContainer =
         CServiceBroker::GetPVRManager().ChannelGroups();
-    if (!channelGroupContainer)
+    // the containers exist before PVR has loaded them, and are not safe to search until then
+    if (!CServiceBroker::GetPVRManager().IsStarted() || !channelGroupContainer)
       return FailedToExecute;
 
     const std::shared_ptr<const CPVRChannel> channel = channelGroupContainer->GetChannelById(
@@ -976,7 +980,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   {
     const std::shared_ptr<const CPVRRecordings> recordingsContainer =
         CServiceBroker::GetPVRManager().Recordings();
-    if (!recordingsContainer)
+    if (!CServiceBroker::GetPVRManager().IsStarted() || !recordingsContainer)
       return FailedToExecute;
 
     const std::shared_ptr<CPVRRecording> recording = recordingsContainer->GetById(static_cast<int>(parameterObject["item"]["recordingid"].asInteger()));
@@ -1019,6 +1023,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       }
       else if (list.Size() == 1 && URIUtils::IsPVRChannel(list[0]->GetPath()))
       {
+        if (!CServiceBroker::GetPVRManager().IsStarted())
+          return FailedToExecute;
         if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(*list[0]))
           return FailedToExecute;
       }
@@ -1026,7 +1032,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       {
         const std::shared_ptr<const CPVRRecordings> recordingsContainer{
             CServiceBroker::GetPVRManager().Recordings()};
-        if (!recordingsContainer)
+        if (!CServiceBroker::GetPVRManager().IsStarted() || !recordingsContainer)
           return FailedToExecute;
 
         std::shared_ptr<CPVRRecording> recording{list[0]->GetPVRRecordingInfoTag()};
