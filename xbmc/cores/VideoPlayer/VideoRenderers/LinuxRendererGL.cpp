@@ -1010,7 +1010,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         m_pYUVShader = new YUV2RGBFilterShader4(
             m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat, m_nonLinStretch,
             m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
-            m_toneMap, m_toneMapMethod, m_scalingMethod, out);
+            m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
@@ -1036,7 +1036,7 @@ void CLinuxRendererGL::LoadShaders(int field)
           m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat,
           m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
           m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
-          m_toneMap, m_toneMapMethod, out,
+          m_toneMap, m_toneMapMethod, m_hueSatTransfer, out,
           m_intermediateGammaCorrection && m_renderQuality == RQ_MULTIPASS);
 
       if (!m_cmsOn)
@@ -2786,6 +2786,19 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
   bool toneMap = false;
   const bool streamIsHDRPQ =
       (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 && buf.m_srcPrimaries == AVCOL_PRI_BT2020);
+  const bool streamIsHDR =
+      buf.m_srcPrimaries == AVCOL_PRI_BT2020 && (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 ||
+                                                 buf.m_srcColTransfer == AVCOL_TRC_ARIB_STD_B67);
+
+  const bool hueSat =
+      streamIsHDR && (m_videoSettings.m_Hue != 50.0f || m_videoSettings.m_Saturation != 50.0f);
+  const AVColorTransferCharacteristic hueSatTransfer =
+      hueSat ? buf.m_srcColTransfer : AVCOL_TRC_UNSPECIFIED;
+  if (hueSatTransfer != m_hueSatTransfer)
+  {
+    m_hueSatTransfer = hueSatTransfer;
+    m_reloadShaders = true;
+  }
 
   if (!m_passthroughHDR && streamIsHDRPQ && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {

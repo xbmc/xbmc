@@ -109,6 +109,9 @@ vec4 process()
 #endif
 
   rgb = m_yuvmat * yuv;
+#if defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)
+  rgb.rgb = hueSaturation(rgb.rgb);
+#endif
   rgb.a = m_alpha;
 
 #if defined(XBMC_COL_CONVERSION)
