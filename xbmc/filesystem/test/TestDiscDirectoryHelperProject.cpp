@@ -631,6 +631,27 @@ TEST_F(TestDiscDirectoryHelperProject, Movie_TheNameLeadsTheDescription)
   EXPECT_TRUE(items[0]->GetLabel2().starts_with("FPL_MainFeature_eng - ")) << items[0]->GetLabel2();
 }
 
+TEST_F(TestDiscDirectoryHelperProject, Movie_SingleTitleKeepsTheHeuristicsCopyOfThePlainFeature)
+{
+  // Seen on Avatar: Fire and Ash, where FPL_MainFeature_eng translates on screen what
+  // FPL_MainFeature leaves out, and the heuristics choose it as the fuller copy
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 120min, {1u}, 3)},
+                        {1661u, MakePlaylist(1661u, 120min, {1u}, 2)}};
+  ClipMap clips{{1u, MakeClip(120min, {800u, 1661u})}};
+
+  helper.SetPlaylistHints(MakeProject({MakeNamed(800u, "FPL_MainFeature_eng", 120min),
+                                       MakeNamed(1661u, "FPL_MainFeature", 120min)}));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{800u});
+}
+
 TEST_F(TestDiscDirectoryHelperProject, NoProjectLeavesTheHeuristicsUntouched)
 {
   CDiscDirectoryHelper helper;

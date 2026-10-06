@@ -25,6 +25,8 @@
 #if defined(HAS_UDFREAD)
 #include "filesystem/UDFContext.h"
 #endif
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/EpisodeUtils.h"
 #include "utils/LanguageTag.h"
 #include "utils/RegExp.h"
@@ -775,7 +777,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     // A disc whose playlists could not be read says nothing about its project either, as every
     // record would be rejected as naming a playlist the disc does not have
     ProjectInformation projectInformation;
-    if (!playlists.empty())
+    if (!playlists.empty() &&
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_parseBlurayProjectFile)
       GetProjectInformation(playlists, projectInformation);
 
     CDiscDirectoryHelper helper{[this](unsigned int playlist, CFileItem& item)

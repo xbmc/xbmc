@@ -3456,6 +3456,27 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToMovie(const CURL& url,
                   [&hints](unsigned int playlist) { return !hints.at(playlist).basePresentation; });
     if (!base.empty())
       selected = select(base);
+
+    // Where the heuristics chose another named copy of that presentation, theirs is the fullest -
+    // eg. FPL_MainFeature_eng, whose pictures carry the translation FPL_MainFeature leaves out
+    if (!selected.empty() && !items.IsEmpty())
+    {
+      const unsigned int heuristic{items[0]->GetProperty("bluray_playlist").asUnsignedInteger32()};
+      if (std::ranges::find(features, heuristic) != features.end())
+      {
+        const PlaylistInformation& information{playlistMap.at(heuristic)};
+        const std::vector<std::chrono::milliseconds> clipDurations{
+            GetSortedClipDurations(information, clips)};
+        if (std::ranges::any_of(selected,
+                                [&](const PlaylistInformation& playlist)
+                                {
+                                  return IsSamePresentation(playlist,
+                                                            GetSortedClipDurations(playlist, clips),
+                                                            information, clipDurations);
+                                }))
+          selected = {information};
+      }
+    }
   }
   if (selected.empty())
     selected = select(features);
