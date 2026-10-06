@@ -16,6 +16,7 @@
 #include "bluray/BlurayPlaylistHints.h"
 #include "bluray/M2TSParser.h"
 #include "bluray/MPLSParser.h"
+#include "bluray/MovieObjectParser.h"
 #include "bluray/PlaylistStructure.h"
 #include "bluray/StreamParser.h"
 #include "filesystem/BlurayCallback.h"
@@ -764,6 +765,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // /root/episode/<season>/<episode>   - get playlists that correspond with S<season>E<episode>
   // /root/episode/all                  - get all episodes
   // /root/extras                       - get the playlists the disc names as extras of the movie
+  // /root/extras/titles                - get the playlists the disc's titles play that may be extras
   //
   // /root/titles/all                   - get all playlists (sorted by longest -> shortest - for movies)
   // /root/titles/episodes/all          - get all playlists (sorted by playlist number - for episodes)
@@ -823,6 +825,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
         CLog::LogF(LOGDEBUG, "Invalid path {} for bluray playlist parsing", file);
 
       return !items.IsEmpty();
+    }
+
+    if (file == "root/extras/titles")
+    {
+      MovieObjectInformation information;
+      CMovieObjectParser::GetMovieObject(m_url, information);
+      helper.GetMovieTitleExtraPlaylists(m_url, items, allTitles, GetMainPlaylist(), clips,
+                                         playlists, information.titlePlaylists);
+      return true;
     }
 
     // A disc naming no extras has none to list, which is no failure

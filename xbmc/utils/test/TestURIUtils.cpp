@@ -2234,6 +2234,14 @@ TEST_F(TestURIUtils, GetBlurayEpisodePath)
           3, 4));
 }
 
+TEST_F(TestURIUtils, GetBlurayExtraTitlesPath)
+{
+  const std::string refDir{"bluray://%2fsomepath%2fpath%2f/root/extras/titles"};
+  EXPECT_EQ(refDir, URIUtils::GetBlurayExtraTitlesPath("/somepath/path/BDMV/index.bdmv"));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayExtraTitlesPath(
+                        "bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+}
+
 TEST_F(TestURIUtils, GetBlurayExtrasPath)
 {
   std::string refDir{"bluray://%2fsomepath%2fpath%2f/root/extras"};

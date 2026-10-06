@@ -3784,6 +3784,92 @@ bool IsPlayedBy(const PlaylistInformation& playlist, const PlaylistInformation& 
 }
 } // namespace
 
+bool CDiscDirectoryHelper::MoviePresentations::IsMovie(std::chrono::milliseconds duration) const
+{
+  return std::ranges::any_of(
+      movieDurations, [duration](std::chrono::milliseconds movieDuration)
+      { return std::chrono::abs(movieDuration - duration) <= MOVIE_EQUAL_LENGTH_TOLERANCE; });
+}
+
+CDiscDirectoryHelper::MoviePresentations CDiscDirectoryHelper::GetMoviePresentations(
+    const CURL& url,
+    const CFileItemList& allTitles,
+    int mainPlaylist,
+    const ClipMap& clips,
+    const PlaylistMap& playlistMap)
+{
+  // What is offered as the movie, or a version of it, is not also an extra of it. Nor is the
+  // movie presented differently (eg. Mufasa (2024), whose sing-along the heuristics took for a
+  // copy of the feature), which runs as long as it. A bonus disc can name a seconds-long
+  // placeholder as its feature, which is no movie for an extra to be a presentation of.
+  CFileItemList versions;
+  GetMoviePlaylists(url, versions, allTitles, mainPlaylist, GetTitle::MAIN, clips, playlistMap);
+  MoviePresentations movie;
+  for (const auto& version : versions)
+  {
+    const unsigned int playlist{
+        version->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asUnsignedInteger32()};
+    movie.versions.emplace(playlist);
+    if (const auto information{playlistMap.find(playlist)};
+        information != playlistMap.end() && information->second.duration >= MIN_MOVIE_DURATION)
+      movie.movieDurations.emplace_back(information->second.duration);
+  }
+  return movie;
+}
+
+bool CDiscDirectoryHelper::GetMovieTitleExtraPlaylists(
+    const CURL& url,
+    CFileItemList& items,
+    const CFileItemList& allTitles,
+    int mainPlaylist,
+    const ClipMap& clips,
+    const PlaylistMap& playlistMap,
+    const std::vector<unsigned int>& titlePlaylists)
+{
+  items.Clear();
+
+  if (titlePlaylists.empty() || playlistMap.empty())
+    return false;
+
+  const MoviePresentations movie{
+      GetMoviePresentations(url, allTitles, mainPlaylist, clips, playlistMap)};
+
+  std::vector<const PlaylistInformation*> extras;
+  for (const unsigned int playlist : titlePlaylists)
+  {
+    const auto information{playlistMap.find(playlist)};
+    if (information == playlistMap.end() || movie.versions.contains(playlist) ||
+        movie.IsMovie(information->second.duration) ||
+        information->second.duration < MIN_EXTRA_DURATION)
+      continue;
+
+    // Every extra a disc's project names has speech in a known language, while most of its logos,
+    // menus and slideshows have none
+    if (std::ranges::all_of(information->second.audioStreams, [](const AudioStreamInfo& stream)
+                            { return stream.language.IsUndetermined(); }))
+      continue;
+
+    // Titles can lead to the same content, each through a playlist of its own
+    if (std::ranges::any_of(extras,
+                            [&information](const PlaylistInformation* extra)
+                            {
+                              return extra->duration == information->second.duration &&
+                                     extra->clips == information->second.clips;
+                            }))
+      continue;
+
+    extras.emplace_back(&information->second);
+  }
+
+  for (const PlaylistInformation* extra : extras)
+  {
+    const auto item{GenerateMovieItem(url, extra->playlist, mainPlaylist, *extra, {})};
+    AddStreamDetails(m_getStreamDetails, allTitles, extra->playlist, *item);
+    items.Add(item);
+  }
+  return !items.IsEmpty();
+}
+
 bool CDiscDirectoryHelper::GetMovieExtraPlaylists(const CURL& url,
                                                   CFileItemList& items,
                                                   const CFileItemList& allTitles,
@@ -3796,34 +3882,8 @@ bool CDiscDirectoryHelper::GetMovieExtraPlaylists(const CURL& url,
   if (playlistMap.empty() || !m_hints || !m_hints->HasHints())
     return false;
 
-  // What is offered as the movie, or a version of it, is not also an extra of it. Nor is the
-  // movie presented differently (eg. Mufasa (2024), whose sing-along the heuristics took for a
-  // copy of the feature), which runs as long as it. A bonus disc can name a seconds-long
-  // placeholder as its feature, which is no movie for an extra to be a presentation of.
-  CFileItemList versions;
-  GetMoviePlaylists(url, versions, allTitles, mainPlaylist, GetTitle::MAIN, clips, playlistMap);
-  std::set<unsigned int> versionPlaylists;
-  std::vector<const PlaylistInformation*> moviePlaylists;
-  for (const auto& version : versions)
-  {
-    const unsigned int playlist{
-        version->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asUnsignedInteger32()};
-    versionPlaylists.emplace(playlist);
-    if (const auto information{playlistMap.find(playlist)};
-        information != playlistMap.end() && information->second.duration >= MIN_MOVIE_DURATION)
-      moviePlaylists.emplace_back(&information->second);
-  }
-  const auto isPresentationOfTheMovie{
-      [&moviePlaylists](const PlaylistInformation& information)
-      {
-        return std::ranges::any_of(moviePlaylists,
-                                   [&information](const PlaylistInformation* version)
-                                   {
-                                     return std::chrono::abs(version->duration -
-                                                             information.duration) <=
-                                            MOVIE_EQUAL_LENGTH_TOLERANCE;
-                                   });
-      }};
+  const MoviePresentations movie{
+      GetMoviePresentations(url, allTitles, mainPlaylist, clips, playlistMap)};
 
   std::vector<MovieExtra> candidates;
   for (const auto& [playlist, hint] : m_hints->GetHints())
@@ -3832,10 +3892,10 @@ bool CDiscDirectoryHelper::GetMovieExtraPlaylists(const CURL& url,
     if (hint.role != PlaylistRole::SPECIAL || information == playlistMap.end())
       continue;
 
-    if (versionPlaylists.contains(playlist))
+    if (movie.versions.contains(playlist))
       CLog::LogF(LOGDEBUG, "Playlist {} ({}) is not an extra - it is a version of the movie",
                  playlist, hint.name);
-    else if (isPresentationOfTheMovie(information->second))
+    else if (movie.IsMovie(information->second.duration))
       CLog::LogF(LOGDEBUG, "Playlist {} ({}) is not an extra - it is the movie", playlist,
                  hint.name);
     else if (information->second.duration < MIN_EXTRA_DURATION)
@@ -4190,13 +4250,20 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     directoryDuration = dirUrl.Get();
   }
 
-  // Get items. A disc naming no extras is no failure, so is not logged as one.
+  // Get items. A disc naming no extras is no failure, so is not logged as one. To choose from, the
+  // playlists its titles play are offered instead.
   CFileItemList sourceItems;
   const bool listingExtras{isExtra &&
                            directory == URIUtils::GetBlurayExtrasPath(item.GetDynPath())};
+  const auto getExtras{[&sourceItems, silent](const std::string& path)
+                       {
+                         return GetDirectoryItems(path, sourceItems, CDirectory::CHints(),
+                                                  silent) &&
+                                !sourceItems.IsEmpty();
+                       }};
   if (listingExtras
-          ? !GetDirectoryItems(directoryDuration, sourceItems, CDirectory::CHints(), silent) ||
-                sourceItems.IsEmpty()
+          ? !getExtras(directoryDuration) &&
+                (silent || !getExtras(URIUtils::GetBlurayExtraTitlesPath(item.GetDynPath())))
           : !GetItems(sourceItems, directoryDuration, silent))
   {
     // No main movie or episode playlist found

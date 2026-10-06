@@ -332,6 +332,27 @@ public:
                               const PlaylistMap& playlistMap);
 
   /*!
+   * \brief Populates a CFileItemList with the playlists a disc's titles play that may be extras
+   * of its movie - not the movie or one of its versions, not too short, and not the same content
+   * as another. They are unnamed, so are for choosing from where the disc names no extras.
+   * \param url bluray:// url
+   * \param items CFileItemList to populate, in the order of the titles
+   * \param allTitles CFileItemList of all titles on the disc (populated by CBlurayDirectory). Used for streamdetails.
+   * \param mainPlaylist the main playlist number (if known, from disc.inf), otherwise -1
+   * \param clips map of clips on disc (populated in CBlurayDirectory)
+   * \param playlistMap map of playlists on disc (populated in CBlurayDirectory)
+   * \param titlePlaylists the playlists the disc's titles play, in the order of the titles
+   * \return true if at least one playlist is found, otherwise false
+   */
+  bool GetMovieTitleExtraPlaylists(const CURL& url,
+                                   CFileItemList& items,
+                                   const CFileItemList& allTitles,
+                                   int mainPlaylist,
+                                   const ClipMap& clips,
+                                   const PlaylistMap& playlistMap,
+                                   const std::vector<unsigned int>& titlePlaylists);
+
+  /*!
    * \brief Populates a vector array of CVideoInfoTags with information for the episodes on a bluray disc
    * \param url bluray:// episode url
    * \return vector array of CVideoInfoTags containing episode information
@@ -393,6 +414,22 @@ protected:
                                 bool silent = false);
 
 private:
+  //! The playlists offered as the movie or a version of it, and the lengths of those long enough
+  //! to be the movie
+  struct MoviePresentations
+  {
+    std::set<unsigned int> versions;
+    std::vector<std::chrono::milliseconds> movieDurations;
+
+    //! Whether a playlist runs as long as the movie, so is the movie presented differently
+    bool IsMovie(std::chrono::milliseconds duration) const;
+  };
+  MoviePresentations GetMoviePresentations(const CURL& url,
+                                           const CFileItemList& allTitles,
+                                           int mainPlaylist,
+                                           const ClipMap& clips,
+                                           const PlaylistMap& playlistMap);
+
   void Reset();
   void InitialiseEpisodePlaylistSearch(int episodeIndex, const Episodes& episodesOnDisc);
   void StorePlayAllPlaylist(

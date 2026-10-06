@@ -15,6 +15,7 @@
 #include "filesystem/bluray/BlurayPlaylistHints.h"
 #include "filesystem/bluray/ProjectParser.h"
 #include "language/LangInfo.h"
+#include "language/LanguageTag.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "video/VideoInfoTag.h"
@@ -851,6 +852,35 @@ TEST_F(TestDiscDirectoryHelperProject, Extras_NumberedExtrasAreNotCopies)
 
   EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
   EXPECT_EQ(GetPlaylists(items), (std::vector<unsigned int>{811u, 812u}));
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_TitlesOfferWhatIsNotTheMovie)
+{
+  // No project - the titles play the feature, a logo, two extras, one of those extras again, a
+  // slideshow without speech and a scene cut from the same clip as one of the extras
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 110min, {1u})},
+                        {801u, MakePlaylist(801u, 5s, {2u})},
+                        {802u, MakePlaylist(802u, 12min, {3u})},
+                        {803u, MakePlaylist(803u, 4min, {4u})},
+                        {804u, MakePlaylist(804u, 12min, {3u})}};
+  playlists.emplace(806u, MakePlaylist(806u, 6min, {3u}));
+  for (auto& [playlist, information] : playlists)
+    information.audioStreams[1].language = KODI::LANGUAGE::CLanguageTag::Parse("eng");
+  playlists.emplace(805u, MakePlaylist(805u, 3min, {5u}));
+  ClipMap clips{{1u, MakeClip(110min, {800u})},
+                {2u, MakeClip(5s, {801u})},
+                {3u, MakeClip(12min, {802u, 804u, 806u})},
+                {4u, MakeClip(4min, {803u})},
+                {5u, MakeClip(3min, {805u})}};
+
+  EXPECT_TRUE(helper.GetMovieTitleExtraPlaylists(url, items, allTitles, 800, clips, playlists,
+                                                 {800u, 801u, 803u, 805u, 802u, 804u, 806u}));
+  EXPECT_EQ(GetPlaylists(items), (std::vector<unsigned int>{803u, 802u, 806u}));
 }
 
 TEST_F(TestDiscDirectoryHelperProject, Extras_TheCopyWithoutAnythingAddedIsListed)

@@ -188,6 +188,13 @@ public:
    */
   static std::string GetBlurayExtrasPath(const std::string& path);
 
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to the playlists the
+   disc's titles play that may be extras of the movie.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root/extras/titles path.
+   */
+  static std::string GetBlurayExtraTitlesPath(const std::string& path);
+
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
    \param path the ISO/index.BDMV path.
    \param playlist (optional) the .mpls playlist
