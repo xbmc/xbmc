@@ -24,7 +24,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "storage/MediaManager.h"
 #include "utils/DiscsUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
@@ -150,10 +149,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
     return ChoosePlaylist(discExtra(m_videoAsset->GetDynPath()), ReplaceExistingFile::NO);
 
   // prompt to choose a video file
-  std::vector<CMediaSource> sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
-
-  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
-  CServiceBroker::GetMediaManager().GetNetworkLocations(sources);
+  std::vector<CMediaSource> sources{*CMediaSourceSettings::GetInstance().GetSources("video")};
   AppendItemFolderToFileBrowserSources(sources);
 
   std::string path;
