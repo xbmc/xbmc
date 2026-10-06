@@ -13,6 +13,7 @@
 namespace KODI::MEDIA::CONTENT
 {
 
+inline constexpr char ACTORS[] = "actors";
 inline constexpr char ADDONS[] = "addons";
 inline constexpr char ALBUMS[] = "albums";
 inline constexpr char ARTISTS[] = "artists";
@@ -38,6 +39,9 @@ inline constexpr char SOURCES[] = "sources";
 inline constexpr char STUDIOS[] = "studios";
 inline constexpr char TAGS[] = "tags";
 inline constexpr char TVSHOWS[] = "tvshows";
+inline constexpr char VIDEOASSETS[] = "videoassets";
+inline constexpr char VIDEOEXTRAS[] = "videoextras";
+inline constexpr char VIDEOVERSIONS[] = "videoversions";
 inline constexpr char YEARS[] = "years";
 
 } // namespace KODI::MEDIA::CONTENT

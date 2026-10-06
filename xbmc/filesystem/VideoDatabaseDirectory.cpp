@@ -67,7 +67,7 @@ std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
           VideoDbContentType::MUSICVIDEOS)
         return CONTENT::ARTISTS;
 
-      return "actors";
+      return CONTENT::ACTORS;
     }
     case NodeType::DIRECTOR:
       return CONTENT::DIRECTORS;
@@ -83,11 +83,11 @@ std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
       return CONTENT::TAGS;
     case NodeType::VIDEOVERSIONS:
     case NodeType::MOVIE_ASSETS_VERSIONS:
-      return "videoversions";
+      return CONTENT::VIDEOVERSIONS;
     case NodeType::MOVIE_ASSETS_EXTRAS:
-      return "videoextras";
+      return CONTENT::VIDEOEXTRAS;
     case NodeType::MOVIE_ASSETS:
-      return "videoassets";
+      return CONTENT::VIDEOASSETS;
     default:
       break;
   }

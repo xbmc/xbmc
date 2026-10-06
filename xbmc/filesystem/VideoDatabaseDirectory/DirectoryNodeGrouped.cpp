@@ -95,7 +95,7 @@ std::string CDirectoryNodeGrouped::GetContentType(const CQueryParams &params) co
     case NodeType::TAGS:
       return CONTENT::TAGS;
     case NodeType::VIDEOVERSIONS:
-      return "videoversions";
+      return CONTENT::VIDEOVERSIONS;
     case NodeType::YEAR:
       return CONTENT::YEARS;
     case NodeType::ACTOR:
@@ -103,7 +103,7 @@ std::string CDirectoryNodeGrouped::GetContentType(const CQueryParams &params) co
           VideoDbContentType::MUSICVIDEOS)
         return CONTENT::ARTISTS;
       else
-        return "actors";
+        return CONTENT::ACTORS;
     case NodeType::DIRECTOR:
       return CONTENT::DIRECTORS;
     case NodeType::STUDIO:
