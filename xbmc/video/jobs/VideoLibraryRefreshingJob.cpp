@@ -560,8 +560,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       }
     }
 
-    // finally download the information for the item
+    // finally download the information for the item. A movie's extras are added once its old
+    // versions and extras are its own again, so that those already there are seen.
     VIDEO::CVideoInfoScanner scanner;
+    scanner.DeferMovieExtras();
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
                                    scraperUrl.HasUrls() ? &scraperUrl : nullptr,
@@ -679,6 +681,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
                      CURL::GetRedacted(versionItem.GetPath()));
       }
     }
+
+    if (scraper->Content() == ADDON::ContentType::MOVIES)
+      scanner.AddMovieDiscExtras(*items[0]);
 
     // we're finally done
     MarkFinished();

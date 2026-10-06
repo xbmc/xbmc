@@ -914,7 +914,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         break;
       }
       if (ret == InfoRet::ADDED || ret == InfoRet::HAVE_ALREADY)
+      {
         FoundSomeInfo = true;
+        if (info2->Content() == ContentType::MOVIES && !m_ignoreVideoExtras &&
+            !m_deferMovieExtras)
+          m_extras.AddMovieDiscExtras(*pItem);
+      }
       else if (ret == InfoRet::NOT_FOUND)
       {
         CLog::Log(LOGWARNING,
@@ -965,6 +970,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     m_database.Close();
     return FoundSomeInfo;
+  }
+
+  void CVideoInfoScanner::AddMovieDiscExtras(const CFileItem& item)
+  {
+    if (m_ignoreVideoExtras)
+      return;
+
+    m_database.Open();
+    m_extras.AddMovieDiscExtras(item);
+    m_database.Close();
   }
 
   CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForTvShow(CFileItem* pItem,

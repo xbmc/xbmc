@@ -16,21 +16,57 @@
 #include "addons/Scraper.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DiscDirectoryHelper.h"
+#include "filesystem/StackDirectory.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/DiscsUtils.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 
+#include <algorithm>
+#include <cstdlib>
 #include <memory>
+#include <vector>
 
 using namespace XFILE;
 
 namespace KODI::VIDEO
 {
+namespace
+{
+bool IsBluray(const std::string& path)
+{
+  return ::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path);
+}
+
+//! Whether a movie already has an extra on a bluray, either the whole disc or one of its playlists
+bool HasExtraOnDisc(CVideoDatabase& db, const std::string& disc, int dbId)
+{
+  if (const VideoAssetInfo whole{db.GetVideoVersionInfo(disc)};
+      whole.m_assetType == VideoAssetType::EXTRA && whole.m_idMedia == dbId)
+    return true;
+
+  return std::ranges::any_of(db.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(disc)),
+                             [dbId](const CVideoDatabase::PlaylistInfo& playlist)
+                             {
+                               return playlist.mediaType == VideoDbContentType::MOVIES &&
+                                      playlist.idMedia == dbId &&
+                                      playlist.itemType == VideoAssetType::EXTRA;
+                             });
+}
+} // namespace
+
 CVideoInfoScannerExtras::CVideoInfoScannerExtras(CVideoDatabase& database,
                                                  const CVideoInfoScannerArt& art)
   : m_database(database),
@@ -76,6 +112,12 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
       path,
       [this, dbId, path](const std::shared_ptr<CFileItem>& item)
       {
+        // A bluray is added as the extras it names, or failing that as a whole. One already
+        // there may since have been given a playlist, so it is not added as a whole again.
+        if (IsBluray(item->GetPath()) && (HasExtraOnDisc(m_database, item->GetPath(), dbId) ||
+                                          AddDiscExtras(item->GetPath(), dbId)))
+          return;
+
         const std::string extraTypeName =
             CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
@@ -118,5 +160,174 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
       [](const std::shared_ptr<CFileItem>& dirItem)
       { return !CInfoScanner::HasNoMedia(dirItem->GetPath()); }, true,
       CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
+}
+
+void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
+{
+  std::vector<std::string> paths{item.GetDynPath()};
+  if (URIUtils::IsStack(paths.front()))
+  {
+    const std::string stack{paths.front()};
+    paths.clear();
+    CStackDirectory::GetPaths(stack, paths);
+  }
+
+  for (const std::string& path : paths)
+  {
+    if (!IsBluray(path) && !URIUtils::IsBlurayPath(path))
+      continue;
+
+    const int dbId{m_database.GetMovieId(path)};
+    if (dbId < 0)
+    {
+      CLog::LogF(LOGDEBUG, "No movie found for {} to add its extras to", CURL::GetRedacted(path));
+      continue;
+    }
+
+    // A disc already giving the movie its extras is not read again on every scan
+    if (HasExtraOnDisc(m_database, path, dbId))
+      continue;
+
+    AddDiscExtras(path, dbId);
+  }
+}
+
+const CFileItem* FindExtraOnAnotherDisc(const CFileItemList& existing, const CFileItem& extra)
+{
+  const auto letters{[](const std::string& name)
+                     {
+                       std::string title{StringUtils::ToLower(name)};
+                       std::erase_if(title,
+                                     [](char c) { return !StringUtils::isasciialphanum(c); });
+                       return title;
+                     }};
+
+  // What one playing all of a kind is called, as GetExtraTitle() names it
+  const CLocalizeStrings& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  const std::string playAll{strings.Get(40508)};
+  const std::string playAllOf{strings.Get(40708)};
+  const size_t name{playAllOf.find("{0:s}")};
+  const auto isPlayAll{[&playAll, &playAllOf, name](const std::string& title)
+                       {
+                         if (title == playAll)
+                           return true;
+                         if (name == std::string::npos)
+                           return false;
+                         const std::string before{playAllOf.substr(0, name)};
+                         const std::string after{playAllOf.substr(name + 5)};
+                         return title.size() > before.size() + after.size() &&
+                                title.starts_with(before) && title.ends_with(after);
+                       }};
+
+  const CVideoInfoTag& tag{*extra.GetVideoInfoTag()};
+  const std::string title{letters(tag.GetAssetInfo().GetTitle())};
+  const bool playsAll{isPlayAll(tag.GetAssetInfo().GetTitle())};
+  const auto same{std::ranges::find_if(
+      existing,
+      [&tag, &title, playsAll, &letters, &isPlayAll](const auto& other)
+      {
+        const CVideoInfoTag& otherTag{*other->GetVideoInfoTag()};
+        if (std::abs(static_cast<int>(otherTag.GetDuration()) -
+                     static_cast<int>(tag.GetDuration())) > 2)
+          return false;
+
+        // Each disc may code a kind differently, so playing all of a kind is told by its length
+        if (playsAll && isPlayAll(otherTag.GetAssetInfo().GetTitle()))
+          return true;
+
+        const std::string otherTitle{letters(otherTag.GetAssetInfo().GetTitle())};
+        return !title.empty() && !otherTitle.empty() &&
+               (otherTitle.find(title) != std::string::npos ||
+                title.find(otherTitle) != std::string::npos);
+      })};
+  return same != existing.end() ? same->get() : nullptr;
+}
+
+bool CVideoInfoScannerExtras::AddDiscExtras(const std::string& disc, int dbId)
+{
+  CFileItem item{disc, false};
+  item.GetVideoInfoTag()->GetAssetInfo().SetType(VideoAssetType::EXTRA);
+
+  CFileItemList extras;
+  if (!CDiscDirectoryHelper::GetOrShowPlaylistSelection(item, extras, MenuDecision::SILENT) ||
+      extras.IsEmpty())
+  {
+    CLog::LogF(LOGDEBUG, "No extras named on {}", CURL::GetRedacted(disc));
+    return false;
+  }
+
+  // Those of this disc are already told apart, so only those of other discs are compared
+  CFileItemList existing;
+  m_database.GetVideoVersions(VideoDbContentType::MOVIES, dbId, existing, VideoAssetType::EXTRA);
+
+  for (const auto& extra : extras)
+  {
+    const std::string& path{extra->GetDynPath()};
+    const std::string& title{extra->GetVideoInfoTag()->GetAssetInfo().GetTitle()};
+    if (m_database.GetVideoVersionInfo(path).m_assetTypeId != -1)
+    {
+      CLog::LogF(LOGDEBUG, "Extra '{}' ({}) is already in the library", title,
+                 CURL::GetRedacted(path));
+      continue;
+    }
+    if (const auto* repeat{FindExtraOnAnotherDisc(existing, *extra)})
+    {
+      // The extra is kept in its better copy, as a 4K disc's may be in 4K
+      const CVideoInfoTag& other{*repeat->GetVideoInfoTag()};
+      if (extra->GetVideoInfoTag()->m_streamDetails.GetVideoHeight() <=
+          other.m_streamDetails.GetVideoHeight())
+      {
+        CLog::LogF(LOGDEBUG, "Extra '{}' ({}) is on another disc of the movie", title,
+                   CURL::GetRedacted(path));
+        continue;
+      }
+
+      m_database.BeginTransaction();
+
+      // Deleting the old file deletes its bookmarks, so they are carried over
+      VECBOOKMARKS bookmarks;
+      m_database.GetBookMarksForFile(other.m_strFileNameAndPath, bookmarks);
+      m_database.GetBookMarksForFile(other.m_strFileNameAndPath, bookmarks, CBookmark::RESUME,
+                                     true);
+      const int idFile{
+          m_database.SetFileForMedia(path, VideoDbContentType::MOVIES, dbId,
+                                     CVideoDatabase::FileRecord{.m_idFile = other.m_iFileId,
+                                                                .m_playCount = other.GetPlayCount(),
+                                                                .m_lastPlayed = other.m_lastPlayed,
+                                                                .m_dateAdded = other.m_dateAdded})};
+      if (idFile > 0 &&
+          m_database.SetStreamDetailsForFileId(extra->GetVideoInfoTag()->m_streamDetails, idFile) &&
+          std::ranges::all_of(bookmarks,
+                              [this, &path](const CBookmark& bookmark)
+                              {
+                                return m_database.AddBookMarkToFile(path, bookmark,
+                                                                    bookmark.type);
+                              }))
+      {
+        m_database.CommitTransaction();
+        CLog::LogF(LOGDEBUG, "Extra '{}' moved to its better copy on this disc ({})",
+                   other.GetAssetInfo().GetTitle(), CURL::GetRedacted(path));
+      }
+      else
+      {
+        m_database.RollbackTransaction();
+        CLog::LogF(LOGERROR, "Failed to move extra '{}' to its better copy ({})",
+                   other.GetAssetInfo().GetTitle(), CURL::GetRedacted(path));
+      }
+      continue;
+    }
+
+    const int idType{
+        m_database.AddVideoVersionType(title, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+    if (idType < 0 || !m_database.AddVideoAsset(VideoDbContentType::MOVIES, dbId, idType,
+                                                VideoAssetType::EXTRA, *extra))
+    {
+      CLog::LogF(LOGERROR, "Failed to add extra '{}' ({})", title, CURL::GetRedacted(path));
+      continue;
+    }
+
+    CLog::LogF(LOGDEBUG, "Added extra '{}' ({})", title, CURL::GetRedacted(path));
+  }
+  return true;
 }
 } // namespace KODI::VIDEO

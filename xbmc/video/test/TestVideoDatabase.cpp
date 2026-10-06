@@ -652,3 +652,29 @@ TEST_F(TestVideoDatabase, KindsOfExtraAreBuiltInExtraTypes)
 
   strings.Clear();
 }
+
+// A file can be only one asset, so each extra on a disc is a playlist of its own
+TEST_F(TestVideoDatabase, ExtrasOnADiscAreItsPlaylists)
+{
+  const std::string disc{"/movies/Nope (2022)/NOPE.iso"};
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 800))};
+  ASSERT_GT(idMovie, 0);
+
+  for (const auto& [playlist, name] : {std::pair{1244, "Gag Reel"}, std::pair{1245, "Making Of"}})
+  {
+    const int idType{
+        m_db.AddVideoVersionType(name, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+    CFileItem extra{URIUtils::GetBlurayPlaylistPath(disc, playlist), false};
+    ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                   VideoAssetType::EXTRA, extra));
+  }
+
+  std::set<int> extras;
+  for (const auto& playlist : m_db.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(disc)))
+  {
+    EXPECT_EQ(idMovie, playlist.idMedia);
+    if (playlist.itemType == VideoAssetType::EXTRA)
+      extras.emplace(playlist.playlist);
+  }
+  EXPECT_EQ(extras, (std::set<int>{1244, 1245}));
+}

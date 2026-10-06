@@ -125,6 +125,17 @@ namespace KODI::VIDEO
                            bool fetchEpisodes = true,
                            CGUIDialogProgress* pDlgProgress = nullptr);
 
+    /*! \brief Leave adding the extras of the movies RetrieveVideoInfo() adds to
+     AddMovieDiscExtras(). A refresh adds a movie again before moving its old versions and extras
+     to it, and they must be its own for those already there to be seen.
+     */
+    void DeferMovieExtras() { m_deferMovieExtras = true; }
+
+    /*! \brief Add the extras the discs of a movie name, as a scan does once it has added the movie.
+     \param item the movie's file or disc, as given to RetrieveVideoInfo()
+     */
+    void AddMovieDiscExtras(const CFileItem& item);
+
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
     /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
@@ -337,6 +348,9 @@ namespace KODI::VIDEO
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
+
+    //! Whether RetrieveVideoInfo() leaves a movie's extras to AddMovieDiscExtras()
+    bool m_deferMovieExtras{false};
 
     //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
     bool m_useFolderNames{false};
