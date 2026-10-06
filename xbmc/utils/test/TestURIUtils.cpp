@@ -2233,6 +2233,25 @@ TEST_F(TestURIUtils, GetBlurayEpisodePath)
           3, 4));
 }
 
+TEST_F(TestURIUtils, GetBlurayExtrasPath)
+{
+  std::string refDir{"bluray://%2fsomepath%2fpath%2f/root/extras"};
+  EXPECT_EQ(refDir, URIUtils::GetBlurayExtrasPath("/somepath/path/BDMV/index.bdmv"));
+  EXPECT_EQ(refDir, URIUtils::GetBlurayExtrasPath(
+                        "bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
+
+  refDir = "bluray://D%3a%5cMovies%5c/root/extras";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayExtrasPath("D:\\Movies\\BDMV\\index.bdmv"));
+
+  refDir = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/root/extras";
+  EXPECT_EQ(refDir, URIUtils::GetBlurayExtrasPath("smb://somepath/path/movie.iso"));
+  EXPECT_EQ(
+      refDir,
+      URIUtils::GetBlurayExtrasPath(
+          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+          "00800.mpls"));
+}
+
 TEST_F(TestURIUtils, GetBlurayPlaylistPath)
 {
   EXPECT_EQ("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/",

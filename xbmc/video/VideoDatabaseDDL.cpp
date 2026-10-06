@@ -30,11 +30,16 @@ void CVideoDatabaseDDL::InitializeVideoVersionTypeTable(CDatabase& db)
       // Exclude removed pre-populated "quality" values
       if (id == 40405 || (id >= 40418 && id <= 40430))
         continue;
+      if (id >= VIDEO_EXTRA_NAME_ID_BEGIN && id <= VIDEO_EXTRA_NAME_ID_END)
+        continue;
 
+      const VideoAssetType assetType{id >= VIDEO_EXTRA_ID_BEGIN && id <= VIDEO_EXTRA_ID_END
+                                         ? VideoAssetType::EXTRA
+                                         : VideoAssetType::VERSION};
       const std::string& type{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id)};
       db.ExecuteQuery(db.PrepareSQL(
           "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(%i, '%s', %i, %i)", id,
-          type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));
+          type.c_str(), VideoAssetTypeOwner::SYSTEM, assetType));
     }
   }
   catch (...)

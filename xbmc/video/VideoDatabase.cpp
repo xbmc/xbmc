@@ -13017,6 +13017,9 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
 
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
+      if (id >= VIDEO_EXTRA_NAME_ID_BEGIN && id <= VIDEO_EXTRA_NAME_ID_END)
+        continue;
+
       const std::string& type =
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id);
       m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET name = '%s', owner = %i WHERE id = '%i'",

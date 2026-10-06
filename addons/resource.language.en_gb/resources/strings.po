@@ -25835,6 +25835,124 @@ msgctxt "#40436"
 msgid "50th Anniversary Edition"
 msgstr ""
 
+#empty strings from id 40437 to 40499
+
+# Video extras
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40500"
+msgid "Deleted scenes"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40501"
+msgid "Music videos"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40502"
+msgid "Sing-alongs"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40503"
+msgid "Trailers"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40504"
+msgid "Commercials"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40505"
+msgid "Promos"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40506"
+msgid "Behind the scenes"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40507"
+msgid "Cast"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40508"
+msgid "Play all"
+msgstr ""
+
+#empty strings from id 40509 to 40699
+
+# Names of video extras of a kind, which are not types
+
+#. Name of a deleted scene found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40700"
+msgid "Deleted scene: {0:s}"
+msgstr ""
+
+#. Name of a music video found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40701"
+msgid "Music video: {0:s}"
+msgstr ""
+
+#. Name of a sing-along found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40702"
+msgid "Sing-along: {0:s}"
+msgstr ""
+
+#. Name of a trailer found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40703"
+msgid "Trailer: {0:s}"
+msgstr ""
+
+#. Name of a commercial found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40704"
+msgid "Commercial: {0:s}"
+msgstr ""
+
+#. Name of a promo found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40705"
+msgid "Promo: {0:s}"
+msgstr ""
+
+#. Name of a behind the scenes extra found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40706"
+msgid "Behind the scenes: {0:s}"
+msgstr ""
+
+#. Name of an extra about a member of the cast found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40707"
+msgid "Cast: {0:s}"
+msgstr ""
+
+#. Name of a disc's playlist playing a group of extras one after the other - {0:s} is the group
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40708"
+msgid "{0:s} (play all)"
+msgstr ""
+
+#empty strings from id 40709 to 40800
+
 # 40000 to 40800 are reserved for Video Versions feature
 
 #. Confirm file deletion

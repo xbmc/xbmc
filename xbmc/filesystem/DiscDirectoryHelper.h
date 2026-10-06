@@ -37,6 +37,9 @@ static constexpr int ALL_PLAYLISTS{-1};
 //! nothing distinguishes them, so a library scan does not store a guess
 static constexpr const char* MULTIPLE_SPECIALS_PROPERTY{"bluray_multiple_specials"};
 
+//! Property set on each listed extra of a movie, holding what to call it
+static constexpr const char* EXTRA_TITLE_PROPERTY{"bluray_extra_title"};
+
 enum class GetTitle : uint8_t
 {
   SINGLE,
@@ -182,6 +185,14 @@ static constexpr int MIN_EDITION_LENGTH_PERCENT{40};
 // whose sing along wraps the movie in a one second bumper at each end)
 static constexpr std::chrono::milliseconds MOVIE_EQUAL_LENGTH_TOLERANCE{10 * 1000}; // 10 seconds
 
+// Extras
+// Shorter than this is a slate, copyright card or title rather than an extra (eg. Aliens (1986),
+// whose shortest deleted scene runs 12 seconds)
+static constexpr std::chrono::milliseconds MIN_EXTRA_DURATION{10 * 1000}; // 10 seconds
+// Copies of an extra differ by no more than a slate (eg. Nope (2022), whose deleted scenes are
+// offered with and without one)
+static constexpr std::chrono::milliseconds EXTRA_COPY_TOLERANCE{15 * 1000}; // 15 seconds
+
 /*!
  \brief Populates the stream details of item for the given title on the disc.
  Supplied by the disc's directory implementation.
@@ -301,6 +312,24 @@ public:
                          GetTitle job,
                          const ClipMap& clips,
                          const PlaylistMap& playlistMap);
+
+  /*!
+   * \brief Populates a CFileItemList with the playlists the disc names as extras of its movie.
+   * Without hints from the disc nothing is found, as nothing else tells an extra apart.
+   * \param url bluray:// url
+   * \param items CFileItemList to populate
+   * \param allTitles CFileItemList of all titles on the disc (populated by CBlurayDirectory). Used for streamdetails.
+   * \param mainPlaylist the main playlist number (if known, from disc.inf), otherwise -1
+   * \param clips map of clips on disc (populated in CBlurayDirectory)
+   * \param playlistMap map of playlists on disc (populated in CBlurayDirectory)
+   * \return true if at least one extra is found, otherwise false
+   */
+  bool GetMovieExtraPlaylists(const CURL& url,
+                              CFileItemList& items,
+                              const CFileItemList& allTitles,
+                              int mainPlaylist,
+                              const ClipMap& clips,
+                              const PlaylistMap& playlistMap);
 
   /*!
    * \brief Populates a vector array of CVideoInfoTags with information for the episodes on a bluray disc
