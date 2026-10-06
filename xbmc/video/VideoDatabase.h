@@ -1085,6 +1085,14 @@ public:
   bool UpdateAssetsOwner(KODI::MEDIA::TYPE mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
+
+  /*!
+   \brief The movie whose files lie in a folder or below it, other than below excludedFolder.
+   Files on a disc or in an archive in the folder count too.
+   \return the movie, or -1 if there is none or more than one
+   */
+  int GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder);
+
   std::string GetMovieTitle(int idMovie);
 
   enum MatchingMask : uint8_t

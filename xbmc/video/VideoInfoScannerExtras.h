@@ -36,6 +36,13 @@ public:
    */
   bool AddVideoExtras(const CFileItemList& items, const std::string& path);
 
+  /*!
+   \brief Add the videos in an extras folder, and in the folders below it, as extras of a movie.
+   \param dbId the movie
+   \param path the extras folder
+   */
+  void AddVideoExtras(int dbId, const std::string& path);
+
 private:
   CVideoDatabase& m_database;
   const CVideoInfoScannerArt& m_art;
