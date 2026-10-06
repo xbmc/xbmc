@@ -27,7 +27,7 @@ inline constexpr unsigned int COUNTRY_CODE_COUNT{15};
 inline constexpr unsigned int EXTENDED_COUNTRY_CODE_COUNT{7};
 
 /*!
- * \brief The code the standard assigns to an extended country code and PI country code.
+ * \brief The code IEC 62106 assigns to an extended country code and PI country code.
  * \note A broadcaster sends a country as a 4 bit PI nibble crossed with an extended country
  *       code, never as text, so these tables are the whole vocabulary an RDS stream can name a
  *       place in.
@@ -46,7 +46,7 @@ std::optional<std::string_view> CountryCode(unsigned int extendedCountryCode,
  * \param[in] extendedCountryCode The ECC, as the high nibble carries it: 0xA0, 0xD0, 0xE0 or 0xF0.
  * \param[in] countryCode The PI country code, 1 to 15.
  * \param[in] index The ECC's low nibble.
- * \return The territory, naming nowhere where the standard reserves the cell, or nothing at all
+ * \return The territory, naming nowhere where IEC 62106 reserves the cell, or nothing at all
  *         where the arguments name no cell.
  */
 std::optional<LANGUAGE::CTerritory> Country(unsigned int extendedCountryCode,

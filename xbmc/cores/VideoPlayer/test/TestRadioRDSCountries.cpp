@@ -63,7 +63,7 @@ TEST(TestRadioRDSCountries, TheCellHoldingANameRatherThanACodeNamesNowhere)
   EXPECT_EQ(KODI::RDS::Country(0xD0, 0xD, 1), CTerritory::FromCode("TZ"));
 }
 
-// The standard predates three of the places it names. A withdrawn code is still a registered
+// IEC 62106 predates three of the places it names. A withdrawn code is still a registered
 // region subtag, so the broadcast is reported as sent rather than silently reassigned - none of
 // the three has a single successor to reassign it to in any case.
 TEST(TestRadioRDSCountries, WithdrawnCodesAreReportedAsTheStandardSendsThem)

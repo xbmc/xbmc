@@ -13,13 +13,13 @@
 namespace
 {
 
-// A cell the standard reserves, which names no place
+// A cell IEC 62106 reserves, which names no place
 constexpr std::string_view RESERVED{};
 
 using Row = std::array<std::string_view, KODI::RDS::EXTENDED_COUNTRY_CODE_COUNT>;
 using Table = std::array<Row, KODI::RDS::COUNTRY_CODE_COUNT>;
 
-/* page 71, Annex D, table D.1 in the standard and Annex N */
+/* IEC 62106, Annex D, table D.1, and Annex N */
 // clang-format off
 // ECC 0xA0
 constexpr Table COUNTRY_CODES_A{{
