@@ -51,6 +51,7 @@ public:
   bool Configure(AVPixelFormat format);
   void FrameMove();
   void SetBuffer(IRenderBuffer* buffer);
+  void SetSpeed(double speed);
   void RenderFrame(bool clear, uint8_t alpha);
 
   // Feature support
