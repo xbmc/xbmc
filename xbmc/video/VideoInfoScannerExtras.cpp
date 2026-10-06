@@ -62,6 +62,12 @@ bool CVideoInfoScannerExtras::AddVideoExtras(const CFileItemList& items, const s
     return false;
   }
 
+  AddVideoExtras(dbId, path);
+  return true;
+}
+
+void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
+{
   // No need to check for .nomedia in the current directory, the caller already checked and this
   // function would not have been called if it existed.
 
@@ -112,7 +118,5 @@ bool CVideoInfoScannerExtras::AddVideoExtras(const CFileItemList& items, const s
       [](const std::shared_ptr<CFileItem>& dirItem)
       { return !CInfoScanner::HasNoMedia(dirItem->GetPath()); }, true,
       CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
-
-  return true;
 }
 } // namespace KODI::VIDEO
