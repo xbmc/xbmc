@@ -12,6 +12,7 @@
 #if defined(TARGET_WINDOWS_STORE)
 #include "DolbyVisionEffect.h"
 #endif
+#include "VideoRenderers/VideoShaders/ToneMappers.h"
 #include "WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/CPUInfo.h"
@@ -137,8 +138,9 @@ CRendererShaders::~CRendererShaders() = default;
 
 bool CRendererShaders::Supports(ERENDERFEATURE feature) const
 {
+  // the Dolby Vision effect bypasses the YUV shader and the HDR output stage
   if (feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION)
-    return true;
+    return !m_dolbyVisionEffect;
 
   return CRendererBase::Supports(feature);
 }
@@ -237,8 +239,14 @@ void CRendererShaders::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint
   if (!m_reuseIntermediate)
   {
     m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness,
-                             m_videoSettings.m_Hue, m_videoSettings.m_Saturation,
+                             m_hdrStream ? 50.0f : m_videoSettings.m_Hue,
+                             m_hdrStream ? 50.0f : m_videoSettings.m_Saturation,
                              DX::Windowing()->UseLimitedColor());
+    if (m_colorShaderHueSat != AVCOL_TRC_UNSPECIFIED)
+      m_colorShader->SetHueSaturation(
+          (m_videoSettings.m_Hue - 50.0f) * 3.6f, m_videoSettings.m_Saturation * 0.02f,
+          CToneMappers::GetPeakLuminanceValue(buf->hasDisplayMetadata, buf->displayMetadata,
+                                              buf->hasLightMetadata, buf->lightMetadata));
     m_colorShader->SetColParams(buf->color_space, buf->bits, !buf->full_range, buf->texBits);
     m_colorShader->Render(src, dstPoints, buf, target);
   }
@@ -389,6 +397,11 @@ void CRendererShaders::CheckVideoParameters()
     m_srcPrimaries = buf->primaries;
     m_colorShader.reset();
   }
+  if (m_hueSatTransfer != m_colorShaderHueSat)
+  {
+    m_colorShaderHueSat = m_hueSatTransfer;
+    m_colorShader.reset();
+  }
 }
 
 void CRendererShaders::UpdateVideoFilters()
@@ -406,7 +419,8 @@ void CRendererShaders::UpdateVideoFilters()
         (m_srcPrimaries == AVCOL_PRI_BT709 || m_srcPrimaries == AVCOL_PRI_BT2020))
       dstPrimaries = m_srcPrimaries;
 
-    if (!m_colorShader->Create(m_format, dstPrimaries, m_srcPrimaries))
+    if (!m_colorShader->Create(m_format, dstPrimaries, m_srcPrimaries, nullptr,
+                               m_colorShaderHueSat))
     {
       // we are in a big trouble
       CLog::LogF(LOGERROR, "unable to create YUV->RGB shader, rendering is not possible");
