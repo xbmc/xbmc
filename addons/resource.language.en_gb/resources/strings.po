@@ -25553,7 +25553,7 @@ msgstr ""
 #. Help for ignore video extras settting
 #: system/settings/settings.xml
 msgctxt "#40205"
-msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
+msgid "Select scanner action for video extras, in an \"extras\" folder or named by a Blu-ray disc.[CR][Enabled] Leave video extras out of the library.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
 #empty strings from id 40206 to 40208 freed in v22
