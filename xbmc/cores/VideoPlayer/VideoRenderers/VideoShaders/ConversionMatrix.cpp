@@ -45,6 +45,15 @@ constexpr Primaries PrimariesBT610_625 = {{{0.640, 0.330}, {0.290, 0.600}, {0.15
                                           {0.3127, 0.3290}};
 constexpr Primaries PrimariesBT2020 = {{{0.708, 0.292}, {0.170, 0.797}, {0.131, 0.046}},
                                        {0.3127, 0.3290}};
+
+// rotate and scale the centred chroma plane, same convention as the DXVA ProcAmp
+std::array<std::array<float, 3>, 3> HueSaturation(float hue, float saturation)
+{
+  const float angle = hue * std::numbers::pi_v<float> / 180.0f;
+  const float hueCos = saturation * std::cos(angle);
+  const float hueSin = saturation * std::sin(angle);
+  return {{{1.0f, 0.0f, 0.0f}, {0.0f, hueCos, hueSin}, {0.0f, -hueSin, hueCos}}};
+}
 } // namespace
 
 //------------------------------------------------------------------------------
@@ -528,12 +537,7 @@ const CGlMatrix& CConvertMatrix::GenMat()
   ConversionToRGB mConvRGB(convYCbCr.Kr, convYCbCr.Kb);
   CGlMatrix mat(mConvRGB);
 
-  // rotate and scale the centred chroma plane, same convention as the DXVA ProcAmp
-  const float hue = m_hue * std::numbers::pi_v<float> / 180.0f;
-  const float hueCos = m_saturation * std::cos(hue);
-  const float hueSin = m_saturation * std::sin(hue);
-  mat *= CGlMatrix(std::array<std::array<float, 3>, 3>{
-      {{1.0f, 0.0f, 0.0f}, {0.0f, hueCos, hueSin}, {0.0f, -hueSin, hueCos}}});
+  mat *= CGlMatrix(HueSaturation(m_hue, m_saturation));
 
   CTranslate trans(0, -0.5, -0.5);
   mat *= trans;
@@ -634,6 +638,24 @@ float CConvertMatrix::GetGammaSrc()
 float CConvertMatrix::GetGammaDst()
 {
   return m_gammaDst;
+}
+
+Matrix3 CConvertMatrix::GetLinearHueSatMat(AVColorSpace colspace, float hue, float saturation)
+{
+  const Matrix3x1 coefs = GetRGBYuvCoefs(colspace);
+  const ConversionToRGB toRGB(coefs[0], coefs[2]);
+  Matrix3 toYCbCr(toRGB.Get());
+  toYCbCr.Invert();
+
+  const Matrix3 mat = Matrix3(toRGB.Get()) * HueSaturation(hue, saturation) * toYCbCr.Get();
+
+  Matrix3 dst;
+
+  for (int i = 0; i < 3; ++i)
+    for (int j = 0; j < 3; ++j)
+      dst[i][j] = mat[j][i];
+
+  return dst;
 }
 
 Matrix3x1 CConvertMatrix::GetRGBYuvCoefs(AVColorSpace colspace)
