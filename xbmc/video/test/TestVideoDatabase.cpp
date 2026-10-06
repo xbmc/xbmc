@@ -716,10 +716,15 @@ TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
   EXPECT_TRUE(m_db.GetPathHash(folder, previousHash));
   EXPECT_FALSE(previousHash.empty());
 
+  const int renamed{
+      m_db.AddVideoVersionType("Renamed", VideoAssetTypeOwner::USER, VideoAssetType::EXTRA)};
+  m_db.SetVideoVersion(m_db.GetVideoVersionInfo(first).m_idFile, renamed);
+
   const std::string second{URIUtils::AddFileToFolder(folder, "Second.mkv")};
   EXPECT_GT(addVideo(second), 0);
   scanner.AddVideoExtrasBesideDisc(root, false, {});
   EXPECT_EQ(m_db.GetVideoVersionInfo(second).m_assetType, VideoAssetType::EXTRA);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetTypeId, renamed);
   std::string hash;
   EXPECT_TRUE(m_db.GetPathHash(folder, hash));
   EXPECT_NE(hash, previousHash);

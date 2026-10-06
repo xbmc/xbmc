@@ -141,6 +141,11 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
                                           AddDiscExtras(item->GetPath(), dbId)))
           return;
 
+        // An extra already in the library keeps any name or art it has since been given
+        if (const VideoAssetInfo asset{m_database.GetVideoVersionInfo(item->GetPath())};
+            asset.m_assetType == VideoAssetType::EXTRA && asset.m_idMedia == dbId)
+          return;
+
         const std::string extraTypeName =
             CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
