@@ -33,7 +33,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
 #include <utility>

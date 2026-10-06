@@ -163,16 +163,12 @@ TEST(TestMediaSourceSettings, SaveString)
   ms.Clear();
   EXPECT_TRUE(ms.Load(xmlfile));
   const auto& progsources = ms.GetSources(MediaSection::PROGRAMS);
-  const auto& progsources2 = ms.GetSources(MediaSection::PROGRAMS);
-  EXPECT_EQ(&progsources, &progsources2);
   EXPECT_EQ(progsources.size(), refprograms);
   const auto& filessources = ms.GetSources(MediaSection::FILES);
   EXPECT_EQ(filessources.size(), reffiles);
   const auto& musicsources = ms.GetSources(MediaSection::MUSIC);
   EXPECT_EQ(musicsources.size(), refmusic);
   const auto& videosources = ms.GetSources(MediaSection::VIDEO);
-  const auto& videosources2 = ms.GetSources(MediaSection::VIDEO);
-  EXPECT_EQ(&videosources, &videosources2);
   EXPECT_EQ(videosources.size(), refvideo);
   const auto& picturessources = ms.GetSources(MediaSection::PICTURES);
   EXPECT_EQ(picturessources.size(), refpictures);

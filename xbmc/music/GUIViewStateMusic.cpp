@@ -21,7 +21,6 @@
 #include "playlists/PlayListFileItemClassify.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
@@ -34,7 +33,6 @@
 using namespace KODI;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
-using KODI::MEDIA::MediaSection;
 
 PLAYLIST::Id CGUIViewStateWindowMusic::GetPlaylist() const
 {
