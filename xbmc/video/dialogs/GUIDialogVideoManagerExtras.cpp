@@ -271,6 +271,18 @@ std::string CGUIDialogVideoManagerExtras::GenerateVideoExtra(const std::string& 
 {
   // generate a video extra version string from its file path
 
+  // A disc is named after the folder holding it, which may be the extras folder itself
+  if (URIUtils::IsOpticalMediaFile(extrasPath))
+  {
+    std::string disc{URIUtils::RemoveDiscPath(extrasPath)};
+    URIUtils::RemoveSlashAtEnd(disc);
+    std::string root{extrasRoot};
+    URIUtils::RemoveSlashAtEnd(root);
+    if (disc.size() <= root.size())
+      return URIUtils::GetFileName(root);
+    return disc.substr(root.size() + 1);
+  }
+
   // remove the root path from its path
   const std::string extrasVersion{extrasPath.substr(extrasRoot.size())};
 

@@ -12,11 +12,15 @@
 #include "filesystem/Directory.h"
 #include "platform/Filesystem.h"
 #include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoUtils.h"
+#include "video/dialogs/GUIDialogVideoManagerExtras.h"
 
 #include <array>
 #include <fstream>
+#include <memory>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -215,3 +219,93 @@ const auto edition_tests = std::array{
 };
 
 INSTANTIATE_TEST_SUITE_P(TestVideoUtils, FindEditionInNameTest, testing::ValuesIn(edition_tests));
+
+namespace
+{
+//! The videos EnumerateVideoExtras() finds below root, as paths relative to it
+std::set<std::string> GetVideoExtras(const std::string& root, const std::string& folder)
+{
+  std::set<std::string> videos;
+  VIDEO::UTILS::EnumerateVideoExtras(URIUtils::AddFileToFolder(root, folder),
+                                     [&root, &videos](const std::shared_ptr<CFileItem>& item)
+                                     {
+                                       std::string video{item->GetPath().substr(root.size())};
+                                       StringUtils::Replace(video, '\\', '/');
+                                       videos.emplace(video);
+                                     });
+  return videos;
+}
+
+void CreateFiles(const std::string& root, const std::vector<std::string>& files)
+{
+  for (const std::string& file : files)
+  {
+    const std::string path{URIUtils::AddFileToFolder(root, file)};
+    ASSERT_TRUE(CUtil::CreateDirectoryEx(URIUtils::GetDirectory(path)));
+    std::ofstream of(path);
+  }
+}
+} // namespace
+
+TEST(TestVideoUtils, EnumerateVideoExtrasTakesADiscAsOneVideo)
+{
+  std::error_code ec;
+  std::string root{fs::create_temp_directory(ec)};
+  ASSERT_FALSE(ec);
+  URIUtils::AddSlashAtEnd(root);
+
+  CreateFiles(root, {
+                        "Extras/Trailer.mkv",
+                        "Extras/Featurettes/Making Of.mkv",
+                        "Extras/Hidden/.nomedia",
+                        "Extras/Hidden/Hidden.mkv",
+                        "Extras/DVD/VIDEO_TS/VIDEO_TS.IFO",
+                        "Extras/DVD/VIDEO_TS/VTS_01_1.VOB",
+#ifdef HAVE_LIBBLURAY
+                        "Extras/Disc 2/BDMV/index.bdmv",
+                        "Extras/Disc 2/BDMV/MovieObject.bdmv",
+                        "Extras/Disc 2/BDMV/PLAYLIST/00001.mpls",
+                        "Extras/Disc 2/BDMV/STREAM/00001.m2ts",
+                        "Extras/Disc 2/BDMV/BACKUP/index.bdmv",
+                        "Bonus Disc/BDMV/index.bdmv",
+                        "Bonus Disc/BDMV/STREAM/00001.m2ts",
+#endif
+                    });
+
+  const std::set<std::string> extras{
+      "Extras/Trailer.mkv",
+      "Extras/Featurettes/Making Of.mkv",
+      "Extras/DVD/VIDEO_TS/VIDEO_TS.IFO",
+#ifdef HAVE_LIBBLURAY
+      "Extras/Disc 2/BDMV/index.bdmv",
+#endif
+  };
+  EXPECT_EQ(GetVideoExtras(root, "Extras"), extras);
+#ifdef HAVE_LIBBLURAY
+  // The extras folder may itself be the disc
+  EXPECT_EQ(GetVideoExtras(root, "Bonus Disc"),
+            std::set<std::string>{"Bonus Disc/BDMV/index.bdmv"});
+#endif
+
+  XFILE::CDirectory::RemoveRecursive(root);
+}
+
+TEST(TestVideoUtils, VideoExtrasAreNamedAfterTheirFileOrDisc)
+{
+  const std::string extras{"/movies/Movie/Extras/"};
+  EXPECT_EQ(CGUIDialogVideoManagerExtras::GenerateVideoExtra(extras,
+                                                             extras + "Featurettes/Making Of.mkv"),
+            "Featurettes/Making Of");
+  EXPECT_EQ(CGUIDialogVideoManagerExtras::GenerateVideoExtra(extras, extras + "Bonus.iso"),
+            "Bonus");
+  EXPECT_EQ(
+      CGUIDialogVideoManagerExtras::GenerateVideoExtra(extras, extras + "Disc 2/BDMV/index.bdmv"),
+      "Disc 2");
+  EXPECT_EQ(CGUIDialogVideoManagerExtras::GenerateVideoExtra(extras,
+                                                             extras + "DVD/VIDEO_TS/VIDEO_TS.IFO"),
+            "DVD");
+
+  const std::string bonus{"/movies/Movie/Bonus Disc/"};
+  EXPECT_EQ(CGUIDialogVideoManagerExtras::GenerateVideoExtra(bonus, bonus + "BDMV/index.bdmv"),
+            "Bonus Disc");
+}

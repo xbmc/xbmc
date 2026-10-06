@@ -10,12 +10,10 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "InfoScanner.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Scraper.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
-#include "filesystem/Directory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/StackDirectory.h"
 #include "resources/LocalizeStrings.h"
@@ -23,7 +21,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/DiscsUtils.h"
-#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -32,6 +29,7 @@
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 
 #include <algorithm>
@@ -126,7 +124,7 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
   // function would not have been called if it existed.
 
   // Add video extras to library
-  CDirectory::EnumerateDirectory(
+  UTILS::EnumerateVideoExtras(
       path,
       [this, dbId, path](const std::shared_ptr<CFileItem>& item)
       {
@@ -174,10 +172,7 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
           m_database.ConvertVideoToVersion(VideoDbContentType::MOVIES, idMovie, dbId,
                                            idVideoAssetType, VideoAssetType::EXTRA);
         }
-      },
-      [](const std::shared_ptr<CFileItem>& dirItem)
-      { return !CInfoScanner::HasNoMedia(dirItem->GetPath()); }, true,
-      CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
+      });
 }
 
 void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)

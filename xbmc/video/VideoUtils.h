@@ -12,6 +12,7 @@
 #include "video/Bookmark.h"
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -39,6 +40,16 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
  \return non-empty string if item is optical media folder, empty otherwise.
  */
 std::string GetOpticalMediaPath(const CFileItem& item);
+
+/*!
+ \brief Call back for each video in a folder of video extras, and in the folders below it.
+  A disc (BDMV or VIDEO_TS) is one video, its index.bdmv or VIDEO_TS.IFO, however many files it
+  holds. The folder may itself be a disc. A folder below it holding a .nomedia file is skipped.
+ \param folder [in] the folder of video extras
+ \param callback [in] called for each video
+ */
+void EnumerateVideoExtras(const std::string& folder,
+                          const std::function<void(const std::shared_ptr<CFileItem>&)>& callback);
 
 /*! \brief Check whether auto play next item is set for the media type of the given item.
   \param item [in] the item to check
