@@ -91,6 +91,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       CVideoInfoTag* setInfo = pItem->GetVideoInfoTag();
       setInfo->m_strPath = pItem->GetPath();
       setInfo->m_strTitle = pItem->GetLabel();
+      setInfo->m_strSortTitle = (*set->second.begin())->GetVideoInfoTag()->m_set.GetSortTitle();
       setInfo->m_strPlot = (*set->second.begin())->GetVideoInfoTag()->m_set.GetOverview();
 
       int ratings = 0;
