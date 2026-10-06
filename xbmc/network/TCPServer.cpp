@@ -95,12 +95,21 @@ bool SetNonBlocking(SOCKET socket)
 #endif
 }
 
-bool SendWouldBlock()
+bool WouldBlock()
 {
 #if defined(TARGET_WINDOWS)
   return WSAGetLastError() == WSAEWOULDBLOCK;
 #else
   return errno == EAGAIN || errno == EWOULDBLOCK;
+#endif
+}
+
+bool Interrupted()
+{
+#if defined(TARGET_WINDOWS)
+  return WSAGetLastError() == WSAEINTR;
+#else
+  return errno == EINTR;
 #endif
 }
 }
@@ -261,6 +270,8 @@ void CTCPServer::Process()
               m_connections[i]->Enqueue(m_connections[i], this, buffer, nread);
             }
           }
+          else if (nread < 0 && (WouldBlock() || Interrupted()))
+            continue;
           else
             close = true;
 
@@ -656,11 +667,13 @@ void CTCPServer::CTCPClient::Send(const char *data, unsigned int size)
       continue;
     }
 
-    if (written < 0 && SendWouldBlock() && WaitUntilWritable())
+    if (written < 0 && (Interrupted() || (WouldBlock() && WaitUntilWritable())))
       continue;
 
     // -1 must not reach the unsigned counter above
     CLog::Log(LOGERROR, "JSONRPC Server: Send failed, dropping {} of {} bytes", size - sent, size);
+    // The peer cannot find the start of the next message after a partly written one
+    RequestClose();
     return;
   }
 }
@@ -675,6 +688,8 @@ bool CTCPServer::CTCPClient::WaitUntilWritable()
     timeval timeout = {0, 100000};
     const int result =
         select(static_cast<int>(m_socket) + 1, nullptr, &writable, nullptr, &timeout);
+    if (result < 0 && Interrupted())
+      continue;
     if (result != 0)
       return result > 0 && !m_disconnecting;
   }
