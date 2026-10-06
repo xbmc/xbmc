@@ -243,23 +243,6 @@ namespace KODI::VIDEO
      */
     bool GetEpisodeTitleFromRegExp(CRegExp& reg, EPISODE& episodeInfo);
 
-    static int GetPathHash(const CFileItemList &items, std::string &hash);
-
-    /*! \brief Retrieve a "fast" hash of the given directory (if available)
-     Performs a stat() on the directory, and uses modified time to create a "fast"
-     hash of the folder. If no modified time is available, the create time is used,
-     and if neither are available, an empty hash is returned.
-     In case exclude from scan expressions are present, the string array will be appended
-     to the md5 hash to ensure we're doing a re-scan whenever the user modifies those.
-     \param directory folder to hash
-     \param excludes string array of exclude expressions
-     \return the md5 hash of the folder"
-     */
-    std::string GetFastHash(const std::string &directory, const std::vector<std::string> &excludes) const;
-
-    /*! \brief As above but from an already known raw modification time */
-    std::string GetFastHash(const std::vector<std::string>& excludes, int64_t time) const;
-
     /*! \brief Retrieve a "fast" hash of the given directory recursively (if available)
      Performs a stat() on the directory, and uses modified time to create a "fast"
      hash of each folder. If no modified time is available, the create time is used,

@@ -446,7 +446,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       std::string fastHash;
       if (m_advancedSettings->m_bVideoLibraryUseFastHash && !URIUtils::IsPlugin(strDirectory))
-        fastHash = GetFastHash(strDirectory, regexps);
+        fastHash = UTILS::GetFastHash(strDirectory, regexps);
 
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && StringUtils::EqualsNoCase(fastHash, dbHash))
       { // fast hashes match - no need to process anything
@@ -478,8 +478,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
               std::none_of(stackRegExps.begin(), stackRegExps.end(),
                            [&label](CRegExp& re) { return re.RegFind(label) != -1; }) &&
               m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
-              StringUtils::EqualsNoCase(rawTime != 0 ? GetFastHash(regexps, rawTime)
-                                                     : GetFastHash(items[i]->GetPath(), regexps),
+              StringUtils::EqualsNoCase(rawTime != 0
+                                            ? UTILS::GetFastHash(regexps, rawTime)
+                                            : UTILS::GetFastHash(items[i]->GetPath(), regexps),
                                         dbh))
             items[i]->SetProperty(PROPERTY_UNCHANGED, true);
           else if (HasNoMedia(items[i]->GetPath()))
@@ -494,7 +495,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // check whether to re-use previously computed fast hash
         listingHash = !CanFastHash(items, regexps) || fastHash.empty();
         if (listingHash)
-          GetPathHash(items, hash);
+          UTILS::GetPathHash(items, hash);
         else
           hash = fastHash;
       }
@@ -542,7 +543,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // sort by filename as always present for any files, but keep case sensitivity
         items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
 
-        GetPathHash(items, hash);
+        UTILS::GetPathHash(items, hash);
         bSkip = true;
         if (!m_database.GetPathHash(strDirectory, dbHash) || !StringUtils::EqualsNoCase(dbHash, hash))
           bSkip = false;
@@ -725,7 +726,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
             int64_t rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
             if (rawTime == 0)
               rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
-            fh = rawTime != 0 ? GetFastHash(regexps, rawTime) : GetFastHash(discFolder, regexps);
+            fh = rawTime != 0 ? UTILS::GetFastHash(regexps, rawTime)
+                              : UTILS::GetFastHash(discFolder, regexps);
           }
           std::string dbh;
           const bool unchanged{!fh.empty() && m_database.GetPathHash(discFolder, dbh) &&
@@ -1947,7 +1949,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           // force sorting consistency to avoid hash mismatch between platforms
           // sort by filename as always present for any files, but keep case sensitivity
           items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
-          GetPathHash(items, hash);
+          UTILS::GetPathHash(items, hash);
           if (pathKnown && StringUtils::EqualsNoCase(dbHash, hash))
           {
             // slow hashes match - no need to process anything
@@ -2835,62 +2837,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return false; // no info found, or cancelled
   }
 
-  int CVideoInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash)
-  {
-    // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
-    if (0 == items.Size()) return 0;
-    CDigest digest{CDigest::Type::MD5};
-    int count = 0;
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      const CFileItemPtr pItem = items[i];
-      digest.Update(pItem->GetPath());
-      if (pItem->IsPlugin())
-      {
-        // allow plugin to calculate hash itself using strings rather than binary data for size and date
-        // according to ListItem.setInfo() documentation date format should be "d.m.Y"
-        const int64_t size{pItem->GetSize()};
-        if (size)
-          digest.Update(std::to_string(size));
-
-        const CDateTime& dateTime{pItem->GetDateTime()};
-        if (dateTime.IsValid())
-        {
-          digest.Update(StringUtils::Format("{:02}.{:02}.{:04}", dateTime.GetDay(),
-                                            dateTime.GetMonth(), dateTime.GetYear()));
-        }
-      }
-      else
-      {
-        // linux and windows platform don't follow the same output format
-        // (linux return a zero value for milliseconds member).
-        // for consistency, use less precise format instead which discard
-        // milliseconds value.
-        // Unless a modification occur during the 1 second window when
-        // kodi hash and update this particular file, we are safe.
-        if (const std::string stackParts{pItem->GetProperty(PROPERTY_STACK_DIGEST).asString()};
-            !stackParts.empty())
-        {
-          // add a digest of every part (calculated in Stack())
-          digest.Update(stackParts);
-        }
-        else
-        {
-          const int64_t size{pItem->GetSize()};
-          digest.Update(&size, sizeof(size));
-
-          time_t tt{};
-          pItem->GetDateTime().GetAsTime(tt);
-          digest.Update(&tt, sizeof(tt));
-        }
-      }
-      if (IsVideo(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
-        count++;
-    }
-    hash = digest.Finalize();
-    return count;
-  }
-
   void CVideoInfoScanner::AddPathToClean(const std::string& directory)
   {
     m_pathsToClean.insert(m_database.GetPathId(directory));
@@ -2918,33 +2864,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return false;
     }
     return true;
-  }
-
-  std::string CVideoInfoScanner::GetFastHash(const std::string &directory,
-      const std::vector<std::string> &excludes) const
-  {
-    struct __stat64 buffer;
-    if (XFILE::CFile::Stat(directory, &buffer) == 0)
-    {
-      int64_t time = buffer.st_mtime;
-      if (!time)
-        time = buffer.st_ctime;
-      if (time)
-        return GetFastHash(excludes, time);
-    }
-    return "";
-  }
-
-  std::string CVideoInfoScanner::GetFastHash(const std::vector<std::string>& excludes,
-                                             int64_t time) const
-  {
-    CDigest digest{CDigest::Type::MD5};
-
-    if (!excludes.empty())
-      digest.Update(StringUtils::Join(excludes, "|"));
-
-    digest.Update((unsigned char*)&time, sizeof(time));
-    return digest.Finalize();
   }
 
   std::string CVideoInfoScanner::GetRecursiveFastHash(const std::string &directory,
