@@ -20,6 +20,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
+#include "utils/ItemProperties.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -118,8 +119,8 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
       item->SetDynPath(item->GetVideoInfoTag()->GetPath());
     }
   }
-  if (items.HasProperty("customtitle"))
-    items.SetLabel(items.GetProperty("customtitle").asString());
+  if (items.HasProperty(KODI::ITEM::PROPERTY::CUSTOM_TITLE))
+    items.SetLabel(items.GetProperty(KODI::ITEM::PROPERTY::CUSTOM_TITLE).asString());
   else
     items.SetLabel(pNode->GetLocalizedName());
 

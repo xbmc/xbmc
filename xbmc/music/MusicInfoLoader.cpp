@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -223,7 +224,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
           pItem->SetArt("thumb", it->second[0].strThumb);
       }
       else if (it != m_songsMap.end() && it->second.size() > 1 &&
-               pItem->GetProperty("cueloadinformation").asBoolean(false))
+               pItem->GetProperty(ITEM::PROPERTY::CUE_LOAD_INFORMATION).asBoolean(false))
       {
         // Find matching song
         const auto& songs{it->second};

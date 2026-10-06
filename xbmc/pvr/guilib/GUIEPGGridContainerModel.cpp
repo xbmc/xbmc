@@ -17,6 +17,7 @@
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "utils/ItemProperties.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -718,7 +719,7 @@ std::unique_ptr<CFileItemList> CGUIEPGGridContainerModel::GetCurrentTimeLineItem
       // tags are sorted, so we can iterate and append
       for (const auto& tag : (*itEpg).second.tags)
       {
-        tag->SetProperty("TimelineIndex", i);
+        tag->SetProperty(KODI::ITEM::PROPERTY::TIMELINE_INDEX, i);
         items->Add(tag);
         ++i;
       }
@@ -727,7 +728,7 @@ std::unique_ptr<CFileItemList> CGUIEPGGridContainerModel::GetCurrentTimeLineItem
     {
       // fake empty EPG
       const std::shared_ptr<CFileItem> tag = CreateGapItem(channel);
-      tag->SetProperty("TimelineIndex", i);
+      tag->SetProperty(KODI::ITEM::PROPERTY::TIMELINE_INDEX, i);
       items->Add(tag);
       ++i;
     }

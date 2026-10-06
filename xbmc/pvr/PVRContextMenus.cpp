@@ -33,6 +33,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 
@@ -455,7 +456,7 @@ bool DeleteWatchedRecordings::IsVisible(const CFileItem& item) const
 {
   // recordings folder?
   if (item.IsFolder() && !item.IsParentFolder() && CPVRRecordingsPath(item.GetPath()).IsValid())
-    return item.GetProperty("watchedepisodes").asInteger() > 0;
+    return item.GetProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES).asInteger() > 0;
 
   return false;
 }

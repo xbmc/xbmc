@@ -58,6 +58,7 @@
 #include "utils/ArtUtils.h"
 #include "utils/EpisodeUtils.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/ItemProperties.h"
 #include "utils/Mime.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/RegExp.h"
@@ -175,7 +176,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
   }
 
   // Speedup FillInDefaultIcon()
-  SetProperty("icon_never_overlay", true);
+  SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
 
   if (tag->IsRadio() && !HasMusicInfoTag())
     FillMusicInfoTag(tag);
@@ -200,7 +201,7 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
     SetArt("icon", "DefaultPVRSearch.png");
 
   // Speedup FillInDefaultIcon()
-  SetProperty("icon_never_overlay", true);
+  SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
 
   FillInMimeType(false);
 }
@@ -226,7 +227,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   SetArt("thumb", channel->IconPath());
 
   // Speedup FillInDefaultIcon()
-  SetProperty("icon_never_overlay", true);
+  SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
 
   if (channel->IsRadio() && !HasMusicInfoTag())
   {
@@ -265,7 +266,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
     SetArt("fanart", record->FanartPath());
 
   // Speedup FillInDefaultIcon()
-  SetProperty("icon_never_overlay", true);
+  SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
 
   FillInMimeType(false);
 }
@@ -287,7 +288,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
     SetArt("icon", "DefaultTVShows.png");
 
   // Speedup FillInDefaultIcon()
-  SetProperty("icon_never_overlay", true);
+  SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
 
   FillInMimeType(false);
 }
@@ -308,7 +309,7 @@ CFileItem::CFileItem(std::string_view path, const std::shared_ptr<CPVRProvider>&
     SetArt("thumb", provider->GetThumbPath());
 
   // Speedup FillInDefaultIcon()
-  SetProperty("icon_never_overlay", true);
+  SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
 
   FillInMimeType(false);
 }
@@ -394,7 +395,7 @@ CFileItem::CFileItem(const CMediaSource& share) : m_strPath(share.strPath)
   m_lockInfo = share.GetLockInfo();
   m_iDriveType = share.m_iDriveType;
   if (!share.strDevicePath.empty())
-    SetProperty("device_path", share.strDevicePath);
+    SetProperty(ITEM::PROPERTY::DEVICE_PATH, share.strDevicePath);
   SetArt("thumb", share.m_strThumbnailImage);
   SetLabelPreformatted(true);
   if (IsDVD())
@@ -948,7 +949,7 @@ bool CFileItem::IsFileFolder(FileFolderType types) const
 
 bool CFileItem::IsLibraryFolder() const
 {
-  if (HasProperty("library.filter") && GetProperty("library.filter").asBoolean())
+  if (HasProperty(ITEM::PROPERTY::LIBRARY_FILTER) && GetProperty(ITEM::PROPERTY::LIBRARY_FILTER).asBoolean())
     return true;
 
   return GetURL().IsLibraryFolder();
@@ -1265,8 +1266,8 @@ bool IsSameLibraryItem(const CFileItem& item, const CFileItem& other)
   const auto SameFile{[&item, &other](int myFile, int otherFile)
                       {
                         return myFile == otherFile ||
-                               item.GetProperty("replaced_file_id").asInteger32(-1) == otherFile ||
-                               other.GetProperty("replaced_file_id").asInteger32(-1) == myFile;
+                               item.GetProperty(ITEM::PROPERTY::REPLACED_FILE_ID).asInteger32(-1) == otherFile ||
+                               other.GetProperty(ITEM::PROPERTY::REPLACED_FILE_ID).asInteger32(-1) == myFile;
                       }};
 
   // For a version its db id is a file id
@@ -1295,8 +1296,8 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
 
   if (!m_strPath.empty() && item->GetPath() == m_strPath)
   {
-    if (item->HasProperty("item_start") || HasProperty("item_start"))
-      return (item->GetProperty("item_start") == GetProperty("item_start"));
+    if (item->HasProperty(ITEM::PROPERTY::ITEM_START) || HasProperty(ITEM::PROPERTY::ITEM_START))
+      return (item->GetProperty(ITEM::PROPERTY::ITEM_START) == GetProperty(ITEM::PROPERTY::ITEM_START));
     // See if we have associated a bluray playlist
     if (URIUtils::IsBlurayPath(GetDynPath()) || URIUtils::IsBlurayPath(item->GetDynPath()))
     {
@@ -1327,34 +1328,34 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   if (MUSIC::IsMusicDb(*this) && HasMusicInfoTag())
   {
     CFileItem dbItem(m_musicInfoTag->GetURL(), false);
-    if (HasProperty("item_start"))
-      dbItem.SetProperty("item_start", GetProperty("item_start"));
+    if (HasProperty(ITEM::PROPERTY::ITEM_START))
+      dbItem.SetProperty(ITEM::PROPERTY::ITEM_START, GetProperty(ITEM::PROPERTY::ITEM_START));
     return dbItem.IsSamePath(item);
   }
   if (VIDEO::IsVideoDb(*this) && HasVideoInfoTag())
   {
     CFileItem dbItem(GetVideoInfoTag()->m_strFileNameAndPath, false);
-    if (HasProperty("item_start"))
-      dbItem.SetProperty("item_start", GetProperty("item_start"));
+    if (HasProperty(ITEM::PROPERTY::ITEM_START))
+      dbItem.SetProperty(ITEM::PROPERTY::ITEM_START, GetProperty(ITEM::PROPERTY::ITEM_START));
     return dbItem.IsSamePath(item);
   }
   if (MUSIC::IsMusicDb(*item) && item->HasMusicInfoTag())
   {
     CFileItem dbItem(item->m_musicInfoTag->GetURL(), false);
-    if (item->HasProperty("item_start"))
-      dbItem.SetProperty("item_start", item->GetProperty("item_start"));
+    if (item->HasProperty(ITEM::PROPERTY::ITEM_START))
+      dbItem.SetProperty(ITEM::PROPERTY::ITEM_START, item->GetProperty(ITEM::PROPERTY::ITEM_START));
     return IsSamePath(&dbItem);
   }
   if (VIDEO::IsVideoDb(*item) && item->HasVideoInfoTag() &&
       !URIUtils::IsBlurayPath(item->GetDynPath()))
   {
     CFileItem dbItem(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-    if (item->HasProperty("item_start"))
-      dbItem.SetProperty("item_start", item->GetProperty("item_start"));
+    if (item->HasProperty(ITEM::PROPERTY::ITEM_START))
+      dbItem.SetProperty(ITEM::PROPERTY::ITEM_START, item->GetProperty(ITEM::PROPERTY::ITEM_START));
     return IsSamePath(&dbItem);
   }
-  if (HasProperty("original_listitem_url"))
-    return (GetProperty("original_listitem_url") == item->GetPath());
+  if (HasProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL))
+    return (GetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL) == item->GetPath());
   return false;
 }
 
@@ -1445,8 +1446,8 @@ void CFileItem::UpdateInfo(const CFileItem& item,
       label = CEpisodeUtils::GetEpisodesLabel(item);
 
       // Multiple episodes so use show plot rather than episode plot
-      if (HasVideoInfoTag() && item.HasProperty("episodes_show_plot"))
-        GetVideoInfoTag()->m_strPlot = item.GetProperty("episodes_show_plot").asString();
+      if (HasVideoInfoTag() && item.HasProperty(ITEM::PROPERTY::EPISODES_SHOW_PLOT))
+        GetVideoInfoTag()->m_strPlot = item.GetProperty(ITEM::PROPERTY::EPISODES_SHOW_PLOT).asString();
     }
     else if (!item.GetLabel().empty())
       label = item.GetLabel();
@@ -1674,7 +1675,7 @@ void CFileItem::SetFromSong(const CSong &song)
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lStartPartNumber = 1;
-  SetProperty("item_start", song.iStartOffset);
+  SetProperty(ITEM::PROPERTY::ITEM_START, song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
   if (!song.strThumb.empty())
     SetArt("thumb", song.strThumb);
@@ -2346,7 +2347,7 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
-  if (GetProperty("IsVideoFolder").asBoolean(false))
+  if (GetProperty(ITEM::PROPERTY::IS_VIDEO_FOLDER).asBoolean(false))
   {
     const std::shared_ptr<CFileItem> loadedItem{VIDEO::UTILS::LoadVideoFilesFolderInfo(*this)};
     if (loadedItem)
@@ -2510,12 +2511,12 @@ bool CFileItem::IsResumable() const
     int64_t watched = 0;
     int64_t inprogress = 0;
     int64_t total = 0;
-    if (HasProperty("inprogressepisodes"))
+    if (HasProperty(ITEM::PROPERTY::IN_PROGRESS_EPISODES))
     {
       // show/season
-      watched = GetProperty("watchedepisodes").asInteger();
-      inprogress = GetProperty("inprogressepisodes").asInteger();
-      total = GetProperty("totalepisodes").asInteger();
+      watched = GetProperty(ITEM::PROPERTY::WATCHED_EPISODES).asInteger();
+      inprogress = GetProperty(ITEM::PROPERTY::IN_PROGRESS_EPISODES).asInteger();
+      total = GetProperty(ITEM::PROPERTY::TOTAL_EPISODES).asInteger();
     }
     else if (HasProperty("inprogress"))
     {

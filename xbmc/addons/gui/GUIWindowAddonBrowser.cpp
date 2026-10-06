@@ -39,6 +39,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -136,7 +137,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         // iItem is checked for validity inside these routines
         if (iAction == ACTION_SHOW_INFO)
         {
-          if (!m_vecItems->Get(iItem)->GetProperty("Addon.ID").empty())
+          if (!m_vecItems->Get(iItem)->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).empty())
             return CGUIDialogAddonInfo::ShowForItem((*m_vecItems)[iItem]);
           return false;
         }
@@ -151,7 +152,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         for (int i = 0; i < m_vecItems->Size(); ++i)
         {
           CFileItemPtr item = m_vecItems->Get(i);
-          if (item->GetProperty("Addon.ID") == message.GetStringParam())
+          if (item->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID) == message.GetStringParam())
           {
             UpdateStatus(item);
             FormatAndSort(*m_vecItems);
@@ -249,12 +250,12 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string& player)
   if (!item->IsFolder())
   {
     // cancel a downloading job
-    if (item->HasProperty("Addon.Downloading"))
+    if (item->HasProperty(KODI::ITEM::PROPERTY::ADDON_DOWNLOADING))
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{24000}, item->GetProperty("Addon.Name"),
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{24000}, item->GetProperty(KODI::ITEM::PROPERTY::ADDON_NAME),
                                            CVariant{24066}, CVariant{""}))
       {
-        if (CAddonInstaller::GetInstance().Cancel(item->GetProperty("Addon.ID").asString()))
+        if (CAddonInstaller::GetInstance().Cancel(item->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString()))
           Refresh();
       }
       return true;
@@ -336,7 +337,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
         {
           //check if it's installed
           AddonPtr addon;
-          if (!CServiceBroker::GetAddonMgr().GetAddon(items[i]->GetProperty("Addon.ID").asString(),
+          if (!CServiceBroker::GetAddonMgr().GetAddon(items[i]->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(),
                                                       addon, OnlyEnabled::CHOICE_YES))
             items.Remove(i);
         }
@@ -357,18 +358,18 @@ void CGUIWindowAddonBrowser::UpdateStatus(const CFileItemPtr& item) const
 
   unsigned int percent;
   bool downloadFinshed;
-  if (CAddonInstaller::GetInstance().GetProgress(item->GetProperty("Addon.ID").asString(), percent,
+  if (CAddonInstaller::GetInstance().GetProgress(item->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(), percent,
                                                  downloadFinshed))
   {
     std::string progress = StringUtils::Format(
         !downloadFinshed ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24042)
                          : CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24044),
         percent);
-    item->SetProperty("Addon.Status", progress);
-    item->SetProperty("Addon.Downloading", true);
+    item->SetProperty(KODI::ITEM::PROPERTY::ADDON_STATUS, progress);
+    item->SetProperty(KODI::ITEM::PROPERTY::ADDON_DOWNLOADING, true);
   }
   else
-    item->ClearProperty("Addon.Downloading");
+    item->ClearProperty(KODI::ITEM::PROPERTY::ADDON_DOWNLOADING);
 }
 
 bool CGUIWindowAddonBrowser::Update(const std::string& strDirectory,

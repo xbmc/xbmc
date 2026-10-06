@@ -31,6 +31,7 @@
 #include "settings/VideoVersionsSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -464,7 +465,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
 
   // Select the playlist using the simple menu
   const std::string oldPath{item->GetDynPath()};
-  item->SetProperty("force_playlist_selection", true);
+  item->SetProperty(KODI::ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION, true);
   const int idMovie{m_database.GetMovieId(oldPath)};
 
   CFileItemList items;
