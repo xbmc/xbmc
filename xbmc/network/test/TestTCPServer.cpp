@@ -8,10 +8,15 @@
 
 #include "ServiceBroker.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/json-rpc/JSONRPC.h"
+#include "interfaces/json-rpc/JSONServiceDescription.h"
 #include "network/Network.h"
+#include "network/NetworkServices.h"
 #include "network/TCPServer.h"
+#include "threads/Event.h"
 #include "utils/Variant.h"
 
+#include <atomic>
 #include <chrono>
 #include <future>
 #include <memory>
@@ -28,6 +33,70 @@ using namespace std::chrono_literals;
 
 namespace
 {
+CEvent requestBlocked{true};
+CEvent releaseRequest{true};
+std::atomic<bool> blockedRequestReturned{false};
+CEvent laterRequestStarted{true};
+
+JSONRPC_STATUS Block(const std::string& method,
+                     ITransportLayer* transport,
+                     IClient* client,
+                     const CVariant& parameterObject,
+                     CVariant& result)
+{
+  requestBlocked.Set();
+  releaseRequest.Wait();
+  blockedRequestReturned = true;
+  result = "OK";
+  return OK;
+}
+
+JSONRPC_STATUS Record(const std::string& method,
+                      ITransportLayer* transport,
+                      IClient* client,
+                      const CVariant& parameterObject,
+                      CVariant& result)
+{
+  laterRequestStarted.Set();
+  result = "OK";
+  return OK;
+}
+
+// Test.Block holds its worker until releaseRequest is set; Test.Record only says it ran
+class CTestMethods
+{
+public:
+  CTestMethods()
+  {
+    requestBlocked.Reset();
+    releaseRequest.Reset();
+    blockedRequestReturned = false;
+    laterRequestStarted.Reset();
+
+    CJSONRPC::Initialize();
+    m_added = CJSONServiceDescription::AddMethod(Schema("Test.Block"), Block) &&
+              CJSONServiceDescription::AddMethod(Schema("Test.Record"), Record);
+  }
+
+  ~CTestMethods()
+  {
+    releaseRequest.Set();
+    CJSONRPC::Cleanup();
+  }
+
+  bool Added() const { return m_added; }
+
+private:
+  static std::string Schema(const std::string& name)
+  {
+    return R"(")" + name +
+           R"(": {"type": "method", "description": "", "transport": "Response",
+                  "permission": "ReadData", "params": [], "returns": "string"})";
+  }
+
+  bool m_added{false};
+};
+
 class TestTCPServer : public testing::Test
 {
 protected:
@@ -179,4 +248,74 @@ TEST_F(TestTCPServer, StopsWhileAnAnnouncementIsBlockedOnAPeerThatStoppedReading
   CServiceBroker::RegisterAnnouncementManager(previous);
 
   EXPECT_TRUE(stoppedInTime) << "StopServer waited on an announcement to a stalled peer";
+}
+
+TEST_F(TestTCPServer, StartsNoRequestOnceStopped)
+{
+  CTestMethods methods;
+  ASSERT_TRUE(methods.Added());
+
+  const SOCKET client = Connect();
+  ASSERT_NE(INVALID_SOCKET, client);
+
+  // One write, so the second request is already with the worker when the first blocks it
+  const std::string requests = R"({"jsonrpc":"2.0","method":"Test.Block","id":1})"
+                               R"({"jsonrpc":"2.0","method":"Test.Record","id":2})";
+  ASSERT_EQ(static_cast<int>(requests.size()),
+            send(client, requests.data(), static_cast<int>(requests.size()), 0));
+  ASSERT_TRUE(requestBlocked.Wait(5s));
+
+  // A request held up by the caller of StopServer, as by a modal dialog on the GUI thread
+  std::promise<void> stopped;
+  auto done = stopped.get_future();
+  std::thread stopper(
+      [&stopped]
+      {
+        CTCPServer::StopServer(true);
+        stopped.set_value();
+      });
+  const bool stoppedInTime = done.wait_for(5s) == std::future_status::ready;
+  releaseRequest.Set();
+  stopper.join();
+
+  EXPECT_TRUE(stoppedInTime) << "StopServer waited on a request that only it could release";
+  const bool laterStarted = laterRequestStarted.Wait(1s);
+  EXPECT_FALSE(laterStarted) << "a request started after StopServer returned";
+
+  // Let a late request finish before its method is removed
+  if (laterStarted)
+    std::this_thread::sleep_for(500ms);
+}
+
+TEST_F(TestTCPServer, StopWaitsForRequestsAfterTheServerThreadHasExited)
+{
+  CTestMethods methods;
+  ASSERT_TRUE(methods.Added());
+
+  const SOCKET client = Connect();
+  ASSERT_NE(INVALID_SOCKET, client);
+  const std::string request = R"({"jsonrpc":"2.0","method":"Test.Block","id":1})";
+  ASSERT_EQ(static_cast<int>(request.size()),
+            send(client, request.data(), static_cast<int>(request.size()), 0));
+  ASSERT_TRUE(requestBlocked.Wait(5s));
+
+  // Application shutdown signals every service to stop before it waits for any of them
+  CTCPServer::StopServer(false);
+  for (auto waited = 0ms; CTCPServer::IsRunning() && waited < 5s; waited += 10ms)
+    std::this_thread::sleep_for(10ms);
+  ASSERT_FALSE(CTCPServer::IsRunning());
+
+  std::thread releaser(
+      []
+      {
+        std::this_thread::sleep_for(200ms);
+        releaseRequest.Set();
+      });
+  CServiceBroker::GetNetwork().GetServices().StopJSONRPCServer(true);
+  const bool returned = blockedRequestReturned;
+  releaser.join();
+  // Nothing may still be in a request once its method is removed
+  CTCPServer::StopServer(true);
+
+  EXPECT_TRUE(returned) << "StopJSONRPCServer(true) did not wait for a running request";
 }

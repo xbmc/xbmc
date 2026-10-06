@@ -139,7 +139,9 @@ void CTCPServer::StopServer(bool bWait)
     ServerInstance->StopThread(bWait);
     if (bWait)
     {
-      // Deinitialize has told every worker to stop; one inside a modal dialog may not return
+      // Bounded: a request can be waiting on the caller itself, on a modal dialog the GUI thread
+      // opened for it and is still running when it calls this. A worker that outlives the wait
+      // finishes only the request it is in.
       ServerInstance->WaitForWorkers(std::chrono::seconds(2));
       ServerInstance.reset();
     }
@@ -172,8 +174,6 @@ CTCPServer::CTCPServer(int port, bool nonlocal) : CThread("TCPServer")
 
 void CTCPServer::Process()
 {
-  m_bStop = false;
-
   while (!m_bStop)
   {
     SOCKET          max_fd = 0;
@@ -797,8 +797,9 @@ void CTCPServer::CTCPClient::RunRequests(const std::shared_ptr<CTCPClient>& self
       std::unique_lock<std::mutex> lock(self->m_inboundMutex);
 
       // Cleared under the lock Enqueue tests it under, so the next buffer starts a new worker.
-      // A connection that is dropped still has what it already sent executed.
-      if (self->m_inbound.empty())
+      // A connection that is dropped still has what it already sent executed, a stopped server
+      // does not.
+      if (self->m_inbound.empty() || host->m_bStop)
       {
         self->m_workerStarted = false;
         return;
@@ -881,7 +882,13 @@ void CTCPServer::CTCPClient::PushBuffer(CTCPServer* host, const char* buffer, in
       }
       if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
       {
+        // Once StopServer() has been called nothing more is started or sent, as StopServer(true)
+        // may return before this does and the application then tears down what a request reaches
+        if (host->m_bStop)
+          return;
         std::string line = CJSONRPC::MethodCall(m_buffer, host, this);
+        if (host->m_bStop)
+          return;
         Send(line.c_str(), line.size());
         m_beginChar = m_beginBrackets = m_endBrackets = 0;
         m_buffer.clear();
