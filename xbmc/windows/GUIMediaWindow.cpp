@@ -809,7 +809,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   if (section)
   {
-    const std::vector<std::string>& regexps{
+    const std::vector<std::string> regexps{
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetExcludeFromListingRegExps(
             *section)};
     KODI::REGEXP::RegExpCache cache;

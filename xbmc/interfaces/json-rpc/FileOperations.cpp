@@ -89,7 +89,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
     return InvalidParams;
 
   const MediaSection section{MediaSectionFromName(media).value_or(MediaSection::FILES)};
-  const std::vector<std::string>& regexps{
+  const std::vector<std::string> regexps{
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetExcludeFromListingRegExps(
           section)};
   const std::string extensions{
@@ -365,7 +365,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
     {
       CFileItemList items;
       const MediaSection section{MediaSectionFromName(media).value_or(MediaSection::FILES)};
-      const std::vector<std::string>& regexps{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetExcludeFromListingRegExps(section)};
+      const std::vector<std::string> regexps{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetExcludeFromListingRegExps(section)};
       const std::string extensions{
           CServiceBroker::GetFileExtensionProvider().GetMediaExtensions(section)};
 
