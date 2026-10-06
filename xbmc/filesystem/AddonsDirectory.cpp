@@ -21,6 +21,7 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
+#include "filesystem/AddonsPaths.h"
 #include "games/GameUtils.h"
 #include "games/addons/GameClient.h"
 #include "guilib/TextureManager.h"
@@ -525,14 +526,14 @@ static void OutdatedAddons(const CURL& path, CFileItemList &items)
     if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
     {
       const CFileItemPtr itemUpdateAllowed(
-          std::make_shared<CFileItem>("addons://update_allowed/", false));
+          std::make_shared<CFileItem>(ADDONS::UPDATE_ALLOWED, false));
       itemUpdateAllowed->SetLabel(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24137));
       itemUpdateAllowed->SetSpecialSort(SortSpecial::TOP);
       items.Add(itemUpdateAllowed);
     }
 
-    const CFileItemPtr itemUpdateAll(std::make_shared<CFileItem>("addons://update_all/", false));
+    const CFileItemPtr itemUpdateAll(std::make_shared<CFileItem>(ADDONS::UPDATE_ALL, false));
     itemUpdateAll->SetLabel(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24122));
     itemUpdateAll->SetSpecialSort(SortSpecial::TOP);
@@ -624,14 +625,14 @@ static bool Repos(const CURL& path, CFileItemList &items)
   if (addons.empty())
     return true;
   else if (addons.size() == 1)
-    return Browse(CURL("addons://" + addons[0]->ID()), items);
-  CFileItemPtr item(new CFileItem("addons://all/", true));
+    return Browse(CURL(ADDONS::ROOT + addons[0]->ID()), items);
+  CFileItemPtr item(new CFileItem(ADDONS::ALL, true));
   item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24087));
   item->SetSpecialSort(SortSpecial::TOP);
   items.Add(item);
   for (const auto& repo : addons)
   {
-    CFileItemPtr item = CAddonsDirectory::FileItemFromAddon(repo, "addons://" + repo->ID(), true);
+    CFileItemPtr item = CAddonsDirectory::FileItemFromAddon(repo, ADDONS::ROOT + repo->ID(), true);
     items.Add(item);
   }
   items.SetContent("addons");
@@ -643,21 +644,21 @@ static void RootDirectory(CFileItemList& items)
   auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
   items.SetLabel(localizeStrings.Get(10040));
   {
-    CFileItemPtr item(new CFileItem("addons://user/", true));
+    CFileItemPtr item(new CFileItem(ADDONS::USER, true));
     item->SetLabel(localizeStrings.Get(24998));
     item->SetArt("icon", "DefaultAddonsInstalled.png");
     items.Add(item);
   }
   if (CServiceBroker::GetAddonMgr().HasAvailableUpdates())
   {
-    CFileItemPtr item(new CFileItem("addons://outdated/", true));
+    CFileItemPtr item(new CFileItem(ADDONS::OUTDATED, true));
     item->SetLabel(localizeStrings.Get(24043));
     item->SetArt("icon", "DefaultAddonsUpdates.png");
     items.Add(item);
   }
   if (CAddonInstaller::GetInstance().IsDownloading())
   {
-    CFileItemPtr item(new CFileItem("addons://downloading/", true));
+    CFileItemPtr item(new CFileItem(ADDONS::DOWNLOADING, true));
     item->SetLabel(localizeStrings.Get(24067));
     item->SetArt("icon", "DefaultNetwork.png");
     items.Add(item);
@@ -665,26 +666,26 @@ static void RootDirectory(CFileItemList& items)
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
       && HasRecentlyUpdatedAddons())
   {
-    CFileItemPtr item(new CFileItem("addons://recently_updated/", true));
+    CFileItemPtr item(new CFileItem(ADDONS::RECENTLY_UPDATED, true));
     item->SetLabel(localizeStrings.Get(24004));
     item->SetArt("icon", "DefaultAddonsRecentlyUpdated.png");
     items.Add(item);
   }
   if (CServiceBroker::GetAddonMgr().HasAddons(AddonType::REPOSITORY))
   {
-    CFileItemPtr item(new CFileItem("addons://repos/", true));
+    CFileItemPtr item(new CFileItem(ADDONS::REPOS, true));
     item->SetLabel(localizeStrings.Get(24033));
     item->SetArt("icon", "DefaultAddonsRepo.png");
     items.Add(item);
   }
   {
-    CFileItemPtr item(new CFileItem("addons://install/", false));
+    CFileItemPtr item(new CFileItem(ADDONS::INSTALL, false));
     item->SetLabel(localizeStrings.Get(24041));
     item->SetArt("icon", "DefaultAddonsZip.png");
     items.Add(item);
   }
   {
-    CFileItemPtr item(new CFileItem("addons://search/", true));
+    CFileItemPtr item(new CFileItem(ADDONS::SEARCH, true));
     item->SetLabel(localizeStrings.Get(137));
     item->SetArt("icon", "DefaultAddonsSearch.png");
     items.Add(item);
@@ -707,18 +708,18 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     RootDirectory(items);
     return true;
   }
-  else if (endpoint == "user")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::USER))
   {
     UserInstalledAddons(path, items);
     return true;
   }
-  else if (endpoint == "dependencies")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::DEPENDENCIES))
   {
     DependencyAddons(path, items);
     return true;
   }
   // PVR hardcodes this view so keep for compatibility
-  else if (endpoint == "disabled")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::DISABLED))
   {
     VECADDONS addons;
     AddonType type;
@@ -738,29 +739,29 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     }
     return false;
   }
-  else if (endpoint == "outdated")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::OUTDATED))
   {
     OutdatedAddons(path, items);
     return true;
   }
-  else if (endpoint == "running")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::RUNNING))
   {
     RunningAddons(path, items);
     return true;
   }
-  else if (endpoint == "repos")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::REPOS))
   {
     return Repos(path, items);
   }
-  else if (endpoint == "sources")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::SOURCES))
   {
     return GetScriptsAndPlugins(path.GetFileName(), items);
   }
-  else if (endpoint == "search")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::SEARCH))
   {
     return GetSearchResults(path, items);
   }
-  else if (endpoint == "recently_updated")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::RECENTLY_UPDATED))
   {
     VECADDONS addons;
     if (!GetRecentlyUpdatedAddons(addons))
@@ -771,7 +772,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24004));
     return true;
   }
-  else if (endpoint == "downloading")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::DOWNLOADING))
   {
     VECADDONS addons;
     CAddonInstaller::GetInstance().GetInstallList(addons);
@@ -780,7 +781,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24067));
     return true;
   }
-  else if (endpoint == "more")
+  else if (endpoint == ADDONS::EndpointOf(ADDONS::MORE))
   {
     const std::string& type = path.GetFileName();
     if (type == "video" || type == "audio" || type == "image" || type == "executable")
@@ -801,8 +802,8 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
     return false;
 
   AddonPtr tmp;
-  return url.GetHostName() == "repos" || url.GetHostName() == "all" ||
-         url.GetHostName() == "search" ||
+  return url.GetHostName() == ADDONS::EndpointOf(ADDONS::REPOS) || url.GetHostName() == ADDONS::EndpointOf(ADDONS::ALL) ||
+         url.GetHostName() == ADDONS::EndpointOf(ADDONS::SEARCH) ||
          CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), tmp, AddonType::REPOSITORY,
                                                 OnlyEnabled::CHOICE_YES);
 }
@@ -893,7 +894,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   item->SetPath(path);
 
   std::string strLabel(addon->Name());
-  if (CURL(path).GetHostName() == "search")
+  if (CURL(path).GetHostName() == ADDONS::EndpointOf(ADDONS::SEARCH))
     strLabel = StringUtils::Format("{} - {}", CAddonInfo::TranslateType(addon->Type(), true),
                                    addon->Name());
   item->SetLabel(strLabel);

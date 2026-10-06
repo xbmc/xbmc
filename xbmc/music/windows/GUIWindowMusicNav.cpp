@@ -18,6 +18,7 @@
 #include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/AddonsPaths.h"
 #include "filesystem/LibraryPaths.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
@@ -631,7 +632,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           !URIUtils::IsSpecial(item->GetPath()) && !item->IsPlugin() && !item->IsScript() &&
           !PLAYLIST::IsPlayList(
               *item) && // .m3u etc. that as flagged as folders when playlistasfolders
-          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
+          !StringUtils::StartsWithNoCase(item->GetPath(), ADDONS::ROOT) &&
           (profileManager->GetCurrentProfile().canWriteDatabases() ||
            g_passwordManager.bMasterUser))
       {
