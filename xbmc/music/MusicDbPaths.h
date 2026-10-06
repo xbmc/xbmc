@@ -8,8 +8,7 @@
 
 #pragma once
 
-//! \brief The musicdb:// paths of the music library's nodes, as XFILE::CMusicDatabaseDirectory
-//! parses them.
+//! \brief The musicdb:// paths of the music library's nodes and filtered album views.
 namespace KODI::MUSIC::DB_PATH
 {
 
