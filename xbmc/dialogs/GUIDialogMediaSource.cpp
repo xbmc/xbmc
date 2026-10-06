@@ -29,6 +29,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -143,7 +144,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const std::string &type)
     CMediaSource share;
     share.FromNameAndPaths(strName, dialog->GetPaths());
     if (dialog->m_paths->Size() > 0)
-      share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetArt("thumb");
+      share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetArt(KODI::ART::TYPE::THUMB);
     CMediaSourceSettings::GetInstance().AddShare(type, share);
     OnMediaSourceChanged(type, "", share);
   }

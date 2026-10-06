@@ -16,6 +16,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "language/LangInfo.h"
+#include "utils/ArtTypes.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
@@ -463,7 +464,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
           }
-          else if (value == "banner")
+          else if (value == KODI::ART::TYPE::BANNER)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());

@@ -35,6 +35,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -248,13 +249,13 @@ bool CGUIWindowPictures::Update(const std::string &strDirectory, bool updateFilt
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
-  m_vecItems->SetArt("thumb", "");
+  m_vecItems->SetArt(ART::TYPE::THUMB, "");
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PICTURES_GENERATETHUMBS))
     m_thumbLoader.Load(*m_vecItems);
 
   CPictureThumbLoader thumbLoader;
   std::string thumb = thumbLoader.GetCachedImage(*m_vecItems, "thumb");
-  m_vecItems->SetArt("thumb", thumb);
+  m_vecItems->SetArt(ART::TYPE::THUMB, thumb);
 
   return true;
 }

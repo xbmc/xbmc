@@ -46,6 +46,7 @@
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/Map.h"
@@ -254,8 +255,8 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
         if (item && m_movieItem->IsPath(item->GetPath()))
         { // Just copy over the stream details and the thumb if we don't already have one
-          if (!m_movieItem->HasArt("thumb"))
-            m_movieItem->SetArt("thumb", item->GetArt("thumb"));
+          if (!m_movieItem->HasArt(ART::TYPE::THUMB))
+            m_movieItem->SetArt(ART::TYPE::THUMB, item->GetArt(ART::TYPE::THUMB));
           m_movieItem->GetVideoInfoTag()->m_streamDetails = item->GetVideoInfoTag()->m_streamDetails;
         }
         return true;
@@ -367,8 +368,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       std::string thumb = database.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
       CFileItemPtr item(new CFileItem(*it));
       if (!thumb.empty())
-        item->SetArt("thumb", thumb);
-      item->SetArt("icon", "DefaultArtist.png");
+        item->SetArt(ART::TYPE::THUMB, thumb);
+      item->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
       item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(29904));
       m_castList->Add(item);
     }
@@ -382,18 +383,18 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       {
         CFileItemPtr item(new CFileItem(it->strName));
         if (!it->thumb.empty())
-          item->SetArt("thumb", it->thumb);
+          item->SetArt(ART::TYPE::THUMB, it->thumb);
         else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                      CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
         { // backward compatibility
           std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
           if (!thumb.empty())
           {
-            item->SetArt("thumb", thumb);
+            item->SetArt(ART::TYPE::THUMB, thumb);
             CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
           }
         }
-        item->SetArt("icon", "DefaultActor.png");
+        item->SetArt(ART::TYPE::ICON, "DefaultActor.png");
         item->SetLabel(it->strName);
         item->SetLabel2(it->strRole);
         m_castList->Add(item);
@@ -419,7 +420,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     {
       CFileItemPtr item(new CFileItem(it->strName));
       if (!it->thumb.empty())
-        item->SetArt("thumb", it->thumb);
+        item->SetArt(ART::TYPE::THUMB, it->thumb);
       else
       {
         const std::shared_ptr<CSettings> settings =
@@ -431,12 +432,12 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
           std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
           if (!thumb.empty())
           {
-            item->SetArt("thumb", thumb);
+            item->SetArt(ART::TYPE::THUMB, thumb);
             CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
           }
         }
       }
-      item->SetArt("icon", "DefaultActor.png");
+      item->SetArt(ART::TYPE::ICON, "DefaultActor.png");
       item->SetLabel(it->strName);
       item->SetLabel2(it->strRole);
       m_castList->Add(item);
@@ -541,7 +542,7 @@ void CGUIDialogVideoInfo::Update()
   {
     CGUIImage* pImageControl = static_cast<CGUIImage*>(pControl);
     pImageControl->FreeResources();
-    pImageControl->SetFileName(m_movieItem->GetArt("thumb"));
+    pImageControl->SetFileName(m_movieItem->GetArt(ART::TYPE::THUMB));
   }
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
@@ -899,7 +900,7 @@ void CArtTypeChooser::UpdateArtType(const std::string& type, const std::string& 
   if (!m_items.IsEmpty())
     for (auto& item : m_items)
       if (item->GetProperty("type") == type)
-        item->SetArt("thumb", art);
+        item->SetArt(ART::TYPE::THUMB, art);
 }
 
 bool CArtTypeChooser::ChooseArtType()
@@ -921,7 +922,7 @@ bool CArtTypeChooser::ChooseArtType()
 
     // maps art types to resource ids
     static constexpr auto name2idMap = make_map<std::string_view, int>({
-        {"banner", 20020},
+        {ART::TYPE::BANNER, 20020},
         {"fanart", 20445},
         {"poster", 20021},
         {"thumb", 21371},
@@ -932,7 +933,7 @@ bool CArtTypeChooser::ChooseArtType()
       const auto item = std::make_shared<CFileItem>(type, false);
       item->SetProperty("type", type);
       if (m_item->HasArt(type))
-        item->SetArt("thumb", m_item->GetArt(type));
+        item->SetArt(ART::TYPE::THUMB, m_item->GetArt(type));
 
       const auto it = name2idMap.find(type);
       item->SetLabel(
@@ -1037,7 +1038,7 @@ void CGUIDialogVideoInfo::SetLabel(int iControl, const std::string &strLabel)
 
 std::string CGUIDialogVideoInfo::GetThumbnail() const
 {
-  return m_movieItem->GetArt("thumb");
+  return m_movieItem->GetArt(ART::TYPE::THUMB);
 }
 
 int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
@@ -1903,7 +1904,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   if (!currentArt.empty())
   {
     const auto itemCurrent = std::make_shared<CFileItem>("thumb://Current", false);
-    itemCurrent->SetArt("thumb", currentArt);
+    itemCurrent->SetArt(ART::TYPE::THUMB, currentArt);
     itemCurrent->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13512));
     items.Add(itemCurrent);
   }
@@ -1912,7 +1913,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   if (!embeddedArt.empty())
   {
     const auto itemEmbedded = std::make_shared<CFileItem>("thumb://Embedded", false);
-    itemEmbedded->SetArt("thumb", embeddedArt);
+    itemEmbedded->SetArt(ART::TYPE::THUMB, embeddedArt);
     itemEmbedded->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13519));
     items.Add(itemEmbedded);
   }
@@ -1922,8 +1923,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   {
     const auto itemRemote =
         std::make_shared<CFileItem>(StringUtils::Format("thumb://Remote{0}", i), false);
-    itemRemote->SetArt("thumb", remoteArt[i]);
-    itemRemote->SetArt("icon", "DefaultPicture.png");
+    itemRemote->SetArt(ART::TYPE::THUMB, remoteArt[i]);
+    itemRemote->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
     itemRemote->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13513));
     items.Add(itemRemote);
 
@@ -1936,13 +1937,13 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   {
     const auto itemLocal = std::make_shared<CFileItem>("thumb://Local", false);
     itemLocal->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13514));
-    itemLocal->SetArt("thumb", localArt);
+    itemLocal->SetArt(ART::TYPE::THUMB, localArt);
     items.Add(itemLocal);
   }
 
   const auto itemNone = std::make_shared<CFileItem>("thumb://None", false);
   itemNone->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
-  itemNone->SetArt("icon", artHandler->GetDefaultIcon());
+  itemNone->SetArt(ART::TYPE::ICON, artHandler->GetDefaultIcon());
   items.Add(itemNone);
 
   std::string result;

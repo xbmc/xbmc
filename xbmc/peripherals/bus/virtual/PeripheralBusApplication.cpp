@@ -21,6 +21,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -102,7 +103,7 @@ void CPeripheralBusApplication::GetDirectory(const std::string& strPath, CFileIt
       item->SetProperty("location", peripheral->Location());
       item->SetProperty("class", PeripheralTypeTranslator::TypeToString(peripheral->Type()));
       if (controller)
-        item->SetArt("icon", controller->Layout().ImagePath());
+        item->SetArt(ART::TYPE::ICON, controller->Layout().ImagePath());
       items.Add(item);
     }
   }
@@ -121,7 +122,7 @@ void CPeripheralBusApplication::GetDirectory(const std::string& strPath, CFileIt
       item->SetProperty("location", peripheral->Location());
       item->SetProperty("class", PeripheralTypeTranslator::TypeToString(peripheral->Type()));
       if (controller)
-        item->SetArt("icon", controller->Layout().ImagePath());
+        item->SetArt(ART::TYPE::ICON, controller->Layout().ImagePath());
       items.Add(item);
     }
   }

@@ -34,6 +34,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -153,7 +154,7 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList& items)
         m_searchfilter == nullptr ? 19335 : 19336)); // "New search..." / "Edit search..."
     item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecial::TOP);
-    item->SetArt("icon", "DefaultPVRSearch.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRSearch.png");
     items.Add(item);
 
     item = std::make_shared<CFileItem>(IsRadio() ? CPVREpgSearchPath::PATH_RADIO_SAVEDSEARCHES
@@ -163,7 +164,7 @@ void CGUIWindowPVRSearchBase::OnPrepareFileItems(CFileItemList& items)
         19337)); // "Saved searches"
     item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecial::TOP);
-    item->SetArt("icon", "DefaultFolder.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultFolder.png");
     items.Add(item);
   }
 

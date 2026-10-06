@@ -21,6 +21,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/Variant.h"
 #include "utils/guilib/GUIBuiltinsUtils.h"
 #include "view/GUIViewState.h"
@@ -47,17 +48,17 @@ bool ChooseAndSetNewName(CFileItem& item)
 bool ChooseAndSetNewThumbnail(CFileItem& item)
 {
   CFileItemList prefilledItems;
-  if (item.HasArt("thumb"))
+  if (item.HasArt(KODI::ART::TYPE::THUMB))
   {
     const auto current = std::make_shared<CFileItem>("thumb://Current", false);
-    current->SetArt("thumb", item.GetArt("thumb"));
+    current->SetArt(KODI::ART::TYPE::THUMB, item.GetArt(KODI::ART::TYPE::THUMB));
     current->SetLabel(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016)); // Current thumb
     prefilledItems.Add(current);
   }
 
   const auto none = std::make_shared<CFileItem>("thumb://None", false);
-  none->SetArt("icon", item.GetArt("icon"));
+  none->SetArt(KODI::ART::TYPE::ICON, item.GetArt(KODI::ART::TYPE::ICON));
   none->SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018)); // No thumb
   prefilledItems.Add(none);
@@ -70,7 +71,7 @@ bool ChooseAndSetNewThumbnail(CFileItem& item)
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1030),
           thumb)) // Browse for image
   {
-    item.SetArt("thumb", thumb);
+    item.SetArt(KODI::ART::TYPE::THUMB, thumb);
     return true;
   }
   return false;

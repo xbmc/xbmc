@@ -17,6 +17,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ContentUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -134,7 +135,7 @@ bool LoadFromFile(const std::string& strPath, CFileItemList& items)
         const auto item{std::make_shared<CFileItem>(name)};
         item->SetPath(favURL);
         if (thumb)
-          item->SetArt("thumb", thumb);
+          item->SetArt(ART::TYPE::THUMB, thumb);
         items.Add(item);
       }
     }
@@ -207,8 +208,8 @@ bool CFavouritesService::Persist() const
   {
     auto* favNode = doc.NewElement("favourite");
     favNode->SetAttribute("name", item->GetLabel().c_str());
-    if (item->HasArt("thumb"))
-      favNode->SetAttribute("thumb", item->GetArt("thumb").c_str());
+    if (item->HasArt(ART::TYPE::THUMB))
+      favNode->SetAttribute("thumb", item->GetArt(ART::TYPE::THUMB).c_str());
 
     auto* execute = doc.NewText(CFavouritesURL(item->GetPath()).GetExecString().c_str());
     favNode->InsertEndChild(execute);
@@ -258,7 +259,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
       const auto favourite{std::make_shared<CFileItem>(item.GetLabel())};
       if (item.GetLabel().empty())
         favourite->SetLabel(CUtil::GetTitleFromPath(item.GetPath(), item.IsFolder()));
-      favourite->SetArt("thumb", ContentUtils::GetPreferredArtImage(item));
+      favourite->SetArt(ART::TYPE::THUMB, ContentUtils::GetPreferredArtImage(item));
       const std::string favUrl{CFavouritesURL(item, contextWindow).GetURL()};
       favourite->SetPath(favUrl);
       m_favourites.Add(favourite);

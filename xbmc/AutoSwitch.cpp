@@ -16,6 +16,7 @@
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "view/ViewState.h"
 
 #include <algorithm>
@@ -33,7 +34,7 @@ enum class Method
   BY_FOLDERTHUMBS,
 };
 
-auto hasThumb = [](const auto& item) { return item->HasArt("thumb"); };
+auto hasThumb = [](const auto& item) { return item->HasArt(KODI::ART::TYPE::THUMB); };
 }
 
 /// \brief Generic function to add a layer of transparency to the calling window
@@ -160,7 +161,7 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
     return false;
 
   const int numThumbs = std::ranges::count_if(
-      vecItems, [](const auto& item) { return item->IsFolder() && item->HasArt("thumb"); });
+      vecItems, [](const auto& item) { return item->IsFolder() && item->HasArt(KODI::ART::TYPE::THUMB); });
   return numThumbs >= 0.01f * percent * (numItems - fileCount);
 }
 

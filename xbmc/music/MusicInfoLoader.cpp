@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/ArtTypes.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -198,8 +199,8 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         mapItem->GetDateTime() == pItem->GetDateTime())
     { // Query map if we previously cached the file on HD
       *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
-      if (mapItem->HasArt("thumb"))
-        pItem->SetArt("thumb", mapItem->GetArt("thumb"));
+      if (mapItem->HasArt(ART::TYPE::THUMB))
+        pItem->SetArt(ART::TYPE::THUMB, mapItem->GetArt(ART::TYPE::THUMB));
     }
     else
     {
@@ -220,7 +221,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         // and even if it has a cuesheet it has only one song
         pItem->GetMusicInfoTag()->SetSong(it->second[0]);
         if (!it->second[0].strThumb.empty())
-          pItem->SetArt("thumb", it->second[0].strThumb);
+          pItem->SetArt(ART::TYPE::THUMB, it->second[0].strThumb);
       }
       else if (it != m_songsMap.end() && it->second.size() > 1 &&
                pItem->GetProperty("cueloadinformation").asBoolean(false))
@@ -239,7 +240,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
           // Populate the music info tag from the matched song
           pItem->GetMusicInfoTag()->SetSong(*it2);
           if (!it2->strThumb.empty())
-            pItem->SetArt("thumb", it2->strThumb);
+            pItem->SetArt(ART::TYPE::THUMB, it2->strThumb);
 
           // Build the musicdb:// path so the item references the database entry
           pItem->SetDynPath(pItem->GetPath());
@@ -256,7 +257,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         {
           pItem->GetMusicInfoTag()->SetSong(song);
           if (!song.strThumb.empty())
-            pItem->SetArt("thumb", song.strThumb);
+            pItem->SetArt(ART::TYPE::THUMB, song.strThumb);
         }
       }
       else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(

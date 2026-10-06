@@ -20,6 +20,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
@@ -85,8 +86,8 @@ std::string CVideoItemArtworkHandler::GetCurrentArt() const
   std::string currentArt;
   if (m_item->HasArt(m_artType))
     currentArt = m_item->GetArt(m_artType);
-  else if (m_item->HasArt("thumb") && (m_artType == "poster" || m_artType == "banner"))
-    currentArt = m_item->GetArt("thumb");
+  else if (m_item->HasArt(ART::TYPE::THUMB) && (m_artType == "poster" || m_artType == ART::TYPE::BANNER))
+    currentArt = m_item->GetArt(ART::TYPE::THUMB);
 
   return currentArt;
 }
@@ -470,7 +471,7 @@ public:
 
 std::string CVideoItemArtworkFanartHandler::GetCurrentArt() const
 {
-  return m_item->GetArt("fanart");
+  return m_item->GetArt(ART::TYPE::FANART);
 }
 
 std::vector<std::string> CVideoItemArtworkFanartHandler::GetRemoteArt() const

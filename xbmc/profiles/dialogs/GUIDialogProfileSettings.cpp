@@ -28,6 +28,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -240,13 +241,13 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     if (!m_thumb.empty())
     {
       CFileItemPtr item(new CFileItem("thumb://Current", false));
-      item->SetArt("thumb", m_thumb);
+      item->SetArt(KODI::ART::TYPE::THUMB, m_thumb);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
       items.Add(item);
     }
 
     CFileItemPtr item(new CFileItem("thumb://None", false));
-    item->SetArt("thumb", "DefaultUser.png");
+    item->SetArt(KODI::ART::TYPE::THUMB, "DefaultUser.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
     items.Add(item);
 

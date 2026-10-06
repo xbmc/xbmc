@@ -14,6 +14,7 @@
 #include "TextureCache.h"
 #include "imagefiles/ImageFileURL.h"
 #include "pvr/PVRManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -50,7 +51,7 @@ void CPVRThumbLoader::OnLoaderFinish()
 
 void CPVRThumbLoader::ClearCachedImage(CFileItem& item)
 {
-  const std::string thumb = item.GetArt("thumb");
+  const std::string thumb = item.GetArt(KODI::ART::TYPE::THUMB);
   if (!thumb.empty())
   {
     CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
@@ -59,7 +60,7 @@ void CPVRThumbLoader::ClearCachedImage(CFileItem& item)
       m_textureDatabase->ClearTextureForPath(item.GetPath(), "thumb");
       m_textureDatabase->Close();
     }
-    item.SetArt("thumb", "");
+    item.SetArt(KODI::ART::TYPE::THUMB, "");
     m_bInvalidated = true;
   }
 }
@@ -91,7 +92,7 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
   if (thumb.empty())
     return false;
 
-  item.SetArt("thumb", thumb);
+  item.SetArt(KODI::ART::TYPE::THUMB, thumb);
   return true;
 }
 

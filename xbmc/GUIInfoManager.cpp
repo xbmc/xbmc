@@ -26,6 +26,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/SkinSettings.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/FileUtils.h"
@@ -12300,10 +12301,10 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem& item)
 void CGUIInfoManager::SetCurrentAlbumThumb(const std::string& thumbFileName)
 {
   if (CFileUtils::Exists(thumbFileName))
-    m_currentFile->SetArt("thumb", thumbFileName);
+    m_currentFile->SetArt(ART::TYPE::THUMB, thumbFileName);
   else
   {
-    m_currentFile->SetArt("thumb", "");
+    m_currentFile->SetArt(ART::TYPE::THUMB, "");
     ART::FillInDefaultIcon(*m_currentFile);
   }
 }
@@ -12496,14 +12497,14 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem* item,
       case LISTITEM_PROGRAM_COUNT:
         return std::to_string(item->GetProgramCount());
       case LISTITEM_ACTUAL_ICON:
-        return item->GetArt("icon");
+        return item->GetArt(ART::TYPE::ICON);
       case LISTITEM_ICON:
       {
         std::string strThumb = item->GetThumbHideIfUnwatched(item);
         if (strThumb.empty())
-          strThumb = item->GetArt("icon");
+          strThumb = item->GetArt(ART::TYPE::ICON);
         if (fallback)
-          *fallback = item->GetArt("icon");
+          *fallback = item->GetArt(ART::TYPE::ICON);
         return strThumb;
       }
       case LISTITEM_ART:

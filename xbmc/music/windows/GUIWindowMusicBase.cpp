@@ -27,6 +27,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "utils/ArtTypes.h"
 #include "utils/PlaceholderPaths.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_CDDA_RIPPER
@@ -859,13 +860,13 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist->SetLabel(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16035));
       newPlaylist->SetLabelPreformatted(true);
-      newPlaylist->SetArt("icon", "DefaultPartyMode.png");
+      newPlaylist->SetArt(ART::TYPE::ICON, "DefaultPartyMode.png");
       newPlaylist->SetFolder(true);
       items.Add(newPlaylist);
 
       newPlaylist = std::make_shared<CFileItem>(PLACEHOLDER::NEW_PLAYLIST, false);
       newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(525));
-      newPlaylist->SetArt("icon", "DefaultAddSource.png");
+      newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecial::BOTTOM);
       newPlaylist->SetCanQueue(false);
@@ -875,7 +876,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
           std::string{PLACEHOLDER::NEW_SMART_PLAYLIST} + "music", false);
       newPlaylist->SetLabel(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21437));
-      newPlaylist->SetArt("icon", "DefaultAddSource.png");
+      newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecial::BOTTOM);
       newPlaylist->SetCanQueue(false);

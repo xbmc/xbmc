@@ -43,6 +43,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/PlaceholderPaths.h"
@@ -300,7 +301,7 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
   {
     CFileItemPtr artitem(new CFileItem(type, false));
     // Localise the names of common types of art
-    if (type == "banner")
+    if (type == ART::TYPE::BANNER)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20020));
     else if (type == "fanart")
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20445));
@@ -314,7 +315,7 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
     artitem->SetProperty("arttype", type);
     // Set current art as art item thumb
     if (musicitem.HasArt(type))
-      artitem->SetArt("thumb", musicitem.GetArt(type));
+      artitem->SetArt(ART::TYPE::THUMB, musicitem.GetArt(type));
     artlist.Add(artitem);
   }
 

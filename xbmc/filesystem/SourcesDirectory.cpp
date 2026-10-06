@@ -20,6 +20,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/FileUtils.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/URIUtils.h"
@@ -67,7 +68,7 @@ bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, C
       // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
       std::string strThumb = "special://temp/dvdicon.tbn";
       if (CFileUtils::Exists(strThumb))
-        pItem->SetArt("thumb", strThumb);
+        pItem->SetArt(ART::TYPE::THUMB, strThumb);
     }
     else if (URIUtils::IsProtocol(pItem->GetPath(), "addons"))
       strIcon = "DefaultHardDisk.png";
@@ -92,7 +93,7 @@ bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, C
     else
       strIcon = "DefaultHardDisk.png";
 
-    pItem->SetArt("icon", strIcon);
+    pItem->SetArt(ART::TYPE::ICON, strIcon);
     if (share.GetLockInfo().IsLocked() &&
         m_profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
