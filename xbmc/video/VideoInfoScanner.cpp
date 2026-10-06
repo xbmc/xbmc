@@ -636,6 +636,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       OnDirectoryScanned(strDirectory);
 
     bool foundSomethingInArchive = false;
+    std::vector<std::string> extrasFolders;
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -643,15 +644,32 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (m_bStop)
         break;
 
-      // add video extras to library
-      if (foundSomething && content == ContentType::MOVIES && settings.parent_name &&
-          !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
+      // add video extras to library. An extras folder holds no movie of its own, so it is never
+      // scanned for one.
+      bool addAsExtras{content == ContentType::MOVIES && settings.parent_name &&
+                       !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem)};
+      if (addAsExtras)
       {
-        if (m_extras.AddVideoExtras(items, pItem->GetPath()))
+        SScanSettings extrasSettings;
+        bool extrasFoundDirectly{false};
+        m_database.GetScraperForPath(pItem->GetPath(), extrasSettings, extrasFoundDirectly,
+                                    &m_scraperCache);
+        addAsExtras = !extrasFoundDirectly;
+      }
+      if (addAsExtras)
+      {
+        RemoveSubDirectories(m_pathsToScan, pItem->GetPath(), {});
+        if (foundSomething)
         {
-          CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
-                    CURL::GetRedacted(pItem->GetPath()));
+          if (m_extras.AddVideoExtras(items, pItem->GetPath()))
+          {
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
+                      CURL::GetRedacted(pItem->GetPath()));
+          }
         }
+        // The movie may be in the folders beside it (eg. Disc 1, Disc 2), not yet scanned
+        else if (!bSkip)
+          extrasFolders.emplace_back(pItem->GetPath());
 
         // no further processing required
         continue;
@@ -714,6 +732,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
           foundSomethingInArchive = true;
         }
       }
+    }
+
+    for (const std::string& extrasFolder : extrasFolders)
+    {
+      if (m_bStop)
+        break;
+
+      const int dbId{m_database.GetMovieIdInFolder(strDirectory, extrasFolder)};
+      if (dbId < 0)
+      {
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: No single movie found for video extras {}",
+                  CURL::GetRedacted(extrasFolder));
+        continue;
+      }
+
+      m_extras.AddVideoExtras(dbId, extrasFolder);
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
+                CURL::GetRedacted(extrasFolder));
     }
 
     // If the direct scan found nothing but an archive subfolder scan did,

@@ -597,6 +597,28 @@ TEST_F(TestVideoDatabase, ConvertVideoToVersionKeepsStreamDetails)
   EXPECT_EQ(6019, details.GetVideoDuration());
 }
 
+// A bonus disc's folder sits beside the folders holding the movie's own discs
+TEST_F(TestVideoDatabase, GetMovieIdInFolderFindsTheMovieOnTheDiscsBesideAnExtrasFolder)
+{
+  const std::string folder{"/movies/Aliens (1986)/"};
+  const std::string extras{folder + "Bonus Disc/"};
+
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(folder + "Disc 1/ALIENS.iso", 800))};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{URIUtils::GetBlurayPlaylistPath(folder + "Disc 2/ALIENS.iso", 800), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  // Scraped as a movie of its own before extras were recognised there
+  ASSERT_GT(AddMovie(URIUtils::GetBlurayPlaylistPath(extras + "ALIENS_BONUS.iso", 800)), 0);
+
+  EXPECT_EQ(idMovie, m_db.GetMovieIdInFolder(folder, extras));
+
+  // Nor is there a single movie where a folder holds two
+  ASSERT_GT(AddMovie(folder + "Aliens (1986) Special Edition.mkv"), 0);
+  EXPECT_EQ(-1, m_db.GetMovieIdInFolder(folder, extras));
+}
+
 TEST_F(TestVideoDatabase, KindsOfExtraAreBuiltInExtraTypes)
 {
   // The types were named when the database was made, before any strings were loaded

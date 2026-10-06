@@ -1144,6 +1144,52 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
   return -1;
 }
 
+int CVideoDatabase::GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder)
+{
+  if (!m_pDB || !m_pDS)
+    return -1;
+
+  std::vector<std::pair<int, std::string>> paths;
+  std::vector<std::pair<int, std::string>> excludedPaths;
+  if (!GetSubPaths(folder, paths, false) || !GetSubPaths(excludedFolder, excludedPaths, false))
+    return -1;
+
+  std::vector<std::string> pathIds;
+  for (const auto& [idPath, path] : paths)
+  {
+    if (std::ranges::none_of(excludedPaths,
+                             [idPath](const auto& excluded) { return excluded.first == idPath; }))
+      pathIds.emplace_back(std::to_string(idPath));
+  }
+  if (pathIds.empty())
+    return -1;
+
+  std::string sql;
+  try
+  {
+    sql = PrepareSQL("SELECT DISTINCT videoversion.idMedia FROM videoversion "
+                     "JOIN files ON files.idFile = videoversion.idFile "
+                     "WHERE videoversion.media_type = '%s' AND videoversion.itemType = %i "
+                     "AND files.idPath IN (",
+                     MediaTypeMovie, VideoAssetType::VERSION) +
+          StringUtils::Join(pathIds, ",") + ")";
+    m_pDS->query(sql);
+
+    int idMovie{-1};
+    if (m_pDS->num_rows() == 1)
+      idMovie = m_pDS->fv(0).get_asInt();
+    else
+      CLog::LogF(LOGDEBUG, "{} movies found in {}", m_pDS->num_rows(), CURL::GetRedacted(folder));
+    m_pDS->close();
+    return idMovie;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "error during query: {}", sql);
+  }
+  return -1;
+}
+
 int CVideoDatabase::GetTvShowId(const std::string& strPath)
 {
   try
