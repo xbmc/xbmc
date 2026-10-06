@@ -556,6 +556,18 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
   const CFileItem original{*item};
   *item = chosen;
 
+  // Chosen before the transaction below, whose lock would stop a new asset type being added
+  int idVideoVersion{-1};
+  if (replaceExistingFile == ReplaceExistingFile::NO)
+  {
+    idVideoVersion = ChooseVideoAsset(item, GetVideoAssetType(), "");
+    if (idVideoVersion < 0)
+    {
+      *item = original;
+      return false;
+    }
+  }
+
   // Add playlist file as bluray://
   bool videoDbSuccess{false};
   try
@@ -587,15 +599,6 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
     }
     else
     {
-      // Choose a video version for the video
-      const int idVideoVersion{ChooseVideoAsset(item, GetVideoAssetType(), "")};
-      if (idVideoVersion < 0)
-      {
-        m_database.RollbackTransaction();
-        *item = original;
-        return false;
-      }
-
       idFile = m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded);
       if (idFile > 0)
       {
