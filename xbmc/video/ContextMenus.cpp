@@ -474,7 +474,9 @@ bool CTVShowScanForNewContent::Execute(const std::shared_ptr<CFileItem>& item) c
 
 bool CVideoShowExtras::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoInfoTag() && item.HasVideoExtras();
+  // An extra's tag carries its movie's extras flag
+  return item.HasVideoInfoTag() && item.HasVideoExtras() &&
+         item.GetVideoInfoTag()->GetAssetInfo().GetType() != VideoAssetType::EXTRA;
 }
 bool CVideoShowExtras::Execute(const std::shared_ptr<CFileItem>& item) const
 {
