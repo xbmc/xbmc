@@ -46,3 +46,21 @@ float CToneMappers::GetLuminanceValue(bool hasDisplayMetadata,
 
   return result;
 }
+
+float CToneMappers::GetPeakLuminanceValue(bool hasDisplayMetadata,
+                                          const AVMasteringDisplayMetadata& displayMetadata,
+                                          bool hasLightMetadata,
+                                          const AVContentLightMetadata& lightMetadata)
+{
+  if (hasLightMetadata && lightMetadata.MaxCLL)
+    return static_cast<float>(lightMetadata.MaxCLL);
+
+  if (hasDisplayMetadata && displayMetadata.has_luminance && displayMetadata.max_luminance.den)
+  {
+    const float lum = static_cast<float>(av_q2d(displayMetadata.max_luminance));
+    if (lum > 0.0f)
+      return lum;
+  }
+
+  return 1000.0f;
+}
