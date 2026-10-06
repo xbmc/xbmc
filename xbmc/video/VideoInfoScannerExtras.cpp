@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <memory>
+#include <set>
 #include <vector>
 
 using namespace XFILE;
@@ -48,6 +49,23 @@ namespace
 bool IsBluray(const std::string& path)
 {
   return ::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path);
+}
+
+//! The movie a bluray belongs to. GetMovieId() finds it from the disc only where the movie's
+//! default version is on it, which is not so for an HD disc beside the movie's 4K one.
+int GetDiscMovieId(CVideoDatabase& db, const std::string& disc)
+{
+  if (const int dbId{db.GetMovieId(disc)}; dbId >= 0)
+    return dbId;
+
+  std::set<int> movies;
+  for (const auto& playlist : db.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(disc)))
+  {
+    if (playlist.mediaType == VideoDbContentType::MOVIES &&
+        playlist.itemType == VideoAssetType::VERSION)
+      movies.emplace(playlist.idMedia);
+  }
+  return movies.size() == 1 ? *movies.begin() : -1;
 }
 
 //! Whether a movie already has an extra on a bluray, either the whole disc or one of its playlists
@@ -165,11 +183,15 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
 void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
 {
   std::vector<std::string> paths{item.GetDynPath()};
+  int stackDbId{-1};
   if (URIUtils::IsStack(paths.front()))
   {
     const std::string stack{paths.front()};
     paths.clear();
     CStackDirectory::GetPaths(stack, paths);
+
+    // A movie on several discs is stored under its stack, not under any one disc
+    stackDbId = m_database.GetMovieId(stack);
   }
 
   for (const std::string& path : paths)
@@ -177,7 +199,7 @@ void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
     if (!IsBluray(path) && !URIUtils::IsBlurayPath(path))
       continue;
 
-    const int dbId{m_database.GetMovieId(path)};
+    const int dbId{stackDbId >= 0 ? stackDbId : GetDiscMovieId(m_database, path)};
     if (dbId < 0)
     {
       CLog::LogF(LOGDEBUG, "No movie found for {} to add its extras to", CURL::GetRedacted(path));
