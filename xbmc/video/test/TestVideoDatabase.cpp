@@ -684,6 +684,47 @@ TEST_F(TestVideoDatabase, ExtrasOnADiscAreItsPlaylists)
   EXPECT_EQ(extras, (std::set<int>{1244, 1245}));
 }
 
+TEST_F(TestVideoDatabase, SetFileForMediaRepointsAnExtra)
+{
+  const int idMovie{AddMovie("/movies/Movie (2020)/movie.mkv")};
+  ASSERT_GT(idMovie, 0);
+
+  const std::string disc{"/movies/Movie (2020)/Extras/Disc 1/BDMV/index.bdmv"};
+  const int idType{
+      m_db.AddVideoVersionType("Disc 1", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+  CFileItem extra{disc, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType, VideoAssetType::EXTRA,
+                                 extra));
+  const int oldFile{m_db.GetVideoVersionInfo(disc).m_idFile};
+  ASSERT_GT(oldFile, 0);
+
+  CStreamDetails streams;
+  auto* video{new CStreamDetailVideo()};
+  video->m_iDuration = 600;
+  streams.AddStream(video);
+  ASSERT_TRUE(m_db.SetStreamDetailsForFileId(streams, oldFile));
+  ASSERT_TRUE(m_db.SetArtForItem(oldFile, MediaTypeVideoVersion, "thumb", "thumb.jpg"));
+
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(disc, 12)};
+  m_db.BeginTransaction();
+  const int newFile{m_db.SetFileForMedia(playlist, VideoDbContentType::MOVIES, idMovie,
+                                         CVideoDatabase::FileRecord{.m_idFile = oldFile})};
+  m_db.CommitTransaction();
+  ASSERT_GT(newFile, 0);
+
+  const VideoAssetInfo asset{m_db.GetVideoVersionInfo(playlist)};
+  EXPECT_EQ(asset.m_idMedia, idMovie);
+  EXPECT_EQ(asset.m_assetType, VideoAssetType::EXTRA);
+  EXPECT_LT(m_db.GetVideoVersionInfo(disc).m_idFile, 0);
+
+  CStreamDetails moved;
+  EXPECT_TRUE(m_db.GetStreamDetails(playlist, moved));
+  EXPECT_EQ(moved.GetVideoDuration(), 600);
+  KODI::ART::Artwork art;
+  EXPECT_TRUE(m_db.GetArtForItem(newFile, MediaTypeVideoVersion, art));
+  EXPECT_EQ(art["thumb"], "thumb.jpg");
+}
+
 TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
 {
   const std::string root{CSpecialProtocol::TranslatePath("special://temp/ScannerExtras/")};
