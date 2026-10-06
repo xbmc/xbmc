@@ -33,6 +33,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 
 #include <cstdint>
 #include <memory>
@@ -213,15 +214,25 @@ MenuDecision GetMenuDecisions(const CFileItem& item,
   if (forceSelectionAlways && isBlurayPath)
     return SHOW_SIMPLE_MENU;
 
+  // An extra stored as one of a disc's playlists plays that playlist rather than the disc menu or
+  // main title
+  const auto isExtraPlaylist{[&item, isBlurayPath]
+                             {
+                               CVideoDatabase db;
+                               return isBlurayPath && db.Open() &&
+                                      db.GetVideoVersionInfo(item.GetDynPath()).m_assetType ==
+                                          VideoAssetType::EXTRA;
+                             }};
+
   // Show Disc menu
   // This takes priority over the simple menu
   const bool useDiscMenuSetting{playbackSetting == BD_PLAYBACK_DISC_MENU};
-  if ((isBluray || isBlurayPath) && atStart && useDiscMenuSetting)
+  if ((isBluray || isBlurayPath) && atStart && useDiscMenuSetting && !isExtraPlaylist())
     return SHOW_DISC_MENU;
 
   // Select main title
   const bool useMainTitleSetting{playbackSetting == BD_PLAYBACK_MAIN_TITLE};
-  if ((isBluray || isBlurayPath) && atStart && useMainTitleSetting)
+  if ((isBluray || isBlurayPath) && atStart && useMainTitleSetting && !isExtraPlaylist())
     return GET_MAIN_TITLE;
 
   const bool forceSelectionAtStart{playbackSetting == BD_PLAYBACK_SIMPLE_MENU};
