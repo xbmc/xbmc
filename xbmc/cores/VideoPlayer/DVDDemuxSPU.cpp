@@ -415,25 +415,25 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
     {
       int nibble = AddNibble( 0, p_src, pi_offset, iUnparsedSize );
       if (nibble < 0) return nullptr;
-      i_code = nibble;
+      i_code = static_cast<unsigned int>(nibble);
 
       if ( i_code < 0x04 )
       {
         nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
         if (nibble < 0) return nullptr;
-        i_code = nibble;
+        i_code = static_cast<unsigned int>(nibble);
 
         if ( i_code < 0x10 )
         {
           nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
           if (nibble < 0) return nullptr;
-          i_code = nibble;
+          i_code = static_cast<unsigned int>(nibble);
 
           if ( i_code < 0x040 )
           {
             nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
             if (nibble < 0) return nullptr;
-            i_code = nibble;
+            i_code = static_cast<unsigned int>(nibble);
 
             if ( i_code < 0x0100 )
             {
