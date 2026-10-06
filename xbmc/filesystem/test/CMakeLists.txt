@@ -15,6 +15,8 @@ if(TARGET ${APP_NAME_LC}::Bluray)
   list(APPEND SOURCES TestBlurayDirectory.cpp
                       TestBlurayPlaylistHints.cpp
                       TestDiscDirectoryHelperProject.cpp
+                      TestMovieObjectParser.cpp
+                      TestNavigationCommand.cpp
                       TestProjectParser.cpp
                       TestStreamParser.cpp)
 endif()
