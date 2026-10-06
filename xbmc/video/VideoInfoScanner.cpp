@@ -448,7 +448,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (m_advancedSettings->m_bVideoLibraryUseFastHash && !URIUtils::IsPlugin(strDirectory))
         fastHash = UTILS::GetFastHash(strDirectory, regexps);
 
-      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && StringUtils::EqualsNoCase(fastHash, dbHash))
+      // An extra added beside a disc rip changes neither this folder nor the rip's, so the
+      // listing is still needed for the checks made from it
+      const bool addExtras{content == ContentType::MOVIES && settings.parent_name &&
+                           !m_ignoreVideoExtras};
+      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() &&
+          StringUtils::EqualsNoCase(fastHash, dbHash) && !addExtras)
       { // fast hashes match - no need to process anything
         hash = fastHash;
       }
@@ -665,6 +670,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       OnDirectoryScanned(strDirectory);
 
+    // The folders the library knows have an extras folder, looked up once rather than per folder
+    std::set<std::string> foldersWithExtras;
+    if (content == ContentType::MOVIES && settings.parent_name && !m_ignoreVideoExtras)
+    {
+      std::vector<std::pair<int, std::string>> knownPaths;
+      m_database.GetSubPaths(strDirectory, knownPaths);
+      for (const auto& [idPath, path] : knownPaths)
+      {
+        if (IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(path)))
+          foldersWithExtras.insert(URIUtils::GetParentPath(path));
+      }
+    }
+
     bool foundSomethingInArchive = false;
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -733,8 +751,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
           const bool unchanged{!fh.empty() && m_database.GetPathHash(discFolder, dbh) &&
                                StringUtils::EqualsNoCase(fh, dbh)};
 
-          if (!unchanged && settings.parent_name && !m_ignoreVideoExtras)
-            m_extras.AddVideoExtrasBesideDisc(discFolder);
+          if (settings.parent_name && !m_ignoreVideoExtras)
+            m_extras.AddVideoExtrasBesideDisc(discFolder, !unchanged, regexps);
 
           if (!fh.empty() && !unchanged && m_database.HasMovieInfo(pItem->GetDynPath()))
             m_database.SetPathHash(discFolder, fh);
@@ -751,6 +769,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
                     CURL::GetRedacted(pItem->GetPath()));
           m_pathsToScan.erase(pItem->GetPath());
+
+          // An unchanged folder is not listed, so its extras folders are looked at here
+          if (foldersWithExtras.contains(pItem->GetPath()))
+            m_extras.AddVideoExtrasBesideDisc(pItem->GetPath(), false, regexps);
           continue;
         }
         if (const auto [scanComplete, foundContentOnRecursion] = DoScan(pItem->GetPath());

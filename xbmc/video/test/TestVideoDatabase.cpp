@@ -10,6 +10,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "XBDateTime.h"
 #include "cores/VideoSettings.h"
 #include "filesystem/Directory.h"
@@ -21,6 +22,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
 #include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
@@ -29,12 +31,15 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoScannerExtras.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 
 #include <memory>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -677,4 +682,53 @@ TEST_F(TestVideoDatabase, ExtrasOnADiscAreItsPlaylists)
       extras.emplace(playlist.playlist);
   }
   EXPECT_EQ(extras, (std::set<int>{1244, 1245}));
+}
+
+TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/ScannerExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+
+  const int idMovie{AddMovie(URIUtils::AddFileToFolder(root, "Movie.mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const auto addVideo{
+      [this](const std::string& path)
+      {
+        XFILE::CFile file;
+        EXPECT_TRUE(file.OpenForWrite(path));
+        file.Close();
+        return AddMovie(path);
+      }};
+  const std::string first{URIUtils::AddFileToFolder(folder, "First.mkv")};
+  ASSERT_GT(addVideo(first), 0);
+
+  // A fast hash holds the folder's time in whole seconds, too coarse to see a video added here
+  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const bool fastHash{std::exchange(advancedSettings->m_bVideoLibraryUseFastHash, false)};
+
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
+  scanner.AddVideoExtrasBesideDisc(root, true, {});
+  EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetType, VideoAssetType::EXTRA);
+  std::string previousHash;
+  EXPECT_TRUE(m_db.GetPathHash(folder, previousHash));
+  EXPECT_FALSE(previousHash.empty());
+
+  const std::string second{URIUtils::AddFileToFolder(folder, "Second.mkv")};
+  EXPECT_GT(addVideo(second), 0);
+  scanner.AddVideoExtrasBesideDisc(root, false, {});
+  EXPECT_EQ(m_db.GetVideoVersionInfo(second).m_assetType, VideoAssetType::EXTRA);
+  std::string hash;
+  EXPECT_TRUE(m_db.GetPathHash(folder, hash));
+  EXPECT_NE(hash, previousHash);
+
+  scanner.AddVideoExtrasBesideDisc(root, false, {});
+  CFileItemList extras;
+  m_db.GetVideoVersions(VideoDbContentType::MOVIES, idMovie, extras, VideoAssetType::EXTRA);
+  EXPECT_EQ(extras.Size(), 2);
+
+  advancedSettings->m_bVideoLibraryUseFastHash = fastHash;
+  EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(root));
 }

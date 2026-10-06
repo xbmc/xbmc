@@ -20,9 +20,11 @@
 #include "filesystem/StackDirectory.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/DiscsUtils.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -40,6 +42,7 @@
 #include <cstdlib>
 #include <memory>
 #include <set>
+#include <utility>
 #include <vector>
 
 using namespace XFILE;
@@ -213,34 +216,80 @@ void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
   }
 }
 
-void CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFolder)
+void CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFolder,
+                                                       bool discChanged,
+                                                       const std::vector<std::string>& regexps)
 {
-  CFileItemList folders;
-  if (!CDirectory::GetDirectory(discFolder, folders, "/", DIR_FLAG_DEFAULTS))
-    return;
-
-  for (const auto& folder : folders)
+  // A new extras folder changes the disc's folder, so is found by listing it. A file added to an
+  // extras folder changes only that, so those already known are each looked at.
+  std::vector<std::string> folders;
+  if (discChanged)
   {
-    if (!IsVideoExtrasFolder(*folder) || CInfoScanner::HasNoMedia(folder->GetPath()))
-      continue;
+    CFileItemList items;
+    if (!CDirectory::GetDirectory(discFolder, items, "/", DIR_FLAG_DEFAULTS))
+      return;
+    for (const auto& item : items)
+    {
+      if (IsVideoExtrasFolder(*item))
+        folders.emplace_back(item->GetPath());
+    }
+  }
+  else
+  {
+    std::vector<std::pair<int, std::string>> paths;
+    m_database.GetSubPaths(discFolder, paths);
+    for (const auto& [idPath, path] : paths)
+    {
+      if (URIUtils::PathEquals(URIUtils::GetParentPath(path), discFolder, true) &&
+          IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(path)))
+        folders.emplace_back(path);
+    }
+  }
 
+  const bool useFastHash{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash};
+  for (const std::string& folder : folders)
+  {
     // Leave a folder with content set on it (a source root) alone
     SScanSettings settings;
     bool foundDirectly{false};
-    if (m_database.GetScraperForPath(folder->GetPath(), settings, foundDirectly) && foundDirectly)
+    if (m_database.GetScraperForPath(folder, settings, foundDirectly) && foundDirectly)
       continue;
 
-    const int dbId{m_database.GetMovieIdInFolder(discFolder, folder->GetPath())};
+    // Without fast hashing the folder's listing is hashed, as the scanner does for its folders
+    std::string hash;
+    if (useFastHash)
+      hash = UTILS::GetFastHash(folder, regexps);
+    else
+    {
+      CFileItemList items;
+      CDirectory::GetDirectory(folder, items,
+                               CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                               DIR_FLAG_DEFAULTS);
+      items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+      UTILS::GetPathHash(items, hash);
+    }
+    if (std::string dbHash; !hash.empty() && m_database.GetPathHash(folder, dbHash) &&
+                            StringUtils::EqualsNoCase(hash, dbHash))
+      continue;
+
+    if (CInfoScanner::HasNoMedia(folder))
+      continue;
+
+    const int dbId{m_database.GetMovieIdInFolder(discFolder, folder)};
     if (dbId < 0)
     {
       CLog::Log(LOGDEBUG, "VideoInfoScanner: No single movie found for video extras {}",
-                CURL::GetRedacted(folder->GetPath()));
+                CURL::GetRedacted(folder));
       continue;
     }
 
-    AddVideoExtras(dbId, folder->GetPath());
+    AddVideoExtras(dbId, folder);
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
-              CURL::GetRedacted(folder->GetPath()));
+              CURL::GetRedacted(folder));
+
+    if (!hash.empty())
+      m_database.SetPathHash(folder, hash);
   }
 }
 
