@@ -659,7 +659,7 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
 void CGUIDialogVideoManager::AppendItemFolderToFileBrowserSources(
     std::vector<CMediaSource>& sources)
 {
-  const std::string itemDir{URIUtils::GetParentPath(m_videoAsset->GetDynPath())};
+  const std::string itemDir{URIUtils::GetBasePath(m_videoAsset->GetDynPath())};
   if (!itemDir.empty() && XFILE::CDirectory::Exists(itemDir))
   {
     CMediaSource& itemSource = sources.emplace_back();

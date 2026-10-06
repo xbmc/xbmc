@@ -1768,6 +1768,7 @@ TEST_F(TestURIUtils, GetDiscBasePath)
   EXPECT_EQ(refDir,
             URIUtils::GetDiscBasePath("bluray://%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls"));
   EXPECT_EQ(refDir, URIUtils::GetDiscBasePath("/somepath/path/movie.iso"));
+  EXPECT_EQ(refDir, URIUtils::GetDiscBasePath("/somepath/path/movie.mkv"));
   EXPECT_EQ(refDir,
             URIUtils::GetDiscBasePath(
                 "bluray://udf%3a%2f%2f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
