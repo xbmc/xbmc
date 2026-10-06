@@ -548,7 +548,8 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
       (replaceExistingFile == ReplaceExistingFile::NO ||
        existing.m_idFile != item->GetVideoInfoTag()->m_iFileId))
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{40047});
+    CGUIDialogOK::ShowAndGetInput(
+        CVariant{257}, CVariant{GetVideoAssetType() == VideoAssetType::EXTRA ? 40055 : 40047});
     return false;
   }
 
@@ -560,7 +561,11 @@ bool CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
   int idVideoVersion{-1};
   if (replaceExistingFile == ReplaceExistingFile::NO)
   {
-    idVideoVersion = ChooseVideoAsset(item, GetVideoAssetType(), "");
+    // An extra is offered the name the disc gives its playlist
+    idVideoVersion = ChooseVideoAsset(item, GetVideoAssetType(),
+                                      GetVideoAssetType() == VideoAssetType::EXTRA
+                                          ? item->GetVideoInfoTag()->GetAssetInfo().GetTitle()
+                                          : "");
     if (idVideoVersion < 0)
     {
       *item = original;

@@ -67,22 +67,25 @@ bool ReassignPlaylist(const CFileItem& item,
     else if (tag->m_type == MediaTypeVideoVersion) // From versions manager
       assignedMovie = db.GetVideoVersionInfo(item.GetDynPath()).m_idMedia;
   }
-  if (assignedMovie >= 0 &&
-      std::ranges::any_of(
-          matchingPlaylists, [assignedMovie](const CVideoDatabase::PlaylistInfo& p)
-          { return p.mediaType == VideoDbContentType::MOVIES && p.idMedia == assignedMovie; }))
+  const auto own{std::ranges::find_if(
+      matchingPlaylists, [assignedMovie](const CVideoDatabase::PlaylistInfo& p)
+      { return p.mediaType == VideoDbContentType::MOVIES && p.idMedia == assignedMovie; })};
+  if (assignedMovie >= 0 && own != matchingPlaylists.end())
   {
-    CGUIDialogOK::ShowAndGetInput(
-        CVariant{257}, CVariant{40047}); // This playlist belongs to another version of this movie
+    // This playlist belongs to (another version of) this movie
+    const bool isExtra{item.GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA ||
+                       own->itemType == VideoAssetType::EXTRA};
+    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{isExtra ? 40055 : 40047});
     return false;
   }
 
   // Show warning dialog if the new playlist will displace an existing item in the library
-  const bool displacesMovie{
-      std::ranges::any_of(matchingPlaylists, [](const CVideoDatabase::PlaylistInfo& p)
-                          { return p.mediaType == VideoDbContentType::MOVIES; })};
-  if (!CGUIDialogYesNo::ShowAndGetInput(
-          CVariant{559}, CVariant{displacesMovie ? 40049 : 40048})) // Movie or episode
+  const auto displacedMovie{std::ranges::find(matchingPlaylists, VideoDbContentType::MOVIES,
+                                              &CVideoDatabase::PlaylistInfo::mediaType)};
+  const int question{displacedMovie == matchingPlaylists.end()           ? 40048 // Episode
+                     : displacedMovie->itemType == VideoAssetType::EXTRA ? 40056
+                                                                         : 40049};
+  if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{559}, CVariant{question}))
     return false;
 
   std::string base{item.GetDynPath()};
@@ -100,11 +103,26 @@ bool ReassignPlaylist(const CFileItem& item,
     int idMedia;
   };
   std::vector<Displaced> displaced;
+  std::vector<int> moviesLosingExtras;
 
   db.BeginTransaction();
 
   for (const auto& it : matchingPlaylists)
   {
+    // An extra is the playlist, so it goes rather than falling back to the whole disc
+    if (it.mediaType == VideoDbContentType::MOVIES && it.itemType == VideoAssetType::EXTRA)
+    {
+      if (!db.DeleteVideoAsset(it.idFile) || !db.DeleteFile(it.idFile))
+      {
+        CLog::LogF(LOGERROR, "Failed to remove the extra of movie {} on playlist {}", it.idMedia,
+                   it.playlist);
+        db.RollbackTransaction();
+        return false;
+      }
+      moviesLosingExtras.emplace_back(it.idMedia);
+      continue;
+    }
+
     const MediaType& mediaType{it.mediaType == VideoDbContentType::EPISODES ? MediaTypeEpisode
                                                                             : MediaTypeMovie};
 
@@ -194,6 +212,8 @@ bool ReassignPlaylist(const CFileItem& item,
   CUtil::DeleteVideoDatabaseDirectoryCache();
   for (const auto& d : displaced)
     CVideoDatabase::AnnounceUpdate(d.mediaType, d.idMedia);
+  for (const int idMovie : moviesLosingExtras)
+    CVideoDatabase::AnnounceUpdate(MediaTypeMovie, idMovie);
 
   return true;
 }

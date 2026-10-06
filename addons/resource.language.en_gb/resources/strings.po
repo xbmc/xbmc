@@ -25530,7 +25530,46 @@ msgctxt "#40051"
 msgid "This playlist is still in use by another movie version and could not be reassigned."
 msgstr ""
 
-#empty strings with id 40052 to 40201
+#. Asked before choosing one of a disc's playlists for an extra that plays the whole disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40052"
+msgid "Assign a playlist to this extra?"
+msgstr ""
+
+#. Asked before choosing an extra from the playlists of the movie's own disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40053"
+msgid "Add an extra from this disc?"
+msgstr ""
+
+#. Asked when a disc is picked as an extra, to add one of its playlists rather than the whole disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40054"
+msgid "Choose a playlist from this disc?"
+msgstr ""
+
+#. Shown when a playlist chosen for an extra already belongs to the same movie, or one chosen for a version is already its extra
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40055"
+msgid "This playlist already belongs to this movie."
+msgstr ""
+
+#. Asked before taking a playlist away from another movie's extra that uses it
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40056"
+msgid "The selected playlist is already assigned to another extra. Reassign it?"
+msgstr ""
+
+#empty string with id 40057
+
+#. Asked when adding an extra while an extra on a disc is selected
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40058"
+msgid "Add another extra from this disc?"
+msgstr ""
+
+#empty strings with id 40059 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml
