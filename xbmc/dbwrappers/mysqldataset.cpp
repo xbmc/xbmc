@@ -1942,21 +1942,29 @@ bool MysqlDataset::dropIndex(const char* table, const char* index)
   return true;
 }
 
+std::string MysqlDataset::EnforceAutoIncrement(std::string sql)
+{
+  constexpr std::string_view KEY{"integer primary key"};
+  constexpr std::string_view SQLITE_KEYWORD{" autoincrement"};
+
+  const size_t loc{ci_find(sql, KEY)};
+  if (loc == std::string::npos)
+    return sql;
+
+  const size_t end{loc + KEY.size()};
+  if (ci_find(std::string_view{sql}.substr(end, SQLITE_KEYWORD.size()), SQLITE_KEYWORD) == 0)
+    sql.erase(end, SQLITE_KEYWORD.size());
+  sql.insert(end, " auto_increment ");
+  return sql;
+}
+
 int MysqlDataset::exec(const std::string& sql)
 {
   if (!handle())
     throw DbErrors("No Database Connection");
-  std::string qry = sql;
+  const std::string qry{EnforceAutoIncrement(sql)};
 
   exec_res.clear();
-
-  // enforce the "auto_increment" keyword to be appended to "integer primary key"
-  size_t loc;
-
-  if ((loc = ci_find(qry, "integer primary key")) != std::string::npos)
-  {
-    qry = qry.insert(loc + 19, " auto_increment ");
-  }
 
   const auto start = std::chrono::steady_clock::now();
 

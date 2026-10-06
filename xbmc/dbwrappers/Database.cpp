@@ -841,6 +841,32 @@ bool CDatabase::CreateDatabase()
   return CommitTransaction();
 }
 
+void CDatabase::AddAutoIncrement(const std::string& table)
+{
+  if (!m_sqlite)
+    return;
+
+  std::string sql{GetSingleValue(
+      PrepareSQL("SELECT sql FROM sqlite_master WHERE type='table' AND name='%s'", table.c_str()))};
+  const std::string lower{StringUtils::ToLower(std::string_view{sql})};
+  constexpr std::string_view KEY{"integer primary key"};
+  const size_t key{lower.find(KEY)};
+  if (key == std::string::npos)
+    throw dbiplus::DbErrors("table %s has no integer primary key", table.c_str());
+  if (lower.find("autoincrement") != std::string::npos)
+    return;
+
+  sql.insert(key + KEY.size(), " AUTOINCREMENT");
+
+  // Renamed rather than copied into a new name, so the stored definition keeps the table's own.
+  m_pDS->exec(
+      PrepareSQL("ALTER TABLE `%s` RENAME TO `%s_reusedids`", table.c_str(), table.c_str()));
+  m_pDS->exec(sql);
+  m_pDS->exec(
+      PrepareSQL("INSERT INTO `%s` SELECT * FROM `%s_reusedids`", table.c_str(), table.c_str()));
+  m_pDS->exec(PrepareSQL("DROP TABLE `%s_reusedids`", table.c_str()));
+}
+
 void CDatabase::UpdateVersionNumber()
 {
   std::string strSQL = PrepareSQL("UPDATE version SET idVersion=%i\n", GetSchemaVersion());
