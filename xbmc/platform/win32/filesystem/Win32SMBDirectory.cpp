@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "utils/CharsetConverter.h"
+#include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -21,6 +22,7 @@
 #include "platform/win32/WIN32Util.h"
 #include "platform/win32/network/WSDiscoveryWin32.h"
 
+#include <algorithm>
 #include <cstdint>
 
 #include <Windows.h>
@@ -39,9 +41,9 @@ using KODI::PLATFORM::WINDOWS::FromW;
 // local helper
 static inline bool worthTryToConnect(const DWORD lastErr)
 {
-  return lastErr != ERROR_FILE_NOT_FOUND      && lastErr != ERROR_BAD_NET_NAME  &&
-         lastErr != ERROR_NO_NET_OR_BAD_PATH  && lastErr != ERROR_NO_NETWORK    &&
-         lastErr != ERROR_BAD_NETPATH;
+  return lastErr != ERROR_FILE_NOT_FOUND && lastErr != ERROR_BAD_NET_NAME &&
+         lastErr != ERROR_NO_NET_OR_BAD_PATH && lastErr != ERROR_NO_NETWORK &&
+         lastErr != ERROR_BAD_NETPATH && lastErr != ERROR_PATH_NOT_FOUND;
 }
 
 /**
@@ -308,7 +310,9 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
     const auto entrVec = entries.GetList();
     for (const auto& it : entrVec)
     {
-      if (it->GetLabel() == searchStr)
+      // a server's label can differ from the host in its path, e.g. "name (IP)"
+      if (url.GetShareName().empty() ? CURL(it->GetPath()).GetHostName() == searchStr
+                                     : it->GetLabel() == searchStr)
         return true;
     }
     return false;
@@ -657,17 +661,36 @@ static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList&
   // Get servers immediately from WSD daemon process
   if (wsd.IsRunning() && wsd.ThereAreServers())
   {
-    for (const auto& ip : wsd.GetServersIPs())
+    const auto servers = wsd.GetServers();
+    std::vector<std::string> hostNames;
+    for (const auto& server : servers)
     {
-      std::wstring hostname = wsd.ResolveHostName(ip);
-      std::string shareNameUtf8;
-      if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
+      std::string hostName;
+      if (g_charsetConverter.wToUTF8(server.hostName, hostName, true) && !hostName.empty())
+        hostNames.push_back(hostName);
+    }
+
+    for (const auto& server : servers)
+    {
+      std::string hostName;
+      std::string ip;
+      if (!g_charsetConverter.wToUTF8(server.hostName, hostName, true) || hostName.empty() ||
+          !g_charsetConverter.wToUTF8(server.ip, ip, true))
+        continue;
+
+      // different machines announcing the same name can't share a path
+      std::string label = hostName;
+      if (std::ranges::count_if(hostNames, [&hostName](const std::string& name)
+                                { return StringUtils::EqualsNoCase(name, hostName); }) > 1)
       {
-        CFileItemPtr pItem = std::make_shared<CFileItem>(shareNameUtf8);
-        pItem->SetPath(urlPrefixForItems + shareNameUtf8 + '/');
-        pItem->SetFolder(true);
-        items.Add(pItem);
+        label = StringUtils::Format("{} ({})", hostName, ip);
+        hostName = ip;
       }
+
+      CFileItemPtr pItem = std::make_shared<CFileItem>(label);
+      pItem->SetPath(urlPrefixForItems + hostName + '/');
+      pItem->SetFolder(true);
+      items.Add(pItem);
     }
     return true;
   }
@@ -788,6 +811,16 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
       CLog::LogF(LOGINFO, "Network is busy for \"{}\"", serverShareName);
     else if (connRes == ERROR_SESSION_CREDENTIAL_CONFLICT)
     {
+      // Windows already has a session to this server, e.g. from a saved Windows credential.
+      // Use it if it gives access rather than closing its connections.
+      if ((!usernameW.empty() || !passwordW.empty()) &&
+          WNetAddConnection2W(&connInfo, nullptr, nullptr, CONNECT_TEMPORARY) == NO_ERROR)
+      {
+        CLog::LogF(LOGDEBUG, "Connected to \"{}\" with the credentials of the existing session",
+                   serverShareName);
+        return true;
+      }
+
       CLog::LogF(LOGWARNING,
                  "Can't connect to \"{}\" {} because of conflict of credential. Will try to close "
                  "current connections.",
