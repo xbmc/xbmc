@@ -29,6 +29,7 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 
@@ -779,6 +780,24 @@ TEST_F(TestVideoDatabase, GetSubPathsIncludesArchivesAndDiscImagesOnlyForCleanin
   }
 }
 
+TEST_F(TestVideoDatabase, GetSourcePathReadsTheSettingsOfTheSourceOfASubFolder)
+{
+  const int idSource{m_db.AddPath("/movies/")};
+  ASSERT_GT(idSource, 0);
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='movies', strScraper='metadata.local', useFolderNames=1, "
+      "scanRecursive=0 WHERE idPath=%i",
+      idSource)));
+  ASSERT_GT(m_db.AddPath("/movies/Film/"), 0);
+
+  std::string sourcePath;
+  KODI::VIDEO::SScanSettings settings;
+  ASSERT_TRUE(m_db.GetSourcePath("/movies/Film/", sourcePath, settings));
+  EXPECT_EQ("/movies/", sourcePath);
+  EXPECT_TRUE(settings.parent_name);
+  EXPECT_EQ(0, settings.recurse);
+}
+
 TEST_F(TestVideoDatabase, RemoveContentForPathRemovesDiscRips)
 {
   ASSERT_GT(m_db.AddPath("/movies/"), 0);
@@ -1190,10 +1209,8 @@ TEST_F(TestVideoDatabaseClean, KeepsThePathOfAFolderStillOnDiskThatLostItsMedia)
 {
   const std::string movies{Folder(m_root, "movies")};
   AddSource(movies, "movies");
-  // GetSourcePath() reads parent_name from scanRecursive for a sub folder, so set both
   ASSERT_TRUE(m_db.ExecuteQuery(
-      m_db.PrepareSQL("UPDATE path SET useFolderNames=1, scanRecursive=1 WHERE idPath=%i",
-                      m_db.GetPathId(movies))));
+      m_db.PrepareSQL("UPDATE path SET useFolderNames=1 WHERE idPath=%i", m_db.GetPathId(movies))));
   const std::string film{Folder(movies, "Film (2010)")};
   const std::string gone{File(film, "Film (2010).mkv")};
   ASSERT_GT(AddMovie(gone), 0);
