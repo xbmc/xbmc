@@ -1167,3 +1167,131 @@ TEST_F(TestVideoDatabaseClean, KeepsAMovieWhoseDefaultVersionIsInAnUnavailableSo
 
   EXPECT_EQ(idVersion, m_db.GetFileIdByMovie(idMovie));
 }
+
+TEST_F(TestVideoDatabaseClean, RemovesThePathOfAFolderThatHasGone)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string kept{File(Folder(movies, "Kept (2010)"), "Kept (2010).mkv")};
+  ASSERT_GT(AddMovie(kept), 0);
+  const std::string film{Folder(movies, "Film (2010)")};
+  ASSERT_GT(AddMovie(File(film, "Film (2010).mkv")), 0);
+  ASSERT_TRUE(m_db.SetPathHash(film, "hash"));
+
+  ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(film));
+  Clean();
+
+  EXPECT_EQ(-1, m_db.GetPathId(film));
+}
+
+// The media's path carries a decision to remove its media when folder names are used, which
+// must not remove the folder's own entry while it is still on disk
+TEST_F(TestVideoDatabaseClean, KeepsThePathOfAFolderStillOnDiskThatLostItsMedia)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  // GetSourcePath() reads parent_name from scanRecursive for a sub folder, so set both
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET useFolderNames=1, scanRecursive=1 WHERE idPath=%i",
+                      m_db.GetPathId(movies))));
+  const std::string film{Folder(movies, "Film (2010)")};
+  const std::string gone{File(film, "Film (2010).mkv")};
+  ASSERT_GT(AddMovie(gone), 0);
+  ASSERT_TRUE(m_db.SetPathHash(film, "hash"));
+  // keeps the folder's entry from going as one that holds nothing
+  ASSERT_TRUE(m_db.SetPathHash(Folder(film, "Extras"), "hash"));
+
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+  Clean();
+
+  EXPECT_GT(m_db.GetPathId(film), 0);
+}
+
+// Media outside the paths being cleaned is not checked, so the entry of its path must stay too
+TEST_F(TestVideoDatabaseClean, KeepsThePathOfMediaNotCleaned)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string kept{Folder(movies, "Kept (2010)")};
+  ASSERT_GT(AddMovie(File(kept, "Kept (2010).mkv")), 0);
+  const std::string film{Folder(movies, "Film (2010)")};
+  const std::string gone{File(film, "Film (2010).mkv")};
+  ASSERT_GT(AddMovie(gone), 0);
+  ASSERT_TRUE(m_db.SetPathHash(film, "hash"));
+
+  ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(film));
+  m_db.CleanDatabase(nullptr, {m_db.GetPathId(kept)}, false);
+
+  EXPECT_GT(m_db.GetPathId(film), 0);
+  EXPECT_GT(m_db.GetMovieId(gone), 0);
+}
+
+// An archive's entry hangs off the folder holding it, which is still there
+TEST_F(TestVideoDatabaseClean, RemovesThePathOfAnArchiveThatHasGone)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string film{Folder(movies, "Film (2010)")};
+  ASSERT_TRUE(m_db.SetPathHash(film, "hash"));
+  const std::string archive{File(film, "Film (2010).zip")};
+  const std::string video{ArchivePath("zip", archive, "Film (2010).mkv")};
+  ASSERT_GT(AddMovie(video), 0);
+  const std::string archived{URIUtils::GetDirectory(video)};
+  ASSERT_GT(m_db.GetPathId(archived), 0);
+
+  ASSERT_TRUE(XFILE::CFile::Delete(archive));
+  Clean();
+
+  EXPECT_EQ(-1, m_db.GetMovieId(video));
+  EXPECT_EQ(-1, m_db.GetPathId(archived));
+}
+
+TEST_F(TestVideoDatabaseClean, RemovesAPlayedFileThatHasGone)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string gone{File(Folder(movies, "Played"), "Played.mkv")};
+  MarkPlayed(gone, 1, 600.0);
+  const int idFile{m_db.AddFile(gone)};
+  ASSERT_GT(idFile, 0);
+
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+  Clean();
+
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM files WHERE idFile=%i", idFile)));
+}
+
+TEST_F(TestVideoDatabaseClean, KeepsPlayedFilesThatMayNotHaveGone)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string played{Folder(movies, "Played")};
+  const std::string offline{Folder(m_root, "offline", false)};
+  AddSource(offline, "movies");
+  const std::string outside{Folder(m_root, "outside")};
+
+  const std::vector<std::string> files{
+      File(played, "Still there.mkv"),
+      URIUtils::AddFileToFolder(Folder(offline, "Played", false), "Unavailable.mkv"),
+      URIUtils::AddFileToFolder(outside, "Outside the sources.mkv")};
+  std::vector<int> ids;
+  for (const auto& file : files)
+  {
+    MarkPlayed(file, 1);
+    ids.push_back(m_db.AddFile(file));
+    ASSERT_GT(ids.back(), 0);
+  }
+
+  // a folder entry is still there while its folder can be listed
+  ASSERT_TRUE(m_db.SetPlayCount(CFileItem(played, true), 1).IsValid());
+  ids.push_back(m_db.AddFile(played));
+  ASSERT_GT(ids.back(), 0);
+
+  Clean();
+
+  for (const int idFile : ids)
+    EXPECT_EQ(1, m_db.GetSingleValueInt(
+                     m_db.PrepareSQL("SELECT COUNT(*) FROM files WHERE idFile=%i", idFile)))
+        << idFile;
+}
