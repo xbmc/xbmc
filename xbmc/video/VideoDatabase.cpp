@@ -625,8 +625,8 @@ bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourceP
         std::string strScraper = m_pDS->fv(1).get_asString();
         if (!strContent.empty() && !strScraper.empty())
         {
-          settings.parent_name_root = settings.parent_name = m_pDS->fv(2).get_asBool();
-          settings.recurse = m_pDS->fv(3).get_asInt();
+          settings.parent_name_root = settings.parent_name = m_pDS->fv(3).get_asBool();
+          settings.recurse = m_pDS->fv(2).get_asInt();
           settings.noupdate = m_pDS->fv(4).get_asBool();
           settings.exclude = m_pDS->fv(5).get_asBool();
           found = true;
