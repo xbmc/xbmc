@@ -15,6 +15,7 @@
 #include "settings/VideoVersionsSettings.h"
 #include "utils/RegExp.h"
 #include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoScannerExtras.h"
 
 #include <atomic>
 #include <cstdint>
@@ -307,7 +308,6 @@ namespace KODI::VIDEO
     EpisodeResult EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
-    bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
     static std::pair<VersionConversionResult, int> ProcessVideoVersion(
         VideoDbContentType itemType, int dbId, int targetDbId = -1, bool canBecomeDefault = true);
     static void RemovePartNumberFromTitle(int dbId,
@@ -348,6 +348,7 @@ namespace KODI::VIDEO
 
     //! The artwork side of the scan
     CVideoInfoScannerArt m_art;
+    CVideoInfoScannerExtras m_extras{m_database, m_art};
 
   private:
     /*!

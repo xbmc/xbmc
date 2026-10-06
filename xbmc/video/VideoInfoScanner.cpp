@@ -60,7 +60,6 @@
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
-#include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 
 #include <algorithm>
@@ -648,7 +647,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (foundSomething && content == ContentType::MOVIES && settings.parent_name &&
           !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
       {
-        if (AddVideoExtras(items, content, pItem->GetPath()))
+        if (m_extras.AddVideoExtras(items, pItem->GetPath()))
         {
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
                     CURL::GetRedacted(pItem->GetPath()));
@@ -2941,86 +2940,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return 1;  // found a movie
     }
     return 0;    // didn't find anything
-  }
-
-  bool CVideoInfoScanner::AddVideoExtras(CFileItemList& items,
-                                         ContentType content,
-                                         const std::string& path)
-  {
-    int dbId = -1;
-
-    // get the library item which was added previously with the specified content type
-    for (const auto& item : items)
-    {
-      if (content == ContentType::MOVIES && !item->IsFolder())
-      {
-        dbId = m_database.GetMovieId(item->GetPath());
-        if (dbId != -1)
-        {
-          break;
-        }
-      }
-    }
-
-    if (dbId == -1)
-    {
-      CLog::Log(LOGERROR, "VideoInfoScanner: Failed to find the library item for video extras {}",
-                CURL::GetRedacted(path));
-      return false;
-    }
-
-    // No need to check for .nomedia in the current directory, the caller already checked and this
-    // function would not have been called if it existed.
-
-    // Add video extras to library
-    CDirectory::EnumerateDirectory(
-        path,
-        [this, content, dbId, path](const std::shared_ptr<CFileItem>& item)
-        {
-          const std::string extraTypeName =
-              CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
-
-          const int idVideoAssetType = m_database.AddVideoVersionType(
-              extraTypeName, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
-
-          // the video may have been added to the library as a movie earlier (different settings)
-          const int idMovie{m_database.GetMovieId(item->GetPath())};
-
-          if (idMovie <= 0)
-          {
-            if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                    CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
-            {
-              CDVDFileInfo::GetFileStreamDetails(item.get());
-              CLog::Log(LOGDEBUG,
-                        "VideoInfoScanner: Extracted filestream details from video file {}",
-                        CURL::GetRedacted(item->GetPath()));
-            }
-
-            m_art.GetArtwork(item.get(), content, true, true, "");
-
-            if (m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoAssetType,
-                                         VideoAssetType::EXTRA, *item.get()))
-            {
-              CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extra {}",
-                        CURL::GetRedacted(item->GetPath()));
-            }
-            else
-            {
-              CLog::Log(LOGERROR, "VideoInfoScanner: Failed to add video extra {}",
-                        CURL::GetRedacted(item->GetPath()));
-            }
-          }
-          else
-          {
-            m_database.ConvertVideoToVersion(ContentToVideoDbType(content), idMovie, dbId,
-                                             idVideoAssetType, VideoAssetType::EXTRA);
-          }
-        },
-        [](const std::shared_ptr<CFileItem>& dirItem) { return !HasNoMedia(dirItem->GetPath()); },
-        true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
-
-    return true;
   }
 
   CInfoScanner::InfoRet CVideoInfoScanner::AddBlurayPlaylistVersions(
