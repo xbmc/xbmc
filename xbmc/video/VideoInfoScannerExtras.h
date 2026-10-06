@@ -60,6 +60,13 @@ public:
    */
   void AddMovieDiscExtras(const CFileItem& item);
 
+  /*!
+   \brief Add the video extras folders of a movie whose folder holds its disc structure. Such a
+   folder is listed as the disc's file, so its extras folders are not in the listing scanned.
+   \param discFolder the folder holding the movie's disc structure
+   */
+  void AddVideoExtrasBesideDisc(const std::string& discFolder);
+
 private:
   /*!
    \brief Add the extras a bluray names as extras of a movie.
