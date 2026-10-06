@@ -65,6 +65,19 @@ public:
   void SetMaxRateDifference(double difference) { m_maxRateDifference.store(difference); }
 
   /*!
+   * \brief Time left between a paced frame finishing and the screen taking
+   * it, to absorb jitter in when the screen takes frames
+   */
+  Clock::duration Margin() const
+  {
+    return std::chrono::duration_cast<Clock::duration>(std::chrono::nanoseconds(m_marginNs.load()));
+  }
+  void SetMargin(Clock::duration margin)
+  {
+    m_marginNs.store(std::chrono::duration_cast<std::chrono::nanoseconds>(margin).count());
+  }
+
+  /*!
    * \brief The speed the game runs at, relative to its own frame rate
    */
   double PlaybackRate() const { return m_playbackRate.load(); }
@@ -81,6 +94,7 @@ private:
 
   std::atomic<bool> m_enabled{true};
   std::atomic<double> m_maxRateDifference{0.02};
+  std::atomic<int64_t> m_marginNs{2'500'000};
 
   // Published for the game loop
   std::atomic<int64_t> m_lastTakeNs{0};

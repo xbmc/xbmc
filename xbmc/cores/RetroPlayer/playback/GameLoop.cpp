@@ -27,10 +27,6 @@ constexpr auto PAUSE_SLEEP = 5s;
 // How many frames the loop may fall behind before it gives up the deficit
 // rather than trying to run them back to back
 constexpr unsigned int MAX_FRAME_DEFICIT = 2;
-
-// Time left between a paced frame finishing and the screen taking it, to
-// absorb jitter in when the screen takes frames
-constexpr auto PACING_MARGIN = 2500us;
 } // namespace
 
 CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps, CDisplayPacing* displayPacing)
@@ -197,7 +193,7 @@ bool CGameLoop::PaceToDisplay()
 
   // Started this long before the screen takes it, a frame is ready in time.
   // One that can't be gains nothing from waiting for the screen.
-  const Clock::duration lead = m_frameCost + PACING_MARGIN;
+  const Clock::duration lead = m_frameCost + m_displayPacing->Margin();
   if (lead >= interval)
     return false;
 
