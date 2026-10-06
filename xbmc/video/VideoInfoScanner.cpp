@@ -906,11 +906,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_handle->SetPercentage(i*100.f/items.Size());
       }
 
+      // A movie already in the library had its discs read when added, or by a refresh
+      bool knownMovie{false};
       InfoRet ret = InfoRet::CANCELLED;
       if (info2->Content() == ContentType::TVSHOWS)
         ret = RetrieveInfoForTvShow(pItem.get(), bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
       else if (info2->Content() == ContentType::MOVIES)
+      {
+        knownMovie = m_database.HasMovieInfo(pItem->GetDynPath());
         ret = RetrieveInfoForMovie(pItem.get(), bDirNames, info2, useLocal, pURL, pDlgProgress);
+      }
       else if (info2->Content() == ContentType::MUSICVIDEOS)
         ret = RetrieveInfoForMusicVideo(pItem.get(), bDirNames, info2, useLocal, pURL, pDlgProgress);
       else
@@ -935,7 +940,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         ++m_failedLookups;
       }
       else if (ret == InfoRet::ADDED || ret == InfoRet::HAVE_ALREADY)
+      {
         FoundSomeInfo = true;
+        if (info2->Content() == ContentType::MOVIES && !m_ignoreVideoExtras &&
+            !m_deferMovieExtras && !knownMovie)
+          m_extras.AddMovieDiscExtras(*pItem);
+      }
       else if (ret == InfoRet::NOT_FOUND)
       {
         CLog::Log(LOGWARNING,
@@ -986,6 +996,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     m_database.Close();
     return FoundSomeInfo;
+  }
+
+  void CVideoInfoScanner::AddMovieDiscExtras(const CFileItem& item)
+  {
+    if (m_ignoreVideoExtras)
+      return;
+
+    m_database.Open();
+    m_extras.AddMovieDiscExtras(item);
+    m_database.Close();
   }
 
   CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForTvShow(CFileItem* pItem,
