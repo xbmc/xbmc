@@ -30,6 +30,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -257,12 +259,23 @@ void CGUIDialogVideoManager::SetVideoAsset(const std::shared_ptr<CFileItem>& ite
 
   m_videoAsset = item;
 
+  // An extra is managed from its movie, whose disc and folder its own may not be
+  if (VIDEO::IsVideoAssetFile(*item) &&
+      item->GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA &&
+      (m_database.IsOpen() || m_database.Open()))
+  {
+    const auto movie{std::make_shared<CFileItem>()};
+    if (m_database.GetDetailsByTypeAndId(*movie, VideoDbContentType::MOVIES,
+                                         item->GetVideoInfoTag()->m_iDbId))
+      m_videoAsset = movie;
+  }
+
   Refresh();
 
   m_selectedVideoAsset.reset();
-  if (m_videoAsset->HasVideoInfoTag())
+  if (item->HasVideoInfoTag())
   {
-    const int fileId{m_videoAsset->GetVideoInfoTag()->m_iFileId};
+    const int fileId{item->GetVideoInfoTag()->m_iFileId};
     const auto it{std::find_if(
         m_videoAssetsList->cbegin(), m_videoAssetsList->cend(), [fileId](const auto& entry)
         { return entry->HasVideoInfoTag() && entry->GetVideoInfoTag()->m_iFileId == fileId; })};

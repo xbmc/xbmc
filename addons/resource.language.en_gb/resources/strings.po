@@ -25561,7 +25561,11 @@ msgctxt "#40056"
 msgid "The selected playlist is already assigned to another extra. Reassign it?"
 msgstr ""
 
-#empty string with id 40057
+#. Manage video extras context menu item
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#40057"
+msgid "Manage extras"
+msgstr ""
 
 #. Asked when adding an extra while an extra on a disc is selected
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
