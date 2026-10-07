@@ -233,6 +233,10 @@ void CGUIDialogVideoManager::Refresh()
       m_selectedVideoAsset = item;
   }
 
+  // A list that was empty has nothing, or the empty item Remove() leaves, selected
+  if ((!m_selectedVideoAsset || selectedId == -1) && !m_videoAssetsList->IsEmpty())
+    m_selectedVideoAsset = m_videoAssetsList->Get(0);
+
   CGUIMessage msg{GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_ASSETS, 0, 0, m_videoAssetsList.get()};
   OnMessage(msg);
 }
