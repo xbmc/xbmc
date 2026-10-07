@@ -399,7 +399,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
 
   // update our content in the info manager
-  if (StringUtils::StartsWithNoCase(strDirectory, VIDEO::DB_PATH::ROOT) || VIDEO::IsVideoDb(items))
+  if (URIUtils::IsVideoDb(strDirectory) || VIDEO::IsVideoDb(items))
   {
     CVideoDatabaseDirectory dir;
     const auto node = dir.GetDirectoryChildType(items.GetPath());
