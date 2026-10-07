@@ -1,5 +1,6 @@
 set(SOURCES TestBookmark.cpp
             TestFilenameAttributes.cpp
+            TestGUIWindowVideoBase.cpp
             TestPlayerControllerActions.cpp
             TestSetInfoTag.cpp
             TestStacks.cpp
