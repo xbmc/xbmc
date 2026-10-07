@@ -13,7 +13,6 @@
 
 using namespace KODI;
 
-// CAddonsDirectory tells its nodes apart by host name, which EndpointOf must give
 TEST(TestAddonsPaths, EndpointIsTheHostName)
 {
   for (const char* path :
