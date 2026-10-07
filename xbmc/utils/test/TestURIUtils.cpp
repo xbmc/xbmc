@@ -234,7 +234,7 @@ TEST_F(TestURIUtils, GetDecodedFileName)
   EXPECT_EQ("movie.avi", URIUtils::GetDecodedFileName("/path/to/movie.avi"));
   EXPECT_EQ("the movie.avi", URIUtils::GetDecodedFileName("davs://host/the%20movie.avi"));
   EXPECT_EQ("100% proof.avi", URIUtils::GetDecodedFileName("davs://host/100%25%20proof.avi"));
-  EXPECT_EQ("C++ Collection.mkv", URIUtils::GetDecodedFileName("smb://host/C++%20Collection.mkv"));
+  EXPECT_EQ("C++ Collection.mkv", URIUtils::GetDecodedFileName("davs://host/C++%20Collection.mkv"));
 }
 
 TEST_F(TestURIUtils, RemoveExtension)

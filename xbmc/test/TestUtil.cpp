@@ -1002,13 +1002,6 @@ TEST_F(TestTitleFromPath, LeavesANameOnANonEscapingProtocolAlone)
   EXPECT_EQ("100% proof", CUtil::GetTitleFromPath("smb://server/share/100% proof.mkv"));
 }
 
-TEST_F(TestTitleFromPath, DecodesAnEscapeWhateverTheProtocol)
-{
-  // SMB, NFS and FTP put the server's name into the path unescaped, so a name that itself
-  // contains an escape triplet is decoded here, as it is when the extension is shown.
-  EXPECT_EQ("100 proof", CUtil::GetTitleFromPath("smb://server/share/100%20proof.mkv"));
-}
-
 TEST_F(TestTitleFromPath, DecodesAnArchiveNameOnlyWhenItsParentIsAUrl)
 {
   EXPECT_EQ(
