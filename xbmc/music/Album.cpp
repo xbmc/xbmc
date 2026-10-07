@@ -478,7 +478,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   // Support old style <year></year> for backwards compatibility
   if (strReleaseDate.empty())
   {
-    int year;
+    int year = 0;
     XMLUtils::GetInt(album, "year", year);
     if (year > 0)
       strReleaseDate = StringUtils::Format("{:04}", year);
