@@ -88,7 +88,7 @@ public:
   std::optional<GAME::GameClientDiscState> GetDiscState() const override;
   uint8_t* GetAchievementBuffer(size_t size) override;
   void SetDiscState(const std::optional<GAME::GameClientDiscState>& state) override;
-  void Finalize() override;
+  void Finalize(bool compress) override;
   bool Deserialize(std::vector<uint8_t> data) override;
 
 private:

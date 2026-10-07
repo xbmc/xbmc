@@ -515,7 +515,7 @@ protected:
     file->Close();
     RETRO::CSavestateFlatBuffer savestate;
     *savestate.GetMemoryBuffer(1) = 1;
-    savestate.Finalize();
+    savestate.Finalize(true);
     RETRO::CSavestateDatabase database;
     ASSERT_TRUE(database.AddSavestate(path, {}, savestate));
     {
