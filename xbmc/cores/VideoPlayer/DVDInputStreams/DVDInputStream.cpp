@@ -204,6 +204,7 @@ CDVDInputStream::UpdateState CDVDInputStream::UpdateItemFromPlaylistDetails(
     if (item.HasVideoInfoTag())
       item.GetVideoInfoTag()->m_streamDetails.Reset();
     item.SetDynPath("");
+    // Not continuing to play if in stack
     item.SetProperty(KODI::ITEM::PROPERTY::NO_MAIN_TITLE, true);
     CLog::LogF(LOGDEBUG, "No main title playlist played");
     return NOT_PLAYED;
