@@ -558,7 +558,7 @@ static bool Browse(const CURL& path, CFileItemList &items)
 
   VECADDONS addons;
   items.SetPath(path.Get());
-  if (repoId == "all")
+  if (repoId == ADDONS::EndpointOf(ADDONS::ALL))
   {
     CAddonRepos addonRepos;
     if (!addonRepos.IsValid())
