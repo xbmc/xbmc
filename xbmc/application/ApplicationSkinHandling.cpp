@@ -24,6 +24,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationSettingsHandling.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSubMenu.h"
@@ -452,6 +453,8 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm)
   }
 
   std::string oldSkin = skin->ID();
+
+  CApplicationSettingsHandling::ApplyRasterSettings();
 
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, gui->GetWindowManager().GetActiveWindow());
   gui->GetWindowManager().SendMessage(msg);

@@ -910,36 +910,3 @@ TEST(TestEffectiveGeometry, PictureOnScreenWithNothingKnownIsTheDestination)
              0.0f, 1920.0f, 1080.0f);
 }
 
-/*!
- * A title with one presentation ratio and scenes composed narrower inside it - a director
- * framing a shot, not the film changing shape. Following one brings the masking in for the
- * scene and out again after it, which is the room rearranging itself around the cutting.
- */
-TEST(TestEffectiveGeometry, AReadingNarrowerThanWhatIsServedDoesNotMoveTheRoom)
-{
-  EXPECT_FALSE(LiveReadingWidens(1.90f, 2.40f)) << "a scene composed narrower moved the room";
-  EXPECT_FALSE(LiveReadingWidens(1.78f, 2.40f));
-}
-
-//! \brief The other half: a title opening on an ident before it settles has to open the masking,
-//! or it plays the whole film inside the ident's shape.
-TEST(TestEffectiveGeometry, AReadingWiderThanWhatIsServedOpensTheRoom)
-{
-  EXPECT_TRUE(LiveReadingWidens(2.40f, 1.78f));
-
-  // Nothing served yet, which is a title with no stored measurement on its first reading.
-  EXPECT_TRUE(LiveReadingWidens(1.78f, 0.0f));
-}
-
-/*!
- * The detector wanders by a row or two between frames on the same shot. Without a floor those
- * readings ratchet the masking open a pixel at a time for the length of the film.
- */
-TEST(TestEffectiveGeometry, DetectorNoiseAroundTheServedRatioDoesNotRatchetItOpen)
-{
-  EXPECT_FALSE(LiveReadingWidens(2.4001f, 2.40f));
-  EXPECT_FALSE(LiveReadingWidens(2.41f, 2.40f));
-
-  // The vocabulary's closest neighbouring pair still has to get through.
-  EXPECT_TRUE(LiveReadingWidens(2.00f, 1.85f));
-}

@@ -106,14 +106,6 @@ RenderGeometry RenderGeometryOf(const EffectiveGeometry& geometry)
           geometry.aspect,     geometry.par,          geometry.orientation};
 }
 
-bool LiveReadingWidens(float reading, float served)
-{
-  // Wide enough to be a different ratio rather than the detector wandering by a row.
-  constexpr float WIDEN_EPSILON = 0.02f;
-
-  return reading > served + WIDEN_EPSILON;
-}
-
 CRect PictureOnScreen(const RenderGeometry& geometry, const CRect& source, const CRect& dest)
 {
   const CRect coded{geometry.codedFrame};

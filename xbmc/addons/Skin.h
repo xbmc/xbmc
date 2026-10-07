@@ -169,6 +169,9 @@ public:
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; }
 
+  const std::string& GetSurroundColour() const { return m_surroundColour; }
+  const std::string& GetSurroundImage() const { return m_surroundImage; }
+
   const std::vector<CStartupWindow>& GetStartupWindows() const { return m_startupWindows; }
 
   /*! \brief Retrieve the skin paths to search for skin XML files
@@ -294,6 +297,8 @@ protected:
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_debugging;
+  std::string m_surroundColour;
+  std::string m_surroundImage;
 
   /*! Manager/Owner of skin timers */
   std::unique_ptr<CSkinTimerManager> m_skinTimerManager;

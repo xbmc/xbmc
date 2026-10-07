@@ -88,6 +88,10 @@ public:
    */
   void SetAlignment(Align align) const;
 
+  //! \brief Whether the inside positions are measured against the picture rather than the
+  //! whole video.
+  bool IsAlignedToContent() const;
+
   /*!
    * \brief Get horizontal text alignment
    * \return The alignment

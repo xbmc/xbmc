@@ -42,4 +42,8 @@ public:
   static void ViewModesFiller(const std::shared_ptr<const CSetting>& setting,
                               std::vector<IntegerSettingOption>& list,
                               int& current);
+
+  //! \brief Whether this view mode survives a stated screen shape - both what a viewer is
+  //! offered and what the renderer honours.
+  static bool SurvivesStatedShape(int viewMode);
 };

@@ -25,6 +25,7 @@
 #include "DVDInputStreams/InputStreamPVRBase.h"
 #include "DVDMessage.h"
 #include "FileItem.h"
+#include "LiveGeometryMonitor.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -32,11 +33,14 @@
 #include "VideoPlayerRadioRDS.h"
 #include "VideoPlayerVideo.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "cores/DataCacheCore.h"
 #include "cores/EdlEdit.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/VideoRenderers/DebugInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/StereoscopicsManager.h"
@@ -679,6 +683,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
         s.width = vstream->iWidth;
         s.height = vstream->iHeight;
         s.aspect_ratio = vstream->fAspect;
+        s.orientation = vstream->iOrientation;
         s.stereo_mode = vstream->stereo_mode;
         s.bitrate = vstream->iBitRate;
         s.hdrType = vstream->hdr_type;
@@ -3618,6 +3623,14 @@ void CVideoPlayer::HandleMessages()
         cb->OnAVChange();
       });
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_CONTENT_GEOMETRY))
+    {
+      const LiveGeometryUpdate update =
+          std::static_pointer_cast<CDVDMsgType<LiveGeometryUpdate>>(pMsg)->m_value;
+      IPlayerCallback* cb = &m_callback;
+      m_outboundEvents->Submit([cb, update]() { cb->OnContentGeometryChanged(update);
+      });
+    }
     else if (pMsg->IsType(CDVDMsg::PLAYER_ABORT))
     {
       CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::PLAYER_ABORT");
@@ -6086,11 +6099,25 @@ void CVideoPlayer::VideoParamsChange()
   m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
 }
 
-void CVideoPlayer::GetDebugInfo(std::string &audio, std::string &video, std::string &general)
+void CVideoPlayer::GetDebugInfo(DEBUG_INFO_PLAYER& info)
 {
-  audio = m_VideoPlayerAudio->GetPlayerInfo();
-  video = m_VideoPlayerVideo->GetPlayerInfo();
-  GetGeneralInfo(general);
+  info.audio = m_VideoPlayerAudio->GetPlayerInfo();
+  info.video = m_VideoPlayerVideo->GetPlayerInfo();
+  GetGeneralInfo(info.player);
+
+  if (!m_HasVideo)
+    return;
+
+  const auto geometry =
+      CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>()->Get();
+  info.contentGeometry = StringUtils::Format(
+      "cg: {} {} {:.0f}x{:.0f} at {:.0f},{:.0f}", geometry.label,
+      KODI::VIDEO::GEOMETRY::GeometrySourceName(geometry.source), geometry.displayRect.Width(),
+      geometry.displayRect.Height(), geometry.displayRect.x1, geometry.displayRect.y1);
+
+  const std::string live = m_VideoPlayerVideo->GetContentGeometryInfo();
+  if (!live.empty())
+    info.contentGeometry += " | " + live;
 }
 
 void CVideoPlayer::UpdateClockSync(bool enabled)
@@ -6271,6 +6298,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   info.height = s.height;
   info.codecName = s.codec;
   info.videoAspectRatio = s.aspect_ratio;
+  info.orientation = s.orientation;
   info.stereoMode = s.stereo_mode;
   info.flags = s.flags;
   info.hdrType = s.hdrType;
