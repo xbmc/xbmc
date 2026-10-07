@@ -19,8 +19,8 @@ using namespace KODI;
 
 TEST(TestPlayListPLS, AnUnnamedPlayListIsNamedAfterItsFile)
 {
-  const std::string path{URIUtils::AddFileToFolder(
-      CSpecialProtocol::TranslatePath("special://temp/"), "unnamed.pls")};
+  const std::string path{
+      URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath("special://temp/"), "unnamed.pls")};
   {
     std::ofstream file(path);
     file << "[playlist]\nFile1=http://example.com/stream\nNumberOfEntries=1\n";
