@@ -357,6 +357,23 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 
   MediaType type = item->GetVideoInfoTag()->m_type;
 
+  // An extra's art is only its thumb, so the information, which is its movie's, has the movie's art
+  if (VIDEO::IsVideoAssetFile(*item) &&
+      item->GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA)
+  {
+    CVideoDatabase database;
+    KODI::ART::Artwork art;
+    if (database.Open() &&
+        database.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, MediaTypeMovie, art))
+    {
+      for (const auto& [artType, url] : art)
+      {
+        if (!m_movieItem->HasArt(artType))
+          m_movieItem->SetArt(artType, url);
+      }
+    }
+  }
+
   m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
 
   if (type == MediaTypeMusicVideo)
