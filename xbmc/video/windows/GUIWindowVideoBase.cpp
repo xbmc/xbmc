@@ -252,7 +252,8 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
 
   // Music video. Match visibility test of CMusicInfo::IsVisible
   if (VIDEO::IsVideoDb(fileItem) && fileItem.HasVideoInfoTag() &&
-      (fileItem.HasProperty(ITEM::PROPERTY::ARTIST_MUSICID) || fileItem.HasProperty(ITEM::PROPERTY::ALBUM_MUSICID)))
+      (fileItem.HasProperty(ITEM::PROPERTY::ARTIST_MUSICID) ||
+       fileItem.HasProperty(ITEM::PROPERTY::ALBUM_MUSICID)))
   {
     CGUIDialogMusicInfo::ShowFor(std::make_shared<CFileItem>(fileItem).get());
     return true;
@@ -662,7 +663,8 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   const std::string path{item->GetPath()};
   if (!item->IsFolder() && path != PLACEHOLDER::ADD_SOURCE &&
       ((!PLACEHOLDER::IsNewItem(path) && !URIUtils::IsScript(path) && !URIUtils::IsPlugin(path)) ||
-       (URIUtils::IsPlugin(path) && item->GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean(false))))
+       (URIUtils::IsPlugin(path) &&
+        item->GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean(false))))
   {
     CVideoSelectActionProcessor proc(*this, item, iItem, "");
     return proc.ProcessDefaultAction();
@@ -876,7 +878,8 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       // is a member of a list rather than a single item and we're not on the last element of the list,
       // then add either 'play from here' or 'play only this' depending on default behaviour
       if (!(item->IsFolder() || item->IsScript()) &&
-          (!item->HasProperty(ITEM::PROPERTY::IS_PLAYABLE) || item->GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean()) &&
+          (!item->HasProperty(ITEM::PROPERTY::IS_PLAYABLE) ||
+           item->GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean()) &&
           m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size() - 1)
       {
         if (VIDEO::UTILS::IsAutoPlayNextItem(*item))

@@ -252,10 +252,12 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string& player)
     // cancel a downloading job
     if (item->HasProperty(KODI::ITEM::PROPERTY::ADDON_DOWNLOADING))
     {
-      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{24000}, item->GetProperty(KODI::ITEM::PROPERTY::ADDON_NAME),
+      if (CGUIDialogYesNo::ShowAndGetInput(CVariant{24000},
+                                           item->GetProperty(KODI::ITEM::PROPERTY::ADDON_NAME),
                                            CVariant{24066}, CVariant{""}))
       {
-        if (CAddonInstaller::GetInstance().Cancel(item->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString()))
+        if (CAddonInstaller::GetInstance().Cancel(
+                item->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString()))
           Refresh();
       }
       return true;
@@ -337,8 +339,9 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
         {
           //check if it's installed
           AddonPtr addon;
-          if (!CServiceBroker::GetAddonMgr().GetAddon(items[i]->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(),
-                                                      addon, OnlyEnabled::CHOICE_YES))
+          if (!CServiceBroker::GetAddonMgr().GetAddon(
+                  items[i]->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(), addon,
+                  OnlyEnabled::CHOICE_YES))
             items.Remove(i);
         }
       }
@@ -358,8 +361,8 @@ void CGUIWindowAddonBrowser::UpdateStatus(const CFileItemPtr& item) const
 
   unsigned int percent;
   bool downloadFinshed;
-  if (CAddonInstaller::GetInstance().GetProgress(item->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(), percent,
-                                                 downloadFinshed))
+  if (CAddonInstaller::GetInstance().GetProgress(
+          item->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(), percent, downloadFinshed))
   {
     std::string progress = StringUtils::Format(
         !downloadFinshed ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24042)

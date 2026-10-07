@@ -333,9 +333,10 @@ void CGUIDialogAddonInfo::OnUpdate()
 {
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& addonId = itemAddonInfo->ID();
-  const std::string& origin = m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_ORIGIN).asString();
-  const CAddonVersion& version =
-      static_cast<CAddonVersion>(m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_VERSION).asString());
+  const std::string& origin =
+      m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_ORIGIN).asString();
+  const CAddonVersion& version = static_cast<CAddonVersion>(
+      m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_VERSION).asString());
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
@@ -446,7 +447,8 @@ void CGUIDialogAddonInfo::OnToggleAutoUpdates()
       CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
                                                         AddonUpdateRule::USER_DISABLED_AUTO_UPDATE);
 
-    bool showUpdateButton = (selected && m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean());
+    bool showUpdateButton =
+        (selected && m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean());
 
     if (showUpdateButton)
     {

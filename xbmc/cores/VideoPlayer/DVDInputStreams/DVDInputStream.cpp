@@ -251,7 +251,8 @@ CDVDInputStream::UpdateState CDVDInputStream::UpdateItemFromPlaylistDetails(
   item.SetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST, playlist);
   CLog::LogF(LOGDEBUG, "Main playlist {}", playlist);
 
-  if (type == DVDSTREAM_TYPE_DVD && item.GetProperty(KODI::ITEM::PROPERTY::UPDATE_STREAM_DETAILS).asBoolean(false) &&
+  if (type == DVDSTREAM_TYPE_DVD &&
+      item.GetProperty(KODI::ITEM::PROPERTY::UPDATE_STREAM_DETAILS).asBoolean(false) &&
       item.HasVideoInfoTag())
   {
     // Update streamdetails for DVD titles (bluray handled when playlist selected)

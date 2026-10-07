@@ -1021,13 +1021,13 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
   }
   else if (pItem->HasProperty(ITEM::PROPERTY::ARTIST_MUSICID))
   {
-    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty(ITEM::PROPERTY::ARTIST_MUSICID).asInteger32(),
-                                               MediaTypeArtist);
+    musicitem.GetMusicInfoTag()->SetDatabaseId(
+        pItem->GetProperty(ITEM::PROPERTY::ARTIST_MUSICID).asInteger32(), MediaTypeArtist);
   }
   else if (pItem->HasProperty(ITEM::PROPERTY::ALBUM_MUSICID))
   {
-    musicitem.GetMusicInfoTag()->SetDatabaseId(pItem->GetProperty(ITEM::PROPERTY::ALBUM_MUSICID).asInteger32(),
-                                               MediaTypeAlbum);
+    musicitem.GetMusicInfoTag()->SetDatabaseId(
+        pItem->GetProperty(ITEM::PROPERTY::ALBUM_MUSICID).asInteger32(), MediaTypeAlbum);
   }
   else
     return; // nothing to do

@@ -405,7 +405,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
           // Use the stored cache file name
           if (hasCacheFilename)
-            items.RemoveDiscCacheCRC(newItem->GetProperty(ITEM::PROPERTY::CACHE_FILENAME).asString());
+            items.RemoveDiscCacheCRC(
+                newItem->GetProperty(ITEM::PROPERTY::CACHE_FILENAME).asString());
 
           if (hasParentPath)
             RemoveDiscCache(newItem->GetProperty(ITEM::PROPERTY::PARENT_PATH).asString());

@@ -949,7 +949,8 @@ bool CFileItem::IsFileFolder(FileFolderType types) const
 
 bool CFileItem::IsLibraryFolder() const
 {
-  if (HasProperty(ITEM::PROPERTY::LIBRARY_FILTER) && GetProperty(ITEM::PROPERTY::LIBRARY_FILTER).asBoolean())
+  if (HasProperty(ITEM::PROPERTY::LIBRARY_FILTER) &&
+      GetProperty(ITEM::PROPERTY::LIBRARY_FILTER).asBoolean())
     return true;
 
   return GetURL().IsLibraryFolder();
@@ -1263,12 +1264,13 @@ bool IsSameLibraryItem(const CFileItem& item, const CFileItem& other)
   if (myTag.m_type != otherTag.m_type)
     return false;
 
-  const auto SameFile{[&item, &other](int myFile, int otherFile)
-                      {
-                        return myFile == otherFile ||
-                               item.GetProperty(ITEM::PROPERTY::REPLACED_FILE_ID).asInteger32(-1) == otherFile ||
-                               other.GetProperty(ITEM::PROPERTY::REPLACED_FILE_ID).asInteger32(-1) == myFile;
-                      }};
+  const auto SameFile{
+      [&item, &other](int myFile, int otherFile)
+      {
+        return myFile == otherFile ||
+               item.GetProperty(ITEM::PROPERTY::REPLACED_FILE_ID).asInteger32(-1) == otherFile ||
+               other.GetProperty(ITEM::PROPERTY::REPLACED_FILE_ID).asInteger32(-1) == myFile;
+      }};
 
   // For a version its db id is a file id
   if (myTag.m_type == MediaTypeVideoVersion)
@@ -1297,7 +1299,8 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   if (!m_strPath.empty() && item->GetPath() == m_strPath)
   {
     if (item->HasProperty(ITEM::PROPERTY::ITEM_START) || HasProperty(ITEM::PROPERTY::ITEM_START))
-      return (item->GetProperty(ITEM::PROPERTY::ITEM_START) == GetProperty(ITEM::PROPERTY::ITEM_START));
+      return (item->GetProperty(ITEM::PROPERTY::ITEM_START) ==
+              GetProperty(ITEM::PROPERTY::ITEM_START));
     // See if we have associated a bluray playlist
     if (URIUtils::IsBlurayPath(GetDynPath()) || URIUtils::IsBlurayPath(item->GetDynPath()))
     {
@@ -1447,7 +1450,8 @@ void CFileItem::UpdateInfo(const CFileItem& item,
 
       // Multiple episodes so use show plot rather than episode plot
       if (HasVideoInfoTag() && item.HasProperty(ITEM::PROPERTY::EPISODES_SHOW_PLOT))
-        GetVideoInfoTag()->m_strPlot = item.GetProperty(ITEM::PROPERTY::EPISODES_SHOW_PLOT).asString();
+        GetVideoInfoTag()->m_strPlot =
+            item.GetProperty(ITEM::PROPERTY::EPISODES_SHOW_PLOT).asString();
     }
     else if (!item.GetLabel().empty())
       label = item.GetLabel();

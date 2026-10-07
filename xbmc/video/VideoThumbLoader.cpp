@@ -196,7 +196,8 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   }
 
   // video db items normally have info in the database
-  if (pItem->HasVideoInfoTag() && !pItem->GetProperty(ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean())
+  if (pItem->HasVideoInfoTag() &&
+      !pItem->GetProperty(ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean())
   {
     FillLibraryArt(*pItem);
 
@@ -252,8 +253,8 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 
   const bool isLibraryItem = pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iDbId > -1 &&
                              !pItem->GetVideoInfoTag()->m_type.empty();
-  const bool libraryArtFilled =
-      pItem->HasVideoInfoTag() && pItem->GetProperty(ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean();
+  const bool libraryArtFilled = pItem->HasVideoInfoTag() &&
+                                pItem->GetProperty(ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean();
   if (!isLibraryItem || !libraryArtFilled)
   {
     KODI::ART::Artwork artwork = pItem->GetArt();

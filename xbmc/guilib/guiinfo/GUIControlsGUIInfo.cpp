@@ -471,7 +471,8 @@ bool CGUIControlsGUIInfo::GetBool(bool& value,
       const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        value = window->CurrentDirectory().GetProperty(KODI::ITEM::PROPERTY::IS_STACKED).asBoolean();
+        value =
+            window->CurrentDirectory().GetProperty(KODI::ITEM::PROPERTY::IS_STACKED).asBoolean();
         return true;
       }
       break;

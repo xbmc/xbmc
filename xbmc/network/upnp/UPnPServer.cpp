@@ -429,7 +429,8 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
           // for tvshows and seasons, iEpisode and playCount are
           // invalid
           item->SetFolder(true);
-          item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty(ITEM::PROPERTY::TOTAL_EPISODES).asInteger();
+          item->GetVideoInfoTag()->m_iEpisode =
+              (int)item->GetProperty(ITEM::PROPERTY::TOTAL_EPISODES).asInteger();
           item->GetVideoInfoTag()->SetPlayCount(
               static_cast<int>(item->GetProperty(ITEM::PROPERTY::WATCHED_EPISODES).asInteger()));
         }

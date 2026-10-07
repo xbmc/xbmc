@@ -183,7 +183,8 @@ bool CFileItemHandler::GetField(const std::string& field,
 
     if (field == "art")
     {
-      if (thumbLoader && !item->GetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean() && !fetchedArt &&
+      if (thumbLoader && !item->GetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean() &&
+          !fetchedArt &&
           ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) ||
            (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {

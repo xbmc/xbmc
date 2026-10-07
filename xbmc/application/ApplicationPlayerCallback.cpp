@@ -213,7 +213,8 @@ bool UpdateDiscStackBookmark(CBookmark& bookmark,
         return false;
       }()};
 
-  const bool currentPartFinished{!file.GetProperty(ITEM::PROPERTY::STOPPED_BEFORE_END).asBoolean(false)};
+  const bool currentPartFinished{
+      !file.GetProperty(ITEM::PROPERTY::STOPPED_BEFORE_END).asBoolean(false)};
   const bool allStackPartsPlayed{stackHelper->IsPlayingLastStackPart()};
   const bool noMainTitle{file.GetProperty(ITEM::PROPERTY::NO_MAIN_TITLE).asBoolean(false)};
 
@@ -373,7 +374,8 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     // otherwise if played through Video->Files we need to retrieve the removable:// path
     // We need to update DynPath with the removable:// path (for the database), keeping the playlist
     // Also flag if we need to update stream details from the played file
-    UpdateRemovableBlurayPath(fileItem, file.GetProperty(ITEM::PROPERTY::UPDATE_STREAM_DETAILS).asBoolean(false));
+    UpdateRemovableBlurayPath(
+        fileItem, file.GetProperty(ITEM::PROPERTY::UPDATE_STREAM_DETAILS).asBoolean(false));
 #endif
 
     // Update the stack

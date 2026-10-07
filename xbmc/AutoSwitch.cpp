@@ -176,7 +176,8 @@ float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
                                 --total;
 
                               return item->HasMusicInfoTag() || item->HasVideoInfoTag() ||
-                                     item->HasPictureInfoTag() || item->HasProperty(KODI::ITEM::PROPERTY::ADDON_ID);
+                                     item->HasPictureInfoTag() ||
+                                     item->HasProperty(KODI::ITEM::PROPERTY::ADDON_ID);
                             });
   return total != 0 ? count / total : 0.0f;
 }

@@ -42,7 +42,8 @@ bool CDirectoryNodeMovieAssets::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  const int details{items.GetProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS).asInteger32(VideoDbDetailsStream)};
+  const int details{items.GetProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS)
+                        .asInteger32(VideoDbDetailsStream)};
 
   const std::string path{BuildPath()};
 

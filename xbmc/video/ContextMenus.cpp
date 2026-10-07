@@ -106,7 +106,8 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
 
   if (item.IsFolder())
   {
-    if (item.HasProperty(ITEM::PROPERTY::WATCHED_EPISODES) && item.HasProperty(ITEM::PROPERTY::TOTAL_EPISODES))
+    if (item.HasProperty(ITEM::PROPERTY::WATCHED_EPISODES) &&
+        item.HasProperty(ITEM::PROPERTY::TOTAL_EPISODES))
     {
       return item.GetProperty(ITEM::PROPERTY::WATCHED_EPISODES).asInteger() <
              item.GetProperty(ITEM::PROPERTY::TOTAL_EPISODES).asInteger();

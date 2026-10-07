@@ -58,7 +58,8 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   if (pItem->IsShareOrDrive())
     return false;
 
-  if (pItem->HasMusicInfoTag() && !pItem->GetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean())
+  if (pItem->HasMusicInfoTag() &&
+      !pItem->GetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean())
   {
     if (FillLibraryArt(*pItem))
       return true;

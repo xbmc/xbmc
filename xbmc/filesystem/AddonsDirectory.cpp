@@ -509,7 +509,8 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
     if (orphaned.contains(items[i]->GetProperty(ITEM::PROPERTY::ADDON_ID).asString()))
     {
       items[i]->SetProperty(
-          ITEM::PROPERTY::ADDON_STATUS, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24995));
+          ITEM::PROPERTY::ADDON_STATUS,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24995));
       items[i]->SetProperty("Addon.Orphaned", true);
     }
   }

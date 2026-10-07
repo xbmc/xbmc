@@ -69,7 +69,8 @@ void CSaveFileState::DoWork(CFileItem& item,
         if (updatedItem.HasVideoInfoTag())
           updatedItem.GetVideoInfoTag()->SetResumePoint(bookmark);
         if (updatedItem.HasProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL))
-          updatedItem.SetPath(updatedItem.GetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL).asString());
+          updatedItem.SetPath(
+              updatedItem.GetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL).asString());
         else
           updatedItem.SetPath(
               progressTrackingFile); // fallback to progressTrackingFile which should be the upnp path

@@ -585,7 +585,8 @@ public:
       if (!recPath.IsValid())
         continue;
 
-      const auto oldInProgressEpisodes{folder->GetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES).asInteger(0)};
+      const auto oldInProgressEpisodes{
+          folder->GetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES).asInteger(0)};
 
       // Get all matching recordings of the current directory and sum up in-progress episodes.
       int inProgressEpisodes{0};
