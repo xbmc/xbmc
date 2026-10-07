@@ -8,7 +8,6 @@
 
 #include "LocalizeStrings.h"
 
-#include "addons/LanguageResource.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "threads/SharedSection.h"
@@ -103,24 +102,11 @@ static bool LoadStr2Mem(const std::string& pathname_in,
                         std::string& encoding,
                         uint32_t offset = 0)
 {
-  std::string pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
+  const std::string pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + language);
   if (!XFILE::CDirectory::Exists(pathname))
-  {
-    bool exists = false;
-    std::string lang;
-    // check if there's a language addon using the old language naming convention
-    if (ADDON::CLanguageResource::FindLegacyLanguage(language, lang))
-    {
-      pathname = CSpecialProtocol::TranslatePathConvertCase(pathname_in + lang);
-      exists = XFILE::CDirectory::Exists(pathname);
-    }
+    return false;
 
-    if (!exists)
-      return false;
-  }
-
-  bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) ||
-                       StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
+  const bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT);
 
   return LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset,
                 useSourceLang);
