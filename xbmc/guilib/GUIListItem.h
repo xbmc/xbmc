@@ -13,6 +13,7 @@
 \brief
 */
 
+#include "threads/CriticalSection.h"
 #include "utils/Artwork.h"
 
 #include <cstdint>
@@ -196,6 +197,7 @@ private:
   GUIIconOverlay m_overlayIcon{ICON_OVERLAY_NONE}; // type of overlay icon
   std::unique_ptr<CGUIListItemLayout> m_layout;
   std::unique_ptr<CGUIListItemLayout> m_focusedLayout;
+  CCriticalSection m_layoutSection; // SetInvalid() is called from other threads
   bool m_bSelected{false}; // item is selected or not
   unsigned int m_currentItem{1}; // current item number within container (starting at 1)
 
