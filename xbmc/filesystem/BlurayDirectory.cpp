@@ -94,6 +94,15 @@ std::string GetCachePath(const CURL& url, const std::string& realPath)
   return path;
 }
 
+//! A disc folder or image can be replaced at the same path, so what is cached for it is only kept
+//! while its index or image is unchanged
+void CheckCachedDisc(const std::string& cachePath, const std::string& discFile)
+{
+  if (struct __stat64 st{}; CFile::Stat(discFile, &st) == 0)
+    CServiceBroker::GetBlurayDiscCache()->CheckDisc(cachePath,
+                                                    fmt::format("{}:{}", st.st_mtime, st.st_size));
+}
+
 bool GetPlaylistInfoFromCache(const CURL& url,
                               const std::string& realPath,
                               unsigned int playlist,
@@ -670,6 +679,8 @@ UTILS::DISCS::DiscInfo CBlurayDirectory::ProbeDisc(const std::string& mediaPath)
   UTILS::DISCS::DiscInfo info;
   CBlurayDirectory bdDir;
   bdDir.SetRealPath(mediaPath);
+  CheckCachedDisc(GetCachePath(bdDir.m_url, bdDir.m_realPath),
+                  URIUtils::AddFileToFolder(bdDir.m_realPath, "BDMV", "index.bdmv"));
   const std::optional<std::string> title{bdDir.GetBlurayTitle()};
   if (!title)
     return info;
@@ -764,10 +775,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // Neither needs libbluray or disc.inf, so both are deferred.
   SetRealPath(root);
 
-  // A disc folder or image can be replaced at the same path
-  if (struct __stat64 st{}; CFile::Stat(URIUtils::GetDiscFile(m_url.Get()), &st) == 0)
-    CServiceBroker::GetBlurayDiscCache()->CheckDisc(GetCachePath(m_url, m_realPath),
-                                                    fmt::format("{}:{}", st.st_mtime, st.st_size));
+  CheckCachedDisc(GetCachePath(m_url, m_realPath), URIUtils::GetDiscFile(m_url.Get()));
 
   //
   // These options also return 'All Titles' and 'Menu' options (if supported on disc)
