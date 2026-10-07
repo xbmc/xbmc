@@ -1095,6 +1095,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   {
     // manage video versions
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS, 40001); // Manage versions
+    buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS, 40057); // Manage extras
   }
 
   if (type == MEDIA::TYPE::EPISODE && item->GetVideoInfoTag()->m_iBookmarkId > 0)
@@ -1175,6 +1176,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
       case CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS:
         ManageVideoVersions(item);
+        result = true;
+        break;
+
+      case CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS:
+        CGUIDialogVideoManagerExtras::ManageVideoExtras(item);
         result = true;
         break;
 
