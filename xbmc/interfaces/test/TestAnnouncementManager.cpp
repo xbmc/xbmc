@@ -178,11 +178,12 @@ TEST(TestAnnouncementManagerFailure, RemovingAnAnnouncerWhoseCallThrewDoesNotWai
   ASSERT_TRUE(announcer->m_called.Wait(TIMEOUT));
 
   auto removed = std::make_shared<CEvent>();
-  std::thread remover([m = manager.get(), a = announcer.get(), removed]
-                      {
-                        m->RemoveAnnouncer(a);
-                        removed->Set();
-                      });
+  std::thread remover(
+      [m = manager.get(), a = announcer.get(), removed]
+      {
+        m->RemoveAnnouncer(a);
+        removed->Set();
+      });
   if (!removed->Wait(TIMEOUT))
   {
     remover.detach();
