@@ -202,6 +202,88 @@ TEST(TestVideoInfoTag, WriteStreamDetailFlags)
   EXPECT_EQ(subtitleInfo.flags, reloaded.m_streamDetails.GetSubtitleFlags(1));
 }
 
+TEST(TestVideoInfoTag, SaveRuntime)
+{
+  CVideoInfoTag details;
+  details.SetDuration(1320);
+  auto* video = new CStreamDetailVideo();
+  video->m_iDuration = 1319;
+  video->SetSource(CStreamDetail::MEDIA);
+  details.m_streamDetails.AddStream(video);
+  details.m_streamDetails.DetermineBestStreams();
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "episodedetails"));
+  int runtime{0};
+  EXPECT_TRUE(XMLUtils::GetInt(xmlDoc.RootElement(), "runtime", runtime));
+  EXPECT_EQ(22, runtime);
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
+  EXPECT_EQ(1320u, reloaded.GetStaticDuration());
+
+  CVideoInfoTag noRuntime;
+  CXBMCTinyXML noRuntimeDoc;
+  ASSERT_TRUE(noRuntime.Save(&noRuntimeDoc, "episodedetails"));
+  EXPECT_EQ(nullptr, noRuntimeDoc.RootElement()->FirstChildElement("runtime"));
+}
+
+TEST(TestVideoInfoTag, WriteVideoStreamDetails)
+{
+  auto* video = new CStreamDetailVideo();
+  video->m_strCodec = "hevc";
+  video->m_strLanguage = "eng";
+  video->m_strHdrType = "dolbyvision";
+  video->m_strHdrDetail = "7MEL";
+  video->SetSource(CStreamDetail::MEDIA);
+
+  CVideoInfoTag details;
+  details.m_streamDetails.AddStream(video);
+  details.m_streamDetails.DetermineBestStreams();
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "movie"));
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
+
+  EXPECT_EQ("eng", reloaded.m_streamDetails.GetVideoLanguage(1));
+  EXPECT_EQ("7MEL", reloaded.m_streamDetails.GetVideoHdrDetail(1));
+}
+
+TEST(TestVideoInfoTag, EpisodeBookmarkRoundTrip)
+{
+  CVideoInfoTag details;
+  details.m_EpBookmark.timeInSeconds = 5479.0;
+  details.m_EpBookmark.totalTimeInSeconds = 16066.5;
+
+  CXBMCTinyXML xmlDoc;
+  ASSERT_TRUE(details.Save(&xmlDoc, "episodedetails"));
+
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(xmlDoc.RootElement(), true, false));
+
+  EXPECT_DOUBLE_EQ(5479.0, reloaded.m_EpBookmark.timeInSeconds);
+  EXPECT_DOUBLE_EQ(16066.5, reloaded.m_EpBookmark.totalTimeInSeconds);
+}
+
+TEST(TestVideoInfoTag, ReadTextEpisodeGuide)
+{
+  CXBMCTinyXML doc;
+  doc.Parse(std::string{
+      "<tvshow><episodeguide>{&quot;tmdb&quot;: &quot;1234&quot;}</episodeguide></tvshow>"});
+
+  CVideoInfoTag details;
+  ASSERT_TRUE(details.Load(doc.RootElement(), true, false));
+  EXPECT_EQ(R"(<episodeguide>{"tmdb": "1234"}</episodeguide>)", details.m_strEpisodeGuide);
+
+  CXBMCTinyXML saved;
+  ASSERT_TRUE(details.Save(&saved, "tvshow"));
+  CVideoInfoTag reloaded;
+  ASSERT_TRUE(reloaded.Load(saved.RootElement(), true, false));
+  EXPECT_EQ(details.m_strEpisodeGuide, reloaded.m_strEpisodeGuide);
+}
+
 // Trick to make protected methods accessible for testing
 class CVideoInfoTagTest : public CVideoInfoTag
 {

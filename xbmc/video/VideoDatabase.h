@@ -998,16 +998,13 @@ public:
    * \param idVideoVersion[in] new versiontype of the default version of the video
    *                           special value -1: keep the current versiontype of the video.
    * \param assetType[in] new asset type of the default version of the video.
-   * \param cascadeAction[in] action to take on the assets of the video being converted
-   *        (used to preserve streamdetails for bluray playlists)
    * \return true for success, false otherwise
    */
   bool ConvertVideoToVersion(VideoDbContentType itemType,
                              int dbIdSource,
                              int dbIdTarget,
                              int idVideoVersion,
-                             VideoAssetType assetType,
-                             DeleteMovieCascadeAction cascadeAction);
+                             VideoAssetType assetType);
 
   /*!
    * \brief Adds or updates a version of an existing movie to the database
