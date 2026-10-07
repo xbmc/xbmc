@@ -5651,8 +5651,11 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///   \table_row3{   <b>`ListItem.Genre`</b>,
 ///                  \anchor ListItem_Genre
 ///                  _string_,
-///     @return The genre of the currently selected song\, album or movie in a
+///     @return The genre of the currently selected song\, album\, movie or game in a
 ///     container.
+///     <p><hr>
+///     @skinning_v23 **[Infolabel Updated]** \link ListItem_Genre `ListItem.Genre`\endlink extended
+///     to support games
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Genre(separator)`</b>,
@@ -6633,7 +6636,10 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///   \table_row3{   <b>`ListItem.Plot`</b>,
 ///                  \anchor ListItem_Plot
 ///                  _string_,
-///     @return The complete Text Summary of Video in a container.
+///     @return The complete Text Summary of Video or a game in a container.
+///     <p><hr>
+///     @skinning_v23 **[Infolabel Updated]** \link ListItem_Plot `ListItem.Plot`\endlink extended
+///     to support games
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IMDBNumber`</b>,
@@ -7413,6 +7419,9 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return The game platform (e.g. "Atari 2600") (RETROPLAYER).
 ///     <p><hr>
 ///     @skinning_v18 **[New Infolabel]** \link ListItem_Platform `ListItem.Platform`\endlink
+///
+///     @skinning_v23 **[Infolabel Updated]** \link ListItem_Platform `ListItem.Platform`\endlink
+///     now available for games in a container.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Genres`</b>,
@@ -7429,6 +7438,9 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return The game publisher (e.g. "Nintendo") (RETROPLAYER).
 ///     <p><hr>
 ///     @skinning_v18 **[New Infolabel]** \link ListItem_Publisher `ListItem.Publisher`\endlink
+///
+///     @skinning_v23 **[Infolabel Updated]** \link ListItem_Publisher `ListItem.Publisher`\endlink
+///     now available for games in a container.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Developer`</b>,
@@ -7437,6 +7449,9 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     @return The game developer (e.g. "Square") (RETROPLAYER).
 ///     <p><hr>
 ///     @skinning_v18 **[New Infolabel]** \link ListItem_Developer `ListItem.Developer`\endlink
+///
+///     @skinning_v23 **[Infolabel Updated]** \link ListItem_Developer `ListItem.Developer`\endlink
+///     now available for games in a container.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Overview`</b>,
@@ -7889,7 +7904,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 233> listitem_labels = {{
+constexpr std::array<InfoMap, 236> listitem_labels = {{
     {"thumb",                         LISTITEM_THUMB},
     {"icon",                          LISTITEM_ICON},
     {"actualicon",                    LISTITEM_ACTUAL_ICON},
@@ -8000,6 +8015,9 @@ constexpr std::array<InfoMap, 233> listitem_labels = {{
     {"trailer",                       LISTITEM_TRAILER},
     {"sortletter",                    LISTITEM_SORT_LETTER},
     {"tag",                           LISTITEM_TAG},
+    {"platform",                      LISTITEM_PLATFORM},
+    {"developer",                     LISTITEM_DEVELOPER},
+    {"publisher",                     LISTITEM_PUBLISHER},
     {"set",                           LISTITEM_SET},
     {"setid",                         LISTITEM_SETID},
     {"videocodec",                    LISTITEM_VIDEO_CODEC},

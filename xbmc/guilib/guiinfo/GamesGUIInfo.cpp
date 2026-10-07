@@ -111,6 +111,52 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
   switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    // LISTITEM_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case LISTITEM_TITLE:
+    case LISTITEM_YEAR:
+    case LISTITEM_GENRE:
+    case LISTITEM_PLOT:
+    case LISTITEM_PLATFORM:
+    case LISTITEM_DEVELOPER:
+    case LISTITEM_PUBLISHER:
+    {
+      if (item == nullptr || !item->HasGameInfoTag())
+        break;
+
+      const CGameInfoTag* tag = item->GetGameInfoTag();
+
+      switch (info.GetInfo())
+      {
+        case LISTITEM_TITLE:
+          value = tag->GetTitle();
+          break;
+        case LISTITEM_YEAR:
+          if (tag->GetYear() > 0)
+            value = std::to_string(tag->GetYear());
+          break;
+        case LISTITEM_GENRE:
+          value =
+              StringUtils::Join(tag->GetGenres(), info.GetData3().empty() ? ", " : info.GetData3());
+          break;
+        case LISTITEM_PLOT:
+          value = tag->GetOverview();
+          break;
+        case LISTITEM_PLATFORM:
+          value = tag->GetPlatform();
+          break;
+        case LISTITEM_DEVELOPER:
+          value = tag->GetDeveloper();
+          break;
+        case LISTITEM_PUBLISHER:
+          value = tag->GetPublisher();
+          break;
+        default:
+          break;
+      }
+      return !value.empty();
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     // RETROPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case RETROPLAYER_VIDEO_FILTER:
