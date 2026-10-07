@@ -27,8 +27,10 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cstring>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <string>
@@ -435,6 +437,8 @@ void CDVDInputStreamBluray::Close()
   m_bd = nullptr;
   m_pstream.reset();
   m_rootPath.clear();
+  m_readPos = 0;
+  m_clipSpans.clear();
 
 #if defined(HAS_UDFREAD)
   // Released last, as the files opened from the volume are closed above
@@ -610,6 +614,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     {
       m_clip = &m_titleInfo->clips[m_event.param];
       UpdateClipInfo(m_event.param);
+      OpenClipSpan();
     }
     break;
 
@@ -771,6 +776,8 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       // A unit libbluray skips as broken is reported and read as nothing, which the demuxer would
       // take for the end of the title
     } while (result == 0 && m_readErrors > readErrors);
+    if (result > 0)
+      m_readPos += result;
   }
   return result;
 }
@@ -1040,6 +1047,7 @@ bool CDVDInputStreamBluray::PosTime(int ms)
 
   while (bd_get_event(m_bd, &m_event))
     ProcessEvent();
+  OpenClipSpan();
 
   return true;
 }
@@ -1082,6 +1090,7 @@ bool CDVDInputStreamBluray::SeekChapter(int ch)
 
   while (bd_get_event(m_bd, &m_event))
     ProcessEvent();
+  OpenClipSpan();
 
   return true;
 }
@@ -1234,6 +1243,27 @@ bool CDVDInputStreamBluray::IsDefaultStream(int pid) const
     return is_first_stream(pid, m_clip->pg_streams, m_clip->pg_stream_count);
 
   return false;
+}
+
+std::optional<CDVDInputStreamBluray::ClipTime> CDVDInputStreamBluray::GetClipTime(
+    uint64_t readPos) const
+{
+  const auto it = std::ranges::upper_bound(m_clipSpans, readPos, {}, &ClipSpan::readPos);
+  if (it == m_clipSpans.begin())
+    return {};
+
+  return std::prev(it)->time;
+}
+
+void CDVDInputStreamBluray::OpenClipSpan()
+{
+  if (m_navmode)
+    return;
+
+  ClipSpan span{m_readPos};
+  if (m_clip)
+    span.time = ClipTime{m_clip->in_time, m_clip->start_time};
+  m_clipSpans.push_back(span);
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
