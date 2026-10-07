@@ -21,10 +21,10 @@
 		<entry key="dtshd_hra">DTS-HD HRA</entry>
 		<entry key="dtshd_ma">DTS-HD MA</entry>
 		<entry key="dtsma">DTS-HD MA</entry>
-		<entry key="dtshd_ma_x">DTS-HD MA &#8226; DTS:X</entry>
-		<entry key="dtshd_ma_x_imax">DTS-HD MA &#8226; DTS:X IMAX</entry>
+		<entry key="dtshd_ma_x">DTS-HD MA [COLOR border_alpha]&#8226;[/COLOR] DTS:X</entry>
+		<entry key="dtshd_ma_x_imax">DTS-HD MA [COLOR border_alpha]&#8226;[/COLOR] DTS:X IMAX</entry>
 		<entry key="eac3">Dolby Digital+</entry>
-		<entry key="eac3_ddp_atmos">Dolby Digital+ &#8226; Atmos</entry>
+		<entry key="eac3_ddp_atmos">Dolby Digital+ [COLOR border_alpha]&#8226;[/COLOR] Atmos</entry>
 		<entry key="flac">FLAC</entry>
 		<entry key="mp1">MP1</entry>
 		<entry key="mp2">MP2</entry>
@@ -37,7 +37,7 @@
 		<entry key="pcm_s16le">PCM</entry>
 		<entry key="pcm_s24le">PCM</entry>
 		<entry key="truehd">TrueHD</entry>
-		<entry key="truehd_atmos">TrueHD &#8226; Atmos</entry>
+		<entry key="truehd_atmos">TrueHD [COLOR border_alpha]&#8226;[/COLOR] Atmos</entry>
 		<entry key="vorbis">Vorbis</entry>
 		<entry key="wav">WAV</entry>
 		<entry key="wavpack">WAVP</entry>
