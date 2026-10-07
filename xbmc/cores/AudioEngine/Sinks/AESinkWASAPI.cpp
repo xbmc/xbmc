@@ -666,23 +666,11 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
     CAESinkFactoryWin::BuildWaveFormatExtensible(format, wfxex);
   }
 
-  // Prevents NULL speaker mask. To do: debug exact cause.
-  // When this happens requested AE format is AE_FMT_FLOAT + channel layout
-  // RAW, RAW, RAW... (6 channels). Only happens at end of playback PT
-  // stream, force to defaults does not affect functionality or user
-  // experience. Only avoids crash.
-  if (!wfxex.dwChannelMask && format.m_dataFormat <= AE_FMT_FLOAT)
-  {
-    CLog::LogF(LOGWARNING, "NULL Channel Mask detected. Default values are enforced.");
-    format.m_sampleRate = 0; // force defaults in following code
-  }
-
   /* Test for incomplete format and provide defaults */
-  if (format.m_sampleRate == 0 ||
-      format.m_channelLayout == CAEChannelInfo(nullptr) ||
-      format.m_dataFormat <= AE_FMT_INVALID ||
-      format.m_dataFormat >= AE_FMT_MAX ||
-      format.m_channelLayout.Count() == 0)
+  if (format.m_sampleRate == 0 || format.m_channelLayout == CAEChannelInfo(nullptr) ||
+      format.m_dataFormat <= AE_FMT_INVALID || format.m_dataFormat >= AE_FMT_MAX ||
+      format.m_channelLayout.Count() == 0 ||
+      (wfxex.dwChannelMask == 0 && format.m_dataFormat <= AE_FMT_FLOAT))
   {
     wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
     wfxex.Format.nChannels = 2;
