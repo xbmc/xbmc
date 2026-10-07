@@ -135,10 +135,13 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
       path,
       [this, dbId, path](const std::shared_ptr<CFileItem>& item)
       {
+        // A movie restored from its nfos has only the extras an export records
+        const bool restored{m_restoredFromNfo.contains(dbId)};
+
         // A bluray is added as the extras it names, or failing that as a whole. One already
         // there may since have been given a playlist, so it is not added as a whole again.
         if (IsBluray(item->GetPath()) && (HasExtraOnDisc(m_database, item->GetPath(), dbId) ||
-                                          AddDiscExtras(item->GetPath(), dbId)))
+                                          restored || AddDiscExtras(item->GetPath(), dbId)))
           return;
 
         // An extra already in the library keeps any name or art it has since been given. A version
@@ -211,6 +214,14 @@ void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
     if (dbId < 0)
     {
       CLog::LogF(LOGDEBUG, "No movie found for {} to add its extras to", CURL::GetRedacted(path));
+      continue;
+    }
+
+    // A movie restored from its nfos has the extras they record, not those its discs name
+    if (m_restoredFromNfo.contains(dbId))
+    {
+      CLog::LogF(LOGDEBUG, "Movie {} has the extras of its nfos, not those {} names", dbId,
+                 CURL::GetRedacted(path));
       continue;
     }
 
