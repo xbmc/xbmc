@@ -476,7 +476,8 @@ bool CMusicGUIInfo::GetLabel(std::string& value,
       {
         if (fallback)
           *fallback = "DefaultAlbumCover.png";
-        value = item->HasArt(ART::TYPE::THUMB) ? item->GetArt(ART::TYPE::THUMB) : "DefaultAlbumCover.png";
+        value = item->HasArt(ART::TYPE::THUMB) ? item->GetArt(ART::TYPE::THUMB)
+                                               : "DefaultAlbumCover.png";
         return true;
       }
       break;
