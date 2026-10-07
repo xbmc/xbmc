@@ -1600,6 +1600,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       bool mergedIntoExistingMovie{false};
       item.SetProperty("from_nfo", true);
 
+      // Only an export's nfo adding the movie is the record of its extras
+      const bool restoring{item.GetVideoInfoTag()->GetAssetInfo().GetType() !=
+                               VideoAssetType::UNKNOWN &&
+                           m_database.GetMovieId(pItem->GetDynPath()) < 0};
+
       // Refreshing the recorded playlists gives the durations, and so the stack times, that the
       // nfo does not hold
       if (URIUtils::IsStack(item.GetDynPath()) && ApplyStackParts(&item, loader->GetStackParts()))
@@ -1650,8 +1655,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (tag->IsDefaultVideoVersion())
         defaultVersionFileId = tag->m_iFileId; // Updated in AddMovie()
 
-      // Look for versions (ie. subsequent <movie> entries in the .nfo file)
-      // These must be versions. Reuse the loader.
+      // Look for versions and extras (ie. subsequent <movie> entries in the .nfo file), each
+      // marked by its <videoassettype>. Reuse the loader.
       int index{1};
       while (true)
       {
@@ -1692,6 +1697,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (defaultVersionFileId > -1)
         m_database.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId,
                                           defaultVersionFileId);
+
+      // For the rest of the scan the movie's extras are those its nfos record
+      if (restoring)
+        m_extras.SetRestoredFromNfo(movieId);
 
       return mergedIntoExistingMovie ? InfoRet::HAVE_ALREADY : InfoRet::ADDED;
     }
@@ -2401,12 +2410,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
         {
           pItem->SetArt(art); // May have been filtered above
 
+          // An nfo or an export records whether the asset is an extra of the movie
+          const VideoAssetType assetType{tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA
+                                             ? VideoAssetType::EXTRA
+                                             : VideoAssetType::VERSION};
+
           // Need to look up asset title in current table as, if importing, it may have a different id (primary key)
           const std::string assetTitle{tag->GetAssetInfo().GetTitle()};
-          const int assetId{m_database.AddOrValidateVideoVersionType(assetTitle)};
+          const int assetId{m_database.AddOrValidateVideoVersionType(assetTitle, assetType)};
 
           lResult = m_database.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, assetId,
-                                             VideoAssetType::VERSION, *pItem)
+                                             assetType, *pItem)
                         ? tag->m_iFileId
                         : -1;
         }

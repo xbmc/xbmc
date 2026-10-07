@@ -1375,7 +1375,7 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
 
     // Need to look up asset title in current table as, if importing, it may have a different id (primary key)
     const std::string assetTitle{details.GetAssetInfo().GetTitle()};
-    const int assetId{AddOrValidateVideoVersionType(assetTitle)};
+    const int assetId{AddOrValidateVideoVersionType(assetTitle, VideoAssetType::VERSION)};
 
     m_pDS->exec(
         PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
@@ -12166,7 +12166,22 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
             item.AppendArt(setArt, "set");
           }
         }
-        if (lastTitle == currentTitle && item.HasVideoVersions())
+        // The export writes a movie's versions and extras straight after it
+        const bool isExtra{info.GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+
+        // The art exported is the movie's, not an extra's own, so an extra gets what a scan would
+        // give it instead: art of its file's own, and none for a disc's playlist
+        if (isExtra)
+        {
+          item.ClearArt();
+          if (!URIUtils::IsBlurayPath(item.GetPath()))
+          {
+            CFileItem fileItem(item.GetPath(), false);
+            scanner.GetArtwork(&fileItem, ContentType::MOVIES, true, true, "", useRemoteArt);
+            item.SetArt(fileItem.GetArt());
+          }
+        }
+        if (lastTitle == currentTitle && (item.HasVideoVersions() || isExtra))
         {
           item.GetVideoInfoTag()->m_iDbId = lastMovieId;
           scanner.AddVideo(&item, nullptr, useFolders, true, nullptr, true,
@@ -12196,7 +12211,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           if (!times.empty() && times.size() == paths.size())
             SetStackTimes(info.m_strFileNameAndPath, times);
         }
-        if (item.HasVideoVersions())
+        if (item.HasVideoVersions() && !isExtra)
         {
           // Set default version
           const CVideoInfoTag* tag{item.GetVideoInfoTag()};
@@ -13081,17 +13096,21 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
   }
 }
 
-int CVideoDatabase::AddOrValidateVideoVersionType(const std::string& typeVideoVersion)
+int CVideoDatabase::AddOrValidateVideoVersionType(const std::string& typeVideoVersion,
+                                                  VideoAssetType itemType)
 {
   int assetId{-1};
   if (!typeVideoVersion.empty())
   {
-    assetId = GetVideoVersionByTitle(typeVideoVersion);
+    assetId = GetVideoVersionByTitle(typeVideoVersion, itemType);
 
-    // Needs adding - eg. importing from nfo
+    // Needs adding - eg. importing from nfo. An extra's name is most often one the scanner made up,
+    // so it is not offered as a type to choose, as when the scanner adds it.
     if (assetId < 0)
-      assetId =
-          AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::USER, VideoAssetType::VERSION);
+      assetId = AddVideoVersionType(typeVideoVersion,
+                                    itemType == VideoAssetType::EXTRA ? VideoAssetTypeOwner::AUTO
+                                                                      : VideoAssetTypeOwner::USER,
+                                    itemType);
   }
 
   return assetId;
@@ -13805,13 +13824,15 @@ std::string CVideoDatabase::GetVideoVersionById(int id)
   return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), *m_pDS2);
 }
 
-int CVideoDatabase::GetVideoVersionByTitle(const std::string& title) const
+int CVideoDatabase::GetVideoVersionByTitle(const std::string& title, VideoAssetType itemType) const
 {
   if (!m_pDS2)
     return {};
 
-  const std::string id{GetSingleValue(
-      PrepareSQL("SELECT id FROM videoversiontype WHERE name='%s'", title.c_str()), *m_pDS2)};
+  const std::string id{
+      GetSingleValue(PrepareSQL("SELECT id FROM videoversiontype WHERE name='%s' AND itemType=%i",
+                                title.c_str(), itemType),
+                     *m_pDS2)};
 
   return id.empty() ? -1 : std::stoi(id);
 }

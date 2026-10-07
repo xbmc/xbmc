@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -73,7 +74,17 @@ public:
                                 bool discChanged,
                                 const std::vector<std::string>& regexps);
 
+  /*!
+   \brief Record that the scan added a movie from an export's full nfo. Its extras are then only
+   those the nfos of an export record: its discs are not read for theirs, and an extra without an
+   nfo is not added. A later scan, the movie being in the library, adds what has been added since as usual.
+   \param dbId the movie
+   */
+  void SetRestoredFromNfo(int dbId) { m_restoredFromNfo.insert(dbId); }
+
 private:
+  std::set<int> m_restoredFromNfo;
+
   /*!
    \brief Add the extras a bluray names as extras of a movie.
    \param disc path of the disc (index.bdmv, an .iso, or one of its bluray:// playlists)

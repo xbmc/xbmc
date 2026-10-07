@@ -684,6 +684,64 @@ TEST_F(TestVideoDatabase, ExtrasOnADiscAreItsPlaylists)
   EXPECT_EQ(extras, (std::set<int>{1244, 1245}));
 }
 
+// A name used for both a version and an extra is a type of each kind, so neither is stored with a
+// type of the other kind
+TEST_F(TestVideoDatabase, VideoVersionTypeIsLookedUpByItemType)
+{
+  const int version{m_db.AddOrValidateVideoVersionType("Prologue", VideoAssetType::VERSION)};
+  const int extra{m_db.AddOrValidateVideoVersionType("Prologue", VideoAssetType::EXTRA)};
+  ASSERT_GT(version, 0);
+  ASSERT_GT(extra, 0);
+  EXPECT_NE(version, extra);
+  EXPECT_EQ(version, m_db.GetVideoVersionByTitle("Prologue", VideoAssetType::VERSION));
+  EXPECT_EQ(extra, m_db.GetVideoVersionByTitle("Prologue", VideoAssetType::EXTRA));
+  EXPECT_EQ(extra, m_db.AddOrValidateVideoVersionType("Prologue", VideoAssetType::EXTRA));
+}
+
+// What an import needs to restore a disc's extra as an extra, with its playlist
+TEST_F(TestVideoDatabase, ExportToXMLWritesABlurayExtra)
+{
+  const std::string disc{"/movies/Nope (2022)/NOPE.iso"};
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 800))};
+  ASSERT_GT(idMovie, 0);
+  const int idType{
+      m_db.AddVideoVersionType("Gag Reel", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+  CFileItem extra{URIUtils::GetBlurayPlaylistPath(disc, 12), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType, VideoAssetType::EXTRA,
+                                 extra));
+
+  const std::string exportPath{CSpecialProtocol::TranslatePath("special://temp/")};
+  const std::string exportRoot{URIUtils::AddFileToFolder(
+      exportPath, "kodi_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate())};
+  m_db.ExportToXML(exportPath, true);
+
+  CXBMCTinyXML doc;
+  const bool loaded{doc.LoadFile(URIUtils::AddFileToFolder(exportRoot, "videodb.xml"))};
+  XFILE::CDirectory::RemoveRecursive(exportRoot);
+  ASSERT_TRUE(loaded);
+
+  // The movie comes first, so an import can add the extra to it
+  const TiXmlElement* exportedMovie{doc.RootElement()->FirstChildElement("movie")};
+  ASSERT_NE(nullptr, exportedMovie);
+  int playlist{-1};
+  EXPECT_TRUE(XMLUtils::GetInt(exportedMovie, "playlist", playlist));
+  EXPECT_EQ(800, playlist);
+
+  const TiXmlElement* exportedExtra{exportedMovie->NextSiblingElement("movie")};
+  ASSERT_NE(nullptr, exportedExtra);
+  int assetType{-1};
+  EXPECT_TRUE(XMLUtils::GetInt(exportedExtra, "videoassettype", assetType));
+  EXPECT_EQ(static_cast<int>(VideoAssetType::EXTRA), assetType);
+  std::string title;
+  EXPECT_TRUE(XMLUtils::GetString(exportedExtra, "videoassettitle", title));
+  EXPECT_EQ("Gag Reel", title);
+  EXPECT_TRUE(XMLUtils::GetInt(exportedExtra, "playlist", playlist));
+  EXPECT_EQ(12, playlist);
+  std::string path;
+  EXPECT_TRUE(XMLUtils::GetString(exportedExtra, "filenameandpath", path));
+  EXPECT_EQ(URIUtils::GetBlurayPlaylistPath(disc, 12), path);
+}
+
 TEST_F(TestVideoDatabase, SetFileForMediaRepointsAnExtra)
 {
   const int idMovie{AddMovie("/movies/Movie (2020)/movie.mkv")};
