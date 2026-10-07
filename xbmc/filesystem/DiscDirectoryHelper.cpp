@@ -3469,7 +3469,8 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToMovie(const CURL& url,
     // eg. FPL_MainFeature_eng, whose pictures carry the translation FPL_MainFeature leaves out
     if (!selected.empty() && !items.IsEmpty())
     {
-      const unsigned int heuristic{items[0]->GetProperty("bluray_playlist").asUnsignedInteger32()};
+      const unsigned int heuristic{
+          items[0]->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asUnsignedInteger32()};
       if (std::ranges::find(features, heuristic) != features.end())
       {
         const PlaylistInformation& information{playlistMap.at(heuristic)};
