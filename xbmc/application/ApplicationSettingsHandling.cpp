@@ -15,6 +15,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationContentGeometry.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
@@ -58,7 +59,8 @@ void CApplicationSettingsHandling::RegisterSettings()
                                           CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,
                                           CSettings::SETTING_AUDIOCDS_SETTINGS,
                                           CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
-                                          CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
+                                          CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT,
+                                          CSettings::SETTING_VIDEOSCREEN_CALIBRATIONALIGNMENT,
                                           CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
                                           CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
                                           CSettings::SETTING_VIDEOPLAYER_USEDECODERFILTER,
@@ -66,9 +68,16 @@ void CApplicationSettingsHandling::RegisterSettings()
                                           CSettings::SETTING_SOURCE_VIDEOS,
                                           CSettings::SETTING_SOURCE_MUSIC,
                                           CSettings::SETTING_SOURCE_PICTURES,
+                                          CSettings::SETTING_VIDEOSCREEN_RASTERASPECT,
+                                          CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE,
+                                          CSettings::SETTING_VIDEOSCREEN_GUISURROUND,
+                                          CSettings::SETTING_VIDEOSCREEN_GUISURROUNDCOLOUR,
+                                          CSettings::SETTING_VIDEOSCREEN_GUISURROUNDIMAGE,
                                           CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN,
                                           CSettings::SETTING_VIDEOLIBRARY_FLATTENVERSIONS,
                                       });
+
+  ApplyRasterSettings();
 
   auto& components = CServiceBroker::GetAppComponents();
   settingsMgr->RegisterCallback(
@@ -97,6 +106,16 @@ void CApplicationSettingsHandling::RegisterSettings()
 
   settingsMgr->AddDynamicCondition("isplaying", IsPlaying);
 
+  const auto contentGeometry = components.GetComponent<CApplicationContentGeometry>();
+  settingsMgr->RegisterCallback(contentGeometry.get(),
+                                {CSettings::SETTING_VIDEOSCREEN_RASTERASPECT,
+                                 CSettings::SETTING_VIDEOSCREEN_VARIABLECONTENTGEOMETRY,
+                                 CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE,
+                                 CSettings::SETTING_VIDEOSCREEN_GUISURROUND,
+                                 CSettings::SETTING_VIDEOSCREEN_OSDPLAYING});
+  contentGeometry->RefreshOsdPlacement();
+  contentGeometry->RefreshAtRest();
+
   settings->RegisterSubSettings(this);
 }
 
@@ -111,6 +130,8 @@ void CApplicationSettingsHandling::UnregisterSettings()
 
   settings->UnregisterSubSettings(this);
   settingsMgr->RemoveDynamicCondition("isplaying");
+  settingsMgr->UnregisterCallback(components.GetComponent<CApplicationContentGeometry>().get());
+
   settingsMgr->UnregisterCallback(&appPlayer->GetSeekHandler());
   settingsMgr->UnregisterCallback(components.GetComponent<CApplicationSkinHandling>().get());
   settingsMgr->UnregisterCallback(components.GetComponent<CApplicationVolumeHandling>().get());
@@ -145,10 +166,69 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_RASTERASPECT)
+  {
+    ApplyRasterChange();
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE)
+  {
+    ApplyRasterSettings();
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUISURROUND ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_GUISURROUNDCOLOUR ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_GUISURROUNDIMAGE)
+  {
+    auto* const gui = CServiceBroker::GetGUI();
+    if (gui)
+    {
+      gui->GetWindowManager().InvalidateSurround();
+      gui->GetWindowManager().MarkDirty();
+    }
+  }
+}
+
+void CApplicationSettingsHandling::ApplyRasterChange()
+{
+  if (CServiceBroker::GetGUI())
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               "ReloadSkin");
+  else
+    ApplyRasterSettings();
+}
+
+void CApplicationSettingsHandling::ApplyRasterSettings()
+{
+  auto* const winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
+
+  CGraphicContext& context = winSystem->GetGfxContext();
+
+  const auto contentGeometry =
+      CServiceBroker::GetAppComponents().GetComponent<CApplicationContentGeometry>();
+  const float aspect = contentGeometry->RasterAspect();
+  const bool keepShape = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOSCREEN_GUIKEEPSHAPE);
+
+  if (aspect == context.GetRasterAspect() && keepShape == context.GetGuiKeepShape())
+    return;
+
+  context.SetRasterAspect(aspect);
+  context.SetGuiKeepShape(keepShape);
+
+  auto* const gui = CServiceBroker::GetGUI();
+  if (gui)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+    gui->GetWindowManager().SendThreadMessage(msg);
+  }
+
+  contentGeometry->RefreshAtRest();
 }
 
 void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
+  auto& windowManager{CServiceBroker::GetGUI()->GetWindowManager()};
   if (!setting)
     return;
 
@@ -165,19 +245,22 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_CALIBRATION);
+    windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENALIGNMENT ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_CALIBRATIONALIGNMENT)
+    windowManager.ActivateWindow(WINDOW_SCREEN_ALIGNMENT);
   else if (settingId == CSettings::SETTING_SOURCE_VIDEOS)
   {
     std::vector<std::string> params{KODI::MEDIA::LIBRARY_PATH::VIDEO_FILES, "return"};
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV, params);
+    windowManager.ActivateWindow(WINDOW_VIDEO_NAV, params);
   }
   else if (settingId == CSettings::SETTING_SOURCE_MUSIC)
   {
     std::vector<std::string> params{KODI::MEDIA::LIBRARY_PATH::MUSIC_FILES, "return"};
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, params);
+    windowManager.ActivateWindow(WINDOW_MUSIC_NAV, params);
   }
   else if (settingId == CSettings::SETTING_SOURCE_PICTURES)
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_PICTURES);
+    windowManager.ActivateWindow(WINDOW_PICTURES);
 }
 
 bool CApplicationSettingsHandling::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,

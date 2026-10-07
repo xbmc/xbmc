@@ -110,9 +110,6 @@ ContentAspectSet ContentAspectsOf(const EffectiveGeometry& geometry);
 //! \brief The part of \p geometry a render path reads.
 RenderGeometry RenderGeometryOf(const EffectiveGeometry& geometry);
 
-//! \brief Whether \p reading may be served over \p served. Live readings only ever widen.
-bool LiveReadingWidens(float reading, float served);
-
 //! \brief The part of \p dest showing content, \p source being the coded region drawn into it.
 CRect PictureOnScreen(const RenderGeometry& geometry, const CRect& source, const CRect& dest);
 

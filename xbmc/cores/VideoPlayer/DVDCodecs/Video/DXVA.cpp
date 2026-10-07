@@ -14,6 +14,7 @@
 
 #include "DXVA.h"
 
+#include "DXVAReadback.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
@@ -28,10 +29,13 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
+#include "video/geometry/FrameReduction.h"
 
 #include "platform/win32/WIN32Util.h"
 
 #include <algorithm>
+#include <cmath>
+#include <cstring>
 #include <mutex>
 
 #include <Windows.h>
@@ -787,6 +791,31 @@ void DXVA::CVideoBuffer::Unref()
   av_frame_unref(m_pFrame);
 }
 
+ReductionResult DXVA::CVideoBuffer::ReduceForAnalysis(
+    KODI::VIDEO::GEOMETRY::ReducedFrame& reduction,
+    unsigned int sourceWidth,
+    unsigned int sourceHeight,
+    unsigned int targetWidth)
+{
+  ComPtr<ID3D11Resource> resource;
+  if (FAILED(CVideoBuffer::GetResource(&resource)))
+    return ReductionResult::Unsupported;
+
+  // Runs against every decoded picture, so the pool is reached without building a second
+  // shared_ptr to it.
+  auto* const pool = dynamic_cast<CVideoBufferPool*>(m_pool.get());
+  if (!pool)
+    return ReductionResult::Unsupported;
+
+  CSurfaceReadback* const readback = pool->GetReadback();
+  if (!readback)
+    return ReductionResult::Unsupported;
+
+  const bool fullRange = m_pFrame && m_pFrame->color_range == AVCOL_RANGE_JPEG;
+  return readback->Reduce(resource.Get(), CVideoBuffer::GetIdx(), sourceWidth, sourceHeight,
+                          fullRange, reduction, targetWidth);
+}
+
 CVideoBufferShared::~CVideoBufferShared()
 {
   if (m_handleFence != INVALID_HANDLE_VALUE)
@@ -1021,6 +1050,14 @@ CVideoBufferPool::~CVideoBufferPool()
 {
   CLog::LogF(LOGDEBUG, "destructing buffer pool.");
   Reset();
+}
+
+CSurfaceReadback* CVideoBufferPool::GetReadback()
+{
+  std::unique_lock lock(m_section);
+  if (!m_readback)
+    m_readback = std::make_unique<CSurfaceReadback>();
+  return m_readback.get();
 }
 
 ::CVideoBuffer* CVideoBufferPool::Get()
