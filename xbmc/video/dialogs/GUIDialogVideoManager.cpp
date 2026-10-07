@@ -232,6 +232,10 @@ void CGUIDialogVideoManager::Refresh()
       m_selectedVideoAsset = item;
   }
 
+  // A list that was empty, as for a movie without extras, has nothing selected yet
+  if (!m_selectedVideoAsset && !m_videoAssetsList->IsEmpty())
+    m_selectedVideoAsset = m_videoAssetsList->Get(0);
+
   CGUIMessage msg{GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_ASSETS, 0, 0, m_videoAssetsList.get()};
   OnMessage(msg);
 }
