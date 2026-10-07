@@ -20,6 +20,7 @@
 #include <list>
 #include <memory>
 #include <optional>
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -178,6 +179,11 @@ protected:
   std::vector<std::shared_ptr<CGUIListItem>> m_items;
   typedef std::vector<std::shared_ptr<CGUIListItem>>::iterator iItems;
   std::shared_ptr<CGUIListItem> m_lastItem;
+
+  // Items dropped by Reset(). The destructor releases the layouts of any that
+  // are still alive, while this container (their layouts' parent) exists.
+  std::set<std::weak_ptr<CGUIListItem>, std::owner_less<std::weak_ptr<CGUIListItem>>>
+      m_releasedItems;
 
   int m_pageControl;
   std::optional<int>
