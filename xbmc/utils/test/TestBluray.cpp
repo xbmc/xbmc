@@ -6,11 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "URL.h"
 #include "filesystem/bluray/BitReader.h"
 #include "filesystem/bluray/M2TSParser.h"
+#include "filesystem/bluray/MPLSParser.h"
+#include "filesystem/bluray/PlaylistStructure.h"
 #include "test/TestUtils.h"
 
+#include <chrono>
 #include <limits>
+#include <map>
 #include <ranges>
 
 #include <gtest/gtest.h>
@@ -67,6 +72,38 @@ TEST(TestBytes, General)
   EXPECT_THROW(GetBits64(0x12345678ABCDEF0, 60, 64), std::out_of_range);
   EXPECT_THROW(GetBits64(0x12345678ABCDEF0, 68, 64), std::out_of_range);
   EXPECT_THROW(GetBits64(0x12345678ABCDEF0, 64, 0), std::out_of_range);
+}
+
+TEST(TestMPLSParser, InvalidExtensionDataIsIgnored)
+{
+  // Léon (2in1 UHD), whose ExtensionData_start_address points into its sub-path
+  CURL url;
+  url.SetProtocol("bluray");
+  url.SetHostName(XBMC_REF_FILE_PATH("xbmc/utils/test/data/bluray/"));
+
+  XFILE::BlurayPlaylistInformation playlist;
+  std::map<unsigned int, XFILE::ClipInformation> clipCache;
+  ASSERT_TRUE(
+      XFILE::CMPLSParser::ReadMPLS(url, 888, playlist, clipCache, XFILE::StreamDetails::DEFER));
+  EXPECT_EQ(playlist.playItems.size(), 9);
+  EXPECT_EQ(playlist.subPlayItems.size(), 9);
+  EXPECT_EQ(playlist.chapters.size(), 16);
+  EXPECT_EQ(playlist.duration, std::chrono::milliseconds{6567556});
+  EXPECT_TRUE(playlist.extensionSubPlayItems.empty());
+
+  // As 888, but pointing past the end of the playlist rather than into it
+  playlist = {};
+  ASSERT_TRUE(
+      XFILE::CMPLSParser::ReadMPLS(url, 889, playlist, clipCache, XFILE::StreamDetails::DEFER));
+  EXPECT_EQ(playlist.playItems.size(), 9);
+  EXPECT_TRUE(playlist.extensionSubPlayItems.empty());
+
+  // As 888, but with an extension sub-path whose clip name is not a number
+  playlist = {};
+  ASSERT_TRUE(
+      XFILE::CMPLSParser::ReadMPLS(url, 890, playlist, clipCache, XFILE::StreamDetails::DEFER));
+  EXPECT_EQ(playlist.playItems.size(), 9);
+  EXPECT_TRUE(playlist.extensionSubPlayItems.empty());
 }
 
 TEST(TestM2TSParser, General)
