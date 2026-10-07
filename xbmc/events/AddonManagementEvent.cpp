@@ -69,7 +69,8 @@ bool CAddonManagementEvent::Execute() const
   if (!CanExecute())
     return false;
 
-  CFileItemPtr addonItem = XFILE::CAddonsDirectory::FileItemFromAddon(m_addon, URIUtils::AddFileToFolder(KODI::ADDONS::ROOT, m_addon->ID()));
+  CFileItemPtr addonItem = XFILE::CAddonsDirectory::FileItemFromAddon(
+      m_addon, URIUtils::AddFileToFolder(KODI::ADDONS::ROOT, m_addon->ID()));
   if (addonItem == nullptr)
     return false;
 

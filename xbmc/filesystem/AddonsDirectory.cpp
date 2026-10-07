@@ -802,7 +802,8 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
     return false;
 
   AddonPtr tmp;
-  return url.GetHostName() == ADDONS::EndpointOf(ADDONS::REPOS) || url.GetHostName() == ADDONS::EndpointOf(ADDONS::ALL) ||
+  return url.GetHostName() == ADDONS::EndpointOf(ADDONS::REPOS) ||
+         url.GetHostName() == ADDONS::EndpointOf(ADDONS::ALL) ||
          url.GetHostName() == ADDONS::EndpointOf(ADDONS::SEARCH) ||
          CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), tmp, AddonType::REPOSITORY,
                                                 OnlyEnabled::CHOICE_YES);
