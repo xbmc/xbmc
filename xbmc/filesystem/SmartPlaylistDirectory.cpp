@@ -274,13 +274,6 @@ namespace XFILE
           items.SetPath(videoUrl.ToString());
 
         items.Append(items2);
-        if (items2.Size())
-        {
-          if (items.Size() > items2.Size())
-            items.SetContent("mixed");
-          else
-            items.SetContent("musicvideos");
-        }
         items.SetProperty(PROPERTY_PATH_DB, videoUrl.ToString());
       }
     }
