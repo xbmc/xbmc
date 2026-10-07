@@ -726,7 +726,9 @@ public:
   /*! \brief Sets each piece of \p art for a database item, carrying on past one that fails.
    \return false if any piece could not be set
    */
-  bool SetArtForItem(int mediaId, const std::string& mediaType, const KODI::ART::Artwork& art) override;
+  bool SetArtForItem(int mediaId,
+                     const std::string& mediaType,
+                     const KODI::ART::Artwork& art) override;
 
   /*! \brief Fetch all related art for a database item.
   Fetches multiple pieces of art for a database item including that for related media types
