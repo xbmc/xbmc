@@ -32,6 +32,9 @@ public:
    * @note Not threadsafe
    */
   static unsigned int GetFrameTime();
+
+  //! @brief Monotonic milliseconds, for elapsed time a clock change must not move.
+  static int64_t MonotonicMs();
   static CDateTime GetLocalTime(time_t time);
   
   /*!

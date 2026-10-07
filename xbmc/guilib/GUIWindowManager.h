@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DirtyRegionTracker.h"
+#include "GUISurroundRenderer.h"
 #include "GUIWindow.h"
 #include "IMsgTargetCallback.h"
 #include "IWindowManagerCallback.h"
@@ -99,6 +100,10 @@ public:
   /*! \brief Mark a region as dirty, forcing a redraw at the next Render()
    */
   void MarkDirty(const CRect& rect);
+
+  /*! \brief Tell the surround its settings moved, so the next frame paints the new ones.
+   */
+  void InvalidateSurround() { m_guiSurround.Invalidate(); }
 
   /*! \brief True if Process() collected any dirty regions this frame.
    *   Callable after Process() to decide whether the render pass needs
@@ -303,6 +308,8 @@ private:
   bool m_initialized;
   mutable bool m_touchGestureActive{false};
   mutable bool m_inhibitTouchGestureEvents{false};
+
+  mutable CGUISurroundRenderer m_guiSurround;
 
   CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;

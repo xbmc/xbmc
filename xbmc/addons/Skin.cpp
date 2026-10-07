@@ -216,6 +216,13 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonTyp
 {
   for (const auto& [name, values] : Type(AddonType::SKIN)->GetValues())
   {
+    if (name == "surround")
+    {
+      m_surroundColour = values.GetValue("surround@colour").asString();
+      m_surroundImage = values.GetValue("surround@image").asString();
+      continue;
+    }
+
     if (name != "res")
       continue;
 
@@ -290,8 +297,8 @@ void CSkinInfo::Start()
 
   if (!m_resolutions.empty())
   {
-    // find the closest resolution
-    const RESOLUTION_INFO& target = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+    const RESOLUTION_INFO target =
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetRasterResInfo();
     const auto res = std::ranges::min_element(m_resolutions, closestRes(target));
     m_currentAspect = res->strId;
     m_currentResolution = std::ranges::distance(m_resolutions.begin(), res);
@@ -304,7 +311,7 @@ bool CSkinInfo::IsResolutionChanged() const
     return false;
 
   // compare the entry, resolutions found in the skin directory have no aspect string
-  const RESOLUTION_INFO& target = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  const RESOLUTION_INFO target = CServiceBroker::GetWinSystem()->GetGfxContext().GetRasterResInfo();
   return std::ranges::distance(m_resolutions.begin(),
                                std::ranges::min_element(m_resolutions, closestRes(target))) !=
          m_currentResolution;
@@ -326,8 +333,7 @@ std::string CSkinInfo::GetSkinPath(const std::string& strFile,
   if (!res)
     res = &tempRes;
 
-  // find the closest resolution
-  const RESOLUTION_INFO &target = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  const RESOLUTION_INFO target = CServiceBroker::GetWinSystem()->GetGfxContext().GetRasterResInfo();
   *res = *std::ranges::min_element(m_resolutions, closestRes(target));
 
   std::string strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode, strFile);

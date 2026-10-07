@@ -28,6 +28,7 @@ CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& setting
       this,
       {CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,  CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
        CSettings::SETTING_SUBTITLES_ALIGN,          CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH,
+       CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT,
        CSettings::SETTING_SUBTITLES_FONTNAME,       CSettings::SETTING_SUBTITLES_FONTSIZE,
        CSettings::SETTING_SUBTITLES_STYLE,          CSettings::SETTING_SUBTITLES_COLOR,
        CSettings::SETTING_SUBTITLES_BORDERSIZE,     CSettings::SETTING_SUBTITLES_BORDERCOLOR,
@@ -70,6 +71,11 @@ Align CSubtitlesSettings::GetAlignment() const
 void CSubtitlesSettings::SetAlignment(Align align) const
 {
   m_settings->SetInt(CSettings::SETTING_SUBTITLES_ALIGN, static_cast<int>(align));
+}
+
+bool CSubtitlesSettings::IsAlignedToContent() const
+{
+  return m_settings->GetBool(CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT);
 }
 
 HorizontalAlign CSubtitlesSettings::GetHorizontalAlignment() const
