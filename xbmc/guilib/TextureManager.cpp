@@ -308,6 +308,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
   if (size) // we found the texture
   {
+    std::unique_lock lockTextures(m_section);
     for (int i = 0; i < (int)m_vecTextures.size(); ++i)
     {
       CTextureMap *pMap = m_vecTextures[i];
@@ -321,6 +322,9 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     return emptyTexture;
   }
 
+  //Lock here, we will do stuff that could break rendering
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
   for (auto i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
   {
     CTextureMap* pMap = i->first;
@@ -330,6 +334,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
     if (pMap->GetName() == strTextureName && duration.count() > 0)
     {
+      std::unique_lock lockTextures(m_section);
       m_vecTextures.push_back(pMap);
       m_unusedTextures.erase(i);
       return pMap->GetTexture();
@@ -338,9 +343,6 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
   if (checkBundleOnly && bundle == -1)
     return emptyTexture;
-
-  //Lock here, we will do stuff that could break rendering
-  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
 #ifdef _DEBUG_TEXTURES
   const auto start = std::chrono::steady_clock::now();
@@ -374,6 +376,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     pMap->SetWidth((int)maxWidth);
     pMap->SetHeight((int)maxHeight);
 
+    std::unique_lock lockTextures(m_section);
     m_vecTextures.push_back(pMap);
     return pMap->GetTexture();
   }
@@ -432,6 +435,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
     file.Close();
 
+    std::unique_lock lockTextures(m_section);
     m_vecTextures.push_back(pMap);
     return pMap->GetTexture();
   }
@@ -465,7 +469,10 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
   CTextureMap* pMap = new CTextureMap(strTextureName, width, height, 0);
   pMap->Add(std::move(pTexture), 100);
-  m_vecTextures.push_back(pMap);
+  {
+    std::unique_lock lockTextures(m_section);
+    m_vecTextures.push_back(pMap);
+  }
 
 #ifdef _DEBUG_TEXTURES
   const auto end = std::chrono::steady_clock::now();
@@ -481,6 +488,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool immediately /*= false */)
 {
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lockTextures(m_section);
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -550,6 +558,7 @@ void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
 void CGUITextureManager::Cleanup()
 {
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lockTextures(m_section);
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -582,6 +591,7 @@ void CGUITextureManager::Dump() const
 void CGUITextureManager::Flush()
 {
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock lockTextures(m_section);
 
   ivecTextures i;
   i = m_vecTextures.begin();
