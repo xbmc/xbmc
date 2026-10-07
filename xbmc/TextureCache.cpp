@@ -149,7 +149,8 @@ void CTextureCache::BackgroundCacheImage(const std::string& url, const std::stri
   std::string path(GetCachedImage(url, details));
   if (!path.empty() &&
       (details.hash.empty() ||
-       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_artworkOffline))
+       (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_artworkOffline &&
+        XFILE::CFile::Exists(path))))
     return; // image is already cached and doesn't need to be checked further
 
   path = IMAGE_FILES::ToCacheKey(url);
