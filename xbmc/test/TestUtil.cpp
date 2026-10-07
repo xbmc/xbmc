@@ -1008,3 +1008,12 @@ TEST_F(TestTitleFromPath, DecodesAnEscapeWhateverTheProtocol)
   // contains an escape triplet is decoded here, as it is when the extension is shown.
   EXPECT_EQ("100 proof", CUtil::GetTitleFromPath("smb://server/share/100%20proof.mkv"));
 }
+
+TEST_F(TestTitleFromPath, DecodesAnArchiveNameOnlyWhenItsParentIsAUrl)
+{
+  EXPECT_EQ(
+      "100% proof.zip",
+      CUtil::GetTitleFromPath("zip://davs%3a%2f%2fserver%2ffiles%2f100%2525%2520proof.zip/", true));
+  EXPECT_EQ("100%20proof.zip",
+            CUtil::GetTitleFromPath("zip://%2fmedia%2f100%2520proof.zip/", true));
+}
