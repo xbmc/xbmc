@@ -16,9 +16,9 @@
 
 #include <atomic>
 #include <chrono>
+#include <functional>
 #include <memory>
 #include <mutex>
-#include <functional>
 #include <thread>
 #include <utility>
 #include <vector>
