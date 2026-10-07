@@ -10457,6 +10457,41 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           InvalidatePathHash(pathToInvalidate);
         CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathsToInvalidate.size());
 
+        // The hash of a show folder covers every folder below it, and a show can have more
+        // than one folder. Clear them all for a show that loses episodes, or the scanner skips
+        // the whole show when its files come back unchanged.
+        if (!episodeIDs.empty())
+        {
+          std::string episodes;
+          for (const int idEpisode : episodeIDs)
+            episodes += StringUtils::Format("{},", idEpisode);
+
+          std::vector<std::string> showPaths;
+          m_pDS->query(PrepareSQL("SELECT DISTINCT path.strPath FROM path "
+                                  "JOIN tvshowlinkpath ON tvshowlinkpath.idPath = path.idPath "
+                                  "JOIN episode ON episode.idShow = tvshowlinkpath.idShow "
+                                  "WHERE episode.idEpisode IN (%s)",
+                                  StringUtils::TrimRight(episodes, ",").c_str()));
+          while (!m_pDS->eof())
+          {
+            showPaths.emplace_back(m_pDS->fv(0).get_asString());
+            m_pDS->next();
+          }
+          m_pDS->close();
+
+          size_t cleared = 0;
+          for (const auto& showPath : showPaths)
+          {
+            // A folder that has gone keeps its hash, so the path pass below can still remove it
+            if (CDirectory::Exists(showPath, false))
+            {
+              ClearPathHash(showPath);
+              ++cleared;
+            }
+          }
+          CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} show path hashes", cleared);
+        }
+
         // If a movie is listed for deletion because the file of its default version has gone,
         // promote a different version (first one written) and keep the movie
         for (auto it = movieIDs.begin(); it != movieIDs.end();)
@@ -10607,6 +10642,87 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         sql = "DELETE FROM tvshowlinkpath "
               "WHERE NOT EXISTS (SELECT 1 FROM path WHERE path.idPath = tvshowlinkpath.idPath)";
         m_pDS->exec(sql);
+      }
+
+      // A show that moved keeps its link to the old folder, and the path cleaning above misses
+      // that folder once its hash has been cleared. Remove links to folders that have gone from
+      // a source that is still available, as long as the show keeps another link.
+      {
+        std::string linksSql{
+            "SELECT tvshowlinkpath.idShow, path.idPath, path.strPath, "
+            "(SELECT COUNT(*) FROM tvshowlinkpath AS showLinks "
+            "WHERE showLinks.idShow = tvshowlinkpath.idShow) AS links "
+            "FROM tvshowlinkpath JOIN path ON path.idPath = tvshowlinkpath.idPath "
+            "WHERE tvshowlinkpath.idShow IN "
+            "(SELECT idShow FROM tvshowlinkpath GROUP BY idShow HAVING COUNT(*) > 1)"};
+        if (!paths.empty())
+        {
+          std::string pathIds;
+          for (const int idPath : paths)
+            pathIds += StringUtils::Format("{},", idPath);
+          linksSql +=
+              PrepareSQL(" AND path.idPath IN (%s)", StringUtils::TrimRight(pathIds, ",").c_str());
+        }
+
+        struct ShowLink
+        {
+          int idShow;
+          int idPath;
+          std::string path;
+          int links;
+        };
+        std::vector<ShowLink> showLinks;
+        m_pDS2->query(linksSql);
+        while (!m_pDS2->eof())
+        {
+          showLinks.push_back({m_pDS2->fv(0).get_asInt(), m_pDS2->fv(1).get_asInt(),
+                               m_pDS2->fv(2).get_asString(), m_pDS2->fv(3).get_asInt()});
+          m_pDS2->next();
+        }
+        m_pDS2->close();
+
+        std::map<std::string, bool> sourceAvailable;
+        std::map<int, std::vector<int>> goneLinks; // idShow -> idPath
+        std::map<int, int> linkCount; // idShow -> number of links
+        for (const auto& link : showLinks)
+        {
+          bool isSource;
+          if (URIUtils::IsPlugin(link.path) || URIUtils::IsOnDVD(link.path))
+            continue;
+          const int sourceIndex{CUtil::GetMatchingSource(link.path, videoSources, isSource)};
+          if (sourceIndex < 0)
+            continue;
+
+          std::string root;
+          if (!GetSourcePath(link.path, root))
+            continue;
+
+          auto available = sourceAvailable.find(root);
+          if (available == sourceAvailable.end())
+            available = sourceAvailable.emplace(root, CDirectory::Exists(root, false)).first;
+
+          if (available->second && !CDirectory::Exists(link.path, false))
+          {
+            goneLinks[link.idShow].emplace_back(link.idPath);
+            linkCount[link.idShow] = link.links;
+          }
+        }
+
+        int removed = 0;
+        for (const auto& [idShow, idPaths] : goneLinks)
+        {
+          if (static_cast<int>(idPaths.size()) >= linkCount[idShow])
+            continue; // removing every link would delete the show below
+
+          for (const int idPath : idPaths)
+          {
+            m_pDS->exec(PrepareSQL("DELETE FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i",
+                                   idShow, idPath));
+            ++removed;
+          }
+        }
+        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} links to show folders that have gone",
+                    removed);
       }
 
       CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning tvshow table");
