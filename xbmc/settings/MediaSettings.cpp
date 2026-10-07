@@ -32,6 +32,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/geometry/ContentGeometryScanner.h"
 
 #include <algorithm>
 #include <array>
@@ -361,6 +362,10 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
       videodatabase.Close();
     }
   }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_SCANCONTENTGEOMETRY)
+  {
+    KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep(true);
+  }
   else if (settingId == CSettings::SETTING_MAINTENANCE_CLEANIMAGECACHE)
   {
     CServiceBroker::GetTextureCache()->CleanAllUnusedImages();
@@ -372,8 +377,18 @@ void CMediaSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& set
   if (!setting)
     return;
 
-  if (setting->GetId() == CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)
+  const std::string& settingId{setting->GetId()};
+  if (settingId == CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnRefresh");
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_EXTRACTCONTENTGEOMETRY ||
+           settingId == CSettings::SETTING_VIDEOSCREEN_CONTENTGEOMETRYONSCAN)
+  {
+    auto& scanner{KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance()};
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue())
+      scanner.Sweep();
+    else
+      scanner.StopSweep();
+  }
 }
 
 WatchedMode CMediaSettings::GetWatchedMode(const std::string& content) const

@@ -32,6 +32,11 @@ public:
   */
   static bool CanExtract(const CFileItem& fileItem);
 
+  /*!
+   * @brief Is \p path close enough to decode frames from: local, or on the LAN for HTTP and FTP?
+  */
+  static bool IsExtractableLocation(const std::string& path);
+
   // Probe the files streams and store the info in the VideoInfoTag
   static bool GetFileStreamDetails(CFileItem* pItem);
 

@@ -33,7 +33,10 @@ protected:
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
 
 private:
+  //! \brief Draw the picture at video resolution under a clip lifted to the whole screen, then
+  //! put the interface's resolution and clip back.
   void RenderPicture(bool clear, bool gui);
+
   void SeekChapter(int iChapter);
   void ToggleOSD();
   void TriggerOSD();

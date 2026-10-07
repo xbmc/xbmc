@@ -1,10 +1,12 @@
 set(SOURCES GraphicContext.cpp
+            GuiGeometry.cpp
             OSScreenSaver.cpp
             Resolution.cpp
             WindowSystemFactory.cpp
             WinSystem.cpp)
 
 set(HEADERS GraphicContext.h
+            GuiGeometry.h
             OSScreenSaver.h
             Resolution.h
             WinEvents.h
