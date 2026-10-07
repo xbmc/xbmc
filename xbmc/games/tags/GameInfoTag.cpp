@@ -154,5 +154,19 @@ void CGameInfoTag::Serialize(CVariant& value) const
 
 void CGameInfoTag::ToSortable(SortItem& sortable, Field field) const
 {
-  // No database entries for games (...yet)
+  switch (field)
+  {
+    case Field::TITLE:
+      if (!m_strTitle.empty())
+        sortable[Field::TITLE] = m_strTitle;
+      break;
+    case Field::YEAR:
+      sortable[Field::YEAR] = m_year;
+      break;
+    case Field::GENRE:
+      sortable[Field::GENRE] = m_genres;
+      break;
+    default:
+      break;
+  }
 }
