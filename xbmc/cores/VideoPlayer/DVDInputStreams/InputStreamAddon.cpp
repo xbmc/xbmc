@@ -19,7 +19,7 @@
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "filesystem/SpecialProtocol.h"
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -52,7 +52,7 @@ void CInputStreamProvider::GetAddonInstance(InstanceType instance_type,
 /*****************************************************************************************************************/
 
 using namespace ADDON;
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 
 CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
                                      IVideoPlayer* player,

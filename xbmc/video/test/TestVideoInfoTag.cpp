@@ -8,10 +8,10 @@
 
 #include "ServiceBroker.h"
 #include "language/LangInfo.h"
+#include "language/LanguageTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
-#include "utils/LanguageTag.h"
 #include "utils/SortUtils.h"
 #include "utils/StreamDetails.h"
 #include "utils/Variant.h"
@@ -24,7 +24,7 @@
 
 #include <gtest/gtest.h>
 
-using KODI::UTILS::CLanguageTag;
+using KODI::LANGUAGE::CLanguageTag;
 
 TEST(TestVideoInfoTag, SaveNfoVersion)
 {

@@ -14,6 +14,7 @@
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "language/LanguageTag.h"
 #include "LanguageHook.h"
 #include "ServiceBroker.h"
 #include "Util.h"
@@ -44,7 +45,6 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/LanguageTag.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -533,15 +533,15 @@ namespace XBMCAddon
           break;
         }
       case CLangCodeExpander::ISO_639_1:
-        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+        if (const auto tag = KODI::LANGUAGE::CLanguageTag::TryParse(language); tag.has_value())
           convertedLanguage = tag->AsIso6391();
         break;
       case CLangCodeExpander::ISO_639_2:
-        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+        if (const auto tag = KODI::LANGUAGE::CLanguageTag::TryParse(language); tag.has_value())
           convertedLanguage = tag->AsIso6392B();
         break;
       case CLangCodeExpander::ISO_NAME:
-        if (const auto tag = KODI::UTILS::CLanguageTag::TryParse(language); tag.has_value())
+        if (const auto tag = KODI::LANGUAGE::CLanguageTag::TryParse(language); tag.has_value())
           convertedLanguage = tag->GetEnglishLanguageName();
         break;
       default:

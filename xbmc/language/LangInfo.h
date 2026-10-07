@@ -8,11 +8,11 @@
 
 #pragma once
 
+#include "language/LanguageTag.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/LanguageTag.h"
 #include "utils/Locale.h"
 #include "utils/Speed.h"
 #include "utils/Temperature.h"
@@ -131,7 +131,7 @@ public:
    *                      "original" or "mediadefault" the UI language is returned instead.
    * \return The language, empty when the setting names no language and allowFallback is false.
    */
-  const KODI::UTILS::CLanguageTag& GetAudioLanguage(bool allowFallback) const;
+  const KODI::LANGUAGE::CLanguageTag& GetAudioLanguage(bool allowFallback) const;
 
   /*!
    * \brief Set the audio language.
@@ -147,7 +147,7 @@ public:
    *                      or "forced_only" the preferred audio language is returned instead.
    * \return The language, empty when the setting names no language and allowFallback is false.
    */
-  const KODI::UTILS::CLanguageTag& GetSubtitleLanguage(bool allowFallback) const;
+  const KODI::LANGUAGE::CLanguageTag& GetSubtitleLanguage(bool allowFallback) const;
 
   /*!
    * \brief Set the subtitle language.
@@ -157,9 +157,9 @@ public:
    */
   void SetSubtitleLanguage(const std::string& language);
 
-  KODI::UTILS::CLanguageTag GetDVDMenuLanguage() const;
-  KODI::UTILS::CLanguageTag GetDVDAudioLanguage() const;
-  KODI::UTILS::CLanguageTag GetDVDSubtitleLanguage() const;
+  KODI::LANGUAGE::CLanguageTag GetDVDMenuLanguage() const;
+  KODI::LANGUAGE::CLanguageTag GetDVDAudioLanguage() const;
+  KODI::LANGUAGE::CLanguageTag GetDVDSubtitleLanguage() const;
 
   const std::string& GetRegionLocale() const;
 
@@ -387,10 +387,10 @@ protected:
   CTemperature::Unit m_temperatureUnit;
   CSpeed::Unit m_speedUnit;
 
-  KODI::UTILS::CLanguageTag m_audioLanguage;
-  KODI::UTILS::CLanguageTag m_subtitleLanguage;
+  KODI::LANGUAGE::CLanguageTag m_audioLanguage;
+  KODI::LANGUAGE::CLanguageTag m_subtitleLanguage;
   //! An unset audio or subtitle preference falls back to this
-  KODI::UTILS::CLanguageTag m_uiLanguage;
+  KODI::LANGUAGE::CLanguageTag m_uiLanguage;
 };
 
 XBMC_GLOBAL_REF(CLangInfo, g_langInfo);

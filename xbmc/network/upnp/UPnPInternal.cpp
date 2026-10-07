@@ -8,6 +8,7 @@
 #include "UPnPInternal.h"
 
 #include "FileItem.h"
+#include "language/LanguageTag.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
@@ -29,7 +30,6 @@
 #include "settings/lib/Setting.h"
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
-#include "utils/LanguageTag.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -907,8 +907,8 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       else
         preferredLanguage = setting->ToString();
 
-      const KODI::UTILS::CLanguageTag preferredTag{
-          KODI::UTILS::CLanguageTag::Parse(preferredLanguage)};
+      const KODI::LANGUAGE::CLanguageTag preferredTag{
+          KODI::LANGUAGE::CLanguageTag::Parse(preferredLanguage)};
 
       for (unsigned int i = 0; i < subtitles.size(); i++)
       {

@@ -8,14 +8,14 @@
 
 #include "ServiceManager.h"
 #include "application/Application.h"
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 
 #include <memory>
 #include <utility>
 
 #include <gtest/gtest.h>
 
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 
 TEST(TestLanguageTag, DefaultConstructedIsEmpty)
 {

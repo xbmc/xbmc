@@ -16,12 +16,12 @@
 #include "DVDSubtitles/DVDSubtitleStream.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 #include "utils/StringUtils.h"
 
 #include <memory>
 
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 
 CDVDDemuxVobsub::CDVDDemuxVobsub() = default;
 

@@ -6,13 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 #include "video/VideoStreamSelect.h"
 
 #include <gtest/gtest.h>
 
 using namespace KODI::VIDEO;
-using KODI::UTILS::CLanguageTag;
+using KODI::LANGUAGE::CLanguageTag;
 
 namespace
 {

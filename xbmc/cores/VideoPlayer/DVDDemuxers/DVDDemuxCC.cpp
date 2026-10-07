@@ -11,6 +11,7 @@
 #include "DVDDemuxCC/CCBitstreamParserFactory.h"
 #include "DVDDemuxCC/CaptionBlock.h"
 #include "DVDDemuxUtils.h"
+#include "language/LanguageTag.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/contrib/cc_decoder708.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
@@ -19,7 +20,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ColorUtils.h"
-#include "utils/LanguageTag.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -31,6 +31,7 @@
 namespace COLOR = KODI::UTILS::COLOR;
 
 using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 
 namespace
 {

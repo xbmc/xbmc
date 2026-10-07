@@ -14,6 +14,7 @@
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
+#include "language/LanguageTag.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -28,7 +29,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/FontUtils.h"
-#include "utils/LanguageTag.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -58,7 +58,7 @@ extern "C"
 #include <libavutil/pixdesc.h>
 }
 
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 using namespace std::chrono_literals;
 
 struct StereoModeConversionMap

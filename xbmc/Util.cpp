@@ -2197,13 +2197,14 @@ std::optional<StreamFlags> ExternalStreamFlagFromToken(std::string_view token)
  * \param[in] token One token of the filename.
  * \return The language, or nullopt where the token states none.
  */
-std::optional<KODI::UTILS::CLanguageTag> ExternalStreamLanguageFromToken(const std::string& token)
+std::optional<KODI::LANGUAGE::CLanguageTag> ExternalStreamLanguageFromToken(
+    const std::string& token)
 {
   // _ stands in for the BCP 47 subtag separator, since - separates the filename's own tokens
   std::string langCode{token};
   std::ranges::replace(langCode, '_', '-');
 
-  return KODI::UTILS::CLanguageTag::TryParse(langCode);
+  return KODI::LANGUAGE::CLanguageTag::TryParse(langCode);
 }
 } // namespace
 

@@ -9,9 +9,9 @@
 #include "StreamParser.h"
 
 #include "M2TSParser.h"
+#include "language/LanguageTag.h"
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
-#include "utils/LanguageTag.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -24,7 +24,7 @@
 #include <fmt/format.h>
 #include <libbluray/bluray.h>
 
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 
 namespace XFILE
 {

@@ -11,7 +11,7 @@
 #include <optional>
 #include <string>
 
-namespace KODI::UTILS
+namespace KODI::LANGUAGE
 {
 /*!
  * \brief A language, carried as a value rather than as a bare string.
@@ -166,4 +166,4 @@ private:
 
   std::string m_tag;
 };
-} // namespace KODI::UTILS
+} // namespace KODI::LANGUAGE
