@@ -1183,7 +1183,7 @@ bool CGUIWindowVideoBase::Update(const std::string &strDirectory, bool updateFil
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
-  // might already be running from GetGroupedItems
+  // might already be running from OnFilterItems
   if (!m_thumbLoader.IsLoading())
     m_thumbLoader.Load(*m_vecItems);
 
@@ -1278,12 +1278,18 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
       }
     }
   }
+}
 
-  // reload thumbs after filtering and grouping
+void CGUIWindowVideoBase::OnFilterItems(const std::string& filter)
+{
+  // stop before the items are changed, the loader thread reads them
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
 
-  m_thumbLoader.Load(items);
+  CGUIMediaWindow::OnFilterItems(filter);
+
+  // reload thumbs after filtering and grouping
+  m_thumbLoader.Load(*m_vecItems);
 }
 
 bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
