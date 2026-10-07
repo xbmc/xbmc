@@ -101,8 +101,7 @@ std::map<std::string, CMediaTypes::MediaTypeInfo>::const_iterator CMediaTypes::f
 std::string CMediaTypes::GetCapitalLocalization(const MediaType &mediaType)
 {
   std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
-  if (mediaTypeIt == m_mediaTypes.end() ||
-    mediaTypeIt->second.localizationSingularCapital <= 0)
+  if (mediaTypeIt == m_mediaTypes.end() || mediaTypeIt->second.localizationSingularCapital <= 0)
     return "";
 
   return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
