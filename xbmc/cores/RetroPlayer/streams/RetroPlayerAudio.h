@@ -11,6 +11,7 @@
 #include "IRetroPlayerStream.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 
+#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -52,7 +53,12 @@ public:
   explicit CRetroPlayerAudio(CRPProcessInfo& processInfo);
   ~CRetroPlayerAudio() override;
 
-  void Enable(bool bEnabled) { m_bAudioEnabled = bEnabled; }
+  void Enable(bool bEnabled)
+  {
+    if (!bEnabled)
+      m_restoreDelay = true;
+    m_bAudioEnabled = bEnabled;
+  }
 
   // implementation of IRetroPlayerStream
   bool OpenStream(const StreamProperties& properties) override;
@@ -67,6 +73,9 @@ private:
   CRPProcessInfo& m_processInfo;
   IAE::StreamPtr m_pAudioStream;
   bool m_bAudioEnabled = true;
+  std::atomic<bool> m_restoreDelay{false};
+  double m_playingDelay = 0.0;
+  unsigned int m_framesToSkip = 0;
 
   uint64_t m_droppedFrames = 0;
   uint64_t m_dropEvents = 0;
