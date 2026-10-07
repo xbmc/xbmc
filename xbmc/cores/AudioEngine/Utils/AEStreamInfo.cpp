@@ -657,6 +657,11 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       m_coreSize = m_fsize;
       m_fsize += hd_size;
     }
+    // While acquiring, a core frame counts only if the next frame starts where it ends. A flush
+    // can leave a core cut from its extension, and taking that for a plain DTS stream switches
+    // the output format and back again.
+    else if (!m_hasSync && hd_sync != header)
+      continue;
 
     unsigned int sampleRate = DTSSampleRates[sfreq];
     if (!m_hasSync || skip || dataType != m_info.m_type || sampleRate != m_info.m_sampleRate ||
