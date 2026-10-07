@@ -16,17 +16,48 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
+#include <cmath>
 #include <cstdint>
 
 extern "C"
 {
-#include <libavformat/avformat.h>
-#include <libavutil/imgutils.h>
 #include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
-#include <libswscale/swscale.h>
+#include <libavutil/display.h>
+#include <libavutil/imgutils.h>
 #include <libavutil/pixdesc.h>
+#include <libswscale/swscale.h>
 }
+
+namespace
+{
+constexpr size_t DISPLAY_MATRIX_SIZE = 9;
+// by counter-clockwise quarter turns, unmirrored then mirrored
+constexpr unsigned int ORIENTATIONS[2][4] = {{1, 8, 3, 6}, {2, 7, 4, 5}};
+
+// EXIF orientation (1-8) of a display matrix, 0 if unknown
+unsigned int OrientationFromDisplayMatrix(const int32_t* displayMatrix)
+{
+  std::array<int32_t, DISPLAY_MATRIX_SIZE> matrix{};
+  std::copy_n(displayMatrix, matrix.size(), matrix.begin());
+
+  // a negative determinant means the image is mirrored
+  const bool flipped{static_cast<int64_t>(matrix[0]) * matrix[4] -
+                         static_cast<int64_t>(matrix[1]) * matrix[3] <
+                     0};
+  if (flipped)
+    av_display_matrix_flip(matrix.data(), 1, 0);
+
+  const double rotation{av_display_rotation_get(matrix.data())};
+  if (std::isnan(rotation))
+    return 0;
+
+  const int quarterTurns{(static_cast<int>(std::lround(rotation / 90.0)) % 4 + 4) % 4};
+  return ORIENTATIONS[flipped ? 1 : 0][quarterTurns];
+}
+} // namespace
 
 Frame::Frame(const Frame& src) :
   m_delay(src.m_delay),
@@ -357,6 +388,15 @@ AVFrame* CFFmpegImage::ExtractFrame()
       if (orientation >= 0 && orientation <= 8)
         m_orientation = (unsigned int)orientation;
     }
+  }
+
+  // FFmpeg 8.1 and later only report the EXIF orientation as a display matrix
+  if (m_orientation == 0)
+  {
+    const AVFrameSideData* sideData{av_frame_get_side_data(frame, AV_FRAME_DATA_DISPLAYMATRIX)};
+    if (sideData && sideData->size >= sizeof(int32_t) * DISPLAY_MATRIX_SIZE)
+      m_orientation =
+          OrientationFromDisplayMatrix(reinterpret_cast<const int32_t*>(sideData->data));
   }
   av_packet_unref(&pkt);
 
