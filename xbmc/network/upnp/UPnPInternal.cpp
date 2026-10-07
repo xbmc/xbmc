@@ -357,8 +357,9 @@ NPT_Result PopulateObjectFromTag(CMusicInfoTag& tag,
   object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
   if (tag.GetDatabaseId() >= 0)
   {
-    object.m_ReferenceID = EncodeObjectId(StringUtils::Format(
-        "{}{}{}", MUSIC::DB_PATH::SONGS, tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL())));
+    object.m_ReferenceID =
+        EncodeObjectId(StringUtils::Format("{}{}{}", MUSIC::DB_PATH::SONGS, tag.GetDatabaseId(),
+                                           URIUtils::GetExtension(tag.GetURL())));
   }
   if (object.m_ReferenceID == object.m_ObjectID)
     object.m_ReferenceID = "";

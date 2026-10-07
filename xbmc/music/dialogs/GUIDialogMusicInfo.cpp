@@ -426,7 +426,8 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
         if (m_album.idAlbum >= 0)
         {
           // Play album
-          const std::string path = StringUtils::Format("{}{}", MUSIC::DB_PATH::ALBUMS, m_album.idAlbum);
+          const std::string path =
+              StringUtils::Format("{}{}", MUSIC::DB_PATH::ALBUMS, m_album.idAlbum);
           OnPlayItem(std::make_shared<CFileItem>(path, m_album));
           return true;
         }

@@ -1099,8 +1099,8 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
     else if (album.GetLength() > 0)
     {
       // all tracks by album name
-      std::string strPath =
-          StringUtils::Format("{}{}/", MUSIC::DB_PATH::ALBUMS, database.GetAlbumByName((const char*)album));
+      std::string strPath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ALBUMS,
+                                                database.GetAlbumByName((const char*)album));
 
       return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index,
                                     requested_count, sort_criteria, context);
@@ -1155,8 +1155,8 @@ NPT_Result CUPnPServer::OnSearchContainer(PLT_ActionReference& action,
     {
       CMusicDatabase database;
       database.Open();
-      std::string strPath =
-          StringUtils::Format("{}{}/", MUSIC::DB_PATH::GENRES, database.GetGenreByName((const char*)genre));
+      std::string strPath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::GENRES,
+                                                database.GetGenreByName((const char*)genre));
       return OnBrowseDirectChildren(action, strPath.c_str(), filter, starting_index,
                                     requested_count, sort_criteria, context);
     }

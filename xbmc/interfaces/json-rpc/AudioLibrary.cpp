@@ -526,7 +526,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const std::string &method, 
   CFileItemList items;
   for (const CAlbum& album : albums)
   {
-    std::string path = StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_ADDED_ALBUMS, album.idAlbum);
+    std::string path =
+        StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_ADDED_ALBUMS, album.idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(album, path, item);
@@ -552,7 +553,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedSongs(const std::string &method, I
     amount = 0;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyAddedAlbumSongs(KODI::MUSIC::DB_PATH::SONGS, items, (unsigned int)amount))
+  if (!musicdatabase.GetRecentlyAddedAlbumSongs(KODI::MUSIC::DB_PATH::SONGS, items,
+                                                (unsigned int)amount))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
@@ -576,7 +578,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const std::string &method,
   CFileItemList items;
   for (const CAlbum& album : albums)
   {
-    std::string path = StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_PLAYED_ALBUMS, album.idAlbum);
+    std::string path =
+        StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_PLAYED_ALBUMS, album.idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(album, path, item);
@@ -1161,8 +1164,8 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   }
 
   if (artistID != -1 || albumID != -1 || genreID != -1)
-    success |= musicdatabase.GetSongsNav(KODI::MUSIC::DB_PATH::SONGS, list, SortDescription(), genreID,
-                                         artistID, albumID);
+    success |= musicdatabase.GetSongsNav(KODI::MUSIC::DB_PATH::SONGS, list, SortDescription(),
+                                         genreID, artistID, albumID);
 
   int songID = (int)parameterObject["songid"].asInteger(-1);
   if (songID != -1)

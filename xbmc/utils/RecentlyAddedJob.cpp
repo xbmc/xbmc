@@ -294,7 +294,8 @@ bool CRecentlyAddedJob::UpdateMusic()
         }
       }
 
-      std::string strDBpath = StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::ALBUMS, album.idAlbum);
+      std::string strDBpath =
+          StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::ALBUMS, album.idAlbum);
 
       home->SetProperty("LatestAlbum." + value + ".Title"   , album.strAlbum);
       home->SetProperty("LatestAlbum." + value + ".Year"    , album.strReleaseDate);

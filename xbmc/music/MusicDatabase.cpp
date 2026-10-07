@@ -3581,7 +3581,8 @@ bool CMusicDatabase::SearchArtists(const std::string& search, CFileItemList& art
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(557)); // Artist
     while (!m_pDS->eof())
     {
-      std::string path = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ARTISTS, m_pDS->fv(0).get_asInt());
+      std::string path =
+          StringUtils::Format("{}{}/", MUSIC::DB_PATH::ARTISTS, m_pDS->fv(0).get_asInt());
       auto pItem{std::make_shared<CFileItem>(path, true)};
       std::string label = StringUtils::Format("[{}] {}", artistLabel, m_pDS->fv(1).get_asString());
       pItem->SetLabel(label);
