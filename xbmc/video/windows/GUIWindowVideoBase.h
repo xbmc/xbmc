@@ -68,6 +68,7 @@ protected:
   bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
   void OnItemLoaded(CFileItem* pItem) override {};
   void GetGroupedItems(CFileItemList &items) override;
+  void OnFilterItems(const std::string& filter) override;
 
   bool CheckFilterAdvanced(CFileItemList &items) const override;
   bool CanContainFilter(const std::string &strDirectory) const override;
