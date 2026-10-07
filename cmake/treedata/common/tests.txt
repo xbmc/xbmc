@@ -48,3 +48,4 @@ xbmc/threads/test                 test/threads
 xbmc/utils/test                   test/utils
 xbmc/video/geometry/test          test/video/geometry
 xbmc/video/test                   test/video
+xbmc/windowing/test               test/windowing
