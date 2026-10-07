@@ -161,3 +161,53 @@ TEST(TestDisplayPacing, IsNotSkewedByUnevenFramesAtTheStart)
 
   EXPECT_NEAR(Micros(pacing.Interval(when)), Micros(REFRESH), 1.0);
 }
+
+namespace
+{
+// Takes count frames from when at the given refresh, returning the last
+Clock::time_point TakeFramesAt(CDisplayPacing& pacing,
+                               Clock::time_point when,
+                               std::chrono::nanoseconds refresh,
+                               int count)
+{
+  for (int i = 0; i < count; ++i)
+  {
+    when += refresh;
+    pacing.OnFrameTaken(when);
+  }
+  return when;
+}
+} // namespace
+
+TEST(TestDisplayPacing, FollowsTheScreenToAHigherRefreshRate)
+{
+  CDisplayPacing pacing;
+  Clock::time_point when = TakeFrames(pacing, 1000);
+
+  when = TakeFramesAt(pacing, when, REFRESH / 2, 400);
+
+  EXPECT_NEAR(Micros(pacing.Interval(when)), Micros(REFRESH / 2), 1.0);
+}
+
+TEST(TestDisplayPacing, FollowsTheScreenToALowerRefreshRate)
+{
+  CDisplayPacing pacing;
+  Clock::time_point when = TakeFramesAt(pacing, START, REFRESH / 2, 1000);
+
+  // Every other refresh of the old rate, which a run at that rate takes for a
+  // refresh that passed without a frame
+  when = TakeFramesAt(pacing, when, REFRESH, 700);
+
+  EXPECT_NEAR(Micros(pacing.Interval(when)), Micros(REFRESH), 1.0);
+}
+
+TEST(TestDisplayPacing, FollowsASmallChangeInTheRefreshRate)
+{
+  CDisplayPacing pacing;
+  Clock::time_point when = TakeFrames(pacing, 1000);
+
+  // Close enough to the old rate for each gap to pass as a refresh
+  when = TakeFramesAt(pacing, when, 20ms, 700);
+
+  EXPECT_NEAR(Micros(pacing.Interval(when)), 20'000.0, 1.0);
+}

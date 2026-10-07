@@ -8,6 +8,7 @@
 
 #include "DisplayPacing.h"
 
+#include <algorithm>
 #include <cmath>
 
 using namespace KODI;
@@ -27,6 +28,10 @@ constexpr double MAX_GAP_DEVIATION = 0.25;
 
 // Regular frames needed before their interval is used
 constexpr int64_t MIN_RUN_FRAMES = 30;
+
+// A run is measured over this many frames at most, so that the interval
+// follows the screen if its refresh rate changes
+constexpr int64_t MAX_RUN_FRAMES = 300;
 
 // Frames are no longer being taken regularly after this many intervals
 // without one
@@ -52,24 +57,23 @@ void CDisplayPacing::OnFrameTaken(Clock::time_point when)
     return;
   }
 
-  // Measure against this run once it has an interval of its own
-  const int64_t runIntervalNs =
-      m_runFrames > 1 ? (m_lastTakeLocalNs - m_runStartNs) / (m_runFrames - 1) : 0;
-  const int64_t referenceNs = runIntervalNs != 0 ? runIntervalNs : m_intervalNs.load();
-
+  // A run is measured against its own interval, which its first gap sets, so
+  // that a screen whose refresh rate changes can start a run at the new rate
   int64_t refreshes = 1;
-  if (referenceNs != 0)
+  if (m_runFrames > 1)
   {
+    const int64_t runIntervalNs = (m_lastTakeLocalNs - m_runStartNs) / (m_runFrames - 1);
+
     // A refresh can pass without a frame being taken, so count it. A gap that
     // isn't a whole number of refreshes would skew the run, so start another.
-    const double gapRefreshes = static_cast<double>(gapNs) / referenceNs;
+    // So does a gap of several refreshes before the run is long enough to be
+    // used, as the run may have measured a fraction of the real interval.
+    const double gapRefreshes = static_cast<double>(gapNs) / runIntervalNs;
     refreshes = std::llround(gapRefreshes);
-    if (refreshes < 1 || std::abs(gapRefreshes - refreshes) > MAX_GAP_DEVIATION)
+    if (refreshes < 1 || (refreshes > 1 && m_runFrames - 1 < MIN_RUN_FRAMES) ||
+        std::abs(gapRefreshes - refreshes) > MAX_GAP_DEVIATION)
     {
-      m_runStartNs = takeNs;
-      m_runFrames = 1;
-      m_lastTakeLocalNs = takeNs;
-      m_lastTakeNs.store(takeNs);
+      StartRun(takeNs);
       return;
     }
   }
@@ -85,8 +89,11 @@ void CDisplayPacing::OnFrameTaken(Clock::time_point when)
   if (elapsedFrames >= MIN_RUN_FRAMES && elapsedFrames >= m_intervalFrames)
   {
     m_intervalNs.store((takeNs - m_runStartNs) / elapsedFrames);
-    m_intervalFrames = elapsedFrames;
+    m_intervalFrames = std::min(elapsedFrames, MAX_RUN_FRAMES);
   }
+
+  if (elapsedFrames >= MAX_RUN_FRAMES)
+    StartRun(takeNs);
 }
 
 CDisplayPacing::Clock::duration CDisplayPacing::Interval(Clock::time_point now) const
@@ -117,10 +124,15 @@ CDisplayPacing::Clock::time_point CDisplayPacing::NextTake(Clock::time_point now
 
 void CDisplayPacing::Restart(int64_t takeNs)
 {
+  StartRun(takeNs);
+  m_intervalNs.store(0);
+  m_intervalFrames = 0;
+}
+
+void CDisplayPacing::StartRun(int64_t takeNs)
+{
   m_runStartNs = takeNs;
   m_runFrames = 1;
   m_lastTakeLocalNs = takeNs;
   m_lastTakeNs.store(takeNs);
-  m_intervalNs.store(0);
-  m_intervalFrames = 0;
 }

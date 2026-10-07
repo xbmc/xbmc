@@ -85,6 +85,7 @@ public:
 
 private:
   void Restart(int64_t takeNs);
+  void StartRun(int64_t takeNs);
 
   // Rendering thread only
   int64_t m_runStartNs{0};
