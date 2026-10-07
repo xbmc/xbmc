@@ -51,7 +51,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           StringUtils::Format("androidapp://{}/{}/{}", url.GetHostName(), dirname, i.packageName);
       pItem->SetPath(path);
       pItem->SetLabel(i.packageLabel);
-      pItem->SetArt(KODI::ART::TYPE::THUMB, path+".png");
+      pItem->SetArt(KODI::ART::TYPE::THUMB, path + ".png");
       pItem->SetSize(-1); // No size
       items.Add(pItem);
     }

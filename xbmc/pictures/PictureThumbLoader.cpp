@@ -85,7 +85,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
       !pItem->IsCBR() && !PLAYLIST::IsPlayList(*pItem))
   { // load the thumb from the image file
     thumb = pItem->HasArt(ART::TYPE::THUMB) ? pItem->GetArt(ART::TYPE::THUMB)
-                                   : IMAGE_FILES::URLFromFile(pItem->GetPath());
+                                            : IMAGE_FILES::URLFromFile(pItem->GetPath());
   }
   else if (VIDEO::IsVideo(*pItem) && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() &&
            !pItem->IsCBR() && !PLAYLIST::IsPlayList(*pItem))
