@@ -93,6 +93,15 @@ private:
    */
   bool AddDiscExtras(const std::string& disc, int dbId);
 
+  /*!
+   \brief Add the versions and extras an exported nfo of a bluray records, each with its playlist.
+   \param disc path of the disc (index.bdmv or an .iso)
+   \param folder the extras folder holding it, whose scraper reads the nfo
+   \param dbId the movie
+   \return true if the nfo records any of the disc's playlists as versions or extras
+   */
+  bool AddNfoDiscExtras(const std::string& disc, const std::string& folder, int dbId);
+
   CVideoDatabase& m_database;
   const CVideoInfoScannerArt& m_art;
 };

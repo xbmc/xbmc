@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/DiscsUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
@@ -37,11 +38,14 @@
 #include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
+#include "video/tags/IVideoInfoTagLoader.h"
+#include "video/tags/VideoInfoTagLoaderFactory.h"
 
 #include <algorithm>
 #include <cstdlib>
 #include <memory>
 #include <set>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -71,6 +75,26 @@ int GetDiscMovieId(CVideoDatabase& db, const std::string& disc)
       movies.emplace(playlist.idMedia);
   }
   return movies.size() == 1 ? *movies.begin() : -1;
+}
+
+//! The loader of what an export wrote beside a video in an extras folder, read with its scraper
+std::unique_ptr<IVideoInfoTagLoader> CreateExportLoader(CVideoDatabase& db,
+                                                        const std::string& video,
+                                                        const std::string& folder)
+{
+  const ADDON::ScraperPtr info{db.GetScraperForPath(folder)};
+  if (!info)
+    return nullptr;
+  return std::unique_ptr<IVideoInfoTagLoader>{
+      CVideoInfoTagLoaderFactory::CreateLoader(CFileItem{video, false}, info, false)};
+}
+
+//! Whether an export records a video as a version or an extra of its movie
+bool IsExportedAsset(const CVideoInfoTag& tag)
+{
+  const VideoAssetType type{tag.GetAssetInfo().GetType()};
+  return (type == VideoAssetType::VERSION || type == VideoAssetType::EXTRA) &&
+         !tag.GetAssetInfo().GetTitle().empty();
 }
 
 //! Whether a movie already has an extra on a bluray, either the whole disc or one of its playlists
@@ -138,10 +162,13 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
         // A movie restored from its nfos has only the extras an export records
         const bool restored{m_restoredFromNfo.contains(dbId)};
 
-        // A bluray is added as the extras it names, or failing that as a whole. One already
-        // there may since have been given a playlist, so it is not added as a whole again.
-        if (IsBluray(item->GetPath()) && (HasExtraOnDisc(m_database, item->GetPath(), dbId) ||
-                                          restored || AddDiscExtras(item->GetPath(), dbId)))
+        // A bluray is added as the versions and extras its exported nfo records, or as the extras
+        // it names, or failing that as a whole. One already there may since have been given a
+        // playlist, so it is not added as a whole again.
+        if (IsBluray(item->GetPath()) &&
+            (HasExtraOnDisc(m_database, item->GetPath(), dbId) ||
+             AddNfoDiscExtras(item->GetPath(), path, dbId) || restored ||
+             AddDiscExtras(item->GetPath(), dbId)))
           return;
 
         // An extra already in the library keeps any name or art it has since been given. A version
@@ -308,6 +335,85 @@ void CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
     if (!hash.empty())
       m_database.SetPathHash(folder, hash);
   }
+}
+
+bool CVideoInfoScannerExtras::AddNfoDiscExtras(const std::string& disc,
+                                               const std::string& folder,
+                                               int dbId)
+{
+  const std::unique_ptr<IVideoInfoTagLoader> loader{CreateExportLoader(m_database, disc, folder)};
+  if (!loader)
+    return false;
+
+  const std::shared_ptr<CAdvancedSettings> advancedSettings{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+
+  // The export writes each playlist of the disc as a <movie> of the nfo, and the disc as a whole as
+  // one without a playlist
+  bool recorded{false};
+  CVideoInfoTag tag;
+  int index{1};
+  for (CInfoScanner::InfoType result{loader->Load(tag, false)};
+       result != CInfoScanner::InfoType::NONE; result = loader->LoadVersion(++index, tag))
+  {
+    const int playlist{loader->GetBlurayPlaylist()};
+    const std::string title{tag.GetAssetInfo().GetTitle()};
+    const VideoAssetType assetType{tag.GetAssetInfo().GetType()};
+    if (result != CInfoScanner::InfoType::FULL || !IsExportedAsset(tag))
+    {
+      tag.Reset();
+      continue;
+    }
+    recorded = true;
+    const std::string_view kind{assetType == VideoAssetType::VERSION ? "version" : "extra"};
+
+    const std::string path{playlist < 0 ? disc : URIUtils::GetBlurayPlaylistPath(disc, playlist)};
+    CFileItem asset{path, false};
+    *asset.GetVideoInfoTag() = tag;
+    asset.GetVideoInfoTag()->m_strFileNameAndPath = path;
+    tag.Reset();
+
+    if (m_database.GetVideoVersionInfo(path).m_assetTypeId != -1)
+    {
+      CLog::LogF(LOGDEBUG, "The {} '{}' ({}) is already in the library", kind, title,
+                 CURL::GetRedacted(path));
+      continue;
+    }
+
+    // Keep the play state only if advancedsettings.xml says so, as for a movie's nfo
+    CVideoInfoTag& assetTag{*asset.GetVideoInfoTag()};
+    if (!advancedSettings->m_bVideoLibraryImportWatchedState)
+      assetTag.ResetPlayCount();
+    if (!advancedSettings->m_bVideoLibraryImportResumePoint)
+      assetTag.SetResumePoint(CBookmark());
+    if (!assetTag.HasStreamDetails() && playlist >= 0)
+      CDiscDirectoryHelper::ReadResolvedPlaylist(asset);
+
+    // The art the export wrote beside the disc is an extra's own, the nfo's the movie's. A
+    // version's nfo holds its own, as for one beside the movie.
+    if (assetType == VideoAssetType::EXTRA)
+    {
+      assetTag.m_strPictureURL.Clear();
+      assetTag.m_fanart.Clear();
+    }
+    m_art.GetArtwork(&asset, ADDON::ContentType::MOVIES, false, true, "");
+    ART::Artwork art{asset.GetArt()};
+    std::erase_if(art, [](const auto& image) { return image.second.starts_with("image://video"); });
+    asset.SetArt(art);
+
+    const int idType{m_database.AddOrValidateVideoVersionType(title, assetType)};
+    if (idType < 0 ||
+        !m_database.AddVideoAsset(VideoDbContentType::MOVIES, dbId, idType, assetType, asset))
+    {
+      CLog::LogF(LOGERROR, "Failed to add {} '{}' ({})", kind, title, CURL::GetRedacted(path));
+      continue;
+    }
+
+    CLog::LogF(LOGDEBUG, "Added {} '{}' ({}) from its nfo", kind, title, CURL::GetRedacted(path));
+    if (assetTag.GetResumePoint().IsSet())
+      m_database.AddBookMarkToFile(path, assetTag.GetResumePoint(), CBookmark::RESUME);
+  }
+  return recorded;
 }
 
 const CFileItem* FindExtraOnAnotherDisc(const CFileItemList& existing, const CFileItem& extra)
