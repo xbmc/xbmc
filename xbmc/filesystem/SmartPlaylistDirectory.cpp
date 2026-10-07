@@ -217,7 +217,8 @@ namespace XFILE
       }
     }
 
-    if (playlist.GetType() == MEDIA::CONTENT::MUSICVIDEOS || playlist.GetType() == MEDIA::CONTENT::MIXED)
+    if (playlist.GetType() == MEDIA::CONTENT::MUSICVIDEOS ||
+        playlist.GetType() == MEDIA::CONTENT::MIXED)
     {
       playlistTypeHint = PLAYLIST::Id::TYPE_VIDEO;
       CVideoDatabase db;

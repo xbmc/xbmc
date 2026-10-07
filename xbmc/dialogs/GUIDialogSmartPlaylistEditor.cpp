@@ -62,15 +62,15 @@ typedef struct
   int localizedString;
 } translateType;
 
-static const translateType types[] = { { CGUIDialogSmartPlaylistEditor::TYPE_SONGS, MEDIA::CONTENT::SONGS, 134 },
-                                       { CGUIDialogSmartPlaylistEditor::TYPE_ALBUMS, MEDIA::CONTENT::ALBUMS, 132 },
-                                       { CGUIDialogSmartPlaylistEditor::TYPE_ARTISTS, MEDIA::CONTENT::ARTISTS, 133 },
-                                       { CGUIDialogSmartPlaylistEditor::TYPE_MIXED, MEDIA::CONTENT::MIXED, 20395 },
-                                       { CGUIDialogSmartPlaylistEditor::TYPE_MUSICVIDEOS, MEDIA::CONTENT::MUSICVIDEOS, 20389 },
-                                       { CGUIDialogSmartPlaylistEditor::TYPE_MOVIES, MEDIA::CONTENT::MOVIES, 20342 },
-                                       { CGUIDialogSmartPlaylistEditor::TYPE_TVSHOWS, MEDIA::CONTENT::TVSHOWS, 20343 },
-                                       { CGUIDialogSmartPlaylistEditor::TYPE_EPISODES, MEDIA::CONTENT::EPISODES, 20360 }
-                                     };
+static const translateType types[] = {
+    {CGUIDialogSmartPlaylistEditor::TYPE_SONGS, MEDIA::CONTENT::SONGS, 134},
+    {CGUIDialogSmartPlaylistEditor::TYPE_ALBUMS, MEDIA::CONTENT::ALBUMS, 132},
+    {CGUIDialogSmartPlaylistEditor::TYPE_ARTISTS, MEDIA::CONTENT::ARTISTS, 133},
+    {CGUIDialogSmartPlaylistEditor::TYPE_MIXED, MEDIA::CONTENT::MIXED, 20395},
+    {CGUIDialogSmartPlaylistEditor::TYPE_MUSICVIDEOS, MEDIA::CONTENT::MUSICVIDEOS, 20389},
+    {CGUIDialogSmartPlaylistEditor::TYPE_MOVIES, MEDIA::CONTENT::MOVIES, 20342},
+    {CGUIDialogSmartPlaylistEditor::TYPE_TVSHOWS, MEDIA::CONTENT::TVSHOWS, 20343},
+    {CGUIDialogSmartPlaylistEditor::TYPE_EPISODES, MEDIA::CONTENT::EPISODES, 20360}};
 
 CGUIDialogSmartPlaylistEditor::CGUIDialogSmartPlaylistEditor(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR, "SmartPlaylistEditor.xml")

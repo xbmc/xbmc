@@ -462,7 +462,8 @@ bool CVideoDatabase::GetPathsForCleaning(const std::string& directory,
     if (content.empty())
       return true;
     if (byDirectory && content == MEDIA::CONTENT::TVSHOWS)
-      return pathContent == MEDIA::CONTENT::TVSHOWS || pathContent == MEDIA::CONTENT::SEASONS || pathContent == MEDIA::CONTENT::EPISODES;
+      return pathContent == MEDIA::CONTENT::TVSHOWS || pathContent == MEDIA::CONTENT::SEASONS ||
+             pathContent == MEDIA::CONTENT::EPISODES;
     return pathContent == content;
   };
 

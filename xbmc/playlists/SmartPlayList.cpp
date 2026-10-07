@@ -760,7 +760,8 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
 CDatabaseQueryRule::SearchOperator CSmartPlaylistRule::GetOperator(const std::string& strType) const
 {
   SearchOperator op = CDatabaseQueryRule::GetOperator(strType);
-  if ((strType == MEDIA::CONTENT::TVSHOWS || strType == MEDIA::CONTENT::EPISODES) && m_field == static_cast<int>(Field::YEAR))
+  if ((strType == MEDIA::CONTENT::TVSHOWS || strType == MEDIA::CONTENT::EPISODES) &&
+      m_field == static_cast<int>(Field::YEAR))
   { // special case for premiered which is a date rather than a year
     //! @todo SMARTPLAYLISTS do we really need this, or should we just make this field the premiered date and request a date?
     if (op == OPERATOR_EQUALS)
@@ -1108,8 +1109,8 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table +
             ".idFile AND strHdrDetail " + parameter + ")";
 
-  if ((m_field == static_cast<int>(Field::PLAYCOUNT) && strType != MEDIA::CONTENT::SONGS && strType != MEDIA::CONTENT::ALBUMS &&
-       strType != MEDIA::CONTENT::TVSHOWS) ||
+  if ((m_field == static_cast<int>(Field::PLAYCOUNT) && strType != MEDIA::CONTENT::SONGS &&
+       strType != MEDIA::CONTENT::ALBUMS && strType != MEDIA::CONTENT::TVSHOWS) ||
       m_field == static_cast<int>(Field::USER_RATING))
     query = FormatNullableNumber(GetField(m_field, strType), m_operator, param, parameter);
 
@@ -1169,7 +1170,10 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(
         {
           std::string playlistQuery;
           // only playlists of same type will be part of the query
-          if (playlist.GetType() == strType || (playlist.GetType() == MEDIA::CONTENT::MIXED && (strType == MEDIA::CONTENT::SONGS || strType == MEDIA::CONTENT::MUSICVIDEOS)) || playlist.GetType().empty())
+          if (playlist.GetType() == strType ||
+              (playlist.GetType() == MEDIA::CONTENT::MIXED &&
+               (strType == MEDIA::CONTENT::SONGS || strType == MEDIA::CONTENT::MUSICVIDEOS)) ||
+              playlist.GetType().empty())
           {
             playlist.SetType(strType);
             playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
@@ -1620,8 +1624,9 @@ bool CSmartPlaylist::IsMusicType() const
 
 bool CSmartPlaylist::IsVideoType(const std::string &type)
 {
-  return type == MEDIA::CONTENT::MOVIES || type == MEDIA::CONTENT::TVSHOWS || type == MEDIA::CONTENT::EPISODES ||
-         type == MEDIA::CONTENT::MUSICVIDEOS || type == MEDIA::CONTENT::MIXED;
+  return type == MEDIA::CONTENT::MOVIES || type == MEDIA::CONTENT::TVSHOWS ||
+         type == MEDIA::CONTENT::EPISODES || type == MEDIA::CONTENT::MUSICVIDEOS ||
+         type == MEDIA::CONTENT::MIXED;
 }
 
 bool CSmartPlaylist::IsMusicType(const std::string &type)
