@@ -58,7 +58,8 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
 
       // is this the first time accessing this window?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::PROGRAMS));
+        message.SetStringParam(
+            CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::PROGRAMS));
 
       return CGUIMediaWindow::OnMessage(message);
     }

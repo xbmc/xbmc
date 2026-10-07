@@ -1269,7 +1269,8 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
   // otherwise, is this the first time accessing this window?
   else if (m_Directory[0]->GetPath() == "?")
   {
-    m_Directory[0]->SetPath(strDestination = CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::FILES));
+    m_Directory[0]->SetPath(
+        strDestination = CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::FILES));
     CLog::Log(LOGINFO, "Attempting to default to: {}", strDestination);
   }
   // try to open the destination path

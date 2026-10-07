@@ -887,8 +887,10 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     items.FilterCueItems();
 
     std::string label;
-    if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(),
-                           &CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC), &label))
+    if (items.GetLabel().empty() &&
+        m_rootDir.IsSource(items.GetPath(),
+                           &CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC),
+                           &label))
       items.SetLabel(label);
   }
 

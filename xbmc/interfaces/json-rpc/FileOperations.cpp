@@ -200,7 +200,8 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
     item = std::make_shared<CFileItem>(file, false);
 
   if (!URIUtils::IsUPnP(file))
-    FillFileItem(item, item, MediaSectionFromName(parameterObject["media"].asString()), parameterObject);
+    FillFileItem(item, item, MediaSectionFromName(parameterObject["media"].asString()),
+                 parameterObject);
 
   // Check if the "properties" list exists
   // and make sure it contains the "file"
@@ -365,7 +366,9 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
     {
       CFileItemList items;
       const MediaSection section{MediaSectionFromName(media).value_or(MediaSection::FILES)};
-      const std::vector<std::string> regexps{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetExcludeFromListingRegExps(section)};
+      const std::vector<std::string> regexps{CServiceBroker::GetSettingsComponent()
+                                                 ->GetAdvancedSettings()
+                                                 ->GetExcludeFromListingRegExps(section)};
       const std::string extensions{
           CServiceBroker::GetFileExtensionProvider().GetMediaExtensions(section)};
 

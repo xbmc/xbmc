@@ -54,7 +54,9 @@ public:
                     std::string_view strPath,
                     bool virtualSource = false);
   bool AddShare(KODI::MEDIA::MediaSection section, const CMediaSource& share);
-  bool UpdateShare(KODI::MEDIA::MediaSection section, std::string_view oldName, const CMediaSource& share);
+  bool UpdateShare(KODI::MEDIA::MediaSection section,
+                   std::string_view oldName,
+                   const CMediaSource& share);
 
 protected:
   CMediaSourceSettings();

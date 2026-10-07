@@ -230,8 +230,8 @@ bool Interface_GUIDialogFileBrowser::show_and_get_source(KODI_HANDLE kodiBase,
   std::vector<CMediaSource> vecShares;
   if (additionalShare)
     GetVECShares(vecShares, additionalShare, strPath);
-  const bool bRet{
-      CGUIDialogFileBrowser::ShowAndGetSource(strPath, allowNetworkShares, &vecShares, KODI::MEDIA::MediaSectionFromName(strType))};
+  const bool bRet{CGUIDialogFileBrowser::ShowAndGetSource(
+      strPath, allowNetworkShares, &vecShares, KODI::MEDIA::MediaSectionFromName(strType))};
   if (bRet)
     *path_out = strdup(strPath.c_str());
   return bRet;

@@ -483,7 +483,8 @@ std::vector<CMediaSource>& CGUIViewState::GetSources()
 
 void CGUIViewState::AddLiveTVSources()
 {
-  std::vector<CMediaSource>& sources = CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO);
+  std::vector<CMediaSource>& sources =
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO);
   for (std::vector<CMediaSource>::iterator it = sources.begin(); it != sources.end(); ++it)
   {
     if (URIUtils::IsLiveTV((*it).strPath))

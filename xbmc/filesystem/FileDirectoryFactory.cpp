@@ -54,7 +54,9 @@ namespace
 bool IsUnderMusicSource(const std::string& path)
 {
   bool isSourceName = false;
-  return CUtil::GetMatchingSource(path, CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC), isSourceName) > -1;
+  return CUtil::GetMatchingSource(
+             path, CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC),
+             isSourceName) > -1;
 }
 
 /*!

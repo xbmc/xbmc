@@ -155,8 +155,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
     std::vector<CMediaSource>& sources = CMediaSourceSettings::GetInstance().GetSources(section);
     int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
     if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) &&
-        !sources.at(sourceIndex).GetLockInfo().IsLocked() &&
-        sources.at(sourceIndex).m_allowSharing)
+        !sources.at(sourceIndex).GetLockInfo().IsLocked() && sources.at(sourceIndex).m_allowSharing)
       return true;
   }
   // Check auto-mounted sources

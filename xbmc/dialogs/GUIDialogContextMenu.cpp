@@ -207,7 +207,10 @@ float CGUIDialogContextMenu::GetWidth() const
     return CGUIDialog::GetWidth();
 }
 
-bool CGUIDialogContextMenu::SourcesMenu(MediaSection section, const CFileItemPtr& item, float posX, float posY)
+bool CGUIDialogContextMenu::SourcesMenu(MediaSection section,
+                                        const CFileItemPtr& item,
+                                        float posX,
+                                        float posY)
 {
   //! @todo This should be callable even if we don't have any valid items
   if (!item)
@@ -251,7 +254,9 @@ bool ShowAndGetLock(CMediaSource& share, MediaSection section, MediaLockState st
 }
 } // unnamed namespace
 
-void CGUIDialogContextMenu::GetContextButtons(MediaSection section, const CFileItemPtr& item, CContextButtons &buttons)
+void CGUIDialogContextMenu::GetContextButtons(MediaSection section,
+                                              const CFileItemPtr& item,
+                                              CContextButtons& buttons)
 {
   // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
   // Optical removable drives automatically have the static Eject button added (see CEjectDisk).
@@ -323,7 +328,9 @@ void CGUIDialogContextMenu::GetContextButtons(MediaSection section, const CFileI
   }
 }
 
-bool CGUIDialogContextMenu::OnContextButton(MediaSection section, const CFileItemPtr& item, CONTEXT_BUTTON button)
+bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
+                                            const CFileItemPtr& item,
+                                            CONTEXT_BUTTON button)
 {
   // buttons that are available on both sources and autosourced items
   if (!item)
@@ -461,7 +468,8 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section, const CFileIte
 
       if (!share->m_ignore)
       {
-        CMediaSourceSettings::GetInstance().UpdateSource(section,share->strName,"thumbnail",strThumb);
+        CMediaSourceSettings::GetInstance().UpdateSource(section, share->strName, "thumbnail",
+                                                         strThumb);
         CMediaSourceSettings::GetInstance().Save();
       }
       else if (!strThumb.empty())
