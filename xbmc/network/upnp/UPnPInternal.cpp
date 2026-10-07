@@ -8,7 +8,6 @@
 #include "UPnPInternal.h"
 
 #include "FileItem.h"
-#include "language/LanguageTag.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "ThumbLoader.h"
@@ -21,6 +20,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "imagefiles/ImageFileURL.h"
+#include "language/LanguageTag.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListFileItemClassify.h"

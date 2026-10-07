@@ -8,11 +8,11 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
-#include "language/LanguageTag.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "filesystem/DiscDirectoryHelper.h"
+#include "language/LanguageTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"

@@ -9,9 +9,9 @@
 #include "StreamParser.h"
 
 #include "M2TSParser.h"
-#include "language/LanguageTag.h"
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
+#include "language/LanguageTag.h"
 #include "utils/log.h"
 
 #include <algorithm>

@@ -14,7 +14,6 @@
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
-#include "language/LanguageTag.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -24,6 +23,7 @@
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "language/LanguageTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

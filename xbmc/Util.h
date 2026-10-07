@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "language/LanguageTag.h"
 #include "MediaSource.h" // Definition of std::vector<CMediaSource>
+#include "language/LanguageTag.h"
 #include "utils/Digest.h"
 #include "utils/RegExp.h"
 

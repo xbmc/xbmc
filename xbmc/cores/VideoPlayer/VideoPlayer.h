@@ -13,7 +13,6 @@
 #include "Edl.h"
 #include "FileItem.h"
 #include "IVideoPlayer.h"
-#include "language/LanguageTag.h"
 #include "VideoPlayerAudioID3.h"
 #include "VideoPlayerRadioRDS.h"
 #include "VideoPlayerSubtitle.h"
@@ -23,6 +22,7 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/DispResource.h"
+#include "language/LanguageTag.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 
