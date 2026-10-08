@@ -39,6 +39,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/ContentNames.h"
 #include "utils/URIUtils.h"
 #include "video/GUIViewStateVideo.h"
 #include "video/VideoUtils.h"
@@ -78,17 +79,16 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (PLAYLIST::IsSmartPlayList(items) || url.IsProtocol("upnp") || items.IsLibraryFolder())
   {
-    if (items.GetContent() == "songs" ||
-        items.GetContent() == "albums" ||
-        items.GetContent() == "mixed")
+    if (items.GetContent() == MEDIA::CONTENT::SONGS ||
+        items.GetContent() == MEDIA::CONTENT::ALBUMS || items.GetContent() == MEDIA::CONTENT::MIXED)
       return new CGUIViewStateMusicSmartPlaylist(items);
-    else if (items.GetContent() == "musicvideos")
+    else if (items.GetContent() == MEDIA::CONTENT::MUSICVIDEOS)
       return new CGUIViewStateVideoMusicVideos(items);
-    else if (items.GetContent() == "tvshows")
+    else if (items.GetContent() == MEDIA::CONTENT::TVSHOWS)
       return new CGUIViewStateVideoTVShows(items);
-    else if (items.GetContent() == "episodes")
+    else if (items.GetContent() == MEDIA::CONTENT::EPISODES)
       return new CGUIViewStateVideoEpisodes(items);
-    else if (items.GetContent() == "movies")
+    else if (items.GetContent() == MEDIA::CONTENT::MOVIES)
       return new CGUIViewStateVideoMovies(items);
   }
 

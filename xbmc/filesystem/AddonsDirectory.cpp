@@ -31,6 +31,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -635,7 +636,7 @@ static bool Repos(const CURL& path, CFileItemList &items)
     CFileItemPtr item = CAddonsDirectory::FileItemFromAddon(repo, ADDONS::ROOT + repo->ID(), true);
     items.Add(item);
   }
-  items.SetContent("addons");
+  items.SetContent(MEDIA::CONTENT::ADDONS);
   return true;
 }
 
@@ -818,7 +819,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
       CServiceBroker::GetAddonMgr().GetAddonsWithAvailableUpdate();
 
   items.ClearItems();
-  items.SetContent("addons");
+  items.SetContent(MEDIA::CONTENT::ADDONS);
   items.SetLabel(label);
   for (const auto& addon : addons)
   {
@@ -987,7 +988,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, CFileIte
     items.Add(FileItemFromAddon(addon, path, bIsFolder));
   }
 
-  items.SetContent("addons");
+  items.SetContent(MEDIA::CONTENT::ADDONS);
   items.SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24001)); // Add-ons
 

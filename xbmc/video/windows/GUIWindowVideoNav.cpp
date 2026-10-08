@@ -41,6 +41,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
+#include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
@@ -410,7 +411,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     if (!isVideoDb)
     {
       if (URIUtils::PathEquals(items.GetPath(), "special://videoplaylists/"))
-        items.SetContent("playlists");
+        items.SetContent(MEDIA::CONTENT::PLAYLISTS);
       else if (!items.IsVirtualDirectoryRoot())
       { // load info from the database
         std::string label;
@@ -561,7 +562,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     CVideoDbUrl videoUrl;
     if (videoUrl.FromString(items.GetPath()))
     {
-      if (items.GetContent() == "tags" &&
+      if (items.GetContent() == MEDIA::CONTENT::TAGS &&
           !items.Contains(PLACEHOLDER::NEW_TAG + videoUrl.GetType()))
       {
         const auto newTag{
@@ -1137,7 +1138,7 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
     filterWatched = true;
   if (!VIDEO::IsVideoDb(items))
     filterWatched = true;
-  if (items.GetContent() == "tvshows" &&
+  if (items.GetContent() == MEDIA::CONTENT::TVSHOWS &&
       (PLAYLIST::IsSmartPlayList(items) || items.IsLibraryFolder()))
     node = NodeType::TITLE_TVSHOWS; // so that the check below works
 

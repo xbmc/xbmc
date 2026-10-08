@@ -19,6 +19,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/Crc32.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
@@ -28,6 +29,8 @@
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
+
+namespace CONTENT = KODI::MEDIA::CONTENT;
 
 CVideoDatabaseDirectory::CVideoDatabaseDirectory(void) = default;
 
@@ -41,51 +44,51 @@ std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
   {
     case NodeType::EPISODES:
     case NodeType::RECENTLY_ADDED_EPISODES:
-      return "episodes";
+      return CONTENT::EPISODES;
     case NodeType::SEASONS:
-      return "seasons";
+      return CONTENT::SEASONS;
     case NodeType::TITLE_MOVIES:
     case NodeType::RECENTLY_ADDED_MOVIES:
-      return "movies";
+      return CONTENT::MOVIES;
     case NodeType::TITLE_TVSHOWS:
     case NodeType::INPROGRESS_TVSHOWS:
-      return "tvshows";
+      return CONTENT::TVSHOWS;
     case NodeType::TITLE_MUSICVIDEOS:
     case NodeType::RECENTLY_ADDED_MUSICVIDEOS:
-      return "musicvideos";
+      return CONTENT::MUSICVIDEOS;
     case NodeType::GENRE:
-      return "genres";
+      return CONTENT::GENRES;
     case NodeType::COUNTRY:
-      return "countries";
+      return CONTENT::COUNTRIES;
     case NodeType::ACTOR:
     {
       CQueryParams params;
       node->CollectQueryParams(params);
       if (static_cast<VideoDbContentType>(params.GetContentType()) ==
           VideoDbContentType::MUSICVIDEOS)
-        return "artists";
+        return CONTENT::ARTISTS;
 
-      return "actors";
+      return CONTENT::ACTORS;
     }
     case NodeType::DIRECTOR:
-      return "directors";
+      return CONTENT::DIRECTORS;
     case NodeType::STUDIO:
-      return "studios";
+      return CONTENT::STUDIOS;
     case NodeType::YEAR:
-      return "years";
+      return CONTENT::YEARS;
     case NodeType::MUSICVIDEOS_ALBUM:
-      return "albums";
+      return CONTENT::ALBUMS;
     case NodeType::SETS:
-      return "sets";
+      return CONTENT::SETS;
     case NodeType::TAGS:
-      return "tags";
+      return CONTENT::TAGS;
     case NodeType::VIDEOVERSIONS:
     case NodeType::MOVIE_ASSETS_VERSIONS:
-      return "videoversions";
+      return CONTENT::VIDEOVERSIONS;
     case NodeType::MOVIE_ASSETS_EXTRAS:
-      return "videoextras";
+      return CONTENT::VIDEOEXTRAS;
     case NodeType::MOVIE_ASSETS:
-      return "videoassets";
+      return CONTENT::VIDEOASSETS;
     default:
       break;
   }
