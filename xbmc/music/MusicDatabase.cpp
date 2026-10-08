@@ -12868,54 +12868,14 @@ void CMusicDatabase::SetItemUpdated(int mediaId, const std::string& mediaType)
   }
 }
 
-void CMusicDatabase::SetArtForItem(int mediaId,
+bool CMusicDatabase::SetArtForItem(int mediaId,
                                    const std::string& mediaType,
                                    const KODI::ART::Artwork& art)
 {
+  bool result = true;
   for (const auto& [type, url] : art)
-    SetArtForItem(mediaId, mediaType, type, url);
-}
-
-void CMusicDatabase::SetArtForItem(int mediaId,
-                                   const std::string& mediaType,
-                                   const std::string& artType,
-                                   const std::string& url)
-{
-  try
-  {
-    if (nullptr == m_pDB)
-      return;
-    if (nullptr == m_pDS)
-      return;
-
-    // don't set <foo>.<bar> art types - these are derivative types from parent items
-    if (artType.find('.') != std::string::npos)
-      return;
-
-    std::string sql = PrepareSQL("SELECT art_id FROM art "
-                                 "WHERE media_id=%i AND media_type='%s' AND type='%s'",
-                                 mediaId, mediaType.c_str(), artType.c_str());
-    m_pDS->query(sql);
-    if (!m_pDS->eof())
-    { // update
-      int artId = m_pDS->fv(0).get_asInt();
-      m_pDS->close();
-      sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
-      m_pDS->exec(sql);
-    }
-    else
-    { // insert
-      m_pDS->close();
-      sql = PrepareSQL("INSERT INTO art(media_id, media_type, type, url) "
-                       "VALUES (%d, '%s', '%s', '%s')",
-                       mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
-      m_pDS->exec(sql);
-    }
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "({}, '{}', '{}', '{}') failed", mediaId, mediaType, artType, url);
-  }
+    result &= SetArtForItem(mediaId, mediaType, type, url);
+  return result;
 }
 
 bool CMusicDatabase::GetArtForItem(
@@ -13037,98 +12997,7 @@ bool CMusicDatabase::GetArtForItem(int mediaId,
                                    const std::string& mediaType,
                                    KODI::ART::Artwork& art)
 {
-  try
-  {
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS2)
-      return false; // using dataset 2 as we're likely called in loops on dataset 1
-
-    std::string sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=%i AND media_type='%s'",
-                                 mediaId, mediaType.c_str());
-    m_pDS2->query(sql);
-    while (!m_pDS2->eof())
-    {
-      art.try_emplace(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString());
-      m_pDS2->next();
-    }
-    m_pDS2->close();
-    return !art.empty();
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "({}) failed", mediaId);
-  }
-  return false;
-}
-
-std::string CMusicDatabase::GetArtForItem(int mediaId,
-                                          const std::string& mediaType,
-                                          const std::string& artType)
-{
-  if (!m_pDS2)
-    return {};
-
-  std::string query = PrepareSQL("SELECT url FROM art "
-                                 "WHERE media_id=%i AND media_type='%s' AND type='%s'",
-                                 mediaId, mediaType.c_str(), artType.c_str());
-  return GetSingleValue(query, *m_pDS2);
-}
-
-bool CMusicDatabase::RemoveArtForItem(int mediaId,
-                                      const MediaType& mediaType,
-                                      const std::string& artType)
-{
-  return ExecuteQuery(PrepareSQL("DELETE FROM art "
-                                 "WHERE media_id=%i AND media_type='%s' AND type='%s'",
-                                 mediaId, mediaType.c_str(), artType.c_str()));
-}
-
-bool CMusicDatabase::RemoveArtForItem(int mediaId,
-                                      const MediaType& mediaType,
-                                      const std::set<std::string, std::less<>>& artTypes)
-{
-  bool result = true;
-  for (const auto& i : artTypes)
-    result &= RemoveArtForItem(mediaId, mediaType, i);
-
-  return result;
-}
-
-bool CMusicDatabase::GetArtTypes(const MediaType& mediaType, std::vector<std::string>& artTypes)
-{
-  try
-  {
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS)
-      return false;
-
-    std::string strSQL =
-        PrepareSQL("SELECT DISTINCT type FROM art WHERE media_type='%s'", mediaType.c_str());
-
-    if (!m_pDS->query(strSQL))
-      return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false;
-    }
-
-    while (!m_pDS->eof())
-    {
-      artTypes.emplace_back(m_pDS->fv(0).get_asString());
-      m_pDS->next();
-    }
-    m_pDS->close();
-    return true;
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "({}) failed", mediaType);
-  }
-  return false;
+  return CDatabase::GetArtForItem(mediaId, mediaType, art) && !art.empty();
 }
 
 std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId,
