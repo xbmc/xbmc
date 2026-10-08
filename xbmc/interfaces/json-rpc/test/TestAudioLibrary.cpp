@@ -199,6 +199,8 @@ protected:
   void TearDown() override
   {
     m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM song_artist WHERE idArtist = %i", m_artistId));
+    m_db.ExecuteQuery(
+        m_db.PrepareSQL("DELETE FROM removed_link WHERE idArtist = %i AND idRole = 1", m_artistId));
     m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM song WHERE idPath = %i", m_pathId));
     for (const int albumId : m_albumIds)
       m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM album WHERE idAlbum = %i", albumId));
