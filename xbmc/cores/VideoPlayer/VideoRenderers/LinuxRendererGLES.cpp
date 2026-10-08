@@ -466,36 +466,17 @@ void CLinuxRendererGLES::ClearBackBufferQuad()
 {
   CRect windowRect(0, 0, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
                    CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
-  struct Svertex
-  {
-    float x, y;
-  };
-
-  std::vector<Svertex> vertices{
-      {windowRect.x1, windowRect.y2 * 2},
-      {windowRect.x1, windowRect.y1},
-      {windowRect.x2 * 2, windowRect.y1},
-  };
 
   glDisable(GL_BLEND);
 
   m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
-  GLint posLoc = m_renderSystem->GUIShaderGetPos();
   GLint uniCol = m_renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = m_renderSystem->GUIShaderGetDepth();
 
   glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1);
 
-  m_clearQuadVBO.SetData(vertices.data(), vertices.size(), GL_STREAM_DRAW);
-
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
-  glEnableVertexAttribArray(posLoc);
-
-  glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-  glDisableVertexAttribArray(posLoc);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  m_renderSystem->DrawGUIQuad(windowRect);
 
   m_renderSystem->DisableGUIShader();
 }
@@ -507,31 +488,6 @@ void CLinuxRendererGLES::DrawBlackBars()
 
   auto quads = windowRect.SubtractRect(m_destRect);
 
-  struct Svertex
-  {
-    float x, y;
-  };
-
-  std::vector<Svertex> vertices(6 * quads.size());
-
-  GLubyte count = 0;
-  for (const auto& quad : quads)
-  {
-    vertices[count + 1].x = quad.x1;
-    vertices[count + 1].y = quad.y1;
-
-    vertices[count + 0].x = vertices[count + 5].x = quad.x1;
-    vertices[count + 0].y = vertices[count + 5].y = quad.y2;
-
-    vertices[count + 2].x = vertices[count + 3].x = quad.x2;
-    vertices[count + 2].y = vertices[count + 3].y = quad.y1;
-
-    vertices[count + 4].x = quad.x2;
-    vertices[count + 4].y = quad.y2;
-
-    count += 6;
-  }
-
   glDisable(GL_BLEND);
 
   CRenderSystemGLES* renderSystem =
@@ -540,22 +496,14 @@ void CLinuxRendererGLES::DrawBlackBars()
     return;
 
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
-  GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint uniCol = renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = m_renderSystem->GUIShaderGetDepth();
 
   glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1);
 
-  m_blackBarsVBO.SetData(vertices.data(), vertices.size(), GL_STREAM_DRAW);
-
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
-  glEnableVertexAttribArray(posLoc);
-
-  glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-  glDisableVertexAttribArray(posLoc);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  for (const auto& quad : quads)
+    renderSystem->DrawGUIQuad(quad);
 
   renderSystem->DisableGUIShader();
 }
