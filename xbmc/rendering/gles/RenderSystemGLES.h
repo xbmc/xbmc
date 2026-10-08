@@ -150,13 +150,14 @@ public:
   GLint GUIShaderGetCoordStep();
   GLint GUIShaderGetDepth();
   GLint GUIShaderGetPma();
+  GLint GUIShaderGetGUIMatrix();
+  GLint GUIShaderGetSnap();
+  GLint GUIShaderGetAttrSnap();
+  GLint GUIShaderGetQuadClip();
+  GLint GUIShaderGetAttrGrad0();
+  GLint GUIShaderGetAttrGrad1();
 
-  // Shared by all CGUITextureGLES batches, which lay out every quad as 0,1,2 2,3,0.
-  template<typename T>
-  void StreamGUIVertices(const std::vector<T>& vertices)
-  {
-    m_guiVertexBuffer.SetData(vertices.data(), vertices.size(), GL_STREAM_DRAW);
-  }
+  // Binds an index buffer for quadCount quads laid out as 0,1,2 2,3,0.
   void BindGUIQuadIndices(std::size_t quadCount);
 
 protected:
@@ -177,7 +178,6 @@ protected:
 
   CGUIQuadDrawerGLES m_quadDrawer;
 
-  KODI::UTILS::GL::CGLBufferObject m_guiVertexBuffer{GL_ARRAY_BUFFER};
   KODI::UTILS::GL::CGLBufferObject m_guiQuadIndexBuffer{GL_ELEMENT_ARRAY_BUFFER};
   std::vector<GLushort> m_guiQuadIndices;
 };
