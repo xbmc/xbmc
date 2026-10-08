@@ -39,11 +39,6 @@ public:
   float m_u;
   float m_v;
   bool m_pma; /*< is alpha in texture premultiplied in the values */
-
-private:
-  KODI::UTILS::GL::CGLBufferObject m_posVBO{GL_ARRAY_BUFFER};
-  KODI::UTILS::GL::CGLBufferObject m_texVBO{GL_ARRAY_BUFFER};
-  KODI::UTILS::GL::CGLBufferObject m_IBO{GL_ELEMENT_ARRAY_BUFFER};
 };
 
 class COverlayGlyphGLES : public COverlay
