@@ -103,7 +103,6 @@ public:
   void RenderEx() override;
   void Process(unsigned int currentTime, CDirtyRegionList& regions) override;
   void OnDeinitWindow(int nextWindowID) override;
-  void FreeResources(bool forceUnLoad = false) override;
 
   void OnLoadPic(int iPic,
                  int iSlideNumber,
