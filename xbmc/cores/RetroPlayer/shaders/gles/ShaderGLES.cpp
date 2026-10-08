@@ -151,6 +151,7 @@ bool CShaderGLES::Create(unsigned int passIdx,
 
   // Set up VBO
   glGenBuffers(3, m_shaderVertexVBO.data());
+  m_vertexDataSize.reset();
 
   glGenBuffers(1, &m_shaderIndexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_shaderIndexVBO);
@@ -170,21 +171,28 @@ void CShaderGLES::Render(IShaderTexture& sourceTexture, IShaderTexture& targetTe
 
   SetShaderParameters(sourceTexture);
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords.data(), GL_DYNAMIC_DRAW);
+  // The preset's vertex shader expects these attributes as they are, so the quad is only
+  // re-uploaded when the output size changes.
+  if (m_vertexDataSize != m_outputSize)
+  {
+    glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m_VertexCoords), m_VertexCoords.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[2]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords.data(), GL_STATIC_DRAW);
+    m_vertexDataSize = m_outputSize;
+  }
 
+  glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[0]);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
   glEnableVertexAttribArray(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors.data(), GL_DYNAMIC_DRAW);
-
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
   glEnableVertexAttribArray(1);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_shaderVertexVBO[2]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(m_TexCoords), m_TexCoords.data(), GL_DYNAMIC_DRAW);
-
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
   glEnableVertexAttribArray(2);
 
@@ -288,6 +296,7 @@ void CShaderGLES::Delete()
   glDeleteBuffers(3, m_shaderVertexVBO.data());
   m_shaderIndexVBO = 0;
   m_shaderVertexVBO = {0, 0, 0};
+  m_vertexDataSize.reset();
 }
 
 void CShaderGLES::UpdateUniformInputs(
