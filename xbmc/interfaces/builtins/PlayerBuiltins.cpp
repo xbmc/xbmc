@@ -36,6 +36,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -556,7 +557,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
   }
 
   if (!item.IsFolder() && item.IsPlugin())
-    item.SetProperty("IsPlayable", true);
+    item.SetProperty(ITEM::PROPERTY::IS_PLAYABLE, true);
 
   if (forcePlay && askToResume)
   {

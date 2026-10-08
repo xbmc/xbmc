@@ -43,6 +43,7 @@
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -430,9 +431,10 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
           // for tvshows and seasons, iEpisode and playCount are
           // invalid
           item->SetFolder(true);
-          item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
+          item->GetVideoInfoTag()->m_iEpisode =
+              (int)item->GetProperty(ITEM::PROPERTY::TOTAL_EPISODES).asInteger();
           item->GetVideoInfoTag()->SetPlayCount(
-              static_cast<int>(item->GetProperty("watchedepisodes").asInteger()));
+              static_cast<int>(item->GetProperty(ITEM::PROPERTY::WATCHED_EPISODES).asInteger()));
         }
         // if this is an item in the library without a playable path it most be a folder
         else if (item->GetVideoInfoTag()->m_strFileNameAndPath.empty())

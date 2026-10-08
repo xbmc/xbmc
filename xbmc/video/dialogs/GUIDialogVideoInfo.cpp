@@ -48,6 +48,7 @@
 #include "threads/IRunnable.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/Map.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -1993,11 +1994,11 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
 
   item->SetArt(artType, result);
 
-  if (item->HasProperty("set_folder_thumb"))
+  if (item->HasProperty(ITEM::PROPERTY::SET_FOLDER_THUMB))
   {
     // have a folder thumb to set as well
     VIDEO::CVideoInfoScannerArt::ApplyThumbToFolder(
-        item->GetProperty("set_folder_thumb").asString(), result);
+        item->GetProperty(ITEM::PROPERTY::SET_FOLDER_THUMB).asString(), result);
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();

@@ -22,6 +22,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentNames.h"
+#include "utils/ItemProperties.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -36,7 +37,6 @@
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 #define PROPERTY_GROUP_BY           "group.by"
 #define PROPERTY_GROUP_MIXED        "group.mixed"
-constexpr char PROPERTY_WATCHED_MODE[] = "watchedmode";
 
 using namespace KODI;
 
@@ -54,7 +54,7 @@ namespace XFILE
       return false;
     bool result = GetDirectory(playlist, items);
     if (result)
-      items.SetProperty("library.smartplaylist", true);
+      items.SetProperty(ITEM::PROPERTY::LIBRARY_SMARTPLAYLIST, true);
 
     return result;
   }
@@ -315,7 +315,7 @@ namespace XFILE
     }
 
     if (auto watchedMode = playlist.GetWatchedMode(); watchedMode.has_value())
-      items.SetProperty(PROPERTY_WATCHED_MODE, static_cast<int>(watchedMode.value()));
+      items.SetProperty(ITEM::PROPERTY::WATCHED_MODE, static_cast<int>(watchedMode.value()));
 
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)

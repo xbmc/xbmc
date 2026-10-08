@@ -30,6 +30,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/LanguageTag.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
@@ -1376,7 +1377,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
   PLT_MediaItemResource resource;
 
   // store original path so we remember it
-  item.SetProperty("original_listitem_url", item.GetPath());
+  item.SetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL, item.GetPath());
   item.SetProperty("original_listitem_mime", item.GetMimeType());
 
   // get a sorted list based on our preference

@@ -61,6 +61,7 @@
 #include "storage/MediaManager.h"
 #include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/MathUtils.h"
 #include "utils/Random.h"
@@ -3227,7 +3228,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetDiscSubtitle(record->at(song_strDiscSubtitle).get_asString());
   item->SetLabel(record->at(song_strTitle).get_asString());
   item->SetStartOffset(record->at(song_iStartOffset).get_asInt64());
-  item->SetProperty("item_start", item->GetStartOffset());
+  item->SetProperty(ITEM::PROPERTY::ITEM_START, item->GetStartOffset());
   item->SetEndOffset(record->at(song_iEndOffset).get_asInt64());
   item->GetMusicInfoTag()->SetMusicBrainzTrackID(
       record->at(song_strMusicBrainzTrackID).get_asString());
@@ -5744,7 +5745,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir,
 
         pItem->GetMusicInfoTag()->SetDatabaseId(artist.idArtist, MediaTypeArtist);
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
-        pItem->SetProperty("icon_never_overlay", true);
+        pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
         pItem->SetArt("icon", "DefaultArtist.png");
 
         SetPropertiesFromArtist(*pItem, artist);
@@ -5973,7 +5974,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string& baseDir,
 
         auto pItem{std::make_shared<CFileItem>(itemUrl.ToString(), GetAlbumFromDataset(record))};
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
-        pItem->SetProperty("icon_never_overlay", true);
+        pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
         pItem->SetArt("icon", "DefaultAlbumCover.png");
         items.Add(std::move(pItem));
       }
@@ -6185,7 +6186,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
         pItem->GetMusicInfoTag()->SetTitle(strDiscSubtitle);
         pItem->SetLabel(strDiscSubtitle);
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
-        pItem->SetProperty("icon_never_overlay", true);
+        pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
         pItem->SetArt("icon", "DefaultAlbumCover.png");
         items.Add(std::move(pItem));
       }
@@ -6419,7 +6420,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string& baseDir,
           count++;
           item->SetProgramCount(count);
           // Set icon now to avoid slow per item processing in FillInDefaultIcon later
-          item->SetProperty("icon_never_overlay", true);
+          item->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
           item->SetArt("icon", "DefaultAudio.png");
           items.Add(std::move(item));
         }

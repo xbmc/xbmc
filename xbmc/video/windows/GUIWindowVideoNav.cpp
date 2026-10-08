@@ -43,6 +43,7 @@
 #include "utils/Artwork.h"
 #include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -80,8 +81,6 @@ using namespace KODI::MESSAGING;
 #define CONTROL_LABELEMPTY        18
 
 #define CONTROL_UPDATE_LIBRARY    20
-
-constexpr char PROPERTY_WATCHED_MODE[] = "watchedmode";
 
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
@@ -425,7 +424,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     }
 
     m_persistWatchedMode = true;
-    if (const CVariant prop = items.GetProperty(PROPERTY_WATCHED_MODE); prop.isInteger())
+    if (const CVariant prop = items.GetProperty(ITEM::PROPERTY::WATCHED_MODE); prop.isInteger())
     {
       if (const auto wm = CMediaSettings::ToWatchedMode(prop.asInteger()); wm.has_value())
       {
@@ -465,7 +464,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           for(int i = 0; i < items.Size(); i++)
           {
             const CFileItemPtr item = items.Get(i);
-            if (item->GetProperty("unwatchedepisodes").asInteger() != 0 && item->GetVideoInfoTag()->m_iSeason > 0)
+            if (item->GetProperty(ITEM::PROPERTY::UNWATCHED_EPISODES).asInteger() != 0 &&
+                item->GetVideoInfoTag()->m_iSeason > 0)
               count++;
           }
           bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
@@ -825,10 +825,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     bool inPlaylists = m_vecItems->IsPath(CUtil::VideoPlaylistsLocation()) ||
                        m_vecItems->IsPath("special://videoplaylists/");
 
-    if (item->HasVideoInfoTag() && item->HasProperty("artist_musicid"))
+    if (item->HasVideoInfoTag() && item->HasProperty(ITEM::PROPERTY::ARTIST_MUSICID))
       buttons.Add(CONTEXT_BUTTON_GO_TO_ARTIST, 20396);
 
-    if (item->HasVideoInfoTag() && item->HasProperty("album_musicid"))
+    if (item->HasVideoInfoTag() && item->HasProperty(ITEM::PROPERTY::ALBUM_MUSICID))
       buttons.Add(CONTEXT_BUTTON_GO_TO_ALBUM, 20397);
 
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strAlbum.empty() &&
@@ -912,7 +912,7 @@ bool CGUIWindowVideoNav::OnPopupMenu(int iItem)
   if (iItem >= 0 && iItem < m_vecItems->Size())
   {
     const auto item = m_vecItems->Get(iItem);
-    item->SetProperty("CheckAutoPlayNextItem", true);
+    item->SetProperty(ITEM::PROPERTY::CHECK_AUTOPLAY_NEXT_ITEM, true);
   }
 
   return CGUIWindowVideoBase::OnPopupMenu(iItem);
@@ -964,7 +964,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       std::string strPath;
       strPath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ARTISTS,
-                                    item->GetProperty("artist_musicid").asInteger());
+                                    item->GetProperty(ITEM::PROPERTY::ARTIST_MUSICID).asInteger());
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, strPath);
       return true;
     }
@@ -972,7 +972,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       std::string strPath;
       strPath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ALBUMS,
-                                    item->GetProperty("album_musicid").asInteger());
+                                    item->GetProperty(ITEM::PROPERTY::ALBUM_MUSICID).asInteger());
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, strPath);
       return true;
     }
@@ -1149,12 +1149,15 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
     if (item->HasVideoInfoTag() && (node == NodeType::TITLE_TVSHOWS || node == NodeType::SEASONS))
     {
       if (m_watchedMode == WatchedMode::UNWATCHED)
-        item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("unwatchedepisodes").asInteger();
+        item->GetVideoInfoTag()->m_iEpisode =
+            (int)item->GetProperty(ITEM::PROPERTY::UNWATCHED_EPISODES).asInteger();
       if (m_watchedMode == WatchedMode::WATCHED)
-        item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("watchedepisodes").asInteger();
+        item->GetVideoInfoTag()->m_iEpisode =
+            (int)item->GetProperty(ITEM::PROPERTY::WATCHED_EPISODES).asInteger();
       if (m_watchedMode == WatchedMode::ALL)
-        item->GetVideoInfoTag()->m_iEpisode = (int)item->GetProperty("totalepisodes").asInteger();
-      item->SetProperty("numepisodes", item->GetVideoInfoTag()->m_iEpisode);
+        item->GetVideoInfoTag()->m_iEpisode =
+            (int)item->GetProperty(ITEM::PROPERTY::TOTAL_EPISODES).asInteger();
+      item->SetProperty(ITEM::PROPERTY::NUM_EPISODES, item->GetVideoInfoTag()->m_iEpisode);
       listchanged = true;
     }
 

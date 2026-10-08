@@ -55,6 +55,7 @@
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -1132,7 +1133,7 @@ void CMusicInfoScanner::FindArtForAlbums(std::vector<CAlbum>& albums, const std:
      that case and set the IsHTTPDirectory property to enable scanning for art.
     */
     if (StringUtils::StartsWithNoCase(path, "http") && StringUtils::EndsWith(path, "/"))
-      album.SetProperty("IsHTTPDirectory", true);
+      album.SetProperty(ITEM::PROPERTY::IS_HTTP_DIRECTORY, true);
     albumArt = album.GetUserMusicThumb(true);
     if (!albumArt.empty())
       albums[0].art["thumb"] = albumArt;

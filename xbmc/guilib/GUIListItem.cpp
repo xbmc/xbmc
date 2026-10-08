@@ -11,6 +11,7 @@
 #include "GUIListItemLayout.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -109,7 +110,7 @@ void CGUIListItem::ClearArt()
 {
   m_art.clear();
   m_artFallbacks.clear();
-  SetProperty("libraryartfilled", false);
+  SetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED, false);
 }
 
 void CGUIListItem::AppendArt(const KODI::ART::Artwork& art, const std::string& prefix)

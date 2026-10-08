@@ -21,6 +21,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -106,10 +107,11 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
 
   if (item.IsFolder())
   {
-    if (item.HasProperty("watchedepisodes") && item.HasProperty("totalepisodes"))
+    if (item.HasProperty(ITEM::PROPERTY::WATCHED_EPISODES) &&
+        item.HasProperty(ITEM::PROPERTY::TOTAL_EPISODES))
     {
-      return item.GetProperty("watchedepisodes").asInteger() <
-             item.GetProperty("totalepisodes").asInteger();
+      return item.GetProperty(ITEM::PROPERTY::WATCHED_EPISODES).asInteger() <
+             item.GetProperty(ITEM::PROPERTY::TOTAL_EPISODES).asInteger();
     }
     else if (item.HasProperty("watched") && item.HasProperty("total"))
     {
@@ -119,7 +121,7 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
       return true;
     else if (StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::VIDEO))
       return true;
-    else if (item.GetProperty("IsVideoFolder").asBoolean())
+    else if (item.GetProperty(ITEM::PROPERTY::IS_VIDEO_FOLDER).asBoolean())
       return true;
     else
       return !item.IsParentFolder() && URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
@@ -146,9 +148,9 @@ bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
 
   if (item.IsFolder())
   {
-    if (item.HasProperty("watchedepisodes"))
+    if (item.HasProperty(ITEM::PROPERTY::WATCHED_EPISODES))
     {
-      return item.GetProperty("watchedepisodes").asInteger() > 0;
+      return item.GetProperty(ITEM::PROPERTY::WATCHED_EPISODES).asInteger() > 0;
     }
     else if (item.HasProperty("watched"))
     {
@@ -158,7 +160,7 @@ bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
       return true;
     else if (StringUtils::StartsWithNoCase(item.GetPath(), LIBRARY::VIDEO))
       return true;
-    else if (item.GetProperty("IsVideoFolder").asBoolean())
+    else if (item.GetProperty(ITEM::PROPERTY::IS_VIDEO_FOLDER).asBoolean())
       return true;
     else
       return !item.IsParentFolder() && URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
@@ -247,7 +249,7 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
     {
       if (!itemCopy->IsFolder())
       {
-        itemCopy->SetProperty("original_listitem_url", item->GetPath());
+        itemCopy->SetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL, item->GetPath());
         itemCopy->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
       }
       else if (itemCopy->HasVideoInfoTag() && itemCopy->GetVideoInfoTag()->IsDefaultVideoVersion())

@@ -32,6 +32,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentNames.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -507,10 +508,11 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
 
   for (int i = 0; i < items.Size(); ++i)
   {
-    if (orphaned.contains(items[i]->GetProperty("Addon.ID").asString()))
+    if (orphaned.contains(items[i]->GetProperty(ITEM::PROPERTY::ADDON_ID).asString()))
     {
       items[i]->SetProperty(
-          "Addon.Status", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24995));
+          ITEM::PROPERTY::ADDON_STATUS,
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24995));
       items[i]->SetProperty("Addon.Orphaned", true);
     }
   }
@@ -858,27 +860,27 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
 
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);
-    pItem->SetProperty("Addon.HasUpdate", hasUpdate);
+    pItem->SetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE, hasUpdate);
     pItem->SetProperty("Addon.IsUpdate", isUpdate);
-    pItem->SetProperty("Addon.ValidUpdateVersion", validUpdateVersion);
-    pItem->SetProperty("Addon.ValidUpdateOrigin", validUpdateOrigin);
+    pItem->SetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_VERSION, validUpdateVersion);
+    pItem->SetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_ORIGIN, validUpdateOrigin);
     pItem->SetProperty("Addon.IsFromOfficialRepo", fromOfficialRepo);
     pItem->SetProperty("Addon.IsBinary", addon->IsBinary());
 
     if (installed)
-      pItem->SetProperty("Addon.Status",
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(305));
     if (disabled)
-      pItem->SetProperty("Addon.Status",
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24023));
     if (hasUpdate)
-      pItem->SetProperty("Addon.Status",
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24068));
     else if (addon->LifecycleState() == AddonLifecycleState::BROKEN)
-      pItem->SetProperty("Addon.Status",
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24098));
     else if (addon->LifecycleState() == AddonLifecycleState::DEPRECATED)
-      pItem->SetProperty("Addon.Status",
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24170));
 
     items.Add(pItem);
@@ -905,8 +907,8 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   item->SetArt("icon", "DefaultAddon.png");
 
   //! @todo fix hacks that depends on these
-  item->SetProperty("Addon.ID", addon->ID());
-  item->SetProperty("Addon.Name", addon->Name());
+  item->SetProperty(ITEM::PROPERTY::ADDON_ID, addon->ID());
+  item->SetProperty(ITEM::PROPERTY::ADDON_NAME, addon->Name());
   item->SetCanQueue(false);
   const auto it = addon->ExtraInfo().find("language");
   if (it != addon->ExtraInfo().end())

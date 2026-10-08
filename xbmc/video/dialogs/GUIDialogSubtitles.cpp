@@ -39,6 +39,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/ItemProperties.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -152,7 +153,8 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
       int item = msg.GetParam1();
       if (item >= 0 && item < m_serviceItems->Size())
       {
-        SetService(m_serviceItems->Get(item)->GetProperty("Addon.ID").asString());
+        SetService(
+            m_serviceItems->Get(item)->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString());
         Search();
       }
       return true;
@@ -340,7 +342,7 @@ const CFileItemPtr CGUIDialogSubtitles::GetService() const
 {
   for (int i = 0; i < m_serviceItems->Size(); i++)
   {
-    if (m_serviceItems->Get(i)->GetProperty("Addon.ID") == m_currentService)
+    if (m_serviceItems->Get(i)->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID) == m_currentService)
       return m_serviceItems->Get(i);
   }
   return CFileItemPtr();
@@ -452,25 +454,26 @@ void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
     case SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_SETTINGS:
     {
       AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(service->GetProperty("Addon.ID").asString(), addon,
-                                                 AddonType::SUBTITLE_MODULE,
-                                                 OnlyEnabled::CHOICE_YES))
+      if (CServiceBroker::GetAddonMgr().GetAddon(
+              service->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(), addon,
+              AddonType::SUBTITLE_MODULE, OnlyEnabled::CHOICE_YES))
       {
         CGUIDialogAddonSettings::ShowForAddon(addon);
       }
       else
       {
         CLog::Log(LOGERROR, "{} - Could not open settings for addon: {}", __FUNCTION__,
-                  service->GetProperty("Addon.ID").asString());
+                  service->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString());
       }
       break;
     }
     case SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_DISABLE:
     {
-      CServiceBroker::GetAddonMgr().DisableAddon(service->GetProperty("Addon.ID").asString(),
-                                                 AddonDisabledReason::USER);
+      CServiceBroker::GetAddonMgr().DisableAddon(
+          service->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString(),
+          AddonDisabledReason::USER);
       const bool currentActiveServiceWasDisabled =
-          m_currentService == service->GetProperty("Addon.ID").asString();
+          m_currentService == service->GetProperty(KODI::ITEM::PROPERTY::ADDON_ID).asString();
       FillServices();
       // restart search if the current active service was disabled
       if (currentActiveServiceWasDisabled && !m_serviceItems->IsEmpty())

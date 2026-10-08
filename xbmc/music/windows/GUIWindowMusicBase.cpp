@@ -27,6 +27,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_CDDA_RIPPER
@@ -309,7 +310,8 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
 
   // Match visibility test of CMusicInfo::IsVisible
   if (VIDEO::IsVideoDb(*item) && item->HasVideoInfoTag() &&
-      (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
+      (item->HasProperty(ITEM::PROPERTY::ARTIST_MUSICID) ||
+       item->HasProperty(ITEM::PROPERTY::ALBUM_MUSICID)))
   {
     // Music video artist or album (navigation by music > music video > artist))
     CGUIDialogMusicInfo::ShowFor(item.get());
@@ -938,7 +940,7 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
         auto choice = CGUIDialogContextMenu::Show(choices);
         if (choice == MUSIC_SELECT_ACTION_RESUME)
         {
-          (*itemIt)->SetProperty("audiobook_bookmark", bookmark);
+          (*itemIt)->SetProperty(ITEM::PROPERTY::AUDIOBOOK_BOOKMARK, bookmark);
           return CGUIMediaWindow::OnSelect(static_cast<int>(itemIt - m_vecItems->cbegin()));
         }
         else if (choice < 0)
