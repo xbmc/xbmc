@@ -9,7 +9,6 @@
 #pragma once
 
 #include "SlideShowPicture.h"
-#include "utils/GLBufferObject.h"
 
 class CTexture;
 
@@ -19,13 +18,6 @@ public:
   CSlideShowPicGLES() = default;
   ~CSlideShowPicGLES() override = default;
 
-  void Free() override;
-
 protected:
   void Render(float* x, float* y, CTexture* pTexture, KODI::UTILS::COLOR::Color color) override;
-
-private:
-  KODI::UTILS::GL::CGLBufferObject m_posVBO{GL_ARRAY_BUFFER};
-  KODI::UTILS::GL::CGLBufferObject m_texVBO{GL_ARRAY_BUFFER};
-  KODI::UTILS::GL::CGLBufferObject m_IBO{GL_ELEMENT_ARRAY_BUFFER};
 };
