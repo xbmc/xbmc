@@ -1054,13 +1054,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return FoundSomeInfo;
   }
 
-  void CVideoInfoScanner::AddMovieDiscExtras(const CFileItem& item)
+  void CVideoInfoScanner::AddMovieExtras(int dbId, bool useFolderNames)
   {
     if (m_ignoreVideoExtras)
       return;
 
     m_database.Open();
-    m_extras.AddMovieDiscExtras(item);
+    m_extras.AddMovieExtras(dbId, useFolderNames,
+                            m_advancedSettings->m_moviesExcludeFromScanRegExps);
     m_database.Close();
   }
 
@@ -1635,10 +1636,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
       bool mergedIntoExistingMovie{false};
       item.SetProperty("from_nfo", true);
 
-      // Only an export's nfo adding the movie is the record of its extras
-      const bool restoring{item.GetVideoInfoTag()->GetAssetInfo().GetType() !=
-                               VideoAssetType::UNKNOWN &&
-                           m_database.GetMovieId(pItem->GetDynPath()) < 0};
+      // Only an export's nfo adding the movie is the record of its extras; a refresh reads it again
+      const bool restoring{!m_deferMovieExtras &&
+                           item.GetVideoInfoTag()->GetAssetInfo().GetType() !=
+                               VideoAssetType::UNKNOWN};
 
       // Refreshing the recorded playlists gives the durations, and so the stack times, that the
       // nfo does not hold. A part the nfo records no playlist for stays the disc.

@@ -42,6 +42,7 @@
 #include "video/VideoInfoScannerExtras.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoUtils.h"
 
 #include <algorithm>
 #include <filesystem>
@@ -2015,4 +2016,65 @@ TEST_F(TestVideoDatabase, AVersionInAnExtrasFolderStaysAVersion)
   EXPECT_EQ(own.m_idMedia, idMovie);
 
   XFILE::CDirectory::RemoveRecursive(root);
+}
+
+// A refresh adds the extras of a movie's extras folders, which a scan passes by where the folder
+// hasn't changed since it was last added, as in a library scanned before they were recognised.
+// Those of a movie on several discs are beside the discs' folders.
+TEST_F(TestVideoDatabase, ARefreshAddsTheExtrasOfAnUnchangedFolder)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/RefreshedExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+  const std::string video{URIUtils::AddFileToFolder(folder, "Interview.mkv")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(video));
+    file.Close();
+  }
+
+  const int idMovie{AddMovie(URIUtils::AddFileToFolder(root, "Disc 1", "Movie.mkv"))};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='movies', strScraper='metadata.local' WHERE idPath=%i",
+      m_db.AddPath(root))));
+
+  // A version outside the sources, which a scan never looks at
+  const std::string elsewhere{
+      CSpecialProtocol::TranslatePath("special://temp/RefreshedElsewhere/")};
+  const std::string elsewhereExtra{URIUtils::AddFileToFolder(elsewhere, "Extras", "Other.mkv")};
+  XFILE::CDirectory::RemoveRecursive(elsewhere);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(URIUtils::GetDirectory(elsewhereExtra)));
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(elsewhereExtra));
+    file.Close();
+  }
+  CFileItem version{URIUtils::AddFileToFolder(elsewhere, "Movie Extended.mkv"), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const bool fastHash{std::exchange(advancedSettings->m_bVideoLibraryUseFastHash, true)};
+  m_db.SetPathHash(folder, KODI::VIDEO::UTILS::GetFastHash(folder, {}));
+
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
+  scanner.AddVideoExtrasBesideDisc(root, true, {});
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
+
+  // Without folder names a movie has no extras folders
+  scanner.AddMovieExtras(idMovie, false, {});
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
+
+  scanner.AddMovieExtras(idMovie, true, {});
+  const VideoAssetInfo extra{m_db.GetVideoVersionInfo(video)};
+  EXPECT_EQ(extra.m_assetType, VideoAssetType::EXTRA);
+  EXPECT_EQ(extra.m_idMedia, idMovie);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(elsewhereExtra).m_assetTypeId, -1);
+
+  advancedSettings->m_bVideoLibraryUseFastHash = fastHash;
+  XFILE::CDirectory::RemoveRecursive(root);
+  XFILE::CDirectory::RemoveRecursive(elsewhere);
 }
