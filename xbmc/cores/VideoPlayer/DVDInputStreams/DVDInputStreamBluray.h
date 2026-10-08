@@ -156,6 +156,10 @@ public:
    */
   std::optional<ClipTime> GetClipTime(uint64_t readPos) const;
 
+  //! hand the clip start held at a non-seamless join to the demuxer opened by its reset
+  void ReleaseClipStart() { m_clipStartHeld = false; }
+  bool IsClipStartHeld() const { return m_clipStartHeld && !m_clipStart.empty(); }
+
   void OverlayCallback(const BD_OVERLAY * const);
 #ifdef HAVE_LIBBLURAY_BDJ
   void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);
@@ -276,4 +280,7 @@ protected:
 
     uint64_t m_readPos{0};
     std::vector<ClipSpan> m_clipSpans;
+    std::vector<uint8_t> m_clipStart;
+    size_t m_clipStartOffset{0};
+    bool m_clipStartHeld{false};
 };
