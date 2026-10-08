@@ -51,6 +51,7 @@ using namespace GAME;
 namespace
 {
 constexpr auto GAMES_FOLDER = "special://profile/games";
+constexpr size_t MAX_NAME_BYTES = 200;
 } // namespace
 
 // Initialize static state
@@ -459,11 +460,28 @@ std::set<std::string> CGameUtils::GetGameExtensions()
 
 std::string CGameUtils::GetGameFolder(const std::string& gamePath)
 {
+  // A game reaches here as the item's path or as the game client loaded it,
+  // with special:// resolved and file:// dropped, and a login in a URL can
+  // change. Every form has to find the same folder.
+  CURL url(CSpecialProtocol::TranslatePath(gamePath));
+  if (url.GetProtocol() == "file")
+    url.SetProtocol("");
+  const std::string path = url.GetWithoutUserDetails();
+
+  // Leave room for the CRC within a file system's 255-byte limit on a name,
+  // without splitting a UTF-8 character
+  std::string name = CUtil::MakeLegalFileName(URIUtils::GetFileName(path));
+  if (name.size() > MAX_NAME_BYTES)
+  {
+    size_t end = MAX_NAME_BYTES;
+    while (end > 0 && (static_cast<unsigned char>(name[end]) & 0xC0) == 0x80)
+      --end;
+    name.resize(end);
+  }
+
   // A CRC of the full path keeps games with the same file name apart
-  return URIUtils::AddFileToFolder(
-      GAMES_FOLDER,
-      StringUtils::Format("{}_{:08x}", CUtil::MakeLegalFileName(URIUtils::GetFileName(gamePath)),
-                          Crc32::Compute(gamePath)));
+  return URIUtils::AddFileToFolder(GAMES_FOLDER,
+                                   StringUtils::Format("{}_{:08x}", name, Crc32::Compute(path)));
 }
 
 bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)
