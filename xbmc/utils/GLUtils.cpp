@@ -285,6 +285,18 @@ int KODI::UTILS::GL::glFormatElementByteCount(GLenum format)
   }
 }
 
+std::array<GLfloat, 16> KODI::UTILS::GL::QuadTransform(const CPoint& origin,
+                                                       const CPoint& right,
+                                                       const CPoint& down)
+{
+  // clang-format off
+  return {right.x - origin.x, right.y - origin.y, 0.0f, 0.0f,
+          down.x - origin.x,  down.y - origin.y,  0.0f, 0.0f,
+          0.0f,               0.0f,               1.0f, 0.0f,
+          origin.x,           origin.y,           0.0f, 1.0f};
+  // clang-format on
+}
+
 uint8_t KODI::UTILS::GL::GetChannelFromARGB(const KODI::UTILS::GL::ColorChannel colorChannel,
                                             const uint32_t argb)
 {

@@ -170,8 +170,8 @@ bool CRenderSystemGLES::DestroyRenderSystem()
   ReleaseShaders();
   // The DrawQuad callback holds a reference to m_quadDrawer; nothing may draw through it from now on.
   CGUITexture::UnregisterDrawQuad();
-  m_quadDrawer.Destroy();
   m_guiQuadIndexBuffer.Destroy();
+  m_guiUnitQuad.Destroy();
   m_bRenderCreated = false;
 
   return true;
@@ -194,6 +194,50 @@ void CRenderSystemGLES::BindGUIQuadIndices(std::size_t quadCount)
       m_guiQuadIndices.push_back(static_cast<GLushort>(quad * 4 + offset));
   }
   m_guiQuadIndexBuffer.SetData(m_guiQuadIndices.data(), m_guiQuadIndices.size(), GL_STATIC_DRAW);
+}
+
+void CRenderSystemGLES::BindGUIUnitQuad()
+{
+  // Triangle strip order: top left, top right, bottom left, bottom right.
+  static constexpr GLfloat unitQuad[4][2] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}};
+  m_guiUnitQuad.SetDataOnce(unitQuad);
+}
+
+void CRenderSystemGLES::DrawGUIQuad(const CPoint& origin,
+                                    const CPoint& right,
+                                    const CPoint& down,
+                                    const CRect* texCoords)
+{
+  glUniformMatrix4fv(GUIShaderGetGUIMatrix(), 1, GL_FALSE,
+                     KODI::UTILS::GL::QuadTransform(origin, right, down).data());
+
+  BindGUIUnitQuad();
+  const GLint posLoc = GUIShaderGetPos();
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(posLoc);
+
+  const GLint texLoc = texCoords ? GUIShaderGetCoord0() : -1;
+  if (texLoc >= 0)
+  {
+    const CRect& tex = *texCoords;
+    glUniformMatrix4fv(
+        GUIShaderGetCoord0Matrix(), 1, GL_FALSE,
+        KODI::UTILS::GL::QuadTransform({tex.x1, tex.y1}, {tex.x2, tex.y1}, {tex.x1, tex.y2}).data());
+    glVertexAttribPointer(texLoc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(texLoc);
+  }
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glDisableVertexAttribArray(posLoc);
+  if (texLoc >= 0)
+    glDisableVertexAttribArray(texLoc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void CRenderSystemGLES::DrawGUIQuad(const CRect& rect, const CRect* texCoords)
+{
+  DrawGUIQuad({rect.x1, rect.y1}, {rect.x2, rect.y1}, {rect.x1, rect.y2}, texCoords);
 }
 
 bool CRenderSystemGLES::BeginRender()
