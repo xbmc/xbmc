@@ -384,11 +384,11 @@ CRect CBaseRenderer::ApplyContentGeometry(float& contentRatio)
 
       m_sourceRect = cut.source;
       contentRatio = cut.aspect;
+
+      if (!m_frameContentRect.IsEmpty() && inputs.maskAspect > 0.0f)
+        renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maskAspect, renderWindow);
     }
   }
-
-  if (!m_frameContentRect.IsEmpty() && inputs.maskAspect > 0.0f)
-    renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maskAspect, renderWindow);
 
   if (inputs.maintainAspect > 0.0f)
     renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maintainAspect, m_viewRect);
