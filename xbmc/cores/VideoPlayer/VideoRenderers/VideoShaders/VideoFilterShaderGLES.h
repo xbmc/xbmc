@@ -10,6 +10,9 @@
 
 #include "cores/VideoSettings.h"
 #include "guilib/Shader.h"
+#include "utils/Geometry.h"
+
+#include <array>
 
 #include "system_gl.h"
 
@@ -44,6 +47,11 @@ public:
   }
   virtual void SetAlpha(GLfloat alpha) { m_alpha = alpha; }
 
+  // Maps the vertex positions, for instance a unit quad (see KODI::UTILS::GL::QuadTransform()).
+  void SetQuadTransform(const std::array<GLfloat, 16>& transform) { m_quad = transform; }
+  // The texture coordinates span rect.
+  void SetTextureRect(const CRect& rect) { m_texRect = rect; }
+
 protected:
   int m_width;
   int m_height;
@@ -60,10 +68,15 @@ protected:
   GLint m_hProj = -1;
   GLint m_hModel = -1;
   GLint m_hAlpha = -1;
+  GLint m_hQuad = -1;
+  GLint m_hTexRect = -1;
 
   const GLfloat* m_proj;
   const GLfloat* m_model;
   GLfloat m_alpha = -1;
+  std::array<GLfloat, 16> m_quad{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                                 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+  CRect m_texRect{0, 0, 1, 1};
   };
 
   class ConvolutionFilterShader : public BaseVideoFilterShader
