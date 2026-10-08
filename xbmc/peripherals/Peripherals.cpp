@@ -141,7 +141,7 @@ void CPeripherals::Initialise()
   m_eventScanner->Start();
 
   CServiceBroker::GetAppMessenger()->RegisterReceiver(this);
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Player);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::System);
 
   // Register for GUI messages
   CGUIComponent* gui = CServiceBroker::GetGUI();
