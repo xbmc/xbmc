@@ -97,6 +97,16 @@ bool IsExportedAsset(const CVideoInfoTag& tag)
          !tag.GetAssetInfo().GetTitle().empty();
 }
 
+//! A version or an extra an export wrote beside it, or false where there is none
+bool GetExportedAsset(CVideoDatabase& db,
+                      const std::string& video,
+                      const std::string& folder,
+                      CVideoInfoTag& tag)
+{
+  const std::unique_ptr<IVideoInfoTagLoader> loader{CreateExportLoader(db, video, folder)};
+  return loader && loader->Load(tag, false) == CInfoScanner::InfoType::FULL && IsExportedAsset(tag);
+}
+
 //! Whether a movie already has an extra on a bluray, either the whole disc or one of its playlists
 bool HasExtraOnDisc(CVideoDatabase& db, const std::string& disc, int dbId)
 {
@@ -177,11 +187,38 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
             asset.m_assetType != VideoAssetType::UNKNOWN && asset.m_idMedia == dbId)
           return;
 
-        const std::string extraTypeName =
-            CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
+        // An export keeps the extra's name and play state in an nfo beside it, and whether it is
+        // a version of the movie instead
+        std::string extraTypeName;
+        VideoAssetType assetType{VideoAssetType::EXTRA};
+        if (CVideoInfoTag exported; GetExportedAsset(m_database, item->GetPath(), path, exported))
+        {
+          extraTypeName = exported.GetAssetInfo().GetTitle();
+          assetType = exported.GetAssetInfo().GetType();
+          CVideoInfoTag& tag{*item->GetVideoInfoTag()};
+          tag.m_dateAdded = exported.m_dateAdded;
+          const std::shared_ptr<CAdvancedSettings> advancedSettings{
+              CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+          if (advancedSettings->m_bVideoLibraryImportWatchedState)
+          {
+            tag.SetPlayCount(exported.GetPlayCount());
+            tag.m_lastPlayed = exported.m_lastPlayed;
+          }
+          if (advancedSettings->m_bVideoLibraryImportResumePoint)
+            tag.SetResumePoint(exported.GetResumePoint());
+        }
+        else if (restored)
+        {
+          CLog::LogF(LOGDEBUG, "Extra {} is not in the nfos of its movie",
+                     CURL::GetRedacted(item->GetPath()));
+          return;
+        }
+        else
+          extraTypeName = CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
-        const int idVideoAssetType = m_database.AddVideoVersionType(
-            extraTypeName, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
+        const int idVideoAssetType{
+            m_database.AddOrValidateVideoVersionType(extraTypeName, assetType)};
+        const std::string_view kind{assetType == VideoAssetType::VERSION ? "version" : "extra"};
 
         // the video may have been added to the library as a movie earlier (different settings)
         const int idMovie{m_database.GetMovieId(item->GetPath())};
@@ -199,21 +236,24 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
           m_art.GetArtwork(item.get(), ADDON::ContentType::MOVIES, true, true, "");
 
           if (m_database.AddVideoAsset(VideoDbContentType::MOVIES, dbId, idVideoAssetType,
-                                       VideoAssetType::EXTRA, *item.get()))
+                                       assetType, *item.get()))
           {
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extra {}",
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video {} {}", kind,
                       CURL::GetRedacted(item->GetPath()));
+            const CBookmark& resume{item->GetVideoInfoTag()->GetResumePoint()};
+            if (resume.IsSet())
+              m_database.AddBookMarkToFile(item->GetPath(), resume, CBookmark::RESUME);
           }
           else
           {
-            CLog::Log(LOGERROR, "VideoInfoScanner: Failed to add video extra {}",
+            CLog::Log(LOGERROR, "VideoInfoScanner: Failed to add video {} {}", kind,
                       CURL::GetRedacted(item->GetPath()));
           }
         }
         else
         {
           m_database.ConvertVideoToVersion(VideoDbContentType::MOVIES, idMovie, dbId,
-                                           idVideoAssetType, VideoAssetType::EXTRA);
+                                           idVideoAssetType, assetType);
         }
       });
 }

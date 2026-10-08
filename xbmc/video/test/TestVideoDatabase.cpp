@@ -783,6 +783,38 @@ TEST_F(TestVideoDatabase, SetFileForMediaRepointsAnExtra)
   EXPECT_EQ(art["thumb"], "thumb.jpg");
 }
 
+// A movie restored from its nfos has only the extras they record, so a video without an nfo in its
+// extras folder is left out during that scan, and added by a later one
+TEST_F(TestVideoDatabase, ARestoredMovieHasOnlyTheExtrasOfItsNfos)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/RestoredExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+  const std::string video{URIUtils::AddFileToFolder(folder, "Interview.mkv")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(video));
+    file.Close();
+  }
+
+  const int idMovie{AddMovie(URIUtils::AddFileToFolder(root, "Movie.mkv"))};
+  ASSERT_GT(idMovie, 0);
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  {
+    KODI::VIDEO::CVideoInfoScannerExtras restoringScan{m_db, art};
+    restoringScan.SetRestoredFromNfo(idMovie);
+    restoringScan.AddVideoExtras(idMovie, folder);
+    EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
+  }
+
+  KODI::VIDEO::CVideoInfoScannerExtras laterScan{m_db, art};
+  laterScan.AddVideoExtras(idMovie, folder);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetType, VideoAssetType::EXTRA);
+
+  XFILE::CDirectory::RemoveRecursive(root);
+}
+
 TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
 {
   const std::string root{CSpecialProtocol::TranslatePath("special://temp/ScannerExtras/")};
