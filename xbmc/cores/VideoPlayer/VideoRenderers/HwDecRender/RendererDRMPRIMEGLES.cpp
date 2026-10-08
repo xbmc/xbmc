@@ -344,31 +344,6 @@ void CRendererDRMPRIMEGLES::DrawBlackBars()
 
   auto quads = windowRect.SubtractRect(m_destRect);
 
-  struct Svertex
-  {
-    float x, y;
-  };
-
-  std::vector<Svertex> vertices(6 * quads.size());
-
-  GLubyte count = 0;
-  for (const auto& quad : quads)
-  {
-    vertices[count + 1].x = quad.x1;
-    vertices[count + 1].y = quad.y1;
-
-    vertices[count + 0].x = vertices[count + 5].x = quad.x1;
-    vertices[count + 0].y = vertices[count + 5].y = quad.y2;
-
-    vertices[count + 2].x = vertices[count + 3].x = quad.x2;
-    vertices[count + 2].y = vertices[count + 3].y = quad.y1;
-
-    vertices[count + 4].x = quad.x2;
-    vertices[count + 4].y = quad.y2;
-
-    count += 6;
-  }
-
   glDisable(GL_BLEND);
 
   CRenderSystemGLES* renderSystem =
@@ -377,26 +352,14 @@ void CRendererDRMPRIMEGLES::DrawBlackBars()
     return;
 
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
-  GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint uniCol = renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
   glUniform4f(uniCol, 0.0f, 0.0f, 0.0f, 1.0f);
   glUniform1f(depthLoc, -1.0f);
 
-  GLuint vertexVBO;
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
-  glEnableVertexAttribArray(posLoc);
-
-  glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-
-  glDisableVertexAttribArray(posLoc);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
+  for (const auto& quad : quads)
+    renderSystem->DrawGUIQuad(quad);
 
   renderSystem->DisableGUIShader();
 }
@@ -493,56 +456,33 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
     m_yuvShader->SetHeight(texSize.Height());
     m_yuvShader->SetAlpha(1.0f);
     m_yuvShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+    // Per-plane texcoords stay at their 0..1 default; each EGL-imported texture covers the
+    // whole plane regardless of chroma subsampling.
+    m_yuvShader->SetQuadTransform(KODI::UTILS::GL::QuadTransform(
+        m_rotatedDestCoords[0], m_rotatedDestCoords[1], m_rotatedDestCoords[3]));
     // SetConvertFullColorRange(false) was set at Configure time -> matrix
     // produces limited-range RGB. No per-frame setter needed.
     m_yuvShader->Enable();
-
-    GLubyte idx[4] = {0, 1, 3, 2};
-    GLfloat vert[4][3];
-    GLfloat tex[3][4][2];
 
     GLint vertLoc = m_yuvShader->GetVertexLoc();
     GLint yLoc = m_yuvShader->GetYcoordLoc();
     GLint uLoc = m_yuvShader->GetUcoordLoc();
     GLint vLoc = m_yuvShader->GetVcoordLoc();
 
-    glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, vert);
-    glVertexAttribPointer(yLoc, 2, GL_FLOAT, 0, 0, tex[0]);
-    glVertexAttribPointer(uLoc, 2, GL_FLOAT, 0, 0, tex[1]);
-    glVertexAttribPointer(vLoc, 2, GL_FLOAT, 0, 0, tex[2]);
-
-    glEnableVertexAttribArray(vertLoc);
-    glEnableVertexAttribArray(yLoc);
-    glEnableVertexAttribArray(uLoc);
-    glEnableVertexAttribArray(vLoc);
-
-    for (int i = 0; i < 4; i++)
+    renderSystem->BindGUIUnitQuad();
+    for (GLint loc : {vertLoc, yLoc, uLoc, vLoc})
     {
-      vert[i][0] = m_rotatedDestCoords[i].x;
-      vert[i][1] = m_rotatedDestCoords[i].y;
-      vert[i][2] = 0.0f;
+      glVertexAttribPointer(loc, 2, GL_FLOAT, 0, 0, 0);
+      glEnableVertexAttribArray(loc);
     }
 
-    // Per-plane texcoords are 0..1; each EGL-imported texture covers the
-    // whole plane regardless of chroma subsampling.
-    for (int p = 0; p < 3; p++)
-    {
-      tex[p][0][0] = 0.0f;
-      tex[p][0][1] = 0.0f;
-      tex[p][1][0] = 1.0f;
-      tex[p][1][1] = 0.0f;
-      tex[p][2][0] = 1.0f;
-      tex[p][2][1] = 1.0f;
-      tex[p][3][0] = 0.0f;
-      tex[p][3][1] = 1.0f;
-    }
-
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glDisableVertexAttribArray(vertLoc);
     glDisableVertexAttribArray(yLoc);
     glDisableVertexAttribArray(uLoc);
     glDisableVertexAttribArray(vLoc);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     m_yuvShader->Disable();
 
@@ -577,77 +517,12 @@ void CRendererDRMPRIMEGLES::DrawTexture(CRenderSystemGLES& renderSystem,
 
   renderSystem.EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_RGBA_OES);
 
-  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-  GLuint vertexVBO;
-  GLuint indexVBO;
-  struct PackedVertex
-  {
-    float x, y, z;
-    float u1, v1;
-  };
+  glUniform1f(renderSystem.GUIShaderGetDepth(), -1.0f);
 
-  std::array<PackedVertex, 4> vertex;
-
-  GLint vertLoc = renderSystem.GUIShaderGetPos();
-  GLint loc = renderSystem.GUIShaderGetCoord0();
-  GLint depthLoc = renderSystem.GUIShaderGetDepth();
-
-  // top left
-  vertex[0].x = dest[0].x;
-  vertex[0].y = dest[0].y;
-  vertex[0].z = 0.0f;
-  vertex[0].u1 = 0.0f;
-  vertex[0].v1 = 0.0f;
-
-  // top right
-  vertex[1].x = dest[1].x;
-  vertex[1].y = dest[1].y;
-  vertex[1].z = 0.0f;
-  vertex[1].u1 = 1.0f;
-  vertex[1].v1 = 0.0f;
-
-  // bottom right
-  vertex[2].x = dest[2].x;
-  vertex[2].y = dest[2].y;
-  vertex[2].z = 0.0f;
-  vertex[2].u1 = 1.0f;
-  vertex[2].v1 = 1.0f;
-
-  // bottom left
-  vertex[3].x = dest[3].x;
-  vertex[3].y = dest[3].y;
-  vertex[3].z = 0.0f;
-  vertex[3].u1 = 0.0f;
-  vertex[3].v1 = 1.0f;
-
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * vertex.size(), vertex.data(),
-               GL_STATIC_DRAW);
-
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
-
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(loc);
-
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
-
-  glUniform1f(depthLoc, -1.0f);
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
-
-  glDisableVertexAttribArray(vertLoc);
-  glDisableVertexAttribArray(loc);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &indexVBO);
+  // dest holds the corners of a (possibly rotated) rectangle: top left, top right, bottom right,
+  // bottom left.
+  const CRect texCoords(0.0f, 0.0f, 1.0f, 1.0f);
+  renderSystem.DrawGUIQuad(dest[0], dest[1], dest[3], &texCoords);
 
   renderSystem.DisableGUIShader();
 
