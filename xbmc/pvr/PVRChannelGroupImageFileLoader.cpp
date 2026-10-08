@@ -35,7 +35,7 @@ std::unique_ptr<CTexture> PVR::CPVRChannelGroupImageFileLoader::Load(
   std::vector<std::string> channelIcons;
   for (const auto& channel : channels)
   {
-    const std::string& icon = channel->GetArt(KODI::ART::TYPE::ICON);
+    const std::string& icon = channel->GetArt(KODI::ART::TYPE::THUMB);
     if (!icon.empty())
       channelIcons.emplace_back(IMAGE_FILES::CImageFileURL(icon).GetTargetFile());
 
