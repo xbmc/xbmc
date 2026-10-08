@@ -73,6 +73,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <ranges>
@@ -11266,11 +11267,34 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
         pDS3->next();
       }
-      pDS3->first();
+    }
+
+    // The rows of a file go into its one nfo together, but need not come one after the other (eg. a
+    // raw disc's default and its playlists, with a file extra sorting between them), so are gathered
+    std::vector<int> order;
+    order.reserve(total);
+    if (singleFile)
+    {
+      for (int row = 0; row < total; ++row)
+        order.emplace_back(row);
+    }
+    else
+    {
+      std::map<std::string, std::vector<int>, std::less<>> rowsOfFile;
+      std::vector<std::string> files;
+      for (int row = 0; row < total; ++row)
+      {
+        std::vector<int>& rows{rowsOfFile[versions[row].hash]};
+        if (rows.empty())
+          files.emplace_back(versions[row].hash);
+        rows.emplace_back(row);
+      }
+      for (const std::string& file : files)
+        std::ranges::copy(rowsOfFile[file], std::back_inserter(order));
     }
 
     CLog::LogF(LOGDEBUG, "Starting...");
-    while (!pDS3->eof())
+    while (current < total)
     {
       // reset old skip state
       bool bSkip = false;
@@ -11280,16 +11304,17 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
       // To be XML compliant multiple <movie> tags need to be enclosed in a <movies> tag
       bool multiMovie{false};
-      if (!singleFile && fileHashMap[versions[current].hash] > 1)
+      if (!singleFile && fileHashMap[versions[order[current]].hash] > 1)
       {
         TiXmlElement xmlMainElement("movies");
         pMain = xmlDoc.InsertEndChild(xmlMainElement);
         multiMovie = true;
-        CLog::Log(LOGDEBUG, "Exporting multiple movies for file {}", versions[current].path);
+        CLog::Log(LOGDEBUG, "Exporting multiple movies for file {}", versions[order[current]].path);
       }
 
       do
       {
+        pDS3->seek(order[current]);
         CVideoInfoTag movie = GetDetailsForMovie(*pDS3, VideoDbDetailsAll);
         // GetStreamDetails() replaces the runtime with the stream duration, so take the stored one
         movie.SetDuration(GetDetailsForMovie(*pDS3).GetStaticDuration());
@@ -11418,9 +11443,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
         }
 
-        pDS3->next();
         current++;
-      } while (!singleFile && !pDS3->eof() && versions[current - 1].hash == versions[current].hash);
+      } while (!singleFile && current < total &&
+               versions[order[current - 1]].hash == versions[order[current]].hash);
 
       if (!singleFile)
       {

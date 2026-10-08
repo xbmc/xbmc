@@ -575,6 +575,59 @@ TEST_F(TestVideoDatabase, ExportToXMLWritesStoredRuntime)
   EXPECT_EQ(22, runtime);
 }
 
+// The entries of a disc share its nfo even where another of the movie's files sorts between them,
+// as a file extra's folder does between the disc's raw default and its playlists
+TEST_F(TestVideoDatabase, ExportToSeparateFilesKeepsADiscsEntriesTogether)
+{
+  const std::string root{
+      CSpecialProtocol::TranslatePath("special://temp/ExportDisc/Movie (2020)/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  const std::string bdmv{URIUtils::AddFileToFolder(root, "Disc 1", "BDMV")};
+  const std::string extras{URIUtils::AddFileToFolder(root, "Extras")};
+  for (const std::string& folder : {root, URIUtils::AddFileToFolder(root, "Disc 1"), bdmv,
+                                    URIUtils::AddFileToFolder(bdmv, "PLAYLIST"), extras})
+    ASSERT_TRUE(XFILE::CDirectory::Create(folder));
+  const std::string disc{URIUtils::AddFileToFolder(bdmv, "index.bdmv")};
+  const std::string trailer{URIUtils::AddFileToFolder(extras, "trailer.mkv")};
+  for (const std::string& file :
+       {disc, URIUtils::AddFileToFolder(bdmv, "PLAYLIST", "00801.mpls"), trailer})
+  {
+    XFILE::CFile out;
+    ASSERT_TRUE(out.OpenForWrite(file, true));
+    out.Close();
+  }
+
+  const int idMovie{AddMovie(disc)};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{URIUtils::GetBlurayPlaylistPath(disc, 801), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(
+      VideoDbContentType::MOVIES, idMovie,
+      m_db.AddVideoVersionType("Extended", VideoAssetTypeOwner::USER, VideoAssetType::VERSION),
+      VideoAssetType::VERSION, version));
+  CFileItem extra{trailer, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(
+      VideoDbContentType::MOVIES, idMovie,
+      m_db.AddVideoVersionType("Trailer", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA),
+      VideoAssetType::EXTRA, extra));
+
+  m_db.ExportToXML(root, false);
+
+  CXBMCTinyXML doc;
+  const bool loaded{doc.LoadFile(URIUtils::AddFileToFolder(bdmv, "index.nfo"))};
+  std::vector<int> playlists;
+  for (const TiXmlElement* movie{loaded ? doc.RootElement()->FirstChildElement("movie") : nullptr};
+       movie; movie = movie->NextSiblingElement("movie"))
+  {
+    int playlist{-1};
+    XMLUtils::GetInt(movie, "playlist", playlist);
+    playlists.emplace_back(playlist);
+  }
+  XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath("special://temp/ExportDisc/"));
+  ASSERT_TRUE(loaded);
+  EXPECT_EQ(2u, playlists.size());
+  EXPECT_NE(playlists.end(), std::ranges::find(playlists, 801));
+}
+
 // The converted movie's file is kept as the version, so its streamdetails must be kept too
 TEST_F(TestVideoDatabase, ConvertVideoToVersionKeepsStreamDetails)
 {
