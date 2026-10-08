@@ -737,3 +737,39 @@ TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
   advancedSettings->m_bVideoLibraryUseFastHash = fastHash;
   EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(root));
 }
+
+// A video in an extras folder made a version of the movie stays one when the folder is scanned
+// again, and the movie keeps its own file
+TEST_F(TestVideoDatabase, AVersionInAnExtrasFolderStaysAVersion)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/VersionInExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+  const std::string video{URIUtils::AddFileToFolder(folder, "Director's Cut.mkv")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(video));
+    file.Close();
+  }
+
+  const std::string movie{URIUtils::AddFileToFolder(root, "Movie.mkv")};
+  const int idMovie{AddMovie(movie)};
+  ASSERT_GT(idMovie, 0);
+  const int idType{m_db.AddVideoVersionType("Director's Cut", VideoAssetTypeOwner::USER,
+                                            VideoAssetType::VERSION)};
+  CFileItem version{video, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                 VideoAssetType::VERSION, version));
+
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
+  scanner.AddVideoExtras(idMovie, folder);
+
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, idType);
+  const VideoAssetInfo own{m_db.GetVideoVersionInfo(movie)};
+  EXPECT_EQ(own.m_assetType, VideoAssetType::VERSION);
+  EXPECT_EQ(own.m_idMedia, idMovie);
+
+  XFILE::CDirectory::RemoveRecursive(root);
+}
