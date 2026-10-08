@@ -46,6 +46,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
@@ -725,7 +726,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
         !URIUtils::IsProtocol(pItem->GetPath(), "newtag"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
-  else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
+  else if (StringUtils::StartsWithNoCase(pItem->GetPath(), VIDEO::DB_PATH::MOVIE_SETS) &&
            pItem->GetPath().size() > 22 && pItem->IsFolder())
   {
     CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
@@ -1081,36 +1082,36 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
 {
   static const auto map = std::map<std::string, std::string>{
       {"files", "sources://video/"},
-      {"inprogresstvshows", "videodb://inprogresstvshows/"},
-      {"movieactors", "videodb://movies/actors/"},
-      {"moviecountries", "videodb://movies/countries/"},
-      {"moviedirectors", "videodb://movies/directors/"},
-      {"moviegenres", "videodb://movies/genres/"},
-      {"movies", "videodb://movies/"},
-      {"moviesets", "videodb://movies/sets/"},
-      {"moviestudios", "videodb://movies/studios/"},
-      {"movietags", "videodb://movies/tags/"},
-      {"movietitles", "videodb://movies/titles/"},
-      {"movieyears", "videodb://movies/years/"},
-      {"musicvideoalbums", "videodb://musicvideos/albums/"},
-      {"musicvideoartists", "videodb://musicvideos/artists/"},
-      {"musicvideodirectors", "videodb://musicvideos/directors/"},
-      {"musicvideogenres", "videodb://musicvideos/genres/"},
-      {"musicvideos", "videodb://musicvideos/"},
-      {"musicvideostudios", "videodb://musicvideos/studios/"},
-      {"musicvideotags", "videodb://musicvideos/tags/"},
-      {"musicvideotitles", "videodb://musicvideos/titles/"},
-      {"musicvideoyears", "videodb://musicvideos/years/"},
-      {"recentlyaddedepisodes", "videodb://recentlyaddedepisodes/"},
-      {"recentlyaddedmovies", "videodb://recentlyaddedmovies/"},
-      {"recentlyaddedmusicvideos", "videodb://recentlyaddedmusicvideos/"},
-      {"tvshowactors", "videodb://tvshows/actors/"},
-      {"tvshowgenres", "videodb://tvshows/genres/"},
-      {"tvshows", "videodb://tvshows/"},
-      {"tvshowstudios", "videodb://tvshows/studios/"},
-      {"tvshowtags", "videodb://tvshows/tags/"},
-      {"tvshowtitles", "videodb://tvshows/titles/"},
-      {"tvshowyears", "videodb://tvshows/years/"},
+      {"inprogresstvshows", VIDEO::DB_PATH::INPROGRESS_TVSHOWS},
+      {"movieactors", VIDEO::DB_PATH::MOVIE_ACTORS},
+      {"moviecountries", VIDEO::DB_PATH::MOVIE_COUNTRIES},
+      {"moviedirectors", VIDEO::DB_PATH::MOVIE_DIRECTORS},
+      {"moviegenres", VIDEO::DB_PATH::MOVIE_GENRES},
+      {"movies", VIDEO::DB_PATH::MOVIES},
+      {"moviesets", VIDEO::DB_PATH::MOVIE_SETS},
+      {"moviestudios", VIDEO::DB_PATH::MOVIE_STUDIOS},
+      {"movietags", VIDEO::DB_PATH::MOVIE_TAGS},
+      {"movietitles", VIDEO::DB_PATH::MOVIE_TITLES},
+      {"movieyears", VIDEO::DB_PATH::MOVIE_YEARS},
+      {"musicvideoalbums", VIDEO::DB_PATH::MUSICVIDEO_ALBUMS},
+      {"musicvideoartists", VIDEO::DB_PATH::MUSICVIDEO_ARTISTS},
+      {"musicvideodirectors", VIDEO::DB_PATH::MUSICVIDEO_DIRECTORS},
+      {"musicvideogenres", VIDEO::DB_PATH::MUSICVIDEO_GENRES},
+      {"musicvideos", VIDEO::DB_PATH::MUSICVIDEOS},
+      {"musicvideostudios", VIDEO::DB_PATH::MUSICVIDEO_STUDIOS},
+      {"musicvideotags", VIDEO::DB_PATH::MUSICVIDEO_TAGS},
+      {"musicvideotitles", VIDEO::DB_PATH::MUSICVIDEO_TITLES},
+      {"musicvideoyears", VIDEO::DB_PATH::MUSICVIDEO_YEARS},
+      {"recentlyaddedepisodes", VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES},
+      {"recentlyaddedmovies", VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES},
+      {"recentlyaddedmusicvideos", VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS},
+      {"tvshowactors", VIDEO::DB_PATH::TVSHOW_ACTORS},
+      {"tvshowgenres", VIDEO::DB_PATH::TVSHOW_GENRES},
+      {"tvshows", VIDEO::DB_PATH::TVSHOWS},
+      {"tvshowstudios", VIDEO::DB_PATH::TVSHOW_STUDIOS},
+      {"tvshowtags", VIDEO::DB_PATH::TVSHOW_TAGS},
+      {"tvshowtitles", VIDEO::DB_PATH::TVSHOW_TITLES},
+      {"tvshowyears", VIDEO::DB_PATH::TVSHOW_YEARS},
   };
 
   const auto it = map.find(StringUtils::ToLower(dir));

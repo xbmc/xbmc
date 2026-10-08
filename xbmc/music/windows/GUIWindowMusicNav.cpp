@@ -57,6 +57,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
@@ -398,7 +399,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
 
   // update our content in the info manager
-  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || VIDEO::IsVideoDb(items))
+  if (URIUtils::IsVideoDb(strDirectory) || VIDEO::IsVideoDb(items))
   {
     CVideoDatabaseDirectory dir;
     const auto node = dir.GetDirectoryChildType(items.GetPath());
@@ -738,7 +739,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
 
       // music videos - artists
-      if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/"))
+      if (StringUtils::StartsWithNoCase(item->GetPath(), VIDEO::DB_PATH::MUSICVIDEO_ARTISTS))
       {
         int idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
@@ -755,7 +756,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       // music videos - albums
-      if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/albums/"))
+      if (StringUtils::StartsWithNoCase(item->GetPath(), VIDEO::DB_PATH::MUSICVIDEO_ALBUMS))
       {
         int idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
@@ -805,7 +806,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CVideoDatabase database;
       database.Open();
       strPath = StringUtils::Format(
-          "videodb://musicvideos/artists/{}/",
+          "{}{}/", VIDEO::DB_PATH::MUSICVIDEO_ARTISTS,
           database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString()));
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
