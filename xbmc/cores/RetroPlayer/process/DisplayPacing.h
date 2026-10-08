@@ -33,9 +33,11 @@ public:
   /*!
    * \brief A frame is being taken for the screen
    *
+   * \param newFrame False if the game hasn't given a frame since the last one
+   *
    * Called from the rendering thread only.
    */
-  void OnFrameTaken(Clock::time_point when);
+  void OnFrameTaken(Clock::time_point when, bool newFrame = true);
 
   /*!
    * \brief The time between frames taken for the screen
@@ -83,6 +85,12 @@ public:
   double PlaybackRate() const { return m_playbackRate.load(); }
   void SetPlaybackRate(double rate) { m_playbackRate.store(rate); }
 
+  /*!
+   * \brief Whether the game is running in step with the screen, which every
+   * refresh should then show a new frame of
+   */
+  void SetPaced(bool paced) { m_paced.store(paced); }
+
 private:
   void Restart(int64_t takeNs);
   void StartRun(int64_t takeNs);
@@ -92,10 +100,13 @@ private:
   int64_t m_runFrames{0};
   int64_t m_lastTakeLocalNs{0};
   int64_t m_intervalFrames{0};
+  int64_t m_pacedRefreshes{0};
+  int64_t m_missedRefreshes{0};
 
   std::atomic<bool> m_enabled{true};
   std::atomic<double> m_maxRateDifference{0.02};
   std::atomic<int64_t> m_marginNs{2'500'000};
+  std::atomic<bool> m_paced{false};
 
   // Published for the game loop
   std::atomic<int64_t> m_lastTakeNs{0};

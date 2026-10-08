@@ -8,6 +8,8 @@
 
 #include "DisplayPacing.h"
 
+#include "utils/log.h"
+
 #include <algorithm>
 #include <cmath>
 
@@ -37,19 +39,41 @@ constexpr int64_t MAX_RUN_FRAMES = 300;
 // without one
 constexpr int64_t STALE_INTERVALS = 3;
 
+// Paced refreshes between reports of those that had no new frame
+constexpr int64_t MISSED_REPORT_REFRESHES = 600;
+
 int64_t ToNs(CDisplayPacing::Clock::time_point when)
 {
   return std::chrono::duration_cast<std::chrono::nanoseconds>(when.time_since_epoch()).count();
 }
 } // namespace
 
-void CDisplayPacing::OnFrameTaken(Clock::time_point when)
+void CDisplayPacing::OnFrameTaken(Clock::time_point when, bool newFrame)
 {
   const int64_t takeNs = ToNs(when);
   const int64_t gapNs = takeNs - m_lastTakeLocalNs;
 
   if (m_lastTakeLocalNs != 0 && gapNs < MIN_INTERVAL_NS)
     return;
+
+  // A paced frame that isn't ready when the screen takes one, as when the
+  // margin is too short, shows the last frame again
+  if (m_paced.load())
+  {
+    ++m_pacedRefreshes;
+    if (!newFrame)
+      ++m_missedRefreshes;
+    if (m_pacedRefreshes == MISSED_REPORT_REFRESHES)
+    {
+      if (m_missedRefreshes > 0)
+        CLog::Log(LOGINFO,
+                  "RetroPlayer[PACING]: {} of the last {} refreshes had no new frame (margin "
+                  "{:.1f} ms)",
+                  m_missedRefreshes, m_pacedRefreshes, m_marginNs.load() / 1e6);
+      m_pacedRefreshes = 0;
+      m_missedRefreshes = 0;
+    }
+  }
 
   if (m_lastTakeLocalNs == 0 || gapNs > MAX_GAP_NS)
   {

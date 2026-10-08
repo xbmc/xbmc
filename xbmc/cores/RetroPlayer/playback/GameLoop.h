@@ -96,6 +96,22 @@ private:
   void StopPacing();
   void RunFrame();
 
+  enum class PacingState
+  {
+    UNKNOWN,
+    NO_INTERVAL,
+    RATE_TOO_FAR,
+    FRAME_TOO_SLOW,
+    PACED,
+  };
+
+  /*!
+   * \brief Record why the game is or isn't paced
+   *
+   * \return True if that changed, so it can be logged once
+   */
+  bool PacingChanged(PacingState state);
+
   std::chrono::microseconds FrameTimeUs() const;
   std::chrono::microseconds NowUs() const;
 
@@ -108,6 +124,7 @@ private:
   CEvent m_sleepEvent;
   CDisplayPacing::Clock::time_point m_lastPacedTake{};
   CDisplayPacing::Clock::duration m_frameCost{};
+  PacingState m_pacingState{PacingState::UNKNOWN};
   std::atomic<bool> m_quiesceRequested{false};
   CEvent m_quiescedEvent{true};
 };
