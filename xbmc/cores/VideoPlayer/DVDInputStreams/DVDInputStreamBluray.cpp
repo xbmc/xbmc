@@ -439,6 +439,7 @@ void CDVDInputStreamBluray::Close()
   m_rootPath.clear();
   m_readPos = 0;
   m_clipSpans.clear();
+  m_clipStart.clear();
 
 #if defined(HAS_UDFREAD)
   // Released last, as the files opened from the volume are closed above
@@ -704,6 +705,19 @@ void CDVDInputStreamBluray::ProcessEvent() {
 int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 {
   int result = 0;
+  if (!m_clipStart.empty())
+  {
+    if (m_clipStartHeld)
+      return 0;
+
+    result = std::min(buf_size, static_cast<int>(m_clipStart.size() - m_clipStartOffset));
+    std::copy_n(m_clipStart.data() + m_clipStartOffset, result, buf);
+    m_clipStartOffset += result;
+    m_readPos += result;
+    if (m_clipStartOffset == m_clipStart.size())
+      m_clipStart.clear();
+    return result;
+  }
   m_dispTimeBeforeRead = static_cast<int>((bd_tell_time(m_bd) / 90));
   if(m_navmode)
   {
@@ -763,6 +777,7 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
   else
   {
     unsigned int readErrors{0};
+    bool discontinuity = false;
     do
     {
       if (m_aborted || HasGivenUpReading())
@@ -772,10 +787,23 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       if (result > 0)
         m_readErrors = 0;
       while (bd_get_event(m_bd, &m_event))
+      {
+        if (m_event.event == BD_EVENT_DISCONTINUITY)
+          discontinuity = true;
         ProcessEvent();
+      }
       // A unit libbluray skips as broken is reported and read as nothing, which the demuxer would
       // take for the end of the title
     } while (result == 0 && m_readErrors > readErrors);
+    // the read starts the new clip, which the demuxer being reset must not consume
+    if (discontinuity && result > 0 && m_player)
+    {
+      m_clipStart.assign(buf, buf + result);
+      m_clipStartOffset = 0;
+      m_clipStartHeld = true;
+      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - holding {} bytes of the new clip", result);
+      return 0;
+    }
     if (result > 0)
       m_readPos += result;
   }
@@ -1045,6 +1073,7 @@ bool CDVDInputStreamBluray::PosTime(int ms)
   if(bd_seek_time(m_bd, ms * 90) < 0)
     return false;
 
+  m_clipStart.clear();
   while (bd_get_event(m_bd, &m_event))
     ProcessEvent();
   OpenClipSpan();
@@ -1088,6 +1117,7 @@ bool CDVDInputStreamBluray::SeekChapter(int ch)
   if(m_titleInfo && bd_seek_chapter(m_bd, ch-1) < 0)
     return false;
 
+  m_clipStart.clear();
   while (bd_get_event(m_bd, &m_event))
     ProcessEvent();
   OpenClipSpan();
