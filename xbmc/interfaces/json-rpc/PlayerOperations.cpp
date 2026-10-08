@@ -937,6 +937,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("broadcastid"))
   {
+    if (!CServiceBroker::GetPVRManager().IsStarted())
+      return FailedToExecute;
+
     const std::shared_ptr<CPVREpgInfoTag> epgTag =
         CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
             static_cast<unsigned int>(parameterObject["item"]["broadcastid"].asInteger()));
@@ -951,6 +954,10 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("channelid"))
   {
+    // the containers exist before PVR has loaded them, and are not safe to search until then
+    if (!CServiceBroker::GetPVRManager().IsStarted())
+      return FailedToExecute;
+
     const std::shared_ptr<const CPVRChannelGroupsContainer> channelGroupContainer =
         CServiceBroker::GetPVRManager().ChannelGroups();
     if (!channelGroupContainer)
@@ -974,6 +981,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("recordingid"))
   {
+    if (!CServiceBroker::GetPVRManager().IsStarted())
+      return FailedToExecute;
+
     const std::shared_ptr<const CPVRRecordings> recordingsContainer =
         CServiceBroker::GetPVRManager().Recordings();
     if (!recordingsContainer)
@@ -1019,11 +1029,16 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       }
       else if (list.Size() == 1 && URIUtils::IsPVRChannel(list[0]->GetPath()))
       {
+        if (!CServiceBroker::GetPVRManager().IsStarted())
+          return FailedToExecute;
         if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(*list[0]))
           return FailedToExecute;
       }
       else if (list.Size() == 1 && URIUtils::IsPVRRecording(list[0]->GetPath()))
       {
+        if (!CServiceBroker::GetPVRManager().IsStarted())
+          return FailedToExecute;
+
         const std::shared_ptr<const CPVRRecordings> recordingsContainer{
             CServiceBroker::GetPVRManager().Recordings()};
         if (!recordingsContainer)
