@@ -211,8 +211,8 @@ int64_t CPosixFile::GetLength()
   if (m_fd < 0)
     return -1;
 
-  struct stat64 st;
-  if (fstat64(m_fd, &st) != 0)
+  struct stat st;
+  if (fstat(m_fd, &st) != 0)
     return -1;
 
   return st.st_size;
@@ -327,8 +327,8 @@ bool CPosixFile::Exists(const CURL& url)
   if (filename.empty())
     return false;
 
-  struct stat64 st;
-  return stat64(filename.c_str(), &st) == 0 && !S_ISDIR(st.st_mode);
+  struct stat st;
+  return stat(filename.c_str(), &st) == 0 && !S_ISDIR(st.st_mode);
 }
 
 int CPosixFile::Stat(const CURL& url, struct __stat64* buffer)
@@ -374,7 +374,7 @@ int CPosixFile::Stat(const CURL& url, struct __stat64* buffer)
   }
   return ret;
 #else
-  return stat64(filename.c_str(), buffer);
+  return stat(filename.c_str(), buffer);
 #endif
 }
 
@@ -384,5 +384,5 @@ int CPosixFile::Stat(struct __stat64* buffer)
   if (m_fd < 0 || !buffer)
     return -1;
 
-  return fstat64(m_fd, buffer);
+  return fstat(m_fd, buffer);
 }

@@ -638,7 +638,7 @@ extern "C"
 #if defined(TARGET_WINDOWS)
       return _fstat64(fd, buf);
 #else
-      return fstat64(fd, buf);
+      return fstat(fd, buf);
 #endif
     CLog::Log(LOGERROR, "{} emulated function failed", __FUNCTION__);
     return -1;
@@ -1236,7 +1236,7 @@ extern "C"
     return EOF;
   }
 
-  int dll_fseek64(FILE* stream, off64_t offset, int origin)
+  int dll_fseek64(FILE* stream, off_t offset, int origin)
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
@@ -1289,12 +1289,12 @@ extern "C"
     return (long)dll_ftell64(stream);
   }
 
-  off64_t dll_ftell64(FILE *stream)
+  off_t dll_ftell64(FILE* stream)
   {
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(stream);
     if (pFile != NULL)
     {
-       return (off64_t)pFile->GetPosition();
+      return (off_t)pFile->GetPosition();
     }
     CLog::Log(LOGERROR, "{} emulated function failed", __FUNCTION__);
     return -1;
@@ -1339,7 +1339,7 @@ extern "C"
 #elif defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
       return lseek(fd, 0, SEEK_CUR);
 #else
-      return lseek64(fd, 0, SEEK_CUR);
+      return lseek(fd, 0, SEEK_CUR);
 #endif
     }
     CLog::Log(LOGERROR, "{} emulated function failed", __FUNCTION__);
@@ -1563,7 +1563,7 @@ extern "C"
 #elif defined(TARGET_WASM) || !defined(__GLIBC__)
       tmpPos = *pos;
 #else
-      tmpPos.__pos = (off64_t)(pos->__pos);
+      tmpPos.__pos = (off_t)(pos->__pos);
 #endif
       return dll_fsetpos64(stream, &tmpPos);
     }
