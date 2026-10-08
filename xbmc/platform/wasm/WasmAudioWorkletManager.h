@@ -21,7 +21,7 @@ class CWasmAudioWorkletManager
 public:
   static constexpr unsigned int kMaxChannels = 8;
 
-  static CWasmAudioWorkletManager& Instance();
+  static CWasmAudioWorkletManager& GetInstance();
 
   bool Initialize(unsigned int channels, unsigned int requestedSampleRate);
   void Shutdown();

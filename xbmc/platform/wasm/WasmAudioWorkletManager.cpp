@@ -228,7 +228,7 @@ void ClearResumeHooksOnMain(int audioContext)
 
 namespace KODI::PLATFORM::WASM
 {
-CWasmAudioWorkletManager& CWasmAudioWorkletManager::Instance()
+CWasmAudioWorkletManager& CWasmAudioWorkletManager::GetInstance()
 {
   static CWasmAudioWorkletManager instance;
   return instance;

@@ -45,7 +45,7 @@ void CAESinkWasmAudioWorklet::Register()
 
 void CAESinkWasmAudioWorklet::Cleanup()
 {
-  CWasmAudioWorkletManager::Instance().Shutdown();
+  CWasmAudioWorkletManager::GetInstance().Shutdown();
 }
 
 std::unique_ptr<IAESink> CAESinkWasmAudioWorklet::Create(std::string& device,
@@ -67,9 +67,9 @@ void CAESinkWasmAudioWorklet::EnumerateDevicesEx(AEDeviceInfoList& list, bool)
   info.m_displayName = "Browser Audio";
   info.m_displayNameExtra = "Wasm Audio Worklet";
   info.m_deviceType = AE_DEVTYPE_PCM;
-  info.m_channels = ResolveSinkLayout(
-      CWasmAudioWorkletManager::kMaxChannels,
-      CWasmAudioWorkletManager::Instance().GetMaxOutputChannels());
+  info.m_channels =
+      ResolveSinkLayout(CWasmAudioWorkletManager::kMaxChannels,
+                        CWasmAudioWorkletManager::GetInstance().GetMaxOutputChannels());
   info.m_sampleRates = {44100, 48000};
   info.m_dataFormats = {AE_FMT_FLOATP};
   info.m_wantsIECPassthrough = false;
@@ -86,20 +86,20 @@ bool CAESinkWasmAudioWorklet::Initialize(AEAudioFormat& format, std::string& dev
   }
 
   const unsigned int maxOutputChannels =
-      CWasmAudioWorkletManager::Instance().GetMaxOutputChannels();
+      CWasmAudioWorkletManager::GetInstance().GetMaxOutputChannels();
   format.m_channelLayout =
       CAEChannelInfo(ResolveSinkLayout(format.m_channelLayout.Count(), maxOutputChannels));
   const unsigned int channels = format.m_channelLayout.Count();
 
-  if (!CWasmAudioWorkletManager::Instance().Initialize(channels, format.m_sampleRate))
+  if (!CWasmAudioWorkletManager::GetInstance().Initialize(channels, format.m_sampleRate))
     return false;
 
   device = "default";
   format.m_dataFormat = AE_FMT_FLOATP;
-  format.m_sampleRate = CWasmAudioWorkletManager::Instance().GetSampleRate();
+  format.m_sampleRate = CWasmAudioWorkletManager::GetInstance().GetSampleRate();
 
   constexpr unsigned int TARGET_PERIOD_MS = 20;
-  const unsigned int quantum = CWasmAudioWorkletManager::Instance().GetQuantumSize();
+  const unsigned int quantum = CWasmAudioWorkletManager::GetInstance().GetQuantumSize();
   const unsigned int targetFrames = (format.m_sampleRate * TARGET_PERIOD_MS + 999U) / 1000U;
   unsigned int periodFrames = targetFrames;
   if (quantum > 0)
@@ -125,13 +125,13 @@ void CAESinkWasmAudioWorklet::Deinitialize()
   if (!m_initialized)
     return;
 
-  CWasmAudioWorkletManager::Instance().Shutdown();
+  CWasmAudioWorkletManager::GetInstance().Shutdown();
   m_initialized = false;
 }
 
 double CAESinkWasmAudioWorklet::GetCacheTotal()
 {
-  return CWasmAudioWorkletManager::Instance().GetBufferCapacitySeconds();
+  return CWasmAudioWorkletManager::GetInstance().GetBufferCapacitySeconds();
 }
 
 unsigned int CAESinkWasmAudioWorklet::AddPackets(uint8_t** data, unsigned int frames, unsigned int offset)
@@ -139,7 +139,7 @@ unsigned int CAESinkWasmAudioWorklet::AddPackets(uint8_t** data, unsigned int fr
   if (!m_initialized || !data || !data[0])
     return 0;
 
-  const unsigned int channels = CWasmAudioWorkletManager::Instance().GetChannels();
+  const unsigned int channels = CWasmAudioWorkletManager::GetInstance().GetChannels();
   if (channels == 0)
     return 0;
 
@@ -156,14 +156,14 @@ unsigned int CAESinkWasmAudioWorklet::AddPackets(uint8_t** data, unsigned int fr
   }
 
   const unsigned int written =
-      CWasmAudioWorkletManager::Instance().WritePlanar(planes, channels, frames, offset);
+      CWasmAudioWorkletManager::GetInstance().WritePlanar(planes, channels, frames, offset);
   DrainUnderrunLog();
   return written;
 }
 
 void CAESinkWasmAudioWorklet::GetDelay(AEDelayStatus& status)
 {
-  auto& manager = CWasmAudioWorkletManager::Instance();
+  auto& manager = CWasmAudioWorkletManager::GetInstance();
 
   // outputLatency reads 0 until the context has rendered.
   const auto now = std::chrono::steady_clock::now();
@@ -184,17 +184,17 @@ void CAESinkWasmAudioWorklet::Drain()
   if (!m_initialized)
     return;
 
-  CWasmAudioWorkletManager::Instance().Drain();
+  CWasmAudioWorkletManager::GetInstance().Drain();
   DrainUnderrunLog();
 }
 
 void CAESinkWasmAudioWorklet::DrainUnderrunLog()
 {
-  m_pendingUnderrunFrames += CWasmAudioWorkletManager::Instance().ConsumeUnderrunFrames();
+  m_pendingUnderrunFrames += CWasmAudioWorkletManager::GetInstance().ConsumeUnderrunFrames();
   if (m_pendingUnderrunFrames == 0)
     return;
 
-  const unsigned int sampleRate = CWasmAudioWorkletManager::Instance().GetSampleRate();
+  const unsigned int sampleRate = CWasmAudioWorkletManager::GetInstance().GetSampleRate();
   if (sampleRate == 0)
     return;
 
