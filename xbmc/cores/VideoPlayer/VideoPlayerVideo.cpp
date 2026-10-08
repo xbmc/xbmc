@@ -938,8 +938,6 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(VideoPicture* p
     return OUTPUT_DROPPED;
   }
 
-  pPicture->contentRect = m_liveGeometry.OnPicture(*pPicture, m_hints, m_speed);
-
   auto timeToDisplay = std::chrono::milliseconds(DVD_TIME_TO_MSEC(pPicture->pts - iPlayingClock));
 
   // make sure waiting time is not negative
@@ -965,6 +963,8 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(VideoPicture* p
 
     return OUTPUT_AGAIN;
   }
+
+  pPicture->contentRect = m_liveGeometry.OnPicture(*pPicture, m_hints, m_speed);
 
   ProcessOverlays(pPicture, pPicture->pts);
 

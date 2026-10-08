@@ -13593,6 +13593,9 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
       return false;
     }
 
+    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasContentGeometry())
+      SetContentGeometry(idFile, item.GetVideoInfoTag()->m_contentGeometry);
+
     if (!SetArtForItem(idFile, MediaTypeVideoVersion, item.GetArt()))
     {
       RollbackTransaction();
