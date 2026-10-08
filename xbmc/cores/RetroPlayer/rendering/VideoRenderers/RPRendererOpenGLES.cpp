@@ -18,8 +18,6 @@
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
-#include <cstddef>
-
 using namespace KODI;
 using namespace RETRO;
 
@@ -60,24 +58,7 @@ CRPRendererOpenGLES::CRPRendererOpenGLES(const CRenderSettings& renderSettings,
   // Initialize CRPBaseRenderer
   m_shaderPreset = std::make_unique<SHADER::CShaderPresetGLES>(m_context);
 
-  const GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-
-  // Set up main screen VBO
-  glGenBuffers(1, &m_mainVertexVBO);
-
-  glGenBuffers(1, &m_mainIndexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
   m_context.ApplyStateBlock();
-}
-
-CRPRendererOpenGLES::~CRPRendererOpenGLES()
-{
-  glDeleteBuffers(1, &m_mainIndexVBO);
-  glDeleteBuffers(1, &m_mainVertexVBO);
 }
 
 void CRPRendererOpenGLES::RenderInternal(uint8_t alpha)
@@ -206,8 +187,6 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   // Use GUI shader
   m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
-  GLint posLoc = m_context.GUIShaderGetPos();
-  GLint tex0Loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
   GLint depthLoc = m_context.GUIShaderGetDepth();
 
@@ -223,48 +202,16 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
               (col[3] / 255.0f));
   glUniform1f(depthLoc, -1.0f);
 
-  // Setup destination rectangle
+  // Setup texture coordinates
   CRect rect = m_sourceRect;
   rect.x1 /= renderBuffer->GetWidth();
   rect.x2 /= renderBuffer->GetWidth();
   rect.y1 /= renderBuffer->GetHeight();
   rect.y2 /= renderBuffer->GetHeight();
 
-  PackedVertex vertex[4];
-
-  // Setup vertex position values
-  for (unsigned int i = 0; i < 4; i++)
-  {
-    vertex[i].x = m_rotatedDestCoords[i].x;
-    vertex[i].y = m_rotatedDestCoords[i].y;
-    vertex[i].z = 0.0f;
-  }
-
-  // Setup texture coordinates
-  vertex[0].u1 = vertex[3].u1 = rect.x1;
-  vertex[0].v1 = vertex[1].v1 = rect.y1;
-  vertex[1].u1 = vertex[2].u1 = rect.x2;
-  vertex[2].v1 = vertex[3].v1 = rect.y2;
-
-  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_DYNAMIC_DRAW);
-
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glEnableVertexAttribArray(posLoc);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
-  glEnableVertexAttribArray(tex0Loc);
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  // The destination corners are a rotated rectangle: top left, top right, bottom right, bottom left
+  dynamic_cast<CRenderSystemGLES&>(*m_context.Rendering())
+      .DrawGUIQuad(m_rotatedDestCoords[0], m_rotatedDestCoords[1], m_rotatedDestCoords[3], &rect);
 
   m_context.DisableGUIShader();
 }
