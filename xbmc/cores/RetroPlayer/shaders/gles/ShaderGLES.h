@@ -14,6 +14,7 @@
 #include "rendering/gl/GLShader.h"
 
 #include <array>
+#include <optional>
 #include <stdint.h>
 
 namespace KODI::SHADER
@@ -135,5 +136,7 @@ private:
 
   std::array<GLuint, 3> m_shaderVertexVBO{GL_NONE};
   GLuint m_shaderIndexVBO{GL_NONE};
+  // Output size the vertex buffers were last filled for
+  std::optional<float2> m_vertexDataSize;
 };
 } // namespace KODI::SHADER
