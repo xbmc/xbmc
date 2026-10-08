@@ -14,6 +14,7 @@
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationComponents.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "filesystem/AddonsPaths.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -418,8 +419,8 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_ADDONS)
   {
-    const std::vector<std::string> params{"addons://default_binary_addons_source/kodi.pvrclient",
-                                          "return"};
+    const std::vector<std::string> params{
+        std::string{KODI::ADDONS::DEFAULT_BINARY_ADDONS_SOURCE} + "kodi.pvrclient", "return"};
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_ADDON_BROWSER, params);
   }
   else if (settingId == CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME)

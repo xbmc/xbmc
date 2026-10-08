@@ -24,8 +24,6 @@ public:
 
   void OnPostInstall(bool update, bool modal) override;
 
-  bool IsAllowed(const std::string &file) const override;
-
   const CLocale& GetLocale() const { return m_locale; }
 
   const std::string& GetGuiCharset() const { return m_charsetGui; }
@@ -41,6 +39,9 @@ public:
   static std::string GetAddonId(const std::string& locale);
 
   static bool FindLegacyLanguage(const std::string &locale, std::string &legacyLanguage);
+
+protected:
+  Published PublishedFiles() const override;
 
 private:
   CLocale m_locale;

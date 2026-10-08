@@ -12,9 +12,11 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "music/MusicDbPaths.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
+#include "video/VideoDbPaths.h"
 
 CMediaLibraryEvent::CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, EventLevel level /* = EventLevel::Information */)
   : CUniqueEvent(label, description, level),
@@ -65,13 +67,13 @@ bool CMediaLibraryEvent::Execute() const
       if (m_mediaType == MediaTypeVideo)
         path = "sources://video/";
       else if (m_mediaType == MediaTypeMovie)
-        path = "videodb://movies/titles/";
+        path = KODI::VIDEO::DB_PATH::MOVIE_TITLES;
       else if (m_mediaType == MediaTypeVideoCollection)
-        path = "videodb://movies/sets/";
+        path = KODI::VIDEO::DB_PATH::MOVIE_SETS;
       else if (m_mediaType == MediaTypeMusicVideo)
-        path = "videodb://musicvideos/titles/";
+        path = KODI::VIDEO::DB_PATH::MUSICVIDEO_TITLES;
       else if (m_mediaType == MediaTypeTvShow || m_mediaType == MediaTypeSeason || m_mediaType == MediaTypeEpisode)
-        path = "videodb://tvshows/titles/";
+        path = KODI::VIDEO::DB_PATH::TVSHOW_TITLES;
     }
     else
     {
@@ -90,11 +92,11 @@ bool CMediaLibraryEvent::Execute() const
       if (m_mediaType == MediaTypeMusic)
         path = "sources://music/";
       else if (m_mediaType == MediaTypeArtist)
-        path = "musicdb://artists/";
+        path = KODI::MUSIC::DB_PATH::ARTISTS;
       else if (m_mediaType == MediaTypeAlbum)
-        path = "musicdb://albums/";
+        path = KODI::MUSIC::DB_PATH::ALBUMS;
       else if (m_mediaType == MediaTypeSong)
-        path = "musicdb://songs/";
+        path = KODI::MUSIC::DB_PATH::SONGS;
     }
     else
     {

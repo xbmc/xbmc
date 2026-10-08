@@ -31,6 +31,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoDbPaths.h"
 
 #define CONTROL_LABELFILES        12
 
@@ -196,7 +197,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
     items.SetPath("");
     items.Add(mdb);
 
-    CFileItemPtr vdb(new CFileItem("videodb://musicvideos/", true));
+    CFileItemPtr vdb(new CFileItem(VIDEO::DB_PATH::MUSICVIDEOS, true));
     vdb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20389));
     vdb->SetLabelPreformatted(true);
     vdb->SetIsShareOrDrive(true);

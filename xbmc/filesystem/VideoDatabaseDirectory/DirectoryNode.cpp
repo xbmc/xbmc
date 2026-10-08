@@ -31,6 +31,7 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoDbPaths.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -207,7 +208,7 @@ std::string CDirectoryNode::BuildPath() const
     pParent = pParent->GetParent();
   }
 
-  std::string strPath="videodb://";
+  std::string strPath = KODI::VIDEO::DB_PATH::ROOT;
   for (int i = 0; i < static_cast<int>(array.size()); ++i)
     strPath += array[i]+"/";
 

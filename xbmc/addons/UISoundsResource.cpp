@@ -12,9 +12,9 @@
 #include "guilib/GUIAudioManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 
+#include <array>
+#include <string_view>
 
 namespace ADDON
 {
@@ -24,10 +24,11 @@ CUISoundsResource::CUISoundsResource(const AddonInfoPtr& addonInfo)
 {
 }
 
-bool CUISoundsResource::IsAllowed(const std::string& file) const
+CResource::Published CUISoundsResource::PublishedFiles() const
 {
-  return StringUtils::EqualsNoCase(file, "sounds.xml")
-      || URIUtils::HasExtension(file, ".wav");
+  static constexpr std::array<std::string_view, 1> names{"sounds.xml"};
+  static constexpr std::array<std::string_view, 1> extensions{".wav"};
+  return {.names = names, .extensions = extensions};
 }
 
 bool CUISoundsResource::IsInUse() const

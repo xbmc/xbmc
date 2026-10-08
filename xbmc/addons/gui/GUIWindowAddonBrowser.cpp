@@ -26,6 +26,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/AddonsDirectory.h"
+#include "filesystem/AddonsPaths.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/ActionIDs.h"
@@ -230,18 +231,18 @@ void CGUIWindowAddonBrowser::InstallFromZip()
 bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string& player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (item->GetPath() == "addons://install/")
+  if (item->GetPath() == KODI::ADDONS::INSTALL)
   {
     InstallFromZip();
     return true;
   }
-  if (item->GetPath() == "addons://update_all/")
+  if (item->GetPath() == KODI::ADDONS::UPDATE_ALL)
   {
     UpdateAddons updater;
     CGUIDialogBusy::Wait(&updater, 100, true);
     return true;
   }
-  if (item->GetPath() == "addons://update_allowed/")
+  if (item->GetPath() == KODI::ADDONS::UPDATE_ALLOWED)
   {
     UpdateAllowedAddons updater;
     CGUIDialogBusy::Wait(&updater, 100, true);
@@ -266,7 +267,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string& player)
     CGUIDialogAddonInfo::ShowForItem(item);
     return true;
   }
-  if (item->IsPath("addons://search/"))
+  if (item->IsPath(KODI::ADDONS::SEARCH))
   {
     Update(item->GetPath());
     return true;
@@ -642,14 +643,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
 
 std::string CGUIWindowAddonBrowser::GetStartFolder(const std::string& dir)
 {
-  if (StringUtils::StartsWith(dir, "addons://"))
+  if (StringUtils::StartsWith(dir, KODI::ADDONS::ROOT))
   {
-    if (StringUtils::StartsWith(dir, "addons://default_binary_addons_source/"))
+    if (StringUtils::StartsWith(dir, KODI::ADDONS::DEFAULT_BINARY_ADDONS_SOURCE))
     {
       const bool all = CServiceBroker::GetPlatform().SupportsUserInstalledBinaryAddons();
-      std::string startDir = dir;
-      StringUtils::Replace(startDir, "/default_binary_addons_source/", all ? "/all/" : "/user/");
-      return startDir;
+      return (all ? KODI::ADDONS::ALL : KODI::ADDONS::USER) +
+             dir.substr(std::string_view{KODI::ADDONS::DEFAULT_BINARY_ADDONS_SOURCE}.size());
     }
     else
       return dir;
