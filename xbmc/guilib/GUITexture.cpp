@@ -238,6 +238,24 @@ void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
   // setup our renderer
   Begin(color);
 
+  if (m_segmentsDirty)
+    UpdateSegments();
+
+  if (!DrawQuads(m_quads, m_quadsVersion))
+  {
+    for (const Segment& segment : m_segments)
+      Render(segment);
+  }
+
+  // close off our renderer
+  End();
+
+  if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
+    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
+}
+
+void CGUITexture::UpdateSegments()
+{
   // compute the texture coordinates
   float u1, u2, u3, v1, v2, v3;
   u1 = m_info.border.x1;
@@ -257,6 +275,14 @@ void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
     v3 *= m_texCoordsScaleV;
   }
 
+  m_frameU = u3;
+  m_frameV = v3;
+
+  m_segments.clear();
+  const auto add = [this](float left, float top, float right, float bottom, float tu1, float tv1,
+                          float tu2, float tv2)
+  { m_segments.push_back({CRect(left, top, right, bottom), CRect(tu1, tv1, tu2, tv2)}); };
+
   //! @todo The diffuse coloring applies to all vertices, which will
   //!      look weird for stuff with borders, as will the -ve height/width
   //!       for flipping
@@ -265,67 +291,57 @@ void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
   if (m_info.border.x1)
   {
     if (m_info.border.y1)
-      Render(m_vertex.x1, m_vertex.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, 0, 0, u1, v1, u3, v3);
-    Render(m_vertex.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, 0, v1, u1, v2, u3, v3);
+      add(m_vertex.x1, m_vertex.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, 0, 0, u1, v1);
+    add(m_vertex.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, 0, v1, u1, v2);
     if (m_info.border.y2)
-      Render(m_vertex.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x1 + m_info.border.x1, m_vertex.y2, 0, v2, u1, v3, u3, v3);
+      add(m_vertex.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x1 + m_info.border.x1, m_vertex.y2, 0, v2, u1, v3);
   }
   // middle segment (u1,0,u2,v3)
   if (m_info.border.y1)
-    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1, u3, v3);
+    add(m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1);
   if (m_info.m_infill)
-    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1,
-           m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
+    add(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1,
+        m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2);
   if (m_info.border.y2)
-    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3, u3, v3);
+    add(m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3);
   // right segment
   if (m_info.border.x2)
   { // have a left border
     if (m_info.border.y1)
-      Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1, m_vertex.x2, m_vertex.y1 + m_info.border.y1, u2, 0, u3, v1, u3, v3);
-    Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, m_vertex.x2, m_vertex.y2 - m_info.border.y2, u2, v1, u3, v2, u3, v3);
+      add(m_vertex.x2 - m_info.border.x2, m_vertex.y1, m_vertex.x2, m_vertex.y1 + m_info.border.y1, u2, 0, u3, v1);
+    add(m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, m_vertex.x2, m_vertex.y2 - m_info.border.y2, u2, v1, u3, v2);
     if (m_info.border.y2)
-      Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3, u3, v3);
+      add(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2, m_vertex.y2, u2, v2, u3, v3);
   }
 
-  // close off our renderer
-  End();
+  const int orientation = GetOrientation();
+  m_quads.clear();
+  for (const Segment& segment : m_segments)
+  {
+    if (segment.vertex.IsEmpty())
+      continue;
 
-  if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
-    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
+    Quad quad{segment.vertex, segment.texture, segment.texture};
+    OrientateTexCoords(quad.texture, m_diffuse.size() ? &quad.diffuse : nullptr, orientation);
+    m_quads.push_back(quad);
+  }
+
+  m_segmentsDirty = false;
+  ++m_quadsVersion;
 }
 
-void CGUITexture::Render(float left,
-                         float top,
-                         float right,
-                         float bottom,
-                         float u1,
-                         float v1,
-                         float u2,
-                         float v2,
-                         float u3,
-                         float v3)
+void CGUITexture::Render(const Segment& segment)
 {
-  CRect diffuse(u1, v1, u2, v2);
-  CRect texture(u1, v1, u2, v2);
-  CRect vertex(left, top, right, bottom);
+  CRect diffuse(segment.texture);
+  CRect texture(segment.texture);
+  CRect vertex(segment.vertex);
   CServiceBroker::GetWinSystem()->GetGfxContext().ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : NULL);
 
   if (vertex.IsEmpty())
     return; // nothing to render
 
   int orientation = GetOrientation();
-  OrientateTexture(texture, u3, v3, orientation);
-
-  if (m_diffuse.size())
-  {
-    // flip the texture as necessary.  Diffuse just gets flipped according to m_info.orientation.
-    // Main texture gets flipped according to GetOrientation().
-    diffuse.x1 *= m_diffuseScaleU / u3; diffuse.x2 *= m_diffuseScaleU / u3;
-    diffuse.y1 *= m_diffuseScaleV / v3; diffuse.y2 *= m_diffuseScaleV / v3;
-    diffuse += m_diffuseOffset;
-    OrientateTexture(diffuse, m_diffuseU, m_diffuseV, m_info.orientation);
-  }
+  OrientateTexCoords(texture, m_diffuse.size() ? &diffuse : nullptr, orientation);
 
   float x[4], y[4], z[4];
 
@@ -350,6 +366,21 @@ void CGUITexture::Render(float left,
   if (x[3] == x[1]) x[3] += 1.0f;
 
   Draw(x, y, z, texture, diffuse, orientation);
+}
+
+void CGUITexture::OrientateTexCoords(CRect& texture, CRect* diffuse, int orientation) const
+{
+  OrientateTexture(texture, m_frameU, m_frameV, orientation);
+
+  if (diffuse)
+  {
+    // flip the texture as necessary.  Diffuse just gets flipped according to m_info.orientation.
+    // Main texture gets flipped according to GetOrientation().
+    diffuse->x1 *= m_diffuseScaleU / m_frameU; diffuse->x2 *= m_diffuseScaleU / m_frameU;
+    diffuse->y1 *= m_diffuseScaleV / m_frameV; diffuse->y2 *= m_diffuseScaleV / m_frameV;
+    *diffuse += m_diffuseOffset;
+    OrientateTexture(*diffuse, m_diffuseU, m_diffuseV, m_info.orientation);
+  }
 }
 
 bool CGUITexture::AllocResources()
@@ -530,6 +561,7 @@ bool CGUITexture::CalculateSize()
   }
 
   m_invalid = false;
+  m_segmentsDirty = true;
   return true;
 }
 
@@ -561,6 +593,7 @@ void CGUITexture::FreeResources(bool immediately /* = false */)
   // call our implementation
   Free();
 
+  m_segmentsDirty = true;
   m_isAllocated = NO;
   m_lastReadyState.reset(); // reset for next allocation cycle
 }
