@@ -12125,6 +12125,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     movie = root->FirstChildElement();
     std::string lastTitle;
     int lastMovieId{-1};
+    KODI::ART::Artwork lastMovieArt;
     KODI::REGEXP::RegExpCache regexpCache;
     while (movie)
     {
@@ -12168,20 +12169,44 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         }
         // The export writes a movie's versions and extras straight after it
         const bool isExtra{info.GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+        const bool isAsset{lastTitle == currentTitle && (item.HasVideoVersions() || isExtra)};
 
-        // The art exported is the movie's, not an extra's own, so an extra gets what a scan would
-        // give it instead: art of its file's own, and none for a disc's playlist
-        if (isExtra)
+        // The export writes the art of a version or an extra over its movie's. A version takes what
+        // is not the movie's, keeping the movie's art found above for the rest. An extra shows only
+        // its own, so takes what is not the movie's, or failing that what a scan would give it: art
+        // of its file's own, and none for a disc's playlist.
+        KODI::ART::Artwork exportedArt;
+        ImportArtFromXML(movie->FirstChildElement("art"), exportedArt);
+        if (!isAsset)
+          lastMovieArt = exportedArt;
+        else if (!isExtra)
         {
+          for (const auto& [artType, url] : exportedArt)
+          {
+            const auto movieArt{lastMovieArt.find(artType)};
+            if (movieArt == lastMovieArt.end() || movieArt->second != url)
+              item.SetArt(artType, url);
+          }
+        }
+        else
+        {
+          std::erase_if(exportedArt,
+                        [&lastMovieArt](const auto& art)
+                        {
+                          const auto movieArt{lastMovieArt.find(art.first)};
+                          return movieArt != lastMovieArt.end() && movieArt->second == art.second;
+                        });
           item.ClearArt();
-          if (!URIUtils::IsBlurayPath(item.GetPath()))
+          if (!exportedArt.empty())
+            item.SetArt(exportedArt);
+          else if (!URIUtils::IsBlurayPath(item.GetPath()))
           {
             CFileItem fileItem(item.GetPath(), false);
             scanner.GetArtwork(&fileItem, ContentType::MOVIES, true, true, "", useRemoteArt);
             item.SetArt(fileItem.GetArt());
           }
         }
-        if (lastTitle == currentTitle && (item.HasVideoVersions() || isExtra))
+        if (isAsset)
         {
           item.GetVideoInfoTag()->m_iDbId = lastMovieId;
           scanner.AddVideo(&item, nullptr, useFolders, true, nullptr, true,
