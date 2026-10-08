@@ -29,6 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/Song.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
@@ -47,11 +48,13 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "view/GUIViewState.h"
 
 #include <utility>
@@ -725,7 +728,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
         !URIUtils::IsProtocol(pItem->GetPath(), "newtag"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
-  else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
+  else if (StringUtils::StartsWithNoCase(pItem->GetPath(), VIDEO::DB_PATH::MOVIE_SETS) &&
            pItem->GetPath().size() > 22 && pItem->IsFolder())
   {
     CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
@@ -806,6 +809,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+          if (CVideoLibraryQueue::GetInstance().IsRefreshingSource(item->GetPath()))
+            buttons.Add(CONTEXT_BUTTON_STOP_REFRESHING_CONTENT, 13364);
+          else
+            buttons.Add(CONTEXT_BUTTON_REFRESH_ALL_CONTENT, 13363);
         }
         else
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
@@ -956,7 +963,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_GO_TO_ARTIST:
     {
       std::string strPath;
-      strPath = StringUtils::Format("musicdb://artists/{}/",
+      strPath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ARTISTS,
                                     item->GetProperty("artist_musicid").asInteger());
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, strPath);
       return true;
@@ -964,7 +971,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_GO_TO_ALBUM:
     {
       std::string strPath;
-      strPath = StringUtils::Format("musicdb://albums/{}/",
+      strPath = StringUtils::Format("{}{}/", MUSIC::DB_PATH::ALBUMS,
                                     item->GetProperty("album_musicid").asInteger());
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, strPath);
       return true;
@@ -985,6 +992,19 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_SCAN_TO_LIBRARY:
     CGUIDialogVideoInfo::ShowFor(*item);
+    return true;
+
+  case CONTEXT_BUTTON_REFRESH_ALL_CONTENT:
+    if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
+    {
+      HELPERS::ShowOKDialogText(CVariant{13363}, CVariant{14057});
+      return true;
+    }
+    CVideoLibraryQueue::GetInstance().AddJob(new CVideoLibraryRefreshingSourceJob(item->GetPath()));
+    return true;
+
+  case CONTEXT_BUTTON_STOP_REFRESHING_CONTENT:
+    CVideoLibraryQueue::GetInstance().StopRefreshingSource(item->GetPath());
     return true;
 
   default:
@@ -1064,36 +1084,36 @@ std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
 {
   static const auto map = std::map<std::string, std::string>{
       {"files", "sources://video/"},
-      {"inprogresstvshows", "videodb://inprogresstvshows/"},
-      {"movieactors", "videodb://movies/actors/"},
-      {"moviecountries", "videodb://movies/countries/"},
-      {"moviedirectors", "videodb://movies/directors/"},
-      {"moviegenres", "videodb://movies/genres/"},
-      {"movies", "videodb://movies/"},
-      {"moviesets", "videodb://movies/sets/"},
-      {"moviestudios", "videodb://movies/studios/"},
-      {"movietags", "videodb://movies/tags/"},
-      {"movietitles", "videodb://movies/titles/"},
-      {"movieyears", "videodb://movies/years/"},
-      {"musicvideoalbums", "videodb://musicvideos/albums/"},
-      {"musicvideoartists", "videodb://musicvideos/artists/"},
-      {"musicvideodirectors", "videodb://musicvideos/directors/"},
-      {"musicvideogenres", "videodb://musicvideos/genres/"},
-      {"musicvideos", "videodb://musicvideos/"},
-      {"musicvideostudios", "videodb://musicvideos/studios/"},
-      {"musicvideotags", "videodb://musicvideos/tags/"},
-      {"musicvideotitles", "videodb://musicvideos/titles/"},
-      {"musicvideoyears", "videodb://musicvideos/years/"},
-      {"recentlyaddedepisodes", "videodb://recentlyaddedepisodes/"},
-      {"recentlyaddedmovies", "videodb://recentlyaddedmovies/"},
-      {"recentlyaddedmusicvideos", "videodb://recentlyaddedmusicvideos/"},
-      {"tvshowactors", "videodb://tvshows/actors/"},
-      {"tvshowgenres", "videodb://tvshows/genres/"},
-      {"tvshows", "videodb://tvshows/"},
-      {"tvshowstudios", "videodb://tvshows/studios/"},
-      {"tvshowtags", "videodb://tvshows/tags/"},
-      {"tvshowtitles", "videodb://tvshows/titles/"},
-      {"tvshowyears", "videodb://tvshows/years/"},
+      {"inprogresstvshows", VIDEO::DB_PATH::INPROGRESS_TVSHOWS},
+      {"movieactors", VIDEO::DB_PATH::MOVIE_ACTORS},
+      {"moviecountries", VIDEO::DB_PATH::MOVIE_COUNTRIES},
+      {"moviedirectors", VIDEO::DB_PATH::MOVIE_DIRECTORS},
+      {"moviegenres", VIDEO::DB_PATH::MOVIE_GENRES},
+      {"movies", VIDEO::DB_PATH::MOVIES},
+      {"moviesets", VIDEO::DB_PATH::MOVIE_SETS},
+      {"moviestudios", VIDEO::DB_PATH::MOVIE_STUDIOS},
+      {"movietags", VIDEO::DB_PATH::MOVIE_TAGS},
+      {"movietitles", VIDEO::DB_PATH::MOVIE_TITLES},
+      {"movieyears", VIDEO::DB_PATH::MOVIE_YEARS},
+      {"musicvideoalbums", VIDEO::DB_PATH::MUSICVIDEO_ALBUMS},
+      {"musicvideoartists", VIDEO::DB_PATH::MUSICVIDEO_ARTISTS},
+      {"musicvideodirectors", VIDEO::DB_PATH::MUSICVIDEO_DIRECTORS},
+      {"musicvideogenres", VIDEO::DB_PATH::MUSICVIDEO_GENRES},
+      {"musicvideos", VIDEO::DB_PATH::MUSICVIDEOS},
+      {"musicvideostudios", VIDEO::DB_PATH::MUSICVIDEO_STUDIOS},
+      {"musicvideotags", VIDEO::DB_PATH::MUSICVIDEO_TAGS},
+      {"musicvideotitles", VIDEO::DB_PATH::MUSICVIDEO_TITLES},
+      {"musicvideoyears", VIDEO::DB_PATH::MUSICVIDEO_YEARS},
+      {"recentlyaddedepisodes", VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES},
+      {"recentlyaddedmovies", VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES},
+      {"recentlyaddedmusicvideos", VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS},
+      {"tvshowactors", VIDEO::DB_PATH::TVSHOW_ACTORS},
+      {"tvshowgenres", VIDEO::DB_PATH::TVSHOW_GENRES},
+      {"tvshows", VIDEO::DB_PATH::TVSHOWS},
+      {"tvshowstudios", VIDEO::DB_PATH::TVSHOW_STUDIOS},
+      {"tvshowtags", VIDEO::DB_PATH::TVSHOW_TAGS},
+      {"tvshowtitles", VIDEO::DB_PATH::TVSHOW_TITLES},
+      {"tvshowyears", VIDEO::DB_PATH::TVSHOW_YEARS},
   };
 
   const auto it = map.find(StringUtils::ToLower(dir));

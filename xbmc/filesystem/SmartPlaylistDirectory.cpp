@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicDbUrl.h"
 #include "playlists/PlayListTypes.h"
 #include "playlists/SmartPlayList.h"
@@ -25,6 +26,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 
 #include <memory>
@@ -115,9 +117,9 @@ namespace XFILE
         if (strBaseDir.empty())
         {
           if (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode)
-            baseDir = "videodb://tvshows/";
+            baseDir = VIDEO::DB_PATH::TVSHOWS;
           else if (mediaType == MediaTypeMovie)
-            baseDir = "videodb://movies/";
+            baseDir = VIDEO::DB_PATH::MOVIES;
           else
             return false;
 
@@ -174,7 +176,7 @@ namespace XFILE
         std::string baseDir = strBaseDir;
         if (strBaseDir.empty())
         {
-          baseDir = "musicdb://";
+          baseDir = MUSIC::DB_PATH::ROOT;
           if (!isGrouped)
           {
             if (mediaType == MediaTypeArtist)
@@ -231,7 +233,7 @@ namespace XFILE
         std::string baseDir = strBaseDir;
         if (baseDir.empty())
         {
-          baseDir = "videodb://musicvideos/";
+          baseDir = VIDEO::DB_PATH::MUSICVIDEOS;
 
           if (!isGrouped)
             baseDir += "titles";

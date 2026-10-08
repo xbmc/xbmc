@@ -11,8 +11,10 @@
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/XbtManager.h"
 #include "utils/FileUtils.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+
+#include <array>
+#include <string_view>
 
 namespace ADDON
 {
@@ -33,16 +35,10 @@ void CImageResource::OnPreUnInstall()
   XFILE::CXbtManager::GetInstance().Release(xbtUrl);
 }
 
-bool CImageResource::IsAllowed(const std::string &file) const
+CResource::Published CImageResource::PublishedFiles() const
 {
-  // check if the file path points to a directory
-  if (URIUtils::HasSlashAtEnd(file, true))
-    return true;
-
-  std::string ext = URIUtils::GetExtension(file);
-  return file.empty() ||
-         StringUtils::EqualsNoCase(ext, ".png") ||
-         StringUtils::EqualsNoCase(ext, ".jpg");
+  static constexpr std::array<std::string_view, 2> extensions{".png", ".jpg"};
+  return {.extensions = extensions};
 }
 
 std::string CImageResource::GetFullPath(const std::string &filePath) const

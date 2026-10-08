@@ -17,6 +17,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicDbUrl.h"
 #include "playlists/SmartPlayList.h"
 #include "resources/LocalizeStrings.h"
@@ -31,6 +32,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 
 #include <algorithm>
@@ -573,12 +575,12 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 
   delete m_dbUrl;
   bool video = false;
-  if (path.starts_with("videodb://"))
+  if (path.starts_with(VIDEO::DB_PATH::ROOT))
   {
     m_dbUrl = new CVideoDbUrl();
     video = true;
   }
-  else if (path.starts_with("musicdb://"))
+  else if (path.starts_with(MUSIC::DB_PATH::ROOT))
     m_dbUrl = new CMusicDbUrl();
   else
   {

@@ -28,6 +28,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
@@ -1665,7 +1666,7 @@ void CFileItem::SetFromSong(const CSong &song)
   if (song.idSong > 0)
   {
     std::string strExt = URIUtils::GetExtension(song.strFileName);
-    SetPath(StringUtils::Format("musicdb://songs/{}{}", song.idSong, strExt));
+    SetPath(StringUtils::Format("{}{}{}", MUSIC::DB_PATH::SONGS, song.idSong, strExt));
   }
   else if (!song.strFileName.empty())
   {

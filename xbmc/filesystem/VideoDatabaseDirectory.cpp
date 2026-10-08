@@ -25,6 +25,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbPaths.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -332,7 +333,7 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
   switch (GetDirectoryChildType(path))
   {
     case NodeType::TITLE_MOVIES:
-      if (URIUtils::PathEquals(path, "videodb://movies/titles/"))
+      if (URIUtils::PathEquals(path, KODI::VIDEO::DB_PATH::MOVIE_TITLES))
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))
@@ -341,7 +342,7 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
       }
       return "";
     case NodeType::TITLE_TVSHOWS:
-      if (URIUtils::PathEquals(path, "videodb://tvshows/titles/"))
+      if (URIUtils::PathEquals(path, KODI::VIDEO::DB_PATH::TVSHOW_TITLES))
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))
@@ -350,7 +351,7 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
       }
       return "";
     case NodeType::TITLE_MUSICVIDEOS:
-      if (URIUtils::PathEquals(path, "videodb://musicvideos/titles/"))
+      if (URIUtils::PathEquals(path, KODI::VIDEO::DB_PATH::MUSICVIDEO_TITLES))
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))

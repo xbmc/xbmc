@@ -16,8 +16,6 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/log.h"
 
-#include <regex>
-
 using namespace KODI::SHADER;
 
 CShaderPresetGL::CShaderPresetGL(RETRO::CRenderContext& context,
@@ -52,8 +50,7 @@ bool CShaderPresetGL::CreateShaders()
     const std::string& shaderSource = pass.vertexSource; // Also contains fragment source
     const std::string& shaderPath = pass.sourcePath;
 
-    // Get only the parameters belonging to this specific shader
-    ShaderParameterMap passParameters = GetShaderParameters(pass.parameters, pass.vertexSource);
+    ShaderParameterMap passParameters = GetShaderParameters(pass.parameters);
 
     // Create the shader
     auto videoShader = std::make_unique<CShaderGL>();

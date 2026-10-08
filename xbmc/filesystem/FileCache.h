@@ -17,6 +17,8 @@
 #include <chrono>
 #include <memory>
 
+class TestFileCache;
+
 using namespace std::chrono_literals;
 
 namespace XFILE
@@ -90,6 +92,10 @@ public:
     CFileCache(unsigned int flags, std::unique_ptr<IFileCacheSource> source);
 
   private:
+    // Allow the EOF regression test to observe seek waiters without exposing
+    // the events
+    friend class ::TestFileCache;
+
     std::unique_ptr<CCacheStrategy> m_pCache;
     int m_seekPossible = 0;
     std::unique_ptr<IFileCacheSource> m_source;
