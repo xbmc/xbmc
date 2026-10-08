@@ -141,9 +141,10 @@ void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
                                           AddDiscExtras(item->GetPath(), dbId)))
           return;
 
-        // An extra already in the library keeps any name or art it has since been given
+        // An extra already in the library keeps any name or art it has since been given. A version
+        // is left one, as converting it would make the movie's own file the extra.
         if (const VideoAssetInfo asset{m_database.GetVideoVersionInfo(item->GetPath())};
-            asset.m_assetType == VideoAssetType::EXTRA && asset.m_idMedia == dbId)
+            asset.m_assetType != VideoAssetType::UNKNOWN && asset.m_idMedia == dbId)
           return;
 
         const std::string extraTypeName =
