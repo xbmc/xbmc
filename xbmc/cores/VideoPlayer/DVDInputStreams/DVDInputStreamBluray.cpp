@@ -692,6 +692,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
 int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
 {
   int result = 0;
+  if (m_navmode && !m_clipStart.empty() && !m_clipStartHeld && m_clipStartOffset == 0)
+    DropClipStartOnJump();
   if (!m_clipStart.empty())
   {
     if (m_clipStartHeld)
@@ -735,6 +737,11 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
           if(m_hold != HOLD_DATA)
           {
             m_hold = HOLD_HELD;
+            if (m_event.event == BD_EVENT_PLAYITEM && result > 0)
+            {
+              HoldClipStart(buf, result);
+              return 0;
+            }
             return result;
           }
           break;
@@ -750,10 +757,34 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
           break;
       }
 
+      const bool queued = m_event.event != BD_EVENT_NONE && m_hold != HOLD_DATA;
       if(result > 0)
         m_hold = HOLD_NONE;
 
       ProcessEvent();
+
+      // a clip open can queue its play item behind other events of the same read
+      while (result > 0 && queued && m_hold == HOLD_NONE && bd_get_event(m_bd, &m_event))
+      {
+        switch (m_event.event)
+        {
+          case BD_EVENT_PLAYITEM:
+            m_hold = HOLD_HELD;
+            HoldClipStart(buf, result);
+            return 0;
+          case BD_EVENT_SEEK:
+          case BD_EVENT_TITLE:
+          case BD_EVENT_ANGLE:
+          case BD_EVENT_PLAYLIST:
+          case BD_EVENT_STILL_TIME:
+            m_hold = HOLD_HELD;
+            return result;
+
+          default:
+            break;
+        }
+        ProcessEvent();
+      }
 
     } while(result == 0);
 
@@ -771,16 +802,59 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
     // the read starts the new clip, which the demuxer being reset must not consume
     if (discontinuity && result > 0 && m_player)
     {
-      m_clipStart.assign(buf, buf + result);
-      m_clipStartOffset = 0;
-      m_clipStartHeld = true;
-      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - holding {} bytes of the new clip", result);
+      HoldClipStart(buf, result);
       return 0;
     }
     if (result > 0)
       m_readPos += result;
   }
   return result;
+}
+
+void CDVDInputStreamBluray::HoldClipStart(const uint8_t* buf, int size)
+{
+  m_clipStart.assign(buf, buf + size);
+  m_clipStartOffset = 0;
+  m_clipStartHeld = true;
+  m_clipStartEnd = bd_tell(m_bd);
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - holding {} bytes of the new clip", size);
+}
+
+// a menu action or a disc program can move away from the held play item during the hold; an HDMV
+// jump is reported only when the VM runs again, a BD-J reposition shows only in the read position
+void CDVDInputStreamBluray::DropClipStartOnJump()
+{
+  while (true)
+  {
+    if (bd_read_ext(m_bd, nullptr, 0, &m_event) < 0)
+    {
+      m_hold = HOLD_ERROR;
+      break;
+    }
+    if (m_event.event == BD_EVENT_NONE)
+      break;
+
+    switch (m_event.event)
+    {
+      case BD_EVENT_SEEK:
+      case BD_EVENT_TITLE:
+      case BD_EVENT_ANGLE:
+      case BD_EVENT_PLAYLIST:
+      case BD_EVENT_PLAYLIST_STOP:
+        m_clipStart.clear();
+        break;
+      default:
+        break;
+    }
+    ProcessEvent();
+    if (m_hold == HOLD_ERROR || m_hold == HOLD_EXIT)
+      break;
+  }
+
+  if (m_hold == HOLD_ERROR || m_hold == HOLD_EXIT || bd_tell(m_bd) != m_clipStartEnd)
+    m_clipStart.clear();
+  else if (!m_clipStart.empty() && m_hold == HOLD_DATA)
+    m_hold = HOLD_NONE;
 }
 
 int CDVDInputStreamBluray::ReadBlocks(uint8_t* buf, int lba, int num_blocks)
