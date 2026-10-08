@@ -18,6 +18,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicDbUrl.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/infoscanner/MusicInfoScanner.h"
@@ -349,7 +350,7 @@ static int RefreshArtist(const std::vector<std::string>& params)
 
   // Set the artist id on the musicdb url
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://artists/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ARTISTS))
     return -1;
   musicUrl.AddOption("artistid", params.front());
 
@@ -371,7 +372,7 @@ static int RefreshAlbum(const std::vector<std::string>& params)
 
   // Set the album id on the musicdb url
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://albums/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ALBUMS))
     return -1;
   musicUrl.AddOption("albumid", params.front());
 

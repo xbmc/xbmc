@@ -21,6 +21,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
 #include "playlists/SmartPlayList.h"
@@ -338,7 +339,7 @@ bool CPartyModeManager::AddRandomSongs()
       CMusicDatabase database;
       if (database.Open())
       {
-        database.GetSongsFullByWhere("musicdb://songs/", items, SortDescription,
+        database.GetSongsFullByWhere(MUSIC::DB_PATH::SONGS, items, SortDescription,
                                      CDatabase::Filter(sqlWhereMusic), true);
 
         // Get artist and album properties for songs

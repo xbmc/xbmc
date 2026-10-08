@@ -20,6 +20,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "imagefiles/ImageFileURL.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -357,8 +358,9 @@ NPT_Result PopulateObjectFromTag(CMusicInfoTag& tag,
   object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
   if (tag.GetDatabaseId() >= 0)
   {
-    object.m_ReferenceID = EncodeObjectId(StringUtils::Format(
-        "musicdb://songs/{}{}", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL())));
+    object.m_ReferenceID =
+        EncodeObjectId(StringUtils::Format("{}{}{}", MUSIC::DB_PATH::SONGS, tag.GetDatabaseId(),
+                                           URIUtils::GetExtension(tag.GetURL())));
   }
   if (object.m_ReferenceID == object.m_ObjectID)
     object.m_ReferenceID = "";

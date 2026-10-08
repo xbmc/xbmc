@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicDbUrl.h"
 #include "playlists/PlayListTypes.h"
 #include "playlists/SmartPlayList.h"
@@ -174,7 +175,7 @@ namespace XFILE
         std::string baseDir = strBaseDir;
         if (strBaseDir.empty())
         {
-          baseDir = "musicdb://";
+          baseDir = MUSIC::DB_PATH::ROOT;
           if (!isGrouped)
           {
             if (mediaType == MediaTypeArtist)
