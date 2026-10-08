@@ -24,23 +24,30 @@ bool PVR::CPVRChannelGroupImageFileLoader::CanLoad(const std::string& specialTyp
 std::unique_ptr<CTexture> PVR::CPVRChannelGroupImageFileLoader::Load(
     const IMAGE_FILES::CImageFileURL& imageFile) const
 {
-  const CPVRGUIDirectory channelGroupDir(imageFile.GetTargetFile());
-  CFileItemList channels;
-  if (!channelGroupDir.GetChannelsDirectory(channels))
-  {
-    return {};
-  }
-
-  std::vector<std::string> channelIcons;
-  for (const auto& channel : channels)
-  {
-    const std::string& icon = channel->GetArt("thumb");
-    if (!icon.empty())
-      channelIcons.emplace_back(IMAGE_FILES::CImageFileURL(icon).GetTargetFile());
-
-    if (channelIcons.size() == 9) // limit number of tiles
-      break;
-  }
+  std::vector<std::string> channelIcons{GetChannelGroupIcons(imageFile.GetTargetFile())};
+  for (auto& icon : channelIcons)
+    icon = IMAGE_FILES::CImageFileURL(icon).GetTargetFile();
 
   return CPicture::CreateTiledThumb(channelIcons);
+}
+
+std::vector<std::string> PVR::CPVRChannelGroupImageFileLoader::GetChannelGroupIcons(
+    const std::string& groupPath)
+{
+  std::vector<std::string> icons;
+  const CPVRGUIDirectory channelGroupDir(groupPath);
+  CFileItemList channels;
+  if (!channelGroupDir.GetChannelsDirectory(channels))
+    return icons;
+
+  for (const auto& channel : channels)
+  {
+    const std::string& icon{channel->GetArt("thumb")};
+    if (!icon.empty())
+      icons.emplace_back(icon);
+
+    if (icons.size() == 9) // limit number of tiles
+      break;
+  }
+  return icons;
 }
