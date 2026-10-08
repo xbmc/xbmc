@@ -65,14 +65,26 @@ public:
   /*!
    \brief Add the video extras folders of a movie whose folder holds its disc structure. Such a
    folder is listed as the disc's file, so its extras folders are not in the listing scanned.
-   An extras folder is looked at only where it has changed since it was last added.
+   An extras folder is looked at only where it has changed since it was last added, unless rescan.
    \param discFolder the folder holding the movie's disc structure
    \param discChanged whether that folder has changed, so may hold a new extras folder
    \param regexps the exclusions, which the fast hash of an extras folder covers
+   \param rescan whether an extras folder is looked at even where it hasn't changed
    */
   void AddVideoExtrasBesideDisc(const std::string& discFolder,
                                 bool discChanged,
-                                const std::vector<std::string>& regexps);
+                                const std::vector<std::string>& regexps,
+                                bool rescan = false);
+
+  /*!
+   \brief Add the extras of a movie being refreshed: those each of its blurays names, and those of
+   the extras folders beside its files, whether or not they have changed since they were last
+   added. A scan finds these as it lists the movie's folders, which a refresh does not.
+   \param dbId the movie, once its versions and extras are its own
+   \param useFolderNames whether the movie's folder names it, without which it has no extras folders
+   \param regexps the exclusions, which the fast hash of an extras folder covers
+   */
+  void AddMovieExtras(int dbId, bool useFolderNames, const std::vector<std::string>& regexps);
 
   /*!
    \brief Record that the scan added a movie from an export's full nfo. Its extras are then only

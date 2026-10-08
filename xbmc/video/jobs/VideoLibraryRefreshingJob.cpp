@@ -682,8 +682,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       }
     }
 
-    if (scraper->Content() == ADDON::ContentType::MOVIES)
-      scanner.AddMovieDiscExtras(*items[0]);
+    // as the movie's folders are not listed, its discs and extras folders are looked at here
+    if (scraper->Content() == ADDON::ContentType::MOVIES && m_item->GetVideoInfoTag()->m_iDbId > 0)
+      scanner.AddMovieExtras(m_item->GetVideoInfoTag()->m_iDbId, scanSettings.parent_name);
 
     // we're finally done
     MarkFinished();

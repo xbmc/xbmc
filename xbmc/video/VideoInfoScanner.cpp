@@ -1031,13 +1031,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return FoundSomeInfo;
   }
 
-  void CVideoInfoScanner::AddMovieDiscExtras(const CFileItem& item)
+  void CVideoInfoScanner::AddMovieExtras(int dbId, bool useFolderNames)
   {
     if (m_ignoreVideoExtras)
       return;
 
     m_database.Open();
-    m_extras.AddMovieDiscExtras(item);
+    m_extras.AddMovieExtras(dbId, useFolderNames,
+                            m_advancedSettings->m_moviesExcludeFromScanRegExps);
     m_database.Close();
   }
 

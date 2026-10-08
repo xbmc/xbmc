@@ -26,6 +26,7 @@
 #include "utils/Artwork.h"
 #include "utils/DiscsUtils.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -302,7 +303,8 @@ void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
 
 void CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFolder,
                                                        bool discChanged,
-                                                       const std::vector<std::string>& regexps)
+                                                       const std::vector<std::string>& regexps,
+                                                       bool rescan /* = false */)
 {
   // A new extras folder changes the disc's folder, so is found by listing it. A file added to an
   // extras folder changes only that, so those already known are each looked at.
@@ -353,7 +355,7 @@ void CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
       items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
       UTILS::GetPathHash(items, hash);
     }
-    if (std::string dbHash; !hash.empty() && m_database.GetPathHash(folder, dbHash) &&
+    if (std::string dbHash; !rescan && !hash.empty() && m_database.GetPathHash(folder, dbHash) &&
                             StringUtils::EqualsNoCase(hash, dbHash))
       continue;
 
@@ -375,6 +377,60 @@ void CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
     if (!hash.empty())
       m_database.SetPathHash(folder, hash);
   }
+}
+
+void CVideoInfoScannerExtras::AddMovieExtras(int dbId,
+                                             bool useFolderNames,
+                                             const std::vector<std::string>& regexps)
+{
+  CFileItemList versions;
+  m_database.GetVideoVersions(VideoDbContentType::MOVIES, dbId, versions, VideoAssetType::VERSION);
+
+  // A disc holding several versions is read once
+  std::set<std::string> discs;
+  std::set<std::string> folders;
+  std::vector<CRegExp> folderStacks{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_folderStackRegExps};
+  for (const auto& version : versions)
+  {
+    // A movie on several discs is stored under its stack, whose discs are read together
+    const std::string& file{version->GetDynPath()};
+    const std::string disc{URIUtils::IsBlurayPath(file) ? URIUtils::GetDiscFile(file) : file};
+    if (discs.insert(disc).second)
+      AddMovieDiscExtras(CFileItem{disc, false});
+
+    std::vector<std::string> paths{disc};
+    if (URIUtils::IsStack(disc))
+    {
+      paths.clear();
+      CStackDirectory::GetPaths(disc, paths);
+    }
+    for (std::string path : paths)
+    {
+      // The folder holding the movie's file, disc structure or archive
+      if (URIUtils::IsBlurayPath(path))
+        path = URIUtils::GetDiscFile(path);
+      if (URIUtils::IsInArchive(path))
+        path = CURL(path).GetHostName();
+      std::string folder{URIUtils::IsOpticalMediaFile(path) ? URIUtils::RemoveDiscPath(path)
+                                                            : URIUtils::GetDirectory(path)};
+      URIUtils::AddSlashAtEnd(folder);
+      folders.insert(folder);
+
+      // The extras folders of a movie on several discs (Disc 1, Disc 2) are beside them
+      std::string name{folder};
+      StringUtils::ToLower(name);
+      URIUtils::RemoveSlashAtEnd(name);
+      if (std::ranges::any_of(folderStacks,
+                              [&name](CRegExp& regExp) { return regExp.RegFind(name) != -1; }))
+        folders.insert(URIUtils::GetParentPath(folder));
+    }
+  }
+
+  if (!useFolderNames)
+    return;
+  for (const std::string& folder : folders)
+    AddVideoExtrasBesideDisc(folder, true, regexps, true);
 }
 
 bool CVideoInfoScannerExtras::AddNfoDiscExtras(const std::string& disc,
