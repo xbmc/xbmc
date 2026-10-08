@@ -12180,9 +12180,11 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
             item.AppendArt(setArt, "set");
           }
         }
-        // The export writes a movie's versions and extras straight after it
+        // The export writes a movie's versions and extras straight after it. A movie's own entry is
+        // marked as its default, so another movie of the same title after it is not taken as one.
         const bool isExtra{info.GetAssetInfo().GetType() == VideoAssetType::EXTRA};
-        const bool isAsset{lastTitle == currentTitle && (item.HasVideoVersions() || isExtra)};
+        const bool isAsset{lastTitle == currentTitle && !info.IsDefaultVideoVersion() &&
+                           (item.HasVideoVersions() || isExtra)};
 
         // The export writes the art of a version or an extra over its movie's. A version takes what
         // is not the movie's, keeping the movie's art found above for the rest. An extra shows only
