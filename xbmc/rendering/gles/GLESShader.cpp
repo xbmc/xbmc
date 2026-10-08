@@ -60,12 +60,18 @@ void CGLESShader::OnCompiledAndLinked()
   m_hCoordStep = glGetUniformLocation(ProgramHandle(), "m_cordStep");
   m_hDepth = glGetUniformLocation(ProgramHandle(), "m_depth");
   m_hPma = glGetUniformLocation(ProgramHandle(), "m_pma");
+  m_hGUIMatrix = glGetUniformLocation(ProgramHandle(), "m_gui");
+  m_hSnap = glGetUniformLocation(ProgramHandle(), "m_snap");
+  m_hQuadClip = glGetUniformLocation(ProgramHandle(), "m_quadClip");
 
   // Vertex attributes
   m_hPos    = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
   m_hCol    = glGetAttribLocation(ProgramHandle(),  "m_attrcol");
   m_hCord0  = glGetAttribLocation(ProgramHandle(),  "m_attrcord0");
   m_hCord1  = glGetAttribLocation(ProgramHandle(),  "m_attrcord1");
+  m_hAttrSnap = glGetAttribLocation(ProgramHandle(), "m_attrsnap");
+  m_hAttrGrad0 = glGetAttribLocation(ProgramHandle(), "m_attrgrad0");
+  m_hAttrGrad1 = glGetAttribLocation(ProgramHandle(), "m_attrgrad1");
 
   // It's okay to do this only one time. Textures units never change.
   glUseProgram( ProgramHandle() );
@@ -173,6 +179,14 @@ bool CGLESShader::OnEnabled()
 
   glUniform1f(m_hBrightness, 0.0f);
   glUniform1f(m_hContrast, 1.0f);
+  // clang-format off
+  static constexpr GLfloat identity[16] = {1.0f, 0.0f, 0.0f, 0.0f,
+                                           0.0f, 1.0f, 0.0f, 0.0f,
+                                           0.0f, 0.0f, 1.0f, 0.0f,
+                                           0.0f, 0.0f, 0.0f, 1.0f};
+  // clang-format on
+  glUniformMatrix4fv(m_hGUIMatrix, 1, GL_FALSE, identity);
+  glUniform1f(m_hSnap, 0.0f);
 
   // Default to straight-alpha math for all consumers; the one site that draws
   // premultiplied-alpha textures (COverlayTextureGLES) overrides this to 1.0

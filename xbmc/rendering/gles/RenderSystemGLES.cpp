@@ -171,7 +171,6 @@ bool CRenderSystemGLES::DestroyRenderSystem()
   // The DrawQuad callback holds a reference to m_quadDrawer; nothing may draw through it from now on.
   CGUITexture::UnregisterDrawQuad();
   m_quadDrawer.Destroy();
-  m_guiVertexBuffer.Destroy();
   m_guiQuadIndexBuffer.Destroy();
   m_bRenderCreated = false;
 
@@ -784,6 +783,54 @@ GLint CRenderSystemGLES::GUIShaderGetPma()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetPmaLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetGUIMatrix()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetGUIMatrixLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetSnap()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetSnapLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetAttrSnap()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetAttrSnapLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetQuadClip()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetQuadClipLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetAttrGrad0()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetAttrGrad0Loc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetAttrGrad1()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetAttrGrad1Loc();
 
   return -1;
 }
