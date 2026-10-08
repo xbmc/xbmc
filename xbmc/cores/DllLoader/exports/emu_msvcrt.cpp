@@ -1499,7 +1499,7 @@ extern "C"
 #if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
     defined(TARGET_ANDROID)
     *pos = (fpos_t)tmpPos;
-#elif defined(TARGET_WASM)
+#elif defined(TARGET_WASM) || !defined(__GLIBC__)
     *pos = tmpPos;
 #else
     pos->__pos = (off_t)tmpPos.__pos;
@@ -1515,7 +1515,7 @@ extern "C"
 #if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
     defined(TARGET_ANDROID)
       *pos = pFile->GetPosition();
-#elif defined(TARGET_WASM)
+#elif defined(TARGET_WASM) || !defined(__GLIBC__)
       pos->__lldata = static_cast<long long>(pFile->GetPosition());
 #else
       pos->__pos = pFile->GetPosition();
@@ -1534,7 +1534,7 @@ extern "C"
 #if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
     defined(TARGET_ANDROID)
       if (dll_lseeki64(fd, *pos, SEEK_SET) >= 0)
-#elif defined(TARGET_WASM)
+#elif defined(TARGET_WASM) || !defined(__GLIBC__)
       if (dll_lseeki64(fd, static_cast<__off64_t>(pos->__lldata), SEEK_SET) >= 0)
 #else
       if (dll_lseeki64(fd, (__off64_t)pos->__pos, SEEK_SET) >= 0)
@@ -1560,7 +1560,7 @@ extern "C"
 #if !defined(TARGET_POSIX) || defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || \
     defined(TARGET_ANDROID)
       tmpPos= *pos;
-#elif defined(TARGET_WASM)
+#elif defined(TARGET_WASM) || !defined(__GLIBC__)
       tmpPos = *pos;
 #else
       tmpPos.__pos = (off64_t)(pos->__pos);
