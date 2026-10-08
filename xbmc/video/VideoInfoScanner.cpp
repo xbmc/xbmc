@@ -1660,12 +1660,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
       int index{1};
       while (true)
       {
+        // The item is reused for every entry, so must not keep the art found for the one before
         tag->Reset();
+        item.ClearArt();
         const InfoType versionResult{loader->LoadVersion(++index, *tag)};
         if (versionResult == InfoType::NONE)
           break; // No further <movie> entries
         if (versionResult != InfoType::FULL)
           continue; // Entry cannot stand alone as a version - skip it, but keep looking
+
+        // An entry holds the movie's art, which an extra shows none of. Its own is beside it.
+        if (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA)
+        {
+          tag->m_strPictureURL.Clear();
+          tag->m_fanart.Clear();
+        }
 
         // A <playlist> nfo element identifies the disc playlist the info belongs to.
         // The item is reused for every entry, so a version without one must not inherit the
