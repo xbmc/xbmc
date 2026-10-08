@@ -47,6 +47,8 @@ void BaseVideoFilterShader::OnCompiledAndLinked()
   m_hAlpha  = glGetUniformLocation(ProgramHandle(), "m_alpha");
   m_hProj  = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
+  m_hQuad = glGetUniformLocation(ProgramHandle(), "m_quad");
+  m_hTexRect = glGetUniformLocation(ProgramHandle(), "m_texRect");
 }
 
 bool BaseVideoFilterShader::OnEnabled()
@@ -54,6 +56,8 @@ bool BaseVideoFilterShader::OnEnabled()
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
+  glUniformMatrix4fv(m_hQuad, 1, GL_FALSE, m_quad.data());
+  glUniform4f(m_hTexRect, m_texRect.x1, m_texRect.y1, m_texRect.Width(), m_texRect.Height());
   return true;
 }
 
