@@ -1234,7 +1234,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return ::UTILS::DISCS::IsBlurayDiscImage(path) || URIUtils::IsBDFile(path);
   }
 
-  bool ResolveBlurayStack(CFileItem* item)
+  // A part without a playlist has one chosen for it, unless choosePlaylists is false
+  bool ResolveBlurayStack(CFileItem* item, bool choosePlaylists = true)
   {
     const std::string originalPath{item->GetDynPath()};
 
@@ -1260,6 +1261,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (!IsBluray(path) && !playlistChosen)
       {
         fileParts.emplace_back(part);
+        playlistPaths.emplace_back(path);
+        continue;
+      }
+      if (!playlistChosen && !choosePlaylists)
+      {
         playlistPaths.emplace_back(path);
         continue;
       }
@@ -1606,9 +1612,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                            m_database.GetMovieId(pItem->GetDynPath()) < 0};
 
       // Refreshing the recorded playlists gives the durations, and so the stack times, that the
-      // nfo does not hold
+      // nfo does not hold. A part the nfo records no playlist for stays the disc.
       if (URIUtils::IsStack(item.GetDynPath()) && ApplyStackParts(&item, loader->GetStackParts()))
-        ResolveBlurayStack(&item);
+        ResolveBlurayStack(&item, false);
 
       CVideoInfoTag* tag{item.GetVideoInfoTag()};
       if (tag->HasVideoVersions())
