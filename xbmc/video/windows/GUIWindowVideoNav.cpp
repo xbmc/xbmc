@@ -51,6 +51,7 @@
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "view/GUIViewState.h"
 
 #include <utility>
@@ -805,6 +806,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+          if (CVideoLibraryQueue::GetInstance().IsRefreshingSource(item->GetPath()))
+            buttons.Add(CONTEXT_BUTTON_STOP_REFRESHING_CONTENT, 13364);
+          else
+            buttons.Add(CONTEXT_BUTTON_REFRESH_ALL_CONTENT, 13363);
         }
         else
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
@@ -984,6 +989,19 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_SCAN_TO_LIBRARY:
     CGUIDialogVideoInfo::ShowFor(*item);
+    return true;
+
+  case CONTEXT_BUTTON_REFRESH_ALL_CONTENT:
+    if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
+    {
+      HELPERS::ShowOKDialogText(CVariant{13363}, CVariant{14057});
+      return true;
+    }
+    CVideoLibraryQueue::GetInstance().AddJob(new CVideoLibraryRefreshingSourceJob(item->GetPath()));
+    return true;
+
+  case CONTEXT_BUTTON_STOP_REFRESHING_CONTENT:
+    CVideoLibraryQueue::GetInstance().StopRefreshingSource(item->GetPath());
     return true;
 
   default:
