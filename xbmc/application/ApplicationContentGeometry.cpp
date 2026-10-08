@@ -346,20 +346,3 @@ float CApplicationContentGeometry::MaskAspectLocked() const
 {
   return m_inputs.cached.HasRecord() ? WidestAspect(m_inputs.cached.record) : 0.0f;
 }
-
-float CApplicationContentGeometry::DetectedAspect() const
-{
-  std::unique_lock lock(m_section);
-  return m_haveStream ? ResolveDetectedAspect(m_inputs) : 0.0f;
-}
-
-void CApplicationContentGeometry::ApplyDeclaredAspect(CApplicationPlayer& player, float ratio)
-{
-  CVideoSettings vs = player.GetVideoSettings();
-  if (ratio > 0.0f)
-    vs.DeclareAspect(ratio, DetectedAspect());
-  else
-    vs.ClearDeclaredAspect();
-
-  player.SetVideoSettings(vs);
-}
