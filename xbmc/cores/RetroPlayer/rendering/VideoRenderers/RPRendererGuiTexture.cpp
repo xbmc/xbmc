@@ -20,6 +20,10 @@
 using namespace DirectX;
 #endif
 
+#if defined(HAS_GLES)
+#include "rendering/gles/RenderSystemGLES.h"
+#endif
+
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "utils/GLUtils.h"
 
@@ -248,12 +252,7 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
 
   GLubyte col[4];
-  GLfloat ver[4][3];
-  GLfloat tex[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
 
-  GLint posLoc = m_context.GUIShaderGetPos();
-  GLint tex0Loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
   GLint depthLoc = m_context.GUIShaderGetDepth();
 
@@ -263,40 +262,15 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   col[2] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::B, color);
   col[3] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::A, color);
 
-  for (unsigned int i = 0; i < 4; i++)
-  {
-    // Setup vertex position values
-    ver[i][0] = m_rotatedDestCoords[i].x;
-    ver[i][1] = m_rotatedDestCoords[i].y;
-    ver[i][2] = 0.0f;
-  }
-
-  // Setup texture coordinates
-  tex[0][0] = tex[3][0] = u1;
-  tex[0][1] = tex[1][1] = v1;
-  tex[1][0] = tex[2][0] = u2;
-  tex[2][1] = tex[3][1] = v2;
-
-  m_posVBO.SetData(ver, GL_STREAM_DRAW);
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, 0);
-  glEnableVertexAttribArray(posLoc);
-
-  m_texVBO.SetData(tex, GL_STREAM_DRAW);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, 0);
-  glEnableVertexAttribArray(tex0Loc);
-
-  m_IBO.SetDataOnce(idx);
-
   glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
               (col[3] / 255.0f));
   glUniform1f(depthLoc, -1.0f);
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  // The destination corners are a rotated rectangle: top left, top right, bottom right, bottom left
+  const CRect texCoords(u1, v1, u2, v2);
+  dynamic_cast<CRenderSystemGLES&>(*m_context.Rendering())
+      .DrawGUIQuad(m_rotatedDestCoords[0], m_rotatedDestCoords[1], m_rotatedDestCoords[3],
+                   &texCoords);
 
   m_context.DisableGUIShader();
 
