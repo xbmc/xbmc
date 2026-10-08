@@ -26174,11 +26174,7 @@ msgid "Draws a frame at each aspect ratio you choose, for aligning a projector t
 msgstr ""
 
 
-#. Label for the OSD video setting that declares the content's aspect ratio, overriding detection
-#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
-msgctxt "#40863"
-msgid "Content aspect ratio"
-msgstr ""
+#empty string with id 40863
 
 #. Option of setting "videoscreen.guisurround": report the interface's own shape to the room
 #: system/settings/settings.xml
