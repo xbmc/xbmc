@@ -7,13 +7,17 @@
  */
 
 #include "DatabaseManager.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
+#include "utils/Artwork.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabaseDDL.h"
+#include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 #include "video/geometry/ContentGeometryRecord.h"
 #include "video/test/VideoDatabaseTestBase.h"
 
@@ -461,6 +465,27 @@ TEST_F(TestVideoDatabaseContentGeometry, TheStoredReadIgnoresIdentityEntirely)
   EXPECT_EQ(IDENTITY.time, stored->identity.time);
 
   EXPECT_FALSE(m_db.GetStoredContentGeometry(idFile + 100000));
+}
+
+TEST_F(TestVideoDatabaseContentGeometry, AVersionStoresTheMeasurementItWasAddedWith)
+{
+  CVideoInfoTag movie;
+  movie.m_strTitle = "Movie";
+  movie.m_strFileNameAndPath = "/test/contentgeometry/movie.mkv";
+  movie.m_strPath = "/test/contentgeometry/";
+  const int idMovie{m_db.SetDetailsForMovie(movie, KODI::ART::Artwork{})};
+  ASSERT_GT(idMovie, 0);
+
+  CFileItem version{"/test/contentgeometry/movie extended.mkv", false};
+  version.GetVideoInfoTag()->m_contentGeometry = MakeRecord();
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie,
+                                 m_db.AddOrValidateVideoVersionType("Extended"),
+                                 VideoAssetType::VERSION, version));
+
+  const std::optional<ContentGeometryRecord> stored{
+      m_db.GetStoredContentGeometry(version.GetVideoInfoTag()->m_iFileId)};
+  ASSERT_TRUE(stored);
+  EXPECT_EQ(MakeRecord().aspects, stored->aspects);
 }
 
 /*!
