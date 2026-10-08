@@ -1,4 +1,6 @@
 set(SOURCES TestAudioBookFileDirectory.cpp
+            TestDataFile.cpp
+            TestDataURI.cpp
             TestDirectory.cpp
             TestDirectoryCache.cpp
             TestDiscDirectoryHelper.cpp
