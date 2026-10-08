@@ -683,7 +683,7 @@ void CPeripherals::GetSettingsFromMappingsFile(
 
       /* set the order */
       int iOrder = 0;
-      currentNode->Attribute("order", std::to_string(iOrder).c_str());
+      currentNode->QueryIntAttribute("order", &iOrder);
       /* if the order attribute is invalid or 0, then the setting will be added at the end */
       if (iOrder < 0)
         iOrder = 0;
