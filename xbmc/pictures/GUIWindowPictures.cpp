@@ -35,6 +35,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -291,7 +292,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
     items.SetLabel(label);
 
   if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsPlugin())
-    items.SetContent("images");
+    items.SetContent(MEDIA::CONTENT::IMAGES);
   return true;
 }
 

@@ -46,6 +46,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -624,7 +625,7 @@ private:
 
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
 {
-  results.SetContent("recordings");
+  results.SetContent(KODI::MEDIA::CONTENT::RECORDINGS);
 
   bool bGrouped = false;
   const std::vector<std::shared_ptr<CPVRRecording>> recordings =

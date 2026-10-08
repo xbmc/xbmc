@@ -28,6 +28,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -278,7 +279,7 @@ bool CGUIWindowMusicPlaylistEditor::Update(const std::string &strDirectory, bool
   if (!CGUIMediaWindow::Update(strDirectory, updateFilterPath))
     return false;
 
-  m_vecItems->SetContent("files");
+  m_vecItems->SetContent(MEDIA::CONTENT::FILES);
   m_thumbLoader.Load(*m_vecItems);
 
   // update our playlist control

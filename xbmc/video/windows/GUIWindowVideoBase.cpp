@@ -50,6 +50,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "storage/MediaManager.h"
+#include "utils/ContentNames.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
@@ -702,7 +703,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   if (content.empty())
   {
     content = database.GetContentForPath(items.GetPath());
-    items.SetContent((content.empty() && !items.IsPlugin()) ? "files" : content);
+    items.SetContent((content.empty() && !items.IsPlugin()) ? MEDIA::CONTENT::FILES : content);
   }
 
   /*
@@ -732,7 +733,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     database.GetItemsForPath(content, items.GetPath(), dbItems, getDetails);
 
     // Determine episode ranges for multi-episode items sharing the same basePath (same file).
-    if (content == "episodes" && !dbItems.IsEmpty())
+    if (content == MEDIA::CONTENT::EPISODES && !dbItems.IsEmpty())
     {
       std::map<std::string, std::vector<int>> episodesByPath;
       for (int i = 0; i < dbItems.Size(); i++)
@@ -1268,7 +1269,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     dir.GetQueryParams(items.GetPath(), params);
     NodeType nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    if (items.GetContent() == "movies" && params.GetSetId() <= 0 &&
+    if (items.GetContent() == MEDIA::CONTENT::MOVIES && params.GetSetId() <= 0 &&
         params.GetVideoVersionId() < 0 && nodeType == NodeType::TITLE_MOVIES &&
         (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) ||
          (StringUtils::EqualsNoCase(group, "sets") && mixed)))
@@ -1294,10 +1295,10 @@ bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   const std::string& content = items.GetContent();
   if ((VIDEO::IsVideoDb(items) || CanContainFilter(m_strFilterPath)) &&
-      (StringUtils::EqualsNoCase(content, "movies") ||
-       StringUtils::EqualsNoCase(content, "tvshows") ||
-       StringUtils::EqualsNoCase(content, "episodes") ||
-       StringUtils::EqualsNoCase(content, "musicvideos")))
+      (StringUtils::EqualsNoCase(content, MEDIA::CONTENT::MOVIES) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::TVSHOWS) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::EPISODES) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::MUSICVIDEOS)))
     return true;
 
   return false;

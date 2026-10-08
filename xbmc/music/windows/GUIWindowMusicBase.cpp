@@ -66,6 +66,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/Artwork.h"
+#include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -287,9 +288,9 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
   ADDON::ContentType content{ADDON::ContentType::NONE};
-  if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
+  if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), MEDIA::CONTENT::ALBUMS))
     content = ADDON::ContentType::ALBUMS;
-  else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
+  else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), MEDIA::CONTENT::ARTISTS))
     content = ADDON::ContentType::ARTISTS;
   else
     return;
@@ -899,8 +900,9 @@ bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   const std::string& content = items.GetContent();
   if ((MUSIC::IsMusicDb(items) || CanContainFilter(m_strFilterPath)) &&
-      (StringUtils::EqualsNoCase(content, "artists") ||
-       StringUtils::EqualsNoCase(content, "albums") || StringUtils::EqualsNoCase(content, "songs")))
+      (StringUtils::EqualsNoCase(content, MEDIA::CONTENT::ARTISTS) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::ALBUMS) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::SONGS)))
     return true;
 
   return false;

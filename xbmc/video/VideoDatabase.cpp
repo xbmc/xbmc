@@ -50,6 +50,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/ArtUtils.h"
+#include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
 #include "utils/ItemProperties.h"
@@ -462,8 +463,9 @@ bool CVideoDatabase::GetPathsForCleaning(const std::string& directory,
   {
     if (content.empty())
       return true;
-    if (byDirectory && content == "tvshows")
-      return pathContent == "tvshows" || pathContent == "seasons" || pathContent == "episodes";
+    if (byDirectory && content == MEDIA::CONTENT::TVSHOWS)
+      return pathContent == MEDIA::CONTENT::TVSHOWS || pathContent == MEDIA::CONTENT::SEASONS ||
+             pathContent == MEDIA::CONTENT::EPISODES;
     return pathContent == content;
   };
 
@@ -8031,16 +8033,16 @@ bool CVideoDatabase::GetItems(const std::string &strBaseDir, CFileItemList &item
 bool CVideoDatabase::GetItems(const std::string &strBaseDir, const std::string &mediaType, const std::string &itemType, CFileItemList &items, const Filter &filter /* = Filter() */, const SortDescription &sortDescription /* = SortDescription() */)
 {
   VideoDbContentType contentType;
-  if (StringUtils::EqualsNoCase(mediaType, "movies"))
+  if (StringUtils::EqualsNoCase(mediaType, MEDIA::CONTENT::MOVIES))
     contentType = VideoDbContentType::MOVIES;
-  else if (StringUtils::EqualsNoCase(mediaType, "tvshows"))
+  else if (StringUtils::EqualsNoCase(mediaType, MEDIA::CONTENT::TVSHOWS))
   {
-    if (StringUtils::EqualsNoCase(itemType, "episodes"))
+    if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::EPISODES))
       contentType = VideoDbContentType::EPISODES;
     else
       contentType = VideoDbContentType::TVSHOWS;
   }
-  else if (StringUtils::EqualsNoCase(mediaType, "musicvideos"))
+  else if (StringUtils::EqualsNoCase(mediaType, MEDIA::CONTENT::MUSICVIDEOS))
     contentType = VideoDbContentType::MUSICVIDEOS;
   else
     return false;
@@ -8055,10 +8057,10 @@ bool CVideoDatabase::GetItems(const std::string& strBaseDir,
                               const Filter& filter /* = Filter() */,
                               const SortDescription& sortDescription /* = SortDescription() */)
 {
-  if (StringUtils::EqualsNoCase(itemType, "movies") &&
+  if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::MOVIES) &&
       (mediaType == VideoDbContentType::MOVIES || mediaType == VideoDbContentType::MOVIE_SETS))
     return GetMoviesByWhere(strBaseDir, filter, items, sortDescription);
-  else if (StringUtils::EqualsNoCase(itemType, "tvshows") &&
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::TVSHOWS) &&
            mediaType == VideoDbContentType::TVSHOWS)
   {
     Filter extFilter = filter;
@@ -8067,10 +8069,10 @@ bool CVideoDatabase::GetItems(const std::string& strBaseDir,
       extFilter.AppendWhere("totalCount IS NOT NULL AND totalCount > 0");
     return GetTvShowsByWhere(strBaseDir, extFilter, items, sortDescription);
   }
-  else if (StringUtils::EqualsNoCase(itemType, "musicvideos") &&
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::MUSICVIDEOS) &&
            mediaType == VideoDbContentType::MUSICVIDEOS)
     return GetMusicVideosByWhere(strBaseDir, filter, items, true, sortDescription);
-  else if (StringUtils::EqualsNoCase(itemType, "episodes") &&
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::EPISODES) &&
            mediaType == VideoDbContentType::EPISODES)
     return GetEpisodesByWhere(strBaseDir, filter, items, true, sortDescription);
   else if (StringUtils::EqualsNoCase(itemType, "seasons") &&
@@ -8096,10 +8098,10 @@ bool CVideoDatabase::GetItems(const std::string& strBaseDir,
     return GetTagsNav(strBaseDir, items, mediaType, filter);
   else if (StringUtils::EqualsNoCase(itemType, "videoversions"))
     return GetVideoVersionsNav(strBaseDir, items, mediaType, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "artists") &&
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ARTISTS) &&
            mediaType == VideoDbContentType::MUSICVIDEOS)
     return GetActorsNav(strBaseDir, items, mediaType, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "albums") &&
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ALBUMS) &&
            mediaType == VideoDbContentType::MUSICVIDEOS)
     return GetMusicVideoAlbumsNav(strBaseDir, items, -1, filter);
 
@@ -8114,7 +8116,7 @@ std::string CVideoDatabase::GetItemById(const std::string &itemType, int id)
     return std::to_string(id);
   else if (StringUtils::EqualsNoCase(itemType, "actors") ||
            StringUtils::EqualsNoCase(itemType, "directors") ||
-           StringUtils::EqualsNoCase(itemType, "artists"))
+           StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ARTISTS))
     return GetPersonById(id);
   else if (StringUtils::EqualsNoCase(itemType, "studios"))
     return GetStudioById(id);
@@ -8126,7 +8128,7 @@ std::string CVideoDatabase::GetItemById(const std::string &itemType, int id)
     return GetTagById(id);
   else if (StringUtils::EqualsNoCase(itemType, "videoversions"))
     return GetVideoVersionById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "albums"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ALBUMS))
     return GetMusicVideoAlbumById(id);
 
   return "";
@@ -8545,7 +8547,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
 
         CVideoDbUrl itemUrl = videoUrl;
         std::string path;
-        if (appendFullShowPath && videoUrl.GetItemType() != "episodes")
+        if (appendFullShowPath && videoUrl.GetItemType() != MEDIA::CONTENT::EPISODES)
           path = StringUtils::Format("{}/{}/{}",
                                      record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt(),
                                      episode.m_iSeason, idEpisode);
@@ -9035,7 +9037,7 @@ std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
 
       m_pDS->query(sql);
       if (m_pDS->num_rows())
-        return "episodes";
+        return MEDIA::CONTENT::EPISODES;
 
       // If the episodes are in individual archives
       // then strPath may point to the directory containing the archive
@@ -9052,14 +9054,15 @@ std::string CVideoDatabase::GetContentForPath(const std::string& strPath)
         {
           const CURL url(m_pDS->fv(0).get_asString());
           if ((url.GetFileName().empty() && URIUtils::IsArchive(url)) || url.IsBlurayPath())
-            return "episodes"; // Episodes in root of archive
+            return MEDIA::CONTENT::EPISODES; // Episodes in root of archive
           m_pDS->next();
         }
       }
 
       // If the scraper was set directly on this path, it is a tvshows root
       // unless the scraper is set for a single tv show in this folder
-      return foundDirectly && !settings.parent_name ? "tvshows" : "seasons";
+      return foundDirectly && !settings.parent_name ? MEDIA::CONTENT::TVSHOWS
+                                                    : MEDIA::CONTENT::SEASONS;
     }
     return TranslateContent(scraper->Content());
   }
@@ -12505,23 +12508,23 @@ bool CVideoDatabase::GetItemsForPath(const std::string& content,
   if (pathID < 0)
     return false;
 
-  if (content == "movies")
+  if (content == MEDIA::CONTENT::MOVIES)
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_PARENTPATHID, pathID));
     GetMoviesByWhere(VIDEO::DB_PATH::MOVIE_TITLES, filter, items, SortDescription(), getDetails);
   }
-  else if (content == "episodes")
+  else if (content == MEDIA::CONTENT::EPISODES)
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_EPISODE_PARENTPATHID, pathID));
     GetEpisodesByWhere(VIDEO::DB_PATH::TVSHOW_TITLES, filter, items, true, SortDescription(),
                        getDetails);
   }
-  else if (content == "tvshows")
+  else if (content == MEDIA::CONTENT::TVSHOWS)
   {
     Filter filter(PrepareSQL("idParentPath=%d", pathID));
     GetTvShowsByWhere(VIDEO::DB_PATH::TVSHOW_TITLES, filter, items, SortDescription(), getDetails);
   }
-  else if (content == "musicvideos")
+  else if (content == MEDIA::CONTENT::MUSICVIDEOS)
   {
     Filter filter(PrepareSQL("c%02d=%d", VIDEODB_ID_MUSICVIDEO_PARENTPATHID, pathID));
     GetMusicVideosByWhere(VIDEO::DB_PATH::MUSICVIDEO_TITLES, filter, items, true, SortDescription(),
@@ -12576,7 +12579,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
   std::string itemType = ((const CVideoDbUrl &)videoUrl).GetItemType();
   const CUrlOptions::UrlOptions& options = videoUrl.GetOptions();
 
-  if (type == "movies")
+  if (type == MEDIA::CONTENT::MOVIES)
   {
     AppendIdLinkFilter("genre", "genre", "movie", "movie", "idMovie", options, filter);
     AppendLinkFilter("genre", "genre", "movie", "movie", "idMovie", options, filter);
@@ -12663,9 +12666,9 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
     AppendLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
   }
-  else if (type == "tvshows")
+  else if (type == MEDIA::CONTENT::TVSHOWS)
   {
-    if (itemType == "tvshows")
+    if (itemType == MEDIA::CONTENT::TVSHOWS)
     {
       AppendIdLinkFilter("genre", "genre", "tvshow", "tvshow", "idShow", options, filter);
       AppendLinkFilter("genre", "genre", "tvshow", "tvshow", "idShow", options, filter);
@@ -12704,7 +12707,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
 
       AppendIdLinkFilter("actor", "actor", "tvshow", "season", "idShow", options, filter);
     }
-    else if (itemType == "episodes")
+    else if (itemType == MEDIA::CONTENT::EPISODES)
     {
       int idShow = -1;
       auto option = options.find("tvshowid");
@@ -12762,7 +12765,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       }
     }
   }
-  else if (type == "musicvideos")
+  else if (type == MEDIA::CONTENT::MUSICVIDEOS)
   {
     AppendIdLinkFilter("genre", "genre", "musicvideo", "musicvideo", "idMVideo", options, filter);
     AppendLinkFilter("genre", "genre", "musicvideo", "musicvideo", "idMVideo", options, filter);
@@ -12781,7 +12784,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("artistid");
     if (option != options.end())
     {
-      if (itemType != "albums")
+      if (itemType != MEDIA::CONTENT::ALBUMS)
         filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=musicvideo_view.idMVideo AND actor_link.media_type='musicvideo'"));
       filter.AppendWhere(
           PrepareSQL("actor_link.actor_id = %i", static_cast<int>(option->second.asInteger())));
@@ -12790,7 +12793,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     option = options.find("artist");
     if (option != options.end())
     {
-      if (itemType != "albums")
+      if (itemType != MEDIA::CONTENT::ALBUMS)
       {
         filter.AppendJoin(PrepareSQL("JOIN actor_link ON actor_link.media_id=musicvideo_view.idMVideo AND actor_link.media_type='musicvideo'"));
         filter.AppendJoin(PrepareSQL("JOIN actor ON actor.actor_id=actor_link.actor_id"));
@@ -12823,7 +12826,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
        (xsp.GetGroup() == itemType && !xsp.IsGroupMixed()) ||
         // handle episode listings with videodb://tvshows/titles/ which get the rest
         // of the path (season and episodeid) appended later
-       (xsp.GetType() == "episodes" && itemType == "tvshows"))
+       (xsp.GetType() == MEDIA::CONTENT::EPISODES && itemType == MEDIA::CONTENT::TVSHOWS))
     {
       std::set<std::string, std::less<>> playlists;
       filter.AppendWhere(xsp.GetWhereClause(*this, playlists));

@@ -101,6 +101,7 @@ set(HEADERS ActorProtocol.h
             CPUInfo.h
             ColorUtils.h
             ComponentContainer.h
+            ContentNames.h
             ContentUtils.h
             Crc32.h
             CSSUtils.h
