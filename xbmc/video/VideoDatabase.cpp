@@ -11290,8 +11290,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         // strip paths to make them relative
         if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
           movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
+        // Separate files hold the art of a version or an extra beside it, where a scan finds it as
+        // that asset's own, so only its own is written there. The movie's is written with the movie,
+        // which in a single file is also where the files for its art are, so they are written once.
+        const bool isDefault{movie.IsDefaultVideoVersion()};
         ART::Artwork artwork;
-        if (GetArtForAsset(pDS3->fv("videoVersionIdFile").get_asInt(), ArtFallbackOptions::PARENT,
+        if (GetArtForAsset(pDS3->fv("videoVersionIdFile").get_asInt(),
+                           singleFile || isDefault ? ArtFallbackOptions::PARENT
+                                                   : ArtFallbackOptions::NONE,
                            artwork) &&
             !artwork.empty() && singleFile)
         {
@@ -11374,7 +11380,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
 
-        if (images && !bSkip)
+        if (images && !bSkip && (isDefault || !singleFile))
         {
           if (singleFile)
           {
@@ -11401,7 +11407,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", type, savedThumb,
                         overwrite);
           }
-          if (actorThumbs)
+          // The cast is the movie's, so is written once, with the movie
+          if (actorThumbs && isDefault)
             ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
         }
 
