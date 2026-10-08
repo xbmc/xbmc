@@ -36,6 +36,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 
+#include <algorithm>
 #include <memory>
 #include <set>
 #include <string>
@@ -696,6 +697,69 @@ TEST_F(TestVideoDatabase, VideoVersionTypeIsLookedUpByItemType)
   EXPECT_EQ(version, m_db.GetVideoVersionByTitle("Prologue", VideoAssetType::VERSION));
   EXPECT_EQ(extra, m_db.GetVideoVersionByTitle("Prologue", VideoAssetType::EXTRA));
   EXPECT_EQ(extra, m_db.AddOrValidateVideoVersionType("Prologue", VideoAssetType::EXTRA));
+}
+
+// The name of an extra other than a built-in kind is that of the one extra, so goes once no extra
+// has it, whether the extra is removed or given another type
+TEST_F(TestVideoDatabase, AnExtrasTypeGoesWithItsLastExtra)
+{
+  auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  m_db.UpdateVideoVersionTypeTable();
+
+  const int idMovie{AddMovie("/movies/Movie (2020)/movie.mkv")};
+  ASSERT_GT(idMovie, 0);
+  const int made{
+      m_db.AddVideoVersionType("Gag Reel", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+  const int typed{
+      m_db.AddVideoVersionType("My Scene", VideoAssetTypeOwner::USER, VideoAssetType::EXTRA)};
+  const int version{
+      m_db.AddVideoVersionType("My Cut", VideoAssetTypeOwner::USER, VideoAssetType::VERSION)};
+  const std::string kind{m_db.GetVideoVersionById(VIDEO_EXTRA_ID_BEGIN + 1)};
+  ASSERT_FALSE(kind.empty());
+
+  const auto addExtra{[this, idMovie](const std::string& path, int idType)
+                      {
+                        CFileItem extra{path, false};
+                        EXPECT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                                       VideoAssetType::EXTRA, extra));
+                        return m_db.GetVideoVersionInfo(path).m_idFile;
+                      }};
+  const int first{addExtra("/movies/Movie (2020)/Extras/gag reel 1.mkv", made)};
+  const int second{addExtra("/movies/Movie (2020)/Extras/gag reel 2.mkv", made)};
+  const int third{addExtra("/movies/Movie (2020)/Extras/my scene.mkv", typed)};
+
+  ASSERT_TRUE(m_db.DeleteVideoAsset(first));
+  EXPECT_EQ("Gag Reel", m_db.GetVideoVersionById(made));
+  ASSERT_TRUE(m_db.DeleteVideoAsset(second));
+  EXPECT_EQ("", m_db.GetVideoVersionById(made));
+
+  m_db.SetVideoVersion(third, VIDEO_EXTRA_ID_BEGIN + 1);
+  EXPECT_EQ("", m_db.GetVideoVersionById(typed));
+  ASSERT_TRUE(m_db.DeleteVideoAsset(third));
+  EXPECT_EQ(kind, m_db.GetVideoVersionById(VIDEO_EXTRA_ID_BEGIN + 1));
+  EXPECT_EQ("My Cut", m_db.GetVideoVersionById(version));
+
+  strings.Clear();
+}
+
+// A name typed for an extra is not offered for others, as one typed for a version is
+TEST_F(TestVideoDatabase, TypedExtraNamesAreNotOffered)
+{
+  ASSERT_GT(m_db.AddVideoVersionType("My Scene", VideoAssetTypeOwner::USER, VideoAssetType::EXTRA),
+            0);
+  ASSERT_GT(m_db.AddVideoVersionType("My Cut", VideoAssetTypeOwner::USER, VideoAssetType::VERSION),
+            0);
+
+  const auto offered{[this](VideoAssetType assetType, const std::string& name)
+                     {
+                       CFileItemList types;
+                       m_db.GetVideoVersionTypes(VideoDbContentType::MOVIES, assetType, types);
+                       return std::ranges::any_of(types, [&name](const auto& type)
+                                                  { return type->GetLabel() == name; });
+                     }};
+  EXPECT_FALSE(offered(VideoAssetType::EXTRA, "My Scene"));
+  EXPECT_TRUE(offered(VideoAssetType::VERSION, "My Cut"));
 }
 
 // What an import needs to restore a disc's extra as an extra, with its playlist

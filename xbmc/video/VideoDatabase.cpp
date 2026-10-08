@@ -10903,6 +10903,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
             "WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.idSet = `sets`.idSet)";
       m_pDS->exec(sql);
 
+      // Removing an extra removes its type, but one made and never used is left
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning video extra types");
+      m_pDS->exec(PrepareSQL("DELETE FROM videoversiontype WHERE itemType = %i AND owner <> %i "
+                             "AND id NOT IN (SELECT idType FROM videoversion)",
+                             VideoAssetType::EXTRA, VideoAssetTypeOwner::SYSTEM));
+
       CommitTransaction();
 
       if (handle)
@@ -13791,10 +13797,13 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
 
   try
   {
+    // A name given to a version may suit another movie's, but one given to an extra is most
+    // often that of the one extra, so only the built-in kinds of extra are offered
     m_pDS->query(
         PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' AND itemType = %i "
-                   "AND owner IN (%i, %i)",
-                   assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
+                   "AND (owner = %i OR (owner = %i AND itemType = %i))",
+                   assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER,
+                   VideoAssetType::VERSION));
 
     while (!m_pDS->eof())
     {
