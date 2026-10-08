@@ -21,12 +21,3 @@ TEST(TestCheatUtils, CheatFileNamePreservesTheExactGameBasename)
   EXPECT_EQ(CCheatUtils::GetCheatFileName("zip://%2fgames%2fFrogger.zip/Frogger (USA).gb"),
             "Frogger (USA).cht");
 }
-
-TEST(TestCheatUtils, RememberedSelectionsDistinguishGamesWithTheSameBasename)
-{
-  const auto first = CCheatUtils::GetSelectionFileName("/games/gb/Frogger (USA).gb");
-  EXPECT_EQ(first, "Frogger (USA).gb_c3ca570b.xml");
-  EXPECT_NE(first, CCheatUtils::GetSelectionFileName("/games/other/Frogger (USA).gb"));
-  EXPECT_EQ(first.find('/'), std::string::npos);
-  EXPECT_TRUE(first.ends_with(".xml"));
-}

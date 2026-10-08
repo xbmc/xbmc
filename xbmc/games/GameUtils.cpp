@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "addons/Addon.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
@@ -37,6 +38,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/Crc32.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -45,6 +47,11 @@
 
 using namespace KODI;
 using namespace GAME;
+
+namespace
+{
+constexpr auto GAMES_FOLDER = "special://profile/games";
+} // namespace
 
 // Initialize static state
 ADDON::VECADDONS CGameUtils::m_installableGameAddons;
@@ -448,6 +455,15 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   extensions.erase("/");
 
   return extensions;
+}
+
+std::string CGameUtils::GetGameFolder(const std::string& gamePath)
+{
+  // A CRC of the full path keeps games with the same file name apart
+  return URIUtils::AddFileToFolder(
+      GAMES_FOLDER,
+      StringUtils::Format("{}_{:08x}", CUtil::MakeLegalFileName(URIUtils::GetFileName(gamePath)),
+                          Crc32::Compute(gamePath)));
 }
 
 bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)

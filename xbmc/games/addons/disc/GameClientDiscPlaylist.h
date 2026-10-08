@@ -23,22 +23,10 @@ class CGameClientDiscPlaylist
 {
 public:
   /*!
-   * \brief Root location where RetroPlayer stores per-game disc-state data
-   */
-  static std::string GetDiscStateDirectory();
-
-  /*!
-   * \brief Sanitized base file name derived from the provided game path
-   */
-  static std::string GetSafeBaseName(const std::string& gamePath);
-
-  /*!
-   * \brief Per-game subdirectory name used to isolate state files by source path and CRC
-   */
-  static std::string GetStateSubdirectory(const std::string& gamePath);
-
-  /*!
-   * \brief Build a complete state file path for the given extension (without leading dot)
+   * \brief Build the path of a game's disc state file
+   *
+   * \param gamePath The game the disc state belongs to
+   * \param extension The file's extension, with its leading dot
    */
   static std::string GetStateFilePath(const std::string& gamePath, std::string_view extension);
 };
