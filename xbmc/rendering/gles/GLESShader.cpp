@@ -186,6 +186,7 @@ bool CGLESShader::OnEnabled()
                                            0.0f, 0.0f, 0.0f, 1.0f};
   // clang-format on
   glUniformMatrix4fv(m_hGUIMatrix, 1, GL_FALSE, identity);
+  glUniformMatrix4fv(m_hCoord0Matrix, 1, GL_FALSE, identity);
   glUniform1f(m_hSnap, 0.0f);
 
   // Default to straight-alpha math for all consumers; the one site that draws
