@@ -512,7 +512,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
     // stretch to the limits of the 16:9 screen.
     // incorrect behaviour, but it's what the users want, so...
     CDisplaySettings::GetInstance().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
-    bool nonlin = (is43 && stretch43 == ViewModeStretch16x9Nonlin) || mode == ViewModeStretch16x9Nonlin;
+    bool nonlin =
+        (is43 && stretch43 == ViewModeStretch16x9Nonlin) || mode == ViewModeStretch16x9Nonlin;
     CDisplaySettings::GetInstance().SetNonLinearStretched(nonlin);
   }
   else  if (mode == ViewModeOriginal)
