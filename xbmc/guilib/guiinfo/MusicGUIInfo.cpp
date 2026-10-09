@@ -32,6 +32,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -475,9 +476,9 @@ bool CMusicGUIInfo::GetLabel(std::string& value,
       if (appPlayer->IsPlayingAudio())
       {
         if (fallback)
-          *fallback = "DefaultAlbumCover.png";
+          *fallback = ART::DEFAULT::ALBUM_COVER;
         value = item->HasArt(ART::TYPE::THUMB) ? item->GetArt(ART::TYPE::THUMB)
-                                               : "DefaultAlbumCover.png";
+                                               : ART::DEFAULT::ALBUM_COVER;
         return true;
       }
       break;
@@ -626,7 +627,7 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
       loader.LoadItem(playlistItem.get());
       // still no thumb? then just the set the default cover
       if (!playlistItem->HasArt(ART::TYPE::THUMB))
-        playlistItem->SetArt(ART::TYPE::THUMB, "DefaultAlbumCover.png");
+        playlistItem->SetArt(ART::TYPE::THUMB, ART::DEFAULT::ALBUM_COVER);
     }
     value = playlistItem->GetArt(ART::TYPE::THUMB);
     return true;

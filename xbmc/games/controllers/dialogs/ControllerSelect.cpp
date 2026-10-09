@@ -21,6 +21,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -101,7 +102,7 @@ void CControllerSelect::Process()
     // Add a button to disconnect the port
     CFileItemPtr item(new CFileItem(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13298))); // "Disconnected"
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonNone.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDON_NONE);
     items.Add(std::move(item));
 
     // Check if the disconnect button should be selected by default

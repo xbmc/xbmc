@@ -14,6 +14,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/DefaultArt.h"
 #include "view/ViewState.h"
 #include "view/ViewStateNames.h"
 #include "view/ViewStateSettings.h"
@@ -67,8 +68,8 @@ std::vector<CMediaSource>& CGUIViewStateWindowPrograms::GetSources()
     CMediaSource source;
     source.strPath = "androidapp://sources/apps/";
     source.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20244);
-    if (CServiceBroker::GetGUI()->GetTextureManager().HasTexture("DefaultProgram.png"))
-      source.m_strThumbnailImage = "DefaultProgram.png";
+    if (CServiceBroker::GetGUI()->GetTextureManager().HasTexture(KODI::ART::DEFAULT::PROGRAM))
+      source.m_strThumbnailImage = KODI::ART::DEFAULT::PROGRAM;
     source.m_iDriveType = SourceType::LOCAL;
     source.m_ignore = true;
     m_sources.emplace_back(std::move(source));

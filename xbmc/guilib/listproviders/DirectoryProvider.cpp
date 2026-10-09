@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/ExecString.h"
 #include "utils/PlayerUtils.h"
 #include "utils/SortUtils.h"
@@ -295,7 +296,7 @@ public:
           CFileItem item(m_url, true);
           item.SetLabel(
               CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(22082)); // More...
-          item.SetArt(ART::TYPE::ICON, "DefaultFolder.png");
+          item.SetArt(ART::TYPE::ICON, ART::DEFAULT::FOLDER);
           item.SetProperty("node.target", m_target);
           item.SetProperty("node.type", "target_folder"); // make item identifiable, e.g. by skins
 

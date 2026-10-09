@@ -28,6 +28,7 @@
 #include "guilib/GUIWindow.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -158,7 +159,7 @@ void CGUIActivePortList::DeinitializeGUI()
 void CGUIActivePortList::AddInputDisabled()
 {
   CFileItem item;
-  item.SetArt(ART::TYPE::ICON, "DefaultAddonNone.png");
+  item.SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDON_NONE);
   m_vecItems->Add(std::move(item));
 }
 

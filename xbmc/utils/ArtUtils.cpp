@@ -22,6 +22,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
@@ -83,83 +84,83 @@ void FillInDefaultIcon(CFileItem& item)
       if (item.IsPVRChannel())
       {
         if (URIUtils::IsPVRRadioChannel(item.GetPath()))
-          item.SetArt(ART::TYPE::ICON, "DefaultMusicSongs.png");
+          item.SetArt(ART::TYPE::ICON, ART::DEFAULT::MUSIC_SONGS);
         else
-          item.SetArt(ART::TYPE::ICON, "DefaultTVShows.png");
+          item.SetArt(ART::TYPE::ICON, ART::DEFAULT::TV_SHOWS);
       }
       else if (item.IsLiveTV())
       {
         // Live TV Channel
-        item.SetArt(ART::TYPE::ICON, "DefaultTVShows.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::TV_SHOWS);
       }
       else if (URIUtils::IsArchive(item.GetPath()))
       { // archive
-        item.SetArt(ART::TYPE::ICON, "DefaultFile.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::FILE);
       }
       else if (item.IsUsablePVRRecording())
       {
         // PVR recording
-        item.SetArt(ART::TYPE::ICON, "DefaultVideo.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::VIDEO);
       }
       else if (item.IsDeletedPVRRecording())
       {
         // PVR deleted recording
-        item.SetArt(ART::TYPE::ICON, "DefaultVideoDeleted.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::VIDEO_DELETED);
       }
       else if (item.IsPVRProvider())
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultPVRProvider.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::PVR_PROVIDER);
       }
       else if (PLAYLIST::IsPlayList(item) || PLAYLIST::IsSmartPlayList(item))
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultPlaylist.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::PLAYLIST);
       }
       else if (MUSIC::IsAudio(item))
       {
         // audio
-        item.SetArt(ART::TYPE::ICON, "DefaultAudio.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::AUDIO);
       }
       else if (VIDEO::IsVideo(item))
       {
         // video
-        item.SetArt(ART::TYPE::ICON, "DefaultVideo.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::VIDEO);
       }
       else if (item.IsPVRTimer())
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultVideo.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::VIDEO);
       }
       else if (item.IsPicture())
       {
         // picture
-        item.SetArt(ART::TYPE::ICON, "DefaultPicture.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::PICTURE);
       }
       else if (item.IsPythonScript())
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultScript.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::SCRIPT);
       }
       else if (item.IsFavourite())
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultFavourites.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::FAVOURITES);
       }
       else
       {
         // default icon for unknown file type
-        item.SetArt(ART::TYPE::ICON, "DefaultFile.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::FILE);
       }
     }
     else
     {
       if (PLAYLIST::IsPlayList(item) || PLAYLIST::IsSmartPlayList(item))
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultPlaylist.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::PLAYLIST);
       }
       else if (item.IsParentFolder())
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultFolderBack.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::FOLDER_BACK);
       }
       else
       {
-        item.SetArt(ART::TYPE::ICON, "DefaultFolder.png");
+        item.SetArt(ART::TYPE::ICON, ART::DEFAULT::FOLDER);
       }
     }
   }
