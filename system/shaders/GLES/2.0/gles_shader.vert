@@ -68,11 +68,12 @@ void main ()
   else
   {
     pos = m_gui * pos;
+    cord0 = m_coord0Matrix * cord0;
   }
 
   gl_Position = m_matrix * pos;
   gl_Position.z = m_depth * gl_Position.w;
   m_colour = m_attrcol;
-  m_cord0 = m_coord0Matrix * cord0;
+  m_cord0 = cord0;
   m_cord1 = cord1;
 }
