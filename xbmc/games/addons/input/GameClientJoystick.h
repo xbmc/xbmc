@@ -13,6 +13,9 @@
 #include "peripherals/PeripheralTypes.h"
 
 #include <memory>
+#include <mutex>
+#include <set>
+#include <string>
 
 namespace KODI
 {
@@ -104,6 +107,10 @@ private:
   bool m_bLoggedRumble{false};
   bool m_bLoggedRumbleFailure{false};
   bool m_bLoggedRumbleUnwired{false};
+
+  // Motors left running, stopped when the controller is detached
+  std::set<std::string> m_activeMotors;
+  std::mutex m_rumbleMutex;
 };
 } // namespace GAME
 } // namespace KODI
