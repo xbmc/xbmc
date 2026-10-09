@@ -20,6 +20,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "imagefiles/ImageFileURL.h"
+#include "language/LanguageTag.h"
 #include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
@@ -31,7 +32,6 @@
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
 #include "utils/ItemProperties.h"
-#include "utils/LanguageTag.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -911,8 +911,8 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       else
         preferredLanguage = setting->ToString();
 
-      const KODI::UTILS::CLanguageTag preferredTag{
-          KODI::UTILS::CLanguageTag::Parse(preferredLanguage)};
+      const KODI::LANGUAGE::CLanguageTag preferredTag{
+          KODI::LANGUAGE::CLanguageTag::Parse(preferredLanguage)};
 
       for (unsigned int i = 0; i < subtitles.size(); i++)
       {

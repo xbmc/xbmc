@@ -12,9 +12,9 @@
 #include "URL.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "filesystem/DiscDirectoryHelper.h"
+#include "language/LanguageTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/LanguageTag.h"
 #include "utils/StringUtils.h"
 #include "video/Episode.h"
 
@@ -98,7 +98,7 @@ AudioStreamInfo MakeAudioStream(std::string codecName, std::string language, int
   AudioStreamInfo info;
   info.valid = true;
   info.codecName = std::move(codecName);
-  info.language = KODI::UTILS::CLanguageTag::Parse(language);
+  info.language = KODI::LANGUAGE::CLanguageTag::Parse(language);
   info.channels = channels;
   return info;
 }
@@ -116,7 +116,7 @@ SubtitleStreamInfo MakeSubtitleStream(std::string language)
 {
   SubtitleStreamInfo info;
   info.valid = true;
-  info.language = KODI::UTILS::CLanguageTag::Parse(language);
+  info.language = KODI::LANGUAGE::CLanguageTag::Parse(language);
   return info;
 }
 
