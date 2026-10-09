@@ -44,6 +44,10 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
+#include <span>
+#include <string_view>
+#include <vector>
 
 using namespace KODI;
 using namespace GAME;
@@ -52,6 +56,8 @@ namespace
 {
 constexpr auto GAMES_FOLDER = "special://profile/games";
 constexpr size_t MAX_NAME_BYTES = 200;
+// The file name and the two folders above it
+constexpr size_t KEY_PARTS = 3;
 } // namespace
 
 // Initialize static state
@@ -479,9 +485,16 @@ std::string CGameUtils::GetGameFolder(const std::string& gamePath)
     name.resize(end);
   }
 
-  // A CRC of the full path keeps games with the same file name apart
-  return URIUtils::AddFileToFolder(GAMES_FOLDER,
-                                   StringUtils::Format("{}_{:08x}", name, Crc32::Compute(path)));
+  // Enough of the path to tell PS1/Worms (USA)/Worms (USA).cue from
+  // Dreamcast/Worms (USA)/Worms (USA).cue, but not the drive or share above it
+  constexpr std::array<std::string_view, 2> separators{"/", "\\"};
+  std::vector<std::string> parts = StringUtils::Split(path, separators);
+  std::erase(parts, "");
+  const std::span<const std::string> key = std::span(parts).last(std::min(parts.size(), KEY_PARTS));
+
+  return URIUtils::AddFileToFolder(
+      GAMES_FOLDER,
+      StringUtils::Format("{}_{:08x}", name, Crc32::Compute(StringUtils::Join(key, "/"))));
 }
 
 bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)
