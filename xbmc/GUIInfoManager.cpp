@@ -3180,7 +3180,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     through\, so that one ratio does not describe all of it. What the other ratios are is
 ///     at \ref VideoPlayer_ContentAspect "VideoPlayer.ContentAspect(n)".
 ///     <p><hr>
-///     @skinning_v22 **[New Boolean Condition]** \link VideoPlayer_ContentAspectVaries `VideoPlayer.ContentAspectVaries`\endlink
+///     @skinning_v23 **[New Boolean Condition]** \link VideoPlayer_ContentAspectVaries `VideoPlayer.ContentAspectVaries`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.SubtitlesEnabled`</b>,
@@ -3995,7 +3995,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     @return The name of the aspect ratio of the currently playing video (possible values:
 ///     see \ref ListItem_VideoAspectName "ListItem.VideoAspectName").
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_VideoAspectName `VideoPlayer.VideoAspectName`\endlink
+///     @skinning_v23 **[New Infolabel]** \link VideoPlayer_VideoAspectName `VideoPlayer.VideoAspectName`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ContentAspect([n])`</b>,
@@ -4008,7 +4008,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     through contains\, dominant first\, so `ContentAspect` and `ContentAspect(0)` are the
 ///     same value (possible values: see \ref ListItem_VideoAspect "ListItem.VideoAspect").
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspect `VideoPlayer.ContentAspect`\endlink
+///     @skinning_v23 **[New Infolabel]** \link VideoPlayer_ContentAspect `VideoPlayer.ContentAspect`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ContentAspectName([n])`</b>,
@@ -4018,7 +4018,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     called\, e.g. `Scope`\, and empty when it has no name. Not translated (possible values:
 ///     see \ref ListItem_VideoAspectName "ListItem.VideoAspectName").
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspectName `VideoPlayer.ContentAspectName`\endlink
+///     @skinning_v23 **[New Infolabel]** \link VideoPlayer_ContentAspectName `VideoPlayer.ContentAspectName`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ContentAspectCount`</b>,
@@ -4028,7 +4028,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     nothing was measured or declared for it**\, which is not the same as a title detected as
 ///     the shape of its own frame. The count is of ratios\, never of how much runtime each holds.
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspectCount `VideoPlayer.ContentAspectCount`\endlink
+///     @skinning_v23 **[New Infolabel]** \link VideoPlayer_ContentAspectCount `VideoPlayer.ContentAspectCount`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ContentAspectSource`</b>,
@@ -4038,7 +4038,7 @@ constexpr std::array<InfoMap, 46> musicplayer = {{
 ///     answer)\, `cached` (a stored measurement)\, `live` (measured during playback) or
 ///     `declared` (stated by the viewer\, which pins).
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ContentAspectSource `VideoPlayer.ContentAspectSource`\endlink
+///     @skinning_v23 **[New Infolabel]** \link VideoPlayer_ContentAspectSource `VideoPlayer.ContentAspectSource`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioCodec`</b>,
@@ -6852,7 +6852,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     .
 ///     The list is the shipped `system/aspectratios.xml`\, which a user may add to or rename.
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link ListItem_VideoAspectName `ListItem.VideoAspectName`\endlink
+///     @skinning_v23 **[New Infolabel]** \link ListItem_VideoAspectName `ListItem.VideoAspectName`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ContentAspect([n])`</b>,
@@ -6866,7 +6866,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     `ContentAspect` and `ContentAspect(0)` are the same value. Values as for \ref
 ///     ListItem_VideoAspect "ListItem.VideoAspect".
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspect `ListItem.ContentAspect`\endlink
+///     @skinning_v23 **[New Infolabel]** \link ListItem_ContentAspect `ListItem.ContentAspect`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ContentAspectName([n])`</b>,
@@ -6876,7 +6876,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     called\, empty for a ratio that has no name. Not translated. Values as for \ref
 ///     ListItem_VideoAspectName "ListItem.VideoAspectName".
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspectName `ListItem.ContentAspectName`\endlink
+///     @skinning_v23 **[New Infolabel]** \link ListItem_ContentAspectName `ListItem.ContentAspectName`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ContentAspectCount`</b>,
@@ -6886,7 +6886,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     measured or declared for it**\, which is not the same as an item detected as the shape of
 ///     its own frame. The count is of ratios\, never of how much runtime each holds.
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspectCount `ListItem.ContentAspectCount`\endlink
+///     @skinning_v23 **[New Infolabel]** \link ListItem_ContentAspectCount `ListItem.ContentAspectCount`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ContentAspectSource`</b>,
@@ -6896,7 +6896,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     answer)\, `cached` (a stored measurement)\, `live` (measured during playback) or
 ///     `declared` (stated by the viewer\, which pins).
 ///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link ListItem_ContentAspectSource `ListItem.ContentAspectSource`\endlink
+///     @skinning_v23 **[New Infolabel]** \link ListItem_ContentAspectSource `ListItem.ContentAspectSource`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AudioCodec`</b>,
@@ -7959,7 +7959,7 @@ constexpr std::array<InfoMap, 3> container_str = {{
 ///     that one ratio does not describe all of it. What the other ratios are is at \ref
 ///     ListItem_ContentAspect "ListItem.ContentAspect(n)".
 ///     <p><hr>
-///     @skinning_v22 **[New Boolean Condition]** \link ListItem_ContentAspectVaries `ListItem.ContentAspectVaries`\endlink
+///     @skinning_v23 **[New Boolean Condition]** \link ListItem_ContentAspectVaries `ListItem.ContentAspectVaries`\endlink
 ///   }
 ///   \table_row3{   <b>`ListItem.VideoVersionName`</b>,
 ///                  \anchor ListItem_VideoVersionName
