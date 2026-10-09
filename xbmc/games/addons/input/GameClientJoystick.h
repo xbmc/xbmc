@@ -92,8 +92,11 @@ public:
 
   // Input handlers
   bool SetRumble(const std::string& feature, float magnitude);
+  void EnableRumble(bool bEnabled);
 
 private:
+  void StopMotors();
+
   // Construction parameters
   CGameClient& m_gameClient;
   const std::string m_portAddress;
@@ -110,6 +113,7 @@ private:
 
   // Motors left running, stopped when the controller is detached
   std::set<std::string> m_activeMotors;
+  bool m_bRumbleEnabled{true};
   std::mutex m_rumbleMutex;
 };
 } // namespace GAME

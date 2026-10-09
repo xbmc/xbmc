@@ -702,8 +702,9 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
     return false;
   }
 
-  m_joysticks[portAddress] =
-      std::make_shared<CGameClientJoystick>(m_gameClient, portAddress, controller);
+  auto joystick = std::make_shared<CGameClientJoystick>(m_gameClient, portAddress, controller);
+  joystick->EnableRumble(m_bRumbleEnabled);
+  m_joysticks[portAddress] = std::move(joystick);
 
   return true;
 }
@@ -750,6 +751,15 @@ void CGameClientInput::HardwareReset()
 {
   if (m_hardware)
     m_hardware->OnResetButton();
+}
+
+void CGameClientInput::EnableRumble(bool bEnabled)
+{
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
+  m_bRumbleEnabled = bEnabled;
+  for (const auto& [portAddress, joystick] : m_joysticks)
+    joystick->EnableRumble(bEnabled);
 }
 
 bool CGameClientInput::ReceiveInputEvent(const game_input_event& event)
