@@ -1773,6 +1773,15 @@ void CVideoPlayer::Process()
         }
       }
 
+      // closing the old streams drops the queue of a player that is not in sync
+      if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) &&
+          m_State.menuType == MenuType::NATIVE &&
+          ShouldWaitForSync(std::chrono::steady_clock::now()))
+      {
+        CThread::Sleep(10ms);
+        continue;
+      }
+
       // if there is another stream available, reopen demuxer
       CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
       if(next == CDVDInputStream::NEXTSTREAM_OPEN)
@@ -1826,6 +1835,9 @@ void CVideoPlayer::Process()
 
       break;
     }
+
+    if (STREAM_SOURCE_MASK(pStream->source) != STREAM_SOURCE_DEMUX_SUB)
+      m_syncWait.reset();
 
     // see if we can find something better to play
     CheckBetterStream(m_CurrentAudio,    pStream);
@@ -2147,6 +2159,34 @@ bool CVideoPlayer::ShouldDeferSync(bool ready, std::chrono::steady_clock::time_p
     return false;
   }
   return true;
+}
+
+bool CVideoPlayer::ShouldWaitForSync(std::chrono::steady_clock::time_point now)
+{
+  // a resync that HandlePlaySpeed deferred ends within its own bound
+  if (m_syncStartPtsWait)
+    return true;
+
+  const auto starting = [](const CCurrentStream& current)
+  {
+    return current.id >= 0 && current.packets > 0 &&
+           current.syncState == IDVDStreamPlayer::SYNC_STARTING;
+  };
+  const bool busy = (starting(m_CurrentAudio) && m_VideoPlayerAudio->HasData()) ||
+                    (starting(m_CurrentVideo) &&
+                     (m_VideoPlayerVideo->HasData() || !m_VideoPlayerVideo->IsStalled())) ||
+                    m_messenger.GetPacketCount(CDVDMsg::PLAYER_STARTED) > 0;
+  if (!busy)
+  {
+    m_syncWait.reset();
+    return false;
+  }
+
+  // a player that does not sync within the bound gets the drop at the close
+  constexpr auto NAV_SYNC_WAIT_MAX = 2000ms;
+  if (!m_syncWait)
+    m_syncWait = now;
+  return now - *m_syncWait < NAV_SYNC_WAIT_MAX;
 }
 
 void CVideoPlayer::HandlePlaySpeed()
@@ -4705,6 +4745,7 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
 void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
 {
   m_syncStartPtsWait.reset();
+  m_syncWait.reset();
   CLog::Log(LOGDEBUG, "CVideoPlayer::FlushBuffers - flushing buffers");
 
   double startpts;
