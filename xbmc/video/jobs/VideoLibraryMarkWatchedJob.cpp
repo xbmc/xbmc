@@ -21,6 +21,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
@@ -86,7 +87,7 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
       if (m_mark)
       {
         auto file{std::make_unique<CFileItem>(*item)};
-        file->SetProperty("playcount_incremented", CVariant{true});
+        file->SetProperty(KODI::ITEM::PROPERTY::PLAYCOUNT_INCREMENTED, CVariant{true});
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PROCESS_DELETE_AFTER_WATCH, -1, -1,
                                                    static_cast<void*>(file.release()));
       }

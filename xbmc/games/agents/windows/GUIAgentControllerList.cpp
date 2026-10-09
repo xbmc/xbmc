@@ -34,6 +34,7 @@
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/log.h"
 #include "view/GUIViewControl.h"
 #include "view/ViewState.h"
@@ -222,7 +223,7 @@ void CGUIAgentControllerList::AddItem(const CAgentController& agentController)
   item->SetPath(path);
   if (controller)
   {
-    item->SetProperty("Addon.ID", controller->ID());
+    item->SetProperty(ITEM::PROPERTY::ADDON_ID, controller->ID());
     item->SetArt("icon", controller->Layout().ImagePath());
   }
   m_vecItems->Add(std::move(item));

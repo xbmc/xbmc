@@ -25,6 +25,7 @@
 #include "utils/Artwork.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
@@ -95,7 +96,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
   const std::string extensions{
       CServiceBroker::GetFileExtensionProvider().GetMediaExtensions(section)};
   if (section == MediaSection::VIDEO)
-    items.SetProperty("set_videodb_details",
+    items.SetProperty(ITEM::PROPERTY::SET_VIDEODB_DETAILS,
                       CVideoLibrary::GetDetailsFromJsonParameters(parameterObject));
 
   if (CDirectory::GetDirectory(strPath, items, extensions, DIR_FLAG_DEFAULTS))

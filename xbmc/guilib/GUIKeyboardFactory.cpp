@@ -22,7 +22,7 @@
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
 #include "dialogs/GUIDialogKeyboardTouch.h"
 
 #if defined(TARGET_DARWIN_EMBEDDED)
@@ -93,7 +93,7 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
         (uint32_t)heading.asInteger());
 
   bool useKodiKeyboard = true;
-#if defined(TARGET_DARWIN_TVOS) || defined(TARGET_ANDROID)
+#if defined(TARGET_DARWIN_TVOS) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
   useKodiKeyboard = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_INPUT_USEAPPLICATIONKEYBOARD);
 #elif defined(TARGET_DARWIN_EMBEDDED)
@@ -104,10 +104,10 @@ bool CGUIKeyboardFactory::ShowAndGetInput(std::string& aTextString,
   CGUIKeyboard* kb = nullptr;
   if (useKodiKeyboard)
     kb = winManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
-#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID)
+#if defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
   else
     kb = winManager.GetWindow<CGUIDialogKeyboardTouch>(WINDOW_DIALOG_KEYBOARD_TOUCH);
-#endif // defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID)
+#endif // defined(TARGET_DARWIN_EMBEDDED) || defined(TARGET_ANDROID) || defined(TARGET_WASM)
 
   if (kb)
   {

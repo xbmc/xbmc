@@ -9,6 +9,7 @@
 #include "URL.h"
 #include "filesystem/FileCache.h"
 #include "threads/Event.h"
+#include "threads/test/TestHelpers.h"
 
 #if !defined(TARGET_WINDOWS)
 #include "platform/posix/ConvUtils.h"
@@ -110,7 +111,7 @@ public:
     return position;
   }
 
-  int64_t GetLength() override { return 1024 * 1024; }
+  int64_t GetLength() override { return m_length; }
   int GetChunkSize() override { return 64 * 1024; }
   int IoControl(IOControl request, void* param) override
   {
@@ -127,6 +128,7 @@ public:
   {
     m_seekOutcomes.emplace_back(SeekOutcome{result, error});
   }
+  void SetLength(int64_t length) { m_length = length; }
   void SetFirstReadSize(size_t size) { m_firstReadSize = size; }
   std::future<Operation> GetNextOperation() { return m_nextOperation.get_future(); }
   bool WaitForFirstRead(std::chrono::milliseconds timeout)
@@ -141,6 +143,7 @@ private:
   bool m_positionUncertain{false};
   bool m_operationRecorded{false};
   int64_t m_position{0};
+  int64_t m_length{1024 * 1024};
   size_t m_firstReadSize{1};
   size_t m_nextSeekOutcome{0};
   std::vector<SeekOutcome> m_seekOutcomes;
@@ -151,6 +154,8 @@ private:
   CEvent m_seekEntered{true};
 };
 
+} // namespace
+
 class TestFileCache : public CFileCache
 {
 public:
@@ -158,8 +163,22 @@ public:
     : CFileCache(flags, std::move(source))
   {
   }
+
+  bool WaitForSeekRequest(std::chrono::milliseconds timeout)
+  {
+    return waitForWaiters(m_seekEnded, 1, timeout);
+  }
+
+  // A CEventGroup waiter can be signalled by the delayed group phase of an
+  // already consumed CEvent::Set(), replaying a completed seek.
+  bool WaitForDirectSeekWait(std::chrono::milliseconds timeout)
+  {
+    return waitForWaiters(m_seekEvent, 1, timeout);
+  }
 };
 
+namespace
+{
 struct SeekResult
 {
   int64_t position;
@@ -368,4 +387,38 @@ TEST(TestFileCache, ReadFailsPromptlyAfterQuarantinedCacheDrains)
   const auto [readResult, readError] = failedRead.get();
   EXPECT_EQ(-1, readResult);
   EXPECT_EQ(ECONNRESET, readError);
+}
+
+TEST(TestFileCache, EOFDoesNotReplayCompletedSeek)
+{
+  using namespace std::chrono_literals;
+
+  auto source = std::make_unique<CGatedFileCacheSource>();
+  auto* sourcePtr = source.get();
+  sourcePtr->SetLength(64);
+  sourcePtr->SetFirstReadSize(64);
+  TestFileCache cache{READ_AUDIO_VIDEO, std::move(source)};
+
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+  const bool readEntered = sourcePtr->WaitForFirstRead(5s);
+  // Seeking beyond the file completes a worker seek clamped to zero.
+  auto seek = std::async(std::launch::async, [&]() { return cache.Seek(256 * 1024, SEEK_SET); });
+  const bool seekRequested = cache.WaitForSeekRequest(5s);
+  sourcePtr->AllowFirstRead();
+  const bool seekReady = seek.wait_for(5s) == std::future_status::ready;
+  if (!seekReady)
+  {
+    cache.Close();
+    ASSERT_TRUE(seekReady);
+  }
+  ASSERT_TRUE(readEntered);
+  ASSERT_TRUE(seekRequested);
+  EXPECT_EQ(-1, seek.get());
+  ASSERT_TRUE(cache.WaitForDirectSeekWait(5s));
+
+  unsigned char value = 0xff;
+  EXPECT_EQ(1, cache.Read(&value, 1));
+  EXPECT_EQ(0, value);
+  EXPECT_EQ(1, cache.GetPosition());
+  cache.Close();
 }

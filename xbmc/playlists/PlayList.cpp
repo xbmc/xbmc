@@ -16,6 +16,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/ItemProperties.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -93,7 +94,7 @@ void CPlayList::Add(const std::shared_ptr<CFileItem>& item, int iPosition, int i
     m_iPlayableItems++;
 
   // set 'IsPlayable' property - needed for properly handling plugin:// URLs
-  item->SetProperty("IsPlayable", true);
+  item->SetProperty(ITEM::PROPERTY::IS_PLAYABLE, true);
 
   // set 'BasePath' property - needed for properly handling browse for subtitles
   if (!item->HasProperty("BasePath"))
@@ -489,7 +490,7 @@ bool CPlayList::Expand(int position)
     (*playlist)[i]->SetPath(item->GetDynPath());
     // Only propagate parent's start offset if the loaded item doesn't already
     // have its own (e.g. a CUE sheet offset loaded from the playlist file).
-    if (!(*playlist)[i]->HasProperty("item_start"))
+    if (!(*playlist)[i]->HasProperty(ITEM::PROPERTY::ITEM_START))
       (*playlist)[i]->SetStartOffset(item->GetStartOffset());
     if (!(*playlist)[i]->HasProperty("BasePath"))
       (*playlist)[i]->SetProperty("BasePath", playlist->m_strBasePath);

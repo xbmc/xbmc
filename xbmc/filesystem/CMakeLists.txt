@@ -66,6 +66,7 @@ set(SOURCES AddonsDirectory.cpp
             ZipManager.cpp)
 
 set(HEADERS AddonsDirectory.h
+            AddonsPaths.h
             CacheStrategy.h
             CircularCache.h
             CurlFile.h

@@ -19,14 +19,19 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/Crc32.h"
+#include "utils/ItemProperties.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbPaths.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
+
+namespace CONTENT = KODI::MEDIA::CONTENT;
 
 CVideoDatabaseDirectory::CVideoDatabaseDirectory(void) = default;
 
@@ -40,51 +45,51 @@ std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
   {
     case NodeType::EPISODES:
     case NodeType::RECENTLY_ADDED_EPISODES:
-      return "episodes";
+      return CONTENT::EPISODES;
     case NodeType::SEASONS:
-      return "seasons";
+      return CONTENT::SEASONS;
     case NodeType::TITLE_MOVIES:
     case NodeType::RECENTLY_ADDED_MOVIES:
-      return "movies";
+      return CONTENT::MOVIES;
     case NodeType::TITLE_TVSHOWS:
     case NodeType::INPROGRESS_TVSHOWS:
-      return "tvshows";
+      return CONTENT::TVSHOWS;
     case NodeType::TITLE_MUSICVIDEOS:
     case NodeType::RECENTLY_ADDED_MUSICVIDEOS:
-      return "musicvideos";
+      return CONTENT::MUSICVIDEOS;
     case NodeType::GENRE:
-      return "genres";
+      return CONTENT::GENRES;
     case NodeType::COUNTRY:
-      return "countries";
+      return CONTENT::COUNTRIES;
     case NodeType::ACTOR:
     {
       CQueryParams params;
       node->CollectQueryParams(params);
       if (static_cast<VideoDbContentType>(params.GetContentType()) ==
           VideoDbContentType::MUSICVIDEOS)
-        return "artists";
+        return CONTENT::ARTISTS;
 
-      return "actors";
+      return CONTENT::ACTORS;
     }
     case NodeType::DIRECTOR:
-      return "directors";
+      return CONTENT::DIRECTORS;
     case NodeType::STUDIO:
-      return "studios";
+      return CONTENT::STUDIOS;
     case NodeType::YEAR:
-      return "years";
+      return CONTENT::YEARS;
     case NodeType::MUSICVIDEOS_ALBUM:
-      return "albums";
+      return CONTENT::ALBUMS;
     case NodeType::SETS:
-      return "sets";
+      return CONTENT::SETS;
     case NodeType::TAGS:
-      return "tags";
+      return CONTENT::TAGS;
     case NodeType::VIDEOVERSIONS:
     case NodeType::MOVIE_ASSETS_VERSIONS:
-      return "videoversions";
+      return CONTENT::VIDEOVERSIONS;
     case NodeType::MOVIE_ASSETS_EXTRAS:
-      return "videoextras";
+      return CONTENT::VIDEOEXTRAS;
     case NodeType::MOVIE_ASSETS:
-      return "videoassets";
+      return CONTENT::VIDEOASSETS;
     default:
       break;
   }
@@ -118,8 +123,8 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
       item->SetDynPath(item->GetVideoInfoTag()->GetPath());
     }
   }
-  if (items.HasProperty("customtitle"))
-    items.SetLabel(items.GetProperty("customtitle").asString());
+  if (items.HasProperty(KODI::ITEM::PROPERTY::CUSTOM_TITLE))
+    items.SetLabel(items.GetProperty(KODI::ITEM::PROPERTY::CUSTOM_TITLE).asString());
   else
     items.SetLabel(pNode->GetLocalizedName());
 
@@ -329,7 +334,7 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
   switch (GetDirectoryChildType(path))
   {
     case NodeType::TITLE_MOVIES:
-      if (URIUtils::PathEquals(path, "videodb://movies/titles/"))
+      if (URIUtils::PathEquals(path, KODI::VIDEO::DB_PATH::MOVIE_TITLES))
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))
@@ -338,7 +343,7 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
       }
       return "";
     case NodeType::TITLE_TVSHOWS:
-      if (URIUtils::PathEquals(path, "videodb://tvshows/titles/"))
+      if (URIUtils::PathEquals(path, KODI::VIDEO::DB_PATH::TVSHOW_TITLES))
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))
@@ -347,7 +352,7 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
       }
       return "";
     case NodeType::TITLE_MUSICVIDEOS:
-      if (URIUtils::PathEquals(path, "videodb://musicvideos/titles/"))
+      if (URIUtils::PathEquals(path, KODI::VIDEO::DB_PATH::MUSICVIDEO_TITLES))
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))

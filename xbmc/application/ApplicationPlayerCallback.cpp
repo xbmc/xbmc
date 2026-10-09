@@ -32,6 +32,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ItemProperties.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -205,16 +206,17 @@ bool UpdateDiscStackBookmark(CBookmark& bookmark,
         if (!stackHelper->IsPlayingLastStackPart())
           return false; // Not finished if not playing last part
         if (!stackHelper->IsSeekingParts() &&
-            !file.GetProperty("stopped_before_end").asBoolean(false))
+            !file.GetProperty(ITEM::PROPERTY::STOPPED_BEFORE_END).asBoolean(false))
           return true; // For disc stacks, if not flagged then we have not stopped early (decision made in InputStream unless seeking cross-parts)
         if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd))
           return true; // Within videoIgnorePercentAtEnd of the end so consider watched
         return false;
       }()};
 
-  const bool currentPartFinished{!file.GetProperty("stopped_before_end").asBoolean(false)};
+  const bool currentPartFinished{
+      !file.GetProperty(ITEM::PROPERTY::STOPPED_BEFORE_END).asBoolean(false)};
   const bool allStackPartsPlayed{stackHelper->IsPlayingLastStackPart()};
-  const bool noMainTitle{file.GetProperty("no_main_title").asBoolean(false)};
+  const bool noMainTitle{file.GetProperty(ITEM::PROPERTY::NO_MAIN_TITLE).asBoolean(false)};
 
   bookmark.partNumber = stackHelper->GetStackPartNumber(file);
   stackHelper->SetCurrentPartFinished(currentPartFinished);
@@ -295,7 +297,7 @@ void UpdateStackAndItem(const CFileItem& file,
   {
     stackHelper->UpdateDiscStackAndTimes(file);
 
-    if (file.GetProperty("update_stream_details").asBoolean(false))
+    if (file.GetProperty(ITEM::PROPERTY::UPDATE_STREAM_DETAILS).asBoolean(false))
     {
       fileItem.GetVideoInfoTag()->m_streamDetails =
           file.GetVideoInfoTag()->m_streamDetails; // Update streamdetails
@@ -304,7 +306,7 @@ void UpdateStackAndItem(const CFileItem& file,
     const std::string oldStackPath{stackHelper->GetOldStackDynPath()};
     if (!oldStackPath.empty())
     {
-      fileItem.SetProperty("new_stack_path", true);
+      fileItem.SetProperty(ITEM::PROPERTY::NEW_STACK_PATH, true);
       fileItem.SetProperty("old_stack_path", oldStackPath);
     }
 
@@ -372,7 +374,8 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     // otherwise if played through Video->Files we need to retrieve the removable:// path
     // We need to update DynPath with the removable:// path (for the database), keeping the playlist
     // Also flag if we need to update stream details from the played file
-    UpdateRemovableBlurayPath(fileItem, file.GetProperty("update_stream_details").asBoolean(false));
+    UpdateRemovableBlurayPath(
+        fileItem, file.GetProperty(ITEM::PROPERTY::UPDATE_STREAM_DETAILS).asBoolean(false));
 #endif
 
     // Update the stack
