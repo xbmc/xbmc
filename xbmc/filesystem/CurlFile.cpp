@@ -1110,31 +1110,6 @@ void CCurlFile::Reset()
   m_state->m_cancelled = false;
 }
 
-void CCurlFile::SetProxy(const std::string &type, const std::string &host,
-  uint16_t port, const std::string &user, const std::string &password)
-{
-  m_proxytype = CCurlFile::ProxyType::HTTP;
-  if (type == "http")
-    m_proxytype = CCurlFile::ProxyType::HTTP;
-  else if (type == "https")
-    m_proxytype = CCurlFile::ProxyType::HTTPS;
-  else if (type == "socks4")
-    m_proxytype = CCurlFile::ProxyType::SOCKS4;
-  else if (type == "socks4a")
-    m_proxytype = CCurlFile::ProxyType::SOCKS4A;
-  else if (type == "socks5")
-    m_proxytype = CCurlFile::ProxyType::SOCKS5;
-  else if (type == "socks5-remote")
-    m_proxytype = CCurlFile::ProxyType::SOCKS5_REMOTE;
-  else
-    CLog::Log(LOGERROR, "CCurFile::{} - <{}> Invalid proxy type \"{}\"", __FUNCTION__,
-              CURL::GetRedacted(m_url), type);
-  m_proxyhost = host;
-  m_proxyport = port;
-  m_proxyuser = user;
-  m_proxypassword = password;
-}
-
 bool CCurlFile::Open(const CURL& url)
 {
   m_opened = true;
