@@ -1444,8 +1444,12 @@ void CVideoPlayer::Process()
     }
 
     // if the queues are full, no need to read more
-    if ((!m_VideoPlayerAudio->AcceptsData() && m_CurrentAudio.id >= 0) ||
-        (!m_VideoPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0))
+    // However, if audio is starving, we must keep demuxing so audio stream doesn't stall
+    bool videoFull = (!m_VideoPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0);
+    bool audioFull = (!m_VideoPlayerAudio->AcceptsData() && m_CurrentAudio.id >= 0);
+    bool audioStarving = (m_CurrentAudio.id >= 0 && m_VideoPlayerAudio->GetLevel() < 25);
+
+    if ((audioFull || videoFull) && !audioStarving)
     {
       if (m_playSpeed == DVD_PLAYSPEED_PAUSE &&
           m_demuxerSpeed != DVD_PLAYSPEED_PAUSE)

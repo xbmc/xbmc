@@ -70,7 +70,7 @@ public:
   void AddVideoPicture(const VideoPicture& picture, int index) override;
   void UnInit() override;
   bool Flush(bool saveBuffers) override;
-  void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
+  void SetBufferSize(int numBuffers) override;
   bool IsGuiLayer() override;
   void ReleaseBuffer(int idx) override;
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;

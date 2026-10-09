@@ -336,3 +336,6 @@ exclude_dll.txt
 
 # clangd index
 .cache/
+
+# webOS packages
+*.ipk

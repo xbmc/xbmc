@@ -33,6 +33,7 @@ bool CPlatformWebOS::InitStageOne()
   setenv("KODI_HOME", HOME.c_str(), 1);
   setenv("SSL_CERT_FILE",
          CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  setenv("GCONV_PATH", (HOME + "/lib/gconv").c_str(), 1);
 
   return CPlatformLinux::InitStageOne();
 }

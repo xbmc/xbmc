@@ -955,10 +955,10 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   unsigned int process_time = latency / 4; // 100 ms
   if (sinkStruct.isHWDevice && !sinkStruct.isNWDevice && !sinkStruct.isBTDevice)
   {
-    // on hw devices buffers can be further reduced
-    // 200ms max latency
-    // 50ms min packet size
-    latency = m_BytesPerSecond / 5;
+    // On webOS TV hardware devices, configure 300ms max latency and 75ms min packet size.
+    // The upstream desktop default of 200ms (which negotiates down to ~176ms) is overly tight
+    // during high-bitrate 4K demuxing and causes buffer underruns under CPU/bus contention.
+    latency = m_BytesPerSecond / 3.33;
     process_time = latency / 4;
   }
 
@@ -1136,8 +1136,11 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   unsigned int available = frames * m_format.m_frameSize;
   unsigned int length = m_periodSize;
   void *buffer = data[0]+offset*m_format.m_frameSize;
-  auto wait_time =
-      std::chrono::duration<double>(static_cast<double>(m_BufferSize) / m_BytesPerSecond);
+  // Guard wait_time with a minimum of 1.0s. Without this, a tight buffer size (e.g. 176ms)
+  // causes AddPackets to time out on brief CPU scheduling spikes or demuxer delays during
+  // stream startup or seek, triggering "timeout adding data to renderer" errors.
+  auto wait_time = std::chrono::duration<double>(
+      std::max(static_cast<double>(m_BufferSize) / m_BytesPerSecond, 1.0));
   XbmcThreads::EndTime<std::chrono::duration<double>> timer(wait_time);
   // we don't want to block forever - if timer expires pa_stream_write will
   // fail - therefore we don't care and just return 0;

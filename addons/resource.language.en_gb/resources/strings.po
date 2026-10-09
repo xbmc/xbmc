@@ -7428,6 +7428,17 @@ msgid "Allow hardware acceleration - MediaCodec (Surface)"
 msgstr ""
 
 #: system/settings/settings.xml
+msgctxt "#38990"
+msgid "Allow hardware acceleration - Starfish (webOS)"
+msgstr ""
+
+#. Description of setting with label #38990 "Allow hardware acceleration - Starfish (webOS)"
+#: system/settings/settings.xml
+msgctxt "#38991"
+msgid "Enable this option to use hardware-accelerated decoding via the webOS Starfish media pipeline. If disabled, CPU software decoding will be used."
+msgstr ""
+
+#: system/settings/settings.xml
 msgctxt "#13441"
 msgid "Use MPEG-2 VDPAU"
 msgstr ""

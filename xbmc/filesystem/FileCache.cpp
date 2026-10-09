@@ -115,8 +115,16 @@ bool CFileCache::Open(const CURL& url)
   if (!settings)
     return false;
 
-  const unsigned int cacheMemSize =
+  unsigned int cacheMemSize =
       settings->GetInt(CSettings::SETTING_FILECACHE_MEMORYSIZE) * 1024 * 1024;
+#if defined(TARGET_WEBOS)
+  if (cacheMemSize > 16 * 1024 * 1024)
+  {
+    CLog::Log(LOGINFO, "CFileCache - webOS memory constraint: capping cache memory size from {} MB to 16 MB",
+              cacheMemSize / (1024 * 1024));
+    cacheMemSize = 16 * 1024 * 1024;
+  }
+#endif
 
   m_source.IoControl(IOCTRL_SET_CACHE, this);
 

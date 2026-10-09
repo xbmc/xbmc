@@ -98,6 +98,10 @@ protected:
   double m_DAR = 1.0;
   CDVDStreamInfo m_hints;
   CDVDCodecOptions m_options;
+  AVDiscard m_defaultSkipLoopFilter{AVDISCARD_DEFAULT};
+  struct AVBufferPool* m_pConversionBufferPool{nullptr};
+  int m_conversionPoolWidth{0};
+  int m_conversionPoolHeight{0};
 
   struct CDropControl
   {

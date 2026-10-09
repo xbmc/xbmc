@@ -63,13 +63,14 @@ void main()
   rgb.a = m_alpha;
 
 #if defined(XBMC_COL_CONVERSION)
-  rgb.rgb = pow(max(vec3(0), rgb.rgb), vec3(m_gammaSrc));
-  rgb.rgb = max(vec3(0), m_primMat * rgb.rgb);
-  rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
+  rgb.rgb = pow(max(vec3(0.00001), rgb.rgb), vec3(m_gammaSrc));
+  rgb.rgb = max(vec3(0.0), m_primMat * rgb.rgb);
+  rgb.rgb = pow(max(vec3(0.00001), rgb.rgb), vec3(m_gammaDstInv));
 
 #if defined(KODI_TONE_MAPPING_REINHARD)
   float luma = dot(rgb.rgb, m_coefsDst);
-  rgb.rgb *= reinhard(luma) / luma;
+  if (luma > 0.0001)
+    rgb.rgb *= reinhard(luma) / luma;
 
 #elif defined(KODI_TONE_MAPPING_ACES)
   rgb.rgb = inversePQ(rgb.rgb);

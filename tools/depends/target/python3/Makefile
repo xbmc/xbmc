@@ -33,7 +33,9 @@ endif
 ifeq ($(OS), linux)
   EXTRA_CONFIGURE=ac_cv_pthread=yes
   ifeq ($(TARGET_PLATFORM),webos)
-    LDFLAGS+= -liconv
+    ifeq ($(NEED_LIBICONV),1)
+      LDFLAGS+= -liconv
+    endif
   endif
 
 endif

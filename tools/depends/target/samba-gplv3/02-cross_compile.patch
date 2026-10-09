@@ -68,6 +68,12 @@
      return False
 --- a/buildtools/wafsamba/wscript
 +++ b/buildtools/wafsamba/wscript
+@@ -83,4 +83,4 @@
+     opt.add_option('--with-libiconv',
+                    help='additional directory to search for libiconv',
+-                   action='store', dest='iconv_open', default='/usr/local',
++                   action='store', dest='iconv_open', default=None,
+                    match = ['Checking for library iconv', 'Checking for iconv_open', 'Checking for header iconv.h'])
 @@ -317,7 +317,7 @@
      conf.CHECK_CODE('printf("hello world")',
                      define='HAVE_SIMPLE_C_PROG',
@@ -288,3 +294,4 @@
 +
 +check_system_heimdal_binary("compile_et")
 +check_system_heimdal_binary("asn1_compile")
+

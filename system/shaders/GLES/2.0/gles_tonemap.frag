@@ -9,7 +9,8 @@ const float ST2084_c3 = (2392.0 / 4096.0) * 32.0;
 #if defined(KODI_TONE_MAPPING_REINHARD)
 float reinhard(float x)
 {
-  return x * (1.0 + x / (m_toneP1 * m_toneP1)) / (1.0 + x);
+  float p1 = max(m_toneP1, 0.01);
+  return x * (1.0 + x / (p1 * p1)) / max(1.0 + x, 0.001);
 }
 #endif
 
@@ -41,9 +42,9 @@ vec3 hable(vec3 x)
 #if (defined(KODI_TONE_MAPPING_ACES) || defined(KODI_TONE_MAPPING_HABLE))
 vec3 inversePQ(vec3 x)
 {
-  x = pow(max(x, 0.0), vec3(1.0 / ST2084_m2));
-  x = max(x - ST2084_c1, 0.0) / (ST2084_c2 - ST2084_c3 * x);
-  x = pow(x, vec3(1.0 / ST2084_m1));
+  x = pow(max(x, 0.00001), vec3(1.0 / ST2084_m2));
+  x = max(x - ST2084_c1, 0.0) / max(ST2084_c2 - ST2084_c3 * x, vec3(0.0001));
+  x = pow(max(x, 0.00001), vec3(1.0 / ST2084_m1));
   return x;
 }
 #endif

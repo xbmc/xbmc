@@ -246,4 +246,13 @@
       </group>
     </category>
   </section>
+  <section id="services">
+    <category id="filecache">
+      <group id="1">
+        <setting id="filecache.memorysize">
+          <default>16</default>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>

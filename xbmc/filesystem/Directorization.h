@@ -105,7 +105,7 @@ namespace XFILE
         continue;
 
       entryFileName = URIUtils::AddFileToFolder(entryFileName, pathTokens[filePathTokens.size()]);
-      char c = entryPath[entryFileName.size()];
+      char c = (entryFileName.size() < entryPath.size()) ? entryPath[entryFileName.size()] : '\0';
       if (c == '/' || c == '\\')
         URIUtils::AddSlashAtEnd(entryFileName);
 

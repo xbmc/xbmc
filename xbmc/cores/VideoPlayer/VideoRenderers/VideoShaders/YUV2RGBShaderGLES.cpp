@@ -15,6 +15,7 @@
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
+#include <cmath>
 #include <sstream>
 #include <string>
 
@@ -40,7 +41,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
 
   m_convertFullRange = false;
 
-  if (m_format == SHADER_YV12)
+  if (m_format == SHADER_YV12 ||
+      m_format == SHADER_YV12_9 ||
+      m_format == SHADER_YV12_10 ||
+      m_format == SHADER_YV12_12 ||
+      m_format == SHADER_YV12_14 ||
+      m_format == SHADER_YV12_16)
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == SHADER_NV12)
     m_defines += "#define XBMC_NV12\n";
@@ -49,6 +55,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
   else
     CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
 
+#if !defined(TARGET_WEBOS)
   if (dstPrimaries != srcPrimaries)
   {
     m_colorConversion = true;
@@ -66,6 +73,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
     else if (toneMapMethod == VS_TONEMAPMETHOD_HABLE)
       m_defines += "#define KODI_TONE_MAPPING_HABLE\n";
   }
+#endif
 
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
@@ -109,7 +117,9 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1i(m_hYTex, 0);
   glUniform1i(m_hUTex, 1);
   glUniform1i(m_hVTex, 2);
-  glUniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
+  float stepX = (m_width > 0) ? (1.0f / m_width) : 0.0f;
+  float stepY = (m_height > 0) ? (1.0f / m_height) : 0.0f;
+  glUniform2f(m_hStep, stepX, stepY);
 
   m_convMatrix.SetDestinationContrast(m_contrast)
       .SetDestinationBlack(m_black)
@@ -135,18 +145,21 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     {
       float param = 0.7;
 
-      if (m_hasLightMetadata)
+      if (m_hasLightMetadata && m_lightMetadata.MaxCLL > 1)
       {
-        param = log10(100) / log10(m_lightMetadata.MaxCLL);
+        param = log10(100.0f) / log10(static_cast<float>(m_lightMetadata.MaxCLL));
       }
-      else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
+      else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance &&
+               m_displayMetadata.max_luminance.den > 0 &&
+               m_displayMetadata.max_luminance.num > m_displayMetadata.max_luminance.den)
       {
-        param = log10(100) /
-                log10(m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den);
+        param = log10(100.0f) /
+                log10(static_cast<float>(m_displayMetadata.max_luminance.num) /
+                      static_cast<float>(m_displayMetadata.max_luminance.den));
       }
 
       // Sanity check
-      if (param < 0.1f || param > 5.0f)
+      if (std::isnan(param) || std::isinf(param) || param < 0.1f || param > 5.0f)
       {
         param = 0.7f;
       }

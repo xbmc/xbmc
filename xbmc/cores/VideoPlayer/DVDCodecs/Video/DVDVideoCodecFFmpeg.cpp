@@ -27,10 +27,15 @@
 #include <memory>
 #include <mutex>
 
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+#include <arm_neon.h>
+#endif
+
 extern "C" {
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
+#include <libavutil/imgutils.h>
 #include <libavutil/mastering_display_metadata.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
@@ -61,6 +66,133 @@ enum EFilterFlags {
   FILTER_DEINTERLACE_HALFED  = 0x20,  //< do half rate deinterlacing
   FILTER_ROTATE              = 0x40,  //< rotate image according to the codec hints
 };
+
+namespace
+{
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+static inline void ConvertYUV10RowTo8(const uint16_t* src, uint8_t* dst, int count)
+{
+  int x = 0;
+  for (; x <= count - 16; x += 16)
+  {
+    uint16x8_t in0 = vld1q_u16(src + x);
+    uint16x8_t in1 = vld1q_u16(src + x + 8);
+    uint8x8_t out0 = vshrn_n_u16(in0, 2);
+    uint8x8_t out1 = vshrn_n_u16(in1, 2);
+    vst1q_u8(dst + x, vcombine_u8(out0, out1));
+  }
+  for (; x < count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[x] >> 2);
+  }
+}
+
+static inline void ConvertYUV12RowTo8(const uint16_t* src, uint8_t* dst, int count)
+{
+  int x = 0;
+  for (; x <= count - 16; x += 16)
+  {
+    uint16x8_t in0 = vld1q_u16(src + x);
+    uint16x8_t in1 = vld1q_u16(src + x + 8);
+    uint8x8_t out0 = vshrn_n_u16(in0, 4);
+    uint8x8_t out1 = vshrn_n_u16(in1, 4);
+    vst1q_u8(dst + x, vcombine_u8(out0, out1));
+  }
+  for (; x < count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[x] >> 4);
+  }
+}
+
+static inline void DownscaleYUV10RowTo8(const uint16_t* src, uint8_t* dst, int dst_count)
+{
+  int x = 0;
+  for (; x <= dst_count - 16; x += 16)
+  {
+    uint16x8x2_t in0 = vld2q_u16(src + 2 * x);
+    uint16x8x2_t in1 = vld2q_u16(src + 2 * x + 16);
+    uint8x8_t out0 = vshrn_n_u16(in0.val[0], 2);
+    uint8x8_t out1 = vshrn_n_u16(in1.val[0], 2);
+    vst1q_u8(dst + x, vcombine_u8(out0, out1));
+  }
+  for (; x < dst_count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[2 * x] >> 2);
+  }
+}
+
+static inline void DownscaleYUV12RowTo8(const uint16_t* src, uint8_t* dst, int dst_count)
+{
+  int x = 0;
+  for (; x <= dst_count - 16; x += 16)
+  {
+    uint16x8x2_t in0 = vld2q_u16(src + 2 * x);
+    uint16x8x2_t in1 = vld2q_u16(src + 2 * x + 16);
+    uint8x8_t out0 = vshrn_n_u16(in0.val[0], 4);
+    uint8x8_t out1 = vshrn_n_u16(in1.val[0], 4);
+    vst1q_u8(dst + x, vcombine_u8(out0, out1));
+  }
+  for (; x < dst_count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[2 * x] >> 4);
+  }
+}
+
+static inline void DownscaleYUV8RowTo8(const uint8_t* src, uint8_t* dst, int dst_count)
+{
+  int x = 0;
+  for (; x <= dst_count - 16; x += 16)
+  {
+    uint8x16x2_t in = vld2q_u8(src + 2 * x);
+    vst1q_u8(dst + x, in.val[0]);
+  }
+  for (; x < dst_count; x++)
+  {
+    dst[x] = src[2 * x];
+  }
+}
+#else
+static inline void ConvertYUV10RowTo8(const uint16_t* src, uint8_t* dst, int count)
+{
+  for (int x = 0; x < count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[x] >> 2);
+  }
+}
+
+static inline void ConvertYUV12RowTo8(const uint16_t* src, uint8_t* dst, int count)
+{
+  for (int x = 0; x < count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[x] >> 4);
+  }
+}
+
+static inline void DownscaleYUV10RowTo8(const uint16_t* src, uint8_t* dst, int dst_count)
+{
+  for (int x = 0; x < dst_count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[2 * x] >> 2);
+  }
+}
+
+static inline void DownscaleYUV12RowTo8(const uint16_t* src, uint8_t* dst, int dst_count)
+{
+  for (int x = 0; x < dst_count; x++)
+  {
+    dst[x] = static_cast<uint8_t>(src[2 * x] >> 4);
+  }
+}
+
+static inline void DownscaleYUV8RowTo8(const uint8_t* src, uint8_t* dst, int dst_count)
+{
+  for (int x = 0; x < dst_count; x++)
+  {
+    dst[x] = src[2 * x];
+  }
+}
+#endif
+} // namespace
 
 //------------------------------------------------------------------------------
 // Video Buffers
@@ -375,7 +507,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #endif
 
   // setup threading model
-  if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE))
+  if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE) && !CDVDFactoryCodec::GetHWAccels().empty())
   {
     if (m_decoderState == STATE_NONE)
     {
@@ -383,16 +515,29 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     }
     else
     {
-      int num_threads = CServiceBroker::GetCPUInfo()->GetCPUCount() * 3 / 2;
-      num_threads = std::max(1, std::min(num_threads, 16));
+      int num_threads = CServiceBroker::GetCPUInfo()->GetCPUCount();
+      num_threads = std::max(1, std::min(num_threads, 8));
       m_pCodecContext->thread_count = num_threads;
+      m_pCodecContext->thread_type = FF_THREAD_FRAME | FF_THREAD_SLICE;
       m_decoderState = STATE_SW_MULTI;
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - open frame threaded with {} threads",
+      CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg - open frame threaded with {} threads",
                 num_threads);
     }
   }
   else
-    m_decoderState = STATE_SW_SINGLE;
+  {
+    int num_threads = CServiceBroker::GetCPUInfo()->GetCPUCount();
+    num_threads = std::max(1, std::min(num_threads, 8));
+#if defined(TARGET_WEBOS)
+    // Utilize all 4 cores on webOS quad-core SoC for maximum software decoding throughput
+    num_threads = std::min(num_threads, 4);
+#endif
+    m_pCodecContext->thread_count = num_threads;
+    m_pCodecContext->thread_type = FF_THREAD_FRAME | FF_THREAD_SLICE;
+    m_decoderState = STATE_SW_MULTI;
+    CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg - open software decoder with {} threads",
+              num_threads);
+  }
 
   // if we don't do this, then some codecs seem to fail.
   m_pCodecContext->coded_height = hints.height;
@@ -418,19 +563,48 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   {
     m_pCodecContext->skip_loop_filter = static_cast<AVDiscard>(iSkipLoopFilter);
   }
+#if defined(TARGET_WEBOS)
+  m_pCodecContext->flags2 |= AV_CODEC_FLAG2_FAST;
+  if (hints.width >= 2560 || hints.height >= 1440)
+  {
+    if (m_pCodecContext->skip_loop_filter == AVDISCARD_DEFAULT)
+      m_pCodecContext->skip_loop_filter = AVDISCARD_ALL;
+    CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg - 4K/QHD webOS optimizations enabled (skip_loop_filter=all, fast)");
+  }
+#endif
+  m_defaultSkipLoopFilter = m_pCodecContext->skip_loop_filter;
+
+  AVDictionary* codecOptions = nullptr;
+#if defined(TARGET_WEBOS)
+  if (pCodec->id == AV_CODEC_ID_HEVC)
+  {
+    av_dict_set(&codecOptions, "skip_sao", "1", 0);
+    CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg - webOS HEVC optimization: skip_sao=1 enabled");
+  }
+#endif
 
   // set any special options
   for(std::vector<CDVDCodecOption>::iterator it = options.m_keys.begin(); it != options.m_keys.end(); ++it)
   {
     av_opt_set(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0);
+    av_dict_set(&codecOptions, it->m_name.c_str(), it->m_value.c_str(), 0);
   }
 
-  if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
+  int openRet = avcodec_open2(m_pCodecContext, pCodec, &codecOptions);
+  av_dict_free(&codecOptions);
+  if (openRet < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     avcodec_free_context(&m_pCodecContext);
     return false;
   }
+
+#if defined(TARGET_WEBOS)
+  if (pCodec->id == AV_CODEC_ID_HEVC && m_pCodecContext->priv_data)
+  {
+    av_opt_set(m_pCodecContext->priv_data, "skip_sao", "1", 0);
+  }
+#endif
 
   m_pFrame = av_frame_alloc();
   if (!m_pFrame)
@@ -480,10 +654,28 @@ void CDVDVideoCodecFFmpeg::Dispose()
   }
 
   FilterClose();
+
+  if (m_pConversionBufferPool)
+  {
+    av_buffer_pool_uninit(&m_pConversionBufferPool);
+    m_pConversionBufferPool = nullptr;
+  }
+  m_conversionPoolWidth = 0;
+  m_conversionPoolHeight = 0;
 }
 
 void CDVDVideoCodecFFmpeg::SetFilters()
 {
+  m_filters_next.clear();
+
+  // 4K and QHD content is strictly progressive. Never run deinterlacing filters on 4K.
+  if (m_pCodecContext->width >= 2560 || m_pCodecContext->height >= 1440 ||
+      m_hints.width >= 2560 || m_hints.height >= 1440)
+  {
+    m_interlaced = false;
+    return;
+  }
+
   // ask codec to do deinterlacing if possible
   EINTERLACEMETHOD mInt = m_processInfo.GetVideoSettings().m_InterlaceMethod;
 
@@ -797,13 +989,39 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     m_started = true;
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 2;
   }
+#if defined(TARGET_WEBOS)
+  if (m_pDecodedFrame->width >= 2560 || m_pDecodedFrame->height >= 1440)
+    m_interlaced = false;
+  else if (m_pDecodedFrame->interlaced_frame)
+    m_interlaced = true;
+  else
+    m_interlaced = false;
+#else
   if (m_pDecodedFrame->interlaced_frame)
     m_interlaced = true;
   else
     m_interlaced = false;
+#endif
 
   if (!m_processInfo.GetVideoInterlaced() && m_interlaced)
     m_processInfo.SetVideoInterlaced(m_interlaced);
+
+#if defined(TARGET_WEBOS)
+  if (m_pDecodedFrame->width >= 2560 || m_pDecodedFrame->height >= 1440)
+  {
+    if (m_defaultSkipLoopFilter == AVDISCARD_DEFAULT)
+    {
+      m_defaultSkipLoopFilter = AVDISCARD_ALL;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_ALL;
+      CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg - 4K/QHD detected from decoded frame ({}x{}), skip_loop_filter=all enabled",
+                m_pDecodedFrame->width, m_pDecodedFrame->height);
+    }
+    if (m_pCodecContext->priv_data)
+    {
+      av_opt_set(m_pCodecContext->priv_data, "skip_sao", "1", 0);
+    }
+  }
+#endif
 
   if (!m_started)
   {
@@ -852,6 +1070,186 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   {
     SetFilters();
 
+    // Fast direct 10-bit & 12-bit YUV to 8-bit YUV conversion, plus 4K downscale (bypasses libavfilter entirely)
+    const bool is10or12Bit = (m_pDecodedFrame->format == AV_PIX_FMT_YUV420P10LE ||
+                              m_pDecodedFrame->format == AV_PIX_FMT_YUV420P10 ||
+                              m_pDecodedFrame->format == AV_PIX_FMT_YUV420P12LE ||
+                              m_pDecodedFrame->format == AV_PIX_FMT_YUV420P12);
+#if defined(TARGET_WEBOS)
+    const bool is4K8Bit = (m_pDecodedFrame->format == AV_PIX_FMT_YUV420P &&
+                           (m_pDecodedFrame->width >= 2560 || m_pDecodedFrame->height >= 1440));
+#else
+    const bool is4K8Bit = false;
+#endif
+
+    if (m_filters_next.empty() && (is10or12Bit || is4K8Bit))
+    {
+      if (m_pFilterGraph)
+        FilterClose();
+
+      const int w = m_pDecodedFrame->width;
+      const int h = m_pDecodedFrame->height;
+
+#if defined(TARGET_WEBOS)
+      const bool downscale4K = (w >= 2560 || h >= 1440);
+#else
+      const bool downscale4K = false;
+#endif
+
+      const int out_w = downscale4K ? ((w / 2) & ~1) : w;
+      const int out_h = downscale4K ? ((h / 2) & ~1) : h;
+
+      // Reinitialize buffer pool if dimensions changed
+      if (!m_pConversionBufferPool || m_conversionPoolWidth != out_w || m_conversionPoolHeight != out_h)
+      {
+        if (m_pConversionBufferPool)
+          av_buffer_pool_uninit(&m_pConversionBufferPool);
+
+        int bufSize = av_image_get_buffer_size(AV_PIX_FMT_YUV420P, out_w, out_h, 32);
+        if (bufSize > 0)
+        {
+          m_pConversionBufferPool = av_buffer_pool_init(bufSize, nullptr);
+          m_conversionPoolWidth = out_w;
+          m_conversionPoolHeight = out_h;
+          CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg - initialized conversion buffer pool for {}x{} (src {}x{}, bufSize={})",
+                    out_w, out_h, w, h, bufSize);
+        }
+      }
+
+      AVBufferRef* buf = m_pConversionBufferPool ? av_buffer_pool_get(m_pConversionBufferPool) : nullptr;
+      if (buf)
+      {
+        av_frame_unref(m_pFrame);
+        av_frame_copy_props(m_pFrame, m_pDecodedFrame);
+        m_pFrame->format = AV_PIX_FMT_YUV420P;
+        m_pFrame->width = out_w;
+        m_pFrame->height = out_h;
+
+        av_image_fill_arrays(m_pFrame->data, m_pFrame->linesize, buf->data, AV_PIX_FMT_YUV420P, out_w, out_h, 32);
+        m_pFrame->buf[0] = buf;
+
+        const bool is12Bit = (m_pDecodedFrame->format == AV_PIX_FMT_YUV420P12LE ||
+                              m_pDecodedFrame->format == AV_PIX_FMT_YUV420P12);
+        const bool is8Bit = (m_pDecodedFrame->format == AV_PIX_FMT_YUV420P);
+
+        if (downscale4K)
+        {
+          if (is8Bit)
+          {
+            // 8-bit Y plane
+            for (int y = 0; y < out_h; y++)
+            {
+              const uint8_t* src_y = m_pDecodedFrame->data[0] + (y * 2) * m_pDecodedFrame->linesize[0];
+              uint8_t* dst_y = m_pFrame->data[0] + y * m_pFrame->linesize[0];
+              DownscaleYUV8RowTo8(src_y, dst_y, out_w);
+            }
+
+            const int uv_w = (out_w + 1) / 2;
+            const int uv_h = (out_h + 1) / 2;
+            for (int y = 0; y < uv_h; y++)
+            {
+              const uint8_t* src_u = m_pDecodedFrame->data[1] + (y * 2) * m_pDecodedFrame->linesize[1];
+              uint8_t* dst_u = m_pFrame->data[1] + y * m_pFrame->linesize[1];
+              DownscaleYUV8RowTo8(src_u, dst_u, uv_w);
+            }
+
+            for (int y = 0; y < uv_h; y++)
+            {
+              const uint8_t* src_v = m_pDecodedFrame->data[2] + (y * 2) * m_pDecodedFrame->linesize[2];
+              uint8_t* dst_v = m_pFrame->data[2] + y * m_pFrame->linesize[2];
+              DownscaleYUV8RowTo8(src_v, dst_v, uv_w);
+            }
+          }
+          else
+          {
+            // 10-bit / 12-bit Y plane
+            for (int y = 0; y < out_h; y++)
+            {
+              const uint16_t* src_y = reinterpret_cast<const uint16_t*>(m_pDecodedFrame->data[0] + (y * 2) * m_pDecodedFrame->linesize[0]);
+              uint8_t* dst_y = m_pFrame->data[0] + y * m_pFrame->linesize[0];
+              if (is12Bit)
+                DownscaleYUV12RowTo8(src_y, dst_y, out_w);
+              else
+                DownscaleYUV10RowTo8(src_y, dst_y, out_w);
+            }
+
+            const int uv_w = (out_w + 1) / 2;
+            const int uv_h = (out_h + 1) / 2;
+            for (int y = 0; y < uv_h; y++)
+            {
+              const uint16_t* src_u = reinterpret_cast<const uint16_t*>(m_pDecodedFrame->data[1] + (y * 2) * m_pDecodedFrame->linesize[1]);
+              uint8_t* dst_u = m_pFrame->data[1] + y * m_pFrame->linesize[1];
+              if (is12Bit)
+                DownscaleYUV12RowTo8(src_u, dst_u, uv_w);
+              else
+                DownscaleYUV10RowTo8(src_u, dst_u, uv_w);
+            }
+
+            for (int y = 0; y < uv_h; y++)
+            {
+              const uint16_t* src_v = reinterpret_cast<const uint16_t*>(m_pDecodedFrame->data[2] + (y * 2) * m_pDecodedFrame->linesize[2]);
+              uint8_t* dst_v = m_pFrame->data[2] + y * m_pFrame->linesize[2];
+              if (is12Bit)
+                DownscaleYUV12RowTo8(src_v, dst_v, uv_w);
+              else
+                DownscaleYUV10RowTo8(src_v, dst_v, uv_w);
+            }
+          }
+        }
+        else
+        {
+          // 1:1 conversion for 10-bit/12-bit (<= 1080p)
+          for (int y = 0; y < h; y++)
+          {
+            const uint16_t* src_y = reinterpret_cast<const uint16_t*>(m_pDecodedFrame->data[0] + y * m_pDecodedFrame->linesize[0]);
+            uint8_t* dst_y = m_pFrame->data[0] + y * m_pFrame->linesize[0];
+            if (is12Bit)
+              ConvertYUV12RowTo8(src_y, dst_y, w);
+            else
+              ConvertYUV10RowTo8(src_y, dst_y, w);
+          }
+
+          const int uv_w = (w + 1) / 2;
+          const int uv_h = (h + 1) / 2;
+          for (int y = 0; y < uv_h; y++)
+          {
+            const uint16_t* src_u = reinterpret_cast<const uint16_t*>(m_pDecodedFrame->data[1] + y * m_pDecodedFrame->linesize[1]);
+            uint8_t* dst_u = m_pFrame->data[1] + y * m_pFrame->linesize[1];
+            if (is12Bit)
+              ConvertYUV12RowTo8(src_u, dst_u, uv_w);
+            else
+              ConvertYUV10RowTo8(src_u, dst_u, uv_w);
+          }
+
+          for (int y = 0; y < uv_h; y++)
+          {
+            const uint16_t* src_v = reinterpret_cast<const uint16_t*>(m_pDecodedFrame->data[2] + y * m_pDecodedFrame->linesize[2]);
+            uint8_t* dst_v = m_pFrame->data[2] + y * m_pFrame->linesize[2];
+            if (is12Bit)
+              ConvertYUV12RowTo8(src_v, dst_v, uv_w);
+            else
+              ConvertYUV10RowTo8(src_v, dst_v, uv_w);
+          }
+        }
+
+        av_frame_unref(m_pDecodedFrame);
+
+        if (!SetPictureParams(pVideoPicture))
+          return VC_ERROR;
+        else
+        {
+          pVideoPicture->pixelFormat = AV_PIX_FMT_YUV420P;
+          pVideoPicture->colorBits = 8;
+          return VC_PICTURE;
+        }
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::GetPicture - failed to get buffer from conversion pool");
+        return VC_ERROR;
+      }
+    }
+
     bool need_scale = std::find(m_formats.begin(),
                                 m_formats.end(),
                                 m_pCodecContext->pix_fmt) == m_formats.end();
@@ -863,7 +1261,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     if (!m_filters_next.empty() && m_filterEof)
       need_reopen = true;
 
-    if (m_pFilterIn)
+    if (m_pFilterIn && m_pFilterIn->outputs && m_pFilterIn->nb_outputs > 0 && m_pFilterIn->outputs[0])
     {
       if (m_pFilterIn->outputs[0]->format != m_pCodecContext->pix_fmt ||
           m_pFilterIn->outputs[0]->w != m_pCodecContext->width ||
@@ -1013,8 +1411,18 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
 
   pVideoPicture->iRepeatPicture = 0.5 * m_pFrame->repeat_pict;
   pVideoPicture->iFlags = 0;
+#if defined(TARGET_WEBOS)
+  const bool isOrig4K = (m_hints.width >= 2560 || m_hints.height >= 1440 ||
+                         m_pCodecContext->width >= 2560 || m_pCodecContext->height >= 1440);
+  if (!isOrig4K)
+  {
+    pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
+    pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST : 0;
+  }
+#else
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
-  pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
+  pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST : 0;
+#endif
 
   if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
   {
@@ -1183,6 +1591,12 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - unable to alloc filter graph");
     return -1;
   }
+
+  int num_threads = CServiceBroker::GetCPUInfo()->GetCPUCount();
+  m_pFilterGraph->nb_threads = std::max(1, std::min(num_threads, 8));
+  m_pFilterGraph->scale_sws_opts = av_strdup("flags=fast_bilinear");
+  CLog::Log(LOGINFO, "CDVDVideoCodecFFmpeg::FilterOpen - configured filter graph with {} threads and fast_bilinear",
+            m_pFilterGraph->nb_threads);
 
   const AVFilter* srcFilter = avfilter_get_by_name("buffer");
   const AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
@@ -1368,7 +1782,7 @@ void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
 
   if (m_pCodecContext)
   {
-    bool bDrop = (flags & DVD_CODEC_CTRL_DROP_ANY) != 0;
+    bool bDrop = (flags & (DVD_CODEC_CTRL_DROP_ANY | DVD_CODEC_CTRL_DROP)) != 0;
     if (bDrop && m_pHardware && m_pHardware->CanSkipDeint())
     {
       m_requestSkipDeint = true;
@@ -1381,13 +1795,13 @@ void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
     {
       m_pCodecContext->skip_frame = AVDISCARD_NONREF;
       m_pCodecContext->skip_idct = AVDISCARD_NONREF;
-      m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_ALL;
     }
     else
     {
       m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
       m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
-      m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_loop_filter = m_defaultSkipLoopFilter;
     }
   }
 

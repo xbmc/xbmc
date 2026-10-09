@@ -67,9 +67,15 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
 
+#if defined(TARGET_WEBOS)
+  // On webOS, use 64 MB and 8.0s to prevent demux queue starvation while keeping RAM safe
+  m_messageQueue.SetMaxDataSize(64 * 1024 * 1024);
+  m_messageQueue.SetMaxTimeSize(8.0);
+#else
   // 128 MB allows max bitrate of 128 Mbit/s (e.g. UHD Blu-Ray) during 8 seconds
   m_messageQueue.SetMaxDataSize(128 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
+#endif
 
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
@@ -867,14 +873,19 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   int orientation = sorient != 0 ? (sorient + m_hints.orientation) % 360
                                  : m_hints.orientation;
 
+  static int configureRetries = 0;
   if (!m_renderManager.Configure(*pPicture,
                                 static_cast<float>(config_framerate),
                                 orientation,
                                 m_pVideoCodec->GetAllowedReferences()))
   {
-    CLog::Log(LOGERROR, "{} - failed to configure renderer", __FUNCTION__);
+    CLog::Log(LOGERROR, "{} - failed to configure renderer (retry {}/3)", __FUNCTION__, configureRetries + 1);
+    if (++configureRetries < 3)
+      return OUTPUT_AGAIN;
+    configureRetries = 0;
     return OUTPUT_ABORT;
   }
+  configureRetries = 0;
 
   //try to calculate the framerate
   m_ptsTracker.Add(pPicture->pts);

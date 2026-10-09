@@ -314,7 +314,12 @@ void CVideoPlayerAudio::Process()
                 m_messageQueue.GetLevel(), m_audioSink.GetDelay());
 
       double delay = m_audioSink.GetDelay();
-      if (pts > m_audioClock - delay + 0.5 * DVD_TIME_BASE)
+      // On GENERAL_RESYNC (e.g. after seek or stream startup), if the buffered audio timestamp
+      // diverges from the newly synced master clock by more than 500ms in either direction,
+      // flush the audio sink to start cleanly from the new stream position. This avoids leaving
+      // ActiveAE to resample/skip samples across a large clock discontinuity, which produces
+      // audible stuttering and glitches.
+      if (std::abs(pts - (m_audioClock - delay)) > 0.5 * DVD_TIME_BASE)
       {
         m_audioSink.Flush();
       }

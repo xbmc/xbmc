@@ -137,7 +137,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_presentevent.notifyAll();
   }
 
-  if (!m_stateEvent.Wait(1000ms))
+  if (!m_stateEvent.Wait(10000ms))
   {
     CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for configure");
     std::unique_lock<CCriticalSection> lock(m_statelock);

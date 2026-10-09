@@ -161,6 +161,11 @@
           </updates>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usestarfish" type="boolean" label="38990" help="38991">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedxva2" type="boolean" label="13427" help="36158">
           <requirement>HasDXVA2</requirement>
           <level>2</level>
@@ -2525,7 +2530,7 @@
         </setting>
         <setting id="filecache.memorysize" type="integer" label="37105" help="37106">
           <level>2</level>
-          <default>20</default>
+          <default>16</default>
           <dependencies>
             <dependency type="enable">
               <condition setting="filecache.buffermode" operator="!is">3</condition>
@@ -2538,7 +2543,7 @@
         </setting>
         <setting id="filecache.readfactor" type="integer" label="37107" help="37108">
           <level>2</level>
-          <default>400</default>
+          <default>2000</default>
           <dependencies>
             <dependency type="enable">
               <condition setting="filecache.buffermode" operator="!is">3</condition>

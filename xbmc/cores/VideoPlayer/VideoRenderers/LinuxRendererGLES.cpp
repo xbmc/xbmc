@@ -43,11 +43,20 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
 #if defined (GL_UNPACK_ROW_LENGTH_EXT)
-  if (m_renderSystem->IsExtSupported("GL_EXT_unpack_subimage"))
+  if (m_renderSystem && m_renderSystem->IsExtSupported("GL_EXT_unpack_subimage"))
   {
     m_pixelStoreKey = GL_UNPACK_ROW_LENGTH_EXT;
   }
 #endif
+  if (m_pixelStoreKey == 0 && m_renderSystem)
+  {
+    unsigned int major = 0, minor = 0;
+    m_renderSystem->GetRenderVersion(major, minor);
+    if (major >= 3)
+    {
+      m_pixelStoreKey = 0x0CF2; // GL_UNPACK_ROW_LENGTH (core in GLES 3.0+)
+    }
+  }
 }
 
 CLinuxRendererGLES::~CLinuxRendererGLES()
@@ -86,19 +95,24 @@ bool CLinuxRendererGLES::ValidateRenderTarget()
 
      // create the yuv textures
     UpdateVideoFilter();
+    CLog::Log(LOGINFO, "GLES: ValidateRenderTarget - loading shaders");
     LoadShaders();
 
     if (m_renderMethod < 0)
     {
+      CLog::Log(LOGERROR, "GLES: ValidateRenderTarget - LoadShaders failed (m_renderMethod < 0)");
       return false;
     }
+    CLog::Log(LOGINFO, "GLES: ValidateRenderTarget - shaders loaded (renderMethod={}), creating textures", m_renderMethod);
 
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
     {
+      CLog::Log(LOGINFO, "GLES: ValidateRenderTarget - creating texture buffer {}/{}", i, m_NumYV12Buffers);
       CreateTexture(i);
     }
 
     m_bValidated = true;
+    CLog::Log(LOGINFO, "GLES: ValidateRenderTarget - render target validated successfully");
 
     return true;
   }
@@ -178,10 +192,7 @@ void CLinuxRendererGLES::AddVideoPicture(const VideoPicture &picture, int index)
   buf.hasDisplayMetadata = picture.hasDisplayMetadata;
   buf.displayMetadata = picture.displayMetadata;
   buf.lightMetadata = picture.lightMetadata;
-  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
-  {
-    buf.hasLightMetadata = picture.hasLightMetadata;
-  }
+  buf.hasLightMetadata = (picture.hasLightMetadata && picture.lightMetadata.MaxCLL > 0);
 }
 
 void CLinuxRendererGLES::ReleaseBuffer(int idx)
@@ -286,7 +297,7 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
     if (m_pixelStoreKey > 0)
     {
       pixelStoreChanged = true;
-      glPixelStorei(m_pixelStoreKey, stride);
+      glPixelStorei(m_pixelStoreKey, stride / (bps > 0 ? bps : 1));
     }
     else
     {
@@ -645,25 +656,39 @@ void CLinuxRendererGLES::LoadShaders(int field)
         // Try GLSL shaders if supported and user requested auto or GLSL.
         if (glCreateProgram())
         {
-          // create regular scan shader
-          CLog::Log(LOGINFO, "GLES: Selecting YUV 2 RGB shader");
-
           EShaderFormat shaderFormat = GetShaderFormat();
           m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(
-              shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod);
-          m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
-          m_pYUVBobShader = new YUV2RGBBobShader(
-              shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod);
-          m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
+#if defined(TARGET_WEBOS)
+          AVColorPrimaries dstPrim = m_srcPrimaries;
+#else
+          AVColorPrimaries dstPrim = m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709;
+#endif
+          CLog::Log(LOGINFO, "GLES: Selecting YUV 2 RGB shader (format={}, srcPrim={}, dstPrim={}, toneMap={}, toneMapMethod={})",
+                    shaderFormat, m_srcPrimaries, dstPrim, m_toneMap, m_toneMapMethod);
 
-          if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
-              && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
+          m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, dstPrim, m_srcPrimaries, m_toneMap, m_toneMapMethod);
+          m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
+
+          CLog::Log(LOGINFO, "GLES: Compiling progressive YUV2RGB shader");
+          bool progCompiled = (m_pYUVProgShader && m_pYUVProgShader->CompileAndLink());
+          CLog::Log(LOGINFO, "GLES: Progressive shader compile result: {}", progCompiled);
+
+          bool bobCompiled = true;
+#if !defined(TARGET_WEBOS)
+          const bool is4K = (m_sourceWidth >= 2560 || m_sourceHeight >= 1440);
+          if (!is4K)
+          {
+            m_pYUVBobShader = new YUV2RGBBobShader(shaderFormat, dstPrim, m_srcPrimaries, m_toneMap, m_toneMapMethod);
+            m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
+            bobCompiled = (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink());
+          }
+#endif
+
+          if (progCompiled && bobCompiled)
           {
             m_renderMethod = RENDER_GLSL;
             UpdateVideoFilter();
+            CLog::Log(LOGINFO, "GLES: YUV2RGB GLSL shaders enabled successfully");
             break;
           }
           else
@@ -787,8 +812,16 @@ bool CLinuxRendererGLES::UploadTexture(int index)
 
 void CLinuxRendererGLES::Render(unsigned int flags, int index)
 {
+#if defined(TARGET_WEBOS)
+  m_currentField = FIELD_FULL;
+#else
+  // 4K video is strictly progressive; always use FIELD_FULL
+  if (m_sourceWidth >= 2560 || m_sourceHeight >= 1440)
+  {
+    m_currentField = FIELD_FULL;
+  }
   // obtain current field, if interlaced
-  if( flags & RENDER_FLAG_TOP)
+  else if( flags & RENDER_FLAG_TOP)
   {
     m_currentField = FIELD_TOP;
   }
@@ -800,6 +833,7 @@ void CLinuxRendererGLES::Render(unsigned int flags, int index)
   {
     m_currentField = FIELD_FULL;
   }
+#endif
 
   // call texture load function
   if (!UploadTexture(index))
@@ -840,13 +874,27 @@ void CLinuxRendererGLES::Render(unsigned int flags, int index)
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
+#if defined(TARGET_WEBOS)
+  field = FIELD_FULL;
+#else
+  if (m_sourceWidth >= 2560 || m_sourceHeight >= 1440)
+    field = FIELD_FULL;
+#endif
+
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+
+  if (!planes[0].id || !planes[1].id || !planes[2].id ||
+      planes[0].texwidth == 0 || planes[0].texheight == 0)
+  {
+    return;
+  }
 
   CheckVideoParameters(index);
 
   if (m_reloadShaders)
   {
+    CLog::Log(LOGINFO, "GLES: RenderSinglePass - reloading shaders (toneMap={}, toneMapMethod={})", m_toneMap, m_toneMapMethod);
     LoadShaders(field);
   }
 
@@ -868,7 +916,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   VerifyGLState();
 
   Shaders::GLES::BaseYUV2RGBGLSLShader* pYUVShader;
-  if (field != FIELD_FULL)
+  if (field != FIELD_FULL && m_pYUVBobShader)
   {
     pYUVShader = m_pYUVBobShader;
   }
@@ -876,6 +924,9 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   {
     pYUVShader = m_pYUVProgShader;
   }
+
+  if (!pYUVShader)
+    return;
 
   pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
@@ -934,7 +985,20 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
     m_tex[i][2][1] = m_tex[i][3][1] = planes[i].rect.y2;
   }
 
+  static int s_renderedFrames = 0;
+  if (s_renderedFrames < 5)
+  {
+    CLog::Log(LOGINFO, "GLES: RenderSinglePass - drawing frame {}, field={}, planes=[{},{},{}], texsize={}x{}",
+              s_renderedFrames, field, planes[0].id, planes[1].id, planes[2].id, planes[0].texwidth, planes[0].texheight);
+  }
+
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  if (s_renderedFrames < 5)
+  {
+    CLog::Log(LOGINFO, "GLES: RenderSinglePass - frame {} drawn successfully", s_renderedFrames);
+    s_renderedFrames++;
+  }
 
   VerifyGLState();
 
@@ -951,8 +1015,21 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
 void CLinuxRendererGLES::RenderToFBO(int index, int field)
 {
+#if defined(TARGET_WEBOS)
+  field = FIELD_FULL;
+#else
+  if (m_sourceWidth >= 2560 || m_sourceHeight >= 1440)
+    field = FIELD_FULL;
+#endif
+
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+
+  if (!planes[0].id || !planes[1].id || !planes[2].id ||
+      planes[0].texwidth == 0 || planes[0].texheight == 0)
+  {
+    return;
+  }
 
   CheckVideoParameters(index);
 
@@ -1347,7 +1424,13 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
     im.plane[i] = nullptr; // will be set in UploadTexture()
   }
 
-  for(int f = 0; f < MAX_FIELDS; f++)
+#if defined(TARGET_WEBOS)
+  const int maxFields = 1;
+#else
+  const int maxFields = (m_sourceWidth >= 2560 || m_sourceHeight >= 1440) ? 1 : MAX_FIELDS;
+#endif
+
+  for(int f = 0; f < maxFields; f++)
   {
     for(p = 0; p < YuvImage::MAX_PLANES; p++)
     {
@@ -1360,7 +1443,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   }
 
   // YUV
-  for (int f = FIELD_FULL; f <= FIELD_BOT ; f++)
+  for (int f = FIELD_FULL; f < maxFields ; f++)
   {
     int fieldshift = (f == FIELD_FULL) ? 0 : 1;
     CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[f];
@@ -1702,10 +1785,30 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method) const
   return false;
 }
 
+void CLinuxRendererGLES::SetBufferSize(int numBuffers)
+{
+#if defined(TARGET_WEBOS)
+  m_NumYV12Buffers = std::min(numBuffers, 3);
+  CLog::Log(LOGINFO, "LinuxRendererGLES::SetBufferSize - webOS clamp: using {} render buffers", m_NumYV12Buffers);
+#else
+  if (m_sourceWidth >= 2560 || m_sourceHeight >= 1440)
+  {
+    m_NumYV12Buffers = std::min(numBuffers, 3);
+    CLog::Log(LOGINFO, "LinuxRendererGLES::SetBufferSize - 4K/QHD clamp: using {} render buffers", m_NumYV12Buffers);
+  }
+  else
+    m_NumYV12Buffers = numBuffers;
+#endif
+}
+
 CRenderInfo CLinuxRendererGLES::GetRenderInfo()
 {
   CRenderInfo info;
-  info.max_buffer_size = NUM_BUFFERS;
+#if defined(TARGET_WEBOS)
+  info.max_buffer_size = 3;
+#else
+  info.max_buffer_size = (m_sourceWidth >= 2560 || m_sourceHeight >= 1440) ? 3 : NUM_BUFFERS;
+#endif
 
   return info;
 }
@@ -1731,6 +1834,12 @@ void CLinuxRendererGLES::CheckVideoParameters(int index)
     m_reloadShaders = true;
   }
 
+#if defined(TARGET_WEBOS)
+  // On webOS, mobile Mali GPU cannot sustain 50 million pow() calls per frame at 3840x2160.
+  // Bypass software GLES tone mapping; direct BT.2020 matrix conversion yields full 60fps rendering,
+  // and the LG TV panel processor handles HDR and wide color gamut natively.
+  bool toneMap = false;
+#else
   bool toneMap = false;
   const bool streamIsHDRPQ =
       (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 && buf.m_srcPrimaries == AVCOL_PRI_BT2020);
@@ -1739,6 +1848,7 @@ void CLinuxRendererGLES::CheckVideoParameters(int index)
   {
     toneMap = true;
   }
+#endif
 
   if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
   {

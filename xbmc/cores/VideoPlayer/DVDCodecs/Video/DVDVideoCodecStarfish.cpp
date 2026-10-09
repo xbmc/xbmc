@@ -28,11 +28,16 @@
 #include "windowing/wayland/WinSystemWaylandWebOS.h"
 
 #include <memory>
+#include <setjmp.h>
+#include <thread>
 #include <vector>
 
 #include <appswitching-control-block/AcbAPI.h>
 #include <player-factory/custompipeline.hpp>
 #include <player-factory/customplayer.hpp>
+
+extern thread_local sigjmp_buf g_starfishJmpBuf;
+extern thread_local bool g_inStarfishGuard;
 
 using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
@@ -40,11 +45,11 @@ using namespace std::chrono_literals;
 namespace
 {
 constexpr unsigned int PRE_BUFFER_BYTES = 0;
-constexpr unsigned int MAX_QUEUE_BUFFER_LEVEL = 1 * 1024 * 1024; // 1 MB
+constexpr unsigned int MAX_QUEUE_BUFFER_LEVEL = 8 * 1024 * 1024; // 8 MB
 constexpr unsigned int MIN_BUFFER_LEVEL = 0;
 constexpr unsigned int MAX_BUFFER_LEVEL = 0;
-constexpr unsigned int MIN_SRC_BUFFER_LEVEL = 1 * 1024 * 1024; // 1 MB
-constexpr unsigned int MAX_SRC_BUFFER_LEVEL = 8 * 1024 * 1024; // 8 MB
+constexpr unsigned int MIN_SRC_BUFFER_LEVEL = 2 * 1024 * 1024; // 2 MB
+constexpr unsigned int MAX_SRC_BUFFER_LEVEL = 32 * 1024 * 1024; // 32 MB
 } // namespace
 
 CDVDVideoCodecStarfish::CDVDVideoCodecStarfish(CProcessInfo& processInfo)
@@ -52,12 +57,16 @@ CDVDVideoCodecStarfish::CDVDVideoCodecStarfish(CProcessInfo& processInfo)
 {
   using namespace KODI::WINDOWING::WAYLAND;
   auto winSystem = static_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
-  if (!winSystem->SupportsExportedWindow())
+  if (winSystem && !winSystem->SupportsExportedWindow())
   {
     m_acbId = AcbAPI_create();
     if (m_acbId)
     {
-      if (!AcbAPI_initialize(m_acbId, PLAYER_TYPE_MSE, getenv("APPID"), &AcbCallback))
+      const char* appId = getenv("APPID");
+      if (!appId || !*appId)
+        appId = CCompileInfo::GetPackage();
+
+      if (!AcbAPI_initialize(m_acbId, PLAYER_TYPE_MSE, appId, &AcbCallback))
       {
         AcbAPI_destroy(m_acbId);
         m_acbId = 0;
@@ -86,6 +95,28 @@ std::atomic<bool> CDVDVideoCodecStarfish::ms_instanceGuard(false);
 
 bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
+  const char* disableHw = getenv("KODI_DISABLE_STARFISH_HWDEC");
+  if (disableHw && (strcmp(disableHw, "1") == 0 || strcmp(disableHw, "true") == 0))
+  {
+    CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: Disabled via KODI_DISABLE_STARFISH_HWDEC environment variable");
+    return false;
+  }
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (settings)
+  {
+    const auto setting = settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USESTARFISH);
+    if (setting)
+    {
+      const auto boolSetting = std::dynamic_pointer_cast<CSettingBool>(setting);
+      if (boolSetting && !boolSetting->GetValue())
+      {
+        CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: Disabled via videoplayer.usestarfish setting");
+        return false;
+      }
+    }
+  }
+
   // allow only 1 instance here
   if (ms_instanceGuard.exchange(true))
   {
@@ -93,10 +124,37 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     return false;
   }
 
-  bool ok = OpenInternal(hints, options);
+  bool ok = false;
+  g_inStarfishGuard = true;
+  if (sigsetjmp(g_starfishJmpBuf, 1) == 0)
+  {
+    try
+    {
+      ok = OpenInternal(hints, options);
+    }
+    catch (const std::exception& e)
+    {
+      CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Exception in OpenInternal: {}", e.what());
+      ok = false;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Unknown exception in OpenInternal");
+      ok = false;
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Caught crash signal inside Starfish HWDEC! Safely falling back to software decoder (FFmpeg)");
+    ok = false;
+  }
+  g_inStarfishGuard = false;
 
   if (!ok)
+  {
+    Dispose();
     ms_instanceGuard.exchange(false);
+  }
 
   return ok;
 }
@@ -232,16 +290,28 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
       break;
   }
 
+  CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: [STEP 1] Calling notifyForeground for codec {}", m_codecname);
   m_starfishMediaAPI->notifyForeground();
+  CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: [STEP 2] notifyForeground completed successfully");
 
   using namespace KODI::WINDOWING::WAYLAND;
   auto winSystem = static_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
+  if (!winSystem)
+  {
+    CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: winSystem is null!");
+    return false;
+  }
 
   payloadArg["mediaTransportType"] = "BUFFERSTREAM";
   if (winSystem->SupportsExportedWindow())
   {
     std::string exportedWindowName = winSystem->GetExportedWindowName();
+    CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: [STEP 3] Exported window ID: '{}'", exportedWindowName);
     payloadArg["option"]["windowId"] = exportedWindowName;
+  }
+  else
+  {
+    CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: [STEP 3] SupportsExportedWindow is false");
   }
   payloadArg["option"]["appId"] = CCompileInfo::GetPackage();
   payloadArg["option"]["externalStreamingInfo"]["contents"]["codec"]["video"] = m_codecname;
@@ -275,12 +345,14 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   std::string payload;
   CJSONVariantWriter::Write(payloadArgs, payload, true);
 
-  CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: Sending Load payload {}", payload);
+  CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: [STEP 4] Sending Load payload: {}", payload);
   if (!m_starfishMediaAPI->Load(payload.c_str(), &CDVDVideoCodecStarfish::PlayerCallback, this))
   {
     CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Load failed");
+    m_starfishMediaAPI->notifyBackground();
     return false;
   }
+  CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish: [STEP 5] Load succeeded");
 
   SetHDR();
 
@@ -315,18 +387,21 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
 
 void CDVDVideoCodecStarfish::Dispose()
 {
-  if (!m_opened)
-    return;
-  m_opened = false;
-
-  m_starfishMediaAPI->Unload();
+  if (m_starfishMediaAPI)
+  {
+    if (m_opened)
+      m_starfishMediaAPI->Unload();
+    m_starfishMediaAPI->notifyBackground();
+  }
 
   if (m_acbId)
   {
     AcbAPI_finalize(m_acbId);
     AcbAPI_destroy(m_acbId);
+    m_acbId = 0;
   }
 
+  m_opened = false;
   ms_instanceGuard.exchange(false);
 }
 
@@ -380,8 +455,14 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
       contentInfo.ptsToDecode = pts.count();
       pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
       pipeline->sendSegmentEvent();
+      // Record initial segment PTS. Do NOT set m_newFrame = true here:
+      // Starfish hardware video decoding runs asynchronously and needs to pre-fill
+      // its hardware buffer (2MB - 32MB) before presenting frames. Setting m_newFrame prematurely
+      // causes GetPicture() to return VC_PICTURE on packet 0, prompting CVideoPlayer to start the
+      // master clock and resume PulseAudio ~2s before video frames actually display. That lead time
+      // triggers large audio sync errors (~2200ms) and audible ActiveAE stuttering.
+      // m_newFrame is set exclusively when Starfish fires PF_EVENT_TYPE_FRAMEREADY.
       m_currentPlaytime = pts;
-      m_newFrame = true;
     }
     m_state = StarfishState::RUNNING;
   }
@@ -403,7 +484,19 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
       return true;
 
     if (result.find("BufferFull") != std::string::npos)
+    {
+      // Hardware decoder buffer is full. Wait briefly for uMediaServer to consume frames.
+      for (int retry = 0; retry < 6; ++retry)
+      {
+        std::this_thread::sleep_for(10ms);
+        result = m_starfishMediaAPI->Feed(json.c_str());
+        if (result.find("Ok") != std::string::npos)
+          return true;
+        if (result.find("BufferFull") == std::string::npos)
+          break;
+      }
       return false;
+    }
 
     CLog::LogF(LOGWARNING, "CDVDVideoCodecStarfish: Buffer submit returned error: {}", result);
   }
@@ -421,8 +514,10 @@ void CDVDVideoCodecStarfish::Reset()
 
   m_state = StarfishState::FLUSHED;
 
-  // Invalidate our local VideoPicture bits
+  // Invalidate our local VideoPicture bits and clear pending frame flag
   m_videobuffer.pts = DVD_NOPTS_VALUE;
+  // Ensure no stale frame ready flag persists across seek/flush
+  m_newFrame = false;
 
   if (m_bitstream)
     m_bitstream->ResetStartDecode();
@@ -568,21 +663,32 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
                                             const char* strValue)
 {
   std::string logstr = strValue != nullptr ? strValue : "";
-  CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: type: {}, numValue: {}, strValue: {}", type,
+  CLog::LogF(LOGINFO, "CDVDVideoCodecStarfish::PlayerCallback: type: {}, numValue: {}, strValue: '{}'", type,
              numValue, logstr);
 
   switch (type)
   {
     case PF_EVENT_TYPE_FRAMEREADY:
+      // Real decoded/presented video frame timestamp from Starfish hardware pipeline.
+      // This is the sole authoritative trigger that a picture is ready for presentation.
       m_currentPlaytime = std::chrono::nanoseconds(numValue);
       m_newFrame = true;
       break;
     case PF_EVENT_TYPE_STR_RESOURCE_INFO:
-      m_newFrame = true;
+      // Resource allocation event from webOS (VDEC acquisition), not a decoded frame.
+      // Must not set m_newFrame to avoid premature playback startup.
       break;
     case PF_EVENT_TYPE_STR_VIDEO_INFO:
       if (m_acbId)
         AcbAPI_setMediaVideoData(m_acbId, logstr.c_str());
+      break;
+    case PF_EVENT_TYPE_STR_BUFFERFULL:
+      CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: Pipeline BufferFull event");
+      break;
+    case PF_EVENT_TYPE_STR_BUFFERLOW:
+    case PF_EVENT_TYPE_INT_BUFFERLOW:
+    case PF_EVENT_TYPE_INT_NEED_DATA:
+      CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: Pipeline BufferLow / NeedData event");
       break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
       if (m_acbId)
@@ -627,6 +733,11 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
                                             const char* strValue,
                                             void* data)
 {
+  if (!data)
+  {
+    CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish::PlayerCallback: Null data pointer received!");
+    return;
+  }
   static_cast<CDVDVideoCodecStarfish*>(data)->PlayerCallback(type, numValue, strValue);
 }
 

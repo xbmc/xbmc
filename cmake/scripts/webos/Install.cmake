@@ -30,7 +30,7 @@ set(APP_INSTALL_DIRS ${CMAKE_BINARY_DIR}/addons
                      ${CMAKE_BINARY_DIR}/userdata)
 set(APP_TOOLCHAIN_FILES ${TOOLCHAIN}/${HOST}/sysroot/lib/libatomic.so.1
                         ${TOOLCHAIN}/${HOST}/sysroot/lib/libcrypt.so.1
-                        ${CMAKE_BINARY_DIR}/libAcbAPI.so.1)
+                        ${DEPENDS_PATH}/lib/libAcbAPI.so.1)
 set(BIN_ADDONS_DIR ${DEPENDS_PATH}/addons)
 
 file(WRITE ${CMAKE_BINARY_DIR}/install.cmake "
@@ -41,6 +41,9 @@ file(WRITE ${CMAKE_BINARY_DIR}/install.cmake "
   file(INSTALL python3 DESTINATION ${APP_PACKAGE_DIR}/lib)
   file(INSTALL ${DEPENDS_PATH}/lib/python${PYTHON_VERSION} DESTINATION ${APP_PACKAGE_DIR}/lib FOLLOW_SYMLINK_CHAIN)
   file(INSTALL ${APP_TOOLCHAIN_FILES} DESTINATION ${APP_PACKAGE_DIR}/lib FOLLOW_SYMLINK_CHAIN)
+  if(EXISTS ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/gconv)
+    file(INSTALL ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/gconv DESTINATION ${APP_PACKAGE_DIR}/lib)
+  endif()
 
   file(STRINGS ${CMAKE_BINARY_DIR}/missing_libs.txt missing_libs)
   foreach(lib IN LISTS missing_libs)

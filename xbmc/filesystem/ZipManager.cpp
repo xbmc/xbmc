@@ -185,7 +185,8 @@ bool CZipManager::GetZipList(const CURL& url, std::vector<SZipEntry>& items)
     if ((ze.flags & ZC_FLAG_EFS) == 0)
     {
       std::string tmp(strName);
-      g_charsetConverter.ToUtf8("CP437", tmp, strName);
+      if (!g_charsetConverter.ToUtf8("CP437", tmp, strName) || strName.empty())
+        strName = tmp;
     }
     memset(ze.name, 0, 255);
     strncpy(ze.name, strName.c_str(), strName.size() > 254 ? 254 : strName.size());

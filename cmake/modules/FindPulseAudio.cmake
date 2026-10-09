@@ -7,13 +7,11 @@
 #
 #   PulseAudio::PulseAudio - The PulseAudio library
 #   PulseAudio::PulseAudioSimple - The PulseAudio simple library
-#   PulseAudio::PulseAudioMainloop - The PulseAudio mainloop library
 
 if(NOT TARGET PulseAudio::PulseAudio)
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_PULSEAUDIO libpulse>=11.0.0 QUIET)
-    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib>=11.0.0 QUIET)
     pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple>=11.0.0 QUIET)
   endif()
 
@@ -29,10 +27,6 @@ if(NOT TARGET PulseAudio::PulseAudio)
                                          HINTS ${PC_PULSEAUDIO_LIBDIR} ${PC_PULSEAUDIO_LIBRARY_DIRS}
                                          NO_CACHE)
 
-  find_library(PULSEAUDIO_MAINLOOP_LIBRARY NAMES pulse-mainloop pulse-mainloop-glib libpulse-mainloop-glib
-                                           HINTS ${PC_PULSEAUDIO_LIBDIR} ${PC_PULSEAUDIO_LIBRARY_DIRS}
-                                           NO_CACHE)
-
   if(PC_PULSEAUDIO_VERSION)
     set(PULSEAUDIO_VERSION_STRING ${PC_PULSEAUDIO_VERSION})
   elseif(PULSEAUDIO_INCLUDE_DIR AND EXISTS "${PULSEAUDIO_INCLUDE_DIR}/pulse/version.h")
@@ -43,7 +37,7 @@ if(NOT TARGET PulseAudio::PulseAudio)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(PulseAudio
-                                    REQUIRED_VARS PULSEAUDIO_LIBRARY PULSEAUDIO_MAINLOOP_LIBRARY PULSEAUDIO_SIMPLE_LIBRARY PULSEAUDIO_INCLUDE_DIR
+                                    REQUIRED_VARS PULSEAUDIO_LIBRARY PULSEAUDIO_SIMPLE_LIBRARY PULSEAUDIO_INCLUDE_DIR
                                     VERSION_VAR PULSEAUDIO_VERSION_STRING)
 
   if(PULSEAUDIO_FOUND)
@@ -54,16 +48,12 @@ if(NOT TARGET PulseAudio::PulseAudio)
     set_target_properties(PulseAudio::PulseAudioSimple PROPERTIES
                                                        IMPORTED_LOCATION "${PULSEAUDIO_SIMPLE_LIBRARY}")
 
-    add_library(PulseAudio::PulseAudioMainloop UNKNOWN IMPORTED)
-    set_target_properties(PulseAudio::PulseAudioMainloop PROPERTIES
-                                                         IMPORTED_LOCATION "${PULSEAUDIO_MAINLOOP_LIBRARY}")
-
     add_library(PulseAudio::PulseAudio UNKNOWN IMPORTED)
     set_target_properties(PulseAudio::PulseAudio PROPERTIES
                                                  IMPORTED_LOCATION "${PULSEAUDIO_LIBRARY}"
                                                  INTERFACE_INCLUDE_DIRECTORIES "${PULSEAUDIO_INCLUDE_DIR}"
                                                  INTERFACE_COMPILE_DEFINITIONS HAS_PULSEAUDIO=1
-                                                 INTERFACE_LINK_LIBRARIES "PulseAudio::PulseAudioMainloop;PulseAudio::PulseAudioSimple")
+                                                 INTERFACE_LINK_LIBRARIES "PulseAudio::PulseAudioSimple")
 
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP PulseAudio::PulseAudio)
   endif()

@@ -52,8 +52,8 @@ else
   endif
 endif
 
-# LLVM 15 has raised this to error by default. drop back to warning
-CFLAGS+= -Wno-error=int-conversion
+# GCC 14+ / LLVM 15+ raised these to errors by default. drop back to warning
+CFLAGS+= -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types
 
 export PERL5LIB:=$(PERLMODULE):$(PERL5LIB)
 
