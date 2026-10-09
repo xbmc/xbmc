@@ -318,6 +318,8 @@ protected:
   void UnconfigureSink();
   void Dispose();
   void LoadSettings();
+  void UpdateDeviceVolume();
+  void ApplyDeviceVolume();
   void ValidateOutputDevices(bool saveChanges);
   void HandleDeviceCountChange(const std::string& driver, bool defaultDeviceChanged);
   bool NeedReconfigureBuffers();
@@ -414,6 +416,8 @@ protected:
   float m_volumeScaled; // multiplier to scale samples in order to achieve the volume specified in m_volume
   bool m_muted;
   bool m_sinkHasVolume;
+  bool m_volumeReceived{false};
+  std::string m_deviceVolume;
 
   // viz
   std::vector<IAudioCallback*> m_audioCallback;
