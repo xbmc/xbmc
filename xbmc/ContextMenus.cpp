@@ -94,7 +94,8 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
     return false;
 
   return (!item.GetPath().empty() && !item.IsParentFolder() &&
-          !item.IsPath(ITEM::PLACEHOLDER::ADD_SOURCE) && !item.IsPath(ITEM::PLACEHOLDER::NEW_PLAYLIST) &&
+          !item.IsPath(ITEM::PLACEHOLDER::ADD_SOURCE) &&
+          !item.IsPath(ITEM::PLACEHOLDER::NEW_PLAYLIST) &&
           !URIUtils::IsProtocol(item.GetPath(), "favourites") &&
           !URIUtils::IsProtocol(item.GetPath(), "newsmartplaylist") &&
           !URIUtils::IsProtocol(item.GetPath(), "newtag") &&

@@ -773,8 +773,9 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
-  if (m_strPath.empty() || IsPath(ITEM::PLACEHOLDER::ADD_SOURCE) || NETWORK::IsInternetStream(*this) ||
-      IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin() || IsPVR())
+  if (m_strPath.empty() || IsPath(ITEM::PLACEHOLDER::ADD_SOURCE) ||
+      NETWORK::IsInternetStream(*this) || IsParentFolder() || IsVirtualDirectoryRoot() ||
+      IsPlugin() || IsPVR())
     return true;
 
   if (VIDEO::IsVideoDb(*this) && HasVideoInfoTag())

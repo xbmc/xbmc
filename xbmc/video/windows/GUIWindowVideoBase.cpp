@@ -1217,8 +1217,8 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
     newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
 */
-    newPlaylist =
-        std::make_shared<CFileItem>(std::string{ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST} + "video", false);
+    newPlaylist = std::make_shared<CFileItem>(
+        std::string{ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST} + "video", false);
     newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         21437)); // "new smart playlist..."
     newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");

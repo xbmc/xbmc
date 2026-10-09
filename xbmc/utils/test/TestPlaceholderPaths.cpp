@@ -17,7 +17,8 @@ using namespace KODI;
 TEST(TestPlaceholderPaths, NewPlaylistCoversBothKindsWithTheirSection)
 {
   EXPECT_TRUE(ITEM::PLACEHOLDER::IsNewPlaylist(ITEM::PLACEHOLDER::NEW_PLAYLIST));
-  EXPECT_TRUE(ITEM::PLACEHOLDER::IsNewPlaylist(std::string{ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST} + "video"));
+  EXPECT_TRUE(ITEM::PLACEHOLDER::IsNewPlaylist(std::string{ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST} +
+                                               "video"));
   EXPECT_TRUE(ITEM::PLACEHOLDER::IsNewPlaylist("NewPlaylist://"));
   EXPECT_FALSE(ITEM::PLACEHOLDER::IsNewPlaylist(ITEM::PLACEHOLDER::NEW_TAG));
   EXPECT_FALSE(ITEM::PLACEHOLDER::IsNewPlaylist("special://videoplaylists/"));
