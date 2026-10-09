@@ -9,6 +9,7 @@ set(SOURCES TestAutoSwitch.cpp
             TestMediaSource.cpp
             TestPasswordManager.cpp
             TestPlayListPlayer.cpp
+            TestTextureCache.cpp
             TestTextureCacheJob.cpp
             TestURL.cpp
             TestUtil.cpp

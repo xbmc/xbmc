@@ -393,7 +393,15 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
     std::string dest = destination + URIUtils::GetExtension(cachedImage);
     if (overwrite || !CFile::Exists(dest))
     {
+      const std::string staleImage{cachedImage};
       cachedImage = EnsureCachedFile(image, details, cachedImage);
+      // Cached again, the image may have changed type
+      if (!cachedImage.empty() && cachedImage != staleImage)
+      {
+        dest = destination + URIUtils::GetExtension(cachedImage);
+        if (!overwrite && CFile::Exists(dest))
+          return false;
+      }
       if (!cachedImage.empty() && CFile::Copy(cachedImage, dest))
         return true;
       CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, image, dest);
