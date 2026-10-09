@@ -355,9 +355,7 @@ CSetting::ApplyResult CSetting::ApplyValue(TValue& storage, const TValue& value,
 
   {
     std::unique_lock lock(m_critical);
-    // Undo only this call's write; a value another thread stored during the callbacks stands.
-    if (storage == value)
-      storage = oldValue;
+    storage = oldValue;
   }
 
   // the setting couldn't be changed because one of the
@@ -424,6 +422,7 @@ void CSettingList::MergeDetails(const CSetting& other)
 
 bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
+  std::unique_lock writer(m_writeSection);
   std::unique_lock lock(m_critical);
 
   if (!m_definition)
@@ -532,6 +531,7 @@ bool CSettingList::CheckValidity(const std::string &value) const
 
 void CSettingList::Reset()
 {
+  std::unique_lock writer(m_writeSection);
   std::unique_lock lock(m_critical);
   SettingList values;
   for (const auto& it : m_defaults)
@@ -551,6 +551,8 @@ bool CSettingList::FromString(const std::vector<std::string> &value)
 
 bool CSettingList::SetValue(const SettingList &values)
 {
+  std::unique_lock writer(m_writeSection);
+
   SettingList oldValues;
   {
     std::unique_lock lock(m_critical);
@@ -581,9 +583,7 @@ bool CSettingList::SetValue(const SettingList &values)
   {
     {
       std::unique_lock lock(m_critical);
-      // shared_ptr elements: this compares by identity, not by value
-      if (m_values == values)
-        m_values = oldValues;
+      m_values = oldValues;
     }
 
     // the setting couldn't be changed because one of the
@@ -790,6 +790,7 @@ bool CSettingBool::CheckValidity(const std::string &value) const
 
 bool CSettingBool::SetValue(bool value)
 {
+  std::unique_lock writer(m_writeSection);
   const ApplyResult result{ApplyValue<CSettingBool>(m_value, value, [] { return true; })};
   if (result != ApplyResult::Applied)
     return result == ApplyResult::Unchanged;
@@ -1056,6 +1057,7 @@ bool CSettingInt::CheckValidity(int value) const
 
 bool CSettingInt::SetValue(int value)
 {
+  std::unique_lock writer(m_writeSection);
   const ApplyResult result{
       ApplyValue<CSettingInt>(m_value, value, [&] { return CheckValidity(value); })};
   if (result != ApplyResult::Applied)
@@ -1093,6 +1095,7 @@ SettingOptionsType CSettingInt::GetOptionsType() const
 
 IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
 {
+  std::unique_lock writer(m_writeSection);
   std::unique_lock lock(m_critical);
   IntegerSettingOptions options;
   if (!m_optionsFiller && (m_optionsFillerName.empty() || !m_settingsManager))
@@ -1311,6 +1314,7 @@ bool CSettingNumber::CheckValidity(double value) const
 
 bool CSettingNumber::SetValue(double value)
 {
+  std::unique_lock writer(m_writeSection);
   const ApplyResult result{
       ApplyValue<CSettingNumber>(m_value, value, [&] { return CheckValidity(value); })};
   if (result != ApplyResult::Applied)
@@ -1519,6 +1523,7 @@ bool CSettingString::CheckValidity(const std::string &value) const
 
 bool CSettingString::SetValue(const std::string &value)
 {
+  std::unique_lock writer(m_writeSection);
   const ApplyResult result{
       ApplyValue<CSettingString>(m_value, value, [&] { return CheckValidity(value); })};
   if (result != ApplyResult::Applied)
@@ -1556,6 +1561,7 @@ SettingOptionsType CSettingString::GetOptionsType() const
 
 StringSettingOptions CSettingString::UpdateDynamicOptions()
 {
+  std::unique_lock writer(m_writeSection);
   std::unique_lock lock(m_critical);
   StringSettingOptions options;
   if (!m_optionsFiller && (m_optionsFillerName.empty() || !m_settingsManager))

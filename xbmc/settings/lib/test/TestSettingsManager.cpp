@@ -9,6 +9,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "threads/Event.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 
@@ -259,61 +260,51 @@ TEST(TestSettingsManager, ValueIsReadableFromAnotherThreadDuringOnSettingChangin
 
 namespace
 {
-// The write happens once: a rejection re-runs OnSettingChanging to announce the reverted
-// value, and that call must not write again.
-class CRejectAfterConcurrentWriteCallback : public ISettingCallback
+// Holds the first change in its callback until released, then rejects it. Later changes,
+// including the call that announces the rejected change's revert, are accepted.
+class CHoldThenRejectCallback : public ISettingCallback
 {
 public:
-  std::shared_ptr<CSettingInt> m_setting;
-  int m_concurrentValue{0};
-  std::atomic<bool> m_writeCompleted{false};
+  CEvent m_entered;
+  CEvent m_release;
 
   bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override
   {
-    if (m_written ||
-        std::static_pointer_cast<const CSettingInt>(setting)->GetValue() == m_concurrentValue)
+    if (m_calls++ != 0)
       return true;
 
-    m_written = true;
-
-    const auto done = std::make_shared<std::atomic<bool>>(false);
-    const auto s = m_setting;
-    const int concurrentValue = m_concurrentValue;
-    std::thread(
-        [s, done, concurrentValue]()
-        {
-          s->SetValue(concurrentValue);
-          done->store(true);
-        })
-        .detach();
-
-    // Bounded, so a lock still held across this callback fails the test rather than hanging it
-    for (int i = 0; i < 200 && !done->load(); ++i)
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-    m_writeCompleted.store(done->load());
+    m_entered.Set();
+    m_release.Wait(std::chrono::seconds(5));
     return false;
   }
 
 private:
-  bool m_written{false};
+  std::atomic<int> m_calls{0};
 };
 } // namespace
 
-// Rejecting a change undoes only that change. A value another thread wrote in the meantime,
-// which its own callbacks accepted, must survive the rejection.
-TEST(TestSettingsManager, RejectedChangeDoesNotUndoAConcurrentWrite)
+// A write of the same value made while another change's callbacks run must not be reported as
+// done and then lost when that change is rejected.
+TEST(TestSettingsManager, AWriteDuringARejectedChangeIsNotLost)
 {
   const auto setting = std::make_shared<CSettingInt>("test", nullptr);
-  CRejectAfterConcurrentWriteCallback callback;
-  callback.m_setting = setting;
-  callback.m_concurrentValue = 2;
+  CHoldThenRejectCallback callback;
   setting->SetCallback(&callback);
 
-  EXPECT_FALSE(setting->SetValue(1));
+  std::atomic<bool> firstResult{true};
+  std::atomic<bool> secondResult{false};
+  std::thread first([&]() { firstResult = setting->SetValue(1); });
+  const bool entered{callback.m_entered.Wait(std::chrono::seconds(5))};
+  std::thread second([&]() { secondResult = setting->SetValue(1); });
 
-  ASSERT_TRUE(callback.m_writeCompleted.load())
-      << "the concurrent write never completed - SetValue held the setting's exclusive lock "
-         "across OnSettingChanging";
-  EXPECT_EQ(2, setting->GetValue());
+  // Long enough for the second write to finish if it does not wait for the first
+  std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  callback.m_release.Set();
+  first.join();
+  second.join();
+
+  ASSERT_TRUE(entered);
+  EXPECT_FALSE(firstResult);
+  EXPECT_TRUE(secondResult);
+  EXPECT_EQ(1, setting->GetValue()) << "the second write reported success but did not survive";
 }
