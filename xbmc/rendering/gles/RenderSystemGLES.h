@@ -144,7 +144,6 @@ public:
   GLint GUIShaderGetStep();
   GLint GUIShaderGetContrast();
   GLint GUIShaderGetBrightness();
-  GLint GUIShaderGetModel();
   GLint GUIShaderGetMatrix();
   GLint GUIShaderGetClip();
   GLint GUIShaderGetCoordStep();

@@ -932,14 +932,6 @@ bool CRenderSystemGLES::SupportsStereo(RenderStereoMode mode) const
   return CRenderSystemBase::SupportsStereo(mode);
 }
 
-GLint CRenderSystemGLES::GUIShaderGetModel()
-{
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetModelLoc();
-
-  return -1;
-}
-
 GLint CRenderSystemGLES::GUIShaderGetMatrix()
 {
   if (m_pShader[m_method])
