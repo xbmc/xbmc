@@ -135,5 +135,4 @@ std::string CLanguageResource::GetAddonId(const std::string& locale)
   StringUtils::ToLower(addonId);
   return addonId;
 }
-
 }
