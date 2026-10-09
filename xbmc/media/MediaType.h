@@ -11,6 +11,8 @@
 #include <string>
 #include <string_view>
 
+#include <fmt/format.h> //! \todo remove after upgrade to libfmt >= 10.0
+
 namespace KODI::MEDIA
 {
 
@@ -57,3 +59,16 @@ bool IsContainer(TYPE type);
 std::string GetCapitalLocalization(TYPE type);
 
 } // namespace KODI::MEDIA
+
+#if FMT_VERSION < 100000
+// user-type formatter for libfmt < 10.0
+//! \todo remove after libfmt upgrade
+template<>
+struct fmt::formatter<KODI::MEDIA::TYPE> : fmt::formatter<std::string_view>
+{
+  auto format(const KODI::MEDIA::TYPE& type, format_context& ctx) const
+  {
+    return fmt::formatter<std::string_view>::format(KODI::MEDIA::format_as(type), ctx);
+  }
+};
+#endif

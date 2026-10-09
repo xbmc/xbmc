@@ -657,8 +657,9 @@ public:
    */
   static std::string ToStoredPath(const std::string& directory);
 
-  /*! \brief The id column of the table holding \p type, which NameOf(type) names.
-   \return empty for a type without a table of its own
+  /*! \brief The id column of the movie, tvshow, episode or musicvideo table, whichever holds
+   \p type.
+   \return empty for any other type
    */
   static std::string_view IdColumnOf(KODI::MEDIA::TYPE type);
 
@@ -903,7 +904,7 @@ public:
   */
   unsigned int GetRandomMusicVideoIDs(const std::string& strWhere, std::vector<std::pair<int, int> > &songIDs);
 
-  void UpdateArtForItem(int mediaId, KODI::MEDIA::TYPE mediaType) const;
+  void UpdateArtForItem(int mediaId, const std::string& mediaType) const;
 
   /*!
    * \brief Retrieve all art for the given video asset, with optional fallback to the art of the
@@ -1260,6 +1261,10 @@ protected:
   int SetFileForUnknown(const std::string& fileAndPath, int oldIdFile, int newIdFile);
 
 private:
+  //! \brief Announce an update for an item named by its stored media type, which an actor has
+  //! but no KODI::MEDIA::TYPE names.
+  static void AnnounceUpdate(const std::string& mediaType, int id);
+
   void CreateTables() override;
   void CreateAnalytics() override;
   void UpdateTables(int version) override;

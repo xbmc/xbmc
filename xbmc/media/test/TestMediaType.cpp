@@ -42,6 +42,14 @@ TEST(TestMediaType, NamesAreTheStoredSpellings)
   EXPECT_EQ(NameOf(KODI::MEDIA::TYPE::NONE), "");
 }
 
+TEST(TestMediaType, FormatsAsItsName)
+{
+  const KODI::MEDIA::TYPE movie{KODI::MEDIA::TYPE::MOVIE};
+  EXPECT_EQ(fmt::format("{}", movie), "movie");
+  EXPECT_EQ(fmt::format("{}", KODI::MEDIA::TYPE::TV_SHOW), "tvshow");
+  EXPECT_EQ(fmt::format("{:s}", KODI::MEDIA::TYPE::ALBUM), "album");
+}
+
 TEST(TestMediaType, AFacetOrUnknownNameIsNoType)
 {
   EXPECT_EQ(MediaTypeFromName(""), KODI::MEDIA::TYPE::NONE);
