@@ -17,6 +17,7 @@
 #include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "imagefiles/ImageFileURL.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
@@ -65,7 +66,10 @@ void CacheArtwork(const std::string& url,
   }
 
   bool needsRecaching{false};
-  if (!textureCache->CheckCachedImage(url, needsRecaching).empty() && !needsRecaching)
+  const std::string cachedImage{textureCache->CheckCachedImage(url, needsRecaching)};
+  // A cached copy whose file has gone is cached again. An image that is its own copy is not
+  if (!cachedImage.empty() && !needsRecaching &&
+      (cachedImage == IMAGE_FILES::ToCacheKey(url) || CFile::Exists(cachedImage)))
     return; // already cached
 
   // Fetch art or recache as needed

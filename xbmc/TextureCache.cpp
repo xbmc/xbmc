@@ -146,7 +146,8 @@ void CTextureCache::BackgroundCacheImage(const std::string& url, const std::stri
 
   CTextureDetails details;
   std::string path(GetCachedImage(url, details));
-  if (!path.empty() && details.hash.empty())
+  // A row whose file has gone is cached again, the job replacing the row
+  if (!path.empty() && details.hash.empty() && (details.file.empty() || CFile::Exists(path)))
     return; // image is already cached and doesn't need to be checked further
 
   path = IMAGE_FILES::ToCacheKey(url);
@@ -374,6 +375,15 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
 
+std::string CTextureCache::EnsureCachedFile(const std::string& image,
+                                            const CTextureDetails& details,
+                                            const std::string& cachedImage)
+{
+  if (details.file.empty() || CFile::Exists(cachedImage))
+    return cachedImage;
+  return CacheImage(image);
+}
+
 bool CTextureCache::Export(const std::string &image, const std::string &destination, bool overwrite)
 {
   CTextureDetails details;
@@ -383,9 +393,10 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
     std::string dest = destination + URIUtils::GetExtension(cachedImage);
     if (overwrite || !CFile::Exists(dest))
     {
-      if (CFile::Copy(cachedImage, dest))
+      cachedImage = EnsureCachedFile(image, details, cachedImage);
+      if (!cachedImage.empty() && CFile::Copy(cachedImage, dest))
         return true;
-      CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, cachedImage, dest);
+      CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, image, dest);
     }
   }
   return false;
@@ -397,9 +408,10 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
   std::string cachedImage(GetCachedImage(image, details));
   if (!cachedImage.empty())
   {
-    if (CFile::Copy(cachedImage, destination))
+    cachedImage = EnsureCachedFile(image, details, cachedImage);
+    if (!cachedImage.empty() && CFile::Copy(cachedImage, destination))
       return true;
-    CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, cachedImage, destination);
+    CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, image, destination);
   }
   return false;
 }
