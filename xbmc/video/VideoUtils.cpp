@@ -25,6 +25,7 @@
 #include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML2.h"
@@ -190,6 +191,15 @@ bool IsAutoPlayNextItem(const std::string& content)
           CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM));
 
   return setting && CSettingUtils::FindIntInList(setting, settingValue);
+}
+
+void SetEpisodeCounts(CFileItem& item, int total, int watched)
+{
+  item.SetProperty(ITEM::PROPERTY::TOTAL_EPISODES, total);
+  item.SetProperty(ITEM::PROPERTY::NUM_EPISODES, total);
+  item.SetProperty(ITEM::PROPERTY::WATCHED_EPISODES, watched);
+  item.SetProperty(ITEM::PROPERTY::UNWATCHED_EPISODES, total - watched);
+  item.SetProperty(ITEM::PROPERTY::WATCHED_EPISODE_PERCENT, total > 0 ? watched * 100 / total : 0);
 }
 
 std::optional<int> GetNextPartFromBookmark(const CBookmark& bookmark)

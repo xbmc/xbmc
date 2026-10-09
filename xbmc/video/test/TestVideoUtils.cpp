@@ -215,3 +215,22 @@ const auto edition_tests = std::array{
 };
 
 INSTANTIATE_TEST_SUITE_P(TestVideoUtils, FindEditionInNameTest, testing::ValuesIn(edition_tests));
+
+TEST(TestVideoUtils, EpisodeCountsDeriveFromTotalAndWatched)
+{
+  CFileItem show;
+  VIDEO::UTILS::SetEpisodeCounts(show, 8, 2);
+  EXPECT_EQ(show.GetProperty("totalepisodes").asInteger(), 8);
+  EXPECT_EQ(show.GetProperty("numepisodes").asInteger(), 8);
+  EXPECT_EQ(show.GetProperty("watchedepisodes").asInteger(), 2);
+  EXPECT_EQ(show.GetProperty("unwatchedepisodes").asInteger(), 6);
+  EXPECT_EQ(show.GetProperty("watchedepisodepercent").asInteger(), 25);
+  EXPECT_FALSE(show.HasProperty("inprogressepisodes"));
+}
+
+TEST(TestVideoUtils, EpisodeCountsOfAnEmptyShow)
+{
+  CFileItem show;
+  VIDEO::UTILS::SetEpisodeCounts(show, 0, 0);
+  EXPECT_EQ(show.GetProperty("watchedepisodepercent").asInteger(), 0);
+}
