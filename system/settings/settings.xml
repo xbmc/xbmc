@@ -1805,10 +1805,6 @@
           <level>1</level>
           <control type="button" format="action" />
         </setting>
-        <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
-          <level>1</level>
-          <control type="button" format="action" />
-        </setting>
         <setting id="pvrmanager.clientpriorities" type="action" label="19240" help="36210">
           <level>2</level>
           <dependencies>

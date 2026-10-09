@@ -8748,6 +8748,7 @@ msgstr ""
 #empty strings from id 14228 to 14229
 
 #: system/settings/settings.xml
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 msgctxt "#14230"
 msgid "Actions"
 msgstr ""
@@ -10979,11 +10980,7 @@ msgctxt "#19195"
 msgid "Delay mark last watched"
 msgstr ""
 
-#. value for "pvr client specific actions" dialog headers
-#: xbmc/pvr/guilib/PVRGUIActionsClients.cpp
-msgctxt "#19196"
-msgid "PVR client specific actions"
-msgstr ""
+#empty string with id 19196
 
 #. text for "recording started on <pvr client name>" pvr client addon callback notification
 #: xbmc/pvr/addons/PVRClient.cpp
@@ -11472,11 +11469,7 @@ msgctxt "#19279"
 msgid "PVR clients"
 msgstr ""
 
-#. pvr client specific settings 'client specific settings' action control label.
-#: system/settings/settings.xml
-msgctxt "#19280"
-msgid "Client specific settings"
-msgstr ""
+#empty string with id 19280
 
 #. pvr settings 'confirm channel switch' setting label.
 #: system/settings/settings.xml
@@ -11893,11 +11886,7 @@ msgctxt "#19346"
 msgid "Display and manage available PVR client add-ons."
 msgstr ""
 
-#. info message box text stating that none of the available pvr clients does provide client-specific settings
-#: xbmc/pvr/guilib/PVRGUIActionsClients.cpp
-msgctxt "#19347"
-msgid "None of the active PVR clients provide client-specific settings."
-msgstr ""
+#empty string with id 19347
 
 #. generic label for a pvr provider used in different places
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
@@ -21175,10 +21164,7 @@ msgctxt "#36251"
 msgid "This category contains the settings for your PVR backend specifically, if supported by the PVR add-on and backend."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36252"
-msgid "This option will bring you to any specific settings for your PVR backend, if supported by the PVR add-on and backend."
-msgstr ""
+#empty string with id 36252
 
 #. Description of settings section with label #2 "Music"
 #: system/settings/settings.xml
