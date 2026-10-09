@@ -21,7 +21,7 @@ TEST(TestGameUtils, GamesWithTheSameFileNameHaveTheirOwnFolders)
   const std::string folder = CGameUtils::GetGameFolder("/games/gb/Frogger (USA).gb");
 
   EXPECT_EQ(URIUtils::GetDirectory(folder), "special://profile/games/");
-  EXPECT_EQ(URIUtils::GetFileName(folder), "Frogger (USA).gb_c3ca570b");
+  EXPECT_EQ(URIUtils::GetFileName(folder), "Frogger (USA).gb_b28ca3f0");
   EXPECT_NE(folder, CGameUtils::GetGameFolder("/games/other/Frogger (USA).gb"));
 }
 
@@ -35,6 +35,18 @@ TEST(TestGameUtils, EveryFormOfAGamesPathFindsTheSameFolder)
             CGameUtils::GetGameFolder("/games/gb/Frogger (USA).gb"));
   EXPECT_EQ(CGameUtils::GetGameFolder("smb://user:secret@nas/games/Frogger (USA).gb"),
             CGameUtils::GetGameFolder("smb://nas/games/Frogger (USA).gb"));
+}
+
+TEST(TestGameUtils, AGameKeepsItsFolderWhenTheLibraryMoves)
+{
+  const std::string game = "PS1/Worms (USA)/Worms (USA).cue";
+  const std::string folder = CGameUtils::GetGameFolder("/media/disk1/Games/" + game);
+
+  EXPECT_EQ(folder, CGameUtils::GetGameFolder("smb://nas/Roms/" + game));
+  EXPECT_EQ(folder, CGameUtils::GetGameFolder("nfs://nas/export/" + game));
+  EXPECT_EQ(folder, CGameUtils::GetGameFolder("D:\\Games\\PS1\\Worms (USA)\\Worms (USA).cue"));
+  EXPECT_NE(folder,
+            CGameUtils::GetGameFolder("/media/disk1/Games/Dreamcast/Worms (USA)/Worms (USA).cue"));
 }
 
 TEST(TestGameUtils, ALongNameStaysWithinTheFileSystemLimit)

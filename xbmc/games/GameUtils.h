@@ -101,6 +101,9 @@ public:
    * \brief Get the folder that holds everything kept for one game: its
    * savestates, in-game saves, disc state and cheat choice
    *
+   * The folder follows the game's file name and the two folders above it, so
+   * it stays the same when the library moves to another drive or share.
+   *
    * \param gamePath The path of the game file
    *
    * \return The folder, which may not exist yet
