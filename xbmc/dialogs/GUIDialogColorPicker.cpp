@@ -33,16 +33,13 @@
 
 CGUIDialogColorPicker::CGUIDialogColorPicker()
   : CGUIDialogBoxBase(WINDOW_DIALOG_COLOR_PICKER, "DialogColorPicker.xml"),
-    m_vecList(new CFileItemList())
+    m_vecList(std::make_unique<CFileItemList>())
 {
   m_bConfirmed = false;
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogColorPicker::~CGUIDialogColorPicker()
-{
-  delete m_vecList;
-}
+CGUIDialogColorPicker::~CGUIDialogColorPicker() = default;
 
 bool CGUIDialogColorPicker::OnMessage(CGUIMessage& message)
 {
@@ -170,9 +167,9 @@ void CGUIDialogColorPicker::LoadColors(const std::string& filePath)
   {
     for (auto& color : colors)
     {
-      CFileItem* item = new CFileItem(color.first);
+      auto item = std::make_shared<CFileItem>(color.first);
       item->SetLabel2(StringUtils::Format("{:08X}", color.second.colorARGB));
-      m_vecList->Add(CFileItemPtr(item));
+      m_vecList->Add(std::move(item));
     }
   }
   else
