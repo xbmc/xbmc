@@ -52,8 +52,6 @@ void CGLESShader::OnCompiledAndLinked()
   m_sdrPeak = glGetUniformLocation(ProgramHandle(), "m_sdrPeak");
 
   // Variables passed directly to the Vertex shader
-  m_hProj  = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hCoord0Matrix = glGetUniformLocation(ProgramHandle(), "m_coord0Matrix");
   m_hMatrix = glGetUniformLocation(ProgramHandle(), "m_matrix");
   m_hShaderClip = glGetUniformLocation(ProgramHandle(), "m_shaderClip");
@@ -96,8 +94,9 @@ bool CGLESShader::OnEnabled()
 
   const GLfloat *projMatrix = glMatrixProject.Get();
   const GLfloat *modelMatrix = glMatrixModview.Get();
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, projMatrix);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
+  CMatrixGL matrix = glMatrixProject.Get();
+  matrix.MultMatrixf(glMatrixModview.Get());
+  glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, matrix);
 
   const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix();
   CRect viewPort; // absolute positions of corners

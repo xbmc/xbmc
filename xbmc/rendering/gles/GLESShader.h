@@ -33,7 +33,6 @@ public:
   GLint GetStepLoc() { return m_hStep; }
   GLint GetContrastLoc() { return m_hContrast; }
   GLint GetBrightnessLoc() { return m_hBrightness; }
-  GLint GetModelLoc() { return m_hModel; }
   GLint GetMatrixLoc() { return m_hMatrix; }
   GLint GetShaderClipLoc() { return m_hShaderClip; }
   GLint GetShaderCoordStepLoc() { return m_hCoordStep; }
@@ -53,9 +52,7 @@ protected:
   GLint m_hTex0 = 0;
   GLint m_hTex1 = 0;
   GLint m_hUniCol = 0;
-  GLint m_hProj = 0;
-  GLint m_hModel = 0;
-  GLint m_hMatrix{0}; // m_hProj * m_hModel
+  GLint m_hMatrix{0}; // projection * model-view
   GLint m_hShaderClip{0}; // clipping rect vec4(x1,y1,x2,y2)
   GLint m_hCoordStep{0}; // step (1/resolution) for the two textures vec4(t1.x,t1.y,t2.x,t2.y)
   GLint m_hPos = 0;
