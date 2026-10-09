@@ -21,6 +21,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoUtils.h"
 
 #include <memory>
 
@@ -90,15 +91,8 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
         inprogress += static_cast<int>(
             item->GetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES).asInteger());
       }
-      const int totalEpisodes = watched + unwatched;
-      pItem->SetProperty("totalepisodes", totalEpisodes);
-      pItem->SetProperty("numepisodes",
-                         totalEpisodes); // will be changed later to reflect watchmode setting
-      pItem->SetProperty("watchedepisodes", watched);
-      pItem->SetProperty("unwatchedepisodes", unwatched);
+      KODI::VIDEO::UTILS::SetEpisodeCounts(*pItem, watched + unwatched, watched);
       pItem->SetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, inprogress);
-      pItem->SetProperty("watchedepisodepercent",
-                         totalEpisodes > 0 ? watched * 100 / totalEpisodes : 0);
 
       // @note: The items list may contain additional items that do not belong to the show.
       // This is the case of the up directory (..) or movies linked to the tvshow.
