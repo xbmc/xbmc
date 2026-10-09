@@ -444,7 +444,10 @@ void CWasmAudioWorkletManager::Drain()
 
   // The browser still holds the pipeline latency's worth of audio after the ring empties.
   if (IsReady() && m_contextRunning.load(std::memory_order_acquire))
+  {
+    RefreshPipelineLatency();
     emscripten_thread_sleep(GetPipelineLatencySeconds() * 1000.0);
+  }
 }
 
 double CWasmAudioWorkletManager::GetBufferedSeconds() const
