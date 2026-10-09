@@ -11814,13 +11814,13 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
                               const SortDescription& sortDescription,
                               const Filter& filter /* = Filter() */)
 {
-  if (StringUtils::EqualsNoCase(itemType, "genres"))
+  if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::GENRES))
     return GetGenresNav(strBaseDir, items, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "sources"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::SOURCES))
     return GetSourcesNav(strBaseDir, items, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "years"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::YEARS))
     return GetYearsNav(strBaseDir, items, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "roles"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ROLES))
     return GetRolesNav(strBaseDir, items, filter);
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ARTISTS))
     return GetArtistsNav(strBaseDir, items, sortDescription,
@@ -11829,7 +11829,7 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
                          -1, -1, -1, filter, false);
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ALBUMS))
     return GetAlbumsByWhere(strBaseDir, items, sortDescription, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "discs"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::DISCS))
     return GetDiscsByWhere(strBaseDir, items, sortDescription, filter);
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::SONGS))
     return GetSongsFullByWhere(strBaseDir, items, sortDescription, filter, true);
@@ -11839,17 +11839,17 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
 
 std::string CMusicDatabase::GetItemById(const std::string& itemType, int id) const
 {
-  if (StringUtils::EqualsNoCase(itemType, "genres"))
+  if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::GENRES))
     return GetGenreById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "sources"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::SOURCES))
     return GetSourceById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "years"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::YEARS))
     return std::to_string(id);
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ARTISTS))
     return GetArtistById(id);
   else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ALBUMS))
     return GetAlbumById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "roles"))
+  else if (StringUtils::EqualsNoCase(itemType, MEDIA::CONTENT::ROLES))
     return GetRoleById(id);
 
   return "";
@@ -13548,7 +13548,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
                                       AudioType::ToString(AudioType::Type::Album).c_str()));
     }
   }
-  else if (type == "discs")
+  else if (type == MEDIA::CONTENT::DISCS)
   {
     if (idAlbum > 0)
       filter.AppendWhere(PrepareSQL("albumview.idAlbum = %i", idAlbum));
