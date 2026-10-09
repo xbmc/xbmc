@@ -19,6 +19,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "imagefiles/ImageFileURL.h"
 #include "messaging/ApplicationMessenger.h"
+#include "utils/ArtTypes.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -1458,13 +1459,13 @@ void CVideoLibrary::UpdateVideoTag(const CVariant& parameterObject,
   if (ParameterNotNull(parameterObject, "thumbnail"))
   {
     std::string value = parameterObject["thumbnail"].asString();
-    artwork["thumb"] = StringUtils::Trim(value);
+    artwork[KODI::ART::TYPE::THUMB] = StringUtils::Trim(value);
     updatedDetails.insert("art.altered");
   }
   if (ParameterNotNull(parameterObject, "fanart"))
   {
     std::string value = parameterObject["fanart"].asString();
-    artwork["fanart"] = StringUtils::Trim(value);
+    artwork[KODI::ART::TYPE::FANART] = StringUtils::Trim(value);
     updatedDetails.insert("art.altered");
   }
 

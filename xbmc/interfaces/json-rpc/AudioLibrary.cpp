@@ -26,6 +26,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -294,8 +295,9 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
 
         if (bFetchFanart)
         {
-          if (item.HasArt("fanart"))
-            result["albums"][index]["fanart"] = IMAGE_FILES::URLFromFile(item.GetArt("fanart"));
+          if (item.HasArt(KODI::ART::TYPE::FANART))
+            result["albums"][index]["fanart"] =
+                IMAGE_FILES::URLFromFile(item.GetArt(KODI::ART::TYPE::FANART));
           else
             result["albums"][index]["fanart"] = "";
         }
@@ -453,15 +455,17 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
 
         if (bFetchThumb)
         {
-          if (item.HasArt("thumb"))
-            result["songs"][index]["thumbnail"] = IMAGE_FILES::URLFromFile(item.GetArt("thumb"));
+          if (item.HasArt(KODI::ART::TYPE::THUMB))
+            result["songs"][index]["thumbnail"] =
+                IMAGE_FILES::URLFromFile(item.GetArt(KODI::ART::TYPE::THUMB));
           else
             result["songs"][index]["thumbnail"] = "";
         }
         if (bFetchFanart)
         {
-          if (item.HasArt("fanart"))
-            result["songs"][index]["fanart"] = IMAGE_FILES::URLFromFile(item.GetArt("fanart"));
+          if (item.HasArt(KODI::ART::TYPE::FANART))
+            result["songs"][index]["fanart"] =
+                IMAGE_FILES::URLFromFile(item.GetArt(KODI::ART::TYPE::FANART));
           else
             result["songs"][index]["fanart"] = "";
         }

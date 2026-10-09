@@ -49,6 +49,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
@@ -1709,7 +1710,7 @@ int CVideoDatabase::AddActor(const std::string& name, const std::string& thumbUR
     }
     // add artwork
     if (!thumb.empty())
-      SetArtForItem(idActor, "actor", "thumb", thumb);
+      SetArtForItem(idActor, "actor", ART::TYPE::THUMB, thumb);
     return idActor;
   }
   catch (...)
@@ -5837,8 +5838,8 @@ std::vector<std::string> GetBasicItemAvailableArtTypes(int mediaId,
 
   //! @todo artwork: fanart stored separately, doesn't need to be
   tag.m_fanart.Unpack();
-  if (tag.m_fanart.GetNumFanarts() && std::ranges::find(result, "fanart") == result.cend())
-    result.emplace_back("fanart");
+  if (tag.m_fanart.GetNumFanarts() && std::ranges::find(result, ART::TYPE::FANART) == result.cend())
+    result.emplace_back(ART::TYPE::FANART);
 
   // all other images
   tag.m_strPictureURL.Parse();
@@ -5846,7 +5847,7 @@ std::vector<std::string> GetBasicItemAvailableArtTypes(int mediaId,
   {
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
-      artType = tag.m_type == MediaTypeEpisode ? "thumb" : "poster";
+      artType = tag.m_type == MediaTypeEpisode ? ART::TYPE::THUMB : ART::TYPE::POSTER;
     if (urlEntry.m_type == CScraperUrl::UrlType::General && // exclude season artwork for TV shows
         !StringUtils::StartsWith(artType, "set.") && // exclude movie set artwork for movies
         std::ranges::find(result, artType) == result.cend())
@@ -5871,7 +5872,7 @@ std::vector<std::string> GetSeasonAvailableArtTypes(int mediaId, CVideoDatabase&
   {
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
-      artType = "poster";
+      artType = ART::TYPE::POSTER;
     if (urlEntry.m_type == CScraperUrl::UrlType::Season && urlEntry.m_season == tag.m_iSeason &&
         std::ranges::find(result, artType) == result.cend())
     {
@@ -5915,21 +5916,21 @@ std::vector<CScraperUrl::SUrlEntry> GetBasicItemAvailableArt(int mediaId,
   std::vector<CScraperUrl::SUrlEntry> result;
   CVideoInfoTag tag = db.GetDetailsByTypeAndId(dbType, mediaId);
 
-  if (artType.empty() || artType == "fanart")
+  if (artType.empty() || artType == ART::TYPE::FANART)
   {
     tag.m_fanart.Unpack();
     for (unsigned int i = 0; i < tag.m_fanart.GetNumFanarts(); i++)
     {
       CScraperUrl::SUrlEntry& url = result.emplace_back(tag.m_fanart.GetImageURL(i));
       url.m_preview = tag.m_fanart.GetPreviewURL(i);
-      url.m_aspect = "fanart";
+      url.m_aspect = ART::TYPE::FANART;
     }
   }
   tag.m_strPictureURL.Parse();
   for (auto urlEntry : tag.m_strPictureURL.GetUrls())
   {
     if (urlEntry.m_aspect.empty())
-      urlEntry.m_aspect = tag.m_type == MediaTypeEpisode ? "thumb" : "poster";
+      urlEntry.m_aspect = tag.m_type == MediaTypeEpisode ? ART::TYPE::THUMB : ART::TYPE::POSTER;
     if ((urlEntry.m_aspect == artType ||
          (artType.empty() && !StringUtils::StartsWith(urlEntry.m_aspect, "set."))) &&
         urlEntry.m_type == CScraperUrl::UrlType::General)
@@ -5956,7 +5957,7 @@ std::vector<CScraperUrl::SUrlEntry> GetSeasonAvailableArt(int mediaId,
   for (auto urlEntry : sourceShow.m_strPictureURL.GetUrls())
   {
     if (urlEntry.m_aspect.empty())
-      urlEntry.m_aspect = "poster";
+      urlEntry.m_aspect = ART::TYPE::POSTER;
     if ((artType.empty() || urlEntry.m_aspect == artType) &&
       urlEntry.m_type == CScraperUrl::UrlType::Season &&
       urlEntry.m_season == tag.m_iSeason)
@@ -7313,9 +7314,9 @@ bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir,
     {
       CFileItemPtr pItem = items[i];
       if (idContent == VideoDbContentType::MUSICVIDEOS)
-        pItem->SetArt("icon", "DefaultArtist.png");
+        pItem->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
       else
-        pItem->SetArt("icon", "DefaultActor.png");
+        pItem->SetArt(ART::TYPE::ICON, "DefaultActor.png");
     }
     return true;
   }
@@ -11975,7 +11976,7 @@ namespace
 void CopyArt(const CFileItem& artItem, CFileItem& item)
 {
   KODI::ART::Artwork art{artItem.GetArt()};
-  art.erase("icon");
+  art.erase(ART::TYPE::ICON);
   item.SetArt(art);
 }
 

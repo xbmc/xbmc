@@ -33,6 +33,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 
@@ -359,27 +360,27 @@ void CGUIDialogSongInfo::OnGetArt()
   {
     // Add item for current artwork, could a fallback from album/artist
     CFileItemPtr item(new CFileItem(IMAGE_CHOICE::CURRENT, false));
-    item->SetArt("thumb", m_song->GetArt(type));
-    item->SetArt("icon", "DefaultPicture.png");
+    item->SetArt(ART::TYPE::THUMB, m_song->GetArt(type));
+    item->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         13512)); //! @todo: label fallback art so user knows?
     items.Add(item);
   }
-  else if (m_song->HasArt("thumb"))
+  else if (m_song->HasArt(ART::TYPE::THUMB))
   { // For missing art of that type add the thumb (when it exists and not a fallback)
-    auto i = primeArt.find("thumb");
+    auto i = primeArt.find(ART::TYPE::THUMB);
     if (i != primeArt.end())
     {
       CFileItemPtr item(new CFileItem(IMAGE_CHOICE::THUMB, false));
-      item->SetArt("thumb", m_song->GetArt("thumb"));
-      item->SetArt("icon", "DefaultAlbumCover.png");
+      item->SetArt(ART::TYPE::THUMB, m_song->GetArt(ART::TYPE::THUMB));
+      item->SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21371));
       items.Add(item);
     }
   }
 
   std::string localThumb;
-  if (type == "thumb")
+  if (type == ART::TYPE::THUMB)
   { // Local thumb type art held in <filename>.tbn (for non-library items)
     localThumb = m_song->GetUserMusicThumb(true);
     if (MUSIC::IsMusicDb(*m_song))
@@ -390,7 +391,7 @@ void CGUIDialogSongInfo::OnGetArt()
     if (CFileUtils::Exists(localThumb))
     {
       CFileItemPtr item(new CFileItem(IMAGE_CHOICE::LOCAL, false));
-      item->SetArt("thumb", localThumb);
+      item->SetArt(ART::TYPE::THUMB, localThumb);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20017));
       items.Add(item);
     }
@@ -400,7 +401,7 @@ void CGUIDialogSongInfo::OnGetArt()
   // local file changes immediately
   for (auto& item : items)
   {
-    std::string thumb(item->GetArt("thumb"));
+    std::string thumb(item->GetArt(ART::TYPE::THUMB));
     if (thumb.empty())
       continue;
     CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
@@ -410,7 +411,7 @@ void CGUIDialogSongInfo::OnGetArt()
   { // Actually has this type of art (not a fallback) so
     // allow the user to delete it by selecting "no art".
     CFileItemPtr item(new CFileItem(IMAGE_CHOICE::NONE, false));
-    item->SetArt("thumb", "DefaultAlbumCover.png");
+    item->SetArt(ART::TYPE::THUMB, "DefaultAlbumCover.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
     items.Add(item);
   }
@@ -440,7 +441,7 @@ void CGUIDialogSongInfo::OnGetArt()
     // Overwrite with the new art or clear it
     std::string newArt;
     if (result == IMAGE_CHOICE::THUMB)
-      newArt = m_song->GetArt("thumb");
+      newArt = m_song->GetArt(ART::TYPE::THUMB);
     else if (result == IMAGE_CHOICE::LOCAL)
       newArt = localThumb;
 //    else if (result == "thumb://Embedded")
@@ -472,7 +473,7 @@ void CGUIDialogSongInfo::OnGetArt()
     {
       if (artitem->GetProperty("artType") == type)
       {
-        artitem->SetArt("thumb", newArt);
+        artitem->SetArt(ART::TYPE::THUMB, newArt);
         break;
       }
     }

@@ -13,6 +13,7 @@
 #include "FileItemList.h"
 #include "URL.h"
 #include "filesystem/File.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -50,7 +51,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           StringUtils::Format("androidapp://{}/{}/{}", url.GetHostName(), dirname, i.packageName);
       pItem->SetPath(path);
       pItem->SetLabel(i.packageLabel);
-      pItem->SetArt("thumb", path+".png");
+      pItem->SetArt(KODI::ART::TYPE::THUMB, path + ".png");
       pItem->SetSize(-1); // No size
       items.Add(pItem);
     }

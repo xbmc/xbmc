@@ -22,6 +22,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/devices/PeripheralJoystick.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -355,7 +356,7 @@ void CPeripheralAddon::GetDirectory(const std::string& strPath, CFileItemList& i
     peripheralFile->SetProperty("class",
                                 PeripheralTypeTranslator::TypeToString(peripheral->Type()));
     peripheralFile->SetProperty("version", peripheral->GetVersionInfo());
-    peripheralFile->SetArt("icon", peripheral->GetIcon());
+    peripheralFile->SetArt(ART::TYPE::ICON, peripheral->GetIcon());
     items.Add(peripheralFile);
   }
 }

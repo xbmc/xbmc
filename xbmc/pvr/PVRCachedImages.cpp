@@ -13,6 +13,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "imagefiles/ImageFileURL.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -82,7 +83,7 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
       CServiceBroker::GetTextureCache()->ClearCachedImage(items[i]["textureid"].asInteger());
 
       if (clearTextureForPath)
-        db.ClearTextureForPath(textureURL, "thumb");
+        db.ClearTextureForPath(textureURL, KODI::ART::TYPE::THUMB);
 
       iCleanedImages++;
     }

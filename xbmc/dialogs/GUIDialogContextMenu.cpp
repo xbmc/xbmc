@@ -37,6 +37,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -424,14 +425,14 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
       if (!share->m_strThumbnailImage.empty())
       {
         CFileItemPtr current(new CFileItem(IMAGE_CHOICE::CURRENT, false));
-        current->SetArt("thumb", share->m_strThumbnailImage);
+        current->SetArt(ART::TYPE::THUMB, share->m_strThumbnailImage);
         current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
       }
-      else if (item->HasArt("thumb"))
+      else if (item->HasArt(ART::TYPE::THUMB))
       { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
         CFileItemPtr current(new CFileItem(IMAGE_CHOICE::CURRENT, false));
-        current->SetArt("thumb", item->GetArt("thumb"));
+        current->SetArt(ART::TYPE::THUMB, item->GetArt(ART::TYPE::THUMB));
         current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
       }
@@ -440,13 +441,13 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
       if (CFileUtils::Exists(folderThumb))
       {
         CFileItemPtr local(new CFileItem(IMAGE_CHOICE::LOCAL, false));
-        local->SetArt("thumb", folderThumb);
+        local->SetArt(ART::TYPE::THUMB, folderThumb);
         local->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20017));
         items.Add(local);
       }
       // and add a "no thumb" entry as well
       CFileItemPtr nothumb(new CFileItem(IMAGE_CHOICE::NONE, false));
-      nothumb->SetArt("icon", item->GetArt("icon"));
+      nothumb->SetArt(ART::TYPE::ICON, item->GetArt(ART::TYPE::ICON));
       nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
       items.Add(nothumb);
 
@@ -477,7 +478,7 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
       { // this is some sort of an auto-share, so store in the texture database
         CTextureDatabase db;
         if (db.Open())
-          db.SetTextureForPath(item->GetPath(), "thumb", strThumb);
+          db.SetTextureForPath(item->GetPath(), ART::TYPE::THUMB, strThumb);
       }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);

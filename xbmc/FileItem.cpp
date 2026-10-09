@@ -56,6 +56,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/Archive.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/EpisodeUtils.h"
 #include "utils/FileExtensionProvider.h"
@@ -163,17 +164,17 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
 
   if (!tag->IconPath().empty())
   {
-    SetArt("icon", tag->IconPath());
+    SetArt(ART::TYPE::ICON, tag->IconPath());
   }
   else
   {
     const std::string iconPath = tag->ChannelIconPath();
     if (!iconPath.empty())
-      SetArt("icon", iconPath);
+      SetArt(ART::TYPE::ICON, iconPath);
     else if (tag->IsRadio())
-      SetArt("icon", "DefaultMusicSongs.png");
+      SetArt(ART::TYPE::ICON, "DefaultMusicSongs.png");
     else
-      SetArt("icon", "DefaultTVShows.png");
+      SetArt(ART::TYPE::ICON, "DefaultTVShows.png");
   }
 
   // Speedup FillInDefaultIcon()
@@ -197,9 +198,9 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
 
   const std::string& iconPath = filter->GetIconPath();
   if (!iconPath.empty())
-    SetArt("icon", iconPath);
+    SetArt(ART::TYPE::ICON, iconPath);
   else
-    SetArt("icon", "DefaultPVRSearch.png");
+    SetArt(ART::TYPE::ICON, "DefaultPVRSearch.png");
 
   // Speedup FillInDefaultIcon()
   SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
@@ -217,15 +218,15 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   SetLabel(channel->ChannelName());
 
   if (!channel->IconPath().empty())
-    SetArt("icon", channel->IconPath());
+    SetArt(ART::TYPE::ICON, channel->IconPath());
   else if (channel->IsRadio())
-    SetArt("icon", "DefaultMusicSongs.png");
+    SetArt(ART::TYPE::ICON, "DefaultMusicSongs.png");
   else
-    SetArt("icon", "DefaultTVShows.png");
+    SetArt(ART::TYPE::ICON, "DefaultTVShows.png");
 
   SetProperty("channelid", channel->ChannelID());
   SetProperty("path", channelGroupMember->Path());
-  SetArt("thumb", channel->IconPath());
+  SetArt(ART::TYPE::THUMB, channel->IconPath());
 
   // Speedup FillInDefaultIcon()
   SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
@@ -248,23 +249,23 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
 
   // Set art
   if (!record->IconPath().empty())
-    SetArt("icon", record->IconPath());
+    SetArt(ART::TYPE::ICON, record->IconPath());
   else
   {
     const std::shared_ptr<const CPVRChannel> channel = record->Channel();
     if (channel && !channel->IconPath().empty())
-      SetArt("icon", channel->IconPath());
+      SetArt(ART::TYPE::ICON, channel->IconPath());
     else if (record->IsRadio())
-      SetArt("icon", "DefaultMusicSongs.png");
+      SetArt(ART::TYPE::ICON, "DefaultMusicSongs.png");
     else
-      SetArt("icon", "DefaultTVShows.png");
+      SetArt(ART::TYPE::ICON, "DefaultTVShows.png");
   }
 
   if (!record->ThumbnailPath().empty())
-    SetArt("thumb", record->ThumbnailPath());
+    SetArt(ART::TYPE::THUMB, record->ThumbnailPath());
 
   if (!record->FanartPath().empty())
-    SetArt("fanart", record->FanartPath());
+    SetArt(ART::TYPE::FANART, record->FanartPath());
 
   // Speedup FillInDefaultIcon()
   SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
@@ -282,11 +283,11 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
   SetLabel(timer->Title());
 
   if (!timer->ChannelIcon().empty())
-    SetArt("icon", timer->ChannelIcon());
+    SetArt(ART::TYPE::ICON, timer->ChannelIcon());
   else if (timer->IsRadio())
-    SetArt("icon", "DefaultMusicSongs.png");
+    SetArt(ART::TYPE::ICON, "DefaultMusicSongs.png");
   else
-    SetArt("icon", "DefaultTVShows.png");
+    SetArt(ART::TYPE::ICON, "DefaultTVShows.png");
 
   // Speedup FillInDefaultIcon()
   SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
@@ -302,12 +303,12 @@ CFileItem::CFileItem(std::string_view path, const std::shared_ptr<CPVRProvider>&
 
   // Set art
   if (!provider->GetIconPath().empty())
-    SetArt("icon", provider->GetIconPath());
+    SetArt(ART::TYPE::ICON, provider->GetIconPath());
   else
-    SetArt("icon", "DefaultPVRProvider.png");
+    SetArt(ART::TYPE::ICON, "DefaultPVRProvider.png");
 
   if (!provider->GetThumbPath().empty())
-    SetArt("thumb", provider->GetThumbPath());
+    SetArt(ART::TYPE::THUMB, provider->GetThumbPath());
 
   // Speedup FillInDefaultIcon()
   SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
@@ -397,7 +398,7 @@ CFileItem::CFileItem(const CMediaSource& share) : m_strPath(share.strPath)
   m_iDriveType = share.m_iDriveType;
   if (!share.strDevicePath.empty())
     SetProperty(ITEM::PROPERTY::DEVICE_PATH, share.strDevicePath);
-  SetArt("thumb", share.m_strThumbnailImage);
+  SetArt(ART::TYPE::THUMB, share.m_strThumbnailImage);
   SetLabelPreformatted(true);
   if (IsDVD())
     GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
@@ -413,7 +414,7 @@ CFileItem::CFileItem(const std::shared_ptr<const IEvent>& eventLogEntry)
 {
   SetLabel(eventLogEntry->GetLabel());
   if (!eventLogEntry->GetIcon().empty())
-    SetArt("icon", eventLogEntry->GetIcon());
+    SetArt(ART::TYPE::ICON, eventLogEntry->GetIcon());
 }
 
 CFileItem::~CFileItem()
@@ -1639,7 +1640,7 @@ void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag& music)
 
   const CPropertySaveHelper thumb(*this, "OriginalThumb", music.GetStationArt());
   if (thumb.NeedsSave())
-    SetArt("thumb", thumb.GetValueToSave(GetArt("thumb")));
+    SetArt(ART::TYPE::THUMB, thumb.GetValueToSave(GetArt(ART::TYPE::THUMB)));
 
   *GetMusicInfoTag() = music;
   ART::FillInDefaultIcon(*this);
@@ -1655,7 +1656,7 @@ void CFileItem::SetFromAlbum(const CAlbum &album)
   GetMusicInfoTag()->SetAlbum(album);
 
   if (album.art.empty())
-    SetArt("icon", "DefaultAlbumCover.png");
+    SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
   else
     SetArt(album.art);
 
@@ -1683,7 +1684,7 @@ void CFileItem::SetFromSong(const CSong &song)
   SetProperty(ITEM::PROPERTY::ITEM_START, song.iStartOffset);
   m_lEndOffset = song.iEndOffset;
   if (!song.strThumb.empty())
-    SetArt("thumb", song.strThumb);
+    SetArt(ART::TYPE::THUMB, song.strThumb);
   FillInMimeType(false);
 }
 
@@ -1904,16 +1905,16 @@ std::string CFileItem::GetThumbHideIfUnwatched(const CFileItem* item) const
       item->GetVideoInfoTag()->GetPlayCount() == 0 &&
       !CSettingUtils::FindIntInList(setting,
                                     CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE) &&
-      item->HasArt("thumb"))
+      item->HasArt(ART::TYPE::THUMB))
   {
-    std::string fanArt = item->GetArt("fanart");
+    std::string fanArt = item->GetArt(ART::TYPE::FANART);
     if (fanArt.empty())
       return "OverlaySpoiler.png";
     else
       return fanArt;
   }
 
-  return item->GetArt("thumb");
+  return item->GetArt(ART::TYPE::THUMB);
 }
 
 std::string CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) const

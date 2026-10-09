@@ -23,6 +23,7 @@
 #include "jobs/JobQueue.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/ItemProperties.h"
@@ -240,10 +241,11 @@ ArtPriority PriorityOfArtType(std::string_view artType)
     artType.remove_prefix(4);
 
   // Numbered, where a scraper offers more than one eg. "fanart2"
-  if (artType.starts_with("fanart"))
+  if (artType.starts_with(ART::TYPE::FANART))
     return ArtPriority::BACKGROUND;
 
-  if (artType == "poster" || artType == "thumb" || artType == "banner" || artType == "keyart")
+  if (artType == ART::TYPE::POSTER || artType == ART::TYPE::THUMB || artType == ART::TYPE::BANNER ||
+      artType == "keyart")
     return ArtPriority::LIST;
 
   return ArtPriority::DETAIL;
@@ -352,13 +354,13 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
   }
 
   // add online fanart (treated separately due to it being stored in m_fanart)
-  if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist("fanart", artTypes, exactName)) &&
-      !art.contains("fanart"))
+  if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(ART::TYPE::FANART, artTypes, exactName)) &&
+      !art.contains(ART::TYPE::FANART))
   {
     std::string fanart = pItem->GetVideoInfoTag()->m_fanart.GetImageURL();
     if (!fanart.empty() &&
         !(useRemoteArt == UseRemoteArtWithLocalScraper::NO && URIUtils::IsRemote(fanart)))
-      art.insert(std::make_pair("fanart", fanart));
+      art.insert(std::make_pair(ART::TYPE::FANART, fanart));
   }
 
   // add online art
@@ -369,7 +371,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     std::string aspect = url.m_aspect;
     if (aspect.empty())
       // Backward compatibility with Kodi 11 Eden NFO files
-      aspect = mediaType == MediaTypeEpisode ? "thumb" : "poster";
+      aspect = mediaType == MediaTypeEpisode ? ART::TYPE::THUMB : ART::TYPE::POSTER;
 
     if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(aspect, artTypes, exactName)) &&
         !art.contains(aspect))
@@ -381,12 +383,12 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     }
   }
 
-  if (!art.contains("thumb") &&
+  if (!art.contains(ART::TYPE::THUMB) &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
       CDVDFileInfo::CanExtract(mediaItem ? *mediaItem : *pItem))
   {
-    art["thumb"] = CVideoThumbLoader::GetEmbeddedThumbURL(mediaItem ? *mediaItem : *pItem);
+    art[ART::TYPE::THUMB] = CVideoThumbLoader::GetEmbeddedThumbURL(mediaItem ? *mediaItem : *pItem);
   }
 
   std::vector<ArtToCache> artToCache;
@@ -412,7 +414,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
                      useRemoteArt);
   }
   if (bApplyToDir)
-    ApplyThumbToFolder(parentDir, art["thumb"]);
+    ApplyThumbToFolder(parentDir, art[ART::TYPE::THUMB]);
 }
 
 std::string CVideoInfoScannerArt::GetImage(const CScraperUrl::SUrlEntry& image,
@@ -436,7 +438,7 @@ void CVideoInfoScannerArt::ApplyThumbToFolder(const std::string& folder,
   {
     CFileItem folderItem(folder, true);
     CThumbLoader loader;
-    loader.SetCachedImage(folderItem, "thumb", imdbThumb);
+    loader.SetCachedImage(folderItem, ART::TYPE::THUMB, imdbThumb);
   }
 }
 
@@ -503,7 +505,7 @@ void CVideoInfoScannerArt::GetSeasonThumbs(const CVideoInfoTag& show,
       continue;
     std::string aspect = url.m_aspect;
     if (aspect.empty())
-      aspect = "thumb";
+      aspect = ART::TYPE::THUMB;
     KODI::ART::Artwork& art = seasonArt[url.m_season];
     if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(aspect, artTypes, exactName)) &&
         !art.contains(aspect))

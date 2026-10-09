@@ -20,6 +20,7 @@
 #include "guilib/WindowIDs.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -87,7 +88,7 @@ void CControllerSelect::Process()
   for (const ControllerPtr& controller : m_controllers)
   {
     CFileItemPtr item(new CFileItem(controller->Layout().Label()));
-    item->SetArt("icon", controller->Layout().ImagePath());
+    item->SetArt(ART::TYPE::ICON, controller->Layout().ImagePath());
     items.Add(std::move(item));
 
     // Check if a specified controller should be selected by default
@@ -100,7 +101,7 @@ void CControllerSelect::Process()
     // Add a button to disconnect the port
     CFileItemPtr item(new CFileItem(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13298))); // "Disconnected"
-    item->SetArt("icon", "DefaultAddonNone.png");
+    item->SetArt(ART::TYPE::ICON, "DefaultAddonNone.png");
     items.Add(std::move(item));
 
     // Check if the disconnect button should be selected by default

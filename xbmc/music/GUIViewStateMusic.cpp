@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/SortUtils.h"
@@ -701,7 +702,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowMusicNav::GetSources()
     CMediaSource share;
     share.strName = item->GetLabel();
     share.strPath = item->GetPath();
-    share.m_strThumbnailImage = item->GetArt("icon");
+    share.m_strThumbnailImage = item->GetArt(ART::TYPE::ICON);
     share.m_iDriveType = SourceType::LOCAL;
     m_sources.push_back(share);
   }

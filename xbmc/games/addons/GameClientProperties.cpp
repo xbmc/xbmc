@@ -29,6 +29,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -366,7 +367,7 @@ bool CGameClientProperties::InstallDependencies(const std::vector<std::string>& 
   for (const auto& addon : installableAddons)
   {
     CFileItem item{addon->Name()};
-    item.SetArt("icon", addon->Icon());
+    item.SetArt(ART::TYPE::ICON, addon->Icon());
     selectDialog->Add(item);
   }
 

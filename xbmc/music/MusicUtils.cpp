@@ -43,6 +43,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
@@ -302,13 +303,13 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
   {
     CFileItemPtr artitem(new CFileItem(type, false));
     // Localise the names of common types of art
-    if (type == "banner")
+    if (type == ART::TYPE::BANNER)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20020));
-    else if (type == "fanart")
+    else if (type == ART::TYPE::FANART)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20445));
-    else if (type == "poster")
+    else if (type == ART::TYPE::POSTER)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20021));
-    else if (type == "thumb")
+    else if (type == ART::TYPE::THUMB)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21371));
     else
       artitem->SetLabel(type);
@@ -316,7 +317,7 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
     artitem->SetProperty("arttype", type);
     // Set current art as art item thumb
     if (musicitem.HasArt(type))
-      artitem->SetArt("thumb", musicitem.GetArt(type));
+      artitem->SetArt(ART::TYPE::THUMB, musicitem.GetArt(type));
     artlist.Add(artitem);
   }
 
@@ -403,7 +404,7 @@ std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType)
   // Get default types of art that are to be automatically fetched during scanning
   if (mediaType == MediaTypeArtist)
   {
-    arttypes = {"thumb", "fanart"};
+    arttypes = {ART::TYPE::THUMB, ART::TYPE::FANART};
     for (auto& artType : CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
              CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST))
     {
@@ -413,7 +414,7 @@ std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType)
   }
   else if (mediaType == MediaTypeAlbum)
   {
-    arttypes = {"thumb"};
+    arttypes = {ART::TYPE::THUMB};
     for (auto& artType : CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
              CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST))
     {

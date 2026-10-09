@@ -12,6 +12,7 @@
 #include "imagefiles/ImageFileURL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
@@ -68,7 +69,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
       return false; // No fallback
   }
 
-  if (pItem->HasVideoInfoTag() && !pItem->HasArt("thumb"))
+  if (pItem->HasVideoInfoTag() && !pItem->HasArt(KODI::ART::TYPE::THUMB))
   { // music video
     CVideoThumbLoader loader;
     if (loader.LoadItemCached(pItem))
@@ -76,22 +77,22 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   }
 
   // Fallback to folder thumb when path has one cached
-  if (!pItem->HasArt("thumb"))
+  if (!pItem->HasArt(KODI::ART::TYPE::THUMB))
   {
-    std::string art = GetCachedImage(*pItem, "thumb");
+    std::string art = GetCachedImage(*pItem, KODI::ART::TYPE::THUMB);
     if (!art.empty())
-      pItem->SetArt("thumb", art);
+      pItem->SetArt(KODI::ART::TYPE::THUMB, art);
   }
 
   // Fallback to folder fanart when path has one cached
   //! @todo Remove as "fanart" is never been cached for music folders (only for
   // artists) or start caching fanart for folders?
-  if (!pItem->HasArt("fanart"))
+  if (!pItem->HasArt(KODI::ART::TYPE::FANART))
   {
-    std::string art = GetCachedImage(*pItem, "fanart");
+    std::string art = GetCachedImage(*pItem, KODI::ART::TYPE::FANART);
     if (!art.empty())
     {
-      pItem->SetArt("fanart", art);
+      pItem->SetArt(KODI::ART::TYPE::FANART, art);
     }
   }
 
@@ -113,7 +114,7 @@ bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
       return true;
   }
 
-  if (!pItem->HasArt("thumb"))
+  if (!pItem->HasArt(KODI::ART::TYPE::THUMB))
   {
     // Look for embedded art
     if (pItem->HasMusicInfoTag() && !pItem->GetMusicInfoTag()->GetCoverArtInfo().Empty())
@@ -123,7 +124,7 @@ bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
       {
         // No user thumb, use embedded art
         std::string thumb = IMAGE_FILES::URLFromFile(pItem->GetPath(), "music");
-        pItem->SetArt("thumb", thumb);
+        pItem->SetArt(KODI::ART::TYPE::THUMB, thumb);
       }
     }
     else
@@ -138,17 +139,17 @@ bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
 
 bool CMusicThumbLoader::FillThumb(CFileItem &item, bool folderThumbs /* = true */)
 {
-  if (item.HasArt("thumb"))
+  if (item.HasArt(KODI::ART::TYPE::THUMB))
     return true;
-  std::string thumb = GetCachedImage(item, "thumb");
+  std::string thumb = GetCachedImage(item, KODI::ART::TYPE::THUMB);
   if (thumb.empty())
   {
     thumb = item.GetUserMusicThumb(false, folderThumbs);
     if (!thumb.empty())
-      SetCachedImage(item, "thumb", thumb);
+      SetCachedImage(item, KODI::ART::TYPE::THUMB, thumb);
   }
   if (!thumb.empty())
-    item.SetArt("thumb", thumb);
+    item.SetArt(KODI::ART::TYPE::THUMB, thumb);
   return !thumb.empty();
 }
 
@@ -312,20 +313,21 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       // Add fallback art for "thumb" and "fanart" art types only
       // Set album thumb as the fallback used when song thumb is missing
       if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum &&
-          artitem.artType == "thumb")
+          artitem.artType == KODI::ART::TYPE::THUMB)
       {
         item.SetArtFallback(artitem.artType, artname);
       }
 
       // For albums and songs set fallback fanart from the artist.
       // For songs prefer primary song artist over primary albumartist fanart as fallback fanart
-      if (artitem.prefix == "artist" && artitem.artType == "fanart")
+      if (artitem.prefix == "artist" && artitem.artType == KODI::ART::TYPE::FANART)
         fanartfallback = artname;
-      if (artitem.prefix == "albumartist" && artitem.artType == "fanart" && fanartfallback.empty())
+      if (artitem.prefix == "albumartist" && artitem.artType == KODI::ART::TYPE::FANART &&
+          fanartfallback.empty())
         fanartfallback = artname;
     }
     if (!fanartfallback.empty())
-      item.SetArtFallback("fanart", fanartfallback);
+      item.SetArtFallback(KODI::ART::TYPE::FANART, fanartfallback);
 
     // Process specific disc art when we have some
     for (const auto& discart : discartmap)
@@ -344,7 +346,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       {
         // Use disc thumb rather than album as fallback for song thumb
         // (Fallback approach is used to fill missing thumbs).
-        if (discart.first == "thumb")
+        if (discart.first == KODI::ART::TYPE::THUMB)
         {
           it = artmap.find("album.thumb");
           if (it != artmap.end())
@@ -354,7 +356,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
           {
             // Insert thumb for album and set as fallback
             artmap.insert(std::make_pair("album.thumb", discart.second));
-            item.SetArtFallback("thumb", "album.thumb");
+            item.SetArtFallback(KODI::ART::TYPE::THUMB, "album.thumb");
           }
         }
         else

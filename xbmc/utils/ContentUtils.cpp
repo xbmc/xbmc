@@ -9,6 +9,7 @@
 #include "ContentUtils.h"
 
 #include "FileItem.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
@@ -28,9 +29,9 @@ std::string GetPreferredArtType(const MediaType& type)
   if (type == MediaTypeMovie || type == MediaTypeTvShow || type == MediaTypeSeason ||
       type == MediaTypeVideoCollection)
   {
-    return "poster";
+    return KODI::ART::TYPE::POSTER;
   }
-  return "thumb";
+  return KODI::ART::TYPE::THUMB;
 }
 } // namespace
 
@@ -44,7 +45,7 @@ const std::string ContentUtils::GetPreferredArtImage(const CFileItem& item)
       return item.GetArt(preferredArtType);
     }
   }
-  return item.GetArt("thumb");
+  return item.GetArt(KODI::ART::TYPE::THUMB);
 }
 
 std::unique_ptr<CFileItem> ContentUtils::GeneratePlayableTrailerItem(const CFileItem& item,

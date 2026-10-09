@@ -86,6 +86,7 @@ set(HEADERS ActorProtocol.h
             AlarmClock.h
             AliasShortcutUtils.h
             Archive.h
+            ArtTypes.h
             ArtUtils.h
             Artwork.h
             AspectRatioVocabulary.h

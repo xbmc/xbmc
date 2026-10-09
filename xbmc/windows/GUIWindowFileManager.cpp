@@ -53,6 +53,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
 #include "utils/PlaceholderPaths.h"
@@ -482,7 +483,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath(PLACEHOLDER::ADD_SOURCE);
-    pItem->SetArt("icon", "DefaultAddSource.png");
+    pItem->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
     pItem->SetFolder(true);
@@ -504,21 +505,21 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
     pItem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20070));
-    pItem->SetArt("thumb", "DefaultFolder.png");
+    pItem->SetArt(ART::TYPE::THUMB, "DefaultFolder.png");
     pItem->SetLabelPreformatted(true);
     m_vecItems[iList]->Add(pItem);
 
     #ifdef TARGET_DARWIN_EMBEDDED
       CFileItemPtr iItem(new CFileItem("special://envhome/Documents/Inbox", true));
       iItem->SetLabel("Inbox");
-      iItem->SetArt("thumb", "DefaultFolder.png");
+      iItem->SetArt(ART::TYPE::THUMB, "DefaultFolder.png");
       iItem->SetLabelPreformatted(true);
       m_vecItems[iList]->Add(iItem);
     #endif
     #ifdef TARGET_ANDROID
       CFileItemPtr iItem(new CFileItem("special://logpath", true));
       iItem->SetLabel("Logs");
-      iItem->SetArt("thumb", "DefaultFolder.png");
+      iItem->SetArt(ART::TYPE::THUMB, "DefaultFolder.png");
       iItem->SetLabelPreformatted(true);
       m_vecItems[iList]->Add(iItem);
     #endif
@@ -531,7 +532,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     if (pItem->IsHD() &&
         URIUtils::HasExtension(pItem->GetPath(), ".tbn"))
     {
-      pItem->SetArt("thumb", pItem->GetPath());
+      pItem->SetArt(ART::TYPE::THUMB, pItem->GetPath());
     }
   }
   m_vecItems[iList]->FillInDefaultIcons();

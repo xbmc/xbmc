@@ -30,6 +30,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
+#include "utils/ArtTypes.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -47,7 +48,7 @@ CFileItemPtr CreateNewSaveItem()
 
   // A nonexistent path ensures a gamewindow control won't render any pixels
   item->SetPath(NO_PIXEL_DATA);
-  item->SetArt("icon", "DefaultAddSource.png");
+  item->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
   item->SetProperty(SAVESTATE_CAPTION,
                     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                         15315)); // "Save progress to a new save file"

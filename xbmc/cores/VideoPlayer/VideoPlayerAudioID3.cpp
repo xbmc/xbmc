@@ -16,6 +16,7 @@
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/ArtTypes.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -92,9 +93,9 @@ void CVideoPlayerAudioID3::CloseStream(bool bWaitForBuffers)
   {
     // The stream may be reopened while the item keeps playing
     CFileItem& item = g_application.CurrentFileItem();
-    if (item.GetArt("thumb") == m_picturePath)
+    if (item.GetArt(KODI::ART::TYPE::THUMB) == m_picturePath)
     {
-      item.SetArt("thumb", m_previousThumb);
+      item.SetArt(KODI::ART::TYPE::THUMB, m_previousThumb);
       if (CGUIComponent* gui = CServiceBroker::GetGUI())
         gui->GetInfoManager().SetCurrentItem(item);
     }
@@ -401,12 +402,12 @@ bool CVideoPlayerAudioID3::ProcessID3v2Picture(const ID3v2::FrameList& frameList
   }
 
   if (m_picturePath.empty())
-    m_previousThumb = g_application.CurrentFileItem().GetArt("thumb");
+    m_previousThumb = g_application.CurrentFileItem().GetArt(KODI::ART::TYPE::THUMB);
   else
     XFILE::CFile::Delete(m_picturePath);
   m_picturePath = path;
 
-  g_application.CurrentFileItem().SetArt("thumb", path);
+  g_application.CurrentFileItem().SetArt(KODI::ART::TYPE::THUMB, path);
   return true;
 }
 
