@@ -25513,7 +25513,7 @@ msgstr ""
 
 #. Shown when the playlist chosen for a movie version already belongs to another version of it
 #: xbmc/dialogs/GUIDialogSimpleMenu.cpp
-#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40047"
 msgid "This playlist already belongs to another version of this movie."
 msgstr ""
@@ -25542,7 +25542,50 @@ msgctxt "#40051"
 msgid "This playlist is still in use by another movie version and could not be reassigned."
 msgstr ""
 
-#empty strings with id 40052 to 40201
+#. Asked before choosing one of a disc's playlists for an extra that plays the whole disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40052"
+msgid "Assign a playlist to this extra?"
+msgstr ""
+
+#. Asked before choosing an extra from the playlists of the movie's own disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40053"
+msgid "Add an extra from this disc?"
+msgstr ""
+
+#. Asked when a disc is picked as an extra, to add one of its playlists rather than the whole disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40054"
+msgid "Choose a playlist from this disc?"
+msgstr ""
+
+#. Shown when a playlist chosen for an extra already belongs to the same movie, or one chosen for a version is already its extra
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40055"
+msgid "This playlist already belongs to this movie."
+msgstr ""
+
+#. Asked before taking a playlist away from another movie's extra that uses it
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40056"
+msgid "The selected playlist is already assigned to another extra. Reassign it?"
+msgstr ""
+
+#. Manage video extras context menu item
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#40057"
+msgid "Manage extras"
+msgstr ""
+
+#. Asked when adding an extra while an extra on a disc is selected
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40058"
+msgid "Add another extra from this disc?"
+msgstr ""
+
+#empty strings with id 40059 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml
@@ -25565,7 +25608,7 @@ msgstr ""
 #. Help for ignore video extras settting
 #: system/settings/settings.xml
 msgctxt "#40205"
-msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
+msgid "Select scanner action for video extras, in an \"extras\" folder or named by a Blu-ray disc.[CR][Enabled] Leave video extras out of the library, other than those a movie's nfo records.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
 #empty strings from id 40206 to 40208 freed in v22
@@ -25846,6 +25889,124 @@ msgstr ""
 msgctxt "#40436"
 msgid "50th Anniversary Edition"
 msgstr ""
+
+#empty strings from id 40437 to 40499
+
+# Video extras
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40500"
+msgid "Deleted scenes"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40501"
+msgid "Music videos"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40502"
+msgid "Sing-alongs"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40503"
+msgid "Trailers"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40504"
+msgid "Commercials"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40505"
+msgid "Promos"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40506"
+msgid "Behind the scenes"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40507"
+msgid "Cast"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40508"
+msgid "Play all"
+msgstr ""
+
+#empty strings from id 40509 to 40699
+
+# Names of video extras of a kind, which are not types
+
+#. Name of a deleted scene found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40700"
+msgid "Deleted scene: {0:s}"
+msgstr ""
+
+#. Name of a music video found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40701"
+msgid "Music video: {0:s}"
+msgstr ""
+
+#. Name of a sing-along found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40702"
+msgid "Sing-along: {0:s}"
+msgstr ""
+
+#. Name of a trailer found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40703"
+msgid "Trailer: {0:s}"
+msgstr ""
+
+#. Name of a commercial found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40704"
+msgid "Commercial: {0:s}"
+msgstr ""
+
+#. Name of a promo found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40705"
+msgid "Promo: {0:s}"
+msgstr ""
+
+#. Name of a behind the scenes extra found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40706"
+msgid "Behind the scenes: {0:s}"
+msgstr ""
+
+#. Name of an extra about a member of the cast found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40707"
+msgid "Cast: {0:s}"
+msgstr ""
+
+#. Name of a disc's playlist playing a group of extras one after the other - {0:s} is the group
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40708"
+msgid "{0:s} (play all)"
+msgstr ""
+
+#empty strings from id 40709 to 40800
 
 # 40000 to 40800 are reserved for Video Versions feature
 

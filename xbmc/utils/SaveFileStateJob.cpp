@@ -19,6 +19,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "log.h"
+#include "media/MediaType.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
@@ -28,6 +29,7 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoManagerTypes.h"
 
 using namespace KODI;
 using namespace KODI::VIDEO;
@@ -241,6 +243,18 @@ void CSaveFileState::DoWork(CFileItem& item,
               return false;
             }()};
 
+        // An asset played from its own row (eg. an extra) is identified by its file
+        MediaType mediaType{tag ? tag->m_type : ""};
+        int idMedia{tag ? tag->m_iDbId : -1};
+        if (updateNeeded && mediaType == MediaTypeVideoVersion)
+        {
+          CVideoInfoTag oldFile;
+          mediaType = MediaTypeMovie;
+          idMedia = videodatabase.GetFileInfo("", oldFile, tag->m_iFileId)
+                        ? videodatabase.GetVideoVersionInfo(oldFile.m_strFileNameAndPath).m_idMedia
+                        : -1;
+        }
+
         int replacedFileId{-1};
         if (updateNeeded)
         {
@@ -249,7 +263,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           // in the movie table entry if it's a non-default video version
           const int oldFileId{tag->m_iFileId};
           const int newFileId{videodatabase.SetFileForMedia(
-              progressTrackingFile, item.GetVideoContentType(), tag->m_iDbId,
+              progressTrackingFile, item.GetVideoContentType(), idMedia,
               CVideoDatabase::FileRecord{.m_idFile = oldFileId,
                                          .m_playCount = tag->GetPlayCount(),
                                          .m_lastPlayed = tag->m_lastPlayed,
@@ -260,8 +274,8 @@ void CSaveFileState::DoWork(CFileItem& item,
             item.GetVideoInfoTag()->m_iFileId = newFileId;
             if (newFileId != oldFileId)
             {
-              CLog::LogF(LOGDEBUG, "{} {} now uses file {} ({}) instead of file {}", tag->m_type,
-                         tag->m_iDbId, newFileId, redactPath, oldFileId);
+              CLog::LogF(LOGDEBUG, "{} {} now uses file {} ({}) instead of file {}", mediaType,
+                         idMedia, newFileId, redactPath, oldFileId);
               replacedFileId = oldFileId;
               updateListing = true;
             }
@@ -284,7 +298,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 
           // Widgets reload on the announcement, which must follow the file change
           if (replacedFileId > 0)
-            CVideoDatabase::AnnounceUpdate(tag->m_type, tag->m_iDbId);
+            CVideoDatabase::AnnounceUpdate(mediaType, idMedia);
         }
 
         CLog::LogF(LOGDEBUG, "Finished saving file state for video item {} (listing update {})",

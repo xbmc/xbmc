@@ -24,14 +24,16 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "storage/MediaManager.h"
+#include "utils/DiscsUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 
 #include <algorithm>
+#include <memory>
 #include <string>
 
 static constexpr unsigned int CONTROL_BUTTON_ADD_EXTRAS = 23;
@@ -110,11 +112,44 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
 
-  // prompt to choose a video file
-  std::vector<CMediaSource> sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
+  // An extra chosen from a disc starts as the movie, so that the movie's own playlists are
+  // recognised, but takes nothing else of it
+  const auto discExtra{[this](const std::string& disc)
+                       {
+                         auto item{std::make_shared<CFileItem>(*m_videoAsset)};
+                         item->SetDynPath(disc);
+                         item->ClearArt();
+                         CVideoInfoTag* tag{item->GetVideoInfoTag()};
+                         tag->m_streamDetails.Reset();
+                         tag->GetAssetInfo().Clear();
+                         tag->GetAssetInfo().SetType(VideoAssetType::EXTRA);
+                         return item;
+                       }};
+  const auto discOf{[](const std::string& path)
+                    { return URIUtils::IsBlurayPath(path) ? URIUtils::GetDiscFile(path) : path; }};
 
-  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
-  CServiceBroker::GetMediaManager().GetNetworkLocations(sources);
+  // As Manage versions does, the disc of the extra selected is offered first: a playlist for the
+  // extra where it plays the whole disc, then another extra from it
+  std::string selectedDisc;
+  if (m_selectedVideoAsset && m_selectedVideoAsset->IsBluray())
+  {
+    if (!URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()) &&
+        CGUIDialogYesNo::ShowAndGetInput(CVariant{40015}, CVariant{40052}) &&
+        !ChoosePlaylist(m_selectedVideoAsset, ReplaceExistingFile::YES))
+      return false;
+
+    selectedDisc = discOf(m_selectedVideoAsset->GetDynPath());
+    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{40015}, CVariant{40058}))
+      return ChoosePlaylist(discExtra(m_selectedVideoAsset->GetDynPath()), ReplaceExistingFile::NO);
+  }
+
+  // The movie's own disc, unless that was the disc just offered
+  if (m_videoAsset->IsBluray() && discOf(m_videoAsset->GetDynPath()) != selectedDisc &&
+      CGUIDialogYesNo::ShowAndGetInput(CVariant{40015}, CVariant{40053}))
+    return ChoosePlaylist(discExtra(m_videoAsset->GetDynPath()), ReplaceExistingFile::NO);
+
+  // prompt to choose a video file
+  std::vector<CMediaSource> sources{*CMediaSourceSettings::GetInstance().GetSources("video")};
   AppendItemFolderToFileBrowserSources(sources);
 
   std::string path;
@@ -122,19 +157,24 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
           sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(40015), path))
   {
+    if ((URIUtils::IsBDFile(path) || ::UTILS::DISCS::IsBlurayDiscImage(path)) &&
+        CGUIDialogYesNo::ShowAndGetInput(CVariant{40015}, CVariant{40054}))
+      return ChoosePlaylist(discExtra(path), ReplaceExistingFile::NO);
+
     const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
     const VideoDbContentType itemType = m_videoAsset->GetVideoContentType();
 
     const VideoAssetInfo newAsset{m_database.GetVideoVersionInfo(path)};
 
     std::string typeNewVideoVersion{
-        CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
+        URIUtils::IsOpticalMediaFile(path)
+            ? GenerateVideoExtra(URIUtils::GetParentPath(URIUtils::RemoveDiscPath(path)), path)
+            : GenerateVideoExtra(URIUtils::GetFileName(path))};
 
     if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
-      // The video already is an extra of the movie
-      if (newAsset.m_idMedia == dbId && newAsset.m_mediaType == mediaType &&
-          newAsset.m_assetType == VideoAssetType::EXTRA)
+      // The video already is an asset of the movie
+      if (newAsset.m_idMedia == dbId && newAsset.m_mediaType == mediaType)
       {
         unsigned int msgid{};
 
@@ -270,6 +310,18 @@ std::string CGUIDialogVideoManagerExtras::GenerateVideoExtra(const std::string& 
                                                              const std::string& extrasPath)
 {
   // generate a video extra version string from its file path
+
+  // A disc is named after the folder holding it, which may be the extras folder itself
+  if (URIUtils::IsOpticalMediaFile(extrasPath))
+  {
+    std::string disc{URIUtils::RemoveDiscPath(extrasPath)};
+    URIUtils::RemoveSlashAtEnd(disc);
+    std::string root{extrasRoot};
+    URIUtils::RemoveSlashAtEnd(root);
+    if (disc.size() <= root.size())
+      return URIUtils::GetFileName(root);
+    return disc.substr(root.size() + 1);
+  }
 
   // remove the root path from its path
   const std::string extrasVersion{extrasPath.substr(extrasRoot.size())};

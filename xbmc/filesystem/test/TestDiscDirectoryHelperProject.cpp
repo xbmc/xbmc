@@ -8,11 +8,16 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/IPlaylistHints.h"
 #include "filesystem/bluray/BlurayPlaylistHints.h"
 #include "filesystem/bluray/ProjectParser.h"
+#include "language/LangInfo.h"
+#include "language/LanguageTag.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "video/VideoInfoTag.h"
 
 #include <chrono>
@@ -666,4 +671,344 @@ TEST_F(TestDiscDirectoryHelperProject, NoProjectLeavesTheHeuristicsUntouched)
   // No SetPlaylistHints call at all
   EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
   EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{800u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_TheExtrasTheDiscNamesAreListed)
+{
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 120min, {1u})},
+                        {810u, MakePlaylist(810u, 20min, {2u})},
+                        {811u, MakePlaylist(811u, 2min, {3u})},
+                        {820u, MakePlaylist(820u, 30s, {4u})},
+                        {830u, MakePlaylist(830u, 1min, {5u})}};
+  ClipMap clips{{1u, MakeClip(120min, {800u})},
+                {2u, MakeClip(20min, {810u})},
+                {3u, MakeClip(2min, {811u})},
+                {4u, MakeClip(30s, {820u})},
+                {5u, MakeClip(1min, {830u})}};
+
+  // Nothing but the disc says which playlists are extras
+  EXPECT_FALSE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_TRUE(items.IsEmpty());
+
+  helper.SetPlaylistHints(
+      MakeProject({MakeNamed(800u, "FPL_MainFeature", 120min),
+                   MakeNamed(810u, "SF_01_Making", 20min), MakeNamed(811u, "SF_02_Trailer", 2min),
+                   MakeNamed(820u, "WRN_Piracy", 30s), MakeNamed(830u, "TMPL Main Menu", 1min)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), (std::vector<unsigned int>{810u, 811u}));
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_AnExtraLongEnoughForAnEditionIsAnExtra)
+{
+  // The heuristics would take the 90 minute extra for another cut of the 120 minute movie
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 120min, {1u})},
+                        {801u, MakePlaylist(801u, 90min, {2u})}};
+  ClipMap clips{{1u, MakeClip(120min, {800u})}, {2u, MakeClip(90min, {801u})}};
+
+  helper.SetPlaylistHints(MakeProject(
+      {MakeNamed(800u, "FPL_MainFeature", 120min), MakeNamed(801u, "SF_Making_Of", 90min)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{801u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_ASingAlongNamedAsAnExtraIsNotAnExtra)
+{
+  // Seen on Snow White (2025), whose sing-along is another version of the movie
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 6529s, {1u})},
+                        {801u, MakePlaylist(801u, 6531s, {2u})},
+                        {802u, MakePlaylist(802u, 10min, {3u})}};
+  ClipMap clips{
+      {1u, MakeClip(6529s, {800u})}, {2u, MakeClip(6531s, {801u})}, {3u, MakeClip(10min, {802u})}};
+
+  helper.SetPlaylistHints(MakeProject({MakeNamed(800u, "FPL_MainFeature", 6529s),
+                                       MakeNamed(801u, "SF_SA_01_00_PlayMovie", 6531s),
+                                       MakeNamed(802u, "SF_01_Making", 10min)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{802u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_ASingAlongTakenForACopyOfTheMovieIsNotAnExtra)
+{
+  // Seen on Mufasa (2024), whose sing-along plays the feature's clip, so is no version either
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{801u, MakePlaylist(801u, 7085s, {1u})},
+                        {1628u, MakePlaylist(1628u, 7085s, {1u})},
+                        {1630u, MakePlaylist(1630u, 156s, {2u})}};
+  ClipMap clips{{1u, MakeClip(7085s, {801u, 1628u})}, {2u, MakeClip(156s, {1630u})}};
+
+  helper.SetPlaylistHints(MakeProject({MakeNamed(801u, "FPL_MainFeature", 7085s),
+                                       MakeNamed(1628u, "SF_00_Feature_SingAlong", 7085s),
+                                       MakeNamed(1630u, "SF_01_SS_01_Milele", 156s)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{1630u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_AShortExtraIsNotTakenForAPlaceholderFeature)
+{
+  // Seen on the bonus disc of Aliens (1986), which names a 5 second placeholder as its feature
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 5s, {1u})},
+                        {1965u, MakePlaylist(1965u, 12s, {2u})}};
+  ClipMap clips{{1u, MakeClip(5s, {800u})}, {2u, MakeClip(12s, {1965u})}};
+
+  helper.SetPlaylistHints(MakeProject(
+      {MakeNamed(800u, "FPL_MainFeature", 5s), MakeNamed(1965u, "SF_CH16_SL27_MiniAPC", 12s)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{1965u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_ACopyrightCardIsNotAnExtra)
+{
+  // Seen on The Running Man (2025), whose extras end on a six second copyright card
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 120min, {1u})},
+                        {801u, MakePlaylist(801u, 10min, {2u})},
+                        {802u, MakePlaylist(802u, 6s, {3u})}};
+  ClipMap clips{
+      {1u, MakeClip(120min, {800u})}, {2u, MakeClip(10min, {801u})}, {3u, MakeClip(6s, {802u})}};
+
+  helper.SetPlaylistHints(MakeProject({MakeNamed(800u, "FPL_MainFeature", 120min),
+                                       MakeNamed(801u, "SF_01_HuntBegins", 10min),
+                                       MakeNamed(802u, "SF_Copyright", 6s)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{801u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_CopiesOfAnExtraAreListedOnce)
+{
+  // Seen on Aquaman and the Lost Kingdom (2023), which also offers each extra as a segment and
+  // dubbed into Japanese
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{126u, MakePlaylist(126u, 1284s, {11u})},
+                        {800u, MakePlaylist(800u, 124min, {1u})},
+                        {811u, MakePlaylist(811u, 1284s, {11u})},
+                        {819u, MakePlaylist(819u, 1284s, {19u})}};
+  ClipMap clips{{1u, MakeClip(124min, {800u})},
+                {11u, MakeClip(1284s, {126u, 811u})},
+                {19u, MakeClip(1284s, {819u})}};
+
+  helper.SetPlaylistHints(MakeProject(
+      {MakeNamed(126u, "SEG SF_01_Finding", 1284s), MakeNamed(800u, "FPL_MainFeature", 124min),
+       MakeNamed(811u, "SF_01_Finding", 1284s), MakeNamed(819u, "SF_01_Finding_JPN", 1284s)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{811u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_NumberedExtrasAreNotCopies)
+{
+  // The numbers are left out of the titles, so both trailers are called "Trailer"
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 110min, {1u})},
+                        {811u, MakePlaylist(811u, 140s, {2u})},
+                        {812u, MakePlaylist(812u, 145s, {3u})}};
+  ClipMap clips{
+      {1u, MakeClip(110min, {800u})}, {2u, MakeClip(140s, {811u})}, {3u, MakeClip(145s, {812u})}};
+
+  helper.SetPlaylistHints(
+      MakeProject({MakeNamed(800u, "FPL_MainFeature", 110min),
+                   MakeNamed(811u, "SF_Trailer_1", 140s), MakeNamed(812u, "SF_Trailer_2", 145s)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), (std::vector<unsigned int>{811u, 812u}));
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_TitlesOfferWhatIsNotTheMovie)
+{
+  // No project - the titles play the feature, a logo, two extras, one of those extras again, a
+  // slideshow without speech and a scene cut from the same clip as one of the extras
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 110min, {1u})},
+                        {801u, MakePlaylist(801u, 5s, {2u})},
+                        {802u, MakePlaylist(802u, 12min, {3u})},
+                        {803u, MakePlaylist(803u, 4min, {4u})},
+                        {804u, MakePlaylist(804u, 12min, {3u})}};
+  playlists.emplace(806u, MakePlaylist(806u, 6min, {3u}));
+  for (auto& [playlist, information] : playlists)
+    information.audioStreams[1].language = KODI::LANGUAGE::CLanguageTag::Parse("eng");
+  playlists.emplace(805u, MakePlaylist(805u, 3min, {5u}));
+  ClipMap clips{{1u, MakeClip(110min, {800u})},
+                {2u, MakeClip(5s, {801u})},
+                {3u, MakeClip(12min, {802u, 804u, 806u})},
+                {4u, MakeClip(4min, {803u})},
+                {5u, MakeClip(3min, {805u})}};
+
+  EXPECT_TRUE(helper.GetMovieTitleExtraPlaylists(url, items, allTitles, 800, clips, playlists,
+                                                 {800u, 801u, 803u, 805u, 802u, 804u, 806u}));
+  EXPECT_EQ(GetPlaylists(items), (std::vector<unsigned int>{803u, 802u, 806u}));
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_TheCopyWithoutAnythingAddedIsListed)
+{
+  // Seen on Eraser (1996), which names no plain presentation of its extras - a segment, one marked
+  // _NCR and that dubbed into Japanese
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 115min, {1u})},
+                        {819u, MakePlaylist(819u, 360s, {2u})},
+                        {821u, MakePlaylist(821u, 361s, {3u})},
+                        {822u, MakePlaylist(822u, 361s, {4u})}};
+  ClipMap clips{{1u, MakeClip(115min, {800u})},
+                {2u, MakeClip(360s, {819u})},
+                {3u, MakeClip(361s, {821u})},
+                {4u, MakeClip(361s, {822u})}};
+
+  helper.SetPlaylistHints(
+      MakeProject({MakeNamed(800u, "FPL_MainFeature", 115min),
+                   MakeNamed(819u, "SEG_SF_01_Reinventing_Modern_Action_Hero", 360s),
+                   MakeNamed(821u, "SF_01_Reinventing_Modern_Action_Hero_NCR", 361s),
+                   MakeNamed(822u, "SF_01_Reinventing_Modern_Action_Hero_NCR_JPN", 361s)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{821u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_ASlateAnExtraPlaysIsNotAnExtra)
+{
+  // Seen on Nope (2022), whose deleted scenes come with a slate, without one, and the slate alone
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 130min, {1u})},
+                        {1248u, MakePlaylist(1248u, 120s, {2u, 3u, 4u})},
+                        {1253u, MakePlaylist(1253u, 114s, {2u, 3u})},
+                        {1258u, MakePlaylist(1258u, 12s, {2u})}};
+  ClipMap clips{{1u, MakeClip(130min, {800u})},
+                {2u, MakeClip(12s, {1248u, 1253u, 1258u})},
+                {3u, MakeClip(102s, {1248u, 1253u})},
+                {4u, MakeClip(6s, {1248u})}};
+
+  helper.SetPlaylistHints(MakeProject({MakeNamed(800u, "FPL_MainFeature", 130min),
+                                       MakeNamed(1248u, "SF_DS_01_01_Hiker", 120s),
+                                       MakeNamed(1253u, "SF_DS_01_01_Hiker_Binge", 114s),
+                                       MakeNamed(1258u, "SEG_SF_DS_01_01_Hiker_Slate", 12s)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), std::vector<unsigned int>{1248u});
+}
+
+TEST_F(TestDiscDirectoryHelperProject, Extras_PlayAllIsListedWithWhatItPlays)
+{
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{{700u, MakePlaylist(700u, 100min, {1u})},
+                        {711u, MakePlaylist(711u, 2min, {2u})},
+                        {712u, MakePlaylist(712u, 4min, {3u})},
+                        {718u, MakePlaylist(718u, 6min, {2u, 3u})}};
+  ClipMap clips{{1u, MakeClip(100min, {700u})},
+                {2u, MakeClip(2min, {711u, 718u})},
+                {3u, MakeClip(4min, {712u, 718u})}};
+
+  helper.SetPlaylistHints(
+      MakeProject({MakeNamed(700u, "FPL_MainFeature", 100min), MakeNamed(711u, "SF_DS_01", 2min),
+                   MakeNamed(712u, "SF_DS_02", 4min), MakeNamed(718u, "SF_DS_PlayAll", 6min)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+  EXPECT_EQ(GetPlaylists(items), (std::vector<unsigned int>{711u, 712u, 718u}));
+}
+
+class TestDiscDirectoryHelperProjectTitles : public TestDiscDirectoryHelperProject
+{
+protected:
+  void SetUp() override
+  {
+    ASSERT_TRUE(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Load(
+        g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  }
+
+  void TearDown() override { CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Clear(); }
+};
+
+TEST_F(TestDiscDirectoryHelperProjectTitles, Extras_AreTitledByWhatTheyAre)
+{
+  CDiscDirectoryHelper helper;
+  CURL url;
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 120min, {1u})}, {810u, MakePlaylist(810u, 20min, {2u})},
+      {811u, MakePlaylist(811u, 2min, {3u})},   {812u, MakePlaylist(812u, 2min, {3u})},
+      {813u, MakePlaylist(813u, 20min, {2u})},  {814u, MakePlaylist(814u, 20min, {2u})},
+      {815u, MakePlaylist(815u, 7min, {4u})},   {816u, MakePlaylist(816u, 3min, {5u})}};
+  ClipMap clips{{1u, MakeClip(120min, {800u})},
+                {2u, MakeClip(20min, {810u, 813u, 814u})},
+                {3u, MakeClip(2min, {811u, 812u})},
+                {4u, MakeClip(7min, {815u})},
+                {5u, MakeClip(3min, {816u})}};
+
+  helper.SetPlaylistHints(MakeProject(
+      {MakeNamed(800u, "FPL_MainFeature", 120min), MakeNamed(810u, "SF_01_GagReel", 20min),
+       MakeNamed(811u, "SF_DS_06_02_TakeOffShoes", 2min), MakeNamed(812u, "SF_DS_PlayAll", 2min),
+       MakeNamed(813u, "SF_MakingOf_PlayAll", 20min), MakeNamed(814u, "SF_03_NE_00_PlayAll", 20min),
+       MakeNamed(815u, "SF_BTS", 7min), MakeNamed(816u, "SF_CAST_01_01_ChrisPratt", 3min)}));
+
+  EXPECT_TRUE(helper.GetMovieExtraPlaylists(url, items, allTitles, -1, clips, playlists));
+
+  const std::vector<std::string> titles{"Gag Reel",
+                                        "Deleted scene: Take Off Shoes",
+                                        "Deleted scenes (play all)",
+                                        "Making Of (play all)",
+                                        "NE (play all)",
+                                        "Behind the scenes",
+                                        "Cast: Chris Pratt"};
+  ASSERT_EQ(items.Size(), static_cast<int>(titles.size()));
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    EXPECT_EQ(items[i]->GetProperty(EXTRA_TITLE_PROPERTY).asString(), titles[i]);
+    EXPECT_TRUE(items[i]->GetLabel2().starts_with(titles[i] + " - ")) << items[i]->GetLabel2();
+  }
 }

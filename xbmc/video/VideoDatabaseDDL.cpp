@@ -30,11 +30,16 @@ void CVideoDatabaseDDL::InitializeVideoVersionTypeTable(CDatabase& db)
       // Exclude removed pre-populated "quality" values
       if (id == 40405 || (id >= 40418 && id <= 40430))
         continue;
+      if (id >= VIDEO_EXTRA_NAME_ID_BEGIN && id <= VIDEO_EXTRA_NAME_ID_END)
+        continue;
 
+      const VideoAssetType assetType{id >= VIDEO_EXTRA_ID_BEGIN && id <= VIDEO_EXTRA_ID_END
+                                         ? VideoAssetType::EXTRA
+                                         : VideoAssetType::VERSION};
       const std::string& type{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id)};
       db.ExecuteQuery(db.PrepareSQL(
           "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(%i, '%s', %i, %i)", id,
-          type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));
+          type.c_str(), VideoAssetTypeOwner::SYSTEM, assetType));
     }
   }
   catch (...)
@@ -372,11 +377,19 @@ void CVideoDatabaseDDL::CreateTriggers(CDatabase& db)
                   "DELETE FROM videoversion WHERE idFile=old.idFile; "
                   "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
                   "END");
+  // The type of an extra other than a built-in one is the name of one extra, so goes with it
+  const std::string deleteUnusedExtraType{db.PrepareSQL(
+      "DELETE FROM videoversiontype WHERE id=old.idType AND itemType=%i AND owner<>%i "
+      "AND id NOT IN (SELECT idType FROM videoversion); ",
+      VideoAssetType::EXTRA, VideoAssetTypeOwner::SYSTEM)};
   db.ExecuteQuery(
       "CREATE TRIGGER delete_videoversion AFTER DELETE ON videoversion FOR EACH ROW BEGIN "
       "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
-      "DELETE FROM streamdetails WHERE idFile=old.idFile; "
-      "END");
+      "DELETE FROM streamdetails WHERE idFile=old.idFile; " +
+      deleteUnusedExtraType + "END");
+  db.ExecuteQuery("CREATE TRIGGER update_videoversion AFTER UPDATE ON videoversion FOR EACH ROW "
+                  "BEGIN " +
+                  deleteUnusedExtraType + "END");
 }
 
 /*!

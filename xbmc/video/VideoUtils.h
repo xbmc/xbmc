@@ -12,6 +12,7 @@
 #include "video/Bookmark.h"
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -19,6 +20,7 @@
 #include <vector>
 
 class CFileItem;
+class CFileItemList;
 
 namespace KODI::VIDEO::UTILS
 {
@@ -39,6 +41,38 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
  \return non-empty string if item is optical media folder, empty otherwise.
  */
 std::string GetOpticalMediaPath(const CFileItem& item);
+
+/*!
+ \brief Call back for each video in a folder of video extras, and in the folders below it.
+  A disc (BDMV or VIDEO_TS) is one video, its index.bdmv or VIDEO_TS.IFO, however many files it
+  holds. The folder may itself be a disc. A folder below it holding a .nomedia file is skipped.
+ \param folder [in] the folder of video extras
+ \param callback [in] called for each video
+ */
+void EnumerateVideoExtras(const std::string& folder,
+                          const std::function<void(const std::shared_ptr<CFileItem>&)>& callback);
+
+/*! \brief Retrieve a "fast" hash of the given directory (if available)
+ Performs a stat() on the directory, and uses modified time to create a "fast"
+ hash of the folder. If no modified time is available, the create time is used,
+ and if neither are available, an empty hash is returned.
+ In case exclude from scan expressions are present, the string array will be appended
+ to the md5 hash to ensure we're doing a re-scan whenever the user modifies those.
+ \param directory folder to hash
+ \param excludes string array of exclude expressions
+ \return the md5 hash of the folder"
+ */
+std::string GetFastHash(const std::string& directory, const std::vector<std::string>& excludes);
+
+/*! \brief As above but from an already known raw modification time */
+std::string GetFastHash(const std::vector<std::string>& excludes, int64_t time);
+
+/*! \brief Retrieve a hash of a folder's listing, from the names, sizes and dates of its items
+ \param items the listing, sorted so that the hash is the same on every platform
+ \param hash [out] the md5 hash of the listing, unchanged if it has no items
+ \return the number of videos in the listing
+ */
+int GetPathHash(const CFileItemList& items, std::string& hash);
 
 /*! \brief Check whether auto play next item is set for the media type of the given item.
   \param item [in] the item to check

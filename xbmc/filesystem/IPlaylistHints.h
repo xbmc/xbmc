@@ -46,6 +46,20 @@ constexpr std::string_view GetPlaylistRoleName(PlaylistRole role)
   }
 }
 
+/*! \brief The kind of extra a disc's name for it says it is, where it says. */
+enum class ExtraGroup : uint8_t
+{
+  NONE,
+  DELETED_SCENES,
+  MUSIC_VIDEOS,
+  SING_ALONGS,
+  TRAILERS,
+  COMMERCIALS,
+  PROMOS,
+  BEHIND_THE_SCENES,
+  CAST
+};
+
 /*! \brief What a disc says about one of its playlists. */
 struct PlaylistHint
 {
@@ -65,6 +79,15 @@ struct PlaylistHint
   //! Whether this is the plain presentation of what it holds, rather than the same content
   //! dubbed, audio described or otherwise presented differently
   bool basePresentation{true};
+
+  //! For an extra, what to call it, in words, without the disc's codes or what sets its group
+  std::string extraTitle{};
+
+  //! For an extra, the kind its name says it is
+  ExtraGroup extraGroup{ExtraGroup::NONE};
+
+  //! For an extra, whether it plays the extras of its group one after the other
+  bool playAll{false};
 };
 
 using PlaylistHintMap = std::map<unsigned int, PlaylistHint>;

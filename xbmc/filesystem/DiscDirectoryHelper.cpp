@@ -3721,6 +3721,255 @@ bool CDiscDirectoryHelper::GetMoviePlaylists(const CURL& url,
   return !items.IsEmpty();
 }
 
+namespace
+{
+struct MovieExtra
+{
+  unsigned int playlist;
+  const PlaylistHint* hint;
+  const PlaylistInformation* information;
+};
+
+//! \brief What an extra of a kind is called ("Deleted scene: {0:s}"), or what one playing all of
+//! that kind plays ("Deleted scenes"). 0 for an extra of no particular kind.
+uint32_t GetExtraGroupStringId(ExtraGroup group, bool playAll)
+{
+  struct GroupStrings
+  {
+    ExtraGroup group;
+    uint32_t extra;
+    uint32_t playAll;
+  };
+  static constexpr std::array<GroupStrings, 8> STRINGS{{
+      {ExtraGroup::DELETED_SCENES, 40700, 40500},
+      {ExtraGroup::MUSIC_VIDEOS, 40701, 40501},
+      {ExtraGroup::SING_ALONGS, 40702, 40502},
+      {ExtraGroup::TRAILERS, 40703, 40503},
+      {ExtraGroup::COMMERCIALS, 40704, 40504},
+      {ExtraGroup::PROMOS, 40705, 40505},
+      {ExtraGroup::BEHIND_THE_SCENES, 40706, 40506},
+      {ExtraGroup::CAST, 40707, 40507},
+  }};
+
+  const auto strings{std::ranges::find(STRINGS, group, &GroupStrings::group)};
+  if (strings == STRINGS.end())
+    return 0;
+  return playAll ? strings->playAll : strings->extra;
+}
+
+//! \brief What to call an extra - "Deleted scene: Terry Attack", "Making Of (play all)"
+std::string GetExtraTitle(const PlaylistHint& hint)
+{
+  const CLocalizeStrings& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  const uint32_t group{GetExtraGroupStringId(hint.extraGroup, hint.playAll)};
+  if (hint.playAll)
+  {
+    const std::string what{group != 0 ? strings.Get(group) : hint.extraTitle};
+    return what.empty() ? strings.Get(40508) : StringUtils::Format(strings.Get(40708), what);
+  }
+  if (group == 0)
+    return hint.extraTitle;
+
+  // A name that is nothing but its group (eg. SF_BTS) is known by the group
+  if (hint.extraTitle.empty())
+    return strings.Get(GetExtraGroupStringId(hint.extraGroup, true));
+  return StringUtils::Format(strings.Get(group), hint.extraTitle);
+}
+
+//! \brief Whether every clip of a playlist is played by another
+bool IsPlayedBy(const PlaylistInformation& playlist, const PlaylistInformation& other)
+{
+  return std::ranges::all_of(playlist.clips, [&other](unsigned int clip)
+                             { return std::ranges::find(other.clips, clip) != other.clips.end(); });
+}
+} // namespace
+
+bool CDiscDirectoryHelper::MoviePresentations::IsMovie(std::chrono::milliseconds duration) const
+{
+  return std::ranges::any_of(
+      movieDurations, [duration](std::chrono::milliseconds movieDuration)
+      { return std::chrono::abs(movieDuration - duration) <= MOVIE_EQUAL_LENGTH_TOLERANCE; });
+}
+
+CDiscDirectoryHelper::MoviePresentations CDiscDirectoryHelper::GetMoviePresentations(
+    const CURL& url,
+    const CFileItemList& allTitles,
+    int mainPlaylist,
+    const ClipMap& clips,
+    const PlaylistMap& playlistMap)
+{
+  // What is offered as the movie, or a version of it, is not also an extra of it. Nor is the
+  // movie presented differently (eg. Mufasa (2024), whose sing-along the heuristics took for a
+  // copy of the feature), which runs as long as it. A bonus disc can name a seconds-long
+  // placeholder as its feature, which is no movie for an extra to be a presentation of.
+  CFileItemList versions;
+  GetMoviePlaylists(url, versions, allTitles, mainPlaylist, GetTitle::MAIN, clips, playlistMap);
+  MoviePresentations movie;
+  for (const auto& version : versions)
+  {
+    const unsigned int playlist{
+        version->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asUnsignedInteger32()};
+    movie.versions.emplace(playlist);
+    if (const auto information{playlistMap.find(playlist)};
+        information != playlistMap.end() && information->second.duration >= MIN_MOVIE_DURATION)
+      movie.movieDurations.emplace_back(information->second.duration);
+  }
+  return movie;
+}
+
+bool CDiscDirectoryHelper::GetMovieTitleExtraPlaylists(
+    const CURL& url,
+    CFileItemList& items,
+    const CFileItemList& allTitles,
+    int mainPlaylist,
+    const ClipMap& clips,
+    const PlaylistMap& playlistMap,
+    const std::vector<unsigned int>& titlePlaylists)
+{
+  items.Clear();
+
+  if (titlePlaylists.empty() || playlistMap.empty())
+    return false;
+
+  const MoviePresentations movie{
+      GetMoviePresentations(url, allTitles, mainPlaylist, clips, playlistMap)};
+
+  std::vector<const PlaylistInformation*> extras;
+  for (const unsigned int playlist : titlePlaylists)
+  {
+    const auto information{playlistMap.find(playlist)};
+    if (information == playlistMap.end() || movie.versions.contains(playlist) ||
+        movie.IsMovie(information->second.duration) ||
+        information->second.duration < MIN_EXTRA_DURATION)
+      continue;
+
+    // Every extra a disc's project names has speech in a known language, while most of its logos,
+    // menus and slideshows have none
+    if (std::ranges::all_of(information->second.audioStreams, [](const AudioStreamInfo& stream)
+                            { return stream.language.IsUndetermined(); }))
+      continue;
+
+    // Titles can lead to the same content, each through a playlist of its own
+    if (std::ranges::any_of(extras,
+                            [&information](const PlaylistInformation* extra)
+                            {
+                              return extra->duration == information->second.duration &&
+                                     extra->clips == information->second.clips;
+                            }))
+      continue;
+
+    extras.emplace_back(&information->second);
+  }
+
+  for (const PlaylistInformation* extra : extras)
+  {
+    const auto item{GenerateMovieItem(url, extra->playlist, mainPlaylist, *extra, {})};
+    AddStreamDetails(m_getStreamDetails, allTitles, extra->playlist, *item);
+    items.Add(item);
+  }
+  return !items.IsEmpty();
+}
+
+bool CDiscDirectoryHelper::GetMovieExtraPlaylists(const CURL& url,
+                                                  CFileItemList& items,
+                                                  const CFileItemList& allTitles,
+                                                  int mainPlaylist,
+                                                  const ClipMap& clips,
+                                                  const PlaylistMap& playlistMap)
+{
+  items.Clear();
+
+  if (playlistMap.empty() || !m_hints || !m_hints->HasHints())
+    return false;
+
+  const MoviePresentations movie{
+      GetMoviePresentations(url, allTitles, mainPlaylist, clips, playlistMap)};
+
+  std::vector<MovieExtra> candidates;
+  for (const auto& [playlist, hint] : m_hints->GetHints())
+  {
+    const auto information{playlistMap.find(playlist)};
+    if (hint.role != PlaylistRole::SPECIAL || information == playlistMap.end())
+      continue;
+
+    if (movie.versions.contains(playlist))
+      CLog::LogF(LOGDEBUG, "Playlist {} ({}) is not an extra - it is a version of the movie",
+                 playlist, hint.name);
+    else if (movie.IsMovie(information->second.duration))
+      CLog::LogF(LOGDEBUG, "Playlist {} ({}) is not an extra - it is the movie", playlist,
+                 hint.name);
+    else if (information->second.duration < MIN_EXTRA_DURATION)
+      CLog::LogF(LOGDEBUG, "Playlist {} ({}) is not an extra - it is too short", playlist,
+                 hint.name);
+    else
+      candidates.push_back({playlist, &hint, &information->second});
+  }
+
+  // Of an extra and its copies, the plain presentation is the one kept
+  std::ranges::stable_sort(candidates, std::greater{},
+                           [](const MovieExtra& extra) { return extra.hint->basePresentation; });
+
+  std::vector<MovieExtra> extras;
+  for (const MovieExtra& candidate : candidates)
+  {
+    const auto original{std::ranges::find_if(
+        extras,
+        [&candidate](const MovieExtra& extra)
+        {
+          return !candidate.hint->basePresentation &&
+                 extra.hint->extraTitle == candidate.hint->extraTitle &&
+                 extra.hint->extraGroup == candidate.hint->extraGroup &&
+                 extra.hint->playAll == candidate.hint->playAll &&
+                 std::chrono::abs(extra.information->duration - candidate.information->duration) <=
+                     EXTRA_COPY_TOLERANCE;
+        })};
+    if (original != extras.end())
+      CLog::LogF(LOGDEBUG, "Playlist {} ({}) is not an extra - it is a copy of playlist {} ({})",
+                 candidate.playlist, candidate.hint->name, original->playlist,
+                 original->hint->name);
+    else
+      extras.emplace_back(candidate);
+  }
+
+  // A segment or slate another extra plays is part of that extra rather than one in its own right
+  std::vector<MovieExtra> wholeExtras;
+  for (const MovieExtra& extra : extras)
+  {
+    const auto whole{std::ranges::find_if(
+        extras,
+        [&extra](const MovieExtra& other)
+        {
+          return !extra.hint->basePresentation && other.hint->basePresentation &&
+                 !other.hint->playAll && IsPlayedBy(*extra.information, *other.information);
+        })};
+    if (whole != extras.end())
+      CLog::LogF(LOGDEBUG, "Playlist {} ({}) is not an extra - it is part of playlist {} ({})",
+                 extra.playlist, extra.hint->name, whole->playlist, whole->hint->name);
+    else
+      wholeExtras.emplace_back(extra);
+  }
+
+  std::ranges::sort(wholeExtras, {}, &MovieExtra::playlist);
+
+  PlaylistNames titles;
+  for (const MovieExtra& extra : wholeExtras)
+    titles.emplace(extra.playlist, GetExtraTitle(*extra.hint));
+
+  for (const MovieExtra& extra : wholeExtras)
+  {
+    const auto item{
+        GenerateMovieItem(url, extra.playlist, mainPlaylist, *extra.information, titles)};
+    item->SetProperty(EXTRA_TITLE_PROPERTY, titles.at(extra.playlist));
+    AddStreamDetails(m_getStreamDetails, allTitles, extra.playlist, *item);
+    items.Add(item);
+
+    CLog::LogF(LOGDEBUG, "Playlist {} ({}) is the extra \"{}\"", extra.playlist, extra.hint->name,
+               titles.at(extra.playlist));
+  }
+
+  return !items.IsEmpty();
+}
+
 void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
                                           CFileItemList& items,
                                           AllTitles allTitlesType,
@@ -3896,8 +4145,14 @@ void ApplyPlaylistDetails(CFileItem& item,
   }
 
   if (tag->GetAssetInfo().GetTitle().empty())
-    tag->GetAssetInfo().SetTitle(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(VIDEO_VERSION_ID_DEFAULT));
+  {
+    // An extra the disc does not name is left for whoever adds it to name
+    if (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA)
+      tag->GetAssetInfo().SetTitle(playlistItem.GetProperty(EXTRA_TITLE_PROPERTY).asString());
+    else
+      tag->GetAssetInfo().SetTitle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+          VIDEO_VERSION_ID_DEFAULT));
+  }
   if (playlistItem.HasProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST))
     item.SetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST,
                      playlistItem.GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST));
@@ -3906,17 +4161,22 @@ void ApplyPlaylistDetails(CFileItem& item,
 
 bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
                                                       CFileItemList& items,
-                                                      MenuDecision playback)
+                                                      MenuDecision playback,
+                                                      bool forPlayback)
 {
   const bool silent{playback == MenuDecision::SILENT};
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const auto action = static_cast<SimilarVideoScanAction>(
       settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION));
-  const bool returnMultipleItems{(silent && action != SimilarVideoScanAction::NONE &&
-                                  item.GetVideoContentType() == VideoDbContentType::MOVIES)};
+  const bool isExtra{item.HasVideoInfoTag() &&
+                     item.GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+  // Every extra on a disc is wanted, whether or not versions are
+  const bool returnMultipleItems{
+      silent && (isExtra || (action != SimilarVideoScanAction::NONE &&
+                             item.GetVideoContentType() == VideoDbContentType::MOVIES))};
 
   const std::string directory{
-      [&item, &playback, &returnMultipleItems]
+      [&item, &playback, &returnMultipleItems, isExtra]
       {
         const bool forceSelection{
             item.GetProperty(KODI::ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION).asBoolean(false)};
@@ -3932,9 +4192,12 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
           return URIUtils::GetBlurayEpisodePath(item.GetDynPath(), tag->m_iSeason, tag->m_iEpisode);
         }
 
-        // Playlists > 70% longest
         using enum MenuDecision;
         using enum VideoDbContentType;
+        if (isExtra && (playback == SILENT || playback == SHOW_SIMPLE_MENU))
+          return URIUtils::GetBlurayExtrasPath(item.GetDynPath());
+
+        // Playlists > 70% longest
         if (playback == SHOW_SIMPLE_MENU)
         {
           if (item.GetVideoContentType() == EPISODES || item.GetVideoContentType() == TVSHOWS)
@@ -3987,9 +4250,21 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
     directoryDuration = dirUrl.Get();
   }
 
-  // Get items
+  // Get items. A disc naming no extras is no failure, so is not logged as one. To choose from, the
+  // playlists its titles play are offered instead.
   CFileItemList sourceItems;
-  if (!GetItems(sourceItems, directoryDuration, silent))
+  const bool listingExtras{isExtra &&
+                           directory == URIUtils::GetBlurayExtrasPath(item.GetDynPath())};
+  const auto getExtras{[&sourceItems, silent](const std::string& path)
+                       {
+                         return GetDirectoryItems(path, sourceItems, CDirectory::CHints(),
+                                                  silent) &&
+                                !sourceItems.IsEmpty();
+                       }};
+  if (listingExtras
+          ? !getExtras(directoryDuration) &&
+                (silent || !getExtras(URIUtils::GetBlurayExtraTitlesPath(item.GetDynPath())))
+          : !GetItems(sourceItems, directoryDuration, silent))
   {
     // No main movie or episode playlist found
     if (silent)
@@ -4010,6 +4285,12 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
           CVariant{item.GetVideoContentType() == VideoDbContentType::EPISODES ? 25017 : 25016});
       return false;
     }
+  }
+  else if (isExtra && !silent)
+  {
+    // The disc may hold an extra it does not name
+    AddRootOptions(CURL{directory}, sourceItems, AllTitles::MOVIES,
+                   AddMenuAndAllTitlesOptions::ADD_ALL_TITLES);
   }
 
   // Select item
@@ -4039,6 +4320,15 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
         if (item.GetVideoContentType() == VideoDbContentType::EPISODES ||
             item.GetVideoContentType() == VideoDbContentType::TVSHOWS)
           sourceItems.Sort(SortBy::TIME, SortOrder::DESCENDING);
+
+        if (!forPlayback)
+        {
+          for (int i = sourceItems.Size() - 1; i >= 0; --i)
+          {
+            if (URIUtils::IsBlurayMenuPath(sourceItems[i]->GetDynPath()))
+              sourceItems.Remove(i);
+          }
+        }
 
         LabelUsedPlaylists(sourceItems, usedPlaylists);
 

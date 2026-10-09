@@ -1433,9 +1433,27 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE `sets` ADD strSortSet TEXT");
   }
+
+  if (iVersion < 151)
+  {
+    constexpr int VideoAssetType_EXTRA = 2;
+    constexpr int VideoAssetTypeOwner_SYSTEM = 0;
+
+    // The kinds of video extra are built-in types of extras, where the rows were empty versions
+    for (int id = 40500; id <= 40699; ++id)
+    {
+      const std::string& type{CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id)};
+      m_pDS->exec(PrepareSQL(
+          "UPDATE videoversiontype SET name = '%s', owner = %i, itemType = %i WHERE id = %i",
+          type.c_str(), VideoAssetTypeOwner_SYSTEM, VideoAssetType_EXTRA, id));
+    }
+
+    // An upgrade from before v123 named these, but what an extra of a kind is called is no type
+    m_pDS->exec("UPDATE videoversiontype SET name = '' WHERE id BETWEEN 40700 AND 40799");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 150;
+  return 151;
 }

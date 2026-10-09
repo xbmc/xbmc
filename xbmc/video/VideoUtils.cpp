@@ -10,10 +10,12 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "InfoScanner.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -23,6 +25,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/ArtUtils.h"
+#include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -30,6 +33,7 @@
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
@@ -161,6 +165,116 @@ std::string GetOpticalMediaPath(const CFileItem& item)
     }
   }
   return std::string{};
+}
+
+void EnumerateVideoExtras(const std::string& folder,
+                          const std::function<void(const std::shared_ptr<CFileItem>&)>& callback)
+{
+  if (const std::string disc{GetOpticalMediaPath(CFileItem{folder, true})}; !disc.empty())
+  {
+    callback(std::make_shared<CFileItem>(disc, false));
+    return;
+  }
+
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(
+          folder, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+          XFILE::DIR_FLAG_DEFAULTS))
+    return;
+
+  for (const auto& item : items)
+  {
+    if (!item->IsFolder())
+      callback(item);
+  }
+
+  for (const auto& item : items)
+  {
+    if (item->IsFolder() && !CInfoScanner::HasNoMedia(item->GetPath()))
+      EnumerateVideoExtras(item->GetPath(), callback);
+  }
+}
+
+std::string GetFastHash(const std::string& directory, const std::vector<std::string>& excludes)
+{
+  struct __stat64 buffer;
+  if (XFILE::CFile::Stat(directory, &buffer) == 0)
+  {
+    int64_t time = buffer.st_mtime;
+    if (!time)
+      time = buffer.st_ctime;
+    if (time)
+      return GetFastHash(excludes, time);
+  }
+  return "";
+}
+
+std::string GetFastHash(const std::vector<std::string>& excludes, int64_t time)
+{
+  KODI::UTILITY::CDigest digest{KODI::UTILITY::CDigest::Type::MD5};
+
+  if (!excludes.empty())
+    digest.Update(StringUtils::Join(excludes, "|"));
+
+  digest.Update((unsigned char*)&time, sizeof(time));
+  return digest.Finalize();
+}
+
+int GetPathHash(const CFileItemList& items, std::string& hash)
+{
+  // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
+  if (0 == items.Size())
+    return 0;
+  KODI::UTILITY::CDigest digest{KODI::UTILITY::CDigest::Type::MD5};
+  int count = 0;
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    const CFileItemPtr pItem = items[i];
+    digest.Update(pItem->GetPath());
+    if (pItem->IsPlugin())
+    {
+      // allow plugin to calculate hash itself using strings rather than binary data for size and date
+      // according to ListItem.setInfo() documentation date format should be "d.m.Y"
+      const int64_t size{pItem->GetSize()};
+      if (size)
+        digest.Update(std::to_string(size));
+
+      const CDateTime& dateTime{pItem->GetDateTime()};
+      if (dateTime.IsValid())
+      {
+        digest.Update(StringUtils::Format("{:02}.{:02}.{:04}", dateTime.GetDay(),
+                                          dateTime.GetMonth(), dateTime.GetYear()));
+      }
+    }
+    else
+    {
+      // linux and windows platform don't follow the same output format
+      // (linux return a zero value for milliseconds member).
+      // for consistency, use less precise format instead which discard
+      // milliseconds value.
+      // Unless a modification occur during the 1 second window when
+      // kodi hash and update this particular file, we are safe.
+      if (const std::string stackParts{pItem->GetProperty(PROPERTY_STACK_DIGEST).asString()};
+          !stackParts.empty())
+      {
+        // add a digest of every part (calculated in Stack())
+        digest.Update(stackParts);
+      }
+      else
+      {
+        const int64_t size{pItem->GetSize()};
+        digest.Update(&size, sizeof(size));
+
+        time_t tt{};
+        pItem->GetDateTime().GetAsTime(tt);
+        digest.Update(&tt, sizeof(tt));
+      }
+    }
+    if (IsVideo(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
+      count++;
+  }
+  hash = digest.Finalize();
+  return count;
 }
 
 bool IsAutoPlayNextItem(const CFileItem& item)
