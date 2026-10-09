@@ -321,7 +321,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
   }
 
   if (VIDEO::IsVideo(*item) && item->HasVideoInfoTag() &&
-      item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
+      item->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::MUSIC_VIDEO)
   { // Music video on a mixed current playlist or navigation by music > music video > artist > video
     CGUIDialogVideoInfo::ShowFor(*item);
     return;
@@ -334,10 +334,18 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
   }
 
   // Match visibility test of CMusicInfo::IsVisible
-  if (item->HasMusicInfoTag() && (item->GetMusicInfoTag()->GetType() == MediaTypeSong ||
-    item->GetMusicInfoTag()->GetType() == MediaTypeAlbum ||
-    item->GetMusicInfoTag()->GetType() == MediaTypeArtist))
-    CGUIDialogMusicInfo::ShowFor(item.get());
+  if (!item->HasMusicInfoTag())
+    return;
+  switch (item->GetMusicInfoTag()->GetMediaType())
+  {
+    case MEDIA::TYPE::SONG:
+    case MEDIA::TYPE::ALBUM:
+    case MEDIA::TYPE::ARTIST:
+      CGUIDialogMusicInfo::ShowFor(item.get());
+      break;
+    default:
+      break;
+  }
 }
 
 void CGUIWindowMusicBase::RefreshContent(const std::string& strContent)
@@ -830,9 +838,9 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     }
     if (artfound)
     {
-      std::string dirType = MediaTypeArtist;
+      std::string dirType = NameOf(MEDIA::TYPE::ARTIST);
       if (params.GetAlbumId() > 0)
-        dirType = MediaTypeAlbum;
+        dirType = NameOf(MEDIA::TYPE::ALBUM);
       KODI::ART::Artwork artmap;
       for (auto artitem : art)
       {
@@ -843,7 +851,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
           artname = artitem.mediaType + "." + artitem.artType;
         else
         {
-          if (dirType == MediaTypeAlbum)
+          if (dirType == NameOf(MEDIA::TYPE::ALBUM))
             StringUtils::Replace(artitem.prefix, "albumartist", "artist");
           artname = artitem.prefix + "." + artitem.artType;
         }

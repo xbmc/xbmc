@@ -1149,7 +1149,7 @@ bool CApplication::OnAction(const CAction &action)
       {
         db.SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,
                               m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating,
-                              m_itemCurrentFile->GetVideoInfoTag()->m_type);
+                              m_itemCurrentFile->GetVideoInfoTag()->GetMediaType());
         db.Close();
       }
       // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)

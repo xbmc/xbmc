@@ -368,7 +368,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
         }
 
         // all items apart from songs (artists, albums, etc) are folders
-        if (!item->HasMusicInfoTag() || item->GetMusicInfoTag()->GetType() != MediaTypeSong)
+        if (!item->HasMusicInfoTag() || item->GetMusicInfoTag()->GetMediaType() != KODI::MEDIA::TYPE::SONG)
         {
           item->SetFolder(true);
         }
@@ -425,8 +425,8 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
           }
         }
 
-        if (item->GetVideoInfoTag()->m_type == MediaTypeTvShow ||
-            item->GetVideoInfoTag()->m_type == MediaTypeSeason)
+        if (item->GetVideoInfoTag()->GetMediaType() == KODI::MEDIA::TYPE::TV_SHOW ||
+            item->GetVideoInfoTag()->GetMediaType() == KODI::MEDIA::TYPE::SEASON)
         {
           // for tvshows and seasons, iEpisode and playCount are
           // invalid
@@ -555,7 +555,7 @@ void CUPnPServer::Announce(AnnouncementFlag flag,
     // as we don't differentiate 'updates' from 'adds' in RPC interface
     if (flag == VideoLibrary)
     {
-      if (item_type == MediaTypeEpisode)
+      if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::EPISODE))
       {
         CVideoDatabase db;
         if (!db.Open())
@@ -567,23 +567,23 @@ void CUPnPServer::Announce(AnnouncementFlag flag,
                                             season_id, show_id));
         UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES);
       }
-      else if (item_type == MediaTypeTvShow)
+      else if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::TV_SHOW))
       {
         UpdateContainer(LIBRARY::TVSHOW_TITLES);
         UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES);
       }
-      else if (item_type == MediaTypeMovie)
+      else if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE))
       {
         UpdateContainer(LIBRARY::MOVIE_TITLES);
         UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES);
       }
-      else if (item_type == MediaTypeMusicVideo)
+      else if (item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MUSIC_VIDEO))
       {
         UpdateContainer(LIBRARY::MUSICVIDEO_TITLES);
         UpdateContainer(VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS);
       }
     }
-    else if (flag == AudioLibrary && item_type == MediaTypeSong)
+    else if (flag == AudioLibrary && item_type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::SONG))
     {
       // we also update the 'songs' container is maybe a performance drop too
       // high? would need to check if slow clients even cache at all anyway

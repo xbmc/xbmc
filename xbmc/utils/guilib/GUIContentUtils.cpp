@@ -23,15 +23,23 @@ bool CGUIContentUtils::HasInfoForItem(const CFileItem& item)
 {
   if (item.HasVideoInfoTag() && !item.HasPVRRecordingInfoTag())
   {
-    auto mediaType = item.GetVideoInfoTag()->m_type;
-    return (mediaType == MediaTypeMovie || mediaType == MediaTypeTvShow ||
-            mediaType == MediaTypeSeason || mediaType == MediaTypeEpisode ||
-            mediaType == MediaTypeVideo || mediaType == MediaTypeVideoCollection ||
-            mediaType == MediaTypeMusicVideo);
+    switch (item.GetVideoInfoTag()->GetMediaType())
+    {
+      case KODI::MEDIA::TYPE::VIDEO:
+      case KODI::MEDIA::TYPE::MOVIE:
+      case KODI::MEDIA::TYPE::VIDEO_COLLECTION:
+      case KODI::MEDIA::TYPE::TV_SHOW:
+      case KODI::MEDIA::TYPE::SEASON:
+      case KODI::MEDIA::TYPE::EPISODE:
+      case KODI::MEDIA::TYPE::MUSIC_VIDEO:
+        return true;
+      default:
+        return false;
+    }
   }
 
-  return (item.HasMusicInfoTag() || item.HasAddonInfo() ||
-          CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().HasInfoForItem(item));
+  return item.HasMusicInfoTag() || item.HasAddonInfo() ||
+         CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().HasInfoForItem(item);
 }
 
 bool CGUIContentUtils::ShowInfoForItem(const CFileItem& item)

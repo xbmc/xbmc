@@ -109,7 +109,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
         for (int i = 1; i < items.Size(); i++)
         {
           if (items[i]->HasVideoInfoTag() &&
-              items[i]->GetVideoInfoTag()->m_type == MediaTypeSeason &&
+              items[i]->GetVideoInfoTag()->GetMediaType() == KODI::MEDIA::TYPE::SEASON &&
               items[i]->GetVideoInfoTag()->m_iSeason > 0)
           {
             *pItem->GetVideoInfoTag() = *items[i]->GetVideoInfoTag();
@@ -129,7 +129,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
         pItem->GetVideoInfoTag()->m_iDbId = db.GetSeasonId(pItem->GetVideoInfoTag()->m_iIdShow, -1);
         db.Close();
       }
-      pItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
+      pItem->GetVideoInfoTag()->SetMediaType(KODI::MEDIA::TYPE::SEASON);
   }
   break;
   case NodeType::MUSICVIDEOS_ALBUM:

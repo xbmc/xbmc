@@ -180,7 +180,7 @@ protected:
   \param iArtLevel [in] art level
   \return vector of art types that are to be fetched during scanning
   */
-  std::vector<CVariant> GetArtWhitelist(const MediaType& mediaType, int iArtLevel);
+  std::vector<CVariant> GetArtWhitelist(KODI::MEDIA::TYPE mediaType, int iArtLevel);
 
   /*! \brief Add extra local artwork for albums and artists
   This common utility scans the given folder for local (non-thumb) art.
@@ -192,7 +192,7 @@ protected:
   \return true when art is added
   */
   bool AddLocalArtwork(std::map<std::string, std::string>& art,
-                       const std::string& mediaType,
+                       KODI::MEDIA::TYPE mediaType,
                        const std::string& mediaName,
                        const std::string& artfolder,
                        int discnum = 0);
@@ -207,7 +207,7 @@ protected:
   \return true when art is added
   */
   bool AddRemoteArtwork(std::map<std::string, std::string>& art,
-                        const std::string& mediaType,
+                        KODI::MEDIA::TYPE mediaType,
                         const CScraperUrl& thumbURL);
 
   /*! \brief Add art for an artist

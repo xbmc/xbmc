@@ -17,8 +17,10 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
+#include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Artwork.h"
+#include "utils/DatabaseUtils.h"
 #include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -422,6 +424,27 @@ TEST_F(TestVideoDatabase, ATvShowDirectorFoundBySearchListsTheirShows)
   EXPECT_EQ(idShow, shows[0]->GetVideoInfoTag()->m_iDbId);
 }
 
+TEST_F(TestVideoDatabase, ASmartPlaylistGenreRuleFindsAMovieOfThatGenre)
+{
+  CVideoInfoTag drama{Tag("/videos/drama.mkv")};
+  drama.SetGenre({"Drama"});
+  const int idMovie{m_db.SetDetailsForMovie(drama, KODI::ART::Artwork{})};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_GT(AddMovie("/videos/other.mkv"), 0);
+
+  KODI::PLAYLIST::CSmartPlaylistRule rule;
+  rule.m_field = static_cast<int>(Field::GENRE);
+  rule.m_operator = CDatabaseQueryRule::SearchOperator::OPERATOR_EQUALS;
+  rule.m_parameter = {"Drama"};
+  const std::string where{rule.GetWhereClause(m_db, "movies")};
+  EXPECT_NE(std::string::npos, where.find("genre_link.media_type = 'movie'")) << where;
+
+  CFileItemList items;
+  ASSERT_TRUE(m_db.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter{where}, items));
+  ASSERT_EQ(1, items.Size());
+  EXPECT_EQ(idMovie, items[0]->GetVideoInfoTag()->m_iDbId);
+}
+
 TEST_F(TestVideoDatabase, GetPlayCountsListingInsideArchiveAcrossZipAndArchiveProtocols)
 {
   MarkPlayed(ArchivePath("zip", "/tv/season.zip", "e01.mkv"), 1);
@@ -496,6 +519,21 @@ TEST_F(TestVideoDatabase, GetItemsForPathReturnsArchivedMoviesWithCollapsedPaths
   EXPECT_EQ(archived, archivedItems[0]->GetPath());
   EXPECT_EQ(0, archivedItems[0]->GetVideoInfoTag()->GetPlayCount());
   EXPECT_EQ(1200.0, archivedItems[0]->GetVideoInfoTag()->GetResumePoint().timeInSeconds);
+}
+
+// The id column and the table NameOf() gives must name the same table
+TEST(TestVideoDatabaseContent, ContentNamesItsTableAndIdColumn)
+{
+  const auto check = [](VideoDbContentType content, KODI::MEDIA::TYPE type, std::string_view idColumn)
+  {
+    EXPECT_EQ(DatabaseUtils::MediaTypeFromVideoContentType(content), type);
+    EXPECT_EQ(CVideoDatabase::IdColumnOf(type), idColumn);
+  };
+  check(VideoDbContentType::MOVIES, KODI::MEDIA::TYPE::MOVIE, "idMovie");
+  check(VideoDbContentType::TVSHOWS, KODI::MEDIA::TYPE::TV_SHOW, "idShow");
+  check(VideoDbContentType::EPISODES, KODI::MEDIA::TYPE::EPISODE, "idEpisode");
+  check(VideoDbContentType::MUSICVIDEOS, KODI::MEDIA::TYPE::MUSIC_VIDEO, "idMVideo");
+  check(VideoDbContentType::MOVIE_SETS, KODI::MEDIA::TYPE::VIDEO_COLLECTION, "");
 }
 
 TEST_F(TestVideoDatabase, ToStoredPathAddsTheTrailingSeparator)

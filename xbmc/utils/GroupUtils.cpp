@@ -76,7 +76,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       CFileItemPtr pItem(
           new CFileItem((*set->second.begin())->GetVideoInfoTag()->m_set.GetTitle()));
       pItem->GetVideoInfoTag()->m_iDbId = set->first;
-      pItem->GetVideoInfoTag()->m_type = MediaTypeVideoCollection;
+      pItem->GetVideoInfoTag()->SetMediaType(MEDIA::TYPE::VIDEO_COLLECTION);
 
       std::string basePath = StringUtils::Format("{}{}/", VIDEO::DB_PATH::MOVIE_SETS, set->first);
       CVideoDbUrl videoUrl;

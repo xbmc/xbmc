@@ -244,7 +244,8 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
     return KODI::UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(fileItem);
 
   // Video version
-  if (fileItem.HasVideoInfoTag() && fileItem.GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
+  if (fileItem.HasVideoInfoTag() &&
+      fileItem.GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::VIDEO_VERSION)
     return false;
 
   // Movie set
@@ -295,7 +296,7 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   if ((VIDEO::IsVideoDb(item) && item.HasVideoInfoTag()) ||
       (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId != -1))
   {
-    if (item.GetVideoInfoTag()->m_type == MediaTypeSeason)
+    if (item.GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::SEASON)
     { // clear out the art - we're really grabbing the info on the show here
       item.ClearArt();
       item.GetVideoInfoTag()->m_iDbId = item.GetVideoInfoTag()->m_iIdShow;
@@ -409,7 +410,8 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
       if (item->IsFolder())
       {
         const CVideoInfoTag* videoTag = item->GetVideoInfoTag();
-        if (videoTag && videoTag->m_type == MediaTypeSeason && videoTag->m_iSeason != -1)
+        if (videoTag && videoTag->GetMediaType() == MEDIA::TYPE::SEASON &&
+            videoTag->m_iSeason != -1)
           bHasInfo = m_database.GetSeasonInfo(videoTag->m_iIdSeason, movieDetails);
         if (!bHasInfo)
           bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails, dbId);

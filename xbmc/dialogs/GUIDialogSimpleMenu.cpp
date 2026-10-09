@@ -38,7 +38,7 @@ namespace
 void RetypeAsVersion(CFileItem& item)
 {
   CVideoInfoTag* tag{item.GetVideoInfoTag()};
-  tag->m_type = MediaTypeVideoVersion;
+  tag->SetMediaType(MEDIA::TYPE::VIDEO_VERSION);
   tag->m_iDbId = tag->m_iFileId;
   tag->m_strTitle = tag->GetAssetInfo().GetTitle();
   item.SetTitle(tag->m_strTitle);
@@ -62,9 +62,9 @@ bool ReassignPlaylist(const CFileItem& item,
   if (item.HasVideoInfoTag())
   {
     const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-    if (tag->m_type == MediaTypeMovie) // In library view
+    if (tag->GetMediaType() == MEDIA::TYPE::MOVIE) // In library view
       assignedMovie = tag->m_iDbId;
-    else if (tag->m_type == MediaTypeVideoVersion) // From versions manager
+    else if (tag->GetMediaType() == MEDIA::TYPE::VIDEO_VERSION) // From versions manager
       assignedMovie = db.GetVideoVersionInfo(item.GetDynPath()).m_idMedia;
   }
   if (assignedMovie >= 0 &&
@@ -96,7 +96,7 @@ bool ReassignPlaylist(const CFileItem& item,
     std::string oldPath;
     int oldFile;
     bool version;
-    std::string mediaType;
+    MEDIA::TYPE mediaType;
     int idMedia;
   };
   std::vector<Displaced> displaced;
@@ -105,8 +105,8 @@ bool ReassignPlaylist(const CFileItem& item,
 
   for (const auto& it : matchingPlaylists)
   {
-    const MediaType& mediaType{it.mediaType == VideoDbContentType::EPISODES ? MediaTypeEpisode
-                                                                            : MediaTypeMovie};
+    const MEDIA::TYPE mediaType{it.mediaType == VideoDbContentType::EPISODES ? MEDIA::TYPE::EPISODE
+                                                                           : MEDIA::TYPE::MOVIE};
 
     // History belongs to the playlist (watched counts etc.), so it is not carried over.
     // An item already at the base file keeps its own, as SetFileForMedia() rewrites the row

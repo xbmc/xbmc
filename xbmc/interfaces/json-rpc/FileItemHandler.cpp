@@ -436,15 +436,15 @@ void CFileItemHandler::HandleFileItem(const char* ID,
         else if (item->HasMusicInfoTag())
         {
           std::string type = item->GetMusicInfoTag()->GetType();
-          if (type == MediaTypeAlbum || type == MediaTypeSong || type == MediaTypeArtist)
+          if (type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::ALBUM) || type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::SONG) || type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::ARTIST))
             object["type"] = type;
           else if (!item->IsFolder())
-            object["type"] = MediaTypeSong;
+            object["type"] = KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::SONG);
         }
         else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_type.empty())
         {
           std::string type = item->GetVideoInfoTag()->m_type;
-          if (type == MediaTypeMovie || type == MediaTypeTvShow || type == MediaTypeEpisode || type == MediaTypeMusicVideo)
+          if (type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE) || type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::TV_SHOW) || type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::EPISODE) || type == KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MUSIC_VIDEO))
             object["type"] = type;
         }
         else if (item->HasPictureInfoTag())

@@ -105,7 +105,7 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
   // Use song Id (not path) as called for items from either library or file view,
   // but could also be listitem with tag loaded by a script
   if (pItem->HasMusicInfoTag() &&
-      pItem->GetMusicInfoTag()->GetType() == MediaTypeSong &&
+      pItem->GetMusicInfoTag()->GetMediaType() == MEDIA::TYPE::SONG &&
       pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
     CMusicDatabase database;
