@@ -304,6 +304,7 @@ bool CPeripheralBus::HasPeripheral(const std::string& strLocation) const
 
 void CPeripheralBus::GetDirectory(const std::string& strPath, CFileItemList& items) const
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   std::unique_lock lock(m_critSection);
   for (const auto& peripheral : m_peripherals)
   {
@@ -326,16 +327,13 @@ void CPeripheralBus::GetDirectory(const std::string& strPath, CFileItemList& ite
 
     if (peripheral->GetBusType() == PERIPHERAL_BUS_CEC && !peripheral->GetSettingBool("enabled"))
       strDetails = StringUtils::Format(
-          "{}: {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(126),
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13106));
+          "{}: {}", localizeStrings.Get(126), localizeStrings.Get(13106));
 
     if (strDetails.empty())
     {
       std::string strVersion(peripheral->GetVersionInfo());
       if (!strVersion.empty())
-        strDetails = StringUtils::Format(
-            "{} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24051),
-            strVersion);
+        strDetails = StringUtils::Format("{} {}", localizeStrings.Get(24051), strVersion);
     }
 
     peripheralFile->SetProperty("version", strVersion);

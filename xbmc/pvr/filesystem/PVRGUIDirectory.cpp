@@ -145,6 +145,7 @@ namespace
 
 bool GetRootDirectory(bool bRadio, CFileItemList& results)
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   std::shared_ptr<CFileItem> item;
 
   const std::shared_ptr<const CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
@@ -155,8 +156,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   {
     item = std::make_shared<CFileItem>(
         StringUtils::Format("pvr://guide/{}/", bRadio ? "radio" : "tv"), true);
-    item->SetLabel(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19069)); // Guide
+    item->SetLabel(localizeStrings.Get(19069)); // Guide
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_GUIDE
                                                                                : WINDOW_TV_GUIDE));
     item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRGuide.png");
@@ -166,8 +166,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   // Channels
   item = std::make_shared<CFileItem>(
       bRadio ? CPVRChannelsPath::PATH_RADIO_CHANNELS : CPVRChannelsPath::PATH_TV_CHANNELS, true);
-  item->SetLabel(
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19019)); // Channels
+  item->SetLabel(localizeStrings.Get(19019)); // Channels
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_CHANNELS
                                                                              : WINDOW_TV_CHANNELS));
   item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRChannels.png");
@@ -179,8 +178,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
     item = std::make_shared<CFileItem>(bRadio ? CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS
                                               : CPVRRecordingsPath::PATH_ACTIVE_TV_RECORDINGS,
                                        true);
-    item->SetLabel(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19017)); // Recordings
+    item->SetLabel(localizeStrings.Get(19017)); // Recordings
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS));
     item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRRecordings.png");
@@ -193,8 +191,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
     item = std::make_shared<CFileItem>(bRadio ? CPVRProvidersPath::PATH_RADIO_PROVIDERS
                                               : CPVRProvidersPath::PATH_TV_PROVIDERS,
                                        true);
-    item->SetLabel(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19334)); // Providers
+    item->SetLabel(localizeStrings.Get(19334)); // Providers
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_PROVIDERS : WINDOW_TV_PROVIDERS));
     item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRProviders.png");
@@ -205,7 +202,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   // - always present, because Reminders are always available, no client support needed for this
   item = std::make_shared<CFileItem>(
       bRadio ? CPVRTimersPath::PATH_RADIO_TIMERS : CPVRTimersPath::PATH_TV_TIMERS, true);
-  item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19040)); // Timers
+  item->SetLabel(localizeStrings.Get(19040)); // Timers
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_TIMERS
                                                                              : WINDOW_TV_TIMERS));
   item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRTimers.png");
@@ -213,8 +210,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
 
   item = std::make_shared<CFileItem>(
       bRadio ? CPVRTimersPath::PATH_RADIO_TIMER_RULES : CPVRTimersPath::PATH_TV_TIMER_RULES, true);
-  item->SetLabel(
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19138)); // Timer rules
+  item->SetLabel(localizeStrings.Get(19138)); // Timer rules
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                        bRadio ? WINDOW_RADIO_TIMER_RULES : WINDOW_TV_TIMER_RULES));
   item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRTimerRules.png");
@@ -225,7 +221,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   {
     item = std::make_shared<CFileItem>(
         bRadio ? CPVREpgSearchPath::PATH_RADIO_SEARCH : CPVREpgSearchPath::PATH_TV_SEARCH, true);
-    item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(137)); // Search
+    item->SetLabel(localizeStrings.Get(137)); // Search
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
                                                                                : WINDOW_TV_SEARCH));
     item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRSearch.png");
@@ -1050,17 +1046,16 @@ unsigned int GetVisibleChannelCountForProvider(const CPVRChannelGroup& group,
 
 bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
 {
+  auto& pvrManager{CServiceBroker::GetPVRManager()};
   const CPVRProvidersPath path(m_url.GetWithoutOptions());
   if (path.IsValid())
   {
     if (path.IsProvidersRoot())
     {
-      const std::shared_ptr<const CPVRChannelGroupsContainer> groups{
-          CServiceBroker::GetPVRManager().ChannelGroups()};
-      const std::shared_ptr<const CPVRRecordings> recordings{
-          CServiceBroker::GetPVRManager().Recordings()};
+      const std::shared_ptr<const CPVRChannelGroupsContainer> groups{pvrManager.ChannelGroups()};
+      const std::shared_ptr<const CPVRRecordings> recordings{pvrManager.Recordings()};
       const std::vector<std::shared_ptr<CPVRProvider>> providers{
-          CServiceBroker::GetPVRManager().Providers()->GetProviders()};
+          pvrManager.Providers()->GetProviders()};
       for (const auto& provider : providers)
       {
         if (!groups->HasChannelForProvider(path.IsRadio(), provider->GetClientId(),
@@ -1079,8 +1074,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
     {
       // Add items for channels, groups, and recordings, if at least one matching is available.
 
-      const std::shared_ptr<const CPVRChannelGroupsContainer> groups{
-          CServiceBroker::GetPVRManager().ChannelGroups()};
+      const std::shared_ptr<const CPVRChannelGroupsContainer> groups{pvrManager.ChannelGroups()};
       const unsigned int channelCount{groups->GetChannelCountByProvider(
           path.IsRadio(), path.GetClientId(), path.GetProviderUid())};
       if (channelCount > 0)
@@ -1114,8 +1108,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         }
       }
 
-      const std::shared_ptr<const CPVRRecordings> recordings{
-          CServiceBroker::GetPVRManager().Recordings()};
+      const std::shared_ptr<const CPVRRecordings> recordings{pvrManager.Recordings()};
       const unsigned int recordingCount{recordings->GetRecordingCountByProvider(
           path.IsRadio(), path.GetClientId(), path.GetProviderUid())};
       if (recordingCount > 0)
@@ -1158,7 +1151,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
     {
       // Add all channels served by this provider.
       const std::shared_ptr<const CPVRChannelGroup> group{
-          CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio())};
+          pvrManager.ChannelGroups()->GetGroupAll(path.IsRadio())};
       if (group)
       {
         const bool checkUid{path.GetProviderUid() != PVR_PROVIDER_INVALID_UID};
@@ -1184,7 +1177,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
       // Add all recordings served by this provider.
       const bool checkUid{path.GetProviderUid() != PVR_PROVIDER_INVALID_UID};
       const std::vector<std::shared_ptr<CPVRRecording>> recordings{
-          CServiceBroker::GetPVRManager().Recordings()->GetAll()};
+          pvrManager.Recordings()->GetAll()};
       for (const auto& recording : recordings)
       {
         if (recording->IsRadio() != path.IsRadio())

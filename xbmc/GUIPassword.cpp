@@ -53,6 +53,8 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
                                   const std::string& strLabel,
                                   const std::string& strHeading)
 {
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  CMediaSourceSettings& mediaSources{CMediaSourceSettings::GetInstance()};
   const std::shared_ptr<CProfileManager> profileManager =
       CServiceBroker::GetSettingsComponent()->GetProfileManager();
   if (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
@@ -64,11 +66,9 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
     if (!g_passwordManager.bMasterUser) // Check if we are the MasterUser!
     {
       const KODI::UTILS::CLockInfo& lockInfo{pItem->GetLockInfo()};
-      if (0 != CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                   CSettings::SETTING_MASTERLOCK_MAXRETRIES) &&
+      if (0 != settings->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) &&
           lockInfo.GetBadPasswordCount() >=
-              CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                  CSettings::SETTING_MASTERLOCK_MAXRETRIES))
+              settings->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
       {
         // user previously exhausted all retries, show access denied error
         HELPERS::ShowOKDialogText(CVariant{12345}, CVariant{12346});
@@ -90,9 +90,9 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
         lockInfo.ResetBadPasswordCount();
         lockInfo.SetState(LOCK_STATE_LOCK_BUT_UNLOCKED);
         g_passwordManager.LockSource(section, strLabel, false);
-        CMediaSourceSettings::GetInstance().UpdateSource(
+        mediaSources.UpdateSource(
             section, strLabel, "badpwdcount", std::to_string(lockInfo.GetBadPasswordCount()));
-        CMediaSourceSettings::GetInstance().Save();
+        mediaSources.Save();
 
         // a mediasource has been unlocked successfully
         // => refresh favourites due to possible visibility changes
@@ -103,12 +103,11 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
       {
         // password entry failed
         KODI::UTILS::CLockInfo& lockInfo{pItem->GetLockInfo()};
-        if (0 != CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-                     CSettings::SETTING_MASTERLOCK_MAXRETRIES))
+        if (0 != settings->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
           lockInfo.IncrementBadPasswordCount();
-        CMediaSourceSettings::GetInstance().UpdateSource(
+        mediaSources.UpdateSource(
             section, strLabel, "badpwdcount", std::to_string(lockInfo.GetBadPasswordCount()));
-        CMediaSourceSettings::GetInstance().Save();
+        mediaSources.Save();
         break;
       }
     default:
@@ -426,26 +425,27 @@ bool IsSettingsWindow(int iWindowID)
 
 bool CGUIPassword::CheckMenuLock(int iWindowID)
 {
+  auto& windowManager{CServiceBroker::GetGUI()->GetWindowManager()};
   bool bCheckPW = false;
   int iSwitch = iWindowID;
 
   // check if a settings subcategory was called from other than settings window
   if (IsSettingsWindow(iWindowID))
   {
-    int iCWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    int iCWindowID = windowManager.GetActiveWindow();
     if (iCWindowID != WINDOW_SETTINGS_MENU && !IsSettingsWindow(iCWindowID))
       iSwitch = WINDOW_SETTINGS_MENU;
   }
 
   if (iWindowID == WINDOW_MUSIC_NAV)
   {
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_HOME)
+    if (windowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_MUSIC_NAV;
   }
 
   if (iWindowID == WINDOW_VIDEO_NAV)
   {
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_HOME)
+    if (windowManager.GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_VIDEO_NAV;
   }
 
@@ -561,10 +561,11 @@ void CGUIPassword::LockSources(bool lock)
 
 void CGUIPassword::RemoveSourceLocks()
 {
+  CMediaSourceSettings& mediaSources{CMediaSourceSettings::GetInstance()};
   // remove lock from all sources
   for (const MediaSection section : KODI::MEDIA::MEDIA_SECTIONS)
   {
-    std::vector<CMediaSource>& shares = CMediaSourceSettings::GetInstance().GetSources(section);
+    std::vector<CMediaSource>& shares = mediaSources.GetSources(section);
     for (std::vector<CMediaSource>::iterator it = shares.begin(); it != shares.end(); ++it)
     {
       KODI::UTILS::CLockInfo& lockInfo{it->GetLockInfo()};
@@ -574,11 +575,11 @@ void CGUIPassword::RemoveSourceLocks()
         lockInfo.SetMode(LockMode::EVERYONE);
 
         // remove locks from xml
-        CMediaSourceSettings::GetInstance().UpdateSource(section, it->strName, "lockmode", "0");
+        mediaSources.UpdateSource(section, it->strName, "lockmode", "0");
       }
     }
   }
-  CMediaSourceSettings::GetInstance().Save();
+  mediaSources.Save();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }

@@ -409,7 +409,8 @@ void CGUIWindowSlideShow::SetDirection(int direction)
 
 void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &regions)
 {
-  const RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  CWinSystemBase* const winSystem{CServiceBroker::GetWinSystem()};
+  const RESOLUTION_INFO res = winSystem->GetGfxContext().GetResInfo();
 
   // reset the screensaver if we're in a slideshow
   // (unless we are the screensaver!)
@@ -425,8 +426,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (!HasProcessed())
   {
     regions.emplace_back(CRect(
-        0.0f, 0.0f, static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()),
-        static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())));
+        0.0f, 0.0f, static_cast<float>(winSystem->GetGfxContext().GetWidth()),
+        static_cast<float>(winSystem->GetGfxContext().GetHeight())));
     MarkDirtyRegion();
   }
 
@@ -512,8 +513,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (m_bErrorMessage)
   { // hack, just mark it all
     regions.emplace_back(CRect(
-        0.0f, 0.0f, static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()),
-        static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())));
+        0.0f, 0.0f, static_cast<float>(winSystem->GetGfxContext().GetWidth()),
+        static_cast<float>(winSystem->GetGfxContext().GetHeight())));
     MarkDirtyRegion();
     return;
   }
@@ -705,7 +706,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     MarkDirtyRegion();
   }
   CGUIWindow::Process(currentTime, regions);
-  m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
+  m_renderRegion.SetRect(0, 0, (float)winSystem->GetGfxContext().GetWidth(), (float)winSystem->GetGfxContext().GetHeight());
 }
 
 void CGUIWindowSlideShow::Render()

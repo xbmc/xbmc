@@ -183,24 +183,22 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
 {
+  auto& addonMgr{CServiceBroker::GetAddonMgr()};
   if (!m_item)
     return;
 
   const auto& itemAddonInfo = m_item->GetAddonInfo();
-  bool isInstalled = CServiceBroker::GetAddonMgr().IsAddonInstalled(
+  bool isInstalled = addonMgr.IsAddonInstalled(
       itemAddonInfo->ID(), itemAddonInfo->Origin(), itemAddonInfo->Version());
-  m_addonEnabled =
-      m_localAddon && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_localAddon->ID());
-  bool canDisable =
-      isInstalled && CServiceBroker::GetAddonMgr().CanAddonBeDisabled(m_localAddon->ID());
+  m_addonEnabled = m_localAddon && !addonMgr.IsAddonDisabled(m_localAddon->ID());
+  bool canDisable = isInstalled && addonMgr.CanAddonBeDisabled(m_localAddon->ID());
   bool canInstall = !isInstalled && itemAddonInfo->LifecycleState() != AddonLifecycleState::BROKEN;
-  bool canUninstall = m_localAddon && CServiceBroker::GetAddonMgr().CanUninstall(m_localAddon);
+  bool canUninstall = m_localAddon && addonMgr.CanUninstall(m_localAddon);
 
-  bool isUpdate = (!isInstalled && CServiceBroker::GetAddonMgr().IsAddonInstalled(
+  bool isUpdate = (!isInstalled && addonMgr.IsAddonInstalled(
                                        itemAddonInfo->ID(), itemAddonInfo->Origin()));
 
-  bool showUpdateButton = m_localAddon &&
-                          CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()) &&
+  bool showUpdateButton = m_localAddon && addonMgr.IsAutoUpdateable(m_localAddon->ID()) &&
                           m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean();
 
   if (isInstalled)
@@ -253,7 +251,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_AUTOUPDATE,
                        isInstalled && autoUpdatesOn &&
-                           CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()));
+                           addonMgr.IsAutoUpdateable(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
   const bool active = m_localAddon && CAddonSystemSettings::GetInstance().IsActive(*m_localAddon);
@@ -438,15 +436,15 @@ void CGUIDialogAddonInfo::OnSelectVersion()
 
 void CGUIDialogAddonInfo::OnToggleAutoUpdates()
 {
+  auto& addonMgr{CServiceBroker::GetAddonMgr()};
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), CONTROL_BTN_AUTOUPDATE);
   if (OnMessage(msg))
   {
     bool selected = msg.GetParam1() == 1;
     if (selected)
-      CServiceBroker::GetAddonMgr().RemoveAllUpdateRulesFromList(m_localAddon->ID());
+      addonMgr.RemoveAllUpdateRulesFromList(m_localAddon->ID());
     else
-      CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
-                                                        AddonUpdateRule::USER_DISABLED_AUTO_UPDATE);
+      addonMgr.AddUpdateRuleToList(m_localAddon->ID(), AddonUpdateRule::USER_DISABLED_AUTO_UPDATE);
 
     bool showUpdateButton =
         (selected && m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean());
@@ -462,7 +460,7 @@ void CGUIDialogAddonInfo::OnToggleAutoUpdates()
       SET_CONTROL_HIDDEN(CONTROL_BTN_UPDATE);
     }
 
-    CServiceBroker::GetAddonMgr().PublishEventAutoUpdateStateChanged(m_localAddon->ID());
+    addonMgr.PublishEventAutoUpdateStateChanged(m_localAddon->ID());
   }
 }
 
@@ -663,6 +661,7 @@ void CGUIDialogAddonInfo::OnSettings() const
 
 bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint entryPoint)
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   if (entryPoint != EntryPoint::INSTALL || m_showDepDialogOnInstall)
   {
     auto pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
@@ -718,13 +717,10 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
               !CAddonRepos::IsFromOfficialRepo(infoAddon, CheckAddonPath::CHOICE_NO))
           {
             item->SetLabel2(StringUtils::Format(
-                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(messageId),
-                it.m_depInfo.versionMin.asString(),
+                localizeStrings.Get(messageId), it.m_depInfo.versionMin.asString(),
                 it.m_installed ? it.m_installed->Version().asString() : "",
                 it.m_available ? it.m_available->Version().asString() : "",
-                it.m_depInfo.optional
-                    ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24184)
-                    : ""));
+                it.m_depInfo.optional ? localizeStrings.Get(24184) : ""));
 
             item->SetArt(ART::TYPE::ICON, infoAddon->Icon());
             item->SetProperty("addon_id", it.m_depInfo.id);
@@ -735,7 +731,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
       else
       {
         auto item{std::make_shared<CFileItem>(it.m_depInfo.id)};
-        item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+        item->SetLabel2(localizeStrings.Get(
             10005)); // Not available
         items.Add(std::move(item));
       }

@@ -168,6 +168,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
                               const CGUIInfo& info,
                               std::string* fallback) const
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +368,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
     case PLAYER_PROCESS_AUDIO_LIVE_BITRATE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioLiveBitRate() /
                                         1024);
-      value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25019);
+      value += " " + localizeStrings.Get(25019);
       return true;
     case PLAYER_PROCESS_AUDIO_QUEUE_LEVEL:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetAudioQueueLevel());
@@ -378,7 +379,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value,
     case PLAYER_PROCESS_VIDEO_LIVE_BITRATE:
       value = StringUtils::Format(
           "{:.1f}", CServiceBroker::GetDataCacheCore().GetVideoLiveBitRate() / 1048576.0);
-      value += " " + CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25020);
+      value += " " + localizeStrings.Get(25020);
       return true;
     case PLAYER_PROCESS_VIDEO_QUEUE_LEVEL:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoQueueLevel());
