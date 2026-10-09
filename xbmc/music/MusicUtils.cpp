@@ -80,7 +80,7 @@ public:
   ~CSetArtJob(void) override = default;
 
   bool HasSongExtraArtChanged(const CFileItemPtr& pSongItem,
-                              const std::string& type,
+                              MEDIA::TYPE type,
                               const int itemID,
                               const CMusicDatabase& db)
   {
@@ -90,10 +90,10 @@ public:
     if (idSong <= 0)
       return false;
     bool result = false;
-    if (type == MediaTypeAlbum)
+    if (type == MEDIA::TYPE::ALBUM)
       // Update art when song is from album
       result = (itemID == pSongItem->GetMusicInfoTag()->GetAlbumId());
-    else if (type == MediaTypeArtist)
+    else if (type == MEDIA::TYPE::ARTIST)
     {
       // Update art when artist is song or album artist of the song
       if (pSongItem->HasProperty("artistid"))
@@ -130,7 +130,8 @@ public:
     int itemID = pItem->GetMusicInfoTag()->GetDatabaseId();
     if (itemID <= 0)
       return false;
-    std::string type = pItem->GetMusicInfoTag()->GetType();
+    const std::string& type = pItem->GetMusicInfoTag()->GetType();
+    const MEDIA::TYPE mediaType = pItem->GetMusicInfoTag()->GetMediaType();
     CMusicDatabase db;
     if (!db.Open())
       return false;
@@ -139,7 +140,7 @@ public:
     else
       db.RemoveArtForItem(itemID, type, m_artType);
     // Artwork changed so set datemodified field for artist, album or song
-    db.SetItemUpdated(itemID, type);
+    db.SetItemUpdated(itemID, mediaType);
 
     /* Update the art of the songs of the current music playlist.
       Song thumb is often a fallback from the album and fanart is from the artist(s).
@@ -154,7 +155,7 @@ public:
     for (int i = 0; i < playlist.size(); ++i)
     {
       CFileItemPtr songitem = playlist[i];
-      if (HasSongExtraArtChanged(songitem, type, itemID, db))
+      if (HasSongExtraArtChanged(songitem, mediaType, itemID, db))
       {
         songitem->ClearArt(); // Art gets reloaded when the current playlist is shown
         clearcache = true;
@@ -173,7 +174,7 @@ public:
     if (appPlayer->IsPlayingAudio() && g_application.CurrentFileItem().HasMusicInfoTag())
     {
       CFileItemPtr songitem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
-      if (HasSongExtraArtChanged(songitem, type, itemID, db))
+      if (HasSongExtraArtChanged(songitem, mediaType, itemID, db))
         g_application.UpdateCurrentPlayArt();
     }
 
@@ -229,7 +230,7 @@ void UpdateArtJob(const std::shared_ptr<CFileItem>& pItem,
 // Add art types required in Kodi and configured by the user
 void AddHardCodedAndExtendedArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag)
 {
-  for (const auto& artType : GetArtTypesToScan(tag.GetType()))
+  for (const auto& artType : GetArtTypesToScan(tag.GetMediaType()))
   {
     if (find(artTypes.begin(), artTypes.end(), artType) == artTypes.end())
       artTypes.push_back(artType);
@@ -269,7 +270,7 @@ void AddAvailableArtTypes(std::vector<std::string>& artTypes,
                           const CMusicInfoTag& tag,
                           CMusicDatabase& db)
 {
-  for (const auto& artType : db.GetAvailableArtTypesForItem(tag.GetDatabaseId(), tag.GetType()))
+  for (const auto& artType : db.GetAvailableArtTypesForItem(tag.GetDatabaseId(), tag.GetMediaType()))
   {
     if (find(artTypes.begin(), artTypes.end(), artType) == artTypes.end())
       artTypes.push_back(artType);
@@ -281,8 +282,8 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
   const CMusicInfoTag& tag = *musicitem.GetMusicInfoTag();
   if (tag.GetDatabaseId() < 1 || tag.GetType().empty())
     return false;
-  if (tag.GetType() != MediaTypeArtist && tag.GetType() != MediaTypeAlbum &&
-      tag.GetType() != MediaTypeSong)
+  const MEDIA::TYPE type = tag.GetMediaType();
+  if (type != MEDIA::TYPE::ARTIST && type != MEDIA::TYPE::ALBUM && type != MEDIA::TYPE::SONG)
     return false;
 
   artlist.Clear();
@@ -390,7 +391,7 @@ void UpdateSongRatingJob(const std::shared_ptr<CFileItem>& pItem, int userrating
   // Asynchronously update the song user rating in music library
   const CMusicInfoTag* tag = pItem->GetMusicInfoTag();
   CSetSongRatingJob* job;
-  if (tag && tag->GetType() == MediaTypeSong && tag->GetDatabaseId() > 0)
+  if (tag && tag->GetMediaType() == MEDIA::TYPE::SONG && tag->GetDatabaseId() > 0)
     // Use song ID when known
     job = new CSetSongRatingJob(tag->GetDatabaseId(), userrating);
   else
@@ -398,11 +399,11 @@ void UpdateSongRatingJob(const std::shared_ptr<CFileItem>& pItem, int userrating
   CServiceBroker::GetJobManager()->AddJob(job, nullptr);
 }
 
-std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType)
+std::vector<std::string> GetArtTypesToScan(MEDIA::TYPE mediaType)
 {
   std::vector<std::string> arttypes;
   // Get default types of art that are to be automatically fetched during scanning
-  if (mediaType == MediaTypeArtist)
+  if (mediaType == MEDIA::TYPE::ARTIST)
   {
     arttypes = {ART::TYPE::THUMB, ART::TYPE::FANART};
     for (auto& artType : CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
@@ -412,7 +413,7 @@ std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType)
         arttypes.emplace_back(artType.asString());
     }
   }
-  else if (mediaType == MediaTypeAlbum)
+  else if (mediaType == MEDIA::TYPE::ALBUM)
   {
     arttypes = {ART::TYPE::THUMB};
     for (auto& artType : CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
@@ -631,7 +632,7 @@ void ShowToastNotification(const CFileItem& item, int titleId)
 
   if (item.HasMusicInfoTag())
   {
-    localizedMediaType = CMediaTypes::GetCapitalLocalization(item.GetMusicInfoTag()->GetType());
+    localizedMediaType = GetCapitalLocalization(item.GetMusicInfoTag()->GetMediaType());
     title = item.GetMusicInfoTag()->GetTitle();
   }
 

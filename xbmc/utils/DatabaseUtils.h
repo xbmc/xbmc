@@ -12,7 +12,9 @@
 
 #include <map>
 #include <set>
+#include <span>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CVariant;
@@ -172,15 +174,18 @@ using DatabaseResults = std::vector<DatabaseResult>;
 class DatabaseUtils
 {
 public:
-  static MediaType MediaTypeFromVideoContentType(VideoDbContentType videoContentType);
+  static KODI::MEDIA::TYPE MediaTypeFromVideoContentType(VideoDbContentType videoContentType);
+  static VideoDbContentType VideoContentTypeFromMediaType(KODI::MEDIA::TYPE mediaType);
 
-  static std::string GetField(Field field, const MediaType &mediaType, DatabaseQueryPart queryPart);
-  static int GetField(Field field, const MediaType &mediaType);
-  static int GetFieldIndex(Field field, const MediaType &mediaType);
-  static bool GetSelectFields(const Fields &fields, const MediaType &mediaType, FieldList &selectFields);
+  static std::string GetField(Field field,
+                              KODI::MEDIA::TYPE mediaType, DatabaseQueryPart queryPart);
+  static int GetField(Field field, KODI::MEDIA::TYPE mediaType);
+  static int GetFieldIndex(Field field, KODI::MEDIA::TYPE mediaType);
+  static bool GetSelectFields(const Fields &fields,
+                              KODI::MEDIA::TYPE mediaType, FieldList &selectFields);
 
   static bool GetFieldValue(const dbiplus::field_value &fieldValue, CVariant &variantValue);
-  static bool GetDatabaseResults(const MediaType& mediaType,
+  static bool GetDatabaseResults(KODI::MEDIA::TYPE mediaType,
                                  const FieldList& fields,
                                  dbiplus::Dataset& dataset,
                                  DatabaseResults& results);
@@ -190,5 +195,29 @@ public:
   static size_t GetLimitCount(int end, int start);
 
 private:
-  static int GetField(Field field, const MediaType &mediaType, bool asIndex);
+  //! Where a field is read from in one media type's view
+  struct Column
+  {
+    Field field;
+    //! The column's name, empty for the numbered column c<number>
+    std::string_view name;
+    //! The column's number, or the index of a named column
+    int number;
+    //! The column's position in a result row, -1 for none
+    int index;
+  };
+
+  //! The columns of one media type's view
+  struct View
+  {
+    std::string_view name;
+    std::span<const Column> columns;
+
+    const Column* Find(Field field) const;
+    std::string NameOf(const Column& column) const;
+  };
+
+  //! The view of \p mediaType, nullptr for a type without one
+  static const View* ViewOf(KODI::MEDIA::TYPE mediaType);
+  static const Column* FindColumn(Field field, KODI::MEDIA::TYPE mediaType);
 };

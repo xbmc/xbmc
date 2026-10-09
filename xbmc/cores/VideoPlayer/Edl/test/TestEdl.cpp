@@ -503,7 +503,7 @@ TEST_F(TestEdl, TestMultipleEpisodeEdlProcess)
     CFileItem item;
     item.SetPath("/path/to/video.mkv");
     CVideoInfoTag* tag = item.GetVideoInfoTag();
-    tag->m_type = MediaTypeEpisode;
+    tag->SetMediaType(KODI::MEDIA::TYPE::EPISODE);
     tag->m_iIdShow = 1;
     tag->m_iFileId = 1;
     tag->m_iSeason = 1;

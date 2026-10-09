@@ -14,19 +14,17 @@
 class CMediaLibraryEvent : public CUniqueEvent
 {
 public:
-  CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, EventLevel level = EventLevel::Information);
-  CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, EventLevel level = EventLevel::Information);
-  CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level = EventLevel::Information);
-  CMediaLibraryEvent(const MediaType& mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, const CVariant& executionLabel, EventLevel level = EventLevel::Information);
+  CMediaLibraryEvent(KODI::MEDIA::TYPE mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, EventLevel level = EventLevel::Information);
+  CMediaLibraryEvent(KODI::MEDIA::TYPE mediaType, const std::string& mediaPath, const CVariant& label, const CVariant& description, const std::string& icon, const CVariant& details, EventLevel level = EventLevel::Information);
   ~CMediaLibraryEvent() override = default;
 
   const char* GetType() const override { return "MediaLibraryEvent"; }
   std::string GetExecutionLabel() const override;
 
-  bool CanExecute() const override { return !m_mediaType.empty(); }
+  bool CanExecute() const override { return m_mediaType != KODI::MEDIA::TYPE::NONE; }
   bool Execute() const override;
 
 protected:
-  MediaType m_mediaType;
+  KODI::MEDIA::TYPE m_mediaType;
   std::string m_mediaPath;
 };
