@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIComponent.h"
@@ -15,10 +14,9 @@
 #include "guilib/GUIToggleButtonControl.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/test/TestGUIStubs.h"
 #include "interfaces/legacy/Control.h"
 #include "interfaces/legacy/Window.h"
-#include "rendering/RenderSystem.h"
-#include "windowing/WinSystem.h"
 
 #include <memory>
 
@@ -31,50 +29,8 @@ constexpr int WINDOW_ID = 5000;
 constexpr int BUTTON_ID = 5001;
 constexpr int TOGGLE_ID = 5002;
 
-class CTestRenderSystem : public CRenderSystemBase
-{
-public:
-  bool InitRenderSystem() override { return true; }
-  bool DestroyRenderSystem() override { return true; }
-  bool ResetRenderSystem(int width, int height) override { return true; }
-  bool BeginRender() override { return true; }
-  bool EndRender() override { return true; }
-  void PresentRender(bool rendered, bool videoLayer) override {}
-  bool ClearBuffers(KODI::UTILS::COLOR::Color color) override { return true; }
-  bool IsExtSupported(const char* extension) const override { return false; }
-  void SetViewPort(const CRect& viewPort) override {}
-  void GetViewPort(CRect& viewPort) override {}
-  void SetScissors(const CRect& rect) override {}
-  void ResetScissors() override {}
-  void CaptureStateBlock() override {}
-  void ApplyStateBlock() override {}
-  void SetCameraPosition(const CPoint& camera,
-                         int screenWidth,
-                         int screenHeight,
-                         float stereoFactor) override
-  {
-  }
-};
-
-class CTestWinSystem : public CWinSystemBase
-{
-public:
-  CRenderSystemBase* GetRenderSystem() override { return &m_renderSystem; }
-  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override
-  {
-    return true;
-  }
-  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override { return true; }
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override
-  {
-    return true;
-  }
-  void Register(IDispResource* resource) override {}
-  void Unregister(IDispResource* resource) override {}
-
-private:
-  CTestRenderSystem m_renderSystem;
-};
+using KODI::GUILIB::TEST::CTestGUIComponent;
+using KODI::GUILIB::TEST::CTestWinSystem;
 
 class CTestGUITexture : public CGUITexture
 {
@@ -98,18 +54,6 @@ protected:
   void End() override {}
 };
 
-class CTestGUIComponent : public CGUIComponent
-{
-public:
-  CTestGUIComponent() : CGUIComponent(false)
-  {
-    m_pWindowManager = std::make_unique<CGUIWindowManager>();
-    // The window code under test dereferences it through CServiceBroker::GetGUI()
-    m_guiInfoManager = std::make_unique<CGUIInfoManager>();
-    CServiceBroker::RegisterGUI(this);
-  }
-};
-
 class TestWindowGetControl : public ::testing::Test
 {
 protected:
@@ -123,7 +67,8 @@ protected:
         [](const CRect&, KODI::UTILS::COLOR::Color, CTexture*, const CRect*, float, bool) {});
 
     CServiceBroker::RegisterWinSystem(&m_winSystem);
-    m_gui = std::make_unique<CTestGUIComponent>();
+    // The window code under test dereferences the info manager through CServiceBroker::GetGUI()
+    m_gui = std::make_unique<CTestGUIComponent>(CTestGUIComponent::InfoManager::WITH);
 
     const CTextureInfo texture;
     const CLabelInfo label;

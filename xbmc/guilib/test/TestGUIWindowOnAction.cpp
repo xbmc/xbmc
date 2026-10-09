@@ -10,10 +10,9 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIControlGroup.h"
 #include "guilib/GUIWindow.h"
+#include "guilib/test/TestGUIStubs.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "rendering/RenderSystem.h"
-#include "windowing/WinSystem.h"
 
 #include <functional>
 #include <memory>
@@ -29,50 +28,7 @@ constexpr int GROUP_ID = 5001;
 constexpr int CHILD_ID = 5002;
 constexpr int DEFAULT_CONTROL_ID = 5003;
 
-class CTestRenderSystem : public CRenderSystemBase
-{
-public:
-  bool InitRenderSystem() override { return true; }
-  bool DestroyRenderSystem() override { return true; }
-  bool ResetRenderSystem(int width, int height) override { return true; }
-  bool BeginRender() override { return true; }
-  bool EndRender() override { return true; }
-  void PresentRender(bool rendered, bool videoLayer) override {}
-  bool ClearBuffers(KODI::UTILS::COLOR::Color color) override { return true; }
-  bool IsExtSupported(const char* extension) const override { return false; }
-  void SetViewPort(const CRect& viewPort) override {}
-  void GetViewPort(CRect& viewPort) override {}
-  void SetScissors(const CRect& rect) override {}
-  void ResetScissors() override {}
-  void CaptureStateBlock() override {}
-  void ApplyStateBlock() override {}
-  void SetCameraPosition(const CPoint& camera,
-                         int screenWidth,
-                         int screenHeight,
-                         float stereoFactor) override
-  {
-  }
-};
-
-class CTestWinSystem : public CWinSystemBase
-{
-public:
-  CRenderSystemBase* GetRenderSystem() override { return &m_renderSystem; }
-  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override
-  {
-    return true;
-  }
-  bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override { return true; }
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override
-  {
-    return true;
-  }
-  void Register(IDispResource* resource) override {}
-  void Unregister(IDispResource* resource) override {}
-
-private:
-  CTestRenderSystem m_renderSystem;
-};
+using KODI::GUILIB::TEST::CTestWinSystem;
 
 class CScopedWinSystemRegistration
 {
