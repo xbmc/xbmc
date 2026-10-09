@@ -62,7 +62,9 @@ void CGLESShader::OnCompiledAndLinked()
   m_hPma = glGetUniformLocation(ProgramHandle(), "m_pma");
   m_hGUIMatrix = glGetUniformLocation(ProgramHandle(), "m_gui");
   m_hSnap = glGetUniformLocation(ProgramHandle(), "m_snap");
+  m_hQuadRect = glGetUniformLocation(ProgramHandle(), "m_quadRect");
   m_hQuadClip = glGetUniformLocation(ProgramHandle(), "m_quadClip");
+  m_hTexSwap = glGetUniformLocation(ProgramHandle(), "m_texSwap");
 
   // Vertex attributes
   m_hPos    = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
@@ -70,8 +72,6 @@ void CGLESShader::OnCompiledAndLinked()
   m_hCord0  = glGetAttribLocation(ProgramHandle(),  "m_attrcord0");
   m_hCord1  = glGetAttribLocation(ProgramHandle(),  "m_attrcord1");
   m_hAttrSnap = glGetAttribLocation(ProgramHandle(), "m_attrsnap");
-  m_hAttrGrad0 = glGetAttribLocation(ProgramHandle(), "m_attrgrad0");
-  m_hAttrGrad1 = glGetAttribLocation(ProgramHandle(), "m_attrgrad1");
 
   // It's okay to do this only one time. Textures units never change.
   glUseProgram( ProgramHandle() );
