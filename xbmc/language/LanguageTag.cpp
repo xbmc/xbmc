@@ -9,7 +9,6 @@
 #include "language/LanguageTag.h"
 
 #include "language/i18n/Iso639.h"
-#include "language/i18n/Iso639_2.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 
@@ -80,8 +79,8 @@ std::string CLanguageTag::AsIso6392T() const
     return iso6392B;
 
   // Only the languages whose two forms are spelled differently have a mapping to follow
-  if (const auto tCode = CIso639_2::BCodeToTCode(StringToLongCode(iso6392B)); tCode.has_value())
-    return LongCodeToString(*tCode);
+  if (const auto tCode = CIso639::BCodeToTCode(iso6392B); tCode.has_value())
+    return *tCode;
 
   return iso6392B;
 }

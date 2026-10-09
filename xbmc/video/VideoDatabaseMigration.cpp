@@ -1135,11 +1135,9 @@ void CVideoDatabase::UpdateTables(int iVersion)
         // ISO 639-2/B that do not have an ISO 639-1 equivalent are left alone, as they are either
         // identical to the desired ISO 639-2/T code or unrecognized values that must have come
         // from AS.xml or a language addon. There is no easy way to tell which situation applies.
-        const auto it = std::ranges::lower_bound(LanguageCodesByIso639_2b, iso6392Lower, {},
-                                                 &ISO639::iso639_2b);
-        if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == iso6392Lower)
+        if (const auto alpha2 = KODI::LANGUAGE::I18N::Alpha2OfAlpha3B(iso6392Lower))
         {
-          const auto to = std::string{it->iso639_1};
+          const auto to = std::string{*alpha2};
           m_pDS->exec(PrepareSQL("UPDATE movie SET originalLanguage='" + to +
                                  "' WHERE originalLanguage='" + from + "'"));
           m_pDS->exec(PrepareSQL("UPDATE tvshow SET originalLanguage='" + to +
