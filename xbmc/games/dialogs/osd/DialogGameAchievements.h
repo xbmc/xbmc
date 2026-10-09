@@ -58,6 +58,15 @@ private:
    */
   void RefreshList();
 
+  /*!
+   * \brief Act on the hardcore toggle
+   *
+   * Turning hardcore on restarts the game, so it is asked about first. The
+   * restart itself comes back from the add-on, which will not let a session
+   * begun in casual mode carry on into hardcore.
+   */
+  void OnHardcoreToggled();
+
   // Dialog parameters
   std::unique_ptr<CFileItemList> m_items;
   std::unique_ptr<CGUIViewControl> m_viewControl;

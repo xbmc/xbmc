@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "playlists/PlayList.h"
+#include "utils/ItemProperties.h"
 
 using namespace KODI;
 using namespace XFILE;
@@ -39,7 +40,7 @@ bool CPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   for (int i = 0; i < playlist.size(); ++i)
   {
     CFileItemPtr item = playlist[i];
-    item->SetProperty("playlistposition", i);
+    item->SetProperty(ITEM::PROPERTY::PLAYLIST_POSITION, i);
     item->SetProperty("playlisttype", static_cast<int>(playlistId));
     //item->SetProgramCount(i); // the programCount is set as items are added!
     items.Add(item);

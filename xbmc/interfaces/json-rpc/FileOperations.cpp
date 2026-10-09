@@ -25,6 +25,7 @@
 #include "utils/Artwork.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
@@ -92,7 +93,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
   {
     regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoExcludeFromListingRegExps;
     extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
-    items.SetProperty("set_videodb_details",
+    items.SetProperty(ITEM::PROPERTY::SET_VIDEODB_DETAILS,
                       CVideoLibrary::GetDetailsFromJsonParameters(parameterObject));
   }
   else if (media == "music")

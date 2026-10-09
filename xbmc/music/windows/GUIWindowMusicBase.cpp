@@ -27,6 +27,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_CDDA_RIPPER
@@ -65,6 +66,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/Artwork.h"
+#include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -286,9 +288,9 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
   ADDON::ContentType content{ADDON::ContentType::NONE};
-  if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
+  if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), MEDIA::CONTENT::ALBUMS))
     content = ADDON::ContentType::ALBUMS;
-  else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
+  else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), MEDIA::CONTENT::ARTISTS))
     content = ADDON::ContentType::ARTISTS;
   else
     return;
@@ -308,7 +310,8 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
 
   // Match visibility test of CMusicInfo::IsVisible
   if (VIDEO::IsVideoDb(*item) && item->HasVideoInfoTag() &&
-      (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
+      (item->HasProperty(ITEM::PROPERTY::ARTIST_MUSICID) ||
+       item->HasProperty(ITEM::PROPERTY::ALBUM_MUSICID)))
   {
     // Music video artist or album (navigation by music > music video > artist))
     CGUIDialogMusicInfo::ShowFor(item.get());
@@ -897,8 +900,9 @@ bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   const std::string& content = items.GetContent();
   if ((MUSIC::IsMusicDb(items) || CanContainFilter(m_strFilterPath)) &&
-      (StringUtils::EqualsNoCase(content, "artists") ||
-       StringUtils::EqualsNoCase(content, "albums") || StringUtils::EqualsNoCase(content, "songs")))
+      (StringUtils::EqualsNoCase(content, MEDIA::CONTENT::ARTISTS) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::ALBUMS) ||
+       StringUtils::EqualsNoCase(content, MEDIA::CONTENT::SONGS)))
     return true;
 
   return false;
@@ -936,7 +940,7 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
         auto choice = CGUIDialogContextMenu::Show(choices);
         if (choice == MUSIC_SELECT_ACTION_RESUME)
         {
-          (*itemIt)->SetProperty("audiobook_bookmark", bookmark);
+          (*itemIt)->SetProperty(ITEM::PROPERTY::AUDIOBOOK_BOOKMARK, bookmark);
           return CGUIMediaWindow::OnSelect(static_cast<int>(itemIt - m_vecItems->cbegin()));
         }
         else if (choice < 0)

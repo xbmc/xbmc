@@ -47,7 +47,14 @@ XBPython::XBPython()
   // Info about interesting python envvars available
   // at http://docs.python.org/using/cmdline.html#environment-variables
 
-#if !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
+#if defined(TARGET_WASM)
+  // CPython is linked statically here, so it has no install prefix to find on a
+  // real filesystem. The standard library is preloaded into the Emscripten VFS
+  // as <PYTHONHOME>/lib/pythonXY.zip, which is the zip landmark getpath() looks
+  // for; see cmake/scripts/wasm/ExtraTargets.cmake.
+  setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://xbmc").c_str(), 1);
+  CLog::Log(LOGDEBUG, "PYTHONHOME -> {}", CSpecialProtocol::TranslatePath("special://xbmc"));
+#elif !defined(TARGET_WINDOWS) && !defined(TARGET_ANDROID)
   // check if we are running as real xbmc.app or just binary
   if (!CUtil::GetFrameworksPath(true).empty())
   {

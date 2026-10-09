@@ -22,6 +22,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -244,9 +245,10 @@ void CVideoPlayActionProcessor::Play(const std::string& player)
   }
 
   item->SetProperty("playlist_type_hint", static_cast<int>(KODI::PLAYLIST::Id::TYPE_VIDEO));
-  const ContentUtils::PlayMode mode{item->GetProperty("CheckAutoPlayNextItem").asBoolean()
-                                        ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
-                                        : ContentUtils::PlayMode::PLAY_ONLY_THIS};
+  const ContentUtils::PlayMode mode{
+      item->GetProperty(ITEM::PROPERTY::CHECK_AUTOPLAY_NEXT_ITEM).asBoolean()
+          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+          : ContentUtils::PlayMode::PLAY_ONLY_THIS};
   VIDEO::UTILS::PlayItem(item, player, mode);
 }
 

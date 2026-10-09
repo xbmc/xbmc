@@ -24,6 +24,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/SortUtils.h"
 #include "utils/log.h"
@@ -426,7 +427,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
   const CViewState* viewState = CViewStateSettings::GetInstance().Get(VIEW_STATE::MUSIC_NAV_SONGS);
 
-  if (items.GetContent() == "songs" || items.GetContent() == "mixed")
+  if (items.GetContent() == MEDIA::CONTENT::SONGS || items.GetContent() == MEDIA::CONTENT::MIXED)
   {
     std::string strTrack = settings->GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
     AddSortMethod(SortBy::TRACK_NUMBER, 554,
@@ -470,7 +471,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     SetViewAsControl(
         CViewStateSettings::GetInstance().Get(VIEW_STATE::MUSIC_NAV_SONGS)->m_viewMode);
   }
-  else if (items.GetContent() == "albums")
+  else if (items.GetContent() == MEDIA::CONTENT::ALBUMS)
   {
     std::string strAlbum = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_strMusicLibraryAlbumFormat;
     if (strAlbum.empty())
