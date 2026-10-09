@@ -5,6 +5,7 @@ set(SOURCES TestPlayListASX.cpp
             TestPlayListPLS.cpp
             TestPlayListWPL.cpp
             TestPlayListXML.cpp
-            TestPlayListXSPF.cpp)
+            TestPlayListXSPF.cpp
+            TestSmartFeed.cpp)
 
 core_add_test_library(playlists_test)
