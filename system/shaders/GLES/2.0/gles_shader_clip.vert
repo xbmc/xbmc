@@ -36,7 +36,7 @@ void main()
 
   // correct texture coordinates for clipped vertices
   vec2 clipDist = m_attrpos.xy - position.xy;
-  m_cord0.xy = m_attrcord0.xy - clipDist * m_cordStep.xy;
+  m_cord0.xy = (m_attrcord0.xy * 0.5 - 0.5 - clipDist) * m_cordStep.xy;
   m_cord1.xy = m_attrcord1.xy - clipDist * m_cordStep.zw;
 
   m_colour = m_attrcol;

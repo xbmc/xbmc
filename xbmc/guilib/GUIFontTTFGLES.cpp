@@ -180,6 +180,11 @@ void CGUIFontTTFGLES::LastEnd()
 
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
+
+    const float textureSteps[4] = {1.f / static_cast<float>(m_textureWidth),
+                                   1.f / static_cast<float>(m_textureHeight), 1.f, 1.f};
+    glUniform4fv(coordStepUniformLoc, 1, textureSteps);
+
     // Store current scissor
     CGraphicContext& context = winSystem->GetGfxContext();
     CRect scissor = context.StereoCorrection(context.GetScissors());
@@ -227,11 +232,6 @@ void CGUIFontTTFGLES::LastEnd()
                 context.GetGUIScaleY()};
 
         glUniform4fv(clipUniformLoc, 1, clipBoundaries);
-
-        const float textureSteps[4] = {1.f / static_cast<float>(m_textureWidth),
-                                       1.f / static_cast<float>(m_textureHeight), 1.f, 1.f};
-
-        glUniform4fv(coordStepUniformLoc, 1, textureSteps);
       }
 
       // calculate the fractional offset to the ideal position
@@ -276,13 +276,13 @@ void CGUIFontTTFGLES::LastEnd()
 
         // Set up the offsets of the various vertex attributes within the buffer
         // object bound to GL_ARRAY_BUFFER
-        glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+        glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
                               reinterpret_cast<GLvoid*>(offset + character * sizeof(SVertex) * 4 +
                                                         offsetof(SVertex, x)));
         glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
                               reinterpret_cast<GLvoid*>(offset + character * sizeof(SVertex) * 4 +
                                                         offsetof(SVertex, r)));
-        glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+        glVertexAttribPointer(tex0Loc, 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(SVertex),
                               reinterpret_cast<GLvoid*>(offset + character * sizeof(SVertex) * 4 +
                                                         offsetof(SVertex, u)));
 
@@ -493,8 +493,8 @@ void CGUIFontTTFGLES::DestroyStaticVertexBuffers(void)
 GLuint CGUIFontTTFGLES::m_elementArrayHandle{0};
 bool CGUIFontTTFGLES::m_staticVertexBufferCreated{false};
 
-// Text runs above the largest slot get their own buffer: from about 1.5 pages on, page rounding
-// wastes less than a shared slot would.
+// Longer text runs get their own buffer, where page rounding wastes about as much as a shared slot
+// would.
 KODI::UTILS::GL::CGLBufferArena CGUIFontTTFGLES::m_vertexArena{
     {4 * CHARACTER_SIZE, 8 * CHARACTER_SIZE, 12 * CHARACTER_SIZE, 16 * CHARACTER_SIZE,
      24 * CHARACTER_SIZE, 32 * CHARACTER_SIZE, 48 * CHARACTER_SIZE},
