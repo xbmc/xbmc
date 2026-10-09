@@ -17,6 +17,7 @@
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -52,7 +53,7 @@ std::shared_ptr<CFileItem> LoadRecordingFileOrFolderItem(const CFileItem& item)
   if (URIUtils::IsPVRRecordingFileOrFolder(item.GetPath()))
   {
     //! @todo prop misused to detect loaded state for recording folder item
-    if (item.HasPVRRecordingInfoTag() || item.HasProperty("watchedepisodes"))
+    if (item.HasPVRRecordingInfoTag() || item.HasProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES))
       return std::make_shared<CFileItem>(item); // already loaded
 
     if (item.IsFolder())

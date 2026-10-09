@@ -24,6 +24,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoLibraryQueue.h"
 
@@ -43,7 +44,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovies(const std::string &method, ITransportLay
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  if (!videoUrl.FromString("videodb://movies/titles/"))
+  if (!videoUrl.FromString(KODI::VIDEO::DB_PATH::MOVIE_TITLES))
     return InternalError;
 
   int genreID = -1, year = -1, setID = 0;
@@ -114,7 +115,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSets(const std::string &method, ITransport
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetSetsNav("videodb://movies/sets/", items, VideoDbContentType::MOVIES))
+  if (!videodatabase.GetSetsNav(KODI::VIDEO::DB_PATH::MOVIE_SETS, items, VideoDbContentType::MOVIES))
     return InternalError;
 
   HandleFileItemList("setid", false, "sets", items, parameterObject, result);
@@ -139,7 +140,8 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSetDetails(const std::string &method, ITra
 
   // Get movies from the set
   CFileItemList items;
-  if (!videodatabase.GetMoviesNav("videodb://movies/titles/", items, -1, -1, -1, -1, -1, -1, id, -1, SortDescription(), RequiresAdditionalDetails(MediaTypeMovie, parameterObject["movies"])))
+  if (!videodatabase.GetMoviesNav(
+          KODI::VIDEO::DB_PATH::MOVIE_TITLES, items, -1, -1, -1, -1, -1, -1, id, -1, SortDescription(), RequiresAdditionalDetails(MediaTypeMovie, parameterObject["movies"])))
     return InternalError;
 
   return HandleItems("movieid", "movies", items, parameterObject["movies"], result["setdetails"], true);
@@ -157,7 +159,7 @@ JSONRPC_STATUS CVideoLibrary::GetTVShows(const std::string &method, ITransportLa
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  if (!videoUrl.FromString("videodb://tvshows/titles/"))
+  if (!videoUrl.FromString(KODI::VIDEO::DB_PATH::TVSHOW_TITLES))
     return InternalError;
 
   const CVariant &filter = parameterObject["filter"];
@@ -216,7 +218,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasons(const std::string &method, ITransportLa
 
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
 
-  std::string strPath = StringUtils::Format("videodb://tvshows/titles/{}/", tvshowID);
+  std::string strPath = StringUtils::Format("{}{}/", KODI::VIDEO::DB_PATH::TVSHOW_TITLES, tvshowID);
   CFileItemList items;
   if (!videodatabase.GetSeasonsNav(strPath, items, -1, -1, -1, -1, tvshowID, false))
     return InternalError;
@@ -257,7 +259,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const std::string &method, ITransportL
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
   int season   = (int)parameterObject["season"].asInteger();
 
-  std::string strPath = StringUtils::Format("videodb://tvshows/titles/{}/{}/", tvshowID, season);
+  std::string strPath = StringUtils::Format("{}{}/{}/", KODI::VIDEO::DB_PATH::TVSHOW_TITLES, tvshowID, season);
 
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(strPath))
@@ -319,7 +321,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const std::string &method, ITran
     tvshowid = videodatabase.GetTvShowForEpisode(id);
 
   std::string basePath =
-      StringUtils::Format("videodb://tvshows/titles/{}/{}/{}", tvshowid, infos.m_iSeason, id);
+      StringUtils::Format("{}{}/{}/{}", KODI::VIDEO::DB_PATH::TVSHOW_TITLES, tvshowid, infos.m_iSeason, id);
   pItem->SetPath(basePath);
 
   HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["properties"], result, false);
@@ -338,7 +340,7 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideos(const std::string &method, ITranspo
     return InvalidParams;
 
   CVideoDbUrl videoUrl;
-  if (!videoUrl.FromString("videodb://musicvideos/titles/"))
+  if (!videoUrl.FromString(KODI::VIDEO::DB_PATH::MUSICVIDEO_TITLES))
     return InternalError;
 
   int genreID = -1, year = -1;
@@ -397,7 +399,8 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMovies(const std::string &method, 
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMoviesNav("videodb://recentlyaddedmovies/", items, 0, RequiresAdditionalDetails(MediaTypeMovie, parameterObject)))
+  if (!videodatabase.GetRecentlyAddedMoviesNav(
+          KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MOVIES, items, 0, RequiresAdditionalDetails(MediaTypeMovie, parameterObject)))
     return InternalError;
 
   return HandleItems("movieid", "movies", items, parameterObject, result, true);
@@ -410,7 +413,8 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const std::string &method
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedEpisodesNav("videodb://recentlyaddedepisodes/", items, 0, RequiresAdditionalDetails(MediaTypeEpisode, parameterObject)))
+  if (!videodatabase.GetRecentlyAddedEpisodesNav(
+          KODI::VIDEO::DB_PATH::RECENTLY_ADDED_EPISODES, items, 0, RequiresAdditionalDetails(MediaTypeEpisode, parameterObject)))
     return InternalError;
 
   return HandleItems("episodeid", "episodes", items, parameterObject, result, true);
@@ -423,7 +427,8 @@ JSONRPC_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const std::string &met
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetRecentlyAddedMusicVideosNav("videodb://recentlyaddedmusicvideos/", items, 0, RequiresAdditionalDetails(MediaTypeMusicVideo, parameterObject)))
+  if (!videodatabase.GetRecentlyAddedMusicVideosNav(
+          KODI::VIDEO::DB_PATH::RECENTLY_ADDED_MUSICVIDEOS, items, 0, RequiresAdditionalDetails(MediaTypeMusicVideo, parameterObject)))
     return InternalError;
 
   return HandleItems("musicvideoid", "musicvideos", items, parameterObject, result, true);
@@ -437,7 +442,7 @@ JSONRPC_STATUS CVideoLibrary::GetInProgressTVShows(const std::string &method, IT
 
   CFileItemList items;
   if (!videodatabase.GetInProgressTvShowsNav(
-          "videodb://inprogresstvshows/", items,
+          KODI::VIDEO::DB_PATH::INPROGRESS_TVSHOWS, items,
           RequiresAdditionalDetails(MediaTypeTvShow, parameterObject)))
     return InternalError;
 
@@ -450,7 +455,7 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const std::string &method, ITransportLay
   StringUtils::ToLower(media);
   VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
-  std::string strPath = "videodb://";
+  std::string strPath = KODI::VIDEO::DB_PATH::ROOT;
   /* select which video content to get genres from*/
   if (media == MediaTypeMovie)
   {
@@ -491,7 +496,7 @@ JSONRPC_STATUS CVideoLibrary::GetTags(const std::string &method, ITransportLayer
   StringUtils::ToLower(media);
   VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
-  std::string strPath = "videodb://";
+  std::string strPath = KODI::VIDEO::DB_PATH::ROOT;
   /* select which video content to get tags from*/
   if (media == MediaTypeMovie)
   {

@@ -45,6 +45,7 @@
 #include "threads/IRunnable.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -662,7 +663,7 @@ std::string GetMusicDbItemPath(const CFileItem& item)
 {
   std::string path = item.GetPath();
   if (!URIUtils::IsMusicDb(path))
-    path = item.GetProperty("original_listitem_url").asString();
+    path = item.GetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL).asString();
 
   if (URIUtils::IsMusicDb(path))
     return path;
@@ -746,7 +747,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
     {
       // Add item and all its siblings to the playlist and play. Prefer musicdb path if available,
       // because it provides more information than just a plain file system path for example.
-      std::string parentPath = item->GetProperty("ParentPath").asString();
+      std::string parentPath = item->GetProperty(ITEM::PROPERTY::PARENT_PATH).asString();
       if (parentPath.empty())
       {
         std::string path = GetMusicDbItemPath(*item);
@@ -950,7 +951,7 @@ bool IsItemPlayable(const CFileItem& item)
   }
 
   if (item.IsPlugin() && MUSIC::IsAudio(item) && !IsEmptyMusicItem(item) &&
-      item.GetProperty("isplayable").asBoolean(false))
+      item.GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean(false))
   {
     return true;
   }

@@ -18,6 +18,7 @@
 #include "guilib/GUIListItem.h"
 #include "guilib/GUITexture.h"
 #include "peripherals/Peripherals.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -110,8 +111,8 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
     std::string portAddress;
     std::string peripheralLocation;
 
-    if (item->HasProperty("Addon.ID"))
-      controllerId = item->GetProperty("Addon.ID").asString();
+    if (item->HasProperty(ITEM::PROPERTY::ADDON_ID))
+      controllerId = item->GetProperty(ITEM::PROPERTY::ADDON_ID).asString();
 
     if (controllerId.empty())
       controllerId = m_controllerIdInfo.GetItemLabel(item);

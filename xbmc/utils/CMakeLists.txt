@@ -100,6 +100,7 @@ set(HEADERS ActorProtocol.h
             CPUInfo.h
             ColorUtils.h
             ComponentContainer.h
+            ContentNames.h
             ContentUtils.h
             Crc32.h
             CSSUtils.h
@@ -138,6 +139,7 @@ set(HEADERS ActorProtocol.h
             ISerializable.h
             ISortable.h
             IXmlDeserializable.h
+            ItemProperties.h
             JSONVariantParser.h
             JSONVariantWriter.h
             LabelFormatter.h

@@ -24,6 +24,7 @@
 #include "settings/dialogs/GUIDialogLibExportSettings.h"
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
@@ -406,8 +407,8 @@ void CMediaSettings::CycleWatchedMode(WatchedMode& mode)
 
 std::string CMediaSettings::GetWatchedContent(const std::string &content)
 {
-  if (content == "seasons" || content == "episodes")
-    return "tvshows";
+  if (content == MEDIA::CONTENT::SEASONS || content == MEDIA::CONTENT::EPISODES)
+    return MEDIA::CONTENT::TVSHOWS;
 
   return content;
 }

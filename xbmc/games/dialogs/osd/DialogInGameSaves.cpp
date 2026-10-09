@@ -20,6 +20,8 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
 #include "games/dialogs/DialogGameDefines.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIMessage.h"
@@ -305,6 +307,11 @@ void CDialogInGameSaves::OnLoad(CFileItem& focusedItem)
   }
   else
   {
+    // Hardcore mode explains itself with a notification, which is the whole
+    // story; an error on top of it would say the load went wrong instead
+    if (CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore())
+      return;
+
     //! @todo Remove this when support for savestate compression is added
     RETRO::CSavestateDatabase db;
     std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();

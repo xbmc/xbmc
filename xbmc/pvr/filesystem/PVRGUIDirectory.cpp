@@ -46,6 +46,8 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -456,10 +458,10 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
       item->SetLabel(strCurrent);
       item->SetLabelPreformatted(true);
       item->SetDateTime(recording->RecordingTimeAsLocalTime());
-      item->SetProperty("totalepisodes", 0);
-      item->SetProperty("watchedepisodes", 0);
-      item->SetProperty("unwatchedepisodes", 0);
-      item->SetProperty("inprogressepisodes", 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 0);
       item->SetProperty("sizeinbytes", UINT64_C(0));
 
       // Assume all folders are watched, we'll change the overlay later
@@ -473,21 +475,21 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
         item->SetDateTime(recording->RecordingTimeAsLocalTime());
     }
 
-    item->IncrementProperty("totalepisodes", 1);
+    item->IncrementProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 1);
     if (recording->GetPlayCount() == 0)
     {
       unwatchedFolders.insert(item);
-      item->IncrementProperty("unwatchedepisodes", 1);
+      item->IncrementProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 1);
     }
     else
     {
-      item->IncrementProperty("watchedepisodes", 1);
+      item->IncrementProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 1);
     }
     // Note: Calling GetResumePoint() could involve a PVR add-on backend call!
     // So we fetch the the locally cached resume point here for performance reasons.
     if (recording->GetLocalResumePoint().IsPartWay())
     {
-      item->IncrementProperty("inprogressepisodes", 1);
+      item->IncrementProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 1);
     }
     item->IncrementProperty("sizeinbytes", recording->GetSizeInBytes());
   }
@@ -516,10 +518,10 @@ bool CPVRGUIDirectory::GetRecordingsDirectoryInfo(CFileItem& item)
   if (dir.GetRecordingsDirectory(results))
   {
     item.SetLabelPreformatted(true);
-    item.SetProperty("totalepisodes", 0);
-    item.SetProperty("watchedepisodes", 0);
-    item.SetProperty("unwatchedepisodes", 0);
-    item.SetProperty("inprogressepisodes", 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 0);
 
     int64_t sizeInBytes{0};
 
@@ -533,22 +535,22 @@ bool CPVRGUIDirectory::GetRecordingsDirectoryInfo(CFileItem& item)
       if (dateTime.IsValid() || (dateTime < recording->RecordingTimeAsLocalTime()))
         item.SetDateTime(recording->RecordingTimeAsLocalTime());
 
-      item.IncrementProperty("totalepisodes", 1);
+      item.IncrementProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 1);
 
       if (recording->GetPlayCount() == 0)
-        item.IncrementProperty("unwatchedepisodes", 1);
+        item.IncrementProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 1);
       else
-        item.IncrementProperty("watchedepisodes", 1);
+        item.IncrementProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 1);
 
       if (recording->GetResumePoint().IsPartWay())
-        item.IncrementProperty("inprogressepisodes", 1);
+        item.IncrementProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 1);
 
       sizeInBytes += recording->GetSizeInBytes();
     }
 
     item.SetProperty("recordingsize", StringUtils::SizeToString(sizeInBytes));
 
-    if (item.GetProperty("unwatchedepisodes").asInteger() > 0)
+    if (item.GetProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES).asInteger() > 0)
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
     else
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
@@ -584,7 +586,8 @@ public:
       if (!recPath.IsValid())
         continue;
 
-      const auto oldInProgressEpisodes{folder->GetProperty("inprogressepisodes").asInteger(0)};
+      const auto oldInProgressEpisodes{
+          folder->GetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES).asInteger(0)};
 
       // Get all matching recordings of the current directory and sum up in-progress episodes.
       int inProgressEpisodes{0};
@@ -606,7 +609,7 @@ public:
 
       if (inProgressEpisodes != oldInProgressEpisodes)
       {
-        folder->SetProperty("inprogressepisodes", inProgressEpisodes);
+        folder->SetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, inProgressEpisodes);
         windowMgr.SendThreadMessage(
             {GUI_MSG_NOTIFY_ALL, windowMgr.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, folder});
       }
@@ -622,7 +625,7 @@ private:
 
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
 {
-  results.SetContent("recordings");
+  results.SetContent(KODI::MEDIA::CONTENT::RECORDINGS);
 
   bool bGrouped = false;
   const std::vector<std::shared_ptr<CPVRRecording>> recordings =

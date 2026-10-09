@@ -21,6 +21,14 @@
 
 using namespace KODI::SHADER;
 
+namespace
+{
+// Shaders take the frame count at medium precision on GLES, which need not
+// reach past 2^15 and on some drivers is a 16-bit float. A count past 65504
+// is then infinite, and the picture goes black after 18 minutes at 60 fps.
+constexpr uint64_t MEDIUMP_FRAME_COUNT_LIMIT = 1 << 15;
+} // namespace
+
 CShaderGLES::CShaderGLES() = default;
 
 CShaderGLES::~CShaderGLES()
@@ -316,6 +324,7 @@ CShaderGLES::UniformInputs CShaderGLES::GetInputData(uint64_t frameCount) const
 {
   if (m_frameCountMod != 0)
     frameCount %= m_frameCountMod;
+  frameCount %= MEDIUMP_FRAME_COUNT_LIMIT;
 
   const UniformInputs input = {
       {m_inputSize}, // video_size

@@ -1,0 +1,12 @@
+diff --git a/Python/sysmodule.c b/Python/sysmodule.c
+--- a/Python/sysmodule.c
++++ b/Python/sysmodule.c
+@@ -3710,6 +3710,8 @@ static PyStructSequence_Desc emscripten_info_desc = {
+     4
+ };
+ 
++EM_JS_DEPS(_Py_emscripten_runtime, "$lengthBytesUTF8,$stringToUTF8,malloc")
++
+ EM_JS(char *, _Py_emscripten_runtime, (void), {
+     var info;
+     if (typeof navigator == 'object') {

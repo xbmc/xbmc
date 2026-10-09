@@ -720,27 +720,15 @@ public:
   /////////////////////////////////////////////////
   // Art
   /////////////////////////////////////////////////
-  /*! \brief Sets art for a database item.
-   Sets a single piece of art for a database item.
-   \param mediaId the id in the media (song/artist/album) table.
-   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-   \param artType the type of art to set, e.g. "thumb", "fanart"
-   \param url the url to the art (this is the original url, not a cached url).
-   \sa GetArtForItem
-   */
-  void SetArtForItem(int mediaId,
-                     const std::string& mediaType,
-                     const std::string& artType,
-                     const std::string& url);
+  using CDatabase::GetArtForItem;
+  using CDatabase::SetArtForItem;
 
-  /*! \brief Sets art for a database item.
-   Sets multiple pieces of art for a database item.
-   \param mediaId the id in the media (song/artist/album) table.
-   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-   \param art a map of <type, url> where type is "thumb", "fanart", etc. and url is the original url of the art.
-   \sa GetArtForItem
+  /*! \brief Sets each piece of \p art for a database item, carrying on past one that fails.
+   \return false if any piece could not be set
    */
-  void SetArtForItem(int mediaId, const std::string& mediaType, const KODI::ART::Artwork& art);
+  bool SetArtForItem(int mediaId,
+                     const std::string& mediaType,
+                     const KODI::ART::Artwork& art) override;
 
   /*! \brief Fetch all related art for a database item.
   Fetches multiple pieces of art for a database item including that for related media types
@@ -766,53 +754,9 @@ public:
                      std::vector<ArtForThumbLoader>& art);
 
   /*! \brief Fetch art for a database item.
-   Fetches multiple pieces of art for a database item.
-   \param mediaId the id in the media (song/artist/album) table.
-   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-   \param art [out] a map of <type, url> where type is "thumb", "fanart", etc. and url is the original url of the art.
    \return true if art is retrieved, false if no art is found.
-   \sa SetArtForItem
    */
-  bool GetArtForItem(int mediaId, const std::string& mediaType, KODI::ART::Artwork& art);
-
-  /*! \brief Fetch art for a database item.
-   Fetches a single piece of art for a database item.
-   \param mediaId the id in the media (song/artist/album) table.
-   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-   \param artType the type of art to retrieve, eg "thumb", "fanart".
-   \return the original URL to the piece of art, if available.
-   \sa SetArtForItem
-   */
-  std::string GetArtForItem(int mediaId, const std::string& mediaType, const std::string& artType);
-
-  /*! \brief Remove art for a database item.
-  Removes  a single piece of art for a database item.
-  \param mediaId the id in the media (song/artist/album) table.
-  \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-  \param artType the type of art to remove, eg "thumb", "fanart".
-  \return true if art is removed, false if no art is found.
-  \sa RemoveArtForItem
-  */
-  bool RemoveArtForItem(int mediaId, const MediaType& mediaType, const std::string& artType);
-
-  /*! \brief Remove art for a database item.
-  Removes multiple pieces of art for a database item.
-  \param mediaId the id in the media (song/artist/album) table.
-  \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-  \param arttypes a set of types, e.g. "thumb", "fanart", etc. to be removed.
-  \return true if art is removed, false if no art is found.
-  \sa RemoveArtForItem
-  */
-  bool RemoveArtForItem(int mediaId,
-                        const MediaType& mediaType,
-                        const std::set<std::string, std::less<>>& artTypes);
-
-  /*! \brief Fetch the distinct types of art held in the database for a type of media.
-  \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-  \param artTypes [out] the types of art e.g. "thumb", "fanart", etc.
-  \return true if art is found, false if no art is found.
-  */
-  bool GetArtTypes(const MediaType& mediaType, std::vector<std::string>& artTypes);
+  bool GetArtForItem(int mediaId, const std::string& mediaType, KODI::ART::Artwork& art) override;
 
   /*! \brief Fetch the distinct types of available-but-unassigned art held in the
   database for a specific media item.

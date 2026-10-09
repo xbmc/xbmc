@@ -45,9 +45,10 @@ protected:
   void Process() override;
 
 private:
-  void ProcessID3(const unsigned char* data, unsigned int length) const;
+  void ProcessID3(const unsigned char* data, unsigned int length);
   void ProcessID3v1(const TagLib::ID3v1::Tag* tag) const;
-  void ProcessID3v2(const TagLib::ID3v2::Tag* tag) const;
+  void ProcessID3v2(const TagLib::ID3v2::Tag* tag);
+  bool ProcessID3v2Picture(const TagLib::ID3v2::FrameList& frameList);
 
   static std::vector<std::string> GetID3v2StringList(const TagLib::ID3v2::FrameList& frameList);
   static std::vector<std::string> StringListToVectorString(const TagLib::StringList& stringList);
@@ -55,4 +56,6 @@ private:
   int m_speed = DVD_PLAYSPEED_NORMAL;
   CCriticalSection m_critSection;
   CDVDMessageQueue m_messageQueue;
+  std::string m_picturePath;
+  std::string m_previousThumb;
 };

@@ -114,7 +114,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "musicdb://"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "videodb://"))
+  else if (URIUtils::IsVideoDb(realPath))
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "library://video"))
     return true;

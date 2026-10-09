@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -199,7 +200,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
 
   bool showUpdateButton = m_localAddon &&
                           CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()) &&
-                          m_item->GetProperty("Addon.HasUpdate").asBoolean();
+                          m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean();
 
   if (isInstalled)
   {
@@ -332,9 +333,10 @@ void CGUIDialogAddonInfo::OnUpdate()
 {
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& addonId = itemAddonInfo->ID();
-  const std::string& origin = m_item->GetProperty("Addon.ValidUpdateOrigin").asString();
-  const CAddonVersion& version =
-      static_cast<CAddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
+  const std::string& origin =
+      m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_ORIGIN).asString();
+  const CAddonVersion& version = static_cast<CAddonVersion>(
+      m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_VERSION).asString());
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
@@ -445,7 +447,8 @@ void CGUIDialogAddonInfo::OnToggleAutoUpdates()
       CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
                                                         AddonUpdateRule::USER_DISABLED_AUTO_UPDATE);
 
-    bool showUpdateButton = (selected && m_item->GetProperty("Addon.HasUpdate").asBoolean());
+    bool showUpdateButton =
+        (selected && m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean());
 
     if (showUpdateButton)
     {
@@ -634,7 +637,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
 
     if (CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER))
       m_item->SetProperty(
-          "Addon.Status",
+          ITEM::PROPERTY::ADDON_STATUS,
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24023)); // Disabled
   }
   else
@@ -645,7 +648,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
 
     if (CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID()))
       m_item->SetProperty(
-          "Addon.Status",
+          ITEM::PROPERTY::ADDON_STATUS,
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(305)); // Enabled
   }
 

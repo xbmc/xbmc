@@ -13,8 +13,11 @@
 #include "Interface/DemuxPacket.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/Digest.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <taglib/attachedpictureframe.h>
@@ -84,6 +87,21 @@ void CVideoPlayerAudioID3::CloseStream(bool bWaitForBuffers)
   StopThread();
 
   m_messageQueue.End();
+
+  if (!m_picturePath.empty())
+  {
+    // The stream may be reopened while the item keeps playing
+    CFileItem& item = g_application.CurrentFileItem();
+    if (item.GetArt("thumb") == m_picturePath)
+    {
+      item.SetArt("thumb", m_previousThumb);
+      if (CGUIComponent* gui = CServiceBroker::GetGUI())
+        gui->GetInfoManager().SetCurrentItem(item);
+    }
+
+    XFILE::CFile::Delete(m_picturePath);
+    m_picturePath.clear();
+  }
 }
 
 void CVideoPlayerAudioID3::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
@@ -153,7 +171,7 @@ void CVideoPlayerAudioID3::Process()
   }
 }
 
-void CVideoPlayerAudioID3::ProcessID3(const unsigned char* data, unsigned int length) const
+void CVideoPlayerAudioID3::ProcessID3(const unsigned char* data, unsigned int length)
 {
   if (data && length > 0)
   {
@@ -241,7 +259,7 @@ void CVideoPlayerAudioID3::ProcessID3v1(const ID3v1::Tag* tag) const
   }
 }
 
-void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
+void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag)
 {
   if (tag != nullptr && !tag->isEmpty())
   {
@@ -263,7 +281,7 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
 
           else if (it.first == "TPE1")
           {
-            currentMusic->SetArtist(GetID3v2StringList(it.second));
+            currentMusic->SetArtist(GetID3v2StringList(it.second), true);
             changed = true;
           }
 
@@ -308,28 +326,11 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
             changed = true;
           }
 
-          // Support for setting the cover art image via CMusicInfoTag does not currently exist,
-          // the code sample below would check for an ID3v2 "APIC" tag of the proper type and
-          // convert the information into an EmbeddedArt object instance
-          //
-          // else if (it.first == "APIC")
-          // {
-          //  // Loop through and look for the FrontCover picture frame
-          //  for (const auto& pi : it.second)
-          //  {
-          //    auto pictureFrame = dynamic_cast<ID3v2::AttachedPictureFrame*>(pi);
-          //    if (pictureFrame && pictureFrame->type() == ID3v2::AttachedPictureFrame::FrontCover)
-          //    {
-          //      EmbeddedArt coverArt(
-          //          reinterpret_cast<const uint8_t*>(pictureFrame->picture().data()),
-          //          pictureFrame->size(), pictureFrame->mimeType().to8Bit(true));
-
-          //      // Assumes "void CMusicInfoTag::SetCoverArt(const EmbeddedArt& art)" exists
-          //      currentMusic->SetCoverArt(coverArt);
-          //      changed = true;
-          //    }
-          //  }
-          // }
+          else if (it.first == "APIC")
+          {
+            if (ProcessID3v2Picture(it.second))
+              changed = true;
+          }
         }
       }
 
@@ -337,6 +338,76 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
         CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(g_application.CurrentFileItem());
     }
   }
+}
+
+bool CVideoPlayerAudioID3::ProcessID3v2Picture(const ID3v2::FrameList& frameList)
+{
+  // Prefer the front cover, otherwise use the first picture
+  const ID3v2::AttachedPictureFrame* picture = nullptr;
+  for (const auto& frame : frameList)
+  {
+    auto pictureFrame = dynamic_cast<const ID3v2::AttachedPictureFrame*>(frame);
+    if (!pictureFrame)
+      continue;
+
+    if (!picture)
+      picture = pictureFrame;
+
+    if (pictureFrame->type() == ID3v2::AttachedPictureFrame::FrontCover)
+    {
+      picture = pictureFrame;
+      break;
+    }
+  }
+
+  if (!picture || picture->picture().isEmpty())
+    return false;
+
+  // The MIME type comes from the stream, so it must not end up in the path as it is
+  const std::string mimeType = picture->mimeType().to8Bit(true);
+  std::string_view extension;
+  if (StringUtils::EqualsNoCase(mimeType, "image/jpeg") ||
+      StringUtils::EqualsNoCase(mimeType, "image/jpg"))
+    extension = "jpg";
+  else if (StringUtils::EqualsNoCase(mimeType, "image/png"))
+    extension = "png";
+  else
+    return false;
+
+  // Named by content, as the GUI keeps loaded textures by path
+  const ByteVector& data = picture->picture();
+  const std::string path =
+      StringUtils::Format("special://temp/id3-{}.{}",
+                          KODI::UTILITY::CDigest::Calculate(KODI::UTILITY::CDigest::Type::MD5,
+                                                            data.data(), data.size()),
+                          extension);
+  if (path == m_picturePath)
+    return false;
+
+  XFILE::CFile file;
+  if (!file.OpenForWrite(path, true))
+  {
+    CLog::Log(LOGERROR, "Audio ID3 tag processor - unable to write picture {}", path);
+    return false;
+  }
+
+  const bool isWritten = file.Write(data.data(), data.size()) == static_cast<ssize_t>(data.size());
+  file.Close();
+  if (!isWritten)
+  {
+    CLog::Log(LOGERROR, "Audio ID3 tag processor - unable to write picture {}", path);
+    XFILE::CFile::Delete(path);
+    return false;
+  }
+
+  if (m_picturePath.empty())
+    m_previousThumb = g_application.CurrentFileItem().GetArt("thumb");
+  else
+    XFILE::CFile::Delete(m_picturePath);
+  m_picturePath = path;
+
+  g_application.CurrentFileItem().SetArt("thumb", path);
+  return true;
 }
 
 std::vector<std::string> CVideoPlayerAudioID3::GetID3v2StringList(const ID3v2::FrameList& frameList)
