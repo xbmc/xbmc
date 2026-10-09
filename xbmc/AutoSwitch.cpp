@@ -17,6 +17,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/ItemProperties.h"
 #include "view/ViewState.h"
 
 #include <algorithm>
@@ -177,7 +178,8 @@ float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
                                 --total;
 
                               return item->HasMusicInfoTag() || item->HasVideoInfoTag() ||
-                                     item->HasPictureInfoTag() || item->HasProperty("Addon.ID");
+                                     item->HasPictureInfoTag() ||
+                                     item->HasProperty(KODI::ITEM::PROPERTY::ADDON_ID);
                             });
   return total != 0 ? count / total : 0.0f;
 }

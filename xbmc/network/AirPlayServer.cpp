@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -980,7 +981,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       location += "|User-Agent=" + userAgent;
 
       CFileItem fileToPlay(location, false);
-      fileToPlay.SetProperty("StartPercent", position*100.0f);
+      fileToPlay.SetProperty(ITEM::PROPERTY::START_PERCENT, position*100.0f);
       ServerInstance->AnnounceToClients(EVENT_LOADING);
 
       CFileItemList *l = new CFileItemList; //don't delete,

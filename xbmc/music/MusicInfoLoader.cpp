@@ -18,6 +18,7 @@
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
@@ -27,6 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
 #include "utils/ArtTypes.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -224,7 +226,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
           pItem->SetArt(ART::TYPE::THUMB, it->second[0].strThumb);
       }
       else if (it != m_songsMap.end() && it->second.size() > 1 &&
-               pItem->GetProperty("cueloadinformation").asBoolean(false))
+               pItem->GetProperty(ITEM::PROPERTY::CUE_LOAD_INFORMATION).asBoolean(false))
       {
         // Find matching song
         const auto& songs{it->second};
@@ -244,7 +246,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
 
           // Build the musicdb:// path so the item references the database entry
           pItem->SetDynPath(pItem->GetPath());
-          pItem->SetPath(StringUtils::Format("musicdb://songs/{}{}", it2->idSong,
+          pItem->SetPath(StringUtils::Format("{}{}{}", MUSIC::DB_PATH::SONGS, it2->idSong,
                                              URIUtils::GetExtension(it2->strFileName)));
         }
       }

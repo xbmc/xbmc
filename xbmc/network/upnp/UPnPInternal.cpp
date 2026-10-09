@@ -20,6 +20,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "imagefiles/ImageFileURL.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -30,11 +31,13 @@
 #include "utils/ArtTypes.h"
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/LanguageTag.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoDbPaths.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
@@ -357,8 +360,9 @@ NPT_Result PopulateObjectFromTag(CMusicInfoTag& tag,
   object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
   if (tag.GetDatabaseId() >= 0)
   {
-    object.m_ReferenceID = EncodeObjectId(StringUtils::Format(
-        "musicdb://songs/{}{}", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL())));
+    object.m_ReferenceID =
+        EncodeObjectId(StringUtils::Format("{}{}{}", MUSIC::DB_PATH::SONGS, tag.GetDatabaseId(),
+                                           URIUtils::GetExtension(tag.GetURL())));
   }
   if (object.m_ReferenceID == object.m_ObjectID)
     object.m_ReferenceID = "";
@@ -401,7 +405,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
       object.m_Title = tag.m_strTitle.c_str();
       object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
       object.m_ReferenceID =
-          EncodeObjectId(StringUtils::Format("videodb://musicvideos/titles/{}", tag.m_iDbId));
+          EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::MUSICVIDEO_TITLES, tag.m_iDbId));
     }
     else if (tag.m_type == MediaTypeMovie)
     {
@@ -409,7 +413,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
       object.m_Title = tag.m_strTitle.c_str();
       object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
       object.m_ReferenceID =
-          EncodeObjectId(StringUtils::Format("videodb://movies/titles/{}", tag.m_iDbId));
+          EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::MOVIE_TITLES, tag.m_iDbId));
     }
     else
     {
@@ -426,7 +430,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         else
           object.m_Date = tag.m_premiered.GetAsW3CDate().c_str();
         object.m_ReferenceID =
-            EncodeObjectId(StringUtils::Format("videodb://tvshows/titles/{}", tag.m_iDbId));
+            EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iDbId));
       }
       else if (tag.m_type == MediaTypeSeason)
       {
@@ -439,7 +443,8 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         else
           object.m_Date = tag.m_premiered.GetAsW3CDate().c_str();
         object.m_ReferenceID = EncodeObjectId(
-            StringUtils::Format("videodb://tvshows/titles/{}/{}", tag.m_iIdShow, tag.m_iSeason));
+            StringUtils::Format(
+            "{}{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iIdShow, tag.m_iSeason));
       }
       else
       {
@@ -452,8 +457,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         object.m_Recorded.episode_number = tag.m_iEpisode;
         object.m_Recorded.episode_season = tag.m_iSeason;
         object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
-        object.m_ReferenceID = EncodeObjectId(StringUtils::Format(
-            "videodb://tvshows/titles/{}/{}/{}", tag.m_iIdShow, tag.m_iSeason, tag.m_iDbId));
+        object.m_ReferenceID = EncodeObjectId(StringUtils::Format("{}{}/{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iIdShow, tag.m_iSeason, tag.m_iDbId));
         object.m_Date = tag.m_firstAired.GetAsW3CDate().c_str();
       }
     }
@@ -1374,7 +1378,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
   PLT_MediaItemResource resource;
 
   // store original path so we remember it
-  item.SetProperty("original_listitem_url", item.GetPath());
+  item.SetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL, item.GetPath());
   item.SetProperty("original_listitem_mime", item.GetMimeType());
 
   // get a sorted list based on our preference

@@ -78,7 +78,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
         continue;
 
       resource = std::dynamic_pointer_cast<ADDON::CResource>(resourceAddon);
-      if (resource && resource->IsAllowed(filePath))
+      if (resource && resource->CanResolve(filePath))
         break;
     }
   }
@@ -86,7 +86,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
   if (resource == NULL)
     return false;
 
-  if (!resource->IsAllowed(filePath))
+  if (!resource->CanResolve(filePath))
     return false;
 
   translatedPath = CUtil::ValidatePath(resource->GetFullPath(filePath));

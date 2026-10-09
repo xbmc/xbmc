@@ -16,6 +16,7 @@
 #include "favourites/FavouritesUtils.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/guilib/GUIBuiltinsUtils.h"
@@ -90,7 +91,7 @@ std::shared_ptr<CFileItem> ResolveFavouriteItem(const CFileItem& item)
   std::shared_ptr<CFileItem> targetItem{
       CServiceBroker::GetFavouritesService().ResolveFavourite(item)};
   if (targetItem)
-    targetItem->SetProperty("hide_add_remove_favourite", CVariant{true});
+    targetItem->SetProperty(ITEM::PROPERTY::HIDE_ADD_REMOVE_FAVOURITE, CVariant{true});
 
   return targetItem;
 }

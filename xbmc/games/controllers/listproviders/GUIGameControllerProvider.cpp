@@ -17,6 +17,7 @@
 #include "guilib/GUIFont.h"
 #include "guilib/GUIListItem.h"
 #include "utils/ArtTypes.h"
+#include "utils/ItemProperties.h"
 #include "utils/Variant.h"
 
 using namespace KODI;
@@ -144,7 +145,7 @@ void CGUIGameControllerProvider::UpdateItems()
     {
       fileItem->SetLabel(controller->Layout().Label());
       fileItem->SetPath(m_peripheralLocation);
-      fileItem->SetProperty("Addon.ID", controller->ID());
+      fileItem->SetProperty(ITEM::PROPERTY::ADDON_ID, controller->ID());
       fileItem->SetArt(ART::TYPE::ICON, controller->Layout().ImagePath());
     }
 

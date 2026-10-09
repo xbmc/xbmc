@@ -32,6 +32,7 @@
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/ISerializable.h"
+#include "utils/ItemProperties.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -183,7 +184,8 @@ bool CFileItemHandler::GetField(const std::string& field,
 
     if (field == "art")
     {
-      if (thumbLoader && !item->GetProperty("libraryartfilled").asBoolean() && !fetchedArt &&
+      if (thumbLoader && !item->GetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean() &&
+          !fetchedArt &&
           ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) ||
            (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
@@ -243,12 +245,12 @@ bool CFileItemHandler::GetField(const std::string& field,
     {
       if (item->GetVideoInfoTag()->m_iSeason < 0 && field == "season")
       {
-        result[field] = (int)item->GetProperty("totalseasons").asInteger();
+        result[field] = (int)item->GetProperty(KODI::ITEM::PROPERTY::TOTAL_SEASONS).asInteger();
         return true;
       }
       if (field == "watchedepisodes")
       {
-        result[field] = (int)item->GetProperty("watchedepisodes").asInteger();
+        result[field] = (int)item->GetProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES).asInteger();
         return true;
       }
     }

@@ -23,6 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
@@ -163,7 +164,7 @@ void FillInDefaultIcon(CFileItem& item)
     }
   }
   // Set the icon overlays (if applicable)
-  if (!item.HasOverlay() && !item.HasProperty("icon_never_overlay"))
+  if (!item.HasOverlay() && !item.HasProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY))
   {
     if (URIUtils::IsInZIP(item.GetPath()))
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
@@ -272,7 +273,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
       }
       case PLAYLIST:
       {
-        const int playlist{item.GetProperty("bluray_playlist").asInteger32(-1)};
+        const int playlist{item.GetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1)};
         if (playlist > -1)
         {
           std::string baseFile{file};

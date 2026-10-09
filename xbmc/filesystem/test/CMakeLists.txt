@@ -1,4 +1,5 @@
-set(SOURCES TestAudioBookFileDirectory.cpp
+set(SOURCES TestAddonsPaths.cpp
+            TestAudioBookFileDirectory.cpp
             TestDirectory.cpp
             TestDirectoryCache.cpp
             TestDiscDirectoryHelper.cpp

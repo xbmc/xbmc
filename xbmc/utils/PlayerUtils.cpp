@@ -13,6 +13,7 @@
 #include "application/ApplicationPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "music/MusicUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/Variant.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
@@ -28,7 +29,7 @@ bool CPlayerUtils::IsItemPlayable(const CFileItem& itemIn)
     return false;
 
   // Plugins
-  if (item.IsPlugin() && item.GetProperty("isplayable").asBoolean())
+  if (item.IsPlugin() && item.GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean())
     return true;
 
   // Music

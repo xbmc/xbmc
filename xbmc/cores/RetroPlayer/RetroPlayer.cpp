@@ -30,6 +30,7 @@
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RPStreamManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
@@ -429,6 +430,9 @@ uint64_t CRetroPlayer::GetTotalTime()
 
 void CRetroPlayer::SetSpeed(float speed)
 {
+  if (RefuseSpeedInHardcore(static_cast<double>(speed)))
+    return;
+
   if (m_playback->GetSpeed() != static_cast<double>(speed))
   {
     if (speed == 1.0f)
@@ -503,6 +507,8 @@ void CRetroPlayer::FrameMove()
 
   if (m_playbackControl)
     m_playbackControl->FrameMove();
+
+  LeaveSpeedRefusedInHardcore();
 
   if (m_processInfo)
     m_processInfo->SetPlayTimes(0, GetTime(), 0, GetTotalTime());
@@ -611,6 +617,9 @@ void CRetroPlayer::CloseOSDCallback()
 
 void CRetroPlayer::SetPlaybackSpeed(double speed)
 {
+  if (RefuseSpeedInHardcore(speed))
+    return;
+
   if (m_playback)
   {
     if (m_playback->GetSpeed() != speed)
@@ -647,6 +656,42 @@ bool CRetroPlayer::IsAutoSaveEnabled() const
 void CRetroPlayer::RequestAutosave()
 {
   m_playback->RequestAutosave();
+}
+
+bool CRetroPlayer::RefuseSpeedInHardcore(double speed) const
+{
+  if (!m_gameServices.GameSettings().GetAchievementsHardcore())
+    return false;
+
+  // Rewind runs the game backwards, so it arrives here as a negative speed
+  if (speed < 0.0)
+  {
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Refusing to rewind in hardcore mode");
+    GAME::CGameUtils::NotifyBlockedByHardcore(35309); // "Rewind"
+    return true;
+  }
+
+  if (speed > 0.0 && speed < 1.0)
+  {
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Refusing to slow down in hardcore mode");
+    GAME::CGameUtils::NotifyBlockedByHardcore(35701); // "Slow motion"
+    return true;
+  }
+
+  return false;
+}
+
+void CRetroPlayer::LeaveSpeedRefusedInHardcore()
+{
+  if (!m_playback || !m_gameServices.GameSettings().GetAchievementsHardcore())
+    return;
+
+  const double speed = m_playback->GetSpeed();
+  if (speed < 0.0 || (speed > 0.0 && speed < 1.0))
+  {
+    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Hardcore mode started, returning to normal speed");
+    SetPlaybackSpeed(1.0);
+  }
 }
 
 void CRetroPlayer::SetSpeedInternal(double speed)
@@ -691,6 +736,21 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
     if (!bStandalone)
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Loading savestate");
+
+      // RetroAchievements requires a resumed session to drop to casual: the
+      // player did not reach the state being resumed from in this session.
+      // Done before the load, which is otherwise refused while hardcore is on.
+      GAME::CGameSettings& gameSettings = m_gameServices.GameSettings();
+      if (gameSettings.GetAchievementsHardcore())
+      {
+        CLog::Log(LOGINFO, "RetroPlayer[SAVE]: Resuming from a savestate, dropping to casual mode");
+        gameSettings.SetAchievementsHardcore(false);
+
+        // "RetroAchievements", "Hardcore mode turned off. Achievements will be..."
+        const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strings.Get(35264),
+                                              strings.Get(35306));
+      }
 
       if (!LoadSavestate(savestatePath))
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to load savestate");

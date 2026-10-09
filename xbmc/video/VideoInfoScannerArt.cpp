@@ -26,6 +26,7 @@
 #include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -310,7 +311,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
       }
       else if (content == ContentType::MOVIE_VERSIONS ||
                (pItem->HasVideoVersions() &&
-                pItem->GetProperty("bluray_playlist").asInteger32(-1) > -1))
+                pItem->GetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1) > -1))
       {
         // Add playlist identifier only when there are multiple versions of the movie on the same disc
         path =

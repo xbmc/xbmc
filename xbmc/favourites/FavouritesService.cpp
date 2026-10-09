@@ -18,6 +18,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/ContentNames.h"
 #include "utils/ContentUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -157,7 +158,7 @@ void CFavouritesService::ReInit(std::string userDataFolder)
   m_userDataFolder = std::move(userDataFolder);
   m_favourites.Clear();
   m_targets.clear();
-  m_favourites.SetContent("favourites");
+  m_favourites.SetContent(MEDIA::CONTENT::FAVOURITES);
 
   std::string favourites = "special://xbmc/system/favourites.xml";
   if (CFileUtils::Exists(favourites))

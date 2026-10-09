@@ -37,6 +37,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -91,7 +92,7 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item) const
   if (!item.IsFolder() && VIDEO::UTILS::IsAutoPlayNextItem(item))
   {
     // recursively add items located in the same folder as item to play list, starting with item
-    std::string parentPath{item.GetProperty("ParentPath").asString()};
+    std::string parentPath{item.GetProperty(ITEM::PROPERTY::PARENT_PATH).asString()};
     if (parentPath.empty())
       URIUtils::GetParentPath(item.GetPath(), parentPath);
 

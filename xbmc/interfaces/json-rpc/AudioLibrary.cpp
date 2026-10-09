@@ -18,6 +18,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicDbUrl.h"
 #include "music/MusicThumbLoader.h"
 #include "music/Song.h"
@@ -103,7 +104,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://artists/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ARTISTS))
     return InternalError;
 
   bool allroles = false;
@@ -176,7 +177,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const std::string &method, ITrans
   int artistID = (int)parameterObject["artistid"].asInteger();
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://artists/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ARTISTS))
     return InternalError;
 
   CMusicDatabase musicdatabase;
@@ -213,7 +214,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://albums/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ALBUMS))
     return InternalError;
 
   if (parameterObject["includesingles"].asBoolean())
@@ -335,7 +336,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const std::string &method, ITransp
   if (!musicdatabase.GetAlbum(albumID, album, false))
     return NotFound;
 
-  std::string path = StringUtils::Format("musicdb://albums/{}/", albumID);
+  std::string path = StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::ALBUMS, albumID);
 
   CFileItemPtr albumItem;
   FillAlbumItem(album, path, albumItem);
@@ -358,7 +359,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://songs/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::SONGS))
     return InternalError;
 
   if (parameterObject["singlesonly"].asBoolean())
@@ -529,7 +530,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const std::string &method, 
   CFileItemList items;
   for (const CAlbum& album : albums)
   {
-    std::string path = StringUtils::Format("musicdb://recentlyaddedalbums/{}/", album.idAlbum);
+    std::string path =
+        StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_ADDED_ALBUMS, album.idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(album, path, item);
@@ -555,7 +557,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedSongs(const std::string &method, I
     amount = 0;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", items, (unsigned int)amount))
+  if (!musicdatabase.GetRecentlyAddedAlbumSongs(KODI::MUSIC::DB_PATH::SONGS, items,
+                                                (unsigned int)amount))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
@@ -579,7 +582,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const std::string &method,
   CFileItemList items;
   for (const CAlbum& album : albums)
   {
-    std::string path = StringUtils::Format("musicdb://recentlyplayedalbums/{}/", album.idAlbum);
+    std::string path =
+        StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_PLAYED_ALBUMS, album.idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(album, path, item);
@@ -601,7 +605,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedSongs(const std::string &method, 
     return InternalError;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyPlayedAlbumSongs("musicdb://songs/", items))
+  if (!musicdatabase.GetRecentlyPlayedAlbumSongs(KODI::MUSIC::DB_PATH::SONGS, items))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
@@ -641,7 +645,7 @@ JSONRPC_STATUS CAudioLibrary::GetRoles(const std::string &method, ITransportLaye
     return InternalError;
 
   CFileItemList items;
-  if (!musicdatabase.GetRolesNav("musicdb://songs/", items))
+  if (!musicdatabase.GetRolesNav(KODI::MUSIC::DB_PATH::SONGS, items))
     return InternalError;
 
   /* need to set strTitle in each item*/
@@ -1164,8 +1168,8 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   }
 
   if (artistID != -1 || albumID != -1 || genreID != -1)
-    success |= musicdatabase.GetSongsNav("musicdb://songs/", list, SortDescription(), genreID,
-                                         artistID, albumID);
+    success |= musicdatabase.GetSongsNav(KODI::MUSIC::DB_PATH::SONGS, list, SortDescription(),
+                                         genreID, artistID, albumID);
 
   int songID = (int)parameterObject["songid"].asInteger(-1);
   if (songID != -1)

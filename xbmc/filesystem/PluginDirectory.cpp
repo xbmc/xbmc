@@ -23,6 +23,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
@@ -148,8 +149,8 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
 
   if (success)
   { // update the play path and metadata, saving the old one as needed
-    if (!resultItem.HasProperty("original_listitem_url"))
-      resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
+    if (!resultItem.HasProperty(KODI::ITEM::PROPERTY::ORIGINAL_LISTITEM_URL))
+      resultItem.SetProperty(KODI::ITEM::PROPERTY::ORIGINAL_LISTITEM_URL, resultItem.GetPath());
     resultItem.SetDynPath(newDir.m_fileResult->GetPath());
     resultItem.SetMimeType(newDir.m_fileResult->GetMimeType());
     resultItem.SetContentLookup(newDir.m_fileResult->ContentLookup());

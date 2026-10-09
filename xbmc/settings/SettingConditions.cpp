@@ -413,6 +413,9 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_DARWIN_TVOS
   m_simpleConditions.emplace("have_tvos");
 #endif
+#ifdef TARGET_WASM
+  m_simpleConditions.emplace("have_wasm");
+#endif
 #if defined(TARGET_WINDOWS)
   m_simpleConditions.emplace("has_dx");
   m_simpleConditions.emplace("hasdxva2");

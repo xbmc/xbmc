@@ -21,6 +21,7 @@
 #include "profiles/ProfileManager.h"
 #include "utils/ArtTypes.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -63,7 +64,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         if (playlist.LoadFromXML(node) &&
             CSmartPlaylistDirectory::GetDirectory(playlist, items))
         {
-          items.SetProperty("library.filter", "true");
+          items.SetProperty(ITEM::PROPERTY::LIBRARY_FILTER, "true");
           items.SetPath(items.GetProperty("path.db").asString());
           return true;
         }

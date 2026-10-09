@@ -21,6 +21,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "filesystem/AddonsPaths.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIUtils.h"
@@ -280,7 +281,7 @@ static int SetFile(const std::vector<std::string>& params)
     std::string replace;
     if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, CAddonInfo::TranslateType(type, true), replace, true, true, true))
     {
-      if (StringUtils::StartsWithNoCase(replace, "addons://"))
+      if (StringUtils::StartsWithNoCase(replace, KODI::ADDONS::ROOT))
         CSkinSettings::GetInstance().SetString(string, URIUtils::GetFileName(replace));
       else
         CSkinSettings::GetInstance().SetString(string, replace);

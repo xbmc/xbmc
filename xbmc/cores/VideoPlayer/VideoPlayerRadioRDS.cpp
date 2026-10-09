@@ -24,6 +24,7 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "Interface/DemuxPacket.h"
+#include "RadioRDSCountries.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -302,87 +303,6 @@ enum {
   RTPLUS_IDENTIFIER         = 61,
   RTPLUS_PURCHASE           = 62,
   RTPLUS_GET_DATA           = 63
-};
-
-/* page 71, Annex D, table D.1 in the standard and Annex N */
-static const char *piCountryCodes_A[15][7]=
-{
-  // 0   1    2    3    4    5    6
-  {"US","__","AI","BO","GT","__","__"}, // 1
-  {"US","__","AG","CO","HN","__","__"}, // 2
-  {"US","__","EC","JM","AW","__","__"}, // 3
-  {"US","__","FK","MQ","__","__","__"}, // 4
-  {"US","__","BB","GF","MS","__","__"}, // 5
-  {"US","__","BZ","PY","TT","__","__"}, // 6
-  {"US","__","KY","NI","PE","__","__"}, // 7
-  {"US","__","CR","__","SR","__","__"}, // 8
-  {"US","__","CU","PA","UY","__","__"}, // 9
-  {"US","__","AR","DM","KN","__","__"}, // A
-  {"US","CA","BR","DO","LC","MX","__"}, // B
-  {"__","CA","BM","CL","SV","VC","__"}, // C
-  {"US","CA","AN","GD","HT","MX","__"}, // D
-  {"US","CA","GP","TC","VE","MX","__"}, // E
-  {"__","GL","BS","GY","__","VG","PM"}  // F
-};
-
-static const char *piCountryCodes_D[15][7]=
-{
-  // 0   1    2    3    4    5    6
-  {"CM","NA","SL","__","__","__","__"}, // 1
-  {"CF","LR","ZW","__","__","__","__"}, // 2
-  {"DJ","GH","MZ","EH","__","__","__"}, // 3
-  {"MG","MR","UG","xx","__","__","__"}, // 4
-  {"ML","ST","SZ","RW","__","__","__"}, // 5
-  {"AO","CV","KE","LS","__","__","__"}, // 6
-  {"GQ","SN","SO","__","__","__","__"}, // 7
-  {"GA","GM","NE","SC","__","__","__"}, // 8
-  {"GN","BI","TD","__","__","__","__"}, // 9
-  {"ZA","AC","GW","MU","__","__","__"}, // A
-  {"BF","BW","ZR","__","__","__","__"}, // B
-  {"CG","KM","CI","SD","__","__","__"}, // C
-  {"TG","TZ","Zanzibar","__","__","__","__"}, // D
-  {"BJ","ET","ZM","__","__","__","__"}, // E
-  {"MW","NG","__","__","__","__","__"}  // F
-};
-
-static const char *piCountryCodes_E[15][7]=
-{
-  // 0   1    2    3    4    5    6
-  {"DE","GR","MA","__","MD","__","__"},
-  {"DZ","CY","CZ","IE","EE","__","__"},
-  {"AD","SM","PL","TR","KG","__","__"},
-  {"IL","CH","VA","MK","__","__","__"},
-  {"IT","JO","SK","TJ","__","__","__"},
-  {"BE","FI","SY","__","UA","__","__"},
-  {"RU","LU","TN","__","__","__","__"},
-  {"PS","BG","__","NL","PT","__","__"},
-  {"AL","DK","LI","LV","SI","__","__"}, // 9
-  {"AT","GI","IS","LB","AM","__","__"}, // A
-  {"HU","IQ","MC","AZ","UZ","__","__"}, // B
-  {"MT","GB","LT","HR","GE","__","__"}, // C
-  {"DE","LY","YU","KZ","__","__","__"}, // D
-  {"__","RO","ES","SE","TM","__","__"}, // E
-  {"EG","FR","NO","BY","BA","__","__"}  // F
-};
-
-static const char *piCountryCodes_F[15][7]=
-{
-  // 0   1    2    3    4    5    6
-  {"AU","KI","KW","LA","__","__","__"}, // 1
-  {"AU","BT","QA","TH","__","__","__"}, // 2
-  {"AU","BD","KH","TO","__","__","__"}, // 3
-  {"AU","PK","WS","__","__","__","__"}, // 4
-  {"AU","FJ","IN","__","__","__","__"}, // 5
-  {"AU","OM","MO","__","__","__","__"}, // 6
-  {"AU","NR","VN","__","__","__","__"}, // 7
-  {"AU","IR","PH","__","__","__","__"}, // 8
-  {"SA","NZ","JP","PG","__","__","__"}, // 9
-  {"AF","SB","SG","__","__","__","__"}, // A
-  {"MM","BN","MV","YE","__","__","__"}, // B
-  {"CN","LK","ID","__","__","__","__"}, // C
-  {"KP","TW","AE","__","__","__","__"}, // D
-  {"BH","KR","NP","FM","__","__","__"}, // E
-  {"MY","HK","VU","MN","__","__","__"}  // F
 };
 
 /* see page 84, Annex J in the standard */
@@ -1483,38 +1403,20 @@ unsigned int CDVDRadioRDSData::DecodeEPPTransmitterInfo(const uint8_t* msgElemen
   {
     int codeHigh = msgElement[2]&0xF0;
     int codeLow  = msgElement[2]&0x0F;
-    if (codeLow > 7)
+
+    const auto territory{KODI::RDS::Country(codeHigh, m_PI_CountryCode, codeLow)};
+    if (!territory)
     {
-      CLog::Log(LOGERROR, "Radio RDS - {} - invalid country code {:#02X}{:02X}", __FUNCTION__,
-                codeHigh, codeLow);
+      CLog::LogF(LOGERROR, "Radio RDS - invalid extended country region code:{:02X}{:02X}",
+                 codeHigh, codeLow);
       return 7;
     }
 
-    std::string countryName;
-    switch (codeHigh)
-    {
-      case 0xA0:
-        countryName = piCountryCodes_A[m_PI_CountryCode-1][codeLow];
-        break;
-      case 0xD0:
-        countryName = piCountryCodes_D[m_PI_CountryCode-1][codeLow];
-        break;
-      case 0xE0:
-        countryName = piCountryCodes_E[m_PI_CountryCode-1][codeLow];
-        break;
-      case 0xF0:
-        countryName = piCountryCodes_F[m_PI_CountryCode-1][codeLow];
-        break;
-      default:
-        CLog::Log(LOGERROR, "Radio RDS - {} - invalid extended country region code:{:02X}{:02X}",
-                  __FUNCTION__, codeHigh, codeLow);
-        return 7;
-    }
-
     // The United States, Canada, and Mexico use the RBDS standard
-    m_RDS_IsRBDS = (countryName == "US" || countryName == "CA" || countryName == "MX");
+    const std::string& country{territory->ToString()};
+    m_RDS_IsRBDS = (country == "US" || country == "CA" || country == "MX");
 
-    m_currentInfoTag->SetCountry(countryName);
+    m_currentInfoTag->SetCountry(*territory);
   }
 
   return 7;
@@ -1546,36 +1448,16 @@ unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(const uint8_t* msgElement
       {
         int codeHigh    = slowLabellingCode&0xF0;
         int codeLow     = slowLabellingCode&0x0F;
-        if (codeLow > 5)
+
+        const auto territory{KODI::RDS::Country(codeHigh, m_PI_CountryCode, codeLow)};
+        if (!territory)
         {
-          CLog::Log(LOGERROR, "Radio RDS - {} - invalid country code {:#02X}{:02X}", __FUNCTION__,
-                    codeHigh, codeLow);
+          CLog::LogF(LOGERROR, "Radio RDS - invalid extended country region code:{:02X}{:02X}",
+                     codeHigh, codeLow);
           return 4;
         }
 
-        std::string countryName;
-        switch (codeHigh)
-        {
-          case 0xA0:
-            countryName = piCountryCodes_A[m_PI_CountryCode-1][codeLow];
-            break;
-          case 0xD0:
-            countryName = piCountryCodes_D[m_PI_CountryCode-1][codeLow];
-            break;
-          case 0xE0:
-            countryName = piCountryCodes_E[m_PI_CountryCode-1][codeLow];
-            break;
-          case 0xF0:
-            countryName = piCountryCodes_F[m_PI_CountryCode-1][codeLow];
-            break;
-          default:
-            CLog::Log(LOGERROR,
-                      "Radio RDS - {} - invalid extended country region code:{:02X}{:02X}",
-                      __FUNCTION__, codeHigh, codeLow);
-            return 4;
-        }
-
-        m_currentInfoTag->SetCountry(countryName);
+        m_currentInfoTag->SetCountry(*territory);
       }
       break;
     }
