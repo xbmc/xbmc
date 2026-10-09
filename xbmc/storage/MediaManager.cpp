@@ -56,6 +56,7 @@
 #endif
 
 #include <algorithm>
+#include <array>
 #include <cctype>
 #include <chrono>
 #include <string>
@@ -64,6 +65,16 @@
 #ifdef HAS_OPTICAL_DRIVE
 using namespace MEDIA_DETECT;
 #endif
+
+using KODI::MEDIA::MediaSection;
+
+namespace
+{
+//! The sections a mounted drive is added to as a source of its own
+constexpr std::array AUTO_SOURCE_SECTIONS{MediaSection::FILES, MediaSection::VIDEO,
+                                          MediaSection::PICTURES, MediaSection::MUSIC,
+                                          MediaSection::PROGRAMS};
+} // namespace
 
 const char MEDIA_SOURCES_XML[] = { "special://profile/mediasources.xml" };
 
@@ -377,51 +388,36 @@ void CMediaManager::LoadAddonSources() const
 {
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVirtualShares)
   {
-    CMediaSourceSettings::GetInstance().AddShare("video", GetRootAddonTypeSource("video"));
-    CMediaSourceSettings::GetInstance().AddShare("programs", GetRootAddonTypeSource("programs"));
-    CMediaSourceSettings::GetInstance().AddShare("pictures", GetRootAddonTypeSource("pictures"));
-    CMediaSourceSettings::GetInstance().AddShare("music", GetRootAddonTypeSource("music"));
-    CMediaSourceSettings::GetInstance().AddShare("games", GetRootAddonTypeSource("games"));
+    for (const MediaSection section :
+         {MediaSection::VIDEO, MediaSection::PROGRAMS, MediaSection::PICTURES, MediaSection::MUSIC,
+          MediaSection::GAMES})
+      CMediaSourceSettings::GetInstance().AddShare(section, GetRootAddonTypeSource(section));
   }
 }
 
-CMediaSource CMediaManager::GetRootAddonTypeSource(const std::string& type) const
+CMediaSource CMediaManager::GetRootAddonTypeSource(MediaSection section) const
 {
-  if (type == "programs" || type == "myprograms")
+  auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+  switch (section)
   {
-    return ComputeRootAddonTypeSource(
-        "executable", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1043),
-        "DefaultAddonProgram.png");
+    case MediaSection::PROGRAMS:
+      return ComputeRootAddonTypeSource("executable", localizeStrings.Get(1043),
+                                        "DefaultAddonProgram.png");
+    case MediaSection::VIDEO:
+      return ComputeRootAddonTypeSource("video", localizeStrings.Get(1037),
+                                        "DefaultAddonVideo.png");
+    case MediaSection::MUSIC:
+      return ComputeRootAddonTypeSource("audio", localizeStrings.Get(1038),
+                                        "DefaultAddonMusic.png");
+    case MediaSection::PICTURES:
+      return ComputeRootAddonTypeSource("image", localizeStrings.Get(1039),
+                                        "DefaultAddonPicture.png");
+    case MediaSection::GAMES:
+      return ComputeRootAddonTypeSource("game", localizeStrings.Get(35049), "DefaultAddonGame.png");
+    case MediaSection::FILES:
+      break;
   }
-  else if (type == "video" || type == "videos")
-  {
-    return ComputeRootAddonTypeSource(
-        "video", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1037),
-        "DefaultAddonVideo.png");
-  }
-  else if (type == "music")
-  {
-    return ComputeRootAddonTypeSource(
-        "audio", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1038),
-        "DefaultAddonMusic.png");
-  }
-  else if (type == "pictures")
-  {
-    return ComputeRootAddonTypeSource(
-        "image", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1039),
-        "DefaultAddonPicture.png");
-  }
-  else if (type == "games")
-  {
-    return ComputeRootAddonTypeSource(
-        "game", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35049),
-        "DefaultAddonGame.png");
-  }
-  else
-  {
-    CLog::LogF(LOGERROR, "Invalid type {} provided", type);
-    return {};
-  }
+  return {};
 }
 
 CMediaSource CMediaManager::ComputeRootAddonTypeSource(const std::string& type,
@@ -439,11 +435,8 @@ CMediaSource CMediaManager::ComputeRootAddonTypeSource(const std::string& type,
 
 void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 {
-  CMediaSourceSettings::GetInstance().AddShare("files", share);
-  CMediaSourceSettings::GetInstance().AddShare("video", share);
-  CMediaSourceSettings::GetInstance().AddShare("pictures", share);
-  CMediaSourceSettings::GetInstance().AddShare("music", share);
-  CMediaSourceSettings::GetInstance().AddShare("programs", share);
+  for (const MediaSection section : AUTO_SOURCE_SECTIONS)
+    CMediaSourceSettings::GetInstance().AddShare(section, share);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   CGUIComponent *gui = CServiceBroker::GetGUI();
   if (gui)
@@ -457,11 +450,8 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 
 void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 {
-  CMediaSourceSettings::GetInstance().DeleteSource("files", share.strName, share.strPath, true);
-  CMediaSourceSettings::GetInstance().DeleteSource("video", share.strName, share.strPath, true);
-  CMediaSourceSettings::GetInstance().DeleteSource("pictures", share.strName, share.strPath, true);
-  CMediaSourceSettings::GetInstance().DeleteSource("music", share.strName, share.strPath, true);
-  CMediaSourceSettings::GetInstance().DeleteSource("programs", share.strName, share.strPath, true);
+  for (const MediaSection section : AUTO_SOURCE_SECTIONS)
+    CMediaSourceSettings::GetInstance().DeleteSource(section, share.strName, share.strPath, true);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)

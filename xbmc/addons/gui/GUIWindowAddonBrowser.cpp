@@ -56,6 +56,7 @@ constexpr int CONTROL_CHECK_FOR_UPDATES = 9;
 
 using namespace ADDON;
 using namespace XFILE;
+using KODI::MEDIA::MediaSection;
 
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
   : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
@@ -215,7 +216,8 @@ void CGUIWindowAddonBrowser::InstallFromZip()
   else
   {
     // pop up filebrowser to grab an installed folder
-    std::vector<CMediaSource> shares = *CMediaSourceSettings::GetInstance().GetSources("files");
+    std::vector<CMediaSource> shares =
+        CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES);
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     std::string path;

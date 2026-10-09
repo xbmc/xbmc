@@ -47,16 +47,16 @@ using namespace KODI;
 using namespace KODI::ADDONS;
 using namespace XFILE;
 using namespace PLAYLIST;
+using KODI::MEDIA::MediaSection;
 
 namespace
 {
 bool IsUnderMusicSource(const std::string& path)
 {
-  auto* sources = CMediaSourceSettings::GetInstance().GetSources("music");
-  if (!sources)
-    return false;
   bool isSourceName = false;
-  return CUtil::GetMatchingSource(path, *sources, isSourceName) > -1;
+  return CUtil::GetMatchingSource(
+             path, CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC),
+             isSourceName) > -1;
 }
 
 /*!

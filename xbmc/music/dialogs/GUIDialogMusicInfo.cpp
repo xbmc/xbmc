@@ -60,6 +60,7 @@ using namespace MUSIC_INFO;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTN_REFRESH      6
 #define CONTROL_USERRATING       7
@@ -912,7 +913,8 @@ void CGUIDialogMusicInfo::OnGetArt()
   // never used by Kodi again, but there is no obvious way to clear these
   // thumbs from the cache automatically.
   std::string result;
-  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC));
   CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_item);
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   if (CGUIDialogFileBrowser::ShowAndGetImage(

@@ -50,6 +50,7 @@
 #define CONTROL_BTNREPEAT 26
 
 using namespace KODI;
+using KODI::MEDIA::MediaSection;
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
   : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyPlaylist.xml")
@@ -70,7 +71,8 @@ void CGUIWindowVideoPlaylist::OnPrepareFileItems(CFileItemList& items)
   { // load info from the database
     std::string label;
     if (items.GetLabel().empty() &&
-        m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"),
+        m_rootDir.IsSource(items.GetPath(),
+                           &CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO),
                            &label))
       items.SetLabel(label);
     if (!items.IsSourcesPath() && !items.IsLibraryFolder())
