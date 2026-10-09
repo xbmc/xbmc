@@ -570,7 +570,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_END_OF_TITLE:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_END_OF_TITLE {}", m_event.param);
     /* when a title ends, playlist WILL eventually change */
-    FreeTitleInfo();
+    if (m_navmode)
+      FreeTitleInfo();
     break;
 
   case BD_EVENT_TITLE:
