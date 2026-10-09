@@ -41,6 +41,7 @@
 #include "settings/SettingsComponent.h"
 #include "tags/SetInfoTagLoaderFactory.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
+#include "tags/VideoTagLoaderNFO.h"
 #include "utils/ArtUtils.h"
 #include "utils/Digest.h"
 #include "utils/DiscsUtils.h"
@@ -2508,7 +2509,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
           item.GetVideoInfoTag()->m_iSeason = file->iSeason;
 
           // Add flag if multi-episode file
-          if (episodeMap[file->strPath] > 1)
+          // <archive>-SxxEyy.nfo is only exported for an archive holding several episodes
+          const auto* nfoLoader{dynamic_cast<const CVideoTagLoaderNFO*>(loader.get())};
+          if (episodeMap[file->strPath] > 1 ||
+              (URIUtils::IsInArchive(file->strPath) && nfoLoader &&
+               URIUtils::PathEquals(
+                   nfoLoader->GetNFOPath(),
+                   URIUtils::ReplaceExtension(ART::GetTBNFile(item, file->iSeason, file->iEpisode),
+                                              ".nfo"))))
             item.SetProperty(MULTIPLE_EPISODES, true);
         }
         if (AddVideo(&item, info, file->isFolder, true, &showInfo, false, ContentType::TVSHOWS) < 0)
