@@ -179,7 +179,16 @@ void CTCPServer::Process()
             }
 
             if (response.empty())
-              m_connections[i]->PushBuffer(this, buffer, nread);
+            {
+              // Don't hold the lock while a request runs. A method that waits on the
+              // main thread would block Announce, which holds the announcement lock
+              // the main thread may be waiting for. Only this thread removes
+              // connections, so the client stays valid.
+              CTCPClient* client = m_connections[i];
+              lock.unlock();
+              client->PushBuffer(this, buffer, nread);
+              lock.lock();
+            }
 
             close = m_connections[i]->Closing();
           }
