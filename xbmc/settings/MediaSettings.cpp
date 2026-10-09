@@ -281,7 +281,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   XMLUtils::SetInt(pNode, "watchmodemusicvideos",
                    static_cast<int>(m_watchedModes.find(CONTENT::MUSICVIDEOS)->second));
   XMLUtils::SetInt(pNode, "watchmoderecordings",
-                   static_cast<int>(m_watchedModes.find("recordings")->second));
+                   static_cast<int>(m_watchedModes.find(CONTENT::RECORDINGS)->second));
 
   TiXmlElement videoPlaylistNode("playlist");
   playlistNode = pNode->InsertEndChild(videoPlaylistNode);
