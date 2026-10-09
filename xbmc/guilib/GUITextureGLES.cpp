@@ -192,47 +192,41 @@ void CGUITextureGLES::Draw(float*, float*, float*, const CRect&, const CRect&, i
   // Unused: DrawQuads() draws every quad.
 }
 
-bool CGUITextureGLES::DrawQuads(const std::vector<Quad>& quads, unsigned int version)
+bool CGUITextureGLES::DrawQuads(const std::vector<Quad>& quads,
+                                unsigned int version,
+                                const CRect& rect)
 {
   if (m_quadBufferVersion != version)
   {
-    const std::size_t count = quads.size();
-    if (count > 0)
+    std::vector<QuadVertex> vertices;
+    vertices.reserve(quads.size() * 4);
+    for (const Quad& quad : quads)
     {
-      const int orientation = GetOrientation();
-      std::vector<QuadVertex> vertices;
-      vertices.reserve(count * 4);
-      for (const Quad& quad : quads)
+      const CRect& a = quad.anchor;
+      const CRect& o = quad.offset;
+      const std::array<std::array<float, 4>, 4> corners{{{a.x1, a.y1, o.x1, o.y1},
+                                                         {a.x2, a.y1, o.x2, o.y1},
+                                                         {a.x2, a.y2, o.x2, o.y2},
+                                                         {a.x1, a.y2, o.x1, o.y2}}};
+      const std::array<CPoint, 4> texCoords = TexCoordCorners(quad.texture, GetOrientation() & 4);
+      const std::array<CPoint, 4> diffuseCoords =
+          TexCoordCorners(quad.diffuse, m_info.orientation & 4);
+      for (std::size_t i = 0; i < 4; i++)
       {
-        const CRect& rect = quad.vertex;
-        const std::array<CPoint, 4> corners{
-            {{rect.x1, rect.y1}, {rect.x2, rect.y1}, {rect.x2, rect.y2}, {rect.x1, rect.y2}}};
-        const std::array<CPoint, 4> texCoords = TexCoordCorners(quad.texture, orientation & 4);
-        const std::array<CPoint, 4> diffuseCoords =
-            TexCoordCorners(quad.diffuse, m_info.orientation & 4);
-        const CPoint texDx = (texCoords[1] - texCoords[0]) / rect.Width();
-        const CPoint texDy = (texCoords[3] - texCoords[0]) / rect.Height();
-        const CPoint diffuseDx = (diffuseCoords[1] - diffuseCoords[0]) / rect.Width();
-        const CPoint diffuseDy = (diffuseCoords[3] - diffuseCoords[0]) / rect.Height();
-        for (std::size_t i = 0; i < 4; i++)
-        {
-          const CPoint& opposite = corners[(i + 2) % 4];
-          // CGUITexture::Render() pushes the bottom right and bottom left corners.
-          const float push = i >= 2 ? 1.0f : 0.0f;
-          vertices.push_back({corners[i].x, corners[i].y, opposite.x, opposite.y, push,
-                              texCoords[i].x, texCoords[i].y, diffuseCoords[i].x,
-                              diffuseCoords[i].y, texDx.x, texDx.y, texDy.x, texDy.y,
-                              diffuseDx.x, diffuseDx.y, diffuseDy.x, diffuseDy.y});
-        }
+        const std::size_t opposite = (i + 2) % 4;
+        vertices.push_back({corners[i], corners[opposite],
+                            {texCoords[i].x, texCoords[i].y, texCoords[opposite].x,
+                             texCoords[opposite].y},
+                            {diffuseCoords[i].x, diffuseCoords[i].y, diffuseCoords[opposite].x,
+                             diffuseCoords[opposite].y}});
       }
-      m_quadBuffer.SetData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
     }
+
+    if (!vertices.empty())
+      m_quadBuffer.SetData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
+
     m_quadBufferVersion = version;
-    m_quadCount = count;
-  }
-  else if (m_quadCount > 0)
-  {
-    m_quadBuffer.Bind();
+    m_quadCount = quads.size();
   }
 
   if (m_quadCount == 0)
@@ -243,59 +237,49 @@ bool CGUITextureGLES::DrawQuads(const std::vector<Quad>& quads, unsigned int ver
   const CRect clip = context.HasClipRegion()
                          ? context.GetClipRegion()
                          : CRect(-unbounded, -unbounded, unbounded, unbounded);
-  glUniform4f(m_renderSystem->GUIShaderGetQuadClip(), clip.x1, clip.y1, clip.x2, clip.y2);
-  glUniformMatrix4fv(m_renderSystem->GUIShaderGetGUIMatrix(), 1, GL_FALSE,
-                     CMatrixGL(context.GetGUIMatrix()));
-  glUniform1f(m_renderSystem->GUIShaderGetSnap(), 1.0f);
 
   GLint posLoc = m_renderSystem->GUIShaderGetPos();
   GLint snapLoc = m_renderSystem->GUIShaderGetAttrSnap();
   GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
   GLint tex1Loc = m_renderSystem->GUIShaderGetCoord1();
-  GLint grad0Loc = m_renderSystem->GUIShaderGetAttrGrad0();
-  GLint grad1Loc = m_renderSystem->GUIShaderGetAttrGrad1();
+  float swap0 = (GetOrientation() & 4) ? 1.0f : 0.0f;
+  float swap1 = (m_info.orientation & 4) ? 1.0f : 0.0f;
+  if (m_diffuse.size() && m_texture.m_textures[m_currentFrame]->GetSwizzle() == KD_TEX_SWIZ_111R)
+  {
+    std::swap(tex0Loc, tex1Loc);
+    std::swap(swap0, swap1);
+  }
+
+  glUniform4f(m_renderSystem->GUIShaderGetQuadRect(), rect.x1, rect.y1, rect.Width(),
+              rect.Height());
+  glUniform4f(m_renderSystem->GUIShaderGetQuadClip(), clip.x1, clip.y1, clip.x2, clip.y2);
+  glUniform2f(m_renderSystem->GUIShaderGetTexSwap(), swap0, swap1);
+  glUniformMatrix4fv(m_renderSystem->GUIShaderGetGUIMatrix(), 1, GL_FALSE,
+                     CMatrixGL(context.GetGUIMatrix()));
+  glUniform1f(m_renderSystem->GUIShaderGetSnap(), 1.0f);
+
+  m_quadBuffer.Bind();
+  const auto attribute = [](GLint location, std::size_t member)
+  {
+    glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex),
+                          reinterpret_cast<GLvoid*>(member));
+    glEnableVertexAttribArray(location);
+  };
+  attribute(posLoc, offsetof(QuadVertex, corner));
+  attribute(snapLoc, offsetof(QuadVertex, opposite));
+  attribute(tex0Loc, offsetof(QuadVertex, texture));
+  if (m_diffuse.size())
+    attribute(tex1Loc, offsetof(QuadVertex, diffuse));
 
   m_renderSystem->BindGUIQuadIndices(m_quadCount);
-
-  if (m_diffuse.size())
-  {
-    if (m_texture.m_textures[m_currentFrame]->GetSwizzle() == KD_TEX_SWIZ_111R)
-    {
-      std::swap(tex0Loc, tex1Loc);
-      std::swap(grad0Loc, grad1Loc);
-    }
-    glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(QuadVertex),
-                          reinterpret_cast<GLvoid*>(offsetof(QuadVertex, u2)));
-    glEnableVertexAttribArray(tex1Loc);
-    glVertexAttribPointer(grad1Loc, 4, GL_FLOAT, 0, sizeof(QuadVertex),
-                          reinterpret_cast<GLvoid*>(offsetof(QuadVertex, du2dx)));
-    glEnableVertexAttribArray(grad1Loc);
-  }
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, sizeof(QuadVertex),
-                        reinterpret_cast<GLvoid*>(offsetof(QuadVertex, x)));
-  glEnableVertexAttribArray(posLoc);
-  glVertexAttribPointer(snapLoc, 3, GL_FLOAT, 0, sizeof(QuadVertex),
-                        reinterpret_cast<GLvoid*>(offsetof(QuadVertex, oppositeX)));
-  glEnableVertexAttribArray(snapLoc);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(QuadVertex),
-                        reinterpret_cast<GLvoid*>(offsetof(QuadVertex, u1)));
-  glEnableVertexAttribArray(tex0Loc);
-  glVertexAttribPointer(grad0Loc, 4, GL_FLOAT, 0, sizeof(QuadVertex),
-                        reinterpret_cast<GLvoid*>(offsetof(QuadVertex, du1dx)));
-  glEnableVertexAttribArray(grad0Loc);
-
   glDrawElements(GL_TRIANGLES, m_quadCount * 6, GL_UNSIGNED_SHORT, 0);
   CRenderSystemBase::m_GUIElementCount++;
 
-  if (m_diffuse.size())
-  {
-    glDisableVertexAttribArray(tex1Loc);
-    glDisableVertexAttribArray(grad1Loc);
-  }
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(snapLoc);
-  glDisableVertexAttribArray(grad0Loc);
   glDisableVertexAttribArray(tex0Loc);
+  if (m_diffuse.size())
+    glDisableVertexAttribArray(tex1Loc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

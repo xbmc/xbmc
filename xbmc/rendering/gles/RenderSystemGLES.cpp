@@ -863,18 +863,18 @@ GLint CRenderSystemGLES::GUIShaderGetQuadClip()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetAttrGrad0()
+GLint CRenderSystemGLES::GUIShaderGetQuadRect()
 {
   if (m_pShader[m_method])
-    return m_pShader[m_method]->GetAttrGrad0Loc();
+    return m_pShader[m_method]->GetQuadRectLoc();
 
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetAttrGrad1()
+GLint CRenderSystemGLES::GUIShaderGetTexSwap()
 {
   if (m_pShader[m_method])
-    return m_pShader[m_method]->GetAttrGrad1Loc();
+    return m_pShader[m_method]->GetTexSwapLoc();
 
   return -1;
 }
