@@ -1368,7 +1368,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::UpdateDatabaseAlbumInfo(
               MEDIA::TYPE::ALBUM, album.strPath, 24146,
               StringUtils::Format(
                   CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24147),
-                  MEDIA::TYPE::ALBUM, album.strAlbum),
+                  MEDIA::NameOf(MEDIA::TYPE::ALBUM), album.strAlbum),
               CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
               CURL::GetRedacted(album.strPath), EventLevel::Warning)));
       }
@@ -1443,7 +1443,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::UpdateDatabaseArtistInfo(
               MEDIA::TYPE::ARTIST, artist.strPath, 24146,
               StringUtils::Format(
                   CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24147),
-                  MEDIA::TYPE::ARTIST, artist.strArtist),
+                  MEDIA::NameOf(MEDIA::TYPE::ARTIST), artist.strArtist),
               CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
               CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
       }

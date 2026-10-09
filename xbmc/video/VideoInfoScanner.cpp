@@ -904,7 +904,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
               mediaType, pItem->GetPath(), 24145,
               StringUtils::Format(
                   CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24147),
-                  mediaType, itemlogpath),
+                  MEDIA::NameOf(mediaType), itemlogpath),
               EventLevel::Warning)));
         }
       }

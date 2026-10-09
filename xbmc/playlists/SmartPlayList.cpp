@@ -794,7 +794,7 @@ std::string CSmartPlaylistRule::FormatLinkQuery(const char *field, const char *t
       "         JOIN {} ON {}.{}_id={}_link.{}_id"
       "         WHERE {}_link.media_id={} AND {}.name {} AND {}_link.media_type = '{}')",
       field, table, table, table, field, table, field, mediaField, table, parameter, field,
-      mediaType);
+      MEDIA::NameOf(mediaType));
 }
 
 std::string CSmartPlaylistRule::FormatYearQuery(const std::string& field,

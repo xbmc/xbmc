@@ -39,8 +39,6 @@
 #include <ranges>
 #include <vector>
 
-using KODI::MEDIA::MediaTypeFromName;
-
 namespace KODI::VIDEO::UTILS
 {
 
@@ -175,26 +173,18 @@ bool IsAutoPlayNextItem(const CFileItem& item)
 
 bool IsAutoPlayNextItem(const std::string& content)
 {
+  const auto isA = [&content](MEDIA::TYPE type)
+  { return content == NameOf(type) || content == PluralNameOf(type); };
+
   int settingValue = CSettings::SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
-  switch (MediaTypeFromName(content))
-  {
-    case MEDIA::TYPE::MOVIE:
-    case MEDIA::TYPE::VIDEO_COLLECTION:
-      settingValue = CSettings::SETTING_AUTOPLAYNEXT_MOVIES;
-      break;
-    case MEDIA::TYPE::SEASON:
-    case MEDIA::TYPE::EPISODE:
-      settingValue = CSettings::SETTING_AUTOPLAYNEXT_EPISODES;
-      break;
-    case MEDIA::TYPE::MUSIC_VIDEO:
-      settingValue = CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
-      break;
-    case MEDIA::TYPE::TV_SHOW:
-      settingValue = CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS;
-      break;
-    default:
-      break;
-  }
+  if (isA(MEDIA::TYPE::MOVIE) || content == PluralNameOf(MEDIA::TYPE::VIDEO_COLLECTION))
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MOVIES;
+  else if (isA(MEDIA::TYPE::EPISODE) || content == PluralNameOf(MEDIA::TYPE::SEASON))
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_EPISODES;
+  else if (isA(MEDIA::TYPE::MUSIC_VIDEO))
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
+  else if (isA(MEDIA::TYPE::TV_SHOW))
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS;
 
   const auto setting = std::dynamic_pointer_cast<CSettingList>(
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
