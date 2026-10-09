@@ -383,18 +383,21 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     }
   }
 
+  std::vector<ArtToCache> artToCache;
+  for (const auto& [artType, url] : art)
+    artToCache.push_back({url, {}, PriorityOfArtType(artType)});
+
   if (!art.contains(ART::TYPE::THUMB) &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
       CDVDFileInfo::CanExtract(mediaItem ? *mediaItem : *pItem))
   {
     art[ART::TYPE::THUMB] = CVideoThumbLoader::GetEmbeddedThumbURL(mediaItem ? *mediaItem : *pItem);
+    // Extracting a frame is costly, so it is made ahead of display only where thumb is listed
+    if (std::ranges::find(artTypes, ART::TYPE::THUMB) != artTypes.end())
+      artToCache.push_back({art[ART::TYPE::THUMB], {}, PriorityOfArtType(ART::TYPE::THUMB)});
   }
 
-  std::vector<ArtToCache> artToCache;
-  for (const auto& artType : artTypes)
-    if (art.contains(artType))
-      artToCache.push_back({art.at(artType), {}, PriorityOfArtType(artType)});
   Cache(std::move(artToCache));
 
   pItem->SetArt(art);
