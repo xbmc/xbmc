@@ -8,10 +8,12 @@
 
 #include "FileItem.h"
 #include "XBDateTime.h"
+#include "music/tags/MusicInfoTag.h"
 #include "network/upnp/UPnPInternal.h"
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <Platinum/Source/Devices/MediaServer/PltDidl.h>
 #include <Platinum/Source/Devices/MediaServer/PltMediaItem.h>
@@ -263,4 +265,34 @@ TEST(TestUPnPInternal, AddAlternateMimeResourcesOffersEveryAddress)
       alternates++;
   }
   EXPECT_EQ(2, alternates);
+}
+
+TEST(TestUPnPInternal, ASongReadBackKeepsEveryArtistAndGenre)
+{
+  PLT_MediaItem object;
+  object.m_People.artists.Add("Alpha");
+  object.m_People.artists.Add("Alpha", "Performer");
+  object.m_People.artists.Add("Beta");
+  object.m_People.artists.Add("Beta", "Performer");
+  object.m_People.artists.Add("Gamma", "AlbumArtist");
+  object.m_Affiliation.genres.Add("Rock");
+  object.m_Affiliation.genres.Add("Pop");
+
+  MUSIC_INFO::CMusicInfoTag tag;
+  PopulateTagFromObject(tag, object);
+
+  EXPECT_EQ(tag.GetArtist(), (std::vector<std::string>{"Alpha", "Beta"}));
+  EXPECT_EQ(tag.GetAlbumArtist(), (std::vector<std::string>{"Gamma"}));
+  EXPECT_EQ(tag.GetGenre(), (std::vector<std::string>{"Rock", "Pop"}));
+}
+
+TEST(TestUPnPInternal, ALoneUnknownGenreIsNoGenre)
+{
+  PLT_MediaItem object;
+  object.m_Affiliation.genres.Add("Unknown");
+
+  MUSIC_INFO::CMusicInfoTag tag;
+  PopulateTagFromObject(tag, object);
+
+  EXPECT_TRUE(tag.GetGenre().empty());
 }
