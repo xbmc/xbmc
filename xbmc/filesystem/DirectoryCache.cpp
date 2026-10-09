@@ -126,6 +126,8 @@ void CDirectoryCache::SetDirectory(const CURL& url, const CFileItemList& items, 
 
 void CDirectoryCache::ClearFile(const CURL& url)
 {
+  std::unique_lock lock(m_cs);
+
   const std::string dirPath = getDirKey(url);
   m_cache.erase(dirPath);
 }
