@@ -64,7 +64,8 @@ bool CTextureCacheJob::DoWork()
   // check whether we need cache the job anyway
   bool needsRecaching = false;
   std::string path(CServiceBroker::GetTextureCache()->CheckCachedImage(m_url, needsRecaching));
-  if (!path.empty() && !needsRecaching)
+  // A cached copy whose file has gone is cached again. An image that is its own copy is not
+  if (!path.empty() && !needsRecaching && (path == m_url || XFILE::CFile::Exists(path)))
     return false;
 
   m_holdsProcessingClaim = CServiceBroker::GetTextureCache()->StartCacheImage(m_url);
