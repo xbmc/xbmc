@@ -153,9 +153,9 @@ public:
   GLint GUIShaderGetGUIMatrix();
   GLint GUIShaderGetSnap();
   GLint GUIShaderGetAttrSnap();
+  GLint GUIShaderGetQuadRect();
   GLint GUIShaderGetQuadClip();
-  GLint GUIShaderGetAttrGrad0();
-  GLint GUIShaderGetAttrGrad1();
+  GLint GUIShaderGetTexSwap();
 
   // Binds an index buffer for quadCount quads laid out as 0,1,2 2,3,0.
   void BindGUIQuadIndices(std::size_t quadCount);

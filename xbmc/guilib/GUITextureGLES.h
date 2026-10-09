@@ -38,20 +38,18 @@ protected:
   void Begin(KODI::UTILS::COLOR::Color color) override;
   void Draw(float* x, float* y, float* z, const CRect& texture, const CRect& diffuse, int orientation) override;
   void End() override;
-  bool DrawQuads(const std::vector<Quad>& quads, unsigned int version) override;
+  bool DrawQuads(const std::vector<Quad>& quads, unsigned int version, const CRect& rect) override;
 
 private:
   CGUITextureGLES(const CGUITextureGLES& texture);
 
-  // See m_attrsnap and m_attrgrad0/1 in gles_shader.vert.
+  // One corner of a quad and its opposite corner; see m_attrpos and m_attrsnap in gles_shader.vert.
   struct QuadVertex
   {
-    float x, y;
-    float oppositeX, oppositeY, push;
-    float u1, v1;
-    float u2, v2;
-    float du1dx, dv1dx, du1dy, dv1dy;
-    float du2dx, dv2dx, du2dy, dv2dy;
+    std::array<float, 4> corner; // anchor x, anchor y, offset x, offset y
+    std::array<float, 4> opposite;
+    std::array<float, 4> texture; // u, v at this corner and at the opposite one
+    std::array<float, 4> diffuse;
   };
 
   std::array<GLubyte, 4> m_col;

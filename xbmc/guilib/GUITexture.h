@@ -135,11 +135,20 @@ protected:
   CGUITexture(float posX, float posY, float width, float height, const CTextureInfo& texture);
   CGUITexture(const CGUITexture& left);
 
+  /*!
+   * @brief One quad of the texture, independent of the texture's position and size.
+   *
+   * Each edge lies at rect.x1 + anchor * rect.Width() + offset (and likewise vertically), where
+   * rect is the texture's render rectangle in skin coordinates.
+   */
   struct Quad
   {
-    CRect vertex; ///< in skin coordinates, before clipping and the GUI transform
+    CRect anchor;
+    CRect offset;
     CRect texture;
     CRect diffuse;
+
+    bool operator==(const Quad& other) const = default;
   };
 
   bool CalculateSize();
@@ -161,13 +170,17 @@ protected:
   virtual void End() = 0;
 
   /*!
-   * @brief Draw the quads with the current clip region and GUI transform applied by the GPU.
+   * @brief Draw the quads at @p rect with the current clip region and GUI transform applied by
+   * the GPU.
    *
    * Called between Begin() and End(). The quads only change when @p version does, so they can be
-   * kept in GPU memory. If this returns false, the quads are clipped and transformed on the CPU
-   * and passed to Draw() instead.
+   * kept in GPU memory while @p rect moves or resizes. If this returns false, the quads are
+   * clipped and transformed on the CPU and passed to Draw() instead.
    */
-  virtual bool DrawQuads(const std::vector<Quad>& quads, unsigned int version) { return false; }
+  virtual bool DrawQuads(const std::vector<Quad>& quads, unsigned int version, const CRect& rect)
+  {
+    return false;
+  }
 
   bool m_visible;
   KODI::UTILS::COLOR::Color m_diffuseColor;
