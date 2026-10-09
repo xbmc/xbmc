@@ -19371,11 +19371,7 @@ msgctxt "#35270"
 msgid "Your account is not verified. Please check your email to complete your sign up."
 msgstr ""
 
-#. Error message shown when an OpenGL game is played, as OpenGL is not currently supported
-#: xbmc/games/addons/GameClient.cpp
-msgctxt "#35271"
-msgid "This game requires OpenGL support for 3D rendering. OpenGL support is still under development."
-msgstr ""
+#empty string with id 35271
 
 #. Label for the "Disc menu" button to open the Disc Manager when playing a game
 #: addons/skin.estuary/xml/GameOSD.xml
