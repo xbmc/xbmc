@@ -51,6 +51,9 @@ FOR /F "eol=; tokens=1,2" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM
   )
 )
 
+REM download-dependencies.bat restored the target packages from the build cache
+IF "%FORMED_TARGET_RESTORED%" == "YES" GOTO reportResult
+
 CALL :setStageName Starting downloads of Target (%TARGETPLATFORM%) formed packages...
 CD %DL_PATH% || EXIT /B 10
 FOR /F "eol=; tokens=1,2" %%f IN (%SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
@@ -67,6 +70,7 @@ FOR /F "eol=; tokens=1,2" %%f IN (%SCRIPT_PATH%\0_package.target-%TARGETPLATFORM
   )
 )
 
+:reportResult
 REM Report any errors
 IF EXIST %FORMED_FAILED_LIST% (
   CALL :setStageName Some formed packages had errors
