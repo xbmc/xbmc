@@ -86,6 +86,21 @@ static constexpr const std::array<TypeMapping, 42> types =
   }};
 // clang-format on
 
+struct SubContentName
+{
+  std::string_view name;
+  AddonType type;
+};
+
+//! The content a plugin can provide, by the name it gives it
+constexpr std::array<SubContentName, 5> SUB_CONTENT_NAMES{{
+    {"audio", AddonType::AUDIO},
+    {"image", AddonType::IMAGE},
+    {"executable", AddonType::EXECUTABLE},
+    {"video", AddonType::VIDEO},
+    {"game", AddonType::GAME},
+}};
+
 const std::string& CAddonInfo::OriginName() const
 {
   if (!m_originName)
@@ -142,18 +157,14 @@ std::string CAddonInfo::TranslateIconType(AddonType type)
 
 AddonType CAddonInfo::TranslateSubContent(std::string_view content)
 {
-  if (content == "audio")
-    return AddonType::AUDIO;
-  else if (content == "image")
-    return AddonType::IMAGE;
-  else if (content == "executable")
-    return AddonType::EXECUTABLE;
-  else if (content == "video")
-    return AddonType::VIDEO;
-  else if (content == "game")
-    return AddonType::GAME;
-  else
-    return AddonType::UNKNOWN;
+  const auto it = std::ranges::find(SUB_CONTENT_NAMES, content, &SubContentName::name);
+  return it != SUB_CONTENT_NAMES.end() ? it->type : AddonType::UNKNOWN;
+}
+
+std::string_view CAddonInfo::SubContentNameOf(AddonType type)
+{
+  const auto it = std::ranges::find(SUB_CONTENT_NAMES, type, &SubContentName::type);
+  return it != SUB_CONTENT_NAMES.end() ? it->name : std::string_view{};
 }
 
 AddonInstanceSupport CAddonInfo::InstanceSupportType(AddonType type)

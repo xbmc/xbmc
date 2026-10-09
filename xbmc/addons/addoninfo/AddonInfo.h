@@ -256,6 +256,12 @@ public:
   static std::string TranslateIconType(AddonType type);
   static AddonType TranslateType(const std::string& string);
   static AddonType TranslateSubContent(std::string_view content);
+
+  /*!
+   * \brief The name a plugin gives \p type in what it provides, empty if \p type is not
+   * content a plugin can provide.
+   */
+  static std::string_view SubContentNameOf(AddonType type);
   static AddonInstanceSupport InstanceSupportType(AddonType type);
   //@}
 

@@ -59,29 +59,32 @@ void CPluginSource::SetProvides(const std::string &content)
 
 CPluginSource::Content CPluginSource::Translate(std::string_view content)
 {
+  return ContentOf(CAddonInfo::TranslateSubContent(content));
+}
+
+CPluginSource::Content CPluginSource::ContentOf(AddonType type)
+{
   using enum ADDON::CPluginSource::Content;
-  if (content == "audio")
-    return AUDIO;
-  else if (content == "image")
-    return IMAGE;
-  else if (content == "executable")
-    return EXECUTABLE;
-  else if (content == "video")
-    return VIDEO;
-  else if (content == "game")
-    return GAME;
-  else
-    return UNKNOWN;
+  switch (type)
+  {
+    case AddonType::AUDIO:
+      return AUDIO;
+    case AddonType::IMAGE:
+      return IMAGE;
+    case AddonType::EXECUTABLE:
+      return EXECUTABLE;
+    case AddonType::VIDEO:
+      return VIDEO;
+    case AddonType::GAME:
+      return GAME;
+    default:
+      return UNKNOWN;
+  }
 }
 
 bool CPluginSource::HasType(AddonType type) const
 {
-  return ((type == AddonType::VIDEO && Provides(Content::VIDEO)) ||
-          (type == AddonType::AUDIO && Provides(Content::AUDIO)) ||
-          (type == AddonType::IMAGE && Provides(Content::IMAGE)) ||
-          (type == AddonType::GAME && Provides(Content::GAME)) ||
-          (type == AddonType::EXECUTABLE && Provides(Content::EXECUTABLE)) ||
-          (type == CAddon::Type()));
+  return Provides(ContentOf(type)) || type == CAddon::Type();
 }
 
 } /*namespace ADDON*/

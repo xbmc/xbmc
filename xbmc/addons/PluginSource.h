@@ -50,6 +50,7 @@ public:
   }
 
   static Content Translate(std::string_view content);
+  static Content ContentOf(AddonType type);
 
 private:
   /*! \brief Set the provided content for this plugin
