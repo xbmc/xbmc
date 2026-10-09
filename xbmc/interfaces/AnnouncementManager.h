@@ -9,6 +9,7 @@
 #pragma once
 
 #include "IAnnouncer.h"
+#include "threads/Condition.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
@@ -92,5 +93,9 @@ namespace ANNOUNCEMENT
     CCriticalSection m_announcersCritSection;
     CCriticalSection m_queueCritSection;
     std::unordered_map<IAnnouncer*, int> m_announcers;
+
+    //! The announcer being called by DoAnnounce(), which runs without m_announcersCritSection.
+    IAnnouncer* m_announcing{nullptr};
+    XbmcThreads::ConditionVariable m_announced;
   };
 }
