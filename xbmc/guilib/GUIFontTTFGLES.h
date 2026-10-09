@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIFontTTF.h"
+#include "utils/GLBufferArena.h"
 
 #include <string>
 #include <vector>
@@ -39,6 +40,7 @@ protected:
   void DeleteHardwareTexture() override;
 
   static GLuint m_elementArrayHandle;
+  static KODI::UTILS::GL::CGLBufferArena m_vertexArena;
 
 private:
   unsigned int m_updateY1{0};

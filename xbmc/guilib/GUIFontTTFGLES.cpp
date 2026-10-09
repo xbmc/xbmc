@@ -36,6 +36,7 @@
 namespace
 {
 constexpr size_t ELEMENT_ARRAY_MAX_CHAR_INDEX = 1000;
+constexpr size_t CHARACTER_SIZE = 4 * sizeof(SVertex);
 } /* namespace */
 
 CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
@@ -185,7 +186,8 @@ void CGUIFontTTFGLES::LastEnd()
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
-      if (m_vertexTrans[i].m_vertexBuffer->bufferHandle == 0)
+      const CVertexBuffer& vertexBuffer = *m_vertexTrans[i].m_vertexBuffer;
+      if (vertexBuffer.bufferHandle == 0 && !m_vertexArena.IsValid(vertexBuffer.range))
       {
         continue;
       }
@@ -258,27 +260,31 @@ void CGUIFontTTFGLES::LastEnd()
       glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
-      glBindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].m_vertexBuffer->bufferHandle);
+      GLintptr offset = 0;
+      if (vertexBuffer.bufferHandle != 0)
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer.bufferHandle);
+      else
+        offset = m_vertexArena.Bind(vertexBuffer.range);
 
       // Do the actual drawing operation, split into groups of characters no
       // larger than the pre-determined size of the element array
-      for (size_t character = 0; m_vertexTrans[i].m_vertexBuffer->size > character;
+      for (size_t character = 0; vertexBuffer.size > character;
            character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
       {
-        size_t count = m_vertexTrans[i].m_vertexBuffer->size - character;
+        size_t count = vertexBuffer.size - character;
         count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
         // Set up the offsets of the various vertex attributes within the buffer
         // object bound to GL_ARRAY_BUFFER
-        glVertexAttribPointer(
-            posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-            reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, x)));
-        glVertexAttribPointer(
-            colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
-            reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, r)));
-        glVertexAttribPointer(
-            tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-            reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, u)));
+        glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              reinterpret_cast<GLvoid*>(offset + character * sizeof(SVertex) * 4 +
+                                                        offsetof(SVertex, x)));
+        glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                              reinterpret_cast<GLvoid*>(offset + character * sizeof(SVertex) * 4 +
+                                                        offsetof(SVertex, r)));
+        glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              reinterpret_cast<GLvoid*>(offset + character * sizeof(SVertex) * 4 +
+                                                        offsetof(SVertex, u)));
 
         glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
         CRenderSystemBase::m_GUIElementCount++;
@@ -310,6 +316,15 @@ CVertexBuffer CGUIFontTTFGLES::CreateVertexBuffer(const std::vector<SVertex>& ve
   // Do not create empty buffers, leave buffer as 0, it will be ignored in drawing stage
   if (!vertices.empty())
   {
+    const size_t size = vertices.size() * sizeof(SVertex);
+    const KODI::UTILS::GL::CGLBufferArena::Range range = m_vertexArena.Allocate(size);
+    if (m_vertexArena.IsValid(range))
+    {
+      m_vertexArena.Upload(range, vertices.data(), size);
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      return CVertexBuffer(range, vertices.size() / 4, this);
+    }
+
     // Generate a unique buffer object name and put it in bufferHandle
     glGenBuffers(1, &bufferHandle);
     // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
@@ -317,8 +332,7 @@ CVertexBuffer CGUIFontTTFGLES::CreateVertexBuffer(const std::vector<SVertex>& ve
     // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
     // binding point (i.e. our buffer object) and initialise it from the
     // specified client-side pointer
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(SVertex), vertices.data(),
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);
     // Unbind GL_ARRAY_BUFFER
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
@@ -328,6 +342,7 @@ CVertexBuffer CGUIFontTTFGLES::CreateVertexBuffer(const std::vector<SVertex>& ve
 
 void CGUIFontTTFGLES::DestroyVertexBuffer(CVertexBuffer& buffer) const
 {
+  m_vertexArena.Free(buffer.range);
   if (buffer.bufferHandle != 0)
   {
     // Release the buffer name for reuse
@@ -466,6 +481,8 @@ void CGUIFontTTFGLES::CreateStaticVertexBuffers(void)
 
 void CGUIFontTTFGLES::DestroyStaticVertexBuffers(void)
 {
+  m_vertexArena.Destroy();
+
   if (!m_staticVertexBufferCreated)
     return;
 
@@ -475,3 +492,10 @@ void CGUIFontTTFGLES::DestroyStaticVertexBuffers(void)
 
 GLuint CGUIFontTTFGLES::m_elementArrayHandle{0};
 bool CGUIFontTTFGLES::m_staticVertexBufferCreated{false};
+
+// Text runs above the largest slot get their own buffer: from about 1.5 pages on, page rounding
+// wastes less than a shared slot would.
+KODI::UTILS::GL::CGLBufferArena CGUIFontTTFGLES::m_vertexArena{
+    {4 * CHARACTER_SIZE, 8 * CHARACTER_SIZE, 12 * CHARACTER_SIZE, 16 * CHARACTER_SIZE,
+     24 * CHARACTER_SIZE, 32 * CHARACTER_SIZE, 48 * CHARACTER_SIZE},
+    16 * 1024};
