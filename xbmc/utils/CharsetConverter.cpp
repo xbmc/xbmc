@@ -605,7 +605,6 @@ std::vector<std::string> CCharsetConverter::getCharsetLabels()
   return lab;
 }
 
-
 std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetLabel)
 {
   for(SCharsetMapping* c = g_charsets; c->charset; c++)
@@ -657,7 +656,6 @@ std::u32string CCharsetConverter::utf8ToUtf32(const std::string& utf8StringSrc, 
   utf8ToUtf32(utf8StringSrc, converted, failOnBadChar);
   return converted;
 }
-
 
 bool CCharsetConverter::utf32ToUtf8(const std::u32string& utf32StringSrc, std::string& utf8StringDst, bool failOnBadChar /*= true*/)
 {
@@ -727,7 +725,6 @@ bool CCharsetConverter::subtitleCharsetToUtf8(const std::string& stringSrc, std:
 {
   return CInnerConverter::stdConvert(SubtitleCharsetToUtf8, stringSrc, utf8StringDst, false);
 }
-
 
 bool CCharsetConverter::utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst)
 {
@@ -804,12 +801,10 @@ bool CCharsetConverter::utf16BEtoUTF8(const std::string& utf16StringSrc, std::st
   return CInnerConverter::stdConvert(Utf16BEtoUtf8, utf16StringSrc, utf8StringDst);
 }
 
-
 bool CCharsetConverter::utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst)
 {
   return CInnerConverter::stdConvert(Utf32ToUserCharset, utf32StringSrc, stringDst);
 }
-
 
 bool CCharsetConverter::systemToUtf8(const std::string& sysStringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
@@ -820,7 +815,6 @@ bool CCharsetConverter::MacintoshToUTF8(const std::string& macStringSrc, std::st
 {
   return CInnerConverter::stdConvert(MacintoshToUtf8, macStringSrc, utf8StringDst);
 }
-
 
 bool CCharsetConverter::utf8IsRTLBidiDirection(const std::string& utf8String)
 {
