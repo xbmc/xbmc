@@ -16,6 +16,10 @@
 #include "utils/ColorUtils.h"
 #include "utils/TransformMatrix.h"
 
+#if defined(HAS_GLES)
+#include "utils/GLBufferArena.h"
+#endif
+
 #include <algorithm>
 #include <cassert>
 #include <chrono>
@@ -231,11 +235,23 @@ struct CVertexBuffer
 #endif
   BufferHandleType bufferHandle = BUFFER_HANDLE_INIT; // this is really a GLuint
   size_t size = 0;
+#if defined(HAS_GLES)
+  // Used instead of bufferHandle when the vertices share a buffer with other text
+  KODI::UTILS::GL::CGLBufferArena::Range range;
+#endif
   CVertexBuffer() : m_font(nullptr) {}
   CVertexBuffer(BufferHandleType bufferHandle, size_t size, const CGUIFontTTF* font)
     : bufferHandle(bufferHandle), size(size), m_font(font)
   {
   }
+#if defined(HAS_GLES)
+  CVertexBuffer(KODI::UTILS::GL::CGLBufferArena::Range range, size_t size, const CGUIFontTTF* font)
+    : size(size),
+      range(range),
+      m_font(font)
+  {
+  }
+#endif
   CVertexBuffer(const CVertexBuffer& other)
     : bufferHandle(other.bufferHandle), size(other.size), m_font(other.m_font)
   {
@@ -250,6 +266,10 @@ struct CVertexBuffer
     assert(bufferHandle == 0);
     bufferHandle = other.bufferHandle;
     other.bufferHandle = 0;
+#if defined(HAS_GLES)
+    range = other.range;
+    other.range = {};
+#endif
     size = other.size;
     m_font = other.m_font;
     return *this;
