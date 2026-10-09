@@ -22,6 +22,7 @@
 #include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
 #include "utils/Crc32.h"
+#include "utils/DefaultArt.h"
 #include "utils/ItemProperties.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
@@ -340,8 +341,8 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))
-          return "DefaultMovies.png";
-        return "DefaultMovieTitle.png";
+          return KODI::ART::DEFAULT::MOVIES;
+        return KODI::ART::DEFAULT::MOVIE_TITLE;
       }
       return "";
     case NodeType::TITLE_TVSHOWS:
@@ -349,8 +350,8 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))
-          return "DefaultTVShows.png";
-        return "DefaultTVShowTitle.png";
+          return KODI::ART::DEFAULT::TV_SHOWS;
+        return KODI::ART::DEFAULT::TV_SHOW_TITLE;
       }
       return "";
     case NodeType::TITLE_MUSICVIDEOS:
@@ -358,44 +359,44 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
       {
         if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                 CSettings::SETTING_MYVIDEOS_FLATTEN))
-          return "DefaultMusicVideos.png";
-        return "DefaultMusicVideoTitle.png";
+          return KODI::ART::DEFAULT::MUSIC_VIDEOS;
+        return KODI::ART::DEFAULT::MUSIC_VIDEO_TITLE;
       }
       return "";
     case NodeType::ACTOR: // Actor
-      return "DefaultActor.png";
+      return KODI::ART::DEFAULT::ACTOR;
     case NodeType::GENRE: // Genres
-      return "DefaultGenre.png";
+      return KODI::ART::DEFAULT::GENRE;
     case NodeType::COUNTRY: // Countries
-      return "DefaultCountry.png";
+      return KODI::ART::DEFAULT::COUNTRY;
     case NodeType::SETS: // Sets
-      return "DefaultSets.png";
+      return KODI::ART::DEFAULT::SETS;
     case NodeType::TAGS: // Tags
-      return "DefaultTags.png";
+      return KODI::ART::DEFAULT::TAGS;
     case NodeType::VIDEOVERSIONS: // Video versions
-      return "DefaultVideoVersions.png";
+      return KODI::ART::DEFAULT::VIDEO_VERSIONS;
     case NodeType::YEAR: // Year
-      return "DefaultYear.png";
+      return KODI::ART::DEFAULT::YEAR;
     case NodeType::DIRECTOR: // Director
-      return "DefaultDirector.png";
+      return KODI::ART::DEFAULT::DIRECTOR;
     case NodeType::MOVIES_OVERVIEW: // Movies
-      return "DefaultMovies.png";
+      return KODI::ART::DEFAULT::MOVIES;
     case NodeType::TVSHOWS_OVERVIEW: // TV Shows
-      return "DefaultTVShows.png";
+      return KODI::ART::DEFAULT::TV_SHOWS;
     case NodeType::RECENTLY_ADDED_MOVIES: // Recently Added Movies
-      return "DefaultRecentlyAddedMovies.png";
+      return KODI::ART::DEFAULT::RECENTLY_ADDED_MOVIES;
     case NodeType::RECENTLY_ADDED_EPISODES: // Recently Added Episodes
-      return "DefaultRecentlyAddedEpisodes.png";
+      return KODI::ART::DEFAULT::RECENTLY_ADDED_EPISODES;
     case NodeType::RECENTLY_ADDED_MUSICVIDEOS: // Recently Added Episodes
-      return "DefaultRecentlyAddedMusicVideos.png";
+      return KODI::ART::DEFAULT::RECENTLY_ADDED_MUSIC_VIDEOS;
     case NodeType::INPROGRESS_TVSHOWS: // InProgress TvShows
-      return "DefaultInProgressShows.png";
+      return KODI::ART::DEFAULT::IN_PROGRESS_SHOWS;
     case NodeType::STUDIO: // Studios
-      return "DefaultStudios.png";
+      return KODI::ART::DEFAULT::STUDIOS;
     case NodeType::MUSICVIDEOS_OVERVIEW: // Music Videos
-      return "DefaultMusicVideos.png";
+      return KODI::ART::DEFAULT::MUSIC_VIDEOS;
     case NodeType::MUSICVIDEOS_ALBUM: // Music Videos - Albums
-      return "DefaultMusicAlbums.png";
+      return KODI::ART::DEFAULT::MUSIC_ALBUMS;
     default:
       break;
   }

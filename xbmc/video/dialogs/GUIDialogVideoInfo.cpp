@@ -49,6 +49,7 @@
 #include "threads/IRunnable.h"
 #include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
 #include "utils/Map.h"
@@ -373,7 +374,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       CFileItemPtr item(new CFileItem(*it));
       if (!thumb.empty())
         item->SetArt(ART::TYPE::THUMB, thumb);
-      item->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
+      item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ARTIST);
       item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(29904));
       m_castList->Add(item);
     }
@@ -398,7 +399,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
             CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
           }
         }
-        item->SetArt(ART::TYPE::ICON, "DefaultActor.png");
+        item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ACTOR);
         item->SetLabel(it->strName);
         item->SetLabel2(it->strRole);
         m_castList->Add(item);
@@ -441,7 +442,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
           }
         }
       }
-      item->SetArt(ART::TYPE::ICON, "DefaultActor.png");
+      item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ACTOR);
       item->SetLabel(it->strName);
       item->SetLabel2(it->strRole);
       m_castList->Add(item);
@@ -1929,7 +1930,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   {
     const auto itemRemote = std::make_shared<CFileItem>(IMAGE_CHOICE::RemoteOf(i), false);
     itemRemote->SetArt(ART::TYPE::THUMB, remoteArt[i]);
-    itemRemote->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
+    itemRemote->SetArt(ART::TYPE::ICON, ART::DEFAULT::PICTURE);
     itemRemote->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13513));
     items.Add(itemRemote);
 

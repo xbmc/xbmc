@@ -22,6 +22,7 @@
 #include "settings/VideoVersionsSettings.h"
 #include "threads/IRunnable.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StreamUtils.h"
@@ -2100,7 +2101,7 @@ std::shared_ptr<CFileItem> GenerateEpisodeItem(const CURL& url,
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24026) /* Languages */,
       langs));
   item->SetSize(0);
-  item->SetArt(KODI::ART::TYPE::ICON, "DefaultVideo.png");
+  item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::VIDEO);
 
   return item;
 }
@@ -2345,7 +2346,7 @@ std::shared_ptr<CFileItem> GenerateAllEpisodesItem(const CURL& url,
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24026) /* Languages */,
       langs));
   item->SetSize(0);
-  item->SetArt(KODI::ART::TYPE::ICON, "DefaultVideo.png");
+  item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::VIDEO);
 
   return item;
 }
@@ -2917,7 +2918,7 @@ std::shared_ptr<CFileItem> GenerateMovieItem(const CURL& url,
   item->SetLabel2(label2);
 
   item->SetSize(0);
-  item->SetArt(KODI::ART::TYPE::ICON, "DefaultVideo.png");
+  item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::VIDEO);
 
   return item;
 }
@@ -3739,7 +3740,7 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
     item->SetLabel(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25002) /* All titles */);
     item->SetSpecialSort(SortSpecial::BOTTOM); // below the playlists, however they are sorted
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultVideoPlaylists.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::VIDEO_PLAYLISTS);
     items.Add(item);
   }
 
@@ -3751,7 +3752,7 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url,
     item->SetLabel(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25003) /* Menu */);
     item->SetSpecialSort(SortSpecial::BOTTOM);
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultProgram.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PROGRAM);
     items.Add(item);
   }
 }

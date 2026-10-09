@@ -32,6 +32,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/DefaultArt.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -44,9 +45,6 @@ using namespace MESSAGING;
 namespace
 {
 constexpr int CONTROL_BTN_LEVELS = 20;
-
-// Fallback icon shown when no add-on icon is available
-constexpr const char* DEFAULT_ADDON_ICON = "DefaultAddon.png";
 } // namespace
 
 CGUIDialogAddonSettings::CGUIDialogAddonSettings()
@@ -439,7 +437,7 @@ void CGUIDialogAddonSettings::SetupView()
   if (!m_addon->Icon().empty())
     SetProperty("Addon.Icon", m_addon->Icon());
   else
-    SetProperty("Addon.Icon", DEFAULT_ADDON_ICON);
+    SetProperty("Addon.Icon", ART::DEFAULT::ADDON);
   SetProperty("Addon.Version", m_addon->Version().asString());
 
   if (m_addon->Type() == ADDON::AddonType::GAMEDLL)

@@ -48,6 +48,7 @@
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
@@ -544,7 +545,7 @@ void CGUIDialogMusicInfo::SetDiscography(CMusicDatabase& database) const
     // Load all the album art and related artist(s) art (could be other collaborating artists)
     loader.LoadItem(item.get());
     if (item->GetMusicInfoTag()->GetDatabaseId() == -1)
-      item->SetArt(ART::TYPE::THUMB, "DefaultAlbumCover.png");
+      item->SetArt(ART::TYPE::THUMB, ART::DEFAULT::ALBUM_COVER);
   }
 }
 
@@ -798,7 +799,7 @@ void CGUIDialogMusicInfo::OnGetArt()
     // For album it could be a fallback from artist
     CFileItemPtr item(new CFileItem(IMAGE_CHOICE::CURRENT, false));
     item->SetArt(ART::TYPE::THUMB, m_item->GetArt(type));
-    item->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::PICTURE);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13512));
     items.Add(item);
   }
@@ -817,7 +818,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   {
     CFileItemPtr item(new CFileItem(IMAGE_CHOICE::RemoteOf(i), false));
     item->SetArt(ART::TYPE::THUMB, remotethumbs[i]);
-    item->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::PICTURE);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13513));
 
     items.Add(item);
@@ -882,9 +883,9 @@ void CGUIDialogMusicInfo::OnGetArt()
     // allow the user to delete it by selecting "no art".
     CFileItemPtr item(new CFileItem(IMAGE_CHOICE::NONE, false));
     if (m_bArtistInfo)
-      item->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
+      item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ARTIST);
     else
-      item->SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
+      item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ALBUM_COVER);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
     items.Add(item);
   }

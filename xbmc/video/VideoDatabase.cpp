@@ -52,6 +52,7 @@
 #include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/ContentNames.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
 #include "utils/ItemProperties.h"
@@ -7314,9 +7315,9 @@ bool CVideoDatabase::GetActorsNav(const std::string& strBaseDir,
     {
       CFileItemPtr pItem = items[i];
       if (idContent == VideoDbContentType::MUSICVIDEOS)
-        pItem->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
+        pItem->SetArt(ART::TYPE::ICON, ART::DEFAULT::ARTIST);
       else
-        pItem->SetArt(ART::TYPE::ICON, "DefaultActor.png");
+        pItem->SetArt(ART::TYPE::ICON, ART::DEFAULT::ACTOR);
     }
     return true;
   }

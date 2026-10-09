@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/Digest.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
@@ -314,7 +315,7 @@ int CGUIDialogAddonInfo::AskForVersion(
     if (origin == LOCAL_CACHE)
     {
       item.SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24095));
-      item.SetArt(ART::TYPE::ICON, "DefaultAddonRepository.png");
+      item.SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDON_REPOSITORY);
       dialog->Add(item);
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(origin, repo, AddonType::REPOSITORY,
@@ -814,9 +815,9 @@ void CGUIDialogAddonInfo::ShowSupportList() const
     if (!entry.m_icon.empty())
       item->SetArt(ART::TYPE::ICON, entry.m_icon);
     else if (entry.m_type == AddonSupportType::Extension)
-      item->SetArt(ART::TYPE::ICON, "DefaultExtensionInfo.png");
+      item->SetArt(ART::TYPE::ICON, ART::DEFAULT::EXTENSION_INFO);
     else if (entry.m_type == AddonSupportType::Mimetype)
-      item->SetArt(ART::TYPE::ICON, "DefaultMimetypeInfo.png");
+      item->SetArt(ART::TYPE::ICON, ART::DEFAULT::MIMETYPE_INFO);
     item->SetProperty("addon_id", m_localAddon->ID());
     items.Add(std::move(item));
   }

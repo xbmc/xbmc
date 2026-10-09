@@ -28,6 +28,7 @@
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "settings/SettingAddon.h"
 #include "settings/lib/Setting.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML2.h"
@@ -939,7 +940,7 @@ std::string CPeripheral::GetIcon() const
 
   // Fallback
   if (icon.empty())
-    icon = "DefaultAddon.png";
+    icon = ART::DEFAULT::ADDON;
 
   return icon;
 }

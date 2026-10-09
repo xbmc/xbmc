@@ -37,6 +37,7 @@
 #include "storage/discs/IDiscDriveHandler.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
+#include "utils/DefaultArt.h"
 #include "utils/GpuInfo.h"
 #include "utils/HDRCapabilities.h"
 #include "utils/MemUtils.h"
@@ -297,7 +298,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
                                      ->GetProfileManager()
                                      ->GetCurrentProfile()
                                      .getThumb();
-      value = thumb.empty() ? "DefaultUser.png" : thumb;
+      value = thumb.empty() ? KODI::ART::DEFAULT::USER : thumb;
       return true;
     }
     case SYSTEM_LANGUAGE:

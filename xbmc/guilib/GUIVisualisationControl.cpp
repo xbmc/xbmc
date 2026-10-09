@@ -32,6 +32,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/DefaultArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -274,7 +275,7 @@ void CGUIVisualisationControl::UpdateTrack()
   // get the current album art filename
   m_albumThumb = CSpecialProtocol::TranslatePath(
       CServiceBroker::GetGUI()->GetInfoManager().GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
-  if (m_albumThumb == "DefaultAlbumCover.png")
+  if (m_albumThumb == KODI::ART::DEFAULT::ALBUM_COVER)
     m_albumThumb = "";
   else
     CLog::Log(LOGDEBUG, "Updating visualization albumart: {}", m_albumThumb);

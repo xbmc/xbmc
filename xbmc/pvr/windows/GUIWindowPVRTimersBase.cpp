@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/URIUtils.h"
 
 #include <memory>
@@ -72,7 +73,7 @@ void CGUIWindowPVRTimersBase::OnPrepareFileItems(CFileItemList& items)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19026)); // "Add timer..."
     item->SetLabelPreformatted(true);
     item->SetSpecialSort(SortSpecial::TOP);
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultTVShows.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::TV_SHOWS);
 
     items.AddFront(item, 0);
   }
