@@ -467,10 +467,6 @@ void CImageMetadataParser::ExtractIPTC(Exiv2::IptcData& iptcData)
     {
       m_imageMetadata->iptcInfo.Date = it->value().toString();
     }
-    else if (iptcKey == "Iptc.Application2.DateCreated")
-    {
-      m_imageMetadata->iptcInfo.Date = it->value().toString();
-    }
     else if (iptcKey == "Iptc.Application2.TimeCreated")
     {
       m_imageMetadata->iptcInfo.TimeCreated = it->value().toString();
