@@ -51,6 +51,7 @@
 using namespace KODI;
 using namespace ADDON;
 using namespace PVR;
+using KODI::MEDIA::MediaSection;
 
 std::string CGUIViewState::m_strPlaylistDirectory;
 std::vector<CMediaSource> CGUIViewState::m_sources;
@@ -465,9 +466,9 @@ bool CGUIViewState::AutoPlayNextItem()
   return false;
 }
 
-std::string CGUIViewState::GetLockType()
+std::optional<KODI::MEDIA::MediaSection> CGUIViewState::GetLockType()
 {
-  return "";
+  return std::nullopt;
 }
 
 std::string CGUIViewState::GetExtensions()
@@ -482,8 +483,9 @@ std::vector<CMediaSource>& CGUIViewState::GetSources()
 
 void CGUIViewState::AddLiveTVSources()
 {
-  std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources("video");
-  for (std::vector<CMediaSource>::iterator it = sources->begin(); it != sources->end(); ++it)
+  std::vector<CMediaSource>& sources =
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO);
+  for (std::vector<CMediaSource>::iterator it = sources.begin(); it != sources.end(); ++it)
   {
     if (URIUtils::IsLiveTV((*it).strPath))
     {

@@ -49,6 +49,8 @@
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
 
+using KODI::MEDIA::MediaSection;
+
 namespace KODI
 {
 
@@ -164,7 +166,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // Check if we add a locked share
     if (!item->IsPVR() && item->IsShareOrDrive())
     {
-      if (!g_passwordManager.IsItemUnlocked(item.get(), "video"))
+      if (!g_passwordManager.IsItemUnlocked(item.get(), MediaSection::VIDEO))
         return;
     }
 

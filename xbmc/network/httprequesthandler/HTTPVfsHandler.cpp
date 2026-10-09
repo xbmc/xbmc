@@ -18,6 +18,10 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
+#include <array>
+
+using KODI::MEDIA::MediaSection;
+
 CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   : CHTTPFileHandler(request)
 {
@@ -35,8 +39,8 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
         accessible = true;
       else
       {
-        std::string sourceTypes[] = { "video", "music", "pictures" };
-        unsigned int size = sizeof(sourceTypes) / sizeof(std::string);
+        constexpr std::array sections{MediaSection::VIDEO, MediaSection::MUSIC,
+                                      MediaSection::PICTURES};
 
         std::string realPath = URIUtils::GetRealPath(file);
         // for rar:// and zip:// paths we need to extract the path to the archive instead of using the VFS path
@@ -44,14 +48,12 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
           realPath = CURL(realPath).GetHostName();
 
         // Check manually configured sources
-        std::vector<CMediaSource>* sources = NULL;
-        for (unsigned int index = 0; index < size && !accessible; index++)
+        for (const MediaSection section : sections)
         {
-          sources = CMediaSourceSettings::GetInstance().GetSources(sourceTypes[index]);
-          if (sources == NULL)
-            continue;
+          if (accessible)
+            break;
 
-          for (const auto& source : *sources)
+          for (const auto& source : CMediaSourceSettings::GetInstance().GetSources(section))
           {
             if (accessible)
               break;

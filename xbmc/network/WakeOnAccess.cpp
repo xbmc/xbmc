@@ -56,6 +56,7 @@
 #define DEFAULT_WAIT_FOR_SERVICES_SEC (5)    // wait 5 seconds after host go online to launch file sharing daemons
 
 using namespace std::chrono_literals;
+using KODI::MEDIA::MediaSection;
 
 static CDateTime upnpInitReady;
 
@@ -672,13 +673,6 @@ static void AddHostsFromVecSource(const std::vector<CMediaSource>& sources,
     AddHostsFromMediaSource(it, hosts);
 }
 
-static void AddHostsFromVecSource(const std::vector<CMediaSource>* sources,
-                                  std::vector<std::string>& hosts)
-{
-  if (sources)
-    AddHostsFromVecSource(*sources, hosts);
-}
-
 void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
 {
   std::vector<std::string> hosts;
@@ -686,11 +680,11 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   // add media sources
   CMediaSourceSettings& ms = CMediaSourceSettings::GetInstance();
 
-  AddHostsFromVecSource(ms.GetSources("video"), hosts);
-  AddHostsFromVecSource(ms.GetSources("music"), hosts);
-  AddHostsFromVecSource(ms.GetSources("files"), hosts);
-  AddHostsFromVecSource(ms.GetSources("pictures"), hosts);
-  AddHostsFromVecSource(ms.GetSources("programs"), hosts);
+  AddHostsFromVecSource(ms.GetSources(MediaSection::VIDEO), hosts);
+  AddHostsFromVecSource(ms.GetSources(MediaSection::MUSIC), hosts);
+  AddHostsFromVecSource(ms.GetSources(MediaSection::FILES), hosts);
+  AddHostsFromVecSource(ms.GetSources(MediaSection::PICTURES), hosts);
+  AddHostsFromVecSource(ms.GetSources(MediaSection::PROGRAMS), hosts);
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 

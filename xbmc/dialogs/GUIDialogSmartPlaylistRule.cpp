@@ -35,6 +35,7 @@
 
 using enum CDatabaseQueryRule::FieldType;
 using namespace KODI;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -322,10 +323,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   {
     std::vector<CMediaSource> sources;
     if (m_type == "songs" || m_type == "mixed")
-      sources = *CMediaSourceSettings::GetInstance().GetSources("music");
+      sources = CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC);
     if (PLAYLIST::CSmartPlaylist::IsVideoType(m_type))
     {
-      std::vector<CMediaSource> sources2 = *CMediaSourceSettings::GetInstance().GetSources("video");
+      std::vector<CMediaSource> sources2 =
+          CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO);
       sources.insert(sources.end(),sources2.begin(),sources2.end());
     }
     CServiceBroker::GetMediaManager().GetLocalDrives(sources);

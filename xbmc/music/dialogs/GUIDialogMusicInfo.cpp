@@ -18,6 +18,7 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/ImageChoices.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
@@ -60,6 +61,7 @@ using namespace MUSIC_INFO;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTN_REFRESH      6
 #define CONTROL_USERRATING       7
@@ -794,7 +796,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   {
     // Add item for current artwork
     // For album it could be a fallback from artist
-    CFileItemPtr item(new CFileItem("thumb://Current", false));
+    CFileItemPtr item(new CFileItem(IMAGE_CHOICE::CURRENT, false));
     item->SetArt(ART::TYPE::THUMB, m_item->GetArt(type));
     item->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13512));
@@ -813,9 +815,7 @@ void CGUIDialogMusicInfo::OnGetArt()
 
   for (unsigned int i = 0; i < remotethumbs.size(); ++i)
   {
-    std::string strItemPath;
-    strItemPath = StringUtils::Format("thumb://Remote{}", i);
-    CFileItemPtr item(new CFileItem(strItemPath, false));
+    CFileItemPtr item(new CFileItem(IMAGE_CHOICE::RemoteOf(i), false));
     item->SetArt(ART::TYPE::THUMB, remotethumbs[i]);
     item->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13513));
@@ -880,7 +880,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   if (bHasArt && !bFallback)
   { // Actually has this type of art (not a fallback) so
     // allow the user to delete it by selecting "no art".
-    CFileItemPtr item(new CFileItem("thumb://None", false));
+    CFileItemPtr item(new CFileItem(IMAGE_CHOICE::NONE, false));
     if (m_bArtistInfo)
       item->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
     else
@@ -896,7 +896,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   for (auto& item : items)
   {
     // Skip images from remote sources, recache done by refresh (could be slow)
-    if (StringUtils::StartsWith(item->GetPath(), "thumb://Remote"))
+    if (IMAGE_CHOICE::RemoteIndexOf(item->GetPath()))
       continue;
     std::string thumb(item->GetArt(ART::TYPE::THUMB));
     if (thumb.empty())
@@ -914,23 +914,21 @@ void CGUIDialogMusicInfo::OnGetArt()
   // never used by Kodi again, but there is no obvious way to clear these
   // thumbs from the cache automatically.
   std::string result;
-  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC));
   CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_item);
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   if (CGUIDialogFileBrowser::ShowAndGetImage(
           items, sources, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13511),
           result) &&
-      result != "thumb://Current")
+      result != IMAGE_CHOICE::CURRENT)
   {
     // User didn't choose the one they have.
     // Overwrite with the new art or clear it
     std::string newArt;
-    if (StringUtils::StartsWith(result, "thumb://Remote"))
-    {
-      int number = atoi(result.substr(14).c_str());
-      newArt = remotethumbs[number];
-    }
-    else if (result == "thumb://Thumb")
+    if (const auto index = IMAGE_CHOICE::RemoteIndexOf(result))
+      newArt = remotethumbs[*index];
+    else if (result == IMAGE_CHOICE::THUMB)
       newArt = m_item->GetArt(ART::TYPE::THUMB);
     else if (StringUtils::StartsWith(result, "Local Art: "))
       newArt = localArt;

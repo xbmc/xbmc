@@ -36,9 +36,11 @@
 #include "utils/CharsetConverter.h"
 #endif
 
+#include <array>
 #include <vector>
 
 using namespace XFILE;
+using KODI::MEDIA::MediaSection;
 
 bool CFileUtils::DeleteItem(const std::string &strPath)
 {
@@ -102,7 +104,8 @@ bool CFileUtils::RenameFile(const std::string &strFile)
 
 bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
 {
-  std::string SourceNames[] = { "programs", "files", "video", "music", "pictures" };
+  constexpr std::array sections{MediaSection::PROGRAMS, MediaSection::FILES, MediaSection::VIDEO,
+                                MediaSection::MUSIC, MediaSection::PICTURES};
 
   std::string realPath = URIUtils::GetRealPath(strPath);
   // for rar:// and zip:// paths we need to extract the path to the archive
@@ -147,13 +150,12 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   }
   bool isSource;
   // Check manually added sources (held in sources.xml)
-  for (const std::string& sourceName : SourceNames)
+  for (const MediaSection section : sections)
   {
-    std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
-    int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
-    if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources->size()) &&
-        !sources->at(sourceIndex).GetLockInfo().IsLocked() &&
-        sources->at(sourceIndex).m_allowSharing)
+    std::vector<CMediaSource>& sources = CMediaSourceSettings::GetInstance().GetSources(section);
+    int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
+    if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) &&
+        !sources.at(sourceIndex).GetLockInfo().IsLocked() && sources.at(sourceIndex).m_allowSharing)
       return true;
   }
   // Check auto-mounted sources

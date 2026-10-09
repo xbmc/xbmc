@@ -35,6 +35,7 @@
 #include <gtest/gtest.h>
 
 using namespace XFILE;
+using KODI::MEDIA::MediaSection;
 
 #define WEBSERVER_HOST          "127.0.0.1"
 
@@ -114,7 +115,7 @@ protected:
     source.GetLockInfo().SetMode(LockMode::EVERYONE);
     source.m_ignore = true;
 
-    CMediaSourceSettings::GetInstance().AddShare("videos", source);
+    CMediaSourceSettings::GetInstance().AddShare(MediaSection::VIDEO, source);
   }
 
   void TearDownMediaSources()

@@ -46,6 +46,8 @@
 #include <string>
 #include <vector>
 
+using KODI::MEDIA::MediaSection;
+
 #define SETTING_SUBTITLE_ENABLE                "subtitles.enable"
 #define SETTING_SUBTITLE_DELAY                 "subtitles.delay"
 #define SETTING_SUBTITLE_STREAM                "subtitles.stream"
@@ -129,7 +131,8 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
       extras += '|' + vfsAddon->GetExtensions();
   }
 
-  std::vector<CMediaSource> shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
+  std::vector<CMediaSource> shares(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO));
 
   const auto currentItem{g_application.CurrentFileItem()};
   std::string strPath{currentItem.GetProperty("BasePath").asString("")};

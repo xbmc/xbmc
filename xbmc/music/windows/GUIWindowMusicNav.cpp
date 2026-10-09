@@ -71,6 +71,7 @@ using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -590,7 +591,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (m_vecItems->IsPath("sources://music/"))
     {
       // get the usual music shares, and anything for all media windows
-      CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
+      CGUIDialogContextMenu::GetContextButtons(MediaSection::MUSIC, item, buttons);
 #ifdef HAS_OPTICAL_DRIVE
       // enable Rip CD an audio disc
       if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*item))
