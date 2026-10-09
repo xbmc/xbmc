@@ -1656,6 +1656,27 @@ void CActiveAE::FlushEngine()
   if (m_vizBuffers)
     m_vizBuffers->Flush();
 
+  // The AC3/EAC3 encoder keeps internal state (MDCT overlap, partially filled input frame).
+  // If it survives a flush, the first encoded frame after seek/pause mixes stale data from the
+  // old position with the new audio, which results in an audible pop. Start from a clean encoder.
+  if (m_mode == MODE_TRANSCODE && m_encoder)
+  {
+    AEAudioFormat encFormat = m_encoderFormat;
+    delete m_encoder;
+    m_encoder = new CAEEncoderFFmpeg();
+    if (m_encoder->Initialize(encFormat, true))
+    {
+      m_encoderFormat = encFormat;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "ActiveAE::{} - failed to re-initialize encoder on flush", __FUNCTION__);
+      delete m_encoder;
+      m_encoder = nullptr;
+      m_extError = true;
+    }
+  }
+
   // send message to sink
   Message *reply;
   if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s))
