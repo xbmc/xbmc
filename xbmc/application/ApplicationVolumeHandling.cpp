@@ -194,38 +194,31 @@ bool CApplicationVolumeHandling::Save(TiXmlNode* settings) const
   return true;
 }
 
-bool CApplicationVolumeHandling::OnSettingChanged(const CSetting& setting)
+void CApplicationVolumeHandling::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  const std::string& settingId = setting.GetId();
+  const std::string& settingId = setting->GetId();
 
-  if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
+  if (settingId == CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE)
     m_replayGainSettings.m_type =
-        static_cast<ReplayGain::Type>(static_cast<const CSettingInt&>(setting).GetValue());
-  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP) ||
-           StringUtils::EqualsNoCase(settingId,
-                                     CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
+        static_cast<ReplayGain::Type>(static_cast<const CSettingInt&>(*setting).GetValue());
+  else if (settingId == CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP ||
+           settingId == CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP)
   {
-    const float gain{static_cast<float>(static_cast<const CSettingNumber&>(setting).GetValue())};
+    const float gain{static_cast<float>(static_cast<const CSettingNumber&>(*setting).GetValue())};
 
     // 0 dB gain value needs to be exactly 0 to avoid unwanted sign flips
     if (gain != 0.0f && (std::abs(gain) < 0.01f))
     {
       CServiceBroker::GetSettingsComponent()->GetSettings()->SetNumber(settingId, 0.0);
-      return true;
+      return;
     }
-    if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP))
+    if (settingId == CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP)
       m_replayGainSettings.m_preAmp = gain;
-    else if (StringUtils::EqualsNoCase(settingId,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
+    else
       m_replayGainSettings.m_noGainPreAmp = gain;
   }
-  else if (StringUtils::EqualsNoCase(settingId,
-                                     CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
-    m_replayGainSettings.m_avoidClipping = static_cast<const CSettingBool&>(setting).GetValue();
-  else
-    return false;
-
-  return true;
+  else if (settingId == CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING)
+    m_replayGainSettings.m_avoidClipping = static_cast<const CSettingBool&>(*setting).GetValue();
 }
 
 bool CApplicationVolumeHandling::OnAction(const CAction& action)

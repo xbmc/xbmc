@@ -10,6 +10,7 @@
 
 #include "application/IApplicationComponent.h"
 #include "music/tags/ReplayGain.h"
+#include "settings/lib/ISettingCallback.h"
 
 class CAction;
 class CApplication;
@@ -20,7 +21,7 @@ class TiXmlNode;
 /*!
  * \brief Class handling application support for audio volume management.
  */
-class CApplicationVolumeHandling : public IApplicationComponent
+class CApplicationVolumeHandling : public IApplicationComponent, public ISettingCallback
 {
   friend class CApplication;
   friend class CApplicationMessageHandling;
@@ -52,7 +53,7 @@ public:
 
   bool Load(const TiXmlNode* settings);
   bool Save(TiXmlNode* settings) const;
-  bool OnSettingChanged(const CSetting& setting);
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   /*!
    \brief Handle the mute, passthrough and volume actions.
