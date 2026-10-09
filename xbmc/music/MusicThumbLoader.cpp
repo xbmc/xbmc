@@ -13,6 +13,7 @@
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/Artwork.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "video/VideoThumbLoader.h"
 
@@ -57,7 +58,8 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   if (pItem->IsShareOrDrive())
     return false;
 
-  if (pItem->HasMusicInfoTag() && !pItem->GetProperty("libraryartfilled").asBoolean())
+  if (pItem->HasMusicInfoTag() &&
+      !pItem->GetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean())
   {
     if (FillLibraryArt(*pItem))
       return true;
@@ -367,7 +369,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     }
 
     item.AppendArt(artmap);
-    item.SetProperty("libraryartfilled", true);
+    item.SetProperty(KODI::ITEM::PROPERTY::LIBRARY_ART_FILLED, true);
   }
 
   return artfound;

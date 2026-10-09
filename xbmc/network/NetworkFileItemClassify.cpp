@@ -9,6 +9,7 @@
 #include "network/NetworkFileItemClassify.h"
 
 #include "FileItem.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 
 namespace KODI::NETWORK
@@ -16,7 +17,7 @@ namespace KODI::NETWORK
 
 bool IsInternetStream(const CFileItem& item)
 {
-  if (item.HasProperty("IsHTTPDirectory"))
+  if (item.HasProperty(ITEM::PROPERTY::IS_HTTP_DIRECTORY))
     return false;
 
   return URIUtils::IsInternetStream(item.GetDynURL());

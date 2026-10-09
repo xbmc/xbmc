@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
+#include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -182,7 +183,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       if (strLinkTemp != ".." && !strLinkTemp.empty() && NameMatchesLink(strNameTemp, strLinkTemp))
       {
         CFileItemPtr pItem(new CFileItem(strNameTemp));
-        pItem->SetProperty("IsHTTPDirectory", true);
+        pItem->SetProperty(KODI::ITEM::PROPERTY::IS_HTTP_DIRECTORY, true);
         CURL url2(url);
 
         url2.SetFileName(strBasePath + strLinkBase);
@@ -300,7 +301,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
   http.Close();
 
-  items.SetProperty("IsHTTPDirectory", true);
+  items.SetProperty(KODI::ITEM::PROPERTY::IS_HTTP_DIRECTORY, true);
 
   return true;
 }

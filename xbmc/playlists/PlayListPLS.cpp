@@ -66,9 +66,8 @@ bool CPlayListPLS::Load(const std::string &strFile)
 {
   //read it from the file
   std::string strFileName(strFile);
-  m_strPlayListName = URIUtils::GetFileName(strFileName);
-
   Clear();
+  m_strPlayListName = URIUtils::GetFileName(strFileName);
 
   bool bShoutCast = false;
   if( StringUtils::StartsWithNoCase(strFileName, "shout://") )

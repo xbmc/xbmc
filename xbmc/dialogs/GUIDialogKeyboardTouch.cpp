@@ -11,6 +11,8 @@
 #include "platform/darwin/ios-common/DarwinEmbedKeyboard.h"
 #elif defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidKeyboard.h"
+#elif defined(TARGET_WASM)
+#include "windowing/wasm/WasmKeyboard.h"
 #endif
 
 CGUIDialogKeyboardTouch::CGUIDialogKeyboardTouch()
@@ -27,6 +29,8 @@ bool CGUIDialogKeyboardTouch::ShowAndGetInput(char_callback_t pCallback, const s
   m_keyboard.reset(new CDarwinEmbedKeyboard());
 #elif defined(TARGET_ANDROID)
   m_keyboard.reset(new CAndroidKeyboard(*this));
+#elif defined(TARGET_WASM)
+  m_keyboard = std::make_unique<KODI::WINDOWING::WASM::CWasmKeyboard>();
 #endif
 
   if (!m_keyboard)

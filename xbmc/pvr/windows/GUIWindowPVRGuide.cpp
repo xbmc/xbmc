@@ -44,6 +44,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ItemProperties.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "view/GUIViewState.h"
 
@@ -304,7 +305,7 @@ CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
 int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(
     const std::shared_ptr<const CFileItem>& item) const
 {
-  return item ? item->GetProperty("TimelineIndex").asInteger32() : -1;
+  return item ? item->GetProperty(KODI::ITEM::PROPERTY::TIMELINE_INDEX).asInteger32() : -1;
 }
 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)

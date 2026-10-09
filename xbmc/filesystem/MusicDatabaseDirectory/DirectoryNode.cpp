@@ -28,6 +28,7 @@
 #include "FileItemList.h"
 #include "QueryParams.h"
 #include "URL.h"
+#include "music/MusicDbPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -210,7 +211,7 @@ std::string CDirectoryNode::BuildPath() const
     pParent=pParent->GetParent();
   }
 
-  std::string strPath="musicdb://";
+  std::string strPath = KODI::MUSIC::DB_PATH::ROOT;
   for (int i = 0; i < static_cast<int>(array.size()); ++i)
     strPath+=array[i]+"/";
 

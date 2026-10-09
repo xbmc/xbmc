@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -41,7 +42,8 @@ bool CDirectoryNodeMovieAssets::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  const int details{items.GetProperty("set_videodb_details").asInteger32(VideoDbDetailsStream)};
+  const int details{items.GetProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS)
+                        .asInteger32(VideoDbDetailsStream)};
 
   const std::string path{BuildPath()};
 

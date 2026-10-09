@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
+#include "utils/ItemProperties.h"
 #include "utils/log.h"
 #include "video/Bookmark.h"
 
@@ -323,8 +324,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
 
   // Music from cuesheet => "item_start" and offset match
   // Start offset defines where this song starts in file of multiple songs
-  if (si->m_fileItem->HasProperty("item_start") &&
-      (si->m_fileItem->GetProperty("item_start").asInteger() == si->m_fileItem->GetStartOffset()))
+  if (si->m_fileItem->HasProperty(ITEM::PROPERTY::ITEM_START) &&
+      (si->m_fileItem->GetProperty(ITEM::PROPERTY::ITEM_START).asInteger() ==
+       si->m_fileItem->GetStartOffset()))
   {
     // Start stream at offset from cuesheet
     si->m_startOffset = si->m_fileItem->GetStartOffset();
@@ -393,21 +395,23 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
     streamTotalTime = si->m_endOffset - si->m_startOffset;
 
   // Seek to a resume point
-  if (si->m_fileItem->HasProperty("StartPercent") &&
-      (si->m_fileItem->GetProperty("StartPercent").asDouble() > 0) &&
-      (si->m_fileItem->GetProperty("StartPercent").asDouble() <= 100))
+  if (si->m_fileItem->HasProperty(ITEM::PROPERTY::START_PERCENT) &&
+      (si->m_fileItem->GetProperty(ITEM::PROPERTY::START_PERCENT).asDouble() > 0) &&
+      (si->m_fileItem->GetProperty(ITEM::PROPERTY::START_PERCENT).asDouble() <= 100))
   {
     si->m_seekFrame =
         si->m_audioFormat.m_sampleRate *
         CUtil::ConvertMilliSecsToSecs(static_cast<int>(+(static_cast<double>(
-            streamTotalTime * (si->m_fileItem->GetProperty("StartPercent").asDouble() / 100.0)))));
+            streamTotalTime *
+            (si->m_fileItem->GetProperty(ITEM::PROPERTY::START_PERCENT).asDouble() / 100.0)))));
   }
   else if (starttime > 0)
     si->m_seekFrame = si->m_audioFormat.m_sampleRate * starttime;
-  else if (si->m_fileItem->HasProperty("audiobook_bookmark"))
-    si->m_seekFrame = si->m_audioFormat.m_sampleRate *
-                      CUtil::ConvertMilliSecsToSecs(
-                          si->m_fileItem->GetProperty("audiobook_bookmark").asInteger());
+  else if (si->m_fileItem->HasProperty(ITEM::PROPERTY::AUDIOBOOK_BOOKMARK))
+    si->m_seekFrame =
+        si->m_audioFormat.m_sampleRate *
+        CUtil::ConvertMilliSecsToSecs(
+            si->m_fileItem->GetProperty(ITEM::PROPERTY::AUDIOBOOK_BOOKMARK).asInteger());
 
   si->m_prepareNextAtFrame = 0;
   // cd drives don't really like it to be crossfaded or prepared

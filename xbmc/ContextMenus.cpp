@@ -17,6 +17,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -41,7 +42,7 @@ namespace CONTEXTMENU
 #ifdef HAS_OPTICAL_DRIVE
     // Sources carry the drive, which cdda://local/ and mount points don't name. An item on the
     // disc itself has no source, so fall back to the drive root of its own path.
-    std::string devicePath{item->GetProperty("device_path").asString()};
+    std::string devicePath{item->GetProperty(ITEM::PROPERTY::DEVICE_PATH).asString()};
     const std::string& path{item->GetPath()};
     if (devicePath.empty() && URIUtils::IsDOSPath(path) && path[1] == ':')
       devicePath = path.substr(0, 2);
@@ -89,7 +90,7 @@ std::string CAddRemoveFavourite::GetLabel(const CFileItem& item) const
 
 bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
 {
-  if (item.GetProperty("hide_add_remove_favourite").asBoolean())
+  if (item.GetProperty(ITEM::PROPERTY::HIDE_ADD_REMOVE_FAVOURITE).asBoolean())
     return false;
 
   return (!item.GetPath().empty() && !item.IsParentFolder() &&

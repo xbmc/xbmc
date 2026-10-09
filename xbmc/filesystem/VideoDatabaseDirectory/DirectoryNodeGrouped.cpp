@@ -9,10 +9,13 @@
 #include "DirectoryNodeGrouped.h"
 
 #include "QueryParams.h"
+#include "utils/ContentNames.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
+
+namespace CONTENT = KODI::MEDIA::CONTENT;
 
 CDirectoryNodeGrouped::CDirectoryNodeGrouped(NodeType type,
                                              const std::string& strName,
@@ -84,29 +87,29 @@ std::string CDirectoryNodeGrouped::GetContentType(const CQueryParams &params) co
   switch (GetType())
   {
     case NodeType::GENRE:
-      return "genres";
+      return CONTENT::GENRES;
     case NodeType::COUNTRY:
-      return "countries";
+      return CONTENT::COUNTRIES;
     case NodeType::SETS:
-      return "sets";
+      return CONTENT::SETS;
     case NodeType::TAGS:
-      return "tags";
+      return CONTENT::TAGS;
     case NodeType::VIDEOVERSIONS:
-      return "videoversions";
+      return CONTENT::VIDEOVERSIONS;
     case NodeType::YEAR:
-      return "years";
+      return CONTENT::YEARS;
     case NodeType::ACTOR:
       if (static_cast<VideoDbContentType>(params.GetContentType()) ==
           VideoDbContentType::MUSICVIDEOS)
-        return "artists";
+        return CONTENT::ARTISTS;
       else
-        return "actors";
+        return CONTENT::ACTORS;
     case NodeType::DIRECTOR:
-      return "directors";
+      return CONTENT::DIRECTORS;
     case NodeType::STUDIO:
-      return "studios";
+      return CONTENT::STUDIOS;
     case NodeType::MUSICVIDEOS_ALBUM:
-      return "albums";
+      return CONTENT::ALBUMS;
 
     case NodeType::EPISODES:
     case NodeType::MOVIES_OVERVIEW:

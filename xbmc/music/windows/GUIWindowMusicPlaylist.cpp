@@ -33,6 +33,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/LabelFormatter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -534,7 +535,7 @@ bool CGUIWindowMusicPlayList::Update(const std::string& strDirectory,
     return false;
 
   if (m_vecItems->GetContent().empty())
-    m_vecItems->SetContent("songs");
+    m_vecItems->SetContent(MEDIA::CONTENT::SONGS);
 
   m_musicInfoLoader.Load(*m_vecItems);
   return true;

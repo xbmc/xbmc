@@ -60,6 +60,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/LabelFormatter.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/SortUtils.h"
@@ -399,15 +400,16 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           CFileItemList items;
           items.SetPath(URIUtils::GetDirectory(newItem->GetPath()));
 
-          const bool hasCacheFilename = newItem->HasProperty("cachefilename");
-          const bool hasParentPath = newItem->HasProperty("ParentPath");
+          const bool hasCacheFilename = newItem->HasProperty(ITEM::PROPERTY::CACHE_FILENAME);
+          const bool hasParentPath = newItem->HasProperty(ITEM::PROPERTY::PARENT_PATH);
 
           // Use the stored cache file name
           if (hasCacheFilename)
-            items.RemoveDiscCacheCRC(newItem->GetProperty("cachefilename").asString());
+            items.RemoveDiscCacheCRC(
+                newItem->GetProperty(ITEM::PROPERTY::CACHE_FILENAME).asString());
 
           if (hasParentPath)
-            RemoveDiscCache(newItem->GetProperty("ParentPath").asString());
+            RemoveDiscCache(newItem->GetProperty(ITEM::PROPERTY::PARENT_PATH).asString());
 
           // No stored cache file name or parent path, try the truncated item path as list path
           if (!hasCacheFilename && !hasParentPath)
@@ -773,7 +775,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   // Store parent path along with item as parent path cannot safely be calculated from item's path.
   for (const auto& item : items)
   {
-    item->SetProperty("ParentPath", m_vecItems->GetPath());
+    item->SetProperty(ITEM::PROPERTY::PARENT_PATH, m_vecItems->GetPath());
   }
 
   // update the view state's reference to the current items
@@ -1135,7 +1137,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
     return true;
   }
-  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
+  else if (pItem->IsPlugin() && !pItem->GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean())
   {
     bool resume = pItem->GetStartOffset() == STARTOFFSET_RESUME;
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetURL(), resume);
