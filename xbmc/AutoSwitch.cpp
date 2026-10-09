@@ -16,6 +16,8 @@
 #include "guilib/WindowIDs.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
+#include "utils/ItemProperties.h"
 #include "view/ViewState.h"
 
 #include <algorithm>
@@ -33,7 +35,7 @@ enum class Method
   BY_FOLDERTHUMBS,
 };
 
-auto hasThumb = [](const auto& item) { return item->HasArt("thumb"); };
+auto hasThumb = [](const auto& item) { return item->HasArt(KODI::ART::TYPE::THUMB); };
 }
 
 /// \brief Generic function to add a layer of transparency to the calling window
@@ -159,8 +161,9 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
   if (fileCount > 0.25f * numItems)
     return false;
 
-  const int numThumbs = std::ranges::count_if(
-      vecItems, [](const auto& item) { return item->IsFolder() && item->HasArt("thumb"); });
+  const int numThumbs =
+      std::ranges::count_if(vecItems, [](const auto& item)
+                            { return item->IsFolder() && item->HasArt(KODI::ART::TYPE::THUMB); });
   return numThumbs >= 0.01f * percent * (numItems - fileCount);
 }
 
@@ -175,7 +178,8 @@ float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
                                 --total;
 
                               return item->HasMusicInfoTag() || item->HasVideoInfoTag() ||
-                                     item->HasPictureInfoTag() || item->HasProperty("Addon.ID");
+                                     item->HasPictureInfoTag() ||
+                                     item->HasProperty(KODI::ITEM::PROPERTY::ADDON_ID);
                             });
   return total != 0 ? count / total : 0.0f;
 }

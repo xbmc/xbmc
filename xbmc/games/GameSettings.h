@@ -11,6 +11,7 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/Observer.h"
 
+#include <atomic>
 #include <string>
 
 class CSetting;
@@ -40,6 +41,32 @@ public:
   unsigned int MaxRewindTimeSec();
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
+
+  /*!
+   * \brief Whether achievements are earned in hardcore mode
+   *
+   * Hardcore awards double points, and in exchange the player goes without
+   * rewind, save state loading, cheats and slow motion. RetroAchievements does
+   * not allow a session begun in casual mode to carry on into hardcore, so
+   * turning this on part-way through restarts the game.
+   */
+  bool GetAchievementsHardcore() const;
+
+  /*!
+   * \brief Turn hardcore mode on or off
+   *
+   * Used to drop back to casual when a session resumes from a save state,
+   * which RetroAchievements requires.
+   */
+  void SetAchievementsHardcore(bool hardcore);
+
+  /*!
+   * \brief Whether hardcore mode is offered to the player
+   *
+   * RetroAchievements decide which clients may earn hardcore unlocks, so the
+   * setting stays hidden until they have approved Kodi.
+   */
+  bool AchievementsHardcoreOffered() const;
 
   /*!
    * \brief Whether achievements already earned can be triggered again
@@ -79,6 +106,12 @@ private:
 
   // Construction parameters
   std::shared_ptr<CSettings> m_settings;
+
+  //! Hardcore mode, kept apart from the setting because it is read with a game
+  //! client's lock held. A change holds the setting's own lock while observers
+  //! run, and they take the client lock, so reading the setting there could
+  //! wait on a change that is waiting on the reader.
+  std::atomic<bool> m_achievementsHardcore{false};
 };
 
 } // namespace GAME

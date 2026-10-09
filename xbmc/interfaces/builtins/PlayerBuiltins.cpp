@@ -36,6 +36,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -195,9 +196,9 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (appPlayer->SupportsTempo() && appPlayer->IsPlaying() && !appPlayer->IsPaused())
     {
       if (paramlow == "tempodown")
-        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::DECREASE);
+        CPlayerUtils::AdvanceTempoStep(*appPlayer, TempoStepChange::DECREASE);
       else if (paramlow == "tempoup")
-        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::INCREASE);
+        CPlayerUtils::AdvanceTempoStep(*appPlayer, TempoStepChange::INCREASE);
     }
   }
   else if (StringUtils::StartsWithNoCase(params[0], "tempo"))
@@ -556,7 +557,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
   }
 
   if (!item.IsFolder() && item.IsPlugin())
-    item.SetProperty("IsPlayable", true);
+    item.SetProperty(ITEM::PROPERTY::IS_PLAYABLE, true);
 
   if (forcePlay && askToResume)
   {

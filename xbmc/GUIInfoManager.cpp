@@ -26,6 +26,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/SkinSettings.h"
+#include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/FileUtils.h"
@@ -4540,6 +4541,15 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_SupportsCheats `RetroPlayer.SupportsCheats`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.AchievementsHardcore`</b>,
+///                  \anchor RetroPlayer_AchievementsHardcore
+///                  _boolean_,
+///     @return **True** if achievements are being earned in hardcore mode\,
+///     **False** otherwise.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link RetroPlayer_AchievementsHardcore `RetroPlayer.AchievementsHardcore`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`RetroPlayer.AchievementsProgress`</b>,
 ///                  \anchor RetroPlayer_AchievementsProgress
 ///                  _string_,
@@ -4638,7 +4648,7 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 28> retroplayer = {{
+constexpr std::array<InfoMap, 29> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4660,6 +4670,7 @@ constexpr std::array<InfoMap, 28> retroplayer = {{
     {"achievementsindicatorbadge", RETROPLAYER_ACHIEVEMENTS_INDICATOR_BADGE},
     {"achievementsindicatorprogress", RETROPLAYER_ACHIEVEMENTS_INDICATOR_PROGRESS},
     {"achievementsindicatorpercent", RETROPLAYER_ACHIEVEMENTS_INDICATOR_PERCENT},
+    {"achievementshardcore", RETROPLAYER_ACHIEVEMENTS_HARDCORE},
     {"supportseject", RETROPLAYER_SUPPORTS_EJECT},
     {"discejected", RETROPLAYER_DISC_EJECTED},
     {"disclabel", RETROPLAYER_DISC_LABEL},
@@ -11395,7 +11406,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
       else if (prop.Name() == "property")
       {
         if (StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
-          return AddMultiInfo(CGUIInfo(PLAYER_ITEM_ART, "fanart"));
+          return AddMultiInfo(CGUIInfo(PLAYER_ITEM_ART, ART::TYPE::FANART));
 
         return AddMultiInfo(CGUIInfo(MUSICPLAYER_PROPERTY, prop.param()));
       }
@@ -11785,7 +11796,7 @@ int CGUIInfoManager::TranslateListItem(const Property& cat,
     if (prop.Name() == "property" && StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
     {
       ret = LISTITEM_ART;
-      data3 = "fanart";
+      data3 = ART::TYPE::FANART;
     }
     else if (prop.Name() == "property" || prop.Name() == "art" || prop.Name() == "rating" ||
              prop.Name() == "votes" || prop.Name() == "ratingandvotes" || prop.Name() == "uniqueid")
@@ -12300,10 +12311,10 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem& item)
 void CGUIInfoManager::SetCurrentAlbumThumb(const std::string& thumbFileName)
 {
   if (CFileUtils::Exists(thumbFileName))
-    m_currentFile->SetArt("thumb", thumbFileName);
+    m_currentFile->SetArt(ART::TYPE::THUMB, thumbFileName);
   else
   {
-    m_currentFile->SetArt("thumb", "");
+    m_currentFile->SetArt(ART::TYPE::THUMB, "");
     ART::FillInDefaultIcon(*m_currentFile);
   }
 }
@@ -12496,14 +12507,14 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem* item,
       case LISTITEM_PROGRAM_COUNT:
         return std::to_string(item->GetProgramCount());
       case LISTITEM_ACTUAL_ICON:
-        return item->GetArt("icon");
+        return item->GetArt(ART::TYPE::ICON);
       case LISTITEM_ICON:
       {
         std::string strThumb = item->GetThumbHideIfUnwatched(item);
         if (strThumb.empty())
-          strThumb = item->GetArt("icon");
+          strThumb = item->GetArt(ART::TYPE::ICON);
         if (fallback)
-          *fallback = item->GetArt("icon");
+          *fallback = item->GetArt(ART::TYPE::ICON);
         return strThumb;
       }
       case LISTITEM_ART:

@@ -30,6 +30,7 @@
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "threads/SystemClock.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -112,7 +113,7 @@ void CDialogGameVideoFilter::InitScalingMethods()
         item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
             scalingMethodProps.categoryIndex));
         item->SetProperty("game.videofilter", CVariant{videoSettings.GetVideoFilter()});
-        item->SetArt("icon", ICON_VIDEO);
+        item->SetArt(ART::TYPE::ICON, ICON_VIDEO);
         m_items.Add(std::move(item));
       }
     }
@@ -216,7 +217,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
     auto item{std::make_shared<CFileItem>(videoFilter.name)};
     item->SetLabel2(videoFilter.folder);
     item->SetProperty("game.videofilter", CVariant{videoFilter.path});
-    item->SetArt("icon", ICON_VIDEO);
+    item->SetArt(ART::TYPE::ICON, ICON_VIDEO);
 
     m_items.Add(std::move(item));
   }
@@ -248,7 +249,7 @@ void CDialogGameVideoFilter::InitGetMoreButton()
   {
     auto item = std::make_shared<CFileItem>(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21452)); // "Get more..."
-    item->SetArt("icon", ICON_GET_MORE);
+    item->SetArt(ART::TYPE::ICON, ICON_GET_MORE);
     m_items.Add(std::move(item));
   }
 }

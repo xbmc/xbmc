@@ -20,10 +20,10 @@
 #if defined(TARGET_WINDOWS_STORE)
 #include "platform/Environment.h"
 #endif
+#include "language/LanguageTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Geometry.h"
-#include "utils/LanguageTag.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -50,7 +50,7 @@ struct iovec
 #   include <sys/uio.h>                                      /* struct iovec */
 #endif
 
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 using namespace std::chrono_literals;
 
 namespace

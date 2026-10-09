@@ -20,6 +20,8 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
 #include "games/dialogs/DialogGameDefines.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIMessage.h"
@@ -28,6 +30,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
+#include "utils/ArtTypes.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -45,7 +48,7 @@ CFileItemPtr CreateNewSaveItem()
 
   // A nonexistent path ensures a gamewindow control won't render any pixels
   item->SetPath(NO_PIXEL_DATA);
-  item->SetArt("icon", "DefaultAddSource.png");
+  item->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
   item->SetProperty(SAVESTATE_CAPTION,
                     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                         15315)); // "Save progress to a new save file"
@@ -305,6 +308,11 @@ void CDialogInGameSaves::OnLoad(CFileItem& focusedItem)
   }
   else
   {
+    // Hardcore mode explains itself with a notification, which is the whole
+    // story; an error on top of it would say the load went wrong instead
+    if (CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore())
+      return;
+
     //! @todo Remove this when support for savestate compression is added
     RETRO::CSavestateDatabase db;
     std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();

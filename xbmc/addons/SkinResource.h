@@ -18,7 +18,8 @@ class CSkinResource : public CResource
 public:
   explicit CSkinResource(const AddonInfoPtr& addonInfo);
 
-  bool IsAllowed(const std::string& file) const override;
+protected:
+  Published PublishedFiles() const override;
 };
 
 } // namespace ADDON

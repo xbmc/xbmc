@@ -34,6 +34,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
+#include "utils/ArtTypes.h"
 #include "utils/Crc32.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -271,7 +272,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     CFileItemPtr item(new CFileItem(StringUtils::Format(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(299), i + 1)));
     item->SetLabel2(bookmarkTime);
-    item->SetArt("thumb", m_bookmarks[i].thumbNailImage);
+    item->SetArt(KODI::ART::TYPE::THUMB, m_bookmarks[i].thumbNailImage);
     item->SetProperty("resumepoint", m_bookmarks[i].timeInSeconds);
     item->SetProperty("playerstate", m_bookmarks[i].playerState);
     item->SetProperty("isbookmark", "true");
@@ -304,7 +305,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     {
       auto chapterPath = IMAGE_FILES::CImageFileURL::FromFile(m_filePath, "video");
       chapterPath.AddOption("chapter", std::to_string(i));
-      item->SetArt("thumb", chapterPath.ToCacheKey());
+      item->SetArt(KODI::ART::TYPE::THUMB, chapterPath.ToCacheKey());
     }
 
     item->SetProperty("chapter", i);

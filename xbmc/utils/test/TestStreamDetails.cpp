@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/LanguageTag.h"
+#include "language/LanguageTag.h"
 #include "utils/StreamDetails.h"
 #include "utils/Variant.h"
 
@@ -17,7 +17,7 @@
 
 #include <gtest/gtest.h>
 
-using KODI::UTILS::CLanguageTag;
+using KODI::LANGUAGE::CLanguageTag;
 
 TEST(TestStreamDetails, General)
 {
@@ -786,7 +786,7 @@ StreamUtils::AudioPreferences ForLanguage(std::string_view language)
   if (language.empty())
     preferences.mediaDefault = true;
   else
-    preferences.language = KODI::UTILS::CLanguageTag::Parse(std::string{language});
+    preferences.language = KODI::LANGUAGE::CLanguageTag::Parse(std::string{language});
   return preferences;
 }
 } // namespace
@@ -1145,7 +1145,7 @@ TEST(TestStreamDetails, PreferredAudio_MediaDefaultIgnoresLanguageAndImpairedFla
 
   StreamUtils::AudioPreferences preferences;
   preferences.mediaDefault = true;
-  preferences.language = KODI::UTILS::CLanguageTag::Parse("eng"); // must be disregarded
+  preferences.language = KODI::LANGUAGE::CLanguageTag::Parse("eng"); // must be disregarded
 
   EXPECT_EQ(2, details.GetPreferredAudioStreamIndex(preferences));
 }

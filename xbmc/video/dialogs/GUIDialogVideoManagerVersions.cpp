@@ -20,7 +20,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/DiscDirectoryHelper.h"
-#include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "media/MediaType.h"
@@ -32,6 +31,7 @@
 #include "settings/VideoVersionsSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -40,12 +40,13 @@
 #include "video/VideoThumbLoader.h"
 #include "video/guilib/VideoGUIUtils.h"
 
-#include <algorithm>
 #include <memory>
 #include <optional>
 #include <string>
 #include <utility>
 #include <vector>
+
+using KODI::MEDIA::MediaSection;
 
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
 static constexpr unsigned int CONTROL_BUTTON_RENAME_VERSION = 24;
@@ -466,7 +467,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
 
   // Select the playlist using the simple menu
   const std::string oldPath{item->GetDynPath()};
-  item->SetProperty("force_playlist_selection", true);
+  item->SetProperty(KODI::ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION, true);
   const int idMovie{m_database.GetMovieId(oldPath)};
 
   CFileItemList items;
@@ -726,27 +727,12 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ConvertT
   // Must be retrieved before the conversion, which reassigns the file to the target movie.
   const int idFile{videoDb.GetFileIdByMovie(sourceDbId)};
 
-  // Preserve streamdetails if bluray playlist, or a stack containing them
+  // For the log, as the conversion deletes the source movie
   CFileItem sourceItem;
-  bool isSourceBluray{false};
-  if (videoDb.GetDetailsByTypeAndId(sourceItem, itemType, sourceDbId))
-  {
-    if (URIUtils::IsStack(sourceItem.GetDynPath()))
-    {
-      std::vector<std::string> paths;
-      XFILE::CStackDirectory::GetPaths(sourceItem.GetDynPath(), paths);
-      isSourceBluray = std::ranges::any_of(paths, [](const std::string& path)
-                                           { return URIUtils::IsBlurayPath(path); });
-    }
-    else
-      isSourceBluray = sourceItem.IsBluray();
-  }
-  const DeleteMovieCascadeAction cascadeAction{
-      isSourceBluray ? DeleteMovieCascadeAction::ALL_ASSETS_NOT_STREAMDETAILS
-                     : DeleteMovieCascadeAction::ALL_ASSETS};
+  videoDb.GetDetailsByTypeAndId(sourceItem, itemType, sourceDbId);
 
   if (!videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, versionTypeId,
-                                     VideoAssetType::VERSION, cascadeAction))
+                                     VideoAssetType::VERSION))
   {
     CLog::LogF(LOGERROR, "Failed to convert movie id {} into a version of movie id {}", sourceDbId,
                targetDbId);
@@ -937,7 +923,8 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
 
   // prompt to choose a video file
-  std::vector<CMediaSource> sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
+  std::vector<CMediaSource> sources{
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES)};
 
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   CServiceBroker::GetMediaManager().GetNetworkLocations(sources);
@@ -1045,8 +1032,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
           RemovePartNumberFromTitle(m_videoAsset->GetVideoInfoTag()->m_iDbId,
                                     m_videoAsset->GetVideoContentType(), m_database);
           return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
-                                                  idNewVideoVersion, VideoAssetType::VERSION,
-                                                  DeleteMovieCascadeAction::ALL_ASSETS);
+                                                  idNewVideoVersion, VideoAssetType::VERSION);
         }
         else
         {
@@ -1108,14 +1094,9 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
   }
 
   // Choose playlist for blurays, unless one has already been determined
-  DeleteMovieCascadeAction cascadeAction{DeleteMovieCascadeAction::ALL_ASSETS};
-  if (itemMovie->IsBluray())
-  {
-    if (!URIUtils::IsBlurayPath(itemMovie->GetDynPath()) &&
-        !ChoosePlaylist(itemMovie, ReplaceExistingFile::YES))
-      return false;
-    cascadeAction = DeleteMovieCascadeAction::ALL_ASSETS_NOT_STREAMDETAILS;
-  }
+  if (itemMovie->IsBluray() && !URIUtils::IsBlurayPath(itemMovie->GetDynPath()) &&
+      !ChoosePlaylist(itemMovie, ReplaceExistingFile::YES))
+    return false;
 
   // choose a video version type for the video
   const int idVideoVersion{ChooseVideoAsset(itemMovie, VideoAssetType::VERSION, "")};
@@ -1129,7 +1110,7 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
   const int sourceDbId{itemMovie->GetVideoInfoTag()->m_iDbId};
   const int targetDbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
   return m_database.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceDbId, targetDbId,
-                                          idVideoVersion, VideoAssetType::VERSION, cascadeAction);
+                                          idVideoVersion, VideoAssetType::VERSION);
 }
 
 void CGUIDialogVideoManagerVersions::PostProcessList(CFileItemList& list, int dbId)

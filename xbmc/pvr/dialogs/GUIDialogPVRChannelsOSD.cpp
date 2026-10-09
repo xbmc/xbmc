@@ -19,16 +19,22 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/providers/PVRProvider.h"
+#include "pvr/providers/PVRProviders.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <string>
 #include <vector>
@@ -40,6 +46,52 @@ using namespace std::chrono_literals;
 namespace
 {
 constexpr auto MAX_INVALIDATION_FREQUENCY = 2000ms; // limit to one invalidation per X milliseconds
+
+bool IsProviderChannel(const CPVRChannel& channel, const CPVRProvider& provider)
+{
+  return channel.ClientID() == provider.GetClientId() &&
+         channel.ClientProviderUid() == provider.GetUniqueId();
+}
+
+bool HasProviderChannel(const CPVRChannelGroup& group, const CPVRProvider& provider)
+{
+  return std::ranges::any_of(group.GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE),
+                             [&provider](const auto& member)
+                             { return IsProviderChannel(*member->Channel(), provider); });
+}
+
+struct ProviderGroup
+{
+  std::shared_ptr<CPVRProvider> provider;
+  std::shared_ptr<CPVRChannelGroup> group;
+};
+
+std::vector<ProviderGroup> GetProviderGroups(const CPVRChannelGroups& groups,
+                                             const CPVRProviders& providers)
+{
+  std::vector<ProviderGroup> result;
+  const auto allChannels = groups.GetGroupAll();
+  if (!allChannels)
+    return result;
+
+  const auto visibleGroups = groups.GetMembers(true);
+  for (const auto& provider : providers.GetProviders())
+  {
+    if (!HasProviderChannel(*allChannels, *provider))
+      continue;
+
+    result.push_back({provider, allChannels});
+    for (const auto& group : visibleGroups)
+    {
+      if (group != allChannels &&
+          group->GroupType() != PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT &&
+          HasProviderChannel(*group, *provider))
+        result.push_back({provider, group});
+    }
+  }
+
+  return result;
+}
 
 } // unnamed namespace
 
@@ -91,7 +143,10 @@ void CGUIDialogPVRChannelsOSD::OnInitWindow()
     return;
   }
 
+  m_useProviderGroups = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_PVRMENU_PROVIDERCHANNELOSD);
   Init();
+  m_provider.reset();
   Update();
   CGUIDialogPVRItemsViewBase::OnInitWindow();
 }
@@ -106,6 +161,7 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
     // next OnInitWindow will set the group which is then selected
     m_group.reset();
   }
+  m_provider.reset();
 
   CGUIDialogPVRItemsViewBase::OnDeinitWindow(nextWindowID);
 }
@@ -139,13 +195,42 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
       SaveControlStates();
 
       // switch to next or previous group
-      const std::shared_ptr<const CPVRChannelGroups> groups{
-          CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_group->IsRadio())};
-      const std::shared_ptr<CPVRChannelGroup> nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP
-                                                              ? groups->GetNextGroup(*m_group)
-                                                              : groups->GetPreviousGroup(*m_group);
-      CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(nextGroup);
-      m_group = nextGroup;
+      CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
+      const auto groups = pvrMgr.ChannelGroups()->Get(m_group->IsRadio());
+      const bool next = action.GetID() == ACTION_NEXT_CHANNELGROUP;
+      if (!m_useProviderGroups)
+      {
+        m_group = next ? groups->GetNextGroup(*m_group) : groups->GetPreviousGroup(*m_group);
+      }
+      else
+      {
+        const auto providerGroups = GetProviderGroups(*groups, *pvrMgr.Providers());
+        if (providerGroups.empty())
+        {
+          m_provider.reset();
+          m_group = next ? groups->GetNextGroup(*m_group) : groups->GetPreviousGroup(*m_group);
+        }
+        else
+        {
+          const auto it = std::ranges::find_if(
+              providerGroups,
+              [this](const ProviderGroup& entry)
+              {
+                return m_provider && entry.provider->GetClientId() == m_provider->GetClientId() &&
+                       entry.provider->GetUniqueId() == m_provider->GetUniqueId() &&
+                       entry.group->GroupID() == m_group->GroupID();
+              });
+          const size_t index = it == providerGroups.end()
+                                   ? (next ? providerGroups.size() - 1 : 0)
+                                   : static_cast<size_t>(std::distance(providerGroups.begin(), it));
+          const auto& selected = providerGroups[(index + (next ? 1 : providerGroups.size() - 1)) %
+                                                providerGroups.size()];
+          m_provider = selected.provider;
+          m_group = selected.group;
+        }
+      }
+
+      pvrMgr.PlaybackState()->SetActiveChannelGroup(m_group);
       Init();
       Update();
 
@@ -182,6 +267,8 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
 void CGUIDialogPVRChannelsOSD::Update()
 {
   CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
+  SetProperty("PVRProviderName", "");
+  SetProperty("PVRGroupName", "");
   pvrMgr.Events().Subscribe(this,
                             [this](const PVREvent& event)
                             {
@@ -193,14 +280,56 @@ void CGUIDialogPVRChannelsOSD::Update()
   const std::shared_ptr<const CPVRChannel> channel = pvrMgr.PlaybackState()->GetPlayingChannel();
   if (channel)
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
-        pvrMgr.PlaybackState()->GetActiveChannelGroup(channel->IsRadio());
+    if (m_useProviderGroups && !m_provider)
+      m_provider = channel->GetProvider();
+    const auto& provider = m_provider;
+    if (m_useProviderGroups && provider)
+    {
+      std::string providerName{provider->GetName()};
+      if (provider->IsClientProvider())
+      {
+        if (const auto client = pvrMgr.GetClient(provider->GetClientId()))
+        {
+          const std::string instanceName{client->GetInstanceName()};
+          if (!instanceName.empty())
+            providerName = instanceName;
+        }
+      }
+      SetProperty("PVRProviderName", providerName);
+    }
+    else if (m_useProviderGroups)
+    {
+      if (const auto client = pvrMgr.GetClient(channel->ClientID()))
+        SetProperty("PVRProviderName", client->GetInstanceName());
+    }
+
+    std::shared_ptr<CPVRChannelGroup> group =
+        m_useProviderGroups && m_group
+            ? m_group
+            : pvrMgr.PlaybackState()->GetActiveChannelGroup(channel->IsRadio());
+    if (m_useProviderGroups && group && provider && !HasProviderChannel(*group, *provider))
+      group = pvrMgr.ChannelGroups()->Get(channel->IsRadio())->GetGroupAll();
+    if (m_group && m_group != group)
+      m_group = group;
     if (group)
     {
+      if (m_useProviderGroups)
+      {
+        if (group->GroupType() == PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_ALL_CLIENTS ||
+            group->GroupType() == PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT)
+          SetProperty("PVRGroupName",
+                      pvrMgr.ChannelGroups()->Get(channel->IsRadio())->GetGroupAll()->GroupName());
+        else
+          SetProperty("PVRGroupName", group->GroupName());
+      }
+
       const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
           group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
       {
+        if (m_useProviderGroups && provider &&
+            !IsProviderChannel(*groupMember->Channel(), *provider))
+          continue;
         m_vecItems->Add(std::make_shared<CFileItem>(groupMember));
       }
 
@@ -268,12 +397,16 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int iItem)
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)
 {
-  m_groupSelectedItemPaths[iGroupID] = m_viewControl.GetSelectedItemPath();
+  const int clientId = m_provider ? m_provider->GetClientId() : -1;
+  const int providerUid = m_provider ? m_provider->GetUniqueId() : PVR_PROVIDER_INVALID_UID;
+  m_groupSelectedItemPaths[{clientId, providerUid, iGroupID}] = m_viewControl.GetSelectedItemPath();
 }
 
 std::string CGUIDialogPVRChannelsOSD::GetLastSelectedItemPath(int iGroupID) const
 {
-  const auto it = m_groupSelectedItemPaths.find(iGroupID);
+  const int clientId = m_provider ? m_provider->GetClientId() : -1;
+  const int providerUid = m_provider ? m_provider->GetUniqueId() : PVR_PROVIDER_INVALID_UID;
+  const auto it = m_groupSelectedItemPaths.find({clientId, providerUid, iGroupID});
   if (it != m_groupSelectedItemPaths.end())
     return it->second;
 

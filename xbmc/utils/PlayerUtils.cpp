@@ -13,6 +13,7 @@
 #include "application/ApplicationPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "music/MusicUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/Variant.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
@@ -28,7 +29,7 @@ bool CPlayerUtils::IsItemPlayable(const CFileItem& itemIn)
     return false;
 
   // Plugins
-  if (item.IsPlugin() && item.GetProperty("isplayable").asBoolean())
+  if (item.IsPlugin() && item.GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean())
     return true;
 
   // Music
@@ -44,18 +45,17 @@ bool CPlayerUtils::IsItemPlayable(const CFileItem& itemIn)
   return false;
 }
 
-void CPlayerUtils::AdvanceTempoStep(const std::shared_ptr<CApplicationPlayer>& appPlayer,
-                                    TempoStepChange change)
+void CPlayerUtils::AdvanceTempoStep(CApplicationPlayer& appPlayer, TempoStepChange change)
 {
   const auto step = 0.1f;
-  const auto currentTempo = appPlayer->GetPlayTempo();
+  const auto currentTempo = appPlayer.GetPlayTempo();
   switch (change)
   {
     case TempoStepChange::INCREASE:
-      appPlayer->SetTempo(currentTempo + step);
+      appPlayer.SetTempo(currentTempo + step);
       break;
     case TempoStepChange::DECREASE:
-      appPlayer->SetTempo(currentTempo - step);
+      appPlayer.SetTempo(currentTempo - step);
       break;
   }
 }

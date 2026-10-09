@@ -53,6 +53,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
 #include "utils/PlaceholderPaths.h"
@@ -65,6 +66,7 @@
 using namespace XFILE;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTNSELECTALL            1
 #define CONTROL_BTNFAVOURITES           2
@@ -481,7 +483,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath(PLACEHOLDER::ADD_SOURCE);
-    pItem->SetArt("icon", "DefaultAddSource.png");
+    pItem->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
     pItem->SetFolder(true);
@@ -503,21 +505,21 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
   {
     CFileItemPtr pItem(new CFileItem("special://profile/", true));
     pItem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20070));
-    pItem->SetArt("thumb", "DefaultFolder.png");
+    pItem->SetArt(ART::TYPE::THUMB, "DefaultFolder.png");
     pItem->SetLabelPreformatted(true);
     m_vecItems[iList]->Add(pItem);
 
     #ifdef TARGET_DARWIN_EMBEDDED
       CFileItemPtr iItem(new CFileItem("special://envhome/Documents/Inbox", true));
       iItem->SetLabel("Inbox");
-      iItem->SetArt("thumb", "DefaultFolder.png");
+      iItem->SetArt(ART::TYPE::THUMB, "DefaultFolder.png");
       iItem->SetLabelPreformatted(true);
       m_vecItems[iList]->Add(iItem);
     #endif
     #ifdef TARGET_ANDROID
       CFileItemPtr iItem(new CFileItem("special://logpath", true));
       iItem->SetLabel("Logs");
-      iItem->SetArt("thumb", "DefaultFolder.png");
+      iItem->SetArt(ART::TYPE::THUMB, "DefaultFolder.png");
       iItem->SetLabelPreformatted(true);
       m_vecItems[iList]->Add(iItem);
     #endif
@@ -530,7 +532,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     if (pItem->IsHD() &&
         URIUtils::HasExtension(pItem->GetPath(), ".tbn"))
     {
-      pItem->SetArt("thumb", pItem->GetPath());
+      pItem->SetArt(ART::TYPE::THUMB, pItem->GetPath());
     }
   }
   m_vecItems[iList]->FillInDefaultIcons();
@@ -566,9 +568,9 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
       pItem->GetLabel() == CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
                                1026)) // 'add source button' in empty root
   {
-    if (CGUIDialogMediaSource::ShowAndAddMediaSource("files"))
+    if (CGUIDialogMediaSource::ShowAndAddMediaSource(MediaSection::FILES))
     {
-      m_rootDir.SetSources(*CMediaSourceSettings::GetInstance().GetSources("files"));
+      m_rootDir.SetSources(CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES));
       Update(0,m_Directory[0]->GetPath());
       Update(1,m_Directory[1]->GetPath());
     }
@@ -592,7 +594,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     std::string strPath = pItem->GetPath();
     if (pItem->IsShareOrDrive())
     {
-      if ( !g_passwordManager.IsItemUnlocked( pItem.get(), "files" ) )
+      if ( !g_passwordManager.IsItemUnlocked( pItem.get(), MediaSection::FILES) )
       {
         Refresh();
         return ;
@@ -1014,9 +1016,9 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::SourcesMenu("files", pItem, posX, posY))
+    if (CGUIDialogContextMenu::SourcesMenu(MediaSection::FILES, pItem, posX, posY))
     {
-      m_rootDir.SetSources(*CMediaSourceSettings::GetInstance().GetSources("files"));
+      m_rootDir.SetSources(CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES));
       if (m_Directory[1 - list]->IsVirtualDirectoryRoot())
         Refresh();
       else
@@ -1135,7 +1137,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
   if (btnid == CONTROL_BTNSWITCHMEDIA)
   {
-    CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->GetPath());
+    CGUIDialogContextMenu::SwitchMedia(MediaSection::FILES, m_vecItems[list]->GetPath());
     return;
   }
   if (btnid == CONTROL_BTNCANCELJOB)
@@ -1180,7 +1182,7 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const std::string &strDirecto
   int64_t totalSize = 0;
   CFileItemList items;
   CVirtualDirectory rootDir;
-  rootDir.SetSources(*CMediaSourceSettings::GetInstance().GetSources("files"));
+  rootDir.SetSources(CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES));
   rootDir.GetDirectory(pathToUrl, items, false, false);
   for (int i=0; i < items.Size(); i++)
   {
@@ -1260,7 +1262,7 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
 {
   // check for a passed destination path
   std::string strDestination = path;
-  m_rootDir.SetSources(*CMediaSourceSettings::GetInstance().GetSources("files"));
+  m_rootDir.SetSources(CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES));
   if (!strDestination.empty())
   {
     CLog::Log(LOGINFO, "Attempting to quickpath to: {}", strDestination);
@@ -1268,7 +1270,8 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
   // otherwise, is this the first time accessing this window?
   else if (m_Directory[0]->GetPath() == "?")
   {
-    m_Directory[0]->SetPath(strDestination = CMediaSourceSettings::GetInstance().GetDefaultSource("files"));
+    m_Directory[0]->SetPath(
+        strDestination = CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::FILES));
     CLog::Log(LOGINFO, "Attempting to default to: {}", strDestination);
   }
   // try to open the destination path

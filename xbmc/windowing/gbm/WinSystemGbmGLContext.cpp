@@ -167,13 +167,8 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
 
   if (m_dispReset && m_dispResetTimer.IsTimePast())
   {
-    CLog::Log(LOGDEBUG, "CWinSystemGbmGLContext::{} - Sending display reset to all clients",
-              __FUNCTION__);
     m_dispReset = false;
-    std::unique_lock lock(m_resourceSection);
-
-    for (auto resource : m_resources)
-      resource->OnResetDisplay();
+    CWinSystemGbm::OnResetDisplay();
   }
 }
 

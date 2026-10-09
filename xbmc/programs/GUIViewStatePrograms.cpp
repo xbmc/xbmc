@@ -15,6 +15,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "view/ViewState.h"
+#include "view/ViewStateNames.h"
 #include "view/ViewStateSettings.h"
 
 #ifdef TARGET_ANDROID
@@ -24,6 +25,7 @@
 #endif
 
 using namespace XFILE;
+using KODI::MEDIA::MediaSection;
 
 CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items)
 {
@@ -34,7 +36,7 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
                     ? SortAttributeIgnoreArticle
                     : SortAttributeNone);
 
-  const CViewState *viewState = CViewStateSettings::GetInstance().Get("programs");
+  const CViewState* viewState = CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PROGRAMS);
   SetSortMethod(viewState->m_sortDescription);
   SetViewAsControl(viewState->m_viewMode);
   SetSortOrder(viewState->m_sortDescription.sortOrder);
@@ -44,12 +46,13 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
 
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
-  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS, CViewStateSettings::GetInstance().Get("programs"));
+  SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS,
+               CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PROGRAMS));
 }
 
-std::string CGUIViewStateWindowPrograms::GetLockType()
+std::optional<KODI::MEDIA::MediaSection> CGUIViewStateWindowPrograms::GetLockType()
 {
-  return "programs";
+  return KODI::MEDIA::MediaSection::PROGRAMS;
 }
 
 std::string CGUIViewStateWindowPrograms::GetExtensions()
@@ -72,9 +75,9 @@ std::vector<CMediaSource>& CGUIViewStateWindowPrograms::GetSources()
   }
 #endif
 
-  std::vector<CMediaSource>* programSources =
-      CMediaSourceSettings::GetInstance().GetSources("programs");
-  AddOrReplace(*programSources, CGUIViewState::GetSources());
-  return *programSources;
+  std::vector<CMediaSource>& programSources =
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::PROGRAMS);
+  AddOrReplace(programSources, CGUIViewState::GetSources());
+  return programSources;
 }
 

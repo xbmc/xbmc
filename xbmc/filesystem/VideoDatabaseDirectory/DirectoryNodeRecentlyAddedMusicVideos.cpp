@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "utils/ItemProperties.h"
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -27,8 +28,8 @@ bool CDirectoryNodeRecentlyAddedMusicVideos::GetContent(CFileItemList& items) co
   if (!videodatabase.Open())
     return false;
 
-  int details = items.HasProperty("set_videodb_details")
-                    ? items.GetProperty("set_videodb_details").asInteger32()
+  int details = items.HasProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS)
+                    ? items.GetProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS).asInteger32()
                     : VideoDbDetailsNone;
   bool bSuccess = videodatabase.GetRecentlyAddedMusicVideosNav(BuildPath(), items, 0, details);
 

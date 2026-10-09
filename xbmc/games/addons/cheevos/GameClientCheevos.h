@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/Observer.h"
+
 #include <atomic>
 #include <string>
 
@@ -36,13 +38,16 @@ class CGameClient;
 /*!
  * \ingroup games
  */
-class CGameClientCheevos
+class CGameClientCheevos : public Observer
 {
 public:
   CGameClientCheevos(CGameClient& gameClient,
                      AddonInstance_Game& addonStruct,
                      CCriticalSection& clientAccess);
-  ~CGameClientCheevos();
+  ~CGameClientCheevos() override;
+
+  // Implementation of Observer
+  void Notify(const Observable& obs, const ObservableMessage msg) override;
 
   /*!
    * \name RetroAchievements events received from the add-on
@@ -106,6 +111,24 @@ public:
    */
   bool SendCredentials();
 
+  /*!
+   * \brief Watch the achievement modes for as long as the client is loaded
+   *
+   * Called from CGameClient, which holds no lock at that point. It must stay
+   * that way: a settings change reaches Notify() with the observer list held,
+   * and Notify() then takes the client lock, so registering with the client
+   * lock already held would be the other order.
+   *
+   * Not done when the subsystem is built either - the game services are still
+   * being constructed at that point, and the settings live there.
+   */
+  void ObserveSettings();
+
+  /*!
+   * \brief Stop watching, for a client that outlives the settings
+   */
+  void StopObservingSettings();
+
 private:
   /*!
    * \brief Give the client the RetroAchievements account to sign in with
@@ -113,6 +136,23 @@ private:
    * The account is held by Kodi, which owns the settings it is entered in.
    */
   bool SetRetroAchievementsCredentials(const std::string& username, const std::string& token);
+
+  /*!
+   * \brief Tell the client which mode achievements are being earned in
+   *
+   * Applied as it arrives rather than at the next load: the client resets the
+   * game when hardcore is switched on, because RetroAchievements does not
+   * allow a session begun in casual mode to carry on into hardcore.
+   */
+  bool SetHardcoreEnabled(bool enabled);
+
+  /*!
+   * \brief Turn hardcore off after the client wouldn't take it
+   *
+   * The client plays on in casual mode, so Kodi stops enforcing hardcore and
+   * stops saying it is on.
+   */
+  void DropHardcore();
 
   /*!
    * \brief Tell the client that earned achievements are armed again
@@ -130,6 +170,14 @@ private:
   //! callbacks read it on the add-on's thread while loading and closing a game
   //! write it on Kodi's.
   std::atomic<bool> m_encoreModeEnabled{false};
+
+  //! Hardcore as last applied to this client. Atomic because the setting can
+  //! change on the player's thread as well as Kodi's.
+  std::atomic<bool> m_hardcoreEnabled{false};
+
+  //! Whether this instance is registered with the game settings. Only touched
+  //! on Kodi's thread, either side of a game.
+  bool m_observingSettings{false};
 };
 } // namespace GAME
 } // namespace KODI

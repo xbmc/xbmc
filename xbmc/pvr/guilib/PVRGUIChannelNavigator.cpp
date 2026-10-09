@@ -17,8 +17,11 @@
 #include "jobs/JobManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/providers/PVRProvider.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
@@ -187,9 +190,38 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevCh
         CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
     if (group)
     {
+      const bool useProviderGroups = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRMENU_PROVIDERCHANNELOSD);
+      const auto playingChannel =
+          useProviderGroups ? CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel()
+                            : nullptr;
+      const auto provider = playingChannel ? playingChannel->GetProvider() : nullptr;
+
       std::unique_lock lock(m_critSection);
-      return bNext ? group->GetNextChannelGroupMember(m_currentChannel)
-                   : group->GetPreviousChannelGroupMember(m_currentChannel);
+      const auto nextMember = [bNext, &group](const auto& member)
+      {
+        return bNext ? group->GetNextChannelGroupMember(member)
+                     : group->GetPreviousChannelGroupMember(member);
+      };
+
+      std::shared_ptr<CPVRChannelGroupMember> member = nextMember(m_currentChannel);
+      if (!member || !provider)
+        return member;
+
+      const int clientId = provider->GetClientId();
+      const int providerUid = provider->GetUniqueId();
+      const auto firstMember = member;
+      while (member)
+      {
+        const auto& channel = member->Channel();
+        if (channel->ClientID() == clientId && channel->ClientProviderUid() == providerUid)
+          return member;
+
+        member = nextMember(member);
+        if (member == m_currentChannel || member == firstMember)
+          break;
+      }
+      return {};
     }
   }
   return {};

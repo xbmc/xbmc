@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "events/EventLog.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 
 using namespace XFILE;
@@ -21,7 +22,7 @@ using namespace XFILE;
 bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   items.ClearProperties();
-  items.SetContent("events");
+  items.SetContent(KODI::MEDIA::CONTENT::EVENTS);
 
   auto log = CServiceBroker::GetEventLog();
   Events events;

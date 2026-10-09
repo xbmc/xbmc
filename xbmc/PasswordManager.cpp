@@ -167,9 +167,11 @@ void CPasswordManager::Load()
       std::string from, to;
       if (XMLUtils::GetPath(path, "from", from) && XMLUtils::GetPath(path, "to", to))
       {
-        m_permanentCache[from] = to;
-        m_temporaryCache[from] = to;
-        m_temporaryCache[GetServerLookup(from)] = to;
+        // older files hold the host name as it was typed
+        const std::string lookup = GetLookupPath(CURL(from));
+        m_permanentCache[lookup] = to;
+        m_temporaryCache[lookup] = to;
+        m_temporaryCache[GetServerLookup(lookup)] = to;
       }
       path = path->NextSiblingElement("path");
     }
@@ -215,11 +217,13 @@ std::string CPasswordManager::GetLookupPath(const CURL &url) const
   if (url.IsProtocol("sftp"))
     return GetServerLookup(url.Get());
 
-  return url.GetProtocol() + "://" + url.GetHostName() + "/" + url.GetShareName();
+  // host names are case-insensitive, so "MEDIAMASTER" must find credentials saved for "MediaMaster"
+  return url.GetProtocol() + "://" + StringUtils::ToLower(url.GetHostName()) + "/" +
+         url.GetShareName();
 }
 
 std::string CPasswordManager::GetServerLookup(const std::string &path) const
 {
   CURL url(path);
-  return url.GetProtocol() + "://" + url.GetHostName() + "/";
+  return url.GetProtocol() + "://" + StringUtils::ToLower(url.GetHostName()) + "/";
 }

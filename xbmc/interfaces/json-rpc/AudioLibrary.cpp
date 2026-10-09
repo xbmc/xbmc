@@ -18,6 +18,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicDbUrl.h"
 #include "music/MusicThumbLoader.h"
 #include "music/Song.h"
@@ -25,6 +26,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -102,7 +104,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://artists/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ARTISTS))
     return InternalError;
 
   bool allroles = false;
@@ -175,7 +177,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const std::string &method, ITrans
   int artistID = (int)parameterObject["artistid"].asInteger();
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://artists/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ARTISTS))
     return InternalError;
 
   CMusicDatabase musicdatabase;
@@ -212,7 +214,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://albums/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::ALBUMS))
     return InternalError;
 
   if (parameterObject["includesingles"].asBoolean())
@@ -293,8 +295,9 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
 
         if (bFetchFanart)
         {
-          if (item.HasArt("fanart"))
-            result["albums"][index]["fanart"] = IMAGE_FILES::URLFromFile(item.GetArt("fanart"));
+          if (item.HasArt(KODI::ART::TYPE::FANART))
+            result["albums"][index]["fanart"] =
+                IMAGE_FILES::URLFromFile(item.GetArt(KODI::ART::TYPE::FANART));
           else
             result["albums"][index]["fanart"] = "";
         }
@@ -333,7 +336,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const std::string &method, ITransp
   if (!musicdatabase.GetAlbum(albumID, album, false))
     return NotFound;
 
-  std::string path = StringUtils::Format("musicdb://albums/{}/", albumID);
+  std::string path = StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::ALBUMS, albumID);
 
   CFileItemPtr albumItem;
   FillAlbumItem(album, path, albumItem);
@@ -356,7 +359,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
     return InternalError;
 
   CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://songs/"))
+  if (!musicUrl.FromString(KODI::MUSIC::DB_PATH::SONGS))
     return InternalError;
 
   if (parameterObject["singlesonly"].asBoolean())
@@ -452,15 +455,17 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
 
         if (bFetchThumb)
         {
-          if (item.HasArt("thumb"))
-            result["songs"][index]["thumbnail"] = IMAGE_FILES::URLFromFile(item.GetArt("thumb"));
+          if (item.HasArt(KODI::ART::TYPE::THUMB))
+            result["songs"][index]["thumbnail"] =
+                IMAGE_FILES::URLFromFile(item.GetArt(KODI::ART::TYPE::THUMB));
           else
             result["songs"][index]["thumbnail"] = "";
         }
         if (bFetchFanart)
         {
-          if (item.HasArt("fanart"))
-            result["songs"][index]["fanart"] = IMAGE_FILES::URLFromFile(item.GetArt("fanart"));
+          if (item.HasArt(KODI::ART::TYPE::FANART))
+            result["songs"][index]["fanart"] =
+                IMAGE_FILES::URLFromFile(item.GetArt(KODI::ART::TYPE::FANART));
           else
             result["songs"][index]["fanart"] = "";
         }
@@ -525,7 +530,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const std::string &method, 
   CFileItemList items;
   for (const CAlbum& album : albums)
   {
-    std::string path = StringUtils::Format("musicdb://recentlyaddedalbums/{}/", album.idAlbum);
+    std::string path =
+        StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_ADDED_ALBUMS, album.idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(album, path, item);
@@ -551,7 +557,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyAddedSongs(const std::string &method, I
     amount = 0;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://songs/", items, (unsigned int)amount))
+  if (!musicdatabase.GetRecentlyAddedAlbumSongs(KODI::MUSIC::DB_PATH::SONGS, items,
+                                                (unsigned int)amount))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
@@ -575,7 +582,8 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedAlbums(const std::string &method,
   CFileItemList items;
   for (const CAlbum& album : albums)
   {
-    std::string path = StringUtils::Format("musicdb://recentlyplayedalbums/{}/", album.idAlbum);
+    std::string path =
+        StringUtils::Format("{}{}/", KODI::MUSIC::DB_PATH::RECENTLY_PLAYED_ALBUMS, album.idAlbum);
 
     CFileItemPtr item;
     FillAlbumItem(album, path, item);
@@ -597,7 +605,7 @@ JSONRPC_STATUS CAudioLibrary::GetRecentlyPlayedSongs(const std::string &method, 
     return InternalError;
 
   CFileItemList items;
-  if (!musicdatabase.GetRecentlyPlayedAlbumSongs("musicdb://songs/", items))
+  if (!musicdatabase.GetRecentlyPlayedAlbumSongs(KODI::MUSIC::DB_PATH::SONGS, items))
     return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
@@ -637,7 +645,7 @@ JSONRPC_STATUS CAudioLibrary::GetRoles(const std::string &method, ITransportLaye
     return InternalError;
 
   CFileItemList items;
-  if (!musicdatabase.GetRolesNav("musicdb://songs/", items))
+  if (!musicdatabase.GetRolesNav(KODI::MUSIC::DB_PATH::SONGS, items))
     return InternalError;
 
   /* need to set strTitle in each item*/
@@ -1151,17 +1159,22 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   int albumID = (int)parameterObject["albumid"].asInteger(-1);
   int genreID = (int)parameterObject["genreid"].asInteger(-1);
 
+  // Gather into a list of our own. The sort below applies to what this call resolved, and
+  // callers accumulate several items into one list - sorting theirs would reorder the items
+  // they resolved earlier.
+  CFileItemList resolved;
+
   bool success = false;
   CFileItemPtr fileItem(new CFileItem());
   if (FillFileItem(file, fileItem, parameterObject))
   {
     success = true;
-    list.Add(fileItem);
+    resolved.Add(fileItem);
   }
 
   if (artistID != -1 || albumID != -1 || genreID != -1)
-    success |= musicdatabase.GetSongsNav("musicdb://songs/", list, SortDescription(), genreID,
-                                         artistID, albumID);
+    success |= musicdatabase.GetSongsNav(KODI::MUSIC::DB_PATH::SONGS, resolved, SortDescription(),
+                                         genreID, artistID, albumID);
 
   int songID = (int)parameterObject["songid"].asInteger(-1);
   if (songID != -1)
@@ -1169,7 +1182,7 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     CSong song;
     if (musicdatabase.GetSong(songID, song))
     {
-      list.Add(std::make_shared<CFileItem>(song));
+      resolved.Add(std::make_shared<CFileItem>(song));
       success = true;
     }
   }
@@ -1179,22 +1192,24 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     // If we retrieved the list of songs by "artistid"
     // we sort by album (and implicitly by track number)
     if (artistID != -1)
-      list.Sort(SortBy::ALBUM, SortOrder::ASCENDING,
-                CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                    CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
-                    ? SortAttributeIgnoreArticle
-                    : SortAttributeNone);
+      resolved.Sort(SortBy::ALBUM, SortOrder::ASCENDING,
+                    CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                        CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                        ? SortAttributeIgnoreArticle
+                        : SortAttributeNone);
     // If we retrieve the list of songs by "genreid"
     // we sort by artist (and implicitly by album and track number)
     else if (genreID != -1)
-      list.Sort(SortBy::ARTIST, SortOrder::ASCENDING,
-                CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                    CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
-                    ? SortAttributeIgnoreArticle
-                    : SortAttributeNone);
+      resolved.Sort(SortBy::ARTIST, SortOrder::ASCENDING,
+                    CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                        CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                        ? SortAttributeIgnoreArticle
+                        : SortAttributeNone);
     // otherwise we sort by track number
     else
-      list.Sort(SortBy::TRACK_NUMBER, SortOrder::ASCENDING);
+      resolved.Sort(SortBy::TRACK_NUMBER, SortOrder::ASCENDING);
+
+    list.Append(resolved);
   }
 
   return success;

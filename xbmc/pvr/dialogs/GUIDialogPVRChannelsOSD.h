@@ -15,10 +15,12 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <tuple>
 
 namespace PVR
 {
 class CPVRChannelGroup;
+class CPVRProvider;
 
 class CGUIDialogPVRChannelsOSD : public CGUIDialogPVRItemsViewBase,
                                  public CPVRChannelNumberInputHandler
@@ -47,7 +49,9 @@ private:
   std::string GetLastSelectedItemPath(int iGroupID) const;
 
   std::shared_ptr<CPVRChannelGroup> m_group;
-  std::map<int, std::string> m_groupSelectedItemPaths;
+  std::shared_ptr<CPVRProvider> m_provider;
+  bool m_useProviderGroups{false};
+  std::map<std::tuple<int, int, int>, std::string> m_groupSelectedItemPaths;
   XbmcThreads::EndTime<> m_refreshTimeout;
 };
 } // namespace PVR

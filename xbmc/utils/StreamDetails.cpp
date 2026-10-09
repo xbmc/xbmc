@@ -10,9 +10,9 @@
 
 #include "StreamUtils.h"
 #include "language/LangInfo.h"
+#include "language/LanguageTag.h"
 #include "utils/Archive.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/LanguageTag.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -217,8 +217,8 @@ bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail& that) const
   if (that.m_eType != CStreamDetail::SUBTITLE)
     return true;
 
-  const KODI::UTILS::CLanguageTag language{KODI::UTILS::CLanguageTag::Parse(m_strLanguage)};
-  const KODI::UTILS::CLanguageTag other{KODI::UTILS::CLanguageTag::Parse(
+  const KODI::LANGUAGE::CLanguageTag language{KODI::LANGUAGE::CLanguageTag::Parse(m_strLanguage)};
+  const KODI::LANGUAGE::CLanguageTag other{KODI::LANGUAGE::CLanguageTag::Parse(
       static_cast<const CStreamDetailSubtitle&>(that).m_strLanguage)};
 
   if (language.Matches(other))
@@ -640,7 +640,7 @@ int CStreamDetails::GetPreferredAudioStreamIndex(
     // which would otherwise pay for it once per stream compared rather than once per stream
     const auto* audio{static_cast<const CStreamDetailAudio*>(iter.get())};
     const StreamUtils::AudioCandidate candidate{
-        .language = KODI::UTILS::CLanguageTag::Parse(audio->m_strLanguage),
+        .language = KODI::LANGUAGE::CLanguageTag::Parse(audio->m_strLanguage),
         .codec = audio->m_strCodec,
         .channels = audio->m_iChannels,
         .flags = audio->m_flags};

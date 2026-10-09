@@ -24,6 +24,7 @@
 #include "guilib/WindowIDs.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -403,7 +404,8 @@ void CDialogGameLeaderboardEntries::PopulateList()
 
       // A face against every name, the way the site shows them
       if (!entry.username.empty())
-        item->SetArt("icon", StringUtils::Format(USER_PIC_URL, CURL::Encode(entry.username)));
+        item->SetArt(KODI::ART::TYPE::ICON,
+                     StringUtils::Format(USER_PIC_URL, CURL::Encode(entry.username)));
 
       item->SetProperty(PROPERTY_ITEM_RANK, static_cast<int>(entry.rank));
       item->SetProperty(PROPERTY_ITEM_RANK_LABEL, StringUtils::Format("{}", entry.rank));

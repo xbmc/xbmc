@@ -1,6 +1,7 @@
 set(SOURCES Bookmark.cpp
             ContextMenus.cpp
             FilenameAttributes.cpp
+            geometry/ContentBarDetector.cpp
             geometry/ContentGeometryCombiner.cpp
             geometry/ContentGeometryRecord.cpp
             geometry/EffectiveGeometry.cpp
@@ -8,6 +9,7 @@ set(SOURCES Bookmark.cpp
             geometry/FrameSampling.cpp
             geometry/GeometryPublication.cpp
             geometry/GeometryTransforms.cpp
+            geometry/LiveGeometrySelector.cpp
             geometry/SampledGeometry.cpp
             GUIViewStateVideo.cpp
             PlayerController.cpp
@@ -36,6 +38,8 @@ set(HEADERS Bookmark.h
             ContextMenus.h
             Episode.h
             FilenameAttributes.h
+            geometry/ContentBarDetector.h
+            geometry/ContentBarHistogram.h
             geometry/ContentGeometryCombiner.h
             geometry/ContentGeometryRecord.h
             geometry/EffectiveGeometry.h
@@ -43,6 +47,7 @@ set(HEADERS Bookmark.h
             geometry/FrameSampling.h
             geometry/GeometryPublication.h
             geometry/GeometryTransforms.h
+            geometry/LiveGeometrySelector.h
             geometry/SampledGeometry.h
             GUIViewStateVideo.h
             PlayerController.h
@@ -53,6 +58,7 @@ set(HEADERS Bookmark.h
             VideoDatabase.h
             VideoDatabaseColumns.h
             VideoDatabaseDDL.h
+            VideoDbPaths.h
             VideoDbUrl.h
             VideoEmbeddedImageFileLoader.h
             VideoFileItemClassify.h

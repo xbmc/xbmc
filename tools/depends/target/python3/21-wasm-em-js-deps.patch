@@ -1,0 +1,45 @@
+diff --git a/Python/emscripten_syscalls.c b/Python/emscripten_syscalls.c
+--- a/Python/emscripten_syscalls.c
++++ b/Python/emscripten_syscalls.c
+@@ -125,6 +125,10 @@ EM_JS_MACROS(void, _emscripten_promising_main_js, (void), {
+     };
+ })
+ 
++EM_JS_DEPS(_emscripten_promising_main,
++           "$FS,$PATH,$FS_getMode,$resolveGlobalSymbol,"
++           "emscripten_exit_with_live_runtime");
++
+ __attribute__((constructor)) void _emscripten_promising_main(void) {
+     _emscripten_promising_main_js();
+ }
+@@ -192,6 +196,8 @@ EM_JS_MACROS(__externref_t, __maybe_fd_read_async, (
+ };
+ );
+ 
++EM_JS_DEPS(__maybe_fd_read_async, "$SYSCALLS");
++
+ // Bind original fd_read syscall to __wasi_fd_read_orig().
+ __wasi_errno_t __wasi_fd_read_orig(__wasi_fd_t fd, const __wasi_iovec_t *iovs,
+                                    size_t iovs_len, __wasi_size_t *nread)
+@@ -273,6 +279,8 @@ EM_JS_MACROS(__externref_t, __maybe_poll_async, (intptr_t fds, int nfds, int tim
+     })();
+ });
+ 
++EM_JS_DEPS(__maybe_poll_async, "$FS");
++
+ // Bind original poll syscall to syscall_poll_orig().
+ int syscall_poll_orig(intptr_t fds, int nfds, int timeout)
+     __attribute__((__import_module__("env"),
+diff --git a/Python/emscripten_trampoline.c b/Python/emscripten_trampoline.c
+--- a/Python/emscripten_trampoline.c
++++ b/Python/emscripten_trampoline.c
+@@ -94,6 +94,9 @@ addOnPreRun(function setEmscriptenTrampoline() {
+ });
+ );
+ 
++EM_JS_DEPS(_PyEM_TrampolineCall,
++           "$wasmTable,$wasmMemory,$addFunction,$addOnPreRun");
++
+ PyObject*
+ _PyEM_TrampolineCall(PyCFunctionWithKeywords func,
+                      PyObject* self,

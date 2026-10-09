@@ -13,14 +13,15 @@
 
 #include <algorithm>
 #include <string>
-#include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace
 {
 
 // ATTENTION: Make sure the longer match strings go first
 // because the string match is performed with ::starts_with()
-const auto s_videoDbTranslator = std::unordered_map<std::string, std::string>{
+const auto s_videoDbTranslator = std::vector<std::pair<std::string, std::string>>{
     {"videodb://1/1", "videodb://movies/genres"},
     {"videodb://1/2", "videodb://movies/titles"},
     {"videodb://1/3", "videodb://movies/years"},
@@ -51,22 +52,22 @@ const auto s_videoDbTranslator = std::unordered_map<std::string, std::string>{
 
 // ATTENTION: Make sure the longer match strings go first
 // because the string match is performed with ::starts_with()
-const auto s_musicDbTranslator =
-    std::unordered_map<std::string, std::string>{{"musicdb://10", "musicdb://singles"},
-                                                 {"musicdb://1", "musicdb://genres"},
-                                                 {"musicdb://2", "musicdb://artists"},
-                                                 {"musicdb://3", "musicdb://albums"},
-                                                 {"musicdb://4", "musicdb://songs"},
-                                                 {"musicdb://5/1", "musicdb://top100/albums"},
-                                                 {"musicdb://5/2", "musicdb://top100/songs"},
-                                                 {"musicdb://5", "musicdb://top100"},
-                                                 {"musicdb://6", "musicdb://recentlyaddedalbums"},
-                                                 {"musicdb://7", "musicdb://recentlyplayedalbums"},
-                                                 {"musicdb://8", "musicdb://compilations"},
-                                                 {"musicdb://9", "musicdb://years"}};
+const auto s_musicDbTranslator = std::vector<std::pair<std::string, std::string>>{
+    {"musicdb://10", "musicdb://singles"},
+    {"musicdb://1", "musicdb://genres"},
+    {"musicdb://2", "musicdb://artists"},
+    {"musicdb://3", "musicdb://albums"},
+    {"musicdb://4", "musicdb://songs"},
+    {"musicdb://5/1", "musicdb://top100/albums"},
+    {"musicdb://5/2", "musicdb://top100/songs"},
+    {"musicdb://5", "musicdb://top100"},
+    {"musicdb://6", "musicdb://recentlyaddedalbums"},
+    {"musicdb://7", "musicdb://recentlyplayedalbums"},
+    {"musicdb://8", "musicdb://compilations"},
+    {"musicdb://9", "musicdb://years"}};
 
 std::string TranslatePath(const std::string& legacyPath,
-                          const std::unordered_map<std::string, std::string>& translationMap)
+                          const std::vector<std::pair<std::string, std::string>>& translationMap)
 {
   std::string newPath = legacyPath;
   const std::string lowPath = StringUtils::ToLower(legacyPath);

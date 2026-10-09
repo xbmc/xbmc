@@ -46,6 +46,9 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
+#include "utils/ContentNames.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -156,7 +159,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19069)); // Guide
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_GUIDE
                                                                                : WINDOW_TV_GUIDE));
-    item->SetArt("icon", "DefaultPVRGuide.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRGuide.png");
     results.Add(item);
   }
 
@@ -167,7 +170,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19019)); // Channels
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_CHANNELS
                                                                              : WINDOW_TV_CHANNELS));
-  item->SetArt("icon", "DefaultPVRChannels.png");
+  item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRChannels.png");
   results.Add(item);
 
   // Recordings
@@ -180,7 +183,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19017)); // Recordings
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS));
-    item->SetArt("icon", "DefaultPVRRecordings.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRRecordings.png");
     results.Add(item);
   }
 
@@ -194,7 +197,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19334)); // Providers
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_PROVIDERS : WINDOW_TV_PROVIDERS));
-    item->SetArt("icon", "DefaultPVRProviders.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRProviders.png");
     results.Add(std::move(item));
   }
 
@@ -205,7 +208,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19040)); // Timers
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_TIMERS
                                                                              : WINDOW_TV_TIMERS));
-  item->SetArt("icon", "DefaultPVRTimers.png");
+  item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRTimers.png");
   results.Add(item);
 
   item = std::make_shared<CFileItem>(
@@ -214,7 +217,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19138)); // Timer rules
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                        bRadio ? WINDOW_RADIO_TIMER_RULES : WINDOW_TV_TIMER_RULES));
-  item->SetArt("icon", "DefaultPVRTimerRules.png");
+  item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRTimerRules.png");
   results.Add(item);
 
   // Search
@@ -225,7 +228,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(137)); // Search
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
                                                                                : WINDOW_TV_SEARCH));
-    item->SetArt("icon", "DefaultPVRSearch.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRSearch.png");
     results.Add(item);
   }
 
@@ -456,10 +459,10 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
       item->SetLabel(strCurrent);
       item->SetLabelPreformatted(true);
       item->SetDateTime(recording->RecordingTimeAsLocalTime());
-      item->SetProperty("totalepisodes", 0);
-      item->SetProperty("watchedepisodes", 0);
-      item->SetProperty("unwatchedepisodes", 0);
-      item->SetProperty("inprogressepisodes", 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 0);
+      item->SetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 0);
       item->SetProperty("sizeinbytes", UINT64_C(0));
 
       // Assume all folders are watched, we'll change the overlay later
@@ -473,21 +476,21 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
         item->SetDateTime(recording->RecordingTimeAsLocalTime());
     }
 
-    item->IncrementProperty("totalepisodes", 1);
+    item->IncrementProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 1);
     if (recording->GetPlayCount() == 0)
     {
       unwatchedFolders.insert(item);
-      item->IncrementProperty("unwatchedepisodes", 1);
+      item->IncrementProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 1);
     }
     else
     {
-      item->IncrementProperty("watchedepisodes", 1);
+      item->IncrementProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 1);
     }
     // Note: Calling GetResumePoint() could involve a PVR add-on backend call!
     // So we fetch the the locally cached resume point here for performance reasons.
     if (recording->GetLocalResumePoint().IsPartWay())
     {
-      item->IncrementProperty("inprogressepisodes", 1);
+      item->IncrementProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 1);
     }
     item->IncrementProperty("sizeinbytes", recording->GetSizeInBytes());
   }
@@ -516,10 +519,10 @@ bool CPVRGUIDirectory::GetRecordingsDirectoryInfo(CFileItem& item)
   if (dir.GetRecordingsDirectory(results))
   {
     item.SetLabelPreformatted(true);
-    item.SetProperty("totalepisodes", 0);
-    item.SetProperty("watchedepisodes", 0);
-    item.SetProperty("unwatchedepisodes", 0);
-    item.SetProperty("inprogressepisodes", 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 0);
+    item.SetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 0);
 
     int64_t sizeInBytes{0};
 
@@ -533,22 +536,22 @@ bool CPVRGUIDirectory::GetRecordingsDirectoryInfo(CFileItem& item)
       if (dateTime.IsValid() || (dateTime < recording->RecordingTimeAsLocalTime()))
         item.SetDateTime(recording->RecordingTimeAsLocalTime());
 
-      item.IncrementProperty("totalepisodes", 1);
+      item.IncrementProperty(KODI::ITEM::PROPERTY::TOTAL_EPISODES, 1);
 
       if (recording->GetPlayCount() == 0)
-        item.IncrementProperty("unwatchedepisodes", 1);
+        item.IncrementProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES, 1);
       else
-        item.IncrementProperty("watchedepisodes", 1);
+        item.IncrementProperty(KODI::ITEM::PROPERTY::WATCHED_EPISODES, 1);
 
       if (recording->GetResumePoint().IsPartWay())
-        item.IncrementProperty("inprogressepisodes", 1);
+        item.IncrementProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, 1);
 
       sizeInBytes += recording->GetSizeInBytes();
     }
 
     item.SetProperty("recordingsize", StringUtils::SizeToString(sizeInBytes));
 
-    if (item.GetProperty("unwatchedepisodes").asInteger() > 0)
+    if (item.GetProperty(KODI::ITEM::PROPERTY::UNWATCHED_EPISODES).asInteger() > 0)
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
     else
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
@@ -584,7 +587,8 @@ public:
       if (!recPath.IsValid())
         continue;
 
-      const auto oldInProgressEpisodes{folder->GetProperty("inprogressepisodes").asInteger(0)};
+      const auto oldInProgressEpisodes{
+          folder->GetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES).asInteger(0)};
 
       // Get all matching recordings of the current directory and sum up in-progress episodes.
       int inProgressEpisodes{0};
@@ -606,7 +610,7 @@ public:
 
       if (inProgressEpisodes != oldInProgressEpisodes)
       {
-        folder->SetProperty("inprogressepisodes", inProgressEpisodes);
+        folder->SetProperty(KODI::ITEM::PROPERTY::IN_PROGRESS_EPISODES, inProgressEpisodes);
         windowMgr.SendThreadMessage(
             {GUI_MSG_NOTIFY_ALL, windowMgr.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, folder});
       }
@@ -622,7 +626,7 @@ private:
 
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
 {
-  results.SetContent("recordings");
+  results.SetContent(KODI::MEDIA::CONTENT::RECORDINGS);
 
   bool bGrouped = false;
   const std::vector<std::shared_ptr<CPVRRecording>> recordings =
@@ -1065,7 +1069,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         auto channelsItem{std::make_shared<CFileItem>(channelsPath.AsString(), true)};
         channelsItem->SetLabel(
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19019)); // Channels
-        channelsItem->SetArt("icon", "DefaultPVRChannels.png");
+        channelsItem->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRChannels.png");
         channelsItem->SetProperty("totalcount", channelCount);
         results.Add(std::move(channelsItem));
       }
@@ -1082,7 +1086,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         auto recordingsItem{std::make_shared<CFileItem>(recordingsPath.AsString(), true)};
         recordingsItem->SetLabel(
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19017)); // Recordings
-        recordingsItem->SetArt("icon", "DefaultPVRRecordings.png");
+        recordingsItem->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRRecordings.png");
         recordingsItem->SetProperty("totalcount", recordingCount);
         results.Add(std::move(recordingsItem));
       }

@@ -2011,6 +2011,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrmenu.providerchannelosd" type="boolean" label="19358" help="36462">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pvrplayback.confirmchannelswitch" type="boolean" label="19281" help="36231">
           <level>1</level>
           <default>true</default>
@@ -2803,6 +2808,9 @@
         <setting id="gamesgeneral.enablerewind" type="boolean" label="35203" help="35204">
           <level>0</level>
           <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="gamesachievements.hardcore">false</dependency>
+          </dependencies>
           <control type="toggle" />
         </setting>
         <setting id="gamesgeneral.rewindtime" type="integer" label="35205" help="35206">
@@ -2814,7 +2822,12 @@
             <maximum>600</maximum>
           </constraints>
           <dependencies>
-            <dependency type="enable" setting="gamesgeneral.enablerewind">true</dependency>
+            <dependency type="enable">
+              <and>
+                <condition setting="gamesgeneral.enablerewind" operator="is">true</condition>
+                <condition setting="gamesachievements.hardcore" operator="is">false</condition>
+              </and>
+            </dependency>
           </dependencies>
           <control type="slider" format="integer">
             <popup>true</popup>
@@ -2877,6 +2890,13 @@
         </setting>
       </group>
       <group id="3" label="35201">
+        <setting id="gamesachievements.hardcore" type="boolean" label="35700" help="35302">
+          <!-- Shown once RetroAchievements have approved Kodi for hardcore -->
+          <visible>false</visible>
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="gamesachievements.encore" type="boolean" label="35303" help="35304">
           <level>0</level>
           <default>false</default>
@@ -3716,6 +3736,7 @@
             <or>
               <condition>HAVE_ANDROID</condition>
               <condition>HAVE_TVOS</condition>
+              <condition>HAVE_WASM</condition>
             </or>
           </requirement>
           <level>1</level>

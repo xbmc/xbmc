@@ -41,7 +41,9 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/Digest.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -199,7 +201,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
 
   bool showUpdateButton = m_localAddon &&
                           CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()) &&
-                          m_item->GetProperty("Addon.HasUpdate").asBoolean();
+                          m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean();
 
   if (isInstalled)
   {
@@ -283,7 +285,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
   for (const auto& screenshot : m_item->GetAddonInfo()->Screenshots())
   {
     auto item = std::make_shared<CFileItem>("");
-    item->SetArt("thumb", screenshot);
+    item->SetArt(ART::TYPE::THUMB, screenshot);
     items.Add(std::move(item));
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_SCREENSHOTS, 0, 0, &items);
@@ -312,14 +314,14 @@ int CGUIDialogAddonInfo::AskForVersion(
     if (origin == LOCAL_CACHE)
     {
       item.SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24095));
-      item.SetArt("icon", "DefaultAddonRepository.png");
+      item.SetArt(ART::TYPE::ICON, "DefaultAddonRepository.png");
       dialog->Add(item);
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(origin, repo, AddonType::REPOSITORY,
                                                     OnlyEnabled::CHOICE_YES))
     {
       item.SetLabel2(repo->Name());
-      item.SetArt("icon", repo->Icon());
+      item.SetArt(ART::TYPE::ICON, repo->Icon());
       dialog->Add(item);
     }
   }
@@ -332,9 +334,10 @@ void CGUIDialogAddonInfo::OnUpdate()
 {
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& addonId = itemAddonInfo->ID();
-  const std::string& origin = m_item->GetProperty("Addon.ValidUpdateOrigin").asString();
-  const CAddonVersion& version =
-      static_cast<CAddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
+  const std::string& origin =
+      m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_ORIGIN).asString();
+  const CAddonVersion& version = static_cast<CAddonVersion>(
+      m_item->GetProperty(ITEM::PROPERTY::ADDON_VALID_UPDATE_VERSION).asString());
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
@@ -445,7 +448,8 @@ void CGUIDialogAddonInfo::OnToggleAutoUpdates()
       CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_localAddon->ID(),
                                                         AddonUpdateRule::USER_DISABLED_AUTO_UPDATE);
 
-    bool showUpdateButton = (selected && m_item->GetProperty("Addon.HasUpdate").asBoolean());
+    bool showUpdateButton =
+        (selected && m_item->GetProperty(ITEM::PROPERTY::ADDON_HAS_UPDATE).asBoolean());
 
     if (showUpdateButton)
     {
@@ -634,7 +638,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
 
     if (CServiceBroker::GetAddonMgr().DisableAddon(m_localAddon->ID(), AddonDisabledReason::USER))
       m_item->SetProperty(
-          "Addon.Status",
+          ITEM::PROPERTY::ADDON_STATUS,
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24023)); // Disabled
   }
   else
@@ -645,7 +649,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
 
     if (CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID()))
       m_item->SetProperty(
-          "Addon.Status",
+          ITEM::PROPERTY::ADDON_STATUS,
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(305)); // Enabled
   }
 
@@ -722,7 +726,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
                     ? CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24184)
                     : ""));
 
-            item->SetArt("icon", infoAddon->Icon());
+            item->SetArt(ART::TYPE::ICON, infoAddon->Icon());
             item->SetProperty("addon_id", it.m_depInfo.id);
             items.Add(std::move(item));
           }
@@ -808,11 +812,11 @@ void CGUIDialogAddonInfo::ShowSupportList() const
     auto item{std::make_shared<CFileItem>(label)};
     item->SetLabel2(entry.m_description);
     if (!entry.m_icon.empty())
-      item->SetArt("icon", entry.m_icon);
+      item->SetArt(ART::TYPE::ICON, entry.m_icon);
     else if (entry.m_type == AddonSupportType::Extension)
-      item->SetArt("icon", "DefaultExtensionInfo.png");
+      item->SetArt(ART::TYPE::ICON, "DefaultExtensionInfo.png");
     else if (entry.m_type == AddonSupportType::Mimetype)
-      item->SetArt("icon", "DefaultMimetypeInfo.png");
+      item->SetArt(ART::TYPE::ICON, "DefaultMimetypeInfo.png");
     item->SetProperty("addon_id", m_localAddon->ID());
     items.Add(std::move(item));
   }

@@ -25,8 +25,11 @@
 #if defined(HAS_UDFREAD)
 #include "filesystem/UDFContext.h"
 #endif
+#include "language/LanguageTag.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/EpisodeUtils.h"
-#include "utils/LanguageTag.h"
+#include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -270,7 +273,7 @@ std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
   const auto item{std::make_shared<CFileItem>(path.Get(), false)};
   const int duration{static_cast<int>(title.duration.count() / 1000)};
   item->GetVideoInfoTag()->SetDuration(duration);
-  item->SetProperty("bluray_playlist", title.playlist);
+  item->SetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST, title.playlist);
 
   // Stream details are deferred when the playlist is only a candidate
   // as parsing the m2ts is expensive
@@ -504,7 +507,7 @@ bool CBlurayDirectory::GetPlaylistsInformation(const CURL& url,
 
     for (const auto& title : allTitles)
     {
-      const int playlist{title->GetProperty("bluray_playlist").asInteger32(-1)};
+      const int playlist{title->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1)};
       PlaylistInformation titleInfo;
       if (playlist == -1 || !GetPlaylistInfoFromDisc(url, realPath, playlist, StreamDetails::DEFER,
                                                      titleInfo, clipCache))
@@ -775,7 +778,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     // A disc whose playlists could not be read says nothing about its project either, as every
     // record would be rejected as naming a playlist the disc does not have
     ProjectInformation projectInformation;
-    if (!playlists.empty())
+    if (!playlists.empty() &&
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_parseBlurayProjectFile)
       GetProjectInformation(playlists, projectInformation);
 
     CDiscDirectoryHelper helper{[this](unsigned int playlist, CFileItem& item)

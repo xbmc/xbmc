@@ -10,6 +10,7 @@
 
 #include "GameTypes.h"
 
+#include <cstdint>
 #include <mutex>
 #include <set>
 #include <string>
@@ -71,6 +72,15 @@ public:
    * \return The client, or empty if no game is playing
    */
   static GameClientPtr GetPlayingGameClient();
+
+  /*!
+   * \brief Tell the player that hardcore mode withheld what they asked for
+   *
+   * Silently ignoring the request would read as a broken control.
+   *
+   * \param featureStringId The localized name of the feature that was withheld
+   */
+  static void NotifyBlockedByHardcore(uint32_t featureStringId);
 
   /*!
    * \brief Check if the file extension is supported by an add-on in
