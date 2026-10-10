@@ -266,6 +266,23 @@ void CLinuxRendererGLES::AddVideoPicture(const VideoPicture &picture, int index)
   }
 }
 
+void CLinuxRendererGLES::UpdateLightMetadata(const VideoPicture& picture)
+{
+  for (auto& buf : m_buffers)
+  {
+    if (!buf.videoBuffer)
+      continue;
+
+    buf.hasLightMetadata = picture.hasLightMetadata && picture.lightMetadata.MaxCLL != 0;
+    buf.lightMetadata = picture.lightMetadata;
+  }
+
+  // In passthrough, the display consumes MaxCLL/MaxFALL via HDR_OUTPUT_METADATA,
+  // not the tone-map shader above - push it there too, without a reconfigure.
+  if (m_passthroughHDR)
+    CServiceBroker::GetWinSystem()->RefreshHDRLightMetadata(&picture);
+}
+
 void CLinuxRendererGLES::ReleaseBuffer(int idx)
 {
   CPictureBuffer &buf = m_buffers[idx];
