@@ -200,10 +200,17 @@ int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uin
   int distance = 0;
   if (ratio != 1.0)
   {
-    delta = (src_samples*ratio-src_samples)*m_dst_rate/m_src_rate;
+    // Compensation is in whole samples, and a ratio this close to 1 asks for
+    // less than one per call. Carry what isn't compensated yet into the next.
+    const double exact =
+        (src_samples * ratio - src_samples) * m_dst_rate / m_src_rate + m_compensationRemainder;
+    delta = static_cast<int>(exact);
+    m_compensationRemainder = exact - delta;
     distance = src_samples*m_dst_rate/m_src_rate;
     m_doesResample = true;
   }
+  else
+    m_compensationRemainder = 0.0;
 
   if (m_doesResample)
   {
