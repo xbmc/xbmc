@@ -146,9 +146,9 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
     // default version, or removed this one
     CVideoInfoTag tag;
     bool found{false};
-    if (listed.m_type == MediaTypeMovie)
+    if (listed.GetMediaType() == KODI::MEDIA::TYPE::MOVIE)
       found = db.GetMovieInfo({}, tag, listed.m_iDbId);
-    else if (listed.m_type == MediaTypeTvShow)
+    else if (listed.GetMediaType() == KODI::MEDIA::TYPE::TV_SHOW)
       found = db.GetTvShowInfo({}, tag, listed.m_iDbId);
     else
       found = db.GetMusicVideoInfo({}, tag, listed.m_iDbId);

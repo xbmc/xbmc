@@ -173,16 +173,17 @@ bool IsAutoPlayNextItem(const CFileItem& item)
 
 bool IsAutoPlayNextItem(const std::string& content)
 {
+  const auto isA = [&content](MEDIA::TYPE type)
+  { return content == NameOf(type) || content == PluralNameOf(type); };
+
   int settingValue = CSettings::SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
-  if (content == MediaTypeMovie || content == MediaTypeMovies ||
-      content == MediaTypeVideoCollections)
+  if (isA(MEDIA::TYPE::MOVIE) || content == PluralNameOf(MEDIA::TYPE::VIDEO_COLLECTION))
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_MOVIES;
-  else if (content == MediaTypeEpisode || content == MediaTypeSeasons ||
-           content == MediaTypeEpisodes)
+  else if (isA(MEDIA::TYPE::EPISODE) || content == PluralNameOf(MEDIA::TYPE::SEASON))
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_EPISODES;
-  else if (content == MediaTypeMusicVideo || content == MediaTypeMusicVideos)
+  else if (isA(MEDIA::TYPE::MUSIC_VIDEO))
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
-  else if (content == MediaTypeTvShow || content == MediaTypeTvShows)
+  else if (isA(MEDIA::TYPE::TV_SHOW))
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS;
 
   const auto setting = std::dynamic_pointer_cast<CSettingList>(
@@ -190,6 +191,30 @@ bool IsAutoPlayNextItem(const std::string& content)
           CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM));
 
   return setting && CSettingUtils::FindIntInList(setting, settingValue);
+}
+
+bool IsPlotHidden(const CVideoInfoTag& tag)
+{
+  if (tag.GetPlayCount() != 0)
+    return false;
+
+  const auto setting = std::dynamic_pointer_cast<CSettingList>(
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+          CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS));
+  if (!setting)
+    return false;
+
+  switch (tag.GetMediaType())
+  {
+    case MEDIA::TYPE::MOVIE:
+      return !CSettingUtils::FindIntInList(setting,
+                                           CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES);
+    case MEDIA::TYPE::EPISODE:
+      return !CSettingUtils::FindIntInList(
+          setting, CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES);
+    default:
+      return false;
+  }
 }
 
 std::optional<int> GetNextPartFromBookmark(const CBookmark& bookmark)

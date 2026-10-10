@@ -19,6 +19,8 @@
 
 #include <utility>
 
+using KODI::MEDIA::MediaTypeFromName;
+
 namespace XBMCAddon
 {
   namespace xbmc
@@ -1041,7 +1043,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::setMediaTypeRaw(CVideoInfoTag* infoTag, const String& mediaType)
     {
-      if (CMediaTypes::IsValidMediaType(mediaType))
+      if (MediaTypeFromName(mediaType) != KODI::MEDIA::TYPE::NONE)
         infoTag->m_type = mediaType;
     }
 

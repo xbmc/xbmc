@@ -19,6 +19,7 @@
 #include <vector>
 
 class CFileItem;
+class CVideoInfoTag;
 
 namespace KODI::VIDEO::UTILS
 {
@@ -51,6 +52,11 @@ bool IsAutoPlayNextItem(const CFileItem& item);
   \return True if auto play next item is active, false otherwise.
   */
 bool IsAutoPlayNextItem(const std::string& content);
+
+/*! \brief Whether the plot of \p tag is hidden, as the user hides those of unwatched items of its
+  type.
+  */
+bool IsPlotHidden(const CVideoInfoTag& tag);
 
 /*! \brief Parses a playerState string from a bookmark and returns the next stack part number if available.
   \param bookmark The bookmark to parse

@@ -109,7 +109,7 @@ namespace JSONRPC
                                                                const CVideoInfoTag& episode);
 
   private:
-    static int RequiresAdditionalDetails(const MediaType& mediaType, const CVariant &parameterObject);
+    static int RequiresAdditionalDetails(KODI::MEDIA::TYPE mediaType, const CVariant &parameterObject);
     static JSONRPC_STATUS HandleItems(const char *idProperty, const char *resultName, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool limit = true);
     static JSONRPC_STATUS RemoveVideo(const CVariant &parameterObject);
     static void UpdateVideoTag(const CVariant& parameterObject,

@@ -12,17 +12,18 @@
 #include <gtest/gtest.h>
 
 using namespace KODI;
+using KODI::MEDIA::PluralNameOf;
 
 // A list is given its media type's plural as its content in places, so the two must agree
 TEST(TestContentNames, AMediaTypesPluralIsItsContent)
 {
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeAlbum), MEDIA::CONTENT::ALBUMS);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeArtist), MEDIA::CONTENT::ARTISTS);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeSong), MEDIA::CONTENT::SONGS);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeMovie), MEDIA::CONTENT::MOVIES);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeTvShow), MEDIA::CONTENT::TVSHOWS);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeSeason), MEDIA::CONTENT::SEASONS);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeEpisode), MEDIA::CONTENT::EPISODES);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeMusicVideo), MEDIA::CONTENT::MUSICVIDEOS);
-  EXPECT_EQ(CMediaTypes::ToPlural(MediaTypeVideoCollection), MEDIA::CONTENT::SETS);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::ALBUM), MEDIA::CONTENT::ALBUMS);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::ARTIST), MEDIA::CONTENT::ARTISTS);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::SONG), MEDIA::CONTENT::SONGS);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::MOVIE), MEDIA::CONTENT::MOVIES);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::TV_SHOW), MEDIA::CONTENT::TVSHOWS);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::SEASON), MEDIA::CONTENT::SEASONS);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::EPISODE), MEDIA::CONTENT::EPISODES);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::MUSIC_VIDEO), MEDIA::CONTENT::MUSICVIDEOS);
+  EXPECT_EQ(PluralNameOf(MEDIA::TYPE::VIDEO_COLLECTION), MEDIA::CONTENT::SETS);
 }

@@ -1707,6 +1707,16 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     CLog::LogF(LOGWARNING, "<originallanguage> tag value {} is not recognized", value);
 }
 
+KODI::MEDIA::TYPE CVideoInfoTag::GetMediaType() const
+{
+  return KODI::MEDIA::MediaTypeOf(m_type);
+}
+
+void CVideoInfoTag::SetMediaType(KODI::MEDIA::TYPE type)
+{
+  m_type = KODI::MEDIA::NameOf(type);
+}
+
 bool CVideoInfoTag::HasStreamDetails() const
 {
   return m_streamDetails.HasItems();

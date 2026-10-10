@@ -72,7 +72,7 @@ void UpdateSongRatingJob(const std::shared_ptr<CFileItem>& pItem, int userrating
   \param mediaType [in] artist or album
   \return vector of art types that are to be fetched during scanning
   */
-std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType);
+std::vector<std::string> GetArtTypesToScan(KODI::MEDIA::TYPE mediaType);
 
 /*! \brief Validate string is acceptable as the name of an additional art type
   - limited length, and ascii alphanumberic characters only

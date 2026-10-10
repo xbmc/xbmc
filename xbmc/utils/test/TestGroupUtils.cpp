@@ -29,7 +29,7 @@ std::shared_ptr<CFileItem> MakeMovieInSet(const std::string& movieTitle,
   item->SetPath("videodb://movies/titles/1");
 
   CVideoInfoTag* tag{item->GetVideoInfoTag()};
-  tag->m_type = MediaTypeMovie;
+  tag->m_type = KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE);
   tag->m_strTitle = movieTitle;
   tag->m_set.SetID(idSet);
   tag->m_set.SetTitle(setTitle);
@@ -45,7 +45,7 @@ std::shared_ptr<CFileItem> MakeStandaloneMovie(const std::string& movieTitle)
   item->SetPath("videodb://movies/titles/2");
 
   CVideoInfoTag* tag{item->GetVideoInfoTag()};
-  tag->m_type = MediaTypeMovie;
+  tag->m_type = KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE);
   tag->m_strTitle = movieTitle;
 
   return item;
