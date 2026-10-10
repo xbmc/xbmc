@@ -69,6 +69,90 @@ std::optional<std::string> GetImageDLNAProfile(const std::string& imgPath)
   }
   return std::nullopt;
 }
+
+constexpr char GENERIC_MIME_TYPE[] = "application/octet-stream";
+
+//! The extension of \p path in lower case, without its dot
+std::string LowerExtension(const std::string& path)
+{
+  std::string extension{URIUtils::GetExtension(path)};
+  if (!extension.empty())
+    extension.erase(0, 1);
+  StringUtils::ToLower(extension);
+  return extension;
+}
+
+//! The general kind of content an object of \p objectClass holds: video, audio or image
+const char* ContentOfClass(const NPT_String& objectClass)
+{
+  if (objectClass.StartsWith("object.item.videoItem", true))
+    return "video";
+  if (objectClass.StartsWith("object.item.audioItem", true))
+    return "audio";
+  if (objectClass.StartsWith("object.item.imageItem", true))
+    return "image";
+  return nullptr;
+}
+
+template<typename List>
+void AddAll(List& list, const std::vector<std::string>& values)
+{
+  for (const std::string& value : values)
+    list.Add(value.c_str());
+}
+
+std::vector<std::string> StringsOf(const NPT_List<NPT_String>& list)
+{
+  std::vector<std::string> values;
+  for (auto it = list.GetFirstItem(); it; ++it)
+    values.emplace_back(it->GetChars());
+  return values;
+}
+
+std::vector<std::string> NamesOf(const PLT_PersonRoles& people)
+{
+  std::vector<std::string> names;
+  for (auto it = people.GetFirstItem(); it; ++it)
+    names.emplace_back(it->name.GetChars());
+  return names;
+}
+
+//! The genres of \p object, without the lone "Unknown" Platinum gives an object that has none
+std::vector<std::string> GenresOf(const PLT_MediaObject& object)
+{
+  const NPT_List<NPT_String>& genres{object.m_Affiliation.genres};
+  if (genres.GetItemCount() == 1 && *genres.GetFirstItem() == "Unknown")
+    return {};
+  return StringsOf(genres);
+}
+
+std::string AlbumArtistOrArtist(const CMusicInfoTag& tag)
+{
+  return tag.GetAlbumArtistString().empty() ? tag.GetArtistString() : tag.GetAlbumArtistString();
+}
+
+void AddArtistRoles(PLT_PersonRoles& roles,
+                    const std::string& performers,
+                    const std::string& albumArtist)
+{
+  roles.Add(performers.c_str(), "Performer");
+  roles.Add(albumArtist.c_str(), "AlbumArtist");
+}
+
+//! The date a show or season first aired, or the start of its year when only that is known
+CDateTime PremieredOrYear(const CVideoInfoTag& tag)
+{
+  if (!tag.m_premiered.IsValid() && tag.GetYear() > 0)
+    return CDateTime(tag.GetYear(), 1, 1, 0, 0, 0);
+  return tag.m_premiered;
+}
+
+//! Whether \p id is one of the integer ids used for fixed containers, such as the root, which are
+//! not encoded
+bool IsIntegerObjectId(const std::string& id)
+{
+  return StringUtils::IsInteger(id);
+}
 } // namespace
 
 namespace UPNP
@@ -106,9 +190,6 @@ constexpr auto SupportedSubFormats = make_set<std::string_view>({
 constexpr NPT_HttpFileRequestHandler_DefaultFileTypeMapEntry kodiPlatinumMimeTypeExtensions[] = {
     {"m2ts", "video/vnd.dlna.mpeg-tts"}};
 
-/*----------------------------------------------------------------------
-|  GetClientQuirks
-+---------------------------------------------------------------------*/
 EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
 {
   if (context == NULL)
@@ -137,9 +218,6 @@ EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
   return (EClientQuirks)quirks;
 }
 
-/*----------------------------------------------------------------------
-|  GetMediaControllerQuirks
-+---------------------------------------------------------------------*/
 EMediaControllerQuirks GetMediaControllerQuirks(const PLT_DeviceData* device)
 {
   if (device == NULL)
@@ -153,21 +231,11 @@ EMediaControllerQuirks GetMediaControllerQuirks(const PLT_DeviceData* device)
   return (EMediaControllerQuirks)quirks;
 }
 
-/*----------------------------------------------------------------------
-|   GetMimeType
-+---------------------------------------------------------------------*/
 NPT_String GetMimeType(const char* filename, const PLT_HttpRequestContext* context /* = NULL */)
 {
-  NPT_String ext = URIUtils::GetExtension(filename).c_str();
-  ext.TrimLeft('.');
-  ext = ext.ToLowercase();
-
-  return PLT_MimeType::GetMimeTypeFromExtension(ext, context);
+  return PLT_MimeType::GetMimeTypeFromExtension(LowerExtension(filename).c_str(), context);
 }
 
-/*----------------------------------------------------------------------
-|   GetMimeType
-+---------------------------------------------------------------------*/
 NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* context /* = NULL */)
 {
   std::string path = item.GetPath();
@@ -183,9 +251,7 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
   if (URIUtils::IsStack(path))
     path = XFILE::CStackDirectory::GetFirstStackedFile(path);
 
-  NPT_String ext = URIUtils::GetExtension(path).c_str();
-  ext.TrimLeft('.');
-  ext = ext.ToLowercase();
+  const NPT_String ext{LowerExtension(path).c_str()};
 
   NPT_String mime;
 
@@ -207,10 +273,8 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
                or custom types according to context (who asked for it)
         */
       mime = PLT_MimeType::GetMimeTypeFromExtension(ext, context);
-      if (mime == "application/octet-stream")
-      {
+      if (mime == GENERIC_MIME_TYPE)
         mime = "";
-      }
     }
   }
 
@@ -218,7 +282,7 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
   if (mime.IsEmpty())
   {
     mime = item.GetMimeType().c_str();
-    if (mime == "application/octet-stream")
+    if (mime == GENERIC_MIME_TYPE)
       mime = "";
   }
 
@@ -237,51 +301,26 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
 
   /* nothing we can figure out */
   if (mime.IsEmpty())
-  {
-    mime = "application/octet-stream";
-  }
+    mime = GENERIC_MIME_TYPE;
 
   return mime;
 }
 
-/*----------------------------------------------------------------------
-|   GetProtocolInfo
-+---------------------------------------------------------------------*/
 const NPT_String GetProtocolInfo(const CFileItem& item,
                                  const char* protocol,
                                  const PLT_HttpRequestContext* context /* = NULL */)
 {
-  NPT_String proto = protocol;
+  const std::string source{protocol && *protocol ? protocol : item.GetURL().GetProtocol()};
 
-  //! @todo fixup the protocol just in case nothing was passed
-  if (proto.IsEmpty())
-  {
-    proto = item.GetURL().GetProtocol().c_str();
-  }
+  // UPnP clients get http; other protocols are offered as xbmc-get for other Kodi clients
+  //! @todo add rtsp ?
+  NPT_String proto{source == "http" ? "http-get" : "xbmc-get"};
 
-  /**
-    *  map protocol to right prefix and use xbmc-get for
-    *  unsupported UPnP protocols for other xbmc clients
-    *  @todo add rtsp ?
-    */
-  if (proto == "http")
-  {
-    proto = "http-get";
-  }
-  else
-  {
-    proto = "xbmc-get";
-  }
-
-  /* we need a valid extension to retrieve the mimetype for the protocol info */
-  NPT_String mime = GetMimeType(item, context);
+  const NPT_String mime{GetMimeType(item, context)};
   proto += ":*:" + mime + ":" + PLT_ProtocolInfo::GetDlnaExtension(mime, context);
   return proto;
 }
 
-/*----------------------------------------------------------------------
-|   AddAlternateMimeResources
-+---------------------------------------------------------------------*/
 void AddAlternateMimeResources(PLT_MediaObject& object)
 {
   // Content types in use under two names; a renderer matching on one cannot select the other.
@@ -309,9 +348,6 @@ void AddAlternateMimeResources(PLT_MediaObject& object)
   }
 }
 
-/*----------------------------------------------------------------------
-   |   CResourceFinder
-   +---------------------------------------------------------------------*/
 CResourceFinder::CResourceFinder(const char* protocol, const char* content)
   : m_Protocol(protocol), m_Content(content)
 {
@@ -319,16 +355,11 @@ CResourceFinder::CResourceFinder(const char* protocol, const char* content)
 
 bool CResourceFinder::operator()(const PLT_MediaItemResource& resource) const
 {
-  if (m_Content.IsEmpty())
-    return (resource.m_ProtocolInfo.GetProtocol().Compare(m_Protocol, true) == 0);
-  else
-    return ((resource.m_ProtocolInfo.GetProtocol().Compare(m_Protocol, true) == 0) &&
-            resource.m_ProtocolInfo.GetContentType().StartsWith(m_Content, true));
+  return resource.m_ProtocolInfo.GetProtocol().Compare(m_Protocol, true) == 0 &&
+         (m_Content.IsEmpty() ||
+          resource.m_ProtocolInfo.GetContentType().StartsWith(m_Content, true));
 }
 
-/*----------------------------------------------------------------------
-|   PopulateObjectFromTag
-+---------------------------------------------------------------------*/
 NPT_Result PopulateObjectFromTag(CMusicInfoTag& tag,
                                  PLT_MediaObject& object,
                                  NPT_String* file_path,
@@ -339,24 +370,16 @@ NPT_Result PopulateObjectFromTag(CMusicInfoTag& tag,
   if (!tag.GetURL().empty() && file_path)
     *file_path = tag.GetURL().c_str();
 
-  const std::vector<std::string>& genres = tag.GetGenre();
-  for (unsigned int index = 0; index < genres.size(); index++)
-    object.m_Affiliation.genres.Add(genres.at(index).c_str());
+  AddAll(object.m_Affiliation.genres, tag.GetGenre());
   object.m_Title = tag.GetTitle().c_str();
   object.m_Affiliation.album = tag.GetAlbum().c_str();
-  for (unsigned int index = 0; index < tag.GetArtist().size(); index++)
+  for (const std::string& artist : tag.GetArtist())
   {
-    object.m_People.artists.Add(tag.GetArtist().at(index).c_str());
-    object.m_People.artists.Add(tag.GetArtist().at(index).c_str(), "Performer");
+    object.m_People.artists.Add(artist.c_str());
+    object.m_People.artists.Add(artist.c_str(), "Performer");
   }
-  object.m_People.artists.Add(
-      (!tag.GetAlbumArtistString().empty() ? tag.GetAlbumArtistString() : tag.GetArtistString())
-          .c_str(),
-      "AlbumArtist");
-  if (tag.GetAlbumArtistString().empty())
-    object.m_Creator = tag.GetArtistString().c_str();
-  else
-    object.m_Creator = tag.GetAlbumArtistString().c_str();
+  object.m_People.artists.Add(AlbumArtistOrArtist(tag).c_str(), "AlbumArtist");
+  object.m_Creator = AlbumArtistOrArtist(tag).c_str();
   object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
   if (tag.GetDatabaseId() >= 0)
   {
@@ -376,9 +399,6 @@ NPT_Result PopulateObjectFromTag(CMusicInfoTag& tag,
   return NPT_SUCCESS;
 }
 
-/*----------------------------------------------------------------------
-|   PopulateObjectFromTag
-+---------------------------------------------------------------------*/
 NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
                                  PLT_MediaObject& object,
                                  NPT_String* file_path,
@@ -399,8 +419,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
               tag.m_artist,
               CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator)
               .c_str();
-      for (const auto& itArtist : tag.m_artist)
-        object.m_People.artists.Add(itArtist.c_str());
+      AddAll(object.m_People.artists, tag.m_artist);
       object.m_Affiliation.album = tag.m_strAlbum.c_str();
       object.m_Title = tag.m_strTitle.c_str();
       object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
@@ -425,10 +444,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         object.m_Title = tag.m_strTitle.c_str();
         object.m_Recorded.episode_number = tag.m_iEpisode;
         object.m_Recorded.episode_count = tag.m_iEpisode;
-        if (!tag.m_premiered.IsValid() && tag.GetYear() > 0)
-          object.m_Date = CDateTime(tag.GetYear(), 1, 1, 0, 0, 0).GetAsW3CDate().c_str();
-        else
-          object.m_Date = tag.m_premiered.GetAsW3CDate().c_str();
+        object.m_Date = PremieredOrYear(tag).GetAsW3CDate().c_str();
         object.m_ReferenceID =
             EncodeObjectId(StringUtils::Format("{}{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iDbId));
       }
@@ -438,10 +454,7 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
         object.m_Title = tag.m_strTitle.c_str();
         object.m_Recorded.episode_season = tag.m_iSeason;
         object.m_Recorded.episode_count = tag.m_iEpisode;
-        if (!tag.m_premiered.IsValid() && tag.GetYear() > 0)
-          object.m_Date = CDateTime(tag.GetYear(), 1, 1, 0, 0, 0).GetAsW3CDate().c_str();
-        else
-          object.m_Date = tag.m_premiered.GetAsW3CDate().c_str();
+        object.m_Date = PremieredOrYear(tag).GetAsW3CDate().c_str();
         object.m_ReferenceID = EncodeObjectId(
             StringUtils::Format(
             "{}{}/{}", VIDEO::DB_PATH::TVSHOW_TITLES, tag.m_iIdShow, tag.m_iSeason));
@@ -450,10 +463,8 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
       {
         object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
         object.m_Recorded.program_title =
-            "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
-        object.m_Recorded.program_title +=
-            "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
-        object.m_Recorded.program_title += (" : " + tag.m_strTitle).c_str();
+            StringUtils::Format("S{:02}E{:02} : {}", tag.m_iSeason, tag.m_iEpisode, tag.m_strTitle)
+                .c_str();
         object.m_Recorded.episode_number = tag.m_iEpisode;
         object.m_Recorded.episode_season = tag.m_iSeason;
         object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
@@ -469,30 +480,21 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
   if (object.m_ReferenceID == object.m_ObjectID)
     object.m_ReferenceID = "";
 
-  for (unsigned int index = 0; index < tag.m_studio.size(); index++)
-    object.m_People.publisher.Add(tag.m_studio[index].c_str());
+  AddAll(object.m_People.publisher, tag.m_studio);
 
   object.m_XbmcInfo.date_added = tag.m_dateAdded.GetAsW3CDate().c_str();
   object.m_XbmcInfo.rating = tag.GetRating().rating;
   object.m_XbmcInfo.votes = tag.GetRating().votes;
   object.m_XbmcInfo.unique_identifier = tag.GetUniqueID().c_str();
-  for (const auto& country : tag.m_country)
-    object.m_XbmcInfo.countries.Add(country.c_str());
+  AddAll(object.m_XbmcInfo.countries, tag.m_country);
   object.m_XbmcInfo.user_rating = tag.m_iUserRating;
 
-  for (unsigned int index = 0; index < tag.m_genre.size(); index++)
-    object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
+  AddAll(object.m_Affiliation.genres, tag.m_genre);
 
-  for (auto it = tag.m_cast.begin(); it != tag.m_cast.end(); ++it)
-  {
-    object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
-  }
-
-  for (unsigned int index = 0; index < tag.m_director.size(); index++)
-    object.m_People.directors.Add(tag.m_director[index].c_str());
-
-  for (unsigned int index = 0; index < tag.m_writingCredits.size(); index++)
-    object.m_People.authors.Add(tag.m_writingCredits[index].c_str());
+  for (const SActorInfo& actor : tag.m_cast)
+    object.m_People.actors.Add(actor.strName.c_str(), actor.strRole.c_str());
+  AddAll(object.m_People.directors, tag.m_director);
+  AddAll(object.m_People.authors, tag.m_writingCredits);
 
   object.m_Description.description = tag.m_strTagLine.c_str();
   object.m_Description.long_description = tag.m_strPlot.c_str();
@@ -516,9 +518,6 @@ NPT_Result PopulateObjectFromTag(CVideoInfoTag& tag,
   return NPT_SUCCESS;
 }
 
-/*----------------------------------------------------------------------
-|   BuildObject
-+---------------------------------------------------------------------*/
 PLT_MediaObject* BuildObject(CFileItem& item,
                              NPT_String& file_path,
                              bool with_count,
@@ -652,11 +651,6 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       object->m_Resources[i].m_Duration = resource.m_Duration;
       object->m_Resources[i].m_Resolution = resource.m_Resolution;
     }
-
-    // Some upnp clients expect all audio items to have parent root id 4
-#ifdef WMP_ID_MAPPING
-    object->m_ParentID = EncodeObjectId("4");
-#endif
   }
   else
   {
@@ -675,50 +669,22 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       switch (node)
       {
         case MUSICDATABASEDIRECTORY::NodeType::ARTIST:
-        {
-          container->m_ObjectClass.type += ".person.musicArtist";
-          CMusicInfoTag* tag = item.GetMusicInfoTag();
-          if (tag)
-          {
-            container->m_People.artists.Add(CorrectAllItemsSortHack(tag->GetArtistString()).c_str(),
-                                            "Performer");
-            container->m_People.artists.Add(
-                CorrectAllItemsSortHack((!tag->GetAlbumArtistString().empty()
-                                             ? tag->GetAlbumArtistString()
-                                             : tag->GetArtistString()))
-                    .c_str(),
-                "AlbumArtist");
-          }
-#ifdef WMP_ID_MAPPING
-          // Some upnp clients expect all artists to have parent root id 107
-          container->m_ParentID = EncodeObjectId("107");
-#endif
-        }
-        break;
         case MUSICDATABASEDIRECTORY::NodeType::ALBUM:
         case MUSICDATABASEDIRECTORY::NodeType::ALBUM_RECENTLY_ADDED:
         {
-          container->m_ObjectClass.type += ".album.musicAlbum";
-          // for Sonos to be happy
-          CMusicInfoTag* tag = item.GetMusicInfoTag();
-          if (tag)
+          const bool artist{node == MUSICDATABASEDIRECTORY::NodeType::ARTIST};
+          container->m_ObjectClass.type += artist ? ".person.musicArtist" : ".album.musicAlbum";
+          // albums carry their artists for Sonos
+          if (const CMusicInfoTag* tag = item.GetMusicInfoTag(); tag)
           {
-            container->m_People.artists.Add(CorrectAllItemsSortHack(tag->GetArtistString()).c_str(),
-                                            "Performer");
-            container->m_People.artists.Add(
-                CorrectAllItemsSortHack(!tag->GetAlbumArtistString().empty()
-                                            ? tag->GetAlbumArtistString()
-                                            : tag->GetArtistString())
-                    .c_str(),
-                "AlbumArtist");
-            container->m_Affiliation.album = CorrectAllItemsSortHack(tag->GetAlbum()).c_str();
+            AddArtistRoles(container->m_People.artists,
+                           CorrectAllItemsSortHack(tag->GetArtistString()),
+                           CorrectAllItemsSortHack(AlbumArtistOrArtist(*tag)));
+            if (!artist)
+              container->m_Affiliation.album = CorrectAllItemsSortHack(tag->GetAlbum()).c_str();
           }
-#ifdef WMP_ID_MAPPING
-          // Some upnp clients expect all albums to have parent root id 7
-          container->m_ParentID = EncodeObjectId("7");
-#endif
+          break;
         }
-        break;
         case MUSICDATABASEDIRECTORY::NodeType::GENRE:
           container->m_ObjectClass.type += ".genre.musicGenre";
           break;
@@ -744,20 +710,11 @@ PLT_MediaObject* BuildObject(CFileItem& item,
           container->m_Title = tag.m_strTitle.c_str();
           break;
         case VIDEODATABASEDIRECTORY::NodeType::SEASONS:
-          container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastSeason";
-          if (item.HasVideoInfoTag())
-          {
-            CVideoInfoTag* tag = (CVideoInfoTag*)item.GetVideoInfoTag();
-            PopulateObjectFromTag(*tag, *container, &file_path, &resource, quirks);
-          }
-          break;
         case VIDEODATABASEDIRECTORY::NodeType::TITLE_TVSHOWS:
-          container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastShow";
-          if (item.HasVideoInfoTag())
-          {
-            CVideoInfoTag* tag = (CVideoInfoTag*)item.GetVideoInfoTag();
-            PopulateObjectFromTag(*tag, *container, &file_path, &resource, quirks);
-          }
+          container->m_ObjectClass.type += node == VIDEODATABASEDIRECTORY::NodeType::SEASONS
+                                               ? ".album.videoAlbum.videoBroadcastSeason"
+                                               : ".album.videoAlbum.videoBroadcastShow";
+          PopulateObjectFromTag(tag, *container, &file_path, &resource, quirks);
           break;
         default:
           container->m_ObjectClass.type += ".storageFolder";
@@ -881,18 +838,11 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     std::vector<std::string> subtitles;
     CUtil::ScanForExternalSubtitles(file_path.GetChars(), filenames);
 
-    std::string ext;
-    for (unsigned int i = 0; i < filenames.size(); i++)
+    // Only the formats UPnP devices commonly support, which leaves out archives such as rar or zip
+    for (const std::string& filename : filenames)
     {
-      ext = URIUtils::GetExtension(filenames[i]).c_str();
-      ext = ext.substr(1);
-      std::ranges::transform(ext, ext.begin(), ::tolower);
-      /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
-               subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
-      if (SupportedSubFormats.contains(ext))
-      {
-        subtitles.push_back(filenames[i]);
-      }
+      if (SupportedSubFormats.contains(LowerExtension(filename)))
+        subtitles.push_back(filename);
     }
 
     std::string subtitlePath;
@@ -915,14 +865,12 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       const KODI::LANGUAGE::CLanguageTag preferredTag{
           KODI::LANGUAGE::CLanguageTag::Parse(preferredLanguage)};
 
-      for (unsigned int i = 0; i < subtitles.size(); i++)
+      for (const std::string& subtitle : subtitles)
       {
-        ExternalStreamInfo info =
-            CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitles[i]);
-
-        if (info.language.Matches(preferredTag))
+        if (CUtil::GetExternalStreamDetailsFromFilename(file_path.GetChars(), subtitle)
+                .language.Matches(preferredTag))
         {
-          subtitlePath = subtitles[i];
+          subtitlePath = subtitle;
           break;
         }
       }
@@ -949,9 +897,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       upnp_server->AddSafeResourceUri(object, rooturi, ips, NPT_String(subtitlePath.c_str()),
                                       protocolInfo);
 
-      ext = URIUtils::GetExtension(subtitlePath).c_str();
-      ext = ext.substr(1);
-      std::ranges::transform(ext, ext.begin(), ::tolower);
+      const std::string ext{LowerExtension(subtitlePath)};
 
       NPT_String subtitle_uri = object->m_Resources[object->m_Resources.GetItemCount() - 1].m_Uri;
 
@@ -985,9 +931,6 @@ failure:
   return NULL;
 }
 
-/*----------------------------------------------------------------------
-|   CUPnPServer::CorrectAllItemsSortHack
-+---------------------------------------------------------------------*/
 const std::string& CorrectAllItemsSortHack(const std::string& item)
 {
   // This is required as in order for the "* All Albums" etc. items to sort
@@ -1008,26 +951,23 @@ int PopulateTagFromObject(CMusicInfoTag& tag,
 {
   tag.SetTitle((const char*)object.m_Title);
   tag.SetArtist((const char*)object.m_Creator);
-  for (PLT_PersonRoles::Iterator it = object.m_People.artists.GetFirstItem(); it; it++)
+
+  // An artist is listed under no role and again as a performer
+  std::vector<std::string> artists;
+  std::vector<std::string> albumArtists;
+  for (auto it = object.m_People.artists.GetFirstItem(); it; ++it)
   {
-    if (it->role == "")
-      tag.SetArtist((const char*)it->name);
-    else if (it->role == "Performer")
-      tag.SetArtist((const char*)it->name);
-    else if (it->role == "AlbumArtist")
-      tag.SetAlbumArtist((const char*)it->name);
+    std::vector<std::string>& names{it->role == "AlbumArtist" ? albumArtists : artists};
+    if ((it->role.IsEmpty() || it->role == "Performer" || it->role == "AlbumArtist") &&
+        std::ranges::find(names, it->name.GetChars()) == names.end())
+      names.emplace_back(it->name.GetChars());
   }
+  if (!artists.empty())
+    tag.SetArtist(artists, true);
+  if (!albumArtists.empty())
+    tag.SetAlbumArtist(albumArtists, true);
   tag.SetTrackNumber(object.m_MiscInfo.original_track_number);
-
-  for (NPT_List<NPT_String>::Iterator it = object.m_Affiliation.genres.GetFirstItem(); it; it++)
-  {
-    // ignore single "Unknown" genre inserted by Platinum
-    if (it == object.m_Affiliation.genres.GetFirstItem() &&
-        object.m_Affiliation.genres.GetItemCount() == 1 && *it == "Unknown")
-      break;
-
-    tag.SetGenre((const char*)*it);
-  }
+  tag.SetGenre(GenresOf(object));
 
   tag.SetAlbum((const char*)object.m_Affiliation.album);
   CDateTime last;
@@ -1111,10 +1051,7 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
       tag.m_type = MediaTypeMusicVideo;
 
       if (object.m_People.artists.GetItemCount() > 0)
-      {
-        for (unsigned int index = 0; index < object.m_People.artists.GetItemCount(); index++)
-          tag.m_artist.emplace_back(object.m_People.artists.GetItem(index)->name.GetChars());
-      }
+        tag.m_artist = NamesOf(object.m_People.artists);
       else if (!object.m_Creator.IsEmpty() && object.m_Creator != "Unknown")
         tag.m_artist = StringUtils::Split(
             object.m_Creator.GetChars(),
@@ -1129,34 +1066,22 @@ int PopulateTagFromObject(CVideoInfoTag& tag,
       tag.SetPremiered(date);
   }
 
-  for (unsigned int index = 0; index < object.m_People.publisher.GetItemCount(); index++)
-    tag.m_studio.emplace_back(object.m_People.publisher.GetItem(index)->GetChars());
+  tag.m_studio = StringsOf(object.m_People.publisher);
 
   tag.m_dateAdded.SetFromW3CDate((const char*)object.m_XbmcInfo.date_added);
   tag.SetRating(object.m_XbmcInfo.rating, object.m_XbmcInfo.votes);
   tag.SetUniqueID(object.m_XbmcInfo.unique_identifier.GetChars());
-  for (unsigned int index = 0; index < object.m_XbmcInfo.countries.GetItemCount(); index++)
-    tag.m_country.emplace_back(object.m_XbmcInfo.countries.GetItem(index)->GetChars());
+  tag.m_country = StringsOf(object.m_XbmcInfo.countries);
   tag.m_iUserRating = object.m_XbmcInfo.user_rating;
 
-  for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
-  {
-    // ignore single "Unknown" genre inserted by Platinum
-    if (index == 0 && object.m_Affiliation.genres.GetItemCount() == 1 &&
-        *object.m_Affiliation.genres.GetItem(index) == "Unknown")
-      break;
-
-    tag.m_genre.emplace_back(object.m_Affiliation.genres.GetItem(index)->GetChars());
-  }
-  for (unsigned int index = 0; index < object.m_People.directors.GetItemCount(); index++)
-    tag.m_director.emplace_back(object.m_People.directors.GetItem(index)->name.GetChars());
-  for (unsigned int index = 0; index < object.m_People.authors.GetItemCount(); index++)
-    tag.m_writingCredits.emplace_back(object.m_People.authors.GetItem(index)->name.GetChars());
-  for (unsigned int index = 0; index < object.m_People.actors.GetItemCount(); index++)
+  tag.m_genre = GenresOf(object);
+  tag.m_director = NamesOf(object.m_People.directors);
+  tag.m_writingCredits = NamesOf(object.m_People.authors);
+  for (auto it = object.m_People.actors.GetFirstItem(); it; ++it)
   {
     SActorInfo info;
-    info.strName = object.m_People.actors.GetItem(index)->name;
-    info.strRole = object.m_People.actors.GetItem(index)->role;
+    info.strName = it->name;
+    info.strRole = it->role;
     tag.m_cast.push_back(info);
   }
   tag.m_strTagLine = object.m_Description.description;
@@ -1230,27 +1155,13 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
   }
   else
   {
-    bool audio = false, image = false, video = false;
-    // set a general content type
-    const char* content = NULL;
-    if (ObjectClass.StartsWith("object.item.videoitem"))
-    {
-      pItem->SetMimeType("video/octet-stream");
-      content = "video";
-      video = true;
-    }
-    else if (ObjectClass.StartsWith("object.item.audioitem"))
-    {
-      pItem->SetMimeType("audio/octet-stream");
-      content = "audio";
-      audio = true;
-    }
-    else if (ObjectClass.StartsWith("object.item.imageitem"))
-    {
-      pItem->SetMimeType("image/octet-stream");
-      content = "image";
-      image = true;
-    }
+    const char* content{ContentOfClass(entry->m_ObjectClass.type)};
+    const std::string_view contentView{content ? content : ""};
+    const bool video{contentView == "video"};
+    const bool audio{contentView == "audio"};
+    const bool image{contentView == "image"};
+    if (content)
+      pItem->SetMimeType(StringUtils::Format("{}/octet-stream", content));
 
     // attempt to find a valid resource (may be multiple)
     PLT_MediaItemResource resource, *res = NULL;
@@ -1333,12 +1244,8 @@ struct ResourcePrioritySort
 {
   explicit ResourcePrioritySort(const PLT_MediaObject* entry)
   {
-    if (entry->m_ObjectClass.type.StartsWith("object.item.audioItem"))
-      m_content = "audio";
-    else if (entry->m_ObjectClass.type.StartsWith("object.item.imageItem"))
-      m_content = "image";
-    else if (entry->m_ObjectClass.type.StartsWith("object.item.videoItem"))
-      m_content = "video";
+    if (const char* content = ContentOfClass(entry->m_ObjectClass.type); content)
+      m_content = content;
   }
 
   int GetPriority(const PLT_MediaItemResource& res) const
@@ -1404,7 +1311,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
   {
     logger->debug("resource protocol info '{}'", (const char*)(resource.m_ProtocolInfo.ToString()));
 
-    if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0)
+    if (resource.m_ProtocolInfo.GetContentType().Compare(GENERIC_MIME_TYPE) != 0)
     {
       item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
     }
@@ -1476,16 +1383,8 @@ NPT_String EncodeObjectId(const std::string& id)
     CLog::LogF(LOGWARNING, "Failed to encode object id, provided object id is empty");
     return {};
   }
-  // we use integers in some special cases like virtualpath://upnproot or whenever clients with
-  // quirks expect to receive integer ids for some parent containers
-  //! @todo all other items except upnproot and -1 (the parent of upnproot) seem to only be enabled
-  // if WMP_ID_MAPPING is defined which doesn't seem to happen anywhere in the code. Consider removing
-  // WMP_ID_MAPPING ifdef blocks in the future and reduce the scope of this comparison by including the
-  // actual used integer ids (0 and -1)
-  if (StringUtils::IsInteger(id))
-  {
+  if (IsIntegerObjectId(id))
     return id.c_str();
-  }
 
   return Base64::Encode(id).c_str();
 }
@@ -1497,16 +1396,8 @@ NPT_String DecodeObjectId(const std::string& id)
     CLog::LogF(LOGWARNING, "Failed to decode object id, provided object id is empty");
     return {};
   }
-  // we use integers in some special cases like virtualpath://upnproot or whenever clients with
-  // quirks expect to receive integer ids for some parent containers
-  //! @todo all other items except upnproot and -1 (the parent of upnproot) seem to only be enabled
-  // if WMP_ID_MAPPING is defined which doesn't seem to happen anywhere in the code. Consider removing
-  // WMP_ID_MAPPING ifdef blocks in the future and reduce the scope of this comparison by including the
-  // actual used integer ids (0 and -1)
-  if (StringUtils::IsInteger(id))
-  {
+  if (IsIntegerObjectId(id))
     return id.c_str();
-  }
   // if the provided object id is a url (contains :// and thus not valid in the base64 dictionary)
   // we are trying to decode a plain vfs path. In such cases, return the id as is for backward
   // compatibility with external clients/tools relying on plain vfs paths
@@ -1518,8 +1409,7 @@ NPT_String DecodeObjectId(const std::string& id)
   const std::string decodedObjectId = Base64::Decode(id);
   if (decodedObjectId.empty())
   {
-    CLog::LogF(LOGERROR, "Failed to decode object id {}, not properly Base64 encoded",
-               decodedObjectId);
+    CLog::LogF(LOGERROR, "Failed to decode object id {}, not properly Base64 encoded", id);
   }
 
   return decodedObjectId.c_str();
