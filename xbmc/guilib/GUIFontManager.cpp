@@ -107,14 +107,18 @@ void GUIFontManager::RescaleFontSizeAndAspect(CGraphicContext& context,
   else
   {
     // font stretched like the rest of the UI, aspect parameter being the original aspect
-
-    // adjust aspect ratio
-    *aspect *= sourceRes.fPixelRatio;
-
-    *aspect *= scaleY / scaleX;
+    *aspect = StretchedFontAspect(*aspect, sourceRes, scaleX, scaleY);
   }
 
   *size /= scaleY;
+}
+
+float GUIFontManager::StretchedFontAspect(float aspect,
+                                          const RESOLUTION_INFO& sourceRes,
+                                          float scaleX,
+                                          float scaleY)
+{
+  return aspect / sourceRes.fPixelRatio * scaleY / scaleX;
 }
 
 static bool CheckFont(std::string& strPath, const std::string& newPath, const std::string& filename)
