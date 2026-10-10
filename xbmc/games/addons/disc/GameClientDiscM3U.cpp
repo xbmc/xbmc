@@ -110,14 +110,6 @@ bool CGameClientDiscM3U::Save(const std::string& gamePath, const CGameClientDisc
   if (gamePath.empty())
     return true;
 
-  const std::string stateDirectory = GetDiscStateDirectory();
-  if (!XFILE::CDirectory::Exists(stateDirectory) && !XFILE::CDirectory::Create(stateDirectory))
-  {
-    CLog::Log(LOGERROR, "Failed to create disc state directory {}",
-              CURL::GetRedacted(stateDirectory));
-    return false;
-  }
-
   const std::string m3uPath = GetM3UPath(gamePath);
   const std::string m3uDirectory = URIUtils::GetDirectory(m3uPath);
   const std::string m3u = BuildM3U(model);
@@ -126,7 +118,7 @@ bool CGameClientDiscM3U::Save(const std::string& gamePath, const CGameClientDisc
 
   if (!XFILE::CDirectory::Exists(m3uDirectory) && !XFILE::CDirectory::Create(m3uDirectory))
   {
-    CLog::Log(LOGERROR, "Failed to create disc state subdirectory {} for game {}",
+    CLog::Log(LOGERROR, "Failed to create game folder {} for game {}",
               CURL::GetRedacted(m3uDirectory), CURL::GetRedacted(gamePath));
     return false;
   }

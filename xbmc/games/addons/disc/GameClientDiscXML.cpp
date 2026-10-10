@@ -109,14 +109,6 @@ bool CGameClientDiscXML::Save(const std::string& gamePath, const CGameClientDisc
   if (gamePath.empty())
     return true;
 
-  const std::string stateDirectory = GetDiscStateDirectory();
-  if (!XFILE::CDirectory::Exists(stateDirectory) && !XFILE::CDirectory::Create(stateDirectory))
-  {
-    CLog::Log(LOGWARNING, "Failed to create disc state directory {}",
-              CURL::GetRedacted(stateDirectory));
-    return false;
-  }
-
   const std::string xmlPath = GetXMLPath(gamePath);
   const std::string xmlDirectory = URIUtils::GetDirectory(xmlPath);
 
@@ -124,8 +116,7 @@ bool CGameClientDiscXML::Save(const std::string& gamePath, const CGameClientDisc
 
   if (!XFILE::CDirectory::Exists(xmlDirectory) && !XFILE::CDirectory::Create(xmlDirectory))
   {
-    CLog::Log(LOGWARNING, "Failed to create disc state subdirectory {}",
-              CURL::GetRedacted(xmlDirectory));
+    CLog::Log(LOGWARNING, "Failed to create game folder {}", CURL::GetRedacted(xmlDirectory));
     return false;
   }
 

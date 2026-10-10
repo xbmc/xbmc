@@ -306,13 +306,11 @@ TEST(TestGameClientDiscM3U, LoadMissingPlaylistIsNonErrorAndLeavesEmptyModel)
   EXPECT_TRUE(loadedModel.Empty());
 }
 
-TEST(TestGameClientDiscM3U, GetM3UPathUsesPerGameDirectoryAndExtensionlessBaseName)
+TEST(TestGameClientDiscM3U, GetM3UPathIsInTheGameFolder)
 {
   const std::string m3uPath = CGameClientDiscM3U::GetM3UPath(GAME_PATH);
 
-  EXPECT_EQ(URIUtils::GetFileName(m3uPath), "my_game.m3u");
-  EXPECT_EQ(URIUtils::GetExtension(m3uPath), ".m3u");
-  EXPECT_EQ(m3uPath.find("my_game.m3u.m3u"), std::string::npos);
+  EXPECT_EQ(URIUtils::GetFileName(m3uPath), "discstate.m3u");
 
   std::string m3uDirectoryName = URIUtils::GetDirectory(m3uPath);
   URIUtils::RemoveSlashAtEnd(m3uDirectoryName);
