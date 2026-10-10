@@ -16,6 +16,7 @@
 #include "SettingLevel.h"
 #include "SettingType.h"
 #include "SettingUpdate.h"
+#include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "utils/logtypes.h"
 
@@ -128,6 +129,23 @@ protected:
     return std::static_pointer_cast<TSetting>(shared_from_this());
   }
 
+  enum class ApplyResult
+  {
+    Unchanged,
+    Applied,
+    Rejected //!< the value was invalid, or a callback refused it and it has been reverted
+  };
+
+  /*! \brief Store a value and run the change callbacks.
+
+   The callbacks run with m_critical released, unless the caller already holds it, because
+   one of them reading this setting back on another thread would otherwise deadlock against
+   the write. validate is the exception: it is called while the lock is held. The caller holds
+   m_writeSection.
+   */
+  template<class TSetting, typename TValue, typename TValidate>
+  ApplyResult ApplyValue(TValue& storage, const TValue& value, TValidate validate);
+
   ISettingCallback *m_callback = nullptr;
   bool m_enabled = true;
   std::string m_parentSetting;
@@ -137,6 +155,9 @@ protected:
   std::set<CSettingUpdate> m_updates;
   bool m_changed = false;
   mutable CSharedSection m_critical;
+  //! Held by a writer from before its value is stored until its callbacks finish, so writers apply
+  //! one at a time while readers take only m_critical. Taken before m_critical.
+  mutable CCriticalSection m_writeSection;
 
   std::string m_referencedId;
 
