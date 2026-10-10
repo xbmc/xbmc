@@ -188,8 +188,9 @@ JSONRPC_STATUS CAudioLibrary::GetArtistDetails(const std::string &method, ITrans
 
   CFileItemList items;
   CDatabase::Filter filter;
-  if (!musicdatabase.GetArtistsByWhere(musicUrl.ToString(), items, SortDescription(), filter) ||
-      items.Size() != 1)
+  if (!musicdatabase.GetArtistsByWhere(musicUrl.ToString(), items, SortDescription(), filter))
+    return InternalError;
+  if (items.Size() != 1)
     return NotFound;
 
   // Add "artist" to "properties" array by default
