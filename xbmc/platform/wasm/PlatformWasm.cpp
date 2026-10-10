@@ -8,6 +8,7 @@
 
 #include "PlatformWasm.h"
 
+#include "cores/AudioEngine/Sinks/AESinkWasmAudioWorklet.h"
 #include "windowing/wasm/WinSystemWasmGLESContext.h"
 
 #include <cstdlib>
@@ -26,6 +27,7 @@ bool CPlatformWasm::InitStageOne()
     return false;
 
   CWinSystemWasmGLESContext::Register();
+  CAESinkWasmAudioWorklet::Register();
 
   return true;
 }
