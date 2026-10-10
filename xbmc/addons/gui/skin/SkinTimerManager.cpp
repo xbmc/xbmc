@@ -9,8 +9,11 @@
 #include "SkinTimerManager.h"
 
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIAction.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
@@ -217,6 +220,7 @@ void CSkinTimerManager::Stop()
 
 void CSkinTimerManager::Process() const
 {
+  bool changed = false;
   for (const auto& [key, val] : m_timers)
   {
     const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
@@ -232,5 +236,12 @@ void CSkinTimerManager::Process() const
     {
       timer->Reset();
     }
+    changed |= timer->CheckStateChanged();
   }
+
+  // skin conditions on timers change without any other GUI event, so windows
+  // that are only processed when dirty need to be notified
+  if (changed)
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0,
+                                                             GUI_MSG_STATE_CHANGED);
 }
