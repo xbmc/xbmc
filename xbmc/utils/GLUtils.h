@@ -19,6 +19,10 @@
 // if not it's just an empty inline stub, and thus won't affect performance
 // and will be optimized out.
 
+#include "utils/Geometry.h"
+
+#include <array>
+
 #include "system_gl.h"
 
 namespace KODI
@@ -30,6 +34,12 @@ namespace GL
 void GlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
 int glFormatElementByteCount(GLenum format);
+
+/*!
+ * @brief Column-major matrix mapping the unit square onto the parallelogram whose corners are
+ * @p origin, @p right and @p down (the fourth corner follows).
+ */
+std::array<GLfloat, 16> QuadTransform(const CPoint& origin, const CPoint& right, const CPoint& down);
 
 enum class ColorChannel
 {

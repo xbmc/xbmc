@@ -31,6 +31,8 @@
 #include "utils/EGLUtils.h"
 #endif
 
+#include <array>
+
 using namespace std::chrono_literals;
 
 CRenderSystemGLES::CRenderSystemGLES()
@@ -117,7 +119,7 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   InitialiseShaders();
 
-  CGUITextureGLES::Register();
+  CGUITextureGLES::Register(m_quadDrawer);
 
   return true;
 }
@@ -166,9 +168,76 @@ bool CRenderSystemGLES::DestroyRenderSystem()
   PresentRenderImpl(true);
 
   ReleaseShaders();
+  // The DrawQuad callback holds a reference to m_quadDrawer; nothing may draw through it from now on.
+  CGUITexture::UnregisterDrawQuad();
+  m_guiQuadIndexBuffer.Destroy();
+  m_guiUnitQuad.Destroy();
   m_bRenderCreated = false;
 
   return true;
+}
+
+void CRenderSystemGLES::BindGUIQuadIndices(std::size_t quadCount)
+{
+  const std::size_t needed = quadCount * 6;
+  if (m_guiQuadIndexBuffer && m_guiQuadIndices.size() >= needed)
+  {
+    m_guiQuadIndexBuffer.Bind();
+    return;
+  }
+
+  static constexpr std::array<GLushort, 6> pattern{0, 1, 2, 2, 3, 0};
+  m_guiQuadIndices.reserve(needed);
+  for (std::size_t quad = m_guiQuadIndices.size() / 6; quad < quadCount; ++quad)
+  {
+    for (GLushort offset : pattern)
+      m_guiQuadIndices.push_back(static_cast<GLushort>(quad * 4 + offset));
+  }
+  m_guiQuadIndexBuffer.SetData(m_guiQuadIndices.data(), m_guiQuadIndices.size(), GL_STATIC_DRAW);
+}
+
+void CRenderSystemGLES::BindGUIUnitQuad()
+{
+  // Triangle strip order: top left, top right, bottom left, bottom right.
+  static constexpr GLfloat unitQuad[4][2] = {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}};
+  m_guiUnitQuad.SetDataOnce(unitQuad);
+}
+
+void CRenderSystemGLES::DrawGUIQuad(const CPoint& origin,
+                                    const CPoint& right,
+                                    const CPoint& down,
+                                    const CRect* texCoords)
+{
+  glUniformMatrix4fv(GUIShaderGetGUIMatrix(), 1, GL_FALSE,
+                     KODI::UTILS::GL::QuadTransform(origin, right, down).data());
+
+  BindGUIUnitQuad();
+  const GLint posLoc = GUIShaderGetPos();
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(posLoc);
+
+  const GLint texLoc = texCoords ? GUIShaderGetCoord0() : -1;
+  if (texLoc >= 0)
+  {
+    const CRect& tex = *texCoords;
+    glUniformMatrix4fv(
+        GUIShaderGetCoord0Matrix(), 1, GL_FALSE,
+        KODI::UTILS::GL::QuadTransform({tex.x1, tex.y1}, {tex.x2, tex.y1}, {tex.x1, tex.y2}).data());
+    glVertexAttribPointer(texLoc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(texLoc);
+  }
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glDisableVertexAttribArray(posLoc);
+  if (texLoc >= 0)
+    glDisableVertexAttribArray(texLoc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void CRenderSystemGLES::DrawGUIQuad(const CRect& rect, const CRect* texCoords)
+{
+  DrawGUIQuad({rect.x1, rect.y1}, {rect.x2, rect.y1}, {rect.x1, rect.y2}, texCoords);
 }
 
 bool CRenderSystemGLES::BeginRender()
@@ -762,6 +831,54 @@ GLint CRenderSystemGLES::GUIShaderGetPma()
   return -1;
 }
 
+GLint CRenderSystemGLES::GUIShaderGetGUIMatrix()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetGUIMatrixLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetSnap()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetSnapLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetAttrSnap()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetAttrSnapLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetQuadClip()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetQuadClipLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetQuadRect()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetQuadRectLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetTexSwap()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetTexSwapLoc();
+
+  return -1;
+}
+
 GLint CRenderSystemGLES::GUIShaderGetUniCol()
 {
   if (m_pShader[m_method])
@@ -813,14 +930,6 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
 bool CRenderSystemGLES::SupportsStereo(RenderStereoMode mode) const
 {
   return CRenderSystemBase::SupportsStereo(mode);
-}
-
-GLint CRenderSystemGLES::GUIShaderGetModel()
-{
-  if (m_pShader[m_method])
-    return m_pShader[m_method]->GetModelLoc();
-
-  return -1;
 }
 
 GLint CRenderSystemGLES::GUIShaderGetMatrix()

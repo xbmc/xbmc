@@ -29,13 +29,17 @@ varying vec2 m_cordU;
 varying vec2 m_cordV;
 uniform mat4 m_proj;
 uniform mat4 m_model;
+uniform mat4 m_quad;
+uniform vec4 m_texRectY;
+uniform vec4 m_texRectU;
+uniform vec4 m_texRectV;
 
 void main ()
 {
   mat4 mvp = m_proj * m_model;
-  gl_Position = mvp * m_attrpos;
+  gl_Position = mvp * (m_quad * m_attrpos);
   gl_Position.z = -1. * gl_Position.w;
-  m_cordY = m_attrcordY;
-  m_cordU = m_attrcordU;
-  m_cordV = m_attrcordV;
+  m_cordY = m_texRectY.xy + m_attrcordY * m_texRectY.zw;
+  m_cordU = m_texRectU.xy + m_attrcordU * m_texRectU.zw;
+  m_cordV = m_texRectV.xy + m_attrcordV * m_texRectV.zw;
 }

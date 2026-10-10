@@ -49,20 +49,9 @@ void CSlideShowPicGLES::Render(float* x,
   }
 
   GLubyte col[4];
-  GLfloat ver[4][3];
-  GLfloat tex[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2}; //determines order of triangle strip
 
-  GLint posLoc = renderSystem->GUIShaderGetPos();
-  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint uniColLoc = renderSystem->GUIShaderGetUniCol();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
-
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
 
   // Setup Colour values
   col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
@@ -77,26 +66,13 @@ void CSlideShowPicGLES::Render(float* x,
     col[2] = (235 - 16) * col[2] / 255 + 16;
   }
 
-  for (int i = 0; i < 4; i++)
-  {
-    // Setup vertex position values
-    ver[i][0] = x[i];
-    ver[i][1] = y[i];
-    ver[i][2] = 0.0f;
-  }
-  // Setup texture coordinates
-  tex[0][0] = tex[3][0] = u1;
-  tex[0][1] = tex[1][1] = v1;
-  tex[1][0] = tex[2][0] = u2;
-  tex[2][1] = tex[3][1] = v2;
-
   glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
               (col[3] / 255.0f));
   glUniform1f(depthLoc, -1.0f);
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
+  // The corners are always a transformed rectangle, so three of them define it.
+  const CRect texCoords(u1, v1, u2, v2);
+  renderSystem->DrawGUIQuad({x[0], y[0]}, {x[1], y[1]}, {x[3], y[3]}, &texCoords);
 
   renderSystem->DisableGUIShader();
 }
