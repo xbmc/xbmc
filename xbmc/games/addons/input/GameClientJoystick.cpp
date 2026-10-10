@@ -42,7 +42,35 @@ void CGameClientJoystick::RegisterInput(JOYSTICK::IInputProvider* inputProvider)
 
 void CGameClientJoystick::UnregisterInput(JOYSTICK::IInputProvider* inputProvider)
 {
+  std::lock_guard<std::mutex> lock(m_rumbleMutex);
+
+  // A motor runs until it is told to stop, so a game that closes mid-rumble
+  // would leave the controller vibrating
+  if (inputProvider != nullptr)
+    StopMotors();
+  m_activeMotors.clear();
+
   m_portInput->UnregisterInput(inputProvider);
+}
+
+void CGameClientJoystick::EnableRumble(bool bEnabled)
+{
+  std::lock_guard<std::mutex> lock(m_rumbleMutex);
+
+  m_bRumbleEnabled = bEnabled;
+  if (!bEnabled)
+    StopMotors();
+}
+
+void CGameClientJoystick::StopMotors()
+{
+  JOYSTICK::IInputReceiver* receiver = InputReceiver();
+  if (receiver != nullptr)
+  {
+    // A motor that won't stop is kept, so the next stop tries it again
+    std::erase_if(m_activeMotors, [receiver](const std::string& motor)
+                  { return receiver->SetRumbleState(motor, 0.0f); });
+  }
 }
 
 std::string CGameClientJoystick::ControllerID(void) const
@@ -210,12 +238,27 @@ JOYSTICK::IInputReceiver* CGameClientJoystick::InputReceiver(void)
 
 bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
 {
+  std::lock_guard<std::mutex> lock(m_rumbleMutex);
+
+  // A frame that was still running when the game paused can ask for rumble
+  // after the motors were stopped
+  if (!m_bRumbleEnabled && magnitude > 0.0f)
+    return false;
+
   bool bHandled = false;
 
   JOYSTICK::IInputReceiver* receiver = InputReceiver();
 
   if (receiver != nullptr)
     bHandled = receiver->SetRumbleState(feature, magnitude);
+
+  if (bHandled)
+  {
+    if (magnitude > 0.0f)
+      m_activeMotors.insert(feature);
+    else
+      m_activeMotors.erase(feature);
+  }
 
   // Report the first motor event, and the first that fails, once each. A game
   // asking for rumble and not producing any is otherwise entirely silent: the
