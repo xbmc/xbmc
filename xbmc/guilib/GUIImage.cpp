@@ -159,6 +159,11 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
   if (m_textureCurrent->Process(currentTime))
     MarkDirtyRegion();
 
+  // background textures are picked up in Process(), keep the window
+  // processed until they're loaded without redrawing this control
+  if (m_textureCurrent->IsLoading() || m_textureNext->IsLoading())
+    MarkDirtyRegion(DIRTY_STATE_CHILD);
+
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
