@@ -240,7 +240,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
 bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 {
   if (pItem->IsShareOrDrive() || pItem->IsParentFolder() ||
-      pItem->GetPath() == PLACEHOLDER::ADD_SOURCE)
+      pItem->GetPath() == ITEM::PLACEHOLDER::ADD_SOURCE)
     return false;
 
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_type.empty() &&

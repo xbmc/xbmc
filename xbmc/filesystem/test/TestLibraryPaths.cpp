@@ -23,10 +23,10 @@ namespace
 //! Whether \p path names a node shipped in system/library, as a folder or an XML file
 bool IsShippedNode(const std::string& path)
 {
-  if (!StringUtils::StartsWith(path, LIBRARY::ROOT))
+  if (!StringUtils::StartsWith(path, MEDIA::LIBRARY_PATH::ROOT))
     return false;
   std::string node{"special://xbmc/system/library/" +
-                   path.substr(std::string{LIBRARY::ROOT}.size())};
+                   path.substr(std::string{MEDIA::LIBRARY_PATH::ROOT}.size())};
   if (XFILE::CDirectory::Exists(node))
     return true;
   URIUtils::RemoveSlashAtEnd(node);
@@ -36,9 +36,10 @@ bool IsShippedNode(const std::string& path)
 
 TEST(TestLibraryPaths, EveryPathIsAShippedNode)
 {
-  for (const char* path :
-       {LIBRARY::VIDEO, LIBRARY::VIDEO_FLAT, LIBRARY::VIDEO_FILES, LIBRARY::MOVIE_TITLES,
-        LIBRARY::TVSHOW_TITLES, LIBRARY::MUSICVIDEOS, LIBRARY::MUSICVIDEO_TITLES, LIBRARY::MUSIC,
-        LIBRARY::MUSIC_FILES, LIBRARY::MUSIC_PLAYLISTS})
+  for (const char* path : {MEDIA::LIBRARY_PATH::VIDEO, MEDIA::LIBRARY_PATH::VIDEO_FLAT,
+                           MEDIA::LIBRARY_PATH::VIDEO_FILES, MEDIA::LIBRARY_PATH::MOVIE_TITLES,
+                           MEDIA::LIBRARY_PATH::TVSHOW_TITLES, MEDIA::LIBRARY_PATH::MUSICVIDEOS,
+                           MEDIA::LIBRARY_PATH::MUSICVIDEO_TITLES, MEDIA::LIBRARY_PATH::MUSIC,
+                           MEDIA::LIBRARY_PATH::MUSIC_FILES, MEDIA::LIBRARY_PATH::MUSIC_PLAYLISTS})
     EXPECT_TRUE(IsShippedNode(path)) << path;
 }

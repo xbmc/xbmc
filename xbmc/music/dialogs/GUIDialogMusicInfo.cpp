@@ -991,7 +991,7 @@ void CGUIDialogMusicInfo::ShowForArtist(int idArtist)
 void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
 {
   if (pItem->IsParentFolder() || URIUtils::IsSpecial(pItem->GetPath()) ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), PLACEHOLDER::MUSIC_SEARCH))
+      StringUtils::StartsWithNoCase(pItem->GetPath(), ITEM::PLACEHOLDER::MUSIC_SEARCH))
     return; // nothing to do
 
   if (!pItem->IsFolder())

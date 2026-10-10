@@ -75,7 +75,7 @@ bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, C
              || pItem->IsPath("special://videoplaylists/"))
       strIcon = "DefaultPlaylist.png";
     else if (VIDEO::IsVideoDb(*pItem) || MUSIC::IsMusicDb(*pItem) || pItem->IsPlugin() ||
-             pItem->IsPath(PLACEHOLDER::MUSIC_SEARCH))
+             pItem->IsPath(ITEM::PLACEHOLDER::MUSIC_SEARCH))
       strIcon = "DefaultFolder.png";
     else if (NETWORK::IsRemote(*pItem))
       strIcon = "DefaultNetwork.png";

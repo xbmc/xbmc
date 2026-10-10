@@ -232,7 +232,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
 {
   if (fileItem.IsParentFolder() || fileItem.IsShareOrDrive() ||
-      fileItem.IsPath(PLACEHOLDER::ADD_SOURCE) ||
+      fileItem.IsPath(ITEM::PLACEHOLDER::ADD_SOURCE) ||
       (PLAYLIST::IsPlayList(fileItem) && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
     return false;
 
@@ -664,8 +664,9 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   const std::shared_ptr<CFileItem> item{m_vecItems->Get(iItem)};
 
   const std::string path{item->GetPath()};
-  if (!item->IsFolder() && path != PLACEHOLDER::ADD_SOURCE &&
-      ((!PLACEHOLDER::IsNewItem(path) && !URIUtils::IsScript(path) && !URIUtils::IsPlugin(path)) ||
+  if (!item->IsFolder() && path != ITEM::PLACEHOLDER::ADD_SOURCE &&
+      ((!ITEM::PLACEHOLDER::IsNewItem(path) && !URIUtils::IsScript(path) &&
+        !URIUtils::IsPlugin(path)) ||
        (URIUtils::IsPlugin(path) &&
         item->GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean(false))))
   {
@@ -1200,7 +1201,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
 
   // add in the "New Playlist" item if we're in the playlists folder
   if ((items.GetPath() == "special://videoplaylists/") &&
-      !items.Contains(PLACEHOLDER::NEW_PLAYLIST))
+      !items.Contains(ITEM::PLACEHOLDER::NEW_PLAYLIST))
   {
     const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -1216,8 +1217,8 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
     newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
 */
-    newPlaylist =
-        std::make_shared<CFileItem>(std::string{PLACEHOLDER::NEW_SMART_PLAYLIST} + "video", false);
+    newPlaylist = std::make_shared<CFileItem>(
+        std::string{ITEM::PLACEHOLDER::NEW_SMART_PLAYLIST} + "video", false);
     newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         21437)); // "new smart playlist..."
     newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
