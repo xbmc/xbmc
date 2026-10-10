@@ -64,3 +64,17 @@ TEST_F(TestPeripheralMappings, SkipsASettingWithoutAKey)
   EXPECT_EQ(1u, settings->size());
   EXPECT_TRUE(settings->contains("enabled"));
 }
+
+TEST_F(TestPeripheralMappings, ReadsTheOrderOfASetting)
+{
+  const auto settings = SettingsFrom(R"(<peripheral>
+                                          <setting key="first" type="bool" value="1" label="1" order="2"/>
+                                          <setting key="second" type="bool" value="1" label="2" order="1"/>
+                                        </peripheral>)");
+
+  ASSERT_TRUE(settings.has_value()) << "reading the settings did not finish";
+  ASSERT_TRUE(settings->contains("first"));
+  ASSERT_TRUE(settings->contains("second"));
+  EXPECT_EQ(2, settings->at("first").m_order);
+  EXPECT_EQ(1, settings->at("second").m_order);
+}
