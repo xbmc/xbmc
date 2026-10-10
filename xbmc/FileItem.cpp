@@ -1991,7 +1991,8 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */, int dept
 
   URIUtils::RemoveSlashAtEnd(strMovieName);
 
-  strMovieName = URIUtils::GetDecodedFileName(strMovieName);
+  // '+' becomes a space, as the title cleaning that follows does not split on it
+  strMovieName = URIUtils::URLDecode(URIUtils::GetFileName(strMovieName));
   URIUtils::RemoveExtension(strMovieName);
   return strMovieName;
 }

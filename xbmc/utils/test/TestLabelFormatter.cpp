@@ -105,3 +105,9 @@ TEST_F(TestLabelFormatterHiddenExtensions, HidesTheExtensionOfAnEscapedName)
   EXPECT_EQ("file_name", LabelFor("davs://server/files/file_name.mkv", "file_name.mkv"));
   EXPECT_EQ("file name", LabelFor("davs://server/files/file%20name.mkv", "file name.mkv"));
 }
+
+TEST_F(TestLabelFormatterHiddenExtensions, KeepsAPlusInTheName)
+{
+  EXPECT_EQ("C++ Collection",
+            LabelFor("smb://server/share/C++ Collection.mkv", "C++ Collection.mkv"));
+}

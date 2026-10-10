@@ -234,6 +234,7 @@ TEST_F(TestURIUtils, GetDecodedFileName)
   EXPECT_EQ("movie.avi", URIUtils::GetDecodedFileName("/path/to/movie.avi"));
   EXPECT_EQ("the movie.avi", URIUtils::GetDecodedFileName("davs://host/the%20movie.avi"));
   EXPECT_EQ("100% proof.avi", URIUtils::GetDecodedFileName("davs://host/100%25%20proof.avi"));
+  EXPECT_EQ("C++ Collection.mkv", URIUtils::GetDecodedFileName("davs://host/C++%20Collection.mkv"));
 }
 
 TEST_F(TestURIUtils, RemoveExtension)
@@ -2697,4 +2698,13 @@ TEST_F(TestURIUtils, GetDecodedPath)
   encoded = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls";
   decoded = "bluray://smb://somepath/path//BDMV/PLAYLIST/00800.mpls";
   EXPECT_EQ(decoded, URIUtils::GetDecodedPath(encoded));
+}
+
+TEST_F(TestURIUtils, DecodePathEscapes)
+{
+  EXPECT_EQ("file name", URIUtils::DecodePathEscapes("file%20name"));
+  EXPECT_EQ("100% proof", URIUtils::DecodePathEscapes("100%25 proof"));
+
+  EXPECT_EQ("C++ Collection", URIUtils::DecodePathEscapes("C++ Collection"));
+  EXPECT_EQ("C   Collection", URIUtils::URLDecode("C++ Collection"));
 }
