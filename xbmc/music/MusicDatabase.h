@@ -117,9 +117,9 @@ public:
    \param strTitle [in] the title of the song (required to be non-empty)
    \param strMusicBrainzTrackID [in] the MusicBrainz track ID of the song
    \param strPathAndFileName [in] the path and filename to the song
-   \param strComment [in] the ids of the added songs
+   \param strComment [in] the comment of the song
    \param strMood [in] the mood of the added song
-   \param strThumb [in] the ids of the added songs
+   \param strThumb [in] the thumb of the song
    \param artistDisp [in] the assembled artist name(s) display string
    \param artistSort [in] the artist name(s) sort string
    \param genres [in] a vector of genres to which this song belongs
@@ -135,6 +135,10 @@ public:
    \param rating [in] a rating for the song
    \param userrating [in] a userrating (my rating) for the song
    \param votes [in] a vote counter for the song rating
+   \param iBPM [in] the beats per minute of a song
+   \param iBitRate [in] the bitrate of the song file
+   \param iSampleRate [in] the sample rate of the song file
+   \param iChannels [in] the number of audio channels in the song file
    \param songVideoURL [in] url to video of the song
    \param replayGain [in] album and track replaygain and peak values
    \return the id of the song
@@ -174,7 +178,7 @@ public:
   /*! \brief Update a song and all its nested entities (genres, artists, contributors)
     \param song [in/out] the song to update, artist ids are returned in artist credits
     \param bArtists to update artist credits and contributors, default is true
-    \param bArtists to check and log if artist links have changed, default is true
+    \param bArtistLinks to check and log if artist links have changed, default is true
     \return true if successful
    */
   bool UpdateSong(CSong& song, bool bArtists = true, bool bArtistLinks = true);
@@ -184,9 +188,9 @@ public:
    \param strTitle [in] the title of the song (required to be non-empty)
    \param strMusicBrainzTrackID [in] the MusicBrainz track ID of the song
    \param strPathAndFileName [in] the path and filename to the song
-   \param strComment [in] the ids of the added songs
+   \param strComment [in] the comment of the song
    \param strMood [in] the mood of the added song
-   \param strThumb [in] the ids of the added songs
+   \param strThumb [in] the thumb of the song
    \param artistDisp [in] the artist name(s) display string
    \param artistSort [in] the artist name(s) sort string
    \param genres [in] a vector of genres to which this song belongs
@@ -262,7 +266,7 @@ public:
   /*! \brief Add an album and all its songs to the database
   \param album the album to add
   \param idSource the music source id
-  \return the id of the album
+  \return true if successful
   */
   bool AddAlbum(CAlbum& album, int idSource);
 
@@ -275,6 +279,7 @@ public:
   /*! \brief Add an album to the database
    \param strAlbum the album title
    \param strMusicBrainzAlbumID the Musicbrainz Id
+   \param strReleaseGroupMBID the MusicBrainz release group id
    \param strArtist the album artist name(s) display string
    \param strArtistSort the album artist name(s) sort string
    \param strGenre the album genre(s)
@@ -421,7 +426,7 @@ public:
 
   /*! \brief Propagate artist sort name into the concatenated artist sort name strings
   held for songs and albums
-  \param int idArtist to propagate sort name for, -1 means all artists
+  \param idArtist to propagate sort name for, -1 means all artists
   */
   bool UpdateArtistSortNames(int idArtist = -1);
 
@@ -812,9 +817,9 @@ public:
   std::string GetArtistsLastModified() const;
 
   /*!
-   * @brief Check the passed in list of images if used in this database. Used to clean the image cache.
-   * @param imagesToCheck
-   * @return a list of the passed in images used by this database.
+   * \brief Check the passed in list of images if used in this database. Used to clean the image cache.
+   * \param imagesToCheck the image URLs to check
+   * \return a list of the passed in images used by this database.
    */
   std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck) const;
 
