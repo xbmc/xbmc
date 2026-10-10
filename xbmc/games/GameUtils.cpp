@@ -21,6 +21,7 @@
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/AddonsDirectory.h"
@@ -537,4 +538,17 @@ GameClientPtr CGameUtils::GetPlayingGameClient()
     return {};
 
   return std::static_pointer_cast<CGameClient>(addon);
+}
+
+void CGameUtils::NotifyBlockedByHardcore(uint32_t featureStringId)
+{
+  constexpr unsigned int TOAST_DISPLAY_TIME_MS = 5000;
+
+  const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+
+  // "Hardcore mode", "{0:s} is not available". The mode heads the toast so the
+  // longest feature name still fits the notification's fixed width.
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Info, strings.Get(35700),
+      StringUtils::Format(strings.Get(35305), strings.Get(featureStringId)), TOAST_DISPLAY_TIME_MS);
 }

@@ -74,6 +74,14 @@ public:
    */
   bool CanInstallCheats() const;
 
+  /*!
+   * \brief Take the cheats off the client while hardcore mode is on, and put
+   *        back the ones switched on when it is turned off
+   *
+   * \param hardcore Whether hardcore mode is now on
+   */
+  void SetHardcore(bool hardcore);
+
   enum class InstallResult
   {
     FAILED,
@@ -217,8 +225,11 @@ private:
    * Call with the client's lock held and m_mutex free. Every path here takes
    * the two in that order, which is the order a game being closed already
    * holds them in.
+   *
+   * \param hardcore Whether hardcore mode is on, read before the client's lock
+   *                 was taken. None are sent while it is.
    */
-  void Apply();
+  void Apply(bool hardcore);
 
   mutable std::mutex m_mutex;
   std::shared_ptr<Session> m_session;

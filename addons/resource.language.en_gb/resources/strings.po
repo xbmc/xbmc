@@ -10955,7 +10955,8 @@ msgctxt "#19193"
 msgid "The channel scan can't be started."
 msgstr ""
 
-#. unused?
+#. Question after an explanation of what will happen, such as #35702
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
 msgctxt "#19194"
 msgid "Continue?"
 msgstr ""
@@ -19561,7 +19562,11 @@ msgctxt "#35301"
 msgid "Kodi couldn't initialize {0:s} rendering for this game on this display."
 msgstr ""
 
-#empty string with id 35302
+#. Help text for the hardcore mode setting
+#: system/settings/settings.xml
+msgctxt "#35302"
+msgid "Earn achievements worth double points. Rewind, loading save states, slow motion and cheats are unavailable while this is on, and turning it on restarts the game."
+msgstr ""
 
 #. Label of the setting that enables RetroAchievements encore mode
 #: system/settings/settings.xml
@@ -19575,13 +19580,38 @@ msgctxt "#35304"
 msgid "Allow achievements you have already earned to be triggered again.[CR][CR]Applies the next time you load the game."
 msgstr ""
 
+#. Notification shown when hardcore mode refuses something, {0:s} is the feature
+#: xbmc/games/GameUtils.cpp
+msgctxt "#35305"
+msgid "{0:s} is not available"
+msgstr ""
+
+#. Notification shown when resuming a save state turns hardcore mode off
+#: xbmc/cores/RetroPlayer/RetroPlayer.cpp
+msgctxt "#35306"
+msgid "Hardcore mode turned off. Achievements will be earned in casual mode."
+msgstr ""
+
 #. Notification shown when all achievements of a subset are earned, {0:s} is the subset
 #: xbmc/games/addons/cheevos/GameClientCheevos.cpp
 msgctxt "#35307"
 msgid "Subset completed"
 msgstr ""
 
-#empty strings from id 35313 to 35319
+#. Name of the feature hardcore mode refused, used with #35305
+#: xbmc/cores/RetroPlayer/playback/ReversiblePlayback.cpp
+msgctxt "#35308"
+msgid "Loading save states"
+msgstr ""
+
+#. Name of the feature hardcore mode refused, used with #35305
+#: xbmc/cores/RetroPlayer/RetroPlayer.cpp
+#: xbmc/cores/RetroPlayer/playback/ReversiblePlayback.cpp
+msgctxt "#35309"
+msgid "Rewind"
+msgstr ""
+
+#empty strings from id 35310 to 35319
 
 #. Label of the Cheats button in the game OSD, heading of the cheats dialog, and
 #. of the cheats group in settings
@@ -19921,7 +19951,34 @@ msgctxt "#35511"
 msgid "Current"
 msgstr ""
 
-#empty strings from id 35512 to 35999
+#empty strings from id 35512 to 35699
+
+#. Label of the setting that enables RetroAchievements hardcore mode
+#: system/settings/settings.xml
+msgctxt "#35700"
+msgid "Hardcore mode"
+msgstr ""
+
+#. Name of the feature hardcore mode refused, used with #35305
+#: xbmc/cores/RetroPlayer/RetroPlayer.cpp
+msgctxt "#35701"
+msgid "Slow motion"
+msgstr ""
+
+#. Confirmation shown before turning hardcore mode on during a game, followed by #19194
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35702"
+msgid "Starting a hardcore session restarts the game. Any unsaved progress will be lost."
+msgstr ""
+
+#. Shown as a game with achievements starts in hardcore mode, {0:d} earned of {1:d}
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+#, c++-format
+msgctxt "#35703"
+msgid "Hardcore mode: {0:d} of {1:d} achievements unlocked"
+msgstr ""
+
+#empty strings from id 35704 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
