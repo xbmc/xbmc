@@ -489,10 +489,10 @@ void CLabelFormatter::FillMusicMaskContent(const char mask, const std::string &v
     tag->SetDuration(StringUtils::TimeStringToSeconds(value));
     break;
   case 'R': // rating
-    tag->SetRating(value[0]);
+    tag->SetRating(static_cast<float>(atof(value.c_str())));
     break;
   case 'r': // userrating
-    tag->SetUserrating(value[0]);
+    tag->SetUserrating(atoi(value.c_str()));
     break;
   case 'b': // total discs
     tag->SetTotalDiscs(atol(value.c_str()));
