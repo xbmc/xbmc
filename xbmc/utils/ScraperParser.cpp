@@ -75,7 +75,6 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_strFile.clear();
 }
 
 bool CScraperParser::Load(const std::string& strXMLFile)
@@ -86,8 +85,6 @@ bool CScraperParser::Load(const std::string& strXMLFile)
 
   if (!m_document)
     return false;
-
-  m_strFile = strXMLFile;
 
   if (m_document->LoadFile(strXMLFile))
     return LoadFromXML();

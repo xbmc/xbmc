@@ -72,7 +72,7 @@ void CDAVDirectory::ParseResponse(const tinyxml2::XMLElement* element, CFileItem
               else if (CDAVCommon::ValueWithoutNamespace(propChild, "displayname") &&
                        !propChild->NoChildren())
               {
-                item.SetLabel(CURL::Decode(propChild->FirstChild()->Value()));
+                item.SetLabel(URIUtils::DecodePathEscapes(propChild->FirstChild()->Value()));
               }
               else if (!item.GetDateTime().IsValid() &&
                        CDAVCommon::ValueWithoutNamespace(propChild, "creationdate") &&

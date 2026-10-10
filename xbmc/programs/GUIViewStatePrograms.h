@@ -17,7 +17,7 @@ public:
 
 protected:
   void SaveViewState() override;
-  std::string GetLockType() override;
+  std::optional<KODI::MEDIA::MediaSection> GetLockType() override;
   std::string GetExtensions() override;
   std::vector<CMediaSource>& GetSources() override;
 };

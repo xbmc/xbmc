@@ -91,6 +91,7 @@
 #include "video/FilenameAttributes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -400,7 +401,11 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
-    strFilename = URIUtils::GetFileName(url.GetHostName());
+  {
+    const std::string& parent = url.GetHostName();
+    strFilename = URIUtils::IsURL(parent) ? URIUtils::GetDecodedFileName(parent)
+                                          : URIUtils::GetFileName(parent);
+  }
 
   // now remove the extension if needed
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -2197,13 +2202,14 @@ std::optional<StreamFlags> ExternalStreamFlagFromToken(std::string_view token)
  * \param[in] token One token of the filename.
  * \return The language, or nullopt where the token states none.
  */
-std::optional<KODI::UTILS::CLanguageTag> ExternalStreamLanguageFromToken(const std::string& token)
+std::optional<KODI::LANGUAGE::CLanguageTag> ExternalStreamLanguageFromToken(
+    const std::string& token)
 {
   // _ stands in for the BCP 47 subtag separator, since - separates the filename's own tokens
   std::string langCode{token};
   std::ranges::replace(langCode, '_', '-');
 
-  return KODI::UTILS::CLanguageTag::TryParse(langCode);
+  return KODI::LANGUAGE::CLanguageTag::TryParse(langCode);
 }
 } // namespace
 
@@ -2514,13 +2520,19 @@ std::string CUtil::GetHexString(const std::span<const uint8_t>& buf, int count)
 
 bool CUtil::UseDynPathForAddOrUpdate(const CFileItem& item)
 {
-  if (item.IsStack() ||
-      (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-       (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-        item.GetVideoContentType() == VideoDbContentType::EPISODES ||
-        item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */)))
-  {
+  if (item.IsStack())
     return true;
+
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
+  {
+    // A disc image played from outside the library keeps its state against the image, as the
+    // image is what is looked up when it is played or listed again
+    const VideoDbContentType type{item.GetVideoContentType()};
+    const bool isLibraryItem{item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0};
+    if (((type == VideoDbContentType::MOVIES || type == VideoDbContentType::EPISODES) &&
+         isLibraryItem) ||
+        type == VideoDbContentType::UNKNOWN /* Removable bluray */)
+      return true;
   }
 
   return URIUtils::IsArchive(CURL(item.GetDynPath()));

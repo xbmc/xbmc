@@ -11,7 +11,7 @@
 #include <optional>
 #include <string>
 
-namespace KODI::UTILS
+namespace KODI::LANGUAGE
 {
 class CLanguageTag;
 }
@@ -34,7 +34,7 @@ public:
    * \param[in] language The language of a stream.
    * \return The English name of the language, or a localized "Unknown" when it has no name.
    */
-  static std::string FormatLanguage(const UTILS::CLanguageTag& language);
+  static std::string FormatLanguage(const LANGUAGE::CLanguageTag& language);
 };
 
 } // namespace KODI::GUILIB::GUIINFO

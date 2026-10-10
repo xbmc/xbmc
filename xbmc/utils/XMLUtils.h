@@ -24,17 +24,13 @@ public:
   static bool HasChild(const TiXmlNode* pRootNode, const char* strTag);
   static bool HasChild(const tinyxml2::XMLNode* rootNode, const char* tag);
 
-  static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwHexValue);
   static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue);
-  static bool GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
   static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double& value);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
   static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
 
-  static bool GetHex(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value);
   static bool GetUInt(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value);
-  static bool GetLong(const tinyxml2::XMLNode* rootNode, const char* tag, long& value);
   static bool GetFloat(const tinyxml2::XMLNode* rootNode, const char* tag, float& value);
   static bool GetDouble(const tinyxml2::XMLNode* rootNode, const char* tag, double& value);
   static bool GetInt(const tinyxml2::XMLNode* rootNode, const char* tag, int& value);
@@ -61,21 +57,6 @@ public:
    */
   static std::string GetString(const TiXmlNode* pRootNode, const char* strTag);
   static std::string GetString(const tinyxml2::XMLNode* rootNode, const char* tag);
-  /*! \brief Get multiple tags, concatenating the values together.
-   Transforms
-     <tag>value1</tag>
-     <tag clear="true">value2</tag>
-     ...
-     <tag>valuen</tag>
-   into value2<sep>...<sep>valuen, appending it to the value string. Note that <value1> is overwritten by the clear="true" tag.
-
-   \param rootNode    the parent containing the <tag>'s.
-   \param tag         the <tag> in question.
-   \param separator   the separator to use when concatenating values.
-   \param value [out] the resulting string. Remains untouched if no <tag> is available, else is appended (or cleared based on the clear parameter).
-   \param clear       if true, clears the string prior to adding tags, if tags are available. Defaults to false.
-   */
-  static bool GetAdditiveString(const TiXmlNode* rootNode, const char* tag, const std::string& separator, std::string& value, bool clear = false);
   static bool GetStringArray(const TiXmlNode* rootNode, const char* tag, std::vector<std::string>& arrayValue, bool clear = false, const std::string& separator = "");
   static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
@@ -84,11 +65,6 @@ public:
   static bool GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime& date);
   static bool GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDateTime& dateTime);
 
-  static bool GetAdditiveString(const tinyxml2::XMLNode* rootNode,
-                                const char* tag,
-                                const std::string& separator,
-                                std::string& value,
-                                bool clear = false);
   static bool GetStringArray(const tinyxml2::XMLNode* rootNode,
                              const char* tag,
                              std::vector<std::string>& value,
@@ -118,25 +94,18 @@ public:
   static std::string GetAttribute(const tinyxml2::XMLElement* element, const char* tag);
 
   static TiXmlNode* SetString(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);
-  static void SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const std::string& strSeparator, const std::string& strValue);
   static void SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue);
   static TiXmlNode* SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
   static TiXmlNode* SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
   static TiXmlNode* SetDouble(TiXmlNode* pRootNode, const char* strTag, double value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
-  static void SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);
-  static void SetLong(TiXmlNode* pRootNode, const char *strTag, long iValue);
   static void SetDate(TiXmlNode* pRootNode, const char *strTag, const CDateTime& date);
   static void SetDateTime(TiXmlNode* pRootNode, const char *strTag, const CDateTime& dateTime);
 
   static tinyxml2::XMLNode* SetString(tinyxml2::XMLNode* rootNode,
                                       const char* tag,
                                       const std::string& value);
-  static void SetAdditiveString(tinyxml2::XMLNode* rootNode,
-                                const char* tag,
-                                const std::string& separator,
-                                const std::string& value);
   static void SetStringArray(tinyxml2::XMLNode* rootNode,
                              const char* tag,
                              const std::vector<std::string>& value);
@@ -144,9 +113,7 @@ public:
   static tinyxml2::XMLNode* SetFloat(tinyxml2::XMLNode* rootNode, const char* tag, float value);
   static tinyxml2::XMLNode* SetDouble(tinyxml2::XMLNode* rootNode, const char* tag, double value);
   static void SetBoolean(tinyxml2::XMLNode* rootNode, const char* tag, bool value);
-  static void SetHex(tinyxml2::XMLNode* rootNode, const char* tag, uint32_t value);
   static void SetPath(tinyxml2::XMLNode* rootNode, const char* tag, const std::string& value);
-  static void SetLong(tinyxml2::XMLNode* rootNode, const char* tag, long value);
   static void SetDate(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& date);
   static void SetDateTime(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& dateTime);
 

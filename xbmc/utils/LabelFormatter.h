@@ -17,6 +17,7 @@ namespace MUSIC_INFO
 }
 
 class CFileItem;  // forward
+class CFileItemList;
 
 struct LABEL_MASKS
 {
@@ -44,6 +45,10 @@ public:
     FormatLabel(item);
     FormatLabel2(item);
   }
+
+  //! \brief Label every item not already labelled, files by the file masks and folders by the
+  //! folder masks.
+  static void FormatItemLabels(CFileItemList& items, const LABEL_MASKS& masks);
 
   bool FillMusicTag(const std::string &fileName, MUSIC_INFO::CMusicInfoTag *tag) const;
 

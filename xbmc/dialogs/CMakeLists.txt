@@ -59,7 +59,8 @@ set(HEADERS GUIDialogBoxBase.h
             GUIDialogTextViewer.h
             GUIDialogVolumeBar.h
             GUIDialogYesNo.h
-            IGUIVolumeBarCallback.h)
+            IGUIVolumeBarCallback.h
+            ImageChoices.h)
 
 if(ENABLE_OPTICAL)
   list(APPEND SOURCES GUIDialogPlayEject.cpp)

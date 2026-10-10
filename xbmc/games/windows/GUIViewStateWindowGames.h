@@ -25,7 +25,7 @@ public:
   ~CGUIViewStateWindowGames() override = default;
 
   // implementation of CGUIViewState
-  std::string GetLockType() override;
+  std::optional<KODI::MEDIA::MediaSection> GetLockType() override;
   std::string GetExtensions() override;
   std::vector<CMediaSource>& GetSources() override;
 

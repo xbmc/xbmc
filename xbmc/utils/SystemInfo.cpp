@@ -933,13 +933,6 @@ bool CSysInfo::IsAeroDisabled()
 
 CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
 
-bool CSysInfo::IsWindowsVersion(WindowsVersion ver)
-{
-  if (ver == WindowsVersionUnknown)
-    return false;
-  return GetWindowsVersion() == ver;
-}
-
 bool CSysInfo::IsWindowsVersionAtLeast(WindowsVersion ver)
 {
   if (ver == WindowsVersionUnknown)

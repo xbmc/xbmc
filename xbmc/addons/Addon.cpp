@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddonManagerCallback.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
@@ -18,6 +19,7 @@
 #include "filesystem/File.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -192,7 +194,7 @@ const std::vector<DependencyInfo>& CAddon::GetDependencies() const
 
 std::string CAddon::FanArt() const
 {
-  auto it = m_addonInfo->Art().find("fanart");
+  auto it = m_addonInfo->Art().find(KODI::ART::TYPE::FANART);
   return it != m_addonInfo->Art().end() ? it->second : "";
 }
 
@@ -244,7 +246,12 @@ bool CAddon::DeleteInstanceSettings(AddonInstanceId instance)
 
 bool CAddon::CanHaveAddonOrInstanceSettings()
 {
-  return HasSettings(ADDON_SETTINGS_ID) || SupportsInstanceSettings();
+  if (HasSettings(ADDON_SETTINGS_ID) || SupportsInstanceSettings())
+    return true;
+
+  const IAddonMgrCallback* addonTypeManager{
+      CServiceBroker::GetAddonMgr().GetCallbackForType(Type())};
+  return addonTypeManager && !addonTypeManager->GetSettingsActions(ID(), ADDON_SETTINGS_ID).empty();
 }
 
 bool CAddon::HasSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)

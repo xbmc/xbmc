@@ -33,8 +33,6 @@ TEST(TestBitstreamStats, General)
   i = 0;
   a.Start();
   EXPECT_EQ(0.0, a.GetBitrate());
-  EXPECT_EQ(0.0, a.GetMaxBitrate());
-  EXPECT_EQ(-1.0, a.GetMinBitrate());
   while (i <= BITS)
   {
     a.AddSampleBits(1);
@@ -43,8 +41,6 @@ TEST(TestBitstreamStats, General)
   }
   a.CalculateBitrate();
   EXPECT_GT(a.GetBitrate(), 0.0);
-  EXPECT_GT(a.GetMaxBitrate(), 0.0);
-  EXPECT_GT(a.GetMinBitrate(), 0.0);
 
   i = 0;
   while (i <= BYTES)
@@ -55,6 +51,4 @@ TEST(TestBitstreamStats, General)
   }
   a.CalculateBitrate();
   EXPECT_GT(a.GetBitrate(), 0.0);
-  EXPECT_GT(a.GetMaxBitrate(), 0.0);
-  EXPECT_LE(a.GetMinBitrate(), a.GetMaxBitrate());
 }

@@ -49,6 +49,8 @@
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
 
+using KODI::MEDIA::MediaSection;
+
 namespace KODI
 {
 
@@ -164,7 +166,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // Check if we add a locked share
     if (!item->IsPVR() && item->IsShareOrDrive())
     {
-      if (!g_passwordManager.IsItemUnlocked(item.get(), "video"))
+      if (!g_passwordManager.IsItemUnlocked(item.get(), MediaSection::VIDEO))
         return;
     }
 
@@ -183,20 +185,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     {
       LABEL_MASKS labelMasks;
       state->GetSortMethodLabelMasks(labelMasks);
-
-      const CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
-      const CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder,
-                                            labelMasks.m_strLabel2Folder);
-      for (const auto& i : items)
-      {
-        if (i->IsLabelPreformatted())
-          continue;
-
-        if (i->IsFolder())
-          folderFormatter.FormatLabels(i.get());
-        else
-          fileFormatter.FormatLabels(i.get());
-      }
+      CLabelFormatter::FormatItemLabels(items, labelMasks);
 
       SortDescription sortDesc;
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == viewStateWindowId)

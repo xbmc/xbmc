@@ -22,6 +22,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -545,7 +546,7 @@ void CPluginDirectory::SetProperty(int handle, const std::string &strProperty, c
   if (!dir)
     return;
   if (strProperty == "fanart_image")
-    dir->m_listItems->SetArt("fanart", strValue);
+    dir->m_listItems->SetArt(KODI::ART::TYPE::FANART, strValue);
   else
     dir->m_listItems->SetProperty(strProperty, strValue);
 }

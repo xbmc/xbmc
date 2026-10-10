@@ -19,6 +19,7 @@
 #include "guilib/TextureManager.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
@@ -127,7 +128,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
       item->SetLabel(label);
       if (!icon.empty() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture(icon))
-        item->SetArt("icon", icon);
+        item->SetArt(ART::TYPE::ICON, icon);
       item->SetProgramCount(order);
       items.Add(item);
     }

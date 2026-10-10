@@ -25,6 +25,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ItemProperties.h"
 #include "utils/Mp4ChplReader.h"
 #include "utils/StringUtils.h"
@@ -303,7 +304,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
     item->SetProperty(KODI::ITEM::PROPERTY::ITEM_START, item->GetStartOffset());
     item->SetProperty("audio_bookmark", item->GetStartOffset());
     if (!thumb.empty() && !chapter_error)
-      item->SetArt("thumb", thumb);
+      item->SetArt(KODI::ART::TYPE::THUMB, thumb);
     items.Add(item);
   }
   return true;

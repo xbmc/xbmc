@@ -19,6 +19,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "imagefiles/ImageFileURL.h"
 #include "messaging/ApplicationMessenger.h"
+#include "utils/ArtTypes.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -722,6 +723,36 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const std::string &method, ITrans
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeTvShow, removedArtwork))
     return InternalError;
 
+  const bool updatePlaycount = ParameterNotNull(parameterObject, "playcount");
+  const bool updateLastplayed = ParameterNotNull(parameterObject, "lastplayed");
+  if (updatePlaycount || updateLastplayed)
+  {
+    // a tvshow has no file row of its own - its playcount is derived from its
+    // episodes, so the new values have to be applied to every episode of the show
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(StringUtils::Format("videodb://tvshows/titles/{}/-1/", id)))
+      return InternalError;
+    videoUrl.AddOption("tvshowid", id);
+
+    CFileItemList episodes;
+    if (!videodatabase.GetEpisodesByWhere(videoUrl.ToString(), CDatabase::Filter(), episodes,
+                                          false))
+      return InternalError;
+
+    videodatabase.BeginTransaction();
+    for (const auto& episode : episodes)
+    {
+      if (!episode->HasVideoInfoTag())
+        continue;
+
+      const auto update = EpisodePlaybackUpdate(infos, updatePlaycount, updateLastplayed,
+                                                *episode->GetVideoInfoTag());
+      if (update)
+        videodatabase.SetPlayCount(*episode, update->playCount, update->lastPlayed);
+    }
+    videodatabase.CommitTransaction();
+  }
+
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
@@ -1105,6 +1136,19 @@ JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *
   return ACK;
 }
 
+std::optional<CVideoLibrary::PlaybackUpdate> CVideoLibrary::EpisodePlaybackUpdate(
+    const CVideoInfoTag& show,
+    bool updatePlaycount,
+    bool updateLastplayed,
+    const CVideoInfoTag& episode)
+{
+  const int count = updatePlaycount ? show.GetPlayCount() : episode.GetPlayCount();
+  if (!updateLastplayed && count == episode.GetPlayCount())
+    return std::nullopt;
+
+  return PlaybackUpdate{count, updateLastplayed ? show.m_lastPlayed : episode.m_lastPlayed};
+}
+
 bool CVideoLibrary::FillFileItem(
     const std::string& strFilename,
     std::shared_ptr<CFileItem>& item,
@@ -1458,13 +1502,13 @@ void CVideoLibrary::UpdateVideoTag(const CVariant& parameterObject,
   if (ParameterNotNull(parameterObject, "thumbnail"))
   {
     std::string value = parameterObject["thumbnail"].asString();
-    artwork["thumb"] = StringUtils::Trim(value);
+    artwork[KODI::ART::TYPE::THUMB] = StringUtils::Trim(value);
     updatedDetails.insert("art.altered");
   }
   if (ParameterNotNull(parameterObject, "fanart"))
   {
     std::string value = parameterObject["fanart"].asString();
-    artwork["fanart"] = StringUtils::Trim(value);
+    artwork[KODI::ART::TYPE::FANART] = StringUtils::Trim(value);
     updatedDetails.insert("art.altered");
   }
 

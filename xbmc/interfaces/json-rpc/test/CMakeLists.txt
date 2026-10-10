@@ -5,6 +5,7 @@ set(SOURCES TestAddonsExecuteAddon.cpp
             TestJSONRPCStatus.cpp
             TestSetConfiguration.cpp
             TestSettingsLevel.cpp
+            TestVideoLibraryPlaybackState.cpp
             TestVideoLibrarySetSourceContent.cpp)
 
 core_add_test_library(jsonrpc_test)

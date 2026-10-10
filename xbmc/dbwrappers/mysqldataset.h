@@ -140,6 +140,11 @@ public:
   /* destructor */
   ~MysqlDataset() override;
 
+  /*! \brief Declare the first integer primary key auto_increment, taking the place of SQLite's
+   AUTOINCREMENT where the statement carries it.
+   */
+  static std::string EnforceAutoIncrement(std::string sql);
+
   /* set autorefresh boolean value (if true - refresh the data after edit()
 or insert() operations default = false) */
   void set_autorefresh(bool val);

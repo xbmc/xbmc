@@ -31,7 +31,6 @@ CFileOperationJob::CFileOperationJob()
   : m_items(),
     m_strDestFile(),
     m_avgSpeed(),
-    m_currentOperation(),
     m_currentFile()
 { }
 
@@ -43,7 +42,6 @@ CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
     m_items(),
     m_strDestFile(strDestFile),
     m_avgSpeed(),
-    m_currentOperation(),
     m_currentFile(),
     m_displayProgress(displayProgress),
     m_heading(heading),
@@ -254,7 +252,6 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
   bool bResult = true;
 
   base->m_currentFile = CURL(m_strFileA).GetFileNameWithoutPath();
-  base->m_currentOperation = GetActionString(m_action);
 
   if (base->ShouldCancel((unsigned int)current, 100))
     return false;

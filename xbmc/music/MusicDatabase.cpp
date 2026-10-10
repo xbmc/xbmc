@@ -59,6 +59,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
@@ -85,6 +86,7 @@ using namespace KODI::MESSAGING;
 using namespace MUSIC_INFO;
 
 using ADDON::AddonPtr;
+using KODI::MEDIA::MediaSection;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
 #ifdef HAS_OPTICAL_DRIVE
@@ -175,7 +177,7 @@ bool CMusicDatabase::Open()
 void CMusicDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create artist table");
-  m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, "
+  m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key AUTOINCREMENT, "
               " strArtist varchar(256), strMusicBrainzArtistID text, "
               " strSortName text, "
               " strType text, strGender text, strDisambiguation text, "
@@ -196,7 +198,7 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec(strSQL);
 
   CLog::Log(LOGINFO, "create album table");
-  m_pDS->exec("CREATE TABLE album (idAlbum integer primary key, "
+  m_pDS->exec("CREATE TABLE album (idAlbum integer primary key AUTOINCREMENT, "
               " strAlbum varchar(256), strMusicBrainzAlbumID text, "
               " strReleaseGroupMBID text, "
               " strArtistDisp text, strArtistSort text, strGenres text, "
@@ -232,20 +234,21 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE album_source (idSource INTEGER, idAlbum INTEGER)");
 
   CLog::Log(LOGINFO, "create genre table");
-  m_pDS->exec("CREATE TABLE genre (idGenre integer primary key, strGenre varchar(256))");
+  m_pDS->exec(
+      "CREATE TABLE genre (idGenre integer primary key AUTOINCREMENT, strGenre varchar(256))");
 
   CLog::Log(LOGINFO, "create path table");
   m_pDS->exec("CREATE TABLE path (idPath integer primary key, strPath varchar(512), strHash text)");
 
   CLog::Log(LOGINFO, "create source table");
-  m_pDS->exec(
-      "CREATE TABLE source (idSource INTEGER PRIMARY KEY, strName TEXT, strMultipath TEXT)");
+  m_pDS->exec("CREATE TABLE source (idSource INTEGER PRIMARY KEY AUTOINCREMENT, strName TEXT, "
+              "strMultipath TEXT)");
 
   CLog::Log(LOGINFO, "create source_path table");
   m_pDS->exec("CREATE TABLE source_path (idSource INTEGER, idPath INTEGER, strPath varchar(512))");
 
   CLog::Log(LOGINFO, "create song table");
-  m_pDS->exec("CREATE TABLE song (idSong integer primary key, "
+  m_pDS->exec("CREATE TABLE song (idSong integer primary key AUTOINCREMENT, "
               " idAlbum integer, idPath integer, "
               " strArtistDisp text, strArtistSort text, strGenres text, strTitle varchar(512), "
               " iTrack integer, iDuration integer, "
@@ -268,7 +271,7 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE song_genre (idGenre integer, idSong integer, iOrder integer)");
 
   CLog::Log(LOGINFO, "create role table");
-  m_pDS->exec("CREATE TABLE role (idRole integer primary key, strRole text)");
+  m_pDS->exec("CREATE TABLE role (idRole integer primary key AUTOINCREMENT, strRole text)");
   m_pDS->exec("INSERT INTO role(idRole, strRole) VALUES (1, 'Artist')"); //Default role
 
   CLog::Log(LOGINFO, "create infosetting table");
@@ -1242,7 +1245,7 @@ int CMusicDatabase::AddSong(const int idSong,
                  iBPM, iBitRate, iSampleRate, iChannels, songVideoURL);
     }
     if (!strThumb.empty())
-      SetArtForItem(idNew, MediaTypeSong, "thumb", strThumb);
+      SetArtForItem(idNew, MediaTypeSong, ART::TYPE::THUMB, strThumb);
 
     // Song genres added, and genre string updated to use the standardised genre names
     AddSongGenres(idNew, genres);
@@ -5746,7 +5749,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir,
         pItem->GetMusicInfoTag()->SetDatabaseId(artist.idArtist, MediaTypeArtist);
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
         pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-        pItem->SetArt("icon", "DefaultArtist.png");
+        pItem->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
 
         SetPropertiesFromArtist(*pItem, artist);
         items.Add(std::move(pItem));
@@ -5975,7 +5978,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string& baseDir,
         auto pItem{std::make_shared<CFileItem>(itemUrl.ToString(), GetAlbumFromDataset(record))};
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
         pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-        pItem->SetArt("icon", "DefaultAlbumCover.png");
+        pItem->SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
         items.Add(std::move(pItem));
       }
       catch (...)
@@ -6187,7 +6190,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
         pItem->SetLabel(strDiscSubtitle);
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
         pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-        pItem->SetArt("icon", "DefaultAlbumCover.png");
+        pItem->SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
         items.Add(std::move(pItem));
       }
       catch (...)
@@ -6421,7 +6424,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string& baseDir,
           item->SetProgramCount(count);
           // Set icon now to avoid slow per item processing in FillInDefaultIcon later
           item->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-          item->SetArt("icon", "DefaultAudio.png");
+          item->SetArt(ART::TYPE::ICON, "DefaultAudio.png");
           items.Add(std::move(item));
         }
         // Get song artist credits and contributors
@@ -7221,13 +7224,15 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string, std::less
                   record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
         }
         if (joinLayout.GetOutput(joinToArtist_thumbnail) &&
-            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() == "thumb")
+            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() ==
+                ART::TYPE::THUMB)
         {
           artistObj["thumbnail"] = IMAGE_FILES::URLFromFile(
               record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
         }
         if (joinLayout.GetOutput(joinToArtist_fanart) &&
-            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() == "fanart")
+            record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() ==
+                ART::TYPE::FANART)
         {
           artistObj["fanart"] = IMAGE_FILES::URLFromFile(
               record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
@@ -9402,6 +9407,12 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 83)
     m_pDS->exec("ALTER TABLE song ADD strVideoURL TEXT");
 
+  if (version < 85)
+  {
+    for (const char* table : {"artist", "album", "song", "genre", "role", "source"})
+      AddAutoIncrement(table);
+  }
+
   // Set the version of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
   // that needs this. Forced rescanning (of music files that have not changed since they were
@@ -9422,7 +9433,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 84;
+  return 85;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -10267,7 +10278,8 @@ bool CMusicDatabase::CheckSources(const std::vector<CMediaSource>& sources)
 bool CMusicDatabase::MigrateSources()
 {
   //Fetch music sources from xml
-  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC));
 
   std::string strSQL;
   try
@@ -10307,7 +10319,8 @@ bool CMusicDatabase::MigrateSources()
 bool CMusicDatabase::UpdateSources()
 {
   //Check library and xml sources match
-  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC));
   if (CheckSources(sources))
     return true;
 
@@ -11323,7 +11336,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string& path1,
           songmap.try_emplace(filename, songs);
           songs.clear();
         }
-        song.strThumb = GetArtForItem(song.idSong, MediaTypeSong, "thumb");
+        song.strThumb = GetArtForItem(song.idSong, MediaTypeSong, ART::TYPE::THUMB);
         songs.emplace_back(song);
         songIds.push_back(PrepareSQL("%i", song.idSong));
         filename = song.strFileName;
@@ -12030,7 +12043,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
               {
                 for (const auto& [type, url] : artwork)
                 {
-                  if (type == "thumb")
+                  if (type == ART::TYPE::THUMB)
                     savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
                   else
                     savedArtfile = URIUtils::AddFileToFolder(strPath, type);
@@ -12171,7 +12184,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                 {
                   for (const auto& [type, url] : artwork)
                   {
-                    if (type == "thumb")
+                    if (type == ART::TYPE::THUMB)
                       savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
                     else
                       savedArtfile = URIUtils::AddFileToFolder(strPath, type);
@@ -13026,7 +13039,7 @@ std::vector<std::string> CMusicDatabase::GetAvailableArtTypesForItem(int mediaId
   {
     std::string artType = urlEntry.m_aspect;
     if (artType.empty())
-      artType = "thumb";
+      artType = ART::TYPE::THUMB;
     if (std::ranges::find(result, artType) == result.end())
       result.push_back(artType);
   }
@@ -13054,7 +13067,7 @@ std::vector<CScraperUrl::SUrlEntry> CMusicDatabase::GetAvailableArtForItem(
   for (auto urlEntry : thumbURL.GetUrls())
   {
     if (urlEntry.m_aspect.empty())
-      urlEntry.m_aspect = "thumb";
+      urlEntry.m_aspect = ART::TYPE::THUMB;
     if (artType.empty() || urlEntry.m_aspect == artType)
       result.push_back(urlEntry);
   }

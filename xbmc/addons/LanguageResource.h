@@ -38,8 +38,6 @@ public:
 
   static std::string GetAddonId(const std::string& locale);
 
-  static bool FindLegacyLanguage(const std::string &locale, std::string &legacyLanguage);
-
 protected:
   Published PublishedFiles() const override;
 

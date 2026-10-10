@@ -20,6 +20,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "imagefiles/ImageFileURL.h"
+#include "language/LanguageTag.h"
 #include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
@@ -28,10 +29,10 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/ArtTypes.h"
 #include "utils/Base64.h"
 #include "utils/ContentUtils.h"
 #include "utils/ItemProperties.h"
-#include "utils/LanguageTag.h"
 #include "utils/Set.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -911,8 +912,8 @@ PLT_MediaObject* BuildObject(CFileItem& item,
       else
         preferredLanguage = setting->ToString();
 
-      const KODI::UTILS::CLanguageTag preferredTag{
-          KODI::UTILS::CLanguageTag::Parse(preferredLanguage)};
+      const KODI::LANGUAGE::CLanguageTag preferredTag{
+          KODI::LANGUAGE::CLanguageTag::Parse(preferredLanguage)};
 
       for (unsigned int i = 0; i < subtitles.size(); i++)
       {
@@ -1294,9 +1295,9 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
   // if there is a thumbnail available set it here
   if (entry->m_ExtraInfo.album_arts.GetItem(0))
     // only considers first album art
-    pItem->SetArt("thumb", (const char*)entry->m_ExtraInfo.album_arts.GetItem(0)->uri);
+    pItem->SetArt(ART::TYPE::THUMB, (const char*)entry->m_ExtraInfo.album_arts.GetItem(0)->uri);
   else if (entry->m_Description.icon_uri.GetLength())
-    pItem->SetArt("thumb", (const char*)entry->m_Description.icon_uri);
+    pItem->SetArt(ART::TYPE::THUMB, (const char*)entry->m_Description.icon_uri);
 
   for (unsigned int index = 0; index < entry->m_XbmcInfo.artwork.GetItemCount(); index++)
     pItem->SetArt(entry->m_XbmcInfo.artwork.GetItem(index)->type.GetChars(),
@@ -1411,7 +1412,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     // if this is an image fill the thumb of the item
     if (StringUtils::StartsWithNoCase(resource.m_ProtocolInfo.GetContentType().GetChars(), "image"))
     {
-      item.SetArt("thumb", std::string_view(resource.m_Uri));
+      item.SetArt(ART::TYPE::THUMB, std::string_view(resource.m_Uri));
     }
   }
   else

@@ -43,7 +43,6 @@ set(SOURCES ActorProtocol.cpp
             JSONVariantWriter.cpp
             LabelFormatter.cpp
             LangCodeExpander.cpp
-            LanguageTag.cpp
             LegacyPathTranslation.cpp
             Locale.cpp
             log.cpp
@@ -87,6 +86,7 @@ set(HEADERS ActorProtocol.h
             AlarmClock.h
             AliasShortcutUtils.h
             Archive.h
+            ArtTypes.h
             ArtUtils.h
             Artwork.h
             AspectRatioVocabulary.h
@@ -145,7 +145,6 @@ set(HEADERS ActorProtocol.h
             JSONVariantWriter.h
             LabelFormatter.h
             LangCodeExpander.h
-            LanguageTag.h
             LegacyPathTranslation.h
             Locale.h
             LockInfo.h

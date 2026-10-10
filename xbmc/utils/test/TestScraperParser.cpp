@@ -18,7 +18,5 @@ TEST(TestScraperParser, General)
   a.Clear();
   EXPECT_TRUE(a.Load(XBMC_REF_FILE_PATH("/addons/metadata.local/local.xml")));
 
-  EXPECT_STREQ(XBMC_REF_FILE_PATH("/addons/metadata.local/local.xml").c_str(),
-               a.GetFilename().c_str());
   EXPECT_STREQ("UTF-8", a.GetSearchStringEncoding().c_str());
 }

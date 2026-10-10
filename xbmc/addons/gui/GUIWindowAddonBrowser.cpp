@@ -40,6 +40,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtTypes.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -56,6 +57,7 @@ constexpr int CONTROL_CHECK_FOR_UPDATES = 9;
 
 using namespace ADDON;
 using namespace XFILE;
+using KODI::MEDIA::MediaSection;
 
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
   : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
@@ -215,7 +217,8 @@ void CGUIWindowAddonBrowser::InstallFromZip()
   else
   {
     // pop up filebrowser to grab an installed folder
-    std::vector<CMediaSource> shares = *CMediaSourceSettings::GetInstance().GetSources("files");
+    std::vector<CMediaSource> shares =
+        CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES);
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     std::string path;
@@ -580,7 +583,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
     auto item{std::make_shared<CFileItem>("", false)};
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231));
     item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24040));
-    item->SetArt("icon", "DefaultAddonNone.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultAddonNone.png");
     item->SetSpecialSort(SortSpecial::TOP);
     items.Add(std::move(item));
   }

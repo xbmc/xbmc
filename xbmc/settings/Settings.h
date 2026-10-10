@@ -219,6 +219,7 @@ public:
   static constexpr auto SETTING_PVRMANAGER_ADDONS = "pvrmanager.addons";
   static constexpr auto SETTING_PVRMENU_DISPLAYCHANNELINFO = "pvrmenu.displaychannelinfo";
   static constexpr auto SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH = "pvrmenu.closechannelosdonswitch";
+  static constexpr auto SETTING_PVRMENU_PROVIDERCHANNELOSD = "pvrmenu.providerchannelosd";
   static constexpr auto SETTING_PVRMENU_ICONPATH = "pvrmenu.iconpath";
   static constexpr auto SETTING_PVRMENU_SEARCHICONS = "pvrmenu.searchicons";
   static constexpr auto SETTING_EPG_PAST_DAYSTODISPLAY = "epg.pastdaystodisplay";
@@ -261,7 +262,6 @@ public:
   static constexpr auto SETTING_PVRPARENTAL_ENABLED = "pvrparental.enabled";
   static constexpr auto SETTING_PVRPARENTAL_PIN = "pvrparental.pin";
   static constexpr auto SETTING_PVRPARENTAL_DURATION = "pvrparental.duration";
-  static constexpr auto SETTING_PVRCLIENT_MENUHOOK = "pvrclient.menuhook";
   static constexpr auto SETTING_PVRTIMERS_HIDEDISABLEDTIMERS = "pvrtimers.hidedisabledtimers";
   static constexpr auto SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS =
       "musiclibrary.showcompilationartists";

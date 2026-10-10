@@ -14,6 +14,7 @@
 #include "TextureCache.h"
 #include "imagefiles/ImageFileURL.h"
 #include "pvr/PVRManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -50,16 +51,16 @@ void CPVRThumbLoader::OnLoaderFinish()
 
 void CPVRThumbLoader::ClearCachedImage(CFileItem& item)
 {
-  const std::string thumb = item.GetArt("thumb");
+  const std::string thumb = item.GetArt(KODI::ART::TYPE::THUMB);
   if (!thumb.empty())
   {
     CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
     if (m_textureDatabase->Open())
     {
-      m_textureDatabase->ClearTextureForPath(item.GetPath(), "thumb");
+      m_textureDatabase->ClearTextureForPath(item.GetPath(), KODI::ART::TYPE::THUMB);
       m_textureDatabase->Close();
     }
-    item.SetArt("thumb", "");
+    item.SetArt(KODI::ART::TYPE::THUMB, "");
     m_bInvalidated = true;
   }
 }
@@ -73,7 +74,7 @@ void CPVRThumbLoader::ClearCachedImages(const CFileItemList& items)
 bool CPVRThumbLoader::FillThumb(CFileItem& item)
 {
   // see whether we have a cached image for this item
-  std::string thumb = GetCachedImage(item, "thumb");
+  std::string thumb = GetCachedImage(item, KODI::ART::TYPE::THUMB);
   if (thumb.empty())
   {
     if (item.IsPVRChannelGroup())
@@ -83,7 +84,7 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
 
     if (!thumb.empty())
     {
-      SetCachedImage(item, "thumb", thumb);
+      SetCachedImage(item, KODI::ART::TYPE::THUMB, thumb);
       m_bInvalidated = true;
     }
   }
@@ -91,7 +92,7 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
   if (thumb.empty())
     return false;
 
-  item.SetArt("thumb", thumb);
+  item.SetArt(KODI::ART::TYPE::THUMB, thumb);
   return true;
 }
 

@@ -35,7 +35,6 @@
 #include "language/LangInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/RegExp.h"
 
 #include <algorithm>
 #include <array>
@@ -86,8 +85,6 @@ T NumberFromSS(std::string_view str, T fallback)
   return 'a' <= c && c <= 'z' ? c - 'a' + 'A' : c;
 }
 } // unnamed namespace
-
-static constexpr const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 
 /* empty string for use in returns by ref */
 const std::string StringUtils::Empty = "";
@@ -547,36 +544,6 @@ std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str) noexce
   return str;
 }
 
-bool StringUtils::IsSpecialCharacter(char c) noexcept
-{
-  static constexpr std::string_view view(" .-_+,!'\"\t/\\*?#$%&@()[]{}");
-  return std::ranges::any_of(view, [c](char ch) { return ch == c; });
-}
-
-std::string StringUtils::ReplaceSpecialCharactersWithSpace(std::string_view str)
-{
-  std::string result;
-  bool prevCharWasSpecial = false;
-
-  for (char c : str)
-  {
-    if (IsSpecialCharacter(c))
-    {
-      if (!prevCharWasSpecial)
-      {
-        result += ' ';
-      }
-      prevCharWasSpecial = true;
-    }
-    else
-    {
-      result += c;
-      prevCharWasSpecial = false;
-    }
-  }
-  return result;
-}
-
 int StringUtils::Replace(std::string& str, char oldChar, char newChar) noexcept
 {
   int replacedChars = 0;
@@ -770,19 +737,6 @@ std::vector<std::string> StringUtils::SplitMulti(std::span<const std::string> in
                                                  size_t iMaxStrings /*= 0*/)
 {
   return SplitMultiT(input, delimiters, iMaxStrings);
-}
-
-// returns the number of occurrences of strFind in strInput.
-int StringUtils::FindNumber(std::string_view strInput, std::string_view strFind) noexcept
-{
-  size_t pos = strInput.find(strFind, 0);
-  int numfound = 0;
-  while (pos != std::string::npos)
-  {
-    numfound++;
-    pos = strInput.find(strFind, pos + 1);
-  }
-  return numfound;
 }
 
 // Plane maps for MySQL utf8_general_ci (now known as utf8mb3_general_ci) collation
@@ -1776,13 +1730,6 @@ std::string StringUtils::CreateUUID()
   std::stringstream strGuid; strGuid << guid;
   return std::move(strGuid).str();
 #endif
-}
-
-bool StringUtils::ValidateUUID(const std::string &uuid)
-{
-  CRegExp guidRE;
-  guidRE.RegComp(ADDON_GUID_RE);
-  return (guidRE.RegFind(uuid.c_str()) == 0);
 }
 
 double StringUtils::CompareFuzzy(std::string_view left, std::string_view right) noexcept

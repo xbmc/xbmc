@@ -12,6 +12,7 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
@@ -36,8 +37,8 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
   CGUIControlFactory::GetActions(item, "onclick", m_clickActions);
   SetLabel(label.GetLabel(parentID));
   SetLabel2(label2.GetLabel(parentID));
-  SetArt("thumb", thumb.GetLabel(parentID, true));
-  SetArt("icon", icon.GetLabel(parentID, true));
+  SetArt(KODI::ART::TYPE::THUMB, thumb.GetLabel(parentID, true));
+  SetArt(KODI::ART::TYPE::ICON, icon.GetLabel(parentID, true));
   if (!label.IsConstant())
     m_info.emplace_back(label, "label");
   if (!label2.IsConstant())
@@ -91,9 +92,9 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     else if (StringUtils::EqualsNoCase(name, "label2"))
       SetLabel2(value);
     else if (StringUtils::EqualsNoCase(name, "thumb"))
-      SetArt("thumb", value);
+      SetArt(KODI::ART::TYPE::THUMB, value);
     else if (StringUtils::EqualsNoCase(name, "icon"))
-      SetArt("icon", value);
+      SetArt(KODI::ART::TYPE::ICON, value);
     else
       SetProperty(name, value.c_str());
   }

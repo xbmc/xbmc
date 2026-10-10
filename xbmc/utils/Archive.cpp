@@ -59,11 +59,6 @@ void CArchive::Close()
   FlushBuffer();
 }
 
-bool CArchive::IsLoading() const
-{
-  return (m_iMode == load);
-}
-
 bool CArchive::IsStoring() const
 {
   return (m_iMode == store);

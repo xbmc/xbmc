@@ -222,10 +222,11 @@ namespace XBMCAddon
       DelayedCallGuard dcguard(languageHook);
       std::string value;
       std::string mask = maskparam;
-      std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
+      const std::optional<KODI::MEDIA::MediaSection> section{
+          KODI::MEDIA::MediaSectionFromName(s_shares)};
 
       std::vector<CMediaSource> localShares;
-      if (!shares)
+      if (!section)
       {
         CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
         if (StringUtils::CompareNoCase(s_shares, "local") != 0)
@@ -233,7 +234,7 @@ namespace XBMCAddon
       }
       else // always append local drives
       {
-        localShares = *shares;
+        localShares = CMediaSourceSettings::GetInstance().GetSources(*section);
         CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
       }
 
@@ -255,12 +256,13 @@ namespace XBMCAddon
                           bool useFileDirectories, const String& defaultt )
     {
       DelayedCallGuard dcguard(languageHook);
-      std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
+      const std::optional<KODI::MEDIA::MediaSection> section{
+          KODI::MEDIA::MediaSectionFromName(s_shares)};
       std::vector<String> valuelist;
       String lmask = mask;
 
       std::vector<CMediaSource> localShares;
-      if (!shares)
+      if (!section)
       {
         CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
         if (StringUtils::CompareNoCase(s_shares, "local") != 0)
@@ -268,7 +270,7 @@ namespace XBMCAddon
       }
       else // always append local drives
       {
-        localShares = *shares;
+        localShares = CMediaSourceSettings::GetInstance().GetSources(*section);
         CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
       }
 

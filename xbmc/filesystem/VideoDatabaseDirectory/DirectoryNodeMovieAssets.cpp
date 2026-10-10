@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -68,7 +69,7 @@ bool CDirectoryNodeMovieAssets::GetContent(CFileItemList& items) const
     item->SetLabelPreformatted(true); //! @todo not sure, but used elsewhere
 
     //! @todo wrong art type? some Estuary views don't show it
-    item->SetArt("icon", "DefaultVideoExtras.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultVideoExtras.png");
 
     items.Add(item);
   }

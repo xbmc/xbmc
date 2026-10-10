@@ -47,7 +47,6 @@ public:
                         const std::string& strDestFile);
 
   const std::string &GetAverageSpeed() const { return m_avgSpeed; }
-  const std::string &GetCurrentOperation() const { return m_currentOperation; }
   const std::string &GetCurrentFile() const { return m_currentFile; }
   const CFileItemList &GetItems() const { return m_items; }
   FileAction GetAction() const { return m_action; }
@@ -85,7 +84,7 @@ private:
   FileAction m_action = ActionCopy;
   CFileItemList m_items;
   std::string m_strDestFile;
-  std::string m_avgSpeed, m_currentOperation, m_currentFile;
+  std::string m_avgSpeed, m_currentFile;
   bool m_displayProgress = false;
   int m_heading = 0;
   int m_line = 0;

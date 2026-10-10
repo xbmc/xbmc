@@ -23,6 +23,7 @@
 #include "addons/PluginSource.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
+#include "media/MediaSection.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -59,6 +60,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
 #include "utils/LabelFormatter.h"
@@ -69,6 +71,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "view/GUIViewState.h"
+
+#include <optional>
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -679,20 +683,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
  */
 void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks)
 {
-  CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
-  CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
-  for (int i=0; i<items.Size(); ++i)
-  {
-    CFileItemPtr pItem=items[i];
-
-    if (pItem->IsLabelPreformatted())
-      continue;
-
-    if (pItem->IsFolder())
-      folderFormatter.FormatLabels(pItem.get());
-    else
-      fileFormatter.FormatLabels(pItem.get());
-  }
+  CLabelFormatter::FormatItemLabels(items, labelMasks);
 
   if (items.GetSortMethod() == SortBy::LABEL)
     items.ClearSortState();
@@ -797,19 +788,20 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
     items.AddFront(pItem, 0);
   }
 
-  int iWindow = GetID();
-  std::vector<std::string> regexps;
-
+  std::optional<KODI::MEDIA::MediaSection> section;
   //! @todo Do we want to limit the directories we apply the video ones to?
-  if (iWindow == WINDOW_VIDEO_NAV)
-    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoExcludeFromListingRegExps;
-  if (iWindow == WINDOW_MUSIC_NAV)
-    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromListingRegExps;
-  if (iWindow == WINDOW_PICTURES)
-    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pictureExcludeFromListingRegExps;
+  if (GetID() == WINDOW_VIDEO_NAV)
+    section = KODI::MEDIA::MediaSection::VIDEO;
+  else if (GetID() == WINDOW_MUSIC_NAV)
+    section = KODI::MEDIA::MediaSection::MUSIC;
+  else if (GetID() == WINDOW_PICTURES)
+    section = KODI::MEDIA::MediaSection::PICTURES;
 
-  if (!regexps.empty())
+  if (section)
   {
+    const std::vector<std::string> regexps{
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetExcludeFromListingRegExps(
+            *section)};
     KODI::REGEXP::RegExpCache cache;
     for (int i=0; i < items.Size();)
     {
@@ -920,7 +912,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath(PLACEHOLDER::ADD_SOURCE);
-    pItem->SetArt("icon", "DefaultAddSource.png");
+    pItem->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
     pItem->SetFolder(true);
@@ -1086,9 +1078,9 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   {
     if (pItem->IsShareOrDrive())
     {
-      const std::string& strLockType=m_guiState->GetLockType();
+      const std::optional<KODI::MEDIA::MediaSection> lockSection{m_guiState->GetLockType()};
       if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
-        if (!strLockType.empty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
+        if (lockSection && !g_passwordManager.IsItemUnlocked(pItem.get(), *lockSection))
             return true;
 
       if (!HaveDiscOrConnection(pItem->GetPath(), pItem->GetDriveType()))

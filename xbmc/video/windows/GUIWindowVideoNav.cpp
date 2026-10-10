@@ -40,6 +40,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/ContentNames.h"
 #include "utils/FileUtils.h"
@@ -64,6 +65,7 @@ using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -126,7 +128,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       SetProperty("flattened", CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN));
       if (message.GetNumStringParams() && StringUtils::EqualsNoCase(message.GetStringParam(0), "Files") &&
-          CMediaSourceSettings::GetInstance().GetSources("video")->empty())
+          CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO).empty())
       {
         message.SetStringParam("");
       }
@@ -416,7 +418,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         std::string label;
         if (items.GetLabel().empty() &&
             m_rootDir.IsSource(items.GetPath(),
-                               CMediaSourceSettings::GetInstance().GetSources("video"), &label))
+                               &CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO),
+                               &label))
           items.SetLabel(label);
         if (!items.IsSourcesPath() && !items.IsLibraryFolder())
           LoadVideoInfo(items, m_database);
@@ -495,13 +498,13 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art) && !art.empty())
         {
           items.AppendArt(art, details.m_type);
-          items.SetArtFallback("fanart", "tvshow.fanart");
+          items.SetArtFallback(ART::TYPE::FANART, "tvshow.fanart");
           if (node == NodeType::SEASONS)
           { // set an art fallback for "thumb"
             if (items.HasArt("tvshow.poster"))
-              items.SetArtFallback("thumb", "tvshow.poster");
+              items.SetArtFallback(ART::TYPE::THUMB, "tvshow.poster");
             else if (items.HasArt("tvshow.banner"))
-              items.SetArtFallback("thumb", "tvshow.banner");
+              items.SetArtFallback(ART::TYPE::THUMB, "tvshow.banner");
           }
         }
 
@@ -536,9 +539,9 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
             items.AppendArt(seasonArt, MediaTypeSeason);
             // set an art fallback for "thumb"
             if (items.HasArt("season.poster"))
-              items.SetArtFallback("thumb", "season.poster");
+              items.SetArtFallback(ART::TYPE::THUMB, "season.poster");
             else if (items.HasArt("season.banner"))
-              items.SetArtFallback("thumb", "season.banner");
+              items.SetArtFallback(ART::TYPE::THUMB, "season.banner");
           }
         }
       }
@@ -551,9 +554,9 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
               !setArt.empty())
           {
             items.AppendArt(setArt, MediaTypeVideoCollection);
-            items.SetArtFallback("fanart", "set.fanart");
+            items.SetArtFallback(ART::TYPE::FANART, "set.fanart");
             if (items.HasArt("set.poster"))
-              items.SetArtFallback("thumb", "set.poster");
+              items.SetArtFallback(ART::TYPE::THUMB, "set.poster");
           }
         }
       }
@@ -795,7 +798,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   else if (m_vecItems->IsPath("sources://video/"))
   {
     // get the usual shares
-    CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
+    CGUIDialogContextMenu::GetContextButtons(MediaSection::VIDEO, item, buttons);
     if (!item->IsDVD() && item->GetPath() != PLACEHOLDER::ADD_SOURCE && !item->IsParentFolder() &&
         (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
@@ -923,7 +926,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
-  if (CGUIDialogContextMenu::OnContextButton("video", item, button))
+  if (CGUIDialogContextMenu::OnContextButton(MediaSection::VIDEO, item, button))
   {
     if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsLiveTV() 
         &&!item->IsRSS() && !URIUtils::IsUPnP(item->GetPath()))
@@ -1016,7 +1019,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowVideoNav::OnAddMediaSource()
 {
-  return CGUIDialogMediaSource::ShowAndAddMediaSource("video");
+  return CGUIDialogMediaSource::ShowAndAddMediaSource(MediaSection::VIDEO);
 }
 
 bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)

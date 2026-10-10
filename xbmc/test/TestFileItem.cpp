@@ -864,6 +864,12 @@ TEST_P(TestFileItemMovieName, GetMovieName)
 
 INSTANTIATE_TEST_SUITE_P(NameMovies, TestFileItemMovieName, ValuesIn(BaseNames));
 
+TEST(TestFileItemMovieNamePlus, ScannerSeesAPlusAsASpace)
+{
+  const CFileItem item{"smb://server/Movies/The+Matrix+1999.mkv", false};
+  EXPECT_EQ("The Matrix 1999", item.GetMovieName());
+}
+
 const TestFileData BasePaths[] = {
     // Linux path tests
     {"/home/user/movies/movie/", true, "/home/user/movies/movie/"},

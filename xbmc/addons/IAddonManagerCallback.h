@@ -10,10 +10,18 @@
 
 #include "addons/IAddon.h"
 
+#include <functional>
 #include <string>
+#include <vector>
 
 namespace ADDON
 {
+struct AddonSettingsAction
+{
+  int label; //!< String id, looked up in the add-on's strings before Kodi's
+  std::function<void()> execute;
+};
+
 /**
   * Class - IAddonMgrCallback
   * This callback should be inherited by any class which manages
@@ -27,6 +35,12 @@ public:
   virtual bool RequestRestart(const std::string& addonId,
                               AddonInstanceId instanceId,
                               bool datachanged) = 0;
+
+  /*!
+   * @brief Get the actions to offer in the settings dialog of an add-on instance.
+   */
+  virtual std::vector<AddonSettingsAction> GetSettingsActions(const std::string& addonId,
+                                                              AddonInstanceId instanceId) const = 0;
 };
 
 } /* namespace ADDON */

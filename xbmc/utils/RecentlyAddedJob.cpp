@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -75,12 +76,12 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMovie." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMovie." + value + ".Trailer"     , item->GetVideoInfoTag()->m_strTrailer);
 
-      if (!item->HasArt("thumb"))
+      if (!item->HasArt(KODI::ART::TYPE::THUMB))
         loader.LoadItem(item.get());
 
-      home->SetProperty("LatestMovie." + value + ".Thumb"       , item->GetArt("thumb"));
-      home->SetProperty("LatestMovie." + value + ".Fanart"      , item->GetArt("fanart"));
-      home->SetProperty("LatestMovie." + value + ".Poster"      , item->GetArt("poster"));
+      home->SetProperty("LatestMovie." + value + ".Thumb", item->GetArt(KODI::ART::TYPE::THUMB));
+      home->SetProperty("LatestMovie." + value + ".Fanart", item->GetArt(KODI::ART::TYPE::FANART));
+      home->SetProperty("LatestMovie." + value + ".Poster", item->GetArt(KODI::ART::TYPE::POSTER));
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -122,17 +123,19 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestEpisode." + value + ".EpisodeNumber" , EpisodeNumber);
       home->SetProperty("LatestEpisode." + value + ".Path"          , item->GetVideoInfoTag()->m_strFileNameAndPath);
 
-      if (!item->HasArt("thumb"))
+      if (!item->HasArt(KODI::ART::TYPE::THUMB))
         loader.LoadItem(item.get());
 
       std::string seasonThumb;
       if (item->GetVideoInfoTag()->m_iIdSeason > 0)
-        seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason, MediaTypeSeason, "thumb");
+        seasonThumb = videodatabase.GetArtForItem(item->GetVideoInfoTag()->m_iIdSeason,
+                                                  MediaTypeSeason, KODI::ART::TYPE::THUMB);
 
-      home->SetProperty("LatestEpisode." + value + ".Thumb"         , item->GetArt("thumb"));
+      home->SetProperty("LatestEpisode." + value + ".Thumb", item->GetArt(KODI::ART::TYPE::THUMB));
       home->SetProperty("LatestEpisode." + value + ".ShowThumb"     , item->GetArt("tvshow.thumb"));
       home->SetProperty("LatestEpisode." + value + ".SeasonThumb"   , seasonThumb);
-      home->SetProperty("LatestEpisode." + value + ".Fanart"        , item->GetArt("fanart"));
+      home->SetProperty("LatestEpisode." + value + ".Fanart",
+                        item->GetArt(KODI::ART::TYPE::FANART));
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -175,11 +178,13 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
       home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator));
 
-      if (!item->HasArt("thumb"))
+      if (!item->HasArt(KODI::ART::TYPE::THUMB))
         loader.LoadItem(item.get());
 
-      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetArt("thumb"));
-      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetArt("fanart"));
+      home->SetProperty("LatestMusicVideo." + value + ".Thumb",
+                        item->GetArt(KODI::ART::TYPE::THUMB));
+      home->SetProperty("LatestMusicVideo." + value + ".Fanart",
+                        item->GetArt(KODI::ART::TYPE::FANART));
     }
   }
   for (; i < NUM_ITEMS; ++i)
@@ -238,8 +243,8 @@ bool CRecentlyAddedJob::UpdateMusic()
 
         if (loader.LoadItem(item.get()))
         {
-          strAlbumThumb = item->GetArt("thumb");
-          strAlbumFanart = item->GetArt("fanart");
+          strAlbumThumb = item->GetArt(KODI::ART::TYPE::THUMB);
+          strAlbumFanart = item->GetArt(KODI::ART::TYPE::FANART);
         }
       }
 
@@ -288,9 +293,10 @@ bool CRecentlyAddedJob::UpdateMusic()
       {
         for (const auto& artitem : art)
         {
-          if (artitem.mediaType == MediaTypeAlbum && artitem.artType == "thumb")
+          if (artitem.mediaType == MediaTypeAlbum && artitem.artType == KODI::ART::TYPE::THUMB)
             strThumb = artitem.url;
-          else if (artitem.mediaType == MediaTypeArtist && artitem.artType == "fanart")
+          else if (artitem.mediaType == MediaTypeArtist &&
+                   artitem.artType == KODI::ART::TYPE::FANART)
             strFanart = artitem.url;
         }
       }

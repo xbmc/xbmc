@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "media/MediaSection.h"
 
 #include <string>
 #include <utility>
@@ -108,11 +109,18 @@ public:
   bool OnAction(const CAction& action) override;
   void SetPosition(float posX, float posY) override;
 
-  static bool SourcesMenu(const std::string &strType, const CFileItemPtr& item, float posX, float posY);
-  static void SwitchMedia(const std::string& strType, const std::string& strPath);
+  static bool SourcesMenu(KODI::MEDIA::MediaSection section,
+                          const CFileItemPtr& item,
+                          float posX,
+                          float posY);
+  static void SwitchMedia(KODI::MEDIA::MediaSection section, const std::string& strPath);
 
-  static void GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons);
-  static bool OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button);
+  static void GetContextButtons(KODI::MEDIA::MediaSection section,
+                                const CFileItemPtr& item,
+                                CContextButtons& buttons);
+  static bool OnContextButton(KODI::MEDIA::MediaSection section,
+                              const CFileItemPtr& item,
+                              CONTEXT_BUTTON button);
 
   /*! Show the context menu with the given choices and return the index of the selected item,
     or -1 if cancelled.
@@ -135,10 +143,10 @@ protected:
   void OnInitWindow() override;
   void OnWindowLoaded() override;
   void OnDeinitWindow(int nextWindowID) override;
-  static std::string GetDefaultShareNameByType(const std::string &strType);
-  static void SetDefault(const std::string &strType, const std::string &strDefault);
-  static void ClearDefault(const std::string &strType);
-  static CMediaSource *GetShare(const std::string &type, const CFileItem *item);
+  static std::string GetDefaultShareNameByType(KODI::MEDIA::MediaSection section);
+  static void SetDefault(KODI::MEDIA::MediaSection section, const std::string &strDefault);
+  static void ClearDefault(KODI::MEDIA::MediaSection section);
+  static CMediaSource *GetShare(KODI::MEDIA::MediaSection section, const CFileItem *item);
 
 private:
   float m_coordX, m_coordY;

@@ -85,15 +85,10 @@ public:
 
   void SetId(std::string id);
   void SetName(std::string name);
-  void SetLicense(std::string license);
   void SetSummary(std::string summary);
   void SetDescription(std::string description);
   void SetDisclaimer(std::string disclaimer);
   void SetAuthor(std::string author);
-  void SetSource(std::string source);
-  void SetWebsite(std::string website);
-  void SetForum(std::string forum);
-  void SetEMail(std::string email);
   void SetIcon(std::string icon);
   void SetArt(const std::string& type, std::string value);
   void SetArt(KODI::ART::Artwork art);

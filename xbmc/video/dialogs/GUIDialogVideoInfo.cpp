@@ -21,6 +21,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/ImageChoices.h"
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
@@ -46,6 +47,7 @@
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
@@ -79,6 +81,7 @@ using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
@@ -256,8 +259,8 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
         if (item && m_movieItem->IsPath(item->GetPath()))
         { // Just copy over the stream details and the thumb if we don't already have one
-          if (!m_movieItem->HasArt("thumb"))
-            m_movieItem->SetArt("thumb", item->GetArt("thumb"));
+          if (!m_movieItem->HasArt(ART::TYPE::THUMB))
+            m_movieItem->SetArt(ART::TYPE::THUMB, item->GetArt(ART::TYPE::THUMB));
           m_movieItem->GetVideoInfoTag()->m_streamDetails = item->GetVideoInfoTag()->m_streamDetails;
         }
         return true;
@@ -366,11 +369,11 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     for (std::vector<std::string>::const_iterator it = artists.begin(); it != artists.end(); ++it)
     {
       int idArtist = database.GetArtistByName(*it);
-      std::string thumb = database.GetArtForItem(idArtist, MediaTypeArtist, "thumb");
+      std::string thumb = database.GetArtForItem(idArtist, MediaTypeArtist, ART::TYPE::THUMB);
       CFileItemPtr item(new CFileItem(*it));
       if (!thumb.empty())
-        item->SetArt("thumb", thumb);
-      item->SetArt("icon", "DefaultArtist.png");
+        item->SetArt(ART::TYPE::THUMB, thumb);
+      item->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
       item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(29904));
       m_castList->Add(item);
     }
@@ -384,18 +387,18 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
       {
         CFileItemPtr item(new CFileItem(it->strName));
         if (!it->thumb.empty())
-          item->SetArt("thumb", it->thumb);
+          item->SetArt(ART::TYPE::THUMB, it->thumb);
         else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                      CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
         { // backward compatibility
           std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
           if (!thumb.empty())
           {
-            item->SetArt("thumb", thumb);
+            item->SetArt(ART::TYPE::THUMB, thumb);
             CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
           }
         }
-        item->SetArt("icon", "DefaultActor.png");
+        item->SetArt(ART::TYPE::ICON, "DefaultActor.png");
         item->SetLabel(it->strName);
         item->SetLabel2(it->strRole);
         m_castList->Add(item);
@@ -421,7 +424,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     {
       CFileItemPtr item(new CFileItem(it->strName));
       if (!it->thumb.empty())
-        item->SetArt("thumb", it->thumb);
+        item->SetArt(ART::TYPE::THUMB, it->thumb);
       else
       {
         const std::shared_ptr<CSettings> settings =
@@ -433,12 +436,12 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
           std::string thumb = CScraperUrl::GetThumbUrl(it->thumbUrl.GetFirstUrlByType());
           if (!thumb.empty())
           {
-            item->SetArt("thumb", thumb);
+            item->SetArt(ART::TYPE::THUMB, thumb);
             CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
           }
         }
       }
-      item->SetArt("icon", "DefaultActor.png");
+      item->SetArt(ART::TYPE::ICON, "DefaultActor.png");
       item->SetLabel(it->strName);
       item->SetLabel2(it->strRole);
       m_castList->Add(item);
@@ -543,7 +546,7 @@ void CGUIDialogVideoInfo::Update()
   {
     CGUIImage* pImageControl = static_cast<CGUIImage*>(pControl);
     pImageControl->FreeResources();
-    pImageControl->SetFileName(m_movieItem->GetArt("thumb"));
+    pImageControl->SetFileName(m_movieItem->GetArt(ART::TYPE::THUMB));
   }
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
@@ -901,7 +904,7 @@ void CArtTypeChooser::UpdateArtType(const std::string& type, const std::string& 
   if (!m_items.IsEmpty())
     for (auto& item : m_items)
       if (item->GetProperty("type") == type)
-        item->SetArt("thumb", art);
+        item->SetArt(ART::TYPE::THUMB, art);
 }
 
 bool CArtTypeChooser::ChooseArtType()
@@ -923,10 +926,10 @@ bool CArtTypeChooser::ChooseArtType()
 
     // maps art types to resource ids
     static constexpr auto name2idMap = make_map<std::string_view, int>({
-        {"banner", 20020},
-        {"fanart", 20445},
-        {"poster", 20021},
-        {"thumb", 21371},
+        {ART::TYPE::BANNER, 20020},
+        {ART::TYPE::FANART, 20445},
+        {ART::TYPE::POSTER, 20021},
+        {ART::TYPE::THUMB, 21371},
     });
 
     for (const auto& type : availableArtTypes)
@@ -934,7 +937,7 @@ bool CArtTypeChooser::ChooseArtType()
       const auto item = std::make_shared<CFileItem>(type, false);
       item->SetProperty("type", type);
       if (m_item->HasArt(type))
-        item->SetArt("thumb", m_item->GetArt(type));
+        item->SetArt(ART::TYPE::THUMB, m_item->GetArt(type));
 
       const auto it = name2idMap.find(type);
       item->SetLabel(
@@ -986,7 +989,8 @@ void CGUIDialogVideoInfo::OnGetArt()
 
 void CGUIDialogVideoInfo::OnGetFanart()
 {
-  if (ManageVideoItemArtwork(m_movieItem, m_movieItem->GetVideoInfoTag()->m_type, "fanart"))
+  if (ManageVideoItemArtwork(m_movieItem, m_movieItem->GetVideoInfoTag()->m_type,
+                             ART::TYPE::FANART))
   {
     m_hasUpdatedThumb = true;
 
@@ -1039,7 +1043,7 @@ void CGUIDialogVideoInfo::SetLabel(int iControl, const std::string &strLabel)
 
 std::string CGUIDialogVideoInfo::GetThumbnail() const
 {
-  return m_movieItem->GetArt("thumb");
+  return m_movieItem->GetArt(ART::TYPE::THUMB);
 }
 
 int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
@@ -1843,7 +1847,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
                                                  const std::string& mediaType)
 {
   // When not selecting art type, default type to "thumb".
-  return ManageVideoItemArtwork(item, mediaType, "thumb");
+  return ManageVideoItemArtwork(item, mediaType, ART::TYPE::THUMB);
 }
 
 namespace
@@ -1905,8 +1909,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::string currentArt = asyncArtHandler.GetCurrentArt();
   if (!currentArt.empty())
   {
-    const auto itemCurrent = std::make_shared<CFileItem>("thumb://Current", false);
-    itemCurrent->SetArt("thumb", currentArt);
+    const auto itemCurrent = std::make_shared<CFileItem>(IMAGE_CHOICE::CURRENT, false);
+    itemCurrent->SetArt(ART::TYPE::THUMB, currentArt);
     itemCurrent->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13512));
     items.Add(itemCurrent);
   }
@@ -1914,8 +1918,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::string embeddedArt = asyncArtHandler.GetEmbeddedArt();
   if (!embeddedArt.empty())
   {
-    const auto itemEmbedded = std::make_shared<CFileItem>("thumb://Embedded", false);
-    itemEmbedded->SetArt("thumb", embeddedArt);
+    const auto itemEmbedded = std::make_shared<CFileItem>(IMAGE_CHOICE::EMBEDDED, false);
+    itemEmbedded->SetArt(ART::TYPE::THUMB, embeddedArt);
     itemEmbedded->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13519));
     items.Add(itemEmbedded);
   }
@@ -1923,10 +1927,9 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::vector<std::string> remoteArt = asyncArtHandler.GetRemoteArt();
   for (size_t i = 0; i < remoteArt.size(); ++i)
   {
-    const auto itemRemote =
-        std::make_shared<CFileItem>(StringUtils::Format("thumb://Remote{0}", i), false);
-    itemRemote->SetArt("thumb", remoteArt[i]);
-    itemRemote->SetArt("icon", "DefaultPicture.png");
+    const auto itemRemote = std::make_shared<CFileItem>(IMAGE_CHOICE::RemoteOf(i), false);
+    itemRemote->SetArt(ART::TYPE::THUMB, remoteArt[i]);
+    itemRemote->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
     itemRemote->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13513));
     items.Add(itemRemote);
 
@@ -1937,19 +1940,20 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::string localArt = asyncArtHandler.GetLocalArt();
   if (!localArt.empty())
   {
-    const auto itemLocal = std::make_shared<CFileItem>("thumb://Local", false);
+    const auto itemLocal = std::make_shared<CFileItem>(IMAGE_CHOICE::LOCAL, false);
     itemLocal->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13514));
-    itemLocal->SetArt("thumb", localArt);
+    itemLocal->SetArt(ART::TYPE::THUMB, localArt);
     items.Add(itemLocal);
   }
 
-  const auto itemNone = std::make_shared<CFileItem>("thumb://None", false);
+  const auto itemNone = std::make_shared<CFileItem>(IMAGE_CHOICE::NONE, false);
   itemNone->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
-  itemNone->SetArt("icon", artHandler->GetDefaultIcon());
+  itemNone->SetArt(ART::TYPE::ICON, artHandler->GetDefaultIcon());
   items.Add(itemNone);
 
   std::string result;
-  std::vector<CMediaSource> sources = *CMediaSourceSettings::GetInstance().GetSources("video");
+  std::vector<CMediaSource> sources =
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO);
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   artHandler->AddItemPathToFileBrowserSources(sources);
 
@@ -1960,26 +1964,23 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
           result, artHandler->SupportsFlippedArt() ? &flip : nullptr, 39123 /* Artwork */))
     return false; // user cancelled
 
-  if (result == "thumb://Current")
+  if (result == IMAGE_CHOICE::CURRENT)
     result = currentArt; // user chose the one they have
 
-  if (result == "thumb://Local")
+  if (result == IMAGE_CHOICE::LOCAL)
     result = localArt;
 
-  if (result == "thumb://Embedded")
+  if (result == IMAGE_CHOICE::EMBEDDED)
     result = artHandler->UpdateEmbeddedArt(embeddedArt);
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  if (result == "thumb://None")
+  if (result == IMAGE_CHOICE::NONE)
   {
     result.clear();
   }
-  else if (StringUtils::StartsWith(result, "thumb://Remote"))
-  {
-    const int index = std::atoi(StringUtils::Mid(result, 14).c_str());
-    result = artHandler->UpdateRemoteArt(remoteArt, index);
-  }
+  else if (const auto index = IMAGE_CHOICE::RemoteIndexOf(result))
+    result = artHandler->UpdateRemoteArt(remoteArt, static_cast<int>(*index));
 
   // flip selected image, if user wants it
   if (!result.empty() && flip)
