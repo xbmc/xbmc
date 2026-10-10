@@ -45,6 +45,7 @@ set(HEADERS GUIDialogBoxBase.h
             GUIDialogMediaFilter.h
             GUIDialogMediaSource.h
             GUIDialogNumeric.h
+            NumericInputMode.h
             GUIDialogOK.h
             GUIDialogPlayerControls.h
             GUIDialogPlayerProcessInfo.h
