@@ -104,6 +104,12 @@ public:
   */
   bool VerifyStopCondition() const;
 
+  /*! \brief Checks if the timer state that skins can see (running state and elapsed whole
+  * seconds) changed since the last call
+  * \return true if the state changed, false otherwise
+  */
+  bool CheckStateChanged();
+
 private:
   /*! \brief Called when this timer is started */
   void OnStart() const;
@@ -125,4 +131,8 @@ private:
   CGUIAction m_stopActions;
   /*! if the timer should be reset on start (or just resumed) */
   bool m_resetOnStart{false};
+  /*! The running state at the last CheckStateChanged() call */
+  bool m_lastRunning{false};
+  /*! The elapsed whole seconds at the last CheckStateChanged() call */
+  int m_lastElapsedSeconds{0};
 };
