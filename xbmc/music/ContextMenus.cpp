@@ -16,6 +16,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
@@ -172,7 +173,7 @@ bool CMusicGoToArtist::Execute(const std::shared_ptr<CFileItem>& item) const
   if (idArtist < 0)
     return false;
 
-  const std::string path = "musicdb://artists/" + std::to_string(idArtist) + "/";
+  const std::string path = KODI::MUSIC::DB_PATH::ARTISTS + std::to_string(idArtist) + "/";  
 
   auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
   if (windowMgr.GetActiveWindow() == WINDOW_MUSIC_NAV)
