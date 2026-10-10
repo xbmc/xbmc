@@ -3,6 +3,7 @@ set(SOURCES VideoLibraryCleaningJob.cpp
             VideoLibraryMarkWatchedJob.cpp
             VideoLibraryProgressJob.cpp
             VideoLibraryRefreshingJob.cpp
+            VideoLibraryRefreshingSourceJob.cpp
             VideoLibraryScanningJob.cpp
             VideoLibraryResetResumePointJob.cpp)
 
@@ -11,6 +12,7 @@ set(HEADERS VideoLibraryCleaningJob.h
             VideoLibraryMarkWatchedJob.h
             VideoLibraryProgressJob.h
             VideoLibraryRefreshingJob.h
+            VideoLibraryRefreshingSourceJob.h
             VideoLibraryScanningJob.h
             VideoLibraryResetResumePointJob.h)
 
