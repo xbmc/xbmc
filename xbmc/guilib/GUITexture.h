@@ -17,6 +17,7 @@
 
 #include <functional>
 #include <optional>
+#include <vector>
 
 class CTextureInfo
 {
@@ -68,6 +69,7 @@ public:
 
   static void Register(const CreateGUITextureFunc& createFunction,
                        const DrawQuadFunc& drawQuadFunction);
+  static void UnregisterDrawQuad();
 
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
@@ -133,19 +135,25 @@ protected:
   CGUITexture(float posX, float posY, float width, float height, const CTextureInfo& texture);
   CGUITexture(const CGUITexture& left);
 
+  /*!
+   * @brief One quad of the texture, independent of the texture's position and size.
+   *
+   * Each edge lies at rect.x1 + anchor * rect.Width() + offset (and likewise vertically), where
+   * rect is the texture's render rectangle in skin coordinates.
+   */
+  struct Quad
+  {
+    CRect anchor;
+    CRect offset;
+    CRect texture;
+    CRect diffuse;
+
+    bool operator==(const Quad& other) const = default;
+  };
+
   bool CalculateSize();
   bool AllocateOnDemand();
   bool UpdateAnimFrame(unsigned int currentTime);
-  void Render(float left,
-              float top,
-              float right,
-              float bottom,
-              float u1,
-              float v1,
-              float u2,
-              float v2,
-              float u3,
-              float v3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
   void ResetAnimState();
 
@@ -160,6 +168,19 @@ protected:
                     const CRect& diffuse,
                     int orientation) = 0;
   virtual void End() = 0;
+
+  /*!
+   * @brief Draw the quads at @p rect with the current clip region and GUI transform applied by
+   * the GPU.
+   *
+   * Called between Begin() and End(). The quads only change when @p version does, so they can be
+   * kept in GPU memory while @p rect moves or resizes. If this returns false, the quads are
+   * clipped and transformed on the CPU and passed to Draw() instead.
+   */
+  virtual bool DrawQuads(const std::vector<Quad>& quads, unsigned int version, const CRect& rect)
+  {
+    return false;
+  }
 
   bool m_visible;
   KODI::UTILS::COLOR::Color m_diffuseColor;
@@ -207,6 +228,23 @@ protected:
   CTextureArray m_texture;
 
 private:
+  struct Segment
+  {
+    CRect vertex;
+    CRect texture;
+  };
+
+  void UpdateSegments();
+  void Render(const Segment& segment);
+  void OrientateTexCoords(CRect& texture, CRect* diffuse, int orientation) const;
+
+  std::vector<Segment> m_segments;
+  std::vector<Quad> m_quads;
+  float m_frameU{0}; // frame size in texture coordinates
+  float m_frameV{0};
+  bool m_segmentsDirty{true};
+  unsigned int m_quadsVersion{0};
+
   static CreateGUITextureFunc m_createGUITextureFunc;
   static DrawQuadFunc m_drawQuadFunc;
 };

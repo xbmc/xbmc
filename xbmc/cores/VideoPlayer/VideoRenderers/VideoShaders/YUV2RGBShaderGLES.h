@@ -12,7 +12,10 @@
 #include "ShaderFormats.h"
 #include "cores/VideoSettings.h"
 #include "guilib/Shader.h"
+#include "utils/Geometry.h"
 #include "utils/TransformMatrix.h"
+
+#include <array>
 
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>
@@ -58,6 +61,11 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 
     void SetMatrices(const GLfloat *p, const GLfloat *m) { m_proj = p; m_model = m; }
     void SetAlpha(GLfloat alpha) { m_alpha = alpha; }
+
+    // Maps the vertex positions, for instance a unit quad (see KODI::UTILS::GL::QuadTransform()).
+    void SetQuadTransform(const std::array<GLfloat, 16>& transform) { m_quad = transform; }
+    // The texture coordinates of plane 0 (Y), 1 (U) or 2 (V) span rect.
+    void SetTextureRect(int plane, const CRect& rect) { m_texRects[plane] = rect; }
 
   protected:
     void OnCompiledAndLinked() override;
@@ -106,10 +114,15 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     GLint m_hProj{-1};
     GLint m_hModel{-1};
     GLint m_hAlpha{-1};
+    GLint m_hQuad{-1};
+    std::array<GLint, 3> m_hTexRect{-1, -1, -1};
 
     const GLfloat *m_proj{nullptr};
     const GLfloat *m_model{nullptr};
     GLfloat m_alpha{1.0f};
+    std::array<GLfloat, 16> m_quad{1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                                   0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    std::array<CRect, 3> m_texRects{CRect(0, 0, 1, 1), CRect(0, 0, 1, 1), CRect(0, 0, 1, 1)};
 
     bool m_convertFullRange;
 

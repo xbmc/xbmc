@@ -52,20 +52,24 @@ void CGLESShader::OnCompiledAndLinked()
   m_sdrPeak = glGetUniformLocation(ProgramHandle(), "m_sdrPeak");
 
   // Variables passed directly to the Vertex shader
-  m_hProj  = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hCoord0Matrix = glGetUniformLocation(ProgramHandle(), "m_coord0Matrix");
   m_hMatrix = glGetUniformLocation(ProgramHandle(), "m_matrix");
   m_hShaderClip = glGetUniformLocation(ProgramHandle(), "m_shaderClip");
   m_hCoordStep = glGetUniformLocation(ProgramHandle(), "m_cordStep");
   m_hDepth = glGetUniformLocation(ProgramHandle(), "m_depth");
   m_hPma = glGetUniformLocation(ProgramHandle(), "m_pma");
+  m_hGUIMatrix = glGetUniformLocation(ProgramHandle(), "m_gui");
+  m_hSnap = glGetUniformLocation(ProgramHandle(), "m_snap");
+  m_hQuadRect = glGetUniformLocation(ProgramHandle(), "m_quadRect");
+  m_hQuadClip = glGetUniformLocation(ProgramHandle(), "m_quadClip");
+  m_hTexSwap = glGetUniformLocation(ProgramHandle(), "m_texSwap");
 
   // Vertex attributes
   m_hPos    = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
   m_hCol    = glGetAttribLocation(ProgramHandle(),  "m_attrcol");
   m_hCord0  = glGetAttribLocation(ProgramHandle(),  "m_attrcord0");
   m_hCord1  = glGetAttribLocation(ProgramHandle(),  "m_attrcord1");
+  m_hAttrSnap = glGetAttribLocation(ProgramHandle(), "m_attrsnap");
 
   // It's okay to do this only one time. Textures units never change.
   glUseProgram( ProgramHandle() );
@@ -90,8 +94,9 @@ bool CGLESShader::OnEnabled()
 
   const GLfloat *projMatrix = glMatrixProject.Get();
   const GLfloat *modelMatrix = glMatrixModview.Get();
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, projMatrix);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
+  CMatrixGL matrix = glMatrixProject.Get();
+  matrix.MultMatrixf(glMatrixModview.Get());
+  glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, matrix);
 
   const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix();
   CRect viewPort; // absolute positions of corners
@@ -173,6 +178,15 @@ bool CGLESShader::OnEnabled()
 
   glUniform1f(m_hBrightness, 0.0f);
   glUniform1f(m_hContrast, 1.0f);
+  // clang-format off
+  static constexpr GLfloat identity[16] = {1.0f, 0.0f, 0.0f, 0.0f,
+                                           0.0f, 1.0f, 0.0f, 0.0f,
+                                           0.0f, 0.0f, 1.0f, 0.0f,
+                                           0.0f, 0.0f, 0.0f, 1.0f};
+  // clang-format on
+  glUniformMatrix4fv(m_hGUIMatrix, 1, GL_FALSE, identity);
+  glUniformMatrix4fv(m_hCoord0Matrix, 1, GL_FALSE, identity);
+  glUniform1f(m_hSnap, 0.0f);
 
   // Default to straight-alpha math for all consumers; the one site that draws
   // premultiplied-alpha textures (COverlayTextureGLES) overrides this to 1.0

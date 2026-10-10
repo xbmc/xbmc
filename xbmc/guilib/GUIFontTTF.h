@@ -61,6 +61,14 @@ struct SVertex
   float u, v;
   float u2, v2;
 };
+#elif defined(HAS_GLES)
+struct SVertex
+{
+  float x, y;
+  unsigned char r, g, b, a;
+  // Texture coordinates in half texels, offset by half a texel so that the edges stay positive
+  uint16_t u, v;
+};
 #else
 struct SVertex
 {

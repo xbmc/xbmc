@@ -1117,10 +1117,17 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   // when scaling by shader, we have to grow the vertex and texture coords
   // by .5 or we would omit pixels when animating.
+#if defined(HAS_GLES)
+  const auto tl = static_cast<uint16_t>(2 * texture.x1);
+  const auto tr = static_cast<uint16_t>(2 * texture.x2 + 2);
+  const auto tt = static_cast<uint16_t>(2 * texture.y1);
+  const auto tb = static_cast<uint16_t>(2 * texture.y2 + 2);
+#else
   const float tl = (texture.x1 - .5f) * m_textureScaleX;
   const float tr = (texture.x2 + .5f) * m_textureScaleX;
   const float tt = (texture.y1 - .5f) * m_textureScaleY;
   const float tb = (texture.y2 + .5f) * m_textureScaleY;
+#endif
 
   vertices.resize(vertices.size() + VERTEX_PER_GLYPH);
   SVertex* v = &vertices[vertices.size() - VERTEX_PER_GLYPH];
@@ -1186,25 +1193,21 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
   v[0].v = tt;
   v[0].x = vertex.x1 - xOffset - 0.5f;
   v[0].y = vertex.y1 - yOffset - 0.5f;
-  v[0].z = 0;
 
   v[1].u = tl;
   v[1].v = tb;
   v[1].x = vertex.x1 - xOffset - 0.5f;
   v[1].y = vertex.y2 - yOffset + 0.5f;
-  v[1].z = 0;
 
   v[2].u = tr;
   v[2].v = tt;
   v[2].x = vertex.x2 - xOffset + 0.5f;
   v[2].y = vertex.y1 - yOffset - 0.5f;
-  v[2].z = 0;
 
   v[3].u = tr;
   v[3].v = tb;
   v[3].x = vertex.x2 - xOffset + 0.5f;
   v[3].y = vertex.y2 - yOffset + 0.5f;
-  v[3].z = 0;
 #endif
 }
 
