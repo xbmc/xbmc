@@ -302,7 +302,6 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
         item->GetMusicInfoTag()->GetAlbum(), item->GetMusicInfoTag()->GetTitle()));
 
     item->SetProperty(KODI::ITEM::PROPERTY::ITEM_START, item->GetStartOffset());
-    item->SetProperty("audio_bookmark", item->GetStartOffset());
     if (!thumb.empty() && !chapter_error)
       item->SetArt(KODI::ART::TYPE::THUMB, thumb);
     items.Add(item);
