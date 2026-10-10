@@ -1433,9 +1433,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE `sets` ADD strSortSet TEXT");
   }
+
+  if (iVersion < 151)
+  {
+    m_pDS->exec("ALTER TABLE settings ADD Hue float DEFAULT 50");
+    m_pDS->exec("ALTER TABLE settings ADD Saturation float DEFAULT 50");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 150;
+  return 151;
 }

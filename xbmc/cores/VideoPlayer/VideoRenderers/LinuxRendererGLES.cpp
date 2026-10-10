@@ -973,7 +973,8 @@ void CLinuxRendererGLES::LoadShaders(int field)
           {
             m_pYUVProgShader = new YUV2RGBFilterShader(
                 shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-                m_srcPrimaries, m_toneMap, m_toneMapMethod, m_scalingMethod, m_useDithering);
+                m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_scalingMethod,
+                m_useDithering);
             // TODO: GL gates this on !m_cmsOn. Add when CMS is ported to GLES.
             m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
 
@@ -999,14 +1000,14 @@ void CLinuxRendererGLES::LoadShaders(int field)
           // Fall back to regular progressive shader
           m_pYUVProgShader = new YUV2RGBProgressiveShader(
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_useDithering);
+              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useDithering);
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
 
           CLog::Log(LOGINFO, "GLES: Selecting YUV 2 RGB shader");
 
           m_pYUVBobShader = new YUV2RGBBobShader(
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_useDithering);
+              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useDithering);
           m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
 
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
@@ -1247,6 +1248,8 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
   pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -1385,6 +1388,8 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
 
   pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -2128,14 +2133,11 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature) const
     return false;
   }
 
-  if (feature == RENDERFEATURE_STRETCH ||
-      feature == RENDERFEATURE_ZOOM ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT ||
-      feature == RENDERFEATURE_PIXEL_RATIO ||
-      feature == RENDERFEATURE_POSTPROCESS ||
-      feature == RENDERFEATURE_ROTATION ||
-      feature == RENDERFEATURE_BRIGHTNESS ||
-      feature == RENDERFEATURE_CONTRAST ||
+  if (feature == RENDERFEATURE_STRETCH || feature == RENDERFEATURE_ZOOM ||
+      feature == RENDERFEATURE_VERTICAL_SHIFT || feature == RENDERFEATURE_PIXEL_RATIO ||
+      feature == RENDERFEATURE_POSTPROCESS || feature == RENDERFEATURE_ROTATION ||
+      feature == RENDERFEATURE_BRIGHTNESS || feature == RENDERFEATURE_CONTRAST ||
+      feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION ||
       feature == RENDERFEATURE_TONEMAP)
   {
     return true;
@@ -2232,6 +2234,19 @@ void CLinuxRendererGLES::CheckVideoParameters(int index)
   bool toneMap = false;
   const bool streamIsHDRPQ =
       (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 && buf.m_srcPrimaries == AVCOL_PRI_BT2020);
+  const bool streamIsHDR =
+      buf.m_srcPrimaries == AVCOL_PRI_BT2020 && (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 ||
+                                                 buf.m_srcColTransfer == AVCOL_TRC_ARIB_STD_B67);
+
+  const bool hueSat =
+      streamIsHDR && (m_videoSettings.m_Hue != 50.0f || m_videoSettings.m_Saturation != 50.0f);
+  const AVColorTransferCharacteristic hueSatTransfer =
+      hueSat ? buf.m_srcColTransfer : AVCOL_TRC_UNSPECIFIED;
+  if (hueSatTransfer != m_hueSatTransfer)
+  {
+    m_hueSatTransfer = hueSatTransfer;
+    m_reloadShaders = true;
+  }
 
   if (streamIsHDRPQ && !m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {

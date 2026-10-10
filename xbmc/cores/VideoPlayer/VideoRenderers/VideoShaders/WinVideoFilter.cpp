@@ -270,6 +270,25 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
     effect.SetScalar("g_toneP2", lumin_div100);
     m_toneMappingDebug = lumin;
   }
+  if (m_hueSatTransfer != AVCOL_TRC_UNSPECIFIED)
+  {
+    float peak = 1.0f;
+    if (m_hueSatTransfer == AVCOL_TRC_SMPTE2084)
+      peak = CToneMappers::GetPeakLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
+                                                 m_hasLightMetadata, m_lightMetadata) /
+             10000.0f;
+
+    Matrix4 hueSatMat(CConvertMatrix::GetLinearHueSatMat(m_hueSatCoefs, m_hue, m_saturation));
+    Matrix3x1 coefs = CConvertMatrix::GetRGBYuvCoefs(m_hueSatCoefs);
+
+    effect.SetMatrix("g_hsMat", hueSatMat.ToRaw());
+    effect.SetFloatArray("g_hsCoefs", coefs.data(), coefs.size());
+    effect.SetScalar("g_hsPeak", peak);
+    const bool limited = DX::Windowing()->UseLimitedColor();
+    float range[2] = {limited ? 876.0f / 1023.0f : 1.0f,
+                      limited ? 64.0f / 1023.0f : 0.0f};
+    effect.SetFloatArray("g_hsRange", range, 2);
+  }
 }
 
 void COutputShader::GetDefines(DefinesMap& map) const
@@ -298,6 +317,14 @@ void COutputShader::GetDefines(DefinesMap& map) const
   {
     map["KODI_HLG_TO_PQ"] = "";
   }
+  if (m_hueSatTransfer == AVCOL_TRC_SMPTE2084)
+  {
+    map["KODI_HUESAT_PQ"] = "";
+  }
+  else if (m_hueSatTransfer == AVCOL_TRC_ARIB_STD_B67)
+  {
+    map["KODI_HUESAT_HLG"] = "";
+  }
 }
 
 bool COutputShader::Create(bool useLUT,
@@ -305,9 +332,11 @@ bool COutputShader::Create(bool useLUT,
                            int ditherDepth,
                            bool toneMapping,
                            ETONEMAPMETHOD toneMethod,
-                           bool HLGtoPQ)
+                           bool HLGtoPQ,
+                           AVColorTransferCharacteristic hueSatTransfer)
 {
   m_useLut = useLUT;
+  m_hueSatTransfer = hueSatTransfer;
   m_ditherDepth = ditherDepth;
   m_toneMapping = toneMapping;
   m_useHLGtoPQ = HLGtoPQ;
@@ -371,6 +400,13 @@ void COutputShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDispl
   m_displayMetadata = displayMetadata;
   m_hasLightMetadata = hasLightMetadata;
   m_lightMetadata = lightMetadata;
+}
+
+void COutputShader::SetHueSaturation(float hue, float saturation, AVColorSpace lumaCoefs)
+{
+  m_hue = hue;
+  m_saturation = saturation;
+  m_hueSatCoefs = lumaCoefs;
 }
 
 void COutputShader::SetToneMapParam(ETONEMAPMETHOD method, float param)
@@ -648,10 +684,13 @@ void CYUV2RGBShader::Render(CRect sourceRect, CPoint dest[], CRenderBuffer* vide
   Execute({ &target }, 4);
 }
 
-void CYUV2RGBShader::SetParams(float contrast, float black, bool limited)
+void CYUV2RGBShader::SetParams(
+    float contrast, float black, float hue, float saturation, bool limited)
 {
   m_convMatrix.SetDestinationContrast(contrast * 0.02f)
       .SetDestinationBlack(black * 0.01f - 0.5f)
+      .SetDestinationHue((hue - 50.0f) * 3.6f)
+      .SetDestinationSaturation(saturation * 0.02f)
       .SetDestinationLimitedRange(limited);
 }
 

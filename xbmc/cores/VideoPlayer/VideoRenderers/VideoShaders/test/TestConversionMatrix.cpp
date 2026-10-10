@@ -180,4 +180,77 @@ TEST(TestConvertMatrix, ColorSpaceConversion)
   EXPECT_TRUE(CompareMatrices(bt2020_to_bt709_Mat, primMat, 0.0001f));
 }
 
+TEST(TestConvertMatrix, HueSaturation)
+{
+  CConvertMatrix convMat;
+  convMat.SetSourceColorSpace(AVCOL_SPC_BT709)
+         .SetSourceLimitedRange(true)
+         .SetDestinationLimitedRange(false);
+
+  convMat.SetDestinationHue(0.0f)
+         .SetDestinationSaturation(1.0f);
+  Matrix4 yuvMat = convMat.GetYuvMat();
+  EXPECT_TRUE(CompareMatrices(bt709Mat_8bit, yuvMat, 0.0001f));
+
+  // no chroma left, R, G and B must be equal for every input
+  convMat.SetDestinationSaturation(0.0f);
+  yuvMat = convMat.GetYuvMat();
+  DebugPrint(yuvMat);
+
+  for (int i = 0; i < 4; ++i)
+  {
+    EXPECT_NEAR(yuvMat[i][0], yuvMat[i][1], 0.0001f);
+    EXPECT_NEAR(yuvMat[i][0], yuvMat[i][2], 0.0001f);
+  }
+
+  // a half turn of the chroma plane is the same as inverting it
+  convMat.SetDestinationHue(180.0f)
+         .SetDestinationSaturation(1.0f);
+  Matrix4 rotated = convMat.GetYuvMat();
+  convMat.SetDestinationHue(0.0f)
+         .SetDestinationSaturation(-1.0f);
+  yuvMat = convMat.GetYuvMat();
+  EXPECT_TRUE(CompareMatrices(yuvMat, rotated, 0.0001f));
+}
+
+TEST(TestConvertMatrix, LinearHueSaturation)
+{
+  const Matrix3x1 coefs = CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT2020_NCL);
+  const std::array<std::array<float, 3>, 3> colors = {{
+    {1.0f, 0.0f, 0.0f}, {0.1f, 0.6f, 0.2f}, {0.05f, 0.02f, 0.9f}
+  }};
+
+  // the shaders multiply column vectors by the transposed matrix
+  const auto apply = [](const Matrix3& mat, const std::array<float, 3>& rgb) {
+    std::array<float, 3> out{};
+    for (int i = 0; i < 3; ++i)
+      for (int j = 0; j < 3; ++j)
+        out[i] += mat[j][i] * rgb[j];
+    return out;
+  };
+  const auto luma = [&coefs](const std::array<float, 3>& rgb) {
+    return coefs[0] * rgb[0] + coefs[1] * rgb[1] + coefs[2] * rgb[2];
+  };
+
+  Matrix3 mat = CConvertMatrix::GetLinearHueSatMat(AVCOL_SPC_BT2020_NCL, 0.0f, 1.0f);
+  for (const auto& rgb : colors)
+  {
+    const auto out = apply(mat, rgb);
+    for (int i = 0; i < 3; ++i)
+      EXPECT_NEAR(rgb[i], out[i], 0.0001f);
+  }
+
+  mat = CConvertMatrix::GetLinearHueSatMat(AVCOL_SPC_BT2020_NCL, 90.0f, 2.0f);
+  for (const auto& rgb : colors)
+    EXPECT_NEAR(luma(rgb), luma(apply(mat, rgb)), 0.0001f);
+
+  mat = CConvertMatrix::GetLinearHueSatMat(AVCOL_SPC_BT2020_NCL, 0.0f, 0.0f);
+  for (const auto& rgb : colors)
+  {
+    const auto out = apply(mat, rgb);
+    for (int i = 0; i < 3; ++i)
+      EXPECT_NEAR(luma(rgb), out[i], 0.0001f);
+  }
+}
+
 // clang-format on

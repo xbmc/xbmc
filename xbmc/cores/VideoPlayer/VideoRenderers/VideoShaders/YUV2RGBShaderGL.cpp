@@ -35,6 +35,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
                                              AVColorPrimaries srcPrimaries,
                                              bool toneMap,
                                              ETONEMAPMETHOD toneMapMethod,
+                                             AVColorTransferCharacteristic hueSatTransfer,
                                              std::shared_ptr<GLSLOutput> output)
 {
   m_width = 1;
@@ -43,6 +44,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
   m_format = format;
   m_black = 0.0f;
   m_contrast = 1.0f;
+  m_hue = 0.0f;
+  m_saturation = 1.0f;
   m_stretch = 0.0f;
 
   // get defines from the output stage if used
@@ -104,6 +107,17 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
       m_defines += "#define KODI_TONE_MAPPING_HABLE\n";
   }
 
+  if (hueSatTransfer == AVCOL_TRC_SMPTE2084)
+  {
+    m_hueSatTransfer = hueSatTransfer;
+    m_defines += "#define KODI_HUESAT_PQ\n";
+  }
+  else if (hueSatTransfer == AVCOL_TRC_ARIB_STD_B67)
+  {
+    m_hueSatTransfer = hueSatTransfer;
+    m_defines += "#define KODI_HUESAT_HLG\n";
+  }
+
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
 
   CLog::Log(LOGDEBUG, "GL: using shader format: {}",
@@ -141,6 +155,10 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hCoefsDst = glGetUniformLocation(ProgramHandle(), "m_coefsDst");
   m_hToneP1 = glGetUniformLocation(ProgramHandle(), "m_toneP1");
   m_hLuminance = glGetUniformLocation(ProgramHandle(), "m_luminance");
+  m_hHsMat = glGetUniformLocation(ProgramHandle(), "m_hsMat");
+  m_hHsCoefs = glGetUniformLocation(ProgramHandle(), "m_hsCoefs");
+  m_hHsPeak = glGetUniformLocation(ProgramHandle(), "m_hsPeak");
+  m_hHsRange = glGetUniformLocation(ProgramHandle(), "m_hsRange");
   VerifyGLState();
 
   if (m_glslOutput)
@@ -156,8 +174,13 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1f(m_hStretch, m_stretch);
   glUniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
 
+  const bool hueSatLinear = m_hueSatTransfer != AVCOL_TRC_UNSPECIFIED;
+
+  // HDR hue and saturation are applied in linear light after the YUV conversion
   m_convMatrix.SetDestinationContrast(m_contrast)
       .SetDestinationBlack(m_black)
+      .SetDestinationHue(hueSatLinear ? 0.0f : m_hue)
+      .SetDestinationSaturation(hueSatLinear ? 1.0f : m_saturation)
       .SetDestinationLimitedRange(!m_convertFullRange);
 
   Matrix4 yuvMat = m_convMatrix.GetYuvMat();
@@ -172,6 +195,25 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     glUniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, reinterpret_cast<GLfloat*>(primMat.ToRaw()));
     glUniform1f(m_hGammaSrc, m_convMatrix.GetGammaSrc());
     glUniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
+  }
+
+  if (hueSatLinear)
+  {
+    // the signal is still BT.2020 here, primaries conversion comes after
+    Matrix3 hueSatMat =
+        CConvertMatrix::GetLinearHueSatMat(AVCOL_SPC_BT2020_NCL, m_hue, m_saturation);
+    Matrix3x1 coefs = CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT2020_NCL);
+    float peak = 1.0f;
+    if (m_hueSatTransfer == AVCOL_TRC_SMPTE2084)
+      peak = CToneMappers::GetPeakLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
+                                                 m_hasLightMetadata, m_lightMetadata) /
+             10000.0f;
+
+    glUniformMatrix3fv(m_hHsMat, 1, GL_FALSE, reinterpret_cast<GLfloat*>(hueSatMat.ToRaw()));
+    glUniform3f(m_hHsCoefs, coefs[0], coefs[1], coefs[2]);
+    glUniform1f(m_hHsPeak, peak);
+    glUniform2f(m_hHsRange, m_convertFullRange ? 1.0f : 876.0f / 1023.0f,
+                m_convertFullRange ? 0.0f : 64.0f / 1023.0f);
   }
 
   if (m_toneMapping)
@@ -275,6 +317,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
                                                    AVColorPrimaries srcPrimaries,
                                                    bool toneMap,
                                                    ETONEMAPMETHOD toneMapMethod,
+                                                   AVColorTransferCharacteristic hueSatTransfer,
                                                    std::shared_ptr<GLSLOutput> output,
                                                    bool gammaCorrection)
   : BaseYUV2RGBGLSLShader(rect,
@@ -284,6 +327,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
                           srcPrimaries,
                           toneMap,
                           toneMapMethod,
+                          hueSatTransfer,
                           std::move(output))
 {
   if (gammaCorrection)
@@ -293,6 +337,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
   PixelShader()->AppendSource("gl_output.glsl");
 
   PixelShader()->InsertSource("gl_tonemap.glsl", "vec4 process()");
+  PixelShader()->InsertSource("gl_huesat.glsl", "vec4 process()");
 }
 
 //------------------------------------------------------------------------------
@@ -306,6 +351,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                                            AVColorPrimaries srcPrimaries,
                                            bool toneMap,
                                            ETONEMAPMETHOD toneMapMethod,
+                                           AVColorTransferCharacteristic hueSatTransfer,
                                            ESCALINGMETHOD method,
                                            std::shared_ptr<GLSLOutput> output)
   : BaseYUV2RGBGLSLShader(rect,
@@ -315,6 +361,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                           srcPrimaries,
                           toneMap,
                           toneMapMethod,
+                          hueSatTransfer,
                           std::move(output))
 {
   m_scaling = method;
@@ -322,6 +369,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
   PixelShader()->AppendSource("gl_output.glsl");
 
   PixelShader()->InsertSource("gl_tonemap.glsl", "vec4 process()");
+  PixelShader()->InsertSource("gl_huesat.glsl", "vec4 process()");
 }
 
 YUV2RGBFilterShader4::~YUV2RGBFilterShader4()

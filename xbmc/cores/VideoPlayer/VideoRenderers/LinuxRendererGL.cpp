@@ -1010,7 +1010,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         m_pYUVShader = new YUV2RGBFilterShader4(
             m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat, m_nonLinStretch,
             m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
-            m_toneMap, m_toneMapMethod, m_scalingMethod, out);
+            m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
@@ -1036,7 +1036,7 @@ void CLinuxRendererGL::LoadShaders(int field)
           m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat,
           m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
           m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
-          m_toneMap, m_toneMapMethod, out,
+          m_toneMap, m_toneMapMethod, m_hueSatTransfer, out,
           m_intermediateGammaCorrection && m_renderQuality == RQ_MULTIPASS);
 
       if (!m_cmsOn)
@@ -1179,6 +1179,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  m_pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -1371,6 +1373,8 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
   m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
+  m_pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
@@ -2602,16 +2606,12 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGL::Supports(ERENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE_STRETCH ||
-      feature == RENDERFEATURE_NONLINSTRETCH ||
-      feature == RENDERFEATURE_ZOOM ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT ||
-      feature == RENDERFEATURE_PIXEL_RATIO ||
-      feature == RENDERFEATURE_POSTPROCESS ||
-      feature == RENDERFEATURE_ROTATION ||
-      feature == RENDERFEATURE_BRIGHTNESS ||
-      feature == RENDERFEATURE_CONTRAST ||
-      feature == RENDERFEATURE_TONEMAP)
+  if (feature == RENDERFEATURE_STRETCH || feature == RENDERFEATURE_NONLINSTRETCH ||
+      feature == RENDERFEATURE_ZOOM || feature == RENDERFEATURE_VERTICAL_SHIFT ||
+      feature == RENDERFEATURE_PIXEL_RATIO || feature == RENDERFEATURE_POSTPROCESS ||
+      feature == RENDERFEATURE_ROTATION || feature == RENDERFEATURE_BRIGHTNESS ||
+      feature == RENDERFEATURE_CONTRAST || feature == RENDERFEATURE_HUE ||
+      feature == RENDERFEATURE_SATURATION || feature == RENDERFEATURE_TONEMAP)
     return true;
 
   return false;
@@ -2786,6 +2786,19 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
   bool toneMap = false;
   const bool streamIsHDRPQ =
       (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 && buf.m_srcPrimaries == AVCOL_PRI_BT2020);
+  const bool streamIsHDR =
+      buf.m_srcPrimaries == AVCOL_PRI_BT2020 && (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 ||
+                                                 buf.m_srcColTransfer == AVCOL_TRC_ARIB_STD_B67);
+
+  const bool hueSat =
+      streamIsHDR && (m_videoSettings.m_Hue != 50.0f || m_videoSettings.m_Saturation != 50.0f);
+  const AVColorTransferCharacteristic hueSatTransfer =
+      hueSat ? buf.m_srcColTransfer : AVCOL_TRC_UNSPECIFIED;
+  if (hueSatTransfer != m_hueSatTransfer)
+  {
+    m_hueSatTransfer = hueSatTransfer;
+    m_reloadShaders = true;
+  }
 
   if (!m_passthroughHDR && streamIsHDRPQ && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {

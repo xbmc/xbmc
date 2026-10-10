@@ -31,6 +31,7 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                           AVColorPrimaries src,
                           bool toneMap,
                           ETONEMAPMETHOD toneMapMethod,
+                          AVColorTransferCharacteristic hueSatTransfer,
                           bool dither = false);
     ~BaseYUV2RGBGLSLShader() override;
     void SetField(int field) { m_field = field; }
@@ -40,6 +41,8 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     void SetColParams(AVColorSpace colSpace, int bits, bool limited, int textureBits);
     void SetBlack(float black) { m_black = black; }
     void SetContrast(float contrast) { m_contrast = contrast; }
+    void SetHue(float hue) { m_hue = hue; }
+    void SetSaturation(float saturation) { m_saturation = saturation; }
     void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
     void SetDitherUniforms(bool enabled,
                            GLuint ditherTex,
@@ -76,11 +79,14 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     bool m_toneMapping{false};
     ETONEMAPMETHOD m_toneMappingMethod{VS_TONEMAPMETHOD_OFF};
     float m_toneMappingParam{1.0};
+    AVColorTransferCharacteristic m_hueSatTransfer{AVCOL_TRC_UNSPECIFIED};
 
     bool m_colorConversion{false};
 
     float m_black;
     float m_contrast;
+    float m_hue;
+    float m_saturation;
 
     std::string m_defines;
 
@@ -98,6 +104,10 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     GLint m_hToneP1{-1};
     GLint m_hCoefsDst{-1};
     GLint m_hLuminance = -1;
+    GLint m_hHsMat{-1};
+    GLint m_hHsCoefs{-1};
+    GLint m_hHsPeak{-1};
+    GLint m_hHsRange{-1};
 
     GLint m_hVertex{-1};
     GLint m_hYcoord{-1};
@@ -133,6 +143,7 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                              AVColorPrimaries srcPrimaries,
                              bool toneMap,
                              ETONEMAPMETHOD toneMapMethod,
+                             AVColorTransferCharacteristic hueSatTransfer,
                              bool dither = false);
   };
 
@@ -144,6 +155,7 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                      AVColorPrimaries srcPrimaries,
                      bool toneMap,
                      ETONEMAPMETHOD toneMapMethod,
+                     AVColorTransferCharacteristic hueSatTransfer,
                      bool dither = false);
     void OnCompiledAndLinked() override;
     bool OnEnabled() override;
@@ -161,6 +173,7 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                         AVColorPrimaries srcPrimaries,
                         bool toneMap,
                         ETONEMAPMETHOD toneMapMethod,
+                        AVColorTransferCharacteristic hueSatTransfer,
                         ESCALINGMETHOD method,
                         bool dither = false);
     ~YUV2RGBFilterShader() override;

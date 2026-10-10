@@ -36,7 +36,17 @@ public:
   void UnInit();
   bool Open(const VideoPicture& picture, std::shared_ptr<DXVA::CEnumeratorHD> enumerator);
   void Close();
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
+  bool Render(CRect src,
+              CRect dst,
+              ID3D11Resource* target,
+              CRenderBuffer** views,
+              DWORD flags,
+              UINT frameIdx,
+              UINT rotation,
+              float contrast,
+              float brightness,
+              float hue,
+              float saturation);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
 
   /*!
@@ -74,6 +84,8 @@ protected:
                             const UINT& rotation,
                             const float& contrast,
                             const float& brightness,
+                            const float& hue,
+                            const float& saturation,
                             const CRenderBuffer& rb);
 
   void EnableIntelVideoSuperResolution();
@@ -107,6 +119,8 @@ protected:
   UINT m_lastRotation{0};
   float m_lastContrast{.0f};
   float m_lastBrightness{.0f};
+  float m_lastHue{.0f};
+  float m_lastSaturation{.0f};
   ProcessorConversion m_lastConversion{};
   AVColorSpace m_lastColorSpace{AVCOL_SPC_UNSPECIFIED};
   bool m_lastFullRange{false};

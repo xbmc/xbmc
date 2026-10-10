@@ -62,7 +62,8 @@ void CVideoDatabaseDDL::CreateTables(CDatabase& db)
       "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
       "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, "
       "VideoStream integer,"
-      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer)\n");
+      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer, "
+      "Hue float, Saturation float)\n");
 
   CLog::Log(LOGINFO, "create stacktimes table");
   db.ExecuteQuery("CREATE TABLE stacktimes (idFile integer, times text)\n");

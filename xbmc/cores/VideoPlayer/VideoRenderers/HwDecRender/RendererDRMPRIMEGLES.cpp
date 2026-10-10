@@ -196,7 +196,7 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
     EShaderFormat fmt = planar3 ? SHADER_YV12_10 : SHADER_NV12_RRG;
     auto shader = std::make_unique<YUV2RGBProgressiveShader>(
         fmt, picture.color_primaries, picture.color_primaries,
-        /*toneMap*/ false, VS_TONEMAPMETHOD_OFF);
+        /*toneMap*/ false, VS_TONEMAPMETHOD_OFF, AVCOL_TRC_UNSPECIFIED);
     if (shader->CompileAndLink())
     {
       // P010/P012/P016 are MSB-aligned -> textureBits=8 (no rescale).
