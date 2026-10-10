@@ -19,11 +19,13 @@
 #include "input/actions/ActionTranslator.h"
 #include "input/keymaps/ButtonTranslator.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/MessengerPayload.h"
 #include "utils/Variant.h"
 #include "windowing/XBMC_events.h"
 
 using namespace KODI;
 using namespace JSONRPC;
+using KODI::MESSAGING::TransferToMessenger;
 
 //! @todo the breakage of the screensaver should be refactored
 //! to one central super duper place for getting rid of
@@ -49,10 +51,10 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 
     if (waitResult)
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(actionID)));
+          TransferToMessenger(std::make_unique<CAction>(actionID)));
     else
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(actionID)));
+          TransferToMessenger(std::make_unique<CAction>(actionID)));
   }
   return ACK;
 }
@@ -111,12 +113,13 @@ JSONRPC_STATUS CInputOperations::ButtonEvent(const std::string& method,
     return InvalidParams;
   }
 
-  XBMC_Event* newEvent = new XBMC_Event;
+  auto newEvent = std::make_unique<XBMC_Event>();
   newEvent->type = XBMC_BUTTON;
   newEvent->keybutton.button = keycode;
   newEvent->keybutton.holdtime = holdtime;
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EVENT, -1, -1, static_cast<void*>(newEvent));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EVENT, -1, -1,
+                                             TransferToMessenger(std::move(newEvent)));
 
   return ACK;
 }
