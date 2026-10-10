@@ -30,23 +30,30 @@ CGUIDialogVolumeBar::~CGUIDialogVolumeBar(void) = default;
 
 bool CGUIDialogVolumeBar::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN || action.GetID() == ACTION_VOLUME_SET || action.GetID() == ACTION_MUTE)
+  switch (action.GetID())
   {
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
-    if (appVolume->IsMuted() ||
-        appVolume->GetVolumeRatio() <= CApplicationVolumeHandling::VOLUME_MINIMUM)
-    { // cancel the timer, dialog needs to stay visible
-      CancelAutoClose();
+    case ACTION_VOLUME_UP:
+    case ACTION_VOLUME_DOWN:
+    case ACTION_VOLUME_SET:
+    case ACTION_MUTE:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+      if (appVolume->IsMuted() ||
+          appVolume->GetVolumeRatio() <= CApplicationVolumeHandling::VOLUME_MINIMUM)
+      { // cancel the timer, dialog needs to stay visible
+        CancelAutoClose();
+      }
+      else
+      { // reset the timer, as we've changed the volume level
+        SetAutoClose(VOLUME_BAR_DISPLAY_TIME);
+      }
+      MarkDirtyRegion();
+      return true;
     }
-    else
-    { // reset the timer, as we've changed the volume level
-      SetAutoClose(VOLUME_BAR_DISPLAY_TIME);
-    }
-    MarkDirtyRegion();
-    return true;
+    default:
+      return CGUIDialog::OnAction(action);
   }
-  return CGUIDialog::OnAction(action);
 }
 
 bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)

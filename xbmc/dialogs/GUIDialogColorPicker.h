@@ -11,6 +11,7 @@
 #include "GUIDialogBoxBase.h"
 #include "view/GUIViewControl.h"
 
+#include <memory>
 #include <string>
 
 class CFileItem;
@@ -58,7 +59,7 @@ private:
   int GetSelectedItem() const;
 
   CGUIViewControl m_viewControl;
-  CFileItemList* m_vecList;
+  std::unique_ptr<CFileItemList> m_vecList;
   bool m_focusToButton = false;
   std::string m_selectedColor;
 };
