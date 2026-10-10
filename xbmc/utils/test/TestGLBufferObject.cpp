@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "utils/GLBufferArena.h"
 #include "utils/GLBufferObject.h"
 
 #include <cstring>
@@ -17,6 +18,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
+using KODI::UTILS::GL::CGLBufferArena;
 using KODI::UTILS::GL::CGLBufferObject;
 
 namespace
@@ -200,4 +202,96 @@ TEST_F(TestGLBufferObject, DestructorDeletesBuffer)
     EXPECT_TRUE(glIsBuffer(name));
   }
   EXPECT_FALSE(glIsBuffer(name));
+}
+
+using TestGLBufferArena = TestGLBufferObject;
+
+TEST_F(TestGLBufferArena, AllocatesFromTheSmallestFittingSlotSize)
+{
+  CGLBufferArena arena({16, 64}, 256);
+
+  CGLBufferArena::Range small = arena.Allocate(10);
+  CGLBufferArena::Range large = arena.Allocate(40);
+  CGLBufferArena::Range tooLarge = arena.Allocate(100);
+
+  ASSERT_TRUE(arena.IsValid(small));
+  ASSERT_TRUE(arena.IsValid(large));
+  EXPECT_FALSE(arena.IsValid(tooLarge));
+  EXPECT_EQ(small.pool, 0u);
+  EXPECT_EQ(large.pool, 1u);
+}
+
+TEST_F(TestGLBufferArena, PacksRangesIntoSharedBuffers)
+{
+  CGLBufferArena arena({16}, 256);
+
+  CGLBufferArena::Range first = arena.Allocate(16);
+  const GLintptr firstOffset = arena.Bind(first);
+  const GLuint buffer = BoundBuffer(GL_ARRAY_BUFFER_BINDING);
+  EXPECT_EQ(firstOffset, 0);
+  EXPECT_EQ(BufferSize(GL_ARRAY_BUFFER), 256);
+
+  for (int i = 1; i < 16; ++i)
+  {
+    CGLBufferArena::Range range = arena.Allocate(16);
+    EXPECT_EQ(arena.Bind(range), i * 16);
+    EXPECT_EQ(BoundBuffer(GL_ARRAY_BUFFER_BINDING), buffer);
+  }
+
+  CGLBufferArena::Range overflow = arena.Allocate(16);
+  EXPECT_EQ(arena.Bind(overflow), 0);
+  EXPECT_NE(BoundBuffer(GL_ARRAY_BUFFER_BINDING), buffer);
+}
+
+TEST_F(TestGLBufferArena, ReusesFreedRanges)
+{
+  CGLBufferArena arena({16}, 256);
+
+  CGLBufferArena::Range first = arena.Allocate(16);
+  CGLBufferArena::Range second = arena.Allocate(16);
+  const GLintptr secondOffset = arena.Bind(second);
+
+  arena.Free(second);
+  EXPECT_FALSE(arena.IsValid(second));
+
+  CGLBufferArena::Range reused = arena.Allocate(16);
+  EXPECT_EQ(arena.Bind(reused), secondOffset);
+  EXPECT_TRUE(arena.IsValid(first));
+}
+
+TEST_F(TestGLBufferArena, UploadsWhenBound)
+{
+  CGLBufferArena arena({16}, 256);
+  CGLBufferArena::Range range = arena.Allocate(16);
+  arena.Allocate(16);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  const GLfloat data[4] = {1.0f, 2.0f, 3.0f, 4.0f};
+  arena.Upload(range, data, sizeof(data));
+  EXPECT_EQ(BoundBuffer(GL_ARRAY_BUFFER_BINDING), 0u);
+
+  arena.Bind(range);
+  EXPECT_NE(BoundBuffer(GL_ARRAY_BUFFER_BINDING), 0u);
+  EXPECT_EQ(BufferSize(GL_ARRAY_BUFFER), 256);
+  EXPECT_EQ(glGetError(), static_cast<GLenum>(GL_NO_ERROR));
+}
+
+TEST_F(TestGLBufferArena, DestroyInvalidatesExistingRanges)
+{
+  CGLBufferArena arena({16}, 256);
+  CGLBufferArena::Range stale = arena.Allocate(16);
+  arena.Bind(stale);
+  const GLuint buffer = BoundBuffer(GL_ARRAY_BUFFER_BINDING);
+
+  arena.Destroy();
+  EXPECT_FALSE(arena.IsValid(stale));
+  EXPECT_FALSE(glIsBuffer(buffer));
+
+  CGLBufferArena::Range fresh = arena.Allocate(16);
+  arena.Free(stale);
+  EXPECT_FALSE(arena.IsValid(stale));
+  EXPECT_TRUE(arena.IsValid(fresh));
+
+  CGLBufferArena::Range next = arena.Allocate(16);
+  EXPECT_NE(arena.Bind(next), arena.Bind(fresh));
 }
