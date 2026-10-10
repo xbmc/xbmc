@@ -1004,3 +1004,15 @@ msgstr ""
 msgctxt "#31615"
 msgid "Subtitle language"
 msgstr ""
+
+#: /xml/Includes_MediaMenu.xml
+#. Label for the View Options toggle that switches Recently Added Episodes to a shows-grouped view
+msgctxt "#31616"
+msgid "Group by show"
+msgstr ""
+
+#: /xml/Includes_MediaMenu.xml
+#. Label for the View Options toggle that switches back to the episodes view
+msgctxt "#31617"
+msgid "Group by episode"
+msgstr ""
