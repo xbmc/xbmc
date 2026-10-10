@@ -3922,10 +3922,6 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
         const bool forceSelection{
             item.GetProperty(KODI::ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION).asBoolean(false)};
 
-        // All episodes
-        if (item.HasProperty("episodes_start"))
-          return URIUtils::GetBlurayAllEpisodesPath(item.GetDynPath());
-
         // Single episode
         if (item.GetVideoContentType() == VideoDbContentType::EPISODES && !forceSelection)
         {
