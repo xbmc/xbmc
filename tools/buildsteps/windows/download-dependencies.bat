@@ -95,7 +95,9 @@ SET VSWHERE_ARGS=-latest -property installationVersion
 IF "%prerelease%" == "true" SET VSWHERE_ARGS=%VSWHERE_ARGS% -prerelease
 FOR /F "usebackq delims=" %%v IN (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" %VSWHERE_ARGS%`) DO SET VS_VERSION=%%v
 FOR /F %%r IN ('git -C "%WORKSPACE%" rev-list HEAD --max-count=1 -- CMakeLists.txt cmake/modules cmake/platform cmake/scripts project/BuildDependencies/scripts tools/buildsteps/windows tools/depends') DO SET DEPENDS_REVISION=%%r
-FOR /F %%h IN ('ECHO %TARGETPLATFORM% %DEPENDS_REVISION% %VS_VERSION%^| git hash-object --stdin') DO SET BUILD_HASH=%%h
+REM BuildSetup.bat builds Release when buildconfig is not set
+IF NOT DEFINED buildconfig SET buildconfig=Release
+FOR /F %%h IN ('ECHO %TARGETPLATFORM% %DEPENDS_REVISION% %VS_VERSION% %buildconfig%^| git hash-object --stdin') DO SET BUILD_HASH=%%h
 EXIT /B 0
 
 :restoreCachedBuild
