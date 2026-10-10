@@ -47,6 +47,10 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_REFRESH_TIMER:
     return CGUIDialog::OnMessage(message);
+  case GUI_MSG_NOTIFY_ALL:
+    if (message.GetParam1() == GUI_MSG_STATE_CHANGED)
+      return CGUIDialog::OnMessage(message);
+    break;
   }
   return false; // don't process anything other than what we need!
 }
