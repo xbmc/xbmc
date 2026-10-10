@@ -135,6 +135,15 @@ std::string CStackDirectory::GetStackTitlePath(const std::string& strPath)
   if (!stackParts.empty() &&
       std::ranges::adjacent_find(stackParts, std::not_equal_to{}) == stackParts.end())
   {
+    // Part folders named by their part alone are inside the movie's own folder, so the title
+    // is that folder's name and the title path stays inside it
+    if (isFolderStack && stackParts[0].title.empty())
+    {
+      std::string folder{commonPath};
+      URIUtils::RemoveSlashAtEnd(folder);
+      stackParts[0].title = URIUtils::GetFileName(folder);
+    }
+
     // Create stacked title
     stackTitle = stackParts[0].title + stackParts[0].volume +
                  (isFolderStack ? (URIUtils::IsDOSPath(commonPath) ? "\\" : "/")

@@ -801,7 +801,30 @@ constexpr TestStackData Stacks[] = {
              "PLAYLIST/01003.mpls",
      .basePath = "smb://somepath/movie.iso",
      .firstPath = "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%2520disc%25201.iso%2f/"
-                  "BDMV/PLAYLIST/01003.mpls"}};
+                  "BDMV/PLAYLIST/01003.mpls"},
+    {.path = "stack://smb://somepath/movie/part 1/movie.iso , smb://somepath/movie/part "
+             "2/movie.iso",
+     .basePath = "smb://somepath/movie/movie/",
+     .firstPath = "smb://somepath/movie/part 1/movie.iso"},
+    {.path = "stack://smb://somepath/movie/part 1/BDMV/index.bdmv , smb://somepath/movie/part "
+             "2/BDMV/index.bdmv",
+     .basePath = "smb://somepath/movie/movie/",
+     .firstPath = "smb://somepath/movie/part 1/BDMV/index.bdmv"},
+    {.path = "stack://D:\\somepath\\movie\\part 1\\BDMV\\index.bdmv , "
+             "D:\\somepath\\movie\\part 2\\BDMV\\index.bdmv",
+     .basePath = "D:\\somepath\\movie\\movie\\",
+     .firstPath = "D:\\somepath\\movie\\part 1\\BDMV\\index.bdmv"},
+    {.path = "stack://bluray://"
+             "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%252fpart%25201%252fmovie.iso%2f/"
+             "BDMV/PLAYLIST/01003.mpls , "
+             "bluray://"
+             "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%252fpart%25202%252fmovie.iso%2f/"
+             "BDMV/PLAYLIST/01003.mpls",
+     .basePath = "smb://somepath/movie/movie/",
+     .firstPath =
+         "bluray://"
+         "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie%252fpart%25201%252fmovie.iso%2f/"
+         "BDMV/PLAYLIST/01003.mpls"}};
 
 TEST_P(TestGetStackedTitlePath, GetStackedTitlePath)
 {
