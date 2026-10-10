@@ -73,6 +73,12 @@ public:
   virtual void Drain() {}
 
   /*
+    Discard audio the sink has already been handed but has not played yet.
+    Called when the engine flushes, e.g. on a seek.
+  */
+  virtual void Flush() {}
+
+  /*
     Indicates if sink can handle volume control.
   */
   virtual bool HasVolume() { return false; }
