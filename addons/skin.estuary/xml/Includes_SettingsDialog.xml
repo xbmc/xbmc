@@ -255,17 +255,9 @@
 			<include>DialogSettingButton</include>
 			<visible>System.HasAddon(script.embuary.info)</visible>
 			<onclick condition="System.AddonIsEnabled(script.embuary.info)">Skin.ToggleSetting(home_no_Embuary_movies_categories)</onclick>
-			<selected>System.AddonIsEnabled(script.embuary.info) + !Skin.HasSetting(home_no_Embuary_movies_categories)</selected>	
-			<enable>System.HasAddon(script.embuary.info) + !Skin.HasSetting(home_no_movies_categories_widget)</enable>
-		</control>
-		<control type="radiobutton" id="22112">
-			<label>- $LOCALIZE[31179]</label>
-			<include>DialogSettingButton</include>
-			<visible>System.HasAddon(script.embuary.info)</visible>
-			<onclick condition="System.AddonIsEnabled(script.embuary.info)">Skin.ToggleSetting(home_no_Embuary_tvshows_categories)</onclick>
 			<onclick condition="System.HasAddon(script.embuary.info) + !System.AddonIsEnabled(script.embuary.info)">EnableAddon(script.embuary.info)</onclick>
-			<selected>System.AddonIsEnabled(script.embuary.info) + !Skin.HasSetting(home_no_Embuary_tvshows_categories)</selected>
-			<enable>System.HasAddon(script.embuary.info) + !Skin.HasSetting(home_no_movies_categories_widget)</enable>
+			<selected>System.AddonIsEnabled(script.embuary.info) + !Skin.HasSetting(home_no_Embuary_movies_categories)</selected>	
+			<enable>!Skin.HasSetting(home_no_movies_categories_widget)</enable>
 		</control>
 		<control type="radiobutton" id="22102">
 			<include>DialogSettingButton</include>
@@ -318,6 +310,15 @@
 			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
 			<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
 			<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+			<enable>!Skin.HasSetting(home_no_tvshows_categories_widget)</enable>
+		</control>
+		<control type="radiobutton" id="22112">
+			<label>- $LOCALIZE[31179]</label>
+			<include>DialogSettingButton</include>
+			<visible>System.HasAddon(script.embuary.info)</visible>
+			<onclick condition="System.AddonIsEnabled(script.embuary.info)">Skin.ToggleSetting(home_no_Embuary_tvshows_categories)</onclick>
+			<onclick condition="System.HasAddon(script.embuary.info) + !System.AddonIsEnabled(script.embuary.info)">EnableAddon(script.embuary.info)</onclick>
+			<selected>System.AddonIsEnabled(script.embuary.info) + !Skin.HasSetting(home_no_Embuary_tvshows_categories)</selected>
 			<enable>!Skin.HasSetting(home_no_tvshows_categories_widget)</enable>
 		</control>
 		<control type="radiobutton" id="22102">
