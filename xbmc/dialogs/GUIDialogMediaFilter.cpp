@@ -700,7 +700,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     else if (filter.field == Field::STUDIO)
       videodb.GetStudiosNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
     else if (filter.field == Field::ALBUM)
-      videodb.GetMusicVideoAlbumsNav(m_dbUrl->ToString(), selectItems, -1, dbfilter, countOnly);
+      videodb.GetMusicVideoAlbumsNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == Field::TAG)
       videodb.GetTagsNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
   }
