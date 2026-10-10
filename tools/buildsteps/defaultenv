@@ -34,28 +34,28 @@ case $XBMC_PLATFORM_DIR in
   ios)
     DEFAULT_SDK_VERSION=26.2
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
-    DEFAULT_CONFIGURATION="Debug"
+    DEFAULT_CONFIGURATION="RelWithDebInfo"
     DEFAULT_XCODE_APP="Xcode-26.3.0.app"
     ;;
 
   tvos)
     DEFAULT_SDK_VERSION=26.2
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
-    DEFAULT_CONFIGURATION="Debug"
+    DEFAULT_CONFIGURATION="Release"
     DEFAULT_XCODE_APP="Xcode-26.3.0.app"
     ;;
 
   osx64)
     DEFAULT_SDK_VERSION=14.2
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
-    DEFAULT_CONFIGURATION="Debug"
+    DEFAULT_CONFIGURATION="Release"
     DEFAULT_XCODE_APP="Xcode_15.2.app"
     ;;
 
   osx-arm64)
     DEFAULT_SDK_VERSION=14.2
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
-    DEFAULT_CONFIGURATION="Debug"
+    DEFAULT_CONFIGURATION="Release"
     DEFAULT_XCODE_APP="Xcode_15.2.app"
     ;;
 
@@ -118,7 +118,7 @@ then
   Configuration=$DEFAULT_CONFIGURATION
 fi
 
-if [ "$Configuration" == "Release" ]
+if [ "$Configuration" != "Debug" ]
 then
   DEBUG_SWITCH='--disable-debug'
 fi
