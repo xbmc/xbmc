@@ -22,6 +22,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -183,6 +184,20 @@ public:
   \brief Returns the full locale of the current language.
   */
   const CLocale& GetLocale() const;
+
+  /*!
+   \brief Whether the current GUI language is written right-to-left.
+   \return true if the language of the current locale uses a right-to-left script.
+   */
+  bool IsRightToLeft() const;
+
+  /*!
+   \brief Whether a language is written right-to-left.
+   \param languageCode Lower-case ISO 639-1 language code, as returned by
+          CLocale::GetLanguageCode().
+   \return true if the language uses a right-to-left script.
+   */
+  static bool IsRightToLeftLanguage(std::string_view languageCode);
 
   /*!
    \brief Returns the system's current locale.

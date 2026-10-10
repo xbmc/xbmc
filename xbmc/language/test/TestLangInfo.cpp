@@ -77,3 +77,12 @@ TEST(TestLangInfo, FallsBackWhenTheLanguageSettingNamesNoLanguage)
   EXPECT_TRUE(langInfo.GetSubtitleLanguage(false).IsEmpty());
   EXPECT_FALSE(langInfo.GetSubtitleLanguage(true).IsEmpty());
 }
+
+TEST(TestLangInfo, IsRightToLeftLanguage)
+{
+  for (const auto* code : {"ar", "dv", "fa", "he", "ps", "sd", "ug", "ur", "yi"})
+    EXPECT_TRUE(CLangInfo::IsRightToLeftLanguage(code)) << code;
+
+  for (const auto* code : {"en", "de", "ru", "zh", "ja", "ku", ""})
+    EXPECT_FALSE(CLangInfo::IsRightToLeftLanguage(code)) << code;
+}
