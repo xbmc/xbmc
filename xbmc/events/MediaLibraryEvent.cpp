@@ -9,6 +9,7 @@
 #include "MediaLibraryEvent.h"
 
 #include "ServiceBroker.h"
+#include "filesystem/SourcesDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -65,7 +66,7 @@ bool CMediaLibraryEvent::Execute() const
     if (path.empty())
     {
       if (m_mediaType == MediaTypeVideo)
-        path = "sources://video/";
+        path = XFILE::CSourcesDirectory::PathOf(KODI::MEDIA::MediaSection::VIDEO);
       else if (m_mediaType == MediaTypeMovie)
         path = KODI::VIDEO::DB_PATH::MOVIE_TITLES;
       else if (m_mediaType == MediaTypeVideoCollection)
@@ -90,7 +91,7 @@ bool CMediaLibraryEvent::Execute() const
     if (path.empty())
     {
       if (m_mediaType == MediaTypeMusic)
-        path = "sources://music/";
+        path = XFILE::CSourcesDirectory::PathOf(KODI::MEDIA::MediaSection::MUSIC);
       else if (m_mediaType == MediaTypeArtist)
         path = KODI::MUSIC::DB_PATH::ARTISTS;
       else if (m_mediaType == MediaTypeAlbum)
