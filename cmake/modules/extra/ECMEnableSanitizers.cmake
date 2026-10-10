@@ -167,6 +167,9 @@ if (ECM_ENABLE_SANITIZERS)
             # TODO: GCC will not link pthread library if enabled ASan
             if(CMAKE_C_COMPILER_ID MATCHES "Clang")
               set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${XSAN_COMPILE_FLAGS}" )
+              # dependencies built with their own build system (e.g. FFmpeg)
+              # link without the compile flags
+              set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${CUR_SANITIZER}" )
             endif()
             set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${XSAN_COMPILE_FLAGS}" )
             if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
