@@ -5704,28 +5704,6 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
   return false;
 }
 
-bool CVideoDatabase::HasArtForItem(int mediaId, const MediaType &mediaType)
-{
-  try
-  {
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS2)
-      return false; // using dataset 2 as we're likely called in loops on dataset 1
-
-    std::string sql = PrepareSQL("SELECT 1 FROM art WHERE media_id=%i AND media_type='%s' LIMIT 1", mediaId, mediaType.c_str());
-    m_pDS2->query(sql);
-    bool result = !m_pDS2->eof();
-    m_pDS2->close();
-    return result;
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "({}) failed", mediaId);
-  }
-  return false;
-}
-
 bool CVideoDatabase::GetTvShowSeasons(int showId, std::map<int, int> &seasons)
 {
   try

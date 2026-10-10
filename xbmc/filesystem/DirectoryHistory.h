@@ -59,7 +59,6 @@ public:
   std::string RemoveParentPath(bool filter = false);
   void ClearPathHistory();
   void ClearSearchHistory();
-  void DumpPathHistory();
 
   /*! \brief Returns whether a path is in the history.
    \param path to test
