@@ -87,6 +87,7 @@
 #include <androidjni/Cursor.h>
 #include <androidjni/Display.h>
 #include <androidjni/DisplayManager.h>
+#include <androidjni/Environment.h>
 #include <androidjni/File.h>
 #include <androidjni/FileProvider.h>
 #include <androidjni/Intent.h>
@@ -122,6 +123,15 @@ using namespace jni;
 using namespace KODI::GUILIB;
 using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
+
+namespace
+{
+// Location of the user data tree ("special://home") relative to the root of
+// shared/primary external storage. Kept in a user-visible folder on purpose so
+// that it is reachable with any file manager and survives an app uninstall,
+// instead of living in the app-private Android/data sandbox.
+constexpr const char* KODI_DATA_SUBDIR = "Documents/Kodi";
+} // namespace
 
 std::shared_ptr<CNativeWindow> CNativeWindow::CreateFromSurface(CJNISurfaceHolder holder)
 {
@@ -1574,21 +1584,39 @@ void CXBMCApp::SetupEnv()
   }
   setenv("KODI_BINADDON_PATH", (cacheDir + "/lib").c_str(), 0);
 
+  // User data location. Priority:
+  //   1. explicit override via the "xbmc.data" system property
+  //   2. <shared storage>/Documents/Kodi
+  //   3. app-private *internal* storage as a last resort
+  // Note: getExternalFilesDir() is deliberately NOT used any more, as it points
+  // into Android/data/<package>/files, which is hidden from the user and wiped
+  // on uninstall.
   std::string externalDir = CJNISystem::getProperty("xbmc.data", "");
   if (externalDir.empty())
   {
-    CJNIFile androidPath = getExternalFilesDir("");
-    if (!androidPath)
-      androidPath = getDir(className, 1);
-
-    if (androidPath)
-      externalDir = androidPath.getAbsolutePath();
+    CJNIFile sharedStorage = CJNIEnvironment::getExternalStorageDirectory();
+    if (sharedStorage)
+      externalDir = sharedStorage.getAbsolutePath() + "/" + KODI_DATA_SUBDIR;
+  }
+  if (externalDir.empty())
+  {
+    CJNIFile internalPath = getDir(className, 1);
+    if (internalPath)
+      externalDir = internalPath.getAbsolutePath();
   }
 
   if (!externalDir.empty())
+  {
+    // KODI_DATA is taken verbatim as special://home, whereas HOME would get a
+    // hidden ".<appname>" appended. Both are set so that other consumers of
+    // HOME (smb, python, ...) stay inside the same tree.
+    setenv("KODI_DATA", externalDir.c_str(), 0);
     setenv("HOME", externalDir.c_str(), 0);
-  else
+  }
+  else if (getenv("KODI_TEMP"))
+  {
     setenv("HOME", getenv("KODI_TEMP"), 0);
+  }
 
   std::string pythonPath;
   if (xbmcHome.empty())
