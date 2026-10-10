@@ -616,7 +616,10 @@ void CPeripherals::GetSettingsFromMappingsFile(
     SettingPtr setting;
     std::string strKey = XMLUtils::GetAttribute(currentNode, "key");
     if (strKey.empty())
+    {
+      currentNode = currentNode->NextSiblingElement("setting");
       continue;
+    }
 
     std::string strSettingsType = XMLUtils::GetAttribute(currentNode, "type");
     int iLabelId = currentNode->Attribute("label") ? atoi(currentNode->Attribute("label")) : -1;
