@@ -77,3 +77,15 @@ TEST(TestLangInfo, FallsBackWhenTheLanguageSettingNamesNoLanguage)
   EXPECT_TRUE(langInfo.GetSubtitleLanguage(false).IsEmpty());
   EXPECT_FALSE(langInfo.GetSubtitleLanguage(true).IsEmpty());
 }
+
+TEST(TestLangInfo, RegionalDateFormatsAreTheRegions)
+{
+  CLangInfoTest langInfo;
+
+  langInfo.SetShortDateFormat("regional");
+
+  langInfo.SetLongDateFormat("regional");
+
+  EXPECT_EQ(langInfo.GetShortDateFormat(), "DD/MM/YYYY");
+  EXPECT_EQ(langInfo.GetLongDateFormat(), "DDDD, D MMMM YYYY");
+}
