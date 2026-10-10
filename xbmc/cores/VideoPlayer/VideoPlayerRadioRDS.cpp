@@ -1462,7 +1462,7 @@ unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(const uint8_t* msgElement
       break;
     }
     case VARCODE_LANGUAGE_CODES:      // language codes
-      if (slowLabellingCode > 1 && slowLabellingCode < 0x80)
+      if (slowLabellingCode > 0 && slowLabellingCode < 0x80)
         m_currentInfoTag->SetLanguage(piRDSLanguageCodes[slowLabellingCode]);
       else
         CLog::Log(LOGERROR, "Radio RDS - {} - invalid language code {}", __FUNCTION__,
