@@ -189,6 +189,8 @@ public:
     return 0;
   }
 
+  virtual bool ReplayPacketsOnReopen() const { return true; }
+
   /**
    * Number of references to old pictures that are allowed to be retained when
    * calling decode on the next demux packet
