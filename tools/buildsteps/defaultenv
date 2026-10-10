@@ -118,7 +118,7 @@ then
   Configuration=$DEFAULT_CONFIGURATION
 fi
 
-if [ "$Configuration" == "Release" ]
+if [ "$Configuration" != "Debug" ]
 then
   DEBUG_SWITCH='--disable-debug'
 fi
