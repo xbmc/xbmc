@@ -29,15 +29,21 @@
 namespace UPNP
 {
 
+//! NPT_ERROR_TIMEOUT when the deadline passes, NPT_FAILURE when the user cancels.
 inline NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime<>& timeout)
 {
   if (event.Wait(std::chrono::milliseconds(0)))
     return NPT_SUCCESS;
 
-  if (!CGUIDialogBusy::WaitOnEvent(event))
-    return NPT_FAILURE;
-
-  return NPT_SUCCESS;
+  switch (CGUIDialogBusy::WaitOnEventFor(event, timeout.GetTimeLeft()))
+  {
+    case CGUIDialogBusy::WaitResult::COMPLETED:
+      return NPT_SUCCESS;
+    case CGUIDialogBusy::WaitResult::TIMED_OUT:
+      return NPT_ERROR_TIMEOUT;
+    default:
+      return NPT_FAILURE;
+  }
 }
 
 class CUPnPPlayerController : public PLT_MediaControllerDelegate
