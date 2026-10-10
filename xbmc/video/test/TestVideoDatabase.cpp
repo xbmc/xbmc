@@ -129,6 +129,33 @@ protected:
     return m_db.SetDetailsForEpisode(tag, KODI::ART::Artwork{}, idShow);
   }
 
+  // A movie with the given art, and a second movie with the given art converted into a version
+  // of it
+  struct MovieWithVersion
+  {
+    int movieId{-1};
+    int movieFileId{-1};
+    int versionFileId{-1};
+  };
+
+  MovieWithVersion AddMovieWithVersion(const KODI::ART::Artwork& movieArt,
+                                       const KODI::ART::Artwork& versionArt)
+  {
+    CVideoInfoTag movieTag{Tag("/movies/Movie (2010)/Movie (2010) Extended Edition.mkv")};
+    CVideoInfoTag versionTag{Tag("/movies/Movie (2010)/Movie (2010) Standard Edition.mkv")};
+    const int movieId{m_db.SetDetailsForMovie(movieTag, movieArt)};
+    const int sourceId{m_db.SetDetailsForMovie(versionTag, versionArt)};
+    if (movieId <= 0 || sourceId <= 0)
+      return {};
+
+    const MovieWithVersion result{movieId, m_db.GetFileIdByMovie(movieId),
+                                  m_db.GetFileIdByMovie(sourceId)};
+    if (!m_db.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceId, movieId, -1,
+                                    VideoAssetType::VERSION))
+      return {};
+    return result;
+  }
+
   DatabaseSettings m_settings;
   CVideoDatabase m_db;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previousAnnouncementManager;
@@ -613,4 +640,56 @@ TEST_F(TestVideoDatabase, ConvertVideoToVersionKeepsStreamDetails)
   CStreamDetails details;
   EXPECT_TRUE(m_db.GetStreamDetails(source, details));
   EXPECT_EQ(6019, details.GetVideoDuration());
+}
+
+// A new default version lacking an art type must not take that art away from the movie
+TEST_F(TestVideoDatabase, SetDefaultVideoVersionKeepsArtTheVersionLacks)
+{
+  const auto [movieId, movieFileId, versionFileId] = AddMovieWithVersion(
+      {{"poster", "old-poster.jpg"}, {"fanart", "old-fanart.jpg"}}, {{"poster", "new-poster.jpg"}});
+  ASSERT_GT(versionFileId, 0);
+
+  ASSERT_TRUE(m_db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId, versionFileId));
+
+  KODI::ART::Artwork movieArt;
+  ASSERT_TRUE(m_db.GetArtForItem(movieId, MediaTypeMovie, movieArt));
+  EXPECT_EQ((KODI::ART::Artwork{{"poster", "new-poster.jpg"}, {"fanart", "old-fanart.jpg"}}),
+            movieArt);
+
+  // The previous default version keeps all of its own art
+  KODI::ART::Artwork previousVersionArt;
+  ASSERT_TRUE(m_db.GetArtForItem(movieFileId, MediaTypeVideoVersion, previousVersionArt));
+  EXPECT_EQ((KODI::ART::Artwork{{"poster", "old-poster.jpg"}, {"fanart", "old-fanart.jpg"}}),
+            previousVersionArt);
+}
+
+// An empty version art url (art type set to none) falls back to the movie art, so it must not
+// replace that art when the version becomes the default
+TEST_F(TestVideoDatabase, SetDefaultVideoVersionKeepsArtTheVersionHasNoneOf)
+{
+  const auto [movieId, movieFileId, versionFileId] = AddMovieWithVersion(
+      {{"poster", "old-poster.jpg"}, {"fanart", "old-fanart.jpg"}}, {{"poster", "new-poster.jpg"}});
+  ASSERT_GT(versionFileId, 0);
+  ASSERT_TRUE(m_db.SetArtForItem(versionFileId, MediaTypeVideoVersion, "fanart", ""));
+
+  ASSERT_TRUE(m_db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId, versionFileId));
+
+  EXPECT_EQ("old-fanart.jpg", m_db.GetArtForItem(movieId, MediaTypeMovie, "fanart"));
+}
+
+// Art of the previous default version itself is not movie art and must not be kept as such
+TEST_F(TestVideoDatabase, SetDefaultVideoVersionKeepsOnlyTheMovieArt)
+{
+  const auto [movieId, movieFileId, versionFileId] = AddMovieWithVersion(
+      {{"poster", "old-poster.jpg"}, {"fanart", "old-fanart.jpg"}}, {{"poster", "new-poster.jpg"}});
+  ASSERT_GT(versionFileId, 0);
+  ASSERT_TRUE(
+      m_db.SetArtForItem(movieFileId, MediaTypeVideoVersion, "fanart", "version-fanart.jpg"));
+
+  ASSERT_TRUE(m_db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId, versionFileId));
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt(
+                   "SELECT COUNT(*) FROM art WHERE media_id = " + std::to_string(movieId) +
+                   " AND media_type = 'movie' AND type = 'fanart'"));
+  EXPECT_EQ("old-fanart.jpg", m_db.GetArtForItem(movieId, MediaTypeMovie, "fanart"));
 }

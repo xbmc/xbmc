@@ -13411,6 +13411,21 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
         m_pDS->exec(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i",
                                idFile, VIDEODB_ID_BASEPATH, path.c_str(), dbId));
 
+        // The selected version falls back to the movie art for any type it has none of, or has
+        // an empty url for, so give it that art before it becomes the movie art
+        m_pDS->exec(PrepareSQL("DELETE FROM art WHERE media_id = %i AND media_type = '%s' "
+                               "AND url = ''",
+                               idFile, MediaTypeVideoVersion));
+        m_pDS->exec(PrepareSQL("INSERT INTO art (media_id, media_type, type, url) "
+                               "SELECT %i, '%s', movieart.type, movieart.url FROM art movieart "
+                               "  LEFT JOIN art versionart ON versionart.media_id = %i "
+                               "    AND versionart.media_type = '%s' "
+                               "    AND versionart.type = movieart.type "
+                               "WHERE movieart.media_id = %i AND movieart.media_type = '%s' "
+                               "AND versionart.art_id IS NULL",
+                               idFile, MediaTypeVideoVersion, idFile, MediaTypeVideoVersion, dbId,
+                               MediaTypeMovie));
+
         // Swap art
         // media_id is idMovie for movies and idFile for videoversions
         // Convert current movie art to videoversion art
