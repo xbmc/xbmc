@@ -39,6 +39,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -662,7 +663,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList& items,
   {
     CFileItemPtr item(new CFileItem(KODI::IMAGE_CHOICE::BROWSE, false));
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20153));
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultFolder.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::FOLDER);
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);
@@ -788,7 +789,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
     CDirectory::GetDirectory(directory,*browser->m_vecItems, "", DIR_FLAG_DEFAULTS);
     CFileItemPtr item(new CFileItem("file://Browse", false));
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20153));
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultFolder.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::FOLDER);
     browser->m_vecItems->Add(item);
     browser->m_singleList = true;
   }

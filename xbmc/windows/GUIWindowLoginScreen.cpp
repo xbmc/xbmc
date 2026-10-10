@@ -32,6 +32,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "view/ViewState.h"
@@ -216,7 +217,7 @@ void CGUIWindowLoginScreen::Update()
     item->SetLabel2(strLabel);
     item->SetArt(KODI::ART::TYPE::THUMB, profile->getThumb());
     if (profile->getThumb().empty())
-      item->SetArt(KODI::ART::TYPE::THUMB, "DefaultUser.png");
+      item->SetArt(KODI::ART::TYPE::THUMB, KODI::ART::DEFAULT::USER);
     item->SetLabelPreformatted(true);
 
     m_vecItems->Add(item);

@@ -48,6 +48,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
+#include "utils/DefaultArt.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -159,7 +160,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19069)); // Guide
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_GUIDE
                                                                                : WINDOW_TV_GUIDE));
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRGuide.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_GUIDE);
     results.Add(item);
   }
 
@@ -170,7 +171,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19019)); // Channels
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_CHANNELS
                                                                              : WINDOW_TV_CHANNELS));
-  item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRChannels.png");
+  item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_CHANNELS);
   results.Add(item);
 
   // Recordings
@@ -183,7 +184,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19017)); // Recordings
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS));
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRRecordings.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_RECORDINGS);
     results.Add(item);
   }
 
@@ -197,7 +198,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19334)); // Providers
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_PROVIDERS : WINDOW_TV_PROVIDERS));
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRProviders.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_PROVIDERS);
     results.Add(std::move(item));
   }
 
@@ -208,7 +209,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19040)); // Timers
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_TIMERS
                                                                              : WINDOW_TV_TIMERS));
-  item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRTimers.png");
+  item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_TIMERS);
   results.Add(item);
 
   item = std::make_shared<CFileItem>(
@@ -217,7 +218,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19138)); // Timer rules
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                        bRadio ? WINDOW_RADIO_TIMER_RULES : WINDOW_TV_TIMER_RULES));
-  item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRTimerRules.png");
+  item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_TIMER_RULES);
   results.Add(item);
 
   // Search
@@ -228,7 +229,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(137)); // Search
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
                                                                                : WINDOW_TV_SEARCH));
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRSearch.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_SEARCH);
     results.Add(item);
   }
 
@@ -1090,7 +1091,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         auto channelsItem{std::make_shared<CFileItem>(channelsPath.AsString(), true)};
         channelsItem->SetLabel(
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19019)); // Channels
-        channelsItem->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRChannels.png");
+        channelsItem->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_CHANNELS);
         channelsItem->SetProperty("totalcount", channelCount);
         results.Add(std::move(channelsItem));
 
@@ -1126,7 +1127,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         auto recordingsItem{std::make_shared<CFileItem>(recordingsPath.AsString(), true)};
         recordingsItem->SetLabel(
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19017)); // Recordings
-        recordingsItem->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRRecordings.png");
+        recordingsItem->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_RECORDINGS);
         recordingsItem->SetProperty("totalcount", recordingCount);
         results.Add(std::move(recordingsItem));
       }

@@ -22,6 +22,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
 #include "utils/ArtUtils.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -118,7 +119,7 @@ std::string CVideoItemArtworkHandler::GetLocalArt() const
 
 std::string CVideoItemArtworkHandler::GetDefaultIcon() const
 {
-  return m_item->IsFolder() ? "DefaultFolder.png" : "DefaultPicture.png";
+  return m_item->IsFolder() ? ART::DEFAULT::FOLDER : ART::DEFAULT::PICTURE;
 }
 
 void CVideoItemArtworkHandler::AddItemPathToFileBrowserSources(std::vector<CMediaSource>& sources)
@@ -185,7 +186,7 @@ public:
   std::vector<std::string> GetRemoteArt() const override;
   std::string GetLocalArt() const override;
 
-  std::string GetDefaultIcon() const override { return "DefaultArtist.png"; }
+  std::string GetDefaultIcon() const override { return ART::DEFAULT::ARTIST; }
 
   void PersistArt(const std::string& art) override;
 };
@@ -300,7 +301,7 @@ public:
   std::string GetCurrentArt() const override;
   std::string GetLocalArt() const override;
 
-  std::string GetDefaultIcon() const override { return "DefaultActor.png"; }
+  std::string GetDefaultIcon() const override { return ART::DEFAULT::ACTOR; }
 };
 
 std::string CVideoItemArtworkActorHandler::GetCurrentArt() const
@@ -376,7 +377,7 @@ public:
   std::vector<std::string> GetRemoteArt() const override;
   std::string GetLocalArt() const override;
 
-  std::string GetDefaultIcon() const override { return "DefaultVideo.png"; }
+  std::string GetDefaultIcon() const override { return ART::DEFAULT::VIDEO; }
 
   void AddItemPathToFileBrowserSources(std::vector<CMediaSource>& sources) override;
 };
@@ -464,7 +465,7 @@ public:
   std::vector<std::string> GetRemoteArt() const override;
   std::string GetLocalArt() const override;
 
-  std::string GetDefaultIcon() const override { return "DefaultPicture.png"; }
+  std::string GetDefaultIcon() const override { return ART::DEFAULT::PICTURE; }
   bool SupportsFlippedArt() const override { return true; }
 
   std::string UpdateEmbeddedArt(const std::string& art) override;

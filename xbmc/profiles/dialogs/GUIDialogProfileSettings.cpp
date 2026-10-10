@@ -30,6 +30,7 @@
 #include "settings/windows/GUIControlSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -248,7 +249,7 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     }
 
     CFileItemPtr item(new CFileItem(KODI::IMAGE_CHOICE::NONE, false));
-    item->SetArt(KODI::ART::TYPE::THUMB, "DefaultUser.png");
+    item->SetArt(KODI::ART::TYPE::THUMB, KODI::ART::DEFAULT::USER);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
     items.Add(item);
 

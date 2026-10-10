@@ -33,6 +33,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
+#include "utils/DefaultArt.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -307,7 +308,7 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
         new CFileItem(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24993)));
     item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_INFO_PROVIDERS));
     item->SetFolder(true);
-    const std::string thumb = "DefaultAddonInfoProvider.png";
+    const std::string thumb = ART::DEFAULT::ADDON_INFO_PROVIDER;
     if (CServiceBroker::GetGUI()->GetTextureManager().HasTexture(thumb))
       item->SetArt(ART::TYPE::THUMB, thumb);
     items.Add(item);
@@ -318,7 +319,7 @@ static void GenerateMainCategoryListing(const CURL& path, const VECADDONS& addon
         new CFileItem(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24997)));
     item->SetPath(URIUtils::AddFileToFolder(path.Get(), CATEGORY_LOOK_AND_FEEL));
     item->SetFolder(true);
-    const std::string thumb = "DefaultAddonLookAndFeel.png";
+    const std::string thumb = ART::DEFAULT::ADDON_LOOK_AND_FEEL;
     if (CServiceBroker::GetGUI()->GetTextureManager().HasTexture(thumb))
       item->SetArt(ART::TYPE::THUMB, thumb);
     items.Add(item);
@@ -650,21 +651,21 @@ static void RootDirectory(CFileItemList& items)
   {
     CFileItemPtr item(new CFileItem(ADDONS::USER, true));
     item->SetLabel(localizeStrings.Get(24998));
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonsInstalled.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDONS_INSTALLED);
     items.Add(item);
   }
   if (CServiceBroker::GetAddonMgr().HasAvailableUpdates())
   {
     CFileItemPtr item(new CFileItem(ADDONS::OUTDATED, true));
     item->SetLabel(localizeStrings.Get(24043));
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonsUpdates.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDONS_UPDATES);
     items.Add(item);
   }
   if (CAddonInstaller::GetInstance().IsDownloading())
   {
     CFileItemPtr item(new CFileItem(ADDONS::DOWNLOADING, true));
     item->SetLabel(localizeStrings.Get(24067));
-    item->SetArt(ART::TYPE::ICON, "DefaultNetwork.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::NETWORK);
     items.Add(item);
   }
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
@@ -672,26 +673,26 @@ static void RootDirectory(CFileItemList& items)
   {
     CFileItemPtr item(new CFileItem(ADDONS::RECENTLY_UPDATED, true));
     item->SetLabel(localizeStrings.Get(24004));
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonsRecentlyUpdated.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDONS_RECENTLY_UPDATED);
     items.Add(item);
   }
   if (CServiceBroker::GetAddonMgr().HasAddons(AddonType::REPOSITORY))
   {
     CFileItemPtr item(new CFileItem(ADDONS::REPOS, true));
     item->SetLabel(localizeStrings.Get(24033));
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonsRepo.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDONS_REPO);
     items.Add(item);
   }
   {
     CFileItemPtr item(new CFileItem(ADDONS::INSTALL, false));
     item->SetLabel(localizeStrings.Get(24041));
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonsZip.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDONS_ZIP);
     items.Add(item);
   }
   {
     CFileItemPtr item(new CFileItem(ADDONS::SEARCH, true));
     item->SetLabel(localizeStrings.Get(137));
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonsSearch.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDONS_SEARCH);
     items.Add(item);
   }
 }
@@ -905,7 +906,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   item->SetLabel(strLabel);
   item->SetArt(addon->Art());
   item->SetArt(ART::TYPE::THUMB, addon->Icon());
-  item->SetArt(ART::TYPE::ICON, "DefaultAddon.png");
+  item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDON);
 
   //! @todo fix hacks that depends on these
   item->SetProperty(ITEM::PROPERTY::ADDON_ID, addon->ID());

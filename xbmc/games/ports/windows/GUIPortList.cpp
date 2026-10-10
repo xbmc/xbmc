@@ -30,6 +30,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "view/GUIViewControl.h"
@@ -229,7 +230,7 @@ bool CGUIPortList::AddItems(const CPortNode& port,
     item->SetLabel2(
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13298)); // "Disconnected"
     item->SetPath(port.GetAddress());
-    item->SetArt(ART::TYPE::ICON, "DefaultAddonNone.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADDON_NONE);
     m_vecItems->Add(std::move(item));
     ++itemId;
   }

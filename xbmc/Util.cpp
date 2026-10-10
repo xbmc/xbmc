@@ -84,6 +84,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/DefaultArt.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/RegExp.h"
@@ -689,7 +690,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 {
   if (!CServiceBroker::GetMediaManager().IsDiscInDrive(strPath))
   {
-    strIcon = "DefaultDVDEmpty.png";
+    strIcon = ART::DEFAULT::DVD_EMPTY;
     return ;
   }
 
@@ -697,13 +698,13 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 
   if (item.IsBluray())
   {
-    strIcon = "DefaultBluray.png";
+    strIcon = ART::DEFAULT::BLURAY;
     return;
   }
 
   if ( URIUtils::IsDVD(strPath) )
   {
-    strIcon = "DefaultDVDFull.png";
+    strIcon = ART::DEFAULT::DVD_FULL;
     return ;
   }
 
@@ -713,17 +714,17 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
     const std::shared_ptr<CCdInfo> pInfo{CServiceBroker::GetMediaManager().GetCdInfo()};
     if (pInfo && pInfo->IsVideoCd(1))
     {
-      strIcon = "DefaultVCD.png";
+      strIcon = ART::DEFAULT::VCD;
       return ;
     }
 #endif
-    strIcon = "DefaultDVDRom.png";
+    strIcon = ART::DEFAULT::DVD_ROM;
     return ;
   }
 
   if ( URIUtils::IsCDDA(strPath) )
   {
-    strIcon = "DefaultCDDA.png";
+    strIcon = ART::DEFAULT::CDDA;
     return ;
   }
 }

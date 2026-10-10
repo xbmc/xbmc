@@ -12,6 +12,7 @@
 #include "guilib/GUIFadeLabelControl.h"
 #include "guilib/GUIMessage.h"
 #include "peripherals/Peripherals.h"
+#include "utils/DefaultArt.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 
@@ -130,11 +131,11 @@ bool CGUIDialogKaiToast::DoWork()
       if (icon.empty())
       {
         if (toast.eType == Warning)
-          icon = "DefaultIconWarning.png";
+          icon = KODI::ART::DEFAULT::ICON_WARNING;
         else if (toast.eType == Error)
-          icon = "DefaultIconError.png";
+          icon = KODI::ART::DEFAULT::ICON_ERROR;
         else
-          icon = "DefaultIconInfo.png";
+          icon = KODI::ART::DEFAULT::ICON_INFO;
       }
       SET_CONTROL_FILENAME(POPUP_ICON, icon);
     }

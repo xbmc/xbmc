@@ -52,6 +52,7 @@
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
@@ -1207,7 +1208,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
     CFileItemPtr newPlaylist(new CFileItem(profileManager->GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16035));
     newPlaylist->SetLabelPreformatted(true);
-    newPlaylist->SetArt(ART::TYPE::ICON, "DefaultPartyMode.png");
+    newPlaylist->SetArt(ART::TYPE::ICON, ART::DEFAULT::PARTY_MODE);
     newPlaylist->SetFolder(true);
     items.Add(newPlaylist);
 
@@ -1220,7 +1221,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
         std::make_shared<CFileItem>(std::string{PLACEHOLDER::NEW_SMART_PLAYLIST} + "video", false);
     newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         21437)); // "new smart playlist..."
-    newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
+    newPlaylist->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADD_SOURCE);
     newPlaylist->SetLabelPreformatted(true);
     items.Add(newPlaylist);
   }

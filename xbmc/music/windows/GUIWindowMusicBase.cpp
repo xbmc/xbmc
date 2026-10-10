@@ -68,6 +68,7 @@
 #include "storage/MediaManager.h"
 #include "utils/Artwork.h"
 #include "utils/ContentNames.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -864,13 +865,13 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
       newPlaylist->SetLabel(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16035));
       newPlaylist->SetLabelPreformatted(true);
-      newPlaylist->SetArt(ART::TYPE::ICON, "DefaultPartyMode.png");
+      newPlaylist->SetArt(ART::TYPE::ICON, ART::DEFAULT::PARTY_MODE);
       newPlaylist->SetFolder(true);
       items.Add(newPlaylist);
 
       newPlaylist = std::make_shared<CFileItem>(PLACEHOLDER::NEW_PLAYLIST, false);
       newPlaylist->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(525));
-      newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
+      newPlaylist->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADD_SOURCE);
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecial::BOTTOM);
       newPlaylist->SetCanQueue(false);
@@ -880,7 +881,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
           std::string{PLACEHOLDER::NEW_SMART_PLAYLIST} + "music", false);
       newPlaylist->SetLabel(
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21437));
-      newPlaylist->SetArt(ART::TYPE::ICON, "DefaultAddSource.png");
+      newPlaylist->SetArt(ART::TYPE::ICON, ART::DEFAULT::ADD_SOURCE);
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetSpecialSort(SortSpecial::BOTTOM);
       newPlaylist->SetCanQueue(false);
