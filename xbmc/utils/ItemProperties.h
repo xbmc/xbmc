@@ -68,6 +68,7 @@ inline constexpr char NUM_EPISODES[] = "numepisodes";
 inline constexpr char WATCHED_EPISODES[] = "watchedepisodes";
 inline constexpr char UNWATCHED_EPISODES[] = "unwatchedepisodes";
 inline constexpr char IN_PROGRESS_EPISODES[] = "inprogressepisodes";
+inline constexpr char WATCHED_EPISODE_PERCENT[] = "watchedepisodepercent";
 
 // Add-on listings
 inline constexpr char ADDON_ID[] = "Addon.ID";

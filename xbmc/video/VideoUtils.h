@@ -52,6 +52,14 @@ bool IsAutoPlayNextItem(const CFileItem& item);
   */
 bool IsAutoPlayNextItem(const std::string& content);
 
+/*!
+ \brief Set the episode count properties of a show or season item.
+ \param item The show or season
+ \param total The episodes it has
+ \param watched How many of them are watched
+ */
+void SetEpisodeCounts(CFileItem& item, int total, int watched);
+
 /*! \brief Parses a playerState string from a bookmark and returns the next stack part number if available.
   \param bookmark The bookmark to parse
   \return std::nullopt if no nextpart tag, or the next part number if available.

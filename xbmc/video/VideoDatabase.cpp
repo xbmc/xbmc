@@ -70,6 +70,7 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 
 #include <algorithm>
 #include <chrono>
@@ -5203,14 +5204,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   {
     item->SetDateTime(details.GetPremiered());
     item->SetProperty(ITEM::PROPERTY::TOTAL_SEASONS, details.m_iSeason);
-    item->SetProperty("totalepisodes", details.m_iEpisode);
-    item->SetProperty("numepisodes", details.m_iEpisode); // will be changed later to reflect watchmode setting
-    item->SetProperty("watchedepisodes", details.GetPlayCount());
-    item->SetProperty("unwatchedepisodes", details.m_iEpisode - details.GetPlayCount());
+    VIDEO::UTILS::SetEpisodeCounts(*item, details.m_iEpisode, details.GetPlayCount());
     item->SetProperty(ITEM::PROPERTY::IN_PROGRESS_EPISODES, inProgressEpisodes);
-    item->SetProperty("watchedepisodepercent",
-                      details.m_iEpisode > 0 ? (details.GetPlayCount() * 100 / details.m_iEpisode)
-                                             : 0);
   }
   details.SetPlayCount((details.m_iEpisode <= details.GetPlayCount()) ? 1 : 0);
 
@@ -7939,13 +7934,8 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
         const int inProgressEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_INPROGRESS).get_asInt();
 
         pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
-        pItem->SetProperty("totalepisodes", totalEpisodes);
-        pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
-        pItem->SetProperty("watchedepisodes", watchedEpisodes);
-        pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
+        VIDEO::UTILS::SetEpisodeCounts(*pItem, totalEpisodes, watchedEpisodes);
         pItem->SetProperty(ITEM::PROPERTY::IN_PROGRESS_EPISODES, inProgressEpisodes);
-        pItem->SetProperty("watchedepisodepercent",
-                           totalEpisodes > 0 ? (watchedEpisodes * 100 / totalEpisodes) : 0);
         if (iSeason == 0)
           pItem->SetProperty("isspecial", true);
         pItem->GetVideoInfoTag()->SetPlayCount((totalEpisodes == watchedEpisodes) ? 1 : 0);
