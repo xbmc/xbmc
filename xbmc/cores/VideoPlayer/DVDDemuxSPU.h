@@ -37,7 +37,8 @@ public:
       uint8_t* data, int iSize, double pts); // returns a packet from ParsePacket if possible
 
   std::shared_ptr<CDVDOverlaySpu> ParseRLE(std::shared_ptr<CDVDOverlaySpu> pSPU,
-                                           uint8_t* pUnparsedData);
+                                           uint8_t* pUnparsedData,
+                                           unsigned int iUnparsedSize);
   static void FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySpu& pSPU);
   static bool CanDisplayWithAlphas(const int a[4], const int stats[4]);
 
