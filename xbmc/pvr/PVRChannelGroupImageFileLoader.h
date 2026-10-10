@@ -10,6 +10,9 @@
 
 #include "imagefiles/SpecialImageFileLoader.h"
 
+#include <string>
+#include <vector>
+
 namespace PVR
 {
 /*!
@@ -23,6 +26,13 @@ public:
 
   bool CanLoad(const std::string& specialType) const override;
   std::unique_ptr<CTexture> Load(const IMAGE_FILES::CImageFileURL& imageFile) const override;
+
+  /*!
+   * @brief Get the channel icons the thumbnail for the given channel group is composed of.
+   * @param groupPath The path of the channel group.
+   * @return The icon paths.
+   */
+  static std::vector<std::string> GetChannelGroupIcons(const std::string& groupPath);
 };
 
 } // namespace PVR
