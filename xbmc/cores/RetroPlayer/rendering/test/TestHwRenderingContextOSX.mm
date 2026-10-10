@@ -1107,7 +1107,7 @@ class CTestFBORenderer : public CRPRendererFBO
 public:
   using CRPRendererFBO::CRPRendererFBO;
 
-  std::vector<GLuint> VertexArrays() const { return {m_mainVAO, m_blackbarsVAO}; }
+  std::vector<GLuint> VertexArrays() const { return {m_mainVAO}; }
 
   CDirectionalTestPreset* UseDirectionalPreset(bool sRGBPass = false)
   {
@@ -1137,11 +1137,11 @@ public:
   }
 
 protected:
-  void RenderInternal(bool clear, uint8_t alpha) override
+  void RenderInternal(uint8_t alpha) override
   {
     m_sourceRect = m_crop;
     m_shaderPreset->SetVideoSize(m_renderBuffer->GetWidth(), m_renderBuffer->GetHeight());
-    CRPRendererFBO::RenderInternal(clear, alpha);
+    CRPRendererFBO::RenderInternal(alpha);
   }
 
 private:
@@ -1472,8 +1472,7 @@ TEST_F(TestRPRendererFBOOSX, RendererOwnsInitializedVertexArraysUntilDestruction
     {
       CTestFBORenderer renderer({}, context, m_pool);
       arrays = renderer.VertexArrays();
-      ASSERT_EQ(arrays.size(), 2u);
-      EXPECT_NE(arrays[0], arrays[1]);
+      ASSERT_EQ(arrays.size(), 1u);
       GLint binding = 0;
       for (size_t i = 0; i < arrays.size(); ++i)
       {
@@ -1509,7 +1508,7 @@ TEST_F(TestRPRendererFBOOSX, RendererOwnsInitializedVertexArraysUntilDestruction
       glBindVertexArray(guiVertexArray);
       std::sort(buffers.begin(), buffers.end());
       buffers.erase(std::unique(buffers.begin(), buffers.end()), buffers.end());
-      EXPECT_EQ(buffers.size(), 3u);
+      EXPECT_EQ(buffers.size(), 2u);
     }
     for (const auto array : arrays)
       EXPECT_FALSE(glIsVertexArray(array));
