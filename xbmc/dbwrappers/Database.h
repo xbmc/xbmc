@@ -338,6 +338,12 @@ protected:
    */
   virtual void UpdateTables(int version) {}
 
+  /*! \brief Rebuild a table so that its integer primary key never hands out a deleted row's id.
+   For UpdateTables() only: the analytics must be dropped. MySQL already declares every integer
+   primary key auto_increment, so there it does nothing.
+   */
+  void AddAutoIncrement(const std::string& table);
+
   /* \brief The minimum schema version that we support updating from.
    */
   virtual int GetMinSchemaVersion() const { return 0; }

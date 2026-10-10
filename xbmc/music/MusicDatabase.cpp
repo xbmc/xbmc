@@ -177,7 +177,7 @@ bool CMusicDatabase::Open()
 void CMusicDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create artist table");
-  m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key, "
+  m_pDS->exec("CREATE TABLE artist ( idArtist integer primary key AUTOINCREMENT, "
               " strArtist varchar(256), strMusicBrainzArtistID text, "
               " strSortName text, "
               " strType text, strGender text, strDisambiguation text, "
@@ -198,7 +198,7 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec(strSQL);
 
   CLog::Log(LOGINFO, "create album table");
-  m_pDS->exec("CREATE TABLE album (idAlbum integer primary key, "
+  m_pDS->exec("CREATE TABLE album (idAlbum integer primary key AUTOINCREMENT, "
               " strAlbum varchar(256), strMusicBrainzAlbumID text, "
               " strReleaseGroupMBID text, "
               " strArtistDisp text, strArtistSort text, strGenres text, "
@@ -234,20 +234,21 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE album_source (idSource INTEGER, idAlbum INTEGER)");
 
   CLog::Log(LOGINFO, "create genre table");
-  m_pDS->exec("CREATE TABLE genre (idGenre integer primary key, strGenre varchar(256))");
+  m_pDS->exec(
+      "CREATE TABLE genre (idGenre integer primary key AUTOINCREMENT, strGenre varchar(256))");
 
   CLog::Log(LOGINFO, "create path table");
   m_pDS->exec("CREATE TABLE path (idPath integer primary key, strPath varchar(512), strHash text)");
 
   CLog::Log(LOGINFO, "create source table");
-  m_pDS->exec(
-      "CREATE TABLE source (idSource INTEGER PRIMARY KEY, strName TEXT, strMultipath TEXT)");
+  m_pDS->exec("CREATE TABLE source (idSource INTEGER PRIMARY KEY AUTOINCREMENT, strName TEXT, "
+              "strMultipath TEXT)");
 
   CLog::Log(LOGINFO, "create source_path table");
   m_pDS->exec("CREATE TABLE source_path (idSource INTEGER, idPath INTEGER, strPath varchar(512))");
 
   CLog::Log(LOGINFO, "create song table");
-  m_pDS->exec("CREATE TABLE song (idSong integer primary key, "
+  m_pDS->exec("CREATE TABLE song (idSong integer primary key AUTOINCREMENT, "
               " idAlbum integer, idPath integer, "
               " strArtistDisp text, strArtistSort text, strGenres text, strTitle varchar(512), "
               " iTrack integer, iDuration integer, "
@@ -270,7 +271,7 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE song_genre (idGenre integer, idSong integer, iOrder integer)");
 
   CLog::Log(LOGINFO, "create role table");
-  m_pDS->exec("CREATE TABLE role (idRole integer primary key, strRole text)");
+  m_pDS->exec("CREATE TABLE role (idRole integer primary key AUTOINCREMENT, strRole text)");
   m_pDS->exec("INSERT INTO role(idRole, strRole) VALUES (1, 'Artist')"); //Default role
 
   CLog::Log(LOGINFO, "create infosetting table");
@@ -9406,6 +9407,12 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 83)
     m_pDS->exec("ALTER TABLE song ADD strVideoURL TEXT");
 
+  if (version < 85)
+  {
+    for (const char* table : {"artist", "album", "song", "genre", "role", "source"})
+      AddAutoIncrement(table);
+  }
+
   // Set the version of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
   // that needs this. Forced rescanning (of music files that have not changed since they were
@@ -9426,7 +9433,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 84;
+  return 85;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()

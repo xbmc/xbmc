@@ -1433,9 +1433,16 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE `sets` ADD strSortSet TEXT");
   }
+
+  if (iVersion < 151)
+  {
+    for (const char* table :
+         {"movie", "tvshow", "seasons", "episode", "musicvideo", "sets", "genre", "tag"})
+      AddAutoIncrement(table);
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 150;
+  return 151;
 }
