@@ -547,23 +547,15 @@ bool CApplicationPowerHandling::IsIdleShutdownInhibited() const
   return m_bInhibitIdleShutdown;
 }
 
-bool CApplicationPowerHandling::OnSettingChanged(const CSetting& setting)
+void CApplicationPowerHandling::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  const std::string& settingId = setting.GetId();
-
-  if (settingId == CSettings::SETTING_SCREENSAVER_MODE)
-  {
+  if (setting->GetId() == CSettings::SETTING_SCREENSAVER_MODE)
     CheckOSScreenSaverInhibitionSetting();
-  }
-  else
-    return false;
-
-  return true;
 }
 
-bool CApplicationPowerHandling::OnSettingAction(const CSetting& setting)
+void CApplicationPowerHandling::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  const std::string& settingId = setting.GetId();
+  const std::string& settingId = setting->GetId();
 
   if (settingId == CSettings::SETTING_SCREENSAVER_PREVIEW)
     ActivateScreenSaver(true);
@@ -576,8 +568,4 @@ bool CApplicationPowerHandling::OnSettingAction(const CSetting& setting)
             addon, ADDON::AddonType::SCREENSAVER, ADDON::OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
-  else
-    return false;
-
-  return true;
 }

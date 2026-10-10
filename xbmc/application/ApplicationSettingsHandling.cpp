@@ -54,20 +54,8 @@ void CApplicationSettingsHandling::RegisterSettings()
 
   settingsMgr->RegisterCallback(this, {
                                           CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH,
-                                          CSettings::SETTING_LOOKANDFEEL_SKIN,
                                           CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS,
-                                          CSettings::SETTING_LOOKANDFEEL_FONT,
-                                          CSettings::SETTING_LOOKANDFEEL_SKINTHEME,
-                                          CSettings::SETTING_LOOKANDFEEL_SKINCOLORS,
-                                          CSettings::SETTING_LOOKANDFEEL_SKINZOOM,
-                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP,
-                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP,
-                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE,
-                                          CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING,
                                           CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,
-                                          CSettings::SETTING_SCREENSAVER_MODE,
-                                          CSettings::SETTING_SCREENSAVER_PREVIEW,
-                                          CSettings::SETTING_SCREENSAVER_SETTINGS,
                                           CSettings::SETTING_AUDIOCDS_SETTINGS,
                                           CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
                                           CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
@@ -83,6 +71,21 @@ void CApplicationSettingsHandling::RegisterSettings()
                                       });
 
   auto& components = CServiceBroker::GetAppComponents();
+  settingsMgr->RegisterCallback(
+      components.GetComponent<CApplicationSkinHandling>().get(),
+      {CSettings::SETTING_LOOKANDFEEL_SKIN, CSettings::SETTING_LOOKANDFEEL_FONT,
+       CSettings::SETTING_LOOKANDFEEL_SKINTHEME, CSettings::SETTING_LOOKANDFEEL_SKINCOLORS,
+       CSettings::SETTING_LOOKANDFEEL_SKINZOOM});
+  settingsMgr->RegisterCallback(components.GetComponent<CApplicationVolumeHandling>().get(),
+                                {CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP,
+                                 CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP,
+                                 CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE,
+                                 CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING});
+  settingsMgr->RegisterCallback(components.GetComponent<CApplicationPowerHandling>().get(),
+                                {CSettings::SETTING_SCREENSAVER_MODE,
+                                 CSettings::SETTING_SCREENSAVER_PREVIEW,
+                                 CSettings::SETTING_SCREENSAVER_SETTINGS});
+
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (!appPlayer)
     return;
@@ -109,6 +112,9 @@ void CApplicationSettingsHandling::UnregisterSettings()
   settings->UnregisterSubSettings(this);
   settingsMgr->RemoveDynamicCondition("isplaying");
   settingsMgr->UnregisterCallback(&appPlayer->GetSeekHandler());
+  settingsMgr->UnregisterCallback(components.GetComponent<CApplicationSkinHandling>().get());
+  settingsMgr->UnregisterCallback(components.GetComponent<CApplicationVolumeHandling>().get());
+  settingsMgr->UnregisterCallback(components.GetComponent<CApplicationPowerHandling>().get());
   settingsMgr->UnregisterCallback(this);
   settingsMgr->UnregisterSettingsHandler(this);
 }
@@ -116,19 +122,6 @@ void CApplicationSettingsHandling::UnregisterSettings()
 void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
   if (!setting)
-    return;
-
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
-  if (appSkin->OnSettingChanged(*setting))
-    return;
-
-  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
-  if (appVolume->OnSettingChanged(*setting))
-    return;
-
-  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
-  if (appPower->OnSettingChanged(*setting))
     return;
 
   const std::string& settingId = setting->GetId();
@@ -157,11 +150,6 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
 void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
   if (!setting)
-    return;
-
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
-  if (appPower->OnSettingAction(*setting))
     return;
 
   const std::string& settingId = setting->GetId();

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "application/IApplicationComponent.h"
+#include "settings/lib/ISettingCallback.h"
 
 #include <string>
 
@@ -20,7 +21,7 @@ class IWindowManagerCallback;
 /*!
  * \brief Class handling application support for skin management.
  */
-class CApplicationSkinHandling : public IApplicationComponent
+class CApplicationSkinHandling : public IApplicationComponent, public ISettingCallback
 {
   friend class CApplication;
 
@@ -31,7 +32,7 @@ public:
 
   void UnloadSkin();
 
-  bool OnSettingChanged(const CSetting& setting);
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   void ReloadSkin(bool confirm = false);
   bool LoadSkin(const std::string& skinID);
 

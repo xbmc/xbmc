@@ -9,6 +9,7 @@
 #pragma once
 
 #include "application/IApplicationComponent.h"
+#include "settings/lib/ISettingCallback.h"
 
 #ifdef TARGET_WINDOWS
 #include "powermanagement/WinIdleTimer.h"
@@ -31,7 +32,7 @@ class CSetting;
  * \brief Class handling application support for screensavers, dpms and shutdown timers.
  */
 
-class CApplicationPowerHandling : public IApplicationComponent
+class CApplicationPowerHandling : public IApplicationComponent, public ISettingCallback
 {
   friend class CApplication;
   friend class CApplicationMessageHandling;
@@ -63,8 +64,8 @@ public:
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
 
-  bool OnSettingChanged(const CSetting& setting);
-  bool OnSettingAction(const CSetting& setting);
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 protected:
   void ActivateScreenSaver(bool forceType = false);
