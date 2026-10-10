@@ -26,7 +26,6 @@ TEST(TestLocale, DefaultLocale)
   ASSERT_FALSE(locale.IsValid());
   ASSERT_STREQ("", locale.GetLanguageCode().c_str());
   ASSERT_STREQ("", locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ("", locale.GetCodeset().c_str());
   ASSERT_STREQ("", locale.GetModifier().c_str());
   ASSERT_STREQ("", locale.ToString().c_str());
 }
@@ -37,10 +36,8 @@ TEST(TestLocale, LanguageLocale)
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ("", locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ("", locale.GetCodeset().c_str());
   ASSERT_STREQ("", locale.GetModifier().c_str());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -55,10 +52,8 @@ TEST(TestLocale, LanguageTerritoryLocale)
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ(TerritoryCodeBritain.c_str(), locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ("", locale.GetCodeset().c_str());
   ASSERT_STREQ("", locale.GetModifier().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(strLocaleLC.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(strLocaleLC.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -66,17 +61,13 @@ TEST(TestLocale, LanguageTerritoryLocale)
 TEST(TestLocale, LanguageCodesetLocale)
 {
   const std::string strLocale = LanguageCodeEnglish + CodesetSeparator + CodesetUtf8;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
 
   CLocale locale(LanguageCodeEnglish, "", CodesetUtf8);
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ("", locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ(CodesetUtf8.c_str(), locale.GetCodeset().c_str());
   ASSERT_STREQ("", locale.GetModifier().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(strLocaleLC.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -84,17 +75,13 @@ TEST(TestLocale, LanguageCodesetLocale)
 TEST(TestLocale, LanguageModifierLocale)
 {
   const std::string strLocale = LanguageCodeEnglish + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
 
   CLocale locale(LanguageCodeEnglish, "", "", ModifierLatin);
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ("", locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ("", locale.GetCodeset().c_str());
   ASSERT_STREQ(ModifierLatin.c_str(), locale.GetModifier().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(strLocaleLC.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -105,17 +92,13 @@ TEST(TestLocale, LanguageTerritoryCodesetLocale)
   std::string strLocaleShortLC = strLocaleShort;
   StringUtils::ToLower(strLocaleShortLC);
   const std::string strLocale = strLocaleShort + CodesetSeparator + CodesetUtf8;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
 
   CLocale locale(LanguageCodeEnglish, TerritoryCodeBritain, CodesetUtf8);
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ(TerritoryCodeBritain.c_str(), locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ(CodesetUtf8.c_str(), locale.GetCodeset().c_str());
   ASSERT_STREQ("", locale.GetModifier().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(strLocaleLC.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(strLocaleShort.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(strLocaleShortLC.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -126,17 +109,13 @@ TEST(TestLocale, LanguageTerritoryModifierLocale)
   std::string strLocaleShortLC = strLocaleShort;
   StringUtils::ToLower(strLocaleShortLC);
   const std::string strLocale = strLocaleShort + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
 
   CLocale locale(LanguageCodeEnglish, TerritoryCodeBritain, "", ModifierLatin);
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ(TerritoryCodeBritain.c_str(), locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ("", locale.GetCodeset().c_str());
   ASSERT_STREQ(ModifierLatin.c_str(), locale.GetModifier().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(strLocaleLC.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(strLocaleShort.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(strLocaleShortLC.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -147,17 +126,13 @@ TEST(TestLocale, LanguageTerritoryCodesetModifierLocale)
   std::string strLocaleShortLC = strLocaleShort;
   StringUtils::ToLower(strLocaleShortLC);
   const std::string strLocale = strLocaleShort + CodesetSeparator + CodesetUtf8 + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
 
   CLocale locale(LanguageCodeEnglish, TerritoryCodeBritain, CodesetUtf8, ModifierLatin);
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ(TerritoryCodeBritain.c_str(), locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ(CodesetUtf8.c_str(), locale.GetCodeset().c_str());
   ASSERT_STREQ(ModifierLatin.c_str(), locale.GetModifier().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(strLocaleLC.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(strLocaleShort.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(strLocaleShortLC.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -168,17 +143,13 @@ TEST(TestLocale, FullStringLocale)
   std::string strLocaleShortLC = strLocaleShort;
   StringUtils::ToLower(strLocaleShortLC);
   const std::string strLocale = strLocaleShort + CodesetSeparator + CodesetUtf8 + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
 
   CLocale locale(strLocale);
   ASSERT_TRUE(locale.IsValid());
   ASSERT_STREQ(LanguageCodeEnglish.c_str(), locale.GetLanguageCode().c_str());
   ASSERT_STREQ(TerritoryCodeBritain.c_str(), locale.GetTerritoryCode().c_str());
-  ASSERT_STREQ(CodesetUtf8.c_str(), locale.GetCodeset().c_str());
   ASSERT_STREQ(ModifierLatin.c_str(), locale.GetModifier().c_str());
   ASSERT_STREQ(strLocale.c_str(), locale.ToString().c_str());
-  ASSERT_STREQ(strLocaleLC.c_str(), locale.ToStringLC().c_str());
   ASSERT_STREQ(strLocaleShort.c_str(), locale.ToShortString().c_str());
   ASSERT_STREQ(strLocaleShortLC.c_str(), locale.ToShortStringLC().c_str());
 }
@@ -231,7 +202,6 @@ TEST(TestLocale, EmptyLocale)
   ASSERT_FALSE(CLocale::Empty.IsValid());
   ASSERT_STREQ("", CLocale::Empty.GetLanguageCode().c_str());
   ASSERT_STREQ("", CLocale::Empty.GetTerritoryCode().c_str());
-  ASSERT_STREQ("", CLocale::Empty.GetCodeset().c_str());
   ASSERT_STREQ("", CLocale::Empty.GetModifier().c_str());
   ASSERT_STREQ("", CLocale::Empty.ToString().c_str());
 }

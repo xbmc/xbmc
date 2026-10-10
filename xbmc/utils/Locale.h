@@ -56,10 +56,6 @@ public:
    */
   const std::string& GetTerritoryCode() const { return m_territory; }
   /*!
-   \brief Returns the codeset of the locale.
-   */
-  const std::string& GetCodeset() const { return m_codeset; }
-  /*!
    \brief Returns the modifier of the locale.
    */
   const std::string& GetModifier() const { return m_modifier; }
@@ -73,15 +69,6 @@ public:
    is represented as a (upper-case) two character ISO 3166-1 Alpha-2 code.
    */
   std::string ToString() const;
-  /*!
-   \brief Returns the full string representation of the locale in lowercase.
-
-   \details The format of the string representation is
-   `language[_territory][.codeset][@modifier]]` where the language is
-   represented as a two character ISO 639-1 code and the territory is
-   represented as a two character ISO 3166-1 Alpha-2 code.
-   */
-  std::string ToStringLC() const;
   /*!
    \brief Returns the short string representation of the locale.
 

@@ -90,11 +90,6 @@ public:
     */
   void ParseEntry(bool bisSourceLang);
 
-  /*! \brief Gets the msgctxt string previously parsed by ParseEntry().
-    \return string* containing the msgctxt string, unescaped and linked together.
-    */
-  const std::string& GetMsgctxt() const {return m_Entry.msgCtxt.Str;}
-
   /*! \brief Gets the msgid string previously parsed by ParseEntry().
     \return string* containing the msgid string, unescaped and linked together.
     */
@@ -104,12 +99,6 @@ public:
     \return string* containing the msgstr string, unescaped and linked together.
     */
   const std::string& GetMsgstr() const {return m_Entry.msgStr.Str;}
-
-  /*! \brief Gets the msgstr[x] string previously parsed by ParseEntry().
-    \param plural the number of plural-form expected to get (0-6).
-    \return string* containing the msgstr string, unescaped and linked together.
-    */
-  const std::string& GetPlurMsgstr (size_t plural) const;
 
 protected:
 

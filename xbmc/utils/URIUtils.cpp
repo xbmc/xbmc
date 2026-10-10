@@ -468,11 +468,6 @@ bool URIUtils::HasParentInHostname(const CURL& url)
   return url.HasParentInHostname();
 }
 
-bool URIUtils::HasEncodedHostname(const CURL& url)
-{
-  return url.HasEncodedHostname();
-}
-
 bool URIUtils::HasEncodedFilename(const CURL& url)
 {
   const std::string prot2 = url.GetTranslatedProtocol();
@@ -1941,46 +1936,6 @@ std::string URIUtils::resolvePath(const std::string &path)
     realPath += delim;
 
   return realPath;
-}
-
-bool URIUtils::UpdateUrlEncoding(std::string &strFilename)
-{
-  if (strFilename.empty())
-    return false;
-
-  CURL url(strFilename);
-  // if this is a stack:// URL we need to work with its filename
-  if (URIUtils::IsStack(strFilename))
-  {
-    std::vector<std::string> files;
-    if (!CStackDirectory::GetPaths(strFilename, files))
-      return false;
-
-    for (std::vector<std::string>::iterator file = files.begin(); file != files.end(); ++file)
-      UpdateUrlEncoding(*file);
-
-    std::string stackPath;
-    if (!CStackDirectory::ConstructStackPath(files, stackPath))
-      return false;
-
-    url.Parse(stackPath);
-  }
-  // if the protocol has an encoded hostname we need to work with its hostname
-  else if (URIUtils::HasEncodedHostname(url))
-  {
-    std::string hostname = url.GetHostName();
-    UpdateUrlEncoding(hostname);
-    url.SetHostName(hostname);
-  }
-  else
-    return false;
-
-  std::string newFilename = url.Get();
-  if (newFilename == strFilename)
-    return false;
-
-  strFilename = newFilename;
-  return true;
 }
 
 CURL URIUtils::AddCredentials(CURL url)

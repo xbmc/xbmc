@@ -124,15 +124,6 @@ public:
   static std::string& TrimRight(std::string& str, std::string_view chars) noexcept;
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str) noexcept;
 
-  /*! \brief Check if the character is a special character.
-
-   A special character is not an alphanumeric character, and is not useful to provide information
-
-   \param c Input character to be checked
-   */
-  [[nodiscard]] static bool IsSpecialCharacter(char c) noexcept;
-
-  [[nodiscard]] static std::string ReplaceSpecialCharactersWithSpace(std::string_view str);
   static int Replace(std::string& str, char oldChar, char newChar) noexcept;
   static int Replace(std::string& str, std::string_view oldStr, std::string_view newStr);
   static int Replace(std::wstring& str, std::wstring_view oldStr, std::wstring_view newStr);
@@ -275,7 +266,6 @@ public:
   [[nodiscard]] static std::vector<std::string> SplitMulti(std::span<const std::string_view> input,
                                                            std::span<const std::string> delimiters,
                                                            size_t iMaxStrings = 0);
-  [[nodiscard]] static int FindNumber(std::string_view strInput, std::string_view strFind) noexcept;
   [[nodiscard]] static int64_t AlphaNumericCompare(std::wstring_view left,
                                                    std::wstring_view right) noexcept;
   [[nodiscard]] static int AlphaNumericCollation(int nKey1,
@@ -402,7 +392,6 @@ public:
   [[nodiscard]] static std::string ISODateToLocalizedDate(std::string_view strIsoDate);
   static void WordToDigits(std::string& word) noexcept;
   [[nodiscard]] static std::string CreateUUID();
-  [[nodiscard]] static bool ValidateUUID(const std::string& uuid); // NB only validates syntax
   [[nodiscard]] static double CompareFuzzy(std::string_view left, std::string_view right) noexcept;
   [[nodiscard]] static int FindBestMatch(std::string_view str,
                                          std::span<const std::string_view> strings,

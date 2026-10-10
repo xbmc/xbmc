@@ -580,11 +580,6 @@ bool CURL::IsLocalHost() const
   return CServiceBroker::GetNetwork().IsLocalHost(m_strHostName);
 }
 
-bool CURL::IsFileOnly(const std::string& url)
-{
-  return url.find_first_of("/\\") == std::string::npos;
-}
-
 bool CURL::IsFullPath(const std::string& url)
 {
   if (!url.empty() && url[0] == '/') // /foo/bar.ext

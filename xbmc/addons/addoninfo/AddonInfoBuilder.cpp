@@ -65,11 +65,6 @@ void CAddonInfoBuilderFromDB::SetName(std::string name)
   m_addonInfo->m_name = std::move(name);
 }
 
-void CAddonInfoBuilderFromDB::SetLicense(std::string license)
-{
-  m_addonInfo->m_license = std::move(license);
-}
-
 void CAddonInfoBuilderFromDB::SetSummary(std::string summary)
 {
   m_addonInfo->m_summary.try_emplace("unk", std::move(summary));
@@ -88,26 +83,6 @@ void CAddonInfoBuilderFromDB::SetDisclaimer(std::string disclaimer)
 void CAddonInfoBuilderFromDB::SetAuthor(std::string author)
 {
   m_addonInfo->m_author = std::move(author);
-}
-
-void CAddonInfoBuilderFromDB::SetSource(std::string source)
-{
-  m_addonInfo->m_source = std::move(source);
-}
-
-void CAddonInfoBuilderFromDB::SetWebsite(std::string website)
-{
-  m_addonInfo->m_website = std::move(website);
-}
-
-void CAddonInfoBuilderFromDB::SetForum(std::string forum)
-{
-  m_addonInfo->m_forum = std::move(forum);
-}
-
-void CAddonInfoBuilderFromDB::SetEMail(std::string email)
-{
-  m_addonInfo->m_email = std::move(email);
 }
 
 void CAddonInfoBuilderFromDB::SetIcon(std::string icon)

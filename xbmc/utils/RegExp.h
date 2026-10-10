@@ -111,13 +111,6 @@ public:
   std::string GetMatch(int iSub = 0) const;
   std::string GetMatch(const char* name) const;
   const std::string& GetPattern() const { return m_pattern; }
-  void DumpOvector(int iLog);
-  /**
-   * Check is RegExp object is ready for matching
-   * @return true if RegExp object is ready for matching, false otherwise
-   */
-  inline bool IsCompiled(void) const
-  { return !m_pattern.empty(); }
   CRegExp& operator= (const CRegExp& re);
   static bool IsUtf8Supported(void);
   static bool AreUnicodePropertiesSupported(void);
