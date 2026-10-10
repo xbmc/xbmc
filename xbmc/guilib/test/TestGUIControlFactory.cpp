@@ -927,9 +927,31 @@ TEST_P(TestGetTexture, GetTexture)
   EXPECT_EQ(info.m_infill, GetParam().info.m_infill);
   EXPECT_EQ(info.orientation, GetParam().info.orientation);
   EXPECT_EQ(info.useLarge, GetParam().info.useLarge);
+  EXPECT_FALSE(info.m_subpixel);
 }
 
 INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory, TestGetTexture, testing::ValuesIn(TextureTests));
+
+TEST(TestGUIControlFactory, GetTextureSubpixel)
+{
+  CGUITestComponent comp;
+  CXBMCTinyXML doc;
+  doc.Parse(R"(<root><test subpixel="true">foo.png</test></root>)"s);
+  CTextureInfo info;
+  EXPECT_TRUE(CGFTestable::GetTexture(doc.RootElement(), "test", info));
+  EXPECT_TRUE(info.m_subpixel);
+}
+
+TEST(TestGUIControlFactory, GetTextureSubpixelFalse)
+{
+  CGUITestComponent comp;
+  CXBMCTinyXML doc;
+  doc.Parse(R"(<root><test subpixel="false">foo.png</test></root>)"s);
+  CTextureInfo info;
+  info.m_subpixel = true;
+  EXPECT_TRUE(CGFTestable::GetTexture(doc.RootElement(), "test", info));
+  EXPECT_FALSE(info.m_subpixel);
+}
 
 TEST_P(TestGetType, GetType)
 {
