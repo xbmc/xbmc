@@ -10,6 +10,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
@@ -133,4 +134,22 @@ TEST_F(TestLabelFormatterHiddenExtensions, KeepsAPlusInTheName)
 {
   EXPECT_EQ("C++ Collection",
             LabelFor("smb://server/share/C++ Collection.mkv", "C++ Collection.mkv"));
+}
+
+TEST_F(TestLabelFormatter, FillMusicTagReadsTheRatingAsANumber)
+{
+  CLabelFormatter formatter("%A - %R", "");
+  MUSIC_INFO::CMusicInfoTag tag;
+
+  ASSERT_TRUE(formatter.FillMusicTag("Artist - 7", &tag));
+  EXPECT_EQ(7.0f, tag.GetRating());
+}
+
+TEST_F(TestLabelFormatter, FillMusicTagReadsTheUserRatingAsANumber)
+{
+  CLabelFormatter formatter("%A - %r", "");
+  MUSIC_INFO::CMusicInfoTag tag;
+
+  ASSERT_TRUE(formatter.FillMusicTag("Artist - 7", &tag));
+  EXPECT_EQ(7, tag.GetUserrating());
 }
