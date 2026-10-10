@@ -213,9 +213,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
 endif()
 
 if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
-  list(APPEND SOURCES GLBufferObject.cpp
+  list(APPEND SOURCES GLBufferArena.cpp
+                      GLBufferObject.cpp
                       GLUtils.cpp)
-  list(APPEND HEADERS GLBufferObject.h
+  list(APPEND HEADERS GLBufferArena.h
+                      GLBufferObject.h
                       GLUtils.h)
 endif()
 
