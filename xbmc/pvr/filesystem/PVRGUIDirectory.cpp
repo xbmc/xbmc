@@ -1128,8 +1128,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
     }
     else if (path.IsGroups())
     {
-      const auto providerGroups{
-          CServiceBroker::GetPVRManager().ChannelGroups()->Get(path.IsRadio())->GetMembers(true)};
+      const auto providerGroups{pvrManager.ChannelGroups()->Get(path.IsRadio())->GetMembers(true)};
       for (const auto& group : providerGroups)
       {
         const unsigned int visibleChannelCount{GetVisibleChannelCountForProvider(*group, path)};
