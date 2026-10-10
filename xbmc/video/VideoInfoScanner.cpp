@@ -2691,6 +2691,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         // Determine bluray playlist(s) (if possible)
         // Also populates streamdetails if playlist(s) found
+        // Resolved as an episode whether or not the scraper gave the media type
+        scraperItem.GetVideoInfoTag()->m_type = MediaTypeEpisode;
         CFileItemList blurayItems;
         ResolveBlurayPlaylist(&scraperItem, blurayItems);
 
@@ -3067,6 +3069,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         targetDbId = chosenTargetMovieDbId;
         versioned = true;
       }
+      else if (isMainPlaylist)
+      {
+        // Not merged into another movie, so the disc's main title stays one and the other
+        // playlists become versions of it
+        targetDbId = newMovieDbId;
+      }
       else if (result == VersionConversionResult::FAILED ||
                result == VersionConversionResult::CANCELLED)
       {
@@ -3079,7 +3087,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
 
-    if (added && targetDbId >= 0)
+    if (versioned)
       RemovePartNumberFromTitle(targetDbId, VideoDbContentType::MOVIES, m_database);
     return !added ? InfoRet::INFO_ERROR : (versioned ? InfoRet::HAVE_ALREADY : InfoRet::ADDED);
   }

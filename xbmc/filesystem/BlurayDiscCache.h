@@ -41,6 +41,9 @@ struct Disc
   //! What the disc's authoring project named, where it left one behind
   std::optional<XFILE::ProjectInformation> project;
 
+  //! Identifies the content held, so a disc replaced at the same path is noticed (see CheckDisc)
+  std::string fingerprint;
+
   //! When this disc was last used, to decide which to drop when the cache is full. Mutable as
   //! recency is not part of what the cache holds, so reading a disc's information updates it too.
   mutable uint64_t lastUsed{0};
@@ -123,6 +126,13 @@ public:
 
   //! Drop everything held for a disc, as its information no longer describes what is in the drive
   void ClearDisc(const std::string& path);
+
+  /*!
+   \brief Drop everything held for a disc if it is not the disc it was read from.
+   \param fingerprint identifies the disc's content, eg. the modification time and size of its
+   index or image
+   */
+  void CheckDisc(const std::string& path, const std::string& fingerprint);
 
 private:
   /*!

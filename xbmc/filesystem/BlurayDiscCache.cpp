@@ -261,6 +261,21 @@ void CBlurayDiscCache::ClearDisc(const std::string& path)
   m_cache.erase(GetDiscKey(path));
 }
 
+void CBlurayDiscCache::CheckDisc(const std::string& path, const std::string& fingerprint)
+{
+  std::unique_lock lock(m_cs);
+
+  if (const Disc * disc{Find(path)}; disc && disc->fingerprint != fingerprint &&
+                                     !disc->fingerprint.empty())
+  {
+    CLog::LogF(LOGDEBUG, "Disc at {} has changed, dropping its cached information",
+               CURL::GetRedacted(path));
+    m_cache.erase(GetDiscKey(path));
+  }
+
+  FindOrCreate(path).fingerprint = fingerprint;
+}
+
 void CBlurayDiscCache::Clear()
 {
   std::unique_lock lock(m_cs);

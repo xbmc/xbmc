@@ -542,6 +542,48 @@ TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleSpecial_StillOffered)
     EXPECT_FALSE(item->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false));
 }
 
+// A scan stores the first candidate for a single special, so the longest leads
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SingleSpecial_LongestFirst)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800), // Special
+                    MakeEpisode(1, 1, 3600)};
+
+  PlaylistMap playlists{{800u, MakePlaylist(800u, 60min, {1u}, {60min})},
+                        {100u, MakePlaylist(100u, 25min, {2u}, {25min})},
+                        {101u, MakePlaylist(101u, 30min, {3u}, {30min})}};
+  ClipMap clips{
+      {1u, MakeClip(60min, {800u})}, {2u, MakeClip(25min, {100u})}, {3u, MakeClip(30min, {101u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 101);
+  EXPECT_EQ(GetPlaylistFromPath(items[1]->GetPath()), 100);
+}
+
+// A disc of specials only, eg. a bonus disc, is held to the same minimum length
+TEST_F(TestDiscDirectoryHelper, GetEpisodePlaylists_SpecialsOnly_ShortPlaylistsAreNotSpecials)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+  Episodes episodes{MakeEpisode(0, 1, 1800)}; // Special
+
+  PlaylistMap playlists{{1u, MakePlaylist(1u, 1min, {1u}, {1min})},
+                        {800u, MakePlaylist(800u, 30min, {2u}, {30min})}};
+  ClipMap clips{{1u, MakeClip(1min, {1u})}, {2u, MakeClip(30min, {800u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(helper.GetEpisodePlaylists(url, items, allTitles, 0, episodes, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800);
+}
+
 //
 // ---- GetEpisodePlaylists – play-all playlist method -------------------------
 //
@@ -5020,6 +5062,84 @@ TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPicturePresentationNe
       helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
   ASSERT_EQ(items.Size(), 1);
   EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 100u);
+}
+
+// Kodi plays a picture-in-picture copy of the feature as the feature, so only the plain one is
+// offered, whichever is numbered first
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_PictureInPictureCopyGivesWayToPlainFeature)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 2h, {1u}, {1h, 1h})},
+      {801u, MakePlaylist(801u, 2h, {1u}, {1h, 1h})},
+      {802u, MakePlaylist(802u, 100min, {2u}, {50min, 50min})},
+  };
+  playlists.at(800u).hasSecondaryVideo = true;
+  playlists.at(800u).pgStreams.emplace_back(); // eg. The Sound of Music (1965) disc 2
+  ClipMap clips{{1u, MakeClip(2h, {800u, 801u})}, {2u, MakeClip(100min, {802u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 2);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+  EXPECT_EQ(GetPlaylistFromPath(items[1]->GetPath()), 802u);
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::SINGLE, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+}
+
+// 12 Monkeys (2015) offers the feature with a Dolby Vision enhancement layer as playlist 0 and
+// without one as playlist 555, their last chapters differing by a fraction of a second. The Dolby
+// Vision copy is the one offered, whichever is numbered first.
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_DolbyVisionCopyIsPreferred)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 2h, {1u}, {1h, 1h})},
+      {801u, MakePlaylist(801u, 2h, {1u}, {1h - 125ms, 1h + 125ms})},
+  };
+  playlists.at(801u).hasDolbyVision = true;
+  ClipMap clips{{1u, MakeClip(2h, {800u, 801u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 801u);
+}
+
+// Dolby Vision only settles a tie, so a copy offering more streams is still the one offered
+TEST_F(TestDiscDirectoryHelper, GetMoviePlaylists_FullerCopyIsPreferredToDolbyVision)
+{
+  CDiscDirectoryHelper helper;
+  CURL url("bluray://test/");
+  CFileItemList items;
+  CFileItemList allTitles;
+
+  PlaylistMap playlists{
+      {800u, MakePlaylist(800u, 2h, {1u}, {1h, 1h})},
+      {801u, MakePlaylist(801u, 2h, {1u}, {1h - 125ms, 1h + 125ms})},
+  };
+  playlists.at(800u).audioStreams.emplace_back();
+  playlists.at(801u).hasDolbyVision = true;
+  ClipMap clips{{1u, MakeClip(2h, {800u, 801u})}};
+  ASSERT_TRUE(Validate(clips, playlists));
+
+  EXPECT_TRUE(
+      helper.GetMoviePlaylists(url, items, allTitles, -1, GetTitle::MAIN, clips, playlists));
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(GetPlaylistFromPath(items[0]->GetPath()), 800u);
 }
 
 // A disc offering nothing but a picture-in-picture presentation still offers it

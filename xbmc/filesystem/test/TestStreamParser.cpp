@@ -173,6 +173,25 @@ TEST(TestStreamParser, SecondaryVideoMarksAPictureInPicturePresentation)
   EXPECT_EQ(pip.videoStreams.size(), p.videoStreams.size());
 }
 
+TEST(TestStreamParser, DolbyVisionStreamMarksTheEnhancementLayer)
+{
+  const std::vector<StreamInformation> audio{
+      MakeStream(ENCODING_TYPE::AUDIO_DTSHD_MASTER, 0x1100, "eng")};
+
+  BlurayPlaylistInformation hdr10{MakePlaylist(555, 30, audio, {})};
+  PlaylistInformation p;
+  CStreamParser::ConvertBlurayPlaylistInformation(hdr10, p, {}, StreamDetails::INCLUDE);
+  EXPECT_FALSE(p.hasDolbyVision);
+
+  BlurayPlaylistInformation dolbyVision{MakePlaylist(0, 30, audio, {})};
+  dolbyVision.playItems[0].dolbyVisionStreams.emplace_back(
+      MakeStream(ENCODING_TYPE::VIDEO_HEVC, 0x1015, ""));
+
+  PlaylistInformation dv;
+  CStreamParser::ConvertBlurayPlaylistInformation(dolbyVision, dv, {}, StreamDetails::INCLUDE);
+  EXPECT_TRUE(dv.hasDolbyVision);
+}
+
 TEST(TestStreamParser, PlaylistWithoutAStreamNumberTableFallsBackToTheClip)
 {
   // A stream number table is expected of a conforming playlist, but if it is missing the clip's

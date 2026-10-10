@@ -94,6 +94,15 @@ std::string GetCachePath(const CURL& url, const std::string& realPath)
   return path;
 }
 
+//! A disc folder or image can be replaced at the same path, so what is cached for it is only kept
+//! while its index or image is unchanged
+void CheckCachedDisc(const std::string& cachePath, const std::string& discFile)
+{
+  if (struct __stat64 st{}; CFile::Stat(discFile, &st) == 0)
+    CServiceBroker::GetBlurayDiscCache()->CheckDisc(cachePath,
+                                                    fmt::format("{}:{}", st.st_mtime, st.st_size));
+}
+
 bool GetPlaylistInfoFromCache(const CURL& url,
                               const std::string& realPath,
                               unsigned int playlist,
@@ -211,6 +220,18 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
   // so two playlists sharing a clip but offering different streams are not seen as identical.
   // The duration is compared as well as the chapters, as two playlists can play the same clips
   // from the same chapter starts but to different out times (ie. they are distinct cuts).
+  // Kodi does not play the secondary video, so a picture-in-picture copy is a copy all the same -
+  // but it is the one discarded, as it never leads the movie search. Of other copies the one with
+  // a Dolby Vision enhancement layer is kept, then the lowest numbered.
+  const auto isDiscarded{[](const PlaylistInformation& a, const PlaylistInformation& b)
+                         {
+                           if (a.hasSecondaryVideo != b.hasSecondaryVideo)
+                             return a.hasSecondaryVideo;
+                           if (a.hasDolbyVision != b.hasDolbyVision)
+                             return b.hasDolbyVision;
+                           return a.playlist > b.playlist;
+                         }};
+
   std::unordered_set<unsigned int> duplicatePlaylists;
   for (size_t i = 0; i + 1 < playlists.size(); ++i)
   {
@@ -222,7 +243,8 @@ void RemoveDuplicatePlaylists(std::vector<PlaylistInformation>& playlists)
           playlists[i].chapters == playlists[j].chapters &&
           playlists[i].clips == playlists[j].clips)
       {
-        duplicatePlaylists.emplace(std::max(playlists[i].playlist, playlists[j].playlist));
+        duplicatePlaylists.emplace(isDiscarded(playlists[i], playlists[j]) ? playlists[i].playlist
+                                                                           : playlists[j].playlist);
       }
     }
   }
@@ -490,7 +512,7 @@ bool CBlurayDirectory::GetPlaylistsInformation(const CURL& url,
   try
   {
     // Check cache
-    const std::string& path{url.GetHostName()};
+    const std::string path{GetCachePath(url, realPath)};
     if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips, allTitles))
     {
       CLog::LogF(LOGDEBUG, "Playlist information for {} retrieved from cache", path);
@@ -657,6 +679,8 @@ UTILS::DISCS::DiscInfo CBlurayDirectory::ProbeDisc(const std::string& mediaPath)
   UTILS::DISCS::DiscInfo info;
   CBlurayDirectory bdDir;
   bdDir.SetRealPath(mediaPath);
+  CheckCachedDisc(GetCachePath(bdDir.m_url, bdDir.m_realPath),
+                  URIUtils::AddFileToFolder(bdDir.m_realPath, "BDMV", "index.bdmv"));
   const std::optional<std::string> title{bdDir.GetBlurayTitle()};
   if (!title)
     return info;
@@ -750,6 +774,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // Most requests are now served from the disc cache or by parsing a single playlist.
   // Neither needs libbluray or disc.inf, so both are deferred.
   SetRealPath(root);
+
+  CheckCachedDisc(GetCachePath(m_url, m_realPath), URIUtils::GetDiscFile(m_url.Get()));
 
   //
   // These options also return 'All Titles' and 'Menu' options (if supported on disc)
@@ -873,7 +899,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
         episodeIndex = static_cast<int>(std::distance(episodesOnDisc.begin(), it));
 
         // Add duration and title from scraper
-        it->duration = duration;
+        if (duration > 0)
+          it->duration = duration;
         if (!title.empty())
           it->strTitle = title;
       }
