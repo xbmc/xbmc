@@ -36,6 +36,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <atomic>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -81,6 +82,8 @@ static const struct StereoModeConversionMap WmvToInternalStereoModeMap[] =
 
 namespace
 {
+std::atomic<bool> g_abortFileInfoProbes{false};
+
 const std::vector<std::string> font_mimetypes = {"application/x-truetype-font",
                                                  "application/vnd.ms-opentype",
                                                  "application/x-font-ttf",
@@ -224,6 +227,9 @@ bool CDVDDemuxFFmpeg::Aborted()
   if (m_timeout.IsTimePast())
     return true;
 
+  if (m_fileinfo && g_abortFileInfoProbes.load())
+    return true;
+
   std::shared_ptr<CDVDInputStreamFFmpeg> input = std::dynamic_pointer_cast<CDVDInputStreamFFmpeg>(m_pInput);
   if (input && input->Aborted())
     return true;
@@ -254,6 +260,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
 {
   const AVInputFormat* iformat = nullptr;
   std::string strFile;
+  m_fileinfo = fileinfo;
   m_streaminfo = !pInput->IsRealtime() && !m_reopen;
   m_reopen = false;
   m_currentPts = DVD_NOPTS_VALUE;
@@ -779,6 +786,11 @@ void CDVDDemuxFFmpeg::Flush()
 void CDVDDemuxFFmpeg::Abort()
 {
   m_timeout.SetExpired();
+}
+
+void CDVDDemuxFFmpeg::AbortFileInfoProbes()
+{
+  g_abortFileInfoProbes = true;
 }
 
 void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)

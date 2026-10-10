@@ -48,6 +48,7 @@
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/FFmpeg.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogCache.h"
@@ -1706,6 +1707,8 @@ bool CApplication::Stop(int exitCode)
 
     // cancel any jobs from the jobmanager
     CServiceBroker::GetJobManager()->CancelJobs();
+
+    CDVDFileInfo::StopProbes();
 
     CServiceBroker::GetAppMessenger()->Cleanup();
 
