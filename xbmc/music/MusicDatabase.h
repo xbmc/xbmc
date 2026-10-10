@@ -171,6 +171,7 @@ public:
               const ReplayGain& replayGain);
   bool GetSong(int idSong, CSong& song);
 
+  GetResult TryGetSong(int idSong, CSong& song);
   /*! \brief Update a song and all its nested entities (genres, artists, contributors)
     \param song [in/out] the song to update, artist ids are returned in artist credits
     \param bArtists to update artist credits and contributors, default is true
@@ -310,6 +311,9 @@ public:
    \return true if the album is retrieved, false otherwise.
    */
   bool GetAlbum(int idAlbum, CAlbum& album, bool getSongs = true);
+
+  //! An album with no songs is retrieved with an empty song list, not reported as missing.
+  GetResult TryGetAlbum(int idAlbum, CAlbum& album, bool getSongs = true);
   int UpdateAlbum(int idAlbum,
                   const std::string& strAlbum,
                   const std::string& strMusicBrainzAlbumID,
@@ -378,7 +382,12 @@ public:
                 const std::string& strMusicBrainzArtistID,
                 bool bScrapedMBID = false);
   bool GetArtist(int idArtist, CArtist& artist, bool fetchAll = false);
+
+  //! fetchAll also retrieves the discography and video links.
+  GetResult TryGetArtist(int idArtist, CArtist& artist, bool fetchAll = false);
   bool GetArtistExists(int idArtist);
+
+  GetResult TryGetArtistExists(int idArtist);
   int GetLastArtist() const;
   int GetArtistFromMBID(const std::string& strMusicBrainzArtistID, std::string& artistname);
   int UpdateArtist(int idArtist,
