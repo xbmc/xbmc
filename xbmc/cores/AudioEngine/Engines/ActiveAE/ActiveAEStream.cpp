@@ -391,6 +391,11 @@ void CActiveAEStream::Pause()
   m_activeAE->PauseStream(this, true);
 }
 
+void CActiveAEStream::Hold()
+{
+  m_activeAE->HoldStream(this);
+}
+
 void CActiveAEStream::Resume()
 {
   m_activeAE->PauseStream(this, false);
@@ -570,6 +575,11 @@ unsigned int CActiveAEStream::GetSampleRate() const
 enum AEDataFormat CActiveAEStream::GetDataFormat() const
 {
   return m_format.m_dataFormat;
+}
+
+bool CActiveAEStream::HasSinkFormatChanged() const
+{
+  return m_sinkFormatChanged;
 }
 
 void CActiveAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
