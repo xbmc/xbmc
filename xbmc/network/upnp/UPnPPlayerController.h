@@ -124,6 +124,12 @@ public:
     m_nextPoll.Set(std::chrono::milliseconds(500));
   }
 
+  PLT_PositionInfo GetPosition() const
+  {
+    std::unique_lock lock(m_section);
+    return m_posinfo;
+  }
+
   ~CUPnPPlayerController() override
   {
     std::unique_lock lock(m_actionSection);
@@ -161,6 +167,14 @@ public:
                                    void* userdata) override
     {
       Complete(res, "OnSetAVTransportURIResult");
+    }
+
+    void OnSetNextAVTransportURIResult(NPT_Result res,
+                                       PLT_DeviceDataReference& device,
+                                       void* userdata) override
+    {
+      m_owner.m_nextRefused = NPT_FAILED(res);
+      Complete(res, "OnSetNextAVTransportURIResult");
     }
 
     void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
@@ -309,6 +323,8 @@ public:
   NPT_UInt32 m_instance = 0;
 
   PLT_PositionInfo m_posinfo;
+
+  std::atomic<bool> m_nextRefused{false};
 
 private:
   void Release(CAction& action)
