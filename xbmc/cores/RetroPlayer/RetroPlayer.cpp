@@ -270,9 +270,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Failed to save state at close");
   }
 
-  if (m_playback)
-    m_playback->Deinitialize();
-  m_playback.reset();
+  ResetPlayback();
 
   if (m_input)
     m_input->StopAgentManager();
@@ -303,8 +301,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
     m_processInfo->ResetInfo();
   }
   m_processInfo.reset();
-  CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback ended");
-  m_callback.OnPlayBackEnded();
+  CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback stopped");
+  m_callback.OnPlayBackStopped();
 
   return true;
 }
