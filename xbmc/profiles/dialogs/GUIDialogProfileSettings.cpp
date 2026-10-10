@@ -241,13 +241,13 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     CFileItemList items;
     if (!m_thumb.empty())
     {
-      CFileItemPtr item(new CFileItem(KODI::IMAGE_CHOICE::CURRENT, false));
+      CFileItemPtr item(new CFileItem(KODI::ART::CHOICE::CURRENT, false));
       item->SetArt(KODI::ART::TYPE::THUMB, m_thumb);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
       items.Add(item);
     }
 
-    CFileItemPtr item(new CFileItem(KODI::IMAGE_CHOICE::NONE, false));
+    CFileItemPtr item(new CFileItem(KODI::ART::CHOICE::NONE, false));
     item->SetArt(KODI::ART::TYPE::THUMB, "DefaultUser.png");
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
     items.Add(item);
@@ -256,10 +256,10 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     if (CGUIDialogFileBrowser::ShowAndGetImage(
             items, shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1030),
             thumb) &&
-        !StringUtils::EqualsNoCase(thumb, KODI::IMAGE_CHOICE::CURRENT))
+        !StringUtils::EqualsNoCase(thumb, KODI::ART::CHOICE::CURRENT))
     {
       m_needsSaving = true;
-      m_thumb = StringUtils::EqualsNoCase(thumb, KODI::IMAGE_CHOICE::NONE) ? "" : thumb;
+      m_thumb = StringUtils::EqualsNoCase(thumb, KODI::ART::CHOICE::NONE) ? "" : thumb;
 
       UpdateProfileImage();
     }
