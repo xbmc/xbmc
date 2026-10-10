@@ -400,7 +400,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   // add the current thumb, if available
   if (!pItem->GetProperty(PROPERTY_CHANNEL_ICON).asString().empty())
   {
-    auto current{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::CURRENT, false)};
+    auto current{std::make_shared<CFileItem>(KODI::ART::CHOICE::CURRENT, false)};
     current->SetArt(KODI::ART::TYPE::THUMB, pItem->GetPVRChannelInfoTag()->IconPath());
     current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
     items.Add(std::move(current));
@@ -408,14 +408,14 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   else if (pItem->HasArt(KODI::ART::TYPE::THUMB))
   {
     // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
-    auto current{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::CURRENT, false)};
+    auto current{std::make_shared<CFileItem>(KODI::ART::CHOICE::CURRENT, false)};
     current->SetArt(KODI::ART::TYPE::THUMB, pItem->GetArt(KODI::ART::TYPE::THUMB));
     current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
     items.Add(std::move(current));
   }
 
   // and add a "no thumb" entry as well
-  auto nothumb{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::NONE, false)};
+  auto nothumb{std::make_shared<CFileItem>(KODI::ART::CHOICE::NONE, false)};
   nothumb->SetArt(KODI::ART::TYPE::ICON, pItem->GetArt(KODI::ART::TYPE::ICON));
   nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19283));
   items.Add(std::move(nothumb));
@@ -436,10 +436,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
           strThumb, nullptr, 19285))
     return false;
 
-  if (strThumb == KODI::IMAGE_CHOICE::CURRENT)
+  if (strThumb == KODI::ART::CHOICE::CURRENT)
     return true;
 
-  if (strThumb == KODI::IMAGE_CHOICE::NONE)
+  if (strThumb == KODI::ART::CHOICE::NONE)
     strThumb = "";
 
   if (pItem->GetProperty(PROPERTY_CHANNEL_ICON).asString() != strThumb)

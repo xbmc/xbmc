@@ -1909,7 +1909,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::string currentArt = asyncArtHandler.GetCurrentArt();
   if (!currentArt.empty())
   {
-    const auto itemCurrent = std::make_shared<CFileItem>(IMAGE_CHOICE::CURRENT, false);
+    const auto itemCurrent = std::make_shared<CFileItem>(ART::CHOICE::CURRENT, false);
     itemCurrent->SetArt(ART::TYPE::THUMB, currentArt);
     itemCurrent->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13512));
     items.Add(itemCurrent);
@@ -1918,7 +1918,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::string embeddedArt = asyncArtHandler.GetEmbeddedArt();
   if (!embeddedArt.empty())
   {
-    const auto itemEmbedded = std::make_shared<CFileItem>(IMAGE_CHOICE::EMBEDDED, false);
+    const auto itemEmbedded = std::make_shared<CFileItem>(ART::CHOICE::EMBEDDED, false);
     itemEmbedded->SetArt(ART::TYPE::THUMB, embeddedArt);
     itemEmbedded->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13519));
     items.Add(itemEmbedded);
@@ -1927,7 +1927,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::vector<std::string> remoteArt = asyncArtHandler.GetRemoteArt();
   for (size_t i = 0; i < remoteArt.size(); ++i)
   {
-    const auto itemRemote = std::make_shared<CFileItem>(IMAGE_CHOICE::RemoteOf(i), false);
+    const auto itemRemote = std::make_shared<CFileItem>(ART::CHOICE::RemoteOf(i), false);
     itemRemote->SetArt(ART::TYPE::THUMB, remoteArt[i]);
     itemRemote->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
     itemRemote->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13513));
@@ -1940,13 +1940,13 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::string localArt = asyncArtHandler.GetLocalArt();
   if (!localArt.empty())
   {
-    const auto itemLocal = std::make_shared<CFileItem>(IMAGE_CHOICE::LOCAL, false);
+    const auto itemLocal = std::make_shared<CFileItem>(ART::CHOICE::LOCAL, false);
     itemLocal->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13514));
     itemLocal->SetArt(ART::TYPE::THUMB, localArt);
     items.Add(itemLocal);
   }
 
-  const auto itemNone = std::make_shared<CFileItem>(IMAGE_CHOICE::NONE, false);
+  const auto itemNone = std::make_shared<CFileItem>(ART::CHOICE::NONE, false);
   itemNone->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
   itemNone->SetArt(ART::TYPE::ICON, artHandler->GetDefaultIcon());
   items.Add(itemNone);
@@ -1964,22 +1964,22 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
           result, artHandler->SupportsFlippedArt() ? &flip : nullptr, 39123 /* Artwork */))
     return false; // user cancelled
 
-  if (result == IMAGE_CHOICE::CURRENT)
+  if (result == ART::CHOICE::CURRENT)
     result = currentArt; // user chose the one they have
 
-  if (result == IMAGE_CHOICE::LOCAL)
+  if (result == ART::CHOICE::LOCAL)
     result = localArt;
 
-  if (result == IMAGE_CHOICE::EMBEDDED)
+  if (result == ART::CHOICE::EMBEDDED)
     result = artHandler->UpdateEmbeddedArt(embeddedArt);
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
-  if (result == IMAGE_CHOICE::NONE)
+  if (result == ART::CHOICE::NONE)
   {
     result.clear();
   }
-  else if (const auto index = IMAGE_CHOICE::RemoteIndexOf(result))
+  else if (const auto index = ART::CHOICE::RemoteIndexOf(result))
     result = artHandler->UpdateRemoteArt(remoteArt, static_cast<int>(*index));
 
   // flip selected image, if user wants it

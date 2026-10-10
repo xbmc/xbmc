@@ -424,14 +424,14 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
       // add the current thumb, if available
       if (!share->m_strThumbnailImage.empty())
       {
-        CFileItemPtr current(new CFileItem(IMAGE_CHOICE::CURRENT, false));
+        CFileItemPtr current(new CFileItem(ART::CHOICE::CURRENT, false));
         current->SetArt(ART::TYPE::THUMB, share->m_strThumbnailImage);
         current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
       }
       else if (item->HasArt(ART::TYPE::THUMB))
       { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
-        CFileItemPtr current(new CFileItem(IMAGE_CHOICE::CURRENT, false));
+        CFileItemPtr current(new CFileItem(ART::CHOICE::CURRENT, false));
         current->SetArt(ART::TYPE::THUMB, item->GetArt(ART::TYPE::THUMB));
         current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016));
         items.Add(current);
@@ -440,13 +440,13 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
       std::string folderThumb = ART::GetFolderThumb(*item);
       if (CFileUtils::Exists(folderThumb))
       {
-        CFileItemPtr local(new CFileItem(IMAGE_CHOICE::LOCAL, false));
+        CFileItemPtr local(new CFileItem(ART::CHOICE::LOCAL, false));
         local->SetArt(ART::TYPE::THUMB, folderThumb);
         local->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20017));
         items.Add(local);
       }
       // and add a "no thumb" entry as well
-      CFileItemPtr nothumb(new CFileItem(IMAGE_CHOICE::NONE, false));
+      CFileItemPtr nothumb(new CFileItem(ART::CHOICE::NONE, false));
       nothumb->SetArt(ART::TYPE::ICON, item->GetArt(ART::TYPE::ICON));
       nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018));
       items.Add(nothumb);
@@ -459,13 +459,13 @@ bool CGUIDialogContextMenu::OnContextButton(MediaSection section,
               strThumb))
         return false;
 
-      if (strThumb == IMAGE_CHOICE::CURRENT)
+      if (strThumb == ART::CHOICE::CURRENT)
         return true;
 
-      if (strThumb == IMAGE_CHOICE::LOCAL)
+      if (strThumb == ART::CHOICE::LOCAL)
         strThumb = folderThumb;
 
-      if (strThumb == IMAGE_CHOICE::NONE)
+      if (strThumb == ART::CHOICE::NONE)
         strThumb = "";
 
       if (!share->m_ignore)
