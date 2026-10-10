@@ -413,6 +413,13 @@ void CRenderManager::UnInit()
   m_captureBlit.reset();
   DeleteRenderer();
 
+  if (m_renderState != STATE_CONFIGURED && CServiceBroker::GetAppMessenger()->IsProcessThread())
+  {
+    CServiceBroker::GetWinSystem()->SetGuiCompositing(false);
+    CServiceBroker::GetWinSystem()->SetHDR(nullptr);
+    CServiceBroker::GetWinSystem()->SetColorimetry(nullptr);
+  }
+
   m_renderState = STATE_UNCONFIGURED;
   m_picture.Reset();
   m_bRenderGUI = false;
