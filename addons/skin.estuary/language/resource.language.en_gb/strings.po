@@ -889,7 +889,17 @@ msgctxt "#31177"
 msgid "Choose weather icon pack"
 msgstr ""
 
-#empty strings from id 31178 to 31596
+#: /xml/SkinSettings.xml
+msgctxt "#31178"
+msgid "Embuary Info | in cinemas (soon)"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31179"
+msgid "Embuary Info | next aired"
+msgstr ""
+
+#empty strings from id 31180 to 31596
 
 #: /xml/Includes_SettingsDialog.xml
 #. Button to select Player Process Info window
