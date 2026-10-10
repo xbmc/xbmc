@@ -895,10 +895,11 @@ bool CNetworkServices::IsJSONRPCServerRunning()
 
 bool CNetworkServices::StopJSONRPCServer(bool bWait)
 {
-  if (!IsJSONRPCServerRunning())
-    return true;
-
+  // Requests can still be running after the server thread has exited
+  const bool wasRunning = IsJSONRPCServerRunning();
   CTCPServer::StopServer(bWait);
+  if (!wasRunning)
+    return true;
 
 #ifdef HAS_ZEROCONF
   CZeroconf::GetInstance()->RemoveService("servers.jsonrpc-tcp");

@@ -15,6 +15,12 @@
 #include "threads/Thread.h"
 #include "websocket/WebSocket.h"
 
+#include <atomic>
+#include <condition_variable>
+#include <deque>
+#include <memory>
+#include <mutex>
+#include <string>
 #include <vector>
 
 #include <sys/socket.h>
@@ -31,6 +37,9 @@ namespace JSONRPC
     static bool StartServer(int port, bool nonlocal);
     static void StopServer(bool bWait);
     static bool IsRunning();
+
+    //! \brief Number of request workers currently running, across every connection
+    static unsigned int GetActiveWorkers();
 
     bool PrepareDownload(const char *path, CVariant &details, std::string &protocol) override;
     bool Download(const char *path, CVariant &result) override;
@@ -56,6 +65,7 @@ namespace JSONRPC
       CTCPClient();
       //Copying a CCriticalSection is not allowed, so copy everything but that
       //when adding a member variable, make sure to copy it in CTCPClient::Copy
+      // worker state is deliberately not copied
       CTCPClient(const CTCPClient& client);
       CTCPClient& operator=(const CTCPClient& client);
       ~CTCPClient() override = default;
@@ -64,12 +74,55 @@ namespace JSONRPC
       int GetAnnouncementFlags() override;
       bool SetAnnouncementFlags(int flags) override;
 
+      /*!
+       * \brief Queue a message and write as much of it as the socket takes now.
+       *
+       * Never waits for the peer, so the announcement thread and the server thread are not held
+       * up by one that has stopped reading. The rest is written by the connection's worker in
+       * Drain(), or by the server thread once the socket has room.
+       */
       virtual void Send(const char *data, unsigned int size);
       virtual void PushBuffer(CTCPServer *host, const char *buffer, int length);
       virtual void Disconnect();
 
+      //! \brief Write what is queued and nothing is writing, without waiting for room
+      void Flush();
+
+      //! \brief Whether output is queued that nothing is writing
+      bool HasUnwrittenOutput();
+
+      /*!
+       * \brief Hand the socket, and what is still queued for it, to the client replacing this one.
+       *
+       * Announce() may still hold this client, and must not write to a socket it no longer owns.
+       */
+      void HandOver(CTCPClient& successor);
+
+      /*!
+       * \brief Hand a received buffer to this connection's worker, starting one if none is running.
+       *
+       * The server thread never executes a request itself: a handler may block in a modal
+       * dialog, and every other client would wait behind it. A worker exits once it has drained
+       * the buffers handed to it, so an idle or half-sent connection holds no thread.
+       *
+       * \param self shared ownership of this client, kept alive by the worker
+       * \param host the server, kept alive by the worker through its own shared_ptr
+       */
+      void Enqueue(const std::shared_ptr<CTCPClient>& self,
+                   CTCPServer* host,
+                   const char* buffer,
+                   int length);
+
       virtual bool IsNew() const { return m_new; }
-      virtual bool Closing() const { return false; }
+      virtual bool Closing() const { return m_closing; }
+
+      /*!
+       * \brief Whether this connection has more accepted but unparsed input than it should.
+       *
+       * The server thread stops reading a backlogged connection, which closes the receive
+       * window and holds the client back.
+       */
+      bool Backlogged();
 
       SOCKET m_socket{INVALID_SOCKET};
       sockaddr_storage m_cliaddr;
@@ -78,12 +131,57 @@ namespace JSONRPC
 
     protected:
       void Copy(const CTCPClient& client);
+
+      /*!
+       * \brief Ask the server thread to drop this connection.
+       *
+       * Only the server thread closes a socket: it may be in select() on that descriptor.
+       */
+      void RequestClose() { m_closing = true; }
+
+      //! \brief Set once this client no longer owns its socket, so that nothing more is sent
+      std::atomic<bool> m_disconnecting{false};
+
     private:
+      static void RunWorker(std::shared_ptr<CTCPClient> self, std::shared_ptr<CTCPServer> host);
+      static void RunRequests(const std::shared_ptr<CTCPClient>& self, CTCPServer* host);
+
+      enum class WriteResult
+      {
+        DONE,
+        SOCKET_FULL,
+        FAILED,
+      };
+
+      //! \brief Write what is queued until the socket is full; m_writeMutex must be held
+      WriteResult WriteQueued();
+
+      //! \brief Write everything queued, waiting for room; only the connection's worker waits here
+      void Drain();
+
+      //! \brief Wait for room to send; false once the connection is being dropped
+      bool WaitUntilWritable();
+
       bool m_new;
       int m_announcementflags;
       int m_beginBrackets, m_endBrackets;
       char m_beginChar, m_endChar;
       std::string m_buffer;
+
+      std::atomic<bool> m_closing{false};
+
+      // Held by whoever writes to the socket, and to close it. Only that writer removes from
+      // m_output, so it writes from the front message without copying it.
+      std::mutex m_writeMutex;
+      std::mutex m_outputMutex;
+      std::deque<std::string> m_output;
+      size_t m_outputBytes{0};
+      size_t m_frontWritten{0};
+
+      std::mutex m_inboundMutex;
+      std::deque<std::string> m_inbound;
+      size_t m_inboundBytes{0};
+      bool m_workerStarted{false};
     };
 
     class CWebSocketClient : public CTCPClient
@@ -100,20 +198,30 @@ namespace JSONRPC
       void Disconnect() override;
 
       bool IsNew() const override { return m_websocket == NULL; }
-      bool Closing() const override { return m_websocket != NULL && m_websocket->GetState() == WebSocketStateClosed; }
 
     private:
       CWebSocket *m_websocket;
       std::string m_buffer;
     };
 
-    std::vector<CTCPClient*> m_connections;
+    std::vector<std::shared_ptr<CTCPClient>> m_connections;
     std::vector<SOCKET> m_servers;
     CCriticalSection m_connectionsCritSection;
     int m_port;
     bool m_nonlocal;
     void* m_sdpd;
 
-    static CTCPServer *ServerInstance;
+    // Handed to each worker, so a request still running when StopServer() drops ServerInstance
+    // keeps the server alive until it returns.
+    std::weak_ptr<CTCPServer> m_self;
+
+    //! \brief Wait for every worker but the calling one to finish
+    void WaitForWorkers();
+
+    std::mutex m_workersMutex;
+    std::condition_variable m_workersDone;
+    unsigned int m_activeWorkers{0};
+
+    static std::shared_ptr<CTCPServer> ServerInstance;
   };
 }
