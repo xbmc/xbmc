@@ -70,19 +70,19 @@ CDigest::Type CDigest::TypeFromString(std::string const& type)
 {
   std::string typeLower{type};
   StringUtils::ToLower(typeLower);
-  if (type == "md5")
+  if (typeLower == "md5")
   {
     return Type::MD5;
   }
-  else if (type == "sha1")
+  else if (typeLower == "sha1")
   {
     return Type::SHA1;
   }
-  else if (type == "sha256")
+  else if (typeLower == "sha256")
   {
     return Type::SHA256;
   }
-  else if (type == "sha512")
+  else if (typeLower == "sha512")
   {
     return Type::SHA512;
   }
