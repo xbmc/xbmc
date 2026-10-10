@@ -27,6 +27,9 @@ namespace WINDOWING
 {
 namespace GBM
 {
+
+constexpr const char* SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
+
 // https://github.com/torvalds/linux/blob/7d0a66e4bb9081d75c82ec4957c50034cb0ea449/drivers/
 // gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c#L683-L692
 //

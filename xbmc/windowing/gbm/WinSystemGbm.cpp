@@ -21,6 +21,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "utils/DRMHelpers.h"
 #include "utils/DisplayInfo.h"
 #include "utils/HDRUtils.h"
@@ -100,9 +101,18 @@ CWinSystemGbm::CWinSystemGbm()
 {
   m_dpms = std::make_shared<CGBMDPMSSupport>();
   m_libinput->Start();
+
+  // registered for the lifetime of the object: applying the setting cycles the window system,
+  // which would otherwise unregister the callback that is doing the applying
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
+      this, {SETTING_VIDEOSCREEN_LIMITGUISIZE});
 }
 
-CWinSystemGbm::~CWinSystemGbm() = default;
+CWinSystemGbm::~CWinSystemGbm()
+{
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->UnregisterCallback(
+      this);
+}
 
 const std::string CWinSystemGbm::GetName()
 {
@@ -192,7 +202,7 @@ bool CWinSystemGbm::InitWindowSystem()
   if (!settings)
     return false;
 
-  auto setting = settings->GetSetting("videoscreen.limitguisize");
+  auto setting = settings->GetSetting(SETTING_VIDEOSCREEN_LIMITGUISIZE);
   if (setting)
     setting->SetVisible(true);
 
@@ -254,6 +264,44 @@ void CWinSystemGbm::UpdateResolutions()
 
   // Ensure that scrubbed calibrations are always saved, otherwise would depend on calibration GUI
   CDisplaySettings::GetInstance().UpdateCalibrations();
+}
+
+void CWinSystemGbm::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
+{
+  if (!setting || setting->GetId() != SETTING_VIDEOSCREEN_LIMITGUISIZE)
+    return;
+
+  // post rather than call: this can run off the main thread (e.g. JSON-RPC), and it runs with the
+  // settings lock held, which applying the mode needs on the main thread to write back
+  // videoscreen.screenmode
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1, &m_limitGuiSizeCallback);
+}
+
+void CWinSystemGbm::ApplyLimitGuiSize(void* userptr)
+{
+  auto* winSystem = static_cast<CWinSystemGbm*>(userptr);
+
+  // the limit is applied as the mode list is built, so the list has to be rebuilt and the
+  // current mode re-applied for the GUI to be recreated at the new size
+  CDisplaySettings& displaySettings = CDisplaySettings::GetInstance();
+  const RESOLUTION_INFO desktop = displaySettings.GetResolutionInfo(RES_DESKTOP);
+  winSystem->UpdateResolutions();
+
+  // UpdateResolutions() makes the current mode the desktop mode, which during playback is the
+  // mode chosen for the video rather than the one to return to when it stops
+  for (size_t i = RES_CUSTOM; i < displaySettings.ResolutionInfoSize(); ++i)
+  {
+    const RESOLUTION_INFO& res = displaySettings.GetResolutionInfo(i);
+    if (res.iScreenWidth == desktop.iScreenWidth && res.iScreenHeight == desktop.iScreenHeight &&
+        res.fRefreshRate == desktop.fRefreshRate && res.dwFlags == desktop.dwFlags)
+    {
+      displaySettings.GetResolutionInfo(RES_DESKTOP) = res;
+      break;
+    }
+  }
+
+  CGraphicContext& gfx = winSystem->GetGfxContext();
+  gfx.SetVideoResolution(gfx.GetVideoResolution(), true);
 }
 
 bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
