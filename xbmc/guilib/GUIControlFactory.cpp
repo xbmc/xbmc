@@ -1156,7 +1156,21 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     StringUtils::ToLower(strTmp);
     if (strTmp == "horizontal")
       orientation = HORIZONTAL;
+    else if (strTmp == "horizontal-reverse")
+      orientation = HORIZONTAL_REVERSE;
+    else if (strTmp == "vertical-reverse")
+      orientation = VERTICAL_REVERSE;
   }
+  // Reverse orientations are implemented by list-type containers only. Other controls compare
+  // the orientation against HORIZONTAL/VERTICAL directly, so hand them the base axis.
+  if (IsReversed(orientation) && type != CGUIControl::GUICONTAINER_LIST &&
+      type != CGUIControl::GUICONTAINER_WRAPLIST && type != CGUIControl::GUICONTAINER_FIXEDLIST &&
+      type != CGUIControl::GUICONTAINER_PANEL)
+  {
+    CLog::Log(LOGWARNING, "Control {}: reversed orientation is not supported for this control type, ignoring", id);
+    orientation = IsVertical(orientation) ? VERTICAL : HORIZONTAL;
+  }
+
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
 
   int movement = 0;
