@@ -13,6 +13,8 @@
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "threads/SystemClock.h"
 
+#include <atomic>
+
 class CGUIListItem;
 class CFileItem;
 class CLabelInfo;
@@ -63,7 +65,7 @@ protected:
   float m_width{0};
   float m_height{0};
   bool m_focused{false};
-  bool m_invalidated{true};
+  std::atomic_bool m_invalidated{true};
   CGUIControl* m_sizeChangeOwner{nullptr};
 
   INFO::InfoPtr m_condition;

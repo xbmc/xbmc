@@ -126,7 +126,7 @@ protected:
    \param filter the filter to use.
    \sa FilterItems
    */
-  void OnFilterItems(const std::string &filter);
+  virtual void OnFilterItems(const std::string& filter);
 
   /* \brief Retrieve the filtered item list
    \param filter filter to apply

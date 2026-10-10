@@ -29,6 +29,7 @@ protected:
   // override base class methods
   bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
   bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
+  void OnFilterItems(const std::string& filter) override;
   void UpdateButtons() override;
   void PlayItem(int iItem) override;
   void OnWindowLoaded() override;
