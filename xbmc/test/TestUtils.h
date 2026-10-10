@@ -94,6 +94,27 @@ private:
   double probability;
 };
 
+//! \brief Sets a setting for the life of the guard, then puts back the value it had.
+class CScopedSetting
+{
+public:
+  //! \brief Only puts the value back, for a test that sets the setting itself.
+  explicit CScopedSetting(const std::string& id);
+  CScopedSetting(const std::string& id, bool value);
+  CScopedSetting(const std::string& id, const std::string& value);
+  CScopedSetting(const std::string& id, const char* value) : CScopedSetting(id, std::string{value})
+  {
+  }
+  ~CScopedSetting();
+
+  CScopedSetting(const CScopedSetting&) = delete;
+  CScopedSetting& operator=(const CScopedSetting&) = delete;
+
+private:
+  std::string m_id;
+  std::string m_previous;
+};
+
 #define XBMC_REF_FILE_PATH(s) CXBMCTestUtils::Instance().ReferenceFilePath(s)
 #define XBMC_CREATETEMPFILE(a) CXBMCTestUtils::Instance().CreateTempFile(a)
 #define XBMC_DELETETEMPFILE(a) CXBMCTestUtils::Instance().DeleteTempFile(a)
