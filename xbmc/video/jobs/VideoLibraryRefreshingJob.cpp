@@ -570,6 +570,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // something went wrong
       MarkFinished();
 
+      // The movie has been removed. Remove its other versions and extras too, as removing it from
+      // the library would, rather than leave them attached to a movie that no longer exists.
+      if (hasAdditionalAssets && scraper->Content() == ADDON::ContentType::MOVIES)
+        db.DeleteMovie(origDbId, DeleteMovieCascadeAction::ALL_ASSETS);
+
       // check if the user cancelled
       if (!IsCancelled() && IsModal())
         HELPERS::ShowOKDialogText(CVariant{195}, CVariant{itemTitle});

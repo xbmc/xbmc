@@ -274,6 +274,8 @@ namespace KODI::VIDEO
      A disc rip or archive is not anchored in the folder that was scanned but under a
      bluray:// or zip:// path of its own. Those are queued too, otherwise the clean never
      looks at them and media removed with the disc stays in the library.
+     The video extras folders of the directory are queued too, as the scan adds their
+     extras without scanning them as directories of their own.
      \param directory the directory that was scanned
      */
     void AddPathToClean(const std::string& directory);

@@ -2811,12 +2811,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     m_pathsToClean.insert(m_database.GetPathId(directory));
 
-    // Pick up the base paths of directory's disc rips and archives
+    // Pick up the base paths of directory's disc rips and archives, and its video extras folders
     std::vector<std::pair<int, std::string>> subPaths;
     m_database.GetSubPaths(directory, subPaths, false);
     for (const auto& [idPath, path] : subPaths)
     {
-      if (!URIUtils::PathHasParent(path, directory) || URIUtils::IsDiscPath(path))
+      if (!URIUtils::PathHasParent(path, directory) || URIUtils::IsDiscPath(path) ||
+          !GetExtrasFolder(directory, path).empty())
         m_pathsToClean.insert(idPath);
     }
   }
