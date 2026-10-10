@@ -8,244 +8,270 @@
 
 #pragma once
 
+#include "utils/StringUtils.h"
+
 #include <algorithm>
 #include <array>
+#include <optional>
 #include <string_view>
+#include <utility>
 
-struct ISO639
+namespace KODI::LANGUAGE::I18N
 {
-  std::string_view iso639_1;
-  std::string_view iso639_2b;
+struct ISO639_1
+{
+  std::string_view alpha2; // alpha-2 code
+  std::string_view alpha3B; // ISO 639-2/B code
+  std::string_view name; // English name
+  bool withdrawn; // ISO 639-1 no longer assigns the code
 };
 
-// Legacy ISO 639 table - unclear source
-// Sorted by alpha-2
+// ISO 639-1 table
+// Source: Library of Congress http://www.loc.gov/standards/iso639-2, sorted by alpha-2
 
-inline static constexpr int LANGUAGE_CODES_COUNT = 190;
+// 4 special-scope ISO 639-2 codes + 183 current ISO 639-1 codes + 1 Kodi addition + 7 withdrawn
+inline constexpr int ISO639_1_COUNT = 195;
 
 // clang-format off
-inline constexpr std::array<ISO639, LANGUAGE_CODES_COUNT> LanguageCodes = {{
+inline constexpr std::array<ISO639_1, ISO639_1_COUNT> TableISO639_1 = {{
     // The four special-scope ISO 639-2 codes have no ISO 639-1 code, and sort first for it
-    {"", "und"}, // Undetermined
-    {"", "zxx"}, // No linguistic content
-    {"", "mis"}, // Uncoded languages
-    {"", "mul"}, // Multiple languages
-    {"aa", "aar"},
-    {"ab", "abk"},
-    {"ae", "ave"},
-    {"af", "afr"},
-    {"ak", "aka"},
-    {"am", "amh"},
-    {"an", "arg"},
-    {"ar", "ara"},
-    {"as", "asm"},
-    {"av", "ava"},
-    {"ay", "aym"},
-    {"az", "aze"},
-    {"ba", "bak"},
-    {"be", "bel"},
-    {"bg", "bul"},
-    {"bh", "bih"},
-    {"bi", "bis"},
-    {"bm", "bam"},
-    {"bn", "ben"},
-    {"bo", "tib"},
-    {"br", "bre"},
-    {"bs", "bos"},
-    {"ca", "cat"},
-    {"ce", "che"},
-    {"ch", "cha"},
-    {"co", "cos"},
-    {"cr", "cre"},
-    {"cs", "cze"},
-    {"cu", "chu"},
-    {"cv", "chv"},
-    {"cy", "wel"},
-    {"da", "dan"},
-    {"de", "ger"},
-    {"dv", "div"},
-    {"dz", "dzo"},
-    {"ee", "ewe"},
-    {"el", "gre"},
-    {"en", "eng"},
-    {"eo", "epo"},
-    {"es", "spa"},
-    {"et", "est"},
-    {"eu", "baq"},
-    {"fa", "per"},
-    {"ff", "ful"},
-    {"fi", "fin"},
-    {"fj", "fij"},
-    {"fo", "fao"},
-    {"fr", "fre"},
-    {"fy", "fry"},
-    {"ga", "gle"},
-    {"gd", "gla"},
-    {"gl", "glg"},
-    {"gn", "grn"},
-    {"gu", "guj"},
-    {"gv", "glv"},
-    {"ha", "hau"},
-    {"he", "heb"},
-    {"hi", "hin"},
-    {"ho", "hmo"},
-    {"hr", "hrv"},
-    {"ht", "hat"},
-    {"hu", "hun"},
-    {"hy", "arm"},
-    {"hz", "her"},
-    {"ia", "ina"},
-    {"id", "ind"},
-    {"ie", "ile"},
-    {"ig", "ibo"},
-    {"ii", "iii"},
-    {"ik", "ipk"},
-    {"io", "ido"},
-    {"is", "ice"},
-    {"it", "ita"},
-    {"iu", "iku"},
-    {"ja", "jpn"},
-    {"jv", "jav"},
-    {"ka", "geo"},
-    {"kg", "kon"},
-    {"ki", "kik"},
-    {"kj", "kua"},
-    {"kk", "kaz"},
-    {"kl", "kal"},
-    {"km", "khm"},
-    {"kn", "kan"},
-    {"ko", "kor"},
-    {"kr", "kau"},
-    {"ks", "kas"},
-    {"ku", "kur"},
-    {"kv", "kom"},
-    {"kw", "cor"},
-    {"ky", "kir"},
-    {"la", "lat"},
-    {"lb", "ltz"},
-    {"lg", "lug"},
-    {"li", "lim"},
-    {"ln", "lin"},
-    {"lo", "lao"},
-    {"lt", "lit"},
-    {"lu", "lub"},
-    {"lv", "lav"},
-    {"mg", "mlg"},
-    {"mh", "mah"},
-    {"mi", "mao"},
-    {"mk", "mac"},
-    {"ml", "mal"},
-    {"mn", "mon"},
-    {"mr", "mar"},
-    {"ms", "may"},
-    {"mt", "mlt"},
-    {"my", "bur"},
-    {"na", "nau"},
-    {"nb", "nob"},
-    {"nd", "nde"},
-    {"ne", "nep"},
-    {"ng", "ndo"},
-    {"nl", "dut"},
-    {"nn", "nno"},
-    {"no", "nor"},
-    {"nr", "nbl"},
-    {"nv", "nav"},
-    {"ny", "nya"},
-    {"oc", "oci"},
-    {"oj", "oji"},
-    {"om", "orm"},
-    {"or", "ori"},
-    {"os", "oss"},
-    {"pa", "pan"},
-    // pb / pob = unofficial language code for Brazilian Portuguese
-    {"pb", "pob"},
-    {"pi", "pli"},
-    {"pl", "pol"},
-    {"ps", "pus"},
-    {"pt", "por"},
-    {"qu", "que"},
-    {"rm", "roh"},
-    {"rn", "run"},
-    {"ro", "rum"},
-    {"ru", "rus"},
-    {"rw", "kin"},
-    {"sa", "san"},
-    {"sc", "srd"},
-    {"sd", "snd"},
-    {"se", "sme"},
-    {"sg", "sag"},
-    {"sh", "scr"},
-    {"si", "sin"},
-    {"sk", "slo"},
-    {"sl", "slv"},
-    {"sm", "smo"},
-    {"sn", "sna"},
-    {"so", "som"},
-    {"sq", "alb"},
-    {"sr", "srp"},
-    {"ss", "ssw"},
-    {"st", "sot"},
-    {"su", "sun"},
-    {"sv", "swe"},
-    {"sw", "swa"},
-    {"ta", "tam"},
-    {"te", "tel"},
-    {"tg", "tgk"},
-    {"th", "tha"},
-    {"ti", "tir"},
-    {"tk", "tuk"},
-    {"tl", "tgl"},
-    {"tn", "tsn"},
-    {"to", "ton"},
-    {"tr", "tur"},
-    {"ts", "tso"},
-    {"tt", "tat"},
-    {"tw", "twi"},
-    {"ty", "tah"},
-    {"ug", "uig"},
-    {"uk", "ukr"},
-    {"ur", "urd"},
-    {"uz", "uzb"},
-    {"ve", "ven"},
-    {"vi", "vie"},
-    {"vo", "vol"},
-    {"wa", "wln"},
-    {"wo", "wol"},
-    {"xh", "xho"},
-    {"yi", "yid"},
-    {"yo", "yor"},
-    {"za", "zha"},
-    {"zh", "chi"},
-    {"zu", "zul"},
+    {"", "und", "", false}, // Undetermined
+    {"", "zxx", "", false}, // No linguistic content
+    {"", "mis", "", false}, // Uncoded languages
+    {"", "mul", "", false}, // Multiple languages
+    {"aa", "aar", "Afar", false},
+    {"ab", "abk", "Abkhazian", false},
+    {"ae", "ave", "Avestan", false},
+    {"af", "afr", "Afrikaans", false},
+    {"ak", "aka", "Akan", false},
+    {"am", "amh", "Amharic", false},
+    {"an", "arg", "Aragonese", false},
+    {"ar", "ara", "Arabic", false},
+    {"as", "asm", "Assamese", false},
+    {"av", "ava", "Avaric", false},
+    {"ay", "aym", "Aymara", false},
+    {"az", "aze", "Azerbaijani", false},
+    {"ba", "bak", "Bashkir", false},
+    {"be", "bel", "Belarusian", false},
+    {"bg", "bul", "Bulgarian", false},
+    {"bh", "bih", "Bihari", true}, // withdrawn 2021, with no alpha-2 replacement
+    {"bi", "bis", "Bislama", false},
+    {"bm", "bam", "Bambara", false},
+    {"bn", "ben", "Bengali; Bangla", false},
+    {"bo", "tib", "Tibetan", false},
+    {"br", "bre", "Breton", false},
+    {"bs", "bos", "Bosnian", false},
+    {"ca", "cat", "Catalan", false},
+    {"ce", "che", "Chechen", false},
+    {"ch", "cha", "Chamorro", false},
+    {"co", "cos", "Corsican", false},
+    {"cr", "cre", "Cree", false},
+    {"cs", "cze", "Czech", false},
+    {"cu", "chu", "Church Slavic", false},
+    {"cv", "chv", "Chuvash", false},
+    {"cy", "wel", "Welsh", false},
+    {"da", "dan", "Danish", false},
+    {"de", "ger", "German", false},
+    {"dv", "div", "Dhivehi", false},
+    {"dz", "dzo", "Dzongkha", false},
+    {"ee", "ewe", "Ewe", false},
+    {"el", "gre", "Greek", false},
+    {"en", "eng", "English", false},
+    {"eo", "epo", "Esperanto", false},
+    {"es", "spa", "Spanish", false},
+    {"et", "est", "Estonian", false},
+    {"eu", "baq", "Basque", false},
+    {"fa", "per", "Persian", false},
+    {"ff", "ful", "Fulah", false},
+    {"fi", "fin", "Finnish", false},
+    {"fj", "fij", "Fijian", false},
+    {"fo", "fao", "Faroese", false},
+    {"fr", "fre", "French", false},
+    {"fy", "fry", "Western Frisian", false},
+    {"ga", "gle", "Irish", false},
+    {"gd", "gla", "Scottish Gaelic", false},
+    {"gl", "glg", "Galician", false},
+    {"gn", "grn", "Guarani", false},
+    {"gu", "guj", "Gujarati", false},
+    {"gv", "glv", "Manx", false},
+    {"ha", "hau", "Hausa", false},
+    {"he", "heb", "Hebrew", false},
+    {"hi", "hin", "Hindi", false},
+    {"ho", "hmo", "Hiri Motu", false},
+    {"hr", "hrv", "Croatian", false},
+    {"ht", "hat", "Haitian", false},
+    {"hu", "hun", "Hungarian", false},
+    {"hy", "arm", "Armenian", false},
+    {"hz", "her", "Herero", false},
+    {"ia", "ina", "Interlingua", false},
+    {"id", "ind", "Indonesian", false},
+    {"ie", "ile", "Interlingue", false},
+    {"ig", "ibo", "Igbo", false},
+    {"ii", "iii", "Sichuan Yi", false},
+    {"ik", "ipk", "Inupiat", false},
+    {"in", "ind", "Indonesian", true}, // withdrawn 1989, now id
+    {"io", "ido", "Ido", false},
+    {"is", "ice", "Icelandic", false},
+    {"it", "ita", "Italian", false},
+    {"iu", "iku", "Inuktitut", false},
+    {"iw", "heb", "Hebrew", true}, // withdrawn 1989, now he
+    {"ja", "jpn", "Japanese", false},
+    {"ji", "yid", "Yiddish", true}, // withdrawn 1989, now yi
+    {"jv", "jav", "Javanese", false},
+    {"jw", "jav", "Javanese", true}, // withdrawn 2001, now jv
+    {"ka", "geo", "Georgian", false},
+    {"kg", "kon", "Kongo", false},
+    {"ki", "kik", "Kikuyu", false},
+    {"kj", "kua", "Kuanyama", false},
+    {"kk", "kaz", "Kazakh", false},
+    {"kl", "kal", "Kalaallisut", false},
+    {"km", "khm", "Khmer", false},
+    {"kn", "kan", "Kannada", false},
+    {"ko", "kor", "Korean", false},
+    {"kr", "kau", "Kanuri", false},
+    {"ks", "kas", "Kashmiri", false},
+    {"ku", "kur", "Kurdish", false},
+    {"kv", "kom", "Komi", false},
+    {"kw", "cor", "Cornish", false},
+    {"ky", "kir", "Kirghiz", false},
+    {"la", "lat", "Latin", false},
+    {"lb", "ltz", "Luxembourgish", false},
+    {"lg", "lug", "Ganda", false},
+    {"li", "lim", "Limburgan", false},
+    {"ln", "lin", "Lingala", false},
+    {"lo", "lao", "Lao", false},
+    {"lt", "lit", "Lithuanian", false},
+    {"lu", "lub", "Luba-Katanga", false},
+    {"lv", "lav", "Latvian, Lettish", false},
+    {"mg", "mlg", "Malagasy", false},
+    {"mh", "mah", "Marshallese", false},
+    {"mi", "mao", "Maori", false},
+    {"mk", "mac", "Macedonian", false},
+    {"ml", "mal", "Malayalam", false},
+    {"mn", "mon", "Mongolian", false},
+    {"mo", "rum", "Moldavian", true}, // withdrawn 2008, merged into ro
+    {"mr", "mar", "Marathi", false},
+    {"ms", "may", "Malay", false},
+    {"mt", "mlt", "Maltese", false},
+    {"my", "bur", "Burmese", false},
+    {"na", "nau", "Nauru", false},
+    {"nb", "nob", "Norwegian Bokmål", false},
+    {"nd", "nde", "Ndebele, North", false},
+    {"ne", "nep", "Nepali", false},
+    {"ng", "ndo", "Ndonga", false},
+    {"nl", "dut", "Dutch", false},
+    {"nn", "nno", "Norwegian Nynorsk", false},
+    {"no", "nor", "Norwegian", false},
+    {"nr", "nbl", "Ndebele, South", false},
+    {"nv", "nav", "Navajo", false},
+    {"ny", "nya", "Chichewa", false},
+    {"oc", "oci", "Occitan", false},
+    {"oj", "oji", "Ojibwa", false},
+    {"om", "orm", "Oromo", false},
+    {"or", "ori", "Oriya", false},
+    {"os", "oss", "Ossetic", false},
+    {"pa", "pan", "Punjabi", false},
+    // unofficial code for Brazilian Portuguese
+    {"pb", "pob", "Portuguese (Brazil)", false},
+    {"pi", "pli", "Pali", false},
+    {"pl", "pol", "Polish", false},
+    {"ps", "pus", "Pashto, Pushto", false},
+    {"pt", "por", "Portuguese", false},
+    {"qu", "que", "Quechua", false},
+    {"rm", "roh", "Romansh", false},
+    {"rn", "run", "Kirundi", false},
+    {"ro", "rum", "Romanian", false},
+    {"ru", "rus", "Russian", false},
+    {"rw", "kin", "Kinyarwanda", false},
+    {"sa", "san", "Sanskrit", false},
+    {"sc", "srd", "Sardinian", false},
+    {"sd", "snd", "Sindhi", false},
+    {"se", "sme", "Northern Sami", false},
+    {"sg", "sag", "Sangho", false},
+    {"sh", "hbs", "Serbo-Croatian", true}, // withdrawn 2000; hbs is ISO 639-3, ISO 639-2 having withdrawn scr
+    {"si", "sin", "Sinhalese", false},
+    {"sk", "slo", "Slovak", false},
+    {"sl", "slv", "Slovenian", false},
+    {"sm", "smo", "Samoan", false},
+    {"sn", "sna", "Shona", false},
+    {"so", "som", "Somali", false},
+    {"sq", "alb", "Albanian", false},
+    {"sr", "srp", "Serbian", false},
+    {"ss", "ssw", "Swati", false},
+    {"st", "sot", "Sesotho", false},
+    {"su", "sun", "Sundanese", false},
+    {"sv", "swe", "Swedish", false},
+    {"sw", "swa", "Swahili", false},
+    {"ta", "tam", "Tamil", false},
+    {"te", "tel", "Telugu", false},
+    {"tg", "tgk", "Tajik", false},
+    {"th", "tha", "Thai", false},
+    {"ti", "tir", "Tigrinya", false},
+    {"tk", "tuk", "Turkmen", false},
+    {"tl", "tgl", "Tagalog", false},
+    {"tn", "tsn", "Tswana", false},
+    {"to", "ton", "Tonga", false},
+    {"tr", "tur", "Turkish", false},
+    {"ts", "tso", "Tsonga", false},
+    {"tt", "tat", "Tatar", false},
+    {"tw", "twi", "Twi", false},
+    {"ty", "tah", "Tahitian", false},
+    {"ug", "uig", "Uighur", false},
+    {"uk", "ukr", "Ukrainian", false},
+    {"ur", "urd", "Urdu", false},
+    {"uz", "uzb", "Uzbek", false},
+    {"ve", "ven", "Venda", false},
+    {"vi", "vie", "Vietnamese", false},
+    {"vo", "vol", "Volapuk", false},
+    {"wa", "wln", "Walloon", false},
+    {"wo", "wol", "Wolof", false},
+    {"xh", "xho", "Xhosa", false},
+    {"yi", "yid", "Yiddish", false},
+    {"yo", "yor", "Yoruba", false},
+    {"za", "zha", "Zhuang", false},
+    {"zh", "chi", "Chinese", false},
+    {"zu", "zul", "Zulu", false},
 }};
 // clang-format on
 
-static_assert(std::ranges::is_sorted(LanguageCodes, {}, &ISO639::iso639_1));
+static_assert(std::ranges::is_sorted(TableISO639_1, {}, &ISO639_1::alpha2));
 
-// ISO 639-1 withdrew these codes. Media tagged with the old spelling still has to be understood,
-// so they live here rather than in the table above, whose ISO 639-2/B codes have to stay unique
-// for the reverse lookup to have one answer per language.
-// Sorted by alpha-2
-inline constexpr auto DeprecatedLanguageCodes = std::array<ISO639, 5>{{
-    {"in", "ind"}, // Indonesian, now id
-    {"iw", "heb"}, // Hebrew, now he
-    {"ji", "yid"}, // Yiddish, now yi
-    {"jw", "jav"}, // Javanese, now jv
-    {"mo", "rum"}, // Moldavian, merged into Romanian (ro) in 2008
-}};
+static_assert(std::ranges::all_of(
+    TableISO639_1,
+    [](std::string_view name) { return StringUtils::IsAsciiTrimmed(name); },
+    &ISO639_1::name));
 
-static_assert(std::ranges::is_sorted(DeprecatedLanguageCodes, {}, &ISO639::iso639_1));
-
-constexpr auto CreateLanguageCodesSortedByIso639_2b()
+constexpr auto CreateTableISO639_1ByAlpha3B()
 {
-  auto codes{LanguageCodes};
-  std::ranges::sort(codes, {}, &ISO639::iso639_2b);
+  auto codes{TableISO639_1};
+  // A language's current code sorts ahead of a code withdrawn from it
+  std::ranges::sort(codes, {}, [](const ISO639_1& entry)
+                    { return std::pair{entry.alpha3B, entry.withdrawn}; });
   return codes;
 }
 
-inline constexpr auto LanguageCodesByIso639_2b = CreateLanguageCodesSortedByIso639_2b();
+inline constexpr auto TableISO639_1ByAlpha3B = CreateTableISO639_1ByAlpha3B();
 
-// The sort above is not stable, so a repeated ISO 639-2/B code would resolve to whichever row the
-// compiler happened to place first - a language exported differently by different builds.
-static_assert(std::ranges::adjacent_find(LanguageCodesByIso639_2b, {}, &ISO639::iso639_2b) ==
-              LanguageCodesByIso639_2b.end());
+// The sort above is not stable, so a repeated code would resolve to whichever row the compiler
+// happened to place first - a language exported differently by different builds.
+static_assert(std::ranges::adjacent_find(TableISO639_1ByAlpha3B,
+                                         [](const ISO639_1& a, const ISO639_1& b)
+                                         {
+                                           return a.alpha3B == b.alpha3B &&
+                                                  a.withdrawn == b.withdrawn;
+                                         }) == TableISO639_1ByAlpha3B.end());
+
+/*!
+ * \brief The ISO 639-1 code of a language given by its ISO 639-2/B code.
+ * \return The current code, or the withdrawn one where ISO 639-1 has no other for the language,
+ *         or nullopt when it has none at all.
+ */
+constexpr std::optional<std::string_view> Alpha2OfAlpha3B(std::string_view alpha3B)
+{
+  const auto it = std::ranges::lower_bound(TableISO639_1ByAlpha3B, alpha3B, {}, &ISO639_1::alpha3B);
+  if (it == TableISO639_1ByAlpha3B.end() || it->alpha3B != alpha3B || it->alpha2.empty())
+    return std::nullopt;
+
+  return it->alpha2;
+}
+} // namespace KODI::LANGUAGE::I18N

@@ -2,8 +2,8 @@ set(SOURCES TestBcp47.cpp
             TestBcp47Formatter.cpp
             TestBcp47Parser.cpp
             TestIso3166_1.cpp
-            TestIso639_1.cpp
-            TestIso639_2.cpp
+            TestIso639.cpp
+            TestLanguageTable.cpp
             TestI18nUtils.cpp
             TestListFormatter.cpp)
 
