@@ -17,6 +17,7 @@ set(SOURCES AudioSinkAE.cpp
             PTSTracker.cpp
             RadioRDSCountries.cpp
             VideoDecodeSession.cpp
+            VideoFileGeometry.cpp
             VideoPlayer.cpp
             VideoPlayerAudio.cpp
             VideoPlayerAudioID3.cpp
@@ -48,6 +49,7 @@ set(HEADERS AudioSinkAE.h
             PTSTracker.h
             RadioRDSCountries.h
             VideoDecodeSession.h
+            VideoFileGeometry.h
             VideoPlayer.h
             VideoPlayerAudio.h
             VideoPlayerAudioID3.h
