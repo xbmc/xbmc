@@ -23,6 +23,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
+#include "filesystem/SourcesDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
@@ -588,7 +589,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     bool inPlaylists = m_vecItems->IsPath(CUtil::MusicPlaylistsLocation()) ||
       m_vecItems->IsPath("special://musicplaylists/");
 
-    if (m_vecItems->IsPath("sources://music/"))
+    if (m_vecItems->IsPath(CSourcesDirectory::PathOf(MediaSection::MUSIC)))
     {
       // get the usual music shares, and anything for all media windows
       CGUIDialogContextMenu::GetContextButtons(MediaSection::MUSIC, item, buttons);
@@ -969,7 +970,7 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
       {"artists", MUSIC::DB_PATH::ARTISTS},
       {"boxsets", "musicdb://boxsets/"},
       {"compilations", "musicdb://compilations/"},
-      {"files", "sources://music/"},
+      {"files", CSourcesDirectory::PathOf(MediaSection::MUSIC)},
       {"genres", MUSIC::DB_PATH::GENRES},
       {"recentlyaddedalbums", MUSIC::DB_PATH::RECENTLY_ADDED_ALBUMS},
       {"recentlyplayedalbums", MUSIC::DB_PATH::RECENTLY_PLAYED_ALBUMS},
