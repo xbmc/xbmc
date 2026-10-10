@@ -1081,11 +1081,14 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(pVideoPicture->pixelFormat);
   pVideoPicture->colorBits = desc ? desc->comp[0].depth : 8;
 
+  AVColorRange range = m_hints.colorRange;
   if (m_pCodecContext->color_range == AVCOL_RANGE_JPEG ||
     m_pCodecContext->pix_fmt == AV_PIX_FMT_YUVJ420P)
-    pVideoPicture->color_range = 1;
-  else
-    pVideoPicture->color_range = m_hints.colorRange == AVCOL_RANGE_JPEG ? 1 : 0;
+    range = AVCOL_RANGE_JPEG;
+  else if (range == AVCOL_RANGE_UNSPECIFIED)
+    range = m_pCodecContext->color_range;
+
+  pVideoPicture->color_range = VideoPicture::IsFullRange(range, pVideoPicture->pixelFormat);
 
   //! @todo: ffmpeg doesn't seem like they know how they want to handle this.
   // av_frame_get_qp_table is deprecated but there doesn't seem to be a valid

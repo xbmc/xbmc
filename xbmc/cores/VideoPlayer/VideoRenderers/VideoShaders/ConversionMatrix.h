@@ -155,6 +155,11 @@ public:
   CConvertMatrix& SetSourceColorSpace(AVColorSpace colorSpace);
 
   /**
+   * @brief Set whether the source planes hold G, B and R instead of Y, Cb and Cr.
+   */
+  CConvertMatrix& SetSourceRGB(bool rgb);
+
+  /**
    * @brief Set the source bit depth.
    */
   CConvertMatrix& SetSourceBitDepth(int bits);
@@ -229,6 +234,7 @@ private:
   std::unique_ptr<CMatrix<3>> m_matPrim;
 
   AVColorSpace m_colSpace = AVCOL_SPC_BT709;
+  bool m_rgbSrc = false;
   AVColorPrimaries m_colPrimariesSrc = AVCOL_PRI_BT709;
   float m_gammaSrc = 2.2f;
   bool m_limitedSrc = true;

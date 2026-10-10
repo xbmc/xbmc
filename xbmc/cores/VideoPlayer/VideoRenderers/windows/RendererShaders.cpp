@@ -17,15 +17,46 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <algorithm>
+
 #include <ppl.h>
 
 using namespace Microsoft::WRL;
-static DXGI_FORMAT plane_formats[][2] =
+
+namespace
 {
-  { DXGI_FORMAT_R8_UNORM,  DXGI_FORMAT_R8G8_UNORM },   // NV12
-  { DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM }, // P010
-  { DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM }  // P016
+// The textures the planes of a picture are drawn from, one row for each format the renderer takes
+struct PlaneTextures
+{
+  AVPixelFormat format;
+  DXGI_FORMAT first;
+  DXGI_FORMAT others;
 };
+
+constexpr PlaneTextures FORMATS[] = {
+    {AV_PIX_FMT_NV12, DXGI_FORMAT_R8_UNORM, DXGI_FORMAT_R8G8_UNORM},
+    {AV_PIX_FMT_YUV420P, DXGI_FORMAT_R8_UNORM, DXGI_FORMAT_R8_UNORM},
+    {AV_PIX_FMT_P010, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM},
+    {AV_PIX_FMT_YUV420P10, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+    {AV_PIX_FMT_P016, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16G16_UNORM},
+    {AV_PIX_FMT_YUV420P16, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+    {AV_PIX_FMT_YUV422P, DXGI_FORMAT_R8_UNORM, DXGI_FORMAT_R8_UNORM},
+    {AV_PIX_FMT_YUV422P10, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+    {AV_PIX_FMT_YUV422P12, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+    {AV_PIX_FMT_YUV444P, DXGI_FORMAT_R8_UNORM, DXGI_FORMAT_R8_UNORM},
+    {AV_PIX_FMT_YUV444P10, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+    {AV_PIX_FMT_YUV444P12, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+    {AV_PIX_FMT_GBRP, DXGI_FORMAT_R8_UNORM, DXGI_FORMAT_R8_UNORM},
+    {AV_PIX_FMT_GBRP10, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+    {AV_PIX_FMT_GBRP12, DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM},
+};
+
+const PlaneTextures* FindTextures(AVPixelFormat format)
+{
+  const auto it = std::ranges::find(FORMATS, format, &PlaneTextures::format);
+  return it != std::end(FORMATS) ? it : nullptr;
+}
+} // namespace
 
 CRendererBase* CRendererShaders::Create(CVideoSettings& videoSettings)
 {
@@ -37,38 +68,35 @@ void CRendererShaders::GetWeight(std::map<RenderMethod, int>& weights, const Vid
   unsigned weight = 0;
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
 
-  switch (av_pixel_format)
+  if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    case AV_PIX_FMT_D3D11VA_VLD:
-      if (IsHWPicSupported(picture))
-        weight += 1000; // support natively
-      else
-        weight += 200; // double copying (GPU->CPU->GPU)
-      break;
-    case AV_PIX_FMT_YUV420P:
-    case AV_PIX_FMT_NV12:
+    if (IsHWPicSupported(picture))
+      weight += 1000; // support natively
+    else
+      weight += 200; // double copying (GPU->CPU->GPU)
+  }
+  else if (const PlaneTextures* textures = FindTextures(av_pixel_format))
+  {
+    // every feature level has the 8 bit textures
+    if (textures->first == DXGI_FORMAT_R8_UNORM ||
+        (DX::Windowing()->IsFormatSupport(textures->first, D3D11_FORMAT_SUPPORT_TEXTURE2D) &&
+         DX::Windowing()->IsFormatSupport(textures->others, D3D11_FORMAT_SUPPORT_TEXTURE2D)))
       weight += 500; // single copying
-      break;
-    case AV_PIX_FMT_YUV420P10:
-    case AV_PIX_FMT_YUV420P16:
-      if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
-        weight += 500; // single copying
-      else
-        CLog::LogF(LOGWARNING, "Texture format DXGI_FORMAT_R16_UNORM is not supported.");
-      break;
-    case AV_PIX_FMT_P010:
-    case AV_PIX_FMT_P016:
-      if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D) &&
-          DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16G16_UNORM,
-                                           D3D11_FORMAT_SUPPORT_TEXTURE2D))
-        weight += 500; // single copying
-      else
-        CLog::LogF(LOGWARNING, "Texture format R16_UNORM / R16G16_UNORM is not supported.");
-      break;
+    else
+      CLog::LogF(LOGWARNING, "Texture format R16_UNORM / R16G16_UNORM is not supported.");
   }
 
   if (weight > 0)
     weights[RENDER_PS] = weight;
+}
+
+std::vector<AVPixelFormat> CRendererShaders::GetRenderFormats()
+{
+  std::vector<AVPixelFormat> formats{AV_PIX_FMT_D3D11VA_VLD};
+  for (const PlaneTextures& textures : FORMATS)
+    formats.push_back(textures.format);
+
+  return formats;
 }
 
 CRendererShaders::CRendererShaders(CVideoSettings& videoSettings) : CRendererHQ(videoSettings)
@@ -227,73 +255,46 @@ CRenderBuffer* CRendererShaders::CreateBuffer()
 CRendererShaders::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height)
   : CRenderBuffer(av_pix_format, width, height)
 {
-  DXGI_FORMAT view_formats[YuvImage::MAX_PLANES] = {};
-
-  switch (av_format)
+  if (av_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-  case AV_PIX_FMT_D3D11VA_VLD:
     m_viewCount = 2;
-    break;
-  case AV_PIX_FMT_NV12:
-  {
-    view_formats[0] = DXGI_FORMAT_R8_UNORM;
-    view_formats[1] = DXGI_FORMAT_R8G8_UNORM;
-    // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
-    if (!DX::Windowing()->IsFormatSupport(view_formats[1], D3D11_FORMAT_SUPPORT_TEXTURE2D))
-      view_formats[1] = DXGI_FORMAT_R8G8_SNORM;
-    m_viewCount = 2;
-    break;
-  }
-  case AV_PIX_FMT_P010:
-  case AV_PIX_FMT_P016:
-  {
-    view_formats[0] = DXGI_FORMAT_R16_UNORM;
-    view_formats[1] = DXGI_FORMAT_R16G16_UNORM;
-    m_viewCount = 2;
-    break;
-  }
-  case AV_PIX_FMT_YUV420P:
-  {
-    view_formats[0] = view_formats[1] = view_formats[2] = DXGI_FORMAT_R8_UNORM;
-    m_viewCount = 3;
-    break;
-  }
-  case AV_PIX_FMT_YUV420P10:
-  case AV_PIX_FMT_YUV420P16:
-  {
-    view_formats[0] = view_formats[1] = view_formats[2] = DXGI_FORMAT_R16_UNORM;
-    m_viewCount = 3;
-    texBits = av_format == AV_PIX_FMT_YUV420P10 ? 10 : 16;
-    break;
-  }
-  default:
-    // unsupported format
     return;
   }
 
-  if (av_format != AV_PIX_FMT_D3D11VA_VLD)
+  const PlaneTextures* textures = FindTextures(av_format);
+  if (!textures)
+    return;
+
+  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(av_format);
+  m_viewCount = av_pix_fmt_count_planes(av_format);
+  // the bits of a texel that the samples reach
+  texBits = desc->comp[0].depth + desc->comp[0].shift;
+
+  for (size_t i = 0; i < m_viewCount; i++)
   {
-    for (size_t i = 0; i < m_viewCount; i++)
+    const auto w = i ? m_width >> desc->log2_chroma_w : m_width;
+    const auto h = i ? m_height >> desc->log2_chroma_h : m_height;
+    const bool uv = i && !(desc->flags & AV_PIX_FMT_FLAG_RGB);
+
+    DXGI_FORMAT format = i ? textures->others : textures->first;
+    // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
+    if (format == DXGI_FORMAT_R8G8_UNORM &&
+        !DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+      format = DXGI_FORMAT_R8G8_SNORM;
+
+    if (!m_textures[i].Create(w, h, 1, D3D11_USAGE_DYNAMIC, format))
+      break;
+
+    // clear plane
+    D3D11_MAPPED_SUBRESOURCE mapping = {};
+    if (m_textures[i].LockRect(0, &mapping, D3D11_MAP_WRITE_DISCARD))
     {
-      const auto w = i ? m_width >> 1 : m_width;
-      const auto h = i ? m_height >> 1 : m_height;
+      if (textures->first == DXGI_FORMAT_R8_UNORM)
+        memset(mapping.pData, uv ? 0x80 : 0, mapping.RowPitch * h);
+      else
+        wmemset(static_cast<wchar_t*>(mapping.pData), uv ? 0x8000 : 0, mapping.RowPitch * h >> 1);
 
-      if (!m_textures[i].Create(w, h, 1, D3D11_USAGE_DYNAMIC, view_formats[i]))
-        break;
-
-      // clear plane
-      D3D11_MAPPED_SUBRESOURCE mapping = {};
-      if (m_textures[i].LockRect(0, &mapping, D3D11_MAP_WRITE_DISCARD))
-      {
-        if (view_formats[i] == DXGI_FORMAT_R8_UNORM ||
-          view_formats[i] == DXGI_FORMAT_R8G8_UNORM ||
-          view_formats[i] == DXGI_FORMAT_R8G8_SNORM)
-          memset(mapping.pData, i ? 0x80 : 0, mapping.RowPitch * h);
-        else
-          wmemset(static_cast<wchar_t*>(mapping.pData), i ? 0x8000 : 0, mapping.RowPitch * h >> 1);
-
-        if (m_textures[i].UnlockRect(0)) {}
-      }
+      if (m_textures[i].UnlockRect(0)) {}
     }
   }
 }
@@ -359,12 +360,13 @@ ID3D11View* CRendererShaders::CRenderBufferImpl::GetView(unsigned viewIdx)
 
     const auto dxva_format = CRendererBase::GetDXGIFormat(videoBuffer);
     // impossible but we check
-    if (dxva_format < DXGI_FORMAT_NV12 || dxva_format > DXGI_FORMAT_P016)
+    const PlaneTextures* textures = FindTextures(CRendererBase::GetAVFormat(dxva_format));
+    if (!textures)
       return nullptr;
 
     CD3D11_SHADER_RESOURCE_VIEW_DESC srvDesc(
       D3D11_SRV_DIMENSION_TEXTURE2DARRAY,
-      plane_formats[dxva_format - DXGI_FORMAT_NV12][viewIdx],
+      viewIdx ? textures->others : textures->first,
       0, 1, arrayIdx, 1
     );
 
@@ -460,17 +462,21 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromBuffer() const
   videoBuffer->GetPlanes(bufData);
   videoBuffer->GetStrides(srcLines);
 
+  bool loaded = true;
   for (unsigned plane = 0; plane < m_viewCount; ++plane)
   {
     D3D11_MAPPED_SUBRESOURCE mapping = {};
     if (!m_textures[plane].LockRect(0, &mapping, D3D11_MAP_WRITE_DISCARD))
+    {
+      loaded = false;
       break;
+    }
 
     auto* dst = static_cast<uint8_t*>(mapping.pData);
     auto* src = bufData[plane];
     int srcLine = srcLines[plane];
     int dstLine = mapping.RowPitch;
-    int height = plane ? m_height >> 1 : m_height;
+    int height = m_textures[plane].GetHeight();
 
     if (srcLine == dstLine)
     {
@@ -492,5 +498,5 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromBuffer() const
   for (unsigned plane = 0; plane < m_viewCount; ++plane)
     if (!m_textures[plane].UnlockRect(0)) {}
 
-  return true;
+  return loaded;
 }
