@@ -1,5 +1,6 @@
 set(SOURCES TestDVDSubtitlesLibass.cpp
             TestRadioRDSCountries.cpp
+            TestRadioRDSLanguages.cpp
             TestVideoCodecPictureFormat.cpp
             TestVideoPlayer.cpp)
 

@@ -25,6 +25,7 @@
 #include "GUIUserMessages.h"
 #include "Interface/DemuxPacket.h"
 #include "RadioRDSCountries.h"
+#include "RadioRDSLanguages.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -303,20 +304,6 @@ enum {
   RTPLUS_IDENTIFIER         = 61,
   RTPLUS_PURCHASE           = 62,
   RTPLUS_GET_DATA           = 63
-};
-
-/* see page 84, Annex J in the standard */
-static const std::string piRDSLanguageCodes[128]=
-{
-  // 0      1      2      3      4      5      6      7      8      9      A      B      C      D      E      F
-  "___", "alb", "bre", "cat", "hrv", "wel", "cze", "dan", "ger", "eng", "spa", "epo", "est", "baq", "fae", "fre", // 0
-  "fry", "gle", "gla", "glg", "ice", "ita", "smi", "lat", "lav", "ltz", "lit", "hun", "mlt", "dut", "nor", "oci", // 1
-  "pol", "por", "rum", "rom", "srp", "slo", "slv", "fin", "swe", "tur", "nld", "wln", "___", "___", "___", "___", // 2
-  "___", "___", "___", "___", "___", "___", "___", "___", "___", "___", "___", "___", "___", "___", "___", "___", // 3
-  "___", "___", "___", "___", "___", "zul", "vie", "uzb", "urd", "ukr", "tha", "tel", "tat", "tam", "tgk", "swa", // 4
-  "srn", "som", "sin", "sna", "scc", "rue", "rus", "que", "pus", "pan", "per", "pap", "ori", "nep", "nde", "mar", // 5
-  "mol", "mys", "mlg", "mkd", "_?_", "kor", "khm", "kaz", "kan", "jpn", "ind", "hin", "heb", "hau", "grn", "guj", // 6
-  "gre", "geo", "ful", "prs", "chv", "chi", "bur", "bul", "ben", "bel", "bam", "aze", "asm", "arm", "ara", "amh"  // 7
 };
 
 /* ----------------------------------------------------------------------------------------------------------- */
@@ -1463,7 +1450,7 @@ unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(const uint8_t* msgElement
     }
     case VARCODE_LANGUAGE_CODES:      // language codes
       if (slowLabellingCode > 1 && slowLabellingCode < 0x80)
-        m_currentInfoTag->SetLanguage(piRDSLanguageCodes[slowLabellingCode]);
+        m_currentInfoTag->SetLanguage(std::string{KODI::RDS::LanguageCode(slowLabellingCode)});
       else
         CLog::Log(LOGERROR, "Radio RDS - {} - invalid language code {}", __FUNCTION__,
                   slowLabellingCode);
