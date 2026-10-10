@@ -102,8 +102,7 @@ TEST(TestSavestateCapture, FailedExplicitSerializationReleasesStorageWithoutCapt
   EXPECT_EQ(metadataCaptures, 1u);
   if (snapshot)
     worker.Release(snapshot);
-  snapshot = worker.TryAcquire();
-  ASSERT_NE(snapshot, nullptr);
+  snapshot = worker.Acquire();
   EXPECT_EQ(snapshot->memory.get(), address);
   worker.Release(snapshot);
 }
