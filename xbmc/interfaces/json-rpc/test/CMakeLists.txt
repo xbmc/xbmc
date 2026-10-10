@@ -3,6 +3,7 @@ set(SOURCES TestAddonsExecuteAddon.cpp
             TestFileOperations.cpp
             TestJSONRPCPermission.cpp
             TestJSONRPCStatus.cpp
+            TestPlayerOpenDirectory.cpp
             TestSetConfiguration.cpp
             TestSettingsLevel.cpp
             TestVideoLibraryPlaybackState.cpp

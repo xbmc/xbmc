@@ -251,7 +251,7 @@
   "Player.Open": {
     "type": "method",
     "description":
-        "Start playback of either the playlist with the given ID, a slideshow with the pictures from the given directory or a single file or an item from the database.",
+        "Start playback of either the playlist with the given ID, the given directory (a slideshow of its pictures, or a playlist of its media when it holds no pictures) or a single file or an item from the database.",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
@@ -284,13 +284,15 @@
             "properties": {
               "path": {
                 "type": "string",
-                "required": true
+                "required": true,
+                "description":
+                    "Directory to play. A directory holding pictures is shown as a slideshow, in which any videos it also holds become video slides when the pictures.showvideos setting is on. A directory holding no pictures is played as a playlist of the video and audio files in it."
               },
               "random": {
                 "type": "boolean",
                 "default": true,
                 "description":
-                    "Deprecated, use the shuffled property of the options parameter instead"
+                    "Deprecated, use the shuffled property of the options parameter instead. Only applies to a slideshow."
               },
               "recursive": {
                 "type": "boolean",
