@@ -988,7 +988,7 @@ TEST(TestDatabaseUtils, GetFieldIndex_MediaTypeMovie)
   varindex = DatabaseUtils::GetFieldIndex(Field::COUNTRY, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
-  refindex = VIDEODB_DETAILS_MOVIE_FILE + 2;
+  refindex = VIDEODB_DETAILS_MOVIE_FILE;
   varindex = DatabaseUtils::GetFieldIndex(Field::FILENAME, MediaTypeMovie);
   EXPECT_EQ(refindex, varindex);
 
