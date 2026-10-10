@@ -118,7 +118,7 @@ then
   Configuration=$DEFAULT_CONFIGURATION
 fi
 
-if [ "$Configuration" == "Release" ]
+if [ "$Configuration" != "Debug" ]
 then
   DEBUG_SWITCH='--disable-debug'
 fi
@@ -144,6 +144,7 @@ function getBuildHash ()
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $checkPath)"
   hashStr="$hashStr $Configuration $SDK_PATH $NDK_PATH $NDK_VERSION $SDK_VERSION $TOOLCHAIN $XBMC_DEPENDS_ROOT $XCODE_APP"
+  [ -z "$DEBUG_SWITCH" ] || hashStr="$hashStr $DEBUG_SWITCH"
   echo $hashStr
 }
 
