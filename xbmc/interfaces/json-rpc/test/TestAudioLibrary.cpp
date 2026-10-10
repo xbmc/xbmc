@@ -7,6 +7,8 @@
  */
 
 #include "DatabaseManager.h"
+#include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
@@ -14,11 +16,13 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/json-rpc/AudioLibrary.h"
 #include "music/MusicDatabase.h"
+#include "music/tags/MusicInfoTag.h"
 #include "utils/Variant.h"
 
 #include <array>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -171,3 +175,85 @@ TEST_P(TestAudioLibrary, SetArtistDetailsPreservesDiscographyAndVideoLinks)
 }
 
 INSTANTIATE_TEST_SUITE_P(WithAndWithoutDiscography, TestAudioLibrary, testing::Bool());
+
+namespace
+{
+class TestAudioLibraryFillFileItemList : public testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    if (!CServiceBroker::GetDatabaseManager().CanOpen("MyMusic"))
+    {
+      ASSERT_TRUE(CServiceBroker::GetDatabaseManager().Initialize());
+    }
+    ASSERT_TRUE(m_db.Open());
+    ASSERT_TRUE(m_db.ExecuteQuery(
+        "INSERT INTO path (strPath) VALUES ('special://temp/fillfileitemlist/')"));
+    m_pathId = std::stoi(m_db.GetSingleValue("SELECT MAX(idPath) FROM path"));
+    // a song is listed through its artist credits
+    m_artistId = m_db.AddArtist("FillFileItemList artist", "");
+    ASSERT_GT(m_artistId, 0);
+  }
+
+  void TearDown() override
+  {
+    m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM song_artist WHERE idArtist = %i", m_artistId));
+    m_db.ExecuteQuery(
+        m_db.PrepareSQL("DELETE FROM removed_link WHERE idArtist = %i AND idRole = 1", m_artistId));
+    m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM song WHERE idPath = %i", m_pathId));
+    for (const int albumId : m_albumIds)
+      m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM album WHERE idAlbum = %i", albumId));
+    m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM path WHERE idPath = %i", m_pathId));
+    m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM artist WHERE idArtist = %i", m_artistId));
+    m_db.Close();
+  }
+
+  int AddAlbumWithTwoTracks(const std::string& name)
+  {
+    EXPECT_TRUE(m_db.ExecuteQuery(
+        m_db.PrepareSQL("INSERT INTO album (strAlbum) VALUES ('%s')", name.c_str())));
+    const int albumId = std::stoi(m_db.GetSingleValue("SELECT MAX(idAlbum) FROM album"));
+    m_albumIds.push_back(albumId);
+    for (const int track : {1, 2})
+    {
+      EXPECT_TRUE(m_db.ExecuteQuery(
+          m_db.PrepareSQL("INSERT INTO song (idAlbum, idPath, strFileName, iTrack, strTitle) "
+                          "VALUES (%i, %i, '%s%i.flac', %i, '%s %i')",
+                          albumId, m_pathId, name.c_str(), track, track, name.c_str(), track)));
+      EXPECT_TRUE(m_db.ExecuteQuery(
+          m_db.PrepareSQL("INSERT INTO song_artist (idArtist, idSong, idRole, iOrder, strArtist) "
+                          "SELECT %i, MAX(idSong), 1, 0, 'FillFileItemList artist' FROM song",
+                          m_artistId)));
+    }
+    return albumId;
+  }
+
+  TestGUI m_gui;
+  CMusicDatabase m_db;
+  int m_pathId{-1};
+  int m_artistId{-1};
+  std::vector<int> m_albumIds;
+};
+} // namespace
+
+// Playlist.Add and Insert resolve every entry of an item array into one list
+TEST_F(TestAudioLibraryFillFileItemList, AlbumsAddedTogetherKeepTheirTracksTogether)
+{
+  const int first = AddAlbumWithTwoTracks("First");
+  const int second = AddAlbumWithTwoTracks("Second");
+
+  CFileItemList list;
+  for (const int albumId : {first, second})
+  {
+    CVariant parameters(CVariant::VariantTypeObject);
+    parameters["albumid"] = albumId;
+    ASSERT_TRUE(JSONRPC::CAudioLibrary::FillFileItemList(parameters, list));
+  }
+
+  std::vector<std::string> titles;
+  for (const auto& item : list)
+    titles.emplace_back(item->GetMusicInfoTag()->GetTitle());
+
+  EXPECT_EQ((std::vector<std::string>{"First 1", "First 2", "Second 1", "Second 2"}), titles);
+}
