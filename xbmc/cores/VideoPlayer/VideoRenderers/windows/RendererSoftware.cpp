@@ -129,8 +129,11 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
   if (!m_sw_scale_ctx)
     return;
 
+  // swscale takes an RGB source through YUV and back, so both ways must use the same coefficients
+  const bool rgb = (av_pix_fmt_desc_get(buf->av_format)->flags & AV_PIX_FMT_FLAG_RGB) != 0;
+
   sws_setColorspaceDetails(m_sw_scale_ctx,
-    sws_getCoefficients(buf->color_space), buf->full_range,
+    sws_getCoefficients(rgb ? AVCOL_SPC_BT709 : buf->color_space), buf->full_range,
     sws_getCoefficients(AVCOL_SPC_BT709),  buf->full_range,
     0, 1 << 16, 1 << 16);
 
@@ -158,10 +161,19 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
 
 void CRendererSoftware::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4])
 {
-  m_outputShader->Render(source, src, destPoints, target, 
-    DX::Windowing()->UseLimitedColor(), 
-    m_videoSettings.m_Contrast * 0.01f,
-    m_videoSettings.m_Brightness * 0.01f);
+  float contrast = m_videoSettings.m_Contrast * 0.01f;
+  float brightness = m_videoSettings.m_Brightness * 0.01f;
+
+  // swscale leaves the range of an RGB source as it is, so expand it here
+  const CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  if (!buf->full_range && (av_pix_fmt_desc_get(buf->av_format)->flags & AV_PIX_FMT_FLAG_RGB))
+  {
+    brightness -= contrast * 2.0f * 16.0f / 219.0f;
+    contrast *= 255.0f / 219.0f;
+  }
+
+  m_outputShader->Render(source, src, destPoints, target, DX::Windowing()->UseLimitedColor(),
+                         contrast, brightness);
 }
 
 CRenderBuffer* CRendererSoftware::CreateBuffer()
