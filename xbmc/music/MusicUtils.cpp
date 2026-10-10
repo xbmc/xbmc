@@ -14,6 +14,7 @@
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -907,15 +908,7 @@ bool IsItemPlayable(const CFileItem& item)
     if (StringUtils::StartsWithNoCase(item.GetMimeType(), "audio/"))
       return true;
 
-    if (StringUtils::StartsWithNoCase(item.GetPath(), "special://musicplaylists/") ||
-        StringUtils::StartsWithNoCase(item.GetPath(), "special://profile/playlists/music/"))
-      return true;
-
-    // Has user changed default playlists location and the list is located there?
-    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    std::string path = settings->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
-    StringUtils::TrimRight(path, "/");
-    if (StringUtils::StartsWith(item.GetPath(), StringUtils::Format("{}/music/", path)))
+    if (CUtil::IsInPlaylistsFolder(item.GetPath(), MediaSection::MUSIC))
       return true;
 
     if (!item.IsFolder() && !item.HasMusicInfoTag())

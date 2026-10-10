@@ -41,6 +41,24 @@ TEST(TestUtil, GetQualifiedFilename)
   EXPECT_EQ(file, "smb://foo/bar/");
 }
 
+TEST(TestUtil, IsInPlaylistsFolderFollowsThePlaylistsSetting)
+{
+  using KODI::MEDIA::MediaSection;
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string original{settings->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH)};
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, "special://temp/lists/");
+
+  EXPECT_TRUE(CUtil::IsInPlaylistsFolder("special://temp/lists/video/a.m3u", MediaSection::VIDEO));
+  EXPECT_FALSE(CUtil::IsInPlaylistsFolder("special://temp/lists/video/a.m3u", MediaSection::MUSIC));
+  EXPECT_TRUE(CUtil::IsInPlaylistsFolder("special://temp/lists/mixed/a.m3u", MediaSection::MUSIC));
+  EXPECT_TRUE(CUtil::IsInPlaylistsFolder("special://musicplaylists/a.xsp", MediaSection::MUSIC));
+  EXPECT_FALSE(
+      CUtil::IsInPlaylistsFolder("special://profile/playlists/video/a.m3u", MediaSection::VIDEO));
+  EXPECT_FALSE(CUtil::IsInPlaylistsFolder("special://temp/lists/video/a.m3u", MediaSection::FILES));
+
+  settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, original);
+}
+
 TEST(TestUtil, MakeLegalPath)
 {
   std::string path;
