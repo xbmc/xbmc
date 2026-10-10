@@ -173,6 +173,7 @@ protected:
   // size used to get and release image from LargeTextureManager
   int m_requestWidth = REQUEST_SIZE_UNSET;
   int m_requestHeight = REQUEST_SIZE_UNSET;
+  bool m_largeInterim{false};
   static constexpr int REQUEST_SIZE_UNSET = -1;
 
   CRect m_vertex;       // vertex coords to render

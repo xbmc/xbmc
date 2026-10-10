@@ -142,7 +142,7 @@ bool CGUITexture::AllocateOnDemand()
 {
   if (m_visible)
   { // visible, so make sure we're allocated
-    if (!IsAllocated() || (m_isAllocated == LARGE && !m_texture.size()))
+    if (!IsAllocated() || (m_isAllocated == LARGE && (!m_texture.size() || m_largeInterim)))
       return AllocResources();
   }
   else
@@ -352,7 +352,7 @@ bool CGUITexture::AllocResources()
   if (m_info.filename.empty())
     return false;
 
-  if (m_texture.size())
+  if (m_texture.size() && !m_largeInterim)
     return false; // already have our texture
 
   // reset our animstate
@@ -389,8 +389,14 @@ bool CGUITexture::AllocResources()
       {
         m_isAllocated = LARGE;
 
-        if (!texture.size()) // not ready as yet
-          return false;
+        if (texture.size())
+          m_largeInterim = false;
+        else if (!m_largeInterim &&
+                 CServiceBroker::GetGUI()->GetLargeTextureManager().GetInterimImage(
+                     m_info.filename, m_aspect.ratio, texture))
+          m_largeInterim = true;
+        else
+          return false; // not ready as yet
 
         m_texture = texture;
 
@@ -416,7 +422,7 @@ bool CGUITexture::AllocResources()
   m_frameHeight = (float)m_texture.m_height;
 
   // load the diffuse texture (if necessary)
-  if (!m_info.diffuse.empty())
+  if (!m_info.diffuse.empty() && !m_diffuse.size())
   {
     m_diffuse = CServiceBroker::GetGUI()->GetTextureManager().Load(m_info.diffuse);
   }
@@ -557,6 +563,7 @@ void CGUITexture::FreeResources(bool immediately /* = false */)
   Free();
 
   m_isAllocated = NO;
+  m_largeInterim = false;
   m_lastReadyState.reset(); // reset for next allocation cycle
 }
 
