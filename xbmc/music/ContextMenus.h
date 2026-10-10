@@ -84,4 +84,11 @@ struct CMusicQueue : CStaticContextMenuAction
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
 };
 
+struct CMusicGoToAlbum : CStaticContextMenuAction
+{
+  CMusicGoToAlbum() : CStaticContextMenuAction(40808) {} // Go to album
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+}; 
+
 } // namespace CONTEXTMENU

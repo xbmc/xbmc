@@ -17,6 +17,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
+#include "music/MusicDbPaths.h"
 #include "playlists/PlayListTypes.h"
 #include "tags/MusicInfoTag.h"
 #include "utils/ItemProperties.h"
@@ -200,6 +201,43 @@ bool CMusicQueue::Execute(const std::shared_ptr<CFileItem>& item) const
   // Set selection to next item in active window's view.
   const int windowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   SelectNextItem(windowID);
+
+  return true;
+}
+
+bool CMusicGoToAlbum::IsVisible(const CFileItem& item) const
+{
+  if (!item.HasMusicInfoTag())
+    return false;
+
+  const auto& tag = *item.GetMusicInfoTag();
+  if (tag.GetType() == MediaTypeAlbum)
+    return tag.GetDatabaseId() > -1;
+
+  return tag.GetType() == MediaTypeSong && tag.GetAlbumId() > -1;
+}
+
+bool CMusicGoToAlbum::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  const auto& tag = *item->GetMusicInfoTag();
+  int idAlbum = tag.GetType() == MediaTypeAlbum ? tag.GetDatabaseId() : tag.GetAlbumId();
+
+  if (idAlbum < 0)
+    return false;
+
+  const std::string path = MUSIC::DB_PATH::ALBUMS + std::to_string(idAlbum) + "/";
+
+  auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+  if (windowMgr.GetActiveWindow() == WINDOW_MUSIC_NAV)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_MUSIC_NAV, 0, GUI_MSG_UPDATE);
+    msg.SetStringParam(path);
+    windowMgr.SendMessage(msg);
+  }
+  else
+  {
+    windowMgr.ActivateWindow(WINDOW_MUSIC_NAV, {path, "return"});
+  }
 
   return true;
 }

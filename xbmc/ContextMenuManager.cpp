@@ -78,6 +78,7 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CMusicPlayUsing>(),
       std::make_shared<CONTEXTMENU::CMusicPlayNext>(),
       std::make_shared<CONTEXTMENU::CMusicQueue>(),
+      std::make_shared<CONTEXTMENU::CMusicGoToAlbum>(),      
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
       std::make_shared<CONTEXTMENU::CEnableAddon>(),
       std::make_shared<CONTEXTMENU::CDisableAddon>(),
