@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 class CFavouritesURL;
 class CFileItem;
@@ -18,6 +19,8 @@ namespace FAVOURITES_UTILS
 {
 bool ChooseAndSetNewName(CFileItem& item);
 bool ChooseAndSetNewThumbnail(CFileItem& item);
+//! \brief Apply the \p choice made in the image browser to \p item. False when \p item is unchanged.
+bool SetChosenThumbnail(CFileItem& item, const std::string& choice);
 bool MoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item, int amount);
 bool RemoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item);
 bool ShouldEnableMoveItems();
