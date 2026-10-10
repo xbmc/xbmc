@@ -1561,10 +1561,15 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
              { return i->IsZIP() || i->IsRAR() || i->IsFolder(); });
 
     // Chosen item
-    int mediaToPlay =
-        std::distance(playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
-                                                     [&item](const std::shared_ptr<CFileItem>& i)
-                                                     { return i->GetPath() == item->GetPath(); }));
+    int mediaToPlay = std::distance(
+        playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
+                                       [&item](const std::shared_ptr<CFileItem>& i)
+                                       {
+                                         // cue sheet tracks share one path: compare the start
+                                         // offset too, otherwise the first track always plays
+                                         return i->GetPath() == item->GetPath() &&
+                                                i->GetStartOffset() == item->GetStartOffset();
+                                       }));
     /* For .mka albums, all tracks are in the same file so using path as above will always play the
      * first track.  Use the track and disk number to ensure we start playback on the correct track.
      * This only applies to mka or m4b items played back via files view. Music library takes
