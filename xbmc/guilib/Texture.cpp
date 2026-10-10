@@ -287,6 +287,10 @@ bool CTexture::LoadIImage(IImage* pImage,
     }
   }
 
+  // Never upscale: the GPU scales the texture when drawing it, so a larger copy only costs memory.
+  width = std::min(width, pImage->Width());
+  height = std::min(height, pImage->Height());
+
   if (width > maxTextureSize || height > maxTextureSize)
   {
     float aspect = (float)width / height;
