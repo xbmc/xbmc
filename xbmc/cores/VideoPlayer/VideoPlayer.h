@@ -510,6 +510,8 @@ protected:
   bool OpenDemuxStream();
   void CloseDemuxer();
   void OpenDefaultStreams(bool reset = true);
+  //! \brief Reorder audio candidates so the requested initial ordinal is tried first.
+  void PrioritizeInitialAudioStream(std::vector<SelectionStream>& streams);
   void UpdateHasVideoAudio();
 
   void UpdatePlayState(double timeout);
