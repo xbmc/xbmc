@@ -1005,6 +1005,29 @@ const CLocale& CLangInfo::GetLocale() const
   return language != nullptr ? language->GetLocale() : CLocale::Empty;
 }
 
+bool CLangInfo::IsRightToLeft() const
+{
+  return IsRightToLeftLanguage(GetLocale().GetLanguageCode());
+}
+
+bool CLangInfo::IsRightToLeftLanguage(std::string_view languageCode)
+{
+  // ISO 639-1 codes of languages written in a right-to-left script
+  static constexpr std::array<std::string_view, 9> rtlLanguages = {
+      "ar", // Arabic
+      "dv", // Dhivehi
+      "fa", // Persian
+      "he", // Hebrew
+      "ps", // Pashto
+      "sd", // Sindhi
+      "ug", // Uyghur
+      "ur", // Urdu
+      "yi", // Yiddish
+  };
+
+  return std::ranges::find(rtlLanguages, languageCode) != rtlLanguages.end();
+}
+
 const std::string& CLangInfo::GetRegionLocale() const
 {
   return m_currentRegion->m_strRegionLocaleName;

@@ -643,7 +643,7 @@ constexpr uint32_t SYSTEM_PROFILEAUTOLOGIN           = 1004;
 constexpr uint32_t SYSTEM_HAS_CMS                    = 1006;
 constexpr uint32_t SYSTEM_BUILD_VERSION_CODE         = 1007;
 constexpr uint32_t SYSTEM_BUILD_VERSION_GIT          = 1008;
-// unused id 1009
+constexpr uint32_t SYSTEM_IS_RTL                     = 1009;
 // unused id 1010
 constexpr uint32_t SYSTEM_LOCALE_REGION              = 1011;
 constexpr uint32_t SYSTEM_LOCALE                     = 1012;

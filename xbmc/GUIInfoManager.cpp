@@ -1435,6 +1435,15 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     @return **True** if Kodi is running in standalone mode.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.IsRTL`</b>,
+///                  \anchor System_IsRTL
+///                  _boolean_,
+///     @return **True** if the current GUI language is written right-to-left
+///     (e.g. Hebrew\, Arabic\, Persian).
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link System_IsRTL `System.IsRTL`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`System.IsFullscreen`</b>,
 ///                  \anchor System_IsFullscreen
 ///                  _boolean_,
@@ -2053,6 +2062,7 @@ constexpr std::array<InfoMap, 76> system_labels = {{
     {"ismaster",                SYSTEM_ISMASTER},
     {"isfullscreen",            SYSTEM_ISFULLSCREEN},
     {"isstandalone",            SYSTEM_ISSTANDALONE},
+    {"isrtl",                   SYSTEM_IS_RTL},
     {"loggedon",                SYSTEM_LOGGEDON},
     {"showexitbutton",          SYSTEM_SHOW_EXIT_BUTTON},
     {"canpowerdown",            SYSTEM_CAN_POWERDOWN},

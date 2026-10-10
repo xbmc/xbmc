@@ -614,6 +614,9 @@ bool CSystemGUIInfo::GetBool(bool& value,
     case SYSTEM_ISSTANDALONE:
       value = CServiceBroker::GetAppParams()->IsStandAlone();
       return true;
+    case SYSTEM_IS_RTL:
+      value = g_langInfo.IsRightToLeft();
+      return true;
     case SYSTEM_HAS_SHUTDOWN:
       value = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
                    CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
