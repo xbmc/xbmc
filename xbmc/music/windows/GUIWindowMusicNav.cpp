@@ -510,11 +510,11 @@ void CGUIWindowMusicNav::UpdateButtons()
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
       if (pItem->IsParentFolder()) iItems--;
-      if (StringUtils::StartsWith(pItem->GetPath(), "/-1/")) iItems--;
+      if (StringUtils::EndsWith(pItem->GetPath(), "/-1/")) iItems--;
     }
     // or the last item
     if (m_vecItems->Size() > 2 &&
-      StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
+      StringUtils::EndsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
   std::string items = StringUtils::Format(
