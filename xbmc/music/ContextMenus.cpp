@@ -12,14 +12,18 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "music/MusicDatabase.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "playlists/PlayListTypes.h"
 #include "tags/MusicInfoTag.h"
 #include "utils/ItemProperties.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoFileItemClassify.h"
 
@@ -83,6 +87,106 @@ bool CMusicBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
   {
     windowMgr.ActivateWindow(WINDOW_MUSIC_NAV, {path, "return"});
   }
+  return true;
+}
+
+bool CMusicGoToArtist::IsVisible(const CFileItem& item) const
+{
+  if (!item.HasMusicInfoTag())
+    return false;
+
+  const auto& tag = *item.GetMusicInfoTag();
+  return tag.GetDatabaseId() > -1 &&
+         (tag.GetType() == MediaTypeSong || tag.GetType() == MediaTypeAlbum);
+}
+
+namespace
+{
+int SelectArtist(CMusicDatabase& database, const std::vector<int>& artistIds)
+{
+  if (artistIds.empty())
+    return -1;
+
+  if (artistIds.size() == 1)
+    return artistIds[0];
+
+  CGUIDialogSelect* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+          WINDOW_DIALOG_SELECT);
+  if (!dialog)
+    return -1;
+
+  dialog->Reset();
+  dialog->SetHeading(40807);
+
+  for (const auto artistId : artistIds)
+  {
+    CArtist artist;
+    if (!database.GetArtist(artistId, artist))
+      return -1;
+
+    dialog->Add(artist.strArtist);
+  }
+
+  dialog->Open();
+
+  if (!dialog->IsConfirmed())
+    return -1;
+
+  const int selected = dialog->GetSelectedItem();
+  if (selected < 0 || selected >= static_cast<int>(artistIds.size()))
+    return -1;
+
+  return artistIds[selected];
+}
+} // unnamed namespace
+
+bool CMusicGoToArtist::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  CMusicDatabase database;
+  if (!database.Open())
+    return false;
+
+  const auto& tag = *item->GetMusicInfoTag();
+  int idArtist = -1;
+
+  if (tag.GetType() == MediaTypeSong)
+  {
+    std::vector<int> artistIds;
+    if (database.GetArtistsBySong(tag.GetDatabaseId(), artistIds))
+      idArtist = SelectArtist(database, artistIds);
+  }
+  else if (tag.GetType() == MediaTypeAlbum &&
+           database.GetArtistsByAlbum(tag.GetDatabaseId(), item.get()))
+  {
+    const auto artistIds = item->GetProperty("albumartistid");
+    if (artistIds.isArray() && !artistIds.empty())
+    {
+      std::vector<int> ids;
+      for (unsigned int i = 0; i < artistIds.size(); ++i)
+        ids.push_back(artistIds[i].asInteger());
+
+      idArtist = SelectArtist(database, ids);
+    }
+  }
+
+  if (idArtist < 0)
+    return false;
+
+  const std::string path = KODI::MUSIC::DB_PATH::ARTISTS + std::to_string(idArtist) + "/";  
+
+  auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+  if (windowMgr.GetActiveWindow() == WINDOW_MUSIC_NAV)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_MUSIC_NAV, 0, GUI_MSG_UPDATE);
+    msg.SetStringParam(path);
+    windowMgr.SendMessage(msg);
+  }
+  else
+  {
+    windowMgr.ActivateWindow(WINDOW_MUSIC_NAV, {path, "return"});
+  }
+
   return true;
 }
 
