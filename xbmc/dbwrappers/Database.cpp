@@ -841,6 +841,32 @@ bool CDatabase::CreateDatabase()
   return CommitTransaction();
 }
 
+void CDatabase::AddAutoIncrement(const std::string& table)
+{
+  if (!m_sqlite)
+    return;
+
+  std::string sql{GetSingleValue(
+      PrepareSQL("SELECT sql FROM sqlite_master WHERE type='table' AND name='%s'", table.c_str()))};
+  const std::string lower{StringUtils::ToLower(std::string_view{sql})};
+  constexpr std::string_view KEY{"integer primary key"};
+  const size_t key{lower.find(KEY)};
+  if (key == std::string::npos)
+    throw dbiplus::DbErrors("table %s has no integer primary key", table.c_str());
+  if (lower.find("autoincrement") != std::string::npos)
+    return;
+
+  sql.insert(key + KEY.size(), " AUTOINCREMENT");
+
+  // Renamed rather than copied into a new name, so the stored definition keeps the table's own.
+  m_pDS->exec(
+      PrepareSQL("ALTER TABLE `%s` RENAME TO `%s_reusedids`", table.c_str(), table.c_str()));
+  m_pDS->exec(sql);
+  m_pDS->exec(
+      PrepareSQL("INSERT INTO `%s` SELECT * FROM `%s_reusedids`", table.c_str(), table.c_str()));
+  m_pDS->exec(PrepareSQL("DROP TABLE `%s_reusedids`", table.c_str()));
+}
+
 void CDatabase::UpdateVersionNumber()
 {
   std::string strSQL = PrepareSQL("UPDATE version SET idVersion=%i\n", GetSchemaVersion());
@@ -888,4 +914,148 @@ bool CDatabase::BuildSQL(const std::string& strBaseDir,
     return false;
 
   return BuildSQL(strQuery, filter, strSQL);
+}
+
+bool CDatabase::SetArtForItem(int mediaId,
+                              const std::string& mediaType,
+                              const std::string& artType,
+                              const std::string& url)
+{
+  try
+  {
+    if (nullptr == m_pDB)
+      return false;
+    if (nullptr == m_pDS)
+      return false;
+
+    if (artType.find('.') != std::string::npos)
+      return true;
+
+    std::string sql = PrepareSQL("SELECT art_id,url FROM art "
+                                 "WHERE media_id=%i AND media_type='%s' AND type='%s'",
+                                 mediaId, mediaType.c_str(), artType.c_str());
+    m_pDS->query(sql);
+    if (!m_pDS->eof())
+    { // update
+      int artId = m_pDS->fv(0).get_asInt();
+      std::string oldUrl = m_pDS->fv(1).get_asString();
+      m_pDS->close();
+      if (oldUrl != url)
+      {
+        sql = PrepareSQL("UPDATE art SET url='%s' where art_id=%d", url.c_str(), artId);
+        m_pDS->exec(sql);
+      }
+    }
+    else
+    { // insert
+      m_pDS->close();
+      sql = PrepareSQL("INSERT INTO art(media_id, media_type, type, url) "
+                       "VALUES (%d, '%s', '%s', '%s')",
+                       mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
+      m_pDS->exec(sql);
+    }
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}, '{}', '{}', '{}') failed", mediaId, mediaType, artType, url);
+    return false;
+  }
+}
+
+bool CDatabase::SetArtForItem(int mediaId,
+                              const std::string& mediaType,
+                              const KODI::ART::Artwork& art)
+{
+  return std::ranges::all_of(
+      art, [this, mediaId, &mediaType](const auto& artwork)
+      { return SetArtForItem(mediaId, mediaType, artwork.first, artwork.second); });
+}
+
+bool CDatabase::GetArtForItem(int mediaId, const std::string& mediaType, KODI::ART::Artwork& art)
+{
+  try
+  {
+    if (nullptr == m_pDB)
+      return false;
+    if (nullptr == m_pDS2)
+      return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    std::string sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=%i AND media_type='%s'",
+                                 mediaId, mediaType.c_str());
+    m_pDS2->query(sql);
+    while (!m_pDS2->eof())
+    {
+      art.try_emplace(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString());
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", mediaId);
+  }
+  return false;
+}
+
+std::string CDatabase::GetArtForItem(int mediaId,
+                                     const std::string& mediaType,
+                                     const std::string& artType)
+{
+  if (!m_pDS2)
+    return {};
+
+  std::string query = PrepareSQL("SELECT url FROM art "
+                                 "WHERE media_id=%i AND media_type='%s' AND type='%s'",
+                                 mediaId, mediaType.c_str(), artType.c_str());
+  return GetSingleValue(query, *m_pDS2);
+}
+
+bool CDatabase::RemoveArtForItem(int mediaId,
+                                 const std::string& mediaType,
+                                 const std::string& artType)
+{
+  return ExecuteQuery(PrepareSQL("DELETE FROM art "
+                                 "WHERE media_id=%i AND media_type='%s' AND type='%s'",
+                                 mediaId, mediaType.c_str(), artType.c_str()));
+}
+
+bool CDatabase::RemoveArtForItem(int mediaId,
+                                 const std::string& mediaType,
+                                 const std::set<std::string, std::less<>>& artTypes)
+{
+  bool result = true;
+  for (const auto& artType : artTypes)
+    result &= RemoveArtForItem(mediaId, mediaType, artType);
+
+  return result;
+}
+
+bool CDatabase::GetArtTypes(const std::string& mediaType, std::vector<std::string>& artTypes)
+{
+  try
+  {
+    if (nullptr == m_pDB)
+      return false;
+    if (nullptr == m_pDS)
+      return false;
+
+    if (!m_pDS->query(
+            PrepareSQL("SELECT DISTINCT type FROM art WHERE media_type='%s'", mediaType.c_str())))
+      return false;
+
+    while (!m_pDS->eof())
+    {
+      artTypes.emplace_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", mediaType);
+  }
+  return false;
 }

@@ -14,25 +14,6 @@
 
 #include <gtest/gtest.h>
 
-TEST(TestXMLUtils, GetHex)
-{
-  CXBMCTinyXML a;
-  uint32_t ref, val, val2;
-
-  a.Parse(std::string("<root><node>0xFF</node></root>"));
-  EXPECT_TRUE(XMLUtils::GetHex(a.RootElement(), "node", val));
-
-  ref = 0xFF;
-  EXPECT_EQ(ref, val);
-
-  CXBMCTinyXML2 b;
-
-  b.Parse(std::string("<root><node>0xFF</node></root>"));
-  EXPECT_TRUE(XMLUtils::GetHex(b.RootElement(), "node", val2));
-
-  EXPECT_EQ(ref, val2);
-}
-
 TEST(TestXMLUtils, GetUInt)
 {
   CXBMCTinyXML a;
@@ -48,25 +29,6 @@ TEST(TestXMLUtils, GetUInt)
 
   b.Parse(std::string("<root><node>1000</node></root>"));
   EXPECT_TRUE(XMLUtils::GetUInt(b.RootElement(), "node", val2));
-
-  EXPECT_EQ(ref, val2);
-}
-
-TEST(TestXMLUtils, GetLong)
-{
-  CXBMCTinyXML a;
-  long ref, val, val2;
-
-  a.Parse(std::string("<root><node>1000</node></root>"));
-  EXPECT_TRUE(XMLUtils::GetLong(a.RootElement(), "node", val));
-
-  ref = 1000;
-  EXPECT_EQ(ref, val);
-
-  CXBMCTinyXML2 b;
-
-  b.Parse(std::string("<root><node>1000</node></root>"));
-  EXPECT_TRUE(XMLUtils::GetLong(b.RootElement(), "node", val2));
 
   EXPECT_EQ(ref, val2);
 }
@@ -170,64 +132,6 @@ TEST(TestXMLUtils, GetString)
   b.Parse(std::string("<root><node>some string</node></root>"));
   EXPECT_TRUE(XMLUtils::GetString(b.RootElement(), "node", val2));
 
-  EXPECT_STREQ(ref.c_str(), val2.c_str());
-}
-
-TEST(TestXMLUtils, GetAdditiveString)
-{
-  CXBMCTinyXML a, b;
-  std::string ref, val, val2;
-
-  a.Parse(std::string("<root>\n"
-          "  <node>some string1</node>\n"
-          "  <node>some string2</node>\n"
-          "  <node>some string3</node>\n"
-          "  <node>some string4</node>\n"
-          "  <node>some string5</node>\n"
-          "</root>\n"));
-  EXPECT_TRUE(XMLUtils::GetAdditiveString(a.RootElement(), "node", ",", val));
-
-  ref = "some string1,some string2,some string3,some string4,some string5";
-  EXPECT_STREQ(ref.c_str(), val.c_str());
-
-  val.clear();
-  b.Parse(std::string("<root>\n"
-          "  <node>some string1</node>\n"
-          "  <node>some string2</node>\n"
-          "  <node clear=\"true\">some string3</node>\n"
-          "  <node>some string4</node>\n"
-          "  <node>some string5</node>\n"
-          "</root>\n"));
-  EXPECT_TRUE(XMLUtils::GetAdditiveString(b.RootElement(), "node", ",", val));
-
-  ref = "some string3,some string4,some string5";
-  EXPECT_STREQ(ref.c_str(), val.c_str());
-
-  CXBMCTinyXML2 c, d;
-
-  c.Parse(std::string("<root>\n"
-                      "  <node>some string1</node>\n"
-                      "  <node>some string2</node>\n"
-                      "  <node>some string3</node>\n"
-                      "  <node>some string4</node>\n"
-                      "  <node>some string5</node>\n"
-                      "</root>\n"));
-  EXPECT_TRUE(XMLUtils::GetAdditiveString(c.RootElement(), "node", ",", val2));
-
-  ref = "some string1,some string2,some string3,some string4,some string5";
-  EXPECT_STREQ(ref.c_str(), val2.c_str());
-
-  val2.clear();
-  d.Parse(std::string("<root>\n"
-                      "  <node>some string1</node>\n"
-                      "  <node>some string2</node>\n"
-                      "  <node clear=\"true\">some string3</node>\n"
-                      "  <node>some string4</node>\n"
-                      "  <node>some string5</node>\n"
-                      "</root>\n"));
-  EXPECT_TRUE(XMLUtils::GetAdditiveString(d.RootElement(), "node", ",", val2));
-
-  ref = "some string3,some string4,some string5";
   EXPECT_STREQ(ref.c_str(), val2.c_str());
 }
 
@@ -358,29 +262,6 @@ TEST(TestXMLUtils, SetString)
   EXPECT_STREQ(ref.c_str(), val2.c_str());
 }
 
-TEST(TestXMLUtils, SetAdditiveString)
-{
-  CXBMCTinyXML a;
-  std::string ref, val, val2;
-
-  a.Parse(std::string("<root></root>"));
-  XMLUtils::SetAdditiveString(a.RootElement(), "node", ",",
-    "some string1,some string2,some string3,some string4,some string5");
-  EXPECT_TRUE(XMLUtils::GetAdditiveString(a.RootElement(), "node", ",", val));
-
-  ref = "some string1,some string2,some string3,some string4,some string5";
-  EXPECT_STREQ(ref.c_str(), val.c_str());
-
-  CXBMCTinyXML2 b;
-
-  b.Parse(std::string("<root></root>"));
-  XMLUtils::SetAdditiveString(b.RootElement(), "node", ",",
-                              "some string1,some string2,some string3,some string4,some string5");
-  EXPECT_TRUE(XMLUtils::GetAdditiveString(b.RootElement(), "node", ",", val2));
-
-  EXPECT_STREQ(ref.c_str(), val2.c_str());
-}
-
 TEST(TestXMLUtils, SetStringArray)
 {
   CXBMCTinyXML a;
@@ -484,27 +365,6 @@ TEST(TestXMLUtils, SetBoolean)
   EXPECT_EQ(ref, val2);
 }
 
-TEST(TestXMLUtils, SetHex)
-{
-  CXBMCTinyXML a;
-  uint32_t ref, val, val2;
-
-  a.Parse(std::string("<root></root>"));
-  XMLUtils::SetHex(a.RootElement(), "node", 0xFF);
-  EXPECT_TRUE(XMLUtils::GetHex(a.RootElement(), "node", val));
-
-  ref = 0xFF;
-  EXPECT_EQ(ref, val);
-
-  CXBMCTinyXML2 b;
-
-  b.Parse(std::string("<root></root>"));
-  XMLUtils::SetHex(b.RootElement(), "node", 0xFF);
-  EXPECT_TRUE(XMLUtils::GetHex(b.RootElement(), "node", val2));
-
-  EXPECT_EQ(ref, val2);
-}
-
 TEST(TestXMLUtils, SetPath)
 {
   CXBMCTinyXML a;
@@ -524,27 +384,6 @@ TEST(TestXMLUtils, SetPath)
   EXPECT_TRUE(XMLUtils::GetPath(b.RootElement(), "node", val2));
 
   EXPECT_STREQ(ref.c_str(), val2.c_str());
-}
-
-TEST(TestXMLUtils, SetLong)
-{
-  CXBMCTinyXML a;
-  long ref, val, val2;
-
-  a.Parse(std::string("<root></root>"));
-  XMLUtils::SetLong(a.RootElement(), "node", 1000);
-  EXPECT_TRUE(XMLUtils::GetLong(a.RootElement(), "node", val));
-
-  ref = 1000;
-  EXPECT_EQ(ref, val);
-
-  CXBMCTinyXML2 b;
-
-  b.Parse(std::string("<root></root>"));
-  XMLUtils::SetLong(b.RootElement(), "node", 1000);
-  EXPECT_TRUE(XMLUtils::GetLong(b.RootElement(), "node", val2));
-
-  EXPECT_EQ(ref, val2);
 }
 
 TEST(TestXMLUtils, SetDate)

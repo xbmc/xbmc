@@ -201,6 +201,24 @@ std::string CFileExtensionProvider::GetSubtitleExtensions() const
                        });
 }
 
+std::string CFileExtensionProvider::GetMediaExtensions(KODI::MEDIA::MediaSection section) const
+{
+  switch (section)
+  {
+    case KODI::MEDIA::MediaSection::VIDEO:
+      return GetVideoExtensions();
+    case KODI::MEDIA::MediaSection::MUSIC:
+      return GetMusicExtensions();
+    case KODI::MEDIA::MediaSection::PICTURES:
+      return GetPictureExtensions();
+    case KODI::MEDIA::MediaSection::FILES:
+    case KODI::MEDIA::MediaSection::PROGRAMS:
+    case KODI::MEDIA::MediaSection::GAMES:
+      break;
+  }
+  return {};
+}
+
 std::string CFileExtensionProvider::GetVideoExtensions() const
 {
   return GetExtensions(m_initialized, m_critSection, m_videoExtensions,

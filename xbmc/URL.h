@@ -82,8 +82,6 @@ public:
   static std::string GetRedacted(std::string path);
   bool IsLocal() const;
   bool IsLocalHost() const;
-  static bool IsFileOnly(
-      const std::string& url); ///< return true if there are no directories in the url.
   static bool IsFullPath(const std::string& url); ///< return true if the url includes the full path
   static std::string Decode(std::string_view strURLData);
   static std::string Encode(std::string_view strURLData);

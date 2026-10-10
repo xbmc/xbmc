@@ -20,6 +20,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/ImageChoices.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -37,6 +38,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtTypes.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -45,6 +47,7 @@
 
 using namespace KODI::MESSAGING;
 using namespace XFILE;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_LIST          450
 #define CONTROL_THUMBS        451
@@ -90,7 +93,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
   if ((action.GetID() == ACTION_CONTEXT_MENU || action.GetID() == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->GetPath().empty())
   {
     int iItem = m_viewControl.GetSelectedItem();
-    if ((!m_addSourceType.empty() && iItem != m_vecItems->Size()-1))
+    if ((m_addSourceSection && iItem != m_vecItems->Size() - 1))
       return OnPopupMenu(iItem);
     if (m_addNetworkShareEnabled && CServiceBroker::GetMediaManager().HasLocation(m_selectedPath))
     {
@@ -449,7 +452,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
     pItem->SetFolder(true);
     m_vecItems->Add(pItem);
   }
-  if (m_Directory->GetPath().empty() && !m_addSourceType.empty())
+  if (m_Directory->GetPath().empty() && m_addSourceSection)
   {
     CFileItemPtr pItem(
         new CFileItem(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21359)));
@@ -514,7 +517,7 @@ void CGUIDialogFileBrowser::FrameMove()
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, safePath);
     }
     if ((!m_browsingForFolders && (*m_vecItems)[item]->IsFolder()) ||
-        ((*m_vecItems)[item]->GetPath() == "image://Browse"))
+        ((*m_vecItems)[item]->GetPath() == KODI::IMAGE_CHOICE::BROWSE))
     {
       CONTROL_DISABLE(CONTROL_OK);
     }
@@ -560,7 +563,7 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
       OnAddMediaSource();
       return;
     }
-    if (!m_addSourceType.empty())
+    if (m_addSourceSection)
     {
       OnEditMediaSource(pItem.get());
       return;
@@ -657,9 +660,9 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList& items,
   browser->m_vecItems->Append(items);
   if (true)
   {
-    CFileItemPtr item(new CFileItem("image://Browse", false));
+    CFileItemPtr item(new CFileItem(KODI::IMAGE_CHOICE::BROWSE, false));
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20153));
-    item->SetArt("icon", "DefaultFolder.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultFolder.png");
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);
@@ -669,7 +672,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList& items,
   if (confirmed)
   {
     result = browser->m_selectedPath;
-    if (result == "image://Browse")
+    if (result == KODI::IMAGE_CHOICE::BROWSE)
     { // "Browse for thumb"
       CServiceBroker::GetGUI()->GetWindowManager().Delete(browser->GetID());
       return ShowAndGetImage(
@@ -785,7 +788,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
     CDirectory::GetDirectory(directory,*browser->m_vecItems, "", DIR_FLAG_DEFAULTS);
     CFileItemPtr item(new CFileItem("file://Browse", false));
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20153));
-    item->SetArt("icon", "DefaultFolder.png");
+    item->SetArt(KODI::ART::TYPE::ICON, "DefaultFolder.png");
     browser->m_vecItems->Add(item);
     browser->m_singleList = true;
   }
@@ -862,7 +865,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(
     std::string& path,
     bool allowNetworkShares,
     std::vector<CMediaSource>* additionalShare /* = NULL */,
-    const std::string& strType /* = "" */)
+    std::optional<MediaSection> section /* = {} */)
 {
   // Technique is
   // 1.  Show Filebrowser with currently defined local, and optionally the network locations.
@@ -883,11 +886,11 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(
     return false;
 
   std::vector<CMediaSource> shares;
-  if (!strType.empty())
+  if (section)
   {
     if (additionalShare)
       shares = *additionalShare;
-    browser->m_addSourceType = strType;
+    browser->m_addSourceSection = section;
   }
   else
   {
@@ -926,7 +929,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(
 void CGUIDialogFileBrowser::SetSources(const std::vector<CMediaSource>& shares)
 {
   m_shares = shares;
-  if (m_shares.empty() && m_addSourceType.empty())
+  if (m_shares.empty() && !m_addSourceSection)
     CServiceBroker::GetMediaManager().GetLocalDrives(m_shares);
   m_rootDir.SetSources(m_shares);
 }
@@ -957,18 +960,18 @@ void CGUIDialogFileBrowser::OnAddNetworkLocation()
 
 void CGUIDialogFileBrowser::OnAddMediaSource()
 {
-  if (CGUIDialogMediaSource::ShowAndAddMediaSource(m_addSourceType))
+  if (CGUIDialogMediaSource::ShowAndAddMediaSource(*m_addSourceSection))
   {
-    SetSources(*CMediaSourceSettings::GetInstance().GetSources(m_addSourceType));
+    SetSources(CMediaSourceSettings::GetInstance().GetSources(*m_addSourceSection));
     Update("");
   }
 }
 
 void CGUIDialogFileBrowser::OnEditMediaSource(CFileItem* pItem)
 {
-  if (CGUIDialogMediaSource::ShowAndEditMediaSource(m_addSourceType,pItem->GetLabel()))
+  if (CGUIDialogMediaSource::ShowAndEditMediaSource(*m_addSourceSection, pItem->GetLabel()))
   {
-    SetSources(*CMediaSourceSettings::GetInstance().GetSources(m_addSourceType));
+    SetSources(CMediaSourceSettings::GetInstance().GetSources(*m_addSourceSection));
     Update("");
   }
 }
@@ -976,8 +979,8 @@ void CGUIDialogFileBrowser::OnEditMediaSource(CFileItem* pItem)
 bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
 {
   CContextButtons choices;
-  choices.Add(1, m_addSourceType.empty() ? 20133 : 21364);
-  choices.Add(2, m_addSourceType.empty() ? 20134 : 21365);
+  choices.Add(1, !m_addSourceSection ? 20133 : 21364);
+  choices.Add(2, !m_addSourceSection ? 20134 : 21365);
 
   int btnid = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (btnid == 1)
@@ -1041,8 +1044,9 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     }
     else
     {
-      CMediaSourceSettings::GetInstance().DeleteSource(m_addSourceType,(*m_vecItems)[iItem]->GetLabel(),(*m_vecItems)[iItem]->GetPath());
-      SetSources(*CMediaSourceSettings::GetInstance().GetSources(m_addSourceType));
+      CMediaSourceSettings::GetInstance().DeleteSource(
+          *m_addSourceSection, (*m_vecItems)[iItem]->GetLabel(), (*m_vecItems)[iItem]->GetPath());
+      SetSources(CMediaSourceSettings::GetInstance().GetSources(*m_addSourceSection));
       Update("");
     }
   }

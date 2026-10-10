@@ -15,8 +15,6 @@ int64_t BitstreamStats::m_tmFreq;
 BitstreamStats::BitstreamStats(unsigned int nEstimatedBitrate)
 {
   m_dBitrate = 0.0;
-  m_dMaxBitrate = 0.0;
-  m_dMinBitrate = -1.0;
 
   m_nBitCount = 0;
   m_nEstimatedBitrate = nEstimatedBitrate;
@@ -54,12 +52,6 @@ void BitstreamStats::CalculateBitrate()
   if (elapsed >= 2)
   {
     m_dBitrate = (double)m_nBitCount / elapsed;
-
-    if (m_dBitrate > m_dMaxBitrate)
-      m_dMaxBitrate = m_dBitrate;
-
-    if (m_dBitrate < m_dMinBitrate || m_dMinBitrate == -1)
-      m_dMinBitrate = m_dBitrate;
 
     Start();
   }

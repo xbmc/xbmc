@@ -53,6 +53,18 @@ protected:
 
 using PERIPHERALS::TestPeripheralMappings;
 
+TEST_F(TestPeripheralMappings, SkipsASettingWithoutAKey)
+{
+  const auto settings = SettingsFrom(R"(<peripheral>
+                                          <setting type="bool" value="1" label="1"/>
+                                          <setting key="enabled" type="bool" value="1" label="2"/>
+                                        </peripheral>)");
+
+  ASSERT_TRUE(settings.has_value()) << "reading the settings did not finish";
+  EXPECT_EQ(1u, settings->size());
+  EXPECT_TRUE(settings->contains("enabled"));
+}
+
 TEST_F(TestPeripheralMappings, ReadsTheOrderOfASetting)
 {
   const auto settings = SettingsFrom(R"(<peripheral>

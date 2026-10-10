@@ -135,21 +135,4 @@ std::string CLanguageResource::GetAddonId(const std::string& locale)
   StringUtils::ToLower(addonId);
   return addonId;
 }
-
-bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::string &legacyLanguage)
-{
-  if (locale.empty())
-    return false;
-
-  std::string addonId = GetAddonId(locale);
-
-  AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::RESOURCE_LANGUAGE,
-                                              OnlyEnabled::CHOICE_YES))
-    return false;
-
-  legacyLanguage = addon->Name();
-  return true;
-}
-
 }

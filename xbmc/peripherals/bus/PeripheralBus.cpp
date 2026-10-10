@@ -15,6 +15,7 @@
 #include "peripherals/devices/Peripheral.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -69,9 +70,14 @@ void CPeripheralBus::Clear(void)
     StopThread(true);
   }
 
-  std::unique_lock lock(m_critSection);
+  PeripheralVector peripherals;
+  {
+    std::unique_lock lock(m_critSection);
+    peripherals.swap(m_peripherals);
+  }
 
-  m_peripherals.clear();
+  for (const auto& peripheral : peripherals)
+    peripheral->ReleaseControllerInput();
 }
 
 void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults& results)
@@ -334,7 +340,7 @@ void CPeripheralBus::GetDirectory(const std::string& strPath, CFileItemList& ite
 
     peripheralFile->SetProperty("version", strVersion);
     peripheralFile->SetLabel2(strDetails);
-    peripheralFile->SetArt("icon", peripheral->GetIcon());
+    peripheralFile->SetArt(KODI::ART::TYPE::ICON, peripheral->GetIcon());
 
     items.Add(peripheralFile);
   }

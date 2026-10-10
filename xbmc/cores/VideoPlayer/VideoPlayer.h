@@ -22,9 +22,9 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/DispResource.h"
+#include "language/LanguageTag.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
-#include "utils/LanguageTag.h"
 
 #include <atomic>
 #include <chrono>
@@ -197,7 +197,7 @@ struct SelectionStream
   int type_index = 0;
   std::string filename;
   std::string filename2;  // for vobsub subtitles, 2 files are necessary (idx/sub)
-  KODI::UTILS::CLanguageTag language;
+  KODI::LANGUAGE::CLanguageTag language;
   std::string name;
   StreamFlags flags = StreamFlags::FLAG_NONE;
   int source = 0;
@@ -418,6 +418,7 @@ protected:
   void DestroyPlayers();
 
   void Prepare();
+  void ForgetSubtitleSelection();
   bool ShouldDeferSync(bool ready, std::chrono::steady_clock::time_point now);
   bool OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset = true);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
@@ -588,6 +589,9 @@ protected:
     int m_videoIndex{-1};
     int m_audioIndex{-1};
     int m_subtitleIndex{-1};
+    //! Last subtitle index that resolved to an open stream. A hidden subtitle is
+    //! closed on the demuxer but stays selected, so this outlives the stream.
+    int m_selectedSubtitleIndex{-1};
   } m_content;
 
   int m_playSpeed;

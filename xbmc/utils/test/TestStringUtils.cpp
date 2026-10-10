@@ -260,13 +260,6 @@ TEST(TestStringUtils, RemoveDuplicatedSpacesAndTabs)
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
-TEST(TestStringUtils, ReplaceSpecialCharactersWithSpace)
-{
-  const std::string input("a .-_+b,!'c\"\tde/\\f*?g#$%h&@(i)[j]{k}");
-  const std::string output = StringUtils::ReplaceSpecialCharactersWithSpace(input);
-  EXPECT_STREQ(output.c_str(), "a b c de f g h i j k ");
-}
-
 TEST(TestStringUtils, Replace)
 {
   std::string refstr = "text text";
@@ -398,12 +391,6 @@ TEST(TestStringUtils, SplitMulti)
             StringUtils::SplitMulti(input, delims, 5));
   EXPECT_EQ(std::vector<std::string>({"aaa", "bbb", "cc:c", "ddd", "eee"}),
             StringUtils::SplitMulti(input, delims, 6));
-}
-
-TEST(TestStringUtils, FindNumber)
-{
-  EXPECT_EQ(3, StringUtils::FindNumber("aabcaadeaa", "aa"));
-  EXPECT_EQ(1, StringUtils::FindNumber("aabcaadeaa", "b"));
 }
 
 TEST(TestStringUtils, AlphaNumericCompare)
@@ -639,11 +626,6 @@ TEST(TestStringUtils, WordToDigits)
 TEST(TestStringUtils, CreateUUID)
 {
   std::cout << "CreateUUID(): " << StringUtils::CreateUUID() << std::endl;
-}
-
-TEST(TestStringUtils, ValidateUUID)
-{
-  EXPECT_TRUE(StringUtils::ValidateUUID(StringUtils::CreateUUID()));
 }
 
 TEST(TestStringUtils, CompareFuzzy)

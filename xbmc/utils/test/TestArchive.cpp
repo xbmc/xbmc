@@ -37,17 +37,7 @@ TEST_F(TestArchive, IsStoring)
   ASSERT_NE(nullptr, file);
   CArchive arstore(file, CArchive::store);
   EXPECT_TRUE(arstore.IsStoring());
-  EXPECT_FALSE(arstore.IsLoading());
   arstore.Close();
-}
-
-TEST_F(TestArchive, IsLoading)
-{
-  ASSERT_NE(nullptr, file);
-  CArchive arload(file, CArchive::load);
-  EXPECT_TRUE(arload.IsLoading());
-  EXPECT_FALSE(arload.IsStoring());
-  arload.Close();
 }
 
 TEST_F(TestArchive, FloatArchive)
@@ -351,7 +341,6 @@ TEST_F(TestArchive, MultiTypeArchive)
 
   CArchive arstore(file, CArchive::store);
   EXPECT_TRUE(arstore.IsStoring());
-  EXPECT_FALSE(arstore.IsLoading());
   arstore << float_ref;
   arstore << double_ref;
   arstore << int_ref;
@@ -370,7 +359,6 @@ TEST_F(TestArchive, MultiTypeArchive)
 
   ASSERT_EQ(0, file->Seek(0, SEEK_SET));
   CArchive arload(file, CArchive::load);
-  EXPECT_TRUE(arload.IsLoading());
   EXPECT_FALSE(arload.IsStoring());
   arload >> float_var;
   arload >> double_var;

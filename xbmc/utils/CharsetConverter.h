@@ -51,20 +51,6 @@ public:
    */
   static std::u32string utf8ToUtf32(const std::string& utf8StringSrc, bool failOnBadChar = true);
   /**
-   * Convert UTF-8 string to UTF-32 string.
-   * RTL logical-visual transformation is optionally performed.
-   * Use it for readable text, GUI strings etc.
-   * @param utf8StringSrc       is source UTF-8 string to convert
-   * @param utf32StringDst      is output UTF-32 string, empty on any error
-   * @param bVisualBiDiFlip     allow RTL visual-logical transformation if set to true, must be set
-   *                            to false is logical-visual transformation is already done
-   * @param forceLTRReadingOrder        force LTR reading order
-   * @param failOnBadChar       if set to true function will fail on invalid character,
-   *                            otherwise invalid character will be skipped
-   * @return true on successful conversion, false on any error
-   */
-  static bool utf8ToUtf32Visual(const std::string& utf8StringSrc, std::u32string& utf32StringDst, bool bVisualBiDiFlip = false, bool forceLTRReadingOrder = false, bool failOnBadChar = false);
-  /**
    * Convert UTF-32 string to UTF-8 string.
    * No RTL visual-logical transformation is performed.
    * @param utf32StringSrc      is source UTF-32 string to convert
@@ -121,14 +107,11 @@ public:
                 bool bVisualBiDiFlip = true, bool forceLTRReadingOrder = false,
                 bool failOnBadChar = false);
 
-  static bool utf16LEtoW(const std::u16string& utf16String, std::wstring& wString);
-
   static bool subtitleCharsetToUtf8(const std::string& stringSrc, std::string& utf8StringDst);
 
   static bool utf8ToStringCharset(const std::string& utf8StringSrc, std::string& stringDst);
 
   static bool utf8ToStringCharset(std::string& stringSrcDst);
-  static bool utf8ToSystem(std::string& stringSrcDst, bool failOnBadChar = false);
   static bool systemToUtf8(const std::string& sysStringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
 
   static bool utf8To(const std::string& strDestCharset, const std::string& utf8StringSrc, std::string& stringDst);
@@ -157,9 +140,6 @@ public:
    */
   static bool utf16BEtoUTF8(const std::string& utf16StringSrc, std::string& utf8StringDst);
 
-  static bool utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
-  static bool ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst);
-
   /*!
    *  \brief Convert Macintosh (string) string to UTF-8 string.
    *  No RTL visual-logical transformation is performed.
@@ -168,8 +148,6 @@ public:
    *  \return True on successful conversion, false on any error
    */
   static bool MacintoshToUTF8(const std::string& macStringSrc, std::string& utf8StringDst);
-
-  static bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString = false);
 
   /**
    * Check if a string has RTL direction.
@@ -181,14 +159,10 @@ public:
   static bool utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst);
 
   static std::vector<std::string> getCharsetLabels();
-  static std::string getCharsetLabelByName(const std::string& charsetName);
   static std::string getCharsetNameByLabel(const std::string& charsetLabel);
 
   static bool unknownToUTF8(std::string& stringSrcDst);
   static bool unknownToUTF8(const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
-
-  static bool toW(const std::string& stringSrc, std::wstring& wStringDst, const std::string& enc);
-  static bool fromW(const std::wstring& wStringSrc, std::string& stringDst, const std::string& enc);
 
   static void SettingOptionsCharsetsFiller(const std::shared_ptr<const CSetting>& setting,
                                            std::vector<StringSettingOption>& list,

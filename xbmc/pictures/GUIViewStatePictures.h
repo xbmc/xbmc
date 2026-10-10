@@ -15,7 +15,7 @@ class CGUIViewStateWindowPictures : public CGUIViewState
 public:
   explicit CGUIViewStateWindowPictures(const CFileItemList& items);
 
-  std::string GetLockType() override;
+  std::optional<KODI::MEDIA::MediaSection> GetLockType() override;
   std::string GetExtensions() override;
   std::vector<CMediaSource>& GetSources() override;
 

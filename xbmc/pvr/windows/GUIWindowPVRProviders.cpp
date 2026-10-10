@@ -68,7 +68,7 @@ void CGUIWindowPVRProvidersBase::UpdateButtons()
   // Update window breadcrumb.
   std::string header1;
   const CPVRProvidersPath path{m_vecItems->GetPath()};
-  if (path.IsProvider())
+  if (path.IsProvider() || path.IsGroups())
   {
     const std::shared_ptr<const CPVRProvider> provider{
         CServiceBroker::GetPVRManager().Providers()->GetByClient(path.GetClientId(),
@@ -125,6 +125,13 @@ bool CGUIWindowPVRProvidersBase::OnMessage(CGUIMessage& message)
                     ret = true;
                     break;
                   }
+                }
+                else if (path.IsGroups() && !item->IsParentFolder())
+                {
+                  CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(
+                      path.IsRadio() ? WINDOW_RADIO_CHANNELS : WINDOW_TV_CHANNELS, item->GetPath());
+                  ret = true;
+                  break;
                 }
               }
 

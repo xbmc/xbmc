@@ -528,24 +528,6 @@ std::string CRegExp::GetMatch(const char* name) const
   return {};
 }
 
-void CRegExp::DumpOvector(int iLog /* = LOGDEBUG */)
-{
-  if (iLog < LOGDEBUG || iLog > LOGNONE)
-    return;
-
-  std::string str = "{";
-  int size = GetSubCount(); // past the subpatterns is junk
-  for (int i = 0; i <= size; i++)
-  {
-    std::string t = StringUtils::Format("[{},{}]", m_iOvector[(i * 2)], m_iOvector[(i * 2) + 1]);
-    if (i != size)
-      t += ",";
-    str += t;
-  }
-  str += "}";
-  CLog::Log(iLog, "regexp ovector={}", str);
-}
-
 void CRegExp::Cleanup()
 {
   if (m_re)

@@ -12,6 +12,7 @@
 #include "OptionalsReg.h"
 #include "ServiceBroker.h"
 #include "X11DPMSSupport.h"
+#include "application/AppParams.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationSkinHandling.h"
 #include "cores/RetroPlayer/process/X11/RPProcessInfoX11.h"
@@ -300,11 +301,11 @@ bool CWinSystemX11GLESContext::RefreshGLContext(bool force)
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGLES::Register();
 
-  std::string gli = (getenv("KODI_GL_INTERFACE") != nullptr) ? getenv("KODI_GL_INTERFACE") : "";
+  std::string_view gli = CServiceBroker::GetAppParams()->GetGlInterface();
 
   m_pGLContext = new CGLContextEGL(m_dpy, EGL_OPENGL_ES_API);
   success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
-  if (!success && gli == "EGL_PB")
+  if (!success && gli == "egl-pb")
   {
     success = m_pGLContext->CreatePB();
     m_newGlContext = true;

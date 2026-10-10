@@ -16,6 +16,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "language/LangInfo.h"
+#include "utils/ArtTypes.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
@@ -64,11 +65,6 @@ void CAddonInfoBuilderFromDB::SetName(std::string name)
   m_addonInfo->m_name = std::move(name);
 }
 
-void CAddonInfoBuilderFromDB::SetLicense(std::string license)
-{
-  m_addonInfo->m_license = std::move(license);
-}
-
 void CAddonInfoBuilderFromDB::SetSummary(std::string summary)
 {
   m_addonInfo->m_summary.try_emplace("unk", std::move(summary));
@@ -87,26 +83,6 @@ void CAddonInfoBuilderFromDB::SetDisclaimer(std::string disclaimer)
 void CAddonInfoBuilderFromDB::SetAuthor(std::string author)
 {
   m_addonInfo->m_author = std::move(author);
-}
-
-void CAddonInfoBuilderFromDB::SetSource(std::string source)
-{
-  m_addonInfo->m_source = std::move(source);
-}
-
-void CAddonInfoBuilderFromDB::SetWebsite(std::string website)
-{
-  m_addonInfo->m_website = std::move(website);
-}
-
-void CAddonInfoBuilderFromDB::SetForum(std::string forum)
-{
-  m_addonInfo->m_forum = std::move(forum);
-}
-
-void CAddonInfoBuilderFromDB::SetEMail(std::string email)
-{
-  m_addonInfo->m_email = std::move(email);
 }
 
 void CAddonInfoBuilderFromDB::SetIcon(std::string icon)
@@ -448,7 +424,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
              elementsAssets = elementsAssets->NextSiblingElement())
         {
           std::string value = elementsAssets->Value();
-          if (value == "icon")
+          if (value == KODI::ART::TYPE::ICON)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_icon = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
@@ -458,12 +434,12 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
             if (elementsAssets->GetText() != nullptr)
               addon->m_screenshots.emplace_back(URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText()));
           }
-          else if (value == "fanart")
+          else if (value == KODI::ART::TYPE::FANART)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
           }
-          else if (value == "banner")
+          else if (value == KODI::ART::TYPE::BANNER)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
@@ -473,7 +449,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] = URIUtils::AddFileToFolder(assetBasePath, elementsAssets->GetText());
           }
-          else if (value == "thumb")
+          else if (value == KODI::ART::TYPE::THUMB)
           {
             if (elementsAssets->GetText() != nullptr)
               addon->m_art[value] =

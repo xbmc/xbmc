@@ -38,6 +38,7 @@
 
 using namespace KODI;
 using namespace GAME;
+using KODI::MEDIA::MediaSection;
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY 3
@@ -57,7 +58,8 @@ bool CGUIWindowGames::OnMessage(CGUIMessage& message)
 
       // Is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("games"));
+        message.SetStringParam(
+            CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::GAMES));
 
       //! @todo
       m_dlgProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
@@ -167,7 +169,7 @@ void CGUIWindowGames::GetContextButtons(int itemNumber, CContextButtons& buttons
     if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsSourcesPath())
     {
       // Context buttons for a sources path, like "Add Source", "Remove Source", etc.
-      CGUIDialogContextMenu::GetContextButtons("games", item, buttons);
+      CGUIDialogContextMenu::GetContextButtons(MediaSection::GAMES, item, buttons);
     }
     else
     {
@@ -203,7 +205,7 @@ bool CGUIWindowGames::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsSourcesPath())
     {
-      if (CGUIDialogContextMenu::OnContextButton("games", item, button))
+      if (CGUIDialogContextMenu::OnContextButton(MediaSection::GAMES, item, button))
       {
         Update(m_vecItems->GetPath());
         return true;
@@ -235,7 +237,7 @@ bool CGUIWindowGames::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 bool CGUIWindowGames::OnAddMediaSource()
 {
-  return CGUIDialogMediaSource::ShowAndAddMediaSource("games");
+  return CGUIDialogMediaSource::ShowAndAddMediaSource(MediaSection::GAMES);
 }
 
 bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemList& items)
@@ -297,7 +299,8 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
   if (items.GetLabel().empty())
   {
     std::string source;
-    if (m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("games"),
+    if (m_rootDir.IsSource(items.GetPath(),
+                           &CMediaSourceSettings::GetInstance().GetSources(MediaSection::GAMES),
                            &source))
       label = std::move(source);
   }
@@ -348,7 +351,7 @@ std::string CGUIWindowGames::GetStartFolder(const std::string& dir)
     if (iIndex < static_cast<int>(shares.size()) && shares[iIndex].GetLockInfo().IsLocked())
     {
       CFileItem item(shares[iIndex]);
-      if (!g_passwordManager.IsItemUnlocked(&item, "games"))
+      if (!g_passwordManager.IsItemUnlocked(&item, MediaSection::GAMES))
         return "";
     }
     if (bIsSourceName)

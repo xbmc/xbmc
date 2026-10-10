@@ -1181,12 +1181,12 @@ bool CGUIControlButtonSetting::GetPath(const std::shared_ptr<CSettingPath>& path
   {
     if (StringUtils::EqualsNoCase(source, "local"))
       localSharesOnly = true;
-    else
+    else if (const std::optional<KODI::MEDIA::MediaSection> section{
+                 KODI::MEDIA::MediaSectionFromName(source)})
     {
-      const std::vector<CMediaSource>* mediasources =
-          CMediaSourceSettings::GetInstance().GetSources(source);
-      if (mediasources)
-        shares.insert(shares.end(), mediasources->begin(), mediasources->end());
+      const std::vector<CMediaSource>& mediasources =
+          CMediaSourceSettings::GetInstance().GetSources(*section);
+      shares.insert(shares.end(), mediasources.begin(), mediasources.end());
     }
   }
 

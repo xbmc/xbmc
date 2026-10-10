@@ -14,6 +14,7 @@
 #include "guilib/Texture.h"
 #include "imagefiles/ImageFileURL.h"
 #include "pictures/Picture.h"
+#include "utils/ArtTypes.h"
 #include "utils/log.h"
 
 bool PVR::CPVRChannelGroupImageFileLoader::CanLoad(const std::string& specialType) const
@@ -34,7 +35,7 @@ std::unique_ptr<CTexture> PVR::CPVRChannelGroupImageFileLoader::Load(
   std::vector<std::string> channelIcons;
   for (const auto& channel : channels)
   {
-    const std::string& icon = channel->GetArt("icon");
+    const std::string& icon = channel->GetArt(KODI::ART::TYPE::ICON);
     if (!icon.empty())
       channelIcons.emplace_back(IMAGE_FILES::CImageFileURL(icon).GetTargetFile());
 

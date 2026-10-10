@@ -16,6 +16,14 @@
 class HTTPRequestHandlerUtils
 {
 public:
+  /*!
+   * \brief Returns the URI scheme by which the client reached Kodi, either "http" or "https".
+   *
+   * \details X-Forwarded-Proto, set by a reverse proxy terminating TLS, is honoured over the
+   * scheme of the connection the proxy made to Kodi.
+   */
+  static std::string GetRequestScheme(struct MHD_Connection* connection);
+
   static std::string GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues);

@@ -57,10 +57,11 @@ CGUIDialogExtendedProgressBar::CGUIDialogExtendedProgressBar(void)
 
 CGUIDialogProgressBarHandle *CGUIDialogExtendedProgressBar::GetHandle(const std::string &strTitle)
 {
-  CGUIDialogProgressBarHandle *handle = new CGUIDialogProgressBarHandle(strTitle);
+  auto owned{std::make_unique<CGUIDialogProgressBarHandle>(strTitle)};
+  CGUIDialogProgressBarHandle* handle = owned.get();
   {
     std::unique_lock lock(m_critSection);
-    m_handles.push_back(handle);
+    m_handles.push_back(std::move(owned));
   }
 
   Open();
@@ -104,15 +105,7 @@ void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
   {
     std::unique_lock lock(m_critSection);
 
-    // delete finished items
-    for (int iPtr = m_handles.size() - 1; iPtr >= 0; iPtr--)
-    {
-      if (m_handles.at(iPtr)->IsFinished())
-      {
-        delete m_handles.at(iPtr);
-        m_handles.erase(m_handles.begin() + iPtr);
-      }
-    }
+    std::erase_if(m_handles, [](const auto& handle) { return handle->IsFinished(); });
 
     if (m_handles.empty())
     {
@@ -135,7 +128,7 @@ void CGUIDialogExtendedProgressBar::UpdateState(unsigned int currentTime)
         m_iCurrentItem = 0;
     }
 
-    CGUIDialogProgressBarHandle *handle = m_handles.at(m_iCurrentItem);
+    CGUIDialogProgressBarHandle* handle = m_handles.at(m_iCurrentItem).get();
     if (handle)
     {
       strTitle  = handle->Text();

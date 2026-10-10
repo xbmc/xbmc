@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
@@ -68,6 +69,28 @@ TEST_F(TestLabelFormatter, FormatLabel2)
   EXPECT_TRUE(XBMC_DELETETEMPFILE(tmpfile));
 }
 
+TEST_F(TestLabelFormatter, AListIsLabelledByTheMasksOfEachKind)
+{
+  const auto file = std::make_shared<CFileItem>("file.mkv", false);
+  file->SetLabel("one");
+  const auto folder = std::make_shared<CFileItem>("folder/", true);
+  folder->SetLabel("two");
+  const auto preformatted = std::make_shared<CFileItem>("other.mkv", false);
+  preformatted->SetLabel("three");
+  preformatted->SetLabelPreformatted(true);
+
+  CFileItemList items;
+  items.Add(file);
+  items.Add(folder);
+  items.Add(preformatted);
+
+  CLabelFormatter::FormatItemLabels(items, LABEL_MASKS("[file %L]", "", "[folder %L]", ""));
+
+  EXPECT_EQ("file one", file->GetLabel());
+  EXPECT_EQ("folder two", folder->GetLabel());
+  EXPECT_EQ("three", preformatted->GetLabel());
+}
+
 class TestLabelFormatterHiddenExtensions : public testing::Test
 {
 protected:
@@ -104,4 +127,10 @@ TEST_F(TestLabelFormatterHiddenExtensions, HidesTheExtensionOfAnEscapedName)
 {
   EXPECT_EQ("file_name", LabelFor("davs://server/files/file_name.mkv", "file_name.mkv"));
   EXPECT_EQ("file name", LabelFor("davs://server/files/file%20name.mkv", "file name.mkv"));
+}
+
+TEST_F(TestLabelFormatterHiddenExtensions, KeepsAPlusInTheName)
+{
+  EXPECT_EQ("C++ Collection",
+            LabelFor("smb://server/share/C++ Collection.mkv", "C++ Collection.mkv"));
 }

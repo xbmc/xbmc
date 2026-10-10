@@ -110,7 +110,6 @@ struct TestURLParseDetailsData
   std::string expectedGetRedacted = "";
   bool expectedIsLocal = false;
   bool expectedIsLocalHost = false;
-  bool expectedIsFileOnly = false;
   bool expectedIsFullPath = false;
   std::string expectedDecode = "";
   std::string expectedDecodeFileName = "";
@@ -212,7 +211,6 @@ struct TestURLParseDetailsData
   std::string expectedCreateRARArchivePath = "";
   std::string expectedCreateAPKArchivePath = "";
   std::string expectedGetRealPath = "";
-  std::string expectedUpdateUrlEncoding = "";
 };
 
 void read(bool& output, const CVariant& jsonObj, const char* key)
@@ -290,7 +288,6 @@ TestURLParseDetailsData CreateParamFromJson(std::string filename)
     read(param.expectedGetRedacted, json, "expectedGetRedacted");
     read(param.expectedIsLocal, json, "expectedIsLocal");
     read(param.expectedIsLocalHost, json, "expectedIsLocalHost");
-    read(param.expectedIsFileOnly, json, "expectedIsFileOnly");
     read(param.expectedIsFullPath, json, "expectedIsFullPath");
     read(param.expectedDecode, json, "expectedDecode");
     read(param.expectedDecodeFileName, json, "expectedDecodeFileName");
@@ -393,7 +390,6 @@ TestURLParseDetailsData CreateParamFromJson(std::string filename)
     read(param.expectedCreateRARArchivePath, json, "expectedCreateRARArchivePath");
     read(param.expectedCreateAPKArchivePath, json, "expectedCreateAPKArchivePath");
     read(param.expectedGetRealPath, json, "expectedGetRealPath");
-    read(param.expectedUpdateUrlEncoding, json, "expectedUpdateUrlEncoding");
   }
   return param;
 }
@@ -424,10 +420,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   URIUtils::RemoveSlashAtEnd(tmp1);
   const auto removedEndSlash = tmp1;
 
-  tmp1 = p;
-  URIUtils::UpdateUrlEncoding(tmp1);
-  const auto updatedURLEncoding = tmp1;
-
   //EXPECT_EQ(URIUtils::GetFileName(p), splitCurlFileName) << p;
   //EXPECT_EQ(URIUtils::GetFileName(p), curl.GetFileNameWithoutPath()) << p;
 
@@ -452,7 +444,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   EXPECT_EQ(param.expectedGetRedacted, curl.GetRedacted());
   EXPECT_EQ(param.expectedIsLocal, curl.IsLocal());
   EXPECT_EQ(param.expectedIsLocalHost, curl.IsLocalHost());
-  EXPECT_EQ(param.expectedIsFileOnly, CURL::IsFileOnly(p));
   EXPECT_EQ(param.expectedIsFullPath, CURL::IsFullPath(p));
   EXPECT_EQ(param.expectedDecode, CURL::Decode(p));
   EXPECT_EQ(param.expectedDecodeFileName, CURL::Decode(curl.GetFileName()));
@@ -469,7 +460,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   EXPECT_EQ(param.expectedSplitFileName, splitFileName);
   EXPECT_EQ(param.expectedHasParentInHostname, URIUtils::HasParentInHostname(curl));
   EXPECT_EQ(param.expectedHasParentInHostname, curl.HasParentInHostname());
-  EXPECT_EQ(param.expectedHasEncodedHostname, URIUtils::HasEncodedHostname(curl));
   EXPECT_EQ(param.expectedHasEncodedHostname, curl.HasEncodedHostname());
   EXPECT_EQ(param.expectedHasEncodedFilename, URIUtils::HasEncodedFilename(curl));
   EXPECT_EQ(param.expectedHasEncodedFilename, curl.HasEncodedFilename());
@@ -585,7 +575,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   EXPECT_EQ(param.expectedCreateAPKArchivePath,
             URIUtils::CreateArchivePath("apk", curl, "/my/archived/path", "passwd").Get());
   EXPECT_EQ(param.expectedGetRealPath, URIUtils::GetRealPath(p));
-  EXPECT_EQ(param.expectedUpdateUrlEncoding, updatedURLEncoding);
 
 #ifdef GENERATE_JSON_TEST_FILES
   CVariant jsonObj;
@@ -612,7 +601,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   write(jsonObj, "expectedGetRedacted", curl.GetRedacted());
   write(jsonObj, "expectedIsLocal", curl.IsLocal());
   write(jsonObj, "expectedIsLocalHost", curl.IsLocalHost());
-  write(jsonObj, "expectedIsFileOnly", CURL::IsFileOnly(p));
   write(jsonObj, "expectedIsFullPath", CURL::IsFullPath(p));
   write(jsonObj, "expectedDecode", CURL::Decode(p));
   write(jsonObj, "expectedDecodeFileName", CURL::Decode(curl.GetFileName()));
@@ -626,7 +614,7 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   write(jsonObj, "expectedSplitPath", splitPath);
   write(jsonObj, "expectedSplitFileName", splitFileName);
   write(jsonObj, "expectedHasParentInHostname", URIUtils::HasParentInHostname(curl));
-  write(jsonObj, "expectedHasEncodedHostname", URIUtils::HasEncodedHostname(curl));
+  write(jsonObj, "expectedHasEncodedHostname", curl.HasEncodedHostname());
   write(jsonObj, "expectedHasEncodedFilename", URIUtils::HasEncodedFilename(curl));
   write(jsonObj, "expectedHasParentPath", URIUtils::GetParentPath(p));
   write(jsonObj, "expectedGetParentPath", parentPath);
@@ -717,7 +705,6 @@ void RunParseTest(const std::string& filename, const TestURLParseDetailsData& pa
   write(jsonObj, "expectedCreateAPKArchivePath",
         URIUtils::CreateArchivePath("apk", curl, "/my/archived/path", "passwd").Get());
   write(jsonObj, "expectedGetRealPath", URIUtils::GetRealPath(p));
-  write(jsonObj, "expectedUpdateUrlEncoding", updatedURLEncoding);
 
   std::string jsonString;
   CJSONVariantWriter::Write(jsonObj, jsonString, false);

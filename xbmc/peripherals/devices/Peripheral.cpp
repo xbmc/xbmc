@@ -90,11 +90,7 @@ CPeripheral::CPeripheral(CPeripherals& manager,
 
 CPeripheral::~CPeripheral(void)
 {
-  if (m_controllerInput)
-  {
-    m_controllerInput->Deinitialize();
-    m_controllerInput.reset();
-  }
+  ReleaseControllerInput();
 
   PersistSettings(true);
 
@@ -104,6 +100,11 @@ CPeripheral::~CPeripheral(void)
 }
 
 void CPeripheral::OnDeviceRemoved(void)
+{
+  ReleaseControllerInput();
+}
+
+void CPeripheral::ReleaseControllerInput()
 {
   if (m_controllerInput)
   {

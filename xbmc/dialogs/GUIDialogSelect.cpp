@@ -193,7 +193,7 @@ void CGUIDialogSelect::Reset()
 
 int CGUIDialogSelect::Add(const std::string& strLabel)
 {
-  CFileItemPtr pItem(new CFileItem(strLabel));
+  auto pItem = std::make_shared<CFileItem>(strLabel);
   m_vecList->Add(pItem);
   return m_vecList->Size() - 1;
 }

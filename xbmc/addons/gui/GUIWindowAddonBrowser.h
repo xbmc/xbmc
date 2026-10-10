@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ThumbLoader.h"
+#include "filesystem/AddonsPaths.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <string>
@@ -102,7 +103,7 @@ protected:
   bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
   std::string GetStartFolder(const std::string& dir) override;
 
-  std::string GetRootPath() override { return "addons://"; }
+  std::string GetRootPath() override { return KODI::ADDONS::ROOT; }
 
 private:
   void SetProperties();

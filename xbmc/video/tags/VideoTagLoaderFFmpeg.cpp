@@ -14,6 +14,7 @@
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 
@@ -40,11 +41,11 @@ int64_t vfs_file_seek(void* h, int64_t pos, int whence)
 std::string filenameToType(std::string_view filename)
 {
   if (filename == "fanart.png" || filename == "fanart.jpg")
-    return "fanart";
+    return KODI::ART::TYPE::FANART;
   else if (filename == "cover.png" || filename == "cover.jpg")
-    return "poster";
+    return KODI::ART::TYPE::POSTER;
   else if (filename == "small_cover.png" || filename == "small_cover.jpg")
-    return "thumb";
+    return KODI::ART::TYPE::THUMB;
   return {};
 }
 
@@ -274,7 +275,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       continue;
 
     const size_t size = m_fctx->streams[i]->attached_pic.size;
-    const std::string type = "poster";
+    const std::string type = KODI::ART::TYPE::POSTER;
     if (art)
       art->emplace_back(m_fctx->streams[i]->attached_pic.data, size, "image/png", type);
     else

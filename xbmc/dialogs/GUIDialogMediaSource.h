@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "media/MediaSection.h"
 
 #include <string>
 #include <vector>
@@ -25,14 +26,14 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   void OnDeinitWindow(int nextWindowID) override;
   bool OnBack(int actionID) override;
-  static bool ShowAndAddMediaSource(const std::string &type);
-  static bool ShowAndEditMediaSource(const std::string &type, const CMediaSource &share);
-  static bool ShowAndEditMediaSource(const std::string &type, const std::string &share);
+  static bool ShowAndAddMediaSource(KODI::MEDIA::MediaSection section);
+  static bool ShowAndEditMediaSource(KODI::MEDIA::MediaSection section, const CMediaSource &share);
+  static bool ShowAndEditMediaSource(KODI::MEDIA::MediaSection section, const std::string &share);
 
   bool IsConfirmed() const { return m_confirmed; }
 
   void SetShare(const CMediaSource &share);
-  void SetTypeOfMedia(const std::string &type, bool editNotAdd = false);
+  void SetTypeOfMedia(KODI::MEDIA::MediaSection section, bool editNotAdd = false);
 protected:
   void OnPathBrowse(int item);
   void OnPath(int item);
@@ -44,11 +45,13 @@ protected:
   int GetSelectedItem();
   void HighlightItem(int item);
   std::string GetUniqueMediaSourceName();
-  static void OnMediaSourceChanged(const std::string& type, const std::string& oldName, const CMediaSource& share);
+  static void OnMediaSourceChanged(KODI::MEDIA::MediaSection section,
+                                   const std::string& oldName,
+                                   const CMediaSource& share);
 
   std::vector<std::string> GetPaths() const;
 
-  std::string m_type;
+  KODI::MEDIA::MediaSection m_section{KODI::MEDIA::MediaSection::FILES};
   std::string m_name;
   CFileItemList* m_paths;
   bool m_confirmed = false;

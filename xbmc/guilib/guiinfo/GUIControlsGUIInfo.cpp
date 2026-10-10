@@ -29,6 +29,8 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
@@ -397,7 +399,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value,
       const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        value = window->CurrentDirectory().GetArt("fanart");
+        value = window->CurrentDirectory().GetArt(KODI::ART::TYPE::FANART);
         return true;
       }
       break;
@@ -470,7 +472,8 @@ bool CGUIControlsGUIInfo::GetBool(bool& value,
       const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        value = window->CurrentDirectory().GetProperty("isstacked").asBoolean();
+        value =
+            window->CurrentDirectory().GetProperty(KODI::ITEM::PROPERTY::IS_STACKED).asBoolean();
         return true;
       }
       break;
@@ -480,7 +483,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value,
       const CGUIMediaWindow* window{GUIINFO::GetMediaWindow(contextWindow)};
       if (window)
       {
-        value = window->CurrentDirectory().HasArt("thumb");
+        value = window->CurrentDirectory().HasArt(KODI::ART::TYPE::THUMB);
         return true;
       }
       break;

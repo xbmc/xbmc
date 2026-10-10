@@ -19,6 +19,7 @@ set(HEADERS Album.h
             ContextMenus.h
             GUIViewStateMusic.h
             MusicDatabase.h
+            MusicDbPaths.h
             MusicDbUrl.h
             MusicEmbeddedCoverLoaderFFmpeg.h
             MusicEmbeddedImageFileLoader.h

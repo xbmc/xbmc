@@ -39,6 +39,7 @@
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/AudioType.h"
+#include "music/MusicDbPaths.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
@@ -51,9 +52,11 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -340,7 +343,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
   if (strDirectory.empty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetAlbumsNav("musicdb://albums/", items, SortDescription());
+    m_musicDatabase.GetAlbumsNav(MUSIC::DB_PATH::ALBUMS, items, SortDescription());
     m_musicDatabase.Close();
   }
   else
@@ -404,7 +407,7 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
     m_musicDatabase.Open();
     const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     m_musicDatabase.GetArtistsNav(
-        "musicdb://artists/", items, SortDescription(),
+        MUSIC::DB_PATH::ARTISTS, items, SortDescription(),
         !settings->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
     m_musicDatabase.Close();
   }
@@ -1131,10 +1134,10 @@ void CMusicInfoScanner::FindArtForAlbums(std::vector<CAlbum>& albums, const std:
      that case and set the IsHTTPDirectory property to enable scanning for art.
     */
     if (StringUtils::StartsWithNoCase(path, "http") && StringUtils::EndsWith(path, "/"))
-      album.SetProperty("IsHTTPDirectory", true);
+      album.SetProperty(ITEM::PROPERTY::IS_HTTP_DIRECTORY, true);
     albumArt = album.GetUserMusicThumb(true);
     if (!albumArt.empty())
-      albums[0].art["thumb"] = albumArt;
+      albums[0].art[ART::TYPE::THUMB] = albumArt;
   }
   for (auto& album : albums)
   {
@@ -1176,7 +1179,7 @@ void CMusicInfoScanner::FindArtForAlbums(std::vector<CAlbum>& albums, const std:
     }
 
     if (!albumArt.empty())
-      album.art["thumb"] = albumArt;
+      album.art[ART::TYPE::THUMB] = albumArt;
 
     if (singleArt)
     { //if singleArt then we can clear the artwork for all songs
@@ -1197,7 +1200,7 @@ void CMusicInfoScanner::FindArtForAlbums(std::vector<CAlbum>& albums, const std:
     // assign to folder thumb as well
     CFileItem albumItem(path, true);
     CMusicThumbLoader loader;
-    loader.SetCachedImage(albumItem, "thumb", albumArt);
+    loader.SetCachedImage(albumItem, ART::TYPE::THUMB, albumArt);
   }
 }
 
@@ -2031,7 +2034,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
   std::string strArt;
 
   // Handle thumb separately, can be from multiple configurable file names
-  if (!artist.art.contains("thumb"))
+  if (!artist.art.contains(ART::TYPE::THUMB))
   {
     if (!artfolder.empty())
     { // Local music thumbnail images named by "musiclibrary.musicthumbs"
@@ -2039,9 +2042,9 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
       strArt = item.GetUserMusicThumb(true);
     }
     if (strArt.empty())
-      strArt = CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType("thumb"));
+      strArt = CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType(ART::TYPE::THUMB));
     if (!strArt.empty())
-      addedart.insert(std::make_pair("thumb", strArt));
+      addedart.insert(std::make_pair(ART::TYPE::THUMB, strArt));
   }
 
   // Process additional art types in artist folder
@@ -2057,8 +2060,8 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
   {
     // Cache thumb, fanart and other whitelisted artwork immediately
     // (other art types will be cached when first displayed)
-    if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == "thumb" ||
-        it.first == "fanart")
+    if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == ART::TYPE::THUMB ||
+        it.first == ART::TYPE::FANART)
       CServiceBroker::GetTextureCache()->BackgroundCacheImage(it.second);
     auto ret = artist.art.insert(it);
     if (ret.second)
@@ -2087,7 +2090,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
 
   if (album.art.empty())
     m_musicDatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, album.art);
-  auto thumb = album.art.find("thumb"); // Find "thumb", may want to replace it
+  auto thumb = album.art.find(ART::TYPE::THUMB); // Find "thumb", may want to replace it
 
   bool replaceThumb = paths.size() > 1;
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -2113,12 +2116,12 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
       strArt = item.GetUserMusicThumb(true);
     }
     if (strArt.empty())
-      strArt = CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType("thumb"));
+      strArt = CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType(ART::TYPE::THUMB));
     if (!strArt.empty())
     {
       if (thumb != album.art.end())
         album.art.erase(thumb);
-      addedart.insert(std::make_pair("thumb", strArt));
+      addedart.insert(std::make_pair(ART::TYPE::THUMB, strArt));
     }
   }
   // Process additional art types in album folder
@@ -2140,8 +2143,8 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
         // Handle thumbs separately. Get thumb for path from textures db cached during scan
         // (could be embedded or local file from multiple configurable file names)
         CFileItem item(pathpair.first.c_str(), true);
-        std::string strArtType = StringUtils::Format("{}{}", "thumb", discnum);
-        strArt = loader.GetCachedImage(item, "thumb");
+        std::string strArtType = StringUtils::Format("{}{}", ART::TYPE::THUMB, discnum);
+        strArt = loader.GetCachedImage(item, ART::TYPE::THUMB);
         if (strArt.empty())
           strArt = CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType(strArtType));
         if (!strArt.empty())
@@ -2160,13 +2163,14 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
     }
     // Finally if we still don't have album thumb then use the art from the
     // first disc in the set with a thumb
-    if (!firstDiscThumb.empty() && !album.art.contains("thumb"))
+    if (!firstDiscThumb.empty() && !album.art.contains(ART::TYPE::THUMB))
     {
-      m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb", firstDiscThumb);
+      m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, ART::TYPE::THUMB,
+                                    firstDiscThumb);
       // Assign art as folder thumb (in textures db) as well
 
       CFileItem albumItem(album.strPath, true);
-      loader.SetCachedImage(albumItem, "thumb", firstDiscThumb);
+      loader.SetCachedImage(albumItem, ART::TYPE::THUMB, firstDiscThumb);
     }
   }
 
@@ -2179,8 +2183,8 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
   {
     // Cache thumb, fanart and whitelisted artwork immediately
     // (other art types will be cached when first displayed)
-    if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == "thumb" ||
-        it.first == "fanart")
+    if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == ART::TYPE::THUMB ||
+        it.first == ART::TYPE::FANART)
       CServiceBroker::GetTextureCache()->BackgroundCacheImage(it.second);
 
     auto ret = album.art.insert(it);
@@ -2198,7 +2202,7 @@ std::vector<CVariant> CMusicInfoScanner::GetArtWhitelist(const MediaType& mediaT
     // Basic artist artwork = thumb + fanart (but not "family" fanart1, fanart2 etc.)
     // Basic album artwork = thumb only, thumb handled separately not in whitelist
     if (mediaType == MediaTypeArtist)
-      whitelistarttypes.emplace_back("fanart");
+      whitelistarttypes.emplace_back(ART::TYPE::FANART);
   }
   else
   {
@@ -2298,7 +2302,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
         // Catch any variants of music thumbs e.g. folder2.jpg as "thumb2"
         // Used for disc sets when files all in one album folder
         if (std::find(thumbs.begin(), thumbs.end(), strFamily + strExt) != thumbs.end())
-          strCandidate = "thumb" + strDigits;
+          strCandidate = ART::TYPE::THUMB + strDigits;
       }
       else if (discnum > 0)
         // Append disc number when candidate art type (and file) not have it
@@ -2336,7 +2340,7 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
     // Art type is encoded into the scraper XML held in thumbURL as optional "aspect=" field.
     // Those URL without aspect are also returned for all other type values.
     // Loop through all the first URLS of each type except "thumb" and add if art missing
-    if (url.m_aspect.empty() || url.m_aspect == "thumb")
+    if (url.m_aspect.empty() || url.m_aspect == ART::TYPE::THUMB)
       continue;
     if (!bUseAll)
     { // Check whitelist for art type family e.g. "discart" for aspect="discart2"
