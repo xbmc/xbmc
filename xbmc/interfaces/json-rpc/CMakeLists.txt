@@ -14,6 +14,7 @@ set(SOURCES AddonsExecuteAddon.cpp
             PlayerOperations.cpp
             PlaylistOperations.cpp
             ProfilesOperations.cpp
+            PVREpgFields.cpp
             PVROperations.cpp
             SettingsOperations.cpp
             SystemOperations.cpp
@@ -42,6 +43,7 @@ set(HEADERS AddonsExecuteAddon.h
             PlayerOperations.h
             PlaylistOperations.h
             ProfilesOperations.h
+            PVREpgFields.h
             PVROperations.h
             SettingsOperations.h
             SystemOperations.h
