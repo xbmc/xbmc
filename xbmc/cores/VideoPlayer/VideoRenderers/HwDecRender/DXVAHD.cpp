@@ -267,6 +267,13 @@ ComPtr<ID3D11VideoProcessorInputView> CProcessorHD::GetInputView(CRenderBuffer* 
     HRESULT hr = view->GetResource(resource.GetAddressOf(), &arrayIdx);
     if (SUCCEEDED(hr))
     {
+      // frames queued before the device was recreated belong to the old device, some drivers
+      // crash when they are used on the new one
+      ComPtr<ID3D11Device> device;
+      resource->GetDevice(device.GetAddressOf());
+      if (device.Get() != DX::DeviceResources::Get()->GetD3DDevice())
+        return {};
+
       vpivd.Texture2D.ArraySlice = arrayIdx;
       return m_enumerator->CreateVideoProcessorInputView(resource.Get(), &vpivd);
     }
