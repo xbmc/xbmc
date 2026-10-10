@@ -100,6 +100,12 @@ protected:
   std::unique_ptr<CLibInputHandler> m_libinput;
 
 private:
+  bool IsVideoResolutionActive();
+  bool DeferSdrRestore();
+  void ApplySdrRestore();
+
+  bool m_sdrRestorePending = false;
+  bool m_applyingSdrRestore = false;
   CDRMPropertyBlob m_hdrBlob;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
   KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;

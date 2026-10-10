@@ -96,6 +96,23 @@ bool IsKnownLanguage(const CLanguageTag& language)
 {
   return !language.IsUndetermined();
 }
+
+struct VideoModeChange
+{
+  RESOLUTION res;
+  VideoPicture picture;
+};
+
+void ApplyVideoModeChange(void* userptr)
+{
+  auto* change = static_cast<VideoModeChange*>(userptr);
+  CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
+
+  winSystem->SetColorimetry(&change->picture);
+  if (winSystem->SetHDR(&change->picture))
+    winSystem->SetGuiCompositing(change->picture.color_transfer);
+  winSystem->GetGfxContext().SetVideoResolution(change->res, false);
+}
 } // unnamed namespace
 
 class PredicateSubtitleFilter
@@ -4463,8 +4480,31 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
                                                    (double)DVD_TIME_BASE * hint.fpsscale /
                                                    (hint.fpsrate * (hint.interlaced ? 2 : 1)));
 
-      RESOLUTION res = CResolutionUtils::ChooseBestResolution(static_cast<float>(framerate), hint.width, hint.height, !hint.stereo_mode.empty());
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
+      VideoModeChange change;
+      change.res = CResolutionUtils::ChooseBestResolution(
+          static_cast<float>(framerate), hint.width, hint.height, !hint.stereo_mode.empty());
+      change.picture.Reset();
+      change.picture.iWidth = hint.width;
+      change.picture.iHeight = hint.height;
+      change.picture.color_space = hint.colorSpace;
+      change.picture.color_primaries = hint.colorPrimaries;
+      change.picture.color_transfer = hint.colorTransferCharacteristic;
+      if (hint.masteringMetadata)
+      {
+        change.picture.hasDisplayMetadata = true;
+        change.picture.displayMetadata = *hint.masteringMetadata;
+      }
+      if (hint.contentLightMetadata)
+      {
+        change.picture.hasLightMetadata = true;
+        change.picture.lightMetadata = *hint.contentLightMetadata;
+      }
+
+      MESSAGING::ThreadMessageCallback callback;
+      callback.callback = &ApplyVideoModeChange;
+      callback.userptr = &change;
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_CALLBACK, -1, -1,
+                                                 static_cast<void*>(&callback));
       m_renderManager.TriggerUpdateResolution(framerate, hint.width, hint.height, hint.stereo_mode);
     }
   }
