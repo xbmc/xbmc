@@ -99,6 +99,7 @@ public:
   {
     m_allowCheckForUpdates = allowCheckForUpdates;
   };
+  using CProgressJob::SetProgressBar;
 
 private:
   void OnPreInstall();
@@ -444,14 +445,32 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
                                 DependencyJob dependsInstall,
                                 AllowCheckForUpdates allowCheckForUpdates)
 {
+  // Opening the dialog from another thread waits for the process thread, so the lock must not be
+  // held meanwhile.
+  CGUIDialogProgressBarHandle* progressBar = nullptr;
+  if (background == BackgroundJob::CHOICE_YES)
+  {
+    auto* dialog =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
+            WINDOW_DIALOG_EXT_PROGRESS);
+    if (dialog)
+      progressBar = dialog->GetHandle(addon->Name());
+  }
+
   // check whether we already have the addon installing
   std::unique_lock lock(m_critSection);
   if (m_downloadJobs.contains(addon->ID()))
+  {
+    if (progressBar)
+      progressBar->MarkFinished();
     return false;
+  }
 
   auto installJob = std::make_unique<CAddonInstallJob>(addon, repo, autoUpdate);
   if (background == BackgroundJob::CHOICE_YES)
   {
+    installJob->SetProgressBar(progressBar);
+
     // Workaround: because CAddonInstallJob is blocking waiting for other jobs, it needs to be run
     // with priority dedicated.
     unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(installJob.release(), this,
@@ -1197,11 +1216,13 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
       return false;
   }
 
-  SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24086));
+  SetText(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24188));
   SetProgress(100.0f * (static_cast<float>(totalSteps) - 1.0f) / static_cast<float>(totalSteps));
 
   CFilesystemInstaller fsInstaller;
-  if (!fsInstaller.InstallToFilesystem(installFrom, m_addon->ID()))
+  if (!fsInstaller.InstallToFilesystem(installFrom, m_addon->ID(),
+                                       [this](unsigned int progress, unsigned int total)
+                                       { SetProgress(progress, total); }))
   {
     ReportInstallError(m_addon->ID(), m_addon->ID());
     return false;

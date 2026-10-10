@@ -16963,7 +16963,13 @@ msgctxt "#24187"
 msgid "Failed to initialise databases - exiting in {} seconds."
 msgstr ""
 
-#empty strings from id 24188 to 24990
+#. Progress text while extracting an add-on package
+#: xbmc/addons/AddonInstaller.cpp
+msgctxt "#24188"
+msgid "Unpacking add-on..."
+msgstr ""
+
+#empty strings from id 24189 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
