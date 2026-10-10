@@ -24,6 +24,7 @@
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -50,12 +51,14 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/ItemProperties.h"
 #include "utils/MathUtils.h"
 #include "utils/PlayerUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <map>
 #include <tuple>
@@ -873,7 +876,6 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   CVariant optionShuffled = options["shuffled"];
   CVariant optionRepeat = options["repeat"];
   CVariant optionResume = options["resume"];
-  CVariant optionPlayer = options["playername"];
 
   if (parameterObject["item"].isMember("playlistid"))
   {
@@ -923,9 +925,19 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("path"))
   {
+    const std::string path{parameterObject["item"]["path"].asString()};
+    const bool recursive{parameterObject["item"]["recursive"].asBoolean()};
+
+    // Only a directory holding pictures is a slideshow; one holding none plays as a playlist.
+    CFileItemList pictures;
+    CFileItemList media;
+    if (ListSlideshowDirectory(path, recursive, pictures, media) && pictures.IsEmpty() &&
+        !media.IsEmpty())
+      return PlayFileItemList(media, options);
+
     bool random = (optionShuffled.isBoolean() && optionShuffled.asBoolean()) ||
                   (!optionShuffled.isBoolean() && parameterObject["item"]["random"].asBoolean());
-    return StartSlideshow(parameterObject["item"]["path"].asString(), parameterObject["item"]["recursive"].asBoolean(), random);
+    return StartSlideshow(path, recursive, random);
   }
   else if (parameterObject["item"].isObject() && parameterObject["item"].isMember("partymode"))
   {
@@ -1058,64 +1070,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
           return FailedToExecute;
       }
       else
-      {
-        std::string playername;
-        // Handle the "playerid" option
-        if (!optionPlayer.isNull())
-        {
-          if (optionPlayer.isString())
-          {
-            playername = optionPlayer.asString();
-
-            if (playername != "default")
-            {
-              const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
-
-              // check if the there's actually a player with the given name
-              if (playerCoreFactory.GetPlayerType(playername).empty())
-                return InvalidParams;
-
-              // check if the player can handle at least the first item in the list
-              std::vector<std::string> possiblePlayers;
-              playerCoreFactory.GetPlayers(*list.Get(0).get(), possiblePlayers);
-
-              bool match = false;
-              for (const auto& entry : possiblePlayers)
-              {
-                if (StringUtils::EqualsNoCase(entry, playername))
-                {
-                  match = true;
-                  break;
-                }
-              }
-              if (!match)
-                return InvalidParams;
-            }
-          }
-          else
-            return InvalidParams;
-        }
-
-        // Handle "shuffled" option
-        if (optionShuffled.isBoolean())
-          list.SetProperty("shuffled", optionShuffled);
-        // Handle "repeat" option
-        if (!optionRepeat.isNull())
-          list.SetProperty("repeat", static_cast<int>(ParseRepeatState(optionRepeat)));
-        // Handle "resume" option
-        if (list.Size() == 1)
-          HandleResumeOption(optionResume, *list[0]);
-
-        // Playback is posted asynchronously, so nothing after this point can be reported
-        // back to the caller. Report an addressable single item that cannot be reached.
-        if (list.Size() == 1 && !IsReachable(*list[0]))
-          return Unavailable;
-
-        auto l = new CFileItemList(); //don't delete
-        l->Copy(list);
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l),
-                                                   playername);
-      }
+        return PlayFileItemList(list, options);
 
       return ACK;
     }
@@ -1124,6 +1079,108 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
 
   return InvalidParams;
+}
+
+JSONRPC_STATUS CPlayerOperations::PlayFileItemList(CFileItemList& list, const CVariant& options)
+{
+  const CVariant& optionShuffled = options["shuffled"];
+  const CVariant& optionRepeat = options["repeat"];
+  const CVariant& optionResume = options["resume"];
+  const CVariant& optionPlayer = options["playername"];
+
+  std::string playername;
+  // Handle the "playerid" option
+  if (!optionPlayer.isNull())
+  {
+    if (optionPlayer.isString())
+    {
+      playername = optionPlayer.asString();
+
+      if (playername != "default")
+      {
+        const CPlayerCoreFactory& playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
+
+        // check if the there's actually a player with the given name
+        if (playerCoreFactory.GetPlayerType(playername).empty())
+          return InvalidParams;
+
+        // check if the player can handle at least the first item in the list
+        std::vector<std::string> possiblePlayers;
+        playerCoreFactory.GetPlayers(*list.Get(0).get(), possiblePlayers);
+
+        bool match = false;
+        for (const auto& entry : possiblePlayers)
+        {
+          if (StringUtils::EqualsNoCase(entry, playername))
+          {
+            match = true;
+            break;
+          }
+        }
+        if (!match)
+          return InvalidParams;
+      }
+    }
+    else
+      return InvalidParams;
+  }
+
+  // Handle "shuffled" option
+  if (optionShuffled.isBoolean())
+    list.SetProperty("shuffled", optionShuffled);
+  // Handle "repeat" option
+  if (!optionRepeat.isNull())
+    list.SetProperty("repeat", static_cast<int>(ParseRepeatState(optionRepeat)));
+  // Handle "resume" option
+  if (list.Size() == 1)
+    HandleResumeOption(optionResume, *list[0]);
+
+  // Playback is posted asynchronously, so nothing after this point can be reported
+  // back to the caller. Report an addressable single item that cannot be reached.
+  if (list.Size() == 1 && !IsReachable(*list[0]))
+    return Unavailable;
+
+  auto l = new CFileItemList(); //don't delete
+  l->Copy(list);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l),
+                                             playername);
+
+  return ACK;
+}
+
+bool CPlayerOperations::ListSlideshowDirectory(const std::string& path,
+                                               bool recursive,
+                                               CFileItemList& pictures,
+                                               CFileItemList& media)
+{
+  const CFileExtensionProvider& extensions = CServiceBroker::GetFileExtensionProvider();
+  const std::string mask{extensions.GetPictureExtensions() + "|" + extensions.GetVideoExtensions() +
+                         "|" + extensions.GetMusicExtensions()};
+
+  CFileItemList items;
+  if (!XFILE::CDirectory::GetDirectory(path, items, mask, XFILE::DIR_FLAG_NO_FILE_DIRS))
+    return false;
+
+  items.Sort(SortBy::FILE, SortOrder::ASCENDING);
+
+  // one picture makes the directory a slideshow, and the slideshow window lists the rest itself
+  for (const auto& item : items)
+  {
+    if (item->IsFolder())
+    {
+      if (recursive)
+        ListSlideshowDirectory(item->GetPath(), true, pictures, media);
+    }
+    else if (item->IsPicture())
+      pictures.Add(item);
+    else if (VIDEO::IsVideo(*item) || MUSIC::IsAudio(*item))
+      media.Add(item);
+
+    if (!pictures.IsEmpty())
+      return true;
+  }
+
+  return true;
 }
 
 JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
