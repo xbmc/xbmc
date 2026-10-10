@@ -683,20 +683,7 @@ void CGUIMediaWindow::SortItems(CFileItemList &items)
  */
 void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks)
 {
-  CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
-  CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
-  for (int i=0; i<items.Size(); ++i)
-  {
-    CFileItemPtr pItem=items[i];
-
-    if (pItem->IsLabelPreformatted())
-      continue;
-
-    if (pItem->IsFolder())
-      folderFormatter.FormatLabels(pItem.get());
-    else
-      fileFormatter.FormatLabels(pItem.get());
-  }
+  CLabelFormatter::FormatItemLabels(items, labelMasks);
 
   if (items.GetSortMethod() == SortBy::LABEL)
     items.ClearSortState();

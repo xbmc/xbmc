@@ -9,6 +9,7 @@
 #include "LabelFormatter.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "RegExp.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
@@ -151,6 +152,22 @@ void CLabelFormatter::FormatLabel(CFileItem *item) const
 void CLabelFormatter::FormatLabel2(CFileItem *item) const
 {
   item->SetLabel2(GetContent(1, item));
+}
+
+void CLabelFormatter::FormatItemLabels(CFileItemList& items, const LABEL_MASKS& masks)
+{
+  const CLabelFormatter fileFormatter(masks.m_strLabelFile, masks.m_strLabel2File);
+  const CLabelFormatter folderFormatter(masks.m_strLabelFolder, masks.m_strLabel2Folder);
+  for (const auto& item : items)
+  {
+    if (item->IsLabelPreformatted())
+      continue;
+
+    if (item->IsFolder())
+      folderFormatter.FormatLabels(item.get());
+    else
+      fileFormatter.FormatLabels(item.get());
+  }
 }
 
 std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileItem *item) const
