@@ -723,6 +723,36 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const std::string &method, ITrans
   if (!videodatabase.RemoveArtForItem(infos.m_iDbId, MediaTypeTvShow, removedArtwork))
     return InternalError;
 
+  const bool updatePlaycount = ParameterNotNull(parameterObject, "playcount");
+  const bool updateLastplayed = ParameterNotNull(parameterObject, "lastplayed");
+  if (updatePlaycount || updateLastplayed)
+  {
+    // a tvshow has no file row of its own - its playcount is derived from its
+    // episodes, so the new values have to be applied to every episode of the show
+    CVideoDbUrl videoUrl;
+    if (!videoUrl.FromString(StringUtils::Format("videodb://tvshows/titles/{}/-1/", id)))
+      return InternalError;
+    videoUrl.AddOption("tvshowid", id);
+
+    CFileItemList episodes;
+    if (!videodatabase.GetEpisodesByWhere(videoUrl.ToString(), CDatabase::Filter(), episodes,
+                                          false))
+      return InternalError;
+
+    videodatabase.BeginTransaction();
+    for (const auto& episode : episodes)
+    {
+      if (!episode->HasVideoInfoTag())
+        continue;
+
+      const auto update = EpisodePlaybackUpdate(infos, updatePlaycount, updateLastplayed,
+                                                *episode->GetVideoInfoTag());
+      if (update)
+        videodatabase.SetPlayCount(*episode, update->playCount, update->lastPlayed);
+    }
+    videodatabase.CommitTransaction();
+  }
+
   CJSONRPCUtils::NotifyItemUpdated();
   return ACK;
 }
@@ -1104,6 +1134,19 @@ JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *
 
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
+}
+
+std::optional<CVideoLibrary::PlaybackUpdate> CVideoLibrary::EpisodePlaybackUpdate(
+    const CVideoInfoTag& show,
+    bool updatePlaycount,
+    bool updateLastplayed,
+    const CVideoInfoTag& episode)
+{
+  const int count = updatePlaycount ? show.GetPlayCount() : episode.GetPlayCount();
+  if (!updateLastplayed && count == episode.GetPlayCount())
+    return std::nullopt;
+
+  return PlaybackUpdate{count, updateLastplayed ? show.m_lastPlayed : episode.m_lastPlayed};
 }
 
 bool CVideoLibrary::FillFileItem(
