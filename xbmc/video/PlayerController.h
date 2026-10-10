@@ -58,5 +58,12 @@ private:
   bool NextAudioStream();
 
   int m_sliderAction = 0; ///< \brief set to the action id for a slider being displayed \sa ShowSlider
+
+  /*!
+   * \brief Set vertical shift for video image
+   * \param verticalshift value to set for vertical shift
+   */
+  void SetVerticalShift(float verticalshift);
+
   KODI::UTILS::MOVING_SPEED::CMovingSpeed m_movingSpeed;
 };
