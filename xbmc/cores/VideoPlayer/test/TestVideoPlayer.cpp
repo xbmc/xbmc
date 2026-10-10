@@ -67,6 +67,12 @@ public:
   }
   bool InvokeEvaluateIsStreaming() const { return EvaluateIsStreaming(); }
 
+  static CVideoPlayer::SpeedChangeNotifications InvokeGetSpeedChangeNotifications(
+      int previousSpeed, int newSpeed, bool isTempo)
+  {
+    return GetSpeedChangeNotifications(previousSpeed, newSpeed, isTempo);
+  }
+
   void SetCurrentVideoId(int id) { m_CurrentVideo.id = id; }
   void SetCurrentAudioId(int id) { m_CurrentAudio.id = id; }
 
@@ -650,4 +656,68 @@ TEST_F(TestVideoPlayer, IsStreamingDemuxerReturnsTrue)
 
   player.SetDemuxer(std::make_unique<CTestDemux>(true));
   EXPECT_TRUE(player.InvokeEvaluateIsStreaming());
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_ResumeToNormalFromPause)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_PAUSE, DVD_PLAYSPEED_NORMAL, false);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_FALSE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_ResumeToTempoFromPause)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_PAUSE, 1200, true);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_FALSE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_FFFromPause)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_PAUSE, 2 * DVD_PLAYSPEED_NORMAL, false);
+  EXPECT_TRUE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_RWFromPause)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_PAUSE, -2 * DVD_PLAYSPEED_NORMAL, false);
+  EXPECT_TRUE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_SpeedChangeWhilePlaying)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      2 * DVD_PLAYSPEED_NORMAL, 4 * DVD_PLAYSPEED_NORMAL, false);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_ReturnToNormalFromFF)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      2 * DVD_PLAYSPEED_NORMAL, DVD_PLAYSPEED_NORMAL, false);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_TRUE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_PauseFromPlaying)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      DVD_PLAYSPEED_NORMAL, DVD_PLAYSPEED_PAUSE, false);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_FALSE(notifications.speedChanged);
+}
+
+TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_NoActualChange)
+{
+  const auto notifications = CTestVideoPlayer::InvokeGetSpeedChangeNotifications(
+      2 * DVD_PLAYSPEED_NORMAL, 2 * DVD_PLAYSPEED_NORMAL, false);
+  EXPECT_FALSE(notifications.resumed);
+  EXPECT_FALSE(notifications.speedChanged);
 }

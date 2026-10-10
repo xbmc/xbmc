@@ -558,6 +558,17 @@ protected:
   void ExecuteTimeSeek(int64_t target, Direction direction, bool accurate);
   bool EvaluateIsStreaming() const;
 
+  struct SpeedChangeNotifications
+  {
+    bool resumed{false};
+    bool speedChanged{false};
+  };
+  // Callbacks to raise for a PLAYER_SETSPEED transition. Unpausing to normal or tempo
+  // speed is excluded because SetSpeed() already raises OnPlayBackResumed.
+  static SpeedChangeNotifications GetSpeedChangeNotifications(int previousSpeed,
+                                                              int newSpeed,
+                                                              bool isTempo);
+
   bool m_players_created;
 
   CFileItem m_item;
@@ -602,7 +613,6 @@ protected:
     double lastpts{0.0}; // holds last display pts during ff/rw operations
     int64_t lasttime{0};
     double lastseekpts{0.0};
-    double lastabstime{0.0};
 
     void Reset(double pts)
     {
