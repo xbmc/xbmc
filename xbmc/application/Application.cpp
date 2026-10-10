@@ -1571,7 +1571,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     // Open the door for external calls e.g python exactly here.
     // Window size can be between 2 and 10ms and depends on number of continuous requests
-    if (m_WaitingExternalCalls)
+    // Stop() has already released the guard; don't take it back on the way out
+    if (m_WaitingExternalCalls && !m_bStop)
     {
       CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
       m_frameMoveGuard.unlock();
@@ -2408,10 +2409,14 @@ void CApplication::Process()
 
   {
     // Allow processing of script threads to let them shut down properly.
+    // Stop() has already released the guard; don't take it back on the way out
+    const bool releaseGuard = !m_bStop;
     CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
-    m_frameMoveGuard.unlock();
+    if (releaseGuard)
+      m_frameMoveGuard.unlock();
     CScriptInvocationManager::GetInstance().Process();
-    m_frameMoveGuard.lock();
+    if (releaseGuard)
+      m_frameMoveGuard.lock();
   }
 
   // process messages, even if a movie is playing
