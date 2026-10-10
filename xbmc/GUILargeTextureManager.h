@@ -158,6 +158,7 @@ private:
     bool DecrRef(bool deleteImmediately);
     bool DeleteIfRequired(bool deleteImmediately = false);
     void SetTexture(std::unique_ptr<CTexture> texture);
+    void ShareTexture(const CTextureArray& texture) { m_texture = texture; }
 
     const std::string& GetPath() const { return m_path; }
     const CTextureArray& GetTexture() const { return m_texture; }
