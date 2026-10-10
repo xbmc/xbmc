@@ -579,31 +579,25 @@ bool CYUV2RGBShader::Create(AVPixelFormat fmt, AVColorPrimaries dstPrimaries,
 
   DefinesMap defines;
 
-  switch (fmt)
-  {
-  case AV_PIX_FMT_YUV420P:
-  case AV_PIX_FMT_YUV420P10:
-  case AV_PIX_FMT_YUV420P16:
+  const int planes = av_pix_fmt_count_planes(fmt);
+
+  if (fmt == AV_PIX_FMT_UYVY422)
+    defines["XBMC_UYVY"] = "";
+  else if (fmt == AV_PIX_FMT_YUYV422)
+    defines["XBMC_YUY2"] = "";
+  else if (planes == 3)
     defines["XBMC_YV12"] = "";
-    break;
-  case AV_PIX_FMT_D3D11VA_VLD:
-  case AV_PIX_FMT_NV12:
-  case AV_PIX_FMT_P010:
-  case AV_PIX_FMT_P016:
+  else if (planes == 2 || fmt == AV_PIX_FMT_D3D11VA_VLD)
+  {
     defines["XBMC_NV12"] = "";
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
     if (!DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       defines["NV12_SNORM_UV"] = "";
-    break;
-  case AV_PIX_FMT_UYVY422:
-    defines["XBMC_UYVY"] = "";
-    break;
-  case AV_PIX_FMT_YUYV422:
-    defines["XBMC_YUY2"] = "";
-    break;
-  default:
-    return false;
   }
+  else
+    return false;
+
+  m_convMatrix.SetSourceRGB((av_pix_fmt_desc_get(fmt)->flags & AV_PIX_FMT_FLAG_RGB) != 0);
 
   if (srcPrimaries != dstPrimaries)
   {
@@ -685,6 +679,13 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceR
     m_sourceWidth = videoBuffer->GetWidth();
     m_sourceHeight = videoBuffer->GetHeight();
 
+    // the second and third planes are smaller where the format subsamples chroma
+    const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_format);
+    const float chromaScaleX = static_cast<float>(1 << desc->log2_chroma_w);
+    const float chromaScaleY = static_cast<float>(1 << desc->log2_chroma_h);
+    const unsigned chromaWidth = m_sourceWidth >> desc->log2_chroma_w;
+    const unsigned chromaHeight = m_sourceHeight >> desc->log2_chroma_h;
+
     Vertex* v;
     CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
 
@@ -693,32 +694,32 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceR
     v[0].z = 0.0f;
     v[0].tu = sourceRect.x1 / m_sourceWidth;
     v[0].tv = sourceRect.y1 / m_sourceHeight;
-    v[0].tu2 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
-    v[0].tv2 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
+    v[0].tu2 = (sourceRect.x1 / chromaScaleX) / chromaWidth;
+    v[0].tv2 = (sourceRect.y1 / chromaScaleY) / chromaHeight;
 
     v[1].x = m_dest[1].x;
     v[1].y = m_dest[1].y;
     v[1].z = 0.0f;
     v[1].tu = sourceRect.x2 / m_sourceWidth;
     v[1].tv = sourceRect.y1 / m_sourceHeight;
-    v[1].tu2 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
-    v[1].tv2 = (sourceRect.y1 / 2.0f) / (m_sourceHeight>>1);
+    v[1].tu2 = (sourceRect.x2 / chromaScaleX) / chromaWidth;
+    v[1].tv2 = (sourceRect.y1 / chromaScaleY) / chromaHeight;
 
     v[2].x = m_dest[2].x;
     v[2].y = m_dest[2].y;
     v[2].z = 0.0f;
     v[2].tu = sourceRect.x2 / m_sourceWidth;
     v[2].tv = sourceRect.y2 / m_sourceHeight;
-    v[2].tu2 = (sourceRect.x2 / 2.0f) / (m_sourceWidth>>1);
-    v[2].tv2 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
+    v[2].tu2 = (sourceRect.x2 / chromaScaleX) / chromaWidth;
+    v[2].tv2 = (sourceRect.y2 / chromaScaleY) / chromaHeight;
 
     v[3].x = m_dest[3].x;
     v[3].y = m_dest[3].y;
     v[3].z = 0.0f;
     v[3].tu = sourceRect.x1 / m_sourceWidth;
     v[3].tv = sourceRect.y2 / m_sourceHeight;
-    v[3].tu2 = (sourceRect.x1 / 2.0f) / (m_sourceWidth>>1);
-    v[3].tv2 = (sourceRect.y2 / 2.0f) / (m_sourceHeight>>1);
+    v[3].tu2 = (sourceRect.x1 / chromaScaleX) / chromaWidth;
+    v[3].tv2 = (sourceRect.y2 / chromaScaleY) / chromaHeight;
 
     CWinShader::UnlockVertexBuffer();
   }

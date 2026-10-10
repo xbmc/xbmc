@@ -76,6 +76,12 @@ AVPixelFormat ConvertToPixelFormat(const VIDEOCODEC_FORMAT videoFormat)
     case VIDEOCODEC_FORMAT_XRGB16161616F:
       // Same situation for half-float RGB.
       return AV_PIX_FMT_RGBAF16LE;
+    case VIDEOCODEC_FORMAT_GBRP:
+      return AV_PIX_FMT_GBRP;
+    case VIDEOCODEC_FORMAT_GBRP10:
+      return AV_PIX_FMT_GBRP10;
+    case VIDEOCODEC_FORMAT_GBRP12:
+      return AV_PIX_FMT_GBRP12;
     case VIDEOCODEC_FORMAT_UNKNOWN:
       // Addon did not opt in to videoFormat; preserve pre-PR default.
       return AV_PIX_FMT_YUV420P;
