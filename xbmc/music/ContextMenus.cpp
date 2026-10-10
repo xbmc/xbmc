@@ -225,7 +225,7 @@ bool CMusicGoToAlbum::Execute(const std::shared_ptr<CFileItem>& item) const
   if (idAlbum < 0)
     return false;
 
-  const std::string path = MUSIC::DB_PATH::ALBUMS + std::to_string(idAlbum) + "/";
+  const std::string path = KODI::MUSIC::DB_PATH::ALBUMS + std::to_string(idAlbum) + "/";
 
   auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
   if (windowMgr.GetActiveWindow() == WINDOW_MUSIC_NAV)
