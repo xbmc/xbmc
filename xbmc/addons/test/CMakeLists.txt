@@ -3,6 +3,7 @@ set(SOURCES TestAddonBuilder.cpp
             TestAddonInfoBuilder.cpp
             TestAddonVersion.cpp
             TestResource.cpp
+            TestScraper.cpp
             TestSkin.cpp)
 
 core_add_test_library(addons_test)

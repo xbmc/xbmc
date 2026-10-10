@@ -19,6 +19,7 @@ inline constexpr char ALBUMS[] = "albums";
 inline constexpr char ARTISTS[] = "artists";
 inline constexpr char COUNTRIES[] = "countries";
 inline constexpr char DIRECTORS[] = "directors";
+inline constexpr char DISCS[] = "discs";
 inline constexpr char EPISODES[] = "episodes";
 inline constexpr char EVENTS[] = "events";
 inline constexpr char FAVOURITES[] = "favourites";
@@ -28,6 +29,7 @@ inline constexpr char IMAGES[] = "images";
 inline constexpr char MIXED[] = "mixed";
 inline constexpr char MOVIES[] = "movies";
 inline constexpr char MUSICVIDEOS[] = "musicvideos";
+inline constexpr char PHOTOS[] = "photos";
 inline constexpr char PLAYLISTS[] = "playlists";
 inline constexpr char PLUGINS[] = "plugins";
 inline constexpr char RECORDINGS[] = "recordings";
@@ -39,9 +41,11 @@ inline constexpr char SOURCES[] = "sources";
 inline constexpr char STUDIOS[] = "studios";
 inline constexpr char TAGS[] = "tags";
 inline constexpr char TVSHOWS[] = "tvshows";
+inline constexpr char UNKNOWN[] = "unknown";
 inline constexpr char VIDEOASSETS[] = "videoassets";
 inline constexpr char VIDEOEXTRAS[] = "videoextras";
 inline constexpr char VIDEOVERSIONS[] = "videoversions";
+inline constexpr char WRITERS[] = "writers";
 inline constexpr char YEARS[] = "years";
 
 } // namespace KODI::MEDIA::CONTENT

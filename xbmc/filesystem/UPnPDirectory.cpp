@@ -21,6 +21,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -31,6 +32,8 @@
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace UPNP;
+
+namespace CONTENT = KODI::MEDIA::CONTENT;
 
 namespace XFILE
 {
@@ -43,19 +46,19 @@ static std::string GetContentMapping(NPT_String& objectClass)
         const char* Content;
     };
     static const SClassMapping mapping[] = {
-          { "object.item.videoItem.videoBroadcast"                  , "episodes"      }
-        , { "object.item.videoItem.musicVideoClip"                  , "musicvideos"  }
-        , { "object.item.videoItem"                                 , "movies"       }
-        , { "object.item.audioItem.musicTrack"                      , "songs"        }
-        , { "object.item.audioItem"                                 , "songs"        }
-        , { "object.item.imageItem.photo"                           , "photos"       }
-        , { "object.item.imageItem"                                 , "photos"       }
-        , { "object.container.album.videoAlbum.videoBroadcastShow"  , "tvshows"      }
-        , { "object.container.album.videoAlbum.videoBroadcastSeason", "seasons"      }
-        , { "object.container.album.musicAlbum"                     , "albums"       }
-        , { "object.container.album.photoAlbum"                     , "photos"       }
-        , { "object.container.album"                                , "albums"       }
-        , { "object.container.person"                               , "artists"      }
+          { "object.item.videoItem.videoBroadcast"                  , CONTENT::EPISODES      }
+        , { "object.item.videoItem.musicVideoClip"                  , CONTENT::MUSICVIDEOS  }
+        , { "object.item.videoItem"                                 , CONTENT::MOVIES       }
+        , { "object.item.audioItem.musicTrack"                      , CONTENT::SONGS        }
+        , { "object.item.audioItem"                                 , CONTENT::SONGS        }
+        , { "object.item.imageItem.photo"                           , CONTENT::PHOTOS       }
+        , { "object.item.imageItem"                                 , CONTENT::PHOTOS       }
+        , { "object.container.album.videoAlbum.videoBroadcastShow"  , CONTENT::TVSHOWS      }
+        , { "object.container.album.videoAlbum.videoBroadcastSeason", CONTENT::SEASONS      }
+        , { "object.container.album.musicAlbum"                     , CONTENT::ALBUMS       }
+        , { "object.container.album.photoAlbum"                     , CONTENT::PHOTOS       }
+        , { "object.container.album"                                , CONTENT::ALBUMS       }
+        , { "object.container.person"                               , CONTENT::ARTISTS      }
         , { NULL                                                    , NULL           }
     };
     for(const SClassMapping* map = mapping; map->ObjectClass; map++)
@@ -66,7 +69,7 @@ static std::string GetContentMapping(NPT_String& objectClass)
           break;
         }
     }
-    return "unknown";
+    return CONTENT::UNKNOWN;
 }
 
 static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReference& device)
@@ -343,7 +346,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         }
         std::string content = GetContentMapping(max_string);
         items.SetContent(content);
-        if (content == "unknown")
+        if (content == CONTENT::UNKNOWN)
         {
           items.AddSortMethod(SortBy::NONE, 571, LABEL_MASKS("%L", "%I", "%L", ""));
           items.AddSortMethod(SortBy::LABEL, SortAttributeIgnoreFolders, 551,

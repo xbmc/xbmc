@@ -10,6 +10,7 @@
 
 #include "guilib/GUIDialog.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/ContentNames.h"
 
 #include <string>
 #include <utility>
@@ -26,7 +27,8 @@ public:
   void OnInitWindow() override;
   void OnDeinitWindow(int nextWindowID) override;
 
-  static bool EditRule(KODI::PLAYLIST::CSmartPlaylistRule& rule, const std::string& type = "songs");
+  static bool EditRule(KODI::PLAYLIST::CSmartPlaylistRule& rule,
+                       const std::string& type = KODI::MEDIA::CONTENT::SONGS);
 
 protected:
   void OnField();

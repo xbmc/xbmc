@@ -34,6 +34,7 @@
 #include "settings/SettingsValueFlatJsonSerializer.h"
 #include "utils/ArtTypes.h"
 #include "utils/CharsetConverter.h"
+#include "utils/ContentNames.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
@@ -54,6 +55,8 @@ using namespace XFILE;
 using namespace KODI;
 using namespace MUSIC_GRABBER;
 
+namespace CONTENT = KODI::MEDIA::CONTENT;
+
 namespace
 {
 struct ContentMapping
@@ -64,14 +67,13 @@ struct ContentMapping
 };
 
 // clang-format off
-const std::array<ContentMapping, 7> content = {{
-  {"unknown",     ADDON::ContentType::NONE,        231},
-  {"albums",      ADDON::ContentType::ALBUMS,      132},
-  {"music",       ADDON::ContentType::ALBUMS,      132},
-  {"artists",     ADDON::ContentType::ARTISTS,     133},
-  {"movies",      ADDON::ContentType::MOVIES,      20342},
-  {"tvshows",     ADDON::ContentType::TVSHOWS,     20343},
-  {"musicvideos", ADDON::ContentType::MUSICVIDEOS, 20389},
+const std::array<ContentMapping, 6> content = {{
+  {CONTENT::UNKNOWN,     ADDON::ContentType::NONE,        231},
+  {CONTENT::ALBUMS,      ADDON::ContentType::ALBUMS,      132},
+  {CONTENT::ARTISTS,     ADDON::ContentType::ARTISTS,     133},
+  {CONTENT::MOVIES,      ADDON::ContentType::MOVIES,      20342},
+  {CONTENT::TVSHOWS,     ADDON::ContentType::TVSHOWS,     20343},
+  {CONTENT::MUSICVIDEOS, ADDON::ContentType::MUSICVIDEOS, 20389},
 }};
 // clang-format on
 
