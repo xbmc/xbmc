@@ -688,6 +688,39 @@ namespace XBMCAddon
       InfoTagVideo* getVideoInfoTag();
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
+      /// @brief \python_func{ getContentGeometry() }
+      /// To get where the picture is inside the frame carrying it.
+      ///
+      /// Returns the content rectangle in force - what the film was shot at\, as against the
+      /// shape of the frame it is encoded in. A stored measurement\, a reading taken during
+      /// playback and a ratio the viewer declared all reach it\, and getSource() says which.
+      ///
+      /// Unlike the info tag getters this does not raise when nothing is playing\, reporting
+      /// the shape Kodi rests at with source `container` and no frame behind it.
+      ///
+      /// @return                    Content geometry snapshot
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v22 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// geometry = xbmc.Player().getContentGeometry()
+      /// if geometry.getSource() != 'container':
+      ///     lens.select(geometry.getAspect())
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      getContentGeometry();
+#else
+      ContentGeometry* getContentGeometry();
+#endif
+
       // Player_GetMusicInfoTag
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

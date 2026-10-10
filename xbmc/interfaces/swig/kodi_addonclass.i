@@ -116,6 +116,8 @@ namespace
 %newobject XBMCAddon::xbmc::Player::getRadioRDSInfoTag;
 %newobject XBMCAddon::xbmc::Player::getGameInfoTag;
 %newobject XBMCAddon::xbmc::Player::getPlayingItem;
+%newobject XBMCAddon::xbmc::Player::getContentGeometry;
+%newobject XBMCAddon::xbmc::InfoTagVideo::getContentGeometry;
 
 %newobject XBMCAddon::xbmcaddon::Addon::getSettings;
 

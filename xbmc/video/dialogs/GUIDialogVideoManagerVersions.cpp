@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/geometry/ContentGeometryScanner.h"
 #include "video/guilib/VideoGUIUtils.h"
 
 #include <memory>
@@ -1058,6 +1059,8 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
       return false;
 
     m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::VERSION, item);
+
+    KODI::VIDEO::GEOMETRY::CContentGeometryScanner::GetInstance().Sweep();
 
     return true;
   }

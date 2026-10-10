@@ -4,6 +4,8 @@ set(SOURCES TestBookmark.cpp
             TestSetInfoTag.cpp
             TestStacks.cpp
             TestVideoDatabase.cpp
+            TestVideoDatabaseContentGeometry.cpp
+            TestVideoDatabaseDeclaredAspect.cpp
             TestVideoDbPaths.cpp
             TestVideoDbUrl.cpp
             TestVideoFileItemClassify.cpp

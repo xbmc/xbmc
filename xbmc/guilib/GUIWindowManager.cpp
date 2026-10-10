@@ -39,6 +39,7 @@
 #include "programs/GUIWindowPrograms.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/windows/GUIWindowScreenAlignment.h"
 #include "settings/windows/GUIWindowSettings.h"
 #include "settings/windows/GUIWindowSettingsCategory.h"
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
@@ -221,6 +222,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowSettings);
   Add(new CGUIWindowSystemInfo);
   Add(new CGUIWindowSettingsScreenCalibration);
+  Add(new CGUIWindowScreenAlignment);
   Add(new CGUIWindowSettingsCategory);
   Add(new CGUIWindowVideoNav);
   Add(new CGUIWindowVideoPlaylist);
@@ -1353,6 +1355,7 @@ void CGUIWindowManager::RenderPassSingle() const
   if (pWindow)
   {
     pWindow->ClearBackground();
+    m_guiSurround.Render();
     pWindow->DoRender();
   }
 
@@ -1371,7 +1374,10 @@ void CGUIWindowManager::RenderPassDual() const
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
+  {
     pWindow->ClearBackground();
+    m_guiSurround.Render();
+  }
 
   auto renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
@@ -1587,6 +1593,11 @@ void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)
 void CGUIWindowManager::DeInitialize()
 {
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
+  // Unloading the skin is what brings us here, and the skin is one of the two things the
+  // surround is painted from.
+  m_guiSurround.ReleaseResources();
+  m_guiSurround.Invalidate();
 
   // Need a copy because addon-dialogs removes itself on Close()
   // Copy shared_ptrs to keep windows alive during cleanup

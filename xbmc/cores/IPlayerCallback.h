@@ -14,6 +14,7 @@
 
 class CFileItem;
 class CBookmark;
+struct LiveGeometryUpdate;
 
 class IPlayerCallback
 {
@@ -32,6 +33,7 @@ public:
   virtual void OnPlayBackSpeedChanged(int iSpeed) {}
   virtual void OnAVChange() {}
   virtual void OnAVStarted(const CFileItem& file) {}
+  virtual void OnContentGeometryChanged(const LiveGeometryUpdate& update) {}
   virtual void RequestVideoSettings(const CFileItem& fileItem) {}
   virtual void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) {}
 };
