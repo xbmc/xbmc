@@ -173,16 +173,15 @@ JSONRPC_STATUS CGUIOperations::TakeScreenshot(const std::string& method,
 
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVariant &result)
 {
+  auto& infoManager{CServiceBroker::GetGUI()->GetInfoManager()};
   if (property == "currentwindow")
   {
-    result["label"] = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
-        CServiceBroker::GetGUI()->GetInfoManager().TranslateString("System.CurrentWindow"),
+    result["label"] = infoManager.GetLabel(infoManager.TranslateString("System.CurrentWindow"),
         INFO::DEFAULT_CONTEXT);
     result["id"] = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
   }
   else if (property == "currentcontrol")
-    result["label"] = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
-        CServiceBroker::GetGUI()->GetInfoManager().TranslateString("System.CurrentControl"),
+    result["label"] = infoManager.GetLabel(infoManager.TranslateString("System.CurrentControl"),
         INFO::DEFAULT_CONTEXT);
   else if (property == "skin")
   {

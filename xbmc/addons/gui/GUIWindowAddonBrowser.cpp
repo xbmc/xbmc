@@ -451,6 +451,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
                                           bool showInstallable /* = false */,
                                           bool showMore /* = true */)
 {
+  auto& addonMgr{CServiceBroker::GetAddonMgr()};
   // if we shouldn't show neither installed nor installable addons the list will be empty
   if (!showInstalled && !showInstallable)
     return -1;
@@ -491,7 +492,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
       else if (type == AddonType::GAME)
         CAddonsDirectory::GetScriptsAndPlugins("game", typeAddons);
       else
-        CServiceBroker::GetAddonMgr().GetAddons(typeAddons, type);
+        addonMgr.GetAddons(typeAddons, type);
 
       addons.insert(addons.end(), typeAddons.begin(), typeAddons.end());
     }
@@ -500,7 +501,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
   if (showInstallable || showMore)
   {
     VECADDONS installableAddons;
-    if (CServiceBroker::GetAddonMgr().GetInstallableAddons(installableAddons))
+    if (addonMgr.GetInstallableAddons(installableAddons))
     {
       for (auto addon = installableAddons.begin(); addon != installableAddons.end();)
       {
@@ -625,7 +626,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
         const AddonPtr& addon = itAddon->second;
 
         // if the addon isn't installed we need to install it
-        if (!CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID()))
+        if (!addonMgr.IsAddonInstalled(addon->ID()))
         {
           AddonPtr installedAddon;
           if (!CAddonInstaller::GetInstance().InstallModal(addon->ID(), installedAddon,
@@ -634,8 +635,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
         }
 
         // if the addon is disabled we need to enable it
-        if (CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID()))
-          CServiceBroker::GetAddonMgr().EnableAddon(addon->ID());
+        if (addonMgr.IsAddonDisabled(addon->ID()))
+          addonMgr.EnableAddon(addon->ID());
       }
     }
 

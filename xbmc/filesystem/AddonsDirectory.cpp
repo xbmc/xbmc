@@ -521,9 +521,9 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
 
 static void OutdatedAddons(const CURL& path, CFileItemList &items)
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   VECADDONS addons = CServiceBroker::GetAddonMgr().GetAvailableUpdates();
-  CAddonsDirectory::GenerateAddonListing(
-      path, addons, items, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24043));
+  CAddonsDirectory::GenerateAddonListing(path, addons, items, localizeStrings.Get(24043));
 
   if (!items.IsEmpty())
   {
@@ -531,15 +531,13 @@ static void OutdatedAddons(const CURL& path, CFileItemList &items)
     {
       const CFileItemPtr itemUpdateAllowed(
           std::make_shared<CFileItem>(ADDONS::UPDATE_ALLOWED, false));
-      itemUpdateAllowed->SetLabel(
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24137));
+      itemUpdateAllowed->SetLabel(localizeStrings.Get(24137));
       itemUpdateAllowed->SetSpecialSort(SortSpecial::TOP);
       items.Add(itemUpdateAllowed);
     }
 
     const CFileItemPtr itemUpdateAll(std::make_shared<CFileItem>(ADDONS::UPDATE_ALL, false));
-    itemUpdateAll->SetLabel(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24122));
+    itemUpdateAll->SetLabel(localizeStrings.Get(24122));
     itemUpdateAll->SetSpecialSort(SortSpecial::TOP);
     items.Add(itemUpdateAll);
   }
@@ -818,8 +816,10 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                             CFileItemList& items,
                                             const std::string& label)
 {
+  auto& addonMgr{CServiceBroker::GetAddonMgr()};
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   std::map<std::string, AddonWithUpdate, std::less<>> addonsWithUpdate =
-      CServiceBroker::GetAddonMgr().GetAddonsWithAvailableUpdate();
+      addonMgr.GetAddonsWithAvailableUpdate();
 
   items.ClearItems();
   items.SetContent(MEDIA::CONTENT::ADDONS);
@@ -830,9 +830,8 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     itemPath.SetFileName(addon->ID());
     CFileItemPtr pItem = FileItemFromAddon(addon, itemPath.Get(), false);
 
-    bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(addon->ID(), addon->Origin(),
-                                                                    addon->Version());
-    bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
+    bool installed = addonMgr.IsAddonInstalled(addon->ID(), addon->Origin(), addon->Version());
+    bool disabled = addonMgr.IsAddonDisabled(addon->ID());
 
     bool isUpdate{false};
     bool hasUpdate{false};
@@ -869,20 +868,15 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
     pItem->SetProperty("Addon.IsBinary", addon->IsBinary());
 
     if (installed)
-      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
-                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(305));
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS, localizeStrings.Get(305));
     if (disabled)
-      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
-                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24023));
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS, localizeStrings.Get(24023));
     if (hasUpdate)
-      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
-                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24068));
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS, localizeStrings.Get(24068));
     else if (addon->LifecycleState() == AddonLifecycleState::BROKEN)
-      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
-                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24098));
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS, localizeStrings.Get(24098));
     else if (addon->LifecycleState() == AddonLifecycleState::DEPRECATED)
-      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS,
-                         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24170));
+      pItem->SetProperty(ITEM::PROPERTY::ADDON_STATUS, localizeStrings.Get(24170));
 
     items.Add(pItem);
   }

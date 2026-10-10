@@ -108,6 +108,7 @@ CApplicationMessageHandling::CApplicationMessageHandling(CApplication& app)
 
 void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage* pMsg)
 {
+  CWinSystemBase* const winSystem{CServiceBroker::GetWinSystem()};
   uint32_t msg = pMsg->dwMessage;
   if (msg == TMSG_SYSTEM_POWERDOWN)
   {
@@ -185,12 +186,12 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
     case TMSG_DISPLAY_SETUP:
       // We might come from a refresh rate switch destroying the native window; use the context resolution
       *static_cast<bool*>(pMsg->lpVoid) =
-          m_app.InitWindow(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
+          m_app.InitWindow(winSystem->GetGfxContext().GetVideoResolution());
       m_app.GetComponent<CApplicationPowerHandling>()->SetRenderGUI(true);
       break;
 
     case TMSG_DISPLAY_DESTROY:
-      *static_cast<bool*>(pMsg->lpVoid) = CServiceBroker::GetWinSystem()->DestroyWindow();
+      *static_cast<bool*>(pMsg->lpVoid) = winSystem->DestroyWindow();
       m_app.GetComponent<CApplicationPowerHandling>()->SetRenderGUI(false);
       break;
 
@@ -250,21 +251,21 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
     break;
 
     case TMSG_SETVIDEORESOLUTION:
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(
+      winSystem->GetGfxContext().SetVideoResolution(
           static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
       break;
 
     case TMSG_TOGGLEFULLSCREEN:
-      CServiceBroker::GetWinSystem()->GetGfxContext().ToggleFullScreen();
+      winSystem->GetGfxContext().ToggleFullScreen();
       appPlayer->TriggerUpdateResolution();
       break;
 
     case TMSG_MOVETOSCREEN:
-      CServiceBroker::GetWinSystem()->MoveToScreen(pMsg->param1);
+      winSystem->MoveToScreen(pMsg->param1);
       break;
 
     case TMSG_MINIMIZE:
-      CServiceBroker::GetWinSystem()->Minimize();
+      winSystem->Minimize();
       break;
 
     case TMSG_EXECUTE_OS:
@@ -453,6 +454,8 @@ void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage*
 
 bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 {
+  auto& pvrManager{CServiceBroker::GetPVRManager()};
+
   switch (message.GetMessage())
   {
     case GUI_MSG_NOTIFY_ALL:
@@ -511,7 +514,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
           std::make_shared<CFileItem>(*std::static_pointer_cast<CFileItem>(message.GetItem())));
       m_app.ResetPlayerEvent();
 
-      CServiceBroker::GetPVRManager().OnPlaybackStarted(m_app.CurrentFileItem());
+      pvrManager.OnPlaybackStarted(m_app.CurrentFileItem());
 
       PLAYLIST::CPlayList playList = CServiceBroker::GetPlaylistPlayer().GetPlaylist(
           CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
@@ -650,7 +653,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
     case GUI_MSG_PLAYBACK_STOPPED:
     {
-      CServiceBroker::GetPVRManager().OnPlaybackStopped(m_app.CurrentFileItem());
+      pvrManager.OnPlaybackStopped(m_app.CurrentFileItem());
       CServiceBroker::GetFavouritesService().OnPlaybackStopped(m_app.CurrentFileItem());
 
       CVariant data(CVariant::VariantTypeObject);
@@ -674,7 +677,7 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
     case GUI_MSG_PLAYBACK_ENDED:
     {
-      CServiceBroker::GetPVRManager().OnPlaybackEnded(m_app.CurrentFileItem());
+      pvrManager.OnPlaybackEnded(m_app.CurrentFileItem());
       CServiceBroker::GetFavouritesService().OnPlaybackEnded(m_app.CurrentFileItem());
 
       CVariant data(CVariant::VariantTypeObject);

@@ -101,6 +101,7 @@ void CGUIDialogSmartPlaylistRule::OnOK()
 
 void CGUIDialogSmartPlaylistRule::OnBrowse()
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   CFileItemList items;
   CMusicDatabase database;
   database.Open();
@@ -333,9 +334,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CServiceBroker::GetMediaManager().GetLocalDrives(sources);
 
     std::string path = m_rule.GetParameter();
-    CGUIDialogFileBrowser::ShowAndGetDirectory(
-        sources, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(657), path,
-        false);
+    CGUIDialogFileBrowser::ShowAndGetDirectory(sources, localizeStrings.Get(657), path, false);
     if (!m_rule.m_parameter.empty())
       m_rule.m_parameter.clear();
     if (!path.empty())
@@ -379,8 +378,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   pDialog->Reset();
   pDialog->SetItems(items);
   std::string strHeading =
-      StringUtils::Format(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13401),
-                          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(iLabel));
+      StringUtils::Format(localizeStrings.Get(13401), localizeStrings.Get(iLabel));
   pDialog->SetHeading(CVariant{std::move(strHeading)});
   pDialog->SetMultiSelection(m_rule.m_field != static_cast<int>(Field::PLAYLIST) &&
                              m_rule.m_field != static_cast<int>(Field::VIRTUAL_FOLDER));
