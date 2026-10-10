@@ -17,6 +17,7 @@
 #include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "imagefiles/ImageFileURL.h"
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
@@ -65,7 +66,10 @@ void CacheArtwork(const std::string& url,
   }
 
   bool needsRecaching{false};
-  if (!textureCache->CheckCachedImage(url, needsRecaching).empty() && !needsRecaching)
+  const std::string cachedImage{textureCache->CheckCachedImage(url, needsRecaching)};
+  // A cached copy whose file has gone is cached again. An image that is its own copy is not
+  if (!cachedImage.empty() && !needsRecaching &&
+      (cachedImage == IMAGE_FILES::ToCacheKey(url) || CFile::Exists(cachedImage)))
     return; // already cached
 
   // Fetch art or recache as needed
@@ -383,18 +387,21 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
     }
   }
 
+  std::vector<ArtToCache> artToCache;
+  for (const auto& [artType, url] : art)
+    artToCache.push_back({url, {}, PriorityOfArtType(artType)});
+
   if (!art.contains(ART::TYPE::THUMB) &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
       CDVDFileInfo::CanExtract(mediaItem ? *mediaItem : *pItem))
   {
     art[ART::TYPE::THUMB] = CVideoThumbLoader::GetEmbeddedThumbURL(mediaItem ? *mediaItem : *pItem);
+    // Extracting a frame is costly, so it is made ahead of display only where thumb is listed
+    if (std::ranges::find(artTypes, ART::TYPE::THUMB) != artTypes.end())
+      artToCache.push_back({art[ART::TYPE::THUMB], {}, PriorityOfArtType(ART::TYPE::THUMB)});
   }
 
-  std::vector<ArtToCache> artToCache;
-  for (const auto& artType : artTypes)
-    if (art.contains(artType))
-      artToCache.push_back({art.at(artType), {}, PriorityOfArtType(artType)});
   Cache(std::move(artToCache));
 
   pItem->SetArt(art);

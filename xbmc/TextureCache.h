@@ -222,6 +222,16 @@ private:
    */
   std::string GetCachedImage(const std::string &image, CTextureDetails &details, bool trackUsage = false);
 
+  /*! \brief Cache an image again where the database knows it but its cached file has gone
+   \param image url of the image
+   \param details the details GetCachedImage() found for the image
+   \param cachedImage the cached url GetCachedImage() returned for the image
+   \return cached url of this image, empty if it couldn't be cached again
+   */
+  std::string EnsureCachedFile(const std::string& image,
+                               const CTextureDetails& details,
+                               const std::string& cachedImage);
+
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
    \param url url of the original image
