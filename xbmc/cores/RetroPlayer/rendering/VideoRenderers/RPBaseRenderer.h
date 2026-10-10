@@ -78,7 +78,7 @@ public:
 protected:
   // Protected renderer interface
   virtual bool ConfigureInternal() { return true; }
-  virtual void RenderInternal(bool clear, uint8_t alpha) = 0;
+  virtual void RenderInternal(uint8_t alpha) = 0;
   virtual void FlushInternal() {}
 
   // Construction parameters
