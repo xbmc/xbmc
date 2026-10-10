@@ -107,7 +107,7 @@ struct cc_decoder_s
 
   void *userdata;
   void(*callback)(int service, void *userdata);
-  char text[CC_ROWS*CC_COLUMNS + 1];
+  char text[CC_ROWS * CC_COLUMNS * 3 + CC_ROWS + 1];
   int textlen;
   cc_attribute_t textattr;
 };
