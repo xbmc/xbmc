@@ -388,7 +388,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_format.m_channelLayout  = AUDIOTRACKChannelMaskToAEChannelMap(atChannelMask);
   if (m_encoding == CJNIAudioFormat::ENCODING_IEC61937)
   {
-    // keep above channel output if we do IEC61937 and got DTSHD or TrueHD by AudioEngine
+    // Most IEC formats require CHANNEL_OUT_STEREO, but DTS-HD MA and TrueHD
+    // need an 8-channel carrier (2ch@192kHz cannot carry their bitrate).
+    // This is supported on specific hardware (Shield, Fire TV Cube 3rd gen).
+    // Do not simplify to always-stereo - it breaks passthrough on that hardware.
     if (m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_DTSHD_MA && m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_TRUEHD)
       atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
   }
@@ -577,6 +580,16 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
           usleep(200 * 1000);
           continue;
         }
+        if (m_info.m_wantsIECPassthrough || !m_hasIEC)
+        {
+          // No remaining device string to try for this stream.
+          // Return true to prevent ActiveAE from entering a fatal retry loop.
+          CLog::Log(LOGERROR, "AESinkAUDIOTRACK - Unable to create AudioTrack for passthrough - "
+                              "continuing with no audio for this stream");
+          format = m_format;
+          return true;
+        }
+        // RAW failed - fall through to return false so CActiveAESink tries IEC next.
       }
       CLog::Log(LOGERROR, "AESinkAUDIOTRACK - Unable to create AudioTrack");
       Deinitialize();
@@ -635,7 +648,9 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 {
   if (!m_at_jni)
   {
-    status.SetDelay(0);
+    // Definitively failed passthrough: report the configured buffer time
+    // so sync logic sees a stable delay instead of zero.
+    status.SetDelay(m_passthrough && m_audiotrackbuffer_sec > 0.0 ? m_audiotrackbuffer_sec : 0);
     return;
   }
 
@@ -792,6 +807,15 @@ double CAESinkAUDIOTRACK::GetCacheTotal()
 // when it returns ActiveAESink will take the next buffer out of a queue
 unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
 {
+  if (!m_at_jni && m_passthrough)
+  {
+    // Passthrough definitively failed - no AudioTrack to write to.
+    // Report data as consumed to avoid CActiveAESink treating this
+    // as an error and repeatedly rebuilding the sink. No throttling
+    // here because an explicit sleep caused video lag on some devices.
+    m_duration_written += static_cast<double>(frames) / m_format.m_sampleRate;
+    return frames;
+  }
   if (!IsInitialized())
     return INT_MAX;
 
@@ -1182,7 +1206,9 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
             m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
             CLog::Log(LOGDEBUG, "E-AC3 and DTSHD-HR via IEC61937 is supported");
           }
-          // Check for IEC 8 channel 192 khz PT DTS-HD-MA and TrueHD
+          // DTS-HD MA/TrueHD need an 8-channel IEC carrier at 192kHz.
+          // 2ch@192kHz cannot carry their bitrate, so this must probe 7.1
+          // unlike the stereo IEC probes above. Keep in sync with Initialize().
           int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
           if (VerifySinkConfiguration(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
           {
