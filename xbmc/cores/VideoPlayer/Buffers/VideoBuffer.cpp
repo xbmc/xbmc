@@ -14,6 +14,11 @@
 #include <string.h>
 #include <utility>
 
+extern "C"
+{
+#include <libavutil/pixdesc.h>
+}
+
 //-----------------------------------------------------------------------------
 // CVideoBuffer
 //-----------------------------------------------------------------------------
@@ -225,42 +230,17 @@ void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&stride
   m_image.stride[0] = strides[0];
   m_image.stride[1] = strides[1];
   m_image.stride[2] = strides[2];
-  m_image.cshift_x = 1;
-  m_image.cshift_y = 1;
-  m_image.bpp = 1;
 
-  if (m_pixFormat == AV_PIX_FMT_YUV420P ||
-      m_pixFormat == AV_PIX_FMT_YUV420P16 ||
-      m_pixFormat == AV_PIX_FMT_YUV420P14 ||
-      m_pixFormat == AV_PIX_FMT_YUV420P12 ||
-      m_pixFormat == AV_PIX_FMT_YUV420P10 ||
-      m_pixFormat == AV_PIX_FMT_YUV420P9)
-  {
-    if (m_pixFormat != AV_PIX_FMT_YUV420P)
-      m_image.bpp = 2;
+  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_pixFormat);
+  const int planes = desc ? av_pix_fmt_count_planes(m_pixFormat) : 0;
+  m_image.cshift_x = desc ? desc->log2_chroma_w : 0;
+  m_image.cshift_y = desc ? desc->log2_chroma_h : 0;
+  m_image.bpp = desc ? (desc->comp[0].depth + 7) / 8 : 1;
 
-    m_image.planesize[0] = m_image.stride[0] * m_image.height;
-    m_image.planesize[1] = m_image.stride[1] * (m_image.height >> m_image.cshift_y);
-    m_image.planesize[2] = m_image.stride[2] * (m_image.height >> m_image.cshift_y);
-  }
-  else if (m_pixFormat == AV_PIX_FMT_NV12)
+  for (int i = 0; i < YuvImage::MAX_PLANES; ++i)
   {
-    // Y plane
-    m_image.planesize[0] = m_image.stride[0] * m_image.height;
-    // packed UV plane
-    m_image.planesize[1] = m_image.stride[1] * m_image.height / 2;
-    // third plane is not used
-    m_image.planesize[2] = 0;
-  }
-  else if (m_pixFormat == AV_PIX_FMT_YUYV422 ||
-           m_pixFormat == AV_PIX_FMT_UYVY422)
-  {
-    // packed YUYV plane
-    m_image.planesize[0] = m_image.stride[0] * m_image.height;
-    // second plane is not used
-    m_image.planesize[1] = 0;
-    // third plane is not used
-    m_image.planesize[2] = 0;
+    const int rows = i ? m_image.height >> m_image.cshift_y : m_image.height;
+    m_image.planesize[i] = i < planes ? m_image.stride[i] * rows : 0;
   }
 
   m_image.plane[0] = m_data;

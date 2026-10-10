@@ -96,6 +96,26 @@ std::array<std::array<float, 4>, 4> bt709_10bit =
 
 Matrix4 bt709Mat_10bit(bt709_10bit);
 
+std::array<std::array<float, 4>, 4> bt709_12bit =
+{{
+  {1.1686643836, 1.1686643836, 1.1686643836, 0.0000000000},
+  {0.0000000000, -0.2140326165, 2.1201679688, 0.0000000000},
+  {1.7993320313, -0.5348685540, 0.0000000000, 0.0000000000},
+  {-0.9729450750, 0.3014826655, -1.1334022179, 1.0000000000},
+}};
+
+Matrix4 bt709Mat_12bit(bt709_12bit);
+
+std::array<std::array<float, 4>, 4> bt709_16bit =
+{{
+  {1.1689319349, 1.1689319349, 1.1689319349, 0.0000000000},
+  {0.0000000000, -0.2140816167, 2.1206533552, 0.0000000000},
+  {1.7997439662, -0.5349910056, 0.0000000000, 0.0000000000},
+  {-0.9729450750, 0.3014826655, -1.1334022179, 1.0000000000},
+}};
+
+Matrix4 bt709Mat_16bit(bt709_16bit);
+
 std::array<std::array<float, 4>, 4> bt709_10bit_texture =
 {{
   {74.8116378784, 74.8116378784, 74.8116378784, 0.0000000000},
@@ -105,6 +125,36 @@ std::array<std::array<float, 4>, 4> bt709_10bit_texture =
 }};
 
 Matrix4 bt709Mat_10bit_texture(bt709_10bit_texture);
+
+std::array<std::array<float, 4>, 4> gbr_full =
+{{
+  {0.0000000000, 1.0000000000, 0.0000000000, 0.0000000000},
+  {0.0000000000, 0.0000000000, 1.0000000000, 0.0000000000},
+  {1.0000000000, 0.0000000000, 0.0000000000, 0.0000000000},
+  {0.0000000000, 0.0000000000, 0.0000000000, 1.0000000000},
+}};
+
+Matrix4 gbrMat_full(gbr_full);
+
+std::array<std::array<float, 4>, 4> gbr_8bit =
+{{
+  {0.0000000000, 1.1643835616, 0.0000000000, 0.0000000000},
+  {0.0000000000, 0.0000000000, 1.1643835616, 0.0000000000},
+  {1.1643835616, 0.0000000000, 0.0000000000, 0.0000000000},
+  {-0.0730593607, -0.0730593607, -0.0730593607, 1.0000000000},
+}};
+
+Matrix4 gbrMat_8bit(gbr_8bit);
+
+std::array<std::array<float, 4>, 4> gbr_10bit_texture =
+{{
+  {0.0000000000, 74.8116438356, 0.0000000000, 0.0000000000},
+  {0.0000000000, 0.0000000000, 74.8116438356, 0.0000000000},
+  {74.8116438356, 0.0000000000, 0.0000000000, 0.0000000000},
+  {-0.0730593607, -0.0730593607, -0.0730593607, 1.0000000000},
+}};
+
+Matrix4 gbrMat_10bit_texture(gbr_10bit_texture);
 
 std::array<std::array<float, 3>, 3> bt601_to_bt709 =
 {{
@@ -152,12 +202,59 @@ TEST(TestConvertMatrix, YUV2RGB)
 
   EXPECT_TRUE(CompareMatrices(bt709Mat_10bit, yuvMat, 0.0001f));
 
+  convMat.SetSourceBitDepth(12)
+         .SetSourceTextureBitDepth(8);
+  yuvMat = convMat.GetYuvMat();
+  DebugPrint(yuvMat);
+
+  EXPECT_TRUE(CompareMatrices(bt709Mat_12bit, yuvMat, 0.0001f));
+
+  convMat.SetSourceBitDepth(16)
+         .SetSourceTextureBitDepth(8);
+  yuvMat = convMat.GetYuvMat();
+  DebugPrint(yuvMat);
+
+  EXPECT_TRUE(CompareMatrices(bt709Mat_16bit, yuvMat, 0.0001f));
+
   convMat.SetSourceBitDepth(10)
          .SetSourceTextureBitDepth(10);
   yuvMat = convMat.GetYuvMat();
   DebugPrint(yuvMat);
 
   EXPECT_TRUE(CompareMatrices(bt709Mat_10bit_texture, yuvMat, 0.0001f));
+}
+
+TEST(TestConvertMatrix, GBR2RGB)
+{
+  CConvertMatrix convMat;
+  convMat.SetSourceRGB(true)
+         .SetSourceLimitedRange(false);
+
+  convMat.SetDestinationBlack(0.0f)
+         .SetDestinationContrast(1.0f)
+         .SetDestinationLimitedRange(false);
+
+  Matrix4 rgbMat;
+
+  convMat.SetSourceBitDepth(8)
+         .SetSourceTextureBitDepth(8);
+  rgbMat = convMat.GetYuvMat();
+  DebugPrint(rgbMat);
+
+  EXPECT_TRUE(CompareMatrices(gbrMat_full, rgbMat, 0.0001f));
+
+  convMat.SetSourceLimitedRange(true);
+  rgbMat = convMat.GetYuvMat();
+  DebugPrint(rgbMat);
+
+  EXPECT_TRUE(CompareMatrices(gbrMat_8bit, rgbMat, 0.0001f));
+
+  convMat.SetSourceBitDepth(10)
+         .SetSourceTextureBitDepth(10);
+  rgbMat = convMat.GetYuvMat();
+  DebugPrint(rgbMat);
+
+  EXPECT_TRUE(CompareMatrices(gbrMat_10bit_texture, rgbMat, 0.0001f));
 }
 
 TEST(TestConvertMatrix, ColorSpaceConversion)
