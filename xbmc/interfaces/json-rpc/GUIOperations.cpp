@@ -24,6 +24,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/MessengerPayload.h"
 #include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -32,6 +33,7 @@
 
 using namespace JSONRPC;
 using namespace ADDON;
+using KODI::MESSAGING::TransferToMessenger;
 
 JSONRPC_STATUS CGUIOperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -99,7 +101,7 @@ JSONRPC_STATUS CGUIOperations::SetFullscreen(const std::string &method, ITranspo
        parameterObject["fullscreen"].asBoolean() != g_application.IsFullScreen()))
   {
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               static_cast<void*>(new CAction(ACTION_SHOW_GUI)));
+        TransferToMessenger(std::make_unique<CAction>(ACTION_SHOW_GUI)));
   }
   else if (!parameterObject["fullscreen"].isBoolean() && !parameterObject["fullscreen"].isString())
     return InvalidParams;
@@ -113,7 +115,7 @@ JSONRPC_STATUS CGUIOperations::SetStereoscopicMode(const std::string &method, IT
   if (action.GetID() != ACTION_NONE)
   {
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               static_cast<void*>(new CAction(action)));
+        TransferToMessenger(std::make_unique<CAction>(action)));
     return ACK;
   }
 
