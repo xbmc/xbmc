@@ -94,6 +94,9 @@ namespace JSONRPC
     static int GetDetailsFromJsonParameters(const CVariant& parameterObject);
 
   protected:
+    //! Adds the files table's playback state to an item that already says what it is.
+    static void ApplyPlaybackState(const CVideoInfoTag& fileDetails, CVideoInfoTag& details);
+
     struct PlaybackUpdate
     {
       int playCount;
