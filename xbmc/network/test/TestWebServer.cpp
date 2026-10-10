@@ -23,6 +23,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "test/TestUtils.h"
 #include "utils/JSONVariantParser.h"
+#include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -373,6 +374,37 @@ protected:
     return StringUtils::Format("bytes={}-{}", start, end);
   }
 
+  //! \brief Files.PrepareDownload for a test file over HTTP POST, with an optional
+  //!        X-Forwarded-Proto header.
+  CVariant PrepareDownloadOfTestFile(const std::string& testFile,
+                                     const std::string& forwardedProtocol = "")
+  {
+    CVariant request(CVariant::VariantTypeObject);
+    request["jsonrpc"] = "2.0";
+    request["id"] = 1;
+    request["method"] = "Files.PrepareDownload";
+    request["params"]["path"] = URIUtils::AddFileToFolder(sourcePath, testFile);
+
+    std::string requestData;
+    if (!CJSONVariantWriter::Write(request, requestData, true))
+      return CVariant();
+
+    CCurlFile curl;
+    curl.SetMimeType("application/json");
+    if (!forwardedProtocol.empty())
+      curl.SetRequestHeader("X-Forwarded-Proto", forwardedProtocol);
+
+    std::string response;
+    if (!curl.Post(GetUrl(TEST_URL_JSONRPC), requestData, response))
+      return CVariant();
+
+    CVariant responseObj;
+    if (!CJSONVariantParser::Parse(response, responseObj) || !responseObj.isObject())
+      return CVariant();
+
+    return responseObj["result"];
+  }
+
   static std::unique_ptr<CWebServer> s_webserver;
   static std::unique_ptr<CHTTPJsonRpcHandler> s_jsonRpcHandler;
   static std::unique_ptr<CHTTPVfsHandler> s_vfsHandler;
@@ -589,6 +621,50 @@ TEST_F(TestWebServer, CanModifyOverJsonRpcWithHttpPost)
   EXPECT_TRUE(cacheControl.find("no-cache") != std::string::npos);
 
   // uninitialize JSON-RPC
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadReportsTheSchemeOfThePlainRequest)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML);
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("http", result["protocol"].asString().c_str());
+
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadReportsTheSchemeForwardedByAProxy)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML, "https");
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("https", result["protocol"].asString().c_str());
+
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadReportsTheSchemeOfTheFirstProxyInAChain)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML, "HTTPS, http");
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("https", result["protocol"].asString().c_str());
+
+  JSONRPC::CJSONRPC::Cleanup();
+}
+
+TEST_F(TestWebServer, PrepareDownloadDoesNotReportAnUnknownForwardedScheme)
+{
+  JSONRPC::CJSONRPC::Initialize();
+
+  const CVariant result = PrepareDownloadOfTestFile(TEST_FILES_HTML, "javascript");
+  ASSERT_TRUE(result.isObject());
+  EXPECT_STREQ("http", result["protocol"].asString().c_str());
+
   JSONRPC::CJSONRPC::Cleanup();
 }
 
