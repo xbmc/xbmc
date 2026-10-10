@@ -610,7 +610,7 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   if(GetDriveStatus(strVolFormat, true) != 1)
     return ToggleTray(cDL);
   else
-    return S_OK;
+    return S_FALSE;
 }
 
 HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
@@ -629,7 +629,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   if(GetDriveStatus(strVolFormat, true) == 1)
     return ToggleTray(cDL);
   else
-    return S_OK;
+    return S_FALSE;
 }
 
 BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
