@@ -1219,6 +1219,7 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
             {
               pPacket->dispTime = m_displayTime;
               pPacket->dispTime += DVD_TIME_TO_MSEC(pPacket->dts - m_dtsAtDisplayTime);
+              pPacket->m_hasDisplayTime = true;
             }
           }
 
