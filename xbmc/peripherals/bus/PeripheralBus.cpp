@@ -70,9 +70,14 @@ void CPeripheralBus::Clear(void)
     StopThread(true);
   }
 
-  std::unique_lock lock(m_critSection);
+  PeripheralVector peripherals;
+  {
+    std::unique_lock lock(m_critSection);
+    peripherals.swap(m_peripherals);
+  }
 
-  m_peripherals.clear();
+  for (const auto& peripheral : peripherals)
+    peripheral->ReleaseControllerInput();
 }
 
 void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults& results)
