@@ -15,6 +15,7 @@ xbmc/cores/VideoPlayer/Edl/test   test/edl
 xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/dbwrappers/test              test/dbwrappers
 xbmc/dialogs/test                 test/dialogs
+xbmc/favourites/test              test/favourites
 xbmc/filesystem/test              test/filesystem
 xbmc/filesystem/VideoDatabaseDirectory/test test/videodatabasedirectory
 xbmc/games/addons/cheats/test     test/games/addons/cheats
