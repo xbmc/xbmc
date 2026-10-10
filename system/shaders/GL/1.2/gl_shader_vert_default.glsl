@@ -8,13 +8,13 @@
 
 #version 120
 
-attribute vec2 m_attrpos;
+attribute vec3 m_attrpos;
 uniform mat4 m_proj;
 uniform mat4 m_model;
 
 void main()
 {
   mat4 mvp = m_proj * m_model;
-  gl_Position = mvp * vec4(m_attrpos, 0., 1.);
+  gl_Position = mvp * vec4(m_attrpos, 1.);
   gl_Position.z = -1. * gl_Position.w;
 }
