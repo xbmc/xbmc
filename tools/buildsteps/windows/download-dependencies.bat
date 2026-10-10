@@ -32,6 +32,15 @@ SET TMP_PATH=%BUILD_DEPS_PATH%\scripts\tmp
 REM Clean dependencies path (install path) to avoid Debug vs Release conflicts
 IF EXIST %APP_PATH% rmdir %APP_PATH% /S /Q
 
+REM Restore the dependencies a successful build left for the same inputs, see prepare-env.bat.
+REM The bundled libraries are built with /GL, so the Visual Studio version is part of the hash.
+SET BUILD_CACHE_DIR=%WORKSPACE%\.build-cache
+IF "%BUILD_CACHE_ENTRIES%" == "" SET BUILD_CACHE_ENTRIES=2
+SET FORMED_TARGET_RESTORED=NO
+CALL :getBuildHash
+IF NOT "%BUILD_CACHE_ENTRIES%" == "0" IF EXIST "%BUILD_CACHE_DIR%\%BUILD_HASH%\%TARGETPLATFORM%" CALL :restoreCachedBuild
+IF EXIST "%BUILD_CACHE_DIR%" PowerShell -NoProfile -Command "Get-ChildItem -LiteralPath '%BUILD_CACHE_DIR%' -Directory | Sort-Object CreationTime -Descending | Select-Object -Skip %BUILD_CACHE_ENTRIES% | ForEach-Object { cmd /c rmdir /S /Q $_.FullName }"
+
 REM Change to the BuildDependencies directory, if we're not there already
 PUSHD %BUILD_DEPS_PATH%
 
@@ -71,9 +80,30 @@ IF NOT EXIST %FORMED_OK_FLAG% (
 
 rmdir %TMP_PATH% /S /Q
 
+REM BuildSetup.bat marks it complete once the build has installed the bundled libraries
+IF "%FORMED_TARGET_RESTORED%" == "NO" ECHO %BUILD_HASH%> "%APP_PATH%\.build-hash.pending"
+
 REM Restore the previous current directory
 POPD
 
 ENDLOCAL
 
+EXIT /B 0
+
+:getBuildHash
+SET VSWHERE_ARGS=-latest -property installationVersion
+IF "%prerelease%" == "true" SET VSWHERE_ARGS=%VSWHERE_ARGS% -prerelease
+FOR /F "usebackq delims=" %%v IN (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" %VSWHERE_ARGS%`) DO SET VS_VERSION=%%v
+FOR /F %%r IN ('git -C "%WORKSPACE%" rev-list HEAD --max-count=1 -- CMakeLists.txt cmake/modules cmake/platform cmake/scripts project/BuildDependencies/scripts tools/buildsteps/windows tools/depends') DO SET DEPENDS_REVISION=%%r
+REM BuildSetup.bat builds Release when buildconfig is not set
+IF NOT DEFINED buildconfig SET buildconfig=Release
+FOR /F %%h IN ('ECHO %TARGETPLATFORM% %DEPENDS_REVISION% %VS_VERSION% %buildconfig%^| git hash-object --stdin') DO SET BUILD_HASH=%%h
+EXIT /B 0
+
+:restoreCachedBuild
+move "%BUILD_CACHE_DIR%\%BUILD_HASH%\%TARGETPLATFORM%" "%APP_PATH%" >NUL || EXIT /B 0
+rmdir "%BUILD_CACHE_DIR%\%BUILD_HASH%"
+move /Y "%APP_PATH%\.build-hash" "%APP_PATH%\.build-hash.pending" >NUL
+SET FORMED_TARGET_RESTORED=YES
+ECHO Restored %APP_PATH% from the build cache
 EXIT /B 0

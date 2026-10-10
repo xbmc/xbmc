@@ -95,6 +95,9 @@ IF DEFINED BUILDDIR (
     goto DIE
   )
 
+  rem the dependencies are complete, so prepare-env.bat may cache them
+  FOR /D %%d IN (%base_dir%\project\BuildDependencies\*) DO IF EXIST "%%d\.build-hash.pending" MOVE /Y "%%d\.build-hash.pending" "%%d\.build-hash" >NUL
+
   set EXE="%BUILDDIR%\%buildconfig%\%APP_NAME%.exe"
   set PDB="%BUILDDIR%\%buildconfig%\%APP_NAME%.pdb"
 
