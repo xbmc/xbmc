@@ -30,21 +30,10 @@
 namespace
 {
 constexpr unsigned int HIDDEN_SIZE = 8;
-constexpr unsigned int SMALLEST_BUCKET = 64;
-constexpr unsigned int LARGEST_BUCKET = 1024;
 
-unsigned int Bucket(unsigned int size)
-{
-  unsigned int bucket = SMALLEST_BUCKET;
-  while (bucket < size && bucket <= LARGEST_BUCKET)
-    bucket *= 2;
-  return bucket;
-}
-
-// bilinear filtering shrinks up to 2x without aliasing
-void BucketRequest(unsigned int& width,
-                   unsigned int& height,
-                   CAspectRatio::AspectRatio& aspectRatio)
+void NormalizeRequest(unsigned int& width,
+                      unsigned int& height,
+                      CAspectRatio::AspectRatio& aspectRatio)
 {
   if (aspectRatio == CAspectRatio::CENTER)
     return;
@@ -53,23 +42,29 @@ void BucketRequest(unsigned int& width,
   if (aspectRatio == CAspectRatio::STRETCH)
     aspectRatio = CAspectRatio::SCALE;
 
-  // zero is auto size; LoadIImage takes it from image
-  const unsigned int bucketWidth = width ? Bucket(width) : 0;
-  const unsigned int bucketHeight = height ? Bucket(height) : 0;
   if (std::max(width, height) < HIDDEN_SIZE)
   {
     aspectRatio = CAspectRatio::KEEP;
     width = height = 0;
   }
-  else if (bucketWidth > LARGEST_BUCKET || bucketHeight > LARGEST_BUCKET)
-  {
-    width = height = 0;
-  }
-  else
-  {
-    width = bucketWidth;
-    height = bucketHeight;
-  }
+}
+
+// a loaded decode of the same image can stand in for a request it covers; bilinear filtering
+// shrinks up to 2x without aliasing
+bool Covers(const CTextureArray& texture,
+            unsigned int width,
+            unsigned int height,
+            CAspectRatio::AspectRatio aspectRatio)
+{
+  if (!texture.size() || !width || !height || texture.m_width <= 0 || texture.m_height <= 0)
+    return false;
+
+  const float aspect = static_cast<float>(texture.m_width) / texture.m_height;
+  float needWidth = aspectRatio == CAspectRatio::SCALE
+                        ? std::max(static_cast<float>(width), height * aspect)
+                        : std::min(static_cast<float>(width), height * aspect);
+  needWidth = std::min(needWidth, static_cast<float>(texture.m_textures[0]->GetOriginalWidth()));
+  return texture.m_width + 1 >= needWidth && texture.m_width <= 2 * needWidth;
 }
 } // namespace
 
@@ -242,7 +237,7 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
                                        bool firstRequest,
                                        const bool useCache)
 {
-  BucketRequest(width, height, aspectRatio);
+  NormalizeRequest(width, height, aspectRatio);
 
   std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
@@ -258,9 +253,39 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
     }
   }
 
-  if (firstRequest)
-    QueueImage(path, width, height, aspectRatio, useCache);
+  if (!firstRequest)
+    return true;
 
+  const bool queued = std::any_of(m_queued.begin(), m_queued.end(),
+                                  [&](const auto& job)
+                                  {
+                                    const CLargeTexture* image = job.second;
+                                    return image->GetPath() == path &&
+                                           image->GetTargetWidth() == width &&
+                                           image->GetTargetHeight() == height &&
+                                           image->GetAspectRatio() == aspectRatio;
+                                  });
+  if (!queued && aspectRatio != CAspectRatio::CENTER)
+  {
+    const CLargeTexture* best = nullptr;
+    for (const CLargeTexture* image : m_allocated)
+    {
+      if (image->GetPath() == path && image->GetAspectRatio() != CAspectRatio::CENTER &&
+          Covers(image->GetTexture(), width, height, aspectRatio) &&
+          (!best || image->GetTexture().m_width < best->GetTexture().m_width))
+        best = image;
+    }
+    if (best)
+    {
+      auto* image = new CLargeTexture(path, width, height, aspectRatio);
+      image->ShareTexture(best->GetTexture());
+      m_allocated.push_back(image);
+      texture = image->GetTexture();
+      return true;
+    }
+  }
+
+  QueueImage(path, width, height, aspectRatio, useCache);
   return true;
 }
 
@@ -293,7 +318,7 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
                                            CAspectRatio::AspectRatio aspectRatio,
                                            bool immediately)
 {
-  BucketRequest(width, height, aspectRatio);
+  NormalizeRequest(width, height, aspectRatio);
 
   std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
