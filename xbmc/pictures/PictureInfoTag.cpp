@@ -265,7 +265,7 @@ void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
 
 const std::string CPictureInfoTag::GetInfo(int info) const
 {
-  if (!m_isLoaded && !m_isInfoSetExternally) // If no metadata has been loaded from the picture file or set with SetInfo(), just return
+  if (!m_isLoaded && !m_isInfoSetExternally) // If no metadata has been loaded from the picture file or set by a setter, just return
     return "";
 
   std::string value;
@@ -540,100 +540,18 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   return value;
 }
 
-int CPictureInfoTag::TranslateString(const std::string &info)
+void CPictureInfoTag::SetResolution(int width, int height)
 {
-  if (StringUtils::EqualsNoCase(info, "filename")) return SLIDESHOW_FILE_NAME;
-  else if (StringUtils::EqualsNoCase(info, "path")) return SLIDESHOW_FILE_PATH;
-  else if (StringUtils::EqualsNoCase(info, "filesize")) return SLIDESHOW_FILE_SIZE;
-  else if (StringUtils::EqualsNoCase(info, "filedate")) return SLIDESHOW_FILE_DATE;
-  else if (StringUtils::EqualsNoCase(info, "slideindex")) return SLIDESHOW_INDEX;
-  else if (StringUtils::EqualsNoCase(info, "resolution")) return SLIDESHOW_RESOLUTION;
-  else if (StringUtils::EqualsNoCase(info, "slidecomment")) return SLIDESHOW_COMMENT;
-  else if (StringUtils::EqualsNoCase(info, "colour")) return SLIDESHOW_COLOUR;
-  else if (StringUtils::EqualsNoCase(info, "process")) return SLIDESHOW_PROCESS;
-  else if (StringUtils::EqualsNoCase(info, "exiftime")) return SLIDESHOW_EXIF_DATE_TIME;
-  else if (StringUtils::EqualsNoCase(info, "exifdate")) return SLIDESHOW_EXIF_DATE;
-  else if (StringUtils::EqualsNoCase(info, "longexiftime")) return SLIDESHOW_EXIF_LONG_DATE_TIME;
-  else if (StringUtils::EqualsNoCase(info, "longexifdate")) return SLIDESHOW_EXIF_LONG_DATE;
-  else if (StringUtils::EqualsNoCase(info, "exifdescription")) return SLIDESHOW_EXIF_DESCRIPTION;
-  else if (StringUtils::EqualsNoCase(info, "cameramake")) return SLIDESHOW_EXIF_CAMERA_MAKE;
-  else if (StringUtils::EqualsNoCase(info, "cameramodel")) return SLIDESHOW_EXIF_CAMERA_MODEL;
-  else if (StringUtils::EqualsNoCase(info, "exifcomment"))
-    return SLIDESHOW_EXIF_COMMENT;
-  else if (StringUtils::EqualsNoCase(info, "aperture")) return SLIDESHOW_EXIF_APERTURE;
-  else if (StringUtils::EqualsNoCase(info, "focallength")) return SLIDESHOW_EXIF_FOCAL_LENGTH;
-  else if (StringUtils::EqualsNoCase(info, "focusdistance")) return SLIDESHOW_EXIF_FOCUS_DIST;
-  else if (StringUtils::EqualsNoCase(info, "exposure")) return SLIDESHOW_EXIF_EXPOSURE;
-  else if (StringUtils::EqualsNoCase(info, "exposuretime")) return SLIDESHOW_EXIF_EXPOSURE_TIME;
-  else if (StringUtils::EqualsNoCase(info, "exposurebias")) return SLIDESHOW_EXIF_EXPOSURE_BIAS;
-  else if (StringUtils::EqualsNoCase(info, "exposuremode")) return SLIDESHOW_EXIF_EXPOSURE_MODE;
-  else if (StringUtils::EqualsNoCase(info, "flashused")) return SLIDESHOW_EXIF_FLASH_USED;
-  else if (StringUtils::EqualsNoCase(info, "whitebalance")) return SLIDESHOW_EXIF_WHITE_BALANCE;
-  else if (StringUtils::EqualsNoCase(info, "lightsource")) return SLIDESHOW_EXIF_LIGHT_SOURCE;
-  else if (StringUtils::EqualsNoCase(info, "meteringmode")) return SLIDESHOW_EXIF_METERING_MODE;
-  else if (StringUtils::EqualsNoCase(info, "isoequivalence")) return SLIDESHOW_EXIF_ISO_EQUIV;
-  else if (StringUtils::EqualsNoCase(info, "digitalzoom")) return SLIDESHOW_EXIF_DIGITAL_ZOOM;
-  else if (StringUtils::EqualsNoCase(info, "ccdwidth")) return SLIDESHOW_EXIF_CCD_WIDTH;
-  else if (StringUtils::EqualsNoCase(info, "orientation")) return SLIDESHOW_EXIF_ORIENTATION;
-  else if (StringUtils::EqualsNoCase(info, "supplementalcategories")) return SLIDESHOW_IPTC_SUP_CATEGORIES;
-  else if (StringUtils::EqualsNoCase(info, "keywords")) return SLIDESHOW_IPTC_KEYWORDS;
-  else if (StringUtils::EqualsNoCase(info, "caption")) return SLIDESHOW_IPTC_CAPTION;
-  else if (StringUtils::EqualsNoCase(info, "author")) return SLIDESHOW_IPTC_AUTHOR;
-  else if (StringUtils::EqualsNoCase(info, "headline")) return SLIDESHOW_IPTC_HEADLINE;
-  else if (StringUtils::EqualsNoCase(info, "specialinstructions")) return SLIDESHOW_IPTC_SPEC_INSTR;
-  else if (StringUtils::EqualsNoCase(info, "category")) return SLIDESHOW_IPTC_CATEGORY;
-  else if (StringUtils::EqualsNoCase(info, "byline")) return SLIDESHOW_IPTC_BYLINE;
-  else if (StringUtils::EqualsNoCase(info, "bylinetitle")) return SLIDESHOW_IPTC_BYLINE_TITLE;
-  else if (StringUtils::EqualsNoCase(info, "credit")) return SLIDESHOW_IPTC_CREDIT;
-  else if (StringUtils::EqualsNoCase(info, "source")) return SLIDESHOW_IPTC_SOURCE;
-  else if (StringUtils::EqualsNoCase(info, "copyrightnotice")) return SLIDESHOW_IPTC_COPYRIGHT_NOTICE;
-  else if (StringUtils::EqualsNoCase(info, "objectname")) return SLIDESHOW_IPTC_OBJECT_NAME;
-  else if (StringUtils::EqualsNoCase(info, "city")) return SLIDESHOW_IPTC_CITY;
-  else if (StringUtils::EqualsNoCase(info, "state")) return SLIDESHOW_IPTC_STATE;
-  else if (StringUtils::EqualsNoCase(info, "country")) return SLIDESHOW_IPTC_COUNTRY;
-  else if (StringUtils::EqualsNoCase(info, "transmissionreference")) return SLIDESHOW_IPTC_TX_REFERENCE;
-  else if (StringUtils::EqualsNoCase(info, "iptcdate")) return SLIDESHOW_IPTC_DATE;
-  else if (StringUtils::EqualsNoCase(info, "urgency")) return SLIDESHOW_IPTC_URGENCY;
-  else if (StringUtils::EqualsNoCase(info, "countrycode")) return SLIDESHOW_IPTC_COUNTRY_CODE;
-  else if (StringUtils::EqualsNoCase(info, "referenceservice")) return SLIDESHOW_IPTC_REF_SERVICE;
-  else if (StringUtils::EqualsNoCase(info, "latitude")) return SLIDESHOW_EXIF_GPS_LATITUDE;
-  else if (StringUtils::EqualsNoCase(info, "longitude")) return SLIDESHOW_EXIF_GPS_LONGITUDE;
-  else if (StringUtils::EqualsNoCase(info, "altitude")) return SLIDESHOW_EXIF_GPS_ALTITUDE;
-  else if (StringUtils::EqualsNoCase(info, "timecreated")) return SLIDESHOW_IPTC_TIMECREATED;
-  else if (StringUtils::EqualsNoCase(info, "sublocation")) return SLIDESHOW_IPTC_SUBLOCATION;
-  else if (StringUtils::EqualsNoCase(info, "imagetype")) return SLIDESHOW_IPTC_IMAGETYPE;
-  return 0;
+  m_imageMetadata.width = width;
+  m_imageMetadata.height = height;
+  m_isInfoSetExternally = true;
 }
 
-void CPictureInfoTag::SetInfo(const std::string &key, const std::string& value)
+void CPictureInfoTag::SetDateTimeTaken(const std::string& exifDateTime)
 {
-  int info = TranslateString(key);
-
-  switch (info)
-  {
-  case SLIDESHOW_RESOLUTION:
-    {
-      std::vector<std::string> dimension;
-      StringUtils::Tokenize(value, dimension, ",");
-      if (dimension.size() == 2)
-      {
-        m_imageMetadata.width = std::atoi(dimension[0].c_str());
-        m_imageMetadata.height = std::atoi(dimension[1].c_str());
-        m_isInfoSetExternally =
-            true; // Set the internal state to show metadata has been set by call to SetInfo
-      }
-      break;
-    }
-  case SLIDESHOW_EXIF_DATE_TIME:
-    {
-      m_imageMetadata.exifInfo.DateTime = value;
-      m_isInfoSetExternally = true; // Set the internal state to show metadata has been set by call to SetInfo
-      ConvertDateTime();
-      break;
-    }
-  default:
-    break;
-  }
+  m_imageMetadata.exifInfo.DateTime = exifDateTime;
+  m_isInfoSetExternally = true;
+  ConvertDateTime();
 }
 
 const CDateTime& CPictureInfoTag::GetDateTimeTaken() const

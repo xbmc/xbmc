@@ -45,7 +45,7 @@ void listFromDefs(CFileItemList& items, const std::vector<FileItemSpec>& defs)
     if (def.hasMusic)
       item->GetMusicInfoTag()->SetAlbum("foo");
     if (def.hasPicture)
-      item->GetPictureInfoTag()->SetInfo("foo", "bar");
+      item->GetPictureInfoTag()->SetResolution(1, 1);
     if (def.hasAddonId)
       item->SetProperty("Addon.ID", "foobar");
     items.Add(std::move(item));
