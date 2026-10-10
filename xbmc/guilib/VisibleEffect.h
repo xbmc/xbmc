@@ -249,6 +249,11 @@ public:
   float GetValue() const { return m_scrollValue; }
   void SetValue(float scrollValue) { m_scrollValue = scrollValue; }
 
+  /**
+   * Value the scroller is heading to (current value when not scrolling)
+   */
+  float GetTargetValue() const { return m_delta != 0 ? m_startPosition + m_delta : m_scrollValue; }
+
   bool IsScrolling() const { return m_delta != 0; }
   bool IsScrollingUp() const { return m_delta < 0; }
   bool IsScrollingDown() const { return m_delta > 0; }
