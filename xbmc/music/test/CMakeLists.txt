@@ -1,4 +1,5 @@
-set(SOURCES TestMusicDatabase.cpp
+set(SOURCES TestGUIWindowMusicNav.cpp
+            TestMusicDatabase.cpp
             TestMusicDbPaths.cpp
             TestMusicFileItemClassify.cpp
             TestMusicInfoTag.cpp)
