@@ -29,6 +29,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "threads/Timer.h"
+#include "utils/AspectRatioVocabulary.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -161,6 +162,45 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
+//! \brief The ratio a layout's aspect attribute declares; zero when nothing usable is stated.
+static float ParseDeclaredAspect(const std::string& strAspect, const std::string& skinId)
+{
+  float aspect = 0;
+
+  if (strAspect.find(':') != std::string::npos)
+  {
+    const std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
+    if (fracs.size() == 2)
+    {
+      const float w = StringUtils::ToFloat(fracs[0]);
+      const float h = StringUtils::ToFloat(fracs[1]);
+      if (h > 0.0f)
+        aspect = w / h;
+    }
+
+    if (aspect > 0.0f)
+      CLog::Log(LOGDEBUG, "Skin {}: aspect \"{}\" is a fraction, use \"{:.2f}\"", skinId, strAspect,
+                aspect);
+  }
+  else if (!strAspect.empty())
+  {
+    aspect = StringUtils::ToFloat(strAspect);
+
+    const float canonical = KODI::UTILS::CAspectRatioVocabulary::RatioForKey(
+        KODI::UTILS::CAspectRatioVocabulary::Key(aspect));
+    if (canonical > 0.0f)
+      aspect = canonical;
+  }
+
+  if (aspect > 0.0f)
+    return aspect;
+
+  if (!strAspect.empty())
+    CLog::Log(LOGDEBUG, "Skin {}: aspect \"{}\" is not a ratio", skinId, strAspect);
+
+  return 0.0f;
+}
+
 CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo,
                      const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
   : CAddon(addonInfo, AddonType::SKIN),
@@ -183,11 +223,8 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonTyp
     const bool defRes = values.GetValue("res@default").asBoolean();
     const std::string folder = values.GetValue("res@folder").asString();
     const std::string strAspect = values.GetValue("res@aspect").asString();
-    float aspect = 0;
+    const float aspect = ParseDeclaredAspect(strAspect, ID());
 
-    const std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
-    if (fracs.size() == 2)
-      aspect = static_cast<float>(std::atof(fracs[0].c_str()) / std::atof(fracs[1].c_str()));
     if (width > 0 && height > 0)
     {
       RESOLUTION_INFO res(width, height, aspect, folder);

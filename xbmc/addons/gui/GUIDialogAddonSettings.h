@@ -11,6 +11,13 @@
 #include "addons/IAddon.h"
 #include "settings/dialogs/GUIDialogSettingsManagerBase.h"
 
+#include <functional>
+#include <map>
+#include <memory>
+#include <string>
+
+class CSettingCategory;
+
 class CGUIDialogAddonSettings : public CGUIDialogSettingsManagerBase
 {
 public:
@@ -48,7 +55,14 @@ private:
                                     ADDON::AddonInstanceId instanceId = ADDON::ADDON_SETTINGS_ID);
   static bool ShowForMultipleInstances(const ADDON::AddonPtr& addon, bool saveToDisk);
 
+  void CreateActionsCategory();
+
   ADDON::AddonPtr m_addon;
   ADDON::AddonInstanceId m_instanceId{ADDON::ADDON_SETTINGS_ID};
   bool m_saveToDisk = false;
+
+  // Used instead of the add-on's settings manager if the add-on only offers actions
+  std::shared_ptr<CSettingsManager> m_actionsOnlySettingsManager;
+  std::shared_ptr<CSettingCategory> m_actionsCategory;
+  std::map<std::string, std::function<void()>, std::less<>> m_actions;
 };

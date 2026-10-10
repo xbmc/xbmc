@@ -51,7 +51,8 @@ void CVideoSyncWasm::Run(CEvent& stop)
 
     // The rate changes when the window moves to another display. Waiting for the
     // measurement to settle sets the reference clock up again only once.
-    if (std::abs(VSYNC::RefreshRate() - m_fps) > m_fps * RATE_CHANGE_TOLERANCE)
+    const double fps = static_cast<double>(m_fps);
+    if (std::abs(VSYNC::RefreshRate() - fps) > fps * RATE_CHANGE_TOLERANCE)
     {
       if (++deviatingTicks >= RATE_CHANGE_TICKS)
         return;

@@ -19,6 +19,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
@@ -309,7 +310,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 {
   std::vector<Field> fields;
   bool isVideo = false;
-  if (type == "mixed")
+  if (type == MEDIA::CONTENT::MIXED)
   {
     fields = {
         Field::GENRE,        Field::ALBUM,          Field::ARTIST, Field::ALBUM_ARTIST,
@@ -318,7 +319,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
         Field::LAST_PLAYED,
     };
   }
-  else if (type == "songs")
+  else if (type == MEDIA::CONTENT::SONGS)
   {
     fields = {
         Field::GENRE,  Field::SOURCE,       Field::ALBUM, Field::DISC_TITLE,
@@ -347,7 +348,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
                                     Field::DATE_NEW,
                                 });
   }
-  else if (type == "albums")
+  else if (type == MEDIA::CONTENT::ALBUMS)
   {
     fields = {
         Field::GENRE,        Field::SOURCE,      Field::ALBUM,
@@ -379,7 +380,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
                                     Field::DATE_NEW,
                                 });
   }
-  else if (type == "artists")
+  else if (type == MEDIA::CONTENT::ARTISTS)
   {
     fields = {
         Field::ARTIST,     Field::SOURCE,         Field::GENRE,     Field::MOODS,
@@ -389,7 +390,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
         Field::DATE_ADDED, Field::DATE_MODIFIED,  Field::DATE_NEW,
     };
   }
-  else if (type == "tvshows")
+  else if (type == MEDIA::CONTENT::TVSHOWS)
   {
     fields = {
         Field::TITLE,
@@ -417,7 +418,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
         Field::TRAILER,
     };
   }
-  else if (type == "episodes")
+  else if (type == MEDIA::CONTENT::EPISODES)
   {
     fields = {
         Field::TITLE,       Field::TVSHOW_TITLE, Field::ORIGINAL_TITLE, Field::PLOT,
@@ -431,7 +432,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     };
     isVideo = true;
   }
-  else if (type == "movies")
+  else if (type == MEDIA::CONTENT::MOVIES)
   {
     fields = {
         Field::TITLE,
@@ -466,7 +467,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     };
     isVideo = true;
   }
-  else if (type == "musicvideos")
+  else if (type == MEDIA::CONTENT::MUSICVIDEOS)
   {
     fields = {
         Field::TITLE,       Field::GENRE,      Field::ALBUM,     Field::YEAR,        Field::ARTIST,
@@ -503,7 +504,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
 std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
 {
   std::vector<SortBy> orders;
-  if (type == "mixed")
+  if (type == MEDIA::CONTENT::MIXED)
   {
     orders = {
         SortBy::NONE,  SortBy::GENRE, SortBy::ALBUM,     SortBy::ARTIST,
@@ -511,7 +512,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
         SortBy::FILE,  SortBy::PATH,  SortBy::PLAYCOUNT, SortBy::LAST_PLAYED,
     };
   }
-  else if (type == "songs")
+  else if (type == MEDIA::CONTENT::SONGS)
   {
     orders = {
         SortBy::NONE, SortBy::GENRE, SortBy::ALBUM, SortBy::ARTIST, SortBy::TITLE, SortBy::YEAR,
@@ -532,7 +533,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
                                     SortBy::BPM,
                                 });
   }
-  else if (type == "albums")
+  else if (type == MEDIA::CONTENT::ALBUMS)
   {
     orders = {
         SortBy::NONE,   SortBy::GENRE, SortBy::ALBUM, SortBy::TOTAL_DISCS,
@@ -551,11 +552,11 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
                                     SortBy::DATE_ADDED,
                                 });
   }
-  else if (type == "artists")
+  else if (type == MEDIA::CONTENT::ARTISTS)
   {
     orders = {SortBy::NONE, SortBy::ARTIST};
   }
-  else if (type == "tvshows")
+  else if (type == MEDIA::CONTENT::TVSHOWS)
   {
     orders = {
         SortBy::NONE,
@@ -576,7 +577,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
         SortBy::LAST_PLAYED,
     };
   }
-  else if (type == "episodes")
+  else if (type == MEDIA::CONTENT::EPISODES)
   {
     orders = {
         SortBy::NONE,           SortBy::TITLE,       SortBy::ORIGINAL_TITLE, SortBy::TVSHOW_TITLE,
@@ -587,7 +588,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
         SortBy::STUDIO,         SortBy::MPAA,        SortBy::DATE_ADDED,
     };
   }
-  else if (type == "movies")
+  else if (type == MEDIA::CONTENT::MOVIES)
   {
     orders = {
         SortBy::NONE,        SortBy::SORT_TITLE,  SortBy::ORIGINAL_TITLE, SortBy::VOTES,
@@ -598,7 +599,7 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
         SortBy::PATH,        SortBy::DATE_ADDED,
     };
   }
-  else if (type == "musicvideos")
+  else if (type == MEDIA::CONTENT::MUSICVIDEOS)
   {
     orders = {
         SortBy::NONE,   SortBy::TITLE,  SortBy::GENRE,       SortBy::ALBUM,     SortBy::YEAR,
@@ -614,14 +615,14 @@ std::vector<SortBy> CSmartPlaylistRule::GetOrders(const std::string& type)
 std::vector<Field> CSmartPlaylistRule::GetGroups(const std::string &type)
 {
   std::vector<Field> groups;
-  if (type == "artists")
+  if (type == MEDIA::CONTENT::ARTISTS)
   {
     groups = {
         Field::UNKNOWN,
         Field::GENRE,
     };
   }
-  else if (type == "albums")
+  else if (type == MEDIA::CONTENT::ALBUMS)
   {
     groups = {
         Field::UNKNOWN,
@@ -631,21 +632,21 @@ std::vector<Field> CSmartPlaylistRule::GetGroups(const std::string &type)
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
       groups.push_back(Field::ORIG_YEAR);
   }
-  if (type == "movies")
+  if (type == MEDIA::CONTENT::MOVIES)
   {
     groups = {
         Field::UNKNOWN,  Field::NONE,   Field::SET,    Field::GENRE,   Field::YEAR, Field::ACTOR,
         Field::DIRECTOR, Field::WRITER, Field::STUDIO, Field::COUNTRY, Field::TAG,
     };
   }
-  else if (type == "tvshows")
+  else if (type == MEDIA::CONTENT::TVSHOWS)
   {
     groups = {
         Field::UNKNOWN,  Field::GENRE,  Field::YEAR, Field::ACTOR,
         Field::DIRECTOR, Field::STUDIO, Field::TAG,
     };
   }
-  else if (type == "musicvideos")
+  else if (type == MEDIA::CONTENT::MUSICVIDEOS)
   {
     groups = {
         Field::UNKNOWN, Field::ARTIST,   Field::ALBUM,  Field::GENRE,
@@ -715,7 +716,7 @@ std::string CSmartPlaylistRule::GetVideoResolutionQuery(const std::string &param
 
 std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const std::string &strType) const
 {
-  if (strType == "movies")
+  if (strType == MEDIA::CONTENT::MOVIES)
   {
     if (m_field == static_cast<int>(Field::IN_PROGRESS))
       return "movie_view.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
@@ -725,12 +726,12 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
              m_field == static_cast<int>(Field::HAS_VIDEO_EXTRAS))
       return negate + GetField(m_field, strType);
   }
-  else if (strType == "episodes")
+  else if (strType == MEDIA::CONTENT::EPISODES)
   {
     if (m_field == static_cast<int>(Field::IN_PROGRESS))
       return "episode_view.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
   }
-  else if (strType == "tvshows")
+  else if (strType == MEDIA::CONTENT::TVSHOWS)
   {
     if (m_field == static_cast<int>(Field::IN_PROGRESS))
       return negate +
@@ -746,7 +747,7 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
     else if (m_field == static_cast<int>(Field::TRAILER))
       return negate + GetField(m_field, strType) + "!= ''";
   }
-  if (strType == "albums")
+  if (strType == MEDIA::CONTENT::ALBUMS)
   {
     if (m_field == static_cast<int>(Field::COMPILATION))
       return negate + GetField(m_field, strType);
@@ -759,7 +760,8 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
 CDatabaseQueryRule::SearchOperator CSmartPlaylistRule::GetOperator(const std::string& strType) const
 {
   SearchOperator op = CDatabaseQueryRule::GetOperator(strType);
-  if ((strType == "tvshows" || strType == "episodes") && m_field == static_cast<int>(Field::YEAR))
+  if ((strType == MEDIA::CONTENT::TVSHOWS || strType == MEDIA::CONTENT::EPISODES) &&
+      m_field == static_cast<int>(Field::YEAR))
   { // special case for premiered which is a date rather than a year
     //! @todo SMARTPLAYLISTS do we really need this, or should we just make this field the premiered date and request a date?
     if (op == OPERATOR_EQUALS)
@@ -843,7 +845,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
 
   std::string query;
   std::string table;
-  if (strType == "songs")
+  if (strType == MEDIA::CONTENT::SONGS)
   {
     table = "songview";
 
@@ -873,7 +875,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = FormatYearQuery(field, param, parameter);
     }
   }
-  else if (strType == "albums")
+  else if (strType == MEDIA::CONTENT::ALBUMS)
   {
     table = "albumview";
 
@@ -921,7 +923,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = FormatYearQuery(field, param, parameter);
     }
   }
-  else if (strType == "artists")
+  else if (strType == MEDIA::CONTENT::ARTISTS)
   {
     table = "artistview";
 
@@ -975,7 +977,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
                parameter + "))";
     }
   }
-  else if (strType == "movies")
+  else if (strType == MEDIA::CONTENT::MOVIES)
   {
     table = "movie_view";
 
@@ -1004,7 +1006,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + FormatLinkQuery("tag", "tag", MediaTypeMovie,
                                        GetField(static_cast<int>(Field::ID), strType), parameter);
   }
-  else if (strType == "musicvideos")
+  else if (strType == MEDIA::CONTENT::MUSICVIDEOS)
   {
     table = "musicvideo_view";
 
@@ -1028,7 +1030,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + FormatLinkQuery("tag", "tag", MediaTypeMusicVideo,
                                        GetField(static_cast<int>(Field::ID), strType), parameter);
   }
-  else if (strType == "tvshows")
+  else if (strType == MEDIA::CONTENT::TVSHOWS)
   {
     table = "tvshow_view";
 
@@ -1058,7 +1060,7 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
       query = negate + FormatLinkQuery("tag", "tag", MediaTypeTvShow,
                                        GetField(static_cast<int>(Field::ID), strType), parameter);
   }
-  else if (strType == "episodes")
+  else if (strType == MEDIA::CONTENT::EPISODES)
   {
     table = "episode_view";
 
@@ -1107,8 +1109,8 @@ std::string CSmartPlaylistRule::FormatWhereClause(const std::string &negate, con
     query = negate + " EXISTS (SELECT 1 FROM streamdetails WHERE streamdetails.idFile = " + table +
             ".idFile AND strHdrDetail " + parameter + ")";
 
-  if ((m_field == static_cast<int>(Field::PLAYCOUNT) && strType != "songs" && strType != "albums" &&
-       strType != "tvshows") ||
+  if ((m_field == static_cast<int>(Field::PLAYCOUNT) && strType != MEDIA::CONTENT::SONGS &&
+       strType != MEDIA::CONTENT::ALBUMS && strType != MEDIA::CONTENT::TVSHOWS) ||
       m_field == static_cast<int>(Field::USER_RATING))
     query = FormatNullableNumber(GetField(m_field, strType), m_operator, param, parameter);
 
@@ -1168,7 +1170,10 @@ std::string CSmartPlaylistRuleCombination::GetWhereClause(
         {
           std::string playlistQuery;
           // only playlists of same type will be part of the query
-          if (playlist.GetType() == strType || (playlist.GetType() == "mixed" && (strType == "songs" || strType == "musicvideos")) || playlist.GetType().empty())
+          if (playlist.GetType() == strType ||
+              (playlist.GetType() == MEDIA::CONTENT::MIXED &&
+               (strType == MEDIA::CONTENT::SONGS || strType == MEDIA::CONTENT::MUSICVIDEOS)) ||
+              playlist.GetType().empty())
           {
             playlist.SetType(strType);
             playlistQuery = playlist.GetWhereClause(db, referencedPlaylists);
@@ -1266,9 +1271,9 @@ const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
     m_playlistType = type;
   // backward compatibility:
   if (m_playlistType == "music")
-    m_playlistType = "songs";
+    m_playlistType = MEDIA::CONTENT::SONGS;
   if (m_playlistType == "video")
-    m_playlistType = "musicvideos";
+    m_playlistType = MEDIA::CONTENT::MUSICVIDEOS;
 
   // load the playlist name
   XMLUtils::GetString(root, "name", m_playlistName);
@@ -1350,9 +1355,9 @@ bool CSmartPlaylist::Load(const CVariant &obj)
 
   // backward compatibility
   if (m_playlistType == "music")
-    m_playlistType = "songs";
+    m_playlistType = MEDIA::CONTENT::SONGS;
   if (m_playlistType == "video")
-    m_playlistType = "musicvideos";
+    m_playlistType = MEDIA::CONTENT::MUSICVIDEOS;
 
   // load the playlist name
   if (obj.isMember("name") && obj["name"].isString())
@@ -1591,7 +1596,7 @@ void CSmartPlaylist::Reset()
   m_orderField = SortBy::NONE;
   m_orderDirection = SortOrder::NONE;
   m_orderAttributes = SortAttributeNone;
-  m_playlistType = "songs"; // sane default
+  m_playlistType = MEDIA::CONTENT::SONGS; // sane default
   m_group.clear();
   m_groupMixed = false;
   m_watchedMode.reset();
@@ -1619,14 +1624,15 @@ bool CSmartPlaylist::IsMusicType() const
 
 bool CSmartPlaylist::IsVideoType(const std::string &type)
 {
-  return type == "movies" || type == "tvshows" || type == "episodes" ||
-         type == "musicvideos" || type == "mixed";
+  return type == MEDIA::CONTENT::MOVIES || type == MEDIA::CONTENT::TVSHOWS ||
+         type == MEDIA::CONTENT::EPISODES || type == MEDIA::CONTENT::MUSICVIDEOS ||
+         type == MEDIA::CONTENT::MIXED;
 }
 
 bool CSmartPlaylist::IsMusicType(const std::string &type)
 {
-  return type == "artists" || type == "albums" ||
-         type == "songs" || type == "mixed";
+  return type == MEDIA::CONTENT::ARTISTS || type == MEDIA::CONTENT::ALBUMS ||
+         type == MEDIA::CONTENT::SONGS || type == MEDIA::CONTENT::MIXED;
 }
 
 std::string CSmartPlaylist::GetWhereClause(
@@ -1642,8 +1648,8 @@ void CSmartPlaylist::GetVirtualFolders(std::vector<std::string> &virtualFolders)
 
 std::string CSmartPlaylist::GetSaveLocation() const
 {
-  if (m_playlistType == "mixed")
-    return "mixed";
+  if (m_playlistType == MEDIA::CONTENT::MIXED)
+    return MEDIA::CONTENT::MIXED;
   if (IsMusicType())
     return "music";
   // all others are video
@@ -1676,12 +1682,12 @@ bool CSmartPlaylist::CheckTypeCompatibility(const std::string &typeLeft, const s
   if (typeLeft == typeRight)
     return true;
 
-  if (typeLeft == "mixed" &&
-     (typeRight == "songs" || typeRight == "musicvideos"))
+  if (typeLeft == MEDIA::CONTENT::MIXED &&
+     (typeRight == MEDIA::CONTENT::SONGS || typeRight == MEDIA::CONTENT::MUSICVIDEOS))
     return true;
 
-  if (typeRight == "mixed" &&
-     (typeLeft == "songs" || typeLeft == "musicvideos"))
+  if (typeRight == MEDIA::CONTENT::MIXED &&
+     (typeLeft == MEDIA::CONTENT::SONGS || typeLeft == MEDIA::CONTENT::MUSICVIDEOS))
     return true;
 
   return false;

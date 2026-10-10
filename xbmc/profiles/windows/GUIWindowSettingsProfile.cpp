@@ -26,6 +26,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -214,7 +215,7 @@ void CGUIWindowSettingsProfile::LoadList()
     const CProfile *profile = profileManager->GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetLabel2(profile->getDate());
-    item->SetArt("thumb", profile->getThumb());
+    item->SetArt(KODI::ART::TYPE::THUMB, profile->getThumb());
     item->SetOverlayImage(profile->getLockMode() == LockMode::EVERYONE
                               ? CGUIListItem::ICON_OVERLAY_NONE
                               : CGUIListItem::ICON_OVERLAY_LOCKED);
@@ -267,7 +268,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   CFileItemPtr item(new CFileItem());
   item->SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37014)); // Last used profile
-  item->SetArt("icon", "DefaultUser.png");
+  item->SetArt(KODI::ART::TYPE::ICON, "DefaultUser.png");
   items.Add(item);
 
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); i++)
@@ -280,7 +281,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
     std::string thumb = profile->getThumb();
     if (thumb.empty())
       thumb = "DefaultUser.png";
-    item->SetArt("icon", thumb);
+    item->SetArt(KODI::ART::TYPE::ICON, thumb);
     items.Add(item);
   }
 

@@ -112,6 +112,17 @@ public:
    */
   std::vector<std::string> GetUserFontsFamilyNames();
 
+  /*!
+   * \brief The aspect a font that stretches with the interface is rasterised at
+   * \param aspect The font's own aspect
+   * \param sourceRes The skin resolution the font is declared in
+   * \param scaleX, scaleY The skin to screen scaling, as GetGUIScaling() gives it
+   */
+  static float StretchedFontAspect(float aspect,
+                                   const RESOLUTION_INFO& sourceRes,
+                                   float scaleX,
+                                   float scaleY);
+
 protected:
   void ReloadTTFFonts();
   static void RescaleFontSizeAndAspect(CGraphicContext& context,

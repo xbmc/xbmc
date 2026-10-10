@@ -30,6 +30,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
@@ -152,7 +153,7 @@ bool CGUIWindowPVRRecordingsBase::OnAction(const CAction& action)
     if (pItem->HasPVRRecordingInfoTag())
       bUnWatched = pItem->GetPVRRecordingInfoTag()->GetPlayCount() == 0;
     else if (pItem->IsFolder())
-      bUnWatched = pItem->GetProperty("unwatchedepisodes").asInteger() > 0;
+      bUnWatched = pItem->GetProperty(ITEM::PROPERTY::UNWATCHED_EPISODES).asInteger() > 0;
     else
       return false;
 
@@ -168,7 +169,7 @@ bool CGUIWindowPVRRecordingsBase::OnPopupMenu(int iItem)
   if (iItem >= 0 && iItem < m_vecItems->Size())
   {
     const auto item = m_vecItems->Get(iItem);
-    item->SetProperty("CheckAutoPlayNextItem", true);
+    item->SetProperty(ITEM::PROPERTY::CHECK_AUTOPLAY_NEXT_ITEM, true);
   }
 
   return CGUIWindowPVRBase::OnPopupMenu(iItem);

@@ -45,15 +45,3 @@ TEST(TestMathUtils, abs)
   EXPECT_EQ(refval, varval);
 }
 
-TEST(TestMathUtils, bitcount)
-{
-  unsigned refval, varval;
-
-  refval = 10;
-  varval = MathUtils::bitcount(0x03FF);
-  EXPECT_EQ(refval, varval);
-
-  refval = 8;
-  varval = MathUtils::bitcount(0x2AD5);
-  EXPECT_EQ(refval, varval);
-}

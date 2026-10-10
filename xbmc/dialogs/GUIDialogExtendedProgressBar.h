@@ -10,6 +10,7 @@
 
 #include "guilib/GUIDialog.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -56,5 +57,5 @@ protected:
   CCriticalSection                           m_critSection;
   unsigned int                               m_iCurrentItem;
   unsigned int                               m_iLastSwitchTime;
-  std::vector<CGUIDialogProgressBarHandle *> m_handles;
+  std::vector<std::unique_ptr<CGUIDialogProgressBarHandle>> m_handles;
 };

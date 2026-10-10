@@ -31,6 +31,7 @@
 #include "settings/VideoVersionsSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -44,6 +45,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+using KODI::MEDIA::MediaSection;
 
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
 static constexpr unsigned int CONTROL_BUTTON_RENAME_VERSION = 24;
@@ -464,7 +467,7 @@ bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileI
 
   // Select the playlist using the simple menu
   const std::string oldPath{item->GetDynPath()};
-  item->SetProperty("force_playlist_selection", true);
+  item->SetProperty(KODI::ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION, true);
   const int idMovie{m_database.GetMovieId(oldPath)};
 
   CFileItemList items;
@@ -920,7 +923,8 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
 
   // prompt to choose a video file
-  std::vector<CMediaSource> sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
+  std::vector<CMediaSource> sources{
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES)};
 
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   CServiceBroker::GetMediaManager().GetNetworkLocations(sources);

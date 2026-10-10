@@ -17,6 +17,7 @@
 #include "pictures/PictureInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -258,7 +259,7 @@ namespace XBMCAddon
       else if (lowerKey == "specialsort")
         setSpecialSortRaw(value);
       else if (lowerKey == "fanart_image")
-        item->SetArt("fanart", value);
+        item->SetArt(KODI::ART::TYPE::FANART, value);
       else
         addPropertyRaw(lowerKey, value);
     }
@@ -299,7 +300,7 @@ namespace XBMCAddon
         value = StringUtils::Format("{:f}", GetVideoInfoTag()->GetResumePoint().timeInSeconds);
       }
       else if (lowerKey == "fanart_image")
-        value = item->GetArt("fanart");
+        value = item->GetArt(KODI::ART::TYPE::FANART);
       else
         value = item->GetProperty(lowerKey).asString();
 

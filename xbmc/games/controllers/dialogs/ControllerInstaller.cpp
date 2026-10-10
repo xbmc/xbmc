@@ -23,6 +23,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -67,7 +68,7 @@ void CControllerInstaller::Process()
   for (const auto& addon : installableAddons)
   {
     CFileItemPtr item(new CFileItem(addon->Name()));
-    item->SetArt("icon", addon->Icon());
+    item->SetArt(ART::TYPE::ICON, addon->Icon());
     items.Add(std::move(item));
   }
 

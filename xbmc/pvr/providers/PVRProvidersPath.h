@@ -21,6 +21,7 @@ public:
   static const std::string PATH_TV_PROVIDERS;
   static const std::string PATH_RADIO_PROVIDERS;
   static const std::string CHANNELS;
+  static const std::string GROUPS;
   static const std::string RECORDINGS;
 
   enum class Kind
@@ -41,6 +42,7 @@ public:
   bool IsProvidersRoot() const { return m_isRoot; }
   bool IsProvider() const { return m_isProvider; }
   bool IsChannels() const { return m_isChannels; }
+  bool IsGroups() const { return m_isGroups; }
   bool IsRecordings() const { return m_isRecordings; }
   bool IsRadio() const { return m_kind == Kind::RADIO; }
   Kind GetKind() const { return m_kind; }
@@ -55,6 +57,7 @@ private:
   bool m_isRoot{false};
   bool m_isProvider{false};
   bool m_isChannels{false};
+  bool m_isGroups{false};
   bool m_isRecordings{false};
   Kind m_kind{Kind::UNKNOWN};
   int m_providerUid{PVR_PROVIDER_INVALID_UID};

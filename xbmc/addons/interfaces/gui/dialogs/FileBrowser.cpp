@@ -18,6 +18,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+using KODI::MEDIA::MediaSection;
+
 namespace ADDON
 {
 
@@ -228,8 +230,8 @@ bool Interface_GUIDialogFileBrowser::show_and_get_source(KODI_HANDLE kodiBase,
   std::vector<CMediaSource> vecShares;
   if (additionalShare)
     GetVECShares(vecShares, additionalShare, strPath);
-  const bool bRet{
-      CGUIDialogFileBrowser::ShowAndGetSource(strPath, allowNetworkShares, &vecShares, strType)};
+  const bool bRet{CGUIDialogFileBrowser::ShowAndGetSource(
+      strPath, allowNetworkShares, &vecShares, KODI::MEDIA::MediaSectionFromName(strType))};
   if (bRet)
     *path_out = strdup(strPath.c_str());
   return bRet;
@@ -349,45 +351,16 @@ void Interface_GUIDialogFileBrowser::GetVECShares(std::vector<CMediaSource>& vec
   found = strShares.find("removable");
   if (found != std::string::npos)
     CServiceBroker::GetMediaManager().GetRemovableDrives(vecShares);
-  found = strShares.find("programs");
-  if (found != std::string::npos)
+  for (const MediaSection section :
+       {MediaSection::PROGRAMS, MediaSection::FILES, MediaSection::MUSIC, MediaSection::VIDEO,
+        MediaSection::PICTURES})
   {
-    const std::vector<CMediaSource>* sources{
-        CMediaSourceSettings::GetInstance().GetSources("programs")};
-    if (sources != nullptr)
-      vecShares.insert(vecShares.end(), sources->begin(), sources->end());
-  }
-  found = strShares.find("files");
-  if (found != std::string::npos)
-  {
-    const std::vector<CMediaSource>* sources{
-        CMediaSourceSettings::GetInstance().GetSources("files")};
-    if (sources)
-      vecShares.insert(vecShares.end(), sources->begin(), sources->end());
-  }
-  found = strShares.find("music");
-  if (found != std::string::npos)
-  {
-    const std::vector<CMediaSource>* sources{
-        CMediaSourceSettings::GetInstance().GetSources("music")};
-    if (sources)
-      vecShares.insert(vecShares.end(), sources->begin(), sources->end());
-  }
-  found = strShares.find("video");
-  if (found != std::string::npos)
-  {
-    const std::vector<CMediaSource>* sources{
-        CMediaSourceSettings::GetInstance().GetSources("video")};
-    if (sources)
-      vecShares.insert(vecShares.end(), sources->begin(), sources->end());
-  }
-  found = strShares.find("pictures");
-  if (found != std::string::npos)
-  {
-    const std::vector<CMediaSource>* sources{
-        CMediaSourceSettings::GetInstance().GetSources("pictures")};
-    if (sources)
-      vecShares.insert(vecShares.end(), sources->begin(), sources->end());
+    if (strShares.find(KODI::MEDIA::NameOf(section)) == std::string::npos)
+      continue;
+
+    const std::vector<CMediaSource>& sources{
+        CMediaSourceSettings::GetInstance().GetSources(section)};
+    vecShares.insert(vecShares.end(), sources.begin(), sources.end());
   }
 
   if (vecShares.empty())

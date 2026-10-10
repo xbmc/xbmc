@@ -9,7 +9,6 @@
 #include "PVRComponentRegistration.h"
 
 #include "pvr/guilib/PVRGUIActionsChannels.h"
-#include "pvr/guilib/PVRGUIActionsClients.h"
 #include "pvr/guilib/PVRGUIActionsDatabase.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
@@ -26,7 +25,6 @@ using namespace PVR;
 CPVRComponentRegistration::CPVRComponentRegistration()
 {
   RegisterComponent(std::make_shared<CPVRGUIActionsChannels>());
-  RegisterComponent(std::make_shared<CPVRGUIActionsClients>());
   RegisterComponent(std::make_shared<CPVRGUIActionsDatabase>());
   RegisterComponent(std::make_shared<CPVRGUIActionsEPG>());
   RegisterComponent(std::make_shared<CPVRGUIActionsParentalControl>());
@@ -47,6 +45,5 @@ CPVRComponentRegistration::~CPVRComponentRegistration()
   DeregisterComponent(typeid(CPVRGUIActionsParentalControl));
   DeregisterComponent(typeid(CPVRGUIActionsEPG));
   DeregisterComponent(typeid(CPVRGUIActionsDatabase));
-  DeregisterComponent(typeid(CPVRGUIActionsClients));
   DeregisterComponent(typeid(CPVRGUIActionsChannels));
 }

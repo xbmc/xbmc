@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "QueryParams.h"
+#include "utils/ItemProperties.h"
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -31,8 +32,8 @@ bool CDirectoryNodeTitleMusicVideos::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  int details = items.HasProperty("set_videodb_details")
-                    ? items.GetProperty("set_videodb_details").asInteger32()
+  int details = items.HasProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS)
+                    ? items.GetProperty(KODI::ITEM::PROPERTY::SET_VIDEODB_DETAILS).asInteger32()
                     : VideoDbDetailsNone;
   bool bSuccess = videodatabase.GetMusicVideosNav(
       BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(),

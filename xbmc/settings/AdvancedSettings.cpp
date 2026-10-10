@@ -71,6 +71,26 @@ void ParseDatabaseSettings(const TiXmlElement* element, DatabaseSettings& settin
 }
 } // unnamed namespace
 
+const std::vector<std::string>& CAdvancedSettings::GetExcludeFromListingRegExps(
+    KODI::MEDIA::MediaSection section) const
+{
+  static const std::vector<std::string> none;
+  switch (section)
+  {
+    case KODI::MEDIA::MediaSection::VIDEO:
+      return m_videoExcludeFromListingRegExps;
+    case KODI::MEDIA::MediaSection::MUSIC:
+      return m_audioExcludeFromListingRegExps;
+    case KODI::MEDIA::MediaSection::PICTURES:
+      return m_pictureExcludeFromListingRegExps;
+    case KODI::MEDIA::MediaSection::FILES:
+    case KODI::MEDIA::MediaSection::PROGRAMS:
+    case KODI::MEDIA::MediaSection::GAMES:
+      break;
+  }
+  return none;
+}
+
 void CAdvancedSettings::OnSettingsLoaded()
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();

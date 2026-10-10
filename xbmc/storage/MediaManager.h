@@ -11,6 +11,7 @@
 #include "IStorageProvider.h"
 #include "MediaSource.h" // for std::vector<CMediaSource>
 #include "jobs/IJobCallback.h"
+#include "media/MediaSection.h"
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
@@ -175,11 +176,12 @@ private:
    */
   void LoadAddonSources() const;
 
-  /*! \brief Get the addons root source for the given content type
-   \param type the type of addon content desired
-   \return the given CMediaSource for the addon root directory
+  /*! \brief Get the addons root source for the given section
+   \param section the section whose add-ons are wanted
+   \return the given CMediaSource for the addon root directory, empty for a section with no
+   add-ons of its own
    */
-  CMediaSource GetRootAddonTypeSource(const std::string& type) const;
+  CMediaSource GetRootAddonTypeSource(KODI::MEDIA::MediaSection section) const;
 
   /*! \brief Generate the addons source for the given content type
    \param type the type of addon content desired

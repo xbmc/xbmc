@@ -11,6 +11,10 @@ FAILED_BUILD_FILENAME=".last_failed_revision"
 TARBALLS=${TARBALLS:-"/opt/xbmc-tarballs"}
 RENDER_SYSTEM=${RENDER_SYSTEM:-"Default"}
 BUILD_HOST=${BUILD_HOST:-"Default"}
+BUILD_CACHE_ENTRIES=${BUILD_CACHE_ENTRIES:-2}
+case "$BUILD_CACHE_ENTRIES" in *[!0-9]*) BUILD_CACHE_ENTRIES=2 ;; esac
+BUILD_CACHE_NAME=".build-cache"
+BUILD_CACHE_DIR=$WORKSPACE/$BUILD_CACHE_NAME
 
 BINARY_ADDONS_ROOT=tools/depends/target
 BINARY_ADDONS="binary-addons"
@@ -182,6 +186,95 @@ function tagFailedBuild ()
   # tag last failed build with revisions of the given dir
   # needs to match the checks in function getBuildHash
   echo "$(getBuildHash $pathToTag)" > $pathToTag/$FAILED_BUILD_FILENAME
+}
+
+#param1 cached path
+#param2 build hash of the cached path
+function getBuildCacheEntry ()
+{
+  echo "$BUILD_CACHE_DIR/$(echo "$1 $2" | git hash-object --stdin)"
+}
+
+#move the untracked files of a successful build into the build cache
+#param1 path to be cached
+function cacheBuild ()
+{
+  local checkPath
+  local entry
+  local file
+  checkPath="$1"
+  if [ "$BUILD_CACHE_ENTRIES" -le 0 ]
+  then
+    rm -rf $BUILD_CACHE_DIR
+    return
+  fi
+  if [ ! -e $checkPath/$PATH_CHANGE_REV_FILENAME ]
+  then
+    return
+  fi
+
+  entry=$(getBuildCacheEntry $checkPath "$(cat $checkPath/$PATH_CHANGE_REV_FILENAME)")
+  rm -rf $entry
+  mkdir -p $entry/tree
+  (cd $checkPath && git ls-files --others --directory -z) > $entry/files
+  while IFS= read -r -d '' file
+  do
+    file=${file%/}
+    mkdir -p "$entry/tree/$(dirname "$file")"
+    mv "$checkPath/$file" "$entry/tree/$file"
+  done < $entry/files
+
+  #the current revision's entry is about to be restored, so it does not count
+  entry=$(getBuildCacheEntry $checkPath "$(getBuildHash $checkPath)")
+  ls -1td $BUILD_CACHE_DIR/*/ | grep -vF "$entry/" | tail -n +$((BUILD_CACHE_ENTRIES + 1)) | xargs rm -rf
+}
+
+#move a cached build of the current revision back into place
+#param1 path to be restored
+#returns 1 if there is no cached build to restore
+function restoreCachedBuild ()
+{
+  local checkPath
+  local entry
+  local file
+  checkPath="$1"
+  entry=$(getBuildCacheEntry $checkPath "$(getBuildHash $checkPath)")
+  if [ ! -e $entry/files ]
+  then
+    return 1
+  fi
+
+  while IFS= read -r -d '' file
+  do
+    file=${file%/}
+    if ! mv "$entry/tree/$file" "$checkPath/$file"
+    then
+      rm -rf $entry
+      git clean -xffd $checkPath
+      return 1
+    fi
+  done < $entry/files
+  rm -rf $entry
+}
+
+#clean the workspace, keeping the depends build if tools/depends has not changed
+function prepareDepends ()
+{
+  #clean without depends for skipping depends build if possible
+  #also skip binary addons (pvr, audioencoder) as long as they are deployed in tree
+  cd $WORKSPACE;git clean -xfd -e "cmake/.last_success_revision" -e "tools/depends" -e "/$BUILD_CACHE_NAME" ${DEPLOYED_BINARY_ADDONS}
+
+  # if depends path has changed - cleanout everything and restore a cached build of this revision or do a full rebuild
+  if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+  then
+    cacheBuild $WORKSPACE/tools/depends
+    #clean up the rest too
+    cd $WORKSPACE;git clean -xffd -e "/$BUILD_CACHE_NAME"
+    if ! restoreCachedBuild $WORKSPACE/tools/depends
+    then
+      cd $WORKSPACE/tools/depends/;./bootstrap
+    fi
+  fi
 }
 
 function getBuildRevDateStr ()

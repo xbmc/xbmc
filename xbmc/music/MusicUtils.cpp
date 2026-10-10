@@ -43,8 +43,10 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
+#include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
 #include "utils/FileUtils.h"
+#include "utils/ItemProperties.h"
 #include "utils/PlaceholderPaths.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -59,6 +61,7 @@ using namespace KODI::VIDEO;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace std::chrono_literals;
+using KODI::MEDIA::MediaSection;
 
 namespace MUSIC_UTILS
 {
@@ -300,13 +303,13 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
   {
     CFileItemPtr artitem(new CFileItem(type, false));
     // Localise the names of common types of art
-    if (type == "banner")
+    if (type == ART::TYPE::BANNER)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20020));
-    else if (type == "fanart")
+    else if (type == ART::TYPE::FANART)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20445));
-    else if (type == "poster")
+    else if (type == ART::TYPE::POSTER)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20021));
-    else if (type == "thumb")
+    else if (type == ART::TYPE::THUMB)
       artitem->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21371));
     else
       artitem->SetLabel(type);
@@ -314,7 +317,7 @@ bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist)
     artitem->SetProperty("arttype", type);
     // Set current art as art item thumb
     if (musicitem.HasArt(type))
-      artitem->SetArt("thumb", musicitem.GetArt(type));
+      artitem->SetArt(ART::TYPE::THUMB, musicitem.GetArt(type));
     artlist.Add(artitem);
   }
 
@@ -401,7 +404,7 @@ std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType)
   // Get default types of art that are to be automatically fetched during scanning
   if (mediaType == MediaTypeArtist)
   {
-    arttypes = {"thumb", "fanart"};
+    arttypes = {ART::TYPE::THUMB, ART::TYPE::FANART};
     for (auto& artType : CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
              CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST))
     {
@@ -411,7 +414,7 @@ std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType)
   }
   else if (mediaType == MediaTypeAlbum)
   {
-    arttypes = {"thumb"};
+    arttypes = {ART::TYPE::THUMB};
     for (auto& artType : CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
              CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST))
     {
@@ -543,7 +546,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // Check if we add a locked share
     if (item->IsShareOrDrive())
     {
-      if (!g_passwordManager.IsItemUnlocked(item.get(), "music"))
+      if (!g_passwordManager.IsItemUnlocked(item.get(), MediaSection::MUSIC))
         return;
     }
 
@@ -556,20 +559,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     {
       LABEL_MASKS labelMasks;
       state->GetSortMethodLabelMasks(labelMasks);
-
-      const CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
-      const CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder,
-                                            labelMasks.m_strLabel2Folder);
-      for (const auto& i : items)
-      {
-        if (i->IsLabelPreformatted())
-          continue;
-
-        if (i->IsFolder())
-          folderFormatter.FormatLabels(i.get());
-        else
-          fileFormatter.FormatLabels(i.get());
-      }
+      CLabelFormatter::FormatItemLabels(items, labelMasks);
 
       SortDescription sortDesc;
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV)
@@ -662,7 +652,7 @@ std::string GetMusicDbItemPath(const CFileItem& item)
 {
   std::string path = item.GetPath();
   if (!URIUtils::IsMusicDb(path))
-    path = item.GetProperty("original_listitem_url").asString();
+    path = item.GetProperty(ITEM::PROPERTY::ORIGINAL_LISTITEM_URL).asString();
 
   if (URIUtils::IsMusicDb(path))
     return path;
@@ -746,7 +736,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
     {
       // Add item and all its siblings to the playlist and play. Prefer musicdb path if available,
       // because it provides more information than just a plain file system path for example.
-      std::string parentPath = item->GetProperty("ParentPath").asString();
+      std::string parentPath = item->GetProperty(ITEM::PROPERTY::PARENT_PATH).asString();
       if (parentPath.empty())
       {
         std::string path = GetMusicDbItemPath(*item);
@@ -950,7 +940,7 @@ bool IsItemPlayable(const CFileItem& item)
   }
 
   if (item.IsPlugin() && MUSIC::IsAudio(item) && !IsEmptyMusicItem(item) &&
-      item.GetProperty("isplayable").asBoolean(false))
+      item.GetProperty(ITEM::PROPERTY::IS_PLAYABLE).asBoolean(false))
   {
     return true;
   }

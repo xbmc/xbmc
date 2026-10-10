@@ -50,7 +50,7 @@ std::string GetDateStringWithFormat(const CDateTime& date, const std::string& fo
 } // namespace
 
 using namespace KODI::LANGINFO;
-using namespace KODI::UTILS;
+using namespace KODI::LANGUAGE;
 using namespace KODI::LANGUAGE::I18N;
 
 static std::string shortDateFormats[] = {

@@ -401,6 +401,27 @@ TEST_F(TestVideoDatabase, AMovieIsFoundByItsDirectorsName)
   EXPECT_EQ(idMovie, items[0]->GetVideoInfoTag()->m_iDbId);
 }
 
+TEST_F(TestVideoDatabase, ATvShowDirectorFoundBySearchListsTheirShows)
+{
+  CVideoInfoTag directed;
+  directed.m_strTitle = "Directed";
+  directed.m_strPath = "/tv/directed/";
+  directed.SetDirector({"Jane Director"});
+  const int idShow{m_db.SetDetailsForTvShow({directed.m_strPath}, directed, KODI::ART::Artwork{},
+                                            KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(idShow, 0);
+  ASSERT_GT(AddTvShow("/tv/undirected/"), 0);
+
+  CFileItemList directors;
+  m_db.GetTvShowsDirectorsByName("Jane", directors);
+  ASSERT_EQ(1, directors.Size());
+
+  CFileItemList shows;
+  ASSERT_TRUE(m_db.GetTvShowsByWhere(directors[0]->GetPath(), CDatabase::Filter(), shows));
+  ASSERT_EQ(1, shows.Size());
+  EXPECT_EQ(idShow, shows[0]->GetVideoInfoTag()->m_iDbId);
+}
+
 TEST_F(TestVideoDatabase, GetPlayCountsListingInsideArchiveAcrossZipAndArchiveProtocols)
 {
   MarkPlayed(ArchivePath("zip", "/tv/season.zip", "e01.mkv"), 1);

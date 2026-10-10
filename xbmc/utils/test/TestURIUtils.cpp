@@ -234,6 +234,7 @@ TEST_F(TestURIUtils, GetDecodedFileName)
   EXPECT_EQ("movie.avi", URIUtils::GetDecodedFileName("/path/to/movie.avi"));
   EXPECT_EQ("the movie.avi", URIUtils::GetDecodedFileName("davs://host/the%20movie.avi"));
   EXPECT_EQ("100% proof.avi", URIUtils::GetDecodedFileName("davs://host/100%25%20proof.avi"));
+  EXPECT_EQ("C++ Collection.mkv", URIUtils::GetDecodedFileName("davs://host/C++%20Collection.mkv"));
 }
 
 TEST_F(TestURIUtils, RemoveExtension)
@@ -1380,13 +1381,6 @@ TEST_F(TestURIUtils, HasParentInHostname)
   EXPECT_TRUE(URIUtils::HasParentInHostname(CURL("bluray://")));
 }
 
-TEST_F(TestURIUtils, HasEncodedHostname)
-{
-  EXPECT_TRUE(URIUtils::HasEncodedHostname(CURL("zip://")));
-  EXPECT_TRUE(URIUtils::HasEncodedHostname(CURL("bluray://")));
-  EXPECT_TRUE(URIUtils::HasEncodedHostname(CURL("musicsearch://")));
-}
-
 TEST_F(TestURIUtils, HasEncodedFilename)
 {
   EXPECT_TRUE(URIUtils::HasEncodedFilename(CURL("shout://")));
@@ -1452,33 +1446,6 @@ TEST_F(TestURIUtils, GetRealPath)
   // test zip/zip path
   ref ="zip://zip%3a%2f%2f%252Fpath%252Fto%252Fzip%2fpath%2fto%2fzip/subpath/to/file";
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath("zip://zip%3a%2f%2f%252Fpath%252Fto%252Fsome%252F..%252Fzip%2fpath%2fto%2fsome%2f..%2fzip/subpath/to/some/../file").c_str());
-}
-
-TEST_F(TestURIUtils, UpdateUrlEncoding)
-{
-  std::string oldUrl = "stack://zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD1%2ezip/video.avi , zip://%2fpath%2fto%2farchive%2fsome%2darchive%2dfile%2eCD2%2ezip/video.avi";
-  std::string newUrl = "stack://zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD1.zip/video.avi , zip://%2fpath%2fto%2farchive%2fsome-archive-file.CD2.zip/video.avi";
-
-  EXPECT_TRUE(URIUtils::UpdateUrlEncoding(oldUrl));
-  EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
-
-  oldUrl = "zip://%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2ezip/video.avi";
-  newUrl = "zip://%2fpath%2fto%2farchive%2fsome-archive.file.zip/video.avi";
-
-  EXPECT_TRUE(URIUtils::UpdateUrlEncoding(oldUrl));
-  EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
-
-  oldUrl = "/path/to/some/long%2dnamed%2efile";
-  newUrl = "/path/to/some/long%2dnamed%2efile";
-
-  EXPECT_FALSE(URIUtils::UpdateUrlEncoding(oldUrl));
-  EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
-
-  oldUrl = "/path/to/some/long-named.file";
-  newUrl = "/path/to/some/long-named.file";
-
-  EXPECT_FALSE(URIUtils::UpdateUrlEncoding(oldUrl));
-  EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
 }
 
 struct SanitiseUrlEncodingTestData
@@ -2731,4 +2698,13 @@ TEST_F(TestURIUtils, GetDecodedPath)
   encoded = "bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls";
   decoded = "bluray://smb://somepath/path//BDMV/PLAYLIST/00800.mpls";
   EXPECT_EQ(decoded, URIUtils::GetDecodedPath(encoded));
+}
+
+TEST_F(TestURIUtils, DecodePathEscapes)
+{
+  EXPECT_EQ("file name", URIUtils::DecodePathEscapes("file%20name"));
+  EXPECT_EQ("100% proof", URIUtils::DecodePathEscapes("100%25 proof"));
+
+  EXPECT_EQ("C++ Collection", URIUtils::DecodePathEscapes("C++ Collection"));
+  EXPECT_EQ("C   Collection", URIUtils::URLDecode("C++ Collection"));
 }

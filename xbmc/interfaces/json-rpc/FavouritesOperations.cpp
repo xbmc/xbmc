@@ -13,6 +13,7 @@
 #include "favourites/FavouritesURL.h"
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
+#include "utils/ArtTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -49,7 +50,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
 
     object["title"] = item->GetLabel();
     if (fields.contains("thumbnail"))
-      object["thumbnail"] = item->GetArt("thumb");
+      object["thumbnail"] = item->GetArt(KODI::ART::TYPE::THUMB);
 
     if (function == CFavouritesURL::Action::ACTIVATE_WINDOW)
     {
@@ -152,7 +153,7 @@ JSONRPC_STATUS CFavouritesOperations::AddFavourite(const std::string &method, IT
 
   item.SetLabel(title);
   if (ParameterNotNull(parameterObject,"thumbnail"))
-    item.SetArt("thumb", parameterObject["thumbnail"].asString());
+    item.SetArt(KODI::ART::TYPE::THUMB, parameterObject["thumbnail"].asString());
 
   if (CServiceBroker::GetFavouritesService().AddOrRemove(item, contextWindow))
     return ACK;

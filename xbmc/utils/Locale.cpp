@@ -90,17 +90,6 @@ std::string CLocale::ToString() const
   return locale;
 }
 
-std::string CLocale::ToStringLC() const
-{
-  if (!m_valid)
-    return "";
-
-  std::string locale = ToString();
-  StringUtils::ToLower(locale);
-
-  return locale;
-}
-
 std::string CLocale::ToShortString() const
 {
   if (!m_valid)

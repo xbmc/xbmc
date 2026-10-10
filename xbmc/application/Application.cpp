@@ -549,6 +549,9 @@ bool CApplication::InitWindow(RESOLUTION res)
 
 bool CApplication::Initialize()
 {
+  // Must precede anything that can dispatch a JSON-RPC call
+  CJSONRPC::Initialize();
+
   m_pActiveAE->Start();
   // restore AE's previous volume state
 
@@ -743,10 +746,6 @@ bool CApplication::Initialize()
     // rendered while we load the main window or enter the master lock key
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SPLASH);
   }
-
-  // Must stay above the window activation below: that can raise a modal dialog, whose nested
-  // render loop reaches anything after it only once the dialog has been dismissed.
-  CJSONRPC::Initialize();
 
   CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
 
@@ -1353,7 +1352,8 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     // Open the door for external calls e.g python exactly here.
     // Window size can be between 2 and 10ms and depends on number of continuous requests
-    if (m_WaitingExternalCalls)
+    // Stop() has already released the guard; don't take it back on the way out
+    if (m_WaitingExternalCalls && !m_bStop)
     {
       CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
       m_frameMoveGuard.unlock();
@@ -2212,10 +2212,14 @@ void CApplication::Process()
 
   {
     // Allow processing of script threads to let them shut down properly.
+    // Stop() has already released the guard; don't take it back on the way out
+    const bool releaseGuard = !m_bStop;
     CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
-    m_frameMoveGuard.unlock();
+    if (releaseGuard)
+      m_frameMoveGuard.unlock();
     CScriptInvocationManager::GetInstance().Process();
-    m_frameMoveGuard.lock();
+    if (releaseGuard)
+      m_frameMoveGuard.lock();
   }
 
   // process messages, even if a movie is playing

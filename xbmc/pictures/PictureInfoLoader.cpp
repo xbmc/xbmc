@@ -15,6 +15,7 @@
 #include "network/NetworkFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "video/VideoFileItemClassify.h"
 
 using namespace KODI;
@@ -67,7 +68,7 @@ bool CPictureInfoLoader::LoadItemCached(CFileItem* pItem)
   if (mapItem && mapItem->HasPictureInfoTag() && mapItem->GetDateTime() == pItem->GetDateTime())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
-    pItem->SetArt("thumb", mapItem->GetArt("thumb"));
+    pItem->SetArt(ART::TYPE::THUMB, mapItem->GetArt(ART::TYPE::THUMB));
     return true;
   }
 

@@ -34,7 +34,6 @@ public:
   bool IsNoop() const { return m_isNoop; }
 
   void Clear();
-  const std::string& GetFilename() const { return m_strFile; }
   std::string GetSearchStringEncoding() const
     { return m_SearchStringEncoding; }
   const std::string Parse(const std::string& strTag,
@@ -72,7 +71,6 @@ private:
   const char* m_SearchStringEncoding;
   bool m_isNoop;
 
-  std::string m_strFile;
   ADDON::CScraper* m_scraper;
 };
 

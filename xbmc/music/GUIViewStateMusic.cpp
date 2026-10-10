@@ -21,9 +21,10 @@
 #include "playlists/PlayListFileItemClassify.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
+#include "utils/ContentNames.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/SortUtils.h"
 #include "utils/log.h"
@@ -47,9 +48,9 @@ bool CGUIViewStateWindowMusic::AutoPlayNextItem()
          !settings->GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT);
 }
 
-std::string CGUIViewStateWindowMusic::GetLockType()
+std::optional<KODI::MEDIA::MediaSection> CGUIViewStateWindowMusic::GetLockType()
 {
-  return "music";
+  return KODI::MEDIA::MediaSection::MUSIC;
 }
 
 std::string CGUIViewStateWindowMusic::GetExtensions()
@@ -426,7 +427,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
   const CViewState* viewState = CViewStateSettings::GetInstance().Get(VIEW_STATE::MUSIC_NAV_SONGS);
 
-  if (items.GetContent() == "songs" || items.GetContent() == "mixed")
+  if (items.GetContent() == MEDIA::CONTENT::SONGS || items.GetContent() == MEDIA::CONTENT::MIXED)
   {
     std::string strTrack = settings->GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
     AddSortMethod(SortBy::TRACK_NUMBER, 554,
@@ -470,7 +471,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     SetViewAsControl(
         CViewStateSettings::GetInstance().Get(VIEW_STATE::MUSIC_NAV_SONGS)->m_viewMode);
   }
-  else if (items.GetContent() == "albums")
+  else if (items.GetContent() == MEDIA::CONTENT::ALBUMS)
   {
     std::string strAlbum = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_strMusicLibraryAlbumFormat;
     if (strAlbum.empty())
@@ -688,19 +689,6 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV);
 }
 
-void CGUIViewStateWindowMusicNav::AddOnlineShares()
-{
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVirtualShares)
-    return;
-
-  std::vector<CMediaSource>* musicSources = CMediaSourceSettings::GetInstance().GetSources("music");
-
-  for (int i = 0; i < (int)musicSources->size(); ++i)
-  {
-    CMediaSource share = musicSources->at(i);
-  }
-}
-
 std::vector<CMediaSource>& CGUIViewStateWindowMusicNav::GetSources()
 {
   //  Setup shares we want to have
@@ -714,12 +702,10 @@ std::vector<CMediaSource>& CGUIViewStateWindowMusicNav::GetSources()
     CMediaSource share;
     share.strName = item->GetLabel();
     share.strPath = item->GetPath();
-    share.m_strThumbnailImage = item->GetArt("icon");
+    share.m_strThumbnailImage = item->GetArt(ART::TYPE::ICON);
     share.m_iDriveType = SourceType::LOCAL;
     m_sources.push_back(share);
   }
-
-  AddOnlineShares();
 
   return CGUIViewStateWindowMusic::GetSources();
 }

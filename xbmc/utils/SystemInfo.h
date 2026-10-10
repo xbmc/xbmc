@@ -146,7 +146,6 @@ public:
 
   bool HasInternet();
   bool IsAeroDisabled();
-  static bool IsWindowsVersion(WindowsVersion ver);
   static bool IsWindowsVersionAtLeast(WindowsVersion ver);
   static WindowsVersion GetWindowsVersion();
   static int GetKernelBitness(void);

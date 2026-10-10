@@ -14,6 +14,7 @@
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationComponents.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "filesystem/AddonsPaths.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -28,7 +29,6 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
-#include "pvr/guilib/PVRGUIActionsClients.h"
 #include "pvr/guilib/PVRGUIActionsDatabase.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
@@ -55,8 +55,8 @@ CPVRGUIActionListener::CPVRGUIActionListener()
        CSettings::SETTING_EPG_RESETEPG, CSettings::SETTING_PVRMANAGER_ADDONS,
        CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES, CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
        CSettings::SETTING_PVRMANAGER_GROUPMANAGER, CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
-       CSettings::SETTING_PVRMENU_SEARCHICONS, CSettings::SETTING_PVRCLIENT_MENUHOOK,
-       CSettings::SETTING_EPG_PAST_DAYSTODISPLAY, CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
+       CSettings::SETTING_PVRMENU_SEARCHICONS, CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
+       CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
        CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME});
 }
 
@@ -412,14 +412,10 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   {
     CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
   }
-  else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Clients>().ProcessSettingsMenuHooks();
-  }
   else if (settingId == CSettings::SETTING_PVRMANAGER_ADDONS)
   {
-    const std::vector<std::string> params{"addons://default_binary_addons_source/kodi.pvrclient",
-                                          "return"};
+    const std::vector<std::string> params{
+        std::string{KODI::ADDONS::DEFAULT_BINARY_ADDONS_SOURCE} + "kodi.pvrclient", "return"};
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_ADDON_BROWSER, params);
   }
   else if (settingId == CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME)

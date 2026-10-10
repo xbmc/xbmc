@@ -47,6 +47,7 @@ using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace KODI::MESSAGING;
 using namespace KODI::CDRIP;
+using KODI::MEDIA::MediaSection;
 
 CCDDARipper& CCDDARipper::GetInstance()
 {
@@ -310,8 +311,7 @@ void CCDDARipper::OnJobComplete(unsigned int jobID, bool success, CJob* job)
       std::string dir = URIUtils::GetDirectory(static_cast<CCDDARipJob*>(job)->GetOutput());
       bool unimportant;
       int source = CUtil::GetMatchingSource(
-          dir, *CMediaSourceSettings::GetInstance().CMediaSourceSettings::GetSources("music"),
-          unimportant);
+          dir, CMediaSourceSettings::GetInstance().GetSources(MediaSection::MUSIC), unimportant);
 
       CMusicDatabase database;
       database.Open();

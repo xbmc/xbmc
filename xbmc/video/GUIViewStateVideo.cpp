@@ -24,6 +24,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtTypes.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/SortUtils.h"
 #include "video/VideoFileItemClassify.h"
@@ -34,9 +35,9 @@ using namespace KODI;
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 
-std::string CGUIViewStateWindowVideo::GetLockType()
+std::optional<KODI::MEDIA::MediaSection> CGUIViewStateWindowVideo::GetLockType()
 {
-  return "video";
+  return KODI::MEDIA::MediaSection::VIDEO;
 }
 
 std::string CGUIViewStateWindowVideo::GetExtensions()
@@ -550,7 +551,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowVideoNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->GetPath();
-    share.m_strThumbnailImage = item->GetArt("icon");
+    share.m_strThumbnailImage = item->GetArt(ART::TYPE::ICON);
     share.m_iDriveType = SourceType::LOCAL;
     m_sources.push_back(share);
   }
