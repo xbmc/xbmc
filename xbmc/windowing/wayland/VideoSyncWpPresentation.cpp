@@ -31,6 +31,18 @@ bool CVideoSyncWpPresentation::Setup()
   m_stopEvent.Reset();
   m_fps = m_winSystem.GetSyncOutputRefreshRate();
 
+  if (m_fps <= 0.0f)
+  {
+    // The compositor has not (yet) sent a wp_presentation_feedback::sync_output event,
+    // so the real refresh rate is not known yet. Fall back to a sane default to avoid
+    // a division by zero further down the line (e.g. in CVideoReferenceClock).
+    CLog::Log(LOGWARNING,
+              "CVideoSyncWpPresentation::{} - sync output refresh rate not yet known, defaulting "
+              "to 60 Hz",
+              __FUNCTION__);
+    m_fps = 60.0f;
+  }
+
   return true;
 }
 
@@ -63,7 +75,11 @@ void CVideoSyncWpPresentation::HandlePresentation(timespec tv, std::uint32_t ref
             static_cast<std::uint64_t>(tv.tv_sec), static_cast<std::uint64_t>(tv.tv_nsec), refresh,
             1.0e9 / refresh, syncOutputID, syncOutputRefreshRate, msc, mscDiff);
 
-  if (m_fps != syncOutputRefreshRate || (m_syncOutputID != 0 && m_syncOutputID != syncOutputID))
+  // A syncOutputRefreshRate of 0 means the compositor has not reported a real rate yet
+  // (e.g. presented before sync_output), so it must not be compared against m_fps or it
+  // would spuriously look like a refresh rate change and restart video sync forever.
+  if ((syncOutputRefreshRate > 0.0f && m_fps != syncOutputRefreshRate) ||
+      (m_syncOutputID != 0 && m_syncOutputID != syncOutputID))
   {
     // Restart if fps changes or sync output changes (which means that the msc jumps)
     CLog::Log(LOGDEBUG, "fps or sync output changed, restarting Wayland video sync");
