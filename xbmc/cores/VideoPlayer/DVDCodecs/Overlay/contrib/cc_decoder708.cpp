@@ -667,6 +667,10 @@ void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, un
   col_count++; // These increments seems to be needed but no documentation
   row_count++; // backs it up
 
+  if (col_count > I708_MAX_COLUMNS)
+    col_count = I708_MAX_COLUMNS;
+  if (row_count > I708_MAX_ROWS)
+    row_count = I708_MAX_ROWS;
   if (anchor_vertical > I708_SCREENGRID_ROWS)
     anchor_vertical = I708_SCREENGRID_ROWS;
 
@@ -847,6 +851,10 @@ void handle_708_SPL_SetPenLocation (cc708_service_decoder *decoder, unsigned cha
     // Can't do anything yet - we need a window to be defined first.
     return;
   }
+  if (row >= I708_MAX_ROWS)
+    row = I708_MAX_ROWS - 1;
+  if (col >= I708_MAX_COLUMNS)
+    col = I708_MAX_COLUMNS - 1;
   decoder->windows[decoder->current_window].pen_row=row;
   decoder->windows[decoder->current_window].pen_column=col;
 }
