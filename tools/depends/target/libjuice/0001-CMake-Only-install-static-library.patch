@@ -1,0 +1,34 @@
+From 9bee76db155328b3adf02fe43148379d1ab4b8be Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Fri, 28 Jun 2024 16:49:40 -0700
+Subject: [PATCH] CMake: Only install static library
+
+---
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 840b6ed..49074cb 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -100,7 +100,7 @@ target_include_directories(juice PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+ target_compile_definitions(juice PRIVATE $<$<CONFIG:Release>:RELEASE=1>)
+ target_link_libraries(juice PRIVATE Threads::Threads)
+ 
+-add_library(juice-static STATIC EXCLUDE_FROM_ALL ${LIBJUICE_SOURCES})
++add_library(juice-static STATIC ${LIBJUICE_SOURCES})
+ set_target_properties(juice-static PROPERTIES VERSION ${PROJECT_VERSION})
+ target_include_directories(juice-static PUBLIC
+     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+@@ -147,7 +147,7 @@ add_library(LibJuice::LibJuice ALIAS juice)
+ set_target_properties(juice-static PROPERTIES EXPORT_NAME LibJuiceStatic)
+ add_library(LibJuice::LibJuiceStatic ALIAS juice-static)
+ 
+-install(TARGETS juice EXPORT LibJuiceTargets
++install(TARGETS juice-static EXPORT LibJuiceTargets
+ 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+ 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+-- 
+2.47.1
+
