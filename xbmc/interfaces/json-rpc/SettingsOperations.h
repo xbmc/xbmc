@@ -61,7 +61,6 @@ namespace JSONRPC
                                               CVariant& result);
 
   private:
-    static SettingLevel ParseSettingLevel(const std::string &strLevel);
 
     static bool SerializeISetting(const std::shared_ptr<const ISetting>& setting, CVariant& obj);
     static bool SerializeSettingSection(const std::shared_ptr<const CSettingSection>& setting,

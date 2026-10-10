@@ -32,7 +32,7 @@ using namespace JSONRPC;
 
 JSONRPC_STATUS CSettingsOperations::GetSections(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  SettingLevel level = ParseSettingLevel(parameterObject["level"].asString());
+  SettingLevel level = SettingLevelFromString(parameterObject["level"].asString());
   bool listCategories = !parameterObject["properties"].empty() && parameterObject["properties"][0].asString() == "categories";
 
   result["sections"] = CVariant(CVariant::VariantTypeArray);
@@ -70,7 +70,7 @@ JSONRPC_STATUS CSettingsOperations::GetSections(const std::string &method, ITran
 
 JSONRPC_STATUS CSettingsOperations::GetCategories(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  SettingLevel level = ParseSettingLevel(parameterObject["level"].asString());
+  SettingLevel level = SettingLevelFromString(parameterObject["level"].asString());
   std::string strSection = parameterObject["section"].asString();
   bool listSettings = !parameterObject["properties"].empty() && parameterObject["properties"][0].asString() == "settings";
 
@@ -135,7 +135,7 @@ JSONRPC_STATUS CSettingsOperations::GetCategories(const std::string &method, ITr
 
 JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  SettingLevel level = ParseSettingLevel(parameterObject["level"].asString());
+  SettingLevel level = SettingLevelFromString(parameterObject["level"].asString());
   const CVariant &filter = parameterObject["filter"];
   bool doFilter = filter.isMember("section") && filter.isMember("category");
   std::string strSection, strCategory;
@@ -333,18 +333,6 @@ JSONRPC_STATUS CSettingsOperations::ResetSettingValue(const std::string &method,
   return ACK;
 }
 
-SettingLevel CSettingsOperations::ParseSettingLevel(const std::string &strLevel)
-{
-  if (StringUtils::EqualsNoCase(strLevel, "basic"))
-    return SettingLevel::Basic;
-  if (StringUtils::EqualsNoCase(strLevel, "advanced"))
-    return SettingLevel::Advanced;
-  if (StringUtils::EqualsNoCase(strLevel, "expert"))
-    return SettingLevel::Expert;
-
-  return SettingLevel::Standard;
-}
-
 bool CSettingsOperations::SerializeISetting(const std::shared_ptr<const ISetting>& setting,
                                             CVariant& obj)
 {
@@ -404,28 +392,11 @@ bool CSettingsOperations::SerializeSetting(const std::shared_ptr<const CSetting>
     obj["help"] =
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(setting->GetHelp());
 
-  switch (setting->GetLevel())
-  {
-    case SettingLevel::Basic:
-      obj["level"] = "basic";
-      break;
+  const char* const level = SettingLevelToString(setting->GetLevel());
+  if (level == nullptr)
+    return false;
 
-    case SettingLevel::Standard:
-      obj["level"] = "standard";
-      break;
-
-    case SettingLevel::Advanced:
-      obj["level"] = "advanced";
-      break;
-
-    case SettingLevel::Expert:
-      obj["level"] = "expert";
-      break;
-
-    default:
-      return false;
-  }
-
+  obj["level"] = level;
   obj["enabled"] = setting->IsEnabled();
   obj["parent"] = setting->GetParent();
 
