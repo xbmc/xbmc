@@ -13,13 +13,46 @@
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
+#include "threads/CriticalSection.h"
 
 #include <cstdint>
+#include <deque>
 #include <memory>
 #include <string>
+#include <vector>
 
 class CVideoBufferPoolSysMem;
 struct SwsContext;
+
+// A picture whose pixels never enter the wasm heap: it names a VideoFrame the
+// bridge holds on the browser main thread by decoder handle and sequence
+// number. CRendererWebCodecs uploads it into a GL texture by that number, and
+// returning the buffer to its pool closes the frame unless it is already closed.
+class CVideoBufferWebCodecs : public CVideoBuffer
+{
+public:
+  explicit CVideoBufferWebCodecs(int id);
+
+  void SetFrame(int decoderHandle, int32_t sequence, AVPixelFormat format);
+  int GetDecoderHandle() const { return m_decoderHandle; }
+  int32_t GetSequence() const { return m_sequence; }
+
+private:
+  int m_decoderHandle{0};
+  int32_t m_sequence{-1};
+};
+
+class CVideoBufferPoolWebCodecs : public IVideoBufferPool
+{
+public:
+  CVideoBuffer* Get() override;
+  void Return(int id) override;
+
+private:
+  CCriticalSection m_critSection;
+  std::vector<std::unique_ptr<CVideoBufferWebCodecs>> m_all;
+  std::deque<int> m_free;
+};
 
 class CDVDVideoCodecWebCodecs : public CDVDVideoCodec
 {
@@ -57,6 +90,7 @@ private:
   int32_t WaitForCopy(int copyId);
   void ReleaseCopyBuffer();
   void ReportPixelFormat(const char* name);
+  VCReturn TakeFrame(int32_t sequence, const WebCodecsFrameInfo& info, VideoPicture* pVideoPicture);
   VCReturn CopyFrame(int32_t sequence, const WebCodecsFrameInfo& info, VideoPicture* pVideoPicture);
   VCReturn DroppedPicture(const WebCodecsFrameInfo& info,
                           AVPixelFormat pixelFormat,
@@ -68,10 +102,15 @@ private:
   void FillPictureMetadata(VideoPicture* pVideoPicture,
                            CVideoBuffer* videoBuffer,
                            AVPixelFormat pixelFormat,
-                           const WebCodecsFrameInfo& info) const;
+                           const WebCodecsFrameInfo& info,
+                           bool colourFromFrame) const;
 
   std::string m_name{"webcodecs"};
   CDVDStreamInfo m_hints;
+  // Frames stay on the browser side and are imported into the renderer's
+  // textures; false when the page's WebGL rejects a VideoFrame source.
+  bool m_textureUpload{false};
+  std::shared_ptr<CVideoBufferPoolWebCodecs> m_framePool;
   std::shared_ptr<CVideoBufferPoolSysMem> m_videoBufferPool;
   // Landing zone for packed RGB frames before ConvertToYuv420p().
   std::shared_ptr<CVideoBufferPoolSysMem> m_rgbBufferPool;

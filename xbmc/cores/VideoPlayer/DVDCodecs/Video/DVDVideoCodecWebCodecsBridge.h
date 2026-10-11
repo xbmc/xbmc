@@ -91,7 +91,7 @@ extern "C"
   // Field offsets are locked down by static_assert below and mirrored as byte
   // offsets in JS. The colour fields hold FFmpeg's AVCOL_* values, with the
   // *_UNSPECIFIED value where the frame carries none; fullRange is 1, 0 or -1
-  // for unknown.
+  // for unknown. The layout fields serve the sysmem copy path only.
   struct WebCodecsFrameInfo
   {
     int32_t width; // visibleRect
@@ -104,7 +104,7 @@ extern "C"
     int32_t colorPrimaries;
     int32_t colorTransfer;
     int32_t fullRange;
-    int32_t payloadSize; // tightly packed copy size; 0 if not copyable
+    int32_t payloadSize; // tightly packed copy size; 0 on the texture path or if not copyable
     int32_t yStride;
     int32_t uStride;
     int32_t vStride;
@@ -181,6 +181,13 @@ extern "C"
 {
 #endif
 
+  // Returns 1 if the page's WebGL context accepts a VideoFrame as a texImage2D
+  // source, 0 otherwise. The first call runs the probe on the context Emscripten
+  // holds on the main thread and must come from the thread that owns the GL
+  // command stream, before it has queued anything (InitWindowSystem); later
+  // calls return the cached answer.
+  int webcodecs_probe_texture_upload(void);
+
   // Returns a positive decoder handle on success, 0 on failure. `description` is
   // the AVC or HEVC decoder configuration record when the stream has one, and
   // `annexB` selects the Annex B bitstream format for those two codecs. `shared`
@@ -214,6 +221,13 @@ extern "C"
   // NaN ptsSeconds, and so does the frame decoded from it.
   void webcodecs_push_packet(
       int handle, uint8_t* data, int size, int keyFrame, double ptsSeconds, double durationSeconds);
+
+  // Uploads frame `sequence` into GL texture `glTexture` (an Emscripten texture
+  // name from glGenTextures) with texImage2D on the main thread. Asynchronous;
+  // ordered with the caller's own GL calls because both go through Emscripten's
+  // system proxying queue. The frame stays open until webcodecs_release_frame(),
+  // as VideoPlayer queues a still picture again into other render buffers.
+  void webcodecs_upload_frame(int handle, int sequence, unsigned int glTexture);
 
   // Closes frame `sequence` if it is still open. Asynchronous; a no-op for a
   // frame already released or closed by a reset.

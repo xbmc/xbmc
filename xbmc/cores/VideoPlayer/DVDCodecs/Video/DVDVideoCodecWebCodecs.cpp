@@ -216,9 +216,54 @@ int SwsColorspace(AVColorSpace colorSpace)
 }
 } // namespace
 
+CVideoBufferWebCodecs::CVideoBufferWebCodecs(int id) : CVideoBuffer(id)
+{
+}
+
+void CVideoBufferWebCodecs::SetFrame(int decoderHandle, int32_t sequence, AVPixelFormat format)
+{
+  m_decoderHandle = decoderHandle;
+  m_sequence = sequence;
+  m_pixFormat = format;
+}
+
+CVideoBuffer* CVideoBufferPoolWebCodecs::Get()
+{
+  std::unique_lock lock(m_critSection);
+
+  CVideoBufferWebCodecs* buffer;
+  if (!m_free.empty())
+  {
+    buffer = m_all[m_free.front()].get();
+    m_free.pop_front();
+  }
+  else
+  {
+    m_all.emplace_back(std::make_unique<CVideoBufferWebCodecs>(static_cast<int>(m_all.size())));
+    buffer = m_all.back().get();
+  }
+
+  buffer->Acquire(GetPtr());
+  return buffer;
+}
+
+// The last reference is gone, so the frame is either uploaded already or will
+// never be; the release is a no-op for a frame the bridge has closed.
+void CVideoBufferPoolWebCodecs::Return(int id)
+{
+  std::unique_lock lock(m_critSection);
+
+  CVideoBufferWebCodecs& buffer = *m_all[id];
+  if (buffer.GetSequence() >= 0)
+    webcodecs_release_frame(buffer.GetDecoderHandle(), buffer.GetSequence());
+  buffer.SetFrame(0, -1, AV_PIX_FMT_NONE);
+  m_free.push_back(id);
+}
+
 CDVDVideoCodecWebCodecs::CDVDVideoCodecWebCodecs(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo)
 {
+  m_framePool = std::make_shared<CVideoBufferPoolWebCodecs>();
 }
 
 CDVDVideoCodecWebCodecs::~CDVDVideoCodecWebCodecs()
@@ -343,7 +388,8 @@ bool CDVDVideoCodecWebCodecs::Open(CDVDStreamInfo& hints, CDVDCodecOptions& opti
     return false;
 
   // The heap copy takes 8-bit 4:2:0 frames only; FFmpeg decodes the rest.
-  if (hints.bitdepth > 8 || !WEBCODECS::IsChroma420Profile(hints))
+  m_textureUpload = webcodecs_probe_texture_upload() != 0;
+  if (!m_textureUpload && (hints.bitdepth > 8 || !WEBCODECS::IsChroma420Profile(hints)))
     return false;
 
   Dispose();
@@ -370,9 +416,10 @@ bool CDVDVideoCodecWebCodecs::Open(CDVDStreamInfo& hints, CDVDCodecOptions& opti
   m_processInfo.SetVideoDimensions(hints.width, hints.height);
   CLog::Log(LOGINFO,
             "CDVDVideoCodecWebCodecs::Open - Using WebCodecs for video decoding: {} ({}x{}, "
-            "annexB={}, {} decoder)",
+            "annexB={}, {} decoder, frames {})",
             m_codecString, hints.width, hints.height, m_annexB,
-            m_hardware ? "hardware" : "browser-chosen");
+            m_hardware ? "hardware" : "browser-chosen",
+            m_textureUpload ? "imported as textures" : "copied through the heap");
   return true;
 }
 
@@ -722,10 +769,15 @@ CVideoBuffer* CDVDVideoCodecWebCodecs::ConvertToYuv420p(CVideoBuffer* rgbBuffer,
   return yuvBuffer;
 }
 
+// The colour fields come from the stream hints, as for every codec, unless
+// colourFromFrame asks for the frame's own colour space; the fields the frame
+// leaves unspecified fall back to the hints either way. The sysmem path keeps
+// the hints because its RGB to YUV conversion was made with them.
 void CDVDVideoCodecWebCodecs::FillPictureMetadata(VideoPicture* pVideoPicture,
                                                   CVideoBuffer* videoBuffer,
                                                   AVPixelFormat pixelFormat,
-                                                  const WebCodecsFrameInfo& info) const
+                                                  const WebCodecsFrameInfo& info,
+                                                  bool colourFromFrame) const
 {
   const int width = info.width;
   const int height = info.height;
@@ -773,6 +825,24 @@ void CDVDVideoCodecWebCodecs::FillPictureMetadata(VideoPicture* pVideoPicture,
   pVideoPicture->color_range = m_hints.colorRange == AVCOL_RANGE_JPEG;
   pVideoPicture->colorBits = PICTURE_COLOR_BITS;
 
+  if (colourFromFrame)
+  {
+    if (info.colorMatrix != AVCOL_SPC_UNSPECIFIED)
+      pVideoPicture->color_space = static_cast<AVColorSpace>(info.colorMatrix);
+    if (info.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
+      pVideoPicture->color_primaries = static_cast<AVColorPrimaries>(info.colorPrimaries);
+    if (info.colorTransfer != AVCOL_TRC_UNSPECIFIED)
+      pVideoPicture->color_transfer =
+          static_cast<AVColorTransferCharacteristic>(info.colorTransfer);
+    if (info.fullRange >= 0)
+      pVideoPicture->color_range = info.fullRange == 1;
+    const WebCodecsPixelFormatInfo* format = FindPixelFormat(info.pixelFormat);
+    if (format && format->bitDepth > 0)
+      pVideoPicture->colorBits = format->bitDepth;
+    else if (m_hints.bitdepth > 0)
+      pVideoPicture->colorBits = m_hints.bitdepth;
+  }
+
   pVideoPicture->m_originalColorPrimaries = pVideoPicture->color_primaries;
   pVideoPicture->chroma_position = AVCHROMA_LOC_LEFT;
 
@@ -818,13 +888,35 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecWebCodecs::DroppedPicture(const WebCodecs
     return VC_NOBUFFER;
   videoBuffer->SetPixelFormat(pixelFormat);
 
-  FillPictureMetadata(pVideoPicture, videoBuffer, pixelFormat, info);
+  FillPictureMetadata(pVideoPicture, videoBuffer, pixelFormat, info, false);
   pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
   return VC_PICTURE;
 }
 
-// The frame is copied into a CVideoBuffer, converted to YUV420P when the
-// decoder emits packed RGB, and handed to the generic renderer.
+// Zero-copy path: the picture only names the frame. CRendererWebCodecs
+// imports it into a texture on the main thread and releasing the buffer
+// closes it, so a dropped picture releases it here and is never rendered.
+CDVDVideoCodec::VCReturn CDVDVideoCodecWebCodecs::TakeFrame(int32_t sequence,
+                                                            const WebCodecsFrameInfo& info,
+                                                            VideoPicture* pVideoPicture)
+{
+  auto* videoBuffer = static_cast<CVideoBufferWebCodecs*>(m_framePool->Get());
+  videoBuffer->SetFrame(m_decoderHandle, sequence, PixelFormatFromWebCodecs(info.pixelFormat));
+  PublishFramesTaken(sequence + 1);
+  ReportPixelFormat(WebCodecsPixelFormatName(info.pixelFormat));
+
+  const bool drop = (m_codecControlFlags & (DVD_CODEC_CTRL_DROP | DVD_CODEC_CTRL_DROP_ANY)) != 0;
+  if (drop)
+    webcodecs_release_frame(m_decoderHandle, sequence);
+
+  FillPictureMetadata(pVideoPicture, videoBuffer, videoBuffer->GetFormat(), info, true);
+  if (drop)
+    pVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+  return VC_PICTURE;
+}
+
+// Sysmem path: the frame is copied into a CVideoBuffer, converted to YUV420P
+// when the decoder emits packed RGB, and handed to the generic renderer.
 CDVDVideoCodec::VCReturn CDVDVideoCodecWebCodecs::CopyFrame(int32_t sequence,
                                                             const WebCodecsFrameInfo& info,
                                                             VideoPicture* pVideoPicture)
@@ -899,7 +991,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecWebCodecs::CopyFrame(int32_t sequence,
   videoBuffer->SetPixelFormat(pixelFormat);
   videoBuffer->SetDimensions(info.width, info.height, strides, planeOffsets);
 
-  FillPictureMetadata(pVideoPicture, videoBuffer, pixelFormat, info);
+  FillPictureMetadata(pVideoPicture, videoBuffer, pixelFormat, info, false);
   return VC_PICTURE;
 }
 
@@ -953,5 +1045,6 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecWebCodecs::GetPicture(VideoPicture* pVide
   // The slot is complete: the bridge writes it before it publishes framesProduced.
   const int32_t sequence = SharedLoad(m_shared.framesTaken);
   const WebCodecsFrameInfo info = m_shared.ring[sequence % WEBCODECS_FRAME_RING];
-  return CopyFrame(sequence, info, pVideoPicture);
+  return m_textureUpload ? TakeFrame(sequence, info, pVideoPicture)
+                         : CopyFrame(sequence, info, pVideoPicture);
 }
