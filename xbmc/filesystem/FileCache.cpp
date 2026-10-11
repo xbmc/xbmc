@@ -166,6 +166,9 @@ size_t CFileCache::CacheSizeForRate(uint32_t bytesPerSecond) const
   KODI::MEMORY::MemoryStatus memory{};
   KODI::MEMORY::GetMemoryStatus(&memory);
   int64_t budget = static_cast<int64_t>(memory.totalPhys / 16);
+  // A 32-bit process has a few GiB of address space, however much memory is installed
+  if constexpr (sizeof(void*) < 8)
+    budget = std::min<int64_t>(budget, 256 * 1024 * 1024);
   if (m_flags & READ_MULTI_STREAM)
     budget /= 2;
 
