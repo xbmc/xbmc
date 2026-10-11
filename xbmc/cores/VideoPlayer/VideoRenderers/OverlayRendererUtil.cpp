@@ -284,27 +284,39 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 bool convert_quad_pages(ASS_Image* images, std::vector<SQuads>& pages, int maxTextureSize)
 {
   pages.clear();
-  if (maxTextureSize < 2)
+  if (maxTextureSize < 4)
     return false;
 
-  // Keep libass painter order. Split oversized bitmaps too, without copying
-  // their pixels; convert_quad copies each tile into its final atlas.
-  std::vector<ASS_Image> tiles;
+  struct Tile
+  {
+    ASS_Image image;
+    int left;
+    int top;
+    int right;
+    int bottom;
+  };
+  std::vector<Tile> tiles;
   for (ASS_Image* image = images; image; image = image->next)
   {
     if ((image->color & 0xff) == 0xff || image->w <= 0 || image->h <= 0)
       continue;
-    for (int y = 0; y < image->h; y += maxTextureSize - 1)
+    const int tileWidth = image->w < maxTextureSize ? image->w : maxTextureSize - 3;
+    const int tileHeight = image->h < maxTextureSize ? image->h : maxTextureSize - 3;
+    for (int y = 0; y < image->h; y += tileHeight)
     {
-      for (int x = 0; x < image->w; x += maxTextureSize - 1)
+      for (int x = 0; x < image->w; x += tileWidth)
       {
-        ASS_Image tile = *image;
-        tile.w = std::min(image->w - x, maxTextureSize - 1);
-        tile.h = std::min(image->h - y, maxTextureSize - 1);
-        tile.bitmap += static_cast<size_t>(y) * image->stride + x;
-        tile.dst_x += x;
-        tile.dst_y += y;
-        tile.next = nullptr;
+        const int width = std::min(image->w - x, tileWidth);
+        const int height = std::min(image->h - y, tileHeight);
+        Tile tile{*image, x > 0, y > 0, x + width < image->w, y + height < image->h};
+        // Include neighbouring texels for GL_LINEAR at internal tile edges.
+        // Only the original tile area will be drawn, so these borders never overlap.
+        tile.image.w = width + tile.left + tile.right;
+        tile.image.h = height + tile.top + tile.bottom;
+        tile.image.bitmap += static_cast<size_t>(y - tile.top) * image->stride + x - tile.left;
+        tile.image.dst_x += x - tile.left;
+        tile.image.dst_y += y - tile.top;
+        tile.image.next = nullptr;
         tiles.push_back(tile);
       }
     }
@@ -320,7 +332,7 @@ bool convert_quad_pages(ASS_Image* images, std::vector<SQuads>& pages, int maxTe
     size_t end = begin;
     for (; end < tiles.size(); ++end)
     {
-      const ASS_Image& tile = tiles[end];
+      const ASS_Image& tile = tiles[end].image;
       if (x + tile.w >= maxTextureSize)
       {
         y += rowHeight + 1;
@@ -334,9 +346,20 @@ bool convert_quad_pages(ASS_Image* images, std::vector<SQuads>& pages, int maxTe
     }
 
     for (size_t i = begin; i < end; ++i)
-      tiles[i].next = i + 1 < end ? &tiles[i + 1] : nullptr;
+      tiles[i].image.next = i + 1 < end ? &tiles[i + 1].image : nullptr;
     pages.emplace_back();
-    convert_quad(&tiles[begin], pages.back(), maxTextureSize);
+    convert_quad(&tiles[begin].image, pages.back(), maxTextureSize);
+    for (size_t i = begin; i < end; ++i)
+    {
+      const Tile& tile = tiles[i];
+      SQuad& quad = pages.back().quad[i - begin];
+      quad.u += tile.left;
+      quad.v += tile.top;
+      quad.x += tile.left;
+      quad.y += tile.top;
+      quad.w -= tile.left + tile.right;
+      quad.h -= tile.top + tile.bottom;
+    }
     begin = end;
   }
   return !pages.empty();

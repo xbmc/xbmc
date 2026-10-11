@@ -8,7 +8,9 @@
 
 #include "cores/VideoPlayer/VideoRenderers/OverlayRendererUtil.h"
 
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <vector>
 
 #include <ass/ass.h>
@@ -96,4 +98,57 @@ TEST(TestOverlayRendererUtil, BoundedPagesPreserveImages)
   EXPECT_TRUE(pages.empty());
   EXPECT_FALSE(OVERLAY::convert_quad_pages(&images.back(), pages, limit));
   EXPECT_FALSE(OVERLAY::convert_quad_pages(images.data(), pages, 1));
+}
+
+TEST(TestOverlayRendererUtil, TiledImagesPreserveLinearFiltering)
+{
+  constexpr int width = 19;
+  constexpr int height = 17;
+  constexpr int stride = 23;
+  constexpr int limit = 8;
+  std::vector<unsigned char> bitmap(stride * (height - 1) + width);
+
+  const auto sample =
+      [](const std::vector<unsigned char>& pixels, int rowStride, int w, int h, double x, double y)
+  {
+    const int x0 = static_cast<int>(std::floor(x));
+    const int y0 = static_cast<int>(std::floor(y));
+    const double fx = x - x0;
+    const double fy = y - y0;
+    const auto pixel = [&](int px, int py)
+    { return pixels[std::clamp(py, 0, h - 1) * rowStride + std::clamp(px, 0, w - 1)]; };
+    return (1.0 - fy) * ((1.0 - fx) * pixel(x0, y0) + fx * pixel(x0 + 1, y0)) +
+           fy * ((1.0 - fx) * pixel(x0, y0 + 1) + fx * pixel(x0 + 1, y0 + 1));
+  };
+
+  for (const bool opaque : {true, false})
+  {
+    for (size_t i = 0; i < bitmap.size(); ++i)
+      bitmap[i] = opaque ? 255 : (i * 17) % 251;
+    ASS_Image image{};
+    image.w = width;
+    image.h = height;
+    image.stride = stride;
+    image.bitmap = bitmap.data();
+    std::vector<OVERLAY::SQuads> pages;
+    ASSERT_TRUE(OVERLAY::convert_quad_pages(&image, pages, limit));
+
+    for (const auto& page : pages)
+      for (const auto& quad : page.quad)
+        for (int y = 0; y < quad.h * 2; ++y)
+          for (int x = 0; x < quad.w * 2; ++x)
+          {
+            // Fragment centres at 2x scale, in source texel-centre coordinates.
+            const double dx = (x + 0.5) / 2.0 - 0.5;
+            const double dy = (y + 0.5) / 2.0 - 0.5;
+            const double sourceX = quad.x + dx;
+            const double sourceY = quad.y + dy;
+            if (sourceX < 0 || sourceX > width - 1 || sourceY < 0 || sourceY > height - 1)
+              continue;
+            ASSERT_DOUBLE_EQ(sample(bitmap, stride, width, height, sourceX, sourceY),
+                             sample(page.texture, page.size_x, page.size_x, page.size_y,
+                                    quad.u + dx, quad.v + dy))
+                << "source=" << sourceX << "," << sourceY << " opaque=" << opaque;
+          }
+  }
 }
