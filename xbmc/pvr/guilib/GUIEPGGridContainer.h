@@ -206,7 +206,7 @@ private:
 
   bool OnMouseClick(int dwButton, const CPoint& point);
   bool OnMouseDoubleClick(int dwButton, const CPoint& point);
-  bool OnMouseWheel(char wheel);
+  bool OnMouseWheel(char wheel, const CPoint& point);
 
   void HandleChannels(bool bRender,
                       unsigned int currentTime,

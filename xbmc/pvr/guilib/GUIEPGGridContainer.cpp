@@ -1282,10 +1282,10 @@ EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint& point,
       OnMouseDoubleClick(0, point);
       return EVENT_RESULT_HANDLED;
     case ACTION_MOUSE_WHEEL_UP:
-      OnMouseWheel(-1);
+      OnMouseWheel(-1, point);
       return EVENT_RESULT_HANDLED;
     case ACTION_MOUSE_WHEEL_DOWN:
-      OnMouseWheel(1);
+      OnMouseWheel(1, point);
       return EVENT_RESULT_HANDLED;
     case ACTION_GESTURE_BEGIN:
     {
@@ -1374,8 +1374,18 @@ bool CGUIEPGGridContainer::OnClick(int actionID) const
   return SendWindowMessage(msg);
 }
 
-bool CGUIEPGGridContainer::OnMouseWheel(char wheel)
+bool CGUIEPGGridContainer::OnMouseWheel(char wheel, const CPoint& point)
 {
+  const bool vertical{m_orientation == VERTICAL};
+  const CRect channels(m_channelPosX, m_channelPosY,
+                       m_channelPosX + (vertical ? m_channelWidth : m_gridWidth),
+                       m_channelPosY + (vertical ? m_gridHeight : m_channelHeight));
+  if (channels.PtInRect(point))
+  {
+    ChannelScroll(wheel);
+    return true;
+  }
+
   // doesn't work while an item is selected?
   ProgrammesScroll(-wheel);
   return true;
