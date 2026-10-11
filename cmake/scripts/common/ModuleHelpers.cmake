@@ -266,6 +266,15 @@ macro(BUILD_DEP_TARGET)
     # We can disable adding them with WIN_DISABLE_PROJECT_FLAGS. This is potentially required
     # for host build tools (eg flatc) that may be a different arch to the core app
     if(WIN32 OR WINDOWS_STORE)
+      if(CCACHE_FOUND AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
+         CMAKE_GENERATOR MATCHES "Visual Studio")
+        list(APPEND CMAKE_ARGS "-DCCACHE_PROGRAM=${CCACHE_PROGRAM}"
+                               "-DCMAKE_PROJECT_INCLUDE=${PROJECTSOURCE}/cmake/scripts/windows/CCache.cmake"
+                               -DCMAKE_POLICY_DEFAULT_CMP0141=NEW)
+      elseif(CMAKE_GENERATOR MATCHES "Visual Studio")
+        # External projects retain their CMake cache when ccache is disabled.
+        list(APPEND CMAKE_ARGS -UCMAKE_PROJECT_INCLUDE -UCCACHE_PROGRAM)
+      endif()
       if(NOT (DEFINED WIN_DISABLE_PROJECT_FLAGS OR
          ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "native"))
         list(APPEND CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} $<$<CONFIG:Debug>:${CMAKE_C_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_C_FLAGS_RELEASE}> ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS}"
@@ -855,8 +864,14 @@ function(create_mesonbinaries)
     set(input "${${cmake_binary_name}}")
     string(STRIP "${input}" input)
 
-    string(PREPEND input "${meson_label_name} = '")
-    string(APPEND input "'")
+    if(CCACHE_FOUND AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
+       CMAKE_GENERATOR MATCHES "Visual Studio" AND
+       (meson_label_name STREQUAL "c" OR meson_label_name STREQUAL "cpp"))
+      set(input "${meson_label_name} = ['${CCACHE_PROGRAM}', '${input}']")
+    else()
+      string(PREPEND input "${meson_label_name} = '")
+      string(APPEND input "'")
+    endif()
     string(APPEND output_string "${input}\n")
   endforeach()
 
