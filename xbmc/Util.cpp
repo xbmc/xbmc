@@ -1416,6 +1416,12 @@ bool CUtil::IsInPlaylistsFolder(const std::string& path, KODI::MEDIA::MediaSecti
     return false;
   if (URIUtils::PathHasParent(path, playlists))
     return true;
+  // With no playlists path set the folders are relative paths, which name no place
+  if (CServiceBroker::GetSettingsComponent()
+          ->GetSettings()
+          ->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH)
+          .empty())
+    return false;
   return std::ranges::any_of(PlaylistsFoldersOf(section), [&path](const std::string& folder)
                              { return URIUtils::PathHasParent(path, folder); });
 }
