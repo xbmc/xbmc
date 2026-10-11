@@ -16,6 +16,9 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <algorithm>
+#include <cmath>
+
 #include "PlatformDefs.h"
 
 using namespace KODI::WINDOWING::GBM;
@@ -778,7 +781,7 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
                             settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0
                         ? settings->GetInt(SETTING_VIDEOSCREEN_LIMITGUISIZE)
                         : 0;
-  if (limit > 0 && res.iScreenWidth > 1920 && res.iScreenHeight > 1080)
+  if (limit > 0)
   {
     switch (limit)
     {
@@ -799,6 +802,11 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
         res.iHeight = mode->vrefresh > 30 ? 1080 : res.iScreenHeight;
         break;
     }
+    // the limit caps the line count; the width follows the mode's aspect ratio, so non-16:9 and
+    // pixel-repeated SD modes are not stretched or squashed, and the GUI is never enlarged
+    const double scale = std::min(1.0, static_cast<double>(res.iHeight) / res.iScreenHeight);
+    res.iWidth = static_cast<int>(std::lround(res.iScreenWidth * scale));
+    res.iHeight = static_cast<int>(std::lround(res.iScreenHeight * scale));
   }
 
   if (mode->htotal > 0 && mode->vtotal > 0)
