@@ -119,7 +119,7 @@ bool Interrupted()
   return errno == EINTR;
 #endif
 }
-}
+} // namespace
 
 std::shared_ptr<CTCPServer> CTCPServer::ServerInstance;
 
@@ -684,8 +684,7 @@ void CTCPServer::CTCPClient::Send(const char *data, unsigned int size)
     if (!m_output.empty() && m_outputBytes + size > maxQueuedOutput)
     {
       if (!m_closing)
-        CLog::Log(LOGERROR,
-                  "JSONRPC Server: Peer is not reading, dropping it with {} bytes unsent",
+        CLog::Log(LOGERROR, "JSONRPC Server: Peer is not reading, dropping it with {} bytes unsent",
                   m_outputBytes);
       RequestClose();
       return;
