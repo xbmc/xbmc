@@ -1,4 +1,5 @@
 set(SOURCES TestDVDSubtitlesLibass.cpp
+            TestOverlayRendererUtil.cpp
             TestVideoCodecPictureFormat.cpp
             TestVideoPlayer.cpp)
 
