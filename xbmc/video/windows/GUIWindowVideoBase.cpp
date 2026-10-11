@@ -1301,7 +1301,7 @@ bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 
 bool CGUIWindowVideoBase::CanContainFilter(const std::string &strDirectory) const
 {
-  return URIUtils::IsProtocol(strDirectory, "videodb://");
+  return URIUtils::IsVideoDb(strDirectory);
 }
 
 /// \brief Search the current directory for a string got from the virtual keyboard
