@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "PictureXmp.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "filesystem/Directory.h"
@@ -24,7 +25,6 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
-#include <charconv>
 #include <cstdint>
 #include <map>
 #include <string_view>
@@ -37,69 +37,32 @@ namespace
 {
 constexpr std::string_view CLIP_FOLDER = "special://temp/motionphotos/";
 
-// The XMP packet is near the start of the file, after the EXIF data
-constexpr int64_t XMP_SEARCH_SIZE = 256 * 1024;
 // Apple's maker note is in the EXIF data at the start of the file
 constexpr int64_t MAKER_NOTE_SEARCH_SIZE = 64 * 1024;
 // The maker note tag holding the ID a Live Photo's still shares with its clip
 constexpr uint16_t APPLE_CONTENT_IDENTIFIER = 0x0011;
-
-std::string_view GetXmpValue(std::string_view xmp, std::string_view name)
-{
-  const std::string attribute = std::string(name) + "=\"";
-  size_t start = xmp.find(attribute);
-  if (start != std::string_view::npos)
-  {
-    start += attribute.size();
-    const size_t end = xmp.find('"', start);
-    if (end != std::string_view::npos)
-      return xmp.substr(start, end - start);
-  }
-
-  const std::string element = "<" + std::string(name) + ">";
-  start = xmp.find(element);
-  if (start != std::string_view::npos)
-  {
-    start += element.size();
-    const size_t end = xmp.find('<', start);
-    if (end != std::string_view::npos)
-      return xmp.substr(start, end - start);
-  }
-
-  return {};
-}
-
-uint64_t ToNumber(std::string_view value)
-{
-  uint64_t number = 0;
-  std::from_chars(value.data(), value.data() + value.size(), number);
-  return number;
-}
 
 /*!
  * \brief Size of the clip at the end of a Motion Photo, or 0 if the XMP doesn't describe one
  */
 uint64_t GetClipSize(std::string_view xmp)
 {
-  // Motion Photo format: the clip is the last item of the container directory
-  if (GetXmpValue(xmp, "GCamera:MotionPhoto") == "1" ||
-      GetXmpValue(xmp, "Camera:MotionPhoto") == "1")
+  using namespace KODI::PICTURE;
+
+  if (XMP::GetValue(xmp, "GCamera:MotionPhoto") == "1" ||
+      XMP::GetValue(xmp, "Camera:MotionPhoto") == "1")
   {
-    const size_t semantic = xmp.find("Item:Semantic=\"MotionPhoto\"");
-    if (semantic == std::string_view::npos)
-      return 0;
-
-    const size_t start = xmp.rfind('<', semantic);
-    const size_t end = xmp.find('>', semantic);
-    if (start == std::string_view::npos || end == std::string_view::npos)
-      return 0;
-
-    return ToNumber(GetXmpValue(xmp.substr(start, end - start), "Item:Length"));
+    for (const auto& item : XMP::GetContainerItems(xmp))
+    {
+      if (item.semantic == "MotionPhoto")
+        return item.length;
+    }
+    return 0;
   }
 
   // Older MicroVideo format
-  if (GetXmpValue(xmp, "GCamera:MicroVideo") == "1")
-    return ToNumber(GetXmpValue(xmp, "GCamera:MicroVideoOffset"));
+  if (XMP::GetValue(xmp, "GCamera:MicroVideo") == "1")
+    return XMP::GetUnsigned(xmp, "GCamera:MicroVideoOffset");
 
   return 0;
 }
@@ -236,18 +199,7 @@ std::string ExtractMotionPhotoClip(const std::string& path)
     return {};
 
   const int64_t fileSize = file.GetLength();
-  std::string head(static_cast<size_t>(std::min(fileSize, XMP_SEARCH_SIZE)), '\0');
-  if (head.empty() || file.Read(head.data(), head.size()) != static_cast<ssize_t>(head.size()))
-    return {};
-
-  const size_t xmpStart = head.find("<x:xmpmeta");
-  if (xmpStart == std::string::npos)
-    return {};
-  const size_t xmpEnd = head.find("</x:xmpmeta>", xmpStart);
-  if (xmpEnd == std::string::npos)
-    return {};
-
-  const uint64_t clipSize = GetClipSize(std::string_view(head).substr(xmpStart, xmpEnd - xmpStart));
+  const uint64_t clipSize = GetClipSize(XMP::Read(file));
   if (clipSize == 0 || clipSize >= static_cast<uint64_t>(fileSize))
     return {};
 
