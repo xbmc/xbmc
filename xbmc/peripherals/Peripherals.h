@@ -391,6 +391,8 @@ public:
   bool WaitForGUI();
 
 private:
+  friend class TestPeripheralMappings;
+
   bool LoadMappings();
   static bool MappingMatchesPeripheral(const PeripheralDeviceMapping& mapping,
                                        const CPeripheral& peripheral);
