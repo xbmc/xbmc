@@ -13,6 +13,7 @@
 #include "WasmClipboard.h"
 #include "WasmVsync.h"
 #include "WebGLCommit.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecWebCodecs.h"
 #include "cores/VideoPlayer/Process/wasm/ProcessInfoWasm.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
@@ -111,6 +112,7 @@ bool CWinSystemWasmGLESContext::InitWindowSystem()
 {
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CProcessInfoWasm::Register();
+  CDVDVideoCodecWebCodecs::Register();
   CLinuxRendererGLES::Register();
   CScreenshotSurfaceGLES::Register();
 
