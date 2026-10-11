@@ -315,7 +315,10 @@ public:
   bool GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* item = nullptr);
   bool GetFileInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idFile = -1);
 
-  //! The path is ignored when idMovie is given.
+  // Asked by path, these answer NotFound for a path they cannot resolve to an id, even when it
+  // is that lookup which failed.
+
+  //! With idMovie given, the path only picks the version, when neither idVersion nor idFile does.
   GetResult TryGetMovieInfo(const std::string& strFilenameAndPath,
                             CVideoInfoTag& details,
                             int idMovie = -1,
