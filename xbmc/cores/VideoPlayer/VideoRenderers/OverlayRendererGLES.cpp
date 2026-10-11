@@ -290,117 +290,123 @@ COverlayGlyphGLES::COverlayGlyphGLES(ASS_Image* images, float width, float heigh
   m_x = 0.0f;
   m_y = 0.0f;
 
-  SQuads quads;
-  if (!convert_quad(images, quads, static_cast<int>(width)))
+  GLint maxTextureSize = 0;
+  glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+  std::vector<SQuads> pages;
+  if (!convert_quad_pages(images, pages, maxTextureSize))
     return;
 
-  glGenTextures(1, &m_texture);
-  glBindTexture(GL_TEXTURE_2D, m_texture);
-
-  LoadTexture(GL_TEXTURE_2D, quads.size_x, quads.size_y, quads.size_x, &m_u, &m_v, true,
-              quads.texture.data());
-
-  float scale_u = m_u / quads.size_x;
-  float scale_v = m_v / quads.size_y;
-
-  float scale_x = 1.0f / width;
-  float scale_y = 1.0f / height;
-
-  std::vector<VERTEX> quadVertices(quads.quad.size() * 4);
-
-  VERTEX* vt = quadVertices.data();
-  SQuad* vs = quads.quad.data();
-
-  for (size_t i = 0; i < quads.quad.size(); i++)
+  m_pages = std::vector<Page>(pages.size());
+  for (size_t i = 0; i < pages.size(); ++i)
   {
-    for (int s = 0; s < 4; s++)
-    {
-      vt[s].a = vs->a;
-      vt[s].r = vs->r;
-      vt[s].g = vs->g;
-      vt[s].b = vs->b;
+    SQuads& quads = pages[i];
+    Page& page = m_pages[i];
+    float u;
+    float v;
 
-      vt[s].x = scale_x;
-      vt[s].y = scale_y;
-      vt[s].z = 0.0f;
-      vt[s].u = scale_u;
-      vt[s].v = scale_v;
+    glGenTextures(1, &page.texture);
+    glBindTexture(GL_TEXTURE_2D, page.texture);
+
+    LoadTexture(GL_TEXTURE_2D, quads.size_x, quads.size_y, quads.size_x, &u, &v, true,
+                quads.texture.data());
+
+    float scale_u = u / quads.size_x;
+    float scale_v = v / quads.size_y;
+
+    float scale_x = 1.0f / width;
+    float scale_y = 1.0f / height;
+
+    std::vector<VERTEX> quadVertices(quads.quad.size() * 4);
+
+    VERTEX* vt = quadVertices.data();
+    SQuad* vs = quads.quad.data();
+
+    for (size_t i = 0; i < quads.quad.size(); i++)
+    {
+      for (int s = 0; s < 4; s++)
+      {
+        vt[s].a = vs->a;
+        vt[s].r = vs->r;
+        vt[s].g = vs->g;
+        vt[s].b = vs->b;
+
+        vt[s].x = scale_x;
+        vt[s].y = scale_y;
+        vt[s].z = 0.0f;
+        vt[s].u = scale_u;
+        vt[s].v = scale_v;
+      }
+
+      vt[0].x *= vs->x;
+      vt[0].u *= vs->u;
+      vt[0].y *= vs->y;
+      vt[0].v *= vs->v;
+
+      vt[1].x *= vs->x;
+      vt[1].u *= vs->u;
+      vt[1].y *= vs->y + vs->h;
+      vt[1].v *= vs->v + vs->h;
+
+      vt[2].x *= vs->x + vs->w;
+      vt[2].u *= vs->u + vs->w;
+      vt[2].y *= vs->y;
+      vt[2].v *= vs->v;
+
+      vt[3].x *= vs->x + vs->w;
+      vt[3].u *= vs->u + vs->w;
+      vt[3].y *= vs->y + vs->h;
+      vt[3].v *= vs->v + vs->h;
+
+      vs += 1;
+      vt += 4;
     }
 
-    vt[0].x *= vs->x;
-    vt[0].u *= vs->u;
-    vt[0].y *= vs->y;
-    vt[0].v *= vs->v;
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-    vt[1].x *= vs->x;
-    vt[1].u *= vs->u;
-    vt[1].y *= vs->y + vs->h;
-    vt[1].v *= vs->v + vs->h;
+    // gles_shader_simple.vert reads texture coordinates as texel units offset by half a texel and
+    // scales them by m_cordStep: cord = (attr - 0.5) * cordStep. Render() sets cordStep to 1, so
+    // bias the normalised coordinates here to come back out unchanged.
+    for (VERTEX& v : quadVertices)
+    {
+      v.u += 0.5f;
+      v.v += 0.5f;
+    }
 
-    vt[2].x *= vs->x + vs->w;
-    vt[2].u *= vs->u + vs->w;
-    vt[2].y *= vs->y;
-    vt[2].v *= vs->v;
+    // Expand quads to triangles and upload once: glyph vertices never change after construction.
+    std::vector<VERTEX> vecVertices(6 * quadVertices.size() / 4);
+    VERTEX* vertices = vecVertices.data();
 
-    vt[3].x *= vs->x + vs->w;
-    vt[3].u *= vs->u + vs->w;
-    vt[3].y *= vs->y + vs->h;
-    vt[3].v *= vs->v + vs->h;
+    for (size_t i = 0; i < quadVertices.size(); i += 4)
+    {
+      *vertices++ = quadVertices[i];
+      *vertices++ = quadVertices[i + 1];
+      *vertices++ = quadVertices[i + 2];
 
-    vs += 1;
-    vt += 4;
+      *vertices++ = quadVertices[i + 1];
+      *vertices++ = quadVertices[i + 3];
+      *vertices++ = quadVertices[i + 2];
+    }
+
+    page.vbo.SetData(vecVertices.data(), vecVertices.size(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    page.vertexCount = static_cast<GLsizei>(vecVertices.size());
   }
-
-  glBindTexture(GL_TEXTURE_2D, 0);
-
-  // gles_shader_simple.vert reads texture coordinates as texel units offset by half a texel and
-  // scales them by m_cordStep: cord = (attr - 0.5) * cordStep. Render() sets cordStep to 1, so
-  // bias the normalised coordinates here to come back out unchanged.
-  for (VERTEX& v : quadVertices)
-  {
-    v.u += 0.5f;
-    v.v += 0.5f;
-  }
-
-  // Expand quads to triangles and upload once: glyph vertices never change after construction.
-  std::vector<VERTEX> vecVertices(6 * quadVertices.size() / 4);
-  VERTEX* vertices = vecVertices.data();
-
-  for (size_t i = 0; i < quadVertices.size(); i += 4)
-  {
-    *vertices++ = quadVertices[i];
-    *vertices++ = quadVertices[i + 1];
-    *vertices++ = quadVertices[i + 2];
-
-    *vertices++ = quadVertices[i + 1];
-    *vertices++ = quadVertices[i + 3];
-    *vertices++ = quadVertices[i + 2];
-  }
-
-  m_VBO.SetData(vecVertices.data(), vecVertices.size(), GL_STATIC_DRAW);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  m_vertexCount = static_cast<GLsizei>(vecVertices.size());
 }
 
 COverlayGlyphGLES::~COverlayGlyphGLES()
 {
-  glDeleteTextures(1, &m_texture);
+  for (const Page& page : m_pages)
+    glDeleteTextures(1, &page.texture);
 }
 
 void COverlayGlyphGLES::Render(SRenderState& state)
 {
-  if (m_texture == 0 || m_vertexCount == 0)
+  if (m_pages.empty())
     return;
 
   glEnable(GL_BLEND);
 
-  glBindTexture(GL_TEXTURE_2D, m_texture);
   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   glMatrixModview.Push();
   glMatrixModview->Translatef(state.x, state.y, 0.0f);
@@ -423,29 +429,37 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   matrix.MultMatrixf(glMatrixModview.Get());
   glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
-  m_VBO.Bind();
+  for (const Page& page : m_pages)
+  {
+    glBindTexture(GL_TEXTURE_2D, page.texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    page.vbo.Bind();
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        reinterpret_cast<GLvoid*>(offsetof(VERTEX, x)));
-  glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX),
-                        reinterpret_cast<GLvoid*>(offsetof(VERTEX, r)));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        reinterpret_cast<GLvoid*>(offsetof(VERTEX, u)));
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
+                          reinterpret_cast<GLvoid*>(offsetof(VERTEX, x)));
+    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX),
+                          reinterpret_cast<GLvoid*>(offsetof(VERTEX, r)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
+                          reinterpret_cast<GLvoid*>(offsetof(VERTEX, u)));
 
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
-  glEnableVertexAttribArray(tex0Loc);
+    glEnableVertexAttribArray(posLoc);
+    glEnableVertexAttribArray(colLoc);
+    glEnableVertexAttribArray(tex0Loc);
 
-  glUniform1f(depthLoc, -1.0f);
+    glUniform1f(depthLoc, -1.0f);
 
-  glDrawArrays(GL_TRIANGLES, 0, m_vertexCount);
-  CRenderSystemBase::m_GUIElementCount++;
+    glDrawArrays(GL_TRIANGLES, 0, page.vertexCount);
+    CRenderSystemBase::m_GUIElementCount++;
 
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(colLoc);
-  glDisableVertexAttribArray(tex0Loc);
+    glDisableVertexAttribArray(posLoc);
+    glDisableVertexAttribArray(colLoc);
+    glDisableVertexAttribArray(tex0Loc);
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+  }
 
   renderSystem->DisableGUIShader();
 
