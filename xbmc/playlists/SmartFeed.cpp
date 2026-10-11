@@ -11,6 +11,7 @@
 #include "utils/Random.h"
 
 #include <algorithm>
+#include <iterator>
 #include <mutex>
 #include <numeric>
 #include <utility>
@@ -28,16 +29,25 @@ CSmartFeed::CSmartFeed(int total, Fetch fetch)
 
 std::vector<std::shared_ptr<CFileItem>> CSmartFeed::Take(int count)
 {
-  std::vector<int> slice;
+  const size_t wanted = static_cast<size_t>(std::max(count, 0));
+  std::vector<std::shared_ptr<CFileItem>> items;
+  // A fetch leaves out matches that no longer exist, so more are claimed to make up the count
+  while (items.size() < wanted)
   {
-    std::unique_lock lock(m_critSection);
-    const size_t end = std::min(m_pool.size(), m_next + static_cast<size_t>(std::max(count, 0)));
-    slice.assign(m_pool.begin() + m_next, m_pool.begin() + end);
-    m_next = end;
+    std::vector<int> slice;
+    {
+      std::unique_lock lock(m_critSection);
+      const size_t end = std::min(m_pool.size(), m_next + wanted - items.size());
+      slice.assign(m_pool.begin() + m_next, m_pool.begin() + end);
+      m_next = end;
+    }
+    if (slice.empty())
+      break;
+    std::vector<std::shared_ptr<CFileItem>> fetched = m_fetch(slice);
+    items.insert(items.end(), std::make_move_iterator(fetched.begin()),
+                 std::make_move_iterator(fetched.end()));
   }
-  if (slice.empty())
-    return {};
-  return m_fetch(slice);
+  return items;
 }
 
 void CSmartFeed::Restart()

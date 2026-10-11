@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -88,4 +89,33 @@ TEST(TestSmartFeed, RestartDealsEverythingAgain)
 
   EXPECT_EQ(4, feed->GetLeft());
   EXPECT_EQ((std::vector<int>{0, 1, 2, 3}), Sorted(Entries(feed->Take(4))));
+}
+
+TEST(TestSmartFeed, ATakeLooksPastAMatchThatNoLongerExists)
+{
+  bool firstMatchGone = true;
+  const auto feed = std::make_shared<CSmartFeed>(
+      4,
+      [&firstMatchGone](const std::vector<int>& slice)
+      {
+        std::vector<std::shared_ptr<CFileItem>> items;
+        for (const int entry : slice)
+        {
+          if (!std::exchange(firstMatchGone, false))
+            items.push_back(std::make_shared<CFileItem>(std::to_string(entry), false));
+        }
+        return items;
+      });
+
+  EXPECT_EQ(1u, feed->Take(1).size());
+  EXPECT_EQ(2, feed->GetLeft());
+}
+
+TEST(TestSmartFeed, ATakeEndsWhenNoMatchLeftExists)
+{
+  const auto feed = std::make_shared<CSmartFeed>(
+      3, [](const std::vector<int>&) { return std::vector<std::shared_ptr<CFileItem>>{}; });
+
+  EXPECT_TRUE(feed->Take(2).empty());
+  EXPECT_EQ(0, feed->GetLeft());
 }
