@@ -1125,10 +1125,12 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   // Adaptive manifests may omit HDR signaling even when the decoded HEVC
   // picture identifies an HDR10/HLG base layer. A Dolby Vision fallback is
   // valid only when its profile and compatibility ID say so explicitly.
-  if (pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_NONE &&
+  if ((pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_NONE ||
+       pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) &&
       pVideoPicture->color_primaries == AVCOL_PRI_BT2020)
   {
-    const bool noDolbyVision = m_hints.dovi.dv_profile == 0;
+    const bool noDolbyVision =
+        pVideoPicture->hdrType == StreamHdrType::HDR_TYPE_NONE && m_hints.dovi.dv_profile == 0;
     if (pVideoPicture->color_transfer == AVCOL_TRC_SMPTE2084 &&
         (noDolbyVision || m_hints.HasHDR10DolbyVisionBaseLayer()))
       pVideoPicture->hdrType = StreamHdrType::HDR_TYPE_HDR10;
