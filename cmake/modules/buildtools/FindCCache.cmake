@@ -2,13 +2,54 @@
 # FindCCache
 # ----------
 # Finds ccache and sets it up as compiler wrapper.
-# This should ideally be called before the call to project().
+# Visual Studio support requires this to be called after project().
 #
 # See: https://crascit.com/2016/04/09/using-ccache-with-cmake/
 
+set(_ccache_explicit_program "${CCACHE_PROGRAM}")
 find_program(CCACHE_PROGRAM ccache)
 
-if(CCACHE_PROGRAM)
+set(_ccache_required_vars CCACHE_PROGRAM)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_GENERATOR MATCHES "Visual Studio")
+  if(CCACHE_PROGRAM AND NOT _ccache_explicit_program)
+    get_filename_component(_ccache_directory "${CCACHE_PROGRAM}" DIRECTORY)
+    file(GLOB _ccache_chocolatey_programs
+         "${_ccache_directory}/../lib/ccache/tools/ccache.exe"
+         "${_ccache_directory}/../lib/ccache/tools/*/ccache.exe")
+    if(_ccache_chocolatey_programs)
+      list(SORT _ccache_chocolatey_programs COMPARE NATURAL ORDER DESCENDING)
+      list(GET _ccache_chocolatey_programs 0 CCACHE_PROGRAM)
+      set(CCACHE_PROGRAM "${CCACHE_PROGRAM}" CACHE FILEPATH "Path to ccache executable" FORCE)
+    endif()
+  endif()
+
+  # Package-manager shims may work as ccache.exe but fail when relocated as cl.exe.
+  set(CCACHE_MSVC_USABLE FALSE)
+  if(CCACHE_PROGRAM)
+    set(_ccache_probe "${CMAKE_BINARY_DIR}/CMakeFiles/ccache/cl.exe")
+    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/CMakeFiles/ccache")
+    file(COPY_FILE "${CCACHE_PROGRAM}" "${_ccache_probe}" ONLY_IF_DIFFERENT
+         RESULT _ccache_copy_result)
+    if(_ccache_copy_result STREQUAL "0")
+      execute_process(COMMAND "${CMAKE_COMMAND}" -E env CCACHE_DISABLE=1 CCACHE_NOSTATS=1
+                              "CCACHE_COMPILER=${CMAKE_CXX_COMPILER}"
+                              "${_ccache_probe}" /?
+                      RESULT_VARIABLE _ccache_probe_result
+                      OUTPUT_QUIET ERROR_QUIET TIMEOUT 10)
+      if(_ccache_probe_result STREQUAL "0")
+        set(CCACHE_MSVC_USABLE TRUE)
+      endif()
+    endif()
+  endif()
+  list(APPEND _ccache_required_vars CCACHE_MSVC_USABLE)
+  set(_ccache_failure_reason
+      "Visual Studio requires a real ccache executable that works when copied as cl.exe. Set CCACHE_PROGRAM to the real executable (for Chocolatey, under lib/ccache/tools), or use ENABLE_CCACHE=OFF.")
+  if(CCACHE_PROGRAM AND NOT CCACHE_MSVC_USABLE AND NOT CCache_FIND_REQUIRED)
+    message(WARNING "Disabling ccache: ${CCACHE_PROGRAM} cannot be used as cl.exe. ${_ccache_failure_reason}")
+  endif()
+endif()
+
+if(CCACHE_PROGRAM AND (NOT DEFINED CCACHE_MSVC_USABLE OR CCACHE_MSVC_USABLE))
   execute_process(COMMAND "${CCACHE_PROGRAM}" --version
                   OUTPUT_VARIABLE CCACHE_VERSION
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -17,12 +58,24 @@ if(CCACHE_PROGRAM)
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(CCache REQUIRED_VARS CCACHE_PROGRAM
-                                  VERSION_VAR CCACHE_VERSION)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_GENERATOR MATCHES "Visual Studio")
+  set(CCache_FIND_VERSION 4.13.3)
+endif()
+find_package_handle_standard_args(CCache REQUIRED_VARS ${_ccache_required_vars}
+                                  VERSION_VAR CCACHE_VERSION
+                                  REASON_FAILURE_MESSAGE "${_ccache_failure_reason}")
 
 if(CCACHE_FOUND)
-  # Supports Unix Makefiles, Ninja and Xcode
-  if(XCODE)
+  # Supports Unix Makefiles, Ninja, Visual Studio and Xcode
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_GENERATOR MATCHES "Visual Studio")
+    include(${CMAKE_CURRENT_LIST_DIR}/../../scripts/windows/CCache.cmake)
+    set(CMAKE_CXX_SCAN_FOR_MODULES OFF PARENT_SCOPE)
+    # Embedded debug information can exceed the archive size limit.
+    set(ENABLE_STATIC_LIBS TRUE PARENT_SCOPE)
+    foreach(_variable IN LISTS _ccache_variables)
+      set(${_variable} "${${_variable}}" PARENT_SCOPE)
+    endforeach()
+  elseif(XCODE)
     file(WRITE "${CMAKE_BINARY_DIR}/launch-c" "#!/bin/sh\nexec \"${CCACHE_PROGRAM}\" \"${CMAKE_C_COMPILER}\" \"$@\"\n")
     file(WRITE "${CMAKE_BINARY_DIR}/launch-cxx" "#!/bin/sh\nexec \"${CCACHE_PROGRAM}\" \"${CMAKE_CXX_COMPILER}\" \"$@\"\n")
     execute_process(COMMAND chmod +x "${CMAKE_BINARY_DIR}/launch-c" "${CMAKE_BINARY_DIR}/launch-cxx")
