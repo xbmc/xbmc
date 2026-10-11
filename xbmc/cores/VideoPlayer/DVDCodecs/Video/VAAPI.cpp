@@ -656,7 +656,11 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         profile = VAProfileHEVCMain422_10;
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
                chroma == 422 &&
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(59, 45, 100)
                (m_capFormats.Supports(AV_PIX_FMT_Y212) || m_capFormats.Supports(AV_PIX_FMT_Y216)))
+#else
+               m_capFormats.Supports(AV_PIX_FMT_Y212))
+#endif
         profile = VAProfileHEVCMain422_12;
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 8 &&
                chroma == 444 &&
@@ -667,7 +671,11 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         profile = VAProfileHEVCMain444_10;
       else if (avctx->profile == AV_PROFILE_HEVC_REXT && m_vaapiConfig.bitDepth == 12 &&
                chroma == 444 &&
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(59, 46, 100)
                (m_capFormats.Supports(AV_PIX_FMT_XV36) || m_capFormats.Supports(AV_PIX_FMT_XV48)))
+#else
+               m_capFormats.Supports(AV_PIX_FMT_XV36))
+#endif
         profile = VAProfileHEVCMain444_12;
       break;
     }
@@ -694,8 +702,12 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
         profile = VAProfileVP9Profile1;
       else if (avctx->profile == AV_PROFILE_VP9_3 && chroma == 444 &&
                ((m_vaapiConfig.bitDepth == 10 && m_capFormats.Supports(AV_PIX_FMT_XV30)) ||
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(59, 46, 100)
                 (m_vaapiConfig.bitDepth == 12 && (m_capFormats.Supports(AV_PIX_FMT_XV36) ||
                                                   m_capFormats.Supports(AV_PIX_FMT_XV48)))))
+#else
+                (m_vaapiConfig.bitDepth == 12 && (m_capFormats.Supports(AV_PIX_FMT_XV36)))))
+#endif
         profile = VAProfileVP9Profile3;
       break;
     }
