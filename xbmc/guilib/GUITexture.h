@@ -14,6 +14,7 @@
 #include "guilib/AspectRatio.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
+#include "windowing/GraphicContext.h"
 
 #include <functional>
 #include <optional>
@@ -61,6 +62,8 @@ using DrawQuadFunc = std::function<void(const CRect& coords,
                                         const float depth,
                                         const bool blending)>;
 
+using DrawStencilQuadFunc = std::function<void(const CRect& coords, const STENCIL_LAYER mask)>;
+
 class CGUITexture
 {
 public:
@@ -68,6 +71,9 @@ public:
 
   static void Register(const CreateGUITextureFunc& createFunction,
                        const DrawQuadFunc& drawQuadFunction);
+  static void Register(const CreateGUITextureFunc& createFunction,
+                       const DrawQuadFunc& drawQuadFunction,
+                       const DrawStencilQuadFunc& drawStencilQuadFunction);
 
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
@@ -79,6 +85,8 @@ public:
                        const CRect* texCoords = nullptr,
                        const float depth = 1.0,
                        const bool blending = true);
+
+  static void DrawStencilQuad(const CRect& coords, const STENCIL_LAYER mask);
 
   bool Process(unsigned int currentTime);
   void Render(int32_t depthOffset = 0, int32_t overrideDepth = -1);
@@ -209,4 +217,5 @@ protected:
 private:
   static CreateGUITextureFunc m_createGUITextureFunc;
   static DrawQuadFunc m_drawQuadFunc;
+  static DrawStencilQuadFunc m_drawStencilQuadFunc;
 };
