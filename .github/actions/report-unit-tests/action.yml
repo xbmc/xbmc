@@ -1,0 +1,27 @@
+name: Report unit tests
+description: >
+  Uploads gtest XML results and writes a summary with one annotation per failed
+  test. Informational: the step that ran kodi-test decides the job result.
+inputs:
+  name:
+    description: Platform suffix for the artifact name (e.g. linux-gbm-X64).
+    required: true
+  results:
+    description: Glob of gtest XML files.
+    default: build/gtestresults.xml
+runs:
+  using: composite
+  steps:
+    - name: Summarise unit tests
+      if: always()
+      shell: bash
+      run: python3 .github/scripts/gtest_summary.py "${{ inputs.results }}" --title "Unit tests (${{ inputs.name }})"
+
+    - name: Upload unit test results
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: unit-test-results-${{ inputs.name }}
+        path: ${{ inputs.results }}
+        if-no-files-found: warn
+        retention-days: 7
