@@ -1,0 +1,38 @@
+name: Merge conflicts
+
+# Replaces Jenkins' GitHub-ConflictChecker: labels open pull requests that no
+# longer merge with "Rebase needed", comments once when the label is added and
+# removes the label again once the branch merges. A push to master checks every
+# pull request against master; a pull request update checks every open pull
+# request. pull_request_target runs with the repository's token so fork pull
+# requests can be labelled; nothing from the pull request is checked out or run.
+
+on:
+  push:
+    branches: [master]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+# One scan at a time: the action decides from a snapshot of each pull request's
+# labels, so parallel runs could comment twice. Later triggers collapse into a
+# single queued run, which covers them all.
+concurrency:
+  group: merge-conflicts
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-26.04
+    # GitHub computes mergeability lazily after a push; the action waits and
+    # retries (120 s, five times) while a pull request still reports unknown.
+    timeout-minutes: 30
+    steps:
+      - uses: eps1lon/actions-label-merge-conflict@0273be72a0bbd58fcd71d0d6c02c209b50d1e5e1 # v3.1.0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          dirtyLabel: Rebase needed
+          commentOnDirty: This pull request has conflicts with its target branch and needs a rebase.
