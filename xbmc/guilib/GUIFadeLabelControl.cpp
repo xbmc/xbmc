@@ -228,6 +228,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_ADD)
     {
       AddLabel(message.GetLabel());
+      MarkDirtyRegion();
       return true;
     }
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
@@ -236,6 +237,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
       m_infoLabels.clear();
       m_allLabelsShown = true;
       m_scrollInfo.Reset();
+      MarkDirtyRegion();
       return true;
     }
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
@@ -245,6 +247,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
       m_allLabelsShown = true;
       m_scrollInfo.Reset();
       AddLabel(message.GetLabel());
+      MarkDirtyRegion();
       return true;
     }
   }
