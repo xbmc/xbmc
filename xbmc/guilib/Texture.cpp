@@ -308,6 +308,9 @@ bool CTexture::LoadIImage(IImage* pImage,
     }
   }
 
+  width = std::max(width, 1u);
+  height = std::max(height, 1u);
+
   // align all textures so that they have an even width
   // in some circumstances when we downsize a thumbnail
   // which has an uneven number of pixels in width
