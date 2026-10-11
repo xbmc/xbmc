@@ -719,13 +719,15 @@ void CGUIWindowSlideShow::Render()
       IsVideo(*m_slides.at(m_iCurrentSlide)) && CServiceBroker::GetWinSystem()->IsHdrComposite();
   gfxCtx.Clear(hdrVideo ? 0 : 0xff000000);
 
-  if (IsVideo(*m_slides.at(m_iCurrentSlide)))
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  // A running slideshow never shows a video's thumbnail. Otherwise keep it up until the first frame.
+  if (IsVideo(*m_slides.at(m_iCurrentSlide)) &&
+      ((m_bSlideShow && !m_bPause) || appPlayer->IsRenderingVideo()))
   {
     gfxCtx.SetViewWindow(0, 0, m_coordsRes.iWidth, m_coordsRes.iHeight);
     gfxCtx.SetRenderingResolution(gfxCtx.GetVideoResolution(), false);
-
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
     if (appPlayer->IsRenderingVideoLayer())
     {
