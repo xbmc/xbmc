@@ -489,7 +489,7 @@ bool CPicture::Rotate90CCW(std::unique_ptr<uint32_t[]>& pixels,
                            unsigned int& height,
                            unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height * 4);
+  auto dest = std::make_unique<uint32_t[]>(width * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -512,7 +512,7 @@ bool CPicture::Rotate270CCW(std::unique_ptr<uint32_t[]>& pixels,
                             unsigned int& height,
                             unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height * 4);
+  auto dest = std::make_unique<uint32_t[]>(width * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -537,7 +537,7 @@ bool CPicture::Transpose(std::unique_ptr<uint32_t[]>& pixels,
                          unsigned int& height,
                          unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height * 4);
+  auto dest = std::make_unique<uint32_t[]>(width * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -561,7 +561,7 @@ bool CPicture::TransposeOffAxis(std::unique_ptr<uint32_t[]>& pixels,
                                 unsigned int& height,
                                 unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height * 4);
+  auto dest = std::make_unique<uint32_t[]>(width * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
