@@ -917,7 +917,7 @@ int DatabaseUtils::GetField(Field field, const MediaType &mediaType, bool asInde
     else if (field == Field::COUNTRY)
       index = VIDEODB_ID_COUNTRY;
     else if (field == Field::FILENAME)
-      index = VIDEODB_DETAILS_MOVIE_FILE;
+      return VIDEODB_DETAILS_MOVIE_FILE;
     else if (field == Field::PATH)
       return VIDEODB_DETAILS_MOVIE_PATH;
     else if (field == Field::PLAYCOUNT)
