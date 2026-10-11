@@ -37,6 +37,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/DisplaySettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Random.h"
@@ -1212,7 +1213,11 @@ bool CGUIWindowSlideShow::PlayVideo()
   CLog::Log(LOGDEBUG, "Playing current video slide {}", item->GetPath());
   m_bPlayingVideo = true;
   m_iVideoSlide = m_iCurrentSlide;
+  // The clip plays inside the slideshow, so it mustn't switch the display mode like a film
+  const bool startWindowed = CMediaSettings::GetInstance().DoesMediaStartWindowed();
+  CMediaSettings::GetInstance().SetMediaStartWindowed(true);
   bool ret = g_application.PlayFile(*item, "");
+  CMediaSettings::GetInstance().SetMediaStartWindowed(startWindowed);
   if (ret == true)
     return true;
   else
