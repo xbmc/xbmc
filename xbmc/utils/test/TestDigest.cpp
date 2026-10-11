@@ -97,3 +97,11 @@ TEST(TestDigest, TypedDigest_DifferingType)
   EXPECT_THROW(a = (t1 != t2), std::logic_error);
   (void)a;
 }
+
+TEST(TestDigest, TypeFromStringIgnoresCase)
+{
+  EXPECT_EQ(CDigest::Type::MD5, CDigest::TypeFromString("MD5"));
+  EXPECT_EQ(CDigest::Type::SHA1, CDigest::TypeFromString("Sha1"));
+  EXPECT_EQ(CDigest::Type::SHA256, CDigest::TypeFromString("SHA256"));
+  EXPECT_EQ(CDigest::Type::SHA512, CDigest::TypeFromString("sha512"));
+}
