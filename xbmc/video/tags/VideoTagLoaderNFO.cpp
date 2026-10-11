@@ -217,8 +217,25 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
       if (nfoFile.empty())
       {
         const std::string stackedTitlePath{CStackDirectory::GetStackTitlePath(item.GetPath())};
+        // A folder stack's title path is no folder to look in, but when the stack is named after
+        // the folder holding its parts, that is the movie's folder and its movie.nfo takes priority
+        const bool isFolderStack{URIUtils::HasSlashAtEnd(stackedTitlePath)};
+        if (movieFolder && isFolderStack)
+        {
+          std::string basePath{CStackDirectory::GetBasePath(item.GetPath())};
+          std::string titlePath{stackedTitlePath};
+          URIUtils::RemoveSlashAtEnd(basePath);
+          URIUtils::RemoveSlashAtEnd(titlePath);
+          if (URIUtils::GetFileName(titlePath) == URIUtils::GetFileName(basePath))
+          {
+            nfoFile = URIUtils::AddFileToFolder(basePath, "movie.nfo");
+            if (CFileUtils::Exists(nfoFile))
+              return nfoFile;
+            nfoFile.clear();
+          }
+        }
         item2.SetPath(stackedTitlePath);
-        nfoFile = FindNFO(item2, movieFolder);
+        nfoFile = FindNFO(item2, movieFolder && !isFolderStack);
       }
     }
     else
