@@ -38,7 +38,8 @@ public:
                const std::string& strFileName,
                const int maxWidth,
                const int maxHeight,
-               bool checkMotion);
+               bool checkMotion,
+               bool checkHdr);
   bool IsLoading() { return m_isLoading; }
   int SlideNumber() const { return m_iSlideNumber; }
   int Pic() const { return m_iPic; }
@@ -51,6 +52,7 @@ private:
   int m_maxWidth = 0;
   int m_maxHeight = 0;
   bool m_checkMotion = false;
+  bool m_checkHdr = false;
 
   CEvent m_loadPic;
   bool m_isLoading = false;
@@ -108,8 +110,10 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool OnAction(const CAction& action) override;
+  void FreeResources(bool forceUnLoad = false) override;
   void Render() override;
   void RenderEx() override;
+  bool WantsRenderEx() const override { return m_hdrOutput; }
   void Process(unsigned int currentTime, CDirtyRegionList& regions) override;
   void OnDeinitWindow(int nextWindowID) override;
 
@@ -118,7 +122,9 @@ public:
                  const std::string& strFileName,
                  std::unique_ptr<CTexture> pTexture,
                  bool bFullSize,
-                 const std::string& motionClip);
+                 const std::string& motionClip,
+                 std::unique_ptr<CTexture> gainMap,
+                 const KODI::PICTURE::GainMapParams& gainMapParams);
 
   static void RunSlideShow(const std::vector<std::string>& paths, int start = 0);
 
@@ -138,6 +144,7 @@ private:
   void EndMotion();
   bool IsShowingVideo() const;
   std::string GetMotionClip(const CFileItem& item) const;
+  void SetHdrOutput(bool hdr);
   CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;
   void RenderPause();
   void RenderErrorMessage();
@@ -176,6 +183,9 @@ private:
   mutable CCriticalSection m_motionClipsSection;
   std::map<std::string, std::string, std::less<>> m_motionClips; // picture path -> clip path
   bool m_bErrorMessage;
+  bool m_showHdr = false; //!< HDR pictures switch the display to HDR
+  bool m_hdrOutput = false;
+  bool m_hdrEntered = false; //!< An HDR picture has been shown in this slideshow
 
   std::vector<CFileItemPtr> m_slides;
 

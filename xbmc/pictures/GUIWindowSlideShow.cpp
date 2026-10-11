@@ -19,6 +19,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
@@ -34,6 +35,7 @@
 #include "pictures/MotionPhoto.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pictures/SlideShowDelegator.h"
+#include "pictures/UltraHdr.h"
 #include "playlists/PlayListTypes.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
@@ -51,6 +53,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
 
@@ -110,6 +113,14 @@ void CBackgroundPicLoader::Process()
         std::string motionClip;
         if (texture && m_checkMotion)
           motionClip = KODI::PICTURE::ExtractMotionPhotoClip(m_strFileName);
+        std::unique_ptr<CTexture> gainMapTexture;
+        KODI::PICTURE::GainMap gainMap;
+        if (texture && m_checkHdr)
+          gainMap = KODI::PICTURE::ReadGainMap(m_strFileName);
+        if (!gainMap.image.empty())
+          gainMapTexture = CTexture::LoadFromFileInMemory(
+              reinterpret_cast<unsigned char*>(gainMap.image.data()), gainMap.image.size(),
+              "image/jpeg", m_maxWidth, m_maxHeight);
 
         auto end = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -133,7 +144,7 @@ void CBackgroundPicLoader::Process()
           }
         }
         m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, m_strFileName, std::move(texture), bFullSize,
-                               motionClip);
+                               motionClip, std::move(gainMapTexture), gainMap.params);
         m_isLoading = false;
       }
     }
@@ -148,7 +159,8 @@ void CBackgroundPicLoader::LoadPic(int iPic,
                                    const std::string& strFileName,
                                    const int maxWidth,
                                    const int maxHeight,
-                                   bool checkMotion)
+                                   bool checkMotion,
+                                   bool checkHdr)
 {
   m_iPic = iPic;
   m_iSlideNumber = iSlideNumber;
@@ -156,6 +168,7 @@ void CBackgroundPicLoader::LoadPic(int iPic,
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
   m_checkMotion = checkMotion;
+  m_checkHdr = checkHdr;
   m_isLoading = true;
   m_loadPic.Set();
 }
@@ -304,6 +317,8 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
     //CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), true);
   }
 
+  SetHdrOutput(false);
+
   if (m_bPlayingMotion)
   {
     // The clip is part of the photo, so it ends with the slideshow
@@ -343,6 +358,14 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
   m_bSlideShow = false;
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
+}
+
+void CGUIWindowSlideShow::FreeResources(bool forceUnLoad)
+{
+  m_Image[0]->Free();
+  m_Image[1]->Free();
+
+  CGUIDialog::FreeResources(forceUnLoad);
 }
 
 void CGUIWindowSlideShow::Add(const CFileItem *picture)
@@ -596,7 +619,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
         (float)res.iHeight * m_fZoom,
         maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(m_iCurrentPic, m_iCurrentSlide, picturePath, maxWidth, maxHeight,
-                                   !IsVideo(*item));
+                                   !IsVideo(*item), m_showHdr && !IsVideo(*item));
       m_iLastFailedNextSlide = -1;
       m_bLoadNextPic = false;
     }
@@ -627,7 +650,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
                      (float)res.iHeight * m_fZoom,
                      maxWidth, maxHeight);
       m_pBackgroundLoader->LoadPic(1 - m_iCurrentPic, m_iNextSlide, picturePath, maxWidth,
-                                   maxHeight, !IsVideo(*item));
+                                   maxHeight, !IsVideo(*item), m_showHdr && !IsVideo(*item));
     }
   }
 
@@ -767,13 +790,27 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
                   });
   }
 
+  if (m_hdrOutput && !m_showHdr)
+    SetHdrOutput(false);
+
+  // The first HDR picture switches the display to HDR, and it stays there until the slideshow ends.
+  // A video sets the display up for itself, so the next picture after one switches back.
+  if (m_showHdr && !m_hdrOutput && !m_bPlayingVideo && m_Image[m_iCurrentPic]->IsLoaded() &&
+      (m_Image[m_iCurrentPic]->HasGainMap() ||
+       (m_hdrEntered && !IsVideo(*m_slides.at(m_iCurrentSlide)))))
+  {
+    SetHdrOutput(true);
+    m_hdrEntered = m_hdrEntered || m_hdrOutput;
+  }
+
   // A new visit to a moving photo plays its clip again, even if a video was showing in between
   if (m_iMotionSlide != m_iCurrentSlide)
     m_iMotionSlide = -1;
 
-  // While browsing by hand, a moving photo plays its clip each time it comes up
-  if ((!m_bSlideShow || m_bPause) && !m_bPlayingVideo && m_iMotionSlide != m_iCurrentSlide &&
-      m_Image[m_iCurrentPic]->IsLoaded() &&
+  // While browsing by hand, a moving photo plays its clip each time it comes up. Its clip isn't
+  // HDR, so it doesn't play while the display is in HDR.
+  if ((!m_bSlideShow || m_bPause) && !m_bPlayingVideo && !m_hdrOutput &&
+      m_iMotionSlide != m_iCurrentSlide && m_Image[m_iCurrentPic]->IsLoaded() &&
       m_Image[m_iCurrentPic]->SlideNumber() == m_iCurrentSlide &&
       !m_Image[m_iCurrentPic]->DrawNextImage())
   {
@@ -805,9 +842,11 @@ void CGUIWindowSlideShow::Render()
     return;
 
   CGraphicContext& gfxCtx = CServiceBroker::GetWinSystem()->GetGfxContext();
-  // HDR video is drawn underneath the GUI, by the window below the slideshow
-  const bool hdrVideo = IsShowingVideo() && CServiceBroker::GetWinSystem()->IsHdrComposite();
-  gfxCtx.Clear(hdrVideo ? 0 : 0xff000000);
+  // HDR pictures are drawn underneath the GUI by RenderEx(), and HDR video by the window below
+  // the slideshow
+  const bool hdrUnderneath =
+      m_hdrOutput || (IsShowingVideo() && CServiceBroker::GetWinSystem()->IsHdrComposite());
+  gfxCtx.Clear(hdrUnderneath ? 0 : 0xff000000);
 
   if (IsShowingVideo())
   {
@@ -837,10 +876,10 @@ void CGUIWindowSlideShow::Render()
   else
   {
     if (m_Image[m_iCurrentPic]->IsLoaded())
-      m_Image[m_iCurrentPic]->Render();
+      m_Image[m_iCurrentPic]->Render(!m_hdrOutput);
 
     if (m_Image[m_iCurrentPic]->DrawNextImage() && m_Image[1 - m_iCurrentPic]->IsLoaded())
-      m_Image[1 - m_iCurrentPic]->Render();
+      m_Image[1 - m_iCurrentPic]->Render(!m_hdrOutput);
   }
 
   RenderErrorMessage();
@@ -854,6 +893,21 @@ void CGUIWindowSlideShow::RenderEx()
     auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     appPlayer->Render(false, 255, false);
+  }
+  else if (m_hdrOutput)
+  {
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes,
+                                                                           m_needsScaling);
+    bool rendered = true;
+    if (m_Image[m_iCurrentPic]->IsLoaded())
+      rendered = m_Image[m_iCurrentPic]->RenderHdr();
+
+    if (m_Image[m_iCurrentPic]->DrawNextImage() && m_Image[1 - m_iCurrentPic]->IsLoaded())
+      rendered = m_Image[1 - m_iCurrentPic]->RenderHdr() && rendered;
+
+    // Process() switches back to SDR
+    if (!rendered)
+      m_showHdr = false;
   }
 
   CGUIWindow::RenderEx();
@@ -1147,6 +1201,14 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       else
         m_Resolution = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
 
+      // A slideshow with videos in it stays out of HDR: the display would change mode, and go
+      // blank for a moment, on the way into and out of every video
+      m_showHdr = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                      CSettings::SETTING_SLIDESHOW_HDRPICTURES) &&
+                  m_Image[0]->SupportsHdr() && CServiceBroker::GetWinSystem()->IsHDRDisplay() &&
+                  std::ranges::none_of(m_slides, [](const auto& slide) { return IsVideo(*slide); });
+      m_hdrEntered = false;
+
       CGUIDialog::OnMessage(message);
 
       // turn off slideshow if we only have 1 image
@@ -1335,6 +1397,8 @@ bool CGUIWindowSlideShow::PlayVideo()
   CLog::Log(LOGDEBUG, "Playing current video slide {}", item->GetPath());
   m_bPlayingVideo = true;
   m_iVideoSlide = m_iCurrentSlide;
+  // The video sets up the display for itself
+  SetHdrOutput(false);
   // The clip plays inside the slideshow, so it mustn't switch the display mode like a film
   const bool startWindowed = CMediaSettings::GetInstance().DoesMediaStartWindowed();
   CMediaSettings::GetInstance().SetMediaStartWindowed(true);
@@ -1400,6 +1464,65 @@ std::string CGUIWindowSlideShow::GetMotionClip(const CFileItem& item) const
   return clip != m_motionClips.end() ? clip->second : "";
 }
 
+void CGUIWindowSlideShow::SetHdrOutput(bool hdr)
+{
+  if (hdr == m_hdrOutput)
+    return;
+
+  CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
+  if (hdr)
+  {
+    // Ask for the output a 10-bit PQ video would get
+    VideoPicture picture{};
+    picture.color_primaries = AVCOL_PRI_BT2020;
+    picture.color_transfer = AVCOL_TRC_SMPTE2084;
+    picture.color_space = AVCOL_SPC_BT2020_NCL;
+    picture.colorBits = 10;
+    picture.iWidth = static_cast<unsigned int>(winSystem->GetGfxContext().GetWidth());
+    picture.iHeight = static_cast<unsigned int>(winSystem->GetGfxContext().GetHeight());
+
+    // Describe the pictures as HDR10 mastered on a 1000-nit display, the brightest a gain map is
+    // drawn. Some displays stay in SDR when this is left empty.
+    picture.hasDisplayMetadata = true;
+    AVMasteringDisplayMetadata& display = picture.displayMetadata;
+    display.display_primaries[0][0] = av_make_q(708, 1000);
+    display.display_primaries[0][1] = av_make_q(292, 1000);
+    display.display_primaries[1][0] = av_make_q(170, 1000);
+    display.display_primaries[1][1] = av_make_q(797, 1000);
+    display.display_primaries[2][0] = av_make_q(131, 1000);
+    display.display_primaries[2][1] = av_make_q(46, 1000);
+    display.white_point[0] = av_make_q(3127, 10000);
+    display.white_point[1] = av_make_q(3290, 10000);
+    display.max_luminance = av_make_q(1000, 1);
+    display.min_luminance = av_make_q(5, 1000);
+    display.has_primaries = 1;
+    display.has_luminance = 1;
+    picture.hasLightMetadata = true;
+    picture.lightMetadata.MaxCLL = 1000;
+    picture.lightMetadata.MaxFALL = 400;
+
+    winSystem->SetVideoOutput(&picture);
+    winSystem->SetColorimetry(&picture);
+    if (winSystem->SetHDR(&picture) && winSystem->SetGuiCompositing(AVCOL_TRC_SMPTE2084))
+    {
+      CLog::Log(LOGINFO, "Slideshow: switched the display to HDR for HDR pictures");
+      m_hdrOutput = true;
+      MarkDirtyRegion();
+      return;
+    }
+
+    CLog::Log(LOGWARNING, "Slideshow: the display couldn't switch to HDR");
+    m_showHdr = false;
+  }
+
+  winSystem->SetGuiCompositing(0);
+  winSystem->SetHDR(nullptr);
+  winSystem->SetColorimetry(nullptr);
+  winSystem->SetVideoOutput(nullptr);
+  m_hdrOutput = false;
+  MarkDirtyRegion();
+}
+
 CSlideShowPic::DISPLAY_EFFECT CGUIWindowSlideShow::GetDisplayEffect(int iSlideNumber) const
 {
   if (m_bSlideShow && !m_bPause && !IsVideo(*m_slides.at(iSlideNumber)))
@@ -1413,7 +1536,9 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic,
                                     const std::string& strFileName,
                                     std::unique_ptr<CTexture> pTexture,
                                     bool bFullSize,
-                                    const std::string& motionClip)
+                                    const std::string& motionClip,
+                                    std::unique_ptr<CTexture> gainMap,
+                                    const KODI::PICTURE::GainMapParams& gainMapParams)
 {
   if (pTexture)
   {
@@ -1433,6 +1558,8 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic,
     m_Image[iPic]->SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(),
                                    bFullSize);
     m_Image[iPic]->SetTexture(iSlideNumber, std::move(pTexture), GetDisplayEffect(iSlideNumber));
+    if (gainMap)
+      m_Image[iPic]->SetGainMap(std::move(gainMap), gainMapParams);
 
     m_Image[iPic]->m_bIsComic = false;
     if (URIUtils::IsInRAR(m_slides.at(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides.at(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz
