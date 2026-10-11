@@ -2439,6 +2439,12 @@ void CVideoPlayer::HandlePlaySpeed()
             m_clock.SetSpeedAdjust(adjust);
           }
         }
+        // An adjustment made while the audio was still decoded would otherwise stand for as
+        // long as it is passed through, with nothing left to take it off
+        else if (IsPassthrough() && m_clock.GetSpeedAdjust() < 0)
+        {
+          m_clock.SetSpeedAdjust(0.0);
+        }
       }
     }
   }
