@@ -123,7 +123,7 @@ void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
     // coverage alpha; HDR FBO composite uses a compensated squared-alpha
     // blend because the FBO is color-transformed to PQ/HLG before composite,
     // and alpha blending in non-linear space is mathematically wrong.
-    if (CServiceBroker::GetWinSystem()->IsHdrComposite())
+    if (CServiceBroker::GetWinSystem()->UseSquaredAlphaBlend())
       glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA,
                           GL_ONE_MINUS_SRC_ALPHA);
     else
