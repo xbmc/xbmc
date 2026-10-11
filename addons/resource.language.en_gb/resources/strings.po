@@ -19256,7 +19256,13 @@ msgctxt "#35239"
 msgid "Integer (square pixels)"
 msgstr ""
 
-#empty strings from id 35240 to 35248
+#. Error dialog text when an emulator can't load a game, or can't start without one. {0:s} - emulator name
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35240"
+msgid "The emulator \"{0:s}\" couldn't start. It may be missing BIOS or other files it needs."
+msgstr ""
+
+#empty strings from id 35241 to 35248
 
 #. Button to open the savestate manager from the game OSD
 #: addons/skin.estuary/xml/GameOSD.xml

@@ -329,14 +329,15 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
   const auto loadGame = [this, &path]()
   {
-    GAME_ERROR loadError = GAME_ERROR_FAILED;
+    // GAME_ERROR_FAILED brings up the BIOS hint, so only LoadGame() may return it
+    GAME_ERROR loadError = GAME_ERROR_UNKNOWN;
     try
     {
       CClientFrameScope hwScope(Streams());
       if (!hwScope.IsBound())
       {
         CLog::Log(LOGERROR, "GameClient: Failed to make the client's context current");
-        return GAME_ERROR_FAILED;
+        return GAME_ERROR_UNKNOWN;
       }
 
       LogError(loadError = m_ifc.game->toAddon->LoadGame(m_ifc.game, path.c_str()), "LoadGame()");
@@ -391,7 +392,8 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
 
   CloseFile();
 
-  GAME_ERROR error = GAME_ERROR_FAILED;
+  // GAME_ERROR_FAILED brings up the missing files hint, so only LoadStandalone() may return it
+  GAME_ERROR error = GAME_ERROR_UNKNOWN;
 
   // Loading the game might require the stream subsystem to be initialized
   Streams().Initialize(streamManager);
@@ -408,7 +410,7 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
       if (!hwScope.IsBound())
       {
         CLog::Log(LOGERROR, "GameClient: Failed to make the client's context current");
-        error = GAME_ERROR_FAILED;
+        error = GAME_ERROR_UNKNOWN;
       }
       else
         LogError(error = m_ifc.game->toAddon->LoadStandalone(m_ifc.game), "LoadStandalone()");
@@ -612,6 +614,15 @@ void CGameClient::NotifyError(GAME_ERROR error)
         CVariant{StringUtils::Format(
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35211),
             missingResource)});
+  }
+  else if (error == GAME_ERROR_FAILED)
+  {
+    // Failed to play game
+    // The emulator "%s" couldn't start. It may be missing BIOS or other files it needs.
+    MESSAGING::HELPERS::ShowOKDialogText(
+        CVariant{35210},
+        CVariant{StringUtils::Format(
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35240), Name())});
   }
   else
   {
