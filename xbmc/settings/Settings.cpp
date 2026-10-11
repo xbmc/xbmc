@@ -594,7 +594,7 @@ void CSettings::InitializeISettingCallbacks()
        CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS, CSettings::SETTING_VIDEOLIBRARY_CLEANUP,
        CSettings::SETTING_VIDEOLIBRARY_IMPORT, CSettings::SETTING_VIDEOLIBRARY_EXPORT,
        CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS,
-       CSettings::SETTING_MAINTENANCE_CLEANIMAGECACHE});
+       CSettings::SETTING_MAINTENANCE_CLEANIMAGECACHE, CSettings::SETTING_SLIDESHOW_MUSIC});
 
   GetSettingsManager()->RegisterCallback(
       &CDisplaySettings::GetInstance(),

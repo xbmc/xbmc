@@ -12,12 +12,17 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "playlists/PlayListTypes.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "tags/MusicInfoTag.h"
 #include "utils/ItemProperties.h"
 #include "utils/Variant.h"
@@ -201,5 +206,25 @@ bool CMusicQueue::Execute(const std::shared_ptr<CFileItem>& item) const
   const int windowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   SelectNextItem(windowID);
 
+  return true;
+}
+
+bool CMusicSlideshowMusic::IsVisible(const CFileItem& item) const
+{
+  // A plug-in item can't be played again from its path alone
+  return MUSIC_UTILS::IsItemPlayable(item) && !item.IsPlugin();
+}
+
+bool CMusicSlideshowMusic::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  settings->SetString(CSettings::SETTING_SLIDESHOW_MUSICPATH, item->GetPath());
+  settings->SetString(CSettings::SETTING_SLIDESHOW_MUSIC, item->GetLabel());
+  settings->Save();
+
+  CGUIDialogKaiToast::QueueNotification(
+      CGUIDialogKaiToast::Info,
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36647), // Background music
+      item->GetLabel());
   return true;
 }

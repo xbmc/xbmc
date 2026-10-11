@@ -13,6 +13,9 @@
 #include "TextureCache.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -20,12 +23,16 @@
 #include "music/MusicLibraryQueue.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/dialogs/GUIDialogLibExportSettings.h"
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
 #include "utils/ContentNames.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -333,6 +340,57 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
       // Import data to music library showing progress dialog
       CMusicLibraryQueue::GetInstance().ImportLibrary(path, true);
     }
+  }
+  else if (settingId == CSettings::SETTING_SLIDESHOW_MUSIC)
+  {
+    auto* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+        WINDOW_DIALOG_SELECT);
+    if (!dialog)
+      return;
+
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    std::string path = settings->GetString(CSettings::SETTING_SLIDESHOW_MUSICPATH);
+
+    dialog->Reset();
+    dialog->SetHeading(CVariant{36647}); // Background music
+    dialog->Add(localizeStrings.Get(36649)); // Choose a folder
+    dialog->Add(localizeStrings.Get(36650)); // Choose a file
+    if (!path.empty())
+      dialog->Add(localizeStrings.Get(36651)); // Turn off
+    dialog->Open();
+    if (!dialog->IsConfirmed())
+      return;
+
+    std::vector<CMediaSource> shares =
+        CMediaSourceSettings::GetInstance().GetSources(KODI::MEDIA::MediaSection::MUSIC);
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+    const std::string heading = localizeStrings.Get(36647);
+
+    switch (dialog->GetSelectedItem())
+    {
+      case 0:
+        if (!CGUIDialogFileBrowser::ShowAndGetDirectory(shares, heading, path))
+          return;
+        break;
+      case 1:
+        if (!CGUIDialogFileBrowser::ShowAndGetFile(
+                shares, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), heading,
+                path))
+          return;
+        break;
+      case 2:
+        path.clear();
+        break;
+      default:
+        return;
+    }
+
+    std::string name = path;
+    URIUtils::RemoveSlashAtEnd(name);
+    settings->SetString(CSettings::SETTING_SLIDESHOW_MUSICPATH, path);
+    settings->SetString(CSettings::SETTING_SLIDESHOW_MUSIC, URIUtils::GetFileName(name));
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_CLEANUP)
   {

@@ -12,9 +12,11 @@
 #include "guilib/GUIDialog.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/ISlideShowDelegate.h"
+#include "playlists/PlayListTypes.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
+#include <cstdint>
 #include <memory>
 #include <set>
 
@@ -125,6 +127,10 @@ private:
                 SortOrder order = SortOrder::ASCENDING,
                 SortAttribute sortAttributes = SortAttributeNone);
   bool PlayVideo();
+  void StartMusic();
+  void StopMusic();
+  void ResumeMusic();
+  bool IsSlideshowMusic(int item) const;
   CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;
   void RenderPause();
   void RenderErrorMessage();
@@ -157,6 +163,10 @@ private:
   bool m_bPause;
   bool m_bPlayingVideo;
   int m_iVideoSlide = -1;
+  bool m_bPlayingMusic = false;
+  int m_iMusicResumeItem = -1;
+  int64_t m_iMusicResumeTime = 0;
+  KODI::PLAYLIST::RepeatState m_musicRepeat = KODI::PLAYLIST::RepeatState::NONE;
   bool m_bErrorMessage;
 
   std::vector<CFileItemPtr> m_slides;

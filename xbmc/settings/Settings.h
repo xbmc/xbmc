@@ -333,6 +333,8 @@ public:
   static constexpr auto SETTING_SLIDESHOW_STAYTIME = "slideshow.staytime";
   static constexpr auto SETTING_SLIDESHOW_DISPLAYEFFECTS = "slideshow.displayeffects";
   static constexpr auto SETTING_SLIDESHOW_SHUFFLE = "slideshow.shuffle";
+  static constexpr auto SETTING_SLIDESHOW_MUSIC = "slideshow.music";
+  static constexpr auto SETTING_SLIDESHOW_MUSICPATH = "slideshow.musicpath";
   static constexpr auto SETTING_SLIDESHOW_HIGHQUALITYDOWNSCALING =
       "slideshow.highqualitydownscaling";
   static constexpr auto SETTING_WEATHER_CURRENTLOCATION = "weather.currentlocation";

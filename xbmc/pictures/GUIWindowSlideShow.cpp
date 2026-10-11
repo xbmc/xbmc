@@ -13,6 +13,7 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/Application.h"
@@ -29,9 +30,13 @@
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseEvent.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/MusicFileItemClassify.h"
+#include "music/MusicUtils.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pictures/SlideShowDelegator.h"
+#include "playlists/PlayList.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "playlists/PlayListTypes.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
@@ -73,6 +78,12 @@ using namespace std::chrono_literals;
 #define CONTROL_PAUSE                       13
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
+
+namespace
+{
+// Marks the songs a slideshow queued as its background music
+constexpr const char* SLIDESHOW_MUSIC = "slideshowmusic";
+} // namespace
 
 CBackgroundPicLoader::CBackgroundPicLoader() : CThread("BgPicLoader")
 {
@@ -272,6 +283,8 @@ void CGUIWindowSlideShow::Reset()
 
 void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
 {
+  StopMusic();
+
   if (m_Resolution != CDisplaySettings::GetInstance().GetCurrentResolution())
   {
     //FIXME: Use GUI resolution for now
@@ -428,6 +441,9 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   int iSlides = m_slides.size();
   if (!iSlides)
     return;
+
+  if (m_iMusicResumeItem >= 0 && !m_bPlayingVideo && !IsVideo(*m_slides.at(m_iCurrentSlide)))
+    ResumeMusic();
 
   // if we haven't processed yet, we should mark the whole screen
   if (!HasProcessed())
@@ -942,6 +958,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
       m_bSlideShow = true;
       m_bPause = false;
       SetDirection(1);
+      StartMusic();
       if (m_Image[m_iCurrentPic]->IsLoaded())
       {
         CSlideShowPic::DISPLAY_EFFECT effect = GetDisplayEffect(m_iCurrentSlide);
@@ -1062,6 +1079,9 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       if (m_slides.size() <= 1)
         m_bSlideShow = false;
 
+      if (m_bSlideShow)
+        StartMusic();
+
       return true;
     }
     break;
@@ -1108,7 +1128,9 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_PLAYBACK_STOPPED:
       {
-        if (m_bPlayingVideo)
+        // The music stopping to make way for the video isn't the video stopping
+        if (m_bPlayingVideo &&
+            !CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()->IsPlaying())
         {
           m_bPlayingVideo = false;
           m_iVideoSlide = -1;
@@ -1219,6 +1241,18 @@ bool CGUIWindowSlideShow::PlayVideo()
   if (!item || !IsVideo(*item))
     return false;
   CLog::Log(LOGDEBUG, "Playing current video slide {}", item->GetPath());
+
+  // Kodi plays one thing at a time, so the video stops the music until it's done
+  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  if (m_bPlayingMusic && appPlayer->IsPlayingAudio())
+  {
+    auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+    m_iMusicResumeItem = playlistPlayer.GetCurrentItemIdx();
+    m_iMusicResumeTime = appPlayer->GetTime();
+    // Or the playlist stopping would stop the video too
+    playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
+  }
+
   m_bPlayingVideo = true;
   m_iVideoSlide = m_iCurrentSlide;
   bool ret = g_application.PlayFile(*item, "");
@@ -1232,6 +1266,89 @@ bool CGUIWindowSlideShow::PlayVideo()
   m_bPlayingVideo = false;
   m_iVideoSlide = -1;
   return false;
+}
+
+void CGUIWindowSlideShow::StartMusic()
+{
+  const std::string path = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_SLIDESHOW_MUSICPATH);
+  const auto& components = CServiceBroker::GetAppComponents();
+  if (path.empty() || components.GetComponent<CApplicationPlayer>()->IsPlaying() ||
+      components.GetComponent<CApplicationPowerHandling>()->IsInScreenSaver())
+    return;
+
+  auto item = std::make_shared<CFileItem>(path, URIUtils::HasSlashAtEnd(path));
+  // A smart playlist is browsed like a folder
+  if (PLAYLIST::IsSmartPlayList(*item))
+    item->SetFolder(true);
+
+  CFileItemList items;
+  if (!MUSIC_UTILS::GetItemsForPlayList(item, items))
+    return;
+
+  // A folder or playlist can hold videos too
+  CFileItemList songs;
+  for (const auto& song : items)
+  {
+    if (!MUSIC::IsAudio(*song))
+      continue;
+    song->SetProperty(SLIDESHOW_MUSIC, true);
+    songs.Add(song);
+  }
+  if (songs.IsEmpty())
+    return;
+
+  auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+  playlistPlayer.ClearPlaylist(PLAYLIST::Id::TYPE_MUSIC);
+  playlistPlayer.Reset();
+  playlistPlayer.Add(PLAYLIST::Id::TYPE_MUSIC, songs);
+  m_musicRepeat = playlistPlayer.GetRepeat(PLAYLIST::Id::TYPE_MUSIC);
+  playlistPlayer.SetRepeat(PLAYLIST::Id::TYPE_MUSIC, PLAYLIST::RepeatState::ALL);
+  playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_MUSIC);
+  playlistPlayer.Play(0, "");
+  m_bPlayingMusic = true;
+}
+
+void CGUIWindowSlideShow::StopMusic()
+{
+  if (!m_bPlayingMusic)
+    return;
+
+  m_bPlayingMusic = false;
+  m_iMusicResumeItem = -1;
+
+  auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+  playlistPlayer.SetRepeat(PLAYLIST::Id::TYPE_MUSIC, m_musicRepeat);
+  if (CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()->IsPlayingAudio() &&
+      playlistPlayer.GetCurrentPlaylist() == PLAYLIST::Id::TYPE_MUSIC &&
+      IsSlideshowMusic(playlistPlayer.GetCurrentItemIdx()))
+    g_application.StopPlaying();
+}
+
+bool CGUIWindowSlideShow::IsSlideshowMusic(int item) const
+{
+  const PLAYLIST::CPlayList& playlist =
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC);
+  return item >= 0 && item < playlist.size() &&
+         playlist[item]->GetProperty(SLIDESHOW_MUSIC).asBoolean();
+}
+
+void CGUIWindowSlideShow::ResumeMusic()
+{
+  auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+  PLAYLIST::CPlayList& playlist = playlistPlayer.GetPlaylist(PLAYLIST::Id::TYPE_MUSIC);
+  // Leave anything started during the video alone
+  if (!CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()->IsPlaying() &&
+      IsSlideshowMusic(m_iMusicResumeItem))
+  {
+    playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_MUSIC);
+    const std::shared_ptr<CFileItem>& song = playlist[m_iMusicResumeItem];
+    song->SetStartOffset(m_iMusicResumeTime);
+    playlistPlayer.Play(m_iMusicResumeItem, "");
+    // Next time round, the song starts from the beginning
+    song->SetStartOffset(0);
+  }
+  m_iMusicResumeItem = -1;
 }
 
 CSlideShowPic::DISPLAY_EFFECT CGUIWindowSlideShow::GetDisplayEffect(int iSlideNumber) const

@@ -23088,7 +23088,45 @@ msgctxt "#36642"
 msgid "No orphaned add-ons to remove."
 msgstr ""
 
-#empty strings from id 36643 to 36898
+#empty strings from id 36643 to 36646
+
+#. Label of setting "Pictures -> Slideshow -> Background music"
+#: system/settings/settings.xml
+msgctxt "#36647"
+msgid "Background music"
+msgstr ""
+
+#. Description of setting "Pictures -> Slideshow -> Background music" with label #36647
+#: system/settings/settings.xml
+msgctxt "#36648"
+msgid "Music to play during a slideshow when nothing else is playing. Choose a folder or file here, or use \"Use as slideshow music\" on any music item. It pauses for videos in the slideshow and carries on after them."
+msgstr ""
+
+#. Option of setting "Pictures -> Slideshow -> Background music"
+#: xbmc/settings/MediaSettings.cpp
+msgctxt "#36649"
+msgid "Choose a folder"
+msgstr ""
+
+#. Option of setting "Pictures -> Slideshow -> Background music"
+#: xbmc/settings/MediaSettings.cpp
+msgctxt "#36650"
+msgid "Choose a file"
+msgstr ""
+
+#. Option of setting "Pictures -> Slideshow -> Background music"
+#: xbmc/settings/MediaSettings.cpp
+msgctxt "#36651"
+msgid "Turn off"
+msgstr ""
+
+#. Label of the context menu item that makes a music item the slideshow's background music
+#: xbmc/music/ContextMenus.h
+msgctxt "#36652"
+msgid "Use as slideshow music"
+msgstr ""
+
+#empty strings from id 36653 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml

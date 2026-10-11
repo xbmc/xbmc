@@ -582,6 +582,22 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="slideshow.music" type="string" label="36647" help="36648">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="slideshow.musicpath" type="string">
+          <visible>false</visible>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
       </group>
     </category>
     <category id="language" label="14218" help="38106">
