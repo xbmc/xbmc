@@ -59,16 +59,13 @@ using KODI::MEDIA::MediaSection;
 #define CONTROL_CONTENT         20
 
 CGUIDialogMediaSource::CGUIDialogMediaSource(void)
-    : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
+    : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml"),
+      m_paths(std::make_unique<CFileItemList>())
 {
-  m_paths = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
 }
 
-CGUIDialogMediaSource::~CGUIDialogMediaSource()
-{
-  delete m_paths;
-}
+CGUIDialogMediaSource::~CGUIDialogMediaSource() = default;
 
 bool CGUIDialogMediaSource::OnBack(int actionID)
 {
@@ -501,7 +498,7 @@ void CGUIDialogMediaSource::UpdateButtons()
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1020); // "Enter path..."
     item->SetLabel(path);
   }
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths.get());
   OnMessage(msg);
   SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
 
@@ -513,12 +510,12 @@ void CGUIDialogMediaSource::SetShare(const CMediaSource &share)
   m_paths->Clear();
   for (unsigned int i = 0; i < share.vecPaths.size(); i++)
   {
-    CFileItemPtr item(new CFileItem(share.vecPaths[i], true));
+    auto item = std::make_shared<CFileItem>(share.vecPaths[i], true);
     m_paths->Add(item);
   }
   if (share.vecPaths.empty())
   {
-    CFileItemPtr item(new CFileItem("", true));
+    auto item = std::make_shared<CFileItem>("", true);
     m_paths->Add(item);
   }
   m_name = share.strName;
@@ -591,7 +588,7 @@ void CGUIDialogMediaSource::OnPathRemove(int item)
 void CGUIDialogMediaSource::OnPathAdd()
 {
   // add a new item and select it as well
-  CFileItemPtr item(new CFileItem("", true));
+  auto item = std::make_shared<CFileItem>("", true);
   m_paths->Add(item);
   UpdateButtons();
   HighlightItem(m_paths->Size() - 1);
