@@ -8,17 +8,40 @@
 
 #include "PictureInfoLoader.h"
 
+#include "CompileInfo.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "PictureInfoTag.h"
 #include "ServiceBroker.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "network/NetworkFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Archive.h"
 #include "utils/ArtTypes.h"
+#include "utils/Crc32.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 
+#include <exception>
+
 using namespace KODI;
+
+namespace
+{
+// Unlike special://temp/archive_cache, this survives a restart. Each cached item is only used
+// while its file's date matches, and a cache is only read by the build that wrote it.
+constexpr const char* CACHE_FOLDER = "special://temp/picture_cache/";
+
+std::string GetCacheFile(const std::string& folder)
+{
+  std::string path = folder;
+  URIUtils::RemoveSlashAtEnd(path);
+  return StringUtils::Format("{}{:08x}.fi", CACHE_FOLDER, Crc32::ComputeFromLowerCase(path));
+}
+} // namespace
 
 CPictureInfoLoader::CPictureInfoLoader()
 {
@@ -36,7 +59,23 @@ void CPictureInfoLoader::OnLoaderStart()
 {
   // Load previously cached items from HD
   m_mapFileItems->SetPath(m_pVecItems->GetPath());
-  m_mapFileItems->Load();
+  XFILE::CFile file;
+  if (file.Open(GetCacheFile(m_pVecItems->GetPath())))
+  {
+    try
+    {
+      CArchive ar(&file, CArchive::load);
+      std::string build;
+      ar >> build;
+      if (build == CCompileInfo::GetSCMID())
+        ar >> *m_mapFileItems;
+      ar.Close();
+    }
+    catch (const std::exception&)
+    {
+      m_mapFileItems->Clear();
+    }
+  }
   m_mapFileItems->SetFastLookup(true);
 
   m_tagReads = 0;
@@ -65,7 +104,8 @@ bool CPictureInfoLoader::LoadItemCached(CFileItem* pItem)
 
   // Check the cached item
   CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
-  if (mapItem && mapItem->HasPictureInfoTag() && mapItem->GetDateTime() == pItem->GetDateTime())
+  if (mapItem && mapItem->HasPictureInfoTag() && mapItem->GetPictureInfoTag()->Loaded() &&
+      mapItem->GetDateTime() == pItem->GetDateTime())
   { // Query map if we previously cached the file on HD
     *pItem->GetPictureInfoTag() = *mapItem->GetPictureInfoTag();
     pItem->SetArt(ART::TYPE::THUMB, mapItem->GetArt(ART::TYPE::THUMB));
@@ -103,5 +143,22 @@ void CPictureInfoLoader::OnLoaderFinish()
 
   // Save loaded items to HD
   if (!m_bStop && m_tagReads > 0)
-    m_pVecItems->Save();
+  {
+    // Written aside first, so an interrupted write never leaves part of a cache behind. The old
+    // one is deleted before the rename because Windows won't rename over it.
+    const std::string cacheFile = GetCacheFile(m_pVecItems->GetPath());
+    const std::string partFile = cacheFile + ".part";
+    XFILE::CFile file;
+    if (XFILE::CDirectory::Create(CACHE_FOLDER) && file.OpenForWrite(partFile, true))
+    {
+      CArchive ar(&file, CArchive::store);
+      ar << std::string(CCompileInfo::GetSCMID());
+      ar << *m_pVecItems;
+      ar.Close();
+      file.Close();
+      XFILE::CFile::Delete(cacheFile);
+      if (!XFILE::CFile::Rename(partFile, cacheFile))
+        XFILE::CFile::Delete(partFile);
+    }
+  }
 }
