@@ -511,7 +511,9 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
       videoStream->dovi.bl_present_flag = stream->m_dvccMetadata->m_blPresentFlag;
       videoStream->dovi.dv_bl_signal_compatibility_id =
           stream->m_dvccMetadata->m_dvBlSignalCompatibilityId;
+#if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(59, 30, 100)
       videoStream->dovi.dv_md_compression = stream->m_dvccMetadata->m_dvMdCompression;
+#endif
     }
     //@}
 
