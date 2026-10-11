@@ -94,7 +94,7 @@ namespace
 bool HasNoLocalArtLocation(const CFileItem& item)
 {
   const std::string& path{item.GetPath()};
-  return path.empty() || PLACEHOLDER::IsNewPlaylist(path) || item.IsShareOrDrive() ||
+  return path.empty() || ITEM::PLACEHOLDER::IsNewPlaylist(path) || item.IsShareOrDrive() ||
          NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(path) ||
          (URIUtils::IsFTP(path) &&
           !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||
@@ -773,8 +773,9 @@ void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 
 bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
-  if (m_strPath.empty() || IsPath(PLACEHOLDER::ADD_SOURCE) || NETWORK::IsInternetStream(*this) ||
-      IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin() || IsPVR())
+  if (m_strPath.empty() || IsPath(ITEM::PLACEHOLDER::ADD_SOURCE) ||
+      NETWORK::IsInternetStream(*this) || IsParentFolder() || IsVirtualDirectoryRoot() ||
+      IsPlugin() || IsPVR())
     return true;
 
   if (VIDEO::IsVideoDb(*this) && HasVideoInfoTag())

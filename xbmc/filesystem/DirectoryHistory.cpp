@@ -148,7 +148,7 @@ void CDirectoryHistory::ClearPathHistory()
 
 bool CDirectoryHistory::IsMusicSearchUrl(CPathHistoryItem &i)
 {
-  return StringUtils::StartsWith(i.GetPath(), KODI::PLACEHOLDER::MUSIC_SEARCH);
+  return StringUtils::StartsWith(i.GetPath(), KODI::ITEM::PLACEHOLDER::MUSIC_SEARCH);
 }
 
 void CDirectoryHistory::ClearSearchHistory()

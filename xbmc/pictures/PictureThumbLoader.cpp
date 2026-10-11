@@ -130,7 +130,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     }
   }
   if ((pItem->IsFolder() || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->IsShareOrDrive() &&
-      !pItem->IsParentFolder() && !pItem->IsPath(PLACEHOLDER::ADD_SOURCE))
+      !pItem->IsParentFolder() && !pItem->IsPath(ITEM::PLACEHOLDER::ADD_SOURCE))
   {
     // first check for a folder.jpg
     std::string thumb = "folder.jpg";

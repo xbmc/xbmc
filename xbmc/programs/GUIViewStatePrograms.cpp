@@ -36,7 +36,7 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
                     ? SortAttributeIgnoreArticle
                     : SortAttributeNone);
 
-  const CViewState* viewState = CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PROGRAMS);
+  const CViewState* viewState = CViewStateSettings::GetInstance().Get(KODI::VIEW::STATE::PROGRAMS);
   SetSortMethod(viewState->m_sortDescription);
   SetViewAsControl(viewState->m_viewMode);
   SetSortOrder(viewState->m_sortDescription.sortOrder);
@@ -47,7 +47,7 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
   SaveViewToDb(m_items.GetPath(), WINDOW_PROGRAMS,
-               CViewStateSettings::GetInstance().Get(KODI::VIEW_STATE::PROGRAMS));
+               CViewStateSettings::GetInstance().Get(KODI::VIEW::STATE::PROGRAMS));
 }
 
 std::optional<KODI::MEDIA::MediaSection> CGUIViewStateWindowPrograms::GetLockType()

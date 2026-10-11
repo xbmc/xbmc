@@ -43,7 +43,7 @@ CGUIViewStateWindowGames::CGUIViewStateWindowGames(const CFileItemList& items)
     AddSortMethod(SortBy::SIZE, 553,
                   LABEL_MASKS("%L", "%I", "%L", "%I")); // Filename, Size | Label, Size
 
-    const CViewState* viewState = CViewStateSettings::GetInstance().Get(VIEW_STATE::GAMES);
+    const CViewState* viewState = CViewStateSettings::GetInstance().Get(VIEW::STATE::GAMES);
     if (viewState)
     {
       SetSortMethod(viewState->m_sortDescription);
@@ -78,5 +78,5 @@ std::vector<CMediaSource>& CGUIViewStateWindowGames::GetSources()
 void CGUIViewStateWindowGames::SaveViewState()
 {
   SaveViewToDb(m_items.GetPath(), WINDOW_GAMES,
-               CViewStateSettings::GetInstance().Get(VIEW_STATE::GAMES));
+               CViewStateSettings::GetInstance().Get(VIEW::STATE::GAMES));
 }

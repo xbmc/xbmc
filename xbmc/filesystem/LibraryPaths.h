@@ -9,7 +9,7 @@
 #pragma once
 
 //! \brief The library:// paths of the library nodes, as XFILE::CLibraryDirectory resolves them.
-namespace KODI::LIBRARY
+namespace KODI::MEDIA::LIBRARY_PATH
 {
 
 inline constexpr char ROOT[] = "library://";
@@ -26,4 +26,4 @@ inline constexpr char MUSIC[] = "library://music/";
 inline constexpr char MUSIC_FILES[] = "library://music/files.xml/";
 inline constexpr char MUSIC_PLAYLISTS[] = "library://music/playlists.xml/";
 
-} // namespace KODI::LIBRARY
+} // namespace KODI::MEDIA::LIBRARY_PATH

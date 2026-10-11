@@ -46,7 +46,7 @@ namespace
 bool HasNoMusicInfo(const CFileItem& item)
 {
   return (item.IsFolder() && !MUSIC::IsAudio(item)) || PLAYLIST::IsPlayList(item) ||
-         PLAYLIST::IsSmartPlayList(item) || PLACEHOLDER::IsNewPlaylist(item.GetPath()) ||
+         PLAYLIST::IsSmartPlayList(item) || ITEM::PLACEHOLDER::IsNewPlaylist(item.GetPath()) ||
          item.IsNFO() || (NETWORK::IsInternetStream(item) && !MUSIC::IsMusicDb(item));
 }
 } // namespace
