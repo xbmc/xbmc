@@ -68,6 +68,7 @@ public:
 
   static void Register(const CreateGUITextureFunc& createFunction,
                        const DrawQuadFunc& drawQuadFunction);
+  static void UnregisterDrawQuad();
 
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
