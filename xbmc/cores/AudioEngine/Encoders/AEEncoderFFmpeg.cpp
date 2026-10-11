@@ -122,6 +122,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat& format, bool allow_planar_input
   m_CodecCtx->bit_rate = m_BitRate;
   m_CodecCtx->sample_rate = format.m_sampleRate;
 
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(61, 13, 100)
   uint64_t channelLayout = AV_CH_LAYOUT_5POINT1_BACK;
   if (format.m_channelLayout.IsLayoutValid())
   {
@@ -141,9 +142,14 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat& format, bool allow_planar_input
     format.m_channelLayout = layouts[best];
     channelLayout = CAEUtil::GetAVChannelLayout(format.m_channelLayout);
   }
+#endif
 
   av_channel_layout_uninit(&m_CodecCtx->ch_layout);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(61, 13, 100)
   av_channel_layout_from_mask(&m_CodecCtx->ch_layout, channelLayout);
+#else
+  av_channel_layout_from_mask(&m_CodecCtx->ch_layout, AV_CH_LAYOUT_5POINT1_BACK);
+#endif
 
   const AVSampleFormat* sampleFmts = nullptr;
   int numFmts = 0;
