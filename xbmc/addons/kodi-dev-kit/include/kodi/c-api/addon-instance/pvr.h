@@ -125,6 +125,7 @@ extern "C"
     void (*TriggerEpgUpdate)(void* kodiInstance, unsigned int iChannelUid);
     void (*TriggerRecordingUpdate)(void* kodiInstance);
     void (*TriggerTimerUpdate)(void* kodiInstance);
+    void (*PlayingChannelChange)(void* kodiInstance, unsigned int iChannelUid);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
@@ -135,7 +136,6 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where
     // breaks min API version) moved up.
-    void (*PlayingChannelChange)(void* kodiInstance, unsigned int iChannelUid);
   } AddonToKodiFuncTable_PVR;
 
   /*!

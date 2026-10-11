@@ -29,17 +29,15 @@ public:
   PVR_ERROR GetBackendVersion(std::string& version) override { return PVR_ERROR_NO_ERROR; }
 };
 
-//! An add-on's PVR instance, created by a Kodi of the given PVR API version
+//! An add-on's PVR instance, with the functions Kodi hands it
 class DevKitPVRClient
 {
 public:
-  explicit DevKitPVRClient(const char* kodiVersion)
-    : m_previous(kodi::addon::CPrivateBase::m_interface)
+  DevKitPVRClient() : m_previous(kodi::addon::CPrivateBase::m_interface)
   {
     m_callbacks.kodiInstance = this;
     m_callbacks.PlayingChannelChange = [](void* kodiInstance, unsigned int channelUid)
     { static_cast<DevKitPVRClient*>(kodiInstance)->m_channelChanges.emplace_back(channelUid); };
-    m_info.version = kodiVersion;
     m_instance.info = &m_info;
     m_instance.functions = &m_functions;
     m_instance.pvr = &m_pvr;
@@ -73,15 +71,9 @@ private:
 };
 } // namespace
 
-TEST(TestPVRClientDevKit, PlayingChannelChangeReachesOnlyAKodiThatHasIt)
+TEST(TestPVRClientDevKit, PlayingChannelChangeReachesKodi)
 {
-  // A 9.2.0 Kodi's function table ends before the call
-  {
-    const DevKitPVRClient addon("9.2.0");
-    addon.PlayingChannelChange(101);
-    EXPECT_TRUE(addon.m_channelChanges.empty());
-  }
-  const DevKitPVRClient addon("9.3.0");
+  const DevKitPVRClient addon;
   addon.PlayingChannelChange(101);
   EXPECT_EQ(addon.m_channelChanges, std::vector<unsigned int>{101});
 }

@@ -519,6 +519,7 @@ void CPVRClient::ResetProperties()
   m_ifc.pvr->toKodi->TriggerTimerUpdate = cb_trigger_timer_update;
   m_ifc.pvr->toKodi->TriggerRecordingUpdate = cb_trigger_recording_update;
   m_ifc.pvr->toKodi->TriggerEpgUpdate = cb_trigger_epg_update;
+  m_ifc.pvr->toKodi->PlayingChannelChange = cb_playing_channel_change;
   m_ifc.pvr->toKodi->FreeDemuxPacket = cb_free_demux_packet;
   m_ifc.pvr->toKodi->AllocateDemuxPacket = cb_allocate_demux_packet;
   m_ifc.pvr->toKodi->TransferChannelGroup = cb_transfer_channel_group;
@@ -526,7 +527,6 @@ void CPVRClient::ResetProperties()
   m_ifc.pvr->toKodi->ConnectionStateChange = cb_connection_state_change;
   m_ifc.pvr->toKodi->EpgEventStateChange = cb_epg_event_state_change;
   m_ifc.pvr->toKodi->GetCodecByName = cb_get_codec_by_name;
-  m_ifc.pvr->toKodi->PlayingChannelChange = cb_playing_channel_change;
 
   *m_ifc.pvr->toAddon = {};
 }

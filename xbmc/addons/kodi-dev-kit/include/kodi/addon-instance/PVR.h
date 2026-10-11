@@ -1108,13 +1108,10 @@ public:
   ///
   /// @param[in] channelUid The unique id of the channel for this add-on
   ///
-  /// @remarks Only called from addon itself. Does nothing if Kodi's PVR API is
-  /// older than 9.3.0.
+  /// @remarks Only called from addon itself.
   ///
   inline void PlayingChannelChange(unsigned int channelUid)
   {
-    if (!IsInstanceAPIVersionAtLeast(9, 3, 0))
-      return;
     m_instanceData->toKodi->PlayingChannelChange(m_instanceData->toKodi->kodiInstance, channelUid);
   }
   //----------------------------------------------------------------------------
