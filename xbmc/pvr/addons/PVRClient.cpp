@@ -21,6 +21,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRDescrambleInfo.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/PVRSignalStatus.h"
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClientMenuHooks.h"
@@ -525,6 +526,7 @@ void CPVRClient::ResetProperties()
   m_ifc.pvr->toKodi->ConnectionStateChange = cb_connection_state_change;
   m_ifc.pvr->toKodi->EpgEventStateChange = cb_epg_event_state_change;
   m_ifc.pvr->toKodi->GetCodecByName = cb_get_codec_by_name;
+  m_ifc.pvr->toKodi->PlayingChannelChange = cb_playing_channel_change;
 
   *m_ifc.pvr->toAddon = {};
 }
@@ -2485,6 +2487,16 @@ void CPVRClient::cb_trigger_epg_update(void* kodiInstance, unsigned int iChannel
   HandleAddonCallback(std::source_location::current().function_name(), kodiInstance,
                       [iChannelUid](const CPVRClient* client) {
                         CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(
+                            client->GetID(), iChannelUid);
+                      });
+}
+
+void CPVRClient::cb_playing_channel_change(void* kodiInstance, unsigned int iChannelUid)
+{
+  HandleAddonCallback(std::source_location::current().function_name(), kodiInstance,
+                      [iChannelUid](const CPVRClient* client)
+                      {
+                        CServiceBroker::GetPVRManager().PlaybackState()->OnBackendChannelChange(
                             client->GetID(), iChannelUid);
                       });
 }
