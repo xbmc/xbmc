@@ -1098,6 +1098,27 @@ public:
   }
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Notify Kodi that the backend itself changed the channel it is playing,
+  /// for example by its own remote control.
+  ///
+  /// Kodi switches to that channel if it is playing another channel of this
+  /// add-on, and does nothing otherwise.
+  ///
+  /// @param[in] channelUid The unique id of the channel for this add-on
+  ///
+  /// @remarks Only called from addon itself. Does nothing if Kodi's PVR API is
+  /// older than 9.3.0.
+  ///
+  inline void PlayingChannelChange(unsigned int channelUid)
+  {
+    if (!IsInstanceAPIVersionAtLeast(9, 3, 0))
+      return;
+    m_instanceData->toKodi->PlayingChannelChange(m_instanceData->toKodi->kodiInstance, channelUid);
+  }
+  //----------------------------------------------------------------------------
+
   ///@}
   //--==----==----==----==----==----==----==----==----==----==----==----==----==
 
