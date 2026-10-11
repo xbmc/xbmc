@@ -967,7 +967,7 @@ std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
   static const auto map = std::map<std::string, std::string>{
       {"albums", MUSIC::DB_PATH::ALBUMS},
       {"artists", MUSIC::DB_PATH::ARTISTS},
-      {"boxsets", "musicdb://boxsets/"},
+      {"boxsets", MUSIC::DB_PATH::BOX_SETS},
       {"compilations", "musicdb://compilations/"},
       {"files", "sources://music/"},
       {"genres", MUSIC::DB_PATH::GENRES},
