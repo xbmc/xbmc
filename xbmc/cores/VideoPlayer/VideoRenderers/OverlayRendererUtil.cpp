@@ -281,6 +281,67 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
   return true;
 }
 
+bool convert_quad_pages(ASS_Image* images, std::vector<SQuads>& pages, int maxTextureSize)
+{
+  pages.clear();
+  if (maxTextureSize < 2)
+    return false;
+
+  // Keep libass painter order. Split oversized bitmaps too, without copying
+  // their pixels; convert_quad copies each tile into its final atlas.
+  std::vector<ASS_Image> tiles;
+  for (ASS_Image* image = images; image; image = image->next)
+  {
+    if ((image->color & 0xff) == 0xff || image->w <= 0 || image->h <= 0)
+      continue;
+    for (int y = 0; y < image->h; y += maxTextureSize - 1)
+    {
+      for (int x = 0; x < image->w; x += maxTextureSize - 1)
+      {
+        ASS_Image tile = *image;
+        tile.w = std::min(image->w - x, maxTextureSize - 1);
+        tile.h = std::min(image->h - y, maxTextureSize - 1);
+        tile.bitmap += static_cast<size_t>(y) * image->stride + x;
+        tile.dst_x += x;
+        tile.dst_y += y;
+        tile.next = nullptr;
+        tiles.push_back(tile);
+      }
+    }
+  }
+
+  size_t begin = 0;
+  while (begin < tiles.size())
+  {
+    // Match convert_quad's shelf packing, including its one-pixel gutter.
+    int x = 0;
+    int y = 0;
+    int rowHeight = 0;
+    size_t end = begin;
+    for (; end < tiles.size(); ++end)
+    {
+      const ASS_Image& tile = tiles[end];
+      if (x + tile.w >= maxTextureSize)
+      {
+        y += rowHeight + 1;
+        x = 0;
+        rowHeight = 0;
+      }
+      if (y + std::max(rowHeight, tile.h) + 1 > maxTextureSize)
+        break;
+      x += tile.w + 1;
+      rowHeight = std::max(rowHeight, tile.h);
+    }
+
+    for (size_t i = begin; i < end; ++i)
+      tiles[i].next = i + 1 < end ? &tiles[i + 1] : nullptr;
+    pages.emplace_back();
+    convert_quad(&tiles[begin], pages.back(), maxTextureSize);
+    begin = end;
+  }
+  return !pages.empty();
+}
+
 bool ShouldConvertPQPaletteToSRGB(bool isHDROverlay)
 {
   if (!isHDROverlay)
