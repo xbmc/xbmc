@@ -423,9 +423,12 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   std::shared_ptr<CDemuxStream> currentStream(GetStreamInternal(stream->uniqueId));
   std::shared_ptr<CDemuxStream> toStream;
 
-  // A stream announced as it was before keeps the properties ParsePacket corrected
+  // A stream announced as it was before keeps the properties ParsePacket corrected. The aspect
+  // is asked apart, as comparing two announcements leaves it out
   const auto current = std::dynamic_pointer_cast<CDemuxStreamClientInternal>(currentStream);
-  if (forceInit && current && current->m_announced == *stream)
+  const CDVDStreamInfo announced(*stream, true);
+  if (forceInit && current && current->m_announced == announced &&
+      current->m_announced.aspect == announced.aspect)
     forceInit = false;
 
   if (stream->type == StreamType::AUDIO)
@@ -620,7 +623,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
 
   // only update profile / level if we create a new stream or has been reset stream properties
   // existing streams may be corrected by ParsePacket
-  if (!currentStream || forceInit)
+  if (toStream != currentStream || forceInit)
   {
     toStream->profile = stream->profile;
     toStream->level = stream->level;

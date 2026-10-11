@@ -15,6 +15,7 @@
 
 #include <cstring>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -56,6 +57,13 @@ public:
   }
 
   void Announce(int channels) { m_channels = channels; }
+  void Announce(AVCodecID codec, int profile)
+  {
+    m_codec = codec;
+    m_profile = profile;
+  }
+  //! The next packet tells the demuxer that the streams changed
+  void SignalStreamChange() { m_streamChange = true; }
 
   int Read(uint8_t* buf, int buf_size) override { return 0; }
   int64_t Seek(int64_t offset, int whence) override { return 0; }
@@ -65,6 +73,12 @@ public:
   bool OpenDemux() override { return true; }
   DemuxPacket* ReadDemux() override
   {
+    if (std::exchange(m_streamChange, false))
+    {
+      DemuxPacket* packet = CDVDDemuxUtils::AllocateDemuxPacket(0);
+      packet->iStreamId = DMX_SPECIALID_STREAMCHANGE;
+      return packet;
+    }
     DemuxPacket* packet = CDVDDemuxUtils::AllocateDemuxPacket(static_cast<int>(m_frame.size()));
     std::memcpy(packet->pData, m_frame.data(), m_frame.size());
     packet->iSize = static_cast<int>(m_frame.size());
@@ -75,7 +89,8 @@ public:
   {
     auto stream = std::make_unique<CDemuxStreamAudio>();
     stream->uniqueId = iStreamId;
-    stream->codec = AV_CODEC_ID_AC3;
+    stream->codec = m_codec;
+    stream->profile = m_profile;
     stream->iChannels = m_channels;
     stream->iSampleRate = 48000;
     m_announced.emplace_back(std::move(stream));
@@ -94,7 +109,35 @@ public:
 
 private:
   int m_channels;
+  AVCodecID m_codec{AV_CODEC_ID_AC3};
+  int m_profile{AV_PROFILE_UNKNOWN};
+  bool m_streamChange{false};
   std::vector<uint8_t> m_frame{MakeAc3Frame()};
+  mutable std::vector<std::unique_ptr<CDemuxStream>> m_announced;
+};
+
+// The same, announcing one video stream of the aspect it is told to
+class CTestVideoInputStream : public CTestDemuxInputStream
+{
+public:
+  explicit CTestVideoInputStream(double aspect) : CTestDemuxInputStream(0), m_aspect(aspect) {}
+
+  void AnnounceAspect(double aspect) { m_aspect = aspect; }
+
+  CDemuxStream* GetStream(int iStreamId) const override
+  {
+    auto stream = std::make_unique<CDemuxStreamVideo>();
+    stream->uniqueId = iStreamId;
+    stream->codec = AV_CODEC_ID_H264;
+    stream->iWidth = 720;
+    stream->iHeight = 576;
+    stream->fAspect = m_aspect;
+    m_announced.emplace_back(std::move(stream));
+    return m_announced.back().get();
+  }
+
+private:
+  double m_aspect;
   mutable std::vector<std::unique_ptr<CDemuxStream>> m_announced;
 };
 
@@ -162,4 +205,32 @@ TEST(TestDVDDemuxClient, OpeningAStreamTakesAChangedAnnouncement)
   demuxer.OpenStream(AUDIO_ID);
 
   EXPECT_EQ(Channels(demuxer), 6);
+}
+
+TEST(TestDVDDemuxClient, OpeningAStreamTakesAChangedAspect)
+{
+  auto input = std::make_shared<CTestVideoInputStream>(1.25);
+  CDVDDemuxClient demuxer;
+  ASSERT_TRUE(demuxer.Open(input));
+  demuxer.OpenStream(AUDIO_ID);
+
+  input->AnnounceAspect(1.75);
+  demuxer.OpenStream(AUDIO_ID);
+
+  EXPECT_EQ(static_cast<CDemuxStreamVideo*>(demuxer.GetStream(AUDIO_ID))->fAspect, 1.75);
+}
+
+TEST(TestDVDDemuxClient, AStreamThatChangesCodecTakesTheAnnouncedProfile)
+{
+  auto input = std::make_shared<CTestDemuxInputStream>(2);
+  CDVDDemuxClient demuxer;
+  ASSERT_TRUE(demuxer.Open(input));
+  demuxer.OpenStream(AUDIO_ID);
+
+  input->Announce(AV_CODEC_ID_AAC, AV_PROFILE_AAC_HE);
+  input->SignalStreamChange();
+  CDVDDemuxUtils::FreeDemuxPacket(demuxer.Read());
+  demuxer.OpenStream(AUDIO_ID);
+
+  EXPECT_EQ(demuxer.GetStream(AUDIO_ID)->profile, AV_PROFILE_AAC_HE);
 }
