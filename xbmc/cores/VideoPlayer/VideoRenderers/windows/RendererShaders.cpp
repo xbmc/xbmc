@@ -83,7 +83,8 @@ void CRendererShaders::GetWeight(std::map<RenderMethod, int>& weights, const Vid
          DX::Windowing()->IsFormatSupport(textures->others, D3D11_FORMAT_SUPPORT_TEXTURE2D)))
       weight += 500; // single copying
     else
-      CLog::LogF(LOGWARNING, "Texture format R16_UNORM / R16G16_UNORM is not supported.");
+      CLog::LogF(LOGWARNING, "Texture format {} / {} is not supported.",
+                 DX::DXGIFormatToString(textures->first), DX::DXGIFormatToString(textures->others));
   }
 
   if (weight > 0)
@@ -272,8 +273,11 @@ CRendererShaders::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_form
 
   for (size_t i = 0; i < m_viewCount; i++)
   {
-    const auto w = i ? m_width >> desc->log2_chroma_w : m_width;
-    const auto h = i ? m_height >> desc->log2_chroma_h : m_height;
+    // a subsampled plane is rounded up, as FFmpeg sizes it
+    const unsigned shiftW = i ? desc->log2_chroma_w : 0;
+    const unsigned shiftH = i ? desc->log2_chroma_h : 0;
+    const unsigned w = (m_width + (1u << shiftW) - 1) >> shiftW;
+    const unsigned h = (m_height + (1u << shiftH) - 1) >> shiftH;
     const bool uv = i && !(desc->flags & AV_PIX_FMT_FLAG_RGB);
 
     DXGI_FORMAT format = i ? textures->others : textures->first;
@@ -417,6 +421,7 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromGPU()
   auto* s_uv = static_cast<uint8_t*>(mapGPU.pData) + m_sDesc.Height * mapGPU.RowPitch;
   auto* d_y = static_cast<uint8_t*>(mappings[PLANE_Y].pData);
   auto* d_uv = static_cast<uint8_t*>(mappings[PLANE_UV].pData);
+  const unsigned uvHeight = m_textures[PLANE_UV].GetHeight();
 
   if (mappings[PLANE_Y].RowPitch == mapGPU.RowPitch
     && mappings[PLANE_UV].RowPitch == mapGPU.RowPitch)
@@ -426,7 +431,7 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromGPU()
       copy_func(d_y, s_y, mapGPU.RowPitch * m_height);
     }, [&]() {
       // copy UV
-      copy_func(d_uv, s_uv, mapGPU.RowPitch * m_height >> 1);
+      copy_func(d_uv, s_uv, mapGPU.RowPitch * uvHeight);
     });
   }
   else
@@ -441,7 +446,7 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromGPU()
       }
     }, [&]() {
       // copy UV
-      for (unsigned y = 0; y < m_height >> 1; ++y)
+      for (unsigned y = 0; y < uvHeight; ++y)
       {
         copy_func(d_uv, s_uv, mappings[PLANE_UV].RowPitch);
         s_uv += mapGPU.RowPitch;

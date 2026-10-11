@@ -21,6 +21,7 @@
 
 #include "platform/win32/WIN32Util.h"
 
+#include <cmath>
 #include <map>
 
 #include <DirectXPackedVector.h>
@@ -679,12 +680,12 @@ void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceR
     m_sourceWidth = videoBuffer->GetWidth();
     m_sourceHeight = videoBuffer->GetHeight();
 
-    // the second and third planes are smaller where the format subsamples chroma
+    // the second and third planes are smaller where the format subsamples chroma, rounded up
     const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(m_format);
     const float chromaScaleX = static_cast<float>(1 << desc->log2_chroma_w);
     const float chromaScaleY = static_cast<float>(1 << desc->log2_chroma_h);
-    const unsigned chromaWidth = m_sourceWidth >> desc->log2_chroma_w;
-    const unsigned chromaHeight = m_sourceHeight >> desc->log2_chroma_h;
+    const float chromaWidth = std::ceil(m_sourceWidth / chromaScaleX);
+    const float chromaHeight = std::ceil(m_sourceHeight / chromaScaleY);
 
     Vertex* v;
     CWinShader::LockVertexBuffer(reinterpret_cast<void**>(&v));
