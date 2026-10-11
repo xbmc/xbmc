@@ -16,7 +16,7 @@
 #include <memory>
 
 #include <concrt.h>
-#include <dxgi1_5.h>
+#include <dxgi1_6.h>
 #include <winrt/windows.foundation.h>
 #include <wrl.h>
 #include <wrl/client.h>
@@ -113,6 +113,10 @@ namespace DX
 
     void SetMonitor(HMONITOR monitor);
     HMONITOR GetMonitor() const;
+    // re-select the rendering GPU after the high-performance GPU setting has changed
+    void OnGpuPreferenceChanged();
+    // rendering GPU doesn't own the display, frames are copied to the display GPU by Windows
+    bool IsCrossAdapter() const { return m_crossAdapter; }
 #if defined(TARGET_WINDOWS_DESKTOP)
     void SetWindow(HWND window);
 #elif defined(TARGET_WINDOWS_STORE)
@@ -149,6 +153,10 @@ namespace DX
     void OnDeviceLost(bool removed);
     void OnDeviceRestored();
     void HandleOutputChange(const std::function<bool(DXGI_OUTPUT_DESC)>& cmpFunc);
+    static bool IsSameAdapter(const DXGI_ADAPTER_DESC& a, const DXGI_ADAPTER_DESC& b);
+#if defined(TARGET_WINDOWS_DESKTOP)
+    static Microsoft::WRL::ComPtr<IDXGIAdapter1> GetHighPerformanceAdapter(IDXGIFactory1* factory);
+#endif
     bool CreateFactory();
     void CheckNV12SharedTexturesSupport();
     VideoDriverInfo GetVideoDriverVersion() const;
@@ -162,6 +170,7 @@ namespace DX
     Microsoft::WRL::ComPtr<IDXGIAdapter1> m_adapter;
     Microsoft::WRL::ComPtr<IDXGIOutput1> m_output;
     DXGI_OUTPUT_DESC m_outputDesc{};
+    bool m_crossAdapter{false};
 
     Microsoft::WRL::ComPtr<ID3D11Device1> m_d3dDevice;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dContext;

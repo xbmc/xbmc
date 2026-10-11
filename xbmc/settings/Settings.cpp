@@ -603,7 +603,8 @@ void CSettings::InitializeISettingCallbacks()
        CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE,
        CSettings::SETTING_VIDEOSCREEN_3DLUT, CSettings::SETTING_VIDEOSCREEN_DISPLAYPROFILE,
        CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS, CSettings::SETTING_VIDEOSCREEN_WHITELIST,
-       CSettings::SETTING_VIDEOSCREEN_10BITSURFACES});
+       CSettings::SETTING_VIDEOSCREEN_10BITSURFACES,
+       CSettings::SETTING_VIDEOSCREEN_HIGHPERFORMANCEGPU});
 
   GetSettingsManager()->RegisterCallback(&g_charsetConverter, {CSettings::SETTING_SUBTITLES_CHARSET,
                                                                CSettings::SETTING_LOCALE_CHARSET});

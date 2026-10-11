@@ -13,6 +13,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/StereoscopicsManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "rendering/RenderSystem.h"
 #include "resources/LocalizeStrings.h"
@@ -350,6 +351,23 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
     return true;
 #endif
   }
+#ifdef TARGET_WINDOWS_DESKTOP
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_HIGHPERFORMANCEGPU)
+  {
+    // re-select the rendering GPU, then re-apply the fullscreen mode as exclusive fullscreen is
+    // not possible when rendering on a GPU that doesn't own the display.
+    // Posted as it recreates the device, which must happen on the application thread.
+    static ThreadMessageCallback callback{
+        [](void*)
+        {
+          DX::DeviceResources::Get()->OnGpuPreferenceChanged();
+          CGraphicContext& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
+          gfxContext.SetVideoResolution(gfxContext.GetVideoResolution(), true);
+        },
+        nullptr};
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1, &callback);
+  }
+#endif
 #if defined(HAVE_X11) || defined(TARGET_WINDOWS_DESKTOP) || defined(TARGET_DARWIN_OSX)
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS)
   {
