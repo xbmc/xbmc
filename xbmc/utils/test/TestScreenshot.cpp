@@ -6,22 +6,32 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "jobs/JobManager.h"
+#include "rendering/capture/CapturePixels.h"
+#include "rendering/capture/CaptureService.h"
+#include "rendering/capture/CaptureTypes.h"
 #include "settings/Settings.h"
 #include "test/TestUtils.h"
 #include "utils/Screenshot.h"
 #include "utils/URIUtils.h"
 
+#include <chrono>
+#include <future>
+#include <memory>
 #include <optional>
+#include <thread>
 
 #include <gtest/gtest.h>
 
 using Error = CScreenShot::ScreenshotError;
+using namespace KODI::RENDERING::CAPTURE;
+using namespace std::chrono_literals;
 
-//! \brief Exercises deletion against a real screenshot folder. Taking one is not covered:
-//!        it needs a render loop to deliver a frame.
+//! \brief Exercises deletion against a real screenshot folder.
 class TestScreenshotDeletion : public testing::Test
 {
 protected:
@@ -142,12 +152,130 @@ TEST_F(TestScreenshotDeletion, ReportsAScreenshotThatIsNotThere)
   EXPECT_EQ(0u, removed.deleted);
 }
 
+TEST_F(TestScreenshotDeletion, ClearingSaysWhenAScreenshotCouldNotBeDeleted)
+{
+#ifndef TARGET_WINDOWS
+  GTEST_SKIP() << "a file held open can still be deleted on this platform";
+#else
+  Write("screenshot00000.png");
+  XFILE::CFile held;
+  ASSERT_TRUE(held.OpenForWrite(URIUtils::AddFileToFolder(m_dir, "screenshot00001.png"), true));
+
+  const CScreenShot::ScreenshotDeletion removed = CScreenShot::DeleteScreenshots();
+  held.Close();
+
+  EXPECT_EQ(Error::FAILED, removed.error);
+  EXPECT_EQ(1u, removed.deleted);
+#endif
+}
+
+//! \brief Takes screenshots with the test standing in for the render loop.
+class TestScreenshotTaking : public TestScreenshotDeletion
+{
+protected:
+  void SetUp() override
+  {
+    TestScreenshotDeletion::SetUp();
+    CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+    m_service = std::make_shared<CCaptureService>();
+    CServiceBroker::RegisterCaptureService(m_service);
+  }
+
+  void TearDown() override
+  {
+    CServiceBroker::UnregisterCaptureService();
+    m_service.reset();
+    CServiceBroker::GetJobManager()->CancelJobs();
+    CServiceBroker::GetJobManager()->Restart();
+    CServiceBroker::UnregisterJobManager();
+    TestScreenshotDeletion::TearDown();
+  }
+
+  //! Draw one frame of the given content for the request on top, once there is one
+  bool Deliver(CaptureContent content)
+  {
+    for (int attempt = 0; attempt < 400; ++attempt)
+    {
+      m_service->LatchFrame();
+      const auto active = m_service->TakeActive(content);
+      if (!active.empty())
+      {
+        CaptureResult result;
+        result.width = 4;
+        result.height = 2;
+        result.stride = 16;
+        result.format = AV_PIX_FMT_BGRA;
+        result.content = content;
+        result.pixels = std::make_shared<CHeapCapturePixels>(std::make_unique<uint8_t[]>(32));
+        m_service->Complete(active[0], result);
+        return true;
+      }
+      std::this_thread::sleep_for(5ms);
+    }
+    return false;
+  }
+
+  std::shared_ptr<CCaptureService> m_service;
+};
+
+TEST_F(TestScreenshotTaking, WritesTheFrameAndAnswersItsPath)
+{
+  auto taken = std::async(std::launch::async, []
+                          { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE); });
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+
+  const CScreenShot::ScreenshotFiles files = taken.get();
+  EXPECT_EQ(Error::NONE, files.error);
+  EXPECT_EQ("special://screenshots/screenshot00000.png", files.composite);
+  EXPECT_TRUE(Exists("screenshot00000.png"));
+}
+
+TEST_F(TestScreenshotTaking, BothWithNoVideoFrameFailsAtOnceAndLeavesNoFile)
+{
+  auto taken = std::async(std::launch::async,
+                          [] { return CScreenShot::TakeScreenshotSync(CaptureContent::BOTH); });
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+
+  ASSERT_EQ(std::future_status::ready, taken.wait_for(2s));
+  EXPECT_EQ(Error::FAILED, taken.get().error);
+  EXPECT_FALSE(Exists("screenshot00000.png"));
+}
+
+TEST_F(TestScreenshotTaking, TwoRequestsWaitingTogetherTakeDifferentNames)
+{
+  const auto take = [] { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE); };
+  auto first = std::async(std::launch::async, take);
+  auto second = std::async(std::launch::async, take);
+  std::this_thread::sleep_for(200ms);
+
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+
+  const CScreenShot::ScreenshotFiles one = first.get();
+  const CScreenShot::ScreenshotFiles other = second.get();
+  EXPECT_EQ(Error::NONE, one.error);
+  EXPECT_EQ(Error::NONE, other.error);
+  EXPECT_NE(one.composite, other.composite);
+  EXPECT_TRUE(Exists("screenshot00000.png"));
+  EXPECT_TRUE(Exists("screenshot00001.png"));
+}
+
 TEST(TestScreenshotPath, OnlyAPlainPngUnderTheScreenshotFolderIsAScreenshot)
 {
+  const CScopedSetting folder(CSettings::SETTING_DEBUG_SCREENSHOTPATH,
+                              CSpecialProtocol::TranslatePath("special://temp/"));
+
   EXPECT_TRUE(CScreenShot::IsScreenshotPath("special://screenshots/screenshot00000.png"));
   EXPECT_TRUE(CScreenShot::IsScreenshotPath("special://screenshots/named.png"));
   EXPECT_FALSE(CScreenShot::IsScreenshotPath("special://screenshots/passwords.xml"));
   EXPECT_FALSE(CScreenShot::IsScreenshotPath("special://screenshots/sub/shot.png"));
   EXPECT_FALSE(CScreenShot::IsScreenshotPath("special://screenshots/"));
   EXPECT_FALSE(CScreenShot::IsScreenshotPath("special://temp/shot.png"));
+}
+
+TEST(TestScreenshotPath, NothingIsAScreenshotWhileNoFolderIsSet)
+{
+  const CScopedSetting noFolder(CSettings::SETTING_DEBUG_SCREENSHOTPATH, "");
+
+  EXPECT_FALSE(CScreenShot::IsScreenshotPath("special://screenshots/screenshot00000.png"));
 }

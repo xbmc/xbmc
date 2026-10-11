@@ -64,7 +64,8 @@ public:
   static ScreenshotFiles TakeScreenshotSync(KODI::RENDERING::CAPTURE::CaptureContent content,
                                             const std::string& target = "");
 
-  //! \brief Whether a path names a screenshot: the special://screenshots folder and a plain .png name
+  //! \brief Whether a path names a screenshot: the special://screenshots folder and a plain .png
+  //!        name. None does while no screenshot folder is configured.
   static bool IsScreenshotPath(const std::string& path);
 
   //! \brief What a delete removed.
