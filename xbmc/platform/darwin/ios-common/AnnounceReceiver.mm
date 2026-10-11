@@ -109,7 +109,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
     // we need to get title, track, album and artist from the db
     if (item_id >= 0)
     {
-      if (item_type == MediaTypeSong)
+      if (KODI::MEDIA::MediaTypeOf(item_type) == KODI::MEDIA::TYPE::SONG)
       {
         CMusicDatabase db;
         if (db.Open())

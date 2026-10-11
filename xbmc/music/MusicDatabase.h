@@ -15,6 +15,7 @@
 
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
+#include "media/MediaType.h"
 #include "music/AudioType.h"
 #include "settings/LibExportSettings.h"
 #include "utils/Artwork.h"
@@ -639,7 +640,7 @@ public:
   int GetDiscsCount(const std::string& baseDir, const Filter& filter = Filter());
   int GetSongsCount(const Filter& filter = Filter());
   bool GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription& sorting) override;
-  int GetOrderFilter(const std::string& type, const SortDescription& sorting, Filter& filter) const;
+  int GetOrderFilter(KODI::MEDIA::TYPE type, const SortDescription& sorting, Filter& filter) const;
 
   /////////////////////////////////////////////////
   // Party Mode
@@ -715,7 +716,7 @@ public:
   void SetPropertiesForFileItem(CFileItem& item);
   static void SetPropertiesFromArtist(CFileItem& item, const CArtist& artist);
   static void SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album);
-  void SetItemUpdated(int mediaId, const std::string& mediaType);
+  void SetItemUpdated(int mediaId, KODI::MEDIA::TYPE mediaType);
 
   /////////////////////////////////////////////////
   // Art
@@ -764,7 +765,7 @@ public:
   \param mediaType the type of media, which corresponds to the table the item resides in (artist/album).
   \return the types of art e.g. "thumb", "fanart", etc.
   */
-  std::vector<std::string> GetAvailableArtTypesForItem(int mediaId, const MediaType& mediaType);
+  std::vector<std::string> GetAvailableArtTypesForItem(int mediaId, KODI::MEDIA::TYPE mediaType);
 
   /*! \brief Fetch the list of available-but-unassigned art URLs held in the
   database for a specific media item and art type.
@@ -774,7 +775,7 @@ public:
   \return list of URLs
   */
   std::vector<CScraperUrl::SUrlEntry> GetAvailableArtForItem(int mediaId,
-                                                             const MediaType& mediaType,
+                                                             KODI::MEDIA::TYPE mediaType,
                                                              const std::string& artType);
 
   /////////////////////////////////////////////////

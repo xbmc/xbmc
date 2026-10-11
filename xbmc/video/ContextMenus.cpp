@@ -44,7 +44,7 @@ using namespace KODI;
 namespace CONTEXTMENU
 {
 
-CVideoInfoBase::CVideoInfoBase(MediaType mediaType)
+CVideoInfoBase::CVideoInfoBase(MEDIA::TYPE mediaType)
   : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
 {
 }
@@ -57,7 +57,7 @@ bool CVideoInfoBase::IsVisible(const CFileItem& item) const
   if (item.IsPVRRecording())
     return false; // pvr recordings have its own implementation for this
 
-  return item.GetVideoInfoTag()->m_type == m_mediaType;
+  return item.GetVideoInfoTag()->GetMediaType() == m_mediaType;
 }
 
 bool CVideoInfoBase::Execute(const std::shared_ptr<CFileItem>& item) const
@@ -78,7 +78,7 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
     return false; // pvr recordings have its own implementation for this
 
   const auto* tag{item.GetVideoInfoTag()};
-  return tag && tag->m_type == MediaTypeNone && !tag->IsEmpty() && VIDEO::IsVideo(item);
+  return tag && tag->m_type.empty() && !tag->IsEmpty() && VIDEO::IsVideo(item);
 }
 
 bool CVideoRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
@@ -460,7 +460,7 @@ bool CVideoPlayAndQueue::Execute(const std::shared_ptr<CFileItem>& item) const
 bool CTVShowScanForNewContent::IsVisible(const CFileItem& item) const
 {
   return !item.IsParentFolder() && item.HasVideoInfoTag() &&
-         item.GetVideoInfoTag()->m_type == MediaTypeTvShow;
+         item.GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::TV_SHOW;
 }
 
 bool CTVShowScanForNewContent::Execute(const std::shared_ptr<CFileItem>& item) const

@@ -15,6 +15,7 @@
 #include "application/Application.h"
 #include "filesystem/File.h"
 #include "guilib/GUIWindowManager.h"
+#include "media/MediaType.h"
 #include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -179,7 +180,7 @@ void CTVOSTopShelf::SetTopShelfItems(CFileItemList& items, TVOSTopShelfItemsCate
             [&videoDb](const CFileItemPtr& videoItem)
             {
               int season = videoItem->GetVideoInfoTag()->m_iIdSeason;
-              return season > 0 ? videoDb.GetArtForItem(season, MediaTypeSeason, "poster")
+              return season > 0 ? videoDb.GetArtForItem(season, KODI::MEDIA::TYPE::SEASON, "poster")
                                 : std::string{};
             },
             [](const CFileItemPtr& videoItem)

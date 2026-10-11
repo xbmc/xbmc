@@ -85,6 +85,7 @@ bool CVideoLibraryRefreshingJob::Equals(const CJob* job) const
 
 bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   if (m_item == nullptr)
     return false;
 
@@ -183,7 +184,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     ART::Artwork movieSetArt;
     if (tag.m_set.HasArt())
       movieSetArt = tag.m_set.GetArt();
-    db.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
+    db.SetArtForItem(dbId, MEDIA::TYPE::VIDEO_COLLECTION, movieSetArt);
 
     // Refresh (for video info dialog)
     m_item->ClearArt();
@@ -308,8 +309,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // if we don't have an url or need to refresh anyway do the web search
     if (!hasDetails && (needsRefresh || !scraperUrl.HasUrls()))
     {
-      SetTitle(StringUtils::Format(
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(197), scraper->Name()));
+      SetTitle(StringUtils::Format(localizeStrings.Get(197), scraper->Name()));
       SetText(itemTitle);
       SetProgress(0);
 
@@ -371,7 +371,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               // ask the user to input a title to use
               if (!CGUIKeyboardFactory::ShowAndGetInput(
                       itemTitle,
-                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                      localizeStrings.Get(
                           scraper->Content() == ADDON::ContentType::TVSHOWS ? 20357 : 16009),
                       false))
                 return false;
@@ -407,7 +407,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         // ask the user to input a title to use
         if (!CGUIKeyboardFactory::ShowAndGetInput(
                 itemTitle,
-                CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+                localizeStrings.Get(
                     scraper->Content() == ADDON::ContentType::TVSHOWS ? 20357 : 16009),
                 false))
           return false;
@@ -452,7 +452,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
       // for a tvshow we need to handle all paths of it
       std::vector<std::string> tvshowPaths;
-      if (CMediaTypes::IsMediaType(m_item->GetVideoInfoTag()->m_type, MediaTypeTvShow) && m_refreshAll &&
+      if (m_item->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::TV_SHOW && m_refreshAll &&
           db.GetPathsLinkedToTvShow(m_item->GetVideoInfoTag()->m_iDbId, tvshowPaths))
       {
         for (const auto& tvshowPath : tvshowPaths)
@@ -494,7 +494,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       headingLabel = 20394;
 
     // prepare the progress dialog for downloading all the necessary information
-    SetTitle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(headingLabel));
+    SetTitle(localizeStrings.Get(headingLabel));
     SetText(itemTitle);
     SetProgress(0);
 
@@ -541,7 +541,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         if (!m_item->IsFolder())
           db.DeleteEpisode(origDbId);
-        else if (m_item->GetVideoInfoTag()->m_type == MediaTypeSeason)
+        else if (m_item->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::SEASON)
           db.DeleteSeason(origDbId);
         else if (m_refreshAll)
           db.DeleteTvShow(origDbId);
@@ -601,7 +601,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
                 "JOIN files ON files.idFile = videoversion.idFile "
                 "WHERE files.idPath = %i AND videoversion.media_type = '%s' AND "
                 "videoversion.itemType = %i",
-                playlistPathId, MediaTypeMovie, static_cast<int>(VideoAssetType::VERSION))) == 1)
+                playlistPathId, MEDIA::NameOf(MEDIA::TYPE::MOVIE).c_str(), static_cast<int>(VideoAssetType::VERSION))) == 1)
         {
           // UNKNOWN, as with MOVIES SetFileForMovie() keeps the old file and its settings when the
           // new one is already a version of the movie, which the playlist is. This moves the file's
@@ -638,7 +638,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         // invalidating the old db ids and m_item is not (yet) updated at this point.
         bool hasInfo = false;
         const CVideoInfoTag* videoTag = m_item->GetVideoInfoTag();
-        if (videoTag && videoTag->m_type == MediaTypeSeason && videoTag->m_iSeason != -1)
+        if (videoTag && videoTag->GetMediaType() == MEDIA::TYPE::SEASON && videoTag->m_iSeason != -1)
           hasInfo = db.GetSeasonInfo(m_item->GetPath(), videoTag->m_iSeason,
                                      *m_item->GetVideoInfoTag(), m_item.get());
         if (!hasInfo)
@@ -660,7 +660,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
                             VideoAssetType::VERSION);
 
       const auto videoTag{m_item->GetVideoInfoTag()};
-      db.UpdateAssetsOwner(videoTag->m_type, origDbId, videoTag->m_iDbId);
+      db.UpdateAssetsOwner(videoTag->GetMediaType(), origDbId, videoTag->m_iDbId);
 
       for (const auto& version : keptVersions)
       {

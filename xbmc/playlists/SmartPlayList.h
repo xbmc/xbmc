@@ -75,7 +75,7 @@ private:
   std::string GetVideoResolutionQuery(const std::string &parameter) const;
   static std::string FormatLinkQuery(const char* field,
                                      const char* table,
-                                     const MediaType& mediaType,
+                                     KODI::MEDIA::TYPE mediaType,
                                      const std::string& mediaField,
                                      const std::string& parameter);
   std::string FormatYearQuery(const std::string& field,

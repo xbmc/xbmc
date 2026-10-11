@@ -10,6 +10,7 @@
 
 #include "ReplayGain.h"
 #include "XBDateTime.h"
+#include "media/MediaType.h"
 #include "music/Album.h"
 #include "music/AudioType.h"
 #include "music/Song.h"
@@ -56,6 +57,8 @@ public:
   std::string GetOriginalYear() const;
   int GetDatabaseId() const;
   const std::string &GetType() const;
+  //! \brief The media type GetType() names, NONE where it names a node such as a genre, or is spelled otherwise.
+  KODI::MEDIA::TYPE GetMediaType() const;
   const std::string& GetDiscSubtitle() const;
   int GetBPM() const;
   std::string GetYearString() const;
@@ -112,6 +115,7 @@ public:
   void SetOriginalDate(std::string_view strOriginalDate);
   void SetReleaseDate(std::string_view strReleaseDate);
   void SetDatabaseId(int id, std::string_view type);
+  void SetDatabaseId(int id, KODI::MEDIA::TYPE type);
   void SetTrackNumber(int iTrack);
   void SetDiscNumber(int iDiscNumber);
   void SetTrackAndDiscNumber(int iTrackAndDisc);
@@ -151,7 +155,8 @@ public:
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
   void SetAlbumReleaseType(AudioType::Type releaseType);
-  void SetType(MediaType_view mediaType);
+  void SetType(std::string_view mediaType);
+  void SetType(KODI::MEDIA::TYPE mediaType);
   void SetDiscSubtitle(std::string_view strDiscSubtitle);
   void SetTotalDiscs(int iDiscTotal);
   void SetBPM(int iBPM);
@@ -244,7 +249,7 @@ private:
   int m_iDuration;
   int m_iTrack;     // consists of the disk number in the high 16 bits, the track number in the low 16bits
   int m_iDbId;
-  MediaType m_type; ///< item type "music", "song", "album", "artist"
+  std::string m_type; ///< the table the id is in: a media type, or a node such as genre
   bool m_bLoaded;
   float m_Rating;
   int m_Userrating;

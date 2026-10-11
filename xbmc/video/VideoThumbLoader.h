@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "ThumbLoader.h"
+#include "media/MediaType.h"
 #include "utils/Artwork.h"
 
 #include <map>
@@ -19,7 +20,7 @@ class CStreamDetails;
 class CVideoDatabase;
 class EmbeddedArt;
 
-using ArtCache = std::map<std::pair<MediaType, int>, KODI::ART::Artwork>;
+using ArtCache = std::map<std::pair<std::string, int>, KODI::ART::Artwork>;
 
 class CVideoThumbLoader : public CThumbLoader
 {
@@ -56,6 +57,10 @@ public:
    \sa GetLocalArt
    */
   static std::vector<std::string> GetArtTypes(const std::string &type);
+  static std::vector<std::string> GetArtTypes(KODI::MEDIA::TYPE type)
+  {
+    return GetArtTypes(KODI::MEDIA::NameOf(type));
+  }
 
   static bool IsValidArtType(const std::string& potentialArtType);
 

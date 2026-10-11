@@ -28,17 +28,17 @@
 using namespace CONTEXTMENU;
 using namespace KODI;
 
-CMusicInfoBase::CMusicInfoBase(MediaType mediaType)
+CMusicInfoBase::CMusicInfoBase(MEDIA::TYPE mediaType)
   : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
 {
 }
 
 bool CMusicInfoBase::IsVisible(const CFileItem& item) const
 {
-  return (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == m_mediaType) ||
-         (m_mediaType == MediaTypeArtist && VIDEO::IsVideoDb(item) &&
+  return (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetMediaType() == m_mediaType) ||
+         (m_mediaType == MEDIA::TYPE::ARTIST && VIDEO::IsVideoDb(item) &&
           item.HasProperty(ITEM::PROPERTY::ARTIST_MUSICID)) ||
-         (m_mediaType == MediaTypeAlbum && VIDEO::IsVideoDb(item) &&
+         (m_mediaType == MEDIA::TYPE::ALBUM && VIDEO::IsVideoDb(item) &&
           item.HasProperty(ITEM::PROPERTY::ALBUM_MUSICID));
 }
 
@@ -57,7 +57,7 @@ bool CMusicInfo::IsVisible(const CFileItem& item) const
     return false;
 
   const auto* tag{item.GetMusicInfoTag()};
-  return tag && tag->GetType() == MediaTypeNone && !tag->GetTitle().empty() && MUSIC::IsAudio(item);
+  return tag && tag->GetType().empty() && !tag->GetTitle().empty() && MUSIC::IsAudio(item);
 }
 
 bool CMusicBrowse::IsVisible(const CFileItem& item) const

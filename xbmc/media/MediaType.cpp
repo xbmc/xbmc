@@ -11,99 +11,105 @@
 #include "ServiceBroker.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 
-#include <utility>
+#include <algorithm>
+#include <array>
 
-static std::map<std::string, CMediaTypes::MediaTypeInfo> fillDefaultMediaTypes()
+namespace KODI::MEDIA
 {
-  std::map<std::string, CMediaTypes::MediaTypeInfo> mediaTypes;
 
-  // clang-format off
-  mediaTypes.insert(std::make_pair(MediaTypeMusic,            CMediaTypes::MediaTypeInfo(MediaTypeMusic,           MediaTypeMusic,               true,    249)));
-  mediaTypes.insert(std::make_pair(MediaTypeArtist,           CMediaTypes::MediaTypeInfo(MediaTypeArtist,          MediaTypeArtist "s",          true,    557)));
-  mediaTypes.insert(std::make_pair(MediaTypeAlbum,            CMediaTypes::MediaTypeInfo(MediaTypeAlbum,           MediaTypeAlbum "s",           true,    558)));
-  mediaTypes.insert(std::make_pair(MediaTypeSong,             CMediaTypes::MediaTypeInfo(MediaTypeSong,            MediaTypeSong "s",            false,   179)));
-  mediaTypes.insert(std::make_pair(MediaTypeVideo,            CMediaTypes::MediaTypeInfo(MediaTypeVideo,           MediaTypeVideo "s",           true,    291)));
-  mediaTypes.insert(std::make_pair(MediaTypeVideoCollection,  CMediaTypes::MediaTypeInfo(MediaTypeVideoCollection, MediaTypeVideoCollection "s", true,  20141)));
-  mediaTypes.insert(std::make_pair(MediaTypeMusicVideo,       CMediaTypes::MediaTypeInfo(MediaTypeMusicVideo,      MediaTypeMusicVideo "s",      false, 20391)));
-  mediaTypes.insert(std::make_pair(MediaTypeMovie,            CMediaTypes::MediaTypeInfo(MediaTypeMovie,           MediaTypeMovie "s",           false, 20338)));
-  mediaTypes.insert(std::make_pair(MediaTypeTvShow,           CMediaTypes::MediaTypeInfo(MediaTypeTvShow,          MediaTypeTvShow "s",          true,  36902)));
-  mediaTypes.insert(std::make_pair(MediaTypeSeason,           CMediaTypes::MediaTypeInfo(MediaTypeSeason,          MediaTypeSeason "s",          true,  20373)));
-  mediaTypes.insert(std::make_pair(MediaTypeEpisode,          CMediaTypes::MediaTypeInfo(MediaTypeEpisode,         MediaTypeEpisode "s",         false, 20359)));
-  mediaTypes.insert(std::make_pair(MediaTypeVideoVersion,     CMediaTypes::MediaTypeInfo(MediaTypeVideoVersion,    MediaTypeVideoVersion "s",    false, 40012)));
-  // clang-format on
+namespace
+{
+struct MediaTypeInfo
+{
+  TYPE type;
+  std::string_view name;
+  std::string_view plural;
+  bool container;
+  int localizationSingularCapital;
+};
 
-  return mediaTypes;
+// clang-format off
+constexpr std::array<MediaTypeInfo, 12> MEDIA_TYPES{{
+    {TYPE::MUSIC,            "music",        "music",              true,    249},
+    {TYPE::ARTIST,           "artist",       CONTENT::ARTISTS,     true,    557},
+    {TYPE::ALBUM,            "album",        CONTENT::ALBUMS,      true,    558},
+    {TYPE::SONG,             "song",         CONTENT::SONGS,       false,   179},
+    {TYPE::VIDEO,            "video",        "videos",             true,    291},
+    {TYPE::VIDEO_COLLECTION, "set",          CONTENT::SETS,        true,  20141},
+    {TYPE::MUSIC_VIDEO,      "musicvideo",   CONTENT::MUSICVIDEOS, false, 20391},
+    {TYPE::MOVIE,            "movie",        CONTENT::MOVIES,      false, 20338},
+    {TYPE::TV_SHOW,          "tvshow",       CONTENT::TVSHOWS,     true,  36902},
+    {TYPE::SEASON,           "season",       CONTENT::SEASONS,     true,  20373},
+    {TYPE::EPISODE,          "episode",      CONTENT::EPISODES,    false, 20359},
+    {TYPE::VIDEO_VERSION,    "videoversion", CONTENT::VIDEOVERSIONS, false, 40012},
+}};
+// clang-format on
+
+const MediaTypeInfo* Find(TYPE type)
+{
+  const auto it = std::ranges::find(MEDIA_TYPES, type, &MediaTypeInfo::type);
+  return it != MEDIA_TYPES.end() ? &*it : nullptr;
 }
 
-std::map<std::string, CMediaTypes::MediaTypeInfo> CMediaTypes::m_mediaTypes = fillDefaultMediaTypes();
-
-bool CMediaTypes::IsValidMediaType(const MediaType &mediaType)
+//! Every type's Field as a string, indexed by type, so a name can be handed out by reference.
+template<std::string_view MediaTypeInfo::* Field>
+const std::string& Text(TYPE type)
 {
-  return findMediaType(mediaType) != m_mediaTypes.end();
-}
-
-bool CMediaTypes::IsMediaType(const std::string &strMediaType, const MediaType &mediaType)
-{
-  std::map<std::string, MediaTypeInfo>::const_iterator strMediaTypeIt = findMediaType(strMediaType);
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
-
-  return strMediaTypeIt != m_mediaTypes.end() && mediaTypeIt != m_mediaTypes.end() &&
-         strMediaTypeIt->first.compare(mediaTypeIt->first) == 0;
-}
-
-MediaType CMediaTypes::FromString(const std::string &strMediaType)
-{
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(strMediaType);
-  if (mediaTypeIt == m_mediaTypes.end())
-    return MediaTypeNone;
-
-  return mediaTypeIt->first;
-}
-
-MediaType CMediaTypes::ToPlural(const MediaType &mediaType)
-{
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
-  if (mediaTypeIt == m_mediaTypes.end())
-    return MediaTypeNone;
-
-  return mediaTypeIt->second.plural;
-}
-
-bool CMediaTypes::IsContainer(const MediaType &mediaType)
-{
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
-  if (mediaTypeIt == m_mediaTypes.end())
-    return false;
-
-  return mediaTypeIt->second.container;
-}
-
-std::map<std::string, CMediaTypes::MediaTypeInfo>::const_iterator CMediaTypes::findMediaType(const std::string &mediaType)
-{
-  std::string strMediaType = mediaType;
-  StringUtils::ToLower(strMediaType);
-
-  std::map<std::string, MediaTypeInfo>::const_iterator it = m_mediaTypes.find(strMediaType);
-  if (it != m_mediaTypes.end())
-    return it;
-
-  for (it = m_mediaTypes.begin(); it != m_mediaTypes.end(); ++it)
+  static const std::array<std::string, MEDIA_TYPES.size() + 1> texts = []
   {
-    if (strMediaType.compare(it->second.plural) == 0)
-      return it;
-  }
-
-  return m_mediaTypes.end();
+    std::array<std::string, MEDIA_TYPES.size() + 1> result;
+    for (const MediaTypeInfo& info : MEDIA_TYPES)
+      result[static_cast<size_t>(info.type)] = std::string{info.*Field};
+    return result;
+  }();
+  return texts[static_cast<size_t>(type)];
 }
 
-std::string CMediaTypes::GetCapitalLocalization(const MediaType &mediaType)
+} // namespace
+
+const std::string& NameOf(TYPE type)
 {
-  std::map<std::string, MediaTypeInfo>::const_iterator mediaTypeIt = findMediaType(mediaType);
-  if (mediaTypeIt == m_mediaTypes.end() || mediaTypeIt->second.localizationSingularCapital <= 0)
-    return "";
-
-  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
-      mediaTypeIt->second.localizationSingularCapital);
+  return Text<&MediaTypeInfo::name>(type);
 }
+
+const std::string& PluralNameOf(TYPE type)
+{
+  return Text<&MediaTypeInfo::plural>(type);
+}
+
+TYPE MediaTypeFromName(std::string_view name)
+{
+  const auto it = std::ranges::find_if(MEDIA_TYPES,
+                                       [name](const MediaTypeInfo& info)
+                                       {
+                                         return StringUtils::EqualsNoCase(name, info.name) ||
+                                                StringUtils::EqualsNoCase(name, info.plural);
+                                       });
+  return it != MEDIA_TYPES.end() ? it->type : TYPE::NONE;
+}
+
+TYPE MediaTypeOf(std::string_view name)
+{
+  const auto it = std::ranges::find(MEDIA_TYPES, name, &MediaTypeInfo::name);
+  return it != MEDIA_TYPES.end() ? it->type : TYPE::NONE;
+}
+
+bool IsContainer(TYPE type)
+{
+  const MediaTypeInfo* info = Find(type);
+  return info && info->container;
+}
+
+std::string GetCapitalLocalization(TYPE type)
+{
+  const MediaTypeInfo* info = Find(type);
+  if (!info)
+    return {};
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
+      info->localizationSingularCapital);
+}
+
+} // namespace KODI::MEDIA
