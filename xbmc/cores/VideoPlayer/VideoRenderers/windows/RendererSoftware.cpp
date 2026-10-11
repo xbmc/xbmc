@@ -248,8 +248,10 @@ void CRendererSoftware::FinalOutput(CD3DTexture& source, CD3DTexture& target, co
   const CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
   if (!buf->full_range && (av_pix_fmt_desc_get(buf->av_format)->flags & AV_PIX_FMT_FLAG_RGB))
   {
+    // Limited range is 16 to 235 of 255 in an 8 bit texture and 64 to 940 of 1023 in a 10 bit one
     brightness -= contrast * 2.0f * 16.0f / 219.0f;
-    contrast *= 255.0f / 219.0f;
+    contrast *=
+        source.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM ? 1023.0f / 876.0f : 255.0f / 219.0f;
   }
 
   m_outputShader->Render(source, src, destPoints, target, DX::Windowing()->UseLimitedColor(),
