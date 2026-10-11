@@ -21,6 +21,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -567,4 +568,36 @@ TEST_F(AudioSortKeyTester, SortKeyFollowsTheLanguageDetailsSetting)
   DescribeStream(CSettings::VIDEOLIBRARY_LANGUAGE_DETAILS_BEST);
   tag.ToSortable(sortable, Field::AUDIO_LANGUAGE);
   EXPECT_EQ("ger", sortable[Field::AUDIO_LANGUAGE].asString());
+}
+
+namespace
+{
+std::vector<std::string> CastAfterLoading(const std::string& clear)
+{
+  const std::string document = R"(<movie>
+                                    <actor><name>First</name></actor>
+                                    <actor clear=")" +
+                               clear + R"("><name>Second</name></actor>
+                                  </movie>)";
+  CXBMCTinyXML doc;
+  doc.Parse(document, TIXML_ENCODING_UNKNOWN);
+
+  CVideoInfoTag details;
+  EXPECT_TRUE(details.Load(doc.RootElement(), true, false));
+
+  std::vector<std::string> names;
+  for (const auto& actor : details.m_cast)
+    names.push_back(actor.strName);
+  return names;
+}
+} // unnamed namespace
+
+TEST(TestVideoInfoTag, ActorClearTrueStartsTheCastAgainFromThatActor)
+{
+  EXPECT_EQ(std::vector<std::string>{"Second"}, CastAfterLoading("true"));
+}
+
+TEST(TestVideoInfoTag, ActorClearFalseKeepsTheCast)
+{
+  EXPECT_EQ((std::vector<std::string>{"First", "Second"}), CastAfterLoading("false"));
 }

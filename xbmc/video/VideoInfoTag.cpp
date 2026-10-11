@@ -1500,6 +1500,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     const TiXmlNode *actor = node->FirstChild("name");
     if (actor && actor->FirstChild())
     {
+      const char* clear = node->Attribute("clear");
+      if (clear && StringUtils::CompareNoCase(clear, "true") == 0)
+        m_cast.clear();
+
       SActorInfo& info = m_cast.emplace_back();
 
       info.strName = actor->FirstChild()->Value();
@@ -1514,9 +1518,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         info.thumbUrl.ParseAndAppendUrl(thumbnode);
         thumbnode = thumbnode->NextSiblingElement("thumb");
       }
-      const char* clear=node->Attribute("clear");
-      if (clear && StringUtils::CompareNoCase(clear, "true"))
-        m_cast.clear();
     }
     node = node->NextSiblingElement("actor");
   }
