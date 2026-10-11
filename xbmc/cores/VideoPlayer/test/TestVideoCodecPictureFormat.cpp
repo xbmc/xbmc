@@ -132,3 +132,14 @@ TEST(TestVideoCodecPictureFormat, H264ReportsItsPixelFormatAndBitDepth)
   EXPECT_EQ(8, picture.depthFromDescriptor);
   EXPECT_EQ(8u, picture.colorBits);
 }
+
+//! FFmpeg takes RGB to be full range, and a decoder handing RGB over often gives no range.
+TEST(TestVideoCodecPictureFormat, RangeNotGivenIsFullForRGBOnly)
+{
+  EXPECT_TRUE(VideoPicture::IsFullRange(AVCOL_RANGE_UNSPECIFIED, AV_PIX_FMT_BGR0));
+  EXPECT_TRUE(VideoPicture::IsFullRange(AVCOL_RANGE_UNSPECIFIED, AV_PIX_FMT_GBRP10));
+  EXPECT_FALSE(VideoPicture::IsFullRange(AVCOL_RANGE_UNSPECIFIED, AV_PIX_FMT_YUV420P));
+
+  EXPECT_FALSE(VideoPicture::IsFullRange(AVCOL_RANGE_MPEG, AV_PIX_FMT_BGR0));
+  EXPECT_TRUE(VideoPicture::IsFullRange(AVCOL_RANGE_JPEG, AV_PIX_FMT_YUV420P));
+}
