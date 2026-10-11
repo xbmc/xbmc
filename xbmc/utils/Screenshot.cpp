@@ -27,15 +27,17 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
+#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <atomic>
 #include <chrono>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <vector>
 
 std::vector<std::function<std::unique_ptr<IScreenshotSurface>()>> CScreenShot::m_screenShotSurfaces;
 
@@ -312,8 +314,14 @@ std::string ScreenshotName(const std::string& file)
 struct PendingScreenshot
 {
   CEvent done;
-  std::atomic<unsigned int> delivered{0};
-  std::atomic<unsigned int> written{0};
+  CCriticalSection lock;
+  //! The composite's file; without a name from the caller, numbered at the first delivery
+  std::string composite;
+  //! The files a delivery has started to write
+  std::vector<std::string> started;
+  unsigned int written{0};
+  //! The request gave up, so a delivery removes again whatever it writes from then on
+  bool abandoned{false};
 };
 
 // Covers forcing a frame, reading it back and encoding it at the native resolution.
@@ -323,6 +331,10 @@ constexpr std::chrono::milliseconds SCREENSHOT_TIMEOUT{5000};
 bool CScreenShot::IsScreenshotPath(const std::string& path)
 {
   if (!StringUtils::StartsWithNoCase(path, SCREENSHOT_FOLDER))
+    return false;
+
+  // With no folder configured, special://screenshots resolves to a relative path
+  if (ScreenshotDir().empty())
     return false;
 
   return IsScreenshotName(path.substr(SCREENSHOT_FOLDER.size()));
@@ -340,20 +352,13 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
     return {ScreenshotError::NO_FOLDER};
   }
 
-  const std::string composite =
-      target.empty() ? NextScreenshotFile(dir) : TargetScreenshotFile(dir, target);
-  if (composite.empty())
+  auto pending = std::make_shared<PendingScreenshot>();
+  if (!target.empty())
   {
-    if (target.empty())
-    {
-      CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
-      return {ScreenshotError::FAILED};
-    }
-    return {ScreenshotError::BAD_TARGET};
+    pending->composite = TargetScreenshotFile(dir, target);
+    if (pending->composite.empty())
+      return {ScreenshotError::BAD_TARGET};
   }
-
-  const bool both = content == CaptureContent::BOTH;
-  const std::string video = both ? VideoScreenshotFile(composite) : composite;
 
   const auto captureService = CServiceBroker::GetCaptureService();
   if (!captureService)
@@ -366,39 +371,92 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
   spec.content = content;
   spec.format = CaptureFormat::NATIVE;
 
+  const bool both = content == CaptureContent::BOTH;
   const unsigned int expected = both ? 2u : 1u;
-  auto pending = std::make_shared<PendingScreenshot>();
 
-  // This thread waits for the capture worker's write; a BOTH request delivers twice.
-  auto handle =
-      captureService->Submit(spec,
-                             [pending, expected, composite, video](const CaptureResult& result)
-                             {
-                               if (!result.pixels)
-                               {
-                                 pending->done.Set();
-                                 return;
-                               }
+  // This thread waits for the capture worker's write. A BOTH request delivers its video frame
+  // first and ends with the composite.
+  auto handle = captureService->Submit(
+      spec,
+      [pending, both, dir](const CaptureResult& result)
+      {
+        const bool videoOfBoth = both && result.content == CaptureContent::VIDEO;
+        if (!result.pixels)
+        {
+          pending->done.Set();
+          return;
+        }
 
-                               const std::string& file =
-                                   result.content == CaptureContent::VIDEO ? video : composite;
-                               CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(file));
-                               if (WriteCapture(result, file))
-                                 ++pending->written;
-                               if (++pending->delivered == expected)
-                                 pending->done.Set();
-                             });
+        std::string file;
+        {
+          std::unique_lock lock(pending->lock);
+          // Deliveries are handled one at a time, so a number taken here is taken by no other
+          if (!pending->abandoned && pending->composite.empty())
+          {
+            pending->composite = NextScreenshotFile(dir);
+            if (pending->composite.empty())
+              CLog::Log(LOGWARNING, "Too many screen shots or invalid folder");
+          }
+          if (!pending->abandoned && !pending->composite.empty())
+          {
+            file = videoOfBoth ? VideoScreenshotFile(pending->composite) : pending->composite;
+            pending->started.emplace_back(file);
+          }
+        }
+
+        if (!file.empty())
+        {
+          CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(file));
+          const bool written = WriteCapture(result, file);
+
+          bool abandoned = false;
+          {
+            std::unique_lock lock(pending->lock);
+            if (written)
+              ++pending->written;
+            abandoned = pending->abandoned;
+          }
+          if (abandoned)
+            XFILE::CFile::Delete(file);
+        }
+
+        if (!videoOfBoth)
+          pending->done.Set();
+      });
 
   // handle is not detached: it stays in scope for the wait, because dropping it
   // cancels the request
-  if (!pending->done.Wait(SCREENSHOT_TIMEOUT) || pending->written != expected)
+  const bool arrived = pending->done.Wait(SCREENSHOT_TIMEOUT);
+
+  bool failed = false;
+  std::string composite;
+  std::vector<std::string> started;
   {
-    CLog::Log(LOGERROR, "Screenshot {} did not complete", CURL::GetRedacted(composite));
+    std::unique_lock lock(pending->lock);
+    failed = !arrived || pending->written != expected;
+    if (failed)
+    {
+      pending->abandoned = true;
+      started = pending->started;
+    }
+    composite = pending->composite;
+  }
+
+  if (failed)
+  {
+    // A delivery still writing removes its own file once it is done
+    for (const std::string& file : started)
+    {
+      if (XFILE::CFile::Exists(file))
+        XFILE::CFile::Delete(file);
+    }
+    CLog::Log(LOGERROR, "Screenshot did not complete");
     return {ScreenshotError::FAILED};
   }
 
   // answered as special://screenshots so the caller holds a path that survives
   // being handed to another machine, and one the web server can resolve
+  const std::string video = both ? VideoScreenshotFile(composite) : composite;
   return {ScreenshotError::NONE,
           content == CaptureContent::VIDEO ? "" : SpecialScreenshotPath(composite),
           content == CaptureContent::COMPOSITE ? "" : SpecialScreenshotPath(video)};
@@ -438,6 +496,7 @@ CScreenShot::ScreenshotDeletion CScreenShot::DeleteScreenshots(const std::string
   }
 
   unsigned int deleted = 0;
+  bool failed = false;
   for (const auto& item : items)
   {
     if (item->IsFolder())
@@ -446,8 +505,11 @@ CScreenShot::ScreenshotDeletion CScreenShot::DeleteScreenshots(const std::string
     if (XFILE::CFile::Delete(item->GetPath()))
       ++deleted;
     else
+    {
+      failed = true;
       CLog::Log(LOGWARNING, "Unable to delete screenshot {}", CURL::GetRedacted(item->GetPath()));
+    }
   }
 
-  return {ScreenshotError::NONE, deleted};
+  return {failed ? ScreenshotError::FAILED : ScreenshotError::NONE, deleted};
 }
