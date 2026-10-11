@@ -13,7 +13,73 @@
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <cstring>
+
 using namespace Microsoft::WRL;
+
+namespace
+{
+using RowWriter = void (*)(const uint8_t* src, uint8_t* dst, unsigned width);
+
+void CopyRow(const uint8_t* src, uint8_t* dst, unsigned width)
+{
+  std::memcpy(dst, src, width * sizeof(uint32_t));
+}
+
+// x2rgb10le has red in the high ten bits, R10G10B10A2 has it in the low ten
+void SwapRedBlueRow(const uint8_t* src, uint8_t* dst, unsigned width)
+{
+  const uint32_t* in = reinterpret_cast<const uint32_t*>(src);
+  uint32_t* out = reinterpret_cast<uint32_t*>(dst);
+  for (unsigned x = 0; x < width; ++x)
+  {
+    const uint32_t pixel = in[x];
+    out[x] = (pixel & 0xC00FFC00) | ((pixel >> 20) & 0x3FF) | ((pixel & 0x3FF) << 20);
+  }
+}
+
+// A packed 32 bit RGB picture format and the texture format that holds it without conversion
+struct DirectFormat
+{
+  AVPixelFormat picture;
+  DXGI_FORMAT texture;
+  RowWriter writeRow;
+};
+
+constexpr DirectFormat DIRECT_FORMATS[] = {
+    {AV_PIX_FMT_BGR0, DXGI_FORMAT_B8G8R8X8_UNORM, CopyRow},
+    {AV_PIX_FMT_X2RGB10LE, DXGI_FORMAT_R10G10B10A2_UNORM, SwapRedBlueRow},
+};
+
+const DirectFormat* FindDirectFormat(AVPixelFormat format)
+{
+  const auto it = std::ranges::find(DIRECT_FORMATS, format, &DirectFormat::picture);
+  return it != std::end(DIRECT_FORMATS) ? &*it : nullptr;
+}
+
+void WriteDirect(const DirectFormat& format, CRenderBuffer& buf, const CD3DTexture& target)
+{
+  uint8_t* planes[YuvImage::MAX_PLANES];
+  int strides[YuvImage::MAX_PLANES];
+  buf.GetDataPlanes(planes, strides);
+
+  D3D11_MAPPED_SUBRESOURCE mapping;
+  if (!target.LockRect(0, &mapping, D3D11_MAP_WRITE_DISCARD))
+  {
+    CLog::LogF(LOGERROR, "failed to lock swtarget texture into memory.");
+    return;
+  }
+
+  const uint8_t* src = planes[0];
+  uint8_t* dst = static_cast<uint8_t*>(mapping.pData);
+  const unsigned height = std::min(target.GetHeight(), buf.GetHeight());
+  for (unsigned y = 0; y < height; ++y, src += strides[0], dst += mapping.RowPitch)
+    format.writeRow(src, dst, buf.GetWidth());
+
+  target.UnlockRect(0);
+}
+} // namespace
 
 CRendererBase* CRendererSoftware::Create(CVideoSettings& videoSettings)
 {
@@ -65,7 +131,12 @@ bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsign
 {
   if (__super::Configure(picture, fps, orientation))
   {
-    if (!CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, true))
+    DXGI_FORMAT targetFormat = DXGI_FORMAT_UNKNOWN;
+    const DirectFormat* direct = FindDirectFormat(picture.videoBuffer->GetFormat());
+    if (direct && DX::Windowing()->IsFormatSupport(direct->texture, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+      targetFormat = direct->texture;
+
+    if (!CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, true, targetFormat))
       return false;
 
     m_format = picture.videoBuffer->GetFormat();
@@ -93,6 +164,15 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
     return;
 
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+
+  const DirectFormat* direct = FindDirectFormat(buf->av_format);
+  if (direct && direct->texture == target.GetFormat())
+  {
+    WriteDirect(*direct, *buf, target);
+    ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
+    return;
+  }
+
   const AVPixelFormat dstFormat = (target.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM)
                                       ? AV_PIX_FMT_X2BGR10LE
                                       : AV_PIX_FMT_BGRA;
