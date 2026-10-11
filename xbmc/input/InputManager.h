@@ -246,6 +246,8 @@ public:
   void UnregisterCecInputProvider(KODI::CEC::ICecInputProvider* handler);
 
 private:
+  friend class TestInputManager;
+
   /*! \brief Process keyboard event and translate into an action
    *
    * \param key keypress details
