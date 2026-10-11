@@ -44,3 +44,17 @@ TEST(TestFavouritesUtils, AnImageReplacesIt)
   EXPECT_TRUE(FAVOURITES_UTILS::SetChosenThumbnail(item, "special://home/new.png"));
   EXPECT_EQ(item.GetArt("thumb"), "special://home/new.png");
 }
+
+TEST(TestFavouritesUtils, TheImageItAlreadyHasChangesNothing)
+{
+  CFileItem item{FavouriteWithThumb()};
+  EXPECT_FALSE(FAVOURITES_UTILS::SetChosenThumbnail(item, "special://home/current.png"));
+  EXPECT_EQ(item.GetArt("thumb"), "special://home/current.png");
+}
+
+TEST(TestFavouritesUtils, NoThumbWhereThereIsNoneChangesNothing)
+{
+  CFileItem item{"favourites://test", false};
+  EXPECT_FALSE(FAVOURITES_UTILS::SetChosenThumbnail(item, std::string{IMAGE_CHOICE::NONE}));
+  EXPECT_EQ(item.GetArt("thumb"), "");
+}

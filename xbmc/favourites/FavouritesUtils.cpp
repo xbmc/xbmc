@@ -80,7 +80,11 @@ bool SetChosenThumbnail(CFileItem& item, const std::string& choice)
   if (choice == KODI::IMAGE_CHOICE::CURRENT)
     return false;
 
-  item.SetArt(KODI::ART::TYPE::THUMB, choice == KODI::IMAGE_CHOICE::NONE ? "" : choice);
+  const std::string thumb{choice == KODI::IMAGE_CHOICE::NONE ? "" : choice};
+  if (item.GetArt(KODI::ART::TYPE::THUMB) == thumb)
+    return false;
+
+  item.SetArt(KODI::ART::TYPE::THUMB, thumb);
   return true;
 }
 
