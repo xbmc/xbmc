@@ -924,7 +924,6 @@ public:
    * \return 
   */
   bool GetArtForAsset(int assetId, ArtFallbackOptions fallback, KODI::ART::Artwork& art);
-  bool HasArtForItem(int mediaId, const MediaType &mediaType);
   /*!
    * \brief Retrieve season information of a TV show.
    * \param[in] showId ID of the show
