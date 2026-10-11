@@ -23088,7 +23088,21 @@ msgctxt "#36642"
 msgid "No orphaned add-ons to remove."
 msgstr ""
 
-#empty strings from id 36643 to 36898
+#empty strings from id 36643 to 36644
+
+#. Label of setting "Pictures -> Slideshow -> Show date and time metadata on screen"
+#: system/settings/settings.xml
+msgctxt "#36645"
+msgid "Show date and time metadata on screen"
+msgstr ""
+
+#. Description of setting "Pictures -> Slideshow -> Show date and time metadata on screen" with label #36645
+#: system/settings/settings.xml
+msgctxt "#36646"
+msgid "During a slideshow, show the date and time from a picture's EXIF metadata, if it has them. Not every skin supports this."
+msgstr ""
+
+#empty strings from id 36647 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml
