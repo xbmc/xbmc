@@ -820,7 +820,9 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
     }
 
     case GUI_MSG_PLAYBACK_ERROR:
-      MESSAGING::HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
+      // The slideshow skips a video that won't play
+      if (!CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_SLIDESHOW))
+        MESSAGING::HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
       return true;
 
     case GUI_MSG_PLAYLISTPLAYER_STARTED:
