@@ -48,6 +48,11 @@ if(CORE_SYSTEM_NAME STREQUAL android)
                       RendererMediaCodecSurface.h)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL wasm)
+  list(APPEND SOURCES RendererWebCodecs.cpp)
+  list(APPEND HEADERS RendererWebCodecs.h)
+endif()
+
 if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC)
   if("gbm" IN_LIST CORE_PLATFORM_NAME_LC AND TARGET ${APP_NAME_LC}::OpenGLES)
     list(APPEND SOURCES RendererDRMPRIME.cpp

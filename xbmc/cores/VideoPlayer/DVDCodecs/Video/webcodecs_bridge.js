@@ -16,7 +16,7 @@
 // Output frames get a per-decoder sequence number. The VideoFrame stays in a
 // Map under that number and its metadata goes into the ring inside the shared
 // state, written before framesProduced is published, so the codec takes frames
-// without a call into JS and names them by number for copy or release.
+// without a call into JS and names them by number for upload, copy or release.
 //
 // Function signatures must match the C prototypes; mismatched __sig will
 // silently corrupt arguments on threaded builds.
@@ -86,6 +86,9 @@ mergeInto(LibraryManager.library, {
     SS_CONFIGURED : 10,
     SS_HARDWARE : 11,
     SS_RING_OFFSET : 48,
+
+    // Result of webcodecs_probe_texture_upload, null until it has run.
+    textureUpload : null,
 
     // Registry is lazily created on first decoder creation; this library file
     // is merged into both the main thread and every pthread module, but only
@@ -296,7 +299,8 @@ mergeInto(LibraryManager.library, {
         fullRange : colorSpace.fullRange === true    ? 1
                     : colorSpace.fullRange === false ? 0
                                                      : -1,
-        layout : this.copyLayout(format, width, height),
+        // Only the copy path reads the layout; the texture path is spared the allocation.
+        layout : this.textureUpload === 1 ? null : this.copyLayout(format, width, height),
         // A frame reordered past later chunks finds its own retired already.
         ptsSeconds : (chunk ? chunk.synthetic : state.syntheticTimestamps)
                          ? NaN
@@ -413,6 +417,55 @@ mergeInto(LibraryManager.library, {
   },
 
   // ---------------------------------------------------------------------------
+  // webcodecs_probe_texture_upload: does texImage2D take a VideoFrame here?
+  // Meant to run before the GL command stream has anything in it, so the
+  // texture binding it leaves behind (none) is the initial state.
+  // ---------------------------------------------------------------------------
+  webcodecs_probe_texture_upload__deps : [ '$WebCodecsBridge', '$GL' ],
+  webcodecs_probe_texture_upload__proxy : 'sync',
+  webcodecs_probe_texture_upload__sig : 'i',
+  webcodecs_probe_texture_upload : function() {
+    const B = WebCodecsBridge;
+    if (B.textureUpload !== null)
+      return B.textureUpload;
+    B.textureUpload = 0;
+
+    const gl = GL.currentContext ? GL.currentContext.GLctx : null;
+    if (!gl || typeof VideoFrame === 'undefined')
+    {
+      console.info('WASM WebCodecs: no WebGL context or no VideoFrame, frames will be copied');
+      return 0;
+    }
+
+    let frame = null;
+    let texture = null;
+    try
+    {
+      frame = new VideoFrame(new Uint8Array(2 * 2 * 4),
+                             {format : 'RGBA', codedWidth : 2, codedHeight : 2, timestamp : 0});
+      texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, frame);
+      B.textureUpload = gl.getError() === gl.NO_ERROR ? 1 : 0;
+    }
+    catch (e)
+    {
+      console.warn('WASM WebCodecs: texImage2D(VideoFrame) threw', e);
+    }
+    finally
+    {
+      if (frame)
+        frame.close();
+      gl.bindTexture(gl.TEXTURE_2D, null);
+      if (texture)
+        gl.deleteTexture(texture);
+    }
+    console.info('WASM WebCodecs: texImage2D(VideoFrame)',
+                 B.textureUpload ? 'supported' : 'unsupported');
+    return B.textureUpload;
+  },
+
+  // ---------------------------------------------------------------------------
   // webcodecs_create_decoder: build + configure a VideoDecoder.
   // sig: i (ret) | string*, i, i, u8*, i, i, WebCodecsSharedState*
   // ---------------------------------------------------------------------------
@@ -463,6 +516,7 @@ mergeInto(LibraryManager.library, {
       generation : 0,
       droppedFrames : 0,
       highWaterMark : 0,
+      uploadFailed : false,
       decoder : null,
       description : null,
       hardwareAcceleration : 'prefer-hardware',
@@ -681,6 +735,46 @@ mergeInto(LibraryManager.library, {
   },
 
   // ---------------------------------------------------------------------------
+  // Asynchronous. Runs in the render thread's GL command stream: the caller
+  // enqueues it before the glBindTexture and draw that use the texture, and
+  // Emscripten's proxying queue keeps that order. Binds on whichever texture
+  // unit is active, as the caller's own glBindTexture would.
+  webcodecs_upload_frame__deps : [ '$WebCodecsBridge', '$GL' ],
+  webcodecs_upload_frame__proxy : 'async',
+  webcodecs_upload_frame__sig : 'viii',
+  webcodecs_upload_frame : function(handle, sequence, glTexture) {
+    const B = WebCodecsBridge;
+    const state = B.getState(handle);
+    if (!state)
+      return;
+    const entry = state.frames.get(sequence);
+    if (!entry)
+      return;
+
+    try
+    {
+      const gl = GL.currentContext ? GL.currentContext.GLctx : null;
+      const texture = GL.textures[glTexture];
+      if (gl && texture)
+      {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, entry.frame);
+      }
+    }
+    catch (e)
+    {
+      if (!state.uploadFailed)
+      {
+        state.uploadFailed = true;
+        console.warn('WASM WebCodecs: texImage2D(VideoFrame) failed', e);
+      }
+      state.failed = true;
+      state.errorMessage = 'texture upload failed: ' + String(e);
+      B.publishState(state);
+    }
+  },
+
+  // ---------------------------------------------------------------------------
   webcodecs_release_frame__deps : [ '$WebCodecsBridge' ],
   webcodecs_release_frame__proxy : 'async',
   webcodecs_release_frame__sig : 'vii',
@@ -697,7 +791,7 @@ mergeInto(LibraryManager.library, {
   },
 
   // ---------------------------------------------------------------------------
-  // Asynchronous; the outcome lands in copyDone/copyResult.
+  // Sysmem fallback. Asynchronous; the outcome lands in copyDone/copyResult.
   webcodecs_copy_frame__deps : [ '$WebCodecsBridge' ],
   webcodecs_copy_frame__proxy : 'async',
   webcodecs_copy_frame__sig : 'viiiii',
