@@ -193,6 +193,8 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVid
 
   m_iDroppedRequest = 0;
   m_iLateFrames = 0;
+  m_seenKeyFrame = false;
+  m_skipToKeyFrame = false;
 
   if( m_fFrameRate > 120 || m_fFrameRate < 5 )
   {
@@ -476,6 +478,7 @@ void CVideoPlayerVideo::Process()
       //! @todo this needs to be set on a streamchange instead
       ResetFrameRateCalc();
       m_droppingStats.Reset();
+      m_skipToKeyFrame = false;
 
       m_stalled = true;
       if (sync)
@@ -547,6 +550,36 @@ void CVideoPlayerVideo::Process()
       {
         CLog::Log(LOGDEBUG, "CVideoPlayerVideo - Stillframe left, switching to normal playback");
         m_stalled = false;
+      }
+
+      // decoder can't keep up: skip packets that are already late until the next keyframe,
+      // dropping single frames does not help for codecs without non-reference frames (VP9, AV1)
+      if (pPacket->m_keyFrame)
+      {
+        m_seenKeyFrame = true;
+        m_skipToKeyFrame = false;
+      }
+      else if (m_seenKeyFrame && !m_skipToKeyFrame && !bPacketDrop &&
+               m_speed == DVD_PLAYSPEED_NORMAL && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
+      {
+        const double packetPts = pPacket->pts != DVD_NOPTS_VALUE ? pPacket->pts : pPacket->dts;
+        if (packetPts != DVD_NOPTS_VALUE)
+        {
+          const double lateness =
+              m_pClock->GetClock() - packetPts - DVD_MSEC_TO_TIME(m_renderManager.GetDelay());
+          if (lateness > DVD_MSEC_TO_TIME(500))
+          {
+            CLog::Log(LOGDEBUG, LOGVIDEO,
+                      "CVideoPlayerVideo - video late by {}ms, skipping to next keyframe",
+                      DVD_TIME_TO_MSEC(lateness));
+            m_skipToKeyFrame = true;
+          }
+        }
+      }
+      if (m_skipToKeyFrame)
+      {
+        m_iDroppedFrames++;
+        continue;
       }
 
       bRequestDrop = false;

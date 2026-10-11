@@ -120,6 +120,9 @@ protected:
   int m_iFrameRateLength;    //how many seconds we should measure the framerate
                              //this is increased exponentially from CVideoPlayerVideo::CalcFrameRate()
 
+  bool m_seenKeyFrame{false}; // demuxer reports keyframes for this stream
+  bool m_skipToKeyFrame{false}; // too late, packets are skipped until the next keyframe
+
   bool m_bFpsInvalid;        // needed to ignore fps (e.g. dvd stills)
   bool m_bRenderSubs;
   float m_fForcedAspectRatio;
