@@ -1969,28 +1969,25 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
   PlaylistVector playlistsLength;
   playlistsLength.reserve(playlists.size());
   playlistsLength.assign(playlists.begin(), playlists.end());
-  if (m_numEpisodes > 0)
-  {
-    std::erase_if(
-        playlistsLength,
-        [this](const PlaylistVectorEntry& playlist)
-        {
-          const auto& [playlistNumber, playlistInformation] = playlist;
+  std::erase_if(
+      playlistsLength,
+      [this](const PlaylistVectorEntry& playlist)
+      {
+        const auto& [playlistNumber, playlistInformation] = playlist;
 
-          const bool isShort{playlistInformation.duration < MIN_SPECIAL_DURATION};
+        const bool isShort{playlistInformation.duration < MIN_SPECIAL_DURATION};
 
-          const auto candidatePlaylistNumbers{m_candidatePlaylists | std::views::keys};
-          const bool isEpisode{std::ranges::find(candidatePlaylistNumbers, playlistNumber) !=
-                               candidatePlaylistNumbers.end()};
+        const auto candidatePlaylistNumbers{m_candidatePlaylists | std::views::keys};
+        const bool isEpisode{std::ranges::find(candidatePlaylistNumbers, playlistNumber) !=
+                             candidatePlaylistNumbers.end()};
 
-          const auto playAllPlaylistNumbers{
-              m_playAllPlaylists | std::views::transform(&CandidatePlaylistInformation::playlist)};
-          const bool isPlayAll{std::ranges::find(playAllPlaylistNumbers, playlistNumber) !=
-                               playAllPlaylistNumbers.end()};
+        const auto playAllPlaylistNumbers{
+            m_playAllPlaylists | std::views::transform(&CandidatePlaylistInformation::playlist)};
+        const bool isPlayAll{std::ranges::find(playAllPlaylistNumbers, playlistNumber) !=
+                             playAllPlaylistNumbers.end()};
 
-          return isShort || isEpisode || isPlayAll;
-        });
-  }
+        return isShort || isEpisode || isPlayAll;
+      });
 
   // Sort playlists by length
   std::ranges::sort(playlistsLength,
@@ -2008,7 +2005,7 @@ void CDiscDirectoryHelper::FindSpecials(const PlaylistMap& playlists)
   if (playlistsLength.size() >= m_numSpecials)
   {
     for (unsigned int playlist : playlistsLength | std::views::keys)
-      m_candidateSpecials.emplace(playlist);
+      m_candidateSpecials.emplace_back(playlist);
   }
 }
 
@@ -2610,12 +2607,17 @@ const PlaylistInformation& GetBestMoviePlaylist(const std::vector<PlaylistInform
 
 bool IsRicherPresentation(const PlaylistInformation& a, const PlaylistInformation& b)
 {
+  // Streams a picture-in-picture copy adds go with the secondary video, which Kodi does not play
+  if (IsPictureInPicturePresentation(a) != IsPictureInPicturePresentation(b))
+    return !IsPictureInPicturePresentation(a);
   if (a.audioStreams.size() != b.audioStreams.size())
     return a.audioStreams.size() > b.audioStreams.size();
   if (a.pgStreams.size() != b.pgStreams.size())
     return a.pgStreams.size() > b.pgStreams.size();
   if (a.chapters.size() != b.chapters.size())
     return a.chapters.size() > b.chapters.size();
+  if (a.hasDolbyVision != b.hasDolbyVision)
+    return a.hasDolbyVision;
   return a.playlist < b.playlist;
 }
 
@@ -3459,10 +3461,20 @@ void CDiscDirectoryHelper::ApplyPlaylistHintsToMovie(const CURL& url,
   std::vector<PlaylistInformation> selected;
   if (job == GetTitle::SINGLE)
   {
+    // The plain feature is of comparable length to the longest the disc names, not a seconds-long
+    // segment it also calls SEG_MainFeature
     const PlaylistHintMap& hints{m_hints->GetHints()};
+    const auto longest{std::ranges::max(
+        features | std::views::transform([&playlistMap](unsigned int playlist)
+                                         { return playlistMap.at(playlist).duration; }))};
     std::vector<unsigned int> base{features};
     std::erase_if(base,
-                  [&hints](unsigned int playlist) { return !hints.at(playlist).basePresentation; });
+                  [&hints, &playlistMap, longest](unsigned int playlist)
+                  {
+                    return !hints.at(playlist).basePresentation ||
+                           playlistMap.at(playlist).duration <
+                               longest * MAIN_TITLE_LENGTH_PERCENT / 100;
+                  });
     if (!base.empty())
       selected = select(base);
 
@@ -4060,19 +4072,24 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   else
   {
     // Silent
+    // The All titles and Menu options are not playlists
+    const auto playlistCount{std::ranges::count_if(
+        sourceItems, [](const auto& sourceItem)
+        { return sourceItem->HasProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST); })};
+
     // A scan must not store a guess, or later playback would use it without asking
     if (sourceItems[0]->GetProperty(MULTIPLE_SPECIALS_PROPERTY).asBoolean(false))
     {
-      CLog::LogF(LOGDEBUG, "Not choosing between the {} specials offered for {}",
-                 sourceItems.Size(), CURL::GetRedacted(directory));
+      CLog::LogF(LOGDEBUG, "Not choosing between the {} specials offered for {}", playlistCount,
+                 CURL::GetRedacted(directory));
       return false;
     }
 
-    if (sourceItems.Size() > 1 && !returnMultipleItems)
+    if (playlistCount > 1 && !returnMultipleItems)
     {
       CLog::LogF(LOGDEBUG, "Automatically selected playlist {} of the {} offered for {}",
                  sourceItems[0]->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(0),
-                 sourceItems.Size(), CURL::GetRedacted(directory));
+                 playlistCount, CURL::GetRedacted(directory));
     }
   }
 
