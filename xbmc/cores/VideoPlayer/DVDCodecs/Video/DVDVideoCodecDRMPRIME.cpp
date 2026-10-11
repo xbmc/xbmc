@@ -534,14 +534,12 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
     m_processInfo.SetVideoDAR(static_cast<float>(m_DAR));
   }
 
-  pVideoPicture->iDisplayWidth =
-      (static_cast<int>(lrint(pVideoPicture->iHeight * aspect_ratio))) & -3;
+  pVideoPicture->iDisplayWidth = static_cast<int>(lrint(pVideoPicture->iHeight * aspect_ratio));
   pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
   if (pVideoPicture->iDisplayWidth > pVideoPicture->iWidth)
   {
     pVideoPicture->iDisplayWidth = pVideoPicture->iWidth;
-    pVideoPicture->iDisplayHeight =
-        (static_cast<int>(lrint(pVideoPicture->iWidth / aspect_ratio))) & -3;
+    pVideoPicture->iDisplayHeight = static_cast<int>(lrint(pVideoPicture->iWidth / aspect_ratio));
   }
 
   pVideoPicture->color_range =
