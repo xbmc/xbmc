@@ -10,6 +10,11 @@
 
 #include "platform/win10/Win10App.h"
 
+#ifdef HAVE_LIBDOVI
+#pragma comment(lib, "Kernel32.lib")
+#pragma comment(lib, "Ntdll.lib")
+#endif
+
 using namespace KODI::PLATFORM::WINDOWS10;
 
 int __stdcall WinMain(HINSTANCE, HINSTANCE, PCSTR, int)
