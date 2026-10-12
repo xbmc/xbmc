@@ -21,6 +21,24 @@
 #define POPUP_CAPTION_TEXT        401
 #define POPUP_NOTIFICATION_BUTTON 402
 
+namespace
+{
+/*!
+ * \brief Check whether a notification supersedes another one, meaning both are successive
+ *        updates of the same information and the older one is obsolete. Callers state
+ *        this by tagging such notifications with a common group. Example: the stream names
+ *        emitted while cycling through the streams of the playing video.
+ * \param newer The notification to be displayed next
+ * \param current The notification currently on display
+ * \return True if newer makes current obsolete, false otherwise
+ */
+bool Supersedes(const CGUIDialogKaiToast::Notification& newer,
+                const CGUIDialogKaiToast::Notification& current)
+{
+  return !newer.supersedeGroup.empty() && newer.supersedeGroup == current.supersedeGroup;
+}
+} // unnamed namespace
+
 CGUIDialogKaiToast::TOASTQUEUE CGUIDialogKaiToast::m_notifications;
 CCriticalSection CGUIDialogKaiToast::m_critical;
 
@@ -49,15 +67,23 @@ bool CGUIDialogKaiToast::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
+      m_currentNotification = {};
     }
     break;
   }
   return CGUIDialog::OnMessage(message);
 }
 
-void CGUIDialogKaiToast::QueueNotification(eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
+void CGUIDialogKaiToast::QueueNotification(eMessageType eType,
+                                           const std::string& aCaption,
+                                           const std::string& aDescription,
+                                           unsigned int displayTime /*= TOAST_DISPLAY_TIME*/,
+                                           bool withSound /*= true*/,
+                                           unsigned int messageTime /*= TOAST_MESSAGE_TIME*/,
+                                           std::string_view supersedeGroup /*= {}*/)
 {
-  AddToQueue("", eType, aCaption, aDescription, displayTime, withSound, messageTime);
+  AddToQueue("", eType, aCaption, aDescription, displayTime, withSound, messageTime,
+             supersedeGroup);
 }
 
 void CGUIDialogKaiToast::QueueNotification(const std::string& aCaption, const std::string& aDescription)
@@ -70,7 +96,14 @@ void CGUIDialogKaiToast::QueueNotification(const std::string& aImageFile, const 
   AddToQueue(aImageFile, Default, aCaption, aDescription, displayTime, withSound, messageTime);
 }
 
-void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime /*= TOAST_DISPLAY_TIME*/, bool withSound /*= true*/, unsigned int messageTime /*= TOAST_MESSAGE_TIME*/)
+void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile,
+                                    const eMessageType eType,
+                                    const std::string& aCaption,
+                                    const std::string& aDescription,
+                                    unsigned int displayTime /*= TOAST_DISPLAY_TIME*/,
+                                    bool withSound /*= true*/,
+                                    unsigned int messageTime /*= TOAST_MESSAGE_TIME*/,
+                                    std::string_view supersedeGroup /*= {}*/)
 {
   std::unique_lock lock(m_critical);
 
@@ -78,7 +111,7 @@ void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessag
   {
     const auto& last = m_notifications.back();
     if (last.eType == eType && last.imagefile == aImageFile && last.caption == aCaption &&
-        last.description == aDescription)
+        last.description == aDescription && last.supersedeGroup == supersedeGroup)
       return; // avoid duplicates in a row.
   }
 
@@ -87,11 +120,15 @@ void CGUIDialogKaiToast::AddToQueue(const std::string& aImageFile, const eMessag
   toast.imagefile = aImageFile;
   toast.caption = aCaption;
   toast.description = aDescription;
+  toast.supersedeGroup = supersedeGroup;
   toast.displayTime = displayTime > TOAST_MESSAGE_TIME + 500 ? displayTime : TOAST_MESSAGE_TIME + 500;
   toast.messageTime = messageTime;
   toast.withSound = withSound;
 
-  m_notifications.push(toast);
+  // A newer notification makes the queued ones of the same group obsolete
+  std::erase_if(m_notifications,
+                [&toast](const Notification& queued) { return Supersedes(toast, queued); });
+  m_notifications.push_back(toast);
 }
 
 bool CGUIDialogKaiToast::DoWork()
@@ -102,14 +139,18 @@ bool CGUIDialogKaiToast::DoWork()
       CTimeUtils::GetFrameTime() - m_timer > m_toastMessageTime)
   {
     // if we have a fade label control for the text to display, ensure the whole text was shown
-    // (scrolled to the end) before we move on to the next message
-    const CGUIFadeLabelControl* notificationText =
-        dynamic_cast<const CGUIFadeLabelControl*>(GetControl(POPUP_NOTIFICATION_BUTTON));
-    if (notificationText && !notificationText->AllLabelsShown())
-      return false;
+    // (scrolled to the end) before we move on to the next message. Exception: the next message
+    // supersedes the one currently on display, whose text is outdated and must not delay it.
+    if (!Supersedes(m_notifications.front(), m_currentNotification))
+    {
+      const CGUIFadeLabelControl* notificationText =
+          dynamic_cast<const CGUIFadeLabelControl*>(GetControl(POPUP_NOTIFICATION_BUTTON));
+      if (notificationText && !notificationText->AllLabelsShown())
+        return false;
+    }
 
     Notification toast = m_notifications.front();
-    m_notifications.pop();
+    m_notifications.pop_front();
     lock.unlock();
 
     m_toastDisplayTime = toast.displayTime;
@@ -144,6 +185,8 @@ bool CGUIDialogKaiToast::DoWork()
 
     // Activate haptics for this notification
     CServiceBroker::GetPeripherals().OnUserNotification();
+
+    m_currentNotification = toast;
 
     ResetTimer();
     return true;
