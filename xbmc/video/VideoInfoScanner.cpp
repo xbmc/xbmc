@@ -720,16 +720,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (addAsExtras)
       {
         removeExtrasFolder(pItem->GetPath());
-        if (foundSomething)
-        {
-          if (m_extras.AddVideoExtras(items, pItem->GetPath()))
-          {
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
-                      CURL::GetRedacted(pItem->GetPath()));
-          }
-        }
-        // The movie may be in the folders beside it (eg. Disc 1, Disc 2), not yet scanned
-        else if (!bSkip)
+        // Added once the folders beside it (eg. Disc 1, Disc 2) are scanned, to the one movie there
+        if (!bSkip)
           extrasFolders.emplace_back(pItem->GetPath());
 
         // no further processing required
