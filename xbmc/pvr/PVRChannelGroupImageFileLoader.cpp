@@ -16,6 +16,11 @@
 #include "pictures/Picture.h"
 #include "utils/log.h"
 
+namespace
+{
+constexpr size_t MAX_THUMB_TILES = 9;
+} // unnamed namespace
+
 bool PVR::CPVRChannelGroupImageFileLoader::CanLoad(const std::string& specialType) const
 {
   return specialType == "pvr";
@@ -46,7 +51,7 @@ std::vector<std::string> PVR::CPVRChannelGroupImageFileLoader::GetChannelGroupIc
     if (!icon.empty())
       icons.emplace_back(icon);
 
-    if (icons.size() == 9) // limit number of tiles
+    if (icons.size() == MAX_THUMB_TILES)
       break;
   }
   return icons;
