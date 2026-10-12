@@ -47,6 +47,15 @@ TEST(TestGameUtils, AGameKeepsItsFolderWhenTheLibraryMoves)
   EXPECT_EQ(folder, CGameUtils::GetGameFolder("D:\\Games\\PS1\\Worms (USA)\\Worms (USA).cue"));
   EXPECT_NE(folder,
             CGameUtils::GetGameFolder("/media/disk1/Games/Dreamcast/Worms (USA)/Worms (USA).cue"));
+
+  EXPECT_EQ(CGameUtils::GetGameFolder("smb://nas1/Roms/Sonic.md"),
+            CGameUtils::GetGameFolder("smb://nas2/Roms/Sonic.md"));
+
+  const std::string zipped =
+      CGameUtils::GetGameFolder("zip://%2fmedia%2fdisk1%2fGames%2fSNES%2fMario.zip/Mario.sfc");
+  EXPECT_EQ(zipped,
+            CGameUtils::GetGameFolder("zip://smb%3a%2f%2fnas%2fRoms%2fSNES%2fMario.zip/Mario.sfc"));
+  EXPECT_EQ(URIUtils::GetFileName(zipped).substr(0, 10), "Mario.sfc_");
 }
 
 TEST(TestGameUtils, ALongNameStaysWithinTheFileSystemLimit)

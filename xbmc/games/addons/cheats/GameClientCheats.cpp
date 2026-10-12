@@ -587,7 +587,7 @@ std::string CGameClientCheats::ReadChoice(const std::string& gamePath) const
   if (xml.LoadFile(GetSelectionPath(gamePath)))
   {
     const auto* root = xml.FirstChildElement("cheatpack");
-    if (root && root->Attribute("game", gamePath.c_str()))
+    if (root)
     {
       if (const char* candidate = root->Attribute("candidate"))
         return candidate;
