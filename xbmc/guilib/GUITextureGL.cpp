@@ -126,7 +126,10 @@ void CGUITextureGL::End()
     GLuint IndexVBO;
 
     if (oldLayer != STENCIL_LAYER::NONE)
+    {
+      glEnable(GL_STENCIL_TEST);
       glStencilFunc(GL_EQUAL, 0xFF, 0x1 << (int)oldLayer);
+    }
 
     glGenBuffers(1, &VertexVBO);
     glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
@@ -177,6 +180,7 @@ void CGUITextureGL::End()
     glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
   glStencilFunc(GL_ALWAYS, 0x0, 0xFF);
+  glDisable(GL_STENCIL_TEST);
 
   m_renderSystem->DisableShader();
 }
@@ -281,6 +285,7 @@ void CGUITextureGL::DrawStencilQuad(const CRect& rect, const STENCIL_LAYER stenc
   const STENCIL_LAYER currentStencilLayer =
       CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer();
 
+  glEnable(GL_STENCIL_TEST);
   glStencilMask(0x1 << (int)stencilMask);
   glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
   if (currentStencilLayer == STENCIL_LAYER::NONE)
@@ -288,8 +293,8 @@ void CGUITextureGL::DrawStencilQuad(const CRect& rect, const STENCIL_LAYER stenc
   else
     glStencilFunc(GL_EQUAL, 0xFF, 0x1 << (int)currentStencilLayer);
 
+  const GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
   glDisable(GL_DEPTH_TEST);
-  glDisable(GL_BLEND);
   struct PackedVertex
   {
     float x, y;
@@ -331,11 +336,13 @@ void CGUITextureGL::DrawStencilQuad(const CRect& rect, const STENCIL_LAYER stenc
   glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, sizeof(PackedVertex), 0);
   glEnableVertexAttribArray(posLoc);
 
+  GLboolean colorMask[4];
+  glGetBooleanv(GL_COLOR_WRITEMASK, colorMask);
   glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+  glColorMask(colorMask[0], colorMask[1], colorMask[2], colorMask[3]);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDisableVertexAttribArray(posLoc);
@@ -344,10 +351,11 @@ void CGUITextureGL::DrawStencilQuad(const CRect& rect, const STENCIL_LAYER stenc
 
   renderSystem->DisableShader();
 
-  if (winSystem->GetGfxContext().GetRenderOrder() == RENDER_ORDER_FRONT_TO_BACK)
+  if (depthTestEnabled)
     glEnable(GL_DEPTH_TEST);
   glStencilFunc(GL_ALWAYS, 0x0, 0xFF);
   glStencilMask(0x0);
+  glDisable(GL_STENCIL_TEST);
 }
 
 void CGUITextureGL::DrawQuad(const CRect& rect,
@@ -357,6 +365,11 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
                              const float depth,
                              const bool blending)
 {
+  const STENCIL_LAYER stencilLayer =
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer();
+  if (stencilLayer == STENCIL_LAYER::INVALID)
+    return;
+
   CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (texture)
   {
@@ -455,8 +468,33 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
+  GLboolean stencilTestEnabled = GL_FALSE;
+  GLint stencilFunc[2]{};
+  GLint stencilRef[2]{};
+  GLint stencilMask[2]{};
+  if (stencilLayer != STENCIL_LAYER::NONE)
+  {
+    stencilTestEnabled = glIsEnabled(GL_STENCIL_TEST);
+    glGetIntegerv(GL_STENCIL_FUNC, &stencilFunc[0]);
+    glGetIntegerv(GL_STENCIL_REF, &stencilRef[0]);
+    glGetIntegerv(GL_STENCIL_VALUE_MASK, &stencilMask[0]);
+    glGetIntegerv(GL_STENCIL_BACK_FUNC, &stencilFunc[1]);
+    glGetIntegerv(GL_STENCIL_BACK_REF, &stencilRef[1]);
+    glGetIntegerv(GL_STENCIL_BACK_VALUE_MASK, &stencilMask[1]);
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_EQUAL, 0xFF, 0x1 << static_cast<int>(stencilLayer));
+  }
+
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, nullptr);
   CRenderSystemBase::m_GUIElementCount++;
+
+  if (stencilLayer != STENCIL_LAYER::NONE)
+  {
+    glStencilFuncSeparate(GL_FRONT, stencilFunc[0], stencilRef[0], stencilMask[0]);
+    glStencilFuncSeparate(GL_BACK, stencilFunc[1], stencilRef[1], stencilMask[1]);
+    if (!stencilTestEnabled)
+      glDisable(GL_STENCIL_TEST);
+  }
 
   glDisableVertexAttribArray(posLoc);
   if (texture)
