@@ -29,6 +29,8 @@ const char* CGameClientTranslator::ToString(GAME_ERROR error)
       return "no game is loaded";
     case GAME_ERROR_RESTRICTED:
       return "the required resources are restricted";
+    case GAME_ERROR_MISSING_FILES:
+      return "files the client needs are missing";
     default:
       break;
   }
