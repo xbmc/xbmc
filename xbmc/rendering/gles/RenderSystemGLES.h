@@ -144,20 +144,35 @@ public:
   GLint GUIShaderGetStep();
   GLint GUIShaderGetContrast();
   GLint GUIShaderGetBrightness();
-  GLint GUIShaderGetModel();
   GLint GUIShaderGetMatrix();
   GLint GUIShaderGetClip();
   GLint GUIShaderGetCoordStep();
   GLint GUIShaderGetDepth();
   GLint GUIShaderGetPma();
+  GLint GUIShaderGetGUIMatrix();
+  GLint GUIShaderGetSnap();
+  GLint GUIShaderGetAttrSnap();
+  GLint GUIShaderGetQuadRect();
+  GLint GUIShaderGetQuadClip();
+  GLint GUIShaderGetTexSwap();
 
-  // Shared by all CGUITextureGLES batches, which lay out every quad as 0,1,2 2,3,0.
-  template<typename T>
-  void StreamGUIVertices(const std::vector<T>& vertices)
-  {
-    m_guiVertexBuffer.SetData(vertices.data(), vertices.size(), GL_STREAM_DRAW);
-  }
+  // Binds an index buffer for quadCount quads laid out as 0,1,2 2,3,0.
   void BindGUIQuadIndices(std::size_t quadCount);
+
+  // Binds a static quad with corners (0, 0), (1, 0), (0, 1) and (1, 1), in GL_TRIANGLE_STRIP order.
+  void BindGUIUnitQuad();
+
+  /*!
+   * @brief Draw a static unit quad with the current GUI shader, which must use gles_shader.vert.
+   *
+   * The quad is mapped onto the parallelogram whose corners are @p origin, @p right and @p down
+   * (the fourth corner follows), and its texture coordinates span @p texCoords if given.
+   */
+  void DrawGUIQuad(const CPoint& origin,
+                   const CPoint& right,
+                   const CPoint& down,
+                   const CRect* texCoords = nullptr);
+  void DrawGUIQuad(const CRect& rect, const CRect* texCoords = nullptr);
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
@@ -177,7 +192,7 @@ protected:
 
   CGUIQuadDrawerGLES m_quadDrawer;
 
-  KODI::UTILS::GL::CGLBufferObject m_guiVertexBuffer{GL_ARRAY_BUFFER};
   KODI::UTILS::GL::CGLBufferObject m_guiQuadIndexBuffer{GL_ELEMENT_ARRAY_BUFFER};
+  KODI::UTILS::GL::CGLBufferObject m_guiUnitQuad{GL_ARRAY_BUFFER};
   std::vector<GLushort> m_guiQuadIndices;
 };

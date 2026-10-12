@@ -488,8 +488,6 @@ void COverlayTextureGLES::Render(SRenderState& state)
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_NOBLEND);
-  GLint posLoc = renderSystem->GUIShaderGetPos();
-  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
   // Tell the shader this texture is premultiplied so its limited-range
@@ -501,40 +499,11 @@ void COverlayTextureGLES::Render(SRenderState& state)
   if (m_pma)
     glUniform1f(renderSystem->GUIShaderGetPma(), 1.0f);
 
-  GLfloat ver[4][2];
-  GLfloat tex[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2}; //determines order of triangle strip
-
   glUniform1f(depthLoc, 1.0f);
-  // Setup vertex position values
-  ver[0][0] = ver[3][0] = rd.x1;
-  ver[0][1] = ver[1][1] = rd.y1;
-  ver[1][0] = ver[2][0] = rd.x2;
-  ver[2][1] = ver[3][1] = rd.y2;
 
-  // Setup texture coordinates
-  tex[0][0] = tex[0][1] = tex[1][1] = tex[3][0] = 0.0f;
-  tex[1][0] = tex[2][0] = m_u;
-  tex[2][1] = tex[3][1] = m_v;
-
-  m_posVBO.SetData(ver, GL_STREAM_DRAW);
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, 0, 0);
-  glEnableVertexAttribArray(posLoc);
-
-  m_texVBO.SetData(tex, GL_STREAM_DRAW);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, 0);
-  glEnableVertexAttribArray(tex0Loc);
-
-  m_IBO.SetDataOnce(idx);
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  const CRect texCoords(0.0f, 0.0f, m_u, m_v);
+  renderSystem->DrawGUIQuad(rd, &texCoords);
   CRenderSystemBase::m_GUIElementCount++;
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   renderSystem->DisableGUIShader();
 

@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "Texture.h"
 #include "guilib/TextureFormats.h"
+#include "rendering/MatrixGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
@@ -20,6 +21,7 @@
 #include "windowing/WinSystem.h"
 
 #include <cstddef>
+#include <limits>
 
 void CGUITextureGLES::Register(CGUIQuadDrawerGLES& quadDrawer)
 {
@@ -44,9 +46,35 @@ CGUITextureGLES::CGUITextureGLES(
   m_isGLES20 = !m_renderSystem->SupportsTextureSwizzle();
 }
 
+CGUITextureGLES::CGUITextureGLES(const CGUITextureGLES& texture)
+  : CGUITexture(texture),
+    m_renderSystem(texture.m_renderSystem),
+    m_isGLES20(texture.m_isGLES20)
+{
+}
+
 CGUITextureGLES* CGUITextureGLES::Clone() const
 {
   return new CGUITextureGLES(*this);
+}
+
+namespace
+{
+// Texture coordinates for the corners of a quad, clockwise from the top left.
+std::array<CPoint, 4> TexCoordCorners(const CRect& rect, bool swapXY)
+{
+  if (swapXY)
+    return {{{rect.x1, rect.y1}, {rect.x1, rect.y2}, {rect.x2, rect.y2}, {rect.x2, rect.y1}}};
+
+  return {{{rect.x1, rect.y1}, {rect.x2, rect.y1}, {rect.x2, rect.y2}, {rect.x1, rect.y2}}};
+}
+} // namespace
+
+void CGUITextureGLES::Free()
+{
+  m_quadBuffer.Destroy();
+  m_quadBufferVersion = 0;
+  m_quadCount = 0;
 }
 
 void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
@@ -140,57 +168,18 @@ void CGUITextureGLES::Begin(KODI::UTILS::COLOR::Color color)
     glDisable(GL_BLEND);
   }
 
-  m_packedVertices.clear();
+  GLint uniColLoc = m_renderSystem->GUIShaderGetUniCol();
+  if (uniColLoc >= 0)
+  {
+    glUniform4f(uniColLoc, (m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f),
+                (m_col[3] / 255.0f));
+  }
+
+  glUniform1f(m_renderSystem->GUIShaderGetDepth(), m_depth);
 }
 
 void CGUITextureGLES::End()
 {
-  if (!m_packedVertices.empty())
-  {
-    GLint posLoc  = m_renderSystem->GUIShaderGetPos();
-    GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
-    GLint tex1Loc = m_renderSystem->GUIShaderGetCoord1();
-    GLint uniColLoc = m_renderSystem->GUIShaderGetUniCol();
-    GLint depthLoc = m_renderSystem->GUIShaderGetDepth();
-
-    if(uniColLoc >= 0)
-    {
-      glUniform4f(uniColLoc,(m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f), (m_col[3] / 255.0f));
-    }
-
-    glUniform1f(depthLoc, m_depth);
-
-    m_renderSystem->StreamGUIVertices(m_packedVertices);
-    m_renderSystem->BindGUIQuadIndices(m_packedVertices.size() / 4);
-
-    if(m_diffuse.size())
-    {
-      if (m_texture.m_textures[m_currentFrame]->GetSwizzle() == KD_TEX_SWIZ_111R)
-        std::swap(tex0Loc, tex1Loc);
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                            reinterpret_cast<GLvoid*>(offsetof(PackedVertex, u2)));
-      glEnableVertexAttribArray(tex1Loc);
-    }
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                          reinterpret_cast<GLvoid*>(offsetof(PackedVertex, x)));
-    glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                          reinterpret_cast<GLvoid*>(offsetof(PackedVertex, u1)));
-    glEnableVertexAttribArray(tex0Loc);
-
-    glDrawElements(GL_TRIANGLES, m_packedVertices.size() * 6 / 4, GL_UNSIGNED_SHORT, 0);
-    CRenderSystemBase::m_GUIElementCount++;
-
-    if (m_diffuse.size())
-      glDisableVertexAttribArray(tex1Loc);
-
-    glDisableVertexAttribArray(posLoc);
-    glDisableVertexAttribArray(tex0Loc);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  }
-
   if (m_diffuse.size())
     glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
@@ -198,83 +187,102 @@ void CGUITextureGLES::End()
   m_renderSystem->DisableGUIShader();
 }
 
-void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
+void CGUITextureGLES::Draw(float*, float*, float*, const CRect&, const CRect&, int)
 {
-  PackedVertex vertices[4];
+  // Unused: DrawQuads() draws every quad.
+}
 
-  // Setup texture coordinates
-  // TopLeft
-  vertices[0].u1 = texture.x1;
-  vertices[0].v1 = texture.y1;
-
-  // TopRight
-  if (orientation & 4)
+bool CGUITextureGLES::DrawQuads(const std::vector<Quad>& quads,
+                                unsigned int version,
+                                const CRect& rect)
+{
+  if (m_quadBufferVersion != version)
   {
-    vertices[1].u1 = texture.x1;
-    vertices[1].v1 = texture.y2;
-  }
-  else
-  {
-    vertices[1].u1 = texture.x2;
-    vertices[1].v1 = texture.y1;
+    std::vector<QuadVertex> vertices;
+    vertices.reserve(quads.size() * 4);
+    for (const Quad& quad : quads)
+    {
+      const CRect& a = quad.anchor;
+      const CRect& o = quad.offset;
+      const std::array<std::array<float, 4>, 4> corners{{{a.x1, a.y1, o.x1, o.y1},
+                                                         {a.x2, a.y1, o.x2, o.y1},
+                                                         {a.x2, a.y2, o.x2, o.y2},
+                                                         {a.x1, a.y2, o.x1, o.y2}}};
+      const std::array<CPoint, 4> texCoords = TexCoordCorners(quad.texture, GetOrientation() & 4);
+      const std::array<CPoint, 4> diffuseCoords =
+          TexCoordCorners(quad.diffuse, m_info.orientation & 4);
+      for (std::size_t i = 0; i < 4; i++)
+      {
+        const std::size_t opposite = (i + 2) % 4;
+        vertices.push_back(
+            {corners[i],
+             corners[opposite],
+             {texCoords[i].x, texCoords[i].y, texCoords[opposite].x, texCoords[opposite].y},
+             {diffuseCoords[i].x, diffuseCoords[i].y, diffuseCoords[opposite].x,
+              diffuseCoords[opposite].y}});
+      }
+    }
+
+    if (!vertices.empty())
+      m_quadBuffer.SetData(vertices.data(), vertices.size(), GL_STATIC_DRAW);
+
+    m_quadBufferVersion = version;
+    m_quadCount = quads.size();
   }
 
-  // BottomRight
-  vertices[2].u1 = texture.x2;
-  vertices[2].v1 = texture.y2;
+  if (m_quadCount == 0)
+    return true;
 
-  // BottomLeft
-  if (orientation & 4)
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  constexpr float unbounded = std::numeric_limits<float>::max();
+  const CRect clip = context.HasClipRegion() ? context.GetClipRegion()
+                                             : CRect(-unbounded, -unbounded, unbounded, unbounded);
+
+  GLint posLoc = m_renderSystem->GUIShaderGetPos();
+  GLint snapLoc = m_renderSystem->GUIShaderGetAttrSnap();
+  GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
+  GLint tex1Loc = m_renderSystem->GUIShaderGetCoord1();
+  float swap0 = (GetOrientation() & 4) ? 1.0f : 0.0f;
+  float swap1 = (m_info.orientation & 4) ? 1.0f : 0.0f;
+  if (m_diffuse.size() && m_texture.m_textures[m_currentFrame]->GetSwizzle() == KD_TEX_SWIZ_111R)
   {
-    vertices[3].u1 = texture.x2;
-    vertices[3].v1 = texture.y1;
-  }
-  else
-  {
-    vertices[3].u1 = texture.x1;
-    vertices[3].v1 = texture.y2;
+    std::swap(tex0Loc, tex1Loc);
+    std::swap(swap0, swap1);
   }
 
+  glUniform4f(m_renderSystem->GUIShaderGetQuadRect(), rect.x1, rect.y1, rect.Width(),
+              rect.Height());
+  glUniform4f(m_renderSystem->GUIShaderGetQuadClip(), clip.x1, clip.y1, clip.x2, clip.y2);
+  glUniform2f(m_renderSystem->GUIShaderGetTexSwap(), swap0, swap1);
+  glUniformMatrix4fv(m_renderSystem->GUIShaderGetGUIMatrix(), 1, GL_FALSE,
+                     CMatrixGL(context.GetGUIMatrix()));
+  glUniform1f(m_renderSystem->GUIShaderGetSnap(), 1.0f);
+
+  m_quadBuffer.Bind();
+  const auto attribute = [](GLint location, std::size_t member)
+  {
+    glVertexAttribPointer(location, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex),
+                          reinterpret_cast<GLvoid*>(member));
+    glEnableVertexAttribArray(location);
+  };
+  attribute(posLoc, offsetof(QuadVertex, corner));
+  attribute(snapLoc, offsetof(QuadVertex, opposite));
+  attribute(tex0Loc, offsetof(QuadVertex, texture));
   if (m_diffuse.size())
-  {
-    // TopLeft
-    vertices[0].u2 = diffuse.x1;
-    vertices[0].v2 = diffuse.y1;
+    attribute(tex1Loc, offsetof(QuadVertex, diffuse));
 
-    // TopRight
-    if (m_info.orientation & 4)
-    {
-      vertices[1].u2 = diffuse.x1;
-      vertices[1].v2 = diffuse.y2;
-    }
-    else
-    {
-      vertices[1].u2 = diffuse.x2;
-      vertices[1].v2 = diffuse.y1;
-    }
+  m_renderSystem->BindGUIQuadIndices(m_quadCount);
+  glDrawElements(GL_TRIANGLES, m_quadCount * 6, GL_UNSIGNED_SHORT, 0);
+  CRenderSystemBase::m_GUIElementCount++;
 
-    // BottomRight
-    vertices[2].u2 = diffuse.x2;
-    vertices[2].v2 = diffuse.y2;
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(snapLoc);
+  glDisableVertexAttribArray(tex0Loc);
+  if (m_diffuse.size())
+    glDisableVertexAttribArray(tex1Loc);
 
-    // BottomLeft
-    if (m_info.orientation & 4)
-    {
-      vertices[3].u2 = diffuse.x2;
-      vertices[3].v2 = diffuse.y1;
-    }
-    else
-    {
-      vertices[3].u2 = diffuse.x1;
-      vertices[3].v2 = diffuse.y2;
-    }
-  }
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-  for (int i=0; i<4; i++)
-  {
-    vertices[i].x = x[i];
-    vertices[i].y = y[i];
-    vertices[i].z = z[i];
-    m_packedVertices.push_back(vertices[i]);
-  }
+  return true;
 }

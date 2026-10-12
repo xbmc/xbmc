@@ -113,6 +113,10 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
   m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hQuad = glGetUniformLocation(ProgramHandle(), "m_quad");
+  m_hTexRect[0] = glGetUniformLocation(ProgramHandle(), "m_texRectY");
+  m_hTexRect[1] = glGetUniformLocation(ProgramHandle(), "m_texRectU");
+  m_hTexRect[2] = glGetUniformLocation(ProgramHandle(), "m_texRectV");
   m_hYTex = glGetUniformLocation(ProgramHandle(), "m_sampY");
   m_hUTex = glGetUniformLocation(ProgramHandle(), "m_sampU");
   m_hVTex = glGetUniformLocation(ProgramHandle(), "m_sampV");
@@ -153,6 +157,12 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   glUniform1f(m_hAlpha, m_alpha);
+  glUniformMatrix4fv(m_hQuad, 1, GL_FALSE, m_quad.data());
+  for (std::size_t plane = 0; plane < m_texRects.size(); ++plane)
+  {
+    const CRect& rect = m_texRects[plane];
+    glUniform4f(m_hTexRect[plane], rect.x1, rect.y1, rect.Width(), rect.Height());
+  }
 
   if (m_colorConversion)
   {

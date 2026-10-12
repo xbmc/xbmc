@@ -200,6 +200,7 @@ public:
   void RestoreClipRegion();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   CRect GetClipRegion();
+  bool HasClipRegion() const { return !m_clipRegions.empty(); }
   void AddGUITransform();
   TransformMatrix AddTransform(const TransformMatrix &matrix);
   void SetTransform(const TransformMatrix &matrix);
