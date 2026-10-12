@@ -55,7 +55,7 @@ class CFileItem;
 - (bool)presentFramebuffer;
 - (BOOL)enableVideoLayer;
 - (void)disableVideoLayer;
-- (void)setVideoLayerFrame:(CGRect)frame;
+- (void)setVideoLayerFrame:(CGRect)frame orientation:(unsigned int)orientation;
 - (void)enqueueVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (void)flushVideoLayer;
 - (void)activateKeyboard:(UIView*)view;

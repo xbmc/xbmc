@@ -169,6 +169,7 @@ bool CRendererVTBDisplayLayer::Configure(const VideoPicture& picture,
   m_sourceWidth = picture.iWidth;
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
+  m_lastRect = {};
   m_fps = fps;
   m_hdrType = picture.hdrType;
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
@@ -251,7 +252,8 @@ void CRendererVTBDisplayLayer::Update()
     const CGFloat sy = boundsSize.height / gfx.GetHeight();
     [g_xbmcController
         setVideoLayerFrame:CGRectMake(m_destRect.x1 * sx, m_destRect.y1 * sy,
-                                      m_destRect.Width() * sx, m_destRect.Height() * sy)];
+                                      m_destRect.Width() * sx, m_destRect.Height() * sy)
+               orientation:m_renderOrientation];
     m_lastRect = m_destRect;
   }
 }
