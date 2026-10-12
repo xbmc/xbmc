@@ -99,6 +99,9 @@ public:
   // Hardware input functions
   void HardwareReset();
 
+  // Output functions
+  void EnableRumble(bool bEnabled);
+
   // Input callbacks
   bool ReceiveInputEvent(const game_input_event& eventStruct);
 
@@ -152,6 +155,9 @@ private:
    * function ResetPorts().
    */
   mutable std::recursive_mutex m_portMutex;
+
+  // Applied to joysticks opened while the game is paused too
+  bool m_bRumbleEnabled{true};
 
   /*!
    * \brief Keyboard handler
