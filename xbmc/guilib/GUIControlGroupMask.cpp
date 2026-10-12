@@ -35,8 +35,9 @@ void CGUIControlGroupMask::Process(unsigned int currentTime, CDirtyRegionList& d
 {
   CGUIControl::Process(currentTime, dirtyregions);
 
+  m_stencilLayer = STENCIL_LAYER::NONE;
   // we need a stencil mask if have a rotation (or in case we have more complex geometry)
-  if (m_transform.HasRotation())
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix().HasRotation())
     m_stencilLayer =
         CServiceBroker::GetWinSystem()->GetGfxContext().AddStencilRectToBucket(m_renderRegion);
 
@@ -71,7 +72,7 @@ void CGUIControlGroupMask::Render()
     const RENDER_ORDER renderOrder =
         CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder();
     if (renderOrder == RENDER_ORDER_FRONT_TO_BACK || renderOrder == RENDER_ORDER_ALL_BACK_TO_FRONT)
-      CGUITexture::DrawStencilQuad(m_renderRegion, m_stencilLayer);
+      CGUITexture::DrawStencilQuad(CalcRenderRegion(), m_stencilLayer);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().SetStencilLayer(m_stencilLayer);
   }
