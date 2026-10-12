@@ -767,9 +767,15 @@ macro(SEARCH_EXISTING_PACKAGES)
     set(_search_prefix ${DEPENDS_PATH})
   endif()
 
+  set(_search_path_suffixes)
+  if(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_PATH_SUFFIXES)
+    list(APPEND _search_path_suffixes PATH_SUFFIXES ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_PATH_SUFFIXES})
+  endif()
+
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                                                          HINTS ${_search_prefix}/share/cmake
                                                                ${_search_prefix}/lib/cmake
+                                                         ${_search_path_suffixes}
                                                          ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
 
   # fallback to pkgconfig to cover all bases
