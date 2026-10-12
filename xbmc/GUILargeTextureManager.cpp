@@ -49,12 +49,11 @@ void NormalizeRequest(unsigned int& width,
   }
 }
 
-// a loaded decode of the same image can stand in for a request it covers; bilinear filtering
-// shrinks up to 2x without aliasing
-bool Covers(const CTextureArray& texture,
-            unsigned int width,
-            unsigned int height,
-            CAspectRatio::AspectRatio aspectRatio)
+// a loaded decode stands in only at the size this request decodes to, GPU scaling can alias
+bool MatchesRequest(const CTextureArray& texture,
+                    unsigned int width,
+                    unsigned int height,
+                    CAspectRatio::AspectRatio aspectRatio)
 {
   if (!texture.size() || !width || !height || texture.m_width <= 0 || texture.m_height <= 0)
     return false;
@@ -64,7 +63,7 @@ bool Covers(const CTextureArray& texture,
                         ? std::max(static_cast<float>(width), height * aspect)
                         : std::min(static_cast<float>(width), height * aspect);
   needWidth = std::min(needWidth, static_cast<float>(texture.m_textures[0]->GetOriginalWidth()));
-  return texture.m_width + 1 >= needWidth && texture.m_width <= 2 * needWidth;
+  return texture.m_width + 1 >= needWidth && texture.m_width <= needWidth + 1;
 }
 } // namespace
 
@@ -271,7 +270,7 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
     for (const CLargeTexture* image : m_allocated)
     {
       if (image->GetPath() == path && image->GetAspectRatio() != CAspectRatio::CENTER &&
-          Covers(image->GetTexture(), width, height, aspectRatio) &&
+          MatchesRequest(image->GetTexture(), width, height, aspectRatio) &&
           (!best || image->GetTexture().m_width < best->GetTexture().m_width))
         best = image;
     }
