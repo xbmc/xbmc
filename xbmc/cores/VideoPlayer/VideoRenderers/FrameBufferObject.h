@@ -59,6 +59,7 @@ public:
 
   // Attach a depth renderbuffer. Required when rendering into the FBO with
   // front-to-back (depth-tested) opaque passes enabled.
+  // OpenGL also attaches stencil storage for GUI masks in either render mode.
   bool AttachDepthBuffer(int width, int height);
 
   // Return the internally created texture ID

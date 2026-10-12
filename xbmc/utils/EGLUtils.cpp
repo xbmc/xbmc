@@ -288,7 +288,7 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
                {EGL_BLUE_SIZE, 8},
                {EGL_ALPHA_SIZE, alpha},
                {EGL_DEPTH_SIZE, 16},
-               {EGL_STENCIL_SIZE, 8},
+               {EGL_STENCIL_SIZE, (renderableType & EGL_OPENGL_BIT) ? 8 : 0},
                {EGL_SAMPLE_BUFFERS, 0},
                {EGL_SAMPLES, 0},
                {EGL_SURFACE_TYPE, surfaceType},
@@ -309,7 +309,9 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
     errorMsg = "failed to query number of EGL configs";
 
   std::vector<EGLConfig> eglConfigs(numMatched);
-  if (eglChooseConfig(m_eglDisplay, attribs.Get(), eglConfigs.data(), numMatched, &numMatched) != EGL_TRUE)
+  if (eglChooseConfig(m_eglDisplay, attribs.Get(), eglConfigs.data(), numMatched, &numMatched) !=
+          EGL_TRUE ||
+      numMatched == 0)
     errorMsg = "failed to find EGL configs with appropriate attributes";
 
   if (errorMsg)

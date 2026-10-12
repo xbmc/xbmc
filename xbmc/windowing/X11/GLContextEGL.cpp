@@ -216,7 +216,7 @@ bool CGLContextEGL::CreatePB()
                                   EGL_DEPTH_SIZE,
                                   8,
                                   EGL_STENCIL_SIZE,
-                                  8,
+                                  m_renderingApi == EGL_OPENGL_API ? 8 : 0,
                                   EGL_RENDERABLE_TYPE,
                                   EGL_OPENGL_BIT,
                                   EGL_NONE};
@@ -368,7 +368,8 @@ bool CGLContextEGL::SuitableCheck(EGLDisplay eglDisplay, EGLConfig config)
     return false;
   if (!eglGetConfigAttrib(eglDisplay, config, EGL_DEPTH_SIZE, &value) || value < 16)
     return false;
-  if (!eglGetConfigAttrib(eglDisplay, config, EGL_STENCIL_SIZE, &value) || value < 8)
+  if (m_renderingApi == EGL_OPENGL_API &&
+      (!eglGetConfigAttrib(eglDisplay, config, EGL_STENCIL_SIZE, &value) || value < 8))
     return false;
 
   return true;

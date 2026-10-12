@@ -116,11 +116,18 @@ bool CFrameBufferObject::AttachDepthBuffer(int width, int height)
 
   glGenRenderbuffers(1, &m_depthBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
+#if defined(HAS_GL)
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+#else
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+#endif
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+#if defined(HAS_GL)
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+#endif
   const GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

@@ -35,11 +35,6 @@ void CGUIControlGroupMask::Process(unsigned int currentTime, CDirtyRegionList& d
 {
   CGUIControl::Process(currentTime, dirtyregions);
 
-  // we need a stencil mask if have a rotation (or in case we have more complex geometry)
-  if (m_transform.HasRotation())
-    m_stencilLayer =
-        CServiceBroker::GetWinSystem()->GetGfxContext().AddStencilRectToBucket(m_renderRegion);
-
   CPoint pos(GetPosition());
   CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(pos.x, pos.y);
 
@@ -55,6 +50,17 @@ void CGUIControlGroupMask::Process(unsigned int currentTime, CDirtyRegionList& d
 
 void CGUIControlGroupMask::Render()
 {
+  const RENDER_ORDER renderOrder = CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder();
+  if (renderOrder == RENDER_ORDER_FRONT_TO_BACK || renderOrder == RENDER_ORDER_ALL_BACK_TO_FRONT)
+  {
+    // Smart redraw can skip Process(), so reserve layers for the masks being rendered.
+    m_stencilLayer = STENCIL_LAYER::NONE;
+    // we need a stencil mask if have a rotation (or in case we have more complex geometry)
+    if (CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix().HasRotation())
+      m_stencilLayer =
+          CServiceBroker::GetWinSystem()->GetGfxContext().AddStencilRectToBucket(m_renderRegion);
+  }
+
   // limit of all available stencil layers has been reached.
   if (m_stencilLayer == STENCIL_LAYER::INVALID)
     return;
@@ -68,10 +74,8 @@ void CGUIControlGroupMask::Render()
   if (m_stencilLayer != STENCIL_LAYER::NONE)
   {
     // rendering just once is enough, as long as it is the first pass.
-    const RENDER_ORDER renderOrder =
-        CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder();
     if (renderOrder == RENDER_ORDER_FRONT_TO_BACK || renderOrder == RENDER_ORDER_ALL_BACK_TO_FRONT)
-      CGUITexture::DrawStencilQuad(m_renderRegion, m_stencilLayer);
+      CGUITexture::DrawStencilQuad(CalcRenderRegion(), m_stencilLayer);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().SetStencilLayer(m_stencilLayer);
   }

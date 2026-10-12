@@ -1290,7 +1290,6 @@ void CGUIWindowManager::Process(unsigned int currentTime)
   std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_dirtyregions.clear();
-  CServiceBroker::GetWinSystem()->GetGfxContext().ClearStencilBuckets();
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
@@ -1348,6 +1347,7 @@ void CGUIWindowManager::MarkDirty(const CRect& rect)
 
 void CGUIWindowManager::RenderPass() const
 {
+  CServiceBroker::GetWinSystem()->GetGfxContext().ClearStencilBuckets();
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
     RenderPassDual();
   else
