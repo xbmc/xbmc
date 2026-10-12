@@ -50,6 +50,9 @@ extern "C"
 
     /// @brief Game requires restricted resources
     GAME_ERROR_RESTRICTED,
+
+    /// @brief The game client couldn't find files it needs, such as BIOS files
+    GAME_ERROR_MISSING_FILES,
   } GAME_ERROR;
   //----------------------------------------------------------------------------
 
@@ -1636,6 +1639,14 @@ extern "C"
      * must release the handle; Kodi calls HwContextDestroy before teardown.
      */
     bool (*StartStream)(KODI_HANDLE, KODI_GAME_STREAM_HANDLE);
+
+    /*!
+     * @brief Name a file the game client looked for and couldn't find.
+     *
+     * Call it before returning GAME_ERROR_MISSING_FILES. The path is relative
+     * to the client's system directory. Since game API 8.3.0.
+     */
+    void (*ReportMissingFile)(KODI_HANDLE kodiInstance, const char* path);
   } AddonToKodiFuncTable_Game;
 
   /*!

@@ -219,6 +219,7 @@ bool CGameClient::Initialize(void)
   m_ifc.game->toKodi->kodiInstance = this;
   m_ifc.game->toKodi->EnableHardwareRendering = cb_enable_hardware_rendering;
   m_ifc.game->toKodi->CloseGame = cb_close_game;
+  m_ifc.game->toKodi->ReportMissingFile = cb_report_missing_file;
   m_ifc.game->toKodi->GetPlaybackSpeed = cb_get_playback_speed;
   m_ifc.game->toKodi->SetGameTiming = cb_set_game_timing;
   m_ifc.game->toKodi->OpenStream = cb_open_stream;
@@ -329,6 +330,8 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
   const auto loadGame = [this, &path]()
   {
+    m_missingFile.clear();
+
     GAME_ERROR loadError = GAME_ERROR_FAILED;
     try
     {
@@ -613,6 +616,18 @@ void CGameClient::NotifyError(GAME_ERROR error)
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35211),
             missingResource)});
   }
+  else if (error == GAME_ERROR_MISSING_FILES)
+  {
+    const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    // Failed to play game
+    // The emulator "%s" couldn't find %s, a file it needs.
+    // The emulator "%s" couldn't find files it needs, such as BIOS files.
+    MESSAGING::HELPERS::ShowOKDialogText(
+        CVariant{35210},
+        CVariant{m_missingFile.empty()
+                     ? StringUtils::Format(strings.Get(35241), Name())
+                     : StringUtils::Format(strings.Get(35240), Name(), m_missingFile)});
+  }
   else
   {
     // Failed to play game
@@ -676,6 +691,8 @@ void CGameClient::Reset()
 void CGameClient::CloseFile()
 {
   std::unique_lock lock(m_critSection);
+
+  m_missingFile.clear();
 
   if (m_bIsPlaying)
   {
@@ -1080,6 +1097,20 @@ void CGameClient::cb_close_game(KODI_HANDLE kodiInstance)
 {
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                              static_cast<void*>(new CAction(ACTION_STOP)));
+}
+
+void CGameClient::cb_report_missing_file(KODI_HANDLE kodiInstance, const char* path)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || path == nullptr)
+    return;
+
+  CLog::Log(LOGWARNING, "GameClient: {} couldn't find {}", gameClient->ID(), path);
+
+  // The first file is the one to name, as clients often look for a file under several names
+  std::unique_lock lock(gameClient->m_critSection);
+  if (gameClient->m_missingFile.empty())
+    gameClient->m_missingFile = path;
 }
 
 double CGameClient::cb_get_playback_speed(KODI_HANDLE kodiInstance)

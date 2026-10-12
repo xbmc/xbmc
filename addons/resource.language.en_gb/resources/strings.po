@@ -19256,7 +19256,19 @@ msgctxt "#35239"
 msgid "Integer (square pixels)"
 msgstr ""
 
-#empty strings from id 35240 to 35248
+#. Error dialog text when an emulator can't find a file it needs, such as a BIOS file. {0:s} - emulator name, {1:s} - file name
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35240"
+msgid "The emulator \"{0:s}\" couldn't find {1:s}."
+msgstr ""
+
+#. Error dialog text when an emulator can't find files it needs and doesn't say which. {0:s} - emulator name
+#: xbmc/games/addons/GameClient.cpp
+msgctxt "#35241"
+msgid "The emulator \"{0:s}\" couldn't find files it needs, such as BIOS files."
+msgstr ""
+
+#empty strings from id 35242 to 35248
 
 #. Button to open the savestate manager from the game OSD
 #: addons/skin.estuary/xml/GameOSD.xml
