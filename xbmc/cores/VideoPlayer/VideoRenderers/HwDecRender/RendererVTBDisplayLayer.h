@@ -35,6 +35,7 @@ public:
   bool IsGuiLayer() override { return false; }
   CRenderInfo GetRenderInfo() override;
   bool SupportsMultiPassRendering() override { return false; }
+  bool Supports(ERENDERFEATURE feature) const override { return feature == RENDERFEATURE_ROTATION; }
   bool Supports(ESCALINGMETHOD method) const override { return false; }
 
 private:

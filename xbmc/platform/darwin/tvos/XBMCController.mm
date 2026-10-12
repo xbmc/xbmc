@@ -47,6 +47,8 @@
 #if __TV_OS_VERSION_MAX_ALLOWED >= 170000
 #import <AVFoundation/AVSampleBufferVideoRenderer.h>
 #endif
+#include <cmath>
+
 #import <AVKit/UIWindow.h>
 #include <unistd.h>
 
@@ -213,12 +215,24 @@ XBMCController* g_xbmcController;
     dispatch_sync(dispatch_get_main_queue(), disable);
 }
 
-- (void)setVideoLayerFrame:(CGRect)frame
+- (void)setVideoLayerFrame:(CGRect)frame orientation:(unsigned int)orientation
 {
   const NSUInteger generation = self.videoLayerGeneration;
   dispatch_async(dispatch_get_main_queue(), ^{
     if (self.videoLayerGeneration == generation)
-      self.videoLayer.frame = frame;
+    {
+      [CATransaction begin];
+      [CATransaction setDisableActions:YES];
+      // Bounds precede the transform, so quarter turns swap the destination dimensions.
+      const CGSize size = orientation == 90 || orientation == 270
+                              ? CGSizeMake(frame.size.height, frame.size.width)
+                              : frame.size;
+      self.videoLayer.bounds = CGRectMake(0.0, 0.0, size.width, size.height);
+      self.videoLayer.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame));
+      [self.videoLayer
+          setAffineTransform:CGAffineTransformMakeRotation(orientation * M_PI / 180.0)];
+      [CATransaction commit];
+    }
   });
 }
 
