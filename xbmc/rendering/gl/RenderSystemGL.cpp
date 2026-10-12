@@ -301,13 +301,17 @@ void CRenderSystemGL::InvalidateColorBuffer()
     return;
   }
 
-  if (!GetEnabledFrontToBackRendering())
-    return;
+  GLbitfield flags = GL_STENCIL_BUFFER_BIT;
+  if (GetEnabledFrontToBackRendering())
+  {
+    glClearDepthf(0);
+    glDepthMask(GL_TRUE);
+    flags |= GL_DEPTH_BUFFER_BIT;
+  }
 
-  glClearDepthf(0);
   glClearStencil(0);
-  glDepthMask(GL_TRUE);
-  glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  glStencilMask(0xFF);
+  glClear(flags);
 }
 
 bool CRenderSystemGL::ClearBuffers(KODI::UTILS::COLOR::Color color)
@@ -573,7 +577,6 @@ void CRenderSystemGL::SetDepthCulling(DepthCulling culling)
   }
   else if (culling == DepthCulling::FRONT_TO_BACK)
   {
-    glEnable(GL_STENCIL_TEST);
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_GREATER);

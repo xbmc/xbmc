@@ -267,7 +267,7 @@ bool CWinSystemGbmGLContext::BeginGuiComposite(bool guiWillRender)
       return false;
     }
 
-    if (GetEnabledFrontToBackRendering() && !m_guiFbo.AttachDepthBuffer(width, height))
+    if (!m_guiFbo.AttachDepthBuffer(width, height))
     {
       CLog::Log(LOGERROR, "CWinSystemGbmGLContext: failed to attach depth buffer to GUI FBO {}x{}",
                 width, height);

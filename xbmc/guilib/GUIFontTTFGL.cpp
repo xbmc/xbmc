@@ -166,7 +166,10 @@ void CGUIFontTTFGL::LastEnd()
     return;
 
   if (stencilLayer != STENCIL_LAYER::NONE)
+  {
+    glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_EQUAL, 0xFF, 0x1 << (int)stencilLayer);
+  }
 
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
 
@@ -313,6 +316,7 @@ void CGUIFontTTFGL::LastEnd()
   renderSystem->DisableShader();
 
   glStencilFunc(GL_ALWAYS, 0x0, 0xFF);
+  glDisable(GL_STENCIL_TEST);
 }
 
 CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex>& vertices) const
