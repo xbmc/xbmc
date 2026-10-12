@@ -41,15 +41,6 @@ public:
   CVideoInfoScannerExtras(CVideoDatabase& database, const CVideoInfoScannerArt& art);
 
   /*!
-   \brief Add the videos in an extras folder, and in the folders below it, as extras of the movie
-   listed beside it.
-   \param items the listing holding the extras folder
-   \param path the extras folder
-   \return false if no movie was found for the extras, true otherwise
-   */
-  bool AddVideoExtras(const CFileItemList& items, const std::string& path);
-
-  /*!
    \brief Add the videos in an extras folder, and in the folders below it, as extras of a movie.
    \param dbId the movie
    \param path the extras folder

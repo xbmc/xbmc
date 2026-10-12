@@ -135,34 +135,6 @@ CVideoInfoScannerExtras::CVideoInfoScannerExtras(CVideoDatabase& database,
 {
 }
 
-bool CVideoInfoScannerExtras::AddVideoExtras(const CFileItemList& items, const std::string& path)
-{
-  int dbId = -1;
-
-  // get the movie which was added previously
-  for (const auto& item : items)
-  {
-    if (!item->IsFolder())
-    {
-      dbId = m_database.GetMovieId(item->GetPath());
-      if (dbId != -1)
-      {
-        break;
-      }
-    }
-  }
-
-  if (dbId == -1)
-  {
-    CLog::Log(LOGERROR, "VideoInfoScanner: Failed to find the library item for video extras {}",
-              CURL::GetRedacted(path));
-    return false;
-  }
-
-  AddVideoExtras(dbId, path);
-  return true;
-}
-
 void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
 {
   // No need to check for .nomedia in the current directory, the caller already checked and this
