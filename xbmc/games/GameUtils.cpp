@@ -58,6 +58,21 @@ constexpr auto GAMES_FOLDER = "special://profile/games";
 constexpr size_t MAX_NAME_BYTES = 200;
 // The file name and the two folders above it
 constexpr size_t KEY_PARTS = 3;
+
+// The folders and file name of a location, without its protocol or server.
+// A game in an archive continues the path of the archive's own location.
+void AddPathParts(const CURL& url, std::vector<std::string>& parts)
+{
+  if (url.HasParentInHostname())
+    AddPathParts(CURL(url.GetHostName()), parts);
+
+  constexpr std::array<std::string_view, 2> separators{"/", "\\"};
+  for (std::string& part : StringUtils::Split(url.GetFileName(), separators))
+  {
+    if (!part.empty())
+      parts.emplace_back(std::move(part));
+  }
+}
 } // namespace
 
 // Initialize static state
@@ -487,9 +502,8 @@ std::string CGameUtils::GetGameFolder(const std::string& gamePath)
 
   // Enough of the path to tell PS1/Worms (USA)/Worms (USA).cue from
   // Dreamcast/Worms (USA)/Worms (USA).cue, but not the drive or share above it
-  constexpr std::array<std::string_view, 2> separators{"/", "\\"};
-  std::vector<std::string> parts = StringUtils::Split(path, separators);
-  std::erase(parts, "");
+  std::vector<std::string> parts;
+  AddPathParts(url, parts);
   const std::span<const std::string> key = std::span(parts).last(std::min(parts.size(), KEY_PARTS));
 
   return URIUtils::AddFileToFolder(
