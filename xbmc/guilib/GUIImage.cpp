@@ -117,7 +117,10 @@ void CGUIImage::AllocateOnDemand()
   // if we're hidden, we can free our resources and return
   if (!IsVisible() && m_visible != DELAYED && m_bDynamicResourceAlloc)
   {
+    // an empty texture here means the request failed; its name marks it as already tried
+    const std::string failedName = m_textureCurrent->GetFileName().empty() ? m_nameCurrent : "";
     FreeResourcesButNotAnims();
+    m_nameCurrent = failedName;
     return;
   }
 
@@ -214,8 +217,10 @@ void CGUIImage::ProcessState()
 
 void CGUIImage::ProcessAllocation()
 {
-  m_textureCurrent->AllocResources();
-  m_textureNext->AllocResources();
+  if (m_textureCurrent->AllocResources())
+    MarkDirtyRegion();
+  if (m_textureNext->AllocResources())
+    MarkDirtyRegion();
 
   if (m_isTransitioning && m_textureNext->FailedToAlloc())
   {
@@ -550,6 +555,7 @@ void CGUIImage::SetInfo(const GUIINFO::CGUIInfoLabel &info)
   {
     m_textureCurrent->SetFileName(m_info.GetLabel(0));
     m_nameCurrent = m_info.GetLabel(0);
+    m_nameStaging = m_nameCurrent;
   }
 }
 
@@ -643,6 +649,10 @@ std::string CGUIImage::GetFallback(const std::string& currentName)
 
 std::string CGUIImage::GetDescription(void) const
 {
+  // hidden images skip Process, and an empty one may take its texture from its own label
+  if ((!IsVisible() || !m_textureCurrent->ReadyToRender()) && m_nameStaging != m_nameCurrent)
+    return m_nameStaging;
+
   // report the incoming texture as soon as it resolves so Control.GetLabel doesn't lag the fade
   if (m_isTransitioning && (m_textureNext->ReadyToRender() || m_textureNext->GetFileName().empty()))
     return m_textureNext->GetFileName();
