@@ -446,7 +446,7 @@ bool CGUITexture::AllocResources()
       }
       if (CServiceBroker::GetGUI()->GetLargeTextureManager().GetImage(
               m_info.filename, texture, m_requestWidth, m_requestHeight, m_aspect.ratio,
-              !IsAllocated(), m_use_cache))
+              !IsAllocated(), m_use_cache, m_scalingMethod))
       {
         m_isAllocated = LARGE;
 
@@ -454,7 +454,7 @@ bool CGUITexture::AllocResources()
           m_largeInterim = false;
         else if (!m_largeInterim &&
                  CServiceBroker::GetGUI()->GetLargeTextureManager().GetInterimImage(
-                     m_info.filename, m_aspect.ratio, texture))
+                     m_info.filename, m_aspect.ratio, texture, m_scalingMethod))
           m_largeInterim = true;
         else
           return false; // not ready as yet
@@ -602,7 +602,7 @@ void CGUITexture::FreeResources(bool immediately /* = false */)
   {
     CServiceBroker::GetGUI()->GetLargeTextureManager().ReleaseImage(
         m_info.filename, m_requestWidth, m_requestHeight, m_aspect.ratio,
-        immediately || (m_isAllocated == LARGE_FAILED));
+        immediately || (m_isAllocated == LARGE_FAILED), m_scalingMethod);
     m_requestWidth = REQUEST_SIZE_UNSET;
     m_requestHeight = REQUEST_SIZE_UNSET;
     CServiceBroker::GetGUI()->GetTextureCallbackManager().UnregisterOnWindowResizeCallback(*this);

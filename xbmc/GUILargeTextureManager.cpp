@@ -71,12 +71,14 @@ CImageLoader::CImageLoader(const std::string& path,
                            unsigned int targetWidth,
                            unsigned int targetHeight,
                            CAspectRatio::AspectRatio aspectRatio,
-                           const bool useCache)
+                           const bool useCache,
+                           TEXTURE_SCALING scalingMethod)
   : m_path(path),
     m_texture(nullptr),
     m_targetWidth(targetWidth),
     m_targetHeight(targetHeight),
-    m_aspectRatio(aspectRatio)
+    m_aspectRatio(aspectRatio),
+    m_scalingMethod(scalingMethod)
 {
   m_use_cache = useCache;
 
@@ -108,7 +110,8 @@ bool CImageLoader::DoWork()
   {
     // direct route - load the image
     auto start = std::chrono::steady_clock::now();
-    m_texture = CTexture::LoadFromFile(loadPath, m_targetWidth, m_targetHeight, m_aspectRatio);
+    m_texture = CTexture::LoadFromFile(loadPath, m_targetWidth, m_targetHeight, m_aspectRatio, "",
+                                       m_scalingMethod);
 
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -150,11 +153,13 @@ bool CImageLoader::DoWork()
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string& path,
                                                       unsigned int targetWidth,
                                                       unsigned int targetHeight,
-                                                      CAspectRatio::AspectRatio aspectRatio)
+                                                      CAspectRatio::AspectRatio aspectRatio,
+                                                      TEXTURE_SCALING scalingMethod)
   : m_path(path),
     m_targetWidth(targetWidth),
     m_targetHeight(targetHeight),
-    m_aspectRatio(aspectRatio)
+    m_aspectRatio(aspectRatio),
+    m_scalingMethod(scalingMethod)
 {
   m_refCount = 1;
   m_timeToDelete = 0;
@@ -234,7 +239,8 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
                                        unsigned int height,
                                        CAspectRatio::AspectRatio aspectRatio,
                                        bool firstRequest,
-                                       const bool useCache)
+                                       const bool useCache,
+                                       TEXTURE_SCALING scalingMethod)
 {
   NormalizeRequest(width, height, aspectRatio);
 
@@ -243,7 +249,8 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
   {
     CLargeTexture *image = *it;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
-        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
+        image->GetScalingMethod() == scalingMethod)
     {
       if (firstRequest)
         image->AddRef();
@@ -262,7 +269,8 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
                                     return image->GetPath() == path &&
                                            image->GetTargetWidth() == width &&
                                            image->GetTargetHeight() == height &&
-                                           image->GetAspectRatio() == aspectRatio;
+                                           image->GetAspectRatio() == aspectRatio &&
+                                           image->GetScalingMethod() == scalingMethod;
                                   });
   if (!queued && aspectRatio != CAspectRatio::CENTER)
   {
@@ -270,13 +278,14 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
     for (const CLargeTexture* image : m_allocated)
     {
       if (image->GetPath() == path && image->GetAspectRatio() != CAspectRatio::CENTER &&
+          image->GetScalingMethod() == scalingMethod &&
           MatchesRequest(image->GetTexture(), width, height, aspectRatio) &&
           (!best || image->GetTexture().m_width < best->GetTexture().m_width))
         best = image;
     }
     if (best)
     {
-      auto* image = new CLargeTexture(path, width, height, aspectRatio);
+      auto* image = new CLargeTexture(path, width, height, aspectRatio, scalingMethod);
       image->ShareTexture(best->GetTexture());
       m_allocated.push_back(image);
       texture = image->GetTexture();
@@ -284,13 +293,14 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
     }
   }
 
-  QueueImage(path, width, height, aspectRatio, useCache);
+  QueueImage(path, width, height, aspectRatio, useCache, scalingMethod);
   return true;
 }
 
 bool CGUILargeTextureManager::GetInterimImage(const std::string& path,
                                               CAspectRatio::AspectRatio aspectRatio,
-                                              CTextureArray& texture)
+                                              CTextureArray& texture,
+                                              TEXTURE_SCALING scalingMethod)
 {
   if (aspectRatio == CAspectRatio::CENTER)
     return false;
@@ -300,7 +310,7 @@ bool CGUILargeTextureManager::GetInterimImage(const std::string& path,
   for (const CLargeTexture* image : m_allocated)
   {
     if (image->GetPath() == path && image->GetAspectRatio() != CAspectRatio::CENTER &&
-        image->GetTexture().size() &&
+        image->GetScalingMethod() == scalingMethod && image->GetTexture().size() &&
         (!best || image->GetTexture().m_width > best->GetTexture().m_width))
       best = image;
   }
@@ -315,7 +325,8 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
                                            unsigned int width,
                                            unsigned int height,
                                            CAspectRatio::AspectRatio aspectRatio,
-                                           bool immediately)
+                                           bool immediately,
+                                           TEXTURE_SCALING scalingMethod)
 {
   NormalizeRequest(width, height, aspectRatio);
 
@@ -324,7 +335,8 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
   {
     CLargeTexture *image = *it;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
-        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
+        image->GetScalingMethod() == scalingMethod)
     {
       if (image->DecrRef(immediately) && immediately)
         m_allocated.erase(it);
@@ -337,7 +349,7 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
     CLargeTexture *image = it->second;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
         image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
-        image->DecrRef(true))
+        image->GetScalingMethod() == scalingMethod && image->DecrRef(true))
     {
       // cancel this job
       CServiceBroker::GetJobManager()->CancelJob(id);
@@ -352,7 +364,8 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
                                          unsigned int width,
                                          unsigned int height,
                                          CAspectRatio::AspectRatio aspectRatio,
-                                         bool useCache)
+                                         bool useCache,
+                                         TEXTURE_SCALING scalingMethod)
 {
   if (path.empty())
     return;
@@ -362,7 +375,8 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
   {
     CLargeTexture *image = it->second;
     if (image->GetPath() == path && image->GetTargetWidth() == width &&
-        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
+        image->GetScalingMethod() == scalingMethod)
     {
       image->AddRef();
       return; // already queued
@@ -370,9 +384,10 @@ void CGUILargeTextureManager::QueueImage(const std::string& path,
   }
 
   // queue the item
-  CLargeTexture* image = new CLargeTexture(path, width, height, aspectRatio);
+  CLargeTexture* image = new CLargeTexture(path, width, height, aspectRatio, scalingMethod);
   unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(
-      new CImageLoader(path, width, height, aspectRatio, useCache), this, CJob::PRIORITY_NORMAL);
+      new CImageLoader(path, width, height, aspectRatio, useCache, scalingMethod), this,
+      CJob::PRIORITY_NORMAL);
   m_queued.emplace_back(jobID, image);
 }
 
