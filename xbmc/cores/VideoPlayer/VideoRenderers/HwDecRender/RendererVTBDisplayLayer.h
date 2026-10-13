@@ -33,6 +33,8 @@ public:
   void RenderUpdate(
       int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   bool IsGuiLayer() override { return false; }
+  bool CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                         KODI::RENDERING::CAPTURE::CaptureResult& result) override;
   CRenderInfo GetRenderInfo() override;
   bool SupportsMultiPassRendering() override { return false; }
   bool Supports(ERENDERFEATURE feature) const override
@@ -45,6 +47,7 @@ public:
 
 private:
   CVideoBuffer* m_buffers[NUM_BUFFERS]{};
+  VideoPicture m_capturePictures[NUM_BUFFERS]{};
   StreamHdrType m_hdrType{};
   bool m_configured{false};
   int m_lastIndex{-1};
