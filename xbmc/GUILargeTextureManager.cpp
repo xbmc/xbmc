@@ -21,10 +21,51 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <exception>
 #include <mutex>
+
+namespace
+{
+constexpr unsigned int HIDDEN_SIZE = 8;
+
+void NormalizeRequest(unsigned int& width,
+                      unsigned int& height,
+                      CAspectRatio::AspectRatio& aspectRatio)
+{
+  if (aspectRatio == CAspectRatio::CENTER)
+    return;
+
+  // decodes keep image's shape so any can stand in for another, and cover never upscales
+  if (aspectRatio == CAspectRatio::STRETCH)
+    aspectRatio = CAspectRatio::SCALE;
+
+  if (std::max(width, height) < HIDDEN_SIZE)
+  {
+    aspectRatio = CAspectRatio::KEEP;
+    width = height = 0;
+  }
+}
+
+// a loaded decode stands in only at the size this request decodes to, GPU scaling can alias
+bool MatchesRequest(const CTextureArray& texture,
+                    unsigned int width,
+                    unsigned int height,
+                    CAspectRatio::AspectRatio aspectRatio)
+{
+  if (!texture.size() || !width || !height || texture.m_width <= 0 || texture.m_height <= 0)
+    return false;
+
+  const float aspect = static_cast<float>(texture.m_width) / texture.m_height;
+  float needWidth = aspectRatio == CAspectRatio::SCALE
+                        ? std::max(static_cast<float>(width), height * aspect)
+                        : std::min(static_cast<float>(width), height * aspect);
+  needWidth = std::min(needWidth, static_cast<float>(texture.m_textures[0]->GetOriginalWidth()));
+  return texture.m_width + 1 >= needWidth && texture.m_width <= needWidth + 1;
+}
+} // namespace
 
 CImageLoader::CImageLoader(const std::string& path,
                            unsigned int targetWidth,
@@ -38,6 +79,13 @@ CImageLoader::CImageLoader(const std::string& path,
     m_aspectRatio(aspectRatio)
 {
   m_use_cache = useCache;
+
+  if (m_aspectRatio != CAspectRatio::CENTER && m_targetWidth == 0 && m_targetHeight == 0)
+  {
+    const CGraphicContext& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
+    m_targetWidth = static_cast<unsigned int>(gfxContext.GetWidth());
+    m_targetHeight = static_cast<unsigned int>(gfxContext.GetHeight());
+  }
 }
 
 CImageLoader::~CImageLoader() = default;
@@ -188,6 +236,8 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
                                        bool firstRequest,
                                        const bool useCache)
 {
+  NormalizeRequest(width, height, aspectRatio);
+
   std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
@@ -202,9 +252,62 @@ bool CGUILargeTextureManager::GetImage(const std::string& path,
     }
   }
 
-  if (firstRequest)
-    QueueImage(path, width, height, aspectRatio, useCache);
+  if (!firstRequest)
+    return true;
 
+  const bool queued = std::any_of(m_queued.begin(), m_queued.end(),
+                                  [&](const auto& job)
+                                  {
+                                    const CLargeTexture* image = job.second;
+                                    return image->GetPath() == path &&
+                                           image->GetTargetWidth() == width &&
+                                           image->GetTargetHeight() == height &&
+                                           image->GetAspectRatio() == aspectRatio;
+                                  });
+  if (!queued && aspectRatio != CAspectRatio::CENTER)
+  {
+    const CLargeTexture* best = nullptr;
+    for (const CLargeTexture* image : m_allocated)
+    {
+      if (image->GetPath() == path && image->GetAspectRatio() != CAspectRatio::CENTER &&
+          MatchesRequest(image->GetTexture(), width, height, aspectRatio) &&
+          (!best || image->GetTexture().m_width < best->GetTexture().m_width))
+        best = image;
+    }
+    if (best)
+    {
+      auto* image = new CLargeTexture(path, width, height, aspectRatio);
+      image->ShareTexture(best->GetTexture());
+      m_allocated.push_back(image);
+      texture = image->GetTexture();
+      return true;
+    }
+  }
+
+  QueueImage(path, width, height, aspectRatio, useCache);
+  return true;
+}
+
+bool CGUILargeTextureManager::GetInterimImage(const std::string& path,
+                                              CAspectRatio::AspectRatio aspectRatio,
+                                              CTextureArray& texture)
+{
+  if (aspectRatio == CAspectRatio::CENTER)
+    return false;
+
+  std::unique_lock lock(m_listSection);
+  const CLargeTexture* best = nullptr;
+  for (const CLargeTexture* image : m_allocated)
+  {
+    if (image->GetPath() == path && image->GetAspectRatio() != CAspectRatio::CENTER &&
+        image->GetTexture().size() &&
+        (!best || image->GetTexture().m_width > best->GetTexture().m_width))
+      best = image;
+  }
+  if (!best)
+    return false;
+
+  texture = best->GetTexture();
   return true;
 }
 
@@ -214,6 +317,8 @@ void CGUILargeTextureManager::ReleaseImage(const std::string& path,
                                            CAspectRatio::AspectRatio aspectRatio,
                                            bool immediately)
 {
+  NormalizeRequest(width, height, aspectRatio);
+
   std::unique_lock lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {

@@ -285,6 +285,12 @@ bool CTexture::LoadIImage(IImage* pImage,
       else
         height = heightFromWidth;
     }
+
+    if (width > pImage->Width() || height > pImage->Height())
+    {
+      width = pImage->Width();
+      height = pImage->Height();
+    }
   }
 
   if (width > maxTextureSize || height > maxTextureSize)
