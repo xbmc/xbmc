@@ -224,7 +224,7 @@ TEST(TestAudioBookFileDirectory, ExpandsAFileWhoseChaptersDeclareNoUid)
   EXPECT_EQ(9000, items[2]->GetEndOffset());
 }
 
-#endif // TagLib >= 2.3.1
+#endif // TagLib >= 2.3.2
 
 /*!
  * A file with chapters but no tags is not an album, whichever reader read it. FFmpeg reports the
@@ -318,7 +318,7 @@ TEST(TestAudioBookFileDirectory, KeepsTheLastTrackOfAFileThatDeclaresNoLength)
    * being tested is that the track survives that, not what number it ends on.
    */
 }
-#endif // TagLib >= 2.3.1
+#endif // TagLib >= 2.3.2
 
 /*!
  * Nothing stops a caller handing one instance a second URL. The demuxer context the first file was
