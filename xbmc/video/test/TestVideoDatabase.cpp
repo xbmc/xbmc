@@ -1370,6 +1370,27 @@ TEST_F(TestVideoDatabaseClean, KeepsAVersionOutsideTheSourcesWhoseFolderIsUnavai
   EXPECT_EQ(idMovie, m_db.GetMovieId(unavailable));
 }
 
+TEST_F(TestVideoDatabaseClean, RemovesAnExtraOutsideTheSourcesWhoseDiscHasGone)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const int idMovie{AddMovie(File(Folder(movies, "Film (2010)"), "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const std::string gone{URIUtils::GetBlurayPlaylistPath(
+      URIUtils::AddFileToFolder(Folder(m_root, "outside"), "BDMV", "index.bdmv"), 801)};
+  const int idExtra{AddAsset(idMovie, gone, VideoAssetType::EXTRA)};
+  ASSERT_GT(idExtra, 0);
+  const std::string unavailable{URIUtils::GetBlurayPlaylistPath(
+      URIUtils::AddFileToFolder(Folder(m_root, "unplugged", false), "BDMV", "index.bdmv"), 801)};
+  ASSERT_GT(AddAsset(idMovie, unavailable, VideoAssetType::EXTRA), 0);
+
+  Clean();
+
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM files WHERE idFile=%i", idExtra)));
+  EXPECT_EQ(idMovie, m_db.GetVideoVersionInfo(unavailable).m_idMedia);
+}
+
 TEST_F(TestVideoDatabaseClean, KeepsAPromotedVersionOutsideTheSourcesOnTheNextClean)
 {
   const std::string movies{Folder(m_root, "movies")};
