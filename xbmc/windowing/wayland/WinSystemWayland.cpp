@@ -1512,7 +1512,9 @@ void CWinSystemWayland::PrepareFramePresentation()
       timespec tv = { .tv_sec = static_cast<std::time_t> ((static_cast<std::uint64_t>(tvSecHi) << 32) + tvSecLo), .tv_nsec = static_cast<long>(tvNsec) };
       std::int64_t latency{KODI::LINUX::TimespecDifference(iter->submissionTime, tv)};
       std::uint64_t msc{(static_cast<std::uint64_t>(seqHi) << 32) + seqLo};
-      m_presentationFeedbackHandlers.Invoke(tv, refresh, m_syncOutputID, m_syncOutputRefreshRate, msc);
+      m_presentationRefreshRate = refresh != 0 ? 1.0e9f / refresh : m_syncOutputRefreshRate.load();
+      m_presentationFeedbackHandlers.Invoke(tv, refresh, m_syncOutputID, m_presentationRefreshRate,
+                                            msc);
 
       iter->latency = latency / 1e9f; // nanoseconds to seconds
       float adjust{};
@@ -1609,9 +1611,9 @@ float CWinSystemWayland::GetDisplayLatency()
   }
 }
 
-float CWinSystemWayland::GetSyncOutputRefreshRate()
+float CWinSystemWayland::GetPresentationRefreshRate()
 {
-  return m_syncOutputRefreshRate;
+  return m_presentationRefreshRate;
 }
 
 KODI::CSignalRegistration CWinSystemWayland::RegisterOnPresentationFeedback(
