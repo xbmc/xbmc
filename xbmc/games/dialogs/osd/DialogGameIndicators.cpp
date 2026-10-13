@@ -47,6 +47,9 @@ void CDialogGameIndicators::Process(unsigned int currentTime, CDirtyRegionList& 
 
 bool CDialogGameIndicators::AnythingToShow()
 {
+  if (!m_overGame)
+    return false;
+
   auto& gameServices = CServiceBroker::GetGameServices();
   const auto& runtime = gameServices.AchievementRuntime();
 
@@ -72,6 +75,17 @@ void CDialogGameIndicators::Register()
 
 std::atomic<bool> CDialogGameIndicators::m_showing{false};
 std::atomic<bool> CDialogGameIndicators::m_activating{false};
+std::atomic<bool> CDialogGameIndicators::m_overGame{false};
+
+void CDialogGameIndicators::SetOverGame(bool overGame)
+{
+  m_overGame = overGame;
+
+  // Leaving the game is handled by Process(); coming back has to reopen the
+  // dialog, as an indicator still active may not report again
+  if (overGame)
+    Show();
+}
 
 void CDialogGameIndicators::OnInitWindow()
 {

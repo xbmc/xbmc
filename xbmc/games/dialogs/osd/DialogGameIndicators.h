@@ -60,6 +60,13 @@ public:
    */
   static void Register();
 
+  /*!
+   * \brief Say whether the game is on screen, as the indicators belong over it
+   *
+   * Called by the full screen game window as it opens and closes.
+   */
+  static void SetOverGame(bool overGame);
+
 private:
   /*!
    * \brief Open the dialog if the runtime has something to show
@@ -79,6 +86,8 @@ private:
   //! Whether an activation has been posted and not yet arrived. Without it a
   //! burst of updates before the window opens posts one message each.
   static std::atomic<bool> m_activating;
+
+  static std::atomic<bool> m_overGame;
 };
 } // namespace GAME
 } // namespace KODI
