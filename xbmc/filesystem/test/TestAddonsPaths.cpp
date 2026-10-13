@@ -7,11 +7,15 @@
  */
 
 #include "URL.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/AddonsPaths.h"
 
 #include <gtest/gtest.h>
 
 using namespace KODI;
+using ADDON::AddonType;
+using ADDON::CAddonInfo;
 
 TEST(TestAddonsPaths, EndpointIsTheHostName)
 {
@@ -20,4 +24,12 @@ TEST(TestAddonsPaths, EndpointIsTheHostName)
         ADDONS::RUNNING, ADDONS::REPOS, ADDONS::SOURCES, ADDONS::SEARCH, ADDONS::RECENTLY_UPDATED,
         ADDONS::DOWNLOADING, ADDONS::MORE, ADDONS::DEFAULT_BINARY_ADDONS_SOURCE})
     EXPECT_EQ(ADDONS::EndpointOf(path), CURL(path).GetHostName()) << path;
+}
+
+TEST(TestAddonsPaths, SubContentNamesRoundTrip)
+{
+  for (const AddonType type : {AddonType::AUDIO, AddonType::IMAGE, AddonType::EXECUTABLE,
+                               AddonType::VIDEO, AddonType::GAME})
+    EXPECT_EQ(CAddonInfo::TranslateSubContent(CAddonInfo::SubContentNameOf(type)), type);
+  EXPECT_EQ(CAddonInfo::SubContentNameOf(AddonType::SKIN), "");
 }
