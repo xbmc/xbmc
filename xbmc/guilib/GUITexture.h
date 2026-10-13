@@ -211,8 +211,10 @@ protected:
   bool m_invalid;       // if true, we need to recalculate
   bool m_use_cache;
   std::optional<bool> m_lastReadyState; // cached ready state for change detection
-  CRect m_lastScreenRect; // unsnapped screen rect of the last render, for subpixel textures
-  bool m_moving{false};
+  std::optional<CRect> m_lastScreenRect; // unsnapped screen rect of the last process
+  unsigned int m_lastMoveTime{0}; // when that rect last changed
+  bool m_moving{false}; // corners stay fractional while set
+  static constexpr unsigned int SUBPIXEL_SETTLE_MS = 200; // a few frames at 24 Hz, yet immediate
   unsigned char m_alpha;
 
   float m_frameWidth, m_frameHeight;          // size in pixels of the actual frame within the texture

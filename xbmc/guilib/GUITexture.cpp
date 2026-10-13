@@ -21,7 +21,6 @@
 #include <array>
 #include <cmath>
 #include <stdexcept>
-#include <utility>
 
 CreateGUITextureFunc CGUITexture::m_createGUITextureFunc;
 DrawQuadFunc CGUITexture::m_drawQuadFunc;
@@ -176,8 +175,28 @@ bool CGUITexture::Process(unsigned int currentTime)
   if (m_invalid)
     changed |= CalculateSize();
 
-  // redraw once more after motion stops, so that the texture settles on whole pixels
-  changed |= std::exchange(m_moving, false);
+  if (m_info.m_subpixel)
+  {
+    const CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+    const CRect screen(context.ScaleFinalXCoord(m_vertex.x1, m_vertex.y1),
+                       context.ScaleFinalYCoord(m_vertex.x1, m_vertex.y1),
+                       context.ScaleFinalXCoord(m_vertex.x2, m_vertex.y2),
+                       context.ScaleFinalYCoord(m_vertex.x2, m_vertex.y2));
+    if (!m_lastScreenRect) // first sight counts as settled
+    {
+      m_lastScreenRect = screen;
+      m_lastMoveTime = currentTime - SUBPIXEL_SETTLE_MS;
+    }
+    else if (screen != *m_lastScreenRect)
+    {
+      m_lastScreenRect = screen;
+      m_lastMoveTime = currentTime;
+    }
+    // stay fractional for a moment after the last move, then redraw once more snapped
+    const bool moving = currentTime - m_lastMoveTime < SUBPIXEL_SETTLE_MS;
+    changed |= moving != m_moving;
+    m_moving = moving;
+  }
 
   if (m_isAllocated)
   {
@@ -232,17 +251,6 @@ void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
     return;
   if (!hasAlpha && renderOrder == RENDER_ORDER_BACK_TO_FRONT)
     return;
-
-  if (m_info.m_subpixel)
-  {
-    const CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
-    const CRect screen(context.ScaleFinalXCoord(m_vertex.x1, m_vertex.y1),
-                       context.ScaleFinalYCoord(m_vertex.x1, m_vertex.y1),
-                       context.ScaleFinalXCoord(m_vertex.x2, m_vertex.y2),
-                       context.ScaleFinalYCoord(m_vertex.x2, m_vertex.y2));
-    m_moving = screen != m_lastScreenRect;
-    m_lastScreenRect = screen;
-  }
 
   // see if we need to clip the image
   if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
@@ -391,7 +399,7 @@ void CGUITexture::Render(const Segment& segment)
 
   float x[4], y[4], z[4];
 
-#define ROUND_TO_PIXEL(x) SnapToPixel((x), m_moving)
+#define ROUND_TO_PIXEL(x) SnapToPixel((x), m_moving) // m_moving is decided in Process()
 #define ROUND_DEPTH(x) SnapToPixel((x), false)
 
   // clang-format off
