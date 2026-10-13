@@ -58,7 +58,9 @@ public:
    \returns true if we're allowed to access the settings
    */
   bool CheckSettingLevelLock(const SettingLevel& level, bool enforce = false);
-  //! Whether the level may be entered without a master lock prompt.
+  //! Whether the level is open to a caller that cannot be prompted for the master lock. A level
+  //! the settings windows are showing because their viewer answered the prompt is not open to
+  //! anyone else.
   bool IsSettingLevelUnlocked(const SettingLevel& level);
   bool CheckMenuLock(int iWindowID);
   bool IsVideoUnlocked();
