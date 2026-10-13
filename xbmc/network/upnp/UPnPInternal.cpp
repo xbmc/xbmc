@@ -40,6 +40,7 @@
 #include "video/VideoDbPaths.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoUtils.h"
 
 #include <algorithm>
 #include <array>
@@ -1224,11 +1225,7 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
     bool watched(false);
     if (type == KODI::MEDIA::TYPE::TV_SHOW || type == KODI::MEDIA::TYPE::SEASON)
     {
-      pItem->SetProperty("totalepisodes", episodes);
-      pItem->SetProperty("numepisodes", episodes);
-      pItem->SetProperty("watchedepisodes", played);
-      pItem->SetProperty("unwatchedepisodes", episodes - played);
-      pItem->SetProperty("watchedepisodepercent", episodes > 0 ? played * 100 / episodes : 0);
+      VIDEO::UTILS::SetEpisodeCounts(*pItem, episodes, played);
       watched = (episodes && played >= episodes);
       pItem->GetVideoInfoTag()->SetPlayCount(watched ? 1 : 0);
     }
