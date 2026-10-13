@@ -13,6 +13,7 @@ endif
 
 LIBDYLIB=$(PLATFORM)/python
 ifeq ($(NATIVE_OS), osx)
+    CONFIGURE += ac_cv_func_dup3=no ac_cv_func_pipe2=no
     # Case insensitive FS will add .exe to buildexe regardless of --with-suffix=no
 	LIBDYLIB=$(PLATFORM)/python.exe
 endif
