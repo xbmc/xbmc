@@ -81,14 +81,21 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC})
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC})
+
+      if(WIN32 OR WINDOWS_STORE)
+        include(CheckSymbolExists)
+        include(CMakePushCheckState)
+        cmake_push_check_state(RESET)
+        set(CMAKE_REQUIRED_DEFINITIONS -DCMS_DLL)
+        set(CMAKE_REQUIRED_LIBRARIES ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+        unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB CACHE)
+        check_symbol_exists(cmsCreateTransform lcms2.h ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB)
+        cmake_pop_check_state()
+      endif()
     elseif(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       SETUP_BUILD_TARGET()
 
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-
-      if(WIN32 OR WINDOWS_STORE)
-        list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS CMS_DLL)
-      endif()
 
       # We are building as a requirement, so set LIB_BUILD property to allow calling
       # modules to know we will be building, and they will want to rebuild as well.
@@ -96,6 +103,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
 
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    endif()
+
+    if((WIN32 OR WINDOWS_STORE) AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB)
+      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS CMS_DLL)
     endif()
 
     list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_LCMS2
