@@ -144,13 +144,16 @@ void CRendererShaders::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint
     m_colorShader->Render(src, dstPoints, buf, target);
   }
 
+  // the output pass draws with a full back buffer viewport, move the picture to the eye's half
+  // in the split stereo modes (the HQ scaler does it itself)
+  const auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
   if (viewSized)
   {
-    dst.GetQuad(destPoints);
+    context.StereoCorrection(dst).GetQuad(destPoints);
     sourceRect = dst;
   }
   else if (!HasHQScaler())
-    ReorderDrawPoints(CRect(destPoints[0], destPoints[2]), destPoints);
+    ReorderDrawPoints(context.StereoCorrection(CRect(destPoints[0], destPoints[2])), destPoints);
 }
 
 void CRendererShaders::CheckVideoParameters()
