@@ -12,7 +12,6 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/TextureFormats.h"
@@ -172,17 +171,30 @@ std::string ResolveScreenshotDir()
   return ScreenshotDir();
 }
 
-// The next free auto-numbered name in dir; empty when the folder is full or unreadable.
-std::string NextScreenshotFile(const std::string& dir)
-{
-  return CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
-}
-
 // The video-only companion of a composite screenshot, sharing its NNNNN so the
 // pair is obvious.
 std::string VideoScreenshotFile(const std::string& composite)
 {
   return URIUtils::ReplaceExtension(composite, "-video.png");
+}
+
+// The next auto-numbered name in dir that neither it nor its video companion has taken; empty
+// when the folder is full.
+std::string NextScreenshotFile(const std::string& dir)
+{
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory(dir, items, ".png",
+                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_GET_HIDDEN);
+  items.SetFastLookup(true);
+
+  const std::string numbered = URIUtils::AddFileToFolder(dir, "screenshot{:05}.png");
+  for (int number = 0; number <= 65535; ++number)
+  {
+    const std::string file = StringUtils::Format(numbered, number);
+    if (!items.Get(file) && !items.Get(VideoScreenshotFile(file)))
+      return file;
+  }
+  return {};
 }
 } // namespace
 
@@ -256,8 +268,7 @@ void CScreenShot::TakeScreenshotBoth()
             CLog::Log(LOGWARNING, "No screenshot path configured");
             return;
           }
-          *composite =
-              CUtil::GetNextFilename(URIUtils::AddFileToFolder(dir, "screenshot{:05}.png"), 65535);
+          *composite = NextScreenshotFile(dir);
         }
         if (composite->empty())
         {
@@ -317,7 +328,7 @@ struct PendingScreenshot
   CCriticalSection lock;
   //! The composite's file; without a name from the caller, numbered at the first delivery
   std::string composite;
-  //! The files a delivery has started to write
+  //! The files a delivery has started to write that were not there before
   std::vector<std::string> started;
   unsigned int written{0};
   //! The request gave up, so a delivery removes again whatever it writes from then on
@@ -388,6 +399,7 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
         }
 
         std::string file;
+        bool created = false;
         {
           std::unique_lock lock(pending->lock);
           // Deliveries are handled one at a time, so a number taken here is taken by no other
@@ -400,7 +412,10 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
           if (!pending->abandoned && !pending->composite.empty())
           {
             file = videoOfBoth ? VideoScreenshotFile(pending->composite) : pending->composite;
-            pending->started.emplace_back(file);
+            // A named target may be a screenshot already there, which a failure must leave
+            created = !XFILE::CFile::Exists(file);
+            if (created)
+              pending->started.emplace_back(file);
           }
         }
 
@@ -416,7 +431,7 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
               ++pending->written;
             abandoned = pending->abandoned;
           }
-          if (abandoned)
+          if (abandoned && created)
             XFILE::CFile::Delete(file);
         }
 
@@ -489,7 +504,8 @@ CScreenShot::ScreenshotDeletion CScreenShot::DeleteScreenshots(const std::string
     return {};
 
   CFileItemList items;
-  if (!XFILE::CDirectory::GetDirectory(dir, items, ".png", XFILE::DIR_FLAG_NO_FILE_DIRS))
+  if (!XFILE::CDirectory::GetDirectory(dir, items, ".png",
+                                       XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_GET_HIDDEN))
   {
     CLog::Log(LOGERROR, "Unable to read screenshot folder {}", CURL::GetRedacted(dir));
     return {ScreenshotError::FAILED};
