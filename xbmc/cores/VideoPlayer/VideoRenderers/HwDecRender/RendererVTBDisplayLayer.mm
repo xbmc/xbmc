@@ -56,6 +56,7 @@ VTB::CVideoBufferVTB* GetVTBBuffer(CVideoBuffer* buffer)
 void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& picture)
 {
   if (picture.hdrType != StreamHdrType::HDR_TYPE_HDR10 &&
+      picture.hdrType != StreamHdrType::HDR_TYPE_HDR10PLUS &&
       picture.hdrType != StreamHdrType::HDR_TYPE_HLG)
     return;
 
@@ -69,7 +70,8 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
                             : kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ,
                         kCVAttachmentMode_ShouldPropagate);
 
-  if (picture.hdrType != StreamHdrType::HDR_TYPE_HDR10)
+  if (picture.hdrType != StreamHdrType::HDR_TYPE_HDR10 &&
+      picture.hdrType != StreamHdrType::HDR_TYPE_HDR10PLUS)
   {
     CVBufferRemoveAttachment(pixelBuffer, kCVImageBufferMasteringDisplayColorVolumeKey);
     CVBufferRemoveAttachment(pixelBuffer, kCVImageBufferContentLightLevelInfoKey);
