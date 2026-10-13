@@ -46,6 +46,7 @@ xbmc/peripherals/test             test/peripherals
 xbmc/playlists/test               test/playlists
 xbmc/pvr/channels/test            test/pvrchannels
 xbmc/pvr/epg/test                 test/pvrepg
+xbmc/pvr/guilib/guiinfo/test       test/pvrguiinfo
 xbmc/rendering/capture/test       test/rendering_capture
 xbmc/settings/test                test/settings
 xbmc/settings/lib/test            test/lib/settings
