@@ -65,3 +65,24 @@ TEST(TestVideoBufferSysMem, PlacesThePlanesOfEachLayoutOneAfterAnother)
     buffer->Release();
   }
 }
+
+TEST(TestVideoBufferSysMem, KeepsTheHalfRowOfAnOddHeight)
+{
+  // 15 rows of 4:2:0 hold 8 rows of chroma
+  constexpr int ODD_HEIGHT = 15;
+  const int strides[YuvImage::MAX_PLANES] = {32, 16, 16};
+
+  CVideoBufferManager manager;
+  CVideoBuffer* buffer = manager.Get(AV_PIX_FMT_YUV420P, 3 * 64 * HEIGHT, nullptr);
+  ASSERT_NE(buffer, nullptr);
+
+  buffer->SetDimensions(WIDTH, ODD_HEIGHT, strides);
+
+  uint8_t* planes[YuvImage::MAX_PLANES];
+  buffer->GetPlanes(planes);
+
+  EXPECT_EQ(planes[1] - planes[0], 32 * ODD_HEIGHT);
+  EXPECT_EQ(planes[2] - planes[1], 16 * 8);
+
+  buffer->Release();
+}

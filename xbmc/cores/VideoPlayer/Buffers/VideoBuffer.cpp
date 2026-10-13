@@ -16,6 +16,7 @@
 
 extern "C"
 {
+#include <libavutil/common.h>
 #include <libavutil/pixdesc.h>
 }
 
@@ -239,7 +240,8 @@ void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&stride
 
   for (int i = 0; i < YuvImage::MAX_PLANES; ++i)
   {
-    const int rows = i ? m_image.height >> m_image.cshift_y : m_image.height;
+    // an odd height keeps its half row of chroma, as FFmpeg lays a picture out
+    const int rows = i ? AV_CEIL_RSHIFT(m_image.height, m_image.cshift_y) : m_image.height;
     m_image.planesize[i] = i < planes ? m_image.stride[i] * rows : 0;
   }
 
