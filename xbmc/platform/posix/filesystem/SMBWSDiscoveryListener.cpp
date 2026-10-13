@@ -274,7 +274,9 @@ void CWSDiscoveryListenerUDP::Process()
       bufferoutput = "";
       char msgbuf[UDPBUFFSIZE];
       socklen_t addrlen = sizeof(addr);
-      int nbytes = recvfrom(fd, msgbuf, UDPBUFFSIZE, 0, (struct sockaddr*)&addr, &addrlen);
+      int nbytes = recvfrom(fd, msgbuf, UDPBUFFSIZE - 1, 0, (struct sockaddr*)&addr, &addrlen);
+      if (nbytes <= 0)
+        continue;
       msgbuf[nbytes] = '\0';
       // turn msgbuf into std::string
       bufferoutput.append(msgbuf, nbytes);
