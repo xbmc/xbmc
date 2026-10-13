@@ -78,7 +78,6 @@ private:
   CCriticalSection m_queueSection;
   bool m_canQueueNext{false};
   std::string m_trackUri;
-  std::string m_queuedUri;
   std::unique_ptr<CFileItem> m_queued;
   bool m_nextRequested{false};
 

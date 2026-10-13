@@ -289,7 +289,6 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   {
     std::unique_lock lock(m_queueSection);
     m_trackUri.clear();
-    m_queuedUri.clear();
     m_queued.reset();
     m_nextRequested = false;
   }
@@ -365,13 +364,11 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
 
   // Not waited on: this runs on the application thread, and a refusal only means the next file is
   // opened the ordinary way once this one ends.
-  m_delegate->m_nextRefused = false;
   NPT_CHECK_LABEL_WARNING(
       m_delegate->SendSetNextAVTransportURI(action, uri.c_str(), metadata.c_str()), failed);
   m_delegate->EndAction(*action);
   {
     std::unique_lock lock(m_queueSection);
-    m_queuedUri = uri;
     m_queued = std::make_unique<CFileItem>(file);
   }
   return true;
@@ -474,15 +471,12 @@ void CUPnPPlayer::FollowQueue()
 
   {
     std::unique_lock lock(m_queueSection);
-    if (m_queued && m_delegate->m_nextRefused)
-    {
-      m_logger->warn("renderer refused {}; it opens when this file ends", m_queued->GetPath());
-      m_queued.reset();
-    }
-    else if (m_queued && reported == m_queuedUri)
+    // A file is only queued behind one the renderer reports by the URI it was given, so any
+    // other URI it then reports is the queued file, however the renderer spells it.
+    if (m_queued && !reported.empty() && reported != m_trackUri)
     {
       started = std::move(m_queued);
-      m_trackUri = m_queuedUri;
+      m_trackUri = reported;
       m_nextRequested = false;
     }
     // The renderer echoing the URI it was given is what lets the move to the next one be seen.
