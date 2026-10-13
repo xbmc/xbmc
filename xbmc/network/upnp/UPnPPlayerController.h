@@ -173,7 +173,6 @@ public:
                                        PLT_DeviceDataReference& device,
                                        void* userdata) override
     {
-      m_owner.m_nextRefused = NPT_FAILED(res);
       Complete(res, "OnSetNextAVTransportURIResult");
     }
 
@@ -323,8 +322,6 @@ public:
   NPT_UInt32 m_instance = 0;
 
   PLT_PositionInfo m_posinfo;
-
-  std::atomic<bool> m_nextRefused{false};
 
 private:
   void Release(CAction& action)
