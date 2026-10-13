@@ -31,6 +31,10 @@ TEST(TestIso639, ResolvesTheLanguagesWhoseBibliographicCodeWasWithdrawn)
   // and the codes that replaced them are what the language is named by now
   EXPECT_EQ(CIso639::Alpha2ToAlpha3B("hr"), "hrv");
   EXPECT_EQ(CIso639::Alpha2ToAlpha3B("sr"), "srp");
+
+  // Media tagged with a withdrawn code is still read as the language the code named
+  EXPECT_EQ(CIso639::Alpha3ToAlpha2("scr"), "hr");
+  EXPECT_EQ(CIso639::Alpha3ToAlpha2("scc"), "sr");
 }
 
 TEST(TestIso639, NamesTheAlpha3CodeOfAWithdrawnAlpha2One)
