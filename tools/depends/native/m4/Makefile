@@ -6,6 +6,11 @@ DEPS = ../../Makefile.include M4-VERSION Makefile ../../download-files.include
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
+ifeq ($(NATIVE_OS), osx)
+  # Use gnulib's pipe2 fallback for macOS versions before 27.
+  CONFIGURE+= ac_cv_func_pipe2=no
+endif
+
 LIBDYLIB=$(PLATFORM)/src/$(LIBNAME)
 
 all: .installed-$(PLATFORM)
