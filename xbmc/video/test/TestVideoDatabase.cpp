@@ -2078,3 +2078,22 @@ TEST_F(TestVideoDatabase, ARefreshAddsTheExtrasOfAnUnchangedFolder)
   XFILE::CDirectory::RemoveRecursive(root);
   XFILE::CDirectory::RemoveRecursive(elsewhere);
 }
+
+// The search's path for an extra ends in its file id, so the extra is played from its file
+TEST_F(TestVideoDatabase, AnExtraFoundBySearchPlaysItsFile)
+{
+  const std::string disc{"/movies/Movie (2000)/BDMV/index.bdmv"};
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 800))};
+  ASSERT_GT(idMovie, 0);
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(disc, 802)};
+  CFileItem extra{playlist, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(
+      VideoDbContentType::MOVIES, idMovie,
+      m_db.AddVideoVersionType("Gag Reel", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA),
+      VideoAssetType::EXTRA, extra));
+
+  CFileItemList items;
+  m_db.GetMovieExtrasByName("Gag", items);
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(items[0]->GetDynPath(), playlist);
+}
