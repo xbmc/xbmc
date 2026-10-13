@@ -11,6 +11,7 @@
 #include "../RenderFactory.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
+#include "rendering/capture/CaptureTypes.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/tvos/WinSystemTVOS.h"
@@ -23,8 +24,11 @@
 #include <cstring>
 #include <iterator>
 #include <limits>
+#include <memory>
+#include <new>
 #include <type_traits>
 
+#include <CoreImage/CoreImage.h>
 #include <CoreMedia/CMSampleBuffer.h>
 #include <CoreVideo/CVImageBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
@@ -206,6 +210,7 @@ void CRendererVTBDisplayLayer::AddVideoPicture(const VideoPicture& picture, int 
   SetColorAttachments(vtb->GetPB(), picture);
   m_buffers[index] = picture.videoBuffer;
   m_buffers[index]->Acquire();
+  m_capturePictures[index].SetParams(picture);
 }
 
 void CRendererVTBDisplayLayer::ReleaseBuffer(int index)
@@ -215,6 +220,7 @@ void CRendererVTBDisplayLayer::ReleaseBuffer(int index)
     m_buffers[index]->Release();
     m_buffers[index] = nullptr;
   }
+  m_capturePictures[index].Reset();
 }
 
 void CRendererVTBDisplayLayer::UnInit()
@@ -311,6 +317,94 @@ void CRendererVTBDisplayLayer::RenderUpdate(
   [g_xbmcController enqueueVideoSampleBuffer:sample];
   CFRelease(sample);
   m_lastIndex = index;
+}
+
+bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
+                                                 KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+  using namespace KODI::RENDERING::CAPTURE;
+
+  if (!m_configured || m_lastIndex < 0)
+    return false;
+  auto* vtb = GetVTBBuffer(m_buffers[m_lastIndex]);
+  if (!vtb)
+    return false;
+
+  const auto& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  CRect visible = m_destRect;
+  visible.Intersect(CRect(0, 0, gfx.GetWidth(), gfx.GetHeight()));
+  if (visible.IsEmpty())
+    return false;
+
+  const unsigned int width = spec.width ? spec.width : static_cast<unsigned int>(visible.Width());
+  const unsigned int height =
+      spec.height ? spec.height : static_cast<unsigned int>(visible.Height());
+  const bool native = spec.format == CaptureFormat::NATIVE;
+  const unsigned int bytesPerPixel = native ? 8 : 4;
+  if (!width || !height || width > std::numeric_limits<int>::max() / bytesPerPixel ||
+      height > std::numeric_limits<int>::max())
+    return false;
+  const int stride = width * bytesPerPixel;
+  auto pixels =
+      std::unique_ptr<uint8_t[]>(new (std::nothrow) uint8_t[static_cast<size_t>(stride) * height]);
+  if (!pixels)
+    return false;
+
+  @autoreleasepool
+  {
+    // Keep output-coded PQ/HLG values; capture consumers perform SDR tonemapping.
+    static CIContext* context = [[CIContext alloc] initWithOptions:@{
+      kCIContextWorkingColorSpace : [NSNull null],
+      kCIContextOutputColorSpace : [NSNull null],
+      kCIContextCacheIntermediates : @NO
+    }];
+    CIImage* image = [CIImage imageWithCVPixelBuffer:vtb->GetPB()
+                                             options:@{kCIImageColorSpace : [NSNull null]}];
+    if (!context || !image)
+      return false;
+
+    const int orientation = m_renderOrientation == 90    ? 6
+                            : m_renderOrientation == 180 ? 3
+                            : m_renderOrientation == 270 ? 8
+                                                         : 1;
+    image = [image imageByApplyingOrientation:orientation];
+    const CGRect extent = image.extent;
+    const CGRect crop = CGRectMake(
+        extent.origin.x + static_cast<CGFloat>((visible.x1 - m_destRect.x1) / m_destRect.Width()) *
+                              extent.size.width,
+        extent.origin.y + static_cast<CGFloat>((m_destRect.y2 - visible.y2) / m_destRect.Height()) *
+                              extent.size.height,
+        static_cast<CGFloat>(visible.Width() / m_destRect.Width()) * extent.size.width,
+        static_cast<CGFloat>(visible.Height() / m_destRect.Height()) * extent.size.height);
+    image = [image imageByClampingToExtent];
+    image = [image
+        imageByApplyingTransform:CGAffineTransformMakeTranslation(-crop.origin.x, -crop.origin.y)];
+    image = [image imageByApplyingTransform:CGAffineTransformMakeScale(width / crop.size.width,
+                                                                       height / crop.size.height)];
+    [context render:image
+           toBitmap:pixels.get()
+           rowBytes:stride
+             bounds:CGRectMake(0, 0, width, height)
+             format:native ? kCIFormatRGBA16 : kCIFormatBGRA8
+         colorSpace:nullptr];
+  }
+
+  const auto& picture = m_capturePictures[m_lastIndex];
+  result.pixels = std::make_shared<CHeapCapturePixels>(std::move(pixels));
+  result.width = width;
+  result.height = height;
+  result.stride = stride;
+  result.format = native ? AV_PIX_FMT_RGBA64LE : AV_PIX_FMT_BGRA;
+  result.color.primaries = AVCOL_PRI_BT2020;
+  result.color.transfer =
+      picture.hdrType == StreamHdrType::HDR_TYPE_HLG ? AVCOL_TRC_ARIB_STD_B67 : AVCOL_TRC_SMPTE2084;
+  result.color.range = AVCOL_RANGE_JPEG;
+  result.content = CaptureContent::VIDEO;
+  result.hasDisplayMetadata = picture.hasDisplayMetadata;
+  result.displayMetadata = picture.displayMetadata;
+  result.hasLightMetadata = picture.hasLightMetadata;
+  result.lightMetadata = picture.lightMetadata;
+  return true;
 }
 
 CRenderInfo CRendererVTBDisplayLayer::GetRenderInfo()
