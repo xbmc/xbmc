@@ -426,9 +426,10 @@ void CStreamParser::ConvertBlurayPlaylistInformation(const BlurayPlaylistInforma
     if (streamDetails != StreamDetails::DEFER)
       LogDefaultStreams(b);
 
-    // The secondary video stream is not one Kodi plays, but it tells the playlist apart from one
-    // presenting the same content without it (see IsPictureInPicturePresentation)
+    // The secondary video stream is not one Kodi plays, but it marks the playlist as presenting the
+    // content picture-in-picture (see IsPictureInPicturePresentation)
     p.hasSecondaryVideo = !playItem->secondaryVideoStreams.empty();
+    p.hasDolbyVision = !playItem->dolbyVisionStreams.empty();
 
     for (const auto* streams :
          {&playItem->videoStreams, &playItem->audioStreams, &playItem->presentationGraphicStreams})
