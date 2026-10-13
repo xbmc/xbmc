@@ -78,6 +78,17 @@ TEST_F(TestScreenshotDeletion, ClearsEveryScreenshotAndSaysHowMany)
   EXPECT_FALSE(Exists("screenshot00001-video.png"));
 }
 
+TEST_F(TestScreenshotDeletion, ClearsAScreenshotTheFolderHides)
+{
+  Write(".hidden.png");
+
+  const CScreenShot::ScreenshotDeletion removed = CScreenShot::DeleteScreenshots();
+
+  EXPECT_EQ(Error::NONE, removed.error);
+  EXPECT_EQ(1u, removed.deleted);
+  EXPECT_FALSE(Exists(".hidden.png"));
+}
+
 TEST_F(TestScreenshotDeletion, LeavesWhatIsNotAScreenshotAlone)
 {
   Write("screenshot00000.png");
@@ -192,7 +203,10 @@ protected:
   }
 
   //! Draw one frame of the given content for the request on top, once there is one
-  bool Deliver(CaptureContent content)
+  bool Deliver(CaptureContent content) { return Deliver(content, true); }
+
+  //! \p readable false delivers a frame whose pixels cannot be locked, so nothing is written
+  bool Deliver(CaptureContent content, bool readable)
   {
     for (int attempt = 0; attempt < 400; ++attempt)
     {
@@ -206,7 +220,8 @@ protected:
         result.stride = 16;
         result.format = AV_PIX_FMT_BGRA;
         result.content = content;
-        result.pixels = std::make_shared<CHeapCapturePixels>(std::make_unique<uint8_t[]>(32));
+        result.pixels = std::make_shared<CHeapCapturePixels>(
+            readable ? std::make_unique<uint8_t[]>(32) : nullptr);
         m_service->Complete(active[0], result);
         return true;
       }
@@ -239,6 +254,31 @@ TEST_F(TestScreenshotTaking, BothWithNoVideoFrameFailsAtOnceAndLeavesNoFile)
   ASSERT_EQ(std::future_status::ready, taken.wait_for(2s));
   EXPECT_EQ(Error::FAILED, taken.get().error);
   EXPECT_FALSE(Exists("screenshot00000.png"));
+}
+
+TEST_F(TestScreenshotTaking, AFailedScreenshotLeavesTheOneItsNameAlreadyHeld)
+{
+  Write("named.png");
+
+  auto taken = std::async(std::launch::async, []
+                          { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE,
+                                                                   "named.png"); });
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE, false));
+
+  EXPECT_EQ(Error::FAILED, taken.get().error);
+  EXPECT_TRUE(Exists("named.png"));
+}
+
+TEST_F(TestScreenshotTaking, ANumberItsVideoFrameStillHoldsIsNotTakenAgain)
+{
+  Write("screenshot00000-video.png");
+
+  auto taken = std::async(std::launch::async, []
+                          { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE); });
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+
+  EXPECT_EQ("special://screenshots/screenshot00001.png", taken.get().composite);
+  EXPECT_TRUE(Exists("screenshot00000-video.png"));
 }
 
 TEST_F(TestScreenshotTaking, TwoRequestsWaitingTogetherTakeDifferentNames)
