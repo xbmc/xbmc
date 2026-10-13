@@ -8,6 +8,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "PlayListPlayer.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -97,6 +98,35 @@ TEST_F(TestPlayerOpenDirectory, OnePictureMakesItASlideshowSource)
 
   EXPECT_EQ((std::vector<std::string>{"x.jpg"}), Names(pictures));
   EXPECT_EQ((std::vector<std::string>{"a.mp4"}), Names(media));
+}
+
+TEST_F(TestPlayerOpenDirectory, AnArchiveIsNeitherAPictureNorMedia)
+{
+  Touch("movie.mkv");
+  Touch("backup.zip");
+  Touch("scans.rar");
+
+  CFileItemList pictures;
+  CFileItemList media;
+  ASSERT_TRUE(CTestPlayerOperations::List(m_root, true, pictures, media));
+
+  EXPECT_EQ(0, pictures.Size());
+  EXPECT_EQ((std::vector<std::string>{"movie.mkv"}), Names(media));
+}
+
+TEST_F(TestPlayerOpenDirectory, AFileThatCouldBeAudioOrVideoAsksForTheVideoPlayer)
+{
+  Touch("recording.wtv");
+  Touch("film.mkv");
+
+  CFileItemList pictures;
+  CFileItemList media;
+  ASSERT_TRUE(CTestPlayerOperations::List(m_root, true, pictures, media));
+
+  ASSERT_EQ((std::vector<std::string>{"film.mkv", "recording.wtv"}), Names(media));
+  EXPECT_FALSE(media[0]->HasProperty("playlist_type_hint"));
+  EXPECT_EQ(static_cast<int>(KODI::PLAYLIST::Id::TYPE_VIDEO),
+            media[1]->GetProperty("playlist_type_hint").asInteger32(-1));
 }
 
 TEST_F(TestPlayerOpenDirectory, SubdirectoriesAreOnlyFollowedWhenAsked)
