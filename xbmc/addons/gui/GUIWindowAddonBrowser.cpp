@@ -41,6 +41,7 @@
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -583,7 +584,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
     auto item{std::make_shared<CFileItem>("", false)};
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231));
     item->SetLabel2(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(24040));
-    item->SetArt(KODI::ART::TYPE::ICON, "DefaultAddonNone.png");
+    item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::ADDON_NONE);
     item->SetSpecialSort(SortSpecial::TOP);
     items.Add(std::move(item));
   }

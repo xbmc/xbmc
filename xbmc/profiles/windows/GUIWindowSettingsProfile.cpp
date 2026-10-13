@@ -27,6 +27,7 @@
 #include "resources/ResourcesComponent.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -268,7 +269,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   CFileItemPtr item(new CFileItem());
   item->SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(37014)); // Last used profile
-  item->SetArt(KODI::ART::TYPE::ICON, "DefaultUser.png");
+  item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::USER);
   items.Add(item);
 
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); i++)
@@ -280,7 +281,7 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
     item->SetLabel2(locked); // lock setting
     std::string thumb = profile->getThumb();
     if (thumb.empty())
-      thumb = "DefaultUser.png";
+      thumb = KODI::ART::DEFAULT::USER;
     item->SetArt(KODI::ART::TYPE::ICON, thumb);
     items.Add(item);
   }

@@ -61,6 +61,7 @@
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileUtils.h"
 #include "utils/ItemProperties.h"
 #include "utils/LegacyPathTranslation.h"
@@ -5750,7 +5751,7 @@ bool CMusicDatabase::GetArtistsByWhere(const std::string& strBaseDir,
         pItem->GetMusicInfoTag()->SetDatabaseId(artist.idArtist, MEDIA::TYPE::ARTIST);
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
         pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-        pItem->SetArt(ART::TYPE::ICON, "DefaultArtist.png");
+        pItem->SetArt(ART::TYPE::ICON, ART::DEFAULT::ARTIST);
 
         SetPropertiesFromArtist(*pItem, artist);
         items.Add(std::move(pItem));
@@ -5979,7 +5980,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const std::string& baseDir,
         auto pItem{std::make_shared<CFileItem>(itemUrl.ToString(), GetAlbumFromDataset(record))};
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
         pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-        pItem->SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
+        pItem->SetArt(ART::TYPE::ICON, ART::DEFAULT::ALBUM_COVER);
         items.Add(std::move(pItem));
       }
       catch (...)
@@ -6191,7 +6192,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
         pItem->SetLabel(strDiscSubtitle);
         // Set icon now to avoid slow per item processing in FillInDefaultIcon later
         pItem->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-        pItem->SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
+        pItem->SetArt(ART::TYPE::ICON, ART::DEFAULT::ALBUM_COVER);
         items.Add(std::move(pItem));
       }
       catch (...)
@@ -6425,7 +6426,7 @@ bool CMusicDatabase::GetSongsFullByWhere(const std::string& baseDir,
           item->SetProgramCount(count);
           // Set icon now to avoid slow per item processing in FillInDefaultIcon later
           item->SetProperty(ITEM::PROPERTY::ICON_NEVER_OVERLAY, true);
-          item->SetArt(ART::TYPE::ICON, "DefaultAudio.png");
+          item->SetArt(ART::TYPE::ICON, ART::DEFAULT::AUDIO);
           items.Add(std::move(item));
         }
         // Get song artist credits and contributors

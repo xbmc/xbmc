@@ -35,6 +35,7 @@
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
 #include "utils/Artwork.h"
+#include "utils/DefaultArt.h"
 #include "utils/FileUtils.h"
 
 using namespace KODI;
@@ -361,7 +362,7 @@ void CGUIDialogSongInfo::OnGetArt()
     // Add item for current artwork, could a fallback from album/artist
     CFileItemPtr item(new CFileItem(IMAGE_CHOICE::CURRENT, false));
     item->SetArt(ART::TYPE::THUMB, m_song->GetArt(type));
-    item->SetArt(ART::TYPE::ICON, "DefaultPicture.png");
+    item->SetArt(ART::TYPE::ICON, ART::DEFAULT::PICTURE);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
         13512)); //! @todo: label fallback art so user knows?
     items.Add(item);
@@ -373,7 +374,7 @@ void CGUIDialogSongInfo::OnGetArt()
     {
       CFileItemPtr item(new CFileItem(IMAGE_CHOICE::THUMB, false));
       item->SetArt(ART::TYPE::THUMB, m_song->GetArt(ART::TYPE::THUMB));
-      item->SetArt(ART::TYPE::ICON, "DefaultAlbumCover.png");
+      item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ALBUM_COVER);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21371));
       items.Add(item);
     }
@@ -411,7 +412,7 @@ void CGUIDialogSongInfo::OnGetArt()
   { // Actually has this type of art (not a fallback) so
     // allow the user to delete it by selecting "no art".
     CFileItemPtr item(new CFileItem(IMAGE_CHOICE::NONE, false));
-    item->SetArt(ART::TYPE::THUMB, "DefaultAlbumCover.png");
+    item->SetArt(ART::TYPE::THUMB, ART::DEFAULT::ALBUM_COVER);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
     items.Add(item);
   }

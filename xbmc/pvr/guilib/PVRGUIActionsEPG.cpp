@@ -32,6 +32,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/ArtTypes.h"
+#include "utils/DefaultArt.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -224,14 +225,15 @@ bool CPVRGUIActionsEPG::ChooseIconForSavedSearch(const CFileItem& item) const
   // Add the current icon, if available.
   const std::string iconPath{searchFilter->GetIconPath()};
   auto current{std::make_shared<CFileItem>("icon://Current", false)};
-  current->SetArt(KODI::ART::TYPE::ICON, iconPath.empty() ? "DefaultPVRSearch.png" : iconPath);
+  current->SetArt(KODI::ART::TYPE::ICON,
+                  iconPath.empty() ? KODI::ART::DEFAULT::PVR_SEARCH : iconPath);
   current->SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282)); // Current icon
   items.Add(std::move(current));
 
   // And add a "No icon" entry as well.
   auto nothumb{std::make_shared<CFileItem>("icon://None", false)};
-  nothumb->SetArt(KODI::ART::TYPE::ICON, "DefaultPVRSearch.png");
+  nothumb->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::PVR_SEARCH);
   nothumb->SetLabel(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19283)); // No icon
   items.Add(std::move(nothumb));
