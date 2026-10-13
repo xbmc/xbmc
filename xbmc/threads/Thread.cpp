@@ -260,8 +260,10 @@ bool CThread::Join(std::chrono::milliseconds duration)
 
     {
       CSingleExit exit(m_CriticalSection); // don't hold the thread lock while we're waiting
-      std::future_status stat = m_future.wait_for(duration);
-      if (stat != std::future_status::ready)
+      // wait_for() overflows on a max() timeout and returns immediately
+      if (duration == std::chrono::milliseconds::max())
+        m_future.wait();
+      else if (m_future.wait_for(duration) != std::future_status::ready)
         return false;
     }
 
