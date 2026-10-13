@@ -20019,7 +20019,47 @@ msgctxt "#35703"
 msgid "Hardcore mode: {0:d} of {1:d} achievements unlocked"
 msgstr ""
 
-#empty strings from id 35704 to 35999
+#empty strings from id 35704 to 35709
+
+#. Marks a locked achievement that can be missed for good
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35710"
+msgid "Missable"
+msgstr ""
+
+#. Button that picks which of a game's achievement sets is shown
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35711"
+msgid "Achievement set"
+msgstr ""
+
+#. An achievement set whose progression and win achievements are all earned
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35712"
+msgid "Beaten"
+msgstr ""
+
+#. How close an achievement set is to being beaten, {0:d} earned of {1:d} needed
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+#, c++-format
+msgctxt "#35713"
+msgid "{0:d} of {1:d} to beat"
+msgstr ""
+
+#. An achievement set the player turned off
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35714"
+msgid "Turned off"
+msgstr ""
+
+#. The game's own achievement set, as opposed to its subsets
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35715"
+msgid "Main Set"
+msgstr ""
+
+#empty strings from id 35716 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
