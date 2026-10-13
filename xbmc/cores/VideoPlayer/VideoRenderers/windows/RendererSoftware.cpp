@@ -133,10 +133,16 @@ bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsign
   {
     DXGI_FORMAT targetFormat = DXGI_FORMAT_UNKNOWN;
     const DirectFormat* direct = FindDirectFormat(picture.videoBuffer->GetFormat());
-    if (direct && DX::Windowing()->IsFormatSupport(direct->texture, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+    // The output shader samples the texture the picture is written to
+    if (direct &&
+        DX::Windowing()->IsFormatSupport(direct->texture, D3D11_FORMAT_SUPPORT_TEXTURE2D) &&
+        DX::Windowing()->IsFormatSupport(direct->texture, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
       targetFormat = direct->texture;
 
-    if (!CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, true, targetFormat))
+    // Without its own texture the picture goes through the scaler to the back buffer's format
+    if (!CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, true, targetFormat) &&
+        (targetFormat == DXGI_FORMAT_UNKNOWN ||
+         !CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, true)))
       return false;
 
     m_format = picture.videoBuffer->GetFormat();
