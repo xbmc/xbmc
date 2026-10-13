@@ -48,7 +48,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DEXIV2_BUILD_EXIV2_COMMAND=OFF
                    ${EXTRA_ARGS})
 
-    if(NOT CMAKE_CXX_COMPILER_LAUNCHER STREQUAL "")
+    if(XCODE)
+      # Exiv2's ccache wrapper relies on PATH; use the toolchain's absolute launcher.
+      list(APPEND CMAKE_ARGS -DBUILD_WITH_CCACHE=OFF)
+    elseif(NOT CMAKE_CXX_COMPILER_LAUNCHER STREQUAL "")
       list(APPEND CMAKE_ARGS -DBUILD_WITH_CCACHE=ON)
     endif()
 
