@@ -20,6 +20,7 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
+#include <algorithm>
 #include <numeric>
 
 #include <androidjni/AudioFormat.h>
@@ -770,6 +771,24 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       else
         m_hw_delay -= delay; // part that delay would not have
     }
+    else if (m_timestampPos == 0 && latency != -1)
+    {
+      // No timestamp yet after init/flush/drain, so the part of the delay below
+      // the AudioTrack is unknown and would count as 0 while ActiveAE aligns
+      // the new stream. Estimate it from getLatency() like the PCM path does
+      // until the first valid timestamp takes over.
+      const int atbuffer = m_at_jni->getBufferSizeInFrames();
+      const double buffertime = static_cast<double>(atbuffer) / m_sink_sampleRate;
+      const double estimate = latency / 1000.0 - buffertime;
+      m_hw_delay = (estimate > 0.0 && estimate < 1.0) ? estimate : 0.0;
+      CLog::Log(LOGDEBUG,
+                "CAESinkAUDIOTRACK::GetDelay: RAW start estimate latency={} ms "
+                "bufferframes={} "
+                "buffertime={:.1f} ms estimate={:.1f} ms used={:.1f} ms "
+                "written={:.1f} ms",
+                latency, atbuffer, buffertime * 1000, estimate * 1000, m_hw_delay * 1000,
+                m_duration_written * 1000);
+    }
   }
 
   if (usesAdvancedLogging)
@@ -793,7 +812,42 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   // track delay in local member
   m_delay = d;
-  status.SetDelay(d);
+  // Together with the getLatency() start estimate the start-up lag is counted
+  // twice, so it is only the fallback where getLatency() is unavailable.
+  double startup_raw_delay = 0.0;
+  if (isRawPt && latency == -1)
+    startup_raw_delay = GetRawStartupDelay();
+
+  status.SetDelay(d + startup_raw_delay);
+}
+
+// RAW passthrough: after a flush the output starts ~100 ms after the first write, with the
+// playback head at 0 until then. Report the remaining start-up time as extra delay, so A/V sync
+// corrects it while nothing is audible yet instead of later by dropping frames during speech.
+// The lag is measured at every start (no per-device constant) and kept across flushes.
+double CAESinkAUDIOTRACK::GetRawStartupDelay()
+{
+  if (!m_startPending || !m_passthrough || m_info.m_wantsIECPassthrough)
+    return 0.0;
+
+  const double elapsed =
+      m_startWriteCounter != 0
+          ? static_cast<double>(CurrentHostCounter() - m_startWriteCounter) / CurrentHostFrequency()
+          : 0.0;
+
+  if (m_startWriteCounter != 0 && m_headPos > 0) // output started
+  {
+    const double lag =
+        std::clamp(elapsed - static_cast<double>(m_headPos) / m_sink_sampleRate, 0.0, 0.5);
+    // ignore outliers (e.g. data arriving late), average the rest
+    if (m_startLag <= 0.0)
+      m_startLag = lag;
+    else if (lag < 2 * m_startLag + 0.05)
+      m_startLag = (m_startLag + lag) / 2;
+    m_startPending = false;
+    return 0.0;
+  }
+  return std::max(m_startLag - elapsed, 0.0);
 }
 
 double CAESinkAUDIOTRACK::GetLatency()
@@ -857,6 +911,9 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   int loop_written = 0;
   if (frames)
   {
+    if (m_startPending && m_startWriteCounter == 0)
+      m_startWriteCounter = CurrentHostCounter();
+
     if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
       m_at_jni->play();
 
@@ -992,7 +1049,8 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
 
   // RAW has no actual pause packet to write. On an empty track, booking a
   // pause as queued audio would report delay for audio which does not exist.
-  if (!m_rawNeedsFlush)
+  const double queued = m_duration_written - static_cast<double>(m_headPos) / m_sink_sampleRate;
+  if (queued <= 0.0)
   {
     usleep(millis * 1000);
     return;
@@ -1055,6 +1113,8 @@ void CAESinkAUDIOTRACK::Flush()
   m_audiotrackbuffer_sec = m_audiotrackbuffer_sec_orig;
   m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
+  m_startPending = true;
+  m_startWriteCounter = 0;
 }
 
 void CAESinkAUDIOTRACK::Drain()
@@ -1077,6 +1137,10 @@ void CAESinkAUDIOTRACK::Drain()
   m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
   m_pause_ms = 0.0;
+  if (m_passthrough && !m_info.m_wantsIECPassthrough)
+    m_hw_delay = 0.0;
+  m_startPending = true;
+  m_startWriteCounter = 0;
 }
 
 void CAESinkAUDIOTRACK::Register()
