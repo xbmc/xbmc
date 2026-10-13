@@ -6,9 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "filesystem/File.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #include "video/test/VideoDatabaseTestBase.h"
+
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -19,6 +22,13 @@ using GetResult = CDatabase::GetResult;
 
 // An id that no test ever inserts, so every lookup of it misses.
 constexpr int MISSING_ID = 4242;
+
+// A test that adds rows or damages the schema removes its database, so that it can run again in
+// the same process.
+void DeleteTestDatabase(const std::string& name)
+{
+  XFILE::CFile::Delete(TestDatabaseSettings().host + name + ".db");
+}
 
 } // namespace
 
@@ -126,4 +136,5 @@ TEST(VideoDatabaseGetResultQueryFailureTest, FailedQueryReportsError)
   EXPECT_FALSE(db.GetFileInfo("", details, MISSING_ID));
 
   db.Close();
+  DeleteTestDatabase("TestVideoDatabaseGetResultQueryFailure");
 }
