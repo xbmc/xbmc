@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 typedef int DisplayMode;
 #define DM_WINDOWED     -1
@@ -115,6 +116,22 @@ public:
   float DisplayRatio() const;
 };
 
+//! A display mode that may be chosen for video playback
+struct ResolutionCandidate
+{
+  RESOLUTION resolution;
+  RESOLUTION_INFO info;
+};
+
+//! The whitelist settings used to choose a display mode for video playback
+struct WhitelistOptions
+{
+  bool allowDoubleRefreshRate{false}; //!< videoscreen.whitelistdoublerefreshrate
+  bool allowPulldown{false}; //!< videoscreen.whitelistpulldown
+  bool useMultipleRefreshRates{false}; //!< videoscreen.whitelistmultiplerefreshrate
+  bool matchResolution{false}; //!< videoscreen.matchvideoresolution
+};
+
 class CResolutionUtils
 {
 public:
@@ -128,6 +145,27 @@ public:
    * \param height [OUT] Max height resolution
    */
   static void GetMaxAllowedScreenResolution(unsigned int& width, unsigned int& height);
+
+  /*!
+   * \brief Choose the display mode for a video from the whitelist
+   * \param fps Video frame rate
+   * \param width Video width, which may include decoder padding or cropping
+   * \param height Video height, which may include decoder padding or cropping
+   * \param current The display mode currently chosen for the video
+   * \param desktop The desktop display mode
+   * \param whitelist The user whitelist, if empty a default whitelist is built from allowed
+   * \param allowed The display modes allowed by the display
+   * \param options The whitelist settings
+   * \return The chosen display mode, or RES_INVALID if none matched
+   */
+  static RESOLUTION SelectFromWhitelist(float fps,
+                                        int width,
+                                        int height,
+                                        const RESOLUTION_INFO& current,
+                                        const RESOLUTION_INFO& desktop,
+                                        const std::vector<ResolutionCandidate>& whitelist,
+                                        const std::vector<ResolutionCandidate>& allowed,
+                                        const WhitelistOptions& options);
 
 protected:
   static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);

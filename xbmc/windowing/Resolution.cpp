@@ -19,6 +19,7 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <limits>
@@ -93,54 +94,85 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int heig
 void CResolutionUtils::FindResolutionFromWhitelist(
     float fps, int width, int height, bool is3D, RESOLUTION& resolution)
 {
-  RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
+  CGraphicContext& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
   CLog::LogF(LOGINFO, "Searching the whitelist for: width: {}, height: {}, fps: {:0.3f}, 3D: {}",
              width, height, fps, is3D ? "true" : "false");
 
-  std::vector<CVariant> indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
-      CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+  std::vector<ResolutionCandidate> whitelist;
+  for (const auto& mode : settings->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST))
+  {
+    const RESOLUTION res = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+    whitelist.push_back({res, gfxContext.GetResInfo(res)});
+  }
 
-  bool noWhiteList = indexList.empty();
-  const bool matchResolution = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-      SETTING_VIDEOSCREEN_MATCH_VIDEO_RESOLUTION);
+  std::vector<ResolutionCandidate> allowed;
+  if (whitelist.empty())
+  {
+    std::vector<RESOLUTION> resolutions;
+    gfxContext.GetAllowedResolutions(resolutions);
+    for (const auto res : resolutions)
+      allowed.push_back({res, gfxContext.GetResInfo(res)});
+  }
 
+  WhitelistOptions options;
+  options.allowDoubleRefreshRate =
+      settings->GetBool(SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE);
+  options.allowPulldown = settings->GetBool(SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN);
+  options.useMultipleRefreshRates =
+      settings->GetBool(SETTING_VIDEOSCREEN_WHITELIST_MULTIPLEREFRESHRATE);
+  options.matchResolution = settings->GetBool(SETTING_VIDEOSCREEN_MATCH_VIDEO_RESOLUTION);
+
+  const RESOLUTION chosen = SelectFromWhitelist(
+      fps, width, height, gfxContext.GetResInfo(resolution),
+      gfxContext.GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution()), whitelist,
+      allowed, options);
+  if (chosen != RES_INVALID)
+    resolution = chosen;
+}
+
+RESOLUTION CResolutionUtils::SelectFromWhitelist(float fps,
+                                                 int width,
+                                                 int height,
+                                                 const RESOLUTION_INFO& current,
+                                                 const RESOLUTION_INFO& desktop,
+                                                 const std::vector<ResolutionCandidate>& whitelist,
+                                                 const std::vector<ResolutionCandidate>& allowed,
+                                                 const WhitelistOptions& options)
+{
+  const bool noWhiteList = whitelist.empty();
+  const bool matchResolution = options.matchResolution;
+
+  std::vector<ResolutionCandidate> defaultWhitelist;
   if (noWhiteList)
   {
     CLog::LogF(LOGDEBUG, "Using the default whitelist because the user whitelist is empty");
 
-    std::vector<RESOLUTION> candidates;
-    RESOLUTION_INFO info;
-    CServiceBroker::GetWinSystem()->GetGfxContext().GetAllowedResolutions(candidates);
-
-    for (const auto& c : candidates)
+    for (const auto& c : allowed)
     {
-      info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(c);
+      const RESOLUTION_INFO& info = c.info;
       const bool largeEnough{info.iScreenHeight >=
-                                 (matchResolution ? height : curr.iScreenHeight) &&
-                             info.iScreenWidth >= (matchResolution ? width : curr.iScreenWidth)};
+                                 (matchResolution ? height : current.iScreenHeight) &&
+                             info.iScreenWidth >= (matchResolution ? width : current.iScreenWidth)};
       if ((largeEnough || (matchResolution && MatchesMode(width, height, info))) &&
-          (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK))
+          (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (current.dwFlags & D3DPRESENTFLAG_MODEMASK))
       {
         // do not add half refreshrates (25, 29.97 by default) as kodi cannot cope with
         // them on playback start. Especially interlaced content is not properly detected
         // and this causes ugly double switching.
         // This won't allow 25p / 30p playback on native refreshrate by default
         if ((info.fRefreshRate > 30) || (MathUtils::FloatEquals(info.fRefreshRate, 24.0f, 0.1f)))
-          indexList.push_back(CDisplaySettings::GetInstance().GetStringFromRes(c));
+          defaultWhitelist.push_back(c);
       }
     }
   }
+  const std::vector<ResolutionCandidate>& modes = noWhiteList ? defaultWhitelist : whitelist;
 
   // Get additional parameters
-  const bool allowDouble =
-      noWhiteList || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                         SETTING_VIDEOSCREEN_WHITELIST_DOUBLEREFRESHRATE);
-  const bool allowPulldown =
-      noWhiteList || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                         SETTING_VIDEOSCREEN_WHITELIST_PULLDOWN);
-  const bool useMultiple =
-      allowDouble && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                         SETTING_VIDEOSCREEN_WHITELIST_MULTIPLEREFRESHRATE);
+  const bool allowDouble = noWhiteList || options.allowDoubleRefreshRate;
+  const bool allowPulldown = noWhiteList || options.allowPulldown;
+  const bool useMultiple = allowDouble && options.useMultipleRefreshRates;
 
   if (noWhiteList)
     CLog::LogF(LOGDEBUG, "No whitelist - forces allow double refresh rates and pulldown rates ON");
@@ -166,21 +198,15 @@ void CResolutionUtils::FindResolutionFromWhitelist(
   if (!useMultiple)
     MATCH_REFRESH_RATE = 32;
 
-  const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(
-      CDisplaySettings::GetInstance().GetCurrentResolution());
-
   std::vector<std::tuple<RESOLUTION, int, float, int>>
       resolutions; // index, resolution dfference, frequency, weighting
 
   CLog::LogF(LOGDEBUG, "Scanning available resolutions");
-  for (const auto& mode : indexList)
+  for (const auto& [i, info] : modes)
   {
-    const RESOLUTION i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
-    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
-
     CLog::LogF(LOGDEBUG, "Considering resolution {}", info.strMode);
 
-    if ((info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK))
+    if ((info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (current.dwFlags & D3DPRESENTFLAG_MODEMASK))
     {
       float m{};
       const float f{std::modf(info.fRefreshRate / fps, &m)};
@@ -204,8 +230,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(
 
       if (MatchesMode(width, height, info))
         w |= MATCH_RESOLUTION;
-      else if (info.iScreenWidth == desktop_info.iScreenWidth &&
-               info.iScreenHeight == desktop_info.iScreenHeight)
+      else if (info.iScreenWidth == desktop.iScreenWidth &&
+               info.iScreenHeight == desktop.iScreenHeight)
         w |= MATCH_DESKTOP_RESOLUTION;
 
       // Found resolution for consideration
@@ -216,43 +242,43 @@ void CResolutionUtils::FindResolutionFromWhitelist(
     }
   }
 
-  if (!resolutions.empty())
+  if (resolutions.empty())
   {
-    // Sort list based on weighting (then proximity of resolution, then frequency)
-    std::sort(resolutions.begin(), resolutions.end(),
-              [&](const std::tuple<RESOLUTION, int, float, int>& i,
-                  const std::tuple<RESOLUTION, int, float, int>& j)
-              {
-                if (std::get<3>(i) == std::get<3>(j)) // weighting
-                  if (std::get<1>(i) == std::get<1>(j)) // resolution proximity
-                    return std::get<2>(i) > std::get<2>(j); // frequency
-                  else
-                    return std::get<1>(i) < std::get<1>(j);
-                else
-                  return std::get<3>(i) > std::get<3>(j);
-              });
-
-    // Log sorted list
-    CLog::LogF(LOGDEBUG, "Sorted weighted resolution list");
-    for (const auto& r : resolutions)
-    {
-      const auto info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(std::get<0>(r));
-      CLog::LogF(LOGDEBUG, "Resolution {} Weighting {} ({})", info.strMode, std::get<3>(r),
-                 std::get<0>(r));
-    }
-
-    // Choose resolution
-    CLog::LogF(LOGINFO, "Chosen resolution {}",
-               CServiceBroker::GetWinSystem()
-                   ->GetGfxContext()
-                   .GetResInfo(std::get<0>(resolutions[0]))
-                   .strMode);
-    resolution = std::get<0>(resolutions[0]);
-  }
-  else
     CLog::LogF(LOGINFO, "No resolution matched");
+    return RES_INVALID;
+  }
 
-  return;
+  // Sort list based on weighting (then proximity of resolution, then frequency)
+  std::sort(resolutions.begin(), resolutions.end(),
+            [&](const std::tuple<RESOLUTION, int, float, int>& i,
+                const std::tuple<RESOLUTION, int, float, int>& j)
+            {
+              if (std::get<3>(i) == std::get<3>(j)) // weighting
+                if (std::get<1>(i) == std::get<1>(j)) // resolution proximity
+                  return std::get<2>(i) > std::get<2>(j); // frequency
+                else
+                  return std::get<1>(i) < std::get<1>(j);
+              else
+                return std::get<3>(i) > std::get<3>(j);
+            });
+
+  const auto modeName = [&modes](RESOLUTION res)
+  {
+    const auto it =
+        std::find_if(modes.begin(), modes.end(),
+                     [res](const ResolutionCandidate& c) { return c.resolution == res; });
+    return it != modes.end() ? it->info.strMode : std::string();
+  };
+
+  // Log sorted list
+  CLog::LogF(LOGDEBUG, "Sorted weighted resolution list");
+  for (const auto& r : resolutions)
+    CLog::LogF(LOGDEBUG, "Resolution {} Weighting {} ({})", modeName(std::get<0>(r)),
+               std::get<3>(r), std::get<0>(r));
+
+  // Choose resolution
+  CLog::LogF(LOGINFO, "Chosen resolution {}", modeName(std::get<0>(resolutions[0])));
+  return std::get<0>(resolutions[0]);
 }
 
 bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback)
