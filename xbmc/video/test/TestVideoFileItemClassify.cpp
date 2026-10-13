@@ -114,7 +114,7 @@ TEST_P(VideoTest, IsVideo)
       item.GetMusicInfoTag()->SetPlayCount(1);
       break;
     case 4:
-      item.GetPictureInfoTag()->SetInfo("foo", "bar");
+      item.GetPictureInfoTag()->SetResolution(1, 1);
       break;
     default:
       break;

@@ -14,6 +14,10 @@
 #include "pictures/PictureInfoTag.h"
 #include "utils/StringUtils.h"
 
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 using namespace XBMCAddonUtils;
 
 namespace XBMCAddon
@@ -66,7 +70,10 @@ void InfoTagPicture::setDateTimeTaken(const String& datetimetaken)
 
 void InfoTagPicture::setResolutionRaw(CPictureInfoTag* infoTag, const String& resolution)
 {
-  infoTag->SetInfo("resolution", resolution);
+  std::vector<std::string> dimension;
+  StringUtils::Tokenize(resolution, dimension, ",");
+  if (dimension.size() == 2)
+    infoTag->SetResolution(std::atoi(dimension[0].c_str()), std::atoi(dimension[1].c_str()));
 }
 
 void InfoTagPicture::setResolutionRaw(CPictureInfoTag* infoTag, int width, int height)
@@ -76,7 +83,7 @@ void InfoTagPicture::setResolutionRaw(CPictureInfoTag* infoTag, int width, int h
   if (height <= 0)
     throw WrongTypeException("InfoTagPicture.setResolution: height must be greater than zero (0)");
 
-  setResolutionRaw(infoTag, StringUtils::Format("{:d},{:d}", width, height));
+  infoTag->SetResolution(width, height);
 }
 
 void InfoTagPicture::setDateTimeTakenRaw(CPictureInfoTag* infoTag, String datetimetaken)
@@ -91,7 +98,7 @@ void InfoTagPicture::setDateTimeTakenRaw(CPictureInfoTag* infoTag, String dateti
                                         w3cDateTimeTaken.GetMinute(), w3cDateTimeTaken.GetSecond());
   }
 
-  infoTag->SetInfo("exiftime", datetimetaken);
+  infoTag->SetDateTimeTaken(datetimetaken);
 }
 
 } // namespace xbmc

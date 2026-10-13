@@ -43,7 +43,9 @@ public:
   bool Loaded() const { return m_isLoaded; }
   bool Load(const std::string &path);
 
-  void SetInfo(const std::string& key, const std::string& value);
+  void SetResolution(int width, int height);
+  //! \param exifDateTime the date and time in EXIF format, YYYY:MM:DD HH:MM:SS
+  void SetDateTimeTaken(const std::string& exifDateTime);
 
   /**
    * GetDateTimeTaken() -- Returns the EXIF DateTimeOriginal for current picture
@@ -53,11 +55,9 @@ public:
    */
   const CDateTime& GetDateTimeTaken() const;
 private:
-  static int TranslateString(const std::string &info);
-
   ImageMetadata m_imageMetadata;
   bool       m_isLoaded;             // Set to true if metadata has been loaded from the picture file successfully
-  bool       m_isInfoSetExternally;  // Set to true if metadata has been set by an external call to SetInfo
+  bool       m_isInfoSetExternally;  // Set to true if metadata has been set by SetResolution or SetDateTimeTaken
   CDateTime  m_dateTimeTaken;
   void ConvertDateTime();
 };

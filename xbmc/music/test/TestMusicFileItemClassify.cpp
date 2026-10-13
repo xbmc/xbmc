@@ -63,7 +63,7 @@ TEST_P(AudioTest, IsAudio)
       item.GetMusicInfoTag()->SetPlayCount(1);
       break;
     case 4:
-      item.GetPictureInfoTag()->SetInfo("foo", "bar");
+      item.GetPictureInfoTag()->SetResolution(1, 1);
       break;
     default:
       break;
@@ -149,7 +149,7 @@ TEST_P(AudioBookMkvTest, IsAudioBook)
       item.GetMusicInfoTag()->SetPlayCount(1);
       break;
     case 4:
-      item.GetPictureInfoTag()->SetInfo("foo", "bar");
+      item.GetPictureInfoTag()->SetResolution(1, 1);
       break;
     default:
       break;
