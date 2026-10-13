@@ -11099,6 +11099,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(MEDIA::TYPE mediaType,
         sourcePath = parentPath;
 
       int sourcePathID = GetPathId(sourcePath);
+      // A disc's playlists are never a folder that exists, so a loose one's is the disc's folder
+      if (looseAsset && URIUtils::IsBlurayPath(sourcePath))
+        sourcePath = URIUtils::GetDiscBasePath(sourcePath);
       auto sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
       // A loose asset's decision is its own, not one for a default version in the same folder
       if (looseAsset || sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
