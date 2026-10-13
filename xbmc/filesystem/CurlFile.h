@@ -65,8 +65,6 @@ namespace XFILE
       void Cancel();
       void Reset();
       void SetUserAgent(const std::string& sUserAgent) { m_userAgent = sUserAgent; }
-      void SetProxy(const std::string &type, const std::string &host, uint16_t port,
-                    const std::string &user, const std::string &password);
       void SetCustomRequest(const std::string &request) { m_customrequest = request; }
       void SetAcceptEncoding(const std::string& encoding) { m_acceptencoding = encoding; }
       void SetAcceptCharset(const std::string& charset) { m_acceptCharset = charset; }
