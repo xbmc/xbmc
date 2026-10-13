@@ -713,7 +713,10 @@ void CGUIWindowSlideShow::Render()
     return;
 
   CGraphicContext& gfxCtx = CServiceBroker::GetWinSystem()->GetGfxContext();
-  gfxCtx.Clear(0xff000000);
+  // HDR video is drawn underneath the GUI, by the window below the slideshow
+  const bool hdrVideo =
+      IsVideo(*m_slides.at(m_iCurrentSlide)) && CServiceBroker::GetWinSystem()->IsHdrComposite();
+  gfxCtx.Clear(hdrVideo ? 0 : 0xff000000);
 
   if (IsVideo(*m_slides.at(m_iCurrentSlide)))
   {
