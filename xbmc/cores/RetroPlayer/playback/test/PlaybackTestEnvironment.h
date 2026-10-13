@@ -19,7 +19,6 @@
 #include "games/controllers/ControllerManager.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
-#include "settings/SettingsComponent.h"
 #include "windowing/WinSystem.h"
 
 namespace KODI::RETRO
@@ -33,9 +32,8 @@ public:
       m_previousWinSystem(CServiceBroker::GetWinSystem())
   {
     auto services = std::make_unique<GAME::CGameServices>(
-        m_controllers, m_guiRenderer, m_peripherals,
-        *CServiceBroker::GetSettingsComponent()->GetProfileManager(), m_input,
-        CServiceBroker::GetAddonMgr(), CServiceBroker::GetFileExtensionProvider());
+        m_controllers, m_guiRenderer, m_peripherals, m_input, CServiceBroker::GetAddonMgr(),
+        CServiceBroker::GetFileExtensionProvider());
     auto& registered = CServices::GameServices(*g_application.m_ServiceManager);
     m_previousServices = std::move(registered);
     registered = std::move(services);

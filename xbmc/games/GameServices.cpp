@@ -15,7 +15,6 @@
 #include "games/GameSettings.h"
 #include "games/GameUtils.h"
 #include "games/agents/input/AgentInput.h"
-#include "profiles/ProfileManager.h"
 #include "utils/FileExtensionProvider.h"
 
 using namespace KODI;
@@ -24,13 +23,11 @@ using namespace GAME;
 CGameServices::CGameServices(CControllerManager& controllerManager,
                              RETRO::CGUIGameRenderManager& renderManager,
                              PERIPHERALS::CPeripherals& peripheralManager,
-                             const CProfileManager& profileManager,
                              CInputManager& inputManager,
                              ADDON::CAddonMgr& addons,
                              CFileExtensionProvider& fileExtensionProvider)
   : m_controllerManager(controllerManager),
     m_gameRenderManager(renderManager),
-    m_profileManager(profileManager),
     m_fileExtensionProvider(fileExtensionProvider),
     m_achievementRuntime(std::make_unique<CAchievementRuntime>()),
     m_gameSettings(new CGameSettings()),
@@ -83,11 +80,6 @@ std::string CGameServices::TranslateFeature(const std::string& controllerId,
                                             const std::string& featureName)
 {
   return m_controllerManager.TranslateFeature(controllerId, featureName);
-}
-
-std::string CGameServices::GetSavestatesFolder() const
-{
-  return m_profileManager.GetSavestatesFolder();
 }
 
 void CGameServices::OnAddonRepoInstalled()

@@ -17,6 +17,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
+#include "games/GameUtils.h"
 #include "games/dialogs/DialogGameDefines.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -29,7 +30,6 @@
 namespace
 {
 constexpr auto SAVESTATE_EXTENSION = ".sav";
-constexpr auto SAVESTATE_BASE_FOLDER = "special://home/saves/";
 } // namespace
 
 using namespace KODI;
@@ -270,11 +270,7 @@ std::string CSavestateDatabase::MakeThumbnailPath(const std::string& savestatePa
 
 std::string CSavestateDatabase::MakePath(const std::string& gamePath)
 {
-  if (!CreateFolderIfNotExists(SAVESTATE_BASE_FOLDER))
-    return "";
-
-  std::string gameName = URIUtils::GetFileName(gamePath);
-  std::string folderPath = URIUtils::AddFileToFolder(SAVESTATE_BASE_FOLDER, gameName);
+  const std::string folderPath = GAME::CGameUtils::GetGameFolder(gamePath);
 
   if (!CreateFolderIfNotExists(folderPath))
     return "";

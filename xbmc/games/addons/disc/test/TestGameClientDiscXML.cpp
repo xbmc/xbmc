@@ -241,13 +241,11 @@ TEST(TestGameClientDiscXML, LoadMissingEjectedDefaultsToFalse)
   CleanupStateFile();
 }
 
-TEST(TestGameClientDiscXML, GetXMLPathUsesPerGameDirectoryAndExtensionlessBaseName)
+TEST(TestGameClientDiscXML, GetXMLPathIsInTheGameFolder)
 {
   const std::string xmlPath = CGameClientDiscXML::GetXMLPath(GAME_PATH);
 
-  EXPECT_EQ(URIUtils::GetFileName(xmlPath), "my_game.xml");
-  EXPECT_EQ(URIUtils::GetExtension(xmlPath), ".xml");
-  EXPECT_EQ(xmlPath.find("my_game.m3u.xml"), std::string::npos);
+  EXPECT_EQ(URIUtils::GetFileName(xmlPath), "discstate.xml");
 
   std::string xmlDirectoryName = URIUtils::GetDirectory(xmlPath);
   URIUtils::RemoveSlashAtEnd(xmlDirectoryName);
