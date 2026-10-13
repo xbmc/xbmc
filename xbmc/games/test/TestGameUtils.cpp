@@ -50,6 +50,12 @@ TEST(TestGameUtils, AGameKeepsItsFolderWhenTheLibraryMoves)
 
   EXPECT_EQ(CGameUtils::GetGameFolder("smb://nas1/Roms/Sonic.md"),
             CGameUtils::GetGameFolder("smb://nas2/Roms/Sonic.md"));
+  EXPECT_EQ(CGameUtils::GetGameFolder("D:\\Roms\\Sonic.md"),
+            CGameUtils::GetGameFolder("E:\\Roms\\Sonic.md"));
+  EXPECT_EQ(CGameUtils::GetGameFolder("D:\\Roms\\Sonic.md"),
+            CGameUtils::GetGameFolder("\\\\nas\\Roms\\Sonic.md"));
+  EXPECT_EQ(CGameUtils::GetGameFolder("D:\\Roms\\Sonic.md"),
+            CGameUtils::GetGameFolder("smb://nas/Roms/Sonic.md"));
 
   const std::string zipped =
       CGameUtils::GetGameFolder("zip://%2fmedia%2fdisk1%2fGames%2fSNES%2fMario.zip/Mario.sfc");
