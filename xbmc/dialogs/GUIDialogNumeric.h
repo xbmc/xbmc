@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "dialogs/NumericInputMode.h"
 #include "guilib/GUIDialog.h"
 #include "utils/XTimeUtils.h"
 
@@ -24,7 +25,6 @@ class CGUIDialogNumeric :
       public CGUIDialog
 {
 public:
-  enum INPUT_MODE { INPUT_TIME = 1, INPUT_DATE, INPUT_IP_ADDRESS, INPUT_PASSWORD, INPUT_NUMBER, INPUT_TIME_SECONDS };
   CGUIDialogNumeric(void);
   ~CGUIDialogNumeric(void) override;
   bool OnMessage(CGUIMessage& message) override;
@@ -34,15 +34,15 @@ public:
 
   bool IsConfirmed() const;
   bool IsCanceled() const;
-  bool IsInputHidden() const { return m_mode == INPUT_PASSWORD; }
+  bool IsInputHidden() const { return m_mode == KODI::DIALOGS::NUMERIC_MODE::PASSWORD; }
 
   static bool ShowAndVerifyNewPassword(std::string& strNewPassword);
   static int ShowAndVerifyPassword(std::string& strPassword, const std::string& strHeading, int iRetries);
   static InputVerificationResult ShowAndVerifyInput(std::string& strPassword, const std::string& strHeading, bool bGetUserInput);
 
   void SetHeading(const std::string &strHeading);
-  void SetMode(INPUT_MODE mode, const KODI::TIME::SystemTime& initial);
-  void SetMode(INPUT_MODE mode, const std::string &initial);
+  void SetMode(KODI::DIALOGS::NUMERIC_MODE mode, const KODI::TIME::SystemTime& initial);
+  void SetMode(KODI::DIALOGS::NUMERIC_MODE mode, const std::string &initial);
   KODI::TIME::SystemTime GetOutput() const;
   std::string GetOutputString() const;
 
@@ -72,7 +72,8 @@ protected:
   bool m_bConfirmed = false;
   bool m_bCanceled = false;
 
-  INPUT_MODE m_mode = INPUT_PASSWORD; // the current input mode
+  KODI::DIALOGS::NUMERIC_MODE m_mode =
+      KODI::DIALOGS::NUMERIC_MODE::PASSWORD; // the current input mode
   KODI::TIME::SystemTime m_datetime; // for time and date modes
   uint8_t m_ip[4];                  // for ip address mode
   uint32_t m_block{}; // for time, date, and IP methods.
