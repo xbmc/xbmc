@@ -149,6 +149,12 @@ CGUIBaseContainer::~CGUIBaseContainer(void)
   // release the container from items
   for (const auto& item : m_items)
     item->FreeMemory();
+
+  for (const auto& weakItem : m_releasedItems)
+  {
+    if (const auto item = weakItem.lock())
+      item->FreeMemory();
+  }
 }
 
 void CGUIBaseContainer::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -1361,8 +1367,12 @@ int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
 void CGUIBaseContainer::Reset()
 {
   m_wasReset = true;
-  for (const auto& item : m_items)
-    item->FreeMemory();
+
+  // Static items are fetched again right away and must keep their layout state
+  // (e.g. an already applied UnFocus animation).
+  std::erase_if(m_releasedItems, [](const auto& weakItem) { return weakItem.expired(); });
+  m_releasedItems.insert(m_items.begin(), m_items.end());
+
   m_items.clear();
   m_lastItem.reset();
   ResetAutoScrolling();
