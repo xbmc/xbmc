@@ -7,11 +7,14 @@
  */
 
 #include "dbwrappers/test/DatabaseTestUtils.h"
+#include "filesystem/File.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
 #include "music/Song.h"
 #include "utils/StringUtils.h"
+
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -25,6 +28,13 @@ constexpr int MISSING_ID = 4242;
 
 // The album the songless-album test adds.
 constexpr int ALBUM_ID = 4243;
+
+// A test that adds rows or damages the schema removes its database, so that it can run again in
+// the same process.
+void DeleteTestDatabase(const std::string& name)
+{
+  XFILE::CFile::Delete(TestDatabaseSettings().host + name + ".db");
+}
 
 } // namespace
 
@@ -119,6 +129,7 @@ TEST(MusicDatabaseGetResultSonglessAlbumTest, AlbumWithNoSongsIsRetrievedWithAnE
   EXPECT_FALSE(db.GetAlbum(ALBUM_ID, withSongs, true));
 
   db.Close();
+  DeleteTestDatabase("TestMusicDatabaseSonglessAlbum");
 }
 
 // Refreshing the library info is a side effect of a commit, not a condition of it.
@@ -163,4 +174,5 @@ TEST(MusicDatabaseGetResultQueryFailureTest, FailedQueryReportsError)
   EXPECT_FALSE(db.GetArtistExists(MISSING_ID));
 
   db.Close();
+  DeleteTestDatabase("TestMusicDatabaseGetResultQueryFailure");
 }
