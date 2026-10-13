@@ -512,6 +512,10 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
     if (assetId < 0)
       return -1;
 
+    // A movie may have several extras of a kind (eg. trailers)
+    if (assetType == VideoAssetType::EXTRA)
+      break;
+
     const int dbId{item->GetVideoInfoTag()->m_iDbId};
 
     //! @todo db refactor: should not be versions, but assets
