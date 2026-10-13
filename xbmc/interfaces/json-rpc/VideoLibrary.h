@@ -97,6 +97,13 @@ namespace JSONRPC
     //! Adds the files table's playback state to an item that already says what it is.
     static void ApplyPlaybackState(const CVideoInfoTag& fileDetails, CVideoInfoTag& details);
 
+    //! Describes a folder as the TV show it is one of the folders of. A folder beneath a
+    //! show's own resolves to the show as well, and is left as it is.
+    static bool GetTvShowOfFolder(CVideoDatabase& videodatabase,
+                                  const std::string& path,
+                                  CVideoInfoTag& details,
+                                  CFileItem* item);
+
     struct PlaybackUpdate
     {
       int playCount;
