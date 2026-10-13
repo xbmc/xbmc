@@ -582,6 +582,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="slideshow.showdate" type="boolean" label="36645" help="36646">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="language" label="14218" help="38106">

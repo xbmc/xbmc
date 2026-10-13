@@ -11,5 +11,15 @@
 			<visible>SlideShow.IsVideo</visible>
 			<visible>![Player.Playing + Player.HasVideo] | SlideShow.IsPaused</visible>
 		</control>
+		<control type="label">
+			<left>60</left>
+			<bottom>40</bottom>
+			<width>1200</width>
+			<height>50</height>
+			<font>font27</font>
+			<shadowcolor>black</shadowcolor>
+			<label>$INFO[Slideshow.LongEXIFTime]</label>
+			<visible>System.GetBool(slideshow.showdate)</visible>
+		</control>
 	</controls>
 </window>
