@@ -73,7 +73,8 @@ Apple TV and display, tvOS 17 or newer, and a build made with the tvOS 17 SDK
 or newer. Enable **Match Dynamic Range** in tvOS Video and Audio settings and
 **Adjust display HDR mode** in Kodi's Player / Videos settings. Builds made with
 older SDKs retain the SDR playback path. Dolby Vision and HDR10+ dynamic
-metadata are not supported by this path.
+metadata are not supported by this path. HDR10+ content is displayed using
+its HDR10 base layer.
 
 Building for tvOS should work with the following combinations of Xcode and macOS versions:
   * Xcode 12.4 against tvOS SDK 14.3 on 10.15.7 (Catalina)(recommended)(CI)

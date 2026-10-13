@@ -268,7 +268,9 @@ StreamHdrType CWinSystemTVOS::GetSupportedHDRType(const VideoPicture* videoPictu
       (caps.SupportsHLG() || caps.SupportsHDR10()))
     return StreamHdrType::HDR_TYPE_HLG;
 
-  if (videoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 && caps.SupportsHDR10())
+  if ((videoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+       videoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10PLUS) &&
+      caps.SupportsHDR10())
   {
     return StreamHdrType::HDR_TYPE_HDR10;
   }

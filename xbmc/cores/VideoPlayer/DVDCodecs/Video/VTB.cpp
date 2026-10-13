@@ -163,6 +163,7 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
       hdrOutput =
           canUseHDRVideoLayer &&
           (((hint.hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+             hint.hdrType == StreamHdrType::HDR_TYPE_HDR10PLUS ||
              hint.HasHDR10DolbyVisionBaseLayer()) &&
             caps.SupportsHDR10()) ||
            ((hint.hdrType == StreamHdrType::HDR_TYPE_HLG || hint.HasHLGDolbyVisionBaseLayer()) &&
