@@ -10,6 +10,8 @@
 
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
+#include "games/addons/GameClient.h"
+#include "games/addons/input/GameClientInput.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/events/EventPollHandle.h"
 #include "utils/log.h"
@@ -57,9 +59,17 @@ void CRetroPlayerInput::StopAgentManager()
 void CRetroPlayerInput::SetSpeed(double speed)
 {
   if (speed != 0)
+  {
     m_inputPollHandle->Activate();
+    m_gameClient->Input().EnableRumble(true);
+  }
   else
+  {
     m_inputPollHandle->Deactivate();
+
+    // A paused game can't stop its own motors
+    m_gameClient->Input().EnableRumble(false);
+  }
 }
 
 void CRetroPlayerInput::EnableInput(bool bEnabled)

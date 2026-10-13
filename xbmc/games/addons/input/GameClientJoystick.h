@@ -13,6 +13,9 @@
 #include "peripherals/PeripheralTypes.h"
 
 #include <memory>
+#include <mutex>
+#include <set>
+#include <string>
 
 namespace KODI
 {
@@ -89,8 +92,11 @@ public:
 
   // Input handlers
   bool SetRumble(const std::string& feature, float magnitude);
+  void EnableRumble(bool bEnabled);
 
 private:
+  void StopMotors();
+
   // Construction parameters
   CGameClient& m_gameClient;
   const std::string m_portAddress;
@@ -104,6 +110,11 @@ private:
   bool m_bLoggedRumble{false};
   bool m_bLoggedRumbleFailure{false};
   bool m_bLoggedRumbleUnwired{false};
+
+  // Motors left running, stopped when the controller is detached
+  std::set<std::string> m_activeMotors;
+  bool m_bRumbleEnabled{true};
+  std::mutex m_rumbleMutex;
 };
 } // namespace GAME
 } // namespace KODI
