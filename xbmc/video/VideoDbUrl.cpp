@@ -12,12 +12,15 @@
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 using namespace KODI;
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
+
+namespace CONTENT = KODI::MEDIA::CONTENT;
 
 CVideoDbUrl::CVideoDbUrl()
   : CDbUrl()
@@ -41,13 +44,13 @@ bool CVideoDbUrl::parse()
     case NodeType::RECENTLY_ADDED_MOVIES:
     case NodeType::TITLE_MOVIES:
     case NodeType::SETS:
-      m_type = "movies";
+      m_type = CONTENT::MOVIES;
       break;
 
     // Leaf node
     case NodeType::MOVIE_ASSETS:
-      m_type = "movies";
-      m_itemType = "movies";
+      m_type = CONTENT::MOVIES;
+      m_itemType = CONTENT::MOVIES;
       break;
 
     case NodeType::TVSHOWS_OVERVIEW:
@@ -56,14 +59,14 @@ bool CVideoDbUrl::parse()
     case NodeType::EPISODES:
     case NodeType::RECENTLY_ADDED_EPISODES:
     case NodeType::INPROGRESS_TVSHOWS:
-      m_type = "tvshows";
+      m_type = CONTENT::TVSHOWS;
       break;
 
     case NodeType::MUSICVIDEOS_OVERVIEW:
     case NodeType::RECENTLY_ADDED_MUSICVIDEOS:
     case NodeType::TITLE_MUSICVIDEOS:
     case NodeType::MUSICVIDEOS_ALBUM:
-      m_type = "musicvideos";
+      m_type = CONTENT::MUSICVIDEOS;
       break;
 
     default:
@@ -79,74 +82,74 @@ bool CVideoDbUrl::parse()
     case NodeType::MOVIE_ASSETS:
     case NodeType::MOVIE_ASSETS_VERSIONS:
     case NodeType::MOVIE_ASSETS_EXTRAS:
-      m_type = "movies";
-      m_itemType = "movies";
+      m_type = CONTENT::MOVIES;
+      m_itemType = CONTENT::MOVIES;
       break;
 
     case NodeType::TVSHOWS_OVERVIEW:
     case NodeType::TITLE_TVSHOWS:
     case NodeType::INPROGRESS_TVSHOWS:
-      m_type = "tvshows";
-      m_itemType = "tvshows";
+      m_type = CONTENT::TVSHOWS;
+      m_itemType = CONTENT::TVSHOWS;
       break;
 
     case NodeType::SEASONS:
-      m_type = "tvshows";
-      m_itemType = "seasons";
+      m_type = CONTENT::TVSHOWS;
+      m_itemType = CONTENT::SEASONS;
       break;
 
     case NodeType::EPISODES:
     case NodeType::RECENTLY_ADDED_EPISODES:
-      m_type = "tvshows";
-      m_itemType = "episodes";
+      m_type = CONTENT::TVSHOWS;
+      m_itemType = CONTENT::EPISODES;
       break;
 
     case NodeType::MUSICVIDEOS_OVERVIEW:
     case NodeType::RECENTLY_ADDED_MUSICVIDEOS:
     case NodeType::TITLE_MUSICVIDEOS:
-      m_type = "musicvideos";
-      m_itemType = "musicvideos";
+      m_type = CONTENT::MUSICVIDEOS;
+      m_itemType = CONTENT::MUSICVIDEOS;
       break;
 
     case NodeType::GENRE:
-      m_itemType = "genres";
+      m_itemType = CONTENT::GENRES;
       break;
 
     case NodeType::ACTOR:
-      m_itemType = "actors";
+      m_itemType = CONTENT::ACTORS;
       break;
 
     case NodeType::YEAR:
-      m_itemType = "years";
+      m_itemType = CONTENT::YEARS;
       break;
 
     case NodeType::DIRECTOR:
-      m_itemType = "directors";
+      m_itemType = CONTENT::DIRECTORS;
       break;
 
     case NodeType::STUDIO:
-      m_itemType = "studios";
+      m_itemType = CONTENT::STUDIOS;
       break;
 
     case NodeType::COUNTRY:
-      m_itemType = "countries";
+      m_itemType = CONTENT::COUNTRIES;
       break;
 
     case NodeType::SETS:
-      m_itemType = "sets";
+      m_itemType = CONTENT::SETS;
       break;
 
     case NodeType::MUSICVIDEOS_ALBUM:
-      m_type = "musicvideos";
-      m_itemType = "albums";
+      m_type = CONTENT::MUSICVIDEOS;
+      m_itemType = CONTENT::ALBUMS;
       break;
 
     case NodeType::TAGS:
-      m_itemType = "tags";
+      m_itemType = CONTENT::TAGS;
       break;
 
     case NodeType::VIDEOVERSIONS:
-      m_itemType = "videoversions";
+      m_itemType = CONTENT::VIDEOVERSIONS;
       break;
 
     case NodeType::NONE:
@@ -175,7 +178,7 @@ bool CVideoDbUrl::parse()
   if (queryParams.GetActorId() != -1)
   {
     std::string optionName = "actorid";
-    if (m_type == "musicvideos")
+    if (m_type == CONTENT::MUSICVIDEOS)
       optionName = "artistid";
 
     AddOption(optionName, (int)queryParams.GetActorId());
@@ -233,5 +236,5 @@ bool CVideoDbUrl::validateOption(const std::string &key, const CVariant &value)
 
   // check if the filter playlist matches the item type
   return (xspFilter.GetType() == m_itemType ||
-         (xspFilter.GetType() == "movies" && m_itemType == "sets"));
+         (xspFilter.GetType() == CONTENT::MOVIES && m_itemType == CONTENT::SETS));
 }

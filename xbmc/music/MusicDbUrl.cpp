@@ -12,12 +12,15 @@
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 using namespace KODI;
 using namespace XFILE;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
+
+namespace CONTENT = KODI::MEDIA::CONTENT;
 
 CMusicDbUrl::CMusicDbUrl()
   : CDbUrl()
@@ -43,18 +46,18 @@ bool CMusicDbUrl::parse()
   switch (dirType)
   {
     case NodeType::ARTIST:
-      m_type = "artists";
+      m_type = CONTENT::ARTISTS;
       break;
 
     case NodeType::ALBUM:
     case NodeType::ALBUM_RECENTLY_ADDED:
     case NodeType::ALBUM_RECENTLY_PLAYED:
     case NodeType::ALBUM_TOP100:
-      m_type = "albums";
+      m_type = CONTENT::ALBUMS;
       break;
 
     case NodeType::DISC:
-      m_type = "discs";
+      m_type = CONTENT::DISCS;
       break;
 
     case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
@@ -63,7 +66,7 @@ bool CMusicDbUrl::parse()
     case NodeType::SONG:
     case NodeType::SONG_TOP100:
     case NodeType::SINGLES:
-      m_type = "songs";
+      m_type = CONTENT::SONGS;
       break;
 
     default:
@@ -73,18 +76,18 @@ bool CMusicDbUrl::parse()
   switch (childType)
   {
     case NodeType::ARTIST:
-      m_type = "artists";
+      m_type = CONTENT::ARTISTS;
       break;
 
     case NodeType::ALBUM:
     case NodeType::ALBUM_RECENTLY_ADDED:
     case NodeType::ALBUM_RECENTLY_PLAYED:
     case NodeType::ALBUM_TOP100:
-      m_type = "albums";
+      m_type = CONTENT::ALBUMS;
       break;
 
     case NodeType::DISC:
-      m_type = "discs";
+      m_type = CONTENT::DISCS;
       break;
 
     case NodeType::SONG:
@@ -93,23 +96,23 @@ bool CMusicDbUrl::parse()
     case NodeType::ALBUM_TOP100_SONGS:
     case NodeType::SONG_TOP100:
     case NodeType::SINGLES:
-      m_type = "songs";
+      m_type = CONTENT::SONGS;
       break;
 
     case NodeType::GENRE:
-      m_type = "genres";
+      m_type = CONTENT::GENRES;
       break;
 
     case NodeType::SOURCE:
-      m_type = "sources";
+      m_type = CONTENT::SOURCES;
       break;
 
     case NodeType::ROLE:
-      m_type = "roles";
+      m_type = CONTENT::ROLES;
       break;
 
     case NodeType::YEAR:
-      m_type = "years";
+      m_type = CONTENT::YEARS;
       break;
 
     case NodeType::TOP100:

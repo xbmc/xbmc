@@ -30,6 +30,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ContentNames.h"
 #include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
@@ -43,6 +44,8 @@
 
 using namespace KODI;
 using namespace PVR;
+
+namespace CONTENT = KODI::MEDIA::CONTENT;
 
 namespace
 {
@@ -225,7 +228,7 @@ bool CGUIWindowPVRRecordingsBase::Update(const std::string& strDirectory,
 
 void CGUIWindowPVRRecordingsBase::UpdateButtons()
 {
-  const WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
+  const WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode(CONTENT::RECORDINGS);
   int iStringId = 257; // "Error"
 
   if (watchedMode == WatchedMode::ALL)
@@ -375,7 +378,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWMODE)
       {
-        CMediaSettings::GetInstance().CycleWatchedMode("recordings");
+        CMediaSettings::GetInstance().CycleWatchedMode(CONTENT::RECORDINGS);
         CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
         OnFilterItems(GetProperty("filter").asString());
         UpdateButtons();
@@ -453,7 +456,7 @@ bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string& filter, CF
 {
   bool listchanged = CGUIWindowPVRBase::GetFilteredItems(filter, items);
 
-  const WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
+  const WatchedMode watchedMode = CMediaSettings::GetInstance().GetWatchedMode(CONTENT::RECORDINGS);
 
   CFileItemPtr item;
   for (int i = 0; i < items.Size(); i++)
