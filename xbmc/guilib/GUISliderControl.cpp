@@ -113,9 +113,9 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
       !IsDisabled() ? m_guiBackground.get() : m_guiBackgroundDisabled.get();
 
   dirty |= guiBackground->SetPosition(m_posX, m_posY);
-  int infoCode = m_iInfoCode;
-  if (m_action && (!m_dragging || m_action->fireOnDrag))
-    infoCode = m_action->infoCode;
+  int infoCode = 0;
+  if (!m_action || !m_dragging || m_action->fireOnDrag)
+    infoCode = m_action ? m_action->infoCode : m_iInfoCode;
   if (infoCode)
   {
     int val;
@@ -696,7 +696,11 @@ void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector 
 
 EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
 {
-  m_dragging = false;
+  const bool wasDragging = m_dragging;
+  if (wasDragging && event.m_id >= ACTION_GESTURE_SWIPE_LEFT &&
+      event.m_id <= ACTION_GESTURE_SWIPE_DOWN_TEN)
+    return EVENT_RESULT_HANDLED;
+  m_dragging = event.m_id == ACTION_GESTURE_NOTIFY && wasDragging;
   if (event.m_id == ACTION_MOUSE_DRAG || event.m_id == ACTION_MOUSE_DRAG_END)
   {
     m_dragging = true;
@@ -743,12 +747,14 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint& point, const MOUSE::C
   }
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access
+    m_dragging = true;
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
     SendWindowMessage(msg);
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
   { // do the drag
+    m_dragging = true;
     SetFromPosition(point);
     return EVENT_RESULT_HANDLED;
   }
@@ -756,6 +762,8 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint& point, const MOUSE::C
   { // release exclusive access
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
     SendWindowMessage(msg);
+    if (event.m_id == ACTION_GESTURE_END && wasDragging && m_action && !m_action->fireOnDrag)
+      SendClick();
     return EVENT_RESULT_HANDLED;
   }
   return EVENT_RESULT_UNHANDLED;
