@@ -162,7 +162,24 @@ void CRendererHQ::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CR
       return;
     }
 
-    const bool cacheFits = m_scaledCache.GetWidth() == target.GetWidth() &&
+    // the copy bypasses the output merger, so it ignores the colour write masks of the anaglyph
+    // modes and always writes the first array slice (left eye) of a hardware stereo back buffer
+    switch (context.GetStereoMode())
+    {
+      case RenderStereoMode::ANAGLYPH_RED_CYAN:
+      case RenderStereoMode::ANAGLYPH_GREEN_MAGENTA:
+      case RenderStereoMode::ANAGLYPH_YELLOW_BLUE:
+      case RenderStereoMode::HARDWAREBASED:
+        m_scaledCache.Release();
+        m_scalerShader->Render(source, target, sourceRect, destRect, false);
+        return;
+      default:
+        break;
+    }
+
+    // Release() keeps the size and format, check the texture itself too
+    const bool cacheFits = m_scaledCache.Get() != nullptr &&
+                           m_scaledCache.GetWidth() == target.GetWidth() &&
                            m_scaledCache.GetHeight() == target.GetHeight() &&
                            m_scaledCache.GetFormat() == target.GetFormat();
     if (!cacheFits)
@@ -176,12 +193,14 @@ void CRendererHQ::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CR
       }
     }
 
-    if (!m_reuseIntermediate || !cacheFits)
+    // destRect is per eye in the split stereo modes, the same picture lands somewhere else
+    if (!m_reuseIntermediate || !cacheFits || destRect != m_scaledCacheRect)
     {
       // the copy below is rounded to whole pixels, keep pixels outside the picture black
       float black[4] = {};
       DX::DeviceResources::Get()->ClearRenderTarget(m_scaledCache.GetRenderTarget(), black);
       m_scalerShader->Render(source, m_scaledCache, sourceRect, destRect, false);
+      m_scaledCacheRect = destRect;
     }
 
     CRect area = destRect;

@@ -32,4 +32,6 @@ protected:
   bool m_bUseHQScaler = false;
   // HQ scaled picture of the last render, copied instead of scaling the same picture again
   CD3DTexture m_scaledCache;
+  // stereo corrected destination of the picture in m_scaledCache
+  CRect m_scaledCacheRect;
 };
