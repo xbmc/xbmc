@@ -555,7 +555,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     m_iLastFailedNextSlide = -1;
     CFileItemPtr item = m_slides.at(m_iNextSlide);
     std::string picturePath = GetPicturePath(item.get());
-    if (!picturePath.empty() && (!IsVideo(*item) || !m_bSlideShow || m_bPause))
+    if (!picturePath.empty())
     {
       if (IsVideo(*item))
         CLog::Log(LOGDEBUG, "Loading the thumb {} for next video {}: {}", picturePath, m_iNextSlide,
@@ -604,11 +604,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // render the next image
   if (m_Image[m_iCurrentPic]->DrawNextImage())
   {
-    if (m_bSlideShow && !m_bPause && IsVideo(*m_slides.at(m_iNextSlide)))
-    {
-      // do not show thumb of video when playing slideshow
-    }
-    else if (m_Image[1 - m_iCurrentPic]->IsLoaded())
+    if (m_Image[1 - m_iCurrentPic]->IsLoaded())
     {
       if (appPlayer->IsPlayingVideo())
         appPlayer->ClosePlayer();
@@ -720,13 +716,14 @@ void CGUIWindowSlideShow::Render()
       IsVideo(*m_slides.at(m_iCurrentSlide)) && CServiceBroker::GetWinSystem()->IsHdrComposite();
   gfxCtx.Clear(hdrVideo ? 0 : 0xff000000);
 
-  if (IsVideo(*m_slides.at(m_iCurrentSlide)))
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  // Keep the video's thumbnail up until its first frame
+  if (IsVideo(*m_slides.at(m_iCurrentSlide)) && appPlayer->IsRenderingVideo())
   {
     gfxCtx.SetViewWindow(0, 0, m_coordsRes.iWidth, m_coordsRes.iHeight);
     gfxCtx.SetRenderingResolution(gfxCtx.GetVideoResolution(), false);
-
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
     if (appPlayer->IsRenderingVideoLayer())
     {
