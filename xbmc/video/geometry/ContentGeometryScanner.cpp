@@ -15,7 +15,7 @@
 #include "cores/VideoSettings.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "jobs/JobManager.h"
-#include "threads/IRunnable.h"
+#include "threads/Event.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -25,6 +25,9 @@
 #include "video/jobs/VideoLibraryContentGeometryJob.h"
 #include "video/jobs/VideoLibraryJob.h"
 
+#include <atomic>
+#include <chrono>
+#include <memory>
 #include <mutex>
 #include <utility>
 
@@ -127,23 +130,18 @@ void MeasureContentGeometryBeforePlayback(const CFileItem& item,
     db.SetContentGeometry(target->idFile, *record);
 }
 
-//! \brief Hosts MeasureContentGeometryBeforePlayback() under the busy dialog, so the user can
-//! back out.
-class CContentGeometryPlaybackRunnable : public IRunnable
+//! \brief The longest playback waits for its measurement. A read that takes longer has stalled.
+constexpr std::chrono::seconds PLAYBACK_MEASUREMENT_LIMIT{30};
+
+//! \brief What a measurement before playback shares with the playback waiting on it, which may
+//! stop waiting first.
+struct PlaybackMeasurement
 {
-public:
-  explicit CContentGeometryPlaybackRunnable(const CFileItem& item) : m_item(item) {}
+  explicit PlaybackMeasurement(const CFileItem& item) : item(item) {}
 
-  void Run() override
-  {
-    MeasureContentGeometryBeforePlayback(m_item, [this]() { return m_cancelled.load(); });
-  }
-
-  void Cancel() override { m_cancelled = true; }
-
-private:
-  const CFileItem& m_item;
-  std::atomic<bool> m_cancelled{false};
+  const CFileItem item;
+  std::atomic<bool> cancelled{false};
+  CEvent done;
 };
 
 } // unnamed namespace
@@ -153,8 +151,20 @@ void MeasureContentGeometryBeforePlaybackBlocking(const CFileItem& item)
   if (!ContentGeometryNonLiveFromSettings() || !IsVideo(item))
     return;
 
-  CContentGeometryPlaybackRunnable measure{item};
-  CGUIDialogBusy::Wait(&measure, 500, true);
+  const auto measurement = std::make_shared<PlaybackMeasurement>(item);
+  CServiceBroker::GetJobManager()->Submit(
+      [measurement]
+      {
+        MeasureContentGeometryBeforePlayback(measurement->item, [&measurement]
+                                             { return measurement->cancelled.load(); });
+        measurement->done.Set();
+      },
+      CJob::PRIORITY_HIGH);
+
+  // A measurement inside a read cannot be stopped, so it is left to end at its next sample
+  if (CGUIDialogBusy::WaitOnEventFor(measurement->done, PLAYBACK_MEASUREMENT_LIMIT, 500, true) !=
+      CGUIDialogBusy::WaitResult::COMPLETED)
+    measurement->cancelled = true;
 }
 
 bool RemeasureContentGeometry(const CFileItem& item,

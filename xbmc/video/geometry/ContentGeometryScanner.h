@@ -36,7 +36,8 @@ std::optional<ContentGeometryRecord> MeasureContentGeometry(
 
 //! \brief Measure the file \p item plays, unless something already has, and store it, under
 //! the busy dialog. Blocks, so the rectangle is known before the first frame. Skips a file with
-//! a declared ratio. Video items only; backing out abandons the measurement and starts the film.
+//! a declared ratio. Video items only; backing out abandons the measurement and starts the film,
+//! as does a measurement that has not finished within its limit.
 void MeasureContentGeometryBeforePlaybackBlocking(const CFileItem& item);
 
 //! \brief Measure \p item again and replace what is stored, without asking whether the work is
