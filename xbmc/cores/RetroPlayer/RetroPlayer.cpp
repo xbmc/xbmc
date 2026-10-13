@@ -701,7 +701,13 @@ void CRetroPlayer::SetSpeedInternal(double speed)
   if (speed == 0.0)
     m_playback->PauseAsync();
   else
+  {
     m_playback->SetSpeed(speed);
+
+    // Rewinding runs the game loop slower than the speed shown
+    if (speed < 0.0 && m_gameClient && m_gameClient->RequiresGameLoop())
+      m_renderManager->SetSpeed(m_playback->GetSpeed());
+  }
 }
 
 void CRetroPlayer::OnSpeedChange(double newSpeed)
