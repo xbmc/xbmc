@@ -11,7 +11,10 @@
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 
+#include <cstring>
+
 extern "C" {
+#include <libavutil/common.h>
 #include <libavutil/mem.h>
 }
 
@@ -100,9 +103,10 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
   pSource->videoBuffer->GetPlanes(srcPlanes);
   pSource->videoBuffer->GetStrides(srcStrides);
 
-  videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P,
-                                                          srcStrides[0] * pPicture->iHeight +
-                                                          srcStrides[1] * pPicture->iHeight, nullptr);
+  const int chromaRows = AV_CEIL_RSHIFT(pPicture->iHeight, 1);
+  videoBuffer = m_processInfo.GetVideoBufferManager().Get(
+      AV_PIX_FMT_YUV420P, srcStrides[0] * pPicture->iHeight + 2 * srcStrides[1] * chromaRows,
+      nullptr);
   if (!videoBuffer)
   {
     return;
@@ -110,6 +114,15 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
 
   videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, srcStrides);
   videoBuffer->GetPlanes(dstPlanes);
+
+  // libpostproc rounds the chroma planes down, so the last column and row of an odd sized
+  // picture are the source's
+  if ((pPicture->iWidth | pPicture->iHeight) & 1)
+  {
+    memcpy(dstPlanes[1], srcPlanes[1], srcStrides[1] * chromaRows);
+    memcpy(dstPlanes[2], srcPlanes[2], srcStrides[2] * chromaRows);
+  }
+
   //! @bug libpostproc isn't const correct
   pp_postprocess(const_cast<const uint8_t **>(srcPlanes), srcStrides,
                  dstPlanes, srcStrides,
