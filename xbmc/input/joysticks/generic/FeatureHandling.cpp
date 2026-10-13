@@ -12,6 +12,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/joysticks/DriverPrimitive.h"
+#include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "utils/log.h"
@@ -494,24 +495,40 @@ bool CAccelerometer::OnAnalogMotion(const CDriverPrimitive& source, float magnit
 
   m_buttonMap->GetAccelerometer(m_name, positiveX, positiveY, positiveZ);
 
+  // The button map routes each axis's negative semiaxis here too
+  auto opposite = [](const CDriverPrimitive& semiaxis)
+  { return CDriverPrimitive(semiaxis.Index(), 0, semiaxis.SemiAxisDirection() * -1, 1); };
+
   if (source == positiveX)
   {
     m_xAxis.SetPositiveDistance(magnitude);
+  }
+  else if (source == opposite(positiveX))
+  {
+    m_xAxis.SetNegativeDistance(magnitude);
   }
   else if (source == positiveY)
   {
     m_yAxis.SetPositiveDistance(magnitude);
   }
+  else if (source == opposite(positiveY))
+  {
+    m_yAxis.SetNegativeDistance(magnitude);
+  }
   else if (source == positiveZ)
   {
     m_zAxis.SetPositiveDistance(magnitude);
+  }
+  else if (source == opposite(positiveZ))
+  {
+    m_zAxis.SetNegativeDistance(magnitude);
   }
   else
   {
     // Just in case, avoid sticking
     m_xAxis.Reset();
-    m_xAxis.Reset();
     m_yAxis.Reset();
+    m_zAxis.Reset();
   }
 
   return bHandled;
