@@ -747,14 +747,15 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint& point, const MOUSE::C
   }
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access
-    m_dragging = true;
+    // Controls without IDs cannot capture gesture end.
+    m_dragging = GetID() != 0;
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
     SendWindowMessage(msg);
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
   { // do the drag
-    m_dragging = true;
+    m_dragging = GetID() != 0;
     SetFromPosition(point);
     return EVENT_RESULT_HANDLED;
   }

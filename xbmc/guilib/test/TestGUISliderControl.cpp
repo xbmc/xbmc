@@ -79,9 +79,20 @@ protected:
 class CTestSlider : public CGUISliderControl
 {
 public:
-  CTestSlider()
-    : CGUISliderControl(
-          5000, 5001, 0, 0, 100, 10, {}, {}, {}, {}, {}, SLIDER_CONTROL_TYPE_PERCENTAGE, HORIZONTAL)
+  explicit CTestSlider(int controlID = 5001)
+    : CGUISliderControl(5000,
+                        controlID,
+                        0,
+                        0,
+                        100,
+                        10,
+                        {},
+                        {},
+                        {},
+                        {},
+                        {},
+                        SLIDER_CONTROL_TYPE_PERCENTAGE,
+                        HORIZONTAL)
   {
   }
   using CGUISliderControl::OnMouseEvent;
@@ -194,6 +205,32 @@ TEST_F(TestGUISliderControl, PvrSeekUsesTheSameReleasePolicy)
   slider.OnMouseEvent({0, 0}, {ACTION_GESTURE_END});
   ASSERT_EQ(m_actions.size(), 1);
   EXPECT_EQ(m_actions.front(), "PVR.SeekPercentage(25.000000)");
+}
+
+TEST_F(TestGUISliderControl, UnnamedSeekSlidersDoNotWaitForGestureEnd)
+{
+  for (const auto* action : {"seek", "pvr.seek"})
+  {
+    SCOPED_TRACE(action);
+    m_actions.clear();
+    CTestSlider slider(0);
+    slider.SetAction(action);
+    slider.SetInfo(PLAYER_PROGRESS);
+    slider.OnMouseEvent({10, 5}, {ACTION_GESTURE_BEGIN});
+    EXPECT_EQ(m_capture, 0);
+    EXPECT_FALSE(slider.IsDragging());
+    slider.OnMouseEvent({25, 5}, {ACTION_GESTURE_PAN});
+    EXPECT_EQ(m_actions.size(), 1);
+    slider.OnMouseEvent({75, 5}, {ACTION_GESTURE_PAN});
+    ASSERT_EQ(m_actions.size(), 2);
+    EXPECT_NE(m_actions.back().find("75.000000"), std::string::npos);
+
+    // Without capture, gesture end can miss the slider entirely.
+    CDirtyRegionList dirtyRegions;
+    slider.Process(0, dirtyRegions);
+    EXPECT_FALSE(slider.IsDragging());
+    EXPECT_FLOAT_EQ(slider.GetPercentage(), 73);
+  }
 }
 
 TEST_F(TestGUISliderControl, AbortReleasesCaptureWithoutSeeking)
