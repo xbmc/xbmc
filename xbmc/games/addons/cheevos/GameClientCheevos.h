@@ -17,6 +17,7 @@ class CCriticalSection;
 
 struct AddonInstance_Game;
 struct game_rc_achievement_challenge;
+struct game_rc_achievement_sets;
 struct game_rc_achievement_progress;
 struct game_rc_achievement_progress_indicator;
 struct game_rc_leaderboard;
@@ -86,6 +87,8 @@ public:
   void OnReset();
 
   void OnSubsetCompleted(const std::string& title);
+
+  void OnAchievementSets(const game_rc_achievement_sets& data);
   //@}
 
   /*!
@@ -160,6 +163,18 @@ private:
    * Read when a game loads, so a client told once forgets by the next one.
    */
   bool SetEncoreModeEnabled(bool enabled);
+
+  /*!
+   * \brief Tell the client to turn an achievement set on or off
+   */
+  bool SetAchievementSetEnabled(unsigned int setId, bool enabled);
+
+  /*!
+   * \brief Turn a set on or off at the player's request, and remember it
+   *
+   * The game's own set stays on: only subsets can be turned off.
+   */
+  bool OnAchievementSetToggled(unsigned int setId, bool enabled);
 
   CGameClient& m_gameClient;
   AddonInstance_Game& m_struct;

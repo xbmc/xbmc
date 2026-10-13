@@ -24,6 +24,8 @@
 #include "guilib/GUIMacros.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/Settings.h"
@@ -36,6 +38,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <iterator>
 
 using namespace KODI;
 using namespace GAME;
@@ -196,6 +199,16 @@ bool CDialogGameAchievements::OnMessage(CGUIMessage& message)
         OnHardcoreToggled();
         return true;
       }
+      if (control == CONTROL_CHEEVOS_SET)
+      {
+        SelectSet(1);
+        return true;
+      }
+      if (control == CONTROL_CHEEVOS_SET_ENABLED)
+      {
+        OnSetToggled();
+        return true;
+      }
       if (control == CONTROL_CHEEVOS_ENCORE || control == CONTROL_CHEEVOS_CHALLENGE_INDICATOR)
       {
         const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -228,9 +241,62 @@ bool CDialogGameAchievements::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CDialogGameAchievements::OnAction(const CAction& action)
+{
+  switch (action.GetID())
+  {
+    case ACTION_NEXT_ITEM:
+      SelectSet(1);
+      return true;
+    case ACTION_PREV_ITEM:
+      SelectSet(-1);
+      return true;
+    default:
+      break;
+  }
+
+  return CGUIDialog::OnAction(action);
+}
+
+void CDialogGameAchievements::SelectSet(int step)
+{
+  const AchievementState state = CServiceBroker::GetGameServices().AchievementRuntime().GetState();
+  if (state.sets.size() < 2)
+    return;
+
+  const auto current = std::ranges::find(state.sets, m_setId, &AchievementSet::id);
+  const int count = static_cast<int>(state.sets.size());
+  const int index = current != state.sets.end()
+                        ? static_cast<int>(std::distance(state.sets.begin(), current))
+                        : 0;
+
+  m_setId = state.sets[((index + step) % count + count) % count].id;
+
+  // A different set's rows, so the old selection means nothing
+  m_viewControl->SetSelectedItem(0);
+  RefreshList();
+}
+
+void CDialogGameAchievements::OnSetToggled()
+{
+  CAchievementRuntime& runtime = CServiceBroker::GetGameServices().AchievementRuntime();
+  const AchievementState state = runtime.GetState();
+
+  // The list refreshes itself once the client has done it
+  if (!runtime.RequestAchievementSetEnabled(m_setId, !state.IsSetEnabled(m_setId)))
+    RefreshList();
+}
+
 void CDialogGameAchievements::RefreshList()
 {
   const AchievementState state = CServiceBroker::GetGameServices().AchievementRuntime().GetState();
+
+  // The game's own set until another is picked, and again if the one picked
+  // went away with the game
+  if (std::ranges::find(state.sets, m_setId, &AchievementSet::id) == state.sets.end())
+    m_setId = state.sets.empty() ? 0 : state.sets.front().id;
+  const auto shown = std::ranges::find(state.sets, m_setId, &AchievementSet::id);
+  const AchievementSet* shownSet = shown != state.sets.end() ? &*shown : nullptr;
 
   // Remembered by achievement rather than by row: an unlock moves its
   // achievement from the locked group into the earned one, so the row that
@@ -243,7 +309,10 @@ void CDialogGameAchievements::RefreshList()
   m_viewControl->Clear();
   m_items->Clear();
 
-  std::vector<AchievementInfo> achievements = state.achievements;
+  std::vector<AchievementInfo> achievements;
+  std::ranges::copy_if(state.achievements, std::back_inserter(achievements),
+                       [this](const AchievementInfo& achievement)
+                       { return m_setId == 0 || achievement.setId == m_setId; });
 
   // Earned first; the runtime's order is kept within each group so the list
   // doesn't reshuffle as achievements unlock
@@ -275,6 +344,14 @@ void CDialogGameAchievements::RefreshList()
     // which String.IsEmpty() in the skin reads as present
     if (achievement.earned)
       item->SetProperty(ACHIEVEMENT_EARNED, true);
+    else if (achievement.type == AchievementType::MISSABLE)
+      item->SetProperty(ACHIEVEMENT_MISSABLE, true);
+
+    // Earned or not, so the player can see what beating the game took
+    if (achievement.type == AchievementType::PROGRESSION)
+      item->SetProperty(ACHIEVEMENT_PROGRESSION, true);
+    else if (achievement.type == AchievementType::WIN)
+      item->SetProperty(ACHIEVEMENT_WIN, true);
 
     if (achievement.earned && achievement.unlockedDate.IsValid())
     {
@@ -353,15 +430,50 @@ void CDialogGameAchievements::RefreshList()
   // reproduce the punctuation and the empty cases
   //
   // "Achievements - Chrono Trigger (74% complete)"
+  // "Main Set" for the game's own set, which RetroAchievements leaves untitled
+  std::string setTitle = state.gameTitle;
+  if (shownSet != nullptr && shownSet == &state.sets.front())
+    setTitle = Localize(35715);
+  else if (shownSet != nullptr && !shownSet->title.empty())
+    setTitle = shownSet->title;
+  const std::string title = state.sets.size() > 1 ? setTitle : state.gameTitle;
+
+  const bool enabled = shownSet == nullptr || shownSet->enabled;
+  const bool toggleable = shownSet != nullptr && shownSet != &state.sets.front();
+
+  // "Turned off"
+  if (!enabled)
+    progress = Localize(35714);
+
   std::string header = Localize(35287);
-  if (!state.gameTitle.empty())
-    header += " - " + state.gameTitle;
+  if (!title.empty())
+    header += " - " + title;
   if (!progress.empty())
     header += " (" + progress + ")";
 
+  // "Beaten" or "{0:d} of {1:d} to beat"
+  std::string beaten;
+  const BeatenProgress beatenProgress = state.GetBeatenProgress(m_setId);
+  if (beatenProgress.IsBeaten())
+  {
+    beaten = Localize(35712);
+  }
+  else if (beatenProgress.CanBeBeaten())
+  {
+    const unsigned int needed = beatenProgress.progression + (beatenProgress.win > 0 ? 1 : 0);
+    const unsigned int earned =
+        beatenProgress.progressionEarned + (beatenProgress.winEarned > 0 ? 1 : 0);
+    beaten = StringUtils::Format(Localize(35713), earned, needed);
+  }
+
   SetProperty("Header", header);
-  SetProperty("Achievements.GameTitle", state.gameTitle);
+  SetProperty("Achievements.GameTitle", title);
   SetProperty("Achievements.Progress", progress);
+  SetProperty("Achievements.Beaten", enabled ? beaten : "");
+  SetProperty("Achievements.HasSets", state.sets.size() > 1 ? "true" : "");
+  SetProperty("Achievements.SetTitle", setTitle);
+  SetProperty("Achievements.SetEnabled", enabled ? "true" : "");
+  SetProperty("Achievements.SetToggleable", toggleable ? "true" : "");
 }
 
 void CDialogGameAchievements::OnHardcoreToggled()

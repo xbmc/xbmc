@@ -327,6 +327,8 @@ private:
                                               const struct game_rc_leaderboard_scoreboard* data);
   static void cb_rc_on_reset(KODI_HANDLE kodiInstance);
   static void cb_rc_on_subset_completed(KODI_HANDLE kodiInstance, const char* title);
+  static void cb_rc_on_achievement_sets(KODI_HANDLE kodiInstance,
+                                        const game_rc_achievement_sets* data);
   //@}
 
   /*!

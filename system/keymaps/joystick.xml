@@ -130,6 +130,12 @@
       <leftstick direction="down">noop</leftstick>
     </joystick>
   </FullscreenVideo>
+  <GameAchievements>
+    <joystick profile="game.controller.default">
+      <leftbumper>SkipPrevious</leftbumper>
+      <rightbumper>SkipNext</rightbumper>
+    </joystick>
+  </GameAchievements>
   <FullscreenGame>
     <joystick profile="game.controller.default">
       <start holdtime="1000">OSD</start>

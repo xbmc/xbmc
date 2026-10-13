@@ -36,6 +36,8 @@ constexpr unsigned int CONTROL_CHEEVOS_LIST = 3; // Kodi list dialogs default to
 constexpr unsigned int CONTROL_CHEEVOS_ENCORE = 108331;
 constexpr unsigned int CONTROL_CHEEVOS_CHALLENGE_INDICATOR = 108332;
 constexpr unsigned int CONTROL_CHEEVOS_HARDCORE = 108340;
+constexpr unsigned int CONTROL_CHEEVOS_SET = 108345;
+constexpr unsigned int CONTROL_CHEEVOS_SET_ENABLED = 108346;
 
 //! Sent as a refresh's second parameter when the standings behind it were
 //! dropped, so the dialog goes and asks for them rather than drawing the empty
@@ -53,3 +55,6 @@ constexpr auto ACHIEVEMENT_MEASURED = "achievement.measured";
 constexpr auto ACHIEVEMENT_MEASURED_ZERO = "achievement.measuredzero";
 constexpr auto ACHIEVEMENT_MEASURED_PERCENT = "achievement.measuredpercent";
 constexpr auto ACHIEVEMENT_MEASURED_PROGRESS = "achievement.measuredprogress";
+constexpr auto ACHIEVEMENT_MISSABLE = "achievement.missable";
+constexpr auto ACHIEVEMENT_PROGRESSION = "achievement.progression";
+constexpr auto ACHIEVEMENT_WIN = "achievement.win";
