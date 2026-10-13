@@ -31,6 +31,8 @@
 
 #include <algorithm>
 #include <memory>
+#include <string>
+#include <vector>
 
 using namespace JSONRPC;
 
@@ -1154,7 +1156,8 @@ void CVideoLibrary::ApplyPlaybackState(const CVideoInfoTag& fileDetails, CVideoI
 {
   details.m_iFileId = fileDetails.m_iFileId;
   details.SetPlayCount(std::max(details.GetPlayCount(), fileDetails.GetPlayCount()));
-  if (!details.m_lastPlayed.IsValid())
+  if (fileDetails.m_lastPlayed.IsValid() &&
+      (!details.m_lastPlayed.IsValid() || details.m_lastPlayed < fileDetails.m_lastPlayed))
     details.m_lastPlayed = fileDetails.m_lastPlayed;
   if (!details.m_dateAdded.IsValid())
     details.m_dateAdded = fileDetails.m_dateAdded;
@@ -1162,6 +1165,24 @@ void CVideoLibrary::ApplyPlaybackState(const CVideoInfoTag& fileDetails, CVideoI
     details.SetResumePoint(fileDetails.GetResumePoint());
   if (!details.m_streamDetails.HasItems())
     details.m_streamDetails = fileDetails.m_streamDetails;
+}
+
+bool CVideoLibrary::GetTvShowOfFolder(CVideoDatabase& videodatabase,
+                                      const std::string& path,
+                                      CVideoInfoTag& details,
+                                      CFileItem* item)
+{
+  const int idShow{videodatabase.GetTvShowId(path)};
+  if (idShow < 0)
+    return false;
+
+  std::vector<std::string> folders;
+  if (!videodatabase.GetPathsLinkedToTvShow(idShow, folders) ||
+      std::ranges::none_of(folders, [&path](const std::string& folder)
+                           { return URIUtils::PathEquals(folder, path, true); }))
+    return false;
+
+  return videodatabase.GetTvShowInfo(path, details, idShow, item);
 }
 
 bool CVideoLibrary::FillFileItem(
@@ -1182,7 +1203,8 @@ bool CVideoLibrary::FillFileItem(
     if (videodatabase.GetMovieInfo(strFilename, details) ||
         videodatabase.GetEpisodeInfo(strFilename, details) ||
         videodatabase.GetMusicVideoInfo(strFilename, details) ||
-        (item->IsFolder() && videodatabase.GetTvShowInfo(strFilename, details, -1, item.get())))
+        (item->IsFolder() &&
+         GetTvShowOfFolder(videodatabase, strFilename, details, item.get())))
     {
       item->SetFromVideoInfoTag(details);
       item->SetDynPath(strFilename);

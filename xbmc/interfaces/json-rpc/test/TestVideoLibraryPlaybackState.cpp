@@ -6,7 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
+#include "dbwrappers/test/DatabaseTestUtils.h"
+#include "filesystem/File.h"
 #include "interfaces/json-rpc/VideoLibrary.h"
+#include "utils/StringUtils.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
 #include <string>
@@ -22,6 +27,7 @@ class CTestVideoLibrary : public CVideoLibrary
 public:
   using CVideoLibrary::ApplyPlaybackState;
   using CVideoLibrary::EpisodePlaybackUpdate;
+  using CVideoLibrary::GetTvShowOfFolder;
 };
 
 //! \brief A tag as CVideoDatabase::GetFileInfo fills it: bookkeeping, not what the item is
@@ -99,6 +105,46 @@ TEST(TestVideoLibraryPlaybackState, DoesNotDowngradeStateTheItemAlreadyHas)
   EXPECT_EQ(9, details.GetPlayCount());
   EXPECT_EQ("2026-08-10 23:00:00", details.m_lastPlayed.GetAsDBDateTime());
   EXPECT_EQ(600.0, details.GetResumePoint().timeInSeconds);
+}
+
+TEST(TestVideoLibraryPlaybackState, TakesALaterLastPlayedThanTheItemHas)
+{
+  CVideoInfoTag details = PluginDescription();
+  details.m_lastPlayed.SetFromDBDateTime("2026-08-01 09:00:00");
+
+  CTestVideoLibrary::ApplyPlaybackState(FileRow(), details);
+
+  EXPECT_EQ("2026-08-10 21:49:28", details.m_lastPlayed.GetAsDBDateTime());
+}
+
+TEST(TestVideoLibraryTvShowFolder, AFolderBeneathAShowIsNotDescribedAsTheShow)
+{
+  const std::string name{"TestVideoLibraryTvShowFolder"};
+  CVideoDatabase db;
+  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
+            db.Connect(name, TestDatabaseSettings(), true));
+
+  const std::string showFolder{"/tv/Planetes/"};
+  const std::string seasonFolder{"/tv/Planetes/Season 1/"};
+  const int idShowPath{db.AddPath(showFolder)};
+  ASSERT_GE(idShowPath, 0);
+  ASSERT_GE(db.AddPath(seasonFolder), 0);
+  ASSERT_TRUE(db.ExecuteQuery("INSERT INTO tvshow (idShow, c00) VALUES (1, 'Planetes')"));
+  ASSERT_TRUE(db.ExecuteQuery(StringUtils::Format(
+      "INSERT INTO tvshowlinkpath (idShow, idPath) VALUES (1, {})", idShowPath)));
+
+  CVideoInfoTag show;
+  CFileItem showItem;
+  EXPECT_TRUE(CTestVideoLibrary::GetTvShowOfFolder(db, showFolder, show, &showItem));
+  EXPECT_EQ("Planetes", show.m_strTitle);
+
+  CVideoInfoTag season;
+  CFileItem seasonItem;
+  EXPECT_FALSE(CTestVideoLibrary::GetTvShowOfFolder(db, seasonFolder, season, &seasonItem));
+  EXPECT_TRUE(season.m_strTitle.empty());
+
+  db.Close();
+  XFILE::CFile::Delete(TestDatabaseSettings().host + name + ".db");
 }
 
 namespace
