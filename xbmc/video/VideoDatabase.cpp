@@ -10236,7 +10236,7 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
       return;
 
     strSQL =
-        PrepareSQL("SELECT movie.idMovie, vvt.name, path.strPath, files.idFile "
+        PrepareSQL("SELECT movie.idMovie, vvt.name, path.strPath, files.idFile, files.strFilename "
                    "FROM movie "
                    "  JOIN videoversion vv ON "
                    "    vv.idMedia = movie.idMovie AND vv.media_type = '%s' AND vv.itemType = %i "
@@ -10253,8 +10253,9 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
     static const int idxName = m_pDS->fieldIndex("name");
     static const int idxPath = m_pDS->fieldIndex("strPath");
     static const int idxFileId = m_pDS->fieldIndex("idFile");
+    static const int idxFileName = m_pDS->fieldIndex("strFilename");
 
-    if (idxMovieId == -1 || idxName == -1 || idxPath == -1 || idxFileId == -1)
+    if (idxMovieId == -1 || idxName == -1 || idxPath == -1 || idxFileId == -1 || idxFileName == -1)
     {
       CLog::LogF(LOGERROR, "column index not found");
       m_pDS->close();
@@ -10280,6 +10281,10 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
 
       auto pItem = std::make_shared<CFileItem>(m_pDS->fv(idxName).get_asString());
       pItem->SetPath(std::move(path));
+      // The path ends in a file id, not a movie id, so the extra is played from its file
+      std::string file;
+      ConstructPath(file, m_pDS->fv(idxPath).get_asString(), m_pDS->fv(idxFileName).get_asString());
+      pItem->SetDynPath(file);
       pItem->SetFolder(false);
       items.Add(std::move(pItem));
       m_pDS->next();
