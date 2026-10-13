@@ -238,6 +238,7 @@ void CGUIWindowSlideShow::Reset()
   m_bShuffled = false;
   m_bPause = false;
   m_bPlayingVideo = false;
+  m_iVideoSlide = -1;
   m_bErrorMessage = false;
 
   if (m_Image[0])
@@ -444,13 +445,30 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   }
 
   bool bSlideShow = m_bSlideShow && !m_bPause && !m_bPlayingVideo;
-  if (bSlideShow && m_slides.at(m_iCurrentSlide)->HasProperty("unplayable"))
+  // A thumbnail still loading into the current image would land after the skip, so wait for it
+  const bool loadingCurrent = m_pBackgroundLoader->IsLoading() &&
+                              m_pBackgroundLoader->Pic() == m_iCurrentPic &&
+                              m_pBackgroundLoader->SlideNumber() == m_iCurrentSlide;
+  if (bSlideShow && !loadingCurrent && m_slides.at(m_iCurrentSlide)->HasProperty("unplayable"))
   {
     m_iNextSlide = GetNextSlide();
     if (m_iCurrentSlide == m_iNextSlide)
       return;
+    // A video that won't play still shows its thumbnail, so move on to the next slide's image too
+    if (m_Image[m_iCurrentPic]->IsLoaded() &&
+        m_Image[m_iCurrentPic]->SlideNumber() == m_iCurrentSlide)
+    {
+      m_Image[m_iCurrentPic]->Close();
+      if ((m_Image[1 - m_iCurrentPic]->IsLoaded() &&
+           m_Image[1 - m_iCurrentPic]->SlideNumber() == m_iNextSlide) ||
+          (m_pBackgroundLoader->IsLoading() && m_pBackgroundLoader->SlideNumber() == m_iNextSlide &&
+           m_pBackgroundLoader->Pic() == 1 - m_iCurrentPic))
+        m_iCurrentPic = 1 - m_iCurrentPic;
+    }
     m_iCurrentSlide = m_iNextSlide;
     m_iNextSlide = GetNextSlide();
+    // A Next or Previous pressed on the slide that failed is answered by the skip itself
+    m_bLoadNextPic = false;
   }
 
   if (m_bErrorMessage)
@@ -1134,6 +1152,19 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
         }
       }
       break;
+
+      case GUI_MSG_PLAYBACK_ERROR:
+        // While a player is running, the error is a late one from a video already left behind
+        if (m_bPlayingVideo && m_iVideoSlide >= 0 &&
+            m_iVideoSlide < static_cast<int>(m_slides.size()) &&
+            !CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()->IsPlaying())
+        {
+          // Skip it like a picture that won't load. m_iVideoSlide stays set, so it isn't retried.
+          CLog::Log(LOGINFO, "set video {} unplayable", m_slides.at(m_iVideoSlide)->GetPath());
+          m_slides.at(m_iVideoSlide)->SetProperty("unplayable", true);
+          m_bPlayingVideo = false;
+        }
+        break;
   }
   return CGUIDialog::OnMessage(message);
 }
@@ -1226,8 +1257,8 @@ bool CGUIWindowSlideShow::PlayVideo()
     CLog::Log(LOGINFO, "set video {} unplayable", item->GetPath());
     item->SetProperty("unplayable", true);
   }
+  // m_iVideoSlide stays set, so the video isn't retried while it's showing
   m_bPlayingVideo = false;
-  m_iVideoSlide = -1;
   return false;
 }
 
