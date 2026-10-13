@@ -369,29 +369,36 @@ void CFileCache::Process()
     // check for seek events
     if (seekRequested)
     {
-      // Only safe here: the reader is held in Seek or GrowCacheForRate until the seek completes
+      // CreateMemoryCache records the new size, which a grow that does not go through must not
+      // leave behind
+      const auto forwardCacheSize = m_forwardCacheSize;
+      const auto maxForward = m_maxForward;
+      const auto memoryCacheSize = m_memoryCacheSize;
+      const auto keepCacheSize = [&]
+      {
+        m_forwardCacheSize = forwardCacheSize;
+        m_maxForward = maxForward;
+        m_memoryCacheSize = memoryCacheSize;
+      };
+
+      // The grown cache takes over once the source has seeked for it, so a seek that fails
+      // leaves what the current one holds
+      std::unique_ptr<CCacheStrategy> grown;
       if (m_pendingCacheSize)
       {
-        // CreateMemoryCache records the new size, which a failed allocation must not leave behind
-        const auto forwardCacheSize = m_forwardCacheSize;
-        const auto maxForward = m_maxForward;
-        const auto memoryCacheSize = m_memoryCacheSize;
-
-        std::unique_ptr<CCacheStrategy> grown = CreateMemoryCache(m_pendingCacheSize);
+        grown = CreateMemoryCache(m_pendingCacheSize);
         m_pendingCacheSize = 0;
-        if (grown->Open() == CACHE_RC_OK)
-          m_pCache = std::move(grown);
-        else
+        if (grown->Open() != CACHE_RC_OK)
         {
           CLog::LogF(LOGERROR, "<{}> could not allocate the grown cache, keeping the current one",
                      m_sourcePath);
-          m_forwardCacheSize = forwardCacheSize;
-          m_maxForward = maxForward;
-          m_memoryCacheSize = memoryCacheSize;
+          keepCacheSize();
+          grown.reset();
         }
       }
 
-      const int64_t cacheMaxPos = m_pCache->CachedDataEndPosIfSeekTo(m_seekPos);
+      const int64_t cacheMaxPos =
+          (grown ? grown.get() : m_pCache.get())->CachedDataEndPosIfSeekTo(m_seekPos);
       // A length of 0 is unknown, not an end the cache has reached
       const bool cacheReachEOF = m_fileSize > 0 && cacheMaxPos == m_fileSize;
 
@@ -412,6 +419,12 @@ void CFileCache::Process()
           sourceSeekFailed = true;
           m_sourcePositionValid = false;
 
+          if (grown)
+          {
+            keepCacheSize();
+            grown.reset();
+          }
+
           if (m_pCache->Seek(m_readPos) != m_readPos)
           {
             const bool completeReset = m_pCache->Reset(m_readPos);
@@ -430,6 +443,10 @@ void CFileCache::Process()
 
       if (!sourceSeekFailed)
       {
+        // Only safe here: the reader is held in Seek or GrowCacheForRate until the seek completes
+        if (grown)
+          m_pCache = std::move(grown);
+
         m_pCache->ClearEndOfInput();
         const bool bCompleteReset = m_pCache->Reset(m_seekPos);
         m_readPos = m_seekPos;

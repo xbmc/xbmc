@@ -206,6 +206,25 @@ private:
   int64_t m_position{0};
 };
 
+//! A seekable pattern source whose next seek can be made to fail
+class CPatternSourceThatCanFailASeek : public CPatternFileCacheSource
+{
+public:
+  CPatternSourceThatCanFailASeek() : CPatternFileCacheSource(true) {}
+
+  void FailNextSeek() { m_failNextSeek = true; }
+
+  int64_t Seek(int64_t position, int whence) override
+  {
+    if (m_failNextSeek.exchange(false))
+      return -1;
+    return CPatternFileCacheSource::Seek(position, whence);
+  }
+
+private:
+  std::atomic<bool> m_failNextSeek{false};
+};
+
 class CUnknownLengthPatternSource : public CPatternFileCacheSource
 {
 public:
@@ -521,6 +540,43 @@ TEST(TestFileCache, AGrowThatCannotAllocateKeepsTheCacheItHad)
   EXPECT_TRUE(readsBefore);
   EXPECT_EQ(capacityBefore, capacityAfter);
   EXPECT_TRUE(readsAfter) << "playback did not carry on with the cache it had";
+}
+
+TEST(TestFileCache, AGrowWhoseSeekFailsKeepsWhatTheCacheHeld)
+{
+  using namespace std::chrono_literals;
+
+  uint32_t rate = 1536 * 1024;
+  KODI::MEMORY::MemoryStatus memory{};
+  KODI::MEMORY::GetMemoryStatus(&memory);
+  if (memory.totalPhys / 16 < 128 * 1024 * 1024)
+    GTEST_SKIP() << "not enough installed memory for the cache to try to grow";
+
+  auto source = std::make_unique<CPatternSourceThatCanFailASeek>();
+  auto* sourcePtr = source.get();
+  TestFileCache cache{READ_AUDIO_VIDEO, std::move(source)};
+  ASSERT_TRUE(cache.Open(CURL{"mock://server/movie.mkv"}));
+
+  // The fill thread reads ahead before the rate arrives
+  SCacheStatus status{};
+  for (auto waited = 0ms; waited < 2s; waited += 10ms)
+  {
+    cache.IoControl(IOControl::CACHE_STATUS, &status);
+    if (status.forward >= 256 * 1024)
+      break;
+    std::this_thread::sleep_for(10ms);
+  }
+  ASSERT_GE(status.forward, 256u * 1024);
+  const uint64_t capacityBefore = ForwardCapacity(cache);
+
+  sourcePtr->FailNextSeek();
+  cache.IoControl(IOControl::CACHE_SETRATE, &rate);
+  const uint64_t capacityAfter = ForwardCapacity(cache);
+  const bool readsWhatWasCached = ReadsPattern(cache, 128 * 1024);
+  cache.Close();
+
+  EXPECT_EQ(capacityBefore, capacityAfter);
+  EXPECT_TRUE(readsWhatWasCached) << "the data the cache held was dropped with the failed grow";
 }
 
 TEST(TestFileCache, AGrowBeforeTheFirstReadOfAStreamOfUnknownLengthKeepsItsPlace)
