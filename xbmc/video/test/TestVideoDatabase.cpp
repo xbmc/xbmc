@@ -24,6 +24,7 @@
 #include "utils/Artwork.h"
 #include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "video/Bookmark.h"
@@ -32,6 +33,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <memory>
 #include <set>
@@ -1026,6 +1028,109 @@ TEST_F(TestVideoDatabaseClean, PromotingAVersionKeepsTheArtOfTheMovie)
                                 {"poster", "version-poster"},
                                 {"thumb", IMAGE_FILES::URLFromFile(version, "video")}}),
             art);
+}
+
+// The versions of one movie share its id, and each has gone
+TEST_F(TestVideoDatabaseClean, RemovesEveryVersionOfAMovieThatHasGone)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string film{Folder(movies, "Film (2010)")};
+  const int idMovie{AddMovie(File(film, "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const std::string extended{File(film, "Film (2010) Extended.mkv")};
+  const std::string finalCut{File(film, "Film (2010) Final Cut.mkv")};
+  ASSERT_GT(AddAsset(idMovie, extended), 0);
+  ASSERT_GT(AddAsset(idMovie, finalCut), 0);
+
+  ASSERT_TRUE(XFILE::CFile::Delete(extended));
+  ASSERT_TRUE(XFILE::CFile::Delete(finalCut));
+  Clean();
+
+  EXPECT_EQ(-1, m_db.GetMovieId(extended));
+  EXPECT_EQ(-1, m_db.GetMovieId(finalCut));
+}
+
+// The episodes of a multi-episode file share its file, and each has gone
+TEST_F(TestVideoDatabaseClean, RemovesEveryEpisodeOfAFileThatHasGone)
+{
+  const std::string shows{Folder(m_root, "shows")};
+  AddSource(shows, "tvshows");
+  const std::string show{Folder(shows, "Show")};
+  const int idShow{AddTvShow(show)};
+  ASSERT_GT(idShow, 0);
+  const std::string gone{File(show, "Show S01E01E02.mkv")};
+  // as a scan adds each episode of one file
+  for (const int episode : {1, 2})
+  {
+    CVideoInfoTag tag{Tag(gone)};
+    tag.m_iSeason = 1;
+    tag.m_iEpisode = episode;
+    const int idEpisode{m_db.AddNewEpisode(idShow, tag)};
+    ASSERT_GT(m_db.SetDetailsForEpisode(tag, KODI::ART::Artwork{}, idShow, idEpisode), 0);
+  }
+  const int idKept{AddEpisode(idShow, File(show, "Show S01E03.mkv"), 3)};
+  ASSERT_GT(idKept, 0);
+  ASSERT_EQ(3, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idShow=%i", idShow)));
+
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+  Clean();
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idShow=%i", idShow)));
+  EXPECT_EQ(idKept, m_db.GetSingleValueInt(
+                        m_db.PrepareSQL("SELECT idEpisode FROM episode WHERE idShow=%i", idShow)));
+}
+
+namespace
+{
+// Never started, so it keeps every announcement made in its queue
+class CQueuedAnnouncements : public ANNOUNCEMENT::CAnnouncementManager
+{
+public:
+  long CountRemoved(const std::string& type, int id) const
+  {
+    return std::ranges::count_if(m_announcementQueue,
+                                 [&type, id](const CAnnounceData& announcement)
+                                 {
+                                   return announcement.message == "OnRemove" &&
+                                          announcement.data["type"].asString() == type &&
+                                          announcement.data["id"].asInteger() == id;
+                                 });
+  }
+};
+} // namespace
+
+// The clean finds an episode's source through each folder of its show
+TEST_F(TestVideoDatabaseClean, AnnouncesAnEpisodeOfAShowWithTwoFoldersRemovedOnce)
+{
+  const std::string shows{Folder(m_root, "shows")};
+  AddSource(shows, "tvshows");
+  const std::string first{Folder(shows, "Show")};
+  const std::string second{Folder(shows, "Show (more)")};
+
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Show";
+  tag.m_strPath = first;
+  const int idShow{m_db.SetDetailsForTvShow({first, second}, tag, KODI::ART::Artwork{},
+                                            KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(idShow, 0);
+  const std::string gone{File(first, "Show S01E01.mkv")};
+  const int idEpisode{AddEpisode(idShow, gone, 1)};
+  ASSERT_GT(idEpisode, 0);
+  ASSERT_GT(AddEpisode(idShow, File(second, "Show S01E02.mkv"), 2), 0);
+
+  const auto announcements{std::make_shared<CQueuedAnnouncements>()};
+  CServiceBroker::UnregisterAnnouncementManager();
+  CServiceBroker::RegisterAnnouncementManager(announcements);
+
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+  Clean();
+
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
+  EXPECT_EQ(1, announcements->CountRemoved("episode", idEpisode));
 }
 
 TEST_F(TestVideoDatabaseClean, KeepsAVersionOutsideTheSourcesWhileItExists)
