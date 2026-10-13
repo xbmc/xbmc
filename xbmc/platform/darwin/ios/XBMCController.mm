@@ -177,6 +177,7 @@ public:
 @interface XBMCController ()
 {
   std::unique_ptr<DebugLogSharingPresenter> m_debugLogSharingPresenter;
+  UITapGestureRecognizer* m_videoSingleTap;
   UITapGestureRecognizer* m_videoDoubleTap;
   bool m_videoPinchActive;
   KODI::TOUCH::VideoPinchMode m_videoPinchMode;
@@ -296,6 +297,13 @@ public:
   return m_glView && [m_glView isXBMCAlive] && IsFullscreenVideo();
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
+    shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer*)otherGestureRecognizer
+{
+  return gestureRecognizer == m_videoSingleTap && otherGestureRecognizer == m_videoDoubleTap &&
+         [self canHandleVideoGesture];
+}
+
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
 {
   if (gestureRecognizer == m_videoDoubleTap)
@@ -338,7 +346,10 @@ public:
   tapGesture.numberOfTapsRequired = 1;
   tapGesture.numberOfTouchesRequired = numTouches;
   if (numTouches == 1)
-    [tapGesture requireGestureRecognizerToFail:m_videoDoubleTap];
+  {
+    m_videoSingleTap = tapGesture;
+    tapGesture.delegate = self;
+  }
 
   [m_glView addGestureRecognizer:tapGesture];
 }
