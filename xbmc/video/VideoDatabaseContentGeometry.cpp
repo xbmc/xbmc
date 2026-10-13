@@ -95,6 +95,15 @@ ContentGeometryLookup CVideoDatabase::GetContentGeometry(int idFile, const FileI
   return lookup;
 }
 
+ContentGeometryLookup CVideoDatabase::GetContentGeometryOfFile(int idFile, const std::string& path)
+{
+  const std::optional<ContentGeometryRecord> stored{GetStoredContentGeometry(idFile)};
+  if (!stored || !stored->HasReading())
+    return {};
+
+  return GetContentGeometry(idFile, GetFileIdentity(path));
+}
+
 std::optional<ContentGeometryRecord> CVideoDatabase::GetStoredContentGeometry(int idFile)
 {
   try

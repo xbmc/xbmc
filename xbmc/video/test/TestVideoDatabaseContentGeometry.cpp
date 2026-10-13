@@ -233,6 +233,26 @@ TEST_F(TestVideoDatabaseContentGeometry, ARecordWithNoIdentityTakesTheFilesOwn)
   EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
 }
 
+TEST_F(TestVideoDatabaseContentGeometry, AStoredRecordIsCheckedAgainstTheFileAtItsPath)
+{
+  XFILE::CFile* const file{XBMC_CREATETEMPFILE(".mkv")};
+  ASSERT_NE(nullptr, file);
+  const std::string path{XBMC_TEMPFILEPATH(file)};
+  const int idFile{m_db.AddFile(path, URIUtils::GetDirectory(path))};
+  ASSERT_GE(idFile, 0);
+
+  EXPECT_EQ(ContentGeometryState::MISSING, m_db.GetContentGeometryOfFile(idFile, path).state);
+
+  ASSERT_TRUE(m_db.SetContentGeometry(idFile, MakeRecord(GetFileIdentity(path))));
+  EXPECT_EQ(ContentGeometryState::VALID, m_db.GetContentGeometryOfFile(idFile, path).state);
+
+  // measured from other content than the file now at the path
+  ASSERT_TRUE(m_db.SetContentGeometry(idFile, MakeRecord(IDENTITY)));
+  EXPECT_EQ(ContentGeometryState::MISSING, m_db.GetContentGeometryOfFile(idFile, path).state);
+
+  EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
+}
+
 TEST_F(TestVideoDatabaseContentGeometry, AFileWithNoRowHasNothingStored)
 {
   const int idFile{AddTestFile("neverattempted.mkv")};
