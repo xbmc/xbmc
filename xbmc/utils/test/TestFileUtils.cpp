@@ -52,6 +52,8 @@ TEST(TestFileUtils, AnEmptyPlaylistsPathSharesNothing)
 
   settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, "");
   EXPECT_FALSE(CFileUtils::RemoteAccessAllowed("special://temp/remote-access.txt"));
+  EXPECT_FALSE(CFileUtils::RemoteAccessAllowed("music/remote-access.m3u"));
+  EXPECT_FALSE(CFileUtils::RemoteAccessAllowed("mixed/remote-access.m3u"));
 
   settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, "special://temp/playlists/");
   EXPECT_TRUE(CFileUtils::RemoteAccessAllowed("special://temp/playlists/remote-access.m3u"));
