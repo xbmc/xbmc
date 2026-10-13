@@ -24,7 +24,7 @@
 #include <taglib/tiostream.h>
 
 // TagLib::offset_t below needs 2.0, but the Matroska tag API this stream exists to feed needs
-// 2.3.1 - see TagLibVersion.h.
+// 2.3.2 - see TagLibVersion.h.
 #ifdef HAS_TAGLIB_MATROSKA
 
 /*!
@@ -276,4 +276,4 @@ private:
   size_t m_bufFill = 0; //!< Number of valid bytes in the buffer
 };
 
-#endif // TagLib >= 2.3.1
+#endif // TagLib >= 2.3.2
