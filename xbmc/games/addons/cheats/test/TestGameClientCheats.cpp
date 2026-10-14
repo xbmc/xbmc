@@ -208,8 +208,11 @@ protected:
   }
   std::string GetSelectionPath(const std::string& gamePath) const override
   {
-    return URIUtils::AddFileToFolder(
-        selectionDirectory, URIUtils::GetFileName(CGameClientCheats::GetSelectionPath(gamePath)));
+    const std::string path = CGameClientCheats::GetSelectionPath(gamePath);
+    std::string gameFolder = URIUtils::GetDirectory(path);
+    URIUtils::RemoveSlashAtEnd(gameFolder);
+    return URIUtils::AddFileToFolder(selectionDirectory, URIUtils::GetFileName(gameFolder),
+                                     URIUtils::GetFileName(path));
   }
   CCheatPack ReadPack(const std::string& path) override
   {

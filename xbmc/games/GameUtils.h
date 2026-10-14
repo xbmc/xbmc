@@ -98,6 +98,19 @@ public:
   static std::set<std::string> GetGameExtensions();
 
   /*!
+   * \brief Get the folder that holds everything kept for one game: its
+   * savestates, in-game saves, disc state and cheat choice
+   *
+   * The folder follows the game's file name and the two folders above it, so
+   * it stays the same when the library moves to another drive or share.
+   *
+   * \param gamePath The path of the game file
+   *
+   * \return The folder, which may not exist yet
+   */
+  static std::string GetGameFolder(const std::string& gamePath);
+
+  /*!
    * \brief Check if game script or game add-on can be launched directly
    *
    * \return true if the add-on can be launched, false otherwise

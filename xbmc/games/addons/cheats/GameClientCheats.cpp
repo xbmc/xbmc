@@ -576,8 +576,7 @@ CCheatPack CGameClientCheats::ReadPack(const std::string& path)
 
 std::string CGameClientCheats::GetSelectionPath(const std::string& gamePath) const
 {
-  return URIUtils::AddFileToFolder("special://masterprofile/games/cheats",
-                                   CCheatUtils::GetSelectionFileName(gamePath));
+  return URIUtils::AddFileToFolder(CGameUtils::GetGameFolder(gamePath), "cheats.xml");
 }
 
 std::string CGameClientCheats::ReadChoice(const std::string& gamePath) const
@@ -588,7 +587,7 @@ std::string CGameClientCheats::ReadChoice(const std::string& gamePath) const
   if (xml.LoadFile(GetSelectionPath(gamePath)))
   {
     const auto* root = xml.FirstChildElement("cheatpack");
-    if (root && root->Attribute("game", gamePath.c_str()))
+    if (root)
     {
       if (const char* candidate = root->Attribute("candidate"))
         return candidate;

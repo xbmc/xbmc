@@ -10,10 +10,9 @@
 
 #include "GameClient.h"
 #include "GameClientTranslator.h"
-#include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "games/GameServices.h"
+#include "games/GameUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -22,9 +21,9 @@
 using namespace KODI;
 using namespace GAME;
 
-#define INGAME_SAVES_DIRECTORY "InGameSaves"
-#define INGAME_SAVES_EXTENSION_SAVE_RAM ".sav"
-#define INGAME_SAVES_EXTENSION_RTC ".rtc"
+// The names RetroArch uses, so saves can be copied between the two
+#define INGAME_SAVES_SAVE_RAM "savedata.srm"
+#define INGAME_SAVES_RTC "savedata.rtc"
 
 CGameClientInGameSaves::CGameClientInGameSaves(CGameClient* addon,
                                                const AddonInstance_Game* dllStruct)
@@ -49,27 +48,27 @@ void CGameClientInGameSaves::Save()
 
 std::string CGameClientInGameSaves::GetPath(GAME_MEMORY memoryType)
 {
-  const CGameServices& gameServices = CServiceBroker::GetGameServices();
-  std::string path =
-      URIUtils::AddFileToFolder(gameServices.GetSavestatesFolder(), INGAME_SAVES_DIRECTORY);
-  if (!XFILE::CDirectory::Exists(path))
-    XFILE::CDirectory::Create(path);
-
-  // Append save game filename
-  std::string gamePath = URIUtils::GetFileName(m_gameClient->GetGamePath());
-  path = URIUtils::AddFileToFolder(path, gamePath.empty() ? m_gameClient->ID() : gamePath);
-
-  // Append file extension
+  std::string fileName;
   switch (memoryType)
   {
     case GAME_MEMORY_SAVE_RAM:
-      return path + INGAME_SAVES_EXTENSION_SAVE_RAM;
-    case GAME_MEMORY_RTC:
-      return path + INGAME_SAVES_EXTENSION_RTC;
-    default:
+      fileName = INGAME_SAVES_SAVE_RAM;
       break;
+    case GAME_MEMORY_RTC:
+      fileName = INGAME_SAVES_RTC;
+      break;
+    default:
+      return std::string();
   }
-  return std::string();
+
+  // A standalone game has no file, so its add-on stands in for one
+  const std::string& gamePath = m_gameClient->GetGamePath();
+  const std::string folder =
+      CGameUtils::GetGameFolder(gamePath.empty() ? m_gameClient->ID() : gamePath);
+  if (!XFILE::CDirectory::Exists(folder))
+    XFILE::CDirectory::Create(folder);
+
+  return URIUtils::AddFileToFolder(folder, fileName);
 }
 
 void CGameClientInGameSaves::Load(GAME_MEMORY memoryType)

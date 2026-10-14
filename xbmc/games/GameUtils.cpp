@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "addons/Addon.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
@@ -37,14 +38,49 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/Crc32.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
+#include <span>
+#include <string_view>
+#include <vector>
 
 using namespace KODI;
 using namespace GAME;
+
+namespace
+{
+constexpr auto GAMES_FOLDER = "special://profile/games";
+constexpr size_t MAX_NAME_BYTES = 200;
+// The file name and the two folders above it
+constexpr size_t KEY_PARTS = 3;
+
+// The folders and file name of a location, without its protocol or server.
+// A game in an archive continues the path of the archive's own location.
+void AddPathParts(const CURL& url, std::vector<std::string>& parts)
+{
+  if (url.HasParentInHostname())
+    AddPathParts(CURL(url.GetHostName()), parts);
+
+  // A Windows drive letter or network server is where the library is, not part of it
+  bool skipRoot = URIUtils::IsDOSPath(url.GetFileName());
+
+  constexpr std::array<std::string_view, 2> separators{"/", "\\"};
+  for (std::string& part : StringUtils::Split(url.GetFileName(), separators))
+  {
+    if (part.empty())
+      continue;
+    if (skipRoot)
+      skipRoot = false;
+    else
+      parts.emplace_back(std::move(part));
+  }
+}
+} // namespace
 
 // Initialize static state
 ADDON::VECADDONS CGameUtils::m_installableGameAddons;
@@ -448,6 +484,38 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   extensions.erase("/");
 
   return extensions;
+}
+
+std::string CGameUtils::GetGameFolder(const std::string& gamePath)
+{
+  // A game reaches here as the item's path or as the game client loaded it,
+  // with special:// resolved and file:// dropped, and a login in a URL can
+  // change. Every form has to find the same folder.
+  CURL url(CSpecialProtocol::TranslatePath(gamePath));
+  if (url.GetProtocol() == "file")
+    url.SetProtocol("");
+  const std::string path = url.GetWithoutUserDetails();
+
+  // Leave room for the CRC within a file system's 255-byte limit on a name,
+  // without splitting a UTF-8 character
+  std::string name = CUtil::MakeLegalFileName(URIUtils::GetFileName(path));
+  if (name.size() > MAX_NAME_BYTES)
+  {
+    size_t end = MAX_NAME_BYTES;
+    while (end > 0 && (static_cast<unsigned char>(name[end]) & 0xC0) == 0x80)
+      --end;
+    name.resize(end);
+  }
+
+  // Enough of the path to tell PS1/Worms (USA)/Worms (USA).cue from
+  // Dreamcast/Worms (USA)/Worms (USA).cue, but not the drive or share above it
+  std::vector<std::string> parts;
+  AddPathParts(url, parts);
+  const std::span<const std::string> key = std::span(parts).last(std::min(parts.size(), KEY_PARTS));
+
+  return URIUtils::AddFileToFolder(
+      GAMES_FOLDER,
+      StringUtils::Format("{}_{:08x}", name, Crc32::Compute(StringUtils::Join(key, "/"))));
 }
 
 bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)

@@ -207,12 +207,6 @@ bool CGameClient::Initialize(void)
   if (!CDirectory::Exists(Profile()))
     CDirectory::Create(Profile());
 
-  // Ensure directory exists for savestates
-  const CGameServices& gameServices = CServiceBroker::GetGameServices();
-  std::string savestatesDir = URIUtils::AddFileToFolder(gameServices.GetSavestatesFolder(), ID());
-  if (!CDirectory::Exists(savestatesDir))
-    CDirectory::Create(savestatesDir);
-
   if (!AddonProperties().InitializeProperties())
     return false;
 

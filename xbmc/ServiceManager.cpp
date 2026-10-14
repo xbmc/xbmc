@@ -227,8 +227,8 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
   m_peripherals->Initialise();
 
   m_gameServices = std::make_unique<GAME::CGameServices>(
-      *m_gameControllerManager, *m_gameRenderManager, *m_peripherals, *profileManager,
-      *m_inputManager, *m_addonMgr, *m_fileExtensionProvider);
+      *m_gameControllerManager, *m_gameRenderManager, *m_peripherals, *m_inputManager, *m_addonMgr,
+      *m_fileExtensionProvider);
   m_gameServices->Initialize();
 
   m_contextMenuManager->Init();
