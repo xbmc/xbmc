@@ -179,7 +179,8 @@ bool GetPlaylistsFromDisc(const CURL& url,
 {
   const CURL url2{URIUtils::AddFileToFolder(url.GetHostName(), "BDMV", "PLAYLIST", "")};
   CDirectory::CHints hints;
-  hints.flags = flags;
+  // Only the names are needed, each playlist being read in full below
+  hints.flags = flags | DIR_FLAG_NO_FILE_INFO;
   CFileItemList allTitles;
   if (!CDirectory::GetDirectory(url2, allTitles, hints))
     return false;
