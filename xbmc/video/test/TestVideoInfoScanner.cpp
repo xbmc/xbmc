@@ -25,6 +25,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoManagerTypes.h"
+#include "video/jobs/VideoLibraryScanningJob.h"
 
 #include <chrono>
 #include <filesystem>
@@ -356,6 +357,17 @@ protected:
   bool m_eventLog{false};
 };
 } // namespace
+
+TEST_F(TestVideoInfoScanner, ACancelledScanDoesNotHideTheSameScanAskedForAgain)
+{
+  CVideoLibraryScanningJob cancelled{m_root};
+  const CVideoLibraryScanningJob again{m_root};
+  ASSERT_TRUE(cancelled.Equals(&again));
+
+  cancelled.Cancel();
+
+  EXPECT_FALSE(cancelled.Equals(&again));
+}
 
 // Movies
 
