@@ -396,8 +396,10 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
 
   pItem->SetArt(art);
 
-  // parent folder to apply the thumb to and to search for local actor thumbs
-  std::string parentDir = URIUtils::GetParentPath(pItem->GetPath());
+  // parent folder to apply the thumb to and to search for local actor thumbs - a folder item (a tv
+  // show) is its own
+  const std::string parentDir{pItem->IsFolder() ? pItem->GetPath()
+                                                : URIUtils::GetParentPath(pItem->GetPath())};
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
   {
