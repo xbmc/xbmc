@@ -1925,6 +1925,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // with VIDEO_TS or BDMV can be ignored.
     // THere can be a BACKUP/INDEX.BDMV which needs to be ignored (and broke the old while loop here)
 
+    // A local Windows path is separated by backslashes
+    const auto isBackupIndex = [](const std::string& upperPath)
+    {
+      return upperPath.find("BACKUP/INDEX.BDMV") != std::string::npos ||
+             upperPath.find("BACKUP\\INDEX.BDMV") != std::string::npos;
+    };
+
     // Get folders to remove
     std::vector<std::string> foldersToRemove;
     for (const auto& item : items)
@@ -1932,8 +1939,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const std::string file = StringUtils::ToUpper(item->GetPath());
       if (file.find("VIDEO_TS.IFO") != std::string::npos)
         foldersToRemove.emplace_back(StringUtils::ToUpper(URIUtils::GetDirectory(file)));
-      if (file.find("INDEX.BDMV") != std::string::npos &&
-          file.find("BACKUP/INDEX.BDMV") == std::string::npos)
+      if (file.find("INDEX.BDMV") != std::string::npos && !isBackupIndex(file))
         foldersToRemove.emplace_back(
             StringUtils::ToUpper(URIUtils::GetParentPath(URIUtils::GetDirectory(file))));
     }
@@ -1950,8 +1956,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                      [&](const std::string& removePath)
                                      { return path.rfind(removePath, 0) == 0; }) > 0) &&
                       file != "VIDEO_TS.IFO" &&
-                      (file != "INDEX.BDMV" ||
-                       fileAndPath.find("BACKUP/INDEX.BDMV") != std::string::npos);
+                      (file != "INDEX.BDMV" || isBackupIndex(fileAndPath));
              });
 
     bool hasEpisodeCandidates = false;
