@@ -66,10 +66,17 @@ void AddPathParts(const CURL& url, std::vector<std::string>& parts)
   if (url.HasParentInHostname())
     AddPathParts(CURL(url.GetHostName()), parts);
 
+  // A Windows drive letter or network server is where the library is, not part of it
+  bool skipRoot = URIUtils::IsDOSPath(url.GetFileName());
+
   constexpr std::array<std::string_view, 2> separators{"/", "\\"};
   for (std::string& part : StringUtils::Split(url.GetFileName(), separators))
   {
-    if (!part.empty())
+    if (part.empty())
+      continue;
+    if (skipRoot)
+      skipRoot = false;
+    else
       parts.emplace_back(std::move(part));
   }
 }
