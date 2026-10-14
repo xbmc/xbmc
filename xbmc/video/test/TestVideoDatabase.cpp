@@ -1725,3 +1725,14 @@ TEST_F(TestPlayStateAnnouncements, AnnouncesAFileWithoutCredentials)
   ASSERT_EQ(1u, files.size());
   EXPECT_EQ("smb://server/videos/film.mkv", files[0].data["file"].asString());
 }
+
+// Writes made later on the connection would otherwise never be committed
+TEST_F(TestVideoDatabaseClean, EndsItsTransactionWhenThePathsHoldNoMedia)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+
+  m_db.CleanDatabase(nullptr, {m_db.GetPathId(movies)}, false);
+
+  EXPECT_FALSE(m_db.InTransaction());
+}
