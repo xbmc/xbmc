@@ -9,6 +9,7 @@
 #include "FileItem.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "TextureCache.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonVersion.h"
 #include "addons/IAddon.h"
@@ -20,6 +21,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
+#include "jobs/JobManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -665,6 +667,16 @@ protected:
 
   void TearDown() override
   {
+    if (m_textureCache)
+    {
+      // First, as its jobs are cancelled with the job manager
+      CServiceBroker::UnregisterTextureCache();
+      CServiceBroker::GetJobManager()->CancelJobs();
+      CServiceBroker::GetJobManager()->Restart();
+      CServiceBroker::UnregisterJobManager();
+      if (m_previousJobManager)
+        CServiceBroker::RegisterJobManager(m_previousJobManager);
+    }
     Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB, m_extractThumb);
     TestVideoInfoScanner::TearDown();
   }
@@ -690,10 +702,21 @@ protected:
     return File(folder, name);
   }
 
+  //! Caches the art a scan finds, as the cast's thumbs are, in a texture cache of the test's own
+  void UseTextureCache()
+  {
+    m_previousJobManager = CServiceBroker::GetJobManager();
+    CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+    CServiceBroker::RegisterTextureCache(std::make_shared<CTextureCache>());
+    m_textureCache = true;
+  }
+
   int CountShows() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM tvshow"); }
   int CountEpisodes() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"); }
 
   const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
+  bool m_textureCache{false};
+  std::shared_ptr<CJobManager> m_previousJobManager;
 };
 } // namespace
 
@@ -785,6 +808,22 @@ TEST_F(TestVideoInfoScannerTvShows, ABlurayRipInAShowIsOneEpisode)
   ASSERT_EQ(1U, episodes.size());
   EXPECT_EQ(1, episodes[0].iSeason);
   EXPECT_EQ(1, episodes[0].iEpisode);
+}
+
+TEST_F(TestVideoInfoScannerTvShows, AShowsCastHaveTheThumbsInItsActorsFolder)
+{
+  UseTextureCache();
+  // A show's item is its folder, rather than a file in the folder
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo",
+       "<tvshow><title>Show</title><actor><name>Actor Name</name></actor></tvshow>");
+  const std::string thumb{File(Folder(show, ".actors"), "Actor_Name.jpg")};
+  Episode(Folder(show, "Season 1"), "Show S01E01.mkv");
+
+  Scan();
+
+  EXPECT_EQ(thumb, m_db.GetSingleValue(
+                       "SELECT url FROM art WHERE media_type = 'actor' AND type = 'thumb'"));
 }
 
 // TV shows looked up with a scraper
