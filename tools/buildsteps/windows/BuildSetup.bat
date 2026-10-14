@@ -90,7 +90,9 @@ IF DEFINED BUILDDIR (
   )
 
   cmake.exe --build . --config "%buildconfig%" --parallel
-  IF %errorlevel%==1 (
+  SET buildresult=%errorlevel%
+  CALL :CCACHE_REPORT
+  IF %buildresult%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE
   )
@@ -107,6 +109,26 @@ IF DEFINED BUILDDIR (
   IF "%cmakeProps%" NEQ "" GOTO MAKE_APPX
   GOTO MAKE_BUILD_EXE
 
+
+rem Report which ccache the configured build selected and its effective settings.
+rem Informational only: never changes the build result and never resets statistics.
+rem Runs in the build directory, where CMakeCache.txt records the selected CCACHE_PROGRAM.
+:CCACHE_REPORT
+  SET ccache_program=
+  IF NOT EXIST CMakeCache.txt EXIT /B 0
+  FOR /F "tokens=1,* delims==" %%a IN ('findstr /B /C:"CCACHE_PROGRAM:" CMakeCache.txt 2^>NUL') DO SET ccache_program=%%b
+  IF NOT DEFINED ccache_program EXIT /B 0
+  IF "%ccache_program:~-9%"=="-NOTFOUND" (
+    ECHO ccache: not used ^(no ccache executable found^)
+    EXIT /B 0
+  )
+  ECHO ------------------------------------------------------------
+  ECHO ccache: %ccache_program%
+  "%ccache_program%" --version 2>&1 | findstr /B /C:"ccache version"
+  "%ccache_program%" --show-config 2>&1 | findstr /R /C:" cache_dir = " /C:" max_size = "
+  "%ccache_program%" --show-stats 2>&1
+  ECHO ------------------------------------------------------------
+  EXIT /B 0
 
 :MAKE_BUILD_EXE
   ECHO Copying files...
