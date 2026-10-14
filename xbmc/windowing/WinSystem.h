@@ -58,6 +58,9 @@ class CVideoReferenceClock;
 
 struct VideoPicture;
 
+//! Prefix of the name returned by CWinSystemBase::GetName() for the GBM backend.
+constexpr const char* WINDOW_SYSTEM_NAME_GBM = "gbm";
+
 class CWinSystemBase
 {
 public:
