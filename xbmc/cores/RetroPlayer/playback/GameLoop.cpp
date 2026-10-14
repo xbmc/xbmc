@@ -8,6 +8,9 @@
 
 #include "GameLoop.h"
 
+#include "utils/log.h"
+
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 
@@ -26,11 +29,17 @@ constexpr auto PAUSE_SLEEP = 5s;
 // How many frames the loop may fall behind before it gives up the deficit
 // rather than trying to run them back to back
 constexpr unsigned int MAX_FRAME_DEFICIT = 2;
+
+double ToMs(std::chrono::duration<double> duration)
+{
+  return duration.count() * 1000.0;
+}
 } // namespace
 
-CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps)
+CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps, CDisplayPacing* displayPacing)
   : CThread("GameLoop"),
     m_callback(callback),
+    m_displayPacing(displayPacing),
     m_fps(fps != 0.0 ? fps : DEFAULT_FPS)
 {
 }
@@ -127,10 +136,14 @@ void CGameLoop::Process(void)
       if (m_lastFrameUs == std::chrono::microseconds::zero())
         m_lastFrameUs = NowUs();
 
+      if (m_loopSpeedFactor == 1.0 && PaceToDisplay())
+        continue;
+      StopPacing();
+
       // Trigger the appropriate callback depending on the direction of time
       // (forward or rewind)
       if (m_loopSpeedFactor > 0.0)
-        m_callback->FrameEvent();
+        RunFrame();
       else if (m_loopSpeedFactor < 0.0)
         m_callback->RewindEvent();
 
@@ -167,6 +180,108 @@ void CGameLoop::Process(void)
 
   // Notify the callback that the loop has finished processing
   m_callback->EndEvent();
+}
+
+bool CGameLoop::PaceToDisplay()
+{
+  if (m_displayPacing == nullptr || !m_displayPacing->Enabled())
+    return false;
+
+  using Clock = CDisplayPacing::Clock;
+  const Clock::time_point now = Clock::now();
+
+  const Clock::duration interval = m_displayPacing->Interval(now);
+  if (interval == Clock::duration::zero())
+  {
+    if (PacingChanged(PacingState::NO_INTERVAL))
+      CLog::Log(LOGINFO, "RetroPlayer[PACING]: Not pacing, the screen isn't taking frames "
+                         "regularly");
+    return false;
+  }
+
+  const double refreshRate = 1s / std::chrono::duration<double>(interval);
+  const double rate = refreshRate / m_fps.load();
+  if (std::abs(rate - 1.0) > m_displayPacing->MaxRateDifference())
+  {
+    if (PacingChanged(PacingState::RATE_TOO_FAR))
+      CLog::Log(LOGINFO,
+                "RetroPlayer[PACING]: Not pacing, the screen's {:.3f} Hz is too far from the "
+                "game's {:.3f} fps",
+                refreshRate, m_fps.load());
+    return false;
+  }
+
+  // Started this long before the screen takes it, a frame is ready in time.
+  // One that can't be gains nothing from waiting for the screen.
+  const Clock::duration lead = m_frameCost + m_displayPacing->Margin();
+  if (lead >= interval)
+  {
+    if (PacingChanged(PacingState::FRAME_TOO_SLOW))
+      CLog::Log(LOGINFO,
+                "RetroPlayer[PACING]: Not pacing, a {:.1f} ms frame and the {:.1f} ms margin "
+                "don't fit in a {:.1f} ms refresh",
+                ToMs(m_frameCost), ToMs(m_displayPacing->Margin()), ToMs(interval));
+    return false;
+  }
+
+  if (PacingChanged(PacingState::PACED))
+    CLog::Log(LOGINFO,
+              "RetroPlayer[PACING]: Pacing the game to the screen's {:.3f} Hz at {:.2f}% speed",
+              refreshRate, rate * 100.0);
+
+  // One frame for each one the screen takes. The renderer hasn't taken the
+  // last one yet if the next take is still the one it was run for.
+  Clock::time_point take = m_displayPacing->NextTake(now);
+  if (m_lastPacedTake != Clock::time_point{} && take - m_lastPacedTake < interval / 2)
+    take = m_lastPacedTake + interval;
+
+  const Clock::time_point start = take - lead;
+  if (start > now && m_sleepEvent.Wait(start - now))
+    return true; // Woken by a change, such as of speed; look again
+
+  RunFrame();
+
+  m_lastPacedTake = take;
+  m_displayPacing->SetPlaybackRate(rate);
+  m_displayPacing->SetPaced(true);
+
+  // The timer carries on from here if pacing stops
+  m_lastFrameUs = NowUs();
+
+  return true;
+}
+
+void CGameLoop::RunFrame()
+{
+  using Clock = CDisplayPacing::Clock;
+
+  const Clock::time_point begin = Clock::now();
+  m_callback->FrameEvent();
+  const Clock::duration cost = Clock::now() - begin;
+
+  // Follow the slowest recent frame, letting it go slowly, so that one quick
+  // frame doesn't make the next start too late. Timed whether or not it was
+  // paced, so that a slow frame which stops pacing is forgotten again.
+  m_frameCost = std::max(cost, m_frameCost - m_frameCost / 64);
+}
+
+void CGameLoop::StopPacing()
+{
+  if (m_displayPacing == nullptr || m_lastPacedTake == CDisplayPacing::Clock::time_point{})
+    return;
+
+  m_lastPacedTake = {};
+  m_displayPacing->SetPlaybackRate(1.0);
+  m_displayPacing->SetPaced(false);
+}
+
+bool CGameLoop::PacingChanged(PacingState state)
+{
+  if (state == m_pacingState)
+    return false;
+
+  m_pacingState = state;
+  return true;
 }
 
 std::chrono::microseconds CGameLoop::FrameTimeUs() const
