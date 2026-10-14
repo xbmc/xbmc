@@ -34,6 +34,7 @@ public:
   void OnPlayBackSpeedChanged(int iSpeed) override;
   void OnAVChange() override;
   void OnAVStarted(const CFileItem& file) override;
+  void OnContentGeometryChanged(const LiveGeometryUpdate& update) override;
   void RequestVideoSettings(const CFileItem& fileItem) override;
   void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) override;
 };

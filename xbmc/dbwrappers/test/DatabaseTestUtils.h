@@ -54,3 +54,26 @@ inline bool UpgradeThroughManager(DatabaseSettings CAdvancedSettings::* slot,
 
   return initialized;
 }
+
+/*!
+ * \brief Restates the tables the 152 video upgrade changes as 150 defined them, so that upgrade can
+ * run over a database Connect() built at the current schema.
+ *
+ * Restated rather than derived from the current tables, so a column added to the 152 upgrade and
+ * not taken back out here cannot abort the upgrade on a duplicate.
+ */
+inline void RestateVideo150(CDatabase& db)
+{
+  ASSERT_TRUE(db.ExecuteQuery("DROP TABLE contentgeometry"));
+  ASSERT_TRUE(db.ExecuteQuery("DROP TABLE settings"));
+  ASSERT_TRUE(db.ExecuteQuery(
+      "CREATE TABLE settings ( idFile integer, Deinterlace bool,"
+      "ViewMode integer,ZoomAmount float, PixelRatio float, VerticalShift float, AudioStream "
+      "integer, SubtitleStream integer,"
+      "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
+      "VolumeAmplification float, AudioDelay float, ResumeTime integer,"
+      "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
+      "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, "
+      "VideoStream integer,"
+      "TonemapMethod integer, TonemapParam float, Orientation integer, CenterMixLevel integer)"));
+}
