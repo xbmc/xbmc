@@ -423,6 +423,22 @@ protected:
 };
 } // namespace
 
+// The backup copy of the index is matched too by a pattern found anywhere in the path, as an air
+// date is
+TEST_F(TestVideoInfoScanner, ABlurayRipOfADatedEpisodeIsOneEpisode)
+{
+  const std::string show{Folder(m_root, "Show")};
+  BlurayRip(Folder(show, "Show.2023-11-05"));
+
+  TestScanner scanner{m_settings};
+  CFileItem item{show, true};
+  EPISODELIST episodes;
+  EXPECT_EQ(TestScanner::EpisodeResult::FOUND_EPISODES,
+            scanner.EnumerateSeriesFolder(&item, episodes));
+
+  EXPECT_EQ(1U, episodes.size());
+}
+
 TEST_F(TestVideoInfoScanner, ACancelledScanDoesNotHideTheSameScanAskedForAgain)
 {
   CVideoLibraryScanningJob cancelled{m_root};
