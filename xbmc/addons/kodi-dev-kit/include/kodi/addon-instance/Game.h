@@ -426,6 +426,23 @@ public:
 
   //============================================================================
   /// @brief **Callback to Kodi Function**\n
+  /// Name a file the game client looked for and couldn't find, such as a
+  /// BIOS file, so Kodi can tell the user which one is missing.
+  ///
+  /// @param[in] path The file's path, relative to the system directory
+  ///
+  /// @remarks Call it before returning @ref GAME_ERROR_MISSING_FILES. It does
+  ///          nothing with a Kodi older than game API 8.3.0.
+  ///
+  void ReportMissingFile(const std::string& path)
+  {
+    if (IsInstanceAPIVersionAtLeast(8, 3, 0))
+      m_instanceData->toKodi->ReportMissingFile(m_instanceData->toKodi->kodiInstance, path.c_str());
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
   /// Get the speed the game is being played back at
   ///
   /// @return The speed as a multiple of normal speed
