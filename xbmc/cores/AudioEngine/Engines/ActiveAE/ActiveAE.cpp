@@ -2483,8 +2483,10 @@ bool CActiveAE::RunStages()
         if (!m_sinkHasVolume || m_muted)
           Deamplify(*(out->pkt));
 
-        if (m_mode == MODE_TRANSCODE && m_encoder)
+        if (m_mode == MODE_TRANSCODE && m_encoder &&
+            !(out->pkt->nb_samples == 0 && out->pkt->pause_burst_ms > 0))
         {
+          // sync pause burst: nothing to encode, goes to the sink unchanged
           CSampleBuffer *buf = nullptr;
           if (out->pkt->nb_samples)
           {
@@ -2663,6 +2665,20 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     }
   }
 
+  // transcode feeds a bitstream sink: sync corrections must be pause bursts,
+  // not encoded silence queued behind the audio the sink still holds.
+  // With more than one stream the other streams are mixed into this packet, so they
+  // keep the encoded silence (a pause packet would drop them).
+  const bool transcodePause = (m_mode == MODE_TRANSCODE && m_streams.size() == 1);
+  int transcodeBurstMs = 0;
+  if (transcodePause)
+  {
+    transcodeBurstMs = static_cast<int>(m_sinkFormat.m_streamInfo.GetDuration());
+    if (transcodeBurstMs <= 0 && m_encoderFormat.m_sampleRate > 0)
+      transcodeBurstMs =
+          static_cast<int>(m_encoderFormat.m_frames * 1000 / m_encoderFormat.m_sampleRate);
+  }
+
   // While the error is averaged, samples that will not be skipped stay audible.
   double errorSoFar{0.0};
   const bool audible{stream->m_syncError.GetSoFar(errorSoFar) && keepAudible(errorSoFar)};
@@ -2673,6 +2689,11 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     {
       buf->pkt->nb_samples = 0;
       buf->pkt->pause_burst_ms = stream->m_processingBuffers->m_inputFormat.m_streamInfo.GetDuration();
+    }
+    else if (transcodePause)
+    {
+      buf->pkt->nb_samples = 0;
+      buf->pkt->pause_burst_ms = transcodeBurstMs;
     }
     else
     {
@@ -2708,6 +2729,16 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
           ret->pkt->pause_burst_ms = error;
           if (error > stream->m_format.m_streamInfo.GetDuration())
             ret->pkt->pause_burst_ms = stream->m_format.m_streamInfo.GetDuration();
+
+          stream->m_syncError.Correction(-ret->pkt->pause_burst_ms);
+          error -= ret->pkt->pause_burst_ms;
+        }
+        else if (transcodePause)
+        {
+          ret->pkt->nb_samples = 0;
+          // always a whole frame (that is what the stats count per packet),
+          // skipped when less than half a frame is left to correct
+          ret->pkt->pause_burst_ms = (error > transcodeBurstMs / 2) ? transcodeBurstMs : 0;
 
           stream->m_syncError.Correction(-ret->pkt->pause_burst_ms);
           error -= ret->pkt->pause_burst_ms;
