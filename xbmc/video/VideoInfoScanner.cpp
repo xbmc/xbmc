@@ -2461,6 +2461,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     EPISODELIST episodes;
     bool hasEpisodeGuide = false;
+    // A failed lookup doesn't stop the other episodes being added, but makes the result NOT_FOUND
+    // so that the folder isn't hashed and the next scan tries the failed episodes again
+    bool lookupFailed{false};
 
     std::unordered_map<std::string, int> episodeMap;
     for (const auto& file : files)
@@ -2557,7 +2560,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
           CVideoInfoDownloader imdb(scraper);
           if (!imdb.GetEpisodeList(url, episodes))
-            return InfoRet::NOT_FOUND;
+          {
+            CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the episode guide of '{}'",
+                      showInfo.m_strTitle);
+            lookupFailed = true;
+          }
 
           hasEpisodeGuide = true;
         }
@@ -2565,13 +2572,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if (episodes.empty())
       {
-        CLog::Log(LOGERROR,
-                  "VideoInfoScanner: Asked to lookup episode {}"
-                  " online, but we have either no episode guide or"
-                  " we are using the local scraper. Check your tvshow.nfo and make"
-                  " sure the <episodeguide> tag is in place and/or use an online"
-                  " scraper.",
-                  CURL::GetRedacted(file->strPath));
+        // An episode guide that couldn't be fetched has been reported already
+        if (!hasEpisodeGuide)
+          CLog::Log(LOGERROR,
+                    "VideoInfoScanner: Asked to lookup episode {}"
+                    " online, but we have either no episode guide or"
+                    " we are using the local scraper. Check your tvshow.nfo and make"
+                    " sure the <episodeguide> tag is in place and/or use an online"
+                    " scraper.",
+                    CURL::GetRedacted(file->strPath));
         continue;
       }
 
@@ -2678,7 +2687,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         scraperItem.SetPath(file->strPath);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *scraperItem.GetVideoInfoTag(),
                                     pDlgProgress))
-          return InfoRet::NOT_FOUND; //! @todo should we just skip to the next episode?
+        {
+          CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the details of episode {}",
+                    CURL::GetRedacted(file->strPath));
+          lookupFailed = true;
+          continue;
+        }
 
         if (result == InfoType::COMBINED || result == InfoType::OVERRIDE)
           scraperItem.GetVideoInfoTag()->Merge(*item.GetVideoInfoTag());
@@ -2709,7 +2723,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             file->cDate.GetAsLocalizedDate(), file->strTitle);
       }
     }
-    return InfoRet::ADDED;
+    return lookupFailed ? InfoRet::NOT_FOUND : InfoRet::ADDED;
   }
 
   bool CVideoInfoScanner::GetDetails(CFileItem* pItem,

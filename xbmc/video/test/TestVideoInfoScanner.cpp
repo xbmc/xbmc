@@ -708,3 +708,53 @@ TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
   EXPECT_EQ(1, CountShows());
   EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
 }
+
+TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWithAnNfoIsAddedWhenTheEpisodeGuideFails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo",
+       "<tvshow><title>Show</title><episodeguide><url cache=\"guide.xml\">"
+       "http://scraper.invalid/guide</url></episodeguide></tvshow>");
+  ScraperFile("guide.xml", "<error/>");
+  const std::string season{Folder(show, "Season 1")};
+  const std::string first{File(season, "Show S01E01.mkv")};
+  const std::string second{Episode(season, "Show S01E02.mkv")};
+  Scan();
+  EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
+  ASSERT_EQ(1, CountEpisodes());
+
+  ScraperFile("guide.xml", "<episodeguide><episode><title>First</title><url cache=\"first.xml\">"
+                           "http://scraper.invalid/first</url><epnum>1</epnum><season>1</season>"
+                           "</episode></episodeguide>");
+  ScraperFile("first.xml", "<details><title>First</title></details>");
+  Scan();
+
+  EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
+  EXPECT_EQ(2, CountEpisodes());
+}
+
+TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWhoseDetailsFailedIsLookedUpAgain)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo",
+       "<tvshow><title>Show</title><episodeguide><url cache=\"guide.xml\">"
+       "http://scraper.invalid/guide</url></episodeguide></tvshow>");
+  ScraperFile("guide.xml", "<episodeguide><episode><title>First</title><url cache=\"first.xml\">"
+                           "http://scraper.invalid/first</url><epnum>1</epnum><season>1</season>"
+                           "</episode></episodeguide>");
+  ScraperFile("first.xml", "<error/>");
+  const std::string season{Folder(show, "Season 1")};
+  const std::string first{File(season, "Show S01E01.mkv")};
+  const std::string second{Episode(season, "Show S01E02.mkv")};
+  Scan();
+  EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
+  ASSERT_EQ(1, CountEpisodes());
+
+  ScraperFile("first.xml", "<details><title>First</title></details>");
+  Scan();
+
+  EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
+  EXPECT_EQ(2, CountEpisodes());
+}
