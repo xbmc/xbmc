@@ -269,6 +269,7 @@ private:
   static bool cb_enable_hardware_rendering(void* kodiInstance,
                                            const game_hw_rendering_properties* properties);
   static void cb_close_game(KODI_HANDLE kodiInstance);
+  static void cb_report_missing_file(KODI_HANDLE kodiInstance, const char* path);
   static double cb_get_playback_speed(KODI_HANDLE kodiInstance);
   static void cb_set_game_timing(KODI_HANDLE kodiInstance, const game_system_timing* timingInfo);
   static bool cb_start_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HANDLE stream);
@@ -372,6 +373,7 @@ private:
   // stopped the game before it started.
   std::atomic<double> m_playbackSpeed{1.0};
   std::string m_gamePath;
+  std::string m_missingFile; // The first file the client reported missing while loading
   bool m_bRequiresGameLoop = false;
   mutable size_t m_serializeSize = 0;
   IGameInputCallback* m_input = nullptr; // The input callback passed to OpenFile()
