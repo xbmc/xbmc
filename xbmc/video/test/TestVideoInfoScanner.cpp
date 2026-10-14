@@ -690,3 +690,21 @@ TEST_F(TestVideoInfoScannerTvShows, ABlurayRipInAShowIsOneEpisode)
   EXPECT_EQ(1, episodes[0].iSeason);
   EXPECT_EQ(1, episodes[0].iEpisode);
 }
+
+// TV shows looked up with a scraper
+
+TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  DetailsFail("Show");
+  const std::string episode{Episode(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv")};
+  Scan();
+  ASSERT_EQ(0, CountShows());
+  EXPECT_EQ(0, CountEpisodes());
+
+  Details("Show", "<details><title>Show</title></details>");
+  Scan();
+
+  EXPECT_EQ(1, CountShows());
+  EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+}
