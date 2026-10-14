@@ -80,6 +80,7 @@ public:
 private:
   CAddon &m_addon;
   CTimer m_timer;
+  CCriticalSection m_critical;
 };
 
 bool CSkinSetting::Serialize(TiXmlElement* parent) const
@@ -664,6 +665,7 @@ void CSkinInfo::ToggleDebug()
 
 int CSkinInfo::TranslateString(const std::string &setting)
 {
+  std::unique_lock lock(m_settingsCritical);
   // run through and see if we have this setting
   for (const auto& [id, settingstring] : m_strings)
   {
@@ -693,21 +695,24 @@ int CSkinInfo::GetInt(int setting) const
   return settingValueInt;
 }
 
-const std::string& CSkinInfo::GetString(int setting) const
+std::string CSkinInfo::GetString(int setting) const
 {
+  std::unique_lock lock(m_settingsCritical);
   const auto& it = m_strings.find(setting);
   if (it != m_strings.end())
     return it->second->value;
 
-  return StringUtils::Empty;
+  return {};
 }
 
 void CSkinInfo::SetString(int setting, std::string_view label)
 {
+  std::unique_lock lock(m_settingsCritical);
   auto&& it = m_strings.find(setting);
   if (it != m_strings.end())
   {
     it->second->value = label;
+    lock.unlock();
     m_settingsUpdateHandler->TriggerSave();
     return;
   }
@@ -718,6 +723,7 @@ void CSkinInfo::SetString(int setting, std::string_view label)
 
 int CSkinInfo::TranslateBool(const std::string &setting)
 {
+  std::unique_lock lock(m_settingsCritical);
   // run through and see if we have this setting
   for (const auto& [id, settingbool] : m_bools)
   {
@@ -731,6 +737,7 @@ int CSkinInfo::TranslateBool(const std::string &setting)
 
   const auto number = static_cast<int>(m_bools.size() + m_strings.size());
   m_bools.try_emplace(number, skinBool);
+  lock.unlock();
   m_settingsUpdateHandler->TriggerSave();
 
   return number;
@@ -738,6 +745,7 @@ int CSkinInfo::TranslateBool(const std::string &setting)
 
 bool CSkinInfo::GetBool(int setting) const
 {
+  std::unique_lock lock(m_settingsCritical);
   const auto& it = m_bools.find(setting);
   if (it != m_bools.end())
     return it->second->value;
@@ -748,10 +756,12 @@ bool CSkinInfo::GetBool(int setting) const
 
 void CSkinInfo::SetBool(int setting, bool set)
 {
+  std::unique_lock lock(m_settingsCritical);
   auto&& it = m_bools.find(setting);
   if (it != m_bools.end())
   {
     it->second->value = set;
+    lock.unlock();
     m_settingsUpdateHandler->TriggerSave();
     return;
   }
@@ -762,6 +772,7 @@ void CSkinInfo::SetBool(int setting, bool set)
 
 std::set<CSkinSettingPtr> CSkinInfo::GetSkinSettings() const
 {
+  std::unique_lock lock(m_settingsCritical);
   std::set<CSkinSettingPtr> settings;
 
   for (const auto& [_, skinsetting] : m_settings)
@@ -772,6 +783,7 @@ std::set<CSkinSettingPtr> CSkinInfo::GetSkinSettings() const
 
 CSkinSettingPtr CSkinInfo::GetSkinSetting(const std::string& settingId)
 {
+  std::unique_lock lock(m_settingsCritical);
   const auto& it = m_settings.find(settingId);
   if (it != m_settings.end())
     return it->second;
@@ -781,6 +793,7 @@ CSkinSettingPtr CSkinInfo::GetSkinSetting(const std::string& settingId)
 
 std::shared_ptr<const CSkinSetting> CSkinInfo::GetSkinSetting(const std::string& settingId) const
 {
+  std::unique_lock lock(m_settingsCritical);
   const auto& it = m_settings.find(settingId);
   if (it != m_settings.end())
     return it->second;
@@ -790,12 +803,14 @@ std::shared_ptr<const CSkinSetting> CSkinInfo::GetSkinSetting(const std::string&
 
 void CSkinInfo::Reset(const std::string &setting)
 {
+  std::unique_lock lock(m_settingsCritical);
   // run through and see if we have this setting as a string
   for (const auto& [_, settingstring] : m_strings)
   {
     if (StringUtils::EqualsNoCase(setting, settingstring->name))
     {
       settingstring->value.clear();
+      lock.unlock();
       m_settingsUpdateHandler->TriggerSave();
       return;
     }
@@ -807,6 +822,7 @@ void CSkinInfo::Reset(const std::string &setting)
     if (StringUtils::EqualsNoCase(setting, settingbool->name))
     {
       settingbool->value = false;
+      lock.unlock();
       m_settingsUpdateHandler->TriggerSave();
       return;
     }
@@ -815,6 +831,7 @@ void CSkinInfo::Reset(const std::string &setting)
 
 void CSkinInfo::Reset()
 {
+  std::unique_lock lock(m_settingsCritical);
   // clear all the settings and strings from this skin.
   for (const auto& [_, settingbool] : m_bools)
     settingbool->value = false;
@@ -822,6 +839,7 @@ void CSkinInfo::Reset()
   for (const auto& [_, settingstring] : m_strings)
     settingstring->value.clear();
 
+  lock.unlock();
   m_settingsUpdateHandler->TriggerSave();
 }
 
@@ -867,6 +885,7 @@ bool CSkinInfo::SettingsLoaded(AddonInstanceId id /* = ADDON_SETTINGS_ID */) con
   if (id != ADDON_SETTINGS_ID)
     return false;
 
+  std::unique_lock lock(m_settingsCritical);
   return !m_strings.empty() || !m_bools.empty();
 }
 
@@ -881,6 +900,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML& doc,
     return false;
   }
 
+  std::unique_lock lock(m_settingsCritical);
   m_settings.clear();
   m_strings.clear();
   m_bools.clear();
@@ -921,6 +941,7 @@ bool CSkinInfo::SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id /* = ADDON_S
   }
 
   TiXmlElement* settingsElement = settingsNode->ToElement();
+  std::unique_lock lock(m_settingsCritical);
   for (const auto& [_, settingbool] : m_bools)
   {
     if (!settingbool->Serialize(settingsElement))
@@ -943,6 +964,7 @@ void CSkinSettingUpdateHandler::OnTimeout()
 
 void CSkinSettingUpdateHandler::TriggerSave()
 {
+  std::unique_lock lock(m_critical);
   if (m_timer.IsRunning())
     m_timer.Restart();
   else

@@ -11,6 +11,7 @@
 #include "addons/Addon.h"
 #include "addons/gui/skin/SkinTimerManager.h"
 #include "guilib/GUIIncludes.h" // needed for the GUIInclude member
+#include "threads/CriticalSection.h"
 #include "windowing/GraphicContext.h" // needed for the RESOLUTION members
 
 #include <map>
@@ -224,7 +225,7 @@ public:
   bool HasUserSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override { return false; }
 
   int TranslateString(const std::string &setting);
-  const std::string& GetString(int setting) const;
+  std::string GetString(int setting) const;
   void SetString(int setting, std::string_view label);
 
   int TranslateBool(const std::string &setting);
@@ -301,6 +302,7 @@ private:
   std::map<int, CSkinSettingStringPtr> m_strings;
   std::map<int, CSkinSettingBoolPtr> m_bools;
   std::map<std::string, CSkinSettingPtr, std::less<>> m_settings;
+  mutable CCriticalSection m_settingsCritical;
   std::unique_ptr<CSkinSettingUpdateHandler> m_settingsUpdateHandler;
 };
 
