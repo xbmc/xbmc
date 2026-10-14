@@ -49,6 +49,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -153,6 +155,15 @@ bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
 
   m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
   m_processInfo->ResetInfo();
+  m_processInfo->GetDisplayPacing().SetEnabled(
+      m_gameServices.GameSettings().SyncPlaybackToDisplay());
+  m_processInfo->GetDisplayPacing().SetMaxRateDifference(
+      m_gameServices.GameSettings().SyncToDisplayLimit());
+  const float pacingMarginMs =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_gamesPacingMarginMs;
+  m_processInfo->GetDisplayPacing().SetMargin(
+      std::chrono::duration_cast<CDisplayPacing::Clock::duration>(
+          std::chrono::duration<float, std::milli>(pacingMarginMs)));
 
   m_guiMessenger = std::make_unique<CGUIGameMessenger>(*m_processInfo);
   m_renderManager = std::make_unique<CRPRenderManager>(*m_processInfo);
@@ -724,8 +735,8 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
   {
     m_playback->Deinitialize();
     m_playback = std::make_unique<CReversiblePlayback>(
-        m_gameClient.get(), *m_renderManager, *m_guiMessenger, m_gameClient->GetFrameRate(),
-        m_gameClient->GetSerializeSize());
+        m_gameClient.get(), *m_renderManager, *m_guiMessenger, m_processInfo->GetDisplayPacing(),
+        m_gameClient->GetFrameRate(), m_gameClient->GetSerializeSize());
   }
   else
     ResetPlayback();
