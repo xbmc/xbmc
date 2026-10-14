@@ -1094,14 +1094,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
               url.GetFirstThumbUrl(), info2->Name(), info2->Content());
 
-    if (GetDetails(pItem, {}, url, info2,
-                   (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
-                                                                                  : nullptr,
-                   pDlgProgress))
-    {
-      if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
-        return InfoRet::INFO_ERROR;
-    }
+    // Without the show's details there is nothing to add its episodes to. The folder isn't hashed,
+    // so that the next scan tries again.
+    if (!GetDetails(pItem, {}, url, info2,
+                    (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                   : nullptr,
+                    pDlgProgress))
+      return InfoRet::NOT_FOUND;
+
+    if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
+      return InfoRet::INFO_ERROR;
+
     if (fetchEpisodes && !files.empty())
     {
       const InfoRet ret =
@@ -1109,7 +1112,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (ret == InfoRet::ADDED)
         setFolderHash();
     }
-    else if (lResult >= 0 && files.empty())
+    else if (files.empty())
     {
       setFolderHash();
     }
