@@ -534,6 +534,20 @@ TEST_F(TestVideoInfoScanner, AMovieIsAddedFromTheScraper)
   EXPECT_EQ("Film from the scraper", m_db.GetSingleValue("SELECT c00 FROM movie"));
 }
 
+TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  SearchFails("Afilm");
+  File(m_root, "Afilm.mkv");
+  Nfo(m_root, "Bfilm.nfo", "Bfilm");
+  const std::string second{File(m_root, "Bfilm.mkv")};
+
+  Scan();
+
+  EXPECT_GT(m_db.GetMovieId(second), 0);
+  EXPECT_EQ(1, CountMovies());
+}
+
 // TV shows
 
 namespace

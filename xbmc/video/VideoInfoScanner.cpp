@@ -2936,7 +2936,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     MOVIELIST movielist;
     CVideoInfoDownloader imdb(scraper);
     int returncode = imdb.FindMovie(title, year, movielist, progress);
-    if (returncode < 0 || (returncode == 0 && (m_bStop || !DownloadFailed(progress))))
+    // An error the scraper reported ends an interactive lookup, but a scan only stops for it when
+    // the user chooses to - as it does for any other failed lookup
+    if (returncode <= 0 && (m_bStop || (returncode < 0 && progress) || !DownloadFailed(progress)))
     { // scraper reported an error, or we had an error and user wants to cancel the scan
       m_bStop = true;
       return -1; // cancelled
