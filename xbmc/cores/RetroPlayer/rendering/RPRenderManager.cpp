@@ -755,6 +755,7 @@ void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& re
     renderBuffer->Release();
   }
 
+  renderer->SetSpeed(m_speed);
   renderer->RenderFrame(bClear, alpha);
 }
 
