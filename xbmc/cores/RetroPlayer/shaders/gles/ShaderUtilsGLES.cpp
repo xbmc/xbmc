@@ -11,6 +11,8 @@
 #include "ServiceBroker.h"
 #include "rendering/gles/RenderSystemGLES.h"
 
+#include <algorithm>
+
 using namespace KODI::SHADER;
 
 GLint CShaderUtilsGLES::TranslateWrapType(WrapType wrapType)
@@ -54,8 +56,14 @@ std::string CShaderUtilsGLES::GetGLSLVersion(std::string& source)
     {
       version = std::stoul(sourceVersion, &sourceVersionSize, 10);
 
-      // Keep only source code after the version define
-      source = sourceVersion.substr(sourceVersionSize);
+      // Keep only source code after the version and its profile, if any. The
+      // rest of that line can only be a comment, which may continue past it.
+      const size_t profileStart =
+          std::min(sourceVersion.find_first_not_of(" \t", sourceVersionSize), sourceVersion.size());
+      const size_t profileEnd =
+          std::min(sourceVersion.find_first_not_of("abcdefghijklmnopqrstuvwxyz", profileStart),
+                   sourceVersion.size());
+      source = sourceVersion.substr(profileEnd > profileStart ? profileEnd : sourceVersionSize);
     }
     else
     {
