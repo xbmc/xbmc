@@ -587,19 +587,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     bool foundSomething = false;
+    // The directory's hash stands for its own items and the archives in it, so it isn't stored
+    // where a lookup failed in either, and the next scan tries them again
+    bool lookupFailed{false};
     if (!bSkip)
     {
       // parent_name_root, passed as bDirNames below, is false for a source's own root even when
       // folder names are used
       m_useFolderNames = settings.parent_name;
 
+      const unsigned int failedLookups{m_failedLookups};
       foundSomething = RetrieveVideoInfo(items, settings.parent_name_root, content);
+      lookupFailed = m_failedLookups != failedLookups;
       if (foundSomething)
       {
         if (!m_bStop && (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
         {
-          if (!URIUtils::IsArchive(CURL(strDirectory)))
-            m_database.SetPathHash(strDirectory, hash);
           if (m_bClean)
             AddPathToClean(strDirectory);
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir {}",
@@ -698,6 +701,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_pathsToScan.erase(pItem->GetPath());
           continue;
         }
+        const unsigned int failedLookups{m_failedLookups};
         if (const auto [scanComplete, foundContentOnRecursion] = DoScan(pItem->GetPath());
             scanComplete == ScanComplete::Stopped)
         {
@@ -713,19 +717,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
         {
           foundSomethingInArchive = true;
         }
+        if (URIUtils::IsArchive(CURL(pItem->GetPath())) && m_failedLookups != failedLookups)
+          lookupFailed = true;
       }
     }
 
-    // If the direct scan found nothing but an archive subfolder scan did,
-    // store the hash for the physical directory so it is used for change detection
-    // rather than the archive (eg. rar://) virtual path.
-    if (!bSkip && !m_bStop && foundSomethingInArchive && !URIUtils::IsArchive(CURL(strDirectory)))
+    // Content found directly or in an archive subfolder is recorded by the hash of the physical
+    // directory, rather than of the archive's (eg. rar://) virtual path, once every lookup of it
+    // has been made
+    if (!bSkip && !m_bStop && !lookupFailed && (foundSomething || foundSomethingInArchive) &&
+        (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
+        !URIUtils::IsArchive(CURL(strDirectory)))
     {
       m_database.SetPathHash(strDirectory, hash);
-      CLog::LogF(LOGDEBUG,
-                 "Stored hash for physical dir '{}' after finding content in "
-                 "archive subfolder",
-                 CURL::GetRedacted(strDirectory));
+      if (foundSomethingInArchive)
+        CLog::LogF(LOGDEBUG,
+                   "Stored hash for physical dir '{}' after finding content in "
+                   "archive subfolder",
+                   CURL::GetRedacted(strDirectory));
     }
 
     return std::make_pair(m_bStop ? ScanComplete::Stopped : ScanComplete::Completed,
@@ -983,9 +992,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return InfoRet::NOT_NEEDED;
     }
 
-    const auto setFolderHash = [this, pItem]
+    // An episode whose lookup failed leaves the folder unhashed, so the next scan tries it again
+    const auto setFolderHash = [this, pItem, failedLookups = m_failedLookups]
     {
-      if (pItem->IsFolder())
+      if (pItem->IsFolder() && m_failedLookups == failedLookups)
         m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
     };
 
@@ -1647,6 +1657,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return HandleMovieSetAndVersions();
 
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
+    ++m_failedLookups; // found, but its details couldn't be retrieved
     return InfoRet::NOT_FOUND;
   }
 
@@ -1736,6 +1747,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return InfoRet::ADDED;
     }
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
+    ++m_failedLookups; // found, but its details couldn't be retrieved
     return InfoRet::NOT_FOUND;
   }
 
@@ -2466,9 +2478,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     EPISODELIST episodes;
     bool hasEpisodeGuide = false;
-    // A failed lookup doesn't stop the other episodes being added, but makes the result NOT_FOUND
-    // so that the folder isn't hashed and the next scan tries the failed episodes again
-    bool lookupFailed{false};
 
     std::unordered_map<std::string, int> episodeMap;
     for (const auto& file : files)
@@ -2568,7 +2577,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           {
             CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the episode guide of '{}'",
                       showInfo.m_strTitle);
-            lookupFailed = true;
+            ++m_failedLookups;
           }
 
           hasEpisodeGuide = true;
@@ -2695,7 +2704,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         {
           CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the details of episode {}",
                     CURL::GetRedacted(file->strPath));
-          lookupFailed = true;
+          ++m_failedLookups;
           continue;
         }
 
@@ -2728,7 +2737,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             file->cDate.GetAsLocalizedDate(), file->strTitle);
       }
     }
-    return lookupFailed ? InfoRet::NOT_FOUND : InfoRet::ADDED;
+    return InfoRet::ADDED;
   }
 
   bool CVideoInfoScanner::GetDetails(CFileItem* pItem,
@@ -2960,6 +2969,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       m_bStop = true;
       return -1; // cancelled
     }
+    if (returncode <= 0)
+      ++m_failedLookups; // carried on past a search that failed, rather than one that found nothing
     if (returncode > 0 && !movielist.empty())
     {
       url = movielist[0];

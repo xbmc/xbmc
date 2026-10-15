@@ -641,6 +641,41 @@ TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
   EXPECT_EQ(1, CountMovies());
 }
 
+TEST_F(TestVideoInfoScanner, AnUnchangedFolderIsLookedUpAgainAfterASearchFailed)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  SearchFails("Afilm");
+  const std::string first{File(m_root, "Afilm.mkv")};
+  Nfo(m_root, "Bfilm.nfo", "Bfilm");
+  File(m_root, "Bfilm.mkv");
+  Scan();
+  ASSERT_EQ(1, CountMovies());
+
+  Found("Afilm");
+  Details("Afilm", "<details><title>Afilm</title></details>");
+  Scan();
+
+  EXPECT_GT(m_db.GetMovieId(first), 0);
+  EXPECT_EQ(2, CountMovies());
+}
+
+TEST_F(TestVideoInfoScanner, AnUnchangedFolderIsLookedUpAgainAfterDetailsFailed)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  DetailsFail("Afilm");
+  const std::string first{File(m_root, "Afilm.mkv")};
+  Nfo(m_root, "Bfilm.nfo", "Bfilm");
+  File(m_root, "Bfilm.mkv");
+  Scan();
+  ASSERT_EQ(1, CountMovies());
+
+  Details("Afilm", "<details><title>Afilm</title></details>");
+  Scan();
+
+  EXPECT_GT(m_db.GetMovieId(first), 0);
+  EXPECT_EQ(2, CountMovies());
+}
+
 // A url is only taken from the scraper chosen for the path, which is the one it is fetched with
 TEST_F(TestVideoInfoScanner, AMovieIsLookedUpWithItsPathsScraperWhenItsNfoNamesAnother)
 {

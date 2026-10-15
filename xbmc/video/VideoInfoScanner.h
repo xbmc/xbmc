@@ -337,6 +337,10 @@ namespace KODI::VIDEO
     bool m_scanAll;
     bool m_scanSubtree{false};
 
+    //! Lookups so far that failed, rather than finding nothing. A directory in which one failed
+    //! isn't hashed, so that the next scan tries it again.
+    unsigned int m_failedLookups{0};
+
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
 
