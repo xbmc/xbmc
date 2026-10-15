@@ -21,6 +21,7 @@ constexpr auto PROPERTY_NO_VIDEO_FILTER = "";
 constexpr unsigned int CONTROL_VIDEO_HEADING = 10810;
 constexpr unsigned int CONTROL_VIDEO_THUMBS = 10811;
 constexpr unsigned int CONTROL_VIDEO_DESCRIPTION = 10812;
+constexpr unsigned int CONTROL_VIDEO_CATEGORIES = 10813;
 constexpr unsigned int CONTROL_SAVES_HEADING = 10820;
 constexpr unsigned int CONTROL_SAVES_DETAILED_LIST = 3; // Select dialog defaults to this control ID
 constexpr unsigned int CONTROL_SAVES_DESCRIPTION = 10822;
