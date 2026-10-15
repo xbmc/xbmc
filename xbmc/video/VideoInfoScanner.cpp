@@ -881,10 +881,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   "VideoInfoScanner: Error {} occurred while retrieving"
                   "information for {}.",
                   static_cast<int>(ret), CURL::GetRedacted(pItem->GetPath()));
-        FoundSomeInfo = false;
-        break;
+        if (ret == InfoRet::CANCELLED)
+        {
+          FoundSomeInfo = false;
+          break;
+        }
+        // The other items are still added, and the directory is tried again by the next scan
+        ++m_failedLookups;
       }
-      if (ret == InfoRet::ADDED || ret == InfoRet::HAVE_ALREADY)
+      else if (ret == InfoRet::ADDED || ret == InfoRet::HAVE_ALREADY)
         FoundSomeInfo = true;
       else if (ret == InfoRet::NOT_FOUND)
       {
