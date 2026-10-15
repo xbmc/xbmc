@@ -1,2 +1,4 @@
+xbmc/cores/RetroPlayer/shaders/gl/test test/retroplayer/shaders/gl
+xbmc/cores/RetroPlayer/shaders/gles/test test/retroplayer/shaders/gles
 xbmc/platform/linux/test platform/linux/test
 xbmc/platform/posix/filesystem/test platform/posix/filesystem/test
