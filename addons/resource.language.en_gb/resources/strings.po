@@ -19141,17 +19141,7 @@ msgctxt "#35216"
 msgid "Support add-ons"
 msgstr ""
 
-#. Dialog text asking user to overwrite their savestate file
-#: xbmc/cores/RetroPlayer/RetroPlayer.cpp"
-msgctxt "#35217"
-msgid "The savestate can only be loaded with \"{0:s}\". Erase savestate and continue?"
-msgstr ""
-
-#. Button to erase the savestate
-#: xbmc/cores/RetroPlayer/RetroPlayer.cpp"
-msgctxt "#35218"
-msgid "Erase savestate"
-msgstr ""
+#empty strings from id 35217 to 35218
 
 #. Error dialog text when trying to play a game and the game's files aren't found.
 #: xbmc/games/GameClient.cpp
