@@ -353,6 +353,15 @@ COverlayGlyphGLES::COverlayGlyphGLES(ASS_Image* images, float width, float heigh
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
+  // gles_shader_simple.vert reads texture coordinates as texel units offset by half a texel and
+  // scales them by m_cordStep: cord = (attr - 0.5) * cordStep. Render() sets cordStep to 1, so
+  // bias the normalised coordinates here to come back out unchanged.
+  for (VERTEX& v : quadVertices)
+  {
+    v.u += 0.5f;
+    v.v += 0.5f;
+  }
+
   // Expand quads to triangles and upload once: glyph vertices never change after construction.
   std::vector<VERTEX> vecVertices(6 * quadVertices.size() / 4);
   VERTEX* vertices = vecVertices.data();
@@ -407,6 +416,8 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint depthLoc = renderSystem->GUIShaderGetDepth();
   GLint matrixUniformLoc = renderSystem->GUIShaderGetMatrix();
+
+  glUniform4f(renderSystem->GUIShaderGetCoordStep(), 1.0f, 1.0f, 1.0f, 1.0f);
 
   CMatrixGL matrix = glMatrixProject.Get();
   matrix.MultMatrixf(glMatrixModview.Get());
