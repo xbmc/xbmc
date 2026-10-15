@@ -200,3 +200,63 @@ TEST_F(TestGamesGUIInfo, InitCurrentItemSetsTitleFromVfsHostnamePath)
   ASSERT_NE(tag, nullptr);
   EXPECT_EQ(tag->GetTitle(), "test");
 }
+
+TEST_F(TestGamesGUIInfo, AnswersListItemLabelsFromTheGameTag)
+{
+  CFileItem item{"/roms/test.rom", false};
+  CGameInfoTag* tag = item.GetGameInfoTag();
+  tag->SetTitle("Chrono Trigger");
+  tag->SetYear(1995);
+  tag->SetGenres({"Role-playing", "Adventure"});
+  tag->SetOverview("A band of adventurers travels through time.");
+
+  CGUIInfoManager infoManager;
+
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_TITLE), "Chrono Trigger");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_YEAR), "1995");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_GENRE), "Role-playing, Adventure");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_PLOT),
+            "A band of adventurers travels through time.");
+}
+
+TEST_F(TestGamesGUIInfo, AnswersListItemLabelsForAGamesMakers)
+{
+  CFileItem item{"/roms/test.rom", false};
+  CGameInfoTag* tag = item.GetGameInfoTag();
+  tag->SetPlatform("Super Nintendo");
+  tag->SetDeveloper("Square");
+  tag->SetPublisher("Square");
+
+  CGUIInfoManager infoManager;
+
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, infoManager.TranslateString("ListItem.Platform")),
+            "Super Nintendo");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, infoManager.TranslateString("ListItem.Developer")),
+            "Square");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, infoManager.TranslateString("ListItem.Publisher")),
+            "Square");
+}
+
+TEST_F(TestGamesGUIInfo, JoinsGenresWithTheSkinsSeparator)
+{
+  CFileItem item{"/roms/test.rom", false};
+  item.GetGameInfoTag()->SetGenres({"Role-playing", "Adventure"});
+
+  CGamesGUIInfo gamesGUIInfo;
+  std::string value;
+
+  EXPECT_TRUE(gamesGUIInfo.GetLabel(value, &item, 0, CGUIInfo(LISTITEM_GENRE, " / ", 0), nullptr));
+  EXPECT_EQ(value, "Role-playing / Adventure");
+}
+
+TEST_F(TestGamesGUIInfo, LeavesItemsWithoutAGameTagAlone)
+{
+  CFileItem item{"/videos/test.mkv", false};
+
+  CGamesGUIInfo gamesGUIInfo;
+  std::string value;
+
+  EXPECT_FALSE(gamesGUIInfo.GetLabel(value, &item, 0, CGUIInfo(LISTITEM_TITLE), nullptr));
+  EXPECT_FALSE(gamesGUIInfo.GetLabel(value, &item, 0, CGUIInfo(LISTITEM_PLATFORM), nullptr));
+  EXPECT_FALSE(item.HasGameInfoTag());
+}
