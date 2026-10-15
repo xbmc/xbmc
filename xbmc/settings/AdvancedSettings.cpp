@@ -388,6 +388,7 @@ void CAdvancedSettings::Initialize()
   m_imageRes = 720;
   m_imageScalingAlgorithm = CPictureScalingAlgorithm::Default;
   m_imageQualityJpeg = 4;
+  m_retrieveAllArtOnExport = true;
 
   m_sambaclienttimeout = 30;
   m_sambadoscodepage = "";
@@ -1199,6 +1200,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (XMLUtils::GetString(pRootElement, "imagescalingalgorithm", tmp))
     m_imageScalingAlgorithm = CPictureScalingAlgorithm::FromString(tmp);
   XMLUtils::GetUInt(pRootElement, "imagequalityjpeg", m_imageQualityJpeg, 0, 21);
+  XMLUtils::GetBoolean(pRootElement, "retrieveallartonexport", m_retrieveAllArtOnExport);
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "uselocalecollation", m_useLocaleCollation);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", m_detectAsUdf);

@@ -272,6 +272,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     CPictureScalingAlgorithm::Algorithm m_imageScalingAlgorithm;
     unsigned int
         m_imageQualityJpeg; ///< \brief the stored jpeg quality the lower the better (default: 4)
+    bool m_retrieveAllArtOnExport; ///< \brief whether an export retrieves art not yet cached
 
     int m_sambaclienttimeout;
     std::string m_sambadoscodepage;
