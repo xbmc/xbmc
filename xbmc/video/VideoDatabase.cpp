@@ -12141,6 +12141,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     std::string lastTitle;
     int lastMovieId{-1};
     KODI::REGEXP::RegExpCache regexpCache;
+    const int artworkLevel{CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL)};
     while (movie)
     {
       std::string currentTitle{};
@@ -12168,17 +12170,13 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
                                                      LegalPath::WIN32_COMPAT));
           if (CDirectory::Exists(setPath))
           {
+            // As a scan finds it in the movie set information folder
+            URIUtils::AddSlashAtEnd(setPath);
             KODI::ART::Artwork setArt;
-            const CFileItem artItem2(setPath, true);
-            for (const auto& artType :
-                 CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::VIDEO_COLLECTION))
-            {
-              const std::string artPath = CVideoThumbLoader::GetLocalArt(artItem2, artType, true);
-              if (!artPath.empty())
-              {
-                setArt[artType] = artPath;
-              }
-            }
+            ART::AddLocalItemArtwork(
+                setArt, CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::VIDEO_COLLECTION), setPath,
+                artworkLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL,
+                artworkLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_BASIC, true);
             item.AppendArt(setArt, "set");
           }
         }
