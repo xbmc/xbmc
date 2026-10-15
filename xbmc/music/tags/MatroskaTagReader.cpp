@@ -541,7 +541,7 @@ MatroskaAlbum ReadWithTagLib(const CURL& url)
   return album;
 }
 
-#endif // TagLib >= 2.3.1
+#endif // TagLib >= 2.3.2
 } // unnamed namespace
 
 namespace
