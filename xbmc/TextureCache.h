@@ -173,13 +173,24 @@ public:
    */
   bool AddCachedTexture(const std::string &image, const CTextureDetails &details);
 
+  //! \brief What Export() does with an image not cached yet
+  enum class UncachedImage
+  {
+    SKIP, //!< leave it out of the export
+    COPY, //!< copy it from its source, as it is where it is a .jpg or a .png, else cache it
+  };
+
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image
    \param destination url of the destination image, excluding extension.
    \param overwrite whether to overwrite the destination if it exists (TODO: Defaults to false)
+   \param uncached what to do with an image not cached yet
    \return true if we successfully exported the file, false otherwise.
    */
-  bool Export(const std::string &image, const std::string &destination, bool overwrite);
+  bool Export(const std::string& image,
+              const std::string& destination,
+              bool overwrite,
+              UncachedImage uncached = UncachedImage::SKIP);
   bool Export(const std::string &image, const std::string &destination); //! @todo BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 
   bool CleanAllUnusedImages();
