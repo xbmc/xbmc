@@ -4117,7 +4117,8 @@ void ApplyPlaylistDetails(CFileItem& item,
 
 bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
                                                       CFileItemList& items,
-                                                      MenuDecision playback)
+                                                      MenuDecision playback,
+                                                      bool forPlayback)
 {
   const bool silent{playback == MenuDecision::SILENT};
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -4274,6 +4275,15 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
         if (item.GetVideoContentType() == VideoDbContentType::EPISODES ||
             item.GetVideoContentType() == VideoDbContentType::TVSHOWS)
           sourceItems.Sort(SortBy::TIME, SortOrder::DESCENDING);
+
+        if (!forPlayback)
+        {
+          for (int i = sourceItems.Size() - 1; i >= 0; --i)
+          {
+            if (URIUtils::IsBlurayMenuPath(sourceItems[i]->GetDynPath()))
+              sourceItems.Remove(i);
+          }
+        }
 
         LabelUsedPlaylists(sourceItems, usedPlaylists);
 
