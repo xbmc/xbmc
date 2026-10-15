@@ -2214,6 +2214,10 @@ bool CFileItem::LoadDetails()
     {
       const CFileItem loadedItem{*tag};
       UpdateInfo(loadedItem);
+
+      // The record names the file a videodb:// path plays, and nothing later resolves it
+      if (!HasDynPath())
+        SetDynPath(loadedItem.GetPath());
     }
     return ret;
   }
