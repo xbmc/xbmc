@@ -32,6 +32,12 @@ void CGameInfoTag::Reset()
   m_strFormat.clear();
   m_strCartridgeType.clear();
   m_strGameClient.clear();
+  m_strOriginalTitle.clear();
+  m_rating = 0.0f;
+  m_players = 0;
+  m_strAgeRating.clear();
+  m_strTrailer.clear();
+  m_tags.clear();
 }
 
 CGameInfoTag& CGameInfoTag::operator=(const CGameInfoTag& tag)
@@ -52,6 +58,12 @@ CGameInfoTag& CGameInfoTag::operator=(const CGameInfoTag& tag)
     m_strFormat = tag.m_strFormat;
     m_strCartridgeType = tag.m_strCartridgeType;
     m_strGameClient = tag.m_strGameClient;
+    m_strOriginalTitle = tag.m_strOriginalTitle;
+    m_rating = tag.m_rating;
+    m_players = tag.m_players;
+    m_strAgeRating = tag.m_strAgeRating;
+    m_strTrailer = tag.m_strTrailer;
+    m_tags = tag.m_tags;
   }
   return *this;
 }
@@ -91,6 +103,18 @@ bool CGameInfoTag::operator==(const CGameInfoTag& tag) const
         return false;
       if (m_strGameClient != tag.m_strGameClient)
         return false;
+      if (m_strOriginalTitle != tag.m_strOriginalTitle)
+        return false;
+      if (m_rating != tag.m_rating)
+        return false;
+      if (m_players != tag.m_players)
+        return false;
+      if (m_strAgeRating != tag.m_strAgeRating)
+        return false;
+      if (m_strTrailer != tag.m_strTrailer)
+        return false;
+      if (m_tags != tag.m_tags)
+        return false;
     }
   }
   return true;
@@ -114,6 +138,12 @@ void CGameInfoTag::Archive(CArchive& ar)
     ar << m_strFormat;
     ar << m_strCartridgeType;
     ar << m_strGameClient;
+    ar << m_strOriginalTitle;
+    ar << m_rating;
+    ar << m_players;
+    ar << m_strAgeRating;
+    ar << m_strTrailer;
+    ar << m_tags;
   }
   else
   {
@@ -131,6 +161,12 @@ void CGameInfoTag::Archive(CArchive& ar)
     ar >> m_strFormat;
     ar >> m_strCartridgeType;
     ar >> m_strGameClient;
+    ar >> m_strOriginalTitle;
+    ar >> m_rating;
+    ar >> m_players;
+    ar >> m_strAgeRating;
+    ar >> m_strTrailer;
+    ar >> m_tags;
   }
 }
 
@@ -150,6 +186,12 @@ void CGameInfoTag::Serialize(CVariant& value) const
   value["format"] = m_strFormat;
   value["cartridgetype"] = m_strCartridgeType;
   value["gameclient"] = m_strGameClient;
+  value["originaltitle"] = m_strOriginalTitle;
+  value["rating"] = m_rating;
+  value["players"] = m_players;
+  value["agerating"] = m_strAgeRating;
+  value["trailer"] = m_strTrailer;
+  value["tags"] = m_tags;
 }
 
 void CGameInfoTag::ToSortable(SortItem& sortable, Field field) const
@@ -165,6 +207,12 @@ void CGameInfoTag::ToSortable(SortItem& sortable, Field field) const
       break;
     case Field::GENRE:
       sortable[Field::GENRE] = m_genres;
+      break;
+    case Field::ORIGINAL_TITLE:
+      sortable[Field::ORIGINAL_TITLE] = m_strOriginalTitle;
+      break;
+    case Field::RATING:
+      sortable[Field::RATING] = m_rating;
       break;
     default:
       break;
