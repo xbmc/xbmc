@@ -115,7 +115,7 @@ bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
   // Asked before the game client is set up: the dialog runs the message loop,
   // and a game started from it once the client is playing would close this
   // player in the middle of opening
-  if (!bStandalone)
+  if (!bStandalone && !savestatePath.empty())
   {
     CSavestateDatabase savestateDb;
 
