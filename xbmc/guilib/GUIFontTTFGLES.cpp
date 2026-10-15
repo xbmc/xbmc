@@ -16,6 +16,7 @@
 #include "gui3d.h"
 #include "rendering/GLExtensions.h"
 #include "rendering/MatrixGL.h"
+#include "rendering/gles/GUIStencilGLES.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -158,6 +159,13 @@ void CGUIFontTTFGLES::LastEnd()
 
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+
+  CGUIStencilGLES stencil;
+  if (!stencil.Clip(winSystem->GetGfxContext().GetStencilLayer()))
+  {
+    renderSystem->DisableGUIShader();
+    return;
+  }
 
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
