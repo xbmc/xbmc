@@ -13,6 +13,7 @@
 #include "Texture.h"
 #include "guilib/TextureFormats.h"
 #include "rendering/MatrixGL.h"
+#include "rendering/gles/GUIStencilGLES.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
@@ -29,13 +30,42 @@ void CGUITextureGLES::Register(CGUIQuadDrawerGLES& quadDrawer)
       CGUITextureGLES::CreateTexture,
       [&quadDrawer](const CRect& coords, KODI::UTILS::COLOR::Color color, CTexture* texture,
                     const CRect* texCoords, const float depth, const bool blending)
-      { quadDrawer.DrawQuad(coords, color, texture, texCoords, depth, blending); });
+      { quadDrawer.DrawQuad(coords, color, texture, texCoords, depth, blending); },
+      CGUITextureGLES::DrawStencilQuad);
 }
 
 CGUITexture* CGUITextureGLES::CreateTexture(
     float posX, float posY, float width, float height, const CTextureInfo& texture)
 {
   return new CGUITextureGLES(posX, posY, width, height, texture);
+}
+
+void CGUITextureGLES::DrawStencilQuad(const CRect& rect, STENCIL_LAYER mask)
+{
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  CGUIStencilGLES stencil;
+  if (!stencil.Mask(mask, context.GetStencilLayer()))
+    return;
+
+  const GLboolean depthTestEnabled = glIsEnabled(GL_DEPTH_TEST);
+  GLboolean colorMask[4];
+  glGetBooleanv(GL_COLOR_WRITEMASK, colorMask);
+  glDisable(GL_DEPTH_TEST);
+  glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+  auto* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
+  CMatrixGL matrix = glMatrixProject.Get();
+  matrix.MultMatrixf(glMatrixModview.Get());
+  matrix.MultMatrixf(CMatrixGL(context.GetGUIMatrix()));
+  glUniformMatrix4fv(renderSystem->GUIShaderGetMatrix(), 1, GL_FALSE, matrix);
+  glUniform1f(renderSystem->GUIShaderGetDepth(), 0.0f);
+  renderSystem->DrawGUIQuad(rect);
+  renderSystem->DisableGUIShader();
+
+  glColorMask(colorMask[0], colorMask[1], colorMask[2], colorMask[3]);
+  if (depthTestEnabled)
+    glEnable(GL_DEPTH_TEST);
 }
 
 CGUITextureGLES::CGUITextureGLES(
@@ -234,6 +264,10 @@ bool CGUITextureGLES::DrawQuads(const std::vector<Quad>& quads,
     return true;
 
   CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  CGUIStencilGLES stencil;
+  if (!stencil.Clip(context.GetStencilLayer()))
+    return true;
+
   constexpr float unbounded = std::numeric_limits<float>::max();
   const CRect clip = context.HasClipRegion() ? context.GetClipRegion()
                                              : CRect(-unbounded, -unbounded, unbounded, unbounded);

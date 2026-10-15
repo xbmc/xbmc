@@ -273,8 +273,6 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderingApi)
 
 bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool hdr, int alpha)
 {
-  EGLint numMatched{0};
-
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
     throw std::logic_error("Choosing an EGLConfig requires an EGL display");
@@ -288,7 +286,6 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
                {EGL_BLUE_SIZE, 8},
                {EGL_ALPHA_SIZE, alpha},
                {EGL_DEPTH_SIZE, 16},
-               {EGL_STENCIL_SIZE, (renderableType & EGL_OPENGL_BIT) ? 8 : 0},
                {EGL_SAMPLE_BUFFERS, 0},
                {EGL_SAMPLES, 0},
                {EGL_SURFACE_TYPE, surfaceType},
@@ -304,46 +301,66 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
 #endif
 
   const char* errorMsg = nullptr;
-
-  if (eglChooseConfig(m_eglDisplay, attribs.Get(), nullptr, 0, &numMatched) != EGL_TRUE)
-    errorMsg = "failed to query number of EGL configs";
-
-  std::vector<EGLConfig> eglConfigs(numMatched);
-  if (eglChooseConfig(m_eglDisplay, attribs.Get(), eglConfigs.data(), numMatched, &numMatched) !=
-          EGL_TRUE ||
-      numMatched == 0)
-    errorMsg = "failed to find EGL configs with appropriate attributes";
-
-  if (errorMsg)
+  const auto chooseConfig = [&](EGLint stencilSize)
   {
-    if (!hdr)
+    errorMsg = nullptr;
+    auto requestedAttribs = attribs;
+    requestedAttribs.Add({{EGL_STENCIL_SIZE, stencilSize}});
+    EGLint numMatched{0};
+    if (eglChooseConfig(m_eglDisplay, requestedAttribs.Get(), nullptr, 0, &numMatched) != EGL_TRUE)
+    {
+      errorMsg = "failed to query number of EGL configs";
+      return false;
+    }
+
+    std::vector<EGLConfig> eglConfigs(numMatched);
+    if (eglChooseConfig(m_eglDisplay, requestedAttribs.Get(), eglConfigs.data(), numMatched,
+                        &numMatched) != EGL_TRUE ||
+        numMatched == 0)
+    {
+      errorMsg = "failed to find EGL configs with appropriate attributes";
+      return false;
+    }
+
+    for (const auto& eglConfig : eglConfigs)
+    {
+      EGLint id{0};
+      if (visualId != 0)
+      {
+        if (eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_NATIVE_VISUAL_ID, &id) != EGL_TRUE)
+        {
+          CEGLUtils::Log(LOGERROR, "failed to query EGL attribute EGL_NATIVE_VISUAL_ID");
+          continue;
+        }
+        if (visualId != id)
+          continue;
+      }
+      *currentConfig = eglConfig;
+      return true;
+    }
+
+    CLog::Log(LOGDEBUG, "failed to find EGL config with EGL_NATIVE_VISUAL_ID={}", visualId);
+    return false;
+  };
+
+  bool selected = chooseConfig(8);
+  if (!selected && !(renderableType & EGL_OPENGL_BIT))
+  {
+    selected = chooseConfig(0);
+    if (selected)
+      CLog::Log(LOGWARNING, "EGL: no config with eight stencil bits; rotated GUI masks will be "
+                            "hidden on framebuffers without stencil support");
+  }
+
+  if (!selected)
+  {
+    if (errorMsg && !hdr)
     {
       CEGLUtils::Log(LOGERROR, errorMsg);
       Destroy();
     }
-    else
+    else if (errorMsg)
       CEGLUtils::Log(LOGINFO, errorMsg);
-    return false;
-  }
-
-  EGLint id{0};
-  for (const auto &eglConfig: eglConfigs)
-  {
-    *currentConfig = eglConfig;
-
-    if (visualId == 0)
-      break;
-
-    if (eglGetConfigAttrib(m_eglDisplay, *currentConfig, EGL_NATIVE_VISUAL_ID, &id) != EGL_TRUE)
-      CEGLUtils::Log(LOGERROR, "failed to query EGL attribute EGL_NATIVE_VISUAL_ID");
-
-    if (visualId == id)
-      break;
-  }
-
-  if (visualId != 0 && visualId != id)
-  {
-    CLog::Log(LOGDEBUG, "failed to find EGL config with EGL_NATIVE_VISUAL_ID={}", visualId);
     return false;
   }
 
