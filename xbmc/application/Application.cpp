@@ -847,7 +847,7 @@ namespace
 {
 // capture tap: serve pending requests from the finished frame before it is
 // presented.
-void ServiceCaptureTaps()
+void ServiceCaptureTaps(CApplicationPlayer& player)
 {
   using namespace KODI::RENDERING::CAPTURE;
 
@@ -884,6 +884,12 @@ void ServiceCaptureTaps()
   result.format = surface->GetFormat();
   result.color = GetOutputColorMetadata(*winSystem);
   result.content = CaptureContent::COMPOSITE; // this tap is the composite half
+
+  if (!player.CompositeVideoCapture(result))
+  {
+    captureService->Fail(request);
+    return;
+  }
 
   captureService->Complete(request, result);
 }
@@ -955,7 +961,7 @@ void CApplication::Render()
   // could be served, so FrameComplete would kill live requests.
   if (hasRendered)
   {
-    ServiceCaptureTaps();
+    ServiceCaptureTaps(*appPlayer);
     if (const auto captureService = CServiceBroker::GetCaptureService())
       captureService->FrameComplete();
   }
