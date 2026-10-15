@@ -12,6 +12,9 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 
+#include <string>
+#include <vector>
+
 namespace KODI
 {
 namespace GAME
@@ -25,7 +28,16 @@ public:
   CDialogGameVideoFilter();
   ~CDialogGameVideoFilter() override = default;
 
+  // implementation of CGUIControl via CDialogGameVideoSelect
+  bool OnMessage(CGUIMessage& message) override;
+
+  // implementation of CGUIWindow via CDialogGameVideoSelect
+  void FrameMove() override;
+
 protected:
+  // implementation of CGUIWindow via CDialogGameVideoSelect
+  void OnInitWindow() override;
+
   // implementation of CDialogGameVideoSelect
   std::string GetHeading() override;
   void PreInit() override;
@@ -40,10 +52,21 @@ private:
   void InitScalingMethods();
   void InitVideoFilters();
   void InitGetMoreButton();
+  void InitCategories();
+  void BindCategories();
+  bool HasCategories();
+
+  /*!
+   * \brief Show the filters of the category the category list has selected
+   */
+  void UpdateCategory();
+  void ApplyVideoFilter(const CFileItem& item);
   void OnGetMore();
   void OnGetMoreComplete();
 
   CFileItemList m_items;
+  std::vector<CFileItemPtr> m_shownItems;
+  std::vector<std::string> m_categories;
 
   static std::string GetLocalizedString(uint32_t code);
 
@@ -51,12 +74,15 @@ private:
   {
     std::string path;
     std::string name;
-    std::string folder;
+    std::string category;
   };
 
   // GUI state
   unsigned int m_focusedItemIndex{0};
+  unsigned int m_categoryIndex{0};
   bool m_regenerateList{false};
+  bool m_refreshingList{false};
+  bool m_choosingCategory{false};
 };
 } // namespace GAME
 } // namespace KODI

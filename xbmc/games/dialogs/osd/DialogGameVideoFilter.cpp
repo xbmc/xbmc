@@ -20,10 +20,12 @@
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"
 #include "games/dialogs/DialogGameDefines.h"
+#include "guilib/GUIBaseContainer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "input/actions/ActionIDs.h"
 #include "jobs/JobManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -38,6 +40,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <stdlib.h>
 
 using namespace KODI;
@@ -68,6 +71,19 @@ void GetProperties(const CFileItem& item, std::string& videoFilter)
   videoFilter = item.GetProperty("game.videofilter").asString();
 }
 
+std::string GetCategory(const CFileItem& item)
+{
+  RETRO::CRenderVideoSettings videoSettings;
+  videoSettings.SetVideoFilter(item.GetProperty("game.videofilter").asString());
+
+  // Shader presets are grouped by their category. The scaling methods, and the
+  // "Get more..." button, share a category of their own.
+  if (!videoSettings.GetShaderPreset().empty())
+    return item.GetLabel2();
+
+  return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(16298); // "Built-in"
+}
+
 } // namespace
 
 CDialogGameVideoFilter::CDialogGameVideoFilter()
@@ -78,6 +94,72 @@ CDialogGameVideoFilter::CDialogGameVideoFilter()
 std::string CDialogGameVideoFilter::GetHeading()
 {
   return CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35225); // "Video filter"
+}
+
+bool CDialogGameVideoFilter::OnMessage(CGUIMessage& message)
+{
+  if (message.GetMessage() == GUI_MSG_CLICKED &&
+      message.GetSenderId() == static_cast<int>(CONTROL_VIDEO_CATEGORIES))
+  {
+    const int actionId = message.GetParam1();
+    if (actionId == ACTION_SELECT_ITEM || actionId == ACTION_MOUSE_LEFT_CLICK)
+    {
+      // A tap moves focus on before FrameMove() sees the category it chose
+      UpdateCategory();
+      m_choosingCategory = true;
+      SET_CONTROL_FOCUS(CONTROL_VIDEO_THUMBS, 0);
+      return true;
+    }
+  }
+
+  return CDialogGameVideoSelect::OnMessage(message);
+}
+
+void CDialogGameVideoFilter::FrameMove()
+{
+  const CGUIControl* categories = GetControl(CONTROL_VIDEO_CATEGORIES);
+  const CGUIControl* filters = GetControl(CONTROL_VIDEO_THUMBS);
+  if (categories != nullptr && categories->HasFocus())
+  {
+    UpdateCategory();
+    m_choosingCategory = true;
+  }
+  else if (m_choosingCategory && filters != nullptr && filters->HasFocus())
+  {
+    // Moving down from the categories applies the highlighted filter, which a
+    // refreshed list leaves unapplied
+    m_choosingCategory = false;
+    m_focusedItemIndex = static_cast<unsigned int>(m_shownItems.size());
+  }
+
+  CDialogGameVideoSelect::FrameMove();
+}
+
+void CDialogGameVideoFilter::UpdateCategory()
+{
+  const auto* categories =
+      dynamic_cast<const CGUIBaseContainer*>(GetControl(CONTROL_VIDEO_CATEGORIES));
+  if (categories == nullptr)
+    return;
+
+  const int categoryIndex = categories->GetSelectedItem();
+  if (categoryIndex >= 0 && static_cast<unsigned int>(categoryIndex) != m_categoryIndex &&
+      static_cast<unsigned int>(categoryIndex) < m_categories.size())
+  {
+    m_categoryIndex = categoryIndex;
+    RefreshList();
+  }
+}
+
+void CDialogGameVideoFilter::OnInitWindow()
+{
+  CDialogGameVideoSelect::OnInitWindow();
+
+  BindCategories();
+
+  // The highlighted filter is the one in use, so when the configured filter
+  // is gone the one highlighted in its place is applied
+  m_focusedItemIndex = static_cast<unsigned int>(m_shownItems.size());
 }
 
 void CDialogGameVideoFilter::PreInit()
@@ -94,6 +176,8 @@ void CDialogGameVideoFilter::PreInit()
         CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(231)); // "None"
     m_items.Add(std::move(item));
   }
+
+  InitCategories();
 }
 
 void CDialogGameVideoFilter::InitScalingMethods()
@@ -196,9 +280,12 @@ void CDialogGameVideoFilter::InitVideoFilters()
     if (nameNode)
       videoFilter.name = nameNode->Value();
 
-    const TiXmlNode* folderNode{GetFirstChildOfNode(*child, "folder")};
-    if (folderNode)
-      videoFilter.folder = folderNode->Value();
+    // Presets named their category "folder" before
+    const TiXmlNode* categoryNode{GetFirstChildOfNode(*child, "category")};
+    if (!categoryNode)
+      categoryNode = GetFirstChildOfNode(*child, "folder");
+    if (categoryNode)
+      videoFilter.category = categoryNode->Value();
 
     videoFilters.emplace_back(videoFilter);
   }
@@ -215,7 +302,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
       continue;
 
     auto item{std::make_shared<CFileItem>(videoFilter.name)};
-    item->SetLabel2(videoFilter.folder);
+    item->SetLabel2(videoFilter.category);
     item->SetProperty("game.videofilter", CVariant{videoFilter.path});
     item->SetArt(ART::TYPE::ICON, ICON_VIDEO);
 
@@ -254,32 +341,89 @@ void CDialogGameVideoFilter::InitGetMoreButton()
   }
 }
 
+void CDialogGameVideoFilter::InitCategories()
+{
+  m_categories.clear();
+  m_categoryIndex = 0;
+
+  const ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+
+  for (const auto& item : m_items)
+  {
+    std::string category = GetCategory(*item);
+
+    auto it = std::ranges::find(m_categories, category);
+    if (it == m_categories.end())
+      it = m_categories.insert(m_categories.end(), std::move(category));
+
+    std::string videoFilter;
+    GetProperties(*item, videoFilter);
+    if (videoFilter == gameSettings.VideoFilter())
+      m_categoryIndex = static_cast<unsigned int>(std::distance(m_categories.begin(), it));
+  }
+}
+
+void CDialogGameVideoFilter::BindCategories()
+{
+  if (!HasCategories())
+    return;
+
+  CFileItemList items;
+  for (const auto& category : m_categories)
+    items.Add(std::make_shared<CFileItem>(category));
+
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_VIDEO_CATEGORIES, m_categoryIndex, 0,
+                  &items);
+  OnMessage(msg);
+}
+
+bool CDialogGameVideoFilter::HasCategories()
+{
+  return GetControl(CONTROL_VIDEO_CATEGORIES) != nullptr;
+}
+
 void CDialogGameVideoFilter::GetItems(CFileItemList& items)
 {
+  m_shownItems.clear();
+
+  // Skins without a category list show every filter in one row
+  const bool showAll = !HasCategories();
+
   for (const auto& item : m_items)
-    items.Add(item);
+  {
+    if (showAll || GetCategory(*item) == m_categories[m_categoryIndex])
+    {
+      items.Add(item);
+      m_shownItems.push_back(item);
+    }
+  }
 }
 
 void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
 {
-  if (static_cast<int>(index) < m_items.Size())
+  // A filter is applied when the player moves to it. A refreshed list, such as
+  // another category's, can leave one highlighted that isn't in use.
+  if (index >= m_shownItems.size() || index == m_focusedItemIndex)
+    return;
+
+  m_focusedItemIndex = index;
+  if (!m_refreshingList)
+    ApplyVideoFilter(*m_shownItems[index]);
+}
+
+void CDialogGameVideoFilter::ApplyVideoFilter(const CFileItem& item)
+{
+  std::string videoFilter;
+  GetProperties(item, videoFilter);
+  if (videoFilter.empty())
+    return;
+
+  ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+
+  if (gameSettings.VideoFilter() != videoFilter)
   {
-    m_focusedItemIndex = index;
-
-    CFileItemPtr item = m_items[index];
-
-    std::string videoFilter;
-    GetProperties(*item, videoFilter);
-    if (videoFilter.empty())
-      return;
-
-    ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
-
-    if (gameSettings.VideoFilter() != videoFilter)
-    {
-      gameSettings.SetVideoFilter(videoFilter);
-      gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
-    }
+    gameSettings.SetVideoFilter(videoFilter);
+    gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
   }
 }
 
@@ -287,10 +431,10 @@ unsigned int CDialogGameVideoFilter::GetFocusedItem() const
 {
   const ::CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
-  for (int i = 0; i < m_items.Size(); i++)
+  for (unsigned int i = 0; i < m_shownItems.size(); i++)
   {
     std::string videoFilter;
-    GetProperties(*m_items[i], videoFilter);
+    GetProperties(*m_shownItems[i], videoFilter);
 
     if (videoFilter == gameSettings.VideoFilter())
     {
@@ -304,13 +448,17 @@ unsigned int CDialogGameVideoFilter::GetFocusedItem() const
 void CDialogGameVideoFilter::PostExit()
 {
   m_items.Clear();
+  m_shownItems.clear();
+  m_categories.clear();
+  m_choosingCategory = false;
 }
 
 bool CDialogGameVideoFilter::OnClickAction()
 {
-  if (static_cast<int>(m_focusedItemIndex) < m_items.Size())
+  if (m_focusedItemIndex < m_shownItems.size())
   {
-    const auto focusedItem = std::const_pointer_cast<const CFileItem>(m_items[m_focusedItemIndex]);
+    const auto focusedItem =
+        std::const_pointer_cast<const CFileItem>(m_shownItems[m_focusedItemIndex]);
 
     // "Get more..." button has an empty string for the video filter
     if (focusedItem && focusedItem->GetProperty("game.videofilter").empty())
@@ -318,6 +466,9 @@ bool CDialogGameVideoFilter::OnClickAction()
       OnGetMore();
       return true;
     }
+
+    if (focusedItem)
+      ApplyVideoFilter(*focusedItem);
   }
 
   Close();
@@ -331,10 +482,13 @@ void CDialogGameVideoFilter::RefreshList()
   {
     m_regenerateList = false;
     PreInit();
+    BindCategories();
   }
 
   // Call ancestor
+  m_refreshingList = true;
   CDialogGameVideoSelect::RefreshList();
+  m_refreshingList = false;
 }
 
 std::string CDialogGameVideoFilter::GetLocalizedString(uint32_t code)
