@@ -65,7 +65,11 @@ void CFrameBufferObject::Cleanup()
   if (m_depthBuffer)
     glDeleteRenderbuffers(1, &m_depthBuffer);
 
+  if (m_stencilBuffer)
+    glDeleteRenderbuffers(1, &m_stencilBuffer);
+
   m_depthBuffer = 0;
+  m_stencilBuffer = 0;
   m_texid = 0;
   m_fbo = 0;
   m_valid = false;
@@ -114,29 +118,84 @@ bool CFrameBufferObject::AttachDepthBuffer(int width, int height)
   if (m_depthBuffer)
     glDeleteRenderbuffers(1, &m_depthBuffer);
 
+  if (m_stencilBuffer)
+    glDeleteRenderbuffers(1, &m_stencilBuffer);
+  m_stencilBuffer = 0;
+
   glGenRenderbuffers(1, &m_depthBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
 #if defined(HAS_GL)
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 #else
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+  auto* renderSystem = CServiceBroker::GetRenderSystem();
+  unsigned int major, minor;
+  renderSystem->GetRenderVersion(major, minor);
+  const bool packedDepthStencil =
+      major >= 3 || renderSystem->IsExtSupported("GL_OES_packed_depth_stencil");
+  if (packedDepthStencil)
+  {
+#if HAS_GLES >= 3
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+#else
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, width, height);
+#endif
+  }
+  else
+  {
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    glGenRenderbuffers(1, &m_stencilBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_stencilBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height);
+  }
 #endif
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
   glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
-#if defined(HAS_GL)
-  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
-#endif
-  const GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
+                            m_stencilBuffer ? m_stencilBuffer : m_depthBuffer);
+  GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
   if (status != GL_FRAMEBUFFER_COMPLETE)
   {
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
     glDeleteRenderbuffers(1, &m_depthBuffer);
     m_depthBuffer = 0;
-    return false;
+    if (m_stencilBuffer)
+      glDeleteRenderbuffers(1, &m_stencilBuffer);
+    m_stencilBuffer = 0;
+#if defined(HAS_GLES)
+    CLog::Log(
+        LOGWARNING,
+        "CFrameBufferObject: incomplete depth/stencil framebuffer ({:#x}), retrying depth-only",
+        status);
+    while (glGetError() != GL_NO_ERROR)
+    {
+    }
+    glGenRenderbuffers(1, &m_depthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+    status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE)
+    {
+      glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+      glDeleteRenderbuffers(1, &m_depthBuffer);
+      m_depthBuffer = 0;
+      while (glGetError() != GL_NO_ERROR)
+      {
+      }
+    }
+#endif
+    if (status != GL_FRAMEBUFFER_COMPLETE)
+      CLog::Log(LOGERROR, "CFrameBufferObject: incomplete depth/stencil framebuffer ({:#x})",
+                status);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return status == GL_FRAMEBUFFER_COMPLETE;
   }
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   return true;
 }
 
