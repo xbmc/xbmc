@@ -130,7 +130,7 @@ public:
   {
     return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED;
   }
-  bool IsLoading() const { return m_isAllocated == LARGE && !m_texture.size(); }
+  bool IsLoading() const { return m_isAllocated == LARGE && (!m_texture.size() || m_largeInterim); }
   bool ReadyToRender() const;
 
 protected:
