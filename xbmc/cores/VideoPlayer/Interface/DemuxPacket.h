@@ -43,6 +43,9 @@ extern "C"
 
     //! @brief PTS offset correction applied to the PTS and DTS.
     double m_ptsOffsetCorrection{0};
+
+    //! @brief Empty packet replacing input the demuxer read and dropped.
+    bool m_inputDropped{false};
   };
 
 #ifdef __cplusplus
