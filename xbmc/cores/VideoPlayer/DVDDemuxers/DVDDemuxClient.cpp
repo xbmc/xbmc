@@ -331,7 +331,9 @@ DemuxPacket* CDVDDemuxClient::Read()
   {
     RequestStreams();
     CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
-    return CDVDDemuxUtils::AllocateDemuxPacket(0);
+    DemuxPacket* pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+    pPacket->m_inputDropped = true;
+    return pPacket;
   }
   else if (m_packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
   {
@@ -351,9 +353,11 @@ DemuxPacket* CDVDDemuxClient::Read()
 
   if (!IsVideoReady())
   {
+    const bool inputDropped = m_packet->iStreamId != -1;
     CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
     DemuxPacket *pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
     pPacket->demuxerId = GetDemuxerId();
+    pPacket->m_inputDropped = inputDropped;
     return pPacket;
   }
 
