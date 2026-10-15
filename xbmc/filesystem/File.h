@@ -61,6 +61,10 @@ public:
   bool OpenForWrite(const CURL& file, bool bOverWrite = false);
   bool OpenForWrite(const std::string& strFileName, bool bOverWrite = false);
 
+  /**
+   * Read the whole file into outputBuffer.
+   * @return number of bytes read, 0 for an empty file, or -1 on failure
+   */
   ssize_t LoadFile(const CURL& file, std::vector<uint8_t>& outputBuffer);
 
   /**
