@@ -234,6 +234,112 @@ public:
 #ifdef DOXYGEN_SHOULD_USE_THIS
   ///
   /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ getOriginalTitle() }
+  /// Gets the original title of the game, such as the one it was first released under.
+  ///
+  /// @return [string] original title
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  getOriginalTitle();
+#else
+  String getOriginalTitle();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ getRating() }
+  /// Gets the rating of the game, out of 10.
+  ///
+  /// @return [float] rating
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  getRating();
+#else
+  float getRating();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ getPlayers() }
+  /// Gets the most players who can play the game at once.
+  ///
+  /// @return [integer] players, or 0 if unknown
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  getPlayers();
+#else
+  unsigned int getPlayers();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ getAgeRating() }
+  /// Gets the age rating of the game: the rating board followed by its
+  /// rating, e.g. "PEGI 12" (Europe, ages 12 and up), "BBFC 15" (UK, ages 15
+  /// and up), "ESRB T" (North America, Teen, ages 13 and up) or "CERO B"
+  /// (Japan, ages 12 and up). Each region's board has its own scale, and Kodi
+  /// doesn't convert between them.
+  ///
+  /// @return [string] age rating
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  getAgeRating();
+#else
+  String getAgeRating();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ getTrailer() }
+  /// Gets the path or URL of the game's trailer.
+  ///
+  /// @return [string] trailer
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  getTrailer();
+#else
+  String getTrailer();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ getTags() }
+  /// Gets the tags of the game.
+  ///
+  /// @return [list] tags
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  getTags();
+#else
+  std::vector<String> getTags();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setTitle(title) }
   /// Sets the title of the game.
   ///
@@ -365,6 +471,112 @@ public:
   setGameClient(...);
 #else
   void setGameClient(const String& gameClient);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ setOriginalTitle(originalTitle) }
+  /// Sets the original title of the game, such as the one it was first released under.
+  ///
+  /// @param originalTitle      string - original title.
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  setOriginalTitle(...);
+#else
+  void setOriginalTitle(const String& originalTitle);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ setRating(rating) }
+  /// Sets the rating of the game, out of 10.
+  ///
+  /// @param rating             float - rating, from 0.0 to 10.0. Anything outside that is ignored.
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  setRating(...);
+#else
+  void setRating(float rating);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ setPlayers(players) }
+  /// Sets the most players who can play the game at once.
+  ///
+  /// @param players            integer - number of players, or 0 if unknown.
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  setPlayers(...);
+#else
+  void setPlayers(unsigned int players);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ setAgeRating(ageRating) }
+  /// Sets the age rating of the game: the rating board followed by its
+  /// rating, e.g. "PEGI 12" (Europe, ages 12 and up), "BBFC 15" (UK, ages 15
+  /// and up), "ESRB T" (North America, Teen, ages 13 and up) or "CERO B"
+  /// (Japan, ages 12 and up). Each region's board has its own scale, and Kodi
+  /// doesn't convert between them.
+  ///
+  /// @param ageRating          string - age rating.
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  setAgeRating(...);
+#else
+  void setAgeRating(const String& ageRating);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ setTrailer(trailer) }
+  /// Sets the path or URL of the game's trailer.
+  ///
+  /// @param trailer            string - trailer path or URL.
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  setTrailer(...);
+#else
+  void setTrailer(const String& trailer);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_InfoTagGame
+  /// @brief \python_func{ setTags(tags) }
+  /// Sets the tags of the game.
+  ///
+  /// @param tags               list - tags.
+  ///
+  ///
+  ///-----------------------------------------------------------------------
+  /// @python_v23 New function added.
+  ///
+  setTags(...);
+#else
+  void setTags(const std::vector<String>& tags);
 #endif
 
 #ifndef SWIG
