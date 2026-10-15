@@ -10,8 +10,10 @@
 
 #include "ServiceBroker.h"
 #include "Texture.h"
+#include "rendering/gles/GUIStencilGLES.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
+#include "windowing/WinSystem.h"
 
 void CGUIQuadDrawerGLES::DrawQuad(const CRect& rect,
                                   KODI::UTILS::COLOR::Color color,
@@ -20,6 +22,10 @@ void CGUIQuadDrawerGLES::DrawQuad(const CRect& rect,
                                   float depth,
                                   bool blending)
 {
+  CGUIStencilGLES stencil;
+  if (!stencil.Clip(CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer()))
+    return;
+
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   if (texture)

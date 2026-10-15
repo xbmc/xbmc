@@ -258,11 +258,11 @@ bool CWinSystemGbmGLESContext::BeginGuiComposite(bool guiWillRender)
       return false;
     }
 
-    if (GetEnabledFrontToBackRendering() && !m_guiFbo.AttachDepthBuffer(width, height))
+    if (!m_guiFbo.AttachDepthBuffer(width, height))
     {
       CLog::Log(LOGERROR,
-                "CWinSystemGbmGLESContext: failed to attach depth buffer to GUI FBO {}x{}", width,
-                height);
+                "CWinSystemGbmGLESContext: failed to attach depth/stencil buffer to GUI FBO {}x{}",
+                width, height);
       m_guiFbo.Cleanup();
       return false;
     }
