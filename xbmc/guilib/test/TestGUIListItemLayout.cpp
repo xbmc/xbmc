@@ -124,7 +124,7 @@ private:
 };
 } // namespace
 
-TEST_F(TestGUIListItemLayout, ResetReleasesRetainedItemLayouts)
+TEST_F(TestGUIListItemLayout, ResetKeepsLayoutsUntilContainerIsDestroyed)
 {
   auto item = std::make_shared<CFileItem>();
   auto ancestor = std::make_unique<CTestGroup>();
@@ -141,10 +141,15 @@ TEST_F(TestGUIListItemLayout, ResetReleasesRetainedItemLayouts)
 
   container->Reset();
 
+  // layouts survive a reset, so a re-fetched item keeps its state
+  EXPECT_NE(item->GetLayout(), nullptr);
+  EXPECT_NE(item->GetFocusedLayout(), nullptr);
+  EXPECT_EQ(ancestor->GetLookup(), initialLookup);
+
+  // destroying the container releases layouts of items that outlive it
+  ancestor.reset();
   EXPECT_EQ(item->GetLayout(), nullptr);
   EXPECT_EQ(item->GetFocusedLayout(), nullptr);
-  EXPECT_EQ(ancestor->GetLookup(), initialLookup);
-  ancestor.reset();
   item.reset();
 }
 
