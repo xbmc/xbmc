@@ -2124,10 +2124,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                       set.GetSortTitle())};
 
     // Assume art in set
-    if (idSet > 0)
-      return m_database.SetArtForItem(idSet, MEDIA::TYPE::VIDEO_COLLECTION, set.GetArt());
+    const bool added{idSet > 0 &&
+                     m_database.SetArtForItem(idSet, MEDIA::TYPE::VIDEO_COLLECTION, set.GetArt())};
 
-    return false;
+    m_database.Close();
+    return added;
   }
 
   long CVideoInfoScanner::AddVideo(CFileItem* pItem,

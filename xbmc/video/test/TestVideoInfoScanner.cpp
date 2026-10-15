@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
+#include "video/SetInfoTag.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoManagerTypes.h"
@@ -177,6 +178,8 @@ public:
 
   using CVideoInfoScanner::EnumerateSeriesFolder;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
+
+  CVideoDatabase& Database() { return m_database; }
 };
 
 class TestVideoInfoScanner : public ::testing::Test
@@ -439,6 +442,21 @@ TEST_F(TestVideoInfoScanner, ABlurayRipOfADatedEpisodeIsOneEpisode)
             scanner.EnumerateSeriesFolder(&item, episodes));
 
   EXPECT_EQ(1U, episodes.size());
+}
+
+TEST_F(TestVideoInfoScanner, AddingASetLeavesTheDatabaseAsItWas)
+{
+  TestScanner scanner{m_settings};
+  CVideoDatabase& database{scanner.Database()};
+  ASSERT_TRUE(database.IsOpen());
+
+  CSetInfoTag set;
+  set.SetTitle("Collection");
+  EXPECT_TRUE(scanner.AddSet(set));
+
+  // Close() only closes once it has been called as often as Open()
+  database.Close();
+  EXPECT_FALSE(database.IsOpen());
 }
 
 TEST_F(TestVideoInfoScanner, ACancelledScanDoesNotHideTheSameScanAskedForAgain)
