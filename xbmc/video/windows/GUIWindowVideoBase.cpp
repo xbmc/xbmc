@@ -53,6 +53,7 @@
 #include "utils/ArtTypes.h"
 #include "utils/ContentNames.h"
 #include "utils/DefaultArt.h"
+#include "utils/DiscsUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
@@ -656,6 +657,33 @@ private:
   const int m_itemIndex{-1};
   const std::string m_player;
 };
+
+enum ChoosePlaylistAction
+{
+  CHOOSE_PLAYLIST_SAVE = 1,
+  CHOOSE_PLAYLIST_PLAY,
+};
+
+bool ChooseAndSaveDiscPlaylist(CFileItem& item)
+{
+  const std::string oldPath{item.GetDynPath()};
+  const int oldFileId{item.GetVideoInfoTag()->m_iFileId};
+  if (!VIDEO::UTILS::ChooseDiscPlaylist(item))
+    return false;
+
+  if (item.GetDynPath() == oldPath)
+    return true;
+
+  if (!VIDEO::UTILS::SaveDiscPlaylist(item))
+  {
+    CLog::LogF(LOGERROR, "Failed to save playlist {} for {}", CURL::GetRedacted(item.GetDynPath()),
+               item.GetVideoInfoTag()->m_strTitle);
+    return false;
+  }
+
+  VIDEO::UTILS::NotifyItemPathChanged(item, oldPath, oldFileId);
+  return true;
+}
 } // namespace
 
 bool CGUIWindowVideoBase::OnSelect(int iItem)
@@ -896,9 +924,13 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (PLAYLIST::IsSmartPlayList(*item) || PLAYLIST::IsSmartPlayList(*m_vecItems))
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
 
-      if (URIUtils::IsBlurayPath(item->GetDynPath()) && !item->IsFolder())
+      // Either a resolved bluray:// playlist, or a disc (BDMV folder or ISO) for which a
+      // playlist has not been chosen yet
+      if (!item->IsFolder() && (URIUtils::IsBlurayPath(item->GetDynPath()) ||
+                                VIDEO::IsBDFile(*item) || ::UTILS::DISCS::IsBlurayDiscImage(*item)))
       {
-        buttons.Add(CONTEXT_BUTTON_CHOOSE_PLAYLIST, 13424);
+        buttons.Add(CONTEXT_BUTTON_CHOOSE_PLAYLIST,
+                    VIDEO::UTILS::CanSaveDiscPlaylist(*item) ? 13484 : 13424);
       }
     }
   }
@@ -962,6 +994,31 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return OnPlayMedia(itemNumber);
   case CONTEXT_BUTTON_CHOOSE_PLAYLIST:
   {
+    // The chosen playlist is assigned to a library item either way, so ask whether to play it
+    if (VIDEO::UTILS::CanSaveDiscPlaylist(*item))
+    {
+      CContextButtons choices;
+      choices.Add(CHOOSE_PLAYLIST_SAVE, 13485); // and Save
+      choices.Add(CHOOSE_PLAYLIST_PLAY, 13486); // and Play
+      const int choice{CGUIDialogContextMenu::ShowAndGetChoice(choices)};
+      if (choice != CHOOSE_PLAYLIST_SAVE && choice != CHOOSE_PLAYLIST_PLAY)
+        return false;
+
+      const auto chosenItem{std::make_shared<CFileItem>(*item)};
+      if (!ChooseAndSaveDiscPlaylist(*chosenItem))
+        return false;
+
+      Refresh(true);
+
+      if (choice == CHOOSE_PLAYLIST_PLAY)
+      {
+        // The playlist is already chosen and saved, so don't ask again when playing it
+        chosenItem->SetProperty(ITEM::PROPERTY::PLAYLIST_CHOSEN, true);
+        return OnPlayMedia(chosenItem, "");
+      }
+      return true;
+    }
+
     item->SetProperty(ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION, true);
     return OnPlayMedia(itemNumber);
   }
@@ -980,6 +1037,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
     PLAYLIST::CPlayList playlistTemp;
     playlistTemp.Add(pItem);
     g_partyModeManager.AddUserSongs(playlistTemp, true);
+    pItem->ClearProperty(ITEM::PROPERTY::PLAYLIST_CHOSEN);
     return true;
   }
 
@@ -1003,6 +1061,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
     m_thumbLoader.StopAsync();
 
   CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player);
+  itemCopy->ClearProperty(ITEM::PROPERTY::PLAYLIST_CHOSEN);
 
   // Reset force selection flag
   pItem->ClearProperty(ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION);

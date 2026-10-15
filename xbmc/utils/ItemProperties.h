@@ -19,6 +19,7 @@ inline constexpr char ITEM_START[] = "item_start";
 inline constexpr char START_PERCENT[] = "StartPercent";
 inline constexpr char IS_PLAYABLE[] = "IsPlayable";
 inline constexpr char FORCE_PLAYLIST_SELECTION[] = "force_playlist_selection";
+inline constexpr char PLAYLIST_CHOSEN[] = "playlist_chosen";
 inline constexpr char BLURAY_PLAYLIST[] = "bluray_playlist";
 inline constexpr char UPDATE_STREAM_DETAILS[] = "update_stream_details";
 inline constexpr char STOPPED_BEFORE_END[] = "stopped_before_end";

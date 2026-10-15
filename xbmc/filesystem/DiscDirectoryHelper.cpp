@@ -14,6 +14,7 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSimpleMenu.h"
+#include "media/MediaType.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
@@ -31,6 +32,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoUtils.h"
 
 #include <algorithm>
 #include <array>
@@ -4028,18 +4030,28 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   {
     if (playback == MenuDecision::SHOW_SIMPLE_MENU)
     {
-      usedPlaylists =
-          database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(item.GetDynPath()));
-
-      // The playlist this item already uses is labelled like any other, but choosing it again
-      // is no change and must not go through the reassignment
-      std::vector<CVideoDatabase::PlaylistInfo> reusablePlaylists{usedPlaylists};
-      if (CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
-          regex.RegFind(item.GetDynPath()) != -1)
+      // Playlists used by other items are only of interest if this choice will be saved, as
+      // choosing one of them reassigns the item it belongs to. The version manager saves its
+      // (version typed) items itself, but only when it asked for the selection.
+      std::vector<CVideoDatabase::PlaylistInfo> reusablePlaylists;
+      if (KODI::VIDEO::UTILS::CanSaveDiscPlaylist(item) ||
+          (item.HasVideoInfoTag() &&
+           item.GetVideoInfoTag()->GetMediaType() == KODI::MEDIA::TYPE::VIDEO_VERSION &&
+           item.GetProperty(KODI::ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION).asBoolean(false)))
       {
-        const int playlist{std::stoi(regex.GetMatch(1))};
-        std::erase_if(reusablePlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
-                      { return p.playlist == playlist; });
+        usedPlaylists =
+            database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(item.GetDynPath()));
+
+        // The playlist this item already uses is labelled like any other, but choosing it again
+        // is no change and must not go through the reassignment
+        reusablePlaylists = usedPlaylists;
+        if (CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d{5}).mpls$)"};
+            regex.RegFind(item.GetDynPath()) != -1)
+        {
+          const int playlist{std::stoi(regex.GetMatch(1))};
+          std::erase_if(reusablePlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
+                        { return p.playlist == playlist; });
+        }
       }
 
       // Use simple menu dialog to select playlist
@@ -4103,14 +4115,7 @@ bool CDiscDirectoryHelper::GetOrShowPlaylistSelection(const CFileItem& item,
   if (!selectedItem.GetPath().empty())
   {
     // If SelectedItem is not empty then we have a user selected playlist, so return it
-    const auto newItem{GenerateItem(item, selectedItem)};
-
-    // GenerateItem points the paths in the tag at the newly selected playlist
-    // Flag so CSaveFileStateJob can tell playlist has changed
-    if (selectedItem.GetDynPath() != item.GetDynPath())
-      newItem->SetProperty(KODI::ITEM::PROPERTY::NEW_PLAYLIST_PATH, true);
-
-    items.Add(newItem);
+    items.Add(GenerateItem(item, selectedItem));
   }
   else if (!returnMultipleItems)
     // Return single item

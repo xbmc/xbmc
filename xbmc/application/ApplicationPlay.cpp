@@ -33,6 +33,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoUtils.h"
 
 #include <cstdint>
 #include <memory>
@@ -193,6 +194,10 @@ MenuDecision GetMenuDecisions(const CFileItem& item,
   if (isExternalPlayer || isRemotePlayer)
     return NO_ACTION;
 
+  // The playlist has just been chosen for this item, so play it as it is
+  if (item.GetProperty(ITEM::PROPERTY::PLAYLIST_CHOSEN).asBoolean(false))
+    return NO_ACTION;
+
   // See if disc image is a Blu-ray (as an image could be a DVD as well) or if the path is a BDMV folder
   const bool isBluray{::UTILS::DISCS::IsBlurayDiscImage(item) ||
                       URIUtils::IsBDFile(item.GetDynPath())};
@@ -209,8 +214,9 @@ MenuDecision GetMenuDecisions(const CFileItem& item,
   const bool forceSelectionAlways{
       item.GetProperty(ITEM::PROPERTY::FORCE_PLAYLIST_SELECTION).asBoolean(false)};
 
-  // If we already have a playlist but Choose Playlist has been selected on the context menu
-  if (forceSelectionAlways && isBlurayPath)
+  // Choose Playlist has been selected on the context menu, either for an already resolved
+  // playlist or for a disc (BDMV folder or ISO). This overrides the disc playback setting.
+  if (forceSelectionAlways && (isBlurayPath || isBluray))
     return SHOW_SIMPLE_MENU;
 
   // Show Disc menu
@@ -257,10 +263,28 @@ bool CApplicationPlay::GetPlaylistIfDisc()
     {
       // Select playlist, showing simple menu if needed
       CFileItemList items;
+      const std::string oldPath{m_item.GetDynPath()};
+      const int oldFileId{m_item.HasVideoInfoTag() ? m_item.GetVideoInfoTag()->m_iFileId : -1};
       if (!CDiscDirectoryHelper::GetOrShowPlaylistSelection(m_item, items, menuDecision) ||
           items.IsEmpty())
         return false; // User cancelled
       m_item = *items[0];
+
+      // Only a choice the user made is saved, and now rather than when playback finishes
+      if (menuDecision == SHOW_SIMPLE_MENU && m_item.GetDynPath() != oldPath)
+      {
+        if (KODI::VIDEO::UTILS::CanSaveDiscPlaylist(m_item))
+        {
+          if (!KODI::VIDEO::UTILS::SaveDiscPlaylist(m_item))
+            m_item.SetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH, true); // Retried at playback end
+          // Lets a listing entry still holding the old file id match the update at playback end
+          else if (m_item.GetVideoInfoTag()->m_iFileId != oldFileId)
+            m_item.SetProperty(ITEM::PROPERTY::REPLACED_FILE_ID, oldFileId);
+        }
+        else if (m_item.GetVideoContentType() == VideoDbContentType::UNKNOWN)
+          // Removable disc, saved at playback end
+          m_item.SetProperty(ITEM::PROPERTY::NEW_PLAYLIST_PATH, true);
+      }
 
       // Reset any resume state as new playlist chosen
       m_options.starttime = m_options.startpercent = 0.0;
@@ -271,6 +295,7 @@ bool CApplicationPlay::GetPlaylistIfDisc()
     case NO_ACTION:
       break;
   }
+  m_item.ClearProperty(ITEM::PROPERTY::PLAYLIST_CHOSEN);
   return true;
 }
 
