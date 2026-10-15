@@ -35,6 +35,7 @@ public:
   bool IsGuiLayer() override { return false; }
   bool CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
                          KODI::RENDERING::CAPTURE::CaptureResult& result) override;
+  bool CompositeVideoCapture(KODI::RENDERING::CAPTURE::CaptureResult& result) override;
   CRenderInfo GetRenderInfo() override;
   bool SupportsMultiPassRendering() override { return false; }
   bool Supports(ERENDERFEATURE feature) const override

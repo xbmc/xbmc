@@ -11,6 +11,7 @@
 #include "../RenderFactory.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
+#include "rendering/capture/CaptureConvert.h"
 #include "rendering/capture/CaptureTypes.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -25,8 +26,10 @@
 #include <iterator>
 #include <limits>
 #include <memory>
+#include <mutex>
 #include <new>
 #include <type_traits>
+#include <vector>
 
 #include <CoreImage/CoreImage.h>
 #include <CoreMedia/CMSampleBuffer.h>
@@ -36,6 +39,66 @@
 
 namespace
 {
+using namespace KODI::RENDERING::CAPTURE;
+
+class CCompositeCapturePixels : public ICapturePixels
+{
+public:
+  CCompositeCapturePixels(CaptureResult gui, CaptureResult video, unsigned int x, unsigned int y)
+    : m_gui(std::move(gui)),
+      m_video(std::move(video)),
+      m_x(x),
+      m_y(y)
+  {
+  }
+
+  const uint8_t* Lock() override
+  {
+    // Both inputs own their pixels; defer tonemapping and blending to the consumer.
+    std::call_once(
+        m_once,
+        [this]
+        {
+          auto pixels =
+              std::make_unique<uint8_t[]>(static_cast<size_t>(m_gui.width) * m_gui.height * 4);
+          std::vector<uint8_t> video(static_cast<size_t>(m_video.width) * m_video.height * 4);
+          if (!CaptureCopyBGRA8(m_gui, m_gui.width, m_gui.height, pixels.get()) ||
+              !CaptureToBGRA(m_video, m_video.width, m_video.height, video.data()))
+            return;
+
+          for (unsigned int y = 0; y < m_gui.height; ++y)
+          {
+            for (unsigned int x = 0; x < m_gui.width; ++x)
+            {
+              uint8_t* gui = pixels.get() + (static_cast<size_t>(y) * m_gui.width + x) * 4;
+              if (x >= m_x && x - m_x < m_video.width && y >= m_y && y - m_y < m_video.height)
+              {
+                const uint8_t* src =
+                    video.data() + (static_cast<size_t>(y - m_y) * m_video.width + x - m_x) * 4;
+                for (unsigned int channel = 0; channel < 3; ++channel)
+                {
+                  // The GLES GUI is already premultiplied by its coverage alpha.
+                  gui[channel] = static_cast<uint8_t>(std::min(
+                      255U, gui[channel] + (src[channel] * (255U - gui[3]) + 127U) / 255U));
+                }
+              }
+              gui[3] = 255;
+            }
+          }
+          m_pixels = std::move(pixels);
+        });
+    return m_pixels.get();
+  }
+
+private:
+  CaptureResult m_gui;
+  CaptureResult m_video;
+  unsigned int m_x;
+  unsigned int m_y;
+  std::once_flag m_once;
+  std::unique_ptr<uint8_t[]> m_pixels;
+};
+
 template<typename T>
 void PutBigEndian(uint8_t* bytes, size_t offset, double value)
 {
@@ -404,6 +467,49 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
   result.displayMetadata = picture.displayMetadata;
   result.hasLightMetadata = picture.hasLightMetadata;
   result.lightMetadata = picture.lightMetadata;
+  return true;
+}
+
+bool CRendererVTBDisplayLayer::CompositeVideoCapture(
+    KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+  using namespace KODI::RENDERING::CAPTURE;
+
+  if (!m_configured)
+    return true;
+  if (!result.pixels || !result.width || !result.height ||
+      result.width > std::numeric_limits<int>::max() / 4)
+    return false;
+
+  const auto& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  CRect visible = m_destRect;
+  visible.Intersect(CRect(0, 0, gfx.GetWidth(), gfx.GetHeight()));
+  if (visible.IsEmpty())
+    return true;
+
+  const double sx = static_cast<double>(result.width) / gfx.GetWidth();
+  const double sy = static_cast<double>(result.height) / gfx.GetHeight();
+  const auto x = static_cast<unsigned int>(std::lround(static_cast<double>(visible.x1) * sx));
+  const auto y = static_cast<unsigned int>(std::lround(static_cast<double>(visible.y1) * sy));
+  CaptureSpec spec;
+  spec.format = CaptureFormat::NATIVE;
+  spec.width = static_cast<unsigned int>(std::lround(static_cast<double>(visible.x2) * sx)) - x;
+  spec.height = static_cast<unsigned int>(std::lround(static_cast<double>(visible.y2) * sy)) - y;
+  if (!spec.width || !spec.height)
+    return true;
+
+  CaptureResult video;
+  if (!CaptureVideoFrame(spec, video))
+    return false;
+  result.pixels = std::make_shared<CCompositeCapturePixels>(result, std::move(video), x, y);
+  result.stride = static_cast<int>(result.width * 4);
+  result.format = AV_PIX_FMT_BGRA;
+  result.color = {AVCOL_PRI_BT709, AVCOL_TRC_BT709, AVCOL_RANGE_JPEG};
+  result.content = CaptureContent::COMPOSITE;
+  result.hasDisplayMetadata = false;
+  result.displayMetadata = {};
+  result.hasLightMetadata = false;
+  result.lightMetadata = {};
   return true;
 }
 
