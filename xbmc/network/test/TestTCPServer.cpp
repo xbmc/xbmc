@@ -220,10 +220,51 @@ protected:
     return false;
   }
 
+  void CheckNotification(const std::string& notification)
+  {
+    CTestMethods methods;
+    ASSERT_TRUE(methods.Added());
+    ASSERT_TRUE(CJSONServiceDescription::AddMethod(
+        R"("Test.Notify": {"type":"method", "description":"", "transport":"Response",
+                           "permission":"ControlNotify", "params":[], "returns":"string"})",
+        Record));
+
+    const SOCKET client = Connect();
+    ASSERT_NE(INVALID_SOCKET, client);
+    ASSERT_EQ(static_cast<int>(notification.size()),
+              send(client, notification.data(), static_cast<int>(notification.size()), 0));
+    ASSERT_TRUE(laterRequestStarted.Wait(5s)) << "the notification was not executed";
+    ASSERT_TRUE(WaitForNoWorkers());
+
+    // Neither a response nor EOF should arrive after the notification finishes.
+    fd_set readable;
+    FD_ZERO(&readable);
+    FD_SET(client, &readable);
+    timeval timeout = {2, 0};
+    ASSERT_EQ(0, select(static_cast<int>(client) + 1, &readable, nullptr, nullptr, &timeout));
+
+    const std::string request = R"({"jsonrpc":"2.0","method":"JSONRPC.Ping","id":1})";
+    ASSERT_EQ(static_cast<int>(request.size()),
+              send(client, request.data(), static_cast<int>(request.size()), 0));
+    EXPECT_TRUE(ReadUntil(client, R"("pong")", 5s)) << "the connection no longer answers requests";
+    EXPECT_TRUE(WaitForNoWorkers());
+  }
+
   int m_port{0};
   std::vector<SOCKET> m_clients;
 };
 } // namespace
+
+TEST_F(TestTCPServer, ANotificationKeepsTheConnectionOpen)
+{
+  CheckNotification(R"({"jsonrpc":"2.0","method":"Test.Notify"})");
+}
+
+TEST_F(TestTCPServer, ANotificationOnlyBatchKeepsTheConnectionOpen)
+{
+  CheckNotification(R"([{"jsonrpc":"2.0","method":"Test.Notify"},)"
+                    R"({"jsonrpc":"2.0","method":"Test.Notify"}])");
+}
 
 TEST_F(TestTCPServer, AnIdleConnectionHoldsNoWorker)
 {
