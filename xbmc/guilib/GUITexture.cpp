@@ -19,6 +19,7 @@
 #include "windowing/WinSystem.h"
 
 #include <array>
+#include <cmath>
 #include <stdexcept>
 
 CreateGUITextureFunc CGUITexture::m_createGUITextureFunc;
@@ -173,6 +174,29 @@ bool CGUITexture::Process(unsigned int currentTime)
 
   if (m_invalid)
     changed |= CalculateSize();
+
+  if (m_info.m_subpixel)
+  {
+    const CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+    const CRect screen(context.ScaleFinalXCoord(m_vertex.x1, m_vertex.y1),
+                       context.ScaleFinalYCoord(m_vertex.x1, m_vertex.y1),
+                       context.ScaleFinalXCoord(m_vertex.x2, m_vertex.y2),
+                       context.ScaleFinalYCoord(m_vertex.x2, m_vertex.y2));
+    if (!m_lastScreenRect) // first sight counts as settled
+    {
+      m_lastScreenRect = screen;
+      m_lastMoveTime = currentTime - SUBPIXEL_SETTLE_MS;
+    }
+    else if (screen != *m_lastScreenRect)
+    {
+      m_lastScreenRect = screen;
+      m_lastMoveTime = currentTime;
+    }
+    // stay fractional for a moment after the last move, then redraw once more snapped
+    const bool moving = currentTime - m_lastMoveTime < SUBPIXEL_SETTLE_MS;
+    changed |= moving != m_moving;
+    m_moving = moving;
+  }
 
   if (m_isAllocated)
   {
@@ -353,6 +377,13 @@ void CGUITexture::UpdateSegments()
   }
 }
 
+float CGUITexture::SnapToPixel(float coord, bool subpixel)
+{
+  if (subpixel)
+    return coord;
+  return static_cast<float>(MathUtils::round_int(static_cast<double>(coord)));
+}
+
 void CGUITexture::Render(const Segment& segment)
 {
   CRect diffuse(segment.texture);
@@ -368,25 +399,34 @@ void CGUITexture::Render(const Segment& segment)
 
   float x[4], y[4], z[4];
 
-#define ROUND_TO_PIXEL(x) static_cast<float>(MathUtils::round_int(static_cast<double>(x)))
+#define ROUND_TO_PIXEL(x) SnapToPixel((x), m_moving) // m_moving is decided in Process()
+#define ROUND_DEPTH(x) SnapToPixel((x), false)
 
+  // clang-format off
   x[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y1));
   y[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y1));
-  z[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y1));
+  z[0] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y1));
   x[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y1));
   y[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y1));
-  z[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y1));
+  z[1] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y1));
   x[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y2));
   y[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y2));
-  z[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2));
+  z[2] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2));
   x[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y2));
   y[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y2));
-  z[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2));
+  z[3] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2));
+  // clang-format on
 
-  if (y[2] == y[0]) y[2] += 1.0f;
-  if (x[2] == x[0]) x[2] += 1.0f;
-  if (y[3] == y[1]) y[3] += 1.0f;
-  if (x[3] == x[1]) x[3] += 1.0f;
+  // a quad with no pixel centre between two corners gets one pixel, even at a fractional position
+  const auto firstCentre = [](float v) { return std::ceil(v - 0.5f); };
+  if (firstCentre(y[2]) == firstCentre(y[0]))
+    y[2] += 1.0f;
+  if (firstCentre(x[2]) == firstCentre(x[0]))
+    x[2] += 1.0f;
+  if (firstCentre(y[3]) == firstCentre(y[1]))
+    y[3] += 1.0f;
+  if (firstCentre(x[3]) == firstCentre(x[1]))
+    x[3] += 1.0f;
 
   Draw(x, y, z, texture, diffuse, orientation);
 }

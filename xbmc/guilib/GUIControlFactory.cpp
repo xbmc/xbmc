@@ -449,6 +449,8 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode,
     image.useLarge = true;
   const char* mipmap = pNode->Attribute("mipmap");
   image.m_mipmap = mipmap && StringUtils::CompareNoCase(mipmap, "true") == 0;
+  const char* subpixel = pNode->Attribute("subpixel");
+  image.m_subpixel = subpixel && StringUtils::CompareNoCase(subpixel, "true") == 0;
   image.filename = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   return true;
 }
