@@ -1066,11 +1066,12 @@ void main()
   }
 
   bool RenderUpdate(KODI::SHADER::IShaderTexture& source,
-                    KODI::SHADER::IShaderTexture& target) override
+                    KODI::SHADER::IShaderTexture& target,
+                    const KODI::SHADER::float2& viewportSize) override
   {
     ++calls;
     sourceID = static_cast<KODI::SHADER::CShaderTextureGLRef&>(source).GetTextureID();
-    rendered = CShaderPresetGL::RenderUpdate(source, target);
+    rendered = CShaderPresetGL::RenderUpdate(source, target, viewportSize);
     return rendered;
   }
 
@@ -1103,7 +1104,8 @@ public:
   }
 
   bool RenderUpdate(KODI::SHADER::IShaderTexture& source,
-                    KODI::SHADER::IShaderTexture& target) override
+                    KODI::SHADER::IShaderTexture& target,
+                    const KODI::SHADER::float2&) override
   {
     sourceTexture = &source;
     targetTexture = &target;

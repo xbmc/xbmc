@@ -40,7 +40,9 @@ public:
 
   // Implementation of IShaderPreset
   bool ReadPresetFile(const std::string& presetPath) override;
-  bool RenderUpdate(IShaderTexture& sourceTexture, IShaderTexture& targetTexture) override;
+  bool RenderUpdate(IShaderTexture& sourceTexture,
+                    IShaderTexture& targetTexture,
+                    const float2& viewportSize) override;
   void SetSpeed(double speed) override { m_speed = speed; }
   void SetVideoSize(unsigned int videoWidth, unsigned int videoHeight) override;
   bool SetShaderPreset(const std::string& shaderPresetPath) override;
@@ -60,7 +62,7 @@ protected:
 
   // Helper functions
   bool Update();
-  void UpdateOutputSize(const float2 outputSize);
+  void UpdateOutputSize(const float2 outputSize, const float2 viewportSize);
   void UpdateMVPs();
   bool PrepareParameters(IShaderTexture& sourceTexture);
   void CalculateScaledSize(const KODI::SHADER::ShaderPass& pass,
@@ -99,6 +101,9 @@ protected:
 
   // Resolution of the output
   float2 m_outputSize;
+
+  // Size the video is shown at
+  float2 m_viewportSize;
 
   // Size of the actual source video data (ie. 160x144 for the Game Boy)
   float2 m_videoSize;

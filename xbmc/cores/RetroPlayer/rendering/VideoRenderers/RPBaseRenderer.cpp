@@ -300,6 +300,22 @@ void CRPBaseRenderer::UpdateShaders()
   }
 }
 
+CSize CRPBaseRenderer::GetShaderTargetSize() const
+{
+  float width = m_fullDestWidth;
+  float height = m_fullDestHeight;
+
+  // A last pass with an absolute scale positions its picture for that size, so
+  // it renders at that size and is then scaled to the destination
+  const SHADER::FboScale& scale = m_shaderPreset->GetPasses().back().fbo;
+  if (scale.scaleX.scaleType == SHADER::ScaleType::ABSOLUTE_SCALE)
+    width = static_cast<float>(scale.scaleX.abs);
+  if (scale.scaleY.scaleType == SHADER::ScaleType::ABSOLUTE_SCALE)
+    height = static_cast<float>(scale.scaleY.abs);
+
+  return CSize(width, height);
+}
+
 void CRPBaseRenderer::PreRender(bool clear)
 {
   m_context.CaptureStateBlock();
