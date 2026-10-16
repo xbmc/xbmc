@@ -92,6 +92,11 @@ using namespace std::chrono_literals;
 
 namespace
 {
+// longer than a demuxer takes to hand over data it already has
+constexpr auto EMPTY_PACKET_GRACE = 1ms;
+// same as the idle sleep on full queues
+constexpr auto EMPTY_PACKET_MAX_SLEEP = 10ms;
+
 bool IsKnownLanguage(const CLanguageTag& language)
 {
   return !language.IsUndetermined();
@@ -1618,11 +1623,14 @@ void CVideoPlayer::Process()
 
   Prepare();
 
+  std::optional<std::chrono::steady_clock::time_point> emptySince;
+
   while (!m_bAbortRequest)
   {
     // check display lost
     if (m_displayLost)
     {
+      emptySince.reset();
       CThread::Sleep(50ms);
       continue;
     }
@@ -1711,6 +1719,7 @@ void CVideoPlayer::Process()
           m_pDemuxer->SetSpeed(DVD_PLAYSPEED_PAUSE);
         m_demuxerSpeed = DVD_PLAYSPEED_PAUSE;
       }
+      emptySince.reset();
       CThread::Sleep(10ms);
       continue;
     }
@@ -1727,13 +1736,36 @@ void CVideoPlayer::Process()
 
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
+    const auto readStart = std::chrono::steady_clock::now();
     ReadPacket(pPacket, pStream);
     if (pPacket && !pStream)
     {
+      const auto now = std::chrono::steady_clock::now();
+      // nothing yet; special packets, dropped input and reads that blocked are progress
+      const bool waiting = pPacket->iStreamId == -1 && !pPacket->m_inputDropped &&
+                           now - readStart <= EMPTY_PACKET_GRACE;
+
       /* probably a empty packet, just free it and move on */
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
+      if (!waiting)
+      {
+        emptySince.reset();
+        continue;
+      }
+
+      // back off in proportion to how long the demuxer has had nothing
+      if (!emptySince)
+        emptySince = now;
+      else if (now - *emptySince > EMPTY_PACKET_GRACE)
+        CThread::Sleep(std::clamp(std::chrono::duration_cast<std::chrono::milliseconds>(
+                                      now - *emptySince - EMPTY_PACKET_GRACE),
+                                  1ms, EMPTY_PACKET_MAX_SLEEP));
+
       continue;
     }
+
+    emptySince.reset();
 
     if (!pPacket)
     {
