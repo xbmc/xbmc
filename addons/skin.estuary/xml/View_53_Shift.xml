@@ -225,7 +225,7 @@
 				<align>left</align>
 				<aligny>center</aligny>
 				<texture>overlays/extras.png</texture>
-				<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras + !$EXP[videoasset_true]</visible>
+				<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras + !$EXP[videoasset_true] + !System.GetBool(videolibrary.flattenversions)</visible>
 			</control>
 			<control type="label">
 				<left>110</left>
