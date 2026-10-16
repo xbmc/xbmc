@@ -8,6 +8,7 @@
 
 #include "ConversionMatrix.h"
 
+#include <algorithm>
 #include <stdexcept>
 #include <string>
 
@@ -34,6 +35,8 @@ constexpr ConvYCbCr BT709YCbCr = {0.2126, 0.0722};
 constexpr ConvYCbCr BT601YCbCr = {0.299, 0.114};
 constexpr ConvYCbCr BT2020YCbCr = {0.2627, 0.0593};
 constexpr ConvYCbCr ST240YCbCr = {0.212, 0.087};
+
+constexpr std::array<std::array<float, 3>, 3> GBRToRGB = {{{0, 0, 1}, {1, 0, 0}, {0, 1, 0}}};
 
 constexpr Primaries PrimariesBT709 = {{{0.640, 0.330}, {0.300, 0.600}, {0.150, 0.060}},
                                       {0.3127, 0.3290}};
@@ -352,6 +355,15 @@ CConvertMatrix& CConvertMatrix::SetSourceColorSpace(AVColorSpace colorSpace)
   return *this;
 }
 
+CConvertMatrix& CConvertMatrix::SetSourceRGB(bool rgb)
+{
+  if (m_rgbSrc != rgb)
+    m_mat.reset();
+
+  m_rgbSrc = rgb;
+  return *this;
+}
+
 CConvertMatrix& CConvertMatrix::SetSourceBitDepth(int bits)
 {
   if (m_srcBits != bits)
@@ -505,35 +517,25 @@ const CGlMatrix& CConvertMatrix::GenMat()
       break;
   }
 
-  ConversionToRGB mConvRGB(convYCbCr.Kr, convYCbCr.Kb);
-  CGlMatrix mat(mConvRGB);
-
-  CTranslate trans(0, -0.5, -0.5);
-  mat *= trans;
+  CGlMatrix mat(GBRToRGB);
+  if (!m_rgbSrc)
+  {
+    mat = CGlMatrix(ConversionToRGB(convYCbCr.Kr, convYCbCr.Kb));
+    mat *= CTranslate(0, -0.5, -0.5);
+  }
 
   if (m_limitedSrc)
   {
-    if (m_srcBits >= 12)
-    {
-      CScale scale(4095.0f / (3760 - 256), 4095.0f / (3840 - 256), 4095.0f / (3840 - 256));
-      CTranslate trans(-256.0f / 4095.0f, -256.0f / 4095.0f, -256.0f / 4095.0f);
-      mat *= scale;
-      mat *= trans;
-    }
-    else if (m_srcBits == 10)
-    {
-      CScale scale(1023.0f / (940 - 64), 1023.0f / (960 - 64), 1023.0f / (960 - 64));
-      CTranslate trans(-64.0f / 1023.0f, -64.0f / 1023.0f, -64.0f / 1023.0f);
-      mat *= scale;
-      mat *= trans;
-    }
-    else
-    {
-      CScale scale(255.0f / (235 - 16), 255.0f / (240 - 16), 255.0f / (240 - 16));
-      CTranslate trans(- 16.0f / 255, - 16.0f / 255, - 16.0f / 255);
-      mat *= scale;
-      mat *= trans;
-    }
+    // the limited range is 16 to 235, or to 240 for chroma, times the step of an 8 bit code
+    const int bits = std::max(m_srcBits, 8);
+    const float step = static_cast<float>(1 << (bits - 8));
+    const float peak = static_cast<float>((1 << bits) - 1);
+    const float luma = peak / (219 * step);
+    const float chroma = m_rgbSrc ? luma : peak / (224 * step);
+    const float black = -16 * step / peak;
+
+    mat *= CScale(luma, chroma, chroma);
+    mat *= CTranslate(black, black, black);
   }
 
   if (m_srcTextureBits > 8)
