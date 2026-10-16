@@ -17,6 +17,7 @@
 #include "utils/log.h"
 
 #include <mutex>
+#include <vector>
 
 namespace XBMCAddon
 {
@@ -90,9 +91,16 @@ namespace XBMCAddon
 
     bool PythonLanguageHook::IsAddonClassInstanceRegistered(AddonClass* obj)
     {
-      for (const auto& iter : hooks)
+      std::vector<AddonClass::Ref<PythonLanguageHook>> snapshot;
       {
-        if (iter.second->HasRegisteredAddonClassInstance(obj))
+        std::unique_lock lock(hooksMutex);
+        for (const auto& iter : hooks)
+          snapshot.push_back(iter.second);
+      }
+
+      for (const auto& hook : snapshot)
+      {
+        if (hook->HasRegisteredAddonClassInstance(obj))
           return true;
       }
       return false;
