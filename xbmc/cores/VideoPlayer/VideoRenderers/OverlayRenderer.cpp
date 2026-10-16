@@ -473,8 +473,9 @@ void CRenderer::PrepareOverlays(int idx)
   if (idx < 0 || idx >= NUM_BUFFERS)
     return;
 
+  UpdateSubtitleStyle();
   SubtitleResolution resolution;
-  UpdateSubtitleStyleAndPosition(resolution);
+  UpdateSubtitlePosition(resolution);
 
   bool doMarkDirty = false;
   bool hasImageSpu = false;
@@ -510,89 +511,7 @@ void CRenderer::PrepareOverlays(int idx)
     if (!ovAss.GetLibassHandler())
       continue;
 
-    // rOpts setup moved from CRenderer::ConvertLibass; duplicated in CDebugRenderer::CRenderer::Render.
-    SUBTITLES::STYLE::renderOpts rOpts;
-
-    // Three rects: source (subtitle canvas), video (playing size), frame
-    // (render target; may exceed video to include letterbox bars so libass
-    // can place subtitles in them).
-    rOpts.sourceWidth = m_rs.Width();
-    rOpts.sourceHeight = m_rs.Height();
-    rOpts.videoWidth = m_rd.Width();
-    rOpts.videoHeight = m_rd.Height();
-    rOpts.frameWidth = m_rv.Width();
-    rOpts.frameHeight = m_rv.Height();
-
-    // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
-    if (m_stereomode == "left_right" || m_stereomode == "right_left")
-    {
-      // only half-sbs video, sbs video don't need to change source size
-      if (rOpts.sourceWidth / rOpts.sourceHeight < 1.2f)
-        rOpts.sourceWidth = m_rs.Width() * 2;
-    }
-    else if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
-    {
-      // only half-ou video, ou video don't need to change source size
-      if (rOpts.sourceWidth / rOpts.sourceHeight > 2.5f)
-        rOpts.sourceHeight = m_rs.Height() * 2;
-    }
-
-    rOpts.m_par = resolution.pixelRatio;
-
-    // rOpts.position and margins (set to style) can invalidate the text
-    // positions to subtitles type that make use of margins to position text on
-    // the screen (e.g. ASS/WebVTT) then we allow to set them when position
-    // override setting is enabled only
-    if (ovAss.IsForcedMargins())
-    {
-      rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::DISABLED;
-    }
-    else if (m_subtitleAlign == SUBTITLES::Align::MANUAL)
-    {
-      // When vertical margins are used Libass apply a displacement in percentage
-      // of the height available to line position, this displacement causes
-      // problems with subtitle calibration bar on Video Calibration window,
-      // so when you moving the subtitle bar of the GUI the text will no longer
-      // match the bar, this calculation compensates for the displacement.
-      // Note also that the displacement compensation will cause a different
-      // default position of the text, different from the other alignment positions
-      double posPx = static_cast<double>(m_subtitlePosition - resolution.overscanTop);
-
-      int assPlayResY = ovAss.GetLibassHandler()->GetPlayResY();
-      double assVertMargin = static_cast<double>(m_overlayStyle->marginVertical) *
-                             (static_cast<double>(assPlayResY) / 720);
-      double vertMarginScaled =
-          assVertMargin / assPlayResY * static_cast<double>(rOpts.frameHeight);
-
-      double pos = posPx / (static_cast<double>(rOpts.frameHeight) - vertMarginScaled);
-      rOpts.position = 100 - pos * 100;
-    }
-    else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
-    {
-      // To keep consistent the position of text as other alignment positions
-      // we avoid apply the displacement compensation
-      double posPx = static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin -
-                                         resolution.overscanTop);
-      rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
-    }
-    else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
-             m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE)
-    {
-      rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
-    }
-
-    // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
-    // This setting influence style->alignment property
-    if (ovAss.IsTextAlignEnabled())
-    {
-      if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::LEFT)
-        rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::LEFT;
-      else if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::RIGHT)
-        rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::RIGHT;
-      else
-        rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::CENTER;
-    }
-
+    const SUBTITLES::STYLE::renderOpts rOpts{GetRenderOptions(ovAss, *m_overlayStyle, resolution)};
     e.renderedFrameWidth = rOpts.frameWidth;
     e.renderedFrameHeight = rOpts.frameHeight;
 
@@ -723,7 +642,95 @@ void CRenderer::LoadSettings()
   ResetSubtitlePosition();
 }
 
-void CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
+SUBTITLES::STYLE::renderOpts CRenderer::GetRenderOptions(const CDVDOverlayLibass& overlay,
+                                                         const SUBTITLES::STYLE::style& style,
+                                                         const SubtitleResolution& resolution) const
+{
+  SUBTITLES::STYLE::renderOpts rOpts;
+
+  // Three rects: source (subtitle canvas), video (playing size), frame
+  // (render target; may exceed video to include letterbox bars so libass
+  // can place subtitles in them).
+  rOpts.sourceWidth = m_rs.Width();
+  rOpts.sourceHeight = m_rs.Height();
+  rOpts.videoWidth = m_rd.Width();
+  rOpts.videoHeight = m_rd.Height();
+  rOpts.frameWidth = m_rv.Width();
+  rOpts.frameHeight = m_rv.Height();
+
+  // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
+  if (m_stereomode == "left_right" || m_stereomode == "right_left")
+  {
+    // only half-sbs video, sbs video don't need to change source size
+    if (rOpts.sourceWidth / rOpts.sourceHeight < 1.2f)
+      rOpts.sourceWidth = m_rs.Width() * 2;
+  }
+  else if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
+  {
+    // only half-ou video, ou video don't need to change source size
+    if (rOpts.sourceWidth / rOpts.sourceHeight > 2.5f)
+      rOpts.sourceHeight = m_rs.Height() * 2;
+  }
+
+  rOpts.m_par = resolution.pixelRatio;
+
+  // rOpts.position and margins (set to style) can invalidate the text
+  // positions to subtitles type that make use of margins to position text on
+  // the screen (e.g. ASS/WebVTT) then we allow to set them when position
+  // override setting is enabled only
+  if (overlay.IsForcedMargins())
+  {
+    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::DISABLED;
+  }
+  else if (m_subtitleAlign == SUBTITLES::Align::MANUAL)
+  {
+    // When vertical margins are used Libass apply a displacement in percentage
+    // of the height available to line position, this displacement causes
+    // problems with subtitle calibration bar on Video Calibration window,
+    // so when you moving the subtitle bar of the GUI the text will no longer
+    // match the bar, this calculation compensates for the displacement.
+    // Note also that the displacement compensation will cause a different
+    // default position of the text, different from the other alignment positions
+    double posPx = static_cast<double>(m_subtitlePosition - resolution.overscanTop);
+
+    int assPlayResY = overlay.GetLibassHandler()->GetPlayResY();
+    double assVertMargin =
+        static_cast<double>(style.marginVertical) * (static_cast<double>(assPlayResY) / 720);
+    double vertMarginScaled = assVertMargin / assPlayResY * static_cast<double>(rOpts.frameHeight);
+
+    double pos = posPx / (static_cast<double>(rOpts.frameHeight) - vertMarginScaled);
+    rOpts.position = 100 - pos * 100;
+  }
+  else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
+  {
+    // To keep consistent the position of text as other alignment positions
+    // we avoid apply the displacement compensation
+    double posPx =
+        static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resolution.overscanTop);
+    rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
+  }
+  else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
+           m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE)
+  {
+    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
+  }
+
+  // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
+  // This setting influence style->alignment property
+  if (overlay.IsTextAlignEnabled())
+  {
+    if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::LEFT)
+      rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::LEFT;
+    else if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::RIGHT)
+      rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::RIGHT;
+    else
+      rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::CENTER;
+  }
+
+  return rOpts;
+}
+
+void CRenderer::UpdateSubtitleStyle()
 {
   if (!m_overlayStyle || m_isSettingsChanged)
   {
@@ -731,8 +738,12 @@ void CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
     LoadSettings();
     CreateSubtitlesStyle();
   }
+}
 
-  RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+void CRenderer::UpdateSubtitlePosition(SubtitleResolution& resolution)
+{
+  CWinSystemBase* const winSystem{CServiceBroker::GetWinSystem()};
+  RESOLUTION_INFO resInfo = winSystem->GetGfxContext().GetResInfo();
   resolution.pixelRatio = resInfo.fPixelRatio;
   resolution.overscanTop = resInfo.Overscan.top;
 
@@ -755,8 +766,8 @@ void CRenderer::UpdateSubtitleStyleAndPosition(SubtitleResolution& resolution)
       // m_subtitlePosition has been changed
       // and has been requested to save the value to resInfo
       resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
-          CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
+      winSystem->GetGfxContext().SetResInfo(winSystem->GetGfxContext().GetVideoResolution(),
+                                            resInfo);
       m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
     }
     else
