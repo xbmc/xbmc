@@ -70,18 +70,23 @@ bool CUDFDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     else
     {
       std::string filename = dirent.d_name;
-      std::string filenameWithPath{strSub + filename};
-      auto file = udfread_file_open(udf, filenameWithPath.c_str());
-      if (!file)
-        continue;
-
       CFileItemPtr pItem(new CFileItem(filename));
       pItem->SetPath(strRoot + filename);
       pItem->SetFolder(false);
-      pItem->SetSize(udfread_file_size(file));
-      items.Add(pItem);
 
-      udfread_file_close(file);
+      // A file's size is held in its own entry rather than the directory's, so it costs a read
+      if (!(m_flags & DIR_FLAG_NO_FILE_INFO))
+      {
+        std::string filenameWithPath{strSub + filename};
+        auto file = udfread_file_open(udf, filenameWithPath.c_str());
+        if (!file)
+          continue;
+
+        pItem->SetSize(udfread_file_size(file));
+        udfread_file_close(file);
+      }
+
+      items.Add(pItem);
     }
   }
 

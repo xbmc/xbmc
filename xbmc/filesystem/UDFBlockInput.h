@@ -10,7 +10,9 @@
 
 #include "threads/CriticalSection.h"
 
+#include <cstdint>
 #include <memory>
+#include <vector>
 
 #include <udfread/blockinput.h>
 
@@ -37,6 +39,11 @@ private:
     struct udfread_block_input bi;
     std::shared_ptr<XFILE::CFile> fp{nullptr};
     CCriticalSection lock;
+
+    //! The blocks read ahead, starting at readAheadLba
+    std::vector<uint8_t> readAhead;
+    uint32_t readAheadLba{0};
+    uint32_t readAheadBlocks{0};
   };
 
   std::unique_ptr<UDF_BI> m_bi{nullptr};

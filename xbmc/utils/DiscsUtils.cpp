@@ -51,11 +51,12 @@ bool UTILS::DISCS::IsBlurayDiscImage(const std::string& path)
   if (!URIUtils::IsDiscImage(path))
     return false;
 
+  // A disc's index is almost always in its BDMV folder, and each probe mounts the image
   static constexpr std::array<std::string_view, 4> blurayFiles = {
-      "index.bdmv",
-      "INDEX.BDM",
       "BDMV/index.bdmv",
       "BDMV/INDEX.BDM",
+      "index.bdmv",
+      "INDEX.BDM",
   };
   CURL url("udf://");
   url.SetHostName(path);
