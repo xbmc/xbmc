@@ -1429,10 +1429,15 @@ bool CGUIWindowManager::Render()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions;
   if (visualizeDirtyRegions)
     bufferAge = 20;
-  if (bufferAge)
-    m_tracker.CleanMarkedRegions(bufferAge + 1);
-  else
-    m_tracker.CleanMarkedRegions(10);
+  // in the stereo modes Render() runs once per eye, age the regions once per frame
+  // otherwise the right eye drops them a frame early and misses redraws
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoView() != RenderStereoView::RIGHT)
+  {
+    if (bufferAge)
+      m_tracker.CleanMarkedRegions(bufferAge + 1);
+    else
+      m_tracker.CleanMarkedRegions(10);
+  }
 
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
 
