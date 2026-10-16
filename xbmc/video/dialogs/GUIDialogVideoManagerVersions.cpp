@@ -28,7 +28,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/VideoVersionsSettings.h"
-#include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -781,10 +780,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
   // prompt to choose a video file
   std::vector<CMediaSource> sources{
-      CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES)};
-
-  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
-  CServiceBroker::GetMediaManager().GetNetworkLocations(sources);
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO)};
   AppendItemFolderToFileBrowserSources(sources);
 
   std::string path;
