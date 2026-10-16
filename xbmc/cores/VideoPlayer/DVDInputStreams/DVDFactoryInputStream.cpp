@@ -27,7 +27,7 @@
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
-#include "filesystem/CurlFile.h"
+#include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
@@ -142,26 +142,21 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     if (finalFileitem.ContentLookup())
     {
       CURL origUrl(finalFileitem.GetDynURL());
-      XFILE::CCurlFile curlFile;
       // try opening the url to resolve all redirects if any
-      try
+      // noshout: a Shoutcast stream is only probed here, not opened as one.
+      CURL lookupUrl(origUrl);
+      lookupUrl.SetProtocolOption("noshout", "true");
+      XFILE::CFile file;
+      if (file.Open(lookupUrl, XFILE::READ_NO_CACHE))
       {
-        if (curlFile.Open(finalFileitem.GetDynURL()))
+        const std::string effectiveUrl = file.GetProperty(XFILE::FileProperty::EFFECTIVE_URL);
+        if (!effectiveUrl.empty())
         {
-          CURL finalUrl(curlFile.GetURL());
+          CURL finalUrl(effectiveUrl);
           finalUrl.SetProtocolOptions(origUrl.GetProtocolOptions());
           finalUrl.SetUserName(origUrl.GetUserName());
           finalUrl.SetPassword(origUrl.GetPassWord());
           finalFileitem.SetDynPath(finalUrl.Get());
-        }
-        curlFile.Close();
-      }
-      catch (XFILE::CRedirectException *pRedirectEx)
-      {
-        if (pRedirectEx)
-        {
-          delete pRedirectEx->m_pNewFileImp;
-          delete pRedirectEx;
         }
       }
     }
