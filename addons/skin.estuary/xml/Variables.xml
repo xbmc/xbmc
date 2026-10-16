@@ -80,13 +80,16 @@
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="ListLabelVar">
-		<value condition="System.GetBool(videolibrary.flattenversions) + ListItem.HasVideoVersions + !String.IsEqual(ListItem.VideoVersionName,$LOCALIZE[40400])">$INFO[ListItem.Label]$INFO[ListItem.VideoVersionName, [COLOR grey][,][/COLOR]]</value>
+		<value condition="!String.IsEmpty(ListItem.VideoVersionName) + [!ListItem.HasVideoVersions | System.GetBool(videolibrary.flattenversions)] + !String.IsEqual(ListItem.VideoVersionName,$LOCALIZE[40400])">$VAR[ListLabelTitleVar]$INFO[ListItem.VideoVersionName, [COLOR grey][,][/COLOR]]</value>
 		<value condition="ListItem.HasVideoVersions + Window.IsActive(videoplaylist)">$INFO[ListItem.Label]$INFO[ListItem.VideoVersionName, [I](,)[/I]]</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + Window.IsActive(videoplaylist)">$INFO[ListItem.TVShowtitle,,: ]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode,,. ]$INFO[ListItem.Title]</value>
 		<value condition="String.IsEqual(ListItem.DbType,musicvideo) + Window.IsActive(videoplaylist)">$INFO[ListItem.Artist,, - ]$INFO[ListItem.Title]</value>
 		<value condition="Container.Content(recordings)">$INFO[ListItem.Label]$VAR[PVRListItemSubLabelFocused, (,)]</value>
 		<value condition="[!String.IsEmpty(ListItem.EpgEventTitle) | !String.IsEmpty(ListItem.TitleExtraInfo)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Label]$VAR[PVRListItemSubLabelFocused, (,)]</value>
 		<value condition="[!String.IsEmpty(ListItem.Season) | !String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Title,,: ]$VAR[SeasonEpisodeLabel]</value>
+		<value>$VAR[ListLabelTitleVar]</value>
+	</variable>
+	<variable name="ListLabelTitleVar">
 		<value condition="Skin.HasSetting(OriginalTitleFormat_1st) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]$INFO[ListItem.Label, (,)]</value>
 		<value condition="Skin.HasSetting(OriginalTitleFormat_2nd) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.Label]$INFO[ListItem.OriginalTitle, (,)]</value>
 		<value condition="Skin.HasSetting(OriginalTitleFormat_Only) + !String.IsEmpty(ListItem.OriginalTitle) + !String.IsEqual(ListItem.Label,ListItem.OriginalTitle)">$INFO[ListItem.OriginalTitle]</value>
@@ -490,10 +493,11 @@
 	<variable name="ListWatchedIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
-		<value condition="ListItem.HasVideoVersions + !$EXP[videoasset_true]">overlays/versions.png</value>
+		<value condition="ListItem.HasVideoVersions + !$EXP[videoasset_true] + !System.GetBool(videolibrary.flattenversions)">overlays/versions.png</value>
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 		<value condition="ListItem.IsResumable + Integer.IsGreater(ListItem.Playcount,0)">overlays/watched/OverlayWatchedResume.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/OverlayResume.png</value>
+		<value condition="System.GetBool(videolibrary.flattenversions) + ListItem.HasVideoVersions + String.IsEqual(ListItem.Overlay,OverlayWatched.png)">$INFO[ListItem.Overlay]</value>
 		<value condition="ListItem.HasVideoExtras + !$EXP[videoasset_true]">overlays/extras.png</value>
 		<value condition="ListItem.IsFolder + String.IsEmpty(Listitem.dbtype) + !String.IsEqual(ListItem.Overlay,OverlayWatched.png) + !ListItem.IsParentFolder">overlays/folder.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
@@ -513,7 +517,7 @@
 	</variable>
 	<variable name="ItemTypeIconVar">
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
-		<value condition="ListItem.HasVideoVersions + !$EXP[videoasset_true]">overlays/versions.png</value>
+		<value condition="ListItem.HasVideoVersions + !$EXP[videoasset_true] + !System.GetBool(videolibrary.flattenversions)">overlays/versions.png</value>
 		<value condition="ListItem.HasVideoExtras + !$EXP[videoasset_true]">overlays/extras.png</value>
 	</variable>
 	<variable name="ListPVRRecordingsIconVar">
