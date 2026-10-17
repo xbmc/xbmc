@@ -18,6 +18,7 @@
 #endif // TARGET_WINDOWS
 #include "CurlFile.h"
 #include "DAVFile.h"
+#include "DataFile.h"
 #include "ShoutcastFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
@@ -104,6 +105,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
   if (url.IsProtocol("zip")) return new CZipFile();
   else if (url.IsProtocol("xbt")) return new CXbtFile();
+  else if (url.IsProtocol("data"))
+    return new CDataFile();
   else if (url.IsProtocol("musicdb")) return new CMusicDatabaseFile();
   else if (url.IsProtocol("videodb")) return new CVideoDatabaseFile();
   else if (url.IsProtocol("plugin")) return new CPluginFile();

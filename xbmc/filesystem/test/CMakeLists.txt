@@ -1,5 +1,8 @@
 set(SOURCES TestAddonsPaths.cpp
             TestAudioBookFileDirectory.cpp
+            TestCurlHttpClient.cpp
+            TestDataFile.cpp
+            TestDataURI.cpp
             TestDirectory.cpp
             TestDirectoryCache.cpp
             TestDiscDirectoryHelper.cpp
@@ -7,7 +10,6 @@ set(SOURCES TestAddonsPaths.cpp
             TestFileCache.cpp
             TestFileFactory.cpp
             TestLibraryPaths.cpp
-            TestCurlHttpClient.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
 
