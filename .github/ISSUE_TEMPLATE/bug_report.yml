@@ -1,0 +1,92 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["Triage: Needed"]
+body:
+  - type: markdown
+    attributes:
+      value:
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened?
+      description: "Tell us what happened. Provide a detailed description of the issue with context."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected?
+      description: "Tell us what you expected to happen."
+    validations:
+      required: true
+  - type: textarea
+    id: possible-fix
+    attributes:
+      label: Possible fix?
+      description: "Tell us about changes that resolve or influence the issue."
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce?
+      description: "Tell us how to reproduce the issue. Walk us through it step by step."
+      value:
+        1.
+        2.
+        3.
+        ...
+    validations:
+      required: true
+  - type: textarea
+    id: debuglog
+    attributes:
+      label: Debug log
+      description: "Share a Kodi debug log paste URL or file that demonstrates the problem."
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshots
+      description: "Provide screenshots that show the issue."
+    validations:
+      required: false
+  - type: dropdown
+    id: opearating-system
+    attributes:
+      label: Operating System(s)
+      options:
+        - Android
+        - Apple (iOS)
+        - Apple (tvOS)
+        - Apple (macOS)
+        - Linux
+        - WebOS
+        - Windows
+        - Windows (UMP)
+      multiple: true
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: Operating System Version
+      description: "What operating system version are you using? e.g. Android 9.0 (Pie)"
+    validations:
+      required: true
+  - type: input
+    id: kodi-version
+    attributes:
+      label: Kodi Version
+      description: "What Kodi version are you using? e.g. Omega 21.0"
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Terms
+      description: "I commit to updating my report with new info, helping volunteer developers when asked, and accept no promise of a quick fix!"
+      options:
+        - label: I agree to these terms
+          required: true
