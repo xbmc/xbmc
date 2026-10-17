@@ -29,7 +29,10 @@
 #include "video/VideoDbUrl.h"
 #include "video/VideoLibraryQueue.h"
 
+#include <algorithm>
 #include <memory>
+#include <string>
+#include <vector>
 
 using namespace JSONRPC;
 
@@ -1149,6 +1152,39 @@ std::optional<CVideoLibrary::PlaybackUpdate> CVideoLibrary::EpisodePlaybackUpdat
   return PlaybackUpdate{count, updateLastplayed ? show.m_lastPlayed : episode.m_lastPlayed};
 }
 
+void CVideoLibrary::ApplyPlaybackState(const CVideoInfoTag& fileDetails, CVideoInfoTag& details)
+{
+  details.m_iFileId = fileDetails.m_iFileId;
+  details.SetPlayCount(std::max(details.GetPlayCount(), fileDetails.GetPlayCount()));
+  if (fileDetails.m_lastPlayed.IsValid() &&
+      (!details.m_lastPlayed.IsValid() || details.m_lastPlayed < fileDetails.m_lastPlayed))
+    details.m_lastPlayed = fileDetails.m_lastPlayed;
+  if (!details.m_dateAdded.IsValid())
+    details.m_dateAdded = fileDetails.m_dateAdded;
+  if (!details.GetResumePoint().IsSet())
+    details.SetResumePoint(fileDetails.GetResumePoint());
+  if (!details.m_streamDetails.HasItems())
+    details.m_streamDetails = fileDetails.m_streamDetails;
+}
+
+bool CVideoLibrary::GetTvShowOfFolder(CVideoDatabase& videodatabase,
+                                      const std::string& path,
+                                      CVideoInfoTag& details,
+                                      CFileItem* item)
+{
+  const int idShow{videodatabase.GetTvShowId(path)};
+  if (idShow < 0)
+    return false;
+
+  std::vector<std::string> folders;
+  if (!videodatabase.GetPathsLinkedToTvShow(idShow, folders) ||
+      std::ranges::none_of(folders, [&path](const std::string& folder)
+                           { return URIUtils::PathEquals(folder, path, true); }))
+    return false;
+
+  return videodatabase.GetTvShowInfo(path, details, idShow, item);
+}
+
 bool CVideoLibrary::FillFileItem(
     const std::string& strFilename,
     std::shared_ptr<CFileItem>& item,
@@ -1161,12 +1197,30 @@ bool CVideoLibrary::FillFileItem(
   bool filled = false;
   if (videodatabase.Open())
   {
+    // Only a library row describes the item; the files table knows anything ever played.
+    // A tv show is keyed on its folder, so it is only asked about for a folder entry.
     CVideoInfoTag details;
-    if (videodatabase.LoadVideoInfo(strFilename, details))
+    if (videodatabase.GetMovieInfo(strFilename, details) ||
+        videodatabase.GetEpisodeInfo(strFilename, details) ||
+        videodatabase.GetMusicVideoInfo(strFilename, details) ||
+        (item->IsFolder() &&
+         GetTvShowOfFolder(videodatabase, strFilename, details, item.get())))
     {
       item->SetFromVideoInfoTag(details);
       item->SetDynPath(strFilename);
       filled = true;
+    }
+    else
+    {
+      // Not a library item: add the files table's playback state to what the entry already says.
+      CVideoInfoTag fileDetails;
+      if (videodatabase.GetFileInfo(strFilename, fileDetails))
+      {
+        ApplyPlaybackState(fileDetails, *item->GetVideoInfoTag());
+        if (item->GetPath().empty())
+          item->SetPath(strFilename);
+        filled = true;
+      }
     }
   }
 
