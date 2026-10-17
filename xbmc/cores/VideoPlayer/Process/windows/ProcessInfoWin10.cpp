@@ -8,7 +8,11 @@
 
 #include "ProcessInfoWin10.h"
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/VideoRenderers/windows/DolbyVisionEffect.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 #include <set>
 
@@ -40,4 +44,14 @@ std::vector<AVPixelFormat> CProcessInfoWin10::GetRenderFormats()
     AV_PIX_FMT_P016,
     AV_PIX_FMT_YUV420P16
   };
+}
+
+bool CProcessInfoWin10::WantsDolbyVisionRpu()
+{
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          "videoplayer.usemfdolbyvision"))
+    return false;
+
+  static const bool effectAvailable = CDolbyVisionEffect::IsAvailable();
+  return effectAvailable;
 }

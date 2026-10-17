@@ -416,6 +416,9 @@ void CSettingConditions::Initialize()
   m_simpleConditions.emplace("has_dx");
   m_simpleConditions.emplace("hasdxva2");
 #endif
+#ifdef TARGET_WINDOWS_STORE
+  m_simpleConditions.emplace("has_uwp");
+#endif
 #if defined(TARGET_WEBOS)
   m_simpleConditions.emplace("have_webos");
 #endif

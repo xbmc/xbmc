@@ -97,6 +97,7 @@ public:
   void UpdateRenderBuffers(int queued, int discard, int free);
   void GetRenderBuffers(int &queued, int &discard, int &free);
   virtual std::vector<AVPixelFormat> GetRenderFormats();
+  virtual bool WantsDolbyVisionRpu() { return false; }
 
   // player states
   /*!
