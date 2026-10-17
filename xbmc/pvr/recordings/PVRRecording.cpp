@@ -183,7 +183,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["channel"] = m_strChannelName;
   value["lifetime"] = m_iLifetime;
   value["directory"] = m_strDirectory;
-  value["icon"] = ClientIconPath();
+  value["icon"] = IconPath();
   value["starttime"] = m_recordingTime.IsValid() ? m_recordingTime.GetAsDBDateTime() : "";
   value["endtime"] = m_recordingTime.IsValid() ? EndTimeAsUTC().GetAsDBDateTime() : "";
   value["recordingid"] = m_iRecordingId;
@@ -194,17 +194,17 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["genre"] = m_genre;
   value["parentalrating"] = m_parentalRating;
   value["parentalratingcode"] = m_parentalRatingCode;
-  value["parentalratingicon"] = ClientParentalRatingIconPath();
+  value["parentalratingicon"] = GetParentalRatingIcon();
   value["parentalratingsource"] = m_parentalRatingSource;
   value["episodepart"] = m_episodePartNumber;
   value["titleextrainfo"] = m_titleExtraInfo;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
-  if (!ClientThumbnailPath().empty())
-    value["art"][KODI::ART::TYPE::THUMB] = ClientThumbnailPath();
-  if (!ClientFanartPath().empty())
-    value["art"][KODI::ART::TYPE::FANART] = ClientFanartPath();
+  if (!ThumbnailPath().empty())
+    value["art"][KODI::ART::TYPE::THUMB] = ThumbnailPath();
+  if (!FanartPath().empty())
+    value["art"][KODI::ART::TYPE::FANART] = FanartPath();
 
   value["clientid"] = m_iClientId;
 }
