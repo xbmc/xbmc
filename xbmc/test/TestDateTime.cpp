@@ -12,6 +12,7 @@
 #include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "utils/XTimeUtils.h"
 
 #include <array>
 #include <cstdint>
@@ -750,6 +751,16 @@ TEST_F(TestDateTime, GetAsTimeStamp)
   dateTime += dateTime.GetTimezoneBias();
 
   EXPECT_TRUE(dateTime == fileTime);
+}
+
+TEST_F(TestDateTime, GetTimezoneBiasBefore1970)
+{
+  KODI::TIME::SystemTime time{};
+  time.year = 1969;
+  time.month = 12;
+  time.day = 31;
+
+  EXPECT_TRUE(std::get<0>(KODI::TIME::GetTimezoneBias(time)));
 }
 
 TEST_F(TestDateTime, GetAsUTCDateTime)
