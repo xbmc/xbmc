@@ -91,6 +91,37 @@ public:
   const std::string& GetGameClient() const { return m_strGameClient; }
   void SetGameClient(const std::string& strGameClient) { m_strGameClient = strGameClient; }
 
+  // Original title
+  const std::string& GetOriginalTitle() const { return m_strOriginalTitle; }
+  void SetOriginalTitle(const std::string& strOriginalTitle)
+  {
+    m_strOriginalTitle = strOriginalTitle;
+  }
+
+  // Rating, out of 10. A value outside 0 to 10, or NaN, is ignored.
+  float GetRating() const { return m_rating; }
+  void SetRating(float rating)
+  {
+    if (rating >= 0.0f && rating <= 10.0f)
+      m_rating = rating;
+  }
+
+  // Most players at once, or 0 if unknown
+  unsigned int GetPlayers() const { return m_players; }
+  void SetPlayers(unsigned int players) { m_players = players; }
+
+  // Age rating, e.g. "PEGI 12"
+  const std::string& GetAgeRating() const { return m_strAgeRating; }
+  void SetAgeRating(const std::string& strAgeRating) { m_strAgeRating = strAgeRating; }
+
+  // Trailer
+  const std::string& GetTrailer() const { return m_strTrailer; }
+  void SetTrailer(const std::string& strTrailer) { m_strTrailer = strTrailer; }
+
+  // Tags
+  const std::vector<std::string>& GetTags() const { return m_tags; }
+  void SetTags(const std::vector<std::string>& tags) { m_tags = tags; }
+
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
@@ -110,6 +141,12 @@ private:
   std::string m_strFormat;
   std::string m_strCartridgeType;
   std::string m_strGameClient;
+  std::string m_strOriginalTitle;
+  float m_rating;
+  unsigned int m_players;
+  std::string m_strAgeRating;
+  std::string m_strTrailer;
+  std::vector<std::string> m_tags;
 };
 } // namespace GAME
 } // namespace KODI

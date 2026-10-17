@@ -1084,6 +1084,8 @@ constexpr uint32_t LISTITEM_ISDEFAULTVIDEOVERSION_NAME = LISTITEM_START + 232;
 constexpr uint32_t LISTITEM_PLATFORM                 = LISTITEM_START + 233;
 constexpr uint32_t LISTITEM_DEVELOPER                = LISTITEM_START + 234;
 constexpr uint32_t LISTITEM_PUBLISHER                = LISTITEM_START + 235;
+constexpr uint32_t LISTITEM_PLAYERS                  = LISTITEM_START + 236;
+constexpr uint32_t LISTITEM_AGERATING                = LISTITEM_START + 237;
 
 constexpr int      LISTITEM_END                      = LISTITEM_START + 2500;
 

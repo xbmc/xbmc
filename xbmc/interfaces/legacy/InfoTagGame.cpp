@@ -80,6 +80,36 @@ String InfoTagGame::getGameClient()
   return infoTag->GetGameClient();
 }
 
+String InfoTagGame::getOriginalTitle()
+{
+  return infoTag->GetOriginalTitle();
+}
+
+float InfoTagGame::getRating()
+{
+  return infoTag->GetRating();
+}
+
+unsigned int InfoTagGame::getPlayers()
+{
+  return infoTag->GetPlayers();
+}
+
+String InfoTagGame::getAgeRating()
+{
+  return infoTag->GetAgeRating();
+}
+
+String InfoTagGame::getTrailer()
+{
+  return infoTag->GetTrailer();
+}
+
+std::vector<String> InfoTagGame::getTags()
+{
+  return infoTag->GetTags();
+}
+
 void InfoTagGame::setTitle(const String& title)
 {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
@@ -126,6 +156,42 @@ void InfoTagGame::setGameClient(const String& gameClient)
 {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
   setGameClientRaw(infoTag, gameClient);
+}
+
+void InfoTagGame::setOriginalTitle(const String& originalTitle)
+{
+  XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+  infoTag->SetOriginalTitle(originalTitle);
+}
+
+void InfoTagGame::setRating(float rating)
+{
+  XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+  infoTag->SetRating(rating);
+}
+
+void InfoTagGame::setPlayers(unsigned int players)
+{
+  XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+  infoTag->SetPlayers(players);
+}
+
+void InfoTagGame::setAgeRating(const String& ageRating)
+{
+  XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+  infoTag->SetAgeRating(ageRating);
+}
+
+void InfoTagGame::setTrailer(const String& trailer)
+{
+  XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+  infoTag->SetTrailer(trailer);
+}
+
+void InfoTagGame::setTags(const std::vector<String>& tags)
+{
+  XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+  infoTag->SetTags(tags);
 }
 
 void InfoTagGame::setTitleRaw(KODI::GAME::CGameInfoTag* infoTag, const String& title)

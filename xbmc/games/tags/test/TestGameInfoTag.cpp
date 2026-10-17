@@ -11,6 +11,7 @@
 #include "games/tags/GameInfoTag.h"
 #include "utils/SortUtils.h"
 
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>
@@ -29,12 +30,13 @@ void AddGames(CFileItemList& items)
     std::string title;
     unsigned int year;
     std::string genre;
+    float rating;
   };
 
   // Listed by file name, which sorts differently to every detail
-  const std::vector<Game> games{{"/roms/1.rom", "Secret of Mana", 1993, "Role-playing"},
-                                {"/roms/2.rom", "Actraiser", 1990, "Simulation"},
-                                {"/roms/3.rom", "Chrono Trigger", 1995, "Adventure"}};
+  const std::vector<Game> games{{"/roms/1.rom", "Secret of Mana", 1993, "Role-playing", 8.5f},
+                                {"/roms/2.rom", "Actraiser", 1990, "Simulation", 7.9f},
+                                {"/roms/3.rom", "Chrono Trigger", 1995, "Adventure", 9.4f}};
 
   for (const Game& game : games)
   {
@@ -44,6 +46,7 @@ void AddGames(CFileItemList& items)
     tag->SetTitle(game.title);
     tag->SetYear(game.year);
     tag->SetGenres({game.genre});
+    tag->SetRating(game.rating);
     items.Add(std::move(item));
   }
 }
@@ -82,4 +85,40 @@ TEST(TestGameInfoTag, SortsByGenre)
   items.Sort(SortBy::GENRE, SortOrder::ASCENDING);
   EXPECT_EQ(Titles(items),
             (std::vector<std::string>{"Chrono Trigger", "Secret of Mana", "Actraiser"}));
+}
+
+TEST(TestGameInfoTag, SortsByRating)
+{
+  CFileItemList items;
+  AddGames(items);
+  items.Sort(SortBy::RATING, SortOrder::ASCENDING);
+  EXPECT_EQ(Titles(items),
+            (std::vector<std::string>{"Actraiser", "Secret of Mana", "Chrono Trigger"}));
+}
+
+TEST(TestGameInfoTag, ComparesTheWiderDetails)
+{
+  CGameInfoTag tag;
+  tag.SetLoaded();
+  tag.SetTags({"JRPG"});
+
+  CGameInfoTag copy{tag};
+  EXPECT_EQ(copy, tag);
+
+  copy.SetPlayers(2);
+  EXPECT_NE(copy, tag);
+}
+
+TEST(TestGameInfoTag, IgnoresARatingOutsideZeroToTen)
+{
+  CGameInfoTag tag;
+  tag.SetRating(8.5f);
+
+  tag.SetRating(11.0f);
+  tag.SetRating(-1.0f);
+  tag.SetRating(std::numeric_limits<float>::quiet_NaN());
+  EXPECT_EQ(tag.GetRating(), 8.5f);
+
+  tag.SetRating(0.0f);
+  EXPECT_EQ(tag.GetRating(), 0.0f);
 }

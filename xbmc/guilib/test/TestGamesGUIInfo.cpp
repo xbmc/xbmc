@@ -237,6 +237,30 @@ TEST_F(TestGamesGUIInfo, AnswersListItemLabelsForAGamesMakers)
             "Square");
 }
 
+TEST_F(TestGamesGUIInfo, AnswersListItemLabelsForAGamesWiderDetails)
+{
+  CFileItem item{"/roms/test.rom", false};
+  CGameInfoTag* tag = item.GetGameInfoTag();
+  tag->SetOriginalTitle("Seiken Densetsu 2");
+  tag->SetRating(8.5f);
+  tag->SetPlayers(3);
+  tag->SetAgeRating("PEGI 7");
+  tag->SetTrailer("https://example.com/trailer.mp4");
+  tag->SetTags({"Co-op", "JRPG"});
+
+  CGUIInfoManager infoManager;
+
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_ORIGINALTITLE), "Seiken Densetsu 2");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_RATING), "8.5");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, infoManager.TranslateString("ListItem.Players")),
+            "3");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, infoManager.TranslateString("ListItem.AgeRating")),
+            "PEGI 7");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_TRAILER),
+            "https://example.com/trailer.mp4");
+  EXPECT_EQ(infoManager.GetItemLabel(&item, 0, LISTITEM_TAG), "Co-op, JRPG");
+}
+
 TEST_F(TestGamesGUIInfo, JoinsGenresWithTheSkinsSeparator)
 {
   CFileItem item{"/roms/test.rom", false};
