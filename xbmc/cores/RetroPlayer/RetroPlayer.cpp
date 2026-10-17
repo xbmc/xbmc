@@ -27,11 +27,8 @@
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
-#include "cores/RetroPlayer/savestates/ISavestate.h"
-#include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RPStreamManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/GameUtils.h"
@@ -111,38 +108,6 @@ bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
 
   // Check if we should open in standalone mode
   const bool bStandalone = fileCopy.GetDynPath().empty();
-
-  // Asked before the game client is set up: the dialog runs the message loop,
-  // and a game started from it once the client is playing would close this
-  // player in the middle of opening
-  if (!bStandalone && !savestatePath.empty())
-  {
-    CSavestateDatabase savestateDb;
-
-    std::unique_ptr<ISavestate> save = CSavestateDatabase::AllocateSavestate();
-    if (savestateDb.GetSavestate(savestatePath, *save))
-    {
-      // Check if game client is the same
-      if (save->GameClientID() != fileCopy.GetGameInfoTag()->GetGameClient())
-      {
-        ADDON::AddonPtr addon;
-        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
-                                                   ADDON::OnlyEnabled::CHOICE_YES))
-        {
-          // Warn the user that continuing with a different game client will
-          // overwrite the save
-          bool dummy;
-          if (!CGUIDialogYesNo::ShowAndGetInput(
-                  438,
-                  StringUtils::Format(
-                      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(35217),
-                      addon->Name()),
-                  dummy, 222, 35218, 0))
-            return false;
-        }
-      }
-    }
-  }
 
   m_processInfo = CRPProcessInfo::CreateInstance();
   if (!m_processInfo)
