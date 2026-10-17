@@ -38,6 +38,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <iterator>
 #include <memory>
 #include <set>
 #include <string>
@@ -1234,6 +1235,15 @@ public:
                                           announcement.data["id"].asInteger() == id;
                                  });
   }
+
+  std::vector<CAnnounceData> Files() const
+  {
+    std::vector<CAnnounceData> files;
+    std::ranges::copy_if(m_announcementQueue, std::back_inserter(files),
+                         [](const CAnnounceData& announcement)
+                         { return announcement.flag == ANNOUNCEMENT::Files; });
+    return files;
+  }
 };
 } // namespace
 
@@ -1585,4 +1595,115 @@ TEST_F(TestVideoDatabase, SetDefaultVideoVersionKeepsOnlyTheMovieArt)
                    "SELECT COUNT(*) FROM art WHERE media_id = " + std::to_string(movieId) +
                    " AND media_type = 'movie' AND type = 'fanart'"));
   EXPECT_EQ("old-fanart.jpg", m_db.GetArtForItem(movieId, KODI::MEDIA::TYPE::MOVIE, "fanart"));
+}
+
+namespace
+{
+class TestVideoDatabaseFileAnnouncements : public TestVideoDatabase
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoDatabase::SetUp();
+    CServiceBroker::UnregisterAnnouncementManager();
+    CServiceBroker::RegisterAnnouncementManager(m_announcements);
+  }
+
+  const std::shared_ptr<CQueuedAnnouncements> m_announcements{
+      std::make_shared<CQueuedAnnouncements>()};
+};
+
+constexpr const char* PLUGIN_ITEM = "plugin://plugin.video.example/play/?id=1";
+} // namespace
+
+TEST_F(TestVideoDatabaseFileAnnouncements, AnnouncesThePlayCountOfAPluginItem)
+{
+  ASSERT_TRUE(m_db.SetPlayCount(CFileItem(PLUGIN_ITEM, false), 1).IsValid());
+  ASSERT_TRUE(m_db.SetPlayCount(CFileItem(PLUGIN_ITEM, false), 0).IsValid());
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(2u, files.size());
+  for (const auto& announcement : files)
+  {
+    EXPECT_EQ("OnPlayCountChanged", announcement.message);
+    EXPECT_EQ(PLUGIN_ITEM, announcement.data["file"].asString());
+  }
+  EXPECT_EQ(1, files[0].data["playcount"].asInteger());
+  EXPECT_EQ(0, files[1].data["playcount"].asInteger());
+}
+
+TEST_F(TestVideoDatabaseFileAnnouncements, DoesNotAnnounceAPlayCountThatStaysTheSame)
+{
+  const CFileItem item(PLUGIN_ITEM, false);
+  ASSERT_TRUE(m_db.SetPlayCount(item, 1).IsValid());
+  // What saving the state of an unfinished playback does
+  ASSERT_TRUE(m_db.UpdateLastPlayed(item).IsValid());
+  ASSERT_TRUE(m_db.SetPlayCount(item, 1).IsValid());
+
+  EXPECT_EQ(1u, m_announcements->Files().size());
+}
+
+TEST_F(TestVideoDatabaseFileAnnouncements, AnnouncesThePluginItemAResolvedItemWasPlayedFrom)
+{
+  CFileItem played("http://127.0.0.1:12345/manifest.mpd", false);
+  played.SetProperty("original_listitem_url", PLUGIN_ITEM);
+  ASSERT_TRUE(m_db.SetPlayCount(played, 1).IsValid());
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ(PLUGIN_ITEM, files[0].data["file"].asString());
+}
+
+TEST_F(TestVideoDatabaseFileAnnouncements, AnnouncesAFileWithoutCredentials)
+{
+  ASSERT_TRUE(
+      m_db.SetPlayCount(CFileItem("smb://user:secret@server/videos/film.mkv", false), 1).IsValid());
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("smb://server/videos/film.mkv", files[0].data["file"].asString());
+}
+
+TEST_F(TestVideoDatabaseFileAnnouncements, AnnouncesAResumePointButNoOtherBookmark)
+{
+  CBookmark bookmark;
+  bookmark.timeInSeconds = 600.0;
+  bookmark.totalTimeInSeconds = 3600.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile("/videos/film.mkv", bookmark, CBookmark::STANDARD));
+  ASSERT_TRUE(m_db.AddBookMarkToFile("/videos/film.mkv", bookmark, CBookmark::RESUME));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("OnResumePointChanged", files[0].message);
+  EXPECT_EQ("/videos/film.mkv", files[0].data["file"].asString());
+  EXPECT_EQ(600.0, files[0].data["resume"]["position"].asDouble());
+  EXPECT_EQ(3600.0, files[0].data["resume"]["total"].asDouble());
+}
+
+TEST_F(TestVideoDatabaseFileAnnouncements, AnnouncesEveryWayOfResettingAResumePoint)
+{
+  const std::string file{"/videos/film.mkv"};
+  CBookmark bookmark;
+  bookmark.timeInSeconds = 600.0;
+  bookmark.totalTimeInSeconds = 3600.0;
+  CFileItem item(file, false);
+  // DeleteResumeBookMark() expects the item to have a video info tag
+  item.GetVideoInfoTag();
+
+  ASSERT_TRUE(m_db.AddBookMarkToFile(file, bookmark, CBookmark::RESUME));
+  ASSERT_TRUE(m_db.ClearBookMarksOfFile(file, CBookmark::RESUME));
+  ASSERT_TRUE(m_db.AddBookMarkToFile(file, bookmark, CBookmark::RESUME));
+  m_db.ClearBookMarkOfFile(file, bookmark, CBookmark::RESUME);
+  ASSERT_TRUE(m_db.AddBookMarkToFile(file, bookmark, CBookmark::RESUME));
+  m_db.DeleteResumeBookMark(item);
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(6u, files.size());
+  for (const size_t reset : {1u, 3u, 5u})
+  {
+    EXPECT_EQ("OnResumePointChanged", files[reset].message) << reset;
+    EXPECT_EQ(file, files[reset].data["file"].asString()) << reset;
+    EXPECT_EQ(0.0, files[reset].data["resume"]["position"].asDouble()) << reset;
+    EXPECT_EQ(0.0, files[reset].data["resume"]["total"].asDouble()) << reset;
+  }
 }

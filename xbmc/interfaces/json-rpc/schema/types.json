@@ -158,6 +158,10 @@
       "Sources": {
         "type": "boolean",
         "required": true
+      },
+      "Files": {
+        "type": "boolean",
+        "required": true
       }
     },
     "additionalProperties": false
