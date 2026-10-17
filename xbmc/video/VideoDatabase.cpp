@@ -21,6 +21,7 @@
 #include "VideoInfoScannerArt.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -442,6 +443,55 @@ bool CVideoDatabase::GetSubPaths(const std::string& basepath,
   return false;
 }
 
+std::string CVideoDatabase::ToStoredPath(const std::string& directory)
+{
+  std::string path{CUtil::ValidatePath(directory)};
+  URIUtils::AddSlashAtEnd(path);
+
+  return path;
+}
+
+bool CVideoDatabase::GetPathsForCleaning(const std::string& directory,
+                                         const std::string& content,
+                                         std::set<int>& paths)
+{
+  const bool byDirectory = !directory.empty();
+
+  const auto matchesContent = [byDirectory, &content](const std::string& pathContent)
+  {
+    if (content.empty())
+      return true;
+    if (byDirectory && content == "tvshows")
+      return pathContent == "tvshows" || pathContent == "seasons" || pathContent == "episodes";
+    return pathContent == content;
+  };
+
+  std::set<std::string, std::less<>> contentPaths;
+  if (byDirectory)
+    contentPaths.insert(ToStoredPath(directory));
+  else if (!GetPaths(contentPaths))
+    return false;
+
+  for (const std::string& path : contentPaths)
+  {
+    if (!matchesContent(GetContentForPath(path)))
+      continue;
+
+    const int pathId = GetPathId(path);
+    if (pathId != -1)
+      paths.insert(pathId);
+
+    std::vector<std::pair<int, std::string>> sub;
+    if (GetSubPaths(path, sub, false))
+    {
+      for (const auto& [subPathId, subPath] : sub)
+        paths.insert(subPathId);
+    }
+  }
+
+  return true;
+}
+
 int CVideoDatabase::AddPath(const std::string& strPath, const std::string &parentPath /*= "" */, const CDateTime& dateAdded /* = CDateTime() */)
 {
   std::string strSQL;
@@ -575,8 +625,8 @@ bool CVideoDatabase::GetSourcePath(const std::string &path, std::string &sourceP
         std::string strScraper = m_pDS->fv(1).get_asString();
         if (!strContent.empty() && !strScraper.empty())
         {
-          settings.parent_name_root = settings.parent_name = m_pDS->fv(2).get_asBool();
-          settings.recurse = m_pDS->fv(3).get_asInt();
+          settings.parent_name_root = settings.parent_name = m_pDS->fv(3).get_asBool();
+          settings.recurse = m_pDS->fv(2).get_asInt();
           settings.noupdate = m_pDS->fv(4).get_asBool();
           settings.exclude = m_pDS->fv(5).get_asBool();
           found = true;
@@ -10342,6 +10392,17 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           *CMediaSourceSettings::GetInstance().GetSources("video"));
       CServiceBroker::GetMediaManager().GetRemovableDrives(videoSources);
 
+      // Versions and extras, which can be added from outside the video sources
+      std::unordered_set<int> assetFiles;
+      m_pDS->query("SELECT idFile FROM videoversion WHERE NOT EXISTS "
+                   "(SELECT 1 FROM movie WHERE movie.idFile = videoversion.idFile)");
+      while (!m_pDS->eof())
+      {
+        assetFiles.insert(m_pDS->fv(0).get_asInt());
+        m_pDS->next();
+      }
+      m_pDS->close();
+
       int total = m_pDS2->num_rows();
       int current = 0;
       std::string lastDir;
@@ -10378,12 +10439,14 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         }
         else
         {
-          // Only consider keeping this file if not optical and belonging to a (matching) source
+          // Only consider keeping this file if not optical and belonging to a (matching) source,
+          // or a version or extra
           bool bIsSource;
           const int sourceIndex = URIUtils::IsOnDVD(fullPath)
                                       ? -1
                                       : CUtil::GetMatchingSource(fullPath, videoSources, bIsSource);
-          if (sourceIndex >= 0)
+          if (sourceIndex >= 0 || (!URIUtils::IsOnDVD(fullPath) &&
+                                   assetFiles.contains(m_pDS2->fv("files.idFile").get_asInt())))
           {
             const std::string pathDir = URIUtils::GetDirectory(fullPath);
 
@@ -10945,8 +11008,14 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
       for (const auto& i : musicVideoIDs)
         AnnounceRemove(MediaTypeMusicVideo, i, true);
 
-      for (const auto& i : videoVersionIDs)
-        AnnounceRemove(MediaTypeVideoVersion, i, true);
+      // videoVersionIDs holds the movies that lost a version or extra. Those still in the
+      // library have changed.
+      std::set<int> changedMovies(videoVersionIDs.begin(), videoVersionIDs.end());
+      for (const auto& i : movieIDs)
+        changedMovies.erase(i);
+
+      for (const auto& i : changedMovies)
+        AnnounceUpdate(MediaTypeMovie, i);
     }
   }
   catch (...)
@@ -11015,6 +11084,10 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
 
   // map of parent path ID to boolean pair (if not exists and user choice)
   std::map<int, std::pair<bool, bool> > sourcePathsDeleteDecisions;
+  // Each source path is checked once, as loose assets don't share their decisions
+  std::map<int, bool> sourcePathsExist;
+  // An episode is listed once for each folder of its show
+  std::set<int> cleaned;
   m_pDS2->query(sql);
   while (!m_pDS2->eof())
   {
@@ -11031,14 +11104,29 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
       bool bIsSourceName;
       bool sourceNotFound = (CUtil::GetMatchingSource(parentPath, videoSources, bIsSourceName) < 0);
 
+      // A non-default version or extra added from outside the sources and the library has its
+      // own folder for a source
+      const bool looseAsset{mediaType == MediaTypeVideoVersion && sourceNotFound &&
+                            sourcePath.empty() &&
+                            !IsDefaultVideoVersion(m_pDS2->fv(1).get_asInt())};
+
       if (sourceNotFound && sourcePath.empty())
         sourcePath = parentPath;
 
       int sourcePathID = GetPathId(sourcePath);
       auto sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
-      if (sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
+      // A loose asset's decision is its own, not one for a default version in the same folder
+      if (looseAsset || sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
       {
-        bool sourcePathNotExists = (sourceNotFound || !CDirectory::Exists(sourcePath, false));
+        bool sourcePathNotExists{sourceNotFound && !looseAsset};
+        if (!sourcePathNotExists)
+        {
+          auto exists{sourcePathsExist.find(sourcePathID)};
+          if (exists == sourcePathsExist.end())
+            exists =
+                sourcePathsExist.emplace(sourcePathID, CDirectory::Exists(sourcePath, false)).first;
+          sourcePathNotExists = !exists->second;
+        }
         // if the parent path exists, the file will be deleted without asking
         // if the parent path doesn't exist or does not belong to a valid media source,
         // ask the user whether to remove all items it contained
@@ -11070,7 +11158,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
           }
         }
 
-        sourcePathsDeleteDecisions.insert(std::make_pair(sourcePathID, std::make_pair(sourcePathNotExists, del)));
+        if (!looseAsset)
+          sourcePathsDeleteDecisions.insert(
+              std::make_pair(sourcePathID, std::make_pair(sourcePathNotExists, del)));
 
         // Only a source that has gone carries a decision about its contents
         if (sourcePathNotExists)
@@ -11086,7 +11176,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
         pathsDeleteDecisions.insert(std::make_pair(m_pDS2->fv(2).get_asInt(), del));
     }
 
-    if (del)
+    if (del && (!isEpisode || cleaned.insert(m_pDS2->fv(0).get_asInt()).second))
     {
       deletedFileIDs += m_pDS2->fv(1).get_asString() + ",";
       cleanedIDs.emplace_back(m_pDS2->fv(0).get_asInt());
@@ -13443,8 +13533,13 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
 
       if (idOldFile != idFile)
       {
-        m_pDS->exec(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i",
-                               idFile, VIDEODB_ID_BASEPATH, path.c_str(), dbId));
+        std::string sourcePath;
+        GetSourcePath(path, sourcePath);
+        const int idParentPath{AddPath(
+            URIUtils::PathEquals(path, sourcePath, true) ? path : URIUtils::GetParentPath(path))};
+        m_pDS->exec(PrepareSQL(
+            "UPDATE movie SET idFile = %i, c%02d = '%s', c%02d = %i WHERE idMovie = %i", idFile,
+            VIDEODB_ID_BASEPATH, path.c_str(), VIDEODB_ID_PARENTPATHID, idParentPath, dbId));
 
         // Swap art
         // media_id is idMovie for movies and idFile for videoversions
@@ -13456,6 +13551,38 @@ bool CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
         m_pDS->exec(PrepareSQL("UPDATE art SET media_type = '%s', media_id = %i "
                                "WHERE media_id = %i AND media_type = '%s'",
                                MediaTypeMovie, dbId, idFile, MediaTypeVideoVersion));
+
+        // Keep the movie's art of a type the new default version has none of. A frame of the
+        // old default's file is swapped for one of the new default's, where one can be taken,
+        // as none is taken for a movie listed as a folder of its versions. Other images taken
+        // from the old file are left out.
+        KODI::ART::Artwork art;
+        KODI::ART::Artwork oldArt;
+        if (GetArtForItem(dbId, MediaTypeMovie, art) &&
+            GetArtForItem(idOldFile, MediaTypeVideoVersion, oldArt))
+        {
+          CVideoInfoTag newDefault;
+          GetFileInfo({}, newDefault, idFile);
+          std::string newDefaultFile;
+          if (CDVDFileInfo::CanExtract(CFileItem{newDefault.m_strFileNameAndPath, false}))
+          {
+            newDefaultFile = newDefault.m_strFileNameAndPath;
+            if (URIUtils::IsStack(newDefaultFile))
+              newDefaultFile = CStackDirectory::GetFirstStackedFile(newDefaultFile);
+          }
+          KODI::ART::Artwork missing;
+          for (const auto& [type, url] : oldArt)
+          {
+            if (art.contains(type))
+              continue;
+            const std::string special{IMAGE_FILES::CImageFileURL(url).GetSpecialType()};
+            if (special == "video" && !newDefaultFile.empty())
+              missing.try_emplace(type, IMAGE_FILES::URLFromFile(newDefaultFile, special));
+            else if (!special.starts_with("video"))
+              missing.try_emplace(type, url);
+          }
+          SetArtForItem(dbId, MediaTypeMovie, missing);
+        }
       }
     }
 
