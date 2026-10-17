@@ -19,6 +19,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 
 extern "C"
 {
@@ -688,6 +689,17 @@ AVFrame* CFFmpegImage::ExtractTileGridFrame()
     av_frame_free(&canvas);
     return nullptr;
   }
+
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(61, 9, 100)
+  // irot/imir of a grid apply to the grid, not its tiles
+  const AVPacketSideData* sideData{av_packet_side_data_get(
+      grid->coded_side_data, grid->nb_coded_side_data, AV_PKT_DATA_DISPLAYMATRIX)};
+  AVFrameSideData* matrix{
+      sideData ? av_frame_new_side_data(canvas, AV_FRAME_DATA_DISPLAYMATRIX, sideData->size)
+               : nullptr};
+  if (matrix)
+    std::memcpy(matrix->data, sideData->data, sideData->size);
+#endif
 
   return canvas;
 }
