@@ -191,3 +191,15 @@ TEST(TestUrlOptions, GetOptionsString)
   std::string value = urlOptions.GetOptionsString();
   EXPECT_STREQ(ref, value.c_str());
 }
+
+TEST(TestUrlOptions, FoundationLegacyFormSemantics)
+{
+  CUrlOptions options("?z=1&a=one+two&a=last&empty=&bare&&escaped=%2f");
+  CVariant value;
+  ASSERT_TRUE(options.GetOption("a", value));
+  EXPECT_EQ("last", value.asString());
+  EXPECT_EQ("?a=last&bare&empty&escaped=%2f&z=1", options.GetOptionsString(true));
+  CUrlOptions plus("?value=a+b");
+  ASSERT_TRUE(plus.GetOption("value", value));
+  EXPECT_EQ("a b", value.asString());
+}

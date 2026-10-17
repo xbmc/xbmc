@@ -469,3 +469,66 @@ const TestNFSURLParsingData nfsParsingData[] = {
 };
 
 INSTANTIATE_TEST_SUITE_P(NFSParsing, TestNFSURLParsing, ValuesIn(nfsParsingData));
+
+TEST_F(TestCURL, FoundationCompatibility)
+{
+  struct Example
+  {
+    const char* input;
+    const char* serialized;
+    const char* protocol;
+    const char* filename;
+  };
+  const Example examples[] = {
+      {"HTTP://example.test//a b.mkv?x=1|seekable=0", "http://example.test//a b.mkv?x=1|seekable=0",
+       "http", "/a b.mkv"},
+      {"smb://domain;user:pass@server/share/movie.mkv",
+       "smb://domain;user:pass@server/share/movie.mkv", "smb", "share/movie.mkv"},
+      {"ftp://server/a.mkv?auth=TLS|cache=no", "ftp://server/a.mkv?auth=TLS|cache=no", "ftp",
+       "a.mkv"},
+      {"nfs://server/export/a.mkv?version=4", "nfs://server/export/a.mkv?version=4", "nfs",
+       "export/a.mkv"},
+      {"rtp://source@239.1.2.3:1234", "rtp://source@239.1.2.3:1234/", "rtp", ""},
+      {"udp://source@239.1.2.3:1234", "udp://source@239.1.2.3:1234/", "udp", ""},
+      {"dav://server/a.mkv", "dav://server/a.mkv", "dav", "a.mkv"},
+      {"special://home/a.mkv", "special://home/a.mkv", "special", "home/a.mkv"},
+      {"videodb://movies/titles/1/", "videodb://movies/titles/1/", "videodb", "movies/titles/1/"},
+      {"zip://%2ftmp%2fmovies.zip/dir/a.mkv", "zip://%2ftmp%2fmovies.zip/dir/a.mkv", "zip",
+       "dir/a.mkv"},
+      {"image://http%3a%2f%2fserver%2fa.jpg/", "image://http%3a%2f%2fserver%2fa.jpg/", "image", ""},
+      {"C:relative", "C:relative", "", "C:relative"},
+      {"./notes:2026", "./notes:2026", "", "./notes:2026"},
+      {"relative?name#part+100%.mkv", "relative?name#part+100%.mkv", "",
+       "relative?name#part+100%.mkv"},
+      {"\\\\server\\share\\a.mkv", "\\\\server\\share\\a.mkv", "", "\\\\server\\share\\a.mkv"},
+  };
+  for (const auto& example : examples)
+  {
+    SCOPED_TRACE(example.input);
+    const CURL url(example.input);
+    EXPECT_EQ(example.serialized, url.Get());
+    EXPECT_EQ(example.protocol, url.GetProtocol());
+    EXPECT_EQ(example.filename, url.GetFileName());
+  }
+  EXPECT_TRUE(CURL::IsFullPath("C:relative"));
+  EXPECT_FALSE(CURL::IsFullPath("./notes:2026"));
+}
+
+TEST_F(TestCURL, FoundationLegacyOptionsAndReparse)
+{
+  CURL url("http://user:pass@server/a.mkv?z=1&a=one+two&a=three&empty=|seekable=0");
+  EXPECT_EQ("three", url.GetOption("a"));
+  EXPECT_EQ("http://user:pass@server/a.mkv?z=1&a=one+two&a=three&empty=|seekable=0", url.Get());
+  url.SetOption("b", "hello world");
+  EXPECT_EQ("?a=three&b=hello%20world&empty&z=1", url.GetOptions());
+  url.Parse("relative.txt");
+  EXPECT_TRUE(url.GetHostName().empty());
+  EXPECT_TRUE(url.GetUserName().empty());
+  EXPECT_TRUE(url.GetOptions().empty());
+  EXPECT_TRUE(url.GetProtocolOptions().empty());
+  EXPECT_EQ("txt", url.GetFileType());
+  url.Reset();
+  EXPECT_TRUE(url.Get().empty());
+  EXPECT_TRUE(url.GetShareName().empty());
+  EXPECT_TRUE(url.GetFileType().empty());
+}
