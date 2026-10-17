@@ -384,6 +384,20 @@ float CGUITexture::SnapToPixel(float coord, bool subpixel)
   return static_cast<float>(MathUtils::round_int(static_cast<double>(coord)));
 }
 
+void CGUITexture::PushThinCorners(const float ux[4], const float uy[4], float x[4], float y[4])
+{
+  // the first pixel centre at or after a coordinate, for whole and fractional pixels alike
+  const auto firstCentre = [](float v) { return std::ceil(v - 0.5f); };
+  for (int i = 0; i < 4; ++i)
+  {
+    const int opposite = (i + 2) % 4;
+    if (ux[i] > ux[opposite] && firstCentre(x[i]) == firstCentre(x[opposite]))
+      x[i] += 1.0f;
+    if (uy[i] > uy[opposite] && firstCentre(y[i]) == firstCentre(y[opposite]))
+      y[i] += 1.0f;
+  }
+}
+
 void CGUITexture::Render(const Segment& segment)
 {
   CRect diffuse(segment.texture);
@@ -397,36 +411,23 @@ void CGUITexture::Render(const Segment& segment)
   int orientation = GetOrientation();
   OrientateTexCoords(texture, m_diffuse.size() ? &diffuse : nullptr, orientation);
 
-  float x[4], y[4], z[4];
-
-#define ROUND_TO_PIXEL(x) SnapToPixel((x), m_moving) // m_moving is decided in Process()
-#define ROUND_DEPTH(x) SnapToPixel((x), false)
-
-  // clang-format off
-  x[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y1));
-  y[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y1));
-  z[0] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y1));
-  x[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y1));
-  y[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y1));
-  z[1] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y1));
-  x[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y2));
-  y[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y2));
-  z[2] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2));
-  x[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y2));
-  y[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y2));
-  z[3] = ROUND_DEPTH(CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2));
-  // clang-format on
-
-  // a quad with no pixel centre between two corners gets one pixel, even at a fractional position
-  const auto firstCentre = [](float v) { return std::ceil(v - 0.5f); };
-  if (firstCentre(y[2]) == firstCentre(y[0]))
-    y[2] += 1.0f;
-  if (firstCentre(x[2]) == firstCentre(x[0]))
-    x[2] += 1.0f;
-  if (firstCentre(y[3]) == firstCentre(y[1]))
-    y[3] += 1.0f;
-  if (firstCentre(x[3]) == firstCentre(x[1]))
-    x[3] += 1.0f;
+  const CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  const std::array<CPoint, 4> corners{{{vertex.x1, vertex.y1},
+                                       {vertex.x2, vertex.y1},
+                                       {vertex.x2, vertex.y2},
+                                       {vertex.x1, vertex.y2}}};
+  float ux[4], uy[4], x[4], y[4], z[4];
+  for (size_t i = 0; i < corners.size(); ++i)
+  {
+    const CPoint& c = corners[i];
+    ux[i] = context.ScaleFinalXCoord(c.x, c.y);
+    uy[i] = context.ScaleFinalYCoord(c.x, c.y);
+    // m_moving is decided in Process()
+    x[i] = SnapToPixel(ux[i], m_moving);
+    y[i] = SnapToPixel(uy[i], m_moving);
+    z[i] = SnapToPixel(context.ScaleFinalZCoord(c.x, c.y), false);
+  }
+  PushThinCorners(ux, uy, x, y);
 
   Draw(x, y, z, texture, diffuse, orientation);
 }
