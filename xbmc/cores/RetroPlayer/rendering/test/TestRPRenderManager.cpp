@@ -170,7 +170,7 @@ protected:
     return true;
   }
 
-  void RenderInternal(bool, uint8_t) override {}
+  void RenderInternal(uint8_t) override {}
   void FlushInternal() override
   {
     const auto& callback = static_cast<CTestPool*>(GetBufferPool())->onRendererFlush;

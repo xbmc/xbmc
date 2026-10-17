@@ -267,7 +267,7 @@ bool CRPWinRenderer::ConfigureInternal()
   return true;
 }
 
-void CRPWinRenderer::RenderInternal(bool clear, uint8_t alpha)
+void CRPWinRenderer::RenderInternal(uint8_t alpha)
 {
   CRenderSystemDX* renderingDx = static_cast<CRenderSystemDX*>(m_context.Rendering());
 

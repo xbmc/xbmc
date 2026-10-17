@@ -47,13 +47,14 @@ void CRenderBufferFBO::Resources::Destroy()
   std::unique_lock lock(mutex);
   if (rendered)
   {
-    sync->wait(rendered);
+    glClientWaitSync(rendered, GL_SYNC_FLUSH_COMMANDS_BIT, GL_TIMEOUT_IGNORED);
     sync->destroy(rendered);
     rendered = nullptr;
   }
   if (ready)
   {
-    glDeleteSync(ready);
+    glClientWaitSync(ready, GL_SYNC_FLUSH_COMMANDS_BIT, GL_TIMEOUT_IGNORED);
+    sync->destroy(ready);
     ready = nullptr;
   }
   glDeleteFramebuffers(1, &framebuffer);
@@ -185,7 +186,7 @@ void CRenderBufferFBO::PrepareForCapture()
   }
   if (m_resources->ready)
   {
-    glDeleteSync(m_resources->ready);
+    m_resources->sync->destroy(m_resources->ready);
     m_resources->ready = nullptr;
   }
 }
@@ -204,8 +205,8 @@ void CRenderBufferFBO::WaitForCapture()
 {
   if (m_resources->ready)
   {
-    glWaitSync(m_resources->ready, 0, GL_TIMEOUT_IGNORED);
-    glDeleteSync(m_resources->ready);
+    m_resources->sync->wait(m_resources->ready);
+    m_resources->sync->destroy(m_resources->ready);
     m_resources->ready = nullptr;
   }
 }
