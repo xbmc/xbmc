@@ -345,6 +345,50 @@ AVFrame* CFFmpegImage::ExtractFrame()
     return nullptr;
   }
 
+  AVFrame* frame = ExtractStreamFrame();
+  if (!frame)
+    return nullptr;
+
+  m_height = frame->height;
+  m_width = frame->width;
+  m_originalWidth = m_width;
+  m_originalHeight = m_height;
+
+  const AVPixFmtDescriptor* pixDescriptor =
+      av_pix_fmt_desc_get(static_cast<AVPixelFormat>(frame->format));
+  if (pixDescriptor &&
+      ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
+    m_hasAlpha = true;
+
+  AVDictionary* dic = frame->metadata;
+  AVDictionaryEntry* entry = NULL;
+  if (dic)
+  {
+    entry = av_dict_get(dic, "Orientation", NULL, AV_DICT_MATCH_CASE);
+    if (entry && entry->value)
+    {
+      int orientation = atoi(entry->value);
+      // only values between including 0 and including 8
+      // http://sylvana.net/jpegcrop/exif_orientation.html
+      if (orientation >= 0 && orientation <= 8)
+        m_orientation = (unsigned int)orientation;
+    }
+  }
+
+  // FFmpeg 8.1 and later only report the EXIF orientation as a display matrix
+  if (m_orientation == 0)
+  {
+    const AVFrameSideData* sideData{av_frame_get_side_data(frame, AV_FRAME_DATA_DISPLAYMATRIX)};
+    if (sideData && sideData->size >= sizeof(int32_t) * DISPLAY_MATRIX_SIZE)
+      m_orientation =
+          OrientationFromDisplayMatrix(reinterpret_cast<const int32_t*>(sideData->data));
+  }
+
+  return frame;
+}
+
+AVFrame* CFFmpegImage::ExtractStreamFrame()
+{
   AVPacket pkt;
   AVFrame* frame = av_frame_alloc();
   int frame_decoded = -1;
@@ -390,38 +434,6 @@ AVFrame* CFFmpegImage::ExtractFrame()
       av_rescale_q(frame->duration, m_fctx->streams[m_streamIndex]->time_base, AVRational{1, 1000});
 #endif
 
-  m_height = frame->height;
-  m_width = frame->width;
-  m_originalWidth = m_width;
-  m_originalHeight = m_height;
-
-  const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(frame->format));
-  if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
-    m_hasAlpha = true;
-
-  AVDictionary* dic = frame->metadata;
-  AVDictionaryEntry* entry = NULL;
-  if (dic)
-  {
-    entry = av_dict_get(dic, "Orientation", NULL, AV_DICT_MATCH_CASE);
-    if (entry && entry->value)
-    {
-      int orientation = atoi(entry->value);
-      // only values between including 0 and including 8
-      // http://sylvana.net/jpegcrop/exif_orientation.html
-      if (orientation >= 0 && orientation <= 8)
-        m_orientation = (unsigned int)orientation;
-    }
-  }
-
-  // FFmpeg 8.1 and later only report the EXIF orientation as a display matrix
-  if (m_orientation == 0)
-  {
-    const AVFrameSideData* sideData{av_frame_get_side_data(frame, AV_FRAME_DATA_DISPLAYMATRIX)};
-    if (sideData && sideData->size >= sizeof(int32_t) * DISPLAY_MATRIX_SIZE)
-      m_orientation =
-          OrientationFromDisplayMatrix(reinterpret_cast<const int32_t*>(sideData->data));
-  }
   av_packet_unref(&pkt);
 
   return frame;
