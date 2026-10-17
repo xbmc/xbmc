@@ -9,7 +9,12 @@
 #include "MediaBackendWasm.h"
 
 #include "MediaBackendEmss.h"
+#include "MediaBackendMse.h"
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
+#include "platform/wasm/MseBridge.h"
 #include "platform/wasm/TizenEmss.h"
 
 #include <algorithm>
@@ -25,6 +30,10 @@ std::unique_ptr<IMediaBackendWasm> IMediaBackendWasm::Create()
 {
   if (tizen_emss_available())
     return std::make_unique<CMediaBackendEmss>();
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (mse_available() && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEBROWSERPLAYER))
+    return std::make_unique<CMediaBackendMse>();
   return nullptr;
 }
 
