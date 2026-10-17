@@ -76,6 +76,9 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem& item)
   const auto stack{std::make_shared<CFileItem>(item)};
   for (int i = 0; const auto& file : m_originalStackItems)
   {
+    // This adds a blank VideoInfoTag, if none exists, to avoid mis-identification as a game
+    file->GetVideoInfoTag();
+
     const std::string& path{file->GetPath()};
     const auto& part{GetOrCreateStackPartInformation(path)};
     part->stackItem = stack;
