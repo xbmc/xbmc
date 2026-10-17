@@ -15,6 +15,7 @@
 #include "utils/StreamUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <memory>
 #include <tuple>
 #include <type_traits>
@@ -24,6 +25,16 @@ extern "C"
 {
 #include <libavcodec/defs.h>
 }
+
+using namespace std::chrono_literals;
+
+namespace
+{
+// counted, not timed: an idle add-on answers in microseconds, a working one takes longer
+constexpr int EMPTY_PACKET_RETRIES = 32;
+// from entry, half the player's EMPTY_PACKET_GRACE, so a read that only retried never looks blocked
+constexpr auto EMPTY_PACKET_RETRY_CAP = 500us;
+} // namespace
 
 class CDemuxStreamClientInternal
 {
@@ -321,7 +332,16 @@ DemuxPacket* CDVDDemuxClient::Read()
   if (m_packet)
     return m_packet.release();
 
+  const auto readStart = std::chrono::steady_clock::now();
   m_packet.reset(m_IDemux->ReadDemux());
+  // an add-on's empty packet may replace input it dropped; ask again while it answers at once
+  for (int retry = 0; retry < EMPTY_PACKET_RETRIES && m_packet && m_packet->iStreamId == -1 &&
+                      std::chrono::steady_clock::now() - readStart < EMPTY_PACKET_RETRY_CAP;
+       ++retry)
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
+    m_packet.reset(m_IDemux->ReadDemux());
+  }
   if (!m_packet)
   {
     return nullptr;
@@ -331,7 +351,9 @@ DemuxPacket* CDVDDemuxClient::Read()
   {
     RequestStreams();
     CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
-    return CDVDDemuxUtils::AllocateDemuxPacket(0);
+    DemuxPacket* pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+    pPacket->m_inputDropped = true;
+    return pPacket;
   }
   else if (m_packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
   {
@@ -351,9 +373,12 @@ DemuxPacket* CDVDDemuxClient::Read()
 
   if (!IsVideoReady())
   {
+    // the add-on's own empty packets mean it has no data yet
+    const bool inputDropped = m_packet->iStreamId != -1;
     CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
     DemuxPacket *pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
     pPacket->demuxerId = GetDemuxerId();
+    pPacket->m_inputDropped = inputDropped;
     return pPacket;
   }
 
