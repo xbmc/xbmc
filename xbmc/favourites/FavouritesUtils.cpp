@@ -48,28 +48,26 @@ bool ChooseAndSetNewName(CFileItem& item)
 
 bool ChooseAndSetNewThumbnail(CFileItem& item)
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   CFileItemList prefilledItems;
   if (item.HasArt(KODI::ART::TYPE::THUMB))
   {
     const auto current = std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::CURRENT, false);
     current->SetArt(KODI::ART::TYPE::THUMB, item.GetArt(KODI::ART::TYPE::THUMB));
-    current->SetLabel(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20016)); // Current thumb
+    current->SetLabel(localizeStrings.Get(20016)); // Current thumb
     prefilledItems.Add(current);
   }
 
   const auto none = std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::NONE, false);
   none->SetArt(KODI::ART::TYPE::ICON, item.GetArt(KODI::ART::TYPE::ICON));
-  none->SetLabel(
-      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20018)); // No thumb
+  none->SetLabel(localizeStrings.Get(20018)); // No thumb
   prefilledItems.Add(none);
 
   std::string thumb;
   std::vector<CMediaSource> sources;
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   if (CGUIDialogFileBrowser::ShowAndGetImage(
-          prefilledItems, sources,
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(1030),
+          prefilledItems, sources, localizeStrings.Get(1030),
           thumb)) // Browse for image
   {
     item.SetArt(KODI::ART::TYPE::THUMB, thumb);

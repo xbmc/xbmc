@@ -359,64 +359,63 @@ void CPVRGUIActionListener::OnSettingChanged(const std::shared_ptr<const CSettin
 
 void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
+  auto& windowManager{CServiceBroker::GetGUI()->GetWindowManager()};
+  auto& pvrManager{CServiceBroker::GetPVRManager()};
   if (setting == nullptr)
     return;
 
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
   {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Database>().ResetDatabase(false);
+    pvrManager.Get<PVR::GUI::Database>().ResetDatabase(false);
   }
   else if (settingId == CSettings::SETTING_EPG_RESETEPG)
   {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Database>().ResetDatabase(true);
+    pvrManager.Get<PVR::GUI::Database>().ResetDatabase(true);
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES)
   {
-    if (CServiceBroker::GetPVRManager().IsStarted())
+    if (pvrManager.IsStarted())
     {
-      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(
-          WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
+      CGUIDialog* dialog = windowManager.GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
       if (dialog)
       {
         dialog->Open();
-        CServiceBroker::GetPVRManager().ChannelGroups()->UpdateFromClients({});
+        pvrManager.ChannelGroups()->UpdateFromClients({});
       }
     }
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELMANAGER)
   {
-    if (CServiceBroker::GetPVRManager().IsStarted())
+    if (pvrManager.IsStarted())
     {
-      CGUIDialog* dialog =
-          CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+      CGUIDialog* dialog = windowManager.GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
         dialog->Open();
     }
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_GROUPMANAGER)
   {
-    if (CServiceBroker::GetPVRManager().IsStarted())
+    if (pvrManager.IsStarted())
     {
-      CGUIDialog* dialog =
-          CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+      CGUIDialog* dialog = windowManager.GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->Open();
     }
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELSCAN)
   {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().StartChannelScan();
+    pvrManager.Get<PVR::GUI::Channels>().StartChannelScan();
   }
   else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
   {
-    CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons();
+    pvrManager.TriggerSearchMissingChannelIcons();
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_ADDONS)
   {
     const std::vector<std::string> params{
         std::string{KODI::ADDONS::DEFAULT_BINARY_ADDONS_SOURCE} + "kodi.pvrclient", "return"};
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_ADDON_BROWSER, params);
+    windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
   }
   else if (settingId == CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME)
   {

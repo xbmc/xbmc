@@ -383,6 +383,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditName()
 
 bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
   if (!pItem)
     return false;
@@ -402,7 +403,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   {
     auto current{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::CURRENT, false)};
     current->SetArt(KODI::ART::TYPE::THUMB, pItem->GetPVRChannelInfoTag()->IconPath());
-    current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
+    current->SetLabel(localizeStrings.Get(19282));
     items.Add(std::move(current));
   }
   else if (pItem->HasArt(KODI::ART::TYPE::THUMB))
@@ -410,14 +411,14 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
     // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
     auto current{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::CURRENT, false)};
     current->SetArt(KODI::ART::TYPE::THUMB, pItem->GetArt(KODI::ART::TYPE::THUMB));
-    current->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19282));
+    current->SetLabel(localizeStrings.Get(19282));
     items.Add(std::move(current));
   }
 
   // and add a "no thumb" entry as well
   auto nothumb{std::make_shared<CFileItem>(KODI::IMAGE_CHOICE::NONE, false)};
   nothumb->SetArt(KODI::ART::TYPE::ICON, pItem->GetArt(KODI::ART::TYPE::ICON));
-  nothumb->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19283));
+  nothumb->SetLabel(localizeStrings.Get(19283));
   items.Add(std::move(nothumb));
 
   std::string strThumb;
@@ -427,12 +428,12 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   {
     CMediaSource share1;
     share1.strPath = settings->GetString(CSettings::SETTING_PVRMENU_ICONPATH);
-    share1.strName = CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19066);
+    share1.strName = localizeStrings.Get(19066);
     shares.push_back(share1);
   }
   CServiceBroker::GetMediaManager().GetLocalDrives(shares);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(
-          items, shares, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(19285),
+          items, shares, localizeStrings.Get(19285),
           strThumb, nullptr, 19285))
     return false;
 

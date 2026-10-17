@@ -118,13 +118,13 @@ static int RunScript(const std::vector<std::string>& params);
  */
 static int RunAddon(const std::vector<std::string>& params)
 {
+  auto& addonMgr{CServiceBroker::GetAddonMgr()};
   if (!params.empty())
   {
     const std::string& addonid = params[0];
 
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::PLUGIN,
-                                               OnlyEnabled::CHOICE_YES))
+    if (addonMgr.GetAddon(addonid, addon, AddonType::PLUGIN, OnlyEnabled::CHOICE_YES))
     {
       const auto plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
       std::string urlParameters;
@@ -166,13 +166,13 @@ static int RunAddon(const std::vector<std::string>& params)
         cmd = StringUtils::Format("RunPlugin({})", StringUtils::Join(params, ","));
       CBuiltins::GetInstance().Execute(cmd);
     }
-    else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT,
+    else if (addonMgr.GetAddon(addonid, addon, AddonType::SCRIPT,
                                                     OnlyEnabled::CHOICE_YES) ||
-             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT_WEATHER,
+             addonMgr.GetAddon(addonid, addon, AddonType::SCRIPT_WEATHER,
                                                     OnlyEnabled::CHOICE_YES) ||
-             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT_LYRICS,
+             addonMgr.GetAddon(addonid, addon, AddonType::SCRIPT_LYRICS,
                                                     OnlyEnabled::CHOICE_YES) ||
-             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT_LIBRARY,
+             addonMgr.GetAddon(addonid, addon, AddonType::SCRIPT_LIBRARY,
                                                     OnlyEnabled::CHOICE_YES))
     {
       // RunScript takes the vector as it stands. Routing it through a builtin string would
@@ -180,8 +180,7 @@ static int RunAddon(const std::vector<std::string>& params)
       // quotes.
       RunScript(params);
     }
-    else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::GAMEDLL,
-                                                    OnlyEnabled::CHOICE_YES))
+    else if (addonMgr.GetAddon(addonid, addon, AddonType::GAMEDLL, OnlyEnabled::CHOICE_YES))
     {
       CFileItem item;
 

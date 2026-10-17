@@ -342,12 +342,13 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
 #endif
     case SYSTEM_SUPPORTED_HDR_TYPES:
     {
-      if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
+      CWinSystemBase* const winSystem{CServiceBroker::GetWinSystem()};
+      if (winSystem->IsHDRDisplay())
       {
         // Assumes HDR10 minimum requirement for HDR
         std::string types = "HDR10";
 
-        const CHDRCapabilities caps = CServiceBroker::GetWinSystem()->GetDisplayHDRCapabilities();
+        const CHDRCapabilities caps = winSystem->GetDisplayHDRCapabilities();
 
         if (caps.SupportsHLG())
           types += ", HLG";
