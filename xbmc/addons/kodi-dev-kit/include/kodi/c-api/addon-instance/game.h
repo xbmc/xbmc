@@ -1647,6 +1647,14 @@ extern "C"
      * to the client's system directory. Since game API 8.3.0.
      */
     void (*ReportMissingFile)(KODI_HANDLE kodiInstance, const char* path);
+
+    /*!
+     * @brief Ask Kodi to fast-forward, or to stop a fast-forward it asked for.
+     *
+     * A ratio above 1 is the speed asked for; anything else leaves it to Kodi.
+     * Since game API 8.4.0.
+     */
+    void (*SetFastForwarding)(KODI_HANDLE kodiInstance, bool fastForward, double ratio);
   } AddonToKodiFuncTable_Game;
 
   /*!
