@@ -53,6 +53,7 @@ struct AVIOContext;
 struct AVFormatContext;
 struct AVCodecContext;
 struct AVPacket;
+struct AVStreamGroup;
 
 class CFFmpegImage : public IImage
 {
@@ -80,6 +81,7 @@ private:
   static void FreeIOCtx(AVIOContext** ioctx);
   AVFrame* ExtractFrame();
   AVFrame* ExtractStreamFrame();
+  AVFrame* ExtractTileGridFrame();
   bool DecodeFrame(AVFrame* m_pFrame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels);
   static int EncodeFFmpegFrame(AVCodecContext *avctx, AVPacket *pkt, int *got_packet, AVFrame *frame);
   static int DecodeFFmpegFrame(AVCodecContext *avctx, AVFrame *frame, int *got_frame, AVPacket *pkt);
@@ -96,6 +98,7 @@ private:
   AVFormatContext* m_fctx = nullptr;
   AVCodecContext* m_codec_ctx = nullptr;
   int m_streamIndex = 0;
+  const AVStreamGroup* m_tileGrid = nullptr;
 
   AVFrame* m_pFrame;
   uint8_t* m_outputBuffer;
