@@ -1,8 +1,12 @@
-set(SOURCES GameFileIdentity.cpp
-            GameNameParser.cpp)
+set(SOURCES GameAgeRatings.cpp
+            GameFileIdentity.cpp
+            GameNameParser.cpp
+            ReleasePolicy.cpp)
 
-set(HEADERS GameFileIdentity.h
+set(HEADERS GameAgeRatings.h
+            GameFileIdentity.h
             GameLibraryTypes.h
-            GameNameParser.h)
+            GameNameParser.h
+            ReleasePolicy.h)
 
 core_add_library(games_library)
