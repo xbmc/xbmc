@@ -19,6 +19,9 @@
 #ifdef TARGET_WEBOS
 #include "VideoPlayerWebOS.h"
 #endif
+#ifdef TARGET_WASM
+#include "VideoPlayerWasm.h"
+#endif
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -51,6 +54,8 @@ std::shared_ptr<IPlayer> CPlayerCoreConfig::CreatePlayer(IPlayerCallback& callba
   {
 #ifdef TARGET_WEBOS
     player = std::make_shared<CVideoPlayerWebOS>(callback);
+#elif defined(TARGET_WASM)
+    player = std::make_shared<CVideoPlayerWasm>(callback);
 #else
     player = std::make_shared<CVideoPlayer>(callback);
 #endif
