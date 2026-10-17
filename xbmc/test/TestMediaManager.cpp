@@ -10,13 +10,19 @@
 
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 
+#include "ServiceBroker.h"
+#include "jobs/JobManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "storage/cdioSupport.h"
 #include "storage/discs/IDiscDriveHandler.h"
+#include "threads/Event.h"
 
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <string>
+#include <thread>
 #include <utility>
 
 #include <gtest/gtest.h>
@@ -31,18 +37,18 @@ public:
   DriveState GetDriveState(const std::string& devicePath) override
   {
     ++probes;
-    if (onProbe)
-      onProbe();
+    if (const auto hook{onProbe}; hook)
+      hook();
     return state;
   }
   TrayState GetTrayState(const std::string& devicePath) override { return TrayState::UNDEFINED; }
-  void EjectDriveTray(const std::string& devicePath) override {}
-  void CloseDriveTray(const std::string& devicePath) override {}
-  void ToggleDriveTray(const std::string& devicePath) override {}
+  bool EjectDriveTray(const std::string& devicePath) override { return true; }
+  bool CloseDriveTray(const std::string& devicePath) override { return true; }
+  bool ToggleDriveTray(const std::string& devicePath) override { return true; }
 
   DriveState state{DriveState::CLOSED_MEDIA_PRESENT};
   int probes{0};
-  /*! Runs inside the probe, ie. while GetDriveStatus() holds no lock */
+  /*! Runs inside the probe, ie. while RefreshDriveStatus() holds no lock */
   std::function<void()> onProbe;
 };
 } // namespace
@@ -56,6 +62,7 @@ protected:
 
   void SetUp() override
   {
+    CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
     m_manager.m_bOpticalDrivePresent = true;
     m_manager.m_strFirstAvailDrive = DEVICE_PATH;
     m_manager.m_platformDiscDriveHander = m_drive;
@@ -63,6 +70,9 @@ protected:
 
   void TearDown() override
   {
+    ReleaseProbe();
+    CServiceBroker::GetJobManager()->CancelJobs();
+    CServiceBroker::UnregisterJobManager();
     m_manager.RemoveCdInfo(DEVICE_PATH);
     m_manager.RemoveCdInfo(SECOND_DEVICE_PATH);
   }
@@ -113,6 +123,8 @@ protected:
     return m_manager.m_mapDiscInfo.contains(mediaPath);
   }
   auto ReadCachedDiscInfo() { return m_manager.GetCachedDiscInfo(DEVICE_PATH); }
+  auto PollCachedDiscInfo() { return m_manager.GetCachedDiscInfo(DEVICE_PATH, true); }
+  std::string CachedDiscLabel() const { return m_manager.m_mapDiscInfo.at(DEVICE_PATH).label; }
 #ifdef HAVE_LIBBLURAY
   auto PlaylistStatus() const { return m_manager.m_hasBlurayPlaylist; }
 #endif
@@ -153,6 +165,71 @@ protected:
     m_manager.m_driveStatusCache.at(DeviceKey(devicePath)).expires =
         Clock::now() - std::chrono::seconds(1);
   }
+  bool IsDriveStatusExpired(const std::string& devicePath)
+  {
+    return DriveStatusExpiry(devicePath) <= Clock::now();
+  }
+  bool IsRefreshing(const std::string& devicePath)
+  {
+    const std::string key{DeviceKey(devicePath)};
+    std::unique_lock lock(m_manager.m_driveStatusSection);
+    return m_manager.m_refreshingDrives.contains(key);
+  }
+  /*! Let the job queued for a cache miss ask the drive, so the cache can then be inspected */
+  void WaitForRefresh()
+  {
+    const auto deadline{Clock::now() + std::chrono::seconds(10)};
+    while (Clock::now() < deadline)
+    {
+      {
+        std::unique_lock lock(m_manager.m_driveStatusSection);
+        if (m_manager.m_refreshingDrives.empty())
+          return;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    FAIL() << "The refresh never finished";
+  }
+  /*! Let the job queued for a polling miss read the disc, so the cache can then be inspected */
+  void WaitForFill()
+  {
+    const auto deadline{Clock::now() + std::chrono::seconds(10)};
+    while (Clock::now() < deadline)
+    {
+      bool filling{false};
+      {
+        std::unique_lock lock(m_manager.m_muAutoSource);
+        filling = !m_manager.m_cdInfoFilling.empty();
+      }
+      {
+        std::unique_lock lock(m_manager.m_discInfoSection);
+        filling = filling || !m_manager.m_discInfoFilling.empty();
+      }
+      if (!filling)
+        return;
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    FAIL() << "The read never finished";
+  }
+  /*! Run what a job posted to the application thread, which nothing pumps in the test binary,
+      until the drive reaches a generation */
+  void WaitForGeneration(const std::string& devicePath, uint64_t generation)
+  {
+    const auto deadline{Clock::now() + std::chrono::seconds(10)};
+    while (m_manager.DiscGeneration(devicePath) != generation && Clock::now() < deadline)
+    {
+      CServiceBroker::GetAppMessenger()->ProcessMessages();
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+  }
+
+  /*! Hold the next probe in the drive until ReleaseProbe(), so in-flight state can be asserted */
+  void HoldProbe()
+  {
+    m_drive->onProbe = [this] { m_probeReleased.Wait(); };
+  }
+  void ReleaseProbe() { m_probeReleased.Set(); }
+  CEvent m_probeReleased{true};
 
   std::shared_ptr<FakeDiscDriveHandler> m_drive{std::make_shared<FakeDiscDriveHandler>()};
   CMediaManager m_manager;
@@ -207,6 +284,15 @@ TEST_F(TestMediaManager, ExpiredDiscInfoIsReadAgain)
   EXPECT_NE(ReadCachedDiscInfo().label, "Stale label");
 }
 
+TEST_F(TestMediaManager, PollingAnswersFromExpiredDiscInfoWhileAJobReadsIt)
+{
+  SeedDiscInfo("Stale label", Clock::now() - std::chrono::seconds(1));
+
+  EXPECT_EQ(PollCachedDiscInfo().label, "Stale label");
+  WaitForFill();
+  EXPECT_NE(CachedDiscLabel(), "Stale label");
+}
+
 TEST_F(TestMediaManager, ResetRejectsInFlightDiscIdentification)
 {
   const auto generation{DiscInfoGeneration()};
@@ -251,12 +337,31 @@ TEST_F(TestMediaManager, OnlyPollingReusesCachedTocFailure)
   EXPECT_LE(FailureExpiry(), Clock::now() + std::chrono::seconds(30));
 }
 
+TEST_F(TestMediaManager, PollingLeavesTheTocReadToAJob)
+{
+  std::thread::id reader;
+  ReadTocWith(
+      [&reader]
+      {
+        reader = std::this_thread::get_id();
+        return SomeToc();
+      });
+
+  EXPECT_EQ(m_manager.GetCdInfo(DEVICE_PATH, true, true), nullptr);
+  WaitForFill();
+  EXPECT_EQ(m_tocReads, 1);
+  EXPECT_NE(reader, std::this_thread::get_id());
+  EXPECT_NE(m_manager.GetCdInfo(DEVICE_PATH, true, true), nullptr);
+  EXPECT_EQ(m_tocReads, 1);
+}
+
 TEST_F(TestMediaManager, ExpiredTocFailureIsReadAgain)
 {
   ReadTocWith(NoToc);
   SeedCachedFailure(DEVICE_PATH, Clock::now() - std::chrono::seconds(1));
 
-  EXPECT_EQ(m_manager.GetCdInfo(DEVICE_PATH, true), nullptr);
+  EXPECT_EQ(m_manager.GetCdInfo(DEVICE_PATH, true, true), nullptr);
+  WaitForFill();
   EXPECT_EQ(m_tocReads, 1);
   EXPECT_GT(FailureExpiry(), Clock::now());
 }
@@ -359,10 +464,37 @@ TEST_F(TestMediaManager, ConcurrentTocReadsKeepPublishedSuccess)
 
 // Drive state cache
 
+TEST_F(TestMediaManager, UnknownDriveIsAnsweredWithoutWaiting)
+{
+  // Nothing is known yet, so the caller gets an answer at once and the drive is asked behind it
+  HoldProbe();
+  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::NOT_READY);
+  EXPECT_TRUE(IsRefreshing(DEVICE_PATH));
+
+  ReleaseProbe();
+  WaitForRefresh();
+  EXPECT_EQ(m_drive->probes, 1);
+  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
+}
+
+TEST_F(TestMediaManager, AskingNowWaitsForTheDrive)
+{
+  EXPECT_EQ(m_manager.GetDriveStatusNow(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
+  EXPECT_EQ(m_drive->probes, 1);
+  EXPECT_FALSE(IsRefreshing(DEVICE_PATH));
+
+  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
+  EXPECT_EQ(m_drive->probes, 1);
+}
+
 TEST_F(TestMediaManager, PresentDiscIsProbedOnce)
 {
   const auto before{Clock::now()};
-  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  WaitForRefresh();
+  EXPECT_EQ(m_drive->probes, 1);
+
   EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
   EXPECT_TRUE(m_manager.IsDiscInDrive(DEVICE_PATH));
   EXPECT_EQ(m_drive->probes, 1);
@@ -375,27 +507,46 @@ TEST_F(TestMediaManager, PresentDiscIsProbedOnce)
 
 TEST_F(TestMediaManager, UnreportedEjectIsNoticedAfterRefresh)
 {
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  WaitForRefresh();
   EXPECT_TRUE(m_manager.IsDiscInDrive(DEVICE_PATH));
+  // The generation is keyed by the drive letter, which the test path only yields in its device form
+  const uint64_t generation{m_manager.DiscGeneration(DeviceKey(DEVICE_PATH))};
 
   // The user presses the drive's eject button and no storage event arrives
   m_drive->state = DriveState::CLOSED_NO_MEDIA;
   EXPECT_TRUE(m_manager.IsDiscInDrive(DEVICE_PATH));
   EXPECT_EQ(m_drive->probes, 1);
 
+  // The last state seen is given while the drive is asked again
   ExpireDriveStatus(DEVICE_PATH);
+  HoldProbe();
+  EXPECT_TRUE(m_manager.IsDiscInDrive(DEVICE_PATH));
+  EXPECT_TRUE(IsRefreshing(DEVICE_PATH));
+
+  ReleaseProbe();
+  WaitForRefresh();
   EXPECT_FALSE(m_manager.IsDiscInDrive(DEVICE_PATH));
   EXPECT_EQ(m_drive->probes, 2);
+
+  // Seeing the disc go is what stops a job still identifying it
+  WaitForGeneration(DeviceKey(DEVICE_PATH), generation + 1);
+  EXPECT_TRUE(m_manager.IsDiscCurrent(DeviceKey(DEVICE_PATH), generation + 1));
 }
 
 TEST_F(TestMediaManager, EmptyDriveIsReprobedOnlyAfterExpiry)
 {
   m_drive->state = DriveState::CLOSED_NO_MEDIA;
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  WaitForRefresh();
   EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_NO_MEDIA);
   EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_NO_MEDIA);
   EXPECT_EQ(m_drive->probes, 1);
 
   ExpireDriveStatus(DEVICE_PATH);
   m_drive->state = DriveState::CLOSED_MEDIA_PRESENT;
+  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_NO_MEDIA);
+  WaitForRefresh();
   EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
   EXPECT_EQ(m_drive->probes, 2);
 }
@@ -403,11 +554,15 @@ TEST_F(TestMediaManager, EmptyDriveIsReprobedOnlyAfterExpiry)
 TEST_F(TestMediaManager, FailedProbeIsReprobedOnlyAfterExpiry)
 {
   m_drive->state = DriveState::NOT_READY;
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  WaitForRefresh();
   EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::NOT_READY);
   EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::NOT_READY);
   EXPECT_EQ(m_drive->probes, 1);
 
   ExpireDriveStatus(DEVICE_PATH);
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  WaitForRefresh();
   EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::NOT_READY);
   EXPECT_EQ(m_drive->probes, 2);
 }
@@ -416,14 +571,16 @@ TEST_F(TestMediaManager, ResetInvalidatesOnlyThatDrive)
 {
   m_manager.GetDriveStatus(DEVICE_PATH);
   m_manager.GetDriveStatus(SECOND_DEVICE_PATH);
+  WaitForRefresh();
   EXPECT_EQ(m_drive->probes, 2);
 
   m_manager.ResetDriveCaches(DEVICE_PATH);
-  EXPECT_FALSE(HasCachedDriveStatus(DEVICE_PATH));
-  EXPECT_TRUE(HasCachedDriveStatus(SECOND_DEVICE_PATH));
+  EXPECT_TRUE(IsDriveStatusExpired(DEVICE_PATH));
+  EXPECT_FALSE(IsDriveStatusExpired(SECOND_DEVICE_PATH));
 
   m_manager.GetDriveStatus(DEVICE_PATH);
   m_manager.GetDriveStatus(SECOND_DEVICE_PATH);
+  WaitForRefresh();
   EXPECT_EQ(m_drive->probes, 3);
 }
 
@@ -431,6 +588,7 @@ TEST_F(TestMediaManager, ResetWithoutPathClearsEveryCache)
 {
   m_manager.GetDriveStatus(DEVICE_PATH);
   m_manager.GetDriveStatus(SECOND_DEVICE_PATH);
+  WaitForRefresh();
   StoreDiscInfo({}, "Label", DiscInfoGeneration(), DEVICE_PATH);
   StoreDiscInfo({}, "Label", DiscInfoGeneration(), SECOND_DEVICE_PATH);
   SeedCachedFailure(DEVICE_PATH);
@@ -438,8 +596,8 @@ TEST_F(TestMediaManager, ResetWithoutPathClearsEveryCache)
 
   m_manager.ResetDriveCaches();
 
-  EXPECT_FALSE(HasCachedDriveStatus(DEVICE_PATH));
-  EXPECT_FALSE(HasCachedDriveStatus(SECOND_DEVICE_PATH));
+  EXPECT_TRUE(IsDriveStatusExpired(DEVICE_PATH));
+  EXPECT_TRUE(IsDriveStatusExpired(SECOND_DEVICE_PATH));
   EXPECT_FALSE(HasCachedDiscInfo(DEVICE_PATH));
   EXPECT_FALSE(HasCachedDiscInfo(SECOND_DEVICE_PATH));
   EXPECT_FALSE(HasCachedFailure(DEVICE_PATH));
@@ -461,13 +619,17 @@ TEST_F(TestMediaManager, ProbeInvalidatedInFlightIsNotStored)
 {
   // A storage event arrives while the hardware is being asked
   m_drive->onProbe = [this] { m_manager.ResetDriveCaches(DEVICE_PATH); };
-  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  WaitForRefresh();
+  EXPECT_EQ(m_drive->probes, 1);
   EXPECT_FALSE(HasCachedDriveStatus(DEVICE_PATH));
 
   m_drive->onProbe = nullptr;
-  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
+  m_manager.GetDriveStatus(DEVICE_PATH);
+  WaitForRefresh();
   EXPECT_EQ(m_drive->probes, 2);
   EXPECT_TRUE(HasCachedDriveStatus(DEVICE_PATH));
+  EXPECT_EQ(m_manager.GetDriveStatus(DEVICE_PATH), DriveState::CLOSED_MEDIA_PRESENT);
 }
 
 // Path normalisation

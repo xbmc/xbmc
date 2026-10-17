@@ -9,6 +9,7 @@
 
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
+#include "jobs/JobManager.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "storage/MediaManager.h"
@@ -51,11 +52,20 @@ void CWin32StorageProvider::ScanForPresentMedia()
   // NOT autorun, matching Linux
   for (const auto& it : vShare)
   {
-    if (CServiceBroker::GetMediaManager().GetDriveStatus(it.strPath) ==
-        DriveState::CLOSED_MEDIA_PRESENT)
-    {
-      CServiceBroker::GetMediaManager().AddOpticalSource(it.strPath);
-    }
+    // Asking the drive and then reading the disc both wait on the hardware, so hand each drive
+    // to a job rather than hold up initialisation
+    const std::string path{it.strPath};
+    // Bumped rather than read, so the drive is known to the removal handling and can be
+    // invalidated while its job runs
+    const uint64_t generation{CServiceBroker::GetMediaManager().BumpDiscGeneration(path)};
+    CServiceBroker::GetJobManager()->Submit(
+        [path, generation]()
+        {
+          auto& mediaManager{CServiceBroker::GetMediaManager()};
+          if (mediaManager.GetDriveStatusNow(path) == DriveState::CLOSED_MEDIA_PRESENT)
+            mediaManager.AddOpticalSource(path, generation);
+        },
+        CJob::PRIORITY_HIGH);
   }
 #endif
 }

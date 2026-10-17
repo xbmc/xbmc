@@ -62,14 +62,16 @@ public:
 
   /*! \brief Eject the provided drive device
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
+  * \return True if the tray moved
   */
-  virtual void EjectDriveTray(const std::string& devicePath) = 0;
+  virtual bool EjectDriveTray(const std::string& devicePath) = 0;
 
   /*! \brief Close the provided drive device
   * \note Some drives support closing apart from opening/eject
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
+  * \return True if the tray moved
   */
-  virtual void CloseDriveTray(const std::string& devicePath) = 0;
+  virtual bool CloseDriveTray(const std::string& devicePath) = 0;
 
   /*! \brief Toggle the state of a given drive device
   *
@@ -78,8 +80,9 @@ public:
   * if closed -> EjectDriveTray)
   *
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
+  * \return True if the tray moved
   */
-  virtual void ToggleDriveTray(const std::string& devicePath) = 0;
+  virtual bool ToggleDriveTray(const std::string& devicePath) = 0;
 
   /*! \brief Called to create platform-specific disc drive handler
   *
