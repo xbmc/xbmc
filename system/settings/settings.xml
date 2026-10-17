@@ -234,12 +234,22 @@
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.allowedhdrformats" type="list[integer]" label="39198" help="39199">
-          <requirement><!-- Android and webOS use CBitstreamConverter -->
+          <requirement><!-- Xbox, Android, webOS use CBitstreamConverter -->
             <or>
+              <condition>HAS_UWP</condition>
               <condition>HAS_MEDIACODEC</condition>
               <condition>HAVE_WEBOS</condition>
             </or>
           </requirement>
+          <dependencies>
+            <dependency type="visible">
+              <or>
+                <condition on="property" name="supportsdolbyvision" />
+                <condition>HAS_MEDIACODEC</condition>
+                <condition>HAVE_WEBOS</condition>
+              </or>
+            </dependency>
+          </dependencies>
           <level>2</level>
           <default>0,1</default> <!-- Allow all HDR formats -->
           <constraints>
@@ -271,6 +281,17 @@
           </dependencies>
           <level>2</level>
           <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videoplayer.usemfdolbyvision" type="boolean" label="39218" help="39219">
+          <requirement>HAS_UWP</requirement> <!-- Xbox -->
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="supportsdolbyvision" />
+            </dependency>
+          </dependencies>
+          <level>2</level>
+          <default>true</default>
           <control type="toggle" />
         </setting>
       </group>

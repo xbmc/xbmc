@@ -13,6 +13,7 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -102,6 +103,8 @@ protected:
   double m_DAR = 1.0;
   CDVDStreamInfo m_hints;
   CDVDCodecOptions m_options;
+  bool m_exportDoviRpu = false;
+  std::map<int64_t, std::vector<uint8_t>> m_av1DoviRpus; // by packet pts
 
   struct CDropControl
   {

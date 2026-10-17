@@ -20,6 +20,7 @@ set(SOURCES ActorProtocol.cpp
             DatabaseUtils.cpp
             Digest.cpp
             DiscsUtils.cpp
+            DolbyVisionRpu.cpp
             EndianSwap.cpp
             EmbeddedArt.cpp
             EpisodeUtils.cpp
@@ -109,6 +110,7 @@ set(HEADERS ActorProtocol.h
             DefaultArt.h
             Digest.h
             DiscsUtils.h
+            DolbyVisionRpu.h
             EndianSwap.h
             EpisodeUtils.h
             EventStream.h
