@@ -49,8 +49,10 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL wasm)
-  list(APPEND SOURCES RendererWebCodecs.cpp)
-  list(APPEND HEADERS RendererWebCodecs.h)
+  list(APPEND SOURCES RendererWasmMedia.cpp
+                      RendererWebCodecs.cpp)
+  list(APPEND HEADERS RendererWasmMedia.h
+                      RendererWebCodecs.h)
 endif()
 
 if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC)

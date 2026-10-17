@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecWebCodecs.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecWebCodecsBridge.h"
 #include "cores/VideoPlayer/Process/wasm/ProcessInfoWasm.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererWasmMedia.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererWebCodecs.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
@@ -117,6 +118,7 @@ bool CWinSystemWasmGLESContext::InitWindowSystem()
   CDVDVideoCodecWebCodecs::Register();
   CLinuxRendererGLES::Register();
   CRendererWebCodecs::Register();
+  CRendererWasmMedia::Register();
   CScreenshotSurfaceGLES::Register();
 
   int initW = 0;
