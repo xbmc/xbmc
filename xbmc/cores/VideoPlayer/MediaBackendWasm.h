@@ -121,4 +121,9 @@ namespace WASM_MEDIA
 //! How far ahead of playback packets are appended. Samsung's player takes them up to
 //! about three seconds ahead.
 constexpr double MAX_FEED_AHEAD = 2.5;
+
+//! The RFC 6381 codec string of an H.264, HEVC, VP9 or AV1 stream, such as "avc1.640028".
+std::string VideoCodecString(const CDVDStreamInfo& hint);
+//! \param nalLengthSize 0 for Annex B, otherwise the size of the NAL unit lengths.
+bool IsKeyFrame(AVCodecID codec, const uint8_t* data, size_t size, int nalLengthSize);
 } // namespace WASM_MEDIA

@@ -7,6 +7,7 @@ set(SOURCES CPUInfoWasm.cpp
 set(HEADERS CPUInfoWasm.h
             GPUInfoWasm.h
             PlatformWasm.h
+            TizenEmss.h
             WasmAudioWorkletManager.h
             WasmMediaLayer.h)
 
