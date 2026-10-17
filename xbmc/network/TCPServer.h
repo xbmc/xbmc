@@ -114,7 +114,9 @@ namespace JSONRPC
                    int length);
 
       virtual bool IsNew() const { return m_new; }
-      virtual bool Closing() const { return m_closing; }
+      bool Closing();
+      void ReadEOF() { m_readEOF = true; }
+      bool IsReadEOF() const { return m_readEOF; }
 
       /*!
        * \brief Whether this connection has more accepted but unparsed input than it should.
@@ -169,6 +171,8 @@ namespace JSONRPC
       std::string m_buffer;
 
       std::atomic<bool> m_closing{false};
+      // Only the server thread reads or changes the receive-side state.
+      bool m_readEOF{false};
 
       // Held by whoever writes to the socket, and to close it. Only that writer removes from
       // m_output, so it writes from the front message without copying it.
