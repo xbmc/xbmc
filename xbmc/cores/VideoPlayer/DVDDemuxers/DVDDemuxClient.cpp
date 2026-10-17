@@ -10,6 +10,7 @@
 
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#include "DVDStreamInfo.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StreamUtils.h"
@@ -50,6 +51,8 @@ public:
   AVCodecParserContext *m_parser = nullptr;
   AVCodecContext *m_context = nullptr;
   bool m_parser_split = false;
+  //! What the input stream announced when the stream properties were last initialized from it
+  CDVDStreamInfo m_announced;
 };
 
 template <class T>
@@ -420,6 +423,14 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   std::shared_ptr<CDemuxStream> currentStream(GetStreamInternal(stream->uniqueId));
   std::shared_ptr<CDemuxStream> toStream;
 
+  // A stream announced as it was before keeps the properties ParsePacket corrected. The aspect
+  // is asked apart, as comparing two announcements leaves it out
+  const auto current = std::dynamic_pointer_cast<CDemuxStreamClientInternal>(currentStream);
+  const CDVDStreamInfo announced(*stream, true);
+  if (forceInit && current && current->m_announced == announced &&
+      current->m_announced.aspect == announced.aspect)
+    forceInit = false;
+
   if (stream->type == StreamType::AUDIO)
   {
     CDemuxStreamAudio *source = dynamic_cast<CDemuxStreamAudio*>(stream);
@@ -612,11 +623,14 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
 
   // only update profile / level if we create a new stream or has been reset stream properties
   // existing streams may be corrected by ParsePacket
-  if (!currentStream || forceInit)
+  if (toStream != currentStream || forceInit)
   {
     toStream->profile = stream->profile;
     toStream->level = stream->level;
   }
+
+  if (toStream != currentStream)
+    std::dynamic_pointer_cast<CDemuxStreamClientInternal>(toStream)->m_announced = *stream;
 
   toStream->uniqueId = stream->uniqueId;
   toStream->codec = stream->codec;
