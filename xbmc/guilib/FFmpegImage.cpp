@@ -99,6 +99,88 @@ unsigned int OrientationFromDisplayMatrix(const int32_t* displayMatrix)
   const int quarterTurns{(static_cast<int>(std::lround(rotation / 90.0)) % 4 + 4) % 4};
   return ORIENTATIONS[flipped ? 1 : 0][quarterTurns];
 }
+
+// decodes a single-packet still with a decoder of its own
+bool DecodeStill(const AVCodecParameters* params, const AVPacket* pkt, AVFrame* frame)
+{
+  const AVCodec* codec{avcodec_find_decoder(params->codec_id)};
+  if (!codec)
+    return false;
+
+  AVCodecContext* ctx{avcodec_alloc_context3(codec)};
+  const bool decoded{ctx && avcodec_parameters_to_context(ctx, params) >= 0 &&
+                     avcodec_open2(ctx, codec, nullptr) >= 0 &&
+                     avcodec_send_packet(ctx, pkt) >= 0 && avcodec_send_packet(ctx, nullptr) >= 0 &&
+                     avcodec_receive_frame(ctx, frame) >= 0};
+  avcodec_free_context(&ctx);
+  return decoded;
+}
+
+// black frame in the tile's pixel format; image overlays (iovl) need not be
+// fully covered, and their fill colour is not applied
+AVFrame* AllocCanvas(const AVFrame* tile, int width, int height)
+{
+  AVFrame* canvas{av_frame_alloc()};
+  if (!canvas)
+    return nullptr;
+
+  canvas->format = tile->format;
+  canvas->width = width;
+  canvas->height = height;
+  canvas->color_range = tile->color_range;
+  canvas->color_primaries = tile->color_primaries;
+  canvas->color_trc = tile->color_trc;
+  canvas->colorspace = tile->colorspace;
+  canvas->chroma_location = tile->chroma_location;
+  if (av_frame_get_buffer(canvas, 0) < 0)
+  {
+    av_frame_free(&canvas);
+    return nullptr;
+  }
+
+  const std::array<ptrdiff_t, 4> linesize{canvas->linesize[0], canvas->linesize[1],
+                                          canvas->linesize[2], canvas->linesize[3]};
+  av_image_fill_black(canvas->data, linesize.data(), static_cast<AVPixelFormat>(canvas->format),
+                      canvas->color_range, width, height);
+  return canvas;
+}
+
+// copies a tile to (x, y) of the canvas, clipped to the canvas
+bool CopyTile(AVFrame* canvas, const AVFrame* tile, int x, int y)
+{
+  if (x < 0 || y < 0)
+    return false;
+
+  const int width{std::min(tile->width, canvas->width - x)};
+  const int height{std::min(tile->height, canvas->height - y)};
+  if (width <= 0 || height <= 0)
+    return true;
+
+  const auto format{static_cast<AVPixelFormat>(canvas->format)};
+  const AVPixFmtDescriptor* desc{av_pix_fmt_desc_get(format)};
+  for (int plane = 0; plane < av_pix_fmt_count_planes(format); ++plane)
+  {
+    const int shiftY{plane == 1 || plane == 2 ? desc->log2_chroma_h : 0};
+    const int offset{av_image_get_linesize(format, x, plane)};
+    const int rowBytes{av_image_get_linesize(format, canvas->width, plane)};
+    const int tileBytes{av_image_get_linesize(format, width, plane)};
+    if (offset < 0 || rowBytes < 0 || tileBytes < 0)
+      return false;
+
+    // odd offsets of subsampled planes round up, so clip to the plane
+    const int top{AV_CEIL_RSHIFT(y, shiftY)};
+    const int bytes{std::min(tileBytes, rowBytes - offset)};
+    const int rows{
+        std::min(AV_CEIL_RSHIFT(height, shiftY), AV_CEIL_RSHIFT(canvas->height, shiftY) - top)};
+    if (bytes <= 0 || rows <= 0)
+      continue;
+
+    av_image_copy_plane(canvas->data[plane] + top * canvas->linesize[plane] + offset,
+                        canvas->linesize[plane], tile->data[plane], tile->linesize[plane], bytes,
+                        rows);
+  }
+  return true;
+}
 } // namespace
 
 Frame::Frame(const Frame& src) :
@@ -230,7 +312,7 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
   m_pFrame = ExtractFrame();
 
   // The decoder refuses some JPEGs at a reduced size, such as lossless ones
-  if (!m_pFrame && m_codec_ctx->lowres > 0)
+  if (!m_pFrame && m_codec_ctx && m_codec_ctx->lowres > 0)
   {
     avcodec_free_context(&m_codec_ctx);
     avformat_close_input(&m_fctx);
@@ -350,6 +432,18 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     return false;
   }
 
+  // HEIF and AVIF store large pictures as a grid of separately coded tiles
+  for (unsigned int i = 0; i < m_fctx->nb_stream_groups; ++i)
+  {
+    const AVStreamGroup* group = m_fctx->stream_groups[i];
+    if (group->type == AV_STREAM_GROUP_PARAMS_TILE_GRID &&
+        (group->disposition & AV_DISPOSITION_DEFAULT))
+    {
+      m_tileGrid = group;
+      return true;
+    }
+  }
+
   // prefer the primary picture of HEIF and AVIF, else the first video stream
   int primary{-1};
   int firstVideo{-1};
@@ -415,13 +509,13 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 
 AVFrame* CFFmpegImage::ExtractFrame()
 {
-  if (!m_fctx || !m_fctx->streams[m_streamIndex])
+  if (!m_fctx || (!m_tileGrid && !m_fctx->streams[m_streamIndex]))
   {
     CLog::LogF(LOGERROR, "No valid format context or stream");
     return nullptr;
   }
 
-  AVFrame* frame = ExtractStreamFrame();
+  AVFrame* frame = m_tileGrid ? ExtractTileGridFrame() : ExtractStreamFrame();
   if (!frame)
     return nullptr;
 
@@ -513,6 +607,89 @@ AVFrame* CFFmpegImage::ExtractStreamFrame()
   av_packet_unref(&pkt);
 
   return frame;
+}
+
+AVFrame* CFFmpegImage::ExtractTileGridFrame()
+{
+  const AVStreamGroupTileGrid* grid = m_tileGrid->params.tile_grid;
+  CLog::LogF(LOGDEBUG, "Decoding a grid of {} tiles to {}x{}", grid->nb_tiles, grid->width,
+             grid->height);
+
+  // the demuxer does not check these against the coded size
+  if (grid->nb_tiles == 0 || grid->coded_width <= 0 || grid->coded_height <= 0 ||
+      grid->horizontal_offset < 0 || grid->vertical_offset < 0 || grid->width <= 0 ||
+      grid->height <= 0 || grid->width > grid->coded_width - grid->horizontal_offset ||
+      grid->height > grid->coded_height - grid->vertical_offset)
+  {
+    CLog::LogF(LOGERROR, "Invalid tile grid geometry");
+    return nullptr;
+  }
+
+  // FFmpeg 7.x gives a tile's number here, not its stream's, so a tile used twice runs past them
+  for (unsigned int i = 0; i < grid->nb_tiles; ++i)
+  {
+    if (grid->offsets[i].idx >= m_tileGrid->nb_streams)
+    {
+      CLog::LogF(LOGERROR, "Tile {} refers to stream {} of {}", i, grid->offsets[i].idx,
+                 m_tileGrid->nb_streams);
+      return nullptr;
+    }
+  }
+
+  AVPacket* pkt = av_packet_alloc();
+  AVFrame* tile = av_frame_alloc();
+  AVFrame* canvas = nullptr;
+  unsigned int placed = 0;
+  bool failed = !pkt || !tile;
+
+  while (!failed && placed < grid->nb_tiles && av_read_frame(m_fctx, pkt) >= 0)
+  {
+    bool decoded = false;
+    // a tile may be placed more than once
+    for (unsigned int i = 0; !failed && i < grid->nb_tiles; ++i)
+    {
+      const AVStream* stream = m_tileGrid->streams[grid->offsets[i].idx];
+      if (stream->index != pkt->stream_index)
+        continue;
+
+      if (!decoded)
+      {
+        decoded = DecodeStill(stream->codecpar, pkt, tile);
+        if (decoded && !canvas)
+          canvas = AllocCanvas(tile, grid->coded_width, grid->coded_height);
+        failed = !decoded || !canvas || tile->format != canvas->format;
+      }
+      failed =
+          failed || !CopyTile(canvas, tile, grid->offsets[i].horizontal, grid->offsets[i].vertical);
+      if (failed)
+        CLog::LogF(LOGERROR, "Could not decode or place tile stream {}", stream->index);
+      else
+        placed++;
+    }
+    av_packet_unref(pkt);
+  }
+  av_packet_free(&pkt);
+  av_frame_free(&tile);
+
+  if (failed || placed < grid->nb_tiles)
+  {
+    CLog::LogF(LOGERROR, "Could only decode {} of {} tiles", placed, grid->nb_tiles);
+    av_frame_free(&canvas);
+    return nullptr;
+  }
+
+  canvas->crop_left = grid->horizontal_offset;
+  canvas->crop_top = grid->vertical_offset;
+  canvas->crop_right = grid->coded_width - grid->width - grid->horizontal_offset;
+  canvas->crop_bottom = grid->coded_height - grid->height - grid->vertical_offset;
+  if (av_frame_apply_cropping(canvas, AV_FRAME_CROP_UNALIGNED) < 0)
+  {
+    CLog::LogF(LOGERROR, "Invalid tile grid cropping");
+    av_frame_free(&canvas);
+    return nullptr;
+  }
+
+  return canvas;
 }
 
 AVPixelFormat CFFmpegImage::ConvertFormats(AVFrame* frame)
