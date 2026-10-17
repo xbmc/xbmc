@@ -10,6 +10,8 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/ApplicationStackHelper.h"
+#include "cores/IPlayer.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
 #include "settings/AdvancedSettings.h"
@@ -107,6 +109,28 @@ TEST_F(TestStacks, TestMovieFilesStackDvdIso)
   {
     EXPECT_EQ(items.Get(0)->IsStack(), true);
   }
+}
+
+TEST_F(TestStacks, TestStackPartToPlayIsVideo)
+{
+  // A part without a video tag would be classified by its extension, which a
+  // game client may claim (eg. .iso), and then played by RetroPlayer.
+  const std::string movieFolder =
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)");
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, VIDEO_EXTENSIONS, DIR_FLAG_DEFAULTS);
+  items.Stack();
+  ASSERT_EQ(items.Size(), 1);
+  ASSERT_TRUE(items.Get(0)->IsStack());
+
+  CApplicationStackHelper stackHelper;
+  ASSERT_TRUE(stackHelper.InitializeStack(*items.Get(0)));
+
+  CFileItem part{*items.Get(0)};
+  CPlayerOptions options;
+  stackHelper.GetStackPartAndOptions(part, options, true);
+  EXPECT_FALSE(part.IsStack());
+  EXPECT_TRUE(part.HasVideoInfoTag());
 }
 
 TEST_F(TestStacks, TestMovieFilesStackBlurayIso)
