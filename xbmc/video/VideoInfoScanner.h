@@ -43,6 +43,7 @@ namespace KODI::VIDEO
       noupdate = false;
       exclude = false;
       m_allExtAudio = false;
+      recursive_tvshow_source = false;
       recurse = 1;
     }
     bool parent_name;       /* use the parent dirname as name of lookup */
@@ -51,6 +52,7 @@ namespace KODI::VIDEO
     bool noupdate;          /* exclude from update library function */
     bool exclude;           /* exclude this path from scraping */
     bool m_allExtAudio; /* treat all audio files in video directory as external tracks */
+    bool recursive_tvshow_source; /* source opted in, independent of remaining recurse depth */
   } SScanSettings;
 
   class CVideoInfoScanner : public CInfoScanner
@@ -122,7 +124,8 @@ namespace KODI::VIDEO
                            bool useLocal = true,
                            CScraperUrl* pURL = nullptr,
                            bool fetchEpisodes = true,
-                           CGUIDialogProgress* pDlgProgress = nullptr);
+                           CGUIDialogProgress* pDlgProgress = nullptr,
+                           bool recursiveTvShowScan = false);
 
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
@@ -137,6 +140,10 @@ namespace KODI::VIDEO
   protected:
     virtual void Process();
     std::pair<ScanComplete, ContentFound> DoScan(const std::string& strDirectory) override;
+    // GetTvShowId() also resolves ancestor show paths. Recursive discovery must
+    // only reuse a show whose library path matches the candidate exactly.
+    int GetExactTvShowId(const std::string& path);
+
 
     InfoRet RetrieveInfoForTvShow(CFileItem* pItem,
                                   bool bDirNames,
