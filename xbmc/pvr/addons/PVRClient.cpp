@@ -21,6 +21,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRDescrambleInfo.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPlaybackState.h"
 #include "pvr/PVRSignalStatus.h"
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClientMenuHooks.h"
@@ -518,6 +519,7 @@ void CPVRClient::ResetProperties()
   m_ifc.pvr->toKodi->TriggerTimerUpdate = cb_trigger_timer_update;
   m_ifc.pvr->toKodi->TriggerRecordingUpdate = cb_trigger_recording_update;
   m_ifc.pvr->toKodi->TriggerEpgUpdate = cb_trigger_epg_update;
+  m_ifc.pvr->toKodi->PlayingChannelChange = cb_playing_channel_change;
   m_ifc.pvr->toKodi->FreeDemuxPacket = cb_free_demux_packet;
   m_ifc.pvr->toKodi->AllocateDemuxPacket = cb_allocate_demux_packet;
   m_ifc.pvr->toKodi->TransferChannelGroup = cb_transfer_channel_group;
@@ -2485,6 +2487,16 @@ void CPVRClient::cb_trigger_epg_update(void* kodiInstance, unsigned int iChannel
   HandleAddonCallback(std::source_location::current().function_name(), kodiInstance,
                       [iChannelUid](const CPVRClient* client) {
                         CServiceBroker::GetPVRManager().EpgContainer().UpdateRequest(
+                            client->GetID(), iChannelUid);
+                      });
+}
+
+void CPVRClient::cb_playing_channel_change(void* kodiInstance, unsigned int iChannelUid)
+{
+  HandleAddonCallback(std::source_location::current().function_name(), kodiInstance,
+                      [iChannelUid](const CPVRClient* client)
+                      {
+                        CServiceBroker::GetPVRManager().PlaybackState()->OnBackendChannelChange(
                             client->GetID(), iChannelUid);
                       });
 }
