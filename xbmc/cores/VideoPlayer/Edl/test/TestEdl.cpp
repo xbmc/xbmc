@@ -117,6 +117,21 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   EXPECT_EQ(edit->end, edl.GetTimeAfterRestoringCuts(commbreak.end));
 }
 
+TEST_F(TestEdl, TestParsingEDLFromItemProperty)
+{
+  CEdl edl;
+
+  CFileItem mediaItem;
+  mediaItem.SetPath("https://example.com/stream.mpd");
+  mediaItem.SetProperty(
+      "edlpath",
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/Edl/test/testdata/mplayertimebasedmixed.edl"));
+  EXPECT_EQ(edl.ReadEditDecisionLists(mediaItem, 0, 0ms), true);
+  EXPECT_EQ(edl.HasCuts(), true);
+  EXPECT_EQ(edl.GetSceneMarkers().size(), 4);
+  EXPECT_EQ(edl.GetEditList().front().start, 15s - edl.GetTotalCutTime());
+}
+
 TEST_F(TestEdl, TestParsingMplayerTimeBasedInterleavedCutsEDL)
 {
   CEdl edl;
