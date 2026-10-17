@@ -644,7 +644,7 @@ unsigned char CGUIImage::GetFadeLevel(unsigned int time) const
   return (unsigned char)(255.0f * (1 - pow(1-alpha, amount))/alpha);
 }
 
-std::string CGUIImage::GetFallback(const std::string& currentName)
+std::string CGUIImage::GetFallback(const std::string& currentName) const
 {
   if (!m_currentFallback.empty() && currentName != m_currentFallback)
     return m_currentFallback;
@@ -658,8 +658,18 @@ std::string CGUIImage::GetDescription(void) const
   if ((!IsVisible() || !m_textureCurrent->ReadyToRender()) && m_nameStaging != m_nameCurrent)
     return m_nameStaging;
 
-  // report the incoming texture as soon as it resolves so Control.GetLabel doesn't lag the fade
-  if (m_isTransitioning && (m_textureNext->ReadyToRender() || m_textureNext->GetFileName().empty()))
+  // grouplists evaluate visibility before Process stages the request
+  if (m_hasNewStagingTexture)
+  {
+    const std::string fileName = m_nameStaging.empty() ? GetFallback(m_nameStaging) : m_nameStaging;
+    if (m_nameCurrent == fileName || m_textureCurrent->GetFileName() == fileName)
+      return GetFileName();
+    if (!m_isTransitioning || (m_nameNext != fileName && m_textureNext->GetFileName() != fileName))
+      return fileName;
+  }
+
+  // Control.GetLabel follows the request, not the texture still drawn
+  if (m_isTransitioning)
     return m_textureNext->GetFileName();
   return GetFileName();
 }
