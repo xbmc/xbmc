@@ -37,6 +37,11 @@ function(add_precompiled_header target pch_header pch_source)
   endforeach()
   # A PCH compiled in C++ mode cannot be used for C code
   list(FILTER sources EXCLUDE REGEX "\\.c$")
+
+  if(CMAKE_DISABLE_PRECOMPILE_HEADERS)
+    set_source_files_properties(${sources} PROPERTIES COMPILE_FLAGS "/FI\"${pch_header}\"")
+    return()
+  endif()
   
   set_source_files_properties(${sources}
                               PROPERTIES COMPILE_FLAGS "/Yu\"${pch_header}\" /Fp\"${pch_binary}\" /FI\"${pch_header}\""

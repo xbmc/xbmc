@@ -59,6 +59,11 @@ macro(buildFFMPEG)
 
     set(msys_env MSYS2_PATH_TYPE=inherit
                  MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH})
+    if(CCACHE_FOUND)
+      list(APPEND msys_env "CCACHE_PROGRAM=${CCACHE_PROGRAM}")
+    else()
+      list(APPEND msys_env "CCACHE_PROGRAM=")
+    endif()
 
     set(PROMPTLEVEL noprompt)
 

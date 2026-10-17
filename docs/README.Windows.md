@@ -242,6 +242,43 @@ cmake --build . --config "Release"
 *Normal* 32bit, 64bit and ARM 64bit builds generate an `exe` file ready to run, located at `%userprofile%\kodi-build\Debug` or `%userprofile%\kodi-build\Release`, depending on the build config.
 UWP builds generate `msix`, `appxsym` and `cer` files, located inside directories at `%userprofile%\kodi-build\AppPackages\kodi\`. You can install them following this **[guide](https://kodi.wiki/view/HOW-TO:Install_Kodi_for_Universal_Windows_Platform)**.
 
+### Compiler caching
+
+MSVC builds using Visual Studio automatically use [ccache](https://ccache.dev/) 4.13.3 or newer
+when `ccache.exe` is on `PATH`. Add `-DENABLE_CCACHE=ON` to the configure command to
+require it, or `-DENABLE_CCACHE=OFF` to disable it. The default is `AUTO`.
+This also enables caching for internal dependencies built with MSVC through CMake
+or Meson, and the MSYS build of FFmpeg.
+
+Automatically discovered Chocolatey shims are resolved to the real executable
+under the installation's `lib\ccache\tools` directory. An explicit
+`CCACHE_PROGRAM` must point to the real executable, not a Chocolatey shim.
+If it cannot run when copied as `cl.exe`, `AUTO` disables caching with a warning
+and `ON` reports an error.
+
+Use a fresh Kodi build directory when enabling, disabling or relocating ccache.
+Existing Meson dependency builds retain their original compiler command;
+removing only `CMakeCache.txt` is not enough.
+
+With ccache enabled, Kodi uses embedded compiler debug information (`/Z7`) and
+disables precompiled headers and automatic C++ module scans. Per-directory
+libraries keep embedded symbols within MSVC's archive size limit. Linker PDBs are
+still produced. Cold builds can be slower and object files larger; subsequent
+compilations can reuse cached objects.
+
+For a persistent cache, set these variables in the environment used to configure
+and build Kodi, including the Jenkins agent service environment:
+
+```bat
+set CCACHE_DIR=%LOCALAPPDATA%\ccache
+set CCACHE_MAXSIZE=20G
+```
+
+Keep the cache outside directories cleaned between builds and keep source and
+build directory paths stable for reliable reuse of debug information. Inspect
+statistics with `ccache -s`, or reset only the counters with `ccache -s -z` before
+measuring a rebuild. Restart the agent service after changing its environment.
+
 **[back to top](#table-of-contents)** | **[back to section top](#6-build-kodi-manually)**
 
 ## 7. Build binary add-ons manually
