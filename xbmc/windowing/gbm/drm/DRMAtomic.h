@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DRMUtils.h"
+#include "threads/CriticalSection.h"
 #include "utils/log.h"
 
 #include <cstdint>
@@ -45,6 +46,8 @@ private:
 
   bool m_need_modeset{true};
   bool m_active = true;
+
+  CCriticalSection m_reqSection;
 
   class CDRMAtomicRequest
   {

@@ -18,6 +18,7 @@
 
 #include <chrono>
 #include <errno.h>
+#include <mutex>
 #include <string.h>
 #include <thread>
 
@@ -30,6 +31,8 @@ using namespace KODI::WINDOWING::GBM;
 
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
+  std::unique_lock lock(m_reqSection);
+
   // Declared at function scope so the blob outlives drmModeAtomicCommit.
   // DRM requires the blob to remain alive for the duration of the commit;
   // destroying it before the commit returns leaves the atomic request
@@ -312,6 +315,8 @@ bool CDRMAtomic::AddProperty(CDRMObject* object, const char* name, uint64_t valu
 {
   if (!object)
     return false;
+
+  std::unique_lock lock(m_reqSection);
   return m_req->AddProperty(object, name, value);
 }
 
