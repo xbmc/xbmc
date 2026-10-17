@@ -17,7 +17,6 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
-#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayStereoUtils.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
@@ -28,10 +27,36 @@
 
 #include <algorithm>
 #include <mutex>
+#include <string_view>
 #include <utility>
 
 using namespace KODI;
 using namespace OVERLAY;
+
+namespace
+{
+bool ShouldRenderStereoOverlay(const CDVDOverlay& overlay,
+                               RenderStereoView renderView,
+                               std::string_view sourceStereoMode)
+{
+  if (overlay.m_stereoView == DVDOverlayStereoView::BOTH)
+    return true;
+
+  if (sourceStereoMode == "right_left" || sourceStereoMode == "bottom_top")
+  {
+    if (renderView == RenderStereoView::LEFT)
+      renderView = RenderStereoView::RIGHT;
+    else if (renderView == RenderStereoView::RIGHT)
+      renderView = RenderStereoView::LEFT;
+  }
+
+  if (renderView == RenderStereoView::OFF)
+    return overlay.m_stereoView == DVDOverlayStereoView::LEFT;
+
+  return (overlay.m_stereoView == DVDOverlayStereoView::LEFT) ==
+         (renderView == RenderStereoView::LEFT);
+}
+} // unnamed namespace
 
 COverlay::COverlay()
 {
@@ -166,8 +191,7 @@ void CRenderer::Render(int idx, float depth)
       if (!o)
         continue;
 
-      if (!KODI::VIDEO::SUBTITLES::ShouldRenderStereoOverlay(it->overlay_dvd->m_stereoView,
-                                                             stereoView, m_stereomode))
+      if (!ShouldRenderStereoOverlay(*it->overlay_dvd, stereoView, m_stereomode))
         continue;
 
       if (!(hdrComposite && o->m_isHDROverlay))
@@ -199,8 +223,7 @@ void CRenderer::RenderHDROverlays(int idx)
       if (!o || !o->m_isHDROverlay)
         continue;
 
-      if (!KODI::VIDEO::SUBTITLES::ShouldRenderStereoOverlay(it->overlay_dvd->m_stereoView,
-                                                             stereoView, m_stereomode))
+      if (!ShouldRenderStereoOverlay(*it->overlay_dvd, stereoView, m_stereomode))
         continue;
 
       Render(o.get());
