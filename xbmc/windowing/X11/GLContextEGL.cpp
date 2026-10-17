@@ -205,17 +205,6 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
 
 bool CGLContextEGL::CreatePB()
 {
-  const EGLint configAttribs[] =
-  {
-    EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
-    EGL_BLUE_SIZE, 8,
-    EGL_GREEN_SIZE, 8,
-    EGL_RED_SIZE, 8,
-    EGL_DEPTH_SIZE, 8,
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-    EGL_NONE
-  };
-
   const EGLint pbufferAttribs[] =
   {
     EGL_WIDTH, 9,
@@ -251,9 +240,42 @@ bool CGLContextEGL::CreatePB()
     return false;
   }
 
-  EGLint numConfigs;
+  const auto chooseConfig = [&](EGLint stencilSize)
+  {
+    const EGLint configAttribs[] = {EGL_SURFACE_TYPE,
+                                    EGL_PBUFFER_BIT,
+                                    EGL_BLUE_SIZE,
+                                    8,
+                                    EGL_GREEN_SIZE,
+                                    8,
+                                    EGL_RED_SIZE,
+                                    8,
+                                    EGL_DEPTH_SIZE,
+                                    8,
+                                    EGL_STENCIL_SIZE,
+                                    stencilSize,
+                                    EGL_RENDERABLE_TYPE,
+                                    m_renderingApi == EGL_OPENGL_API ? EGL_OPENGL_BIT
+                                                                     : EGL_OPENGL_ES2_BIT,
+                                    EGL_NONE};
+    EGLint numConfigs{0};
+    return eglChooseConfig(m_eglDisplay, configAttribs, &m_eglConfig, 1, &numConfigs) == EGL_TRUE &&
+           numConfigs > 0;
+  };
 
-  eglChooseConfig(m_eglDisplay, configAttribs, &m_eglConfig, 1, &numConfigs);
+  if (!chooseConfig(8))
+  {
+    if (m_renderingApi != EGL_OPENGL_ES_API || !chooseConfig(0))
+    {
+      CLog::Log(LOGERROR, "failed to find EGL pbuffer config");
+      Destroy();
+      return false;
+    }
+    CLog::Log(LOGWARNING,
+              "EGL: no pbuffer config with eight stencil bits; rotated GUI masks will be "
+              "hidden on framebuffers without stencil support");
+  }
+
   m_eglSurface = eglCreatePbufferSurface(m_eglDisplay, m_eglConfig, pbufferAttribs);
   if (m_eglSurface == EGL_NO_SURFACE)
   {
@@ -363,6 +385,9 @@ bool CGLContextEGL::SuitableCheck(EGLDisplay eglDisplay, EGLConfig config)
     return false;
   if (!eglGetConfigAttrib(eglDisplay, config, EGL_DEPTH_SIZE, &value) || value < 16)
     return false;
+  if (m_renderingApi == EGL_OPENGL_API &&
+      (!eglGetConfigAttrib(eglDisplay, config, EGL_STENCIL_SIZE, &value) || value < 8))
+    return false;
 
   return true;
 }
@@ -408,9 +433,25 @@ EGLConfig CGLContextEGL::GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
     }
     if (value == (EGLint)vInfo->visualid)
     {
+      if (m_renderingApi == EGL_OPENGL_ES_API &&
+          (!eglGetConfigAttrib(eglDisplay, eglConfigs[i], EGL_STENCIL_SIZE, &value) || value < 8))
+      {
+        if (eglConfig == EGL_NO_CONFIG)
+          eglConfig = eglConfigs[i];
+        continue;
+      }
       eglConfig = eglConfigs[i];
       break;
     }
+  }
+
+  if (m_renderingApi == EGL_OPENGL_ES_API && eglConfig != EGL_NO_CONFIG)
+  {
+    EGLint stencilSize{0};
+    if (!eglGetConfigAttrib(eglDisplay, eglConfig, EGL_STENCIL_SIZE, &stencilSize) ||
+        stencilSize < 8)
+      CLog::Log(LOGWARNING, "EGL: no config with eight stencil bits; rotated GUI masks will be "
+                            "hidden on framebuffers without stencil support");
   }
 
 Exit:
