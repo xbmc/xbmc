@@ -47,6 +47,13 @@ public:
   virtual double GetLatency() { return 0.0; }
 
   /*!
+   * @brief True if the sink is operating without an actual hardware audio path
+   * (e.g. passthrough failed and data is swallowed to keep the pipeline alive).
+   * @return true if this sink is a silent stand-in
+   */
+  virtual bool IsSilentFallback() { return false; }
+
+  /*!
    * @brief Adds packets to be sent out, this routine MUST block or sleep.
    * @param data array of pointers to planes holding audio data
    * @param frames number of audio frames in data
