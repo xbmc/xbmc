@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/RetroPlayer/process/DisplayPacing.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
@@ -65,7 +66,7 @@ public:
 class CGameLoop : protected CThread
 {
 public:
-  CGameLoop(IGameLoopCallback* callback, double fps);
+  CGameLoop(IGameLoopCallback* callback, double fps, CDisplayPacing* displayPacing = nullptr);
 
   ~CGameLoop() override;
 
@@ -86,15 +87,44 @@ protected:
   void Process() override;
 
 private:
+  /*!
+   * \brief Run the next frame in step with the screen, if it can be
+   *
+   * \return False if the frame should be timed by the game's own rate instead
+   */
+  bool PaceToDisplay();
+  void StopPacing();
+  void RunFrame();
+
+  enum class PacingState
+  {
+    UNKNOWN,
+    NO_INTERVAL,
+    RATE_TOO_FAR,
+    FRAME_TOO_SLOW,
+    PACED,
+  };
+
+  /*!
+   * \brief Record why the game is or isn't paced
+   *
+   * \return True if that changed, so it can be logged once
+   */
+  bool PacingChanged(PacingState state);
+
   std::chrono::microseconds FrameTimeUs() const;
   std::chrono::microseconds NowUs() const;
 
   IGameLoopCallback* const m_callback;
+  CDisplayPacing* const m_displayPacing;
   std::atomic<double> m_fps;
   std::atomic<double> m_speedFactor{0.0};
   double m_loopSpeedFactor{0.0};
   std::chrono::microseconds m_lastFrameUs{std::chrono::microseconds::zero()};
   CEvent m_sleepEvent;
+  CDisplayPacing::Clock::time_point m_lastPacedTake{};
+  CDisplayPacing::Clock::duration m_frameCost{};
+  PacingState m_pacingState{PacingState::UNKNOWN};
   std::atomic<bool> m_quiesceRequested{false};
   CEvent m_quiescedEvent{true};
 };

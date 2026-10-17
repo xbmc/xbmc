@@ -457,8 +457,8 @@ protected:
     { return GAME_ERROR_NO_ERROR; };
     m_playbackEnvironment = std::make_unique<RETRO::CPlaybackTestEnvironment>();
     m_playback = std::make_unique<RETRO::CReversiblePlayback>(
-        m_client.get(), m_playbackEnvironment->Renderer(), m_playbackEnvironment->Messenger(), 1.0,
-        1);
+        m_client.get(), m_playbackEnvironment->Renderer(), m_playbackEnvironment->Messenger(),
+        m_playbackEnvironment->ProcessInfo().GetDisplayPacing(), 1.0, 1);
     TestMember<PlaybackMemory>(*m_playback) = std::make_unique<RETRO::CDeltaPairMemoryStream>();
     TestMember<PlaybackMemory>(*m_playback)->Init(1, 10);
     const auto discID = TestMember<PlaybackDiscs>(*m_playback).Intern(m_client->Discs().GetDiscs());
