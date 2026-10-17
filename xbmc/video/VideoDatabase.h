@@ -38,6 +38,7 @@ class CStreamDetails;
 class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
+class CVariant;
 class TiXmlNode;
 
 struct VideoAssetInfo;
@@ -1356,6 +1357,15 @@ private:
                                   std::map<int, bool> &pathsDeleteDecisions, std::string &deletedFileIDs, bool silent);
 
   static void AnnounceRemove(KODI::MEDIA::TYPE content, int id, bool scanning = false);
+
+  /*!
+   * \brief Announce a change of a file's play count or resume point in the Files namespace, for
+   * any file, in or outside the library, so that e.g. the add-on whose plugin item it is can react
+   * \param[in] idFile The file
+   * \param[in] message The notification
+   * \param[in] data The notification's data, which gets the file's path added
+   */
+  void AnnounceFileChange(int idFile, const std::string& message, CVariant data);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
 };
