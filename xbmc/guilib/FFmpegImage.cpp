@@ -349,7 +349,23 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     FreeIOCtx(&m_ioctx);
     return false;
   }
-  AVCodecParameters* codec_params = m_fctx->streams[0]->codecpar;
+
+  // prefer the primary picture of HEIF and AVIF, else the first video stream
+  int primary{-1};
+  int firstVideo{-1};
+  for (unsigned int i = 0; i < m_fctx->nb_streams && primary < 0; ++i)
+  {
+    const AVStream* stream = m_fctx->streams[i];
+    if (stream->codecpar->codec_type != AVMEDIA_TYPE_VIDEO)
+      continue;
+    if (firstVideo < 0)
+      firstVideo = static_cast<int>(i);
+    if (stream->disposition & AV_DISPOSITION_DEFAULT)
+      primary = static_cast<int>(i);
+  }
+  m_streamIndex = primary >= 0 ? primary : std::max(firstVideo, 0);
+
+  AVCodecParameters* codec_params = m_fctx->streams[m_streamIndex]->codecpar;
   const AVCodec* codec = avcodec_find_decoder(codec_params->codec_id);
   m_codec_ctx = avcodec_alloc_context3(codec);
   if (!m_codec_ctx)
@@ -399,7 +415,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 
 AVFrame* CFFmpegImage::ExtractFrame()
 {
-  if (!m_fctx || !m_fctx->streams[0])
+  if (!m_fctx || !m_fctx->streams[m_streamIndex])
   {
     CLog::LogF(LOGERROR, "No valid format context or stream");
     return nullptr;
@@ -423,6 +439,14 @@ AVFrame* CFFmpegImage::ExtractFrame()
       return nullptr;
     }
 
+    // HEIF thumbnails and auxiliary images come as further streams
+    if (pkt.stream_index != m_streamIndex)
+    {
+      av_packet_unref(&pkt);
+      ret = AVERROR(EAGAIN);
+      continue;
+    }
+
     ret = DecodeFFmpegFrame(m_codec_ctx, frame, &frame_decoded, &pkt);
   }
   if (ret < 0 || frame_decoded == 0 || !frame)
@@ -435,11 +459,11 @@ AVFrame* CFFmpegImage::ExtractFrame()
   //we need milliseconds
 
 #if LIBAVCODEC_VERSION_MAJOR < 60
-  frame->pkt_duration =
-      av_rescale_q(frame->pkt_duration, m_fctx->streams[0]->time_base, AVRational{1, 1000});
+  frame->pkt_duration = av_rescale_q(frame->pkt_duration, m_fctx->streams[m_streamIndex]->time_base,
+                                     AVRational{1, 1000});
 #else
   frame->duration =
-      av_rescale_q(frame->duration, m_fctx->streams[0]->time_base, AVRational{1, 1000});
+      av_rescale_q(frame->duration, m_fctx->streams[m_streamIndex]->time_base, AVRational{1, 1000});
 #endif
 
   m_height = frame->height;

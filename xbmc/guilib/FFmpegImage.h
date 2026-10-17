@@ -94,6 +94,7 @@ private:
   AVIOContext* m_ioctx = nullptr;
   AVFormatContext* m_fctx = nullptr;
   AVCodecContext* m_codec_ctx = nullptr;
+  int m_streamIndex = 0;
 
   AVFrame* m_pFrame;
   uint8_t* m_outputBuffer;
