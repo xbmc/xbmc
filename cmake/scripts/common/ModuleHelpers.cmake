@@ -521,13 +521,25 @@ macro(BUILD_DEP_TARGET)
     set(INSTALL_DIR ${DEP_LOCATION})
   endif()
 
+  set(_download_dir "${TARBALL_DIR}")
+  unset(_download_cache)
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR
+     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH
+     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL MATCHES "^[A-Za-z][A-Za-z0-9+.-]*://")
+    get_filename_component(_download_cache "${TARBALL_DIR}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}"
+                           ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+    # ExternalProject may also download or remove archives, so give it a private copy.
+    get_filename_component(_download_dir "${CORE_BUILD_DIR}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME}/download"
+                           ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+  endif()
+
   # Allow a target to supply in-tree source location. eg TexturePacker, JsonSchemaBuilder
   if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR)
     set(BUILD_DOWNLOAD_STEPS SOURCE_DIR "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR}")
   else()
     set(BUILD_DOWNLOAD_STEPS URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}
                              URL_HASH ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH}
-                             DOWNLOAD_DIR ${TARBALL_DIR}
+                             DOWNLOAD_DIR "${_download_dir}"
                              DOWNLOAD_NAME ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE})
   endif()
 
@@ -550,9 +562,7 @@ macro(BUILD_DEP_TARGET)
   # Pointless for local tarballs, and without a hash the download step re-downloads
   # regardless. INDEPENDENT like the download step itself, which CMP0114 requires of
   # anything that step depends on.
-  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_DIR
-     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH
-     AND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL MATCHES "^[A-Za-z][A-Za-z0-9+.-]*://")
+  if(_download_cache)
     # ExternalProject bakes these into its download script; a cmake -P process would
     # not see them otherwise
     set(_download_retry_settings)
@@ -564,14 +574,18 @@ macro(BUILD_DEP_TARGET)
     externalproject_add_step(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} download-retry
                              COMMAND ${CMAKE_COMMAND} ${_download_retry_settings}
                                      -DARCHIVE_URL=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}
-                                     -DARCHIVE_DEST=${TARBALL_DIR}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}
+                                     -DARCHIVE_DEST=${_download_dir}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}
+                                     -DARCHIVE_CACHE=${_download_cache}
                                      -DARCHIVE_HASH=${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_HASH}
                                      -P ${PROJECTSOURCE}/cmake/scripts/common/DownloadWithRetry.cmake
                              DEPENDERS download
+                             DEPENDEES mkdir
                              INDEPENDENT TRUE
                              COMMENT "Fetching ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE}")
     unset(_download_retry_settings)
   endif()
+  unset(_download_dir)
+  unset(_download_cache)
 
   set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES FOLDER "External Projects")
 
