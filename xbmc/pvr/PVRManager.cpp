@@ -272,6 +272,13 @@ std::shared_ptr<CPVRClients> CPVRManager::Clients() const
   return m_addons;
 }
 
+std::optional<int64_t> CPVRManager::GetTimeshiftSeekTime(double percentage) const
+{
+  const auto channel = PlaybackState()->GetPlayingChannel();
+  std::unique_lock lock(m_critSection);
+  return m_guiInfo ? m_guiInfo->GetTimeshiftSeekTime(percentage, channel) : std::nullopt;
+}
+
 std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
 {
   int iClientID = PVR_CLIENT_INVALID_UID;

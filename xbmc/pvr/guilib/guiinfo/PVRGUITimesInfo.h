@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/guilib/guiinfo/PVRGUITimeshiftProgress.h"
 #include "threads/CriticalSection.h"
 #include "utils/TimeFormat.h"
 
@@ -26,6 +27,9 @@ public:
 
   void Reset();
   void Update();
+
+  std::optional<int64_t> GetTimeshiftSeekTime(
+      double percentage, const std::shared_ptr<const CPVRChannel>& channel) const;
 
   // GUI info labels
   std::string GetTimeshiftStartTime(TIME_FORMAT format) const;
@@ -82,6 +86,9 @@ private:
   time_t m_iTimeshiftEndTime;
   time_t m_iTimeshiftPlayTime;
   int64_t m_iTimeshiftOffset;
+  int64_t m_iPlayerPlayTime{0};
+  bool m_bTimeshiftBufferOnly{false};
+  TimeshiftProgress m_timeshiftProgress;
 
   time_t m_iTimeshiftProgressStartTime;
   time_t m_iTimeshiftProgressEndTime;
