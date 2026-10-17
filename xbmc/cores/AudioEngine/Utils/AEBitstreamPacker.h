@@ -25,6 +25,13 @@ public:
 
   void Pack(CAEStreamInfo &info, uint8_t* data, int size);
   bool PackPause(CAEStreamInfo &info, unsigned int millis, bool iecBursts);
+
+  //! Re-emit the last complete burst. Returns false when none has been packed
+  //! yet; the caller skips byte-swapping, as the retained burst is already
+  //! swapped.
+  bool PackLastBurst();
+  //! Start the next packet. The last complete burst is kept: a packer lives as long as the
+  //! sink it was opened for.
   void Reset();
   uint8_t* GetBuffer();
   unsigned int GetSize() const;
@@ -34,6 +41,11 @@ public:
 private:
   void PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size);
   void PackEAC3(CAEStreamInfo &info, uint8_t* data, int size);
+  void RetainBurst();
+
+  //! The last complete burst handed to the sink, kept apart from m_packedBuffer
+  //! so re-emitting it cannot disturb an assembly in progress.
+  std::vector<uint8_t> m_lastBurst;
 
   std::vector<uint8_t> m_dtsHD;
   unsigned int m_dtsHDSize = 0;
