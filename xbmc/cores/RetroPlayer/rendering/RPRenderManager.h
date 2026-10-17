@@ -316,6 +316,8 @@ private:
   uintptr_t m_loggedFramebuffer{0};
   bool m_loggedHardwareCapture{false};
   std::vector<IRenderBuffer*> m_renderBuffers;
+  std::atomic<uint64_t> m_framesGiven{0};
+  uint64_t m_lastFrameTaken{0}; // Rendering thread only
   std::map<AVPixelFormat, std::map<AVPixelFormat, SwsContext*>> m_scalers; // From -> to -> context
   std::vector<uint8_t> m_cachedFrame;
   unsigned int m_cachedWidth = 0;
