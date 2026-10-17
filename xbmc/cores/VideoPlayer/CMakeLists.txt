@@ -16,6 +16,7 @@ set(SOURCES AudioSinkAE.cpp
             Edl/EdlParsers/VideoReDoParser.cpp
             PTSTracker.cpp
             RadioRDSCountries.cpp
+            RadioRDSLanguages.cpp
             VideoDecodeSession.cpp
             VideoFileGeometry.cpp
             VideoPlayer.cpp
@@ -48,6 +49,7 @@ set(HEADERS AudioSinkAE.h
             IVideoPlayer.h
             PTSTracker.h
             RadioRDSCountries.h
+            RadioRDSLanguages.h
             VideoDecodeSession.h
             VideoFileGeometry.h
             VideoPlayer.h
