@@ -77,12 +77,14 @@ endif()
 
 if(CORE_SYSTEM_NAME STREQUAL wasm)
     list(APPEND SOURCES MediaBackendEmss.cpp
+                        MediaBackendMse.cpp
                         MediaBackendWasm.cpp
                         MediaPipelineWasm.cpp
                         VideoPlayerAudioWasm.cpp
                         VideoPlayerVideoWasm.cpp
                         VideoPlayerWasm.cpp)
     list(APPEND HEADERS MediaBackendEmss.h
+                        MediaBackendMse.h
                         MediaBackendWasm.h
                         MediaPipelineWasm.h
                         VideoPlayerAudioWasm.h
