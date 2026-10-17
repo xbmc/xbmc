@@ -18,12 +18,14 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/MessengerPayload.h"
 #include "pictures/PictureInfoTag.h"
 #include "pictures/SlideShowDelegator.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace KODI;
+using KODI::MESSAGING::TransferToMessenger;
 
 JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -201,7 +203,7 @@ JSONRPC_STATUS CPlaylistOperations::Clear(const std::string &method, ITransportL
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       //! @todo: Stop should be a delegator method to void GUI coupling! Same goes for other player controls.
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-                                                 static_cast<void*>(new CAction(ACTION_STOP)));
+          TransferToMessenger(std::make_unique<CAction>(ACTION_STOP)));
       slideShow.Reset();
       break;
     }

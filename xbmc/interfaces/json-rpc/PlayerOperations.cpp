@@ -31,6 +31,7 @@
 #include "input/actions/ActionIDs.h"
 #include "interfaces/builtins/Builtins.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/MessengerPayload.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
@@ -58,11 +59,13 @@
 #include "video/VideoDatabase.h"
 
 #include <map>
+#include <memory>
 #include <tuple>
 
 using namespace KODI;
 using namespace JSONRPC;
 using namespace PVR;
+using KODI::MESSAGING::TransferToMessenger;
 
 namespace
 {
@@ -671,10 +674,12 @@ JSONRPC_STATUS CPlayerOperations::Move(const std::string &method, ITransportLaye
     case Audio:
       if (direction == "left" || direction == "up")
         CServiceBroker::GetAppMessenger()->SendMsg(
-            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            TransferToMessenger(std::make_unique<CAction>(ACTION_PREV_ITEM)));
       else if (direction == "right" || direction == "down")
         CServiceBroker::GetAppMessenger()->SendMsg(
-            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            TransferToMessenger(std::make_unique<CAction>(ACTION_NEXT_ITEM)));
       else
         return InvalidParams;
 
@@ -1145,15 +1150,15 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLaye
           return InvalidParams;
 
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                   static_cast<void*>(new CAction(actionID)));
+            TransferToMessenger(std::make_unique<CAction>(actionID)));
       }
       else if (to.isInteger())
       {
         if (IsPVRChannel())
           CServiceBroker::GetAppMessenger()->SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              static_cast<void*>(
-                  new CAction(ACTION_CHANNEL_SWITCH, static_cast<float>(to.asInteger()))));
+              TransferToMessenger(std::make_unique<CAction>(
+                  ACTION_CHANNEL_SWITCH, static_cast<float>(to.asInteger()))));
         else
           CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PLAY,
                                                      static_cast<int>(to.asInteger()));
@@ -1637,7 +1642,7 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
-                                             static_cast<void*>(new CAction(actionID)));
+      TransferToMessenger(std::make_unique<CAction>(actionID)));
 }
 
 JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std::string &property, CVariant &result)

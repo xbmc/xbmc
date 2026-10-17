@@ -17,13 +17,16 @@
 #include "input/actions/ActionIDs.h"
 #include "language/LangInfo.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/MessengerPayload.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 #include <cmath>
+#include <memory>
 #include <string.h>
 
 using namespace JSONRPC;
+using KODI::MESSAGING::TransferToMessenger;
 
 JSONRPC_STATUS CApplicationOperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -96,7 +99,7 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const std::string &method, ITrans
       (parameterObject["mute"].isBoolean() &&
        parameterObject["mute"].asBoolean() != appVolume->IsMuted()))
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                               static_cast<void*>(new CAction(ACTION_MUTE)));
+        TransferToMessenger(std::make_unique<CAction>(ACTION_MUTE)));
   else if (!parameterObject["mute"].isBoolean() && !parameterObject["mute"].isString())
     return InvalidParams;
 
