@@ -8,19 +8,27 @@
 
 #include "ShaderUtils.h"
 
+#include <string_view>
+
 using namespace KODI::SHADER;
 
 std::string CShaderUtils::StripParameterPragmas(std::string source)
 {
-  size_t pragmaPosition;
-  size_t newlinePosition;
+  constexpr std::string_view PRAGMA = "#pragma parameter";
 
-  while ((pragmaPosition = source.find("#pragma parameter")) != std::string::npos)
+  // Only a line that starts with the pragma declares a parameter. The words
+  // can also appear in a comment, and the line after it must survive.
+  size_t lineStart = 0;
+  while (lineStart < source.size())
   {
-    newlinePosition = source.find_first_of('\n', pragmaPosition + 17);
+    size_t lineEnd = source.find('\n', lineStart);
+    lineEnd = (lineEnd == std::string::npos) ? source.size() : lineEnd + 1;
 
-    if (newlinePosition != std::string::npos)
-      source.erase(pragmaPosition, newlinePosition - pragmaPosition + 1);
+    const size_t textStart = source.find_first_not_of(" \t", lineStart);
+    if (textStart < lineEnd && source.compare(textStart, PRAGMA.size(), PRAGMA) == 0)
+      source.erase(lineStart, lineEnd - lineStart);
+    else
+      lineStart = lineEnd;
   }
 
   return source;
