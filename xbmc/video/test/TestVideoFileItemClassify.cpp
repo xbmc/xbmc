@@ -20,8 +20,10 @@
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoUtils.h"
 
 #include <array>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -153,6 +155,70 @@ TEST(TestVideoFileItemClassify, VideoExtensions)
       EXPECT_TRUE(VIDEO::IsVideo(CFileItem("test" + ext, false)));
     }
   }
+}
+
+TEST(TestVideoFileItemClassify, RecognizeNestedOpticalMediaLikeMovieScanner)
+{
+  // A show with several optical disc subfolders must detect actual disc media
+  // at the show level, not recurse through BDMV/PLAYLIST as if it were TV shows.
+  const std::string tempFile{CXBMCTestUtils::Instance().CreateTempFile("tvdisc")};
+  const std::string root{CXBMCTestUtils::Instance().TempFileDirectory(tempFile)};
+  const std::string discFolder{URIUtils::AddFileToFolder(root, "GAVAN D1")};
+  const std::string dvdFolder{URIUtils::AddFileToFolder(discFolder, "VIDEO_TS")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(discFolder));
+  ASSERT_TRUE(XFILE::CDirectory::Create(dvdFolder));
+
+  const std::string dvdEntry{URIUtils::AddFileToFolder(dvdFolder, "VIDEO_TS.IFO")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(dvdEntry));
+    file.Close();
+  }
+  EXPECT_EQ(dvdEntry, VIDEO::UTILS::GetOpticalMediaPath(CFileItem(discFolder, true)));
+  EXPECT_TRUE(VIDEO::IsInOpticalDiscStructure(dvdEntry));
+  EXPECT_FALSE(VIDEO::IsInOpticalDiscStructure(discFolder));
+
+#ifdef HAVE_LIBBLURAY
+  const std::string blurayDisc{URIUtils::AddFileToFolder(root, "GAVAN D2")};
+  const std::string bdmvFolder{URIUtils::AddFileToFolder(blurayDisc, "BDMV")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(blurayDisc));
+  ASSERT_TRUE(XFILE::CDirectory::Create(bdmvFolder));
+  const std::string blurayEntry{URIUtils::AddFileToFolder(bdmvFolder, "index.bdmv")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(blurayEntry));
+    file.Close();
+  }
+  EXPECT_EQ(blurayEntry, VIDEO::UTILS::GetOpticalMediaPath(CFileItem(blurayDisc, true)));
+  EXPECT_TRUE(VIDEO::IsInOpticalDiscStructure(blurayEntry));
+  XFILE::CDirectory::RemoveRecursive(blurayDisc);
+#endif
+
+  XFILE::CDirectory::RemoveRecursive(discFolder);
+  CXBMCTestUtils::Instance().DeleteTempFile(tempFile);
+}
+
+TEST(TestVideoFileItemClassify, IsInOpticalDiscStructure)
+{
+  // Full paths are important here: a previous recursive TV scan incorrectly
+  // imported BDMV/PLAYLIST as a show and indexed its .mpls files as episodes.
+  const std::array<std::pair<std::string, bool>, 12> paths{{
+      {"smb://jedi/Series/Sentai/Gavan/GAVAN D1/BDMV/PLAYLIST/00001.mpls", true},
+      {"smb://jedi/Series/Sentai/Gavan/GAVAN D1/BDMV/PLAYLIST/", true},
+      {"smb://jedi/Series/Sentai/Gavan/GAVAN D1/bdmv/backup/playlist/", true},
+      {"smb://jedi/Series/Sentai/Gavan/GAVAN D1/BDMV/", true},
+      {"smb://jedi/Series/Sentai/Gavan/GAVAN D1/", false},
+      {"smb://jedi/Series/Animation/Dragon Ball/Dragon Ball Z/Season 01/", false},
+      {"/media/tv/show/VIDEO_TS/VTS_01_1.VOB", true},
+      {"/media/tv/show/video_ts/", true},
+      {"/media/tv/show/", false},
+      {"/media/tv/BDMV-rips/show/", false},
+      {"/media/tv/PLAYLIST/00001.mpls", false},
+      {"/media/tv/BDMV Extras/show/", false},
+  }};
+
+  for (const auto& [path, expected] : paths)
+    EXPECT_EQ(expected, VIDEO::IsInOpticalDiscStructure(path)) << path;
 }
 
 TEST(TestVideoFileItemClassify, IsBDFile)
