@@ -25,6 +25,7 @@ xbmc/games/addons/streams/test    test/games/addons/streams
 xbmc/games/controllers/input/test test/games/controllers/input
 xbmc/games/controllers/test       test/games/controllers
 xbmc/games/dialogs/disc/test      test/games/dialogs/disc
+xbmc/games/library/test           test/games/library
 xbmc/games/tags/test              test/games/tags
 xbmc/games/test                   test/games
 xbmc/guilib/test                  test/guilib
