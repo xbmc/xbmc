@@ -106,7 +106,6 @@ void CThread::Create(bool bAutoDelete)
   //std::unique_lock l(m_CriticalSection);
 
   std::promise<bool> prom;
-  m_future = prom.get_future();
 
   {
     // The std::thread internals must be set prior to the lambda doing
@@ -115,6 +114,8 @@ void CThread::Create(bool bAutoDelete)
     //   have the appropriate memory barrier behavior to accomplish the
     //   same thing so a full system mutex needs to be used.
     std::unique_lock blockLambdaTillDone(m_CriticalSection);
+    m_future = prom.get_future().share();
+    ++m_threadGeneration;
     m_thread = new std::thread([](CThread* pThread, std::promise<bool> promise)
     {
       try
@@ -220,12 +221,21 @@ void CThread::StopThread(bool bWait /*= true*/)
   m_StopEvent.Set();
   std::unique_lock lock(m_CriticalSection);
   std::thread* lthread = m_thread;
+  const uint64_t generation = m_threadGeneration;
+  const std::shared_future<bool> future = m_future;
   if (lthread != nullptr && bWait && !IsCurrentThread())
   {
     lock.unlock();
-    if (!Join(std::chrono::milliseconds::max())) // eh?
-      lthread->join();
-    m_thread = nullptr;
+    future.wait();
+    lock.lock();
+    // a concurrent StopThread() may already have joined and deleted it, or restarted the thread
+    if (m_thread == lthread && m_threadGeneration == generation)
+    {
+      if (lthread->joinable())
+        lthread->join();
+      m_thread = nullptr;
+      delete lthread;
+    }
   }
 }
 
@@ -253,6 +263,8 @@ bool CThread::Join(std::chrono::milliseconds duration)
 {
   std::unique_lock l(m_CriticalSection);
   std::thread* lthread = m_thread;
+  const uint64_t generation = m_threadGeneration;
+  const std::shared_future<bool> future = m_future;
   if (lthread != nullptr)
   {
     if (IsCurrentThread())
@@ -262,14 +274,19 @@ bool CThread::Join(std::chrono::milliseconds duration)
       CSingleExit exit(m_CriticalSection); // don't hold the thread lock while we're waiting
       // wait_for() overflows on a max() timeout and returns immediately
       if (duration == std::chrono::milliseconds::max())
-        m_future.wait();
-      else if (m_future.wait_for(duration) != std::future_status::ready)
+        future.wait();
+      else if (future.wait_for(duration) != std::future_status::ready)
         return false;
     }
 
-    // it's possible it's already joined since we released the lock above.
-    if (lthread->joinable())
-      m_thread->join();
+    // restarted by Create() while we waited, so the replacement thread is still running
+    if (m_threadGeneration != generation)
+      return false;
+
+    // it's possible it's already joined and deleted by StopThread() since we released the lock
+    // above.
+    if (m_thread == lthread && lthread->joinable())
+      lthread->join();
     return true;
   }
   else
