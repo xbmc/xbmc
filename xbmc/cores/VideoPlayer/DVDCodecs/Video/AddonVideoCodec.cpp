@@ -105,14 +105,6 @@ StreamHdrType ConvertHdrType(const VIDEOCODEC_HDR_TYPE type)
   return StreamHdrType::HDR_TYPE_NONE;
 }
 
-unsigned int GetColorBitsFromVideoFormat(const VIDEOCODEC_FORMAT videoFormat)
-{
-  // Delegate format mapping to ConvertToPixelFormat; bit depth comes
-  // from libavutil's public pixdesc API, avoiding a parallel switch.
-  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(ConvertToPixelFormat(videoFormat));
-  return desc ? desc->comp[0].depth : 8;
-}
-
 } // unnamed namespace
 
 CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
@@ -377,6 +369,8 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     videoBuffer->Release();
   }
 
+  const AVPixelFormat format = ConvertToPixelFormat(picture.videoFormat);
+
   switch (ret)
   {
   case VIDEOCODEC_RETVAL::VC_NONE:
@@ -392,9 +386,9 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->dts = DVD_NOPTS_VALUE;
     pVideoPicture->iFlags = 0;
     pVideoPicture->chroma_position = AVCHROMA_LOC_UNSPECIFIED;
-    pVideoPicture->colorBits = GetColorBitsFromVideoFormat(picture.videoFormat);
+    pVideoPicture->colorBits = av_pix_fmt_desc_get(format)->comp[0].depth;
     pVideoPicture->color_primaries = m_colorPrimaries;
-    pVideoPicture->color_range = m_colorRange == AVCOL_RANGE_JPEG ? 1 : 0; // 0=Limited, 1=Full
+    pVideoPicture->color_range = VideoPicture::IsFullRange(m_colorRange, format);
     pVideoPicture->color_space = m_colorSpace;
     pVideoPicture->color_transfer = m_colorTransfer;
     pVideoPicture->hasDisplayMetadata = false;
@@ -442,7 +436,7 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     for (int i = 0; i<YuvImage::MAX_PLANES; ++i)
       planeOffsets[i] = picture.planeOffsets[i];
 
-    pVideoPicture->videoBuffer->SetPixelFormat(ConvertToPixelFormat(picture.videoFormat));
+    pVideoPicture->videoBuffer->SetPixelFormat(format);
     pVideoPicture->videoBuffer->SetDimensions(picture.width, picture.height, strides, planeOffsets);
 
     pVideoPicture->iDisplayWidth = pVideoPicture->iWidth;
@@ -473,11 +467,10 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
       m_processInfo.SetVideoDimensions(m_width, m_height);
     }
 
-    // Inner scope keeps the const pix declaration from crossing the next
+    // Inner scope keeps the declaration from crossing the next
     // case label, which C++ forbids.
     {
-      const AVPixelFormat pix = ConvertToPixelFormat(picture.videoFormat);
-      const char* pixFmtName = av_get_pix_fmt_name(pix);
+      const char* pixFmtName = av_get_pix_fmt_name(format);
       m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
     }
 

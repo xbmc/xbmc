@@ -13,6 +13,11 @@
 #include <string>
 #include <vector>
 
+extern "C"
+{
+#include <libavutil/pixdesc.h>
+}
+
 //******************************************************************************
 // VideoPicture
 //******************************************************************************
@@ -77,6 +82,15 @@ VideoPicture& VideoPicture::SetParams(const VideoPicture &pic)
   *this = pic;
   videoBuffer = nullptr;
   return *this;
+}
+
+bool VideoPicture::IsFullRange(AVColorRange range, AVPixelFormat format)
+{
+  if (range != AVCOL_RANGE_UNSPECIFIED)
+    return range == AVCOL_RANGE_JPEG;
+
+  const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(format);
+  return desc && (desc->flags & AV_PIX_FMT_FLAG_RGB);
 }
 
 bool VideoPicture::CompareDisplayMetadata(const VideoPicture& pic) const
