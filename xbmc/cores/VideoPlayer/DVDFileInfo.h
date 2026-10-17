@@ -72,9 +72,10 @@ private:
   */
   static bool AddExternalSubtitleToDetails(const std::string &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename = "");
 
-  /** \brief Checks external subtitles for a given item and adds any existing ones to the item stream details
+  /** \brief Checks external subtitles for a given item and adds any existing ones to the stream details
   *   \param item The video item
+  *   \param[out] details The stream details to add the subtitles to
   *   \sa AddExternalSubtitleToDetails
   */
-  static void ProcessExternalSubtitles(CFileItem* item);
+  static void ProcessExternalSubtitles(const CFileItem& item, CStreamDetails& details);
 };
