@@ -449,11 +449,13 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
     if (m_displayAspect > 0.0f)
     {
-      pVideoPicture->iDisplayWidth = ((int)lrint(pVideoPicture->iHeight * m_displayAspect)) & ~3;
+      pVideoPicture->iDisplayWidth =
+          static_cast<int>(lrint(pVideoPicture->iHeight * m_displayAspect));
       if (pVideoPicture->iDisplayWidth > pVideoPicture->iWidth)
       {
         pVideoPicture->iDisplayWidth = pVideoPicture->iWidth;
-        pVideoPicture->iDisplayHeight = ((int)lrint(pVideoPicture->iWidth / m_displayAspect)) & ~3;
+        pVideoPicture->iDisplayHeight =
+            static_cast<int>(lrint(pVideoPicture->iWidth / m_displayAspect));
       }
     }
 

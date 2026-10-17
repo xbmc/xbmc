@@ -58,6 +58,8 @@ xbmc/playlists/test/test.xspf
 xbmc/settings/test/test-MediaSources.xml
 xbmc/cores/VideoPlayer/test/testdata/av1_10bit_320x240.mkv
 xbmc/cores/VideoPlayer/test/testdata/h264_8bit_320x240.mkv
+xbmc/cores/VideoPlayer/test/testdata/h264_8bit_322x240.mkv
+xbmc/cores/VideoPlayer/test/testdata/h264_8bit_322x244_sar_2_1.mkv
 xbmc/cores/VideoPlayer/test/testdata/letterbox_320x240_bars40.mp4
 xbmc/cores/VideoPlayer/test/testdata/letterbox_320x240_bars40_12bit.mkv
 xbmc/cores/VideoPlayer/test/testdata/sbs_640x240_bars40.mkv
