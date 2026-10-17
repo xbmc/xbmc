@@ -6,9 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceDescription.h"
 #include "interfaces/json-rpc/JSONRPCUtils.h"
+#include "utils/JSONVariantParser.h"
+#include "utils/Variant.h"
 
 #include <array>
+#include <string>
 #include <string_view>
 
 #include <gtest/gtest.h>
@@ -17,9 +21,9 @@ using namespace JSONRPC;
 
 namespace
 {
-constexpr std::array<OperationPermission, 13> PERMISSIONS{
+constexpr std::array<OperationPermission, 14> PERMISSIONS{
     ReadData,  ControlPlayback, ControlNotify, ControlPower, UpdateData,   RemoveData, Navigate,
-    WriteFile, ControlSystem,   ControlGUI,    ManageAddon,  ExecuteAddon, ControlPVR};
+    WriteFile, ControlSystem,   ControlGUI,    ManageAddon,  ExecuteAddon, ControlPVR,    WriteSetting};
 } // namespace
 
 TEST(TestJSONRPCPermission, EveryPermissionHasAName)
@@ -37,20 +41,20 @@ TEST(TestJSONRPCPermission, NameRoundTripsBackToTheSamePermission)
   }
 }
 
-//! \brief StringToPermission has no failure signal - anything it does not recognise reads as
-//! ReadData, so a misspelled permission in a schema silently becomes the least privileged one
-TEST(TestJSONRPCPermission, UnrecognisedNameFallsBackToReadData)
+//! \brief A name that is not a permission must not read as one, or a misspelled permission in
+//! a schema would silently gate its method at whatever the fallback was
+TEST(TestJSONRPCPermission, UnrecognisedNameIsRefused)
 {
-  EXPECT_EQ(ReadData, StringToPermission("NoSuchPermission"));
-  EXPECT_EQ(ReadData, StringToPermission(""));
-  EXPECT_EQ(ReadData, StringToPermission("Unknown"));
-  EXPECT_EQ(ReadData, StringToPermission("controlpvr")) << "matching is case sensitive";
+  EXPECT_FALSE(StringToPermission("NoSuchPermission").has_value());
+  EXPECT_FALSE(StringToPermission("").has_value());
+  EXPECT_FALSE(StringToPermission("Unknown").has_value());
+  EXPECT_FALSE(StringToPermission("controlpvr").has_value()) << "matching is case sensitive";
 }
 
 TEST(TestJSONRPCPermission, UnknownValueHasNoName)
 {
   EXPECT_STREQ("Unknown", PermissionToString(static_cast<OperationPermission>(0)));
-  EXPECT_STREQ("Unknown", PermissionToString(static_cast<OperationPermission>(0x2000)));
+  EXPECT_STREQ("Unknown", PermissionToString(static_cast<OperationPermission>(0x4000)));
 }
 
 TEST(TestJSONRPCPermission, AllCoversEveryPermission)
@@ -67,4 +71,21 @@ TEST(TestJSONRPCPermission, AllCoversEveryPermission)
 TEST(TestJSONRPCPermission, NotificationPermissionIsAllButReadData)
 {
   EXPECT_EQ(OPERATION_PERMISSION_ALL & ~ReadData, OPERATION_PERMISSION_NOTIFICATION);
+}
+
+TEST(TestJSONRPCPermission, ThePermissionMethodDeclaresEveryPermission)
+{
+  CVariant declared;
+  for (const char* const entry : JSONRPC_SERVICE_METHODS)
+  {
+    // Each entry is one method without its enclosing braces
+    CVariant method;
+    if (CJSONVariantParser::Parse("{" + std::string(entry) + "}", method) &&
+        method.isMember("JSONRPC.Permission"))
+      declared = method["JSONRPC.Permission"]["returns"]["properties"];
+  }
+
+  for (const auto permission : PERMISSIONS)
+    EXPECT_TRUE(declared.isMember(PermissionToString(permission)))
+        << PermissionToString(permission);
 }
