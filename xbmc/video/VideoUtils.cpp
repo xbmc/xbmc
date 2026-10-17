@@ -16,6 +16,7 @@
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
+#include "interfaces/AnnouncementManager.h"
 #include "media/MediaType.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -31,6 +32,7 @@
 #include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -456,6 +458,7 @@ std::string FindEditionInName(const std::string& name, const std::vector<std::st
   }
   return match;
 }
+
 bool CanSaveDiscPlaylist(const CFileItem& item)
 {
   if (!item.HasVideoInfoTag())
@@ -534,4 +537,28 @@ bool SaveDiscPlaylist(CFileItem& item)
   return true;
 }
 
+namespace
+{
+void AnnounceFileChange(const std::string& file, const std::string& message, CVariant data)
+{
+  // As JSON-RPC hands out paths elsewhere, without credentials
+  data["file"] = CURL(file).GetWithoutUserDetails();
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Files, message, data);
+}
+} // unnamed namespace
+
+void AnnouncePlayCountChanged(const std::string& file, int playCount)
+{
+  CVariant data;
+  data["playcount"] = playCount;
+  AnnounceFileChange(file, "OnPlayCountChanged", data);
+}
+
+void AnnounceResumePointChanged(const std::string& file, const CBookmark& resumePoint)
+{
+  CVariant data;
+  data["resume"]["position"] = resumePoint.timeInSeconds;
+  data["resume"]["total"] = resumePoint.totalTimeInSeconds;
+  AnnounceFileChange(file, "OnResumePointChanged", data);
+}
 } // namespace KODI::VIDEO::UTILS

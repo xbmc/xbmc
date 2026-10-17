@@ -633,6 +633,62 @@
     ],
     "returns": null
   },
+  "Files.OnPlayCountChanged": {
+    "type": "notification",
+    "description": "The play count of a file has changed, in or outside the library.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "object",
+        "required": true,
+        "properties": {
+          "file": {
+            "type": "string",
+            "required": true
+          },
+          "playcount": {
+            "type": "integer",
+            "minimum": 0,
+            "required": true
+          }
+        }
+      }
+    ],
+    "returns": null
+  },
+  "Files.OnResumePointChanged": {
+    "type": "notification",
+    "description":
+        "The resume point of a file has changed, in or outside the library. A position of 0 means it has been reset.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "type": "object",
+        "required": true,
+        "properties": {
+          "file": {
+            "type": "string",
+            "required": true
+          },
+          "resume": {
+            "$ref": "Video.Resume",
+            "required": true
+          }
+        }
+      }
+    ],
+    "returns": null
+  },
   "System.OnQuit": {
     "type": "notification",
     "description": "Kodi will be closed.",
