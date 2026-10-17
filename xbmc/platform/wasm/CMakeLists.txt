@@ -11,6 +11,7 @@ set(HEADERS CPUInfoWasm.h
             GPUInfoWasm.h
             PlatformWasm.h
             TitanWebApis.h
+            TizenEmss.h
             TizenWebApis.h
             WasmAudioWorkletManager.h
             WasmMediaLayer.h

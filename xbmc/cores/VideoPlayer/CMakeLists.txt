@@ -76,12 +76,14 @@ if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL wasm)
-    list(APPEND SOURCES MediaBackendWasm.cpp
+    list(APPEND SOURCES MediaBackendEmss.cpp
+                        MediaBackendWasm.cpp
                         MediaPipelineWasm.cpp
                         VideoPlayerAudioWasm.cpp
                         VideoPlayerVideoWasm.cpp
                         VideoPlayerWasm.cpp)
-    list(APPEND HEADERS MediaBackendWasm.h
+    list(APPEND HEADERS MediaBackendEmss.h
+                        MediaBackendWasm.h
                         MediaPipelineWasm.h
                         VideoPlayerAudioWasm.h
                         VideoPlayerVideoWasm.h
