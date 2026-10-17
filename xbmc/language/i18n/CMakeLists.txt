@@ -3,8 +3,7 @@ set(SOURCES Bcp47.cpp
             Bcp47Parser.cpp
             Iso3166_1.cpp
             Iso639.cpp
-            Iso639_1.cpp
-            Iso639_2.cpp
+            LanguageTable.cpp
             ListFormatter.cpp)
 
 set(HEADERS Bcp47.h
@@ -15,11 +14,9 @@ set(HEADERS Bcp47.h
             Iso3166_1.h
             Iso3166_1_Table.h
             Iso639.h
-            Iso639_1.h
-            Iso639_1_Table.h
-            Iso639_2.h
             Iso639_2_Table.h
             IsoCodes.h
+            LanguageTable.h
             ListFormatter.h
             TableLanguageCodes.h)
 
