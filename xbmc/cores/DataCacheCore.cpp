@@ -249,6 +249,18 @@ bool CDataCacheCore::IsVideoInterlaced()
   return m_playerVideoInfo.m_isInterlaced;
 }
 
+void CDataCacheCore::SetVideoHwScaling(bool active)
+{
+  std::unique_lock lock(m_videoPlayerSection);
+  m_playerVideoInfo.m_hwScaling = active;
+}
+
+bool CDataCacheCore::IsVideoHwScaling()
+{
+  std::unique_lock lock(m_videoPlayerSection);
+  return m_playerVideoInfo.m_hwScaling;
+}
+
 // player audio info
 void CDataCacheCore::SetAudioDecoderName(std::string name)
 {
