@@ -93,6 +93,7 @@ using namespace std::chrono_literals;
 namespace
 {
 // longer than a demuxer takes to hand over data it already has
+// CDVDDemuxClient's retry cap must stay at most half of this
 constexpr auto EMPTY_PACKET_GRACE = 1ms;
 // same as the idle sleep on full queues
 constexpr auto EMPTY_PACKET_MAX_SLEEP = 10ms;

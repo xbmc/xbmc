@@ -15,6 +15,7 @@
 #include "utils/StreamUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <memory>
 #include <tuple>
 #include <type_traits>
@@ -24,6 +25,16 @@ extern "C"
 {
 #include <libavcodec/defs.h>
 }
+
+using namespace std::chrono_literals;
+
+namespace
+{
+// an idle add-on answers in microseconds, so these cost little while a stream starves
+constexpr int EMPTY_PACKET_RETRIES = 32;
+// from entry, half the player's EMPTY_PACKET_GRACE, so a read that only retried never looks blocked
+constexpr auto EMPTY_PACKET_RETRY_CAP = 500us;
+} // namespace
 
 class CDemuxStreamClientInternal
 {
@@ -321,7 +332,16 @@ DemuxPacket* CDVDDemuxClient::Read()
   if (m_packet)
     return m_packet.release();
 
+  const auto readStart = std::chrono::steady_clock::now();
   m_packet.reset(m_IDemux->ReadDemux());
+  // an add-on's empty packet may replace input it dropped; ask again while it answers at once
+  for (int retry = 0; retry < EMPTY_PACKET_RETRIES && m_packet && m_packet->iStreamId == -1 &&
+                      std::chrono::steady_clock::now() - readStart < EMPTY_PACKET_RETRY_CAP;
+       ++retry)
+  {
+    CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
+    m_packet.reset(m_IDemux->ReadDemux());
+  }
   if (!m_packet)
   {
     return nullptr;
