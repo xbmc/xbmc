@@ -14,6 +14,7 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIPassword.h"
 #include "GUIWindowSlideShow.h"
+#include "MotionPhoto.h"
 #include "PictureInfoLoader.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -198,6 +199,8 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   for (int i=0;i<items.Size();++i )
     if (StringUtils::EqualsNoCase(items[i]->GetLabel(), "folder.jpg"))
       items.Remove(i);
+
+  KODI::PICTURE::GroupLivePhotos(items);
 
   if (items.GetFolderCount() == items.Size() || !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PICTURES_USETAGS))
     return;
