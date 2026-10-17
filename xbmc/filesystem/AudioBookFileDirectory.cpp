@@ -115,10 +115,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url, CFileItemList& items
 
   std::string thumb;
   thumb = IMAGE_FILES::URLFromFile(url.Get(), "music");
-  /*! Look for any embedded cover art
-  * FFmpeg rather than TagLib: TagLib reads whole Matroska attachments eagerly, which is slow for
-  * large attachments over SMB/NFS. Still unfixed as of TagLib 2.3.1 (it was expected there).
-  */
+  /*! Look for any embedded cover art */
   CMusicEmbeddedCoverLoaderFFmpeg::GetEmbeddedCover(fctx, albumtag);
 
   // now get the AudioCodec -------------------------------------

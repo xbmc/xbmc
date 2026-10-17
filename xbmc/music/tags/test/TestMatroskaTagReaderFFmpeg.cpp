@@ -234,4 +234,4 @@ TEST(TestMatroskaTagReaderFFmpeg, AgreesWithTagLibOnTheChapterList)
     }
   }
 }
-#endif // TagLib >= 2.3.1
+#endif // TagLib >= 2.3.2
