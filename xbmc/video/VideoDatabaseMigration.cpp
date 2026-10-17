@@ -1428,9 +1428,77 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 149)
     m_pDS->exec("ALTER TABLE streamdetails ADD iFlags INTEGER DEFAULT 0");
+
+  if (iVersion < 150)
+  {
+    // Steps 123 to 131 use the itemType values introduced in v134 (version 1, extra 2) instead of
+    // the values of their time (version 0, extra 1), which turns versions and types into extras.
+    constexpr int VideoAssetType_VERSION = 1;
+    constexpr int VideoAssetType_EXTRA = 2;
+    constexpr int VideoAssetTypeOwner_SYSTEM = 0;
+    constexpr int VideoAssetTypeOwner_USER = 2;
+
+    if (iVersion < 123)
+    {
+      // Step 123 created only the versions of the movies' files, using a system type
+      m_pDS->exec(PrepareSQL("UPDATE videoversion SET itemType = %i", VideoAssetType_VERSION));
+      m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i", VideoAssetType_VERSION));
+    }
+    else if (iVersion < 131 || iVersion >= 134)
+    {
+      // From v134 the damage may come from a previous upgrade, from an unknown version
+
+      // The file of a movie is always a version
+      m_pDS->exec(PrepareSQL(
+          "UPDATE videoversion SET itemType = %i "
+          "WHERE media_type = 'movie' AND itemType = %i "
+          "AND idFile = (SELECT m.idFile FROM movie m WHERE m.idMovie = videoversion.idMedia)",
+          VideoAssetType_VERSION, VideoAssetType_EXTRA));
+
+      // System types are always version types
+      m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i "
+                             "WHERE owner = %i AND itemType = %i",
+                             VideoAssetType_VERSION, VideoAssetTypeOwner_SYSTEM,
+                             VideoAssetType_EXTRA));
+
+      // Extras sharing a type with versions (any system type, or a user-added extras type also used
+      // by versions) get a user-added extras type of the same name
+      m_pDS->query(PrepareSQL("SELECT DISTINCT vvt.id, vvt.name "
+                              "FROM videoversion vv "
+                              "  JOIN videoversiontype vvt ON vvt.id = vv.idType "
+                              "WHERE vv.itemType = %i AND (vvt.owner = %i OR "
+                              "  (vvt.owner = %i AND vvt.itemType = %i AND vvt.id IN "
+                              "    (SELECT idType FROM videoversion WHERE itemType = %i)))",
+                              VideoAssetType_EXTRA, VideoAssetTypeOwner_SYSTEM,
+                              VideoAssetTypeOwner_USER, VideoAssetType_EXTRA,
+                              VideoAssetType_VERSION));
+      while (!m_pDS->eof())
+      {
+        const int idType{m_pDS->fv(0).get_asInt()};
+        m_pDS2->exec(PrepareSQL(
+            "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
+            m_pDS->fv(1).get_asString().c_str(), VideoAssetTypeOwner_USER, VideoAssetType_EXTRA));
+
+        const int newId{static_cast<int>(m_pDS2->lastinsertid())};
+        m_pDS2->exec(
+            PrepareSQL("UPDATE videoversion SET idType = %i WHERE itemType = %i AND idType = %i",
+                       newId, VideoAssetType_EXTRA, idType));
+        m_pDS->next();
+      }
+      m_pDS->close();
+
+      // User-added types used only by versions are version types
+      m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i "
+                             "WHERE owner = %i AND itemType = %i "
+                             "AND id IN (SELECT idType FROM videoversion WHERE itemType = %i) "
+                             "AND id NOT IN (SELECT idType FROM videoversion WHERE itemType = %i)",
+                             VideoAssetType_VERSION, VideoAssetTypeOwner_USER, VideoAssetType_EXTRA,
+                             VideoAssetType_VERSION, VideoAssetType_EXTRA));
+    }
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 149;
+  return 150;
 }
