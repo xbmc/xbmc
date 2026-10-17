@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "commons/ilog.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -22,8 +23,10 @@
 #include "jobs/Job.h"
 #include "jobs/JobManager.h"
 #include "profiles/ProfileManager.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
+#include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -33,6 +36,7 @@
 #include <cstring>
 #include <mutex>
 #include <optional>
+#include <vector>
 
 using namespace XFILE;
 using namespace std::chrono_literals;
@@ -146,7 +150,8 @@ void CTextureCache::BackgroundCacheImage(const std::string& url, const std::stri
 
   CTextureDetails details;
   std::string path(GetCachedImage(url, details));
-  if (!path.empty() && details.hash.empty())
+  // A row whose file has gone is cached again, the job replacing the row
+  if (!path.empty() && details.hash.empty() && (details.file.empty() || CFile::Exists(path)))
     return; // image is already cached and doesn't need to be checked further
 
   path = IMAGE_FILES::ToCacheKey(url);
@@ -374,18 +379,73 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
 
+std::string CTextureCache::EnsureCachedFile(const std::string& image,
+                                            const CTextureDetails& details,
+                                            const std::string& cachedImage)
+{
+  if (details.file.empty() || CFile::Exists(cachedImage))
+    return cachedImage;
+  return CacheImage(image);
+}
+
 bool CTextureCache::Export(const std::string &image, const std::string &destination, bool overwrite)
 {
   CTextureDetails details;
   std::string cachedImage(GetCachedImage(image, details));
+  if (cachedImage.empty())
+  {
+    // Not cached yet, so whether it is a .jpg or a .png is only known once it has been fetched
+    if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_retrieveAllArtOnExport ||
+        (!overwrite &&
+         (CFile::Exists(destination + ".jpg") || CFile::Exists(destination + ".png"))))
+      return false;
+
+    // Art nothing has shown is copied as it is from its source, rather than cached for the export
+    const IMAGE_FILES::CImageFileURL imageURL{image};
+    if (std::vector<uint8_t> data;
+        !imageURL.IsSpecialImage() && CFile().LoadFile(imageURL.GetTargetFile(), data) > 0)
+    {
+      const CMime::EFileType type{CMime::GetFileTypeFromContent(
+          {data.begin(), data.begin() + std::min<size_t>(data.size(), 8)})};
+      if (type == CMime::FileTypeJpeg || type == CMime::FileTypePng)
+      {
+        const std::string dest{destination + (type == CMime::FileTypePng ? ".png" : ".jpg")};
+        // As CFile::Copy() does: a single file export's tvshows/<title> folder exists only once art
+        // is written to it
+        if (URIUtils::IsHD(dest))
+          CDirectory::Create(URIUtils::GetDirectory(dest));
+        if (CFile file; file.OpenForWrite(dest, true) &&
+                        file.Write(data.data(), data.size()) == static_cast<ssize_t>(data.size()))
+          return true;
+        // As CFile::Copy() does, so a later export doesn't take a partial file for a written one
+        CFile::Delete(dest);
+        CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__,
+                  CURL::GetRedacted(imageURL.GetTargetFile()), dest);
+        return false;
+      }
+    }
+
+    // Generated art, or another type, is converted by caching it
+    cachedImage = CacheImage(image);
+  }
   if (!cachedImage.empty())
   {
     std::string dest = destination + URIUtils::GetExtension(cachedImage);
     if (overwrite || !CFile::Exists(dest))
     {
-      if (CFile::Copy(cachedImage, dest))
+      const std::string staleImage{cachedImage};
+      cachedImage = EnsureCachedFile(image, details, cachedImage);
+      // Cached again, the image may have changed type
+      if (!cachedImage.empty() && cachedImage != staleImage)
+      {
+        dest = destination + URIUtils::GetExtension(cachedImage);
+        if (!overwrite && CFile::Exists(dest))
+          return false;
+      }
+      if (!cachedImage.empty() && CFile::Copy(cachedImage, dest))
         return true;
-      CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, cachedImage, dest);
+      CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__,
+                CURL::GetRedacted(IMAGE_FILES::CImageFileURL(image).GetTargetFile()), dest);
     }
   }
   return false;
@@ -397,9 +457,11 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
   std::string cachedImage(GetCachedImage(image, details));
   if (!cachedImage.empty())
   {
-    if (CFile::Copy(cachedImage, destination))
+    cachedImage = EnsureCachedFile(image, details, cachedImage);
+    if (!cachedImage.empty() && CFile::Copy(cachedImage, destination))
       return true;
-    CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, cachedImage, destination);
+    CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__,
+              CURL::GetRedacted(IMAGE_FILES::CImageFileURL(image).GetTargetFile()), destination);
   }
   return false;
 }
