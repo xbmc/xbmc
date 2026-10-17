@@ -26,6 +26,7 @@ public:
   ~CGUIPanelContainer(void) override;
   CGUIPanelContainer* Clone() const override { return new CGUIPanelContainer(*this); }
 
+  bool IsScrollAxisMirrored() const override { return m_orientation == HORIZONTAL_REVERSE; }
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
   bool OnAction(const CAction &action) override;
