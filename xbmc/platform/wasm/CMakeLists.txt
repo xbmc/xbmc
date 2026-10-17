@@ -7,6 +7,7 @@ set(SOURCES CPUInfoWasm.cpp
 set(HEADERS CPUInfoWasm.h
             GPUInfoWasm.h
             PlatformWasm.h
-            WasmAudioWorkletManager.h)
+            WasmAudioWorkletManager.h
+            WasmMediaLayer.h)
 
 core_add_library(platform_wasm)

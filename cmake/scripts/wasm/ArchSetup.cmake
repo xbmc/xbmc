@@ -67,6 +67,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     # implementation in ordinary browsers.
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/network/tizen_sockets.js"
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDCodecs/Video/webcodecs_bridge.js"
+    # The <video> layer of media backends.
+    "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/media_layer.js"
   )
 
   # tizen_sockets.js returns one getaddrinfo() node per address, and older
