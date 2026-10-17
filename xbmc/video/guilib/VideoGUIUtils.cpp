@@ -675,7 +675,8 @@ bool ChooseDiscPlaylist(CFileItem& item)
 
   CFileItemList items;
   const bool chosen{XFILE::CDiscDirectoryHelper::GetOrShowPlaylistSelection(
-                        item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU) &&
+                        item, items, XFILE::MenuDecision::SHOW_SIMPLE_MENU,
+                        /* forPlayback */ false) &&
                     !items.IsEmpty()};
   if (chosen)
     item = *items[0];
