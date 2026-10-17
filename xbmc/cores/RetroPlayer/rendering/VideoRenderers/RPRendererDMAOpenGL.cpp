@@ -71,12 +71,14 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
   {
     RenderBufferTextures* rbTextures;
 
+    const CSize targetSize = GetShaderTargetSize();
+
     // Drop cached textures if target size is changed
-    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight)
+    if (targetSize.Width() != m_lastTargetWidth || targetSize.Height() != m_lastTargetHeight)
     {
       m_RBTexturesMap.clear();
-      m_lastTargetWidth = m_fullDestWidth;
-      m_lastTargetHeight = m_fullDestHeight;
+      m_lastTargetWidth = targetSize.Width();
+      m_lastTargetHeight = targetSize.Height();
     }
 
     const auto it = m_RBTexturesMap.find(renderBuffer);
@@ -98,8 +100,8 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
               static_cast<unsigned int>(renderBuffer->GetWidth()),
               static_cast<unsigned int>(renderBuffer->GetHeight()), renderBuffer->TextureID()),
           // Target texture
-          std::make_shared<SHADER::CShaderTextureGL>(static_cast<unsigned int>(m_fullDestWidth),
-                                                     static_cast<unsigned int>(m_fullDestHeight),
+          std::make_shared<SHADER::CShaderTextureGL>(static_cast<unsigned int>(targetSize.Width()),
+                                                     static_cast<unsigned int>(targetSize.Height()),
                                                      GL_UNSIGNED_BYTE, GL_RGBA8, GL_BGRA, false)};
       rbTextures->targetTexture->CreateTexture(); // Create new internal texture
       m_RBTexturesMap.emplace(renderBuffer, rbTextures);
@@ -118,7 +120,8 @@ void CRPRendererDMAOpenGL::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    if (m_shaderPreset->RenderUpdate(*sourceTexture, *targetTexture))
+    if (m_shaderPreset->RenderUpdate(*sourceTexture, *targetTexture,
+                                     {m_fullDestWidth, m_fullDestHeight}))
     {
       glActiveTexture(GL_TEXTURE0); // GUI shader samples from texture unit 0
       glBindTexture(m_textureTarget, targetTexture->GetTextureID());

@@ -315,12 +315,14 @@ void CRPWinRenderer::Render(CD3DTexture& target, uint8_t alpha)
   {
     RenderBufferTextures* rbTextures = nullptr;
 
+    const CSize targetSize = GetShaderTargetSize();
+
     // Drop cached textures if target size is changed
-    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight)
+    if (targetSize.Width() != m_lastTargetWidth || targetSize.Height() != m_lastTargetHeight)
     {
       m_RBTexturesMap.clear();
-      m_lastTargetWidth = m_fullDestWidth;
-      m_lastTargetHeight = m_fullDestHeight;
+      m_lastTargetWidth = targetSize.Width();
+      m_lastTargetHeight = targetSize.Height();
     }
 
     const auto it = m_RBTexturesMap.find(renderBuffer);
@@ -331,9 +333,9 @@ void CRPWinRenderer::Render(CD3DTexture& target, uint8_t alpha)
     else
     {
       auto presetTargetTexture = std::make_shared<CD3DTexture>();
-      if (!presetTargetTexture->Create(static_cast<UINT>(m_fullDestWidth),
-                                       static_cast<UINT>(m_fullDestHeight), 1, D3D11_USAGE_DEFAULT,
-                                       DXGI_FORMAT_B8G8R8A8_UNORM))
+      if (!presetTargetTexture->Create(static_cast<UINT>(targetSize.Width()),
+                                       static_cast<UINT>(targetSize.Height()), 1,
+                                       D3D11_USAGE_DEFAULT, DXGI_FORMAT_B8G8R8A8_UNORM))
       {
         CLog::Log(LOGERROR, "RPWinRenderer: Shader preset target texture creation failed");
         m_bShadersNeedUpdate = false;
@@ -355,7 +357,8 @@ void CRPWinRenderer::Render(CD3DTexture& target, uint8_t alpha)
 
       // Render shaders to an intermediate texture. The output shader handles
       // the final transform and alpha.
-      if (!m_shaderPreset->RenderUpdate(*renderBufferTarget, *presetTarget))
+      if (!m_shaderPreset->RenderUpdate(*renderBufferTarget, *presetTarget,
+                                        {m_fullDestWidth, m_fullDestHeight}))
       {
         m_bShadersNeedUpdate = false;
         m_bUseShaderPreset = false;
