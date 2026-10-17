@@ -36,6 +36,11 @@
 
 #include "DllLibCurl.h"
 #include "ShoutcastFile.h"
+#if defined(TARGET_WASM)
+#include "wasm/XhrFile.h"
+
+#include "platform/wasm/network/TizenSockets.h"
+#endif
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -1983,11 +1988,6 @@ void CCurlFile::SetRequestHeader(const std::string& header, long value)
   m_requestheaders[header] = std::to_string(value);
 }
 
-std::string CCurlFile::GetRedirectURL()
-{
-  return GetInfoString(CURLINFO_REDIRECT_URL);
-}
-
 std::string CCurlFile::GetInfoString(int infoType)
 {
   char* info{};
@@ -2005,6 +2005,10 @@ std::string CCurlFile::GetInfoString(int infoType)
 /* STATIC FUNCTIONS */
 bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 {
+#if defined(TARGET_WASM)
+  if (!kodi_wasm_has_sockets())
+    return CXhrFile::GetHttpHeader(url, headers);
+#endif
   try
   {
     // Apply any stored credentials (passwords.xml). CFile::Stat() does this for its callers,
@@ -2030,6 +2034,10 @@ bool CCurlFile::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 
 bool CCurlFile::GetMimeType(const CURL &url, std::string &content, const std::string &useragent)
 {
+#if defined(TARGET_WASM)
+  if (!kodi_wasm_has_sockets())
+    return CXhrFile::GetMimeType(url, content, useragent);
+#endif
   CCurlFile file;
   if (!useragent.empty())
     file.SetUserAgent(useragent);
@@ -2057,6 +2065,10 @@ bool CCurlFile::GetMimeType(const CURL &url, std::string &content, const std::st
 
 bool CCurlFile::GetContentType(const CURL &url, std::string &content, const std::string &useragent)
 {
+#if defined(TARGET_WASM)
+  if (!kodi_wasm_has_sockets())
+    return CXhrFile::GetContentType(url, content, useragent);
+#endif
   CCurlFile file;
   if (!useragent.empty())
     file.SetUserAgent(useragent);
@@ -2176,6 +2188,12 @@ const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::st
     {
       char* url = nullptr;
       g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL, &url);
+      return url ? url : "";
+    }
+    case FileProperty::REDIRECT_URL:
+    {
+      char* url = nullptr;
+      g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_REDIRECT_URL, &url);
       return url ? url : "";
     }
   default:

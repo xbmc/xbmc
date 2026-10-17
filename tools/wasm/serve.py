@@ -76,6 +76,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         else:
             super().do_HEAD()
 
+    def do_POST(self):
+        if self.path.startswith("/proxy?"):
+            self._proxy(body=True)
+        else:
+            self.send_error(501, "Unsupported method ('POST')")
+
     def _send_range(self) -> bool:
         """Serve one `bytes=` range of a regular file; False if not applicable."""
         match = re.fullmatch(r"bytes=(\d*)-(\d*)", self.headers.get("Range", ""))
@@ -133,11 +139,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_error(400, "bad ?u=")
             return
 
-        req = urllib.request.Request(url, method=self.command)
+        data = None
+        if self.command == "POST":
+            data = self.rfile.read(int(self.headers.get("Content-Length", 0)))
+        req = urllib.request.Request(url, data=data, method=self.command)
         # Forward a few request headers so the upstream sees a real client.
         # Notably, download.blender.org returns 403 to the default
         # "Python-urllib/3.x" agent.
-        for name in ("Range", "User-Agent", "Referer"):
+        for name in ("Range", "User-Agent", "Referer", "Content-Type"):
             value = self.headers.get(name)
             if value is not None:
                 req.add_header(name, value)

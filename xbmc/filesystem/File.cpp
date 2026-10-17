@@ -1033,7 +1033,7 @@ try
   outputBuffer.clear();
 
   if (!Open(file, READ_TRUNCATED))
-    return 0;
+    return -1;
 
   /*
   GetLength() will typically return values that fall into three cases:
@@ -1055,7 +1055,7 @@ try
   */
   int64_t filesize = GetLength();
   if (filesize > (int64_t)max_file_size)
-    return 0; /* file is too large for this function */
+    return -1; /* file is too large for this function */
 
   size_t chunksize = (filesize > 0) ? static_cast<size_t>(filesize + 1)
                                     : static_cast<size_t>(DetermineChunkSize(GetChunkSize(),
