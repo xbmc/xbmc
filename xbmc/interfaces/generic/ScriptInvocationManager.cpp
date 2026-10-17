@@ -333,6 +333,7 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
 
   std::unique_lock lock(m_critSection);
   auto invokerThread = getInvokerThread(scriptId).thread;
+  lock.unlock();
   if (invokerThread == nullptr)
     return false;
 
@@ -359,7 +360,9 @@ bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* 
   if (script == m_scriptPaths.end())
     return false;
 
-  return Stop(script->second, wait);
+  const int scriptId = script->second;
+  lock.unlock();
+  return Stop(scriptId, wait);
 }
 
 bool CScriptInvocationManager::IsRunning(int scriptId) const
