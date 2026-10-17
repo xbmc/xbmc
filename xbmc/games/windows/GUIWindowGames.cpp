@@ -54,14 +54,13 @@ bool CGUIWindowGames::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      m_rootDir.AllowNonLocalSources(true); //! @todo
+      m_rootDir.AllowNonLocalSources(true);
 
       // Is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
         message.SetStringParam(
             CMediaSourceSettings::GetInstance().GetDefaultSource(MediaSection::GAMES));
 
-      //! @todo
       m_dlgProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
           WINDOW_DIALOG_PROGRESS);
 
@@ -373,16 +372,6 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
       CGUIDialogAddonInfo::ShowForItem(item);
   }
 
-  //! @todo
-  /*
-  CGUIDialogGameInfo* gameInfo =
-  CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogGameInfo>(WINDOW_DIALOG_PICTURE_INFO);
-  if (gameInfo)
-  {
-    gameInfo->SetGame(item);
-    gameInfo->Open();
-  }
-  */
 }
 
 bool CGUIWindowGames::PlayGame(const CFileItem& item)
