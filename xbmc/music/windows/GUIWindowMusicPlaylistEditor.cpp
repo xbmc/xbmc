@@ -19,6 +19,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/LibraryPaths.h"
 #include "filesystem/PlaylistFileDirectory.h"
+#include "filesystem/SourcesDirectory.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -185,7 +186,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const std::string &strDirectory
   items.Clear();
   if (strDirectory.empty())
   { // root listing - list files:// and musicdb://
-    CFileItemPtr files(new CFileItem("sources://music/", true));
+    CFileItemPtr files(new CFileItem(XFILE::CSourcesDirectory::PathOf(KODI::MEDIA::MediaSection::MUSIC), true));
     files->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(744));
     files->SetLabelPreformatted(true);
     files->SetIsShareOrDrive(true);

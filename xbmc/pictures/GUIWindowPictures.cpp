@@ -24,6 +24,7 @@
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/SourcesDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/ActionIDs.h"
@@ -449,7 +450,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if (item)
   {
-    if ( m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == "sources://pictures/" )
+    if ( m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == CSourcesDirectory::PathOf(MediaSection::PICTURES))
     {
       CGUIDialogContextMenu::GetContextButtons(MediaSection::PICTURES, item, buttons);
     }
