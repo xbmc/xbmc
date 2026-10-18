@@ -137,9 +137,39 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
+  # An installed CURLConfig.cmake finds zstd again using curl's own FindZstd.cmake, which looks
+  # for zstd.lib and misses our zstd_static.lib. Pass it the target we already resolved, as
+  # buildmacroCurl does.
+  # NOT ZSTD_LIBRARY rather than NOT DEFINED: a failed configure leaves ZSTD_LIBRARY-NOTFOUND cached.
+  if(ENABLE_INTERNAL_CURL AND TARGET LIBRARY::ZSTD AND NOT ZSTD_LIBRARY)
+    get_target_property(_zstd_target LIBRARY::ZSTD ALIASED_TARGET)
+    if(NOT _zstd_target)
+      set(_zstd_target LIBRARY::ZSTD)
+    endif()
+    set(ZSTD_LIBRARY ${_zstd_target})
+    set(ZSTD_INCLUDE_DIR "$<TARGET_PROPERTY:${_zstd_target},INTERFACE_INCLUDE_DIRECTORIES>")
+    set(_curl_zstd_hint ON)
+    unset(_zstd_target)
+  endif()
+
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                                                          HINTS ${DEPENDS_PATH}/lib/cmake
                                                          ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+
+  if(_curl_zstd_hint)
+    unset(ZSTD_LIBRARY)
+    unset(ZSTD_INCLUDE_DIR)
+    unset(_curl_zstd_hint)
+  endif()
+
+  # A config can reject itself (eg a dependency it can't find) yet leave CURL_VERSION set,
+  # which would skip the internal build below. Forget the version so a build can take over.
+  if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(DEFINED ${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_NOT_FOUND_MESSAGE)
+      message(STATUS "Ignoring curl config: ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_NOT_FOUND_MESSAGE}")
+    endif()
+    unset(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION)
+  endif()
 
   # cmake config may not be available (eg Debian libcurl-dev package)
   # fallback to pkgconfig for non windows platforms
