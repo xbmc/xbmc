@@ -25,9 +25,9 @@ namespace MEMORY
 
 void* AlignedMalloc(size_t s, size_t alignTo)
 {
-  void* p;
-  posix_memalign(&p, alignTo, s);
-
+  void* p = nullptr;
+  if (posix_memalign(&p, alignTo, s) != 0)
+    return nullptr;
   return p;
 }
 
