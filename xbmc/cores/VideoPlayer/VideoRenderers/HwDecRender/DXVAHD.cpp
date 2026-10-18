@@ -23,6 +23,7 @@
 
 #include "platform/win32/WIN32Util.h"
 
+#include <cmath>
 #include <mutex>
 
 #include <Windows.h>
@@ -234,7 +235,8 @@ bool CProcessorHD::OpenProcessor()
   return true;
 }
 
-void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const
+void CProcessorHD::ApplyFilter(
+    D3D11_VIDEO_PROCESSOR_FILTER filter, float value, int min, int max, int def) const
 {
   if (filter >= static_cast<D3D11_VIDEO_PROCESSOR_FILTER>(NUM_FILTERS))
     return;
@@ -244,14 +246,14 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
     return;
 
   D3D11_VIDEO_PROCESSOR_FILTER_RANGE range = m_procCaps.m_Filters[filter].Range;
-  int val;
+  float scaled = static_cast<float>(range.Default);
 
-  if(value > def)
-    val = range.Default + (range.Maximum - range.Default) * (value - def) / (max - def);
-  else if(value < def)
-    val = range.Default + (range.Minimum - range.Default) * (value - def) / (min - def);
-  else
-    val = range.Default;
+  if (value > def)
+    scaled += (range.Maximum - range.Default) * (value - def) / (max - def);
+  else if (value < def)
+    scaled += (range.Minimum - range.Default) * (value - def) / (min - def);
+
+  const int val = static_cast<int>(std::lround(scaled));
 
   m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
 }
@@ -318,7 +320,7 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
 
   if (!m_configured || m_lastBrightness != brightness)
   {
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, static_cast<int>(brightness), 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, brightness, 0, 100, 50);
 
     m_lastBrightness = brightness;
     updatedParameter = true;
@@ -326,7 +328,7 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
 
   if (!m_configured || m_lastContrast != contrast)
   {
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, static_cast<int>(contrast), 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, contrast, 0, 100, 50);
 
     m_lastContrast = contrast;
     updatedParameter = true;
@@ -334,7 +336,7 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
 
   if (!m_configured || m_lastHue != hue)
   {
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, static_cast<int>(hue), 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, hue, 0, 100, 50);
 
     m_lastHue = hue;
     updatedParameter = true;
@@ -342,7 +344,7 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
 
   if (!m_configured || m_lastSaturation != saturation)
   {
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, static_cast<int>(saturation), 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, saturation, 0, 100, 50);
 
     m_lastSaturation = saturation;
     updatedParameter = true;

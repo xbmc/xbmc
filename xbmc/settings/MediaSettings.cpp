@@ -23,6 +23,7 @@
 #include "settings/Settings.h"
 #include "settings/dialogs/GUIDialogLibExportSettings.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
 #include "storage/MediaManager.h"
 #include "utils/ContentNames.h"
 #include "utils/StringUtils.h"
@@ -373,6 +374,18 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   {
     CServiceBroker::GetTextureCache()->CleanAllUnusedImages();
   }
+}
+
+void CMediaSettings::SettingOptionsImageAdjustmentGranularitiesFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current)
+{
+  static constexpr std::array<std::pair<const char*, int>, 7> GRANULARITIES{
+      {{"1.0", 100}, {"0.5", 50}, {"0.2", 20}, {"0.1", 10}, {"0.05", 5}, {"0.02", 2}, {"0.01", 1}}};
+
+  for (const auto& [label, value] : GRANULARITIES)
+    list.emplace_back(label, value);
 }
 
 void CMediaSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)

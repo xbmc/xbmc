@@ -18,11 +18,13 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 constexpr int VOLUME_DRC_MINIMUM = 0; // 0dB
 constexpr int VOLUME_DRC_MAXIMUM = 6000; // 60dB
 
 class TiXmlNode;
+struct IntegerSettingOption;
 
 enum class WatchedMode
 {
@@ -44,6 +46,15 @@ public:
 
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+
+  /*!
+   \brief Step sizes of the picture adjustment sliders, in hundredths. The labels are numbers, so
+   they aren't translated.
+   */
+  static void SettingOptionsImageAdjustmentGranularitiesFiller(
+      const std::shared_ptr<const CSetting>& setting,
+      std::vector<IntegerSettingOption>& list,
+      int& current);
 
   const CVideoSettings& GetDefaultVideoSettings() const { return m_defaultVideoSettings; }
   CVideoSettings& GetDefaultVideoSettings() { return m_defaultVideoSettings; }
