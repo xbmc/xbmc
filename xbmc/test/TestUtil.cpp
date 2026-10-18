@@ -1028,3 +1028,13 @@ TEST_F(TestTitleFromPath, DecodesAnArchiveNameOnlyWhenItsParentIsAUrl)
   EXPECT_EQ("100%20proof.zip",
             CUtil::GetTitleFromPath("zip://%2fmedia%2f100%2520proof.zip/", true));
 }
+
+TEST(TestUtil, FoundationNativeAndNestedNormalization)
+{
+  EXPECT_EQ("relative?name#part+100%.mkv", CUtil::ValidatePath("relative?name#part+100%.mkv"));
+  EXPECT_EQ("C:relative", CUtil::ValidatePath("C:relative"));
+  EXPECT_EQ("./notes:2026", CUtil::ValidatePath("./notes:2026"));
+  EXPECT_EQ("zip://%2ftmp%2fa.zip/dir//a.mkv",
+            CUtil::ValidatePath("zip://%2ftmp%2fa.zip/dir//a.mkv", true));
+  EXPECT_EQ("http://server/a%2Fb//c", CUtil::ValidatePath("http://server/a%2Fb//c", true));
+}
