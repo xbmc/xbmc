@@ -19676,7 +19676,19 @@ msgctxt "#35310"
 msgid "Manual"
 msgstr ""
 
-#empty strings from id 35311 to 35319
+#. Label of the setting that shows games with a video filter in HDR
+#: system/settings/settings.xml
+msgctxt "#35311"
+msgid "Use HDR with video filters"
+msgstr ""
+
+#. Help text of setting with label #35311
+#: system/settings/settings.xml
+msgctxt "#35312"
+msgid "Shows games that use a video filter, such as a CRT filter, in HDR on a display that supports it. The light that scanlines and phosphor masks take away comes back from the display's extra brightness."
+msgstr ""
+
+#empty strings from id 35313 to 35319
 
 #. Label of the Cheats button in the game OSD, heading of the cheats dialog, and
 #. of the cheats group in settings
