@@ -8043,7 +8043,13 @@ msgctxt "#13601"
 msgid "Apple TV"
 msgstr ""
 
-#empty strings from id 13602 to 13999
+#. Option to set the granularity (default 1.0) of the brightness/contrast/hue/saturation/gamma settings in video settings
+#: system/settings/settings.xml
+msgctxt "#13602"
+msgid "Image adjustment granularity"
+msgstr ""
+
+#empty strings from id 13603 to 13999
 
 msgctxt "#14000"
 msgid "Stack"
@@ -20388,7 +20394,13 @@ msgctxt "#36058"
 msgid "Automatic"
 msgstr ""
 
-#empty strings from id 36059 to 36095
+#. Description of setting with label #13602 "Image adjustment granularity"
+#: system/settings/settings.xml
+msgctxt "#36059"
+msgid "Step size of the brightness, contrast, hue and saturation sliders in the video settings."
+msgstr ""
+
+#empty strings from id 36060 to 36095
 
 #. Label of setting "System / Display / Use system HDR/SDR brightness balance"
 #: system/settings/settings.xml

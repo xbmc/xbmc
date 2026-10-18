@@ -76,7 +76,8 @@ protected:
   bool InitProcessor();
   bool CheckFormats() const;
   bool OpenProcessor();
-  void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
+  void ApplyFilter(
+      D3D11_VIDEO_PROCESSOR_FILTER filter, float value, int min, int max, int def) const;
   ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
   /*!
    * \brief Apply new video settings if there was a change. Returns true if a parameter changed, false otherwise.
