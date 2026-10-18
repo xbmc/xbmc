@@ -361,7 +361,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     if (!pItem->HasArt(ART::TYPE::THUMB))
     {
       std::string thumbURL = GetEmbeddedThumbURL(*pItem);
-      if (CDVDFileInfo::CanExtract(*pItem) &&
+      if (CanExtractEmbeddedThumb(*pItem) &&
           settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
           settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL) !=
               CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
@@ -668,6 +668,15 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
     path = CStackDirectory::GetFirstStackedFile(path);
 
   return IMAGE_FILES::URLFromFile(path, "video");
+}
+
+bool CVideoThumbLoader::CanExtractEmbeddedThumb(const CFileItem& item)
+{
+  // A stack of disc playlists can be read for its details, but its first part, which the thumb is
+  // taken from, can't be on its own
+  return CDVDFileInfo::CanExtract(item) &&
+         CDVDFileInfo::CanExtract(CFileItem{
+             IMAGE_FILES::CImageFileURL(GetEmbeddedThumbURL(item)).GetTargetFile(), false});
 }
 
 void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)

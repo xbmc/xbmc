@@ -15,7 +15,6 @@
 #include "TextureCacheJob.h"
 #include "ThumbLoader.h"
 #include "Util.h"
-#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "imagefiles/ImageFileURL.h"
@@ -391,7 +390,7 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
   if (!art.contains(ART::TYPE::THUMB) &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
-      CDVDFileInfo::CanExtract(mediaItem ? *mediaItem : *pItem))
+      CVideoThumbLoader::CanExtractEmbeddedThumb(mediaItem ? *mediaItem : *pItem))
   {
     art[ART::TYPE::THUMB] = CVideoThumbLoader::GetEmbeddedThumbURL(mediaItem ? *mediaItem : *pItem);
   }
