@@ -152,9 +152,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     unset(_zstd_target)
   endif()
 
+  # CURLConfig.cmake prepends its own find modules to CMAKE_MODULE_PATH and doesn't restore it
+  # if a dependency fails. Restore it, or buildmacroCurl would load curl's find modules
+  # instead of ours.
+  set(_curl_module_path "${CMAKE_MODULE_PATH}")
   find_package(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                                                          HINTS ${DEPENDS_PATH}/lib/cmake
                                                          ${${CORE_SYSTEM_NAME}_SEARCH_CONFIG})
+  set(CMAKE_MODULE_PATH "${_curl_module_path}")
+  unset(_curl_module_path)
 
   if(_curl_zstd_hint)
     unset(ZSTD_LIBRARY)
