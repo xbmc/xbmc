@@ -752,21 +752,21 @@ TEST(TestSMBUrlEncode, FileNameIsEncoded)
   EXPECT_EQ(smb.URLEncode(url), "smb://MEDIABOX/MEDIA/TEST/01%20Mr.%20Blue%20Sky.flac");
 }
 
-TEST(TestSMBUrlEncode, IPv6HostNameIsBracketed)
+TEST(TestSMBUrlEncode, IPv6HostNameIsEncoded)
 {
   const CURL url("smb://kodi:secret@[fd00::1]/MEDIA/TEST");
-  EXPECT_EQ(smb.URLEncode(url), "smb://kodi:secret@[fd00::1]/MEDIA/TEST");
+  EXPECT_EQ(smb.URLEncode(url), "smb://kodi:secret@fd00%3a%3a1/MEDIA/TEST");
 }
 
-TEST(TestSMBUrlEncode, IPv6HostNameWithPortIsBracketed)
+TEST(TestSMBUrlEncode, IPv6HostNameWithPortIsEncoded)
 {
   const CURL url("smb://[fd00::1]:445/MEDIA/TEST");
-  EXPECT_EQ(smb.URLEncode(url), "smb://[fd00::1]:445/MEDIA/TEST");
+  EXPECT_EQ(smb.URLEncode(url), "smb://fd00%3a%3a1:445/MEDIA/TEST");
 }
 
-TEST(TestSMBUrlEncode, IPv6HostNameSubstitutedForAResolvedNameIsBracketed)
+TEST(TestSMBUrlEncode, IPv6HostNameSubstitutedForAResolvedNameIsEncoded)
 {
   CURL url("smb://kodi:secret@MEDIABOX/MEDIA/TEST");
   url.SetHostName("fd00::1");
-  EXPECT_EQ(smb.URLEncode(url), "smb://kodi:secret@[fd00::1]/MEDIA/TEST");
+  EXPECT_EQ(smb.URLEncode(url), "smb://kodi:secret@fd00%3a%3a1/MEDIA/TEST");
 }
