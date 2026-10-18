@@ -59,7 +59,11 @@ foreach(_attempt RANGE 1 ${_attempts})
         if(_size GREATER 0)
           file(${_algo} "${ARCHIVE_DEST}" _actual)
           if(_actual STREQUAL _expected)
-            file(RENAME "${_download}" "${ARCHIVE_CACHE}")
+            execute_process(COMMAND "${CMAKE_COMMAND}" -E rename "${_download}" "${ARCHIVE_CACHE}"
+                            RESULT_VARIABLE _rename_result ERROR_QUIET)
+            if(NOT _rename_result EQUAL 0)
+              file(REMOVE "${_download}")
+            endif()
             return()
           endif()
           # A complete transfer with the wrong hash is a wrong pin, not a network fault
