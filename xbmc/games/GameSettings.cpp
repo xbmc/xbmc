@@ -48,6 +48,7 @@ const std::string SETTING_GAMES_SYNC_TO_DISPLAY = "gamesgeneral.synctodisplay";
 const std::string SETTING_GAMES_SYNC_TO_DISPLAY_LIMIT = "gamesgeneral.synctodisplaylimit";
 const std::string SETTING_GAMES_ENABLERUNAHEAD = "gamesgeneral.enablerunahead";
 const std::string SETTING_GAMES_RUNAHEADFRAMES = "gamesgeneral.runaheadframes";
+const std::string SETTING_GAMES_HDR_VIDEO_FILTERS = "gamesgeneral.hdrvideofilters";
 const std::string SETTING_GAMES_ACHIEVEMENTS_CREATE_ACCOUNT = "gamesachievements.createaccount";
 const std::string SETTING_GAMES_ACHIEVEMENTS_USERNAME = "gamesachievements.username";
 const std::string SETTING_GAMES_ACHIEVEMENTS_PASSWORD = "gamesachievements.password";
@@ -167,6 +168,11 @@ bool CGameSettings::SyncPlaybackToDisplay()
 double CGameSettings::SyncToDisplayLimit()
 {
   return std::max(m_settings->GetInt(SETTING_GAMES_SYNC_TO_DISPLAY_LIMIT), 0) / 100.0;
+}
+
+bool CGameSettings::HdrWithVideoFilters() const
+{
+  return m_settings->GetBool(SETTING_GAMES_HDR_VIDEO_FILTERS);
 }
 
 std::string CGameSettings::GetRAUsername() const

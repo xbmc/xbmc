@@ -175,6 +175,14 @@ bool CDisplayInfo::SupportsHDRStaticMetadataType1() const
   return m_hdr_static_metadata->descriptors->type1;
 }
 
+float CDisplayInfo::GetMaxLuminance() const
+{
+  if (!m_hdr_static_metadata)
+    return 0.0f;
+
+  return m_hdr_static_metadata->desired_content_max_luminance;
+}
+
 bool CDisplayInfo::SupportsEOTF(Eotf eotf) const
 {
   if (!m_hdr_static_metadata)
