@@ -56,6 +56,7 @@ public:
   int GetVideoQueueDataLevel();
   void SetVideoInterlaced(bool interlaced);
   bool GetVideoInterlaced();
+  void SetVideoHwScaling(bool active);
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
@@ -159,6 +160,7 @@ protected:
   int m_videoQueueLevel = 0;
   int m_videoQueueDataLevel = 0;
   bool m_videoIsInterlaced;
+  bool m_videoHwScaling{false};
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
   mutable CCriticalSection m_videoCodecSection;

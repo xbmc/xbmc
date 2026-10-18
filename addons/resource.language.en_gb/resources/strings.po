@@ -23108,7 +23108,17 @@ msgctxt "#36642"
 msgid "No orphaned add-ons to remove."
 msgstr ""
 
-#empty strings from id 36643 to 36644
+#. Label for a video playback setting
+#: system/settings/linux.xml
+msgctxt "#36643"
+msgid "Use VAAPI hardware scaling"
+msgstr ""
+
+#. Help text for setting with label #36643
+#: system/settings/linux.xml
+msgctxt "#36644"
+msgid "Scales decoded video to the display resolution using the VAAPI video processing pipeline's hardware scaler, instead of the renderer's shader-based scaling."
+msgstr ""
 
 #. Label of setting "Pictures -> Slideshow -> Show date and time metadata on screen"
 #: system/settings/settings.xml
@@ -23122,7 +23132,14 @@ msgctxt "#36646"
 msgid "During a slideshow, show the date and time from a picture's EXIF metadata, if it has them. Not every skin supports this."
 msgstr ""
 
-#empty strings from id 36647 to 36898
+#. Value shown in place of the scaling method spinner when VAAPI hardware
+#. scaling is enabled in settings
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36647"
+msgid "VAAPI hardware scaling enabled"
+msgstr ""
+
+#empty strings from id 36648 to 36898
 
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml
