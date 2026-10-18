@@ -151,7 +151,7 @@ $(DOWNLOAD_TARGETS):
 download: $(DOWNLOAD_TARGETS)
 
 crossguid: $(LIBUUID)
-curl: brotli openssl nghttp2 $(ZLIB)
+curl: brotli openssl nghttp2 $(ZLIB) zstd
 dbus: expat
 exiv2: $(ICONV) $(ZLIB) expat
 ffmpeg: $(ICONV) $(ZLIB) bzip2 openssl dav1d $(LIBVA)
@@ -177,7 +177,7 @@ libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
 libxslt: libxml2
 libzip: bzip2 gnutls $(ZLIB)
-mariadb: openssl $(ICONV) $(ZLIB)
+mariadb: openssl $(ICONV) $(ZLIB) zstd
 mesa: libdrm $(MESA_DEPS) $(ZLIB)
 nettle: gmp
 openssl: $(ZLIB)

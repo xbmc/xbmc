@@ -11,6 +11,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildmacroMariaDBClient)
+    find_package(ZSTD REQUIRED ${SEARCH_QUIET})
 
     if(WIN32 OR WINDOWS_STORE)
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB TRUE)
@@ -35,7 +36,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                   "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/04-win-installpkgconfig.patch")
 
       list(APPEND BUILD_FLAGS -DBUILD_SHARED_LIBS:BOOL=ON
-                              -DINSTALL_SHARED=ON)
+                              -DINSTALL_SHARED=ON
+                              -DCMAKE_POLICY_DEFAULT_CMP0091=NEW
+                              -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded$<$<CONFIG:Debug>:Debug>DLL)
       list(APPEND CLIENT_PLUGINS -DPLUGIN_PVIO_NPIPE:STRING=STATIC
                                  -DPLUGIN_PVIO_SHMEM:STRING=STATIC)
 
@@ -73,7 +76,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                -DCLIENT_PLUGIN_CACHING_SHA2_PASSWORD=STATIC
                                -DCLIENT_PLUGIN_MYSQL_CLEAR_PASSWORD=STATIC
                                -DCLIENT_PLUGIN_MYSQL_OLD_PASSWORD=STATIC
-                               -DCLIENT_PLUGIN_CLIENT_ED25519=STATIC)
+                               -DCLIENT_PLUGIN_CLIENT_ED25519=STATIC
+                               -DCLIENT_PLUGIN_ZSTD=STATIC)
 
     # Disable GSSAPI authentication plugin (not widely used by Kodi users)
     list(APPEND CLIENT_PLUGINS -DCLIENT_PLUGIN_AUTH_GSSAPI_CLIENT=OFF)
@@ -98,18 +102,50 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    ${CLIENT_PLUGINS}
                    ${BUILD_FLAGS})
 
+    get_target_property(_ZSTD_TARGET LIBRARY::ZSTD ALIASED_TARGET)
+    if(_ZSTD_TARGET AND NOT _ZSTD_TARGET STREQUAL "PkgConfig::zstd")
+      # Load the same package in MariaDB so its interface targets remain usable.
+      find_package(zstd CONFIG REQUIRED PATHS "${zstd_DIR}" NO_DEFAULT_PATH)
+      list(APPEND CMAKE_ARGS "-DCMAKE_PROJECT_INCLUDE=${zstd_CONFIG}")
+      set(ZSTD_INCLUDE_DIR "$<JOIN:$<TARGET_PROPERTY:LIBRARY::ZSTD,INTERFACE_INCLUDE_DIRECTORIES>,|>")
+      set(ZSTD_LIBRARY ${_ZSTD_TARGET})
+    else()
+      get_target_property(ZSTD_INCLUDE_DIR LIBRARY::ZSTD INTERFACE_INCLUDE_DIRECTORIES)
+      if(_ZSTD_TARGET STREQUAL "PkgConfig::zstd")
+        get_target_property(ZSTD_LIBRARY LIBRARY::ZSTD INTERFACE_LINK_LIBRARIES)
+      else()
+        set(ZSTD_LIBRARY "$<TARGET_LINKER_FILE:LIBRARY::ZSTD>")
+      endif()
+    endif()
+
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR LIST_SEPARATOR |)
+    if(ZSTD_INCLUDE_DIR)
+      string(REPLACE ";" "|" ZSTD_INCLUDE_DIR "${ZSTD_INCLUDE_DIR}")
+      list(APPEND CMAKE_ARGS "-DZSTD_INCLUDE_DIRS=${ZSTD_INCLUDE_DIR}")
+    endif()
+    if(ZSTD_LIBRARY)
+      string(REPLACE ";" "|" ZSTD_LIBRARY "${ZSTD_LIBRARY}")
+      list(APPEND CMAKE_ARGS "-DZSTD_LIBRARIES:STRING=${ZSTD_LIBRARY}")
+    endif()
+
     BUILD_DEP_TARGET()
+
+    unset(ZSTD_INCLUDE_DIR)
+    unset(ZSTD_LIBRARY)
+    unset(_ZSTD_TARGET)
 
     # Make INCLUDE_DIR match cmake config output
     string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR "/mariadb")
     file(MAKE_DIRECTORY ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR})
 
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::OpenSSL
-                                                                        LIBRARY::ZLIB)
+                                                                        LIBRARY::ZLIB
+                                                                        LIBRARY::ZSTD)
 
     if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB)
       list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES LIBRARY::OpenSSL
-                                                                      LIBRARY::ZLIB)
+                                                                      LIBRARY::ZLIB
+                                                                      LIBRARY::ZSTD)
     endif()
   endmacro()
 
