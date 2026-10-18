@@ -178,6 +178,7 @@ public:
   {
     SKIP, //!< leave it out of the export
     COPY, //!< copy it from its source, as it is where it is a .jpg or a .png, else cache it
+    CACHE, //!< cache it, as art a scan caches, and export the cached copy
   };
 
   /*! \brief Export a (possibly) cached image to a file

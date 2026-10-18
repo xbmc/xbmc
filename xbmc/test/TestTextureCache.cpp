@@ -302,6 +302,17 @@ TEST_F(TestTextureCache, ExportCreatesTheFolderOfAnImageNotCachedYet)
   EXPECT_EQ(OPAQUE_PNG, ReadFile(destination + ".png"));
 }
 
+TEST_F(TestTextureCache, ExportCachesAnImageNotCachedYetWhereAsked)
+{
+  const std::string source{AddSource("uncachedlisted.png", OPAQUE_PNG)};
+  const std::string destination{URIUtils::AddFileToFolder(m_tempPath, "uncachedlisted-poster")};
+
+  EXPECT_TRUE(m_cache->Export(source, destination, false, CTextureCache::UncachedImage::CACHE));
+
+  EXPECT_TRUE(CFile::Exists(destination + ".jpg"));
+  EXPECT_TRUE(m_cache->HasCachedImage(source));
+}
+
 TEST_F(TestTextureCache, ExportCachesAnImageNotCachedYetOfAnotherType)
 {
   const std::string source{AddSource("uncached.bmp", BMP)};

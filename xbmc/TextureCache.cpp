@@ -401,7 +401,7 @@ bool CTextureCache::Export(const std::string& image,
                                                            CFile::Exists(destination + ".png"))))
       return false;
 
-    // Art nothing has shown is copied as it is from its source, rather than cached for the export
+    // Art that isn't cached until shown is copied as it is from its source, rather than cached
     const IMAGE_FILES::CImageFileURL imageURL{image};
     if (std::vector<uint8_t> data; uncached == UncachedImage::COPY && !imageURL.IsSpecialImage() &&
                                    !imageURL.flipped &&
@@ -438,7 +438,8 @@ bool CTextureCache::Export(const std::string& image,
       }
     }
 
-    // Generated or flipped art, or another type, is converted by caching it
+    // Art a scan caches is cached here too, and generated or flipped art, or another type, is
+    // converted by it
     cachedImage = CacheImage(image);
   }
   if (!cachedImage.empty())

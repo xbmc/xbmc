@@ -151,13 +151,21 @@ std::string GetSourcePathOfFile(const CMediaSource& source, const std::string& f
   return {};
 }
 
-// What an export does with art not cached yet
-CTextureCache::UncachedImage UncachedArt()
+// Whether a scan caches art of this type, being on the art list
+bool IsCachedByScan(MEDIA::TYPE mediaType, const std::string& artType)
 {
-  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-             CSettings::SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT)
-             ? CTextureCache::UncachedImage::COPY
-             : CTextureCache::UncachedImage::SKIP;
+  const std::vector<std::string> artTypes{CVideoThumbLoader::GetArtTypes(mediaType)};
+  return std::ranges::find(artTypes, artType) != artTypes.end();
+}
+
+// What an export does with art not cached yet. Art a scan caches is cached, rather than copied
+// from its source
+CTextureCache::UncachedImage UncachedArt(bool cachedByScan)
+{
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT))
+    return CTextureCache::UncachedImage::SKIP;
+  return cachedByScan ? CTextureCache::UncachedImage::CACHE : CTextureCache::UncachedImage::COPY;
 }
 } // unnamed namespace
 
@@ -11419,8 +11427,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           for (const auto& [type, url] : artwork)
           {
             std::string savedThumb = ART::GetLocalArt(item, type, false);
-            if (CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite,
-                                                          UncachedArt()))
+            if (CServiceBroker::GetTextureCache()->Export(
+                    url, savedThumb, overwrite,
+                    UncachedArt(IsCachedByScan(MEDIA::TYPE::MOVIE, type))))
               CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", type, savedThumb,
                         overwrite);
           }
@@ -11539,8 +11548,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             for (const auto& [arttype, arturl] : aw)
             {
               const std::string savedThumb = URIUtils::AddFileToFolder(itemPath, arttype);
-              if (CServiceBroker::GetTextureCache()->Export(arturl, savedThumb, overwrite,
-                                                            UncachedArt()))
+              if (CServiceBroker::GetTextureCache()->Export(
+                      arturl, savedThumb, overwrite,
+                      UncachedArt(IsCachedByScan(MEDIA::TYPE::VIDEO_COLLECTION, arttype))))
                 CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", arturl,
                           savedThumb, overwrite);
             }
@@ -11642,7 +11652,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         for (const auto& [type, url] : artwork)
         {
           const std::string savedThumb = ART::GetLocalArt(item, type, false);
-          if (CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite, UncachedArt()))
+          if (CServiceBroker::GetTextureCache()->Export(
+                  url, savedThumb, overwrite,
+                  UncachedArt(IsCachedByScan(MEDIA::TYPE::MUSIC_VIDEO, type))))
             CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
                       overwrite);
         }
@@ -11749,14 +11761,15 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         for (const auto& [type, url] : artwork)
         {
           const std::string savedThumb = ART::GetLocalArt(item, type, true);
-          CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite, UncachedArt());
+          CServiceBroker::GetTextureCache()->Export(
+              url, savedThumb, overwrite, UncachedArt(IsCachedByScan(MEDIA::TYPE::TV_SHOW, type)));
         }
 
         tvshowDir = tvshow.m_strPath;
         if (actorThumbs)
           ExportActorThumbs(actorsDir, singlePath, tvshow, !singleFile, overwrite);
 
-        // export season thumbs
+        // export season thumbs, all of which a scan caches
         for (const auto& [seasonNumber, art] : seasonArt)
         {
           std::string seasonThumb;
@@ -11769,8 +11782,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           for (const auto& [type, url] : art)
           {
             const std::string savedThumb(ART::GetLocalArt(item, seasonThumb + "-" + type, true));
-            if (!art.empty() && CServiceBroker::GetTextureCache()->Export(url, savedThumb,
-                                                                          overwrite, UncachedArt()))
+            if (!art.empty() && CServiceBroker::GetTextureCache()->Export(
+                                    url, savedThumb, overwrite, UncachedArt(true)))
               CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", url, savedThumb,
                         overwrite);
           }
@@ -11886,7 +11899,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         // Write art/actor images
         if (images)
         {
-          ExportArt(fileItem, episodeArtwork, overwrite);
+          ExportArt(fileItem, episodeArtwork, MEDIA::TYPE::EPISODE, overwrite);
           if (actorThumbs)
             ExportActorThumbs(actorsDir, singlePath, episode, !singleFile, overwrite, tvshowDir);
         }
@@ -11961,6 +11974,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
 void CVideoDatabase::ExportArt(const CFileItem& item,
                                const ART::Artwork& artwork,
+                               MEDIA::TYPE mediaType,
                                bool overwrite) const
 {
   for (const auto& [artType, artPath] : artwork)
@@ -11970,7 +11984,8 @@ void CVideoDatabase::ExportArt(const CFileItem& item,
                          item.GetProperty(MULTIPLE_EPISODES).asBoolean(false)
                              ? ART::AdditionalIdentifiers::SEASON_AND_EPISODE
                              : ART::AdditionalIdentifiers::NONE)};
-    if (CServiceBroker::GetTextureCache()->Export(artPath, savedThumb, overwrite, UncachedArt()))
+    if (CServiceBroker::GetTextureCache()->Export(artPath, savedThumb, overwrite,
+                                                  UncachedArt(IsCachedByScan(mediaType, artType))))
       CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", artPath, savedThumb,
                 overwrite);
   }
@@ -11997,6 +12012,9 @@ void CVideoDatabase::ExportActorThumbs(const std::string& path,
     }
   }
 
+  // A scan caches the cast thumbs it fetches
+  const bool cachedByScan{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS)};
   for (const auto& i : tag.m_cast)
   {
     CFileItem item;
@@ -12004,7 +12022,8 @@ void CVideoDatabase::ExportActorThumbs(const std::string& path,
     if (!i.thumb.empty())
     {
       std::string thumbFile(GetSafeFile(strPath, i.strName));
-      if (CServiceBroker::GetTextureCache()->Export(i.thumb, thumbFile, overwrite, UncachedArt()))
+      if (CServiceBroker::GetTextureCache()->Export(i.thumb, thumbFile, overwrite,
+                                                    UncachedArt(cachedByScan)))
         CLog::Log(LOGDEBUG, "Exported actor thumb '{}' to '{}' - overwrite {}", i.thumb, thumbFile,
                   overwrite);
     }
