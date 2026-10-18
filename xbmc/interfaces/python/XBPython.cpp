@@ -111,6 +111,10 @@ XBPython::~XBPython()
 
   if (Py_IsInitialized())
   {
+    // Uninitialize() kept the GIL for scripts or interpreters that are left
+    if (m_skipFinalize)
+      return;
+
     // Switch to the main interpreter thread before finalizing
     PyThreadState_Swap(m_mainThreadState);
 
@@ -501,6 +505,35 @@ void XBPython::Uninitialize()
 
   // callbacks for the stopped scripts can still be queued
   XBMCAddon::RetardedAsyncCallbackHandler::clearAllPendingCalls();
+
+  // a script that CScriptInvocationManager gave up on keeps its invoker, and a script that
+  // failed can leave its interpreter behind: then keep the GIL from now on, so no further
+  // Python code runs while Kodi exits, and don't finalize Python under them. Scripts not
+  // counted by now are refused in OnScriptInitialized().
+  if (m_skipFinalize)
+    return;
+  int scriptsRunning;
+  {
+    std::unique_lock counterLock(m_critSection);
+    m_scriptsClosed = true;
+    scriptsRunning = static_cast<int>(m_scriptsStarted.size());
+  }
+  PyEval_RestoreThread(m_mainThreadState);
+  bool interpreterLeft = false;
+  for (PyInterpreterState* interp = PyInterpreterState_Head(); interp;
+       interp = PyInterpreterState_Next(interp))
+  {
+    if (interp != PyInterpreterState_Main())
+      interpreterLeft = true;
+  }
+  if (scriptsRunning > 0)
+    CLog::Log(LOGWARNING, "XBPython: {} script(s) still running, not finalizing Python",
+              scriptsRunning);
+  else if (interpreterLeft)
+    CLog::Log(LOGWARNING, "XBPython: a script interpreter was not ended, not finalizing Python");
+  m_skipFinalize = scriptsRunning > 0 || interpreterLeft;
+  if (!m_skipFinalize)
+    m_mainThreadState = PyEval_SaveThread();
 }
 
 void XBPython::Process()
@@ -532,7 +565,12 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
   XBMC_TRACE;
   CLog::Log(LOGDEBUG, "initializing python script");
   std::unique_lock lock(m_critSection);
-  m_iDllScriptCounter++;
+  if (m_scriptsClosed)
+  {
+    CLog::Log(LOGWARNING, "XBPython: Python is shutting down, not starting the script");
+    return false;
+  }
+  m_scriptsStarted.insert(invoker);
 
   return true;
 }
@@ -591,11 +629,7 @@ void XBPython::OnScriptFinalized(ILanguageInvoker* invoker)
 {
   XBMC_TRACE;
   std::unique_lock lock(m_critSection);
-  // for linux - we never release the library. its loaded and stays in memory.
-  if (m_iDllScriptCounter)
-    m_iDllScriptCounter--;
-  else
-    CLog::Log(LOGERROR, "Python script counter attempted to become negative");
+  m_scriptsStarted.erase(invoker);
 }
 
 std::shared_ptr<ILanguageInvoker> XBPython::CreateInvoker()

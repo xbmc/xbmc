@@ -16,6 +16,7 @@
 #include "threads/Thread.h"
 
 #include <memory>
+#include <set>
 #include <vector>
 
 class CPythonInvoker;
@@ -113,7 +114,9 @@ private:
   CCriticalSection m_critSection;
   PyThreadState* m_mainThreadState{nullptr};
   bool m_bindingModulesLoaded{true};
-  int m_iDllScriptCounter{0}; // to keep track of the total scripts running that need the dll
+  std::set<const ILanguageInvoker*> m_scriptsStarted; // between OnScriptInitialized/Finalized
+  bool m_skipFinalize{false}; // GIL kept since Uninitialize()
+  bool m_scriptsClosed{false}; // no script starts once Uninitialize() counts them
 
   //Vector with list of threads used for running scripts
   PyList m_vecPyList;
