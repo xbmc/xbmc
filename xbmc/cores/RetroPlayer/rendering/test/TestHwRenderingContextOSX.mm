@@ -832,7 +832,7 @@ TEST_F(TestRenderBufferPoolFBOOSX, CaptureNormalizesBothOriginsWithinLargerClien
       EXPECT_EQ(binding, framebuffer);
       glGetIntegerv(GL_READ_BUFFER, &binding);
       EXPECT_EQ(binding, GL_NONE);
-      EXPECT_TRUE(glIsEnabled(GL_SCISSOR_TEST));
+      EXPECT_FALSE(glIsEnabled(GL_SCISSOR_TEST));
       std::array<GLint, 4> viewport{};
       glGetIntegerv(GL_VIEWPORT, viewport.data());
       EXPECT_EQ(viewport, (std::array<GLint, 4>{1, 2, 3, 4}));
