@@ -110,6 +110,10 @@ XBPython::~XBPython()
 
   if (Py_IsInitialized())
   {
+    // Uninitialize() kept the GIL for scripts or interpreters that are left
+    if (m_skipFinalize)
+      return;
+
     // Switch to the main interpreter thread before finalizing
     PyThreadState_Swap(m_mainThreadState);
 
@@ -497,6 +501,33 @@ void XBPython::Uninitialize()
 
   // cleanup threads that are still running
   tmpvec.clear();
+
+  // a script that CScriptInvocationManager gave up on keeps its invoker, and a script that
+  // failed can leave its interpreter behind: then keep the GIL from now on, so no further
+  // Python code runs while Kodi exits, and don't finalize Python under them
+  if (m_skipFinalize)
+    return;
+  int scriptsRunning;
+  {
+    std::unique_lock counterLock(m_critSection);
+    scriptsRunning = m_iDllScriptCounter;
+  }
+  PyEval_RestoreThread(m_mainThreadState);
+  bool interpreterLeft = false;
+  for (PyInterpreterState* interp = PyInterpreterState_Head(); interp;
+       interp = PyInterpreterState_Next(interp))
+  {
+    if (interp != PyInterpreterState_Main())
+      interpreterLeft = true;
+  }
+  if (scriptsRunning > 0)
+    CLog::Log(LOGWARNING, "XBPython: {} script(s) still running, not finalizing Python",
+              scriptsRunning);
+  else if (interpreterLeft)
+    CLog::Log(LOGWARNING, "XBPython: a script interpreter was not ended, not finalizing Python");
+  m_skipFinalize = scriptsRunning > 0 || interpreterLeft;
+  if (!m_skipFinalize)
+    m_mainThreadState = PyEval_SaveThread();
 }
 
 void XBPython::Process()
