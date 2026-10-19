@@ -1189,6 +1189,53 @@ TEST_F(TestCURL, RedactCredentialsThroughImageWrappers)
   EXPECT_EQ("image://http%3a%2f%2fhost%2fimage.png/", CURL::GetRedacted(image));
 }
 
+TEST_F(TestCURL, ExplicitWrappersRemoveNestedCredentials)
+{
+  const std::string resource = "http://user:SECRET@host/resource";
+  const std::string cleanResource = "http://host/resource";
+  for (const std::string scheme : {"image", "zip"})
+  {
+    std::string location = scheme + "://" + CURL::Encode(resource) + "/";
+    std::string expected = scheme + "://" + CURL::Encode(cleanResource) + "/";
+    for (int depth = 0; depth < 3; ++depth)
+    {
+      SCOPED_TRACE(location);
+      CURL uri;
+      ASSERT_TRUE(uri.ParseURI(location));
+      EXPECT_EQ(expected, uri.GetWithoutUserDetails());
+      EXPECT_EQ(expected, uri.GetWithoutUserDetails(false));
+      EXPECT_EQ(expected, uri.GetWithoutUserDetails(true));
+      EXPECT_EQ(expected, uri.GetRedacted());
+      EXPECT_EQ(expected, CURL::GetRedacted(location));
+      EXPECT_EQ(location, uri.Get());
+      location = "zip://" + CURL::Encode(location) + "/member";
+      expected = "zip://" + CURL::Encode(expected) + "/member";
+    }
+  }
+}
+
+TEST_F(TestCURL, ExplicitCredentialFreeWrappersPreserveSpelling)
+{
+  for (const std::string resource : {"http://host/im%61ge.png?x=1&x=2", "HTTP://host/image.png"})
+  {
+    for (const std::string scheme : {"image", "zip"})
+    {
+      const std::string location = scheme + "://" + CURL::Encode(resource) + "/";
+      for (const std::string& wrapper : {location, "zip://" + CURL::Encode(location) + "/member",
+                                         "IMAGE://" + CURL::Encode(location) + "/"})
+      {
+        SCOPED_TRACE(wrapper);
+        CURL uri;
+        ASSERT_TRUE(uri.ParseURI(wrapper));
+        EXPECT_EQ(wrapper, uri.GetWithoutUserDetails(false));
+        EXPECT_EQ(CURL(wrapper).GetWithoutUserDetails(true), uri.GetWithoutUserDetails(true));
+        EXPECT_EQ(CURL::GetRedacted(wrapper), uri.GetRedacted());
+        EXPECT_EQ(wrapper, uri.Get());
+      }
+    }
+  }
+}
+
 TEST_F(TestCURL, OneLetterSchemeTransitionsRemainExplicitURIs)
 {
   CURL uri;
