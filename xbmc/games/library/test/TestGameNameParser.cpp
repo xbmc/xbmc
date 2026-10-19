@@ -16,13 +16,24 @@
 using namespace KODI;
 using namespace GAME;
 
+namespace
+{
+std::vector<std::string> Regions(const ParsedGameName& name)
+{
+  std::vector<std::string> regions;
+  for (const GameRegion& region : name.regions)
+    regions.emplace_back(region.ToString());
+  return regions;
+}
+} // namespace
+
 TEST(TestGameNameParser, ReadsANoIntroName)
 {
   const ParsedGameName parsed = CGameNameParser::Parse(
       "Legend of Zelda, The - A Link to the Past (USA, Europe) (En,Fr,De) (Rev 1).sfc");
   EXPECT_EQ(parsed.title, "Legend of Zelda, The - A Link to the Past");
   EXPECT_EQ(parsed.displayTitle, "The Legend of Zelda - A Link to the Past");
-  EXPECT_EQ(parsed.regions, (std::vector<std::string>{"USA", "Europe"}));
+  EXPECT_EQ(Regions(parsed), (std::vector<std::string>{"US", "150"}));
   EXPECT_EQ(parsed.languages, (std::vector<std::string>{"en", "fr", "de"}));
   EXPECT_EQ(parsed.revision, "Rev 1");
   EXPECT_EQ(parsed.status, ReleaseStatus::RETAIL);
@@ -41,7 +52,7 @@ TEST(TestGameNameParser, ReadsARedumpDiscAndItsStatus)
   const ParsedGameName parsed =
       CGameNameParser::Parse("Final Fantasy VII (Japan) (Disc 2 of 3) (Beta).cue");
   EXPECT_EQ(parsed.title, "Final Fantasy VII");
-  EXPECT_EQ(parsed.regions, (std::vector<std::string>{"Japan"}));
+  EXPECT_EQ(Regions(parsed), (std::vector<std::string>{"JP"}));
   EXPECT_EQ(parsed.disc, 2);
   EXPECT_EQ(parsed.discs, 3);
   EXPECT_EQ(parsed.status, ReleaseStatus::BETA);
@@ -54,7 +65,7 @@ TEST(TestGameNameParser, ReadsGoodToolsFlags)
 {
   const ParsedGameName verified = CGameNameParser::Parse("Super Mario Bros. (W) [!].nes");
   EXPECT_EQ(verified.title, "Super Mario Bros.");
-  EXPECT_EQ(verified.regions, (std::vector<std::string>{"World"}));
+  EXPECT_EQ(Regions(verified), (std::vector<std::string>{"World"}));
   EXPECT_TRUE(verified.verified);
   EXPECT_TRUE(CGameNameParser::Parse("Super Mario Bros. (W) [h1].nes").hack);
   EXPECT_TRUE(CGameNameParser::Parse("Super Mario Bros. (W) [b1].nes").bad);
@@ -182,7 +193,7 @@ TEST(TestGameNameParser, LeavesADiscNumberTooLongToBeOne)
 TEST(TestGameNameParser, TellsATosecCountryFromALanguage)
 {
   const ParsedGameName german = CGameNameParser::Parse("Game (1990)(Publisher)(DE).adf");
-  EXPECT_EQ(german.regions, (std::vector<std::string>{"Germany"}));
+  EXPECT_EQ(Regions(german), (std::vector<std::string>{"DE"}));
   EXPECT_TRUE(german.languages.empty());
 
   const ParsedGameName inGerman = CGameNameParser::Parse("Game (1990)(Publisher)(de).adf");
@@ -210,20 +221,20 @@ TEST(TestGameNameParser, CreditsNoCompanyFromATosecName)
 TEST(TestGameNameParser, ReadsATosecCountry)
 {
   const ParsedGameName parsed = CGameNameParser::Parse("1942 (1986)(Elite)(GB).tap");
-  EXPECT_EQ(parsed.regions, (std::vector<std::string>{"United Kingdom"}));
+  EXPECT_EQ(Regions(parsed), (std::vector<std::string>{"GB"}));
   EXPECT_EQ(parsed.publisher, "Elite");
   EXPECT_TRUE(CGameNameParser::Credits(parsed).empty());
-  EXPECT_EQ(CGameNameParser::Parse("Galaga (1983)(Namco)(SE).tap").regions,
-            (std::vector<std::string>{"Sweden"}));
+  EXPECT_EQ(Regions(CGameNameParser::Parse("Galaga (1983)(Namco)(SE).tap")),
+            (std::vector<std::string>{"SE"}));
 }
 
 TEST(TestGameNameParser, ReadsATosecCountryWhoseCodeIsALanguagesToo)
 {
   const ParsedGameName canada = CGameNameParser::Parse("Game (1990)(Publisher)(CA).adf");
-  EXPECT_EQ(canada.regions, (std::vector<std::string>{"Canada"}));
+  EXPECT_EQ(Regions(canada), (std::vector<std::string>{"CA"}));
   EXPECT_TRUE(canada.languages.empty());
-  EXPECT_EQ(CGameNameParser::Parse("Game (1990)(Publisher)(AS).adf").regions,
-            (std::vector<std::string>{"Asia"}));
+  EXPECT_EQ(Regions(CGameNameParser::Parse("Game (1990)(Publisher)(AS).adf")),
+            (std::vector<std::string>{"142"}));
 }
 
 TEST(TestGameNameParser, ReadsATosecTranslation)
@@ -254,8 +265,8 @@ TEST(TestGameNameParser, CreditsNoCompanyForWhatACartridgeWorksWith)
 TEST(TestGameNameParser, ReadsAGoodToolsCountryOnlyWhereGoodToolsWritesIt)
 {
   EXPECT_EQ(
-      CGameNameParser::Parse("Corpse Killer - Graveyard Edition (USA) (Disc 1) (R).cue").regions,
-      (std::vector<std::string>{"USA"}));
+      Regions(CGameNameParser::Parse("Corpse Killer - Graveyard Edition (USA) (Disc 1) (R).cue")),
+      (std::vector<std::string>{"US"}));
 }
 
 TEST(TestGameNameParser, RestoresAnArticleTheSetsMove)
@@ -327,12 +338,29 @@ TEST(TestGameNameParser, ReadsANumberTooLargeToBeOne)
 
 TEST(TestGameNameParser, ReadsEachConventionsCodeForACountry)
 {
-  EXPECT_EQ(CGameNameParser::Parse("Game (D) [!].nes").regions,
-            (std::vector<std::string>{"Netherlands"}));
-  EXPECT_EQ(CGameNameParser::Parse("Game (Nl) [!].nes").regions,
-            (std::vector<std::string>{"Netherlands"}));
-  EXPECT_EQ(CGameNameParser::Parse("0822 Every Day DS Brain Training (KS).zip").regions,
-            (std::vector<std::string>{"Korea"}));
+  EXPECT_EQ(Regions(CGameNameParser::Parse("Game (D) [!].nes")), (std::vector<std::string>{"NL"}));
+  EXPECT_EQ(Regions(CGameNameParser::Parse("Game (Nl) [!].nes")), (std::vector<std::string>{"NL"}));
+  EXPECT_EQ(Regions(CGameNameParser::Parse("0822 Every Day DS Brain Training (KS).zip")),
+            (std::vector<std::string>{"KR"}));
+}
+
+TEST(TestGameNameParser, KeepsAMarketNoTerritoryNames)
+{
+  const ParsedGameName world = CGameNameParser::Parse("Tetris (World).gb");
+  ASSERT_EQ(world.regions.size(), 1U);
+  EXPECT_TRUE(world.regions[0].territory.ToString().empty());
+  EXPECT_EQ(world.regions[0].market, "World");
+  EXPECT_EQ(Regions(CGameNameParser::Parse("Game (Scandinavia).sfc")),
+            (std::vector<std::string>{"Scandinavia"}));
+  EXPECT_EQ(Regions(CGameNameParser::Parse("Game (Latin America).iso")),
+            (std::vector<std::string>{"419"}));
+}
+
+TEST(TestGameNameParser, ReadsAnUnknownRegionAsNone)
+{
+  const ParsedGameName unknown = CGameNameParser::Parse("Diddy Kong Pilot (Unknown) (Proto).zip");
+  EXPECT_TRUE(unknown.regions.empty());
+  EXPECT_TRUE(unknown.unknownTags.empty());
 }
 
 TEST(TestGameNameParser, RestoresTheArticleOfATosecTitle)

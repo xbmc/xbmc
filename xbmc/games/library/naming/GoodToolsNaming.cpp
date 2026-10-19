@@ -23,15 +23,19 @@ using namespace GAME::GOODTOOLS;
 
 namespace
 {
-// GoodCodes' country codes, with the names the game library gives them. (D)
-// and (Nl) are both the Netherlands.
-constexpr auto countries = std::to_array<std::pair<std::string_view, std::string_view>>({
-    {"A", "Australia"},       {"As", "Asia"},       {"B", "Brazil"},       {"C", "Canada"},
-    {"Ch", "China"},          {"D", "Netherlands"}, {"E", "Europe"},       {"F", "France"},
-    {"G", "Germany"},         {"Gr", "Greece"},     {"HK", "Hong Kong"},   {"I", "Italy"},
-    {"J", "Japan"},           {"K", "Korea"},       {"Nl", "Netherlands"}, {"No", "Norway"},
-    {"R", "Russia"},          {"S", "Spain"},       {"Sw", "Sweden"},      {"U", "USA"},
-    {"UK", "United Kingdom"}, {"Unk", "Unknown"},   {"W", "World"},
+// GoodCodes' country codes and the territory each is, as BCP 47 codes it. (D)
+// and (Nl) are both the Netherlands; (As) and (E) are UN M.49's Asia and Europe.
+constexpr auto territories = std::to_array<std::pair<std::string_view, std::string_view>>({
+    {"A", "AU"},  {"As", "142"}, {"B", "BR"},  {"C", "CA"},  {"Ch", "CN"}, {"D", "NL"},
+    {"E", "150"}, {"F", "FR"},   {"G", "DE"},  {"Gr", "GR"}, {"HK", "HK"}, {"I", "IT"},
+    {"J", "JP"},  {"K", "KR"},   {"Nl", "NL"}, {"No", "NO"}, {"R", "RU"},  {"S", "ES"},
+    {"Sw", "SE"}, {"U", "US"},   {"UK", "GB"},
+});
+
+// (W) is the market No-Intro calls World; (Unk) a country GoodTools doesn't know
+constexpr auto markets = std::to_array<std::pair<std::string_view, std::string_view>>({
+    {"W", "World"},
+    {"Unk", ""},
 });
 
 // The codes GoodTools writes for a translation's language that ISO 639-2
@@ -60,14 +64,19 @@ Flag MakeFlag(FlagType type)
 }
 } // namespace
 
-std::string_view CGoodToolsNaming::CountryName(std::string_view code)
+std::optional<GameRegion> CGoodToolsNaming::Region(std::string_view code)
 {
-  for (const auto& [c, name] : countries)
+  for (const auto& [c, territory] : territories)
   {
     if (c == code)
-      return name;
+      return GameRegion::Make(territory);
   }
-  return {};
+  for (const auto& [c, market] : markets)
+  {
+    if (c == code)
+      return GameRegion::Make({}, market);
+  }
+  return std::nullopt;
 }
 
 bool CGoodToolsNaming::IsLanguageCount(std::string_view tag)

@@ -15,23 +15,58 @@
 #include <algorithm>
 #include <array>
 #include <cctype>
+#include <utility>
 
 using namespace KODI;
 using namespace GAME;
 
 namespace
 {
-constexpr auto regions = std::to_array<std::string_view>(
-    {// The convention's examples
-     "Asia", "Australia", "Brazil", "Canada", "China", "Europe", "France", "Germany", "Hong Kong",
-     "Italy", "Japan", "Korea", "Netherlands", "Spain", "Sweden", "USA", "World",
-     // The others the DATs use
-     "Argentina", "Denmark", "Finland", "Greece", "India", "Israel", "Latin America", "Mexico",
-     "Norway", "Poland", "Portugal", "Russia", "Scandinavia", "Taiwan", "United Kingdom",
-     "Unknown"});
+// The territory each region is, as BCP 47 codes it: a country's ISO 3166-1
+// code, or a UN M.49 area
+constexpr auto territories = std::to_array<std::pair<std::string_view, std::string_view>>({
+    // The convention's examples
+    {"Asia", "142"},
+    {"Australia", "AU"},
+    {"Brazil", "BR"},
+    {"Canada", "CA"},
+    {"China", "CN"},
+    {"Europe", "150"},
+    {"France", "FR"},
+    {"Germany", "DE"},
+    {"Hong Kong", "HK"},
+    {"Italy", "IT"},
+    {"Japan", "JP"},
+    {"Korea", "KR"},
+    {"Netherlands", "NL"},
+    {"Spain", "ES"},
+    {"Sweden", "SE"},
+    {"USA", "US"},
+    // The others the DATs use; Redump writes the United Kingdom "UK"
+    {"Argentina", "AR"},
+    {"Denmark", "DK"},
+    {"Finland", "FI"},
+    {"Greece", "GR"},
+    {"India", "IN"},
+    {"Israel", "IL"},
+    {"Latin America", "419"},
+    {"Mexico", "MX"},
+    {"Norway", "NO"},
+    {"Poland", "PL"},
+    {"Portugal", "PT"},
+    {"Russia", "RU"},
+    {"Taiwan", "TW"},
+    {"UK", "GB"},
+    {"United Kingdom", "GB"},
+});
 
-// Redump writes the United Kingdom "UK"
-constexpr std::string_view UK = "UK";
+// The markets no territory is exactly, and the region a set doesn't know
+constexpr auto markets = std::to_array<std::pair<std::string_view, std::string_view>>({
+    // The convention's example: released in Japan, the USA and Europe
+    {"World", "World"},
+    {"Scandinavia", "Scandinavia"},
+    {"Unknown", ""},
+});
 
 // The convention's examples are ST (Sufami Turbo), MB (Multiboot), NP
 // (Nintendo Power) and Rumble Version; the rest are as the DATs write them.
@@ -92,16 +127,19 @@ bool Matches(CRegExp& re, std::string_view tag)
 }
 } // namespace
 
-std::string_view CNoIntroNaming::RegionName(std::string_view region)
+std::optional<GameRegion> CNoIntroNaming::Region(std::string_view region)
 {
-  if (region == UK)
-    return "United Kingdom";
-  for (std::string_view name : regions)
+  for (const auto& [name, code] : territories)
   {
     if (StringUtils::EqualsNoCase(name, region))
-      return name;
+      return GameRegion::Make(code);
   }
-  return {};
+  for (const auto& [name, market] : markets)
+  {
+    if (StringUtils::EqualsNoCase(name, region))
+      return GameRegion::Make({}, market);
+  }
+  return std::nullopt;
 }
 
 bool CNoIntroNaming::IsLanguage(std::string_view code)
