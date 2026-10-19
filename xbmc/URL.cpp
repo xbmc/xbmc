@@ -8,15 +8,13 @@
 
 #include "URL.h"
 
-#include "FileItem.h"
-#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/File.h"
-#include "filesystem/StackDirectory.h"
 #include "network/Network.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/URIRedactor.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #ifndef TARGET_POSIX
@@ -25,7 +23,6 @@
 
 #include <array>
 #include <string>
-#include <vector>
 
 #include <fmt/xchar.h>
 
@@ -427,84 +424,7 @@ std::string CURL::GetWithoutOptions() const
 
 std::string CURL::GetWithoutUserDetails(bool redact) const
 {
-  std::string strURL;
-
-  if (IsProtocol("stack"))
-  {
-    CFileItemList items;
-    XFILE::CStackDirectory dir;
-    dir.GetDirectory(*this, items);
-    std::vector<std::string> newItems;
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      CURL url(items[i]->GetPath());
-      items[i]->SetPath(url.GetWithoutUserDetails(redact));
-      newItems.push_back(items[i]->GetPath());
-    }
-    dir.ConstructStackPath(newItems, strURL);
-    return strURL;
-  }
-
-  unsigned int sizeneed = m_strProtocol.length() + m_strHostName.length() + m_strFileName.length() +
-                          m_strOptions.length() + m_strProtocolOptions.length() + 10;
-
-  if (redact && !m_strUserName.empty())
-  {
-    sizeneed += sizeof("USERNAME");
-    if (!m_strPassword.empty())
-      sizeneed += sizeof(":PASSWORD@");
-    if (!m_strDomain.empty())
-      sizeneed += sizeof("DOMAIN;");
-  }
-
-  strURL.reserve(sizeneed);
-
-  if (m_strProtocol.empty())
-    return m_strFileName;
-
-  strURL = m_strProtocol;
-  strURL += "://";
-
-  if (redact && !m_strUserName.empty())
-  {
-    if (!m_strDomain.empty())
-      strURL += "DOMAIN;";
-    strURL += "USERNAME";
-    if (!m_strPassword.empty())
-      strURL += ":PASSWORD";
-    strURL += "@";
-  }
-
-  if (!m_strHostName.empty())
-  {
-    std::string strHostName;
-
-    if (URIUtils::HasParentInHostname(*this))
-      strHostName = CURL(m_strHostName).GetWithoutUserDetails();
-    else
-      strHostName = m_strHostName;
-
-    if (HasEncodedHostname())
-      strHostName = Encode(strHostName);
-
-    if (HasPort())
-    {
-      protectIPv6(strHostName);
-      strURL += strHostName + StringUtils::Format(":{}", m_iPort);
-    }
-    else
-      strURL += strHostName;
-
-    strURL += "/";
-  }
-  strURL += m_strFileName;
-
-  if (!m_strOptions.empty())
-    strURL += m_strOptions;
-  if (!m_strProtocolOptions.empty())
-    strURL += "|" + m_strProtocolOptions;
-
-  return strURL;
+  return CURIRedactor::GetWithoutUserDetails(*this, redact);
 }
 
 std::string CURL::GetWithoutFilename() const
@@ -567,7 +487,7 @@ std::string CURL::GetRedacted() const
 
 std::string CURL::GetRedacted(std::string path)
 {
-  return CURL(std::move(path)).GetRedacted();
+  return CURIRedactor::GetRedacted(path);
 }
 
 bool CURL::IsLocal() const
