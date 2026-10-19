@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <ctime>
 #include <mutex>
+#include <optional>
 
 using namespace KODI::GAME;
 
@@ -50,7 +51,10 @@ constexpr unsigned int ENTRY_COUNT = 50;
 //! URL's password but not its parameters, so a token in one reaches the log
 constexpr const char* DOREQUEST_URL = "https://retroachievements.org/dorequest.php";
 
-constexpr const char* LBINFO_BODY = "r=lbinfo&i={}&u={}&t={}&c={}&o=0";
+//! Asked without the player, RetroAchievements starts at the top of the board.
+//! Asked with them, it starts at their own entry on a board they have entered.
+constexpr const char* LBINFO_TOP_BODY = "r=lbinfo&i={}&c={}&o=0";
+constexpr const char* LBINFO_PLAYER_BODY = "r=lbinfo&i={}&u={}&t={}&c=1&o=0";
 
 //! Where RetroAchievements serves player avatars from
 constexpr const char* USER_PIC_URL = "https://i.retroachievements.org/UserPic/{}.png";
@@ -67,6 +71,27 @@ constexpr const char* PROPERTY_ITEM_MEDAL = "Medal";
 constexpr const char* PROPERTY_ITEM_DATE = "Date";
 constexpr const char* PROPERTY_ITEM_DATE_RELATIVE = "DateRelative";
 constexpr const char* PROPERTY_ITEM_IS_PLAYER = "IsPlayer";
+
+/*!
+ * \brief Asks RetroAchievements for a page of a leaderboard
+ *
+ * \return The page's rows, or nothing if RetroAchievements didn't answer
+ */
+std::optional<CVariant> RequestEntries(const std::string& body)
+{
+  XFILE::CCurlFile curl;
+  curl.SetTimeout(REQUEST_TIMEOUT_SECS);
+
+  std::string response;
+  if (!curl.Post(DOREQUEST_URL, body, response))
+    return {};
+
+  CVariant data;
+  if (!CJSONVariantParser::Parse(response, data) || !data["Success"].asBoolean())
+    return {};
+
+  return data["LeaderboardData"]["Entries"];
+}
 
 /*!
  * \brief Fetches one leaderboard's standings, off the GUI thread
@@ -91,62 +116,31 @@ public:
 
   bool DoWork() override
   {
-    const std::string body = StringUtils::Format(LBINFO_BODY, m_id, CURL::Encode(m_username),
-                                                 CURL::Encode(m_token), ENTRY_COUNT);
-
-    XFILE::CCurlFile curl;
-    curl.SetTimeout(REQUEST_TIMEOUT_SECS);
-
-    std::string response;
-    if (!curl.Post(DOREQUEST_URL, body, response))
+    const std::optional<CVariant> top =
+        RequestEntries(StringUtils::Format(LBINFO_TOP_BODY, m_id, ENTRY_COUNT));
+    if (!top)
       return false;
 
-    CVariant data;
-    if (!CJSONVariantParser::Parse(response, data) || !data["Success"].asBoolean())
-      return false;
+    for (auto it = top->begin_array(); it != top->end_array(); ++it)
+      m_entries.push_back(ReadEntry(*it));
 
-    const CVariant& leaderboard = data["LeaderboardData"];
-    const CVariant& entries = leaderboard["Entries"];
-
-    for (auto it = entries.begin_array(); it != entries.end_array(); ++it)
+    // Seeing where you stand is the point of looking, so the player's own entry
+    // is added when they placed below the top of the board
+    if (std::none_of(m_entries.begin(), m_entries.end(),
+                     [](const LeaderboardEntry& entry) { return entry.isPlayer; }))
     {
-      const CVariant& row = *it;
+      const std::optional<CVariant> own = RequestEntries(StringUtils::Format(
+          LBINFO_PLAYER_BODY, m_id, CURL::Encode(m_username), CURL::Encode(m_token)));
 
-      LeaderboardEntry entry;
-      entry.rank = static_cast<unsigned int>(row["Rank"].asUnsignedInteger());
-      entry.username = row["User"].asString();
-      entry.score = FormatLeaderboardScore(static_cast<int>(row["Score"].asInteger()), m_format);
-      // Sent as a unix timestamp. Shown raw it is a meaningless ten digit
-      // number, so it is turned into whatever date format the player has set.
-      entry.submitted = static_cast<std::time_t>(row["DateSubmitted"].asInteger());
-      entry.isPlayer = StringUtils::EqualsNoCase(entry.username, m_username);
+      // Kept without it, the player would read as not having entered
+      if (!own)
+        return false;
 
-      m_entries.push_back(std::move(entry));
-    }
-
-    // The player's own standing comes back separately, and is only in the rows
-    // above if they placed inside the page that was asked for. Seeing where you
-    // stand is the point of looking, so it is appended when it is not.
-    const CVariant& playerEntry = leaderboard["UserEntry"];
-    if (playerEntry.isObject() && !playerEntry["Rank"].isNull())
-    {
-      const auto rank = static_cast<unsigned int>(playerEntry["Rank"].asUnsignedInteger());
-
-      const bool alreadyListed =
-          std::any_of(m_entries.begin(), m_entries.end(),
-                      [rank](const LeaderboardEntry& e) { return e.rank == rank && e.isPlayer; });
-
-      if (!alreadyListed)
+      if (own->begin_array() != own->end_array())
       {
-        LeaderboardEntry entry;
-        entry.rank = rank;
-        entry.username = m_username;
-        entry.score =
-            FormatLeaderboardScore(static_cast<int>(playerEntry["Score"].asInteger()), m_format);
-        entry.submitted = static_cast<std::time_t>(playerEntry["DateSubmitted"].asInteger());
-        entry.isPlayer = true;
-
-        m_entries.push_back(std::move(entry));
+        LeaderboardEntry entry = ReadEntry(*own->begin_array());
+        if (entry.isPlayer)
+          m_entries.push_back(std::move(entry));
       }
     }
 
@@ -159,6 +153,19 @@ public:
   const std::vector<LeaderboardEntry>& GetEntries() const { return m_entries; }
 
 private:
+  LeaderboardEntry ReadEntry(const CVariant& row) const
+  {
+    LeaderboardEntry entry;
+    entry.rank = static_cast<unsigned int>(row["Rank"].asUnsignedInteger());
+    entry.username = row["User"].asString();
+    entry.score = FormatLeaderboardScore(static_cast<int>(row["Score"].asInteger()), m_format);
+    // Sent as a unix timestamp. Shown raw it is a meaningless ten digit
+    // number, so it is turned into whatever date format the player has set.
+    entry.submitted = static_cast<std::time_t>(row["DateSubmitted"].asInteger());
+    entry.isPlayer = StringUtils::EqualsNoCase(entry.username, m_username);
+    return entry;
+  }
+
   const unsigned int m_id;
   const std::string m_format;
   const std::string m_username;

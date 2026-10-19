@@ -368,6 +368,28 @@ TEST_F(TestLeaderboardUtils, ReadsBackWhatItKept)
   EXPECT_TRUE(back[2].isPlayer);
 }
 
+TEST_F(TestLeaderboardUtils, ForgetsStandingsKeptBeforeTheyStartedAtTheTop)
+{
+  // A file without a version holds the rows around the player, not the top
+  const std::string kept =
+      "<gameleaderboards><leaderboard id=\"7\" account=\"Sonikku\" fetched=\"" +
+      std::to_string(std::time(nullptr)) +
+      "\"><entry rank=\"679\" user=\"Sonikku\"/></leaderboard></gameleaderboards>";
+  XFILE::CFile file;
+  ASSERT_TRUE(file.OpenForWrite(CacheFile(), true));
+  file.Write(kept.data(), kept.size());
+  file.Close();
+
+  std::vector<LeaderboardEntry> back;
+  EXPECT_FALSE(LoadLeaderboardEntries(7, "Sonikku", back));
+
+  // Saving replaces that file rather than adding to it
+  SaveLeaderboardEntries(7, "Sonikku", {MakeEntry(1, "Knux", std::time(nullptr))});
+  ASSERT_TRUE(LoadLeaderboardEntries(7, "Sonikku", back));
+  ASSERT_EQ(back.size(), 1u);
+  EXPECT_EQ(back[0].rank, 1u);
+}
+
 TEST_F(TestLeaderboardUtils, KnowsNothingAboutALeaderboardItNeverSaw)
 {
   std::vector<LeaderboardEntry> back;
