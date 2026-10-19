@@ -2926,8 +2926,6 @@
       </group>
       <group id="3" label="35201">
         <setting id="gamesachievements.hardcore" type="boolean" label="35700" help="35302">
-          <!-- Shown once RetroAchievements have approved Kodi for hardcore -->
-          <visible>false</visible>
           <level>0</level>
           <default>false</default>
           <control type="toggle" />

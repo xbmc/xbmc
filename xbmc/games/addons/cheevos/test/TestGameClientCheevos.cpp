@@ -324,3 +324,19 @@ TEST_F(TestAchievementSets, BeatenOnceProgressionAndAWinAreEarned)
   EXPECT_EQ(notifications.back().description, "Super Mario Bros.");
   EXPECT_FALSE(notifications.back().withSound);
 }
+
+TEST_F(TestAchievementSets, AHardcoreUnlockDoesNotBeatTheSetAgain)
+{
+  LoadSets();
+  TriggerWin();
+  ASSERT_EQ(ToastQueue::TakeNotifications().size(), 2U);
+
+  game_rc_achievement_triggered event{};
+  event.id = 2;
+  event.title = "Achievement 2";
+  event.hardcore = true;
+  CGameClientCheevos::OnAchievementTriggered(event, m_runtime, false);
+
+  // The unlock only
+  EXPECT_EQ(ToastQueue::TakeNotifications().size(), 1U);
+}

@@ -130,22 +130,48 @@ TEST_F(TestGamesGUIInfo, MarkEarnedOnlyCountsTheFirstUnlock)
   const CDateTime laterUnlock{2026, 8, 6, 8, 15, 0};
 
   bool newlyEarned = false;
-  AchievementState state = achievementRuntime.MarkEarned(2, firstUnlock, newlyEarned);
+  AchievementState state = achievementRuntime.MarkEarned(2, firstUnlock, false, newlyEarned);
   EXPECT_TRUE(newlyEarned);
   EXPECT_EQ(state.unlockedAchievements, 2U);
   EXPECT_EQ(state.achievements[1].unlockedDate, firstUnlock);
 
   // The achievement runtime re-reports achievements earned in an earlier
   // session, which must not inflate the count or replace the unlock date
-  state = achievementRuntime.MarkEarned(2, laterUnlock, newlyEarned);
+  state = achievementRuntime.MarkEarned(2, laterUnlock, false, newlyEarned);
   EXPECT_FALSE(newlyEarned);
   EXPECT_EQ(state.unlockedAchievements, 2U);
   EXPECT_EQ(state.achievements[1].unlockedDate, firstUnlock);
 
   // An unknown ID must not change anything
-  state = achievementRuntime.MarkEarned(99, CDateTime{2026, 8, 7, 12, 0, 0}, newlyEarned);
+  state = achievementRuntime.MarkEarned(99, CDateTime{2026, 8, 7, 12, 0, 0}, false, newlyEarned);
   EXPECT_FALSE(newlyEarned);
   EXPECT_EQ(state.unlockedAchievements, 2U);
+}
+
+TEST_F(TestGamesGUIInfo, MarkEarnedInHardcoreAfterCasualIsNew)
+{
+  CAchievementRuntime achievementRuntime;
+  achievementRuntime.SetState(MakeAchievementState());
+
+  const CDateTime casualUnlock{2026, 8, 5, 19, 20, 0};
+  const CDateTime hardcoreUnlock{2026, 8, 6, 8, 15, 0};
+
+  bool newlyEarned = false;
+  AchievementState state = achievementRuntime.MarkEarned(2, casualUnlock, false, newlyEarned);
+  EXPECT_TRUE(newlyEarned);
+  EXPECT_FALSE(state.achievements[1].earnedHardcore);
+
+  // RetroAchievements counts the modes apart, so this is a new unlock, but the
+  // achievement was already counted as earned
+  state = achievementRuntime.MarkEarned(2, hardcoreUnlock, true, newlyEarned);
+  EXPECT_TRUE(newlyEarned);
+  EXPECT_TRUE(state.achievements[1].earnedHardcore);
+  EXPECT_EQ(state.unlockedAchievements, 2U);
+  EXPECT_EQ(state.achievements[1].unlockedDate, hardcoreUnlock);
+
+  state = achievementRuntime.MarkEarned(2, CDateTime{2026, 8, 7, 12, 0, 0}, true, newlyEarned);
+  EXPECT_FALSE(newlyEarned);
+  EXPECT_EQ(state.achievements[1].unlockedDate, hardcoreUnlock);
 }
 
 TEST_F(TestGamesGUIInfo, GetsRichPresenceFromAchievementState)

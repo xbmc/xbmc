@@ -115,6 +115,23 @@ public:
   bool SendCredentials();
 
   /*!
+   * \brief Whether achievements are earned in hardcore in the game being played
+   *
+   * The setting is the player's choice for every game. This is what holds for
+   * this one, which is casual if its emulator refused hardcore or the session
+   * resumed from a save state.
+   */
+  bool IsHardcoreActive() const { return m_hardcoreEnabled; }
+
+  /*!
+   * \brief Leave hardcore for the rest of this game
+   *
+   * RetroAchievements requires a session resumed from a save state to be
+   * casual. The setting is left alone, so the next game starts in hardcore.
+   */
+  void LeaveHardcore();
+
+  /*!
    * \brief Watch the achievement modes for as long as the client is loaded
    *
    * Called from CGameClient, which holds no lock at that point. It must stay
@@ -150,10 +167,11 @@ private:
   bool SetHardcoreEnabled(bool enabled);
 
   /*!
-   * \brief Turn hardcore off after the client wouldn't take it
+   * \brief Leave hardcore for this game after the client wouldn't take it
    *
    * The client plays on in casual mode, so Kodi stops enforcing hardcore and
-   * stops saying it is on.
+   * stops saying it is on. The setting is left alone: another emulator can
+   * still take it.
    */
   void DropHardcore();
 
@@ -189,6 +207,10 @@ private:
   //! Hardcore as last applied to this client. Atomic because the setting can
   //! change on the player's thread as well as Kodi's.
   std::atomic<bool> m_hardcoreEnabled{false};
+
+  //! Whether this game left hardcore, refused or resumed from a save state. It
+  //! stays casual until the player turns the setting off and on again.
+  std::atomic<bool> m_hardcoreLeft{false};
 
   //! Whether this instance is registered with the game settings. Only touched
   //! on Kodi's thread, either side of a game.

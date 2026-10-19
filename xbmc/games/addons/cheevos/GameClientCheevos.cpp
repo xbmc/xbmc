@@ -87,6 +87,15 @@ CDateTime UnlockTime(int64_t unixTime)
 
   return CDateTime::FromUTCDateTime(static_cast<time_t>(unixTime));
 }
+
+/*!
+ * \brief The loaded game's icon, which leaderboard notifications carry so they
+ *        show the game they belong to
+ */
+std::string GameIcon()
+{
+  return CServiceBroker::GetGameServices().AchievementRuntime().GetState().gameIconUrl;
+}
 } // namespace
 
 using namespace KODI;
@@ -113,7 +122,14 @@ void CGameClientCheevos::Notify(const Observable& obs, const ObservableMessage m
 
   // Only hardcore is applied as it changes. Encore is read as a game is
   // identified, and SendCredentials() sends it with the next one.
-  const bool hardcore = CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore();
+  const bool setting = CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore();
+
+  // Turning the setting off and on again asks the client afresh. Any other
+  // change leaves a game that left hardcore where it is.
+  if (!setting)
+    m_hardcoreLeft = false;
+
+  const bool hardcore = setting && !m_hardcoreLeft;
   if (m_hardcoreEnabled.exchange(hardcore) == hardcore)
     return;
 
@@ -152,6 +168,7 @@ void CGameClientCheevos::OnGameLoaded(const game_rc_game_loaded& data)
   AchievementState achievementState;
   achievementState.gameTitle = gameTitle;
   achievementState.gameId = data.game_id;
+  achievementState.gameIconUrl = SafeString(data.icon_url);
   achievementState.loaded = true;
   achievementState.achievements.reserve(std::min(achievementCount, MAX_ACHIEVEMENTS));
 
@@ -168,6 +185,7 @@ void CGameClientCheevos::OnGameLoaded(const game_rc_game_loaded& data)
     info.rarity = std::clamp(achievement.rarity, 0.0f, 100.0f);
     info.points = achievement.points;
     info.earned = achievement.unlock_state != GAME_RC_UNLOCK_STATE_LOCKED;
+    info.earnedHardcore = achievement.unlock_state == GAME_RC_UNLOCK_STATE_HARDCORE;
     if (info.earned)
       info.unlockedDate = UnlockTime(achievement.unlock_time);
 
@@ -200,13 +218,12 @@ void CGameClientCheevos::OnGameLoaded(const game_rc_game_loaded& data)
   if (achievementState.totalAchievements == 0)
     return;
 
-  // RetroAchievements asks for the mode to be shown as a game starts. The
-  // setting is the mode in force by now: resuming a save state has already
-  // dropped it to casual.
+  // RetroAchievements asks for the mode to be shown as a game starts. The mode
+  // is settled by now: resuming a save state has already dropped it to casual.
   //
   // "Hardcore mode: {0:d} of {1:d} achievements unlocked" or
   // "{0:d} of {1:d} achievements unlocked"
-  const bool hardcore = CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore();
+  const bool hardcore = m_hardcoreEnabled;
   const std::string description =
       StringUtils::Format(Localize(hardcore ? 35703 : 35284), achievementState.unlockedAchievements,
                           achievementState.totalAchievements);
@@ -234,8 +251,13 @@ void CGameClientCheevos::OnAchievementTriggered(const game_rc_achievement_trigge
   // dates from the achievement list, so a fresh unlock isn't styled differently.
   const CDateTime unlockedDate = CDateTime::GetCurrentDateTime();
 
+  const AchievementState previous = runtime.GetState();
+  const auto before = std::ranges::find(previous.achievements, data.id, &AchievementInfo::id);
+  const bool earnedBefore = before != previous.achievements.end() && before->earned;
+
   bool newlyEarned = false;
-  const AchievementState state = runtime.MarkEarned(data.id, unlockedDate, newlyEarned);
+  const AchievementState state =
+      runtime.MarkEarned(data.id, unlockedDate, data.hardcore, newlyEarned);
 
   // Encore re-arms achievements already earned, so a re-trigger is announced
   // even though the runtime has nothing left to change
@@ -263,7 +285,9 @@ void CGameClientCheevos::OnAchievementTriggered(const game_rc_achievement_trigge
                                         !title.empty() ? title : SafeString(data.description),
                                         TOAST_DISPLAY_TIME_MS, true, TOAST_MESSAGE_TIME_MS);
 
-  if (!newlyEarned)
+  // Beating a set counts achievements earned in either mode, so a hardcore
+  // unlock of one already earned can't beat it
+  if (!newlyEarned || earnedBefore)
     return;
 
   // Beaten by this unlock: the last progression achievement, or the first win
@@ -505,8 +529,9 @@ bool CGameClientCheevos::SendCredentials()
 
   CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
 
-  // Recorded whether or not anyone is signed in: the cheats go by the same
-  // setting as the game loads, and a later change is judged against this
+  // Recorded whether or not anyone is signed in: the cheats go by it as the
+  // game loads, and a later change is judged against it
+  m_hardcoreLeft = false;
   m_hardcoreEnabled = gameSettings.GetAchievementsHardcore();
 
   const std::string username = gameSettings.GetRAUsername();
@@ -570,8 +595,8 @@ void CGameClientCheevos::OnLeaderboardStarted(const game_rc_leaderboard& data)
   CLog::Log(LOGINFO, "CGameClientCheevos: leaderboard {} \"{}\" started", data.id, title);
 
   // "Leaderboard attempt started"
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, Localize(35354), title,
-                                        TOAST_DISPLAY_TIME_MS, false, TOAST_MESSAGE_TIME_MS);
+  CGUIDialogKaiToast::QueueNotification(GameIcon(), Localize(35354), title, TOAST_DISPLAY_TIME_MS,
+                                        false, TOAST_MESSAGE_TIME_MS);
 }
 
 void CGameClientCheevos::OnLeaderboardFailed(const game_rc_leaderboard& data)
@@ -581,8 +606,8 @@ void CGameClientCheevos::OnLeaderboardFailed(const game_rc_leaderboard& data)
   CLog::Log(LOGINFO, "CGameClientCheevos: leaderboard {} \"{}\" failed", data.id, title);
 
   // "Leaderboard attempt failed"
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, Localize(35355), title,
-                                        TOAST_DISPLAY_TIME_MS, false, TOAST_MESSAGE_TIME_MS);
+  CGUIDialogKaiToast::QueueNotification(GameIcon(), Localize(35355), title, TOAST_DISPLAY_TIME_MS,
+                                        false, TOAST_MESSAGE_TIME_MS);
 }
 
 void CGameClientCheevos::OnLeaderboardSubmitted(const game_rc_leaderboard& data)
@@ -598,8 +623,8 @@ void CGameClientCheevos::OnLeaderboardSubmitted(const game_rc_leaderboard& data)
       value.empty() ? title : StringUtils::Format("{}  ·  {}", value, title);
 
   // "Leaderboard attempt submitted"
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, Localize(35356), message,
-                                        TOAST_DISPLAY_TIME_MS, false, TOAST_MESSAGE_TIME_MS);
+  CGUIDialogKaiToast::QueueNotification(GameIcon(), Localize(35356), message, TOAST_DISPLAY_TIME_MS,
+                                        false, TOAST_MESSAGE_TIME_MS);
 }
 
 void CGameClientCheevos::OnLeaderboardTracker(const game_rc_leaderboard_tracker& data, bool show)
@@ -650,8 +675,8 @@ void CGameClientCheevos::OnLeaderboardScoreboard(const game_rc_leaderboard_score
     message += StringUtils::Format("  ·  {}", StringUtils::Format(Localize(35358), best));
 
   // "Leaderboard attempt submitted"
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, Localize(35356), message,
-                                        TOAST_DISPLAY_TIME_MS, false, TOAST_MESSAGE_TIME_MS);
+  CGUIDialogKaiToast::QueueNotification(GameIcon(), Localize(35356), message, TOAST_DISPLAY_TIME_MS,
+                                        false, TOAST_MESSAGE_TIME_MS);
 }
 
 void CGameClientCheevos::OnReset()
@@ -712,13 +737,26 @@ bool CGameClientCheevos::SetHardcoreEnabled(bool enabled)
   return false;
 }
 
+void CGameClientCheevos::LeaveHardcore()
+{
+  m_hardcoreLeft = true;
+  if (!m_hardcoreEnabled.exchange(false))
+    return;
+
+  // In the order Notify() turns it off: the client refuses cheats until it has
+  // heard
+  SetHardcoreEnabled(false);
+  m_gameClient.Cheats().SetHardcore(false);
+}
+
 void CGameClientCheevos::DropHardcore()
 {
-  CLog::Log(LOGINFO, "GAME: {} refused hardcore mode, turning it off", m_gameClient.ID());
+  CLog::Log(LOGINFO, "GAME: {} refused hardcore mode, playing this game in casual mode",
+            m_gameClient.ID());
 
+  m_hardcoreLeft = true;
   m_hardcoreEnabled = false;
   m_gameClient.Cheats().SetHardcore(false);
-  CServiceBroker::GetGameServices().GameSettings().SetAchievementsHardcore(false);
 
   // "Hardcore mode turned off. Achievements will be earned in casual mode."
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, m_gameClient.Name(),

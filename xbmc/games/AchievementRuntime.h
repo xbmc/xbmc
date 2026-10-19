@@ -65,6 +65,14 @@ struct AchievementInfo
   bool earned{false};
 
   /*!
+   * \brief Whether it was earned in hardcore mode
+   *
+   * RetroAchievements counts the modes separately: an achievement earned in
+   * casual mode can still be earned again in hardcore.
+   */
+  bool earnedHardcore{false};
+
+  /*!
    * \brief Progress towards the achievement from 0.0 to 100.0, or 0.0 if the
    *        achievement doesn't count anything
    *
@@ -269,6 +277,7 @@ struct AchievementState
 {
   std::string gameTitle;
   unsigned int gameId{0};
+  std::string gameIconUrl;
   unsigned int totalAchievements{0};
   unsigned int unlockedAchievements{0};
   std::string richPresence;
@@ -332,10 +341,12 @@ public:
    * \param unlockedDate When it was earned. Carried as a date rather than
    *        formatted text so the runtime stays free of locale handling and
    *        the formatting happens where it is displayed.
+   * \param hardcore True if it was earned in hardcore mode
    * \param[out] newlyEarned True if this changed the achievement's state
    */
   AchievementState MarkEarned(unsigned int achievementId,
                               const CDateTime& unlockedDate,
+                              bool hardcore,
                               bool& newlyEarned);
   /*!
    * \brief Record the loaded game's sets, and each achievement's set and type
