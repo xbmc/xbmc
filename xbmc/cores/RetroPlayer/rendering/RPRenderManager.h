@@ -313,6 +313,14 @@ private:
   //! the last frame's size, not the space available.
   unsigned int m_hwBufferWidth{0};
   unsigned int m_hwBufferHeight{0};
+
+  //! \brief The client's framebuffer and its allocated size, for a client that
+  //! asks for it from a thread of its own while one of its calls holds m_hwMutex
+  std::mutex m_framebufferMutex;
+  uintptr_t m_framebuffer{0};
+  unsigned int m_framebufferWidth{0};
+  unsigned int m_framebufferHeight{0};
+
   uintptr_t m_loggedFramebuffer{0};
   bool m_loggedHardwareCapture{false};
   std::vector<IRenderBuffer*> m_renderBuffers;
