@@ -8,7 +8,12 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
+#include "filesystem/FileFactory.h"
+#include "filesystem/IDirectory.h"
+#include "filesystem/IFile.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "interfaces/legacy/WindowInterceptor.h"
 #include "settings/AdvancedSettings.h"
@@ -17,6 +22,7 @@
 #include "utils/URIUtils.h"
 
 #include <array>
+#include <memory>
 #include <utility>
 
 #include <gtest/gtest.h>
@@ -499,6 +505,10 @@ class TestBasePath : public testing::Test, public testing::WithParamInterface<Te
 };
 
 const TestPathData Paths[] = {
+    {.path = "folder/disc/movie.mkv", .parent = "folder/disc/", .base = "folder/disc/"},
+#ifdef TARGET_WINDOWS
+    {.path = "folder\\disc\\movie.mkv", .parent = "folder\\disc/", .base = "folder\\disc\\"},
+#endif
     // Linux path tests
     {.path = "/home/user/movies/movie/file.iso",
      .parent = "/home/user/movies/movie/",
@@ -1031,6 +1041,91 @@ TEST_F(TestURIUtils, SubstitutePath)
   ref = "c:\\no\\translation path";
   var = URIUtils::SubstitutePath(ref, true);
   EXPECT_EQ(ref, var);
+}
+
+TEST_F(TestURIUtils, SubstitutePathPreservesExplicitIntent)
+{
+  auto& substitutions =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pathSubstitutions;
+  substitutions.clear();
+  for (const bool haveSubstitutions : {false, true})
+  {
+    SCOPED_TRACE(haveSubstitutions);
+    if (haveSubstitutions)
+      substitutions.emplace_back("/unrelated/source", "https://host/target");
+
+    for (const bool reverse : {false, true})
+    {
+      SCOPED_TRACE(reverse);
+      CURL native;
+      native.ParseNativePath("notes:2026");
+      const CURL result = URIUtils::SubstitutePath(native, reverse);
+      EXPECT_EQ("notes:2026", result.Get());
+      EXPECT_FALSE(result.IsLosslessURI());
+      EXPECT_TRUE(result.SupportsPathOperations());
+      EXPECT_TRUE(result.GetProtocol().empty());
+      EXPECT_EQ("notes:2026", result.GetFileName());
+      EXPECT_EQ("notes:2026", result.GetRawPath());
+      EXPECT_FALSE(result.HasAuthority());
+      EXPECT_FALSE(result.HasQuery());
+      EXPECT_FALSE(result.HasFragment());
+
+      for (const std::string input : {"X:/dir/file?x=1#part", "HTTP://Host/dir/file?x=1#part"})
+      {
+        SCOPED_TRACE(input);
+        CURL uri;
+        ASSERT_TRUE(uri.ParseURI(input));
+        const CURL substituted = URIUtils::SubstitutePath(uri, reverse);
+        EXPECT_EQ(input, substituted.Get());
+        EXPECT_TRUE(substituted.IsLosslessURI());
+        EXPECT_EQ(uri.GetProtocol(), substituted.GetProtocol());
+        EXPECT_EQ(uri.SupportsPathOperations(), substituted.SupportsPathOperations());
+        EXPECT_EQ(uri.GetFileName(), substituted.GetFileName());
+        EXPECT_EQ(uri.GetHostName(), substituted.GetHostName());
+        EXPECT_EQ(uri.HasAuthority(), substituted.HasAuthority());
+        EXPECT_EQ(uri.GetRawAuthority(), substituted.GetRawAuthority());
+        EXPECT_EQ("/dir/file", substituted.GetRawPath());
+        EXPECT_TRUE(substituted.HasQuery());
+        EXPECT_EQ("x=1", substituted.GetRawQuery());
+        EXPECT_TRUE(substituted.HasFragment());
+        EXPECT_EQ("part", substituted.GetRawFragment());
+      }
+    }
+  }
+}
+
+TEST_F(TestURIUtils, SubstitutePathUsesReplacementIntent)
+{
+  auto& substitutions =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pathSubstitutions;
+  substitutions.emplace_back("/local", "https://host/remote");
+  CURL native;
+  native.ParseNativePath("/local/movie name.mkv");
+  const CURL remote = URIUtils::SubstitutePath(native);
+  EXPECT_EQ("https://host/remote/movie%20name.mkv", remote.Get());
+  EXPECT_EQ("https", remote.GetProtocol());
+  EXPECT_EQ("host", remote.GetHostName());
+  EXPECT_EQ("remote/movie%20name.mkv", remote.GetFileName());
+  EXPECT_EQ("/remote/movie%20name.mkv", remote.GetRawPath());
+  EXPECT_TRUE(remote.HasAuthority());
+  EXPECT_FALSE(remote.IsLosslessURI());
+  EXPECT_TRUE(remote.SupportsPathOperations());
+
+  CURL explicitURI;
+  ASSERT_TRUE(explicitURI.ParseURI("https://host/remote/movie%20name.mkv"));
+  for (const CURL& uri : {remote, explicitURI})
+  {
+    const CURL local = URIUtils::SubstitutePath(uri, true);
+    EXPECT_EQ("/local/movie name.mkv", local.Get());
+    EXPECT_TRUE(local.GetProtocol().empty());
+    EXPECT_EQ("/local/movie name.mkv", local.GetFileName());
+    EXPECT_EQ("/local/movie name.mkv", local.GetRawPath());
+    EXPECT_FALSE(local.HasAuthority());
+    EXPECT_FALSE(local.HasQuery());
+    EXPECT_FALSE(local.HasFragment());
+    EXPECT_FALSE(local.IsLosslessURI());
+    EXPECT_TRUE(local.SupportsPathOperations());
+  }
 }
 
 TEST_F(TestURIUtils, IsAddonsPath)
@@ -2709,4 +2804,283 @@ TEST_F(TestURIUtils, DecodePathEscapes)
 
   EXPECT_EQ("C++ Collection", URIUtils::DecodePathEscapes("C++ Collection"));
   EXPECT_EQ("C   Collection", URIUtils::URLDecode("C++ Collection"));
+}
+
+TEST_F(TestURIUtils, IdentifierPathOperationsHaveNoHierarchy)
+{
+  const std::array<std::string, 12> identifiers{
+      "data:,hello", "DATA:text/plain,http://example.test/a//b?x=1#fragment",
+      "data:text/plain,../movie.mkv", "data:text/plain,a%2Fb+%23c", "data://x/movie.mkv",
+      "data:,bad%", "data:,a|b", "urn:example:a/b?+resolver?=query#part",
+      "mailto:user@example.test", "example+v1:/host/a/movie.mkv", "example+v1:body",
+      "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"};
+  for (const auto& identifier : identifiers)
+  {
+    SCOPED_TRACE(identifier);
+    EXPECT_TRUE(URIUtils::GetFileName(identifier).empty());
+    EXPECT_TRUE(URIUtils::GetDirectory(identifier).empty());
+    EXPECT_TRUE(URIUtils::GetExtension(identifier).empty());
+    EXPECT_FALSE(URIUtils::HasExtension(identifier));
+    EXPECT_FALSE(URIUtils::HasExtension(identifier, ".mkv|.test"));
+    EXPECT_TRUE(URIUtils::SplitPath(identifier).empty());
+    std::string parent{"stale"};
+    EXPECT_FALSE(URIUtils::GetParentPath(identifier, parent));
+    EXPECT_TRUE(parent.empty());
+    std::string file{"stale"};
+    URIUtils::Split(identifier, parent, file);
+    EXPECT_TRUE(parent.empty());
+    EXPECT_TRUE(file.empty());
+    EXPECT_TRUE(URIUtils::AddFileToFolder(identifier, "child").empty());
+    EXPECT_TRUE(URIUtils::AddFileToFolder(identifier, "child", "leaf").empty());
+    EXPECT_FALSE(URIUtils::HasSlashAtEnd(identifier, true));
+    std::string modified{identifier};
+    URIUtils::AddSlashAtEnd(modified);
+    EXPECT_EQ(identifier, modified);
+    URIUtils::RemoveSlashAtEnd(modified);
+    EXPECT_EQ(identifier, modified);
+    URIUtils::RemoveExtension(modified);
+    EXPECT_EQ(identifier, modified);
+    EXPECT_EQ(identifier, URIUtils::ReplaceExtension(identifier, ".avi"));
+    EXPECT_EQ(identifier, URIUtils::GetRealPath(identifier));
+    EXPECT_EQ(identifier, URIUtils::CanonicalizePath(identifier, '/'));
+    EXPECT_EQ(identifier, URIUtils::FixSlashesAndDups(identifier));
+    EXPECT_EQ(identifier, URIUtils::SanitiseUrlEncoding(identifier));
+    EXPECT_EQ(identifier, URIUtils::GetDecodedPath(identifier));
+    EXPECT_EQ(identifier, CUtil::ValidatePath(identifier, true));
+    EXPECT_TRUE(URIUtils::ChangeBasePath(identifier, "file.mkv", "/tmp").empty());
+    EXPECT_TRUE(URIUtils::ChangeBasePath("/tmp", "file.mkv", identifier).empty());
+    std::string base{"stale"};
+    CUtil::GetVideoBasePathAndFileName(identifier, base, file);
+    EXPECT_TRUE(base.empty());
+    EXPECT_TRUE(file.empty());
+  }
+}
+
+TEST_F(TestURIUtils, MagnetMemberNavigationPreservesIdentity)
+{
+  // Kodi member paths extend BEP 9; repeated trackers remain intact during navigation.
+  // https://www.bittorrent.org/beps/bep_0009.html#magnet-uri-format
+  const std::string identity =
+      "?xt=urn:btih:0123456789abcdef0123456789abcdef01234567&tr=https://one.test/"
+      "&tr=https%3a%2F%2Ftwo.test&empty=&flag&&x=a+b#part";
+  const std::string member = "magnet:/dir/movie.mkv" + identity;
+  EXPECT_EQ("movie.mkv", URIUtils::GetFileName(member));
+  EXPECT_EQ(".mkv", URIUtils::GetExtension(member));
+  EXPECT_EQ("magnet:/dir/" + identity, URIUtils::GetDirectory(member));
+  EXPECT_EQ("magnet:/dir/" + identity, URIUtils::GetParentPath(member));
+  EXPECT_EQ("magnet:/" + identity, URIUtils::GetParentPath("magnet:/dir/" + identity));
+  EXPECT_TRUE(URIUtils::GetParentPath("magnet:/" + identity).empty());
+  EXPECT_TRUE(URIUtils::GetParentPath("magnet:" + identity).empty());
+  EXPECT_EQ(member, URIUtils::AddFileToFolder("magnet:/dir" + identity, "movie.mkv"));
+  EXPECT_EQ("magnet:/dir/movie.avi" + identity, URIUtils::ReplaceExtension(member, ".avi"));
+  std::string parent;
+  std::string filename;
+  URIUtils::Split(member, parent, filename);
+  EXPECT_EQ("magnet:/dir/" + identity, parent);
+  EXPECT_EQ("movie.mkv", filename);
+  std::string folder = "magnet:/dir" + identity;
+  URIUtils::AddSlashAtEnd(folder);
+  EXPECT_EQ("magnet:/dir/" + identity, folder);
+  EXPECT_TRUE(URIUtils::HasSlashAtEnd(folder, true));
+  URIUtils::RemoveSlashAtEnd(folder);
+  EXPECT_EQ("magnet:/dir" + identity, folder);
+  CUtil::GetVideoBasePathAndFileName(member, parent, filename);
+  EXPECT_EQ("magnet:/dir/" + identity, parent);
+  EXPECT_EQ("movie", filename);
+}
+
+TEST_F(TestURIUtils, MagnetMemberAncestryPreservesIdentity)
+{
+  const std::string identity =
+      "?xt=urn:btih:0123456789012345678901234567890123456789&tr=one&tr=two&x=a+b%2f#part";
+  const std::string child = "magnet:/dir/movie.mkv" + identity;
+  const std::string parent = URIUtils::GetParentPath(child);
+  ASSERT_EQ("magnet:/dir/" + identity, parent);
+  EXPECT_TRUE(URIUtils::PathHasParent(child, parent));
+  EXPECT_TRUE(URIUtils::PathHasParent(child, "magnet:/dir" + identity));
+  EXPECT_TRUE(URIUtils::PathHasParent(child, "magnet:/" + identity));
+  EXPECT_TRUE(URIUtils::PathHasParent(parent, URIUtils::GetParentPath(parent)));
+  EXPECT_TRUE(URIUtils::PathHasParent(child, child));
+  EXPECT_TRUE(URIUtils::PathHasParent(parent, parent));
+  EXPECT_TRUE(URIUtils::PathHasParent("magnet:/" + identity, "magnet:/" + identity));
+  EXPECT_FALSE(URIUtils::PathHasParent("magnet:/" + identity, parent));
+  EXPECT_FALSE(URIUtils::PathHasParent("magnet:/dir" + identity, parent));
+  EXPECT_FALSE(URIUtils::PathHasParent("magnet:/directory/movie.mkv" + identity, parent));
+  EXPECT_FALSE(URIUtils::PathHasParent(child, "magnet:" + identity));
+
+  for (const std::string differentIdentity :
+       {"?xt=urn:btih:1123456789012345678901234567890123456789&tr=one&tr=two&x=a+b%2f#part",
+        "?xt=urn:btih:0123456789012345678901234567890123456789&tr=two&tr=one&x=a+b%2f#part",
+        "?xt=urn:btih:0123456789012345678901234567890123456789&tr=one&tr=two&x=a%20b%2f#part",
+        "?xt=urn:btih:0123456789012345678901234567890123456789&tr=one&tr=two&x=a+b%2F#part",
+        "?xt=urn:btih:0123456789012345678901234567890123456789&tr=one&tr=two&x=a+b%2f#other"})
+  {
+    SCOPED_TRACE(differentIdentity);
+    EXPECT_FALSE(URIUtils::PathHasParent(child, "magnet:/dir/" + differentIdentity));
+  }
+}
+
+TEST_F(TestURIUtils, MagnetMemberAncestryPreservesComponentPresence)
+{
+  for (const std::string suffix : {"", "?", "#", "?#", "?x=1&x=2+a%2f#part"})
+  {
+    SCOPED_TRACE(suffix);
+    const std::string child = "magnet:/dir/file" + suffix;
+    EXPECT_TRUE(URIUtils::PathHasParent(child, URIUtils::GetParentPath(child)));
+    EXPECT_TRUE(URIUtils::PathHasParent(child, "magnet:/" + suffix));
+  }
+  EXPECT_FALSE(URIUtils::PathHasParent("magnet:/dir/file?", "magnet:/dir/"));
+  EXPECT_FALSE(URIUtils::PathHasParent("magnet:/dir/file", "magnet:/dir/?"));
+  EXPECT_FALSE(URIUtils::PathHasParent("magnet:/dir/file#", "magnet:/dir/"));
+  EXPECT_FALSE(URIUtils::PathHasParent("magnet:/dir/file", "magnet:/dir/#"));
+}
+
+TEST_F(TestURIUtils, IdentifierPrefixesHaveNoAncestry)
+{
+  for (const std::string identifier :
+       {"data:,body", "urn:example:body", "unknown+v1:body", "unknown+v1:/host/dir",
+        "magnet:?xt=urn:btih:0123456789012345678901234567890123456789"})
+  {
+    SCOPED_TRACE(identifier);
+    EXPECT_FALSE(URIUtils::PathHasParent(identifier + "/child", identifier));
+    EXPECT_TRUE(URIUtils::PathHasParent(identifier, identifier));
+  }
+  EXPECT_TRUE(URIUtils::PathHasParent("/dir/file", "/dir"));
+  EXPECT_TRUE(URIUtils::PathHasParent("/dir/file", "/dir/file"));
+  EXPECT_FALSE(URIUtils::PathHasParent("/directory/file", "/dir"));
+  EXPECT_TRUE(URIUtils::PathHasParent("http://host/dir/file", "http://host/dir"));
+  EXPECT_FALSE(URIUtils::PathHasParent("http://host/directory/file", "http://host/dir"));
+}
+
+TEST_F(TestURIUtils, URIComponentsAreNotReparsedAsLocations)
+{
+  const std::string path = "http://host/notes:2026/movie.mkv";
+  EXPECT_EQ("movie.mkv", URIUtils::GetFileName(path));
+  EXPECT_EQ(".mkv", CURL{path}.GetExtension());
+  EXPECT_EQ("http://host/notes:2026/movie.avi", URIUtils::ReplaceExtension(path, ".avi"));
+  EXPECT_EQ("http://host/notes:2026/", URIUtils::GetParentPath(path));
+  EXPECT_EQ("http://host/notes:2026/movie.mkv",
+            URIUtils::AddFileToFolder("http://host/notes:2026", "movie.mkv"));
+  EXPECT_EQ("b", URIUtils::GetFileName("/tmp/a://b"));
+  EXPECT_EQ("notes:2026", URIUtils::GetFileName("./notes:2026"));
+  EXPECT_EQ("file?#%+", URIUtils::GetFileName("file?#%+"));
+}
+
+TEST_F(TestURIUtils, CommonMagnetPathPreservesSharedIdentity)
+{
+  const std::string identity = "?xt=urn:btih:0123456789abcdef0123456789abcdef01234567&tr=one&tr=two#part";
+  std::string parent = "magnet:/dir/a.mkv" + identity;
+  URIUtils::GetCommonPath(parent, "magnet:/dir/b.mkv" + identity);
+  EXPECT_EQ("magnet:/dir/" + identity, parent);
+  URIUtils::GetCommonPath(parent,
+                         "magnet:/dir/c.mkv?xt=urn:btih:1123456789abcdef0123456789abcdef01234567");
+  EXPECT_TRUE(parent.empty());
+}
+
+TEST_F(TestURIUtils, ValidatePathPreservesAuthorityFreeURIBytes)
+{
+  const std::string path = "http:/a//b?x=one//two#part//three";
+  EXPECT_EQ(path, CUtil::ValidatePath(path, true));
+  EXPECT_EQ("http://host/path", CUtil::ValidatePath(R"(http:\\host\path)", true));
+}
+
+TEST_F(TestURIUtils, DecodingPreservesAuthorityFreeURIBytes)
+{
+  const std::string path = "http:/a%20b?x=%2F+%25#part%23";
+  EXPECT_EQ(path, URIUtils::GetDecodedPath(path));
+  EXPECT_EQ(path, URIUtils::SanitiseUrlEncoding(path));
+}
+
+TEST_F(TestURIUtils, UnsupportedIdentifiersHaveNoLocalFactoryFallback)
+{
+  for (const std::string identifier :
+       {"data:,movie.zip", "data://host/movie.zip", "urn:example:movie.zip",
+        "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567",
+        "unknown+v1:movie.zip"})
+  {
+    SCOPED_TRACE(identifier);
+    const CURL url{identifier};
+    const std::unique_ptr<IFile> file{CFileFactory::CreateLoader(url)};
+    EXPECT_EQ(nullptr, file);
+    const std::unique_ptr<IDirectory> directory{CDirectoryFactory::Create(url)};
+    EXPECT_EQ(nullptr, directory);
+  }
+}
+
+TEST_F(TestURIUtils, LegacyDirectoryPreservesSourceAuthority)
+{
+  EXPECT_EQ("iso9660://path/in/video_ts.txt/",
+            URIUtils::AppendSlash("iso9660://path/in/video_ts.txt\\"));
+  EXPECT_EQ("ftp://user;pass@host:77/", URIUtils::GetDirectory("ftp://user;pass@host:77/"));
+  EXPECT_EQ("http://", URIUtils::GetDirectory("http://user;pass@host:123"));
+  const std::string path = "ftp://user;pass@host:77/dir/movie.mkv|seekable=0";
+  EXPECT_EQ("ftp://user;pass@host:77/dir/|seekable=0", URIUtils::GetDirectory(path));
+  std::string directory;
+  std::string filename;
+  URIUtils::Split(path, directory, filename);
+  EXPECT_EQ("ftp://user;pass@host:77/dir/", directory);
+  EXPECT_EQ("movie.mkv", filename);
+  URIUtils::Split("http://user;pass@host:123/dir/movie.mkv?next=/other/file", directory, filename);
+  EXPECT_EQ("http://user;pass@host:123/dir/", directory);
+  EXPECT_EQ("movie.mkv", filename);
+  EXPECT_EQ("special://home/a?b/", URIUtils::GetDirectory("special://home/a?b/leaf"));
+  EXPECT_EQ("file:///tmp/a?b/", URIUtils::GetDirectory("file:///tmp/a?b/leaf"));
+}
+
+TEST_F(TestURIUtils, LegacyDirectoryRetainsProtocolFilenameDelimiters)
+{
+  for (const auto& [location, expectedDirectory] :
+       std::array<std::pair<std::string, std::string>, 4>{{
+           {"smb://host/share/album#1/movie.mkv", "smb://host/share/album#1/"},
+           {"sftp://host/dir?name/movie.mkv", "sftp://host/dir?name/"},
+           {"ftp://host/dir#name/movie.mkv?cache=1", "ftp://host/dir#name/"},
+           {"nfs://host/share/#recently-added/movie.mkv", "nfs://host/share/#recently-added/"}}})
+  {
+    SCOPED_TRACE(location);
+    EXPECT_EQ(expectedDirectory, URIUtils::GetDirectory(location));
+    std::string directory;
+    std::string filename;
+    URIUtils::Split(location, directory, filename);
+    EXPECT_EQ(expectedDirectory, directory);
+    EXPECT_EQ("movie.mkv", filename);
+  }
+}
+
+TEST_F(TestURIUtils, SplitRetainsLegacyAdapterFilenames)
+{
+  std::string directory;
+  std::string filename;
+  URIUtils::Split("pvr://guide", directory, filename);
+  EXPECT_EQ("guide", filename);
+  URIUtils::Split("iso9660://path\\in\\video_ts.iso\\file.iso", directory, filename);
+  EXPECT_EQ("file.iso", filename);
+}
+
+TEST_F(TestURIUtils, CustomVFSAndPlaylistNavigation)
+{
+  for (const std::string scheme : {"custom+vfs", "playlistmusic", "playlistvideo"})
+  {
+    SCOPED_TRACE(scheme);
+    const std::string root = scheme + "://host/";
+    const std::string file = root + "dir/movie.mkv";
+    EXPECT_EQ("movie.mkv", URIUtils::GetFileName(file));
+    EXPECT_EQ(".mkv", URIUtils::GetExtension(file));
+    EXPECT_EQ(root + "dir/", URIUtils::GetDirectory(file));
+    EXPECT_EQ(root + "dir/", URIUtils::GetParentPath(file));
+    EXPECT_EQ(file, URIUtils::AddFileToFolder(root + "dir", "movie.mkv"));
+    EXPECT_TRUE(URIUtils::PathHasParent(file, root + "dir/"));
+  }
+}
+
+TEST_F(TestURIUtils, LosslessNavigationRetainsEmptyDelimitersAndEscapes)
+{
+  for (const std::string suffix : {"?", "#", "?#", "?x=%2f&x=+&flag&&#%2F"})
+  {
+    const std::string root = "magnet:/notes:2026/%3F%23/";
+    const std::string file = root + "movie.mkv" + suffix;
+    EXPECT_EQ(root + suffix, URIUtils::GetParentPath(file));
+    EXPECT_EQ(root + suffix, URIUtils::GetDirectory(file));
+    EXPECT_EQ(file, URIUtils::AddFileToFolder(root + suffix, "movie.mkv"));
+    EXPECT_EQ(root + "movie.avi" + suffix, URIUtils::ReplaceExtension(file, ".avi"));
+  }
 }

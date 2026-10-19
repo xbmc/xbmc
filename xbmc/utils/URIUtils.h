@@ -27,6 +27,16 @@ enum class LanCheckMode
   ANY_PRIVATE_SUBNET
 };
 
+/*!
+ * \brief Kodi mixed native-path/URI operations, separate from strict URI syntax.
+ * \note Filename, extension and split operations return no result for identifiers
+ *       whose scheme has no filesystem hierarchy. Void path mutators and normalizers
+ *       leave such identifiers unchanged, including malformed candidates. Navigable
+ *       new URI forms retain raw query/fragment bytes during path changes. Returned
+ *       strings own their bytes; no URI decoding is implicit.
+ * \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-1.2.2
+ * \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-5.3
+ */
 class URIUtils
 {
 public:
@@ -44,6 +54,12 @@ public:
   static void RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings);
   static void UnregisterAdvancedSettings();
 
+  /*!
+   * \brief Return the directory of a mixed native-path/URI location.
+   * \return Empty for identifiers without filesystem-style hierarchy. New URI
+   *         forms preserve the raw query and fragment while replacing only the path.
+   * \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.3
+   */
   static std::string GetDirectory(const std::string &strFilePath);
 
   static std::string GetFileName(const CURL& url);
@@ -90,8 +106,26 @@ public:
                     std::string& strPath, std::string& strFileName);
   static std::vector<std::string> SplitPath(const std::string& strPath);
 
+  /*! \brief Retain the common directory of two mixed native-path/URI locations.
+   *  \param parent Receives the common path, or is cleared if either URI has no hierarchy.
+   *  \param path The other location to compare with parent.
+   *  \note Kodi identity policy requires new URI forms to have matching schemes
+   *        and raw authority, query, and fragment; differing identities have no common path.
+   *  \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3
+   */
   static void GetCommonPath(std::string& parent, std::string_view path);
   static std::string GetParentPath(const std::string& strPath);
+  /*!
+   * \brief Navigate a mixed native-path/URI location to its parent.
+   * \param strPath Location to navigate; this does not resolve relative references.
+   * \param strParent Receives the parent, or is cleared on failure.
+   * \return False for non-file identifiers and for the root of a new URI path.
+   * \note Raw query/fragment preservation during Kodi member navigation is Kodi
+   *       policy. URN namespace-specific slashes do not establish file hierarchy.
+   * \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.3
+   * \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.4
+   * \sa https://www.rfc-editor.org/rfc/rfc8141.html#section-4.3
+   */
   static bool GetParentPath(const std::string& strPath, std::string& strParent);
 
   /*! \brief Retrieve the base path, accounting for stacks and files in rars.
@@ -223,6 +257,15 @@ public:
    */
   static std::string ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath, const bool &bAddPath = true);
 
+  /*! \brief Apply path mappings while preserving explicit intent for unchanged locations.
+   * \param url The native path or URI to substitute.
+   * \param reverse Whether to invert the configured source and target mappings.
+   * \note Kodi guarantees that an unchanged location retains its original CURL
+   *       representation. Actual replacements use the target's mixed native-path/URI
+   *       interpretation, independently of the original input mode.
+   * \sa CURL::ParseURI, CURL::ParseNativePath
+   * \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.1
+   */
   static CURL SubstitutePath(const CURL& url, bool reverse = false);
   static std::string SubstitutePath(const std::string& strPath, bool reverse = false);
 
@@ -235,14 +278,21 @@ public:
    */
   static bool IsProtocol(const std::string& url, const std::string& type);
 
-  /*! \brief Check whether a path has a given parent.
-   Comparison is case-sensitive.
+  /*! \brief Check equality or directory ancestry for mixed native-path/URI locations.
+   Comparison is case-sensitive, except for the scheme of new URI forms.
    Use IsProtocol() to compare the protocol portion only.
    \param path a std::string path.
    \param parent the string the parent of the path should be compared against.
    \param translate whether to translate any special paths into real paths
-   \return true if the path has the given parent string, false otherwise.
+   \return true for identical nonempty locations or a matching directory ancestor.
+   \note Identical non-file identifiers retain the existing equality convention;
+         distinct non-file identifiers have no ancestry. Kodi identity policy requires
+         new URI forms to match raw authority, query, and fragment, including presence,
+         before comparing raw paths at directory boundaries.
    \sa IsProtocol, PathEquals
+   \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.3
+   \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.4
+   \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.5
    */
   static bool PathHasParent(std::string path, std::string parent, bool translate = false);
 
@@ -348,7 +398,7 @@ public:
    * Resolve and remove relative directories ("/../" and "/./")
    * Will ignore slashes with other direction than specified
    * Will not resolve path starting from relative directory
-   * @warning Don't use with "protocol://path"-style URLs
+   * URI operations apply only to the path component; non-file identifiers are unchanged.
    * @param path string to process
    * @param slashCharacter character to use as directory delimiter
    * @return transformed path
@@ -360,6 +410,17 @@ public:
                                 const std::string& pathInArchive = "",
                                 const std::string& password = "");
 
+  /*!
+   * \brief Append a path component to a mixed native-path/URI location.
+   * \param strFolder Location whose scheme permits filesystem-style navigation.
+   * \param strFile Path component, not a separately recognized URI.
+   * \return The combined location, or empty when the folder has no hierarchy or
+   *         a raw URI path cannot represent the supplied component.
+   * \note New URI forms preserve raw query and fragment bytes. Keeping a magnet
+   *       query during Kodi member navigation is Kodi policy; BEP 9 defines the
+   *       external empty-path identifier, not member locations.
+   * \sa https://www.bittorrent.org/beps/bep_0009.html#magnet-uri-format
+   */
   static std::string AddFileToFolder(const std::string& strFolder, const std::string& strFile);
   template<typename... T>
   static std::string AddFileToFolder(const std::string& strFolder,
@@ -367,6 +428,8 @@ public:
                                      const T&... args)
   {
     auto newPath = AddFileToFolder(strFolder, strFile);
+    if (newPath.empty())
+      return {};
     return AddFileToFolder(newPath, args...);
   }
 
@@ -398,7 +461,9 @@ public:
    for file paths and host names (in case of VFS paths).
 
    \param path Path to be cleaned up
-   \return Actual path without any "." or ".."
+   \return Actual path without any "." or "..", or the unchanged non-file identifier.
+   \note Only explicit Kodi nested-location wrappers recurse into their hostname;
+         new URI forms change their path without altering raw query or fragment.
    */
   static std::string GetRealPath(const std::string &path);
 
