@@ -62,7 +62,11 @@ constexpr const char* DOREQUEST_URL = "https://retroachievements.org/dorequest.p
 
 constexpr const char* PATCH_BODY = "r=patch&u={}&t={}&g={}";
 
-constexpr const char* LBINFO_BODY = "r=lbinfo&i={}&u={}&t={}&c=1&o=0";
+//! Asked without the player, RetroAchievements starts at the top of the board.
+//! Asked with them, it starts at their own entry on a board they have entered,
+//! and never gives their standing apart from the rows.
+constexpr const char* LBINFO_TOP_BODY = "r=lbinfo&i={}&c=1&o=0";
+constexpr const char* LBINFO_PLAYER_BODY = "r=lbinfo&i={}&u={}&t={}&c=1&o=0";
 
 /*!
  * \brief Fetches which leaderboards a game has, off the GUI thread
@@ -168,39 +172,41 @@ public:
 
   bool DoWork() override
   {
-    const std::string body =
-        StringUtils::Format(LBINFO_BODY, m_id, CURL::Encode(m_username), CURL::Encode(m_token));
-
-    XFILE::CCurlFile curl;
-    curl.SetTimeout(REQUEST_TIMEOUT_SECS);
-
-    std::string response;
-    if (!curl.Post(DOREQUEST_URL, body, response))
+    CVariant leaderboard;
+    if (!Request(StringUtils::Format(LBINFO_PLAYER_BODY, m_id, CURL::Encode(m_username),
+                                     CURL::Encode(m_token)),
+                 leaderboard))
       return false;
 
-    CVariant data;
-    if (!CJSONVariantParser::Parse(response, data) || !data["Success"].asBoolean())
-      return false;
-
-    const CVariant& leaderboard = data["LeaderboardData"];
     m_totalEntries = static_cast<unsigned int>(leaderboard["TotalEntries"].asUnsignedInteger());
 
     const CVariant& entries = leaderboard["Entries"];
-    if (entries.begin_array() != entries.end_array())
+    if (entries.begin_array() == entries.end_array())
+      return true;
+
+    const CVariant& first = *entries.begin_array();
+    if (!StringUtils::EqualsNoCase(first["User"].asString(), m_username))
     {
-      const CVariant& top = *entries.begin_array();
-      m_topUsername = top["User"].asString();
-      m_topScore = FormatLeaderboardScore(static_cast<int>(top["Score"].asInteger()), m_format);
+      // Not on this board, so the answer started at the top
+      SetTop(first);
+      return true;
     }
 
-    // Only present once the player has submitted to this leaderboard
-    const CVariant& playerEntry = leaderboard["UserEntry"];
-    if (playerEntry.isObject() && !playerEntry["Rank"].isNull())
+    m_playerRank = static_cast<unsigned int>(first["Rank"].asUnsignedInteger());
+    m_playerScore = FormatLeaderboardScore(static_cast<int>(first["Score"].asInteger()), m_format);
+
+    if (m_playerRank == 1)
     {
-      m_playerRank = static_cast<unsigned int>(playerEntry["Rank"].asUnsignedInteger());
-      m_playerScore =
-          FormatLeaderboardScore(static_cast<int>(playerEntry["Score"].asInteger()), m_format);
+      SetTop(first);
+      return true;
     }
+
+    if (!Request(StringUtils::Format(LBINFO_TOP_BODY, m_id), leaderboard))
+      return false;
+
+    const CVariant& top = leaderboard["Entries"];
+    if (top.begin_array() != top.end_array())
+      SetTop(*top.begin_array());
 
     return true;
   }
@@ -214,6 +220,29 @@ public:
   const std::string& GetTopScore() const { return m_topScore; }
 
 private:
+  static bool Request(const std::string& body, CVariant& leaderboard)
+  {
+    XFILE::CCurlFile curl;
+    curl.SetTimeout(REQUEST_TIMEOUT_SECS);
+
+    std::string response;
+    if (!curl.Post(DOREQUEST_URL, body, response))
+      return false;
+
+    CVariant data;
+    if (!CJSONVariantParser::Parse(response, data) || !data["Success"].asBoolean())
+      return false;
+
+    leaderboard = data["LeaderboardData"];
+    return true;
+  }
+
+  void SetTop(const CVariant& entry)
+  {
+    m_topUsername = entry["User"].asString();
+    m_topScore = FormatLeaderboardScore(static_cast<int>(entry["Score"].asInteger()), m_format);
+  }
+
   const unsigned int m_id;
   const std::string m_format;
   const std::string m_username;
