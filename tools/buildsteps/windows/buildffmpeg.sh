@@ -81,6 +81,11 @@ do_removeOption() {
 
 do_getFFmpegConfig
 
+if [ "$ENABLE_LIBOPUS" == "ON" ]; then
+  do_addOption "--enable-libopus"
+  export PKG_CONFIG_PATH="/depends/$TRIPLET/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+fi
+
 # enable OpenSSL, because schannel has issues
 do_removeOption "--enable-gnutls"
 do_addOption "--disable-gnutls"

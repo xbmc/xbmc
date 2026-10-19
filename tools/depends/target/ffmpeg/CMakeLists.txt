@@ -137,6 +137,7 @@ endif()
 
 if(ENABLE_LIBOPUS)
   list(APPEND ffmpeg_conf --enable-libopus)
+  list(APPEND env_vars "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")
 endif()
 
 if(EXTRA_FLAGS)
