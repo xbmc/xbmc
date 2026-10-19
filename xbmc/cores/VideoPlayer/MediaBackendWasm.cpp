@@ -26,15 +26,24 @@ extern "C"
 #include <libavcodec/defs.h>
 }
 
-std::unique_ptr<IMediaBackendWasm> IMediaBackendWasm::Create()
+std::vector<std::unique_ptr<IMediaBackendWasm>> IMediaBackendWasm::Create()
 {
+  std::vector<std::unique_ptr<IMediaBackendWasm>> backends;
+  // On Samsung TVs prefer the Tizen WASM Player: it decodes 4K 10-bit and H.264 High10,
+  // which the browser's MSE pipeline cannot. It drops audio while the TV shows its own
+  // volume overlay; MSE stays as a fallback.
   if (tizen_emss_available())
-    return std::make_unique<CMediaBackendEmss>();
+  {
+    backends.push_back(std::make_unique<CMediaBackendEmss>());
+    if (mse_available())
+      backends.push_back(std::make_unique<CMediaBackendMse>());
+    return backends;
+  }
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (mse_available() && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEBROWSERPLAYER))
-    return std::make_unique<CMediaBackendMse>();
-  return nullptr;
+    backends.push_back(std::make_unique<CMediaBackendMse>());
+  return backends;
 }
 
 namespace WASM_MEDIA

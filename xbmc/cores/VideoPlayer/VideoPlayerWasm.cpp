@@ -47,16 +47,24 @@ bool CVideoPlayerWasm::CanUseMediaPipeline(IMediaBackendWasm& backend)
 
 void CVideoPlayerWasm::CreatePlayers()
 {
-  // The backend depends on a setting, which can change between files.
-  std::unique_ptr<IMediaBackendWasm> backend = IMediaBackendWasm::Create();
+  // The backend depends on the file and on a setting, so it can change between files.
+  std::unique_ptr<IMediaBackendWasm> backend;
+  for (auto& candidate : IMediaBackendWasm::Create())
+  {
+    if (CanUseMediaPipeline(*candidate))
+    {
+      backend = std::move(candidate);
+      break;
+    }
+  }
   const bool subtitlesEnabled = m_VideoPlayerVideo && m_VideoPlayerVideo->IsSubtitleEnabled();
   const double subtitleDelay = m_VideoPlayerVideo ? m_VideoPlayerVideo->GetSubtitleDelay() : 0.0;
   bool replaced = false;
-  if (backend && CanUseMediaPipeline(*backend))
+  if (backend)
   {
     const bool hasAudio = m_SelectionStreams.CountType(StreamType::AUDIO);
-    // The pipeline outlives the file when a playlist moves on.
-    if (m_mediaPipeline)
+    // The pipeline outlives the file when a playlist moves on with the same backend.
+    if (m_mediaPipeline && m_mediaPipeline->Backend().Name() == backend->Name())
       m_mediaPipeline->SetHasAudio(hasAudio);
     else
     {

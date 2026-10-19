@@ -420,7 +420,8 @@ void CSettingConditions::Initialize()
 #endif
 #ifdef TARGET_WASM
   m_simpleConditions.emplace("have_wasm");
-  // Samsung TVs always play through the TV's own player.
+  // Samsung TVs choose between the TV's own player and MSE for each file, so the setting
+  // does not apply there.
   if (mse_available() && !tizen_emss_available())
     m_simpleConditions.emplace("has_browser_video_player");
 #endif
