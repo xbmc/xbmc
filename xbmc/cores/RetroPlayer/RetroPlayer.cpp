@@ -30,6 +30,7 @@
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RPStreamManager.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/GameServices.h"
@@ -49,6 +50,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -153,6 +156,20 @@ bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
 
   m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
   m_processInfo->ResetInfo();
+  // The screen's refresh rate follows its vblanks, whether or not videos are
+  // synced to the display
+  m_displayClock = std::make_unique<CVideoReferenceClock>(true);
+  m_processInfo->GetDisplayPacing().SetRefreshRateSource([clock = m_displayClock.get()]
+                                                         { return clock->GetRefreshRate(); });
+  m_processInfo->GetDisplayPacing().SetEnabled(
+      m_gameServices.GameSettings().SyncPlaybackToDisplay());
+  m_processInfo->GetDisplayPacing().SetMaxRateDifference(
+      m_gameServices.GameSettings().SyncToDisplayLimit());
+  const float pacingMarginMs =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_gamesPacingMarginMs;
+  m_processInfo->GetDisplayPacing().SetMargin(
+      std::chrono::duration_cast<CDisplayPacing::Clock::duration>(
+          std::chrono::duration<float, std::milli>(pacingMarginMs)));
 
   m_guiMessenger = std::make_unique<CGUIGameMessenger>(*m_processInfo);
   m_renderManager = std::make_unique<CRPRenderManager>(*m_processInfo);
@@ -235,6 +252,8 @@ bool CRetroPlayer::Open(const CFileItem& file, const CPlayerOptions& options)
       m_gameClient->Unload();
     m_gameClient.reset();
     m_streamManager.reset();
+    m_processInfo->GetDisplayPacing().SetRefreshRateSource({});
+    m_displayClock.reset();
   }
 
   return bSuccess;
@@ -301,6 +320,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
     m_processInfo->ResetInfo();
   }
   m_processInfo.reset();
+  m_displayClock.reset();
   CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback stopped");
   m_callback.OnPlayBackStopped();
 
@@ -730,8 +750,8 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
   {
     m_playback->Deinitialize();
     m_playback = std::make_unique<CReversiblePlayback>(
-        m_gameClient.get(), *m_renderManager, *m_guiMessenger, m_gameClient->GetFrameRate(),
-        m_gameClient->GetSerializeSize());
+        m_gameClient.get(), *m_renderManager, *m_guiMessenger, m_processInfo->GetDisplayPacing(),
+        m_gameClient->GetFrameRate(), m_gameClient->GetSerializeSize());
   }
   else
     ResetPlayback();
