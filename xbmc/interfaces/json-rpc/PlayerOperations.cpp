@@ -57,6 +57,7 @@
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
+#include <algorithm>
 #include <map>
 #include <tuple>
 
@@ -867,6 +868,45 @@ JSONRPC_STATUS CPlayerOperations::Rotate(const std::string &method, ITransportLa
   }
 }
 
+JSONRPC_STATUS CPlayerOperations::GetPlaylistPlayerName(const CVariant& option,
+                                                        const CFileItemList& items,
+                                                        int position,
+                                                        const CPlayerCoreFactory& playerCoreFactory,
+                                                        std::string& playerName)
+{
+  playerName.clear();
+  if (option.isNull())
+    return OK;
+  if (!option.isString())
+    return InvalidParams;
+
+  const std::string requestedName = option.asString();
+  if (requestedName == "default")
+    return OK;
+  if (playerCoreFactory.GetPlayerType(requestedName).empty())
+    return InvalidParams;
+
+  std::vector<std::string> possiblePlayers;
+  if (items.IsEmpty())
+    playerCoreFactory.GetPlayers(possiblePlayers);
+  else
+  {
+    // Match CPlayListPlayer::Play's position clamping in the current playlist order.
+    position = std::clamp(position, 0, items.Size() - 1);
+    playerCoreFactory.GetPlayers(*items.Get(position), possiblePlayers);
+  }
+
+  for (const auto& candidate : possiblePlayers)
+  {
+    if (StringUtils::EqualsNoCase(candidate, requestedName))
+    {
+      playerName = candidate;
+      return OK;
+    }
+  }
+  return InvalidParams;
+}
+
 JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CVariant options = parameterObject["options"];
@@ -896,9 +936,25 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     {
       case PLAYLIST::Id::TYPE_MUSIC:
       case PLAYLIST::Id::TYPE_VIDEO:
+      {
+        CFileItemList items;
+        if (optionPlayer.isString() && optionPlayer.asString() != "default")
+        {
+          CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_GET_ITEMS,
+                                                     static_cast<int>(playlistid), -1, &items);
+        }
+
+        std::string playerName;
+        const JSONRPC_STATUS status =
+            GetPlaylistPlayerName(optionPlayer, items, playlistStartPosition,
+                                  CServiceBroker::GetPlayerCoreFactory(), playerName);
+        if (status != OK)
+          return status;
+
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, static_cast<int>(playlistid),
-                                                   playlistStartPosition);
+                                                   playlistStartPosition, nullptr, playerName);
         break;
+      }
 
       case PLAYLIST::Id::TYPE_PICTURE:
       {

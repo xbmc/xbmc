@@ -14,6 +14,7 @@
 #include <string>
 
 class CVariant;
+class CPlayerCoreFactory;
 
 namespace PVR
 {
@@ -91,6 +92,13 @@ namespace JSONRPC
                                       IClient* client,
                                       const CVariant& parameterObject,
                                       CVariant& result);
+
+  protected:
+    static JSONRPC_STATUS GetPlaylistPlayerName(const CVariant& option,
+                                                const CFileItemList& items,
+                                                int position,
+                                                const CPlayerCoreFactory& playerCoreFactory,
+                                                std::string& playerName);
 
   private:
     static int GetActivePlayers();
