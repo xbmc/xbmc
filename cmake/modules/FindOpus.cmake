@@ -1,0 +1,48 @@
+#.rst:
+# FindOpus
+# --------
+# Finds the Opus library
+#
+# This will define the following target:
+#
+#   LIBRARY::Opus   - The Opus library
+
+if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libopus)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME Opus)
+  set(${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC opus)
+
+  SETUP_BUILD_VARS()
+
+  SETUP_FIND_SPECS()
+
+  SEARCH_EXISTING_PACKAGES()
+
+  if("${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION}" VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+    message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
+
+    set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
+                   -DOPUS_BUILD_PROGRAMS=OFF
+                   -DOPUS_BUILD_TESTING=OFF
+                   -DOPUS_INSTALL_PKG_CONFIG_MODULE=ON)
+
+    BUILD_DEP_TARGET()
+  endif()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
+    if(TARGET Opus::opus AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS Opus::opus)
+    elseif(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+    else()
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_TYPE LIBRARY)
+
+      SETUP_BUILD_TARGET()
+
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
+    endif()
+  endif()
+endif()

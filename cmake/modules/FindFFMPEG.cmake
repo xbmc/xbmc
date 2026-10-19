@@ -45,6 +45,16 @@ macro(buildFFMPEG)
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
   endif()
 
+  # Multichannel Opus encoding: FFmpeg's own Opus encoder stops at stereo.
+  if(CORE_SYSTEM_NAME STREQUAL wasm)
+    find_package(Opus ${SEARCH_QUIET})
+    if(NOT TARGET LIBRARY::Opus)
+      message(STATUS "opus not found, internal ffmpeg build will be missing multichannel Opus encoding!")
+    else()
+      list(APPEND FFMPEG_OPTIONS -DENABLE_LIBOPUS=ON)
+    endif()
+  endif()
+
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC ffmpeg)
 
   SETUP_BUILD_VARS()
@@ -255,6 +265,9 @@ macro(buildFFMPEG)
 
   if(TARGET LIBRARY::Dav1d)
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Dav1d)
+  endif()
+  if(TARGET LIBRARY::Opus)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Opus)
   endif()
 
   set(FFMPEG_FOUND 1)

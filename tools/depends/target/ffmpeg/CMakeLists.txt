@@ -135,6 +135,10 @@ else()
   list(APPEND ffmpeg_conf --disable-libdav1d)
 endif()
 
+if(ENABLE_LIBOPUS)
+  list(APPEND ffmpeg_conf --enable-libopus)
+endif()
+
 if(EXTRA_FLAGS)
   string(REPLACE " " ";" EXTRA_FLAGS ${EXTRA_FLAGS})
   list(APPEND ffmpeg_conf ${EXTRA_FLAGS})
