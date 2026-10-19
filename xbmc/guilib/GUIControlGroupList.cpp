@@ -440,7 +440,8 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scroller.ScrollTo(std::clamp(offset, 0.0f, std::max(m_totalSize - Size(), 0.0f)));
   if (m_scroller.IsScrolling())
     SetInvalid();
-  MarkDirtyRegion();
+  // Process() marks the control dirty while it scrolls
+  MarkDirtyRegion(DIRTY_STATE_CHILD);
 }
 
 void CGUIControlGroupList::SetScrollOffset(float offset)
