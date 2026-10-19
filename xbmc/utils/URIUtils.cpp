@@ -12,6 +12,7 @@
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
+#include "URIPolicy.h"
 #include "URL.h"
 #include "Util.h"
 #ifdef HAVE_LIBBLURAY
@@ -1335,7 +1336,7 @@ bool URIUtils::IsSmb(const std::string& strFile)
 
 bool URIUtils::IsURL(std::string_view file)
 {
-  return file.find("://") != std::string::npos;
+  return URIPolicy::IsLegacyURL(file);
 }
 
 bool URIUtils::IsFTP(const std::string& strFile)

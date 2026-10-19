@@ -13,7 +13,7 @@
 
 class CURL;
 
-/*! \brief Kodi credential removal and redaction, including resource wrappers. */
+/*! \brief Kodi credential removal and bounded inline-data redaction, including wrappers. */
 class CURIRedactor final
 {
 public:

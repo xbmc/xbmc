@@ -75,6 +75,7 @@ set(SOURCES ActorProtocol.cpp
             TimeUtils.cpp
             URI.cpp
             URIParser.cpp
+            URIPolicy.cpp
             URIRedactor.cpp
             URIUtils.cpp
             UrlOptions.cpp
@@ -194,6 +195,7 @@ set(HEADERS ActorProtocol.h
             TransformMatrix.h
             URI.h
             URIParser.h
+            URIPolicy.h
             URIRedactor.h
             URIUtils.h
             UrlOptions.h

@@ -301,6 +301,12 @@ public:
   static bool IsContainerPath(const std::string& strFile);
   static bool IsFavourite(const std::string& strFile);
   static bool IsUPnP(const std::string& strFile);
+  /*!
+   * \brief Recognize Kodi's legacy leading scheme:// form in mixed path input.
+   * \param file URI or native path; DOS paths take native precedence.
+   * \return True only when // immediately follows the leading scheme colon.
+   * \note This compatibility predicate does not validate URI syntax or imply a backend.
+   */
   static bool IsURL(std::string_view file);
   static bool IsVideoDb(const std::string& strFile);
   static bool IsAPK(const std::string& strFile);
