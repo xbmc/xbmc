@@ -169,8 +169,9 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   {
     if (smbc_lseekdir(fd, 0) < 0)
     {
+      const int seekErrno = errno;
       CLog::LogF(LOGERROR, "Unable to seek directory : '{}'\nunix_err:'{:x}' error: '{}'",
-                 CURL::GetRedacted(strAuth), errno, strerror(errno));
+                 CURL::GetRedacted(strAuth), seekErrno, strerror(seekErrno));
       return false;
     }
 
@@ -211,8 +212,9 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 
   if (smbc_closedir(fd) < 0)
   {
+    const int closeErrno = errno;
     CLog::LogF(LOGERROR, "Unable to close directory : '{}'\nunix_err:'{:x}' error: '{}'",
-               CURL::GetRedacted(strAuth), errno, strerror(errno));
+               CURL::GetRedacted(strAuth), closeErrno, strerror(closeErrno));
     return true; // we already got our listing
   }
 
@@ -261,18 +263,20 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
 
   CLog::LogFC(LOGDEBUG, LOGSAMBA, "Using authentication url {}", CURL::GetRedacted(s));
 
+  int openErrno = 0;
   {
     std::unique_lock lock(smb);
     if (!smb.IsSmbValid())
       return -1;
     fd = smbc_opendir(s.c_str());
+    openErrno = errno;
   }
 
   while (fd < 0) /* only to avoid goto in following code */
   {
     std::string cError;
 
-    if (errno == EACCES || errno == EPERM || errno == EAGAIN || errno == EINVAL)
+    if (openErrno == EACCES || openErrno == EPERM || openErrno == EAGAIN || openErrno == EINVAL)
     {
       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
       {
@@ -286,12 +290,12 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
       break;
     }
 
-    if (errno == ENODEV || errno == ENOENT)
+    if (openErrno == ENODEV || openErrno == ENOENT)
       cError = fmt::format(
           fmt::runtime(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(770)),
-          errno);
+          openErrno);
     else
-      cError = strerror(errno);
+      cError = strerror(openErrno);
 
     if (m_flags & DIR_FLAG_ALLOW_PROMPT)
       SetErrorDialog(257, cError.c_str());
@@ -302,7 +306,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   {
     // write error to logfile
     CLog::LogF(LOGERROR, "Unable to open directory : '{}'\nunix_err:'{:x}' error : '{}'",
-               CURL::GetRedacted(strAuth), errno, strerror(errno));
+               CURL::GetRedacted(strAuth), openErrno, strerror(openErrno));
   }
 
   return fd;

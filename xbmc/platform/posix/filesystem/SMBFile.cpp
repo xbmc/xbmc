@@ -821,13 +821,14 @@ bool CSMBFile::Open(const CURL& url)
 
   std::string strFileName;
   m_fd = OpenFile(url, strFileName);
+  const int openErrno = errno;
 
   CLog::Log(LOGDEBUG, "CSMBFile::Open - opened {}, fd={}", url.GetRedacted(), m_fd);
   if (m_fd == -1)
   {
     // write error to logfile
     CLog::Log(LOGERROR, "SMBFile->Open: Unable to open file : '{}'\nunix_err:'{:x}' error : '{}'",
-              CURL::GetRedacted(strFileName), errno, strerror(errno));
+              CURL::GetRedacted(strFileName), openErrno, strerror(openErrno));
     return false;
   }
 
@@ -1540,9 +1541,10 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   if (m_fd == -1)
   {
+    const int openErrno = errno;
     // write error to logfile
     CLog::Log(LOGERROR, "SMBFile->Open: Unable to open file : '{}'\nunix_err:'{:x}' error : '{}'",
-              CURL::GetRedacted(strFileName), errno, strerror(errno));
+              CURL::GetRedacted(strFileName), openErrno, strerror(openErrno));
     return false;
   }
 
