@@ -66,6 +66,16 @@ public:
     }
   }
 
+  // The error averaged so far, before the interval of Get() is over.
+  bool GetSoFar(double& error) const
+  {
+    if (!m_count)
+      return false;
+
+    error = Get();
+    return true;
+  }
+
   double GetLastError(unsigned int &time)
   {
     time = m_timer.GetStartTime().time_since_epoch().count();
