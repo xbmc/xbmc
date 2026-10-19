@@ -201,7 +201,7 @@ std::string CTextureCache::CacheImage(
     CTextureCacheJob job(url, oldDetails, knownHash);
     job.m_holdsProcessingClaim = true;
 
-    const bool success = job.CacheTexture(texture);
+    const bool success = job.CacheTexture();
     OnCachingComplete(success, &job);
     if (!success)
       return "";
@@ -216,7 +216,11 @@ std::string CTextureCache::CacheImage(
 
     if (details)
       *details = job.m_details;
-    return GetCachedPath(job.m_details.file);
+
+    const std::string cachedPath = GetCachedPath(job.m_details.file);
+    if (texture)
+      *texture = CTexture::LoadFromFile(cachedPath, idealWidth, idealHeight, aspectRatio);
+    return cachedPath;
   }
 
   // wait for currently processing job to end
