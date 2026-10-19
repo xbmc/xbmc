@@ -65,6 +65,16 @@ bool CSkinTimer::VerifyStopCondition() const
   return m_stopCondition && m_stopCondition->Get(INFO::DEFAULT_CONTEXT);
 }
 
+bool CSkinTimer::CheckStateChanged()
+{
+  const bool running = IsRunning();
+  const int elapsedSeconds = static_cast<int>(GetElapsedSeconds());
+  const bool changed = running != m_lastRunning || elapsedSeconds != m_lastElapsedSeconds;
+  m_lastRunning = running;
+  m_lastElapsedSeconds = elapsedSeconds;
+  return changed;
+}
+
 const std::string& CSkinTimer::GetName() const
 {
   return m_name;
