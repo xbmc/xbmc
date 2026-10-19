@@ -628,11 +628,12 @@ bool CAnimation::CheckCondition()
   return !m_condition || m_condition->Get(INFO::DEFAULT_CONTEXT);
 }
 
-void CAnimation::UpdateCondition(const CGUIListItem *item)
+bool CAnimation::UpdateCondition(const CGUIListItem* item)
 {
   if (!m_condition)
-    return;
+    return false;
   bool condition = m_condition->Get(INFO::DEFAULT_CONTEXT, item);
+  bool reset = false;
   if (condition && !m_lastCondition)
     QueueAnimation(ANIM_PROCESS_NORMAL);
   else if (!condition && m_lastCondition)
@@ -640,9 +641,13 @@ void CAnimation::UpdateCondition(const CGUIListItem *item)
     if (m_reversible)
       QueueAnimation(ANIM_PROCESS_REVERSE);
     else
+    {
       ResetAnimation();
+      reset = true;
+    }
   }
   m_lastCondition = condition;
+  return reset;
 }
 
 void CAnimation::SetInitialCondition()
