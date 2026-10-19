@@ -1067,7 +1067,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
           {
             playername = optionPlayer.asString();
 
-            if (playername != "default")
+            if (playername == "default")
+              playername.clear();
+            else
             {
               const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
 
