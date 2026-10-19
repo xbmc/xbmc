@@ -307,6 +307,101 @@ const MONITOR_DETAILS* CWinSystemWin10::GetDefaultMonitor() const
   return &m_displays.front();
 }
 
+CHDRCapabilities CWinSystemWin10::GetDisplayHDRCapabilities() const
+{
+  CHDRCapabilities caps;
+  if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::WindowsDeviceFamily::Xbox ||
+      !ApiInformation::IsPropertyPresent(L"Windows.Graphics.Display.Core.HdmiDisplayMode",
+                                         L"IsDolbyVisionLowLatencySupported"))
+    return caps;
+
+  try
+  {
+    const auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+    if (!hdmiInfo)
+      return caps;
+
+    for (const auto& mode : hdmiInfo.GetSupportedDisplayModes())
+    {
+      if (mode.IsDolbyVisionLowLatencySupported())
+      {
+        caps.SetDolbyVision();
+        break;
+      }
+    }
+  }
+  catch (const winrt::hresult_error& e)
+  {
+    CLog::LogF(LOGERROR, "unable to query HDMI display modes: {:#x}",
+               static_cast<uint32_t>(e.code()));
+    return {};
+  }
+  return caps;
+}
+
+bool CWinSystemWin10::SetDolbyVisionOutput(bool enabled)
+{
+  if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::WindowsDeviceFamily::Xbox ||
+      !ApiInformation::IsPropertyPresent(L"Windows.Graphics.Display.Core.HdmiDisplayMode",
+                                         L"IsDolbyVisionLowLatencySupported"))
+    return false;
+
+  // also called from the renderer's destructor
+  try
+  {
+    const auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+    if (!hdmiInfo)
+      return false;
+
+    const auto hdrOption = enabled ? HdmiDisplayHdrOption::DolbyVisionLowLatency
+                                   : (m_dolbyVisionPreviousHdrState ? HdmiDisplayHdrOption::Eotf2084
+                                                                    : HdmiDisplayHdrOption::None);
+    const auto currentMode = hdmiInfo.GetCurrentDisplayMode();
+    const auto isCurrentMode = [&](const UnsupportedDolbyVisionMode& mode)
+    {
+      return mode.width == currentMode.ResolutionWidthInRawPixels() &&
+             mode.height == currentMode.ResolutionHeightInRawPixels() &&
+             fabs(mode.refreshRate - currentMode.RefreshRate()) <= 0.00001;
+    };
+    if (enabled && isCurrentMode(m_unsupportedDolbyVisionMode))
+      return false;
+
+    for (const auto& mode : hdmiInfo.GetSupportedDisplayModes())
+    {
+      const bool supportsOption =
+          hdrOption == HdmiDisplayHdrOption::DolbyVisionLowLatency
+              ? mode.IsDolbyVisionLowLatencySupported()
+              : hdrOption != HdmiDisplayHdrOption::Eotf2084 || mode.IsSmpte2084Supported();
+      if (mode.ResolutionWidthInRawPixels() == currentMode.ResolutionWidthInRawPixels() &&
+          mode.ResolutionHeightInRawPixels() == currentMode.ResolutionHeightInRawPixels() &&
+          fabs(mode.RefreshRate() - currentMode.RefreshRate()) <= 0.00001 && supportsOption)
+      {
+        const bool hdrWasOn = DX::DeviceResources::Get()->IsHDROutput();
+        const bool success = Wait(hdmiInfo.RequestSetCurrentDisplayModeAsync(mode, hdrOption));
+        if (success)
+          m_dolbyVisionPreviousHdrState = enabled && hdrWasOn;
+        return success;
+      }
+    }
+
+    if (enabled)
+    {
+      m_unsupportedDolbyVisionMode = {currentMode.ResolutionWidthInRawPixels(),
+                                      currentMode.ResolutionHeightInRawPixels(),
+                                      currentMode.RefreshRate()};
+      CLog::LogF(LOGINFO, "no Dolby Vision output mode for {}x{} @ {:.3f}Hz",
+                 m_unsupportedDolbyVisionMode.width, m_unsupportedDolbyVisionMode.height,
+                 m_unsupportedDolbyVisionMode.refreshRate);
+    }
+  }
+  catch (const winrt::hresult_error& e)
+  {
+    CLog::LogF(LOGERROR, "unable to {} Dolby Vision output: {:#x}", enabled ? "enable" : "disable",
+               static_cast<uint32_t>(e.code()));
+  }
+  return false;
+}
+
 bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceChange /*= false*/)
 {
   const MONITOR_DETAILS* details = GetDefaultMonitor();

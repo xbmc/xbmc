@@ -107,6 +107,17 @@ CRenderInfo CRendererDXVA::GetRenderInfo()
 
 bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned orientation)
 {
+  if (picture.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    const char* primaries = av_color_primaries_name(picture.color_primaries);
+    const char* colorSpace = av_color_space_name(picture.color_space);
+    const char* transfer = av_color_transfer_name(picture.color_transfer);
+    CLog::LogF(LOGDEBUG,
+               "Dolby Vision DXVA input: primaries {}, color space {}, transfer {}, full range {}",
+               primaries ? primaries : "unknown", colorSpace ? colorSpace : "unknown",
+               transfer ? transfer : "unknown", picture.color_range == 1);
+  }
+
   if (__super::Configure(picture, fps, orientation))
   {
     m_format = picture.videoBuffer->GetFormat();

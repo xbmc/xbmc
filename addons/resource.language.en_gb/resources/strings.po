@@ -25167,7 +25167,19 @@ msgctxt "#39217"
 msgid "Best"
 msgstr ""
 
-#empty strings from id 39218 to 39899
+#. Title of the setting that chooses if the Dolby Vision extensions is used
+#: system/settings/settings.xml
+msgctxt "#39218"
+msgid "Use Dolby Vision extensions"
+msgstr ""
+
+#. Help text for setting "Dolby Vision extensions" of label #39218
+#: system/settings/settings.xml
+msgctxt "#39219"
+msgid "Use the system Dolby Vision extensions to correctly display Dolby Vision profile 5, 7 (excludes FEL reconstruction), 8 and 10 video."
+msgstr ""
+
+#empty strings from id 39220 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
