@@ -276,7 +276,9 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   {
     std::string cError;
 
-    if (openErrno == EACCES || openErrno == EPERM || openErrno == EAGAIN || openErrno == EINVAL)
+    // smbc_opendir() reports failing to parse its arguments as EINVAL + 8192 + n
+    const bool invalid = openErrno == EINVAL || openErrno >= EINVAL + 8192;
+    if (openErrno == EACCES || openErrno == EPERM || openErrno == EAGAIN || invalid)
     {
       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
       {
