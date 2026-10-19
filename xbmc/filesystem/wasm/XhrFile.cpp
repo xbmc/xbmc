@@ -220,15 +220,18 @@ CXhrFile::~CXhrFile()
   Close();
 }
 
-CXhrFile::Request CXhrFile::BuildRequest() const
+CXhrFile::Request CXhrFile::BuildRequest(const CURL& url) const
 {
   Request request;
-  request.url = m_url;
+  request.url = url.GetWithoutUserDetails();
   for (const auto& [name, value] : m_requestHeaders)
   {
     if (!name.empty())
       request.headers += name + ':' + value + '\n';
   }
+  if (!url.GetUserName().empty() && !HasHeader(m_requestHeaders, "Authorization"))
+    request.headers +=
+        "Authorization:Basic " + Base64::Encode(url.GetUserName() + ':' + url.GetPassWord()) + '\n';
   if (!m_cookie.empty())
     request.headers += "Cookie:" + m_cookie + "\n";
   if (!m_acceptEncoding.empty())
@@ -365,7 +368,7 @@ bool CXhrFile::Open(const CURL& url)
   const std::string method =
       !m_customRequest.empty() ? m_customRequest : (m_postDataSet ? "POST" : "GET");
   const std::string& body = m_postDataSet ? m_postData : std::string();
-  Request request = BuildRequest();
+  Request request = BuildRequest(CURL(m_url));
   // libcurl posts a form by default; XHR would send the bytes with no type.
   if (m_postDataSet && !HasHeader(m_requestHeaders, "Content-Type"))
     request.headers += "Content-Type:application/x-www-form-urlencoded\n";
@@ -404,8 +407,7 @@ bool CXhrFile::Open(const CURL& url)
     response.rawHeaders.clear();
   }
   ParseResponseHeaders(response.rawHeaders, m_httpHeader);
-  if (!response.responseUrl.empty())
-    m_url = response.responseUrl;
+  m_effectiveUrl = response.responseUrl.empty() ? m_url : response.responseUrl;
 
   m_rangeSupported = windowed && response.partial;
   m_fileSize = m_rangeSupported ? response.total : static_cast<int64_t>(response.bodySize);
@@ -431,9 +433,9 @@ int CXhrFile::Head(const CURL& url)
   if (!IsHttp(url))
     return 0;
   const std::string target = ApplyProtocolOptions(url);
-  const Request request = BuildRequest();
+  const Request request = BuildRequest(CURL(target));
   const int status =
-      kodi_xhr_request("HEAD", target.c_str(), nullptr, 0,
+      kodi_xhr_request("HEAD", request.url.c_str(), nullptr, 0,
                        request.headers.empty() ? nullptr : request.headers.c_str(),
                        request.userAgent.c_str(), request.referer.c_str(), request.timeout, 0);
   if (status > 0 && status < 400)
@@ -506,7 +508,7 @@ bool CXhrFile::FillWindow(int64_t position, size_t want)
     return false;
 
   const int64_t length = std::max<int64_t>(static_cast<int64_t>(want), RANGE_WINDOW_BYTES);
-  Response response = Fetch(BuildRequest(), "GET", {}, position, length);
+  Response response = Fetch(BuildRequest(CURL(m_url)), "GET", {}, position, length);
   const bool usable =
       response.status == 206 ? response.partial : response.status > 0 && response.status < 400;
   const int64_t first = response.partial ? response.first : 0;
@@ -632,6 +634,7 @@ void CXhrFile::Close()
   m_opened = false;
   m_httpResponse = -1;
   m_url.clear();
+  m_effectiveUrl.clear();
   m_redirectUrl.clear();
 }
 
@@ -650,7 +653,7 @@ const std::string CXhrFile::GetProperty(XFILE::FileProperty type, const std::str
     case FileProperty::MIME_TYPE:
       return m_httpHeader.GetMimeType();
     case FileProperty::EFFECTIVE_URL:
-      return m_url;
+      return m_effectiveUrl;
     case FileProperty::REDIRECT_URL:
       return m_redirectUrl;
     default:

@@ -76,7 +76,7 @@ private:
 
   std::string ApplyProtocolOptions(const CURL& url);
   bool ReadData(std::string& body);
-  Request BuildRequest() const;
+  Request BuildRequest(const CURL& url) const;
   Response Fetch(const Request& request,
                  const std::string& method,
                  const std::string& body,
@@ -86,7 +86,9 @@ private:
   bool FillWindow(int64_t position, size_t want);
   void DropWindow();
 
+  // Reuse the original URL so the browser applies redirect credential rules to every range.
   std::string m_url;
+  std::string m_effectiveUrl;
   std::map<std::string, std::string> m_requestHeaders;
   std::string m_userAgent;
   std::string m_referer;
