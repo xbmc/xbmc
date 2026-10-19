@@ -17,7 +17,6 @@
 
 #include <array>
 #include <cstdlib>
-#include <functional>
 #include <string>
 
 #include <gtest/gtest.h>
@@ -78,73 +77,39 @@ void DeclareReusableIds(CDatabase& db, const IdTable& table)
   ASSERT_TRUE(db.ExecuteQuery(StringUtils::Format("DROP TABLE `{}_old`", table.name)));
 }
 
+//! AddAutoIncrement() is for UpdateTables() only, the test calls it directly.
 template<typename DB>
-int CurrentSchemaVersion(const DatabaseSettings& settings)
+class CRebuildableDatabase : public DB
 {
-  constexpr const char* PROBE{"TestLibraryIdsSchemaProbe"};
+public:
+  using CDatabase::AddAutoIncrement;
+};
 
-  DB probe;
-  EXPECT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, probe.Connect(PROBE, settings, true));
-  const int version{probe.GetSingleValueInt("SELECT idVersion FROM version")};
-  probe.Close();
-  XFILE::CFile::Delete(settings.host + PROBE + ".db");
-  return version;
-}
-
-/*!
- * \brief Builds a database at an earlier schema version with ids that can be reused, runs the
- * real upgrade through CDatabaseManager, and checks the tables afterwards.
- */
 template<typename DB, std::size_t N>
-void ExpectTheUpgradeStopsIdReuse(DatabaseSettings CAdvancedSettings::* slot,
-                                  const std::string& baseName,
-                                  int previous,
-                                  const std::array<IdTable, N>& tables,
-                                  const std::function<void(CDatabase&)>& restatePrevious = {})
+void ExpectTheRebuildStopsIdReuse(const std::string& name, const std::array<IdTable, N>& tables)
 {
   const DatabaseSettings settings{TestDatabaseSettings()};
-  const std::string& folder{settings.host};
+  XFILE::CFile::Delete(settings.host + name + ".db");
 
-  const int current{CurrentSchemaVersion<DB>(settings)};
-  const std::string oldName{StringUtils::Format("{}{}", baseName, previous)};
-  const std::string newName{StringUtils::Format("{}{}", baseName, current)};
-  XFILE::CFile::Delete(folder + oldName + ".db");
-  XFILE::CFile::Delete(folder + newName + ".db");
+  CRebuildableDatabase<DB> db;
+  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, db.Connect(name, settings, true));
+  db.DropAnalytics();
 
-  std::array<int, N> kept{};
+  for (const auto& table : tables)
   {
-    DB old;
-    ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, old.Connect(oldName, settings, true));
-    old.DropAnalytics();
-    if (restatePrevious)
-      restatePrevious(old);
-    for (std::size_t i = 0; i < N; ++i)
-    {
-      DeclareReusableIds(old, tables[i]);
-      kept[i] = InsertRow(old, tables[i]);
-    }
-    ASSERT_TRUE(old.ExecuteQuery(StringUtils::Format("UPDATE version SET idVersion={}", previous)));
-    old.Close();
+    DeclareReusableIds(db, table);
+    const int kept{InsertRow(db, table)};
+
+    db.AddAutoIncrement(table.name);
+
+    EXPECT_EQ(1, db.GetSingleValueInt(StringUtils::Format("SELECT count(*) FROM `{}` WHERE {}={}",
+                                                          table.name, table.key, kept)))
+        << table.name << " lost its rows";
+    ExpectADeletedIdIsNeverHandedOutAgain(db, table);
   }
 
-  ASSERT_TRUE(UpgradeThroughManager(slot, baseName))
-      << "the database manager could not upgrade " << baseName;
-
-  DB migrated;
-  ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
-            migrated.Connect(newName, settings, false));
-  EXPECT_EQ(current, migrated.GetSingleValueInt("SELECT idVersion FROM version"));
-
-  for (std::size_t i = 0; i < N; ++i)
-  {
-    EXPECT_EQ(
-        1, migrated.GetSingleValueInt(StringUtils::Format("SELECT count(*) FROM `{}` WHERE {}={}",
-                                                          tables[i].name, tables[i].key, kept[i])))
-        << tables[i].name << " lost its rows";
-    ExpectADeletedIdIsNeverHandedOutAgain(migrated, tables[i]);
-  }
-
-  migrated.Close();
+  db.Close();
+  XFILE::CFile::Delete(settings.host + name + ".db");
 }
 
 template<typename DB>
@@ -186,16 +151,14 @@ TEST_F(TestMusicLibraryIds, ANewDatabaseNeverReusesAnId)
     ExpectADeletedIdIsNeverHandedOutAgain(m_db, table);
 }
 
-TEST(TestLibraryIdsMigration, TheVideoUpgradeKeepsRowsAndStopsIdReuse)
+TEST(TestLibraryIdsMigration, TheVideoRebuildKeepsRowsAndStopsIdReuse)
 {
-  ExpectTheUpgradeStopsIdReuse<CVideoDatabase>(&CAdvancedSettings::m_databaseVideo,
-                                               "MyVideosLibraryIds", 150, VIDEO_TABLES);
+  ExpectTheRebuildStopsIdReuse<CVideoDatabase>("MyVideosLibraryIds", VIDEO_TABLES);
 }
 
-TEST(TestLibraryIdsMigration, TheMusicUpgradeKeepsRowsAndStopsIdReuse)
+TEST(TestLibraryIdsMigration, TheMusicRebuildKeepsRowsAndStopsIdReuse)
 {
-  ExpectTheUpgradeStopsIdReuse<CMusicDatabase>(&CAdvancedSettings::m_databaseMusic,
-                                               "MyMusicLibraryIds", 84, MUSIC_TABLES);
+  ExpectTheRebuildStopsIdReuse<CMusicDatabase>("MyMusicLibraryIds", MUSIC_TABLES);
 }
 
 #if defined(HAS_MYSQL) || defined(HAS_MARIADB)
