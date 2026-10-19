@@ -904,12 +904,12 @@ void CURL::RemoveProtocolOption(const std::string& key)
 
 bool CURL::HasExtension(std::string_view extensions) const
 {
-  return SupportsPathOperations() && URIUtils::HasExtension(m_strFileName, extensions);
+  return URIUtils::HasExtension(*this, extensions);
 }
 
 std::string CURL::GetExtension() const
 {
-  return SupportsPathOperations() ? URIUtils::GetExtension(m_strFileName) : std::string{};
+  return URIUtils::GetExtension(*this);
 }
 
 bool CURL::IsStack() const

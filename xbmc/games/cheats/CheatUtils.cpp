@@ -14,5 +14,5 @@ using namespace KODI::GAME;
 
 std::string CCheatUtils::GetCheatFileName(const std::string& gamePath)
 {
-  return URIUtils::ReplaceExtension(URIUtils::GetFileName(gamePath), ".cht");
+  return URIUtils::GetFileName(URIUtils::ReplaceExtension(gamePath, ".cht"));
 }
