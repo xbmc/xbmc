@@ -13,6 +13,8 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/log.h"
 
+#include "platform/wasm/TizenEmss.h"
+
 #include <algorithm>
 #include <atomic>
 #include <chrono>
@@ -47,10 +49,16 @@ constexpr const char* OPUS_MIME = "audio/mp4; codecs=\"opus\"";
 constexpr int OPUS_SAMPLE_RATE = 48000;
 constexpr int OPUS_BITRATE_PER_CHANNEL = 64000;
 
+// Samsung TVs report FLAC as supported but never decode it.
+bool PlaysFlac()
+{
+  return !tizen_emss_available() && mse_is_type_supported(FLAC_MIME) == 1;
+}
+
 // What audio the browser cannot play is converted to: lossless where possible.
 AVCodecID ConvertedCodec()
 {
-  if (mse_is_type_supported(FLAC_MIME) == 1)
+  if (PlaysFlac())
     return AV_CODEC_ID_FLAC;
   if (avcodec_find_encoder_by_name("libopus") && mse_is_type_supported(OPUS_MIME) == 1)
     return AV_CODEC_ID_OPUS;
@@ -248,6 +256,11 @@ bool CMediaBackendMse::SupportsVideo(const CDVDStreamInfo& hint)
   // Browsers have no Dolby Vision decoder, and profile 5 has no base layer they can show.
   if (hint.dovi.dv_profile != 0 && hint.dovi.dv_bl_signal_compatibility_id == 0)
     return false;
+  // Samsung TVs report H.264 above High profile (High 10 and up) as supported but cannot
+  // decode it through MSE.
+  if (hint.codec == AV_CODEC_ID_H264 && (hint.profile & 0xff) > AV_PROFILE_H264_HIGH &&
+      tizen_emss_available())
+    return false;
 
   const std::string mime = Mime(true, WASM_MEDIA::VideoCodecString(hint));
   const bool supported = mse_is_type_supported(mime.c_str()) == 1;
@@ -258,7 +271,8 @@ bool CMediaBackendMse::SupportsVideo(const CDVDStreamInfo& hint)
 IMediaBackendWasm::AudioPath CMediaBackendMse::GetAudioPath(const CDVDStreamInfo& hint)
 {
   const std::string codec = AudioCodecString(hint);
-  if (!codec.empty() && mse_is_type_supported(Mime(false, codec).c_str()) == 1)
+  if (!codec.empty() && (hint.codec != AV_CODEC_ID_FLAC || PlaysFlac()) &&
+      mse_is_type_supported(Mime(false, codec).c_str()) == 1)
     return AudioPath::NATIVE;
 
   const AVCodecID converted = ConvertedCodec();

@@ -256,7 +256,8 @@ bool CMediaPipelineWasm::Load()
     return false;
   }
 
-  m_processInfo.SetVideoDecoderName(m_backend->VideoCodecName(), true);
+  m_processInfo.SetVideoDecoderName(m_backend->VideoCodecName(),
+                                    m_backend->IsHardwareVideoDecoder());
   m_processInfo.SetVideoPixelFormat("Surface");
   m_processInfo.SetVideoDimensions(m_videoHint.width, m_videoHint.height);
   m_processInfo.SetVideoInterlaced(m_videoHint.interlaced);
@@ -659,7 +660,7 @@ bool CMediaPipelineWasm::AppendAudio(const IMediaBackendWasm::Packet& packet)
 {
   if (packet.pts + packet.duration < m_startPosition)
     return true;
-  if (m_fedAudioPts >= 0.0 && m_fedAudioPts - m_position > m_maxAudioAhead)
+  if (m_fedAudioPts >= 0.0 && packet.pts + packet.duration - m_position > m_maxAudioAhead)
     return false;
 
   IMediaBackendWasm::Packet audio = packet;

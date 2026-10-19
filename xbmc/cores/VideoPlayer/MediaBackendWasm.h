@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
 
 struct DemuxPacket;
 
@@ -56,8 +57,8 @@ public:
 
   virtual ~IMediaBackendWasm() = default;
 
-  //! The backend for this device and settings, or nullptr.
-  static std::unique_ptr<IMediaBackendWasm> Create();
+  //! The backends for this device and settings, the preferred one first.
+  static std::vector<std::unique_ptr<IMediaBackendWasm>> Create();
 
   virtual std::string Name() const = 0;
   //! Looks at the codec, profile, bit depth, size and frame rate only.
@@ -78,6 +79,8 @@ public:
   virtual void Close() = 0;
   virtual std::string VideoCodecName() const = 0;
   virtual std::string AudioCodecName() const = 0;
+  //! Whether the backend confirmed hardware video decoding.
+  virtual bool IsHardwareVideoDecoder() const { return false; }
   //! How far ahead of the playback position audio can be appended.
   virtual double MaxAudioAhead() const = 0;
 

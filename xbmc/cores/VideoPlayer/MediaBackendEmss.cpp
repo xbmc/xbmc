@@ -17,6 +17,7 @@
 #include <atomic>
 #include <chrono>
 #include <functional>
+#include <utility>
 
 #include <emscripten/threading.h>
 
@@ -37,14 +38,14 @@ constexpr auto ATTACH_TIMEOUT = 2000ms;
 constexpr auto OPEN_TIMEOUT = 2000ms;
 constexpr auto SEEK_TIMEOUT = 2000ms;
 
-// Audio the TV cannot decode is decoded by FFmpeg and handed to it in this form.
+// EMSS accepts only S16 for PCM input.
 constexpr const char* PCM_MIME = "audio/webm; codecs=\"pcm\"";
 constexpr const char* PCM_SAMPLE_FORMAT = "SampleFormatS16";
-constexpr int PCM_MAX_CHANNELS = 8;
 // Decoded frames are joined up to this length; TrueHD decodes under a millisecond at a time.
 constexpr double MIN_PCM_DURATION = 0.02;
-// Samsung's limit for the data buffered on an audio track, which PCM fills in about a second.
-constexpr double AUDIO_BUFFER_BYTES = 768 * 1024;
+// Samsung limits each audio track to 768 KiB. Reserve space for packet submission.
+constexpr size_t AUDIO_BUFFER_BYTES = 768 * 1024;
+constexpr size_t MAX_PCM_PACKET_BYTES = AUDIO_BUFFER_BYTES / 4;
 
 // TizenEmssState is written by the browser main thread.
 int32_t Read(const int32_t& field)
@@ -97,26 +98,65 @@ const char* SampleFormat(AVCodecID codec)
   }
 }
 
-const char* ChannelLayout(int channels)
+uint64_t StreamLayout(const CDVDStreamInfo& hint)
 {
-  switch (channels)
+  if (hint.channellayout)
+    return hint.channellayout;
+  AVChannelLayout layout{};
+  av_channel_layout_default(&layout, hint.channels);
+  const uint64_t mask = layout.order == AV_CHANNEL_ORDER_NATIVE ? layout.u.mask : 0;
+  av_channel_layout_uninit(&layout);
+  return mask;
+}
+
+const char* ChannelLayout(uint64_t mask)
+{
+  static constexpr std::pair<uint64_t, const char*> layouts[] = {
+      {AV_CH_LAYOUT_MONO, "ChannelLayoutMono"},
+      {AV_CH_LAYOUT_STEREO, "ChannelLayoutStereo"},
+      {AV_CH_LAYOUT_2POINT1, "ChannelLayout2Point1"},
+      {AV_CH_LAYOUT_SURROUND, "ChannelLayoutSurround"},
+      {AV_CH_LAYOUT_2_1, "ChannelLayout2_1"},
+      {AV_CH_LAYOUT_4POINT0, "ChannelLayout4_0"},
+      {AV_CH_LAYOUT_2_2, "ChannelLayout2_2"},
+      {AV_CH_LAYOUT_QUAD, "ChannelLayoutQuad"},
+      {AV_CH_LAYOUT_3POINT1, "ChannelLayout3_1"},
+      {AV_CH_LAYOUT_5POINT0, "ChannelLayout5_0"},
+      {AV_CH_LAYOUT_5POINT0_BACK, "ChannelLayout5_0Back"},
+      {AV_CH_LAYOUT_4POINT1, "ChannelLayout4_1"},
+      {AV_CH_LAYOUT_5POINT1, "ChannelLayout5_1"},
+      {AV_CH_LAYOUT_5POINT1_BACK, "ChannelLayout5_1Back"},
+      {AV_CH_LAYOUT_6POINT0, "ChannelLayout6_0"},
+      {AV_CH_LAYOUT_6POINT0_FRONT, "ChannelLayout6_0Front"},
+      {AV_CH_LAYOUT_HEXAGONAL, "ChannelLayoutHexagonal"},
+      {AV_CH_LAYOUT_6POINT1, "ChannelLayout6_1"},
+      {AV_CH_LAYOUT_6POINT1_BACK, "ChannelLayout6_1Back"},
+      {AV_CH_LAYOUT_6POINT1_FRONT, "ChannelLayout6_1Front"},
+      {AV_CH_LAYOUT_7POINT0, "ChannelLayout7_0"},
+      {AV_CH_LAYOUT_7POINT0_FRONT, "ChannelLayout7_0Front"},
+      {AV_CH_LAYOUT_7POINT1, "ChannelLayout7_1"},
+      {AV_CH_LAYOUT_7POINT1_WIDE, "ChannelLayout7_1Wide"},
+      {AV_CH_LAYOUT_7POINT1_WIDE_BACK, "ChannelLayout7_1WideBack"},
+      {AV_CH_LAYOUT_OCTAGONAL, "ChannelLayoutOctagonal"},
+  };
+  for (const auto& [layout, name] : layouts)
   {
-    case 1:
-      return "ChannelLayoutMono";
-    case 3:
-      return "ChannelLayoutSurround";
-    case 4:
-      return "ChannelLayoutQuad";
-    case 5:
-      return "ChannelLayout5_0";
-    case 6:
-      return "ChannelLayout5_1";
-    case 7:
-      return "ChannelLayout6_1";
-    case 8:
-      return "ChannelLayout7_1";
+    if (mask == layout)
+      return name;
+  }
+  return nullptr;
+}
+
+const char* DecoderName(int32_t mode)
+{
+  switch (mode)
+  {
+    case TIZEN_EMSS_DECODE_HARDWARE:
+      return "hardware";
+    case TIZEN_EMSS_DECODE_SOFTWARE:
+      return "software";
     default:
-      return "ChannelLayoutStereo";
+      return "unknown";
   }
 }
 
@@ -152,6 +192,36 @@ bool TryTrack(const std::function<int(int handle)>& addTrack)
   return added;
 }
 
+bool FindPcmConfig(const CDVDStreamInfo& hint, uint64_t& outputLayout, int& outputRate)
+{
+  const uint64_t inputLayout = StreamLayout(hint);
+  const int inputRate = hint.samplerate > 0 ? hint.samplerate : 48000;
+  for (const uint64_t mask : {inputLayout, uint64_t{AV_CH_LAYOUT_STEREO}})
+  {
+    const char* layout = ChannelLayout(mask);
+    if (!layout)
+      continue;
+    for (const int rate : {inputRate, 48000})
+    {
+      int supported = tizen_emss_validate_audio(PCM_MIME, PCM_SAMPLE_FORMAT, layout, rate);
+      if (supported < 0)
+        supported = TryTrack(
+            [&](int handle)
+            {
+              return tizen_emss_add_audio_track(handle, PCM_MIME, nullptr, 0, PCM_SAMPLE_FORMAT,
+                                                layout, rate);
+            });
+      if (supported > 0)
+      {
+        outputLayout = mask;
+        outputRate = rate;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 void FrameRate(const CDVDStreamInfo& hint, int& rate, int& scale)
 {
   const bool known = hint.fpsrate > 0 && hint.fpsscale > 0;
@@ -160,7 +230,31 @@ void FrameRate(const CDVDStreamInfo& hint, int& rate, int& scale)
 }
 } // namespace
 
-CMediaBackendEmss::CMediaBackendEmss() = default;
+CMediaBackendEmss::CMediaBackendEmss()
+{
+  const int size = tizen_emss_get_capabilities(nullptr, 0);
+  if (size > 0)
+  {
+    std::vector<char> capabilities(size + 1);
+    tizen_emss_get_capabilities(capabilities.data(), static_cast<int>(capabilities.size()));
+    CLog::LogF(LOGINFO, "EMSS capabilities: {}", capabilities.data());
+  }
+}
+
+std::string CMediaBackendEmss::VideoCodecName() const
+{
+  return fmt::format("tizen-{}-{}", DecoderName(Read(m_state.videoDecodingMode)), m_videoMime);
+}
+
+std::string CMediaBackendEmss::AudioCodecName() const
+{
+  return fmt::format("tizen-{}-{}", DecoderName(Read(m_state.audioDecodingMode)), m_audioMime);
+}
+
+bool CMediaBackendEmss::IsHardwareVideoDecoder() const
+{
+  return Read(m_state.videoDecodingMode) == TIZEN_EMSS_DECODE_HARDWARE;
+}
 
 CMediaBackendEmss::~CMediaBackendEmss()
 {
@@ -205,9 +299,9 @@ bool CMediaBackendEmss::SupportsVideo(const CDVDStreamInfo& hint)
 IMediaBackendWasm::AudioPath CMediaBackendEmss::GetAudioPath(const CDVDStreamInfo& hint)
 {
   const int samplerate = hint.samplerate > 0 ? hint.samplerate : 48000;
-  const char* layout = ChannelLayout(hint.channels);
+  const char* layout = ChannelLayout(StreamLayout(hint));
   const std::string mime = AudioMime(hint);
-  if (!mime.empty())
+  if (!mime.empty() && layout)
   {
     int supported =
         tizen_emss_validate_audio(mime.c_str(), SampleFormat(hint.codec), layout, samplerate);
@@ -224,19 +318,11 @@ IMediaBackendWasm::AudioPath CMediaBackendEmss::GetAudioPath(const CDVDStreamInf
       return AudioPath::NATIVE;
   }
 
-  if (hint.channels < 1 || hint.channels > PCM_MAX_CHANNELS || !avcodec_find_decoder(hint.codec))
+  if (hint.channels < 1 || !avcodec_find_decoder(hint.codec))
     return AudioPath::NONE;
-  int pcm = tizen_emss_validate_audio(PCM_MIME, PCM_SAMPLE_FORMAT, layout, samplerate);
-  if (pcm < 0)
-    pcm = TryTrack(
-        [&](int handle)
-        {
-          return tizen_emss_add_audio_track(handle, PCM_MIME, nullptr, 0, PCM_SAMPLE_FORMAT, layout,
-                                            samplerate);
-        });
-  CLog::LogF(LOGDEBUG, "codec {} as PCM, {} channels {} Hz: {}", hint.codec, hint.channels,
-             samplerate, pcm);
-  return pcm ? AudioPath::CONVERTED : AudioPath::NONE;
+  uint64_t outputLayout = 0;
+  int outputRate = 0;
+  return FindPcmConfig(hint, outputLayout, outputRate) ? AudioPath::CONVERTED : AudioPath::NONE;
 }
 
 std::string CMediaBackendEmss::Open(const CDVDStreamInfo& video,
@@ -277,11 +363,26 @@ std::string CMediaBackendEmss::Open(const CDVDStreamInfo& video,
     const int samplerate = audio->samplerate > 0 ? audio->samplerate : 48000;
     if (audioPath == AudioPath::CONVERTED)
     {
+      if (!FindPcmConfig(*audio, m_pcmLayout, m_pcmRate))
+      {
+        Close();
+        return {};
+      }
+      AVChannelLayout layout{};
+      av_channel_layout_from_mask(&layout, m_pcmLayout);
+      m_pcmFrameSize = layout.nb_channels * sizeof(int16_t);
+      av_channel_layout_uninit(&layout);
+      m_pcmPacketSize = std::min(static_cast<size_t>(m_pcmRate * MIN_PCM_DURATION),
+                                 MAX_PCM_PACKET_BYTES / m_pcmFrameSize) *
+                        m_pcmFrameSize;
       m_audioMime = "pcm";
       m_audioTrack = tizen_emss_add_audio_track(m_handle, PCM_MIME, nullptr, 0, PCM_SAMPLE_FORMAT,
-                                                ChannelLayout(audio->channels), samplerate);
-      m_maxAudioAhead = std::min(m_maxAudioAhead,
-                                 AUDIO_BUFFER_BYTES * 0.75 / (audio->channels * 2.0 * samplerate));
+                                                ChannelLayout(m_pcmLayout), m_pcmRate);
+      m_maxAudioAhead =
+          std::min(m_maxAudioAhead,
+                   AUDIO_BUFFER_BYTES * 0.75 / (m_pcmFrameSize * static_cast<double>(m_pcmRate)));
+      CLog::LogF(LOGINFO, "PCM output: S16, {}, {} Hz, {:.3f}s ahead, {} byte packets",
+                 ChannelLayout(m_pcmLayout), m_pcmRate, m_maxAudioAhead, m_pcmPacketSize);
     }
     else
     {
@@ -289,7 +390,7 @@ std::string CMediaBackendEmss::Open(const CDVDStreamInfo& video,
       m_audioTrack = tizen_emss_add_audio_track(
           m_handle, m_audioMime.c_str(), audio->extradata.GetData(),
           static_cast<int>(audio->extradata.GetSize()), SampleFormat(audio->codec),
-          ChannelLayout(audio->channels), samplerate);
+          ChannelLayout(StreamLayout(*audio)), samplerate);
     }
   }
 
@@ -317,17 +418,13 @@ std::string CMediaBackendEmss::Open(const CDVDStreamInfo& video,
     return {};
   }
 
-  const int32_t decoding = Read(m_state.videoDecodingMode);
-  CLog::LogF(LOGINFO, "{} is decoded {}", m_videoMime,
-             decoding == TIZEN_EMSS_DECODE_HARDWARE   ? "in hardware"
-             : decoding == TIZEN_EMSS_DECODE_SOFTWARE ? "in software"
-                                                      : "by an unreported decoder");
+  CLog::LogF(LOGINFO, "Video decoder: {}; audio decoder: {}", VideoCodecName(), AudioCodecName());
 
   m_videoCodec = video.codec;
   SetupBitstreamConverter(video);
   m_demuxerMarksKeyFrames = false;
   m_pcm.clear();
-  m_pcmDuration = 0.0;
+  m_pcmOffset = 0;
   m_pcmClock = 0.0;
   m_pcmFinished = false;
   return audio ? fmt::format("{} with {}", m_videoMime, m_audioMime) : m_videoMime;
@@ -343,7 +440,7 @@ void CMediaBackendEmss::Close()
   m_bitstream.reset();
   swr_free(&m_resample);
   m_pcm.clear();
-  m_pcmDuration = 0.0;
+  m_pcmOffset = 0;
 }
 
 void CMediaBackendEmss::SetupBitstreamConverter(const CDVDStreamInfo& hint)
@@ -437,72 +534,103 @@ void CMediaBackendEmss::EndAudio()
 
 void CMediaBackendEmss::ConvertAudio(const DVDAudioFrame& frame)
 {
-  const int channels = static_cast<int>(frame.format.m_channelLayout.Count());
+  const uint64_t mask = CAEUtil::GetAVChannelLayout(frame.format.m_channelLayout);
   const int rate = static_cast<int>(frame.format.m_sampleRate);
   const AVSampleFormat format = CAEUtil::GetAVSampleFormat(frame.format.m_dataFormat);
-  if (!m_resample || format != m_resampleFormat || channels != m_resampleChannels ||
+  if (!m_resample || format != m_resampleFormat || mask != m_resampleLayout ||
       rate != m_resampleRate)
   {
+    if (m_resample)
+      ResampleAudio(nullptr, 0);
     swr_free(&m_resample);
-    AVChannelLayout layout;
-    av_channel_layout_default(&layout, channels);
-    if (swr_alloc_set_opts2(&m_resample, &layout, AV_SAMPLE_FMT_S16, rate, &layout, format, rate, 0,
-                            nullptr) < 0 ||
-        swr_init(m_resample) < 0)
+    AVChannelLayout input{};
+    AVChannelLayout output{};
+    av_channel_layout_from_mask(&input, mask);
+    av_channel_layout_from_mask(&output, m_pcmLayout);
+    const int result = swr_alloc_set_opts2(&m_resample, &output, AV_SAMPLE_FMT_S16, m_pcmRate,
+                                           &input, format, rate, 0, nullptr);
+    av_channel_layout_uninit(&input);
+    av_channel_layout_uninit(&output);
+    if (result < 0 || swr_init(m_resample) < 0)
     {
-      CLog::LogF(LOGERROR, "Cannot convert {} channels of format {} to PCM", channels,
-                 static_cast<int>(format));
+      CLog::LogF(LOGERROR, "Cannot convert audio layout {} at {} Hz to PCM", mask, rate);
       swr_free(&m_resample);
       return;
     }
     m_resampleFormat = format;
-    m_resampleChannels = channels;
+    m_resampleLayout = mask;
     m_resampleRate = rate;
   }
 
-  const size_t offset = m_pcm.size();
-  m_pcm.resize(offset + static_cast<size_t>(frame.nb_frames) * channels * 2);
-  uint8_t* out = m_pcm.data() + offset;
-  const int samples = swr_convert(m_resample, &out, static_cast<int>(frame.nb_frames),
-                                  reinterpret_cast<const uint8_t* const*>(frame.data),
-                                  static_cast<int>(frame.nb_frames));
-  if (samples <= 0 || rate <= 0)
+  if (m_pcm.empty())
+    m_pcmPts = frame.pts != DVD_NOPTS_VALUE
+                   ? frame.pts / DVD_TIME_BASE -
+                         static_cast<double>(swr_get_delay(m_resample, rate)) / rate
+                   : m_pcmClock;
+  ResampleAudio(frame.data, static_cast<int>(frame.nb_frames));
+}
+
+void CMediaBackendEmss::ResampleAudio(const uint8_t* const* data, int frames)
+{
+  if (m_pcmOffset)
   {
-    m_pcm.resize(offset);
-    return;
+    m_pcm.erase(m_pcm.begin(), m_pcm.begin() + m_pcmOffset);
+    m_pcmOffset = 0;
   }
-  m_pcm.resize(offset + static_cast<size_t>(samples) * channels * 2);
-  if (offset == 0)
-    m_pcmPts = frame.pts != DVD_NOPTS_VALUE ? frame.pts / DVD_TIME_BASE : m_pcmClock;
-  m_pcmDuration += static_cast<double>(samples) / rate;
-  m_pcmClock = m_pcmPts + m_pcmDuration;
+  const int capacity = swr_get_out_samples(m_resample, frames);
+  if (capacity <= 0)
+    return;
+  const size_t offset = m_pcm.size();
+  m_pcm.resize(offset + static_cast<size_t>(capacity) * m_pcmFrameSize);
+  uint8_t* out = m_pcm.data() + offset;
+  const int samples = swr_convert(m_resample, &out, capacity, data, frames);
+  m_pcm.resize(offset + static_cast<size_t>(std::max(0, samples)) * m_pcmFrameSize);
+  m_pcmClock = m_pcmPts + static_cast<double>(m_pcm.size() / m_pcmFrameSize) / m_pcmRate;
+}
+
+void CMediaBackendEmss::FinishConvertedAudio()
+{
+  if (m_resample)
+    ResampleAudio(nullptr, 0);
+  m_pcmFinished = true;
 }
 
 bool CMediaBackendEmss::PeekConvertedAudio(Packet& out)
 {
-  if (m_pcm.empty() || (m_pcmDuration < MIN_PCM_DURATION && !m_pcmFinished))
+  const size_t remaining = m_pcm.size() - m_pcmOffset;
+  if (remaining == 0 || (remaining < m_pcmPacketSize && !m_pcmFinished))
     return false;
-  out.data = m_pcm.data();
-  out.size = m_pcm.size();
+  out.data = m_pcm.data() + m_pcmOffset;
+  out.size = std::min(remaining, m_pcmPacketSize);
   out.pts = m_pcmPts;
   out.dts = m_pcmPts;
-  out.duration = m_pcmDuration;
+  out.duration = static_cast<double>(out.size / m_pcmFrameSize) / m_pcmRate;
   out.keyFrame = true;
   return true;
 }
 
 void CMediaBackendEmss::PopConvertedAudio()
 {
-  m_pcm.clear();
-  m_pcmDuration = 0.0;
-  m_pcmFinished = false;
+  const size_t size = std::min(m_pcm.size() - m_pcmOffset, m_pcmPacketSize);
+  m_pcmPts += static_cast<double>(size / m_pcmFrameSize) / m_pcmRate;
+  m_pcmOffset += size;
+  if (m_pcmOffset == m_pcm.size())
+  {
+    m_pcm.clear();
+    m_pcmOffset = 0;
+  }
 }
 
 void CMediaBackendEmss::Flush()
 {
   if (m_bitstream)
     m_bitstream->ResetStartDecode();
-  PopConvertedAudio();
+  swr_free(&m_resample);
+  m_pcm.clear();
+  m_pcmOffset = 0;
+  m_pcmPts = 0.0;
+  m_pcmClock = 0.0;
+  m_pcmFinished = false;
 }
 
 void CMediaBackendEmss::Play()

@@ -38,8 +38,9 @@ public:
                    AudioPath audioPath,
                    double duration) override;
   void Close() override;
-  std::string VideoCodecName() const override { return "tizen-" + m_videoMime; }
-  std::string AudioCodecName() const override { return "tizen-" + m_audioMime; }
+  std::string VideoCodecName() const override;
+  std::string AudioCodecName() const override;
+  bool IsHardwareVideoDecoder() const override;
   double MaxAudioAhead() const override { return m_maxAudioAhead; }
 
   bool PrepareVideo(DemuxPacket& packet, Packet& out) override;
@@ -49,7 +50,7 @@ public:
   void EndAudio() override;
 
   void ConvertAudio(const DVDAudioFrame& frame) override;
-  void FinishConvertedAudio() override { m_pcmFinished = true; }
+  void FinishConvertedAudio() override;
   bool PeekConvertedAudio(Packet& out) override;
   void PopConvertedAudio() override;
   void Flush() override;
@@ -68,6 +69,7 @@ public:
   double Position() const override;
 
 private:
+  void ResampleAudio(const uint8_t* const* data, int frames);
   void SetupBitstreamConverter(const CDVDStreamInfo& hint);
   AppendResult Append(int track, int32_t sessionId, const Packet& packet);
 
@@ -85,11 +87,15 @@ private:
 
   SwrContext* m_resample{nullptr};
   int m_resampleFormat{-1};
-  int m_resampleChannels{0};
+  uint64_t m_resampleLayout{0};
   int m_resampleRate{0};
+  uint64_t m_pcmLayout{0};
+  int m_pcmRate{0};
+  size_t m_pcmFrameSize{0};
+  size_t m_pcmPacketSize{0};
   std::vector<uint8_t> m_pcm;
+  size_t m_pcmOffset{0};
   double m_pcmPts{0.0};
-  double m_pcmDuration{0.0};
   double m_pcmClock{0.0};
   bool m_pcmFinished{false};
 };

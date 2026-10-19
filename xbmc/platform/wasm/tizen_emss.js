@@ -32,10 +32,11 @@ mergeInto(LibraryManager.library, {
     ERROR : 32,
     DECODING_MODE : 36,
     POSITION : 40,
+    AUDIO_DECODING_MODE : 48,
 
     READY_STATES : {'detached' : 0, 'closed' : 1, 'open-pending' : 2, 'open' : 3, 'ended' : 4},
     ERRORS : {'config-error' : 1, 'drm-error' : 2, 'pipeline-error' : 3, 'out-of-memory' : 4},
-    DECODING_MODES : {'DecodingModeHardware' : 1, 'DecodingModeSoftware' : 2},
+    DECODING_MODES : {'hardware' : 1, 'software' : 2},
 
     api : function() {
       return typeof tizentvwasm !== 'undefined' && !!tizentvwasm.ElementaryMediaStreamSource;
@@ -57,7 +58,7 @@ mergeInto(LibraryManager.library, {
       TizenEmss.store(source, session,
                       event && event.sessionId !== undefined ? event.sessionId : track.sessionId);
       // activeDecodingMode is known once the track opens.
-      if (kind === 'video')
+      if (track.isOpen)
       {
         var mode = 0;
         try
@@ -67,7 +68,9 @@ mergeInto(LibraryManager.library, {
         catch (e)
         {
         }
-        TizenEmss.store(source, TizenEmss.DECODING_MODE, mode);
+        TizenEmss.store(source,
+                        kind === 'video' ? TizenEmss.DECODING_MODE : TizenEmss.AUDIO_DECODING_MODE,
+                        mode);
       }
       TizenEmss.signal(source);
     },
@@ -121,13 +124,16 @@ mergeInto(LibraryManager.library, {
       }
     },
 
-    validate : function(check) {
+    validate : function(check, config) {
       try
       {
-        return check() === 'ConfigSupported' ? 1 : 0;
+        var result = check();
+        console.debug('[kodi][emss] validate ' + JSON.stringify(config) + ': ' + result);
+        return result === 'ConfigSupported' ? 1 : 0;
       }
       catch (e)
       {
+        console.debug('[kodi][emss] validation unavailable: ' + e.message);
         return -1;
       }
     },
@@ -154,6 +160,46 @@ mergeInto(LibraryManager.library, {
                                                                                                 : 0;
   },
 
+  tizen_emss_get_capabilities__deps : [ '$TizenEmss', '$stringToUTF8', '$lengthBytesUTF8' ],
+  tizen_emss_get_capabilities__proxy : 'sync',
+  tizen_emss_get_capabilities : function(buffer, size) {
+    if (!TizenEmss.capabilities)
+    {
+      var present = TizenEmss.api();
+      var track = present && tizentvwasm.ElementaryMediaTrack;
+      var report = {
+        available : present,
+        videoValidation : !!track && typeof track.ValidateVideoConfig === 'function',
+        audioValidation : !!track && typeof track.ValidateAudioConfig === 'function',
+        sideThreadAppend :
+            present && typeof tizentvwasm.SideThreadElementaryMediaTrack !== 'undefined',
+      };
+      if (present)
+      {
+        try
+        {
+          if (tizentvwasm.availableApis !== undefined)
+            report.apis = Array.from(tizentvwasm.availableApis, function(api) {
+              return {
+                name : api.name,
+                version : api.version,
+                apiLevels : Array.from(api.apiLevels || []),
+                features : Array.from(api.features || []),
+              };
+            });
+        }
+        catch (e)
+        {
+          report.queryError = e.message;
+        }
+      }
+      TizenEmss.capabilities = JSON.stringify(report);
+    }
+    if (buffer && size > 0)
+      stringToUTF8(TizenEmss.capabilities, buffer, size);
+    return lengthBytesUTF8(TizenEmss.capabilities);
+  },
+
   tizen_emss_validate_video__deps : [ '$TizenEmss' ],
   tizen_emss_validate_video__proxy : 'sync',
   tizen_emss_validate_video : function(mimePtr, width, height, framerateNum, framerateDen) {
@@ -170,7 +216,7 @@ mergeInto(LibraryManager.library, {
     return TizenEmss.validate(function() {
       return tizentvwasm.ElementaryMediaTrack.ValidateVideoConfig(config, 'latency-mode-normal',
                                                                   'rendering-mode-media-element');
-    });
+    }, config);
   },
 
   tizen_emss_validate_audio__deps : [ '$TizenEmss' ],
@@ -186,7 +232,8 @@ mergeInto(LibraryManager.library, {
       samplesPerSecond : samplesPerSecond,
     };
     return TizenEmss.validate(
-        function() { return tizentvwasm.ElementaryMediaTrack.ValidateAudioConfig(config); });
+        function() { return tizentvwasm.ElementaryMediaTrack.ValidateAudioConfig(config); },
+        config);
   },
 
   tizen_emss_create__deps : [ '$TizenEmss', '$WasmMediaLayer' ],
@@ -194,7 +241,6 @@ mergeInto(LibraryManager.library, {
   tizen_emss_create : function(statePtr) {
     if (!TizenEmss.api())
       return -1;
-    // Tizen 9 has no tizentvwasm.getAvailableApis() to tell which constructor it takes.
     var emss;
     try
     {

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
 // C interface to Samsung's Tizen WASM Player (tizentvwasm.ElementaryMediaStreamSource),
@@ -32,6 +33,7 @@ extern "C"
     int32_t error; // TizenEmssError, 0 when none
     int32_t videoDecodingMode; // TizenEmssDecodingMode: the decoder the TV gave the video track
     double position; // playback position in seconds
+    int32_t audioDecodingMode; // TizenEmssDecodingMode
   };
 
   enum TizenEmssReadyState
@@ -73,6 +75,8 @@ extern "C"
 
   // Whether this device has the Tizen WASM Player.
   int tizen_emss_available(void);
+  // JSON diagnostics; returns the required UTF-8 length, excluding the terminator.
+  int tizen_emss_get_capabilities(char* buffer, int size);
 
   // Whether the TV decodes a stream: 1 yes, 0 no, -1 when this firmware cannot tell.
   // Sample formats and channel layouts are Samsung's names, such as "SampleFormatS16"
@@ -131,3 +135,6 @@ extern "C"
                         int height);
   int tizen_emss_append_end(int trackId, int sessionId);
 }
+
+static_assert(offsetof(TizenEmssState, position) == 40);
+static_assert(offsetof(TizenEmssState, audioDecodingMode) == 48);
