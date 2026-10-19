@@ -10,6 +10,7 @@
 
 #include "GameLibraryTypes.h"
 
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -26,7 +27,7 @@ struct ParsedGameName
 {
   std::string title; // as written, tags removed: "Legend of Zelda, The"
   std::string displayTitle; // article restored: "The Legend of Zelda"
-  std::vector<std::string> regions; // full names, e.g. "USA", "Europe"
+  std::vector<GameRegion> regions;
   std::vector<std::string> languages; // lower-case ISO 639-1
   std::string revision;
   ReleaseStatus status{ReleaseStatus::RETAIL};
@@ -107,12 +108,12 @@ public:
   static std::string DisplayTitle(std::string_view title);
 
   /*!
-   * \brief The region a file name's tag names, written in full, or empty
+   * \brief The region a code or name from any of the conventions names, or nothing
    *
-   * "USA", "Europe", "Japan", "World" and the rest, as No-Intro writes them,
-   * whatever spelling or abbreviation the tag used.
+   * "USA", "Europe", "US", "EU", "U", in any case. A region the source
+   * doesn't know, "Unknown", is an empty one.
    */
-  static std::string RegionName(std::string_view region);
+  static std::optional<GameRegion> Region(std::string_view region);
 };
 } // namespace GAME
 } // namespace KODI
