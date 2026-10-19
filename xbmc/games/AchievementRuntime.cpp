@@ -58,6 +58,7 @@ void CAchievementRuntime::Clear()
   // selection would point the entries dialog at nothing
   m_leaderboards = LeaderboardState{};
   m_trackers.clear();
+  m_attempts.clear();
   m_selectedLeaderboard = 0;
 }
 
@@ -366,10 +367,44 @@ void CAchievementRuntime::SetLeaderboardTracker(const LeaderboardTracker& tracke
     else if (it != m_trackers.end())
     {
       m_trackers.erase(it);
+
+      // A reset hides the trackers without ending the attempts
+      if (m_trackers.empty())
+        m_attempts.clear();
     }
   }
 
   NotifyIndicatorsChanged();
+}
+
+void CAchievementRuntime::SetLeaderboardAttempt(unsigned int leaderboardId,
+                                                const std::string& title,
+                                                bool running)
+{
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    auto it =
+        std::find_if(m_attempts.begin(), m_attempts.end(), [leaderboardId](const auto& attempt)
+                     { return attempt.first == leaderboardId; });
+
+    if (running && it == m_attempts.end())
+      m_attempts.emplace_back(leaderboardId, title);
+    else if (!running && it != m_attempts.end())
+      m_attempts.erase(it);
+  }
+
+  NotifyIndicatorsChanged();
+}
+
+std::vector<std::string> CAchievementRuntime::GetLeaderboardAttemptTitles() const
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+
+  std::vector<std::string> titles;
+  for (const auto& [id, title] : m_attempts)
+    titles.emplace_back(title);
+  return titles;
 }
 
 std::vector<LeaderboardTracker> CAchievementRuntime::GetLeaderboardTrackers() const
