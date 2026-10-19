@@ -61,14 +61,6 @@ public:
   void SetAchievementsHardcore(bool hardcore);
 
   /*!
-   * \brief Whether hardcore mode is offered to the player
-   *
-   * RetroAchievements decide which clients may earn hardcore unlocks, so the
-   * setting stays hidden until they have approved Kodi.
-   */
-  bool AchievementsHardcoreOffered() const;
-
-  /*!
    * \brief Whether achievements already earned can be triggered again
    */
   bool GetAchievementsEncore() const;
@@ -114,6 +106,7 @@ public:
 
   // Inherited from ISettingCallback
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
+  bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
 private:

@@ -23,6 +23,7 @@
 #include "games/GameSettings.h"
 #include "games/GameUtils.h"
 #include "games/addons/GameClient.h"
+#include "games/addons/cheevos/GameClientCheevos.h"
 #include "games/addons/disc/GameClientDiscModel.h"
 #include "games/addons/disc/GameClientDiscs.h"
 #include "utils/MathUtils.h"
@@ -50,9 +51,9 @@ namespace
  * cheats to be unavailable while hardcore is on. Saving a state is still
  * allowed, and so is fast forward.
  */
-bool HardcoreRestrictionsApply()
+bool HardcoreRestrictionsApply(GAME::CGameClient& gameClient)
 {
-  return CServiceBroker::GetGameServices().GameSettings().GetAchievementsHardcore();
+  return gameClient.Cheevos().IsHardcoreActive();
 }
 } // namespace
 
@@ -176,7 +177,7 @@ void CReversiblePlayback::SeekTimeMs(unsigned int timeMs)
     // RewindFrames() without passing through SetSpeed(). Reachable from
     // JSON-RPC and the Python player API, so it is guarded in its own right
     // rather than relying on the buffer being empty.
-    if (HardcoreRestrictionsApply())
+    if (HardcoreRestrictionsApply(*m_gameClient))
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Refusing to seek backwards in hardcore mode");
       GAME::CGameUtils::NotifyBlockedByHardcore(35309); // "Rewind"
@@ -405,7 +406,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
   // Every route that loads a state comes through here - the in-game dialog,
   // JSON-RPC, the Python player API - so hardcore is answered once, rather
   // than at each caller. Creating a state is still allowed.
-  if (HardcoreRestrictionsApply())
+  if (HardcoreRestrictionsApply(*m_gameClient))
   {
     CLog::Log(LOGINFO, "RetroPlayer[SAVE]: Refusing to load a savestate in hardcore mode");
     GAME::CGameUtils::NotifyBlockedByHardcore(35308); // "Loading save states"
@@ -807,7 +808,8 @@ void CReversiblePlayback::UpdateMemoryStream()
 
   // Hardcore forbids rewind, so the buffer isn't allocated at all. It costs a
   // fraction of the savestate size for every frame of the rewind window.
-  const bool rewindEnabled = gameSettings.RewindEnabled() && !HardcoreRestrictionsApply();
+  const bool rewindEnabled =
+      gameSettings.RewindEnabled() && !HardcoreRestrictionsApply(*m_gameClient);
   const size_t memorySize = rewindEnabled ? m_gameClient->GetSerializeSize() : 0;
 
   if (rewindEnabled && memorySize > 0)

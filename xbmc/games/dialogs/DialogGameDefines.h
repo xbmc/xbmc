@@ -48,6 +48,7 @@ constexpr unsigned int REFRESH_STANDINGS_INVALIDATED = 1;
 constexpr auto ACHIEVEMENT_ID = "achievement.id";
 constexpr auto ACHIEVEMENT_POINTS = "achievement.points";
 constexpr auto ACHIEVEMENT_EARNED = "achievement.earned";
+constexpr auto ACHIEVEMENT_HARDCORE = "achievement.hardcore";
 constexpr auto ACHIEVEMENT_UNLOCKED_DATE = "achievement.unlockeddate";
 constexpr auto ACHIEVEMENT_RARITY_CATEGORY = "achievement.raritycategory";
 constexpr auto ACHIEVEMENT_RARITY_STARS = "achievement.raritystars";
