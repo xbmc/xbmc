@@ -19,4 +19,7 @@ class CURIRedactor final
 public:
   static std::string GetRedacted(std::string_view path);
   static std::string GetWithoutUserDetails(const CURL& url, bool redact);
+
+private:
+  static std::string GetWithoutUserDetails(const CURL& url, bool redact, bool& credentialsRemoved);
 };

@@ -156,6 +156,14 @@ bool HasInlineDataResource(std::string_view location, const ResourceEncoding* en
 
 std::string CURIRedactor::GetWithoutUserDetails(const CURL& url, bool redact)
 {
+  bool credentialsRemoved = false;
+  return GetWithoutUserDetails(url, redact, credentialsRemoved);
+}
+
+std::string CURIRedactor::GetWithoutUserDetails(const CURL& url,
+                                                bool redact,
+                                                bool& credentialsRemoved)
+{
   if (redact && (url.m_uri ? HasInlineDataResource(url.m_uri->Get())
                            : (url.IsProtocol("stack")
                                   ? HasInlineDataInStack(url.GetFileName())
@@ -165,15 +173,22 @@ std::string CURIRedactor::GetWithoutUserDetails(const CURL& url, bool redact)
   if (url.m_uri)
   {
     const CURI& uri = *url.m_uri;
-    if (redact && URIPolicy::UsesLegacyURL(uri.Get()) &&
+    if (URIPolicy::UsesLegacyURL(uri.Get()) &&
         (url.IsProtocol("stack") || url.IsProtocol("image") || url.HasParentInHostname()))
-      return GetWithoutUserDetails(CURL(uri.Get()), true);
+    {
+      bool nestedCredentials = uri.GetRawAuthority().find('@') != std::string_view::npos;
+      std::string result = GetWithoutUserDetails(CURL(uri.Get()), redact, nestedCredentials);
+      credentialsRemoved |= nestedCredentials;
+      // Legacy serialization can change spelling even when no credentials were removed.
+      return redact || nestedCredentials ? result : uri.Get();
+    }
     if (!uri.HasAuthority() || URIPolicy::GetPolicy(url.GetProtocol()).redactBody)
       return uri.Get();
     const auto authority = uri.GetRawAuthority();
     const auto at = authority.rfind('@');
     if (at == std::string_view::npos)
       return uri.Get();
+    credentialsRemoved = true;
     std::string result = uri.Get().substr(0, uri.GetComponents().authority->offset);
     if (redact)
       result += authority.substr(0, at).find(':') == std::string_view::npos ? "USERNAME@"
@@ -192,7 +207,7 @@ std::string CURIRedactor::GetWithoutUserDetails(const CURL& url, bool redact)
     for (int i = 0; i < items.Size(); ++i)
     {
       CURL member(items[i]->GetPath());
-      items[i]->SetPath(GetWithoutUserDetails(member, redact));
+      items[i]->SetPath(GetWithoutUserDetails(member, redact, credentialsRemoved));
       newItems.push_back(items[i]->GetPath());
     }
     dir.ConstructStackPath(newItems, strURL);
@@ -217,6 +232,9 @@ std::string CURIRedactor::GetWithoutUserDetails(const CURL& url, bool redact)
   if (url.GetProtocol().empty())
     return url.GetFileName();
 
+  credentialsRemoved |=
+      !url.GetUserName().empty() || !url.GetPassWord().empty() || !url.GetDomain().empty();
+
   strURL = url.GetProtocol();
   strURL += "://";
 
@@ -237,7 +255,7 @@ std::string CURIRedactor::GetWithoutUserDetails(const CURL& url, bool redact)
     if (url.HasParentInHostname() || url.IsProtocol("image"))
     {
       const CURL parent(url.GetHostName());
-      strHostName = GetWithoutUserDetails(parent, false);
+      strHostName = GetWithoutUserDetails(parent, false, credentialsRemoved);
       // Keep image resource spelling when no credentials were removed.
       if (url.IsProtocol("image") && strHostName == parent.Get())
         strHostName = url.GetHostName();
