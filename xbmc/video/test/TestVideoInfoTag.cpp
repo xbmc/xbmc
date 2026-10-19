@@ -7,11 +7,13 @@
  */
 
 #include "ServiceBroker.h"
+#include "filesystem/File.h"
 #include "language/LangInfo.h"
 #include "language/LanguageTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
+#include "utils/Archive.h"
 #include "utils/SortUtils.h"
 #include "utils/StreamDetails.h"
 #include "utils/Variant.h"
@@ -266,6 +268,48 @@ TEST(TestVideoInfoTag, EpisodeBookmarkRoundTrip)
 
   EXPECT_DOUBLE_EQ(5479.0, reloaded.m_EpBookmark.timeInSeconds);
   EXPECT_DOUBLE_EQ(16066.5, reloaded.m_EpBookmark.totalTimeInSeconds);
+}
+
+namespace
+{
+class TestVideoInfoTagArchive : public testing::Test
+{
+protected:
+  TestVideoInfoTagArchive() : m_file(XBMC_CREATETEMPFILE(".ar")) {}
+  ~TestVideoInfoTagArchive() override { EXPECT_TRUE(XBMC_DELETETEMPFILE(m_file)); }
+
+  CVideoInfoTag StoredAndLoaded(CVideoInfoTag details)
+  {
+    CArchive store(m_file, CArchive::store);
+    details.Archive(store);
+    store.Close();
+
+    EXPECT_EQ(0, m_file->Seek(0, SEEK_SET));
+    CVideoInfoTag loaded;
+    CArchive load(m_file, CArchive::load);
+    loaded.Archive(load);
+    load.Close();
+    return loaded;
+  }
+
+  XFILE::CFile* m_file;
+};
+} // unnamed namespace
+
+TEST_F(TestVideoInfoTagArchive, AnUnsetPlayCountStaysUnset)
+{
+  ASSERT_NE(nullptr, m_file);
+  EXPECT_FALSE(StoredAndLoaded(CVideoInfoTag{}).IsPlayCountSet());
+}
+
+TEST_F(TestVideoInfoTagArchive, APlayCountOfZeroStaysSet)
+{
+  ASSERT_NE(nullptr, m_file);
+  CVideoInfoTag details;
+  details.SetPlayCount(0);
+  const CVideoInfoTag loaded{StoredAndLoaded(details)};
+  EXPECT_TRUE(loaded.IsPlayCountSet());
+  EXPECT_EQ(0, loaded.GetPlayCount());
 }
 
 TEST(TestVideoInfoTag, ReadTextEpisodeGuide)
