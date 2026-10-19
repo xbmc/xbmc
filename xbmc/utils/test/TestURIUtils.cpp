@@ -1217,6 +1217,8 @@ TEST_F(TestURIUtils, IsURL)
 {
   EXPECT_TRUE(URIUtils::IsURL("someprotocol://path/to/file"));
   EXPECT_FALSE(URIUtils::IsURL("/path/to/file"));
+  EXPECT_FALSE(URIUtils::IsURL("/tmp/a://b"));
+  EXPECT_FALSE(URIUtils::IsURL("data:,http://host/file"));
 }
 
 TEST_F(TestURIUtils, IsVideoDb)
