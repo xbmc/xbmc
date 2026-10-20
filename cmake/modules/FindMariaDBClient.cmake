@@ -169,7 +169,26 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND)
     if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME} AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      set(_mariadb_libs ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_LINK_LIBRARIES})
+      list(GET _mariadb_libs 0 _mariadb_lib)
+      if(KODI_DEPENDSBUILD AND NOT (WIN32 OR WINDOWS_STORE) AND _mariadb_lib MATCHES "\\${CMAKE_STATIC_LIBRARY_SUFFIX}$")
+        # In a depends build, a static libmariadb in the prefix comes from an earlier internal
+        # build, which has the zstd plugin built in, but libmariadb.pc doesn't list zstd. Make
+        # libmariadb itself depend on zstd, so zstd follows it on the link line even when another
+        # library (curl) has already pulled zstd in.
+        find_package(ZSTD REQUIRED ${SEARCH_QUIET})
+
+        list(REMOVE_AT _mariadb_libs 0)
+        set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE ${_mariadb_lib})
+        set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_INCLUDE_DIRS})
+        set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES ${_mariadb_libs} LIBRARY::ZSTD)
+
+        SETUP_BUILD_TARGET()
+      else()
+        add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
+      endif()
+      unset(_mariadb_lib)
+      unset(_mariadb_libs)
     else()
       SETUP_BUILD_TARGET()
 
