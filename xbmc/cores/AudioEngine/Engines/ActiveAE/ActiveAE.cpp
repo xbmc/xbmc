@@ -2621,7 +2621,11 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error of {:f}, start adjusting", error);
   }
 
-  if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE)
+  // While the error is averaged, samples that already play close to in sync stay audible, so that
+  // the start of the audio is not lost.
+  double errorSoFar{0.0};
+  const bool closeToSync{stream->m_syncError.GetSoFar(errorSoFar) && fabs(errorSoFar) <= threshold};
+  if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE && !closeToSync)
   {
     CSampleBuffer *buf = stream->m_processingBuffers->m_outputSamples.front();
     if (m_mode == MODE_RAW)
