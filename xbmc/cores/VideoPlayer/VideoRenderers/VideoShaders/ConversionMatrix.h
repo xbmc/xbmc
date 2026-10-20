@@ -237,6 +237,12 @@ public:
    */
   static Matrix3 GetLinearHueSatMat(AVColorSpace colspace, float hue, float saturation);
 
+  /**
+   * @brief Get the gamma exponent for a gamma setting of 0..100, 50 is neutral.
+   *        The adjusted signal is signal^(1 / exponent).
+   */
+  static float GetGammaExponent(float gamma);
+
 private:
   const CGlMatrix& GenMat();
   const CMatrix<3>& GenPrimMat();

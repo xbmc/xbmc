@@ -31,6 +31,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
                                              bool toneMap,
                                              ETONEMAPMETHOD toneMapMethod,
                                              AVColorTransferCharacteristic hueSatTransfer,
+                                             bool gamma,
                                              bool dither)
 {
   m_width = 1;
@@ -100,6 +101,9 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
     m_defines += "#define KODI_HUESAT_HLG\n";
   }
 
+  if (gamma)
+    m_defines += "#define KODI_GAMMA\n";
+
   if (m_dither)
     m_defines += "#define XBMC_DITHER\n";
 
@@ -146,6 +150,8 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hHsCoefs = glGetUniformLocation(ProgramHandle(), "m_hsCoefs");
   m_hHsPeak = glGetUniformLocation(ProgramHandle(), "m_hsPeak");
   m_hHsRange = glGetUniformLocation(ProgramHandle(), "m_hsRange");
+  m_hGammaInv = glGetUniformLocation(ProgramHandle(), "m_gammaInv");
+  m_hGammaRange = glGetUniformLocation(ProgramHandle(), "m_gammaRange");
 
   if (m_dither)
   {
@@ -211,6 +217,13 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     glUniform3f(m_hHsCoefs, coefs[0], coefs[1], coefs[2]);
     glUniform1f(m_hHsPeak, peak);
     glUniform2f(m_hHsRange, m_convertFullRange ? 1.0f : 876.0f / 1023.0f,
+                m_convertFullRange ? 0.0f : 64.0f / 1023.0f);
+  }
+
+  if (m_hGammaInv >= 0)
+  {
+    glUniform1f(m_hGammaInv, 1.0f / m_gammaExponent);
+    glUniform2f(m_hGammaRange, m_convertFullRange ? 1.0f : 876.0f / 1023.0f,
                 m_convertFullRange ? 0.0f : 64.0f / 1023.0f);
   }
 
@@ -339,13 +352,15 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(EShaderFormat format,
                                                    bool toneMap,
                                                    ETONEMAPMETHOD toneMapMethod,
                                                    AVColorTransferCharacteristic hueSatTransfer,
+                                                   bool gamma,
                                                    bool dither)
   : BaseYUV2RGBGLSLShader(
-        format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, hueSatTransfer, dither)
+        format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, hueSatTransfer, gamma, dither)
 {
   PixelShader()->LoadSource("gles_yuv2rgb_basic.frag", m_defines);
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
   PixelShader()->InsertSource("gles_huesat.frag", "void main()");
+  PixelShader()->InsertSource("gles_gamma.frag", "void main()");
   PixelShader()->InsertSource("gles_dither_uniforms.frag", "void main()");
   PixelShader()->InsertSource("gles_dither_body.frag", "gl_FragColor");
 }
@@ -361,13 +376,15 @@ YUV2RGBBobShader::YUV2RGBBobShader(EShaderFormat format,
                                    bool toneMap,
                                    ETONEMAPMETHOD toneMapMethod,
                                    AVColorTransferCharacteristic hueSatTransfer,
+                                   bool gamma,
                                    bool dither)
   : BaseYUV2RGBGLSLShader(
-        format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, hueSatTransfer, dither)
+        format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, hueSatTransfer, gamma, dither)
 {
   PixelShader()->LoadSource("gles_yuv2rgb_bob.frag", m_defines);
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
   PixelShader()->InsertSource("gles_huesat.frag", "void main()");
+  PixelShader()->InsertSource("gles_gamma.frag", "void main()");
   PixelShader()->InsertSource("gles_dither_uniforms.frag", "void main()");
   PixelShader()->InsertSource("gles_dither_body.frag", "gl_FragColor");
 }
@@ -403,16 +420,18 @@ YUV2RGBFilterShader::YUV2RGBFilterShader(EShaderFormat format,
                                          bool toneMap,
                                          ETONEMAPMETHOD toneMapMethod,
                                          AVColorTransferCharacteristic hueSatTransfer,
+                                         bool gamma,
                                          ESCALINGMETHOD method,
                                          bool dither)
   : BaseYUV2RGBGLSLShader(
-        format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, hueSatTransfer, dither)
+        format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, hueSatTransfer, gamma, dither)
 {
   m_scaling = method;
   PixelShader()->LoadSource("gles310_yuv2rgb_filter.frag", m_defines);
   VertexShader()->LoadSource("gles310_yuv2rgb.vert");
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
   PixelShader()->InsertSource("gles_huesat.frag", "void main()");
+  PixelShader()->InsertSource("gles_gamma.frag", "void main()");
   PixelShader()->InsertSource("gles_dither_uniforms.frag", "void main()");
   PixelShader()->InsertSource("gles_dither_body.frag", "fragColor = rgb");
 }

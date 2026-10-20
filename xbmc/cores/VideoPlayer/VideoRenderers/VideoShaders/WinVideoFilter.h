@@ -89,7 +89,8 @@ public:
               bool toneMapping,
               ETONEMAPMETHOD toneMethod,
               bool HLGtoPQ,
-              AVColorTransferCharacteristic hueSatTransfer = AVCOL_TRC_UNSPECIFIED);
+              AVColorTransferCharacteristic hueSatTransfer = AVCOL_TRC_UNSPECIFIED,
+              bool gamma = false);
   void Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
             , CD3DTexture& target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void Render(CD3DTexture& sourceTexture, CRect sourceRect, CRect destRect
@@ -99,6 +100,7 @@ public:
                           bool hasLightMetadata, AVContentLightMetadata lightMetadata);
   void SetToneMapParam(ETONEMAPMETHOD method, float param);
   void SetHueSaturation(float hue, float saturation);
+  void SetGamma(float exponent) { m_gammaExponent = exponent; }
   std::string GetDebugInfo();
 
   static bool CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID3D11ShaderResourceView** ppLUTView);
@@ -120,6 +122,8 @@ private:
   bool m_toneMapping = false;
   bool m_useHLGtoPQ = false;
   AVColorTransferCharacteristic m_hueSatTransfer = AVCOL_TRC_UNSPECIFIED;
+  bool m_useGamma = false;
+  float m_gammaExponent = 1.0f;
   float m_hue = 0.0f;
   float m_saturation = 1.0f;
 

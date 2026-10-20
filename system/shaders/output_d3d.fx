@@ -170,10 +170,19 @@ float3 hueSaturation(float3 color)
 #endif
 
 
+#if defined(KODI_GAMMA)
+float  g_gammaInv;   // 1 / gamma exponent
+float2 g_gammaRange; // x - scale, y - offset of limited range
+#endif
+
 float4 output4(float4 color, float2 uv)
 {
 #if (defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)) && !defined(KODI_HUESAT_YUV)
   color.rgb = hueSaturation(color.rgb);
+#endif
+#if defined(KODI_GAMMA)
+  color.rgb = pow(saturate((color.rgb - g_gammaRange.y) / g_gammaRange.x), g_gammaInv) *
+              g_gammaRange.x + g_gammaRange.y;
 #endif
 #if defined(KODI_TONE_MAPPING_REINHARD)
   float luma = dot(color.rgb, g_coefsDst);

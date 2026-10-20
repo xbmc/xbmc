@@ -115,5 +115,9 @@ void main()
 
 #endif
 
+#if defined(KODI_GAMMA)
+  rgb.rgb = pow(clamp((rgb.rgb - m_gammaRange.y) / m_gammaRange.x, 0.0, 1.0), vec3(m_gammaInv)) * m_gammaRange.x + m_gammaRange.y;
+#endif
+
   gl_FragColor = rgb;
 }

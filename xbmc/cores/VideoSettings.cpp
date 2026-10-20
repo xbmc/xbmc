@@ -31,7 +31,7 @@ CVideoSettings::CVideoSettings()
   m_Contrast = 50.0f;
   m_Hue = 50.0f;
   m_Saturation = 50.0f;
-  m_Gamma = 20.0f;
+  m_Gamma = 50.0f;
   m_Sharpness = 0.0f;
   m_NoiseReduction = 0;
   m_PostProcess = false;

@@ -658,6 +658,12 @@ Matrix3 CConvertMatrix::GetLinearHueSatMat(AVColorSpace colspace, float hue, flo
   return dst;
 }
 
+float CConvertMatrix::GetGammaExponent(float gamma)
+{
+  // 0.5 to 2.0, equal steps either side of neutral
+  return std::exp2((gamma - 50.0f) / 50.0f);
+}
+
 Matrix3x1 CConvertMatrix::GetRGBYuvCoefs(AVColorSpace colspace)
 {
   Matrix3x1 coefs;

@@ -36,6 +36,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
                                              bool toneMap,
                                              ETONEMAPMETHOD toneMapMethod,
                                              AVColorTransferCharacteristic hueSatTransfer,
+                                             bool gamma,
                                              std::shared_ptr<GLSLOutput> output)
 {
   m_width = 1;
@@ -118,6 +119,9 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
     m_defines += "#define KODI_HUESAT_HLG\n";
   }
 
+  if (gamma)
+    m_defines += "#define KODI_GAMMA\n";
+
   VertexShader()->LoadSource("gl_yuv2rgb_vertex.glsl", m_defines);
 
   CLog::Log(LOGDEBUG, "GL: using shader format: {}",
@@ -159,6 +163,8 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hHsCoefs = glGetUniformLocation(ProgramHandle(), "m_hsCoefs");
   m_hHsPeak = glGetUniformLocation(ProgramHandle(), "m_hsPeak");
   m_hHsRange = glGetUniformLocation(ProgramHandle(), "m_hsRange");
+  m_hGammaInv = glGetUniformLocation(ProgramHandle(), "m_gammaInv");
+  m_hGammaRange = glGetUniformLocation(ProgramHandle(), "m_gammaRange");
   VerifyGLState();
 
   if (m_glslOutput)
@@ -213,6 +219,13 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     glUniform3f(m_hHsCoefs, coefs[0], coefs[1], coefs[2]);
     glUniform1f(m_hHsPeak, peak);
     glUniform2f(m_hHsRange, m_convertFullRange ? 1.0f : 876.0f / 1023.0f,
+                m_convertFullRange ? 0.0f : 64.0f / 1023.0f);
+  }
+
+  if (m_hGammaInv >= 0)
+  {
+    glUniform1f(m_hGammaInv, 1.0f / m_gammaExponent);
+    glUniform2f(m_hGammaRange, m_convertFullRange ? 1.0f : 876.0f / 1023.0f,
                 m_convertFullRange ? 0.0f : 64.0f / 1023.0f);
   }
 
@@ -318,6 +331,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
                                                    bool toneMap,
                                                    ETONEMAPMETHOD toneMapMethod,
                                                    AVColorTransferCharacteristic hueSatTransfer,
+                                                   bool gamma,
                                                    std::shared_ptr<GLSLOutput> output,
                                                    bool gammaCorrection)
   : BaseYUV2RGBGLSLShader(rect,
@@ -328,6 +342,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
                           toneMap,
                           toneMapMethod,
                           hueSatTransfer,
+                          gamma,
                           std::move(output))
 {
   if (gammaCorrection)
@@ -338,6 +353,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
 
   PixelShader()->InsertSource("gl_tonemap.glsl", "vec4 process()");
   PixelShader()->InsertSource("gl_huesat.glsl", "vec4 process()");
+  PixelShader()->InsertSource("gl_gamma.glsl", "vec4 process()");
 }
 
 //------------------------------------------------------------------------------
@@ -352,6 +368,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                                            bool toneMap,
                                            ETONEMAPMETHOD toneMapMethod,
                                            AVColorTransferCharacteristic hueSatTransfer,
+                                           bool gamma,
                                            ESCALINGMETHOD method,
                                            std::shared_ptr<GLSLOutput> output)
   : BaseYUV2RGBGLSLShader(rect,
@@ -362,6 +379,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                           toneMap,
                           toneMapMethod,
                           hueSatTransfer,
+                          gamma,
                           std::move(output))
 {
   m_scaling = method;
@@ -370,6 +388,7 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
 
   PixelShader()->InsertSource("gl_tonemap.glsl", "vec4 process()");
   PixelShader()->InsertSource("gl_huesat.glsl", "vec4 process()");
+  PixelShader()->InsertSource("gl_gamma.glsl", "vec4 process()");
 }
 
 YUV2RGBFilterShader4::~YUV2RGBFilterShader4()

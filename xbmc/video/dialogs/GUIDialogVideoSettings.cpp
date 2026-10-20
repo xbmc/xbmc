@@ -190,7 +190,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
   else if (settingId == SETTING_VIDEO_GAMMA)
   {
     CVideoSettings vs = appPlayer->GetVideoSettings();
-    vs.m_Gamma = static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    vs.m_Gamma = GetAdjustmentValue(setting);
     appPlayer->SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_VDPAU_NOISE)
@@ -480,7 +480,7 @@ void CGUIDialogVideoSettings::InitializeSettings()
   if (appPlayer->Supports(RENDERFEATURE_SATURATION))
     addAdjustment(SETTING_VIDEO_SATURATION, 472, videoSettings.m_Saturation);
   if (appPlayer->Supports(RENDERFEATURE_GAMMA))
-    AddPercentageSlider(groupVideo, SETTING_VIDEO_GAMMA, 466, SettingLevel::Basic, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
+    addAdjustment(SETTING_VIDEO_GAMMA, 466, videoSettings.m_Gamma);
   if (appPlayer->Supports(RENDERFEATURE_NOISE))
     AddSlider(groupVideo, SETTING_VIDEO_VDPAU_NOISE, 16312, SettingLevel::Basic,
               videoSettings.m_NoiseReduction, "{:2.2f}", 0.0f, 0.01f, 1.0f, 16312, usePopup);
