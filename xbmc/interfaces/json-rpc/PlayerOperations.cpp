@@ -35,6 +35,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/SlideShowDelegator.h"
+#include "playlists/PlayList.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
@@ -893,7 +894,15 @@ JSONRPC_STATUS CPlayerOperations::GetPlaylistPlayerName(const CVariant& option,
   {
     // Match CPlayListPlayer::Play's position clamping in the current playlist order.
     position = std::clamp(position, 0, items.Size() - 1);
-    playerCoreFactory.GetPlayers(*items.Get(position), possiblePlayers);
+    PLAYLIST::CPlayList playlist;
+    playlist.Add(std::make_shared<CFileItem>(*items.Get(position)));
+    // Playback expands the starting entry by at most five levels before selecting a player.
+    for (int i = 0; i < 5; ++i)
+    {
+      if (!playlist.Expand(0))
+        break;
+    }
+    playerCoreFactory.GetPlayers(*playlist[0], possiblePlayers);
   }
 
   for (const auto& candidate : possiblePlayers)

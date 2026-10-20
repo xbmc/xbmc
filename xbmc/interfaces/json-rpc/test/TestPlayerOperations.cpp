@@ -10,12 +10,15 @@
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "filesystem/File.h"
 #include "interfaces/json-rpc/PlayerOperations.h"
 #include "settings/SettingsComponent.h"
+#include "test/TestUtils.h"
 #include "utils/Variant.h"
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -55,6 +58,32 @@ protected:
   std::unique_ptr<CPlayerCoreFactory> m_factory;
   std::string m_name{"previous player"};
 };
+
+TEST_F(TestPlaylistPlayerName, ValidatesExpandedStartingItemWithoutChangingTheQueue)
+{
+  std::vector<std::unique_ptr<XFILE::CFile>> files;
+  std::string target = "/video/next.mp4";
+  for (int depth = 1; depth <= 5; ++depth)
+  {
+    SCOPED_TRACE(depth);
+    files.emplace_back(XBMC_CREATETEMPFILE(".m3u"));
+    ASSERT_NE(nullptr, files.back());
+    const std::string contents = target + "\n";
+    ASSERT_EQ(static_cast<ssize_t>(contents.size()),
+              files.back()->Write(contents.data(), contents.size()));
+    files.back()->Close();
+    target = XBMC_TEMPFILEPATH(files.back().get());
+
+    m_items[0]->SetPath(target);
+    EXPECT_EQ(InvalidParams, Resolve(CVariant("PAPlayer")));
+    EXPECT_TRUE(m_name.empty());
+    EXPECT_EQ(OK, Resolve(CVariant("vIdEoPlAyEr")));
+    EXPECT_EQ("VideoPlayer", m_name);
+    EXPECT_EQ(2, m_items.Size());
+    EXPECT_EQ(target, m_items[0]->GetPath());
+    EXPECT_FALSE(m_items[0]->HasDynPath());
+  }
+}
 
 TEST_F(TestPlaylistPlayerName, MissingAndNullNamesSelectTheDefault)
 {
