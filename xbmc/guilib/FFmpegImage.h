@@ -97,4 +97,10 @@ private:
 
   AVFrame* m_pFrame;
   uint8_t* m_outputBuffer;
+
+  // the size the caller can use, and the size the file actually holds
+  unsigned int m_maxWidth = 0;
+  unsigned int m_maxHeight = 0;
+  unsigned int m_sourceWidth = 0;
+  unsigned int m_sourceHeight = 0;
 };
