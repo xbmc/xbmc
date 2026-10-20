@@ -278,13 +278,25 @@ const ArtFilenameTest local_art_filename_tests[] = {
     {"zip://%5c%5cServer%5cuser%5ctvshow.zip/foo.mkv", "\\\\Server\\user\\tvshow-S03E04.avi", false,
      false, false, ART::AdditionalIdentifiers::SEASON_AND_EPISODE, -1, 3, 4},
     // Playlists
-    {"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls",
-     "smb://somepath/BDMV/index-00800.bdmv", false, false, false,
-     ART::AdditionalIdentifiers::PLAYLIST, 800},
+    {"bluray://smb%3a%2f%2fsomepath%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/index-00800.bdmv",
+     false, false, false, ART::AdditionalIdentifiers::PLAYLIST, 800},
     {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/"
      "PLAYLIST/00800.mpls",
      "smb://somepath/movie-00800.iso", false, false, false, ART::AdditionalIdentifiers::PLAYLIST,
-     800}};
+     800},
+    // A disc in a folder of its own within the movie's, as one of several discs
+    {"bluray://smb%3a%2f%2fsomepath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/disc 1/index-00800.bdmv", false, false, false,
+     ART::AdditionalIdentifiers::PLAYLIST, 800},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fdisc%25201%252fmovie.iso%2f/BDMV/"
+     "PLAYLIST/00800.mpls",
+     "smb://somepath/disc 1/movie-00800.iso", false, false, false,
+     ART::AdditionalIdentifiers::PLAYLIST, 800},
+    // Without a playlist, a video file and a dvd are named as they always were
+    {"/home/user/movies/Film.mkv", "/home/user/movies/Film.mkv", false, false, false,
+     ART::AdditionalIdentifiers::PLAYLIST, -1},
+    {"/home/user/movies/movie/VIDEO_TS/VIDEO_TS.IFO", "/home/user/movies/movie/", false, true,
+     false, ART::AdditionalIdentifiers::PLAYLIST, -1}};
 
 TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
 {
@@ -933,10 +945,19 @@ const LocalArtTest local_art_tests[] = {
      ART::AdditionalIdentifiers::SEASON_AND_EPISODE},
     // Playlists
     {"/home/user/movies/movie_name/BDMV/index.bdmv", "thumb.jpg", false,
-     "/home/user/movies/movie_name/BDMV/index-00800-thumb.jpg", -1, -1, 800,
+     "/home/user/movies/movie_name/index-00800-thumb.jpg", -1, -1, 800,
+     ART::AdditionalIdentifiers::PLAYLIST},
+    {"/home/user/movies/movie_name/BDMV/index.bdmv", "thumb.jpg", true,
+     "/home/user/movies/movie_name/index-00800-thumb.jpg", -1, -1, 800,
+     ART::AdditionalIdentifiers::PLAYLIST},
+    {"bluray://%2fhome%2fuser%2fmovies%2fmovie_name%2f/BDMV/PLAYLIST/00800.mpls", "thumb.jpg",
+     false, "/home/user/movies/movie_name/index-00800-thumb.jpg", -1, -1, 800,
      ART::AdditionalIdentifiers::PLAYLIST},
     {"/home/user/movie/movie.iso", "thumb.jpg", false, "/home/user/movie/movie-00800-thumb.jpg", -1,
-     -1, 800, ART::AdditionalIdentifiers::PLAYLIST}};
+     -1, 800, ART::AdditionalIdentifiers::PLAYLIST},
+    {"/home/user/movies/movie_name/disc 1/BDMV/index.bdmv", "thumb.jpg", false,
+     "/home/user/movies/movie_name/disc 1/index-00800-thumb.jpg", -1, -1, 800,
+     ART::AdditionalIdentifiers::PLAYLIST}};
 
 TEST_P(TestLocalArt, GetLocalArt)
 {
