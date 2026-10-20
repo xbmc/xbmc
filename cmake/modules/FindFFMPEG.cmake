@@ -212,7 +212,7 @@ macro(buildFFMPEG)
                    -DEXTRA_ENV_VARS=${extra_env_vars}
                    ${CROSS_ARGS}
                    ${FFMPEG_OPTIONS}
-                   -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig)
+                   -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig:${DEPENDS_PATH}/lib/pkgconfig)
     set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
                       ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                       <SOURCE_DIR>
