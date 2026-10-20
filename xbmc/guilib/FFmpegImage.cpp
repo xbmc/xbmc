@@ -33,6 +33,48 @@ extern "C"
 
 namespace
 {
+// Read the frame size out of a JPEG's own header. The image demuxers leave codecpar
+// dimensions unset and avformat_find_stream_info() would decode a whole frame to fill them in,
+// which is the allocation we want to size correctly in the first place.
+bool JpegDimensions(const uint8_t* data, size_t size, unsigned int& width, unsigned int& height)
+{
+  size_t pos = 2; // past the SOI marker
+  while (pos + 4 <= size)
+  {
+    if (data[pos] != 0xFF)
+    {
+      pos++;
+      continue;
+    }
+    const uint8_t marker = data[pos + 1];
+    if (marker == 0xFF) // fill byte
+    {
+      pos++;
+      continue;
+    }
+    pos += 2;
+    // markers that carry no payload
+    if (marker == 0x01 || (marker >= 0xD0 && marker <= 0xD9))
+      continue;
+    if (pos + 2 > size)
+      return false;
+    const size_t length = (static_cast<size_t>(data[pos]) << 8) | data[pos + 1];
+    // SOF0..SOF15, less the three codes in that range that are not frame headers
+    if (marker >= 0xC0 && marker <= 0xCF && marker != 0xC4 && marker != 0xC8 && marker != 0xCC)
+    {
+      if (pos + 7 > size)
+        return false;
+      height = (static_cast<unsigned int>(data[pos + 3]) << 8) | data[pos + 4];
+      width = (static_cast<unsigned int>(data[pos + 5]) << 8) | data[pos + 6];
+      return width > 0 && height > 0;
+    }
+    if (length < 2)
+      return false;
+    pos += length;
+  }
+  return false;
+}
+
 constexpr size_t DISPLAY_MATRIX_SIZE = 9;
 // by counter-clockwise quarter turns, unmirrored then mirrored
 constexpr unsigned int ORIENTATIONS[2][4] = {{1, 8, 3, 6}, {2, 7, 4, 5}};
@@ -175,6 +217,8 @@ CFFmpegImage::~CFFmpegImage()
 bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
                                       unsigned int width, unsigned int height)
 {
+  m_maxWidth = width;
+  m_maxHeight = height;
 
   if (!Initialize(buffer, bufSize))
   {
@@ -184,6 +228,19 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
 
   av_frame_free(&m_pFrame);
   m_pFrame = ExtractFrame();
+
+  // The decoder refuses some JPEGs at a reduced size, such as lossless ones
+  if (!m_pFrame && m_codec_ctx->lowres > 0)
+  {
+    avcodec_free_context(&m_codec_ctx);
+    avformat_close_input(&m_fctx);
+    FreeIOCtx(&m_ioctx);
+    m_maxWidth = 0;
+    m_maxHeight = 0;
+    if (!Initialize(buffer, bufSize))
+      return false;
+    m_pFrame = ExtractFrame();
+  }
 
   return !(m_pFrame == nullptr);
 }
@@ -310,6 +367,25 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     return false;
   }
 
+  // Nothing bounds the size of the file we were handed, and decoding more pixels than the
+  // caller can use costs memory that scaling afterwards cannot give back. Decoding at a
+  // reduced size is the only point at which that cost can be avoided rather than merely
+  // hidden, and it needs the dimensions before the frame is decoded.
+  if (is_jpeg)
+    JpegDimensions(buffer, bufSize, m_sourceWidth, m_sourceHeight);
+
+  if (codec && m_maxWidth > 0 && m_maxHeight > 0 && m_sourceWidth > 0 && m_sourceHeight > 0)
+  {
+    // The caller scales the image down to fit its own maximum, so everything decoded above
+    // that size is read and thrown away. Pre-reduce by the largest power of two that stays
+    // at or above it, which costs no detail the caller would have kept.
+    const unsigned int ratio = std::max(m_sourceWidth / m_maxWidth, m_sourceHeight / m_maxHeight);
+    int lowres = 0;
+    while (lowres < codec->max_lowres && (1U << (lowres + 1)) <= ratio)
+      lowres++;
+    m_codec_ctx->lowres = lowres;
+  }
+
   if (avcodec_open2(m_codec_ctx, codec, NULL) < 0)
   {
     avformat_close_input(&m_fctx);
@@ -368,8 +444,8 @@ AVFrame* CFFmpegImage::ExtractFrame()
 
   m_height = frame->height;
   m_width = frame->width;
-  m_originalWidth = m_width;
-  m_originalHeight = m_height;
+  m_originalWidth = m_sourceWidth > 0 ? m_sourceWidth : m_width;
+  m_originalHeight = m_sourceHeight > 0 ? m_sourceHeight : m_height;
 
   const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(frame->format));
   if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
