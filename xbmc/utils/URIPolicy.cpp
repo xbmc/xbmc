@@ -19,8 +19,27 @@ std::optional<std::string_view> GetScheme(std::string_view input)
 {
   auto scheme = URIParser::GetScheme(input);
   if (scheme && scheme->size() == 1)
+  {
+#ifndef TARGET_WINDOWS
+    if (input.substr(2, 2) == "//")
+      return scheme;
+#endif
     return std::nullopt;
+  }
   return scheme;
+}
+
+bool IsURILocation(std::string_view input)
+{
+  const auto scheme = GetScheme(input);
+  if (!scheme)
+    return false;
+
+  const auto prefix = input.substr(scheme->size() + 1, 2);
+  return prefix == "//" || prefix == "\\\\" || SchemeEquals(*scheme, "file") ||
+         SchemeEquals(*scheme, "http") || SchemeEquals(*scheme, "https") ||
+         SchemeEquals(*scheme, "magnet") || SchemeEquals(*scheme, "data") ||
+         SchemeEquals(*scheme, "urn") || SchemeEquals(*scheme, "mailto");
 }
 
 bool SchemeEquals(std::string_view left, std::string_view right)
@@ -71,7 +90,7 @@ bool IsLegacyURL(std::string_view input)
 bool UsesLegacyURL(std::string_view input)
 {
   const auto scheme = GetScheme(input);
-  if (!scheme || !GetPolicy(*scheme).legacy)
+  if (!scheme || (!GetPolicy(*scheme).legacy && scheme->size() != 1))
     return false;
   const auto prefix = input.substr(scheme->size() + 1, 2);
   return prefix == "//" || prefix == "\\\\";

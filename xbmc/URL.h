@@ -36,8 +36,8 @@ public:
 
   void Reset();
   /*! \brief Interpret Kodi mixed native-path/URI input without a strict validity gate.
-   * \note Recognized drive prefixes remain native. Bare notes:2026 is a URI candidate;
-   *       use ParseNativePath or ./notes:2026 for native intent. Legacy adapters retain
+   * \note Recognized drive prefixes and unknown authority-free schemes remain native;
+   *       use ParseURI for explicit URI intent. Legacy adapters retain
    *       their normalization; new URI forms preserve spelling, including malformed bodies.
    * \sa https://www.rfc-editor.org/rfc/rfc8089.html#appendix-E.2
    */

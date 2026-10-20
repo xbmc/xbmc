@@ -334,18 +334,23 @@ TEST(TestGameClientDiscM3U, SaveCreatesPerGameStateFile)
   CleanupStateFile();
 }
 
-TEST(TestGameClientDiscM3U, LoadPreservesAuthorityFreeIdentifiers)
+TEST(TestGameClientDiscM3U, LoadDistinguishesURIsFromRelativeColonFilenames)
 {
   const std::string playlistPath = CreatePlaylistFile(
-      "load-uri-entries.m3u", "file:/roms/disc1.chd\nexample+v1:disc2\n./notes:2026.chd\n");
+      "load-uri-entries.m3u", "file:/roms/disc1.chd\nexample+v1:disc2\n./notes:2026.chd\n"
+                              "Re:Zero (Disc 1).chd\ncustom+vfs://host/disc3.chd\n"
+                              "Archive:Disc 1.chd\n");
   CGameClientDiscM3U discM3U;
   CGameClientDiscModel loadedModel;
   ASSERT_TRUE(discM3U.Load(playlistPath, loadedModel));
-  ASSERT_EQ(loadedModel.Size(), 3U);
+  ASSERT_EQ(loadedModel.Size(), 6U);
   EXPECT_EQ("file:/roms/disc1.chd", loadedModel.GetPathByIndex(0));
-  EXPECT_EQ("example+v1:disc2", loadedModel.GetPathByIndex(1));
-  EXPECT_EQ(URIUtils::AddFileToFolder(URIUtils::GetDirectory(playlistPath), "./notes:2026.chd"),
-            loadedModel.GetPathByIndex(2));
+  EXPECT_EQ("special://temp/test-disc-playlists/example+v1:disc2", loadedModel.GetPathByIndex(1));
+  EXPECT_EQ("special://temp/test-disc-playlists/./notes:2026.chd", loadedModel.GetPathByIndex(2));
+  EXPECT_EQ("special://temp/test-disc-playlists/Re:Zero (Disc 1).chd",
+            loadedModel.GetPathByIndex(3));
+  EXPECT_EQ("custom+vfs://host/disc3.chd", loadedModel.GetPathByIndex(4));
+  EXPECT_EQ("special://temp/test-disc-playlists/Archive:Disc 1.chd", loadedModel.GetPathByIndex(5));
   DeletePlaylistFile(playlistPath);
   CleanupPlaylistDirectory();
 }

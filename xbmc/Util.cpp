@@ -1035,7 +1035,7 @@ std::string CUtil::MakeLegalPath(const std::string& strPathAndFile, LegalPath Le
 
 std::string CUtil::ValidatePath(std::string path, bool bFixDoubleSlashes /* = false */)
 {
-  if (URIPolicy::GetScheme(path) && !URIPolicy::UsesLegacyURL(path))
+  if (URIPolicy::IsURILocation(path) && !URIPolicy::UsesLegacyURL(path))
     return path;
 
   // Don't do any stuff on URLs containing %-characters or protocols that embed
@@ -1958,9 +1958,14 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
     videoFileName = URIUtils::GetFileName(URIUtils::ReplaceExtension(videoPath, ""));
     CURL url{location};
     // Strip non-identity URL options before computing the parent path.
-    if (!url.PreservesQueryIdentity())
+    if (url.IsLosslessURI())
+      basePath = URIUtils::GetParentPath(url.PreservesQueryIdentity() ? url.Get()
+                                                                      : url.GetWithoutOptions());
+    else
+    {
       url.SetOptions("");
-    basePath = URIUtils::GetParentPath(url.Get());
+      basePath = URIUtils::GetParentPath(url.Get());
+    }
   }
 }
 

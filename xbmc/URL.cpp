@@ -224,8 +224,8 @@ bool CURL::SetRawQuery(std::optional<std::string> query)
 void CURL::Parse(std::string strURL1)
 {
   Reset();
-  const auto scheme = URIPolicy::GetScheme(strURL1);
-  if (scheme && !URIPolicy::UsesLegacyURL(strURL1))
+  const bool isURI = URIPolicy::IsURILocation(strURL1);
+  if (isURI && !URIPolicy::UsesLegacyURL(strURL1))
   {
     StoreURI(std::move(strURL1));
     return;
@@ -248,7 +248,7 @@ void CURL::Parse(std::string strURL1)
   // format 2: protocol://file
 
   // decode protocol
-  size_t iPos = scheme && components.authority ? components.scheme->length : std::string::npos;
+  size_t iPos = isURI && components.authority ? components.scheme->length : std::string::npos;
   if (iPos == std::string::npos)
   {
     /* Consider files with the extensions {.zip .apk} as special if they exist
@@ -285,7 +285,8 @@ void CURL::Parse(std::string strURL1)
     SetFileName(std::move(strURL));
     return;
   }
-  SetProtocol(strURL.substr(0, iPos));
+  m_strProtocol = strURL.substr(0, iPos);
+  StringUtils::ToLower(m_strProtocol);
   iPos += 3;
 
   // virtual protocols
@@ -525,7 +526,8 @@ void CURL::SetProtocol(std::string strProtocol)
       StoreURI(changed);
     return;
   }
-  if (!strProtocol.empty() && !URIPolicy::GetPolicy(strProtocol).legacy)
+  if (!strProtocol.empty() && !URIPolicy::GetPolicy(strProtocol).legacy &&
+      (strProtocol.size() != 1 || !m_strProtocol.empty()))
   {
     const auto source = Get();
     if (m_strProtocol.empty())
@@ -749,7 +751,8 @@ std::string CURL::GetRedacted(std::string_view path)
 
 bool CURL::IsLocal() const
 {
-  return m_strProtocol.empty() || (!m_uri && IsLocalHost()) || IsProtocol("win-lib");
+  return m_strProtocol.empty() || (!m_uri && IsLocalHost()) || IsProtocol("win-lib") ||
+         (m_uri && IsProtocol("file") && !m_uri->HasAuthority());
 }
 
 bool CURL::IsLocalHost() const
@@ -761,7 +764,8 @@ bool CURL::IsFullPath(const std::string& url)
 {
   if (!url.empty() && url[0] == '/') // /foo/bar.ext
     return true;
-  if (URIPolicy::GetScheme(url)) // Identifiers are absolute locations without requiring a backend.
+  // Identifiers are absolute locations without requiring a backend.
+  if (URIPolicy::IsURILocation(url))
     return true;
   if (url.size() > 1 && url[1] == ':') // c:\\foo\\bar\\bar.ext
     return true;

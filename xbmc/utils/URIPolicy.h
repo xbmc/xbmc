@@ -32,16 +32,23 @@ struct Policy
 };
 
 /*!
- * \brief Recognize a scheme in Kodi mixed native-path/URI input, without validating its body.
+ * \brief Extract a syntactic scheme while respecting native drive prefixes.
  * \param input Raw location; alphabetic drive prefixes retain native interpretation.
  * \return A source view without the colon, valid until input changes or is destroyed.
- * \note Bare notes:2026 is an identifier; use ./notes:2026 or CURL::ParseNativePath for
- *       native intent. Explicit URIParser input has no drive-prefix exception.
+ * \note On Windows, a letter followed by ':' is a drive prefix, even with //.
+ *       Use CURL::ParseURI or legacy setters for explicit one-letter URI/VFS intent.
+ * \note A scheme prefix alone does not establish URI intent; use IsURILocation for mixed input.
+ *       Explicit URIParser input has no drive-prefix exception.
  * \sa https://www.rfc-editor.org/rfc/rfc3986.html#section-3.1
  * \sa https://www.rfc-editor.org/rfc/rfc8089.html#appendix-E.2
  * \sa https://www.rfc-editor.org/rfc/rfc8089.html#appendix-E.3
  */
 std::optional<std::string_view> GetScheme(std::string_view input);
+
+/*! \brief Classify mixed input as a recognized URI scheme or legacy VFS URL.
+ *  \note Unknown authority-free identifiers require explicit CURL::ParseURI intent.
+ */
+bool IsURILocation(std::string_view input);
 
 /*!
  * \brief Compare raw ASCII scheme names case-insensitively, without decoding.

@@ -539,7 +539,7 @@ TEST_F(TestCURL, IdentifierRecognitionBeforeNormalization)
 {
   for (const auto* input :
        {"DATA:text/plain,http://example.test/a//b?x=1#fragment", "data:,bad%", "data:,a|b",
-        "urn:example:a/b?+resolver?=query#part", "mailto:user@example.test", "example+v1:body"})
+        "urn:example:a/b?+resolver?=query#part", "mailto:user@example.test"})
   {
     SCOPED_TRACE(input);
     const CURL url(input);
@@ -561,8 +561,6 @@ TEST_F(TestCURL, LosslessIdentifiers)
       "data:,a|b",
       "urn:example:a/b?+resolver?=query#part",
       "mailto:user@example.test",
-      "example+v1:body",
-      "notes:2026",
       "magnet:?xt=urn:btih:0123456789012345678901234567890123456789",
       "magnet:?xt=urn:btih:0123456789012345678901234567890123456789&tr=http%3a%2f%2fa"
       "&tr=http%3A%2F%2Fb&xt=urn:btmh:"
@@ -603,7 +601,8 @@ TEST_F(TestCURL, RawComponentsAndSchemeSpecificPart)
   EXPECT_TRUE(data.HasFragment());
   for (const auto* input : {"example:", "example:?", "example:#", "example:?#", "example://"})
   {
-    const CURL url(input);
+    CURL url;
+    ASSERT_TRUE(url.ParseURI(input));
     EXPECT_EQ(input, url.Get());
     EXPECT_TRUE(url.GetRawQuery().empty());
     EXPECT_TRUE(url.GetRawFragment().empty());
@@ -635,6 +634,16 @@ TEST_F(TestCURL, ExplicitAndMixedInputIntent)
   explicitURI.ParseNativePath("notes:2026");
   EXPECT_TRUE(explicitURI.GetProtocol().empty());
   EXPECT_EQ("notes:2026", explicitURI.GetFileName());
+  for (const std::string input : {"C://Movies/movie.mkv", "x://host/file"})
+  {
+    ASSERT_TRUE(explicitURI.ParseURI(input));
+    EXPECT_TRUE(explicitURI.IsLosslessURI());
+    EXPECT_EQ(input, explicitURI.Get());
+    explicitURI.ParseNativePath(input);
+    EXPECT_TRUE(explicitURI.GetProtocol().empty());
+    EXPECT_FALSE(explicitURI.IsLosslessURI());
+    EXPECT_EQ(input, explicitURI.Get());
+  }
   EXPECT_FALSE(explicitURI.ParseURI("data:,bad%"));
   EXPECT_EQ("data", explicitURI.GetProtocol());
   EXPECT_EQ("data:,bad%", explicitURI.Get());
@@ -646,6 +655,43 @@ TEST_F(TestCURL, ExplicitAndMixedInputIntent)
   ASSERT_TRUE(explicitURI.ParseURI("file:///tmp/a"));
   EXPECT_TRUE(explicitURI.HasAuthority());
   EXPECT_EQ("file:///tmp/a", explicitURI.Get());
+}
+
+TEST_F(TestCURL, NativeColonFilenames)
+{
+  for (const std::string path :
+       {"Re:Zero - 01.mkv", "AC:DC - Thunderstruck.mp3", "Alien:Covenant (2017).mkv", "notes:2026",
+        "example+v1:disc2", "Special:Edition.mkv", "Archive:Disc 1.chd", "Episodes:Part 2.mkv",
+        "Library:Collection.mkv"})
+  {
+    SCOPED_TRACE(path);
+    const CURL url{path};
+    EXPECT_EQ(path, url.Get());
+    EXPECT_EQ(path, url.GetFileName());
+    EXPECT_TRUE(url.GetProtocol().empty());
+    EXPECT_FALSE(url.IsLosslessURI());
+    EXPECT_TRUE(url.SupportsPathOperations());
+    EXPECT_TRUE(url.IsLocal());
+    EXPECT_FALSE(CURL::IsFullPath(path));
+  }
+}
+
+TEST_F(TestCURL, UnknownIdentifiersRequireExplicitURIIntent)
+{
+  for (const std::string identifier : {"example+v1:disc2", "notes:2026", "unknown:movie",
+                                       "example+v1:/dir/movie.mkv?x=%2f&x=+#part"})
+  {
+    SCOPED_TRACE(identifier);
+    CURL url;
+    ASSERT_TRUE(url.ParseURI(identifier));
+    EXPECT_EQ(identifier, url.Get());
+    EXPECT_TRUE(url.IsLosslessURI());
+    EXPECT_FALSE(url.SupportsPathOperations());
+    EXPECT_FALSE(url.IsLocal());
+    EXPECT_TRUE(url.GetFileName().empty());
+    EXPECT_TRUE(url.GetExtension().empty());
+    EXPECT_EQ(identifier, url.GetWithoutUserDetails());
+  }
 }
 
 TEST_F(TestCURL, LosslessMemberMutation)
@@ -1146,6 +1192,112 @@ TEST_F(TestCURL, CustomVFSProtocolsRetainLegacyProjection)
   EXPECT_EQ("custom+vfs://host/dir/file", constructed.Get());
 }
 
+TEST_F(TestCURL, OneLetterVFSProtocolsRetainLegacyProjection)
+{
+#ifndef TARGET_WINDOWS
+  for (const std::string scheme : {"x", "X"})
+  {
+    const CURL url(scheme + "://user:pass@host:123/share/movie.mkv");
+    EXPECT_FALSE(url.IsLosslessURI());
+    EXPECT_TRUE(url.SupportsPathOperations());
+    EXPECT_EQ("x", url.GetProtocol());
+    EXPECT_EQ("host", url.GetHostName());
+    EXPECT_EQ("user", url.GetUserName());
+    EXPECT_EQ("pass", url.GetPassWord());
+    EXPECT_EQ(123, url.GetPort());
+    EXPECT_EQ("share/movie.mkv", url.GetFileName());
+    EXPECT_EQ("share", url.GetShareName());
+    EXPECT_EQ("mkv", url.GetFileType());
+    EXPECT_EQ("x://user:pass@host:123/share/movie.mkv", url.Get());
+  }
+#endif
+  for (const std::string path : {"C:/file", "C:\\file", "C:relative"})
+  {
+    const CURL url(path);
+    EXPECT_TRUE(url.GetProtocol().empty());
+    EXPECT_TRUE(url.GetHostName().empty());
+    EXPECT_FALSE(url.IsLosslessURI());
+    EXPECT_FALSE(URIUtils::IsURL(path));
+    EXPECT_EQ(path == "C:relative" ? "relative" : "file", url.GetFileNameWithoutPath());
+  }
+}
+
+#ifdef TARGET_WINDOWS
+TEST_F(TestCURL, DrivePrefixesPrecedeImplicitOneLetterSchemes)
+{
+  for (const std::string drive : {"C", "c", "D", "x"})
+  {
+    SCOPED_TRACE(drive);
+    const CURL url(drive + "://Movies/movie.mkv");
+    EXPECT_TRUE(url.GetProtocol().empty());
+    EXPECT_TRUE(url.GetHostName().empty());
+    EXPECT_FALSE(url.IsLosslessURI());
+    EXPECT_TRUE(url.IsLocal());
+    EXPECT_EQ(drive + R"(:\\Movies\movie.mkv)", url.GetFileName());
+    EXPECT_EQ(drive + R"(:\\Movies\movie.mkv)", url.Get());
+  }
+}
+#endif
+
+TEST_F(TestCURL, AuthorityFreeFileURIsAreLocal)
+{
+  for (const std::string path : {"file:/videos/movie.mkv", "file:movie.mkv"})
+  {
+    SCOPED_TRACE(path);
+    EXPECT_TRUE(CURL(path).IsLocal());
+    CURL explicitURI;
+    ASSERT_TRUE(explicitURI.ParseURI(path));
+    EXPECT_TRUE(explicitURI.IsLocal());
+  }
+  EXPECT_TRUE(CURL("/videos/movie.mkv").IsLocal());
+  EXPECT_TRUE(CURL(R"(C:\videos\movie.mkv)").IsLocal());
+  for (const std::string path : {"file://server/videos/movie.mkv", "file:///videos/movie.mkv",
+                                 "data:,hello", "urn:example:movie", "magnet:?xt=urn:btih:hash",
+                                 "http:/videos/movie.mkv", "https:/videos/movie.mkv"})
+  {
+    SCOPED_TRACE(path);
+    EXPECT_FALSE(CURL(path).IsLocal());
+    CURL explicitURI;
+    ASSERT_TRUE(explicitURI.ParseURI(path));
+    EXPECT_FALSE(explicitURI.IsLocal());
+  }
+  CURL explicitHTTP;
+  ASSERT_TRUE(explicitHTTP.ParseURI("http://localhost/videos/movie.mkv"));
+  EXPECT_FALSE(explicitHTTP.IsLocal());
+}
+
+TEST_F(TestCURL, OneLetterVFSProtocolsSupportLegacyConstruction)
+{
+  for (const std::string scheme : {"x", "X"})
+  {
+    SCOPED_TRACE(scheme);
+    CURL url;
+    url.SetProtocol(scheme);
+    url.SetHostName("host");
+    url.SetFileName("file");
+    EXPECT_EQ("x://host/file", url.Get());
+    EXPECT_FALSE(url.IsLosslessURI());
+    EXPECT_TRUE(url.SupportsPathOperations());
+
+    url.SetUserName("user");
+    url.SetPassword("pass");
+    url.SetPort(123);
+    url.SetFileName("share/movie.mkv");
+    url.SetOptions("?key=value");
+    url.SetProtocolOptions("cache=no");
+    EXPECT_EQ("x", url.GetProtocol());
+    EXPECT_EQ("host", url.GetHostName());
+    EXPECT_EQ("user", url.GetUserName());
+    EXPECT_EQ("pass", url.GetPassWord());
+    EXPECT_EQ(123, url.GetPort());
+    EXPECT_EQ("share/movie.mkv", url.GetFileName());
+    EXPECT_EQ("share", url.GetShareName());
+    EXPECT_EQ("value", url.GetOption("key"));
+    EXPECT_EQ("no", url.GetProtocolOption("cache"));
+    EXPECT_EQ("x://user:pass@host:123/share/movie.mkv?key=value|cache=no", url.Get());
+  }
+}
+
 TEST_F(TestCURL, ExplicitUnknownURIRetainsLosslessIntent)
 {
   CURL uri;
@@ -1239,6 +1391,9 @@ TEST_F(TestCURL, ExplicitCredentialFreeWrappersPreserveSpelling)
 TEST_F(TestCURL, OneLetterSchemeTransitionsRemainExplicitURIs)
 {
   CURL uri;
+  ASSERT_TRUE(uri.ParseURI("x://host/path?x=1#part"));
+  EXPECT_TRUE(uri.IsLosslessURI());
+  EXPECT_EQ("x://host/path?x=1#part", uri.Get());
   ASSERT_TRUE(uri.ParseURI("custom://host/path?x=1#part"));
   uri.SetProtocol("a");
   EXPECT_TRUE(uri.IsLosslessURI());
@@ -1246,6 +1401,10 @@ TEST_F(TestCURL, OneLetterSchemeTransitionsRemainExplicitURIs)
   EXPECT_EQ("host", uri.GetRawAuthority());
   EXPECT_EQ("x=1", uri.GetRawQuery());
   EXPECT_EQ("part", uri.GetRawFragment());
+  CURL legacy("http://host/path?x=1#part");
+  legacy.SetProtocol("a");
+  EXPECT_TRUE(legacy.IsLosslessURI());
+  EXPECT_EQ("a://host/path?x=1#part", legacy.Get());
 }
 
 TEST_F(TestCURL, LargeDataInEncodedStackRedactsWithoutChangingResource)

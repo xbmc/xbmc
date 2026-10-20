@@ -126,6 +126,11 @@ std::string Decode(std::string_view encoded, std::string_view specialChars)
   return decodedUrl;
 }
 
+bool IsLosslessURILocation(std::string_view path)
+{
+  return URIPolicy::IsURILocation(path) && !URIPolicy::UsesLegacyURL(path);
+}
+
 bool HasSameURIIdentity(const CURL& left, const CURL& right)
 {
   return left.IsLosslessURI() && right.IsLosslessURI() &&
@@ -331,7 +336,7 @@ std::string ReplacePathExtension(const std::string& path, const std::string& new
 
 std::string URIUtils::GetExtension(const std::string& path)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
     return GetExtension(CURL{path});
 
   if (const int extension{FindExtension(path)}; extension != NO_EXTENSION)
@@ -352,7 +357,7 @@ std::string URIUtils::GetExtension(const CURL& url)
 
 bool URIUtils::HasExtension(const std::string& path)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
     return !GetExtension(CURL{path}).empty();
   return FindExtension(path) != NO_EXTENSION;
 }
@@ -366,14 +371,14 @@ bool URIUtils::HasExtension(const CURL& url, std::string_view strExtensions)
 
 bool URIUtils::HasExtension(const std::string& path, std::string_view extensions)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
     return HasExtension(CURL{path}, extensions);
   return FindExtension(path, extensions, FindExtensions::ONLY_IN_LIST) != NO_EXTENSION;
 }
 
 void URIUtils::RemoveExtension(std::string& path)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
   {
     CURL url(path);
     if (!url.SupportsPathOperations())
@@ -389,7 +394,7 @@ void URIUtils::RemoveExtension(std::string& path)
 
 std::string URIUtils::ReplaceExtension(const std::string& path, const std::string& newExtension)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
   {
     CURL url(path);
     if (!url.SupportsPathOperations())
@@ -421,22 +426,25 @@ std::string URIUtils::GetDecodedFileName(const std::string& strFileNameAndPath)
 /* handles both / and \, and options in urls*/
 std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
 {
-  if (URIPolicy::GetScheme(strFileNameAndPath))
+  if (URIPolicy::IsURILocation(strFileNameAndPath))
     return GetFileName(CURL{strFileNameAndPath});
   return PathFileName(strFileNameAndPath, true);
 }
 
 std::string URIUtils::GetFileOrFolderName(std::string_view path)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
   {
     const CURL url{std::string{path}};
-    if (!url.SupportsPathOperations())
-      return {};
-    std::string file = url.GetFileName();
-    if (PathEndsInSlash(file))
-      file.pop_back();
-    return PathFileName(file);
+    if (url.IsLosslessURI())
+    {
+      if (!url.SupportsPathOperations())
+        return {};
+      std::string file = url.GetFileName();
+      if (PathEndsInSlash(file))
+        file.pop_back();
+      return PathFileName(file);
+    }
   }
 
   if (path.empty())
@@ -460,7 +468,7 @@ std::string URIUtils::GetFileOrFolderName(std::string_view path)
 void URIUtils::Split(const std::string& strFileNameAndPath,
                      std::string& strPath, std::string& strFileName)
 {
-  if (URIPolicy::GetScheme(strFileNameAndPath))
+  if (URIPolicy::IsURILocation(strFileNameAndPath))
   {
     const CURL url{strFileNameAndPath};
     strPath = GetDirectory(strFileNameAndPath);
@@ -536,22 +544,30 @@ std::vector<std::string> URIUtils::SplitPath(const std::string& path)
 
 void URIUtils::GetCommonPath(std::string& parent, std::string_view path)
 {
-  CURL parentURL{parent};
-  const CURL otherURL{std::string{path}};
-  if (!parentURL.SupportsPathOperations() || !otherURL.SupportsPathOperations())
+  const bool parentIsURI = IsLosslessURILocation(parent);
+  const bool pathIsURI = IsLosslessURILocation(path);
+  if (parentIsURI || pathIsURI)
   {
-    parent.clear();
-    return;
-  }
-  if (parentURL.IsLosslessURI() || otherURL.IsLosslessURI())
-  {
-    if (!HasSameURIIdentity(parentURL, otherURL))
+    if (!parentIsURI || !pathIsURI)
+    {
+      parent.clear();
+      return;
+    }
+    CURL parentURL{parent};
+    const CURL otherURL{std::string{path}};
+    if (!parentURL.SupportsPathOperations() || !otherURL.SupportsPathOperations() ||
+        !HasSameURIIdentity(parentURL, otherURL))
     {
       parent.clear();
       return;
     }
     std::string common = parentURL.GetRawPath();
     const std::string other = otherURL.GetRawPath();
+    if (common.starts_with('/') != other.starts_with('/'))
+    {
+      parent.clear();
+      return;
+    }
     size_t length = 0;
     while (length < std::min(common.size(), other.size()) && common[length] == other[length])
       ++length;
@@ -561,7 +577,7 @@ void URIUtils::GetCommonPath(std::string& parent, std::string_view path)
       const auto slash = common.rfind('/');
       common.resize(slash == std::string::npos ? 0 : slash + 1);
     }
-    if (common.empty() || !parentURL.SetURIPath(std::move(common)))
+    if (!parentURL.SetURIPath(std::move(common)))
       parent.clear();
     else
       parent = parentURL.Get();
@@ -1068,15 +1084,22 @@ bool URIUtils::PathHasParent(std::string path, std::string parent, bool translat
   if (path == parent)
     return true;
 
-  const CURL pathURL{path};
-  const CURL parentURL{parent};
-  if (pathURL.IsLosslessURI() || parentURL.IsLosslessURI())
+  const bool pathIsURI = IsLosslessURILocation(path);
+  const bool parentIsURI = IsLosslessURILocation(parent);
+  if (pathIsURI || parentIsURI)
   {
+    if (!pathIsURI || !parentIsURI)
+      return false;
+
+    const CURL pathURL{path};
+    const CURL parentURL{parent};
     if (!pathURL.SupportsPathOperations() || !parentURL.SupportsPathOperations() ||
         !HasSameURIIdentity(pathURL, parentURL))
       return false;
 
     std::string parentPath = parentURL.GetRawPath();
+    if (parentPath.empty())
+      return !pathURL.GetRawPath().starts_with('/');
     if (!parentPath.ends_with('/'))
       parentPath += '/';
     return pathURL.GetRawPath().starts_with(parentPath);
@@ -1822,7 +1845,7 @@ std::string URIUtils::AppendSlash(std::string strFolder)
 
 void URIUtils::AddSlashAtEnd(std::string& strFolder)
 {
-  if (URIPolicy::GetScheme(strFolder))
+  if (URIPolicy::IsURILocation(strFolder))
   {
     CURL url(strFolder);
     if (!url.SupportsPathOperations())
@@ -1844,7 +1867,7 @@ void URIUtils::AddSlashAtEnd(std::string& strFolder)
 
 bool URIUtils::HasSlashAtEnd(std::string_view file, bool checkURL /* = false */)
 {
-  if (checkURL && URIPolicy::GetScheme(file))
+  if (checkURL && URIPolicy::IsURILocation(file))
   {
     const CURL url{std::string{file}};
     if (!url.SupportsPathOperations())
@@ -1861,7 +1884,7 @@ void URIUtils::RemoveSlashAtEnd(std::string& strFolder)
   if (IsPVRGuideItem(strFolder))
     return;
 
-  if (URIPolicy::GetScheme(strFolder))
+  if (URIPolicy::IsURILocation(strFolder))
   {
     CURL url(strFolder);
     if (!url.SupportsPathOperations())
@@ -1930,7 +1953,7 @@ std::string URIUtils::FixSlashesAndDups(const std::string& path,
                                         const char slashCharacter /* = '/' */,
                                         const size_t startFrom /*= 0*/)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
   {
     CURL url{path};
     if (!url.SupportsPathOperations())
@@ -1980,7 +2003,7 @@ std::string CanonicalizePathComponent(const std::string& path, const char slashC
 std::string URIUtils::CanonicalizePath(const std::string& path,
                                        const char slashCharacter /*= '\\'*/)
 {
-  if (URIPolicy::GetScheme(path))
+  if (URIPolicy::IsURILocation(path))
   {
     CURL url{path};
     if (!url.SupportsPathOperations())
@@ -1993,7 +2016,7 @@ std::string URIUtils::CanonicalizePath(const std::string& path,
 
 std::string URIUtils::AddFileToFolder(const std::string& strFolder, const std::string& strFile)
 {
-  const bool isURI = URIPolicy::GetScheme(strFolder).has_value();
+  const bool isURI = URIPolicy::IsURILocation(strFolder);
   CURL url;
   if (isURI)
   {
@@ -2002,7 +2025,8 @@ std::string URIUtils::AddFileToFolder(const std::string& strFolder, const std::s
       return {};
   }
   std::string result = isURI ? url.GetFileName() : strFolder;
-  if ((!result.empty() || (isURI && url.IsLosslessURI())) && !PathEndsInSlash(result))
+  if ((!result.empty() || (isURI && url.IsLosslessURI() && url.HasAuthority())) &&
+      !PathEndsInSlash(result))
     result += isURI ? '/' : (IsDOSPath(strFolder) ? '\\' : '/');
 
   // Remove any slash at the start of the file
@@ -2011,7 +2035,7 @@ std::string URIUtils::AddFileToFolder(const std::string& strFolder, const std::s
   else
     result += strFile;
   // correct any slash directions
-  if (!IsDOSPath(strFolder))
+  if (isURI || !IsDOSPath(strFolder))
     StringUtils::Replace(result, '\\', '/');
   else
     StringUtils::Replace(result, '/', '\\');
@@ -2038,7 +2062,7 @@ std::string URIUtils::AddFileToFolderMatchingEncoding(const std::string& strFold
 
 std::string URIUtils::GetDirectory(const std::string &strFilePath)
 {
-  if (URIPolicy::GetScheme(strFilePath))
+  if (URIPolicy::IsURILocation(strFilePath))
   {
     CURL url{strFilePath};
     if (!url.SupportsPathOperations())
@@ -2166,7 +2190,7 @@ CURL URIUtils::AddCredentials(CURL url)
 
 std::string URIUtils::SanitiseUrlEncoding(std::string_view path)
 {
-  if (!URIPolicy::IsLegacyURL(path) || !CURL{std::string{path}}.SupportsPathOperations())
+  if (!URIPolicy::IsLegacyURL(path) || !URIPolicy::UsesLegacyURL(path))
     return std::string{path};
 
   // Firstly look at encoded character capitalization.
