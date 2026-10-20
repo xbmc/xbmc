@@ -1463,6 +1463,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE settings ADD Hue float DEFAULT 50");
     m_pDS->exec("ALTER TABLE settings ADD Saturation float DEFAULT 50");
+    // gamma was never applied and stored 20, 50 is neutral now
+    m_pDS->exec("UPDATE settings SET Gamma=50");
   }
 }
 

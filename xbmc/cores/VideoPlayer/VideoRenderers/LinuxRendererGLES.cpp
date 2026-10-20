@@ -913,8 +913,8 @@ void CLinuxRendererGLES::LoadShaders(int field)
           {
             m_pYUVProgShader = new YUV2RGBFilterShader(
                 shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-                m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_scalingMethod,
-                m_useDithering);
+                m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useGamma,
+                m_scalingMethod, m_useDithering);
             // TODO: GL gates this on !m_cmsOn. Add when CMS is ported to GLES.
             m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
 
@@ -940,14 +940,16 @@ void CLinuxRendererGLES::LoadShaders(int field)
           // Fall back to regular progressive shader
           m_pYUVProgShader = new YUV2RGBProgressiveShader(
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useDithering);
+              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useGamma,
+              m_useDithering);
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
 
           CLog::Log(LOGINFO, "GLES: Selecting YUV 2 RGB shader");
 
           m_pYUVBobShader = new YUV2RGBBobShader(
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useDithering);
+              m_srcPrimaries, m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useGamma,
+              m_useDithering);
           m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
 
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
@@ -1190,6 +1192,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
   pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
+  pYUVShader->SetGamma(CConvertMatrix::GetGammaExponent(m_videoSettings.m_Gamma));
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -1312,6 +1315,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
   pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
+  pYUVShader->SetGamma(CConvertMatrix::GetGammaExponent(m_videoSettings.m_Gamma));
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -2016,9 +2020,7 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE_GAMMA ||
-      feature == RENDERFEATURE_NOISE ||
-      feature == RENDERFEATURE_SHARPNESS ||
+  if (feature == RENDERFEATURE_NOISE || feature == RENDERFEATURE_SHARPNESS ||
       feature == RENDERFEATURE_NONLINSTRETCH)
   {
     return false;
@@ -2033,6 +2035,9 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature) const
   {
     return true;
   }
+
+  if (feature == RENDERFEATURE_GAMMA)
+    return !m_streamIsHDR;
 
   return false;
 }
@@ -2136,6 +2141,14 @@ void CLinuxRendererGLES::CheckVideoParameters(int index)
   if (hueSatTransfer != m_hueSatTransfer)
   {
     m_hueSatTransfer = hueSatTransfer;
+    m_reloadShaders = true;
+  }
+
+  m_streamIsHDR = streamIsHDR;
+  const bool gamma = !streamIsHDR && m_videoSettings.m_Gamma != 50.0f;
+  if (gamma != m_useGamma)
+  {
+    m_useGamma = gamma;
     m_reloadShaders = true;
   }
 

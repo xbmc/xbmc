@@ -298,6 +298,13 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
         CToneMappers::GetPeakLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
                                             m_hasLightMetadata, m_lightMetadata),
         DX::Windowing()->UseLimitedColor());
+  if (m_useGamma)
+  {
+    const bool limited = DX::Windowing()->UseLimitedColor();
+    float range[2] = {limited ? 876.0f / 1023.0f : 1.0f, limited ? 64.0f / 1023.0f : 0.0f};
+    effect.SetScalar("g_gammaInv", 1.0f / m_gammaExponent);
+    effect.SetFloatArray("g_gammaRange", range, 2);
+  }
 }
 
 void COutputShader::GetDefines(DefinesMap& map) const
@@ -334,6 +341,10 @@ void COutputShader::GetDefines(DefinesMap& map) const
   {
     map["KODI_HUESAT_HLG"] = "";
   }
+  if (m_useGamma)
+  {
+    map["KODI_GAMMA"] = "";
+  }
 }
 
 bool COutputShader::Create(bool useLUT,
@@ -342,10 +353,12 @@ bool COutputShader::Create(bool useLUT,
                            bool toneMapping,
                            ETONEMAPMETHOD toneMethod,
                            bool HLGtoPQ,
-                           AVColorTransferCharacteristic hueSatTransfer)
+                           AVColorTransferCharacteristic hueSatTransfer,
+                           bool gamma)
 {
   m_useLut = useLUT;
   m_hueSatTransfer = hueSatTransfer;
+  m_useGamma = gamma;
   m_ditherDepth = ditherDepth;
   m_toneMapping = toneMapping;
   m_useHLGtoPQ = HLGtoPQ;

@@ -39,6 +39,7 @@ public:
                         bool toneMap,
                         ETONEMAPMETHOD toneMapMethod,
                         AVColorTransferCharacteristic hueSatTransfer,
+                        bool gamma,
                         std::shared_ptr<GLSLOutput> output);
   ~BaseYUV2RGBGLSLShader() override;
 
@@ -51,6 +52,7 @@ public:
   void SetContrast(float contrast) { m_contrast = contrast; }
   void SetHue(float hue) { m_hue = hue; }
   void SetSaturation(float saturation) { m_saturation = saturation; }
+  void SetGamma(float exponent) { m_gammaExponent = exponent; }
   void SetNonLinStretch(float stretch) { m_stretch = stretch; }
   void SetDisplayMetadata(bool hasDisplayMetadata,
                           const AVMasteringDisplayMetadata& displayMetadata,
@@ -95,6 +97,7 @@ protected:
   float m_contrast;
   float m_hue;
   float m_saturation;
+  float m_gammaExponent{1.0f};
   float m_stretch;
 
   const GLfloat *m_proj = nullptr;
@@ -123,6 +126,8 @@ protected:
   GLint m_hHsCoefs = -1;
   GLint m_hHsPeak = -1;
   GLint m_hHsRange = -1;
+  GLint m_hGammaInv = -1;
+  GLint m_hGammaRange = -1;
 
   // vertex shader attribute handles
   GLint m_hVertex = -1;
@@ -145,6 +150,7 @@ public:
                            bool toneMap,
                            ETONEMAPMETHOD toneMapMethod,
                            AVColorTransferCharacteristic hueSatTransfer,
+                           bool gamma,
                            std::shared_ptr<GLSLOutput> output,
                            bool gammaCorrection);
 };
@@ -160,6 +166,7 @@ public:
                        bool toneMap,
                        ETONEMAPMETHOD toneMapMethod,
                        AVColorTransferCharacteristic hueSatTransfer,
+                       bool gamma,
                        ESCALINGMETHOD method,
                        std::shared_ptr<GLSLOutput> output);
   ~YUV2RGBFilterShader4() override;

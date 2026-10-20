@@ -136,5 +136,9 @@ vec4 process()
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
 #endif
 
+#if defined(KODI_GAMMA)
+  rgb.rgb = pow(clamp((rgb.rgb - m_gammaRange.y) / m_gammaRange.x, 0.0, 1.0), vec3(m_gammaInv)) * m_gammaRange.x + m_gammaRange.y;
+#endif
+
   return rgb;
 }

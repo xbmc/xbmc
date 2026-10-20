@@ -1010,7 +1010,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         m_pYUVShader = new YUV2RGBFilterShader4(
             m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat, m_nonLinStretch,
             m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
-            m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_scalingMethod, out);
+            m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useGamma, m_scalingMethod, out);
         if (!m_cmsOn)
           m_pYUVShader->SetConvertFullColorRange(m_fullRange);
 
@@ -1036,7 +1036,7 @@ void CLinuxRendererGL::LoadShaders(int field)
           m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat,
           m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
           m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
-          m_toneMap, m_toneMapMethod, m_hueSatTransfer, out,
+          m_toneMap, m_toneMapMethod, m_hueSatTransfer, m_useGamma, out,
           m_intermediateGammaCorrection && m_renderQuality == RQ_MULTIPASS);
 
       if (!m_cmsOn)
@@ -1181,6 +1181,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
   m_pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
+  m_pYUVShader->SetGamma(CConvertMatrix::GetGammaExponent(m_videoSettings.m_Gamma));
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
@@ -1375,6 +1376,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   m_pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetHue((m_videoSettings.m_Hue - 50.0f) * 3.6f);
   m_pYUVShader->SetSaturation(m_videoSettings.m_Saturation * 0.02f);
+  m_pYUVShader->SetGamma(CConvertMatrix::GetGammaExponent(m_videoSettings.m_Gamma));
   m_pYUVShader->SetWidth(planes[0].texwidth);
   m_pYUVShader->SetHeight(planes[0].texheight);
   m_pYUVShader->SetNonLinStretch(1.0);
@@ -2614,6 +2616,9 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature) const
       feature == RENDERFEATURE_SATURATION || feature == RENDERFEATURE_TONEMAP)
     return true;
 
+  if (feature == RENDERFEATURE_GAMMA)
+    return !m_streamIsHDR;
+
   return false;
 }
 
@@ -2797,6 +2802,14 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
   if (hueSatTransfer != m_hueSatTransfer)
   {
     m_hueSatTransfer = hueSatTransfer;
+    m_reloadShaders = true;
+  }
+
+  m_streamIsHDR = streamIsHDR;
+  const bool gamma = !streamIsHDR && m_videoSettings.m_Gamma != 50.0f;
+  if (gamma != m_useGamma)
+  {
+    m_useGamma = gamma;
     m_reloadShaders = true;
   }
 

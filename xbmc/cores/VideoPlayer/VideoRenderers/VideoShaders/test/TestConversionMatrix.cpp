@@ -213,6 +213,15 @@ TEST(TestConvertMatrix, HueSaturation)
   EXPECT_TRUE(CompareMatrices(yuvMat, rotated, 0.0001f));
 }
 
+TEST(TestConvertMatrix, GammaExponent)
+{
+  EXPECT_FLOAT_EQ(1.0f, CConvertMatrix::GetGammaExponent(50.0f));
+  EXPECT_FLOAT_EQ(0.5f, CConvertMatrix::GetGammaExponent(0.0f));
+  EXPECT_FLOAT_EQ(2.0f, CConvertMatrix::GetGammaExponent(100.0f));
+  EXPECT_FLOAT_EQ(1.0f,
+                  CConvertMatrix::GetGammaExponent(30.0f) * CConvertMatrix::GetGammaExponent(70.0f));
+}
+
 TEST(TestConvertMatrix, LinearHueSaturation)
 {
   const Matrix3x1 coefs = CConvertMatrix::GetRGBYuvCoefs(AVCOL_SPC_BT2020_NCL);

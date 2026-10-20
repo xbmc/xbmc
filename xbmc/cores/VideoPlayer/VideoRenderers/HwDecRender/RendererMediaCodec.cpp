@@ -110,7 +110,8 @@ bool CRendererMediaCodec::LoadShadersHook()
 bool CRendererMediaCodec::Supports(ERENDERFEATURE feature) const
 {
   // RGB input, the YUV conversion matrix is not used
-  if (feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION)
+  if (feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION ||
+      feature == RENDERFEATURE_GAMMA)
     return false;
 
   return CLinuxRendererGLES::Supports(feature);
