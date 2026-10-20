@@ -353,6 +353,25 @@ void CWinSystemX11::UpdateResolutions()
     XMode mode = g_xrandr.GetCurrentMode(m_userOutput);
     if (mode.id.empty())
       mode = g_xrandr.GetPreferredMode(m_userOutput);
+
+    // The current mode can be one Kodi switched to itself (e.g. the refresh rate of a video):
+    // keep the desktop mode Kodi switches back to, as long as the output still has it.
+    const RESOLUTION_INFO& desktop = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+    const RESOLUTION current = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
+    if (current > RES_DESKTOP && desktop.strOutput == out->name && !desktop.strId.empty() &&
+        desktop.strId != mode.id &&
+        CDisplaySettings::GetInstance().GetResolutionInfo(current).strId == mode.id)
+    {
+      for (const XMode& outMode : out->modes)
+      {
+        if (outMode.id == desktop.strId)
+        {
+          mode = outMode;
+          break;
+        }
+      }
+    }
+
     m_bIsRotated = out->isRotated;
     if (!m_bIsRotated)
       UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), out->name, mode.w, mode.h, mode.hz, 0);
