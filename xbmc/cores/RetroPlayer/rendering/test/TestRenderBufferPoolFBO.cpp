@@ -449,6 +449,29 @@ TEST_P(TestRenderBufferPoolFBOWithContext, ClientFramebufferRemainsStableAcrossS
   client->Release();
 }
 
+TEST_P(TestRenderBufferPoolFBOWithContext, CaptureLeavesClientScissorTestAsItWas)
+{
+  auto* client = m_pool->GetBuffer(4, 4);
+  ASSERT_NE(client, nullptr);
+
+  // Clients such as Dolphin track what they have enabled and don't set it again
+  for (const bool scissor : {true, false})
+  {
+    if (scissor)
+      glEnable(GL_SCISSOR_TEST);
+    else
+      glDisable(GL_SCISSOR_TEST);
+
+    auto* captured = Capture(client);
+    ASSERT_NE(captured, nullptr);
+    EXPECT_EQ(glIsEnabled(GL_SCISSOR_TEST), scissor ? GL_TRUE : GL_FALSE);
+    captured->Release();
+  }
+
+  EXPECT_EQ(glGetError(), GL_NO_ERROR);
+  client->Release();
+}
+
 TEST_P(TestRenderBufferPoolFBOWithContext, RenderedCaptureCannotBeReusedBeforeGUIHandoff)
 {
   auto* client = m_pool->GetBuffer(4, 4);
