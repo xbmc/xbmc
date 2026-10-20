@@ -120,6 +120,12 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
     case LISTITEM_PLATFORM:
     case LISTITEM_DEVELOPER:
     case LISTITEM_PUBLISHER:
+    case LISTITEM_ORIGINALTITLE:
+    case LISTITEM_RATING:
+    case LISTITEM_PLAYERS:
+    case LISTITEM_AGERATING:
+    case LISTITEM_TRAILER:
+    case LISTITEM_TAG:
     {
       if (item == nullptr || !item->HasGameInfoTag())
         break;
@@ -150,6 +156,26 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
           break;
         case LISTITEM_PUBLISHER:
           value = tag->GetPublisher();
+          break;
+        case LISTITEM_ORIGINALTITLE:
+          value = tag->GetOriginalTitle();
+          break;
+        case LISTITEM_RATING:
+          if (tag->GetRating() > 0.0f)
+            value = StringUtils::FormatNumber(tag->GetRating());
+          break;
+        case LISTITEM_PLAYERS:
+          if (tag->GetPlayers() > 0)
+            value = std::to_string(tag->GetPlayers());
+          break;
+        case LISTITEM_AGERATING:
+          value = tag->GetAgeRating();
+          break;
+        case LISTITEM_TRAILER:
+          value = tag->GetTrailer();
+          break;
+        case LISTITEM_TAG:
+          value = StringUtils::Join(tag->GetTags(), ", ");
           break;
         default:
           break;
