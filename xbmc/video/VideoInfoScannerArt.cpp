@@ -306,6 +306,8 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
       useFolder = false;
 
       std::string path;
+      bool isInFolder{bApplyToDir};
+      const int playlist{pItem->GetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1)};
       if (content == ContentType::TVSHOWS)
       {
         path = ART::GetLocalArtBaseFilename(*pItem, useFolder,
@@ -314,16 +316,30 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
                                                 : ART::AdditionalIdentifiers::NONE);
       }
       else if (content == ContentType::MOVIE_VERSIONS ||
-               (pItem->HasVideoVersions() &&
-                pItem->GetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1) > -1))
+               (pItem->HasVideoVersions() && playlist > -1))
       {
         // Add playlist identifier only when there are multiple versions of the movie on the same disc
         path =
             ART::GetLocalArtBaseFilename(*pItem, useFolder, ART::AdditionalIdentifiers::PLAYLIST);
+        if (playlist > -1)
+        {
+          // Each pass overrides the last, so the version's own art wins over plain folder art.
+          // Only a disc folder rip (index-00800.bdmv) has a folder to itself.
+          const std::string directory{URIUtils::GetDirectory(path)};
+          const bool isDiscFolder{URIUtils::HasExtension(path, ".bdmv")};
+          if (bApplyToDir || isDiscFolder)
+            ART::AddLocalItemArtwork(art, artTypes, directory, addAll, exactName, true);
+          if (isDiscFolder)
+            ART::AddLocalItemArtwork(
+                art, artTypes,
+                URIUtils::AddFileToFolder(directory, StringUtils::Format("{:05}.bdmv", playlist)),
+                addAll, exactName, false);
+          isInFolder = false;
+        }
       }
       else
         path = ART::GetLocalArtBaseFilename(*pItem, useFolder);
-      ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, bApplyToDir);
+      ART::AddLocalItemArtwork(art, artTypes, path, addAll, exactName, isInFolder);
     }
 
     if (moviePartOfSet)
