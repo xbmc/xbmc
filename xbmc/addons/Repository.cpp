@@ -17,7 +17,6 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
-#include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/ZipFile.h"
 #include "games/GameServices.h"
@@ -63,7 +62,7 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
   // Do not follow mirror redirect, we want the headers of the redirect response
   CURL url{path};
   url.SetProtocolOption("redirect-limit", "0");
-  CCurlFile file;
+  XFILE::CFile file;
   if (!file.Open(url))
   {
     CLog::Log(LOGERROR, "Could not fetch addon location and hash from {}", path);
@@ -74,9 +73,11 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
 
   // Return the location from the header so we don't have to look it up again
   // (saves one request per addon install)
-  std::string location = file.GetRedirectURL();
+  std::string location = file.GetProperty(XFILE::FileProperty::REDIRECT_URL);
   // content-* headers are base64, convert to base16
-  TypedDigest hash{dirIt->hashType, StringUtils::ToHexadecimal(Base64::Decode(file.GetHttpHeader().GetValue(std::string("content-") + hashTypeStr)))};
+  TypedDigest hash{dirIt->hashType,
+                   StringUtils::ToHexadecimal(Base64::Decode(file.GetProperty(
+                       XFILE::FileProperty::RESPONSE_HEADER, "content-" + hashTypeStr)))};
 
   if (hash.Empty())
   {
@@ -209,14 +210,16 @@ bool CRepository::FetchIndex(const RepositoryDirInfo& repo,
                              std::string const& digest,
                              std::vector<AddonInfoPtr>& addons) noexcept
 {
-  XFILE::CCurlFile http;
+  XFILE::CFile http;
 
-  std::string response;
-  if (!http.Get(repo.info, response))
+  std::vector<uint8_t> data;
+  if (http.LoadFile(CURL(repo.info), data) <= 0)
   {
     CLog::Log(LOGERROR, "CRepository: failed to read {}", repo.info);
     return false;
   }
+
+  std::string response(data.begin(), data.end());
 
   if (repo.checksumType != CDigest::Type::INVALID)
   {

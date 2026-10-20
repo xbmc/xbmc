@@ -73,6 +73,9 @@ brew install emscripten
 > [!WARNING]
 > Kodi's WASM bring-up has only been tested against Emscripten **5.0.6**. Other versions may work but are unverified; if you hit an unexpected build failure, please try 5.0.6 before reporting it. You can check the version shipped by Homebrew with `brew info emscripten`.
 
+> [!NOTE]
+> The Tizen sockets backend needs Emscripten **6.0.10** or later, whose `freeaddrinfo()` frees every result; see **[docs/wasm/SOCKETS.md](wasm/SOCKETS.md)**. CMake warns about older versions.
+
 **Alternatively**, install **emsdk 5.0.6** manually if you need to pin an exact version or use a different host OS:
 ```
 git clone https://github.com/emscripten-core/emsdk.git $HOME/emsdk
