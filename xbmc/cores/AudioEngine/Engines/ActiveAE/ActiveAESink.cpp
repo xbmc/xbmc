@@ -178,7 +178,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
 bool CActiveAESink::NeedIECPacking()
 {
   // the null sink only handles pcm, let a raw stream be packed for it
-  if (m_extReserved)
+  if (m_extReserved || m_outputUnavailable)
     return true;
 
   const AESinkDevice dev = CAESinkFactory::ParseDevice(m_device);
@@ -261,6 +261,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_device = *(data->device);
           }
           m_extError = false;
+          m_outputUnavailable = false;
           m_extSilenceTimer.Set(0ms);
           m_extStreaming = false;
           ReturnBuffers();
@@ -627,6 +628,7 @@ void CActiveAESink::Process()
   m_bStateMachineSelfTrigger = false;
   m_extAppFocused = true;
   m_extReserved = false;
+  m_outputUnavailable = false;
 
   while (!m_bStop)
   {
@@ -955,9 +957,10 @@ void CActiveAESink::OpenSink()
   // WARNING: this changes format and does not use passthrough
   m_sinkFormat = m_requestedFormat;
 
-  if (m_extReserved)
+  if (m_extReserved || m_outputUnavailable)
   {
-    CLog::LogF(LOGDEBUG, "device {} is reserved, discarding output", device);
+    CLog::LogF(LOGDEBUG, "device {} is {}, discarding output", device,
+               m_extReserved ? "reserved" : "unavailable");
     auto nullSink = std::make_unique<CAESinkNULL>(m_reservedCacheTotal, m_reservedLatency);
     if (nullSink->Initialize(m_sinkFormat, device))
       m_sink = std::move(nullSink);
@@ -984,6 +987,16 @@ void CActiveAESink::OpenSink()
   {
     CLog::LogF(LOGERROR, "no sink was returned");
     m_extError = true;
+    return;
+  }
+
+  if (m_sink->IsOutputUnavailable())
+  {
+    // retrying doesn't help, discard the output instead
+    CLog::LogF(LOGERROR, "device {} can't output this stream", device);
+    m_outputUnavailable = true;
+    CloseSink(false);
+    OpenSink();
     return;
   }
 
