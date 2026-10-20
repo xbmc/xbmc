@@ -776,12 +776,14 @@ void CTCPServer::CWebSocketClient::Disconnect()
   {
     if (m_websocket->GetState() != WebSocketStateClosed && m_websocket->GetState() != WebSocketStateNotConnected)
     {
+      // Already framed, so it bypasses Send(), which would wrap it in a text frame
       const CWebSocketFrame *closeFrame = m_websocket->Close();
       if (closeFrame)
-        Send(closeFrame->GetFrameData(), (unsigned int)closeFrame->GetFrameLength());
+        CTCPClient::Send(closeFrame->GetFrameData(), (unsigned int)closeFrame->GetFrameLength());
     }
 
-    if (m_websocket->GetState() == WebSocketStateClosed)
-      CTCPClient::Disconnect();
+    // The caller drops this connection, so the descriptor goes with it even when the peer
+    // never answers the close frame
+    CTCPClient::Disconnect();
   }
 }

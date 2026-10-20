@@ -100,7 +100,11 @@ namespace JSONRPC
       void Disconnect() override;
 
       bool IsNew() const override { return m_websocket == NULL; }
-      bool Closing() const override { return m_websocket != NULL && m_websocket->GetState() == WebSocketStateClosed; }
+      bool Closing() const override
+      {
+        return m_socket == INVALID_SOCKET ||
+               (m_websocket != NULL && m_websocket->GetState() == WebSocketStateClosed);
+      }
 
     private:
       CWebSocket *m_websocket;
