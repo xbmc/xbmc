@@ -245,11 +245,13 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
   if (URIUtils::IsBlurayPath(item.GetDynPath()))
     file = strFile = URIUtils::GetDiscFile(item.GetDynPath());
 
+  bool isOpticalMediaFolder{false};
   if (URIUtils::IsOpticalMediaFile(file) && !URIUtils::IsArchive(url))
   {
     // Optical media files (VIDEO_TS.IFO/INDEX.BDMV) should be treated like folders
     useFolder = true; // ByRef so changes behaviour in GetLocalArt()
     strFile = URIUtils::GetParentPath(file);
+    isOpticalMediaFolder = true;
   }
 
   if (!URIUtils::GetFileName(file).empty() && item.HasVideoInfoTag() &&
@@ -279,6 +281,9 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
         {
           std::string baseFile{file};
           URIUtils::RemoveExtension(baseFile);
+          // Like all disc folder art, version art is stored in the folder holding BDMV
+          if (isOpticalMediaFolder)
+            baseFile = URIUtils::AddFileToFolder(strFile, URIUtils::GetFileName(baseFile));
           strFile = fmt::format("{}-{:05}{}", baseFile, playlist, URIUtils::GetExtension(file));
           useFolder = false;
         }
