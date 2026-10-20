@@ -17207,7 +17207,19 @@ msgctxt "#29805"
 msgid "This Blu-ray disc (or file) is encrypted and can't be played."
 msgstr ""
 
-#empty strings from id 29806 to 29899
+#. Header text for the kaitoast shown when passthrough of an audio format is unavailable
+#: xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAESink.cpp
+msgctxt "#29806"
+msgid "Passthrough unavailable"
+msgstr ""
+
+#. Body text for the kaitoast shown when passthrough of an audio format is unavailable, {0:s} is the audio format
+#: xbmc/cores/AudioEngine/Engines/ActiveAE/ActiveAESink.cpp
+msgctxt "#29807"
+msgid "{0:s} can't be passed through with the current settings. Playing without sound."
+msgstr ""
+
+#empty strings from id 29808 to 29899
 
 #. Header string on RDS Radiotext+ Info dialog
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml

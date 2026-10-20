@@ -9,13 +9,18 @@
 #include "ActiveAESink.h"
 
 #include "ActiveAE.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkNULL.h"
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/EndianSwap.h"
 #include "utils/MemUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -25,6 +30,34 @@
 using namespace AE;
 using namespace ActiveAE;
 using namespace std::chrono_literals;
+
+namespace
+{
+// format names are not localized
+const char* GetStreamTypeName(CAEStreamInfo::DataType type)
+{
+  switch (type)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      return "DD (AC3)";
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      return "DD+ (E-AC3)";
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      return "DTS";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      return "DTS-HD";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+      return "DTS-HD MA";
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      return "TrueHD";
+    default:
+      return CAEUtil::StreamTypeToStr(type);
+  }
+}
+} // namespace
 
 CActiveAESink::CActiveAESink(CEvent* inMsgEvent)
   : CThread("AESink"),
@@ -995,6 +1028,11 @@ void CActiveAESink::OpenSink()
     // retrying doesn't help, discard the output instead
     CLog::LogF(LOGERROR, "device {} can't output this stream", device);
     m_outputUnavailable = true;
+    const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning, strings.Get(29806),
+        StringUtils::Format(strings.Get(29807),
+                            GetStreamTypeName(m_requestedFormat.m_streamInfo.m_type)));
     CloseSink(false);
     OpenSink();
     return;
