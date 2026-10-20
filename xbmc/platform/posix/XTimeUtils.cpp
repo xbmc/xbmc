@@ -10,6 +10,7 @@
 
 #include <errno.h>
 #include <mutex>
+#include <optional>
 #include <time.h>
 
 #include <sys/times.h>
@@ -36,13 +37,13 @@ int64_t days_from_civil(int64_t y, unsigned m, unsigned d)
   return era * 146097LL + static_cast<int64_t>(doe) - 719468LL;
 }
 
-time_t SystemTimeToTimeT(const KODI::TIME::SystemTime& systemTime)
+std::optional<time_t> SystemTimeToTimeT(const KODI::TIME::SystemTime& systemTime)
 {
   // Basic range validation
   if (systemTime.month < 1 || systemTime.month > 12 || systemTime.day < 1 || systemTime.day > 31 ||
       systemTime.hour > 23u || systemTime.minute > 59u ||
       systemTime.second > 60u /* allow 60 for leap second */)
-    return static_cast<time_t>(-1); // error
+    return {}; // error
 
   // Compute days since epoch
   const int64_t days{
@@ -55,7 +56,7 @@ time_t SystemTimeToTimeT(const KODI::TIME::SystemTime& systemTime)
 
   // Validate range for time_t
   if (seconds < std::numeric_limits<time_t>::min() || seconds > std::numeric_limits<time_t>::max())
-    return static_cast<time_t>(-1); // error
+    return {}; // error
 
   return seconds;
 }
@@ -67,12 +68,13 @@ namespace TIME
 {
 std::tuple<bool, int64_t> GetTimezoneBias(const SystemTime& time)
 {
-  const time_t t{SystemTimeToTimeT(time)};
-  if (t < 0)
+  // Times before 1970 are negative, not errors
+  const std::optional<time_t> t{SystemTimeToTimeT(time)};
+  if (!t)
     return {false, 0}; // error
 
   struct tm tms;
-  if (!localtime_r(&t, &tms))
+  if (!localtime_r(&*t, &tms))
     return {false, 0}; // error
 
   return {true, -tms.tm_gmtoff / 60};
