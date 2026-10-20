@@ -61,12 +61,13 @@ protected:
 
 TEST_F(TestPlaylistPlayerName, ValidatesExpandedStartingItemWithoutChangingTheQueue)
 {
-  std::vector<std::unique_ptr<XFILE::CFile>> files;
+  const auto deleteTempFile = [](XFILE::CFile* file) { XBMC_DELETETEMPFILE(file); };
+  std::vector<std::unique_ptr<XFILE::CFile, decltype(deleteTempFile)>> files;
   std::string target = "/video/next.mp4";
   for (int depth = 1; depth <= 5; ++depth)
   {
     SCOPED_TRACE(depth);
-    files.emplace_back(XBMC_CREATETEMPFILE(".m3u"));
+    files.emplace_back(XBMC_CREATETEMPFILE(".m3u"), deleteTempFile);
     ASSERT_NE(nullptr, files.back());
     const std::string contents = target + "\n";
     ASSERT_EQ(static_cast<ssize_t>(contents.size()),
@@ -83,6 +84,8 @@ TEST_F(TestPlaylistPlayerName, ValidatesExpandedStartingItemWithoutChangingTheQu
     EXPECT_EQ(target, m_items[0]->GetPath());
     EXPECT_FALSE(m_items[0]->HasDynPath());
   }
+  files.clear();
+  EXPECT_FALSE(XFILE::CFile::Exists(target));
 }
 
 TEST_F(TestPlaylistPlayerName, MissingAndNullNamesSelectTheDefault)
