@@ -45,7 +45,7 @@ typedef struct FT_GlyphSlotRec_* FT_GlyphSlot;
 typedef struct FT_BitmapGlyphRec_* FT_BitmapGlyph;
 typedef struct FT_StrokerRec_* FT_Stroker;
 
-typedef uint32_t character_t;
+typedef uint64_t character_t;
 typedef std::vector<character_t> vecText;
 
 /*!

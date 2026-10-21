@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-typedef uint32_t character_t;
+typedef uint64_t character_t;
 typedef std::vector<character_t> vecText;
 
 class CGUIFontTTF;

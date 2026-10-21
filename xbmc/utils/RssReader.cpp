@@ -199,7 +199,8 @@ void CRssReader::getFeed(vecText &text)
 
     for (unsigned int j = 0; j < m_strFeed[i].size(); j++)
     {
-      character_t letter = m_strFeed[i][j] | ((m_strColors[i][j] - 48) << 16);
+      character_t letter = static_cast<character_t>(m_strFeed[i][j]) |
+                           (static_cast<character_t>(m_strColors[i][j] - 48) << 32);
       text.push_back(letter);
     }
   }

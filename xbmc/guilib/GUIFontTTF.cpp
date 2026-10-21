@@ -489,7 +489,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
           continue;
 
         float nextWidth = textWidth;
-        if ((ch & 0xffff) == static_cast<character_t>('\t'))
+        if ((ch & 0xffffffff) == static_cast<character_t>('\t'))
           nextWidth += GetTabSpaceLength();
         else
           nextWidth += c->m_advance;
@@ -517,7 +517,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
           continue;
 
         float nextWidth = textWidth;
-        if ((ch & 0xffff) == static_cast<character_t>('\t'))
+        if ((ch & 0xffffffff) == static_cast<character_t>('\t'))
           nextWidth += GetTabSpaceLength();
         else
           nextWidth += c->m_advance;
@@ -551,7 +551,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
         if (ch)
         {
-          if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == L' ')
+          if ((text[glyph.m_glyphInfo.cluster] & 0xffffffff) == L' ')
             numSpaces += 1;
           linePixels += ch->m_advance;
         }
@@ -599,7 +599,8 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
       cursorX += ch->m_advance;
 
-      if ((alignment & XBFONT_JUSTIFIED) && (text[itGlyph->m_glyphInfo.cluster] & 0xffff) == L' ')
+      if ((alignment & XBFONT_JUSTIFIED) &&
+          (text[itGlyph->m_glyphInfo.cluster] & 0xffffffff) == L' ')
         cursorX += spacePerSpaceCharacter;
     }
 
@@ -611,7 +612,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     {
       // If starting text on a new line, determine justification effects
       // Get the current letter in the CStdString
-      KODI::UTILS::COLOR::Color color = (text[itGlyph->m_glyphInfo.cluster] & 0xff0000) >> 16;
+      KODI::UTILS::COLOR::Color color = (text[itGlyph->m_glyphInfo.cluster] >> 32) & 0xff;
       if (color >= colors.size())
         color = 0;
       color = colors[color];
@@ -619,7 +620,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       // grab the next character
       Character* ch = &characters.front();
 
-      if ((text[itGlyph->m_glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
+      if ((text[itGlyph->m_glyphInfo.cluster] & 0xffffffff) == static_cast<character_t>('\t'))
       {
         const float tabwidth = GetTabSpaceLength();
         const float a = cursorX / tabwidth;
@@ -673,7 +674,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                       *tempVertices);
       if (alignment & XBFONT_JUSTIFIED)
       {
-        if ((text[itGlyph->m_glyphInfo.cluster] & 0xffff) == L' ')
+        if ((text[itGlyph->m_glyphInfo.cluster] & 0xffffffff) == L' ')
           cursorX += ch->m_advance + spacePerSpaceCharacter;
         else
           cursorX += ch->m_advance;
@@ -734,7 +735,7 @@ float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text,
       // choped on the end (as render width is larger than advance then).
       if (std::next(it) == glyphs.end())
         width += std::max(c->m_right - c->m_left + c->m_offsetX, c->m_advance);
-      else if ((ch & 0xffff) == static_cast<character_t>('\t'))
+      else if ((ch & 0xffffffff) == static_cast<character_t>('\t'))
         width += GetTabSpaceLength();
       else
         width += c->m_advance;
@@ -749,7 +750,7 @@ float CGUIFontTTF::GetCharWidthInternal(character_t ch)
   Character* c = GetCharacter(ch, 0);
   if (c)
   {
-    if ((ch & 0xffff) == static_cast<character_t>('\t'))
+    if ((ch & 0xffffffff) == static_cast<character_t>('\t'))
       return GetTabSpaceLength();
     else
       return c->m_advance;
@@ -800,7 +801,8 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
   scripts.reserve(text.size());
   for (const auto& character : text)
   {
-    scripts.emplace_back(hb_unicode_script(ufuncs, static_cast<wchar_t>(0xffff & character)));
+    scripts.emplace_back(
+        hb_unicode_script(ufuncs, static_cast<hb_codepoint_t>(0xffffffff & character)));
   }
 
   // HB_SCRIPT_COMMON or HB_SCRIPT_INHERITED should be replaced with previous script
@@ -857,7 +859,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
 
     for (unsigned int j = run.m_startOffset; j < run.m_endOffset; j++)
     {
-      hb_buffer_add(run.m_buffer, static_cast<wchar_t>(0xffff & text[j]), j);
+      hb_buffer_add(run.m_buffer, static_cast<hb_codepoint_t>(0xffffffff & text[j]), j);
     }
 
     hb_buffer_set_content_type(run.m_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
@@ -879,13 +881,13 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
 
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyphIndex)
 {
-  const wchar_t letter = static_cast<wchar_t>(chr & 0xffff);
+  const char32_t letter = static_cast<char32_t>(chr & 0xffffffff);
 
   // ignore linebreaks
-  if (letter == L'\r')
+  if (letter == U'\r')
     return nullptr;
 
-  const character_t style = (chr & 0x7000000) >> 24; // style = 0 - 6
+  const uint32_t style = static_cast<uint32_t>((chr >> 40) & 0x7); // style = 0 - 6
 
   if (!glyphIndex)
     glyphIndex = FT_Get_Char_Index(m_face, letter);
