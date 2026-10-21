@@ -1071,6 +1071,8 @@ void CFileItemList::AddSortMethod(SortBy sortBy,
   SortDescription sorting;
   sorting.sortBy = sortBy;
   sorting.sortAttributes = sortAttributes;
+  // Left to the view, which sorts e.g. by date descending by default
+  sorting.sortOrder = SortOrder::NONE;
 
   AddSortMethod(sorting, buttonLabel, labelMasks);
 }
