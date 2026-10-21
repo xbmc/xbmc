@@ -3400,23 +3400,7 @@ void CVideoPlayer::HandleMessages()
         else if (!st.IsCurrent(m_CurrentSubtitle) || m_CurrentSubtitle.demuxDisabled)
         {
           // a stream disabled in the demuxer is only enabled again by a reopen
-          CloseStream(m_CurrentSubtitle, false);
-          OpenStream(m_CurrentSubtitle, st.demuxerId, st.id, st.source);
-
-          // For embedded subtitles the demuxer is ahead of playback (AV buffers
-          // are full), so the subtitle packets for the current playback time have
-          // already been read and discarded. Seek back to the current time so they
-          // get re-read, mirroring what audio stream switching does.
-          if (STREAM_SOURCE_MASK(st.source) == STREAM_SOURCE_DEMUX)
-          {
-            CDVDMsgPlayerSeek::CMode mode;
-            mode.time = static_cast<double>(GetUpdatedTime());
-            mode.backward = true;
-            mode.accurate = true;
-            mode.trickplay = true;
-            mode.sync = true;
-            m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
-          }
+          ReopenSubtitleStream(st);
         }
       }
     }
@@ -3432,6 +3416,12 @@ void CVideoPlayer::HandleMessages()
           m_CurrentSubtitle.id == -1)
       {
         SetSubtitle(GetSubtitle());
+      }
+      // A stream disabled in the demuxer when it was hidden is only enabled again by a reopen,
+      // done right away so that a stream selection queued after this message still wins
+      else if (isVisible && m_CurrentSubtitle.demuxDisabled)
+      {
+        ReopenSubtitleStream(ss);
       }
 
       // SetEnableStream only if not visible, when visible OpenStream already implied that stream is enabled
@@ -4088,6 +4078,30 @@ void CVideoPlayer::SetSubtitleVisibleInternal(bool bVisible)
     std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream)->EnableSubtitleStream(bVisible);
 
   CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
+}
+
+void CVideoPlayer::ReopenSubtitleStream(const SelectionStream& stream)
+{
+  CloseStream(m_CurrentSubtitle, false);
+  const bool opened{OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source)};
+
+  // For embedded subtitles the demuxer is ahead of playback (AV buffers
+  // are full), so the subtitle packets for the current playback time have
+  // already been read and discarded. Seek back to the current time so they
+  // get re-read, mirroring what audio stream switching does.
+  // A seek already queued re-reads them as well and must not be overridden.
+  if (opened && STREAM_SOURCE_MASK(stream.source) == STREAM_SOURCE_DEMUX &&
+      m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK) == 0 &&
+      m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
+  {
+    CDVDMsgPlayerSeek::CMode mode;
+    mode.time = static_cast<double>(GetUpdatedTime());
+    mode.backward = true;
+    mode.accurate = true;
+    mode.trickplay = true;
+    mode.sync = true;
+    m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
+  }
 }
 
 void CVideoPlayer::SetSubtitleVerticalPosition(int value, bool save)
