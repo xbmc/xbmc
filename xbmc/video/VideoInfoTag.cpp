@@ -624,7 +624,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strShowTitle;
     ar << m_strAlbum;
     ar << m_artist;
-    ar << GetPlayCount();
+    ar << (IsPlayCountSet() ? GetPlayCount() : PLAYCOUNT_NOT_SET);
     ar << m_lastPlayed;
     ar << m_iTop250;
     ar << m_iSeason;
