@@ -222,6 +222,13 @@ TEST_F(TestCharsetConverter, isValidUtf8_4)
   EXPECT_FALSE(CUtf8Utils::isValidUtf8(refutf16LE3));
 }
 
+TEST_F(TestCharsetConverter, isValidUtf8_FourByteSequences)
+{
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8("\xF0\x90\x80\x80")); // U+10000
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8("\xF0\x9F\x8C\x8D")); // U+1F30D
+  EXPECT_FALSE(CUtf8Utils::isValidUtf8("\xF0\x8F\xBF\xBF")); // overlong U+FFFF
+}
+
 //! @todo Resolve correct input/output for this function
 // TEST_F(TestCharsetConverter, ucs2CharsetToStringCharset)
 // {
