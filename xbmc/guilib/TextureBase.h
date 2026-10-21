@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -74,6 +74,7 @@ public:
 
   // allocates staging texture space.
   void Allocate(uint32_t width, uint32_t height, XB_FMT format);
+  void Allocate(uint32_t width, uint32_t height);
   void ClampToEdge();
 
   /*! \brief rounds to power of two. deprecated. */
