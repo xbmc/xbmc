@@ -125,9 +125,11 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
       picture.color_primaries == AVCOL_PRI_BT2020)
   {
     AVFrame* srcFrame = av_frame_alloc();
+    AVFrame* midFrame = av_frame_alloc();
     AVFrame* dstFrame = av_frame_alloc();
+    SwsContext* swsScale = sws_alloc_context();
     SwsContext* sws = sws_alloc_context();
-    if (srcFrame && dstFrame && sws)
+    if (srcFrame && midFrame && dstFrame && swsScale && sws)
     {
       srcFrame->width = static_cast<int>(picture.iWidth);
       srcFrame->height = static_cast<int>(picture.iHeight);
@@ -169,14 +171,31 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
       sws->flags = SWS_BILINEAR;
       sws->intent = SWS_INTENT_PERCEPTUAL;
 
-      const int res = sws_scale_frame(sws, dstFrame, srcFrame);
+      // scale first, so the tone mapping works on thumbnail sized RGBA64 buffers
+      AVFrame* toneFrame = srcFrame;
+      int res = 0;
+      if (nWidth != picture.iWidth || nHeight != picture.iHeight)
+      {
+        midFrame->width = static_cast<int>(nWidth);
+        midFrame->height = static_cast<int>(nHeight);
+        midFrame->format = srcFrame->format;
+        res = av_frame_copy_props(midFrame, srcFrame);
+        swsScale->flags = SWS_BILINEAR;
+        if (res >= 0)
+          res = sws_scale_frame(swsScale, midFrame, srcFrame);
+        toneFrame = midFrame;
+      }
+      if (res >= 0)
+        res = sws_scale_frame(sws, dstFrame, toneFrame);
       if (res < 0)
         CLog::LogF(LOGWARNING, "sws_scale_frame failed ({}), using legacy conversion", res);
       else
         converted = true;
     }
     sws_free_context(&sws);
+    sws_free_context(&swsScale);
     av_frame_free(&srcFrame);
+    av_frame_free(&midFrame);
     av_frame_free(&dstFrame);
   }
 #endif
