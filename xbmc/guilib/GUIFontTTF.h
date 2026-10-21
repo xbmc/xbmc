@@ -122,9 +122,12 @@ protected:
   {
     hb_glyph_info_t m_glyphInfo{};
     hb_glyph_position_t m_glyphPosition{};
+    bool m_emoji{false}; // glyph of the emoji font
 
-    Glyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPosition)
-      : m_glyphInfo(glyphInfo), m_glyphPosition(glyphPosition)
+    Glyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPosition, bool emoji)
+      : m_glyphInfo(glyphInfo),
+        m_glyphPosition(glyphPosition),
+        m_emoji(emoji)
     {
     }
   };
@@ -148,6 +151,7 @@ protected:
     unsigned int m_endOffset;
     hb_buffer_t* m_buffer;
     hb_script_t m_script;
+    bool m_emoji;
     hb_glyph_info_t* m_glyphInfos;
     hb_glyph_position_t* m_glyphPositions;
   };
@@ -180,8 +184,8 @@ protected:
   float m_height{0.0f};
 
   // Stuff for pre-rendering for speed
-  Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
-  bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch);
+  Character* GetCharacter(character_t letter, FT_UInt glyphIndex, bool emoji = false);
+  bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, bool emoji, Character* ch);
   void RenderCharacter(CGraphicContext& context,
                        float posX,
                        float posY,
@@ -238,6 +242,10 @@ protected:
   FT_Stroker m_stroker{nullptr};
 
   hb_font_t* m_hbFont{nullptr};
+
+  // fallback for emoji the font has no glyphs for
+  FT_Face m_emojiFace{nullptr};
+  hb_font_t* m_hbEmojiFont{nullptr};
 
   float m_originX{0.0f};
   float m_originY{0.0f};
