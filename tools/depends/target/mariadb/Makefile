@@ -5,8 +5,7 @@ DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.incl
                                   03-win-uwp.patch \
                                   04-win-installpkgconfig.patch \
                                   05-all-installtargets.patch \
-                                  06-emscripten-no-shared.patch \
-                                  07-all-pc-static-zstd.patch
+                                  06-emscripten-no-shared.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -57,7 +56,6 @@ ifeq ($(OS),wasm)
 	cd $(PLATFORM); patch -p1 -i ../06-emscripten-no-shared.patch
 endif
 	cd $(PLATFORM); patch -p1 -i ../05-all-installtargets.patch
-	cd $(PLATFORM); patch -p1 -i ../07-all-pc-static-zstd.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) $(CMAKE_OPTIONS) ..
 	touch $@
 
