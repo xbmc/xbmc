@@ -104,40 +104,33 @@ void CJobManager::Restart()
 
 void CJobManager::CancelJobs()
 {
-  Processing pending;
+  std::unique_lock lock(m_section);
+  m_running = false;
 
+  // clear any pending jobs
+  for (unsigned int priority = CJob::PRIORITY_LOW_PAUSABLE; priority <= CJob::PRIORITY_DEDICATED;
+       ++priority)
   {
-    std::unique_lock lock(m_section);
-    m_running = false;
-
-    for (auto& queue : m_jobQueue)
-    {
-      for (auto& wi : queue)
-        pending.emplace_back(std::move(wi));
-      queue.clear();
-    }
-
-    // These stay under the lock: the job is owned by its worker, which may complete and
-    // free it the moment the lock is released.
-    std::ranges::for_each(m_processing,
+    std::ranges::for_each(m_jobQueue[priority],
                           [](CWorkItem& wi)
                           {
                             for (auto* callback : wi.GetCallbacks())
                               callback->OnJobAbort(wi.GetId(), wi.GetJob());
-                            wi.Cancel();
+                            wi.FreeJob();
                           });
+    m_jobQueue[priority].clear();
   }
 
-  std::ranges::for_each(pending,
+  // cancel any callbacks on jobs still processing
+  std::ranges::for_each(m_processing,
                         [](CWorkItem& wi)
                         {
                           for (auto* callback : wi.GetCallbacks())
                             callback->OnJobAbort(wi.GetId(), wi.GetJob());
-                          wi.FreeJob();
+                          wi.Cancel();
                         });
 
   // tell our workers to finish
-  std::unique_lock lock(m_section);
   while (!m_workers.empty())
   {
     lock.unlock();
