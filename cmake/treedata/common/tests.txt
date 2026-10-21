@@ -31,6 +31,7 @@ xbmc/imagefiles/test              test/imagefiles
 xbmc/input/test                   test/input
 xbmc/input/keyboard/test          test/input/keyboard
 xbmc/input/keymaps/test           test/input/keymaps
+xbmc/interfaces/test              test/interfaces
 xbmc/interfaces/json-rpc/test     test/jsonrpc
 xbmc/interfaces/python/test       test/python
 xbmc/music/tags/test              test/music_tags
