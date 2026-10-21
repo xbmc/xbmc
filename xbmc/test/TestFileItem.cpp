@@ -12,9 +12,11 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "games/tags/GameInfoTag.h"
 #include "language/LangInfo.h"
 #include "media/MediaType.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
 #include "platform/Filesystem.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
@@ -25,9 +27,12 @@
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 
+#include <atomic>
 #include <fstream>
+#include <thread>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -1528,4 +1533,59 @@ TEST(TestFileItemIsSamePath, OriginalListItemUrlIsTheIdentity)
 
   EXPECT_TRUE(Same(resolved, MakeItem("plugin://source/item/1")));
   EXPECT_FALSE(Same(resolved, MakeItem("plugin://source/item/2")));
+}
+
+namespace
+{
+//! Two threads take the first tag of each fresh item at the same moment. Returns how many items
+//! ended up with the two threads holding different tags.
+template<typename GetTag>
+int CountTagMismatches(GetTag getTag)
+{
+  constexpr int ITEMS = 20000;
+  std::vector<CFileItem> items(ITEMS);
+  std::vector<std::atomic<int>> arrived(ITEMS);
+  std::vector<const void*> first(ITEMS);
+  std::vector<const void*> second(ITEMS);
+
+  const auto worker = [&](std::vector<const void*>& out)
+  {
+    for (int i = 0; i < ITEMS; ++i)
+    {
+      ++arrived[i];
+      while (arrived[i] < 2)
+        std::this_thread::yield();
+      out[i] = getTag(items[i]);
+    }
+  };
+
+  std::thread other(worker, std::ref(second));
+  worker(first);
+  other.join();
+
+  int mismatches = 0;
+  for (int i = 0; i < ITEMS; ++i)
+    mismatches += first[i] != second[i];
+  return mismatches;
+}
+} // namespace
+
+TEST(TestFileItemTags, ConcurrentFirstMusicTagAccessSharesOneTag)
+{
+  EXPECT_EQ(0, CountTagMismatches([](CFileItem& item) { return item.GetMusicInfoTag(); }));
+}
+
+TEST(TestFileItemTags, ConcurrentFirstVideoTagAccessSharesOneTag)
+{
+  EXPECT_EQ(0, CountTagMismatches([](CFileItem& item) { return item.GetVideoInfoTag(); }));
+}
+
+TEST(TestFileItemTags, ConcurrentFirstPictureTagAccessSharesOneTag)
+{
+  EXPECT_EQ(0, CountTagMismatches([](CFileItem& item) { return item.GetPictureInfoTag(); }));
+}
+
+TEST(TestFileItemTags, ConcurrentFirstGameTagAccessSharesOneTag)
+{
+  EXPECT_EQ(0, CountTagMismatches([](CFileItem& item) { return item.GetGameInfoTag(); }));
 }
