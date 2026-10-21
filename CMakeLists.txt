@@ -117,6 +117,7 @@ option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
+option(ENABLE_INTERNAL_OPUS "Enable internal opus?" OFF)
 
 # These are built for all platforms not using system libs or disabled by user
 dependent_option(ENABLE_INTERNAL_ASS "Enable internal libass?")

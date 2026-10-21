@@ -45,6 +45,18 @@ macro(buildFFMPEG)
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
   endif()
 
+  # Multichannel Opus encoding: FFmpeg's own Opus encoder stops at stereo.
+  if(ENABLE_INTERNAL_OPUS)
+    get_libversion_data("libopus" "target")
+  endif()
+
+  find_package(Opus ${LIB_LIBOPUS_VER} ${SEARCH_QUIET})
+  if(NOT TARGET LIBRARY::Opus)
+    message(STATUS "opus not found, internal ffmpeg build will be missing multichannel Opus encoding!")
+  else()
+    list(APPEND FFMPEG_OPTIONS -DENABLE_LIBOPUS=ON)
+  endif()
+
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC ffmpeg)
 
   SETUP_BUILD_VARS()
@@ -59,6 +71,9 @@ macro(buildFFMPEG)
 
     set(msys_env MSYS2_PATH_TYPE=inherit
                  MSYS_INSTALL_PATH=${MSYS_INSTALL_PATH})
+    if(TARGET LIBRARY::Opus)
+      list(APPEND msys_env ENABLE_LIBOPUS=ON)
+    endif()
     if(CCACHE_FOUND)
       list(APPEND msys_env "CCACHE_PROGRAM=${CCACHE_PROGRAM}")
     else()
@@ -197,7 +212,7 @@ macro(buildFFMPEG)
                    -DEXTRA_ENV_VARS=${extra_env_vars}
                    ${CROSS_ARGS}
                    ${FFMPEG_OPTIONS}
-                   -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig)
+                   -DPKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig:${DEPENDS_PATH}/lib/pkgconfig)
     set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
                       ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                       <SOURCE_DIR>
@@ -255,6 +270,9 @@ macro(buildFFMPEG)
 
   if(TARGET LIBRARY::Dav1d)
     add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Dav1d)
+  endif()
+  if(TARGET LIBRARY::Opus)
+    add_dependencies(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} LIBRARY::Opus)
   endif()
 
   set(FFMPEG_FOUND 1)
@@ -350,6 +368,19 @@ if(KODI_DEPENDSBUILD OR (WIN32 OR WINDOWS_STORE))
   endif()
 endif()
 
+if(ENABLE_INTERNAL_OPUS)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+  get_libversion_data("libopus" "target")
+  find_package(Opus ${LIB_LIBOPUS_VER} ${SEARCH_QUIET})
+  if(TARGET LIBRARY::Opus)
+    get_target_property(OPUS_DEP_BUILD LIBRARY::Opus LIB_BUILD)
+    if(OPUS_DEP_BUILD)
+      set(FFMPEG_DEP_BUILD ON)
+      set(ENABLE_INTERNAL_FFMPEG ON)
+    endif()
+  endif()
+endif()
+
 if(ENABLE_INTERNAL_FFMPEG)
   buildFFMPEG()
 else()
@@ -432,6 +463,7 @@ else()
     # correct dependency linking
     if(WIN32 OR WINDOWS_STORE)
       find_package(Dav1d ${SEARCH_QUIET})
+      find_package(Opus ${SEARCH_QUIET})
     endif()
 
     # Macro to populate target
@@ -522,6 +554,9 @@ if(FFMPEG_FOUND)
       if("${_libname}" STREQUAL "libavcodec")
         if(TARGET LIBRARY::Dav1d)
           set_property(TARGET ffmpeg::${_libname} APPEND PROPERTY INTERFACE_LINK_LIBRARIES LIBRARY::Dav1d)
+        endif()
+        if(TARGET LIBRARY::Opus)
+          set_property(TARGET ffmpeg::${_libname} APPEND PROPERTY INTERFACE_LINK_LIBRARIES LIBRARY::Opus)
         endif()
       endif()
     endif()
