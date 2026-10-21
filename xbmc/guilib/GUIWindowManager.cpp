@@ -1289,7 +1289,10 @@ void CGUIWindowManager::Process(unsigned int currentTime)
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
+  {
     pWindow->DoProcess(currentTime, m_dirtyregions);
+    m_guiSurround.Process(currentTime, m_dirtyregions);
+  }
 
   // process all dialogs - visibility may change etc.
   // copy shared_ptrs to ensure windows stay alive during iteration even if map is modified

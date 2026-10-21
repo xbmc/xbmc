@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DirtyRegion.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
@@ -25,6 +26,10 @@ class CGUISurroundRenderer
 public:
   CGUISurroundRenderer();
   ~CGUISurroundRenderer();
+
+  //! \brief Place the surround image and run its process phase, which applies its fit and
+  //! polls a texture still loading. Call on every frame, before Render().
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyRegions);
 
   //! \brief Paint the surround: before the window, only in the leftover bands, under a clip
   //! lifted to the raster and no further.
@@ -53,10 +58,10 @@ private:
   //! calls above.
   const SurroundArt& Art();
 
-  void RenderImage(const std::string& image,
-                   const CRect& raster,
-                   const CRect (&bands)[4],
-                   CGraphicContext& context);
+  //! \brief Fit the image to \p raster at its own ratio. \return whether that moved it
+  bool FitImage(const CRect& raster);
+
+  void RenderImage(const CRect (&bands)[4], CGraphicContext& context);
 
   //! \brief The image drawn in the surround, kept between frames.
   std::unique_ptr<CGUIImage> m_image;
