@@ -179,13 +179,19 @@ protected:
                         bool hScrolling,
                         bool vScrolling,
                         float dx = 0.0f,
-                        float dy = 0.0f);
+                        float dy = 0.0f,
+                        bool shadow = false);
 
   float m_height{0.0f};
 
   // Stuff for pre-rendering for speed
-  Character* GetCharacter(character_t letter, FT_UInt glyphIndex, bool emoji = false);
-  bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, bool emoji, Character* ch);
+  // silhouette: get emoji in the vertex color instead of their own colors
+  Character* GetCharacter(character_t letter,
+                          FT_UInt glyphIndex,
+                          bool emoji = false,
+                          bool silhouette = false);
+  bool CacheCharacter(
+      FT_UInt glyphIndex, uint32_t style, bool emoji, bool silhouette, Character* ch);
   void RenderCharacter(CGraphicContext& context,
                        float posX,
                        float posY,
@@ -196,19 +202,23 @@ protected:
   void ClearCharacterCache();
 
   virtual std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) = 0;
-  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph,
+  // pixels: RGBA, starting at (x1, y1)
+  virtual bool CopyCharToTexture(const uint8_t* pixels,
+                                 unsigned int pitch,
                                  unsigned int x1,
                                  unsigned int y1,
                                  unsigned int x2,
                                  unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
 
+  // Fills RGBA pixels with transparent white, so that filtering at glyph edges keeps the color
+  static void ClearTexturePixels(uint8_t* pixels, size_t size);
+
   // modifying glyphs
   void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);
   static void ObliqueGlyph(FT_GlyphSlot slot);
 
-  std::unique_ptr<CTexture>
-      m_texture; // texture that holds our rendered characters (8bit alpha only)
+  std::unique_ptr<CTexture> m_texture; // texture that holds our rendered characters (RGBA)
 
   unsigned int m_textureWidth{0}; // width of our texture
   unsigned int m_textureHeight{0}; // height of our texture
@@ -240,6 +250,7 @@ protected:
   // freetype stuff
   FT_Face m_face{nullptr};
   FT_Stroker m_stroker{nullptr};
+  int m_borderRadius{0}; // in pixels, for glyphs without outlines to stroke
 
   hb_font_t* m_hbFont{nullptr};
 

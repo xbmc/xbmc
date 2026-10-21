@@ -690,6 +690,28 @@ void CRenderSystemGLES::InitialiseShaders()
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA].reset();
     CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_noalpha.frag - compile and link failed");
   }
+
+  const std::string definesFontsRGBA = defines + "#define KODI_FONTS_RGBA 1\n";
+
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA] = std::make_unique<CGLESShader>(
+      "gles_shader_simple.vert", "gles_shader_fonts.frag", definesFontsRGBA);
+  if (!m_pShader[ShaderMethodGLES::SM_FONTS_RGBA]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA]->Free();
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_simple.vert + gles_shader_fonts.frag (RGBA) - "
+                        "compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP] = std::make_unique<CGLESShader>(
+      "gles_shader_clip.vert", "gles_shader_fonts.frag", definesFontsRGBA);
+  if (!m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP]->Free();
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_clip.vert + gles_shader_fonts.frag (RGBA) - "
+                        "compile and link failed");
+  }
 }
 
 void CRenderSystemGLES::ReleaseShaders()
@@ -761,6 +783,14 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA]->Free();
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_FONTS_RGBA])
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA]->Free();
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP])
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP]->Free();
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP].reset();
 }
 
 void CRenderSystemGLES::EnableGUIShader(ShaderMethodGLES method)

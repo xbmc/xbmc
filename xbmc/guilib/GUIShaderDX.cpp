@@ -51,6 +51,8 @@ constexpr std::array<D3D_SHADER_DATA, SHADER_METHOD_RENDER_COUNT> shaderCode =
   { guishader_interlaced_right, sizeof(guishader_interlaced_right) }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
   { guishader_checkerboard_left, sizeof(guishader_checkerboard_left) }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_LEFT
   { guishader_checkerboard_right, sizeof(guishader_checkerboard_right) }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT
+  { guishader_texture, sizeof(guishader_texture) }, // SHADER_METHOD_RENDER_FONT_RGBA
+  { guishader_texture, sizeof(guishader_texture) }, // SHADER_METHOD_RENDER_FONT_RGBA_SHADER_CLIP
 }};
 // clang-format on
 
@@ -127,8 +129,9 @@ bool CGUIShaderDX::Initialize()
 
   for (std::size_t i = 0; i < SHADER_METHOD_RENDER_COUNT; i++)
   {
-    // All methods except the two font ones share guishader_vert.hlsl
-    if (i == SHADER_METHOD_RENDER_FONT_SHADER_CLIP)
+    // All methods except the font ones with shader clipping share guishader_vert.hlsl
+    if (i == SHADER_METHOD_RENDER_FONT_SHADER_CLIP ||
+        i == SHADER_METHOD_RENDER_FONT_RGBA_SHADER_CLIP)
       m_shaders[i].m_vs = &m_vertexShaderClip;
     else
       m_shaders[i].m_vs = &m_vertexShader;
@@ -437,7 +440,9 @@ void CGUIShaderDX::ApplyChanges(void)
     buffer->wvp = m_cbWorldViewProj.GetWVP();
 
     if (m_currentShader == SHADER_METHOD_RENDER_FONT ||
-        m_currentShader == SHADER_METHOD_RENDER_FONT_SHADER_CLIP)
+        m_currentShader == SHADER_METHOD_RENDER_FONT_SHADER_CLIP ||
+        m_currentShader == SHADER_METHOD_RENDER_FONT_RGBA ||
+        m_currentShader == SHADER_METHOD_RENDER_FONT_RGBA_SHADER_CLIP)
     {
       buffer->m_shaderClip = m_shaderClip;
       buffer->m_texStep = m_texStep;

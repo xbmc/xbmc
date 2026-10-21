@@ -61,9 +61,9 @@ bool CGUIFontTTFGLES::FirstBegin()
 {
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
-  GLenum pixformat = GL_ALPHA; // deprecated
-  GLenum internalFormat = GL_ALPHA;
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS_RGBA);
+  GLenum pixformat = GL_RGBA;
+  GLenum internalFormat = GL_RGBA;
 
   if (renderSystem->ScissorsCanEffectClipping())
   {
@@ -73,7 +73,7 @@ bool CGUIFontTTFGLES::FirstBegin()
   {
     m_scissorClip = false;
     renderSystem->ResetScissors();
-    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS_SHADER_CLIP);
+    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP);
   }
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
@@ -356,7 +356,7 @@ std::unique_ptr<CTexture> CGUIFontTTFGLES::ReallocTexture(unsigned int& newHeigh
   newHeight = CTexture::PadPow2(newHeight);
 
   std::unique_ptr<CTexture> newTexture =
-      CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
+      CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_RGBA8);
 
   if (!newTexture || !newTexture->GetPixels())
   {
@@ -374,7 +374,7 @@ std::unique_ptr<CTexture> CGUIFontTTFGLES::ReallocTexture(unsigned int& newHeigh
   m_staticCache.Flush();
   m_dynamicCache.Flush();
 
-  memset(newTexture->GetPixels(), 0, m_textureHeight * newTexture->GetPitch());
+  ClearTexturePixels(newTexture->GetPixels(), m_textureHeight * newTexture->GetPitch());
   if (m_texture)
   {
     m_updateY1 = 0;
@@ -395,18 +395,19 @@ std::unique_ptr<CTexture> CGUIFontTTFGLES::ReallocTexture(unsigned int& newHeigh
   return newTexture;
 }
 
-bool CGUIFontTTFGLES::CopyCharToTexture(
-    FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+bool CGUIFontTTFGLES::CopyCharToTexture(const uint8_t* pixels,
+                                        unsigned int pitch,
+                                        unsigned int x1,
+                                        unsigned int y1,
+                                        unsigned int x2,
+                                        unsigned int y2)
 {
-  FT_Bitmap bitmap = bitGlyph->bitmap;
-
-  unsigned char* source = bitmap.buffer;
-  unsigned char* target = m_texture->GetPixels() + y1 * m_texture->GetPitch() + x1;
+  unsigned char* target = m_texture->GetPixels() + y1 * m_texture->GetPitch() + x1 * 4;
 
   for (unsigned int y = y1; y < y2; y++)
   {
-    memcpy(target, source, x2 - x1);
-    source += bitmap.width;
+    memcpy(target, pixels, (x2 - x1) * 4);
+    pixels += pitch;
     target += m_texture->GetPitch();
   }
 
