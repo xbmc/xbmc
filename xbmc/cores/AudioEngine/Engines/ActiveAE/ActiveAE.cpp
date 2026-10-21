@@ -44,6 +44,7 @@ constexpr float MIN_WATER_LEVEL = 0.02f; // min buffer time to prevent underrun
 constexpr float MIN_WATER_LEVEL_RESAMPLE = 0.1f; // min buffer time in resample mode
 constexpr float BUFFER_LEVEL_INCREMENT = 0.0001f; // increment step for ramp-up
 constexpr double MAX_BUFFER_TIME = 0.1; // max time of a buffer in seconds;
+constexpr double MAX_LATE_START_MS = 500.0; // late start of audio left to the player's clock
 
 //! \brief Retry interval for a sink that will not open, doubling to a ceiling.
 //! A device that returns announces itself, so only a fault that clears by itself needs the
@@ -2131,8 +2132,7 @@ bool CActiveAE::RunStages()
 
   // TrueHD is very jumpy, meaning the frames don't come in equidistantly. They are only smoothed
   // at the end when the IEC packing happens. Therefore adjust earlier.
-  const bool isTrueHDPassthrough =
-      (m_mode == MODE_RAW && m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD);
+  const bool isTrueHDPassthrough{IsTrueHDPassthrough()};
 
   if (m_settings.lowLatencyMode)
   {
@@ -2571,6 +2571,12 @@ bool CActiveAE::HasWork()
   return false;
 }
 
+bool CActiveAE::IsTrueHDPassthrough() const
+{
+  return m_mode == MODE_RAW &&
+         m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD;
+}
+
 CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
 {
   CSampleBuffer *ret = NULL;
@@ -2584,6 +2590,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     stream->m_syncError.Flush(100ms);
     stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
     stream->m_resampleIntegral = 0;
+    stream->m_lateStartHandedOver = false;
     CLog::Log(LOGDEBUG,"ActiveAE - start sync of audio stream");
   }
 
@@ -2605,6 +2612,27 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
                                           : stream->GetErrorInterval();
   bool newerror = stream->m_syncError.Get(error, timeout);
 
+  if (newerror && stream->m_lateStartHandedOver)
+  {
+    // Mostly averaged before the player moved its clock to the late audio, so neither acted upon
+    // nor reported.
+    stream->m_lateStartHandedOver = false;
+    stream->m_syncError.Flush(timeout);
+    newerror = false;
+    CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error {:f} dropped", error);
+  }
+
+  // Without resampling, the player moves its clock to the audio once the error exceeds its own
+  // limit. Audio starting late is therefore left to the player, as skipping it would lose the
+  // start of the audio. The errors of TrueHD passthrough are scaled down, so they do not tell how
+  // late the audio is.
+  const bool clockFollowsAudio{!stream->m_resampleMode && !IsTrueHDPassthrough()};
+  const auto keepAudible = [&](double syncError)
+  {
+    return fabs(syncError) <= threshold ||
+           (clockFollowsAudio && syncError < 0 && -syncError <= MAX_LATE_START_MS);
+  };
+
   if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
   {
     stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
@@ -2616,16 +2644,29 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
   }
   else if (newerror && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE)
   {
-    stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
-    stream->m_lastSyncError = error;
-    CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error of {:f}, start adjusting", error);
+    if (clockFollowsAudio && error < 0 && -error <= MAX_LATE_START_MS)
+    {
+      stream->m_syncState = CAESyncInfo::AESyncState::SYNC_INSYNC;
+      stream->m_syncError.Flush(1000ms);
+      // Reports the error to the player right away
+      stream->m_syncError.Correction(error);
+      stream->m_resampleIntegral = 0;
+      stream->m_lateStartHandedOver = true;
+      CLog::Log(LOGDEBUG,
+                "ActiveAE::SyncStream - average error of {:f}, left to the player's clock", error);
+    }
+    else
+    {
+      stream->m_syncState = CAESyncInfo::AESyncState::SYNC_ADJUST;
+      stream->m_lastSyncError = error;
+      CLog::Log(LOGDEBUG, "ActiveAE::SyncStream - average error of {:f}, start adjusting", error);
+    }
   }
 
-  // While the error is averaged, samples that already play close to in sync stay audible, so that
-  // the start of the audio is not lost.
+  // While the error is averaged, samples that will not be skipped stay audible.
   double errorSoFar{0.0};
-  const bool closeToSync{stream->m_syncError.GetSoFar(errorSoFar) && fabs(errorSoFar) <= threshold};
-  if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE && !closeToSync)
+  const bool audible{stream->m_syncError.GetSoFar(errorSoFar) && keepAudible(errorSoFar)};
+  if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE && !audible)
   {
     CSampleBuffer *buf = stream->m_processingBuffers->m_outputSamples.front();
     if (m_mode == MODE_RAW)

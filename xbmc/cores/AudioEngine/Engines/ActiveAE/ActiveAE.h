@@ -340,6 +340,7 @@ protected:
   bool RunStages();
   bool HasWork();
   CSampleBuffer* SyncStream(CActiveAEStream *stream);
+  bool IsTrueHDPassthrough() const;
 
   void ResampleSounds();
   bool ResampleSound(CActiveAESound *sound);
