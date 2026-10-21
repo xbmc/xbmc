@@ -202,8 +202,11 @@ void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& pictu
 CBaseRenderer* CRendererVTBDisplayLayer::Create(CVideoBuffer* buffer)
 {
   auto* vtb = GetVTBBuffer(buffer);
-  if (!vtb || CVPixelBufferGetPixelFormatType(vtb->GetPB()) !=
-                  kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
+  if (!vtb)
+    return nullptr;
+  const OSType format = CVPixelBufferGetPixelFormatType(vtb->GetPB());
+  if (format != kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange &&
+      format != kCVPixelFormatType_420YpCbCr10BiPlanarFullRange)
     return nullptr;
   return new CRendererVTBDisplayLayer;
 }
@@ -239,6 +242,7 @@ bool CRendererVTBDisplayLayer::Configure(const VideoPicture& picture,
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
   m_lastRect = {};
+  m_lastSourceRect = {};
   m_fps = fps;
   m_hdrType = picture.hdrType;
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
@@ -315,7 +319,7 @@ void CRendererVTBDisplayLayer::Update()
   if (!m_configured)
     return;
   ManageRenderArea();
-  if (m_destRect != m_lastRect)
+  if (m_destRect != m_lastRect || m_sourceRect != m_lastSourceRect)
   {
     const auto& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
     const CGSize boundsSize = g_xbmcController.glView.bounds.size;
@@ -324,17 +328,24 @@ void CRendererVTBDisplayLayer::Update()
     [g_xbmcController
         setVideoLayerFrame:CGRectMake(m_destRect.x1 * sx, m_destRect.y1 * sy,
                                       m_destRect.Width() * sx, m_destRect.Height() * sy)
+                sourceRect:CGRectMake(static_cast<CGFloat>(m_sourceRect.x1) / m_sourceWidth,
+                                      static_cast<CGFloat>(m_sourceRect.y1) / m_sourceHeight,
+                                      static_cast<CGFloat>(m_sourceRect.Width()) / m_sourceWidth,
+                                      static_cast<CGFloat>(m_sourceRect.Height()) / m_sourceHeight)
                orientation:m_renderOrientation];
     m_lastRect = m_destRect;
+    m_lastSourceRect = m_sourceRect;
   }
 }
 
 void CRendererVTBDisplayLayer::RenderUpdate(
     int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  if (!m_configured || index == m_lastIndex)
+  if (!m_configured)
     return;
   Update();
+  if (index == m_lastIndex)
+    return;
   auto* vtb = GetVTBBuffer(m_buffers[index]);
   if (!vtb)
   {
@@ -430,15 +441,25 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
                             : m_renderOrientation == 180 ? 3
                             : m_renderOrientation == 270 ? 8
                                                          : 1;
-    image = [image imageByApplyingOrientation:orientation];
     const CGRect extent = image.extent;
+    const CGRect source = CGRectMake(
+        extent.origin.x + static_cast<CGFloat>(m_sourceRect.x1) / m_sourceWidth * extent.size.width,
+        extent.origin.y +
+            (1.0 - static_cast<CGFloat>(m_sourceRect.y2) / m_sourceHeight) * extent.size.height,
+        static_cast<CGFloat>(m_sourceRect.Width()) / m_sourceWidth * extent.size.width,
+        static_cast<CGFloat>(m_sourceRect.Height()) / m_sourceHeight * extent.size.height);
+    const CGRect rotatedSource =
+        CGRectApplyAffineTransform(source, [image imageTransformForOrientation:orientation]);
+    image = [image imageByApplyingOrientation:orientation];
     const CGRect crop = CGRectMake(
-        extent.origin.x + static_cast<CGFloat>((visible.x1 - m_destRect.x1) / m_destRect.Width()) *
-                              extent.size.width,
-        extent.origin.y + static_cast<CGFloat>((m_destRect.y2 - visible.y2) / m_destRect.Height()) *
-                              extent.size.height,
-        static_cast<CGFloat>(visible.Width() / m_destRect.Width()) * extent.size.width,
-        static_cast<CGFloat>(visible.Height() / m_destRect.Height()) * extent.size.height);
+        rotatedSource.origin.x +
+            static_cast<CGFloat>((visible.x1 - m_destRect.x1) / m_destRect.Width()) *
+                rotatedSource.size.width,
+        rotatedSource.origin.y +
+            static_cast<CGFloat>((m_destRect.y2 - visible.y2) / m_destRect.Height()) *
+                rotatedSource.size.height,
+        static_cast<CGFloat>(visible.Width() / m_destRect.Width()) * rotatedSource.size.width,
+        static_cast<CGFloat>(visible.Height() / m_destRect.Height()) * rotatedSource.size.height);
     image = [image imageByClampingToExtent];
     image = [image
         imageByApplyingTransform:CGAffineTransformMakeTranslation(-crop.origin.x, -crop.origin.y)];

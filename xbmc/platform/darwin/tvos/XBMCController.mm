@@ -63,6 +63,7 @@ XBMCController* g_xbmcController;
 @synthesize inputHandler;
 @synthesize glView;
 @synthesize videoLayer;
+@synthesize videoLayerContainer;
 @synthesize videoLayerGeneration;
 
 #pragma mark - UIView Keyboard
@@ -177,10 +178,14 @@ XBMCController* g_xbmcController;
       if (self.videoLayer == nil)
       {
         self.videoLayerGeneration = self.videoLayerGeneration + 1;
+        self.videoLayerContainer = [CALayer layer];
+        self.videoLayerContainer.frame = self.view.bounds;
+        self.videoLayerContainer.masksToBounds = YES;
         self.videoLayer = [AVSampleBufferDisplayLayer layer];
         self.videoLayer.videoGravity = AVLayerVideoGravityResize;
-        self.videoLayer.frame = self.view.bounds;
-        [self.view.layer insertSublayer:self.videoLayer below:self.glView.layer];
+        self.videoLayer.frame = self.videoLayerContainer.bounds;
+        [self.videoLayerContainer addSublayer:self.videoLayer];
+        [self.view.layer insertSublayer:self.videoLayerContainer below:self.glView.layer];
       }
       self.glView.opaque = NO;
       self.glView.layer.opaque = NO;
@@ -206,6 +211,8 @@ XBMCController* g_xbmcController;
     self.videoLayerGeneration = self.videoLayerGeneration + 1;
     [self.videoLayer removeFromSuperlayer];
     self.videoLayer = nil;
+    [self.videoLayerContainer removeFromSuperlayer];
+    self.videoLayerContainer = nil;
     self.glView.layer.opaque = YES;
     self.glView.opaque = YES;
   };
@@ -215,7 +222,9 @@ XBMCController* g_xbmcController;
     dispatch_sync(dispatch_get_main_queue(), disable);
 }
 
-- (void)setVideoLayerFrame:(CGRect)frame orientation:(unsigned int)orientation
+- (void)setVideoLayerFrame:(CGRect)frame
+                sourceRect:(CGRect)sourceRect
+               orientation:(unsigned int)orientation
 {
   const NSUInteger generation = self.videoLayerGeneration;
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -223,14 +232,28 @@ XBMCController* g_xbmcController;
     {
       [CATransaction begin];
       [CATransaction setDisableActions:YES];
-      // Bounds precede the transform, so quarter turns swap the destination dimensions.
+      self.videoLayerContainer.frame = frame;
+      self.videoLayerContainer.hidden = CGRectIsEmpty(frame) || CGRectIsEmpty(sourceRect);
+      if (self.videoLayerContainer.hidden)
+      {
+        [CATransaction commit];
+        return;
+      }
+
+      const CGAffineTransform rotation = CGAffineTransformMakeRotation(orientation * M_PI / 180.0);
+      const CGRect unit = CGRectApplyAffineTransform(CGRectMake(0, 0, 1, 1), rotation);
+      CGRect source = CGRectApplyAffineTransform(sourceRect, rotation);
+      source.origin.x -= unit.origin.x;
+      source.origin.y -= unit.origin.y;
+      const CGSize fullSize =
+          CGSizeMake(frame.size.width / source.size.width, frame.size.height / source.size.height);
       const CGSize size = orientation == 90 || orientation == 270
-                              ? CGSizeMake(frame.size.height, frame.size.width)
-                              : frame.size;
+                              ? CGSizeMake(fullSize.height, fullSize.width)
+                              : fullSize;
       self.videoLayer.bounds = CGRectMake(0.0, 0.0, size.width, size.height);
-      self.videoLayer.position = CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame));
-      [self.videoLayer
-          setAffineTransform:CGAffineTransformMakeRotation(orientation * M_PI / 180.0)];
+      self.videoLayer.position = CGPointMake((0.5 - source.origin.x) * fullSize.width,
+                                             (0.5 - source.origin.y) * fullSize.height);
+      [self.videoLayer setAffineTransform:rotation];
       [CATransaction commit];
     }
   });
