@@ -1,2 +1,3 @@
+xbmc/cores/RetroPlayer/shaders/gl/test test/retroplayer/shaders/gl
 xbmc/platform/darwin/osx/storage/test platform/darwin/osx/storage/test
 xbmc/platform/posix/filesystem/test platform/posix/filesystem/test
