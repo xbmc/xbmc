@@ -16,12 +16,14 @@
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
+#include "utils/EmojiUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
 
 #include <algorithm>
 #include <mutex>
 #include <type_traits>
+#include <vector>
 
 #include <fribidi.h>
 #include <iconv.h>
@@ -479,6 +481,49 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   return true;
 }
 
+namespace
+{
+// Puts emoji sequences that reordering for right-to-left text reversed back into logical order, so
+// that they can still be shaped. Sequences with strong right-to-left characters stay reordered.
+void RestoreEmojiSequences(const char32_t* logical,
+                           FriBidiChar* visual,
+                           int* visualToLogicalMap,
+                           size_t length)
+{
+  std::vector<size_t> logicalToVisual(length);
+  for (size_t i = 0; i < length; ++i)
+    logicalToVisual[visualToLogicalMap[i]] = i;
+
+  const auto isStrongRtl = [](char32_t c)
+  {
+    const FriBidiCharType type = fribidi_get_bidi_type(c);
+    return FRIBIDI_IS_STRONG(type) && FRIBIDI_IS_RTL(type);
+  };
+
+  for (size_t start = 0; start < length;)
+  {
+    size_t end = start + 1;
+    bool rtl = isStrongRtl(logical[start]);
+    while (end < length &&
+           (KODI::UTILS::ContinuesEmoji(logical[end]) || logical[end - 1] == 0x200D))
+      rtl |= isStrongRtl(logical[end++]);
+
+    const auto [first, last] =
+        std::minmax_element(logicalToVisual.begin() + start, logicalToVisual.begin() + end);
+    if (end - start > 1 && !rtl && *last - *first + 1 == end - start)
+    {
+      const size_t visualStart = *first;
+      for (size_t i = start; i < end; ++i)
+      {
+        visual[visualStart + i - start] = logical[i];
+        visualToLogicalMap[visualStart + i - start] = static_cast<int>(i);
+      }
+    }
+    start = end;
+  }
+}
+} // namespace
+
 bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
     const std::u32string& stringSrc,
     std::u32string& stringDst,
@@ -517,18 +562,33 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
 
     bool bidiFailed = false;
     FriBidiCharType baseCopy = base; // preserve same value for all lines, required because fribidi_log2vis will modify parameter value
+    std::vector<int> ownVisualToLogicalMap;
+    if (!visualToLogicalMap)
+      ownVisualToLogicalMap.resize(lineLen);
+    int* lineVisualToLogicalMap =
+        visualToLogicalMap ? visualToLogicalMap + lineStart : ownVisualToLogicalMap.data();
     if (fribidi_log2vis(reinterpret_cast<const FriBidiChar*>(stringSrc.c_str() + lineStart),
-                        lineLen, &baseCopy, visual, nullptr,
-                        !visualToLogicalMap ? nullptr : visualToLogicalMap + lineStart, nullptr))
+                        lineLen, &baseCopy, visual, nullptr, lineVisualToLogicalMap, nullptr))
     {
-      // Removes bidirectional marks
-      const int newLen = fribidi_remove_bidi_marks(
-          visual, lineLen, nullptr, !visualToLogicalMap ? nullptr : visualToLogicalMap + lineStart,
-          nullptr);
-      if (newLen > 0)
-        stringDst.append((const char32_t*)visual, (size_t)newLen);
-      else if (newLen < 0)
-        bidiFailed = failOnBadString;
+      RestoreEmojiSequences(stringSrc.c_str() + lineStart, visual, lineVisualToLogicalMap, lineLen);
+
+      // Removes bidirectional marks like fribidi_remove_bidi_marks(), but keeps the zero width
+      // joiner and tag characters that emoji sequences consist of
+      size_t newLen = 0;
+      for (size_t i = 0; i < lineLen; ++i)
+      {
+        const FriBidiChar c = visual[i];
+        const FriBidiCharType type = fribidi_get_bidi_type(c);
+        if (c != 0x200D && (c < 0xE0020 || c > 0xE007F) &&
+            (FRIBIDI_IS_EXPLICIT_OR_BN(type) || FRIBIDI_IS_ISOLATE(type) || c == FRIBIDI_CHAR_LRM ||
+             c == FRIBIDI_CHAR_RLM))
+          continue;
+
+        visual[newLen] = c;
+        lineVisualToLogicalMap[newLen] = lineVisualToLogicalMap[i];
+        ++newLen;
+      }
+      stringDst.append(reinterpret_cast<const char32_t*>(visual), newLen);
     }
     else
       bidiFailed = failOnBadString;

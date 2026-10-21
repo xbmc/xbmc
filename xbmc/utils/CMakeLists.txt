@@ -112,6 +112,7 @@ set(HEADERS ActorProtocol.h
             Digest.h
             DiscsUtils.h
             DolbyVisionRpu.h
+            EmojiUtils.h
             EndianSwap.h
             EpisodeUtils.h
             EventStream.h
