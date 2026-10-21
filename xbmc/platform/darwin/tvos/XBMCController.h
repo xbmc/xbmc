@@ -16,6 +16,7 @@
 
 @class AVDisplayManager;
 @class AVSampleBufferDisplayLayer;
+@class CALayer;
 @class DarwinEmbedNowPlayingInfoManager;
 @class TVOSEAGLView;
 @class TVOSLibInputHandler;
@@ -41,6 +42,7 @@ class CFileItem;
 @property(nonatomic, strong) TVOSDisplayManager* displayManager;
 @property(nonatomic, strong) TVOSEAGLView* glView;
 @property(nonatomic, strong) AVSampleBufferDisplayLayer* videoLayer;
+@property(nonatomic, strong) CALayer* videoLayerContainer;
 @property(atomic) NSUInteger videoLayerGeneration;
 @property(nonatomic, strong) TVOSLibInputHandler* inputHandler;
 
@@ -55,7 +57,9 @@ class CFileItem;
 - (bool)presentFramebuffer;
 - (BOOL)enableVideoLayer;
 - (void)disableVideoLayer;
-- (void)setVideoLayerFrame:(CGRect)frame orientation:(unsigned int)orientation;
+- (void)setVideoLayerFrame:(CGRect)frame
+                sourceRect:(CGRect)sourceRect
+               orientation:(unsigned int)orientation;
 - (void)enqueueVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 - (void)flushVideoLayer;
 - (void)activateKeyboard:(UIView*)view;

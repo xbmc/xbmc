@@ -285,9 +285,13 @@ bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
   auto* buffer =
       videoPicture ? dynamic_cast<VTB::CVideoBufferVTB*>(videoPicture->videoBuffer) : nullptr;
   CVPixelBufferRef pixelBuffer = buffer ? buffer->GetPB() : nullptr;
+  const OSType pixelFormat = pixelBuffer ? CVPixelBufferGetPixelFormatType(pixelBuffer) : 0;
+  const bool matchRefreshRate =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF;
   if (hdrType == StreamHdrType::HDR_TYPE_NONE || !pixelBuffer ||
-      CVPixelBufferGetPixelFormatType(pixelBuffer) !=
-          kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
+      (pixelFormat != kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange &&
+       pixelFormat != kCVPixelFormatType_420YpCbCr10BiPlanarFullRange))
   {
     if (m_hdrFormatDescription)
     {
@@ -295,9 +299,17 @@ bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
       m_hdrFormatDescription = nullptr;
     }
     if (m_hdrStatus == HDR_STATUS::HDR_ON)
-      [g_xbmcController.displayManager displayDynamicRangeReset];
+    {
+      // "On start" retains Kodi's selected rate when playback stops.
+      if (matchRefreshRate && m_requestedRefreshRate > 0.0f)
+        [g_xbmcController.displayManager displayRateSwitch:m_requestedRefreshRate
+                                          withDynamicRange:0 /* SDR */];
+      else
+        [g_xbmcController.displayManager displayDynamicRangeReset];
+    }
     m_hdrStatus = HDR_STATUS::HDR_OFF;
-    m_requestedRefreshRate = 0.0f;
+    if (!matchRefreshRate)
+      m_requestedRefreshRate = 0.0f;
     return false;
   }
 
@@ -311,7 +323,7 @@ bool CWinSystemTVOS::SetHDR(const VideoPicture* videoPicture)
     return false;
   }
 
-  const float rate = m_requestedRefreshRate > 0.0f
+  const float rate = matchRefreshRate && m_requestedRefreshRate > 0.0f
                          ? m_requestedRefreshRate
                          : [g_xbmcController.displayManager getDisplayRate];
   const bool accepted = [g_xbmcController.displayManager displayVideoFormatSwitch:formatDescription

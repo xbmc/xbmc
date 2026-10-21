@@ -52,4 +52,5 @@ private:
   bool m_configured{false};
   int m_lastIndex{-1};
   CRect m_lastRect;
+  CRect m_lastSourceRect;
 };
