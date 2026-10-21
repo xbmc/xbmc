@@ -38,7 +38,7 @@ enum class TYPE
 const std::string& NameOf(TYPE type);
 
 //! \brief Formats as its name, for fmt.
-inline const std::string& format_as(TYPE type)
+inline std::string_view format_as(TYPE type)
 {
   return NameOf(type);
 }
