@@ -755,7 +755,7 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint& point, const MOUSE::C
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
   { // do the drag
-    m_dragging = GetID() != 0;
+    m_dragging = wasDragging;
     SetFromPosition(point);
     return EVENT_RESULT_HANDLED;
   }

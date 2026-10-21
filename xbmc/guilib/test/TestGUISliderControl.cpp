@@ -233,6 +233,33 @@ TEST_F(TestGUISliderControl, UnnamedSeekSlidersDoNotWaitForGestureEnd)
   }
 }
 
+TEST_F(TestGUISliderControl, PanWithoutGestureBeginDoesNotWaitForGestureEnd)
+{
+  for (const auto* action : {"seek", "pvr.seek"})
+  {
+    SCOPED_TRACE(action);
+    m_actions.clear();
+    CTestSlider slider;
+    slider.SetAction(action);
+    slider.SetInfo(PLAYER_PROGRESS);
+    slider.OnMouseEvent({25, 5}, {ACTION_GESTURE_NOTIFY});
+    slider.OnMouseEvent({25, 5}, {ACTION_GESTURE_PAN});
+    EXPECT_EQ(m_capture, 0);
+    EXPECT_FALSE(slider.IsDragging());
+    EXPECT_EQ(m_actions.size(), 1);
+    EXPECT_FLOAT_EQ(slider.GetPercentage(), 25);
+    slider.OnMouseEvent({75, 5}, {ACTION_GESTURE_PAN});
+    ASSERT_EQ(m_actions.size(), 2);
+    EXPECT_NE(m_actions.back().find("75.000000"), std::string::npos);
+
+    // A pan entering the slider without capture may never deliver gesture end.
+    CDirtyRegionList dirtyRegions;
+    slider.Process(0, dirtyRegions);
+    EXPECT_FALSE(slider.IsDragging());
+    EXPECT_FLOAT_EQ(slider.GetPercentage(), 73);
+  }
+}
+
 TEST_F(TestGUISliderControl, AbortReleasesCaptureWithoutSeeking)
 {
   CTestSlider slider;
