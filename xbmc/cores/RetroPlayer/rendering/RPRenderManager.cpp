@@ -452,6 +452,12 @@ bool CRPRenderManager::Create(unsigned int width, unsigned int height)
   {
     m_hwBufferWidth = width;
     m_hwBufferHeight = height;
+    {
+      std::unique_lock framebufferLock(m_framebufferMutex);
+      m_framebuffer = m_hwRenderBuffer->GetCurrentFramebuffer();
+      m_framebufferWidth = width;
+      m_framebufferHeight = height;
+    }
     CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Allocated a {}x{} framebuffer for the game client",
               width, height);
   }
@@ -477,6 +483,11 @@ void CRPRenderManager::ReleaseHwRenderBuffer()
                     return true;
                   });
   }
+  {
+    std::unique_lock framebufferLock(m_framebufferMutex);
+    m_framebuffer = 0;
+    m_framebufferWidth = m_framebufferHeight = 0;
+  }
   m_hwRenderBuffer->Release();
   m_hwRenderBuffer = nullptr;
   m_hwBufferWidth = m_hwBufferHeight = 0;
@@ -486,7 +497,21 @@ void CRPRenderManager::ReleaseHwRenderBuffer()
 
 uintptr_t CRPRenderManager::GetCurrentFramebuffer(unsigned int width, unsigned int height)
 {
-  std::unique_lock lock(m_hwMutex);
+  std::unique_lock lock(m_hwMutex, std::try_to_lock);
+  if (!lock.owns_lock())
+  {
+    // A client can ask from a thread of its own while a call into it holds the
+    // lock and waits for that thread, as PPSSPP's emulation thread does.
+    // Growing the framebuffer needs the context that call has current, but one
+    // already large enough is answered as is.
+    {
+      std::unique_lock framebufferLock(m_framebufferMutex);
+      if (m_framebuffer != 0 && width != 0 && height != 0 && width <= m_framebufferWidth &&
+          height <= m_framebufferHeight)
+        return m_framebuffer;
+    }
+    lock.lock();
+  }
   if (!m_hwRenderBuffer || width == 0 || height == 0)
     return 0;
   if ((width > m_hwBufferWidth || height > m_hwBufferHeight) && !Create(width, height))

@@ -17,6 +17,7 @@
 #include "games/addons/streams/GameClientStreamHwFramebuffer.h"
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <future>
 #include <memory>
@@ -412,6 +413,25 @@ TEST_F(TestRPRenderManager, FramebufferGrowthPreservesBufferAndOtherAxis)
   EXPECT_EQ(buffer->GetHeight(), 928);
   manager.Flush();
   EXPECT_EQ(manager.GetCurrentFramebuffer(320, 240), framebuffer);
+  manager.DestroyContext();
+}
+
+TEST_F(TestRPRenderManager, ClientThreadGetsFramebufferDuringClientCall)
+{
+  auto& manager = m_environment.Renderer();
+  m_pool->hardware = true;
+  ASSERT_TRUE(manager.CreateContext({}));
+  ASSERT_TRUE(manager.Create(480, 272));
+  const auto framebuffer = manager.GetCurrentFramebuffer(480, 272);
+  ASSERT_NE(framebuffer, 0);
+  ASSERT_TRUE(manager.BeginClientFrame());
+  auto fromClientThread = std::async(std::launch::async, [&manager]
+                                     { return manager.GetCurrentFramebuffer(480, 270); });
+  const bool answered =
+      fromClientThread.wait_for(std::chrono::seconds(5)) == std::future_status::ready;
+  manager.EndClientFrame();
+  EXPECT_TRUE(answered);
+  EXPECT_EQ(fromClientThread.get(), framebuffer);
   manager.DestroyContext();
 }
 
