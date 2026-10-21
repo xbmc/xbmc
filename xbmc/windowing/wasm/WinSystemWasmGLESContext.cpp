@@ -13,6 +13,10 @@
 #include "WasmClipboard.h"
 #include "WasmVsync.h"
 #include "WebGLCommit.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecWebCodecs.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecWebCodecsBridge.h"
+#include "cores/VideoPlayer/Process/wasm/ProcessInfoWasm.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererWebCodecs.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
@@ -109,7 +113,10 @@ CWinSystemWasmGLESContext::~CWinSystemWasmGLESContext()
 bool CWinSystemWasmGLESContext::InitWindowSystem()
 {
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CProcessInfoWasm::Register();
+  CDVDVideoCodecWebCodecs::Register();
   CLinuxRendererGLES::Register();
+  CRendererWebCodecs::Register();
   CScreenshotSurfaceGLES::Register();
 
   int initW = 0;
@@ -130,6 +137,9 @@ bool CWinSystemWasmGLESContext::InitWindowSystem()
     CLog::Log(LOGERROR, "WASM: emscripten_webgl_make_context_current failed ({})", r);
     return false;
   }
+
+  // Must run before anything is queued on the context; the decoder reads the cached result.
+  webcodecs_probe_texture_upload();
 
   VSYNC::InstallPump();
 
