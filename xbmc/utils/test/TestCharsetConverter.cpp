@@ -121,6 +121,17 @@ TEST_F(TestCharsetConverter, utf8ToW)
   EXPECT_STREQ(refstrw1.c_str(), varstrw1.c_str());
 }
 
+TEST_F(TestCharsetConverter, utf8ToUtf32_BeyondBMP)
+{
+  EXPECT_EQ(U"a \U0001F600 b", g_charsetConverter.utf8ToUtf32("a \xF0\x9F\x98\x80 b"));
+}
+
+TEST_F(TestCharsetConverter, utf8ToW_BeyondBMP)
+{
+  varstrw1.clear();
+  g_charsetConverter.utf8ToW("a \xF0\x9F\x98\x80 b", varstrw1, false);
+  EXPECT_EQ(L"a \U0001F600 b", varstrw1);
+}
 
 TEST_F(TestCharsetConverter, subtitleCharsetToUtf8)
 {

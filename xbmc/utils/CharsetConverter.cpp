@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <mutex>
+#include <type_traits>
 
 #include <fribidi.h>
 #include <iconv.h>
@@ -319,6 +320,18 @@ bool CCharsetConverter::CInnerConverter::stdConvert(StdConversionType convertTyp
 
   if (convertType < 0 || convertType >= NumberOfStdConversionTypes)
     return false;
+
+#if defined(TARGET_DARWIN)
+  // UTF-8-MAC rejects characters beyond the Basic Multilingual Plane, such as emoji
+  if constexpr (std::is_same_v<INPUT, std::string>)
+  {
+    if ((convertType == Utf8ToUtf32 || convertType == Utf8toW) &&
+        std::ranges::any_of(strSource,
+                            [](char c) { return static_cast<unsigned char>(c) >= 0xF0; }))
+      return customConvert("UTF-8", m_stdConversion[convertType].GetTargetCharset(), strSource,
+                           strDest, failOnInvalidChar);
+  }
+#endif
 
   CConverterType& convType = m_stdConversion[convertType];
   std::unique_lock<CCriticalSection> converterLock(convType);
