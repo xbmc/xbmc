@@ -177,31 +177,28 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
     result = (*deviceInterface)->CreateInterfaceIterator(deviceInterface, &request, &interface_iterator);
     while ((usbInterface = IOIteratorNext(interface_iterator)))
     {
-      SInt32 interfaceScore;
-      IOCFPlugInInterface **interfacePlugin;
-      //create intermediate plugin for interface access
-      result = IOCreatePlugInInterfaceForService(usbInterface,
-        kIOUSBInterfaceUserClientTypeID, kIOCFPlugInInterfaceID, &interfacePlugin, &interfaceScore);
-      if (result != kIOReturnSuccess)
+      // Reading descriptor metadata must not open the USB interface. Opening an
+      // interface owned by another driver can block while creating its user client.
+      CFTypeRef interfaceClassProperty = IORegistryEntryCreateCFProperty(
+          usbInterface, CFSTR("bInterfaceClass"), kCFAllocatorDefault, 0);
+      SInt32 interfaceClassValue = 0;
+      const bool validInterfaceClass =
+          interfaceClassProperty != nullptr &&
+          CFGetTypeID(interfaceClassProperty) == CFNumberGetTypeID() &&
+          CFNumberGetValue(static_cast<CFNumberRef>(interfaceClassProperty),
+                           kCFNumberSInt32Type, &interfaceClassValue) &&
+          interfaceClassValue >= 0 && interfaceClassValue <= 255;
+      if (interfaceClassProperty != nullptr)
+        CFRelease(interfaceClassProperty);
+      if (!validInterfaceClass)
       {
-        IOObjectRelease(usbInterface);
-        continue;
-      }
-      IOUSBInterfaceInterface** interfaceInterface;
-      result = (*interfacePlugin)->QueryInterface(interfacePlugin,
-        CFUUIDGetUUIDBytes(kIOUSBInterfaceInterfaceID), (void**)&interfaceInterface);
-      if (result != kIOReturnSuccess)
-      {
-        IODestroyPlugInInterface(interfacePlugin);
         IOObjectRelease(usbInterface);
         continue;
       }
 
-      // finally we can get to the bInterfaceClass
       // we should also check for kHIDKeyboardInterfaceProtocol but
       // some IR remotes that emulate an HID keyboard do not report this.
-      UInt8 bInterfaceClass;
-      result = (*interfaceInterface)->GetInterfaceClass(interfaceInterface, &bInterfaceClass);
+      const UInt8 bInterfaceClass = static_cast<UInt8>(interfaceClassValue);
       if (bInterfaceClass == kUSBHIDInterfaceClass || bInterfaceClass == kUSBCommunicationDataInterfaceClass)
       {
         std::string ttlDeviceFilePath;
@@ -273,11 +270,9 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
           delete privateDataRef;
         }
         // done with this device, only need one notification per device.
-        IODestroyPlugInInterface(interfacePlugin);
         IOObjectRelease(usbInterface);
         break;
       }
-      IODestroyPlugInInterface(interfacePlugin);
       IOObjectRelease(usbInterface);
     }
     IODestroyPlugInInterface(devicePlugin);
