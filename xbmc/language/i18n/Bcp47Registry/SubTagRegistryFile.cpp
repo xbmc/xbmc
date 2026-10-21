@@ -8,6 +8,7 @@
 
 #include "language/i18n/Bcp47Registry/SubTagRegistryFile.h"
 
+#include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -22,11 +23,7 @@ bool CRegistryFile::Load()
   if (!file)
     return false;
 
-  bool result = Parse(file.get());
-
-  file->Close();
-
-  return result;
+  return Parse(file.get());
 }
 
 std::unique_ptr<CRegistryFile::CRegFile> CRegistryFile::Open()
@@ -157,6 +154,27 @@ std::vector<RegistryFileField> CRegistryFile::ProcessRecordLines(
     fields.emplace_back(std::move(fieldName), std::move(fieldBody));
 
   return fields;
+}
+
+bool CRegistryFile::CRegFile::Open(const std::string& filePath)
+{
+  m_pos = 0;
+  return XFILE::CFile().LoadFile(filePath, m_data) >= 0;
+}
+
+bool CRegistryFile::CRegFile::ReadLine(std::string& line)
+{
+  if (m_pos >= m_data.size())
+    return false;
+
+  const auto begin = m_data.begin() + m_pos;
+  auto end = std::find(begin, m_data.end(), '\n');
+  if (end != m_data.end())
+    ++end;
+
+  line.assign(begin, end);
+  m_pos = end - m_data.begin();
+  return true;
 }
 
 bool CRegistryFile::CRegFile::ReadRecord(std::vector<std::string>& lines)
