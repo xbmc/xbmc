@@ -173,7 +173,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["channeluid"] = m_channelData->UniqueClientChannelId();
   value["parentalrating"] = m_parentalRating;
   value["parentalratingcode"] = m_parentalRatingCode;
-  value["parentalratingicon"] = ClientParentalRatingIconPath();
+  value["parentalratingicon"] = ParentalRatingIcon();
   value["parentalratingsource"] = m_parentalRatingSource;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
@@ -181,7 +181,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["originaltitle"] = m_strOriginalTitle;
-  value["thumbnail"] = ClientIconPath();
+  value["thumbnail"] = IconPath();
   value["cast"] = DeTokenize(m_cast);
   value["director"] = DeTokenize(m_directors);
   value["writer"] = DeTokenize(m_writers);
