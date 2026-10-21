@@ -1454,14 +1454,18 @@ bool CGUIWindowManager::Render()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions ==
           DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS)
   {
+    const CRect clip = CServiceBroker::GetWinSystem()->GetGfxContext().ClipToGui();
     RenderPass();
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetClip(clip);
     hasRendered = true;
   }
   else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
   {
     if (!dirtyRegions.empty())
     {
+      const CRect clip = CServiceBroker::GetWinSystem()->GetGfxContext().ClipToGui();
       RenderPass();
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetClip(clip);
       hasRendered = true;
     }
   }
