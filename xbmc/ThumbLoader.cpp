@@ -52,6 +52,15 @@ void CThumbLoader::SetCachedImage(const CFileItem &item, const std::string &type
   }
 }
 
+void CThumbLoader::ClearCachedImagePath(const CFileItem& item, const std::string& type)
+{
+  if (!item.GetPath().empty() && m_textureDatabase->Open())
+  {
+    m_textureDatabase->ClearTextureForPath(item.GetPath(), type);
+    m_textureDatabase->Close();
+  }
+}
+
 CProgramThumbLoader::CProgramThumbLoader() = default;
 
 CProgramThumbLoader::~CProgramThumbLoader() = default;
