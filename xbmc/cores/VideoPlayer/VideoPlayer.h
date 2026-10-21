@@ -459,6 +459,7 @@ protected:
   void SetEnableStream(CCurrentStream& current, bool isEnabled);
 
   void SetSubtitleVisibleInternal(bool bVisible);
+  void ReopenSubtitleStream(const SelectionStream& stream);
 
   enum SubtitleChange
   {
