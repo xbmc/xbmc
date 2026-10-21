@@ -256,6 +256,8 @@ protected:
   CSyncError m_syncError;
   double m_lastSyncError;
   CAESyncInfo::AESyncState m_syncState;
+  // Whether late audio was left to the player's clock and no error was averaged since
+  bool m_lateStartHandedOver{false};
 };
 }
 
