@@ -335,8 +335,8 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value,
     case SYSTEM_CURRENT_CONTROL:
     case SYSTEM_CURRENT_CONTROL_ID:
     {
-      const CGUIWindow* window{CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
-          CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog())};
+      const CGUIWindowManager& windowMgr{CServiceBroker::GetGUI()->GetWindowManager()};
+      const CGUIWindow* window{windowMgr.GetWindow(windowMgr.GetActiveWindowOrDialog())};
       if (window)
       {
         CGUIControl* control = window->GetFocusedControl();
@@ -838,12 +838,11 @@ bool CGUIControlsGUIInfo::GetBool(bool& value,
       return true;
     case SYSTEM_HAS_INPUT_HIDDEN:
     {
+      const CGUIWindowManager& windowMgr{CServiceBroker::GetGUI()->GetWindowManager()};
       const CGUIDialogNumeric* pNumeric{
-          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(
-              WINDOW_DIALOG_NUMERIC)};
+          windowMgr.GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC)};
       const CGUIDialogKeyboardGeneric* pKeyboard{
-          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardGeneric>(
-              WINDOW_DIALOG_KEYBOARD)};
+          windowMgr.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD)};
 
       if (pNumeric && pNumeric->IsActive())
         value = pNumeric->IsInputHidden();

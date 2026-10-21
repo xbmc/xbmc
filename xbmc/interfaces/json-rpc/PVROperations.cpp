@@ -356,21 +356,22 @@ JSONRPC_STATUS CPVROperations::Record(const std::string& method,
                                       const CVariant& parameterObject,
                                       CVariant& result)
 {
-  if (!CServiceBroker::GetPVRManager().IsStarted())
+  auto& pvrManager{CServiceBroker::GetPVRManager()};
+  if (!pvrManager.IsStarted())
     return FailedToExecute;
 
   std::shared_ptr<CPVRChannel> pChannel;
   const CVariant channel{parameterObject["channel"]};
   if (channel.isString() && channel.asString() == "current")
   {
-    pChannel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
+    pChannel = pvrManager.PlaybackState()->GetPlayingChannel();
     if (!pChannel)
       return InternalError;
   }
   else if (channel.isInteger())
   {
     const std::shared_ptr<const CPVRChannelGroupsContainer> channelGroupContainer{
-        CServiceBroker::GetPVRManager().ChannelGroups()};
+        pvrManager.ChannelGroups()};
     if (!channelGroupContainer)
       return FailedToExecute;
 
@@ -385,15 +386,14 @@ JSONRPC_STATUS CPVROperations::Record(const std::string& method,
     return FailedToExecute;
 
   const CVariant record{parameterObject["record"]};
-  const bool isRecording{CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*pChannel)};
+  const bool isRecording{pvrManager.Timers()->IsRecordingOnChannel(*pChannel)};
   bool toggle = true;
   if (record.isBoolean() && record.asBoolean() == isRecording)
     toggle = false;
 
   if (toggle)
   {
-    if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().SetRecordingOnChannel(
-            pChannel, !isRecording))
+    if (!pvrManager.Get<PVR::GUI::Timers>().SetRecordingOnChannel(pChannel, !isRecording))
       return FailedToExecute;
   }
 
@@ -538,17 +538,18 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string& method,
                                         const CVariant& parameterObject,
                                         CVariant& result)
 {
-  if (!CServiceBroker::GetPVRManager().IsStarted())
+  auto& pvrManager{CServiceBroker::GetPVRManager()};
+  if (!pvrManager.IsStarted())
     return FailedToExecute;
 
   const std::shared_ptr<CPVREpgInfoTag> epgTag{
-      CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
+      pvrManager.EpgContainer().GetTagByDatabaseId(
           static_cast<int>(parameterObject["broadcastid"].asInteger()))};
 
   if (!epgTag)
     return InvalidParams;
 
-  if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag))
+  if (pvrManager.Timers()->GetTimerForEpgTag(epgTag))
     return InvalidParams;
 
   const std::shared_ptr<CPVRTimerInfoTag> newTimer{
@@ -556,7 +557,7 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string& method,
                                       parameterObject["reminder"].asBoolean(false))};
   if (newTimer)
   {
-    if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(newTimer))
+    if (pvrManager.Get<PVR::GUI::Timers>().AddTimer(newTimer))
       return ACK;
   }
   return FailedToExecute;
@@ -592,17 +593,18 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string& method,
                                            const CVariant& parameterObject,
                                            CVariant& result)
 {
-  if (!CServiceBroker::GetPVRManager().IsStarted())
+  auto& pvrManager{CServiceBroker::GetPVRManager()};
+  if (!pvrManager.IsStarted())
     return FailedToExecute;
 
   const std::shared_ptr<CPVREpgInfoTag> epgTag{
-      CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
+      pvrManager.EpgContainer().GetTagByDatabaseId(
           static_cast<int>(parameterObject["broadcastid"].asInteger()))};
 
   if (!epgTag)
     return InvalidParams;
 
-  const std::shared_ptr<CPVRTimers> timers{CServiceBroker::GetPVRManager().Timers()};
+  const std::shared_ptr<CPVRTimers> timers{pvrManager.Timers()};
   if (!timers)
     return FailedToExecute;
 
@@ -624,7 +626,7 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string& method,
     if (!timer)
       return InvalidParams;
 
-    sentOkay = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(timer);
+    sentOkay = pvrManager.Get<PVR::GUI::Timers>().AddTimer(timer);
   }
 
   if (sentOkay)

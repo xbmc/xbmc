@@ -234,6 +234,7 @@ void CGUIDialogVideoBookmarks::Delete(const CBookmark& bm)
 
 void CGUIDialogVideoBookmarks::OnRefreshList()
 {
+  auto& localizeStrings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
   // open the d/b and retrieve the bookmarks for the current movie
   m_filePath = g_application.CurrentFileItem().GetDynPath();
 
@@ -241,15 +242,9 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
                                       {CBookmark::STANDARD, CBookmark::EPISODE}))
     return;
 
-  {
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (appPlayer != nullptr)
-    {
-      std::vector<std::chrono::milliseconds> pos = CBookmark::BookmarksToPositions(m_bookmarks);
-      appPlayer->SetBookmarks(pos);
-    }
-  }
+  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  if (appPlayer != nullptr)
+    appPlayer->SetBookmarks(CBookmark::BookmarksToPositions(m_bookmarks));
 
   std::vector<CFileItemPtr> items;
 
@@ -262,15 +257,13 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     std::string bookmarkTime;
     if (m_bookmarks[i].type == CBookmark::EPISODE)
       bookmarkTime = StringUtils::Format(
-          "{} {} {} {}", CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20373),
-          m_bookmarks[i].seasonNumber,
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20359),
+          "{} {} {} {}", localizeStrings.Get(20373),
+          m_bookmarks[i].seasonNumber, localizeStrings.Get(20359),
           m_bookmarks[i].episodeNumber);
     else
       bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
 
-    CFileItemPtr item(new CFileItem(StringUtils::Format(
-        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(299), i + 1)));
+    CFileItemPtr item(new CFileItem(StringUtils::Format(localizeStrings.Get(299), i + 1)));
     item->SetLabel2(bookmarkTime);
     item->SetArt(KODI::ART::TYPE::THUMB, m_bookmarks[i].thumbNailImage);
     item->SetProperty("resumepoint", m_bookmarks[i].timeInSeconds);
@@ -281,8 +274,6 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   }
 
   // add chapters if around
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   for (int i = 1; i <= appPlayer->GetChapterCount(); ++i)
   {
     std::string chapterName;
@@ -294,8 +285,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     if (chapterName.empty() ||
         StringUtils::StartsWithNoCase(chapterName, time) ||
         StringUtils::IsNaturalNumber(chapterName))
-      chapterName = StringUtils::Format(
-          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(25010), i);
+      chapterName = StringUtils::Format(localizeStrings.Get(25010), i);
 
     CFileItemPtr item(new CFileItem(chapterName));
     item->SetLabel2(time);
