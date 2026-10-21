@@ -360,7 +360,7 @@ void CGUIDialogSongInfo::OnGetArt()
   if (bHasArt)
   {
     // Add item for current artwork, could a fallback from album/artist
-    CFileItemPtr item(new CFileItem(IMAGE_CHOICE::CURRENT, false));
+    CFileItemPtr item(new CFileItem(ART::CHOICE::CURRENT, false));
     item->SetArt(ART::TYPE::THUMB, m_song->GetArt(type));
     item->SetArt(ART::TYPE::ICON, ART::DEFAULT::PICTURE);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
@@ -372,7 +372,7 @@ void CGUIDialogSongInfo::OnGetArt()
     auto i = primeArt.find(ART::TYPE::THUMB);
     if (i != primeArt.end())
     {
-      CFileItemPtr item(new CFileItem(IMAGE_CHOICE::THUMB, false));
+      CFileItemPtr item(new CFileItem(ART::CHOICE::THUMB, false));
       item->SetArt(ART::TYPE::THUMB, m_song->GetArt(ART::TYPE::THUMB));
       item->SetArt(ART::TYPE::ICON, ART::DEFAULT::ALBUM_COVER);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21371));
@@ -391,7 +391,7 @@ void CGUIDialogSongInfo::OnGetArt()
     }
     if (CFileUtils::Exists(localThumb))
     {
-      CFileItemPtr item(new CFileItem(IMAGE_CHOICE::LOCAL, false));
+      CFileItemPtr item(new CFileItem(ART::CHOICE::LOCAL, false));
       item->SetArt(ART::TYPE::THUMB, localThumb);
       item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20017));
       items.Add(item);
@@ -411,7 +411,7 @@ void CGUIDialogSongInfo::OnGetArt()
   if (bHasArt && !bFallback)
   { // Actually has this type of art (not a fallback) so
     // allow the user to delete it by selecting "no art".
-    CFileItemPtr item(new CFileItem(IMAGE_CHOICE::NONE, false));
+    CFileItemPtr item(new CFileItem(ART::CHOICE::NONE, false));
     item->SetArt(ART::TYPE::THUMB, ART::DEFAULT::ALBUM_COVER);
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13515));
     items.Add(item);
@@ -436,14 +436,14 @@ void CGUIDialogSongInfo::OnGetArt()
   if (CGUIDialogFileBrowser::ShowAndGetImage(
           items, sources, CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13511),
           result) &&
-      result != IMAGE_CHOICE::CURRENT)
+      result != ART::CHOICE::CURRENT)
   {
     // User didn't choose the one they have, or the fallback image.
     // Overwrite with the new art or clear it
     std::string newArt;
-    if (result == IMAGE_CHOICE::THUMB)
+    if (result == ART::CHOICE::THUMB)
       newArt = m_song->GetArt(ART::TYPE::THUMB);
-    else if (result == IMAGE_CHOICE::LOCAL)
+    else if (result == ART::CHOICE::LOCAL)
       newArt = localThumb;
 //    else if (result == "thumb://Embedded")
 //      newArt = embeddedArt;

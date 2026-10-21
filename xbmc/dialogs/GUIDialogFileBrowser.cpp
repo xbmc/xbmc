@@ -518,7 +518,7 @@ void CGUIDialogFileBrowser::FrameMove()
       SET_CONTROL_LABEL(CONTROL_LABEL_PATH, safePath);
     }
     if ((!m_browsingForFolders && (*m_vecItems)[item]->IsFolder()) ||
-        ((*m_vecItems)[item]->GetPath() == KODI::IMAGE_CHOICE::BROWSE))
+        ((*m_vecItems)[item]->GetPath() == KODI::ART::CHOICE::BROWSE))
     {
       CONTROL_DISABLE(CONTROL_OK);
     }
@@ -661,7 +661,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList& items,
   browser->m_vecItems->Append(items);
   if (true)
   {
-    CFileItemPtr item(new CFileItem(KODI::IMAGE_CHOICE::BROWSE, false));
+    CFileItemPtr item(new CFileItem(KODI::ART::CHOICE::BROWSE, false));
     item->SetLabel(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20153));
     item->SetArt(KODI::ART::TYPE::ICON, KODI::ART::DEFAULT::FOLDER);
     browser->m_vecItems->Add(item);
@@ -673,7 +673,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList& items,
   if (confirmed)
   {
     result = browser->m_selectedPath;
-    if (result == KODI::IMAGE_CHOICE::BROWSE)
+    if (result == KODI::ART::CHOICE::BROWSE)
     { // "Browse for thumb"
       CServiceBroker::GetGUI()->GetWindowManager().Delete(browser->GetID());
       return ShowAndGetImage(

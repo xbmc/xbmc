@@ -14,15 +14,15 @@ using namespace KODI;
 
 TEST(TestImageChoices, RemoteEntryCarriesItsIndex)
 {
-  EXPECT_EQ(IMAGE_CHOICE::RemoteOf(12), "thumb://Remote12");
-  EXPECT_EQ(IMAGE_CHOICE::RemoteIndexOf(IMAGE_CHOICE::RemoteOf(0)), 0u);
-  EXPECT_EQ(IMAGE_CHOICE::RemoteIndexOf(IMAGE_CHOICE::RemoteOf(12)), 12u);
+  EXPECT_EQ(ART::CHOICE::RemoteOf(12), "thumb://Remote12");
+  EXPECT_EQ(ART::CHOICE::RemoteIndexOf(ART::CHOICE::RemoteOf(0)), 0u);
+  EXPECT_EQ(ART::CHOICE::RemoteIndexOf(ART::CHOICE::RemoteOf(12)), 12u);
 }
 
 TEST(TestImageChoices, OnlyRemoteEntriesHaveAnIndex)
 {
-  EXPECT_FALSE(IMAGE_CHOICE::RemoteIndexOf(IMAGE_CHOICE::CURRENT));
-  EXPECT_FALSE(IMAGE_CHOICE::RemoteIndexOf(IMAGE_CHOICE::REMOTE));
-  EXPECT_FALSE(IMAGE_CHOICE::RemoteIndexOf("thumb://Remote1x"));
-  EXPECT_FALSE(IMAGE_CHOICE::RemoteIndexOf("special://home/thumb.jpg"));
+  EXPECT_FALSE(ART::CHOICE::RemoteIndexOf(ART::CHOICE::CURRENT));
+  EXPECT_FALSE(ART::CHOICE::RemoteIndexOf(ART::CHOICE::REMOTE));
+  EXPECT_FALSE(ART::CHOICE::RemoteIndexOf("thumb://Remote1x"));
+  EXPECT_FALSE(ART::CHOICE::RemoteIndexOf("special://home/thumb.jpg"));
 }
