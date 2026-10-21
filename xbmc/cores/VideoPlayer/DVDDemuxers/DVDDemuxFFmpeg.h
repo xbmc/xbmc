@@ -136,6 +136,7 @@ protected:
   TRANSPORT_STREAM_STATE TransportStreamVideoState();
   bool IsTransportStreamReady();
   void ResetVideoStreams();
+  void FlushInputSeek();
   AVDictionary* GetFFMpegOptionsFromInput();
   double ConvertTimestamp(int64_t pts, int den, int num);
 #ifdef HAVE_LIBBLURAY
