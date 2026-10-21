@@ -81,6 +81,41 @@ const CGUISurroundRenderer::SurroundArt& CGUISurroundRenderer::Art()
   return m_art;
 }
 
+void CGUISurroundRenderer::Process(unsigned int currentTime, CDirtyRegionList& dirtyRegions)
+{
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+
+  if (context.GetGuiKeepShapeRect().IsEmpty())
+    return;
+
+  const std::string& image = Art().image;
+  if (image.empty())
+  {
+    ReleaseResources();
+    return;
+  }
+
+  const CRect raster = context.GetRasterRect();
+  if (!m_image || m_imagePath != image)
+  {
+    ReleaseResources();
+    m_image = std::make_unique<CGUIImage>(0, 0, raster.x1, raster.y1, raster.Width(),
+                                          raster.Height(), CTextureInfo(image));
+    m_imagePath = image;
+    m_image->AllocResources();
+  }
+
+  context.SetTransform(TransformMatrix());
+
+  // Processing may load the texture, so the fit is taken after it, and a moved image is
+  // processed again before it is drawn.
+  m_image->DoProcess(currentTime, dirtyRegions);
+  if (FitImage(raster))
+    m_image->DoProcess(currentTime, dirtyRegions);
+
+  context.RemoveTransform();
+}
+
 void CGUISurroundRenderer::Render()
 {
   CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
@@ -108,38 +143,33 @@ void CGUISurroundRenderer::Render()
   if (art.colour)
     PaintBands(bands, *art.colour);
 
-  if (!art.image.empty())
-    RenderImage(art.image, raster, bands, context);
-  else
-    ReleaseResources();
+  if (m_image)
+    RenderImage(bands, context);
 
   context.RemoveTransform();
   context.SetClip(previousClip);
 }
 
-void CGUISurroundRenderer::RenderImage(const std::string& image,
-                                       const CRect& raster,
-                                       const CRect (&bands)[4],
-                                       CGraphicContext& context)
+bool CGUISurroundRenderer::FitImage(const CRect& raster)
 {
-  if (!m_image || m_imagePath != image)
-  {
-    ReleaseResources();
-    m_image = std::make_unique<CGUIImage>(0, 0, raster.x1, raster.y1, raster.Width(),
-                                          raster.Height(), CTextureInfo(image));
-    m_imagePath = image;
-    m_image->AllocResources();
-  }
-
   // Fitted at its own ratio, never stretched.
   CRect fitted = raster;
   const float textureHeight = m_image->GetTextureHeight();
   if (textureHeight > 0.0f)
     fitted = KODI::VIDEO::GEOMETRY::FitAspect(m_image->GetTextureWidth() / textureHeight, raster);
+
+  if (fitted.x1 == m_image->GetXPosition() && fitted.y1 == m_image->GetYPosition() &&
+      fitted.Width() == m_image->GetWidth() && fitted.Height() == m_image->GetHeight())
+    return false;
+
   m_image->SetPosition(fitted.x1, fitted.y1);
   m_image->SetWidth(fitted.Width());
   m_image->SetHeight(fitted.Height());
+  return true;
+}
 
+void CGUISurroundRenderer::RenderImage(const CRect (&bands)[4], CGraphicContext& context)
+{
   for (const CRect& band : bands)
   {
     if (!band.IsEmpty() && context.SetClipRegion(band.x1, band.y1, band.Width(), band.Height()))
