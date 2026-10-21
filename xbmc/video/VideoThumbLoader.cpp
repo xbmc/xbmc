@@ -135,6 +135,15 @@ bool HasOnlyLibraryArt(const CVideoInfoTag& tag)
       return true;
   }
 }
+
+//! Whether \p art is a plain file path (not a wrapped image:// or remote URL), the kind of art
+//! local art lookup stores. Other code stores wrapped, embedded or remote images for the same paths
+//! in the texture database
+bool IsPlainFileArt(const std::string& art)
+{
+  return !art.empty() && !StringUtils::StartsWith(art, "image://") &&
+         !URIUtils::IsInternetStream(art);
+}
 } // namespace
 
 std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
@@ -231,18 +240,26 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
     }
   }
 
-  // if we have no art, look for it all
-  KODI::ART::Artwork artwork = pItem->GetArt();
-  if (artwork.empty())
+  // look up the art cached in the texture database for the types the item doesn't have yet. Items
+  // not in the library look up each type they lack, as file listings already carry the default
+  // icon as art at this point, and only take plain files unless they have no art at all. Library
+  // items only get it if they have no art at all
+  const bool isLibraryItem = pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iDbId > -1 &&
+                             !pItem->GetVideoInfoTag()->m_type.empty();
+  const bool hasNoArt = pItem->GetArt().empty();
+  if (!isLibraryItem || hasNoArt)
   {
-    std::vector<std::string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
+    std::vector<std::string> artTypes =
+        GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
     if (find(artTypes.begin(), artTypes.end(), ART::TYPE::THUMB) == artTypes.end())
       artTypes.emplace_back(ART::TYPE::THUMB); // always look for "thumb" art for files
-    for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+    KODI::ART::Artwork artwork;
+    for (const auto& type : artTypes)
     {
-      std::string type = *i;
+      if (pItem->HasArt(type))
+        continue;
       std::string art = GetCachedImage(*pItem, type);
-      if (!art.empty())
+      if (!art.empty() && (hasNoArt || IsPlainFileArt(art)))
         artwork.insert(std::make_pair(type, art));
     }
     pItem->AppendArt(artwork);
@@ -271,40 +288,70 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   if (!isLibraryItem || !libraryArtFilled)
   {
     KODI::ART::Artwork artwork = pItem->GetArt();
+    bool artRemoved = false;
     std::vector<std::string> artTypes =
         GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
     if (find(artTypes.begin(), artTypes.end(), ART::TYPE::THUMB) == artTypes.end())
       artTypes.emplace_back(ART::TYPE::THUMB); // always look for "thumb" art for files
-    for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+    for (const auto& type : artTypes)
     {
-      std::string type = *i;
-      if (!pItem->HasArt(type))
+      // for items not in the library, a plain file equal to the art cached in the texture database
+      // for the item's path is looked up again, so that local art which was replaced or removed
+      // since it was cached is noticed. Any other art the item already has is kept
+      std::string cachedArt;
+      if (pItem->HasArt(type))
       {
-        std::string art = GetLocalArt(*pItem, type, type == ART::TYPE::FANART);
-        if (!art.empty()) // cache it
-        {
+        if (isLibraryItem)
+          continue;
+        const std::string itemArt = pItem->GetArt(type);
+        if (!IsPlainFileArt(itemArt))
+          continue;
+        cachedArt = GetCachedImage(*pItem, type);
+        if (cachedArt != itemArt)
+          continue;
+      }
+
+      std::string art = GetLocalArt(*pItem, type, type == ART::TYPE::FANART);
+      if (!art.empty()) // cache it, if it changed
+      {
+        if (art != cachedArt)
           SetCachedImage(*pItem, type, art);
-          CServiceBroker::GetTextureCache()->BackgroundCacheImage(art);
-          artwork.insert(std::make_pair(type, art));
-        }
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(art);
+        if (!cachedArt.empty())
+          artwork.insert_or_assign(type, art);
         else
+          artwork.insert(std::make_pair(type, art));
+      }
+      else
+      {
+        // the cached file is gone, so forget it
+        if (!cachedArt.empty() && !CFile::Exists(cachedArt))
         {
-          // If nothing was found, try embedded art
-          if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_coverArt.empty())
+          CLog::LogF(LOGDEBUG, "cached {} art {} for {} is gone, forgetting it", type,
+                     CURL::GetRedacted(cachedArt), CURL::GetRedacted(pItem->GetPath()));
+          ClearCachedImagePath(*pItem, type);
+          artwork.erase(type);
+          artRemoved = true;
+        }
+
+        // If nothing was found, try embedded art
+        if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_coverArt.empty())
+        {
+          for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
           {
-            for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
+            if (it.m_type == type)
             {
-              if (it.m_type == type)
-              {
-                art = IMAGE_FILES::URLFromFile(pItem->GetPath(), "video_" + type);
-                artwork.insert(std::make_pair(type, art));
-              }
+              art = IMAGE_FILES::URLFromFile(pItem->GetPath(), "video_" + type);
+              artwork.insert(std::make_pair(type, art));
             }
           }
         }
       }
     }
-    pItem->AppendArt(artwork);
+    if (artRemoved)
+      pItem->SetArt(artwork);
+    else
+      pItem->AppendArt(artwork);
   }
 
   // We can only extract flags/thumbs for file-like items
