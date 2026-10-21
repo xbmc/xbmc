@@ -1463,7 +1463,9 @@ bool CGUIWindowManager::Render()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions ==
           DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS)
   {
+    const CRect clip = CServiceBroker::GetWinSystem()->GetGfxContext().ClipToGui();
     RenderPass();
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetClip(clip);
     hasRendered = true;
   }
   else if (bufferAge > MAX_BUFFER_AGE ||
@@ -1473,7 +1475,9 @@ bool CGUIWindowManager::Render()
   {
     if (!dirtyRegions.empty())
     {
+      const CRect clip = CServiceBroker::GetWinSystem()->GetGfxContext().ClipToGui();
       RenderPass();
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetClip(clip);
       hasRendered = true;
     }
   }
