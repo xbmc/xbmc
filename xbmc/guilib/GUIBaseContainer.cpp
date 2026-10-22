@@ -1035,6 +1035,10 @@ void CGUIBaseContainer::FreeResources(bool immediately)
   CGUIControl::FreeResources(immediately);
   if (m_listProvider)
   {
+    // Drop the items' artwork. The provider keeps its item list, so re-showing the container
+    // only has to rebuild the layouts, which ProcessItem() does on demand.
+    m_listProvider->FreeResources(immediately);
+
     if (immediately)
     {
       Reset();
