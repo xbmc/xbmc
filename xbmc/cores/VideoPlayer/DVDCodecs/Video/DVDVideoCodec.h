@@ -51,6 +51,7 @@ public:
   VideoPicture& SetParams(const VideoPicture &pic);
   void Reset(); // reinitialize members, videoBuffer will be released if set!
   bool IsSameParams(const VideoPicture& pic) const;
+  bool CompareLightMetadata(const VideoPicture& pic) const;
 
   /*!
    * \brief Whether a picture of \p format is full range when its stream gives \p range. RGB with
