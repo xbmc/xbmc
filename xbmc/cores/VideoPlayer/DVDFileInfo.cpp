@@ -180,7 +180,7 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
   {
     struct SwsContext* context =
         sws_getContext(picture.iWidth, picture.iHeight, picture.videoBuffer->GetFormat(), nWidth,
-                       nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                       nHeight, AV_PIX_FMT_BGRA, SWS_BILINEAR, NULL, NULL, NULL);
 
     if (context)
     {
