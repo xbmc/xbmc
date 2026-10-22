@@ -97,7 +97,8 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (item)
   {
-    if ( m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == XFILE::CSourcesDirectory::PathOf(MediaSection::PROGRAMS))
+    if (m_vecItems->IsVirtualDirectoryRoot() ||
+        m_vecItems->GetPath() == XFILE::CSourcesDirectory::PathOf(MediaSection::PROGRAMS))
     {
       CGUIDialogContextMenu::GetContextButtons(MediaSection::PROGRAMS, item, buttons);
     }
