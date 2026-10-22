@@ -365,7 +365,9 @@ float CGraphicContext::GetRasterAspect() const
 
 CRect CGraphicContext::ClipToGui()
 {
-  return SetClip(ClipBounds());
+  CRect clip = m_scissors;
+  clip.Intersect(ClipBounds());
+  return SetClip(clip);
 }
 
 CRect CGraphicContext::SetClip(const CRect& rect)

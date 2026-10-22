@@ -126,7 +126,8 @@ public:
   //! \brief The rectangle the interface is held to, empty whenever no hold is in force.
   CRect GetGuiKeepShapeRect() const;
 
-  //! \brief Confine drawing to the area the interface occupies. \return the previous clip
+  //! \brief Confine the clip in force to the area the interface occupies. \return the previous
+  //! clip
   CRect ClipToGui();
 
   //! \brief Lift the clip to the whole display for the picture's render pass, which is contained

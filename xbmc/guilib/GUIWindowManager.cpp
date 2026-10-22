@@ -1346,21 +1346,29 @@ void CGUIWindowManager::MarkDirty(const CRect& rect)
 
 void CGUIWindowManager::RenderPass() const
 {
+  CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+
+  // The clear and the surround fill what the confined interface leaves uncovered.
+  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+  if (pWindow)
+  {
+    pWindow->ClearBackground();
+    m_guiSurround.Render();
+  }
+
+  const CRect clip = context.ClipToGui();
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
     RenderPassDual();
   else
     RenderPassSingle();
+  context.SetClip(clip);
 }
 
 void CGUIWindowManager::RenderPassSingle() const
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
-  {
-    pWindow->ClearBackground();
-    m_guiSurround.Render();
     pWindow->DoRender();
-  }
 
   // we render the dialogs based on their render order.
   auto renderList = m_activeDialogs;
@@ -1376,11 +1384,6 @@ void CGUIWindowManager::RenderPassSingle() const
 void CGUIWindowManager::RenderPassDual() const
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
-  if (pWindow)
-  {
-    pWindow->ClearBackground();
-    m_guiSurround.Render();
-  }
 
   auto renderList = m_activeDialogs;
   stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
@@ -1457,18 +1460,14 @@ bool CGUIWindowManager::Render()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions ==
           DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS)
   {
-    const CRect clip = CServiceBroker::GetWinSystem()->GetGfxContext().ClipToGui();
     RenderPass();
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetClip(clip);
     hasRendered = true;
   }
   else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
   {
     if (!dirtyRegions.empty())
     {
-      const CRect clip = CServiceBroker::GetWinSystem()->GetGfxContext().ClipToGui();
       RenderPass();
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetClip(clip);
       hasRendered = true;
     }
   }
