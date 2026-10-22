@@ -813,7 +813,7 @@
 								<left>10</left>
 								<right>10</right>
 								<top>10</top>
-								<height>256</height>
+								<height>250</height>
 								<texture>$INFO[ListItem.Art(screenshot)]</texture>
 								<aspectratio>keep</aspectratio>
 							</control>
@@ -851,7 +851,7 @@
 								<left>10</left>
 								<right>10</right>
 								<top>10</top>
-								<height>256</height>
+								<height>250</height>
 								<texture>$INFO[ListItem.Art(screenshot)]</texture>
 								<aspectratio>keep</aspectratio>
 							</control>
