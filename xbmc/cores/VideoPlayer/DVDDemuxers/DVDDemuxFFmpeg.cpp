@@ -360,6 +360,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
           1000;
       av_dict_set_int(&options, "load_all_variants", 0, AV_OPT_SEARCH_CHILDREN);
       av_dict_set_int(&options, "max_bandwidth", maxBandwidth, AV_OPT_SEARCH_CHILDREN);
+      av_dict_set_int(&options, "parallel_open", 8, AV_OPT_SEARCH_CHILDREN);
       result = avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options);
       if (result < 0 && result != AVERROR_EXIT)
       {
