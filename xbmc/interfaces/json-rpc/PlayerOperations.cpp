@@ -1151,8 +1151,18 @@ JSONRPC_STATUS CPlayerOperations::PlayFileItemList(CFileItemList& list, const CV
 bool CPlayerOperations::ListSlideshowDirectory(const std::string& path,
                                                bool recursive,
                                                CFileItemList& pictures,
-                                               CFileItemList& media)
+                                               CFileItemList& media,
+                                               std::set<std::string>* visitedPaths /* = nullptr */)
 {
+  // a link to an enclosing directory can list with that directory's own path
+  std::set<std::string> visited;
+  if (!visitedPaths)
+    visitedPaths = &visited;
+  std::string directory{path};
+  URIUtils::RemoveSlashAtEnd(directory);
+  if (!visitedPaths->insert(directory).second)
+    return true;
+
   const CFileExtensionProvider& extensions = CServiceBroker::GetFileExtensionProvider();
   const std::string mask{extensions.GetPictureExtensions() + "|" + extensions.GetVideoExtensions() +
                          "|" + extensions.GetMusicExtensions()};
@@ -1169,7 +1179,7 @@ bool CPlayerOperations::ListSlideshowDirectory(const std::string& path,
     if (item->IsFolder())
     {
       if (recursive)
-        ListSlideshowDirectory(item->GetPath(), true, pictures, media);
+        ListSlideshowDirectory(item->GetPath(), true, pictures, media, visitedPaths);
     }
     else if (URIUtils::IsRAR(item->GetPath()) || URIUtils::IsZIP(item->GetPath()))
     {

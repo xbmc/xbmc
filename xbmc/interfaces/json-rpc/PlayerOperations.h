@@ -11,6 +11,7 @@
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
 
+#include <set>
 #include <string>
 
 class CFileItemList;
@@ -101,12 +102,14 @@ namespace JSONRPC
      \param recursive Whether to descend into subdirectories
      \param pictures Receives the picture files
      \param media Receives the video and audio files, in file order
+     \param visitedPaths The directories already listed, or nullptr to start a new listing
      \return false if the directory could not be listed
      */
     static bool ListSlideshowDirectory(const std::string& path,
                                        bool recursive,
                                        CFileItemList& pictures,
-                                       CFileItemList& media);
+                                       CFileItemList& media,
+                                       std::set<std::string>* visitedPaths = nullptr);
 
   private:
     static JSONRPC_STATUS PlayFileItemList(CFileItemList& list, const CVariant& options);
