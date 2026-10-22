@@ -1203,8 +1203,7 @@ bool CVideoLibrary::FillFileItem(
     if (videodatabase.GetMovieInfo(strFilename, details) ||
         videodatabase.GetEpisodeInfo(strFilename, details) ||
         videodatabase.GetMusicVideoInfo(strFilename, details) ||
-        (item->IsFolder() &&
-         GetTvShowOfFolder(videodatabase, strFilename, details, item.get())))
+        (item->IsFolder() && GetTvShowOfFolder(videodatabase, strFilename, details, item.get())))
     {
       item->SetFromVideoInfoTag(details);
       item->SetDynPath(strFilename);

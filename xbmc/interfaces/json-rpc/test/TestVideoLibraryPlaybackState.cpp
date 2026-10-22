@@ -48,7 +48,7 @@ CVideoInfoTag FileRow()
 CVideoInfoTag PluginDescription()
 {
   CVideoInfoTag details;
-  details.m_type = MediaTypeEpisode;
+  details.m_type = "episode";
   details.m_strTitle = "Extraterrestrial Girl";
   details.m_strShowTitle = "Planetes";
   details.m_iSeason = 1;
@@ -63,7 +63,7 @@ TEST(TestVideoLibraryPlaybackState, KeepsTheDescriptionItIsAppliedTo)
   CVideoInfoTag details = PluginDescription();
   CTestVideoLibrary::ApplyPlaybackState(FileRow(), details);
 
-  EXPECT_EQ(MediaTypeEpisode, details.m_type);
+  EXPECT_EQ("episode", details.m_type);
   EXPECT_EQ("Extraterrestrial Girl", details.m_strTitle);
   EXPECT_EQ("Planetes", details.m_strShowTitle);
   EXPECT_EQ(1, details.m_iSeason);
