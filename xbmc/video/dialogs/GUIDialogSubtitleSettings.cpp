@@ -35,6 +35,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
+#include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -157,6 +158,13 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   {
     strPath.clear();
   }
+
+  // The add-ons virtual source holds no subtitle files, and while present it keeps the file
+  // browser from falling back to local drives, leaving nothing to pick from without a source.
+  std::erase_if(shares,
+                [](const CMediaSource& share) { return URIUtils::IsAddonsPath(share.strPath); });
+  CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+  CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
 
   std::string strMask =
       ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.vtt|.idx|.zip|.sup";
