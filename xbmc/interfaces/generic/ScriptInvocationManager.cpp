@@ -39,6 +39,7 @@ CScriptInvocationManager& CScriptInvocationManager::GetInstance()
 void CScriptInvocationManager::Process()
 {
   std::unique_lock lock(m_critSection);
+
   // go through all active threads and find and remove all which are done
   std::erase_if(m_scripts,
                 [&paths = m_scriptPaths](const auto& it)
@@ -65,6 +66,7 @@ void CScriptInvocationManager::Uninitialize()
 
   // it is safe to release early, thread must be in m_scripts too
   m_lastInvokerThread = nullptr;
+  m_lastPluginHandle = -1;
 
   // make sure all scripts are done
   std::vector<LanguageInvokerThread> tempList;
@@ -164,29 +166,45 @@ int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
   if (m_lastInvokerThread)
   {
     if (m_lastInvokerThread->Reuseable(script))
-      return m_lastPluginHandle;
-    m_lastInvokerThread->Release();
-    m_lastInvokerThread = nullptr;
+    {
+      int handle = m_lastPluginHandle;
+      m_lastPluginHandle = -1;
+      return handle;
+    }
+
+    if (!m_lastInvokerThread->IsReserved() &&
+        m_lastInvokerThread->GetState() == InvokerStateScriptDone)
+    {
+      m_lastInvokerThread->Release();
+      m_lastInvokerThread = nullptr;
+      m_lastPluginHandle = -1;
+    }
   }
   return -1;
 }
 
 std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
-    const std::string& script)
+    const std::string& script, bool reuseable /* = true */)
 {
   std::unique_lock lock(m_critSection);
 
   if (m_lastInvokerThread)
   {
-    if (m_lastInvokerThread->Reuseable(script))
+    if (m_lastInvokerThread->Reuseable(script) && reuseable)
     {
       CLog::Log(LOGDEBUG, "{} - Reusing LanguageInvokerThread {} for script {}", __FUNCTION__,
                 m_lastInvokerThread->GetId(), script);
       m_lastInvokerThread->GetInvoker()->Reset();
       return m_lastInvokerThread->GetInvoker();
     }
-    m_lastInvokerThread->Release();
-    m_lastInvokerThread = nullptr;
+
+    if (!m_lastInvokerThread->Reuseable(script) && !m_lastInvokerThread->IsReserved() &&
+        m_lastInvokerThread->GetState() == InvokerStateScriptDone)
+    {
+      m_lastInvokerThread->Release();
+      m_lastInvokerThread = nullptr;
+      m_lastPluginHandle = -1;
+    }
   }
 
   std::string extension = URIUtils::GetExtension(script);
@@ -215,7 +233,8 @@ int CScriptInvocationManager::ExecuteAsync(
     return -1;
   }
 
-  auto invoker = GetLanguageInvoker(script);
+  std::unique_lock lock(m_critSection);
+  auto invoker = GetLanguageInvoker(script, reuseable);
   return ExecuteAsync(script, invoker, addon, arguments, reuseable, pluginHandle);
 }
 
@@ -238,10 +257,23 @@ int CScriptInvocationManager::ExecuteAsync(
 
   std::unique_lock lock(m_critSection);
 
-  if (m_lastInvokerThread && m_lastInvokerThread->GetInvoker() == languageInvoker)
+  auto selectedInvoker = languageInvoker;
+  if (m_lastInvokerThread && m_lastInvokerThread->GetInvoker() == selectedInvoker &&
+      (!reuseable || m_lastInvokerThread->IsReserved()))
+  {
+    selectedInvoker = GetLanguageInvoker(script, false);
+    if (selectedInvoker == nullptr)
+      return -1;
+  }
+
+  if (reuseable && m_lastInvokerThread && m_lastInvokerThread->GetInvoker() == selectedInvoker &&
+      !m_lastInvokerThread->IsReserved())
   {
     if (addon != nullptr)
       m_lastInvokerThread->SetAddon(addon);
+
+    m_lastInvokerThread->SetReserved(true);
+    m_lastPluginHandle = pluginHandle;
 
     // After we leave the lock, m_lastInvokerThread can be released -> copy!
     auto invokerThread = m_lastInvokerThread;
@@ -251,21 +283,30 @@ int CScriptInvocationManager::ExecuteAsync(
     return invokerThread->GetId();
   }
 
-  m_lastInvokerThread = std::make_shared<CLanguageInvokerThread>(languageInvoker, this, reuseable);
-  if (m_lastInvokerThread == nullptr)
+  auto newThread = std::make_shared<CLanguageInvokerThread>(selectedInvoker, this, reuseable);
+  if (newThread == nullptr)
     return -1;
 
   if (addon != nullptr)
-    m_lastInvokerThread->SetAddon(addon);
+    newThread->SetAddon(addon);
 
-  m_lastInvokerThread->SetId(m_nextId++);
-  m_lastPluginHandle = pluginHandle;
+  newThread->SetId(m_nextId++);
+  newThread->SetReserved(true);
 
-  LanguageInvokerThread thread = {m_lastInvokerThread, script, false};
-  m_scripts.insert(std::make_pair(m_lastInvokerThread->GetId(), thread));
-  m_scriptPaths.insert(std::make_pair(script, m_lastInvokerThread->GetId()));
+  if (reuseable)
+  {
+    if (m_lastInvokerThread && m_lastInvokerThread != newThread)
+      m_lastInvokerThread->Release();
+
+    m_lastInvokerThread = newThread;
+    m_lastPluginHandle = pluginHandle;
+  }
+
+  LanguageInvokerThread thread = {newThread, script, false};
+  m_scripts.insert(std::make_pair(newThread->GetId(), thread));
+  m_scriptPaths.insert(std::make_pair(script, newThread->GetId()));
   // After we leave the lock, m_lastInvokerThread can be released -> copy!
-  auto invokerThread = m_lastInvokerThread;
+  auto invokerThread = newThread;
   lock.unlock();
   invokerThread->Execute(script, arguments);
 
@@ -288,7 +329,7 @@ int CScriptInvocationManager::ExecuteSync(
     return -1;
   }
 
-  auto invoker = GetLanguageInvoker(script);
+  auto invoker = GetLanguageInvoker(script, false);
   return ExecuteSync(script, invoker, addon, arguments, timeoutMs, waitShutdown);
 }
 
@@ -331,8 +372,11 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
   if (scriptId < 0)
     return false;
 
-  std::unique_lock lock(m_critSection);
-  auto invokerThread = getInvokerThread(scriptId).thread;
+  std::shared_ptr<CLanguageInvokerThread> invokerThread;
+  {
+    std::unique_lock lock(m_critSection);
+    invokerThread = getInvokerThread(scriptId).thread;
+  }
   if (invokerThread == nullptr)
     return false;
 
@@ -341,12 +385,18 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
 
 void CScriptInvocationManager::StopRunningScripts(bool wait /* = false */)
 {
-  std::ranges::for_each(m_scripts,
-                        [wait, this](auto& script)
-                        {
-                          if (!script.second.done)
-                            Stop(script.second.script, wait);
-                        });
+  std::vector<int> runningScripts;
+  {
+    std::unique_lock lock(m_critSection);
+    for (const auto& script : m_scripts)
+    {
+      if (!script.second.done)
+        runningScripts.push_back(script.first);
+    }
+  }
+
+  for (const int scriptId : runningScripts)
+    Stop(scriptId, wait);
 }
 
 bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* = false */)
@@ -354,12 +404,17 @@ bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* 
   if (scriptPath.empty())
     return false;
 
-  std::unique_lock lock(m_critSection);
-  const auto script = m_scriptPaths.find(scriptPath);
-  if (script == m_scriptPaths.end())
-    return false;
+  int scriptId = -1;
+  {
+    std::unique_lock lock(m_critSection);
+    const auto script = m_scriptPaths.find(scriptPath);
+    if (script == m_scriptPaths.end())
+      return false;
 
-  return Stop(script->second, wait);
+    scriptId = script->second;
+  }
+
+  return Stop(scriptId, wait);
 }
 
 bool CScriptInvocationManager::IsRunning(int scriptId) const
