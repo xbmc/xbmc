@@ -1149,7 +1149,8 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLaye
         else
           return InvalidParams;
 
-        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
             TransferToMessenger(std::make_unique<CAction>(actionID)));
       }
       else if (to.isInteger())
@@ -1157,8 +1158,8 @@ JSONRPC_STATUS CPlayerOperations::GoTo(const std::string &method, ITransportLaye
         if (IsPVRChannel())
           CServiceBroker::GetAppMessenger()->SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              TransferToMessenger(std::make_unique<CAction>(
-                  ACTION_CHANNEL_SWITCH, static_cast<float>(to.asInteger()))));
+              TransferToMessenger(std::make_unique<CAction>(ACTION_CHANNEL_SWITCH,
+                                                            static_cast<float>(to.asInteger()))));
         else
           CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PLAY,
                                                      static_cast<int>(to.asInteger()));
@@ -1641,7 +1642,8 @@ JSONRPC_STATUS CPlayerOperations::StartSlideshow(const std::string& path, bool r
 
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
-  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
+  CServiceBroker::GetAppMessenger()->SendMsg(
+      TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
       TransferToMessenger(std::make_unique<CAction>(actionID)));
 }
 

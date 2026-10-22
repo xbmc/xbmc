@@ -98,7 +98,8 @@ JSONRPC_STATUS CApplicationOperations::SetMute(const std::string &method, ITrans
        parameterObject["mute"].asString().compare("toggle") == 0) ||
       (parameterObject["mute"].isBoolean() &&
        parameterObject["mute"].asBoolean() != appVolume->IsMuted()))
-    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+    CServiceBroker::GetAppMessenger()->SendMsg(
+        TMSG_GUI_ACTION, WINDOW_INVALID, -1,
         TransferToMessenger(std::make_unique<CAction>(ACTION_MUTE)));
   else if (!parameterObject["mute"].isBoolean() && !parameterObject["mute"].isString())
     return InvalidParams;

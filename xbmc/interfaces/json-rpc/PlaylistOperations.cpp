@@ -202,7 +202,8 @@ JSONRPC_STATUS CPlaylistOperations::Clear(const std::string &method, ITransportL
     {
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       //! @todo: Stop should be a delegator method to void GUI coupling! Same goes for other player controls.
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
+      CServiceBroker::GetAppMessenger()->PostMsg(
+          TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
           TransferToMessenger(std::make_unique<CAction>(ACTION_STOP)));
       slideShow.Reset();
       break;

@@ -50,10 +50,12 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
       gui->GetAudioManager().PlayActionSound(actionID);
 
     if (waitResult)
-      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+      CServiceBroker::GetAppMessenger()->SendMsg(
+          TMSG_GUI_ACTION, WINDOW_INVALID, -1,
           TransferToMessenger(std::make_unique<CAction>(actionID)));
     else
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+      CServiceBroker::GetAppMessenger()->PostMsg(
+          TMSG_GUI_ACTION, WINDOW_INVALID, -1,
           TransferToMessenger(std::make_unique<CAction>(actionID)));
   }
   return ACK;
