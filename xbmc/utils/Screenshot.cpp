@@ -178,8 +178,14 @@ std::string VideoScreenshotFile(const std::string& composite)
   return URIUtils::ReplaceExtension(composite, "-video.png");
 }
 
-// The next auto-numbered name in dir that neither it nor its video companion has taken; empty
-// when the folder is full.
+// Where a synchronous screenshot is written until the whole request has succeeded.
+std::string StagedScreenshotFile(const std::string& file)
+{
+  return file + ".tmp.png";
+}
+
+// The next auto-numbered name in dir that neither it nor its video companion has taken, written
+// or staged; empty when the folder is full.
 std::string NextScreenshotFile(const std::string& dir)
 {
   CFileItemList items;
@@ -187,11 +193,14 @@ std::string NextScreenshotFile(const std::string& dir)
                                   XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_GET_HIDDEN);
   items.SetFastLookup(true);
 
+  const auto taken = [&items](const std::string& file)
+  { return items.Get(file) || items.Get(StagedScreenshotFile(file)); };
+
   const std::string numbered = URIUtils::AddFileToFolder(dir, "screenshot{:05}.png");
   for (int number = 0; number <= 65535; ++number)
   {
     const std::string file = StringUtils::Format(numbered, number);
-    if (!items.Get(file) && !items.Get(VideoScreenshotFile(file)))
+    if (!taken(file) && !taken(VideoScreenshotFile(file)))
       return file;
   }
   return {};
@@ -328,7 +337,7 @@ struct PendingScreenshot
   CCriticalSection lock;
   //! The composite's file; without a name from the caller, numbered at the first delivery
   std::string composite;
-  //! The files a delivery has started to write that were not there before
+  //! The files a delivery has started to stage
   std::vector<std::string> started;
   unsigned int written{0};
   //! The request gave up, so a delivery removes again whatever it writes from then on
@@ -399,7 +408,6 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
         }
 
         std::string file;
-        bool created = false;
         {
           std::unique_lock lock(pending->lock);
           // Deliveries are handled one at a time, so a number taken here is taken by no other
@@ -412,17 +420,15 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
           if (!pending->abandoned && !pending->composite.empty())
           {
             file = videoOfBoth ? VideoScreenshotFile(pending->composite) : pending->composite;
-            // A named target may be a screenshot already there, which a failure must leave
-            created = !XFILE::CFile::Exists(file);
-            if (created)
-              pending->started.emplace_back(file);
+            pending->started.emplace_back(file);
           }
         }
 
         if (!file.empty())
         {
           CLog::Log(LOGDEBUG, "Saving screenshot {}", CURL::GetRedacted(file));
-          const bool written = WriteCapture(result, file);
+          const std::string staged = StagedScreenshotFile(file);
+          const bool written = WriteCapture(result, staged);
 
           bool abandoned = false;
           {
@@ -431,8 +437,8 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
               ++pending->written;
             abandoned = pending->abandoned;
           }
-          if (abandoned && created)
-            XFILE::CFile::Delete(file);
+          if (abandoned && XFILE::CFile::Exists(staged))
+            XFILE::CFile::Delete(staged);
         }
 
         if (!videoOfBoth)
@@ -450,11 +456,16 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
     std::unique_lock lock(pending->lock);
     failed = !arrived || pending->written != expected;
     if (failed)
-    {
       pending->abandoned = true;
-      started = pending->started;
-    }
+    started = pending->started;
     composite = pending->composite;
+  }
+
+  // Only a complete screenshot replaces what its names held
+  for (auto file = started.begin(); !failed && file != started.end(); ++file)
+  {
+    failed = (XFILE::CFile::Exists(*file) && !XFILE::CFile::Delete(*file)) ||
+             !XFILE::CFile::Rename(StagedScreenshotFile(*file), *file);
   }
 
   if (failed)
@@ -462,8 +473,9 @@ CScreenShot::ScreenshotFiles CScreenShot::TakeScreenshotSync(
     // A delivery still writing removes its own file once it is done
     for (const std::string& file : started)
     {
-      if (XFILE::CFile::Exists(file))
-        XFILE::CFile::Delete(file);
+      const std::string staged = StagedScreenshotFile(file);
+      if (XFILE::CFile::Exists(staged))
+        XFILE::CFile::Delete(staged);
     }
     CLog::Log(LOGERROR, "Screenshot did not complete");
     return {ScreenshotError::FAILED};
