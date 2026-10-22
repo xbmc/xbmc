@@ -274,3 +274,87 @@ TEST_F(TestVideoInfoScannerArt, AVersionWithoutArtOfItsOwnHasThePlainArtBesideBD
   EXPECT_EQ(poster, VersionArt("poster"));
   EXPECT_EQ(fanart, VersionArt("fanart"));
 }
+
+namespace
+{
+class TestVideoInfoScannerArtTvShows : public TestVideoInfoScannerArt
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoInfoScannerArt::SetUp();
+
+    // A tv show source, each of whose folders holds a show
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='tvshows', useFolderNames=0, scanRecursive=0 WHERE idPath=%i",
+        m_db.GetPathId(m_root))));
+  }
+
+  //! A show holding a bluray folder rip of episodes 1 and 2 of season 1, read from the disc's nfo
+  //! \return the folder holding BDMV
+  std::string BlurayRipOfTwoEpisodes()
+  {
+    const std::string show{Folder(m_root, "Show")};
+    File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+    const std::string folder{Folder(show, "Show.S01E01E02")};
+    const std::string bdmv{Folder(folder, "BDMV")};
+    File(bdmv, "index.bdmv");
+    File(bdmv, "MovieObject.bdmv");
+    File(Folder(bdmv, "PLAYLIST"), "00000.mpls");
+    File(Folder(bdmv, "STREAM"), "00000.m2ts");
+    File(bdmv, "index.nfo",
+         "<episodedetails><title>First</title><season>1</season><episode>1</episode>"
+         "</episodedetails>"
+         "<episodedetails><title>Second</title><season>1</season><episode>2</episode>"
+         "</episodedetails>");
+    return folder;
+  }
+
+  std::string EpisodeArt(int episode, const std::string& type)
+  {
+    return m_db.GetSingleValue(
+        m_db.PrepareSQL("SELECT art.url FROM art JOIN episode ON art.media_id = episode.idEpisode "
+                        "WHERE art.media_type='episode' AND art.type='%s' AND episode.c13='%i'",
+                        type.c_str(), episode));
+  }
+};
+} // namespace
+
+TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfABlurayRipHasItsOwnArtBesideBDMV)
+{
+  const std::string folder{BlurayRipOfTwoEpisodes()};
+  const std::string thumb1{File(folder, "index-S01E01-thumb.jpg")};
+  const std::string thumb2{File(folder, "index-S01E02-thumb.jpg")};
+  File(folder, "thumb.jpg");
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(thumb1, EpisodeArt(1, "thumb"));
+  EXPECT_EQ(thumb2, EpisodeArt(2, "thumb"));
+}
+
+TEST_F(TestVideoInfoScannerArtTvShows, AnEpisodeOfSeveralOnADiscDoesNotHaveThePlainArtBesideBDMV)
+{
+  const std::string folder{BlurayRipOfTwoEpisodes()};
+  File(folder, "thumb.jpg");
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ("", EpisodeArt(1, "thumb"));
+  EXPECT_EQ("", EpisodeArt(2, "thumb"));
+}
+
+TEST_F(TestVideoInfoScannerArtTvShows, AnEpisodesArtCanBeNamedByItsEpisodeAlone)
+{
+  const std::string folder{BlurayRipOfTwoEpisodes()};
+  const std::string thumb1{File(folder, "S01E01-thumb.jpg")};
+  File(folder, "S01E02-thumb.jpg");
+  const std::string thumb2{File(folder, "index-S01E02-thumb.jpg")};
+
+  Scan();
+
+  EXPECT_EQ(thumb1, EpisodeArt(1, "thumb"));
+  EXPECT_EQ(thumb2, EpisodeArt(2, "thumb"));
+}
