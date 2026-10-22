@@ -171,4 +171,3 @@ std::vector<ContentGeometryCandidate> CVideoDatabase::GetContentGeometryCandidat
   }
   return candidates;
 }
-

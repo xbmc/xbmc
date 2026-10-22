@@ -597,7 +597,7 @@ public:
   //! \brief GetContentGeometry() for the file at \p path, which is asked for its identity only
   //! when a measurement is stored to check it against.
   KODI::VIDEO::GEOMETRY::ContentGeometryLookup GetContentGeometryOfFile(int idFile,
-                                                                         const std::string& path);
+                                                                        const std::string& path);
 
   //! \brief What is stored for a file, including a record that found nothing, without checking
   //! it still describes the file. Anything acting on the rectangle uses GetContentGeometry().

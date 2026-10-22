@@ -28,7 +28,6 @@ CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& setting
       this,
       {CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,  CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
        CSettings::SETTING_SUBTITLES_ALIGN,          CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH,
-       CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT,
        CSettings::SETTING_SUBTITLES_FONTNAME,       CSettings::SETTING_SUBTITLES_FONTSIZE,
        CSettings::SETTING_SUBTITLES_STYLE,          CSettings::SETTING_SUBTITLES_COLOR,
        CSettings::SETTING_SUBTITLES_BORDERSIZE,     CSettings::SETTING_SUBTITLES_BORDERCOLOR,
@@ -41,7 +40,8 @@ CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& setting
        CSettings::SETTING_SUBTITLES_LANGUAGES,      CSettings::SETTING_SUBTITLES_STORAGEMODE,
        CSettings::SETTING_SUBTITLES_CUSTOMPATH,     CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
        CSettings::SETTING_SUBTITLES_DOWNLOADFIRST,  CSettings::SETTING_SUBTITLES_TV,
-       CSettings::SETTING_SUBTITLES_MOVIE,          CSettings::SETTING_SUBTITLES_LINE_SPACING});
+       CSettings::SETTING_SUBTITLES_MOVIE,          CSettings::SETTING_SUBTITLES_LINE_SPACING,
+       CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT});
 }
 
 CSubtitlesSettings::~CSubtitlesSettings()

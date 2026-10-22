@@ -5671,15 +5671,15 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       std::string strSQL2;
 
       strSQL2 = PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i,VideoStream=%i,"
-          "TonemapMethod=%i,TonemapParam=%f,Orientation=%i,CenterMixLevel=%i,"
-          "DeclaredAspect=%f,DeclaredOn='%s',DetectedWhenDeclared=%f"
-          " where idFile=%i\n",
+                           "TonemapMethod=%i,TonemapParam=%f,Orientation=%i,CenterMixLevel=%i,"
+                           "DeclaredAspect=%f,DeclaredOn='%s',DetectedWhenDeclared=%f"
+                           " where idFile=%i\n",
                            setting.m_ResumeTime, setting.m_StereoMode, setting.m_StereoInvert,
                            setting.m_VideoStream, setting.m_ToneMapMethod,
                            static_cast<double>(setting.m_ToneMapParam), setting.m_Orientation,
-                           setting.m_CenterMixLevel,
-          static_cast<double>(setting.m_declaredAspect), setting.m_declaredOn.c_str(),
-          static_cast<double>(setting.m_detectedWhenDeclared), idFile);
+                           setting.m_CenterMixLevel, static_cast<double>(setting.m_declaredAspect),
+                           setting.m_declaredOn.c_str(),
+                           static_cast<double>(setting.m_detectedWhenDeclared), idFile);
       strSQL += strSQL2;
       m_pDS->exec(strSQL);
       return ;
