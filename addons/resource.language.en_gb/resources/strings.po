@@ -25756,7 +25756,19 @@ msgctxt "#40230"
 msgid "Turn on to show individual versions in the movies view, turn off to group them"
 msgstr ""
 
-#empty strings from id 40231 to 40399
+#. Setting to retrieve art not cached yet when the video library is exported
+#: system/settings/settings.xml
+msgctxt "#40231"
+msgid "Retrieve all art during export"
+msgstr ""
+
+#. Help for the retrieve all art during export setting
+#: system/settings/settings.xml
+msgctxt "#40232"
+msgid "When exporting the library with images, retrieve art that isn't cached yet. Turn off to only export art that is already cached."
+msgstr ""
+
+#empty strings from id 40233 to 40399
 
 # Video versions
 

@@ -103,6 +103,8 @@ public:
       "videolibrary.newversionsaredefault";
   static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS = "videolibrary.ignorevideoextras";
   static constexpr auto SETTING_VIDEOLIBRARY_ARTRETRIEVALTIMING = "videolibrary.artretrievaltiming";
+  static constexpr auto SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT =
+      "videolibrary.retrieveallartonexport";
   static constexpr auto SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
   static constexpr auto SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";
   static constexpr auto SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM = "videoplayer.autoplaynextitem";

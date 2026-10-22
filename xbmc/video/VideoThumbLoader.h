@@ -72,6 +72,12 @@ public:
    */
   static std::string GetEmbeddedThumbURL(const CFileItem &item);
 
+  /*! \brief Whether a thumb can be extracted from the video GetEmbeddedThumbURL() names
+   \param item a video CFileItem.
+   \return true if a thumb can be extracted, false otherwise.
+   */
+  static bool CanExtractEmbeddedThumb(const CFileItem& item);
+
   /*! \brief helper function to fill the art for a video library item
    \param item a video CFileItem
    \return true if we fill art, false otherwise

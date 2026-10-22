@@ -1517,6 +1517,11 @@
 		  </constraints>
 		  <control type="list" format="string" />
 	    </setting>
+        <setting id="videolibrary.retrieveallartonexport" type="boolean" label="40231" help="40232">
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="music" label="14216" help="38108">

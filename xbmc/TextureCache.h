@@ -173,13 +173,25 @@ public:
    */
   bool AddCachedTexture(const std::string &image, const CTextureDetails &details);
 
+  //! \brief What Export() does with an image not cached yet
+  enum class UncachedImage
+  {
+    SKIP, //!< leave it out of the export
+    COPY, //!< copy it from its source, as it is where it is a .jpg or a .png, else cache it
+    CACHE, //!< cache it, as art a scan caches, and export the cached copy
+  };
+
   /*! \brief Export a (possibly) cached image to a file
    \param image url of the original image
    \param destination url of the destination image, excluding extension.
    \param overwrite whether to overwrite the destination if it exists (TODO: Defaults to false)
+   \param uncached what to do with an image not cached yet
    \return true if we successfully exported the file, false otherwise.
    */
-  bool Export(const std::string &image, const std::string &destination, bool overwrite);
+  bool Export(const std::string& image,
+              const std::string& destination,
+              bool overwrite,
+              UncachedImage uncached = UncachedImage::SKIP);
   bool Export(const std::string &image, const std::string &destination); //! @todo BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 
   bool CleanAllUnusedImages();
@@ -221,6 +233,17 @@ private:
    \sa ClearCachedImage, CTextureDetails
    */
   std::string GetCachedImage(const std::string &image, CTextureDetails &details, bool trackUsage = false);
+
+  /*! \brief Cache an image again where the database knows it but its cached file has gone
+   An image that is its own cached copy has no row, and is returned as it is.
+   \param image url of the image
+   \param details the details GetCachedImage() found for the image
+   \param cachedImage the cached url GetCachedImage() returned for the image
+   \return cached url of this image, empty if it couldn't be cached again
+   */
+  std::string EnsureCachedFile(const std::string& image,
+                               const CTextureDetails& details,
+                               const std::string& cachedImage);
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture

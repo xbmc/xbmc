@@ -861,7 +861,10 @@ public:
   void UpdateFileDateAdded(CVideoInfoTag& details);
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
-  void ExportArt(const CFileItem& item, const KODI::ART::Artwork& artwork, bool overwrite) const;
+  void ExportArt(const CFileItem& item,
+                 const KODI::ART::Artwork& artwork,
+                 KODI::MEDIA::TYPE mediaType,
+                 bool overwrite) const;
   void ExportActorThumbs(const std::string& path,
                          const std::string& singlePath,
                          const CVideoInfoTag& tag,
