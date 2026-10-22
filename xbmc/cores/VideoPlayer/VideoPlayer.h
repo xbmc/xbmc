@@ -62,6 +62,8 @@ struct SPlayerState
     cache_level = 0.0;
     cache_offset = 0.0;
     cache_time = 0.0;
+    waitingForAudio = false;
+    waitingForAudioRemaining = 0.0;
     lastSeek = 0;
     streamsReady = false;
   }
@@ -102,6 +104,9 @@ struct SPlayerState
   double cache_level; // current cache level
   double cache_offset; // percentage of file ahead of current position
   double cache_time; // estimated playback time of current cached bytes
+
+  bool waitingForAudio; // held for an audio format change to settle downstream
+  double waitingForAudioRemaining; // fraction of that hold still to run
 };
 
 class CDVDInputStream;
@@ -412,6 +417,8 @@ public:
 
   bool IsCaching() const override;
   int GetCacheLevel() const override;
+  bool IsWaitingForAudio() const override;
+  int GetWaitingForAudioRemaining() const override;
 
   int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;

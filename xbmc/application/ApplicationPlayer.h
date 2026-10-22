@@ -111,6 +111,7 @@ public:
   int GetVideoStream();
   int GetVideoStreamCount() const;
   void GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const;
+  int GetWaitingForAudioRemaining() const;
   int GetPrograms(std::vector<ProgramInfo>& programs);
   void SetProgram(int progId);
   int GetProgramsCount() const;
@@ -137,6 +138,7 @@ public:
   bool IsPlayingRDS() const;
   bool IsLiveStream() const;
   bool IsStreaming() const;
+  bool IsWaitingForAudio() const;
   void LoadPage(int p, int sp, unsigned char* buffer);
   bool OnAction(const CAction &action);
 

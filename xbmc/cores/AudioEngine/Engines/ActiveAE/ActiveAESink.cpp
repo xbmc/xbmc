@@ -1102,21 +1102,10 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     bool skipSwap = false;
     if (m_needIecPack)
     {
-      enum class RawOut
-      {
-        NONE,
-        DATA,
-        FILLER,
-        PAUSE
-      };
-      static RawOut lastOut = RawOut::NONE;
-      RawOut out = lastOut;
-      const char* why = "";
       if (frames > 0)
       {
         m_packer->Reset();
         m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
-        out = RawOut::DATA;
         // Content is the hold over.
         m_fillerArmed = false;
       }
@@ -1130,38 +1119,14 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
                                 static_cast<int>(m_sinkFormat.m_streamInfo.GetDuration());
         // Only during a hold: repeating a burst across any other gap is audible.
         if (m_silenceFiller && m_fillerArmed && wholeFrame)
-        {
           filled = m_packer->PackLastBurst();
-          if (!filled)
-            why = " [filler: no burst retained]";
-        }
-        else if (m_silenceFiller)
-          why = !m_fillerArmed ? " [filler: no hold]"
-                : !wholeFrame  ? " [filler: partial frame]"
-                               : "";
         // Not skipSwap: the retained burst is copied in fresh and still needs it.
         if (!filled &&
             !m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
           skipSwap = true;
-        out = filled ? RawOut::FILLER : RawOut::PAUSE;
       }
       else
-      {
         m_packer->Reset();
-        out = RawOut::NONE;
-      }
-
-      if (out != lastOut)
-      {
-        static const char* const names[] = {"none", "data", "filler", "pause"};
-        CLog::Log(
-            LOGDEBUG,
-            "CActiveAESink::OutputSamples - raw output {} -> {} (type {}, repeat {}, {} ms){}",
-            names[static_cast<int>(lastOut)], names[static_cast<int>(out)],
-            static_cast<int>(m_sinkFormat.m_streamInfo.m_type), m_sinkFormat.m_streamInfo.m_repeat,
-            samples->pkt->pause_burst_ms, why);
-        lastOut = out;
-      }
 
       unsigned int size = m_packer->GetSize();
       packBuffer = m_packer->GetBuffer();

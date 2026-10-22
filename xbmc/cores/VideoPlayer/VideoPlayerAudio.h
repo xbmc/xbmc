@@ -18,6 +18,7 @@
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 
+#include <atomic>
 #include <list>
 #include <mutex>
 #include <utility>
@@ -67,6 +68,7 @@ public:
 
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;
+  void OnPlaybackStart() override { m_playbackStart = true; }
 
 protected:
 
@@ -106,6 +108,8 @@ protected:
 
   bool m_holdPending{false};
   double m_holdDelivered{0.0};
+  //! Set by the player thread, taken by this one at the first frame of the playback
+  std::atomic<bool> m_playbackStart{false};
 
   bool   m_prevskipped;
   double m_maxspeedadjust;

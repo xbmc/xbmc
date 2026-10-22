@@ -207,6 +207,11 @@ public:
   //Cache filled in Percent
   virtual int GetCacheLevel() const { return -1; }
 
+  //! True while playback is held for an audio format change to settle downstream
+  virtual bool IsWaitingForAudio() const { return false; }
+  //! Time left of that hold in percent, from 100 when it starts to 0 when it runs out
+  virtual int GetWaitingForAudioRemaining() const { return 0; }
+
   virtual bool IsInMenu() const { return false; }
 
   /*!

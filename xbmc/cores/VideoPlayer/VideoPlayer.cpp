@@ -38,9 +38,7 @@
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "dialogs/GUIDialogBusyNoCancel.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -1489,6 +1487,7 @@ void CVideoPlayer::Prepare()
 
   // give players a chance to reconsider now codecs are known
   CreatePlayers();
+  m_VideoPlayerAudio->OnPlaybackStart();
 
   if (!discStateRestored)
     OpenDefaultStreams();
@@ -5561,6 +5560,18 @@ int CVideoPlayer::GetCacheLevel() const
   return (int)(m_State.cache_level * 100);
 }
 
+bool CVideoPlayer::IsWaitingForAudio() const
+{
+  std::unique_lock lock(m_StateSection);
+  return m_State.waitingForAudio;
+}
+
+int CVideoPlayer::GetWaitingForAudioRemaining() const
+{
+  std::unique_lock lock(m_StateSection);
+  return static_cast<int>(std::lround(m_State.waitingForAudioRemaining * 100));
+}
+
 double CVideoPlayer::GetQueueTime()
 {
   int a = m_VideoPlayerAudio->GetLevel();
@@ -5940,7 +5951,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   CServiceBroker::GetDataCacheCore().SetChapters(chapters);
 
-  if ((m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY) || m_audioFormatHold)
+  if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
     state.caching = true;
   else
     state.caching = false;
@@ -5961,12 +5972,14 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.cache_time = queueTime / 1000.0;
   }
 
+  state.waitingForAudio = m_audioFormatHold;
+  state.waitingForAudioRemaining = 0.0;
   if (m_audioFormatHold)
   {
     const double total =
         static_cast<double>(m_audioFormatHoldTimer.GetInitialTimeoutValue().count());
     const double left = static_cast<double>(m_audioFormatHoldTimer.GetTimeLeft().count());
-    state.cache_level = total > 0.0 ? std::max(0.01, std::min(1.0, 1.0 - left / total)) : 1.0;
+    state.waitingForAudioRemaining = total > 0.0 ? std::min(1.0, left / total) : 0.0;
   }
 
   XFILE::SCacheStatus status;
@@ -6293,12 +6306,6 @@ void CVideoPlayer::HoldForAudioFormatChange()
     m_clock.Pause(true);
     m_audioFormatHold = true;
   }
-
-  // Opened without the render loop: the blocking form would not return.
-  CGUIDialog* busy = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
-      WINDOW_DIALOG_BUSY_NOCANCEL);
-  if (busy)
-    busy->Open(false);
 }
 
 void CVideoPlayer::ReleaseAudioFormatHold()
@@ -6332,11 +6339,6 @@ void CVideoPlayer::ReleaseAudioFormatHold()
     m_audioFormatHoldRestart = false;
     m_audioChainReady = false;
   }
-
-  CGUIDialog* busy = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
-      WINDOW_DIALOG_BUSY_NOCANCEL);
-  if (busy)
-    busy->Close();
 }
 
 void CVideoPlayer::NotifyAudioChainReady()

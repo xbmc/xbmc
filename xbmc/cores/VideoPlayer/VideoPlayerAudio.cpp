@@ -523,6 +523,9 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     if (m_streaminfo.codec == AV_CODEC_ID_FLAC && m_streaminfo.channellayout)
       audioframe.format.m_channelLayout = CAEUtil::GetAEChannelLayout(m_streaminfo.channellayout);
 
+    // Only the start of a playback holds, not a later track or codec change
+    const bool playbackStart = m_playbackStart.exchange(false);
+
     // we have successfully decoded an audio frame, setup renderer to match
     if (!m_audioSink.IsValidFormat(audioframe))
     {
@@ -533,10 +536,11 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
       if (!m_audioSink.Create(audioframe, m_streaminfo.codec, m_synctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "{} - failed to create audio renderer", __FUNCTION__);
-      else
+      else if (playbackStart || m_holdPending)
       {
         // Armed here, resolved once real audio has reached the sink: whether the wire format
-        // changed is the engine's to answer, and it has not configured the sink yet.
+        // changed is the engine's to answer, and it has not configured the sink yet. A sink
+        // replaced before then still belongs to the start.
         m_holdPending = true;
         m_holdDelivered = 0.0;
       }
