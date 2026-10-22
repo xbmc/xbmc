@@ -311,10 +311,25 @@ void CVideoInfoScannerArt::GetArtwork(CFileItem* pItem,
       const int playlist{pItem->GetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger32(-1)};
       if (content == ContentType::TVSHOWS)
       {
+        const bool multipleEpisodes{pItem->GetProperty(MULTIPLE_EPISODES).asBoolean(false)};
         path = ART::GetLocalArtBaseFilename(*pItem, useFolder,
-                                            pItem->GetProperty(MULTIPLE_EPISODES).asBoolean(false)
+                                            multipleEpisodes
                                                 ? ART::AdditionalIdentifiers::SEASON_AND_EPISODE
                                                 : ART::AdditionalIdentifiers::NONE);
+        // The plain art beside a disc of several episodes can't say which episode it is for, but
+        // art named by the episode alone (S01E01-thumb.jpg) can, with index-S01E01- winning
+        if (multipleEpisodes && URIUtils::HasExtension(path, ".bdmv|.ifo"))
+        {
+          const CVideoInfoTag& tag{*pItem->GetVideoInfoTag()};
+          ART::AddLocalItemArtwork(
+              art, artTypes,
+              URIUtils::AddFileToFolder(URIUtils::GetDirectory(path),
+                                        StringUtils::Format("S{:02}E{:02}{}", tag.m_iSeason,
+                                                            tag.m_iEpisode,
+                                                            URIUtils::GetExtension(path))),
+              addAll, exactName, false);
+          isInFolder = false;
+        }
       }
       else if (content == ContentType::MOVIE_VERSIONS ||
                (pItem->HasVideoVersions() && playlist > -1))
