@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -24,6 +25,7 @@
 #include <memory>
 #include <optional>
 #include <thread>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -48,16 +50,35 @@ protected:
     XFILE::CDirectory::RemoveRecursive(m_dir);
   }
 
-  void Write(const std::string& name)
+  void Write(const std::string& name, const std::string& content = "")
   {
     XFILE::CFile file;
     ASSERT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(m_dir, name), true));
+    if (!content.empty())
+      ASSERT_EQ(static_cast<ssize_t>(content.size()), file.Write(content.data(), content.size()));
     file.Close();
+  }
+
+  std::string Read(const std::string& name) const
+  {
+    XFILE::CFile file;
+    std::vector<uint8_t> content;
+    if (file.LoadFile(URIUtils::AddFileToFolder(m_dir, name), content) < 0)
+      return {};
+    return {content.begin(), content.end()};
   }
 
   bool Exists(const std::string& name) const
   {
     return XFILE::CFile::Exists(URIUtils::AddFileToFolder(m_dir, name));
+  }
+
+  int FileCount() const
+  {
+    CFileItemList items;
+    XFILE::CDirectory::GetDirectory(m_dir, items, "",
+                                    XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_GET_HIDDEN);
+    return items.Size();
   }
 
   std::string m_dir;
@@ -267,6 +288,40 @@ TEST_F(TestScreenshotTaking, AFailedScreenshotLeavesTheOneItsNameAlreadyHeld)
 
   EXPECT_EQ(Error::FAILED, taken.get().error);
   EXPECT_TRUE(Exists("named.png"));
+}
+
+TEST_F(TestScreenshotTaking, AFailedPairLeavesBothScreenshotsItsNameAlreadyHeld)
+{
+  Write("named.png", "old composite");
+  Write("named-video.png", "old video");
+
+  auto taken =
+      std::async(std::launch::async,
+                 [] { return CScreenShot::TakeScreenshotSync(CaptureContent::BOTH, "named.png"); });
+  ASSERT_TRUE(Deliver(CaptureContent::VIDEO));
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE, false));
+
+  EXPECT_EQ(Error::FAILED, taken.get().error);
+  EXPECT_EQ("old composite", Read("named.png"));
+  EXPECT_EQ("old video", Read("named-video.png"));
+  EXPECT_EQ(2, FileCount());
+}
+
+TEST_F(TestScreenshotTaking, ANamedPairReplacesTheScreenshotsItsNameHeld)
+{
+  Write("named.png", "old composite");
+  Write("named-video.png", "old video");
+
+  auto taken =
+      std::async(std::launch::async,
+                 [] { return CScreenShot::TakeScreenshotSync(CaptureContent::BOTH, "named.png"); });
+  ASSERT_TRUE(Deliver(CaptureContent::VIDEO));
+  ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE));
+
+  EXPECT_EQ(Error::NONE, taken.get().error);
+  EXPECT_EQ("\x89PNG", Read("named.png").substr(0, 4));
+  EXPECT_EQ("\x89PNG", Read("named-video.png").substr(0, 4));
+  EXPECT_EQ(2, FileCount());
 }
 
 TEST_F(TestScreenshotTaking, ANumberItsVideoFrameStillHoldsIsNotTakenAgain)
