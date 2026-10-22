@@ -32,6 +32,7 @@ files:
   - kodi.js
   - kodi.wasm
   - kodi.data
+  - audio_worklet_processor.js
 
 # list of files to exclude based on the matched patterns
 excludes:

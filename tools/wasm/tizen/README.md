@@ -36,7 +36,8 @@ web project in `<build-dir>/tizen_packaging/Kodi`:
   templates
 - `index.html`, the shared web entry page
 - `media/splash.jpg`, the splash picture `index.html` shows while Kodi loads
-- the build artifacts `kodi.js`, `kodi.wasm` and `kodi.data`
+- the build artifacts `kodi.js`, `kodi.wasm`, `kodi.data` and
+  `audio_worklet_processor.js`
 
 `package_tizen_wgt` then packs and signs that directory into
 `<build-dir>/tizen_packaging/Kodi/Release/Kodi.wgt` (`Debug/` for a Debug

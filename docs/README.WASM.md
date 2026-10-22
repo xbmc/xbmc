@@ -254,13 +254,14 @@ Build:
 make -C $HOME/kodi/build-wasm -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-The build produces three files in the build directory:
+The build produces four files in the build directory:
 
 | File | Contents |
 |---|---|
 | `kodi.js` | Emscripten loader and JS glue |
 | `kodi.wasm` | Compiled Kodi |
 | `kodi.data` | Virtual filesystem image: `addons`, `media`, `system` and `userdata` mounted at `/kodi`, plus the Python standard library |
+| `audio_worklet_processor.js` | Audio processor, loaded by `kodi.js` as an `AudioWorklet` module |
 
 **[back to top](#table-of-contents)**
 
@@ -318,7 +319,7 @@ This section assumes **[README.Tizen.md](README.Tizen.md)** has been followed: t
 make -C $HOME/kodi/build-wasm package_tizen
 ```
 
-This assembles a complete Tizen web project in `$HOME/kodi/build-wasm/tizen_packaging/Kodi/`: the template files, `index.html` (a copy of the shared browser shell `tools/wasm/kodi.html`), `media/splash.jpg`, and the three build artifacts. The directory can also be opened directly in Tizen Studio.
+This assembles a complete Tizen web project in `$HOME/kodi/build-wasm/tizen_packaging/Kodi/`: the template files, `index.html` (a copy of the shared browser shell `tools/wasm/kodi.html`), `media/splash.jpg`, and the four build artifacts. The directory can also be opened directly in Tizen Studio.
 
 Staging needs no SDK — only the two steps below do.
 
@@ -390,12 +391,9 @@ If the launch reports `with debug 0` (`tz`) or answers `closed` (`sdb`), the TV 
 
 ## Audio and video playback
 
-Audio goes out through a Web Audio `AudioWorklet` (`-sAUDIO_WORKLET` and `-sWASM_WORKERS`, which need the same COOP/COEP headers as pthreads). Video decoding uses the browser's WebCodecs decoder for streams it supports, and FFmpeg otherwise.
+Audio goes out through a Web Audio `AudioWorklet` whose JavaScript processor reads Kodi's ring buffer from the shared wasm memory. Video decoding uses the browser's WebCodecs decoder for streams it supports, and FFmpeg otherwise.
 
-Two browser rules show up as behaviour:
-
-- Audio only starts after the first user interaction (keyboard, mouse or touch); this is the browser's autoplay policy.
-- `-sSINGLE_FILE` is not compatible with Emscripten's Audio Worklet path.
+Audio only starts after the first user interaction (keyboard, mouse or touch); this is the browser's autoplay policy.
 
 For manual validation use at least one H.264 MP4 and one VP9 WebM sample and check that playback starts in sync, that pause/resume and repeated seeks keep lip-sync, and that end of stream drains cleanly.
 

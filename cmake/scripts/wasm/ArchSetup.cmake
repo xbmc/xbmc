@@ -42,8 +42,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "-pthread"
     "SHELL:-sMIN_CHROME_VERSION=85"
     "SHELL:-sPTHREAD_POOL_SIZE=16"
-    "SHELL:-sAUDIO_WORKLET"
-    "SHELL:-sWASM_WORKERS"
     "SHELL:-sINITIAL_MEMORY=512MB"
     "SHELL:-sSTACK_SIZE=5MB"
     "SHELL:-sPROXY_TO_PTHREAD"
@@ -59,6 +57,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "SHELL:-sEXPORTED_RUNTIME_METHODS=ccall,cwrap"
     "SHELL:--pre-js ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/kodi_pre.js"
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/windowing/wasm/webgl_commit.js"
+    "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/audio_worklet.js"
     # BSD sockets over the Tizen Sockets Extension; falls back to the upstream
     # implementation in ordinary browsers.
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/network/tizen_sockets.js"
