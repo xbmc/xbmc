@@ -582,8 +582,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
       XFILE::CVideoDatabaseDirectory::GetQueryParams(items[firstItem]->GetPath(), params);
       if (params.GetMVideoId() != -1)
       {
-        AddSortMethod(SortBy::LABEL, sortAttribute, 551,
-                      LABEL_MASKS("%T", "%Y")); // Title, Year
+        AddSortMethod(SortBy::LABEL, sortAttribute, 551, LABEL_MASKS("%T", "%Y")); // Title, Year
         AddSortMethod(SortBy::YEAR, 562, LABEL_MASKS("%T", "%Y"));
         AddSortMethod(SortBy::ARTIST, sortAttribute, 557, LABEL_MASKS("%A - %T", "%Y"));
         AddSortMethod(SortBy::ARTIST_THEN_YEAR, sortAttribute, 578, LABEL_MASKS("%A - %T", "%Y"));
