@@ -17,6 +17,7 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/SpecialProtocol.h"
+#include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRDescrambleInfo.h"
@@ -2496,8 +2497,24 @@ void CPVRClient::cb_playing_channel_change(void* kodiInstance, unsigned int iCha
   HandleAddonCallback(std::source_location::current().function_name(), kodiInstance,
                       [iChannelUid](const CPVRClient* client)
                       {
-                        CServiceBroker::GetPVRManager().PlaybackState()->OnBackendChannelChange(
-                            client->GetID(), iChannelUid);
+                        struct Change
+                        {
+                          KODI::MESSAGING::ThreadMessageCallback message;
+                          int clientId;
+                          unsigned int channelUid;
+                        };
+                        auto change{
+                            std::make_unique<Change>(Change{{}, client->GetID(), iChannelUid})};
+                        change->message.userptr = change.get();
+                        change->message.callback = [](void* data)
+                        {
+                          const std::unique_ptr<Change> posted{static_cast<Change*>(data)};
+                          CServiceBroker::GetPVRManager().PlaybackState()->OnBackendChannelChange(
+                              posted->clientId, posted->channelUid);
+                        };
+                        // The decision reads GUI state, so it runs on the application thread.
+                        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CALLBACK, -1, -1,
+                                                                   &change.release()->message);
                       });
 }
 
