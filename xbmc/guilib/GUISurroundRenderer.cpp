@@ -140,12 +140,17 @@ void CGUISurroundRenderer::Render()
   const CRect previousClip = context.SetClip(raster);
   context.SetTransform(TransformMatrix());
 
+  // Drawn before either pass picks an order, so in the one that draws opaque art too.
+  const RENDER_ORDER previousOrder = context.GetRenderOrder();
+  context.SetRenderOrder(RENDER_ORDER_ALL_BACK_TO_FRONT);
+
   if (art.colour)
     PaintBands(bands, *art.colour);
 
   if (m_image)
     RenderImage(bands, context);
 
+  context.SetRenderOrder(previousOrder);
   context.RemoveTransform();
   context.SetClip(previousClip);
 }
