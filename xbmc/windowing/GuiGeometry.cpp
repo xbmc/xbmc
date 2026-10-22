@@ -64,6 +64,16 @@ CRect ComputeRasterRect(const RESOLUTION_INFO& info, float rasterAspect)
   return {std::round(held.x1), std::round(held.y1), std::round(held.x2), std::round(held.y2)};
 }
 
+CRect ComputeViewWindow(const RESOLUTION_INFO& info, float rasterAspect)
+{
+  CRect rect{static_cast<float>(info.Overscan.left), static_cast<float>(info.Overscan.top),
+             static_cast<float>(info.Overscan.right), static_cast<float>(info.Overscan.bottom)};
+
+  if (rasterAspect > 0.0f)
+    rect.Intersect(ComputeRasterRect(info, rasterAspect));
+  return rect;
+}
+
 CRect ComputeGuiRect(const RESOLUTION_INFO& skinRes,
                      const RESOLUTION_INFO& info,
                      float rasterAspect,

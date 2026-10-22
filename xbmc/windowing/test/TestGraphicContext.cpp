@@ -116,6 +116,25 @@ TEST(TestGraphicContext, RasterMatchingCalibratedShapeIsTheCalibratedArea)
   EXPECT_EQ(ComputeRasterRect(info, 1.78f), CRect(50, 30, 3790, 2130));
 }
 
+// The calibration movers reach a quarter of the display past each edge.
+TEST(TestGraphicContext, ViewWindowKeepsACalibrationPastTheDisplay)
+{
+  RESOLUTION_INFO info = MakeInfo(1920, 1080);
+  info.Overscan.left = -40;
+  info.Overscan.top = -20;
+  info.Overscan.right = 1960;
+  info.Overscan.bottom = 1100;
+
+  EXPECT_EQ(ComputeViewWindow(info, 0.0f), CRect(-40, -20, 1960, 1100));
+}
+
+TEST(TestGraphicContext, ViewWindowIsBoundedByAStatedRaster)
+{
+  const RESOLUTION_INFO info = MakeInfo(3840, 2160);
+
+  EXPECT_EQ(ComputeViewWindow(info, 2.40f), ComputeRasterRect(info, 2.40f));
+}
+
 TEST(TestGraphicContext, GuiRectDefaultIsIdentity)
 {
   const RESOLUTION_INFO skin(1920, 1080);
