@@ -198,7 +198,7 @@ ContentCut CutToContent(const RenderGeometry& geometry,
 
   const CRectInt& coded = geometry.codedFrame;
 
-  // Content and coded are in frameSource's space; only the ratio below carries the orientation.
+  // Content and coded are in frameSource's space.
   RenderGeometry cut;
   cut.displayFrame = CRect{coded};
   cut.displayRect = CRect{content};
@@ -206,8 +206,7 @@ ContentCut CutToContent(const RenderGeometry& geometry,
   const float ratio =
       static_cast<float>(content.Width()) * geometry.par / static_cast<float>(content.Height());
 
-  return {SourceRect(cut, frameSource),
-          NormaliseRotation(geometry.orientation) % 180 == 0 ? ratio : 1.0f / ratio};
+  return {SourceRect(cut, frameSource), ratio};
 }
 
 } // namespace KODI::VIDEO::GEOMETRY
