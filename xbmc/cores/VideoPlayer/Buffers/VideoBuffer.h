@@ -161,7 +161,8 @@ public:
                                             unsigned int sourceHeight,
                                             unsigned int targetWidth)
   {
-    return ReductionResult::Unsupported; }
+    return ReductionResult::Unsupported;
+  }
 
   static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);

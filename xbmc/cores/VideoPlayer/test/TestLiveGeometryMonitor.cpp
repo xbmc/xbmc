@@ -336,4 +336,3 @@ TEST_F(TestLiveGeometryMonitor, AResolutionChangeWithdrawsWhatTheOldStreamServed
                           [](const LiveGeometryUpdate& update) { return update.clear; }))
       << "the old stream's shape was left standing over the new one";
 }
-
