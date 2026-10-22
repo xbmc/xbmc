@@ -1,0 +1,216 @@
+--- a/libavformat/hls.c
++++ b/libavformat/hls.c
+@@ -37,6 +37,7 @@
+ #include "libavutil/mathematics.h"
+ #include "libavutil/mem.h"
+ #include "libavutil/opt.h"
++#include "libavutil/parseutils.h"
+ #include "libavutil/dict.h"
+ #include "libavutil/time.h"
+ #include "avformat.h"
+@@ -205,6 +206,7 @@
+ 
+ struct variant {
+     int bandwidth;
++    int64_t pixels;
+ 
+     /* every variant contains at least the main Media Playlist in index 0 */
+     int n_playlists;
+@@ -244,6 +246,8 @@
+     int http_multiple;
+     int http_seekable;
+     int seg_max_retry;
++    int load_all_variants;
++    int64_t max_bandwidth;
+     AVIOContext *playlist_pb;
+     HLSCryptoContext  crypto_ctx;
+ } HLSContext;
+@@ -277,33 +281,36 @@
+     pls->n_init_sections = 0;
+ }
+ 
++static void free_playlist(HLSContext *c, struct playlist *pls)
++{
++    free_segment_list(pls);
++    free_init_section_list(pls);
++    av_freep(&pls->main_streams);
++    av_freep(&pls->renditions);
++    av_freep(&pls->id3_buf);
++    av_dict_free(&pls->id3_initial);
++    av_dict_free(&pls->timed_id3_metadata);
++    ff_id3v2_free_extra_meta(&pls->id3_deferred_extra);
++    av_freep(&pls->init_sec_buf);
++    av_packet_free(&pls->pkt);
++    av_freep(&pls->pb.pub.buffer);
++    ff_format_io_close(c->ctx, &pls->input);
++    pls->input_read_done = 0;
++    pls->input_reuse = 0;
++    ff_format_io_close(c->ctx, &pls->input_next);
++    pls->input_next_requested = 0;
++    if (pls->ctx) {
++        pls->ctx->pb = NULL;
++        avformat_close_input(&pls->ctx);
++    }
++    av_free(pls);
++}
++
+ static void free_playlist_list(HLSContext *c)
+ {
+     int i;
+-    for (i = 0; i < c->n_playlists; i++) {
+-        struct playlist *pls = c->playlists[i];
+-        free_segment_list(pls);
+-        free_init_section_list(pls);
+-        av_freep(&pls->main_streams);
+-        av_freep(&pls->renditions);
+-        av_freep(&pls->id3_buf);
+-        av_dict_free(&pls->id3_initial);
+-        av_dict_free(&pls->timed_id3_metadata);
+-        ff_id3v2_free_extra_meta(&pls->id3_deferred_extra);
+-        av_freep(&pls->init_sec_buf);
+-        av_packet_free(&pls->pkt);
+-        av_freep(&pls->pb.pub.buffer);
+-        ff_format_io_close(c->ctx, &pls->input);
+-        pls->input_read_done = 0;
+-        pls->input_reuse = 0;
+-        ff_format_io_close(c->ctx, &pls->input_next);
+-        pls->input_next_requested = 0;
+-        if (pls->ctx) {
+-            pls->ctx->pb = NULL;
+-            avformat_close_input(&pls->ctx);
+-        }
+-        av_free(pls);
+-    }
++    for (i = 0; i < c->n_playlists; i++)
++        free_playlist(c, c->playlists[i]);
+     av_freep(&c->playlists);
+     c->n_playlists = 0;
+ }
+@@ -366,6 +373,7 @@
+ 
+ struct variant_info {
+     char bandwidth[20];
++    char resolution[24];
+     /* variant group ids: */
+     char audio[MAX_FIELD_LEN];
+     char video[MAX_FIELD_LEN];
+@@ -387,7 +395,11 @@
+         return NULL;
+ 
+     if (info) {
++        int w = 0, h = 0;
++
+         var->bandwidth = atoi(info->bandwidth);
++        if (info->resolution[0] && av_parse_video_size(&w, &h, info->resolution) >= 0)
++            var->pixels = (int64_t)w * h;
+         strcpy(var->audio_group, info->audio);
+         strcpy(var->video_group, info->video);
+         strcpy(var->subtitles_group, info->subtitles);
+@@ -405,6 +417,9 @@
+     if (!strncmp(key, "BANDWIDTH=", key_len)) {
+         *dest     =        info->bandwidth;
+         *dest_len = sizeof(info->bandwidth);
++    } else if (!strncmp(key, "RESOLUTION=", key_len)) {
++        *dest     =        info->resolution;
++        *dest_len = sizeof(info->resolution);
+     } else if (!strncmp(key, "AUDIO=", key_len)) {
+         *dest     =        info->audio;
+         *dest_len = sizeof(info->audio);
+@@ -2259,6 +2274,76 @@
+     return 0;
+ }
+ 
++static int rendition_in_variant(const struct rendition *rend, const struct variant *var)
++{
++    switch (rend->type) {
++    case AVMEDIA_TYPE_AUDIO:    return var->audio_group[0] && !strcmp(rend->group_id, var->audio_group);
++    case AVMEDIA_TYPE_VIDEO:    return var->video_group[0] && !strcmp(rend->group_id, var->video_group);
++    case AVMEDIA_TYPE_SUBTITLE: return var->subtitles_group[0] && !strcmp(rend->group_id, var->subtitles_group);
++    default:                    return 0;
++    }
++}
++
++/*
++ * Keep only the variant with the highest resolution, then bandwidth, not
++ * above max_bandwidth (or the lowest bandwidth one if none fits) and the
++ * playlists it uses, so the other variants are never downloaded.
++ */
++static void select_single_variant(HLSContext *c)
++{
++    struct variant *sel = NULL;
++    int i, j, n;
++
++    for (i = 0; i < c->n_variants; i++) {
++        struct variant *var = c->variants[i];
++        int fits     = !c->max_bandwidth || var->bandwidth <= c->max_bandwidth;
++        int sel_fits = sel && (!c->max_bandwidth || sel->bandwidth <= c->max_bandwidth);
++
++        if (!sel || (fits && (!sel_fits || var->pixels > sel->pixels ||
++                              (var->pixels == sel->pixels && var->bandwidth > sel->bandwidth))) ||
++            (!fits && !sel_fits && var->bandwidth < sel->bandwidth))
++            sel = var;
++    }
++
++    for (i = 0; i < c->n_variants; i++) {
++        if (c->variants[i] != sel) {
++            av_freep(&c->variants[i]->playlists);
++            av_freep(&c->variants[i]);
++        }
++    }
++    c->variants[0] = sel;
++    c->n_variants  = 1;
++
++    for (i = 0, n = 0; i < c->n_playlists; i++) {
++        struct playlist *pls = c->playlists[i];
++        int keep = pls == sel->playlists[0];
++
++        for (j = 0; j < c->n_renditions && !keep; j++)
++            keep = c->renditions[j]->playlist == pls && rendition_in_variant(c->renditions[j], sel);
++
++        if (keep)
++            c->playlists[n++] = pls;
++        else
++            free_playlist(c, pls);
++    }
++    c->n_playlists = n;
++
++    /* Drop the renditions whose playlist was freed above */
++    for (i = 0, n = 0; i < c->n_renditions; i++) {
++        struct rendition *rend = c->renditions[i];
++        int keep = !rend->playlist;
++
++        for (j = 0; j < c->n_playlists && !keep; j++)
++            keep = rend->playlist == c->playlists[j];
++
++        if (keep)
++            c->renditions[n++] = rend;
++        else
++            av_free(rend);
++    }
++    c->n_renditions = n;
++}
++
+ static int hls_read_header(AVFormatContext *s)
+ {
+     HLSContext *c = s->priv_data;
+@@ -2304,6 +2389,9 @@
+         av_log(s, AV_LOG_WARNING, "Empty playlist\n");
+         return AVERROR_EOF;
+     }
++
++    if (!c->load_all_variants)
++        select_single_variant(c);
+     /* If the playlist only contained playlists (Master Playlist),
+      * parse each individual playlist. */
+     if (c->n_playlists > 1 || c->playlists[0]->n_segments == 0) {
+@@ -3065,6 +3153,10 @@
+         OFFSET(seg_format_opts), AV_OPT_TYPE_DICT, {.str = NULL}, 0, 0, FLAGS},
+     {"seg_max_retry", "Maximum number of times to reload a segment on error.",
+      OFFSET(seg_max_retry), AV_OPT_TYPE_INT, {.i64 = 0}, 0, INT_MAX, FLAGS},
++    {"load_all_variants", "Load all variants of a master playlist, otherwise only the one selected by max_bandwidth",
++        OFFSET(load_all_variants), AV_OPT_TYPE_BOOL, {.i64 = 1}, 0, 1, FLAGS},
++    {"max_bandwidth", "Highest variant bandwidth to load when load_all_variants is disabled (0 = no limit)",
++        OFFSET(max_bandwidth), AV_OPT_TYPE_INT64, {.i64 = 0}, 0, INT64_MAX, FLAGS},
+     {NULL}
+ };
+ 
