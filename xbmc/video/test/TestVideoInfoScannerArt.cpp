@@ -531,3 +531,187 @@ TEST_F(TestVideoInfoScannerArt, AMovieAndItsExtraOnADiscHaveTheirArtAgainAfterAn
   EXPECT_EQ(moviePoster, MovieArt("poster"));
   EXPECT_EQ(extraPoster, ExtraArt("poster"));
 }
+
+namespace
+{
+class TestVideoInfoScannerArtTvShows : public TestVideoInfoScannerArt
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoInfoScannerArt::SetUp();
+
+    // A tv show source, each of whose folders holds a show
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='tvshows', useFolderNames=0, scanRecursive=0 WHERE idPath=%i",
+        m_db.GetPathId(m_root))));
+  }
+
+  //! A show holding a bluray folder rip of episodes 1 and 2 of season 1, read from the disc's nfo
+  //! \return the folder holding BDMV
+  std::string BlurayRipOfTwoEpisodes()
+  {
+    const std::string show{Folder(m_root, "Show")};
+    File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+    const std::string folder{Folder(show, "Show.S01E01E02")};
+    const std::string bdmv{Folder(folder, "BDMV")};
+    File(bdmv, "index.bdmv");
+    File(bdmv, "MovieObject.bdmv");
+    File(Folder(bdmv, "PLAYLIST"), "00000.mpls");
+    File(Folder(bdmv, "STREAM"), "00000.m2ts");
+    File(bdmv, "index.nfo",
+         "<episodedetails><title>First</title><season>1</season><episode>1</episode>"
+         "</episodedetails>"
+         "<episodedetails><title>Second</title><season>1</season><episode>2</episode>"
+         "</episodedetails>");
+    return folder;
+  }
+
+  //! A show holding a dvd folder rip of episodes 3 and 4 of season 1, read from the disc's nfo
+  //! \return the folder holding VIDEO_TS
+  std::string DvdRipOfTwoEpisodes()
+  {
+    const std::string show{Folder(m_root, "Show")};
+    File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+    const std::string folder{Folder(show, "Show.S01E03E04")};
+    File(Folder(folder, "VIDEO_TS"), "VIDEO_TS.IFO");
+    File(URIUtils::AddFileToFolder(folder, "VIDEO_TS"), "VIDEO_TS.nfo",
+         "<episodedetails><title>Third</title><season>1</season><episode>3</episode>"
+         "</episodedetails>"
+         "<episodedetails><title>Fourth</title><season>1</season><episode>4</episode>"
+         "</episodedetails>");
+    return folder;
+  }
+
+  //! A show holding an ISO of episodes 5 and 6 of season 1, read from the ISO's nfo
+  //! \return the folder holding the ISO
+  std::string IsoOfTwoEpisodes()
+  {
+    const std::string show{Folder(m_root, "Show")};
+    File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+    File(show, "Show.S01E05E06.iso");
+    File(show, "Show.S01E05E06.nfo",
+         "<episodedetails><title>Fifth</title><season>1</season><episode>5</episode>"
+         "</episodedetails>"
+         "<episodedetails><title>Sixth</title><season>1</season><episode>6</episode>"
+         "</episodedetails>");
+    return show;
+  }
+
+  std::string EpisodeArt(int episode, const std::string& type)
+  {
+    return m_db.GetSingleValue(
+        m_db.PrepareSQL("SELECT art.url FROM art JOIN episode ON art.media_id = episode.idEpisode "
+                        "WHERE art.media_type='episode' AND art.type='%s' AND episode.c13='%i'",
+                        type.c_str(), episode));
+  }
+};
+} // namespace
+
+TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfABlurayRipHasItsOwnArtBesideBDMV)
+{
+  const std::string folder{BlurayRipOfTwoEpisodes()};
+  const std::string thumb1{File(folder, "index-S01E01-thumb.jpg")};
+  const std::string thumb2{File(folder, "index-S01E02-thumb.jpg")};
+  File(folder, "thumb.jpg");
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(thumb1, EpisodeArt(1, "thumb"));
+  EXPECT_EQ(thumb2, EpisodeArt(2, "thumb"));
+}
+
+TEST_F(TestVideoInfoScannerArtTvShows, AnEpisodeOfSeveralOnADiscDoesNotHaveThePlainArtBesideBDMV)
+{
+  const std::string folder{BlurayRipOfTwoEpisodes()};
+  File(folder, "thumb.jpg");
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ("", EpisodeArt(1, "thumb"));
+  EXPECT_EQ("", EpisodeArt(2, "thumb"));
+}
+
+TEST_F(TestVideoInfoScannerArtTvShows, AnEpisodesArtCanBeNamedByItsEpisodeAlone)
+{
+  const std::string folder{BlurayRipOfTwoEpisodes()};
+  const std::string thumb1{File(folder, "S01E01-thumb.jpg")};
+  File(folder, "S01E02-thumb.jpg");
+  const std::string thumb2{File(folder, "index-S01E02-thumb.jpg")};
+
+  Scan();
+
+  EXPECT_EQ(thumb1, EpisodeArt(1, "thumb"));
+  EXPECT_EQ(thumb2, EpisodeArt(2, "thumb"));
+}
+
+TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfADvdRipHasItsOwnArtBesideVIDEO_TS)
+{
+  const std::string folder{DvdRipOfTwoEpisodes()};
+  const std::string thumb3{File(folder, "VIDEO_TS-S01E03-thumb.jpg")};
+  const std::string thumb4{File(folder, "S01E04-thumb.jpg")};
+  File(folder, "thumb.jpg");
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(thumb3, EpisodeArt(3, "thumb"));
+  EXPECT_EQ(thumb4, EpisodeArt(4, "thumb"));
+}
+
+// Several ISOs can share a folder, so the episode alone can't say which one the art is for
+TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfAnIsoHasItsOwnArtBesideIt)
+{
+  const std::string folder{IsoOfTwoEpisodes()};
+  const std::string thumb5{File(folder, "Show.S01E05E06-S01E05-thumb.jpg")};
+  File(folder, "S01E06-thumb.jpg");
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(thumb5, EpisodeArt(5, "thumb"));
+  EXPECT_EQ("", EpisodeArt(6, "thumb"));
+}
+
+// A disc of one episode has the plain art beside BDMV, as it always had
+TEST_F(TestVideoInfoScannerArtTvShows, ABlurayRipOfOneEpisodeHasThePlainArtBesideBDMV)
+{
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+  const std::string folder{Folder(show, "Show.S01E09")};
+  const std::string bdmv{Folder(folder, "BDMV")};
+  File(bdmv, "index.bdmv");
+  File(bdmv, "index.nfo",
+       "<episodedetails><title>Ninth</title><season>1</season><episode>9</episode>"
+       "</episodedetails>");
+  const std::string thumb{File(folder, "thumb.jpg")};
+
+  Scan();
+
+  ASSERT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(thumb, EpisodeArt(9, "thumb"));
+}
+
+// Episodes of several in a video file have the art named after the file and the episode, and
+// none named by the episode alone, as several files can share the folder
+TEST_F(TestVideoInfoScannerArtTvShows, EachEpisodeOfAVideoFileHasItsOwnArtBesideIt)
+{
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo", "<tvshow><title>Show</title></tvshow>");
+  File(show, "Show.S01E07E08.mkv");
+  File(show, "Show.S01E07E08.nfo",
+       "<episodedetails><title>Seventh</title><season>1</season><episode>7</episode>"
+       "</episodedetails>"
+       "<episodedetails><title>Eighth</title><season>1</season><episode>8</episode>"
+       "</episodedetails>");
+  const std::string thumb7{File(show, "Show.S01E07E08-S01E07-thumb.jpg")};
+  File(show, "S01E08-thumb.jpg");
+
+  Scan();
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"));
+  EXPECT_EQ(thumb7, EpisodeArt(7, "thumb"));
+  EXPECT_EQ("", EpisodeArt(8, "thumb"));
+}
