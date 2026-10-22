@@ -18,6 +18,10 @@ namespace KODI::WINDOWING
 //! display when \p rasterAspect is zero or below.
 CRect ComputeRasterRect(const RESOLUTION_INFO& info, float rasterAspect);
 
+//! \brief The calibrated area the picture is placed in, bounded by the raster when
+//! \p rasterAspect is above zero.
+CRect ComputeViewWindow(const RESOLUTION_INFO& info, float rasterAspect);
+
 //! \brief The rectangle the interface occupies, and in \p scaleX and \p scaleY the skin-to-screen
 //! scale that puts it there.
 CRect ComputeGuiRect(const RESOLUTION_INFO& skinRes,

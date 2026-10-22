@@ -329,17 +329,7 @@ void CGraphicContext::ResetScissors()
 const CRect CGraphicContext::GetViewWindow() const
 {
   if (m_bCalibrating || m_bFullScreenVideo)
-  {
-    CRect rect;
-    RESOLUTION_INFO info = GetResInfo();
-    rect.x1 = (float)info.Overscan.left;
-    rect.y1 = (float)info.Overscan.top;
-    rect.x2 = (float)info.Overscan.right;
-    rect.y2 = (float)info.Overscan.bottom;
-
-    rect.Intersect(ComputeRasterRect(info, RasterAspectInForce()));
-    return rect;
-  }
+    return ComputeViewWindow(GetResInfo(), RasterAspectInForce());
   return m_videoRect;
 }
 
