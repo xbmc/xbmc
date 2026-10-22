@@ -226,6 +226,16 @@ void CGUIWindowScreenAlignment::DoProcess(unsigned int currentTime, CDirtyRegion
   CGUIWindow::DoProcess(currentTime, dirtyregions);
 }
 
+void CGUIWindowScreenAlignment::Process(unsigned int currentTime, CDirtyRegionList& dirtyregions)
+{
+  CGUIWindow::Process(currentTime, dirtyregions);
+
+  // With no controls, nothing else gives the window a region to repaint.
+  const CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  m_renderRegion = {0.0f, 0.0f, static_cast<float>(context.GetWidth()),
+                    static_cast<float>(context.GetHeight())};
+}
+
 void CGUIWindowScreenAlignment::Render()
 {
   CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();

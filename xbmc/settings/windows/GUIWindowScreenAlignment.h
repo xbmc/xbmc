@@ -37,6 +37,7 @@ public:
   bool OnAction(const CAction& action) override;
   bool OnMessage(CGUIMessage& message) override;
   void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void Render() override;
 
   //! \brief The ratios whose frames are being drawn, ascending.
