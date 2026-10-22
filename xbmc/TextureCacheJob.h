@@ -140,9 +140,13 @@ private:
    or smaller than the desired size for speed reasons.
 
    \param image the URL of the image file.
+   \param maxWidth the maximum width to load the image at, 0 for no limit.
+   \param maxHeight the maximum height to load the image at, 0 for no limit.
    \return a pointer to a CTexture object, NULL if failed.
    */
-  static std::unique_ptr<CTexture> LoadImage(const IMAGE_FILES::CImageFileURL& imageURL);
+  static std::unique_ptr<CTexture> LoadImage(const IMAGE_FILES::CImageFileURL& imageURL,
+                                             unsigned int maxWidth,
+                                             unsigned int maxHeight);
 
   std::string    m_cachePath;
 };
