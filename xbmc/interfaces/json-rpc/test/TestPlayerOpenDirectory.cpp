@@ -9,12 +9,15 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "PlayListPlayer.h"
+#include "URL.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/json-rpc/PlayerOperations.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -48,7 +51,11 @@ protected:
     ASSERT_TRUE(XFILE::CDirectory::Create(m_root));
   }
 
-  void TearDown() override { XFILE::CDirectory::RemoveRecursive(m_root); }
+  void TearDown() override
+  {
+    g_directoryCache.ClearSubPaths(CURL(m_root));
+    XFILE::CDirectory::RemoveRecursive(m_root);
+  }
 
   void Touch(const std::string& relative)
   {
@@ -146,6 +153,32 @@ TEST_F(TestPlayerOpenDirectory, SubdirectoriesAreOnlyFollowedWhenAsked)
   ASSERT_TRUE(CTestPlayerOperations::List(m_root, true, pictures, media));
   EXPECT_EQ((std::vector<std::string>{"y.png"}), Names(pictures));
   EXPECT_EQ((std::vector<std::string>{"a.mp4", "d.mp4"}), Names(media));
+}
+
+// An NFS symlink lists with its target's own path, so a link to an enclosing directory names
+// that directory again rather than a deeper path. The listings are seeded into the directory
+// cache, which CDirectory::GetDirectory consults before the filesystem.
+TEST_F(TestPlayerOpenDirectory, ALinkToAnEnclosingDirectoryIsListedOnce)
+{
+  const std::string top{URIUtils::AddFileToFolder(m_root, "share/")};
+  const std::string sub{URIUtils::AddFileToFolder(top, "sub/")};
+
+  CFileItemList topItems;
+  topItems.Add(std::make_shared<CFileItem>(URIUtils::AddFileToFolder(top, "a.mp4"), false));
+  topItems.Add(std::make_shared<CFileItem>(sub, true));
+  g_directoryCache.SetDirectory(CURL(top), topItems, XFILE::CacheType::ALWAYS);
+
+  CFileItemList subItems;
+  subItems.Add(std::make_shared<CFileItem>(URIUtils::AddFileToFolder(sub, "b.mp4"), false));
+  subItems.Add(std::make_shared<CFileItem>(top, true));
+  g_directoryCache.SetDirectory(CURL(sub), subItems, XFILE::CacheType::ALWAYS);
+
+  CFileItemList pictures;
+  CFileItemList media;
+  ASSERT_TRUE(CTestPlayerOperations::List(top, true, pictures, media));
+
+  EXPECT_EQ(0, pictures.Size());
+  EXPECT_EQ((std::vector<std::string>{"a.mp4", "b.mp4"}), Names(media));
 }
 
 TEST_F(TestPlayerOpenDirectory, ADirectoryThatCannotBeListedIsReported)
