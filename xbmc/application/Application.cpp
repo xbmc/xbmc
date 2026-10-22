@@ -1704,6 +1704,8 @@ bool CApplication::Stop(int exitCode)
     m_ExitCode = exitCode;
     CLog::Log(LOGINFO, "Stopping all");
 
+    CScriptInvocationManager::GetInstance().NotifyAllScriptsAborting();
+
     // Stop scanning before the job manager is cancelled below
     // otherwise scans underway are not stopped
     CMusicLibraryQueue::GetInstance().CancelAllJobs();
