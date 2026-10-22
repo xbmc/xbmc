@@ -335,7 +335,8 @@ std::shared_ptr<CSettings> CurrentSettings()
 } // namespace
 
 CScopedSetting::CScopedSetting(const std::string& id)
-  : m_id(id), m_previous(CurrentSettings()->GetSetting(id)->ToString())
+  : m_id(id),
+    m_previous(CurrentSettings()->GetSetting(id)->ToString())
 {
 }
 

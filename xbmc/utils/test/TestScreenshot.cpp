@@ -260,9 +260,9 @@ TEST_F(TestScreenshotTaking, AFailedScreenshotLeavesTheOneItsNameAlreadyHeld)
 {
   Write("named.png");
 
-  auto taken = std::async(std::launch::async, []
-                          { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE,
-                                                                   "named.png"); });
+  auto taken = std::async(
+      std::launch::async,
+      [] { return CScreenShot::TakeScreenshotSync(CaptureContent::COMPOSITE, "named.png"); });
   ASSERT_TRUE(Deliver(CaptureContent::COMPOSITE, false));
 
   EXPECT_EQ(Error::FAILED, taken.get().error);
