@@ -44,6 +44,13 @@ xbmc/filesystem/test/dummy64.zip
 xbmc/filesystem/test/refRARnormal.rar
 xbmc/filesystem/test/refRARstored.rar
 xbmc/games/addons/cheats/test/game.cht.zip
+xbmc/guilib/test/testdata/icc-gray-untagged.jpg
+xbmc/guilib/test/testdata/icc-gray.jpg
+xbmc/guilib/test/testdata/icc-p3.jpg
+xbmc/guilib/test/testdata/icc-srgb-lut.jpg
+xbmc/guilib/test/testdata/icc-srgb-v2.jpg
+xbmc/guilib/test/testdata/icc-srgb-v4.jpg
+xbmc/guilib/test/testdata/icc-untagged.jpg
 xbmc/music/tags/test/testdata/tagged.mp2
 xbmc/network/test/data/test-ranges.txt
 xbmc/network/test/data/test.html
