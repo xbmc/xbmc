@@ -52,6 +52,7 @@ set(package_files strings.xml
                   src/XBMCTextureCache.java
                   src/XBMCURIUtils.java
                   src/KodiDeepLinkActivity.java
+                  src/RestartActivity.java
                   src/channels/SyncChannelJobService.java
                   src/channels/SyncProgramsJobService.java
                   src/channels/model/XBMCDatabase.java
