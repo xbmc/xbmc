@@ -31,7 +31,8 @@ public:
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions);
   void UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler);
   bool HasLanguageInvoker(const std::string &script) const;
-  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script);
+  std::shared_ptr<ILanguageInvoker> GetLanguageInvoker(const std::string& script,
+                                                       bool reuseable = true);
 
   /*!
   * \brief Returns addon_handle if last reusable invoker is ready to use.
