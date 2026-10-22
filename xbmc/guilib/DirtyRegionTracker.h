@@ -19,7 +19,7 @@ public:
   void MarkDirtyRegion(const CDirtyRegion &region);
 
   const CDirtyRegionList &GetMarkedRegions() const;
-  CDirtyRegionList GetDirtyRegions();
+  CDirtyRegionList GetDirtyRegions(int maxAge);
   void CleanMarkedRegions(int bufferAge);
 
 private:
