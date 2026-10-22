@@ -265,8 +265,6 @@ bool CRendererVTBDisplayLayer::ConfigChanged(const VideoPicture& picture)
 void CRendererVTBDisplayLayer::AddVideoPicture(const VideoPicture& picture, int index)
 {
   ReleaseBuffer(index);
-  if (index == m_lastIndex)
-    m_lastIndex = -1;
   auto* vtb = GetVTBBuffer(picture.videoBuffer);
   if (!vtb)
   {
@@ -282,6 +280,9 @@ void CRendererVTBDisplayLayer::AddVideoPicture(const VideoPicture& picture, int 
 
 void CRendererVTBDisplayLayer::ReleaseBuffer(int index)
 {
+  // Recycling a slot must not invalidate a newer presented frame.
+  int expectedIndex = index;
+  m_lastIndex.compare_exchange_strong(expectedIndex, -1);
   if (m_buffers[index])
   {
     m_buffers[index]->Release();
@@ -344,7 +345,7 @@ void CRendererVTBDisplayLayer::RenderUpdate(
   if (!m_configured)
     return;
   Update();
-  if (index == m_lastIndex)
+  if (index == m_lastIndex.load())
     return;
   auto* vtb = GetVTBBuffer(m_buffers[index]);
   if (!vtb)
@@ -398,9 +399,10 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
 {
   using namespace KODI::RENDERING::CAPTURE;
 
-  if (!m_configured || m_lastIndex < 0)
+  const int index = m_lastIndex.load();
+  if (!m_configured || index < 0)
     return false;
-  auto* vtb = GetVTBBuffer(m_buffers[m_lastIndex]);
+  auto* vtb = GetVTBBuffer(m_buffers[index]);
   if (!vtb)
     return false;
 
@@ -473,7 +475,7 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
          colorSpace:nullptr];
   }
 
-  const auto& picture = m_capturePictures[m_lastIndex];
+  const auto& picture = m_capturePictures[index];
   result.pixels = std::make_shared<CHeapCapturePixels>(std::move(pixels));
   result.width = width;
   result.height = height;

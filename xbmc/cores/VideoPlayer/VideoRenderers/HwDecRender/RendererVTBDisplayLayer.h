@@ -12,6 +12,8 @@
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "threads/CriticalSection.h"
 
+#include <atomic>
+
 // Presents the VideoToolbox P010 surface without passing it through an 8-bit
 // OpenGL ES framebuffer. Kodi's GUI is composited above the system video layer.
 class CRendererVTBDisplayLayer : public CBaseRenderer
@@ -51,7 +53,7 @@ private:
   VideoPicture m_capturePictures[NUM_BUFFERS]{};
   StreamHdrType m_hdrType{};
   bool m_configured{false};
-  int m_lastIndex{-1};
+  std::atomic<int> m_lastIndex{-1};
   CRect m_lastRect;
   CRect m_lastSourceRect;
 };
