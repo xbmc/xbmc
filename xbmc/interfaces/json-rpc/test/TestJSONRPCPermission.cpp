@@ -22,8 +22,9 @@ using namespace JSONRPC;
 namespace
 {
 constexpr std::array<OperationPermission, 14> PERMISSIONS{
-    ReadData,  ControlPlayback, ControlNotify, ControlPower, UpdateData,   RemoveData, Navigate,
-    WriteFile, ControlSystem,   ControlGUI,    ManageAddon,  ExecuteAddon, ControlPVR,    WriteSetting};
+    ReadData,    ControlPlayback, ControlNotify, ControlPower,  UpdateData,
+    RemoveData,  Navigate,        WriteFile,     ControlSystem, ControlGUI,
+    ManageAddon, ExecuteAddon,    ControlPVR,    WriteSetting};
 } // namespace
 
 TEST(TestJSONRPCPermission, EveryPermissionHasAName)
