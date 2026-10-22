@@ -285,7 +285,26 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
     converted = ToneMapToTexture(picture, planes, stride, *result);
 
 #if LIBSWSCALE_BUILD >= AV_VERSION_INT(9, 0, 100)
-  if (!converted)
+  // color management builds a 3D LUT per call, which takes seconds on ARM, so keep it for
+  // PQ, HLG and gamuts other than BT.709 and BT.601 that the tone mapping above did not convert
+  bool colorManaged = picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67;
+  switch (picture.color_primaries)
+  {
+    case AVCOL_PRI_RESERVED0:
+    case AVCOL_PRI_BT709:
+    case AVCOL_PRI_UNSPECIFIED:
+    case AVCOL_PRI_RESERVED:
+    case AVCOL_PRI_BT470BG:
+    case AVCOL_PRI_SMPTE170M:
+    case AVCOL_PRI_SMPTE240M:
+      break;
+    default:
+      colorManaged = true;
+      break;
+  }
+
+  if (!converted && colorManaged)
   {
     AVFrame* srcFrame = av_frame_alloc();
     AVFrame* dstFrame = av_frame_alloc();
