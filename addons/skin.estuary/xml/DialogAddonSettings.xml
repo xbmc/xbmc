@@ -85,7 +85,7 @@
 				<height>630</height>
 				<pagecontrol>60</pagecontrol>
 				<onleft>3</onleft>
-				<onright>9000</onright>
+				<onright>60</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
 			</control>
