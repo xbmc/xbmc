@@ -11,6 +11,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -99,6 +100,7 @@ std::string HdrTypeString(int type)
 } // unnamed namespace
 
 const std::string CAndroidUtils::SETTING_LIMITGUI = "videoscreen.limitgui";
+const std::string CAndroidUtils::SETTING_HOMESCREEN = "lookandfeel.androidhomescreen";
 
 CAndroidUtils::CAndroidUtils()
 {
@@ -145,10 +147,22 @@ CAndroidUtils::CAndroidUtils()
   }
   CLog::Log(LOGDEBUG, "CAndroidUtils: selected resolution: {}x{}", m_width, m_height);
 
-  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
-      this, {CAndroidUtils::SETTING_LIMITGUI});
+  const auto settingsManager =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager();
+  settingsManager->RegisterCallback(
+      this, {CAndroidUtils::SETTING_LIMITGUI, CAndroidUtils::SETTING_HOMESCREEN});
+  settingsManager->RegisterSettingsHandler(this);
+  OnSettingsLoaded();
 
   LogDisplaySupportedHdrTypes();
+}
+
+CAndroidUtils::~CAndroidUtils()
+{
+  const auto settingsManager =
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager();
+  settingsManager->UnregisterSettingsHandler(this);
+  settingsManager->UnregisterCallback(this);
 }
 
 bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
@@ -246,6 +260,16 @@ void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& sett
   /* Calibration (overscan / subtitles) are based on GUI size -> reset required */
   if (settingId == CAndroidUtils::SETTING_LIMITGUI)
     CDisplaySettings::GetInstance().ClearCalibrations();
+  else if (settingId == CAndroidUtils::SETTING_HOMESCREEN)
+    CXBMCApp::Get().setHomeScreen(
+        std::static_pointer_cast<const CSettingBool>(setting)->GetValue());
+}
+
+void CAndroidUtils::OnSettingsLoaded()
+{
+  // The setting is stored per profile, the home screen state by Android: keep them in sync
+  CXBMCApp::Get().setHomeScreen(
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(SETTING_HOMESCREEN));
 }
 
 std::vector<int> CAndroidUtils::GetDisplaySupportedHdrTypes()
