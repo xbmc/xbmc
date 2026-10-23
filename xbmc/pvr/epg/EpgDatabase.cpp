@@ -1078,9 +1078,17 @@ bool CPVREpgDatabase::QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(int iEpgID,
 {
   Filter filter;
 
+  const int64_t iMinEndTime{ToStoredTime(minEndTime)};
+
   std::unique_lock lock(m_critSection);
-  filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime >= %lld AND iStartTime <= %lld", iEpgID,
-                                ToStoredTime(minEndTime), ToStoredTime(maxStartTime)));
+  // Tags of an EPG do not overlap, so a tag starting before the last one that starts before
+  // minEndTime cannot reach minEndTime. Bounding the start time this way keeps the index scan
+  // short. MySQL needs the derived table to allow a subquery on the table being deleted from.
+  filter.AppendWhere(PrepareSQL(
+      "idEpg = %u AND iEndTime >= %lld AND iStartTime <= %lld AND iStartTime >= "
+      "coalesce((SELECT s FROM (SELECT max(iStartTime) AS s FROM epgtags WHERE idEpg = %u AND "
+      "iStartTime < %lld) AS t), %lld)",
+      iEpgID, iMinEndTime, ToStoredTime(maxStartTime), iEpgID, iMinEndTime, iMinEndTime));
 
   std::string strQuery;
   if (BuildSQL("DELETE FROM epgtags", filter, strQuery))
