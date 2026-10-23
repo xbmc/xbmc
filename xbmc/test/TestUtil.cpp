@@ -24,6 +24,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/FilenameAttributes.h"
+#include "video/VideoDatabase.h"
 
 #include <algorithm>
 #include <string>
@@ -1362,6 +1363,79 @@ TEST_F(TestVersionAudio, AVersionsAudioCanBeInAnAudioFolder)
   std::vector<std::string> expected{File(URIUtils::AddFileToFolder("audio", "index-00800.mka")),
                                     File(URIUtils::AddFileToFolder("audio", "00800.dts"))};
   File(URIUtils::AddFileToFolder("audio", "index-00801.mka"));
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+//! A source using all the audio beside its videos as their external audio
+class TestVersionAudioUsingAll : public TestVersionAudio
+{
+protected:
+  void SetUp() override
+  {
+    TestVersionAudio::SetUp();
+    ASSERT_TRUE(m_db.Open());
+    std::string source{m_root};
+    URIUtils::AddSlashAtEnd(source);
+    m_idPath = m_db.AddPath(source);
+    ASSERT_TRUE(
+        m_db.ExecuteQuery(m_db.PrepareSQL("UPDATE path SET allAudio=1 WHERE idPath=%i", m_idPath)));
+  }
+
+  void TearDown() override
+  {
+    m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM path WHERE idPath=%i", m_idPath));
+    m_db.Close();
+    TestVersionAudio::TearDown();
+  }
+
+  CVideoDatabase m_db;
+  int m_idPath{-1};
+};
+
+// All the audio beside a disc is used, but not another version's, nor the disc's folders
+TEST_F(TestVersionAudioUsingAll, AFolderRipsVersionHasAllTheAudioButAnotherVersions)
+{
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File("M3GAN.ac3"), File("index-00800.mka"),
+                                    File("commentary.flac")};
+  File("index-00801.mka");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+TEST_F(TestVersionAudioUsingAll, AFolderRipInADiscFolderHasAllTheAudioButAnotherVersions)
+{
+  Folder("disc 1");
+  Folder(URIUtils::AddFileToFolder("disc 1", "BDMV"));
+  const std::string disc{File(URIUtils::AddFileToFolder("disc 1", "BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("disc 1", "commentary.flac")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "00800.dts"))};
+  File(URIUtils::AddFileToFolder("disc 1", "00801.dts"));
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+TEST_F(TestVersionAudioUsingAll, AnIsosVersionHasAllTheAudioButAnotherVersions)
+{
+  const std::string disc{File("M3GAN.iso")};
+  std::vector<std::string> expected{File("M3GAN-00800.ac3"), File("commentary.flac")};
+  File("M3GAN-00801.ac3");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+TEST_F(TestVersionAudioUsingAll, AnIsoInADiscFolderHasAllTheAudioButAnotherVersions)
+{
+  Folder("disc 1");
+  const std::string disc{File(URIUtils::AddFileToFolder("disc 1", "M3GAN.iso"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("disc 1", "M3GAN-00800.ac3")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "commentary.flac"))};
+  File(URIUtils::AddFileToFolder("disc 1", "M3GAN-00801.ac3"));
 
   std::ranges::sort(expected);
   EXPECT_EQ(expected, AudioOf800(disc));
