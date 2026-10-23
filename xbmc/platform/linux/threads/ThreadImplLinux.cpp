@@ -19,6 +19,9 @@
 #include <unistd.h>
 
 #if !defined(TARGET_ANDROID) && (defined(__GLIBC__) || defined(__UCLIBC__))
+#if defined(__UCLIBC__)
+#include <features.h>
+#endif
 #if defined(__UCLIBC__) || !__GLIBC_PREREQ(2, 30)
 #include <sys/syscall.h>
 #endif
@@ -53,7 +56,10 @@ constexpr int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 }
 
 #if !defined(TARGET_ANDROID) && (defined(__GLIBC__) || defined(__UCLIBC__))
-#if defined(__UCLIBC__) || !__GLIBC_PREREQ(2, 30)
+#if (defined(__UCLIBC__) && \
+     (!defined(__UCLIBC_HAS_THREADS_NATIVE__) || (__UCLIBC_MAJOR__ < 1) || \
+      (__UCLIBC_MAJOR__ == 1 && __UCLIBC_MINOR__ == 0 && __UCLIBC_SUBLEVEL__ < 56))) || \
+    (!defined(__UCLIBC__) && !__GLIBC_PREREQ(2, 30))
 static pid_t gettid()
 {
   return syscall(__NR_gettid);
