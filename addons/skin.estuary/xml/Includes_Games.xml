@@ -1938,21 +1938,14 @@
 			<control type="image">
 				<left>10</left>
 				<top>134</top>
-				<width>1160</width>
+				<width>1200</width>
 				<height>740</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
-			<control type="image">
-				<left>1160</left>
-				<top>154</top>
-				<width>1</width>
-				<height>700</height>
-				<texture colordiffuse="bg_overlay">colors/white.png</texture>
-			</control>
 			<control type="grouplist" id="1083901">
-				<left>30</left>
+				<left>29</left>
 				<top>154</top>
-				<width>1108</width>
+				<width>1160</width>
 				<height>700</height>
 				<pagecontrol>1083906</pagecontrol>
 				<onleft>1083908</onleft>
@@ -1966,26 +1959,24 @@
 			</control>
 			<control type="radiobutton" id="1083904">
 				<description>Default RadioButton</description>
-				<textwidth>912</textwidth>
+				<textwidth>964</textwidth>
 				<radioheight>70</radioheight>
 				<textureradioonnofocus colordiffuse="button_focus">buttons/radio-button-on.png</textureradioonnofocus>
 				<textureradioonfocus>buttons/radio-button-on.png</textureradioonfocus>
 				<include>DefaultSettingButton</include>
 			</control>
 			<control type="grouplist" id="1083908">
-				<left>1185</left>
+				<left>1210</left>
 				<top>144</top>
 				<orientation>vertical</orientation>
 				<usecontrolcoords>true</usecontrolcoords>
 				<width>300</width>
 				<height>710</height>
 				<itemgap>10</itemgap>
-				<onleft>1083906</onleft>
+				<onleft>1083901</onleft>
 				<onright>1083901</onright>
 				<include content="DefaultDialogButton">
 					<param name="id" value="1083907" />
-					<param name="left" value="-20" />
-					<param name="width" value="340" />
 					<param name="label" value="" />
 					<param name="font" value="font12" />
 					<param name="wrapmultiline" value="true" />
@@ -2001,8 +1992,6 @@
 				</control>
 				<include content="DefaultDialogButton">
 					<param name="id" value="1083905" />
-					<param name="left" value="-20" />
-					<param name="width" value="340" />
 					<param name="label" value="" />
 				</include>
 				<control type="textbox" id="1083902">
@@ -2014,7 +2003,7 @@
 				</control>
 			</control>
 			<control type="scrollbar" id="1083906">
-				<left>1138</left>
+				<left>1189</left>
 				<top>154</top>
 				<width>12</width>
 				<height>700</height>
