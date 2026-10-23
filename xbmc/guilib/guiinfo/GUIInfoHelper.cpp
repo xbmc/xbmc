@@ -21,6 +21,8 @@
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
 
 namespace KODI::GUILIB::GUIINFO
@@ -163,6 +165,10 @@ std::shared_ptr<CGUIListItem> GetCurrentListItem(int contextWindow,
                                                  int itemOffset /* = 0 */,
                                                  unsigned int itemFlags /* = 0 */)
 {
+  // Add-ons ask for list items from their own threads, and the window and its
+  // controls can change under them unless the GUI is locked
+  std::unique_lock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
   std::shared_ptr<CGUIListItem> item;
 
   if (containerId == 0 && itemOffset == 0 && !(itemFlags & INFOFLAG_LISTITEM_CONTAINER) &&
