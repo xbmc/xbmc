@@ -40,6 +40,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
@@ -52,7 +53,9 @@
 namespace KODI::VIDEO::UTILS
 {
 
-std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache /* = nullptr */)
+std::string FindTrailer(const CFileItem& item,
+                        bool movieFolder,
+                        KODI::REGEXP::RegExpCache* cache /* = nullptr */)
 {
   std::string strFile2;
   std::string strFile = item.GetPath();
@@ -110,7 +113,9 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
       matchRegExps.push_back(r);
   }
 
-  const auto findTrailerFor = [&strFile2, &matchRegExps](std::string strFile)
+  // movie-trailer is no particular video's, so only a movie with a folder of its own has it
+  const bool hasMovieTrailer{movieFolder || !discFile.empty()};
+  const auto findTrailerFor = [&strFile2, &matchRegExps, hasMovieTrailer](std::string strFile)
   {
     std::string strDir = URIUtils::GetDirectory(strFile);
     CFileItemList items;
@@ -119,13 +124,18 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
         XFILE::DIR_FLAG_READ_CACHE | XFILE::DIR_FLAG_NO_FILE_INFO | XFILE::DIR_FLAG_NO_FILE_DIRS);
     URIUtils::RemoveExtension(strFile);
     strFile += "-trailer";
-    std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
+    const std::string strFile3{hasMovieTrailer ? URIUtils::AddFileToFolder(strDir, "movie-trailer")
+                                               : ""};
 
     std::string strTrailer;
     for (int i = 0; i < items.Size(); i++)
     {
       std::string strCandidate = items[i]->GetPath();
       URIUtils::RemoveExtension(strCandidate);
+      // Not even through a trailer expression matching it
+      if (!hasMovieTrailer &&
+          StringUtils::EqualsNoCase(URIUtils::GetFileName(strCandidate), "movie-trailer"))
+        continue;
       if (StringUtils::EqualsNoCase(strCandidate, strFile) ||
           StringUtils::EqualsNoCase(strCandidate, strFile2) ||
           StringUtils::EqualsNoCase(strCandidate, strFile3))
@@ -157,6 +167,17 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
     strTrailer = findTrailerFor(discFile);
 
   return strTrailer;
+}
+
+bool HasMovieFolder(CVideoDatabase& database, const std::string& videoPath)
+{
+  // A playlist's path (bluray://.../BDMV/PLAYLIST/) is deeper than its disc's, so would be taken
+  // for a folder below the source's root
+  const std::string path{URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath)
+                                                           : videoPath};
+  SScanSettings settings;
+  bool foundDirectly{false};
+  return database.GetScraperForPath(path, settings, foundDirectly) && settings.parent_name_root;
 }
 
 std::string GetOpticalMediaPath(const CFileItem& item)
