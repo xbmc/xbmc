@@ -8,8 +8,10 @@
 
 #include "GUIDialogExtendedProgressBar.h"
 
+#include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIProgressControl.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/TimeUtils.h"
 
 #include <cmath>
@@ -63,7 +65,10 @@ CGUIDialogProgressBarHandle *CGUIDialogExtendedProgressBar::GetHandle(const std:
     m_handles.push_back(handle);
   }
 
-  Open();
+  // Open asynchronously. Callers mostly run on worker threads and must not block waiting for
+  // the GUI thread, which may itself be blocked joining the calling thread (e.g. when the PVR
+  // EPG updater is stopped on system sleep).
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_DIALOG_OPEN, GetID());
 
   return handle;
 }
