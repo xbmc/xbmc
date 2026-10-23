@@ -79,19 +79,23 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
   if (URIUtils::IsBlurayPath(strFile))
     strFile = URIUtils::GetDiscFile(strFile);
 
+  // A disc folder rip's trailer is beside BDMV/VIDEO_TS, named after the movie as its subtitles
+  // are, which skips a folder of the disc's own (disc 1)
+  std::string discFile;
+  if (URIUtils::IsOpticalMediaFile(strFile))
+  {
+    discFile = strFile;
+    std::string folder;
+    std::string name;
+    CUtil::GetVideoBasePathAndFileName(strFile, folder, name);
+    // The disc file's extension stands in for the name's, so a name with dots keeps them all
+    strFile = URIUtils::AddFileToFolder(folder, name + URIUtils::GetExtension(strFile));
+  }
+
   // no local trailer available for these
   if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(strFile) || item.IsLiveTV() ||
       item.IsPlugin() || item.IsDVD())
     return "";
-
-  std::string strDir = URIUtils::GetDirectory(strFile);
-  CFileItemList items;
-  XFILE::CDirectory::GetDirectory(
-      strDir, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
-      XFILE::DIR_FLAG_READ_CACHE | XFILE::DIR_FLAG_NO_FILE_INFO | XFILE::DIR_FLAG_NO_FILE_DIRS);
-  URIUtils::RemoveExtension(strFile);
-  strFile += "-trailer";
-  std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
 
   // Precompile our REs
   std::vector<std::shared_ptr<CRegExp>> matchRegExps;
@@ -106,31 +110,51 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
       matchRegExps.push_back(r);
   }
 
-  std::string strTrailer;
-  for (int i = 0; i < items.Size(); i++)
+  const auto findTrailerFor = [&strFile2, &matchRegExps](std::string strFile)
   {
-    std::string strCandidate = items[i]->GetPath();
-    URIUtils::RemoveExtension(strCandidate);
-    if (StringUtils::EqualsNoCase(strCandidate, strFile) ||
-        StringUtils::EqualsNoCase(strCandidate, strFile2) ||
-        StringUtils::EqualsNoCase(strCandidate, strFile3))
+    std::string strDir = URIUtils::GetDirectory(strFile);
+    CFileItemList items;
+    XFILE::CDirectory::GetDirectory(
+        strDir, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+        XFILE::DIR_FLAG_READ_CACHE | XFILE::DIR_FLAG_NO_FILE_INFO | XFILE::DIR_FLAG_NO_FILE_DIRS);
+    URIUtils::RemoveExtension(strFile);
+    strFile += "-trailer";
+    std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
+
+    std::string strTrailer;
+    for (int i = 0; i < items.Size(); i++)
     {
-      strTrailer = items[i]->GetPath();
-      break;
-    }
-    else
-    {
-      for (auto& expr : matchRegExps)
+      std::string strCandidate = items[i]->GetPath();
+      URIUtils::RemoveExtension(strCandidate);
+      if (StringUtils::EqualsNoCase(strCandidate, strFile) ||
+          StringUtils::EqualsNoCase(strCandidate, strFile2) ||
+          StringUtils::EqualsNoCase(strCandidate, strFile3))
       {
-        if (expr->RegFind(strCandidate) != -1)
+        strTrailer = items[i]->GetPath();
+        break;
+      }
+      else
+      {
+        for (auto& expr : matchRegExps)
         {
-          strTrailer = items[i]->GetPath();
-          i = items.Size();
-          break;
+          if (expr->RegFind(strCandidate) != -1)
+          {
+            strTrailer = items[i]->GetPath();
+            i = items.Size();
+            break;
+          }
         }
       }
     }
-  }
+    return strTrailer;
+  };
+
+  std::string strTrailer{findTrailerFor(strFile)};
+
+  //! @todo Up to v21 a disc folder rip's trailer was looked for inside BDMV/VIDEO_TS, as
+  //! index-trailer or movie-trailer. Deprecate in v23.
+  if (strTrailer.empty() && !discFile.empty())
+    strTrailer = findTrailerFor(discFile);
 
   return strTrailer;
 }
