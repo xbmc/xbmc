@@ -802,6 +802,7 @@ template<>
 bool DetailsFromFileItem<CArtist>(const CFileItem& item, CArtist& artist)
 {
   artist.strArtist = item.GetLabel();
+  artist.strSortName = FromString(item, "artist.sortname");
   artist.strMusicBrainzArtistID = FromString(item, "artist.musicbrainzid");
   artist.strDisambiguation = FromString(item, "artist.disambiguation");
   artist.strType = FromString(item, "artist.type");
