@@ -27,14 +27,14 @@ CFileItem FavouriteWithThumb()
 TEST(TestFavouritesUtils, KeepingTheCurrentThumbChangesNothing)
 {
   CFileItem item{FavouriteWithThumb()};
-  EXPECT_FALSE(FAVOURITES_UTILS::SetChosenThumbnail(item, std::string{IMAGE_CHOICE::CURRENT}));
+  EXPECT_FALSE(FAVOURITES_UTILS::SetChosenThumbnail(item, std::string{ART::CHOICE::CURRENT}));
   EXPECT_EQ(item.GetArt("thumb"), "special://home/current.png");
 }
 
 TEST(TestFavouritesUtils, NoThumbClearsIt)
 {
   CFileItem item{FavouriteWithThumb()};
-  EXPECT_TRUE(FAVOURITES_UTILS::SetChosenThumbnail(item, std::string{IMAGE_CHOICE::NONE}));
+  EXPECT_TRUE(FAVOURITES_UTILS::SetChosenThumbnail(item, std::string{ART::CHOICE::NONE}));
   EXPECT_EQ(item.GetArt("thumb"), "");
 }
 
@@ -55,6 +55,6 @@ TEST(TestFavouritesUtils, TheImageItAlreadyHasChangesNothing)
 TEST(TestFavouritesUtils, NoThumbWhereThereIsNoneChangesNothing)
 {
   CFileItem item{"favourites://test", false};
-  EXPECT_FALSE(FAVOURITES_UTILS::SetChosenThumbnail(item, std::string{IMAGE_CHOICE::NONE}));
+  EXPECT_FALSE(FAVOURITES_UTILS::SetChosenThumbnail(item, std::string{ART::CHOICE::NONE}));
   EXPECT_EQ(item.GetArt("thumb"), "");
 }
