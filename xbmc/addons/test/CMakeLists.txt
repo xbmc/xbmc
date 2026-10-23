@@ -4,6 +4,7 @@ set(SOURCES TestAddonBuilder.cpp
             TestAddonVersion.cpp
             TestResource.cpp
             TestScraper.cpp
-            TestSkin.cpp)
+            TestSkin.cpp
+            TestVFSEntry.cpp)
 
 core_add_test_library(addons_test)
