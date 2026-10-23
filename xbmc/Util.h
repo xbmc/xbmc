@@ -259,6 +259,25 @@ public:
                                           std::string& basePath,
                                           std::string& videoFileName);
 
+  /*! \brief The names a version (playlist) of a bluray gives its own files beside the disc, as it
+   *         does its art: index-00800 and 00800 for a folder rip, M3GAN-00800 for M3GAN.iso.
+   *  \param[in] videoPath The path of the video, a bluray:// playlist path for a version.
+   *  \return The names, without an extension, or none if the video is no version of a bluray.
+   */
+  static std::vector<std::string> GetVersionFileNames(const std::string& videoPath);
+
+  /*! \brief Whether a file found for a version (playlist) of a bluray is another version's, named
+   *         after the video (M3GAN-00801), or as a folder rip's version names its own (index-00801
+   *         or 00801).
+   *  \param[in] file The file found.
+   *  \param[in] videoName The name the video's files are found by, from
+   *             GetVideoBasePathAndFileName().
+   *  \param[in] videoPath The path of the video.
+   */
+  static bool IsAnotherVersionsFile(const std::string& file,
+                                    const std::string& videoName,
+                                    const std::string& videoPath);
+
   /*! \brief If a file has a stack://, bluray:// or archive (zip://, rar://, archive://) path,
    *         use the dynamic path for updates (settings, SaveFileStateJob) instead of the real path.
    *  \param item The file item to check.
