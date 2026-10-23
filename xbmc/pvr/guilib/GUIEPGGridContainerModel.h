@@ -9,6 +9,7 @@
 #pragma once
 
 #include "XBDateTime.h"
+#include "threads/CriticalSection.h"
 
 #include <functional>
 #include <map>
@@ -51,6 +52,7 @@ class CGUIEPGGridContainerModel
 {
 public:
   explicit CGUIEPGGridContainerModel(unsigned int minutesPerBlock);
+  CGUIEPGGridContainerModel(const CGUIEPGGridContainerModel& other);
   virtual ~CGUIEPGGridContainerModel() = default;
 
   void Initialize(const CFileItemList& items,
@@ -176,5 +178,8 @@ private:
   int m_lastActiveChannel = 0;
   int m_firstActiveBlock = 0;
   int m_lastActiveBlock = 0;
+
+  // Guards the lazily populated grid data, which is also accessed from non-GUI threads.
+  mutable CCriticalSection m_critSection;
 };
 } // namespace PVR
