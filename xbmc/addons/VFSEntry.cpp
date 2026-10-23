@@ -496,18 +496,32 @@ namespace
 {
 void VFSDirEntriesToCFileItemList(int num_entries, const VFSDirEntry* entries, CFileItemList& items)
 {
+  // Windows SYSTEMTIME supports calendar years through 30827.
+  constexpr int64_t LAST_CALENDAR_SECOND{910670515199}; // 30827-12-31 23:59:59
+
   for (int i=0;i<num_entries;++i)
   {
+    if (!entries[i].path)
+      continue;
+
     auto item = std::make_shared<CFileItem>();
-    item->SetLabel(entries[i].label);
+    if (entries[i].label)
+      item->SetLabel(entries[i].label);
     item->SetPath(URIUtils::SanitiseUrlEncoding(entries[i].path));
-    item->SetSize(entries[i].size);
-    item->SetDateTime(entries[i].date_time);
+    if (std::in_range<int64_t>(entries[i].size))
+      item->SetSize(static_cast<int64_t>(entries[i].size));
+    if (entries[i].date_time != 0 &&
+        std::cmp_less_equal(entries[i].date_time, LAST_CALENDAR_SECOND))
+      item->SetDateTime(
+          CDateTime::FromSecondsSinceEpoch(static_cast<int64_t>(entries[i].date_time)));
     item->SetFolder(entries[i].folder);
     if (entries[i].title)
       item->SetTitle(entries[i].title);
-    for (unsigned int j=0;j<entries[i].num_props;++j)
+    for (unsigned int j = 0; entries[i].properties && j < entries[i].num_props; ++j)
     {
+      if (!entries[i].properties[j].name || !entries[i].properties[j].val)
+        continue;
+
       if (StringUtils::CompareNoCase(entries[i].properties[j].name, "propmisusepreformatted") == 0)
       {
         if (StringUtils::CompareNoCase(entries[i].properties[j].val, "true") == 0)
@@ -541,6 +555,13 @@ bool CVFSEntry::GetDirectory(const CURL& url, CFileItemList& items, void* ctx) c
                                                &callbacks);
   if (ret)
   {
+    if (num_entries < 0 || (num_entries > 0 && !entries))
+    {
+      if (entries)
+        m_ifc.vfs->toAddon->free_directory(m_ifc.vfs, entries, 0);
+      return false;
+    }
+
     VFSDirEntriesToCFileItemList(num_entries, entries, items);
     m_ifc.vfs->toAddon->free_directory(m_ifc.vfs, entries, num_entries);
   }
@@ -563,6 +584,13 @@ bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items) const
                                                 rootpath);
   if (!ret)
     return false;
+
+  if (num_entries < 0 || (num_entries > 0 && !entries))
+  {
+    if (entries)
+      m_ifc.vfs->toAddon->free_directory(m_ifc.vfs, entries, 0);
+    return false;
+  }
 
   VFSDirEntriesToCFileItemList(num_entries, entries, items);
   m_ifc.vfs->toAddon->free_directory(m_ifc.vfs, entries, num_entries);
