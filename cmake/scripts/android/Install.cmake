@@ -37,6 +37,7 @@ set(package_files strings.xml
                   build.gradle
                   src/Splash.java
                   src/Main.java
+                  src/Home.java
                   src/XBMCBroadcastReceiver.java
                   src/XBMCInputDeviceListener.java
                   src/XBMCJsonRPC.java

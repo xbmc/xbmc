@@ -9,6 +9,7 @@
 #pragma once
 
 #include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
 #include "utils/HDRCapabilities.h"
 #include "windowing/Resolution.h"
 
@@ -17,11 +18,11 @@
 
 #include <androidjni/Display.h>
 
-class CAndroidUtils : public ISettingCallback
+class CAndroidUtils : public ISettingCallback, public ISettingsHandler
 {
 public:
   CAndroidUtils();
-  ~CAndroidUtils() override = default;
+  ~CAndroidUtils() override;
   bool GetNativeResolution(RESOLUTION_INFO* res) const;
   bool SetNativeResolution(const RESOLUTION_INFO& res);
   bool ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions);
@@ -30,7 +31,11 @@ public:
 
   // Implementation of ISettingCallback
   static const std::string SETTING_LIMITGUI;
+  static const std::string SETTING_HOMESCREEN;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+
+  // Implementation of ISettingsHandler
+  void OnSettingsLoaded() override;
 
   static bool SupportsMediaCodecMimeType(const std::string& mimeType);
 
