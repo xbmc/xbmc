@@ -31,10 +31,23 @@ namespace KODI::VIDEO::UTILS
 /*! \brief
  *  Find a local trailer file for a given file item
  *  \param[in] item the file item
+ *  \param[in] movieFolder whether the movie has a folder of its own, its source's movies being in
+ *             separate folders, when a movie-trailer file there is its trailer. A disc folder
+ *             rip's folder is always its own.
  *  \param[in] optional Regexp cache to avoid recompilation
  *  \return non-empty string with path of trailer if found
  */
-std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache = nullptr);
+std::string FindTrailer(const CFileItem& item,
+                        bool movieFolder,
+                        KODI::REGEXP::RegExpCache* cache = nullptr);
+
+/*! \brief Whether a movie has a folder of its own: its source has movies in separate folders, and it
+ *         isn't in the source's root. A disc's is that of its file, not of its playlist.
+ *  \param[in] database an open video database
+ *  \param[in] videoPath the path of the movie's video
+ *  \return true if the movie has a folder of its own
+ */
+bool HasMovieFolder(CVideoDatabase& database, const std::string& videoPath);
 
 /*!
  \brief Check whether an item is an optical media folder or its parent.

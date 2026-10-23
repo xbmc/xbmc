@@ -7,13 +7,18 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "platform/Filesystem.h"
-#include "utils/FileUtils.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 
@@ -108,7 +113,7 @@ TEST_P(TrailerTest, FindTrailer)
   }
 
   CFileItem item(input_path, false);
-  EXPECT_EQ(VIDEO::UTILS::FindTrailer(item),
+  EXPECT_EQ(VIDEO::UTILS::FindTrailer(item, true),
             trailer.empty() ? "" : URIUtils::AddFileToFolder(temp_path, trailer));
 
   if (!temp_path.empty())
@@ -157,7 +162,7 @@ TEST(TestVideoUtils, FindTrailerOfADiscFolderRipPrefersTheOneBesideBDMV)
   }
 
   const CFileItem item(URIUtils::AddFileToFolder(bdmv, "index.bdmv"), false);
-  EXPECT_EQ(beside, VIDEO::UTILS::FindTrailer(item));
+  EXPECT_EQ(beside, VIDEO::UTILS::FindTrailer(item, true));
 
   XFILE::CDirectory::RemoveRecursive(temp_path);
 }
@@ -186,9 +191,10 @@ protected:
     return path;
   }
 
-  static std::string Trailer(const std::string& video)
+  //! \param movieFolder whether the movie has a folder of its own
+  static std::string Trailer(const std::string& video, bool movieFolder = true)
   {
-    return VIDEO::UTILS::FindTrailer(CFileItem(video, false));
+    return VIDEO::UTILS::FindTrailer(CFileItem(video, false), movieFolder);
   }
 
   std::string m_root;
@@ -258,13 +264,62 @@ TEST_F(TestDiscTrailer, ADvdFolderRipPrefersTheTrailerBesideVIDEO_TS)
 }
 
 // Several ISOs can share a folder: each has the trailer named after it
+// Several ISOs can share a folder, their movies having no folders of their own: each has the
+// trailer named after it, and movie-trailer is none of theirs
 TEST_F(TestDiscTrailer, EachOfSeveralIsosInAFolderHasTheTrailerNamedAfterIt)
 {
   const std::string discA{File("Movies/A.iso")};
   const std::string discB{File("Movies/B.iso")};
   const std::string trailerB{File("Movies/B-trailer.mkv")};
-  EXPECT_EQ("", Trailer(URIUtils::GetBlurayPlaylistPath(discA, 800)));
-  EXPECT_EQ(trailerB, Trailer(URIUtils::GetBlurayPlaylistPath(discB, 800)));
+  File("Movies/movie-trailer.mkv");
+  EXPECT_EQ("", Trailer(URIUtils::GetBlurayPlaylistPath(discA, 800), false));
+  EXPECT_EQ(trailerB, Trailer(URIUtils::GetBlurayPlaylistPath(discB, 800), false));
+}
+
+// movie-trailer is no particular video's, so it is only the trailer of a movie with a folder of its
+// own
+TEST_F(TestDiscTrailer, MovieTrailerIsOnlyTheTrailerOfAMovieWithAFolderOfItsOwn)
+{
+  const std::string movie{File("Film/Film.mkv")};
+  const std::string trailer{File("Film/movie-trailer.avi")};
+  EXPECT_EQ(trailer, Trailer(movie, true));
+  EXPECT_EQ("", Trailer(movie, false));
+}
+
+// ..even when a trailer expression matches it, while the expression still finds other trailers
+TEST_F(TestDiscTrailer, MovieTrailerIsNoTrailerOfAMovieWithoutAFolderOfItsOwnByExpression)
+{
+  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
+  const std::vector<std::string> trailerExpressions{advancedSettings->m_trailerMatchRegExps};
+  advancedSettings->m_trailerMatchRegExps = {"trailer$"};
+
+  const std::string film{File("Film/Film.mkv")};
+  const std::string movieTrailer{File("Film/movie-trailer.avi")};
+  const std::string other{File("Other/Other.mkv")};
+  const std::string otherTrailer{File("Other/Other.Trailer.avi")};
+  const std::string filmWithFolder{Trailer(film, true)};
+  const std::string filmWithoutFolder{Trailer(film, false)};
+  const std::string otherWithoutFolder{Trailer(other, false)};
+
+  advancedSettings->m_trailerMatchRegExps = trailerExpressions;
+  EXPECT_EQ(movieTrailer, filmWithFolder);
+  EXPECT_EQ("", filmWithoutFolder);
+  EXPECT_EQ(otherTrailer, otherWithoutFolder);
+}
+
+// A disc folder rip's folder is its own, whatever its source's setting
+TEST_F(TestDiscTrailer, ADiscFolderRipAlwaysHasItsMovieTrailer)
+{
+  const std::string disc{File("M3GAN/BDMV/index.bdmv")};
+  const std::string trailer{File("M3GAN/movie-trailer.mkv")};
+  EXPECT_EQ(trailer, Trailer(URIUtils::GetBlurayPlaylistPath(disc, 800), false));
+}
+
+TEST_F(TestDiscTrailer, ADiscFolderRipAlwaysHasItsMovieTrailerInsideBDMV)
+{
+  const std::string disc{File("M3GAN/BDMV/index.bdmv")};
+  const std::string trailer{File("M3GAN/BDMV/movie-trailer.mkv")};
+  EXPECT_EQ(trailer, Trailer(URIUtils::GetBlurayPlaylistPath(disc, 800), false));
 }
 
 namespace
@@ -464,4 +519,92 @@ TEST(TestVideoUtils, VideoExtrasAreNamedAfterTheirFileOrDisc)
   const std::string bonus{"/movies/Movie/Bonus Disc/"};
   EXPECT_EQ(CGUIDialogVideoManagerExtras::GenerateVideoExtra(bonus, bonus + "BDMV/index.bdmv"),
             "Bonus Disc");
+}
+
+namespace
+{
+//! A movie source, /movies/, scanned recursively, in a database of the test's own
+class TestMovieFolder : public testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    m_settings.type = "sqlite3";
+    m_settings.name = "TestMovieFolder";
+    m_settings.host = CSpecialProtocol::TranslatePath("special://temp/");
+    ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
+              m_db.Connect(m_settings.name, m_settings, true));
+    UseFolderNames(true);
+  }
+
+  void TearDown() override
+  {
+    m_db.Close();
+    XFILE::CFile::Delete(m_settings.host + m_settings.name + ".db");
+  }
+
+  void UseFolderNames(bool useFolderNames)
+  {
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='movies', strScraper='metadata.local', useFolderNames=%i, "
+        "scanRecursive=2147483647 WHERE idPath=%i",
+        useFolderNames ? 1 : 0, m_db.AddPath("/movies/"))));
+  }
+
+  DatabaseSettings m_settings;
+  CVideoDatabase m_db;
+};
+} // namespace
+
+// A movie in the source's root shares it, whether a file, an ISO, or a playlist of an ISO
+TEST_F(TestMovieFolder, AMovieInTheSourcesRootHasNoFolderOfItsOwn)
+{
+  for (const std::string& video :
+       {std::string{"/movies/Film.mkv"}, std::string{"/movies/M3GAN.iso"},
+        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN.iso", 800)})
+    EXPECT_FALSE(VIDEO::UTILS::HasMovieFolder(m_db, video)) << video;
+}
+
+TEST_F(TestMovieFolder, AMovieInAFolderBelowTheSourcesRootHasOne)
+{
+  for (const std::string& video :
+       {std::string{"/movies/Film/Film.mkv"}, std::string{"/movies/M3GAN/M3GAN.iso"},
+        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/M3GAN.iso", 800),
+        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/BDMV/index.bdmv", 800),
+        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/disc 1/BDMV/index.bdmv", 800),
+        URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/disc 1/M3GAN.iso", 800),
+        std::string{"/movies/M3GAN/VIDEO_TS/VIDEO_TS.IFO"}})
+    EXPECT_TRUE(VIDEO::UTILS::HasMovieFolder(m_db, video)) << video;
+}
+
+TEST_F(TestMovieFolder, AMovieOfASourceWithoutFolderNamesHasNoFolderOfItsOwn)
+{
+  UseFolderNames(false);
+  for (const std::string& video : {std::string{"/movies/Film/Film.mkv"},
+                                   URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/M3GAN.iso", 800)})
+    EXPECT_FALSE(VIDEO::UTILS::HasMovieFolder(m_db, video)) << video;
+}
+
+// An ISO in a folder of its own has the movie-trailer there, and none in a folder it shares
+TEST_F(TestDiscTrailer, AnIsoHasTheMovieTrailerOnlyInAFolderOfItsOwn)
+{
+  const std::string disc{File("M3GAN/M3GAN.iso")};
+  const std::string trailer{File("M3GAN/movie-trailer.mkv")};
+  EXPECT_EQ(trailer, Trailer(URIUtils::GetBlurayPlaylistPath(disc, 800), true));
+  EXPECT_EQ("", Trailer(URIUtils::GetBlurayPlaylistPath(disc, 800), false));
+}
+
+// A dvd folder rip's folder is its own, whatever its source's setting
+TEST_F(TestDiscTrailer, ADvdFolderRipAlwaysHasItsMovieTrailer)
+{
+  const std::string disc{File("M3GAN/VIDEO_TS/VIDEO_TS.IFO")};
+  const std::string trailer{File("M3GAN/movie-trailer.mkv")};
+  EXPECT_EQ(trailer, Trailer(disc, false));
+}
+
+TEST_F(TestDiscTrailer, ADvdFolderRipAlwaysHasItsMovieTrailerInsideVIDEO_TS)
+{
+  const std::string disc{File("M3GAN/VIDEO_TS/VIDEO_TS.IFO")};
+  const std::string trailer{File("M3GAN/VIDEO_TS/movie-trailer.mkv")};
+  EXPECT_EQ(trailer, Trailer(disc, false));
 }
