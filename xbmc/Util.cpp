@@ -2557,13 +2557,17 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
 
   CVideoDatabase database;
   database.Open();
-  bool useAllExternalAudio = database.GetUseAllExternalAudioForVideo(videoPath);
+  // The setting is a source's, found by the start of the video's path, which for a disc is its file
+  bool useAllExternalAudio = database.GetUseAllExternalAudioForVideo(
+      URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath) : videoPath);
 
   if (useAllExternalAudio)
   {
     for (const auto& audioItem : items.GetList())
     {
-      vecAudio.push_back(audioItem.get()->GetPath());
+      // The folders listed with the audio, such as a disc's BDMV, are not tracks
+      if (!audioItem->IsFolder())
+        vecAudio.push_back(audioItem.get()->GetPath());
     }
   }
   else
