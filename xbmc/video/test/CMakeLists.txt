@@ -10,6 +10,7 @@ set(SOURCES TestBookmark.cpp
             TestVideoFileItemClassify.cpp
             TestVideoInfoScannerArt.cpp
             TestVideoInfoTag.cpp
+            TestVideoItemArtworkHandler.cpp
             TestVideoStreamSelect.cpp
             TestVideoTagLoaderNFO.cpp
             TestVideoThumbLoader.cpp
