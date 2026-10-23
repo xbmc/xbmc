@@ -9,13 +9,17 @@
 #include "EdlFileParser.h"
 
 #include "FileItem.h"
+#include "Util.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 
 #include <charconv>
 #include <chrono>
+#include <vector>
 
 using namespace EDL;
 using namespace XFILE;
@@ -31,7 +35,41 @@ std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
 {
   if (item.HasProperty("edlpath"))
     return item.GetProperty("edlpath").asString();
-  return URIUtils::ReplaceExtension(item.GetDynPath(), ".edl");
+
+  const std::string& path{item.GetDynPath()};
+  const bool isBluray{URIUtils::IsBlurayPath(path)};
+  if (!isBluray && !URIUtils::IsOpticalMediaFile(path))
+    return URIUtils::ReplaceExtension(path, ".edl");
+
+  // A disc's is beside it, as its art and subtitles are: a version's named as its art is
+  // (index-00800, 00800 or M3GAN-00800), then the disc's named after the movie (M3GAN)
+  std::string folder;
+  std::string name;
+  CUtil::GetVideoBasePathAndFileName(path, folder, name);
+  std::vector<std::string> edlFiles;
+  for (const std::string& version : CUtil::GetVersionFileNames(path))
+    edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, version + ".edl"));
+
+  // An extra of the movie on its disc, such as a featurette, is cut only by its own, as the disc's
+  // is the movie's
+  const bool discExtra{isBluray && item.HasVideoInfoTag() &&
+                       item.GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+  if (!discExtra)
+  {
+    edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, name + ".edl"));
+
+    //! @todo Up to v21 a disc folder rip's EDL was looked for inside BDMV/VIDEO_TS, as index.edl or
+    //! VIDEO_TS.edl. Deprecate in v23.
+    edlFiles.emplace_back(
+        URIUtils::ReplaceExtension(isBluray ? URIUtils::GetDiscFile(path) : path, ".edl"));
+  }
+
+  for (const std::string& edlFile : edlFiles)
+  {
+    if (CFile::Exists(edlFile))
+      return edlFile;
+  }
+  return edlFiles.empty() ? URIUtils::ReplaceExtension(path, ".edl") : edlFiles.front();
 }
 
 CEdlParserResult CEdlFileParser::Parse(const CFileItem& item,
