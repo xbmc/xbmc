@@ -39,6 +39,14 @@ extern "C"
  *   ffmpeg -f lavfi -i "smptebars=s=320x240:r=10:d=2" \
  *          -c:v libx264 -preset veryslow -crf 30 -pix_fmt yuv420p -g 10 \
  *          h264_8bit_320x240.mkv
+ *
+ *   ffmpeg -f lavfi -i "smptebars=s=322x240:r=10:d=1" \
+ *          -c:v libx264 -preset veryslow -crf 30 -pix_fmt yuv420p -g 10 \
+ *          h264_8bit_322x240.mkv
+ *
+ *   ffmpeg -f lavfi -i "smptebars=s=322x244:r=10:d=1" -vf setsar=2/1 \
+ *          -c:v libx264 -preset veryslow -crf 30 -pix_fmt yuv420p -g 10 \
+ *          h264_8bit_322x244_sar_2_1.mkv
  */
 
 namespace
@@ -50,6 +58,8 @@ struct DecodedPicture
   AVPixelFormat pixelFormat{AV_PIX_FMT_NONE};
   unsigned int colorBits{0};
   int depthFromDescriptor{0};
+  unsigned int displayWidth{0};
+  unsigned int displayHeight{0};
 };
 
 DecodedPicture DecodeFirstPicture(const std::string& path)
@@ -100,6 +110,8 @@ DecodedPicture DecodeFirstPicture(const std::string& path)
   result.decoded = true;
   result.pixelFormat = picture.pixelFormat;
   result.colorBits = picture.colorBits;
+  result.displayWidth = picture.iDisplayWidth;
+  result.displayHeight = picture.iDisplayHeight;
 
   const AVPixFmtDescriptor* description = av_pix_fmt_desc_get(picture.pixelFormat);
   result.depthFromDescriptor = description ? description->comp[0].depth : 0;
@@ -108,6 +120,28 @@ DecodedPicture DecodeFirstPicture(const std::string& path)
 }
 
 } // unnamed namespace
+
+//! A renderer scales a picture whose display size differs from its own, so neither may be rounded.
+TEST(TestVideoCodecPictureFormat, SquarePixelsAreDisplayedAtThePicturesOwnSize)
+{
+  const DecodedPicture picture{DecodeFirstPicture(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/h264_8bit_322x240.mkv"))};
+
+  ASSERT_TRUE(picture.decoded) << "the 322x240 clip did not decode at all";
+  EXPECT_EQ(322u, picture.displayWidth);
+  EXPECT_EQ(240u, picture.displayHeight);
+}
+
+//! Pixels twice as wide as they are high: the width is kept and the height halved.
+TEST(TestVideoCodecPictureFormat, WidePixelsKeepTheWidthAndReduceTheHeight)
+{
+  const DecodedPicture picture{DecodeFirstPicture(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/h264_8bit_322x244_sar_2_1.mkv"))};
+
+  ASSERT_TRUE(picture.decoded) << "the 322x244 clip did not decode at all";
+  EXPECT_EQ(322u, picture.displayWidth);
+  EXPECT_EQ(122u, picture.displayHeight);
+}
 
 //! AV1 decodes through libdav1d, which allocates its own frames and so never has sw_pix_fmt set.
 TEST(TestVideoCodecPictureFormat, AV1ReportsItsPixelFormatAndBitDepth)
