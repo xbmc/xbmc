@@ -47,6 +47,13 @@ public:
    */
   virtual void SetCachedImage(const CFileItem &item, const std::string &type, const std::string &image);
 
+  /*! \brief Remove the association of an image with the given item from the texture database.
+   The cached texture of the image itself is kept.
+   \param item CFileItem to remove the association from
+   \param type the type of image
+   */
+  void ClearCachedImagePath(const CFileItem& item, const std::string& type);
+
 protected:
   std::unique_ptr<CTextureDatabase> m_textureDatabase;
 };
