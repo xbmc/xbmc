@@ -20,6 +20,7 @@
 #include "pvr/utils/PVRStreamUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/CriticalSection.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -139,6 +140,9 @@ bool CDVDFileInfo::SeekAndDecodeFirstPicture(CDVDDemux& demuxer,
 
 namespace
 {
+// one tone mapping runs at a time, as each holds a 3D LUT and RGBA64 buffers
+CCriticalSection thumbToneMapSection;
+
 //! Convert a decoded picture to a BGRA texture sized for the thumbnail cache.
 std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CDVDStreamInfo& hint)
 {
@@ -231,7 +235,11 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
         toneFrame = midFrame;
       }
       if (res >= 0)
+      {
+        std::unique_lock lock(thumbToneMapSection);
         res = sws_scale_frame(sws, dstFrame, toneFrame);
+        sws_free_context(&sws);
+      }
       if (res < 0)
         CLog::LogF(LOGWARNING, "sws_scale_frame failed ({}), using legacy conversion", res);
       else
