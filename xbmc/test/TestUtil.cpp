@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "DatabaseManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -1248,6 +1249,122 @@ TEST(TestUtil, IsAnotherVersionsFile)
   // Nothing is another version's for what is no version
   EXPECT_FALSE(CUtil::IsAnotherVersionsFile("/movies/M3GAN/M3GAN-00801.eng.srt", "M3GAN",
                                             "/movies/M3GAN/M3GAN.mkv"));
+}
+
+//! The external audio found for playlist 800 of the disc, sorted
+class TestVersionAudio : public TestVersionSubtitles
+{
+protected:
+  void SetUp() override
+  {
+    // The scan asks the video database whether to use all the audio beside the video
+    if (!CServiceBroker::GetDatabaseManager().CanOpen("MyVideos"))
+    {
+      ASSERT_TRUE(CServiceBroker::GetDatabaseManager().Initialize());
+    }
+    TestVersionSubtitles::SetUp();
+  }
+
+  static std::vector<std::string> AudioOf800(const std::string& disc)
+  {
+    std::vector<std::string> audio;
+    CUtil::ScanForExternalAudio(URIUtils::GetBlurayPlaylistPath(disc, 800), audio);
+    std::ranges::sort(audio);
+    return audio;
+  }
+};
+
+// The version of a folder rip has the audio named after the folder holding BDMV, and that beside
+// BDMV named as its art is, but not another version's
+TEST_F(TestVersionAudio, AFolderRipsVersionHasItsOwnAudio)
+{
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File("M3GAN.ac3"), File("M3GAN-00800.ac3"),
+                                    File("index-00800.mka"), File("00800.dts")};
+  File("M3GAN-00801.ac3");
+  File("index-00801.mka");
+  File("00801.dts");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+// The version of an ISO has the audio named after the ISO, but not another version's
+TEST_F(TestVersionAudio, AnIsosVersionHasItsOwnAudio)
+{
+  const std::string disc{File("M3GAN.iso")};
+  std::vector<std::string> expected{File("M3GAN.ac3"), File("M3GAN-00800.ac3")};
+  File("M3GAN-00801.ac3");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+TEST_F(TestVersionAudio, EachOfSeveralIsosInAFolderHasOnlyItsOwnAudio)
+{
+  const std::string disc{File("A.iso")};
+  File("B.iso");
+  std::vector<std::string> expected{File("A.ac3"), File("A-00800.ac3")};
+  File("A-00801.ac3");
+  File("B.ac3");
+  File("B-00800.ac3");
+  File("00800.ac3");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+// A video file is no version of a bluray, so nothing named for a playlist is left out
+TEST_F(TestVersionAudio, AVideoFileHasAllItsAudio)
+{
+  const std::string video{File("Film.mkv")};
+  std::vector<std::string> expected{File("Film.ac3"), File("Film-00801.ac3")};
+
+  std::vector<std::string> audio;
+  CUtil::ScanForExternalAudio(video, audio);
+  std::ranges::sort(audio);
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, audio);
+}
+
+TEST_F(TestVersionAudio, AFolderRipInADiscFolderHasItsOwnAudio)
+{
+  Folder("disc 1");
+  Folder(URIUtils::AddFileToFolder("disc 1", "BDMV"));
+  const std::string disc{File(URIUtils::AddFileToFolder("disc 1", "BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("disc 1", "M3GAN.ac3")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "index-00800.mka")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "00800.dts"))};
+  File(URIUtils::AddFileToFolder("disc 1", "index-00801.mka"));
+  File(URIUtils::AddFileToFolder("disc 1", "disc 1.ac3"));
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+TEST_F(TestVersionAudio, AnIsoInADiscFolderHasItsOwnAudio)
+{
+  Folder("disc 1");
+  const std::string disc{File(URIUtils::AddFileToFolder("disc 1", "M3GAN.iso"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("disc 1", "M3GAN.ac3")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "M3GAN-00800.ac3"))};
+  File(URIUtils::AddFileToFolder("disc 1", "M3GAN-00801.ac3"));
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
+}
+
+// An audio folder beside the disc is the disc's too
+TEST_F(TestVersionAudio, AVersionsAudioCanBeInAnAudioFolder)
+{
+  Folder("audio");
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("audio", "index-00800.mka")),
+                                    File(URIUtils::AddFileToFolder("audio", "00800.dts"))};
+  File(URIUtils::AddFileToFolder("audio", "index-00801.mka"));
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, AudioOf800(disc));
 }
 
 // A version's own subtitle is not given the version's name, as one named after the video is not

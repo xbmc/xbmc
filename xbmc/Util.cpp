@@ -2567,7 +2567,15 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
     }
   }
   else
+  {
     ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
+    // A version (playlist) of a bluray folder rip has audio of its own beside BDMV
+    for (const std::string& name : GetVersionFileNames(videoPath))
+      ScanPathsForAssociatedItems(name, items, exts, vecAudio);
+  }
+
+  std::erase_if(vecAudio, [&strAudio, &videoPath](const std::string& audio)
+                { return IsAnotherVersionsFile(audio, strAudio, videoPath); });
 }
 
 bool CUtil::CanBindPrivileged()
