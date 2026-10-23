@@ -7,9 +7,12 @@
  */
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "guilib/GUIMessage.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/ThreadMessage.h"
 #include "playlists/PlayList.h"
 
 #include <memory>
@@ -111,4 +114,22 @@ TEST_F(TestPlayListPlayer, ClearingTheCurrentPlaylistKeepsThePlaybackStartedStat
   EXPECT_EQ(-1, player.GetCurrentItemIdx());
   EXPECT_TRUE(player.PlaybackStarted());
   EXPECT_EQ(PLAYLIST::Id::TYPE_VIDEO, player.GetCurrentPlaylist());
+}
+
+// A list of one item plays through Play(item) rather than as a playlist. The item is both audio
+// and video with no hint, so Play() refuses it before anything reaches the real player.
+TEST_F(TestPlayListPlayer, MediaPlayOfASingleItemTakesTheListOptions)
+{
+  TestablePlayListPlayer player;
+
+  auto list = new CFileItemList(); // deleted by the handler
+  list->Add(std::make_shared<CFileItem>("/video/recording.wtv", false));
+  list->SetProperty("shuffled", true);
+  list->SetProperty("repeat", static_cast<int>(PLAYLIST::RepeatState::ALL));
+
+  MESSAGING::ThreadMessage msg{TMSG_MEDIA_PLAY, -1, -1, list};
+  player.OnApplicationMessage(&msg);
+
+  EXPECT_EQ(PLAYLIST::RepeatState::ALL, player.GetRepeat(PLAYLIST::Id::TYPE_VIDEO));
+  EXPECT_TRUE(player.IsShuffled(PLAYLIST::Id::TYPE_VIDEO));
 }

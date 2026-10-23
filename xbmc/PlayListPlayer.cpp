@@ -1005,6 +1005,14 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
 
         ClearPlaylist(playlistId);
         SetCurrentPlaylist(playlistId);
+        // Handle "shuffled" option if present
+        if (list->HasProperty("shuffled") && list->GetProperty("shuffled").isBoolean())
+          SetShuffle(playlistId, list->GetProperty("shuffled").asBoolean(), false);
+        // Handle "repeat" option if present
+        if (list->HasProperty("repeat") && list->GetProperty("repeat").isInteger())
+          SetRepeat(playlistId, static_cast<RepeatState>(list->GetProperty("repeat").asInteger()),
+                    false);
+
         if (list->Size() == 1 && !IsPlayList(*list->Get(0)))
         {
           CFileItemPtr item = (*list)[0];
@@ -1033,14 +1041,6 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         }
         else
         {
-          // Handle "shuffled" option if present
-          if (list->HasProperty("shuffled") && list->GetProperty("shuffled").isBoolean())
-            SetShuffle(playlistId, list->GetProperty("shuffled").asBoolean(), false);
-          // Handle "repeat" option if present
-          if (list->HasProperty("repeat") && list->GetProperty("repeat").isInteger())
-            SetRepeat(playlistId, static_cast<RepeatState>(list->GetProperty("repeat").asInteger()),
-                      false);
-
           Add(playlistId, (*list));
           Play(pMsg->param1, pMsg->strParam);
         }
