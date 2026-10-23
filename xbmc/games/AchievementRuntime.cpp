@@ -9,8 +9,39 @@
 #include "AchievementRuntime.h"
 
 #include <algorithm>
+#include <unordered_map>
 
 using namespace KODI::GAME;
+
+bool AchievementState::IsSetEnabled(unsigned int setId) const
+{
+  const auto set = std::ranges::find(sets, setId, &AchievementSet::id);
+  return set == sets.end() || set->enabled;
+}
+
+BeatenProgress AchievementState::GetBeatenProgress(unsigned int setId) const
+{
+  BeatenProgress progress;
+  for (const AchievementInfo& achievement : achievements)
+  {
+    if (achievement.setId != setId)
+      continue;
+
+    if (achievement.type == AchievementType::PROGRESSION)
+    {
+      ++progress.progression;
+      if (achievement.earned)
+        ++progress.progressionEarned;
+    }
+    else if (achievement.type == AchievementType::WIN)
+    {
+      ++progress.win;
+      if (achievement.earned)
+        ++progress.winEarned;
+    }
+  }
+  return progress;
+}
 
 void CAchievementRuntime::SetState(const AchievementState& state)
 {
@@ -55,13 +86,104 @@ AchievementState CAchievementRuntime::MarkEarned(unsigned int achievementId,
         info.measuredPercent = 0.0f;
         info.measuredProgress.clear();
 
-        ++m_state.unlockedAchievements;
+        RecountUnlocked();
         newlyEarned = true;
       }
       break;
     }
   }
   return m_state;
+}
+
+void CAchievementRuntime::SetAchievementSets(const std::vector<AchievementSet>& sets,
+                                             const std::vector<AchievementDetails>& details)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+
+  m_state.sets = sets;
+
+  std::unordered_map<unsigned int, const AchievementDetails*> byId;
+  for (const AchievementDetails& entry : details)
+    byId[entry.achievementId] = &entry;
+
+  for (AchievementInfo& achievement : m_state.achievements)
+  {
+    const auto it = byId.find(achievement.id);
+    if (it != byId.end())
+    {
+      achievement.setId = it->second->setId;
+      achievement.type = it->second->type;
+    }
+  }
+
+  RecountUnlocked();
+}
+
+bool CAchievementRuntime::SetAchievementSetEnabled(unsigned int setId, bool enabled)
+{
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    const auto set = std::ranges::find(m_state.sets, setId, &AchievementSet::id);
+    if (set == m_state.sets.end())
+      return false;
+
+    set->enabled = enabled;
+    RecountUnlocked();
+
+    if (!enabled)
+    {
+      // The add-on stops evaluating the set without ending what it had on screen
+      const auto inSet = [this, setId](unsigned int achievementId)
+      {
+        const auto achievement =
+            std::ranges::find(m_state.achievements, achievementId, &AchievementInfo::id);
+        return achievement != m_state.achievements.end() && achievement->setId == setId;
+      };
+      std::erase_if(m_state.challenges, [&inSet](const AchievementChallenge& challenge)
+                    { return inSet(challenge.id); });
+      std::erase_if(m_state.progressIndicators,
+                    [&inSet](const AchievementProgressIndicator& indicator)
+                    { return inSet(indicator.id); });
+    }
+  }
+
+  NotifyIndicatorsChanged();
+  return true;
+}
+
+void CAchievementRuntime::SetAchievementSetHandler(
+    std::function<bool(unsigned int setId, bool enabled)> handler)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  m_setHandler = std::move(handler);
+}
+
+bool CAchievementRuntime::RequestAchievementSetEnabled(unsigned int setId, bool enabled)
+{
+  std::function<bool(unsigned int, bool)> handler;
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    handler = m_setHandler;
+  }
+
+  // Outside the lock: the handler writes the outcome back here
+  return handler && handler(setId, enabled);
+}
+
+void CAchievementRuntime::RecountUnlocked()
+{
+  m_state.totalAchievements = 0;
+  m_state.unlockedAchievements = 0;
+  for (const AchievementInfo& achievement : m_state.achievements)
+  {
+    if (!m_state.IsSetEnabled(achievement.setId))
+      continue;
+
+    ++m_state.totalAchievements;
+    if (achievement.earned)
+      ++m_state.unlockedAchievements;
+  }
 }
 
 void CAchievementRuntime::SetRichPresence(const std::string& richPresence)

@@ -1015,6 +1015,17 @@
 		<value condition="String.IsEqual(ListItem.Property(achievement.raritycategory),$LOCALIZE[35293])">[COLOR selected]$INFO[ListItem.Property(achievement.raritycategory)][/COLOR]</value>
 		<value>$INFO[ListItem.Property(achievement.raritycategory),[COLOR FFE8B18B],[/COLOR]]</value>
 	</variable>
+	<variable name="GameAchievementTypeIconVar">
+		<value condition="!String.IsEmpty(ListItem.Property(achievement.win))">icons/achievements/win.png</value>
+		<value condition="!String.IsEmpty(ListItem.Property(achievement.progression))">icons/achievements/progression.png</value>
+	</variable>
+	<variable name="GameAchievementsProgressVar">
+		<value condition="!String.IsEmpty(Window.Property(Achievements.HasSets))">$INFO[Window.Property(Achievements.Progress)]$INFO[Window.Property(Achievements.Beaten),  [COLOR white]•[/COLOR]  ,]</value>
+		<value>$INFO[RetroPlayer.AchievementsProgress]$INFO[Window.Property(Achievements.Progress),  [COLOR white]•[/COLOR]  ,]$INFO[Window.Property(Achievements.Beaten),  [COLOR white]•[/COLOR]  ,]</value>
+	</variable>
+	<variable name="GameAchievementMissableLabelVar">
+		<value condition="!String.IsEmpty(ListItem.Property(achievement.missable))">[COLOR red]$LOCALIZE[35710][/COLOR]</value>
+	</variable>
 	<include name="GameAchievementItem">
 		<param name="scroll" default="false" />
 		<definition>
@@ -1027,6 +1038,24 @@
 				<imagefilter>nearest</imagefilter>
 				<diffusefilter>nearest</diffusefilter>
 				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="group">
+				<description>Marks what beating the game takes</description>
+				<left>72</left>
+				<top>72</top>
+				<width>34</width>
+				<height>34</height>
+				<visible>!String.IsEmpty(ListItem.Property(achievement.progression)) | !String.IsEmpty(ListItem.Property(achievement.win))</visible>
+				<control type="image">
+					<texture colordiffuse="dialog_tint">icons/achievements/emblem.png</texture>
+				</control>
+				<control type="image">
+					<left>7</left>
+					<top>7</top>
+					<width>20</width>
+					<height>20</height>
+					<texture>$VAR[GameAchievementTypeIconVar]</texture>
+				</control>
 			</control>
 			<control type="label">
 				<left>116</left>
@@ -1061,7 +1090,7 @@
 					<top>0</top>
 					<width>490</width>
 					<height>28</height>
-					<label>$INFO[ListItem.Property(achievement.points)]$VAR[GameAchievementRarityLabelVar,  [COLOR white]•[/COLOR]  ,]</label>
+					<label>$INFO[ListItem.Property(achievement.points)]$VAR[GameAchievementRarityLabelVar,  [COLOR white]•[/COLOR]  ,]$VAR[GameAchievementMissableLabelVar,  [COLOR white]•[/COLOR]  ,]</label>
 					<font>font12</font>
 					<textcolor>blue</textcolor>
 					<aligny>center</aligny>
@@ -1220,7 +1249,7 @@
 					<control type="label">
 						<left>40</left>
 						<top>83</top>
-						<width>680</width>
+						<width>480</width>
 						<height>45</height>
 						<label>$INFO[Window.Property(Achievements.GameTitle)]</label>
 						<font>font32</font>
@@ -1229,12 +1258,12 @@
 						<scroll>true</scroll>
 					</control>
 					<control type="label">
-						<left>740</left>
+						<left>540</left>
 						<top>83</top>
-						<width>410</width>
+						<width>610</width>
 						<height>45</height>
 						<align>right</align>
-						<label>$INFO[RetroPlayer.AchievementsProgress]$INFO[Window.Property(Achievements.Progress),  [COLOR white]•[/COLOR]  ,]</label>
+						<label>$VAR[GameAchievementsProgressVar]</label>
 						<font>font13</font>
 						<textcolor>blue</textcolor>
 						<aligny>center</aligny>
@@ -1244,6 +1273,7 @@
 						<top>140</top>
 						<width>1120</width>
 						<height>720</height>
+						<animation effect="fade" start="100" end="40" time="0" condition="String.IsEmpty(Window.Property(Achievements.SetEnabled))">Conditional</animation>
 						<onleft>108334</onleft>
 						<onright>108334</onright>
 						<onup>3</onup>
@@ -1290,6 +1320,26 @@
 						<onright>3</onright>
 						<onup>108334</onup>
 						<ondown>108334</ondown>
+						<control type="button" id="108345">
+							<width>380</width>
+							<include>SettingsItemCommon</include>
+							<font>font12</font>
+							<label>$LOCALIZE[35711]</label>
+							<label2>$INFO[Window.Property(Achievements.SetTitle)]</label2>
+							<visible>!String.IsEmpty(Window.Property(Achievements.HasSets))</visible>
+						</control>
+						<control type="radiobutton" id="108346">
+							<width>380</width>
+							<include>SettingsItemCommon</include>
+							<font>font12</font>
+							<label>$LOCALIZE[305]</label>
+							<radiowidth>112</radiowidth>
+							<radioheight>76</radioheight>
+							<radioposx>254</radioposx>
+							<radioposy>12</radioposy>
+							<selected>!String.IsEmpty(Window.Property(Achievements.SetEnabled))</selected>
+							<visible>!String.IsEmpty(Window.Property(Achievements.SetToggleable))</visible>
+						</control>
 						<control type="button" id="108333">
 							<width>380</width>
 							<include>SettingsItemCommon</include>

@@ -28,6 +28,20 @@ struct AchievementProgress
   std::string measuredProgress;
 };
 
+/*!
+ * \brief What an achievement means for finishing its game
+ */
+enum class AchievementType
+{
+  STANDARD,
+  //! Can be missed for good if the player passes the point to earn it
+  MISSABLE,
+  //! Needed to beat the game
+  PROGRESSION,
+  //! Earned for beating the game
+  WIN,
+};
+
 struct AchievementInfo
 {
   unsigned int id{0};
@@ -65,6 +79,10 @@ struct AchievementInfo
    * counted.
    */
   std::string measuredProgress;
+
+  //! The set it belongs to, or 0 if the add-on didn't say
+  unsigned int setId{0};
+  AchievementType type{AchievementType::STANDARD};
 };
 
 /*!
@@ -196,6 +214,50 @@ struct LeaderboardSummary
   std::string topScore;
 };
 
+/*!
+ * \brief One achievement set of the loaded game
+ *
+ * The game's own set comes first, followed by subsets such as bonus sets.
+ */
+struct AchievementSet
+{
+  unsigned int id{0};
+  std::string title;
+  std::string badgeUrl;
+  //! Whether its achievements are earned and counted. The player can turn a
+  //! set off, and it stays off.
+  bool enabled{true};
+};
+
+//! The set and type of one achievement, as the add-on reports them
+struct AchievementDetails
+{
+  unsigned int achievementId{0};
+  unsigned int setId{0};
+  AchievementType type{AchievementType::STANDARD};
+};
+
+/*!
+ * \brief How close a set is to being beaten
+ *
+ * RetroAchievements counts a set as beaten once all of its progression
+ * achievements and one of its win achievements are earned.
+ */
+struct BeatenProgress
+{
+  unsigned int progression{0};
+  unsigned int progressionEarned{0};
+  unsigned int win{0};
+  unsigned int winEarned{0};
+
+  //! Whether the set has anything that marks it as beaten
+  bool CanBeBeaten() const { return progression > 0 || win > 0; }
+  bool IsBeaten() const
+  {
+    return CanBeBeaten() && progressionEarned == progression && (win == 0 || winEarned > 0);
+  }
+};
+
 struct LeaderboardState
 {
   std::string gameTitle;
@@ -211,7 +273,14 @@ struct AchievementState
   unsigned int unlockedAchievements{0};
   std::string richPresence;
   std::vector<AchievementInfo> achievements;
+  //! Empty until the add-on reports them, which an older add-on doesn't
+  std::vector<AchievementSet> sets;
   bool loaded{false};
+
+  //! Whether a set's achievements count. One the add-on didn't name does.
+  bool IsSetEnabled(unsigned int setId) const;
+
+  BeatenProgress GetBeatenProgress(unsigned int setId) const;
 
   /*!
    * \brief Achievements the player is currently attempting
@@ -268,6 +337,40 @@ public:
   AchievementState MarkEarned(unsigned int achievementId,
                               const CDateTime& unlockedDate,
                               bool& newlyEarned);
+  /*!
+   * \brief Record the loaded game's sets, and each achievement's set and type
+   *
+   * Totals count only the achievements of sets that are on.
+   */
+  void SetAchievementSets(const std::vector<AchievementSet>& sets,
+                          const std::vector<AchievementDetails>& details);
+
+  /*!
+   * \brief Turn a set's achievements in or out of the totals and indicators
+   *
+   * Only records what the add-on was already told. To have the add-on told,
+   * use RequestAchievementSetEnabled().
+   *
+   * \return False if the loaded game has no such set
+   */
+  bool SetAchievementSetEnabled(unsigned int setId, bool enabled);
+
+  /*!
+   * \brief Be asked to turn a set on or off in the add-on
+   *
+   * Set by the game client while a game is loaded, and cleared when it closes.
+   * Held rather than called directly for the same reason as the indicator
+   * callback: the runtime knows nothing about who evaluates achievements.
+   */
+  void SetAchievementSetHandler(std::function<bool(unsigned int setId, bool enabled)> handler);
+
+  /*!
+   * \brief Ask for a set to be turned on or off
+   *
+   * \return False if no game is loaded or the add-on refused
+   */
+  bool RequestAchievementSetEnabled(unsigned int setId, bool enabled);
+
   void SetRichPresence(const std::string& richPresence);
   std::string GetRichPresence() const;
 
@@ -443,12 +546,16 @@ public:
   void NotifyIndicatorsChanged();
 
 private:
+  //! Must be called with m_mutex held
+  void RecountUnlocked();
+
   mutable std::mutex m_mutex;
 
   //! Whatever draws the on-screen indicators, told whenever one changes. Held
   //! rather than called directly so the runtime keeps knowing nothing about the
   //! GUI, and invoked outside the lock so it may read back safely.
   std::function<void()> m_indicatorCallback;
+  std::function<bool(unsigned int, bool)> m_setHandler;
   AchievementState m_state;
   LeaderboardState m_leaderboards;
 
