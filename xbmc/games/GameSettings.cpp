@@ -155,6 +155,11 @@ bool CGameSettings::IsAchievementSetDisabled(unsigned int setId) const
   return std::ranges::find(disabled, std::to_string(setId)) != disabled.end();
 }
 
+bool CGameSettings::HasDisabledAchievementSets() const
+{
+  return !m_settings->GetString(SETTING_GAMES_ACHIEVEMENTS_DISABLED_SETS).empty();
+}
+
 void CGameSettings::SetAchievementSetDisabled(unsigned int setId, bool disabled)
 {
   std::vector<std::string> sets =
