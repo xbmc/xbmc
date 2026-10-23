@@ -70,8 +70,6 @@ if(CCACHE_FOUND)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND CMAKE_GENERATOR MATCHES "Visual Studio")
     include(${CMAKE_CURRENT_LIST_DIR}/../../scripts/windows/CCache.cmake)
     set(CMAKE_CXX_SCAN_FOR_MODULES OFF PARENT_SCOPE)
-    # Embedded debug information can exceed the archive size limit.
-    set(ENABLE_STATIC_LIBS TRUE PARENT_SCOPE)
     foreach(_variable IN LISTS _ccache_variables)
       set(${_variable} "${${_variable}}" PARENT_SCOPE)
     endforeach()
