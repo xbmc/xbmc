@@ -15,6 +15,24 @@
 
 using namespace KODI::SHADER;
 
+namespace
+{
+bool SupportsBorderClamp()
+{
+  const CRenderSystemBase* renderSystem = CServiceBroker::GetRenderSystem();
+  if (renderSystem == nullptr)
+    return false;
+
+  unsigned int major{0};
+  unsigned int minor{0};
+  renderSystem->GetRenderVersion(major, minor);
+
+  return major > 3 || (major == 3 && minor >= 2) ||
+         renderSystem->IsExtSupported("GL_EXT_texture_border_clamp") ||
+         renderSystem->IsExtSupported("GL_OES_texture_border_clamp");
+}
+} // namespace
+
 GLint CShaderUtilsGLES::TranslateWrapType(WrapType wrapType)
 {
   GLint glWrap;
@@ -32,7 +50,11 @@ GLint CShaderUtilsGLES::TranslateWrapType(WrapType wrapType)
       break;
     case WrapType::BORDER:
     default:
+#if defined(GL_CLAMP_TO_BORDER_EXT)
+      glWrap = SupportsBorderClamp() ? GL_CLAMP_TO_BORDER_EXT : GL_CLAMP_TO_EDGE;
+#else
       glWrap = GL_CLAMP_TO_EDGE;
+#endif
       break;
   }
 
