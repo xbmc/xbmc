@@ -7,18 +7,26 @@
  */
 
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "Util.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "test/TestUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/FilenameAttributes.h"
+
+#include <algorithm>
+#include <string>
+#include <vector>
 
 #include <gtest/gtest-param-test.h>
 #include <gtest/gtest.h>
@@ -968,6 +976,297 @@ TEST_P(TestExternalStreamDetails, GetExternalStreamDetailsFromFilename)
 INSTANTIATE_TEST_SUITE_P(GetExternalStreamDetailsFromFilename,
                          TestExternalStreamDetails,
                          ValuesIn(ExternalStreams));
+
+//! A movie folder, M3GAN, holding a bluray of several versions (playlists)
+class TestVersionSubtitles : public Test
+{
+protected:
+  void SetUp() override
+  {
+    XFILE::CDirectory::RemoveRecursive(m_root);
+    for (const std::string& path : {m_root, m_folder, URIUtils::AddFileToFolder(m_folder, "BDMV")})
+      ASSERT_TRUE(XFILE::CDirectory::Create(path));
+  }
+
+  void TearDown() override { XFILE::CDirectory::RemoveRecursive(m_root); }
+
+  //! A folder in the movie's
+  void Folder(const std::string& name) const
+  {
+    ASSERT_TRUE(XFILE::CDirectory::Create(URIUtils::AddFileToFolder(m_folder, name)));
+  }
+
+  std::string File(const std::string& name) const
+  {
+    const std::string path{URIUtils::AddFileToFolder(m_folder, name)};
+    XFILE::CFile output;
+    EXPECT_TRUE(output.OpenForWrite(path, true));
+    output.Close();
+    return path;
+  }
+
+  //! The subtitles found for playlist 800 of the disc, sorted
+  static std::vector<std::string> SubtitlesOf800(const std::string& disc)
+  {
+    std::vector<std::string> subtitles;
+    CUtil::ScanForExternalSubtitles(URIUtils::GetBlurayPlaylistPath(disc, 800), subtitles);
+    std::ranges::sort(subtitles);
+    return subtitles;
+  }
+
+  const std::string m_root{URIUtils::AddFileToFolder(
+      CSpecialProtocol::TranslatePath("special://temp/"), "TestVersionSubtitles")};
+  const std::string m_folder{URIUtils::AddFileToFolder(m_root, "M3GAN")};
+};
+
+// The version of a folder rip has the subtitles named after the folder holding BDMV, and those
+// beside BDMV named as its art is, but not those of another version
+TEST_F(TestVersionSubtitles, AFolderRipsVersionHasItsOwnSubtitles)
+{
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File("M3GAN.eng.srt"), File("M3GAN-00800.eng.srt"),
+                                    File("index-00800.eng.ass"), File("00800.fre.srt")};
+  File("M3GAN-00801.eng.srt");
+  File("index-00801.eng.ass");
+  File("00801.fre.srt");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, SubtitlesOf800(disc));
+}
+
+// The version of an ISO has the subtitles named after the ISO, but not those of another version
+TEST_F(TestVersionSubtitles, AnIsosVersionHasItsOwnSubtitles)
+{
+  const std::string disc{File("M3GAN.iso")};
+  std::vector<std::string> expected{File("M3GAN.eng.srt"), File("M3GAN-00800.eng.srt"),
+                                    File("M3GAN-2022.eng.srt")};
+  File("M3GAN-00801.eng.srt");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, SubtitlesOf800(disc));
+}
+
+// A disc in a folder of its own within the movie's has the subtitles beside it, named after the
+// movie's folder or as its art is
+TEST_F(TestVersionSubtitles, AFolderRipInADiscFolderHasItsOwnSubtitles)
+{
+  Folder("disc 1");
+  Folder(URIUtils::AddFileToFolder("disc 1", "BDMV"));
+  const std::string disc{File(URIUtils::AddFileToFolder("disc 1", "BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("disc 1", "M3GAN.eng.srt")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "index-00800.ass")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "00800.fre.srt"))};
+  File(URIUtils::AddFileToFolder("disc 1", "index-00801.ass"));
+  File(URIUtils::AddFileToFolder("disc 1", "disc 1.eng.srt"));
+  File("M3GAN.ger.srt");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, SubtitlesOf800(disc));
+}
+
+TEST_F(TestVersionSubtitles, AnIsoInADiscFolderHasItsOwnSubtitles)
+{
+  Folder("disc 1");
+  const std::string disc{File(URIUtils::AddFileToFolder("disc 1", "M3GAN.iso"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("disc 1", "M3GAN.eng.srt")),
+                                    File(URIUtils::AddFileToFolder("disc 1", "M3GAN-00800.srt"))};
+  File(URIUtils::AddFileToFolder("disc 1", "M3GAN-00801.srt"));
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, SubtitlesOf800(disc));
+}
+
+// A subtitles folder beside the disc is the disc's too
+TEST_F(TestVersionSubtitles, AVersionsSubtitlesCanBeInASubtitlesFolder)
+{
+  Folder("subs");
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File(URIUtils::AddFileToFolder("subs", "index-00800.ass")),
+                                    File(URIUtils::AddFileToFolder("subs", "00800.fre.srt"))};
+  File(URIUtils::AddFileToFolder("subs", "index-00801.ass"));
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, SubtitlesOf800(disc));
+}
+
+// The custom subtitle folder can be shared by many discs, so a version's name says nothing there
+TEST_F(TestVersionSubtitles, AVersionsSubtitlesAreNotTakenFromTheCustomFolder)
+{
+  const std::string custom{URIUtils::AddFileToFolder(m_root, "custom")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(custom));
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+  const std::string customPath{settings->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)};
+  settings->SetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH, custom);
+  CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(0);
+
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  const std::vector<std::string> expected{URIUtils::AddFileToFolder(custom, "M3GAN.eng.srt")};
+  for (const char* name : {"M3GAN.eng.srt", "index-00800.ass", "00800.fre.srt"})
+  {
+    XFILE::CFile output;
+    EXPECT_TRUE(output.OpenForWrite(URIUtils::AddFileToFolder(custom, name), true));
+  }
+  const std::vector<std::string> subtitles{SubtitlesOf800(disc)};
+
+  settings->SetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH, customPath);
+  CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(0);
+  EXPECT_EQ(expected, subtitles);
+}
+
+// Several ISOs can share a folder: each version has only what is named after its own ISO, and
+// nothing named by a playlist alone
+TEST_F(TestVersionSubtitles, EachOfSeveralIsosInAFolderHasOnlyItsOwnSubtitles)
+{
+  const std::string disc{File("A.iso")};
+  File("B.iso");
+  std::vector<std::string> expected{File("A.eng.srt"), File("A-00800.eng.srt")};
+  File("A-00801.eng.srt");
+  File("B.eng.srt");
+  File("B-00800.eng.srt");
+  File("00800.eng.srt");
+  File("index-00800.eng.srt");
+
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, SubtitlesOf800(disc));
+}
+
+// The subtitles in another version's archive aren't offered, though named for no version
+TEST_F(TestVersionSubtitles, AnotherVersionsArchivedSubtitlesAreNotOffered)
+{
+  const std::string disc{File("M3GAN.iso")};
+  const std::string archive{XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.zip")};
+  for (const char* name : {"M3GAN-00800.zip", "M3GAN-00801.zip"})
+    ASSERT_TRUE(XFILE::CFile::Copy(archive, URIUtils::AddFileToFolder(m_folder, name)));
+
+  // reffile.txt, a subtitle by its extension, from each archive offered
+  std::vector<std::string> archives;
+  for (const std::string& subtitle : SubtitlesOf800(disc))
+    archives.emplace_back(URIUtils::GetFileName(CURL(subtitle).GetHostName()));
+  EXPECT_EQ(std::vector<std::string>{"M3GAN-00800.zip"}, archives);
+}
+
+// A disc played as itself, rather than a playlist, is no version: it has only the subtitles named
+// after the movie
+TEST_F(TestVersionSubtitles, AFolderRipPlayedWithoutAPlaylistHasTheMoviesSubtitles)
+{
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  const std::vector<std::string> expected{File("M3GAN.eng.srt")};
+  File("index-00800.eng.srt");
+  File("00800.eng.srt");
+
+  std::vector<std::string> subtitles;
+  CUtil::ScanForExternalSubtitles(disc, subtitles);
+  EXPECT_EQ(expected, subtitles);
+}
+
+TEST_F(TestVersionSubtitles, ADvdFolderRipHasTheMoviesSubtitles)
+{
+  Folder("VIDEO_TS");
+  const std::string disc{File(URIUtils::AddFileToFolder("VIDEO_TS", "VIDEO_TS.IFO"))};
+  const std::vector<std::string> expected{File("M3GAN.eng.srt")};
+
+  std::vector<std::string> subtitles;
+  CUtil::ScanForExternalSubtitles(disc, subtitles);
+  EXPECT_EQ(expected, subtitles);
+}
+
+// A video file is no version of a bluray, so nothing named for a playlist is left out
+TEST_F(TestVersionSubtitles, AVideoFileHasAllItsSubtitles)
+{
+  const std::string video{File("Film.mkv")};
+  std::vector<std::string> expected{File("Film.eng.srt"), File("Film-00801.eng.srt")};
+
+  std::vector<std::string> subtitles;
+  CUtil::ScanForExternalSubtitles(video, subtitles);
+  std::ranges::sort(subtitles);
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, subtitles);
+}
+
+TEST_F(TestVersionSubtitles, AnotherVersionsArchivedSubtitlesOfAFolderRipAreNotOffered)
+{
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  const std::string archive{XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.zip")};
+  for (const char* name : {"M3GAN-00800.zip", "M3GAN-00801.zip"})
+    ASSERT_TRUE(XFILE::CFile::Copy(archive, URIUtils::AddFileToFolder(m_folder, name)));
+
+  std::vector<std::string> archives;
+  for (const std::string& subtitle : SubtitlesOf800(disc))
+    archives.emplace_back(URIUtils::GetFileName(CURL(subtitle).GetHostName()));
+  EXPECT_EQ(std::vector<std::string>{"M3GAN-00800.zip"}, archives);
+}
+
+TEST(TestUtil, GetVersionFileNames)
+{
+  using Names = std::vector<std::string>;
+  const auto namesOf800 = [](const std::string& disc)
+  { return CUtil::GetVersionFileNames(URIUtils::GetBlurayPlaylistPath(disc, 800)); };
+
+  EXPECT_EQ((Names{"index-00800", "00800"}), namesOf800("/movies/M3GAN/BDMV/index.bdmv"));
+  EXPECT_EQ((Names{"index-00800", "00800"}), namesOf800("/movies/M3GAN/disc 1/BDMV/index.bdmv"));
+  EXPECT_EQ((Names{"M3GAN-00800"}), namesOf800("/movies/M3GAN/M3GAN.iso"));
+  EXPECT_EQ((Names{"The.Matrix.1999-00800"}), namesOf800("/movies/The.Matrix.1999.iso"));
+  // Not a version of a bluray
+  EXPECT_EQ(Names{}, CUtil::GetVersionFileNames("/movies/M3GAN/BDMV/index.bdmv"));
+  EXPECT_EQ(Names{}, CUtil::GetVersionFileNames("/movies/M3GAN/M3GAN.mkv"));
+  EXPECT_EQ(Names{}, CUtil::GetVersionFileNames("/movies/M3GAN/VIDEO_TS/VIDEO_TS.IFO"));
+}
+
+TEST(TestUtil, IsAnotherVersionsFile)
+{
+  const std::string video{URIUtils::GetBlurayPlaylistPath("/movies/M3GAN/BDMV/index.bdmv", 800)};
+  const auto isAnothers = [&video](const std::string& file)
+  { return CUtil::IsAnotherVersionsFile("/movies/M3GAN/" + file, "M3GAN", video); };
+
+  EXPECT_TRUE(isAnothers("M3GAN-00801.eng.srt"));
+  EXPECT_TRUE(isAnothers("index-00801.eng.srt"));
+  EXPECT_TRUE(isAnothers("INDEX-00801.eng.srt"));
+  EXPECT_TRUE(isAnothers("00801.eng.srt"));
+  EXPECT_FALSE(isAnothers("M3GAN-00800.eng.srt"));
+  EXPECT_FALSE(isAnothers("index-00800.eng.srt"));
+  EXPECT_FALSE(isAnothers("00800.eng.srt"));
+  EXPECT_FALSE(isAnothers("M3GAN.eng.srt"));
+  // A playlist number is five digits
+  EXPECT_FALSE(isAnothers("M3GAN-2022.eng.srt"));
+  EXPECT_FALSE(isAnothers("M3GAN-008011.eng.srt"));
+  // A video named by five digits keeps its own files
+  EXPECT_FALSE(CUtil::IsAnotherVersionsFile(
+      "/movies/10000 BC/10000 BC.eng.srt", "10000 BC",
+      URIUtils::GetBlurayPlaylistPath("/movies/10000 BC/BDMV/index.bdmv", 800)));
+  // What is in another version's archive is that version's, whatever its own name, also when in an
+  // archive in it
+  const auto isAnothersInArchive = [&video](const std::string& archive, const std::string& file)
+  {
+    return CUtil::IsAnotherVersionsFile(
+        URIUtils::CreateArchivePath("zip", CURL(archive), file).Get(), "M3GAN", video);
+  };
+  EXPECT_TRUE(isAnothersInArchive("/movies/M3GAN/M3GAN-00801.zip", "English.srt"));
+  EXPECT_FALSE(isAnothersInArchive("/movies/M3GAN/M3GAN-00800.zip", "English.srt"));
+  EXPECT_TRUE(isAnothersInArchive(
+      URIUtils::CreateArchivePath("zip", CURL("/movies/M3GAN/M3GAN-00801.zip"), "subs.zip").Get(),
+      "English.srt"));
+  // Nothing is another version's for what is no version
+  EXPECT_FALSE(CUtil::IsAnotherVersionsFile("/movies/M3GAN/M3GAN-00801.eng.srt", "M3GAN",
+                                            "/movies/M3GAN/M3GAN.mkv"));
+}
+
+// A version's own subtitle is not given the version's name, as one named after the video is not
+TEST(TestUtil, ExternalStreamDetailsOfABlurayVersionsSubtitle)
+{
+  const std::string external{
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21602)};
+  for (const auto& [disc, subtitle] :
+       {std::pair{"/movies/M3GAN/BDMV/index.bdmv", "/movies/M3GAN/index-00800.eng.forced.ass"},
+        std::pair{"/movies/M3GAN/BDMV/index.bdmv", "/movies/M3GAN/00800.eng.forced.ass"},
+        std::pair{"/movies/M3GAN/M3GAN.iso", "/movies/M3GAN/M3GAN-00800.eng.forced.ass"}})
+  {
+    const ExternalStreamInfo info{CUtil::GetExternalStreamDetailsFromFilename(
+        URIUtils::GetBlurayPlaylistPath(disc, 800), subtitle)};
+    EXPECT_EQ(info.language.AsBcp47(), "en") << subtitle;
+    EXPECT_EQ(info.flag, StreamFlags::FLAG_FORCED) << subtitle;
+    EXPECT_EQ(info.name, external) << subtitle;
+  }
+}
 
 /*!
  * A percent-encoded path reaches here from any VFS that escapes its names - WebDAV among them.
