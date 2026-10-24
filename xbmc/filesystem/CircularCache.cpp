@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <mutex>
+#include <new>
 #include <string.h>
 
 using namespace XFILE;
@@ -43,7 +44,8 @@ int CCircularCache::Open()
     return CACHE_RC_ERROR;
   m_buf = (uint8_t*)MapViewOfFile(m_handle, FILE_MAP_ALL_ACCESS, 0, 0, 0);
 #else
-  m_buf = new uint8_t[m_size];
+  // nothrow, so a failed allocation reaches the check below as on Windows
+  m_buf = new (std::nothrow) uint8_t[m_size];
 #endif
   if (m_buf == NULL)
     return CACHE_RC_ERROR;
