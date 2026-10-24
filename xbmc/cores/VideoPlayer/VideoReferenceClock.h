@@ -19,7 +19,11 @@ class CVideoSync;
 class CVideoReferenceClock : CThread
 {
   public:
-    CVideoReferenceClock();
+    /*!
+     * \param alwaysRun Run from the display's vblanks whether or not playback is
+     *        synced to the display, as RetroPlayer's pacing needs
+     */
+    explicit CVideoReferenceClock(bool alwaysRun = false);
     ~CVideoReferenceClock() override;
 
     int64_t GetTime(bool interpolated = true);
@@ -49,6 +53,8 @@ class CVideoReferenceClock : CThread
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
+
+    const bool m_alwaysRun;
 
     CEvent m_vsyncStopEvent;
 
