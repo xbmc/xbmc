@@ -1002,7 +1002,7 @@ public:
 
   std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
   std::string GetVideoVersionById(int id);
-  int GetVideoVersionByTitle(const std::string& title) const;
+  int GetVideoVersionByTitle(const std::string& title, VideoAssetType itemType) const;
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,
@@ -1042,7 +1042,7 @@ public:
 
   bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
-  int AddOrValidateVideoVersionType(const std::string& typeVideoVersion);
+  int AddOrValidateVideoVersionType(const std::string& typeVideoVersion, VideoAssetType itemType);
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);
@@ -1085,6 +1085,14 @@ public:
   bool UpdateAssetsOwner(KODI::MEDIA::TYPE mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
+
+  /*!
+   \brief The movie whose files lie in a folder or below it, other than below excludedFolder.
+   Files on a disc or in an archive in the folder count too.
+   \return the movie, or -1 if there is none or more than one
+   */
+  int GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder);
+
   std::string GetMovieTitle(int idMovie);
 
   enum MatchingMask : uint8_t

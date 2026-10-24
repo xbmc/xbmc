@@ -77,6 +77,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <ranges>
@@ -1187,6 +1188,52 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
   return -1;
 }
 
+int CVideoDatabase::GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder)
+{
+  if (!m_pDB || !m_pDS)
+    return -1;
+
+  std::vector<std::pair<int, std::string>> paths;
+  std::vector<std::pair<int, std::string>> excludedPaths;
+  if (!GetSubPaths(folder, paths, false) || !GetSubPaths(excludedFolder, excludedPaths, false))
+    return -1;
+
+  std::vector<std::string> pathIds;
+  for (const auto& [idPath, path] : paths)
+  {
+    if (std::ranges::none_of(excludedPaths,
+                             [id = idPath](const auto& excluded) { return excluded.first == id; }))
+      pathIds.emplace_back(std::to_string(idPath));
+  }
+  if (pathIds.empty())
+    return -1;
+
+  std::string sql;
+  try
+  {
+    sql = PrepareSQL("SELECT DISTINCT videoversion.idMedia FROM videoversion "
+                     "JOIN files ON files.idFile = videoversion.idFile "
+                     "WHERE videoversion.media_type = '%s' AND videoversion.itemType = %i "
+                     "AND files.idPath IN (",
+                     NameOf(MEDIA::TYPE::MOVIE).c_str(), VideoAssetType::VERSION) +
+          StringUtils::Join(pathIds, ",") + ")";
+    m_pDS->query(sql);
+
+    int idMovie{-1};
+    if (m_pDS->num_rows() == 1)
+      idMovie = m_pDS->fv(0).get_asInt();
+    else
+      CLog::LogF(LOGDEBUG, "{} movies found in {}", m_pDS->num_rows(), CURL::GetRedacted(folder));
+    m_pDS->close();
+    return idMovie;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "error during query: {}", sql);
+  }
+  return -1;
+}
+
 int CVideoDatabase::GetTvShowId(const std::string& strPath)
 {
   try
@@ -1372,7 +1419,7 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
 
     // Need to look up asset title in current table as, if importing, it may have a different id (primary key)
     const std::string assetTitle{details.GetAssetInfo().GetTitle()};
-    const int assetId{AddOrValidateVideoVersionType(assetTitle)};
+    const int assetId{AddOrValidateVideoVersionType(assetTitle, VideoAssetType::VERSION)};
 
     m_pDS->exec(
         PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
@@ -10189,7 +10236,7 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
       return;
 
     strSQL =
-        PrepareSQL("SELECT movie.idMovie, vvt.name, path.strPath, files.idFile "
+        PrepareSQL("SELECT movie.idMovie, vvt.name, path.strPath, files.idFile, files.strFilename "
                    "FROM movie "
                    "  JOIN videoversion vv ON "
                    "    vv.idMedia = movie.idMovie AND vv.media_type = '%s' AND vv.itemType = %i "
@@ -10206,8 +10253,9 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
     static const int idxName = m_pDS->fieldIndex("name");
     static const int idxPath = m_pDS->fieldIndex("strPath");
     static const int idxFileId = m_pDS->fieldIndex("idFile");
+    static const int idxFileName = m_pDS->fieldIndex("strFilename");
 
-    if (idxMovieId == -1 || idxName == -1 || idxPath == -1 || idxFileId == -1)
+    if (idxMovieId == -1 || idxName == -1 || idxPath == -1 || idxFileId == -1 || idxFileName == -1)
     {
       CLog::LogF(LOGERROR, "column index not found");
       m_pDS->close();
@@ -10233,6 +10281,10 @@ void CVideoDatabase::GetMovieExtrasByName(const std::string& name, CFileItemList
 
       auto pItem = std::make_shared<CFileItem>(m_pDS->fv(idxName).get_asString());
       pItem->SetPath(std::move(path));
+      // The path ends in a file id, not a movie id, so the extra is played from its file
+      std::string file;
+      ConstructPath(file, m_pDS->fv(idxPath).get_asString(), m_pDS->fv(idxFileName).get_asString());
+      pItem->SetDynPath(file);
       pItem->SetFolder(false);
       items.Add(std::move(pItem));
       m_pDS->next();
@@ -10904,6 +10956,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
             "WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.idSet = `sets`.idSet)";
       m_pDS->exec(sql);
 
+      // Removing an extra removes its type, but one made and never used is left
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning video extra types");
+      m_pDS->exec(PrepareSQL("DELETE FROM videoversiontype WHERE itemType = %i AND owner <> %i "
+                             "AND id NOT IN (SELECT idType FROM videoversion)",
+                             VideoAssetType::EXTRA, VideoAssetTypeOwner::SYSTEM));
+
       CommitTransaction();
 
       if (handle)
@@ -11038,6 +11096,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(MEDIA::TYPE mediaType,
         sourcePath = parentPath;
 
       int sourcePathID = GetPathId(sourcePath);
+      // A disc's playlists are never a folder that exists, so a loose one's is the disc's folder
+      if (looseAsset && URIUtils::IsBlurayPath(sourcePath))
+        sourcePath = URIUtils::GetDiscBasePath(sourcePath);
       auto sourcePathsDeleteDecision = sourcePathsDeleteDecisions.find(sourcePathID);
       // A loose asset's decision is its own, not one for a default version in the same folder
       if (looseAsset || sourcePathsDeleteDecision == sourcePathsDeleteDecisions.end())
@@ -11290,11 +11351,34 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
         pDS3->next();
       }
-      pDS3->first();
+    }
+
+    // The rows of a file go into its one nfo together, but need not come one after the other (eg. a
+    // raw disc's default and its playlists, with a file extra sorting between them), so are gathered
+    std::vector<int> order;
+    order.reserve(total);
+    if (singleFile)
+    {
+      for (int row = 0; row < total; ++row)
+        order.emplace_back(row);
+    }
+    else
+    {
+      std::map<std::string, std::vector<int>, std::less<>> rowsOfFile;
+      std::vector<std::string> files;
+      for (int row = 0; row < total; ++row)
+      {
+        std::vector<int>& rows{rowsOfFile[versions[row].hash]};
+        if (rows.empty())
+          files.emplace_back(versions[row].hash);
+        rows.emplace_back(row);
+      }
+      for (const std::string& file : files)
+        std::ranges::copy(rowsOfFile[file], std::back_inserter(order));
     }
 
     CLog::LogF(LOGDEBUG, "Starting...");
-    while (!pDS3->eof())
+    while (current < total)
     {
       // reset old skip state
       bool bSkip = false;
@@ -11304,24 +11388,31 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
       // To be XML compliant multiple <movie> tags need to be enclosed in a <movies> tag
       bool multiMovie{false};
-      if (!singleFile && fileHashMap[versions[current].hash] > 1)
+      if (!singleFile && fileHashMap[versions[order[current]].hash] > 1)
       {
         TiXmlElement xmlMainElement("movies");
         pMain = xmlDoc.InsertEndChild(xmlMainElement);
         multiMovie = true;
-        CLog::Log(LOGDEBUG, "Exporting multiple movies for file {}", versions[current].path);
+        CLog::Log(LOGDEBUG, "Exporting multiple movies for file {}", versions[order[current]].path);
       }
 
       do
       {
+        pDS3->seek(order[current]);
         CVideoInfoTag movie = GetDetailsForMovie(*pDS3, VideoDbDetailsAll);
         // GetStreamDetails() replaces the runtime with the stream duration, so take the stored one
         movie.SetDuration(GetDetailsForMovie(*pDS3).GetStaticDuration());
         // strip paths to make them relative
         if (StringUtils::StartsWith(movie.m_strTrailer, movie.m_strPath))
           movie.m_strTrailer = movie.m_strTrailer.substr(movie.m_strPath.size());
+        // Separate files hold the art of a version or an extra beside it, where a scan finds it as
+        // that asset's own, so only its own is written there. The movie's is written with the movie,
+        // which in a single file is also where the files for its art are, so they are written once.
+        const bool isDefault{movie.IsDefaultVideoVersion()};
         ART::Artwork artwork;
-        if (GetArtForAsset(pDS3->fv("videoVersionIdFile").get_asInt(), ArtFallbackOptions::PARENT,
+        if (GetArtForAsset(pDS3->fv("videoVersionIdFile").get_asInt(),
+                           singleFile || isDefault ? ArtFallbackOptions::PARENT
+                                                   : ArtFallbackOptions::NONE,
                            artwork) &&
             !artwork.empty() && singleFile)
         {
@@ -11404,7 +11495,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
 
-        if (images && !bSkip)
+        if (images && !bSkip && (isDefault || !singleFile))
         {
           if (singleFile)
           {
@@ -11433,13 +11524,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               CLog::Log(LOGDEBUG, "Exported artwork '{}' to '{}' - overwrite {}", type, savedThumb,
                         overwrite);
           }
-          if (actorThumbs)
+          // The cast is the movie's, so is written once, with the movie
+          if (actorThumbs && isDefault)
             ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
         }
 
-        pDS3->next();
         current++;
-      } while (!singleFile && !pDS3->eof() && versions[current - 1].hash == versions[current].hash);
+      } while (!singleFile && current < total &&
+               versions[order[current - 1]].hash == versions[order[current]].hash);
 
       if (!singleFile)
       {
@@ -12170,6 +12262,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     movie = root->FirstChildElement();
     std::string lastTitle;
     int lastMovieId{-1};
+    KODI::ART::Artwork lastMovieArt;
     KODI::REGEXP::RegExpCache regexpCache;
     const int artworkLevel{CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL)};
@@ -12210,7 +12303,48 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
             item.AppendArt(setArt, "set");
           }
         }
-        if (lastTitle == currentTitle && item.HasVideoVersions())
+        // The export writes a movie's versions and extras straight after it. A movie's own entry is
+        // marked as its default, so another movie of the same title after it is not taken as one.
+        const bool isExtra{info.GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+        const bool isAsset{lastTitle == currentTitle && !info.IsDefaultVideoVersion() &&
+                           (item.HasVideoVersions() || isExtra)};
+
+        // The export writes the art of a version or an extra over its movie's. A version takes what
+        // is not the movie's, keeping the movie's art found above for the rest. An extra shows only
+        // its own, so takes what is not the movie's, or failing that what a scan would give it: art
+        // of its file's own, and none for a disc's playlist.
+        KODI::ART::Artwork exportedArt;
+        ImportArtFromXML(movie->FirstChildElement("art"), exportedArt);
+        if (!isAsset)
+          lastMovieArt = exportedArt;
+        else if (!isExtra)
+        {
+          for (const auto& [artType, url] : exportedArt)
+          {
+            const auto movieArt{lastMovieArt.find(artType)};
+            if (movieArt == lastMovieArt.end() || movieArt->second != url)
+              item.SetArt(artType, url);
+          }
+        }
+        else
+        {
+          std::erase_if(exportedArt,
+                        [&lastMovieArt](const auto& art)
+                        {
+                          const auto movieArt{lastMovieArt.find(art.first)};
+                          return movieArt != lastMovieArt.end() && movieArt->second == art.second;
+                        });
+          item.ClearArt();
+          if (!exportedArt.empty())
+            item.SetArt(exportedArt);
+          else if (!URIUtils::IsBlurayPath(item.GetPath()))
+          {
+            CFileItem fileItem(item.GetPath(), false);
+            scanner.GetArtwork(&fileItem, ContentType::MOVIES, true, true, "", useRemoteArt);
+            item.SetArt(fileItem.GetArt());
+          }
+        }
+        if (isAsset)
         {
           item.GetVideoInfoTag()->m_iDbId = lastMovieId;
           scanner.AddVideo(&item, nullptr, useFolders, true, nullptr, true,
@@ -12240,7 +12374,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           if (!times.empty() && times.size() == paths.size())
             SetStackTimes(info.m_strFileNameAndPath, times);
         }
-        if (item.HasVideoVersions())
+        if (item.HasVideoVersions() && !isExtra)
         {
           // Set default version
           const CVideoInfoTag* tag{item.GetVideoInfoTag()};
@@ -13123,6 +13257,9 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
 
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
+      if (id >= VIDEO_EXTRA_NAME_ID_BEGIN && id <= VIDEO_EXTRA_NAME_ID_END)
+        continue;
+
       const std::string& type =
           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(id);
       m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET name = '%s', owner = %i WHERE id = '%i'",
@@ -13138,17 +13275,21 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
   }
 }
 
-int CVideoDatabase::AddOrValidateVideoVersionType(const std::string& typeVideoVersion)
+int CVideoDatabase::AddOrValidateVideoVersionType(const std::string& typeVideoVersion,
+                                                  VideoAssetType itemType)
 {
   int assetId{-1};
   if (!typeVideoVersion.empty())
   {
-    assetId = GetVideoVersionByTitle(typeVideoVersion);
+    assetId = GetVideoVersionByTitle(typeVideoVersion, itemType);
 
-    // Needs adding - eg. importing from nfo
+    // Needs adding - eg. importing from nfo. An extra's name is most often one the scanner made up,
+    // so it is not offered as a type to choose, as when the scanner adds it.
     if (assetId < 0)
-      assetId =
-          AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::USER, VideoAssetType::VERSION);
+      assetId = AddVideoVersionType(typeVideoVersion,
+                                    itemType == VideoAssetType::EXTRA ? VideoAssetTypeOwner::AUTO
+                                                                      : VideoAssetTypeOwner::USER,
+                                    itemType);
   }
 
   return assetId;
@@ -13844,10 +13985,13 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
 
   try
   {
+    // A name given to a version may suit another movie's, but one given to an extra is most
+    // often that of the one extra, so only the built-in kinds of extra are offered
     m_pDS->query(
         PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' AND itemType = %i "
-                   "AND owner IN (%i, %i)",
-                   assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
+                   "AND (owner = %i OR (owner = %i AND itemType = %i))",
+                   assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER,
+                   VideoAssetType::VERSION));
 
     while (!m_pDS->eof())
     {
@@ -13905,13 +14049,15 @@ std::string CVideoDatabase::GetVideoVersionById(int id)
   return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), *m_pDS2);
 }
 
-int CVideoDatabase::GetVideoVersionByTitle(const std::string& title) const
+int CVideoDatabase::GetVideoVersionByTitle(const std::string& title, VideoAssetType itemType) const
 {
   if (!m_pDS2)
     return {};
 
-  const std::string id{GetSingleValue(
-      PrepareSQL("SELECT id FROM videoversiontype WHERE name='%s'", title.c_str()), *m_pDS2)};
+  const std::string id{
+      GetSingleValue(PrepareSQL("SELECT id FROM videoversiontype WHERE name='%s' AND itemType=%i",
+                                title.c_str(), itemType),
+                     *m_pDS2)};
 
   return id.empty() ? -1 : std::stoi(id);
 }
