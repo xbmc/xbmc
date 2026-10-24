@@ -57,13 +57,14 @@ public:
     GLfloat x, y, z;
   };
 
-  GLuint m_texture = 0;
-  float m_u;
-  float m_v;
-
 private:
-  KODI::UTILS::GL::CGLBufferObject m_VBO{GL_ARRAY_BUFFER};
-  GLsizei m_vertexCount = 0;
+  struct Page
+  {
+    GLuint texture = 0;
+    KODI::UTILS::GL::CGLBufferObject vbo{GL_ARRAY_BUFFER};
+    GLsizei vertexCount = 0;
+  };
+  std::vector<Page> m_pages;
 };
 
 } // namespace OVERLAY
