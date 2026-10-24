@@ -162,6 +162,7 @@ protected:
   int m_sinkLatency;
   std::unique_ptr<CAEBitstreamPacker> m_packer;
   bool m_needIecPack{false};
+  bool m_outputUnavailable{false};
   bool m_streamNoise;
 };
 
