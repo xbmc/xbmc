@@ -909,4 +909,3 @@ TEST(TestEffectiveGeometry, PictureOnScreenWithNothingKnownIsTheDestination)
   ExpectRect(PictureOnScreen(RenderGeometry{}, CRect{0.0f, 0.0f, 3840.0f, 2160.0f}, dest), 0.0f,
              0.0f, 1920.0f, 1080.0f);
 }
-

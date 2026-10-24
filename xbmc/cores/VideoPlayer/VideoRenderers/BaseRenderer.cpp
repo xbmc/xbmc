@@ -462,7 +462,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
   // and the source frame ratio
   float sourceFrameRatio = GetAspectRatio();
 
-  bool is43 = (sourceFrameRatio < 8.f/(3.f*sqrt(3.f)) && mode == ViewModeNormal && !shapeStated);
+  bool is43 =
+      (sourceFrameRatio < 8.f / (3.f * sqrt(3.f)) && mode == ViewModeNormal && !shapeStated);
   const int stretch43 = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_VIDEOPLAYER_STRETCH43);
 
@@ -518,7 +519,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
         (is43 && stretch43 == ViewModeStretch16x9Nonlin) || mode == ViewModeStretch16x9Nonlin;
     CDisplaySettings::GetInstance().SetNonLinearStretched(nonlin);
   }
-  else  if (mode == ViewModeOriginal)
+  else if (mode == ViewModeOriginal)
   { // zoom image so that the height is the original size
     CDisplaySettings::GetInstance().SetPixelRatio(1.0);
     // get the size of the media file
