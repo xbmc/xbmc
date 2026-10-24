@@ -62,6 +62,8 @@ struct SPlayerState
     cache_level = 0.0;
     cache_offset = 0.0;
     cache_time = 0.0;
+    waitingForAudio = false;
+    waitingForAudioRemaining = 0.0;
     lastSeek = 0;
     streamsReady = false;
   }
@@ -102,6 +104,9 @@ struct SPlayerState
   double cache_level; // current cache level
   double cache_offset; // percentage of file ahead of current position
   double cache_time; // estimated playback time of current cached bytes
+
+  bool waitingForAudio; // held for an audio format change to settle downstream
+  double waitingForAudioRemaining; // fraction of that hold still to run
 };
 
 class CDVDInputStream;
@@ -396,8 +401,24 @@ public:
   void OnLostDisplay() override;
   void OnResetDisplay() override;
 
+  /*!
+   \brief Hold presentation while a passthrough format change settles downstream
+
+   Opening a passthrough stream re-trains the HDMI link. On a chain with a matrix
+   or an AV processor in it the picture and sound can take many seconds to return,
+   and playback runs on regardless — the opening of the film is neither seen nor
+   heard. This is the audio-side counterpart of videoscreen.delayrefreshchange,
+   which only ever arms on a display mode change.
+   */
+  void HoldForAudioFormatChange();
+  void ReleaseAudioFormatHold();
+  bool HasPendingPlaybackRequest();
+  void NotifyAudioChainReady() override;
+
   bool IsCaching() const override;
   int GetCacheLevel() const override;
+  bool IsWaitingForAudio() const override;
+  int GetWaitingForAudioRemaining() const override;
 
   int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
@@ -587,6 +608,16 @@ protected:
 
   ECacheState  m_caching;
   XbmcThreads::EndTime<> m_cachingTimer;
+
+  //! Serialises the pause and unpause of the format hold against display lost and reset, which
+  //! arrive on the windowing thread.
+  CCriticalSection m_holdSection;
+  //! Atomic: set on the player thread, read by OnResetDisplay on the windowing thread.
+  std::atomic<bool> m_audioFormatHold{false};
+  XbmcThreads::EndTime<> m_audioFormatHoldTimer;
+  //! Set by a display reset during the hold; the player thread owns the timer.
+  std::atomic<bool> m_audioFormatHoldRestart{false};
+  std::atomic<bool> m_audioChainReady{false};
 
   std::unique_ptr<CProcessInfo> m_processInfo;
 

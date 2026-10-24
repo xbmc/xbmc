@@ -113,6 +113,14 @@ public:
   virtual void SetVolume(float volume){}
   virtual void SetDynamicRangeCompression(long drc){}
 
+  /*!
+   \brief Report that the downstream audio chain has finished settling
+
+   Ends a pass-through hold early. The player cannot see the chain, so this is
+   for an add-on that can - one per device. Ignored when nothing is holding.
+   */
+  virtual void NotifyAudioChainReady() {}
+
   virtual void SetAVDelay(float fValue = 0.0f) {}
   virtual float GetAVDelay() { return 0.0f; }
 
@@ -198,6 +206,11 @@ public:
   virtual bool IsCaching() const { return false; }
   //Cache filled in Percent
   virtual int GetCacheLevel() const { return -1; }
+
+  //! True while playback is held for an audio format change to settle downstream
+  virtual bool IsWaitingForAudio() const { return false; }
+  //! Time left of that hold in percent, from 100 when it starts to 0 when it runs out
+  virtual int GetWaitingForAudioRemaining() const { return 0; }
 
   virtual bool IsInMenu() const { return false; }
 
