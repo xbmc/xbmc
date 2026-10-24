@@ -329,8 +329,24 @@ function(copy_files_from_filelist_to_buildtree pattern)
           # Don't recursively add all files with the given name.
           set(files ${src})
         else()
-          # Static path contents, so we can just glob at generation time
-          file(GLOB_RECURSE files RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/${src})
+          # CONFIGURE_DEPENDS re-runs this glob at build time and triggers a
+          # reconfigure when files are added or removed in the source tree.
+          file(GLOB_RECURSE files CONFIGURE_DEPENDS RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/${src})
+
+          # Remove stale files from build tree that no longer exist in source.
+          # CONFIGURE_DEPENDS updates the file list, but previously-copied files
+          # persist in the build tree and would be installed or deployed.
+          string(REPLACE "*" "" _clean_dir ${src})
+          string(REGEX REPLACE "/+$" "" _clean_dir ${_clean_dir})
+          if(IS_DIRECTORY ${CMAKE_BINARY_DIR}/${_clean_dir})
+            file(GLOB_RECURSE _build_files RELATIVE ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/${src})
+            foreach(_bf ${_build_files})
+              if(NOT ${_bf} IN_LIST files)
+                file(REMOVE ${CMAKE_BINARY_DIR}/${_bf})
+                message(STATUS "Removed stale file from build tree: ${_bf}")
+              endif()
+            endforeach()
+          endif()
         endif()
 
         foreach(file ${files})
