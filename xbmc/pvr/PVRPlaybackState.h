@@ -223,6 +223,12 @@ public:
   void SetActiveChannelGroup(const std::shared_ptr<CPVRChannelGroup>& group);
 
   /*!
+   * @brief Set the active group to the group of the supplied channel group member.
+   * @param channel The channel group member
+   */
+  void SetActiveChannelGroup(const std::shared_ptr<CPVRChannelGroupMember>& channel);
+
+  /*!
    * @brief Get the active channel group.
    * @param bRadio True to get the active radio group, false to get the active TV group.
    * @return The current group or the group containing all channels if it's not set.
@@ -270,12 +276,6 @@ private:
    * @return The item to play next, if any, nullptr otherwise.
    */
   std::unique_ptr<CFileItem> GetNextAutoplayItem(const CFileItem& item);
-
-  /*!
-   * @brief Set the active group to the group of the supplied channel group member.
-   * @param channel The channel group member
-   */
-  void SetActiveChannelGroup(const std::shared_ptr<CPVRChannelGroupMember>& channel);
 
   /*!
    * @brief Updates the last watched timestamps of the channel and group which are currently playing.
