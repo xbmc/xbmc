@@ -228,6 +228,9 @@ macro(buildFFMPEG)
                       COMMAND ${CMAKE_COMMAND} -E copy
                       ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/012-ffmpeg-all-hls-stop-discarded-playlists.patch
                       <SOURCE_DIR>
+                      COMMAND ${CMAKE_COMMAND} -E copy
+                      ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/013-ffmpeg-all-hls-reuse-unchanged-init-section.patch
+                      <SOURCE_DIR>
     )
 
     if(NOT DISABLE_FFMPEG_SOURCE_PLUGINS)
