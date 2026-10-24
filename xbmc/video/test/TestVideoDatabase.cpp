@@ -1419,3 +1419,14 @@ TEST_F(TestVideoDatabaseClean, KeepsPlayedFilesThatMayNotHaveGone)
                      m_db.PrepareSQL("SELECT COUNT(*) FROM files WHERE idFile=%i", idFile)))
         << idFile;
 }
+
+// Writes made later on the connection would otherwise never be committed
+TEST_F(TestVideoDatabaseClean, EndsItsTransactionWhenThePathsHoldNoMedia)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+
+  m_db.CleanDatabase(nullptr, {m_db.GetPathId(movies)}, false);
+
+  EXPECT_FALSE(m_db.InTransaction());
+}
