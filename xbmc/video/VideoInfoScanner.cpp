@@ -2453,6 +2453,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
     }
 
+    // A measurement that found nothing is stored too, once the file is added, so the sweep
+    // does not measure the file again.
+    std::optional<GEOMETRY::ContentGeometryRecord> unread;
     if (GEOMETRY::ContentGeometryNonLiveFromSettings() && !movieDetails.HasContentGeometry())
     {
       if (const std::optional<GEOMETRY::FileIdentity> identity{
@@ -2464,6 +2467,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         if (geometry && geometry->HasReading())
           movieDetails.m_contentGeometry.Set(*geometry);
+        else if (geometry)
+          unread = *geometry;
       }
     }
 
@@ -2638,6 +2643,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
           movieDetails.GetResumePoint().IsSet())
         m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
+
+    if (unread && lResult > -1)
+      m_database.SetContentGeometry(m_database.GetFileId(*pItem), *unread);
 
     m_database.Close();
 
