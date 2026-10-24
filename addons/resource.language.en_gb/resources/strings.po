@@ -25262,7 +25262,37 @@ msgctxt "#39219"
 msgid "Use the system Dolby Vision extensions to correctly display Dolby Vision profile 5, 7 (excludes FEL reconstruction), 8 and 10 video."
 msgstr ""
 
-#empty strings from id 39220 to 39899
+#. Title of the bitmap subtitle zoom setting
+#: system/settings/settings.xml
+msgctxt "#39220"
+msgid "Bitmap subtitle zoom"
+msgstr ""
+
+#. Help text for setting "Bitmap subtitle zoom" of label #39220
+#: system/settings/settings.xml
+msgctxt "#39221"
+msgid "Resize picture-based subtitles such as PGS (Blu-ray) and VobSub. 100% is the authored size."
+msgstr ""
+
+#. Title of the setting that applies the subtitle position and vertical margin to bitmap subtitles
+#: system/settings/settings.xml
+msgctxt "#39222"
+msgid "Apply position to bitmap subtitles"
+msgstr ""
+
+#. Help text for setting "Apply position to bitmap subtitles" of label #39222
+#: system/settings/settings.xml
+msgctxt "#39223"
+msgid "Move picture-based subtitles such as PGS (Blu-ray) and VobSub to the position set by \"Position on screen\" and \"Vertical margin\"."
+msgstr ""
+
+#. Group label for the settings that apply to picture based subtitles
+#: system/settings/settings.xml
+msgctxt "#39224"
+msgid "Image based subtitles"
+msgstr ""
+
+#empty strings from id 39225 to 39899
 
 #. List formatting: pattern used to join a list of exactly two items, e.g. "A and B"
 #. STR_LIST_AND_TWO
