@@ -98,6 +98,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DWITH_UNIT_TESTS:BOOL=OFF
                    -DWITH_EXTERNAL_ZLIB:BOOL=ON
                    -DWITH_CURL:BOOL=OFF
+                   # MariaDB includes FindCURL even with WITH_CURL=OFF. Skip CURLConfig.cmake so
+                   # curl's Zstd dependency lookup doesn't leave ZSTD_LIBRARY-NOTFOUND in the
+                   # cache, which libmariadb then links. Clear any entry left by earlier configures.
+                   -DCURL_NO_CURL_CMAKE:BOOL=ON
+                   -UZSTD_LIBRARY
                    -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF
                    ${CLIENT_PLUGINS}
                    ${BUILD_FLAGS})
@@ -106,7 +111,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(_ZSTD_TARGET AND NOT _ZSTD_TARGET STREQUAL "PkgConfig::zstd")
       # Load the same package in MariaDB so its interface targets remain usable.
       find_package(zstd CONFIG REQUIRED PATHS "${zstd_DIR}" NO_DEFAULT_PATH)
-      list(APPEND CMAKE_ARGS "-DCMAKE_PROJECT_INCLUDE=${zstd_CONFIG}")
+      # Use the project-specific include so it can't collide with the generic
+      # CMAKE_PROJECT_INCLUDE that ModuleHelpers sets or unsets for ccache.
+      list(APPEND CMAKE_ARGS "-DCMAKE_PROJECT_mariadb-connector-c_INCLUDE=${zstd_CONFIG}")
       set(ZSTD_INCLUDE_DIR "$<JOIN:$<TARGET_PROPERTY:LIBRARY::ZSTD,INTERFACE_INCLUDE_DIRECTORIES>,|>")
       set(ZSTD_LIBRARY ${_ZSTD_TARGET})
     else()
