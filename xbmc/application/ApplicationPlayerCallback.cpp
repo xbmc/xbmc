@@ -353,6 +353,10 @@ bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
   if (bookmark.timeInSeconds < 0.0)
     return true; // Finished
 
+  // A next part bookmark's time isn't progress through the whole stack
+  if (VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
+    return false;
+
   const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
   const float percent{static_cast<float>(bookmark.timeInSeconds / bookmark.totalTimeInSeconds) *
                       100.0f};

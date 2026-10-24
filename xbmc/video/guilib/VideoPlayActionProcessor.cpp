@@ -190,8 +190,10 @@ void CVideoPlayActionProcessor::SetResumeData()
       SetStartData(); // No resume point in the chosen part
       return;
     }
+    // The resume point is in the chosen part, so load it through the resume path, which also
+    // restores its player state
     item->SetStartPartNumber(m_chosenStackPart);
-    item->SetStartOffset(offset);
+    item->SetStartOffset(STARTOFFSET_RESUME);
   }
   else
   {

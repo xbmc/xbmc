@@ -351,6 +351,34 @@ TEST(TestVideoUtils, NextPartBookmarkKeepsPlayerState)
   EXPECT_FALSE(VIDEO::UTILS::GetNextPartPlayerStateFromBookmark(bookmark));
 }
 
+TEST(TestVideoUtils, StackPartResumeOffsetOfNextPartBookmark)
+{
+  CFileItem item(
+      R"(stack://D:\Movie\Movie cd1.iso , D:\Movie\Movie cd2.iso , D:\Movie\Movie cd3.iso)", false);
+
+  // Resume point within part 3 (0-based part 2), its time relative to that part
+  CBookmark bookmark;
+  bookmark.timeInSeconds = 1234.5;
+  bookmark.totalTimeInSeconds = 4106.0;
+  bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(
+      2, R"(<navstate version="2"><title>1</title><pgn>9</pgn></navstate>)");
+  item.GetVideoInfoTag()->SetResumePoint(bookmark);
+
+  EXPECT_EQ(VIDEO::UTILS::GetStackPartResumeOffset(item, 3), 1234500);
+  // The relative time isn't a resume point for any other part
+  EXPECT_EQ(VIDEO::UTILS::GetStackPartResumeOffset(item, 1), 0);
+  EXPECT_EQ(VIDEO::UTILS::GetStackPartResumeOffset(item, 2), 0);
+
+  // Without a player state, part 3 resumes from its start
+  bookmark.timeInSeconds = 2.0;
+  bookmark.totalTimeInSeconds = 3.0;
+  bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(2, "");
+  item.GetVideoInfoTag()->SetResumePoint(bookmark);
+
+  EXPECT_EQ(VIDEO::UTILS::GetStackPartResumeOffset(item, 3), 0);
+  EXPECT_EQ(VIDEO::UTILS::GetStackPartResumeOffset(item, 1), 0);
+}
+
 TEST(TestVideoUtils, ItemResumeInformationOfNextPartBookmark)
 {
   CFileItem item(

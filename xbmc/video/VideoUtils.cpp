@@ -457,6 +457,17 @@ int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber)
     const CBookmark bookmark{item.GetVideoInfoTag()->GetResumePoint()};
     if (bookmark.IsPartWay())
     {
+      // A next part bookmark names its part, and its time (if any) is relative to that part
+      if (const std::optional<int> nextPart{GetNextPartFromBookmark(bookmark)}; nextPart)
+      {
+        if (static_cast<unsigned int>(*nextPart + 1) != partNumber)
+          return 0;
+
+        return GetNextPartPlayerStateFromBookmark(bookmark)
+                   ? CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)
+                   : 0;
+      }
+
       std::vector<std::chrono::milliseconds> times;
       if (GetStackTimes(path, times) && partNumber <= times.size())
       {
