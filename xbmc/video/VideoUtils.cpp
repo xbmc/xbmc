@@ -513,14 +513,14 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item)
   if (item.GetCurrentResumeTimeAndPartNumber(startOffset, partNumber) && startOffset > 0)
   {
     ResumeInformation resumeInfo;
-    // A next part bookmark (disc stacks) resumes within that part, or from its start
-    const CBookmark resumePoint{item.HasVideoInfoTag() ? item.GetVideoInfoTag()->GetResumePoint()
-                                                       : CBookmark{}};
-    if (const std::optional<int> nextPart{GetNextPartFromBookmark(resumePoint)}; nextPart)
+    // Take a stack's part from its stack times (or next part bookmark) as the resume choice does
+    if (const auto stackResume{item.IsStack() ? GetStackResumeOffsetAndPartNumber(item)
+                                              : std::nullopt};
+        stackResume)
     {
-      if (GetNextPartPlayerStateFromBookmark(resumePoint))
-        resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(resumePoint.timeInSeconds);
-      resumeInfo.partNumber = *nextPart + 1;
+      const auto& [offset, part] = *stackResume;
+      resumeInfo.startOffset = offset;
+      resumeInfo.partNumber = static_cast<int>(part);
     }
     else
     {

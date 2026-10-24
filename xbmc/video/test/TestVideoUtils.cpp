@@ -14,6 +14,7 @@
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 
@@ -348,4 +349,34 @@ TEST(TestVideoUtils, NextPartBookmarkKeepsPlayerState)
   bookmark.playerState = navState;
   EXPECT_FALSE(VIDEO::UTILS::GetNextPartFromBookmark(bookmark));
   EXPECT_FALSE(VIDEO::UTILS::GetNextPartPlayerStateFromBookmark(bookmark));
+}
+
+TEST(TestVideoUtils, ItemResumeInformationOfNextPartBookmark)
+{
+  CFileItem item(
+      R"(stack://D:\Movie\Movie cd1.iso , D:\Movie\Movie cd2.iso , D:\Movie\Movie cd3.iso)", false);
+
+  // Resume point within part 3 (0-based part 2), time relative to that part
+  CBookmark bookmark;
+  bookmark.timeInSeconds = 1234.5;
+  bookmark.totalTimeInSeconds = 4106.0;
+  bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(
+      2, R"(<navstate version="2"><title>1</title><pgn>9</pgn></navstate>)");
+  item.GetVideoInfoTag()->SetResumePoint(bookmark);
+
+  VIDEO::UTILS::ResumeInformation info{VIDEO::UTILS::GetItemResumeInformation(item)};
+  EXPECT_TRUE(info.isResumable);
+  EXPECT_EQ(info.startOffset, 1234500);
+  EXPECT_EQ(info.partNumber, 3);
+
+  // Without a player state the part is offered from its start
+  bookmark.timeInSeconds = 2.0;
+  bookmark.totalTimeInSeconds = 3.0;
+  bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(2, "");
+  item.GetVideoInfoTag()->SetResumePoint(bookmark);
+
+  info = VIDEO::UTILS::GetItemResumeInformation(item);
+  EXPECT_TRUE(info.isResumable);
+  EXPECT_EQ(info.startOffset, 0);
+  EXPECT_EQ(info.partNumber, 3);
 }
