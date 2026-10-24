@@ -5,7 +5,9 @@ import @APP_PACKAGE@.channels.util.TvUtil;
 import static android.content.pm.PackageManager.FEATURE_LEANBACK;
 
 import android.app.NativeActivity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Rect;
 import android.hardware.input.InputManager;
@@ -88,6 +90,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     super();
     MainActivity = this;
+  }
+
+  public void setHomeScreen(boolean enabled)
+  {
+    getPackageManager().setComponentEnabledSetting(
+        new ComponentName(this, "@APP_PACKAGE@.Home"),
+        enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+        PackageManager.DONT_KILL_APP);
   }
 
   public Rect getDisplayRect()

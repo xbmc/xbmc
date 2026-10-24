@@ -91,6 +91,20 @@
                 <data android:scheme="smb" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Home"
+            android:enabled="false"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <!--
              Our activity is the built-in NativeActivity framework class.
