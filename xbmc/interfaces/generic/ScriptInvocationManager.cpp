@@ -349,6 +349,13 @@ void CScriptInvocationManager::StopRunningScripts(bool wait /* = false */)
                         });
 }
 
+void CScriptInvocationManager::NotifyAllScriptsAborting()
+{
+  std::unique_lock lock(m_critSection);
+  for (const auto& handler : m_invocationHandlers)
+    handler.second->NotifyScriptAborting(nullptr);
+}
+
 bool CScriptInvocationManager::Stop(const std::string &scriptPath, bool wait /* = false */)
 {
   if (scriptPath.empty())

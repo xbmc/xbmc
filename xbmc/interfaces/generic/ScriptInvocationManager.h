@@ -120,6 +120,13 @@ public:
   */
   void StopRunningScripts(bool wait = false);
 
+  /*!
+   *\brief Tell all running scripts that they are about to be stopped
+   *\note Stopping a script waits until it has finished. Notifying all
+   *      scripts beforehand lets them shut down in parallel.
+   */
+  void NotifyAllScriptsAborting();
+
   bool IsRunning(int scriptId) const;
   bool IsRunning(const std::string& scriptPath) const;
 
