@@ -22,6 +22,7 @@
 #include "utils/log.h"
 
 #include <cctype>
+#include <charconv>
 #include <iterator>
 #include <map>
 #include <memory>
@@ -356,7 +357,14 @@ bool CEpisodeUtils::EnumerateEpisodeItem(const CFileItem* item,
                  (reg2Position >= 0 && regPosition == -1))
         {
           const std::string result{multiPartRegex->GetMatch(2)};
-          const int last{std::stoi(result)};
+          int last{0};
+          // A run of digits too long for an episode number (eg. a timestamp) ends the search
+          if (std::from_chars(result.data(), result.data() + result.size(), last).ec != std::errc{})
+          {
+            CLog::LogF(LOGDEBUG, "VideoInfoScanner: '{}' is not an episode number - ignoring",
+                       result);
+            break;
+          }
           const std::string prefix{
               offset < remainder.length()
                   ? StringUtils::ToLower(std::string_view(remainder).substr(offset, 2))

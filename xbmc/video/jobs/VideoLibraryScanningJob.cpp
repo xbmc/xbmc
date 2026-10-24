@@ -28,7 +28,9 @@ bool CVideoLibraryScanningJob::Cancel()
 
 bool CVideoLibraryScanningJob::Equals(const CJob* job) const
 {
-  if (strcmp(job->GetType(), GetType()) != 0)
+  // A cancelled scan keeps its queue slot until it ends, so the same scan asked for again queues
+  // behind it rather than being dropped as a duplicate
+  if (m_cancelled || strcmp(job->GetType(), GetType()) != 0)
     return false;
 
   const CVideoLibraryScanningJob* scanningJob = dynamic_cast<const CVideoLibraryScanningJob*>(job);
@@ -41,6 +43,7 @@ bool CVideoLibraryScanningJob::Equals(const CJob* job) const
 
 bool CVideoLibraryScanningJob::Work(CVideoDatabase &db)
 {
+  m_started = true;
   if (m_cancelled)
     return true;
 
