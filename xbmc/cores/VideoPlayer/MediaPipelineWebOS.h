@@ -389,6 +389,14 @@ private:
   bool Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHint);
 
   /**
+   * @brief Updates the render picture from the video hint and (re)configures the renderer.
+   * @param videoHint Video stream information.
+   * @param fps Frame rate, 0 if unknown.
+   * @return True if the renderer was configured.
+   */
+  bool ConfigureRenderer(const CDVDStreamInfo& videoHint, double fps);
+
+  /**
    * @brief Unloads the media pipeline for cleanup.
    * @param sync If true, wait for unload to complete.
    */
