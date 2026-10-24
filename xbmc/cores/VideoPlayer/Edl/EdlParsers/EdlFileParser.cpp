@@ -9,6 +9,7 @@
 #include "EdlFileParser.h"
 
 #include "FileItem.h"
+#include "Util.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -16,13 +17,39 @@
 
 #include <charconv>
 #include <chrono>
+#include <vector>
 
 using namespace EDL;
 using namespace XFILE;
 
 std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
 {
-  return URIUtils::ReplaceExtension(item.GetDynPath(), ".edl");
+  const std::string& path{item.GetDynPath()};
+  const bool isBluray{URIUtils::IsBlurayPath(path)};
+  if (!isBluray && !URIUtils::IsOpticalMediaFile(path))
+    return URIUtils::ReplaceExtension(path, ".edl");
+
+  // A disc's is beside it, as its art and subtitles are: a version's named as its art is
+  // (index-00800, 00800 or M3GAN-00800), then the disc's named after the movie (M3GAN)
+  std::string folder;
+  std::string name;
+  CUtil::GetVideoBasePathAndFileName(path, folder, name);
+  std::vector<std::string> edlFiles;
+  for (const std::string& version : CUtil::GetVersionFileNames(path))
+    edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, version + ".edl"));
+  edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, name + ".edl"));
+
+  //! @todo Up to v21 a disc folder rip's EDL was looked for inside BDMV/VIDEO_TS, as index.edl or
+  //! VIDEO_TS.edl. Deprecate in v23.
+  edlFiles.emplace_back(
+      URIUtils::ReplaceExtension(isBluray ? URIUtils::GetDiscFile(path) : path, ".edl"));
+
+  for (const std::string& edlFile : edlFiles)
+  {
+    if (CFile::Exists(edlFile))
+      return edlFile;
+  }
+  return edlFiles.front();
 }
 
 CEdlParserResult CEdlFileParser::Parse(const CFileItem& item,
