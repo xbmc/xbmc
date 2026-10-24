@@ -28,6 +28,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
 
@@ -190,10 +191,12 @@ void CVideoPlayActionProcessor::SetResumeData()
       SetStartData(); // No resume point in the chosen part
       return;
     }
-    // The resume point is in the chosen part, so load it through the resume path, which also
-    // restores its player state
     item->SetStartPartNumber(m_chosenStackPart);
-    item->SetStartOffset(STARTOFFSET_RESUME);
+    // A player state (DVD/Blu-ray) is only restored through the resume path
+    if (item->GetVideoInfoTag()->GetResumePoint().HasSavedPlayerState())
+      item->SetStartOffset(STARTOFFSET_RESUME);
+    else
+      item->SetStartOffset(offset);
   }
   else
   {
