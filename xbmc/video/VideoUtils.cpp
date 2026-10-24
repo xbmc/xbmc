@@ -472,8 +472,20 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item)
   if (item.GetCurrentResumeTimeAndPartNumber(startOffset, partNumber) && startOffset > 0)
   {
     ResumeInformation resumeInfo;
-    resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
-    resumeInfo.partNumber = partNumber;
+    // A next part bookmark (disc stacks) resumes from the start of that part
+    if (const std::optional<int> nextPart{
+            item.HasVideoInfoTag()
+                ? GetNextPartFromBookmark(item.GetVideoInfoTag()->GetResumePoint())
+                : std::nullopt};
+        nextPart)
+    {
+      resumeInfo.partNumber = *nextPart + 1;
+    }
+    else
+    {
+      resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
+      resumeInfo.partNumber = partNumber;
+    }
     resumeInfo.isResumable = true;
     return resumeInfo;
   }

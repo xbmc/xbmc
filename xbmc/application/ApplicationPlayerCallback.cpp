@@ -40,6 +40,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoUtils.h"
 
 #include <chrono>
 #include <memory>
@@ -389,14 +390,18 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     if (stackHelper->GetStack(file) != nullptr)
       UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
 
-    if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
-        IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
+    // A next part bookmark counts parts rather than seconds, so time based checks don't apply
+    if (!VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
     {
-      bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
-    }
-    else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
-    {
-      bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)
+      if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
+          IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
+      {
+        bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
+      }
+      else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
+      {
+        bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)
+      }
     }
   }
   else if (MUSIC::IsAudio(fileItem))
