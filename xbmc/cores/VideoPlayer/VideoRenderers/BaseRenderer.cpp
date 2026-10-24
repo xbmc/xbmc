@@ -367,6 +367,7 @@ void CBaseRenderer::ManageRenderArea()
 CRect CBaseRenderer::ApplyContentGeometry(float& contentRatio)
 {
   CRect renderWindow = m_viewRect;
+  const float pixelRatio = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
 
   const CApplicationContentGeometry::RenderInputs inputs{
       CServiceBroker::GetAppComponents()
@@ -386,12 +387,13 @@ CRect CBaseRenderer::ApplyContentGeometry(float& contentRatio)
       contentRatio = cut.aspect;
 
       if (!m_frameContentRect.IsEmpty() && inputs.maskAspect > 0.0f)
-        renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maskAspect, renderWindow);
+        renderWindow =
+            KODI::VIDEO::GEOMETRY::FitAspect(inputs.maskAspect, renderWindow, pixelRatio);
     }
   }
 
   if (inputs.maintainAspect > 0.0f)
-    renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maintainAspect, m_viewRect);
+    renderWindow = KODI::VIDEO::GEOMETRY::FitAspect(inputs.maintainAspect, m_viewRect, pixelRatio);
 
   return renderWindow;
 }
