@@ -141,10 +141,13 @@ CRect ToSquarePixels(const CRectInt& coded, const StreamGeometry& stream)
           static_cast<float>(coded.y2 - stream.coded.y1)};
 }
 
-CRect FitAspect(float aspect, const CRect& frame)
+CRect FitAspect(float aspect, const CRect& frame, float pixelRatio)
 {
   if (aspect <= 0.0f || frame.Width() <= 0.0f || frame.Height() <= 0.0f)
     return frame;
+
+  if (pixelRatio > 0.0f)
+    aspect /= pixelRatio;
 
   float width = frame.Width();
   float height = width / aspect;

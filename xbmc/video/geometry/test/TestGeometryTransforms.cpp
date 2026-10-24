@@ -276,3 +276,18 @@ TEST(TestGeometryTransforms, ScaleRectLeavesADegenerateSpaceAlone)
   EXPECT_EQ(rect, ScaleRect(rect, 0, 540, 3840, 2160));
   EXPECT_EQ(rect, ScaleRect(rect, 960, 540, 0, 2160));
 }
+
+TEST(TestGeometryTransforms, FitAspectFitsADisplayRatioToWidePixels)
+{
+  // A 2.40 raster on 1440x1080 output whose pixels are 4/3 wide.
+  const CRect raster{0.0f, 140.0f, 1440.0f, 940.0f};
+  constexpr float PIXEL_RATIO = 4.0f / 3.0f;
+
+  EXPECT_EQ(raster, FitAspect(2.40f, raster, PIXEL_RATIO));
+
+  const CRect fitted = FitAspect(16.0f / 9.0f, raster, PIXEL_RATIO);
+  EXPECT_NEAR(186.67f, fitted.x1, 0.01f);
+  EXPECT_FLOAT_EQ(140.0f, fitted.y1);
+  EXPECT_NEAR(1253.33f, fitted.x2, 0.01f);
+  EXPECT_FLOAT_EQ(940.0f, fitted.y2);
+}
