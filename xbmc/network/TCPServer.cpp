@@ -184,7 +184,7 @@ void CTCPServer::Process()
     SOCKET          max_fd = 0;
     fd_set          rfds;
     struct timeval  to     = {1, 0};
-    bool backlogged = false;
+    bool pollForProgress = false;
     FD_ZERO(&rfds);
 
     fd_set wfds;
@@ -221,12 +221,18 @@ void CTCPServer::Process()
             max_fd = m_connections[i]->m_socket;
         }
 
+        if (m_connections[i]->IsReadEOF())
+        {
+          pollForProgress = true;
+          continue;
+        }
+
         // Reading faster than the worker parses would queue without limit, so a connection
         // that is far enough ahead is left unread until the worker catches up. Its receive
         // window closes and the client waits.
         if (m_connections[i]->Backlogged())
         {
-          backlogged = true;
+          pollForProgress = true;
           continue;
         }
 
@@ -236,9 +242,9 @@ void CTCPServer::Process()
       }
     }
 
-    // A held-back connection is not in the set, so nothing wakes the select when its worker
-    // drains. Look again soon rather than after the idle timeout.
-    if (backlogged)
+    // Worker progress on a connection excluded from reading may not wake select().
+    // Poll for backlog relief and read-EOF completion before the idle timeout.
+    if (pollForProgress)
       to = {0, 50000};
 
     int res = select((intptr_t)max_fd + 1, &rfds, &wfds, NULL, &to);
@@ -289,7 +295,9 @@ void CTCPServer::Process()
               m_connections[i]->Enqueue(m_connections[i], this, buffer, nread);
             }
           }
-          else if (nread < 0 && (WouldBlock() || Interrupted()))
+          else if (nread == 0)
+            m_connections[i]->ReadEOF();
+          else if (WouldBlock() || Interrupted())
             continue;
           else
             close = true;
@@ -870,6 +878,25 @@ bool CTCPServer::CTCPClient::Backlogged()
   return m_inboundBytes >= maxBufferLength;
 }
 
+bool CTCPServer::CTCPClient::Closing()
+{
+  if (m_closing)
+    return true;
+  if (!m_readEOF)
+    return false;
+
+  std::unique_lock<std::mutex> inboundLock(m_inboundMutex);
+  if (m_workerStarted || !m_inbound.empty())
+    return false;
+
+  std::unique_lock<std::mutex> writeLock(m_writeMutex, std::try_to_lock);
+  if (!writeLock.owns_lock())
+    return false;
+
+  std::unique_lock<std::mutex> outputLock(m_outputMutex);
+  return m_output.empty();
+}
+
 void CTCPServer::CTCPClient::RunWorker(std::shared_ptr<CTCPClient> self,
                                        std::shared_ptr<CTCPServer> host)
 {
@@ -1031,6 +1058,7 @@ void CTCPServer::CTCPClient::Disconnect()
 void CTCPServer::CTCPClient::Copy(const CTCPClient& client)
 {
   m_new               = client.m_new;
+  m_readEOF = client.m_readEOF;
   m_socket            = client.m_socket;
   m_cliaddr           = client.m_cliaddr;
   m_addrlen           = client.m_addrlen;
