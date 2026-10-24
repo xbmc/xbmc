@@ -337,6 +337,7 @@ public:
   static constexpr auto SETTING_SLIDESHOW_SHUFFLE = "slideshow.shuffle";
   static constexpr auto SETTING_SLIDESHOW_HIGHQUALITYDOWNSCALING =
       "slideshow.highqualitydownscaling";
+  static constexpr auto SETTING_SLIDESHOW_HDRPICTURES = "slideshow.hdrpictures";
   static constexpr auto SETTING_WEATHER_CURRENTLOCATION = "weather.currentlocation";
   static constexpr auto SETTING_WEATHER_ADDON = "weather.addon";
   static constexpr auto SETTING_WEATHER_ADDONSETTINGS = "weather.addonsettings";
