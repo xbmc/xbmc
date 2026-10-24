@@ -11,6 +11,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 
+#include <atomic>
 #include <string>
 #include <vector>
 
@@ -30,7 +31,7 @@ public:
   ~CWSDiscoveryListenerUDP();
 
   void Start();
-  void Stop();
+  void Stop(bool bWait);
 
 protected:
   // CThread
@@ -99,6 +100,9 @@ private:
 
   // Socket FD for send/recv
   int fd;
+
+  // Only the Stop() that joins a started thread logs that it stopped
+  std::atomic<bool> m_started{false};
 
   std::vector<Command> m_commandbuffer;
 
