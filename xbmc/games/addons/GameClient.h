@@ -38,6 +38,7 @@ class CGameClientDiscModel;
 
 class CGameClientCheats;
 class CGameClientCheevos;
+class CGameClientFastForward;
 class CGameClientInGameSaves;
 class CGameClientInput;
 class CGameClientProperties;
@@ -271,6 +272,7 @@ private:
   static void cb_close_game(KODI_HANDLE kodiInstance);
   static void cb_report_missing_file(KODI_HANDLE kodiInstance, const char* path);
   static double cb_get_playback_speed(KODI_HANDLE kodiInstance);
+  static void cb_set_fast_forwarding(KODI_HANDLE kodiInstance, bool fastForward, double ratio);
   static void cb_set_game_timing(KODI_HANDLE kodiInstance, const game_system_timing* timingInfo);
   static bool cb_start_stream(KODI_HANDLE kodiInstance, KODI_GAME_STREAM_HANDLE stream);
   static KODI_GAME_STREAM_HANDLE cb_open_stream(KODI_HANDLE kodiInstance,
@@ -325,6 +327,8 @@ private:
                                               const struct game_rc_leaderboard_scoreboard* data);
   static void cb_rc_on_reset(KODI_HANDLE kodiInstance);
   static void cb_rc_on_subset_completed(KODI_HANDLE kodiInstance, const char* title);
+  static void cb_rc_on_achievement_sets(KODI_HANDLE kodiInstance,
+                                        const game_rc_achievement_sets* data);
   //@}
 
   /*!
@@ -372,6 +376,7 @@ private:
   // would read as paused and have a client behave as though the user had
   // stopped the game before it started.
   std::atomic<double> m_playbackSpeed{1.0};
+  const std::unique_ptr<CGameClientFastForward> m_fastForward;
   std::string m_gamePath;
   std::string m_missingFile; // The first file the client reported missing while loading
   bool m_bRequiresGameLoop = false;

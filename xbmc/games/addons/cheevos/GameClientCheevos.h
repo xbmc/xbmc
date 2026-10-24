@@ -11,12 +11,14 @@
 #include "utils/Observer.h"
 
 #include <atomic>
+#include <optional>
 #include <string>
 
 class CCriticalSection;
 
 struct AddonInstance_Game;
 struct game_rc_achievement_challenge;
+struct game_rc_achievement_sets;
 struct game_rc_achievement_progress;
 struct game_rc_achievement_progress_indicator;
 struct game_rc_leaderboard;
@@ -86,6 +88,8 @@ public:
   void OnReset();
 
   void OnSubsetCompleted(const std::string& title);
+
+  void OnAchievementSets(const game_rc_achievement_sets& data);
   //@}
 
   /*!
@@ -161,6 +165,34 @@ private:
    */
   bool SetEncoreModeEnabled(bool enabled);
 
+  /*!
+   * \brief Whether the client reports a game's achievement sets
+   */
+  bool ReportsAchievementSets() const;
+
+  /*!
+   * \brief Tell the client to turn an achievement set on or off
+   */
+  bool SetAchievementSetEnabled(unsigned int setId, bool enabled);
+
+  /*!
+   * \brief Turn a set on or off at the player's request, and remember it
+   *
+   * The game's own set stays on: only subsets can be turned off.
+   */
+  bool OnAchievementSetToggled(unsigned int setId, bool enabled);
+
+  /*!
+   * \brief Show the game's achievement totals, if the toast is waiting
+   */
+  void QueueStartupToast();
+
+  struct StartupToast
+  {
+    std::string icon;
+    std::string title;
+  };
+
   CGameClient& m_gameClient;
   AddonInstance_Game& m_struct;
   CCriticalSection& m_clientAccess;
@@ -174,6 +206,10 @@ private:
   //! Hardcore as last applied to this client. Atomic because the setting can
   //! change on the player's thread as well as Kodi's.
   std::atomic<bool> m_hardcoreEnabled{false};
+
+  //! The game-start toast until it is shown. Only touched on the add-on's
+  //! thread.
+  std::optional<StartupToast> m_startupToast;
 
   //! Whether this instance is registered with the game settings. Only touched
   //! on Kodi's thread, either side of a game.

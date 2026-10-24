@@ -2898,6 +2898,14 @@
           </constraints>
           <control type="edit" format="string"/>
         </setting>
+        <setting id="gamesachievements.disabledsets" type="string">
+          <visible>false</visible>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string"/>
+        </setting>
         <setting id="gamesachievements.loggedin" type="boolean" label="35268" help="35269">
           <visible>true</visible>
           <level>0</level>

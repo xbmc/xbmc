@@ -82,6 +82,24 @@ public:
    */
   bool GetChallengeIndicator() const;
 
+  /*!
+   * \brief Whether the player turned an achievement set off
+   *
+   * RetroAchievements numbers sets across every game, so the set's ID alone
+   * says which one it is.
+   */
+  bool IsAchievementSetDisabled(unsigned int setId) const;
+
+  /*!
+   * \brief Whether the player turned any achievement set off
+   */
+  bool HasDisabledAchievementSets() const;
+
+  /*!
+   * \brief Remember whether the player turned an achievement set off
+   */
+  void SetAchievementSetDisabled(unsigned int setId, bool disabled);
+
   bool GetAchievementsLoggedIn() const;
 
   /*!

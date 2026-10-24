@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "GameClientCallbacks.h"
+#include "GameClientFastForward.h"
 #include "GameClientInGameSaves.h"
 #include "GameClientProperties.h"
 #include "GameClientTranslator.h"
@@ -125,7 +126,8 @@ std::string NormalizeExtension(const std::string& strExtension)
 CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
   : CAddonDll(addonInfo, ADDON::AddonType::GAMEDLL),
     m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, *m_ifc.game, m_critSection)),
-    m_bIsPlaying(false)
+    m_bIsPlaying(false),
+    m_fastForward(std::make_unique<CGameClientFastForward>())
 {
   using namespace ADDON;
 
@@ -215,6 +217,7 @@ bool CGameClient::Initialize(void)
   m_ifc.game->toKodi->CloseGame = cb_close_game;
   m_ifc.game->toKodi->ReportMissingFile = cb_report_missing_file;
   m_ifc.game->toKodi->GetPlaybackSpeed = cb_get_playback_speed;
+  m_ifc.game->toKodi->SetFastForwarding = cb_set_fast_forwarding;
   m_ifc.game->toKodi->SetGameTiming = cb_set_game_timing;
   m_ifc.game->toKodi->OpenStream = cb_open_stream;
   m_ifc.game->toKodi->StartStream = cb_start_stream;
@@ -245,6 +248,7 @@ bool CGameClient::Initialize(void)
   m_ifc.game->toKodi->RCOnLeaderboardScoreboard = cb_rc_on_leaderboard_scoreboard;
   m_ifc.game->toKodi->RCOnReset = cb_rc_on_reset;
   m_ifc.game->toKodi->RCOnSubsetCompleted = cb_rc_on_subset_completed;
+  m_ifc.game->toKodi->RCOnAchievementSets = cb_rc_on_achievement_sets;
 
   memset(m_ifc.game->toAddon, 0, sizeof(KodiToAddonFuncTable_Game));
 
@@ -701,6 +705,7 @@ void CGameClient::CloseFile()
     m_gamePath.clear();
     m_serializeSize = 0;
     m_input = nullptr;
+    m_fastForward->Reset();
 
     Input().Stop();
 
@@ -1113,7 +1118,16 @@ double CGameClient::cb_get_playback_speed(KODI_HANDLE kodiInstance)
   if (!gameClient)
     return 0.0;
 
-  return gameClient->m_playbackSpeed;
+  return gameClient->m_fastForward->ClientSpeed(gameClient->m_playbackSpeed);
+}
+
+void CGameClient::cb_set_fast_forwarding(KODI_HANDLE kodiInstance, bool fastForward, double ratio)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (!gameClient)
+    return;
+
+  gameClient->m_fastForward->Request(fastForward, ratio, gameClient->m_playbackSpeed);
 }
 
 void CGameClient::cb_set_game_timing(KODI_HANDLE kodiInstance, const game_system_timing* timingInfo)
@@ -1445,6 +1459,16 @@ void CGameClient::cb_rc_on_subset_completed(KODI_HANDLE kodiInstance, const char
     return;
 
   gameClient->Cheevos().OnSubsetCompleted(title != nullptr ? title : "");
+}
+
+void CGameClient::cb_rc_on_achievement_sets(KODI_HANDLE kodiInstance,
+                                            const game_rc_achievement_sets* data)
+{
+  CGameClient* gameClient = static_cast<CGameClient*>(kodiInstance);
+  if (gameClient == nullptr || data == nullptr)
+    return;
+
+  gameClient->Cheevos().OnAchievementSets(*data);
 }
 
 std::pair<std::string, std::string> CGameClient::ParseLibretroName(const std::string& addonName)

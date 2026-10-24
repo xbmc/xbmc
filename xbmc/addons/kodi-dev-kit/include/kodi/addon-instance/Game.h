@@ -487,6 +487,28 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Ask Kodi to fast-forward the game, or to stop a fast-forward it asked for
+  ///
+  /// @param[in] fastForward True to fast-forward, false to return to normal speed
+  /// @param[in] ratio The speed asked for if above 1, otherwise Kodi chooses
+  ///
+  /// For a game that wants to pass over a wait of its own, such as loading from
+  /// tape. Kodi leaves a speed the user chose alone: it only fast-forwards from
+  /// normal speed, and only returns to normal speed from the one it set.
+  ///
+  /// @remarks Only called from the add-on itself. It does nothing with a Kodi
+  ///          older than game API 8.4.0.
+  ///
+  void SetFastForwarding(bool fastForward, double ratio)
+  {
+    if (IsInstanceAPIVersionAtLeast(8, 4, 0))
+      m_instanceData->toKodi->SetFastForwarding(m_instanceData->toKodi->kodiInstance, fastForward,
+                                                ratio);
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_game_Operation_CStream Class: CStream
   /// @ingroup cpp_kodi_addon_game_Operation
   /// @brief @cpp_class{ kodi::addon::CInstanceGame::CStream }
@@ -1136,6 +1158,24 @@ public:
   ///
   virtual GAME_ERROR RCSetEncoreModeEnabled(bool enabled) { return GAME_ERROR_NOT_IMPLEMENTED; }
   //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Turn one of the loaded game's achievement sets on or off
+  ///
+  /// The achievements and leaderboards of a set that is off are not evaluated.
+  ///
+  /// @param[in] setId The set, as given to RCOnAchievementSets()
+  /// @param[in] enabled True to turn the set on
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR on success
+  ///
+  /// @note Added in Game API 8.5.0
+  ///
+  virtual GAME_ERROR RCSetAchievementSetEnabled(unsigned int setId, bool enabled)
+  {
+    return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
   //============================================================================
   /// @brief Activate an achievement
   ///
@@ -1445,6 +1485,24 @@ public:
 
   //============================================================================
   /// @brief **Callback to Kodi Function**\n
+  /// Tell Kodi the loaded game's achievement sets, and which set and type each
+  /// of its achievements has
+  ///
+  /// @param[in] data The sets and the achievements' details
+  ///
+  /// @remarks Only called from the add-on itself, after RCOnGameLoaded(). Does
+  ///          nothing with a version of Kodi older than Game API 8.5.0.
+  ///
+  /// @note Added in Game API 8.5.0
+  ///
+  void RCOnAchievementSets(const game_rc_achievement_sets& data)
+  {
+    if (IsInstanceAPIVersionAtLeast(8, 5, 0))
+      m_instanceData->toKodi->RCOnAchievementSets(m_instanceData->toKodi->kodiInstance, &data);
+  }
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
   /// Show, update or hide how far along a measured achievement is
   ///
   /// Some achievements are measured rather than simply locked or unlocked, and
@@ -1707,6 +1765,10 @@ private:
 
     instance->game->toAddon->FreeString = ADDON_FreeString;
 
+    // An older Kodi's table ends before this entry
+    if (IsInstanceAPIVersionAtLeast(8, 5, 0))
+      instance->game->toAddon->RCSetAchievementSetEnabled = ADDON_RCSetAchievementSetEnabled;
+
     m_instanceData = instance->game;
     m_instanceData->toAddon->addonInstance = this;
   }
@@ -1948,6 +2010,14 @@ private:
   {
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->RCSetEncoreModeEnabled(enabled);
+  }
+
+  inline static GAME_ERROR ADDON_RCSetAchievementSetEnabled(const AddonInstance_Game* instance,
+                                                            unsigned int setId,
+                                                            bool enabled)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->RCSetAchievementSetEnabled(setId, enabled);
   }
 
   inline static GAME_ERROR ADDON_ActivateAchievement(const AddonInstance_Game* instance,
