@@ -77,6 +77,21 @@ enum MEDIACODEC_STATES
   MEDIACODEC_STATE_STOPPED
 };
 
+namespace
+{
+/*!
+ * \brief Content frame rate taken from the stream hints.
+ * \return the frame rate, or 0.0 when the hints do not carry a usable one
+ */
+double GetHintsFrameRate(const CDVDStreamInfo& hints)
+{
+  if (hints.fpsrate <= 0 || hints.fpsscale <= 0)
+    return 0.0;
+
+  return static_cast<double>(hints.fpsrate) / static_cast<double>(hints.fpsscale);
+}
+} // unnamed namespace
+
 /*****************************************************************************/
 /*****************************************************************************/
 class CDVDMediaCodecOnFrameAvailable : public CEvent,
@@ -536,6 +551,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         std::tie(displaySupportsDovi, mediaCodecSupportsDovi) =
             CAndroidUtils::GetDolbyVisionCapabilities();
 
+        // When Dolby Vision display support is only present because the user forced it,
+        // content the display cannot show that way falls back to its real capabilities.
+        if (displaySupportsDovi &&
+            CAndroidUtils::IsForcedDolbyVisionBlockedForFps(GetHintsFrameRate(m_hints)))
+          displaySupportsDovi = false;
+
         // For Dolby Vision profiles that don't have HDR10 fallback, always use
         // the dvhe decoder even if the display not supports Dolby Vision.
         // For profiles that has HDR10 fallback (7, 8) is better use HEVC decoder to
@@ -694,6 +715,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         bool mediaCodecSupportsDovi{false};
         std::tie(displaySupportsDovi, mediaCodecSupportsDovi) =
             CAndroidUtils::GetDolbyVisionCapabilities();
+
+        // As in the HEVC path above.
+        if (displaySupportsDovi &&
+            CAndroidUtils::IsForcedDolbyVisionBlockedForFps(GetHintsFrameRate(m_hints)))
+          displaySupportsDovi = false;
 
         const bool notHasHDRfallback = (m_hints.dovi.dv_bl_signal_compatibility_id == 0 ||
                                         m_hints.dovi.dv_bl_signal_compatibility_id == 2 ||
