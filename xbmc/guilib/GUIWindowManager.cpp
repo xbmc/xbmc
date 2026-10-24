@@ -1481,7 +1481,12 @@ bool CGUIWindowManager::Render()
       if (!hasRendered)
         CServiceBroker::GetWinSystem()->SetDirtyRegions(dirtyRegions);
 
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(i);
+      // Bounded by the display only, so the clear and the surround reach the whole region.
+      // RenderPass() confines the interface.
+      CGraphicContext& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+      CRect region = i;
+      region.Intersect(CRect(0, 0, float(context.GetWidth()), float(context.GetHeight())));
+      context.SetClip(region);
       RenderPass();
       hasRendered = true;
     }
