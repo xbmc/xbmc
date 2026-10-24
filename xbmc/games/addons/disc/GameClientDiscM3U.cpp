@@ -95,8 +95,7 @@ bool CGameClientDiscM3U::Load(const std::string& m3uPath, CGameClientDiscModel& 
 
     // M3U entries are relative to the playlist path. Normalize for
     // stable restore
-    if (!URIUtils::IsURL(line) && !URIUtils::IsDOSPath(line) &&
-        !URIUtils::IsAbsolutePOSIXPath(line))
+    if (!CURL::IsFullPath(line))
       line = URIUtils::AddFileToFolder(playlistDirectory, line);
 
     model.AddDisc(line);

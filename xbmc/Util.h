@@ -252,6 +252,8 @@ public:
    *  \param[in]  videoPath The full path of the video file.
    *  \param[out] basePath The base path of the given video.
    *  \param[out] videoFileName The file name of the given video.
+   *  \note Non-file identifiers clear both outputs. URI paths whose query identifies
+   *        the resource retain the raw query and fragment in basePath.
    */
   static void GetVideoBasePathAndFileName(const std::string& videoPath,
                                           std::string& basePath,

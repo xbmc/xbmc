@@ -99,6 +99,15 @@ TEST(TestUtil, ValidatePath)
 {
   std::string path;
 #ifdef TARGET_WINDOWS
+  for (const std::string drive : {"C", "c", "D", "x"})
+  {
+    SCOPED_TRACE(drive);
+    EXPECT_EQ(drive + R"(:\\Movies\movie.mkv)", CUtil::ValidatePath(drive + "://Movies/movie.mkv"));
+    EXPECT_EQ(drive + R"(:\Movies\movie.mkv)",
+              CUtil::ValidatePath(drive + "://Movies/movie.mkv", true));
+  }
+  EXPECT_EQ(R"(C:\file)", CUtil::ValidatePath("C:/file"));
+  EXPECT_EQ("C:relative", CUtil::ValidatePath("C:relative"));
   path = "C:\\\\foo\\\\bar\\";
   EXPECT_EQ(CUtil::ValidatePath(path, true), "C:\\foo\\bar\\");
   path = "\\\\foo\\\\bar\\";
@@ -652,6 +661,12 @@ const TestBaseData Paths[] = {
      "\\\\Server\\Movies\\movie\\", "movie"},
     {"archive://%5c%5cServer%5cMovies%5cmovie%5cdisc%201%5cmovie.tar.gz/file.mkv",
      "\\\\Server\\Movies\\movie\\disc 1\\", "file"},
+    {"file:/videos/movie.mkv?cache=1#part", "file:/videos/", "movie"},
+    {"http:/videos/movie.mkv?cache=1#part", "http:/videos/", "movie"},
+    {"http://host/videos/movie.mkv?cache=1#part|auth=token", "http://host/videos/|auth=token",
+     "movie"},
+    {"magnet:/videos/movie.mkv?xt=urn:btih:hash&tr=one&tr=two#part",
+     "magnet:/videos/?xt=urn:btih:hash&tr=one&tr=two#part", "movie"},
     // HTTP URL with query string
     {"http://192.168.1.1/movie.mkv?session=abc", "http://192.168.1.1/", "movie"},
     {"http://192.168.1.1/path/movie.mkv?session=abc", "http://192.168.1.1/path/", "movie"},
