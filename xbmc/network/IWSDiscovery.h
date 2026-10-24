@@ -17,7 +17,7 @@ class IWSDiscovery
 public:
   virtual ~IWSDiscovery() = default;
   virtual bool StartServices() = 0;
-  virtual bool StopServices() = 0;
+  virtual bool StopServices(bool bWait) = 0;
   virtual bool IsRunning() = 0;
 
   static std::unique_ptr<IWSDiscovery> GetInstance();
