@@ -11,6 +11,7 @@
 #include "RenderContext.h"
 #include "RenderSettings.h"
 #include "RenderTranslator.h"
+#include "RenderUtils.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/RetroPlayer/buffers/IRenderBuffer.h"
@@ -977,7 +978,10 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool* bufferPool)
     IRenderBuffer* renderBuffer =
         CreateFromCache(m_cachedFrame, m_cachedWidth, m_cachedHeight, bufferPool, m_bufferMutex);
     if (renderBuffer != nullptr)
+    {
+      renderBuffer->SetDisplayAspectRatio(m_cachedDisplayAspectRatio);
       m_renderBuffers.emplace_back(renderBuffer);
+    }
   }
 }
 
@@ -1113,6 +1117,7 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
   size_t sourceSize = 0;
   unsigned int width = 0;
   unsigned int height = 0;
+  float displayAspectRatio = 0.0f;
   unsigned int rotationCCW = 0;
 
   if (renderBuffer != nullptr)
@@ -1122,15 +1127,17 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
     sourceSize = renderBuffer->GetFrameSize();
     width = renderBuffer->GetWidth();
     height = renderBuffer->GetHeight();
+    displayAspectRatio = renderBuffer->GetDisplayAspectRatio();
     rotationCCW = renderBuffer->GetRotation();
   }
   else if (!cachedFrame.empty())
   {
     sourceFormat = m_format;
-    sourceData = m_cachedFrame.data();
-    sourceSize = m_cachedFrame.size();
+    sourceData = cachedFrame.data();
+    sourceSize = cachedFrame.size();
     width = m_cachedWidth;
     height = m_cachedHeight;
+    displayAspectRatio = m_cachedDisplayAspectRatio;
     rotationCCW = m_cachedRotationCCW;
   }
 
@@ -1145,9 +1152,11 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
 
   const int stride = CRenderTranslator::TranslateWidthToBytes(width, sourceFormat);
 
-  unsigned int scaleWidth = 400;
-  unsigned int scaleHeight = 220;
-  CPicture::GetScale(width, height, scaleWidth, scaleHeight);
+  // Scale to the shape the frame is shown at, so non-square pixels aren't stretched
+  unsigned int scaleWidth = 444;
+  unsigned int scaleHeight = 250;
+  CPicture::GetScale(CRenderUtils::GetDisplayWidth(width, height, displayAspectRatio), height,
+                     scaleWidth, scaleHeight);
 
   const int bytesPerPixel = 4;
   std::vector<uint8_t> scaledImage(scaleWidth * scaleHeight * bytesPerPixel);

@@ -10,6 +10,7 @@
 
 #include "utils/MathUtils.h"
 
+#include <algorithm>
 #include <cmath>
 
 using namespace KODI;
@@ -401,4 +402,14 @@ ViewportCoordinates CRenderUtils::ReorderDrawPoints(const CRect& destRect,
   }
 
   return rotatedDestCoords;
+}
+
+unsigned int CRenderUtils::GetDisplayWidth(unsigned int width,
+                                           unsigned int height,
+                                           float displayAspectRatio)
+{
+  if (displayAspectRatio <= 0.0f)
+    return width;
+
+  return static_cast<unsigned int>(std::max(1L, std::lround(height * displayAspectRatio)));
 }
