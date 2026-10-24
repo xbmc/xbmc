@@ -159,10 +159,11 @@ CWSDiscoveryListenerUDP::~CWSDiscoveryListenerUDP()
 {
 }
 
-void CWSDiscoveryListenerUDP::Stop()
+void CWSDiscoveryListenerUDP::Stop(bool bWait)
 {
-  StopThread(true);
-  CLog::Log(LOGINFO, "CWSDiscoveryListenerUDP::Stop - Stopped");
+  StopThread(bWait);
+  if (bWait)
+    CLog::Log(LOGINFO, "CWSDiscoveryListenerUDP::Stop - Stopped");
 }
 
 void CWSDiscoveryListenerUDP::Start()
@@ -258,7 +259,7 @@ void CWSDiscoveryListenerUDP::Process()
   while (!m_bStop)
   {
     FD_SET(fd, &rset);
-    timeout.tv_sec = 3;
+    timeout.tv_sec = 1;
     timeout.tv_usec = 0;
     nready = select((fd + 1), &rset, NULL, NULL, &timeout);
 

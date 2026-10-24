@@ -60,7 +60,7 @@ public:
   ~CWSDiscoveryWindows() override;
 
   bool StartServices() override;
-  bool StopServices() override;
+  bool StopServices(bool bWait) override;
   bool IsRunning() override;
 
   bool ThereAreServers();
