@@ -1403,6 +1403,8 @@ CDateTime CGUIEPGGridContainer::GetSelectedDate() const
 
 CFileItemPtr CGUIEPGGridContainer::GetSelectedGridItem(int offset /*= 0*/) const
 {
+  std::unique_lock lock(m_critSection);
+
   CFileItemPtr item;
 
   if (m_channelCursor + m_channelOffset + offset < m_gridModel->ChannelItemsSize() &&

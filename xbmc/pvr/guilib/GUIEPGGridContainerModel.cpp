@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 using namespace PVR;
@@ -34,8 +35,29 @@ CGUIEPGGridContainerModel::CGUIEPGGridContainerModel(unsigned int minutesPerBloc
 {
 }
 
+CGUIEPGGridContainerModel::CGUIEPGGridContainerModel(const CGUIEPGGridContainerModel& other)
+  : m_minutesPerBlock(other.m_minutesPerBlock)
+{
+  std::unique_lock lock(other.m_critSection);
+
+  m_epgItems = other.m_epgItems;
+  m_gridStart = other.m_gridStart;
+  m_gridEnd = other.m_gridEnd;
+  m_channelItems = other.m_channelItems;
+  m_rulerItems = other.m_rulerItems;
+  m_gridIndex = other.m_gridIndex;
+  m_blocks = other.m_blocks;
+  m_fBlockSize = other.m_fBlockSize;
+  m_firstActiveChannel = other.m_firstActiveChannel;
+  m_lastActiveChannel = other.m_lastActiveChannel;
+  m_firstActiveBlock = other.m_firstActiveBlock;
+  m_lastActiveBlock = other.m_lastActiveBlock;
+}
+
 void CGUIEPGGridContainerModel::SetInvalid() const
 {
+  std::unique_lock lock(m_critSection);
+
   for (const auto& [_, gridItem] : m_gridIndex)
     gridItem.item->SetInvalid();
   for (const auto& channel : m_channelItems)
@@ -434,6 +456,8 @@ bool CGUIEPGGridContainerModel::IsSameGridItem(int iChannel, int iBlock1, int iB
   if (iBlock1 == iBlock2)
     return true;
 
+  std::unique_lock lock(m_critSection);
+
   const GridItem* item1 = GetGridItemPtr(iChannel, iBlock1);
   const GridItem* item2 = GetGridItemPtr(iChannel, iBlock2);
 
@@ -443,36 +467,50 @@ bool CGUIEPGGridContainerModel::IsSameGridItem(int iChannel, int iBlock1, int iB
 
 std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetGridItem(int iChannel, int iBlock) const
 {
+  std::unique_lock lock(m_critSection);
+
   return GetGridItemPtr(iChannel, iBlock)->item;
 }
 
 int CGUIEPGGridContainerModel::GetGridItemStartBlock(int iChannel, int iBlock) const
 {
+  std::unique_lock lock(m_critSection);
+
   return GetGridItemPtr(iChannel, iBlock)->startBlock;
 }
 
 int CGUIEPGGridContainerModel::GetGridItemEndBlock(int iChannel, int iBlock) const
 {
+  std::unique_lock lock(m_critSection);
+
   return GetGridItemPtr(iChannel, iBlock)->endBlock;
 }
 
 CDateTime CGUIEPGGridContainerModel::GetGridItemEndTime(int iChannel, int iBlock) const
 {
+  std::unique_lock lock(m_critSection);
+
   return GetGridItemPtr(iChannel, iBlock)->item->GetEPGInfoTag()->EndAsUTC();
 }
 
 float CGUIEPGGridContainerModel::GetGridItemWidth(int iChannel, int iBlock) const
 {
+  std::unique_lock lock(m_critSection);
+
   return GetGridItemPtr(iChannel, iBlock)->width;
 }
 
 float CGUIEPGGridContainerModel::GetGridItemOriginWidth(int iChannel, int iBlock) const
 {
+  std::unique_lock lock(m_critSection);
+
   return GetGridItemPtr(iChannel, iBlock)->originWidth;
 }
 
 void CGUIEPGGridContainerModel::DecreaseGridItemWidth(int iChannel, int iBlock, float fSize)
 {
+  std::unique_lock lock(m_critSection);
+
   auto it = m_gridIndex.find({iChannel, iBlock});
   if (it != m_gridIndex.end() && (*it).second.width != ((*it).second.originWidth - fSize))
     (*it).second.width = (*it).second.originWidth - fSize;
@@ -512,6 +550,8 @@ bool CGUIEPGGridContainerModel::FreeProgrammeMemory(int firstChannel,
                                                     int firstBlock,
                                                     int lastBlock)
 {
+  std::unique_lock lock(m_critSection);
+
   const bool channelsChanged =
       (firstChannel != m_firstActiveChannel || lastChannel != m_lastActiveChannel);
   const bool blocksChanged = (firstBlock != m_firstActiveBlock || lastBlock != m_lastActiveBlock);
@@ -702,6 +742,8 @@ std::unique_ptr<CFileItemList> CGUIEPGGridContainerModel::GetCurrentTimeLineItem
 {
   // Note: No need to keep this in a member. Gets generally not called multiple times for the
   //       same timeline, but content must be synced with m_epgItems, which changes quite often.
+
+  std::unique_lock lock(m_critSection);
 
   auto items{std::make_unique<CFileItemList>()};
 
