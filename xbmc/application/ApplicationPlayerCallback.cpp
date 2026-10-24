@@ -400,8 +400,9 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     if (stackHelper->GetStack(file) != nullptr)
       UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
 
-    // A next part bookmark counts parts rather than seconds, so time based checks don't apply
-    if (!VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
+    // Time based checks don't apply once finished, or to a next part bookmark (counts parts
+    // rather than seconds)
+    if (bookmark.timeInSeconds >= 0.0 && !VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
     {
       if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
           IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
