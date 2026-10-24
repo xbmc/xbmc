@@ -1,0 +1,106 @@
+--- a/libavformat/crypto.c
++++ b/libavformat/crypto.c
+@@ -76,11 +76,18 @@
+     { NULL }
+ };
+ 
++static void *crypto_child_next(void *obj, void *prev)
++{
++    CryptoContext *c = obj;
++    return prev ? NULL : c->hd;
++}
++
+ static const AVClass crypto_class = {
+     .class_name     = "crypto",
+     .item_name      = av_default_item_name,
+     .option         = crypto_options,
+     .version        = LIBAVUTIL_VERSION_INT,
++    .child_next     = crypto_child_next,
+ };
+ 
+ static int set_aes_arg(URLContext *h, uint8_t **buf, int *buf_len,
+--- a/libavformat/hls.c
++++ b/libavformat/hls.c
+@@ -56,6 +56,10 @@
+ #define MPEG_TIME_BASE 90000
+ #define MPEG_TIME_BASE_Q (AVRational){1, MPEG_TIME_BASE}
+ 
++/* Some servers drop a connection that isn't read for a few seconds, so the
++ * next segment is only opened this long before the current one ends. */
++#define PREFETCH_LEAD_TIME (2 * AV_TIME_BASE)
++
+ /*
+  * An apple http stream consists of a playlist with media segment files,
+  * played sequentially. There may be several playlists with the same
+@@ -1744,6 +1748,16 @@
+     return ret;
+ }
+ 
++static int prefetch_due(struct playlist *v, struct segment *cur)
++{
++    int64_t size = cur->size >= 0 ? cur->size : avio_size(v->input);
++
++    if (size <= 0 || cur->duration <= PREFETCH_LEAD_TIME)
++        return 1;
++    return av_rescale(cur->duration, FFMAX(size - v->cur_seg_offset, 0), size) <=
++           PREFETCH_LEAD_TIME;
++}
++
+ static int read_data_continuous(void *opaque, uint8_t *buf, int buf_size)
+ {
+     struct playlist *v = opaque;
+@@ -1751,7 +1765,7 @@
+     int ret;
+     int just_opened = 0;
+     int segment_retries = 0;
+-    struct segment *seg;
++    struct segment *seg, *cur;
+ 
+     if (c->http_persistent && v->input_read_done) {
+         ret = reload_playlist(v, c);
+@@ -1774,12 +1788,13 @@
+         if (ret)
+             return ret;
+ 
+-        if (c->http_multiple == 1 && v->input_next_requested) {
++        if (c->http_multiple == 1 && v->input_next_requested && v->input_next) {
+             FFSWAP(AVIOContext *, v->input, v->input_next);
+             v->cur_seg_offset = 0;
+             v->input_next_requested = 0;
+             ret = 0;
+         } else {
++            v->input_next_requested = 0;
+             ret = open_input(c, v, seg, &v->input);
+         }
+         if (ret < 0) {
+@@ -1813,9 +1828,15 @@
+     }
+ 
+     seg = next_segment(v);
++    cur = current_segment(v);
++    /* AES-128 segments get their own key and IV when opened, so they can be
++     * prefetched too, but not while a SAMPLE-AES segment, which is decrypted
++     * with the playlist key, is still being read. */
+     if (c->http_multiple == 1 && !v->input_next_requested &&
+-        seg && seg->key_type == KEY_NONE && av_strstart(seg->url, "http", NULL) &&
+-        !segment_reusable(v->input, current_segment(v), seg)) {
++        seg && (seg->key_type == KEY_NONE ||
++                (seg->key_type == KEY_AES_128 && cur->key_type != KEY_SAMPLE_AES)) &&
++        av_strstart(seg->url, "http", NULL) &&
++        !segment_reusable(v->input, cur, seg) && prefetch_due(v, cur)) {
+         ret = open_input(c, v, seg, &v->input_next);
+         if (ret < 0) {
+             if (ff_check_interrupt(c->interrupt_callback))
+@@ -1823,9 +1844,10 @@
+             av_log(v->parent, AV_LOG_WARNING, "Failed to open segment %"PRId64" of playlist %d\n",
+                    v->cur_seq_no + 1,
+                    v->index);
+-        } else {
+-            v->input_next_requested = 1;
++            ff_format_io_close(v->parent, &v->input_next);
+         }
++        /* After a failure, the segment is opened again when it is reached */
++        v->input_next_requested = 1;
+     }
+ 
+     if (v->init_sec_buf_read_offset < v->init_sec_data_len) {
