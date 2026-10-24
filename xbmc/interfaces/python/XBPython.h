@@ -114,6 +114,7 @@ private:
   PyThreadState* m_mainThreadState{nullptr};
   bool m_bindingModulesLoaded{true};
   int m_iDllScriptCounter{0}; // to keep track of the total scripts running that need the dll
+  bool m_skipFinalize{false}; // GIL kept since Uninitialize()
 
   //Vector with list of threads used for running scripts
   PyList m_vecPyList;
