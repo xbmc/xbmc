@@ -42,6 +42,8 @@ enum class ShaderMethodGLES
   SM_TEXTURE_RGBA_BOB,
   SM_TEXTURE_RGBA_BOB_OES,
   SM_TEXTURE_NOALPHA,
+  SM_FONTS_RGBA,
+  SM_FONTS_RGBA_SHADER_CLIP,
   SM_MAX
 };
 
@@ -79,6 +81,8 @@ private:
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB, "texture rgba bob"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES, "texture rgba bob OES"},
       {ShaderMethodGLES::SM_TEXTURE_NOALPHA, "texture no alpha"},
+      {ShaderMethodGLES::SM_FONTS_RGBA, "fonts rgba"},
+      {ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP, "fonts rgba with vertex shader based clipping"},
   });
 
   static_assert(static_cast<size_t>(ShaderMethodGLES::SM_MAX) == ShaderMethodGLESMap.size(),

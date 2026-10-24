@@ -62,18 +62,18 @@ bool CGUIFontTTFDX::FirstBegin()
   // Set a shader first to trigger the internal clipping recalculations. The cached clipping data
   // contains stale information from the previous draw otherwise.
   // Mirrors the GL/GLES workaround
-  pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
+  pGUIShader->Begin(SHADER_METHOD_RENDER_FONT_RGBA);
 
   if (DX::Windowing()->ScissorsCanEffectClipping())
   {
     m_scissorClip = true;
-    // SHADER_METHOD_RENDER_FONT already activated
+    // SHADER_METHOD_RENDER_FONT_RGBA already activated
   }
   else
   {
     m_scissorClip = false;
     DX::Windowing()->ResetScissors();
-    pGUIShader->Begin(SHADER_METHOD_RENDER_FONT_SHADER_CLIP);
+    pGUIShader->Begin(SHADER_METHOD_RENDER_FONT_RGBA_SHADER_CLIP);
   }
 
   return true;
@@ -314,7 +314,7 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
       std::make_unique<CDXTexture>(m_textureWidth, newHeight, XB_FMT_A8);
   std::unique_ptr<CD3DTexture> newSpeedupTexture = std::make_unique<CD3DTexture>();
   if (!newSpeedupTexture->Create(m_textureWidth, newHeight, 1, D3D11_USAGE_DEFAULT,
-                                 DXGI_FORMAT_R8_UNORM))
+                                 DXGI_FORMAT_R8G8B8A8_UNORM))
   {
     return nullptr;
   }
@@ -331,15 +331,16 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
                                     0, &rect);
   }
 
-  // Zero the previously unused part of the resource
+  // Clear the previously unused part of the resource
   //! @todo avoid the CPU/GPU synchronization with a GPU clear
   if (newHeight > m_textureHeight)
   {
     const unsigned int startRow = m_speedupTexture ? m_textureHeight : 0;
     CD3D11_BOX rect(0, startRow, 0, m_textureWidth, newHeight, 1);
-    std::vector<uint8_t> black(m_textureWidth * (newHeight - startRow), 0);
-    pContext->UpdateSubresource(newSpeedupTexture->Get(), 0, &rect, black.data(), m_textureWidth,
-                                0);
+    std::vector<uint8_t> clear(m_textureWidth * 4 * (newHeight - startRow));
+    ClearTexturePixels(clear.data(), clear.size());
+    pContext->UpdateSubresource(newSpeedupTexture->Get(), 0, &rect, clear.data(),
+                                m_textureWidth * 4, 0);
   }
   m_texture.reset();
 
@@ -350,17 +351,18 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   return pNewTexture;
 }
 
-bool CGUIFontTTFDX::CopyCharToTexture(
-    FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+bool CGUIFontTTFDX::CopyCharToTexture(const uint8_t* pixels,
+                                      unsigned int pitch,
+                                      unsigned int x1,
+                                      unsigned int y1,
+                                      unsigned int x2,
+                                      unsigned int y2)
 {
-  FT_Bitmap bitmap = bitGlyph->bitmap;
-
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
-  if (m_speedupTexture && m_speedupTexture->Get() && pContext && bitmap.buffer)
+  if (m_speedupTexture && m_speedupTexture->Get() && pContext && pixels)
   {
     CD3D11_BOX dstBox(x1, y1, 0, x2, y2, 1);
-    pContext->UpdateSubresource(m_speedupTexture->Get(), 0, &dstBox, bitmap.buffer, bitmap.pitch,
-                                0);
+    pContext->UpdateSubresource(m_speedupTexture->Get(), 0, &dstBox, pixels, pitch, 0);
     return true;
   }
 

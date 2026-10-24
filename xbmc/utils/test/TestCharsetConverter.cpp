@@ -121,6 +121,17 @@ TEST_F(TestCharsetConverter, utf8ToW)
   EXPECT_STREQ(refstrw1.c_str(), varstrw1.c_str());
 }
 
+TEST_F(TestCharsetConverter, utf8ToUtf32_BeyondBMP)
+{
+  EXPECT_EQ(U"a \U0001F600 b", g_charsetConverter.utf8ToUtf32("a \xF0\x9F\x98\x80 b"));
+}
+
+TEST_F(TestCharsetConverter, utf8ToW_BeyondBMP)
+{
+  varstrw1.clear();
+  g_charsetConverter.utf8ToW("a \xF0\x9F\x98\x80 b", varstrw1, false);
+  EXPECT_EQ(L"a \U0001F600 b", varstrw1);
+}
 
 TEST_F(TestCharsetConverter, subtitleCharsetToUtf8)
 {
@@ -222,6 +233,13 @@ TEST_F(TestCharsetConverter, isValidUtf8_4)
   EXPECT_FALSE(CUtf8Utils::isValidUtf8(refutf16LE3));
 }
 
+TEST_F(TestCharsetConverter, isValidUtf8_FourByteSequences)
+{
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8("\xF0\x90\x80\x80")); // U+10000
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8("\xF0\x9F\x8C\x8D")); // U+1F30D
+  EXPECT_FALSE(CUtf8Utils::isValidUtf8("\xF0\x8F\xBF\xBF")); // overlong U+FFFF
+}
+
 //! @todo Resolve correct input/output for this function
 // TEST_F(TestCharsetConverter, ucs2CharsetToStringCharset)
 // {
@@ -246,6 +264,42 @@ TEST_F(TestCharsetConverter, wToUTF8)
 //  g_charsetConverter.utf16BEtoUTF8(refstr16_1, varstra1);
 //  EXPECT_STREQ(refstra1.c_str(), varstra1.c_str());
 //}
+
+TEST_F(TestCharsetConverter, utf32logicalToVisualBiDi_KeepsEmojiSequences)
+{
+  // man ZWJ woman, black flag with tags for England
+  const std::u32string text =
+      U"\x1F468\x200D\x1F469 \x1F3F4\xE0067\xE0062\xE0065\xE006E\xE0067\xE007F";
+  std::u32string visual;
+  g_charsetConverter.utf32logicalToVisualBiDi(text, visual);
+  EXPECT_EQ(text, visual);
+}
+
+TEST_F(TestCharsetConverter, utf32logicalToVisualBiDi_RemovesBidiMarks)
+{
+  std::u32string visual;
+  g_charsetConverter.utf32logicalToVisualBiDi(U"a\x200E"
+                                              U"b",
+                                              visual);
+  EXPECT_EQ(U"ab", visual);
+}
+
+TEST_F(TestCharsetConverter, utf32logicalToVisualBiDi_KeepsEmojiSequencesInRtlText)
+{
+  // woman, skin tone, ZWJ, laptop after Hebrew text
+  const std::u32string emoji = U"\x1F469\x1F3FD\x200D\x1F4BB";
+  std::u32string visual;
+  g_charsetConverter.utf32logicalToVisualBiDi(U"\x5E9\x5DC\x5D5\x5DD " + emoji, visual);
+  EXPECT_NE(std::u32string::npos, visual.find(emoji));
+}
+
+TEST_F(TestCharsetConverter, utf32logicalToVisualBiDi_ReordersJoinedRtlLetters)
+{
+  // alef, ZWJ, bet
+  std::u32string visual;
+  g_charsetConverter.utf32logicalToVisualBiDi(U"\x5D0\x200D\x5D1", visual);
+  EXPECT_EQ(U"\x5D1\x200D\x5D0", visual);
+}
 
 //! @todo Resolve correct input/output for this function
 // TEST_F(TestCharsetConverter, utf32ToStringCharset)

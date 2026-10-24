@@ -121,7 +121,7 @@ void CGUIFont::DrawTextInternal(float x,
     for (const auto& renderColor : renderColors)
       shadowColors.emplace_back((renderColor & 0xff000000) != 0 ? shadowColor : 0);
     m_font->DrawTextInternal(context, x + 1, y + 1, shadowColors, text, alignment, maxPixelWidth,
-                             false, isVScrolling);
+                             false, isVScrolling, 0.0f, 0.0f, true);
   }
   m_font->DrawTextInternal(context, x, y, renderColors, text, alignment, maxPixelWidth, false,
                            isVScrolling);
@@ -237,9 +237,10 @@ void CGUIFont::DrawScrollingText(float x,
     for (float dx = -offset; dx < maxWidth; dx += scrollInfo.m_totalWidth)
     {
       m_font->DrawTextInternal(context, x + 1, y + 1, shadowColors, text, alignment, textPixelWidth,
-                               scroll, false, dx);
+                               scroll, false, dx, 0.0f, true);
       m_font->DrawTextInternal(context, x + scrollInfo.m_textWidth + 1, y + 1, shadowColors,
-                               scrollInfo.m_suffix, alignment, suffixPixelWidth, scroll, false, dx);
+                               scrollInfo.m_suffix, alignment, suffixPixelWidth, scroll, false, dx,
+                               0.0f, true);
     }
   }
   for (float dx = -offset; dx < maxWidth; dx += scrollInfo.m_totalWidth)

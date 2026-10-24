@@ -87,22 +87,24 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     colors.push_back(0xFF000000);
 
     CGUIFont* font = m_label.GetLabelInfo().font;
-    uint32_t style = (font ? font->GetStyle() : (FONT_STYLE_NORMAL & FONT_STYLE_MASK)) << 24;
+    character_t style =
+        static_cast<character_t>(font ? font->GetStyle() : (FONT_STYLE_NORMAL & FONT_STYLE_MASK))
+        << 40;
 
     for (unsigned int i = 0; i < utf16.size(); i++)
     {
-      uint32_t ch = utf16[i] | style;
+      character_t ch = utf16[i] | style;
       if ((m_startSelection < m_endSelection) && (m_startSelection <= i && i < m_endSelection))
-        ch |= (2 << 16);
+        ch |= (character_t{2} << 32);
       else if ((m_startHighlight < m_endHighlight) && (i < m_startHighlight || i >= m_endHighlight))
-        ch |= (1 << 16);
+        ch |= (character_t{1} << 32);
       text.push_back(ch);
     }
     if (m_bShowCursor && m_iCursorPos >= 0 && (unsigned int)m_iCursorPos <= utf16.size())
     {
-      uint32_t ch = L'|' | style;
+      character_t ch = L'|' | style;
       if ((++m_dwCounter % 50) <= 25)
-        ch |= (3 << 16);
+        ch |= (character_t{3} << 32);
       text.insert(text.begin() + m_iCursorPos, ch);
     }
     changed |= m_label.SetMaxRect(m_posX, m_posY, GetMaxWidth(), m_height);

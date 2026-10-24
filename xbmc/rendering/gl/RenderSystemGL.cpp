@@ -793,6 +793,29 @@ void CRenderSystemGL::InitialiseShaders()
     m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR].reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_multi_blendcolor.glsl - compile and link failed");
   }
+
+  const std::string definesFontsRGBA = defines + "#define KODI_FONTS_RGBA 1\n";
+
+  m_pShader[ShaderMethodGL::SM_FONTS_RGBA] = std::make_unique<CGLShader>(
+      "gl_shader_vert_simple.glsl", "gl_shader_frag_fonts.glsl", definesFontsRGBA);
+  if (!m_pShader[ShaderMethodGL::SM_FONTS_RGBA]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGL::SM_FONTS_RGBA]->Free();
+    m_pShader[ShaderMethodGL::SM_FONTS_RGBA].reset();
+    CLog::Log(LOGERROR,
+              "GUI Shader gl_shader_vert_simple.glsl + gl_shader_frag_fonts.glsl (RGBA) - "
+              "compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP] = std::make_unique<CGLShader>(
+      "gl_shader_vert_clip.glsl", "gl_shader_frag_fonts.glsl", definesFontsRGBA);
+  if (!m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP]->Free();
+    m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP].reset();
+    CLog::Log(LOGERROR, "GUI Shader gl_shader_vert_clip.glsl + gl_shader_frag_fonts.glsl (RGBA) - "
+                        "compile and link failed");
+  }
 }
 
 void CRenderSystemGL::ReleaseShaders()
@@ -828,6 +851,14 @@ void CRenderSystemGL::ReleaseShaders()
   if (m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR])
     m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR]->Free();
   m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR].reset();
+
+  if (m_pShader[ShaderMethodGL::SM_FONTS_RGBA])
+    m_pShader[ShaderMethodGL::SM_FONTS_RGBA]->Free();
+  m_pShader[ShaderMethodGL::SM_FONTS_RGBA].reset();
+
+  if (m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP])
+    m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP]->Free();
+  m_pShader[ShaderMethodGL::SM_FONTS_RGBA_SHADER_CLIP].reset();
 }
 
 void CRenderSystemGL::EnableShader(ShaderMethodGL method)

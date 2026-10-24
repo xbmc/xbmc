@@ -32,7 +32,8 @@ public:
 
 protected:
   std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) override;
-  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph,
+  bool CopyCharToTexture(const uint8_t* pixels,
+                         unsigned int pitch,
                          unsigned int x1,
                          unsigned int y1,
                          unsigned int x2,

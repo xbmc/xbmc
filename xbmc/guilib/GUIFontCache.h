@@ -50,6 +50,7 @@ struct CGUIFontCacheKey
   uint32_t m_alignment;
   float m_maxPixelWidth;
   bool m_scrolling;
+  bool m_shadow;
   const TransformMatrix& m_matrix;
   float m_scaleX;
   float m_scaleY;
@@ -60,6 +61,7 @@ struct CGUIFontCacheKey
                    uint32_t alignment,
                    float maxPixelWidth,
                    bool scrolling,
+                   bool shadow,
                    const TransformMatrix& matrix,
                    float scaleX,
                    float scaleY)
@@ -69,6 +71,7 @@ struct CGUIFontCacheKey
       m_alignment(alignment),
       m_maxPixelWidth(maxPixelWidth),
       m_scrolling(scrolling),
+      m_shadow(shadow),
       m_matrix(matrix),
       m_scaleX(scaleX),
       m_scaleY(scaleY)
@@ -100,6 +103,7 @@ struct CGUIFontCacheEntry
             key.m_alignment,
             key.m_maxPixelWidth,
             key.m_scrolling,
+            key.m_shadow,
             m_matrix,
             key.m_scaleX,
             key.m_scaleY),
@@ -138,6 +142,7 @@ struct CGUIFontCacheKeysMatch
            std::ranges::equal(a.m_colors, b.m_colors) &&
            a.m_alignment == b.m_alignment &&
            a.m_scrolling == b.m_scrolling &&
+           a.m_shadow == b.m_shadow &&
            a.m_maxPixelWidth == b.m_maxPixelWidth &&
            Match(a.m_pos, a.m_matrix, b.m_pos, b.m_matrix, a.m_scrolling) &&
            a.m_scaleX == b.m_scaleX &&
@@ -169,6 +174,7 @@ public:
                 uint32_t alignment,
                 float maxPixelWidth,
                 bool scrolling,
+                bool shadow,
                 std::chrono::steady_clock::time_point now,
                 bool& dirtyCache);
   void Flush();
