@@ -137,7 +137,9 @@ private:
 
   std::string m_ThreadName;
   std::thread* m_thread = nullptr;
-  std::future<bool> m_future;
+  // identifies m_thread across a restart, which may reuse the address of a deleted thread
+  uint64_t m_threadGeneration = 0;
+  std::shared_future<bool> m_future;
 
   std::unique_ptr<IThreadImpl> m_impl;
 };
