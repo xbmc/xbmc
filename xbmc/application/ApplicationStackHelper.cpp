@@ -169,9 +169,20 @@ bool CApplicationStackHelper::ProcessNextPartInBookmark(CFileItem& item, CBookma
   {
     // This updates the FileItem with the next part in the stack
     item = SetStackPartAsCurrent(*nextPart);
-    bookmark.timeInSeconds = 0.0;
-    bookmark.playerState.clear();
-    CLog::LogF(LOGDEBUG, "Next part in stack is {}", item.GetDynPath());
+    // Resume within the part (time is relative to it) or from its start
+    if (std::optional<std::string> state{
+            KODI::VIDEO::UTILS::GetNextPartPlayerStateFromBookmark(bookmark)};
+        state)
+    {
+      bookmark.playerState = *state;
+    }
+    else
+    {
+      bookmark.timeInSeconds = 0.0;
+      bookmark.playerState.clear();
+    }
+    CLog::LogF(LOGDEBUG, "Next part in stack is {} (resume at {}s)", item.GetDynPath(),
+               bookmark.timeInSeconds);
     return true;
   }
   return false;

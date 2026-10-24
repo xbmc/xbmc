@@ -607,3 +607,24 @@ TEST_F(TestDiscTrailer, ADvdFolderRipAlwaysHasItsMovieTrailerInsideVIDEO_TS)
   const std::string trailer{File("M3GAN/VIDEO_TS/movie-trailer.mkv")};
   EXPECT_EQ(trailer, Trailer(disc, false));
 }
+
+TEST(TestVideoUtils, NextPartBookmarkKeepsPlayerState)
+{
+  const std::string navState{R"(<navstate version="2"><title>1</title><pgn>3</pgn></navstate>)"};
+
+  CBookmark bookmark;
+  bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(2, navState);
+  EXPECT_EQ(VIDEO::UTILS::GetNextPartFromBookmark(bookmark), 2);
+  EXPECT_EQ(VIDEO::UTILS::GetNextPartPlayerStateFromBookmark(bookmark), navState);
+
+  // Without a state the part resumes from its start, as before
+  bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(2, "");
+  EXPECT_EQ(bookmark.playerState, "<nextpart>2</nextpart>");
+  EXPECT_EQ(VIDEO::UTILS::GetNextPartFromBookmark(bookmark), 2);
+  EXPECT_FALSE(VIDEO::UTILS::GetNextPartPlayerStateFromBookmark(bookmark));
+
+  // A player state that isn't a next part bookmark
+  bookmark.playerState = navState;
+  EXPECT_FALSE(VIDEO::UTILS::GetNextPartFromBookmark(bookmark));
+  EXPECT_FALSE(VIDEO::UTILS::GetNextPartPlayerStateFromBookmark(bookmark));
+}
