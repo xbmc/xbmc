@@ -953,6 +953,8 @@ bool CArtTypeChooser::ChooseArtType()
   dialog->SetItems(m_items);
   dialog->SetSelected(m_selectedItem);
   dialog->Open();
+  if (!dialog->IsConfirmed() && !dialog->IsButtonPressed())
+    return false;
   m_selectedItem = dialog->GetSelectedItem();
 
   if (dialog->IsButtonPressed())
