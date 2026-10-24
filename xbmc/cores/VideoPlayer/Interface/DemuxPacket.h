@@ -46,6 +46,8 @@ extern "C"
 
     //! @brief Packet is a keyframe, only set by demuxers that know it.
     bool m_keyFrame{false};
+
+    bool m_hasDisplayTime{false};
   };
 
 #ifdef __cplusplus
