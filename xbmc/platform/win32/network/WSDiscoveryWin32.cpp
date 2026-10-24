@@ -485,7 +485,7 @@ std::unique_ptr<IWSDiscovery> IWSDiscovery::GetInstance()
 
 CWSDiscoveryWindows::~CWSDiscoveryWindows()
 {
-  StopServices();
+  StopServices(true);
 }
 
 bool CWSDiscoveryWindows::StartServices()
@@ -516,12 +516,12 @@ bool CWSDiscoveryWindows::StartServices()
   // if get here something has gone wrong
   CLog::Log(LOGERROR, "[WS-Discovery]: Daemon initialization has failed.");
 
-  StopServices();
+  StopServices(true);
 
   return false;
 }
 
-bool CWSDiscoveryWindows::StopServices()
+bool CWSDiscoveryWindows::StopServices(bool bWait)
 {
   std::unique_lock lock(m_criticalSection);
 

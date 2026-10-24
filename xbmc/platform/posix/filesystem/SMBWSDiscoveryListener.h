@@ -30,7 +30,7 @@ public:
   ~CWSDiscoveryListenerUDP();
 
   void Start();
-  void Stop();
+  void Stop(bool bWait);
 
 protected:
   // CThread
