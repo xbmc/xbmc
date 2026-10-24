@@ -19,6 +19,12 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <memory>
+#include <utility>
+
+#if defined(HAVE_LCMS2)
+#include <lcms2.h>
+#endif
 
 extern "C"
 {
@@ -99,6 +105,129 @@ unsigned int OrientationFromDisplayMatrix(const int32_t* displayMatrix)
   const int quarterTurns{(static_cast<int>(std::lround(rotation / 90.0)) % 4 + 4) % 4};
   return ORIENTATIONS[flipped ? 1 : 0][quarterTurns];
 }
+
+#if defined(HAVE_LCMS2)
+// ICC profiles come from any image Kodi loads, so huge ones aren't parsed
+constexpr size_t MAX_ICC_PROFILE_SIZE = 4 * 1024 * 1024;
+// how far colorants (XYZ) and tone curves may be from sRGB's for a profile to count as sRGB
+constexpr double SRGB_COLORANT_TOLERANCE = 0.002;
+constexpr float SRGB_CURVE_TOLERANCE = 1.0f / 255;
+constexpr int SRGB_CURVE_SAMPLES = 16;
+
+using ColorProfile = std::unique_ptr<void, decltype(&cmsCloseProfile)>;
+using ColorTransform = std::unique_ptr<void, decltype(&cmsDeleteTransform)>;
+
+void LogColorError(cmsContext, cmsUInt32Number code, const char* text)
+{
+  CLog::Log(LOGDEBUG, "CFFmpegImage: lcms2 error {}: {}", code, text);
+}
+
+// its own context, apart from the global one VideoPlayer's color management changes.
+// Never deleted: it lives as long as Kodi, so no image job can outlive it.
+cmsContext ColorContext()
+{
+  static const cmsContext context{[]
+                                  {
+                                    cmsContext ctx{cmsCreateContext(nullptr, nullptr)};
+                                    if (ctx)
+                                      cmsSetLogErrorHandlerTHR(ctx, LogColorError);
+                                    return ctx;
+                                  }()};
+  return context;
+}
+
+// sRGB's encoding of a linear value
+float EncodeSRGB(float linear)
+{
+  return linear <= 0.0031308f ? 12.92f * linear : 1.055f * std::pow(linear, 1 / 2.4f) - 0.055f;
+}
+
+// an RGB profile that converts to the profile connection space
+bool IsRGBProfile(cmsHPROFILE profile)
+{
+  const cmsProfileClassSignature deviceClass{cmsGetDeviceClass(profile)};
+  const cmsColorSpaceSignature pcs{cmsGetPCS(profile)};
+  return cmsGetColorSpace(profile) == cmsSigRgbData &&
+         (pcs == cmsSigXYZData || pcs == cmsSigLabData) &&
+         (deviceClass == cmsSigInputClass || deviceClass == cmsSigDisplayClass ||
+          deviceClass == cmsSigOutputClass || deviceClass == cmsSigColorSpaceClass);
+}
+
+// a matrix/curve profile with sRGB's colorants and tone curves, so the pixels are already sRGB.
+// Tone curves are sampled, as v2 profiles store them as tables and v4 ones as parameters, and
+// compared once encoded as sRGB, so within a code value or so.
+bool IsSRGB(cmsHPROFILE profile, cmsHPROFILE srgb)
+{
+  // lcms2 converts with the profile's LUT rather than its matrix and curves when it has one
+  if (!cmsIsMatrixShaper(profile) || cmsIsTag(profile, cmsSigDToB1Tag) ||
+      cmsIsTag(profile, cmsSigAToB1Tag) || cmsIsTag(profile, cmsSigAToB0Tag))
+    return false;
+
+  static constexpr std::array<std::pair<cmsTagSignature, cmsTagSignature>, 3> channels{
+      {{cmsSigRedColorantTag, cmsSigRedTRCTag},
+       {cmsSigGreenColorantTag, cmsSigGreenTRCTag},
+       {cmsSigBlueColorantTag, cmsSigBlueTRCTag}}};
+  for (const auto& [colorantTag, curveTag] : channels)
+  {
+    const auto* colorant{static_cast<const cmsCIEXYZ*>(cmsReadTag(profile, colorantTag))};
+    const auto* srgbColorant{static_cast<const cmsCIEXYZ*>(cmsReadTag(srgb, colorantTag))};
+    const auto* curve{static_cast<const cmsToneCurve*>(cmsReadTag(profile, curveTag))};
+    if (!colorant || !srgbColorant || !curve)
+      return false;
+
+    if (std::abs(colorant->X - srgbColorant->X) > SRGB_COLORANT_TOLERANCE ||
+        std::abs(colorant->Y - srgbColorant->Y) > SRGB_COLORANT_TOLERANCE ||
+        std::abs(colorant->Z - srgbColorant->Z) > SRGB_COLORANT_TOLERANCE)
+      return false;
+
+    for (int i = 0; i <= SRGB_CURVE_SAMPLES; ++i)
+    {
+      const float x{static_cast<float>(i) / SRGB_CURVE_SAMPLES};
+      if (std::abs(EncodeSRGB(cmsEvalToneCurveFloat(curve, x)) - x) > SRGB_CURVE_TOLERANCE)
+        return false;
+    }
+  }
+  return true;
+}
+
+// convert RGB32 pixels from the frame's ICC profile to sRGB, in place
+void ConvertToSRGB(
+    const AVFrame* frame, uint8_t* pixels, unsigned int width, unsigned int height, int linesize)
+{
+  const AVFrameSideData* sideData{av_frame_get_side_data(frame, AV_FRAME_DATA_ICC_PROFILE)};
+  if (!sideData || sideData->size == 0 || sideData->size > MAX_ICC_PROFILE_SIZE)
+    return;
+
+  const cmsContext context{ColorContext()};
+  if (!context)
+    return;
+
+  const ColorProfile profile{cmsOpenProfileFromMemTHR(context, sideData->data,
+                                                      static_cast<cmsUInt32Number>(sideData->size)),
+                             cmsCloseProfile};
+  if (!profile || !IsRGBProfile(profile.get()))
+    return;
+
+  // one per call: lcms2 caches tags inside a profile, so it can't be shared between image jobs
+  const ColorProfile srgb{cmsCreate_sRGBProfileTHR(context), cmsCloseProfile};
+  if (!srgb || IsSRGB(profile.get(), srgb.get()))
+    return;
+
+  // RGB32 is BGRA in memory on little-endian systems and ARGB on big-endian ones.
+  // Matrix/curve profiles have a single rendering, so relative colorimetric, without the black
+  // point compensation lcms2 adds to perceptual for v4 profiles.
+  constexpr cmsUInt32Number format{AV_PIX_FMT_RGB32 == AV_PIX_FMT_BGRA ? TYPE_BGRA_8 : TYPE_ARGB_8};
+  const ColorTransform transform{cmsCreateTransformTHR(context, profile.get(), format, srgb.get(),
+                                                       format, INTENT_RELATIVE_COLORIMETRIC,
+                                                       cmsFLAGS_COPY_ALPHA),
+                                 cmsDeleteTransform};
+  if (!transform)
+    return;
+
+  const auto stride{static_cast<cmsUInt32Number>(linesize)};
+  cmsDoTransformLineStride(transform.get(), pixels, pixels, width, height, stride, stride, 0, 0);
+}
+#endif
 } // namespace
 
 Frame::Frame(const Frame& src) :
@@ -644,6 +773,10 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   sws_scale(context, frame->data, frame->linesize, 0, frame->height, pictureRGB->data,
             pictureRGB->linesize);
   sws_freeContext(context);
+
+#if defined(HAVE_LCMS2)
+  ConvertToSRGB(frame, pictureRGB->data[0], width, height, pictureRGB->linesize[0]);
+#endif
 
   if (needsCopy)
   {
