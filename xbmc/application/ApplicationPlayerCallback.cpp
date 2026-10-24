@@ -269,10 +269,20 @@ bool UpdateDiscStackBookmark(CBookmark& bookmark,
       bookmark.timeInSeconds = 0.0;
     else if (bookmark.partNumber > 0 && bookmark.partNumber >= stackHelper->GetKnownStackParts())
     {
-      // Part played out of order has no start time in the stack, so resume from its start
-      bookmark.timeInSeconds = bookmark.partNumber;
-      bookmark.totalTimeInSeconds = stackHelper->GetTotalPartNumbers();
-      bookmark.playerState = StringUtils::Format("<nextpart>{}</nextpart>", bookmark.partNumber);
+      // Part played out of order has no start time in the stack, so keep the time relative to the
+      // part with the player state needed to restore it. Resume from its start if barely played.
+      if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart ||
+          bookmark.playerState.empty())
+      {
+        bookmark.timeInSeconds = bookmark.partNumber;
+        bookmark.totalTimeInSeconds = stackHelper->GetTotalPartNumbers();
+        bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(bookmark.partNumber, "");
+      }
+      else
+      {
+        bookmark.playerState =
+            VIDEO::UTILS::MakeNextPartPlayerState(bookmark.partNumber, bookmark.playerState);
+      }
     }
     else
       ConvertRelativeStackTimesToAbsolute(bookmark, file, stackHelper);
