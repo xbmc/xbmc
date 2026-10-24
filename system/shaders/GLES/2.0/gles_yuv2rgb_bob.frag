@@ -75,10 +75,16 @@ void main()
 
   yuvAbove = vec4(texture2D(m_sampY, offsetY).r, texture2D(m_sampU, offsetU).g, texture2D(m_sampV, offsetV).a, 1.0);
   rgbAbove = m_yuvmat * yuvAbove;
+#if defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)
+  rgbAbove.rgb = hueSaturation(rgbAbove.rgb);
+#endif
   rgbAbove.a = m_alpha;
 
   yuvBelow = vec4(texture2D(m_sampY, belowY).r, texture2D(m_sampU, belowU).g, texture2D(m_sampV, belowV).a, 1.0);
   rgbBelow = m_yuvmat * yuvBelow;
+#if defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)
+  rgbBelow.rgb = hueSaturation(rgbBelow.rgb);
+#endif
   rgbBelow.a = m_alpha;
 
   rgb = mix(rgbAbove, rgbBelow, 0.5);
@@ -107,6 +113,10 @@ void main()
   rgb.rgb = pow(rgb.rgb, vec3(1.0 / 2.2));
 #endif
 
+#endif
+
+#if defined(KODI_GAMMA)
+  rgb.rgb = pow(clamp((rgb.rgb - m_gammaRange.y) / m_gammaRange.x, 0.0, 1.0), vec3(m_gammaInv)) * m_gammaRange.x + m_gammaRange.y;
 #endif
 
   gl_FragColor = rgb;

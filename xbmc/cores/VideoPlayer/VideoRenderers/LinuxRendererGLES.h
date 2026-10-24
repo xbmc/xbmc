@@ -218,6 +218,11 @@ protected:
   AVColorPrimaries m_srcPrimaries;
   bool m_toneMap = false;
   ETONEMAPMETHOD m_toneMapMethod = VS_TONEMAPMETHOD_OFF;
+  // PQ/HLG streams get hue and saturation from the YUV shader in linear light
+  AVColorTransferCharacteristic m_hueSatTransfer{AVCOL_TRC_UNSPECIFIED};
+  // SDR streams get gamma from the YUV shader
+  bool m_useGamma{false};
+  bool m_streamIsHDR{false};
   bool m_passthroughHDR = false;
   GLint m_intermediateFormat{GL_RGBA};
   GLint m_intermediateType{GL_UNSIGNED_BYTE};

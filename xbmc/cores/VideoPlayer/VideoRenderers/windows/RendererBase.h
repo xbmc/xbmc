@@ -184,6 +184,10 @@ protected:
   virtual CRenderBuffer* CreateBuffer() = 0;
   virtual void UpdateVideoFilters();
   virtual void CheckVideoParameters();
+  // HDR hue and saturation run in the output shader unless the renderer's own YUV conversion
+  // applies them before converting primaries
+  virtual bool HueSaturationInConversion() const { return false; }
+  virtual bool CanAdjustHDRHueSaturation() const { return true; }
   virtual void OnViewSizeChanged() {}
   virtual void OnOutputReset() {}
   virtual std::string GetRenderMethodDebugInfo() const { return {}; }
@@ -194,6 +198,11 @@ protected:
   bool m_lutIsLoading = false;
   bool m_useHLGtoPQ = false;
   ETONEMAPMETHOD m_toneMapMethod = VS_TONEMAPMETHOD_OFF;
+  // PQ/HLG streams get hue and saturation from the output shader instead of the YUV conversion
+  bool m_hdrStream = false;
+  AVColorTransferCharacteristic m_hueSatTransfer = AVCOL_TRC_UNSPECIFIED;
+  // SDR gamma is applied in the output shader
+  bool m_useGamma = false;
 
   int m_iBufferIndex = 0;
   int m_iNumBuffers = 0;
@@ -218,6 +227,9 @@ protected:
     unsigned flags = 0;
     float contrast = 0.0f;
     float brightness = 0.0f;
+    float hue = 0.0f;
+    float saturation = 0.0f;
+    float gamma = 0.0f;
     bool limitedColor = false;
     float toneMapParam = 0.0f;
     bool lutLoading = false;

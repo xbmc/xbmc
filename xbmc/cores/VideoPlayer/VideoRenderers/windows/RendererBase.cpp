@@ -313,6 +313,9 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
                                 flags,
                                 m_videoSettings.m_Contrast,
                                 m_videoSettings.m_Brightness,
+                                m_videoSettings.m_Hue,
+                                m_videoSettings.m_Saturation,
+                                m_videoSettings.m_Gamma,
                                 DX::Windowing()->UseLimitedColor(),
                                 m_videoSettings.m_ToneMapParam,
                                 m_lutIsLoading};
@@ -327,6 +330,17 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
     m_outputShader->SetDisplayMetadata(buf->hasDisplayMetadata, buf->displayMetadata, buf->hasLightMetadata, buf->lightMetadata);
     m_outputShader->SetToneMapParam(m_toneMapMethod, m_videoSettings.m_ToneMapParam);
   }
+
+  if (m_hueSatTransfer != AVCOL_TRC_UNSPECIFIED && !HueSaturationInConversion() && m_outputShader)
+  {
+    m_outputShader->SetDisplayMetadata(buf->hasDisplayMetadata, buf->displayMetadata,
+                                       buf->hasLightMetadata, buf->lightMetadata);
+    m_outputShader->SetHueSaturation((m_videoSettings.m_Hue - 50.0f) * 3.6f,
+                                     m_videoSettings.m_Saturation * 0.02f);
+  }
+
+  if (m_useGamma && m_outputShader)
+    m_outputShader->SetGamma(CConvertMatrix::GetGammaExponent(m_videoSettings.m_Gamma));
 
   FinalOutput(m_IntermediateTarget, target, source, dest);
 
@@ -495,8 +509,9 @@ void CRendererBase::UpdateVideoFilters()
   {
     m_intermediateState = {};
     m_outputShader = std::make_shared<COutputShader>();
-    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping,
-                                m_toneMapMethod, m_useHLGtoPQ))
+    if (!m_outputShader->Create(
+            m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping, m_toneMapMethod, m_useHLGtoPQ,
+            HueSaturationInConversion() ? AVCOL_TRC_UNSPECIFIED : m_hueSatTransfer, m_useGamma))
     {
       CLog::LogF(LOGDEBUG, "unable to create output shader.");
       m_outputShader.reset();
@@ -526,13 +541,27 @@ void CRendererBase::CheckVideoParameters()
   // transform it a second time
   const bool cms = m_colorManager->IsEnabled() && !m_dolbyVisionEffect;
 
+  m_hdrStream =
+      buf->primaries == AVCOL_PRI_BT2020 &&
+      (buf->color_transfer == AVCOL_TRC_SMPTE2084 || buf->color_transfer == AVCOL_TRC_ARIB_STD_B67);
+
+  const bool hueSat = m_hdrStream && !m_dolbyVisionEffect && CanAdjustHDRHueSaturation() &&
+                      (m_videoSettings.m_Hue != 50.0f || m_videoSettings.m_Saturation != 50.0f);
+  const AVColorTransferCharacteristic hueSatTransfer =
+      hueSat ? buf->color_transfer : AVCOL_TRC_UNSPECIFIED;
+
+  // gamma is only offered for SDR, the output shader applies it
+  const bool gamma = !m_hdrStream && !m_dolbyVisionEffect && m_videoSettings.m_Gamma != 50.0f;
+
   if (toneMap != m_toneMapping || m_cmsOn != cms || hlg != m_useHLGtoPQ ||
-      method != m_toneMapMethod)
+      method != m_toneMapMethod || hueSatTransfer != m_hueSatTransfer || gamma != m_useGamma)
   {
     m_toneMapping = toneMap;
     m_cmsOn = cms;
     m_useHLGtoPQ = hlg;
     m_toneMapMethod = method;
+    m_hueSatTransfer = hueSatTransfer;
+    m_useGamma = gamma;
 
     m_outputShader.reset();
     OnOutputReset();
@@ -904,6 +933,12 @@ bool CRendererBase::Supports(ERENDERFEATURE feature) const
       feature == RENDERFEATURE_PIXEL_RATIO || feature == RENDERFEATURE_ROTATION ||
       feature == RENDERFEATURE_POSTPROCESS || feature == RENDERFEATURE_TONEMAP)
     return true;
+
+  if (feature == RENDERFEATURE_HUE || feature == RENDERFEATURE_SATURATION)
+    return m_hdrStream && !m_dolbyVisionEffect && CanAdjustHDRHueSaturation();
+
+  if (feature == RENDERFEATURE_GAMMA)
+    return !m_hdrStream && !m_dolbyVisionEffect;
 
   return false;
 }

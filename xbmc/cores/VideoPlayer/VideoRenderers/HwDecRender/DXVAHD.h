@@ -36,7 +36,17 @@ public:
   void UnInit();
   bool Open(const VideoPicture& picture, std::shared_ptr<DXVA::CEnumeratorHD> enumerator);
   void Close();
-  bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
+  bool Render(CRect src,
+              CRect dst,
+              ID3D11Resource* target,
+              CRenderBuffer** views,
+              DWORD flags,
+              UINT frameIdx,
+              UINT rotation,
+              float contrast,
+              float brightness,
+              float hue,
+              float saturation);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
 
   /*!
@@ -66,7 +76,8 @@ protected:
   bool InitProcessor();
   bool CheckFormats() const;
   bool OpenProcessor();
-  void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
+  void ApplyFilter(
+      D3D11_VIDEO_PROCESSOR_FILTER filter, float value, int min, int max, int def) const;
   ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
   /*!
    * \brief Apply new video settings if there was a change. Returns true if a parameter changed, false otherwise.
@@ -76,6 +87,8 @@ protected:
                             const UINT& rotation,
                             const float& contrast,
                             const float& brightness,
+                            const float& hue,
+                            const float& saturation,
                             const CRenderBuffer& rb);
 
   void EnableIntelVideoSuperResolution();
@@ -109,6 +122,8 @@ protected:
   UINT m_lastRotation{0};
   float m_lastContrast{.0f};
   float m_lastBrightness{.0f};
+  float m_lastHue{.0f};
+  float m_lastSaturation{.0f};
   ProcessorConversion m_lastConversion{};
   AVColorSpace m_lastColorSpace{AVCOL_SPC_UNSPECIFIED};
   bool m_lastFullRange{false};

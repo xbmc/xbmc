@@ -88,7 +88,9 @@ public:
               int ditherDepth,
               bool toneMapping,
               ETONEMAPMETHOD toneMethod,
-              bool HLGtoPQ);
+              bool HLGtoPQ,
+              AVColorTransferCharacteristic hueSatTransfer = AVCOL_TRC_UNSPECIFIED,
+              bool gamma = false);
   void Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
             , CD3DTexture& target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void Render(CD3DTexture& sourceTexture, CRect sourceRect, CRect destRect
@@ -97,6 +99,8 @@ public:
   void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
                           bool hasLightMetadata, AVContentLightMetadata lightMetadata);
   void SetToneMapParam(ETONEMAPMETHOD method, float param);
+  void SetHueSaturation(float hue, float saturation);
+  void SetGamma(float exponent) { m_gammaExponent = exponent; }
   std::string GetDebugInfo();
 
   static bool CreateLUTView(int lutSize, uint16_t* lutData, bool isRGB, ID3D11ShaderResourceView** ppLUTView);
@@ -117,6 +121,11 @@ private:
   bool m_useDithering = false;
   bool m_toneMapping = false;
   bool m_useHLGtoPQ = false;
+  AVColorTransferCharacteristic m_hueSatTransfer = AVCOL_TRC_UNSPECIFIED;
+  bool m_useGamma = false;
+  float m_gammaExponent = 1.0f;
+  float m_hue = 0.0f;
+  float m_saturation = 1.0f;
 
   bool m_hasDisplayMetadata = false;
   bool m_hasLightMetadata = false;
@@ -146,9 +155,14 @@ public:
   bool Create(AVPixelFormat fmt,
               AVColorPrimaries dstPrimaries,
               AVColorPrimaries srcPrimaries,
-              const std::shared_ptr<COutputShader>& pOutShader = nullptr);
+              const std::shared_ptr<COutputShader>& pOutShader = nullptr,
+              AVColorTransferCharacteristic hueSatTransfer = AVCOL_TRC_UNSPECIFIED);
   void Render(CRect sourceRect, CPoint dest[], CRenderBuffer* videoBuffer, CD3DTexture& target);
-  void SetParams(float contrast, float black, bool limited);
+  void SetParams(float contrast, float black, float hue, float saturation, bool limited);
+  /*!
+   * \brief HDR hue and saturation in linear light, used when created with a PQ or HLG transfer.
+   */
+  void SetHueSaturation(float hue, float saturation, float peakLuminance);
   void SetColParams(AVColorSpace colSpace, int bits, bool limited, int texBits);
 
 protected:
@@ -171,6 +185,11 @@ private:
   std::shared_ptr<COutputShader> m_pOutShader = nullptr;
   CConvertMatrix m_convMatrix;
   bool m_colorConversion{false};
+  bool m_limited{false};
+  AVColorTransferCharacteristic m_hueSatTransfer{AVCOL_TRC_UNSPECIFIED};
+  float m_hue{0.0f};
+  float m_saturation{1.0f};
+  float m_peakLuminance{1000.0f};
 };
 
 class CConvolutionShader : public CWinShader

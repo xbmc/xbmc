@@ -1440,9 +1440,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
          {"movie", "tvshow", "seasons", "episode", "musicvideo", "sets", "genre", "tag"})
       AddAutoIncrement(table);
   }
+
+  if (iVersion < 152)
+  {
+    m_pDS->exec("ALTER TABLE settings ADD Hue float DEFAULT 50");
+    m_pDS->exec("ALTER TABLE settings ADD Saturation float DEFAULT 50");
+    // gamma was never applied and stored 20, 50 is neutral now
+    m_pDS->exec("UPDATE settings SET Gamma=50");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 151;
+  return 152;
 }
