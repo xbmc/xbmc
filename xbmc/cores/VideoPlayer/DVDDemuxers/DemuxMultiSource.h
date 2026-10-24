@@ -39,7 +39,7 @@ public:
 
   // implementation of CDVDDemux
   void Abort() override;
-  void EnableStream(int64_t demuxerId, int id, bool enable) override;
+  bool EnableStream(int64_t demuxerId, int id, bool enable) override;
   void Flush() override;
   int GetNrOfStreams() const override;
   CDemuxStream* GetStream(int64_t demuxerId, int iStreamId) const override;
