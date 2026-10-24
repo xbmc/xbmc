@@ -130,6 +130,37 @@ TEST(TestContentGeometryRecord, AReadingIsARatioAndVaryingIsMoreThanOne)
   EXPECT_FLOAT_EQ(2.40f, WidestAspect(record));
 }
 
+//! A reader keeps the record it took, whatever is published after it.
+TEST(TestSharedContentGeometry, ASnapshotIsUnaffectedByALaterPublication)
+{
+  SharedContentGeometry shared;
+  EXPECT_FALSE(shared.HasReading());
+
+  shared.Set({.aspects = {2.40f, 1.78f}, .identity = {}});
+  const ContentGeometryRecord snapshot{shared.Get()};
+
+  shared.Set({});
+  EXPECT_FALSE(shared.HasReading());
+  EXPECT_EQ((std::vector<float>{2.40f, 1.78f}), snapshot.aspects);
+}
+
+TEST(TestSharedContentGeometry, CopiesAndAssignmentsAreIndependent)
+{
+  SharedContentGeometry original;
+  original.Set({.aspects = {2.40f}, .identity = {100, 200}});
+
+  const SharedContentGeometry copied{original};
+  SharedContentGeometry assigned;
+  assigned = original;
+  original.Set({.aspects = {1.78f}, .identity = {}});
+
+  for (const ContentGeometryRecord& record : {copied.Get(), assigned.Get()})
+  {
+    EXPECT_EQ((std::vector<float>{2.40f}), record.aspects);
+    EXPECT_TRUE(record.identity.Matches({100, 200}));
+  }
+}
+
 TEST(TestContentGeometryLookup, MissingCarriesNoRecord)
 {
   EXPECT_FALSE(ContentGeometryLookup{}.HasRecord());

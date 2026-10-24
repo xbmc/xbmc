@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <cstdint>
 #include <optional>
 #include <string>
@@ -56,6 +58,24 @@ struct ContentGeometryRecord
   bool Varies() const { return aspects.size() > 1; }
 };
 
+//! \brief A record one thread can publish while others read it, as the background loader does
+//! to a listed item's tag while the GUI displays it.
+class SharedContentGeometry
+{
+public:
+  SharedContentGeometry() = default;
+  SharedContentGeometry(const SharedContentGeometry& that);
+  SharedContentGeometry& operator=(const SharedContentGeometry& that);
+
+  ContentGeometryRecord Get() const;
+  void Set(ContentGeometryRecord record);
+  bool HasReading() const;
+
+private:
+  mutable CCriticalSection m_critSection;
+  ContentGeometryRecord m_record;
+};
+
 //! \brief \p aspect rounded to the two decimals a ratio is stored and written at.
 float StoredAspect(float aspect);
 
@@ -67,6 +87,7 @@ std::vector<float> DecodeContentAspects(const std::string& packed);
 
 //! \brief Read or write the record on \p ar.
 void Archive(CArchive& ar, ContentGeometryRecord& record);
+void Archive(CArchive& ar, SharedContentGeometry& shared);
 
 //! \brief Write the ratios under \p movie as a <contentgeometry> element, nothing when the
 //! record has no reading.

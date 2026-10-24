@@ -15,6 +15,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <mutex>
+#include <utility>
 
 #include <sys/stat.h>
 
@@ -123,6 +125,44 @@ void Archive(CArchive& ar, ContentGeometryRecord& record)
     ar >> record.identity.size;
     ar >> record.identity.time;
   }
+}
+
+SharedContentGeometry::SharedContentGeometry(const SharedContentGeometry& that)
+  : m_record(that.Get())
+{
+}
+
+SharedContentGeometry& SharedContentGeometry::operator=(const SharedContentGeometry& that)
+{
+  if (this != &that)
+    Set(that.Get());
+  return *this;
+}
+
+ContentGeometryRecord SharedContentGeometry::Get() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_record;
+}
+
+void SharedContentGeometry::Set(ContentGeometryRecord record)
+{
+  std::unique_lock lock(m_critSection);
+  m_record = std::move(record);
+}
+
+bool SharedContentGeometry::HasReading() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_record.HasReading();
+}
+
+void Archive(CArchive& ar, SharedContentGeometry& shared)
+{
+  ContentGeometryRecord record{shared.Get()};
+  Archive(ar, record);
+  if (!ar.IsStoring())
+    shared.Set(std::move(record));
 }
 
 void SaveContentGeometryXML(TiXmlNode& movie, const ContentGeometryRecord& record)

@@ -116,7 +116,7 @@ void CVideoInfoTag::Reset()
   m_showLink.clear();
   m_seasons.clear();
   m_streamDetails.Reset();
-  m_contentGeometry = {};
+  m_contentGeometry.Set({});
   m_playCount = PLAYCOUNT_NOT_SET;
   m_EpBookmark.Reset();
   m_EpBookmark.type = CBookmark::EPISODE;
@@ -346,7 +346,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   }  /* if has stream details */
 
   if (HasContentGeometry())
-    KODI::VIDEO::GEOMETRY::SaveContentGeometryXML(*movie, m_contentGeometry);
+    KODI::VIDEO::GEOMETRY::SaveContentGeometryXML(*movie, m_contentGeometry.Get());
 
   // cast
   for (auto it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -1586,7 +1586,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   SetArtist(artist);
 
   if (const auto record = KODI::VIDEO::GEOMETRY::LoadContentGeometryXML(*movie))
-    m_contentGeometry = *record;
+    m_contentGeometry.Set(*record);
 
   node = movie->FirstChildElement("fileinfo");
   if (node)
@@ -1750,7 +1750,8 @@ bool CVideoInfoTag::HasContentGeometry() const
 
 KODI::VIDEO::GEOMETRY::EffectiveGeometry CVideoInfoTag::ResolveContentGeometry() const
 {
-  if (!HasContentGeometry())
+  KODI::VIDEO::GEOMETRY::ContentGeometryRecord record{m_contentGeometry.Get()};
+  if (!record.HasReading())
     return {};
 
   const int width{m_streamDetails.GetVideoWidth()};
@@ -1763,8 +1764,8 @@ KODI::VIDEO::GEOMETRY::EffectiveGeometry CVideoInfoTag::ResolveContentGeometry()
   inputs.stream = KODI::VIDEO::GEOMETRY::MeasuredStreamGeometry(
       m_streamDetails.GetStereoMode(), static_cast<unsigned int>(width),
       static_cast<unsigned int>(height), m_streamDetails.GetVideoAspect());
-  inputs.cached.record = m_contentGeometry;
-  inputs.cached.state = KODI::VIDEO::GEOMETRY::StateOf(m_contentGeometry);
+  inputs.cached.state = KODI::VIDEO::GEOMETRY::StateOf(record);
+  inputs.cached.record = std::move(record);
   inputs.policy = KODI::VIDEO::GEOMETRY::ContentGeometryPolicyFromSettings();
   inputs.atRestAspect = KODI::VIDEO::GEOMETRY::ContentGeometryAtRestFromSettings();
 

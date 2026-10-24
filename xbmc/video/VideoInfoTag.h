@@ -456,7 +456,7 @@ public:
 
   //! \brief The measured picture rectangle, when one is known. Round-trips through NFO export
   //! and import.
-  KODI::VIDEO::GEOMETRY::ContentGeometryRecord m_contentGeometry;
+  KODI::VIDEO::GEOMETRY::SharedContentGeometry m_contentGeometry;
   CDateTime m_dateAdded;
   std::string m_type; //!< the table m_iDbId is in: a media type, or a node such as genre
   int m_relevance; // Used for actors' number of appearances

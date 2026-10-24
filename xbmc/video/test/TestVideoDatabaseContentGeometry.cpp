@@ -497,7 +497,7 @@ TEST_F(TestVideoDatabaseContentGeometry, AVersionStoresTheMeasurementItWasAddedW
   ASSERT_GT(idMovie, 0);
 
   CFileItem version{"/test/contentgeometry/movie extended.mkv", false};
-  version.GetVideoInfoTag()->m_contentGeometry = MakeRecord();
+  version.GetVideoInfoTag()->m_contentGeometry.Set(MakeRecord());
   ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie,
                                  m_db.AddOrValidateVideoVersionType("Extended"),
                                  VideoAssetType::VERSION, version));
