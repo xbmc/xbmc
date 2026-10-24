@@ -229,7 +229,8 @@ std::unique_ptr<ISavestate> CSavestateDatabase::RenameSavestate(const std::strin
       std::memcpy(achievementData, savestate->GetAchievementData(), achievementSize);
   }
 
-  newSavestate->Finalize();
+  // Preserve existing compressed payloads during metadata-only rewrites.
+  newSavestate->Finalize(true);
 
   if (!AddSavestate(savestatePath, "", *newSavestate))
     return {};

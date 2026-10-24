@@ -484,7 +484,7 @@ protected:
     save.SetTimestampFrames(1);
     if (discs)
       save.SetDiscState(discs->GetState());
-    save.Finalize();
+    save.Finalize(true);
     const std::string path = CreateFile(".sav");
     EXPECT_TRUE(RETRO::CSavestateDatabase().AddSavestate(path, m_client->GetGamePath(), save));
     return path;
@@ -2102,7 +2102,7 @@ TEST_F(TestGameClientDiscs, RewindSavestateWithMismatchedMediaFailsCoreValidatio
   ASSERT_TRUE(edited.SetSelectedDiscByIndex(1));
   // A permissive core would hide a save that pairs cursor memory with later media edits.
   mixed.SetDiscState(edited.GetState());
-  mixed.Finalize();
+  mixed.Finalize(true);
   const auto mixedPath = CreateFile(".sav");
   ASSERT_TRUE(RETRO::CSavestateDatabase().AddSavestate(mixedPath, m_client->GetGamePath(), mixed));
   const auto calls = m_core.deserializeCalls;
