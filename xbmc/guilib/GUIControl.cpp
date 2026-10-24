@@ -130,6 +130,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   // If the control has an active animation, mark it as dirty even if culled because the
   // animation might change the alpha at a later time so processing needs to continue
+  const bool wasVisible = IsVisible();
   const bool animated = Animate(currentTime);
 
   const bool culled = m_transform.alpha <= 0.01f;
@@ -137,11 +138,15 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
   // if the control changed culling state from true to false, mark it.
   const bool cullingChanged = m_isCulled != culled;
 
-  if (cullingChanged || animated)
+  // animations of hidden controls aren't drawn
+  if (cullingChanged || (animated && (wasVisible || IsVisible())))
   {
     m_isCulled = false; // set to false so MarkDirtyRegion() isn't a no-op
     MarkDirtyRegion();
   }
+  else if (animated && (m_visible == DELAYED || IsAnimating(ANIM_TYPE_FOCUS) ||
+                        IsAnimating(ANIM_TYPE_UNFOCUS) || IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
+    MarkDirtyRegion(DIRTY_STATE_CHILD); // keep processing for delays, focus actions and closing
   m_isCulled = culled;
 
   if (IsVisible())
