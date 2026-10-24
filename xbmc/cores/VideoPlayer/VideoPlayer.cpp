@@ -1033,6 +1033,13 @@ bool CVideoPlayer::OpenDemuxStream()
 
   m_offset_pts = 0;
 
+  SaveInputStreamState();
+
+  return true;
+}
+
+void CVideoPlayer::SaveInputStreamState()
+{
   if (m_updateStreamDetails)
   {
     CFileItem item;
@@ -1042,8 +1049,6 @@ bool CVideoPlayer::OpenDemuxStream()
   }
   else
     m_pInputStream->SaveCurrentState({});
-
-  return true;
 }
 
 void CVideoPlayer::CloseDemuxer()
@@ -5110,6 +5115,9 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
 
         if (m_dvd.state != DVDSTATE_STILL)
           m_dvd.state = DVDSTATE_NORMAL;
+
+        // A title can change without the demuxer being reopened, so record it here too
+        SaveInputStreamState();
       }
       break;
     case DVDNAV_NAV_PACKET:
