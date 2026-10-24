@@ -10,7 +10,9 @@
 
 #include "guilib/GUIDialog.h"
 
-#include <queue>
+#include <deque>
+#include <string>
+#include <string_view>
 
 #define TOAST_DISPLAY_TIME   5000L  // default 5 seconds
 #define TOAST_MESSAGE_TIME   1000L  // minimal message time 1 second
@@ -28,15 +30,30 @@ public:
     std::string caption;
     std::string description;
     std::string imagefile;
+    //! Notifications sharing a non-empty group are successive updates of the same information.
+    std::string supersedeGroup;
     eMessageType eType;
     unsigned int displayTime;
     unsigned int messageTime;
     bool withSound;
   };
 
-  typedef std::queue<Notification> TOASTQUEUE;
+  typedef std::deque<Notification> TOASTQUEUE;
 
-  static void QueueNotification(eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
+  /*!
+   * \brief Queue a notification for display.
+   * \param supersedeGroup Optional. Notifications carrying the same group replace each other
+   *        without waiting for the text on display to finish scrolling. Use it for
+   *        notifications that are successive updates of the same information, for example the
+   *        stream names emitted while cycling through the streams of the playing video.
+   */
+  static void QueueNotification(eMessageType eType,
+                                const std::string& aCaption,
+                                const std::string& aDescription,
+                                unsigned int displayTime = TOAST_DISPLAY_TIME,
+                                bool withSound = true,
+                                unsigned int messageTime = TOAST_MESSAGE_TIME,
+                                std::string_view supersedeGroup = {});
   static void QueueNotification(const std::string& aCaption, const std::string& aDescription);
   static void QueueNotification(const std::string& aImageFile, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime = TOAST_DISPLAY_TIME, bool withSound = true, unsigned int messageTime = TOAST_MESSAGE_TIME);
   bool DoWork();
@@ -46,7 +63,14 @@ public:
   void ResetTimer();
 
 protected:
-  static void AddToQueue(const std::string& aImageFile, const eMessageType eType, const std::string& aCaption, const std::string& aDescription, unsigned int displayTime, bool withSound, unsigned int messageTime);
+  static void AddToQueue(const std::string& aImageFile,
+                         const eMessageType eType,
+                         const std::string& aCaption,
+                         const std::string& aDescription,
+                         unsigned int displayTime,
+                         bool withSound,
+                         unsigned int messageTime,
+                         std::string_view supersedeGroup = {});
 
   unsigned int m_timer;
 
@@ -55,4 +79,8 @@ protected:
 
   static TOASTQUEUE m_notifications;
   static CCriticalSection m_critical;
+
+private:
+  //! The notification currently on display, if any.
+  Notification m_currentNotification;
 };
