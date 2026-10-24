@@ -17,6 +17,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <functional>
@@ -77,7 +78,8 @@ void CDVDInputStream::SavePlaylistDetails(std::vector<PlaylistInformation>& play
     // Update last playlist entry
     auto& lastPlaylist = playedPlaylists.back();
 
-    assert(lastPlaylist.duration == currentPlaylistInformation.duration); // Should be the same
+    // DVD menus are all title 0 and a title's program chains can differ in length
+    lastPlaylist.duration = std::max(lastPlaylist.duration, currentPlaylistInformation.duration);
 
     lastPlaylist.watchedTime += watchedTime;
     lastPlaylist.details = currentPlaylistInformation.details;

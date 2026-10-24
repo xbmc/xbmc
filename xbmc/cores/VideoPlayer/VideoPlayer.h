@@ -532,6 +532,7 @@ protected:
   void UpdateContentState();
 
   void UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update);
+  void SaveInputStreamState();
   int GetPreviousChapter();
   std::optional<std::chrono::milliseconds> GetChapterPosMs(int chapterIdx = -1) const;
   // Translate a 1-based visible chapter number (as seen by GetChapter()/GetChapterCount())
