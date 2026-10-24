@@ -698,10 +698,6 @@ static_assert(std::ranges::all_of(
     { return std::ranges::binary_search(TableISO639_2ByCode, tCode, {}, &LCENTRY::code); },
     &LCENTRY::code));
 
-// Not possible to check at compile time the existence of duplicate names in the main table
-// or names of the main table duplicated as additional names - exceeds typical constexpr step limits
-// Checked at runtime instead.
-
 // All T codes of tb mapping must exist in the main ISO 639-2 table
 static_assert(std::ranges::all_of(
     ISO639_2_TB_Mappings,
