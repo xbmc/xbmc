@@ -36,6 +36,7 @@ CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float po
   m_timePerImage = timePerImage + fadeTime;
   m_timeToPauseAtEnd = timeToPauseAtEnd;
   m_image.SetCrossFade(fadeTime);
+  m_image.SetParentControl(this);
   m_randomized = randomized;
   m_loop = loop;
   ControlType = GUICONTROL_MULTI_IMAGE;
@@ -47,6 +48,7 @@ CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float po
 CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
   : CGUIControl(from), m_texturePath(from.m_texturePath), m_imageTimer(), m_files(), m_image(from.m_image)
 {
+  m_image.SetParentControl(this);
   m_timePerImage = from.m_timePerImage;
   m_timeToPauseAtEnd = from.m_timeToPauseAtEnd;
   m_randomized = from.m_randomized;
@@ -132,10 +134,17 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
 
         m_imageTimer.StartZero();
       }
+
+      // keep the window processed until the next image is due
+      MarkDirtyRegion(DIRTY_STATE_CHILD);
     }
   }
   else if (m_directoryStatus != LOADING)
     m_image.SetFileName("");
+
+  // keep the window processed until the loaded directory is picked up
+  if (m_directoryStatus == LOADING || m_directoryStatus == LOADED)
+    MarkDirtyRegion(DIRTY_STATE_CHILD);
 
   if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
