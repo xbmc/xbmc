@@ -65,8 +65,12 @@ void CGUIDialogContentSettings::ResetContent()
 
 void CGUIDialogContentSettings::SetScanSettings(const VIDEO::SScanSettings &scanSettings)
 {
-  m_scanRecursive       = (scanSettings.recurse > 0 && !scanSettings.parent_name) ||
-                          (scanSettings.recurse > 1 && scanSettings.parent_name);
+  // TV shows previously stored recurse=0. Treat the unconfigured default of 1
+  // as disabled so adding an existing TV show source never enables this feature.
+  m_scanRecursive = m_content == ContentType::TVSHOWS
+                        ? scanSettings.recurse > 1 && !scanSettings.parent_name
+                        : (scanSettings.recurse > 0 && !scanSettings.parent_name) ||
+                              (scanSettings.recurse > 1 && scanSettings.parent_name);
   m_useDirectoryNames   = scanSettings.parent_name;
   m_exclude             = scanSettings.exclude;
   m_containsSingleItem  = scanSettings.parent_name_root;
@@ -123,7 +127,8 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper,
       if (content == ContentType::TVSHOWS)
       {
         settings.parent_name = settings.parent_name_root = dialog->GetContainsSingleItem();
-        settings.recurse = 0;
+        // Only collection roots can search recursively for nested TV show directories.
+        settings.recurse = !settings.parent_name && dialog->GetScanRecursive() ? INT_MAX : 0;
       }
       else if (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS)
       {
@@ -232,6 +237,10 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
         return;
 
       const auto& [_, selected] = labels.at(newSelected);
+      // When changing a source from movies (or no content) to TV shows, do not
+      // inherit the movie scanner's recursive checkbox. TV recursion is opt-in.
+      if (selected == ContentType::TVSHOWS && m_content != ContentType::TVSHOWS)
+        m_scanRecursive = false;
       m_content = selected;
 
       AddonPtr scraperAddon;
@@ -357,7 +366,18 @@ void CGUIDialogContentSettings::InitializeSettings()
   {
     case ContentType::TVSHOWS:
     {
-      AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20379, SettingLevel::Basic, m_containsSingleItem, false, m_showScanSettings);
+      AddToggle(groupDetails, SETTING_CONTAINS_SINGLE_ITEM, 20379, SettingLevel::Basic,
+                m_containsSingleItem, false, m_showScanSettings);
+      auto recursive = AddToggle(groupDetails, SETTING_SCAN_RECURSIVE, 20346,
+                                 SettingLevel::Basic, m_scanRecursive, false, m_showScanSettings);
+      CSettingDependency onlyForCollectionRoots(SettingDependencyType::Enable,
+                                                GetSettingsManager());
+      onlyForCollectionRoots.And()->Add(std::make_shared<CSettingDependencyCondition>(
+          SETTING_CONTAINS_SINGLE_ITEM, "false", SettingDependencyOperator::Equals, false,
+          GetSettingsManager()));
+      SettingDependencies recursiveDependencies;
+      recursiveDependencies.push_back(onlyForCollectionRoots);
+      recursive->SetDependencies(recursiveDependencies);
       AddToggle(groupDetails, SETTING_NO_UPDATING, 20432, SettingLevel::Basic, m_noUpdating, false, m_showScanSettings);
       AddToggle(groupDetails, SETTING_ALL_EXTERNAL_AUDIO, 39120, SettingLevel::Basic,
                 m_allExternalAudio, false, m_showScanSettings);
