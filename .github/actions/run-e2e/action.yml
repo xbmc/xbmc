@@ -1,0 +1,62 @@
+name: Run E2E suite
+description: >
+  Runs tools/e2e against a built Kodi and uploads its log, screenshots and
+  results. Exactly one of kodi-binary and kodi-app selects the launcher; the
+  Android job drives pytest from inside the emulator step instead and uses
+  e2e-artifacts directly.
+inputs:
+  name:
+    description: Platform suffix for the artifact names (e.g. linux-gbm).
+    required: true
+  kodi-binary:
+    description: Desktop Kodi executable (KODI_BINARY).
+    default: ""
+  kodi-profile-dir:
+    description: >
+      Profile directory for an installed Linux Kodi (KODI_PROFILE_DIR); the launcher
+      exports it as KODI_DATA instead of using -p.
+    default: ""
+  kodi-app:
+    description: Simulator Kodi.app bundle (KODI_APP).
+    default: ""
+  kodi-simulator-device:
+    description: Simulator device UDID (KODI_SIMULATOR_DEVICE).
+    default: ""
+  log-paths:
+    description: Newline-separated paths of Kodi's log files.
+    required: true
+  screenshot-glob:
+    description: Glob matching the screenshots Kodi wrote.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v8.3.1
+      with:
+        enable-cache: true
+        cache-dependency-glob: tools/e2e/uv.lock
+
+    # conftest.py picks the launcher from which variable is set, so an empty one
+    # must not be exported at all.
+    - name: Run E2E suite
+      shell: bash
+      working-directory: tools/e2e
+      env:
+        KODI_BINARY: ${{ inputs.kodi-binary }}
+        KODI_PROFILE_DIR: ${{ inputs.kodi-profile-dir }}
+        KODI_APP: ${{ inputs.kodi-app }}
+        KODI_SIMULATOR_DEVICE: ${{ inputs.kodi-simulator-device }}
+      run: |
+        for var in KODI_BINARY KODI_PROFILE_DIR KODI_APP KODI_SIMULATOR_DEVICE; do
+          [ -n "${!var}" ] || unset "$var"
+        done
+        uv run pytest scenarios -v --junitxml="${GITHUB_WORKSPACE}/e2e-results.xml"
+
+    - name: Upload artifacts
+      if: always()
+      uses: ./.github/actions/e2e-artifacts
+      with:
+        name: ${{ inputs.name }}
+        log-paths: ${{ inputs.log-paths }}
+        screenshot-glob: ${{ inputs.screenshot-glob }}

@@ -27,22 +27,10 @@ jobs:
           sudo apt install -y libgbm-dev libinput-dev libxkbcommon-dev
           sudo apt install -y doxygen libcap-dev libsndio-dev libmariadbd-dev
           sudo apt install -y libdisplay-info-dev
-      - name: Install SWIG
-        # xbmc/interfaces/swig/CMakeLists.txt requires SWIG 4.5.0 or newer to generate the
-        # python bindings, which is newer than the version Ubuntu ships. Build the same
-        # version tools/depends/native/swig pins for cross-compiled platforms.
-        run: |
-          curl -fL -o swig.tar.gz https://mirrors.kodi.tv/build-deps/sources/swig-4.5.0.tar.gz
-          echo "fef7c3db99d2894064ac8cded989dc574fc15b8a497db6239e278e326616c905df8c2d2a28848f6e0874c1732af958772d504da84c5f068b719a4d192a472e96  swig.tar.gz" | sha512sum -c -
-          mkdir swig-src
-          tar -xf swig.tar.gz -C swig-src --strip-components=1
-          cmake -S swig-src -B swig-build
-          cmake --build swig-build -j$(nproc)
-          sudo cmake --install swig-build
       - name: Run Build Wrapper
         run: |
           mkdir build
-          cmake -S . -B build -D APP_RENDER_SYSTEM=gl -D ENABLE_INTERNAL_FFMPEG=ON -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake -S . -B build -D APP_RENDER_SYSTEM=gl -D ENABLE_INTERNAL_FFMPEG=ON -D ENABLE_INTERNAL_SWIG=ON -D CMAKE_EXPORT_COMPILE_COMMANDS=ON
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v8
         env:
