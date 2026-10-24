@@ -273,8 +273,9 @@ void CDVDInputStream::UpdateStackItem(CFileItem& item, std::chrono::milliseconds
 {
   auto& components{CServiceBroker::GetAppComponents()};
   const auto& stackHelper{components.GetComponent<CApplicationStackHelper>()};
+  // Stack times are built up in part order, so a part played out of order is not added
   if (stackHelper->GetStack(item) != nullptr &&
-      stackHelper->GetStackPartNumber(item) >= stackHelper->GetKnownStackParts())
+      stackHelper->GetStackPartNumber(item) == stackHelper->GetKnownStackParts())
   {
     stackHelper->IncreaseKnownStackParts();
     CLog::LogF(LOGDEBUG, "Playing new stack part");

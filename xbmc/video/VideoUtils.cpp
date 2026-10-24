@@ -417,7 +417,7 @@ int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber)
     if (bookmark.IsPartWay())
     {
       std::vector<std::chrono::milliseconds> times;
-      if (GetStackTimes(path, times))
+      if (GetStackTimes(path, times) && partNumber <= times.size())
       {
         offset = 0;
         const int64_t offsetToCheck{CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)};

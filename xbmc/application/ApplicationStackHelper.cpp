@@ -226,6 +226,13 @@ void CApplicationStackHelper::GetStackPartAndOptions(CFileItem& item,
   if (!updated)
   {
     m_currentStackPosition = GetStackPartNumberAtTime(start);
+
+    // Disc stack parts beyond those already played have no times, so use the requested part
+    if (const int startPart{item.GetStartPartNumber() - 1}; !restart && startPart > 0 &&
+                                                            startPart >= m_knownStackParts &&
+                                                            startPart < m_originalStackItems.Size())
+      m_currentStackPosition = startPart;
+
     item = *m_originalStackItems.Get(m_currentStackPosition);
     options.starttime =
         std::chrono::duration<double>(start - GetStackPartStartTime(m_currentStackPosition))
