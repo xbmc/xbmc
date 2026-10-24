@@ -20,6 +20,7 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
+#include <algorithm>
 #include <numeric>
 
 #include <androidjni/AudioFormat.h>
@@ -774,7 +775,36 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   // track delay in local member
   m_delay = d;
-  status.SetDelay(d);
+  status.SetDelay(d + GetRawStartupDelay());
+}
+
+// RAW passthrough: after a flush the output starts ~100 ms after the first write, with the
+// playback head at 0 until then. Report the remaining start-up time as extra delay, so A/V sync
+// corrects it while nothing is audible yet instead of later by dropping frames during speech.
+// The lag is measured at every start (no per-device constant) and kept across flushes.
+double CAESinkAUDIOTRACK::GetRawStartupDelay()
+{
+  if (!m_startPending || !m_passthrough || m_info.m_wantsIECPassthrough)
+    return 0.0;
+
+  const double elapsed =
+      m_startWriteCounter != 0
+          ? static_cast<double>(CurrentHostCounter() - m_startWriteCounter) / CurrentHostFrequency()
+          : 0.0;
+
+  if (m_startWriteCounter != 0 && m_headPos > 0) // output started
+  {
+    const double lag =
+        std::clamp(elapsed - static_cast<double>(m_headPos) / m_sink_sampleRate, 0.0, 0.5);
+    // ignore outliers (e.g. data arriving late), average the rest
+    if (m_startLag <= 0.0)
+      m_startLag = lag;
+    else if (lag < 2 * m_startLag + 0.05)
+      m_startLag = (m_startLag + lag) / 2;
+    m_startPending = false;
+    return 0.0;
+  }
+  return std::max(m_startLag - elapsed, 0.0);
 }
 
 double CAESinkAUDIOTRACK::GetLatency()
@@ -838,6 +868,9 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   int loop_written = 0;
   if (frames)
   {
+    if (m_startPending && m_startWriteCounter == 0)
+      m_startWriteCounter = CurrentHostCounter();
+
     if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
       m_at_jni->play();
 
@@ -972,6 +1005,14 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PAUSED)
     m_at_jni->pause();
 
+  // Nothing written since the last flush/drain: there is no buffer level to
+  // keep up, so do not book the burst as buffered audio. Just pace it.
+  if (m_duration_written <= 0.0)
+  {
+    usleep(millis * 1000);
+    return;
+  }
+
   // This is a mixture to get it right between
   // blocking, sleeping roughly and GetDelay smoothing
   // In short: Shit in, shit out
@@ -1014,6 +1055,37 @@ void CAESinkAUDIOTRACK::Drain()
   m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
   m_pause_ms = 0.0;
+}
+
+void CAESinkAUDIOTRACK::Flush()
+{
+  // RAW passthrough only, PCM and IEC keep the previous behaviour
+  if (!m_at_jni || !m_passthrough || m_info.m_wantsIECPassthrough)
+    return;
+
+  CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Flush");
+  if (IsInitialized())
+  {
+    // AudioTrack.flush() only discards data while the track is not playing,
+    // so pause first. play() is issued again by the next AddPackets().
+    m_at_jni->pause();
+    m_at_jni->flush();
+  }
+
+  // The playback head restarts at zero after a flush, so everything derived
+  // from it restarts with it.
+  m_duration_written = 0;
+  m_headPos = 0;
+  m_headPosOld = 0;
+  m_timestampPos = 0;
+  m_stuckCounter = 0;
+  m_linearmovingaverage.clear();
+  m_stampTimer.SetExpired();
+  m_pause_ms = 0.0;
+  m_delay = 0.0;
+  m_hw_delay = 0.0;
+  m_startPending = true;
+  m_startWriteCounter = 0;
 }
 
 void CAESinkAUDIOTRACK::Register()
