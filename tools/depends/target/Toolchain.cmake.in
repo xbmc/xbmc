@@ -67,9 +67,28 @@ if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET @target_minver@)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET @target_minver@ CACHE STRING "Minimum OS deployment version" FORCE)
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
   set(CMAKE_XCODE_ATTRIBUTE_ARCHS ${CPU})
+endif()
+
+if(CORE_SYSTEM_NAME STREQUAL osx AND CMAKE_GENERATOR STREQUAL Xcode AND
+   XCODE_VERSION VERSION_GREATER_EQUAL 27)
+  # Keep older macOS deployment targets buildable with the macOS 27 SDK.
+  set(CMAKE_XCODE_ATTRIBUTE___DIAGNOSE_INVALID_DEPLOYMENT_TARGET_AS_ERROR NO)
+
+  # CMake's compiler identification projects do not inherit Xcode attributes.
+  set(_deployment_target_xcconfig "${CMAKE_BINARY_DIR}/CMakeFiles/DeploymentTarget.xcconfig")
+  get_property(_in_try_compile GLOBAL PROPERTY IN_TRY_COMPILE)
+  if(NOT _in_try_compile AND NOT "$ENV{XCODE_XCCONFIG_FILE}" STREQUAL "${_deployment_target_xcconfig}")
+    set(_deployment_target_config "")
+    if(NOT "$ENV{XCODE_XCCONFIG_FILE}" STREQUAL "")
+      string(APPEND _deployment_target_config "#include \"$ENV{XCODE_XCCONFIG_FILE}\"\n")
+    endif()
+    string(APPEND _deployment_target_config "__DIAGNOSE_INVALID_DEPLOYMENT_TARGET_AS_ERROR = NO\n")
+    file(WRITE "${_deployment_target_xcconfig}" "${_deployment_target_config}")
+    set(ENV{XCODE_XCCONFIG_FILE} "${_deployment_target_xcconfig}")
+  endif()
 endif()
 set(CMAKE_SYSTEM_VERSION 1)
 

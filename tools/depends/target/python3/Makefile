@@ -31,6 +31,7 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
     export SDKROOT
   endif
   ifeq ($(OS), osx)
+    EXTRA_CONFIGURE+= ac_cv_func_dup3=no ac_cv_func_pipe2=no
     export SDKROOT
   endif
   # required for _localemodule
