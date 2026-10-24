@@ -5687,10 +5687,11 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
     else
     { // add the items
       m_pDS->close();
-      strSQL= "INSERT INTO settings (idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio, VerticalShift, "
-                "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
-                "Contrast,Gamma,VolumeAmplification,AudioDelay,"
-                "ResumeTime,"
+      strSQL =
+          "INSERT INTO settings (idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio, VerticalShift, "
+          "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
+          "Contrast,Gamma,VolumeAmplification,AudioDelay,"
+          "ResumeTime,"
           "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,"
           "StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel,"
           "DeclaredAspect,DeclaredOn,DetectedWhenDeclared) "
