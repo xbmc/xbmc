@@ -27,7 +27,7 @@ struct LiveSelectorParams
 
   //! \brief Frames a reading that loses picture must persist before it is served. One that
   //! gains picture is served at once.
-  unsigned int narrowFrames{3};
+  unsigned int narrowFrames{1};
 };
 
 //! \brief A shape to serve, in coded space.

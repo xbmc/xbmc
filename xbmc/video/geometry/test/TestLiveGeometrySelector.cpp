@@ -64,7 +64,12 @@ DetectionResult Dark()
 class TestLiveGeometrySelector : public ::testing::Test
 {
 protected:
-  TestLiveGeometrySelector() { m_selector.Configure(CODED, 1.0f, AT_REST); }
+  TestLiveGeometrySelector()
+  {
+    // The narrowing guard is off by default; these tests exercise it at three frames.
+    m_selector.SetParams({8, 3});
+    m_selector.Configure(CODED, 1.0f, AT_REST);
+  }
 
   //! \brief Feed \p rect once, expecting nothing to change.
   void Quiet(const CRectInt& rect)
@@ -121,9 +126,9 @@ TEST_F(TestLiveGeometrySelector, CutToANarrowerRatioIsServedAfterTheFrameGuard)
   EXPECT_EQ(SCOPE, Served(SCOPE_READ).rect);
 }
 
-TEST_F(TestLiveGeometrySelector, TheFrameGuardCanBeTurnedOff)
+TEST_F(TestLiveGeometrySelector, ByDefaultANarrowerRatioIsServedOnTheNextFrame)
 {
-  m_selector.SetParams({8, 1});
+  m_selector.SetParams({});
   Served(CODED);
   EXPECT_EQ(SCOPE, Served(SCOPE_READ).rect);
 }

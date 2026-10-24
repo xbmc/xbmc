@@ -40,7 +40,8 @@ CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& setting
        CSettings::SETTING_SUBTITLES_LANGUAGES,      CSettings::SETTING_SUBTITLES_STORAGEMODE,
        CSettings::SETTING_SUBTITLES_CUSTOMPATH,     CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
        CSettings::SETTING_SUBTITLES_DOWNLOADFIRST,  CSettings::SETTING_SUBTITLES_TV,
-       CSettings::SETTING_SUBTITLES_MOVIE,          CSettings::SETTING_SUBTITLES_LINE_SPACING});
+       CSettings::SETTING_SUBTITLES_MOVIE,          CSettings::SETTING_SUBTITLES_LINE_SPACING,
+       CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT});
 }
 
 CSubtitlesSettings::~CSubtitlesSettings()
@@ -70,6 +71,11 @@ Align CSubtitlesSettings::GetAlignment() const
 void CSubtitlesSettings::SetAlignment(Align align) const
 {
   m_settings->SetInt(CSettings::SETTING_SUBTITLES_ALIGN, static_cast<int>(align));
+}
+
+bool CSubtitlesSettings::IsAlignedToContent() const
+{
+  return m_settings->GetBool(CSettings::SETTING_SUBTITLES_ALIGNTOCONTENT);
 }
 
 HorizontalAlign CSubtitlesSettings::GetHorizontalAlignment() const

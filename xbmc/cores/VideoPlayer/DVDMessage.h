@@ -50,6 +50,7 @@ public:
     PLAYER_OPENFILE,
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
     PLAYER_AVCHANGE,                // signal a change in audio, video or subtitle parameters
+    PLAYER_CONTENT_GEOMETRY,        // a live content geometry reading was confirmed or withdrawn
     PLAYER_ABORT,
     PLAYER_REPORT_STATE,
     PLAYER_FRAME_ADVANCE,

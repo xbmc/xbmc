@@ -135,7 +135,8 @@ TEST(TestGeometryTransforms, WithNothingMeasuredOnTheFrameTheResolvedRectangleIs
  * A rotated stream is decoded upright and turned at draw time, so the frame's own measurement,
  * the coded frame and the source rectangle are all in the same unrotated space. The cut has to
  * leave them there: a quarter turn applied to it would put a letterbox crop down the sides. The
- * ratio is the one part that does carry the rotation, answered as it leaves the picture.
+ * ratio stays upright too, as the resolved one is: the renderer applies the turn when it places
+ * the picture.
  */
 TEST(TestGeometryTransforms, ARotatedStreamIsCutInCodedSpace)
 {
@@ -153,8 +154,7 @@ TEST(TestGeometryTransforms, ARotatedStreamIsCutInCodedSpace)
 
     const ContentCut cut = CutToContent(geometry, content, source);
     ExpectRect(cut.source, 0.0f, 280.0f, 3840.0f, 1880.0f);
-    EXPECT_NEAR(orientation % 180 == 0 ? 2.4f : 1.0f / 2.4f, cut.aspect, 0.01f)
-        << "at " << orientation << " degrees";
+    EXPECT_NEAR(2.4f, cut.aspect, 0.01f) << "at " << orientation << " degrees";
   }
 }
 

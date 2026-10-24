@@ -96,7 +96,7 @@ CRect SourceRect(const RenderGeometry& geometry, const CRect& frameSource);
 struct ContentCut
 {
   CRect source; //!< the region of the source the content occupies
-  float aspect{0.0f}; //!< that content's ratio, as the rotation leaves it
+  float aspect{0.0f}; //!< that content's upright ratio
 };
 
 //! \brief \p frameSource cut to \p content, a rectangle measured from one frame in the space
