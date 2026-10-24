@@ -5,6 +5,7 @@ if(TARGET ${APP_NAME_LC}::OpenGLES)
               GuiCompositeShaderGLES.cpp)
 
   set(HEADERS RenderSystemGLES.h
+              GUIStencilGLES.h
               ScreenshotSurfaceGLES.h
               GLESShader.h
               GuiCompositeShaderGLES.h)

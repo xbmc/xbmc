@@ -35,6 +35,40 @@
 
 using namespace std::chrono_literals;
 
+namespace
+{
+void ClearBuffersWithStencil(GLbitfield flags)
+{
+  GLint stencilMask, stencilBackMask, stencilClear;
+  glGetIntegerv(GL_STENCIL_WRITEMASK, &stencilMask);
+  glGetIntegerv(GL_STENCIL_BACK_WRITEMASK, &stencilBackMask);
+  glGetIntegerv(GL_STENCIL_CLEAR_VALUE, &stencilClear);
+  glStencilMask(0xFF);
+  glClearStencil(0);
+
+  GLboolean depthMask{GL_FALSE};
+  GLfloat depthClear{0.0f};
+  if (flags & GL_DEPTH_BUFFER_BIT)
+  {
+    glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
+    glGetFloatv(GL_DEPTH_CLEAR_VALUE, &depthClear);
+    glDepthMask(GL_TRUE);
+    glClearDepthf(0.0f);
+  }
+
+  glClear(flags | GL_STENCIL_BUFFER_BIT);
+
+  if (flags & GL_DEPTH_BUFFER_BIT)
+  {
+    glDepthMask(depthMask);
+    glClearDepthf(depthClear);
+  }
+  glStencilMaskSeparate(GL_FRONT, stencilMask);
+  glStencilMaskSeparate(GL_BACK, stencilBackMask);
+  glClearStencil(stencilClear);
+}
+} // namespace
+
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
 {
@@ -281,14 +315,12 @@ void CRenderSystemGLES::InvalidateColorBuffer()
 
   // some platforms prefer a clear, instead of rendering over
   if (GetClearFunction() == ClearFunction::FIXED_FUNCTION)
+  {
     ClearBuffers(0);
-
-  if (!GetEnabledFrontToBackRendering())
     return;
+  }
 
-  glClearDepthf(0);
-  glDepthMask(true);
-  glClear(GL_DEPTH_BUFFER_BIT);
+  ClearBuffersWithStencil(GetEnabledFrontToBackRendering() ? GL_DEPTH_BUFFER_BIT : 0);
 }
 
 bool CRenderSystemGLES::ClearBuffers(KODI::UTILS::COLOR::Color color)
@@ -306,13 +338,9 @@ bool CRenderSystemGLES::ClearBuffers(KODI::UTILS::COLOR::Color color)
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
 
   if (GetEnabledFrontToBackRendering())
-  {
-    glClearDepthf(0);
-    glDepthMask(GL_TRUE);
     flags |= GL_DEPTH_BUFFER_BIT;
-  }
 
-  glClear(flags);
+  ClearBuffersWithStencil(flags);
 
   return true;
 }
