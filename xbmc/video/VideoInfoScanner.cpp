@@ -2463,7 +2463,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                              [this]() { return m_bStop.load(); })};
 
         if (geometry && geometry->HasReading())
-          movieDetails.m_contentGeometry = *geometry;
+          movieDetails.m_contentGeometry.Set(*geometry);
       }
     }
 

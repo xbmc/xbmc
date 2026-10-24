@@ -624,8 +624,8 @@ TEST(TestVideoInfoTag, ContentGeometryRoundTripsThroughNfo)
   using namespace KODI::VIDEO::GEOMETRY;
 
   CVideoInfoTag written;
-  written.m_contentGeometry.aspects = {2.35f, 1.78f};
-  written.m_contentGeometry.identity = FileIdentity{68'719'476'736, 1'700'000'000};
+  written.m_contentGeometry.Set(
+      {.aspects = {2.35f, 1.78f}, .identity = FileIdentity{68'719'476'736, 1'700'000'000}});
   ASSERT_TRUE(written.HasContentGeometry());
 
   CXBMCTinyXML doc;
@@ -650,19 +650,20 @@ TEST(TestVideoInfoTag, ContentGeometryRoundTripsThroughNfo)
   ASSERT_TRUE(read.Load(doc.RootElement()->FirstChildElement("movie"), true, false));
 
   ASSERT_TRUE(read.HasContentGeometry());
-  EXPECT_EQ(written.m_contentGeometry.aspects, read.m_contentGeometry.aspects);
-  EXPECT_TRUE(read.m_contentGeometry.Varies());
-  EXPECT_EQ(CONTENT_GEOMETRY_ALGORITHM_VERSION, read.m_contentGeometry.algorithmVersion);
+  const ContentGeometryRecord loaded{read.m_contentGeometry.Get()};
+  EXPECT_EQ(written.m_contentGeometry.Get().aspects, loaded.aspects);
+  EXPECT_TRUE(loaded.Varies());
+  EXPECT_EQ(CONTENT_GEOMETRY_ALGORITHM_VERSION, loaded.algorithmVersion);
 
   // The file an NFO describes is identified when the record is stored, not from the NFO.
-  EXPECT_FALSE(read.m_contentGeometry.identity.IsKnown());
+  EXPECT_FALSE(loaded.identity.IsKnown());
 }
 
 //! A record that found nothing has nothing to tell an NFO.
 TEST(TestVideoInfoTag, NoReadingWritesNoContentGeometry)
 {
   CVideoInfoTag written;
-  written.m_contentGeometry.identity = {8'000'000'000, 1'700'000'000};
+  written.m_contentGeometry.Set({.aspects = {}, .identity = {8'000'000'000, 1'700'000'000}});
 
   CXBMCTinyXML doc;
   doc.InsertEndChild(TiXmlElement("root"));
@@ -696,12 +697,13 @@ TEST(TestVideoInfoTag, ContentGeometryRoundTripsThroughTheArchive)
 
   CVideoInfoTag written;
   written.m_strTitle = "archived";
-  written.m_contentGeometry.aspects = {2.35f, 1.78f};
-  written.m_contentGeometry.identity = FileIdentity{68'719'476'736, 1'700'000'000};
 
   // Not the current version, so that losing this field is visible here rather than only in
   // whatever later reports the record as fresh when it is stale.
-  written.m_contentGeometry.algorithmVersion = CONTENT_GEOMETRY_ALGORITHM_VERSION - 1;
+  const ContentGeometryRecord record{.aspects = {2.35f, 1.78f},
+                                     .algorithmVersion = CONTENT_GEOMETRY_ALGORITHM_VERSION - 1,
+                                     .identity = FileIdentity{68'719'476'736, 1'700'000'000}};
+  written.m_contentGeometry.Set(record);
 
   // A field written after the geometry, which is what a mismatched pair damages first.
   written.m_showLink = {"a show", "another"};
@@ -720,10 +722,11 @@ TEST(TestVideoInfoTag, ContentGeometryRoundTripsThroughTheArchive)
   read.Archive(in);
   in.Close();
 
-  EXPECT_EQ(written.m_contentGeometry.aspects, read.m_contentGeometry.aspects);
-  EXPECT_EQ(written.m_contentGeometry.algorithmVersion, read.m_contentGeometry.algorithmVersion);
-  EXPECT_EQ(written.m_contentGeometry.identity.size, read.m_contentGeometry.identity.size);
-  EXPECT_EQ(written.m_contentGeometry.identity.time, read.m_contentGeometry.identity.time);
+  const ContentGeometryRecord loaded{read.m_contentGeometry.Get()};
+  EXPECT_EQ(record.aspects, loaded.aspects);
+  EXPECT_EQ(record.algorithmVersion, loaded.algorithmVersion);
+  EXPECT_EQ(record.identity.size, loaded.identity.size);
+  EXPECT_EQ(record.identity.time, loaded.identity.time);
   EXPECT_EQ(written.m_showLink, read.m_showLink) << "the operators are out of step";
 
   EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
@@ -760,7 +763,7 @@ CVideoInfoTag MeasuredTag(std::vector<float> aspects = {2.40f})
   CVideoInfoTag tag;
   tag.m_streamDetails.AddStream(new CStreamDetailVideo(info, 0, CStreamDetail::MEDIA));
   tag.m_streamDetails.DetermineBestStreams();
-  tag.m_contentGeometry.aspects = std::move(aspects);
+  tag.m_contentGeometry.Set({.aspects = std::move(aspects), .identity = {}});
   return tag;
 }
 } // unnamed namespace
@@ -784,7 +787,9 @@ TEST(TestVideoInfoTag, AStaleRecordIsStillResolvedAndSaysSo)
   using namespace KODI::VIDEO::GEOMETRY;
 
   CVideoInfoTag tag{MeasuredTag()};
-  tag.m_contentGeometry.algorithmVersion = CONTENT_GEOMETRY_ALGORITHM_VERSION - 1;
+  ContentGeometryRecord record{tag.m_contentGeometry.Get()};
+  record.algorithmVersion = CONTENT_GEOMETRY_ALGORITHM_VERSION - 1;
+  tag.m_contentGeometry.Set(std::move(record));
 
   const EffectiveGeometry resolved{tag.ResolveContentGeometry()};
 
@@ -817,7 +822,7 @@ TEST(TestVideoInfoTag, TheStoredRatiosReachTheResolvedSections)
 TEST(TestVideoInfoTag, ATagWithoutAVideoStreamResolvesToNothing)
 {
   CVideoInfoTag tag;
-  tag.m_contentGeometry.aspects = {2.40f};
+  tag.m_contentGeometry.Set({.aspects = {2.40f}, .identity = {}});
 
   EXPECT_EQ(KODI::VIDEO::GEOMETRY::GeometrySource::Container, tag.ResolveContentGeometry().source);
 }
@@ -839,7 +844,7 @@ TEST(TestVideoInfoTag, TheLibraryAndThePlayerNameTheSameRatio)
   player.stream.coded = CRectInt{0, 0, 1920, 1080};
   player.stream.displayAspect = 16.0f / 9.0f;
   player.cached.state = ContentGeometryState::VALID;
-  player.cached.record = tag.m_contentGeometry;
+  player.cached.record = tag.m_contentGeometry.Get();
   player.policy = ContentGeometryPolicyFromSettings();
   player.atRestAspect = ContentGeometryAtRestFromSettings();
   const EffectiveGeometry played{ResolveEffectiveGeometry(player)};

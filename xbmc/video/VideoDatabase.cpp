@@ -2774,7 +2774,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
     }
 
     if (details.HasContentGeometry())
-      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry);
+      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry.Get());
 
     if (!SetArtForItem(idMovie, MEDIA::TYPE::MOVIE, artwork))
     {
@@ -3462,7 +3462,7 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
     }
 
     if (details.HasContentGeometry())
-      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry);
+      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry.Get());
 
     // ensure we have this season already added
     int idSeason = AddSeason(idShow, details.m_iSeason);
@@ -3575,7 +3575,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
     }
 
     if (details.HasContentGeometry())
-      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry);
+      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry.Get());
 
     if (!SetArtForItem(idMVideo, MEDIA::TYPE::MUSIC_VIDEO, artwork))
     {
@@ -5139,7 +5139,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
 
   // Unverified: the identity check needs the file stat'ing.
   if (auto stored{GetStoredContentGeometry(fileId)})
-    tag.m_contentGeometry = std::move(*stored);
+    tag.m_contentGeometry.Set(std::move(*stored));
 
   return retVal;
 }
@@ -14360,7 +14360,7 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
     }
 
     if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasContentGeometry())
-      SetContentGeometry(idFile, item.GetVideoInfoTag()->m_contentGeometry);
+      SetContentGeometry(idFile, item.GetVideoInfoTag()->m_contentGeometry.Get());
 
     if (!SetArtForItem(idFile, MEDIA::TYPE::VIDEO_VERSION, item.GetArt()))
     {
