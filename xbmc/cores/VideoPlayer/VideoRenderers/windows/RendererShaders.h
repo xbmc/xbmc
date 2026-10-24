@@ -39,6 +39,11 @@ public:
   static CRendererBase* Create(CVideoSettings& videoSettings);
   static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
 
+  /*!
+   * \brief The formats the renderer draws as they are, which a decoder need not convert first.
+   */
+  static std::vector<AVPixelFormat> GetRenderFormats();
+
 protected:
   explicit CRendererShaders(CVideoSettings& videoSettings);
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
