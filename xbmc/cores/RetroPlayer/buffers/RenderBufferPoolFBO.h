@@ -67,6 +67,7 @@ public:
   IRenderBuffer* CaptureClientFrame(IRenderBuffer* clientBuffer,
                                     unsigned int width,
                                     unsigned int height) override;
+  bool ReadCapture(IRenderBuffer* buffer, RENDERING::CAPTURE::ReadbackBuffer& pixels) override;
 
 protected:
   // Implementation of CBaseRenderBufferPool

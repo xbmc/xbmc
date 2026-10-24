@@ -13,6 +13,7 @@
 #include "RenderTranslator.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/IRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/buffers/RenderBufferManager.h"
@@ -28,6 +29,7 @@
 #include "filesystem/File.h"
 #include "games/GameServices.h"
 #include "pictures/Picture.h"
+#include "rendering/capture/CaptureReadback.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/ScopeGuard.h"
@@ -47,6 +49,43 @@ extern "C"
 
 using namespace KODI;
 using namespace RETRO;
+
+namespace
+{
+//! A hardware frame copied into system memory, owned by whoever holds it last
+class CReadbackRenderBuffer : public CBaseRenderBuffer
+{
+public:
+  explicit CReadbackRenderBuffer(RENDERING::CAPTURE::ReadbackBuffer pixels)
+    : m_pixels(std::move(pixels.pixels)),
+      m_size(static_cast<size_t>(pixels.stride) * pixels.height)
+  {
+    // The capture has no alpha channel
+    m_format = pixels.format == AV_PIX_FMT_BGRA ? AV_PIX_FMT_BGR0 : pixels.format;
+    m_width = pixels.width;
+    m_height = pixels.height;
+  }
+
+  bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override
+  {
+    return false;
+  }
+  size_t GetFrameSize() const override { return m_size; }
+  uint8_t* GetMemory() override { return m_pixels.get(); }
+  bool UploadTexture() override { return false; }
+  DataAccess GetMemoryAccess() const override { return DataAccess::READ_ONLY; }
+  DataAlignment GetMemoryAlignment() const override { return DataAlignment::DATA_UNALIGNED; }
+  void Release() override
+  {
+    if (--m_refCount <= 0)
+      delete this;
+  }
+
+private:
+  std::unique_ptr<uint8_t[]> m_pixels;
+  size_t m_size;
+};
+} // namespace
 
 CRPRenderManager::CRPRenderManager(CRPProcessInfo& processInfo)
   : m_processInfo(processInfo),
@@ -1094,18 +1133,23 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(
   return effectiveSettings;
 }
 
-void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
+void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath, const VideoFrame& frame)
 {
-  // A hardware-rendered savestate carries no thumbnail
-  if (IsHardwareRendering())
-    return;
-
   // Get a suitable render buffer for capturing the video data, or use the
   // cached frame if a readable buffer can't be found
   IRenderBuffer* renderBuffer = nullptr;
   std::vector<uint8_t> cachedFrame;
 
-  GetVideoFrame(renderBuffer, cachedFrame);
+  if (IsHardwareRendering())
+  {
+    // Only the copy read back when the savestate was taken is in system memory
+    if (frame.empty())
+      return;
+    renderBuffer = frame.front().get();
+    renderBuffer->Acquire();
+  }
+  else
+    GetVideoFrame(renderBuffer, cachedFrame);
 
   // Video frame properties
   AVPixelFormat sourceFormat = AV_PIX_FMT_NONE;
@@ -1200,8 +1244,11 @@ void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath)
 
 bool CRPRenderManager::TryCaptureVideoFrame(VideoFrame& frame)
 {
-  if (IsHardwareRendering() || !frame.empty())
+  if (!frame.empty())
     return false;
+
+  if (IsHardwareRendering())
+    return ReadHardwareFrame(frame);
 
   std::unique_lock lock(m_bufferMutex, std::try_to_lock);
   if (!lock.owns_lock())
@@ -1212,6 +1259,36 @@ bool CRPRenderManager::TryCaptureVideoFrame(VideoFrame& frame)
     buffer->Acquire();
     frame.emplace_back(buffer, [](IRenderBuffer* acquired) { acquired->Release(); });
   }
+  return true;
+}
+
+bool CRPRenderManager::ReadHardwareFrame(VideoFrame& frame)
+{
+  IRenderBuffer* published = nullptr;
+  {
+    std::unique_lock lock(m_bufferMutex, std::try_to_lock);
+    if (!lock.owns_lock() || m_renderBuffers.empty())
+      return false;
+    published = m_renderBuffers.front();
+    published->Acquire();
+  }
+
+  RENDERING::CAPTURE::ReadbackBuffer pixels;
+  bool read = false;
+  if (BeginClientFrame())
+  {
+    if (m_hwBufferPool)
+      read = m_hwBufferPool->ReadCapture(published, pixels);
+    EndClientFrame();
+  }
+  published->Release();
+
+  if (!read || pixels.stride <= 0)
+    return false;
+
+  auto* buffer = new CReadbackRenderBuffer(std::move(pixels));
+  buffer->Acquire();
+  frame.emplace_back(buffer, [](IRenderBuffer* acquired) { acquired->Release(); });
   return true;
 }
 

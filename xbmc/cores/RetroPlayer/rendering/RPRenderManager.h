@@ -141,11 +141,11 @@ public:
   bool SupportsScalingMethod(SCALINGMETHOD method) const override;
 
   // Savestate functions
-  void SaveThumbnail(const std::string& thumbnailPath);
+  using VideoFrame = std::vector<std::shared_ptr<IRenderBuffer>>;
+  void SaveThumbnail(const std::string& thumbnailPath, const VideoFrame& frame);
 
   // Savestate functions
   void CacheVideoFrame(const std::string& savestatePath);
-  using VideoFrame = std::vector<std::shared_ptr<IRenderBuffer>>;
   bool TryCaptureVideoFrame(VideoFrame& frame);
   void CacheVideoFrame(const std::string& savestatePath, const VideoFrame& frame);
   void SaveVideoFrame(const std::string& savestatePath,
@@ -248,6 +248,7 @@ private:
    */
   bool IsHardwareRendering() const { return m_hasHardwareContext; }
 
+  bool ReadHardwareFrame(VideoFrame& frame);
   void GetVideoFrame(IRenderBuffer*& readableBuffer, std::vector<uint8_t>& cachedFrame);
   void FreeVideoFrame(IRenderBuffer* readableBuffer, std::vector<uint8_t> cachedFrame);
   void LoadVideoFrameAsync(const std::string& savestatePath);
