@@ -84,6 +84,16 @@ public:
    */
   static float SnapToPixel(float coord, bool subpixel);
 
+  /*! \brief Keep thin quads visible.
+   On each axis, a corner right of (or below) its diagonal opposite is pushed one pixel further
+   when no pixel centre lies between the two.
+   \param ux unsnapped screen x of the quad's four corners, in drawing order
+   \param uy unsnapped screen y of the corners
+   \param x snapped screen x of the corners, pushed in place
+   \param y snapped screen y of the corners, pushed in place
+   */
+  static void PushThinCorners(const float ux[4], const float uy[4], float x[4], float y[4]);
+
   static void DrawQuad(const CRect& coords,
                        KODI::UTILS::COLOR::Color color,
                        CTexture* texture = nullptr,
