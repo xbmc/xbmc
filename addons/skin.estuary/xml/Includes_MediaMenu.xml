@@ -395,6 +395,14 @@
 				<visible>Control.IsEnabled(4)</visible>
 				<onclick>SendClick(4)</onclick>
 			</control>
+			<control type="button" id="6054">
+				<include>MediaMenuItemsCommon</include>
+				<label condition="String.IsEqual(Container.FolderPath,videodb://recentlyaddedepisodes/)">$LOCALIZE[31616]</label>
+				<label>$LOCALIZE[31617]</label>
+				<visible>String.IsEqual(Container.FolderPath,videodb://recentlyaddedepisodes/) | String.IsEqual(Container.FolderPath,special://skin/playlists/recent_tvshows.xsp)</visible>
+				<onclick condition="String.IsEqual(Container.FolderPath,videodb://recentlyaddedepisodes/)">Container.Update(special://skin/playlists/recent_tvshows.xsp,replace)</onclick>
+				<onclick condition="String.IsEqual(Container.FolderPath,special://skin/playlists/recent_tvshows.xsp)">Container.Update(videodb://recentlyaddedepisodes/,replace)</onclick>
+			</control>
 			<include condition="Window.IsVisible(Videos) | Window.IsVisible(Music)">MediaMenuSearchButton</include>
 			<control type="button" id="19">
 				<visible>Container.CanFilter + !Container.CanFilterAdvanced</visible>
