@@ -175,6 +175,8 @@ bool CApplicationStackHelper::ProcessNextPartInBookmark(CFileItem& item, CBookma
         state)
     {
       bookmark.playerState = *state;
+      // The input stream reads a disc's resume state from the item (eg. a Blu-ray playlist)
+      item.GetVideoInfoTag()->SetResumePoint(bookmark);
     }
     else
     {
