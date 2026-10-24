@@ -8,10 +8,14 @@
 
 #include "OSScreenSaverWasm.h"
 
+#include "platform/wasm/TizenWebApis.h"
+#include "utils/log.h"
+
 #include <emscripten.h>
 #include <emscripten/em_asm.h>
 
 using namespace KODI::WINDOWING::WASM;
+using KODI::PLATFORM::WASM::CTizenWebApis;
 
 namespace
 {
@@ -66,10 +70,19 @@ void SetWakeLockWanted(bool wanted)
 
 void COSScreenSaverWasm::Inhibit()
 {
+  if (CTizenWebApis::SetScreenSaverEnabled(false))
+  {
+    CLog::Log(LOGINFO, "OS screensaver: asked the TV to turn its screensaver off");
+  }
+  CLog::Log(LOGINFO, "OS screensaver: requesting a screen wake lock");
   SetWakeLockWanted(true);
 }
 
 void COSScreenSaverWasm::Uninhibit()
 {
+  if (CTizenWebApis::SetScreenSaverEnabled(true))
+  {
+    CLog::Log(LOGINFO, "OS screensaver: asked the TV to turn its screensaver back on");
+  }
   SetWakeLockWanted(false);
 }
