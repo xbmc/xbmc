@@ -169,11 +169,13 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_MANAGE_VIDEO_VERSIONS)
       {
-        m_hasUpdatedItems = OnManageVideoVersions();
+        if (OnManageVideoVersions())
+          m_hasUpdatedItems = true;
       }
       else if (iControl == CONTROL_BTN_MANAGE_VIDEO_EXTRAS)
       {
-        m_hasUpdatedItems = OnManageVideoExtras();
+        if (OnManageVideoExtras())
+          m_hasUpdatedItems = true;
       }
       else if (iControl == CONTROL_BTN_PLAY)
       {
@@ -238,8 +240,10 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
           {
             SetMovie(m_castList->Get(iItem).get());
+            const bool hasUpdatedItems{m_hasUpdatedItems};
             Close();
             Open();
+            m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
           }
           else
             OnSearch(strItem);
@@ -272,6 +276,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   m_bRefreshAll = true;
   m_hasUpdatedThumb = false;
   m_hasUpdatedUserrating = false;
+  m_hasUpdatedItems = false;
   m_bViewReview = true;
 
   const std::shared_ptr<CProfileManager> profileManager =
@@ -728,8 +733,10 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   *item.GetVideoInfoTag() = movieDetails;
   SetMovie(&item);
   // refresh our window entirely
+  const bool hasUpdatedItems{m_hasUpdatedItems};
   Close();
   Open();
+  m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
 }
 
 void CGUIDialogVideoInfo::ClearCastList()
@@ -803,7 +810,9 @@ void CGUIDialogVideoInfo::Play(bool resume)
       {
         // The Resume dialog was closed without any choice
         SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
+        const bool hasUpdatedItems{m_hasUpdatedItems};
         Open();
+        m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
       }
     }
   }
