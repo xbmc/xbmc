@@ -43,7 +43,7 @@ public:
 
   bool HasTimers() const { return m_iTimerAmount > 0; }
   bool HasRecordingTimers() const { return m_iRecordingTimerAmount > 0; }
-  bool HasNonRecordingTimers() const { return m_iTimerAmount - m_iRecordingTimerAmount > 0; }
+  bool HasNonRecordingTimers() const { return m_iTimerAmount > m_iRecordingTimerAmount; }
 
 private:
   bool TimerInfoToggle();
