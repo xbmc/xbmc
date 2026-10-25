@@ -26,7 +26,6 @@
 #include "utils/log.h"
 
 #include <cstring>
-#include <utility>
 
 #include "PlatformDefs.h"
 
@@ -98,7 +97,7 @@ bool ShouldCheckForChanges(const std::string& specialType, const std::string& ur
 }
 } // namespace
 
-bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
+bool CTextureCacheJob::CacheTexture()
 {
   IMAGE_FILES::CImageFileURL imageURL{m_url};
 
@@ -139,8 +138,6 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     {
       m_details.width = cached_width;
       m_details.height = cached_height;
-      if (out_texture) // caller wants the texture
-        *out_texture = std::move(texture);
       return true;
     }
   }
