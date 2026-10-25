@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <mutex>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -192,4 +193,134 @@ TEST_F(TestGameClientCheevos, EncoreEventAfterGameClosesIsSuppressed)
   EXPECT_EQ(TakeDialogRefreshes(), 0);
   EXPECT_FALSE(m_runtime.GetState().loaded);
   EXPECT_EQ(m_runtime.GetUnlockedAchievements(), 0U);
+}
+
+namespace
+{
+constexpr unsigned int GAME_SET = 586;
+constexpr unsigned int BONUS_SET = 9001;
+
+AchievementInfo Achievement(unsigned int id, bool earned)
+{
+  AchievementInfo achievement;
+  achievement.id = id;
+  achievement.title = "Achievement " + std::to_string(id);
+  achievement.earned = earned;
+  return achievement;
+}
+} // namespace
+
+class TestAchievementSets : public TestGameClientCheevos
+{
+protected:
+  // The game's own set needs one progression and one win achievement to beat;
+  // the bonus set has a single achievement that can be missed
+  void LoadSets()
+  {
+    AchievementState state;
+    state.loaded = true;
+    state.gameId = 586;
+    state.gameTitle = "Super Mario Bros.";
+    state.achievements = {Achievement(1, true), Achievement(2, false), Achievement(3, false)};
+    state.totalAchievements = 3;
+    state.unlockedAchievements = 1;
+    m_runtime.SetState(state);
+
+    m_runtime.SetAchievementSets(
+        {{GAME_SET, "Super Mario Bros.", "", true}, {BONUS_SET, "Bonus", "", true}},
+        {{1, GAME_SET, AchievementType::PROGRESSION},
+         {2, GAME_SET, AchievementType::WIN},
+         {3, BONUS_SET, AchievementType::MISSABLE}});
+  }
+
+  void TriggerWin()
+  {
+    game_rc_achievement_triggered event{};
+    event.id = 2;
+    event.title = "Achievement 2";
+    CGameClientCheevos::OnAchievementTriggered(event, m_runtime, false);
+  }
+};
+
+TEST_F(TestAchievementSets, EachAchievementKnowsItsSetAndType)
+{
+  LoadSets();
+
+  const AchievementState state = m_runtime.GetState();
+  ASSERT_EQ(state.sets.size(), 2U);
+  ASSERT_EQ(state.achievements.size(), 3U);
+  EXPECT_EQ(state.achievements[0].setId, GAME_SET);
+  EXPECT_EQ(state.achievements[1].type, AchievementType::WIN);
+  EXPECT_EQ(state.achievements[2].setId, BONUS_SET);
+  EXPECT_EQ(state.achievements[2].type, AchievementType::MISSABLE);
+}
+
+TEST_F(TestAchievementSets, ATurnedOffSetLeavesTheTotals)
+{
+  LoadSets();
+  EXPECT_EQ(m_runtime.GetTotalAchievements(), 3U);
+
+  ASSERT_TRUE(m_runtime.SetAchievementSetEnabled(BONUS_SET, false));
+  EXPECT_FALSE(m_runtime.GetState().IsSetEnabled(BONUS_SET));
+  EXPECT_EQ(m_runtime.GetTotalAchievements(), 2U);
+  EXPECT_EQ(m_runtime.GetUnlockedAchievements(), 1U);
+
+  ASSERT_TRUE(m_runtime.SetAchievementSetEnabled(BONUS_SET, true));
+  EXPECT_EQ(m_runtime.GetTotalAchievements(), 3U);
+
+  EXPECT_FALSE(m_runtime.SetAchievementSetEnabled(1234, false));
+}
+
+TEST_F(TestAchievementSets, ATurnedOffSetTakesItsIndicatorsWithIt)
+{
+  LoadSets();
+  m_runtime.SetChallenge({3, "Achievement 3", ""}, true);
+  m_runtime.SetChallenge({2, "Achievement 2", ""}, true);
+
+  m_runtime.SetAchievementSetEnabled(BONUS_SET, false);
+
+  const auto challenges = m_runtime.GetChallenges();
+  ASSERT_EQ(challenges.size(), 1U);
+  EXPECT_EQ(challenges.front().id, 2U);
+}
+
+TEST_F(TestAchievementSets, RequestsGoToTheHandler)
+{
+  LoadSets();
+  EXPECT_FALSE(m_runtime.RequestAchievementSetEnabled(BONUS_SET, false));
+
+  unsigned int askedSet = 0;
+  m_runtime.SetAchievementSetHandler(
+      [&askedSet](unsigned int setId, bool enabled)
+      {
+        askedSet = setId;
+        return !enabled;
+      });
+  EXPECT_TRUE(m_runtime.RequestAchievementSetEnabled(BONUS_SET, false));
+  EXPECT_EQ(askedSet, BONUS_SET);
+  EXPECT_FALSE(m_runtime.RequestAchievementSetEnabled(BONUS_SET, true));
+
+  m_runtime.SetAchievementSetHandler(nullptr);
+  EXPECT_FALSE(m_runtime.RequestAchievementSetEnabled(BONUS_SET, false));
+}
+
+TEST_F(TestAchievementSets, BeatenOnceProgressionAndAWinAreEarned)
+{
+  LoadSets();
+
+  BeatenProgress progress = m_runtime.GetState().GetBeatenProgress(GAME_SET);
+  EXPECT_TRUE(progress.CanBeBeaten());
+  EXPECT_FALSE(progress.IsBeaten());
+  EXPECT_FALSE(m_runtime.GetState().GetBeatenProgress(BONUS_SET).CanBeBeaten());
+
+  TriggerWin();
+
+  progress = m_runtime.GetState().GetBeatenProgress(GAME_SET);
+  EXPECT_TRUE(progress.IsBeaten());
+
+  // The unlock, then the set it beat
+  const auto notifications = ToastQueue::TakeNotifications();
+  ASSERT_EQ(notifications.size(), 2U);
+  EXPECT_EQ(notifications.back().description, "Super Mario Bros.");
+  EXPECT_FALSE(notifications.back().withSound);
 }
