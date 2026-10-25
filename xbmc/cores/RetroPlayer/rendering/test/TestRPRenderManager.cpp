@@ -982,10 +982,8 @@ TEST_F(TestRPStreamHandoff, FinalSoftwareStreamResourcesAreReleasedAtSessionTear
   auto* pendingBuffer = m_swPool->lastBuffer;
   ASSERT_EQ(published->References(), 1);
   ASSERT_EQ(pendingBuffer->References(), 1);
-  m_environment.Renderer().CacheVideoFrame("handoff.sav");
-  ASSERT_EQ(published->References(), 2);
   m_session->CloseStream(std::move(software));
-  EXPECT_EQ(published->References(), 2);
+  EXPECT_EQ(published->References(), 1);
   EXPECT_EQ(pendingBuffer->References(), 1);
   ExpectConfigured(true);
   m_session.reset();

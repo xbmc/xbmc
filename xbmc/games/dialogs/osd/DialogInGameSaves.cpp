@@ -13,7 +13,6 @@
 #include "XBDateTime.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
-#include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "cores/RetroPlayer/playback/IPlayback.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
@@ -45,8 +44,6 @@ CFileItemPtr CreateNewSaveItem()
   CFileItemPtr item = std::make_shared<CFileItem>(
       CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(15314)); // "Save"
 
-  // A nonexistent path ensures a gamewindow control won't render any pixels
-  item->SetPath(NO_PIXEL_DATA);
   item->SetArt("icon", "DefaultAddSource.png");
   item->SetProperty(SAVESTATE_CAPTION,
                     CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(
@@ -290,6 +287,9 @@ void CDialogInGameSaves::OnNewSave()
   CFileItemPtr item = std::make_shared<CFileItem>();
   CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
 
+  // The thumbnail is written with the savestate, so it comes with the real info
+  item->SetArt("screenshot", "");
+
   m_savestateItems.AddFront(item, 0);
 
   RefreshList();
@@ -352,7 +352,10 @@ void CDialogInGameSaves::OnOverwrite(CFileItem& focusedItem)
 
     savestate->Finalize();
 
+    // The old thumbnail stays until the new one is written with the savestate
+    const std::string thumbnail = focusedItem.GetArt("screenshot");
     CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, focusedItem);
+    focusedItem.SetArt("screenshot", thumbnail);
 
     RefreshList();
   }
@@ -415,9 +418,6 @@ void CDialogInGameSaves::OnDelete(const CFileItem& focusedItem)
       m_savestateItems.Remove(&focusedItem);
 
       RefreshList();
-
-      auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
-      gameSettings->FreeSavestateResources(focusedItem.GetPath());
     }
     else
     {
