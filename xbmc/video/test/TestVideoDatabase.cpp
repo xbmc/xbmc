@@ -35,9 +35,13 @@
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoUtils.h"
+#include "video/jobs/VideoLibraryMarkWatchedJob.h"
+#include "video/jobs/VideoLibraryResetResumePointJob.h"
 
 #include <algorithm>
 #include <filesystem>
+#include <iterator>
 #include <memory>
 #include <set>
 #include <string>
@@ -1234,6 +1238,15 @@ public:
                                           announcement.data["id"].asInteger() == id;
                                  });
   }
+
+  std::vector<CAnnounceData> Files() const
+  {
+    std::vector<CAnnounceData> files;
+    std::ranges::copy_if(m_announcementQueue, std::back_inserter(files),
+                         [](const CAnnounceData& announcement)
+                         { return announcement.flag == ANNOUNCEMENT::Files; });
+    return files;
+  }
 };
 } // namespace
 
@@ -1585,4 +1598,130 @@ TEST_F(TestVideoDatabase, SetDefaultVideoVersionKeepsOnlyTheMovieArt)
                    "SELECT COUNT(*) FROM art WHERE media_id = " + std::to_string(movieId) +
                    " AND media_type = 'movie' AND type = 'fanart'"));
   EXPECT_EQ("old-fanart.jpg", m_db.GetArtForItem(movieId, KODI::MEDIA::TYPE::MOVIE, "fanart"));
+}
+
+namespace
+{
+// The jobs run on the test database instead of the library's
+class MarkWatchedJob : public CVideoLibraryMarkWatchedJob
+{
+public:
+  using CVideoLibraryMarkWatchedJob::CVideoLibraryMarkWatchedJob;
+  using CVideoLibraryMarkWatchedJob::Work;
+};
+
+class ResetResumePointJob : public CVideoLibraryResetResumePointJob
+{
+public:
+  using CVideoLibraryResetResumePointJob::CVideoLibraryResetResumePointJob;
+  using CVideoLibraryResetResumePointJob::Work;
+};
+
+class TestPlayStateAnnouncements : public TestVideoDatabase
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoDatabase::SetUp();
+    CServiceBroker::UnregisterAnnouncementManager();
+    CServiceBroker::RegisterAnnouncementManager(m_announcements);
+  }
+
+  const std::shared_ptr<CQueuedAnnouncements> m_announcements{
+      std::make_shared<CQueuedAnnouncements>()};
+};
+
+constexpr const char* PLUGIN_ITEM = "plugin://plugin.video.example/play/?id=1";
+
+// A plugin item showing the play count and resume point its add-on gave it, unknown to the database
+std::shared_ptr<CFileItem> PluginItem(int playCount, double resumeSeconds = 0.0)
+{
+  auto item{std::make_shared<CFileItem>(PLUGIN_ITEM, false)};
+  item->GetVideoInfoTag()->SetPlayCount(playCount);
+  CBookmark resumePoint;
+  resumePoint.timeInSeconds = resumeSeconds;
+  resumePoint.totalTimeInSeconds = 3600.0;
+  item->GetVideoInfoTag()->SetResumePoint(resumePoint);
+  return item;
+}
+} // namespace
+
+TEST_F(TestPlayStateAnnouncements, MarkingUnwatchedAnnouncesAPlayCountTheDatabaseNeverHad)
+{
+  ASSERT_TRUE(MarkWatchedJob(PluginItem(1), false).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("OnPlayCountChanged", files[0].message);
+  EXPECT_EQ(PLUGIN_ITEM, files[0].data["file"].asString());
+  EXPECT_EQ(0, files[0].data["playcount"].asInteger());
+}
+
+TEST_F(TestPlayStateAnnouncements, MarkingWatchedResetsTheResumePointShownFirst)
+{
+  ASSERT_TRUE(MarkWatchedJob(PluginItem(0, 600.0), true).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(2u, files.size());
+  EXPECT_EQ("OnResumePointChanged", files[0].message);
+  EXPECT_EQ(0.0, files[0].data["resume"]["position"].asDouble());
+  EXPECT_EQ("OnPlayCountChanged", files[1].message);
+  EXPECT_EQ(1, files[1].data["playcount"].asInteger());
+}
+
+TEST_F(TestPlayStateAnnouncements, MarkingAnItemShownInThatStateAnnouncesNothing)
+{
+  ASSERT_TRUE(MarkWatchedJob(PluginItem(1), true).Work(m_db));
+
+  EXPECT_TRUE(m_announcements->Files().empty());
+}
+
+TEST_F(TestPlayStateAnnouncements, MarkingWatchedResetsAResumePointOnlyTheDatabaseHad)
+{
+  CBookmark resumePoint;
+  resumePoint.timeInSeconds = 600.0;
+  resumePoint.totalTimeInSeconds = 3600.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile("/videos/film.mkv", resumePoint, CBookmark::RESUME));
+
+  // As the items of a folder come, without a video info tag
+  ASSERT_TRUE(
+      MarkWatchedJob(std::make_shared<CFileItem>("/videos/film.mkv", false), true).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(2u, files.size());
+  EXPECT_EQ("OnResumePointChanged", files[0].message);
+  EXPECT_EQ("/videos/film.mkv", files[0].data["file"].asString());
+  EXPECT_EQ("OnPlayCountChanged", files[1].message);
+}
+
+TEST_F(TestPlayStateAnnouncements, ResettingAResumePointTheDatabaseNeverHadAnnouncesIt)
+{
+  ASSERT_TRUE(ResetResumePointJob(PluginItem(0, 600.0)).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("OnResumePointChanged", files[0].message);
+  EXPECT_EQ(PLUGIN_ITEM, files[0].data["file"].asString());
+  EXPECT_EQ(0.0, files[0].data["resume"]["position"].asDouble());
+}
+
+TEST_F(TestPlayStateAnnouncements, ResettingALibraryItemAnnouncesItsFile)
+{
+  auto item{std::make_shared<CFileItem>("videodb://movies/titles/1", false)};
+  item->GetVideoInfoTag()->m_strFileNameAndPath = "/movies/film.mkv";
+
+  ASSERT_TRUE(ResetResumePointJob(item).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("/movies/film.mkv", files[0].data["file"].asString());
+}
+
+TEST_F(TestPlayStateAnnouncements, AnnouncesAFileWithoutCredentials)
+{
+  KODI::VIDEO::UTILS::AnnouncePlayCountChanged("smb://user:secret@server/videos/film.mkv", 1);
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("smb://server/videos/film.mkv", files[0].data["file"].asString());
 }

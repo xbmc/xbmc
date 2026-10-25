@@ -28,6 +28,7 @@
 #include "video/VideoDbPaths.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoUtils.h"
 
 #include <memory>
 
@@ -648,6 +649,8 @@ JSONRPC_STATUS CVideoLibrary::SetMovieDetails(const std::string &method, ITransp
     int newPlaycount = infos.GetPlayCount();
     infos.SetPlayCount(playcount);
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
+    if (newPlaycount != playcount)
+      KODI::VIDEO::UTILS::AnnouncePlayCountChanged(infos.m_strFileNameAndPath, newPlaycount);
   }
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
@@ -748,7 +751,12 @@ JSONRPC_STATUS CVideoLibrary::SetTVShowDetails(const std::string &method, ITrans
       const auto update = EpisodePlaybackUpdate(infos, updatePlaycount, updateLastplayed,
                                                 *episode->GetVideoInfoTag());
       if (update)
+      {
         videodatabase.SetPlayCount(*episode, update->playCount, update->lastPlayed);
+        if (update->playCount != episode->GetVideoInfoTag()->GetPlayCount())
+          KODI::VIDEO::UTILS::AnnouncePlayCountChanged(
+              episode->GetVideoInfoTag()->m_strFileNameAndPath, update->playCount);
+      }
     }
     videodatabase.CommitTransaction();
   }
@@ -839,6 +847,8 @@ JSONRPC_STATUS CVideoLibrary::SetEpisodeDetails(const std::string &method, ITran
     int newPlaycount = infos.GetPlayCount();
     infos.SetPlayCount(playcount);
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
+    if (newPlaycount != playcount)
+      KODI::VIDEO::UTILS::AnnouncePlayCountChanged(infos.m_strFileNameAndPath, newPlaycount);
   }
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
@@ -890,6 +900,8 @@ JSONRPC_STATUS CVideoLibrary::SetMusicVideoDetails(const std::string &method, IT
     int newPlaycount = infos.GetPlayCount();
     infos.SetPlayCount(playcount);
     videodatabase.SetPlayCount(CFileItem(infos), newPlaycount, infos.m_lastPlayed);
+    if (newPlaycount != playcount)
+      KODI::VIDEO::UTILS::AnnouncePlayCountChanged(infos.m_strFileNameAndPath, newPlaycount);
   }
 
   UpdateResumePoint(parameterObject, infos, videodatabase);
@@ -1314,7 +1326,10 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
   {
     double position = (double)parameterObject["resume"]["position"].asDouble();
     if (position == 0.0)
+    {
       videodatabase.ClearBookMarksOfFile(details.m_strFileNameAndPath, CBookmark::RESUME);
+      KODI::VIDEO::UTILS::AnnounceResumePointChanged(details.m_strFileNameAndPath, {});
+    }
     else
     {
       CBookmark bookmark;
@@ -1326,6 +1341,7 @@ void CVideoLibrary::UpdateResumePoint(const CVariant &parameterObject, CVideoInf
 
       bookmark.timeInSeconds = position;
       videodatabase.AddBookMarkToFile(details.m_strFileNameAndPath, bookmark, CBookmark::RESUME);
+      KODI::VIDEO::UTILS::AnnounceResumePointChanged(details.m_strFileNameAndPath, bookmark);
     }
   }
 }

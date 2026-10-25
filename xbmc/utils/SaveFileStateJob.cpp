@@ -28,6 +28,7 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoUtils.h"
 
 using namespace KODI;
 using namespace KODI::VIDEO;
@@ -124,7 +125,11 @@ void CSaveFileState::DoWork(CFileItem& item,
               videodatabase.BeginTransaction();
               const CDateTime newLastPlayed = videodatabase.IncrementPlayCount(item);
               if (newLastPlayed.IsValid())
+              {
                 videodatabase.CommitTransaction();
+                VIDEO::UTILS::AnnouncePlayCountChanged(
+                    progressTrackingFile, videodatabase.GetPlayCount(progressTrackingFile));
+              }
               else
                 videodatabase.RollbackTransaction();
 
@@ -171,7 +176,12 @@ void CSaveFileState::DoWork(CFileItem& item,
               success = videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark,
                                                         CBookmark::RESUME);
             if (success)
+            {
               videodatabase.CommitTransaction();
+              // A finished playback clears the resume point with a negative position
+              VIDEO::UTILS::AnnounceResumePointChanged(
+                  progressTrackingFile, bookmark.timeInSeconds > 0.0 ? bookmark : CBookmark{});
+            }
             else
               videodatabase.RollbackTransaction();
 

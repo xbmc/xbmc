@@ -180,4 +180,20 @@ int SaveDiscPlaylistToLibrary(const CFileItem& item,
  */
 bool SaveDiscPlaylist(CFileItem& item);
 
+/*!
+ * \brief Announce a change of a file's play count as Files.OnPlayCountChanged, for any file in or
+ * outside the library, so that e.g. the add-on whose plugin item it is can react.
+ * \param[in] file The file. Its credentials are not announced.
+ * \param[in] playCount The new play count
+ */
+void AnnouncePlayCountChanged(const std::string& file, int playCount);
+
+/*!
+ * \brief Announce a change of a file's resume point as Files.OnResumePointChanged, for any file in
+ * or outside the library, so that e.g. the add-on whose plugin item it is can react.
+ * \param[in] file The file. Its credentials are not announced.
+ * \param[in] resumePoint The new resume point, at 0 seconds if it was reset
+ */
+void AnnounceResumePointChanged(const std::string& file, const CBookmark& resumePoint);
+
 } // namespace KODI::VIDEO::UTILS
