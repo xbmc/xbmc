@@ -6,7 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "URL.h"
 #include "games/library/GameNameParser.h"
+#include "utils/URIUtils.h"
 
 #include <string>
 #include <vector>
@@ -361,6 +363,36 @@ TEST(TestGameNameParser, ReadsAnUnknownRegionAsNone)
   const ParsedGameName unknown = CGameNameParser::Parse("Diddy Kong Pilot (Unknown) (Proto).zip");
   EXPECT_TRUE(unknown.regions.empty());
   EXPECT_TRUE(unknown.unknownTags.empty());
+}
+
+TEST(TestGameNameParser, ReadsAGameFileByItsPath)
+{
+  EXPECT_EQ(CGameNameParser::ParsePath("/games/Legend of Zelda, The (USA).nes").displayTitle,
+            "The Legend of Zelda");
+  EXPECT_EQ(CGameNameParser::ParsePath("/games/G.R.rom").displayTitle, "G.R");
+
+  const std::string zip = URIUtils::CreateArchivePath("zip", CURL("/games/Zelda.zip")).Get();
+  EXPECT_EQ(CGameNameParser::ParsePath(zip + "Legend of Zelda, The (USA).nes").displayTitle,
+            "The Legend of Zelda");
+
+  // A zip of one compressed game is listed as the zip's root
+  for (const char* archive :
+       {"/games/Legend of Zelda, The (USA).zip", "smb://nas/games/Legend of Zelda, The (USA).zip",
+        "dav://nas/games/Legend%20of%20Zelda,%20The%20%28USA%29.zip"})
+  {
+    const std::string root = URIUtils::CreateArchivePath("zip", CURL(archive)).Get();
+    EXPECT_EQ(CGameNameParser::ParsePath(root).displayTitle, "The Legend of Zelda") << root;
+  }
+}
+
+TEST(TestGameNameParser, NamesARegionForAListing)
+{
+  EXPECT_EQ(CGameNameParser::RegionName(GameRegion::Make("US")), "USA");
+  EXPECT_EQ(CGameNameParser::RegionName(GameRegion::Make("150")), "Europe");
+  EXPECT_EQ(CGameNameParser::RegionName(GameRegion::Make("GB")), "United Kingdom");
+  EXPECT_EQ(CGameNameParser::RegionName(GameRegion::Make({}, "World")), "World");
+  // A TOSEC country No-Intro has no name for
+  EXPECT_EQ(CGameNameParser::RegionName(GameRegion::Make("CZ")), "Czechia");
 }
 
 TEST(TestGameNameParser, RestoresTheArticleOfATosecTitle)

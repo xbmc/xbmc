@@ -56,8 +56,8 @@ constexpr auto territories = std::to_array<std::pair<std::string_view, std::stri
     {"Portugal", "PT"},
     {"Russia", "RU"},
     {"Taiwan", "TW"},
-    {"UK", "GB"},
     {"United Kingdom", "GB"},
+    {"UK", "GB"},
 });
 
 // The markets no territory is exactly, and the region a set doesn't know
@@ -140,6 +140,21 @@ std::optional<GameRegion> CNoIntroNaming::Region(std::string_view region)
       return GameRegion::Make({}, market);
   }
   return std::nullopt;
+}
+
+std::string_view CNoIntroNaming::Name(const GameRegion& region)
+{
+  for (const auto& [name, code] : territories)
+  {
+    if (code == region.territory.ToString())
+      return name;
+  }
+  for (const auto& [name, market] : markets)
+  {
+    if (!market.empty() && market == region.market)
+      return name;
+  }
+  return {};
 }
 
 bool CNoIntroNaming::IsLanguage(std::string_view code)
