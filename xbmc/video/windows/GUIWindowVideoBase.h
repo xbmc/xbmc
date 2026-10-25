@@ -101,9 +101,12 @@ protected:
    If item has changed then refresh the active underlying list
    \param item the item to lookup
    \param content
+   \param listItemPath path of the list item the information was requested for
    \return true: the information of the item was modified. false: no change.
    */
-  bool ShowInfoAndRefresh(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
+  bool ShowInfoAndRefresh(const CFileItemPtr& item,
+                          const ADDON::ScraperPtr& content,
+                          const std::string& listItemPath);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
@@ -130,14 +133,32 @@ private:
     RESULT_ERROR, // some error occurred
     RESULT_OK_UPDATED, // no error, data updated
     RESULT_OK_NOT_UPDATED, // no error, data not updated
+    RESULT_OK_ART_UPDATED, // no error, only the art of the item updated
+    RESULT_OK_INFO_REFRESHED, // no error, item refreshed from its scraper or nfo
   };
 
   /*!
    \brief Lookup the information of an item and display an Info dialog
    \param item the item to lookup
    \param content
+   \param[out] updatedItem the item as last shown by the dialog, set for RESULT_OK_ART_UPDATED
+   and RESULT_OK_INFO_REFRESHED
    \return the result.
    */
   ShowInfoResult ShowInfo(const std::shared_ptr<CFileItem>& item,
-                          const std::shared_ptr<ADDON::CScraper>& content);
+                          const std::shared_ptr<ADDON::CScraper>& content,
+                          std::shared_ptr<CFileItem>& updatedItem);
+
+  /*!
+   \brief Update the list item of a movie in place after the information dialog changed it
+   \param listItemPath path of the list item to update
+   \param originalFile file of the movie the information was requested for
+   \param item the movie as last shown by the information dialog
+   \param infoRefreshed true if the movie was refreshed, false if only its art changed
+   \return true if the list item was updated, false if the list has to be refreshed instead
+   */
+  bool UpdateMovieListItem(const std::string& listItemPath,
+                           const std::string& originalFile,
+                           const CFileItem& item,
+                           bool infoRefreshed);
 };
