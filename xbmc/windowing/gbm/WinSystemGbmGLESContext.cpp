@@ -9,6 +9,7 @@
 #include "WinSystemGbmGLESContext.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMAOpenGLES.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
@@ -20,6 +21,8 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "rendering/gles/GuiCompositeShaderGLES.h"
 #include "rendering/gles/ScreenshotSurfaceGLES.h"
 
@@ -191,6 +194,7 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
 
 bool CWinSystemGbmGLESContext::SetGuiCompositing(int colorTransfer)
 {
+  m_guiColorTransfer = colorTransfer;
   m_guiCompositing = (colorTransfer != 0);
 
   if (m_guiCompositing)
@@ -198,7 +202,8 @@ bool CWinSystemGbmGLESContext::SetGuiCompositing(int colorTransfer)
     if (!m_compositeShader)
     {
       std::string defines;
-      if (UseLimitedColor())
+      m_compositeShaderLimited = UseLimitedColor();
+      if (m_compositeShaderLimited)
         defines += "#define KODI_LIMITED_RANGE 1\n";
       m_compositeShader = std::make_unique<CGuiCompositeShaderGLES>(defines);
       if (!m_compositeShader->CompileAndLink())
@@ -233,6 +238,17 @@ bool CWinSystemGbmGLESContext::BeginGuiComposite(bool guiWillRender)
 {
   if (!m_guiCompositing)
     return false;
+
+  // the range is a compile time define, rebuild the shader when it changes
+  if (m_compositeShader && m_compositeShaderLimited != UseLimitedColor())
+  {
+    m_compositeShader.reset();
+    if (!SetGuiCompositing(m_guiColorTransfer))
+      return false;
+    // a skipped GUI walk would leave the GUI plane with the old range
+    if (!guiWillRender)
+      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+  }
 
   m_guiWillRender = guiWillRender;
 
