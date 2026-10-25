@@ -10,9 +10,12 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "games/GameUtils.h"
 #include "guilib/WindowIDs.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "view/ViewState.h"
 #include "view/ViewStateNames.h"
@@ -38,8 +41,14 @@ CGUIViewStateWindowGames::CGUIViewStateWindowGames(const CFileItemList& items)
   }
   else
   {
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    AddSortMethod(SortBy::LABEL,
+                  settings->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                      ? SortAttributeIgnoreArticle
+                      : SortAttributeNone,
+                  551, LABEL_MASKS("%L", "%I", "%L", "")); // Label, Size | Label, empty
     AddSortMethod(SortBy::FILE, 561,
-                  LABEL_MASKS("%F", "%I", "%L", "")); // Filename, Size | Label, empty
+                  LABEL_MASKS("%L", "%I", "%L", "")); // Label, Size | Label, empty
     AddSortMethod(SortBy::SIZE, 553,
                   LABEL_MASKS("%L", "%I", "%L", "%I")); // Filename, Size | Label, Size
 
