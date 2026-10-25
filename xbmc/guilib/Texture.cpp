@@ -430,7 +430,7 @@ bool CTexture::UploadFromMemory(unsigned int width,
   }
   else if (!m_pixels)
   {
-    size_t size = GetPitch() * GetRows();
+    size_t size = static_cast<size_t>(GetPitch()) * GetRows();
     constexpr size_t simdPadding{32};
     m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size + simdPadding, 32));
     if (m_pixels == nullptr)

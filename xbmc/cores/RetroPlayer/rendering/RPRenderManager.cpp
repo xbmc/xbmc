@@ -1159,7 +1159,7 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
                      scaleWidth, scaleHeight);
 
   const int bytesPerPixel = 4;
-  std::vector<uint8_t> scaledImage(scaleWidth * scaleHeight * bytesPerPixel);
+  std::vector<uint8_t> scaledImage(static_cast<size_t>(scaleWidth) * scaleHeight * bytesPerPixel);
 
   const AVPixelFormat outFormat = AV_PIX_FMT_BGR0;
   const int scaleStride = CRenderTranslator::TranslateWidthToBytes(scaleWidth, outFormat);

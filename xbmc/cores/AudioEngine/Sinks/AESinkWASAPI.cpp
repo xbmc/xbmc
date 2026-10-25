@@ -158,7 +158,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   // if the device is opened exclusive and event driven, provided samples must match buffersize
   // ActiveAE tries to align provided samples with buffer size but cannot guarantee (e.g. transcoding)
   // this can be avoided by dropping the event mode which has not much benefit; SoftAE polls anyway
-  m_buffer.resize(format.m_frames * format.m_frameSize);
+  m_buffer.resize(static_cast<size_t>(format.m_frames) * format.m_frameSize);
   m_bufferPtr = 0;
 
   return true;
