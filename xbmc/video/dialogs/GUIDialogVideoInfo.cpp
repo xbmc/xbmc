@@ -120,17 +120,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       ClearCastList();
-
-      if (m_startUserrating != m_movieItem->GetVideoInfoTag()->m_iUserRating)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          m_hasUpdatedUserrating = true;
-          db.SetVideoUserRating(m_movieItem->GetVideoInfoTag()->m_iDbId, m_movieItem->GetVideoInfoTag()->m_iUserRating, m_movieItem->GetVideoInfoTag()->m_type);
-          db.Close();
-        }
-      }
+      SaveUserrating();
     }
     break;
 
@@ -239,6 +229,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           std::string strItem = m_castList->Get(iItem)->GetLabel();
           if (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)
           {
+            SaveUserrating();
             SetMovie(m_castList->Get(iItem).get());
             const bool hasUpdatedThumb{m_hasUpdatedThumb};
             const bool hasUpdatedUserrating{m_hasUpdatedUserrating};
@@ -347,6 +338,23 @@ void CGUIDialogVideoInfo::SetUserrating(int userrating) const
     // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
+}
+
+void CGUIDialogVideoInfo::SaveUserrating()
+{
+  if (m_startUserrating == m_movieItem->GetVideoInfoTag()->m_iUserRating)
+    return;
+
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    m_hasUpdatedUserrating = true;
+    db.SetVideoUserRating(m_movieItem->GetVideoInfoTag()->m_iDbId,
+                          m_movieItem->GetVideoInfoTag()->m_iUserRating,
+                          m_movieItem->GetVideoInfoTag()->m_type);
+    db.Close();
+    m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
   }
 }
 
@@ -701,6 +709,8 @@ void CGUIDialogVideoInfo::DoSearch(std::string& strSearch, CFileItemList& items)
 
 void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
+  SaveUserrating();
+
   VideoDbContentType type = pItem->GetVideoContentType();
 
   CVideoDatabase db;
