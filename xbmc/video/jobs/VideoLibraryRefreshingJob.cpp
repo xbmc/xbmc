@@ -213,7 +213,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   // get the item's correct title
   std::string itemTitle = m_searchTitle;
   if (itemTitle.empty())
-    itemTitle = m_item->GetMovieName(scanSettings.parent_name);
+    itemTitle = m_item->GetMovieName(scanSettings.parent_name_root);
 
   CScraperUrl scraperUrl;
   bool needsRefresh = m_forceRefresh;
@@ -327,7 +327,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         items.SetPath(m_item->IsFolder() ? URIUtils::GetParentPath(m_item->GetPath())
                                          : URIUtils::GetDirectory(m_item->GetPath()));
         VIDEO::CVideoInfoScanner scanner;
-        if (scanner.RetrieveVideoInfo(items, scanSettings.parent_name, scraper->Content(),
+        if (scanner.RetrieveVideoInfo(items, scanSettings.parent_name_root, scraper->Content(),
                                       !ignoreNfo, nullptr, m_refreshAll, GetProgressDialog()))
         {
           return true;
@@ -564,9 +564,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     // versions and extras are its own again, so that those already there are seen.
     VIDEO::CVideoInfoScanner scanner;
     scanner.DeferMovieExtras();
-    if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
-                                   scraper->Content(), !ignoreNfo,
-                                   scraperUrl.HasUrls() ? &scraperUrl : nullptr,
+    if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name_root, scraper->Content(),
+                                   !ignoreNfo, scraperUrl.HasUrls() ? &scraperUrl : nullptr,
                                    m_refreshAll, GetProgressDialog()))
     {
       // something went wrong
