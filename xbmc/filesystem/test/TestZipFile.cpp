@@ -91,9 +91,6 @@ TEST_F(TestZipFile, Read)
 TEST_F(TestZipFile, ReadDeflate64)
 {
   const std::string reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.deflate64.zip");
-  // Deflate64 entries are extracted here; remove leftovers so the decoder runs.
-  const std::string cachePath = "special://temp/reffile.txt";
-  XFILE::CFile::Delete(cachePath);
 
   CFileItemList itemlist;
   CURL zipUrl = URIUtils::CreateArchivePath("zip", CURL(reffile), "");
@@ -110,8 +107,25 @@ TEST_F(TestZipFile, ReadDeflate64)
   EXPECT_EQ(sizeof(buf), static_cast<size_t>(file.Read(buf, sizeof(buf))));
   EXPECT_TRUE(!memcmp("multimedia jukebox.\n", buf, sizeof(buf)));
   file.Close();
+}
 
-  XFILE::CFile::Delete(cachePath);
+TEST_F(TestZipFile, Deflate64SameFileName)
+{
+  const CURL archive(XBMC_REF_FILE_PATH("xbmc/filesystem/test/samename.deflate64.zip"));
+
+  XFILE::CFile file;
+  char buf[13]{};
+  ASSERT_TRUE(file.Open(URIUtils::CreateArchivePath("zip", archive, "a/same.txt")));
+  EXPECT_EQ(1200, file.GetLength());
+  EXPECT_EQ(12, file.Read(buf, 12));
+  EXPECT_TRUE(!memcmp("first entry\n", buf, 12));
+  file.Close();
+
+  ASSERT_TRUE(file.Open(URIUtils::CreateArchivePath("zip", archive, "b/same.txt")));
+  EXPECT_EQ(1300, file.GetLength());
+  EXPECT_EQ(13, file.Read(buf, 13));
+  EXPECT_TRUE(!memcmp("second entry\n", buf, 13));
+  file.Close();
 }
 
 TEST_F(TestZipFile, Exists)

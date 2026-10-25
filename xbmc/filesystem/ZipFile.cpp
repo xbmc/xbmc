@@ -9,11 +9,13 @@
 #include "ZipFile.h"
 
 #include "URL.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <cstdint>
+#include <functional>
 #include <vector>
 
 #include <infback9.h>
@@ -57,8 +59,23 @@ int Deflate64Write(void* desc, unsigned char* buf, unsigned int len)
   return output->Write(buf, len) == static_cast<ssize_t>(len) ? 0 : 1;
 }
 
+std::string GetDeflate64CachePath(const CURL& url, const SZipEntry& entry)
+{
+  return StringUtils::Format("special://temp/zip-{:016x}-{:08x}",
+                             std::hash<std::string>{}(url.Get()), entry.crc32);
+}
+
+bool IsCompleteCache(const std::string& path, uint64_t size)
+{
+  struct __stat64 buffer
+  {
+  };
+  return CFile::Stat(path, &buffer) == 0 && static_cast<uint64_t>(buffer.st_size) == size;
+}
+
 // inflateBack9 decodes the whole stream in a single call, so Deflate64 entries
-// are always extracted to a file instead of being inflated on demand.
+// are always extracted to a file instead of being inflated on demand. The file
+// is decoded under a unique name and renamed so destPath is never partial.
 bool DecompressDeflate64(const std::string& archivePath,
                          const SZipEntry& entry,
                          const std::string& destPath)
@@ -70,10 +87,11 @@ bool DecompressDeflate64(const std::string& archivePath,
     return false;
   }
 
+  const std::string tempPath = destPath + "-" + StringUtils::CreateUUID();
   CFile dest;
-  if (!dest.OpenForWrite(destPath, true))
+  if (!dest.OpenForWrite(tempPath, true))
   {
-    CLog::Log(LOGERROR, "FileZip: unable to create {}", destPath);
+    CLog::Log(LOGERROR, "FileZip: unable to create {}", tempPath);
     return false;
   }
 
@@ -90,8 +108,15 @@ bool DecompressDeflate64(const std::string& archivePath,
   {
     CLog::Log(LOGERROR, "FileZip: failed to decompress Deflate64 data. zlib error {} {}", ret,
               strm.msg ? strm.msg : "");
-    CFile::Delete(destPath);
+    CFile::Delete(tempPath);
     return false;
+  }
+
+  // Another open of the same entry may have published it first.
+  if (!CFile::Rename(tempPath, destPath))
+  {
+    CFile::Delete(tempPath);
+    return IsCompleteCache(destPath, entry.usize);
   }
   return true;
 }
@@ -130,9 +155,13 @@ bool CZipFile::Open(const CURL&url)
 
   if (mZipItem.method == 9)
   {
-    const std::string cachePath = "special://temp/" + URIUtils::GetFileName(url2);
-    if (!CFile::Exists(cachePath) && !DecompressDeflate64(url2.GetHostName(), mZipItem, cachePath))
-      return false;
+    const std::string cachePath = GetDeflate64CachePath(url2, mZipItem);
+    if (!IsCompleteCache(cachePath, mZipItem.usize))
+    {
+      CFile::Delete(cachePath);
+      if (!DecompressDeflate64(url2.GetHostName(), mZipItem, cachePath))
+        return false;
+    }
     m_bCached = true;
     return mFile.Open(cachePath);
   }
