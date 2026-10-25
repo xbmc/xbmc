@@ -25,7 +25,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
 #include "utils/DiscsUtils.h"
-#include "utils/FileExtensionProvider.h"
 #include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -295,7 +294,6 @@ void CVideoInfoScannerExtras::AddMovieDiscExtras(const CFileItem& item)
 
 bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFolder,
                                                        bool discChanged,
-                                                       const std::vector<std::string>& regexps,
                                                        bool rescan /* = false */)
 {
   // A new extras folder changes the disc's folder, so is found by listing it. A file added to an
@@ -315,18 +313,24 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
   }
   else
   {
+    std::string base{discFolder};
+    URIUtils::AddSlashAtEnd(base);
     std::vector<std::pair<int, std::string>> paths;
-    m_database.GetSubPaths(discFolder, paths);
+    m_database.GetSubPaths(base, paths);
     for (const auto& [idPath, path] : paths)
     {
-      if (URIUtils::PathEquals(URIUtils::GetParentPath(path), discFolder, true) &&
-          IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(path)))
-        folders.emplace_back(path);
+      // An extras folder whose extras are all in folders below it has no row of its own, so each
+      // row is taken back to the folder below the disc's
+      if (path.size() <= base.size())
+        continue;
+      std::string folder{path.substr(0, path.find_first_of("/\\", base.size()))};
+      URIUtils::AddSlashAtEnd(folder);
+      if (IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(folder)) &&
+          std::ranges::find(folders, folder) == folders.end())
+        folders.emplace_back(folder);
     }
   }
 
-  const bool useFastHash{
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash};
   for (const std::string& folder : folders)
   {
     // Leave a folder with content set on it (a source root) alone
@@ -335,19 +339,14 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
     if (m_database.GetScraperForPath(folder, settings, foundDirectly) && foundDirectly)
       continue;
 
-    // Without fast hashing the folder's listing is hashed, as the scanner does for its folders
+    // The extras are hashed, rather than the folder's time or listing, as a file added or removed
+    // in a folder below changes neither
+    CFileItemList items;
+    UTILS::EnumerateVideoExtras(folder, [&items](const std::shared_ptr<CFileItem>& item)
+                                { items.Add(item); });
+    items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
     std::string hash;
-    if (useFastHash)
-      hash = UTILS::GetFastHash(folder, regexps);
-    else
-    {
-      CFileItemList items;
-      CDirectory::GetDirectory(folder, items,
-                               CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
-                               DIR_FLAG_DEFAULTS);
-      items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
-      UTILS::GetPathHash(items, hash);
-    }
+    UTILS::GetPathHash(items, hash);
     if (std::string dbHash; !rescan && !hash.empty() && m_database.GetPathHash(folder, dbHash) &&
                             StringUtils::EqualsNoCase(hash, dbHash))
       continue;
@@ -375,9 +374,7 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
   return added;
 }
 
-void CVideoInfoScannerExtras::AddMovieExtras(int dbId,
-                                             bool useFolderNames,
-                                             const std::vector<std::string>& regexps)
+void CVideoInfoScannerExtras::AddMovieExtras(int dbId, bool useFolderNames)
 {
   m_rereadDiscs = true;
   CFileItemList versions;
@@ -435,7 +432,7 @@ void CVideoInfoScannerExtras::AddMovieExtras(int dbId,
   if (useFolderNames)
   {
     for (const std::string& folder : folders)
-      AddVideoExtrasBesideDisc(folder, true, regexps, true);
+      AddVideoExtrasBesideDisc(folder, true, true);
   }
   m_rereadDiscs = false;
 }

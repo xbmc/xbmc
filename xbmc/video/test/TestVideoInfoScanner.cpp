@@ -416,6 +416,38 @@ protected:
 
   int CountMovies() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"); }
 
+  //! A file added or deleted below an extras folder changes only the folder holding it. The movie
+  //! is a file in its folder, or a disc structure the folder holds.
+  void ScanChangesBelowTheExtras(bool disc = false)
+  {
+    const std::string folder{Folder(m_root, "Film (2010)")};
+    if (disc)
+    {
+      Nfo(folder, "movie.nfo", "Film");
+      BlurayRip(folder);
+    }
+    else
+      FolderMovie(folder, "Film (2010).mkv");
+    const std::string featurettes{Folder(Folder(folder, "Extras"), "Featurettes")};
+    File(featurettes, "Trailer.mkv");
+    Scan();
+    ASSERT_EQ(1, CountMovies());
+    ASSERT_EQ(1, CountExtras());
+    const int idMovie{m_db.GetSingleValueInt("SELECT idMovie FROM movie")};
+
+    const std::string interview{File(featurettes, "Interview.mkv")};
+    Touch(featurettes);
+    Scan();
+    EXPECT_TRUE(IsExtraOf(interview, idMovie));
+    EXPECT_EQ(2, CountExtras());
+
+    ASSERT_TRUE(XFILE::CFile::Delete(interview));
+    Touch(featurettes);
+    Scan(false, true);
+    EXPECT_EQ(1, CountExtras());
+    EXPECT_EQ(-1, m_db.GetVideoVersionInfo(interview).m_assetTypeId);
+  }
+
   std::string m_root;
   DatabaseSettings m_settings;
   CVideoDatabase m_db;
@@ -885,6 +917,17 @@ TEST_F(TestVideoInfoScanner, ExtrasAreAddedWithFastHashingOff)
   EXPECT_EQ(1, CountMovies());
 }
 
+TEST_F(TestVideoInfoScanner, AVideoAddedOrDeletedBelowTheExtrasOfAnUnchangedFolderIsSeen)
+{
+  ScanChangesBelowTheExtras();
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedOrDeletedBelowTheExtrasIsSeenWithFastHashingOff)
+{
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash = false;
+  ScanChangesBelowTheExtras();
+}
+
 #ifdef HAVE_LIBBLURAY
 // A folder holding a disc structure is listed as the disc's file, so its extras folders are found
 // beside the disc
@@ -908,6 +951,11 @@ TEST_F(TestVideoInfoScanner, ExtrasBesideADiscGoToItsMovie)
   Scan();
   EXPECT_TRUE(IsExtraOf(interview, idMovie));
   EXPECT_EQ(1, CountMovies());
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedOrDeletedBelowTheExtrasBesideADiscIsSeen)
+{
+  ScanChangesBelowTheExtras(true);
 }
 
 // Its playlists and streams are not extras of their own, nor is the disc a movie

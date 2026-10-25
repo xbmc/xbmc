@@ -597,6 +597,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // an extras folder holding a disc structure as the disc's file, which is taken out here rather
     // than scraped as a movie.
     std::vector<std::string> extrasFolders;
+    // Whether an unchanged listing has extras folders, which may have changed below their own folder
+    bool skippedExtras{false};
     // As Process() does for the folders a scan leaves
     const auto removeExtrasFolder{
         [this](const std::string& folder)
@@ -629,6 +631,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         removeExtrasFolder(extrasFolder);
         if (!bSkip)
           extrasFolders.emplace_back(extrasFolder);
+        else
+          skippedExtras = true;
         items.Remove(i);
       }
     }
@@ -732,6 +736,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // Added once the folders beside it (eg. Disc 1, Disc 2) are scanned, to the one movie there
         if (!bSkip)
           extrasFolders.emplace_back(pItem->GetPath());
+        else
+          skippedExtras = true;
 
         // no further processing required
         continue;
@@ -769,7 +775,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           // An extra deleted beside the disc changes its extras folder, or the disc's folder
           if (settings.parent_name && !m_ignoreVideoExtras &&
               (((!unchanged || foldersWithExtras.contains(discFolder)) &&
-                m_extras.AddVideoExtrasBesideDisc(discFolder, !unchanged, regexps)) ||
+                m_extras.AddVideoExtrasBesideDisc(discFolder, !unchanged)) ||
                !unchanged) &&
               m_bClean)
             AddPathToClean(discFolder);
@@ -792,7 +798,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
           // An unchanged folder is not listed, so its extras folders are looked at here
           if (foldersWithExtras.contains(pItem->GetPath()) &&
-              m_extras.AddVideoExtrasBesideDisc(pItem->GetPath(), false, regexps) && m_bClean)
+              m_extras.AddVideoExtrasBesideDisc(pItem->GetPath(), false) && m_bClean)
             AddPathToClean(pItem->GetPath());
           continue;
         }
@@ -834,6 +840,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
                 CURL::GetRedacted(extrasFolder));
     }
+
+    if (skippedExtras && m_extras.AddVideoExtrasBesideDisc(strDirectory, false) && m_bClean)
+      AddPathToClean(strDirectory);
 
     // Content found directly or in an archive subfolder is recorded by the hash of the physical
     // directory, rather than of the archive's (eg. rar://) virtual path, once every lookup of it
@@ -1074,8 +1083,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return;
 
     m_database.Open();
-    m_extras.AddMovieExtras(dbId, useFolderNames,
-                            m_advancedSettings->m_moviesExcludeFromScanRegExps);
+    m_extras.AddMovieExtras(dbId, useFolderNames);
     m_database.Close();
   }
 

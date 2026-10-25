@@ -2114,13 +2114,9 @@ TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
   const std::string first{URIUtils::AddFileToFolder(folder, "First.mkv")};
   ASSERT_GT(addVideo(first), 0);
 
-  // A fast hash holds the folder's time in whole seconds, too coarse to see a video added here
-  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
-  const bool fastHash{std::exchange(advancedSettings->m_bVideoLibraryUseFastHash, false)};
-
   KODI::VIDEO::CVideoInfoScannerArt art;
   KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
-  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, true, {}));
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, true));
   EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetType, VideoAssetType::EXTRA);
   std::string previousHash;
   EXPECT_TRUE(m_db.GetPathHash(folder, previousHash));
@@ -2132,23 +2128,22 @@ TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
 
   const std::string second{URIUtils::AddFileToFolder(folder, "Second.mkv")};
   EXPECT_GT(addVideo(second), 0);
-  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false, {}));
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false));
   EXPECT_EQ(m_db.GetVideoVersionInfo(second).m_assetType, VideoAssetType::EXTRA);
   EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetTypeId, renamed);
   std::string hash;
   EXPECT_TRUE(m_db.GetPathHash(folder, hash));
   EXPECT_NE(hash, previousHash);
 
-  EXPECT_FALSE(scanner.AddVideoExtrasBesideDisc(root, false, {}));
+  EXPECT_FALSE(scanner.AddVideoExtrasBesideDisc(root, false));
   CFileItemList extras;
   m_db.GetVideoVersions(VideoDbContentType::MOVIES, idMovie, extras, VideoAssetType::EXTRA);
   EXPECT_EQ(extras.Size(), 2);
 
   // A deleted video is reported too, so that the scanner's clean removes it
   EXPECT_TRUE(XFILE::CFile::Delete(second));
-  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false, {}));
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false));
 
-  advancedSettings->m_bVideoLibraryUseFastHash = fastHash;
   EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(root));
 }
 
@@ -2225,26 +2220,30 @@ TEST_F(TestVideoDatabase, ARefreshAddsTheExtrasOfAnUnchangedFolder)
   ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
                                  VideoAssetType::VERSION, version));
 
-  const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
-  const bool fastHash{std::exchange(advancedSettings->m_bVideoLibraryUseFastHash, true)};
-  m_db.SetPathHash(folder, KODI::VIDEO::UTILS::GetFastHash(folder, {}));
+  // The folder's hash is that of its extras, as the scanner stores it
+  CFileItemList extras;
+  KODI::VIDEO::UTILS::EnumerateVideoExtras(folder, [&extras](const std::shared_ptr<CFileItem>& item)
+                                           { extras.Add(item); });
+  extras.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+  std::string hash;
+  KODI::VIDEO::UTILS::GetPathHash(extras, hash);
+  m_db.SetPathHash(folder, hash);
 
   KODI::VIDEO::CVideoInfoScannerArt art;
   KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
-  scanner.AddVideoExtrasBesideDisc(root, true, {});
+  scanner.AddVideoExtrasBesideDisc(root, true);
   EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
 
   // Without folder names a movie has no extras folders
-  scanner.AddMovieExtras(idMovie, false, {});
+  scanner.AddMovieExtras(idMovie, false);
   EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
 
-  scanner.AddMovieExtras(idMovie, true, {});
+  scanner.AddMovieExtras(idMovie, true);
   const VideoAssetInfo extra{m_db.GetVideoVersionInfo(video)};
   EXPECT_EQ(extra.m_assetType, VideoAssetType::EXTRA);
   EXPECT_EQ(extra.m_idMedia, idMovie);
   EXPECT_EQ(m_db.GetVideoVersionInfo(elsewhereExtra).m_assetTypeId, -1);
 
-  advancedSettings->m_bVideoLibraryUseFastHash = fastHash;
   XFILE::CDirectory::RemoveRecursive(root);
   XFILE::CDirectory::RemoveRecursive(elsewhere);
 }
