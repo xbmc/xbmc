@@ -8,13 +8,16 @@
 
 #include "GameNameParser.h"
 
+#include "URL.h"
 #include "games/library/naming/GoodToolsNaming.h"
 #include "games/library/naming/NeoKobeNaming.h"
 #include "games/library/naming/NoIntroNaming.h"
 #include "games/library/naming/SceneNaming.h"
 #include "games/library/naming/TosecNaming.h"
+#include "language/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 
 #include <algorithm>
 #include <cctype>
@@ -227,6 +230,22 @@ std::optional<GameRegion> CGameNameParser::Region(std::string_view region)
       return found;
   }
   return std::nullopt;
+}
+
+std::string CGameNameParser::RegionName(const GameRegion& region)
+{
+  if (const std::string_view name = CNoIntroNaming::Name(region); !name.empty())
+    return std::string(name);
+  if (const std::string& code = region.territory.ToString(); !code.empty())
+  {
+    using LANGUAGE::I18N::CSubTagRegistryManager;
+    const auto subtag =
+        CSubTagRegistryManager::GetInstance().GetRegionSubTags().Lookup(StringUtils::ToLower(code));
+    if (subtag && !subtag->m_descriptions.empty())
+      return subtag->m_descriptions.front();
+    return code;
+  }
+  return region.market;
 }
 
 std::string CGameNameParser::DisplayTitle(std::string_view title)
@@ -488,6 +507,16 @@ ParsedGameName CGameNameParser::Parse(std::string_view fileName, bool hasExtensi
   out.title = title;
   out.displayTitle = DisplayTitle(title);
   return out;
+}
+
+ParsedGameName CGameNameParser::ParsePath(const std::string& path)
+{
+  const CURL url(path);
+  if (URIUtils::HasParentInHostname(url) && url.GetFileName().empty())
+    return Parse(URIUtils::GetFileName(url.GetHostName()));
+
+  return Parse(URIUtils::IsURL(path) ? URIUtils::GetDecodedFileName(path)
+                                     : URIUtils::GetFileName(path));
 }
 
 std::vector<std::string> CGameNameParser::Credits(const ParsedGameName& name)

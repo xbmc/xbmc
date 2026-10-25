@@ -2874,6 +2874,13 @@
           </control>
         </setting>
       </group>
+      <group id="3" label="744">
+        <setting id="gamesgeneral.replacelabels" type="boolean" label="35716" help="35717">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="gamesachievements" label="15312">
       <group id="1" label="35264">

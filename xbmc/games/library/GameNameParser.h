@@ -71,6 +71,14 @@ public:
   static ParsedGameName Parse(std::string_view fileName, bool hasExtension = true);
 
   /*!
+   * \brief Read a game file's name from its path
+   *
+   * A zip holding one compressed game is listed as the zip's root, so it is
+   * read by the zip's name.
+   */
+  static ParsedGameName ParsePath(const std::string& path);
+
+  /*!
    * \brief Turn a WHDLoad install name into something a catalogue can match
    *
    * Amiga collections are named for the WHDLoad slave rather than the game:
@@ -114,6 +122,14 @@ public:
    * doesn't know, "Unknown", is an empty one.
    */
   static std::optional<GameRegion> Region(std::string_view region);
+
+  /*!
+   * \brief A region's name for a listing
+   *
+   * As No-Intro writes it where it names the region, "USA" or "Europe", else
+   * the BCP 47 registry's English description, else the market's own word.
+   */
+  static std::string RegionName(const GameRegion& region);
 };
 } // namespace GAME
 } // namespace KODI

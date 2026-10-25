@@ -47,6 +47,14 @@ public:
   static std::optional<GameRegion> Region(std::string_view region);
 
   /*!
+   * \brief The name No-Intro writes for a region, the reverse of Region()
+   *
+   * \return "USA", "Europe", "United Kingdom", or empty for a region the
+   *         convention doesn't name
+   */
+  static std::string_view Name(const GameRegion& region);
+
+  /*!
    * \brief Whether a code is a language as No-Intro writes it: "En", "Ja"
    *
    * The codes are ISO 639-1's, with a capital first letter.
