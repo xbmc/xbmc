@@ -2793,7 +2793,28 @@ void CVideoPlayer::CheckAutoSceneSkip()
     clock += std::chrono::milliseconds{llrint(DVD_TIME_TO_MSEC(elapsed))};
 
   const std::chrono::milliseconds correctClock = m_Edl.GetTimeAfterRestoringCuts(clock);
-  const auto hasEdit = m_Edl.InEdit(correctClock);
+  auto hasEdit = m_Edl.InEdit(correctClock);
+
+  // The renderer shows pictures ahead of the clock by its display latency, and the picture on
+  // screen when a skip starts stays there until the seek is done. Skip a commercial break that
+  // early, plus a margin for the time the skip takes to reach the renderer.
+  if (!hasEdit && m_playSpeed == DVD_PLAYSPEED_NORMAL && m_SkipCommercials)
+  {
+    constexpr std::chrono::milliseconds SKIP_MARGIN{100};
+    const std::chrono::milliseconds lead{
+        std::max(0ll, llrint(DVD_TIME_TO_MSEC(m_renderManager.GetDisplayLatency()))) +
+        SKIP_MARGIN.count()};
+    auto ahead = m_Edl.InEdit(correctClock + lead);
+    if (ahead && ahead.value()->action == EDL::Action::COMM_BREAK)
+    {
+      if (m_Edl.GetLastEditTime() != m_Edl.GetNextPlayableTime(ahead.value()->end))
+        CLog::Log(LOGDEBUG, "{} - Commercial break [{}] is less than {} ms ahead of the clock.",
+                  __FUNCTION__, StringUtils::MillisecondsToTimeString(ahead.value()->start),
+                  lead.count());
+      hasEdit = std::move(ahead);
+    }
+  }
+
   if (!hasEdit)
   {
     // @note: Users are allowed to jump back into EDL commercial breaks
