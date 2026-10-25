@@ -2785,7 +2785,12 @@ void CVideoPlayer::CheckAutoSceneSkip()
       m_CurrentVideo.inited == false)
     return;
 
-  const std::chrono::milliseconds clock{GetTime()};
+  // m_State.time is refreshed only every 200 ms, so up to that much of a break would be shown
+  // before skipping it. Advance it by what the clock moved since, unless a seek lies in between.
+  std::chrono::milliseconds clock{GetTime()};
+  const double elapsed{GetCaughtUpClock() - m_stateClock};
+  if (elapsed > 0 && elapsed < DVD_MSEC_TO_TIME(1000))
+    clock += std::chrono::milliseconds{llrint(DVD_TIME_TO_MSEC(elapsed))};
 
   const std::chrono::milliseconds correctClock = m_Edl.GetTimeAfterRestoringCuts(clock);
   const auto hasEdit = m_Edl.InEdit(correctClock);
@@ -3471,6 +3476,7 @@ void CVideoPlayer::HandleMessages()
           offset = -1000;
         m_State.time += offset;
         m_State.timestamp = m_clock.GetAbsoluteClock();
+        m_stateClock = GetCaughtUpClock();
       }
 
       if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
@@ -5714,11 +5720,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       chapterNbEnabled = true;
     }
 
-    state.time = DVD_TIME_TO_MSEC(m_clock.GetClock());
-    // Let the clock catch up after seek
-    if (m_CurrentVideo.startpts != DVD_NOPTS_VALUE &&
-        state.time < DVD_TIME_TO_MSEC(m_CurrentVideo.startpts))
-      state.time = DVD_TIME_TO_MSEC(m_CurrentVideo.startpts);
+    state.time = DVD_TIME_TO_MSEC(GetCaughtUpClock());
 
     state.timeMax = static_cast<double>(rawStreamLength.count());
   }
@@ -5921,6 +5923,16 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   std::unique_lock lock(m_StateSection);
   m_State = state;
+  m_stateClock = GetCaughtUpClock();
+}
+
+double CVideoPlayer::GetCaughtUpClock()
+{
+  // Let the clock catch up after seek
+  const double clock{m_clock.GetClock()};
+  if (m_CurrentVideo.startpts != DVD_NOPTS_VALUE && clock < m_CurrentVideo.startpts)
+    return m_CurrentVideo.startpts;
+  return clock;
 }
 
 bool CVideoPlayer::CanTempo()

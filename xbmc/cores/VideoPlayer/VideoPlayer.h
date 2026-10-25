@@ -520,6 +520,7 @@ protected:
   void UpdateHasVideoAudio();
 
   void UpdatePlayState(double timeout);
+  double GetCaughtUpClock();
   void GetGeneralInfo(std::string& strVideoInfo);
   int64_t GetUpdatedTime();
   int64_t GetTime() const;
@@ -666,6 +667,7 @@ protected:
   } m_dvd;
 
   SPlayerState m_State;
+  double m_stateClock{0.0}; // GetCaughtUpClock() when m_State.time was set
   mutable CCriticalSection m_StateSection;
   XbmcThreads::EndTime<> m_syncTimer;
 
