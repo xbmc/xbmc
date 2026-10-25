@@ -16995,7 +16995,19 @@ msgctxt "#24189"
 msgid "Installing {0:s}"
 msgstr ""
 
-#empty strings from id 24190 to 24990
+#. Event log entry once a video library scan has finished
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#24190"
+msgid "Scan finished: {0:d} added, {1:d} rescanned but already in the library, {2:d} unchanged folders skipped, {3:d} not found, {4:d} failed"
+msgstr ""
+
+#. Event log entry for an item a video library scan couldn't look up
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#24191"
+msgid "Lookup failed for {0:s}: {1:s}"
+msgstr ""
+
+#empty strings from id 24192 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp
