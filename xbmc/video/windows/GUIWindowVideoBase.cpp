@@ -509,7 +509,7 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
   {
     // reload images
     //! @todo we need this to update images in video info dialog immediately after refresh, but why?
-    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, item);
     OnMessage(reload);
 
     if (!CVideoLibraryQueue::GetInstance().RefreshItemModal(item, needsRefresh,

@@ -318,8 +318,13 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
       {
+        // an item sent along limits the refresh to the list items showing it
+        const auto item{std::static_pointer_cast<CFileItem>(message.GetItem())};
         for (int i = 0; i < m_vecItems->Size(); i++)
-          m_vecItems->Get(i)->FreeMemory(true);
+        {
+          if (!item || m_vecItems->Get(i)->IsSamePath(item.get()))
+            m_vecItems->Get(i)->FreeMemory(true);
+        }
         break;  // the window will take care of any info images
       }
       else if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
