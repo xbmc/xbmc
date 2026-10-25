@@ -33,6 +33,8 @@ public:
   CVideoLibraryScanningJob(const std::string& directory, bool scanAll = false, bool showProgress = true);
   ~CVideoLibraryScanningJob() override;
 
+  bool HasStarted() const { return m_started; }
+
   // specialization of CVideoLibraryJob
   bool CanBeCancelled() const override { return true; }
   bool Cancel() override;
@@ -50,6 +52,7 @@ protected:
 private:
   KODI::VIDEO::CVideoInfoScanner m_scanner;
   std::atomic<bool> m_cancelled{false};
+  std::atomic<bool> m_started{false};
   std::string m_directory;
   bool m_showProgress;
   bool m_scanAll;

@@ -2156,8 +2156,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
       CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's nonexistent");
       CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(-1); // disabled
     }
-
-    CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(1);
+    else
+      CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(1);
   }
 
   std::vector<std::string> strLookInPaths;
