@@ -1204,10 +1204,11 @@
 							<aspectratio>keep</aspectratio>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
-						<control type="gamewindow">
+						<control type="image">
 							<width>444</width>
 							<height>250</height>
-							<pixels>$INFO[ListItem.FilenameAndPath]</pixels>
+							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Art(screenshot)]</texture>
 						</control>
 						<control type="label">
 							<top>250</top>
@@ -1236,10 +1237,11 @@
 							<aspectratio>keep</aspectratio>
 							<texture>$INFO[ListItem.Icon]</texture>
 						</control>
-						<control type="gamewindow">
+						<control type="image">
 							<width>444</width>
 							<height>250</height>
-							<pixels>$INFO[ListItem.FilenameAndPath]</pixels>
+							<aspectratio>keep</aspectratio>
+							<texture>$INFO[ListItem.Art(screenshot)]</texture>
 						</control>
 						<control type="label">
 							<top>250</top>

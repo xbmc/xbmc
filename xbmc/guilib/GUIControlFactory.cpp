@@ -1377,10 +1377,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       GetInfoLabel(pControlNode, "rotation", rotation, parentID);
       static_cast<RETRO::CGUIGameControl*>(control)->SetRotation(rotation);
 
-      GUIINFO::CGUIInfoLabel pixels;
-      GetInfoLabel(pControlNode, "pixels", pixels, parentID);
-      static_cast<RETRO::CGUIGameControl*>(control)->SetPixels(pixels);
-
       break;
     }
     case CGUIControl::GUICONTROL_FADELABEL:

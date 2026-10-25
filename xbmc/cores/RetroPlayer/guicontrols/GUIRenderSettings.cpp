@@ -34,11 +34,6 @@ bool CGUIRenderSettings::HasRotation() const
   return m_guiControl.HasRotation();
 }
 
-bool CGUIRenderSettings::HasPixels() const
-{
-  return m_guiControl.HasPixels();
-}
-
 CRenderSettings CGUIRenderSettings::GetSettings() const
 {
   std::unique_lock lock(m_mutex);
@@ -93,11 +88,4 @@ void CGUIRenderSettings::SetRotationDegCCW(unsigned int rotationDegCCW)
   std::unique_lock lock(m_mutex);
 
   m_renderSettings.VideoSettings().SetRenderRotation(rotationDegCCW);
-}
-
-void CGUIRenderSettings::SetPixels(const std::string& pixelPath)
-{
-  std::unique_lock lock(m_mutex);
-
-  m_renderSettings.VideoSettings().SetPixels(pixelPath);
 }
