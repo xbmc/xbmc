@@ -88,6 +88,32 @@ TEST_F(TestZipFile, Read)
   file.Close();
 }
 
+TEST_F(TestZipFile, ReadDeflate64)
+{
+  const std::string reffile = XBMC_REF_FILE_PATH("xbmc/filesystem/test/reffile.txt.deflate64.zip");
+  // Deflate64 entries are extracted here; remove leftovers so the decoder runs.
+  const std::string cachePath = "special://temp/reffile.txt";
+  XFILE::CFile::Delete(cachePath);
+
+  CFileItemList itemlist;
+  CURL zipUrl = URIUtils::CreateArchivePath("zip", CURL(reffile), "");
+  ASSERT_TRUE(XFILE::CDirectory::GetDirectory(zipUrl, itemlist, "", XFILE::DIR_FLAG_NO_FILE_DIRS));
+  ASSERT_GT(itemlist.Size(), 0);
+
+  XFILE::CFile file;
+  char buf[20]{};
+  ASSERT_TRUE(file.Open(itemlist[0]->GetPath()));
+  EXPECT_EQ(1616, file.GetLength());
+  EXPECT_EQ(sizeof(buf), static_cast<size_t>(file.Read(buf, sizeof(buf))));
+  EXPECT_TRUE(!memcmp("About\n-----\nXBMC is ", buf, sizeof(buf)));
+  EXPECT_EQ(1596, file.Seek(-static_cast<int64_t>(sizeof(buf)), SEEK_END));
+  EXPECT_EQ(sizeof(buf), static_cast<size_t>(file.Read(buf, sizeof(buf))));
+  EXPECT_TRUE(!memcmp("multimedia jukebox.\n", buf, sizeof(buf)));
+  file.Close();
+
+  XFILE::CFile::Delete(cachePath);
+}
+
 TEST_F(TestZipFile, Exists)
 {
   std::string reffile, strpathinzip;
