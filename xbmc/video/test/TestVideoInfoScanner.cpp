@@ -296,13 +296,15 @@ protected:
     return index;
   }
 
-  //! Moves a folder's modified time on, as adding or removing a file does, a second or more later
+  //! Moves a folder's modified time on, as adding or removing a file does, a second or more later.
+  //! A day on, as an hour on in the hour before the clocks go back is the same local time, which
+  //! the hash of the folder holding it uses.
   static void Touch(const std::string& folder)
   {
     const std::filesystem::path path{
         std::u8string{reinterpret_cast<const char8_t*>(folder.data()), folder.size()}};
-    std::filesystem::last_write_time(path, std::filesystem::last_write_time(path) +
-                                               std::chrono::hours{1});
+    std::filesystem::last_write_time(path,
+                                     std::filesystem::last_write_time(path) + std::chrono::days{1});
   }
 
   void Scan(bool ignoreVideoExtras = false, bool clean = false, const std::string& path = {})
