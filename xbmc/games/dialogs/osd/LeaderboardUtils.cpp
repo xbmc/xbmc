@@ -216,6 +216,10 @@ constexpr const char* ROOT_ELEMENT = "gameleaderboards";
 constexpr const char* BOARD_ELEMENT = "leaderboard";
 constexpr const char* ENTRY_ELEMENT = "entry";
 
+//! Raised when the kept rows change meaning. 2: standings start at the top of
+//! the board, where files without a version kept the rows around the player.
+constexpr unsigned int CACHE_VERSION = 2;
+
 //! Standings older than this are refetched. A table that has stood for months
 //! will not have moved overnight, but a week is long enough that somebody may
 //! have beaten it.
@@ -251,7 +255,8 @@ void KODI::GAME::SaveLeaderboardEntries(unsigned int leaderboardId,
 
   tinyxml2::XMLElement* root = nullptr;
   if (XFILE::CFile::Exists(path) && doc.LoadFile(path) && doc.RootElement() != nullptr &&
-      std::string(doc.RootElement()->Value()) == ROOT_ELEMENT)
+      std::string(doc.RootElement()->Value()) == ROOT_ELEMENT &&
+      doc.RootElement()->UnsignedAttribute("version") == CACHE_VERSION)
   {
     root = doc.RootElement();
 
@@ -269,6 +274,7 @@ void KODI::GAME::SaveLeaderboardEntries(unsigned int leaderboardId,
   {
     doc.Clear();
     root = doc.NewElement(ROOT_ELEMENT);
+    root->SetAttribute("version", CACHE_VERSION);
     doc.InsertEndChild(root);
   }
 
@@ -367,7 +373,8 @@ bool KODI::GAME::LoadLeaderboardEntries(unsigned int leaderboardId,
     return false;
 
   const auto* root = doc.RootElement();
-  if (root == nullptr || std::string(root->Value()) != ROOT_ELEMENT)
+  if (root == nullptr || std::string(root->Value()) != ROOT_ELEMENT ||
+      root->UnsignedAttribute("version") != CACHE_VERSION)
     return false;
 
   for (const auto* board = root->FirstChildElement(BOARD_ELEMENT); board != nullptr;

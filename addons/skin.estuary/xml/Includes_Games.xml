@@ -1722,7 +1722,7 @@
 				<scroll>$PARAM[scroll]</scroll>
 			</control>
 			<control type="label">
-				<label>$INFO[ListItem.Property(TopUsername)]</label>
+				<label>$INFO[ListItem.Property(TopUsername),#1 ]</label>
 				<right>15</right>
 				<top>46</top>
 				<width>300</width>
