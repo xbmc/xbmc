@@ -84,6 +84,7 @@ private:
   ParseFunc m_syncFunc;
   bool m_hasSync = false;
 
+  unsigned int m_skipCount = 0;
   unsigned int m_coreSize = 0;         /* core size for dtsHD */
   unsigned int m_dtsBlocks = 0;
   unsigned int m_fsize = 0;
