@@ -252,9 +252,13 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           if (m_movieItem->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::VIDEO_COLLECTION)
           {
             SetMovie(m_castList->Get(iItem).get());
+            const bool hasUpdatedThumb{m_hasUpdatedThumb};
+            const bool hasUpdatedUserrating{m_hasUpdatedUserrating};
             const bool hasUpdatedItems{m_hasUpdatedItems};
             Close();
             Open();
+            m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
+            m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
             m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
           }
           else
@@ -738,9 +742,13 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   *item.GetVideoInfoTag() = movieDetails;
   SetMovie(&item);
   // refresh our window entirely
+  const bool hasUpdatedThumb{m_hasUpdatedThumb};
+  const bool hasUpdatedUserrating{m_hasUpdatedUserrating};
   const bool hasUpdatedItems{m_hasUpdatedItems};
   Close();
   Open();
+  m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
+  m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
   m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
 }
 
@@ -816,8 +824,12 @@ void CGUIDialogVideoInfo::Play(bool resume)
       {
         // The Resume dialog was closed without any choice
         SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
+        const bool hasUpdatedThumb{m_hasUpdatedThumb};
+        const bool hasUpdatedUserrating{m_hasUpdatedUserrating};
         const bool hasUpdatedItems{m_hasUpdatedItems};
         Open();
+        m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
+        m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
         m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
       }
     }
