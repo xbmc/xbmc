@@ -1868,9 +1868,11 @@ bool CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(const std::shared_ptr<
       break;
 
     const std::string chosenArtType{chooser.GetArtType()};
-    result = ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, chosenArtType);
-    if (result)
+    if (ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, chosenArtType))
+    {
+      result = true;
       chooser.UpdateArtType(chosenArtType, item->GetArt(chosenArtType));
+    }
 
   } while (true);
 
