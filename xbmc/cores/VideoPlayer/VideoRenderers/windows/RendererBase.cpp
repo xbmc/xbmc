@@ -162,9 +162,17 @@ void CRenderBuffer::QueueCopyFromGPU()
   }
 }
 
-
 CRendererBase::CRendererBase(CVideoSettings& videoSettings)
-  : m_videoSettings(videoSettings)
+  : m_lut([this](AVColorPrimaries primaries, int& lutSize, ComPtr<ID3D11ShaderResourceView>& view)
+          { return LoadLut(primaries, lutSize, view); },
+          [this](int lutSize, ID3D11ShaderResourceView* view)
+          {
+            // a picture already rendered with the old LUT cannot be reused
+            m_intermediateState = {};
+            if (m_outputShader)
+              m_outputShader->SetLUT(lutSize, view);
+          }),
+    m_videoSettings(videoSettings)
 {
   m_colorManager.reset(new CColorManager());
 }
@@ -314,8 +322,7 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
                                 m_videoSettings.m_Contrast,
                                 m_videoSettings.m_Brightness,
                                 DX::Windowing()->UseLimitedColor(),
-                                m_videoSettings.m_ToneMapParam,
-                                m_lutIsLoading};
+                                m_videoSettings.m_ToneMapParam};
   m_reuseIntermediate = !uploaded && state == m_intermediateState;
   // RenderImpl() clears it if the conversion fails
   m_intermediateState = state;
@@ -432,40 +439,25 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width,
   return true;
 }
 
-void CRendererBase::OnCMSConfigChanged(AVColorPrimaries srcPrimaries)
+bool CRendererBase::LoadLut(AVColorPrimaries primaries,
+                            int& lutSize,
+                            ComPtr<ID3D11ShaderResourceView>& view)
 {
-  m_lutSize = 0;
-  m_lutIsLoading = true;
+  // load 3DLUT data
+  int dataSize;
+  if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &lutSize, &dataSize))
+    return false;
 
-  auto loadLutTask = Concurrency::create_task([this, srcPrimaries] {
-    // load 3DLUT data
-    int lutSize, dataSize;
-    if (!CColorManager::Get3dLutSize(CMS_DATA_FMT_RGBA, &lutSize, &dataSize))
-      return 0;
+  const auto lutData = static_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(dataSize, 16));
+  bool success =
+      m_colorManager->GetVideo3dLut(primaries, &m_cmsToken, CMS_DATA_FMT_RGBA, lutSize, lutData);
+  if (success)
+    success = COutputShader::CreateLUTView(lutSize, lutData, false, view.ReleaseAndGetAddressOf());
+  else
+    CLog::LogF(LOGERROR, "unable to load the 3dlut data.");
 
-    const auto lutData = static_cast<uint16_t*>(KODI::MEMORY::AlignedMalloc(dataSize, 16));
-    bool success = m_colorManager->GetVideo3dLut(srcPrimaries, &m_cmsToken, CMS_DATA_FMT_RGBA,
-                                                 lutSize, lutData);
-    if (success)
-    {
-      success = COutputShader::CreateLUTView(lutSize, lutData, false, m_pLUTView.ReleaseAndGetAddressOf());
-    }
-    else
-      CLog::Log(LOGERROR, "CRendererBase::OnCMSConfigChanged: unable to loading the 3dlut data.");
-
-    KODI::MEMORY::AlignedFree(lutData);
-    if (!success)
-      return 0;
-
-    return lutSize;
-  });
-
-  loadLutTask.then([&](const int lutSize) {
-    m_lutSize = lutSize;
-    if (m_outputShader)
-      m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
-    m_lutIsLoading = false;
-  });
+  KODI::MEMORY::AlignedFree(lutData);
+  return success;
 }
 
 // this is copy from CBaseRenderer::ReorderDrawPoints()
@@ -504,8 +496,8 @@ void CRendererBase::UpdateVideoFilters()
     else
     {
       m_outputShader->SetFinalShader(true);
-      if (m_pLUTView && m_lutSize)
-        m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
+      if (m_lut.GetView() && m_lut.GetSize())
+        m_outputShader->SetLUT(m_lut.GetSize(), m_lut.GetView());
     }
   }
 }
@@ -538,8 +530,8 @@ void CRendererBase::CheckVideoParameters()
     OnOutputReset();
   }
 
-  if (m_cmsOn && !m_lutIsLoading && !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
-    OnCMSConfigChanged(buf->primaries);
+  if (m_cmsOn && !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
+    m_lut.Load(buf->primaries);
 }
 
 DXGI_FORMAT CRendererBase::GetDXGIFormat(const VideoPicture& picture)
