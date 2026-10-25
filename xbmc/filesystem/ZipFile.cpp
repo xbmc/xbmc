@@ -53,10 +53,22 @@ unsigned int Deflate64Read(void* desc, z_const unsigned char** buf)
   return static_cast<unsigned int>(read);
 }
 
+struct Deflate64Output
+{
+  CFile& file;
+  uint64_t remaining;
+  uLong crc = crc32(0L, Z_NULL, 0);
+};
+
 int Deflate64Write(void* desc, unsigned char* buf, unsigned int len)
 {
-  auto* output = static_cast<CFile*>(desc);
-  return output->Write(buf, len) == static_cast<ssize_t>(len) ? 0 : 1;
+  auto* output = static_cast<Deflate64Output*>(desc);
+  if (len > output->remaining)
+    return 1;
+
+  output->remaining -= len;
+  output->crc = crc32(output->crc, buf, len);
+  return output->file.Write(buf, len) == static_cast<ssize_t>(len) ? 0 : 1;
 }
 
 std::string GetDeflate64CachePath(const CURL& url, const SZipEntry& entry)
@@ -96,11 +108,12 @@ bool DecompressDeflate64(const std::string& archivePath,
   }
 
   Deflate64Input input{archive, entry.csize};
+  Deflate64Output output{dest, entry.usize};
   std::vector<unsigned char> window(DEFLATE64_WINDOW_SIZE);
   z_stream strm{};
   int ret = inflateBack9Init(&strm, window.data());
   if (ret == Z_OK)
-    ret = inflateBack9(&strm, Deflate64Read, &input, Deflate64Write, &dest);
+    ret = inflateBack9(&strm, Deflate64Read, &input, Deflate64Write, &output);
   inflateBack9End(&strm);
   dest.Close();
 
@@ -108,6 +121,13 @@ bool DecompressDeflate64(const std::string& archivePath,
   {
     CLog::Log(LOGERROR, "FileZip: failed to decompress Deflate64 data. zlib error {} {}", ret,
               strm.msg ? strm.msg : "");
+    CFile::Delete(tempPath);
+    return false;
+  }
+
+  if (output.remaining != 0 || output.crc != entry.crc32)
+  {
+    CLog::Log(LOGERROR, "FileZip: Deflate64 data does not match the size or CRC of {}", entry.name);
     CFile::Delete(tempPath);
     return false;
   }

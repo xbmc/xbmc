@@ -128,6 +128,15 @@ TEST_F(TestZipFile, Deflate64SameFileName)
   file.Close();
 }
 
+TEST_F(TestZipFile, Deflate64SizeOrCrcMismatch)
+{
+  const CURL archive(XBMC_REF_FILE_PATH("xbmc/filesystem/test/corrupt.deflate64.zip"));
+
+  XFILE::CFile file;
+  EXPECT_FALSE(file.Open(URIUtils::CreateArchivePath("zip", archive, "badcrc.txt")));
+  EXPECT_FALSE(file.Open(URIUtils::CreateArchivePath("zip", archive, "badsize.txt")));
+}
+
 TEST_F(TestZipFile, Exists)
 {
   std::string reffile, strpathinzip;

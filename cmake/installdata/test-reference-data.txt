@@ -38,6 +38,7 @@ xbmc/filesystem/test/data/httpdirectory/nginx-fancyindex.html
 xbmc/filesystem/test/extendedlocalheader.zip
 xbmc/filesystem/test/reffile.txt
 xbmc/filesystem/test/reffile.txt.rar
+xbmc/filesystem/test/corrupt.deflate64.zip
 xbmc/filesystem/test/reffile.txt.deflate64.zip
 xbmc/filesystem/test/reffile.txt.zip
 xbmc/filesystem/test/reffile.txt.zip64.zip
