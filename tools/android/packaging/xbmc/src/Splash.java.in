@@ -724,6 +724,13 @@ public class Splash extends Activity
     // Be sure properties are initialized for native
     XBMCProperties.initialize(getApplicationContext());
 
+    if (Main.isShuttingDown())
+    {
+      RestartActivity.handOver(this, getIntent());
+      finish();
+      return;
+    }
+
     if (Main.isActivityRunning()) {
       Log.d(TAG, "@APP_NAME@ already running; just activate it");
       startXBMC();

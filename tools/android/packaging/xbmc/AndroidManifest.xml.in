@@ -92,6 +92,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".RestartActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|colorMode"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:process=":restart"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+
         <!--
              Our activity is the built-in NativeActivity framework class.
              This will take care of integrating with our NDK code.
