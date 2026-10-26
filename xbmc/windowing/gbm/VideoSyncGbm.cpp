@@ -18,6 +18,8 @@
 #include "windowing/gbm/WinSystemGbm.h"
 
 #include <assert.h>
+#include <chrono>
+#include <optional>
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
@@ -46,6 +48,9 @@ uint64_t MonotonicToHostCounter(uint64_t ns)
   const uint64_t now = static_cast<uint64_t>(ts.tv_sec) * 1000000000ULL + ts.tv_nsec;
   return CurrentHostCounter() - (now - ns);
 }
+
+// Vblank comes back within this once a modeset is done
+constexpr auto MAX_VBLANK_WAIT = std::chrono::seconds(2);
 } // namespace
 
 CVideoSyncGbm::CVideoSyncGbm(CVideoReferenceClock* clock)
@@ -109,23 +114,43 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
   }
   CLog::Log(LOGDEBUG, "CVideoSyncGbm::{}: started {}", __FUNCTION__, m_fd);
 
+  std::optional<std::chrono::steady_clock::time_point> failingSince;
   while (!stopEvent.Signaled() && !m_abort)
   {
     uint64_t sequence = 0, ns = 0;
     usleep(1000);
     int s = drmCrtcGetSequence(m_fd, m_crtcId, &sequence, &ns);
-    if (s != 0)
+    // Zero is how the kernel marks a timestamp it could not determine
+    // e.g. during a modeset
+    if (s != 0 || ns == 0)
     {
-      CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: drmCrtcGetSequence failed ({})", __FUNCTION__, s);
-      break;
+      // Vblank is off while the CRTC is reconfigured, as when the output
+      // switches to HDR, so wait for it to come back. If it doesn't, Setup()
+      // runs again and finds the CRTC the output moved to, if there is one.
+      const auto now = std::chrono::steady_clock::now();
+      if (!failingSince)
+      {
+        CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: no vblank timestamp ({}), waiting", __FUNCTION__,
+                  s);
+        failingSince = now;
+      }
+      else if (now - *failingSince >= MAX_VBLANK_WAIT)
+      {
+        CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: still no vblank timestamp ({})", __FUNCTION__, s);
+        break;
+      }
+      if (stopEvent.Wait(std::chrono::milliseconds(100)))
+        break;
+      continue;
+    }
+
+    if (failingSince)
+    {
+      CLog::Log(LOGINFO, "CVideoSyncGbm::{}: vblank timestamps are back", __FUNCTION__);
+      failingSince.reset();
     }
 
     if (sequence == m_sequence)
-      continue;
-
-    // Zero is how the kernel marks a timestamp it could not determine
-    // e.g. during a modeset
-    if (ns == 0)
       continue;
 
     m_refClock->UpdateClock(sequence - m_sequence, MonotonicToHostCounter(ns));
