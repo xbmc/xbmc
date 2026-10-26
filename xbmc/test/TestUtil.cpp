@@ -1681,6 +1681,11 @@ TEST(TestUtil, IsAnotherEpisodesFile)
       URIUtils::CreateArchivePath("zip", CURL("/tv/Show/Show.S02E01E02/S02E02.zip"), "English.srt")
           .Get(),
       "Show.S02E01E02", video, &tag));
+  // A disc in a folder named S02 keeps its own and the disc's, but not another episode's
+  const std::string season{URIUtils::GetBlurayPlaylistPath("/tv/Show/S02/BDMV/index.bdmv", 1001)};
+  EXPECT_TRUE(CUtil::IsAnotherVersionsFile("/tv/Show/S02/S02E02.eng.srt", "S02", season, &tag));
+  EXPECT_FALSE(CUtil::IsAnotherVersionsFile("/tv/Show/S02/S02E01.eng.srt", "S02", season, &tag));
+  EXPECT_FALSE(CUtil::IsAnotherVersionsFile("/tv/Show/S02/S02.eng.srt", "S02", season, &tag));
   // Nothing is another episode's for a movie
   EXPECT_FALSE(CUtil::IsAnotherVersionsFile("/movies/M3GAN/S02E02.eng.srt", "M3GAN",
                                             "/movies/M3GAN/M3GAN.mkv"));

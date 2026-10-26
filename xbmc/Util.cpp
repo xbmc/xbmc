@@ -2243,8 +2243,10 @@ bool CUtil::IsAnotherVersionsFile(const std::string& file,
   {
     if (!StringUtils::StartsWithNoCase(name, prefix))
       continue;
-    // A file named after the video is the video's own, not a bare playlist's (10000 BC.eng.srt)
-    if (prefix.empty() && StringUtils::StartsWithNoCase(name, videoName))
+    // A file named after the video is the video's own, not a bare playlist's (10000 BC.eng.srt),
+    // unless the video's name is only the start of an episode's (S02 of S02E02)
+    if (prefix.empty() && StringUtils::StartsWithNoCase(name, videoName) &&
+        (!episode || GetEpisodeOfName(name) == GetEpisodeOfName(videoName)))
       return false;
     // A playlist number is five digits, as its file name is
     const std::string_view rest{std::string_view{name}.substr(prefix.size())};
