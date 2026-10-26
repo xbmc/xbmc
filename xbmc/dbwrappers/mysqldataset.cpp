@@ -2099,6 +2099,8 @@ bool MysqlDataset::query(const std::string& query)
           v.set_isNull();
           break;
       }
+      if (!row[i])
+        v.set_isNull();
     }
     result.records.push_back(res);
   }
