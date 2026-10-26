@@ -14,6 +14,7 @@
 
 #include <chrono>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <vector>
 
@@ -78,6 +79,16 @@ public:
    * provided with respect to the original media item timeline.
   */
   const std::vector<EDL::Edit>& GetRawEditList() const { return m_vecEdits; }
+
+  /*!
+   * @brief Get a stable snapshot of the original-media edit list for cross-thread readers.
+   * @return An immutable edit list that remains valid while the list is reloaded.
+   */
+  std::shared_ptr<const std::vector<EDL::Edit>> GetRawEditListSnapshot() const
+  {
+    std::scoped_lock lock(m_rawEditListSnapshotMutex);
+    return m_rawEditListSnapshot;
+  }
 
   /*!
    * @brief Get the EDL edit list.
@@ -181,6 +192,9 @@ private:
   // total cut time (edl cuts) in ms
   std::chrono::milliseconds m_totalCutTime;
   std::vector<EDL::Edit> m_vecEdits;
+  mutable std::mutex m_rawEditListSnapshotMutex;
+  std::shared_ptr<const std::vector<EDL::Edit>> m_rawEditListSnapshot{
+      std::make_shared<const std::vector<EDL::Edit>>()};
   std::vector<std::chrono::milliseconds> m_vecSceneMarkers;
 
   /*!
