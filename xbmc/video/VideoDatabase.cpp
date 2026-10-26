@@ -10396,7 +10396,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
     sql += " ORDER BY path.strPath";
 
     m_pDS2->query(sql);
-    if (m_pDS2->num_rows() > 0)
+    // A full clean goes on to the media whose files have all gone
+    if (m_pDS2->num_rows() > 0 || paths.empty())
     {
       std::string filesToTestForDelete;
       // missing files in a source, with the path of the source that held them
@@ -10513,19 +10514,6 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
 
       std::string filesToDelete;
 
-      // Add any files that don't have a valid idPath entry to the filesToDelete list.
-      m_pDS->query("SELECT files.idFile FROM files WHERE NOT EXISTS (SELECT 1 FROM path "
-                   "WHERE path.idPath = files.idPath)");
-      while (!m_pDS->eof())
-      {
-        std::string file = m_pDS->fv("files.idFile").get_asString() + ",";
-        filesToTestForDelete += file;
-        filesToDelete += file;
-
-        m_pDS->next();
-      }
-      m_pDS->close();
-
       std::map<int, bool> pathsDeleteDecisions;
       std::vector<int> movieIDs;
       std::vector<int> tvshowIDs;
@@ -10546,6 +10534,62 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
                                        pathsDeleteDecisions, filesToDelete, !showProgress);
         videoVersionIDs = CleanMediaType(MEDIA::TYPE::VIDEO_VERSION, filesToTestForDelete,
                                          pathsDeleteDecisions, filesToDelete, !showProgress);
+      }
+
+      // A file whose path has gone, and media or a version whose file has gone, aren't
+      // reached through the files, and belong to no source a clean could be limited to
+      if (paths.empty())
+      {
+        m_pDS->query("SELECT idFile FROM files WHERE NOT EXISTS (SELECT 1 FROM path "
+                     "WHERE path.idPath = files.idPath)");
+        while (!m_pDS->eof())
+        {
+          filesToDelete += m_pDS->fv(0).get_asString() + ",";
+          m_pDS->next();
+        }
+        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning {} files without a path", m_pDS->num_rows());
+        m_pDS->close();
+
+        const auto addWithoutFile = [this, &filesToDelete](MEDIA::TYPE mediaType,
+                                                           const char* idField,
+                                                           std::vector<int>& ids)
+        {
+          const std::string& table = NameOf(mediaType);
+          m_pDS->query(PrepareSQL("SELECT %s, idFile FROM %s WHERE NOT EXISTS (SELECT 1 FROM "
+                                  "files JOIN path ON path.idPath = files.idPath "
+                                  "WHERE files.idFile = %s.idFile)",
+                                  idField, table.c_str(), table.c_str()));
+          while (!m_pDS->eof())
+          {
+            ids.emplace_back(m_pDS->fv(0).get_asInt());
+            filesToDelete += m_pDS->fv(1).get_asString() + ",";
+            m_pDS->next();
+          }
+          CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning {} {} items without a file",
+                      m_pDS->num_rows(), table);
+          m_pDS->close();
+        };
+        addWithoutFile(MEDIA::TYPE::MOVIE, "idMovie", movieIDs);
+        addWithoutFile(MEDIA::TYPE::EPISODE, "idEpisode", episodeIDs);
+        addWithoutFile(MEDIA::TYPE::MUSIC_VIDEO, "idMVideo", musicVideoIDs);
+
+        // The movie of a default version is dealt with above, so only its row goes here
+        std::string assetsWithoutFile;
+        m_pDS->query("SELECT idMedia, idFile FROM videoversion WHERE NOT EXISTS (SELECT 1 FROM "
+                     "files JOIN path ON path.idPath = files.idPath "
+                     "WHERE files.idFile = videoversion.idFile)");
+        while (!m_pDS->eof())
+        {
+          videoVersionIDs.emplace_back(m_pDS->fv(0).get_asInt());
+          assetsWithoutFile += m_pDS->fv(1).get_asString() + ",";
+          m_pDS->next();
+        }
+        CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning {} versions and extras without a file",
+                    m_pDS->num_rows());
+        m_pDS->close();
+        if (!assetsWithoutFile.empty())
+          m_pDS->exec("DELETE FROM videoversion WHERE idFile IN (" +
+                      StringUtils::TrimRight(assetsWithoutFile, ",") + ")");
       }
 
       // A file outside the library only holds history, such as its watched state and resume
@@ -10689,6 +10733,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           CLog::LogFC(LOGDEBUG, LOGDATABASE,
                       "Default version of movie {} has gone, promoted the version of file {}", *it,
                       idFile);
+          // Announced as a movie that lost a version
+          videoVersionIDs.emplace_back(*it);
           it = movieIDs.erase(it);
         }
 
