@@ -65,6 +65,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoItemArtworkHandler.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
@@ -366,6 +367,23 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     return;
 
   const MEDIA::TYPE type = item->GetVideoInfoTag()->GetMediaType();
+
+  // An extra's art is only its thumb, so the information, which is its movie's, has the movie's art
+  if (VIDEO::IsVideoAssetFile(*item) &&
+      item->GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA)
+  {
+    CVideoDatabase database;
+    KODI::ART::Artwork art;
+    if (database.Open() &&
+        database.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, MEDIA::TYPE::MOVIE, art))
+    {
+      for (const auto& [artType, url] : art)
+      {
+        if (!m_movieItem->HasArt(artType))
+          m_movieItem->SetArt(artType, url);
+      }
+    }
+  }
 
   m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
 
@@ -1094,6 +1112,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   {
     // manage video versions
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS, 40001); // Manage versions
+    buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS, 40057); // Manage extras
   }
 
   if (type == MEDIA::TYPE::EPISODE && item->GetVideoInfoTag()->m_iBookmarkId > 0)
@@ -1174,6 +1193,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
       case CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS:
         ManageVideoVersions(item);
+        result = true;
+        break;
+
+      case CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS:
+        CGUIDialogVideoManagerExtras::ManageVideoExtras(item);
         result = true;
         break;
 
@@ -1294,6 +1318,48 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const std::shared_ptr<CFileItem>&
   return true;
 }
 
+namespace
+{
+//! A version or an extra listed under its movie, other than the default version, which is the movie
+bool IsRemovableVideoAsset(const CFileItem& item)
+{
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  const VideoAssetType type{tag.GetAssetInfo().GetType()};
+  return VIDEO::IsVideoAssetFile(item) && !tag.IsDefaultVideoVersion() &&
+         (type == VideoAssetType::VERSION || type == VideoAssetType::EXTRA);
+}
+
+//! Remove a version or an extra from its movie, as Manage versions and Manage extras do
+bool DeleteVideoAssetFromDatabase(const CFileItem& item, bool unavailable)
+{
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  const bool extra{tag.GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+  const CLocalizeStrings& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  if (!CGUIDialogYesNo::ShowAndGetInput(
+          extra ? 40039 : 40018, unavailable
+                                     ? strings.Get(662)
+                                     : StringUtils::Format(strings.Get(extra ? 40040 : 40020),
+                                                           tag.GetAssetInfo().GetTitle())))
+    return false;
+
+  CVideoDatabase database;
+  if (!database.Open())
+    return false;
+
+  database.BeginTransaction();
+  if (!database.DeleteVideoAsset(tag.m_iFileId) ||
+      (URIUtils::IsBlurayPath(item.GetDynPath()) && !database.DeleteFile(tag.m_iFileId)))
+  {
+    database.RollbackTransaction();
+    return false;
+  }
+  database.CommitTransaction();
+
+  CVideoDatabase::AnnounceUpdate(MEDIA::TYPE::MOVIE, tag.m_iDbId);
+  return true;
+}
+} // namespace
+
 bool CGUIDialogVideoInfo::CanDeleteVideoItem(const std::shared_ptr<CFileItem>& item)
 {
   if (item == nullptr || !item->HasVideoInfoTag())
@@ -1324,6 +1390,9 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
     HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;
   }
+
+  if (IsRemovableVideoAsset(*item))
+    return DeleteVideoAssetFromDatabase(*item, unavailable);
 
   CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (pDialog == nullptr)
@@ -1431,8 +1500,13 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
+  // A version or an extra that is a playlist shares its disc with the movie and others
+  const bool playlistAsset{IsRemovableVideoAsset(*item) &&
+                           URIUtils::IsBlurayPath(item->GetVideoInfoTag()->GetPath())};
+
   // check if the user is allowed to delete the actual file as well
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+  if (!playlistAsset &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
       (profileManager->GetCurrentProfile().getLockMode() == LockMode::EVERYONE ||
        !profileManager->GetCurrentProfile().filesLocked() ||

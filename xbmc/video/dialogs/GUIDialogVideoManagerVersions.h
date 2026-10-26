@@ -79,12 +79,6 @@ protected:
   void Remove() override;
 
 private:
-  enum class ReplaceExistingFile : bool
-  {
-    NO,
-    YES
-  };
-
   void SetDefaultVideoVersion(const CFileItem& version);
   /*!
    * \brief Prompt the user to select a file / movie to add as version
@@ -204,15 +198,6 @@ private:
    * \param[in] dbId item to remove from the list
    */
   static void PostProcessList(CFileItemList& list, int dbId);
-
-  /*!
-   * \brief Prompts the user to choose a playlist from the current disc
-   * \param item the current CFileItem
-   * \param replaceExistingFile whether to replace the existing playlist in the database
-   * \return true for success, false otherwise.
-   */
-  bool ChoosePlaylist(const std::shared_ptr<CFileItem>& item,
-                      ReplaceExistingFile replaceExistingFile);
 
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };

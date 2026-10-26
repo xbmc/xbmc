@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
@@ -296,13 +297,15 @@ protected:
     return index;
   }
 
-  //! Moves a folder's modified time on, as adding or removing a file does, a second or more later
+  //! Moves a folder's modified time on, as adding or removing a file does, a second or more later.
+  //! A day on, as an hour on in the hour before the clocks go back is the same local time, which
+  //! the hash of the folder holding it uses.
   static void Touch(const std::string& folder)
   {
     const std::filesystem::path path{
         std::u8string{reinterpret_cast<const char8_t*>(folder.data()), folder.size()}};
-    std::filesystem::last_write_time(path, std::filesystem::last_write_time(path) +
-                                               std::chrono::hours{1});
+    std::filesystem::last_write_time(path,
+                                     std::filesystem::last_write_time(path) + std::chrono::days{1});
   }
 
   void Scan(bool ignoreVideoExtras = false, bool clean = false, const std::string& path = {})
@@ -412,6 +415,38 @@ protected:
   }
 
   int CountMovies() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"); }
+
+  //! A file added or deleted below an extras folder changes only the folder holding it. The movie
+  //! is a file in its folder, or a disc structure the folder holds.
+  void ScanChangesBelowTheExtras(bool disc = false)
+  {
+    const std::string folder{Folder(m_root, "Film (2010)")};
+    if (disc)
+    {
+      Nfo(folder, "movie.nfo", "Film");
+      BlurayRip(folder);
+    }
+    else
+      FolderMovie(folder, "Film (2010).mkv");
+    const std::string featurettes{Folder(Folder(folder, "Extras"), "Featurettes")};
+    File(featurettes, "Trailer.mkv");
+    Scan();
+    ASSERT_EQ(1, CountMovies());
+    ASSERT_EQ(1, CountExtras());
+    const int idMovie{m_db.GetSingleValueInt("SELECT idMovie FROM movie")};
+
+    const std::string interview{File(featurettes, "Interview.mkv")};
+    Touch(featurettes);
+    Scan();
+    EXPECT_TRUE(IsExtraOf(interview, idMovie));
+    EXPECT_EQ(2, CountExtras());
+
+    ASSERT_TRUE(XFILE::CFile::Delete(interview));
+    Touch(featurettes);
+    Scan(false, true);
+    EXPECT_EQ(1, CountExtras());
+    EXPECT_EQ(-1, m_db.GetVideoVersionInfo(interview).m_assetTypeId);
+  }
 
   std::string m_root;
   DatabaseSettings m_settings;
@@ -711,6 +746,281 @@ TEST_F(TestVideoInfoScanner, AMovieIsLookedUpWithItsPathsScraperWhenItsNfoNamesA
 
   EXPECT_GT(m_db.GetMovieId(movie), 0);
   EXPECT_EQ("Film from the path's scraper", m_db.GetSingleValue("SELECT c00 FROM movie"));
+}
+
+// Movie extras
+
+TEST_F(TestVideoInfoScanner, AMovieFolderGetsItsExtras)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+  const std::string trailer{File(Folder(folder, "Extras"), "Trailer.mkv")};
+
+  Scan();
+
+  const int idMovie{m_db.GetMovieId(movie)};
+  ASSERT_GT(idMovie, 0);
+  EXPECT_TRUE(IsExtraOf(trailer, idMovie));
+
+  // An update with nothing changed adds and removes nothing
+  Scan();
+  EXPECT_EQ(1, CountMovies());
+  EXPECT_EQ(1, CountExtras());
+}
+
+// The extras folder belongs to no movie where its folder holds several
+TEST_F(TestVideoInfoScanner, ExtrasBesideTwoMoviesGoToNeither)
+{
+  Nfo(m_root, "First.nfo", "First");
+  const std::string first{File(m_root, "First.mkv")};
+  Nfo(m_root, "Second.nfo", "Second");
+  const std::string second{File(m_root, "Second.mkv")};
+  const std::string trailer{File(Folder(m_root, "Extras"), "Trailer.mkv")};
+
+  Scan();
+
+  EXPECT_GT(m_db.GetMovieId(first), 0);
+  EXPECT_GT(m_db.GetMovieId(second), 0);
+  EXPECT_EQ(-1, m_db.GetVideoVersionInfo(trailer).m_assetTypeId);
+  EXPECT_EQ(-1, m_db.GetMovieId(trailer));
+  EXPECT_EQ(0, CountExtras());
+}
+
+TEST_F(TestVideoInfoScanner, TheExtrasOfAStackGoToItsMovie)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  FolderMovie(folder, "Film (2010) cd1.mkv");
+  File(folder, "Film (2010) cd2.mkv");
+  const std::string trailer{File(Folder(folder, "Extras"), "Trailer.mkv")};
+
+  Scan();
+
+  ASSERT_EQ(1, CountMovies());
+  const int idMovie{m_db.GetSingleValueInt("SELECT idMovie FROM movie")};
+  EXPECT_TRUE(IsExtraOf(trailer, idMovie));
+}
+
+// The movie is found once the folders beside the extras folder have been scanned
+TEST_F(TestVideoInfoScanner, ExtrasBesideTheFolderOfTheirMovieGoToIt)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(Folder(folder, "Disc 1"), "Film (2010).mkv")};
+  const std::string trailer{File(Folder(folder, "Extras"), "Trailer.mkv")};
+
+  Scan();
+
+  const int idMovie{m_db.GetMovieId(movie)};
+  ASSERT_GT(idMovie, 0);
+  EXPECT_TRUE(IsExtraOf(trailer, idMovie));
+}
+
+// A video in an extras folder is an extra, even with a full nfo of its own
+TEST_F(TestVideoInfoScanner, AnExtrasFolderIsNotScannedForMovies)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+  const std::string extras{Folder(folder, "Extras")};
+  Nfo(extras, "Making Of.nfo", "Making Of");
+  const std::string makingOf{File(extras, "Making Of.mkv")};
+
+  Scan();
+
+  EXPECT_EQ(1, CountMovies());
+  EXPECT_TRUE(IsExtraOf(makingOf, m_db.GetMovieId(movie)));
+}
+
+TEST_F(TestVideoInfoScanner, IgnoredExtrasAreNeitherExtrasNorMovies)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  FolderMovie(folder, "Film (2010).mkv");
+  const std::string extras{Folder(folder, "Extras")};
+  Nfo(extras, "Making Of.nfo", "Making Of");
+  File(extras, "Making Of.mkv");
+
+  Scan(true);
+
+  EXPECT_EQ(1, CountMovies());
+  EXPECT_EQ(0, CountExtras());
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedToTheExtrasOfAnUnchangedFolderIsAdded)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+  const std::string extras{Folder(folder, "Extras")};
+  File(extras, "Trailer.mkv");
+  Scan();
+  ASSERT_EQ(1, CountExtras());
+
+  const std::string interview{File(extras, "Interview.mkv")};
+  Touch(extras);
+  Scan();
+
+  EXPECT_TRUE(IsExtraOf(interview, m_db.GetMovieId(movie)));
+  EXPECT_EQ(2, CountExtras());
+}
+
+TEST_F(TestVideoInfoScanner, AnExtraDeletedIsCleanedOnUpdate)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  FolderMovie(folder, "Film (2010).mkv");
+  const std::string extras{Folder(folder, "Extras")};
+  const std::string trailer{File(extras, "Trailer.mkv")};
+  const std::string interview{File(extras, "Interview.mkv")};
+  Scan();
+  ASSERT_EQ(2, CountExtras());
+
+  ASSERT_TRUE(XFILE::CFile::Delete(interview));
+  Touch(extras);
+  Scan(false, true);
+
+  EXPECT_EQ(1, CountExtras());
+  EXPECT_EQ(-1, m_db.GetVideoVersionInfo(interview).m_assetTypeId);
+}
+
+// A scan of the movie's own folder takes its extras folder out of the scan, so queues it for the
+// clean
+TEST_F(TestVideoInfoScanner, AnExtraDeletedIsCleanedByAScanOfItsMovieFolder)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  FolderMovie(folder, "Film (2010).mkv");
+  const std::string extras{Folder(folder, "Extras")};
+  File(extras, "Trailer.mkv");
+  const std::string interview{File(extras, "Interview.mkv")};
+  Scan();
+  ASSERT_EQ(2, CountExtras());
+
+  ASSERT_TRUE(XFILE::CFile::Delete(interview));
+  Touch(extras);
+  Scan(false, true, folder);
+
+  EXPECT_EQ(1, CountExtras());
+}
+
+TEST_F(TestVideoInfoScanner, ExtrasAreAddedWithFastHashingOff)
+{
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash = false;
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+  const std::string extras{Folder(folder, "Extras")};
+  const std::string trailer{File(extras, "Trailer.mkv")};
+
+  Scan();
+  const int idMovie{m_db.GetMovieId(movie)};
+  ASSERT_GT(idMovie, 0);
+  EXPECT_TRUE(IsExtraOf(trailer, idMovie));
+
+  const std::string interview{File(extras, "Interview.mkv")};
+  Touch(extras);
+  Scan();
+  EXPECT_TRUE(IsExtraOf(interview, idMovie));
+  EXPECT_EQ(1, CountMovies());
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedOrDeletedBelowTheExtrasOfAnUnchangedFolderIsSeen)
+{
+  ScanChangesBelowTheExtras();
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedOrDeletedBelowTheExtrasIsSeenWithFastHashingOff)
+{
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash = false;
+  ScanChangesBelowTheExtras();
+}
+
+#ifdef HAVE_LIBBLURAY
+// A folder holding a disc structure is listed as the disc's file, so its extras folders are found
+// beside the disc
+TEST_F(TestVideoInfoScanner, ExtrasBesideADiscGoToItsMovie)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  Nfo(folder, "movie.nfo", "Film");
+  BlurayRip(folder);
+  const std::string extras{Folder(folder, "Extras")};
+  const std::string trailer{File(extras, "Trailer.mkv")};
+
+  Scan();
+
+  ASSERT_EQ(1, CountMovies());
+  const int idMovie{m_db.GetSingleValueInt("SELECT idMovie FROM movie")};
+  EXPECT_TRUE(IsExtraOf(trailer, idMovie));
+
+  // Nor does adding one change the disc's folder
+  const std::string interview{File(extras, "Interview.mkv")};
+  Touch(extras);
+  Scan();
+  EXPECT_TRUE(IsExtraOf(interview, idMovie));
+  EXPECT_EQ(1, CountMovies());
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedOrDeletedBelowTheExtrasBesideADiscIsSeen)
+{
+  ScanChangesBelowTheExtras(true);
+}
+
+// Its playlists and streams are not extras of their own, nor is the disc a movie
+TEST_F(TestVideoInfoScanner, ADiscInAnExtrasFolderIsOneExtra)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+  const std::string disc{BlurayRip(Folder(folder, "Extras"))};
+
+  Scan();
+
+  EXPECT_EQ(1, CountMovies());
+  EXPECT_TRUE(IsExtraOf(disc, m_db.GetMovieId(movie)));
+  EXPECT_EQ(1, CountExtras());
+}
+#endif
+
+// A folder with content set on it is a source of its own, whatever its name
+TEST_F(TestVideoInfoScanner, AnExtrasFolderThatIsASourceIsScannedForMovies)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  FolderMovie(folder, "Film (2010).mkv");
+  const std::string extras{Folder(folder, "Extras")};
+  Nfo(extras, "Other.nfo", "Other");
+  const std::string other{File(extras, "Other.mkv")};
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='movies', strScraper='metadata.local', useFolderNames=0, "
+      "scanRecursive=0, noUpdate=0 WHERE idPath=%i",
+      m_db.AddPath(extras))));
+
+  Scan();
+
+  EXPECT_GT(m_db.GetMovieId(other), 0);
+  EXPECT_EQ(2, CountMovies());
+  EXPECT_EQ(0, CountExtras());
+}
+
+// An exported nfo names the movie's asset type. A scan restoring the movie from it takes only
+// the extras its nfos record; a refresh reads the discs and extras folders as well
+TEST_F(TestVideoInfoScanner, ARefreshOfAMovieWithAnExportedNfoAddsItsExtras)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  File(folder, "movie.nfo",
+       "<movie><title>Film (2010)</title><videoassettype>1</videoassettype></movie>");
+  const std::string movie{File(folder, "Film (2010).mkv")};
+  const std::string trailer{File(Folder(folder, "Extras"), "Trailer.mkv")};
+
+  Scan();
+  const int idMovie{m_db.GetMovieId(movie)};
+  ASSERT_GT(idMovie, 0);
+  EXPECT_EQ(0, CountExtras());
+
+  // As the refresh job does: the movie is deleted, read again and then given its extras
+  ASSERT_TRUE(m_db.DeleteMovie(idMovie, DeleteMovieCascadeAction::DEFAULT_VERSION));
+  TestScanner refresh{m_settings};
+  refresh.DeferMovieExtras();
+  CFileItemList items;
+  items.SetPath(folder);
+  items.Add(std::make_shared<CFileItem>(movie, false));
+  ASSERT_TRUE(refresh.RetrieveVideoInfo(items, true, ADDON::ContentType::MOVIES));
+  const int idRefreshed{m_db.GetMovieId(movie)};
+  ASSERT_GT(idRefreshed, 0);
+  refresh.AddMovieExtras(idRefreshed, true);
+
+  EXPECT_TRUE(IsExtraOf(trailer, idRefreshed));
 }
 
 // TV shows
