@@ -1086,17 +1086,17 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     bool skipSwap = false;
     if (m_needIecPack)
     {
-      if (frames > 0)
+      if (samples->pkt->pause_burst_ms > 0)
       {
-        m_packer->Reset();
-        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
-      }
-      else if (samples->pkt->pause_burst_ms > 0)
-      {
-        // construct a pause burst if we have already output valid audio
+        // Replace the encoded payload with an IEC61937 pause burst during EDL MUTE.
         bool burst = m_extStreaming && (m_packer->GetBuffer()[0] != 0);
         if (!m_packer->PackPause(m_sinkFormat.m_streamInfo, samples->pkt->pause_burst_ms, burst))
           skipSwap = true;
+      }
+      else if (frames > 0)
+      {
+        m_packer->Reset();
+        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
       }
       else
         m_packer->Reset();
