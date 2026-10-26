@@ -310,8 +310,6 @@ protected:
           CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION, m_similarVideoAction);
     if (m_scraperInfo)
     {
-      CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
-          CSettings::SETTING_EVENTLOG_ENABLED, m_eventLog);
       XFILE::CDirectory::RemoveRecursive(m_scraperInfo->Path());
       XFILE::CDirectory::RemoveRecursive(ScraperCacheFolder());
     }
@@ -450,12 +448,6 @@ protected:
                         SCRAPER_ID, m_db.GetPathId(m_root))));
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors =
         true;
-    // A video with no information found is logged as an event, which is sent to the GUI a test
-    // doesn't have
-    m_eventLog = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_EVENTLOG_ENABLED);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
-        CSettings::SETTING_EVENTLOG_ENABLED, false);
   }
 
   //! Installs the test scraper, as a refresh finds the scraper of a path through the add-on manager
@@ -695,7 +687,6 @@ protected:
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors};
   ADDON::AddonInfoPtr m_scraperInfo;
   ADDON::AddonType m_scraperType{ADDON::AddonType::SCRAPER_MOVIES};
-  bool m_eventLog{false};
   std::string m_otherScraper;
   std::string m_installedScraper;
   int m_similarVideoAction{-1};
