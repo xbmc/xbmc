@@ -1973,6 +1973,13 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   bool checkcont = CheckContinuity(m_CurrentAudio, pPacket);
   UpdateTimestamps(m_CurrentAudio, pPacket);
 
+  // Keep the original-media timeline alongside the corrected audio PTS. Some
+  // input streams provide their authoritative timeline through dispTime.
+  if (pPacket->dispTime > 0)
+    pPacket->edlPts = DVD_MSEC_TO_TIME(pPacket->dispTime);
+  else if (pPacket->pts != DVD_NOPTS_VALUE)
+    pPacket->edlPts = pPacket->pts + m_offset_pts;
+
   if (checkcont && (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CHECK))
     m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
 
