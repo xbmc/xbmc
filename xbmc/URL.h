@@ -85,6 +85,16 @@ public:
    */
   std::string GetSchemeSpecificPart() const;
 
+  /*! \brief Borrow a lossless URI's scheme-specific bytes without allocation.
+   * \return Includes the query and its delimiter, excludes the fragment;
+   *         empty for native paths and legacy URLs.
+   * \note The view is invalidated by mutation, moving from, or destruction of this object.
+   */
+  std::string_view GetSchemeSpecificPartView() const
+  {
+    return m_uri ? m_uri->GetSchemeSpecificPart() : std::string_view{};
+  }
+
   /*! \brief Replace a lossless URI's raw path, preserving all other components.
    * \return False without changes for unsupported policy or invalid path syntax.
    * \note With an authority, paths must be empty or slash-prefixed; without one,

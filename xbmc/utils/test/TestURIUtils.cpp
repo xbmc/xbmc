@@ -3180,16 +3180,19 @@ TEST_F(TestURIUtils, SanitiseEncodingDistinguishesLegacyURLsFromIdentifiers)
 #endif
 }
 
-TEST_F(TestURIUtils, UnsupportedIdentifiersHaveNoLocalFactoryFallback)
+TEST_F(TestURIUtils, IdentifierFactoriesRespectSchemeSupport)
 {
-  for (const std::string identifier :
-       {"data:,movie.zip", "data://host/movie.zip", "urn:example:movie.zip",
-        "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"})
+  for (const auto& [identifier, hasFileHandler] : std::array<std::pair<const char*, bool>, 4>{{
+           {"data:,movie.zip", true},
+           {"data://host/movie.zip", true},
+           {"urn:example:movie.zip", false},
+           {"magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567", false},
+       }})
   {
     SCOPED_TRACE(identifier);
     const CURL url{identifier};
     const std::unique_ptr<IFile> file{CFileFactory::CreateLoader(url)};
-    EXPECT_EQ(nullptr, file);
+    EXPECT_EQ(hasFileHandler, file != nullptr);
     const std::unique_ptr<IDirectory> directory{CDirectoryFactory::Create(url)};
     EXPECT_EQ(nullptr, directory);
   }
