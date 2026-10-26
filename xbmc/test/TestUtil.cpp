@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "video/FilenameAttributes.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <string>
@@ -1617,4 +1618,170 @@ TEST_F(TestCustomSubtitleFolder, AFolderThatExistsIsSearched)
 
   EXPECT_EQ(1, CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked());
   EXPECT_EQ(1U, found.size());
+}
+
+//! An episode's info, of season 2, episode 1 by default
+CVideoInfoTag EpisodeTag(int season = 2, int episode = 1)
+{
+  CVideoInfoTag tag;
+  tag.m_iSeason = season;
+  tag.m_iEpisode = episode;
+  return tag;
+}
+
+TEST(TestUtil, GetVersionFileNamesOfAnEpisode)
+{
+  using Names = std::vector<std::string>;
+  const CVideoInfoTag tag{EpisodeTag()};
+  // An episode's own come first, then the playlist's
+  EXPECT_EQ(
+      (Names{"index-S02E01", "S02E01", "index-01001", "01001"}),
+      CUtil::GetVersionFileNames(
+          URIUtils::GetBlurayPlaylistPath("/tv/Show/Show.S02E01E02/BDMV/index.bdmv", 1001), &tag));
+  EXPECT_EQ((Names{"index-S02E01", "S02E01"}),
+            CUtil::GetVersionFileNames("/tv/Show/Show.S02E01E02/BDMV/index.bdmv", &tag));
+  EXPECT_EQ((Names{"VIDEO_TS-S02E01", "S02E01"}),
+            CUtil::GetVersionFileNames("/tv/Show/Show.S02E01E02/VIDEO_TS/VIDEO_TS.IFO", &tag));
+  // Several ISOs or video files can share a folder, so neither is named by the episode alone
+  EXPECT_EQ((Names{"Show.S02E01E02-S02E01", "Show.S02E01E02-00800"}),
+            CUtil::GetVersionFileNames(
+                URIUtils::GetBlurayPlaylistPath("/tv/Show/Show.S02E01E02.iso", 800), &tag));
+  EXPECT_EQ((Names{"Show.S02E01E02-S02E01"}),
+            CUtil::GetVersionFileNames("/tv/Show/Show.S02E01E02.mkv", &tag));
+  // A movie's info has no season and episode
+  const CVideoInfoTag movie;
+  EXPECT_EQ(Names{}, CUtil::GetVersionFileNames("/movies/M3GAN/M3GAN.mkv", &movie));
+}
+
+TEST(TestUtil, IsAnotherEpisodesFile)
+{
+  const CVideoInfoTag tag{EpisodeTag()};
+  const std::string video{
+      URIUtils::GetBlurayPlaylistPath("/tv/Show/Show.S02E01E02/BDMV/index.bdmv", 1001)};
+  const auto isAnothers = [&video, &tag](const std::string& file)
+  {
+    return CUtil::IsAnotherVersionsFile("/tv/Show/Show.S02E01E02/" + file, "Show.S02E01E02", video,
+                                        &tag);
+  };
+
+  EXPECT_TRUE(isAnothers("index-S02E02.eng.srt"));
+  EXPECT_TRUE(isAnothers("S02E02.eng.srt"));
+  EXPECT_TRUE(isAnothers("s02e02.eng.srt"));
+  EXPECT_TRUE(isAnothers("Show.S02E01E02-S02E02.eng.srt"));
+  EXPECT_TRUE(isAnothers("index-01002.eng.srt"));
+  EXPECT_FALSE(isAnothers("index-S02E01.eng.srt"));
+  EXPECT_FALSE(isAnothers("S02E01.eng.srt"));
+  EXPECT_FALSE(isAnothers("Show.S02E01E02-S02E01.eng.srt"));
+  EXPECT_FALSE(isAnothers("index-01001.eng.srt"));
+  // Named after the disc's folder, it is every episode's on the disc
+  EXPECT_FALSE(isAnothers("Show.S02E01E02.eng.srt"));
+  // What is in another episode's archive is its
+  EXPECT_TRUE(CUtil::IsAnotherVersionsFile(
+      URIUtils::CreateArchivePath("zip", CURL("/tv/Show/Show.S02E01E02/S02E02.zip"), "English.srt")
+          .Get(),
+      "Show.S02E01E02", video, &tag));
+  // Nothing is another episode's for a movie
+  EXPECT_FALSE(CUtil::IsAnotherVersionsFile("/movies/M3GAN/S02E02.eng.srt", "M3GAN",
+                                            "/movies/M3GAN/M3GAN.mkv"));
+}
+
+// An episode has the subtitles named after the folder holding its disc, and those named as its
+// art is, but not another episode's
+TEST_F(TestVersionSubtitles, AnEpisodeOfAFolderRipHasItsOwnSubtitles)
+{
+  const CVideoInfoTag tag{EpisodeTag()};
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File("M3GAN.eng.srt"), File("index-S02E01.eng.forced.ass"),
+                                    File("S02E01.fre.srt"), File("index-01001.ger.srt")};
+  File("index-S02E02.eng.forced.ass");
+  File("S02E02.fre.srt");
+  File("index-01002.ger.srt");
+
+  std::vector<std::string> subtitles;
+  CUtil::ScanForExternalSubtitles(URIUtils::GetBlurayPlaylistPath(disc, 1001), subtitles, &tag);
+  std::ranges::sort(subtitles);
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, subtitles);
+}
+
+TEST_F(TestVersionSubtitles, AnEpisodeOfADvdFolderRipHasItsOwnSubtitles)
+{
+  const CVideoInfoTag tag{EpisodeTag(1, 3)};
+  Folder("VIDEO_TS");
+  const std::string disc{File(URIUtils::AddFileToFolder("VIDEO_TS", "VIDEO_TS.IFO"))};
+  std::vector<std::string> expected{File("M3GAN.eng.srt"), File("VIDEO_TS-S01E03.eng.srt"),
+                                    File("S01E03.fre.srt")};
+  File("VIDEO_TS-S01E04.eng.srt");
+  File("S01E04.fre.srt");
+
+  std::vector<std::string> subtitles;
+  CUtil::ScanForExternalSubtitles(disc, subtitles, &tag);
+  std::ranges::sort(subtitles);
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, subtitles);
+}
+
+// An episode of several in an ISO or a video file has the subtitles named after the file, and
+// those named after the file and the episode, but not another episode's, nor any by the episode
+// alone, as several files can share the folder
+TEST_F(TestVersionSubtitles, AnEpisodeOfAnIsoOrVideoFileHasItsOwnSubtitles)
+{
+  const CVideoInfoTag tag{EpisodeTag(1, 5)};
+  const std::string iso{File("Show.S01E05E06.iso")};
+  const std::string file{File("Show.S01E07E08.mkv")};
+  std::vector<std::string> expectedIso{File("Show.S01E05E06.eng.srt"),
+                                       File("Show.S01E05E06-S01E05.eng.srt")};
+  File("Show.S01E05E06-S01E06.eng.srt");
+  File("S01E05.eng.srt");
+  const CVideoInfoTag tag7{EpisodeTag(1, 7)};
+  std::vector<std::string> expectedFile{File("Show.S01E07E08.eng.srt"),
+                                        File("Show.S01E07E08-S01E07.eng.srt")};
+  File("Show.S01E07E08-S01E08.eng.srt");
+
+  std::vector<std::string> isoSubtitles;
+  CUtil::ScanForExternalSubtitles(URIUtils::GetBlurayPlaylistPath(iso, 800), isoSubtitles, &tag);
+  std::vector<std::string> fileSubtitles;
+  CUtil::ScanForExternalSubtitles(file, fileSubtitles, &tag7);
+  for (auto* list : {&isoSubtitles, &fileSubtitles, &expectedIso, &expectedFile})
+    std::ranges::sort(*list);
+  EXPECT_EQ(expectedIso, isoSubtitles);
+  EXPECT_EQ(expectedFile, fileSubtitles);
+}
+
+TEST_F(TestVersionAudio, AnEpisodeOfAFolderRipHasItsOwnAudio)
+{
+  const CVideoInfoTag tag{EpisodeTag()};
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  std::vector<std::string> expected{File("M3GAN.ac3"), File("index-S02E01.mka"),
+                                    File("S02E01.dts")};
+  File("index-S02E02.mka");
+  File("S02E02.dts");
+
+  std::vector<std::string> audio;
+  CUtil::ScanForExternalAudio(URIUtils::GetBlurayPlaylistPath(disc, 1001), audio, &tag);
+  std::ranges::sort(audio);
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, audio);
+}
+
+// An episode's own subtitle is not given the episode's name, as one named after the video is not
+TEST(TestUtil, ExternalStreamDetailsOfAnEpisodesSubtitle)
+{
+  const std::string external{
+      CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(21602)};
+  const CVideoInfoTag tag{EpisodeTag()};
+  for (const auto& [video, subtitle] :
+       {std::pair{URIUtils::GetBlurayPlaylistPath("/tv/Show/S02/BDMV/index.bdmv", 1001),
+                  std::string{"/tv/Show/S02/index-S02E01.eng.forced.ass"}},
+        std::pair{URIUtils::GetBlurayPlaylistPath("/tv/Show/S02/BDMV/index.bdmv", 1001),
+                  std::string{"/tv/Show/S02/S02E01.eng.forced.ass"}},
+        std::pair{std::string{"/tv/Show/Show.S02E01E02.mkv"},
+                  std::string{"/tv/Show/Show.S02E01E02-S02E01.eng.forced.ass"}}})
+  {
+    const ExternalStreamInfo info{
+        CUtil::GetExternalStreamDetailsFromFilename(video, subtitle, &tag)};
+    EXPECT_EQ(info.language.AsBcp47(), "en") << subtitle;
+    EXPECT_EQ(info.flag, StreamFlags::FLAG_FORCED) << subtitle;
+    EXPECT_EQ(info.name, external) << subtitle;
+  }
 }

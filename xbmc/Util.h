@@ -33,6 +33,7 @@ enum class LegalPath
 
 class CFileItem;
 class CFileItemList;
+class CVideoInfoTag;
 class CURL;
 
 struct ExternalStreamInfo
@@ -101,14 +102,25 @@ public:
   static void RemoveTempFiles();
 
   static void ClearSubtitles();
-  static void ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles );
+  /** \brief Retrieves paths of external subtitle files for a given video.
+  *   \param[in] strMovie The full path of the video file.
+  *   \param[out] vecSubtitles The full paths of the subtitle files found.
+  *   \param[in] tag The video's info, if any, so an episode's own subtitles are found
+  */
+  static void ScanForExternalSubtitles(const std::string& strMovie,
+                                       std::vector<std::string>& vecSubtitles,
+                                       const CVideoInfoTag* tag = nullptr);
 
   /** \brief Retrieves stream info of external associated files, e.g., subtitles, for a given video.
   *   \param[in] videoPath The full path of the video file.
   *   \param[in] associatedFile A file that provides additional streams for the given video file.
+  *   \param[in] tag The video's info, if any, so an episode's own name is left out of the stream's
   *   \return stream info for the given associatedFile
   */
-  static ExternalStreamInfo GetExternalStreamDetailsFromFilename(const std::string& videoPath, const std::string& associatedFile);
+  static ExternalStreamInfo GetExternalStreamDetailsFromFilename(
+      const std::string& videoPath,
+      const std::string& associatedFile,
+      const CVideoInfoTag* tag = nullptr);
   static bool FindVobSubPair( const std::vector<std::string>& vecSubtitles, const std::string& strIdxPath, std::string& strSubPath );
   static bool IsVobSub(const std::vector<std::string>& vecSubtitles, const std::string& strSubPath);
   static std::string GetVobSubSubFromIdx(const std::string& vobSubIdx);
@@ -117,8 +129,11 @@ public:
   /** \brief Retrieves paths of external audio files for a given video.
   *   \param[in] videoPath The full path of the video file.
   *   \param[out] vecAudio A vector containing the full paths of all found external audio files.
+  *   \param[in] tag The video's info, if any, so an episode's own audio is found
   */
-  static void ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio);
+  static void ScanForExternalAudio(const std::string& videoPath,
+                                   std::vector<std::string>& vecAudio,
+                                   const CVideoInfoTag* tag = nullptr);
   static int64_t ToInt64(uint32_t high, uint32_t low);
   static std::string GetNextFilename(const std::string &fn_template, int max);
   static std::string GetNextPathname(const std::string &path_template, int max);
@@ -259,24 +274,30 @@ public:
                                           std::string& basePath,
                                           std::string& videoFileName);
 
-  /*! \brief The names a version (playlist) of a bluray gives its own files beside the disc, as it
-   *         does its art: index-00800 and 00800 for a folder rip, M3GAN-00800 for M3GAN.iso.
+  /*! \brief The names a version (playlist) of a bluray, or an episode, gives its own files beside
+   *         its disc or file, as it does its art: index-S01E01, S01E01, index-00800 and 00800 for
+   *         a folder rip (VIDEO_TS-S01E01 for a dvd), M3GAN-00800 for M3GAN.iso, Show-S01E01 for
+   *         Show.iso or Show.mkv. An episode's come first.
    *  \param[in] videoPath The path of the video, a bluray:// playlist path for a version.
-   *  \return The names, without an extension, or none if the video is no version of a bluray.
+   *  \param[in] tag The video's info, if any, for an episode's season and episode.
+   *  \return The names, without an extension, or none if the video is neither.
    */
-  static std::vector<std::string> GetVersionFileNames(const std::string& videoPath);
+  static std::vector<std::string> GetVersionFileNames(const std::string& videoPath,
+                                                      const CVideoInfoTag* tag = nullptr);
 
-  /*! \brief Whether a file found for a version (playlist) of a bluray is another version's, named
-   *         after the video (M3GAN-00801), or as a folder rip's version names its own (index-00801
-   *         or 00801).
+  /*! \brief Whether a file found for a version (playlist) of a bluray, or for an episode, is
+   *         another version's or episode's, named as GetVersionFileNames() names it (M3GAN-00801,
+   *         index-00801, 00801, index-S01E02, S01E02), or in an archive so named.
    *  \param[in] file The file found.
    *  \param[in] videoName The name the video's files are found by, from
    *             GetVideoBasePathAndFileName().
    *  \param[in] videoPath The path of the video.
+   *  \param[in] tag The video's info, if any, for an episode's season and episode.
    */
   static bool IsAnotherVersionsFile(const std::string& file,
                                     const std::string& videoName,
-                                    const std::string& videoPath);
+                                    const std::string& videoPath,
+                                    const CVideoInfoTag* tag = nullptr);
 
   /*! \brief If a file has a stack://, bluray:// or archive (zip://, rar://, archive://) path,
    *         use the dynamic path for updates (settings, SaveFileStateJob) instead of the real path.
