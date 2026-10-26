@@ -235,8 +235,6 @@ protected:
     }
     if (m_scraperInfo)
     {
-      CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
-          CSettings::SETTING_EVENTLOG_ENABLED, m_eventLog);
       XFILE::CDirectory::RemoveRecursive(m_scraperInfo->Path());
       XFILE::CDirectory::RemoveRecursive(ScraperCacheFolder());
     }
@@ -333,12 +331,6 @@ protected:
                         SCRAPER_ID, m_db.GetPathId(m_root))));
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors =
         true;
-    // A video with no information found is logged as an event, which is sent to the GUI a test
-    // doesn't have
-    m_eventLog = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_EVENTLOG_ENABLED);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
-        CSettings::SETTING_EVENTLOG_ENABLED, false);
   }
 
   //! Installs the other scraper. Neither scraper can fetch the url it recognises, nor does the
@@ -458,7 +450,6 @@ protected:
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors};
   ADDON::AddonInfoPtr m_scraperInfo;
   ADDON::AddonType m_scraperType{ADDON::AddonType::SCRAPER_MOVIES};
-  bool m_eventLog{false};
   std::string m_otherScraper;
 };
 } // namespace
