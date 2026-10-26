@@ -49,6 +49,8 @@ private:
   unsigned int m_backlogSize = 0;
   double m_currentPts = DVD_NOPTS_VALUE;
   double m_nextPts = DVD_NOPTS_VALUE;
+  double m_currentEdlPts = DVD_NOPTS_VALUE;
+  double m_nextEdlPts = DVD_NOPTS_VALUE;
   std::string m_codecName;
 
   // TrueHD specifics
