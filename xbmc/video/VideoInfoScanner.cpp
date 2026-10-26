@@ -1844,7 +1844,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     if (pItem->IsFolder() || !IsVideo(*pItem) || pItem->IsNFO() ||
         (PLAYLIST::IsPlayList(*pItem) && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
-      return InfoRet::NOT_FOUND;
+      return InfoRet::NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 20394, pItem->GetLabel()))
       return InfoRet::CANCELLED;
