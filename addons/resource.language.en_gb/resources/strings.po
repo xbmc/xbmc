@@ -20269,6 +20269,7 @@ msgstr ""
 #: xbmc/video/VideoItemArtworkHandler.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
+#: xbmc/video/dialogs/GUIDialogSubtitleSettings.cpp
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr ""
