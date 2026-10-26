@@ -1,0 +1,149 @@
+package @APP_PACKAGE@;
+
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Process;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import java.util.List;
+
+// RestartActivity
+//
+// Runs in its own process. Started when the app is launched while the main
+// process is still shutting down; waits for that process to exit and then
+// launches the app again with the original intent.
+
+public class RestartActivity extends Activity
+{
+  private static final String TAG = "@APP_NAME@";
+  private static final int POLL_INTERVAL_MS = 200;
+  private static final String EXTRA_PID = "pid";
+
+  private final Handler mHandler = new Handler(Looper.getMainLooper());
+
+  // Called in the main process. A later launch replaces the one handed over before.
+  public static void handOver(Context context, Intent launchIntent)
+  {
+    Log.d(TAG, "@APP_NAME@ still shutting down; restart once it has exited");
+    Intent intent = new Intent(context, RestartActivity.class);
+    intent.putExtra(Intent.EXTRA_INTENT, launchIntent);
+    // Android may start a new main process meanwhile, e.g. for a content provider query, so wait
+    // for this very process
+    intent.putExtra(EXTRA_PID, Process.myPid());
+    // Temporary URI permissions end with the original launch, so pass them on
+    intent.setData(launchIntent.getData());
+    intent.setClipData(launchIntent.getClipData());
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    (launchIntent.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION)));
+    context.startActivity(intent);
+  }
+
+  // The main process' UI thread is blocked while the native side shuts down,
+  // so a new launch of Splash would hang until the process exits. Watch for
+  // such launches from a background thread and hand them over.
+  public static void watchForRelaunch(Context context)
+  {
+    Thread watcher = new Thread(() -> {
+      ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+      String splash = Splash.class.getName();
+      while (true)
+      {
+        for (ActivityManager.AppTask task : am.getAppTasks())
+        {
+          try
+          {
+            ActivityManager.RecentTaskInfo info = task.getTaskInfo();
+            ComponentName base = info.baseIntent.getComponent();
+            if (info.numActivities > 0 && base != null && splash.equals(base.getClassName()))
+            {
+              handOver(context, info.baseIntent);
+              task.finishAndRemoveTask();
+            }
+          }
+          catch (IllegalArgumentException e)
+          {
+            // The task was removed in the meantime
+          }
+        }
+
+        try
+        {
+          Thread.sleep(POLL_INTERVAL_MS);
+        }
+        catch (InterruptedException e)
+        {
+          return;
+        }
+      }
+    }, "RelaunchWatcher");
+    watcher.setDaemon(true);
+    watcher.start();
+  }
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+
+    setContentView(R.layout.activity_splash);
+    findViewById(R.id.progressBar1).setVisibility(View.INVISIBLE);
+    TextView textView = findViewById(R.id.textView1);
+    textView.setText(getString(R.string.starting, "@APP_NAME@"));
+
+    mHandler.post(this::restartWhenMainProcessExited);
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent)
+  {
+    super.onNewIntent(intent);
+    setIntent(intent);
+  }
+
+  @Override
+  protected void onDestroy()
+  {
+    mHandler.removeCallbacksAndMessages(null);
+    super.onDestroy();
+  }
+
+  private void restartWhenMainProcessExited()
+  {
+    if (isProcessRunning(getIntent().getIntExtra(EXTRA_PID, 0)))
+    {
+      mHandler.postDelayed(this::restartWhenMainProcessExited, POLL_INTERVAL_MS);
+      return;
+    }
+
+    Log.d(TAG, "RestartActivity: main process exited; restarting");
+    @SuppressWarnings("deprecation")
+    Intent intent = getIntent().getParcelableExtra(Intent.EXTRA_INTENT);
+    intent.setClass(this, Splash.class);
+    startActivity(intent);
+    finish();
+  }
+
+  private boolean isProcessRunning(int pid)
+  {
+    ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+    List<ActivityManager.RunningAppProcessInfo> processes = am.getRunningAppProcesses();
+    if (processes == null)
+      return false;
+
+    for (ActivityManager.RunningAppProcessInfo process : processes)
+    {
+      if (process.pid == pid)
+        return true;
+    }
+    return false;
+  }
+}
