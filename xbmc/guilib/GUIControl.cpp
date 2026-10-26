@@ -642,8 +642,9 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
-    if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.UpdateCondition(item);
+    // a reset animation isn't processed anymore, so it doesn't mark the control dirty itself
+    if (anim.GetType() == ANIM_TYPE_CONDITIONAL && anim.UpdateCondition(item))
+      MarkDirtyRegion();
   }
   // and check for conditional enabling, combined with status set with SetEnabled()
   const bool disabled = IsDisabled();

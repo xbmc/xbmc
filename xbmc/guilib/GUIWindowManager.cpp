@@ -1512,7 +1512,7 @@ void CGUIWindowManager::AfterRender()
   if (dialogDirty)
   {
     if (pWindow)
-      pWindow->MarkDirtyRegion();
+      pWindow->MarkDirtyRegion(CGUIControl::DIRTY_STATE_CHILD);
 
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
     for (const auto& window : activeDialogs)
