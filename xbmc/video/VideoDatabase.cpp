@@ -152,6 +152,24 @@ std::string GetSourcePathOfFile(const CMediaSource& source, const std::string& f
   return {};
 }
 
+// The file a clean checks for an entry of the files table
+std::string GetFileToCheck(std::string file)
+{
+  // get the first stacked file
+  if (URIUtils::IsStack(file))
+    file = CStackDirectory::GetFirstStackedFile(file);
+
+  // get the actual archive path
+  if (URIUtils::IsInArchive(file))
+    file = CURL(file).GetHostName();
+
+  // if bluray:// get actual path
+  if (URIUtils::IsBlurayPath(file))
+    file = URIUtils::GetDiscFile(file);
+
+  return file;
+}
+
 // Whether a scan caches art of this type, being on the art list
 bool IsCachedByScan(MEDIA::TYPE mediaType, const std::string& artType)
 {
@@ -10428,18 +10446,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         std::string fileName = m_pDS2->fv("files.strFileName").get_asString();
         std::string fullPath;
         ConstructPath(fullPath, path, fileName);
-
-        // get the first stacked file
-        if (URIUtils::IsStack(fullPath))
-          fullPath = CStackDirectory::GetFirstStackedFile(fullPath);
-
-        // get the actual archive path
-        if (URIUtils::IsInArchive(fullPath))
-          fullPath = CURL(fullPath).GetHostName();
-
-        // if bluray:// get actual path
-        if (URIUtils::IsBlurayPath(fullPath))
-          fullPath = URIUtils::GetDiscFile(fullPath);
+        fullPath = GetFileToCheck(fullPath);
 
         bool del = true;
         if (URIUtils::IsPlugin(fullPath))
@@ -11140,12 +11147,13 @@ std::vector<int> CVideoDatabase::CleanMediaType(MEDIA::TYPE mediaType,
 
   // now grab them media items. An item whose parent path has gone is checked against the
   // source of its own folder.
-  std::string sql =
-      PrepareSQL("SELECT %s.%s, %s.idFile, path.idPath, "
-                 "COALESCE(parentPath.strPath, path.strPath) FROM %s "
-                 "JOIN files ON files.idFile = %s.idFile "
-                 "JOIN path ON path.idPath = files.idPath ",
-                 table.c_str(), idField.c_str(), table.c_str(), table.c_str(), table.c_str());
+  std::string sql = PrepareSQL("SELECT %s.%s, %s.idFile, path.idPath, "
+                               "COALESCE(parentPath.strPath, path.strPath), path.strPath, "
+                               "files.strFilename%s FROM %s "
+                               "JOIN files ON files.idFile = %s.idFile "
+                               "JOIN path ON path.idPath = files.idPath ",
+                               table.c_str(), idField.c_str(), table.c_str(),
+                               isEpisode ? ", showPath.strPath" : "", table.c_str(), table.c_str());
 
   if (isEpisode)
     sql += "JOIN tvshowlinkpath ON tvshowlinkpath.idShow = episode.idShow JOIN path AS showPath ON showPath.idPath=tvshowlinkpath.idPath ";
@@ -11165,9 +11173,35 @@ std::vector<int> CVideoDatabase::CleanMediaType(MEDIA::TYPE mediaType,
   std::map<int, bool> sourcePathsExist;
   // An episode is listed once for each folder of its show
   std::set<int> cleaned;
+  const auto showFolderHoldsFile = [this]
+  {
+    std::string file;
+    ConstructPath(file, m_pDS2->fv(4).get_asString(), m_pDS2->fv(5).get_asString());
+    return URIUtils::PathHasParent(GetFileToCheck(file), m_pDS2->fv(6).get_asString());
+  };
   m_pDS2->query(sql);
+
+  // Only the folder of its show that holds the file of an episode decides about it, so that
+  // another folder's source doesn't remove it. An episode in none of them goes by them all.
+  std::set<int> heldByAFolder;
+  if (isEpisode)
+  {
+    for (; !m_pDS2->eof(); m_pDS2->next())
+    {
+      if (showFolderHoldsFile())
+        heldByAFolder.insert(m_pDS2->fv(0).get_asInt());
+    }
+    m_pDS2->first();
+  }
+
   while (!m_pDS2->eof())
   {
+    if (isEpisode && heldByAFolder.contains(m_pDS2->fv(0).get_asInt()) && !showFolderHoldsFile())
+    {
+      m_pDS2->next();
+      continue;
+    }
+
     bool del = true;
     if (m_pDS2->fv(3).get_isNull() == false)
     {

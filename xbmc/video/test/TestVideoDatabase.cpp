@@ -1502,6 +1502,32 @@ TEST_F(TestVideoDatabaseClean, KeepsAnEpisodeOutsideTheSourcesWhileItExists)
                    m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
 }
 
+// The source of the show's other folder is available, but doesn't hold the episode
+TEST_F(TestVideoDatabaseClean, KeepsAnEpisodeInAnUnavailableFolderOfAShow)
+{
+  const std::string shows{Folder(m_root, "shows")};
+  AddSource(shows, "tvshows");
+  const std::string offline{Folder(m_root, "offline", false)};
+  AddSource(offline, "tvshows");
+  const std::string available{Folder(shows, "Show")};
+  const std::string unavailable{Folder(offline, "Show", false)};
+
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Show";
+  tag.m_strPath = available;
+  const int idShow{m_db.SetDetailsForTvShow({available, unavailable}, tag, KODI::ART::Artwork{},
+                                            KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(idShow, 0);
+  const int idEpisode{
+      AddEpisode(idShow, URIUtils::AddFileToFolder(unavailable, "Show S01E01.mkv"), 1)};
+  ASSERT_GT(idEpisode, 0);
+
+  Clean();
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
+}
+
 TEST_F(TestVideoDatabaseClean, KeepsAVersionOutsideTheSourcesWhileItExists)
 {
   const std::string movies{Folder(m_root, "movies")};
