@@ -11138,7 +11138,8 @@ std::vector<int> CVideoDatabase::CleanMediaType(MEDIA::TYPE mediaType,
                             sourcePath.empty() &&
                             !IsDefaultVideoVersion(m_pDS2->fv(1).get_asInt())};
 
-      if (sourceNotFound && sourcePath.empty())
+      // Without a source path with content set, the parent path is checked and named instead
+      if (sourcePath.empty())
         sourcePath = parentPath;
 
       int sourcePathID = GetPathId(sourcePath);

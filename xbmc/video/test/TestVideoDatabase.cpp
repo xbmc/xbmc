@@ -1557,6 +1557,24 @@ TEST_F(TestVideoDatabaseClean, KeepsThePathOfAFolderStillOnDiskThatLostItsMedia)
   EXPECT_GT(m_db.GetPathId(film), 0);
 }
 
+// No path of the source has content set, so the movie's parent path stands in for the source
+TEST_F(TestVideoDatabaseClean, RemovesAMovieThatHasGoneFromASourceWithoutContent)
+{
+  const std::string videos{Folder(m_root, "videos")};
+  CMediaSource source;
+  source.FromNameAndPaths(videos, {videos});
+  CMediaSourceSettings::GetInstance()
+      .GetSources(KODI::MEDIA::MediaSection::VIDEO)
+      .push_back(source);
+  const std::string gone{File(Folder(videos, "Film (2010)"), "Film (2010).mkv")};
+  ASSERT_GT(AddMovie(gone), 0);
+
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+  Clean();
+
+  EXPECT_LE(m_db.GetMovieId(gone), 0);
+}
+
 // Media outside the paths being cleaned is not checked, so the entry of its path must stay too
 TEST_F(TestVideoDatabaseClean, KeepsThePathOfMediaNotCleaned)
 {
