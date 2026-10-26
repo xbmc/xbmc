@@ -79,7 +79,7 @@ protected:
     m_settings.host = CSpecialProtocol::TranslatePath("special://temp/");
     ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, m_db.Connect(DB_NAME, m_settings, true));
 
-    // The test environment has no announcement manager. An unstarted one only queues them.
+    // One of the test's own, so a scan's announcements go nowhere
     m_previousAnnouncementManager = CServiceBroker::GetAnnouncementManager();
     CServiceBroker::RegisterAnnouncementManager(
         std::make_shared<ANNOUNCEMENT::CAnnouncementManager>());
