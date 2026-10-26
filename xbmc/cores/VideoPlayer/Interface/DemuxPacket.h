@@ -44,6 +44,9 @@ extern "C"
     //! @brief PTS offset correction applied to the PTS and DTS.
     double m_ptsOffsetCorrection{0};
 
+    //! @brief Packet timestamp on the original-media EDL timeline, in DVD time units.
+    double edlPts{DVD_NOPTS_VALUE};
+
     //! @brief Packet is a keyframe, only set by demuxers that know it.
     bool m_keyFrame{false};
   };
