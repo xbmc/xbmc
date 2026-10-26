@@ -128,7 +128,8 @@ public:
 
   /** \brief Retrieves paths of external audio files for a given video.
   *   \param[in] videoPath The full path of the video file.
-  *   \param[out] vecAudio A vector containing the full paths of all found external audio files.
+  *   \param[in,out] vecAudio The full paths of all found external audio files are appended to
+  *               it. What it already holds, such as the video itself, is kept.
   *   \param[in] tag The video's info, if any, so an episode's own audio is found
   */
   static void ScanForExternalAudio(const std::string& videoPath,

@@ -94,6 +94,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -2166,6 +2167,33 @@ std::string GetDiscName(const std::string& videoPath)
   URIUtils::RemoveExtension(disc);
   return disc;
 }
+
+//! Whether the video is an extra of the movie on its disc, such as a featurette: one of the disc's
+//! playlists, whose files beside the disc are the movie's unless named for it
+bool IsDiscExtra(const std::string& videoPath, const CVideoInfoTag* tag)
+{
+  return tag && tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA &&
+         URIUtils::GetBlurayPlaylistFromPath(videoPath) > -1;
+}
+
+//! Whether a file found for a disc's extra is named for its playlist, as its art is (index-00805,
+//! 00805, M3GAN-00805), or is in an archive so named
+bool IsDiscExtrasOwnFile(const std::string& file,
+                         const std::string& videoName,
+                         const std::string& videoPath,
+                         const CVideoInfoTag* tag)
+{
+  if (URIUtils::IsInArchive(file) &&
+      IsDiscExtrasOwnFile(CURL(file).GetHostName(), videoName, videoPath, tag))
+    return true;
+
+  std::vector<std::string> ownNames{CUtil::GetVersionFileNames(videoPath, tag)};
+  ownNames.emplace_back(
+      StringUtils::Format("{}-{:05}", videoName, URIUtils::GetBlurayPlaylistFromPath(videoPath)));
+  const std::string name{URIUtils::GetFileName(file)};
+  return std::ranges::any_of(ownNames, [&name](const std::string& own)
+                             { return StringUtils::StartsWithNoCase(name, own); });
+}
 } // namespace
 
 std::vector<std::string> CUtil::GetVersionFileNames(const std::string& videoPath,
@@ -2320,6 +2348,11 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
 
   std::erase_if(vecSubtitles, [&strSubtitle, &strMovie, tag](const std::string& subtitle)
                 { return IsAnotherVersionsFile(subtitle, strSubtitle, strMovie, tag); });
+
+  // An extra on the movie's disc has only those named for it: the others there are the movie's
+  if (IsDiscExtra(strMovie, tag))
+    std::erase_if(vecSubtitles, [&strSubtitle, &strMovie, tag](const std::string& subtitle)
+                  { return !IsDiscExtrasOwnFile(subtitle, strSubtitle, strMovie, tag); });
 
   size_t iSize = vecSubtitles.size();
   for (size_t i = 0; i < iSize; i++)
@@ -2604,6 +2637,9 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath,
       item.IsPVR() || !VIDEO::IsVideo(item))
     return;
 
+  // What the caller passes in, such as the video itself ahead of its audio, is kept as it is
+  const auto passedIn{static_cast<std::ptrdiff_t>(vecAudio.size())};
+
   std::string strBasePath;
   std::string strAudio;
 
@@ -2638,8 +2674,17 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath,
       ScanPathsForAssociatedItems(name, items, exts, vecAudio);
   }
 
-  std::erase_if(vecAudio, [&strAudio, &videoPath, tag](const std::string& audio)
-                { return IsAnotherVersionsFile(audio, strAudio, videoPath, tag); });
+  // Another version's is left out. An extra on the movie's disc has only that named for it, even
+  // where all the audio beside a video is used: the rest there is the movie's.
+  const bool discExtra{IsDiscExtra(videoPath, tag)};
+  vecAudio.erase(std::remove_if(vecAudio.begin() + passedIn, vecAudio.end(),
+                                [&strAudio, &videoPath, tag, discExtra](const std::string& audio)
+                                {
+                                  return IsAnotherVersionsFile(audio, strAudio, videoPath, tag) ||
+                                         (discExtra &&
+                                          !IsDiscExtrasOwnFile(audio, strAudio, videoPath, tag));
+                                }),
+                 vecAudio.end());
 }
 
 bool CUtil::CanBindPrivileged()
