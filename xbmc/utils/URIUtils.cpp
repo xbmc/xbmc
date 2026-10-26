@@ -12,6 +12,8 @@
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
+#include "URIParser.h"
+#include "URIPolicy.h"
 #include "URL.h"
 #include "Util.h"
 #ifdef HAVE_LIBBLURAY
@@ -124,6 +126,20 @@ std::string Decode(std::string_view encoded, std::string_view specialChars)
   return decodedUrl;
 }
 
+bool IsLosslessURILocation(std::string_view path)
+{
+  return URIPolicy::IsURILocation(path) && !URIPolicy::UsesLegacyURL(path);
+}
+
+bool HasSameURIIdentity(const CURL& left, const CURL& right)
+{
+  return left.IsLosslessURI() && right.IsLosslessURI() &&
+         left.GetProtocol() == right.GetProtocol() && left.HasAuthority() == right.HasAuthority() &&
+         left.GetRawAuthority() == right.GetRawAuthority() && left.HasQuery() == right.HasQuery() &&
+         left.GetRawQuery() == right.GetRawQuery() && left.HasFragment() == right.HasFragment() &&
+         left.GetRawFragment() == right.GetRawFragment();
+}
+
 } // Unnamed namespace
 
 std::string URIUtils::URLDecode(std::string_view encoded)
@@ -159,12 +175,6 @@ void URIUtils::RegisterAdvancedSettings(const CAdvancedSettings& advancedSetting
 void URIUtils::UnregisterAdvancedSettings()
 {
   m_advancedSettings = nullptr;
-}
-
-/* returns filename extension including period of filename */
-std::string URIUtils::GetExtension(const CURL& url)
-{
-  return url.GetExtension();
 }
 
 static constexpr int NO_EXTENSION{-1};
@@ -247,60 +257,24 @@ int FindExtension(const std::string& path,
   // Single dot extension
   return static_cast<int>(period);
 }
-} // namespace
 
-std::string URIUtils::GetExtension(const std::string& path)
+std::string PathFileName(std::string_view path, bool nativeDrive = false)
 {
-  if (IsURL(path))
-  {
-    CURL url(path);
-    return url.GetExtension();
-  }
-
-  if (const int extension{FindExtension(path)}; extension != NO_EXTENSION)
-    return path.substr(extension);
-  return {};
+  const size_t slash = path.find_last_of("/\\");
+  if (slash != std::string_view::npos)
+    return std::string{path.substr(slash + 1)};
+  if (nativeDrive && path.size() > 1 && path[1] == ':')
+    path.remove_prefix(2);
+  return std::string{path};
 }
 
-bool URIUtils::HasExtension(const std::string& path)
+bool PathEndsInSlash(std::string_view path)
 {
-  if (IsURL(path))
-  {
-    CURL url(path);
-    return HasExtension(url.GetFileName());
-  }
-
-  return FindExtension(path) != NO_EXTENSION;
+  return !path.empty() && (path.back() == '/' || path.back() == '\\');
 }
 
-bool URIUtils::HasExtension(const CURL& url, std::string_view strExtensions)
+void RemovePathExtension(std::string& path)
 {
-  return url.HasExtension(strExtensions);
-}
-
-bool URIUtils::HasExtension(const std::string& path, std::string_view extensions)
-{
-  if (IsURL(path))
-  {
-    const CURL url(path);
-    return HasExtension(url.GetFileName(), extensions);
-  }
-
-  return FindExtension(path, extensions, FindExtensions::ONLY_IN_LIST) != NO_EXTENSION;
-}
-
-void URIUtils::RemoveExtension(std::string& path)
-{
-  if (IsURL(path))
-  {
-    CURL url(path);
-    path = url.GetFileName();
-    RemoveExtension(path);
-    url.SetFileName(path);
-    path = url.Get();
-    return;
-  }
-
   // Extensions to remove
   const std::string extensions{
       // clang-format off
@@ -326,15 +300,8 @@ void URIUtils::RemoveExtension(std::string& path)
   }
 }
 
-std::string URIUtils::ReplaceExtension(const std::string& path, const std::string& newExtension)
+std::string ReplacePathExtension(const std::string& path, const std::string& newExtension)
 {
-  if (IsURL(path))
-  {
-    CURL url(path);
-    url.SetFileName(ReplaceExtension(url.GetFileName(), newExtension));
-    return url.Get();
-  }
-
   const int extension{
       FindExtension(path, "", FindExtensions::ALL_EXTENSIONS, FinalDot::CONSIDER_FINAL_DOT)};
   std::string_view base{path};
@@ -347,6 +314,79 @@ std::string URIUtils::ReplaceExtension(const std::string& path, const std::strin
   return result;
 }
 
+} // namespace
+
+std::string URIUtils::GetExtension(const std::string& path)
+{
+  if (URIPolicy::IsURILocation(path))
+    return GetExtension(CURL{path});
+
+  if (const int extension{FindExtension(path)}; extension != NO_EXTENSION)
+    return path.substr(extension);
+  return {};
+}
+
+/* returns filename extension including period of filename */
+std::string URIUtils::GetExtension(const CURL& url)
+{
+  if (!url.SupportsPathOperations())
+    return {};
+  const auto& path = url.GetFileName();
+  if (const int extension{FindExtension(path)}; extension != NO_EXTENSION)
+    return path.substr(extension);
+  return {};
+}
+
+bool URIUtils::HasExtension(const std::string& path)
+{
+  if (URIPolicy::IsURILocation(path))
+    return !GetExtension(CURL{path}).empty();
+  return FindExtension(path) != NO_EXTENSION;
+}
+
+bool URIUtils::HasExtension(const CURL& url, std::string_view strExtensions)
+{
+  return url.SupportsPathOperations() &&
+         FindExtension(url.GetFileName(), strExtensions, FindExtensions::ONLY_IN_LIST) !=
+             NO_EXTENSION;
+}
+
+bool URIUtils::HasExtension(const std::string& path, std::string_view extensions)
+{
+  if (URIPolicy::IsURILocation(path))
+    return HasExtension(CURL{path}, extensions);
+  return FindExtension(path, extensions, FindExtensions::ONLY_IN_LIST) != NO_EXTENSION;
+}
+
+void URIUtils::RemoveExtension(std::string& path)
+{
+  if (URIPolicy::IsURILocation(path))
+  {
+    CURL url(path);
+    if (!url.SupportsPathOperations())
+      return;
+    std::string file = url.GetFileName();
+    RemovePathExtension(file);
+    url.SetFileName(file);
+    path = url.Get();
+    return;
+  }
+  RemovePathExtension(path);
+}
+
+std::string URIUtils::ReplaceExtension(const std::string& path, const std::string& newExtension)
+{
+  if (URIPolicy::IsURILocation(path))
+  {
+    CURL url(path);
+    if (!url.SupportsPathOperations())
+      return path;
+    url.SetFileName(ReplacePathExtension(url.GetFileName(), newExtension));
+    return url.Get();
+  }
+  return ReplacePathExtension(path, newExtension);
+}
+
 bool URIUtils::HasPluginPath(const CFileItem& item)
 {
   return IsPlugin(item.GetPath()) || IsPlugin(item.GetDynPath());
@@ -354,7 +394,9 @@ bool URIUtils::HasPluginPath(const CFileItem& item)
 
 std::string URIUtils::GetFileName(const CURL& url)
 {
-  return GetFileName(url.GetFileName());
+  if (!url.SupportsPathOperations())
+    return {};
+  return PathFileName(url.GetFileName(), url.GetProtocol().empty());
 }
 
 std::string URIUtils::GetDecodedFileName(const std::string& strFileNameAndPath)
@@ -366,27 +408,24 @@ std::string URIUtils::GetDecodedFileName(const std::string& strFileNameAndPath)
 /* handles both / and \, and options in urls*/
 std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
 {
-  if(IsURL(strFileNameAndPath))
-  {
-    CURL url(strFileNameAndPath);
-    return GetFileName(url.GetFileName());
-  }
-
-  int i = strFileNameAndPath.size() - 1;
-  while (i >= 0)
-  {
-    const char ch = strFileNameAndPath[i];
-    // Only break on ':' if it's a drive separator for DOS (ie d:foo)
-    if (ch == '/' || ch == '\\' || (ch == ':' && i == 1))
-      break;
-    else
-      i--;
-  }
-  return strFileNameAndPath.substr(i + 1);
+  if (URIPolicy::IsURILocation(strFileNameAndPath))
+    return GetFileName(CURL{strFileNameAndPath});
+  return PathFileName(strFileNameAndPath, true);
 }
 
 std::string URIUtils::GetFileOrFolderName(std::string_view path)
 {
+  if (IsLosslessURILocation(path))
+  {
+    const CURL url{std::string{path}};
+    if (!url.SupportsPathOperations())
+      return {};
+    std::string file = url.GetFileName();
+    if (PathEndsInSlash(file))
+      file.pop_back();
+    return PathFileName(file);
+  }
+
   if (path.empty())
     return {};
 
@@ -408,6 +447,13 @@ std::string URIUtils::GetFileOrFolderName(std::string_view path)
 void URIUtils::Split(const std::string& strFileNameAndPath,
                      std::string& strPath, std::string& strFileName)
 {
+  if (IsLosslessURILocation(strFileNameAndPath))
+  {
+    strPath = GetDirectory(strFileNameAndPath);
+    strFileName = GetFileName(CURL{strFileNameAndPath});
+    return;
+  }
+
   //Splits a full filename in path and file.
   //ex. smb://computer/share/directory/filename.ext -> strPath:smb://computer/share/directory/ and strFileName:filename.ext
   //Trailing slash will be preserved
@@ -439,6 +485,21 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
 std::vector<std::string> URIUtils::SplitPath(const std::string& path)
 {
   const CURL url{path};
+  if (!url.SupportsPathOperations())
+    return {};
+  if (url.IsLosslessURI())
+  {
+    std::string file = url.GetRawPath();
+    CURL root{url};
+    root.SetURIPath(file.starts_with('/') ? "/" : "");
+    if (file.starts_with('/'))
+      file.erase(0, 1);
+    auto dirs = StringUtils::Split(file, "/");
+    if (!dirs.empty() && dirs.back().empty())
+      dirs.pop_back();
+    dirs.insert(dirs.begin(), root.Get());
+    return dirs;
+  }
 
   // Split the filename portion of the URL up into separate directories
   const char sep{url.GetDirectorySeparator()};
@@ -457,6 +518,46 @@ std::vector<std::string> URIUtils::SplitPath(const std::string& path)
 
 void URIUtils::GetCommonPath(std::string& parent, std::string_view path)
 {
+  const bool parentIsURI = IsLosslessURILocation(parent);
+  const bool pathIsURI = IsLosslessURILocation(path);
+  if (parentIsURI || pathIsURI)
+  {
+    if (!parentIsURI || !pathIsURI)
+    {
+      parent.clear();
+      return;
+    }
+    CURL parentURL{parent};
+    const CURL otherURL{std::string{path}};
+    if (!parentURL.SupportsPathOperations() || !otherURL.SupportsPathOperations() ||
+        !HasSameURIIdentity(parentURL, otherURL))
+    {
+      parent.clear();
+      return;
+    }
+    std::string common = parentURL.GetRawPath();
+    const std::string other = otherURL.GetRawPath();
+    if (common.starts_with('/') != other.starts_with('/'))
+    {
+      parent.clear();
+      return;
+    }
+    size_t length = 0;
+    while (length < std::min(common.size(), other.size()) && common[length] == other[length])
+      ++length;
+    common.resize(length);
+    if (!common.ends_with('/'))
+    {
+      const auto slash = common.rfind('/');
+      common.resize(slash == std::string::npos ? 0 : slash + 1);
+    }
+    if (!parentURL.SetURIPath(std::move(common)))
+      parent.clear();
+    else
+      parent = parentURL.Get();
+    return;
+  }
+
   const size_t maxCompare{std::min(parent.size(), path.size())};
   size_t i{0};
   while (i < maxCompare && std::tolower(parent[i]) == std::tolower(path[i]))
@@ -497,6 +598,22 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   strParent.clear();
 
   CURL url(strPath);
+  if (!url.SupportsPathOperations())
+    return false;
+  if (url.IsLosslessURI())
+  {
+    std::string file = url.GetRawPath();
+    if (file.empty() || file == "/")
+      return false;
+    if (file.back() == '/')
+      file.pop_back();
+    const auto slash = file.rfind('/');
+    file.resize(slash == std::string::npos ? 0 : slash + 1);
+    if (!url.SetURIPath(std::move(file)))
+      return false;
+    strParent = url.Get();
+    return true;
+  }
   std::string strFile = url.GetFileName();
   if (url.HasParentInHostname() && strFile.empty())
   {
@@ -571,7 +688,7 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
   else if (url.IsProtocol("special"))
   {
-    if (HasSlashAtEnd(strFile))
+    if (PathEndsInSlash(strFile))
       strFile.erase(strFile.size() - 1);
     if(strFile.rfind('/') == std::string::npos)
       return false;
@@ -589,7 +706,7 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     return false;
   }
 
-  if (HasSlashAtEnd(strFile) )
+  if (PathEndsInSlash(strFile))
   {
     strFile.erase(strFile.size() - 1);
   }
@@ -608,7 +725,10 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
 
   strFile.erase(iPos);
 
-  AddSlashAtEnd(strFile);
+  if (url.GetProtocol().empty())
+    AddSlashAtEnd(strFile);
+  else if (!PathEndsInSlash(strFile))
+    strFile += url.GetDirectorySeparator();
 
   url.SetFileName(strFile);
   strParent = url.Get();
@@ -868,6 +988,9 @@ std::string URLDecodePath(const std::string& strPath)
 
 std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::string &fromFile, const std::string &toPath, const bool &bAddPath /* = true */)
 {
+  if (!CURL{fromPath}.SupportsPathOperations() || !CURL{toPath}.SupportsPathOperations())
+    return {};
+
   std::string toFile = fromFile;
 
   // Convert back slashes to forward slashes, if required
@@ -899,7 +1022,8 @@ std::string URIUtils::ChangeBasePath(const std::string &fromPath, const std::str
 CURL URIUtils::SubstitutePath(const CURL& url, bool reverse /* = false */)
 {
   const std::string pathToUrl = url.Get();
-  return CURL(SubstitutePath(pathToUrl, reverse));
+  const std::string substituted = SubstitutePath(pathToUrl, reverse);
+  return substituted == pathToUrl ? url : CURL(substituted);
 }
 
 std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /* = false */)
@@ -950,6 +1074,27 @@ bool URIUtils::PathHasParent(std::string path, std::string parent, bool translat
   if (path == parent)
     return true;
 
+  const bool pathIsURI = IsLosslessURILocation(path);
+  const bool parentIsURI = IsLosslessURILocation(parent);
+  if (pathIsURI || parentIsURI)
+  {
+    if (!pathIsURI || !parentIsURI)
+      return false;
+
+    const CURL pathURL{path};
+    const CURL parentURL{parent};
+    if (!pathURL.SupportsPathOperations() || !parentURL.SupportsPathOperations() ||
+        !HasSameURIIdentity(pathURL, parentURL))
+      return false;
+
+    std::string parentPath = parentURL.GetRawPath();
+    if (parentPath.empty())
+      return !pathURL.GetRawPath().starts_with('/');
+    if (!parentPath.ends_with('/'))
+      parentPath += '/';
+    return pathURL.GetRawPath().starts_with(parentPath);
+  }
+
   // Make sure parent has a trailing slash
   AddSlashAtEnd(parent);
 
@@ -960,8 +1105,12 @@ bool URIUtils::PathEquals(std::string path1, std::string path2, bool ignoreTrail
 {
   if (ignoreURLOptions)
   {
-    path1 = CURL(path1).GetWithoutOptions();
-    path2 = CURL(path2).GetWithoutOptions();
+    const CURL first{path1};
+    const CURL second{path2};
+    if (!first.PreservesQueryIdentity())
+      path1 = first.GetWithoutOptions();
+    if (!second.PreservesQueryIdentity())
+      path2 = second.GetWithoutOptions();
   }
 
   if (ignoreTrailingSlash)
@@ -1351,7 +1500,7 @@ bool URIUtils::IsSmb(const std::string& strFile)
 
 bool URIUtils::IsURL(std::string_view file)
 {
-  return file.find("://") != std::string::npos;
+  return URIPolicy::IsLegacyURL(file);
 }
 
 bool URIUtils::IsFTP(const std::string& strFile)
@@ -1686,45 +1835,37 @@ std::string URIUtils::AppendSlash(std::string strFolder)
 
 void URIUtils::AddSlashAtEnd(std::string& strFolder)
 {
-  if (IsURL(strFolder))
+  if (URIPolicy::IsURILocation(strFolder))
   {
     CURL url(strFolder);
+    if (!url.SupportsPathOperations())
+      return;
     std::string file = url.GetFileName();
-    if(!file.empty() && file != strFolder)
+    if (!file.empty())
     {
-      AddSlashAtEnd(file);
+      if (!PathEndsInSlash(file))
+        file += url.GetDirectorySeparator();
       url.SetFileName(file);
       strFolder = url.Get();
     }
     return;
   }
 
-  if (!HasSlashAtEnd(strFolder))
-  {
-    if (IsDOSPath(strFolder))
-      strFolder += '\\';
-    else
-      strFolder += '/';
-  }
+  if (!PathEndsInSlash(strFolder))
+    strFolder += IsDOSPath(strFolder) ? '\\' : '/';
 }
 
 bool URIUtils::HasSlashAtEnd(std::string_view file, bool checkURL /* = false */)
 {
-  if (file.empty())
-    return false;
-
-  if (checkURL && IsURL(file))
+  if (checkURL && URIPolicy::IsURILocation(file))
   {
-    CURL url(std::string{file});
-    const std::string& filename = url.GetFileName();
-    return filename.empty() || HasSlashAtEnd(filename, false);
+    const CURL url{std::string{file}};
+    if (!url.SupportsPathOperations())
+      return false;
+    return (!url.IsLosslessURI() && url.GetFileName().empty()) ||
+           PathEndsInSlash(url.GetFileName());
   }
-
-  const char kar = file.back();
-  if (kar == '/' || kar == '\\')
-    return true;
-
-  return false;
+  return PathEndsInSlash(file);
 }
 
 void URIUtils::RemoveSlashAtEnd(std::string& strFolder)
@@ -1733,23 +1874,27 @@ void URIUtils::RemoveSlashAtEnd(std::string& strFolder)
   if (IsPVRGuideItem(strFolder))
     return;
 
-  if (IsURL(strFolder))
+  if (URIPolicy::IsURILocation(strFolder))
   {
     CURL url(strFolder);
+    if (!url.SupportsPathOperations())
+      return;
     std::string file = url.GetFileName();
-    if (!file.empty() && file != strFolder)
+    if (!file.empty())
     {
-      RemoveSlashAtEnd(file);
+      const size_t minimum = url.IsLosslessURI() && file.starts_with('/') ? 1 : 0;
+      while (file.size() > minimum && PathEndsInSlash(file))
+        file.pop_back();
       url.SetFileName(file);
       strFolder = url.Get();
       return;
     }
-    if(url.GetHostName().empty())
+    if (url.GetHostName().empty() || url.IsLosslessURI())
       return;
   }
 
-  while (HasSlashAtEnd(strFolder))
-    strFolder.erase(strFolder.size()-1, 1);
+  while (PathEndsInSlash(strFolder))
+    strFolder.pop_back();
 }
 
 bool URIUtils::CompareWithoutSlashAtEnd(const std::string& strPath1, const std::string& strPath2)
@@ -1760,8 +1905,11 @@ bool URIUtils::CompareWithoutSlashAtEnd(const std::string& strPath1, const std::
   return StringUtils::EqualsNoCase(strc1, strc2);
 }
 
-
-std::string URIUtils::FixSlashesAndDups(const std::string& path, const char slashCharacter /* = '/' */, const size_t startFrom /*= 0*/)
+namespace
+{
+std::string FixPathSlashes(const std::string& path,
+                           const char slashCharacter /* = '/' */,
+                           const size_t startFrom /*= 0*/)
 {
   const size_t len = path.length();
   if (startFrom >= len)
@@ -1789,9 +1937,26 @@ std::string URIUtils::FixSlashesAndDups(const std::string& path, const char slas
 
   return result;
 }
+} // namespace
 
+std::string URIUtils::FixSlashesAndDups(const std::string& path,
+                                        const char slashCharacter /* = '/' */,
+                                        const size_t startFrom /*= 0*/)
+{
+  if (URIPolicy::IsURILocation(path))
+  {
+    CURL url{path};
+    if (!url.SupportsPathOperations())
+      return path;
+    url.SetFileName(FixPathSlashes(url.GetFileName(), slashCharacter, startFrom));
+    return url.Get();
+  }
+  return FixPathSlashes(path, slashCharacter, startFrom);
+}
 
-std::string URIUtils::CanonicalizePath(const std::string& path, const char slashCharacter /*= '\\'*/)
+namespace
+{
+std::string CanonicalizePathComponent(const std::string& path, const char slashCharacter /*= '\\'*/)
 {
   assert(slashCharacter == '\\' || slashCharacter == '/');
 
@@ -1823,37 +1988,57 @@ std::string URIUtils::CanonicalizePath(const std::string& path, const char slash
 
   return result;
 }
+} // namespace
 
-std::string URIUtils::AddFileToFolder(const std::string& strFolder,
-                                const std::string& strFile)
+std::string URIUtils::CanonicalizePath(const std::string& path,
+                                       const char slashCharacter /*= '\\'*/)
 {
-  if (IsURL(strFolder))
+  if (URIPolicy::IsURILocation(path))
   {
-    CURL url(strFolder);
-    if (url.GetFileName() != strFolder)
-    {
-      url.SetFileName(AddFileToFolder(url.GetFileName(), strFile));
-      return url.Get();
-    }
+    CURL url{path};
+    if (!url.SupportsPathOperations())
+      return path;
+    url.SetFileName(CanonicalizePathComponent(url.GetFileName(), slashCharacter));
+    return url.Get();
   }
+  return CanonicalizePathComponent(path, slashCharacter);
+}
 
-  std::string strResult = strFolder;
-  if (!strResult.empty())
-    AddSlashAtEnd(strResult);
+std::string URIUtils::AddFileToFolder(const std::string& strFolder, const std::string& strFile)
+{
+  const bool isURI = URIPolicy::IsURILocation(strFolder);
+  CURL url;
+  if (isURI)
+  {
+    url.Parse(strFolder);
+    if (!url.SupportsPathOperations())
+      return {};
+  }
+  std::string result = isURI ? url.GetFileName() : strFolder;
+  if ((!result.empty() || (isURI && url.IsLosslessURI() && url.HasAuthority())) &&
+      !PathEndsInSlash(result))
+    result += isURI ? '/' : (IsDOSPath(strFolder) ? '\\' : '/');
 
   // Remove any slash at the start of the file
   if (!strFile.empty() && (strFile[0] == '/' || strFile[0] == '\\'))
-    strResult += strFile.substr(1);
+    result += strFile.substr(1);
   else
-    strResult += strFile;
-
+    result += strFile;
   // correct any slash directions
-  if (!IsDOSPath(strFolder))
-    StringUtils::Replace(strResult, '\\', '/');
+  if (isURI || !IsDOSPath(strFolder))
+    StringUtils::Replace(result, '\\', '/');
   else
-    StringUtils::Replace(strResult, '/', '\\');
+    StringUtils::Replace(result, '/', '\\');
 
-  return strResult;
+  if (isURI)
+  {
+    if (url.IsLosslessURI() && !url.SetURIPath(result))
+      return {};
+    if (!url.IsLosslessURI())
+      url.SetFileName(result);
+    return url.Get();
+  }
+  return result;
 }
 
 std::string URIUtils::AddFileToFolderMatchingEncoding(const std::string& strFolder,
@@ -1867,6 +2052,17 @@ std::string URIUtils::AddFileToFolderMatchingEncoding(const std::string& strFold
 
 std::string URIUtils::GetDirectory(const std::string &strFilePath)
 {
+  if (IsLosslessURILocation(strFilePath))
+  {
+    CURL url{strFilePath};
+    if (!url.SupportsPathOperations())
+      return {};
+    const auto& file = url.GetFileName();
+    const auto slash = file.find_last_of("/\\");
+    url.SetFileName(slash == std::string::npos ? "" : file.substr(0, slash + 1));
+    return url.Get();
+  }
+
   // Will from a full filename return the directory the file resides in.
   // Keeps the final slash at end and possible |option=foo options.
 
@@ -1910,7 +2106,10 @@ std::string URIUtils::GetRealPath(const std::string &path)
     return path;
 
   CURL url(path);
-  url.SetHostName(GetRealPath(url.GetHostName()));
+  if (!url.SupportsPathOperations())
+    return path;
+  if (url.HasParentInHostname())
+    url.SetHostName(GetRealPath(url.GetHostName()));
   url.SetFileName(resolvePath(url.GetFileName()));
 
   return url.Get();
@@ -1971,6 +2170,9 @@ CURL URIUtils::AddCredentials(CURL url)
 
 std::string URIUtils::SanitiseUrlEncoding(std::string_view path)
 {
+  if (!URIPolicy::IsLegacyURL(path) || !URIPolicy::UsesLegacyURL(path))
+    return std::string{path};
+
   // Firstly look at encoded character capitalization.
   // Some providers (eg. vfs rar) return paths with %2F instead of %2f,
   // which causes problems when comparing paths.
@@ -2032,6 +2234,9 @@ std::string URIUtils::SanitiseUrlEncoding(std::string_view path)
 
 std::string URIUtils::GetDecodedPath(const std::string& path)
 {
+  if (CURL{path}.IsLosslessURI())
+    return path;
+
   std::string decodedPath{path};
   static constexpr unsigned int MAX_DECODE_PASSES = 5;
   for (unsigned int i = 0; decodedPath.find('%') != std::string::npos && i < MAX_DECODE_PASSES; ++i)

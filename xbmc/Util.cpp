@@ -37,6 +37,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/URIPolicy.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -1034,6 +1035,8 @@ std::string CUtil::MakeLegalPath(const std::string& strPathAndFile, LegalPath Le
 
 std::string CUtil::ValidatePath(std::string path, bool bFixDoubleSlashes /* = false */)
 {
+  if (URIPolicy::IsURILocation(path) && !URIPolicy::UsesLegacyURL(path))
+    return path;
 
   // Don't do any stuff on URLs containing %-characters or protocols that embed
   // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
@@ -1922,6 +1925,14 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
                                         std::string& basePath,
                                         std::string& videoFileName)
 {
+  const CURL location{videoPath};
+  if (!location.SupportsPathOperations())
+  {
+    basePath.clear();
+    videoFileName.clear();
+    return;
+  }
+
   if (URIUtils::IsOpticalMediaFile(videoPath) || URIUtils::IsBlurayPath(videoPath))
   {
     const std::string path{URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath)
@@ -1944,11 +1955,17 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
   }
   else
   {
-    videoFileName = URIUtils::ReplaceExtension(URIUtils::GetFileName(videoPath), "");
-    CURL url(videoPath);
-    // Strip URL options (e.g., query/fragment) before computing the parent path
-    url.SetOptions("");
-    basePath = URIUtils::GetParentPath(url.Get());
+    videoFileName = URIUtils::GetFileName(URIUtils::ReplaceExtension(videoPath, ""));
+    CURL url{location};
+    // Strip non-identity URL options before computing the parent path.
+    if (url.IsLosslessURI())
+      basePath = URIUtils::GetParentPath(url.PreservesQueryIdentity() ? url.Get()
+                                                                      : url.GetWithoutOptions());
+    else
+    {
+      url.SetOptions("");
+      basePath = URIUtils::GetParentPath(url.Get());
+    }
   }
 }
 
