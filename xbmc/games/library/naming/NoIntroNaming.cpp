@@ -132,7 +132,7 @@ std::optional<ReleaseStatus> CNoIntroNaming::Status(std::string_view tag)
   if (Matches(re.alpha, tag))
     return ReleaseStatus::ALPHA;
   if (Matches(re.debug, tag))
-    return ReleaseStatus::DEBUG;
+    return ReleaseStatus::DEBUG_BUILD;
   if (Matches(re.program, tag))
     return ReleaseStatus::PROGRAM;
   return std::nullopt;
