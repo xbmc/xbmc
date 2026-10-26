@@ -39,7 +39,7 @@ public:
   bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler);
   bool IsValidFormat(const DVDAudioFrame &audioframe);
   void Destroy(bool finish);
-  unsigned int AddPackets(const DVDAudioFrame &audioframe);
+  unsigned int AddPackets(const DVDAudioFrame &audioframe, bool edlMute);
   double GetPlayingPts();
   double GetCacheTime();
   double GetCacheTotal(); // returns total time a stream can buffer
