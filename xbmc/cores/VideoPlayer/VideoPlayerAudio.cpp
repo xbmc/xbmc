@@ -561,7 +561,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
   }
 
   bool edlMute = false;
-  if (audioframe.pts != DVD_NOPTS_VALUE && audioframe.duration > 0)
+  if (m_streaminfo.codec == AV_CODEC_ID_TRUEHD && IsPassthrough() &&
+      audioframe.pts != DVD_NOPTS_VALUE && audioframe.duration > 0)
   {
     const auto frameStart = std::chrono::milliseconds{DVD_TIME_TO_MSEC(audioframe.pts)};
     const auto frameEnd =
