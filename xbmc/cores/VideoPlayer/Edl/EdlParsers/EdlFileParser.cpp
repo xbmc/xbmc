@@ -38,17 +38,20 @@ std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
 
   const std::string& path{item.GetDynPath()};
   const bool isBluray{URIUtils::IsBlurayPath(path)};
-  if (!isBluray && !URIUtils::IsOpticalMediaFile(path))
+  const std::vector<std::string> ownNames{
+      CUtil::GetVersionFileNames(path, item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr)};
+  if (!isBluray && !URIUtils::IsOpticalMediaFile(path) && ownNames.empty())
     return URIUtils::ReplaceExtension(path, ".edl");
 
-  // A disc's is beside it, as its art and subtitles are: a version's named as its art is
-  // (index-00800, 00800 or M3GAN-00800), then the disc's named after the movie (M3GAN)
+  // A disc's is beside it, as its art and subtitles are: an episode's or version's named as its
+  // art is (index-S01E01, S01E01, index-00800, 00800 or M3GAN-00800), then the disc's named after
+  // the movie (M3GAN). An episode of several in a video file is named after the file (Show-S01E01).
   std::string folder;
   std::string name;
   CUtil::GetVideoBasePathAndFileName(path, folder, name);
   std::vector<std::string> edlFiles;
-  for (const std::string& version : CUtil::GetVersionFileNames(path))
-    edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, version + ".edl"));
+  for (const std::string& own : ownNames)
+    edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, own + ".edl"));
 
   // An extra of the movie on its disc, such as a featurette, is cut only by its own, as the disc's
   // is the movie's
