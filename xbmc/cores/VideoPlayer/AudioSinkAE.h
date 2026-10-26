@@ -43,7 +43,7 @@ public:
   //!        the wire changed and a downstream device has to acquire it again.
   bool HasSinkFormatChanged();
   void Destroy(bool finish);
-  unsigned int AddPackets(const DVDAudioFrame &audioframe);
+  unsigned int AddPackets(const DVDAudioFrame &audioframe, bool edlMute);
   double GetPlayingPts();
   double GetCacheTime();
   double GetCacheTotal(); // returns total time a stream can buffer
