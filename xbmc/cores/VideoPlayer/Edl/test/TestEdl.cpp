@@ -995,11 +995,15 @@ struct DiscEdlTest
   std::vector<std::string> edlFiles;
   //! The one of them read, or none
   std::string read;
+  //! The season and episode of the episode played, if it is one
+  int season{-1};
+  int episode{-1};
 };
 
 void PrintTo(const DiscEdlTest& test, std::ostream* os)
 {
-  *os << test.disc << " playlist " << test.playlist << " reads '" << test.read << "'";
+  *os << test.disc << " playlist " << test.playlist << " episode " << test.season << "x"
+      << test.episode << " reads '" << test.read << "'";
 }
 
 //! The EDL of a disc, among files of a test's own folder. The nth of the files cuts at n seconds.
@@ -1043,9 +1047,11 @@ TEST_P(TestDiscEdl, ReadsTheDiscsEdl)
   for (size_t i = 0; i < GetParam().edlFiles.size(); ++i)
     File(GetParam().edlFiles[i], std::to_string(i + 1) + " " + std::to_string(i + 2) + " 0\n");
 
-  const CFileItem item{
+  CFileItem item{
       GetParam().playlist > -1 ? URIUtils::GetBlurayPlaylistPath(disc, GetParam().playlist) : disc,
       false};
+  item.GetVideoInfoTag()->m_iSeason = GetParam().season;
+  item.GetVideoInfoTag()->m_iEpisode = GetParam().episode;
   CEdl edl;
   const bool found{edl.ReadEditDecisionLists(item, 0, 0ms)};
 
@@ -1109,6 +1115,33 @@ const DiscEdlTest discEdlTests[] = {
      "M3GAN/disc 1/VIDEO_TS/VIDEO_TS.edl"},
     // A video file's is named after it, as always
     {"Film/Film.mkv", -1, {"Film/Film.edl", "Film/movie.edl"}, "Film/Film.edl"},
+    // An episode has its own named as its art is, before its playlist's and the disc's, but not
+    // another episode's
+    {"Show/S02/BDMV/index.bdmv", 1001,
+     {"Show/S02/index-S02E01.edl", "Show/S02/S02E01.edl", "Show/S02/index-01001.edl",
+      "Show/S02/S02.edl", "Show/S02/BDMV/index.edl"},
+     "Show/S02/index-S02E01.edl", 2, 1},
+    {"Show/S02/BDMV/index.bdmv", 1001,
+     {"Show/S02/S02E01.edl", "Show/S02/index-01001.edl", "Show/S02/S02.edl"},
+     "Show/S02/S02E01.edl", 2, 1},
+    {"Show/S02/BDMV/index.bdmv", 1001,
+     {"Show/S02/index-S02E02.edl", "Show/S02/S02E02.edl", "Show/S02/S02.edl"},
+     "Show/S02/S02.edl", 2, 1},
+    {"Show/S01/VIDEO_TS/VIDEO_TS.IFO", -1,
+     {"Show/S01/VIDEO_TS-S01E03.edl", "Show/S01/S01E03.edl", "Show/S01/S01.edl"},
+     "Show/S01/VIDEO_TS-S01E03.edl", 1, 3},
+    {"Show/S01/VIDEO_TS/VIDEO_TS.IFO", -1, {"Show/S01/VIDEO_TS-S01E04.edl", "Show/S01/S01E04.edl"},
+     "", 1, 3},
+    // ..of an ISO or video file, named after the file, not by the episode alone
+    {"Show/Show.S01E05E06.iso", 800,
+     {"Show/Show.S01E05E06-S01E05.edl", "Show/Show.S01E05E06.edl"},
+     "Show/Show.S01E05E06-S01E05.edl", 1, 5},
+    {"Show/Show.S01E05E06.iso", 800, {"Show/S01E05.edl", "Show/Show.S01E05E06-S01E06.edl"}, "",
+     1, 5},
+    {"Show/Show.S01E07E08.mkv", -1,
+     {"Show/Show.S01E07E08-S01E07.edl", "Show/Show.S01E07E08.edl"},
+     "Show/Show.S01E07E08-S01E07.edl", 1, 7},
+    {"Show/Show.S01E07E08.mkv", -1, {"Show/Show.S01E07E08-S01E08.edl"}, "", 1, 7},
     // A name with dots keeps them all
     {"The.Matrix.1999/BDMV/index.bdmv", 800, {"The.Matrix.1999/The.Matrix.1999.edl"},
      "The.Matrix.1999/The.Matrix.1999.edl"},

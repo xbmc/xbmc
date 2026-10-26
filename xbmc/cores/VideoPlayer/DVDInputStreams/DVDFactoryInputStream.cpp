@@ -48,7 +48,8 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     // find any available external audio tracks
     std::vector<std::string> filenames;
     filenames.push_back(file);
-    CUtil::ScanForExternalAudio(file, filenames);
+    CUtil::ScanForExternalAudio(file, filenames,
+                                fileitem.HasVideoInfoTag() ? fileitem.GetVideoInfoTag() : nullptr);
     if (filenames.size() >= 2)
     {
       return CreateInputStream(pPlayer, fileitem, filenames);
