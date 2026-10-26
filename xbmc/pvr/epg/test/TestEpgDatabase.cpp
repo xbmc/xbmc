@@ -78,6 +78,27 @@ protected:
         m_savedTimeCorrection;
   }
 
+  bool InsertTag(int64_t start, int64_t end) const
+  {
+    return m_database->ExecuteQuery(StringUtils::Format(
+        "REPLACE INTO epgtags (idEpg, iStartTime, iEndTime) VALUES ({}, {}, {});", EPG_ID, start,
+        end));
+  }
+
+  bool DeleteTagsByMinEndMaxStartTime(int64_t minEnd, int64_t maxStart) const
+  {
+    return m_database->QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(
+               EPG_ID, CDateTime::FromSecondsSinceEpoch(minEnd),
+               CDateTime::FromSecondsSinceEpoch(maxStart)) &&
+           m_database->CommitDeleteQueries();
+  }
+
+  bool HasTagAt(int64_t start) const
+  {
+    return m_database->GetEpgTagByStartTime(EPG_ID, CDateTime::FromSecondsSinceEpoch(start)) !=
+           nullptr;
+  }
+
   std::shared_ptr<CPVREpgDatabase> m_database;
 
 private:
@@ -173,4 +194,42 @@ TEST_F(TestEpgDatabase, TheMinStartTimeIsNotWrapped)
       m_database->GetMinStartTime(EPG_ID, CDateTime::FromSecondsSinceEpoch(START - 1))};
 
   EXPECT_EQ(START, minStart.GetAsSecondsSinceEpoch()) << AsText(minStart);
+}
+
+/*!
+ A tag starting before the range and reaching into it is deleted, its neighbours are not.
+ */
+TEST_F(TestEpgDatabase, ADeleteByRangeRemovesATagReachingIntoIt)
+{
+  ASSERT_TRUE(InsertTag(START - 3600, START));
+  ASSERT_TRUE(InsertTag(END, END + 3600));
+
+  ASSERT_TRUE(DeleteTagsByMinEndMaxStartTime(START + 1800, START + 2700));
+
+  EXPECT_FALSE(HasTagAt(START));
+  EXPECT_TRUE(HasTagAt(START - 3600));
+  EXPECT_TRUE(HasTagAt(END));
+}
+
+/*!
+ The bounds are inclusive, so a tag ending exactly at the minimum end time is deleted.
+ */
+TEST_F(TestEpgDatabase, ADeleteByRangeRemovesATagEndingAtTheMinimumEndTime)
+{
+  ASSERT_TRUE(InsertTag(START - 3600, START));
+
+  ASSERT_TRUE(DeleteTagsByMinEndMaxStartTime(START, START));
+
+  EXPECT_FALSE(HasTagAt(START - 3600));
+  EXPECT_FALSE(HasTagAt(START));
+}
+
+/*!
+ With no tag starting before the range, the tags starting inside it are still deleted.
+ */
+TEST_F(TestEpgDatabase, ADeleteByRangeBeforeTheFirstTagRemovesTagsStartingInIt)
+{
+  ASSERT_TRUE(DeleteTagsByMinEndMaxStartTime(START - 3600, START));
+
+  EXPECT_FALSE(HasTagAt(START));
 }
