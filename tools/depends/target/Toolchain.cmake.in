@@ -195,8 +195,8 @@ find_file(CONFIG_SITE "config.site" PATHS "${DEPENDS_PATH}/share" NO_CMAKE_FIND_
 # Env variables for non cmake target environments
 set(PROJECT_TARGETENV "AS=${CMAKE_AS}"
                       "AR=${CMAKE_AR}"
-                      "CC=${CMAKE_C_COMPILER}"
-                      "CXX=${CMAKE_CXX_COMPILER}"
+                      [=[CC=@CC@]=]
+                      [=[CXX=@CXX@]=]
                       "NM=${CMAKE_NM}"
                       "LD=${CMAKE_LINKER}"
                       "STRIP=${CMAKE_STRIP}"
