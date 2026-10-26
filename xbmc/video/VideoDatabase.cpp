@@ -11089,12 +11089,14 @@ std::vector<int> CVideoDatabase::CleanMediaType(MEDIA::TYPE mediaType,
   else
     return cleanedIDs;
 
-  // now grab them media items
-  std::string sql = PrepareSQL("SELECT %s.%s, %s.idFile, path.idPath, parentPath.strPath FROM %s "
-                                 "JOIN files ON files.idFile = %s.idFile "
-                                 "JOIN path ON path.idPath = files.idPath ",
-                               table.c_str(), idField.c_str(), table.c_str(), table.c_str(),
-                               table.c_str());
+  // now grab them media items. An item whose parent path has gone is checked against the
+  // source of its own folder.
+  std::string sql =
+      PrepareSQL("SELECT %s.%s, %s.idFile, path.idPath, "
+                 "COALESCE(parentPath.strPath, path.strPath) FROM %s "
+                 "JOIN files ON files.idFile = %s.idFile "
+                 "JOIN path ON path.idPath = files.idPath ",
+                 table.c_str(), idField.c_str(), table.c_str(), table.c_str(), table.c_str());
 
   if (isEpisode)
     sql += "JOIN tvshowlinkpath ON tvshowlinkpath.idShow = episode.idShow JOIN path AS showPath ON showPath.idPath=tvshowlinkpath.idPath ";

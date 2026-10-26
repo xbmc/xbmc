@@ -1155,6 +1155,23 @@ TEST_F(TestVideoDatabaseClean, KeepsThePathsOfAnUnavailableSource)
   EXPECT_EQ("hash", PathHash(other));
 }
 
+// The path the movie was scanned from is no longer in the library
+TEST_F(TestVideoDatabaseClean, KeepsAMovieWithoutAParentPathWhileItsSourceIsUnavailable)
+{
+  const std::string offline{Folder(m_root, "offline", false)};
+  AddSource(offline, "movies");
+  const std::string film{
+      URIUtils::AddFileToFolder(Folder(offline, "Film (2010)", false), "Film (2010).mkv")};
+  const int idMovie{AddMovie(film)};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE movie SET c23='999999' WHERE idMovie=%i", idMovie)));
+
+  Clean();
+
+  EXPECT_GT(m_db.GetMovieId(film), 0);
+}
+
 TEST_F(TestVideoDatabaseClean, ClearsTheHashesOfEveryFolderOfAShowThatLosesEpisodes)
 {
   const std::string shows{Folder(m_root, "shows")};
