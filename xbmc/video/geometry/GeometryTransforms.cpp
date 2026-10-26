@@ -141,10 +141,13 @@ CRect ToSquarePixels(const CRectInt& coded, const StreamGeometry& stream)
           static_cast<float>(coded.y2 - stream.coded.y1)};
 }
 
-CRect FitAspect(float aspect, const CRect& frame)
+CRect FitAspect(float aspect, const CRect& frame, float pixelRatio)
 {
   if (aspect <= 0.0f || frame.Width() <= 0.0f || frame.Height() <= 0.0f)
     return frame;
+
+  if (pixelRatio > 0.0f)
+    aspect /= pixelRatio;
 
   float width = frame.Width();
   float height = width / aspect;
@@ -198,7 +201,7 @@ ContentCut CutToContent(const RenderGeometry& geometry,
 
   const CRectInt& coded = geometry.codedFrame;
 
-  // Content and coded are in frameSource's space; only the ratio below carries the orientation.
+  // Content and coded are in frameSource's space.
   RenderGeometry cut;
   cut.displayFrame = CRect{coded};
   cut.displayRect = CRect{content};
@@ -206,8 +209,7 @@ ContentCut CutToContent(const RenderGeometry& geometry,
   const float ratio =
       static_cast<float>(content.Width()) * geometry.par / static_cast<float>(content.Height());
 
-  return {SourceRect(cut, frameSource),
-          NormaliseRotation(geometry.orientation) % 180 == 0 ? ratio : 1.0f / ratio};
+  return {SourceRect(cut, frameSource), ratio};
 }
 
 } // namespace KODI::VIDEO::GEOMETRY

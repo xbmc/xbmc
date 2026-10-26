@@ -19,6 +19,7 @@ This page shows the window names, the window definition, the window ID and the s
 | ServiceSettings         | WINDOW_SETTINGS_SERVICE              | 10018     | SettingsCategory.xml                |                                    |
 | PVRSettings             | WINDOW_SETTINGS_MYPVR                | 10021     | SettingsCategory.xml                |                                    |
 | GameSettings            | WINDOW_SETTINGS_MYGAMES              | 10022     | SettingsCategory.xml                |                                    |
+| ScreenAlignment         | WINDOW_SCREEN_ALIGNMENT              | 10023     | (none - drawn, not skinned)         |                                    |
 | Videos                  | WINDOW_VIDEO_NAV                     | 10025     | MyVideoNav.xml                      |                                    |
 | VideoPlaylist           | WINDOW_VIDEO_PLAYLIST                | 10028     | MyPlaylist.xml                      |                                    |
 | LoginScreen             | WINDOW_LOGIN_SCREEN                  | 10029     | LoginScreen.xml                     |                                    |

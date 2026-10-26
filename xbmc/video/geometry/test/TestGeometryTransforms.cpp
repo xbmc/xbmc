@@ -135,7 +135,8 @@ TEST(TestGeometryTransforms, WithNothingMeasuredOnTheFrameTheResolvedRectangleIs
  * A rotated stream is decoded upright and turned at draw time, so the frame's own measurement,
  * the coded frame and the source rectangle are all in the same unrotated space. The cut has to
  * leave them there: a quarter turn applied to it would put a letterbox crop down the sides. The
- * ratio is the one part that does carry the rotation, answered as it leaves the picture.
+ * ratio stays upright too, as the resolved one is: the renderer applies the turn when it places
+ * the picture.
  */
 TEST(TestGeometryTransforms, ARotatedStreamIsCutInCodedSpace)
 {
@@ -153,8 +154,7 @@ TEST(TestGeometryTransforms, ARotatedStreamIsCutInCodedSpace)
 
     const ContentCut cut = CutToContent(geometry, content, source);
     ExpectRect(cut.source, 0.0f, 280.0f, 3840.0f, 1880.0f);
-    EXPECT_NEAR(orientation % 180 == 0 ? 2.4f : 1.0f / 2.4f, cut.aspect, 0.01f)
-        << "at " << orientation << " degrees";
+    EXPECT_NEAR(2.4f, cut.aspect, 0.01f) << "at " << orientation << " degrees";
   }
 }
 
@@ -275,4 +275,19 @@ TEST(TestGeometryTransforms, ScaleRectLeavesADegenerateSpaceAlone)
   const CRectInt rect{1, 2, 3, 4};
   EXPECT_EQ(rect, ScaleRect(rect, 0, 540, 3840, 2160));
   EXPECT_EQ(rect, ScaleRect(rect, 960, 540, 0, 2160));
+}
+
+TEST(TestGeometryTransforms, FitAspectFitsADisplayRatioToWidePixels)
+{
+  // A 2.40 raster on 1440x1080 output whose pixels are 4/3 wide.
+  const CRect raster{0.0f, 140.0f, 1440.0f, 940.0f};
+  constexpr float PIXEL_RATIO = 4.0f / 3.0f;
+
+  EXPECT_EQ(raster, FitAspect(2.40f, raster, PIXEL_RATIO));
+
+  const CRect fitted = FitAspect(16.0f / 9.0f, raster, PIXEL_RATIO);
+  EXPECT_NEAR(186.67f, fitted.x1, 0.01f);
+  EXPECT_FLOAT_EQ(140.0f, fitted.y1);
+  EXPECT_NEAR(1253.33f, fitted.x2, 0.01f);
+  EXPECT_FLOAT_EQ(940.0f, fitted.y2);
 }

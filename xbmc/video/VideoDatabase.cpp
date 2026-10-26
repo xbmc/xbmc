@@ -2613,6 +2613,9 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       return -1;
     }
 
+    if (details.HasContentGeometry())
+      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry.Get());
+
     if (!SetArtForItem(idMovie, MEDIA::TYPE::MOVIE, artwork))
     {
       if (!inTransaction)
@@ -3298,6 +3301,9 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
       return -1;
     }
 
+    if (details.HasContentGeometry())
+      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry.Get());
+
     // ensure we have this season already added
     int idSeason = AddSeason(idShow, details.m_iSeason);
 
@@ -3407,6 +3413,9 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
         RollbackTransaction();
       return -1;
     }
+
+    if (details.HasContentGeometry())
+      SetContentGeometry(GetAndFillFileId(details), details.m_contentGeometry.Get());
 
     if (!SetArtForItem(idMVideo, MEDIA::TYPE::MUSIC_VIDEO, artwork))
     {
@@ -4961,6 +4970,10 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
   if (const int duration{tag.m_streamDetails.GetVideoDuration()}; duration > 0)
     tag.SetDuration(duration);
 
+  // Unverified: the identity check needs the file stat'ing.
+  if (auto stored{GetStoredContentGeometry(fileId)})
+    tag.m_contentGeometry.Set(std::move(*stored));
+
   return retVal;
 }
 
@@ -5615,6 +5628,9 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
       settings.m_ToneMapParam = m_pDS->fv("TonemapParam").get_asFloat();
       settings.m_Orientation = m_pDS->fv("Orientation").get_asInt();
       settings.m_CenterMixLevel = m_pDS->fv("CenterMixLevel").get_asInt();
+      settings.m_declaredAspect = m_pDS->fv("DeclaredAspect").get_asFloat();
+      settings.m_declaredOn = m_pDS->fv("DeclaredOn").get_asString();
+      settings.m_detectedWhenDeclared = m_pDS->fv("DetectedWhenDeclared").get_asFloat();
       m_pDS->close();
       settings.m_isDefaultVideoSettings = false;
       return true;
@@ -5672,12 +5688,15 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
       std::string strSQL2;
 
       strSQL2 = PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i,VideoStream=%i,"
-                           "TonemapMethod=%i,TonemapParam=%f,Orientation=%i,CenterMixLevel=%i "
-                           "where idFile=%i\n",
+                           "TonemapMethod=%i,TonemapParam=%f,Orientation=%i,CenterMixLevel=%i,"
+                           "DeclaredAspect=%f,DeclaredOn='%s',DetectedWhenDeclared=%f"
+                           " where idFile=%i\n",
                            setting.m_ResumeTime, setting.m_StereoMode, setting.m_StereoInvert,
                            setting.m_VideoStream, setting.m_ToneMapMethod,
                            static_cast<double>(setting.m_ToneMapParam), setting.m_Orientation,
-                           setting.m_CenterMixLevel, idFile);
+                           setting.m_CenterMixLevel, static_cast<double>(setting.m_declaredAspect),
+                           setting.m_declaredOn.c_str(),
+                           static_cast<double>(setting.m_detectedWhenDeclared), idFile);
       strSQL += strSQL2;
       m_pDS->exec(strSQL);
       return ;
@@ -5685,14 +5704,18 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
     else
     { // add the items
       m_pDS->close();
-      strSQL= "INSERT INTO settings (idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio, VerticalShift, "
-                "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
-                "Contrast,Gamma,VolumeAmplification,AudioDelay,"
-                "ResumeTime,"
-                "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel) "
-              "VALUES ";
+      strSQL =
+          "INSERT INTO settings (idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio, VerticalShift, "
+          "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
+          "Contrast,Gamma,VolumeAmplification,AudioDelay,"
+          "ResumeTime,"
+          "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,"
+          "StereoInvert,VideoStream,TonemapMethod,TonemapParam,Orientation,CenterMixLevel,"
+          "DeclaredAspect,DeclaredOn,DetectedWhenDeclared) "
+          "VALUES ";
       strSQL += PrepareSQL(
-          "(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i)",
+          "(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f,%i,%i,"
+          "%f,'%s',%f)",
           idFile, setting.m_InterlaceMethod, setting.m_ViewMode,
           static_cast<double>(setting.m_CustomZoomAmount),
           static_cast<double>(setting.m_CustomPixelRatio),
@@ -5706,7 +5729,9 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
           setting.m_CustomNonLinStretch, setting.m_PostProcess, setting.m_ScalingMethod,
           setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream,
           setting.m_ToneMapMethod, static_cast<double>(setting.m_ToneMapParam),
-          setting.m_Orientation, setting.m_CenterMixLevel);
+          setting.m_Orientation, setting.m_CenterMixLevel,
+          static_cast<double>(setting.m_declaredAspect), setting.m_declaredOn.c_str(),
+          static_cast<double>(setting.m_detectedWhenDeclared));
       m_pDS->exec(strSQL);
     }
   }
@@ -13721,6 +13746,9 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
       RollbackTransaction();
       return false;
     }
+
+    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasContentGeometry())
+      SetContentGeometry(idFile, item.GetVideoInfoTag()->m_contentGeometry.Get());
 
     if (!SetArtForItem(idFile, MEDIA::TYPE::VIDEO_VERSION, item.GetArt()))
     {

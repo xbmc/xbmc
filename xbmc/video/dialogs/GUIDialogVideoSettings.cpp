@@ -271,6 +271,7 @@ bool CGUIDialogVideoSettings::Save()
     CMediaSettings::GetInstance().GetDefaultVideoSettings() = appPlayer->GetVideoSettings();
     CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
     CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
+    CMediaSettings::GetInstance().GetDefaultVideoSettings().ClearDeclaredAspect();
     CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
   }
 
