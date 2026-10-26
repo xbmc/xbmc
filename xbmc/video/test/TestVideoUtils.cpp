@@ -263,7 +263,6 @@ TEST_F(TestDiscTrailer, ADvdFolderRipPrefersTheTrailerBesideVIDEO_TS)
   EXPECT_EQ(beside, Trailer(disc));
 }
 
-// Several ISOs can share a folder: each has the trailer named after it
 // Several ISOs can share a folder, their movies having no folders of their own: each has the
 // trailer named after it, and movie-trailer is none of theirs
 TEST_F(TestDiscTrailer, EachOfSeveralIsosInAFolderHasTheTrailerNamedAfterIt)
