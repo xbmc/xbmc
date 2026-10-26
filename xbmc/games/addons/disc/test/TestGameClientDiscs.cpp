@@ -17,9 +17,7 @@
 #include "filesystem/File.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientCallbacks.h"
-#include "games/addons/disc/GameClientDiscM3U.h"
 #include "games/addons/disc/GameClientDiscModel.h"
-#include "games/addons/disc/GameClientDiscXML.h"
 #include "games/addons/disc/GameClientDiscs.h"
 #include "test/TestUtils.h"
 #include "utils/XBMCTinyXML2.h"
@@ -166,9 +164,6 @@ struct DiscCore
   bool polledInput{false};
   std::vector<bool> frameInputs;
   bool compactRemoval{false};
-  std::string initialPath;
-  unsigned int initialIndex{0};
-  bool failInitialImage{false};
   unsigned int deserializeCalls{0};
   std::vector<std::string> deserializedSlots;
   std::string machinePath;
@@ -292,13 +287,6 @@ protected:
       ++Core(game).mutations;
       return GAME_ERROR_NO_ERROR;
     };
-    callbacks->SetInitialImage =
-        [](const AddonInstance_Game* game, unsigned int index, const char* path)
-    {
-      Core(game).initialIndex = index;
-      Core(game).initialPath = path ? path : "";
-      return Core(game).failInitialImage ? GAME_ERROR_FAILED : GAME_ERROR_NO_ERROR;
-    };
     callbacks->GetImagePath = [](const AddonInstance_Game* game, unsigned int index) -> char*
     {
       return index < Core(game).slots.size() && !Core(game).slots[index].empty()
@@ -330,12 +318,7 @@ protected:
     if (m_client)
       TestMember<ClientPlaying>(*m_client) = false;
     for (auto* file : m_files)
-    {
-      const std::string path = XBMC_TEMPFILEPATH(file);
-      XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(path));
-      XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(path));
       EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
-    }
   }
 
   std::string CreateFile(const std::string& extension, const std::string& contents = {})
@@ -498,40 +481,6 @@ protected:
     return path;
   }
 
-  std::vector<uint8_t> ReadFile(const std::string& path)
-  {
-    std::vector<uint8_t> data;
-    XFILE::CFile file;
-    EXPECT_GT(file.LoadFile(path, data), 0);
-    return data;
-  }
-
-  struct DiscFileSnapshot
-  {
-    std::string path;
-    std::vector<uint8_t> contents;
-  };
-
-  std::vector<DiscFileSnapshot> SnapshotDiscFiles()
-  {
-    m_client->Discs().SaveDiscState();
-    std::vector<DiscFileSnapshot> files;
-    for (const auto& path : {CGameClientDiscXML::GetXMLPath(m_client->GetGamePath()),
-                             CGameClientDiscM3U::GetM3UPath(m_client->GetGamePath())})
-    {
-      files.push_back({path, ReadFile(path)});
-    }
-    return files;
-  }
-
-  void ExpectDiscFilesUnchanged(const std::vector<DiscFileSnapshot>& files)
-  {
-    for (const auto& file : files)
-    {
-      EXPECT_EQ(ReadFile(file.path), file.contents);
-    }
-  }
-
   template<typename Edit>
   void ExpectRewindCursorSaveRoundtrip(Edit edit)
   {
@@ -666,7 +615,6 @@ protected:
       previewDiscs.SetEjected(true);
     }
 
-    const auto persisted = SnapshotDiscFiles();
     m_playback->RewindEvent();
 
     const auto& memory = TestMember<PlaybackMemory>(*m_playback);
@@ -720,7 +668,6 @@ protected:
     EXPECT_EQ(memory->GetFrameCounter(), 4U);
     EXPECT_EQ(TestMember<PlaybackTotalFrames>(*m_playback), 4U);
     EXPECT_EQ(memory->FutureFramesAvailable(), 0U);
-    ExpectDiscFilesUnchanged(persisted);
     EXPECT_FALSE(RestoreFailureLatched());
   }
 
@@ -838,75 +785,6 @@ TEST_F(TestGameClientDiscs, UnchangedDiscModelCanLearnMediaIdentity)
   EXPECT_EQ(restored.GetPathByIndex(0), path);
 }
 
-TEST_F(TestGameClientDiscs, EmptyPersistedStateLearnsOriginalPlaylistWithoutActivatingIt)
-{
-  const std::string disc = CreateFile(".chd");
-  const std::string playlist = CreateFile(".m3u", disc + "\n");
-  ASSERT_FALSE(disc.empty());
-  ASSERT_FALSE(playlist.empty());
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(playlist, {}));
-  CGameClientDiscModel historical;
-  historical.AddDisc(disc);
-
-  m_client->Discs().Initialize(playlist);
-
-  EXPECT_TRUE(m_client->Discs().HasPersistedState());
-  const auto current = m_client->Discs().GetDiscs();
-  EXPECT_TRUE(current.Empty());
-  EXPECT_TRUE(current.IsSelectedNoDisc());
-  CGameClientDiscModel restored;
-  ASSERT_TRUE(current.ResolveState(historical.GetState(), restored));
-  EXPECT_EQ(restored.GetPathByIndex(0), disc);
-}
-
-TEST_F(TestGameClientDiscs, StartupPruningPreservesRemovedMediaFromXML)
-{
-  const std::string disc = CreateFile(".chd");
-  const std::string playlist = CreateFile(".m3u");
-  ASSERT_FALSE(disc.empty());
-  ASSERT_FALSE(playlist.empty());
-  CGameClientDiscModel previous;
-  previous.AddDisc(disc);
-  const auto state = previous.GetState();
-  ASSERT_TRUE(previous.MarkRemovedByIndex(0));
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(playlist, previous));
-
-  m_client->Discs().Initialize(playlist);
-
-  EXPECT_TRUE(m_client->Discs().HasPersistedState());
-  const auto current = m_client->Discs().GetDiscs();
-  EXPECT_TRUE(current.Empty());
-  EXPECT_TRUE(current.IsSelectedNoDisc());
-  CGameClientDiscModel restored;
-  ASSERT_TRUE(current.ResolveState(state, restored));
-  EXPECT_EQ(restored.GetPathByIndex(0), disc);
-}
-
-TEST_F(TestGameClientDiscs, MissingHistoricalMediaDoesNotInvalidateCurrentPlaylist)
-{
-  const std::string disc = CreateFile(".chd");
-  const std::string playlist = CreateFile(".m3u", disc + "\n");
-  ASSERT_FALSE(disc.empty());
-  ASSERT_FALSE(playlist.empty());
-  CGameClientDiscModel persisted;
-  persisted.AddDisc(disc);
-  persisted.RememberDiscPath("/missing/historical-disc.chd");
-  persisted.SetEjected(true);
-  ASSERT_TRUE(CGameClientDiscXML::Save(playlist, persisted));
-
-  m_client->Discs().Initialize(playlist);
-
-  EXPECT_TRUE(m_client->Discs().HasPersistedState());
-  const auto current = m_client->Discs().GetDiscs();
-  EXPECT_EQ(current, persisted);
-  CGameClientDiscModel missing;
-  missing.AddDisc("/missing/historical-disc.chd");
-  CGameClientDiscModel resolved;
-  EXPECT_FALSE(current.ResolveState(missing.GetState(), resolved));
-}
-
 TEST_F(TestGameClientDiscs, NewSessionDiscardsPreviousMediaCatalog)
 {
   const std::string previousDisc = CreateFile(".chd");
@@ -926,55 +804,25 @@ TEST_F(TestGameClientDiscs, NewSessionDiscardsPreviousMediaCatalog)
   EXPECT_FALSE(current.ResolveState(previousState, resolved));
 }
 
-TEST_F(TestGameClientDiscs, InvalidPersistedSelectionFallsBackToSource)
+TEST_F(TestGameClientDiscs, NewSessionStartsFromItsOwnMedia)
 {
-  const std::string disc = CreateFile(".chd");
-  const std::string playlist = CreateFile(".m3u", disc + "\n");
-  ASSERT_FALSE(disc.empty());
-  ASSERT_FALSE(playlist.empty());
-  CGameClientDiscModel previous;
-  previous.AddDisc(disc);
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(playlist, previous));
-  CXBMCTinyXML2 document;
-  const std::string xmlPath = CGameClientDiscXML::GetXMLPath(playlist);
-  ASSERT_TRUE(document.LoadFile(xmlPath));
-  document.RootElement()->FirstChildElement("selected")->SetAttribute("index", 5);
-  ASSERT_TRUE(document.SaveFile(xmlPath));
+  const auto disc1 = CreateFile(".chd");
+  const auto disc2 = CreateFile(".chd");
+  const auto playlist = CreateFile(".m3u", disc1 + "\n" + disc2 + "\n");
+  m_core.slots = {disc1, disc2};
+  m_client->Discs().Initialize(playlist);
+  ASSERT_TRUE(InitializeGameplay(playlist));
+  ASSERT_TRUE(m_client->Discs().SetEjected(true));
+  ASSERT_TRUE(m_client->Discs().InsertDiscByIndex(1));
+  ASSERT_EQ(m_client->Discs().GetDiscs().GetSelectedDiscIndex(), 1U);
+  m_client->Discs().Deinitialize();
 
   m_client->Discs().Initialize(playlist);
 
-  EXPECT_FALSE(m_client->Discs().HasPersistedState());
   const auto current = m_client->Discs().GetDiscs();
-  EXPECT_EQ(current.GetPathByIndex(0), disc);
+  ASSERT_EQ(current.Size(), 2U);
   EXPECT_EQ(current.GetSelectedDiscIndex(), 0U);
-}
-
-TEST_F(TestGameClientDiscs, MalformedPersistedSlotCannotShiftSelectionOntoAnotherDisc)
-{
-  const std::string first = CreateFile(".chd");
-  const std::string second = CreateFile(".chd");
-  const std::string playlist = CreateFile(".m3u", first + "\n" + second + "\n");
-  ASSERT_FALSE(first.empty());
-  ASSERT_FALSE(second.empty());
-  ASSERT_FALSE(playlist.empty());
-  CGameClientDiscModel previous;
-  previous.AddDisc(first);
-  previous.AddDisc(second);
-  ASSERT_TRUE(CGameClientDiscXML::Save(playlist, previous));
-  CXBMCTinyXML2 document;
-  const std::string xmlPath = CGameClientDiscXML::GetXMLPath(playlist);
-  ASSERT_TRUE(document.LoadFile(xmlPath));
-  document.RootElement()->FirstChildElement("slots")->FirstChildElement("slot")->DeleteAttribute(
-      "path");
-  ASSERT_TRUE(document.SaveFile(xmlPath));
-
-  m_client->Discs().Initialize(playlist);
-
-  EXPECT_FALSE(m_client->Discs().HasPersistedState());
-  const auto current = m_client->Discs().GetDiscs();
-  EXPECT_EQ(current.Size(), 2U);
-  EXPECT_EQ(current.GetSelectedDiscPath(), first);
+  EXPECT_FALSE(current.IsEjected());
 }
 
 TEST_F(TestGameClientDiscs, DeserializePreparesMediaAfterEmptyPlaylist)
@@ -1179,85 +1027,6 @@ TEST_F(TestGameClientDiscs, RestoreHistoricalTopologyClearsRemovedAndExtraSlots)
   EXPECT_TRUE(m_client->Discs().GetDiscs() == historical);
 }
 
-TEST_F(TestGameClientDiscs, SourceRetryReplacesPersistedInitialHint)
-{
-  std::unique_ptr<XFILE::CFile> firstDisc(XBMC_CREATETEMPFILE(".chd"));
-  std::unique_ptr<XFILE::CFile> secondDisc(XBMC_CREATETEMPFILE(".chd"));
-  std::unique_ptr<XFILE::CFile> playlist(XBMC_CREATETEMPFILE(".m3u"));
-  ASSERT_NE(firstDisc, nullptr);
-  ASSERT_NE(secondDisc, nullptr);
-  ASSERT_NE(playlist, nullptr);
-  firstDisc->Close();
-  secondDisc->Close();
-  const std::string firstPath = XBMC_TEMPFILEPATH(firstDisc.get());
-  const std::string secondPath = XBMC_TEMPFILEPATH(secondDisc.get());
-  const std::string source = firstPath + "\n" + secondPath + "\n";
-  ASSERT_EQ(playlist->Write(source.data(), source.size()), static_cast<ssize_t>(source.size()));
-  playlist->Close();
-  const std::string gamePath = XBMC_TEMPFILEPATH(playlist.get());
-
-  CGameClientDiscModel persisted;
-  persisted.AddDisc(firstPath);
-  persisted.AddDisc(secondPath);
-  ASSERT_TRUE(persisted.SetSelectedDiscByIndex(1));
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(gamePath, persisted));
-
-  m_client->Discs().Initialize(gamePath);
-  EXPECT_EQ(m_core.initialIndex, 1U);
-  EXPECT_EQ(m_core.initialPath, secondPath);
-
-  m_client->Discs().Initialize(gamePath, false);
-  EXPECT_EQ(m_core.initialIndex, 0U);
-  EXPECT_EQ(m_core.initialPath, firstPath);
-
-  XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(gamePath));
-  XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(gamePath));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(playlist.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(secondDisc.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(firstDisc.release()));
-}
-
-TEST_F(TestGameClientDiscs, SourceRetryReplacesPersistedHintAfterCallbackFailure)
-{
-  std::unique_ptr<XFILE::CFile> firstDisc(XBMC_CREATETEMPFILE(".chd"));
-  std::unique_ptr<XFILE::CFile> secondDisc(XBMC_CREATETEMPFILE(".chd"));
-  std::unique_ptr<XFILE::CFile> playlist(XBMC_CREATETEMPFILE(".m3u"));
-  ASSERT_NE(firstDisc, nullptr);
-  ASSERT_NE(secondDisc, nullptr);
-  ASSERT_NE(playlist, nullptr);
-  firstDisc->Close();
-  secondDisc->Close();
-  const std::string firstPath = XBMC_TEMPFILEPATH(firstDisc.get());
-  const std::string secondPath = XBMC_TEMPFILEPATH(secondDisc.get());
-  const std::string source = firstPath + "\n" + secondPath + "\n";
-  ASSERT_EQ(playlist->Write(source.data(), source.size()), static_cast<ssize_t>(source.size()));
-  playlist->Close();
-  const std::string gamePath = XBMC_TEMPFILEPATH(playlist.get());
-
-  CGameClientDiscModel persisted;
-  persisted.AddDisc(firstPath);
-  persisted.AddDisc(secondPath);
-  ASSERT_TRUE(persisted.SetSelectedDiscByIndex(1));
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(gamePath, persisted));
-
-  m_core.failInitialImage = true;
-  m_client->Discs().Initialize(gamePath);
-  EXPECT_EQ(m_core.initialIndex, 1U);
-  EXPECT_EQ(m_core.initialPath, secondPath);
-
-  m_client->Discs().Initialize(gamePath, false);
-  EXPECT_EQ(m_core.initialIndex, 0U);
-  EXPECT_EQ(m_core.initialPath, firstPath);
-
-  XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(gamePath));
-  XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(gamePath));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(playlist.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(secondDisc.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(firstDisc.release()));
-}
-
 TEST_F(TestGameClientDiscs, RestoreSelectionAndTrayIndependently)
 {
   for (const bool ejected : {false, true})
@@ -1353,173 +1122,6 @@ TEST_F(TestGameClientDiscs, RefusedMediaRestoreReportsFailure)
   m_core.failReplace = true;
   m_client->Discs().SetDiscModel(historical);
   EXPECT_FALSE(m_client->Discs().RestoreDiscList());
-}
-
-TEST_F(TestGameClientDiscs, PresentEmptyPersistedStateIsAuthoritative)
-{
-  std::unique_ptr<XFILE::CFile> playlist(XBMC_CREATETEMPFILE(".m3u"));
-  ASSERT_NE(playlist, nullptr);
-  playlist->Close();
-  const std::string gamePath = XBMC_TEMPFILEPATH(playlist.get());
-
-  CGameClientDiscXML xml;
-  CGameClientDiscModel empty;
-  ASSERT_TRUE(xml.Save(gamePath, empty));
-
-  m_client->Discs().Initialize(gamePath);
-  EXPECT_TRUE(m_client->Discs().HasPersistedState());
-  EXPECT_TRUE(m_client->Discs().GetDiscs().Empty());
-
-  XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(gamePath));
-  XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(gamePath));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(playlist.release()));
-}
-
-TEST_F(TestGameClientDiscs, InvalidPersistedStateFallsBackToWholeSourcePlaylist)
-{
-  std::unique_ptr<XFILE::CFile> disc(XBMC_CREATETEMPFILE(".chd"));
-  ASSERT_NE(disc, nullptr);
-  disc->Close();
-  const std::string discPath = XBMC_TEMPFILEPATH(disc.get());
-
-  std::unique_ptr<XFILE::CFile> playlist(XBMC_CREATETEMPFILE(".m3u"));
-  ASSERT_NE(playlist, nullptr);
-  ASSERT_EQ(playlist->Write(discPath.data(), discPath.size()),
-            static_cast<ssize_t>(discPath.size()));
-  playlist->Close();
-  const std::string gamePath = XBMC_TEMPFILEPATH(playlist.get());
-
-  CGameClientDiscModel stale;
-  stale.AddDisc("/missing/disc.chd");
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(gamePath, stale));
-
-  m_client->Discs().Initialize(gamePath);
-  const CGameClientDiscModel source = m_client->Discs().GetDiscs();
-  EXPECT_FALSE(m_client->Discs().HasPersistedState());
-  ASSERT_EQ(source.Size(), 1U);
-  EXPECT_EQ(source.GetPathByIndex(0), discPath);
-  EXPECT_EQ(source.GetSelectedDiscIndex(), 0U);
-
-  XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(gamePath));
-  XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(gamePath));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(playlist.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(disc.release()));
-}
-
-TEST_F(TestGameClientDiscs, UnsupportedPersistedMediaFallsBackToWholeSourcePlaylist)
-{
-  std::unique_ptr<XFILE::CFile> sourceDisc(XBMC_CREATETEMPFILE(".chd"));
-  std::unique_ptr<XFILE::CFile> unsupportedDisc(XBMC_CREATETEMPFILE(".iso"));
-  std::unique_ptr<XFILE::CFile> playlist(XBMC_CREATETEMPFILE(".m3u"));
-  ASSERT_NE(sourceDisc, nullptr);
-  ASSERT_NE(unsupportedDisc, nullptr);
-  ASSERT_NE(playlist, nullptr);
-  sourceDisc->Close();
-  unsupportedDisc->Close();
-  const std::string sourcePath = XBMC_TEMPFILEPATH(sourceDisc.get());
-  ASSERT_EQ(playlist->Write(sourcePath.data(), sourcePath.size()),
-            static_cast<ssize_t>(sourcePath.size()));
-  playlist->Close();
-  const std::string gamePath = XBMC_TEMPFILEPATH(playlist.get());
-
-  CGameClientDiscModel incompatible;
-  incompatible.AddDisc(XBMC_TEMPFILEPATH(unsupportedDisc.get()));
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(gamePath, incompatible));
-
-  m_client->Discs().Initialize(gamePath);
-  const CGameClientDiscModel source = m_client->Discs().GetDiscs();
-  EXPECT_FALSE(m_client->Discs().HasPersistedState());
-  ASSERT_EQ(source.Size(), 1U);
-  EXPECT_EQ(source.GetPathByIndex(0), sourcePath);
-
-  XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(gamePath));
-  XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(gamePath));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(playlist.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(unsupportedDisc.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(sourceDisc.release()));
-}
-
-TEST_F(TestGameClientDiscs, SourceOnlyInitializationIgnoresValidPersistedState)
-{
-  std::unique_ptr<XFILE::CFile> sourceDisc(XBMC_CREATETEMPFILE(".chd"));
-  std::unique_ptr<XFILE::CFile> persistedDisc(XBMC_CREATETEMPFILE(".chd"));
-  std::unique_ptr<XFILE::CFile> playlist(XBMC_CREATETEMPFILE(".m3u"));
-  ASSERT_NE(sourceDisc, nullptr);
-  ASSERT_NE(persistedDisc, nullptr);
-  ASSERT_NE(playlist, nullptr);
-  sourceDisc->Close();
-  persistedDisc->Close();
-  const std::string sourcePath = XBMC_TEMPFILEPATH(sourceDisc.get());
-  ASSERT_EQ(playlist->Write(sourcePath.data(), sourcePath.size()),
-            static_cast<ssize_t>(sourcePath.size()));
-  playlist->Close();
-  const std::string gamePath = XBMC_TEMPFILEPATH(playlist.get());
-
-  CGameClientDiscModel persisted;
-  persisted.AddDisc(XBMC_TEMPFILEPATH(persistedDisc.get()));
-  CGameClientDiscXML xml;
-  ASSERT_TRUE(xml.Save(gamePath, persisted));
-
-  m_client->Discs().Initialize(gamePath, false);
-  const CGameClientDiscModel source = m_client->Discs().GetDiscs();
-  EXPECT_FALSE(m_client->Discs().HasPersistedState());
-  ASSERT_EQ(source.Size(), 1U);
-  EXPECT_EQ(source.GetPathByIndex(0), sourcePath);
-
-  XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(gamePath));
-  XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(gamePath));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(playlist.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(persistedDisc.release()));
-  EXPECT_TRUE(XBMC_DELETETEMPFILE(sourceDisc.release()));
-}
-
-TEST_F(TestGameClientDiscs, PersistedEmptyAndShortModelsRestoreAcrossCoreRemovalBehaviors)
-{
-  for (const bool compactRemoval : {false, true})
-  {
-    std::unique_ptr<XFILE::CFile> disc(XBMC_CREATETEMPFILE(".chd"));
-    std::unique_ptr<XFILE::CFile> playlist(XBMC_CREATETEMPFILE(".m3u"));
-    ASSERT_NE(disc, nullptr);
-    ASSERT_NE(playlist, nullptr);
-    disc->Close();
-    playlist->Close();
-    const std::string gamePath = XBMC_TEMPFILEPATH(playlist.get());
-
-    for (const bool empty : {false, true})
-    {
-      CGameClientDiscModel persisted;
-      if (!empty)
-        persisted.AddDisc(XBMC_TEMPFILEPATH(disc.get()));
-      CGameClientDiscXML xml;
-      ASSERT_TRUE(xml.Save(gamePath, persisted));
-
-      m_core.compactRemoval = compactRemoval;
-      m_core.slots = {"/core/one.chd", "/core/two.chd", "/core/three.chd"};
-      m_core.selected = 0;
-      m_client->Discs().Initialize(gamePath);
-      ASSERT_TRUE(m_client->Discs().HasPersistedState());
-      ASSERT_TRUE(m_client->Discs().RestoreDiscList());
-      m_client->Discs().RefreshDiscState();
-
-      const CGameClientDiscModel restored = m_client->Discs().GetDiscs();
-      EXPECT_EQ(restored.Size(), empty ? 0U : 1U);
-      EXPECT_EQ(m_core.slots.size(), compactRemoval ? (empty ? 0U : 1U) : 3U);
-      if (!compactRemoval)
-      {
-        for (size_t i = empty ? 0U : 1U; i < m_core.slots.size(); ++i)
-        {
-          EXPECT_TRUE(m_core.slots[i].empty());
-        }
-      }
-    }
-
-    XFILE::CFile::Delete(CGameClientDiscXML::GetXMLPath(gamePath));
-    XFILE::CFile::Delete(CGameClientDiscM3U::GetM3UPath(gamePath));
-    EXPECT_TRUE(XBMC_DELETETEMPFILE(playlist.release()));
-    EXPECT_TRUE(XBMC_DELETETEMPFILE(disc.release()));
-  }
 }
 
 TEST_F(TestGameClientDiscs, AddAfterHistoricalRestoreReusesClearedPhysicalTail)
@@ -1756,10 +1358,6 @@ TEST_F(TestGameClientDiscs, LegacySavestateMediaReconciliationFailureLeavesState
   CreatePlayback();
   m_client->Discs().RefreshDiscState();
   const auto previous = m_client->Discs().GetDiscs();
-  const auto xmlPath = CGameClientDiscXML::GetXMLPath(m_client->GetGamePath());
-  const auto m3uPath = CGameClientDiscM3U::GetM3UPath(m_client->GetGamePath());
-  const auto xml = ReadFile(xmlPath);
-  const auto m3u = ReadFile(m3uPath);
   m_core.failCloseAfterDeserialize = true;
   m_core.replacementAfterDeserialize = CreateFile(".chd");
 
@@ -1770,8 +1368,6 @@ TEST_F(TestGameClientDiscs, LegacySavestateMediaReconciliationFailureLeavesState
   EXPECT_TRUE(m_core.ejected);
   EXPECT_EQ(m_core.slots[0], m_core.replacementAfterDeserialize);
   EXPECT_TRUE(m_client->Discs().GetDiscs() == previous);
-  EXPECT_EQ(ReadFile(xmlPath), xml);
-  EXPECT_EQ(ReadFile(m3uPath), m3u);
   EXPECT_TRUE(RestoreFailureLatched());
   m_playback->SetSpeed(1.0);
   EXPECT_EQ(m_playback->GetSpeed(), 0.0);
@@ -1858,7 +1454,6 @@ TEST_F(TestGameClientDiscs, ForwardSavestateCapturesLiveMachineDiscAndTimestamp)
   StartPlaying();
   CreatePlayback();
   TestMember<PlaybackMemory>(*m_playback).reset();
-  const auto persisted = SnapshotDiscFiles();
   auto expected = m_client->Discs().GetDiscs().GetState();
   expected.selectedSlot = 1;
   expected.trayEjected = true;
@@ -1880,7 +1475,6 @@ TEST_F(TestGameClientDiscs, ForwardSavestateCapturesLiveMachineDiscAndTimestamp)
   EXPECT_EQ(saved.GetAchievementData()[0], 4);
   ASSERT_TRUE(saved.GetDiscState().has_value());
   EXPECT_EQ(*saved.GetDiscState(), expected);
-  ExpectDiscFilesUnchanged(persisted);
 }
 
 TEST_F(TestGameClientDiscs, SavestateAfterSeekCapturesLiveDiscEdits)
@@ -2128,106 +1722,11 @@ TEST_F(TestGameClientDiscs, ForwardResumeCommitsRewindPreviewDiscAndTrayChanges)
   ExpectRewindPreviewResume(true);
 }
 
-TEST_F(TestGameClientDiscs, GameplayStartupPersistsKnownMediaBeforeAnyDiscMutation)
-{
-  const auto disc1 = CreateFile(".chd");
-  const auto disc2 = CreateFile(".chd");
-  const auto playlist = CreateFile(".m3u", disc1 + "\n" + disc2 + "\n");
-  m_core.slots = {disc1, disc2};
-  m_client->Discs().Initialize(playlist);
-  auto historical = m_client->Discs().GetDiscs();
-  ASSERT_TRUE(historical.SetSelectedDiscByIndex(1));
-  const auto state = historical.GetState();
-  ASSERT_TRUE(m_client->GetGamePath().empty());
-  ASSERT_FALSE(XFILE::CFile::Exists(CGameClientDiscXML::GetXMLPath(playlist)));
-
-  ASSERT_TRUE(InitializeGameplay(playlist));
-
-  ASSERT_TRUE(XFILE::CFile::Exists(CGameClientDiscXML::GetXMLPath(playlist)));
-  CXBMCTinyXML2 xml;
-  ASSERT_TRUE(xml.LoadFile(CGameClientDiscXML::GetXMLPath(playlist)));
-  ASSERT_NE(xml.RootElement()->FirstChildElement("knownmedia"), nullptr);
-  CGameClientDiscModel persisted;
-  ASSERT_TRUE(CGameClientDiscXML().Load(playlist, persisted));
-  EXPECT_EQ(persisted.GetKnownDiscPaths(), (std::vector<std::string>{disc1, disc2}));
-  XFILE::CFile source;
-  ASSERT_TRUE(source.OpenForWrite(playlist, true));
-  const auto shortened = disc1 + "\n";
-  ASSERT_EQ(source.Write(shortened.data(), shortened.size()),
-            static_cast<ssize_t>(shortened.size()));
-  source.Close();
-  ASSERT_TRUE(XFILE::CFile::Exists(disc2));
-  CGameClientDiscModel sourceOnly;
-  ASSERT_TRUE(CGameClientDiscM3U().Load(playlist, sourceOnly));
-  CGameClientDiscModel resolved;
-  EXPECT_FALSE(sourceOnly.ResolveState(state, resolved));
-  ASSERT_TRUE(persisted.ResolveState(state, resolved));
-  EXPECT_EQ(resolved.GetPathByIndex(1), disc2);
-  EXPECT_EQ(resolved.GetSelectedDiscIndex(), 1U);
-}
-
-TEST_F(TestGameClientDiscs, GameplayStartupKeepsEmptyPlaylistAndSourceMediaHistory)
-{
-  const auto disc1 = CreateFile(".chd");
-  const auto disc2 = CreateFile(".chd");
-  const auto playlist = CreateFile(".m3u", disc1 + "\n" + disc2 + "\n");
-  CGameClientDiscModel empty;
-  empty.SetEjected(true);
-  ASSERT_TRUE(CGameClientDiscXML().Save(playlist, empty));
-  m_core.slots = {disc1, disc2};
-  m_client->Discs().Initialize(playlist);
-  ASSERT_TRUE(m_client->Discs().HasPersistedState());
-
-  ASSERT_TRUE(InitializeGameplay(playlist));
-
-  CGameClientDiscModel persisted;
-  ASSERT_TRUE(CGameClientDiscXML().Load(playlist, persisted));
-  EXPECT_TRUE(persisted.Empty());
-  EXPECT_TRUE(persisted.IsSelectedNoDisc());
-  EXPECT_TRUE(persisted.IsEjected());
-  EXPECT_EQ(persisted.GetKnownDiscPaths(), (std::vector<std::string>{disc1, disc2}));
-}
-
-TEST_F(TestGameClientDiscs, FailedGameplayStartupDoesNotCreateDiscState)
-{
-  const auto disc = CreateFile(".chd");
-  const auto playlist = CreateFile(".m3u", disc + "\n");
-  m_core.slots = {disc};
-  m_client->Discs().Initialize(playlist);
-
-  EXPECT_FALSE(InitializeGameplay(playlist, false));
-
-  EXPECT_TRUE(m_client->GetGamePath().empty());
-  EXPECT_FALSE(XFILE::CFile::Exists(CGameClientDiscXML::GetXMLPath(playlist)));
-  EXPECT_FALSE(XFILE::CFile::Exists(CGameClientDiscM3U::GetM3UPath(playlist)));
-}
-
-TEST_F(TestGameClientDiscs, FailedGameplayStartupDoesNotReplaceDiscState)
-{
-  const auto disc = CreateFile(".chd");
-  const auto playlist = CreateFile(".m3u", disc + "\n");
-  m_core.slots = {disc};
-  CGameClientDiscModel persisted;
-  persisted.AddDisc(disc);
-  ASSERT_TRUE(CGameClientDiscXML().Save(playlist, persisted));
-  ASSERT_TRUE(CGameClientDiscM3U().Save(playlist, persisted));
-  const auto xml = ReadFile(CGameClientDiscXML::GetXMLPath(playlist));
-  const auto m3u = ReadFile(CGameClientDiscM3U::GetM3UPath(playlist));
-  m_client->Discs().Initialize(playlist);
-
-  EXPECT_FALSE(InitializeGameplay(playlist, false));
-
-  EXPECT_TRUE(m_client->GetGamePath().empty());
-  EXPECT_EQ(ReadFile(CGameClientDiscXML::GetXMLPath(playlist)), xml);
-  EXPECT_EQ(ReadFile(CGameClientDiscM3U::GetM3UPath(playlist)), m3u);
-}
-
-TEST_F(TestGameClientDiscs, ForwardFramesCaptureLiveDiscHistoryWithoutPersisting)
+TEST_F(TestGameClientDiscs, ForwardFramesCaptureLiveDiscHistory)
 {
   m_core.slots = {CreateFile(".chd"), CreateFile(".chd")};
   StartPlaying();
   CreatePlayback();
-  const auto persisted = SnapshotDiscFiles();
   m_core.changeDiscOnRun = true;
   auto expected = m_client->Discs().GetDiscs().GetState();
   expected.selectedSlot = 1;
@@ -2245,7 +1744,6 @@ TEST_F(TestGameClientDiscs, ForwardFramesCaptureLiveDiscHistoryWithoutPersisting
   EXPECT_EQ(m_core.modelQueries, queries + 1);
   m_playback->FrameEvent();
   EXPECT_EQ(m_core.modelQueries, queries + 2);
-  ExpectDiscFilesUnchanged(persisted);
 
   m_playback->SeekTimeMs(4000);
   EXPECT_EQ(m_core.machineFrame, 4);
