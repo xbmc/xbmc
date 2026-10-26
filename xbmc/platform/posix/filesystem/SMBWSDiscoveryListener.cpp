@@ -159,10 +159,11 @@ CWSDiscoveryListenerUDP::~CWSDiscoveryListenerUDP()
 {
 }
 
-void CWSDiscoveryListenerUDP::Stop()
+void CWSDiscoveryListenerUDP::Stop(bool bWait)
 {
-  StopThread(true);
-  CLog::Log(LOGINFO, "CWSDiscoveryListenerUDP::Stop - Stopped");
+  StopThread(bWait);
+  if (bWait && m_started.exchange(false))
+    CLog::Log(LOGINFO, "CWSDiscoveryListenerUDP::Stop - Stopped");
 }
 
 void CWSDiscoveryListenerUDP::Start()
@@ -178,6 +179,7 @@ void CWSDiscoveryListenerUDP::Start()
   WSInstance.SetItems(m_vecWSDInfo);
 
   // Create thread and set low priority
+  m_started = true;
   Create();
   SetPriority(ThreadPriority::LOWEST);
   CLog::Log(LOGINFO, "CWSDiscoveryListenerUDP::Start - Started");
@@ -258,7 +260,7 @@ void CWSDiscoveryListenerUDP::Process()
   while (!m_bStop)
   {
     FD_SET(fd, &rset);
-    timeout.tv_sec = 3;
+    timeout.tv_sec = 1;
     timeout.tv_usec = 0;
     nready = select((fd + 1), &rset, NULL, NULL, &timeout);
 

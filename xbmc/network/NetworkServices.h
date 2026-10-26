@@ -101,7 +101,7 @@ public:
 
   bool StartWSDiscovery();
   bool IsWSDiscoveryRunning();
-  bool StopWSDiscovery();
+  bool StopWSDiscovery(bool bWait);
 
 private:
   CNetworkServices(const CNetworkServices&);
