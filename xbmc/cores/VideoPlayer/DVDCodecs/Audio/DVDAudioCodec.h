@@ -28,6 +28,7 @@ typedef struct stDVDAudioFrame
 {
   uint8_t* data[16];
   double pts;
+  double edlPts{DVD_NOPTS_VALUE};
   bool hasTimestamp;
   double duration;
   unsigned int nb_frames;
