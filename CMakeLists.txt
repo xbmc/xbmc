@@ -451,6 +451,13 @@ if(CORE_SYSTEM_NAME STREQUAL "darwin_embedded")
   add_library(lib${APP_NAME_LC} STATIC)
   add_dependencies(lib${APP_NAME_LC} compileinfo)
   target_link_libraries(lib${APP_NAME_LC} PUBLIC compileinfo_obj)
+elseif(CCACHE_FOUND AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
+       CMAKE_GENERATOR MATCHES "Visual Studio")
+  # Embedded debug information can exceed the static archive size limit.
+  add_library(lib${APP_NAME_LC} OBJECT)
+  set_target_properties(lib${APP_NAME_LC} PROPERTIES
+    VS_USER_PROPS "${CMAKE_SOURCE_DIR}/cmake/scripts/windows/ObjectLibrary.props")
+  target_link_libraries(lib${APP_NAME_LC} PUBLIC $<TARGET_OBJECTS:compileinfo>)
 else()
   add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
 endif()
