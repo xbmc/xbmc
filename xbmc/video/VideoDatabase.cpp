@@ -10453,14 +10453,17 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         }
         else
         {
-          // Only consider keeping this file if not optical and belonging to a (matching) source,
-          // or a version or extra
+          // Only consider keeping this file if not optical. Outside the sources, which may be
+          // another client's, a file that exists is kept too, unless it is a stream or virtual.
           bool bIsSource;
           const int sourceIndex = URIUtils::IsOnDVD(fullPath)
                                       ? -1
                                       : CUtil::GetMatchingSource(fullPath, videoSources, bIsSource);
-          if (sourceIndex >= 0 || (!URIUtils::IsOnDVD(fullPath) &&
-                                   assetFiles.contains(m_pDS2->fv("files.idFile").get_asInt())))
+          if (sourceIndex >= 0 ||
+              (!URIUtils::IsOnDVD(fullPath) &&
+               (assetFiles.contains(m_pDS2->fv("files.idFile").get_asInt()) ||
+                (!URIUtils::IsInternetStream(fullPath, true) && !URIUtils::IsPVR(fullPath) &&
+                 !URIUtils::IsVideoDb(fullPath)))))
           {
             const std::string pathDir = URIUtils::GetDirectory(fullPath);
 

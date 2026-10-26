@@ -1478,6 +1478,30 @@ TEST_F(TestVideoDatabaseClean, RemovesAVersionWhoseFileHasGoneFromTheLibrary)
   EXPECT_EQ(1, announcements->CountUpdated("movie", idMovie));
 }
 
+// Another client of a shared library can have a source this one hasn't
+TEST_F(TestVideoDatabaseClean, KeepsAnEpisodeOutsideTheSourcesWhileItExists)
+{
+  const std::string shows{Folder(m_root, "shows")};
+  AddSource(shows, "tvshows");
+  const std::string outside{Folder(m_root, "outside")};
+  const std::string inSource{Folder(shows, "Show")};
+  const std::string notInSource{Folder(outside, "Show")};
+
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Show";
+  tag.m_strPath = inSource;
+  const int idShow{m_db.SetDetailsForTvShow({inSource, notInSource}, tag, KODI::ART::Artwork{},
+                                            KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(idShow, 0);
+  const int idEpisode{AddEpisode(idShow, File(notInSource, "Show S01E01.mkv"), 1)};
+  ASSERT_GT(idEpisode, 0);
+
+  Clean();
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
+}
+
 TEST_F(TestVideoDatabaseClean, KeepsAVersionOutsideTheSourcesWhileItExists)
 {
   const std::string movies{Folder(m_root, "movies")};
