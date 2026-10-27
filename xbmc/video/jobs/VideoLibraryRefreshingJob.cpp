@@ -41,6 +41,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
+#include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "video/tags/IVideoInfoTagLoader.h"
 #include "video/tags/VideoInfoTagLoaderFactory.h"
 #include "video/tags/VideoTagLoaderNFO.h"
@@ -749,15 +750,25 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // the versions kept from before the refresh are not scanned, so their stream details are
       // read again here
       CFileItemList keptVersions;
-      if (scraper->Content() == ADDON::ContentType::MOVIES &&
-          CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-              CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+      if (scraper->Content() == ADDON::ContentType::MOVIES)
         db.GetVideoVersions(VideoDbContentType::MOVIES, origDbId, keptVersions,
                             VideoAssetType::VERSION);
 
       const auto videoTag{m_item->GetVideoInfoTag()};
       db.UpdateAssetsOwner(videoTag->m_type, origDbId, videoTag->m_iDbId);
 
+      // The versions kept are on other discs than the one refreshed, so the movie the disc was added
+      // as again isn't named by it
+      if (!keptVersions.IsEmpty() && videoTag->m_iDbId > 0)
+      {
+        CGUIDialogVideoManagerVersions::RemovePartNumberFromTitle(videoTag->m_iDbId,
+                                                                  VideoDbContentType::MOVIES, db);
+        db.GetMovieInfo({}, *videoTag, videoTag->m_iDbId);
+      }
+
+      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+        keptVersions.Clear();
       for (const auto& version : keptVersions)
       {
         CFileItem versionItem{version->GetDynPath(), false};

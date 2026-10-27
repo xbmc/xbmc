@@ -1483,6 +1483,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         switch (result)
         {
           case VersionConversionResult::SUCCESS:
+            RemovePartNumberFromTitle(targetMovieDbId, VideoDbContentType::MOVIES, m_database);
             return InfoRet::HAVE_ALREADY;
           case VersionConversionResult::NOT_NEEDED:
           case VersionConversionResult::CANCELLED:
