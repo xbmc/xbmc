@@ -108,6 +108,19 @@ protected:
                           const ADDON::ScraperPtr& content,
                           const std::string& listItemPath);
 
+  /*!
+   \brief Update the list item of a movie in place after its information or art was changed
+   \param listItemPath path of the list item to update
+   \param originalFile file of the movie the change was requested for
+   \param item the changed movie
+   \param infoRefreshed true if the movie was refreshed, false if only its art changed
+   \return true if the list item was updated, false if the list has to be refreshed instead
+   */
+  bool UpdateMovieListItem(const std::string& listItemPath,
+                           const std::string& originalFile,
+                           const CFileItem& item,
+                           bool infoRefreshed);
+
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem* item,
@@ -148,17 +161,4 @@ private:
   ShowInfoResult ShowInfo(const std::shared_ptr<CFileItem>& item,
                           const std::shared_ptr<ADDON::CScraper>& content,
                           std::shared_ptr<CFileItem>& updatedItem);
-
-  /*!
-   \brief Update the list item of a movie in place after the information dialog changed it
-   \param listItemPath path of the list item to update
-   \param originalFile file of the movie the information was requested for
-   \param item the movie as last shown by the information dialog
-   \param infoRefreshed true if the movie was refreshed, false if only its art changed
-   \return true if the list item was updated, false if the list has to be refreshed instead
-   */
-  bool UpdateMovieListItem(const std::string& listItemPath,
-                           const std::string& originalFile,
-                           const CFileItem& item,
-                           bool infoRefreshed);
 };
