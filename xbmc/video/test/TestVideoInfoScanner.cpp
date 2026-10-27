@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "LangInfo.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
@@ -22,6 +23,8 @@
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
 #include "jobs/JobManager.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -194,10 +197,13 @@ public:
     return AddBlurayPlaylistVersions(playlists, nullptr, true, false);
   }
 
+  //! Groups the similar videos it finds without asking
+  void GroupSimilarVideos() { m_similarVideoAction = SimilarVideoScanAction::AUTO; }
+
   //! As a scan does with a movie it has added, with grouping of similar videos on
   std::pair<VersionConversionResult, int> GroupWithSimilar(int dbId)
   {
-    m_similarVideoAction = SimilarVideoScanAction::AUTO;
+    GroupSimilarVideos();
     return ProcessVideoVersion(VideoDbContentType::MOVIES, dbId);
   }
 
@@ -314,6 +320,39 @@ protected:
     return File(folder, file);
   }
 
+  //! A dvd folder rip
+  //! \return the rip's VIDEO_TS.IFO
+  static std::string DvdRip(const std::string& folder)
+  {
+    const std::string videoTs{Folder(folder, "VIDEO_TS")};
+    const std::string disc{File(videoTs, "VIDEO_TS.IFO")};
+    File(videoTs, "VTS_01_0.IFO");
+    File(videoTs, "VTS_01_1.VOB");
+    return disc;
+  }
+
+  //! What a scan makes of a disc rip in a folder depends on whether its folder was scanned before,
+  //! which the hash of the folder holding it doesn't, so that the next scan doesn't look at it again
+  void FolderHoldingADiscRipKeepsItsHash(bool dvd)
+  {
+    const std::string folder{Folder(m_root, "Film (2010)")};
+    Nfo(folder, "movie.nfo", "Film");
+    if (dvd)
+      DvdRip(folder);
+    else
+      BlurayRip(folder);
+    Scan();
+    ASSERT_EQ(1, CountMovies());
+    std::string first;
+    ASSERT_TRUE(m_db.GetPathHash(m_root, first));
+
+    Scan();
+
+    std::string second;
+    ASSERT_TRUE(m_db.GetPathHash(m_root, second));
+    EXPECT_EQ(first, second);
+  }
+
   //! A bluray folder rip, with the backup copy of its index that a BDMV folder holds
   //! \return the rip's index.bdmv
   static std::string BlurayRip(const std::string& folder)
@@ -341,6 +380,8 @@ protected:
     TestScanner scanner{m_settings, ignoreVideoExtras, clean};
     if (m_scraperInfo)
       scanner.UseScraper(std::make_shared<ADDON::CScraper>(m_scraperInfo, m_scraperType));
+    if (m_similarVideoAction >= 0)
+      scanner.GroupSimilarVideos();
     scanner.Scan(path.empty() ? m_root : path);
   }
 
@@ -642,23 +683,48 @@ TEST_F(TestVideoInfoScanner, AFolderStackIsOneMovie)
   EXPECT_TRUE(m_db.GetSingleValue("SELECT strFileName FROM movie_view").starts_with("stack://"));
 }
 
-// What a scan makes of a disc rip in a folder depends on whether its folder was scanned before,
-// which the hash of the folder holding it doesn't, so that the next scan doesn't look at it again
 TEST_F(TestVideoInfoScanner, AFolderHoldingADiscRipKeepsItsHash)
 {
+  FolderHoldingADiscRipKeepsItsHash(false);
+}
+
+TEST_F(TestVideoInfoScanner, AFolderHoldingADvdRipKeepsItsHash)
+{
+  FolderHoldingADiscRipKeepsItsHash(true);
+}
+
+// A disc joining the movie of another disc of it makes the movie span the discs, so it isn't
+// named by the one it was added from
+TEST_F(TestVideoInfoScanner, AMovieADiscJoinsIsNotNamedByItsOtherDisc)
+{
+  // "(Disc n)" is a localised string
+  auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  struct Unload
+  {
+    CLocalizeStrings& strings;
+    ~Unload() { strings.Clear(); }
+  } unload{strings};
+
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  GroupSimilarVideosAutomatically();
+  Found("Film");
+  Details(
+      "Film",
+      R"(<details><title>Film</title><uniqueid type="tmdb" default="true">100</uniqueid></details>)");
   const std::string folder{Folder(m_root, "Film (2010)")};
-  Nfo(folder, "movie.nfo", "Film");
-  BlurayRip(folder);
+  const std::string first{File(Folder(folder, "Disc 1"), "Film.mkv")};
   Scan();
-  ASSERT_EQ(1, CountMovies());
-  std::string first;
-  ASSERT_TRUE(m_db.GetPathHash(m_root, first));
+  const int idMovie{m_db.GetMovieId(first)};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_EQ("Film (Disc 1)", m_db.GetMovieTitle(idMovie));
 
+  const std::string second{File(Folder(folder, "Disc 2"), "Film.mkv")};
+  Touch(folder);
   Scan();
 
-  std::string second;
-  ASSERT_TRUE(m_db.GetPathHash(m_root, second));
-  EXPECT_EQ(first, second);
+  EXPECT_EQ(idMovie, m_db.GetMovieId(second));
+  EXPECT_EQ("Film", m_db.GetMovieTitle(idMovie));
 }
 
 TEST_F(TestVideoInfoScanner, ABlurayFolderRipIsOneMovie)
@@ -759,6 +825,30 @@ TEST_F(TestVideoInfoScanner, AMovieWithSeveralSimilarMoviesElsewhereStaysApart)
   EXPECT_EQ(VersionConversionResult::CANCELLED, scanner.GroupWithSimilar(idMovie).first);
 
   EXPECT_EQ(3, CountMovies());
+}
+
+// A stack plays the discs of a movie in turn, so isn't one of them, and stays apart as they become
+// one movie
+TEST_F(TestVideoInfoScanner, AStackOfTheDiscsOfAMovieStaysApartAsTheyBecomeOne)
+{
+  GroupSimilarVideosAutomatically();
+  const std::string folder{URIUtils::AddFileToFolder(m_root, "Film (2010)")};
+  const std::string first{URIUtils::AddFileToFolder(folder, "Disc 1", "Film.mkv")};
+  const std::string second{URIUtils::AddFileToFolder(folder, "Disc 2", "Film.mkv")};
+  const std::string stack{"stack://" + first + " , " + second};
+  const int idFirst{AddFilm(first)};
+  ASSERT_GT(idFirst, 0);
+  const int idSecond{AddFilm(second)};
+  ASSERT_GT(idSecond, 0);
+  const int idStack{AddFilm(stack)};
+  ASSERT_GT(idStack, 0);
+
+  TestScanner scanner{m_settings};
+  EXPECT_EQ(VersionConversionResult::SUCCESS, scanner.GroupWithSimilar(idFirst).first);
+
+  EXPECT_EQ(2, CountMovies());
+  EXPECT_EQ(idSecond, m_db.GetMovieId(first));
+  EXPECT_EQ(idStack, m_db.GetMovieId(stack));
 }
 
 // The discs beside a movie are compared with each other as well as with it, as it may lack the
@@ -923,6 +1013,32 @@ TEST_F(TestVideoInfoScanner, ARefreshThatCantReadTheDetailsKeepsTheMovie)
 TEST_F(TestVideoInfoScanner, ARefreshWithAnOverrideNfoThatCantReadTheDetailsKeepsTheMovie)
 {
   RefreshThatCantReadTheDetails(true);
+}
+
+// An nfo naming the movie's url gives none of its details, which the refresh reads before it
+// removes the movie
+TEST_F(TestVideoInfoScanner, ARefreshWithAUrlNfoThatCantReadTheDetailsKeepsTheMovie)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  InstallOtherScraper();
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL("UPDATE path SET strScraper='%s' WHERE idPath=%i",
+                                                OTHER_SCRAPER_ID, m_db.GetPathId(m_root))));
+  const std::string folder{Folder(m_root, "Afilm")};
+  const std::string film{File(folder, "Afilm.mkv")};
+  // A url that the path's scraper recognises, but whose details it can't fetch
+  File(folder, "Afilm.nfo", "http://other.invalid/1");
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Afilm";
+  tag.m_strFileNameAndPath = film;
+  tag.m_strPath = folder;
+  const int idMovie{m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{})};
+  ASSERT_GT(idMovie, 0);
+
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, idMovie));
+  TestRefreshingJob refresh{std::make_shared<CFileItem>(tag), true, false};
+  refresh.Work(m_db);
+
+  EXPECT_EQ(idMovie, m_db.GetMovieId(film));
 }
 
 // A url is only taken from the scraper chosen for the path, which is the one it is fetched with
