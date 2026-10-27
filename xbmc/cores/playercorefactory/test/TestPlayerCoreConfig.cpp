@@ -9,7 +9,7 @@
 #include "FileItem.h"
 #include "cores/playercorefactory/PlayerCoreConfig.h"
 #include "cores/playercorefactory/PlayerSelectionRule.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 
 #include <memory>
@@ -22,7 +22,7 @@ TEST(TestPlayerCoreConfig, CopiesConfig)
 {
   std::unique_ptr<CPlayerCoreConfig> config;
   {
-    CXBMCTinyXML doc;
+    CXBMCTinyXML2 doc;
     ASSERT_TRUE(
         doc.Parse(std::string{R"(<player name="Ext" type="ExternalPlayer" audio="true" )"
                               R"(video="TRUE"><filename>/usr/bin/true</filename></player>)"}));
@@ -34,13 +34,13 @@ TEST(TestPlayerCoreConfig, CopiesConfig)
   EXPECT_TRUE(config->PlaysVideo());
   ASSERT_NE(nullptr, config->m_config);
   std::string filename;
-  EXPECT_TRUE(XMLUtils::GetString(config->m_config.get(), "filename", filename));
+  EXPECT_TRUE(XMLUtils::GetString(config->m_config->RootElement(), "filename", filename));
   EXPECT_EQ("/usr/bin/true", filename);
 }
 
 TEST(TestPlayerCoreConfig, NoAudioOrVideo)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(std::string{R"(<player name="Ext" audio="no"/>)"}));
   const CPlayerCoreConfig config("Ext", "external", doc.RootElement());
   EXPECT_FALSE(config.PlaysAudio());
@@ -57,7 +57,7 @@ TEST(TestPlayerCoreConfig, NoConfig)
 
 TEST(TestPlayerSelectionRule, GetPlayers)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(std::string{R"(<rules name="rules">
       <rule name="mkv" filetypes="mkv" player="VideoPlayer"/>
       <rule name="http" protocols="http|https">
