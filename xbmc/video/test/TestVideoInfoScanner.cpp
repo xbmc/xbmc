@@ -27,10 +27,12 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Artwork.h"
 #include "utils/URIUtils.h"
 #include "video/SetInfoTag.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
@@ -175,6 +177,13 @@ public:
 
     if (m_bClean)
       m_database.CleanDatabase(nullptr, m_pathsToClean, false);
+  }
+
+  //! As a scan adds the main playlists found on a disc, with grouping of similar videos on
+  InfoRet AddPlaylists(const CFileItemList& playlists)
+  {
+    m_similarVideoAction = SimilarVideoScanAction::AUTO;
+    return AddBlurayPlaylistVersions(playlists, nullptr, true, false);
   }
 
   using CVideoInfoScanner::EnumerateSeriesFolder;
@@ -597,6 +606,33 @@ TEST_F(TestVideoInfoScanner, ABlurayFolderRipIsOneMovie)
   EXPECT_GT(m_db.GetMovieId(disc), 0);
 }
 #endif
+
+TEST_F(TestVideoInfoScanner, PlaylistsOfADiscAlreadyInTheLibraryKeepTheirMovie)
+{
+  const std::string disc{File(Folder(m_root, "Film (2010)"), "FILM.iso")};
+  const std::string main{URIUtils::GetBlurayPlaylistPath(disc, 801)};
+  const std::string other{URIUtils::GetBlurayPlaylistPath(disc, 800)};
+
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Film";
+  tag.m_strFileNameAndPath = main;
+  tag.m_strPath = URIUtils::GetDirectory(main);
+  const int idMovie{m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{})};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{other, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  CFileItemList playlists;
+  playlists.Add(std::make_shared<CFileItem>(main, false));
+  playlists.Add(std::make_shared<CFileItem>(other, false));
+  TestScanner scanner{m_settings};
+  EXPECT_EQ(CInfoScanner::InfoRet::HAVE_ALREADY, scanner.AddPlaylists(playlists));
+
+  EXPECT_EQ(1, CountMovies());
+  EXPECT_EQ(idMovie, m_db.GetMovieId(main));
+  EXPECT_EQ(idMovie, m_db.GetMovieId(other));
+}
 
 TEST_F(TestVideoInfoScanner, ADvdFolderRipIsOneMovie)
 {
