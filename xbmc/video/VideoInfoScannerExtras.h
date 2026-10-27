@@ -68,6 +68,13 @@ public:
                                 bool rescan = false);
 
   /*!
+   \brief Record the extras of an extras folder as added, so that it is looked at again only once
+   they change.
+   \param folder the extras folder
+   */
+  void SetVideoExtrasHash(const std::string& folder);
+
+  /*!
    \brief The folders below a folder the library knows of. The extras of a disc are known only
    by the paths of its playlists (bluray://), which are taken as the folder holding the disc.
    \param db database connection to use

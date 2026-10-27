@@ -861,6 +861,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       m_extras.AddVideoExtras(dbId, extrasFolder);
+      m_extras.SetVideoExtrasHash(extrasFolder);
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
                 CURL::GetRedacted(extrasFolder));
     }

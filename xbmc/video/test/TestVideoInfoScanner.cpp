@@ -1029,6 +1029,21 @@ TEST_F(TestVideoInfoScanner, AMovieFolderGetsItsExtras)
   EXPECT_EQ(1, CountExtras());
 }
 
+// The extras folder is recorded as added with the movie, so the next scan doesn't add it again
+TEST_F(TestVideoInfoScanner, AnExtrasFolderAddedWithItsMovieIsHashed)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  FolderMovie(folder, "Film (2010).mkv");
+  const std::string extras{Folder(folder, "Extras")};
+  File(extras, "Trailer.mkv");
+
+  Scan();
+
+  std::string hash;
+  EXPECT_TRUE(m_db.GetPathHash(extras, hash));
+  EXPECT_FALSE(hash.empty());
+}
+
 TEST_F(TestVideoInfoScanner, AVideoAddedBesideTheExtrasOfABonusDiscIsAdded)
 {
   VideoAddedBesideABonusDisc(false);
