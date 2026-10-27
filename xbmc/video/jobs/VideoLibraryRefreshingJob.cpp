@@ -493,6 +493,19 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           discFile = URIUtils::GetDiscFile(filePath);
         else if (::UTILS::DISCS::IsBlurayDiscImage(filePath) || URIUtils::IsBDFile(filePath))
           discFile = filePath;
+
+        // A disc holding another movie too is found as that movie once this one is removed, so
+        // this one is refreshed from its own file alone
+        if (!discFile.empty())
+        {
+          const int playlistPathId{db.GetPathId(URIUtils::GetBlurayPlaylistPath(discFile))};
+          if (playlistPathId >= 0 &&
+              db.GetSingleValueInt(db.PrepareSQL(
+                  "SELECT COUNT(1) FROM movie JOIN files ON files.idFile = movie.idFile "
+                  "WHERE files.idPath = %i AND movie.idMovie <> %i",
+                  playlistPathId, m_item->GetVideoInfoTag()->m_iDbId)) > 0)
+            discFile.clear();
+        }
       }
 
       // for a tvshow we need to handle all paths of it
