@@ -1656,13 +1656,13 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
   {
-    FlushEngine();
+    FlushEngine(true);
   }
 
   m_stats.UpdateStream(stream);
 }
 
-void CActiveAE::FlushEngine()
+void CActiveAE::FlushEngine(bool discardOutput)
 {
   if (m_sinkBuffers)
     m_sinkBuffers->Flush();
@@ -1692,7 +1692,8 @@ void CActiveAE::FlushEngine()
 
   // send message to sink
   Message *reply;
-  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s))
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s,
+                                              &discardOutput, sizeof(discardOutput)))
   {
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
