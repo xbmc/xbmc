@@ -28,7 +28,7 @@ namespace
 {
 std::vector<uint8_t> Serialize(CSavestateFlatBuffer& savestate)
 {
-  savestate.Finalize();
+  savestate.Finalize(true);
 
   const uint8_t* data = nullptr;
   size_t size = 0;
@@ -149,7 +149,7 @@ TEST(TestSavestateDiscState, RenamePreservesDiscState)
   writer.SetLabel("Before");
   writer.SetDiscState(MakeDiscState());
   ASSERT_NE(writer.GetMemoryBuffer(1), nullptr);
-  writer.Finalize();
+  writer.Finalize(true);
 
   CSavestateDatabase database;
   ASSERT_TRUE(database.AddSavestate(path, {}, writer));
