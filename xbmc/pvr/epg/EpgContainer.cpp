@@ -968,9 +968,16 @@ int CPVREpgContainer::CleanupCachedImages()
   const std::map<int, std::shared_ptr<CPVREpg>> epgIdToEpgMap = m_epgIdToEpgMap;
   m_critSection.unlock();
 
-  return std::accumulate(epgIdToEpgMap.cbegin(), epgIdToEpgMap.cend(), 0,
-                         [&database](int cleanedImages, const auto& epg)
-                         { return cleanedImages + epg.second->CleanupCachedImages(database); });
+  int cleanedImages = 0;
+  for (const auto& [_, epg] : epgIdToEpgMap)
+  {
+    // With thousands of channels this takes minutes, and PVR manager can't stop until it returns
+    if (!CServiceBroker::GetPVRManager().IsStarted())
+      break;
+
+    cleanedImages += epg->CleanupCachedImages(database);
+  }
+  return cleanedImages;
 }
 
 std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(
