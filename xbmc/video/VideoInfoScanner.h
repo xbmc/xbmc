@@ -132,6 +132,13 @@ namespace KODI::VIDEO
       m_scraperCache.insert(scrapers.begin(), scrapers.end());
     }
 
+    /*! \brief Look the movies up by these ids with a python scraper, rather than search for them.
+     */
+    void LookUpMoviesBy(const ADDON::CScraper::UniqueIDs& uniqueIDs)
+    {
+      m_movieUniqueIDs = uniqueIDs;
+    }
+
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
     /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
@@ -351,6 +358,9 @@ namespace KODI::VIDEO
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
+
+    //! The ids RetrieveVideoInfo() looks movies up by, where it would otherwise search
+    ADDON::CScraper::UniqueIDs m_movieUniqueIDs;
 
     //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
     bool m_useFolderNames{false};
