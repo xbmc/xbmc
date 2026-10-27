@@ -133,7 +133,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
   // determine the scraper for the item's path
   VIDEO::SScanSettings scanSettings;
-  ScraperPtr scraper = db.GetScraperForPath(m_item->GetPath(), scanSettings);
+  CVideoDatabase::ScraperCache scrapers;
+  ScraperPtr scraper = db.GetScraperForPath(m_item->GetPath(), scanSettings, &scrapers);
   if (!scraper && m_item->GetVideoContentType() == VideoDbContentType::MOVIE_SETS)
   {
     // Deal with refreshing movie set
@@ -259,10 +260,14 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
   // run this in a loop in case we need to refresh again
   bool failure = false;
+  // a title the user enters is searched for in place of one embedded in the file
+  bool useEmbeddedTitle{m_searchTitle.empty()};
   do
   {
     std::unique_ptr<CVideoInfoTag> pluginTag;
     std::unique_ptr<KODI::ART::Artwork> pluginArt;
+    std::string embeddedTitle;
+    int embeddedYear{-1};
 
     if (!ignoreNfo)
     {
@@ -298,8 +303,14 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           if (nfo && nfo->GetArt())
             pluginArt = std::move(nfo->GetArt());
         }
-        else if (nfoResult == CInfoScanner::InfoType::URL)
+        else if (nfoResult == CInfoScanner::InfoType::URL ||
+                 nfoResult == CInfoScanner::InfoType::COMBINED)
           scraperUrl = loader->ScraperUrl();
+        else if (nfoResult == CInfoScanner::InfoType::TITLE)
+        {
+          embeddedTitle = tag->GetTitle();
+          embeddedYear = tag->GetYear();
+        }
       }
 
       static constexpr std::array NFO_RESULTS{"none",     "full",      "url",  "override",
@@ -313,7 +324,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // if there's no NFO remember it in case we have to refresh again
       if (nfoResult == CInfoScanner::InfoType::ERROR_NFO)
         ignoreNfo = true;
-      else if (nfoResult != CInfoScanner::InfoType::NONE)
+      // a movie's embedded title or override nfo still needs its details looked up
+      else if (nfoResult != CInfoScanner::InfoType::NONE &&
+               (scraper->Content() != ADDON::ContentType::MOVIES ||
+                (nfoResult != CInfoScanner::InfoType::TITLE &&
+                 nfoResult != CInfoScanner::InfoType::OVERRIDE)))
         hasDetails = true;
 
       // if we are performing a forced refresh ask the user to choose between using the local
@@ -380,7 +395,10 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
       // try to find a matching item
       MOVIELIST itemResultList;
-      int result = infoDownloader.FindMovie(itemTitle, -1, itemResultList, GetProgressDialog());
+      const bool useTagTitle{useEmbeddedTitle && !ignoreNfo && !embeddedTitle.empty()};
+      int result = infoDownloader.FindMovie(useTagTitle ? embeddedTitle : itemTitle,
+                                            useTagTitle ? embeddedYear : -1, itemResultList,
+                                            GetProgressDialog());
 
       // close the progress dialog
       MarkFinished();
@@ -421,6 +439,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
                 return false;
 
               // go through the whole process again
+              useEmbeddedTitle = false;
               needsRefresh = true;
               continue;
             }
@@ -457,6 +476,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           return false;
 
         // go through the whole process again
+        useEmbeddedTitle = false;
         needsRefresh = true;
         continue;
       }
@@ -464,6 +484,26 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // nothing else we can do
       failure = true;
       break;
+    }
+
+    // A movie is removed before it is added again, so its details are read first. One the scraper
+    // can't give them for, as when its site doesn't answer, is left as it is.
+    if (scraper->Content() == ADDON::ContentType::MOVIES && scraperUrl.HasUrls())
+    {
+      // the search closed a modal progress dialog, and the download pumps the GUI through it
+      SetTitle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(198));
+      SetText(itemTitle);
+      SetProgress(0);
+
+      CVideoInfoTag details;
+      if (!CVideoInfoDownloader(scraper).GetDetails({}, scraperUrl, details, GetProgressDialog()))
+      {
+        CLog::Log(LOGWARNING,
+                  "CVideoLibraryRefreshingJob: no details found for '{}', so it is left as it is",
+                  CURL::GetRedacted(m_item->GetPath()));
+        failure = true;
+        break;
+      }
     }
 
     // before we start downloading all the necessary information cleanup any existing artwork and hashes
@@ -619,6 +659,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // finally download the information for the item
     VIDEO::CVideoInfoScanner scanner;
+    scanner.UseScrapers(scrapers);
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
                                    scraperUrl.HasUrls() ? &scraperUrl : nullptr,
