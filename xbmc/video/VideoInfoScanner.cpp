@@ -3173,8 +3173,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
       int targetDbId /* = -1 */,
       bool canBecomeDefault /* = true */)
   {
-    return CGUIDialogVideoManagerVersions::ProcessVideoVersion(itemType, dbId, targetDbId,
-                                                               canBecomeDefault);
+    if (!m_database.Open())
+      return {VersionConversionResult::FAILED, -1};
+    const auto result{CGUIDialogVideoManagerVersions::ProcessVideoVersion(
+        itemType, dbId, m_database, targetDbId, canBecomeDefault)};
+    m_database.Close();
+    return result;
   }
 
   void CVideoInfoScanner::RemovePartNumberFromTitle(int dbId,

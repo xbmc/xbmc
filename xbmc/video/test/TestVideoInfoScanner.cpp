@@ -195,6 +195,13 @@ public:
     return AddBlurayPlaylistVersions(playlists, nullptr, true, false);
   }
 
+  //! As a scan does with a movie it has added, with grouping of similar videos on
+  std::pair<VersionConversionResult, int> GroupWithSimilar(int dbId)
+  {
+    m_similarVideoAction = SimilarVideoScanAction::AUTO;
+    return ProcessVideoVersion(VideoDbContentType::MOVIES, dbId);
+  }
+
   using CVideoInfoScanner::EnumerateSeriesFolder;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
 
@@ -256,6 +263,9 @@ protected:
       XFILE::CDirectory::RemoveRecursive(m_otherScraper);
       XFILE::CDirectory::RemoveRecursive(ScraperCacheFolder(OTHER_SCRAPER_ID));
     }
+    if (m_similarVideoAction >= 0)
+      CServiceBroker::GetSettingsComponent()->GetSettings()->SetInt(
+          CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION, m_similarVideoAction);
     if (m_scraperInfo)
     {
       CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
@@ -451,6 +461,29 @@ protected:
 
   int CountMovies() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"); }
 
+  //! A movie of its own of the same film, as one disc of it added before grouping. An imdb id
+  //! is given when it has one as well as its tmdb id.
+  int AddFilm(const std::string& file, const std::string& imdb = {})
+  {
+    CVideoInfoTag tag;
+    tag.m_strTitle = "Film";
+    tag.m_strFileNameAndPath = file;
+    tag.m_strPath = URIUtils::GetDirectory(file);
+    tag.SetUniqueID("100", "tmdb", true);
+    if (!imdb.empty())
+      tag.SetUniqueID(imdb, "imdb");
+    return m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{});
+  }
+
+  //! Groups the similar videos found without asking, as the setting's default does
+  void GroupSimilarVideosAutomatically()
+  {
+    const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+    m_similarVideoAction = settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION);
+    settings->SetInt(CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION,
+                     static_cast<int>(SimilarVideoScanAction::AUTO));
+  }
+
   //! A file added or deleted below an extras folder changes only the folder holding it. The movie
   //! is a file in its folder, or a disc structure the folder holds.
   void ScanChangesBelowTheExtras(bool disc = false)
@@ -521,6 +554,7 @@ protected:
   bool m_eventLog{false};
   std::string m_otherScraper;
   std::string m_installedScraper;
+  int m_similarVideoAction{-1};
 };
 } // namespace
 
@@ -684,6 +718,84 @@ TEST_F(TestVideoInfoScanner, PlaylistsOfADiscAlreadyInTheLibraryKeepTheirMovie)
   EXPECT_EQ(1, CountMovies());
   EXPECT_EQ(idMovie, m_db.GetMovieId(main));
   EXPECT_EQ(idMovie, m_db.GetMovieId(other));
+}
+
+// The discs of a movie, added as movies of their own, become one as one of them is added again
+TEST_F(TestVideoInfoScanner, DiscsOfAMovieInItsFolderBecomeOneMovie)
+{
+  GroupSimilarVideosAutomatically();
+  const std::string folder{URIUtils::AddFileToFolder(m_root, "Film (2010)")};
+  const std::string first{URIUtils::AddFileToFolder(folder, "Disc 1", "Film.mkv")};
+  const std::string second{URIUtils::AddFileToFolder(folder, "Disc 2", "Film.mkv")};
+  const std::string third{URIUtils::AddFileToFolder(folder, "Disc 3", "Film.mkv")};
+  const int idFirst{AddFilm(first)};
+  ASSERT_GT(idFirst, 0);
+  ASSERT_GT(AddFilm(third), 0);
+  const int idSecond{AddFilm(second)};
+  ASSERT_GT(idSecond, 0);
+
+  TestScanner scanner{m_settings};
+  EXPECT_EQ(VersionConversionResult::SUCCESS, scanner.GroupWithSimilar(idSecond).first);
+
+  EXPECT_EQ(1, CountMovies());
+  EXPECT_EQ(idFirst, m_db.GetMovieId(first));
+  EXPECT_EQ(idFirst, m_db.GetMovieId(second));
+  EXPECT_EQ(idFirst, m_db.GetMovieId(third));
+}
+
+// A copy elsewhere may be kept apart on purpose, so only the disc beside the movie joins it
+TEST_F(TestVideoInfoScanner, ACopyOfAMovieInAnotherFolderStaysApart)
+{
+  GroupSimilarVideosAutomatically();
+  const std::string folder{URIUtils::AddFileToFolder(m_root, "Film (2010)")};
+  const std::string first{URIUtils::AddFileToFolder(folder, "Disc 1", "Film.mkv")};
+  const std::string second{URIUtils::AddFileToFolder(folder, "Disc 2", "Film.mkv")};
+  const std::string copy{URIUtils::AddFileToFolder(m_root, "Film Copy (2010)", "Film.mkv")};
+  const int idFirst{AddFilm(first)};
+  ASSERT_GT(idFirst, 0);
+  const int idCopy{AddFilm(copy)};
+  ASSERT_GT(idCopy, 0);
+  const int idSecond{AddFilm(second)};
+  ASSERT_GT(idSecond, 0);
+
+  TestScanner scanner{m_settings};
+  EXPECT_EQ(VersionConversionResult::SUCCESS, scanner.GroupWithSimilar(idSecond).first);
+
+  EXPECT_EQ(2, CountMovies());
+  EXPECT_EQ(idFirst, m_db.GetMovieId(second));
+  EXPECT_EQ(idCopy, m_db.GetMovieId(copy));
+}
+
+// Without a movie beside it, there is no telling which of several similar movies it belongs to
+TEST_F(TestVideoInfoScanner, AMovieWithSeveralSimilarMoviesElsewhereStaysApart)
+{
+  GroupSimilarVideosAutomatically();
+  const int idMovie{AddFilm(URIUtils::AddFileToFolder(m_root, "Film (2010)", "Film.mkv"))};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_GT(AddFilm(URIUtils::AddFileToFolder(m_root, "Film Copy (2010)", "Film.mkv")), 0);
+  ASSERT_GT(AddFilm(URIUtils::AddFileToFolder(m_root, "Film Other (2010)", "Film.mkv")), 0);
+
+  TestScanner scanner{m_settings};
+  EXPECT_EQ(VersionConversionResult::CANCELLED, scanner.GroupWithSimilar(idMovie).first);
+
+  EXPECT_EQ(3, CountMovies());
+}
+
+// The discs beside a movie are compared with each other as well as with it, as it may lack the
+// kind of id they differ by
+TEST_F(TestVideoInfoScanner, DiscsBesideAMovieWithConflictingIdsStayApart)
+{
+  GroupSimilarVideosAutomatically();
+  const std::string folder{URIUtils::AddFileToFolder(m_root, "Film (2010)")};
+  ASSERT_GT(AddFilm(URIUtils::AddFileToFolder(folder, "Disc 1", "Film.mkv"), "tt0000001"), 0);
+  ASSERT_GT(AddFilm(URIUtils::AddFileToFolder(folder, "Disc 2", "Film.mkv"), "tt0000002"), 0);
+  const int idThird{AddFilm(URIUtils::AddFileToFolder(folder, "Disc 3", "Film.mkv"))};
+  ASSERT_GT(idThird, 0);
+
+  TestScanner scanner{m_settings};
+  EXPECT_EQ(VersionConversionResult::CANCELLED, scanner.GroupWithSimilar(idThird).first);
+
+  EXPECT_EQ(3, CountMovies());
 }
 
 TEST_F(TestVideoInfoScanner, ADvdFolderRipIsOneMovie)

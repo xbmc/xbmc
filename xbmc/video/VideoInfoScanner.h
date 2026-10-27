@@ -322,8 +322,10 @@ namespace KODI::VIDEO
     EpisodeResult EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
-    static std::pair<VersionConversionResult, int> ProcessVideoVersion(
-        VideoDbContentType itemType, int dbId, int targetDbId = -1, bool canBecomeDefault = true);
+    std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
+                                                                int dbId,
+                                                                int targetDbId = -1,
+                                                                bool canBecomeDefault = true);
     static void RemovePartNumberFromTitle(int dbId,
                                           VideoDbContentType itemType,
                                           CVideoDatabase& db);

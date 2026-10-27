@@ -35,6 +35,7 @@ public:
    * additional version of it.
    * \param[in] itemType content type of dbId
    * \param[in] dbId id of the movie to convert
+   * \param[in] videodb database connection to use
    * \param[in] targetDbId when >= 0, skip searching the library for a similar movie and
    * reuse this movie id as the merge target instead - used to apply a merge decision already
    * made for an earlier, related item (e.g. another bluray playlist on the same disc) without
@@ -46,6 +47,7 @@ public:
    */
   static std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
                                                                      int dbId,
+                                                                     CVideoDatabase& videodb,
                                                                      int targetDbId = -1,
                                                                      bool canBecomeDefault = true);
 

@@ -37,8 +37,12 @@
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 
+#include <algorithm>
+#include <cstdlib>
 #include <memory>
+#include <ranges>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -639,9 +643,86 @@ bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFi
   return true;
 }
 
+namespace
+{
+/*!
+ * \brief Without the user to choose among several similar movies, those in the folder of the item
+ * are taken to be its other discs or copies, and made one movie.
+ * \param[in] item the movie that is to become a version of another
+ * \param[in,out] list the similar movies, left with just the one those beside the item now are.
+ * Left as it was when none is beside it.
+ * \param[in] videodb database connection to use
+ * \return false if making them one movie failed
+ */
+bool MergeMoviesBeside(const CFileItem& item, CFileItemList& list, CVideoDatabase& videodb)
+{
+  // A stack plays its discs in turn, so isn't a copy of any of them
+  const std::string& file{item.GetVideoInfoTag()->m_strFileNameAndPath};
+  if (URIUtils::IsStack(file))
+    return true;
+
+  // The folder above any "Disc n" folder, which holds all the discs of a movie
+  const auto movieFolder{[](const std::string& path)
+                         { return CFileItem{path, false}.GetBaseMoviePath(true); }};
+  const std::string folder{movieFolder(file)};
+
+  std::vector<std::shared_ptr<CFileItem>> beside;
+  for (const auto& movie : list)
+  {
+    const std::string& movieFile{movie->GetVideoInfoTag()->m_strFileNameAndPath};
+    if (!URIUtils::IsStack(movieFile) && URIUtils::PathEquals(movieFolder(movieFile), folder, true))
+      beside.emplace_back(movie);
+  }
+  if (beside.empty())
+    return true;
+
+  // The candidates were only compared with the item, which may lack the kind of id they differ by
+  for (auto first = beside.cbegin(); first != beside.cend(); ++first)
+  {
+    for (auto second = first + 1; second != beside.cend(); ++second)
+    {
+      if ((*first)->GetVideoInfoTag()->HasConflictingUniqueID(*(*second)->GetVideoInfoTag()))
+      {
+        CLog::LogF(LOGINFO, "Automated video version creation stopped by conflicting unique ids");
+        return true;
+      }
+    }
+  }
+
+  // The movie of the lowest disc keeps its details, whichever of the discs is added
+  std::ranges::sort(beside, {},
+                    [](const std::shared_ptr<CFileItem>& movie)
+                    {
+                      const CVideoInfoTag& tag{*movie->GetVideoInfoTag()};
+                      const std::string disc{
+                          CUtil::GetPartNumberFromPath(tag.m_strFileNameAndPath)};
+                      return std::make_tuple(disc.empty(), std::atoi(disc.c_str()), tag.m_iDbId);
+                    });
+  const int targetDbId{beside.front()->GetVideoInfoTag()->m_iDbId};
+  for (const auto& movie : beside | std::views::drop(1))
+  {
+    const int dbId{movie->GetVideoInfoTag()->m_iDbId};
+    if (!videodb.ConvertVideoToVersion(VideoDbContentType::MOVIES, dbId, targetDbId, -1,
+                                       VideoAssetType::VERSION))
+    {
+      CLog::LogF(LOGERROR, "Failed to convert movie id {} into a version of movie id {}", dbId,
+                 targetDbId);
+      return false;
+    }
+    CLog::LogF(LOGDEBUG, "Converted movie id {} into a version of movie id {} beside it in '{}'",
+               dbId, targetDbId, CURL::GetRedacted(folder));
+  }
+
+  list.Clear();
+  list.Add(beside.front());
+  return true;
+}
+} // namespace
+
 std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessVideoVersion(
     VideoDbContentType itemType,
     int dbId,
+    CVideoDatabase& videodb,
     int targetDbId /* = -1 */,
     bool canBecomeDefault /* = true */)
 {
@@ -655,13 +736,6 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessV
   {
     CLog::LogF(LOGDEBUG, "Version creation disabled by settings");
     return {VersionConversionResult::NOT_ALLOWED, NO_VERSION};
-  }
-
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-  {
-    CLog::LogF(LOGERROR, "Failed to open video database!");
-    return {VersionConversionResult::FAILED, NO_VERSION};
   }
 
   CFileItem item;
@@ -766,6 +840,9 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessV
       CLog::LogF(LOGINFO, "Automated video version creation stopped by conflicting unique ids");
       return {VersionConversionResult::NOT_NEEDED, NO_VERSION};
     }
+
+    if (list.Size() > 1 && !MergeMoviesBeside(item, list, videodb))
+      return {VersionConversionResult::FAILED, NO_VERSION};
   }
 
   return ChooseVideoAndConvertToVideoVersion(list, itemType, dbId, videodb, MediaRole::NewVersion,
