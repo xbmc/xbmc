@@ -9,7 +9,7 @@
 #include "filesystem/File.h"
 #include "guilib/GUIColorManager.h"
 #include "test/TestUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <string>
 #include <string_view>
@@ -33,7 +33,7 @@ class CTestColorManager : public CGUIColorManager
 public:
   bool LoadXMLFile(const std::string& path)
   {
-    CXBMCTinyXML xmlDoc;
+    CXBMCTinyXML2 xmlDoc;
     return xmlDoc.LoadFile(path) && LoadXML(xmlDoc);
   }
 };
