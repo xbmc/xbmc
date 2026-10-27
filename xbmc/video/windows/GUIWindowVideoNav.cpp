@@ -945,6 +945,12 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       const int ret{CGUIDialogVideoInfo::ManageVideoItem(item)};
 
+      // changed art of a movie only needs its own list item updated
+      if (ret == CONTEXT_BUTTON_SET_ART && item->HasVideoInfoTag() &&
+          UpdateMovieListItem(item->GetPath(), item->GetVideoInfoTag()->m_strFileNameAndPath, *item,
+                              false))
+        return true;
+
       if (ret >= 0)
       {
         Refresh(true);
