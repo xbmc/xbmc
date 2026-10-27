@@ -218,6 +218,58 @@ TEST_P(TestXBMCTinyXML2Charset, LoadFileTinyXML1)
   EXPECT_EQ(test.usedCharset, doc.GetUsedCharset());
 }
 
+TEST_P(TestXBMCTinyXML2Charset, Parse)
+{
+  const CharsetTest& test = GetParam();
+  CXBMCTinyXML2 doc;
+  ASSERT_TRUE(doc.Parse(std::string{test.data}, std::string{test.charset}));
+  ASSERT_NE(nullptr, doc.RootElement());
+  EXPECT_STREQ(std::string{test.text}.c_str(), doc.RootElement()->GetText());
+  EXPECT_EQ(test.usedCharset, doc.GetUsedCharset());
+}
+
+TEST_P(TestXBMCTinyXML2Charset, LoadFile)
+{
+  const CharsetTest& test = GetParam();
+  if (!test.charset.empty())
+    GTEST_SKIP() << "LoadFile takes the suggested charset from the file";
+
+  XFILE::CFile* file = XBMC_CREATETEMPFILE(".xml");
+  ASSERT_NE(nullptr, file);
+  ASSERT_EQ(static_cast<ssize_t>(test.data.size()),
+            file->Write(test.data.data(), test.data.size()));
+  file->Close();
+  const std::string path = XBMC_TEMPFILEPATH(file);
+
+  CXBMCTinyXML2 doc;
+  const bool loaded = doc.LoadFile(path);
+  XBMC_DELETETEMPFILE(file);
+  ASSERT_TRUE(loaded);
+  ASSERT_NE(nullptr, doc.RootElement());
+  EXPECT_STREQ(std::string{test.text}.c_str(), doc.RootElement()->GetText());
+  EXPECT_EQ(test.usedCharset, doc.GetUsedCharset());
+}
+
+TEST(TestXBMCTinyXML2, ConvertedDeclaresUtf8)
+{
+  CXBMCTinyXML2 doc;
+  ASSERT_TRUE(doc.Parse(std::string{"<?xml version=\"1.0\" encoding='ISO-8859-1' "
+                                    "standalone=\"yes\"?><a>caf\xE9</a>"},
+                        ""));
+  ASSERT_NE(nullptr, doc.FirstChild());
+  ASSERT_NE(nullptr, doc.FirstChild()->ToDeclaration());
+  EXPECT_STREQ("xml version=\"1.0\" encoding='UTF-8' standalone=\"yes\"",
+               doc.FirstChild()->Value());
+
+  tinyxml2::XMLPrinter printer;
+  doc.Print(&printer);
+  CXBMCTinyXML2 reloaded;
+  ASSERT_TRUE(reloaded.Parse(std::string{printer.CStr()}, ""));
+  EXPECT_EQ("UTF-8", reloaded.GetUsedCharset());
+  ASSERT_NE(nullptr, reloaded.RootElement());
+  EXPECT_STREQ(std::string{CAFE_UTF8}.c_str(), reloaded.RootElement()->GetText());
+}
+
 INSTANTIATE_TEST_SUITE_P(TestXBMCTinyXML2,
                          TestXBMCTinyXML2Charset,
                          testing::ValuesIn(charsetTests),
