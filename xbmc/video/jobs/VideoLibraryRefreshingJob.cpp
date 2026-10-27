@@ -262,6 +262,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
   // run this in a loop in case we need to refresh again
   bool failure = false;
+  bool lookUpByIds{true};
   // a title the user enters is searched for in place of one embedded in the file
   bool useEmbeddedTitle{m_searchTitle.empty()};
   do
@@ -366,8 +367,23 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     if (scraper->Content() == ADDON::ContentType::TVSHOWS && !m_item->IsFolder())
       hasDetails = true;
 
+    // Without anyone to choose from what a search finds, a movie is looked up by the ids it already
+    // has, as a search by its title may find another
+    CScraper::UniqueIDs uniqueIDs;
+    if (lookUpByIds && !hasDetails && !IsModal() && m_searchTitle.empty() && scraper->IsPython() &&
+        scraper->Content() == ADDON::ContentType::MOVIES && m_item->HasVideoInfoTag())
+    {
+      for (const auto& [type, value] : m_item->GetVideoInfoTag()->GetUniqueIDs())
+      {
+        if (!value.empty())
+          uniqueIDs.try_emplace(type, value);
+      }
+      if (!uniqueIDs.empty())
+        scraper->ClearCache();
+    }
+
     // if we don't have an url or need to refresh anyway do the web search
-    if (!hasDetails && (needsRefresh || !scraperUrl.HasUrls()))
+    if (!hasDetails && uniqueIDs.empty() && (needsRefresh || !scraperUrl.HasUrls()))
     {
       SetTitle(StringUtils::Format(localizeStrings.Get(197), scraper->Name()));
       SetText(itemTitle);
@@ -462,7 +478,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // if the URL is still empty, check whether or not we're allowed
     // to prompt and ask the user to input a new search title
-    if (!hasDetails && !scraperUrl.HasUrls())
+    if (!hasDetails && uniqueIDs.empty() && !scraperUrl.HasUrls())
     {
       // a local scraper has nothing to search, so another title cannot help and asking for one
       // would only bring us back here
@@ -489,7 +505,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // A movie is removed before it is added again, so its details are read first. One the scraper
     // can't give them for, as when its site doesn't answer, is left as it is.
-    if (scraper->Content() == ADDON::ContentType::MOVIES && scraperUrl.HasUrls())
+    if (scraper->Content() == ADDON::ContentType::MOVIES &&
+        (scraperUrl.HasUrls() || !uniqueIDs.empty()))
     {
       // the search closed a modal progress dialog, and the download pumps the GUI through it
       SetTitle(localizeStrings.Get(198));
@@ -497,10 +514,30 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       SetProgress(0);
 
       CVideoInfoTag details;
-      if (!CVideoInfoDownloader(scraper).GetDetails({}, scraperUrl, details, GetProgressDialog()))
+      if (!CVideoInfoDownloader(scraper).GetDetails(uniqueIDs, scraperUrl, details,
+                                                    GetProgressDialog()))
       {
+        // A scraper that can't look the movie up by its ids is searched for it as before
+        if (!uniqueIDs.empty())
+        {
+          lookUpByIds = false;
+          needsRefresh = true;
+          continue;
+        }
         CLog::Log(LOGWARNING,
                   "CVideoLibraryRefreshingJob: no details found for '{}', so it is left as it is",
+                  CURL::GetRedacted(m_item->GetPath()));
+        failure = true;
+        break;
+      }
+
+      // The search made when the ids lookup failed may have found another film
+      if (!lookUpByIds && m_item->HasVideoInfoTag() &&
+          m_item->GetVideoInfoTag()->HasConflictingUniqueID(details))
+      {
+        CLog::Log(LOGWARNING,
+                  "CVideoLibraryRefreshingJob: the details found for '{}' are of another film by "
+                  "their ids, so it is left as it is",
                   CURL::GetRedacted(m_item->GetPath()));
         failure = true;
         break;
@@ -663,6 +700,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     VIDEO::CVideoInfoScanner scanner;
     scanner.DeferMovieExtras();
     scanner.UseScrapers(scrapers);
+    scanner.LookUpMoviesBy(uniqueIDs);
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
                                    scraperUrl.HasUrls() ? &scraperUrl : nullptr,

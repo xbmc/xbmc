@@ -1805,7 +1805,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() && filenameAttributes.GetIdentifier(identifierType, identifier))
+    // The ids a refresh looks the movie up by come first: an identifier in the file name may name
+    // another film, and the ids are those its details were already read by
+    if (info2->IsPython() && m_movieUniqueIDs.empty() &&
+        filenameAttributes.GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -1814,6 +1817,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
                      pDlgProgress))
         return HandleMovieSetAndVersions();
     }
+
+    if (info2->IsPython() && !m_movieUniqueIDs.empty() && !(pURL && pURL->HasUrls()) &&
+        GetDetails(pItem, m_movieUniqueIDs, url, info2,
+                   (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                  : nullptr,
+                   pDlgProgress))
+      return HandleMovieSetAndVersions();
 
     if (pURL && pURL->HasUrls())
       url = *pURL;
