@@ -294,6 +294,14 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.imageadjustmentgranularity" type="integer" label="13602" help="36059">
+          <level>2</level>
+          <default>100</default> <!-- hundredths -->
+          <constraints>
+            <options>imageadjustmentgranularities</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
       </group>
       <group id="4" label="14232">
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">

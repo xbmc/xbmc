@@ -68,6 +68,9 @@ vec4 process()
                  , 1.0 );
 
   rgb   = m_yuvmat * yuv;
+#if defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)
+  rgb.rgb = hueSaturation(rgb.rgb);
+#endif
   rgb.a = m_alpha;
 
 #elif defined(XBMC_NV12)
@@ -78,6 +81,9 @@ vec4 process()
                    , 1.0 );
 
     rgb   = m_yuvmat * yuv;
+#if defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)
+    rgb.rgb = hueSaturation(rgb.rgb);
+#endif
     rgb.a = m_alpha;
 
 #elif defined(XBMC_YUY2) || defined(XBMC_UYVY)
@@ -116,6 +122,9 @@ vec4 process()
 
   vec4  yuv     = vec4(outY, outUV, 1.0);
   rgb           = m_yuvmat * yuv;
+#if defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)
+  rgb.rgb = hueSaturation(rgb.rgb);
+#endif
 
   rgb.a = m_alpha;
 
@@ -125,6 +134,10 @@ vec4 process()
   rgb.rgb = pow(max(vec3(0), rgb.rgb), vec3(m_gammaSrc));
   rgb.rgb = max(vec3(0), m_primMat * rgb.rgb);
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
+#endif
+
+#if defined(KODI_GAMMA)
+  rgb.rgb = pow(clamp((rgb.rgb - m_gammaRange.y) / m_gammaRange.x, 0.0, 1.0), vec3(m_gammaInv)) * m_gammaRange.x + m_gammaRange.y;
 #endif
 
   return rgb;
