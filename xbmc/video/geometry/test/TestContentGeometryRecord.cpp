@@ -7,7 +7,8 @@
  */
 
 #include "test/TestUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
+#include "utils/XMLUtils.h"
 #include "video/geometry/ContentGeometryRecord.h"
 #include "video/geometry/test/GeometryTestHelpers.h"
 
@@ -135,12 +136,12 @@ TEST(TestContentGeometryRecord, AReadingIsARatioAndVaryingIsMoreThanOne)
 
 TEST(TestContentGeometryRecord, XmlRoundTrip)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(std::string{"<movie/>"}));
   SaveContentGeometryXML(*doc.RootElement(), ScopeRecord({2.40f, 1.78f}));
 
-  std::string xml;
-  xml << *doc.RootElement();
+  const std::string xml{
+      XMLUtils::NodeStringSerialization(doc.RootElement(), XMLUtils::SerializationFormat::COMPACT)};
   EXPECT_EQ("<movie><contentgeometry><aspect>2.40</aspect><aspect>1.78</aspect></contentgeometry>"
             "</movie>",
             xml);
@@ -153,7 +154,7 @@ TEST(TestContentGeometryRecord, XmlRoundTrip)
 
 TEST(TestContentGeometryRecord, XmlWithoutReading)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(std::string{"<movie/>"}));
   SaveContentGeometryXML(*doc.RootElement(), ContentGeometryRecord{});
   EXPECT_EQ(nullptr, doc.RootElement()->FirstChild());
@@ -162,7 +163,7 @@ TEST(TestContentGeometryRecord, XmlWithoutReading)
 
 TEST(TestContentGeometryRecord, XmlSkipsInvalidAspects)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(std::string{"<movie><contentgeometry><aspect/><aspect>abc</aspect>"
                                     "<aspect>1.85</aspect></contentgeometry></movie>"}));
 
