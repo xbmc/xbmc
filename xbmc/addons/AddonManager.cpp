@@ -41,6 +41,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstring>
 #include <mutex>
 #include <set>
 #include <utility>
@@ -62,7 +63,7 @@ namespace
 bool LoadManifest(std::set<std::string, std::less<>>& system,
                   std::set<std::string, std::less<>>& optional)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
   {
     CLog::Log(LOGERROR, "ADDONS: manifest missing");
@@ -70,7 +71,7 @@ bool LoadManifest(std::set<std::string, std::less<>>& system,
   }
 
   auto root = doc.RootElement();
-  if (!root || root->ValueStr() != "addons")
+  if (!root || strcmp(root->Value(), "addons") != 0)
   {
     CLog::Log(LOGERROR, "ADDONS: malformed manifest");
     return false;
@@ -82,9 +83,9 @@ bool LoadManifest(std::set<std::string, std::less<>>& system,
     if (elem->FirstChild())
     {
       if (XMLUtils::GetAttribute(elem, "optional") == "true")
-        optional.insert(elem->FirstChild()->ValueStr());
+        optional.insert(elem->FirstChild()->Value());
       else
-        system.insert(elem->FirstChild()->ValueStr());
+        system.insert(elem->FirstChild()->Value());
     }
     elem = elem->NextSiblingElement("addon");
   }
