@@ -110,6 +110,19 @@ bool GetExportedAsset(CVideoDatabase& db,
   return loader && loader->Load(tag, false) == CInfoScanner::InfoType::FULL && IsExportedAsset(tag);
 }
 
+//! The hash of the extras in a folder and in the folders below it, rather than of the folder's time
+//! or listing, as a file added or removed in a folder below changes neither
+std::string HashVideoExtras(const std::string& folder)
+{
+  CFileItemList items;
+  UTILS::EnumerateVideoExtras(folder, [&items](const std::shared_ptr<CFileItem>& item)
+                              { items.Add(item); });
+  items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+  std::string hash;
+  UTILS::GetPathHash(items, hash);
+  return hash;
+}
+
 //! Whether a movie already has an extra on a bluray, either the whole disc or one of its playlists
 bool HasExtraOnDisc(CVideoDatabase& db, const std::string& disc, int dbId)
 {
@@ -337,14 +350,7 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
     if (m_database.GetScraperForPath(folder, settings, foundDirectly) && foundDirectly)
       continue;
 
-    // The extras are hashed, rather than the folder's time or listing, as a file added or removed
-    // in a folder below changes neither
-    CFileItemList items;
-    UTILS::EnumerateVideoExtras(folder, [&items](const std::shared_ptr<CFileItem>& item)
-                                { items.Add(item); });
-    items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
-    std::string hash;
-    UTILS::GetPathHash(items, hash);
+    const std::string hash{HashVideoExtras(folder)};
     if (std::string dbHash; !rescan && !hash.empty() && m_database.GetPathHash(folder, dbHash) &&
                             StringUtils::EqualsNoCase(hash, dbHash))
       continue;
@@ -370,6 +376,12 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
       m_database.SetPathHash(folder, hash);
   }
   return added;
+}
+
+void CVideoInfoScannerExtras::SetVideoExtrasHash(const std::string& folder)
+{
+  if (const std::string hash{HashVideoExtras(folder)}; !hash.empty())
+    m_database.SetPathHash(folder, hash);
 }
 
 std::vector<std::string> CVideoInfoScannerExtras::GetKnownFolders(CVideoDatabase& db,
