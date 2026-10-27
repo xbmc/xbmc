@@ -34,6 +34,7 @@
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/jobs/VideoLibraryRefreshingJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
 #include <chrono>
@@ -127,6 +128,14 @@ constexpr const char* OTHER_SCRAPER_XML = R"(<?xml version="1.0" encoding="UTF-8
     <RegExp input="$$1" output="$$1" dest="3"><expression/></RegExp>
   </GetEpisodeList>
 </scraper>)";
+
+//! A refresh without its GUI, of the test's database
+class TestRefreshingJob : public CVideoLibraryRefreshingJob
+{
+public:
+  using CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob;
+  using CVideoLibraryRefreshingJob::Work;
+};
 
 //! A scan without its GUI: Start() needs one, so the folders are scanned with DoScan()
 class TestScanner : public CVideoInfoScanner
@@ -236,6 +245,11 @@ protected:
         m_fastHash;
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors =
         m_ignoreErrors;
+    if (!m_installedScraper.empty())
+    {
+      CServiceBroker::GetAddonMgr().UnloadAddon(SCRAPER_ID);
+      XFILE::CDirectory::RemoveRecursive(m_installedScraper);
+    }
     if (!m_otherScraper.empty())
     {
       CServiceBroker::GetAddonMgr().UnloadAddon(OTHER_SCRAPER_ID);
@@ -350,6 +364,18 @@ protected:
         CSettings::SETTING_EVENTLOG_ENABLED, false);
   }
 
+  //! Installs the test scraper, as a refresh finds the scraper of a path through the add-on manager
+  void InstallTestScraper()
+  {
+    const std::string addons{CSpecialProtocol::TranslatePath("special://home/addons/")};
+    static_cast<void>(XFILE::CDirectory::Create(addons));
+    m_installedScraper = Folder(addons, SCRAPER_ID);
+    File(m_installedScraper, "addon.xml", SCRAPER_ADDON);
+    File(m_installedScraper, "scraper.xml", SCRAPER_XML);
+    ASSERT_TRUE(CServiceBroker::GetAddonMgr().FindAddon(SCRAPER_ID, ADDON::ORIGIN_SYSTEM,
+                                                        ADDON::CAddonVersion{"1.0.0"}));
+  }
+
   //! Installs the other scraper. Neither scraper can fetch the url it recognises, nor does the
   //! other one find an episode guide.
   void InstallOtherScraper()
@@ -457,6 +483,31 @@ protected:
     EXPECT_EQ(-1, m_db.GetVideoVersionInfo(interview).m_assetTypeId);
   }
 
+  //! A refresh removes a movie before adding it again, so one whose details can't be read is
+  //! kept. The movie has no nfo, or one that overrides some of the details it is looked up for.
+  void RefreshThatCantReadTheDetails(bool overrideNfo)
+  {
+    UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+    InstallTestScraper();
+    const std::string folder{Folder(m_root, "Afilm")};
+    const std::string film{File(folder, "Afilm.mkv")};
+    if (overrideNfo)
+      File(folder, "Afilm.nfo", "<movie override=\"true\"><title>Afilm</title></movie>");
+    Found("Afilm");
+    Details("Afilm", "<details><title>Afilm</title></details>");
+    Scan();
+    const int idMovie{m_db.GetMovieId(film)};
+    ASSERT_GT(idMovie, 0);
+
+    DetailsFail("Afilm");
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetMovieInfo({}, tag, idMovie));
+    TestRefreshingJob refresh{std::make_shared<CFileItem>(tag), true, false};
+    refresh.Work(m_db);
+
+    EXPECT_EQ(idMovie, m_db.GetMovieId(film));
+  }
+
   std::string m_root;
   DatabaseSettings m_settings;
   CVideoDatabase m_db;
@@ -469,6 +520,7 @@ protected:
   ADDON::AddonType m_scraperType{ADDON::AddonType::SCRAPER_MOVIES};
   bool m_eventLog{false};
   std::string m_otherScraper;
+  std::string m_installedScraper;
 };
 } // namespace
 
@@ -767,6 +819,18 @@ TEST_F(TestVideoInfoScanner, AnUnchangedFolderIsLookedUpAgainAfterDetailsFailed)
 
   EXPECT_GT(m_db.GetMovieId(first), 0);
   EXPECT_EQ(2, CountMovies());
+}
+
+// A refresh removes a movie before adding it again, so one whose details can't be read is kept
+TEST_F(TestVideoInfoScanner, ARefreshThatCantReadTheDetailsKeepsTheMovie)
+{
+  RefreshThatCantReadTheDetails(false);
+}
+
+// An override nfo gives some of the details, and the rest are still looked up
+TEST_F(TestVideoInfoScanner, ARefreshWithAnOverrideNfoThatCantReadTheDetailsKeepsTheMovie)
+{
+  RefreshThatCantReadTheDetails(true);
 }
 
 // A url is only taken from the scraper chosen for the path, which is the one it is fetched with
