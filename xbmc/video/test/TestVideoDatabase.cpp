@@ -1862,6 +1862,26 @@ TEST_F(TestVideoDatabase, DeleteVideoAssetCanKeepTheHashOfItsFolder)
   EXPECT_EQ("hash", hash);
 }
 
+// The extras of a disc are its playlists, so the folder holding the disc is known by them. An
+// archive below the folder is not one of its folders, nor is the folder of another movie.
+TEST_F(TestVideoDatabase, GetKnownFoldersTakesADiscsPlaylistsAsTheFolderHoldingIt)
+{
+  ASSERT_GT(m_db.AddPath("/movies/Film/Extras/"), 0);
+  ASSERT_GT(m_db.AddFile(URIUtils::GetBlurayPlaylistPath("/movies/Film/Bonus Disc/BONUS.iso", 1)),
+            0);
+  ASSERT_GT(m_db.AddFile(ArchivePath("zip", "/movies/Film/Extras.zip", "Trailer.mkv")), 0);
+  ASSERT_GT(m_db.AddFile(URIUtils::GetBlurayPlaylistPath("/movies/Other/Bonus Disc/BONUS.iso", 1)),
+            0);
+
+  const std::vector<std::string> folders{
+      KODI::VIDEO::CVideoInfoScannerExtras::GetKnownFolders(m_db, "/movies/Film/")};
+
+  EXPECT_NE(std::ranges::find(folders, "/movies/Film/Extras/"), folders.end());
+  EXPECT_NE(std::ranges::find(folders, "/movies/Film/Bonus Disc/"), folders.end());
+  for (const std::string& folder : folders)
+    EXPECT_TRUE(folder.starts_with("/movies/Film/")) << folder;
+}
+
 TEST_F(TestVideoDatabase, GetMovieIdFindsTheMovieOnTheDiscPlaylistsOfADiscImageWithoutOne)
 {
   const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
