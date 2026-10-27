@@ -244,10 +244,12 @@ void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
   if (job->CanBeCancelled())
     job->Cancel();
 
-  // A running source refresh finishes its current item before releasing the queue slot. One that
-  // hasn't started is removed now, as it returns at once if it starts after Cancel().
-  if (jobType == CVideoLibraryRefreshingSourceJob::TYPE &&
-      static_cast<CVideoLibraryRefreshingSourceJob*>(job)->HasStarted())
+  // A running scan or source refresh finishes its current item before releasing the queue slot.
+  // One that hasn't started is removed now, as it returns at once if it starts after Cancel().
+  if ((jobType == CVideoLibraryRefreshingSourceJob::TYPE &&
+       static_cast<CVideoLibraryRefreshingSourceJob*>(job)->HasStarted()) ||
+      (jobType == "VideoLibraryScanningJob" &&
+       static_cast<CVideoLibraryScanningJob*>(job)->HasStarted()))
     return;
 
   // remove the job from the job queue

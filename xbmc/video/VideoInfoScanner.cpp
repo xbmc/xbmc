@@ -587,19 +587,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     bool foundSomething = false;
+    // The directory's hash stands for its own items and the archives in it, so it isn't stored
+    // where a lookup failed in either, and the next scan tries them again
+    bool lookupFailed{false};
     if (!bSkip)
     {
       // parent_name_root, passed as bDirNames below, is false for a source's own root even when
       // folder names are used
       m_useFolderNames = settings.parent_name;
 
+      const unsigned int failedLookups{m_failedLookups};
       foundSomething = RetrieveVideoInfo(items, settings.parent_name_root, content);
+      lookupFailed = m_failedLookups != failedLookups;
       if (foundSomething)
       {
         if (!m_bStop && (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
         {
-          if (!URIUtils::IsArchive(CURL(strDirectory)))
-            m_database.SetPathHash(strDirectory, hash);
           if (m_bClean)
             AddPathToClean(strDirectory);
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir {}",
@@ -698,6 +701,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_pathsToScan.erase(pItem->GetPath());
           continue;
         }
+        const unsigned int failedLookups{m_failedLookups};
         if (const auto [scanComplete, foundContentOnRecursion] = DoScan(pItem->GetPath());
             scanComplete == ScanComplete::Stopped)
         {
@@ -713,19 +717,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
         {
           foundSomethingInArchive = true;
         }
+        if (URIUtils::IsArchive(CURL(pItem->GetPath())) && m_failedLookups != failedLookups)
+          lookupFailed = true;
       }
     }
 
-    // If the direct scan found nothing but an archive subfolder scan did,
-    // store the hash for the physical directory so it is used for change detection
-    // rather than the archive (eg. rar://) virtual path.
-    if (!bSkip && !m_bStop && foundSomethingInArchive && !URIUtils::IsArchive(CURL(strDirectory)))
+    // Content found directly or in an archive subfolder is recorded by the hash of the physical
+    // directory, rather than of the archive's (eg. rar://) virtual path, once every lookup of it
+    // has been made
+    if (!bSkip && !m_bStop && !lookupFailed && (foundSomething || foundSomethingInArchive) &&
+        (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
+        !URIUtils::IsArchive(CURL(strDirectory)))
     {
       m_database.SetPathHash(strDirectory, hash);
-      CLog::LogF(LOGDEBUG,
-                 "Stored hash for physical dir '{}' after finding content in "
-                 "archive subfolder",
-                 CURL::GetRedacted(strDirectory));
+      if (foundSomethingInArchive)
+        CLog::LogF(LOGDEBUG,
+                   "Stored hash for physical dir '{}' after finding content in "
+                   "archive subfolder",
+                   CURL::GetRedacted(strDirectory));
     }
 
     return std::make_pair(m_bStop ? ScanComplete::Stopped : ScanComplete::Completed,
@@ -872,10 +881,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
                   "VideoInfoScanner: Error {} occurred while retrieving"
                   "information for {}.",
                   static_cast<int>(ret), CURL::GetRedacted(pItem->GetPath()));
-        FoundSomeInfo = false;
-        break;
+        if (ret == InfoRet::CANCELLED)
+        {
+          FoundSomeInfo = false;
+          break;
+        }
+        // The other items are still added, and the directory is tried again by the next scan
+        ++m_failedLookups;
       }
-      if (ret == InfoRet::ADDED || ret == InfoRet::HAVE_ALREADY)
+      else if (ret == InfoRet::ADDED || ret == InfoRet::HAVE_ALREADY)
         FoundSomeInfo = true;
       else if (ret == InfoRet::NOT_FOUND)
       {
@@ -983,9 +997,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return InfoRet::NOT_NEEDED;
     }
 
-    const auto setFolderHash = [this, pItem]
+    // An episode whose lookup failed leaves the folder unhashed, so the next scan tries it again
+    const auto setFolderHash = [this, pItem, failedLookups = m_failedLookups]
     {
-      if (pItem->IsFolder())
+      if (pItem->IsFolder() && m_failedLookups == failedLookups)
         m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
     };
 
@@ -1090,14 +1105,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
               url.GetFirstThumbUrl(), info2->Name(), info2->Content());
 
-    if (GetDetails(pItem, {}, url, info2,
-                   (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
-                                                                                  : nullptr,
-                   pDlgProgress))
-    {
-      if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
-        return InfoRet::INFO_ERROR;
-    }
+    // Without the show's details there is nothing to add its episodes to. The folder isn't hashed,
+    // so that the next scan tries again.
+    if (!GetDetails(pItem, {}, url, info2,
+                    (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                   : nullptr,
+                    pDlgProgress))
+      return InfoRet::NOT_FOUND;
+
+    if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
+      return InfoRet::INFO_ERROR;
+
     if (fetchEpisodes && !files.empty())
     {
       const InfoRet ret =
@@ -1105,7 +1123,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (ret == InfoRet::ADDED)
         setFolderHash();
     }
-    else if (lResult >= 0 && files.empty())
+    else if (files.empty())
     {
       setFolderHash();
     }
@@ -1644,6 +1662,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return HandleMovieSetAndVersions();
 
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
+    ++m_failedLookups; // found, but its details couldn't be retrieved
     return InfoRet::NOT_FOUND;
   }
 
@@ -1733,6 +1752,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return InfoRet::ADDED;
     }
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
+    ++m_failedLookups; // found, but its details couldn't be retrieved
     return InfoRet::NOT_FOUND;
   }
 
@@ -1918,6 +1938,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // with VIDEO_TS or BDMV can be ignored.
     // THere can be a BACKUP/INDEX.BDMV which needs to be ignored (and broke the old while loop here)
 
+    // A local Windows path is separated by backslashes
+    const auto isBackupIndex = [](const std::string& upperPath)
+    {
+      return upperPath.find("BACKUP/INDEX.BDMV") != std::string::npos ||
+             upperPath.find("BACKUP\\INDEX.BDMV") != std::string::npos;
+    };
+
     // Get folders to remove
     std::vector<std::string> foldersToRemove;
     for (const auto& item : items)
@@ -1925,8 +1952,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const std::string file = StringUtils::ToUpper(item->GetPath());
       if (file.find("VIDEO_TS.IFO") != std::string::npos)
         foldersToRemove.emplace_back(StringUtils::ToUpper(URIUtils::GetDirectory(file)));
-      if (file.find("INDEX.BDMV") != std::string::npos &&
-          file.find("BACKUP/INDEX.BDMV") == std::string::npos)
+      if (file.find("INDEX.BDMV") != std::string::npos && !isBackupIndex(file))
         foldersToRemove.emplace_back(
             StringUtils::ToUpper(URIUtils::GetParentPath(URIUtils::GetDirectory(file))));
     }
@@ -1943,8 +1969,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                      [&](const std::string& removePath)
                                      { return path.rfind(removePath, 0) == 0; }) > 0) &&
                       file != "VIDEO_TS.IFO" &&
-                      (file != "INDEX.BDMV" ||
-                       fileAndPath.find("BACKUP/INDEX.BDMV") != std::string::npos);
+                      (file != "INDEX.BDMV" || isBackupIndex(fileAndPath));
              });
 
     bool hasEpisodeCandidates = false;
@@ -2094,10 +2119,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     const int idSet{m_database.AddSet(set.GetTitle(), set.GetOverview(), set.GetOriginalTitle())};
 
     // Assume art in set
-    if (idSet > 0)
-      return m_database.SetArtForItem(idSet, MediaTypeVideoCollection, set.GetArt());
+    const bool added{idSet > 0 &&
+                     m_database.SetArtForItem(idSet, MediaTypeVideoCollection, set.GetArt())};
 
-    return false;
+    m_database.Close();
+    return added;
   }
 
   long CVideoInfoScanner::AddVideo(CFileItem* pItem,
@@ -2554,7 +2580,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
           CVideoInfoDownloader imdb(scraper);
           if (!imdb.GetEpisodeList(url, episodes))
-            return InfoRet::NOT_FOUND;
+          {
+            CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the episode guide of '{}'",
+                      showInfo.m_strTitle);
+            ++m_failedLookups;
+          }
 
           hasEpisodeGuide = true;
         }
@@ -2562,13 +2592,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if (episodes.empty())
       {
-        CLog::Log(LOGERROR,
-                  "VideoInfoScanner: Asked to lookup episode {}"
-                  " online, but we have either no episode guide or"
-                  " we are using the local scraper. Check your tvshow.nfo and make"
-                  " sure the <episodeguide> tag is in place and/or use an online"
-                  " scraper.",
-                  CURL::GetRedacted(file->strPath));
+        // An episode guide that couldn't be fetched has been reported already
+        if (!hasEpisodeGuide)
+          CLog::Log(LOGERROR,
+                    "VideoInfoScanner: Asked to lookup episode {}"
+                    " online, but we have either no episode guide or"
+                    " we are using the local scraper. Check your tvshow.nfo and make"
+                    " sure the <episodeguide> tag is in place and/or use an online"
+                    " scraper.",
+                    CURL::GetRedacted(file->strPath));
         continue;
       }
 
@@ -2675,7 +2707,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         scraperItem.SetPath(file->strPath);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *scraperItem.GetVideoInfoTag(),
                                     pDlgProgress))
-          return InfoRet::NOT_FOUND; //! @todo should we just skip to the next episode?
+        {
+          CLog::Log(LOGWARNING, "VideoInfoScanner: Unable to fetch the details of episode {}",
+                    CURL::GetRedacted(file->strPath));
+          ++m_failedLookups;
+          continue;
+        }
 
         if (result == InfoType::COMBINED || result == InfoType::OVERRIDE)
           scraperItem.GetVideoInfoTag()->Merge(*item.GetVideoInfoTag());
@@ -2931,11 +2968,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
     MOVIELIST movielist;
     CVideoInfoDownloader imdb(scraper);
     int returncode = imdb.FindMovie(title, year, movielist, progress);
-    if (returncode < 0 || (returncode == 0 && (m_bStop || !DownloadFailed(progress))))
+    // An error the scraper reported ends an interactive lookup, but a scan only stops for it when
+    // the user chooses to - as it does for any other failed lookup
+    if (returncode <= 0 && (m_bStop || (returncode < 0 && progress) || !DownloadFailed(progress)))
     { // scraper reported an error, or we had an error and user wants to cancel the scan
       m_bStop = true;
       return -1; // cancelled
     }
+    if (returncode <= 0)
+      ++m_failedLookups; // carried on past a search that failed, rather than one that found nothing
     if (returncode > 0 && !movielist.empty())
     {
       url = movielist[0];
