@@ -999,6 +999,14 @@ TEST_F(TestTitleFromPath, DecodesAnEscapedNameWhileHidingTheExtension)
   EXPECT_EQ("file_name", CUtil::GetTitleFromPath("davs://server/files/file_name.mkv"));
 }
 
+TEST_F(TestTitleFromPath, DecodesLosslessURIPathNames)
+{
+  EXPECT_EQ("C++ movie%20",
+            CUtil::GetTitleFromPath("file:/videos/C++%20movie%2520.mkv?title=ignored#part"));
+  EXPECT_EQ("Video clips",
+            CUtil::GetTitleFromPath("http:/Video%20clips/?title=ignored#part", true));
+}
+
 /*! A local path is not escaped, so decoding one would corrupt every name holding a plus. */
 TEST_F(TestTitleFromPath, LeavesALocalNameAlone)
 {
