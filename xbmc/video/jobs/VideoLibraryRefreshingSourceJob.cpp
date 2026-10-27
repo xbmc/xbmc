@@ -154,6 +154,19 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
       found = db.GetMusicVideoInfo({}, tag, listed.m_iDbId);
     if (!found)
       continue;
+
+    // A playlist an earlier item merged into this movie may have become its default. Refreshing
+    // the movie from that would refresh the earlier item's disc again rather than this one's, so
+    // the movie gets back the default it was listed with.
+    if (listed.GetMediaType() == KODI::MEDIA::TYPE::MOVIE && tag.m_iFileId != listed.m_iFileId &&
+        db.GetSingleValueInt(db.PrepareSQL(
+            "SELECT COUNT(1) FROM videoversion WHERE idFile = %i AND idMedia = %i AND "
+            "media_type = '%s' AND itemType = %i",
+            listed.m_iFileId, tag.m_iDbId, KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE).c_str(),
+            static_cast<int>(VideoAssetType::VERSION))) > 0 &&
+        db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, tag.m_iDbId, listed.m_iFileId) &&
+        !db.GetMovieInfo({}, tag, listed.m_iDbId))
+      continue;
     SetText(tag.GetTitle());
 
     // A refresh would remove an item whose media is missing, so it is left to library cleaning.
