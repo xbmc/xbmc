@@ -408,6 +408,20 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief Run a frame that the frontend will roll back afterwards
+  ///
+  /// Used for run-ahead. The emulator advances exactly as in RunFrame(), but
+  /// anything that must only happen once per real frame, such as evaluating
+  /// achievements, is skipped, because the frontend restores the emulator's
+  /// state afterwards.
+  ///
+  /// @return The error, or @ref GAME_ERROR_NOT_IMPLEMENTED if the add-on can't
+  ///         run a frame without side effects
+  ///
+  virtual GAME_ERROR RunFrameSpeculative() { return GAME_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @brief Reset the current game
   ///
   /// @return The error, or @ref GAME_ERROR_NO_ERROR if the game was reset
@@ -1008,6 +1022,39 @@ public:
   virtual GAME_ERROR Deserialize(const uint8_t* data, size_t size)
   {
     return GAME_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Serialize the state of the game for run-ahead
+  ///
+  /// The frontend loads this state back after running frames ahead, so the
+  /// add-on may tell it from a savestate the player keeps, as libretro's
+  /// savestate context does. An add-on may refuse a state it couldn't load
+  /// back, and the frontend runs no frames ahead until it accepts one.
+  ///
+  /// @param[in] data The buffer receiving the serialized game data
+  /// @param[in] size The size of the buffer
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the game was serialized into the buffer
+  ///
+  virtual GAME_ERROR SerializeSpeculative(uint8_t* data, size_t size)
+  {
+    return Serialize(data, size);
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Deserialize a state saved by SerializeSpeculative()
+  ///
+  /// @param[in] data A buffer containing the game's new state
+  /// @param[in] size The size of the buffer
+  ///
+  /// @return The error, or @ref GAME_ERROR_NO_ERROR if the game deserialized
+  ///
+  virtual GAME_ERROR DeserializeSpeculative(const uint8_t* data, size_t size)
+  {
+    return Deserialize(data, size);
   }
   //----------------------------------------------------------------------------
 
@@ -1765,9 +1812,15 @@ private:
 
     instance->game->toAddon->FreeString = ADDON_FreeString;
 
-    // An older Kodi's table ends before this entry
+    // An older Kodi's table ends before these entries
     if (IsInstanceAPIVersionAtLeast(8, 5, 0))
       instance->game->toAddon->RCSetAchievementSetEnabled = ADDON_RCSetAchievementSetEnabled;
+    if (IsInstanceAPIVersionAtLeast(8, 6, 0))
+    {
+      instance->game->toAddon->RunFrameSpeculative = ADDON_RunFrameSpeculative;
+      instance->game->toAddon->SerializeSpeculative = ADDON_SerializeSpeculative;
+      instance->game->toAddon->DeserializeSpeculative = ADDON_DeserializeSpeculative;
+    }
 
     m_instanceData = instance->game;
     m_instanceData->toAddon->addonInstance = this;
@@ -1826,6 +1879,27 @@ private:
   inline static GAME_ERROR ADDON_RunFrame(const AddonInstance_Game* instance)
   {
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RunFrame();
+  }
+
+  inline static GAME_ERROR ADDON_RunFrameSpeculative(const AddonInstance_Game* instance)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RunFrameSpeculative();
+  }
+
+  inline static GAME_ERROR ADDON_SerializeSpeculative(const AddonInstance_Game* instance,
+                                                      uint8_t* data,
+                                                      size_t size)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->SerializeSpeculative(data, size);
+  }
+
+  inline static GAME_ERROR ADDON_DeserializeSpeculative(const AddonInstance_Game* instance,
+                                                        const uint8_t* data,
+                                                        size_t size)
+  {
+    return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
+        ->DeserializeSpeculative(data, size);
   }
 
   inline static GAME_ERROR ADDON_Reset(const AddonInstance_Game* instance)
