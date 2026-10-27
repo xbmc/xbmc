@@ -498,10 +498,35 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // sort by filename as always present for any files, but keep case sensitivity
         items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
 
+        // A folder holding a disc rip is listed as its disc only until the folder's own hash is
+        // stored, after which it is marked unchanged above and stays a folder. It is hashed as the
+        // folder, so that this folder's hash doesn't change between the two.
+        CFileItemList hashed;
+        for (const auto& item : items)
+        {
+          std::string discFolder;
+          if (!item->IsFolder() && !URIUtils::IsStack(item->GetPath()) &&
+              URIUtils::IsOpticalMediaFile(item->GetPath()))
+          {
+            discFolder = URIUtils::RemoveDiscPath(item->GetPath());
+            URIUtils::AddSlashAtEnd(discFolder);
+          }
+          if (discFolder.empty() || URIUtils::PathEquals(discFolder, strDirectory, true))
+          {
+            hashed.Add(item);
+            continue;
+          }
+          auto folder{std::make_shared<CFileItem>(*item)};
+          folder->SetPath(discFolder);
+          folder->SetFolder(true);
+          hashed.Add(folder);
+        }
+        hashed.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+
         // check whether to re-use previously computed fast hash
-        listingHash = !CanFastHash(items, regexps) || fastHash.empty();
+        listingHash = !CanFastHash(hashed, regexps) || fastHash.empty();
         if (listingHash)
-          UTILS::GetPathHash(items, hash);
+          UTILS::GetPathHash(hashed, hash);
         else
           hash = fastHash;
       }
