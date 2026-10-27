@@ -131,6 +131,14 @@ namespace KODI::VIDEO
      */
     void DeferMovieExtras() { m_deferMovieExtras = true; }
 
+    /*! \brief Look the videos up with these scrapers, as CVideoDatabase::GetScraperForPath()
+     cached them, so that the details already read with them are read from their cache.
+     */
+    void UseScrapers(const CVideoDatabase::ScraperCache& scrapers)
+    {
+      m_scraperCache.insert(scrapers.begin(), scrapers.end());
+    }
+
     /*! \brief Add the extras of a refreshed movie: those its discs name, and those of the extras
      folders beside it, which a scan finds as it lists the movie's folders.
      \param dbId the movie, once its versions and extras are its own
