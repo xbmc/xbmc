@@ -88,6 +88,23 @@ public:
     m_hdrPeak = peak;
   }
 
+  /*!
+   * \brief Draw the game inside a bezel's window, where the bezel frames it well
+   *
+   * \param window The window on screen, or an empty rectangle for no bezel
+   */
+  void SetBezelWindow(const CRect& window) { m_bezelWindow = window; }
+
+  /*!
+   * \brief Work out where the current frame goes without drawing it
+   */
+  void UpdateRenderArea();
+
+  /*!
+   * \brief True if the current frame goes inside the bezel's window
+   */
+  bool IsBezelShown() const { return m_bezelShown; }
+
   // Rendering properties
   bool IsVisible() const;
   IRenderBuffer* GetRenderBuffer() const;
@@ -136,6 +153,8 @@ protected:
   ViewportCoordinates m_rotatedDestCoords{};
   unsigned int m_hdrPaperWhite{0};
   unsigned int m_hdrPeak{0}; // 0 for SDR
+  CRect m_bezelWindow;
+  bool m_bezelShown{false};
 
   // Video shaders
   void UpdateShaders();

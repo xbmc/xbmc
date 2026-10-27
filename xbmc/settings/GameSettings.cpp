@@ -17,6 +17,7 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
     m_videoFilter = rhs.m_videoFilter;
     m_stretchMode = rhs.m_stretchMode;
     m_rotationDegCCW = rhs.m_rotationDegCCW;
+    m_bezelEnabled = rhs.m_bezelEnabled;
   }
   return *this;
 }
@@ -26,13 +27,13 @@ void CGameSettings::Reset()
   m_videoFilter.clear();
   m_stretchMode = RETRO::STRETCHMODE::Normal;
   m_rotationDegCCW = 0;
+  m_bezelEnabled = true;
 }
 
 bool CGameSettings::operator==(const CGameSettings &rhs) const
 {
-  return m_videoFilter == rhs.m_videoFilter &&
-         m_stretchMode == rhs.m_stretchMode &&
-         m_rotationDegCCW == rhs.m_rotationDegCCW;
+  return m_videoFilter == rhs.m_videoFilter && m_stretchMode == rhs.m_stretchMode &&
+         m_rotationDegCCW == rhs.m_rotationDegCCW && m_bezelEnabled == rhs.m_bezelEnabled;
 }
 
 void CGameSettings::SetVideoFilter(std::string_view videoFilter)
@@ -58,6 +59,15 @@ void CGameSettings::SetRotationDegCCW(unsigned int rotation)
   if (rotation != m_rotationDegCCW)
   {
     m_rotationDegCCW = rotation;
+    SetChanged();
+  }
+}
+
+void CGameSettings::SetBezelEnabled(bool enabled)
+{
+  if (enabled != m_bezelEnabled)
+  {
+    m_bezelEnabled = enabled;
     SetChanged();
   }
 }

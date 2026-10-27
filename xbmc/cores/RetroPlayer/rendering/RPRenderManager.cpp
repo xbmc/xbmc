@@ -9,6 +9,7 @@
 #include "RPRenderManager.h"
 
 #include "HdrOutput.h"
+#include "RenderBezel.h"
 #include "RenderContext.h"
 #include "RenderSettings.h"
 #include "RenderTranslator.h"
@@ -28,8 +29,10 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
+#include "jobs/JobManager.h"
 #include "pictures/Picture.h"
 #include "rendering/capture/CaptureReadback.h"
+#include "settings/GameSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/ScopeGuard.h"
@@ -674,12 +677,57 @@ void CRPRenderManager::CheckFlush()
   }
 }
 
+void CRPRenderManager::SetBezel(const std::string& url)
+{
+  if (url.empty())
+    return;
+
+  // A remote bezel can take as long as its server likes, so nothing waits for
+  // the load: it keeps its own result, which is dropped if the game has gone
+  auto load = std::make_shared<BezelLoad>();
+  {
+    std::unique_lock lock(m_bezelMutex);
+    m_bezelLoad = load;
+  }
+
+  m_renderContext.JobManager().Submit(
+      [load, url, textureCache = m_renderContext.TextureCache()]()
+      {
+        std::shared_ptr<CRenderBezel> bezel = CRenderBezel::Load(url, *textureCache);
+        std::unique_lock lock(load->mutex);
+        load->bezel = std::move(bezel);
+        load->done = true;
+      });
+}
+
+std::shared_ptr<CRenderBezel> CRPRenderManager::GetBezel()
+{
+  std::unique_lock lock(m_bezelMutex);
+
+  if (m_bezelLoad)
+  {
+    std::unique_lock loadLock(m_bezelLoad->mutex);
+    if (m_bezelLoad->done)
+    {
+      m_bezel = std::move(m_bezelLoad->bezel);
+      m_hasBezel = static_cast<bool>(m_bezel);
+      loadLock.unlock();
+      m_bezelLoad.reset();
+    }
+  }
+
+  return m_bezel;
+}
+
 void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes, bool videoLayer)
 {
-  // In HDR the game goes under the GUI, which Kodi composites over it
+  // In HDR the game goes under the GUI, which Kodi composites over it. The GUI
+  // pass comes first, so it takes the frame and works out where the game goes,
+  // and draws the bezel, which stays in the GUI for the GUI's colour conversion.
+  const bool renderGame = videoLayer == m_hdrOutput;
   if (!videoLayer)
     m_windowRendered = true;
-  if (videoLayer != m_hdrOutput)
+  else if (!renderGame)
     return;
 
   // Clear any old renderers on the rendering thread
@@ -694,27 +742,51 @@ void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRe
   if (!renderer)
     return;
 
-  const uint64_t framesGiven = m_framesGiven.load();
-  m_processInfo.GetDisplayPacing().OnFrameTaken(CDisplayPacing::Clock::now(),
-                                                framesGiven != m_lastFrameTaken);
-  m_lastFrameTaken = framesGiven;
-
-  // Get a render buffer for the renderer
-  IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
-
   m_renderContext.SetRenderingResolution(m_renderContext.GetVideoResolution(), false);
 
-  if (bClear && renderBuffer == nullptr)
-    m_renderContext.Clear(m_renderContext.UseLimitedColor() ? UTILS::COLOR::LIMITED_BLACK
-                                                            : UTILS::COLOR::BLACK);
+  const std::shared_ptr<CRenderBezel> bezel = GetBezel();
+  const CRect screen = m_renderContext.GetViewWindow();
+  if (bezel && m_renderContext.GetGameSettings().BezelEnabled())
+    renderer->SetBezelWindow(bezel->GetWindowRect(screen));
 
-  if (m_hdrOutput)
-    renderer->SetHdrLuminance(HDR_REFERENCE_WHITE, m_hdrPeak);
+  if (!videoLayer)
+  {
+    const uint64_t framesGiven = m_framesGiven.load();
+    m_processInfo.GetDisplayPacing().OnFrameTaken(CDisplayPacing::Clock::now(),
+                                                  framesGiven != m_lastFrameTaken);
+    m_lastFrameTaken = framesGiven;
 
-  RenderInternal(renderer, renderBuffer, bClear, 255);
+    // Get a render buffer for the renderer
+    IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
 
-  // The renderer can be shared with a control, which is drawn in the GUI
-  renderer->SetHdrLuminance(0, 0);
+    if (bClear && renderBuffer == nullptr && renderGame)
+      m_renderContext.Clear(m_renderContext.UseLimitedColor() ? UTILS::COLOR::LIMITED_BLACK
+                                                              : UTILS::COLOR::BLACK);
+
+    {
+      CSingleExit exitLock(m_renderContext.GraphicsMutex());
+      SetRendererBuffer(renderer, renderBuffer);
+    }
+
+    renderer->UpdateRenderArea();
+  }
+
+  if (renderGame)
+  {
+    if (m_hdrOutput)
+      renderer->SetHdrLuminance(HDR_REFERENCE_WHITE, m_hdrPeak);
+
+    RenderInternal(renderer, nullptr, bClear, 255);
+
+    // The renderer can be shared with a control, which is drawn in the GUI
+    renderer->SetHdrLuminance(0, 0);
+  }
+
+  if (!videoLayer && bezel && renderer->IsBezelShown())
+    bezel->Render(screen);
+
+  // The renderer can be shared with a control, which has no bezel
+  renderer->SetBezelWindow({});
 
   m_renderContext.SetRenderingResolution(coordsRes, false);
 }
@@ -894,24 +966,30 @@ void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& re
 {
   CSingleExit exitLock(m_renderContext.GraphicsMutex());
 
-  if (renderBuffer != nullptr)
-  {
-    bool bUploaded = true;
-
-    if (!renderBuffer->IsLoaded())
-    {
-      bUploaded = renderBuffer->UploadTexture();
-      renderBuffer->SetLoaded(true);
-    }
-
-    if (bUploaded)
-      renderer->SetBuffer(renderBuffer);
-
-    renderBuffer->Release();
-  }
+  SetRendererBuffer(renderer, renderBuffer);
 
   renderer->SetSpeed(m_speed);
   renderer->RenderFrame(bClear, alpha);
+}
+
+void CRPRenderManager::SetRendererBuffer(const std::shared_ptr<CRPBaseRenderer>& renderer,
+                                         IRenderBuffer* renderBuffer)
+{
+  if (renderBuffer == nullptr)
+    return;
+
+  bool bUploaded = true;
+
+  if (!renderBuffer->IsLoaded())
+  {
+    bUploaded = renderBuffer->UploadTexture();
+    renderBuffer->SetLoaded(true);
+  }
+
+  if (bUploaded)
+    renderer->SetBuffer(renderBuffer);
+
+  renderBuffer->Release();
 }
 
 std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForSettings(
