@@ -461,8 +461,9 @@ void CGUIDialogMediaSource::OnOK()
   share.FromNameAndPaths(m_name, GetPaths());
 
   if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") ||
-    CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) ||
-    CGUIDialogYesNo::ShowAndGetInput(CVariant{ 1001 }, CVariant{ 1025 }))
+      CDirectory::GetDirectory(share.strPath, items, "",
+                               DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) ||
+      CGUIDialogYesNo::ShowAndGetInput(CVariant{1001}, CVariant{1025}))
   {
     m_confirmed = true;
     Close();
