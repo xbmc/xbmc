@@ -36,6 +36,7 @@
 #include <CoreVideo/CVImageBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
 #import <Foundation/NSData.h>
+#include <ImageIO/CGImageProperties.h>
 
 namespace
 {
@@ -118,6 +119,12 @@ VTB::CVideoBufferVTB* GetVTBBuffer(CVideoBuffer* buffer)
 {
   auto* vtb = dynamic_cast<VTB::CVideoBufferVTB*>(buffer);
   return vtb && vtb->GetPB() ? vtb : nullptr;
+}
+
+CGRect ToCGRect(const CRect& rect)
+{
+  return CGRectMake(static_cast<CGFloat>(rect.x1), static_cast<CGFloat>(rect.y1),
+                    static_cast<CGFloat>(rect.Width()), static_cast<CGFloat>(rect.Height()));
 }
 
 void SetColorAttachments(CVPixelBufferRef pixelBuffer, const VideoPicture& picture)
@@ -326,13 +333,14 @@ void CRendererVTBDisplayLayer::Update()
     const CGSize boundsSize = g_xbmcController.glView.bounds.size;
     const CGFloat sx = boundsSize.width / gfx.GetWidth();
     const CGFloat sy = boundsSize.height / gfx.GetHeight();
+    // UIKit uses points; the source crop is normalized in the unrotated surface.
     [g_xbmcController
-        setVideoLayerFrame:CGRectMake(m_destRect.x1 * sx, m_destRect.y1 * sy,
-                                      m_destRect.Width() * sx, m_destRect.Height() * sy)
-                sourceRect:CGRectMake(static_cast<CGFloat>(m_sourceRect.x1) / m_sourceWidth,
-                                      static_cast<CGFloat>(m_sourceRect.y1) / m_sourceHeight,
-                                      static_cast<CGFloat>(m_sourceRect.Width()) / m_sourceWidth,
-                                      static_cast<CGFloat>(m_sourceRect.Height()) / m_sourceHeight)
+        setVideoLayerFrame:CGRectApplyAffineTransform(ToCGRect(m_destRect),
+                                                      CGAffineTransformMakeScale(sx, sy))
+                sourceRect:CGRectApplyAffineTransform(
+                               ToCGRect(m_sourceRect),
+                               CGAffineTransformMakeScale(1.0 / m_sourceWidth,
+                                                          1.0 / m_sourceHeight))
                orientation:m_renderOrientation];
     m_lastRect = m_destRect;
     m_lastSourceRect = m_sourceRect;
@@ -394,6 +402,8 @@ void CRendererVTBDisplayLayer::RenderUpdate(
   m_lastIndex = index;
 }
 
+// Native video bypasses the framebuffer. Convert P010 to packed RGB while
+// preserving HDR coding and metadata for the capture consumer.
 bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE::CaptureSpec& spec,
                                                  KODI::RENDERING::CAPTURE::CaptureResult& result)
 {
@@ -417,6 +427,8 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
       spec.height ? spec.height : static_cast<unsigned int>(visible.Height());
   const bool native = spec.format == CaptureFormat::NATIVE;
   const unsigned int bytesPerPixel = native ? 8 : 4;
+  // bytesPerPixel scales the int row stride, not the height. The total
+  // allocation is computed in size_t on 64-bit tvOS.
   if (!width || !height || width > std::numeric_limits<int>::max() / bytesPerPixel ||
       height > std::numeric_limits<int>::max())
     return false;
@@ -428,7 +440,6 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
 
   @autoreleasepool
   {
-    // Keep output-coded PQ/HLG values; capture consumers perform SDR tonemapping.
     static CIContext* context = [[CIContext alloc] initWithOptions:@{
       kCIContextWorkingColorSpace : [NSNull null],
       kCIContextOutputColorSpace : [NSNull null],
@@ -439,29 +450,39 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
     if (!context || !image)
       return false;
 
-    const int orientation = m_renderOrientation == 90    ? 6
-                            : m_renderOrientation == 180 ? 3
-                            : m_renderOrientation == 270 ? 8
-                                                         : 1;
+    const CGImagePropertyOrientation orientation = [this]
+    {
+      switch (m_renderOrientation)
+      {
+        case 90:
+          return kCGImagePropertyOrientationRight;
+        case 180:
+          return kCGImagePropertyOrientationDown;
+        case 270:
+          return kCGImagePropertyOrientationLeft;
+        default:
+          return kCGImagePropertyOrientationUp;
+      }
+    }();
     const CGRect extent = image.extent;
-    const CGRect source = CGRectMake(
-        extent.origin.x + static_cast<CGFloat>(m_sourceRect.x1) / m_sourceWidth * extent.size.width,
-        extent.origin.y +
-            (1.0 - static_cast<CGFloat>(m_sourceRect.y2) / m_sourceHeight) * extent.size.height,
-        static_cast<CGFloat>(m_sourceRect.Width()) / m_sourceWidth * extent.size.width,
-        static_cast<CGFloat>(m_sourceRect.Height()) / m_sourceHeight * extent.size.height);
+    // Kodi's source crop is top-left based; Core Image uses a bottom-left origin.
+    const CGRect source = CGRectApplyAffineTransform(
+        ToCGRect(m_sourceRect), CGAffineTransformMake(extent.size.width / m_sourceWidth, 0, 0,
+                                                      -extent.size.height / m_sourceHeight,
+                                                      extent.origin.x, CGRectGetMaxY(extent)));
     const CGRect rotatedSource =
-        CGRectApplyAffineTransform(source, [image imageTransformForOrientation:orientation]);
-    image = [image imageByApplyingOrientation:orientation];
-    const CGRect crop = CGRectMake(
-        rotatedSource.origin.x +
-            static_cast<CGFloat>((visible.x1 - m_destRect.x1) / m_destRect.Width()) *
-                rotatedSource.size.width,
-        rotatedSource.origin.y +
-            static_cast<CGFloat>((m_destRect.y2 - visible.y2) / m_destRect.Height()) *
-                rotatedSource.size.height,
-        static_cast<CGFloat>(visible.Width() / m_destRect.Width()) * rotatedSource.size.width,
-        static_cast<CGFloat>(visible.Height() / m_destRect.Height()) * rotatedSource.size.height);
+        CGRectApplyAffineTransform(source, [image imageTransformForCGOrientation:orientation]);
+    image = [image imageByApplyingCGOrientation:orientation];
+    // Map the visible destination back into the oriented source crop.
+    const CGRect destination = ToCGRect(m_destRect);
+    const CGRect relativeVisible =
+        CGRectOffset(ToCGRect(visible), -destination.origin.x, -destination.origin.y);
+    const CGRect crop = CGRectApplyAffineTransform(
+        relativeVisible,
+        CGAffineTransformMake(rotatedSource.size.width / destination.size.width, 0, 0,
+                              -rotatedSource.size.height / destination.size.height,
+                              rotatedSource.origin.x, CGRectGetMaxY(rotatedSource)));
+    // Clamp the full image to avoid transparent edges at fractional crop boundaries.
     image = [image imageByClampingToExtent];
     image = [image
         imageByApplyingTransform:CGAffineTransformMakeTranslation(-crop.origin.x, -crop.origin.y)];
