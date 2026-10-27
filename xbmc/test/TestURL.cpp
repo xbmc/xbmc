@@ -615,6 +615,27 @@ TEST_F(TestCURL, RawComponentsAndSchemeSpecificPart)
   EXPECT_EQ("part", urn.GetRawFragment());
 }
 
+TEST_F(TestCURL, SchemeSpecificPartView)
+{
+  const CURL data("DATA:text/plain,http://example.test/a?x=%2f+1#fragment");
+  EXPECT_EQ("text/plain,http://example.test/a?x=%2f+1", data.GetSchemeSpecificPartView());
+
+  const CURL malformed("data:,bad%?query#fragment");
+  EXPECT_EQ(",bad%?query", malformed.GetSchemeSpecificPartView());
+
+  CURL url("https://example.test/path?x=1");
+  EXPECT_TRUE(url.GetSchemeSpecificPartView().empty());
+  EXPECT_EQ("//example.test/path?x=1", url.GetSchemeSpecificPart());
+
+  ASSERT_TRUE(url.ParseURI("https://example.test/path?x=1#fragment"));
+  EXPECT_EQ("//example.test/path?x=1", url.GetSchemeSpecificPartView());
+
+  url.ParseNativePath("data:,literal?query#fragment");
+  EXPECT_TRUE(url.GetSchemeSpecificPartView().empty());
+  url.Reset();
+  EXPECT_TRUE(url.GetSchemeSpecificPartView().empty());
+}
+
 TEST_F(TestCURL, ExplicitAndMixedInputIntent)
 {
   for (const auto* input : {"C:relative", "C:/Media/a", "C:\\Media\\a", "\\\\server\\share\\a",
