@@ -18,6 +18,7 @@
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/contexts/IHwRenderingContext.h"
 #include "messaging/ApplicationMessenger.h"
+#include "rendering/capture/CaptureReadback.h"
 
 #include <atomic>
 #include <chrono>
@@ -384,6 +385,15 @@ protected:
   bool m_initialized{false};
   bool m_current{false};
 };
+
+TEST_P(TestRenderBufferPoolFBOWithContext, ReadCaptureRefusesAnotherPoolsBuffer)
+{
+  CTestCaptureBuffer software;
+  ASSERT_TRUE(software.Allocate(AV_PIX_FMT_RGBA, 4, 4));
+
+  KODI::RENDERING::CAPTURE::ReadbackBuffer pixels;
+  EXPECT_FALSE(m_pool->ReadCapture(&software, pixels));
+}
 
 TEST_P(TestRenderBufferPoolFBOWithContext, CaptureDiscardsAlphaBeforeShaderCopy)
 {
