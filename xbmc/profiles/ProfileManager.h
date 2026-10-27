@@ -126,7 +126,7 @@ public:
     Loads the master user.  Identical to LoadProfile(MASTER_PROFILE_ID) but doesn't
     update the last logged in details
     */
-  void LoadMasterProfileForLogin();
+  bool LoadMasterProfileForLogin();
 
   /*! \brief Retrieve the last used profile index
     \return the last used profile that logged in.  Does not count the
@@ -197,6 +197,7 @@ private:
     */
   void SetCurrentProfileId(unsigned int profileId);
 
+  bool CheckSettingsVersion(unsigned int index) const;
   void PrepareLoadProfile(unsigned int profileIndex);
   void FinalizeLoadProfile();
 
