@@ -1207,7 +1207,8 @@ TEST_F(TestRPRendererFBOOSX, ShaderTextureCacheTracksBuffersDestinationSizeAndFl
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
-                         CServiceBroker::GetGUI());
+                         CServiceBroker::GetGUI(), CServiceBroker::GetTextureCache(),
+                         CServiceBroker::GetJobManager());
   context.SetViewWindow(0, 0, 8, 8);
   CTestFBORenderer renderer({}, context, m_pool);
   ASSERT_TRUE(renderer.Configure(AV_PIX_FMT_NONE));
@@ -1277,7 +1278,8 @@ TEST_F(TestRPRendererFBOOSX, CaptureSizeChangesPresentCurrentPixelsThroughShader
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
-                         CServiceBroker::GetGUI());
+                         CServiceBroker::GetGUI(), CServiceBroker::GetTextureCache(),
+                         CServiceBroker::GetJobManager());
   context.SetViewWindow(0, 0, 8, 8);
   glMatrixProject->LoadIdentity();
   glMatrixProject->Ortho2D(0, 8, 8, 0);
@@ -1330,7 +1332,8 @@ TEST_F(TestRPRendererFBOOSX, FailedShaderPresentsCaptureAndDisablesPreset)
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
-                         CServiceBroker::GetGUI());
+                         CServiceBroker::GetGUI(), CServiceBroker::GetTextureCache(),
+                         CServiceBroker::GetJobManager());
   glMatrixProject->LoadIdentity();
   glMatrixProject->Ortho2D(0, 8, 8, 0);
   glMatrixModview->LoadIdentity();
@@ -1407,7 +1410,8 @@ TEST_F(TestRPRendererFBOOSX, ShaderPresentationUsesBackbufferAcrossCaptureReuseA
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
-                         CServiceBroker::GetGUI());
+                         CServiceBroker::GetGUI(), CServiceBroker::GetTextureCache(),
+                         CServiceBroker::GetJobManager());
   glMatrixModview->LoadIdentity();
   CTestFBORenderer renderer({}, context, m_pool);
   ASSERT_TRUE(renderer.Configure(AV_PIX_FMT_NONE));
@@ -1476,7 +1480,8 @@ TEST_F(TestRPRendererFBOOSX, RendererOwnsInitializedVertexArraysUntilDestruction
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
-                         CServiceBroker::GetGUI());
+                         CServiceBroker::GetGUI(), CServiceBroker::GetTextureCache(),
+                         CServiceBroker::GetJobManager());
   GLint guiVertexArray = 0;
   glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &guiVertexArray);
 
@@ -1542,7 +1547,8 @@ TEST_F(TestRPRendererFBOOSX, FilteredAndUnfilteredControlsPreserveOrientationCro
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
-                         CServiceBroker::GetGUI());
+                         CServiceBroker::GetGUI(), CServiceBroker::GetTextureCache(),
+                         CServiceBroker::GetJobManager());
   context.SetViewWindow(0, 0, 8, 8);
   glMatrixProject->LoadIdentity();
   glMatrixProject->Ortho2D(0, 8, 8, 0);
@@ -1657,7 +1663,8 @@ TEST_F(TestRPRendererFBOOSX, OpaqueFramesClearBlackBarsAndAllowSubsequentGuiDraw
   ASSERT_TRUE(window.ResetRenderSystem(8, 8));
   CRenderContext context(&window, &window, window.GetGfxContext(), CDisplaySettings::GetInstance(),
                          CMediaSettings::GetInstance(), CServiceBroker::GetGameServices(),
-                         CServiceBroker::GetGUI());
+                         CServiceBroker::GetGUI(), CServiceBroker::GetTextureCache(),
+                         CServiceBroker::GetJobManager());
   context.SetViewWindow(0, 0, 8, 8);
   glMatrixProject->LoadIdentity();
   glMatrixProject->Ortho2D(0, 8, 8, 0);

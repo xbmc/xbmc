@@ -4606,6 +4606,25 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v22 **[New Boolean Condition]** \link RetroPlayer_EmptyTray `RetroPlayer.EmptyTray`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.HasBezel`</b>,
+///                  \anchor RetroPlayer_HasBezel
+///                  _boolean_,
+///     @return **True** if the currently-playing game has a bezel with a window
+///     for the game\, **False** otherwise. The bezel is drawn only while it is
+///     enabled and the stretch mode and the game's shape suit its window.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link RetroPlayer_HasBezel `RetroPlayer.HasBezel`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.BezelEnabled`</b>,
+///                  \anchor RetroPlayer_BezelEnabled
+///                  _boolean_,
+///     @return **True** if games are framed with their bezels\, **False** if
+///     bezels have been turned off with `PlayerControl(Bezel)`.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link RetroPlayer_BezelEnabled `RetroPlayer.BezelEnabled`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`RetroPlayer.VideoFilter`</b>,
 ///                  \anchor RetroPlayer_VideoFilter
 ///                  _string_,
@@ -4648,7 +4667,7 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 29> retroplayer = {{
+constexpr std::array<InfoMap, 31> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4675,6 +4694,8 @@ constexpr std::array<InfoMap, 29> retroplayer = {{
     {"discejected", RETROPLAYER_DISC_EJECTED},
     {"disclabel", RETROPLAYER_DISC_LABEL},
     {"emptytray", RETROPLAYER_EMPTY_TRAY},
+    {"hasbezel", RETROPLAYER_HAS_BEZEL},
+    {"bezelenabled", RETROPLAYER_BEZEL_ENABLED},
     {"videofilter", RETROPLAYER_VIDEO_FILTER},
     {"stretchmode", RETROPLAYER_STRETCH_MODE},
     {"videorotation", RETROPLAYER_VIDEO_ROTATION},

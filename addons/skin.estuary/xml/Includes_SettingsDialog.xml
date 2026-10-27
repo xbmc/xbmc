@@ -164,6 +164,14 @@
 			<label>$LOCALIZE[35227]</label>
 			<onclick>ActivateWindow(GameVideoRotation)</onclick>
 		</control>
+		<control type="radiobutton" id="22108">
+			<description>Bezel button</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35255]</label>
+			<onclick>PlayerControl(Bezel)</onclick>
+			<selected>RetroPlayer.BezelEnabled + RetroPlayer.HasBezel</selected>
+			<enable>RetroPlayer.HasBezel</enable>
+		</control>
 		<control type="button" id="22104">
 			<description>Volume button</description>
 			<include>DialogSettingButton</include>
