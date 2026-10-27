@@ -614,12 +614,15 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_headPos = 0;
   m_headPosOld = 0;
   m_timestampPos = 0;
+  m_timestampValid = false;
+  m_flushTime = 0;
   m_stampTimer.SetExpired();
 
   m_linearmovingaverage.clear();
 
   delete m_at_jni;
   m_at_jni = NULL;
+  m_rawNeedsFlush = false;
   m_delay = 0.0;
   m_hw_delay = 0.0;
   m_pause_ms = 0.0;
@@ -695,6 +698,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       }
       else
       {
+        m_timestampValid = true;
         // check if frameposition is valid and nano timer less than 50 ms outdated
         if (m_timestamp.get_framePosition() > 0 &&
             (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 50 * 1000 * 1000)
@@ -705,8 +709,23 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     }
 
     // check if last value was received less than 2 seconds ago
-    if (m_timestamp.get_framePosition() > 0 &&
-        (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
+    const int64_t timestampAge = CurrentHostCounter() - m_timestamp.get_nanoTime();
+    bool validTimestamp =
+        m_timestamp.get_framePosition() > 0 && timestampAge < 2 * 1000 * 1000 * 1000;
+    if (isRawPt)
+    {
+      // A future presentation time cannot be extrapolated with an unsigned delta.
+      validTimestamp = validTimestamp && m_timestampValid && timestampAge >= 0;
+      if (m_flushTime != 0)
+      {
+        validTimestamp = validTimestamp && m_timestamp.get_nanoTime() >= m_flushTime;
+        if (m_timestampPos == 0)
+          validTimestamp = validTimestamp && m_timestamp.get_framePosition() <=
+                                                 m_duration_written * m_sink_sampleRate;
+      }
+    }
+
+    if (validTimestamp)
     {
       if (usesAdvancedLogging)
       {
@@ -714,7 +733,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
                   (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES),
                   m_timestamp.get_nanoTime(), CurrentHostCounter());
       }
-      uint64_t delta = static_cast<uint64_t>(CurrentHostCounter() - m_timestamp.get_nanoTime());
+      uint64_t delta = static_cast<uint64_t>(timestampAge);
       uint64_t stamphead =
           static_cast<uint64_t>(m_timestamp.get_framePosition() & UINT64_LOWER_BYTES) +
           delta * m_sink_sampleRate / 1000000000.0;
@@ -856,6 +875,9 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         return INT_MAX;
       }
 
+      if (isRawPt && loop_written > 0)
+        m_rawNeedsFlush = true;
+
       // if we could not add any data - sleep a bit and retry
       if (loop_written == 0)
       {
@@ -968,6 +990,14 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   if (!m_at_jni)
     return;
 
+  // RAW has no actual pause packet to write. On an empty track, booking a
+  // pause as queued audio would report delay for audio which does not exist.
+  if (!m_rawNeedsFlush)
+  {
+    usleep(millis * 1000);
+    return;
+  }
+
   // just sleep out the frames
   if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PAUSED)
     m_at_jni->pause();
@@ -995,6 +1025,38 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   }
 }
 
+void CAESinkAUDIOTRACK::Flush()
+{
+  // Discard encoded RAW audio only at an explicit AE
+  // discontinuity. IEC and PCM retain their existing behavior.
+  if (!IsInitialized() || !m_passthrough || m_info.m_wantsIECPassthrough)
+    return;
+
+  // Drain resets the software duration, but stop() may still leave queued
+  // data playing. Track actual writes independently of that duration.
+  if (m_rawNeedsFlush)
+  {
+    m_at_jni->pause();
+    m_at_jni->flush();
+    m_rawNeedsFlush = false;
+  }
+  // A post-flush timestamp must belong to the new playback-head epoch.
+  // Do not let the cached pre-flush timestamp influence the next stream.
+  m_flushTime = CurrentHostCounter();
+  m_duration_written = 0.0;
+  m_headPos = 0;
+  m_headPosOld = 0;
+  m_timestampPos = 0;
+  m_timestampValid = false;
+  m_stuckCounter = 0;
+  m_pause_ms = 0.0;
+  m_delay = 0.0;
+  m_hw_delay = 0.0;
+  m_audiotrackbuffer_sec = m_audiotrackbuffer_sec_orig;
+  m_linearmovingaverage.clear();
+  m_stampTimer.SetExpired();
+}
+
 void CAESinkAUDIOTRACK::Drain()
 {
   if (!m_at_jni)
@@ -1011,6 +1073,7 @@ void CAESinkAUDIOTRACK::Drain()
   m_headPos = 0;
   m_stuckCounter = 0;
   m_timestampPos = 0;
+  m_timestampValid = false;
   m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
   m_pause_ms = 0.0;
