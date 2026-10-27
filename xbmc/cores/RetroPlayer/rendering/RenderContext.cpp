@@ -26,6 +26,8 @@
 #include "rendering/dx/RenderSystemDX.h"
 #endif
 
+#include <utility>
+
 using namespace KODI;
 using namespace RETRO;
 
@@ -35,14 +37,18 @@ CRenderContext::CRenderContext(CRenderSystemBase* rendering,
                                CDisplaySettings& displaySettings,
                                CMediaSettings& mediaSettings,
                                GAME::CGameServices& gameServices,
-                               CGUIComponent* guiComponent)
+                               CGUIComponent* guiComponent,
+                               std::shared_ptr<CTextureCache> textureCache,
+                               std::shared_ptr<CJobManager> jobManager)
   : m_rendering(rendering),
     m_windowing(windowing),
     m_graphicsContext(graphicsContext),
     m_displaySettings(displaySettings),
     m_mediaSettings(mediaSettings),
     m_gameServices(gameServices),
-    m_guiComponent(guiComponent)
+    m_guiComponent(guiComponent),
+    m_textureCache(std::move(textureCache)),
+    m_jobManager(std::move(jobManager))
 {
 }
 

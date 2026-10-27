@@ -111,6 +111,18 @@ public:
   static std::string GetGameFolder(const std::string& gamePath);
 
   /*!
+   * \brief Get the bezel to frame a game with
+   *
+   * The game's own art if it has one, or else a picture beside it: the game's
+   * name with -bezel.png for that game alone, or bezel.png for every game in
+   * the folder.
+   *
+   * \param item The game
+   * \param forThisGame Set true for a -bezel.png made for this game alone
+   */
+  static std::string GetBezel(const CFileItem& item, bool& forThisGame);
+
+  /*!
    * \brief Check if game script or game add-on can be launched directly
    *
    * \return true if the add-on can be launched, false otherwise
