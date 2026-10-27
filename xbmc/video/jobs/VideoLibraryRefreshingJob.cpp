@@ -634,8 +634,16 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     SetText(itemTitle);
     SetProgress(0);
 
-    const bool hasAdditionalAssets{m_item->HasVideoVersions() || m_item->HasVideoExtras()};
     const int origDbId{m_item->GetVideoInfoTag()->m_iDbId};
+    // Read from the database, as a scan may have added versions or extras to the movie since the
+    // item was read, such as while its information dialog was open. The movie's own file is one
+    // of its assets.
+    const bool hasAdditionalAssets{
+        m_item->HasVideoVersions() || m_item->HasVideoExtras() ||
+        (origDbId > 0 && scraper->Content() == ADDON::ContentType::MOVIES &&
+         db.GetSingleValueInt(db.PrepareSQL(
+             "SELECT COUNT(1) FROM videoversion WHERE idMedia = %i AND media_type = '%s'", origDbId,
+             MEDIA::NameOf(MEDIA::TYPE::MOVIE).c_str())) > 1)};
 
     // the disc's watched state, carried over if a single playlist is found on it again
     CVideoDatabase::FileRecord discFileState;
