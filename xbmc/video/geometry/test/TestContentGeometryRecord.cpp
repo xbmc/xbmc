@@ -7,8 +7,11 @@
  */
 
 #include "test/TestUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "video/geometry/ContentGeometryRecord.h"
 #include "video/geometry/test/GeometryTestHelpers.h"
+
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -128,6 +131,45 @@ TEST(TestContentGeometryRecord, AReadingIsARatioAndVaryingIsMoreThanOne)
   record.aspects.push_back(1.78f);
   EXPECT_TRUE(record.Varies());
   EXPECT_FLOAT_EQ(2.40f, WidestAspect(record));
+}
+
+TEST(TestContentGeometryRecord, XmlRoundTrip)
+{
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(doc.Parse(std::string{"<movie/>"}));
+  SaveContentGeometryXML(*doc.RootElement(), ScopeRecord({2.40f, 1.78f}));
+
+  std::string xml;
+  xml << *doc.RootElement();
+  EXPECT_EQ("<movie><contentgeometry><aspect>2.40</aspect><aspect>1.78</aspect></contentgeometry>"
+            "</movie>",
+            xml);
+
+  const auto record = LoadContentGeometryXML(*doc.RootElement());
+  ASSERT_TRUE(record);
+  const std::vector<float> aspects{2.40f, 1.78f};
+  EXPECT_EQ(aspects, record->aspects);
+}
+
+TEST(TestContentGeometryRecord, XmlWithoutReading)
+{
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(doc.Parse(std::string{"<movie/>"}));
+  SaveContentGeometryXML(*doc.RootElement(), ContentGeometryRecord{});
+  EXPECT_EQ(nullptr, doc.RootElement()->FirstChild());
+  EXPECT_FALSE(LoadContentGeometryXML(*doc.RootElement()));
+}
+
+TEST(TestContentGeometryRecord, XmlSkipsInvalidAspects)
+{
+  CXBMCTinyXML doc;
+  ASSERT_TRUE(doc.Parse(std::string{"<movie><contentgeometry><aspect/><aspect>abc</aspect>"
+                                    "<aspect>1.85</aspect></contentgeometry></movie>"}));
+
+  const auto record = LoadContentGeometryXML(*doc.RootElement());
+  ASSERT_TRUE(record);
+  const std::vector<float> aspects{1.85f};
+  EXPECT_EQ(aspects, record->aspects);
 }
 
 TEST(TestContentGeometryLookup, MissingCarriesNoRecord)

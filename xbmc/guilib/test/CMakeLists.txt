@@ -1,4 +1,6 @@
-set(SOURCES TestGUIControlFactory.cpp
+set(SOURCES TestGUIColorManager.cpp
+            TestGUIControlFactory.cpp
+            TestGUIControlProfiler.cpp
             TestGUIControlGroup.cpp
             TestGamesGUIInfo.cpp
             TestGUIFixedListContainer.cpp
