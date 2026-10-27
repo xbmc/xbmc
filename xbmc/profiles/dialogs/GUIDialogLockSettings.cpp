@@ -98,6 +98,7 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(std::string &user, std::s
   dialog->m_user = user;
   dialog->m_url = url;
   dialog->m_saveUserDetails = saveUserDetails;
+  dialog->m_changed = false;
   dialog->Open();
 
   if (!dialog->m_changed)
