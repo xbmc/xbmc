@@ -459,18 +459,19 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
                               item->GetVideoContentType() == VideoDbContentType::MOVIE_SETS);
 
   bool needsRefresh = false;
+  // changes made in the dialog before a refresh, which may fail or not run at all
+  bool hasChanges = false;
   if (bHasInfo)
   {
     item->SetProperty(ITEM::PROPERTY::CHECK_AUTOPLAY_NEXT_ITEM, IsActive());
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item.get());
     pDlgInfo->Open();
-    if (pDlgInfo->HasUpdatedUserrating())
-      return RESULT_OK_UPDATED;
+    hasChanges = pDlgInfo->HasUpdatedUserrating() || pDlgInfo->HasUpdatedThumb() ||
+                 pDlgInfo->HasUpdatedItems();
     needsRefresh = pDlgInfo->NeedRefresh();
     if (!needsRefresh)
-      return (pDlgInfo->HasUpdatedThumb() || pDlgInfo->HasUpdatedItems()) ? RESULT_OK_UPDATED
-                                                                          : RESULT_OK_NOT_UPDATED;
+      return hasChanges ? RESULT_OK_UPDATED : RESULT_OK_NOT_UPDATED;
     // check if the item in the video info dialog has changed and if so, get the new item
     else if (pDlgInfo->GetCurrentListItem() != NULL)
     {
@@ -491,15 +492,15 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
 
   // quietly return if Internet lookups are disabled
   if (!profileManager->GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
-    return RESULT_ERROR;
+    return hasChanges ? RESULT_OK_UPDATED : RESULT_ERROR;
 
   if (!info && item->GetVideoContentType() != VideoDbContentType::MOVIE_SETS)
-    return RESULT_ERROR;
+    return hasChanges ? RESULT_OK_UPDATED : RESULT_ERROR;
 
   if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
   {
     HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{14057});
-    return RESULT_ERROR;
+    return hasChanges ? RESULT_OK_UPDATED : RESULT_ERROR;
   }
 
   bool listNeedsUpdating = false;
@@ -533,7 +534,7 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
     listNeedsUpdating = true;
   } while (needsRefresh);
 
-  return listNeedsUpdating ? RESULT_OK_UPDATED : RESULT_OK_NOT_UPDATED;
+  return (listNeedsUpdating || hasChanges) ? RESULT_OK_UPDATED : RESULT_OK_NOT_UPDATED;
 }
 
 bool CGUIWindowVideoBase::ShowInfoAndRefresh(const CFileItemPtr& item, const ScraperPtr& info)
