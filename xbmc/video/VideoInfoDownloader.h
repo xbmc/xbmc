@@ -19,7 +19,6 @@
 #include <vector>
 
 // forward declarations
-class CXBMCTinyXML;
 class CGUIDialogProgress;
 
 namespace ADDON
