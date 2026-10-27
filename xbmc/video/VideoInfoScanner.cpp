@@ -3087,9 +3087,25 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool added{false};
     bool versioned{false};
+    bool known{false};
     int targetDbId{-1};
     for (const auto& item : blurayItems)
     {
+      // The playlists are ordered with the disc's main title first, so only that one may become
+      // the default version - otherwise each playlist added after it displaces it in turn, leaving
+      // the shortest of them as the default
+      const bool isMainPlaylist{item == blurayItems.Get(0)};
+
+      // A playlist already in the library keeps its movie, which the disc's new playlists join.
+      // Adding it again would return that movie, which a declined merge below would then delete.
+      if (const int knownDbId{m_database.GetMovieId(item->GetDynPath())}; knownDbId >= 0)
+      {
+        known = true;
+        if (isMainPlaylist)
+          targetDbId = knownDbId;
+        continue;
+      }
+
       const int newMovieDbId{static_cast<int>(
           AddVideo(item.get(), scraper, bDirNames, useLocal, nullptr, false, ContentType::MOVIES))};
       if (newMovieDbId < 0)
@@ -3106,10 +3122,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_similarVideoAction != SimilarVideoScanAction::AUTO)
         continue;
 
-      // The playlists are ordered with the disc's main title first, so only that one may become
-      // the default version - otherwise each playlist added after it displaces it in turn, leaving
-      // the shortest of them as the default
-      const bool isMainPlaylist{item == blurayItems.Get(0)};
       const auto [result, chosenTargetMovieDbId] = ProcessVideoVersion(
           ContentToVideoDbType(ContentType::MOVIES), newMovieDbId, targetDbId, isMainPlaylist);
       if (result == VersionConversionResult::SUCCESS)
@@ -3139,7 +3151,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (versioned)
       RemovePartNumberFromTitle(targetDbId, VideoDbContentType::MOVIES, m_database);
-    return !added ? InfoRet::INFO_ERROR : (versioned ? InfoRet::HAVE_ALREADY : InfoRet::ADDED);
+    if (!added)
+      return known ? InfoRet::HAVE_ALREADY : InfoRet::INFO_ERROR;
+    return versioned ? InfoRet::HAVE_ALREADY : InfoRet::ADDED;
   }
 
   std::pair<VersionConversionResult, int> CVideoInfoScanner::ProcessVideoVersion(
