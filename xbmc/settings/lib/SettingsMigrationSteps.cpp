@@ -8,7 +8,10 @@
 
 #include "SettingsMigrationSteps.h"
 
+#include "SettingDefinitions.h"
+#include "SettingsManager.h"
 #include "SettingsMigrationPrimitive.h"
+#include "utils/StringUtils.h"
 
 #include <array>
 #include <string_view>
@@ -27,8 +30,17 @@ public:
     constexpr std::string_view oldSettingId = "dvds.autorun";
     constexpr std::string_view newSettingId = "dvds.autoaction";
 
-    return FAILURE != ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
-                                              {.m_default = 0, .m_false = 0, .m_true = 1});
+    bool ret = FAILURE != ConvertSettingBoolToInt(root, oldSettingId, newSettingId,
+                                                  {.m_default = 0, .m_false = 0, .m_true = 1});
+    const TiXmlElement* versions =
+        CSettingsManager::LocateSetting(root, "videolibrary.ignorevideoversions");
+    const char* isDefault = versions ? versions->Attribute(SETTING_XML_ELM_DEFAULT) : nullptr;
+    if (versions && !(isDefault && StringUtils::EqualsNoCase(isDefault, "true")) &&
+        CSettingsManager::LocateSetting(root, "videolibrary.similarvideoaction") == nullptr)
+      ret &= FAILURE != ConvertSettingBoolToInt(root, "videolibrary.ignorevideoversions",
+                                                "videolibrary.similarvideoaction",
+                                                {.m_default = 2, .m_false = 1, .m_true = 0});
+    return ret;
   }
 };
 
