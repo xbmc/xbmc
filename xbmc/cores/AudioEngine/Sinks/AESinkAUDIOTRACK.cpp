@@ -220,6 +220,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_headPos = 0;
   m_stuckCounter = 0;
   m_headPosOld = 0;
+  m_headPosStep = 0;
   m_timestampPos = 0;
   m_sink_sampleRate = 0;
   m_passthrough = false;
@@ -605,6 +606,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_duration_written = 0;
   m_headPos = 0;
   m_headPosOld = 0;
+  m_headPosStep = 0;
   m_timestampPos = 0;
   m_timestampValid = false;
   m_flushTime = 0;
@@ -654,10 +656,27 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   else
   {
     m_stuckCounter = 0;
+    if (m_headPosOld > 0 && m_headPos > m_headPosOld)
+      m_headPosStep = std::max(m_headPosStep, m_headPos - m_headPosOld);
     m_headPosOld = m_headPos;
   }
 
   double gone = static_cast<double>(m_headPos) / m_sink_sampleRate;
+
+  // Some devices only update the head position every mixer period (e.g. 128 ms),
+  // sometimes in parts. Assume it moves at the sample rate in between while playing:
+  // track the earliest time playback could have started (500 ppm slack for clock
+  // drift) and extrapolate from it, by at most the largest update seen.
+  const double now = static_cast<double>(CurrentHostCounter()) / CurrentHostFrequency();
+  const double maxAhead = static_cast<double>(m_headPosStep) / m_sink_sampleRate;
+  const double start = now - gone;
+  if (m_headPosStep == 0 || m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING ||
+      start < m_playStart || start - m_playStart > maxAhead)
+    m_playStart = start;
+  else
+    m_playStart = std::min(start, m_playStart + 0.0005 * (now - m_playStartUpdated));
+  m_playStartUpdated = now;
+  gone += std::min(start - m_playStart, maxAhead);
 
   // if sink is run dry without buffer time written anymore
   if (gone > m_duration_written)
@@ -1034,6 +1053,7 @@ void CAESinkAUDIOTRACK::Flush()
   m_duration_written = 0.0;
   m_headPos = 0;
   m_headPosOld = 0;
+  m_headPosStep = 0;
   m_timestampPos = 0;
   m_timestampValid = false;
   m_stuckCounter = 0;
@@ -1058,6 +1078,8 @@ void CAESinkAUDIOTRACK::Drain()
   }
   m_duration_written = 0;
   m_headPos = 0;
+  m_headPosOld = 0;
+  m_headPosStep = 0;
   m_stuckCounter = 0;
   m_timestampPos = 0;
   m_timestampValid = false;

@@ -63,6 +63,9 @@ private:
   unsigned int          m_min_buffer_size;
   uint64_t              m_headPos;
   uint64_t m_headPosOld;
+  uint64_t m_headPosStep = 0;
+  double m_playStart = 0.0;
+  double m_playStartUpdated = 0.0;
   uint32_t m_stuckCounter;
   uint64_t m_timestampPos = 0;
   int64_t m_flushTime = 0;
