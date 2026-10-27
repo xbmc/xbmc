@@ -516,6 +516,34 @@ protected:
     EXPECT_EQ(-1, m_db.GetVideoVersionInfo(interview).m_assetTypeId);
   }
 
+  //! The extras a bonus disc names are its playlists, as a refresh adds them, so its folder is
+  //! known only by them. A video added beside the disc changes neither the movie's folder nor the
+  //! library. The disc is an image, or a folder rip.
+  void VideoAddedBesideABonusDisc(bool rip)
+  {
+    const std::string folder{Folder(m_root, "Film (2010)")};
+    const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+    const std::string bonus{Folder(folder, "Bonus Disc")};
+    Scan();
+    const int idMovie{m_db.GetMovieId(movie)};
+    ASSERT_GT(idMovie, 0);
+
+    ASSERT_TRUE(
+        m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM path WHERE strPath='%s'", bonus.c_str())));
+    const std::string disc{rip ? URIUtils::AddFileToFolder(bonus, "BDMV", "index.bdmv")
+                               : URIUtils::AddFileToFolder(bonus, "BONUS.iso")};
+    CFileItem playlist{URIUtils::GetBlurayPlaylistPath(disc, 1), false};
+    ASSERT_TRUE(
+        m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie,
+                           m_db.AddOrValidateVideoVersionType("Featurette", VideoAssetType::EXTRA),
+                           VideoAssetType::EXTRA, playlist));
+
+    const std::string interview{File(bonus, "Interview.mkv")};
+    Scan();
+
+    EXPECT_TRUE(IsExtraOf(interview, idMovie));
+  }
+
   //! A refresh removes a movie before adding it again, so one whose details can't be read is
   //! kept. The movie has no nfo, or one that overrides some of the details it is looked up for.
   void RefreshThatCantReadTheDetails(bool overrideNfo)
@@ -999,6 +1027,16 @@ TEST_F(TestVideoInfoScanner, AMovieFolderGetsItsExtras)
   Scan();
   EXPECT_EQ(1, CountMovies());
   EXPECT_EQ(1, CountExtras());
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedBesideTheExtrasOfABonusDiscIsAdded)
+{
+  VideoAddedBesideABonusDisc(false);
+}
+
+TEST_F(TestVideoInfoScanner, AVideoAddedBesideTheExtrasOfABonusDiscRipIsAdded)
+{
+  VideoAddedBesideABonusDisc(true);
 }
 
 // The extras folder belongs to no movie where its folder holds several

@@ -315,9 +315,7 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
   {
     std::string base{discFolder};
     URIUtils::AddSlashAtEnd(base);
-    std::vector<std::pair<int, std::string>> paths;
-    m_database.GetSubPaths(base, paths);
-    for (const auto& [idPath, path] : paths)
+    for (const std::string& path : GetKnownFolders(m_database, base))
     {
       // An extras folder whose extras are all in folders below it has no row of its own, so each
       // row is taken back to the folder below the disc's
@@ -372,6 +370,29 @@ bool CVideoInfoScannerExtras::AddVideoExtrasBesideDisc(const std::string& discFo
       m_database.SetPathHash(folder, hash);
   }
   return added;
+}
+
+std::vector<std::string> CVideoInfoScannerExtras::GetKnownFolders(CVideoDatabase& db,
+                                                                  const std::string& folder)
+{
+  std::string base{folder};
+  URIUtils::AddSlashAtEnd(base);
+  std::vector<std::pair<int, std::string>> paths;
+  db.GetSubPaths(base, paths, false);
+
+  std::vector<std::string> folders;
+  for (const auto& [idPath, path] : paths)
+  {
+    std::string known{path};
+    if (URIUtils::IsBlurayPath(path))
+    {
+      known = URIUtils::GetDiscBasePath(path);
+      URIUtils::AddSlashAtEnd(known);
+    }
+    if (known.starts_with(base))
+      folders.emplace_back(known);
+  }
+  return folders;
 }
 
 void CVideoInfoScannerExtras::AddMovieExtras(int dbId, bool useFolderNames)
