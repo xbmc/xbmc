@@ -484,6 +484,10 @@ CGUIWindowVideoBase::ShowInfoResult CGUIWindowVideoBase::ShowInfo(
         // Info on folder containing a movie needs dyn path as path for refresh with correct name
         //! @todo get rid of "videos with versions as folder" hack to be able to fix in CFileItem::GetBaseMoviePath()
         item->SetPath(item->GetVideoInfoTag()->GetPath());
+        // The path now names the movie's file, so it is no folder either. Otherwise its nfo would
+        // be looked for in a listing of the file, which finds none
+        if (item->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::MOVIE)
+          item->SetFolder(false);
       }
     }
   }
