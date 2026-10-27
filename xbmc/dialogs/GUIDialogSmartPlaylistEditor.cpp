@@ -32,6 +32,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#include <cassert>
 #include <string_view>
 #include <utility>
 

@@ -72,6 +72,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 #include "view/GUIViewState.h"
 

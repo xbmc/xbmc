@@ -10,7 +10,7 @@
 #include "playlists/SmartPlayList.h"
 #include "test/TestUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <string>
 #include <string_view>
@@ -118,11 +118,23 @@ TEST_F(TestSmartPlayList, LoadFileUnescapedAmpersand)
   ASSERT_TRUE(playlist.Load(CreateFile("<smartplaylist type=\"songs\"><name>Rock & Roll</name>"
                                        "<rule field=\"genre\" operator=\"is\">R&B</rule>"
                                        "</smartplaylist>")));
-  // TinyXML1 drops unescaped ampersands when reading from a stream
-  EXPECT_EQ("Rock  Roll", playlist.GetName());
+  EXPECT_EQ("Rock & Roll", playlist.GetName());
   EXPECT_EQ(
-      R"({"rules":{"and":[{"field":"genre","operator":"is","value":["RB"]}]},"type":"songs"})",
+      R"({"rules":{"and":[{"field":"genre","operator":"is","value":["R&B"]}]},"type":"songs"})",
       ToJson(playlist));
+}
+
+TEST_F(TestSmartPlayList, LoadFileLatin1)
+{
+  CSmartPlaylist playlist;
+  ASSERT_TRUE(playlist.Load(CreateFile("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"
+                                       "<smartplaylist type=\"songs\"><name>Caf\xE9</name>"
+                                       "<rule field=\"genre\" operator=\"is\">Caf\xE9</rule>"
+                                       "</smartplaylist>")));
+  EXPECT_EQ("Caf\xC3\xA9", playlist.GetName());
+  EXPECT_EQ("{\"rules\":{\"and\":[{\"field\":\"genre\",\"operator\":\"is\","
+            "\"value\":[\"Caf\xC3\xA9\"]}]},\"type\":\"songs\"}",
+            ToJson(playlist));
 }
 
 TEST_F(TestSmartPlayList, OpenAndReadName)
@@ -149,7 +161,7 @@ TEST_F(TestSmartPlayList, SaveAndReload)
 
 TEST_F(TestSmartPlayList, LoadFromXMLNode)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   ASSERT_TRUE(doc.Parse(std::string{R"(<node order="1" type="filter">
     <label>Drama</label>
     <content>movies</content>

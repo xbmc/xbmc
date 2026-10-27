@@ -16,7 +16,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <algorithm>
 #include <array>
@@ -58,12 +58,13 @@ const std::array<OperatorField, 15> operators = {{
 
 } // unnamed namespace
 
-bool CDatabaseQueryRule::Load(const TiXmlNode* node, const std::string& encoding /* = "UTF-8" */)
+bool CDatabaseQueryRule::Load(const tinyxml2::XMLNode* node,
+                              const std::string& encoding /* = "UTF-8" */)
 {
   if (!node)
     return false;
 
-  const TiXmlElement* element = node->ToElement();
+  const tinyxml2::XMLElement* element = node->ToElement();
   if (!element)
     return false;
 
@@ -82,40 +83,40 @@ bool CDatabaseQueryRule::Load(const TiXmlNode* node, const std::string& encoding
   if (m_operator == OPERATOR_TRUE || m_operator == OPERATOR_FALSE)
     return true;
 
-  const TiXmlNode* parameter = element->FirstChild();
+  const tinyxml2::XMLNode* parameter = element->FirstChild();
   if (!parameter)
     return false;
 
-  if (parameter->Type() == TiXmlNode::TINYXML_TEXT)
+  if (parameter->ToText())
   {
     std::string utf8Parameter;
     if (encoding.empty()) // utf8
-      utf8Parameter = parameter->ValueStr();
+      utf8Parameter = parameter->Value();
     else
-      CCharsetConverter::ToUtf8(encoding, parameter->ValueStr(), utf8Parameter);
+      CCharsetConverter::ToUtf8(encoding, parameter->Value(), utf8Parameter);
 
     if (!utf8Parameter.empty())
       m_parameter.push_back(utf8Parameter);
   }
-  else if (parameter->Type() == TiXmlNode::TINYXML_ELEMENT)
+  else if (parameter->ToElement())
   {
-    const TiXmlNode* valueNode = element->FirstChild("value");
+    const tinyxml2::XMLElement* valueNode = element->FirstChildElement("value");
     while (valueNode)
     {
-      const TiXmlNode* value = valueNode->FirstChild();
-      if (value && value->Type() == TiXmlNode::TINYXML_TEXT)
+      const tinyxml2::XMLNode* value = valueNode->FirstChild();
+      if (value && value->ToText())
       {
         std::string utf8Parameter;
         if (encoding.empty()) // utf8
-          utf8Parameter = value->ValueStr();
+          utf8Parameter = value->Value();
         else
-          CCharsetConverter::ToUtf8(encoding, value->ValueStr(), utf8Parameter);
+          CCharsetConverter::ToUtf8(encoding, value->Value(), utf8Parameter);
 
         if (!utf8Parameter.empty())
           m_parameter.push_back(utf8Parameter);
       }
 
-      valueNode = valueNode->NextSibling("value");
+      valueNode = valueNode->NextSiblingElement("value");
     }
   }
   else
@@ -158,22 +159,22 @@ bool CDatabaseQueryRule::Load(const CVariant& obj)
   return true;
 }
 
-bool CDatabaseQueryRule::Save(TiXmlNode* parent) const
+bool CDatabaseQueryRule::Save(tinyxml2::XMLNode* parent) const
 {
   if (!parent ||
       (m_parameter.empty() && m_operator != OPERATOR_TRUE && m_operator != OPERATOR_FALSE))
     return false;
 
-  TiXmlElement rule("rule");
-  rule.SetAttribute("field", TranslateField(m_field).c_str());
-  rule.SetAttribute("operator", TranslateOperator(m_operator).c_str());
+  tinyxml2::XMLDocument* doc = parent->GetDocument();
+  tinyxml2::XMLElement* rule = doc->NewElement("rule");
+  rule->SetAttribute("field", TranslateField(m_field).c_str());
+  rule->SetAttribute("operator", TranslateOperator(m_operator).c_str());
 
   for (const auto& it : m_parameter)
   {
-    TiXmlElement value("value");
-    TiXmlText text(it);
-    value.InsertEndChild(text);
-    rule.InsertEndChild(value);
+    tinyxml2::XMLElement* value = doc->NewElement("value");
+    value->InsertEndChild(doc->NewText(it.c_str()));
+    rule->InsertEndChild(value);
   }
 
   parent->InsertEndChild(rule);
@@ -538,7 +539,7 @@ bool CDatabaseQueryRuleCombination::Load(const CVariant& obj,
   return true;
 }
 
-bool CDatabaseQueryRuleCombination::Save(TiXmlNode* parent) const
+bool CDatabaseQueryRuleCombination::Save(tinyxml2::XMLNode* parent) const
 {
   for (const auto& it : m_rules)
     it->Save(parent);
