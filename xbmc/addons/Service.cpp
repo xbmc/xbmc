@@ -125,9 +125,6 @@ void CServiceAddonManager::Stop(
     const std::map<std::string, int, std::less<>>::value_type& service) const
 {
   CLog::Log(LOGDEBUG, "CServiceAddonManager: stopping {}.", service.first);
-  if (!CScriptInvocationManager::GetInstance().Stop(service.second))
-  {
-    CLog::Log(LOGINFO, "CServiceAddonManager: failed to stop {} (may have ended)", service.first);
-  }
+  CScriptInvocationManager::GetInstance().Stop(service.second);
 }
 }
