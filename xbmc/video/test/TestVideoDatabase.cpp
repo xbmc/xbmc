@@ -1841,6 +1841,39 @@ TEST_F(TestVideoDatabase, GetMovieIdInFolderFindsTheMovieOnTheDiscsBesideAnExtra
   EXPECT_EQ(-1, m_db.GetMovieIdInFolder(folder, extras));
 }
 
+TEST_F(TestVideoDatabase, GetMovieIdFindsTheMovieOnTheDiscPlaylistsOfADiscImageWithoutOne)
+{
+  const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
+
+  // Left by a refresh that found the movie on two of the disc's playlists
+  ASSERT_GT(m_db.AddFile(disc), 0);
+  EXPECT_EQ(-1, m_db.GetMovieId(disc));
+
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 801))};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{URIUtils::GetBlurayPlaylistPath(disc, 800), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  EXPECT_EQ(idMovie, m_db.GetMovieId(disc));
+}
+
+// The movie GetMovieId() finds for such a disc image is read through its default version, as the
+// image's own file is none of its versions
+TEST_F(TestVideoDatabase, GetMovieInfoReadsTheMovieOfADiscImageWithoutOne)
+{
+  const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
+  ASSERT_GT(m_db.AddFile(disc), 0);
+  const std::string main{URIUtils::GetBlurayPlaylistPath(disc, 801)};
+  const int idMovie{AddMovie(main)};
+  ASSERT_GT(idMovie, 0);
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo(disc, tag));
+  EXPECT_EQ(idMovie, tag.m_iDbId);
+  EXPECT_EQ(main, tag.m_strFileNameAndPath);
+}
+
 TEST_F(TestVideoDatabase, KindsOfExtraAreBuiltInExtraTypes)
 {
   // The types were named when the database was made, before any strings were loaded
