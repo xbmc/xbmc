@@ -38,6 +38,7 @@ public:
   unsigned int AddPackets(uint8_t** data, unsigned int frames, unsigned int offset) override;
   void AddPause(unsigned int millis) override;
   void Drain() override;
+  void Flush() override;
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   static void Register();
   static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
@@ -65,6 +66,9 @@ private:
   uint64_t m_headPosOld;
   uint32_t m_stuckCounter;
   uint64_t m_timestampPos = 0;
+  int64_t m_flushTime = 0;
+  bool m_rawNeedsFlush = false;
+  bool m_timestampValid = false;
   // Moving Average computes the weighted average delay over
   // a fixed size of delay values - current size: 20 values
   double                GetMovingAverageDelay(double newestdelay);
