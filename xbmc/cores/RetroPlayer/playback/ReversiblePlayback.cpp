@@ -285,7 +285,6 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave, const std::strin
   snapshot->captureUs = 0;
   snapshot->path = GetSavestatePath(autosave, savestatePath, snapshot->created);
   const std::string savePath = snapshot->path;
-  m_renderManager.CacheVideoFrame(savePath);
   m_saveWorker->Submit(snapshot);
   return savePath;
 }
@@ -375,9 +374,6 @@ bool CReversiblePlayback::CommitSavestate(const Snapshot& snapshot)
   savestate->SetGameClientID(m_gameClientId);
   savestate->SetGameClientVersion(m_gameClientVersion);
 
-  if (!snapshot.video.empty())
-    m_renderManager.CacheVideoFrame(savePath, snapshot.video);
-  m_renderManager.SaveVideoFrame(savePath, *savestate, snapshot.video);
   savestate->Finalize();
   bool success;
   {
@@ -385,7 +381,7 @@ bool CReversiblePlayback::CommitSavestate(const Snapshot& snapshot)
     success = m_savestateDatabase->AddSavestate(savePath, m_gamePath, *savestate);
   }
   if (success)
-    m_renderManager.SaveThumbnail(CSavestateDatabase::MakeThumbnailPath(savePath));
+    m_renderManager.SaveThumbnail(CSavestateDatabase::MakeThumbnailPath(savePath), snapshot.video);
   else
     CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to write savestate");
   m_guiMessenger.RefreshSavestates(savePath, savestate.get());
