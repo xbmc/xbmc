@@ -680,6 +680,25 @@ TEST_F(TestVideoInfoScanner, AFolderStackIsOneMovie)
 }
 
 #ifdef HAVE_LIBBLURAY
+// What a scan makes of a disc rip in a folder depends on whether its folder was scanned before,
+// which the hash of the folder holding it doesn't, so that the next scan doesn't look at it again
+TEST_F(TestVideoInfoScanner, AFolderHoldingADiscRipKeepsItsHash)
+{
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  Nfo(folder, "movie.nfo", "Film");
+  BlurayRip(folder);
+  Scan();
+  ASSERT_EQ(1, CountMovies());
+  std::string first;
+  ASSERT_TRUE(m_db.GetPathHash(m_root, first));
+
+  Scan();
+
+  std::string second;
+  ASSERT_TRUE(m_db.GetPathHash(m_root, second));
+  EXPECT_EQ(first, second);
+}
+
 TEST_F(TestVideoInfoScanner, ABlurayFolderRipIsOneMovie)
 {
   const std::string folder{Folder(m_root, "Film (2010)")};
