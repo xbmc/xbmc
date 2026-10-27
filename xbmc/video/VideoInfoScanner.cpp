@@ -726,9 +726,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                       URIUtils::IsOpticalMediaFile(item->GetPath()));
                             }))
     {
-      std::vector<std::pair<int, std::string>> knownPaths;
-      m_database.GetSubPaths(strDirectory, knownPaths);
-      for (const auto& [idPath, path] : knownPaths)
+      for (const std::string& path :
+           CVideoInfoScannerExtras::GetKnownFolders(m_database, strDirectory))
       {
         if (IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(path)))
           foldersWithExtras.insert(URIUtils::GetParentPath(path));

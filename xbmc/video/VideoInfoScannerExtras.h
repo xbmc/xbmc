@@ -68,6 +68,15 @@ public:
                                 bool rescan = false);
 
   /*!
+   \brief The folders below a folder the library knows of. The extras of a disc are known only
+   by the paths of its playlists (bluray://), which are taken as the folder holding the disc.
+   \param db database connection to use
+   \param folder the folder to look below
+   \return the folders, each with a slash at its end
+   */
+  static std::vector<std::string> GetKnownFolders(CVideoDatabase& db, const std::string& folder);
+
+  /*!
    \brief Add the extras of a movie being refreshed: those each of its blurays names, and those of
    the extras folders beside its files, whether or not they have changed since they were last
    added. A scan finds these as it lists the movie's folders, which a refresh does not.
