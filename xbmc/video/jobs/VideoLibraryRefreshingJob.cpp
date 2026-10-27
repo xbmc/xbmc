@@ -660,11 +660,20 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       db.GetBookMarksForFile(tag.m_strFileNameAndPath, discBookmarks);
     }
 
+    // A movie is added again for the same files, so the hashes of its folders are kept and the
+    // next scan doesn't look at them again. They are cleared should adding it again fail.
+    std::string moviePath;
+
     // remove any existing data for the item we're going to refresh
     if (origDbId > 0)
     {
       if (scraper->Content() == ADDON::ContentType::MOVIES)
       {
+        moviePath = db.GetSingleValue(
+            db.PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath = path.idPath "
+                          "JOIN movie ON movie.idFile = files.idFile WHERE movie.idMovie = %i",
+                          origDbId));
+
         // the disc's other playlists are chosen again along with it
         if (!discFile.empty())
         {
@@ -674,10 +683,12 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           for (const auto& version : versions)
           {
             if (URIUtils::GetDiscFile(version->GetDynPath()) == discFile)
-              db.DeleteVideoAsset(version->GetVideoInfoTag()->m_iDbId);
+              db.DeleteVideoAsset(version->GetVideoInfoTag()->m_iDbId,
+                                  DeleteMovieHashAction::HASH_PRESERVE);
           }
         }
-        db.DeleteMovie(origDbId, DeleteMovieCascadeAction::DEFAULT_VERSION);
+        db.DeleteMovie(origDbId, DeleteMovieCascadeAction::DEFAULT_VERSION,
+                       DeleteMovieHashAction::HASH_PRESERVE);
       }
       else if (scraper->Content() == ADDON::ContentType::MUSICVIDEOS)
         db.DeleteMusicVideo(origDbId);
@@ -717,6 +728,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     {
       // something went wrong
       MarkFinished();
+
+      if (!moviePath.empty())
+        db.InvalidatePathHash(moviePath);
 
       // The movie has been removed. Remove its other versions and extras too, as removing it from
       // the library would, rather than leave them attached to a movie that no longer exists.
