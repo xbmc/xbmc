@@ -42,6 +42,8 @@ public:
   unsigned int MaxRewindTimeSec();
   bool SyncPlaybackToDisplay();
   double SyncToDisplayLimit();
+  bool RunaheadEnabled() const;
+  unsigned int RunaheadFrames() const;
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 
