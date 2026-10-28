@@ -682,6 +682,9 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
     {
       CFileItemList items{m_vecItems->GetPath()};
       newItem = std::make_shared<CFileItem>(*listItem);
+      // the copy keeps the old details unless the library has a match for it
+      if (newItem->HasVideoInfoTag())
+        newItem->GetVideoInfoTag()->m_iDbId = -1;
       items.Add(newItem);
       LoadVideoInfo(items, m_database);
       if (!newItem->HasVideoInfoTag() ||
