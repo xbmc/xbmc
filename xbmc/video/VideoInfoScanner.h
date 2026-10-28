@@ -139,12 +139,10 @@ namespace KODI::VIDEO
       m_scraperCache.insert(scrapers.begin(), scrapers.end());
     }
 
-    /*! \brief Look the movies up by these ids with a python scraper, rather than search for them.
+    /*! \brief Look the movies or tv shows up by these ids with a python scraper, rather than search
+     for them.
      */
-    void LookUpMoviesBy(const ADDON::CScraper::UniqueIDs& uniqueIDs)
-    {
-      m_movieUniqueIDs = uniqueIDs;
-    }
+    void LookUpBy(const ADDON::CScraper::UniqueIDs& uniqueIDs) { m_uniqueIDs = uniqueIDs; }
 
     /*! \brief Add the extras of a refreshed movie: those its discs name, and those of the extras
      folders beside it, which a scan finds as it lists the movie's folders.
@@ -361,8 +359,8 @@ namespace KODI::VIDEO
     //! Whether RetrieveVideoInfo() leaves a movie's extras to AddMovieExtras()
     bool m_deferMovieExtras{false};
 
-    //! The ids RetrieveVideoInfo() looks movies up by, where it would otherwise search
-    ADDON::CScraper::UniqueIDs m_movieUniqueIDs;
+    //! The ids RetrieveVideoInfo() looks movies and tv shows up by, where it would otherwise search
+    ADDON::CScraper::UniqueIDs m_uniqueIDs;
 
     //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
     bool m_useFolderNames{false};

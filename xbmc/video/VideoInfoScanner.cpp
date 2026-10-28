@@ -1236,10 +1236,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifierType;
     std::string identifier;
     long lResult = -1;
-    if (info2->IsPython() &&
-        CFilenameAttributes(movieTitle, &m_regexpCache).GetIdentifier(identifierType, identifier))
+    ADDON::CScraper::UniqueIDs uniqueIDs;
+    // The ids a refresh looks the show up by are those it has, which an identifier in its name
+    // may contradict, and are those its details were already read by
+    if (info2->IsPython() && !m_uniqueIDs.empty() && !(pURL && pURL->HasUrls()))
+      uniqueIDs = m_uniqueIDs;
+    else if (info2->IsPython() && CFilenameAttributes(movieTitle, &m_regexpCache)
+                                      .GetIdentifier(identifierType, identifier))
+      uniqueIDs = {{identifierType, identifier}};
+    if (!uniqueIDs.empty())
     {
-      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -1833,7 +1839,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifier;
     // The ids a refresh looks the movie up by come first: an identifier in the file name may name
     // another film, and the ids are those its details were already read by
-    if (info2->IsPython() && m_movieUniqueIDs.empty() &&
+    if (info2->IsPython() && m_uniqueIDs.empty() &&
         filenameAttributes.GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
@@ -1844,8 +1850,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return HandleMovieSetAndVersions();
     }
 
-    if (info2->IsPython() && !m_movieUniqueIDs.empty() && !(pURL && pURL->HasUrls()) &&
-        GetDetails(pItem, m_movieUniqueIDs, url, info2,
+    if (info2->IsPython() && !m_uniqueIDs.empty() && !(pURL && pURL->HasUrls()) &&
+        GetDetails(pItem, m_uniqueIDs, url, info2,
                    (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                   : nullptr,
                    pDlgProgress))

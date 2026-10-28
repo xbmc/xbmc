@@ -1692,6 +1692,35 @@ protected:
     m_textureCache = true;
   }
 
+  //! A refresh of a show with all its episodes removes it before adding it again, so one whose
+  //! details can't be read is kept. The show has no nfo, or one that overrides some of the
+  //! details it is looked up for.
+  void RefreshThatCantReadTheDetails(bool overrideNfo)
+  {
+    UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+    InstallTestScraper();
+    Found("Show");
+    Details("Show", "<details><title>Show</title></details>");
+    const std::string show{Folder(m_root, "Show")};
+    const std::string episode{Episode(Folder(show, "Season 1"), "Show S01E01.mkv")};
+    Scan();
+    const int idShow{m_db.GetSingleValueInt("SELECT idShow FROM tvshow")};
+    ASSERT_GT(idShow, 0);
+    ASSERT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+
+    if (overrideNfo)
+      File(show, "tvshow.nfo", R"(<tvshow override="true"><title>Show</title></tvshow>)");
+    DetailsFail("Show");
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetTvShowInfo({}, tag, idShow));
+    TestRefreshingJob refresh{std::make_shared<CFileItem>(tag), true, true};
+    refresh.Work(m_db);
+
+    EXPECT_EQ(idShow, m_db.GetSingleValueInt("SELECT idShow FROM tvshow"));
+    EXPECT_EQ(1, CountShows());
+    EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+  }
+
   int CountShows() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM tvshow"); }
   int CountEpisodes() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM episode"); }
 
@@ -1823,6 +1852,19 @@ TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
 
   EXPECT_EQ(1, CountShows());
   EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+}
+
+// A refresh of a show with all its episodes removes it before adding it again, so one whose
+// details can't be read is kept
+TEST_F(TestVideoInfoScannerTvShows, ARefreshThatCantReadTheDetailsKeepsTheShow)
+{
+  RefreshThatCantReadTheDetails(false);
+}
+
+// An override nfo gives some of the details, and the rest are still looked up
+TEST_F(TestVideoInfoScannerTvShows, ARefreshWithAnOverrideNfoThatCantReadTheDetailsKeepsTheShow)
+{
+  RefreshThatCantReadTheDetails(true);
 }
 
 TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWithAnNfoIsAddedWhenTheEpisodeGuideFails)
