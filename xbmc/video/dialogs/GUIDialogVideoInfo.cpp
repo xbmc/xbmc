@@ -585,7 +585,7 @@ void CGUIDialogVideoInfo::Update()
   // are likely to have had this image in use so will need refreshing)
   if (m_hasUpdatedThumb)
   {
-    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, m_movieItem);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(reload);
   }
 }
@@ -2113,7 +2113,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, item);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
   return true;
