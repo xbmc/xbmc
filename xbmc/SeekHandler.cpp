@@ -378,6 +378,16 @@ bool CSeekHandler::OnAction(const CAction &action)
       appPlayer->Seek(true, true, action.GetID() == ACTION_CHAPTER_OR_BIG_STEP_FORWARD);
       return true;
     }
+    case ACTION_CHAPTER_OR_SCENE_OR_BIG_STEP_BACK:
+    {
+      appPlayer->SeekChapterOrSceneOrBigStep(Direction::BACKWARD);
+      return true;
+    }
+    case ACTION_CHAPTER_OR_SCENE_OR_BIG_STEP_FORWARD:
+    {
+      appPlayer->SeekChapterOrSceneOrBigStep(Direction::FORWARD);
+      return true;
+    }
     case ACTION_NEXT_SCENE:
     {
       appPlayer->SeekScene(Direction::FORWARD);
@@ -452,6 +462,7 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
     case ACTION_STEP_BACK:
     case ACTION_BIG_STEP_BACK:
     case ACTION_CHAPTER_OR_BIG_STEP_BACK:
+    case ACTION_CHAPTER_OR_SCENE_OR_BIG_STEP_BACK:
     case ACTION_MOVE_LEFT:
     {
       SeekSeconds(-GetTimeCodeSeconds());
@@ -460,6 +471,7 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
     case ACTION_STEP_FORWARD:
     case ACTION_BIG_STEP_FORWARD:
     case ACTION_CHAPTER_OR_BIG_STEP_FORWARD:
+    case ACTION_CHAPTER_OR_SCENE_OR_BIG_STEP_FORWARD:
     case ACTION_MOVE_RIGHT:
     {
       SeekSeconds(GetTimeCodeSeconds());
