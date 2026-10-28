@@ -1867,6 +1867,34 @@ TEST_F(TestVideoInfoScannerTvShows, ARefreshWithAnOverrideNfoThatCantReadTheDeta
   RefreshThatCantReadTheDetails(true);
 }
 
+// A refresh of an episode adds it again for the same file, so the next scan doesn't look at its
+// show's folder again
+TEST_F(TestVideoInfoScannerTvShows, ARefreshOfAnEpisodeKeepsTheHashOfItsShowsFolder)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  InstallTestScraper();
+  Found("Show");
+  Details("Show", "<details><title>Show</title></details>");
+  const std::string show{Folder(m_root, "Show")};
+  const std::string episode{Episode(Folder(show, "Season 1"), "Show S01E01.mkv")};
+  Scan();
+  const int idEpisode{m_db.GetEpisodeId(episode, 1, 1)};
+  ASSERT_GT(idEpisode, 0);
+  std::string hash;
+  ASSERT_TRUE(m_db.GetPathHash(show, hash));
+  ASSERT_FALSE(hash.empty());
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetEpisodeInfo({}, tag, idEpisode));
+  TestRefreshingJob refresh{std::make_shared<CFileItem>(tag), true, false};
+  ASSERT_TRUE(refresh.Work(m_db));
+
+  EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+  std::string after;
+  EXPECT_TRUE(m_db.GetPathHash(show, after));
+  EXPECT_EQ(hash, after);
+}
+
 TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWithAnNfoIsAddedWhenTheEpisodeGuideFails)
 {
   UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);

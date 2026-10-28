@@ -455,7 +455,16 @@ public:
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
-  void DeleteEpisode(int idEpisode, bool bKeepId = false);
+
+  /*!
+   * \brief Remove an episode from the library.
+   * \param[in] idEpisode The id of the episode
+   * \param[in] bKeepId Keep the episode's entry, so that its details are updated in place
+   * \param[in] hashAction Preserve or invalidate the hash of the episode's path, and its show's
+   */
+  void DeleteEpisode(int idEpisode,
+                     bool bKeepId = false,
+                     DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
   void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
   void DeleteDetailsForTvShow(int idTvShow);
   void DeleteStreamDetails(int idFile);
