@@ -4323,7 +4323,9 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
   }
 }
 
-void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteEpisode(int idEpisode,
+                                   bool bKeepId /* = false */,
+                                   DeleteMovieHashAction hashAction /* = HASH_DELETE */)
 {
   if (idEpisode < 0)
     return;
@@ -4346,9 +4348,14 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
     // the ancillary tables are still purged
     if (!bKeepId)
     {
-      std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
-      if (!path.empty())
-        InvalidatePathHash(path);
+      if (hashAction == DeleteMovieHashAction::HASH_DELETE)
+      {
+        std::string path = GetSingleValue(PrepareSQL(
+            "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
+            idFile));
+        if (!path.empty())
+          InvalidatePathHash(path);
+      }
 
       // Removed first to avoid being orphaned
       DeleteBookMarkForEpisode(idEpisode);
