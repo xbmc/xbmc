@@ -635,6 +635,10 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
   if (!listItem)
     return false;
 
+  // stop before the item is read or changed, the loader thread writes it
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
   std::shared_ptr<CFileItem> newItem;
   if (infoRefreshed)
   {
@@ -682,10 +686,6 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
     if (!newItem)
       return false;
   }
-
-  // stop before the item is changed, the loader thread reads it
-  if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
 
   if (newItem)
   {
