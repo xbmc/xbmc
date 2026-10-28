@@ -135,3 +135,70 @@ TEST_P(StackNfoTestFixture, FindNFO)
 INSTANTIATE_TEST_SUITE_P(TestVideoTagLoaderNFO,
                          StackNfoTestFixture,
                          testing::ValuesIn(stack_nfo_tests));
+
+namespace
+{
+struct DiscNfoTest
+{
+  bool image; // a disc image FILM.iso in Film, or a folder rip of Film
+  bool dynPath; // the playlist is the item's dynamic path too, as in a library item
+  bool movieFolder;
+  std::vector<std::string> nfoFiles; // relative to the folder Film
+  std::string expected;
+};
+
+const DiscNfoTest disc_nfo_tests[] = {
+    // A folder rip's movie.nfo, or the index.nfo an export writes in its BDMV folder
+    {false, false, true, {"movie.nfo"}, "movie.nfo"},
+    {false, true, true, {"movie.nfo"}, "movie.nfo"},
+    {false, true, false, {"movie.nfo"}, "movie.nfo"},
+    {false, true, true, {"BDMV/index.nfo"}, "BDMV/index.nfo"},
+    // Beside BDMV the folder can take any nfo, if it is the only one there
+    {false, true, true, {"Film.nfo"}, "Film.nfo"},
+    {false, true, true, {"anything.nfo"}, "anything.nfo"},
+    {false, true, true, {"movie.nfo", "Film.nfo"}, ""},
+    // A disc image's movie.nfo, or the nfo named after it
+    {true, true, true, {"movie.nfo"}, "movie.nfo"},
+    {true, true, false, {"FILM.nfo"}, "FILM.nfo"},
+};
+} // namespace
+
+class DiscNfoTestFixture : public testing::WithParamInterface<DiscNfoTest>, public testing::Test
+{
+};
+
+// A movie on a disc is refreshed from one of its playlists, whose nfo is the disc's
+TEST_P(DiscNfoTestFixture, FindNFO)
+{
+  std::error_code ec;
+  const std::string tmpdir{KODI::PLATFORM::FILESYSTEM::temp_directory_path(ec)};
+  ASSERT_FALSE(ec);
+  std::string dir{
+      URIUtils::AddFileToFolder(tmpdir, fmt::format("NfoDiscTest{:08x}", std::random_device{}()))};
+  URIUtils::AddSlashAtEnd(dir);
+  std::string movieDir{URIUtils::AddFileToFolder(dir, "Film")};
+  URIUtils::AddSlashAtEnd(movieDir);
+  ASSERT_TRUE(XFILE::CDirectory::Create(URIUtils::AddFileToFolder(movieDir, "BDMV")));
+  const std::string disc{GetParam().image
+                             ? URIUtils::AddFileToFolder(movieDir, "FILM.iso")
+                             : URIUtils::AddFileToFolder(movieDir, "BDMV", "index.bdmv")};
+  std::ofstream(disc, std::ios::out);
+  for (const std::string& nfoFile : GetParam().nfoFiles)
+    std::ofstream(URIUtils::AddFileToFolder(movieDir, nfoFile), std::ios::out);
+
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(disc, 800)};
+  CFileItem item(playlist, false);
+  if (GetParam().dynPath)
+    item.SetDynPath(playlist);
+  const CVideoTagLoaderNFO loader(item, nullptr, GetParam().movieFolder);
+
+  EXPECT_EQ(loader.GetNFOPath(), GetParam().expected.empty()
+                                     ? ""
+                                     : URIUtils::AddFileToFolder(movieDir, GetParam().expected));
+
+  XFILE::CDirectory::RemoveRecursive(dir);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestVideoTagLoaderNFO,
+                         DiscNfoTestFixture,
+                         testing::ValuesIn(disc_nfo_tests));
