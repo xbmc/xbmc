@@ -39,7 +39,6 @@ public:
   bool AddImageIndex();
   bool ReplaceImageIndex(unsigned int imageIndex, const std::string& filePath);
   bool RemoveImageIndex(unsigned int imageIndex);
-  bool SetInitialImage(unsigned int imageIndex, const std::string& filePath);
   std::string GetImagePath(unsigned int imageIndex);
   std::string GetImageLabel(unsigned int imageIndex);
 

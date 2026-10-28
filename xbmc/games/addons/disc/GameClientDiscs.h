@@ -30,7 +30,6 @@ class CGameClient;
 class CGameClientDiscM3U;
 class CGameClientDiscModel;
 class CGameClientDiscTransport;
-class CGameClientDiscXML;
 
 /*!
  * \ingroup games
@@ -64,22 +63,19 @@ public:
   bool IsMediaSupported(const CGameClientDiscModel& model) const;
 
   // Lifecycle interface
-  void Initialize(const std::string& gamePath, bool usePersistedState = true);
+  void Initialize(const std::string& gamePath);
   void Deinitialize();
-  bool HasPersistedState() const { return m_hasPersistedState; }
 
   // Disc interface
   bool RestoreDiscList();
   bool PrepareForDeserialize();
   void InvalidateRestoreCache();
   void RefreshDiscState();
-  void RefreshDiscStateLive();
   CGameClientDiscModel GetDiscs() const;
   // The caller must hold CGameClient::LockForSnapshot() while using this reference.
   const CGameClientDiscModel& GetDiscsForSnapshot() const { return *m_discModel; }
   void SetDiscModel(const CGameClientDiscModel& model);
   uint64_t GetRestoreGeneration() const { return m_restoreGeneration; }
-  void SaveDiscState() const;
   bool IsEjected() const { return m_isEjected; }
   std::string GetDiscLabel() const;
   bool IsTrayEmpty() const;
@@ -95,21 +91,18 @@ private:
    * \brief Clear in-memory disc state that is scoped to a single running
    * game session
    *
-   * Persisted disc state is keyed by game path and remains on disk. This
-   * reset is only for the live frontend model so state from a previous game
+   * This reset is for the live frontend model so state from a previous game
    * cannot leak into a new one.
    */
   void ResetSessionState();
 
   void LoadModelFromCore(CGameClientDiscModel& model) const;
 
-  static void PruneRemovedDiscs(CGameClientDiscModel& model);
   static void PruneExtensions(CGameClientDiscModel& model,
                               const std::set<std::string>& supportedExtensions);
 
   // Add-on parameters
   std::unique_ptr<CGameClientDiscTransport> m_transport;
-  std::unique_ptr<CGameClientDiscXML> m_discXml;
   std::unique_ptr<CGameClientDiscM3U> m_discM3u;
 
   // Game parameters
@@ -117,8 +110,6 @@ private:
   std::atomic<bool> m_isEjected{false};
   std::atomic<uint64_t> m_restoreGeneration{0};
   bool m_preserveSlotTopology{false};
-  bool m_hasPersistedState{false};
-  bool m_initialHintAttempted{false};
   std::optional<unsigned int> m_restoredImageCount;
 };
 } // namespace GAME

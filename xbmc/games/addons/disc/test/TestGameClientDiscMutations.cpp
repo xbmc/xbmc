@@ -99,8 +99,6 @@ protected:
       Core(game).slots[index].clear();
       return GAME_ERROR_NO_ERROR;
     };
-    callbacks->SetInitialImage = [](const AddonInstance_Game*, unsigned int, const char*)
-    { return GAME_ERROR_NO_ERROR; };
     callbacks->GetImagePath = [](const AddonInstance_Game*, unsigned int) -> char*
     { return nullptr; };
     callbacks->GetImageLabel = [](const AddonInstance_Game*, unsigned int) -> char*
