@@ -251,6 +251,12 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   // copy the scraper in case we need it again
   ScraperPtr originalScraper(scraper);
 
+  // a tv show, rather than one of its seasons or episodes, is refreshed as a movie is: removed and
+  // added again
+  const bool isTvShow{scraper->Content() == ADDON::ContentType::TVSHOWS &&
+                      m_item->HasVideoInfoTag() &&
+                      m_item->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::TV_SHOW};
+
   // get the item's correct title
   std::string itemTitle = m_searchTitle;
   if (itemTitle.empty())
@@ -328,9 +334,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // if there's no NFO remember it in case we have to refresh again
       if (nfoResult == CInfoScanner::InfoType::ERROR_NFO)
         ignoreNfo = true;
-      // a movie's embedded title or override nfo still needs its details looked up
+      // a movie's or tv show's embedded title or override nfo still needs its details looked up
       else if (nfoResult != CInfoScanner::InfoType::NONE &&
-               (scraper->Content() != ADDON::ContentType::MOVIES ||
+               ((scraper->Content() != ADDON::ContentType::MOVIES && !isTvShow) ||
                 (nfoResult != CInfoScanner::InfoType::TITLE &&
                  nfoResult != CInfoScanner::InfoType::OVERRIDE)))
         hasDetails = true;
@@ -368,11 +374,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     if (scraper->Content() == ADDON::ContentType::TVSHOWS && !m_item->IsFolder())
       hasDetails = true;
 
-    // Without anyone to choose from what a search finds, a movie is looked up by the ids it already
-    // has, as a search by its title may find another
+    // Without anyone to choose from what a search finds, a movie or tv show is looked up by the ids
+    // it already has, as a search by its title may find another or nothing
     CScraper::UniqueIDs uniqueIDs;
     if (lookUpByIds && !hasDetails && !IsModal() && m_searchTitle.empty() && scraper->IsPython() &&
-        scraper->Content() == ADDON::ContentType::MOVIES && m_item->HasVideoInfoTag())
+        (scraper->Content() == ADDON::ContentType::MOVIES || isTvShow) && m_item->HasVideoInfoTag())
     {
       for (const auto& [type, value] : m_item->GetVideoInfoTag()->GetUniqueIDs())
       {
@@ -504,9 +510,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       break;
     }
 
-    // A movie is removed before it is added again, so its details are read first. One the scraper
-    // can't give them for, as when its site doesn't answer, is left as it is.
-    if (scraper->Content() == ADDON::ContentType::MOVIES &&
+    // A movie or tv show is removed before it is added again, so its details are read first. One the
+    // scraper can't give them for, as when its site doesn't answer, is left as it is.
+    if ((scraper->Content() == ADDON::ContentType::MOVIES || isTvShow) &&
         (scraperUrl.HasUrls() || !uniqueIDs.empty()))
     {
       // the search closed a modal progress dialog, and the download pumps the GUI through it
@@ -720,7 +726,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     VIDEO::CVideoInfoScanner scanner;
     scanner.DeferMovieExtras();
     scanner.UseScrapers(scrapers);
-    scanner.LookUpMoviesBy(uniqueIDs);
+    scanner.LookUpBy(uniqueIDs);
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
                                    scraperUrl.HasUrls() ? &scraperUrl : nullptr,
