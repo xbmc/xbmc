@@ -14,7 +14,9 @@
 #include "peripherals/PeripheralTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
+#include "threads/SystemClock.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <vector>
@@ -108,6 +110,13 @@ public:
 private:
   void UnregisterButtonMap(CPeripheral* device);
 
+  /*!
+   * @brief Ask the add-on for the battery of each joystick
+   *
+   * Must be called with m_dllSection held.
+   */
+  void UpdateBatteries();
+
   // Binary add-on callbacks
   void TriggerDeviceScan();
   void RefreshButtonMaps(const std::string& strDeviceName = "");
@@ -174,6 +183,10 @@ private:
   /* @brief Button map observers */
   std::vector<std::pair<CPeripheral*, KODI::JOYSTICK::IButtonMap*>> m_buttonMaps;
   CCriticalSection m_buttonMapMutex;
+
+  /* @brief Battery polling */
+  XbmcThreads::EndTime<> m_batteryTimeout;
+  std::atomic<bool> m_batteryRefresh{false};
 
   /* @brief Thread synchronization */
   mutable CCriticalSection m_critSection;

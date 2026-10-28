@@ -262,6 +262,34 @@ HAT_STATE CPeripheralAddonTranslator::TranslateHatState(JOYSTICK_STATE_HAT state
   return translatedState;
 }
 
+PeripheralBattery CPeripheralAddonTranslator::TranslateBattery(const JOYSTICK_BATTERY& battery)
+{
+  PeripheralBattery translatedBattery;
+
+  switch (battery.state)
+  {
+    case JOYSTICK_BATTERY_STATE_WIRED:
+      translatedBattery.state = PeripheralBatteryState::WIRED;
+      break;
+    case JOYSTICK_BATTERY_STATE_DISCHARGING:
+      translatedBattery.state = PeripheralBatteryState::DISCHARGING;
+      break;
+    case JOYSTICK_BATTERY_STATE_CHARGING:
+      translatedBattery.state = PeripheralBatteryState::CHARGING;
+      break;
+    case JOYSTICK_BATTERY_STATE_FULL:
+      translatedBattery.state = PeripheralBatteryState::FULL;
+      break;
+    default:
+      break;
+  }
+
+  if (0 <= battery.level && battery.level <= 100)
+    translatedBattery.level = battery.level;
+
+  return translatedBattery;
+}
+
 SEMIAXIS_DIRECTION CPeripheralAddonTranslator::TranslateSemiAxisDirection(
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION dir)
 {

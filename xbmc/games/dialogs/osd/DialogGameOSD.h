@@ -9,8 +9,14 @@
 #pragma once
 
 #include "guilib/GUIDialog.h"
+#include "peripherals/PeripheralTypes.h"
+#include "threads/SystemClock.h"
 
 #include <memory>
+#include <utility>
+#include <vector>
+
+class CFileItemList;
 
 namespace KODI
 {
@@ -52,7 +58,14 @@ protected:
   void OnInitWindow() override;
 
 private:
+  void UpdatePlayers();
+
   std::unique_ptr<CDialogGameOSDHelp> m_helpDialog;
+  std::unique_ptr<CFileItemList> m_playerItems;
+
+  // Player number and battery of the players in m_playerItems
+  std::vector<std::pair<unsigned int, PERIPHERALS::PeripheralBattery>> m_players;
+  XbmcThreads::EndTime<> m_playerTimeout;
 };
 } // namespace GAME
 } // namespace KODI
