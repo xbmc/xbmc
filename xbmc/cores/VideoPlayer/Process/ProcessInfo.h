@@ -110,6 +110,17 @@ public:
   bool IsSeeking();
   void SetStateRealtime(bool state);
   bool IsRealtimeStream();
+  /*!
+   * @brief hardware A/V sync session of a tunneled video decoder, 0 if not tunneled
+   */
+  void SetHwAvSyncId(int id) { m_hwAvSyncId = id; }
+  int GetHwAvSyncId() const { return m_hwAvSyncId; }
+  /*!
+   * @brief whether the player can play the audio of this playback in sync with a tunneled
+   * video decoder
+   */
+  void SetTunnelingAllowed(bool allowed) { m_tunnelingAllowed = allowed; }
+  bool IsTunnelingAllowed() const { return m_tunnelingAllowed; }
   void SetStateStreaming(bool isStreaming);
   bool IsStreaming();
   void SetSpeed(float speed);
@@ -193,6 +204,8 @@ protected:
   bool m_stateSeeking;
   std::atomic_int m_levelVQ;
   std::atomic_bool m_renderGuiLayer;
+  std::atomic_int m_hwAvSyncId{0};
+  std::atomic_bool m_tunnelingAllowed{false};
   std::atomic_bool m_renderVideoLayer;
   float m_tempo;
   float m_newTempo;

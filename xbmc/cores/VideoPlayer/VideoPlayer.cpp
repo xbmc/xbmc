@@ -1073,6 +1073,14 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
 
   bool valid;
 
+  // A tunneled video decoder is shown on the clock of PCM audio: there must be
+  // audio, and it must not be passed through (it is not for live streams)
+  m_processInfo->SetTunnelingAllowed(
+      !m_playerOptions.videoOnly && m_SelectionStreams.CountType(StreamType::AUDIO) > 0 &&
+      (m_pInputStream->IsRealtime() ||
+       !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+           CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)));
+
   // open video stream
   valid   = false;
 
@@ -1110,6 +1118,21 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   {
     CloseStream(m_CurrentAudio, true);
     m_processInfo->ResetAudioCodecInfo();
+
+    // a tunneled video decoder is shown on the audio clock
+    m_processInfo->SetTunnelingAllowed(false);
+    if (m_processInfo->GetHwAvSyncId() && m_CurrentVideo.id >= 0)
+    {
+      const int64_t demuxerId = m_CurrentVideo.demuxerId;
+      const int id = m_CurrentVideo.id;
+      const int source = m_CurrentVideo.source;
+      CloseStream(m_CurrentVideo, true);
+      if (!OpenStream(m_CurrentVideo, demuxerId, id, source, reset))
+      {
+        CloseStream(m_CurrentVideo, true);
+        m_processInfo->ResetVideoCodecInfo();
+      }
+    }
   }
 
   UpdateHasVideoAudio();
@@ -3095,6 +3118,14 @@ void CVideoPlayer::HandleMessages()
       m_playerOptions = msg.GetOptions();
 
       m_processInfo->SetPlayTimes(0,0,0,0);
+
+      // A tunneled video decoder and its audio output are set up together, in
+      // the order streams are opened, so start the next file from scratch
+      if (m_processInfo->GetHwAvSyncId())
+      {
+        CloseStream(m_CurrentAudio, false);
+        CloseStream(m_CurrentVideo, false);
+      }
 
       m_outboundEvents->Submit([this]() {
         m_callback.OnPlayBackStarted(m_item);

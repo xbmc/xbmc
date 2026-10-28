@@ -38,6 +38,7 @@
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "platform/android/activity/XBMCApp.h"
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <memory>
@@ -47,7 +48,9 @@
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#include <androidjni/AudioManager.h>
 #include <androidjni/ByteBuffer.h>
+#include <androidjni/Context.h>
 #include <androidjni/MediaCodec.h>
 #include <androidjni/MediaCodecBufferInfo.h>
 #include <androidjni/MediaCodecCryptoInfo.h>
@@ -864,6 +867,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     {
       if (types[j] == m_mime)
       {
+        m_tunneled = m_render_surface && !m_hints.cryptoSession &&
+                     CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                         CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECTUNNELING) &&
+                     m_processInfo.IsTunnelingAllowed() &&
+                     codec_caps.isFeatureSupported(
+                         CJNIMediaCodecInfoCodecCapabilities::FEATURE_TunneledPlayback);
         m_codec = std::make_shared<CJNIMediaCodec>(CJNIMediaCodec::createByCodecName(m_codecname));
         if (xbmc_jnienv()->ExceptionCheck())
         {
@@ -924,6 +933,14 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_videobuffer.iDisplayWidth  = m_hints.width;
   m_videobuffer.iDisplayHeight = m_hints.height;
 
+  if (m_tunneled)
+  {
+    CJNIAudioManager audioManager(CXBMCApp::getSystemService(CJNIContext::AUDIO_SERVICE));
+    m_processInfo.SetHwAvSyncId(audioManager.generateAudioSessionId());
+    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open: tunneled playback, audio session {}",
+              m_processInfo.GetHwAvSyncId());
+  }
+
   if (!ConfigureMediaCodec())
     goto FAIL;
 
@@ -952,6 +969,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
 FAIL:
   m_InstanceGuard.exchange(false);
+  if (m_tunneled)
+    m_processInfo.SetHwAvSyncId(0);
   if (m_crypto)
   {
     delete m_crypto;
@@ -1001,6 +1020,8 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   ReleaseSurfaceTexture();
 
   m_InstanceGuard.exchange(false);
+  if (m_tunneled)
+    m_processInfo.SetHwAvSyncId(0);
   if (m_render_surface)
   {
     m_jnivideoview->release();
@@ -1155,7 +1176,7 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       // some android devices will diddle with presentationTimeUs
       // and you will get NaN back and VideoPlayerVideo will barf.
       if (m_dtsShift == DVD_NOPTS_VALUE)
-        m_dtsShift = (dts == DVD_NOPTS_VALUE) ? 0 : dts;
+        m_dtsShift = (dts == DVD_NOPTS_VALUE || m_tunneled) ? 0 : dts;
 
       int64_t presentationTimeUs = m_invalidPTSValue;
       if (pts != DVD_NOPTS_VALUE)
@@ -1171,6 +1192,13 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       int flags = 0;
       int offset = 0;
 
+      // A tunneled decoder renders every frame it outputs, so frames to drop,
+      // e.g. before the target of an accurate seek, are only decoded
+      const bool decodeOnly = m_tunneled && (m_codecControlFlags & DVD_CODEC_CTRL_DROP) &&
+                              CJNIMediaCodec::BUFFER_FLAG_DECODE_ONLY;
+      if (decodeOnly)
+        flags |= CJNIMediaCodec::BUFFER_FLAG_DECODE_ONLY;
+
       if (!cryptoInfo)
         m_codec->queueInputBuffer(m_indexInputBuffer, offset, iSize, presentationTimeUs, flags);
       else
@@ -1185,6 +1213,8 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         xbmc_jnienv()->ExceptionClear();
         CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::AddData error");
       }
+      else if (m_tunneled && !decodeOnly)
+        m_tunnelPts.push_back(static_cast<double>(presentationTimeUs));
       m_indexInputBuffer = -1;
     }
     else
@@ -1249,6 +1279,7 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 
     m_dtsShift = DVD_NOPTS_VALUE;
     m_indexInputBuffer = -1;
+    m_tunnelPts.clear();
 
     if (m_bitstream)
       m_bitstream->ResetStartDecode();
@@ -1276,7 +1307,29 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
   if (m_state == MEDIACODEC_STATE_ERROR || m_state == MEDIACODEC_STATE_ENDOFSTREAM)
     return VC_EOF;
 
-  if (m_OutputDuration < m_fpsDuration || (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) != 0)
+  if (m_tunneled)
+  {
+    // keep a few frames back so that frames are reported in pts order
+    const bool drain = (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) != 0;
+    if (m_tunnelPts.size() > 4 || (drain && !m_tunnelPts.empty()))
+    {
+      auto first = std::min_element(m_tunnelPts.begin(), m_tunnelPts.end());
+      m_videobuffer.pts = *first;
+      m_videobuffer.dts = DVD_NOPTS_VALUE;
+      m_tunnelPts.erase(first);
+
+      pVideoPicture->videoBuffer = nullptr;
+      pVideoPicture->SetParams(m_videobuffer);
+      pVideoPicture->videoBuffer = m_videoBufferPool->Get();
+      static_cast<CMediaCodecVideoBuffer*>(pVideoPicture->videoBuffer)
+          ->Set(-1, m_textureId, m_surfaceTexture, m_frameAvailable, m_jnivideoview);
+      return VC_PICTURE;
+    }
+    if (drain)
+      return VC_EOF;
+  }
+  else if (m_OutputDuration < m_fpsDuration ||
+           (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN) != 0)
   {
     m_videobuffer.videoBuffer = pVideoPicture->videoBuffer;
 
@@ -1491,7 +1544,9 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     // Handle rotation
     mediaformat.setInteger(CJNIMediaFormat::KEY_ROTATION, m_hints.orientation);
     mediaformat.setFeatureEnabled(CJNIMediaCodecInfoCodecCapabilities::FEATURE_TunneledPlayback,
-                                  false);
+                                  m_tunneled);
+    if (m_tunneled)
+      mediaformat.setInteger(CJNIMediaFormat::KEY_AUDIO_SESSION_ID, m_processInfo.GetHwAvSyncId());
     if (m_needSecureDecoder)
       mediaformat.setFeatureEnabled(CJNIMediaCodecInfoCodecCapabilities::FEATURE_SecurePlayback,
                                     true);
