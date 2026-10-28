@@ -189,9 +189,11 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
       const std::string path{URIUtils::GetDiscFile(item.GetPath())};
       if (!path.empty())
       {
-        // as the disc, which a library item's playlist would otherwise remain as
+        // as the disc's file, which a library item's playlist would otherwise remain as, or a
+        // movie with versions or extras listed as a folder
         item2.SetPath(path);
         item2.SetDynPath(path);
+        item2.SetFolder(false);
         nfoFile = FindNFO(item2, movieFolder);
         return nfoFile;
       }
