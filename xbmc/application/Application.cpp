@@ -1901,6 +1901,8 @@ bool CApplication::Stop(int exitCode)
     m_ExitCode = exitCode;
     CLog::Log(LOGINFO, "Stopping all");
 
+    CScriptInvocationManager::GetInstance().NotifyAllScriptsAborting();
+
     // Stop scanning before the job manager is cancelled below
     // otherwise scans underway are not stopped
     CMusicLibraryQueue::GetInstance().CancelAllJobs();
@@ -1928,8 +1930,6 @@ bool CApplication::Stop(int exitCode)
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
     smb.Deinit();
 #endif
-
-    CScriptInvocationManager::GetInstance().NotifyAllScriptsAborting();
 
     // Stop services before unloading Python
     CServiceBroker::GetServiceAddons().Stop();
