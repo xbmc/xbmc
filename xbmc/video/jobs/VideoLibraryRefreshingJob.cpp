@@ -666,16 +666,16 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       db.GetBookMarksForFile(tag.m_strFileNameAndPath, discBookmarks);
     }
 
-    // A movie is added again for the same files, so the hashes of its folders are kept and the
-    // next scan doesn't look at them again. They are cleared should adding it again fail.
-    std::string moviePath;
+    // A movie or episode is added again for the same files, so the hashes of its folders are kept
+    // and the next scan doesn't look at them again. They are cleared should adding it again fail.
+    std::string mediaPath;
 
     // remove any existing data for the item we're going to refresh
     if (origDbId > 0)
     {
       if (scraper->Content() == ADDON::ContentType::MOVIES)
       {
-        moviePath = db.GetSingleValue(
+        mediaPath = db.GetSingleValue(
             db.PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath = path.idPath "
                           "JOIN movie ON movie.idFile = files.idFile WHERE movie.idMovie = %i",
                           origDbId));
@@ -701,7 +701,13 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       else if (scraper->Content() == ADDON::ContentType::TVSHOWS)
       {
         if (!m_item->IsFolder())
-          db.DeleteEpisode(origDbId);
+        {
+          mediaPath = db.GetSingleValue(db.PrepareSQL(
+              "SELECT strPath FROM path JOIN files ON files.idPath = path.idPath "
+              "JOIN episode ON episode.idFile = files.idFile WHERE episode.idEpisode = %i",
+              origDbId));
+          db.DeleteEpisode(origDbId, false, DeleteMovieHashAction::HASH_PRESERVE);
+        }
         else if (m_item->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::SEASON)
           db.DeleteSeason(origDbId);
         else if (m_refreshAll)
@@ -735,8 +741,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       // something went wrong
       MarkFinished();
 
-      if (!moviePath.empty())
-        db.InvalidatePathHash(moviePath);
+      if (!mediaPath.empty())
+        db.InvalidatePathHash(mediaPath);
 
       // The movie has been removed. Remove its other versions and extras too, as removing it from
       // the library would, rather than leave them attached to a movie that no longer exists.
