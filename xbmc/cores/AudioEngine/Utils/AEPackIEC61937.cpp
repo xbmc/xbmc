@@ -8,6 +8,8 @@
 
 #include "AEPackIEC61937.h"
 
+#include "utils/log.h"
+
 #include <cassert>
 #include <string.h>
 
@@ -128,6 +130,17 @@ int CAEPackIEC61937::PackDTSHD(uint8_t *data, unsigned int size, uint8_t *dest, 
       return 0;
   }
 
+  /* The payload must fit the burst, and the burst the destination buffer. Otherwise the padding
+   * memset below gets a negative length, i.e. about 4 GB. Drop the burst instead. */
+  unsigned int burstsize = period << 2;
+  if (burstsize > MAX_IEC61937_PACKET || size + (size & 0x1) > burstsize - IEC61937_DATA_OFFSET)
+  {
+    CLog::Log(LOGERROR,
+              "CAEPackIEC61937::PackDTSHD - {} byte frame does not fit a period {} burst, dropped",
+              size, period);
+    return 0;
+  }
+
   struct IEC61937Packet *packet = (struct IEC61937Packet*)dest;
   packet->m_preamble1 = IEC61937_PREAMBLE1;
   packet->m_preamble2 = IEC61937_PREAMBLE2;
@@ -147,7 +160,6 @@ int CAEPackIEC61937::PackDTSHD(uint8_t *data, unsigned int size, uint8_t *dest, 
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  unsigned int burstsize = period << 2;
   memset(packet->m_data + size, 0, burstsize - IEC61937_DATA_OFFSET - size);
   return burstsize;
 }
