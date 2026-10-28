@@ -326,6 +326,11 @@ public:
    */
   virtual void SetControllerProfile(const KODI::GAME::ControllerPtr& controller);
 
+  /*!
+   * \brief Get how the peripheral is powered and how charged its battery is
+   */
+  virtual PeripheralBattery GetBattery() const { return {}; }
+
 protected:
   virtual void ClearSettings(void);
 

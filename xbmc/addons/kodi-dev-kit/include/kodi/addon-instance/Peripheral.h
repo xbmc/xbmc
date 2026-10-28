@@ -544,6 +544,21 @@ public:
   virtual void PowerOffJoystick(unsigned int index) {}
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Get the battery of the given joystick
+  ///
+  /// Kodi asks for this periodically, so it should be cheap.
+  ///
+  /// @param[in] index The joystick's driver index
+  /// @param[out] battery How the joystick is powered and how charged it is
+  /// @return @ref PERIPHERAL_NO_ERROR if successful
+  ///
+  virtual PERIPHERAL_ERROR GetJoystickBattery(unsigned int index, JOYSTICK_BATTERY& battery)
+  {
+    return PERIPHERAL_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
   ///@}
 
   //============================================================================
@@ -659,6 +674,9 @@ private:
     instance->peripheral->toAddon->revert_button_map = ADDON_RevertButtonMap;
     instance->peripheral->toAddon->reset_button_map = ADDON_ResetButtonMap;
     instance->peripheral->toAddon->power_off_joystick = ADDON_PowerOffJoystick;
+    // An older Kodi's table ends before this entry
+    if (IsInstanceAPIVersionAtLeast(3, 1, 0))
+      instance->peripheral->toAddon->get_joystick_battery = ADDON_GetJoystickBattery;
 
     m_instanceData = instance->peripheral;
     m_instanceData->toAddon->addonInstance = this;
@@ -953,6 +971,16 @@ private:
 
     static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
         ->PowerOffJoystick(index);
+  }
+
+  inline static PERIPHERAL_ERROR ADDON_GetJoystickBattery(
+      const AddonInstance_Peripheral* addonInstance, unsigned int index, JOYSTICK_BATTERY* battery)
+  {
+    if (!addonInstance || !battery)
+      return PERIPHERAL_ERROR_INVALID_PARAMETERS;
+
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
+        ->GetJoystickBattery(index, *battery);
   }
 
   AddonInstance_Peripheral* m_instanceData;
