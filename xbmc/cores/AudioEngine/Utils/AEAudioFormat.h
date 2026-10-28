@@ -48,6 +48,11 @@ struct AEAudioFormat
    */
   CAEStreamInfo m_streamInfo;
 
+  /**
+   * Hardware A/V sync session shared with a tunneled video decoder (0 = none)
+   */
+  int m_hwAvSyncId = 0;
+
   AEAudioFormat()
   {
     m_dataFormat = AE_FMT_INVALID;
@@ -63,7 +68,8 @@ struct AEAudioFormat
             m_channelLayout ==  fmt.m_channelLayout &&
             m_frames        ==  fmt.m_frames        &&
             m_frameSize     ==  fmt.m_frameSize     &&
-            m_streamInfo    ==  fmt.m_streamInfo;
+            m_streamInfo    ==  fmt.m_streamInfo    &&
+            m_hwAvSyncId    ==  fmt.m_hwAvSyncId;
   }
 };
 

@@ -2613,6 +2613,14 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
                                           : stream->GetErrorInterval();
   bool newerror = stream->m_syncError.Get(error, timeout);
 
+  // the hardware keeps a tunneled stream in sync with its video, the clock
+  // of the player follows the reported error
+  if (stream->m_format.m_hwAvSyncId)
+  {
+    stream->m_syncState = CAESyncInfo::AESyncState::SYNC_INSYNC;
+    return ret;
+  }
+
   if (newerror && stream->m_lateStartHandedOver)
   {
     // Mostly averaged before the player moved its clock to the late audio, so neither acted upon
@@ -3369,7 +3377,8 @@ bool CActiveAE::CompareFormat(const AEAudioFormat& lhs, const AEAudioFormat& rhs
 {
   if (lhs.m_channelLayout != rhs.m_channelLayout ||
       lhs.m_dataFormat != rhs.m_dataFormat ||
-      lhs.m_sampleRate != rhs.m_sampleRate)
+      lhs.m_sampleRate != rhs.m_sampleRate ||
+      lhs.m_hwAvSyncId != rhs.m_hwAvSyncId)
     return false;
   else if (lhs.m_dataFormat == AE_FMT_RAW && rhs.m_dataFormat == AE_FMT_RAW &&
            lhs.m_streamInfo.m_type != rhs.m_streamInfo.m_type)

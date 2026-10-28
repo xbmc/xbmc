@@ -1139,11 +1139,26 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     }
   }
 
+  // a hardware synced output can only play timed frames, pause it for silence
+  if (m_sinkFormat.m_hwAvSyncId && !samples->timestamp &&
+      m_requestedFormat.m_dataFormat != AE_FMT_RAW)
+  {
+    m_sink->AddPause(frames * 1000 / m_sinkFormat.m_sampleRate);
+    m_sink->GetDelay(status);
+    m_stats->UpdateSinkDelay(status, samples->pool ? frames : 0);
+    return status.delay * 1000;
+  }
+
   int framesOrPackets;
 
   while (frames > 0)
   {
     maxFrames = std::min(frames, m_sinkFormat.m_frames);
+    if (samples->timestamp && m_requestedFormat.m_dataFormat != AE_FMT_RAW)
+      m_sink->SetPresentationTime(
+          samples->timestamp +
+          (static_cast<double>(totalFrames - frames) - samples->pkt_start_offset) * 1000 /
+              m_sinkFormat.m_sampleRate);
     written = m_sink->AddPackets(buffer, maxFrames, totalFrames - frames);
     if (written == 0)
     {
