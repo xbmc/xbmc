@@ -462,6 +462,12 @@ constexpr const int ACTION_KEYBOARD_COMPOSING_KEY_FINISHED = 265;
 constexpr const int ACTION_PLAYER_INCREASE_TEMPO = 266;
 constexpr const int ACTION_PLAYER_DECREASE_TEMPO = 267;
 
+//! Goto the nearest chapter or scene marker, if not available perform a big step forward
+constexpr const int ACTION_CHAPTER_OR_SCENE_OR_BIG_STEP_FORWARD = 268;
+
+//! Goto the nearest chapter or scene marker, if not available perform a big step back
+constexpr const int ACTION_CHAPTER_OR_SCENE_OR_BIG_STEP_BACK = 269;
+
 //! Open the dialog window to select a video stream
 constexpr const int ACTION_DIALOG_SELECT_VIDEO = 270;
 

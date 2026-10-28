@@ -146,6 +146,7 @@ public:
   int SeekChapter(int iChapter);
   void SeekPercentage(float fPercent = 0);
   bool SeekScene(Direction seekDirection);
+  void SeekChapterOrSceneOrBigStep(Direction direction);
   void SeekTime(int64_t iTime = 0);
   void SeekTimeRelative(int64_t iTime = 0);
   void SetAudioStream(int iStream);

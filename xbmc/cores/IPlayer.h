@@ -107,6 +107,10 @@ public:
   virtual bool CanSeek() const { return true; }
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
   virtual bool SeekScene(Direction seekDirection) { return false; }
+  virtual void SeekChapterOrSceneOrBigStep(Direction direction)
+  {
+    Seek(direction == Direction::FORWARD, true, true);
+  }
   virtual void SeekPercentage(float fPercent = 0){}
   virtual float GetCachePercentage() const { return 0; }
   virtual void SetMute(bool bOnOff){}
