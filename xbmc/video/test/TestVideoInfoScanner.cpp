@@ -923,6 +923,30 @@ TEST_F(TestVideoInfoScanner, DiscsOfAMovieInItsFolderBecomeOneMovie)
   EXPECT_EQ(idFirst, m_db.GetMovieId(third));
 }
 
+// The movie of the lowest disc of those already in the library is kept, though the disc added is
+// lower, as they may hold what the user set on them
+TEST_F(TestVideoInfoScanner, ALowerDiscAddedJoinsTheMovieOfTheLowestDiscAlreadyThere)
+{
+  GroupSimilarVideosAutomatically();
+  const std::string folder{URIUtils::AddFileToFolder(m_root, "Film (2010)")};
+  const std::string first{URIUtils::AddFileToFolder(folder, "Disc 1", "Film.mkv")};
+  const std::string second{URIUtils::AddFileToFolder(folder, "Disc 2", "Film.mkv")};
+  const std::string third{URIUtils::AddFileToFolder(folder, "Disc 3", "Film.mkv")};
+  ASSERT_GT(AddFilm(third), 0);
+  const int idSecond{AddFilm(second)};
+  ASSERT_GT(idSecond, 0);
+  const int idFirst{AddFilm(first)};
+  ASSERT_GT(idFirst, 0);
+
+  TestScanner scanner{m_settings};
+  EXPECT_EQ(VersionConversionResult::SUCCESS, scanner.GroupWithSimilar(idFirst).first);
+
+  EXPECT_EQ(1, CountMovies());
+  EXPECT_EQ(idSecond, m_db.GetMovieId(first));
+  EXPECT_EQ(idSecond, m_db.GetMovieId(second));
+  EXPECT_EQ(idSecond, m_db.GetMovieId(third));
+}
+
 // A copy elsewhere may be kept apart on purpose, so only the disc beside the movie joins it
 TEST_F(TestVideoInfoScanner, ACopyOfAMovieInAnotherFolderStaysApart)
 {

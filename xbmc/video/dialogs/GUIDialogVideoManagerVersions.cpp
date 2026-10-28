@@ -689,7 +689,9 @@ bool MergeMoviesBeside(const CFileItem& item, CFileItemList& list, CVideoDatabas
     }
   }
 
-  // The movie of the lowest disc keeps its details, whichever of the discs is added
+  // Of the movies already in the library, the one of the lowest disc is kept and the others join
+  // it, as does the item. The item has just been added from its scraper or nfo, while they may
+  // hold what the user set on them, which a movie made a version loses.
   std::ranges::sort(beside, {},
                     [](const std::shared_ptr<CFileItem>& movie)
                     {
