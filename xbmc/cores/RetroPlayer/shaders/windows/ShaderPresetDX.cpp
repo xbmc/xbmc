@@ -43,6 +43,7 @@ bool CShaderPresetDX::CreateShaders()
         presetLUTsDX.emplace_back(std::move(presetLut));
     }
   }
+  m_luts = presetLUTsDX;
 
   const auto numPasses = static_cast<unsigned int>(m_passes.size());
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)

@@ -253,6 +253,16 @@ CShaderDX::cbInput CShaderDX::GetInputData(uint64_t frameCount) const
   return input;
 }
 
+void CShaderDX::ReleaseTextureReferences()
+{
+  // The effect holds a reference to each resource it was given
+  ID3D11ShaderResourceView* noTexture = nullptr;
+  m_effect.SetResources("decal", &noTexture, 1);
+
+  for (const std::shared_ptr<IShaderLut>& lut : m_luts)
+    m_effect.SetTexture(lut->GetID().c_str(), nullptr);
+}
+
 void CShaderDX::SetShaderParameters(const CD3DTexture& sourceTexture)
 {
   m_effect.SetTechnique("TEQ");

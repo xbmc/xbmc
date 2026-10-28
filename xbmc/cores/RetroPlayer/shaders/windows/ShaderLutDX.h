@@ -32,11 +32,14 @@ public:
 
   // Implementation of IShaderLut
   bool Create(const ShaderLut& lut) override;
-  CTexture* GetTexture() override { return m_texture.get(); }
+  CTexture* GetTexture() override;
+  void ReleaseTexture() override;
 
 private:
   static std::unique_ptr<CTexture> CreateLUTexture(const ShaderLut& lut);
 
   std::unique_ptr<CTexture> m_texture;
+  ShaderLut m_lut;
+  bool m_released{false};
 };
 } // namespace KODI::SHADER

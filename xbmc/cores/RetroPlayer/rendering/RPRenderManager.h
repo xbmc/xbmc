@@ -227,6 +227,14 @@ private:
   CRenderVideoSettings GetEffectiveSettings(const IGUIRenderSettings* settings) const;
 
   void CheckFlush();
+
+  /*!
+   * \brief Release the textures of renderers nothing draws any more, such as
+   * a filter preview that has scrolled off screen
+   *
+   * Called on the rendering thread with m_oldRenderersMutex held.
+   */
+  void ReleaseUnusedTextures();
   void DestroyContextInternal();
 
   /*!
