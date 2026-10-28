@@ -125,11 +125,13 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
   if (itemsToRefresh.empty())
     return true;
 
-  if (auto* dialog{
-          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
-              WINDOW_DIALOG_EXT_PROGRESS)})
-    SetProgressBar(
-        dialog->GetHandle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13363)));
+  if (auto* gui{CServiceBroker::GetGUI()})
+  {
+    if (auto* dialog{gui->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
+            WINDOW_DIALOG_EXT_PROGRESS)})
+      SetProgressBar(dialog->GetHandle(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13363)));
+  }
 
   const auto total{static_cast<unsigned int>(itemsToRefresh.size())};
   for (unsigned int i = 0; i < total; ++i)
