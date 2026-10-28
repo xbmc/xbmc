@@ -185,8 +185,8 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
       const bool validInterfaceClass =
           interfaceClassProperty != nullptr &&
           CFGetTypeID(interfaceClassProperty) == CFNumberGetTypeID() &&
-          CFNumberGetValue(static_cast<CFNumberRef>(interfaceClassProperty),
-                           kCFNumberSInt32Type, &interfaceClassValue) &&
+          CFNumberGetValue(static_cast<CFNumberRef>(interfaceClassProperty), kCFNumberSInt32Type,
+                           &interfaceClassValue) &&
           interfaceClassValue >= 0 && interfaceClassValue <= 255;
       if (interfaceClassProperty != nullptr)
         CFRelease(interfaceClassProperty);
