@@ -10,6 +10,7 @@
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "platform/Filesystem.h"
+#include "utils/ItemProperties.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
@@ -142,6 +143,7 @@ struct DiscNfoTest
 {
   bool image; // a disc image FILM.iso in Film, or a folder rip of Film
   bool dynPath; // the playlist is the item's dynamic path too, as in a library item
+  bool hybridFolder; // a library item of a movie with versions or extras, listed as a folder
   bool movieFolder;
   std::vector<std::string> nfoFiles; // relative to the folder Film
   std::string expected;
@@ -149,17 +151,22 @@ struct DiscNfoTest
 
 const DiscNfoTest disc_nfo_tests[] = {
     // A folder rip's movie.nfo, or the index.nfo an export writes in its BDMV folder
-    {false, false, true, {"movie.nfo"}, "movie.nfo"},
-    {false, true, true, {"movie.nfo"}, "movie.nfo"},
-    {false, true, false, {"movie.nfo"}, "movie.nfo"},
-    {false, true, true, {"BDMV/index.nfo"}, "BDMV/index.nfo"},
+    {false, false, false, true, {"movie.nfo"}, "movie.nfo"},
+    {false, true, false, true, {"movie.nfo"}, "movie.nfo"},
+    {false, true, false, false, {"movie.nfo"}, "movie.nfo"},
+    {false, true, true, true, {"movie.nfo"}, "movie.nfo"},
+    {false, true, true, false, {"movie.nfo"}, "movie.nfo"},
+    {false, true, false, true, {"BDMV/index.nfo"}, "BDMV/index.nfo"},
+    {false, true, true, true, {"BDMV/index.nfo"}, "BDMV/index.nfo"},
     // Beside BDMV the folder can take any nfo, if it is the only one there
-    {false, true, true, {"Film.nfo"}, "Film.nfo"},
-    {false, true, true, {"anything.nfo"}, "anything.nfo"},
-    {false, true, true, {"movie.nfo", "Film.nfo"}, ""},
+    {false, true, false, true, {"Film.nfo"}, "Film.nfo"},
+    {false, true, false, true, {"anything.nfo"}, "anything.nfo"},
+    {false, true, false, true, {"movie.nfo", "Film.nfo"}, ""},
     // A disc image's movie.nfo, or the nfo named after it
-    {true, true, true, {"movie.nfo"}, "movie.nfo"},
-    {true, true, false, {"FILM.nfo"}, "FILM.nfo"},
+    {true, true, false, true, {"movie.nfo"}, "movie.nfo"},
+    {true, true, false, false, {"FILM.nfo"}, "FILM.nfo"},
+    {true, true, true, true, {"movie.nfo"}, "movie.nfo"},
+    {true, true, true, false, {"FILM.nfo"}, "FILM.nfo"},
 };
 } // namespace
 
@@ -190,6 +197,11 @@ TEST_P(DiscNfoTestFixture, FindNFO)
   CFileItem item(playlist, false);
   if (GetParam().dynPath)
     item.SetDynPath(playlist);
+  if (GetParam().hybridFolder)
+  {
+    item.SetFolder(true);
+    item.SetProperty(KODI::ITEM::PROPERTY::IS_HYBRID_FOLDER, true);
+  }
   const CVideoTagLoaderNFO loader(item, nullptr, GetParam().movieFolder);
 
   EXPECT_EQ(loader.GetNFOPath(), GetParam().expected.empty()
