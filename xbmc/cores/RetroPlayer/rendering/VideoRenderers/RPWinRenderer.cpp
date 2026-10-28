@@ -267,6 +267,11 @@ bool CRPWinRenderer::ConfigureInternal()
   return true;
 }
 
+void CRPWinRenderer::FlushInternal()
+{
+  m_RBTexturesMap.clear();
+}
+
 void CRPWinRenderer::RenderInternal(uint8_t alpha)
 {
   CRenderSystemDX* renderingDx = static_cast<CRenderSystemDX*>(m_context.Rendering());

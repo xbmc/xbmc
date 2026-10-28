@@ -9,6 +9,7 @@
 #include "ShaderPreset.h"
 
 #include "IShader.h"
+#include "IShaderLut.h"
 #include "IShaderTexture.h"
 #include "ServiceBroker.h"
 #include "ShaderPresetFactory.h"
@@ -248,7 +249,20 @@ void CShaderPreset::DisposeShaders()
   DisposeShaderTextures();
 
   m_pShaders.clear();
+  m_luts.clear();
   m_passes.clear();
+}
+
+void CShaderPreset::ReleaseTextures()
+{
+  for (const auto& shader : m_pShaders)
+    shader->ReleaseTextureReferences();
+
+  DisposeShaderTextures();
+  for (const auto& lut : m_luts)
+    lut->ReleaseTexture();
+
+  m_bPresetNeedsUpdate = true;
 }
 
 void CShaderPreset::DisposeShaderTextures()
