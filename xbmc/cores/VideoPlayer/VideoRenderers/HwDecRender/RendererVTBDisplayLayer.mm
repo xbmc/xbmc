@@ -465,23 +465,27 @@ bool CRendererVTBDisplayLayer::CaptureVideoFrame(const KODI::RENDERING::CAPTURE:
       }
     }();
     const CGRect extent = image.extent;
-    // Kodi's source crop is top-left based; Core Image uses a bottom-left origin.
-    const CGRect source = CGRectApplyAffineTransform(
-        ToCGRect(m_sourceRect), CGAffineTransformMake(extent.size.width / m_sourceWidth, 0, 0,
-                                                      -extent.size.height / m_sourceHeight,
-                                                      extent.origin.x, CGRectGetMaxY(extent)));
+    // Convert decoder pixels from a top-left origin to Core Image's bottom-left origin.
+    const CGAffineTransform sourceToImageScale = CGAffineTransformMakeScale(
+        extent.size.width / m_sourceWidth, -extent.size.height / m_sourceHeight);
+    const CGRect scaledSource =
+        CGRectApplyAffineTransform(ToCGRect(m_sourceRect), sourceToImageScale);
+    const CGRect imageSource = CGRectOffset(scaledSource, extent.origin.x, CGRectGetMaxY(extent));
     const CGRect rotatedSource =
-        CGRectApplyAffineTransform(source, [image imageTransformForCGOrientation:orientation]);
+        CGRectApplyAffineTransform(imageSource, [image imageTransformForCGOrientation:orientation]);
     image = [image imageByApplyingCGOrientation:orientation];
-    // Map the visible destination back into the oriented source crop.
+    // The destination is in GUI pixels. Map its visible portion into the
+    // already-oriented source crop above.
     const CGRect destination = ToCGRect(m_destRect);
-    const CGRect relativeVisible =
+    const CGRect visibleInDestination =
         CGRectOffset(ToCGRect(visible), -destination.origin.x, -destination.origin.y);
-    const CGRect crop = CGRectApplyAffineTransform(
-        relativeVisible,
-        CGAffineTransformMake(rotatedSource.size.width / destination.size.width, 0, 0,
-                              -rotatedSource.size.height / destination.size.height,
-                              rotatedSource.origin.x, CGRectGetMaxY(rotatedSource)));
+    const CGAffineTransform destinationToSourceScale =
+        CGAffineTransformMakeScale(rotatedSource.size.width / destination.size.width,
+                                   -rotatedSource.size.height / destination.size.height);
+    const CGRect scaledVisible =
+        CGRectApplyAffineTransform(visibleInDestination, destinationToSourceScale);
+    const CGRect crop =
+        CGRectOffset(scaledVisible, rotatedSource.origin.x, CGRectGetMaxY(rotatedSource));
     // Clamp the full image to avoid transparent edges at fractional crop boundaries.
     image = [image imageByClampingToExtent];
     image = [image
