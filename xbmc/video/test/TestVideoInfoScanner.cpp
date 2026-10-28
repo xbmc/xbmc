@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "DatabaseManager.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "MediaSource.h"
@@ -18,6 +19,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
+#include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -38,11 +40,13 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/jobs/VideoLibraryRefreshingJob.h"
+#include "video/jobs/VideoLibraryRefreshingSourceJob.h"
 #include "video/jobs/VideoLibraryScanningJob.h"
 
 #include <chrono>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -132,12 +136,28 @@ constexpr const char* OTHER_SCRAPER_XML = R"(<?xml version="1.0" encoding="UTF-8
   </GetEpisodeList>
 </scraper>)";
 
+//! The test's database, named as CVideoDatabase::Open() names the one the settings give it
+class TestDatabase : public CVideoDatabase
+{
+public:
+  using CDatabase::GetSchemaVersion;
+};
+
 //! A refresh without its GUI, of the test's database
 class TestRefreshingJob : public CVideoLibraryRefreshingJob
 {
 public:
   using CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob;
   using CVideoLibraryRefreshingJob::Work;
+};
+
+//! A refresh of a source of the test's database, whose movies are each refreshed with a database
+//! of their own
+class TestRefreshingSourceJob : public CVideoLibraryRefreshingSourceJob
+{
+public:
+  using CVideoLibraryRefreshingSourceJob::CVideoLibraryRefreshingSourceJob;
+  using CVideoLibraryRefreshingSourceJob::Work;
 };
 
 //! A scan without its GUI: Start() needs one, so the folders are scanned with DoScan()
@@ -148,7 +168,7 @@ public:
                        bool ignoreVideoExtras = false,
                        bool clean = false)
   {
-    m_database.Connect(DB_NAME, settings, false);
+    m_database.Connect(settings.name, settings, false);
     m_similarVideoAction = SimilarVideoScanAction::NONE;
     m_ignoreVideoExtras = ignoreVideoExtras;
     m_bClean = clean;
@@ -227,15 +247,31 @@ protected:
     XFILE::CDirectory::RemoveRecursive(m_root);
     ASSERT_TRUE(XFILE::CDirectory::Create(m_root));
 
+    // A refresh opens the database the settings name, as does the scanner it adds the video again
+    // with, once the database manager has updated the profile's databases. The settings name the
+    // test's database, which Open() gives its version.
+    if (!CServiceBroker::GetDatabaseManager().CanOpen("MyVideos"))
+    {
+      ASSERT_TRUE(CServiceBroker::GetDatabaseManager().Initialize());
+    }
     m_settings.type = "sqlite3";
     m_settings.name = DB_NAME;
     m_settings.host = CSpecialProtocol::TranslatePath("special://temp/");
-    ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, m_db.Connect(DB_NAME, m_settings, true));
+    auto& videoDatabase{
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo};
+    m_videoDatabase = videoDatabase;
+    videoDatabase = m_settings;
+    m_settings.name += std::to_string(m_db.GetSchemaVersion());
+    ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
+              m_db.Connect(m_settings.name, m_settings, true));
 
     // The test environment has no announcement manager. An unstarted one only queues them.
     m_previousAnnouncementManager = CServiceBroker::GetAnnouncementManager();
     CServiceBroker::RegisterAnnouncementManager(
         std::make_shared<ANNOUNCEMENT::CAnnouncementManager>());
+    // Neither has it the cache of what discs hold, which reading a disc's playlists fills
+    m_previousDiscCache = CServiceBroker::GetBlurayDiscCache();
+    CServiceBroker::RegisterBlurayDiscCache(std::make_shared<XFILE::CBlurayDiscCache>());
 
     // A movie source using folder names, whose movies are read from their nfos. The clean looks
     // for each file's video source among the sources.
@@ -283,9 +319,16 @@ protected:
     CServiceBroker::UnregisterAnnouncementManager();
     if (m_previousAnnouncementManager)
       CServiceBroker::RegisterAnnouncementManager(m_previousAnnouncementManager);
+    if (m_previousDiscCache)
+      CServiceBroker::RegisterBlurayDiscCache(m_previousDiscCache);
+    else
+      CServiceBroker::UnregisterBlurayDiscCache();
 
+    if (m_videoDatabase)
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo =
+          *m_videoDatabase;
     m_db.Close();
-    XFILE::CFile::Delete(m_settings.host + DB_NAME + ".db");
+    XFILE::CFile::Delete(m_settings.host + m_settings.name + ".db");
     XFILE::CDirectory::RemoveRecursive(m_root);
   }
 
@@ -502,6 +545,36 @@ protected:
 
   int CountMovies() { return m_db.GetSingleValueInt("SELECT COUNT(*) FROM movie"); }
 
+  //! Searching for Film finds it, with its tmdb id
+  static void FilmFound()
+  {
+    Found("Film");
+    Details(
+        "Film",
+        R"(<details><title>Film</title><uniqueid type="tmdb" default="true">100</uniqueid></details>)");
+  }
+
+  //! Refreshes a movie as the information dialog does, or as a refresh of a source does each of
+  //! its movies, from the movie as it was listed
+  bool Refresh(const CVideoInfoTag& listed)
+  {
+    TestRefreshingJob refresh{std::make_shared<CFileItem>(listed), true, false};
+    return refresh.Work(m_db);
+  }
+
+  //! "(Disc n)" is a localised string, which a test naming a movie by its disc loads
+  struct Strings
+  {
+    Strings() : strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()}
+    {
+      loaded = strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb");
+    }
+    ~Strings() { strings.Clear(); }
+
+    CLocalizeStrings& strings;
+    bool loaded{false};
+  };
+
   //! A movie of its own of the same film, as one disc of it added before grouping. An imdb id
   //! is given when it has one as well as its tmdb id.
   int AddFilm(const std::string& file, const std::string& imdb = {})
@@ -612,8 +685,10 @@ protected:
 
   std::string m_root;
   DatabaseSettings m_settings;
-  CVideoDatabase m_db;
+  std::optional<DatabaseSettings> m_videoDatabase;
+  TestDatabase m_db;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previousAnnouncementManager;
+  std::shared_ptr<XFILE::CBlurayDiscCache> m_previousDiscCache;
   const bool m_fastHash{
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash};
   const bool m_ignoreErrors{
@@ -764,21 +839,11 @@ TEST_F(TestVideoInfoScanner, AFolderHoldingADvdRipKeepsItsHash)
 // named by the one it was added from
 TEST_F(TestVideoInfoScanner, AMovieADiscJoinsIsNotNamedByItsOtherDisc)
 {
-  // "(Disc n)" is a localised string
-  auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
-  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
-  struct Unload
-  {
-    CLocalizeStrings& strings;
-    ~Unload() { strings.Clear(); }
-  } unload{strings};
-
+  const Strings strings;
+  ASSERT_TRUE(strings.loaded);
   UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
   GroupSimilarVideosAutomatically();
-  Found("Film");
-  Details(
-      "Film",
-      R"(<details><title>Film</title><uniqueid type="tmdb" default="true">100</uniqueid></details>)");
+  FilmFound();
   const std::string folder{Folder(m_root, "Film (2010)")};
   const std::string first{File(Folder(folder, "Disc 1"), "Film.mkv")};
   Scan();
@@ -1082,6 +1147,113 @@ TEST_F(TestVideoInfoScanner, ARefreshThatCantReadTheDetailsKeepsTheMovie)
 TEST_F(TestVideoInfoScanner, ARefreshWithAnOverrideNfoThatCantReadTheDetailsKeepsTheMovie)
 {
   RefreshThatCantReadTheDetails(true);
+}
+
+// A refresh adds the movie again for the same files, so the next scan doesn't look at its folders
+TEST_F(TestVideoInfoScanner, ARefreshKeepsTheHashesOfTheMoviesFolders)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  InstallTestScraper();
+  const std::string folder{Folder(m_root, "Afilm")};
+  const std::string film{File(folder, "Afilm.mkv")};
+  Found("Afilm");
+  Details("Afilm", "<details><title>Afilm</title></details>");
+  Scan();
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, m_db.GetMovieId(film)));
+  std::string root;
+  ASSERT_TRUE(m_db.GetPathHash(m_root, root));
+  ASSERT_FALSE(root.empty());
+
+  ASSERT_TRUE(Refresh(tag));
+
+  EXPECT_GT(m_db.GetMovieId(film), 0);
+  std::string hash;
+  EXPECT_TRUE(m_db.GetPathHash(m_root, hash));
+  EXPECT_EQ(root, hash);
+}
+
+// A refresh adds a disc of a movie again, which is titled with its disc, and gives it back the
+// movie's other disc
+TEST_F(TestVideoInfoScanner, ARefreshOfADiscGivesTheMovieBackItsOtherDisc)
+{
+  const Strings strings;
+  ASSERT_TRUE(strings.loaded);
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  InstallTestScraper();
+  GroupSimilarVideosAutomatically();
+  FilmFound();
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string first{File(Folder(folder, "Disc 1"), "Film.mkv")};
+  Scan();
+  const int idMovie{m_db.GetMovieId(first)};
+  ASSERT_GT(idMovie, 0);
+  const std::string second{File(Folder(folder, "Disc 2"), "Film.mkv")};
+  Touch(folder);
+  Scan();
+  ASSERT_EQ(idMovie, m_db.GetMovieId(second));
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, idMovie));
+
+  ASSERT_TRUE(Refresh(tag));
+
+  EXPECT_EQ(1, CountMovies());
+  const int idRefreshed{m_db.GetMovieId(first)};
+  ASSERT_GT(idRefreshed, 0);
+  EXPECT_EQ(idRefreshed, m_db.GetMovieId(second));
+  EXPECT_EQ("Film", m_db.GetMovieTitle(idRefreshed));
+}
+
+// The movie refreshed is as it was listed, as by the information dialog, which a scan may have
+// added extras to since. The database is asked which assets it has.
+TEST_F(TestVideoInfoScanner, ARefreshKeepsTheExtrasAddedSinceTheMovieWasListed)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  InstallTestScraper();
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string movie{FolderMovie(folder, "Film (2010).mkv")};
+  Scan();
+  const int idMovie{m_db.GetMovieId(movie)};
+  ASSERT_GT(idMovie, 0);
+  CVideoInfoTag listed;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, listed, idMovie));
+  const std::string trailer{File(Folder(folder, "Extras"), "Trailer.mkv")};
+  Touch(folder);
+  Scan();
+  ASSERT_TRUE(IsExtraOf(trailer, idMovie));
+
+  ASSERT_TRUE(Refresh(listed));
+
+  const int idRefreshed{m_db.GetMovieId(movie)};
+  ASSERT_GT(idRefreshed, 0);
+  EXPECT_TRUE(IsExtraOf(trailer, idRefreshed));
+  EXPECT_EQ(1, CountExtras());
+}
+
+// The refresh of a disc added as a movie of its own merges it into the movie of the lowest disc,
+// where it becomes the default version. That movie is still refreshed from its own disc.
+TEST_F(TestVideoInfoScanner, ARefreshOfASourceRefreshesEachDiscOfAMovie)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  InstallTestScraper();
+  GroupSimilarVideosAutomatically();
+  FilmFound();
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string first{File(Folder(folder, "Disc 1"), "Film.mkv")};
+  const std::string second{File(Folder(folder, "Disc 2"), "Film.mkv")};
+  // listed in the order they are added
+  ASSERT_GT(AddFilm(second), 0);
+  ASSERT_GT(AddFilm(first), 0);
+
+  TestRefreshingSourceJob refresh{m_root};
+  ASSERT_TRUE(refresh.Work(m_db));
+
+  EXPECT_EQ(1, CountMovies());
+  const int idMovie{m_db.GetMovieId(first)};
+  EXPECT_EQ(idMovie, m_db.GetMovieId(second));
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, idMovie));
+  EXPECT_EQ(first, tag.m_strFileNameAndPath);
 }
 
 // An nfo naming the movie's url gives none of its details, which the refresh reads before it
