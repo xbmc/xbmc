@@ -78,6 +78,12 @@ protected:
    */
   void AddPlaylistOrder(const CFileItemList& items, const LABEL_MASKS& label_masks);
 
+  /*! \brief Get the sort order defined in a smartplaylist
+   \param items the list of items for the view state.
+   \return the sort order defined in the smartplaylist, SortBy::NONE if there is none.
+   */
+  static SortBy GetPlaylistSortBy(const CFileItemList& items);
+
   void AddSortMethod(SortBy sortBy,
                      int buttonLabel,
                      const LABEL_MASKS& labelMasks,

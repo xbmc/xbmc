@@ -83,6 +83,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     if (items.GetContent() == MEDIA::CONTENT::SONGS ||
         items.GetContent() == MEDIA::CONTENT::ALBUMS || items.GetContent() == MEDIA::CONTENT::MIXED)
       return new CGUIViewStateMusicSmartPlaylist(items);
+    // The artists of an UPnP server are browsed like any other list of folders
+    else if (items.GetContent() == MEDIA::CONTENT::ARTISTS && !url.IsProtocol("upnp"))
+      return new CGUIViewStateMusicSmartPlaylist(items);
     else if (items.GetContent() == MEDIA::CONTENT::MUSICVIDEOS)
       return new CGUIViewStateVideoMusicVideos(items);
     else if (items.GetContent() == MEDIA::CONTENT::TVSHOWS)
@@ -571,6 +574,14 @@ void CGUIViewState::AddPlaylistOrder(const CFileItemList& items, const LABEL_MAS
 
   AddSortMethod(sortBy, sortLabel, label_masks, SortAttributeNone, sortOrder);
   SetSortMethod(sortBy, sortOrder);
+}
+
+SortBy CGUIViewState::GetPlaylistSortBy(const CFileItemList& items)
+{
+  if (!items.HasProperty(PROPERTY_SORT_ORDER))
+    return SortBy::NONE;
+
+  return static_cast<SortBy>(items.GetProperty(PROPERTY_SORT_ORDER).asInteger());
 }
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
