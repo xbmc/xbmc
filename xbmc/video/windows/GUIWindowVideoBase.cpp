@@ -646,6 +646,10 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
   if (!listItem)
     return false;
 
+  // stop before the item is read or changed, the loader thread writes it
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+
   std::shared_ptr<CFileItem> newItem;
   if (infoRefreshed)
   {
@@ -682,6 +686,9 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
     {
       CFileItemList items{m_vecItems->GetPath()};
       newItem = std::make_shared<CFileItem>(*listItem);
+      // the copy keeps the old details unless the library has a match for it
+      if (newItem->HasVideoInfoTag())
+        newItem->GetVideoInfoTag()->m_iDbId = -1;
       items.Add(newItem);
       LoadVideoInfo(items, m_database);
       if (!newItem->HasVideoInfoTag() ||
@@ -694,10 +701,6 @@ bool CGUIWindowVideoBase::UpdateMovieListItem(const std::string& listItemPath,
     if (!newItem)
       return false;
   }
-
-  // stop before the item is changed, the loader thread reads it
-  if (m_thumbLoader.IsLoading())
-    m_thumbLoader.StopThread();
 
   if (newItem)
   {
