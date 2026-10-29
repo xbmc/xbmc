@@ -92,6 +92,7 @@ public:
                 uint32_t alignment,
                 float maxPixelWidth,
                 bool scrolling,
+                bool shadow,
                 std::chrono::steady_clock::time_point now,
                 bool& dirtyCache);
   void Flush();
@@ -115,6 +116,7 @@ void CGUIFontCacheEntry<Position, Value>::Assign(const CGUIFontCacheKey<Position
   m_key.m_alignment = key.m_alignment;
   m_key.m_maxPixelWidth = key.m_maxPixelWidth;
   m_key.m_scrolling = key.m_scrolling;
+  m_key.m_shadow = key.m_shadow;
   m_matrix = key.m_matrix;
   m_key.m_scaleX = key.m_scaleX;
   m_key.m_scaleY = key.m_scaleY;
@@ -139,14 +141,15 @@ Value& CGUIFontCache<Position, Value>::Lookup(const CGraphicContext& context,
                                               uint32_t alignment,
                                               float maxPixelWidth,
                                               bool scrolling,
+                                              bool shadow,
                                               std::chrono::steady_clock::time_point now,
                                               bool& dirtyCache)
 {
   if (!m_impl)
     m_impl = std::make_unique<CGUIFontCacheImpl<Position, Value>>(this);
 
-  return m_impl->Lookup(context, pos, colors, text, alignment, maxPixelWidth, scrolling, now,
-                        dirtyCache);
+  return m_impl->Lookup(context, pos, colors, text, alignment, maxPixelWidth, scrolling, shadow,
+                        now, dirtyCache);
 }
 
 template<class Position, class Value>
@@ -157,11 +160,12 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context
                                                   uint32_t alignment,
                                                   float maxPixelWidth,
                                                   bool scrolling,
+                                                  bool shadow,
                                                   std::chrono::steady_clock::time_point now,
                                                   bool& dirtyCache)
 {
   const CGUIFontCacheKey<Position> key(pos, colors, text, alignment, maxPixelWidth, scrolling,
-                                       context.GetGUIMatrix(), context.GetGUIScaleX(),
+                                       shadow, context.GetGUIMatrix(), context.GetGUIScaleX(),
                                        context.GetGUIScaleY());
 
   auto i = m_list.FindKey(key);
@@ -233,6 +237,7 @@ template CGUIFontCacheStaticValue& CGUIFontCache<
                                       uint32_t,
                                       float,
                                       bool,
+                                      bool,
                                       std::chrono::steady_clock::time_point,
                                       bool&);
 template void CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Flush();
@@ -250,6 +255,7 @@ template CGUIFontCacheDynamicValue& CGUIFontCache<
                                        std::span<const character_t> text,
                                        uint32_t,
                                        float,
+                                       bool,
                                        bool,
                                        std::chrono::steady_clock::time_point,
                                        bool&);

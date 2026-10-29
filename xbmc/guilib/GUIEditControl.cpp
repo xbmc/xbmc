@@ -624,15 +624,17 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   unsigned int endSelection   = m_cursorPos + m_editOffset + m_editLength;
 
   CGUIFont* font = m_label2.GetLabelInfo().font;
-  uint32_t style = (font ? font->GetStyle() : (FONT_STYLE_NORMAL & FONT_STYLE_MASK)) << 24;
+  character_t style =
+      static_cast<character_t>(font ? font->GetStyle() : (FONT_STYLE_NORMAL & FONT_STYLE_MASK))
+      << 40;
 
   for (unsigned int i = 0; i < text.size(); i++)
   {
-    uint32_t ch = text[i] | style;
+    character_t ch = text[i] | style;
     if (m_editLength > 0 && startSelection <= i && i < endSelection)
-      ch |= (2 << 16); // highlight the letters we're playing with
+      ch |= (character_t{2} << 32); // highlight the letters we're playing with
     else if (!m_edit.empty() && (i < startHighlight || i >= endHighlight))
-      ch |= (1 << 16); // dim the bits we're not editing
+      ch |= (character_t{1} << 32); // dim the bits we're not editing
     styled.push_back(ch);
   }
 
@@ -640,11 +642,11 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   unsigned int posChar = m_cursorPos;
   for (const uint32_t& cursorChar : m_cursorChars)
   {
-    uint32_t ch = cursorChar | style;
+    character_t ch = cursorChar | style;
     if (m_cursorBlinkEnabled)
     {
       if ((++m_cursorBlink % 64) > 32)
-        ch |= (3 << 16);
+        ch |= (character_t{3} << 32);
     }
     styled.insert(styled.begin() + posChar, ch);
     posChar++;

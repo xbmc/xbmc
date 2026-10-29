@@ -124,10 +124,10 @@ inline size_t CUtf8Utils::SizeOfUtf8Char(const char* const str)
     return 3; // valid UTF-8 3 bytes sequence
 
   /* U+10000 - U+3FFFF in UTF-8 */
-  if (chr == 0xF0                                   /* F0=1111 0000 */
-      && (strU[1] & 0xE0) == 0x80     /* E0=1110 0000, 80=1000 0000 - 9F=1001 1111 */
-      && strU[2] >= 0x90 && strU[2] <= 0xBF         /* 90=1001 0000 - BF=1011 1111 */
-      && (strU[3] & 0xC0) == 0x80)    /* C0=1100 0000, 80=1000 0000 - BF=1011 1111 */
+  if (chr == 0xF0 /* F0=1111 0000 */
+      && strU[1] >= 0x90 && strU[1] <= 0xBF /* 90=1001 0000 - BF=1011 1111 */
+      && (strU[2] & 0xC0) == 0x80 /* C0=1100 0000, 80=1000 0000 - BF=1011 1111 */
+      && (strU[3] & 0xC0) == 0x80) /* C0=1100 0000, 80=1000 0000 - BF=1011 1111 */
     return 4; // valid UTF-8 4 bytes sequence
 
   /* U+40000 - U+FFFFF in UTF-8 */
