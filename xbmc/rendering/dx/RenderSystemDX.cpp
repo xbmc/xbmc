@@ -350,7 +350,10 @@ void CRenderSystemDX::InvalidateColorBuffer()
 
   /* clear is not affected by stipple pattern, so we can only clear on first frame */
   if (m_stereoMode == RenderStereoMode::INTERLACED && m_stereoView == RenderStereoView::RIGHT)
+  {
+    m_deviceResources->ClearDepthStencil(false);
     return;
+  }
 
   // some platforms prefer a clear, instead of rendering over
   if (GetClearFunction() == ClearFunction::FIXED_FUNCTION)
@@ -359,10 +362,7 @@ void CRenderSystemDX::InvalidateColorBuffer()
     return;
   }
 
-  if (!GetEnabledFrontToBackRendering())
-    return;
-
-  m_deviceResources->ClearDepthStencil();
+  m_deviceResources->ClearDepthStencil(GetEnabledFrontToBackRendering());
 }
 
 bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
@@ -421,8 +421,7 @@ bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
       m_deviceResources->ClearRenderTarget(pRTView, fColor);
   }
 
-  if (GetEnabledFrontToBackRendering())
-    m_deviceResources->ClearDepthStencil();
+  m_deviceResources->ClearDepthStencil(GetEnabledFrontToBackRendering());
 
   return true;
 }
