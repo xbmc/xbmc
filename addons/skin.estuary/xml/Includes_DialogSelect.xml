@@ -966,24 +966,74 @@
 			<left>0</left>
 			<top>0</top>
 			<width>100%</width>
-			<bottom>410</bottom>
+			<bottom>470</bottom>
 			<texturefocus />
 			<texturenofocus />
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
 			<bottom>0</bottom>
-			<height>410</height>
+			<height>470</height>
 			<width>100%</width>
 			<control type="image">
 				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
+			<control type="list" id="10813">
+				<left>18</left>
+				<right>18</right>
+				<top>14</top>
+				<height>56</height>
+				<orientation>horizontal</orientation>
+				<scrolltime tween="sine">200</scrolltime>
+				<ondown>10811</ondown>
+				<visible>Integer.IsGreater(Container(10813).NumItems,1)</visible>
+				<itemlayout width="250" height="56">
+					<control type="label">
+						<left>10</left>
+						<right>10</right>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font13</font>
+						<textcolor>grey</textcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+					</control>
+				</itemlayout>
+				<focusedlayout width="250" height="56">
+					<control type="image">
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<visible>Control.HasFocus(10813)</visible>
+					</control>
+					<control type="image">
+						<description>The category in use, while the filters have focus</description>
+						<texture colordiffuse="button_alt_focus">lists/focus.png</texture>
+						<visible>!Control.HasFocus(10813)</visible>
+					</control>
+					<control type="label">
+						<left>10</left>
+						<right>10</right>
+						<label>$INFO[ListItem.Label]</label>
+						<font>font13</font>
+						<align>center</align>
+						<aligny>center</aligny>
+						<shadowcolor>text_shadow</shadowcolor>
+					</control>
+				</focusedlayout>
+			</control>
 			<control type="panel" id="10811">
-				<top>30</top>
+				<top>80</top>
+				<onup>10813</onup>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
+				<animation type="Conditional" condition="String.IsEqual(Window.Property(categorymove),next)" reversible="false">
+					<effect type="slide" start="240,0" end="0,0" time="200" tween="cubic" easing="out" />
+					<effect type="fade" start="0" end="100" time="200" />
+				</animation>
+				<animation type="Conditional" condition="String.IsEqual(Window.Property(categorymove),previous)" reversible="false">
+					<effect type="slide" start="-240,0" end="0,0" time="200" tween="cubic" easing="out" />
+					<effect type="fade" start="0" end="100" time="200" />
+				</animation>
 				<itemlayout width="480" height="340">
 					<control type="group">
 						<left>18</left>
@@ -1012,7 +1062,7 @@
 							<top>250</top>
 							<width>444</width>
 							<height>80</height>
-							<label>$INFO[ListItem.Label][CR][COLOR grey]$INFO[ListItem.Label2][/COLOR]</label>
+							<label>$INFO[ListItem.Label]</label>
 							<font>font37</font>
 							<shadowcolor>text_shadow</shadowcolor>
 							<align>center</align>
@@ -1047,7 +1097,7 @@
 							<top>250</top>
 							<width>444</width>
 							<height>80</height>
-							<label>$INFO[ListItem.Label][CR][COLOR grey]$INFO[ListItem.Label2][/COLOR]</label>
+							<label>$INFO[ListItem.Label]</label>
 							<font>font37</font>
 							<shadowcolor>text_shadow</shadowcolor>
 							<align>center</align>
