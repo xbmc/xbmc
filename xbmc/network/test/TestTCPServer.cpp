@@ -14,6 +14,7 @@
 #include "network/NetworkServices.h"
 #include "network/TCPServer.h"
 #include "threads/Event.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/Variant.h"
 
 #include <atomic>
@@ -37,6 +38,19 @@ CEvent requestBlocked{true};
 CEvent releaseRequest{true};
 std::atomic<bool> blockedRequestReturned{false};
 CEvent laterRequestStarted{true};
+CEvent largeReplyStarted{true};
+constexpr size_t LARGE_REPLY_SIZE = 8 * 1024 * 1024;
+
+JSONRPC_STATUS LargeReply(const std::string& method,
+                          ITransportLayer* transport,
+                          IClient* client,
+                          const CVariant& parameterObject,
+                          CVariant& result)
+{
+  result = std::string(LARGE_REPLY_SIZE, 'x');
+  largeReplyStarted.Set();
+  return OK;
+}
 
 JSONRPC_STATUS Block(const std::string& method,
                      ITransportLayer* transport,
@@ -89,16 +103,19 @@ public:
     blockedRequestReturned = false;
     laterRequestStarted.Reset();
     stoppedFromRequest.Reset();
+    largeReplyStarted.Reset();
 
     CJSONRPC::Initialize();
     m_added = CJSONServiceDescription::AddMethod(Schema("Test.Block"), Block) &&
               CJSONServiceDescription::AddMethod(Schema("Test.Record"), Record) &&
-              CJSONServiceDescription::AddMethod(Schema("Test.Stop"), Stop);
+              CJSONServiceDescription::AddMethod(Schema("Test.Stop"), Stop) &&
+              CJSONServiceDescription::AddMethod(Schema("Test.LargeReply"), LargeReply);
   }
 
   ~CTestMethods()
   {
     releaseRequest.Set();
+    CTCPServer::StopServer(true);
     CJSONRPC::Cleanup();
   }
 
@@ -220,10 +237,234 @@ protected:
     return false;
   }
 
+  static bool ReadToEOF(SOCKET client, std::string& received)
+  {
+    const auto deadline = std::chrono::steady_clock::now() + 10s;
+    while (std::chrono::steady_clock::now() < deadline)
+    {
+      fd_set readable;
+      FD_ZERO(&readable);
+      FD_SET(client, &readable);
+      timeval timeout = {0, 100000};
+      if (select(static_cast<int>(client) + 1, &readable, nullptr, nullptr, &timeout) != 1)
+        continue;
+
+      char buffer[65536];
+      const int count = recv(client, buffer, sizeof(buffer), 0);
+      if (count <= 0)
+        return count == 0;
+      received.append(buffer, count);
+    }
+    return false;
+  }
+
   int m_port{0};
   std::vector<SOCKET> m_clients;
 };
+
+class CTestAnnouncementManager : public ANNOUNCEMENT::CAnnouncementManager
+{
+public:
+  using CAnnouncementManager::DoAnnounce;
+};
+
+class TestTCPServerAnnouncements : public TestTCPServer
+{
+protected:
+  void SetUp() override
+  {
+    m_previous = CServiceBroker::GetAnnouncementManager();
+    m_manager = std::make_shared<CTestAnnouncementManager>();
+    CServiceBroker::RegisterAnnouncementManager(m_manager);
+    TestTCPServer::SetUp();
+  }
+
+  void TearDown() override
+  {
+    TestTCPServer::TearDown();
+    CServiceBroker::RegisterAnnouncementManager(m_previous);
+  }
+
+  std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previous;
+  std::shared_ptr<CTestAnnouncementManager> m_manager;
+};
 } // namespace
+
+TEST_F(TestTCPServerAnnouncements, WriteHalfCloseDrainsOutputWithoutAWorker)
+{
+  const SOCKET client = Connect();
+  ASSERT_NE(INVALID_SOCKET, client);
+  ASSERT_TRUE(Exchange(client, R"({"jsonrpc":"2.0","method":"JSONRPC.Ping","id":1})"));
+  ASSERT_TRUE(WaitForNoWorkers());
+
+  const std::string payload(LARGE_REPLY_SIZE, 'x');
+  m_manager->DoAnnounce(ANNOUNCEMENT::Other, "test", "queued", CVariant{payload});
+  ASSERT_EQ(0, shutdown(client, SHUT_WR));
+  std::this_thread::sleep_for(200ms);
+  std::string received;
+  EXPECT_TRUE(ReadToEOF(client, received));
+  CVariant announcement;
+  ASSERT_TRUE(CJSONVariantParser::Parse(received, announcement));
+  EXPECT_EQ(payload, announcement["params"]["data"].asString());
+  EXPECT_TRUE(WaitForNoWorkers());
+}
+
+TEST_F(TestTCPServer, WriteHalfClosePreservesRunningAndQueuedRequests)
+{
+  CTestMethods methods;
+  ASSERT_TRUE(methods.Added());
+  const SOCKET client = Connect();
+  ASSERT_NE(INVALID_SOCKET, client);
+  const std::string first = R"({"jsonrpc":"2.0","method":"Test.Block","id":1})";
+  ASSERT_EQ(static_cast<int>(first.size()),
+            send(client, first.data(), static_cast<int>(first.size()), 0));
+  ASSERT_TRUE(requestBlocked.Wait(5s));
+
+  const std::string second = R"({"jsonrpc":"2.0","method":"Test.Record","id":2})";
+  ASSERT_EQ(static_cast<int>(second.size()),
+            send(client, second.data(), static_cast<int>(second.size()), 0));
+  ASSERT_EQ(0, shutdown(client, SHUT_WR));
+
+  // Give the server a chance to observe EOF while the first request is still running.
+  fd_set readable;
+  FD_ZERO(&readable);
+  FD_SET(client, &readable);
+  timeval timeout = {0, 200000};
+  EXPECT_EQ(0, select(static_cast<int>(client) + 1, &readable, nullptr, nullptr, &timeout));
+  const auto releasedAt = std::chrono::steady_clock::now();
+  releaseRequest.Set();
+
+  std::string received;
+  EXPECT_TRUE(ReadToEOF(client, received));
+  EXPECT_LT(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() -
+                                                                  releasedAt)
+                .count(),
+            500)
+      << "EOF waited for the idle select timeout after the replies were sent";
+  EXPECT_TRUE(WaitForNoWorkers());
+  EXPECT_TRUE(laterRequestStarted.Wait(5s));
+
+  // These two replies contain only scalar fields.
+  const auto end = received.find('}');
+  ASSERT_NE(std::string::npos, end);
+  CVariant reply;
+  ASSERT_TRUE(CJSONVariantParser::Parse(received.substr(0, end + 1), reply));
+  EXPECT_EQ(1, reply["id"].asInteger());
+  EXPECT_EQ("OK", reply["result"].asString());
+  ASSERT_TRUE(CJSONVariantParser::Parse(received.substr(end + 1), reply));
+  EXPECT_EQ(2, reply["id"].asInteger());
+  EXPECT_EQ("OK", reply["result"].asString());
+}
+
+TEST_F(TestTCPServer, WriteHalfCloseDrainsALargeReply)
+{
+  CTestMethods methods;
+  ASSERT_TRUE(methods.Added());
+  const SOCKET client = Connect();
+  ASSERT_NE(INVALID_SOCKET, client);
+  const std::string request = R"({"jsonrpc":"2.0","method":"Test.LargeReply","id":1})";
+  ASSERT_EQ(static_cast<int>(request.size()),
+            send(client, request.data(), static_cast<int>(request.size()), 0));
+  ASSERT_TRUE(largeReplyStarted.Wait(5s));
+  ASSERT_EQ(0, shutdown(client, SHUT_WR));
+  std::this_thread::sleep_for(200ms);
+  EXPECT_GT(CTCPServer::GetActiveWorkers(), 0u) << "the unread reply should still be draining";
+
+  std::string received;
+  EXPECT_TRUE(ReadToEOF(client, received));
+  EXPECT_TRUE(WaitForNoWorkers());
+  CVariant reply;
+  ASSERT_TRUE(CJSONVariantParser::Parse(received, reply));
+  EXPECT_EQ(1, reply["id"].asInteger());
+  EXPECT_EQ(std::string(LARGE_REPLY_SIZE, 'x'), reply["result"].asString());
+}
+
+TEST_F(TestTCPServer, WebSocketWriteHalfClosePreservesARunningRequest)
+{
+  CTestMethods methods;
+  ASSERT_TRUE(methods.Added());
+  const SOCKET client = Connect();
+  ASSERT_NE(INVALID_SOCKET, client);
+  const std::string handshake = "GET /jsonrpc HTTP/1.1\r\nHost: localhost\r\n"
+                                "Upgrade: websocket\r\nConnection: Upgrade\r\n"
+                                "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+                                "Sec-WebSocket-Version: 13\r\n\r\n";
+  ASSERT_EQ(static_cast<int>(handshake.size()),
+            send(client, handshake.data(), static_cast<int>(handshake.size()), 0));
+  ASSERT_TRUE(ReadUntil(client, "101 Switching Protocols", 5s));
+
+  const std::string request = R"({"jsonrpc":"2.0","method":"Test.Block","id":1})";
+  // A final text frame with a four-byte, all-zero client mask.
+  std::string frame{static_cast<char>(0x81), static_cast<char>(0x80 | request.size())};
+  frame.append(4, '\0');
+  frame += request;
+  ASSERT_EQ(static_cast<int>(frame.size()),
+            send(client, frame.data(), static_cast<int>(frame.size()), 0));
+  ASSERT_TRUE(requestBlocked.Wait(5s));
+  ASSERT_EQ(0, shutdown(client, SHUT_WR));
+  std::this_thread::sleep_for(200ms);
+  releaseRequest.Set();
+
+  std::string received;
+  EXPECT_TRUE(ReadToEOF(client, received));
+  EXPECT_TRUE(WaitForNoWorkers());
+  ASSERT_GE(received.size(), 2u);
+  EXPECT_EQ(0x81, static_cast<unsigned char>(received[0]));
+  const auto length = static_cast<unsigned char>(received[1]);
+  ASSERT_LT(length, 126u);
+  ASSERT_GE(received.size(), 2u + length);
+  CVariant reply;
+  ASSERT_TRUE(CJSONVariantParser::Parse(received.substr(2, length), reply));
+  EXPECT_EQ(1, reply["id"].asInteger());
+  EXPECT_EQ("OK", reply["result"].asString());
+}
+
+TEST_F(TestTCPServer, WriteHalfCloseWithNoCompleteRequestCloses)
+{
+  for (const std::string& request : {std::string{}, std::string{R"({"jsonrpc":"2.0","method":)"}})
+  {
+    const SOCKET client = Connect();
+    ASSERT_NE(INVALID_SOCKET, client);
+    if (!request.empty())
+    {
+      ASSERT_EQ(static_cast<int>(request.size()),
+                send(client, request.data(), static_cast<int>(request.size()), 0));
+    }
+    ASSERT_EQ(0, shutdown(client, SHUT_WR));
+    std::string received;
+    EXPECT_TRUE(ReadToEOF(client, received));
+    EXPECT_TRUE(received.empty());
+    EXPECT_TRUE(WaitForNoWorkers());
+  }
+}
+
+TEST_F(TestTCPServer, StopAbortsAWriteHalfClosedNonreadingPeer)
+{
+  CTestMethods methods;
+  ASSERT_TRUE(methods.Added());
+  const SOCKET client = Connect();
+  ASSERT_NE(INVALID_SOCKET, client);
+  const std::string request = R"({"jsonrpc":"2.0","method":"Test.LargeReply","id":1})";
+  ASSERT_EQ(static_cast<int>(request.size()),
+            send(client, request.data(), static_cast<int>(request.size()), 0));
+  ASSERT_TRUE(largeReplyStarted.Wait(5s));
+  ASSERT_EQ(0, shutdown(client, SHUT_WR));
+  std::this_thread::sleep_for(200ms);
+
+  std::promise<void> stopped;
+  auto done = stopped.get_future();
+  std::thread stopper(
+      [&stopped]
+      {
+        CTCPServer::StopServer(true);
+        stopped.set_value();
+      });
+  const bool stoppedInTime = done.wait_for(5s) == std::future_status::ready;
+  closesocket(client);
+  m_clients.clear();
+  stopper.join();
+  EXPECT_TRUE(stoppedInTime);
+}
 
 TEST_F(TestTCPServer, AnIdleConnectionHoldsNoWorker)
 {
