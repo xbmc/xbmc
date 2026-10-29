@@ -397,6 +397,8 @@ void CAgentInput::ProcessMouse()
     PERIPHERALS::EventLockHandlePtr inputHandlingLock;
     ProcessAgentControllers(mice, inputHandlingLock, false);
 
+    auto* mouse = static_cast<MOUSE::IMouseInputProvider*>(mice.at(0).get());
+
     // Process mouse input
     if (m_gameClient && m_gameClient->Input().SupportsMouse() &&
         !m_gameClient->Input().IsMouseOpen())
@@ -412,10 +414,50 @@ void CAgentInput::ProcessMouse()
       m_gameClient->Input().OpenMouse(it->GetActiveController().GetController());
 
       // Save mouse port
-      m_mousePort[static_cast<MOUSE::IMouseInputProvider*>(mice.at(0).get())] = it->GetAddress();
+      m_mousePort[mouse] = it->GetAddress();
 
       SetChanged(true);
     }
+  }
+
+  // Also with no mouse left, to close one that has gone
+  if (m_gameClient && !m_gameClient->Input().SupportsMouse())
+    ProcessControllerMouse(mice.empty() ? PERIPHERALS::PeripheralPtr{} : mice.at(0));
+}
+
+void CAgentInput::ProcessControllerMouse(const PERIPHERALS::PeripheralPtr& mouse)
+{
+  CGameClientInput& input = m_gameClient->Input();
+
+  // Without a mouse port, the mouse plays a controller with a pointer in a
+  // controller port, such as the PlayStation Mouse
+  const CControllerTree controllers = input.GetActiveControllerTree();
+  std::vector<std::string> mousePorts;
+  controllers.GetMouseControllerPorts(mousePorts);
+
+  std::string portAddress;
+  ControllerPtr controller;
+  if (mouse && !mousePorts.empty())
+  {
+    // There is one mouse, so it plays the first of them in port order
+    portAddress = mousePorts.front();
+    controller = controllers.GetPort(portAddress).GetActiveController().GetController();
+  }
+
+  // Reopen when the port, the controller in it or the mouse changes
+  if (input.IsMouseOpen() &&
+      (!controller || !input.IsControllerMouseOpen(portAddress, controller->ID(), mouse)))
+  {
+    input.CloseMouse();
+    m_mousePort.clear();
+    SetChanged(true);
+  }
+
+  if (controller && !input.IsMouseOpen() &&
+      input.OpenControllerMouse(portAddress, controller, mouse))
+  {
+    m_mousePort[static_cast<MOUSE::IMouseInputProvider*>(mouse.get())] = portAddress;
+    SetChanged(true);
   }
 }
 
