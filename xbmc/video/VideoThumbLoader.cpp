@@ -41,6 +41,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <mutex>
 #include <utility>
 
 using namespace KODI;
@@ -62,6 +63,9 @@ void CVideoThumbLoader::OnLoaderStart()
 {
   m_videoDatabase->Open();
   m_artCache.clear();
+  m_prefetchEnd = 0;
+  m_batched.clear();
+  m_prefetched.clear();
   CThumbLoader::OnLoaderStart();
 }
 
@@ -69,7 +73,106 @@ void CVideoThumbLoader::OnLoaderFinish()
 {
   m_videoDatabase->Close();
   m_artCache.clear();
+  m_prefetchEnd = 0;
+  m_batched.clear();
+  m_prefetched.clear();
   CThumbLoader::OnLoaderFinish();
+}
+
+namespace
+{
+//! Add the ids of an item's own, set, show and season art to prefetch, by media type.
+void AddArtIds(const CFileItem& item, std::map<std::string, std::vector<int>>& artIds)
+{
+  if (item.GetProperty(ITEM::PROPERTY::LIBRARY_ART_FILLED).asBoolean() ||
+      VIDEO::IsVideoAssetFile(item))
+    return;
+
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  if (tag.m_iDbId < 0 || tag.m_type.empty())
+    return;
+
+  artIds[tag.m_type].push_back(tag.m_iDbId);
+  const MEDIA::TYPE mediaType{tag.GetMediaType()};
+  if (mediaType == MEDIA::TYPE::EPISODE || mediaType == MEDIA::TYPE::SEASON)
+  {
+    if (tag.m_iIdShow >= 0)
+      artIds[NameOf(MEDIA::TYPE::TV_SHOW)].push_back(tag.m_iIdShow);
+    if (mediaType == MEDIA::TYPE::EPISODE && tag.m_iSeason > -1)
+      artIds[NameOf(MEDIA::TYPE::SEASON)].push_back(tag.m_iIdSeason);
+  }
+  else if (mediaType == MEDIA::TYPE::MOVIE && tag.m_set.GetID() >= 0)
+    artIds[NameOf(MEDIA::TYPE::VIDEO_COLLECTION)].push_back(tag.m_set.GetID());
+}
+} // namespace
+
+void CVideoThumbLoader::PrefetchFrom(const CFileItem& item)
+{
+  // background loader fills m_vecItems; any other caller leaves it empty
+  if (m_prefetchEnd >= m_vecItems.size() || m_batched.contains(&item))
+    return;
+
+  // 50 first for the rows on screen, then batches that fit a low-end device's cache
+  const size_t end{std::min(m_vecItems.size(), m_prefetchEnd + (m_prefetchEnd ? 100 : 50))};
+  std::map<std::string, std::vector<int>> artIds;
+  std::vector<CVideoInfoTag*> streamTags;
+  // held items are another thread's; no queries under the lock, a new hold waits on it
+  std::unique_lock lock(m_itemLock);
+  for (size_t i = m_prefetchEnd; i < end; ++i)
+  {
+    CFileItem& next{*m_vecItems[i]};
+    m_batched.insert(&next);
+    if (std::ranges::find(m_heldItems, &next) != m_heldItems.end() || !next.HasVideoInfoTag() ||
+        next.IsShareOrDrive() || next.IsParentFolder())
+      continue;
+
+    AddArtIds(next, artIds);
+    const CVideoInfoTag& tag{*next.GetVideoInfoTag()};
+    if (!tag.HasStreamDetails() && tag.m_iFileId >= 0 && !m_prefetched.contains(&next))
+    {
+      // loaded aside for LoadItemCached(), as another thread may hold the item until then
+      auto& loaded{m_prefetched[&next]};
+      loaded = std::make_unique<CVideoInfoTag>();
+      loaded->m_iFileId = tag.m_iFileId;
+      streamTags.push_back(loaded.get());
+    }
+  }
+  lock.unlock();
+  m_prefetchEnd = end;
+
+  PrefetchArt(std::move(artIds));
+  // after a failed query each item loads its own, as without a prefetch
+  if (!m_videoDatabase->AddStreamDetailsForList(streamTags))
+  {
+    for (CVideoInfoTag* tag : streamTags)
+      tag->m_iFileId = -1;
+  }
+}
+
+void CVideoThumbLoader::PrefetchArt(std::map<std::string, std::vector<int>> artIds)
+{
+  for (auto& [type, ids] : artIds)
+  {
+    std::ranges::sort(ids);
+    ids.erase(std::ranges::unique(ids).begin(), ids.end());
+    std::erase_if(ids, [this, &type](int id) { return m_artCache.contains({type, id}); });
+    std::map<int, KODI::ART::Artwork> art;
+    if (!m_videoDatabase->GetArtForItems(type, ids, art))
+      continue;
+    for (int id : ids)
+      m_artCache.try_emplace({type, id}, std::move(art[id]));
+  }
+}
+
+bool CVideoThumbLoader::GetItemArt(const CVideoInfoTag& tag, KODI::ART::Artwork& artwork)
+{
+  // an item's own art is read once
+  if (auto cached{m_artCache.extract({tag.m_type, tag.m_iDbId})}; !cached.empty())
+  {
+    artwork.merge(cached.mapped());
+    return true;
+  }
+  return m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork);
 }
 
 namespace
@@ -209,6 +312,10 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
 bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
 {
+  PrefetchFrom(*pItem);
+  const auto prefetched{m_prefetched.extract(pItem)};
+  const CVideoInfoTag* const loaded{prefetched.empty() ? nullptr : prefetched.mapped().get()};
+
   if (pItem->IsShareOrDrive() || pItem->IsParentFolder())
     return false;
 
@@ -222,7 +329,18 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
             VIDEO::IsVideo(
                 *pItem))) // Some other video file for which we haven't yet got any database details
     {
-      if (m_videoDatabase->GetStreamDetails(*pItem))
+      if (loaded && loaded->m_iFileId >= 0)
+      {
+        if (loaded->HasStreamDetails())
+        {
+          CVideoInfoTag& tag{*pItem->GetVideoInfoTag()};
+          tag.m_streamDetails = loaded->m_streamDetails;
+          if (const int duration{tag.m_streamDetails.GetVideoDuration()}; duration > 0)
+            tag.SetDuration(duration);
+          pItem->SetInvalid();
+        }
+      }
+      else if (m_videoDatabase->GetStreamDetails(*pItem))
         pItem->SetInvalid();
     }
   }
@@ -526,7 +644,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
           !artwork.empty())
         item.AppendArt(artwork);
     }
-    else if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork) && !artwork.empty())
+    else if (GetItemArt(tag, artwork) && !artwork.empty())
     {
       item.AppendArt(artwork);
     }

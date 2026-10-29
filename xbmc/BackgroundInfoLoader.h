@@ -75,6 +75,8 @@ protected:
   CFileItemList* m_pVecItems{nullptr};
   std::vector<CFileItemPtr> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.
   CCriticalSection m_lock;
+  CCriticalSection m_itemLock;
+  std::vector<const CFileItem*> m_heldItems; //!< items the loader thread has to leave alone
 
   volatile bool m_bIsLoading{false};
   volatile bool m_bStop{true};
@@ -105,9 +107,7 @@ private:
   ItemState BeginItem(const CFileItem* item, bool waitWhileHeld);
   void EndItem();
 
-  CCriticalSection m_itemLock;
   XbmcThreads::ConditionVariable m_itemChanged;
   const CFileItem* m_currentItem{nullptr}; //!< item the loader thread is working on
-  std::vector<const CFileItem*> m_heldItems; //!< items the loader thread has to leave alone
 };
 

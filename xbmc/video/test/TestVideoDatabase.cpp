@@ -49,6 +49,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <iterator>
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -572,6 +573,26 @@ TEST_F(TestVideoDatabase, AListItemHasTheDetailsOfTheItemLoadedAlone)
     CVideoInfoTag alone;
     ASSERT_TRUE(m_db.GetEpisodeInfo("", alone, item->GetVideoInfoTag()->m_iDbId));
     EXPECT_TRUE(serialized(alone) == serialized(*item->GetVideoInfoTag())) << item->GetLabel();
+  }
+}
+
+TEST_F(TestVideoDatabase, ListArtIsTheArtOfEachItemLoadedAlone)
+{
+  CVideoInfoTag one{Tag("/movies/one.mkv")};
+  const int idOne{m_db.SetDetailsForMovie(
+      one, KODI::ART::Artwork{{"poster", "one.jpg"}, {"fanart", "one-fanart.jpg"}})};
+  CVideoInfoTag two{Tag("/movies/two.mkv")};
+  const int idTwo{m_db.SetDetailsForMovie(two, KODI::ART::Artwork{})};
+  ASSERT_GT(idOne, 0);
+  ASSERT_GT(idTwo, 0);
+
+  std::map<int, KODI::ART::Artwork> art;
+  ASSERT_TRUE(m_db.GetArtForItems("movie", {idOne, idTwo}, art));
+  for (const int id : {idOne, idTwo})
+  {
+    KODI::ART::Artwork alone;
+    ASSERT_TRUE(m_db.GetArtForItem(id, "movie", alone));
+    EXPECT_EQ(alone, art[id]) << id;
   }
 }
 
