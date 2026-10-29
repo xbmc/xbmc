@@ -710,6 +710,8 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
 
     SetSortOrder(SortOrder::ASCENDING);
   }
+
+  AddRandomPlaylistOrder(items, LABEL_MASKS("%F", "", "%L", "")); // Filename, empty | Label, empty
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
 }
 

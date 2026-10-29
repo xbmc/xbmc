@@ -584,6 +584,14 @@ SortBy CGUIViewState::GetPlaylistSortBy(const CFileItemList& items)
   return static_cast<SortBy>(items.GetProperty(PROPERTY_SORT_ORDER).asInteger());
 }
 
+void CGUIViewState::AddRandomPlaylistOrder(const CFileItemList& items,
+                                           const LABEL_MASKS& label_masks)
+{
+  if ((PLAYLIST::IsSmartPlayList(items) || items.IsLibraryFolder()) &&
+      GetPlaylistSortBy(items) == SortBy::RANDOM)
+    AddPlaylistOrder(items, label_masks);
+}
+
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)
 {
   AddSortMethod(SortBy::LABEL, 551,
