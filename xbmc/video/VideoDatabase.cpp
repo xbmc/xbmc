@@ -103,6 +103,12 @@ using KODI::MEDIA::PluralNameOf;
 
 namespace
 {
+// Details a list loads for all its items at once instead of per item
+constexpr int LIST_DETAILS{VideoDbDetailsCast | VideoDbDetailsTag | VideoDbDetailsRating |
+                           VideoDbDetailsUniqueID | VideoDbDetailsShowLink | VideoDbDetailsStream};
+// IN lists stay below the sizes where MariaDB and MySQL switch query plans
+constexpr size_t LIST_DETAILS_CHUNK{500};
+
 // zip:// (native) and archive:// (vfs addon) paths refer to the same archive
 std::string GetArchiveAliasPath(const std::string& path)
 {
@@ -5608,6 +5614,213 @@ void CVideoDatabase::GetUniqueIDs(int media_id, MEDIA::TYPE media_type, CVideoIn
   }
 }
 
+void CVideoDatabase::GetDetailsForList(const std::vector<CVideoInfoTag*>& tags,
+                                       MEDIA::TYPE media_type,
+                                       int getDetails)
+{
+  // what the per-item loaders of each type read
+  int available{LIST_DETAILS};
+  if (media_type == MEDIA::TYPE::EPISODE)
+    available &= ~(VideoDbDetailsTag | VideoDbDetailsShowLink);
+  else if (media_type == MEDIA::TYPE::TV_SHOW)
+    available &= ~(VideoDbDetailsShowLink | VideoDbDetailsStream);
+  const int wanted{getDetails & available};
+
+  if (!(getDetails & LIST_DETAILS) || tags.empty() || !m_pDB || !m_pDS2)
+    return;
+
+  std::map<int, std::vector<CVideoInfoTag*>> byId;
+  std::map<int, std::vector<CVideoInfoTag*>> byShow;
+  for (CVideoInfoTag* tag : tags)
+  {
+    byId[tag->m_iDbId].push_back(tag);
+    if (media_type == MEDIA::TYPE::EPISODE)
+      byShow[tag->m_iIdShow].push_back(tag);
+  }
+
+  // %s in sql takes each chunk of keys, comma separated
+  const auto forEachRow = [this](const std::map<int, std::vector<CVideoInfoTag*>>& keys,
+                                 const std::string& sql, const auto& onRow)
+  {
+    auto it = keys.begin();
+    while (it != keys.end())
+    {
+      std::string list;
+      for (size_t n = 0; n < LIST_DETAILS_CHUNK && it != keys.end(); ++n, ++it)
+      {
+        if (!list.empty())
+          list += ',';
+        list += std::to_string(it->first);
+      }
+      m_pDS2->query(PrepareSQL(sql, list.c_str()));
+      while (!m_pDS2->eof())
+      {
+        onRow();
+        m_pDS2->next();
+      }
+      m_pDS2->close();
+    }
+  };
+  const std::string type{NameOf(media_type)};
+
+  const auto loadCast = [this, &forEachRow](std::map<int, std::vector<CVideoInfoTag*>>& keys,
+                                            const std::string& castType)
+  {
+    forEachRow(
+        keys,
+        PrepareSQL("SELECT actor_link.media_id, actor.name, actor_link.role, "
+                   "actor_link.cast_order, actor.art_urls, art.url "
+                   "FROM actor_link JOIN actor ON actor_link.actor_id=actor.actor_id "
+                   "LEFT JOIN art ON art.media_id=actor.actor_id AND "
+                   "art.media_type='actor' AND art.type='thumb' "
+                   "WHERE actor_link.media_type='%s' AND actor_link.media_id IN (%%s) "
+                   "ORDER BY actor_link.media_id, actor_link.cast_order, actor_link.actor_id",
+                   castType.c_str()),
+        [this, &keys]
+        {
+          SActorInfo info;
+          info.strName = m_pDS2->fv(1).get_asString();
+          info.strRole = m_pDS2->fv(2).get_asString();
+          info.order = m_pDS2->fv(3).get_asInt();
+          info.thumbUrl.ParseFromData(m_pDS2->fv(4).get_asString());
+          info.thumb = m_pDS2->fv(5).get_asString();
+          for (CVideoInfoTag* tag : keys[m_pDS2->fv(0).get_asInt()])
+          {
+            if (std::ranges::none_of(
+                    tag->m_cast, [&info](const SActorInfo& actor)
+                    { return actor.strName == info.strName && actor.strRole == info.strRole; }))
+              tag->m_cast.emplace_back(info);
+          }
+        });
+  };
+
+  try
+  {
+    if (wanted & VideoDbDetailsCast)
+    {
+      loadCast(byId, type);
+      // an episode lists its show's cast after its own
+      if (media_type == MEDIA::TYPE::EPISODE)
+        loadCast(byShow, NameOf(MEDIA::TYPE::TV_SHOW));
+    }
+
+    if (wanted & VideoDbDetailsTag)
+    {
+      forEachRow(byId,
+                 PrepareSQL("SELECT tag_link.media_id, tag.name FROM tag INNER JOIN tag_link ON "
+                            "tag_link.tag_id = tag.tag_id WHERE tag_link.media_type = '%s' AND "
+                            "tag_link.media_id IN (%%s) ORDER BY tag_link.media_id, tag.tag_id",
+                            type.c_str()),
+                 [this, &byId]
+                 {
+                   for (CVideoInfoTag* tag : byId[m_pDS2->fv(0).get_asInt()])
+                     tag->m_tags.emplace_back(m_pDS2->fv(1).get_asString());
+                 });
+    }
+
+    if (wanted & VideoDbDetailsRating)
+    {
+      forEachRow(byId,
+                 PrepareSQL("SELECT media_id, rating_type, rating, votes FROM rating WHERE "
+                            "media_type = '%s' AND media_id IN (%%s)",
+                            type.c_str()),
+                 [this, &byId]
+                 {
+                   for (CVideoInfoTag* tag : byId[m_pDS2->fv(0).get_asInt()])
+                     tag->m_ratings[m_pDS2->fv(1).get_asString()] =
+                         CRating(m_pDS2->fv(2).get_asFloat(), m_pDS2->fv(3).get_asInt());
+                 });
+    }
+
+    if (wanted & VideoDbDetailsUniqueID)
+    {
+      forEachRow(byId,
+                 PrepareSQL("SELECT media_id, type, value FROM uniqueid WHERE media_type = '%s' "
+                            "AND media_id IN (%%s)",
+                            type.c_str()),
+                 [this, &byId]
+                 {
+                   for (CVideoInfoTag* tag : byId[m_pDS2->fv(0).get_asInt()])
+                     tag->SetUniqueID(m_pDS2->fv(2).get_asString(), m_pDS2->fv(1).get_asString());
+                 });
+    }
+
+    if (wanted & VideoDbDetailsShowLink)
+    {
+      forEachRow(byId,
+                 PrepareSQL("SELECT movielinktvshow.idMovie, tvshow.c%02d FROM movielinktvshow "
+                            "JOIN tvshow ON tvshow.idShow = movielinktvshow.idShow WHERE "
+                            "movielinktvshow.idMovie IN (%%s) "
+                            "ORDER BY movielinktvshow.idMovie, movielinktvshow.idShow",
+                            VIDEODB_ID_TV_TITLE),
+                 [this, &byId]
+                 {
+                   for (CVideoInfoTag* tag : byId[m_pDS2->fv(0).get_asInt()])
+                     tag->m_showLink.emplace_back(m_pDS2->fv(1).get_asString());
+                 });
+    }
+
+    if (wanted & VideoDbDetailsStream)
+      GetStreamDetailsForList(tags);
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", type);
+  }
+
+  for (CVideoInfoTag* tag : tags)
+    tag->m_parsedDetails = getDetails;
+}
+
+void CVideoDatabase::GetStreamDetailsForList(const std::vector<CVideoInfoTag*>& tags)
+{
+  std::map<int, std::vector<CVideoInfoTag*>> byFile;
+  for (CVideoInfoTag* tag : tags)
+  {
+    if (tag->m_iFileId >= 0)
+      byFile[tag->m_iFileId].push_back(tag);
+  }
+  if (byFile.empty() || !m_pDB || !m_pDS2)
+    return;
+
+  std::map<int, CStreamDetails> streams;
+  try
+  {
+    for (auto it = byFile.begin(); it != byFile.end();)
+    {
+      std::string list;
+      for (size_t n = 0; n < LIST_DETAILS_CHUNK && it != byFile.end(); ++n, ++it)
+      {
+        if (!list.empty())
+          list += ',';
+        list += std::to_string(it->first);
+      }
+      m_pDS2->query(PrepareSQL("SELECT * FROM streamdetails WHERE idFile IN (%s)", list.c_str()));
+      while (!m_pDS2->eof())
+      {
+        AddStreamDetailFromRow(*m_pDS2, streams[m_pDS2->fv(0).get_asInt()]);
+        m_pDS2->next();
+      }
+      m_pDS2->close();
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed");
+  }
+
+  for (const auto& [idFile, fileTags] : byFile)
+  {
+    for (CVideoInfoTag* tag : fileTags)
+    {
+      // Assigning determines the best streams, which GetVideoDuration() reads
+      tag->m_streamDetails = streams[idFile];
+      if (const int duration{tag->m_streamDetails.GetVideoDuration()}; duration > 0)
+        tag->SetDuration(duration);
+    }
+  }
+}
+
 bool CVideoDatabase::GetVideoSettings(const CFileItem &item, CVideoSettings &settings)
 {
   return GetVideoSettings(GetFileId(item), settings);
@@ -8311,13 +8524,15 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
 
     // get data from returned rows
     items.Reserve(results.size());
+    std::vector<CVideoInfoTag*> listTags;
+    listTags.reserve(results.size());
     const query_data &data = m_pDS->get_result_set().records;
     for (const auto &i : results)
     {
       const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
-      CVideoInfoTag movie = GetDetailsForMovie(record, getDetails);
+      CVideoInfoTag movie = GetDetailsForMovie(record, getDetails & ~LIST_DETAILS);
       if (m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
           g_passwordManager.bMasterUser ||
           g_passwordManager.IsDatabasePathUnlocked(
@@ -8382,8 +8597,10 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         item->SetOverlayImage(movie.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
                                                        : CGUIListItem::ICON_OVERLAY_UNWATCHED);
         items.Add(item);
+        listTags.push_back(item->GetVideoInfoTag());
       }
     }
+    GetDetailsForList(listTags, MEDIA::TYPE::MOVIE, getDetails);
 
     // cleanup
     m_pDS->close();
@@ -8470,6 +8687,8 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
 
     // get data from returned rows
     items.Reserve(results.size());
+    std::vector<CVideoInfoTag*> listTags;
+    listTags.reserve(results.size());
     const query_data &data = m_pDS->get_result_set().records;
     for (const auto &i : results)
     {
@@ -8477,7 +8696,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
       const dbiplus::sql_record* const record = data.at(targetRow);
 
       auto pItem = std::make_shared<CFileItem>();
-      CVideoInfoTag movie = GetDetailsForTvShow(record, getDetails, pItem.get());
+      CVideoInfoTag movie = GetDetailsForTvShow(record, getDetails & ~LIST_DETAILS, pItem.get());
       if (m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
           g_passwordManager.bMasterUser ||
           g_passwordManager.IsDatabasePathUnlocked(
@@ -8494,9 +8713,11 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
                                        (pItem->GetVideoInfoTag()->m_iEpisode > 0)
                                    ? CGUIListItem::ICON_OVERLAY_WATCHED
                                    : CGUIListItem::ICON_OVERLAY_UNWATCHED);
+        listTags.push_back(pItem->GetVideoInfoTag());
         items.Add(std::move(pItem));
       }
     }
+    GetDetailsForList(listTags, MEDIA::TYPE::TV_SHOW, getDetails);
 
     // cleanup
     m_pDS->close();
@@ -8600,6 +8821,8 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
     // get data from returned rows
     items.Reserve(results.size());
     CLabelFormatter formatter("%H. %T", "");
+    std::vector<CVideoInfoTag*> listTags;
+    listTags.reserve(results.size());
 
     const query_data &data = m_pDS->get_result_set().records;
     for (const auto &i : results)
@@ -8607,7 +8830,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
       const auto targetRow = static_cast<unsigned int>(i.at(Field::ROW).asInteger());
       const dbiplus::sql_record* const record = data.at(targetRow);
 
-      CVideoInfoTag episode = GetDetailsForEpisode(record, getDetails);
+      CVideoInfoTag episode = GetDetailsForEpisode(record, getDetails & ~LIST_DETAILS);
       if (m_profileManager.GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
           g_passwordManager.bMasterUser ||
           g_passwordManager.IsDatabasePathUnlocked(
@@ -8634,9 +8857,11 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
         pItem->SetOverlayImage(episode.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
                                                           : CGUIListItem::ICON_OVERLAY_UNWATCHED);
         pItem->SetDateTime(episode.m_firstAired);
+        listTags.push_back(pItem->GetVideoInfoTag());
         items.Add(std::move(pItem));
       }
     }
+    GetDetailsForList(listTags, MEDIA::TYPE::EPISODE, getDetails);
 
     // cleanup
     m_pDS->close();
