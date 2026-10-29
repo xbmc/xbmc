@@ -496,7 +496,9 @@ protected:
   void HandlePlaySpeed();
   bool IsInMenuInternal() const;
   void SynchronizeDemuxer();
+  bool IsNearStreamEnd(std::chrono::milliseconds time) const;
   void QueueAutoSceneSkip(std::chrono::milliseconds seekTime);
+  void MarkCommBreakSkipped(const EDL::Edit& edit, std::chrono::milliseconds seekTime);
   void CheckAutoSceneSkip();
   bool CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(const CCurrentStream& current);
