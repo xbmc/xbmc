@@ -182,3 +182,14 @@ std::pair<std::string, std::string> CGameClientTopology::SplitAddress(
 
   return std::make_pair(baseAddress, nodeId);
 }
+
+GAME_PORT_TYPE CGameClientTopology::GetPortType(const std::string& portAddress)
+{
+  if (portAddress == KEYBOARD_PORT_ADDRESS)
+    return GAME_PORT_KEYBOARD;
+
+  if (portAddress == MOUSE_PORT_ADDRESS)
+    return GAME_PORT_MOUSE;
+
+  return GAME_PORT_CONTROLLER;
+}

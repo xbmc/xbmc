@@ -6,7 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/game.h"
+#include "games/controllers/Controller.h"
+#include "games/controllers/ControllerIDs.h"
 #include "games/controllers/types/ControllerHub.h"
 #include "games/controllers/types/ControllerNode.h"
 #include "games/ports/types/PortNode.h"
@@ -15,6 +20,40 @@
 
 using namespace KODI;
 using namespace GAME;
+
+namespace
+{
+ControllerPtr LoadController(const std::string& controllerId)
+{
+  ADDON::AddonPtr addon;
+  EXPECT_TRUE(CServiceBroker::GetAddonMgr().GetAddon(
+      controllerId, addon, ADDON::AddonType::GAME_CONTROLLER, ADDON::OnlyEnabled::CHOICE_YES));
+
+  ControllerPtr controller = std::static_pointer_cast<CController>(addon);
+  EXPECT_TRUE(controller && controller->LoadLayout());
+
+  return controller;
+}
+
+CPortNode MakeControllerPort(const std::string& address, CControllerNode controller, bool connected)
+{
+  CPortNode port;
+  port.SetPortType(PORT_TYPE::CONTROLLER);
+  port.SetPortID(address.substr(address.rfind('/') + 1));
+  port.SetAddress(address);
+  port.SetCompatibleControllers({std::move(controller)});
+  port.SetConnected(connected);
+  port.SetActiveController(0);
+  return port;
+}
+
+CControllerNode MakeControllerNode(const ControllerPtr& controller)
+{
+  CControllerNode node;
+  node.SetController(controller);
+  return node;
+}
+} // namespace
 
 /*!
  * Verify that a keyboard port at the root level is returned by GetKeyboardPorts.
@@ -134,4 +173,58 @@ TEST(TestPortNodeInput, NestedMouse)
 
   ASSERT_EQ(mousePorts.size(), 1u);
   EXPECT_EQ(mousePorts.front(), std::string(DEFAULT_PORT_ADDRESS) + "/" + MOUSE_PORT_ID);
+}
+
+/*!
+ * Verify that only a connected controller port with a mouse connected is returned
+ * by GetMouseControllerPorts.
+ */
+TEST(TestPortNodeInput, MouseControllerPorts)
+{
+  const ControllerPtr mouse = LoadController(DEFAULT_MOUSE_ID);
+  const ControllerPtr gamepad = LoadController(DEFAULT_CONTROLLER_ID);
+
+  CPortNode mousePort;
+  mousePort.SetPortType(PORT_TYPE::MOUSE);
+  mousePort.SetPortID(MOUSE_PORT_ID);
+  mousePort.SetAddress(MOUSE_PORT_ADDRESS);
+  mousePort.SetCompatibleControllers({MakeControllerNode(mouse)});
+  mousePort.SetConnected(true);
+  mousePort.SetActiveController(0);
+
+  CControllerHub hub;
+  hub.SetPorts({MakeControllerPort("/1", MakeControllerNode(gamepad), true),
+                MakeControllerPort("/2", MakeControllerNode(mouse), true),
+                MakeControllerPort("/3", MakeControllerNode(mouse), false), mousePort});
+
+  std::vector<std::string> mouseControllerPorts;
+  hub.GetMouseControllerPorts(mouseControllerPorts);
+
+  ASSERT_EQ(mouseControllerPorts.size(), 1u);
+  EXPECT_EQ(mouseControllerPorts.front(), "/2");
+}
+
+/*!
+ * Verify that a mouse connected to a port of a connected controller, such as a
+ * multitap, is discovered.
+ */
+TEST(TestPortNodeInput, NestedMouseControllerPort)
+{
+  const ControllerPtr mouse = LoadController(DEFAULT_MOUSE_ID);
+  const ControllerPtr gamepad = LoadController(DEFAULT_CONTROLLER_ID);
+
+  CControllerHub tapHub;
+  tapHub.SetPorts({MakeControllerPort("/1/tap/2", MakeControllerNode(mouse), true)});
+
+  CControllerNode tap = MakeControllerNode(gamepad);
+  tap.SetHub(tapHub);
+
+  CControllerHub hub;
+  hub.SetPorts({MakeControllerPort("/1", std::move(tap), true)});
+
+  std::vector<std::string> mouseControllerPorts;
+  hub.GetMouseControllerPorts(mouseControllerPorts);
+
+  ASSERT_EQ(mouseControllerPorts.size(), 1u);
+  EXPECT_EQ(mouseControllerPorts.front(), "/1/tap/2");
 }

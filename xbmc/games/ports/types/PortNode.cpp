@@ -197,6 +197,22 @@ void CPortNode::GetMousePorts(std::vector<std::string>& mousePorts) const
   }
 }
 
+void CPortNode::GetMouseControllerPorts(std::vector<std::string>& mouseControllerPorts) const
+{
+  if (!IsConnected())
+    return;
+
+  const CControllerNode& controller = GetActiveController();
+
+  // Base case: we're a controller port with a pointer controller connected
+  if (GetPortType() == PORT_TYPE::CONTROLLER && controller.GetController() &&
+      controller.GetController()->FeatureCount(JOYSTICK::FEATURE_TYPE::RELPOINTER) > 0)
+    mouseControllerPorts.emplace_back(GetAddress());
+
+  // Visit children
+  controller.GetMouseControllerPorts(mouseControllerPorts);
+}
+
 void CPortNode::GetPort(CPhysicalPort& port) const
 {
   std::vector<std::string> accepts;
