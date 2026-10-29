@@ -2168,14 +2168,6 @@ std::string GetDiscName(const std::string& videoPath)
   return disc;
 }
 
-//! Whether the video is an extra of the movie on its disc, such as a featurette: one of the disc's
-//! playlists, whose files beside the disc are the movie's unless named for it
-bool IsDiscExtra(const std::string& videoPath, const CVideoInfoTag* tag)
-{
-  return tag && tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA &&
-         URIUtils::GetBlurayPlaylistFromPath(videoPath) > -1;
-}
-
 //! Whether a file found for a disc's extra is named for its playlist, as its art is (index-00805,
 //! 00805, M3GAN-00805), or is in an archive so named
 bool IsDiscExtrasOwnFile(const std::string& file,
@@ -2258,6 +2250,20 @@ bool CUtil::IsAnotherVersionsFile(const std::string& file,
       return *other != std::pair{tag->m_iSeason, tag->m_iEpisode};
   }
   return false;
+}
+
+bool CUtil::IsDiscPlaylistExtra(const std::string& videoPath, const CVideoInfoTag* tag)
+{
+  if (!tag || tag->GetAssetInfo().GetType() != VideoAssetType::EXTRA || tag->m_iFileId <= 0 ||
+      URIUtils::GetBlurayPlaylistFromPath(videoPath) < 0)
+    return false;
+
+  // A whole disc played from one of its playlists has the playlist's path in its tag, but the
+  // library still holds the disc under the same file id
+  CVideoDatabase db;
+  CVideoInfoTag stored;
+  return db.Open() && db.GetFileInfo("", stored, tag->m_iFileId) &&
+         URIUtils::IsBlurayPath(stored.m_strFileNameAndPath);
 }
 
 void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
@@ -2351,8 +2357,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
   std::erase_if(vecSubtitles, [&strSubtitle, &strMovie, tag](const std::string& subtitle)
                 { return IsAnotherVersionsFile(subtitle, strSubtitle, strMovie, tag); });
 
-  // An extra on the movie's disc has only those named for it: the others there are the movie's
-  if (IsDiscExtra(strMovie, tag))
+  // An extra on a disc it shares has only those named for it: the others there are another video's
+  if (IsDiscPlaylistExtra(strMovie, tag))
     std::erase_if(vecSubtitles, [&strSubtitle, &strMovie, tag](const std::string& subtitle)
                   { return !IsDiscExtrasOwnFile(subtitle, strSubtitle, strMovie, tag); });
 
@@ -2676,9 +2682,9 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath,
       ScanPathsForAssociatedItems(name, items, exts, vecAudio);
   }
 
-  // Another version's is left out. An extra on the movie's disc has only that named for it, even
-  // where all the audio beside a video is used: the rest there is the movie's.
-  const bool discExtra{IsDiscExtra(videoPath, tag)};
+  // Another version's is left out. An extra on a disc it shares has only that named for it, even
+  // where all the audio beside a video is used: the rest there is another video's.
+  const bool discExtra{IsDiscPlaylistExtra(videoPath, tag)};
   vecAudio.erase(std::remove_if(vecAudio.begin() + passedIn, vecAudio.end(),
                                 [&strAudio, &videoPath, tag, discExtra](const std::string& audio)
                                 {
