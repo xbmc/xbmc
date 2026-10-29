@@ -14,6 +14,8 @@
 #include "utils/Artwork.h"
 
 #include <map>
+#include <memory>
+#include <set>
 #include <vector>
 
 class CStreamDetails;
@@ -98,4 +100,17 @@ protected:
 
 private:
   int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
+
+  /*! \brief Prefetch art and stream details of the next list batch, unless the item is in one. */
+  void PrefetchFrom(const CFileItem& item);
+
+  /*! \brief Prefetch the art of items and their sets, shows and seasons for FillLibraryArt(). */
+  void PrefetchArt(const std::vector<CFileItem*>& items);
+
+  /*! \brief Get an item's own art, from the art cache when it holds it. */
+  bool GetItemArt(const CVideoInfoTag& tag, KODI::ART::Artwork& artwork);
+
+  size_t m_prefetchEnd{0};
+  std::set<const CFileItem*> m_batched;
+  std::map<const CFileItem*, std::unique_ptr<CVideoInfoTag>> m_prefetched;
 };

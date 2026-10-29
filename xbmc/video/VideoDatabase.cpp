@@ -5772,7 +5772,7 @@ void CVideoDatabase::GetDetailsForList(const std::vector<CVideoInfoTag*>& tags,
     tag->m_parsedDetails = getDetails;
 }
 
-void CVideoDatabase::GetStreamDetailsForList(const std::vector<CVideoInfoTag*>& tags)
+bool CVideoDatabase::AddStreamDetailsForList(const std::vector<CVideoInfoTag*>& tags)
 {
   std::map<int, std::vector<CVideoInfoTag*>> byFile;
   for (CVideoInfoTag* tag : tags)
@@ -5780,10 +5780,11 @@ void CVideoDatabase::GetStreamDetailsForList(const std::vector<CVideoInfoTag*>& 
     if (tag->m_iFileId >= 0)
       byFile[tag->m_iFileId].push_back(tag);
   }
-  if (byFile.empty() || !m_pDB || !m_pDS2)
-    return;
+  if (byFile.empty())
+    return true;
+  if (!m_pDB || !m_pDS2)
+    return false;
 
-  std::map<int, CStreamDetails> streams;
   try
   {
     for (auto it = byFile.begin(); it != byFile.end();)
@@ -5798,27 +5799,78 @@ void CVideoDatabase::GetStreamDetailsForList(const std::vector<CVideoInfoTag*>& 
       m_pDS2->query(PrepareSQL("SELECT * FROM streamdetails WHERE idFile IN (%s)", list.c_str()));
       while (!m_pDS2->eof())
       {
-        AddStreamDetailFromRow(*m_pDS2, streams[m_pDS2->fv(0).get_asInt()]);
+        for (CVideoInfoTag* tag : byFile[m_pDS2->fv(0).get_asInt()])
+          AddStreamDetailFromRow(*m_pDS2, tag->m_streamDetails);
         m_pDS2->next();
       }
       m_pDS2->close();
     }
+    return true;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "failed");
   }
+  return false;
+}
 
-  for (const auto& [idFile, fileTags] : byFile)
+void CVideoDatabase::GetStreamDetailsForList(const std::vector<CVideoInfoTag*>& tags)
+{
+  for (CVideoInfoTag* tag : tags)
   {
-    for (CVideoInfoTag* tag : fileTags)
-    {
-      // Assigning determines the best streams, which GetVideoDuration() reads
-      tag->m_streamDetails = streams[idFile];
-      if (const int duration{tag->m_streamDetails.GetVideoDuration()}; duration > 0)
-        tag->SetDuration(duration);
-    }
+    if (tag->m_iFileId >= 0)
+      tag->m_streamDetails.Reset();
   }
+  AddStreamDetailsForList(tags);
+  for (CVideoInfoTag* tag : tags)
+  {
+    if (tag->m_iFileId < 0)
+      continue;
+
+    tag->m_streamDetails.DetermineBestStreams();
+    if (const int duration{tag->m_streamDetails.GetVideoDuration()}; duration > 0)
+      tag->SetDuration(duration);
+  }
+}
+
+bool CVideoDatabase::GetArtForItems(const std::string& mediaType,
+                                    const std::vector<int>& ids,
+                                    std::map<int, KODI::ART::Artwork>& art)
+{
+  if (ids.empty())
+    return true;
+  if (!m_pDB || !m_pDS2)
+    return false;
+
+  try
+  {
+    for (size_t start = 0; start < ids.size(); start += LIST_DETAILS_CHUNK)
+    {
+      std::string list;
+      for (size_t i = start; i < std::min(ids.size(), start + LIST_DETAILS_CHUNK); ++i)
+      {
+        if (!list.empty())
+          list += ',';
+        list += std::to_string(ids[i]);
+      }
+      m_pDS2->query(PrepareSQL("SELECT media_id, type, url FROM art WHERE media_type='%s' AND "
+                               "media_id IN (%s)",
+                               mediaType.c_str(), list.c_str()));
+      while (!m_pDS2->eof())
+      {
+        art[m_pDS2->fv(0).get_asInt()].try_emplace(m_pDS2->fv(1).get_asString(),
+                                                   m_pDS2->fv(2).get_asString());
+        m_pDS2->next();
+      }
+      m_pDS2->close();
+    }
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", mediaType);
+  }
+  return false;
 }
 
 bool CVideoDatabase::GetVideoSettings(const CFileItem &item, CVideoSettings &settings)
