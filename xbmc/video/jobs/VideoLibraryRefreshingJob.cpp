@@ -21,6 +21,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/PluginDirectory.h"
+#include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -93,9 +94,20 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
             "CVideoLibraryRefreshingJob: refreshing '{}' (ignore nfo: {}, refresh all: {})",
             CURL::GetRedacted(m_item->GetPath()), m_ignoreNfo, m_refreshAll);
 
-  // determine the scraper for the item's path
+  // determine the scraper for the item's path. The Blu-ray playlist path of a movie or music video
+  // is below its disc, so the settings are taken from the disc's own path, as the scan does. A
+  // stack's settings are those of its first part, as GetScraperForPath() finds them.
+  std::string settingsPath{m_item->GetPath()};
+  if (m_item->GetVideoContentType() == VideoDbContentType::MOVIES ||
+      m_item->GetVideoContentType() == VideoDbContentType::MUSICVIDEOS)
+  {
+    if (URIUtils::IsStack(settingsPath))
+      settingsPath = XFILE::CStackDirectory::GetFirstStackedFile(settingsPath);
+    if (URIUtils::IsBlurayPath(settingsPath))
+      settingsPath = URIUtils::GetDiscFile(settingsPath);
+  }
   VIDEO::SScanSettings scanSettings;
-  ScraperPtr scraper = db.GetScraperForPath(m_item->GetPath(), scanSettings);
+  ScraperPtr scraper = db.GetScraperForPath(settingsPath, scanSettings);
   if (!scraper && m_item->GetVideoContentType() == VideoDbContentType::MOVIE_SETS)
   {
     // Deal with refreshing movie set
