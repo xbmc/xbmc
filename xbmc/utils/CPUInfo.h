@@ -99,7 +99,7 @@ protected:
   CCPUInfo() = default;
   virtual ~CCPUInfo() = default;
 
-  int m_lastUsedPercentage;
+  int m_lastUsedPercentage{0};
   XbmcThreads::EndTime<> m_nextUsedReadTime;
   std::string m_cpuVendor;
   std::string m_cpuModel;
