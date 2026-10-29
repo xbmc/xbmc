@@ -15,7 +15,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
-#include "video/VideoManagerTypes.h"
 
 #include <charconv>
 #include <chrono>
@@ -38,8 +37,8 @@ std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
 
   const std::string& path{item.GetDynPath()};
   const bool isBluray{URIUtils::IsBlurayPath(path)};
-  const std::vector<std::string> ownNames{
-      CUtil::GetVersionFileNames(path, item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr)};
+  const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
+  const std::vector<std::string> ownNames{CUtil::GetVersionFileNames(path, tag)};
   if (!isBluray && !URIUtils::IsOpticalMediaFile(path) && ownNames.empty())
     return URIUtils::ReplaceExtension(path, ".edl");
 
@@ -53,11 +52,9 @@ std::string CEdlFileParser::GetEdlFilePath(const CFileItem& item) const
   for (const std::string& own : ownNames)
     edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, own + ".edl"));
 
-  // An extra of the movie on its disc, such as a featurette, is cut only by its own, as the disc's
-  // is the movie's
-  const bool discExtra{isBluray && item.HasVideoInfoTag() &&
-                       item.GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA};
-  if (!discExtra)
+  // An extra on a disc it shares, such as a featurette on the movie's disc, is cut only by its own,
+  // as the disc's is another video's. An extra that is a whole disc of its own has the disc's.
+  if (!CUtil::IsDiscPlaylistExtra(path, tag))
   {
     edlFiles.emplace_back(URIUtils::AddFileToFolder(folder, name + ".edl"));
 
