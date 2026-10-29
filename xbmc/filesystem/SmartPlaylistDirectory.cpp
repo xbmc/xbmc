@@ -295,7 +295,9 @@ namespace XFILE
     }
 
     // sort grouped list by label unless random was specified for musicvideo artists
-    if (items.Size() > 1 && !group.empty())
+    // A playlist with a group setting that is not applied ("none" or a mixed group) is not grouped,
+    // so the order of the database is kept, unless the playlist has no order.
+    if (items.Size() > 1 && (isGrouped || (!group.empty() && playlist.GetOrder() == SortBy::NONE)))
     {
       if (playlist.GetOrder() == SortBy::RANDOM && group == "actors" &&
           playlist.GetType() == MEDIA::CONTENT::MUSICVIDEOS)
