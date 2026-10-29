@@ -351,6 +351,9 @@ inline std::string ATTR_DLL_LOCAL GetRegion(const std::string& id)
 /// @brief Returns the amount of free memory in MByte (or as bytes) as an long
 /// integer
 ///
+/// In bytes mode on platforms with a 32-bit long (Windows and 32-bit Android/Linux),
+/// values of 2 GiB or more are capped at LONG_MAX. Use the default MB mode for larger values.
+///
 /// @param[out] free free memory
 /// @param[out] total total memory
 /// @param[in] asBytes [opt] if set to true becomes returned as bytes, otherwise
