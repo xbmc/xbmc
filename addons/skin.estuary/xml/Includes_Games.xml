@@ -1023,6 +1023,9 @@
 		<value condition="!String.IsEmpty(Window.Property(Achievements.HasSets))">$INFO[Window.Property(Achievements.Progress)]$INFO[Window.Property(Achievements.Beaten),  [COLOR white]•[/COLOR]  ,]</value>
 		<value>$INFO[RetroPlayer.AchievementsProgress]$INFO[Window.Property(Achievements.Progress),  [COLOR white]•[/COLOR]  ,]$INFO[Window.Property(Achievements.Beaten),  [COLOR white]•[/COLOR]  ,]</value>
 	</variable>
+	<variable name="GameAchievementAttemptingLabelVar">
+		<value condition="!String.IsEmpty(ListItem.Property(achievement.attempting))">[COLOR white]$LOCALIZE[35718][/COLOR]</value>
+	</variable>
 	<variable name="GameAchievementMissableLabelVar">
 		<value condition="!String.IsEmpty(ListItem.Property(achievement.missable))">[COLOR red]$LOCALIZE[35710][/COLOR]</value>
 	</variable>
@@ -1090,7 +1093,7 @@
 					<top>0</top>
 					<width>490</width>
 					<height>28</height>
-					<label>$INFO[ListItem.Property(achievement.points)]$VAR[GameAchievementRarityLabelVar,  [COLOR white]•[/COLOR]  ,]$VAR[GameAchievementMissableLabelVar,  [COLOR white]•[/COLOR]  ,]</label>
+					<label>$VAR[GameAchievementAttemptingLabelVar,,  [COLOR white]•[/COLOR]  ]$INFO[ListItem.Property(achievement.points)]$VAR[GameAchievementRarityLabelVar,  [COLOR white]•[/COLOR]  ,]$VAR[GameAchievementMissableLabelVar,  [COLOR white]•[/COLOR]  ,]</label>
 					<font>font12</font>
 					<textcolor>blue</textcolor>
 					<aligny>center</aligny>
@@ -1152,9 +1155,9 @@
 			</control>
 		</definition>
 	</include>
-	<!-- The corner indicators shown over a running game: the achievement being
-	     attempted, how far along a measured one is, and the live value of a
-	     leaderboard attempt.
+	<!-- The corner indicators shown over a running game: the achievements being
+	     attempted, up to three of them, how far along a measured one is, and the
+	     live value of a leaderboard attempt.
 
 	     This has to stay a dialog: over a game with its own DRM plane the GUI
 	     layer is not composited unless one is up. -->
@@ -1173,9 +1176,19 @@
 			<align>right</align>
 
 			<include content="GameIndicator">
-				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle)" />
-				<param name="badge" value="RetroPlayer.AchievementsChallengeBadge" />
-				<param name="title" value="RetroPlayer.AchievementsChallengeTitle" />
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle(1))" />
+				<param name="badge" value="RetroPlayer.AchievementsChallengeBadge(1)" />
+				<param name="title" value="RetroPlayer.AchievementsChallengeTitle(1)" />
+			</include>
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle(2))" />
+				<param name="badge" value="RetroPlayer.AchievementsChallengeBadge(2)" />
+				<param name="title" value="RetroPlayer.AchievementsChallengeTitle(2)" />
+			</include>
+			<include content="GameIndicator">
+				<param name="condition" value="!String.IsEmpty(RetroPlayer.AchievementsChallengeTitle(3))" />
+				<param name="badge" value="RetroPlayer.AchievementsChallengeBadge(3)" />
+				<param name="title" value="RetroPlayer.AchievementsChallengeTitle(3)" />
 			</include>
 
 			<include content="GameIndicator">

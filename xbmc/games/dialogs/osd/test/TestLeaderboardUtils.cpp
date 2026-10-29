@@ -222,6 +222,35 @@ TEST_F(TestLeaderboardUtils, AnIndicatorWithNothingToDrawDoesNotHideOneBehindIt)
   EXPECT_TRUE(silent.GetShownLeaderboardTracker().display.empty());
 }
 
+TEST_F(TestLeaderboardUtils, EveryAttemptCanBeShownInTheOrderItStarted)
+{
+  CAchievementRuntime runtime;
+
+  AchievementChallenge first;
+  first.id = 1;
+  first.title = "Shroom";
+  runtime.SetChallenge(first, true);
+
+  // Nothing to draw, so it takes no place
+  AchievementChallenge nameless;
+  nameless.id = 2;
+  runtime.SetChallenge(nameless, true);
+
+  AchievementChallenge second;
+  second.id = 3;
+  second.title = "Fire Flower";
+  runtime.SetChallenge(second, true);
+
+  EXPECT_EQ(runtime.GetShownChallenge(0).id, 1u);
+  EXPECT_EQ(runtime.GetShownChallenge(1).id, 3u);
+  EXPECT_EQ(runtime.GetShownChallenge(2).id, 0u);
+
+  // One that ends makes room for the next
+  runtime.SetChallenge(first, false);
+  EXPECT_EQ(runtime.GetShownChallenge(0).id, 3u);
+  EXPECT_EQ(runtime.GetShownChallenge(1).id, 0u);
+}
+
 TEST_F(TestLeaderboardUtils, TheClosestToEarnedIsChosenFromWhatCanBeDrawn)
 {
   AchievementProgressIndicator nameless;

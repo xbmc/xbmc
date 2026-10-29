@@ -20054,7 +20054,15 @@ msgctxt "#35715"
 msgid "Main Set"
 msgstr ""
 
-#empty strings from id 35716 to 35999
+#empty strings from id 35716 to 35717
+
+#. Marks an achievement being attempted in the list of a game's achievements
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35718"
+msgid "Attempt active"
+msgstr ""
+
+#empty strings from id 35719 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
