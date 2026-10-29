@@ -90,7 +90,7 @@ IF DEFINED BUILDDIR (
   IF EXIST "%CCACHE_STATSLOG%" DEL /Q "%CCACHE_STATSLOG%"
 
   cmake.exe -G "%cmakeGenerator%" -A %cmakeArch% -T host=x64 %cmakeProps% %base_dir%
-  IF %errorlevel%==1 (
+  IF ERRORLEVEL 1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE
   )
@@ -98,8 +98,8 @@ IF DEFINED BUILDDIR (
   cmake.exe --build . --config "%buildconfig%" --parallel
   SET buildresult=%errorlevel%
   CALL :CCACHE_REPORT
-  IF %buildresult%==1 (
-    set DIETEXT="%APP_NAME%.EXE failed to build!"
+  IF NOT "%buildresult%"=="0" (
+    set DIETEXT="%APP_NAME%.EXE failed to build! (cmake --build returned %buildresult%)"
     goto DIE
   )
 
@@ -179,6 +179,14 @@ rem Runs in the build directory, where CMakeCache.txt records the selected CCACH
 
   rem Exclude dlls from system to avoid duplicates
   Echo .dll>>exclude_dll.txt
+
+  rem A failed or aborted compiler run can leave the build directory without a binary
+  rem even when the exit code looked fine (e.g. MSBuild aborting its out-of-proc nodes
+  rem with an internal error), so never package from an empty build tree.
+  IF NOT EXIST %EXE% (
+    set DIETEXT="%APP_NAME%.EXE was not produced by the build, check the build log for compiler or MSBuild errors"
+    goto DIE
+  )
 
   md BUILD_WIN32\application
 
