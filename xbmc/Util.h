@@ -300,6 +300,15 @@ public:
                                     const std::string& videoPath,
                                     const CVideoInfoTag* tag = nullptr);
 
+  /*! \brief Whether a video is an extra the library stores as one of a disc's playlists, such as a
+   *         featurette on the movie's own disc. The files beside a disc it shares, named after the
+   *         disc, are another video's, so only those named for its playlist are its own. An extra
+   *         that is a whole disc of its own plays one of its playlists too, but keeps the disc's.
+   *  \param[in] videoPath The path the video plays, a bluray:// playlist path for a disc's.
+   *  \param[in] tag The video's info, if any, whose file id is the library's for the extra.
+   */
+  static bool IsDiscPlaylistExtra(const std::string& videoPath, const CVideoInfoTag* tag);
+
   /*! \brief If a file has a stack://, bluray:// or archive (zip://, rar://, archive://) path,
    *         use the dynamic path for updates (settings, SaveFileStateJob) instead of the real path.
    *  \param item The file item to check.

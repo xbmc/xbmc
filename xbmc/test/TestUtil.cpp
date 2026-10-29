@@ -29,6 +29,7 @@
 #include "video/VideoManagerTypes.h"
 
 #include <algorithm>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -992,7 +993,35 @@ protected:
       ASSERT_TRUE(XFILE::CDirectory::Create(path));
   }
 
-  void TearDown() override { XFILE::CDirectory::RemoveRecursive(m_root); }
+  void TearDown() override
+  {
+    CVideoDatabase db;
+    if (!m_storedFiles.empty() && db.Open())
+    {
+      for (const int idFile : m_storedFiles)
+        db.DeleteFile(idFile);
+    }
+    XFILE::CDirectory::RemoveRecursive(m_root);
+  }
+
+  //! The info of an extra of the movie, such as a featurette, the library stores as the given file:
+  //! one of a disc's playlists, a whole disc, or a video file
+  CVideoInfoTag Extra(const std::string& stored)
+  {
+    // The library tells an extra stored as a disc's playlist from one that is a whole disc
+    if (!CServiceBroker::GetDatabaseManager().CanOpen("MyVideos"))
+    {
+      EXPECT_TRUE(CServiceBroker::GetDatabaseManager().Initialize());
+    }
+    CVideoInfoTag tag;
+    tag.GetAssetInfo().SetType(VideoAssetType::EXTRA);
+    CVideoDatabase db;
+    EXPECT_TRUE(db.Open());
+    tag.m_iFileId = db.AddFile(stored);
+    EXPECT_GT(tag.m_iFileId, 0);
+    m_storedFiles.insert(tag.m_iFileId);
+    return tag;
+  }
 
   //! A folder in the movie's
   void Folder(const std::string& name) const
@@ -1021,6 +1050,8 @@ protected:
   const std::string m_root{URIUtils::AddFileToFolder(
       CSpecialProtocol::TranslatePath("special://temp/"), "TestVersionSubtitles")};
   const std::string m_folder{URIUtils::AddFileToFolder(m_root, "M3GAN")};
+  //! The files of the extras stored in the library
+  std::set<int> m_storedFiles;
 };
 
 // The version of a folder rip has the subtitles named after the folder holding BDMV, and those
@@ -1792,16 +1823,9 @@ TEST(TestUtil, ExternalStreamDetailsOfAnEpisodesSubtitle)
   }
 }
 
-//! The info of a video asset of a movie, an extra (a featurette) by default
-CVideoInfoTag AssetTag(VideoAssetType type = VideoAssetType::EXTRA)
-{
-  CVideoInfoTag tag;
-  tag.GetAssetInfo().SetType(type);
-  return tag;
-}
-
-// An extra on the movie's disc, such as a featurette, has only the subtitles named for its
-// playlist, as its art is: the others beside the disc are the movie's. A version has the movie's.
+// An extra on the movie's disc, such as a featurette, which the library stores as one of the disc's
+// playlists, has only the subtitles named for its playlist, as its art is: the others beside the
+// disc are the movie's. A version has the movie's.
 TEST_F(TestVersionSubtitles, AnExtraOfAFolderRipHasOnlyItsOwnSubtitles)
 {
   const std::string disc{
@@ -1811,14 +1835,15 @@ TEST_F(TestVersionSubtitles, AnExtraOfAFolderRipHasOnlyItsOwnSubtitles)
   const std::string movies{File("M3GAN.eng.srt")};
   File("index-00800.eng.srt");
 
-  const CVideoInfoTag extra{AssetTag()};
+  const CVideoInfoTag extra{Extra(disc)};
   std::vector<std::string> subtitles;
   CUtil::ScanForExternalSubtitles(disc, subtitles, &extra);
   std::ranges::sort(subtitles);
   std::ranges::sort(expected);
   EXPECT_EQ(expected, subtitles);
 
-  const CVideoInfoTag version{AssetTag(VideoAssetType::VERSION)};
+  CVideoInfoTag version;
+  version.GetAssetInfo().SetType(VideoAssetType::VERSION);
   std::vector<std::string> versions;
   CUtil::ScanForExternalSubtitles(disc, versions, &version);
   EXPECT_NE(std::ranges::find(versions, movies), versions.end());
@@ -1832,7 +1857,7 @@ TEST_F(TestVersionSubtitles, AnExtraOfAnIsoHasOnlyItsOwnSubtitles)
   File("M3GAN-00800.eng.srt");
   File("00805.eng.srt");
 
-  const CVideoInfoTag extra{AssetTag()};
+  const CVideoInfoTag extra{Extra(disc)};
   std::vector<std::string> subtitles;
   CUtil::ScanForExternalSubtitles(disc, subtitles, &extra);
   EXPECT_EQ(expected, subtitles);
@@ -1846,7 +1871,7 @@ TEST_F(TestVersionSubtitles, AnExtrasArchivedSubtitlesAreThoseOfItsOwnArchive)
   for (const char* name : {"M3GAN.zip", "M3GAN-00805.zip"})
     ASSERT_TRUE(XFILE::CFile::Copy(archive, URIUtils::AddFileToFolder(m_folder, name)));
 
-  const CVideoInfoTag extra{AssetTag()};
+  const CVideoInfoTag extra{Extra(disc)};
   std::vector<std::string> subtitles;
   CUtil::ScanForExternalSubtitles(disc, subtitles, &extra);
   std::vector<std::string> archives;
@@ -1863,7 +1888,7 @@ TEST_F(TestVersionAudio, AnExtraOfAFolderRipHasOnlyItsOwnAudio)
   File("M3GAN.ac3");
   File("index-00800.mka");
 
-  const CVideoInfoTag extra{AssetTag()};
+  const CVideoInfoTag extra{Extra(disc)};
   std::vector<std::string> audio;
   CUtil::ScanForExternalAudio(disc, audio, &extra);
   std::ranges::sort(audio);
@@ -1880,7 +1905,7 @@ TEST_F(TestVersionAudioUsingAll, AnExtraOfAFolderRipHasOnlyItsOwnAudio)
   File("M3GAN.ac3");
   File("commentary.flac");
 
-  const CVideoInfoTag extra{AssetTag()};
+  const CVideoInfoTag extra{Extra(disc)};
   std::vector<std::string> audio;
   CUtil::ScanForExternalAudio(disc, audio, &extra);
   EXPECT_EQ(expected, audio);
@@ -1892,7 +1917,7 @@ TEST_F(TestVersionSubtitles, AnExtraThatIsAVideoFileHasAllItsSubtitles)
   const std::string video{File("Featurette.mkv")};
   std::vector<std::string> expected{File("Featurette.eng.srt"), File("Featurette-00805.srt")};
 
-  const CVideoInfoTag extra{AssetTag()};
+  const CVideoInfoTag extra{Extra(video)};
   std::vector<std::string> subtitles;
   CUtil::ScanForExternalSubtitles(video, subtitles, &extra);
   std::ranges::sort(subtitles);
@@ -1902,10 +1927,9 @@ TEST_F(TestVersionSubtitles, AnExtraThatIsAVideoFileHasAllItsSubtitles)
 
 //! What the player is given for playlist 805 of a disc played as an extra: the video itself, which
 //! it passes in first, then the audio found for it, sorted
-std::vector<std::string> ExtrasVideoAndAudio(const std::string& disc)
+std::vector<std::string> ExtrasVideoAndAudio(const std::string& disc, const CVideoInfoTag& extra)
 {
   const std::string video{URIUtils::GetBlurayPlaylistPath(disc, 805)};
-  const CVideoInfoTag extra{AssetTag()};
   std::vector<std::string> found{video};
   CUtil::ScanForExternalAudio(video, found, &extra);
   std::sort(found.begin() + 1, found.end());
@@ -1920,13 +1944,14 @@ TEST_F(TestVersionAudio, AnIsosExtraKeepsItsVideoAheadOfItsAudio)
   const std::string video{URIUtils::GetBlurayPlaylistPath(disc, 805)};
   const std::string track{File("M3GAN-00805.ac3")};
   File("M3GAN.ac3");
-  EXPECT_EQ((std::vector<std::string>{video, track}), ExtrasVideoAndAudio(disc));
+  const CVideoInfoTag extra{Extra(video)};
+  EXPECT_EQ((std::vector<std::string>{video, track}), ExtrasVideoAndAudio(disc, extra));
 
   const std::string commentary{File("M3GAN-00805.commentary.dts")};
   std::vector<std::string> tracks{track, commentary};
   std::ranges::sort(tracks);
   tracks.insert(tracks.begin(), video);
-  EXPECT_EQ(tracks, ExtrasVideoAndAudio(disc));
+  EXPECT_EQ(tracks, ExtrasVideoAndAudio(disc, extra));
 }
 
 TEST_F(TestVersionAudioUsingAll, AnIsosExtraKeepsItsVideoAheadOfItsAudio)
@@ -1938,7 +1963,7 @@ TEST_F(TestVersionAudioUsingAll, AnIsosExtraKeepsItsVideoAheadOfItsAudio)
 
   std::ranges::sort(tracks);
   tracks.insert(tracks.begin(), URIUtils::GetBlurayPlaylistPath(disc, 805));
-  EXPECT_EQ(tracks, ExtrasVideoAndAudio(disc));
+  EXPECT_EQ(tracks, ExtrasVideoAndAudio(disc, Extra(tracks.front())));
 }
 
 TEST_F(TestVersionAudioUsingAll, AFolderRipsExtraKeepsItsVideoAheadOfItsAudio)
@@ -1947,6 +1972,78 @@ TEST_F(TestVersionAudioUsingAll, AFolderRipsExtraKeepsItsVideoAheadOfItsAudio)
   const std::string track{File("index-00805.ac3")};
   File("M3GAN.ac3");
 
-  EXPECT_EQ((std::vector<std::string>{URIUtils::GetBlurayPlaylistPath(disc, 805), track}),
-            ExtrasVideoAndAudio(disc));
+  const std::string video{URIUtils::GetBlurayPlaylistPath(disc, 805)};
+  EXPECT_EQ((std::vector<std::string>{video, track}), ExtrasVideoAndAudio(disc, Extra(video)));
+}
+
+// An extra the library stores as one of a disc's playlists shares the disc. One stored as the whole
+// disc, such as Bonus.iso in an extras folder, plays one of its playlists, but is the disc's only
+// video.
+TEST_F(TestVersionSubtitles, ADiscPlaylistExtraIsOneTheLibraryStoresAsAPlaylist)
+{
+  const std::string iso{File("Bonus.iso")};
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(iso, 805)};
+  const CVideoInfoTag onADisc{Extra(playlist)};
+  const CVideoInfoTag wholeDisc{Extra(iso)};
+
+  EXPECT_TRUE(CUtil::IsDiscPlaylistExtra(playlist, &onADisc));
+  // Another playlist chosen for it is still one of the disc it shares
+  EXPECT_TRUE(CUtil::IsDiscPlaylistExtra(URIUtils::GetBlurayPlaylistPath(iso, 806), &onADisc));
+  EXPECT_FALSE(CUtil::IsDiscPlaylistExtra(playlist, &wholeDisc));
+  // Played as the disc itself, it plays no playlist
+  EXPECT_FALSE(CUtil::IsDiscPlaylistExtra(iso, &onADisc));
+  // Without the library's file, nothing tells whose the disc is
+  CVideoInfoTag unknown;
+  unknown.GetAssetInfo().SetType(VideoAssetType::EXTRA);
+  EXPECT_FALSE(CUtil::IsDiscPlaylistExtra(playlist, &unknown));
+  // A version isn't an extra
+  CVideoInfoTag version{onADisc};
+  version.GetAssetInfo().SetType(VideoAssetType::VERSION);
+  EXPECT_FALSE(CUtil::IsDiscPlaylistExtra(playlist, &version));
+  EXPECT_FALSE(CUtil::IsDiscPlaylistExtra(playlist, nullptr));
+}
+
+// An extra that is a whole disc of its own has the subtitles named after the disc, and those named
+// for the playlist it plays
+TEST_F(TestVersionSubtitles, AnExtraThatIsAWholeDiscHasTheSubtitlesNamedAfterIt)
+{
+  const std::string iso{File("Bonus.iso")};
+  std::vector<std::string> expected{File("Bonus.eng.srt"), File("Bonus-00001.fre.srt")};
+  const CVideoInfoTag extra{Extra(iso)};
+  std::vector<std::string> subtitles;
+  CUtil::ScanForExternalSubtitles(URIUtils::GetBlurayPlaylistPath(iso, 1), subtitles, &extra);
+  std::ranges::sort(subtitles);
+  std::ranges::sort(expected);
+  EXPECT_EQ(expected, subtitles);
+
+  // ..as does a folder rip, named after the folder holding BDMV
+  const std::string disc{File(URIUtils::AddFileToFolder("BDMV", "index.bdmv"))};
+  const std::vector<std::string> ripExpected{File("M3GAN.eng.srt")};
+  const CVideoInfoTag rip{Extra(disc)};
+  std::vector<std::string> ripSubtitles;
+  CUtil::ScanForExternalSubtitles(URIUtils::GetBlurayPlaylistPath(disc, 1), ripSubtitles, &rip);
+  EXPECT_EQ(ripExpected, ripSubtitles);
+}
+
+TEST_F(TestVersionAudio, AnExtraThatIsAWholeDiscHasTheAudioNamedAfterIt)
+{
+  const std::string iso{File("Bonus.iso")};
+  std::vector<std::string> tracks{File("Bonus.ac3"), File("Bonus-00805.dts")};
+  File("commentary.flac");
+
+  std::ranges::sort(tracks);
+  tracks.insert(tracks.begin(), URIUtils::GetBlurayPlaylistPath(iso, 805));
+  EXPECT_EQ(tracks, ExtrasVideoAndAudio(iso, Extra(iso)));
+}
+
+// Where all the audio beside a video is used, an extra that is a whole disc has all of it
+TEST_F(TestVersionAudioUsingAll, AnExtraThatIsAWholeDiscHasAllTheAudioBesideIt)
+{
+  const std::string iso{File("Bonus.iso")};
+  std::vector<std::string> tracks{File("Bonus.ac3"), File("Bonus-00805.dts"),
+                                  File("commentary.flac")};
+
+  std::ranges::sort(tracks);
+  tracks.insert(tracks.begin(), URIUtils::GetBlurayPlaylistPath(iso, 805));
+  EXPECT_EQ(tracks, ExtrasVideoAndAudio(iso, Extra(iso)));
 }
