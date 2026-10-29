@@ -336,7 +336,9 @@ bool CGamesGUIInfo::GetLabel(std::string& value,
         return true;
       }
 
-      const AchievementChallenge challenge = AchievementRuntime().GetShownChallenge();
+      // Counted from 1 by the skin; without a number, the first
+      const unsigned int index = info.GetData1() > 0 ? info.GetData1() - 1 : 0;
+      const AchievementChallenge challenge = AchievementRuntime().GetShownChallenge(index);
 
       value = (info.GetInfo() == RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE) ? challenge.title
                                                                            : challenge.badgeUrl;
