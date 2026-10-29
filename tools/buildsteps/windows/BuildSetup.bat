@@ -90,8 +90,9 @@ IF DEFINED BUILDDIR (
   IF EXIST "%CCACHE_STATSLOG%" DEL /Q "%CCACHE_STATSLOG%"
 
   cmake.exe -G "%cmakeGenerator%" -A %cmakeArch% -T host=x64 %cmakeProps% %base_dir%
-  IF ERRORLEVEL 1 (
-    set DIETEXT="%APP_NAME%.EXE failed to build!"
+  SET configureresult=%errorlevel%
+  IF NOT "%configureresult%"=="0" (
+    set DIETEXT="%APP_NAME%.EXE failed to configure! (cmake returned %configureresult%)"
     goto DIE
   )
 
