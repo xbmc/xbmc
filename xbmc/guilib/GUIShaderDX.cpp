@@ -35,6 +35,66 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
+namespace
+{
+class CStencilState
+{
+public:
+  ~CStencilState()
+  {
+    if (m_context)
+      m_context->OMSetDepthStencilState(m_state.Get(), m_reference);
+  }
+
+  bool Apply(STENCIL_LAYER mask = STENCIL_LAYER::NONE)
+  {
+    const auto layer = CServiceBroker::GetWinSystem()->GetGfxContext().GetStencilLayer();
+    if (layer == STENCIL_LAYER::INVALID)
+      return false;
+    if (layer == STENCIL_LAYER::NONE && mask == STENCIL_LAYER::NONE)
+      return true;
+
+    const auto device = DX::DeviceResources::Get();
+    m_context = device->GetD3DContext();
+    m_context->OMGetDepthStencilState(&m_state, &m_reference);
+    CD3D11_DEPTH_STENCIL_DESC desc(D3D11_DEFAULT);
+    if (m_state)
+      m_state->GetDesc(&desc);
+
+    desc.StencilEnable = true;
+    desc.StencilReadMask =
+        layer == STENCIL_LAYER::NONE ? 0xff : 1U << static_cast<unsigned int>(layer);
+    desc.StencilWriteMask = mask == STENCIL_LAYER::NONE ? 0 : 1U << static_cast<unsigned int>(mask);
+    desc.FrontFace.StencilFunc =
+        layer == STENCIL_LAYER::NONE ? D3D11_COMPARISON_ALWAYS : D3D11_COMPARISON_EQUAL;
+    desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+    desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+    desc.FrontFace.StencilPassOp =
+        mask == STENCIL_LAYER::NONE ? D3D11_STENCIL_OP_KEEP : D3D11_STENCIL_OP_REPLACE;
+    desc.BackFace = desc.FrontFace;
+    if (mask != STENCIL_LAYER::NONE)
+    {
+      desc.DepthEnable = false;
+      desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+    }
+
+    ComPtr<ID3D11DepthStencilState> state;
+    if (FAILED(device->GetD3DDevice()->CreateDepthStencilState(&desc, &state)))
+    {
+      CLog::LogF(LOGERROR, "Failed to create GUI stencil state.");
+      return false;
+    }
+    m_context->OMSetDepthStencilState(state.Get(), 0xff);
+    return true;
+  }
+
+private:
+  ID3D11DeviceContext* m_context{nullptr};
+  ComPtr<ID3D11DepthStencilState> m_state;
+  UINT m_reference{0};
+};
+} // namespace
+
 // shaders bytecode holder
 // clang-format off
 constexpr std::array<D3D_SHADER_DATA, SHADER_METHOD_RENDER_COUNT> shaderCode =
@@ -284,7 +344,16 @@ void CGUIShaderDX::End()
 
 void CGUIShaderDX::DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4)
 {
+  DrawQuad(v1, v2, v3, v4, STENCIL_LAYER::NONE);
+}
+
+void CGUIShaderDX::DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4, STENCIL_LAYER mask)
+{
   if (!m_bCreated)
+    return;
+
+  CStencilState stencil;
+  if (!stencil.Apply(mask))
     return;
 
   ApplyChanges();
@@ -304,9 +373,56 @@ void CGUIShaderDX::DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4)
   }
 }
 
+void CGUIShaderDX::DrawStencilQuad(const CRect& rect, STENCIL_LAYER mask)
+{
+  if (!m_bCreated || mask == STENCIL_LAYER::NONE || mask == STENCIL_LAYER::INVALID)
+    return;
+
+  const auto device = DX::DeviceResources::Get();
+  CD3D11_BLEND_DESC desc(D3D11_DEFAULT);
+  desc.RenderTarget[0].RenderTargetWriteMask = 0;
+  ComPtr<ID3D11BlendState> colorWriteDisabled;
+  if (FAILED(device->GetD3DDevice()->CreateBlendState(&desc, &colorWriteDisabled)))
+  {
+    CLog::LogF(LOGERROR, "Failed to disable color writes for GUI stencil.");
+    return;
+  }
+
+  auto* context = device->GetD3DContext();
+  ComPtr<ID3D11BlendState> blend;
+  float factors[4];
+  UINT sampleMask;
+  context->OMGetBlendState(&blend, factors, &sampleMask);
+  context->OMSetBlendState(colorWriteDisabled.Get(), nullptr, 0xffffffff);
+
+  const auto shader = m_currentShader;
+  const float depth = m_depth;
+  const XMMATRIX world = GetWorld();
+  const auto& gui = CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix();
+  SetWorld(XMMatrixMultiply(XMLoadFloat3x4(reinterpret_cast<const XMFLOAT3X4*>(&gui.m)), world));
+  SetDepth(0.0f);
+  Begin(SHADER_METHOD_RENDER_DEFAULT);
+  Vertex vertices[]{
+      {XMFLOAT3(rect.x1, rect.y1, 0), XMFLOAT4(1, 1, 1, 1)},
+      {XMFLOAT3(rect.x2, rect.y1, 0), XMFLOAT4(1, 1, 1, 1)},
+      {XMFLOAT3(rect.x2, rect.y2, 0), XMFLOAT4(1, 1, 1, 1)},
+      {XMFLOAT3(rect.x1, rect.y2, 0), XMFLOAT4(1, 1, 1, 1)},
+  };
+  DrawQuad(vertices[0], vertices[1], vertices[2], vertices[3], mask);
+  SetWorld(world);
+  SetDepth(depth);
+  Begin(static_cast<unsigned int>(shader));
+  ApplyChanges();
+  context->OMSetBlendState(blend.Get(), factors, sampleMask);
+}
+
 void CGUIShaderDX::DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int startVertex)
 {
   if (!m_bCreated)
+    return;
+
+  CStencilState stencil;
+  if (!stencil.Apply())
     return;
 
   ApplyChanges();
@@ -316,6 +432,10 @@ void CGUIShaderDX::DrawIndexed(unsigned int indexCount, unsigned int startIndex,
 void CGUIShaderDX::Draw(unsigned int vertexCount, unsigned int startVertex)
 {
   if (!m_bCreated)
+    return;
+
+  CStencilState stencil;
+  if (!stencil.Apply())
     return;
 
   ApplyChanges();
