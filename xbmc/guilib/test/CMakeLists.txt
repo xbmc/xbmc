@@ -1,6 +1,7 @@
 set(SOURCES TestGUIControlFactory.cpp
             TestGUIControlGroup.cpp
             TestGUIControlGroupMask.cpp
+            TestGUIControlGroupMaskD3D.cpp
             TestGUIControlGroupMaskGLES.cpp
             TestGamesGUIInfo.cpp
             TestGUIFixedListContainer.cpp

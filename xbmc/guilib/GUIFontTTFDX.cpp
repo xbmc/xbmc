@@ -72,7 +72,6 @@ bool CGUIFontTTFDX::FirstBegin()
   else
   {
     m_scissorClip = false;
-    DX::Windowing()->ResetScissors();
     pGUIShader->Begin(SHADER_METHOD_RENDER_FONT_RGBA_SHADER_CLIP);
   }
 
