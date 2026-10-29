@@ -114,8 +114,8 @@
       <start>Info</start>
       <back>FullScreen</back>
       <guide>OSD</guide>
-      <up>ChapterOrBigStepForward</up>
-      <down>ChapterOrBigStepBack</down>
+      <up>ChapterOrSceneOrBigStepForward</up>
+      <down>ChapterOrSceneOrBigStepBack</down>
       <right>StepForward</right>
       <left>StepBack</left>
       <leftthumb>ShowSubtitles</leftthumb>

@@ -48,8 +48,8 @@
     <touch>
       <swipe direction="left">StepBack</swipe>
       <swipe direction="right">StepForward</swipe>
-      <swipe direction="up">ChapterOrBigStepForward</swipe>
-      <swipe direction="down">ChapterOrBigStepBack</swipe>
+      <swipe direction="up">ChapterOrSceneOrBigStepForward</swipe>
+      <swipe direction="down">ChapterOrSceneOrBigStepBack</swipe>
       <swipe direction="up" pointers="2">SkipNext</swipe>
       <swipe direction="down" pointers="2">SkipPrevious</swipe>
       <tap pointers="2">Playlist</tap>
