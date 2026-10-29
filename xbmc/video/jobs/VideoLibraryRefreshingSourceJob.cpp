@@ -144,12 +144,17 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
     const auto& [item, refreshAll] = itemsToRefresh[i];
     const CVideoInfoTag& listed{*item->GetVideoInfoTag()};
 
-    // refreshing an earlier item may have merged it with this one as a version, changing its
-    // default version, or removed this one
+    // Refreshing an earlier item may have merged it with this one as a version, changing its
+    // default version, or removed this one. A movie is found by the file it was listed with, as
+    // merging the discs of a film may have made it a version of another movie the earlier item
+    // joined, though its disc wasn't refreshed.
     CVideoInfoTag tag;
     bool found{false};
     if (listed.GetMediaType() == KODI::MEDIA::TYPE::MOVIE)
-      found = db.GetMovieInfo({}, tag, listed.m_iDbId);
+    {
+      const int idMovie{db.GetMovieId(listed.m_strFileNameAndPath)};
+      found = idMovie > 0 && db.GetMovieInfo({}, tag, idMovie);
+    }
     else if (listed.GetMediaType() == KODI::MEDIA::TYPE::TV_SHOW)
       found = db.GetTvShowInfo({}, tag, listed.m_iDbId);
     else
@@ -167,7 +172,7 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
             listed.m_iFileId, tag.m_iDbId, KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE).c_str(),
             static_cast<int>(VideoAssetType::VERSION))) > 0 &&
         db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, tag.m_iDbId, listed.m_iFileId) &&
-        !db.GetMovieInfo({}, tag, listed.m_iDbId))
+        !db.GetMovieInfo({}, tag, tag.m_iDbId))
       continue;
     SetText(tag.GetTitle());
 

@@ -1280,6 +1280,41 @@ TEST_F(TestVideoInfoScanner, ARefreshOfASourceRefreshesEachDiscOfAMovie)
   EXPECT_EQ(first, tag.m_strFileNameAndPath);
 }
 
+// Merging the discs of a film as an earlier disc is refreshed makes the movie of a later one a
+// version, which is still refreshed from its own disc. The disc refreshed last is the default.
+TEST_F(TestVideoInfoScanner, ARefreshOfASourceRefreshesADiscMergedBeforeItsTurn)
+{
+  const Strings strings;
+  ASSERT_TRUE(strings.loaded);
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  InstallTestScraper();
+  GroupSimilarVideosAutomatically();
+  FilmFound();
+  const std::string folder{Folder(m_root, "Film (2010)")};
+  const std::string first{File(Folder(folder, "Disc 1"), "Film.mkv")};
+  const std::string second{File(Folder(folder, "Disc 2"), "Film.mkv")};
+  const std::string third{File(Folder(folder, "Disc 3"), "Film.mkv")};
+  // listed in the order they are added: refreshing Disc 2 merges Disc 3 into Disc 1 first
+  ASSERT_GT(AddFilm(second), 0);
+  ASSERT_GT(AddFilm(first), 0);
+  ASSERT_GT(AddFilm(third), 0);
+  // only a refresh of Disc 3 reads this
+  File(URIUtils::GetDirectory(third), "Film.nfo",
+       R"(<movie override="true"><title>Third refreshed</title></movie>)");
+
+  TestRefreshingSourceJob refresh{m_root};
+  ASSERT_TRUE(refresh.Work(m_db));
+
+  EXPECT_EQ(1, CountMovies());
+  const int idMovie{m_db.GetMovieId(first)};
+  EXPECT_EQ(idMovie, m_db.GetMovieId(second));
+  EXPECT_EQ(idMovie, m_db.GetMovieId(third));
+  EXPECT_EQ("Third refreshed", m_db.GetMovieTitle(idMovie));
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo({}, tag, idMovie));
+  EXPECT_EQ(third, tag.m_strFileNameAndPath);
+}
+
 // An nfo naming the movie's url gives none of its details, which the refresh reads before it
 // removes the movie
 TEST_F(TestVideoInfoScanner, ARefreshWithAUrlNfoThatCantReadTheDetailsKeepsTheMovie)
