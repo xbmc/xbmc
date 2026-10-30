@@ -23330,7 +23330,81 @@ msgctxt "#36925"
 msgid "Colour range of the video output. \"Auto\" hands the choice back to the graphics driver. \"Full\" and \"Limited\" tell the driver to output that range and signal it to the display, where the driver supports it. Without driver support, Kodi converts to limited range itself when Limited is selected. Choose the range your display expects: limited for a regular HDMI TV, full for a PC monitor or a display with a full range mode."
 msgstr ""
 
-#empty strings from id 36926 to 36999
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36926"
+msgid "Colour format"
+msgstr ""
+
+#. Help text for setting "Colour format" of label #36926
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36927"
+msgid "Colour format used to send the picture to the display. \"Auto\" lets the graphics driver choose, which for HDMI is RGB unless the available bandwidth requires YCbCr 4:2:0. The other choices are requested from the driver and may not work with every display or video mode: if the display or the mode refuses one, Kodi goes back to Auto for that mode. Only the formats that the graphics driver offers are listed. The YCbCr formats are always limited range, so the colour range setting is ignored and the driver does the conversion. \"Adaptive\" uses Auto, but switches to YCbCr 4:2:2, or 4:2:0 if the driver has no 4:2:2, for video with more than 8 bits per component when the video mode is too fast for RGB at that depth, such as 4K at 50 or 60 Hz over HDMI 2.0. It does not switch on a link that is detected as HDMI 2.1, which carries that as RGB. Requires a Linux kernel with the \"color format\" connector property."
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36928"
+msgid "RGB"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36929"
+msgid "YCbCr 4:4:4"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36930"
+msgid "YCbCr 4:2:2"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36931"
+msgid "YCbCr 4:2:0"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36932"
+msgid "Adaptive"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36933"
+msgid "Maximum bit depth"
+msgstr ""
+
+#. Help text for setting "Maximum bit depth" of label #36933
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36934"
+msgid "Most bits per colour component that the graphics driver may use for the display. \"Auto\" leaves the driver default, which some drivers keep at 8 bit. Choose at least 10 bit to show 10 bit video without reducing it to 8 bit. The driver lowers the depth by itself when the display or the video mode cannot carry it, and with \"Adaptive\" colour format a limit of 8 bit turns the switch to YCbCr off."
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36935"
+msgid "8 bit"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36936"
+msgid "10 bit"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36937"
+msgid "12 bit"
+msgstr ""
+
+#empty strings from id 36938 to 36999
 
 #: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"

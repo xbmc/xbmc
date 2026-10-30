@@ -99,6 +99,52 @@ std::string CDRMConnector::GetName()
   return GetType() + "-" + std::to_string(m_connector->connector_type_id);
 }
 
+namespace
+{
+constexpr size_t EDID_BLOCK_SIZE = 128;
+constexpr uint8_t CTA_EXTENSION_TAG = 0x02;
+constexpr uint8_t CTA_DB_VENDOR_SPECIFIC = 3;
+constexpr uint8_t CTA_DB_EXTENDED = 7;
+constexpr uint8_t CTA_EXT_DB_HF_SCDB = 0x79;
+
+int ParseMaxFrlRate(const std::vector<uint8_t>& edid)
+{
+  for (size_t block = EDID_BLOCK_SIZE; block + EDID_BLOCK_SIZE <= edid.size();
+       block += EDID_BLOCK_SIZE)
+  {
+    const uint8_t* ext = &edid[block];
+    if (ext[0] != CTA_EXTENSION_TAG)
+      continue;
+
+    // the data blocks run from byte 4 up to the first detailed timing descriptor, 0 means none
+    const size_t end = std::min<size_t>(ext[2], EDID_BLOCK_SIZE);
+    for (size_t pos = 4; pos < end;)
+    {
+      const uint8_t tag = ext[pos] >> 5;
+      const size_t length = ext[pos] & 0x1f;
+      if (pos + 1 + length > end)
+        break;
+
+      const uint8_t* db = &ext[pos];
+
+      // The HDMI Forum vendor block (OUI C4-5D-D8) and the HF-SCDB extended block share their
+      // layout: Max_FRL_Rate is the upper four bits of byte 7, as in the kernel.
+      const bool forumVendor = tag == CTA_DB_VENDOR_SPECIFIC && length >= 7 && db[1] == 0xd8 &&
+                               db[2] == 0x5d && db[3] == 0xc4;
+      const bool forumExtended =
+          tag == CTA_DB_EXTENDED && length >= 7 && db[1] == CTA_EXT_DB_HF_SCDB;
+
+      if (forumVendor || forumExtended)
+        return (db[7] & 0xf0) >> 4;
+
+      pos += 1 + length;
+    }
+  }
+
+  return 0;
+}
+} // namespace
+
 std::vector<uint8_t> CDRMConnector::GetEDID() const
 {
 
@@ -121,4 +167,20 @@ std::vector<uint8_t> CDRMConnector::GetEDID() const
   drmModeFreePropertyBlob(blob);
 
   return edid;
+}
+
+int CDRMConnector::GetMaxFrlRate() const
+{
+  return ParseMaxFrlRate(GetEDID());
+}
+
+bool CDRMConnector::HasModeAboveClock(uint32_t clockKHz) const
+{
+  for (int i = 0; i < m_connector->count_modes; i++)
+  {
+    if (m_connector->modes[i].clock > clockKHz)
+      return true;
+  }
+
+  return false;
 }

@@ -2812,6 +2812,7 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
       tmp.color_space = toneMap ? AVCOL_SPC_UNSPECIFIED : buf.m_srcColSpace;
       tmp.iWidth = m_sourceWidth;
       tmp.iHeight = m_sourceHeight;
+      tmp.colorBits = buf.m_srcBits;
       CServiceBroker::GetWinSystem()->SetColorimetry(&tmp);
     }
 

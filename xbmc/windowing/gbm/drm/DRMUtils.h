@@ -30,6 +30,8 @@ namespace GBM
 
 constexpr const char* SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
 constexpr const char* SETTING_VIDEOSCREEN_COLORRANGE = "videoscreen.colorrange";
+constexpr const char* SETTING_VIDEOSCREEN_COLORFORMAT = "videoscreen.colorformat";
+constexpr const char* SETTING_VIDEOSCREEN_MAXBPC = "videoscreen.maxbpc";
 
 // https://github.com/torvalds/linux/blob/7d0a66e4bb9081d75c82ec4957c50034cb0ea449/drivers/
 // gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_crtc.c#L683-L692
@@ -62,6 +64,8 @@ public:
   virtual bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) { return false; }
   virtual bool SetActive(bool active) { return false; }
   virtual void RequestModeset() {}
+  //! True if the last commit was refused and the previous request was committed instead
+  virtual bool LastCommitFellBack() const { return false; }
   virtual bool InitDrm();
   virtual void DestroyDrm();
   virtual bool SupportsFencing() { return false; }
@@ -73,6 +77,8 @@ public:
   CDRMPlane* GetGuiPlane() const { return m_gui_plane; }
   CDRMCrtc* GetCrtc() const { return m_crtc; }
   CDRMConnector* GetConnector() const { return m_connector; }
+  //! Pixel clock of the active mode in kHz, 0 if there is none
+  uint32_t GetModeClock() const { return m_mode ? m_mode->clock : 0; }
   std::vector<outputformat>& GetOutputFormats() { return m_output_formats; }
   bool FindGuiPlane(uint32_t format, uint64_t modifier);
   bool FindVideoPlane(uint32_t format, uint64_t modifier);
