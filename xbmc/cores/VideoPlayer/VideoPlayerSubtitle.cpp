@@ -195,7 +195,7 @@ void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
   m_dvdspus.FlushCurrentPacket();
 
   if (!bWaitForBuffers)
-    m_pOverlayContainer->Clear();
+    m_pOverlayContainer->ClearSubtitles();
 }
 
 void CVideoPlayerSubtitle::Process(double pts, double offset)
@@ -209,11 +209,11 @@ void CVideoPlayerSubtitle::Process(double pts, double offset)
 
     if (pts + DVD_SEC_TO_TIME(1) < m_lastPts)
     {
-      m_pOverlayContainer->Clear();
+      m_pOverlayContainer->ClearSubtitles();
       m_pSubtitleFileParser->Reset();
     }
 
-    if(m_pOverlayContainer->GetSize() >= 5)
+    if (m_pOverlayContainer->GetSubtitleSize() >= 5)
       return;
 
     std::shared_ptr<CDVDOverlay> pOverlay = m_pSubtitleFileParser->Parse(pts);
@@ -235,6 +235,6 @@ void CVideoPlayerSubtitle::Process(double pts, double offset)
 bool CVideoPlayerSubtitle::AcceptsData() const
 {
   // FIXME : This may still be causing problems + magic number :(
-  return m_pOverlayContainer->GetSize() < 5;
+  return m_pOverlayContainer->GetSubtitleSize() < 5;
 }
 
