@@ -428,6 +428,36 @@ int MysqlDatabase::copy(const char* backup_name)
         throw DbErrors("Can't copy schema for table '%s' (%d)", row[0], ret);
       }
 
+      // every index is rebuilt after the copy, and one kept here slows each inserted row
+      sqlcmd = StringUtils::Format(
+          "SELECT DISTINCT index_name FROM information_schema.statistics WHERE table_schema = "
+          "'{}' AND table_name = '{}' AND index_name != 'PRIMARY'",
+          backup_name, row[0]);
+      ret = query_with_reconnect(sqlcmd);
+      if (ret != MYSQL_OK)
+      {
+        mysql_free_result(res);
+        throw DbErrors("Can't list the indexes of table '%s' (%d)", row[0], ret);
+      }
+      std::string dropIndexes;
+      if (MYSQL_RES* indexes = mysql_store_result(conn))
+      {
+        while (const MYSQL_ROW index = mysql_fetch_row(indexes))
+          dropIndexes +=
+              StringUtils::Format("{}DROP INDEX `{}`", dropIndexes.empty() ? "" : ", ", index[0]);
+        mysql_free_result(indexes);
+      }
+      if (!dropIndexes.empty())
+      {
+        sqlcmd = StringUtils::Format("ALTER TABLE `{}`.`{}` {}", backup_name, row[0], dropIndexes);
+        ret = query_with_reconnect(sqlcmd);
+        if (ret != MYSQL_OK)
+        {
+          mysql_free_result(res);
+          throw DbErrors("Can't drop the indexes of table '%s' (%d)", row[0], ret);
+        }
+      }
+
       // The copy inherits the storage engine, alter it for safety before setting the character set
       if (!ChangeStorageEngine(backup_name, row[0], resolvedEngine))
       {
