@@ -8,6 +8,7 @@
 
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <vector>
 
@@ -60,8 +61,8 @@ void Append(std::vector<uint8_t>& stream, const std::vector<uint8_t>& bytes)
   stream.insert(stream.end(), bytes.begin(), bytes.end());
 }
 
-//! The type the parser reported for every frame it handed out.
-std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream)
+//! The type the parser reported for every frame it handed out, fed at most \p chunk bytes a call.
+std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream, size_t chunk = SIZE_MAX)
 {
   CAEStreamParser parser;
   std::vector<CAEStreamInfo::DataType> types;
@@ -70,8 +71,9 @@ std::vector<CAEStreamInfo::DataType> Parse(std::vector<uint8_t> stream)
   {
     uint8_t* out = nullptr;
     unsigned int outSize = 0;
-    const int used = parser.AddData(stream.data() + pos,
-                                    static_cast<unsigned int>(stream.size() - pos), &out, &outSize);
+    const size_t available = std::min(chunk, stream.size() - pos);
+    const int used =
+        parser.AddData(stream.data() + pos, static_cast<unsigned int>(available), &out, &outSize);
     if (outSize > 0)
       types.push_back(parser.GetDataType());
     if (used <= 0 && outSize == 0)
@@ -111,6 +113,19 @@ TEST(TestAEStreamParser, AnExtensionWithAnUnknownAssetIsNotTakenAsTheStream)
   const std::vector<CAEStreamInfo::DataType> types = Parse(stream);
 
   ASSERT_FALSE(types.empty());
+  for (const CAEStreamInfo::DataType type : types)
+    EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD_MA, type);
+}
+
+TEST(TestAEStreamParser, AnExtensionSplitBeforeItsAssetIsStillDetected)
+{
+  std::vector<uint8_t> stream;
+  for (int i = 0; i < 4; ++i)
+    Append(stream, MaFrame());
+
+  const std::vector<CAEStreamInfo::DataType> types = Parse(stream, CORE_SIZE + 12);
+
+  ASSERT_EQ(4u, types.size());
   for (const CAEStreamInfo::DataType type : types)
     EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD_MA, type);
 }
