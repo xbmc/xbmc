@@ -324,11 +324,7 @@ int MysqlDatabase::connect(bool create_new)
       configure_connection();
 
       // check existence
-      if (exists())
-      {
-        // nothing to see here
-      }
-      else if (create_new)
+      if (create_new && !exists())
       {
         const std::string sqlcmd{
             StringUtils::Format("CREATE DATABASE `{}` {}", db, SQL_CHARSET_COLLATION)};
