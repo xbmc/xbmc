@@ -4821,6 +4821,11 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         m_dvd.iDVDStillTime = 0ms;
         CLog::Log(LOGDEBUG, "BD_EVENT_MENU - libbluray leave menu (DVDSTATE_NORMAL)");
       }
+      else
+      {
+        // The disc may open a menu itself, so close the player controls as ShowVideoMenu does
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnMenu");
+      }
       break;
     case BD_EVENT_PLAYLIST_STOP:
       m_dvd.state = DVDSTATE_NORMAL;
