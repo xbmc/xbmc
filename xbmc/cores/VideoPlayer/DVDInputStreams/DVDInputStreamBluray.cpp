@@ -44,6 +44,13 @@
 using namespace KODI;
 using namespace std::chrono_literals;
 
+namespace
+{
+/*! libbluray skips an aligned unit (6144 bytes) it cannot read and reports each one. This many in
+    a row, about 6 MB, is a disc that has gone rather than a damaged patch to play past */
+constexpr unsigned int MAX_CONSECUTIVE_READ_ERRORS{1000};
+} // namespace
+
 static int read_blocks(void* handle, void* buf, int lba, int num_blocks)
 {
   CDVDInputStreamBluray* blurayStream = reinterpret_cast<CDVDInputStreamBluray*>(handle);
@@ -490,7 +497,13 @@ void CDVDInputStreamBluray::ProcessEvent() {
     break;
 
   case BD_EVENT_READ_ERROR:
-    CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_READ_ERROR");
+    ++m_readErrors;
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray - BD_EVENT_READ_ERROR ({} in a row)", m_readErrors);
+    if (m_readErrors == MAX_CONSECUTIVE_READ_ERRORS)
+      CLog::Log(LOGERROR,
+                "CDVDInputStreamBluray - Giving up after {} read errors in a row, the disc may "
+                "have been removed. Playback can't be continued.",
+                m_readErrors);
     break;
 
   case BD_EVENT_ENCRYPTED:
@@ -693,8 +706,7 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       if (m_hold == HOLD_HELD)
          return 0;
 
-      if(  m_hold == HOLD_ERROR
-        || m_hold == HOLD_EXIT)
+      if (m_hold == HOLD_ERROR || m_hold == HOLD_EXIT || HasGivenUpReading())
         return -1;
 
       result = bd_read_ext (m_bd, buf, buf_size, &m_event);
@@ -704,6 +716,10 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
         m_hold = HOLD_ERROR;
         return result;
       }
+
+      // Before the holding events, as a read crossing a clip boundary returns data with one
+      if (result > 0)
+        m_readErrors = 0;
 
       /* Check for holding events */
       switch(m_event.event) {
@@ -740,11 +756,22 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
   }
   else
   {
+    if (HasGivenUpReading())
+      return -1;
     result = bd_read(m_bd, buf, buf_size);
+    if (result > 0)
+      m_readErrors = 0;
     while (bd_get_event(m_bd, &m_event))
       ProcessEvent();
+    if (HasGivenUpReading())
+      return -1;
   }
   return result;
+}
+
+bool CDVDInputStreamBluray::HasGivenUpReading() const
+{
+  return m_readErrors >= MAX_CONSECUTIVE_READ_ERRORS;
 }
 
 int CDVDInputStreamBluray::ReadBlocks(uint8_t* buf, int lba, int num_blocks)
@@ -1198,7 +1225,7 @@ bool CDVDInputStreamBluray::IsDefaultStream(int pid) const
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 {
-  if(!m_navmode || m_hold == HOLD_EXIT || m_hold == HOLD_ERROR)
+  if (!m_navmode || m_hold == HOLD_EXIT || m_hold == HOLD_ERROR || HasGivenUpReading())
     return NEXTSTREAM_NONE;
 
   /* process any current event */
@@ -1207,6 +1234,10 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
   /* process all queued up events */
   while(bd_get_event(m_bd, &m_event))
     ProcessEvent();
+
+  // The last read error can be queued with the events of a clip boundary
+  if (HasGivenUpReading())
+    return NEXTSTREAM_NONE;
 
   if(m_hold == HOLD_STILL)
     return NEXTSTREAM_RETRY;

@@ -268,12 +268,32 @@ private:
    * application thread. \sa EjectTray \sa CloseTray \sa ToggleTray
    * \param devicePath Path of the drive, empty for the first available optical drive
    * \param operation What to ask the handler to do, reporting whether the drive moved
-   * \param eject Passed to the operation, for the one that needs to know
+   * \param mayOpen Whether the operation can open the tray, so playback from the disc is stopped
+   * and the disc unmounted first
    */
-  void OperateTray(
-      const std::string& devicePath,
-      const std::function<bool(IDiscDriveHandler&, const std::string&, bool)>& operation,
-      bool eject = true);
+  void OperateTray(const std::string& devicePath,
+                   const std::function<bool(IDiscDriveHandler&, const std::string&)>& operation,
+                   bool mayOpen);
+
+  /*! \brief Whether the player is playing something from the disc in a drive
+   * Only for the application thread, which owns the current item.
+   * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
+   */
+  bool IsPlayingFromDrive(const std::string& translatedDevicePath);
+
+  /*! \brief Whether a path is on the disc in a drive
+   * \param path A playing item's path or dynamic path
+   * \param roots The drive's path, as TranslateDevicePath() returns it, then the disc's mount
+   * points
+   */
+  bool IsPathOnDrive(std::string path, const std::vector<std::string>& roots);
+
+#ifndef TARGET_WINDOWS
+  /*! \brief Where the OS has mounted the disc in a drive
+   * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
+   */
+  std::vector<std::string> GetDiscMountPoints(const std::string& translatedDevicePath);
+#endif
 
   /*! \brief The generation of a drive, for a caller already holding m_muAutoSource
    * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it

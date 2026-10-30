@@ -201,6 +201,8 @@ protected:
     HOLD_ERROR,
     HOLD_EXIT
   } m_hold = HOLD_NONE;
+  //! Units libbluray has failed to read since it last returned data
+  unsigned int m_readErrors = 0;
   BD_EVENT m_event;
 #ifdef HAVE_LIBBLURAY_BDJ
   struct bd_argb_buffer_s m_argb;
@@ -211,6 +213,12 @@ protected:
     void SetupPlayerSettings();
     void FreeTitleInfo();
     void FreeClipInfo();
+
+    /*!
+     * \brief Whether so many reads in a row have failed that the disc is taken to have gone.
+     * Only a successful read clears it, so no read is attempted once it is true.
+     */
+    bool HasGivenUpReading() const;
 
     /*!
      * \brief Read the clip information of a play item of the playlist being played.

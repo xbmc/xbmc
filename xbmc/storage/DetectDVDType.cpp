@@ -95,14 +95,27 @@ void CDetectDVDMedia::Process()
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
+  bool pausedForVideo{false};
   while (!m_bStop)
   {
     if (appPlayer->IsPlayingVideo())
     {
-      CThread::Sleep(10000ms);
+      if (!pausedForVideo)
+      {
+        // A disc taken out meanwhile is only noticed once the video stops
+        CLog::LogF(LOGDEBUG, "Not polling the optical drive while video plays");
+        pausedForVideo = true;
+      }
+      // Leaves the drive alone, so it can afford to notice the video stopping promptly
+      CThread::Sleep(1000ms);
     }
     else
     {
+      if (pausedForVideo)
+      {
+        CLog::LogF(LOGDEBUG, "Polling the optical drive again");
+        pausedForVideo = false;
+      }
       UpdateDvdrom();
       m_bStartup = false;
       CThread::Sleep(2000ms);
@@ -141,6 +154,7 @@ void CDetectDVDMedia::UpdateDvdrom()
 
       case DriveState::OPEN:
       {
+        CLog::LogF(LOGINFO, "Optical drive tray is open");
         // Send Message to GUI that disc been ejected
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(""), false,
                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(502));
@@ -160,6 +174,8 @@ void CDetectDVDMedia::UpdateDvdrom()
         // Drive is not ready (closing, opening)
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(""), false,
                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(503));
+        if (m_DriveState != DriveState::NOT_READY)
+          CLog::LogF(LOGINFO, "Optical drive is not ready");
         m_DriveState = DriveState::NOT_READY;
         // DVD-ROM in undefined state - discard the details of the old disc
         Clear();
@@ -174,6 +190,7 @@ void CDetectDVDMedia::UpdateDvdrom()
 
       case DriveState::CLOSED_NO_MEDIA:
       {
+        CLog::LogF(LOGINFO, "Optical drive is closed with no media");
         // Nothing in there...
         SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(""), false,
                           CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(504));
