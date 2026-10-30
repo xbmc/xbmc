@@ -187,42 +187,12 @@ void MysqlDatabase::configure_connection()
   // MySQL 5.7.5+: See #8393
   std::string sqlcmd{
       "SET SESSION sql_mode = (SELECT REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY',''))"};
-  int ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
+  // MariaDB reads some views slower with derived tables merged
+  if (std::string_view(mysql_get_server_info(conn)).find("MariaDB") != std::string_view::npos)
+    sqlcmd += ", SESSION optimizer_switch = 'derived_merge=off'";
+  const int ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
   if (ret != MYSQL_OK)
-    throw DbErrors("Can't disable sql_mode ONLY_FULL_GROUP_BY: '%s' (%d)", db.c_str(), ret);
-
-  // MySQL 5.7.6+: See #8393. Non-fatal if error, as not supported by MySQL 5.0.x
-  sqlcmd = "SELECT @@SESSION.optimizer_switch";
-  ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
-  if (ret == MYSQL_OK)
-  {
-    MYSQL_RES* res = mysql_store_result(conn);
-    if (res)
-    {
-      const MYSQL_ROW row = mysql_fetch_row(res);
-      if (row)
-      {
-        std::string column = row[0];
-        std::vector<std::string> split = StringUtils::Split(column, ',');
-
-        for (std::string& itIn : split)
-        {
-          if (StringUtils::Trim(itIn) == "derived_merge=on")
-          {
-            sqlcmd = "SET SESSION optimizer_switch = 'derived_merge=off'";
-            ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
-            if (ret != MYSQL_OK)
-              throw DbErrors("Can't set optimizer_switch = '%s': '%s' (%d)",
-                             StringUtils::Trim(itIn).c_str(), db.c_str(), ret);
-            break;
-          }
-        }
-      }
-      mysql_free_result(res);
-    }
-  }
-  else
-    CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '{}' ({})", db, ret);
+    throw DbErrors("Can't configure the session: '%s' (%d)", db.c_str(), ret);
 }
 
 int MysqlDatabase::connect(bool create_new)
