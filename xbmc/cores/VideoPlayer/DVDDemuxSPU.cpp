@@ -82,14 +82,54 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
   // check if we are about to start a new packet
   if (pSPUData->iSize == pSPUData->iNeededSize)
   {
-    if (iSize < 2)
-      return nullptr;
-
     // for now we don't delete the memory associated with m_spuData.data
     pSPUData->iSize = 0;
+    pSPUData->iNeededSize = 0;
 
-    // check spu data length, only needed / possible in the first spu packet
-    uint16_t length = data[0] << 8 | data[1];
+    // set presentation time stamp
+    pSPUData->pts = pts;
+  }
+
+  // reading the 2-byte length header requires at least 2 bytes total
+  if (pSPUData->iNeededSize == 0)
+  {
+    if (pSPUData->iSize + iSize < 2)
+    {
+      // not enough data for the length header yet -- buffer and wait
+      if (iSize > 0 && pSPUData->iAllocatedSize == 0)
+      {
+        uint8_t* tmpptr = (uint8_t*)realloc(pSPUData->data, ALIGN(iSize, 0x4000));
+        if (!tmpptr)
+        {
+          free(pSPUData->data);
+          pSPUData->data = nullptr;
+          return nullptr;
+        }
+        pSPUData->data = tmpptr;
+        pSPUData->iAllocatedSize = ALIGN(iSize, 0x4000);
+      }
+      if (pSPUData->data)
+      {
+        memcpy(pSPUData->data + pSPUData->iSize, data, iSize);
+        pSPUData->iSize += iSize;
+      }
+      return nullptr;
+    }
+
+    // build the 2-byte header, possibly spanning two AddData calls
+    uint8_t hdr[2];
+    if (pSPUData->iSize > 0 && pSPUData->data)
+    {
+      hdr[0] = pSPUData->data[0];
+      hdr[1] = data[0];
+    }
+    else
+    {
+      hdr[0] = data[0];
+      hdr[1] = data[1];
+    }
+
+    uint16_t length = hdr[0] << 8 | hdr[1];
     if (length == 0)
     {
       DebugLog("corrupt spu data: zero packet");
@@ -97,11 +137,10 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
       m_spuData.iSize = 0;
       return nullptr;
     }
-    if (length > iSize) pSPUData->iNeededSize = length;
-    else pSPUData->iNeededSize = iSize;
 
-    // set presentation time stamp
-    pSPUData->pts = pts;
+    unsigned int totalAvail = pSPUData->iSize + iSize;
+    if (length > totalAvail) pSPUData->iNeededSize = length;
+    else pSPUData->iNeededSize = totalAvail;
   }
 
   // allocate data if not already done ( done in blocks off 16384 bytes )
