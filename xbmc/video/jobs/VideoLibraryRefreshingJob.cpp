@@ -31,6 +31,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtUtils.h"
 #include "utils/Artwork.h"
 #include "utils/DiscsUtils.h"
 #include "utils/StringUtils.h"
@@ -41,6 +42,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoThumbLoader.h"
 #include "video/tags/IVideoInfoTagLoader.h"
 #include "video/tags/VideoInfoTagLoaderFactory.h"
 #include "video/tags/VideoTagLoaderNFO.h"
@@ -49,12 +51,49 @@
 #include <algorithm>
 #include <array>
 #include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace VIDEO;
 using namespace ADDON;
+
+namespace
+{
+// Whether a movie or music video has art next to it that CVideoInfoScannerArt::GetArtwork() only
+// uses with local information.
+bool HasLocalArt(const CFileItem& item, ADDON::ContentType content, bool useFolderNames)
+{
+  if ((content != ADDON::ContentType::MOVIES && content != ADDON::ContentType::MUSICVIDEOS) ||
+      item.SkipLocalArt())
+    return false;
+
+  const int artLevel{CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL)};
+  if (artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
+    return false;
+
+  const bool addAll{artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL};
+  const bool exactName{artLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_BASIC};
+  std::vector<std::string> artTypes{CVideoThumbLoader::GetArtTypes(
+      content == ADDON::ContentType::MOVIES ? MEDIA::TYPE::MOVIE : MEDIA::TYPE::MUSIC_VIDEO)};
+
+  // the set comes from the new scrape, so look for set art whether or not the movie is in one now
+  if (content == ADDON::ContentType::MOVIES)
+  {
+    for (const std::string& artType : CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::VIDEO_COLLECTION))
+      artTypes.push_back("set." + artType);
+  }
+
+  ART::Artwork art;
+  bool useFolder{false};
+  ART::AddLocalItemArtwork(art, artTypes, ART::GetLocalArtBaseFilename(item, useFolder), addAll,
+                           exactName, useFolderNames);
+  return !art.empty();
+}
+} // unnamed namespace
 
 CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(std::shared_ptr<CFileItem> item,
                                                        bool forceRefresh,
@@ -279,11 +318,17 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       else if (nfoResult != CInfoScanner::InfoType::NONE)
         hasDetails = true;
 
-      // if we are performing a forced refresh ask the user to choose between using a valid NFO and a valid scraper
-      // a local scraper has nothing to refresh from, so discarding the nfo for it leaves no
-      // source at all
+      // if we are performing a forced refresh ask the user to choose between using the local
+      // information and a valid scraper. A local scraper has nothing to refresh from, and an nfo
+      // the scraper failed on is ignored anyway. Without an nfo the answer still covers episode
+      // nfos and season art, an nfo the lookup above can miss (folder items, or parent_name
+      // differing from parent_name_root) and local art.
       if (needsRefresh && IsModal() && !scraper->IsNoop() && scraper->ID() != "metadata.local" &&
-          nfoResult != CInfoScanner::InfoType::ERROR_NFO)
+          nfoResult != CInfoScanner::InfoType::ERROR_NFO &&
+          (nfoResult != CInfoScanner::InfoType::NONE ||
+           scraper->Content() == ADDON::ContentType::TVSHOWS || VIDEO::IsBrowsableFolder(*m_item) ||
+           scanSettings.parent_name != scanSettings.parent_name_root ||
+           HasLocalArt(*m_item, scraper->Content(), scanSettings.parent_name)))
       {
         int heading = 20159;
         if (scraper->Content() == ADDON::ContentType::MOVIES)
