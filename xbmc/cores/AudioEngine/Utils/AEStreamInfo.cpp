@@ -667,8 +667,10 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
           dataType = m_info.m_type;
         }
       }
-      else
+      else if (m_info.m_type != CAEStreamInfo::STREAM_TYPE_NULL)
         dataType = m_info.m_type;
+      else
+        continue;
 
       m_coreSize = m_fsize;
       m_fsize += hd_size;

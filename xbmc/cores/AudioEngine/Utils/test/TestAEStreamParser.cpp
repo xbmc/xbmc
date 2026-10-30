@@ -38,6 +38,15 @@ std::vector<uint8_t> HdExtension()
   return ext;
 }
 
+//! A DTS-HD extension substream whose asset starts with no sync the parser knows.
+std::vector<uint8_t> UnknownExtension()
+{
+  std::vector<uint8_t> ext = HdExtension();
+  const uint8_t unknown[] = {0xF0, 0xC7, 0x89, 0x11};
+  std::copy(std::begin(unknown), std::end(unknown), ext.begin() + 16);
+  return ext;
+}
+
 std::vector<uint8_t> MaFrame()
 {
   std::vector<uint8_t> frame = CoreFrame();
@@ -80,6 +89,22 @@ TEST(TestAEStreamParser, ACoreFrameNotFollowedByASyncIsNotTakenAsTheStream)
 {
   std::vector<uint8_t> stream = CoreFrame();
   Append(stream, {0x1C, 0x4A, 0x40, 0xA6, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88});
+  for (int i = 0; i < 4; ++i)
+    Append(stream, MaFrame());
+
+  const std::vector<CAEStreamInfo::DataType> types = Parse(stream);
+
+  ASSERT_FALSE(types.empty());
+  for (const CAEStreamInfo::DataType type : types)
+    EXPECT_EQ(CAEStreamInfo::STREAM_TYPE_DTSHD_MA, type);
+}
+
+//! After a lost sync there is no previous type to fall back on, and a stream without a type has no
+//! frame duration, which ActiveAE cannot buffer.
+TEST(TestAEStreamParser, AnExtensionWithAnUnknownAssetIsNotTakenAsTheStream)
+{
+  std::vector<uint8_t> stream = CoreFrame();
+  Append(stream, UnknownExtension());
   for (int i = 0; i < 4; ++i)
     Append(stream, MaFrame());
 
