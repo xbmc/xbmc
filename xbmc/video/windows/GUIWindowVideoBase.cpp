@@ -240,6 +240,9 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
       (PLAYLIST::IsPlayList(fileItem) && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
     return false;
 
+  // the item may be one of the list, which the loader thread writes
+  const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, &fileItem};
+
   // "Videos/Video Add-ons" lists addons in the video window
   if (fileItem.HasAddonInfo())
     return CGUIDialogAddonInfo::ShowForItem(std::make_shared<CFileItem>(fileItem));
