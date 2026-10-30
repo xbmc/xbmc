@@ -13,6 +13,7 @@
 #include "threads/Timer.h"
 #include "utils/EventStream.h"
 
+#include <cstdint>
 #include <string>
 #include <string_view>
 #include <vector>
