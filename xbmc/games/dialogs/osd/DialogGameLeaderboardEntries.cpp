@@ -357,6 +357,11 @@ bool CDialogGameLeaderboardEntries::OnMessage(CGUIMessage& message)
 {
   if (message.GetMessage() == GUI_MSG_NOTIFY_ALL && message.GetParam1() == GUI_MSG_REFRESH_LIST)
   {
+    // A status set while closed would hide the list when the dialog next opens,
+    // and a list hidden then is never given its rows
+    if (!IsActive())
+      return true;
+
     PopulateList();
 
     // Only when something dropped the page. A refresh that follows a fetch of
