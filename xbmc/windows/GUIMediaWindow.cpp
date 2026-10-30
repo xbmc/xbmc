@@ -1971,6 +1971,9 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     if (pItem->IsFolder())
     {
       CURL itemUrl(pItem->GetPath());
+      if (itemUrl.IsLosslessURI())
+        continue;
+
       if (!filterOption.empty())
         itemUrl.SetOption("filter", filterOption);
       else
@@ -1982,12 +1985,14 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   SetProperty("filter", filter);
   if (filtered && m_canFilterAdvanced)
   {
+    CURL curUrl;
     // to be able to select the same item as before we need to adjust
     // the path of the item i.e. add or remove the "filter=" URL option
     // but that's only necessary for folder items
-    if (currentItem.get() && currentItem->IsFolder())
+    if (currentItem.get() && currentItem->IsFolder() &&
+        !(curUrl = CURL{currentItemPath}).IsLosslessURI())
     {
-      CURL curUrl(currentItemPath), newUrl(m_strFilterPath);
+      CURL newUrl{m_strFilterPath};
       if (newUrl.HasOption("filter"))
         curUrl.SetOption("filter", newUrl.GetOption("filter"));
       else if (curUrl.HasOption("filter"))
