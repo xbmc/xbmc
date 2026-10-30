@@ -16,6 +16,9 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/VFSEntry.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPlayEject.h"
 #ifdef HAVE_LIBBLURAY
@@ -27,6 +30,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "jobs/JobManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"
@@ -52,6 +56,8 @@
 
 #include <map>
 #include <utility>
+
+#include <sys/stat.h>
 #endif
 #endif
 
@@ -103,6 +109,27 @@ const char* DriveStateName(DriveState state)
       return "closed, media undefined";
   }
   return "unknown";
+}
+} // namespace
+#endif
+
+#if defined(HAS_OPTICAL_DRIVE) && !defined(TARGET_WINDOWS)
+namespace
+{
+/*! \brief Whether two paths name the same block device, eg. /dev/cdrom and the /dev/sr0 it links to
+ *
+ * std::filesystem::equivalent() can't answer this: libstdc++ refuses to compare device nodes.
+ */
+bool IsSameDevice(const std::string& path1, const std::string& path2)
+{
+  struct stat stat1
+  {
+  };
+  struct stat stat2
+  {
+  };
+  return stat(path1.c_str(), &stat1) == 0 && stat(path2.c_str(), &stat2) == 0 &&
+         S_ISBLK(stat1.st_mode) && S_ISBLK(stat2.st_mode) && stat1.st_rdev == stat2.st_rdev;
 }
 } // namespace
 #endif
@@ -999,7 +1026,10 @@ void CMediaManager::EjectTray(const bool bEject, const std::string& devicePath)
 #endif
     const std::string trayDevicePath{TranslateDevicePath(devicePath)};
     if (bEject)
+    {
+      ReleaseDisc(trayDevicePath);
       m_platformDiscDriveHander->EjectDriveTray(trayDevicePath);
+    }
     else
       m_platformDiscDriveHander->CloseDriveTray(trayDevicePath);
     ResetDriveCaches(trayDevicePath);
@@ -1031,6 +1061,7 @@ void CMediaManager::ToggleTray(const std::string& devicePath)
     m_hasBlurayPlaylist = HasBlurayPlaylist::UNKNOWN;
 #endif
     const std::string trayDevicePath{TranslateDevicePath(devicePath)};
+    ReleaseDisc(trayDevicePath);
     m_platformDiscDriveHander->ToggleDriveTray(trayDevicePath);
     ResetDriveCaches(trayDevicePath);
   }
@@ -1051,6 +1082,108 @@ std::set<std::string> CMediaManager::GetRemovableDrivePaths() const
   }
   return paths;
 }
+#endif
+
+#ifdef HAS_OPTICAL_DRIVE
+void CMediaManager::ReleaseDisc(const std::string& translatedDevicePath)
+{
+  // The player has to let go of the disc before it can be unmounted, and would otherwise go on
+  // reading from a drive with nothing in it. Stopping it is the application thread's to do.
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread() &&
+      IsPlayingFromDrive(translatedDevicePath))
+  {
+    CLog::LogF(LOGINFO, "Stopping playback of {} before the tray of {} opens",
+               CURL::GetRedacted(g_application.CurrentUnstackedItem().GetPath()),
+               translatedDevicePath);
+    g_application.StopPlaying();
+  }
+
+#if !defined(TARGET_WINDOWS) && !defined(TARGET_DARWIN)
+  // On macOS the storage provider's Eject() ejects the disc as well as unmounting it
+  for (const auto& mountPoint : GetDiscMountPoints(translatedDevicePath))
+  {
+    CLog::LogF(LOGINFO, "Unmounting {} before the tray of {} opens", mountPoint,
+               translatedDevicePath);
+    bool unmounted{false};
+    {
+      std::unique_lock lock(m_CritSecStorageProvider);
+      unmounted = m_platformStorage && m_platformStorage->Eject(mountPoint);
+    }
+    if (!unmounted)
+      CLog::LogF(LOGWARNING, "Could not unmount {}", mountPoint);
+  }
+#endif
+}
+
+bool CMediaManager::IsPlayingFromDrive(const std::string& translatedDevicePath)
+{
+  const auto appPlayer{CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()};
+  if (!appPlayer->IsPlaying())
+    return false;
+
+  // Played from the drive's device, or from wherever the OS mounted the disc
+  std::vector<std::string> roots{translatedDevicePath};
+#ifndef TARGET_WINDOWS
+  const std::vector<std::string> mountPoints{GetDiscMountPoints(translatedDevicePath)};
+  roots.insert(roots.end(), mountPoints.begin(), mountPoints.end());
+#endif
+
+  // A stack is played a part at a time, and the parts are what is on the disc
+  const CFileItem& item{g_application.CurrentUnstackedItem()};
+  return IsPathOnDrive(item.GetPath(), roots) || IsPathOnDrive(item.GetDynPath(), roots);
+}
+
+bool CMediaManager::IsPathOnDrive(std::string path, const std::vector<std::string>& roots)
+{
+  if (URIUtils::IsBlurayPath(path))
+    path = URIUtils::GetDiscFile(path);
+
+  // These name a drive, where no drive means the first one, or wrap a disc image that may be on one
+  const CURL url{path};
+  if (url.IsProtocol("cdda"))
+    path = TranslateDevicePath(path);
+  else if (url.IsProtocol("iso9660"))
+    path = TranslateDevicePath(url.GetHostName());
+  else if (url.IsProtocol("dvd"))
+    path = TranslateDevicePath("");
+  else if (url.IsProtocol("udf"))
+    path = url.GetHostName();
+
+#ifdef TARGET_WINDOWS
+  // The drive's path has its letter in upper case
+  if (URIUtils::IsDOSPath(path))
+    path[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(path[0])));
+#else
+  // Only a device node is compared by identity, as looking up a path on an unresponsive network
+  // share can block
+  if (path.starts_with("/dev/") && IsSameDevice(path, roots.front()))
+    return true;
+#endif
+
+  return std::ranges::any_of(roots, [&path](const std::string& root)
+                             { return URIUtils::PathHasParent(path, root); });
+}
+
+#ifndef TARGET_WINDOWS
+std::vector<std::string> CMediaManager::GetDiscMountPoints(const std::string& translatedDevicePath)
+{
+  std::vector<CMediaSource> drives;
+  {
+    std::unique_lock lock(m_CritSecStorageProvider);
+    if (m_platformStorage)
+      m_platformStorage->GetRemovableDrives(drives);
+  }
+
+  std::vector<std::string> mountPoints;
+  for (const auto& drive : drives)
+  {
+    if (drive.m_iDriveType == SourceType::OPTICAL_DISC && !drive.strPath.empty() &&
+        IsSameDevice(drive.strDevicePath, translatedDevicePath))
+      mountPoints.push_back(drive.strPath);
+  }
+  return mountPoints;
+}
+#endif
 #endif
 
 void CMediaManager::ProcessEvents()
