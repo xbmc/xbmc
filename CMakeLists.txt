@@ -621,6 +621,13 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   # Enable unit-test related targets
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
+  # Windows permits concurrent servers to bind the listening port these tests share.
+  get_property(tcp_server_tests DIRECTORY PROPERTY TESTS)
+  list(FILTER tcp_server_tests INCLUDE REGEX "^TestTCPServer\\.")
+  if(tcp_server_tests)
+    set_tests_properties(${tcp_server_tests} PROPERTIES RESOURCE_LOCK tcp_server_port)
+  endif()
+  unset(tcp_server_tests)
   find_program(TEST_DPKG_DEB_EXECUTABLE NAMES dpkg-deb)
   find_program(TEST_RSYNC_EXECUTABLE NAMES rsync)
   if(TEST_DPKG_DEB_EXECUTABLE AND TEST_RSYNC_EXECUTABLE)
