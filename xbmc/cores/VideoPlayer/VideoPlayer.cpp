@@ -927,6 +927,9 @@ bool CVideoPlayer::OpenInputStream()
     throw std::runtime_error("m_pInputStream reference count is greater than 1");
   m_pInputStream.reset();
 
+  // Flushes keep disc menu overlays, and the closed input stream can no longer remove them
+  m_overlayContainer.Clear();
+
   CLog::Log(LOGINFO, "Creating InputStream");
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item, true);
