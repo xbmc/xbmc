@@ -3,10 +3,10 @@
 # Security Policy
 
 ## Supported versions
-Security fixes are made on the `master` branch and backported to the current stable release series, as well as to the upcoming release branch while it is in beta or release candidate stage. Older release series do not receive security updates; please upgrade to the latest stable release.
+Security fixes are made on the `master` branch and backported to the current stable release series, as well as to any upcoming release branch. Older release series do not receive security updates; please upgrade to the latest stable release.
 
 ## Reporting a vulnerability
-**Please do not report security vulnerabilities through public GitHub issues, pull requests or the forum.**
+**Please do not report or highlight security vulnerabilities through any public mechanism, including GitHub issues, pull requests, the forum, blog posts or videos.**
 
 Report them privately through GitHub instead:
 
@@ -20,8 +20,7 @@ Please include as much of the following as you can:
 * The impact you believe an attacker could achieve
 
 ## What to expect
-Team Kodi is made up of volunteers, so please be patient. We will:
-* Acknowledge your report and keep you updated in the private advisory as we triage it.
+Team Kodi is made up of volunteers, so please be patient. We will acknowledge your report and keep you updated in the private advisory as we triage it. If we confirm the issue, we will:
 * Work on a fix in a private fork and coordinate the release timing with you.
 * Ship the fix in a security release, announced on the **[Kodi news page](https://kodi.tv/blog/)** with advice to update.
 * Publish a **[GitHub security advisory](https://github.com/xbmc/xbmc/security/advisories)** once the fixed release is available, request a CVE where appropriate and credit you unless you prefer to remain anonymous.
