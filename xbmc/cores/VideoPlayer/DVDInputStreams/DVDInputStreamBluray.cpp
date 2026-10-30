@@ -88,7 +88,7 @@ CDVDInputStreamBluray::~CDVDInputStreamBluray()
 
 void CDVDInputStreamBluray::Abort()
 {
-  m_hold = HOLD_EXIT;
+  m_aborted = true;
 }
 
 bool CDVDInputStreamBluray::IsEOF()
@@ -706,7 +706,7 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       if (m_hold == HOLD_HELD)
          return 0;
 
-      if (m_hold == HOLD_ERROR || m_hold == HOLD_EXIT || HasGivenUpReading())
+      if (m_hold == HOLD_ERROR || m_aborted || HasGivenUpReading())
         return -1;
 
       result = bd_read_ext (m_bd, buf, buf_size, &m_event);
@@ -756,15 +756,20 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
   }
   else
   {
-    if (HasGivenUpReading())
-      return -1;
-    result = bd_read(m_bd, buf, buf_size);
-    if (result > 0)
-      m_readErrors = 0;
-    while (bd_get_event(m_bd, &m_event))
-      ProcessEvent();
-    if (HasGivenUpReading())
-      return -1;
+    unsigned int readErrors{0};
+    do
+    {
+      if (m_aborted || HasGivenUpReading())
+        return -1;
+      readErrors = m_readErrors;
+      result = bd_read(m_bd, buf, buf_size);
+      if (result > 0)
+        m_readErrors = 0;
+      while (bd_get_event(m_bd, &m_event))
+        ProcessEvent();
+      // A unit libbluray skips as broken is reported and read as nothing, which the demuxer would
+      // take for the end of the title
+    } while (result == 0 && m_readErrors > readErrors);
   }
   return result;
 }
@@ -1225,7 +1230,7 @@ bool CDVDInputStreamBluray::IsDefaultStream(int pid) const
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 {
-  if (!m_navmode || m_hold == HOLD_EXIT || m_hold == HOLD_ERROR || HasGivenUpReading())
+  if (!m_navmode || m_aborted || m_hold == HOLD_ERROR || HasGivenUpReading())
     return NEXTSTREAM_NONE;
 
   /* process any current event */

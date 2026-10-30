@@ -15,6 +15,7 @@
 #include "filesystem/UDFContext.h"
 #endif
 
+#include <atomic>
 #include <chrono>
 #include <list>
 #include <memory>
@@ -193,14 +194,17 @@ protected:
   };
 
   SPlane m_planes[2];
-  enum EHoldState {
+  enum EHoldState
+  {
     HOLD_NONE = 0,
     HOLD_HELD,
     HOLD_DATA,
     HOLD_STILL,
     HOLD_ERROR,
-    HOLD_EXIT
   } m_hold = HOLD_NONE;
+  //! Set by Abort() from the thread closing the player. Kept apart from m_hold, which playback
+  //! events overwrite
+  std::atomic<bool> m_aborted{false};
   //! Units libbluray has failed to read since it last returned data
   unsigned int m_readErrors = 0;
   BD_EVENT m_event;
