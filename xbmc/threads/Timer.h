@@ -20,7 +20,9 @@ public:
 };
 
 /*!
- * All timers share one thread, so a callback delays the other timers until it returns.
+ * All timers share one thread, which runs their callbacks one at a time. A callback
+ * therefore delays every other timer until it returns, and must not block, for example
+ * wait on the main thread.
  */
 class CTimer
 {
