@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include "Event.h"
-#include "Thread.h"
-
 #include <chrono>
 #include <functional>
 
@@ -22,30 +19,33 @@ public:
   virtual void OnTimeout() = 0;
 };
 
-class CTimer : protected CThread
+/*!
+ * All timers share one thread, so a callback delays the other timers until it returns.
+ */
+class CTimer
 {
 public:
   explicit CTimer(ITimerCallback *callback);
   explicit CTimer(std::function<void()> const& callback);
-  ~CTimer() override;
+  CTimer(const CTimer&) = delete;
+  CTimer& operator=(const CTimer&) = delete;
+  virtual ~CTimer();
 
   bool Start(std::chrono::milliseconds timeout, bool interval = false);
   bool Stop(bool wait = false);
   bool Restart();
   void RestartAsync(std::chrono::milliseconds timeout);
 
-  bool IsRunning() const { return CThread::IsRunning(); }
+  bool IsRunning() const;
 
   float GetElapsedSeconds() const;
   float GetElapsedMilliseconds() const;
 
-protected:
-  void Process() override;
-
 private:
+  class CTimerThread;
+
   std::function<void()> m_callback;
   std::chrono::milliseconds m_timeout;
   bool m_interval;
   std::chrono::time_point<std::chrono::steady_clock> m_endTime;
-  CEvent m_eventTimeout;
 };
