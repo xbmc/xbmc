@@ -8,7 +8,7 @@
 
 #include "M2TSParser.h"
 
-#include "BitReader.h"
+#include "ByteHelpers.h"
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/File.h"

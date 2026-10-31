@@ -7,7 +7,7 @@
  */
 
 #include "URL.h"
-#include "filesystem/bluray/BitReader.h"
+#include "filesystem/bluray/ByteHelpers.h"
 #include "filesystem/bluray/M2TSParser.h"
 #include "filesystem/bluray/MPLSParser.h"
 #include "filesystem/bluray/PlaylistStructure.h"
