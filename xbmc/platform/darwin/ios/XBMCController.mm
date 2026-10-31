@@ -39,6 +39,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/XBMC_events.h"
 #import "windowing/ios/WinSystemIOS.h"
 
@@ -53,6 +54,7 @@
 #undef id
 
 #include <math.h>
+#include <mutex>
 #include <signal.h>
 
 #import <AVFoundation/AVAudioSession.h>
@@ -70,7 +72,13 @@ namespace
 bool IsFullscreenVideo()
 {
   auto* gui = CServiceBroker::GetGUI();
-  return gui && gui->GetWindowManager().GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_VIDEO;
+  auto* winSystem = CServiceBroker::GetWinSystem();
+  if (!gui || !winSystem)
+    return false;
+
+  // The modal-dialog lookup releases its lock before the window-history read.
+  std::unique_lock lock(winSystem->GetGfxContext());
+  return gui->GetWindowManager().GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_VIDEO;
 }
 
 struct VideoGestureMessage
