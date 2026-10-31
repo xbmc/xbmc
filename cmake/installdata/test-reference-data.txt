@@ -53,6 +53,14 @@ xbmc/games/library/test/large.zip
 xbmc/games/library/test/nested.zip
 xbmc/games/library/test/program.zip
 xbmc/games/library/test/quoted.gdi
+xbmc/guilib/test/testdata/icc-gray-untagged.jpg
+xbmc/guilib/test/testdata/icc-gray.jpg
+xbmc/guilib/test/testdata/icc-p3.jpg
+xbmc/guilib/test/testdata/icc-srgb-lut.jpg
+xbmc/guilib/test/testdata/icc-srgb-notch.jpg
+xbmc/guilib/test/testdata/icc-srgb-v2.jpg
+xbmc/guilib/test/testdata/icc-srgb-v4.jpg
+xbmc/guilib/test/testdata/icc-untagged.jpg
 xbmc/music/tags/test/testdata/tagged.mp2
 xbmc/network/test/data/test-ranges.txt
 xbmc/network/test/data/test.html
