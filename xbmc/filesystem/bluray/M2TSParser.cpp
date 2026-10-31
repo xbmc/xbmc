@@ -916,7 +916,7 @@ bool ParseEAC3Bitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* s
 
 bool ParseAC3Bitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
-  if (!streamInfo)
+  if (!streamInfo || buffer.empty())
     return false;
 
   // Find (E)AC-3 sync word
@@ -933,7 +933,7 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   const unsigned int bsid{GetBits(header, 8, 5)};
 
   if (bsid == 16)
-    return ParseEAC3Bitstream(buffer, streamInfo);
+    return ParseEAC3Bitstream(buffer.subspan(offset), streamInfo);
   if (bsid == 6 || bsid == 8)
     return ParseAC3Bitstream(buffer, offset, streamInfo);
   return false;
