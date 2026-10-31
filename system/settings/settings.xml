@@ -2869,6 +2869,27 @@
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
+        <setting id="gamesgeneral.enablerunahead" type="boolean" label="35378" help="35379">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="gamesgeneral.runaheadframes" type="integer" label="35380" help="35381">
+          <level>0</level>
+          <default>1</default>
+          <constraints>
+            <minimum>1</minimum>
+            <step>1</step>
+            <maximum>3</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="gamesgeneral.enablerunahead">true</dependency>
+          </dependencies>
+          <control type="slider" format="integer">
+            <popup>true</popup>
+            <formatlabel>35382</formatlabel>
+          </control>
+        </setting>
       </group>
       <group id="2" label="35320">
         <setting id="gamesgeneral.cheatspath" type="path" label="35321" help="35322">

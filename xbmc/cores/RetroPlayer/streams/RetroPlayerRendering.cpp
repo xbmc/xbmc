@@ -225,6 +225,9 @@ void CRetroPlayerRendering::AddStreamData(const StreamPacket& packet)
 {
   const HwFramebufferPacket& hwPacket = static_cast<const HwFramebufferPacket&>(packet);
 
+  if (!m_bVideoEnabled)
+    return;
+
   // A core can present a frame larger than the maximum it reported, as LRPS2
   // does with PAL games. Grow the framebuffer for the frames that follow. This
   // one was clipped to the old size, and growing replaced its contents.

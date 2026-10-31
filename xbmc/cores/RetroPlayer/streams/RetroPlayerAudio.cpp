@@ -110,11 +110,26 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   return true;
 }
 
+void CRetroPlayerAudio::Suppress(bool bSuppressed)
+{
+  if (bSuppressed)
+    m_frameThread = std::this_thread::get_id();
+  m_bAudioSuppressed = bSuppressed;
+}
+
 void CRetroPlayerAudio::AddStreamData(const StreamPacket& packet)
 {
   const AudioStreamPacket& audioPacket = static_cast<const AudioStreamPacket&>(packet);
 
-  if (m_bAudioEnabled)
+  // Sound from another thread plays as it arrives
+  bool suppressed = false;
+  const std::thread::id frameThread = m_frameThread;
+  if (frameThread != std::thread::id{} && std::this_thread::get_id() != frameThread)
+    m_sentOffFrameThread = true;
+  else
+    suppressed = m_bAudioSuppressed;
+
+  if (m_bAudioEnabled && !suppressed)
   {
     if (m_pAudioStream)
     {

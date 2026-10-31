@@ -68,6 +68,23 @@ namespace
 constexpr const char* GAME_PROPERTY_SUPPORTS_DISC_CONTROL = "supports_disc_control";
 constexpr const char* GAME_PROPERTY_PLATFORMS = "platforms";
 constexpr const char* GAME_PROPERTY_LIBRETRO_CORE = "libretro_core";
+constexpr const char* GAME_PROPERTY_SAVESTATE_FEATURES = "savestate_features";
+
+// Any other value is unknown, which RetroArch treats as deterministic
+CGameClient::SavestateFeatures ParseSavestateFeatures(const std::string& features)
+{
+  using SavestateFeatures = CGameClient::SavestateFeatures;
+  // libretro's core info rates a core without savestates "null"
+  if (features == "null" || features == "disabled")
+    return SavestateFeatures::DISABLED;
+  if (features == "basic")
+    return SavestateFeatures::BASIC;
+  if (features == "serialized")
+    return SavestateFeatures::SERIALIZED;
+  if (features == "deterministic")
+    return SavestateFeatures::DETERMINISTIC;
+  return SavestateFeatures::UNKNOWN;
+}
 
 /*!
  * \brief Holds a hardware-rendering client's context current for a call into it
@@ -160,6 +177,8 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
 
   m_libretroCore =
       addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_LIBRETRO_CORE).asString();
+  m_savestateFeatures = ParseSavestateFeatures(
+      addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_SAVESTATE_FEATURES).asString());
 }
 
 CGameClient::~CGameClient(void)
@@ -431,6 +450,10 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
                                      RETRO::IStreamManager& streamManager,
                                      IGameInputCallback* input)
 {
+  // Whether frames can be run ahead is a property of the game as well as the
+  // client: a core may refuse for one game and not the next
+  m_speculativeSupported = true;
+
   const bool gameInfoLoaded = LoadGameInfo();
   if (!gameInfoLoaded)
   {
@@ -716,6 +739,51 @@ void CGameClient::PollInput()
     input->PollInput();
 }
 
+bool CGameClient::SupportsSpeculativeFrames() const
+{
+  return m_ifc.game->toAddon->RunFrameSpeculative != nullptr && m_speculativeSupported;
+}
+
+bool CGameClient::RunFrameSpeculative()
+{
+  if (!SupportsSpeculativeFrames())
+    return false;
+
+  std::unique_lock lock(m_critSection);
+
+  if (!m_bIsPlaying)
+    return false;
+
+  try
+  {
+    CClientFrameScope hwScope(Streams());
+    if (!hwScope.IsBound())
+      return false;
+
+    const GAME_ERROR error = m_ifc.game->toAddon->RunFrameSpeculative(m_ifc.game);
+    if (error == GAME_ERROR_NOT_IMPLEMENTED)
+    {
+      CLog::Log(LOGINFO, "GAME: {} can't run speculative frames", ID());
+      m_speculativeSupported = false;
+      return false;
+    }
+    if (!LogError(error, "RunFrameSpeculative()"))
+      return false;
+
+    const GAME_ERROR audioError = m_ifc.game->toAddon->AudioAvailable(m_ifc.game);
+    if (audioError != GAME_ERROR_NO_ERROR && audioError != GAME_ERROR_NOT_IMPLEMENTED)
+      LogError(audioError, "AudioAvailable()");
+
+    return true;
+  }
+  catch (...)
+  {
+    LogException("RunFrameSpeculative()");
+  }
+
+  return false;
+}
+
 void CGameClient::RunFrame(bool pollInput)
 {
   if (pollInput)
@@ -893,6 +961,68 @@ RestoreResult CGameClient::Deserialize(const uint8_t* data,
     restorePreviousDiscs();
   // Media rollback cannot undo machine memory changed by a failed deserialize.
   return bSuccess ? RestoreResult::Restored : RestoreResult::StateUncertain;
+}
+
+bool CGameClient::HasSpeculativeStates() const
+{
+  return m_ifc.game->toAddon->SerializeSpeculative != nullptr;
+}
+
+bool CGameClient::SerializeSpeculative(uint8_t* data, size_t size)
+{
+  if (m_ifc.game->toAddon->SerializeSpeculative == nullptr)
+    return Serialize(data, size);
+
+  if (data == nullptr || size == 0)
+    return false;
+
+  std::unique_lock lock(m_critSection);
+  if (!m_bIsPlaying)
+    return false;
+
+  try
+  {
+    // Refusing a state is expected while the client couldn't load it back, so
+    // it isn't logged as an error
+    CClientFrameScope hwScope(Streams());
+    if (hwScope.IsBound())
+      return m_ifc.game->toAddon->SerializeSpeculative(m_ifc.game, data, size) ==
+             GAME_ERROR_NO_ERROR;
+  }
+  catch (...)
+  {
+    LogException("SerializeSpeculative()");
+  }
+
+  return false;
+}
+
+bool CGameClient::RestoreState(const uint8_t* data, size_t size)
+{
+  if (data == nullptr || size == 0)
+    return false;
+
+  std::unique_lock lock(m_critSection);
+  if (!m_bIsPlaying)
+    return false;
+
+  try
+  {
+    CClientFrameScope hwScope(Streams());
+    if (hwScope.IsBound())
+    {
+      if (m_ifc.game->toAddon->DeserializeSpeculative != nullptr)
+        return LogError(m_ifc.game->toAddon->DeserializeSpeculative(m_ifc.game, data, size),
+                        "DeserializeSpeculative()");
+      return LogError(m_ifc.game->toAddon->Deserialize(m_ifc.game, data, size), "Deserialize()");
+    }
+  }
+  catch (...)
+  {
+    LogException("Deserialize()");
+  }
+
+  return false;
 }
 
 bool CGameClient::SerializeAchievementState(std::vector<uint8_t>& data)
