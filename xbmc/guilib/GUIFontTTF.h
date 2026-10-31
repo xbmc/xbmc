@@ -118,16 +118,25 @@ public:
 protected:
   explicit CGUIFontTTF(const std::string& fontIdent);
 
+  enum class FontFace
+  {
+    Primary,
+    Emoji,
+    Symbols,
+  };
+
   struct Glyph
   {
     hb_glyph_info_t m_glyphInfo{};
     hb_glyph_position_t m_glyphPosition{};
-    bool m_emoji{false}; // glyph of the emoji font
+    FontFace m_fontFace{FontFace::Primary};
 
-    Glyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPosition, bool emoji)
+    Glyph(const hb_glyph_info_t& glyphInfo,
+          const hb_glyph_position_t& glyphPosition,
+          FontFace fontFace)
       : m_glyphInfo(glyphInfo),
         m_glyphPosition(glyphPosition),
-        m_emoji(emoji)
+        m_fontFace(fontFace)
     {
     }
   };
@@ -151,7 +160,7 @@ protected:
     unsigned int m_endOffset;
     hb_buffer_t* m_buffer;
     hb_script_t m_script;
-    bool m_emoji;
+    FontFace m_fontFace;
     hb_glyph_info_t* m_glyphInfos;
     hb_glyph_position_t* m_glyphPositions;
   };
@@ -188,10 +197,10 @@ protected:
   // silhouette: get emoji in the vertex color instead of their own colors
   Character* GetCharacter(character_t letter,
                           FT_UInt glyphIndex,
-                          bool emoji = false,
+                          FontFace fontFace = FontFace::Primary,
                           bool silhouette = false);
   bool CacheCharacter(
-      FT_UInt glyphIndex, uint32_t style, bool emoji, bool silhouette, Character* ch);
+      FT_UInt glyphIndex, uint32_t style, FontFace fontFace, bool silhouette, Character* ch);
   void RenderCharacter(CGraphicContext& context,
                        float posX,
                        float posY,
@@ -258,6 +267,9 @@ protected:
   FT_Face m_emojiFace{nullptr};
   hb_font_t* m_hbEmojiFont{nullptr};
 
+  FT_Face m_symbolsFace{nullptr};
+  hb_font_t* m_hbSymbolsFont{nullptr};
+
   float m_originX{0.0f};
   float m_originY{0.0f};
 
@@ -305,6 +317,11 @@ protected:
   CRenderSystemBase* m_renderSystem;
 
 private:
+  FT_Face GetFace(FontFace fontFace) const;
+  static character_t GlyphAndStyle(FT_UInt glyphIndex,
+                                   uint32_t style,
+                                   FontFace fontFace,
+                                   bool silhouette);
   float GetTabSpaceLength();
 
   virtual bool FirstBegin() = 0;
