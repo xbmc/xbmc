@@ -51,6 +51,11 @@ namespace XBMCAddon
     static void makePendingCalls();
     static void clearPendingCalls(void* userData);
 
+    /*!
+     * \brief Drop every pending call and take no more, once scripts have stopped
+     */
+    static void clearAllPendingCalls();
+
     virtual bool isStateOk(AddonClass* obj) =  0;
     virtual bool shouldRemoveCallback(AddonClass* obj, void* userData) = 0;
   };
