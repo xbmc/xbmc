@@ -40,10 +40,12 @@ struct ParsedGameName
   std::string translation; // the language it is translated into, when the tag names one
   int disc{0};
   int discs{0};
+  int side{0}; // the side of a numbered tape or disk: 1 for A
   bool dataDisk{false}; // one the game asks for once it runs: user, data, scenario...
   int year{0};
   std::string publisher; // TOSEC names the publisher in the file name
   bool tosec{false}; // named the TOSEC way: a date, then the publisher
+  std::string extension; // lower case, without the dot
   std::vector<std::string> unknownTags;
 };
 
