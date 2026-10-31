@@ -14,6 +14,8 @@
  *  Examples of external changes: functional changes, bug fixes, constants value changes, ...
  */
 
+#include "VideoDatabaseMigration.h"
+
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "VideoDatabase.h"
@@ -161,6 +163,73 @@ static std::string SanitiseUrlEncodingV147(const std::string& path)
   out += path.substr(hostEnd);
 
   return out;
+}
+
+// Steps 123 to 131 use the itemType values introduced in v134 (version 1, extra 2) instead of the
+// values of their time (version 0, extra 1), which turns versions and types into extras.
+void RepairVideoAssetTypesV150(CDatabase& db, Dataset& ds, Dataset& ds2, int iVersion)
+{
+  constexpr int VideoAssetType_VERSION = 1;
+  constexpr int VideoAssetType_EXTRA = 2;
+  constexpr int VideoAssetTypeOwner_SYSTEM = 0;
+  constexpr int VideoAssetTypeOwner_USER = 2;
+
+  if (iVersion < 123)
+  {
+    // Step 123 created only the versions of the movies' files, using a system type
+    ds.exec(db.PrepareSQL("UPDATE videoversion SET itemType = %i", VideoAssetType_VERSION));
+    ds.exec(db.PrepareSQL("UPDATE videoversiontype SET itemType = %i", VideoAssetType_VERSION));
+  }
+  else if (iVersion < 131 || iVersion >= 134)
+  {
+    // From v134 the damage may come from a previous upgrade, from an unknown version
+
+    // The file of a movie is always a version
+    ds.exec(db.PrepareSQL(
+        "UPDATE videoversion SET itemType = %i "
+        "WHERE media_type = 'movie' AND itemType = %i "
+        "AND idFile = (SELECT m.idFile FROM movie m WHERE m.idMovie = videoversion.idMedia)",
+        VideoAssetType_VERSION, VideoAssetType_EXTRA));
+
+    // System types are always version types
+    ds.exec(db.PrepareSQL("UPDATE videoversiontype SET itemType = %i "
+                          "WHERE owner = %i AND itemType = %i",
+                          VideoAssetType_VERSION, VideoAssetTypeOwner_SYSTEM,
+                          VideoAssetType_EXTRA));
+
+    // Extras sharing a type with versions (any system type, or a user-added extras type also used
+    // by versions) get a user-added extras type of the same name
+    ds.query(db.PrepareSQL("SELECT DISTINCT vvt.id, vvt.name "
+                           "FROM videoversion vv "
+                           "  JOIN videoversiontype vvt ON vvt.id = vv.idType "
+                           "WHERE vv.itemType = %i AND (vvt.owner = %i OR "
+                           "  (vvt.owner = %i AND vvt.itemType = %i AND vvt.id IN "
+                           "    (SELECT idType FROM videoversion WHERE itemType = %i)))",
+                           VideoAssetType_EXTRA, VideoAssetTypeOwner_SYSTEM,
+                           VideoAssetTypeOwner_USER, VideoAssetType_EXTRA, VideoAssetType_VERSION));
+    while (!ds.eof())
+    {
+      const int idType{ds.fv(0).get_asInt()};
+      ds2.exec(db.PrepareSQL(
+          "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
+          ds.fv(1).get_asString().c_str(), VideoAssetTypeOwner_USER, VideoAssetType_EXTRA));
+
+      const int newId{static_cast<int>(ds2.lastinsertid())};
+      ds2.exec(
+          db.PrepareSQL("UPDATE videoversion SET idType = %i WHERE itemType = %i AND idType = %i",
+                        newId, VideoAssetType_EXTRA, idType));
+      ds.next();
+    }
+    ds.close();
+
+    // User-added types used only by versions are version types
+    ds.exec(db.PrepareSQL("UPDATE videoversiontype SET itemType = %i "
+                          "WHERE owner = %i AND itemType = %i "
+                          "AND id IN (SELECT idType FROM videoversion WHERE itemType = %i) "
+                          "AND id NOT IN (SELECT idType FROM videoversion WHERE itemType = %i)",
+                          VideoAssetType_VERSION, VideoAssetTypeOwner_USER, VideoAssetType_EXTRA,
+                          VideoAssetType_VERSION, VideoAssetType_EXTRA));
+  }
 }
 } // namespace KODI::DATABASE::MIGRATION
 
@@ -1428,9 +1497,12 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 149)
     m_pDS->exec("ALTER TABLE streamdetails ADD iFlags INTEGER DEFAULT 0");
+
+  if (iVersion < 150)
+    KODI::DATABASE::MIGRATION::RepairVideoAssetTypesV150(*this, *m_pDS, *m_pDS2, iVersion);
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 149;
+  return 150;
 }
