@@ -20,6 +20,8 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
+#include <algorithm>
+#include <cmath>
 #include <numeric>
 
 #include <androidjni/AudioFormat.h>
@@ -124,7 +126,8 @@ static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
   return CJNIAudioFormat::CHANNEL_OUT_STEREO;
 }
 
-jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize)
+jni::CJNIAudioTrack* CAESinkAUDIOTRACK::CreateAudioTrack(
+    int stream, int sampleRate, int channelMask, int encoding, int bufferSize, int hwAvSyncId)
 {
   jni::CJNIAudioTrack *jniAt = NULL;
 
@@ -133,6 +136,8 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
     CJNIAudioAttributesBuilder attrBuilder;
     attrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
     attrBuilder.setContentType(CJNIAudioAttributes::CONTENT_TYPE_MUSIC);
+    if (hwAvSyncId)
+      attrBuilder.setFlags(CJNIAudioAttributes::FLAG_HW_AV_SYNC);
 
     CJNIAudioFormatBuilder fmtBuilder;
     fmtBuilder.setChannelMask(channelMask);
@@ -143,7 +148,8 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
                                fmtBuilder.build(),
                                bufferSize,
                                CJNIAudioTrack::MODE_STREAM,
-                               CJNIAudioManager::AUDIO_SESSION_ID_GENERATE);
+                               hwAvSyncId ? hwAvSyncId
+                                          : CJNIAudioManager::AUDIO_SESSION_ID_GENERATE);
   }
   catch (const std::invalid_argument& e)
   {
@@ -196,9 +202,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
 int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int sizeInBytes, int64_t timestamp)
 {
   int     written = 0;
-  std::vector<char> buf;
-  buf.reserve(sizeInBytes);
-  memcpy(buf.data(), audioData, sizeInBytes);
+  std::vector<char> buf(audioData, audioData + sizeInBytes);
 
   CJNIByteBuffer bytebuf = CJNIByteBuffer::wrap(buf);
   written = m_at_jni->write(bytebuf.get_raw(), sizeInBytes, CJNIAudioTrack::WRITE_BLOCKING, timestamp);
@@ -364,7 +368,14 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     // this is temporarily opt-in via advancedsettings only
     const bool allowMultiFloat =
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_AllowMultiChannelFloat;
-    if (allowMultiFloat && m_sinkSupportsMultiChannelFloat)
+    if (m_format.m_hwAvSyncId)
+    {
+      // hardware A/V sync outputs take 16 bit stereo
+      m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
+      m_format.m_dataFormat = AE_FMT_S16LE;
+      m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
+    }
+    else if (allowMultiFloat && m_sinkSupportsMultiChannelFloat)
     {
       m_encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
       m_format.m_dataFormat     = AE_FMT_FLOAT;
@@ -543,8 +554,9 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     m_audiotrackbuffer_sec_orig = m_audiotrackbuffer_sec;
 
     m_jniAudioFormat = m_encoding;
-    m_at_jni = CreateAudioTrack(stream, m_sink_sampleRate, atChannelMask,
-                                m_encoding, m_min_buffer_size);
+    m_hwAvSyncId = m_passthrough ? 0 : format.m_hwAvSyncId;
+    m_at_jni = CreateAudioTrack(stream, m_sink_sampleRate, atChannelMask, m_encoding,
+                                m_min_buffer_size, m_hwAvSyncId);
 
     if (!IsInitialized())
     {
@@ -653,6 +665,9 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   // we add max 50 ms packages - so should be sane that way
   const uint32_t minwrapvalue = UINT32_MAX - m_sink_sampleRate / 10;
   const uint32_t remain = static_cast<uint32_t>(m_headPos & UINT64_LOWER_BYTES);
+  // Some devices report 0 for a hardware synced track while it is paused or resuming
+  if (m_hwAvSyncId && head_pos < remain && remain < minwrapvalue)
+    head_pos = remain;
   if ((remain > head_pos) && (remain >= minwrapvalue))
     m_headPos += (1ULL << 32); // add wraparound, e.g. 0x0000 FFFF FFFF -> 0x0001 FFFF FFFF
   // clear lower 32 bit values, e.g. 0x0001 FFFF FFFF -> 0x0001 0000 0000
@@ -848,6 +863,21 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   // for debugging only - can be removed if everything is really stable
   uint64_t startTime = CurrentHostCounter();
 
+  // Audio starting before the stream does has a negative presentation time,
+  // which some hardware synced outputs take as unsigned: they then hold the
+  // tunneled video until they resync, seconds later. Drop it.
+  unsigned int skipped = 0;
+  if (m_hwAvSyncId && m_ptsMs < 0)
+  {
+    skipped = std::min(frames, static_cast<unsigned int>(
+                                   std::ceil(-m_ptsMs * m_format.m_sampleRate / 1000.0)));
+    offset += skipped;
+    frames -= skipped;
+    m_ptsMs += 1000.0 * skipped / m_format.m_sampleRate;
+    if (!frames)
+      return skipped;
+  }
+
   uint8_t *buffer = data[0]+offset*m_format.m_frameSize;
   uint8_t *out_buf = buffer;
   int size = frames * m_format.m_frameSize;
@@ -864,7 +894,15 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     int size_left = size;
     while (written < size)
     {
-      loop_written = AudioTrackWrite((char*)out_buf, 0, size_left);
+      if (m_hwAvSyncId)
+      {
+        const double ptsMs =
+            m_ptsMs + 1000.0 * (written / m_format.m_frameSize) / m_format.m_sampleRate;
+        loop_written =
+            AudioTrackWrite((char*)out_buf, size_left, static_cast<int64_t>(ptsMs * 1000000));
+      }
+      else
+        loop_written = AudioTrackWrite((char*)out_buf, 0, size_left);
       written += loop_written;
       size_left -= loop_written;
 
@@ -933,7 +971,10 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       loop_written = 0;
     }
   }
-  unsigned int written_frames = static_cast<unsigned int>(written / m_format.m_frameSize);
+  unsigned int written_frames =
+      static_cast<unsigned int>(written / m_format.m_frameSize) + skipped;
+  // frames without a time of their own (e.g. silence) continue from these
+  m_ptsMs += 1000.0 * (written_frames - skipped) / m_format.m_sampleRate;
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
   // Get Back in Sync with faked pause bursts
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
@@ -990,6 +1031,15 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   if (!m_at_jni)
     return;
 
+  // A hardware synced track just stops at its last timed frame
+  if (m_hwAvSyncId)
+  {
+    if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PAUSED)
+      m_at_jni->pause();
+    usleep(millis * 1000);
+    return;
+  }
+
   // RAW has no actual pause packet to write. On an empty track, booking a
   // pause as queued audio would report delay for audio which does not exist.
   if (!m_rawNeedsFlush)
@@ -1025,16 +1075,23 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   }
 }
 
+void CAESinkAUDIOTRACK::SetPresentationTime(double ptsMs)
+{
+  m_ptsMs = ptsMs;
+}
+
 void CAESinkAUDIOTRACK::Flush()
 {
   // Discard encoded RAW audio only at an explicit AE
-  // discontinuity. IEC and PCM retain their existing behavior.
-  if (!IsInitialized() || !m_passthrough || m_info.m_wantsIECPassthrough)
+  // discontinuity. IEC and PCM retain their existing behavior, except for
+  // hardware A/V sync, which would play the gap to the new timestamps.
+  if (!IsInitialized() ||
+      ((!m_passthrough || m_info.m_wantsIECPassthrough) && !m_hwAvSyncId))
     return;
 
   // Drain resets the software duration, but stop() may still leave queued
   // data playing. Track actual writes independently of that duration.
-  if (m_rawNeedsFlush)
+  if (m_rawNeedsFlush || m_hwAvSyncId)
   {
     m_at_jni->pause();
     m_at_jni->flush();

@@ -56,6 +56,12 @@ public:
   virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) = 0;
 
   /*!
+   * @brief set the presentation time of the first frame passed to the next AddPackets call
+   * @param ptsMs presentation time in ms, on the clock of the stream
+   */
+  virtual void SetPresentationTime(double ptsMs) {}
+
+  /*!
    * @brief instruct the sink to add a pause
    * @param millis ms to pause
    */
@@ -74,8 +80,8 @@ public:
 
   /*
     Discard queued RAW output at an explicit stream discontinuity.
-    Called by the sink thread. Only RAW sinks need to implement this;
-    PCM and IEC sinks keep the default no-op.
+    Called by the sink thread. Only RAW and hardware A/V synced sinks need
+    to implement this; PCM and IEC sinks keep the default no-op.
    */
   virtual void Flush() {}
 

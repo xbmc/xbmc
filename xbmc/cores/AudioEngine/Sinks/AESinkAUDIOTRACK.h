@@ -37,6 +37,7 @@ public:
   double GetCacheTotal() override;
   unsigned int AddPackets(uint8_t** data, unsigned int frames, unsigned int offset) override;
   void AddPause(unsigned int millis) override;
+  void SetPresentationTime(double ptsMs) override;
   void Drain() override;
   void Flush() override;
   static void          EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
@@ -44,7 +45,8 @@ public:
   static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
 
 protected:
-  static jni::CJNIAudioTrack *CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize);
+  static jni::CJNIAudioTrack* CreateAudioTrack(
+      int stream, int sampleRate, int channelMask, int encoding, int bufferSize, int hwAvSyncId);
   static bool IsSupported(int sampleRateInHz, int channelConfig, int audioFormat);
   static bool VerifySinkConfiguration(int sampleRate,
                                       int channelMask,
@@ -98,6 +100,10 @@ private:
   double m_pause_ms = 0.0;
   double m_delay = 0.0;
   double m_hw_delay = 0.0;
+  // Tunneled playback: session shared with the video decoder, and the
+  // presentation time of the next frame written
+  int m_hwAvSyncId = 0;
+  double m_ptsMs = 0.0;
   CJNIAudioTimestamp m_timestamp;
   XbmcThreads::EndTime<> m_stampTimer;
   bool m_superviseAudioDelay = false;
