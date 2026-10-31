@@ -723,13 +723,14 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
       if (current == wordEnd)
         break;
 
-      // current line is empty and word is too long: split by character using a safe linear scan.
-      // Do not assume monotonic width because shaping/kerning can make width shrink or grow non-linearly.
+      // current line is empty and word is too long: split by character at the first prefix that
+      // doesn't fit; scanning on to the end of the word is cubic in its length (e.g. CJK text)
       size_t bestCount = 0;
       for (auto it = std::next(current); it < wordEnd; ++it)
       {
-        if (m_font->GetTextWidth({current, it}) <= maxWidth)
-          bestCount = std::distance(current, it);
+        if (m_font->GetTextWidth({current, it}) > maxWidth)
+          break;
+        bestCount = std::distance(current, it);
       }
       if (bestCount == 0)
         bestCount = 1; // ensure progress even if a single glyph is wider than maxWidth
