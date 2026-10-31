@@ -9,6 +9,7 @@
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "cores/RetroPlayer/playback/test/PlaybackTestEnvironment.h"
 #include "games/AchievementRuntime.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -70,6 +71,65 @@ TEST_F(TestGamesGUIInfo, TranslatesRetroPlayerLabels)
             RETROPLAYER_ACHIEVEMENTS_PROGRESS);
   EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsHardcore"),
             RETROPLAYER_ACHIEVEMENTS_HARDCORE);
+}
+
+TEST_F(TestGamesGUIInfo, NamesAnAttemptByItsPlace)
+{
+  CGUIInfoManager infoManager;
+
+  // Without a place, the first
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsChallengeTitle"),
+            RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsChallengeBadge"),
+            RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE);
+
+  const int secondTitle = infoManager.TranslateString("RetroPlayer.AchievementsChallengeTitle(2)");
+  EXPECT_NE(secondTitle, 0);
+  EXPECT_NE(secondTitle, RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE);
+  EXPECT_NE(secondTitle, infoManager.TranslateString("RetroPlayer.AchievementsChallengeTitle(3)"));
+  EXPECT_NE(secondTitle, infoManager.TranslateString("RetroPlayer.AchievementsChallengeBadge(2)"));
+
+  // Places count from 1
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsChallengeTitle(0)"), 0);
+  EXPECT_EQ(infoManager.TranslateString("RetroPlayer.AchievementsChallengeTitle(2nd)"), 0);
+}
+
+TEST_F(TestGamesGUIInfo, AnswersAnAttemptByItsPlace)
+{
+  // Game services, which hold the setting that turns the indicators off
+  KODI::RETRO::CPlaybackTestEnvironment environment;
+  auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const bool indicatorOriginal = settings->GetBool("gamesachievements.challengeindicator");
+  settings->SetBool("gamesachievements.challengeindicator", true);
+
+  CAchievementRuntime achievementRuntime;
+  AchievementChallenge first;
+  first.id = 1;
+  first.title = "Shroom";
+  first.badgeUrl = "shroom.png";
+  achievementRuntime.SetChallenge(first, true);
+  AchievementChallenge second;
+  second.id = 2;
+  second.title = "Fire Flower";
+  second.badgeUrl = "flower.png";
+  achievementRuntime.SetChallenge(second, true);
+
+  CGamesGUIInfo gamesGUIInfo{achievementRuntime};
+  const auto label = [&gamesGUIInfo](uint32_t info, uint32_t place)
+  {
+    std::string value{"stale"};
+    EXPECT_TRUE(gamesGUIInfo.GetLabel(value, nullptr, 0, CGUIInfo(info, place), nullptr));
+    return value;
+  };
+
+  // Without a place, the first
+  EXPECT_EQ(label(RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE, 0), "Shroom");
+  EXPECT_EQ(label(RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE, 1), "Shroom");
+  EXPECT_EQ(label(RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE, 2), "Fire Flower");
+  EXPECT_EQ(label(RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE, 2), "flower.png");
+  EXPECT_EQ(label(RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE, 3), "");
+
+  settings->SetBool("gamesachievements.challengeindicator", indicatorOriginal);
 }
 
 namespace

@@ -4560,6 +4560,26 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v22 **[New Infolabel]** \link RetroPlayer_AchievementsProgress `RetroPlayer.AchievementsProgress`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.AchievementsChallengeTitle(n)`</b>,
+///                  \anchor RetroPlayer_AchievementsChallengeTitle
+///                  _string_,
+///     @return The title of an achievement being attempted\, or an empty string
+///     if there isn't one or challenge indicators are turned off. Several can
+///     be attempted at once: `n` counts them from 1 in the order they started\,
+///     and without it the first is returned.
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link RetroPlayer_AchievementsChallengeTitle `RetroPlayer.AchievementsChallengeTitle(n)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`RetroPlayer.AchievementsChallengeBadge(n)`</b>,
+///                  \anchor RetroPlayer_AchievementsChallengeBadge
+///                  _string_,
+///     @return The badge image of an achievement being attempted\, counted as
+///     for \ref RetroPlayer_AchievementsChallengeTitle "RetroPlayer.AchievementsChallengeTitle(n)".
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link RetroPlayer_AchievementsChallengeBadge `RetroPlayer.AchievementsChallengeBadge(n)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`RetroPlayer.RichPresence`</b>,
 ///                  \anchor RetroPlayer_RichPresence
 ///                  _string_,
@@ -11529,8 +11549,27 @@ int CGUIInfoManager::TranslateSingleString(const std::string& strCondition, bool
     {
       for (const auto& i : retroplayer)
       {
-        if (prop.Name() == i.str)
-          return i.val;
+        if (prop.Name() != i.str)
+          continue;
+
+        // Several achievements can be attempted at once, so these can name one
+        // by its place
+        if (prop.num_params() == 1 && (i.val == RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE ||
+                                       i.val == RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE))
+        {
+          const std::string& param = prop.param(0);
+          uint32_t place = 0;
+          const auto [end, error] =
+              std::from_chars(param.data(), param.data() + param.size(), place);
+          // CGUIInfo keeps flags in the top 8 bits of its data
+          if (error != std::errc{} || end != param.data() + param.size() || place == 0 ||
+              place >= (1u << 24))
+            return 0;
+
+          return AddMultiInfo(CGUIInfo(i.val, place));
+        }
+
+        return i.val;
       }
     }
     else if (cat.Name() == "slideshow")

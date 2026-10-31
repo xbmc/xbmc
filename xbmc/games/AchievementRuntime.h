@@ -417,13 +417,15 @@ public:
   void SetProgressIndicator(const AchievementProgressIndicator& indicator, bool active);
 
   /*!
-   * \brief The attempt worth a corner indicator, if any
+   * \brief An attempt worth a corner indicator, if any
    *
-   * The first the skin has something to draw for. More than one at a time is
-   * rare and a corner has room for one, and the add-on may send an attempt
-   * with no title, which would show as an empty corner if it were chosen.
+   * Counted in the order the attempts started, among those the skin has
+   * something to draw for: the add-on may send an attempt with no title, which
+   * would show as an empty corner.
+   *
+   * \param index Which of them, from 0
    */
-  AchievementChallenge GetShownChallenge() const;
+  AchievementChallenge GetShownChallenge(unsigned int index = 0) const;
 
   /*!
    * \brief The leaderboard attempt worth a corner indicator, if any
