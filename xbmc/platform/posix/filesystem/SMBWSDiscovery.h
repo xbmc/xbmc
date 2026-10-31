@@ -51,7 +51,7 @@ public:
   // IWSDiscovery interface methods
   ~CWSDiscoveryPosix() override;
   bool StartServices() override;
-  bool StopServices() override;
+  bool StopServices(bool bWait) override;
   bool IsRunning() override;
 
   /*
