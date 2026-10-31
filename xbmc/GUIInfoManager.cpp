@@ -4550,6 +4550,17 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///     @skinning_v23 **[New Boolean Condition]** \link RetroPlayer_AchievementsHardcore `RetroPlayer.AchievementsHardcore`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`RetroPlayer.LeaderboardTrackerTitle`</b>,
+///                  \anchor RetroPlayer_LeaderboardTrackerTitle
+///                  _string_,
+///     @return The name of the leaderboard being attempted while its value is
+///     shown\, so a skin can say what the value is for\, or an empty string.
+///     With more than one attempt running\, the value can't be matched to one
+///     of them\, so the string is empty.
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link RetroPlayer_LeaderboardTrackerTitle `RetroPlayer.LeaderboardTrackerTitle`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`RetroPlayer.AchievementsProgress`</b>,
 ///                  \anchor RetroPlayer_AchievementsProgress
 ///                  _string_,
@@ -4648,7 +4659,7 @@ constexpr std::array<InfoMap, 88> videoplayer = {{
 ///
 /// -----------------------------------------------------------------------------
 // clang-format off
-constexpr std::array<InfoMap, 29> retroplayer = {{
+constexpr std::array<InfoMap, 30> retroplayer = {{
     {"title", RETROPLAYER_TITLE},
     {"platform", RETROPLAYER_PLATFORM},
     {"genres", RETROPLAYER_GENRES},
@@ -4666,6 +4677,7 @@ constexpr std::array<InfoMap, 29> retroplayer = {{
     {"achievementschallengetitle", RETROPLAYER_ACHIEVEMENTS_CHALLENGE_TITLE},
     {"achievementschallengebadge", RETROPLAYER_ACHIEVEMENTS_CHALLENGE_BADGE},
     {"leaderboardtracker", RETROPLAYER_LEADERBOARD_TRACKER},
+    {"leaderboardtrackertitle", RETROPLAYER_LEADERBOARD_TRACKER_TITLE},
     {"achievementsindicatortitle", RETROPLAYER_ACHIEVEMENTS_INDICATOR_TITLE},
     {"achievementsindicatorbadge", RETROPLAYER_ACHIEVEMENTS_INDICATOR_BADGE},
     {"achievementsindicatorprogress", RETROPLAYER_ACHIEVEMENTS_INDICATOR_PROGRESS},
