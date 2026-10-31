@@ -20,6 +20,7 @@ set(SOURCES TestAlarmClock.cpp
             TestFileUtils.cpp
             TestGlobalsHandling.cpp
             TestGPUInfo.cpp
+            TestHevcSei.cpp
             TestHTMLUtil.cpp
             TestHttpHeader.cpp
             TestHttpParser.cpp

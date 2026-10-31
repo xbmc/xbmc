@@ -19,6 +19,7 @@ public:
   uint32_t   GetBits(int nbits);
   unsigned int Position() { return m_posBits; }
   unsigned int AvailableBits() { return length * 8 - m_posBits; }
+  bool Overflow() const { return oflow != 0; }
 
 private:
   const uint8_t *buffer, *start;
