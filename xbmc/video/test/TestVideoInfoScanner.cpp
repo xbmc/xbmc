@@ -584,6 +584,7 @@ TEST_F(TestVideoInfoScanner, AFolderStackIsOneMovie)
   EXPECT_TRUE(m_db.GetSingleValue("SELECT strFileName FROM movie_view").starts_with("stack://"));
 }
 
+#ifdef HAVE_LIBBLURAY
 TEST_F(TestVideoInfoScanner, ABlurayFolderRipIsOneMovie)
 {
   const std::string folder{Folder(m_root, "Film (2010)")};
@@ -595,6 +596,7 @@ TEST_F(TestVideoInfoScanner, ABlurayFolderRipIsOneMovie)
   EXPECT_EQ(1, CountMovies());
   EXPECT_GT(m_db.GetMovieId(disc), 0);
 }
+#endif
 
 TEST_F(TestVideoInfoScanner, ADvdFolderRipIsOneMovie)
 {
