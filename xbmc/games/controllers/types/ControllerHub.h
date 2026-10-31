@@ -73,6 +73,14 @@ public:
    */
   void GetMousePorts(std::vector<std::string>& mousePorts) const;
 
+  /*!
+   * \brief Get a list of controller ports with a controller that has a pointer
+   *        connected, such as the PlayStation Mouse, which the mouse can play
+   *
+   * \param[out] mouseControllerPorts The list of controller ports
+   */
+  void GetMouseControllerPorts(std::vector<std::string>& mouseControllerPorts) const;
+
   // XML functions
   bool Serialize(tinyxml2::XMLElement& controllerElement) const;
   bool Deserialize(const tinyxml2::XMLElement& controllerElement);
