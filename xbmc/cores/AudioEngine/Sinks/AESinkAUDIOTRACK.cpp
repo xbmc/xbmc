@@ -20,18 +20,11 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
-#include <numeric>
-
 #include <androidjni/AudioFormat.h>
 #include <androidjni/AudioManager.h>
 #include <androidjni/AudioTrack.h>
 #include <androidjni/Build.h>
 #include <unistd.h>
-
-// This is an alternative to the linear weighted delay smoothing
-// advantages: only one history value needs to be stored
-// in tests the linear weighted average smoother yield better results
-//#define AT_USE_EXPONENTIAL_AVERAGING 1
 
 using namespace jni;
 
@@ -39,7 +32,6 @@ using namespace std::chrono_literals;
 
 const unsigned int TRUEHD_SIZE = 61440;
 const unsigned int MAX_RAW_AUDIO_BUFFER = 16384;
-const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 3;
 const uint64_t UINT64_LOWER_BYTES = 0x00000000FFFFFFFF;
 const uint64_t UINT64_UPPER_BYTES = 0xFFFFFFFF00000000;
 
@@ -228,6 +220,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_headPos = 0;
   m_stuckCounter = 0;
   m_headPosOld = 0;
+  m_headPosStep = 0;
   m_timestampPos = 0;
   m_sink_sampleRate = 0;
   m_passthrough = false;
@@ -613,12 +606,11 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_duration_written = 0;
   m_headPos = 0;
   m_headPosOld = 0;
+  m_headPosStep = 0;
   m_timestampPos = 0;
   m_timestampValid = false;
   m_flushTime = 0;
   m_stampTimer.SetExpired();
-
-  m_linearmovingaverage.clear();
 
   delete m_at_jni;
   m_at_jni = NULL;
@@ -664,10 +656,27 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   else
   {
     m_stuckCounter = 0;
+    if (m_headPosOld > 0 && m_headPos > m_headPosOld)
+      m_headPosStep = std::max(m_headPosStep, m_headPos - m_headPosOld);
     m_headPosOld = m_headPos;
   }
 
   double gone = static_cast<double>(m_headPos) / m_sink_sampleRate;
+
+  // Some devices only update the head position every mixer period (e.g. 128 ms),
+  // sometimes in parts. Assume it moves at the sample rate in between while playing:
+  // track the earliest time playback could have started (500 ppm slack for clock
+  // drift) and extrapolate from it, by at most the largest update seen.
+  const double now = static_cast<double>(CurrentHostCounter()) / CurrentHostFrequency();
+  const double maxAhead = static_cast<double>(m_headPosStep) / m_sink_sampleRate;
+  const double start = now - gone;
+  if (m_headPosStep == 0 || m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING ||
+      start < m_playStart || start - m_playStart > maxAhead)
+    m_playStart = start;
+  else
+    m_playStart = std::min(start, m_playStart + 0.0005 * (now - m_playStartUpdated));
+  m_playStartUpdated = now;
+  gone += std::min(start - m_playStart, maxAhead);
 
   // if sink is run dry without buffer time written anymore
   if (gone > m_duration_written)
@@ -785,15 +794,13 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     delay = 0.0;
 
   delay += (m_pause_ms / 1000.0);
-  const double d = GetMovingAverageDelay(delay);
-
   // Audiotrack is caching more than we thought it would
-  if (d > m_audiotrackbuffer_sec)
-    m_audiotrackbuffer_sec = d;
+  if (delay > m_audiotrackbuffer_sec)
+    m_audiotrackbuffer_sec = delay;
 
   // track delay in local member
-  m_delay = d;
-  status.SetDelay(d);
+  m_delay = delay;
+  status.SetDelay(delay);
 }
 
 double CAESinkAUDIOTRACK::GetLatency()
@@ -1046,6 +1053,7 @@ void CAESinkAUDIOTRACK::Flush()
   m_duration_written = 0.0;
   m_headPos = 0;
   m_headPosOld = 0;
+  m_headPosStep = 0;
   m_timestampPos = 0;
   m_timestampValid = false;
   m_stuckCounter = 0;
@@ -1053,7 +1061,6 @@ void CAESinkAUDIOTRACK::Flush()
   m_delay = 0.0;
   m_hw_delay = 0.0;
   m_audiotrackbuffer_sec = m_audiotrackbuffer_sec_orig;
-  m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
 }
 
@@ -1071,10 +1078,11 @@ void CAESinkAUDIOTRACK::Drain()
   }
   m_duration_written = 0;
   m_headPos = 0;
+  m_headPosOld = 0;
+  m_headPosStep = 0;
   m_stuckCounter = 0;
   m_timestampPos = 0;
   m_timestampValid = false;
-  m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
   m_pause_ms = 0.0;
 }
@@ -1299,38 +1307,3 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
   }
   std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
 }
-
-double CAESinkAUDIOTRACK::GetMovingAverageDelay(double newestdelay)
-{
-#if defined AT_USE_EXPONENTIAL_AVERAGING
-  double old = 0.0;
-  if (m_linearmovingaverage.empty()) // just for creating one space in list
-    m_linearmovingaverage.push_back(newestdelay);
-  else
-    old = m_linearmovingaverage.front();
-
-  const double alpha = 0.3;
-  const double beta = 0.7;
-
-  double d = alpha * newestdelay + beta * old;
-  m_linearmovingaverage.at(0) = d;
-
-  return d;
-#endif
-  m_linearmovingaverage.push_back(newestdelay);
-
-  // new values are in the back, old values are in the front
-  // oldest value is removed if elements > MOVING_AVERAGE_MAX_MEMBERS
-  // removing first element of a vector sucks - I know that
-  // but hey - 10 elements - not 1 million
-  size_t size = m_linearmovingaverage.size();
-  if (size > MOVING_AVERAGE_MAX_MEMBERS)
-  {
-    m_linearmovingaverage.pop_front();
-    size--;
-  }
-  double sum = std::accumulate(m_linearmovingaverage.begin(), m_linearmovingaverage.end(), 0.0);
-
-  return sum / size;
-}
-
