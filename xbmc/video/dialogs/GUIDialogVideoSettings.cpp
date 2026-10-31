@@ -13,6 +13,7 @@
 #include "addons/Skin.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -56,6 +57,9 @@
 
 #define SETTING_VIDEO_INTERLACEMETHOD     "video.interlacemethod"
 #define SETTING_VIDEO_SCALINGMETHOD       "video.scalingmethod"
+
+// Display-only value used when VAAPI hardware scaling is active.
+#define SCALING_METHOD_VAAPI_HW_ACTIVE -1
 
 #define SETTING_VIDEO_STEREOSCOPICMODE    "video.stereoscopicmode"
 #define SETTING_VIDEO_STEREOSCOPICINVERT  "video.stereoscopicinvert"
@@ -401,37 +405,52 @@ void CGUIDialogVideoSettings::InitializeSettings()
     AddSpinner(groupVideo, SETTING_VIDEO_INTERLACEMETHOD, 16038, SettingLevel::Basic, static_cast<int>(method), entries);
   }
 
-  entries.clear();
-  entries.emplace_back(16301, VS_SCALINGMETHOD_NEAREST);
-  entries.emplace_back(16302, VS_SCALINGMETHOD_LINEAR);
-  entries.emplace_back(16303, VS_SCALINGMETHOD_CUBIC_B_SPLINE);
-  entries.emplace_back(16314, VS_SCALINGMETHOD_CUBIC_MITCHELL);
-  entries.emplace_back(16321, VS_SCALINGMETHOD_CUBIC_CATMULL);
-  entries.emplace_back(16326, VS_SCALINGMETHOD_CUBIC_0_075);
-  entries.emplace_back(16330, VS_SCALINGMETHOD_CUBIC_0_1);
-  entries.emplace_back(16304, VS_SCALINGMETHOD_LANCZOS2);
-  entries.emplace_back(16323, VS_SCALINGMETHOD_SPLINE36_FAST);
-  entries.emplace_back(16315, VS_SCALINGMETHOD_LANCZOS3_FAST);
-  entries.emplace_back(16322, VS_SCALINGMETHOD_SPLINE36);
-  entries.emplace_back(16305, VS_SCALINGMETHOD_LANCZOS3);
-  entries.emplace_back(16306, VS_SCALINGMETHOD_SINC8);
-  entries.emplace_back(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
-  entries.emplace_back(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
-  entries.emplace_back(16309, VS_SCALINGMETHOD_SINC_SOFTWARE);
-  entries.emplace_back(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE);
-  entries.emplace_back(16319, VS_SCALINGMETHOD_DXVA_HARDWARE);
-  entries.emplace_back(16316, VS_SCALINGMETHOD_AUTO);
+  const bool vaapiHwScalingEnabled = CServiceBroker::GetDataCacheCore().IsVideoHwScaling();
 
-  /* remove unsupported methods */
-  for(TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
+  int scalingMethodCurrent = static_cast<int>(videoSettings.m_ScalingMethod);
+  entries.clear();
+  if (vaapiHwScalingEnabled)
   {
-    if (appPlayer->Supports(static_cast<ESCALINGMETHOD>(it->value)))
-      ++it;
-    else
-      it = entries.erase(it);
+    // Show VAAPI scaling instead of the renderer scaling method.
+    entries.emplace_back(36647, SCALING_METHOD_VAAPI_HW_ACTIVE);
+    scalingMethodCurrent = SCALING_METHOD_VAAPI_HW_ACTIVE;
+  }
+  else
+  {
+    entries.emplace_back(16301, VS_SCALINGMETHOD_NEAREST);
+    entries.emplace_back(16302, VS_SCALINGMETHOD_LINEAR);
+    entries.emplace_back(16303, VS_SCALINGMETHOD_CUBIC_B_SPLINE);
+    entries.emplace_back(16314, VS_SCALINGMETHOD_CUBIC_MITCHELL);
+    entries.emplace_back(16321, VS_SCALINGMETHOD_CUBIC_CATMULL);
+    entries.emplace_back(16326, VS_SCALINGMETHOD_CUBIC_0_075);
+    entries.emplace_back(16330, VS_SCALINGMETHOD_CUBIC_0_1);
+    entries.emplace_back(16304, VS_SCALINGMETHOD_LANCZOS2);
+    entries.emplace_back(16323, VS_SCALINGMETHOD_SPLINE36_FAST);
+    entries.emplace_back(16315, VS_SCALINGMETHOD_LANCZOS3_FAST);
+    entries.emplace_back(16322, VS_SCALINGMETHOD_SPLINE36);
+    entries.emplace_back(16305, VS_SCALINGMETHOD_LANCZOS3);
+    entries.emplace_back(16306, VS_SCALINGMETHOD_SINC8);
+    entries.emplace_back(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
+    entries.emplace_back(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
+    entries.emplace_back(16309, VS_SCALINGMETHOD_SINC_SOFTWARE);
+    entries.emplace_back(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE);
+    entries.emplace_back(16319, VS_SCALINGMETHOD_DXVA_HARDWARE);
+    entries.emplace_back(16316, VS_SCALINGMETHOD_AUTO);
+
+    /* remove unsupported methods */
+    for (TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end();)
+    {
+      if (appPlayer->Supports(static_cast<ESCALINGMETHOD>(it->value)))
+        ++it;
+      else
+        it = entries.erase(it);
+    }
   }
 
-  AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300, SettingLevel::Basic, static_cast<int>(videoSettings.m_ScalingMethod), entries);
+  const auto scalingMethodSetting = AddSpinner(groupVideo, SETTING_VIDEO_SCALINGMETHOD, 16300,
+                                               SettingLevel::Basic, scalingMethodCurrent, entries);
+  if (scalingMethodSetting)
+    scalingMethodSetting->SetEnabled(!vaapiHwScalingEnabled);
 
   AddVideoStreams(groupVideoStream, SETTING_VIDEO_STREAM);
 
