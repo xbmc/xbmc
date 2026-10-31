@@ -12,11 +12,14 @@
 #include "guilib/GUIDialog.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/ISlideShowDelegate.h"
+#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
+#include <map>
 #include <memory>
 #include <set>
+#include <string>
 
 class CFileItemList;
 class CVariant;
@@ -30,7 +33,12 @@ public:
   ~CBackgroundPicLoader() override;
 
   void Create(CGUIWindowSlideShow *pCallback);
-  void LoadPic(int iPic, int iSlideNumber, const std::string &strFileName, const int maxWidth, const int maxHeight);
+  void LoadPic(int iPic,
+               int iSlideNumber,
+               const std::string& strFileName,
+               const int maxWidth,
+               const int maxHeight,
+               bool checkMotion);
   bool IsLoading() { return m_isLoading; }
   int SlideNumber() const { return m_iSlideNumber; }
   int Pic() const { return m_iPic; }
@@ -42,6 +50,7 @@ private:
   std::string m_strFileName;
   int m_maxWidth = 0;
   int m_maxHeight = 0;
+  bool m_checkMotion = false;
 
   CEvent m_loadPic;
   bool m_isLoading = false;
@@ -108,7 +117,8 @@ public:
                  int iSlideNumber,
                  const std::string& strFileName,
                  std::unique_ptr<CTexture> pTexture,
-                 bool bFullSize);
+                 bool bFullSize,
+                 const std::string& motionClip);
 
   static void RunSlideShow(const std::vector<std::string>& paths, int start = 0);
 
@@ -124,6 +134,10 @@ private:
                 SortOrder order = SortOrder::ASCENDING,
                 SortAttribute sortAttributes = SortAttributeNone);
   bool PlayVideo();
+  bool PlayMotion();
+  void EndMotion();
+  bool IsShowingVideo() const;
+  std::string GetMotionClip(const CFileItem& item) const;
   CSlideShowPic::DISPLAY_EFFECT GetDisplayEffect(int iSlideNumber) const;
   void RenderPause();
   void RenderErrorMessage();
@@ -156,6 +170,11 @@ private:
   bool m_bPause;
   bool m_bPlayingVideo;
   int m_iVideoSlide = -1;
+  bool m_bPlayingMotion = false;
+  int m_iMotionSlide = -1;
+  int m_iMotionClipsSlide = -1;
+  mutable CCriticalSection m_motionClipsSection;
+  std::map<std::string, std::string, std::less<>> m_motionClips; // picture path -> clip path
   bool m_bErrorMessage;
 
   std::vector<CFileItemPtr> m_slides;
