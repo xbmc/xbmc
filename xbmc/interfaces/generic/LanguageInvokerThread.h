@@ -24,13 +24,21 @@ public:
                          bool reuseable);
   ~CLanguageInvokerThread() override;
 
-  virtual InvokerState GetState() const;
+  InvokerState GetState() const override;
 
   const std::string& GetScript() const { return m_script; }
   std::shared_ptr<ILanguageInvoker> GetInvoker() const { return m_invoker; }
+  void SetReserved(bool reserved);
+  bool IsReserved() const
+  {
+    std::unique_lock<std::mutex> lck(m_mutex);
+    return m_reserved;
+  }
   bool Reuseable(const std::string& script) const
   {
-    return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
+    std::unique_lock<std::mutex> lck(m_mutex);
+    return !m_bStop && !m_released && !m_releasePending && !m_restart && !m_reserved &&
+           m_reusable && GetState() == InvokerStateScriptDone && m_script == script;
   };
   virtual void Release();
 
@@ -49,8 +57,11 @@ private:
   std::string m_script;
   std::vector<std::string> m_args;
 
-  std::mutex m_mutex;
+  mutable std::mutex m_mutex;
   std::condition_variable m_condition;
   bool m_restart = false;
+  bool m_released = false;
+  bool m_releasePending = false;
+  bool m_reserved = false;
   bool m_reusable = false;
 };
