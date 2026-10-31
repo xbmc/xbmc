@@ -408,6 +408,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param) const
       return ret;
     }
     case XFILE::IOControl::CACHE_SETRATE:
+    case XFILE::IOControl::CACHE_SETRATE_KEEPSIZE:
     {
       if (!m_ifc.vfs->toAddon->io_control_set_cache_rate)
         return -1;

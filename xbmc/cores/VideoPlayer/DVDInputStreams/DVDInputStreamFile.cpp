@@ -159,10 +159,20 @@ int CDVDInputStreamFile::GetBlockSize()
 
 void CDVDInputStreamFile::SetReadRate(uint32_t rate)
 {
+  SetCacheRate(IOControl::CACHE_SETRATE, rate);
+}
+
+void CDVDInputStreamFile::SetReadRateLimit(uint32_t rate)
+{
+  SetCacheRate(IOControl::CACHE_SETRATE_KEEPSIZE, rate);
+}
+
+void CDVDInputStreamFile::SetCacheRate(IOControl request, uint32_t rate)
+{
   // Increase requested rate by 10%:
   uint32_t maxrate = static_cast<uint32_t>(1.1 * rate);
 
-  if (m_pFile->IoControl(IOControl::CACHE_SETRATE, &maxrate) >= 0)
+  if (m_pFile->IoControl(request, &maxrate) >= 0)
     CLog::Log(LOGDEBUG,
               "CDVDInputStreamFile::SetReadRate - set cache throttle rate to {} bytes per second",
               maxrate);
