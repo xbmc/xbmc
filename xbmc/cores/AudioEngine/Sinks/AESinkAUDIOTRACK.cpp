@@ -388,7 +388,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_format.m_channelLayout  = AUDIOTRACKChannelMaskToAEChannelMap(atChannelMask);
   if (m_encoding == CJNIAudioFormat::ENCODING_IEC61937)
   {
-    // keep above channel output if we do IEC61937 and got DTSHD or TrueHD by AudioEngine
+    // All IEC formats but TrueHD and DTS-HD MA are carried in stereo, those need
+    // the 8 channel layout from above as 2ch@192kHz cannot carry their bitrate
     if (m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_DTSHD_MA && m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_TRUEHD)
       atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
   }
@@ -576,6 +577,14 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
           // might open the device too fast - let's retry
           usleep(200 * 1000);
           continue;
+        }
+        if (m_info.m_wantsIECPassthrough || !m_hasIEC)
+        {
+          // Nothing is left to try, don't fail so that ActiveAE doesn't retry forever
+          CLog::Log(LOGERROR, "AESinkAUDIOTRACK - Unable to create AudioTrack for passthrough");
+          m_outputUnavailable = true;
+          format = m_format;
+          return true;
         }
       }
       CLog::Log(LOGERROR, "AESinkAUDIOTRACK - Unable to create AudioTrack");
@@ -1245,7 +1254,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
             m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
             CLog::Log(LOGDEBUG, "E-AC3 and DTSHD-HR via IEC61937 is supported");
           }
-          // Check for IEC 8 channel 192 khz PT DTS-HD-MA and TrueHD
+          // Check for IEC 8 channel 192 khz PT DTS-HD-MA and TrueHD, keep in sync with Initialize()
           int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1);
           if (VerifySinkConfiguration(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
           {
