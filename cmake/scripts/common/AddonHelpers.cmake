@@ -308,13 +308,18 @@ macro (build_addon target prefix libs)
       if(NOT CPACK_PACKAGE_DIRECTORY)
         # determine the temporary path
         file(TO_CMAKE_PATH "$ENV{TEMP}" WIN32_TEMP_PATH)
+        # a folder of its own, as other add-ons, platforms and Kodi versions can be packaged at the same time
+        set(WIN32_PACKAGE_PATH "${WIN32_TEMP_PATH}/${target}-${PLATFORM_TAG}-${APP_VERSION_MAJOR}")
         string(LENGTH "${WIN32_TEMP_PATH}" WIN32_TEMP_PATH_LENGTH)
+        string(LENGTH "${WIN32_PACKAGE_PATH}" WIN32_PACKAGE_PATH_LENGTH)
         string(LENGTH "${PROJECT_BINARY_DIR}" PROJECT_BINARY_DIR_LENGTH)
 
         # check if the temporary path is shorter than the default packaging directory path
-        if(WIN32_TEMP_PATH_LENGTH GREATER 0 AND WIN32_TEMP_PATH_LENGTH LESS PROJECT_BINARY_DIR_LENGTH)
+        if(WIN32_TEMP_PATH_LENGTH GREATER 0 AND WIN32_PACKAGE_PATH_LENGTH LESS PROJECT_BINARY_DIR_LENGTH)
           # set the directory used by CPack for packaging to the temp directory
-          set(CPACK_PACKAGE_DIRECTORY ${WIN32_TEMP_PATH})
+          set(CPACK_PACKAGE_DIRECTORY ${WIN32_PACKAGE_PATH})
+        else()
+          set(CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR})
         endif()
       endif()
 
