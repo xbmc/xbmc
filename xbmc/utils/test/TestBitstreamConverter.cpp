@@ -253,3 +253,28 @@ TEST(TestBitstreamConverter, HevcExtradataContainsOnlyParameterSets)
   const uint8_t* end = begin + converter.GetConvertSize();
   EXPECT_EQ(end, std::search(begin, end, hdr10Plus.begin(), hdr10Plus.end()));
 }
+
+TEST(TestBitstreamConverterMpeg2, SequenceHeader)
+{
+  // 1920x1080, aspect_ratio_information 3 (16:9), frame_rate_code 3 (25 fps)
+  const std::vector<uint8_t> header{0x00, 0x00, 0x01, 0xB3, 0x78, 0x04, 0x38, 0x33};
+
+  mpeg2_sequence sequence{};
+  EXPECT_TRUE(CBitstreamConverter::mpeg2_sequence_header(header.data(), header.size(), &sequence));
+  EXPECT_EQ(sequence.width, 1920u);
+  EXPECT_EQ(sequence.height, 1080u);
+  EXPECT_EQ(sequence.ratio_info, 3u);
+  EXPECT_FLOAT_EQ(sequence.ratio, 16.0f / 9);
+  EXPECT_EQ(sequence.fps_rate, 25000u);
+  EXPECT_EQ(sequence.fps_scale, 1000u);
+
+  EXPECT_FALSE(CBitstreamConverter::mpeg2_sequence_header(header.data(), header.size(), &sequence));
+
+  // A group of pictures start code first
+  std::vector<uint8_t> packet{0x00, 0x00, 0x01, 0xB8, 0x00, 0x00, 0x00};
+  packet.insert(packet.end(), header.begin(), header.end());
+  mpeg2_sequence afterGop{};
+  EXPECT_TRUE(CBitstreamConverter::mpeg2_sequence_header(packet.data(), packet.size(), &afterGop));
+  EXPECT_EQ(afterGop.width, 1920u);
+  EXPECT_EQ(afterGop.height, 1080u);
+}
