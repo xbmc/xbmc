@@ -196,18 +196,35 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig,
 
 int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uint8_t **src_buffer, int src_samples, double ratio)
 {
-  int delta = 0;
-  int distance = 0;
   if (ratio != 1.0)
   {
-    delta = (src_samples*ratio-src_samples)*m_dst_rate/m_src_rate;
-    distance = src_samples*m_dst_rate/m_src_rate;
+    // Compensation is in whole samples, and a ratio this close to 1, or a call
+    // this short, asks for less than one. What isn't compensated yet is carried,
+    // with the input it belongs to, until there is a whole sample.
+    m_compensationRemainder += (src_samples * ratio - src_samples) * m_dst_rate / m_src_rate;
+    m_compensationInput += src_samples;
+    const int delta = static_cast<int>(m_compensationRemainder);
+    // libswresample spreads it over this many output samples: what the carried
+    // input makes, with the compensation itself, or a speed-up falls short. A
+    // call that sets nothing leaves the compensation already under way alone.
+    const int distance = static_cast<int>(m_compensationInput * m_dst_rate / m_src_rate) + delta;
+    if (delta != 0 && distance > 0)
+    {
+      if (swr_set_compensation(m_pContext, delta, distance) < 0)
+      {
+        CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - set compensation failed");
+        return -1;
+      }
+      m_compensationRemainder -= delta;
+      m_compensationInput = 0;
+    }
     m_doesResample = true;
   }
-
-  if (m_doesResample)
+  else if (m_doesResample)
   {
-    if (swr_set_compensation(m_pContext, delta, distance) < 0)
+    m_compensationRemainder = 0.0;
+    m_compensationInput = 0;
+    if (swr_set_compensation(m_pContext, 0, 0) < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - set compensation failed");
       return -1;
