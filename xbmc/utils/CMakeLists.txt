@@ -6,7 +6,6 @@ set(SOURCES ActorProtocol.cpp
             AspectRatioVocabulary.cpp
             Base64.cpp
             BitstreamConverter.cpp
-            BitstreamReader.cpp
             BitstreamStats.cpp
             BooleanLogic.cpp
             CharArrayParser.cpp
@@ -97,7 +96,6 @@ set(HEADERS ActorProtocol.h
             Base64.h
             BitReader.h
             BitstreamConverter.h
-            BitstreamReader.h
             BitstreamStats.h
             BooleanLogic.h
             CharArrayParser.h
