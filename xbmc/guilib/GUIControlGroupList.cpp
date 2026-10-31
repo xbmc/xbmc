@@ -590,6 +590,17 @@ void CGUIControlGroupList::CalculateItemGap()
   }
 }
 
+CRect CGUIControlGroupList::CalcRenderRegion() const
+{
+  // the items are drawn with the alignment offset
+  CRect rect = CGUIControlGroup::CalcRenderRegion();
+  if (m_orientation == VERTICAL)
+    rect += CPoint(0, GetAlignOffset());
+  else
+    rect += CPoint(GetAlignOffset(), 0);
+  return rect;
+}
+
 float CGUIControlGroupList::GetAlignOffset() const
 {
   if (m_totalSize < Size())
