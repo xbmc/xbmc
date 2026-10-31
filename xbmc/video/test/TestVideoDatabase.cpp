@@ -491,6 +491,89 @@ TEST_F(TestVideoDatabase, ASmartPlaylistGenreRuleFindsAMovieOfThatGenre)
   EXPECT_EQ(idMovie, items[0]->GetVideoInfoTag()->m_iDbId);
 }
 
+TEST_F(TestVideoDatabase, AListItemHasTheDetailsOfTheItemLoadedAlone)
+{
+  const auto addDetails = [](CVideoInfoTag& tag, const std::string& name)
+  {
+    for (const std::string& actor : {"Zed " + name, "Amy " + name})
+    {
+      SActorInfo info;
+      info.strName = actor;
+      info.strRole = "Role";
+      info.order = 0;
+      tag.m_cast.push_back(info);
+    }
+    tag.SetTags({"Tag " + name});
+    tag.SetRating(7.5f, 100, "imdb", true);
+    tag.SetUniqueID("id " + name, "imdb", true);
+    auto* video = new CStreamDetailVideo();
+    video->m_iDuration = 5400;
+    video->SetSource(CStreamDetail::MEDIA);
+    tag.m_streamDetails.AddStream(video);
+    tag.m_streamDetails.DetermineBestStreams();
+  };
+
+  CVideoInfoTag show;
+  show.m_strTitle = "Show";
+  show.m_strPath = "/tv/Show/";
+  addDetails(show, "show");
+  const int idShow{m_db.SetDetailsForTvShow({show.m_strPath}, show, KODI::ART::Artwork{},
+                                            KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(idShow, 0);
+  for (const int episode : {1, 2})
+  {
+    CVideoInfoTag tag{Tag("/tv/Show/S01E0" + std::to_string(episode) + ".mkv")};
+    tag.m_iSeason = 1;
+    tag.m_iEpisode = episode;
+    addDetails(tag, "episode " + std::to_string(episode));
+    ASSERT_GT(m_db.SetDetailsForEpisode(tag, KODI::ART::Artwork{}, idShow), 0);
+  }
+  for (const std::string name : {"one", "two"})
+  {
+    CVideoInfoTag tag{Tag("/movies/" + name + ".mkv")};
+    addDetails(tag, name);
+    tag.m_showLink = {"Show"};
+    ASSERT_GT(m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{}), 0);
+  }
+
+  const auto serialized = [](const CVideoInfoTag& tag)
+  {
+    CVariant value;
+    tag.Serialize(value);
+    return value;
+  };
+
+  CFileItemList movies;
+  ASSERT_TRUE(m_db.GetMoviesByWhere("videodb://movies/titles/", CDatabase::Filter(), movies, {},
+                                    VideoDbDetailsAll));
+  ASSERT_EQ(2, movies.Size());
+  for (const auto& item : movies)
+  {
+    CVideoInfoTag alone;
+    ASSERT_TRUE(m_db.GetMovieInfo("", alone, item->GetVideoInfoTag()->m_iDbId));
+    EXPECT_TRUE(serialized(alone) == serialized(*item->GetVideoInfoTag())) << item->GetLabel();
+  }
+
+  CFileItemList shows;
+  ASSERT_TRUE(m_db.GetTvShowsByWhere("videodb://tvshows/titles/", CDatabase::Filter(), shows, {},
+                                     VideoDbDetailsAll));
+  ASSERT_EQ(1, shows.Size());
+  CVideoInfoTag showAlone;
+  ASSERT_TRUE(m_db.GetTvShowInfo("", showAlone, idShow));
+  EXPECT_TRUE(serialized(showAlone) == serialized(*shows[0]->GetVideoInfoTag()));
+
+  CFileItemList episodes;
+  ASSERT_TRUE(m_db.GetEpisodesByWhere("videodb://tvshows/titles/" + std::to_string(idShow) + "/1/",
+                                      CDatabase::Filter(), episodes, true, {}, VideoDbDetailsAll));
+  ASSERT_EQ(2, episodes.Size());
+  for (const auto& item : episodes)
+  {
+    CVideoInfoTag alone;
+    ASSERT_TRUE(m_db.GetEpisodeInfo("", alone, item->GetVideoInfoTag()->m_iDbId));
+    EXPECT_TRUE(serialized(alone) == serialized(*item->GetVideoInfoTag())) << item->GetLabel();
+  }
+}
+
 TEST_F(TestVideoDatabase, GetPlayCountsListingInsideArchiveAcrossZipAndArchiveProtocols)
 {
   MarkPlayed(ArchivePath("zip", "/tv/season.zip", "e01.mkv"), 1);
