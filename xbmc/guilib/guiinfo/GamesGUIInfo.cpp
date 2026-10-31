@@ -431,6 +431,20 @@ bool CGamesGUIInfo::GetBool(bool& value,
 
       return true;
     }
+    case RETROPLAYER_HAS_BEZEL:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+      value = appPlayer && appPlayer->HasBezel();
+
+      return true;
+    }
+    case RETROPLAYER_BEZEL_ENABLED:
+    {
+      value = CMediaSettings::GetInstance().GetCurrentGameSettings().BezelEnabled();
+      return true;
+    }
     case RETROPLAYER_ACHIEVEMENTS_LOGGED_IN:
     {
       value = CServiceBroker::GetGameServices().GameSettings().GetAchievementsLoggedIn();

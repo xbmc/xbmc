@@ -10,6 +10,7 @@
 
 #include "cores/RetroPlayer/buffers/IRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
+#include "cores/RetroPlayer/rendering/RenderBezel.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderUtils.h"
 #include "cores/RetroPlayer/shaders/IShaderPreset.h"
@@ -120,6 +121,7 @@ void CRPBaseRenderer::SetSpeed(double speed)
 void CRPBaseRenderer::RenderFrame(bool clear, uint8_t alpha)
 {
   m_lastRender = m_renderFrameCount;
+  m_bezelShown = false;
 
   if (!m_bConfigured || m_renderBuffer == nullptr)
     return;
@@ -187,7 +189,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   GetScreenDimensions(screenWidth, screenHeight, screenPixelRatio);
 
   // Get target rendering area for the game view window (including black bars)
-  const CRect viewRect = m_context.GetViewWindow();
+  CRect viewRect = m_context.GetViewWindow();
 
   // Calculate pixel ratio and zoom amount
   float pixelRatio = framePixelRatio;
@@ -199,12 +201,36 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   CRect destRect;
   CRenderUtils::CalcNormalRenderRect(viewRect, sourceFrameRatio * pixelRatio, zoomAmount, destRect);
 
+  // A bezel's window stands in for the screen, so the stretch mode fits the
+  // game to the window the way it would otherwise fit it to the screen
+  if (!m_bezelWindow.IsEmpty())
+  {
+    float bezelPixelRatio = framePixelRatio;
+    float bezelZoomAmount = 1.0f;
+    CRenderUtils::CalculateStretchMode(stretchMode, rotationDegCCW, sourceWidth, sourceHeight,
+                                       m_bezelWindow.Width(), m_bezelWindow.Height(),
+                                       bezelPixelRatio, bezelZoomAmount);
+
+    CRect bezelDestRect;
+    CRenderUtils::CalcNormalRenderRect(m_bezelWindow, sourceFrameRatio * bezelPixelRatio,
+                                       bezelZoomAmount, bezelDestRect);
+
+    if (CRenderBezel::FramesGame(m_bezelWindow, bezelDestRect, destRect))
+    {
+      viewRect = m_bezelWindow;
+      pixelRatio = bezelPixelRatio;
+      zoomAmount = bezelZoomAmount;
+      destRect = bezelDestRect;
+      m_bezelShown = true;
+    }
+  }
+
   // Calculate destination rectangle size for the fullscreen game window (needed for video shaders)
   CRect fullDestRect;
   CRect viewPort;
   m_context.GetViewPort(viewPort);
 
-  if (viewPort == viewRect)
+  if (m_bezelShown || viewPort == viewRect)
   {
     fullDestRect = destRect;
   }
