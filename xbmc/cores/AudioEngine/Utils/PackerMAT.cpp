@@ -13,7 +13,7 @@
 
 #include "PackerMAT.h"
 
-#include "utils/BitstreamReader.h"
+#include "utils/BitReader.h"
 #include "utils/log.h"
 
 #include <array>
@@ -81,7 +81,7 @@ TrueHDMajorSyncInfo ParseTrueHDMajorSyncHeaders(const uint8_t* p, int buffsize)
   if (majorSyncSize > buffsize)
     return {};
 
-  CBitstreamReader bs(p + 4, buffsize - 4);
+  CBitReader bs({p + 4, static_cast<size_t>(buffsize - 4)});
 
   bs.SkipBits(32); // format_sync
 

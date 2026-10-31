@@ -24,14 +24,6 @@ extern "C"
 #endif
 }
 
-typedef struct
-{
-  const uint8_t* data;
-  const uint8_t* end;
-  int head;
-  uint64_t cache;
-} nal_bitstream;
-
 typedef struct mpeg2_sequence
 {
   uint32_t width;
@@ -41,51 +33,6 @@ typedef struct mpeg2_sequence
   float ratio;
   uint32_t ratio_info;
 } mpeg2_sequence;
-
-typedef struct
-{
-  int profile_idc;
-  int level_idc;
-  int sps_id;
-
-  int chroma_format_idc;
-  int separate_colour_plane_flag;
-  int bit_depth_luma_minus8;
-  int bit_depth_chroma_minus8;
-  int qpprime_y_zero_transform_bypass_flag;
-  int seq_scaling_matrix_present_flag;
-
-  int log2_max_frame_num_minus4;
-  int pic_order_cnt_type;
-  int log2_max_pic_order_cnt_lsb_minus4;
-
-  int max_num_ref_frames;
-  int gaps_in_frame_num_value_allowed_flag;
-  int pic_width_in_mbs_minus1;
-  int pic_height_in_map_units_minus1;
-
-  int frame_mbs_only_flag;
-  int mb_adaptive_frame_field_flag;
-
-  int direct_8x8_inference_flag;
-
-  int frame_cropping_flag;
-  int frame_crop_left_offset;
-  int frame_crop_right_offset;
-  int frame_crop_top_offset;
-  int frame_crop_bottom_offset;
-} sps_info_struct;
-
-class CBitstreamParser
-{
-public:
-  CBitstreamParser();
-  ~CBitstreamParser() = default;
-
-  static bool Open() { return true; }
-  static void Close();
-  static bool CanStartDecode(const uint8_t* buf, int buf_size);
-};
 
 class CBitstreamConverter
 {
