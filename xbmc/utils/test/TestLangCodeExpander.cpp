@@ -242,6 +242,9 @@ const TestBcp47Conversion Bcp47ConversionTests[] = {
     {"zho", true, "zh"}, // ISO 639-2/T
     {"chi", true, "zh"}, // ISO 639-2/B
     {"zzz", false, ""}, // not assigned
+    {"pb", true, "pt-BR"}, // Kodi's unofficial alpha-2 for Brazilian Portuguese
+    {"pob", true, "pt-BR"}, // Kodi's unofficial alpha-3 for Brazilian Portuguese
+    {"Portuguese (Brazil)", true, "pt-BR"}, // Kodi's name for both
     {"en-AU", true, "en-AU"},
     {"English", true, "en"}, // Description of ISO 639-1 code
     {"Valencian", true, "ca"}, // additional description of cat, which is the alpha-3 of ca

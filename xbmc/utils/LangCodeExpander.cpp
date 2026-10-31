@@ -21,10 +21,20 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <string_view>
 
 using namespace KODI::LANGUAGE::I18N;
 
 constexpr std::size_t MAX_BCP47_ENGLISH_NAME_LENGTH = 30;
+
+namespace
+{
+//! True for Kodi's unofficial Brazilian Portuguese codes pb and pob, which BCP 47 tags pt-BR.
+bool IsBrazilianPortuguese(std::string_view code)
+{
+  return code == "pb" || code == "pob";
+}
+} // namespace
 
 CLangCodeExpander::STRINGLOOKUPTABLE& CLangCodeExpander::GetUserCodes()
 {
@@ -467,6 +477,12 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
   if (LookupUserCode(code, bcp47Lang))
     return true;
 
+  if (IsBrazilianPortuguese(code))
+  {
+    bcp47Lang = "pt-BR";
+    return true;
+  }
+
   auto tag = CBcp47::ParseTag(code);
 
   // A valid tag is already the answer, in canonical form
@@ -510,7 +526,9 @@ bool CLangCodeExpander::ConvertToBcp47(const std::string& text, std::string& bcp
   if (std::string iso639; ReverseLookup(code, iso639))
   {
     // BCP 47 uses the alpha-2 code where the language has one, and the alpha-3 otherwise
-    if (std::string alpha2; ConvertISO6392ToISO6391(iso639, alpha2))
+    if (IsBrazilianPortuguese(iso639))
+      bcp47Lang = "pt-BR";
+    else if (std::string alpha2; ConvertISO6392ToISO6391(iso639, alpha2))
       bcp47Lang = alpha2;
     else
       bcp47Lang = iso639;
