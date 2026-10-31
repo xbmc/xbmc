@@ -86,6 +86,16 @@ bool CRPBaseRenderer::IsVisible() const
   return m_renderFrameCount <= m_lastRender + VISIBLE_DURATION_FRAME_COUNT;
 }
 
+void CRPBaseRenderer::SetUsed()
+{
+  m_lastUse = m_renderFrameCount;
+}
+
+bool CRPBaseRenderer::IsUnused() const
+{
+  return m_renderFrameCount > m_lastUse + VISIBLE_DURATION_FRAME_COUNT;
+}
+
 IRenderBuffer* CRPBaseRenderer::GetRenderBuffer() const
 {
   if (m_renderBuffer != nullptr)
