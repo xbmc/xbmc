@@ -59,6 +59,7 @@ set(HEADERS Bookmark.h
             VideoDatabase.h
             VideoDatabaseColumns.h
             VideoDatabaseDDL.h
+            VideoDatabaseMigration.h
             VideoDbPaths.h
             VideoDbUrl.h
             VideoEmbeddedImageFileLoader.h
