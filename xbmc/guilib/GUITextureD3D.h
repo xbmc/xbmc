@@ -18,6 +18,8 @@ public:
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
 
+  static void DrawStencilQuad(const CRect& rect, STENCIL_LAYER mask);
+
   static void DrawQuad(const CRect& coords,
                        KODI::UTILS::COLOR::Color color,
                        CTexture* texture = nullptr,

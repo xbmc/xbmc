@@ -245,20 +245,25 @@ XVisualInfo* CWinSystemX11GLESContext::GetVisual()
     return nullptr;
   }
 
-  GLint att[] =
-  {
-    EGL_RED_SIZE, 8,
-    EGL_GREEN_SIZE, 8,
-    EGL_BLUE_SIZE, 8,
-    EGL_ALPHA_SIZE, 8,
-    EGL_BUFFER_SIZE, 32,
-    EGL_DEPTH_SIZE, 24,
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-    EGL_NONE
-  };
-  EGLint numConfigs;
   EGLConfig eglConfig = 0;
-  if (!eglChooseConfig(eglDisplay, att, &eglConfig, 1, &numConfigs) || numConfigs == 0)
+  for (const EGLint stencilSize : {8, 0})
+  {
+    const EGLint att[] = {EGL_RED_SIZE,     8,           EGL_GREEN_SIZE,      8,
+                          EGL_BLUE_SIZE,    8,           EGL_ALPHA_SIZE,      8,
+                          EGL_BUFFER_SIZE,  32,          EGL_DEPTH_SIZE,      24,
+                          EGL_STENCIL_SIZE, stencilSize, EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+                          EGL_NONE};
+    EGLint numConfigs{0};
+    if (eglChooseConfig(eglDisplay, att, &eglConfig, 1, &numConfigs) && numConfigs > 0)
+    {
+      if (stencilSize == 0)
+        CLog::Log(LOGWARNING, "EGL: no visual with eight stencil bits; rotated GUI masks will be "
+                              "hidden on framebuffers without stencil support");
+      break;
+    }
+    eglConfig = 0;
+  }
+  if (!eglConfig)
   {
     CLog::Log(LOGERROR, "Failed to choose a config {}", eglGetError());
     return nullptr;

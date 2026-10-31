@@ -103,7 +103,7 @@ namespace DX
     void Unregister(ID3DResource *resource);
 
     void FinishCommandList(bool bExecute = true) const;
-    void ClearDepthStencil() const;
+    void ClearDepthStencil(bool clearDepth) const;
     void ClearRenderTarget(ID3D11RenderTargetView* pRTView, float color[4]) const;
     void RegisterDeviceNotify(IDeviceNotify* deviceNotify);
 
