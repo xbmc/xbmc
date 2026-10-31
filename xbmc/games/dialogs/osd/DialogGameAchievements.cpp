@@ -354,13 +354,15 @@ void CDialogGameAchievements::RefreshList()
     else if (achievement.type == AchievementType::WIN)
       item->SetProperty(ACHIEVEMENT_WIN, true);
 
-    if (achievement.earned && achievement.unlockedDate.IsValid())
+    const CDateTime& unlockedDate =
+        achievement.earned ? achievement.unlockedDate : achievement.previouslyUnlockedDate;
+    if (unlockedDate.IsValid())
     {
-      // "Unlocked {0:s}"
+      // "Unlocked {0:s}" or "Previously unlocked {0:s}"
       item->SetProperty(
           ACHIEVEMENT_UNLOCKED_DATE,
-          StringUtils::Format(Localize(35289), achievement.unlockedDate.GetAsLocalizedDate(
-                                                   std::string{"MMM dd yyyy"})));
+          StringUtils::Format(Localize(achievement.earned ? 35289 : 35719),
+                              unlockedDate.GetAsLocalizedDate(std::string{"MMM dd yyyy"})));
     }
 
     if (achievement.rarity > 0.0f)

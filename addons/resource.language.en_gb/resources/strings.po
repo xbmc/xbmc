@@ -20089,7 +20089,15 @@ msgctxt "#35715"
 msgid "Main Set"
 msgstr ""
 
-#empty strings from id 35716 to 35999
+#empty strings from id 35716 to 35718
+
+#. Date an achievement was earned before encore mode re-armed it. {0:s} is a localised date
+#: xbmc/games/dialogs/osd/DialogGameAchievements.cpp
+msgctxt "#35719"
+msgid "Previously unlocked {0:s}"
+msgstr ""
+
+#empty strings from id 35720 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
