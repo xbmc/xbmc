@@ -21,6 +21,7 @@
 #include "pvr/utils/PVRStreamUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/CriticalSection.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -94,6 +95,9 @@ int DegreeToOrientation(int degrees)
 
 namespace
 {
+// one tone mapping runs at a time, as each holds a 3D LUT and RGBA64 buffers
+CCriticalSection thumbToneMapSection;
+
 //! Convert a decoded picture to a BGRA texture sized for the thumbnail cache.
 std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CDVDStreamInfo& hint)
 {
@@ -118,11 +122,18 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
   bool converted = false;
 
 #if LIBSWSCALE_BUILD >= AV_VERSION_INT(9, 0, 100)
+  // color management builds a 3D LUT per call, which takes seconds on ARM, so keep it for
+  // HDR and wide gamut sources
+  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67 ||
+      picture.color_primaries == AVCOL_PRI_BT2020)
   {
     AVFrame* srcFrame = av_frame_alloc();
+    AVFrame* midFrame = av_frame_alloc();
     AVFrame* dstFrame = av_frame_alloc();
+    SwsContext* swsScale = sws_alloc_context();
     SwsContext* sws = sws_alloc_context();
-    if (srcFrame && dstFrame && sws)
+    if (srcFrame && midFrame && dstFrame && swsScale && sws)
     {
       srcFrame->width = static_cast<int>(picture.iWidth);
       srcFrame->height = static_cast<int>(picture.iHeight);
@@ -164,14 +175,35 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
       sws->flags = SWS_BILINEAR;
       sws->intent = SWS_INTENT_PERCEPTUAL;
 
-      const int res = sws_scale_frame(sws, dstFrame, srcFrame);
+      // scale first, so the tone mapping works on thumbnail sized RGBA64 buffers
+      AVFrame* toneFrame = srcFrame;
+      int res = 0;
+      if (nWidth != picture.iWidth || nHeight != picture.iHeight)
+      {
+        midFrame->width = static_cast<int>(nWidth);
+        midFrame->height = static_cast<int>(nHeight);
+        midFrame->format = srcFrame->format;
+        res = av_frame_copy_props(midFrame, srcFrame);
+        swsScale->flags = SWS_BILINEAR;
+        if (res >= 0)
+          res = sws_scale_frame(swsScale, midFrame, srcFrame);
+        toneFrame = midFrame;
+      }
+      if (res >= 0)
+      {
+        std::unique_lock lock(thumbToneMapSection);
+        res = sws_scale_frame(sws, dstFrame, toneFrame);
+        sws_free_context(&sws);
+      }
       if (res < 0)
         CLog::LogF(LOGWARNING, "sws_scale_frame failed ({}), using legacy conversion", res);
       else
         converted = true;
     }
     sws_free_context(&sws);
+    sws_free_context(&swsScale);
     av_frame_free(&srcFrame);
+    av_frame_free(&midFrame);
     av_frame_free(&dstFrame);
   }
 #endif
@@ -180,7 +212,7 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
   {
     struct SwsContext* context =
         sws_getContext(picture.iWidth, picture.iHeight, picture.videoBuffer->GetFormat(), nWidth,
-                       nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                       nHeight, AV_PIX_FMT_BGRA, SWS_BILINEAR, NULL, NULL, NULL);
 
     if (context)
     {
