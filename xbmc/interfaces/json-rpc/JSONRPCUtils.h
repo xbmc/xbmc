@@ -15,6 +15,7 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 
 class CFileItem;
@@ -141,16 +142,19 @@ enum OperationPermission
   ControlGUI = 0x200,
   ManageAddon = 0x400,
   ExecuteAddon = 0x800,
-  ControlPVR = 0x1000
+  ControlPVR = 0x1000,
+  WriteSetting = 0x2000
 };
 
 const int OPERATION_PERMISSION_ALL =
     (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData |
-     Navigate | WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
+     Navigate | WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR |
+     WriteSetting);
 
 const int OPERATION_PERMISSION_NOTIFICATION =
     (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate |
-     WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
+     WriteFile | ControlSystem | ControlGUI | ManageAddon | ExecuteAddon | ControlPVR |
+     WriteSetting);
 
 /*!
  \brief Returns a string representation for the
@@ -188,19 +192,24 @@ inline const char* PermissionToString(const OperationPermission& permission)
       return "ExecuteAddon";
     case ControlPVR:
       return "ControlPVR";
+    case WriteSetting:
+      return "WriteSetting";
     default:
       return "Unknown";
     }
   }
 
   /*!
-    \brief Returns a OperationPermission value for the given
+    \brief Returns the OperationPermission value for the given
     string representation
     \param permission String representation of the OperationPermission
-    \return OperationPermission value of the given string representation
+    \return OperationPermission value of the given string representation, or
+    nothing for a string that is not the name of a permission
     */
-  inline OperationPermission StringToPermission(const std::string& permission)
+  inline std::optional<OperationPermission> StringToPermission(const std::string& permission)
   {
+    if (permission.compare("ReadData") == 0)
+      return ReadData;
     if (permission.compare("ControlPlayback") == 0)
       return ControlPlayback;
     if (permission.compare("ControlNotify") == 0)
@@ -225,8 +234,10 @@ inline const char* PermissionToString(const OperationPermission& permission)
       return ExecuteAddon;
     if (permission.compare("ControlPVR") == 0)
       return ControlPVR;
+    if (permission.compare("WriteSetting") == 0)
+      return WriteSetting;
 
-    return ReadData;
+    return std::nullopt;
   }
 
   class CJSONRPCUtils
