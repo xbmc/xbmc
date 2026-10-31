@@ -355,8 +355,13 @@ public:
 
   /*
    * enable / disable demux stream
+   * \return true if the demuxer can enable/disable streams and was asked to, false if it has no
+   *         such support (the stream keeps being delivered regardless of this call)
    */
-  virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); }
+  virtual bool EnableStream(int64_t demuxerId, int id, bool enable)
+  {
+    return EnableStream(id, enable);
+  }
 
   /*
   * implicitly enable and open a demux stream for playback
@@ -377,7 +382,7 @@ public:
   int64_t GetDemuxerId() const { return m_demuxerId; }
 
 protected:
-  virtual void EnableStream(int id, bool enable) {}
+  virtual bool EnableStream(int id, bool enable) { return false; }
   virtual void OpenStream(int id) {}
   virtual CDemuxStream* GetStream(int iStreamId) const = 0;
   virtual std::string GetStreamCodecName(int iStreamId) { return ""; }
