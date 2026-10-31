@@ -104,6 +104,8 @@ public:
   int GetNrOfStreams() const override;
   int GetPrograms(std::vector<ProgramInfo>& programs) override;
   void SetProgram(int progId) override;
+  void EnableStream(int id, bool enable) override;
+  void OpenStream(int id) override;
 
   bool SeekChapter(int chapter, double* startpts = NULL) override;
   int GetChapterCount() override;
