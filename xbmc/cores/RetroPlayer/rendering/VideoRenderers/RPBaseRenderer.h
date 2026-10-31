@@ -71,6 +71,23 @@ public:
   void SetRenderRotation(unsigned int rotationDegCCW);
   void SetShaderPreset(const std::string& presetPath);
 
+  /*!
+   * \brief True if the renderer can draw frames for an HDR10 output
+   */
+  virtual bool SupportsHdr() const { return false; }
+
+  /*!
+   * \brief Draw for an HDR10 output, at the given luminance in nits
+   *
+   * \param paperWhite, peak The luminance of ordinary colours and of the
+   *        brightest light, or 0 to draw for SDR
+   */
+  void SetHdrLuminance(unsigned int paperWhite, unsigned int peak)
+  {
+    m_hdrPaperWhite = paperWhite;
+    m_hdrPeak = peak;
+  }
+
   // Rendering properties
   bool IsVisible() const;
   IRenderBuffer* GetRenderBuffer() const;
@@ -100,6 +117,8 @@ protected:
   float m_lastTargetWidth{0.0f};
   float m_lastTargetHeight{0.0f};
   ViewportCoordinates m_rotatedDestCoords{};
+  unsigned int m_hdrPaperWhite{0};
+  unsigned int m_hdrPeak{0}; // 0 for SDR
 
   // Video shaders
   void UpdateShaders();

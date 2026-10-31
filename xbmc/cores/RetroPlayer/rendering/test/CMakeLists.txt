@@ -1,4 +1,5 @@
 set(SOURCES TestBaseRenderBufferPool.cpp
+            TestHdrOutput.cpp
             TestHwRenderingContextEGL.cpp
             TestRenderBufferOpenGLES.cpp
             TestRenderBufferPoolFBO.cpp

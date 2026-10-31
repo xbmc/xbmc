@@ -101,6 +101,10 @@ bool CShaderTextureGLES::BindFBO()
   if (m_FBO == 0)
     CreateFBO();
 
+  // Not necessarily the screen: over HDR, Kodi draws the GUI into a framebuffer
+  // of its own, and a game shown in the GUI is drawn there too
+  glGetIntegerv(GL_FRAMEBUFFER_BINDING, &m_previousFBO);
+
   glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
@@ -118,5 +122,5 @@ bool CShaderTextureGLES::BindFBO()
 
 void CShaderTextureGLES::UnbindFBO() const
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_previousFBO);
 }

@@ -2869,6 +2869,12 @@
             <formatlabel>14045</formatlabel>
           </control>
         </setting>
+        <setting id="gamesgeneral.hdrvideofilters" type="boolean" label="35311" help="35312">
+          <requirement>HAVE_GBM</requirement>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="35320">
         <setting id="gamesgeneral.cheatspath" type="path" label="35321" help="35322">

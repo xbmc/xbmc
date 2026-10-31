@@ -31,8 +31,10 @@ public:
    *
    * \param bClear Whether the render area should be cleared
    * \param coordsRes Resolution that the window coordinates are in
+   * \param videoLayer True for the pass under the GUI, which the game is drawn
+   *        in when it's shown in HDR, false for the GUI's own pass
    */
-  virtual void RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes) = 0;
+  virtual void RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes, bool videoLayer) = 0;
 
   /*!
    * \brief Render a game control
