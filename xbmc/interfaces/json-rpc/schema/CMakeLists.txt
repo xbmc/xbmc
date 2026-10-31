@@ -8,6 +8,7 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ServiceDescripti
                    COMMAND JsonSchemaBuilder::JsonSchemaBuilder ${JSON_SRCS}
                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                    DEPENDS ${JSON_SRCS}
+                           $<TARGET_FILE:JsonSchemaBuilder::JsonSchemaBuilder>
                    COMMENT "Generating ServiceDescription.h")
 
 if(${CORE_SYSTEM_NAME} MATCHES "windows")
