@@ -114,31 +114,42 @@ void CVideoThumbLoader::PrefetchFrom(const CFileItem& item)
 
   // 50 first for the rows on screen, then batches that fit a low-end device's cache
   const size_t end{std::min(m_vecItems.size(), m_prefetchEnd + (m_prefetchEnd ? 100 : 50))};
+  std::vector<CFileItem*> batch;
+  batch.reserve(end - m_prefetchEnd);
+  for (size_t i = m_prefetchEnd; i < end; ++i)
+  {
+    batch.push_back(m_vecItems[i].get());
+    m_batched.insert(batch.back());
+  }
+  m_prefetchEnd = end;
+
+  Prefetch(batch);
+}
+
+void CVideoThumbLoader::Prefetch(const std::vector<CFileItem*>& items)
+{
   std::map<std::string, std::vector<int>> artIds;
   std::vector<CVideoInfoTag*> streamTags;
   // held items are another thread's; no queries under the lock, a new hold waits on it
   std::unique_lock lock(m_itemLock);
-  for (size_t i = m_prefetchEnd; i < end; ++i)
+  for (CFileItem* item : items)
   {
-    CFileItem& next{*m_vecItems[i]};
-    m_batched.insert(&next);
-    if (std::ranges::find(m_heldItems, &next) != m_heldItems.end() || !next.HasVideoInfoTag() ||
-        next.IsShareOrDrive() || next.IsParentFolder())
+    if (std::ranges::find(m_heldItems, item) != m_heldItems.end() || !item->HasVideoInfoTag() ||
+        item->IsShareOrDrive() || item->IsParentFolder())
       continue;
 
-    AddArtIds(next, artIds);
-    const CVideoInfoTag& tag{*next.GetVideoInfoTag()};
-    if (!tag.HasStreamDetails() && tag.m_iFileId >= 0 && !m_prefetched.contains(&next))
+    AddArtIds(*item, artIds);
+    const CVideoInfoTag& tag{*item->GetVideoInfoTag()};
+    if (!tag.HasStreamDetails() && tag.m_iFileId >= 0 && !m_prefetched.contains(item))
     {
       // loaded aside for LoadItemCached(), as another thread may hold the item until then
-      auto& loaded{m_prefetched[&next]};
+      auto& loaded{m_prefetched[item]};
       loaded = std::make_unique<CVideoInfoTag>();
       loaded->m_iFileId = tag.m_iFileId;
       streamTags.push_back(loaded.get());
     }
   }
   lock.unlock();
-  m_prefetchEnd = end;
 
   PrefetchArt(std::move(artIds));
   // after a failed query each item loads its own, as without a prefetch
