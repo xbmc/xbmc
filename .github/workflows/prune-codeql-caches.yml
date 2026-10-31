@@ -1,0 +1,37 @@
+name: Prune CodeQL caches
+
+# CodeQL's default setup saves an overlay-base database per language for every
+# analysis of master, and a Java dependency cache per run on each branch, yet
+# restores only the newest by key prefix. The older entries would otherwise
+# fill the repository's cache budget.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  actions: write
+
+jobs:
+  prune:
+    if: github.repository == 'xbmc/xbmc'
+    runs-on: ubuntu-latest
+    steps:
+      # An overlay-base key ends in -<CodeQL version>-<commit>-<run id>-<attempt>,
+      # a dependency key in -<hash>; the rest of the key and the ref is what a
+      # restore matches on.
+      - name: Delete all but the newest entry of each CodeQL cache
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh cache list --key codeql- --limit 1000 --json id,key,ref,createdAt --jq '
+            [.[] | select(.key | test("^codeql-(overlay-base-database|dependencies)-"))
+                 | .group = .ref + " " + (.key | split("-")
+                     | if .[1] == "overlay" then .[:-4] else .[:-1] end | join("-"))]
+            | group_by(.group)[] | sort_by(.createdAt) | reverse | .[1:][]
+            | "\(.id) \(.ref) \(.key)"' |
+          while read -r id ref key; do
+            echo "Deleting ${key} (${ref})"
+            gh cache delete "${id}"
+          done
