@@ -38,13 +38,21 @@ public:
   CNoIntroNaming() = delete;
 
   /*!
-   * \brief The region a tag's part names, or empty
+   * \brief The region a tag's part names, or nothing
    *
-   * \param region As written, in any case: "USA", "Europe"
-   * \return The name as No-Intro writes it, which is the name the game
-   *         library gives a region
+   * \param region As written, in any case: "USA", "Europe", "World"
+   * \return The region; an empty one for "Unknown", which a set writes when
+   *         it doesn't know
    */
-  static std::string_view RegionName(std::string_view region);
+  static std::optional<GameRegion> Region(std::string_view region);
+
+  /*!
+   * \brief The name No-Intro writes for a region, the reverse of Region()
+   *
+   * \return "USA", "Europe", "United Kingdom", or empty for a region the
+   *         convention doesn't name
+   */
+  static std::string_view Name(const GameRegion& region);
 
   /*!
    * \brief Whether a code is a language as No-Intro writes it: "En", "Ja"

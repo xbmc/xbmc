@@ -15,10 +15,12 @@ using namespace GAME;
 
 TEST(TestNoIntroNaming, ReadsARegion)
 {
-  EXPECT_EQ(CNoIntroNaming::RegionName("Europe"), "Europe");
-  EXPECT_EQ(CNoIntroNaming::RegionName("usa"), "USA");
-  EXPECT_EQ(CNoIntroNaming::RegionName("UK"), "United Kingdom");
-  EXPECT_TRUE(CNoIntroNaming::RegionName("Proto").empty());
+  EXPECT_EQ(CNoIntroNaming::Region("Europe")->ToString(), "150");
+  EXPECT_EQ(CNoIntroNaming::Region("usa")->ToString(), "US");
+  EXPECT_EQ(CNoIntroNaming::Region("UK")->ToString(), "GB");
+  EXPECT_EQ(CNoIntroNaming::Region("World")->market, "World");
+  EXPECT_TRUE(CNoIntroNaming::Region("Unknown")->IsEmpty());
+  EXPECT_FALSE(CNoIntroNaming::Region("Proto").has_value());
 }
 
 TEST(TestNoIntroNaming, ReadsALanguageWrittenItsWay)

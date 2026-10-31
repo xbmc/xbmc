@@ -16,10 +16,12 @@ using namespace GAME::GOODTOOLS;
 
 TEST(TestGoodToolsNaming, ReadsACountry)
 {
-  EXPECT_EQ(CGoodToolsNaming::CountryName("U"), "USA");
-  EXPECT_EQ(CGoodToolsNaming::CountryName("UK"), "United Kingdom");
-  EXPECT_EQ(CGoodToolsNaming::CountryName("As"), "Asia");
-  EXPECT_TRUE(CGoodToolsNaming::CountryName("u").empty());
+  EXPECT_EQ(CGoodToolsNaming::Region("U")->ToString(), "US");
+  EXPECT_EQ(CGoodToolsNaming::Region("UK")->ToString(), "GB");
+  EXPECT_EQ(CGoodToolsNaming::Region("As")->ToString(), "142");
+  EXPECT_EQ(CGoodToolsNaming::Region("D")->ToString(), "NL");
+  EXPECT_EQ(CGoodToolsNaming::Region("W")->market, "World");
+  EXPECT_FALSE(CGoodToolsNaming::Region("u").has_value());
 }
 
 TEST(TestGoodToolsNaming, ReadsAFlag)
