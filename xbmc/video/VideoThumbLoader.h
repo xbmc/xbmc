@@ -37,6 +37,9 @@ public:
   bool LoadItemCached(CFileItem* pItem) override;
   bool LoadItemLookup(CFileItem* pItem) override;
 
+  /*! \brief Prefetch art and stream details of a batch for LoadItem(). */
+  void Prefetch(const std::vector<CFileItem*>& items);
+
   /*! \brief Fill the thumb of a video item
    First uses a cached thumb from a previous run, then checks for a local thumb
    and caches it for the next run
