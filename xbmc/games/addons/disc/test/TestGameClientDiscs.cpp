@@ -165,6 +165,7 @@ struct DiscCore
   std::vector<bool> frameInputs;
   bool compactRemoval{false};
   unsigned int deserializeCalls{0};
+  size_t deserializedSize{0};
   std::vector<std::string> deserializedSlots;
   std::string machinePath;
 };
@@ -388,10 +389,11 @@ protected:
     TestMember<ClientFrameRate>(*m_client) = 1.0;
     TestMember<ClientGamePath>(*m_client) = m_core.slots.front();
     auto* callbacks = m_client->GetInstanceInterface()->toAddon;
-    callbacks->Deserialize = [](const AddonInstance_Game* game, const uint8_t* data, size_t)
+    callbacks->Deserialize = [](const AddonInstance_Game* game, const uint8_t* data, size_t size)
     {
       auto& core = Core(game);
       ++core.deserializeCalls;
+      core.deserializedSize = size;
       core.machineFrame = 99;
       if (core.failAllFrames || data[0] == core.failedFrame)
         return GAME_ERROR_FAILED;
@@ -1274,6 +1276,24 @@ TEST_F(TestGameClientDiscs, SavestateDeserializeFailureLeavesStateUncertainDespi
   m_playback->SetSpeed(1.0);
   EXPECT_EQ(m_playback->GetSpeed(), 0.0);
   EXPECT_TRUE(m_playback->CreateSavestate(false).empty());
+}
+
+TEST_F(TestGameClientDiscs, SavestateOfAnotherSizeIsRestoredAtItsOwnSize)
+{
+  m_core.slots = {CreateFile(".chd")};
+  StartPlaying();
+  CreatePlayback();
+  // Before its first frame, a client can report another size than the one
+  // the savestate was made at
+  TestMember<ClientSerializeSize>(*m_client) = 2;
+
+  EXPECT_TRUE(m_playback->LoadSavestate(WriteSavestate(nullptr)));
+
+  EXPECT_EQ(m_core.machineFrame, 1);
+  EXPECT_EQ(m_core.deserializedSize, 1U);
+  const auto& memory = TestMember<PlaybackMemory>(*m_playback);
+  EXPECT_EQ(memory->FrameSize(), 2U);
+  EXPECT_EQ(memory->CurrentFrame(), nullptr);
 }
 
 TEST_F(TestGameClientDiscs, SavestateDiscRollbackFailureLeavesStateUncertainBeforeDeserialize)
