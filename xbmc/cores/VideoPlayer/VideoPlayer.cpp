@@ -3469,7 +3469,11 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
-      FlushBuffers(DVD_NOPTS_VALUE, true, true);
+      // a Blu-ray playlist stop handled by NextStream() is queued before the streams are closed
+      if (m_CurrentAudio.id >= 0 || m_CurrentVideo.id >= 0)
+        FlushBuffers(DVD_NOPTS_VALUE, true, true);
+      else
+        m_VideoPlayerSubtitle->Flush();
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
@@ -4821,7 +4825,13 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
     case BD_EVENT_PLAYLIST_STOP:
       m_dvd.state = DVDSTATE_NORMAL;
       m_dvd.iDVDStillTime = 0ms;
-      m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH));
+      // while the demuxer is being opened no streams are open yet, and a queued flush would only
+      // discard the first packets of the streams opened next. The subtitle player isn't closed
+      // on a stream change, so its overlays are flushed now.
+      if (m_CurrentAudio.id >= 0 || m_CurrentVideo.id >= 0)
+        m_messenger.Put(std::make_shared<CDVDMsg>(CDVDMsg::GENERAL_FLUSH));
+      else
+        m_VideoPlayerSubtitle->Flush();
       break;
     case BD_EVENT_AUDIO_STREAM:
       m_dvd.iSelectedAudioStream = *static_cast<int*>(pData);
