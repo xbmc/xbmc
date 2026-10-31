@@ -37,7 +37,8 @@ constexpr uint64_t MEMBER_SIZE = 6 * 1024 * 1024;
 std::vector<std::string> TempFileNames()
 {
   CFileItemList items;
-  XFILE::CDirectory::GetDirectory("special://temp/", items, "", XFILE::DIR_FLAG_NO_FILE_DIRS);
+  XFILE::CDirectory::GetDirectory("special://temp/", items, "",
+                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_BYPASS_CACHE);
 
   std::vector<std::string> names;
   for (const auto& item : items)
