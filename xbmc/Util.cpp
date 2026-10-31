@@ -339,6 +339,16 @@ std::string CUtil::GetTitleFromPath(const std::string& strFileNameAndPath, bool 
 
 std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false */)
 {
+  // Magnet links, use "display name" (dn) option
+  if (URIUtils::IsMagnetURI(url.Get()) && (url.GetRawPath().empty() || url.GetRawPath() == "/"))
+  {
+    for (const std::string& option : StringUtils::Split(url.GetRawQuery(), '&'))
+    {
+      if (option.starts_with("dn="))
+        return URIUtils::URLDecode(std::string_view(option).substr(3));
+    }
+  }
+
   // use above to get the filename
   std::string path(url.Get());
   URIUtils::RemoveSlashAtEnd(path);

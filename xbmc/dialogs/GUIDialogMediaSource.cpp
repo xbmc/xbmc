@@ -463,6 +463,7 @@ void CGUIDialogMediaSource::OnOK()
   if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") ||
       CDirectory::GetDirectory(share.strPath, items, "",
                                DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) ||
+      URIUtils::IsMagnetURI(share.strPath) ||
       CGUIDialogYesNo::ShowAndGetInput(CVariant{1001}, CVariant{1025}))
   {
     m_confirmed = true;
