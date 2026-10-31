@@ -110,6 +110,7 @@
 #include <unistd.h>
 
 #define ACTION_XBMC_RESUME "android.intent.XBMC_RESUME"
+#define ACTION_XBMC_HOME "android.intent.XBMC_HOME"
 
 #define PLAYBACK_STATE_STOPPED  0x0000
 #define PLAYBACK_STATE_PLAYING  0x0001
@@ -1446,6 +1447,11 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
       }
     }
+  }
+  else if (action == ACTION_XBMC_HOME)
+  {
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               "ActivateWindow(Home)");
   }
   else if (action == ACTION_XBMC_RESUME)
   {

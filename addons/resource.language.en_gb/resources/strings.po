@@ -26189,3 +26189,15 @@ msgstr ""
 msgctxt "#40806"
 msgid "Adjust and display the volume level while audio is passed through. The level is not applied to the bitstream, but every change is announced, so an add-on or automation can apply it to an external audio processor."
 msgstr ""
+
+#. Setting "lookandfeel.androidhomescreen"
+#: system/settings/android.xml
+msgctxt "#40807"
+msgid "Use as home screen"
+msgstr ""
+
+#. Help of setting "lookandfeel.androidhomescreen"
+#: system/settings/android.xml
+msgctxt "#40808"
+msgid "Offer Kodi as the Android home screen. Once enabled, Android asks which home screen to use the next time the home button is pressed, unless Kodi is the only one."
+msgstr ""
