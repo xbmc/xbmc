@@ -133,10 +133,11 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 
   struct __stat64 st = {};
   static constexpr auto excludedProtocols =
-      make_set<std::string_view>({"upnp", "addons", "favourites", "sources"});
+      make_set<std::string_view>({"upnp", "addons", "favourites", "sources", "stack"});
   // Stat-ing an internet stream costs a network round trip on every playback
+  // File-directory loaders are chosen by extension, so extensionless paths need no stat
   const bool exclude{excludedProtocols.contains(url.GetProtocol()) ||
-                     URIUtils::IsInternetStream(url)};
+                     URIUtils::IsInternetStream(url) || url.GetFileType().empty()};
   if (!exclude && CFile::Stat(URIUtils::SubstitutePath(url), &st) == 0)
   {
     item.SetFolder(S_ISDIR(st.st_mode));
