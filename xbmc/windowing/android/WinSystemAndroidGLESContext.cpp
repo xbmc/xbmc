@@ -232,36 +232,38 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 #if EGL_EXT_gl_colorspace_bt2020_linear
   if (m_hasHDRConfig && m_hasEGL_BT2020_PQ_Colorspace_Extension && m_hasEGL_ST2086_Extension)
   {
-    HDRColorSpace = EGL_NONE;
-    if (videoPicture && videoPicture->hasDisplayMetadata)
-    {
-      switch (videoPicture->color_space)
-      {
-      case AVCOL_SPC_BT2020_NCL:
-      case AVCOL_SPC_BT2020_CL:
-      case AVCOL_SPC_BT709:
-        HDRColorSpace = EGL_GL_COLORSPACE_BT2020_PQ_EXT;
-        break;
-      default:
-        m_displayMetadata = nullptr;
-        m_lightMetadata = nullptr;
-      }
-    }
-    else
+    // Mastering display / content light level metadata is optional and does not describe the
+    // transfer function, so the tagging is decided from the transfer characteristic. SDR and
+    // HLG (ARIB STD-B67 or BT.2020 10-bit) are never PQ, which also covers Dolby Vision with
+    // an SDR or HLG base layer. FFmpeg can report HDR10 with an unspecified transfer, in that
+    // case use the HDR type inferred by the demuxer (see CDVDDemuxFFmpeg::DetermineHdrType).
+    const bool isPQ =
+        videoPicture && (videoPicture->color_transfer == AVCOL_TRC_SMPTE2084 ||
+                         (videoPicture->color_transfer == AVCOL_TRC_UNSPECIFIED &&
+                          (videoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10 ||
+                           videoPicture->hdrType == StreamHdrType::HDR_TYPE_HDR10PLUS)));
+    HDRColorSpace = isPQ ? EGL_GL_COLORSPACE_BT2020_PQ_EXT : EGL_NONE;
+
+    const bool hasDisplayMetadata = isPQ && videoPicture->hasDisplayMetadata;
+    // The metadata is applied at surface creation, so a change in its presence needs a new
+    // surface just like a colourspace change does
+    const bool displayMetadataChanged = static_cast<bool>(m_displayMetadata) != hasDisplayMetadata;
+
+    if (!hasDisplayMetadata)
     {
       m_displayMetadata = nullptr;
       m_lightMetadata = nullptr;
     }
 
-    if (HDRColorSpace != m_HDRColorSpace)
+    if (HDRColorSpace != m_HDRColorSpace || displayMetadataChanged)
     {
       CLog::Log(LOGDEBUG, "CWinSystemAndroidGLESContext::SetHDR: ColorSpace: {}", HDRColorSpace);
 
       m_HDRColorSpace = HDRColorSpace;
-      m_displayMetadata =
-          m_HDRColorSpace == EGL_NONE
-              ? nullptr
-              : std::make_unique<AVMasteringDisplayMetadata>(videoPicture->displayMetadata);
+      m_displayMetadata = nullptr;
+      if (hasDisplayMetadata)
+        m_displayMetadata =
+            std::make_unique<AVMasteringDisplayMetadata>(videoPicture->displayMetadata);
       // TODO: discuss with NVIDIA why this prevent turning HDR display off
       //m_lightMetadata = !videoPicture || m_HDRColorSpace == EGL_NONE ? nullptr : std::unique_ptr<AVContentLightMetadata>(new AVContentLightMetadata(videoPicture->lightMetadata));
       m_pGLContext.DestroySurface();
