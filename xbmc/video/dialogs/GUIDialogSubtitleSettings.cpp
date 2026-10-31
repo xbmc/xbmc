@@ -22,6 +22,7 @@
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "profiles/ProfileManager.h"
@@ -35,6 +36,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
+#include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -153,6 +155,24 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
       CUtil::GetMatchingSource(strPath, shares, isSourceName) < 0)
   {
     strPath.clear();
+  }
+
+  // The add-ons virtual source holds no subtitle files, and while present it keeps the file
+  // browser from falling back to local drives, leaving nothing to pick from without a source.
+  std::erase_if(shares,
+                [](const CMediaSource& share) { return URIUtils::IsAddonsPath(share.strPath); });
+  CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+  CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+
+  const std::string itemDir{URIUtils::GetParentPath(strPath)};
+  // Exists() on an internet stream blocks the GUI thread on a network request.
+  if (!itemDir.empty() && !URIUtils::IsInternetStream(itemDir) &&
+      XFILE::CDirectory::Exists(itemDir))
+  {
+    CMediaSource& itemSource = shares.emplace_back();
+    itemSource.strName =
+        CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(36041); // * Item folder
+    itemSource.strPath = itemDir;
   }
 
   std::string strMask =
