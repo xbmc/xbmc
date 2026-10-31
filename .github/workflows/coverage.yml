@@ -1,0 +1,75 @@
+name: Coverage
+
+# Unit test coverage on master (Coverage build type, coverage_xml target).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  coverage:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-linux-build
+        with:
+          platforms: wayland gbm
+          extra-packages: gcovr
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: linux-coverage-${{ runner.arch }}
+          dir: /home/runner/.cache/kodi-ccache
+
+      - name: Configure Kodi
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Coverage \
+            -DCORE_PLATFORM_NAME="wayland gbm" -DAPP_RENDER_SYSTEM=gles \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON
+
+      - name: Build and run the unit tests
+        run: |
+          sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
+          cmake --build build --target kodi kodi-test -- -j"$(nproc)"
+          cd build && stdbuf -oL ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - uses: ./.github/actions/report-unit-tests
+        if: always()
+        with:
+          name: linux-coverage-${{ runner.arch }}
+
+      - name: Collect coverage
+        run: cmake --build build --target coverage_xml
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: linux-coverage-${{ runner.arch }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - name: Summarise coverage
+        run: |
+          {
+            echo "### Unit test coverage"
+            echo '```'
+            gcovr -r . --object-directory build --exclude '.*/test/.*' --exclude 'lib/.*' --exclude '.*/lib/.*' \
+              --exclude 'build/.*' --print-summary 2>/dev/null | tail -n 4
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: build/coverage/coverage.xml
+          if-no-files-found: error
+          retention-days: 30
