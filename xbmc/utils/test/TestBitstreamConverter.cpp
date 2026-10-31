@@ -89,3 +89,65 @@ const NalPacketTest nalPackets[] = {
 // clang-format on
 
 INSTANTIATE_TEST_SUITE_P(NalPackets, TestBitstreamConverter, testing::ValuesIn(nalPackets));
+
+namespace
+{
+// avcC and hvcC records with 4 byte NAL lengths and no parameter sets
+const std::vector<uint8_t> avcC{1, 100, 0, 31, 0xff, 0xe0, 0};
+const std::vector<uint8_t> hvcC{1, 0, 0, 0, 0, 0, 0, 0, 0, 0,    0, 0,
+                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0x03, 0};
+
+// Non-IDR slices
+const std::vector<uint8_t> h264Slice{0, 0, 0, 3, 0x41, 0x88, 0x80};
+const std::vector<uint8_t> hevcTrailR{0, 0, 0, 4, 0x02, 0x01, 0xd0, 0x80};
+
+bool StartsDecode(AVCodecID codec,
+                  std::vector<uint8_t> extradata,
+                  const std::vector<uint8_t>& sei,
+                  const std::vector<uint8_t>& slice)
+{
+  CBitstreamConverter converter;
+  EXPECT_TRUE(converter.Open(codec, extradata.data(), static_cast<int>(extradata.size()), true));
+  converter.ResetStartDecode();
+
+  std::vector<uint8_t> data{sei};
+  data.insert(data.end(), slice.begin(), slice.end());
+
+  // No padding: sanitizers should catch any read beyond the supplied packet.
+  auto packet = std::make_unique<uint8_t[]>(data.size());
+  std::copy(data.begin(), data.end(), packet.get());
+  converter.Convert(packet.get(), static_cast<int>(data.size()));
+  return converter.CanStartDecode();
+}
+} // namespace
+
+TEST(TestBitstreamConverterSei, H264RecoveryPoint)
+{
+  const std::vector<uint8_t> sei{0, 0, 0, 5, 0x06, 0x06, 0x01, 0x80, 0x80};
+  EXPECT_TRUE(StartsDecode(AV_CODEC_ID_H264, avcC, sei, h264Slice));
+}
+
+TEST(TestBitstreamConverterSei, H264OtherMessage)
+{
+  const std::vector<uint8_t> sei{0, 0, 0, 5, 0x06, 0x05, 0x01, 0xaa, 0x80};
+  EXPECT_FALSE(StartsDecode(AV_CODEC_ID_H264, avcC, sei, h264Slice));
+}
+
+TEST(TestBitstreamConverterSei, H264SizeRunPastEnd)
+{
+  // The payload size of a recovery point runs to the end of the packet
+  const std::vector<uint8_t> sei{0, 0, 0, 4, 0x06, 0x06, 0xff, 0xff};
+  EXPECT_FALSE(StartsDecode(AV_CODEC_ID_H264, avcC, sei, {}));
+}
+
+TEST(TestBitstreamConverterSei, HevcRecoveryPoint)
+{
+  const std::vector<uint8_t> sei{0, 0, 0, 6, 0x4e, 0x01, 0x06, 0x01, 0x80, 0x80};
+  EXPECT_TRUE(StartsDecode(AV_CODEC_ID_HEVC, hvcC, sei, hevcTrailR));
+}
+
+TEST(TestBitstreamConverterSei, HevcOtherMessage)
+{
+  const std::vector<uint8_t> sei{0, 0, 0, 6, 0x4e, 0x01, 0x89, 0x01, 0x80, 0x80};
+  EXPECT_FALSE(StartsDecode(AV_CODEC_ID_HEVC, hvcC, sei, hevcTrailR));
+}

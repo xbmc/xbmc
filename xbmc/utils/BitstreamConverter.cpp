@@ -235,32 +235,34 @@ static const uint8_t* avc_find_startcode(const uint8_t* p, const uint8_t* end)
   return out;
 }
 
-static bool has_sei_recovery_point(const uint8_t* p, const uint8_t* end)
+static bool has_sei_recovery_point(const uint8_t* p, const uint8_t* end, int headerSize)
 {
-  int pt(0), ps(0), offset(1);
+  if (end - p <= headerSize)
+    return false;
+  p += headerSize;
 
-  do
+  while (p < end && *p != 0x80)
   {
-    pt = 0;
-    do
-    {
-      pt += p[offset];
-    } while (p[offset++] == 0xFF);
+    size_t pt = 0;
+    while (p < end && *p == 0xFF)
+      pt += *p++;
+    if (p == end)
+      return false;
+    pt += *p++;
 
-    ps = 0;
-    do
-    {
-      ps += p[offset];
-    } while (p[offset++] == 0xFF);
+    size_t ps = 0;
+    while (p < end && *p == 0xFF)
+      ps += *p++;
+    if (p == end)
+      return false;
+    ps += *p++;
 
+    if (ps > static_cast<size_t>(end - p))
+      return false;
     if (pt == SEI_RECOVERY_POINT)
-    {
-      nal_bitstream bs;
-      nal_bs_init(&bs, p + offset, ps);
-      return nal_bs_read_ue(&bs) >= 0;
-    }
-    offset += ps;
-  } while (p + offset < end && p[offset] != 0x80);
+      return true;
+    p += ps;
+  }
 
   return false;
 }
@@ -300,7 +302,7 @@ bool CBitstreamParser::CanStartDecode(const uint8_t* buf, int buf_size)
       case AVC_NAL_SEI:
         buf_begin = buf - 1;
         buf = find_start_code(buf, buf_end, &state) - 4;
-        if (has_sei_recovery_point(buf_begin, buf))
+        if (has_sei_recovery_point(buf_begin, buf, 1))
           rtn = true;
         break;
       case AVC_NAL_SPS:
@@ -936,8 +938,10 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
       m_sps_pps_context.idr_sps_pps_seen = 1;
 
-    if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type) ||
-                            (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
+    if (!m_start_decode &&
+        (unit_type == nal_sps || IsIDR(unit_type) ||
+         (unit_type == nal_sei &&
+          has_sei_recovery_point(buf, buf + nal_size, m_codec == AV_CODEC_ID_HEVC ? 2 : 1))))
       m_start_decode = true;
 
     // prepend only to the first access unit of an IDR picture, if no sps/pps already present
