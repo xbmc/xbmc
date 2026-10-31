@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/Screenshot.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -114,6 +115,8 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
     realPath = CURL(realPath).GetHostName();
 
   if (StringUtils::StartsWithNoCase(realPath, "virtualpath://upnproot/"))
+    return true;
+  else if (CScreenShot::IsScreenshotPath(realPath))
     return true;
   else if (StringUtils::StartsWithNoCase(realPath, "musicdb://"))
     return true;
