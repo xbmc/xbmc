@@ -272,16 +272,25 @@ public:
       else
         m_items.reserve(limit);
 
+      std::vector<CFileItem*> videoItems;
       for (int i = 0; i < limit; i++)
       {
         auto item{std::make_shared<CGUIStaticItem>(*items[i])};
         if (item->HasProperty("node.visible"))
           item->SetVisibleCondition(item->GetProperty("node.visible").asString(), m_parentID);
 
-        GetThumbLoader(item)->LoadItem(item.get());
-
+        if (VIDEO::IsVideo(*item))
+          videoItems.push_back(item.get());
         m_items.emplace_back(std::move(item));
       }
+
+      if (!videoItems.empty())
+      {
+        InitThumbLoader<CVideoThumbLoader>(InfoTagType::VIDEO);
+        static_cast<CVideoThumbLoader&>(*m_thumbloaders[InfoTagType::VIDEO]).Prefetch(videoItems);
+      }
+      for (const auto& item : m_items)
+        GetThumbLoader(item)->LoadItem(item.get());
 
       if (items.HasProperty("node.target"))
         m_target = items.GetProperty("node.target").asString();
