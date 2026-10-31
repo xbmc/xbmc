@@ -18,9 +18,57 @@
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
-#include <array>
+#include <string_view>
+#include <vector>
 
 using KODI::MEDIA::MediaSection;
+
+namespace
+{
+constexpr std::string_view VFS_ROOT{"/vfs/"};
+
+//! Whether \p realPath lies in a source that allows sharing, configured or mounted
+bool IsInSharedSource(const std::string& realPath)
+{
+  for (const MediaSection section :
+       {MediaSection::VIDEO, MediaSection::MUSIC, MediaSection::PICTURES})
+  {
+    for (const auto& source : CMediaSourceSettings::GetInstance().GetSources(section))
+    {
+      if (source.GetLockInfo().IsLocked() || !source.m_allowSharing)
+        continue;
+
+      for (const auto& path : source.vecPaths)
+      {
+        if (URIUtils::PathHasParent(realPath, URIUtils::GetRealPath(path), true))
+          return true;
+      }
+    }
+  }
+
+  std::vector<CMediaSource> removableSources;
+  CServiceBroker::GetMediaManager().GetRemovableDrives(removableSources);
+  bool isSource;
+  const int sourceIndex{CUtil::GetMatchingSource(realPath, removableSources, isSource)};
+  return sourceIndex >= 0 && sourceIndex < static_cast<int>(removableSources.size()) &&
+         !removableSources[sourceIndex].GetLockInfo().IsLocked() &&
+         removableSources[sourceIndex].m_allowSharing;
+}
+
+//! Whether \p file may be served: an image, or a file in a shared source
+bool IsAccessible(const std::string& file)
+{
+  if (URIUtils::IsProtocol(file, "image"))
+    return true;
+
+  std::string realPath = URIUtils::GetRealPath(file);
+  // for rar:// and zip:// paths we need to extract the path to the archive instead of using the VFS path
+  while (URIUtils::IsInArchive(realPath))
+    realPath = CURL(realPath).GetHostName();
+
+  return IsInSharedSource(realPath);
+}
+} // namespace
 
 CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   : CHTTPFileHandler(request)
@@ -28,74 +76,17 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   std::string file;
   int responseStatus = MHD_HTTP_BAD_REQUEST;
 
-  if (m_request.pathUrl.size() > 5)
+  if (m_request.pathUrl.size() > VFS_ROOT.size())
   {
-    file = m_request.pathUrl.substr(5);
+    file = m_request.pathUrl.substr(VFS_ROOT.size());
 
-    if (CFileUtils::Exists(file))
-    {
-      bool accessible = false;
-      if (file.substr(0, 8) == "image://")
-        accessible = true;
-      else
-      {
-        constexpr std::array sections{MediaSection::VIDEO, MediaSection::MUSIC,
-                                      MediaSection::PICTURES};
-
-        std::string realPath = URIUtils::GetRealPath(file);
-        // for rar:// and zip:// paths we need to extract the path to the archive instead of using the VFS path
-        while (URIUtils::IsInArchive(realPath))
-          realPath = CURL(realPath).GetHostName();
-
-        // Check manually configured sources
-        for (const MediaSection section : sections)
-        {
-          if (accessible)
-            break;
-
-          for (const auto& source : CMediaSourceSettings::GetInstance().GetSources(section))
-          {
-            if (accessible)
-              break;
-
-            // don't allow access to locked / disabled sharing sources
-            if (source.GetLockInfo().IsLocked() || !source.m_allowSharing)
-              continue;
-
-            for (const auto& path : source.vecPaths)
-            {
-              std::string realSourcePath = URIUtils::GetRealPath(path);
-              if (URIUtils::PathHasParent(realPath, realSourcePath, true))
-              {
-                accessible = true;
-                break;
-              }
-            }
-          }
-        }
-
-        // Check auto-mounted sources
-        if (!accessible)
-        {
-          bool isSource;
-          std::vector<CMediaSource> removableSources;
-          CServiceBroker::GetMediaManager().GetRemovableDrives(removableSources);
-          int sourceIndex = CUtil::GetMatchingSource(realPath, removableSources, isSource);
-          if (sourceIndex >= 0 && sourceIndex < static_cast<int>(removableSources.size()) &&
-              !removableSources.at(sourceIndex).GetLockInfo().IsLocked() &&
-              removableSources.at(sourceIndex).m_allowSharing)
-            accessible = true;
-        }
-      }
-
-      if (accessible)
-        responseStatus = MHD_HTTP_OK;
-      // the file exists but not in one of the defined sources so we deny access to it
-      else
-        responseStatus = MHD_HTTP_UNAUTHORIZED;
-    }
-    else
+    if (!CFileUtils::Exists(file))
       responseStatus = MHD_HTTP_NOT_FOUND;
+    else if (IsAccessible(file))
+      responseStatus = MHD_HTTP_OK;
+    // the file exists but not in one of the defined sources so we deny access to it
+    else
+      responseStatus = MHD_HTTP_UNAUTHORIZED;
   }
 
   // set the file and the HTTP response status
@@ -104,5 +95,5 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
 
 bool CHTTPVfsHandler::CanHandleRequest(const HTTPRequest &request) const
 {
-  return request.pathUrl.find("/vfs") == 0;
+  return request.pathUrl.starts_with(VFS_ROOT);
 }
