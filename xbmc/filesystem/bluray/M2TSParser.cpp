@@ -933,7 +933,7 @@ bool ParseAC3Bitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   const unsigned int bsid{GetBits(header, 8, 5)};
 
   if (bsid == 16)
-    return ParseEAC3Bitstream(buffer, streamInfo);
+    return ParseEAC3Bitstream(buffer.subspan(offset), streamInfo);
   if (bsid == 6 || bsid == 8)
     return ParseAC3Bitstream(buffer, offset, streamInfo);
   return false;
