@@ -8,8 +8,8 @@
 
 #include "ProjectParser.h"
 
-#include "BitReader.h"
 #include "BlurayPlaylistHints.h"
+#include "ByteHelpers.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "URL.h"

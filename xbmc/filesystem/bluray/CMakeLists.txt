@@ -6,8 +6,8 @@ if(TARGET ${APP_NAME_LC}::Bluray)
               MPLSParser.cpp
               ProjectParser.cpp
               StreamParser.cpp)
-  set(HEADERS BitReader.h
-              BlurayPlaylistHints.h
+  set(HEADERS BlurayPlaylistHints.h
+              ByteHelpers.h
               IndexParser.h
               M2TSParser.h
               MovieObjectParser.h
