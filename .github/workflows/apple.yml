@@ -1,0 +1,254 @@
+name: Apple (macOS/iOS/tvOS)
+
+# Builds Kodi for one Apple target via tools/depends: macOS with Ninja
+# (unsigned .dmg, unit tests), iOS and tvOS through the generated Xcode
+# project into an unsigned .ipa, for the Simulator or the device. tools/e2e
+# runs on macOS from the .dmg and in the Simulator from the .ipa.
+#
+# Called from ci.yml once per leg; ci.yml owns the triggers, the legs and the
+# manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      kind:
+        description: macos, simulator or device.
+        type: string
+        required: true
+      platform:
+        description: macos, ios or tvos.
+        type: string
+        required: true
+      depends_platform:
+        description: tools/depends --with-platform.
+        type: string
+        required: true
+      xcode:
+        description: Xcode version, for both the build and the Simulator runtime.
+        type: string
+        required: true
+      xcodebuild_args:
+        description: Extra xcodebuild arguments.
+        type: string
+        default: ''
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+env:
+  DEPENDS_PREFIX: /Users/Shared/xbmc-depends
+  DEVELOPER_DIR: /Applications/Xcode_${{ inputs.xcode }}.app/Contents/Developer
+
+jobs:
+  build:
+    name: ${{ inputs.kind == 'macos' && 'build and unit tests' || 'build' }}
+    # macos-26 is Apple Silicon, so every leg builds and targets arm64.
+    runs-on: macos-26
+    timeout-minutes: 240
+    permissions:
+      contents: read
+      packages: write
+    # Debug unless the caller asks for Release. ccache is for Kodi alone, the
+    # prefix being cached on ghcr.io; -g1 limits debug info to the line tables
+    # backtraces need.
+    env:
+      CONFIGURATION: ${{ inputs.configuration || 'Debug' }}
+      DEPENDS_KEY: apple-${{ inputs.depends_platform }}-xcode${{ inputs.xcode }}-${{ inputs.configuration || 'Debug' }}
+      DEPENDS_ARGS: >-
+        --host=aarch64-apple-darwin --with-platform=${{ inputs.depends_platform }}
+        --disable-ccache --with-target-cflags=-g1
+        ${{ (inputs.configuration || 'Debug') != 'Debug' && '--disable-debug' || '' }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install ccache
+        run: brew install ccache
+
+      - name: Restore tools/depends prefix
+        uses: ./.github/actions/depends-prefix-restore
+        id: depends
+        with:
+          key: ${{ env.DEPENDS_KEY }}
+          configure-args: ${{ env.DEPENDS_ARGS }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - name: Restore ccache
+        uses: ./.github/actions/ccache-restore
+        with:
+          key: ${{ inputs.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          dir: /Users/runner/.cache/kodi-ccache
+
+      - name: Configure tools/depends
+        uses: ./.github/actions/configure-depends
+        id: configure
+        with:
+          configure-args: ${{ env.DEPENDS_ARGS }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: ${{ steps.depends.outputs.hit != 'true' }}
+
+      # Published before Kodi builds, so a failing Kodi build still leaves it.
+      - name: Publish tools/depends prefix
+        uses: ./.github/actions/depends-prefix-push
+        if: steps.configure.outputs.built == 'true' && github.ref == 'refs/heads/master'
+        with:
+          ref: ${{ steps.depends.outputs.ref }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      # Installed into the source tree's addons/, which the app bundle includes.
+      - name: Build binary add-ons
+        uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ inputs.addons }}
+
+      # GEN only applies to macOS; iOS and tvOS always get an Xcode project.
+      # tools/depends builds the ninja CMake drives.
+      - name: Generate Kodi build system
+        run: |
+          native=$(sed -n 's/^NATIVEPREFIX=//p' tools/depends/Makefile.include)
+          make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}" GEN=Ninja \
+            CMAKE_EXTRA_ARGUMENTS="-DCMAKE_MAKE_PROGRAM=${native}/bin/ninja"
+
+      - name: Build Kodi
+        if: inputs.kind == 'macos'
+        run: cmake --build build
+
+      # Kodi ships no provisioning profile, so nothing is signed.
+      - name: Build Kodi (xcodebuild)
+        if: inputs.kind != 'macos'
+        working-directory: build
+        run: xcodebuild -config "${CONFIGURATION}" ${{ inputs.xcodebuild_args }} CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload build logs
+        uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: ${{ inputs.platform }}${{ inputs.kind == 'device' && '-device' || '' }}
+
+      - name: Package .dmg
+        if: inputs.kind == 'macos'
+        run: cmake --build build --target dmg
+
+      - uses: actions/upload-artifact@v7
+        if: inputs.kind == 'macos'
+        with:
+          name: kodi-dmg-macos-${{ runner.arch }}
+          path: build/tools/darwin/packaging/osx/*.dmg
+          if-no-files-found: error
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v7
+        if: inputs.kind != 'macos'
+        with:
+          name: kodi-${{ inputs.platform }}-${{ inputs.kind }}
+          path: build/tools/darwin/packaging/darwin_embedded/*.ipa
+          if-no-files-found: error
+          retention-days: 7
+
+      # Built before ccache-save so its objects are cached too. Only macOS can run
+      # the tests in this job.
+      - name: Build unit tests
+        if: inputs.kind == 'macos'
+        run: cmake --build build --target kodi-test
+
+      - name: Save ccache
+        uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: ${{ inputs.depends_platform }}-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          save: ${{ github.ref == 'refs/heads/master' }}
+
+      # From the build tree, where CUtil::GetHomePath() finds system/ by walking up.
+      - name: Run unit tests
+        if: inputs.kind == 'macos'
+        working-directory: build
+        run: ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - name: Report unit tests
+        uses: ./.github/actions/report-unit-tests
+        if: always() && inputs.kind == 'macos'
+        with:
+          name: macos-${{ runner.arch }}
+
+  e2e:
+    name: e2e
+    needs: build
+    if: inputs.kind != 'device'
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        if: inputs.kind == 'macos'
+        with:
+          name: kodi-dmg-macos-${{ runner.arch }}
+          path: dmg
+
+      - name: Install Kodi.app from the .dmg
+        if: inputs.kind == 'macos'
+        run: |
+          mountpoint="${RUNNER_TEMP}/kodi-dmg"
+          hdiutil attach -nobrowse -readonly -mountpoint "${mountpoint}" dmg/*.dmg
+          mkdir -p build
+          ditto "${mountpoint}/Kodi.app" build/Kodi.app
+          hdiutil detach "${mountpoint}"
+
+      - uses: actions/download-artifact@v8
+        if: inputs.kind == 'simulator'
+        with:
+          name: kodi-${{ inputs.platform }}-simulator
+          path: ipa
+
+      # simctl installs the .app, not the .ipa.
+      - name: Unpack Kodi.app from the .ipa
+        if: inputs.kind == 'simulator'
+        run: |
+          ditto -x -k ipa/*.ipa "${RUNNER_TEMP}/ipa"
+          mkdir -p build
+          ditto "${RUNNER_TEMP}/ipa/Payload/Kodi.app" build/Kodi.app
+
+      # The runtime and a device type it supports are discovered, since both
+      # identifiers change with the image's Xcode.
+      - name: Create and boot a Simulator device
+        if: inputs.kind == 'simulator'
+        id: sim
+        env:
+          RUNTIME_PREFIX: com.apple.CoreSimulator.SimRuntime.${{ inputs.platform == 'ios' && 'iOS' || 'tvOS' }}-
+          DEVICE_PATTERN: ${{ inputs.platform == 'ios' && 'iPhone' || 'Apple TV' }}
+        run: |
+          runtime_json=$(xcrun simctl list --json runtimes | jq -c --arg prefix "$RUNTIME_PREFIX" '
+            [.runtimes[] | select(.identifier | startswith($prefix))]
+            | sort_by(.version) | last')
+          runtime_id=$(echo "$runtime_json" | jq -r '.identifier // empty')
+          device_type=$(echo "$runtime_json" | jq -r --arg pattern "$DEVICE_PATTERN" '
+            [.supportedDeviceTypes[]? | select(.name | test($pattern))] | last | .identifier // empty')
+          if [ -z "$device_type" ] || [ -z "$runtime_id" ]; then
+            echo "::error::Could not find a $DEVICE_PATTERN device type / matching runtime via simctl"
+            xcrun simctl list
+            exit 1
+          fi
+          udid=$(xcrun simctl create Kodi-E2E "$device_type" "$runtime_id")
+          xcrun simctl bootstatus "$udid" -b
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+
+      - name: Run E2E suite (macOS)
+        uses: ./.github/actions/run-e2e
+        if: inputs.kind == 'macos'
+        with:
+          name: macos
+          kodi-binary: ${{ github.workspace }}/build/Kodi.app/Contents/MacOS/Kodi
+
+      - name: Run E2E suite (Simulator)
+        uses: ./.github/actions/run-e2e
+        if: inputs.kind == 'simulator'
+        with:
+          name: ${{ inputs.platform }}
+          kodi-app: ${{ github.workspace }}/build/Kodi.app
+          kodi-simulator-device: ${{ steps.sim.outputs.udid }}
