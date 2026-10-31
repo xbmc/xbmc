@@ -9,8 +9,6 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  14-wasm-build-wasm-default.patch \
                                  15-wasm-static-hacl.patch \
                                  16-ios-static-nonframework.patch \
-                                 17-ios-simulator-version-min.patch \
-                                 18-ios-objc-fallback.patch \
                                  19-tvos-disable-fork-exec.patch \
                                  20-wasm-runtime-deps.patch \
                                  21-wasm-em-js-deps.patch \
@@ -161,11 +159,8 @@ ifeq ($(OS),wasm)
 	cd $(PLATFORM); patch -p1 -i ../23-wasm-static-linking.patch
 endif
 ifeq ($(findstring iphone,$(TARGET_PLATFORM)),iphone)
-# These three patches are all merged upstream now (python/cpython#156110,
-# #156116, #156113); drop them when we bump python past 3.16.
+# Merged upstream (python/cpython#156110); drop it when we bump python past 3.16.
 	cd $(PLATFORM); patch -p1 -i ../16-ios-static-nonframework.patch
-	cd $(PLATFORM); patch -p1 -i ../17-ios-simulator-version-min.patch
-	cd $(PLATFORM); patch -p1 -i ../18-ios-objc-fallback.patch
 endif
 ifeq ($(findstring appletv,$(TARGET_PLATFORM)),appletv)
 	# TODO: drop once tvOS is built as a real Python platform
