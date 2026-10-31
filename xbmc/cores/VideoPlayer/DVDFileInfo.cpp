@@ -38,8 +38,11 @@
 #include "Util.h"
 #include "filesystem/File.h"
 
+#include <chrono>
 #include <cstdint>
+#include <list>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 
@@ -47,6 +50,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavutil/mastering_display_metadata.h>
+#include <libavutil/pixdesc.h>
 #include <libswscale/swscale.h>
 }
 
@@ -94,9 +98,126 @@ int DegreeToOrientation(int degrees)
 
 namespace
 {
+//! Guards the shared conversion contexts of the thumbnail color management;
+//! one color-managed conversion runs at a time.
+std::mutex s_pictureConversionMutex;
+
+//! Geometry and color properties of a source picture as libswscale sees it.
+//! The scaler regenerates the 3D LUTs of its color management when they
+//! change between pictures, which costs seconds on weak CPUs, so pictures
+//! with the same key can share one conversion context. Mastering display
+//! and content light level metadata are attached to the frames as side data
+//! but left out of the key; measured on 4K HDR sources, the scaler keeps its
+//! graph when only they differ, so keying on them would only thin the cache.
+struct SwsPictureKey
+{
+  int width{0};
+  int height{0};
+  int format{0};
+  int colorspace{0};
+  int color_range{0};
+  int color_primaries{0};
+  int color_trc{0};
+  int chroma_location{0};
+
+  bool operator==(const SwsPictureKey& other) const
+  {
+    return width == other.width && height == other.height && format == other.format &&
+           colorspace == other.colorspace && color_range == other.color_range &&
+           color_primaries == other.color_primaries && color_trc == other.color_trc &&
+           chroma_location == other.chroma_location;
+  }
+};
+
+//! libswscale 9 generates the 3D LUTs of its color management when
+//! the scaling graph is set up and regenerates them whenever the source
+//! geometry or colorspace changes, which costs seconds on weak CPUs. Keep
+//! a few conversion contexts alive between extractions, one per recently used
+//! picture key, so the LUTs are generated once per source format, geometry
+//! and colorspace instead of once per thumbnail. Alternating between two
+//! folders of different aspect ratios would otherwise pay again on every
+//! switch, because one context can only hold the graph of its last request.
+class CPictureConversionContexts
+{
+public:
+  ~CPictureConversionContexts()
+  {
+    for (Entry& entry : m_entries)
+      sws_free_context(&entry.sws);
+  }
+
+  SwsContext* Get(const SwsPictureKey& key)
+  {
+    for (auto it = m_entries.begin(); it != m_entries.end(); ++it)
+    {
+      if (it->key == key)
+      {
+        m_entries.splice(m_entries.begin(), m_entries, it);
+        return m_entries.front().sws;
+      }
+    }
+
+    SwsContext* sws = sws_alloc_context();
+    if (sws)
+    {
+      sws->flags = SWS_BILINEAR;
+      sws->intent = SWS_INTENT_PERCEPTUAL;
+      m_entries.push_front(Entry{key, sws});
+      if (m_entries.size() > 3)
+      {
+        sws_free_context(&m_entries.back().sws);
+        m_entries.pop_back();
+      }
+    }
+    return sws;
+  }
+
+private:
+  struct Entry
+  {
+    SwsPictureKey key;
+    SwsContext* sws{nullptr};
+  };
+
+  std::list<Entry> m_entries;
+};
+
+//! True when libswscale will tone map or gamut map the picture to the SDR
+//! BT.709 GUI colorspace instead of passing it through: PQ and HLG transfer
+//! functions, wide-gamut primaries and the BT.2020 matrix engage the color
+//! management.
+bool NeedsColorManagement(const VideoPicture& picture)
+{
+  switch (picture.color_transfer)
+  {
+    case AVCOL_TRC_SMPTE2084:
+    case AVCOL_TRC_ARIB_STD_B67:
+      return true;
+    default:
+      break;
+  }
+  switch (picture.color_primaries)
+  {
+    case AVCOL_PRI_BT2020:
+      return true;
+    default:
+      break;
+  }
+  switch (picture.color_space)
+  {
+    case AVCOL_SPC_BT2020_NCL:
+    case AVCOL_SPC_BT2020_CL:
+      return true;
+    default:
+      return false;
+  }
+}
+
 //! Convert a decoded picture to a BGRA texture sized for the thumbnail cache.
 std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CDVDStreamInfo& hint)
 {
+  const auto convertStart = std::chrono::steady_clock::now();
+
   const unsigned int nWidth =
       std::min(picture.iDisplayWidth,
                CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes);
@@ -119,11 +240,36 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 
 #if LIBSWSCALE_BUILD >= AV_VERSION_INT(9, 0, 100)
   {
+    static CPictureConversionContexts pictureSws;
+    const std::lock_guard<std::mutex> lock(s_pictureConversionMutex);
+
     AVFrame* srcFrame = av_frame_alloc();
     AVFrame* dstFrame = av_frame_alloc();
-    SwsContext* sws = sws_alloc_context();
-    if (srcFrame && dstFrame && sws)
+    AVFrame* scaledFrame = nullptr;
+    if (srcFrame && dstFrame)
     {
+      const auto tagFrame = [&picture](AVFrame* frame)
+      {
+        frame->colorspace = picture.color_space;
+        frame->color_range = picture.color_range == 1 ? AVCOL_RANGE_JPEG : AVCOL_RANGE_MPEG;
+        frame->color_primaries = picture.color_primaries;
+        frame->color_trc = picture.color_transfer;
+        frame->chroma_location = picture.chroma_position;
+
+        if (picture.hasDisplayMetadata)
+        {
+          AVMasteringDisplayMetadata* mdm = av_mastering_display_metadata_create_side_data(frame);
+          if (mdm)
+            *mdm = picture.displayMetadata;
+        }
+        if (picture.hasLightMetadata)
+        {
+          AVContentLightMetadata* clm = av_content_light_metadata_create_side_data(frame);
+          if (clm)
+            *clm = picture.lightMetadata;
+        }
+      };
+
       srcFrame->width = static_cast<int>(picture.iWidth);
       srcFrame->height = static_cast<int>(picture.iHeight);
       srcFrame->format = picture.videoBuffer->GetFormat();
@@ -132,24 +278,7 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
         srcFrame->data[i] = planes[i];
         srcFrame->linesize[i] = stride[i];
       }
-      srcFrame->colorspace = picture.color_space;
-      srcFrame->color_range = picture.color_range == 1 ? AVCOL_RANGE_JPEG : AVCOL_RANGE_MPEG;
-      srcFrame->color_primaries = picture.color_primaries;
-      srcFrame->color_trc = picture.color_transfer;
-      srcFrame->chroma_location = picture.chroma_position;
-
-      if (picture.hasDisplayMetadata)
-      {
-        AVMasteringDisplayMetadata* mdm = av_mastering_display_metadata_create_side_data(srcFrame);
-        if (mdm)
-          *mdm = picture.displayMetadata;
-      }
-      if (picture.hasLightMetadata)
-      {
-        AVContentLightMetadata* clm = av_content_light_metadata_create_side_data(srcFrame);
-        if (clm)
-          *clm = picture.lightMetadata;
-      }
+      tagFrame(srcFrame);
 
       dstFrame->width = static_cast<int>(nWidth);
       dstFrame->height = static_cast<int>(nHeight);
@@ -161,16 +290,58 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
       dstFrame->color_primaries = AVCOL_PRI_BT709;
       dstFrame->color_trc = AVCOL_TRC_BT709;
 
-      sws->flags = SWS_BILINEAR;
-      sws->intent = SWS_INTENT_PERCEPTUAL;
+      // The color management applies its LUTs to every input pixel before
+      // the picture is scaled down, so a 4K HDR source pays for millions
+      // of scalar, non-SIMD LUT lookups and full-resolution intermediate
+      // frames just to produce a 720p thumbnail. Shrink such a picture with
+      // the fast unmanaged scaler first; the LUTs then run on thumbnail pixels.
+      // The prescaling happens in the source transfer function, which is
+      // accurate enough at thumbnail size and preserves the bit depth for
+      // the tone mapping.
+      AVFrame* convertSrc = srcFrame;
+      if (NeedsColorManagement(picture))
+      {
+        scaledFrame = av_frame_alloc();
+        if (scaledFrame)
+        {
+          scaledFrame->width = static_cast<int>(nWidth);
+          scaledFrame->height = static_cast<int>(nHeight);
+          scaledFrame->format = srcFrame->format;
+          if (av_frame_get_buffer(scaledFrame, 0) == 0)
+          {
+            struct SwsContext* preScale =
+                sws_getContext(srcFrame->width, srcFrame->height,
+                               picture.videoBuffer->GetFormat(), static_cast<int>(nWidth),
+                               static_cast<int>(nHeight), picture.videoBuffer->GetFormat(),
+                               SWS_BILINEAR, NULL, NULL, NULL);
+            if (preScale)
+            {
+              sws_scale(preScale, srcFrame->data, srcFrame->linesize, 0, srcFrame->height,
+                        scaledFrame->data, scaledFrame->linesize);
+              sws_freeContext(preScale);
+              tagFrame(scaledFrame);
+              convertSrc = scaledFrame;
+            }
+          }
+        }
+      }
 
-      const int res = sws_scale_frame(sws, dstFrame, srcFrame);
+      const SwsPictureKey key{convertSrc->width,
+                               convertSrc->height,
+                               convertSrc->format,
+                               static_cast<int>(convertSrc->colorspace),
+                               static_cast<int>(convertSrc->color_range),
+                               static_cast<int>(convertSrc->color_primaries),
+                               static_cast<int>(convertSrc->color_trc),
+                               static_cast<int>(convertSrc->chroma_location)};
+      SwsContext* sws = pictureSws.Get(key);
+      const int res = sws ? sws_scale_frame(sws, dstFrame, convertSrc) : -1;
       if (res < 0)
         CLog::LogF(LOGWARNING, "sws_scale_frame failed ({}), using legacy conversion", res);
       else
         converted = true;
     }
-    sws_free_context(&sws);
+    av_frame_free(&scaledFrame);
     av_frame_free(&srcFrame);
     av_frame_free(&dstFrame);
   }
@@ -200,6 +371,13 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 
   if (!converted)
     result.reset();
+
+  CLog::LogF(LOGDEBUG, "measured {} ms to convert {}x{} ({}) to a {}x{} texture",
+             std::chrono::duration_cast<std::chrono::milliseconds>(
+                 std::chrono::steady_clock::now() - convertStart)
+                 .count(),
+             picture.iWidth, picture.iHeight,
+             av_get_pix_fmt_name(picture.videoBuffer->GetFormat()), nWidth, nHeight);
 
   return result;
 }
