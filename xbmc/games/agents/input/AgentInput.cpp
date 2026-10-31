@@ -79,6 +79,9 @@ void CAgentInput::Stop()
     m_portMap.clear();
     m_peripheralMap.clear();
     m_disconnectedPeripherals.clear();
+
+    std::lock_guard<std::mutex> lock(m_controllerMutex);
+    m_playerPeripherals.clear();
   }
 
   // Close open keyboard
@@ -177,6 +180,12 @@ bool CAgentInput::OnButtonPress(MOUSE::BUTTON_ID button)
     NotifyObservers(ObservableMessageAgentControllersChanged);
   }
   return false;
+}
+
+PERIPHERALS::PeripheralVector CAgentInput::GetPlayerPeripherals() const
+{
+  std::lock_guard<std::mutex> lock(m_controllerMutex);
+  return m_playerPeripherals;
 }
 
 std::vector<std::shared_ptr<const CAgentController>> CAgentInput::GetControllers() const
@@ -338,6 +347,22 @@ void CAgentInput::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlin
   // Update connected joysticks
   std::set<PERIPHERALS::PeripheralPtr> disconnectedPeripherals;
   UpdateConnectedJoysticks(joysticks, newPortMap, inputHandlingLock, disconnectedPeripherals);
+
+  // Players are numbered by their port, so an empty port keeps its place
+  std::map<PortAddress, PERIPHERALS::PeripheralPtr> portPeripherals;
+  for (const auto& [inputProvider, joystick] : m_portMap)
+    portPeripherals[joystick->GetPortAddress()] = joystick->GetSource();
+
+  PERIPHERALS::PeripheralVector playerPeripherals;
+  for (const std::string& portAddress : GetGameInputPorts())
+  {
+    const auto it = portPeripherals.find(portAddress);
+    playerPeripherals.emplace_back(it != portPeripherals.end() ? it->second : nullptr);
+  }
+  {
+    std::lock_guard<std::mutex> lock(m_controllerMutex);
+    m_playerPeripherals = std::move(playerPeripherals);
+  }
 
   // Rebuild peripheral map
   PeripheralMap peripheralMap;
