@@ -32,6 +32,7 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <float.h>
 #include <mutex>
@@ -144,9 +145,10 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
       XMLUtils::GetInt(pOverscan, "bottom", cal.Overscan.bottom);
     }
 
-    // mark calibration as not updated
-    // we must not delete those, resolution just might not be available
+    // the GUI size the calibration was made at, 0 if it was saved before that was recorded
     cal.iWidth = cal.iHeight = 0;
+    XMLUtils::GetInt(pResolution, "guiwidth", cal.iWidth);
+    XMLUtils::GetInt(pResolution, "guiheight", cal.iHeight);
 
     // store calibration, avoid adding duplicates
     bool found = false;
@@ -193,6 +195,11 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
     XMLUtils::SetString(pNode, "description", resInfo.strMode);
     XMLUtils::SetInt(pNode, "subtitles", resInfo.iSubtitles);
     XMLUtils::SetFloat(pNode, "pixelratio", resInfo.fPixelRatio);
+    if (resInfo.iWidth > 0 && resInfo.iHeight > 0)
+    {
+      XMLUtils::SetInt(pNode, "guiwidth", resInfo.iWidth);
+      XMLUtils::SetInt(pNode, "guiheight", resInfo.iHeight);
+    }
 #ifdef HAVE_X11
     XMLUtils::SetFloat(pNode, "refreshrate", resInfo.fRefreshRate);
     XMLUtils::SetString(pNode, "output", resInfo.strOutput);
@@ -572,32 +579,64 @@ void CDisplaySettings::ApplyCalibrations()
              (itCal->Overscan.right == 1920 && itCal->Overscan.bottom == 1080)))
           break;
 
+        // Overscan and subtitle position are in GUI coordinates, so a calibration made at another
+        // GUI size (e.g. before the GUI size limit changed) is rescaled. One saved without its GUI
+        // size is taken to be from whichever GUI size it could have been made at its right and
+        // bottom edges are nearest: the current one, the full mode size or a 720p/1080p limit.
+        const RESOLUTION_INFO& info = m_resolutions[res];
+        int calWidth = itCal->iWidth;
+        int calHeight = itCal->iHeight;
+        if (calWidth <= 0 || calHeight <= 0)
+        {
+          calWidth = info.iWidth;
+          calHeight = info.iHeight;
+          const auto distance = [&](int width, int height) {
+            return std::abs(itCal->Overscan.right - width) +
+                   std::abs(itCal->Overscan.bottom - height);
+          };
+          for (const auto& [width, height] : {std::pair{info.iScreenWidth, info.iScreenHeight},
+                                              std::pair{1920, 1080}, std::pair{1280, 720}})
+          {
+            if (width <= info.iScreenWidth && height <= info.iScreenHeight &&
+                distance(width, height) < distance(calWidth, calHeight))
+            {
+              calWidth = width;
+              calHeight = height;
+            }
+          }
+        }
+        const auto scaleX = [&](int x)
+        { return static_cast<int>(std::lround(static_cast<double>(x) * info.iWidth / calWidth)); };
+        const auto scaleY = [&](int y) {
+          return static_cast<int>(std::lround(static_cast<double>(y) * info.iHeight / calHeight));
+        };
+
         // overscan
-        m_resolutions[res].Overscan.left = itCal->Overscan.left;
+        m_resolutions[res].Overscan.left = scaleX(itCal->Overscan.left);
         if (m_resolutions[res].Overscan.left < -m_resolutions[res].iWidth/4)
           m_resolutions[res].Overscan.left = -m_resolutions[res].iWidth/4;
         if (m_resolutions[res].Overscan.left > m_resolutions[res].iWidth/4)
           m_resolutions[res].Overscan.left = m_resolutions[res].iWidth/4;
 
-        m_resolutions[res].Overscan.top = itCal->Overscan.top;
+        m_resolutions[res].Overscan.top = scaleY(itCal->Overscan.top);
         if (m_resolutions[res].Overscan.top < -m_resolutions[res].iHeight/4)
           m_resolutions[res].Overscan.top = -m_resolutions[res].iHeight/4;
         if (m_resolutions[res].Overscan.top > m_resolutions[res].iHeight/4)
           m_resolutions[res].Overscan.top = m_resolutions[res].iHeight/4;
 
-        m_resolutions[res].Overscan.right = itCal->Overscan.right;
+        m_resolutions[res].Overscan.right = scaleX(itCal->Overscan.right);
         if (m_resolutions[res].Overscan.right < m_resolutions[res].iWidth / 2)
           m_resolutions[res].Overscan.right = m_resolutions[res].iWidth / 2;
         if (m_resolutions[res].Overscan.right > m_resolutions[res].iWidth * 3/2)
           m_resolutions[res].Overscan.right = m_resolutions[res].iWidth *3/2;
 
-        m_resolutions[res].Overscan.bottom = itCal->Overscan.bottom;
+        m_resolutions[res].Overscan.bottom = scaleY(itCal->Overscan.bottom);
         if (m_resolutions[res].Overscan.bottom < m_resolutions[res].iHeight / 2)
           m_resolutions[res].Overscan.bottom = m_resolutions[res].iHeight / 2;
         if (m_resolutions[res].Overscan.bottom > m_resolutions[res].iHeight * 3/2)
           m_resolutions[res].Overscan.bottom = m_resolutions[res].iHeight * 3/2;
 
-        m_resolutions[res].iSubtitles = itCal->iSubtitles;
+        m_resolutions[res].iSubtitles = scaleY(itCal->iSubtitles);
         if (m_resolutions[res].iSubtitles < 0)
           m_resolutions[res].iSubtitles = 0;
         if (m_resolutions[res].iSubtitles > m_resolutions[res].iHeight * 3 / 2)
