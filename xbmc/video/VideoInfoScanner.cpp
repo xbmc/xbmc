@@ -498,10 +498,35 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // sort by filename as always present for any files, but keep case sensitivity
         items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
 
+        // A folder holding a disc rip is listed as its disc only until the folder's own hash is
+        // stored, after which it is marked unchanged above and stays a folder. It is hashed as the
+        // folder, so that this folder's hash doesn't change between the two.
+        CFileItemList hashed;
+        for (const auto& item : items)
+        {
+          std::string discFolder;
+          if (!item->IsFolder() && !URIUtils::IsStack(item->GetPath()) &&
+              URIUtils::IsOpticalMediaFile(item->GetPath()))
+          {
+            discFolder = URIUtils::RemoveDiscPath(item->GetPath());
+            URIUtils::AddSlashAtEnd(discFolder);
+          }
+          if (discFolder.empty() || URIUtils::PathEquals(discFolder, strDirectory, true))
+          {
+            hashed.Add(item);
+            continue;
+          }
+          auto folder{std::make_shared<CFileItem>(*item)};
+          folder->SetPath(discFolder);
+          folder->SetFolder(true);
+          hashed.Add(folder);
+        }
+        hashed.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+
         // check whether to re-use previously computed fast hash
-        listingHash = !CanFastHash(items, regexps) || fastHash.empty();
+        listingHash = !CanFastHash(hashed, regexps) || fastHash.empty();
         if (listingHash)
-          UTILS::GetPathHash(items, hash);
+          UTILS::GetPathHash(hashed, hash);
         else
           hash = fastHash;
       }
@@ -701,9 +726,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                       URIUtils::IsOpticalMediaFile(item->GetPath()));
                             }))
     {
-      std::vector<std::pair<int, std::string>> knownPaths;
-      m_database.GetSubPaths(strDirectory, knownPaths);
-      for (const auto& [idPath, path] : knownPaths)
+      for (const std::string& path :
+           CVideoInfoScannerExtras::GetKnownFolders(m_database, strDirectory))
       {
         if (IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(path)))
           foldersWithExtras.insert(URIUtils::GetParentPath(path));
@@ -837,6 +861,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
 
       m_extras.AddVideoExtras(dbId, extrasFolder);
+      m_extras.SetVideoExtrasHash(extrasFolder);
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
                 CURL::GetRedacted(extrasFolder));
     }
@@ -1211,10 +1236,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::string identifierType;
     std::string identifier;
     long lResult = -1;
-    if (info2->IsPython() &&
-        CFilenameAttributes(movieTitle, &m_regexpCache).GetIdentifier(identifierType, identifier))
+    ADDON::CScraper::UniqueIDs uniqueIDs;
+    // The ids a refresh looks the show up by are those it has, which an identifier in its name
+    // may contradict, and are those its details were already read by
+    if (info2->IsPython() && !m_uniqueIDs.empty() && !(pURL && pURL->HasUrls()))
+      uniqueIDs = m_uniqueIDs;
+    else if (info2->IsPython() && CFilenameAttributes(movieTitle, &m_regexpCache)
+                                      .GetIdentifier(identifierType, identifier))
+      uniqueIDs = {{identifierType, identifier}};
+    if (!uniqueIDs.empty())
     {
-      const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
                      (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
                                                                                     : nullptr,
@@ -1633,6 +1664,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         switch (result)
         {
           case VersionConversionResult::SUCCESS:
+            RemovePartNumberFromTitle(targetMovieDbId, VideoDbContentType::MOVIES, m_database);
             return InfoRet::HAVE_ALREADY;
           case VersionConversionResult::NOT_NEEDED:
           case VersionConversionResult::CANCELLED:
@@ -1805,7 +1837,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() && filenameAttributes.GetIdentifier(identifierType, identifier))
+    // The ids a refresh looks the movie up by come first: an identifier in the file name may name
+    // another film, and the ids are those its details were already read by
+    if (info2->IsPython() && m_uniqueIDs.empty() &&
+        filenameAttributes.GetIdentifier(identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
@@ -1814,6 +1849,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
                      pDlgProgress))
         return HandleMovieSetAndVersions();
     }
+
+    if (info2->IsPython() && !m_uniqueIDs.empty() && !(pURL && pURL->HasUrls()) &&
+        GetDetails(pItem, m_uniqueIDs, url, info2,
+                   (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                  : nullptr,
+                   pDlgProgress))
+      return HandleMovieSetAndVersions();
 
     if (pURL && pURL->HasUrls())
       url = *pURL;
@@ -3087,9 +3129,25 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     bool added{false};
     bool versioned{false};
+    bool known{false};
     int targetDbId{-1};
     for (const auto& item : blurayItems)
     {
+      // The playlists are ordered with the disc's main title first, so only that one may become
+      // the default version - otherwise each playlist added after it displaces it in turn, leaving
+      // the shortest of them as the default
+      const bool isMainPlaylist{item == blurayItems.Get(0)};
+
+      // A playlist already in the library keeps its movie, which the disc's new playlists join.
+      // Adding it again would return that movie, which a declined merge below would then delete.
+      if (const int knownDbId{m_database.GetMovieId(item->GetDynPath())}; knownDbId >= 0)
+      {
+        known = true;
+        if (isMainPlaylist)
+          targetDbId = knownDbId;
+        continue;
+      }
+
       const int newMovieDbId{static_cast<int>(
           AddVideo(item.get(), scraper, bDirNames, useLocal, nullptr, false, ContentType::MOVIES))};
       if (newMovieDbId < 0)
@@ -3106,10 +3164,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_similarVideoAction != SimilarVideoScanAction::AUTO)
         continue;
 
-      // The playlists are ordered with the disc's main title first, so only that one may become
-      // the default version - otherwise each playlist added after it displaces it in turn, leaving
-      // the shortest of them as the default
-      const bool isMainPlaylist{item == blurayItems.Get(0)};
       const auto [result, chosenTargetMovieDbId] = ProcessVideoVersion(
           ContentToVideoDbType(ContentType::MOVIES), newMovieDbId, targetDbId, isMainPlaylist);
       if (result == VersionConversionResult::SUCCESS)
@@ -3139,7 +3193,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (versioned)
       RemovePartNumberFromTitle(targetDbId, VideoDbContentType::MOVIES, m_database);
-    return !added ? InfoRet::INFO_ERROR : (versioned ? InfoRet::HAVE_ALREADY : InfoRet::ADDED);
+    if (!added)
+      return known ? InfoRet::HAVE_ALREADY : InfoRet::INFO_ERROR;
+    return versioned ? InfoRet::HAVE_ALREADY : InfoRet::ADDED;
   }
 
   std::pair<VersionConversionResult, int> CVideoInfoScanner::ProcessVideoVersion(
@@ -3148,8 +3204,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
       int targetDbId /* = -1 */,
       bool canBecomeDefault /* = true */)
   {
-    return CGUIDialogVideoManagerVersions::ProcessVideoVersion(itemType, dbId, targetDbId,
-                                                               canBecomeDefault);
+    if (!m_database.Open())
+      return {VersionConversionResult::FAILED, -1};
+    const auto result{CGUIDialogVideoManagerVersions::ProcessVideoVersion(
+        itemType, dbId, m_database, targetDbId, canBecomeDefault)};
+    m_database.Close();
+    return result;
   }
 
   void CVideoInfoScanner::RemovePartNumberFromTitle(int dbId,
