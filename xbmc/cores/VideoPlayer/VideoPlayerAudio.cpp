@@ -19,6 +19,7 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <mutex>
 
 #ifdef TARGET_RASPBERRY_PI
@@ -46,12 +47,14 @@ public:
 CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock,
                                      CDVDMessageQueue& parent,
                                      CProcessInfo& processInfo,
-                                     double messageQueueTimeSize)
+                                     double messageQueueTimeSize,
+                                     CEdl& edl)
   : CThread("VideoPlayerAudio"),
     IDVDStreamPlayerAudio(processInfo),
     m_messageQueue("audio"),
     m_messageParent(parent),
-    m_audioSink(pClock)
+    m_audioSink(pClock),
+    m_edl(edl)
 {
   m_pClock = pClock;
   m_audioClock = 0;
@@ -557,7 +560,23 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     }
   }
 
-  int framesOutput = m_audioSink.AddPackets(audioframe);
+  bool edlMute = false;
+  if (m_streaminfo.codec == AV_CODEC_ID_TRUEHD && IsPassthrough() &&
+      audioframe.pts != DVD_NOPTS_VALUE && audioframe.duration > 0)
+  {
+    const auto frameStart = std::chrono::milliseconds{DVD_TIME_TO_MSEC(audioframe.pts)};
+    const auto frameEnd =
+        std::chrono::milliseconds{DVD_TIME_TO_MSEC(audioframe.pts + audioframe.duration)};
+    for (const auto& edit : m_edl.GetRawEditList())
+    {
+      if (edit.action == EDL::Action::MUTE && frameStart < edit.end && frameEnd > edit.start)
+      {
+        edlMute = true;
+        break;
+      }
+    }
+  }
+  int framesOutput = m_audioSink.AddPackets(audioframe, edlMute);
 
   // guess next pts
   m_audioClock += audioframe.duration * ((double)framesOutput / audioframe.nb_frames);
