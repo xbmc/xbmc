@@ -365,6 +365,35 @@ TEST(TestGameNameParser, ReadsAnUnknownRegionAsNone)
   EXPECT_TRUE(unknown.unknownTags.empty());
 }
 
+TEST(TestGameNameParser, ReadsTheSideOfATape)
+{
+  const ParsedGameName tosec =
+      CGameNameParser::Parse("Game (1985)(Publisher)(Tape 2 of 2 Side B).tap");
+  EXPECT_EQ(tosec.disc, 2);
+  EXPECT_EQ(tosec.side, 2);
+
+  const ParsedGameName tosecTags =
+      CGameNameParser::Parse("Game (1985)(Publisher)(Tape 2)(Side A).tap");
+  EXPECT_EQ(tosecTags.disc, 2);
+  EXPECT_EQ(tosecTags.side, 1);
+
+  const ParsedGameName tags = CGameNameParser::Parse("Other Game (Europe) (Tape 2) (Side A).tap");
+  EXPECT_EQ(tags.disc, 2);
+  EXPECT_EQ(tags.side, 1);
+
+  const ParsedGameName sideOnly = CGameNameParser::Parse("Other Game (Europe) (Side B).tap");
+  EXPECT_EQ(sideOnly.disc, 2);
+  EXPECT_EQ(sideOnly.side, 0);
+}
+
+TEST(TestGameNameParser, KeepsTheExtension)
+{
+  EXPECT_EQ(CGameNameParser::Parse("Tetris (USA).NES").extension, "nes");
+  EXPECT_EQ(CGameNameParser::Parse("Super Mario Bros. (World)", false).extension, "");
+  EXPECT_EQ(CGameNameParser::Parse("Zak McKracken (1988)(Lucasfilm)(Disk 1 of 2).adf").extension,
+            "adf");
+}
+
 TEST(TestGameNameParser, ReadsAGameFileByItsPath)
 {
   EXPECT_EQ(CGameNameParser::ParsePath("/games/Legend of Zelda, The (USA).nes").displayTitle,

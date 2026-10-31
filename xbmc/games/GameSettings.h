@@ -38,6 +38,21 @@ public:
   void ToggleGames();
   bool AutosaveEnabled();
   bool ReplaceLabels();
+  bool OneVersionPerGame();
+
+  /*!
+   * \brief The code of the player's preferred region
+   *
+   * For Automatic, the region chosen in Kodi's regional settings, which is empty
+   * when that isn't a country.
+   */
+  std::string Region();
+
+  /*!
+   * \brief The region tried next, or empty for none
+   */
+  std::string SecondRegion();
+
   bool RewindEnabled();
   unsigned int MaxRewindTimeSec();
   bool SyncPlaybackToDisplay();
