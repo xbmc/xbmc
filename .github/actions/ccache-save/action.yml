@@ -1,0 +1,26 @@
+name: Save ccache
+description: >
+  Prints ccache statistics and saves the cache under a per-commit key. Cache
+  entries are immutable, so saving from every PR push would add an entry per
+  push until the repository's budget evicts the useful ones; callers therefore
+  save from master only, and every run still restores the newest master entry.
+inputs:
+  key:
+    description: Cache key prefix, identical to the one given to ccache-restore.
+    required: true
+  save:
+    description: Whether to save ("true"/"false"). Statistics are printed regardless.
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - name: Show ccache stats
+      shell: bash
+      run: ccache -s || true
+
+    - name: Save ccache
+      if: inputs.save == 'true'
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ env.CCACHE_DIR }}
+        key: ${{ inputs.key }}-ccache-${{ github.sha }}
