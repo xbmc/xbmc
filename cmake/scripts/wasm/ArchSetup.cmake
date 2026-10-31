@@ -67,6 +67,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     # implementation in ordinary browsers.
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/network/tizen_sockets.js"
     "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer/DVDCodecs/Video/webcodecs_bridge.js"
+    # Media backends: the <video> layer, Media Source Extensions and Samsung's Tizen WASM
+    # Player, which is unused outside Samsung TVs.
+    "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/media_layer.js"
+    "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/mse_bridge.js"
+    "SHELL:--js-library ${CMAKE_SOURCE_DIR}/xbmc/platform/wasm/tizen_emss.js"
   )
 
   # tizen_sockets.js returns one getaddrinfo() node per address, and older
