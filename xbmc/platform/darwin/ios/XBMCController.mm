@@ -179,7 +179,7 @@ public:
   std::unique_ptr<DebugLogSharingPresenter> m_debugLogSharingPresenter;
   UITapGestureRecognizer* m_videoSingleTap;
   UITapGestureRecognizer* m_videoDoubleTap;
-  bool m_videoPinchActive;
+  UIPinchGestureRecognizer* m_videoPinch;
   KODI::TOUCH::VideoPinchMode m_videoPinchMode;
 }
 - (void)rescheduleNetworkAutoSuspend;
@@ -306,11 +306,11 @@ public:
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
 {
-  if (gestureRecognizer == m_videoDoubleTap)
+  if (gestureRecognizer == m_videoDoubleTap || gestureRecognizer == m_videoPinch)
     return [self canHandleVideoGesture];
-  if ([gestureRecognizer isKindOfClass:UIRotationGestureRecognizer.class] &&
-      [self canHandleVideoGesture])
-    return NO;
+  if ([gestureRecognizer isKindOfClass:UIPinchGestureRecognizer.class] ||
+      [gestureRecognizer isKindOfClass:UIRotationGestureRecognizer.class])
+    return ![self canHandleVideoGesture];
   return YES;
 }
 
@@ -323,6 +323,21 @@ public:
       point.x - CGRectGetMinX(m_glView.bounds), CGRectGetWidth(m_glView.bounds));
   if (seconds != 0)
     QueueVideoGesture(seconds, KODI::TOUCH::VideoPinchMode::NONE);
+}
+
+- (void)handleVideoPinch:(UIPinchGestureRecognizer*)sender
+{
+  if (sender.state == UIGestureRecognizerStateBegan)
+    m_videoPinchMode = KODI::TOUCH::VideoPinchMode::NONE;
+  else if (sender.state == UIGestureRecognizerStateChanged && [self canHandleVideoGesture])
+  {
+    const auto mode = KODI::TOUCH::GetVideoPinchMode(sender.scale);
+    if (mode != KODI::TOUCH::VideoPinchMode::NONE && mode != m_videoPinchMode)
+    {
+      m_videoPinchMode = mode;
+      QueueVideoGesture(0, mode);
+    }
+  }
 }
 //--------------------------------------------------------------
 - (void)addSwipeGesture:(UISwipeGestureRecognizerDirection)direction numTouches : (NSUInteger)numTouches
@@ -337,7 +352,7 @@ public:
   [m_glView addGestureRecognizer:swipe];
 }
 //--------------------------------------------------------------
-- (void)addTapGesture:(NSUInteger)numTouches
+- (UITapGestureRecognizer*)addTapGesture:(NSUInteger)numTouches
 {
   UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
                                                    initWithTarget:self action:@selector(handleTap:)];
@@ -345,13 +360,8 @@ public:
   tapGesture.delaysTouchesBegan = NO;
   tapGesture.numberOfTapsRequired = 1;
   tapGesture.numberOfTouchesRequired = numTouches;
-  if (numTouches == 1)
-  {
-    m_videoSingleTap = tapGesture;
-    tapGesture.delegate = self;
-  }
-
   [m_glView addGestureRecognizer:tapGesture];
+  return tapGesture;
 }
 //--------------------------------------------------------------
 - (void)createGestureRecognizers
@@ -364,7 +374,8 @@ public:
   [m_glView addGestureRecognizer:m_videoDoubleTap];
 
   //1 finger single tap
-  [self addTapGesture:1];
+  m_videoSingleTap = [self addTapGesture:1];
+  m_videoSingleTap.delegate = self;
 
   //2 finger single tap - right mouse
   [self addTapGesture:2];
@@ -432,6 +443,12 @@ public:
   pinch.delegate = self;
   [m_glView addGestureRecognizer:pinch];
 
+  m_videoPinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self
+                                                           action:@selector(handleVideoPinch:)];
+  m_videoPinch.delaysTouchesBegan = NO;
+  m_videoPinch.delegate = self;
+  [m_glView addGestureRecognizer:m_videoPinch];
+
   //for rotate gesture
   UIRotationGestureRecognizer *rotate = [[UIRotationGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleRotate:)];
@@ -473,28 +490,6 @@ public:
 //--------------------------------------------------------------
 -(void)handlePinch:(UIPinchGestureRecognizer*)sender
 {
-  if (sender.state == UIGestureRecognizerStateBegan)
-  {
-    m_videoPinchActive = [self canHandleVideoGesture];
-    m_videoPinchMode = KODI::TOUCH::VideoPinchMode::NONE;
-  }
-  if (m_videoPinchActive)
-  {
-    if (sender.state == UIGestureRecognizerStateChanged && [self canHandleVideoGesture])
-    {
-      const auto mode = KODI::TOUCH::GetVideoPinchMode(sender.scale);
-      if (mode != KODI::TOUCH::VideoPinchMode::NONE && mode != m_videoPinchMode)
-      {
-        m_videoPinchMode = mode;
-        QueueVideoGesture(0, mode);
-      }
-    }
-    if (sender.state == UIGestureRecognizerStateEnded ||
-        sender.state == UIGestureRecognizerStateCancelled ||
-        sender.state == UIGestureRecognizerStateFailed)
-      m_videoPinchActive = false;
-    return;
-  }
   if( m_glView && [m_glView isXBMCAlive] && sender.numberOfTouches )//NO GESTURES BEFORE WE ARE UP AND RUNNING
   {
     CGPoint point = [sender locationOfTouch:0 inView:m_glView];
