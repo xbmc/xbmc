@@ -17,6 +17,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <functional>
@@ -77,7 +78,8 @@ void CDVDInputStream::SavePlaylistDetails(std::vector<PlaylistInformation>& play
     // Update last playlist entry
     auto& lastPlaylist = playedPlaylists.back();
 
-    assert(lastPlaylist.duration == currentPlaylistInformation.duration); // Should be the same
+    // DVD menus are all title 0 and a title's program chains can differ in length
+    lastPlaylist.duration = std::max(lastPlaylist.duration, currentPlaylistInformation.duration);
 
     lastPlaylist.watchedTime += watchedTime;
     lastPlaylist.details = currentPlaylistInformation.details;
@@ -273,8 +275,9 @@ void CDVDInputStream::UpdateStackItem(CFileItem& item, std::chrono::milliseconds
 {
   auto& components{CServiceBroker::GetAppComponents()};
   const auto& stackHelper{components.GetComponent<CApplicationStackHelper>()};
+  // Stack times are built up in part order, so a part played out of order is not added
   if (stackHelper->GetStack(item) != nullptr &&
-      stackHelper->GetStackPartNumber(item) >= stackHelper->GetKnownStackParts())
+      stackHelper->GetStackPartNumber(item) == stackHelper->GetKnownStackParts())
   {
     stackHelper->IncreaseKnownStackParts();
     CLog::LogF(LOGDEBUG, "Playing new stack part");

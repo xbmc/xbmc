@@ -169,9 +169,22 @@ bool CApplicationStackHelper::ProcessNextPartInBookmark(CFileItem& item, CBookma
   {
     // This updates the FileItem with the next part in the stack
     item = SetStackPartAsCurrent(*nextPart);
-    bookmark.timeInSeconds = 0.0;
-    bookmark.playerState.clear();
-    CLog::LogF(LOGDEBUG, "Next part in stack is {}", item.GetDynPath());
+    // Resume within the part (time is relative to it) or from its start
+    if (std::optional<std::string> state{
+            KODI::VIDEO::UTILS::GetNextPartPlayerStateFromBookmark(bookmark)};
+        state)
+    {
+      bookmark.playerState = *state;
+      // The input stream reads a disc's resume state from the item (eg. a Blu-ray playlist)
+      item.GetVideoInfoTag()->SetResumePoint(bookmark);
+    }
+    else
+    {
+      bookmark.timeInSeconds = 0.0;
+      bookmark.playerState.clear();
+    }
+    CLog::LogF(LOGDEBUG, "Next part in stack is {} (resume at {}s)", item.GetDynPath(),
+               bookmark.timeInSeconds);
     return true;
   }
   return false;
@@ -226,6 +239,13 @@ void CApplicationStackHelper::GetStackPartAndOptions(CFileItem& item,
   if (!updated)
   {
     m_currentStackPosition = GetStackPartNumberAtTime(start);
+
+    // Disc stack parts beyond those already played have no times, so use the requested part
+    if (const int startPart{item.GetStartPartNumber() - 1}; !restart && startPart > 0 &&
+                                                            startPart >= m_knownStackParts &&
+                                                            startPart < m_originalStackItems.Size())
+      m_currentStackPosition = startPart;
+
     item = *m_originalStackItems.Get(m_currentStackPosition);
     options.starttime =
         std::chrono::duration<double>(start - GetStackPartStartTime(m_currentStackPosition))
