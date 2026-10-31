@@ -468,24 +468,34 @@ bool CAddonMgr::GetAddonsInternal(AddonType type,
                                   OnlyEnabled onlyEnabled,
                                   CheckIncompatible checkIncompatible) const
 {
-  std::unique_lock lock(m_critSection);
-
-  for (const auto& [_, addonInfo] : m_installedAddons)
+  std::vector<AddonInfoPtr> addonInfos;
   {
-    if (type != AddonType::UNKNOWN && !addonInfo->HasType(type))
-      continue;
+    std::unique_lock lock(m_critSection);
 
-    if (onlyEnabled == OnlyEnabled::CHOICE_YES &&
-        ((checkIncompatible == CheckIncompatible::CHOICE_NO && IsAddonDisabled(addonInfo->ID())) ||
-         (checkIncompatible == CheckIncompatible::CHOICE_YES &&
-          IsAddonDisabledExcept(addonInfo->ID(), AddonDisabledReason::INCOMPATIBLE))))
-      continue;
+    for (const auto& [_, addonInfo] : m_installedAddons)
+    {
+      if (type != AddonType::UNKNOWN && !addonInfo->HasType(type))
+        continue;
 
-    //FIXME: hack for skipping special dependency addons (xbmc.python etc.).
-    //Will break if any extension point is added to them
-    if (addonInfo->MainType() == AddonType::UNKNOWN)
-      continue;
+      if (onlyEnabled == OnlyEnabled::CHOICE_YES &&
+          ((checkIncompatible == CheckIncompatible::CHOICE_NO &&
+            IsAddonDisabled(addonInfo->ID())) ||
+           (checkIncompatible == CheckIncompatible::CHOICE_YES &&
+            IsAddonDisabledExcept(addonInfo->ID(), AddonDisabledReason::INCOMPATIBLE))))
+        continue;
 
+      //FIXME: hack for skipping special dependency addons (xbmc.python etc.).
+      //Will break if any extension point is added to them
+      if (addonInfo->MainType() == AddonType::UNKNOWN)
+        continue;
+
+      addonInfos.emplace_back(addonInfo);
+    }
+  }
+
+  // Add-on construction can acquire locks in other services.
+  for (const auto& addonInfo : addonInfos)
+  {
     AddonPtr addon = CAddonBuilder::Generate(addonInfo, type);
     if (addon)
     {
