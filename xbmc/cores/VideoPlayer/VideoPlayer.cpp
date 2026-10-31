@@ -6021,6 +6021,11 @@ void CVideoPlayer::Render(bool clear, uint32_t alpha, bool gui)
   m_renderManager.Render(clear, 0, alpha, gui);
 }
 
+bool CVideoPlayer::CompositeVideoCapture(KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+  return m_renderManager.CompositeVideoCapture(result);
+}
+
 void CVideoPlayer::FlushRenderer()
 {
   m_renderManager.Flush(true, true);
