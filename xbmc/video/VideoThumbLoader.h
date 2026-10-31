@@ -37,7 +37,7 @@ public:
   bool LoadItemCached(CFileItem* pItem) override;
   bool LoadItemLookup(CFileItem* pItem) override;
 
-  /*! \brief Prefetch art and stream details of a batch for LoadItem(). */
+  /*! \brief Prefetch art, stream details, ratings, tags and unique ids of a batch for LoadItem(). */
   void Prefetch(const std::vector<CFileItem*>& items);
 
   /*! \brief Fill the thumb of a video item
@@ -104,11 +104,14 @@ protected:
 private:
   int SetDetailsForItem(CVideoInfoTag& details, const KODI::ART::Artwork& artwork);
 
-  /*! \brief Prefetch art and stream details of the next list batch, unless the item is in one. */
+  /*! \brief Prefetch() the next list batch, unless the item is in one. */
   void PrefetchFrom(const CFileItem& item);
 
   /*! \brief Prefetch the art of items and their sets, shows and seasons for FillLibraryArt(). */
   void PrefetchArt(const std::vector<CFileItem*>& items);
+
+  /*! \brief Prefetch library items' ratings, tags and unique ids for skins to show in lists. */
+  void PrefetchListDetails(const std::vector<CFileItem*>& items);
 
   /*! \brief Get an item's own art, from the art cache when it holds it. */
   bool GetItemArt(const CVideoInfoTag& tag, KODI::ART::Artwork& artwork);

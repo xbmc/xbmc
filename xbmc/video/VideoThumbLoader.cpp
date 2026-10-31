@@ -126,6 +126,32 @@ void CVideoThumbLoader::Prefetch(const std::vector<CFileItem*>& items)
     for (CVideoInfoTag* tag : streamTags)
       tag->m_iFileId = -1;
   }
+
+  PrefetchListDetails(artItems);
+}
+
+void CVideoThumbLoader::PrefetchListDetails(const std::vector<CFileItem*>& items)
+{
+  constexpr int details{VideoDbDetailsRating | VideoDbDetailsTag | VideoDbDetailsUniqueID};
+  std::map<MEDIA::TYPE, std::vector<CVideoInfoTag*>> byType;
+  for (CFileItem* item : items)
+  {
+    const CVideoInfoTag& tag{*item->GetVideoInfoTag()};
+    const MEDIA::TYPE type{tag.GetMediaType()};
+    if (tag.m_iDbId > 0 && !(tag.m_parsedDetails & details) &&
+        (type == MEDIA::TYPE::MOVIE || type == MEDIA::TYPE::TV_SHOW ||
+         type == MEDIA::TYPE::EPISODE || type == MEDIA::TYPE::MUSIC_VIDEO))
+    {
+      auto& loaded{m_prefetched[item]};
+      if (!loaded)
+        loaded = std::make_unique<CVideoInfoTag>();
+      loaded->m_iDbId = tag.m_iDbId;
+      byType[type].push_back(loaded.get());
+    }
+  }
+
+  for (const auto& [type, tags] : byType)
+    m_videoDatabase->GetDetailsForList(tags, type, details);
 }
 
 void CVideoThumbLoader::PrefetchArt(const std::vector<CFileItem*>& items)
@@ -251,6 +277,23 @@ bool IsPlainFileArt(const std::string& art)
   return !art.empty() && !StringUtils::StartsWith(art, "image://") &&
          !URIUtils::IsInternetStream(art);
 }
+
+//! Merge ratings and unique ids loaded for a list into an item's tag, and replace its tags.
+void MergeListDetails(CVideoInfoTag& tag, const CVideoInfoTag& loaded)
+{
+  // merged aside and moved in whole, as the GUI may be reading the tag
+  RatingMap ratings{tag.m_ratings};
+  for (const auto& [name, rating] : loaded.m_ratings)
+    ratings[name] = rating;
+  auto uniqueIDs{tag.GetUniqueIDs()};
+  for (const auto& [name, value] : loaded.GetUniqueIDs())
+    uniqueIDs[name] = value;
+
+  tag.m_tags = loaded.m_tags;
+  tag.m_ratings = std::move(ratings);
+  tag.SetUniqueIDs(std::move(uniqueIDs));
+  tag.m_parsedDetails |= loaded.m_parsedDetails;
+}
 } // namespace
 
 std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
@@ -347,6 +390,12 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
       else if (m_videoDatabase->GetStreamDetails(*pItem))
         pItem->SetInvalid();
     }
+  }
+
+  if (loaded && loaded->m_iDbId > 0)
+  {
+    MergeListDetails(*pItem->GetVideoInfoTag(), *loaded);
+    pItem->SetInvalid();
   }
 
   // video db items normally have info in the database
