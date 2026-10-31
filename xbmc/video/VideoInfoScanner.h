@@ -23,6 +23,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 class CAdvancedSettings;
@@ -338,6 +339,33 @@ namespace KODI::VIDEO
     //! isn't hashed, so that the next scan tries it again.
     unsigned int m_failedLookups{0};
 
+    //! What the scan did, logged once it has finished
+    struct ScanSummary
+    {
+      enum class Type
+      {
+        MOVIE,
+        VERSION, //!< of a movie
+        TV_SHOW,
+        EPISODE,
+        MUSIC_VIDEO
+      };
+
+      struct Item
+      {
+        Type type;
+        std::string path;
+        std::string title; //!< of an item added
+      };
+
+      std::vector<Item> added;
+      std::vector<Item> existing; //!< items in rescanned directories already in the library
+      unsigned int unchangedDirectories{0};
+      std::vector<Item> notFound;
+      std::vector<Item> failed;
+    };
+    ScanSummary m_summary;
+
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
 
@@ -357,6 +385,15 @@ namespace KODI::VIDEO
     CVideoInfoScannerExtras m_extras{m_database, m_art};
 
   private:
+    /*!
+     * \brief Count an item that wasn't added in the summary, and log it as an event
+     * \param[in] type What the item is
+     * \param[in] path Path of the item
+     * \param[in] failed Whether its lookup failed, rather than found nothing
+     */
+    void NotAdded(ScanSummary::Type type, const std::string& path, bool failed);
+    void ReportSummary() const;
+
     /*!
      * \brief Remove paths that share missing ancestors with \p directory from the list of paths
      *        to scan
