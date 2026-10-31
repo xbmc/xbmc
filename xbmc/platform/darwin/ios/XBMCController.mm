@@ -16,10 +16,14 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIControl.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/WindowIDs.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/keyboard/XBMC_keysym.h"
+#include "input/touch/VideoGesture.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
@@ -35,6 +39,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/XBMC_events.h"
 #import "windowing/ios/WinSystemIOS.h"
 
@@ -49,6 +54,7 @@
 #undef id
 
 #include <math.h>
+#include <mutex>
 #include <signal.h>
 
 #import <AVFoundation/AVAudioSession.h>
@@ -60,6 +66,58 @@
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 
 XBMCController *g_xbmcController;
+
+namespace
+{
+bool IsFullscreenVideo()
+{
+  auto* gui = CServiceBroker::GetGUI();
+  auto* winSystem = CServiceBroker::GetWinSystem();
+  if (!gui || !winSystem)
+    return false;
+
+  // The modal-dialog lookup releases its lock before the window-history read.
+  std::unique_lock lock(winSystem->GetGfxContext());
+  return gui->GetWindowManager().GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_VIDEO;
+}
+
+struct VideoGestureMessage
+{
+  KODI::MESSAGING::ThreadMessageCallback callback;
+  int seekSeconds;
+  KODI::TOUCH::VideoPinchMode pinchMode;
+};
+
+void ApplyVideoGesture(void* user)
+{
+  std::unique_ptr<VideoGestureMessage> message(static_cast<VideoGestureMessage*>(user));
+  if (!IsFullscreenVideo())
+    return;
+  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  if (!appPlayer || !appPlayer->IsPlayingVideo())
+    return;
+  if (message->seekSeconds != 0)
+    appPlayer->GetSeekHandler().SeekSeconds(message->seekSeconds);
+  else
+  {
+    const auto settings = appPlayer->GetVideoSettings();
+    const auto mode =
+        message->pinchMode == KODI::TOUCH::VideoPinchMode::ZOOM ? ViewModeZoom : ViewModeNormal;
+    appPlayer->SetRenderViewMode(mode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
+                                 settings.m_CustomVerticalShift, settings.m_CustomNonLinStretch);
+  }
+}
+
+void QueueVideoGesture(int seconds, KODI::TOUCH::VideoPinchMode mode)
+{
+  auto messenger = CServiceBroker::GetAppMessenger();
+  if (!messenger)
+    return;
+  auto* message = new VideoGestureMessage{{ApplyVideoGesture, nullptr}, seconds, mode};
+  message->callback.userptr = message;
+  messenger->PostMsg(TMSG_CALLBACK, -1, -1, &message->callback);
+}
+} // namespace
 
 class DebugLogSharingPresenter : ISettingCallback
 {
@@ -127,8 +185,13 @@ public:
 @interface XBMCController ()
 {
   std::unique_ptr<DebugLogSharingPresenter> m_debugLogSharingPresenter;
+  UITapGestureRecognizer* m_videoSingleTap;
+  UITapGestureRecognizer* m_videoDoubleTap;
+  UIPinchGestureRecognizer* m_videoPinch;
+  KODI::TOUCH::VideoPinchMode m_videoPinchMode;
 }
 - (void)rescheduleNetworkAutoSuspend;
+- (BOOL)canHandleVideoGesture;
 @end
 
 @interface UIApplication (extended)
@@ -236,6 +299,54 @@ public:
 
   return NO;
 }
+
+- (BOOL)canHandleVideoGesture
+{
+  return m_glView && [m_glView isXBMCAlive] && IsFullscreenVideo();
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
+    shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer*)otherGestureRecognizer
+{
+  return gestureRecognizer == m_videoSingleTap && otherGestureRecognizer == m_videoDoubleTap &&
+         [self canHandleVideoGesture];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
+{
+  if (gestureRecognizer == m_videoDoubleTap || gestureRecognizer == m_videoPinch)
+    return [self canHandleVideoGesture];
+  if ([gestureRecognizer isKindOfClass:UIPinchGestureRecognizer.class] ||
+      [gestureRecognizer isKindOfClass:UIRotationGestureRecognizer.class])
+    return ![self canHandleVideoGesture];
+  return YES;
+}
+
+- (void)handleVideoDoubleTap:(UITapGestureRecognizer*)sender
+{
+  if (sender.state != UIGestureRecognizerStateRecognized || ![self canHandleVideoGesture])
+    return;
+  const CGPoint point = [sender locationInView:m_glView];
+  const int seconds = KODI::TOUCH::GetVideoDoubleTapSeekSeconds(
+      point.x - CGRectGetMinX(m_glView.bounds), CGRectGetWidth(m_glView.bounds));
+  if (seconds != 0)
+    QueueVideoGesture(seconds, KODI::TOUCH::VideoPinchMode::NONE);
+}
+
+- (void)handleVideoPinch:(UIPinchGestureRecognizer*)sender
+{
+  if (sender.state == UIGestureRecognizerStateBegan)
+    m_videoPinchMode = KODI::TOUCH::VideoPinchMode::NONE;
+  else if (sender.state == UIGestureRecognizerStateChanged && [self canHandleVideoGesture])
+  {
+    const auto mode = KODI::TOUCH::GetVideoPinchMode(sender.scale);
+    if (mode != KODI::TOUCH::VideoPinchMode::NONE && mode != m_videoPinchMode)
+    {
+      m_videoPinchMode = mode;
+      QueueVideoGesture(0, mode);
+    }
+  }
+}
 //--------------------------------------------------------------
 - (void)addSwipeGesture:(UISwipeGestureRecognizerDirection)direction numTouches : (NSUInteger)numTouches
 {
@@ -249,7 +360,7 @@ public:
   [m_glView addGestureRecognizer:swipe];
 }
 //--------------------------------------------------------------
-- (void)addTapGesture:(NSUInteger)numTouches
+- (UITapGestureRecognizer*)addTapGesture:(NSUInteger)numTouches
 {
   UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
                                                    initWithTarget:self action:@selector(handleTap:)];
@@ -257,18 +368,24 @@ public:
   tapGesture.delaysTouchesBegan = NO;
   tapGesture.numberOfTapsRequired = 1;
   tapGesture.numberOfTouchesRequired = numTouches;
-
   [m_glView addGestureRecognizer:tapGesture];
+  return tapGesture;
 }
 //--------------------------------------------------------------
 - (void)createGestureRecognizers
 {
+  m_videoDoubleTap =
+      [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleVideoDoubleTap:)];
+  m_videoDoubleTap.numberOfTapsRequired = 2;
+  m_videoDoubleTap.numberOfTouchesRequired = 1;
+  m_videoDoubleTap.delegate = self;
+  [m_glView addGestureRecognizer:m_videoDoubleTap];
+
   //1 finger single tap
-  [self addTapGesture:1];
+  m_videoSingleTap = [self addTapGesture:1];
+  m_videoSingleTap.delegate = self;
 
   //2 finger single tap - right mouse
-  //single finger double tap delays single finger single tap - so we
-  //go for 2 fingers here - so single finger single tap is instant
   [self addTapGesture:2];
 
   //3 finger single tap
@@ -333,6 +450,12 @@ public:
   pinch.delaysTouchesBegan = NO;
   pinch.delegate = self;
   [m_glView addGestureRecognizer:pinch];
+
+  m_videoPinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self
+                                                           action:@selector(handleVideoPinch:)];
+  m_videoPinch.delaysTouchesBegan = NO;
+  m_videoPinch.delegate = self;
+  [m_glView addGestureRecognizer:m_videoPinch];
 
   //for rotate gesture
   UIRotationGestureRecognizer *rotate = [[UIRotationGestureRecognizer alloc]
