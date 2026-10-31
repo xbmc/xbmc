@@ -1,0 +1,20 @@
+name: Upload E2E artifacts
+description: >
+  Uploads what tools/e2e collected per test under e2e-artifacts/ (Kodi's log,
+  process output, screenshots) together with the JUnit results.
+inputs:
+  name:
+    description: Platform suffix for the artifact name (e.g. linux-gbm-X64).
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Upload E2E artifacts
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: e2e-${{ inputs.name }}
+        path: |
+          e2e-artifacts/
+          e2e-results.xml
+        if-no-files-found: warn
