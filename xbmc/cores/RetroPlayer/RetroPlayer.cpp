@@ -33,6 +33,7 @@
 #include "games/GameSettings.h"
 #include "games/GameUtils.h"
 #include "games/addons/GameClient.h"
+#include "games/addons/cheevos/GameClientCheevos.h"
 #include "games/addons/disc/GameClientDiscs.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/tags/GameInfoTag.h"
@@ -619,7 +620,7 @@ void CRetroPlayer::RequestAutosave()
 
 bool CRetroPlayer::RefuseSpeedInHardcore(double speed) const
 {
-  if (!m_gameServices.GameSettings().GetAchievementsHardcore())
+  if (!m_gameClient || !m_gameClient->Cheevos().IsHardcoreActive())
     return false;
 
   // Rewind runs the game backwards, so it arrives here as a negative speed
@@ -642,7 +643,7 @@ bool CRetroPlayer::RefuseSpeedInHardcore(double speed) const
 
 void CRetroPlayer::LeaveSpeedRefusedInHardcore()
 {
-  if (!m_playback || !m_gameServices.GameSettings().GetAchievementsHardcore())
+  if (!m_playback || !m_gameClient || !m_gameClient->Cheevos().IsHardcoreActive())
     return;
 
   const double speed = m_playback->GetSpeed();
@@ -705,11 +706,11 @@ void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
       // RetroAchievements requires a resumed session to drop to casual: the
       // player did not reach the state being resumed from in this session.
       // Done before the load, which is otherwise refused while hardcore is on.
-      GAME::CGameSettings& gameSettings = m_gameServices.GameSettings();
-      if (gameSettings.GetAchievementsHardcore())
+      // Only this session: the next game starts in hardcore again.
+      if (m_gameClient->Cheevos().IsHardcoreActive())
       {
         CLog::Log(LOGINFO, "RetroPlayer[SAVE]: Resuming from a savestate, dropping to casual mode");
-        gameSettings.SetAchievementsHardcore(false);
+        m_gameClient->Cheevos().LeaveHardcore();
 
         // "RetroAchievements", "Hardcore mode turned off. Achievements will be..."
         const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
