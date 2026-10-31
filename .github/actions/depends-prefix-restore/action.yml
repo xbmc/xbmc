@@ -1,0 +1,65 @@
+name: Restore tools/depends prefix
+description: >
+  Pulls the tools/depends install prefix published to ghcr.io for the given
+  key, the current tools/depends sources and the configure arguments, if one
+  was published. Only the prefix is stored: configure-depends regenerates
+  everything the Kodi and add-on builds read from the tree itself.
+inputs:
+  key:
+    description: >
+      Leg key naming the depends platform, the toolchain and the configuration
+      (e.g. apple-ios-simulator-xcode26.3-Debug), like Jenkins' getBuildHash.
+    required: true
+  configure-args:
+    description: >
+      The configure-args given to configure-depends. They live in the
+      workflows rather than in tools/depends, so the tree hash does not cover them.
+    required: true
+  prefix:
+    description: The --prefix the dependencies were installed to.
+    required: true
+outputs:
+  hit:
+    description: Whether a published prefix was restored ("true" or "false").
+    value: ${{ steps.pull.outputs.hit }}
+  ref:
+    description: The image reference, for depends-prefix-push.
+    value: ${{ steps.pull.outputs.ref }}
+runs:
+  using: composite
+  steps:
+    - name: Set up ORAS
+      uses: ./.github/actions/setup-oras
+
+    # A pull that fails for any reason is a miss: the caller builds tools/depends.
+    - name: Pull prefix
+      id: pull
+      shell: bash
+      env:
+        KEY: ${{ inputs.key }}
+        CONFIGURE_ARGS: ${{ inputs.configure-args }}
+        PREFIX: ${{ inputs.prefix }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        owner=$(tr '[:upper:]' '[:lower:]' <<<"${GITHUB_REPOSITORY_OWNER}")
+        if command -v sha256sum >/dev/null; then sum=sha256sum; else sum="shasum -a 256"; fi
+        args_hash=$(printf '%s' "${CONFIGURE_ARGS}" | ${sum} | cut -c1-12)
+        # TexturePacker, built into the prefix, also compiles these Kodi sources.
+        sources=$(git rev-parse HEAD:tools/depends HEAD:xbmc/guilib/XBTF.cpp HEAD:xbmc/guilib/XBTF.h \
+          HEAD:xbmc/guilib/XBTFReader.h HEAD:xbmc/guilib/TextureFormats.h HEAD:xbmc/utils/EndianSwap.h \
+          | git hash-object --stdin)
+        ref="ghcr.io/${owner}/kodi-depends:${KEY}-${sources}-${args_hash}"
+        echo "ref=${ref}" >> "$GITHUB_OUTPUT"
+        echo "${GH_TOKEN}" | oras login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin \
+          || echo "::warning::ghcr.io login failed, pulling anonymously"
+        dir="${RUNNER_TEMP}/depends-pull"
+        if oras pull --output "${dir}" "${ref}"; then
+          mkdir -p "${PREFIX}"
+          zstd -dc "${dir}/prefix.tar.zst" | tar -xf - -C "${PREFIX}"
+          rm -rf "${dir}"
+          echo "Restored ${ref}"
+          echo "hit=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "Nothing published at ${ref}"
+          echo "hit=false" >> "$GITHUB_OUTPUT"
+        fi
