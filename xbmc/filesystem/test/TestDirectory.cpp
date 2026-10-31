@@ -8,6 +8,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/IDirectory.h"
@@ -15,6 +16,9 @@
 #include "test/TestUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
+
+#include <memory>
+#include <string>
 
 #include <gtest/gtest.h>
 
@@ -56,6 +60,24 @@ TEST(TestDirectory, CreateRecursive)
 
   EXPECT_TRUE(XFILE::CDirectory::Create(path2));
   EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(path1));
+}
+
+TEST(TestDirectory, CreateForDotM3uFolder)
+{
+  const std::string dir{
+      URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath("special://temp/"), "game.m3u")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(dir));
+  std::string dirWithSlash{dir};
+  URIUtils::AddSlashAtEnd(dirWithSlash);
+
+  for (const std::string& path : {dir, dirWithSlash})
+  {
+    const CURL url{path};
+    const std::unique_ptr<XFILE::IDirectory> pDir{XFILE::CDirectoryFactory::Create(url)};
+    ASSERT_NE(nullptr, pDir) << path;
+    EXPECT_TRUE(pDir->Exists(url)) << path;
+  }
+  EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(dir));
 }
 
 #ifdef HAVE_LIBBLURAY
