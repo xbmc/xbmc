@@ -1001,6 +1001,7 @@ namespace XBMCAddon
       /// |--------------:|:------------------------------------------------|
       /// | EDLPath       | string (special://temp/video.edl) - Path or URL of an MPlayer-style EDL file for the item
       /// | inputstream   | string (inputstream.adaptive) - Set the inputstream add-on that will be used to play the item
+      /// | AudioStream   | integer (1) - Prioritize the zero-based Kodi audio stream ordinal when playback starts; invalid or unavailable ordinals use normal audio stream selection
       /// | IsPlayable    | string - "true", "false" - Mark the item as playable, **mandatory for playable items**
       /// | MimeType      | string (application/x-mpegURL) - Set the MimeType of the item before playback
       /// | ResumeTime    | float (1962.0) - Set the resume point of the item in seconds
