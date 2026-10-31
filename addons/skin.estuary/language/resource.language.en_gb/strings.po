@@ -1004,3 +1004,9 @@ msgstr ""
 msgctxt "#31615"
 msgid "Subtitle language"
 msgstr ""
+
+#: /xml/VideoFullScreen.xml
+#. Label shown while playback waits for the audio device to lock on to a new audio format
+msgctxt "#31616"
+msgid "Waiting for audio"
+msgstr ""

@@ -484,6 +484,24 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///     video playback).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.WaitingForAudio`</b>,
+///                  \anchor Player_WaitingForAudio
+///                  _boolean_,
+///     @return **True** while playback is held at its start for the audio device downstream
+///     to lock on to a new audio format.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link Player_WaitingForAudio `Player.WaitingForAudio`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.WaitingForAudioRemaining`</b>,
+///                  \anchor Player_WaitingForAudioRemaining
+///                  _integer_ / _string_,
+///     @return The time left of \link Player_WaitingForAudio `Player.WaitingForAudio`\endlink as a
+///     percentage, from 100 when the hold starts to 0 when it runs out.
+///     <p><hr>
+///     @skinning_v23 **[New Infolabel]** \link Player_WaitingForAudioRemaining `Player.WaitingForAudioRemaining`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Player.DisplayAfterSeek`</b>,
 ///                  \anchor Player_DisplayAfterSeek
 ///                  _boolean_,
@@ -862,7 +880,7 @@ constexpr std::array<InfoMap, 7> integer_bools = {{
 ///     <p>
 ///   }
 // clang-format off
-constexpr std::array<InfoMap, 60> player_labels = {{
+constexpr std::array<InfoMap, 62> player_labels = {{
     {"hasmedia",              PLAYER_HAS_MEDIA},
     {"hasaudio",              PLAYER_HAS_AUDIO},
     {"hasvideo",              PLAYER_HAS_VIDEO},
@@ -885,6 +903,8 @@ constexpr std::array<InfoMap, 60> player_labels = {{
     {"forwarding16x",         PLAYER_FORWARDING_16x},
     {"forwarding32x",         PLAYER_FORWARDING_32x},
     {"caching",               PLAYER_CACHING},
+    {"waitingforaudio",       PLAYER_WAITING_FOR_AUDIO},
+    {"waitingforaudioremaining", PLAYER_WAITING_FOR_AUDIO_REMAINING},
     {"seekbar",               PLAYER_SEEKBAR},
     {"seeking",               PLAYER_SEEKING},
     {"showtime",              PLAYER_SHOWTIME},
