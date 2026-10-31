@@ -1442,7 +1442,7 @@ bool CGUIWindowManager::Render()
     // the buffer age counts presented frames and varies between frames, so keep the regions
     // independently of it and only age them when a frame was presented
     if (m_presentedFrame)
-      m_tracker.CleanMarkedRegions(MAX_BUFFER_AGE + 1);
+      m_tracker.CleanMarkedRegions((visualizeDirtyRegions ? bufferAge : MAX_BUFFER_AGE) + 1);
     m_presentedFrame = false;
   }
 
