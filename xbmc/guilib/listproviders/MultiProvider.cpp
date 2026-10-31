@@ -83,6 +83,12 @@ void CMultiProvider::Reset()
     provider->Reset();
 }
 
+void CMultiProvider::FreeResources(bool immediately)
+{
+  for (auto const& provider : m_providers)
+    provider->FreeResources(immediately);
+}
+
 bool CMultiProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 {
   std::unique_lock lock(m_section);
