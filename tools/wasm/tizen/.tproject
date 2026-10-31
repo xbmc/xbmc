@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tproject xmlns="http://www.tizen.org/tproject">
+    <platforms>
+        <platform>
+            <name>tv-samsung-10.0</name>
+        </platform>
+    </platforms>
+    <package>
+        <blacklist/>
+    </package>
+</tproject>

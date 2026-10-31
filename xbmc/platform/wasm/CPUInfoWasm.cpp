@@ -8,6 +8,8 @@
 
 #include "CPUInfoWasm.h"
 
+#include "platform/wasm/WasmWebApis.h"
+
 #include <emscripten.h>
 
 std::shared_ptr<CCPUInfo> CCPUInfo::GetCPUInfo()
@@ -26,6 +28,20 @@ CCPUInfoWasm::CCPUInfoWasm()
   });
 
   m_cpuModel = "WebAssembly";
+
+  const auto device = KODI::PLATFORM::WASM::CWasmWebApis::GetDeviceInfo();
+  if (device.available)
+  {
+    m_cpuHardware = device.manufacturer;
+    if (!device.model.empty())
+    {
+      if (!m_cpuHardware.empty())
+        m_cpuHardware += " ";
+      m_cpuHardware += device.model;
+    }
+    if (!device.firmware.empty())
+      m_cpuHardware += ", firmware " + device.firmware;
+  }
 
   for (int core = 0; core < m_cpuCount; core++)
   {
