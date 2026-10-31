@@ -127,6 +127,7 @@ template struct MemberAccess<RepositoryUpdater, &CServiceManager::m_repositoryUp
 struct InitializeGameplay
 {
   using Type = bool (CGameClient::*)(const std::string&,
+                                     const std::string&,
                                      RETRO::IStreamManager&,
                                      IGameInputCallback*);
   friend Type GetMember(InitializeGameplay);
@@ -661,7 +662,8 @@ TEST_F(TestGameClientHardwareRendering, FailedGameplayInitializationStillUnloads
     m_manager.bind = false;
     m_core.onUnload = [&] { m_manager.bind = true; };
 
-    EXPECT_FALSE((m_client.get()->*GetMember(InitializeGameplay{}))(path, m_manager, nullptr));
+    EXPECT_FALSE(
+        (m_client.get()->*GetMember(InitializeGameplay{}))(path, path, m_manager, nullptr));
     m_client->Streams().Deinitialize();
     m_client->CloseFile();
 

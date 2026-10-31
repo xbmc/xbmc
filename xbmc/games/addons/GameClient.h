@@ -155,6 +155,9 @@ public:
   const std::set<std::string>& GetExtensions() const { return m_extensions; }
   bool SupportsAllExtensions() const { return m_bSupportsAllExtensions; }
   bool IsExtensionValid(const std::string& strExtension) const;
+
+  //! Whether the client boots a whole folder, as a DOS emulator does
+  bool SupportsFolders() const;
   const std::string& GetEmulatorName() const { return m_emulatorName; }
   const std::string& GetPlatforms() const { return m_platforms; }
   const std::string& GetLibretroCore() const { return m_libretroCore; }
@@ -170,6 +173,8 @@ public:
   void Reset();
   void CloseFile();
   const std::string& GetGamePath() const { return m_gamePath; }
+  //! The file the client loaded: the game, or the copy of it taken out of its archive
+  const std::string& GetMediaPath() const { return m_mediaPath; }
 
   // Playback control
   bool RequiresGameLoop() const { return m_bRequiresGameLoop; }
@@ -253,6 +258,7 @@ public:
 private:
   // Private gameplay functions
   bool InitializeGameplay(const std::string& gamePath,
+                          const std::string& mediaPath,
                           RETRO::IStreamManager& streamManager,
                           IGameInputCallback* input);
   bool LoadGameInfo();
@@ -378,6 +384,7 @@ private:
   std::atomic<double> m_playbackSpeed{1.0};
   const std::unique_ptr<CGameClientFastForward> m_fastForward;
   std::string m_gamePath;
+  std::string m_mediaPath;
   std::string m_missingFile; // The first file the client reported missing while loading
   bool m_bRequiresGameLoop = false;
   mutable size_t m_serializeSize = 0;
