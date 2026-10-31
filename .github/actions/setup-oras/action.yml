@@ -1,0 +1,26 @@
+name: Set up ORAS
+description: >
+  Installs the oras CLI that moves tools/depends prefixes to and from ghcr.io.
+  A no-op when an earlier step of the job already installed it.
+runs:
+  using: composite
+  steps:
+    - name: Install oras
+      shell: bash
+      env:
+        ORAS_VERSION: 1.3.4
+      run: |
+        command -v oras >/dev/null && exit 0
+        case "${RUNNER_OS}-${RUNNER_ARCH}" in
+          Linux-X64)   platform=linux_amd64;  sha256=f27adb935022d94df8dc77719c322dda592c78a0d57a6f7dcdd8d900b248c454 ;;
+          Linux-ARM64) platform=linux_arm64;  sha256=15702c6e3a4a56a8bd8ac5c17efdbcab56d9bada661ccbcf017f5b10c1d89399 ;;
+          macOS-ARM64) platform=darwin_arm64; sha256=217761a9500242ff473de8656b5aca21136ff39e17e9e61fd8936bbfd902704c ;;
+          *) echo "::error::No oras build pinned for ${RUNNER_OS}-${RUNNER_ARCH}"; exit 1 ;;
+        esac
+        archive="${RUNNER_TEMP}/oras_${ORAS_VERSION}_${platform}.tar.gz"
+        curl -fsSL --retry 5 -o "${archive}" \
+          "https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_${platform}.tar.gz"
+        echo "${sha256}  ${archive}" | shasum -a 256 -c -
+        mkdir -p "${RUNNER_TEMP}/oras"
+        tar -xzf "${archive}" -C "${RUNNER_TEMP}/oras" oras
+        echo "${RUNNER_TEMP}/oras" >> "$GITHUB_PATH"

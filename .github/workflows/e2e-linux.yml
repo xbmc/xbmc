@@ -1,0 +1,223 @@
+name: E2E (Linux)
+
+# Builds one of Kodi's GBM, Wayland and X11 backends against Ubuntu's
+# packages, packages it as a .deb and runs tools/e2e against the installed
+# package. GBM renders through vkms, Wayland through a headless Weston and X11
+# through Xvfb, all on Mesa's llvmpipe: the DRM/GBM/EGL/GL paths are exercised,
+# GPU drivers and hardware decoding are not.
+
+# Called from ci.yml once per leg; ci.yml owns the triggers, the legs and the
+# manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      platform:
+        description: CORE_PLATFORM_NAME (gbm, wayland or x11).
+        type: string
+        required: true
+      runner:
+        description: Runner label, which also selects the architecture.
+        type: string
+        required: true
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build and unit tests
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 180
+    # Debug, as Jenkins' Linux jobs, unless the caller asks for Release. GBM and
+    # Wayland share a ccache entry, whichever saves first: their compile lines
+    # differ in -D and -I only, which ccache's preprocessor mode does not hash.
+    env:
+      CONFIGURATION: ${{ inputs.configuration || 'Debug' }}
+      CCACHE_KEY: linux-${{ inputs.platform == 'x11' && 'gl' || 'gles' }}-${{ inputs.runner }}-${{ inputs.configuration || 'Debug' }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-linux-build
+        with:
+          platforms: ${{ inputs.platform }}
+          extra-packages: dpkg-dev fakeroot lsb-release
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: ${{ env.CCACHE_KEY }}
+          dir: /home/runner/.cache/kodi-ccache
+
+      # The install prefix is compiled into the binary, so it has to be the one
+      # dpkg installs to. Ubuntu's TagLib and SWIG are too old for Kodi. -g1
+      # limits debug info to the line tables backtraces need, keeping objects small.
+      - name: Configure Kodi
+        env:
+          RENDER_SYSTEM: ${{ inputs.platform == 'x11' && 'gl' || 'gles' }}
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE="${CONFIGURATION}" -DCMAKE_INSTALL_PREFIX=/usr \
+            -DCPACK_GENERATOR=DEB -DCORE_PLATFORM_NAME=${{ inputs.platform }} \
+            -DAPP_RENDER_SYSTEM="${RENDER_SYSTEM}" -DENABLE_INTERNAL_FFMPEG=ON \
+            -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON \
+            -DCMAKE_C_FLAGS_DEBUG=-g1 -DCMAKE_CXX_FLAGS_DEBUG=-g1
+
+      - name: Build Kodi
+        run: cmake --build build -- -j"$(nproc)"
+
+      # The .deb carries no add-ons; this only proves they build against the tree.
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ inputs.addons }}
+          make-args: PREFIX=${{ github.workspace }}/build-addons
+
+      - name: Package
+        working-directory: build
+        run: cpack
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-deb-linux-${{ inputs.platform }}-${{ runner.arch }}
+          path: build/packages/*.deb
+          retention-days: 7
+
+      # Built before ccache-save so its objects are cached too.
+      - name: Build unit tests
+        run: cmake --build build --target kodi-test -- -j"$(nproc)"
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: ${{ env.CCACHE_KEY }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      # The ping_group_range grant keeps TestNetwork.PingHost running instead of
+      # skipping. Line-buffered so assertion messages stay next to their test.
+      - name: Run unit tests
+        working-directory: build
+        run: |
+          sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
+          stdbuf -oL ./kodi-test --gtest_output=xml:gtestresults.xml
+
+      - uses: ./.github/actions/report-unit-tests
+        if: always()
+        with:
+          name: linux-${{ inputs.platform }}-${{ runner.arch }}
+
+  e2e:
+    name: e2e
+    needs: build
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-deb-linux-${{ inputs.platform }}-${{ runner.arch }}
+          path: packages
+
+      # libgl1-mesa-dri (llvmpipe) is loaded at runtime, so dpkg-shlibdeps does
+      # not record it.
+      - name: Install Kodi
+        run: |
+          sudo apt-get update
+          extra=""
+          [ "${{ inputs.platform }}" = "x11" ] && extra="xvfb x11-utils"
+          # shellcheck disable=SC2086
+          sudo apt-get install -y ./packages/kodi_*.deb ./packages/kodi-bin_*.deb libgl1-mesa-dri $extra
+          echo "KODI_BINARY=$(dpkg -L kodi-bin | grep -E '/kodi/kodi-${{ inputs.platform }}$')" >> "$GITHUB_ENV"
+
+      # CDRMUtils::OpenDrm() takes the first card with a connected connector,
+      # which vkms has and the runner's own card does not. The node belongs to
+      # group video, which the runner user is not in.
+      - name: Load vkms virtual display driver
+        if: inputs.platform == 'gbm'
+        run: |
+          modinfo vkms >/dev/null 2>&1 || sudo apt-get install -y "linux-modules-extra-$(uname -r)"
+          sudo modprobe vkms
+          sudo udevadm settle
+          sudo chmod 666 /dev/dri/card*
+          ls -l /dev/dri
+
+      # Ubuntu 26.04's libdrm 2.4.131 cannot classify vkms on the kernel's faux
+      # bus (fixed in 2.4.134), so Kodi finds no DRM device. Same version and
+      # options as tools/depends/target/libdrm. The multiarch libdir is the first
+      # in the linker's search order on every architecture.
+      - name: Build libdrm 2.4.134
+        if: inputs.platform == 'gbm'
+        run: |
+          sudo apt-get install -y build-essential meson ninja-build pkg-config
+          curl -fsSL -o libdrm.tar.xz https://mirrors.kodi.tv/build-deps/sources/libdrm-2.4.134.tar.xz
+          echo "ef2abddea59d1e93c83a48de920431b839ab50d6071ef4da3cf126e7d64ba7b235f2e34e1169d49ad9de2937a0a18acd66bb8d324b067239b1136e0ddbe792a1  libdrm.tar.xz" | sha512sum -c -
+          mkdir libdrm-src
+          tar -xf libdrm.tar.xz -C libdrm-src --strip-components=1
+          meson setup libdrm-src libdrm-build \
+            --prefix=/usr/local --libdir="lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)" --buildtype=release \
+            -Ddefault_library=shared -Dnouveau=disabled -Domap=disabled \
+            -Dexynos=disabled -Dtegra=disabled -Dintel=disabled \
+            -Dradeon=disabled -Damdgpu=disabled -Dvmwgfx=disabled \
+            -Dvc4=disabled -Dfreedreno=disabled -Detnaviv=disabled \
+            -Dcairo-tests=disabled -Dman-pages=disabled -Dvalgrind=disabled \
+            -Dfreedreno-kgsl=false -Dinstall-test-programs=false -Dudev=false
+          ninja -C libdrm-build
+          sudo ninja -C libdrm-build install
+          sudo ldconfig
+
+      # CWinSystemGbm refuses to start when DISPLAY or WAYLAND_DISPLAY is set at
+      # all, so each is exported only by the leg that needs it.
+      - name: Start headless Wayland compositor (Weston)
+        if: inputs.platform == 'wayland'
+        env:
+          XDG_RUNTIME_DIR: /tmp/xdg-runtime-kodi-e2e
+          WAYLAND_DISPLAY: wayland-1
+        run: |
+          sudo apt-get install -y weston
+          echo "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}" >> "$GITHUB_ENV"
+          echo "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" >> "$GITHUB_ENV"
+          mkdir -p "${XDG_RUNTIME_DIR}"
+          chmod 0700 "${XDG_RUNTIME_DIR}"
+          weston --backend=headless-backend.so --renderer=gl \
+            --socket="${WAYLAND_DISPLAY}" --no-config --idle-time=0 &
+          for _ in $(seq 1 30); do
+            [ -S "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" ] && break
+            sleep 1
+          done
+          [ -S "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" ] || {
+            echo "::error::Weston did not create ${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY} in time"
+            exit 1
+          }
+
+      - name: Start headless X server (Xvfb)
+        if: inputs.platform == 'x11'
+        run: |
+          echo "DISPLAY=:99" >> "$GITHUB_ENV"
+          Xvfb :99 -screen 0 1920x1080x24 &
+          for _ in $(seq 1 30); do
+            xdpyinfo -display :99 >/dev/null 2>&1 && break
+            sleep 1
+          done
+          xdpyinfo -display :99 >/dev/null 2>&1 || {
+            echo "::error::Xvfb did not become ready on display :99 in time"
+            exit 1
+          }
+
+      - name: Re-assert DRM node permissions
+        if: inputs.platform == 'gbm'
+        run: |
+          sudo chmod 666 /dev/dri/card*
+          ls -l /dev/dri
+
+      # The binary is run directly: the /usr/bin/kodi wrapper hides the exit
+      # code and does not forward signals.
+      - uses: ./.github/actions/run-e2e
+        with:
+          name: linux-${{ inputs.platform }}-${{ runner.arch }}
+          kodi-binary: ${{ env.KODI_BINARY }}
+          kodi-profile-dir: ${{ github.workspace }}/e2e-profile

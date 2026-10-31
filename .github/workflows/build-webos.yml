@@ -1,0 +1,155 @@
+name: Build (webOS)
+
+# Cross-builds Kodi for LG webOS via tools/depends with the buildroot
+# toolchain docs/README.webOS.md recommends and packages the .ipk. Build-only:
+# there is no emulator to run tools/e2e on.
+#
+# Called from ci.yml, which owns the triggers and the manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+env:
+  DEPENDS_PREFIX: /home/runner/xbmc-webos-depends
+  # Release tag and asset of https://github.com/openlgtv/buildroot-nc4.
+  TOOLCHAIN_RELEASE: webos-a38c582
+  TOOLCHAIN_ASSET: arm-webos-linux-gnueabi_sdk-buildroot-x86_64.tar.gz
+  TOOLCHAIN_ROOT: /home/runner/webos-toolchain
+  TOOLCHAIN_DIR: /home/runner/webos-toolchain/arm-webos-linux-gnueabi_sdk-buildroot
+  # Release of https://github.com/webosbrew/ares-cli-rs.
+  ARES_CLI_VERSION: 0.7.0
+
+jobs:
+  legs:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    outputs:
+      legs: ${{ steps.legs.outputs.legs }}
+    steps:
+      # Release, as on Jenkins, unless the run asks for Debug.
+      - name: Define legs
+        id: legs
+        env:
+          CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || 'Release') }}
+        run: |
+          legs=$(jq -cn --arg config "$CONFIGURATION" --arg toolchain "$TOOLCHAIN_RELEASE" \
+            '[{configuration: $config, key: "\($toolchain)-\($config)"}]')
+          echo "legs=${legs}" >> "$GITHUB_OUTPUT"
+          echo "${legs}" | jq .
+
+  build:
+    needs: legs
+    runs-on: ubuntu-26.04
+    timeout-minutes: 240
+    permissions:
+      contents: read
+      packages: write
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.legs.outputs.legs) }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # --disable-debug selects the Release toolchain, as on Jenkins. ccache is for
+      # Kodi alone, the prefix being cached on ghcr.io; -g0 keeps debug info, most
+      # of an object's size, out of ccache.
+      - name: Select configure arguments
+        run: |
+          args="--host=arm-webos-linux-gnueabi --with-toolchain=${TOOLCHAIN_DIR} --disable-ccache --with-target-cflags=-g0"
+          [ "${CONFIGURATION}" = Release ] && args="${args} --disable-debug"
+          echo "DEPENDS_ARGS=${args}" >> "$GITHUB_ENV"
+
+      - uses: ./.github/actions/setup-webos-build
+        with:
+          toolchain-release: ${{ env.TOOLCHAIN_RELEASE }}
+          toolchain-asset: ${{ env.TOOLCHAIN_ASSET }}
+          toolchain-root: ${{ env.TOOLCHAIN_ROOT }}
+          toolchain-dir: ${{ env.TOOLCHAIN_DIR }}
+
+      # webosbrew's Rust ares-package, which the ipk target runs and which needs
+      # no Node.js.
+      - name: Install ares-package
+        run: |
+          deb="ares-package_${ARES_CLI_VERSION}-1_$(dpkg --print-architecture).deb"
+          curl -fsSL --retry 5 -o "${RUNNER_TEMP}/${deb}" \
+            "https://github.com/webosbrew/ares-cli-rs/releases/download/v${ARES_CLI_VERSION}/${deb}"
+          sudo apt-get install -y "${RUNNER_TEMP}/${deb}"
+          ares-package --help
+
+      - uses: ./.github/actions/depends-prefix-restore
+        id: depends
+        with:
+          key: ${{ matrix.key }}
+          configure-args: ${{ env.DEPENDS_ARGS }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          dir: /home/runner/.cache/kodi-ccache
+
+      - uses: ./.github/actions/configure-depends
+        id: configure
+        with:
+          configure-args: ${{ env.DEPENDS_ARGS }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: ${{ steps.depends.outputs.hit != 'true' }}
+
+      # Before the add-ons install into the prefix, so it holds tools/depends alone.
+      - uses: ./.github/actions/depends-prefix-push
+        if: steps.configure.outputs.built == 'true' && github.ref == 'refs/heads/master'
+        with:
+          ref: ${{ steps.depends.outputs.ref }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      # verify-libs resolves TV-only libraries against these stubs' build tree
+      # (cmake/scripts/webos/Install.cmake), which a restored prefix lacks.
+      - name: Build webos-userland stubs
+        run: make -C tools/depends/target/webos-userland
+
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ inputs.addons }}
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys Configuration="${CONFIGURATION}"
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      - name: Package .ipk
+        run: |
+          make -C build ipk
+          ls -l build/*.ipk
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: webos
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: webos-${{ runner.arch }}-${{ env.CONFIGURATION }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-webos
+          path: build/*.ipk
+          if-no-files-found: error
+          retention-days: 7

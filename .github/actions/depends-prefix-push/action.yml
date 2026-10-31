@@ -1,0 +1,35 @@
+name: Publish tools/depends prefix
+description: >
+  Publishes the tools/depends install prefix to ghcr.io under the reference
+  depends-prefix-restore computed. Needs packages: write on the token. Keyed on
+  content, so publishing again for the same reference replaces an identical
+  prefix.
+inputs:
+  ref:
+    description: The ref output of depends-prefix-restore.
+    required: true
+  prefix:
+    description: The --prefix the dependencies were installed to.
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/setup-oras
+
+    - name: Push prefix
+      shell: bash
+      env:
+        REF: ${{ inputs.ref }}
+        PREFIX: ${{ inputs.prefix }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        dir="${RUNNER_TEMP}/depends-push"
+        mkdir -p "${dir}"
+        tar -cf - -C "${PREFIX}" . | zstd -T0 -3 -q -o "${dir}/prefix.tar.zst"
+        echo "${GH_TOKEN}" | oras login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+        # Run from the archive's directory: oras records the path it is given
+        # as the file name a pull writes.
+        cd "${dir}"
+        oras push --artifact-type application/vnd.kodi.depends.v1 "${REF}" \
+          prefix.tar.zst:application/vnd.kodi.depends.prefix.v1.tar+zstd
+        rm -rf "${dir}"

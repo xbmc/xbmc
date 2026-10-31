@@ -1,0 +1,84 @@
+name: Coverity Scan
+
+# Weekly Coverity Scan submission. Not per PR: scan.coverity.com rate-limits
+# submissions and the token is a secret. Skips itself without the secrets.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 0'
+
+permissions:
+  contents: read
+
+jobs:
+  coverity:
+    if: github.repository == 'xbmc/xbmc' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 360
+    env:
+      COVERITY_PROJECT: xbmc%2Fxbmc
+    steps:
+      - name: Check for Coverity credentials
+        id: creds
+        env:
+          COVERITY_SCAN_TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
+          COVERITY_SCAN_EMAIL: ${{ secrets.COVERITY_SCAN_EMAIL }}
+        run: |
+          if [ -z "${COVERITY_SCAN_TOKEN}" ] || [ -z "${COVERITY_SCAN_EMAIL}" ]; then
+            echo "::notice::COVERITY_SCAN_TOKEN or COVERITY_SCAN_EMAIL is not set, skipping"
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.creds.outputs.enabled == 'true'
+
+      - uses: ./.github/actions/setup-linux-build
+        if: steps.creds.outputs.enabled == 'true'
+        with:
+          platforms: wayland gbm
+
+      - name: Download the Coverity build tool
+        if: steps.creds.outputs.enabled == 'true'
+        env:
+          COVERITY_SCAN_TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
+        run: |
+          curl -fsSL --data "token=${COVERITY_SCAN_TOKEN}&project=${COVERITY_PROJECT}&md5=1" \
+            -o cov-analysis.md5 https://scan.coverity.com/download/cxx/linux64
+          curl -fsSL --data "token=${COVERITY_SCAN_TOKEN}&project=${COVERITY_PROJECT}" \
+            -o cov-analysis.tgz https://scan.coverity.com/download/cxx/linux64
+          echo "$(cat cov-analysis.md5)  cov-analysis.tgz" | md5sum -c -
+          mkdir -p "${RUNNER_TEMP}/cov-analysis"
+          tar -xzf cov-analysis.tgz -C "${RUNNER_TEMP}/cov-analysis" --strip-components=1
+          rm -f cov-analysis.tgz
+          echo "${RUNNER_TEMP}/cov-analysis/bin" >> "$GITHUB_PATH"
+
+      - name: Configure Kodi
+        if: steps.creds.outputs.enabled == 'true'
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
+            -DCORE_PLATFORM_NAME="wayland gbm" -DAPP_RENDER_SYSTEM=gles \
+            -DENABLE_INTERNAL_FFMPEG=ON -DENABLE_INTERNAL_TAGLIB=ON -DENABLE_INTERNAL_SWIG=ON
+
+      # ccache starts empty here, so every translation unit is compiled and captured.
+      - name: Build Kodi under cov-build
+        if: steps.creds.outputs.enabled == 'true'
+        run: |
+          cov-build --dir cov-int cmake --build build -- -j"$(nproc)"
+          tail -n 20 cov-int/build-log.txt
+          tar -czf kodi-coverity.tgz cov-int
+
+      - name: Submit to Coverity Scan
+        if: steps.creds.outputs.enabled == 'true'
+        env:
+          COVERITY_SCAN_TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
+          COVERITY_SCAN_EMAIL: ${{ secrets.COVERITY_SCAN_EMAIL }}
+        run: |
+          curl -fsS --form token="${COVERITY_SCAN_TOKEN}" \
+            --form email="${COVERITY_SCAN_EMAIL}" \
+            --form file=@kodi-coverity.tgz \
+            --form version="${GITHUB_SHA}" \
+            --form description="${GITHUB_REF_NAME} linux gles $(date -u +%Y-%m-%d)" \
+            "https://scan.coverity.com/builds?project=${COVERITY_PROJECT}"
