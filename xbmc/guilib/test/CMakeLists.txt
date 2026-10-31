@@ -11,6 +11,7 @@ set(SOURCES TestGUIControlFactory.cpp
             TestGUITexture.cpp
             TestGUIWindowOnAction.cpp
             TestSkinMapManager.cpp
+            TestGUISliderControl.cpp
 )
 
 core_add_test_library(guilib_test)
