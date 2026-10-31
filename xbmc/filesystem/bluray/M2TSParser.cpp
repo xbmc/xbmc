@@ -12,6 +12,7 @@
 #include "PlaylistStructure.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/File.h"
+#include "utils/BitReader.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -669,7 +670,7 @@ struct EAC3BitStreamInfo
   bool lfeon;
 };
 
-bool GetEAC3ChannelCountAndSampleRate(BitReader& br,
+bool GetEAC3ChannelCountAndSampleRate(CBitReader& br,
                                       EAC3BitStreamInfo& bsi,
                                       TSAudioStreamInfo* streamInfo)
 {
@@ -744,7 +745,7 @@ bool GetEAC3ChannelCountAndSampleRate(BitReader& br,
   return true;
 }
 
-void SkipEAC3MixingMetadata(BitReader& br, const EAC3BitStreamInfo& bsi)
+void SkipEAC3MixingMetadata(CBitReader& br, const EAC3BitStreamInfo& bsi)
 {
   if (bsi.acmod > 2)
     br.SkipBits(2); // dmixmod
@@ -834,7 +835,7 @@ void SkipEAC3MixingMetadata(BitReader& br, const EAC3BitStreamInfo& bsi)
   }
 }
 
-void SkipEAC3InfoMetadata(BitReader& br, const EAC3BitStreamInfo& bsi)
+void SkipEAC3InfoMetadata(CBitReader& br, const EAC3BitStreamInfo& bsi)
 {
   br.SkipBits(3); // bsmod
   br.SkipBits(1); // copyrightb
@@ -860,7 +861,7 @@ void SkipEAC3InfoMetadata(BitReader& br, const EAC3BitStreamInfo& bsi)
     br.SkipBits(1); // sourcefscod
 }
 
-void SkipEAC3HeaderBits(BitReader& br, const EAC3BitStreamInfo& bsi)
+void SkipEAC3HeaderBits(CBitReader& br, const EAC3BitStreamInfo& bsi)
 {
   // Mixing metadata exists
   if (br.ReadBits(1)) // mixmdate
@@ -877,7 +878,7 @@ void SkipEAC3HeaderBits(BitReader& br, const EAC3BitStreamInfo& bsi)
     br.SkipBits(6); // frmsizecod
 }
 
-void GetAtmos(BitReader& br, TSAudioStreamInfo* streamInfo)
+void GetAtmos(CBitReader& br, TSAudioStreamInfo* streamInfo)
 {
   // Additional bitstream info exists (contains JOC/ATMOS)
   if (br.ReadBits(1)) // addbsie
@@ -899,16 +900,22 @@ void GetAtmos(BitReader& br, TSAudioStreamInfo* streamInfo)
 
 bool ParseEAC3Bitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* streamInfo)
 {
-  BitReader br(buffer.subspan(2));
+  CBitReader br(buffer.subspan(2));
 
+  // Parsed into a copy, so that a header cut short contributes nothing
+  TSAudioStreamInfo parsed{*streamInfo};
   EAC3BitStreamInfo bsi;
-  if (!GetEAC3ChannelCountAndSampleRate(br, bsi, streamInfo))
+  if (!GetEAC3ChannelCountAndSampleRate(br, bsi, &parsed))
     return false; // Not EAC3 bitstream
 
   // Continue to parse for JOC (Atmos)
   SkipEAC3HeaderBits(br, bsi);
-  GetAtmos(br, streamInfo);
+  GetAtmos(br, &parsed);
 
+  if (br.Error())
+    return false;
+
+  *streamInfo = parsed;
   streamInfo->completed = (++streamInfo->seen) >= HEADERS_PARSED_FOR_COMPLETE;
 
   return true;
@@ -970,7 +977,7 @@ std::optional<unsigned int> FindDTSSyncWord(const std::span<std::byte>& buffer,
   return std::nullopt;
 }
 
-std::optional<unsigned int> ParseDTSExtensionSubstreamChannels(BitReader& br)
+std::optional<unsigned int> ParseDTSExtensionSubstreamChannels(CBitReader& br)
 {
   br.SkipBits(8); // UserDefinedBits
   const unsigned int substreamIndex{br.ReadBits(2)}; // nExtSSIndex
@@ -1042,6 +1049,8 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   if (!dtsData)
     return false;
 
+  TSAudioStreamInfo parsed{*streamInfo};
+
   // A frame that starts with the substream sync word has no core
   std::optional<unsigned int> substreamPos{dtsData->syncWord == DTSSyncWords::SUBSTREAM
                                                ? std::optional{dtsData->syncPos}
@@ -1063,13 +1072,13 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
     const auto& channelCounts{DTS_CHANNEL_COUNTS};
 
     if (sfreq < sampleRates.size() && sampleRates[sfreq] != 0)
-      streamInfo->sampleRate = sampleRates[sfreq];
+      parsed.sampleRate = sampleRates[sfreq];
 
     if (amode < channelCounts.size())
-      streamInfo->channels = channelCounts[amode];
+      parsed.channels = channelCounts[amode];
 
     if (lff == 1 || lff == 2)
-      streamInfo->channels++; // Add LFE channel
+      parsed.channels++; // Add LFE channel
 
     // See if there is a DTS substream header in this block
     const unsigned int searchStart{dtsData->syncPos + DTS_HEADER_SIZE};
@@ -1081,28 +1090,37 @@ bool ParseDTSBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* st
   if (substreamPos.has_value())
   {
     // Substream header found
-    streamInfo->hasSubstream = true;
+    parsed.hasSubstream = true;
     if (auto xll{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL)}; xll.has_value())
-      streamInfo->isXLL = true;
+      parsed.isXLL = true;
 
     if (auto xllx{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL_X)};
         xllx.has_value())
-      streamInfo->isXLLX = true;
+      parsed.isXLLX = true;
 
     if (auto xllximax{FindDTSSyncWord(buffer, dtsData->syncPos + 10, DTS_SYNCWORD_XLL_X_IMAX)};
         xllximax.has_value())
-      streamInfo->isXLLXIMAX = true;
+      parsed.isXLLXIMAX = true;
 
-    // The extension describes the full mix, of which the core is only a downmix
+    // The extension describes the full mix, of which the core is only a downmix. A sync word with
+    // no header after it reads as a failure, like a header cut short
     if (const unsigned int headerPos{substreamPos.value() + DTS_SYNCWORD_SIZE};
-        headerPos < buffer.size())
+        headerPos <= buffer.size())
     {
-      BitReader br(buffer.subspan(headerPos));
-      if (const auto channels{ParseDTSExtensionSubstreamChannels(br)};
-          channels.has_value() && channels.value() > streamInfo->channels)
-        streamInfo->channels = channels.value();
+      CBitReader br(buffer.subspan(headerPos));
+      const auto channels{ParseDTSExtensionSubstreamChannels(br)};
+      if (br.Error())
+      {
+        // Without a core, the frame holds nothing else to go on
+        if (dtsData->syncWord != DTSSyncWords::CORE_16BIT_BE)
+          return false;
+      }
+      else if (channels.has_value() && channels.value() > parsed.channels)
+        parsed.channels = channels.value();
     }
   }
+
+  *streamInfo = parsed;
 
   // An XLL substream may still be DTS:X or DTS:X IMAX - neither marker is in every frame, so keep
   // examining frames until one of them is found. An IMAX stream is identified by its own marker,
@@ -1241,7 +1259,7 @@ bool ParseLPCMBitstream(const std::span<std::byte>& buffer, TSAudioStreamInfo* s
 
 void SkipProfileTierLevelBits(bool profilePresentFlag,
                               unsigned int sps_max_sub_layers_minus1,
-                              BitReader& br)
+                              CBitReader& br)
 {
   if (profilePresentFlag)
     br.SkipBits(88); // The general profile/tier/level section is always 88 bits
@@ -1272,7 +1290,7 @@ void SkipProfileTierLevelBits(bool profilePresentFlag,
   }
 }
 
-void ParseScalingListData(BitReader& br)
+void ParseScalingListData(CBitReader& br)
 {
   for (unsigned int sizeId = 0; sizeId < 4; sizeId++)
   {
@@ -1298,7 +1316,7 @@ void ParseScalingListData(BitReader& br)
 // explicitly - deriving it for a predicted set means reproducing the DeltaPoc derivation of the
 // H.265 specification (7.4.8), which this parser has no other use for. Returns false when the count
 // is needed but unknown, leaving the reader mid-set with nothing after it readable.
-bool ParseShortTermRefPicSet(BitReader& br,
+bool ParseShortTermRefPicSet(CBitReader& br,
                              unsigned int idx,
                              unsigned int numSets,
                              std::vector<std::optional<unsigned int>>& numDeltaPocs)
@@ -1323,8 +1341,8 @@ bool ParseShortTermRefPicSet(BitReader& br,
     return true;
   }
 
-  const unsigned int numNegative{br.ReadUE()};
-  const unsigned int numPositive{br.ReadUE()};
+  const unsigned int numNegative{br.ReadUE(16)};
+  const unsigned int numPositive{br.ReadUE(16)};
 
   for (unsigned int i = 0; i < numNegative; i++)
   {
@@ -1344,7 +1362,7 @@ bool ParseShortTermRefPicSet(BitReader& br,
   return true;
 }
 
-float ParseVUI(BitReader& br)
+float ParseVUI(CBitReader& br)
 {
   float ar{0.0};
 
@@ -1368,7 +1386,8 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
 {
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing H265 SPS");
 
-  BitReader br(buffer);
+  CBitReader br(buffer);
+  TSVideoStreamInfo parsed{*streamInfo};
 
   br.SkipBits(4); // sps_video_parameter_set_id
   const unsigned int sps_max_sub_layers_minus1{br.ReadBits(3)};
@@ -1381,8 +1400,8 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
   if (chroma_format_idc == 3)
     br.SkipBits(1);
 
-  streamInfo->width = br.ReadUE();
-  streamInfo->height = br.ReadUE();
+  parsed.width = br.ReadUE();
+  parsed.height = br.ReadUE();
 
   if (br.ReadBits(1) == 1)
   { // conformance_window_flag
@@ -1394,11 +1413,11 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     const unsigned int sub_width_c{(chroma_format_idc == 1 || chroma_format_idc == 2) ? 2u : 1u};
     const unsigned int sub_height_c{(chroma_format_idc == 1) ? 2u : 1u};
 
-    streamInfo->width -= (left_offset + right_offset) * sub_width_c;
-    streamInfo->height -= (top_offset + bottom_offset) * sub_height_c;
+    parsed.width -= (left_offset + right_offset) * sub_width_c;
+    parsed.height -= (top_offset + bottom_offset) * sub_height_c;
   }
 
-  streamInfo->bitDepth = br.ReadUE() + 8;
+  parsed.bitDepth = br.ReadUE() + 8;
 
   br.SkipUE(); // bit_depth_chroma_minus8
   br.SkipUE(); // log2_max_pic_order_cnt_lsb_minus4
@@ -1437,14 +1456,19 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     br.SkipBits(1); // pcm_loop_filter_disabled_flag
   }
 
-  const unsigned int num_short_term_ref_pic_sets{br.ReadUE()};
+  // Counts that size a loop are capped at the limits the specification sets for them
+  const unsigned int num_short_term_ref_pic_sets{br.ReadUE(64)};
   std::vector<std::optional<unsigned int>> numDeltaPocs(num_short_term_ref_pic_sets);
   for (unsigned int i = 0; i < num_short_term_ref_pic_sets; i++)
   {
     if (!ParseShortTermRefPicSet(br, i, num_short_term_ref_pic_sets, numDeltaPocs))
     {
+      if (br.Error())
+        return false;
+
       // The frame size and bit depth read above still stand, but the VUI can no longer be located
       // and a sample aspect ratio read from the wrong position would override the .clpi's
+      *streamInfo = parsed;
       streamInfo->completed = true;
       return true;
     }
@@ -1452,7 +1476,7 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
 
   if (br.ReadBits(1) == 1) // long_term_ref_pics_present_flag
   {
-    unsigned int num_long_term_ref_pics_sps{br.ReadUE()};
+    unsigned int num_long_term_ref_pics_sps{br.ReadUE(32)};
     for (unsigned int i = 0; i < num_long_term_ref_pics_sps; i++)
     {
       br.SkipUE(); // lt_ref_pic_poc_lsb_sps
@@ -1464,14 +1488,18 @@ bool ParseH265SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
   br.SkipBits(1); // strong_intra_smoothing_enabled_flag
 
   if (br.ReadBits(1) == 1) // vui_parameters_present_flag
-    streamInfo->sampleAspectRatio = ParseVUI(br);
+    parsed.sampleAspectRatio = ParseVUI(br);
 
+  if (br.Error())
+    return false;
+
+  *streamInfo = parsed;
   streamInfo->completed = true;
 
   return true;
 }
 
-void ParseH264ScalingList(BitReader& br, int sizeOfScalingList)
+void ParseH264ScalingList(CBitReader& br, int sizeOfScalingList)
 {
   int lastScale{8};
   int nextScale{8};
@@ -1488,7 +1516,8 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
 {
   CLog::LogFC(LOGDEBUG, LOGBLURAY, "Parsing H264 SPS");
 
-  BitReader br(buffer);
+  CBitReader br(buffer);
+  TSVideoStreamInfo parsed{*streamInfo};
 
   unsigned int profile_idc{br.ReadBits(8)};
   br.SkipBits(8); // constraint flags
@@ -1504,7 +1533,7 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     if (chroma_format == 3)
       br.SkipBits(1);
 
-    streamInfo->bitDepth = br.ReadUE() + 8; // bit_depth_luma_minus8
+    parsed.bitDepth = br.ReadUE() + 8; // bit_depth_luma_minus8
     br.SkipUE(); // bit_depth_chroma_minus8
     br.SkipBits(1); // qpprime_y_zero_transform_bypass
 
@@ -1516,7 +1545,7 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     }
   }
   else
-    streamInfo->bitDepth = 8;
+    parsed.bitDepth = 8;
 
   br.SkipUE(); // log2_max_frame_num_minus4
 
@@ -1527,7 +1556,7 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
     br.SkipBits(1); // delta_pic_order_always_zero_flag
     br.SkipSE(); // offset_for_non_ref_pic
     br.SkipSE(); // offset_for_top_to_bottom_field
-    unsigned int num_ref_frames_in_pic_order_cnt_cycle{br.ReadUE()};
+    unsigned int num_ref_frames_in_pic_order_cnt_cycle{br.ReadUE(255)};
     for (unsigned int i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)
       br.SkipSE(); // offset_for_ref_frame[i]
   }
@@ -1560,14 +1589,17 @@ bool ParseH264SPS(const std::span<std::byte>& buffer, TSVideoStreamInfo* streamI
   // Crop offsets are in units of CropUnitX/CropUnitY, not luma samples (7-19 to 7-22). Blurays are
   // always 4:2:0, so CropUnitX is 2 and CropUnitY is 2 * (2 - frame_mbs_only_flag)
   const unsigned int cropUnitY{frame_mbs_only_flag ? 2u : 4u};
-  streamInfo->width =
-      pic_width_in_mbs * 16 - (frame_crop_left_offset + frame_crop_right_offset) * 2;
-  streamInfo->height = (2 - (frame_mbs_only_flag ? 1 : 0)) * pic_height_in_map_units * 16 -
-                       (frame_crop_top_offset + frame_crop_bottom_offset) * cropUnitY;
+  parsed.width = pic_width_in_mbs * 16 - (frame_crop_left_offset + frame_crop_right_offset) * 2;
+  parsed.height = (2 - (frame_mbs_only_flag ? 1 : 0)) * pic_height_in_map_units * 16 -
+                  (frame_crop_top_offset + frame_crop_bottom_offset) * cropUnitY;
 
   if (br.ReadBits(1) == 1) // vui_parameters_present_flag
-    streamInfo->sampleAspectRatio = ParseVUI(br);
+    parsed.sampleAspectRatio = ParseVUI(br);
 
+  if (br.Error())
+    return false;
+
+  *streamInfo = parsed;
   streamInfo->completed = true;
 
   return true;
