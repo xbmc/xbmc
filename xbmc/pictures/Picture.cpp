@@ -306,7 +306,8 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
   bool success = false; // Flag that we at least had one successful image processed
 
   // create a buffer for the resulting thumb
-  std::unique_ptr<uint32_t[]> buffer = std::make_unique<uint32_t[]>(imageRes * imageRes);
+  std::unique_ptr<uint32_t[]> buffer =
+      std::make_unique<uint32_t[]>(static_cast<size_t>(imageRes) * imageRes);
   for (unsigned int i = 0; i < files.size(); ++i)
   {
     int x = i % num_across;
@@ -319,7 +320,8 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
-      std::unique_ptr<uint32_t[]> scaled = std::make_unique<uint32_t[]>(width * height);
+      std::unique_ptr<uint32_t[]> scaled =
+          std::make_unique<uint32_t[]>(static_cast<size_t>(width) * height);
       if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(),
                      texture->GetPitch(), AV_PIX_FMT_BGRA, reinterpret_cast<uint8_t*>(scaled.get()),
                      width, height, width * 4, AV_PIX_FMT_BGRA))
@@ -489,7 +491,7 @@ bool CPicture::Rotate90CCW(std::unique_ptr<uint32_t[]>& pixels,
                            unsigned int& height,
                            unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height);
+  auto dest = std::make_unique<uint32_t[]>(static_cast<size_t>(width) * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -512,7 +514,7 @@ bool CPicture::Rotate270CCW(std::unique_ptr<uint32_t[]>& pixels,
                             unsigned int& height,
                             unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height);
+  auto dest = std::make_unique<uint32_t[]>(static_cast<size_t>(width) * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -537,7 +539,7 @@ bool CPicture::Transpose(std::unique_ptr<uint32_t[]>& pixels,
                          unsigned int& height,
                          unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height);
+  auto dest = std::make_unique<uint32_t[]>(static_cast<size_t>(width) * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -561,7 +563,7 @@ bool CPicture::TransposeOffAxis(std::unique_ptr<uint32_t[]>& pixels,
                                 unsigned int& height,
                                 unsigned int& stridePixels)
 {
-  auto dest = std::make_unique<uint32_t[]>(width * height);
+  auto dest = std::make_unique<uint32_t[]>(static_cast<size_t>(width) * height);
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {

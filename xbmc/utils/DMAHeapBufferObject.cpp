@@ -95,7 +95,7 @@ bool CDMAHeapBufferObject::CreateBufferObject(uint32_t format, uint32_t width, u
 
   m_stride = width * bpp;
 
-  return CreateBufferObject(width * height * bpp);
+  return CreateBufferObject(static_cast<uint64_t>(width) * height * bpp);
 }
 
 bool CDMAHeapBufferObject::CreateBufferObject(uint64_t size)

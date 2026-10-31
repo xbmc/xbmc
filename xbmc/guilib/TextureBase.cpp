@@ -57,7 +57,7 @@ void CTextureBase::Allocate(uint32_t width, uint32_t height, XB_FMT format)
   KODI::MEMORY::AlignedFree(m_pixels);
   m_pixels = NULL;
 
-  size_t size = GetPitch() * GetRows();
+  size_t size = static_cast<size_t>(GetPitch()) * GetRows();
 
   if (size == 0)
     return;
@@ -439,7 +439,7 @@ bool CTextureBase::ConvertToLegacy(uint32_t width, uint32_t height, uint8_t* src
     return false;
   }
 
-  size_t size = GetPitch() * GetRows();
+  size_t size = static_cast<size_t>(GetPitch()) * GetRows();
 
   Allocate(width, height, XB_FMT_A8R8G8B8);
 
