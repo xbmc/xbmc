@@ -351,7 +351,8 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   // Reversed par value
   // from: >1 tighter pixels, <1 wider pixels
   // to: <1 tighter pixels, >1 wider pixels
-  float par = (opts.m_par - 2.0f) * -1;
+  float par = (m_subtitleType == ADAPTED && opts.m_par > 0.0f) ? 1.0f / opts.m_par
+                                                               : (opts.m_par - 2.0f) * -1;
   ass_set_pixel_aspect(m_renderer, static_cast<double>(par));
 
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
