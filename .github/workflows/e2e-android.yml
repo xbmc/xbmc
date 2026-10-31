@@ -1,0 +1,203 @@
+name: E2E (Android emulator)
+
+# Cross-builds one Android ABI via tools/depends and, for the x86_64 leg, runs
+# tools/e2e on the emulator.
+#
+# Called from ci.yml once per leg; ci.yml owns the triggers, the legs and the
+# manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      abi:
+        description: Android ABI, as in the APK name.
+        type: string
+        required: true
+      host:
+        description: tools/depends --host triplet.
+        type: string
+        required: true
+      default_configuration:
+        description: debug or release, used when configuration is empty.
+        type: string
+        required: true
+      e2e:
+        description: Whether to run tools/e2e on the emulator with this leg's APK.
+        type: boolean
+        default: false
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+env:
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+  DEPENDS_PREFIX: /home/runner/xbmc-android-depends
+  BINARY_ADDONS: ${{ inputs.addons }}
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-26.04
+    timeout-minutes: 240
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      apk: ${{ steps.config.outputs.apk }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # Lower-cased: the APK name carries it. --disable-debug selects the Release
+      # toolchain, as on Jenkins; ccache is for Kodi alone, the prefix being cached
+      # on ghcr.io; -g1 limits debug info to the line tables backtraces need. The
+      # NDK version and API level are defaults in tools/depends/configure.ac, so
+      # the tree hash in the depends key covers them.
+      - name: Select configuration
+        id: config
+        env:
+          CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || inputs.default_configuration) }}
+          ABI: ${{ inputs.abi }}
+          HOST: ${{ inputs.host }}
+        run: |
+          config="${CONFIGURATION,,}"
+          args="--host=${HOST} --with-sdk-path=${ANDROID_SDK_ROOT} --disable-ccache --with-target-cflags=-g1"
+          [ "${config}" = release ] && args="${args} --disable-debug"
+          {
+            echo "CONFIG=${config}"
+            echo "DEPENDS_KEY=android-${ABI}-${config}"
+            echo "DEPENDS_ARGS=${args}"
+          } >> "$GITHUB_ENV"
+          echo "apk=kodiapp-${ABI}-${config}.apk" >> "$GITHUB_OUTPUT"
+
+      - uses: ./.github/actions/setup-android-build
+
+      # Every build type signs with this key when KODI_ANDROID_* is unset
+      # (tools/android/packaging/Makefile.in).
+      - name: Create Android debug signing key
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -keystore ~/.android/debug.keystore -v -alias androiddebugkey \
+            -dname "CN=Android Debug,O=Android,C=US" -keypass android -storepass android \
+            -keyalg RSA -keysize 2048 -validity 10000
+
+      - uses: ./.github/actions/depends-prefix-restore
+        id: depends
+        with:
+          key: ${{ env.DEPENDS_KEY }}
+          configure-args: ${{ env.DEPENDS_ARGS }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      - uses: ./.github/actions/ccache-restore
+        with:
+          key: android-${{ inputs.abi }}-${{ env.CONFIG }}
+          dir: /home/runner/.cache/kodi-ccache
+
+      - uses: ./.github/actions/configure-depends
+        id: configure
+        with:
+          configure-args: ${{ env.DEPENDS_ARGS }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+          build: ${{ steps.depends.outputs.hit != 'true' }}
+
+      # Before the add-ons install into the prefix, so it holds tools/depends alone.
+      - uses: ./.github/actions/depends-prefix-push
+        if: steps.configure.outputs.built == 'true' && github.ref == 'refs/heads/master'
+        with:
+          ref: ${{ steps.depends.outputs.ref }}
+          prefix: ${{ env.DEPENDS_PREFIX }}
+
+      # Installed into the prefix, from where the APK packaging copies them.
+      - uses: ./.github/actions/build-binary-addons
+        with:
+          addons: ${{ env.BINARY_ADDONS }}
+
+      - name: Generate Kodi build system
+        run: make -C tools/depends/target/cmakebuildsys
+
+      - name: Build Kodi
+        run: make -j"$(nproc)" -C build
+
+      - name: Package APK
+        run: |
+          make -C build apk
+          test -f "${{ steps.config.outputs.apk }}" || {
+            echo "::error::${{ steps.config.outputs.apk }} not found after 'make apk'"; exit 1; }
+
+      - uses: ./.github/actions/upload-build-logs
+        if: always()
+        with:
+          name: android-${{ inputs.abi }}
+
+      - uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: android-${{ inputs.abi }}-${{ env.CONFIG }}
+          save: ${{ github.event_name != 'pull_request' }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: kodi-android-${{ inputs.abi }}
+          path: ${{ steps.config.outputs.apk }}
+          retention-days: 7
+
+  e2e:
+    needs: build
+    if: inputs.e2e
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    env:
+      APK: ${{ needs.build.outputs.apk }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-android-${{ inputs.abi }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+          cache-dependency-glob: tools/e2e/uv.lock
+
+      # Without this the emulator falls back to software emulation.
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # API 30 is the lowest level with the MANAGE_EXTERNAL_STORAGE flow the
+      # launcher pre-grants. logcat is dumped inside the script because the action
+      # shuts the emulator down when it ends. Not pinned to a SHA: the org's action
+      # allowlist names this action by its v2 tag.
+      - name: Run E2E suite on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: >
+            cd tools/e2e &&
+            KODI_APK="${GITHUB_WORKSPACE}/${APK}" KODI_E2E_ARTIFACTS="${GITHUB_WORKSPACE}/e2e-artifacts"
+            uv run --locked pytest scenarios -v --junitxml=../../e2e-results.xml ;
+            test_exit=$? ;
+            mkdir -p ../../e2e-artifacts ;
+            adb logcat -d > ../../e2e-artifacts/logcat.txt ;
+            exit $test_exit
+
+      - uses: ./.github/actions/e2e-artifacts
+        if: always()
+        with:
+          name: android
