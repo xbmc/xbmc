@@ -25,7 +25,7 @@ rem -------------------------------------------------------------
 rem  CONFIG START
 SET exitcode=0
 SET useshell=sh
-SET buildconfig=Release
+IF NOT DEFINED buildconfig SET buildconfig=Release
 SET PreferredToolArchitecture=x64
 
 
