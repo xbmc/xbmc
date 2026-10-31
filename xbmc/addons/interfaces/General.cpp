@@ -29,6 +29,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <limits>
 #include <string.h>
 
 using namespace kodi; // addon-dev-kit namespace
@@ -252,15 +254,18 @@ void Interface_General::get_free_mem(void* kodiBase, long* free, long* total, bo
     return;
   }
 
-  KODI::MEMORY::MemoryStatus stat;
+  KODI::MEMORY::MemoryStatus stat{};
   KODI::MEMORY::GetMemoryStatus(&stat);
-  *free = static_cast<long>(stat.availPhys);
-  *total = static_cast<long>(stat.totalPhys);
+  if (stat.totalPhys == 0)
+    return;
+
   if (!as_bytes)
   {
-    *free = *free / ( 1024 * 1024 );
-    *total = *total / ( 1024 * 1024 );
+    stat.availPhys /= 1024 * 1024;
+    stat.totalPhys /= 1024 * 1024;
   }
+  *free = static_cast<long>(std::min<uint64_t>(stat.availPhys, std::numeric_limits<long>::max()));
+  *total = static_cast<long>(std::min<uint64_t>(stat.totalPhys, std::numeric_limits<long>::max()));
 }
 
 int Interface_General::get_global_idle_time(void* kodiBase)
