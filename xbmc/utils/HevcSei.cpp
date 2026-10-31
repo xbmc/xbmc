@@ -74,7 +74,7 @@ int CHevcSei::ParseSeiMessage(CBitstreamReader& br, std::vector<CHevcSei>& messa
   sei.m_payloadOffset = br.Position() / 8;
 
   // Invalid size
-  if (sei.m_payloadSize > br.AvailableBits())
+  if (br.Overflow() || sei.m_payloadSize > br.AvailableBits() / 8)
     return 1;
 
   br.SkipBits(sei.m_payloadSize * 8);
