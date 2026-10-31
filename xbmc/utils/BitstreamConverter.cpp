@@ -667,6 +667,8 @@ int CBitstreamConverter::GetExtraSize() const
 void CBitstreamConverter::ResetStartDecode()
 {
   m_start_decode = false;
+  m_sps_pps_context.first_idr = 1;
+  m_sps_pps_context.idr_sps_pps_seen = 0;
 }
 
 bool CBitstreamConverter::CanStartDecode() const
