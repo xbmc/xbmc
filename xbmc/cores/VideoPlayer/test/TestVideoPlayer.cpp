@@ -11,6 +11,7 @@
 #include "cores/IPlayerCallback.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDInputStreams/DVDInputStream.h"
+#include "cores/VideoPlayer/DVDOverlayContainer.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "jobs/JobManager.h"
@@ -18,6 +19,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
+#include <memory>
 #include <stdexcept>
 #include <thread>
 
@@ -721,4 +723,52 @@ TEST_F(TestVideoPlayer, GetSpeedChangeNotifications_NoActualChange)
       2 * DVD_PLAYSPEED_NORMAL, 2 * DVD_PLAYSPEED_NORMAL, false);
   EXPECT_FALSE(notifications.resumed);
   EXPECT_FALSE(notifications.speedChanged);
+}
+
+TEST(TestDVDOverlayContainer, DiscMenusHaveIndependentLifetimes)
+{
+  for (const bool forced : {false, true})
+  {
+    CDVDOverlayContainer container;
+    auto menu = std::make_shared<CDVDOverlayGroup>();
+    menu->bForced = true;
+    menu->SetDiscMenu(true);
+    menu->SetOverlayContainerFlushable(false);
+    container.ProcessAndAddOverlayIfValid(menu);
+
+    auto subtitle = std::make_shared<CDVDOverlay>(DVDOVERLAY_TYPE_IMAGE);
+    subtitle->bForced = forced;
+    subtitle->iPTSStartTime = 1000000;
+    subtitle->iPTSStopTime = 4000000;
+    container.ProcessAndAddOverlayIfValid(subtitle);
+    EXPECT_EQ(menu->iPTSStopTime, 0.0);
+
+    container.CleanUp(1500000);
+    ASSERT_EQ(container.GetSize(), 2u);
+    EXPECT_EQ(container.GetSubtitleSize(), 1u);
+    EXPECT_EQ(container.GetOverlays()->front(), subtitle);
+    EXPECT_EQ(container.GetOverlays()->back(), menu);
+
+    auto replacement = std::make_shared<CDVDOverlayGroup>();
+    replacement->bForced = true;
+    replacement->iPTSStartTime = 2000000;
+    replacement->SetDiscMenu(true);
+    replacement->SetOverlayContainerFlushable(false);
+    container.ProcessAndAddOverlayIfValid(replacement);
+    EXPECT_EQ(menu->iPTSStopTime, 2000000.0);
+    EXPECT_EQ(subtitle->iPTSStopTime, 4000000.0);
+
+    container.CleanUp(2500000);
+    ASSERT_EQ(container.GetSize(), 2u);
+    EXPECT_EQ(container.GetOverlays()->front(), subtitle);
+
+    container.ClearSubtitles();
+    ASSERT_EQ(container.GetSize(), 1u);
+    EXPECT_EQ(container.GetOverlays()->front(), replacement);
+    container.Flush();
+    ASSERT_EQ(container.GetSize(), 1u);
+    EXPECT_EQ(container.GetOverlays()->front(), replacement);
+    container.Clear();
+    EXPECT_EQ(container.GetSize(), 0u);
+  }
 }
