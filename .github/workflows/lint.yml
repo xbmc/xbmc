@@ -1,0 +1,102 @@
+name: Lint
+
+# Jenkins' pre-build PR checks: every commit must be clang-format clean for
+# the lines it touches under xbmc/, and added CLog::Log calls must use fmt-style
+# placeholders (annotations only). Pull requests only: the checks need the
+# merge commit's two parents.
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    steps:
+      # Diffed against the merge base of the merge commit's parents, so changes
+      # master made since the PR forked stay out of the check.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format-18
+          sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-18 100
+          sudo update-alternatives --install /usr/bin/git-clang-format git-clang-format /usr/bin/git-clang-format-18 100
+          clang-format --version
+
+      # git clang-format reports a clean commit in prose rather than a diff;
+      # any other output is a failure of the tool itself.
+      - name: Check formatting of every commit
+        id: check
+        run: |
+          format_diff() {
+            out=$1
+            shift
+            git clang-format --diff "$@" -- xbmc > "${out}" || true
+            grep -q '^diff --git' "${out}" && return 0
+            if grep -qx -e 'no modified files to format' -e 'clang-format did not modify any files' "${out}"; then
+              rm -f "${out}"
+              return 0
+            fi
+            echo "::error::git clang-format $* failed"
+            cat "${out}"
+            return 1
+          }
+          head=$(git rev-parse HEAD^2)
+          base=$(git merge-base HEAD^1 "${head}")
+          mkdir -p clang-format-diffs
+          i=0
+          for commit in $(git rev-list --no-merges --reverse "${base}..${head}"); do
+            i=$((i + 1))
+            parent=$(git rev-parse "${commit}^")
+            subject=$(git show -s --format=%f "${commit}" | head -c 40)
+            file="clang-format-diffs/$(printf %04d "$i")-$(git rev-parse --short "${commit}")-${subject}.diff"
+            format_diff "${file}" "${parent}" "${commit}"
+          done
+          format_diff clang-format-diffs/PR.diff "${base}" "${head}"
+          count=$(find clang-format-diffs -name '*.diff' ! -name PR.diff | wc -l)
+          echo "count=${count}" >> "$GITHUB_OUTPUT"
+          {
+            echo "### clang-format"
+            if [ "${count}" = 0 ]; then
+              echo "All commits are formatted."
+            else
+              echo "The following commits need formatting; apply the attached diffs with \`git apply\`:"
+              for f in clang-format-diffs/*.diff; do echo "- \`$(basename "$f")\`"; done
+              echo
+              echo '```diff'
+              head -c 60000 clang-format-diffs/PR.diff 2>/dev/null || true
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        if: steps.check.outputs.count != '0'
+        with:
+          name: clang-format-diffs
+          path: clang-format-diffs/*.diff
+          retention-days: 14
+
+      - name: Fail on formatting differences
+        if: steps.check.outputs.count != '0'
+        run: |
+          echo "::error::${{ steps.check.outputs.count }} commit(s) are not clang-format clean, see the clang-format-diffs artifact"
+          exit 1
+
+  logging-style:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check added CLog::Log calls for printf-style formats
+        run: |
+          git diff --unified=0 --no-color "$(git merge-base HEAD^1 HEAD^2)" "$(git rev-parse HEAD^2)" -- xbmc \
+            | python3 .github/scripts/check_log_format.py | tee -a "$GITHUB_STEP_SUMMARY"
