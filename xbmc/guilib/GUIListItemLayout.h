@@ -30,6 +30,7 @@ public:
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render(CGUIListItem *item, int parentID);
   float Size(ORIENTATION orientation) const;
+  const CRect& GetRenderRegion() const { return m_group.GetRenderRegion(); }
   unsigned int GetFocusedItem() const;
   void SetFocusedItem(unsigned int focus);
   bool IsAnimating(ANIMATION_TYPE animType);
