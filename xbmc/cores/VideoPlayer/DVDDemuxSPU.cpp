@@ -139,8 +139,10 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::AddData(uint8_t* data, int iSize, 
     }
 
     unsigned int totalAvail = pSPUData->iSize + iSize;
-    if (length > totalAvail) pSPUData->iNeededSize = length;
-    else pSPUData->iNeededSize = totalAvail;
+    if (length > totalAvail)
+      pSPUData->iNeededSize = length;
+    else
+      pSPUData->iNeededSize = totalAvail;
   }
 
   // allocate data if not already done ( done in blocks off 16384 bytes )
@@ -281,7 +283,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_COLOR:
         {
           p++;
-          if (p + 2 > pEnd) return nullptr;
+          if (p + 2 > pEnd)
+            return nullptr;
 
           if (m_bHasClut)
           {
@@ -311,7 +314,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_CONTR:  // alpha
         {
           p++;
-          if (p + 2 > pEnd) return nullptr;
+          if (p + 2 > pEnd)
+            return nullptr;
           // 3, 2, 1, 0
           alpha[0] = (p[0] >> 4) & 0x0f;
           alpha[1] = (p[0]) & 0x0f;
@@ -337,7 +341,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_DAREA:
         {
           p++;
-          if (p + 6 > pEnd) return nullptr;
+          if (p + 6 > pEnd)
+            return nullptr;
           pSPUInfo->x = (p[0] << 4) | (p[1] >> 4);
           pSPUInfo->y = (p[3] << 4) | (p[4] >> 4);
           pSPUInfo->width = (((p[1] & 0x0f) << 8) | p[2]) - pSPUInfo->x + 1;
@@ -350,7 +355,8 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case SET_DSPXA:
         {
           p++;
-          if (p + 4 > pEnd) return nullptr;
+          if (p + 4 > pEnd)
+            return nullptr;
           uint16_t tfaddr = (p[0] << 8 | p[1]); // offset in packet
           uint16_t bfaddr = (p[2] << 8 | p[3]); // offset in packet
           if (tfaddr < 4 || bfaddr < 4 || tfaddr >= pSPUData->iSize || bfaddr >= pSPUData->iSize)
@@ -364,9 +370,11 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       case CHG_COLCON:
         {
           p++;
-          if (p + 2 > pEnd) return nullptr;
+          if (p + 2 > pEnd)
+            return nullptr;
           uint16_t paramlength = p[0] << 8 | p[1];
-          if (p + paramlength > pEnd) return nullptr;
+          if (p + paramlength > pEnd)
+            return nullptr;
           DebugLog("GetPacket, CHG_COLCON, skippin %i bytes", paramlength);
           p += paramlength;
         }
@@ -399,7 +407,10 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 /*****************************************************************************
  * AddNibble: read a nibble from a source packet and add it to our integer.
  *****************************************************************************/
-inline int AddNibble(unsigned int i_code, const uint8_t* p_src, unsigned int* pi_index, unsigned int i_src_size)
+inline int AddNibble(unsigned int i_code,
+                     const uint8_t* p_src,
+                     unsigned int* pi_index,
+                     unsigned int i_src_size)
 {
   if ((*pi_index >> 1) >= i_src_size)
     return -1;
@@ -452,26 +463,30 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
 
     for ( i_x = 0 ; i_x < i_width ; i_x += i_code >> 2 )
     {
-      int nibble = AddNibble( 0, p_src, pi_offset, iUnparsedSize );
-      if (nibble < 0) return nullptr;
+      int nibble = AddNibble(0, p_src, pi_offset, iUnparsedSize);
+      if (nibble < 0)
+        return nullptr;
       i_code = static_cast<unsigned int>(nibble);
 
       if ( i_code < 0x04 )
       {
-        nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
-        if (nibble < 0) return nullptr;
+        nibble = AddNibble(i_code, p_src, pi_offset, iUnparsedSize);
+        if (nibble < 0)
+          return nullptr;
         i_code = static_cast<unsigned int>(nibble);
 
         if ( i_code < 0x10 )
         {
-          nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
-          if (nibble < 0) return nullptr;
+          nibble = AddNibble(i_code, p_src, pi_offset, iUnparsedSize);
+          if (nibble < 0)
+            return nullptr;
           i_code = static_cast<unsigned int>(nibble);
 
           if ( i_code < 0x040 )
           {
-            nibble = AddNibble( i_code, p_src, pi_offset, iUnparsedSize );
-            if (nibble < 0) return nullptr;
+            nibble = AddNibble(i_code, p_src, pi_offset, iUnparsedSize);
+            if (nibble < 0)
+              return nullptr;
             i_code = static_cast<unsigned int>(nibble);
 
             if ( i_code < 0x0100 )
