@@ -11,6 +11,7 @@
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/Thread.h"
 
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -49,6 +50,8 @@ private:
   std::string m_script;
   std::vector<std::string> m_args;
 
+  // Recursive, as stopping pumps app messages that can stop the same script again
+  std::recursive_mutex m_stopMutex;
   std::mutex m_mutex;
   std::condition_variable m_condition;
   bool m_restart = false;
