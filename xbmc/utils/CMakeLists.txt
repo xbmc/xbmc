@@ -96,6 +96,7 @@ set(HEADERS ActorProtocol.h
             Artwork.h
             AspectRatioVocabulary.h
             Base64.h
+            BitReader.h
             BitstreamConverter.h
             BitstreamReader.h
             BitstreamStats.h

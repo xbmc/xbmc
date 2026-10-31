@@ -4,6 +4,7 @@ set(SOURCES TestAlarmClock.cpp
             TestArtUtils.cpp
             TestAspectRatioVocabulary.cpp
             TestBase64.cpp
+            TestBitReader.cpp
             TestBitstreamConverter.cpp
             TestBitstreamStats.cpp
             TestCharsetConverter.cpp
