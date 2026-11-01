@@ -323,15 +323,22 @@ AchievementProgressIndicator CAchievementRuntime::GetProgressIndicator() const
   return best;
 }
 
-AchievementChallenge CAchievementRuntime::GetShownChallenge() const
+AchievementChallenge CAchievementRuntime::GetShownChallenge(unsigned int index /* = 0 */) const
 {
   std::lock_guard<std::mutex> lock(m_mutex);
 
-  const auto shown =
-      std::find_if(m_state.challenges.begin(), m_state.challenges.end(),
-                   [](const AchievementChallenge& challenge) { return !challenge.title.empty(); });
+  for (const AchievementChallenge& challenge : m_state.challenges)
+  {
+    if (challenge.title.empty())
+      continue;
 
-  return (shown != m_state.challenges.end()) ? *shown : AchievementChallenge{};
+    if (index == 0)
+      return challenge;
+
+    --index;
+  }
+
+  return {};
 }
 
 LeaderboardTracker CAchievementRuntime::GetShownLeaderboardTracker() const

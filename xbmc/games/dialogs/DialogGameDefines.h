@@ -59,3 +59,4 @@ constexpr auto ACHIEVEMENT_MEASURED_PROGRESS = "achievement.measuredprogress";
 constexpr auto ACHIEVEMENT_MISSABLE = "achievement.missable";
 constexpr auto ACHIEVEMENT_PROGRESSION = "achievement.progression";
 constexpr auto ACHIEVEMENT_WIN = "achievement.win";
+constexpr auto ACHIEVEMENT_ATTEMPTING = "achievement.attempting";
