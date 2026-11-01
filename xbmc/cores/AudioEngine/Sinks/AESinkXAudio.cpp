@@ -20,6 +20,7 @@
 #include "platform/win32/WIN32Util.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <map>
 #include <mutex>
 #include <stdint.h>
@@ -80,13 +81,14 @@ struct ProbedDevice
   unsigned int channels{0};
   unsigned int channelMask{0};
   unsigned long defaultSampleRate{0};
+  bool isDefault{false};
   std::vector<AEDataFormat> dataFormats;
   std::vector<unsigned int> sampleRates;
 
   bool IsFor(const RendererDetail& details) const
   {
     return channels == details.nChannels && channelMask == details.uiChannelMask &&
-           defaultSampleRate == details.m_samplesPerSec;
+           defaultSampleRate == details.m_samplesPerSec && isDefault == details.bDefault;
   }
 };
 
@@ -413,6 +415,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     const std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDeviceId);
 
+    // Some runtimes reject WinRT IDs even for the default endpoint.
+    const wchar_t* pDevice = details.bDefault ? nullptr : deviceId.c_str();
+
     {
       std::unique_lock lock(g_probedDevicesMutex);
       const auto it = g_probedDevices.find(details.strDeviceId);
@@ -438,7 +443,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
 
     hr = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
-                                       wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(), nullptr,
+                                       wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
                                        streamCategory);
 
     if (FAILED(hr))
@@ -491,12 +496,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.Format.nBlockAlign = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
     wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
+    // The loaded runtime's sample-rate limits can differ from the SDK's.
     for (int j = 0; j < WASAPISampleRateCount; j++)
     {
-      if (WASAPISampleRates[j] < XAUDIO2_MIN_SAMPLE_RATE ||
-          WASAPISampleRates[j] > XAUDIO2_MAX_SAMPLE_RATE)
-        continue;
-
       SafeDestroyVoice(&mSourceVoice);
       SafeDestroyVoice(&mMasterVoice);
 
@@ -504,8 +506,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
       if (SUCCEEDED(xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
-                                                  wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(),
-                                                  nullptr, streamCategory)))
+                                                  wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
+                                                  streamCategory)))
       {
         hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
@@ -523,6 +525,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
           ProbedDevice{.channels = details.nChannels,
                        .channelMask = details.uiChannelMask,
                        .defaultSampleRate = details.m_samplesPerSec,
+                       .isDefault = details.bDefault,
                        .dataFormats = deviceInfo.m_dataFormats,
                        .sampleRates = deviceInfo.m_sampleRates};
     }
@@ -574,18 +577,76 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
   }
 
-  const bool bdefault = deviceId.find("default") != std::string::npos;
-
-  HRESULT hr;
-  IXAudio2MasteringVoice* pMasterVoice = nullptr;
-  const wchar_t* pDevice = device.c_str();
   // ForegroundOnlyMedia/BackgroundCapableMedia replaced in Windows 10 by Movie/Media
   const AUDIO_STREAM_CATEGORY streamCategory{
       CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
           ? AudioCategory_Media
           : AudioCategory_ForegroundOnlyMedia};
 
-  if (!bdefault)
+  const bool bdefault = deviceId.find("default") != std::string::npos;
+  const unsigned int requestedSampleRate = wfxex.Format.nSamplesPerSec;
+  AEDeviceInfoList devices;
+  if (format.m_dataFormat != AE_FMT_RAW)
+    EnumerateDevicesEx(devices, false);
+  AESampleRateList sampleRates;
+  auto negotiateSampleRate = [&](bool useDefault)
+  {
+    if (format.m_dataFormat == AE_FMT_RAW)
+      return true;
+
+    const auto it =
+        std::find_if(devices.begin(), devices.end(), [&](const CAEDeviceInfo& info)
+                     { return info.m_deviceName == (useDefault ? "default" : deviceId); });
+    if (it == devices.end() || it->m_sampleRates.empty())
+    {
+      if (!useDefault)
+        return false;
+
+      // WinRT enumeration can fail even when XAudio2 can open the default endpoint.
+      Microsoft::WRL::ComPtr<IXAudio2> probe;
+      if (FAILED(KXAudio2Create(probe.ReleaseAndGetAddressOf(), 0)))
+        return false;
+
+      const WAVEFORMATEX probeFormat{.wFormatTag = WAVE_FORMAT_PCM,
+                                     .nChannels = 2,
+                                     .nSamplesPerSec = 48000,
+                                     .nAvgBytesPerSec = 48000 * 4,
+                                     .nBlockAlign = 4,
+                                     .wBitsPerSample = 16,
+                                     .cbSize = 0};
+      IXAudio2MasteringVoice* probeMasterVoice = nullptr;
+      IXAudio2SourceVoice* probeSourceVoice = nullptr;
+      HRESULT hr = probe->CreateMasteringVoice(&probeMasterVoice, probeFormat.nChannels,
+                                               probeFormat.nSamplesPerSec, 0, nullptr, nullptr,
+                                               streamCategory);
+      if (SUCCEEDED(hr))
+        hr = probe->CreateSourceVoice(&probeSourceVoice, &probeFormat);
+      SafeDestroyVoice(&probeSourceVoice);
+      SafeDestroyVoice(&probeMasterVoice);
+      if (FAILED(hr))
+        return false;
+
+      sampleRates = {48000};
+    }
+    else
+      sampleRates = it->m_sampleRates;
+
+    const auto closest =
+        std::min_element(sampleRates.begin(), sampleRates.end(),
+                         [requestedSampleRate](unsigned int lhs, unsigned int rhs)
+                         {
+                           return std::abs(static_cast<int64_t>(lhs) - requestedSampleRate) <
+                                  std::abs(static_cast<int64_t>(rhs) - requestedSampleRate);
+                         });
+    wfxex.Format.nSamplesPerSec = *closest;
+    wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+    return true;
+  };
+
+  HRESULT hr;
+  IXAudio2MasteringVoice* pMasterVoice = nullptr;
+  const wchar_t* pDevice = device.c_str();
+  if (!bdefault && negotiateSampleRate(false))
   {
     hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels,
                                          wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
@@ -594,6 +655,9 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
   if (!pMasterVoice)
   {
+    if (!negotiateSampleRate(true))
+      return false;
+
     if (!bdefault)
     {
       CLog::LogF(LOGINFO,
@@ -669,8 +733,8 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
       for (int i = 0 ; i < WASAPISampleRateCount; i++)
       {
-        if (WASAPISampleRates[j] < XAUDIO2_MIN_SAMPLE_RATE ||
-            WASAPISampleRates[j] > XAUDIO2_MAX_SAMPLE_RATE)
+        if (std::find(sampleRates.begin(), sampleRates.end(), WASAPISampleRates[i]) ==
+            sampleRates.end())
           continue;
 
         SafeDestroyVoice(&m_sourceVoice);
@@ -727,6 +791,10 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   return false;
 
 initialize:
+
+  if (wfxex.Format.nSamplesPerSec != requestedSampleRate)
+    CLog::LogF(LOGINFO, "XAudio sample rate negotiated from {} Hz to {} Hz", requestedSampleRate,
+               wfxex.Format.nSamplesPerSec);
 
   CAEChannelInfo channelLayout;
   CAESinkFactoryWin::AEChannelsFromSpeakerMask(channelLayout, wfxex.dwChannelMask);
