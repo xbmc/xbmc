@@ -66,6 +66,7 @@ private:
   const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
   GLuint m_texture{0};
   GLuint m_FBO{0};
+  GLint m_previousFBO{0};
   bool m_sRgbFramebuffer{false};
   bool m_mipmapping{false};
 };

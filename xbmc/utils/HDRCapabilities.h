@@ -24,9 +24,15 @@ public:
   void SetHDR10Plus() { m_hdr10_plus = true; }
   void SetDolbyVision() { m_dolby_vision = true; }
 
+  //! Luminance in nits of the brightest light the display wants, or 0 if it
+  //! doesn't say
+  float GetMaxLuminance() const { return m_max_luminance; }
+  void SetMaxLuminance(float nits) { m_max_luminance = nits; }
+
 private:
   bool m_hdr10 = false;
   bool m_hlg = false;
   bool m_hdr10_plus = false;
   bool m_dolby_vision = false;
+  float m_max_luminance = 0.0f;
 };
