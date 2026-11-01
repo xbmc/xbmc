@@ -473,6 +473,7 @@ bool CPythonInvoker::stop(bool abort)
 {
   std::unique_lock lock(m_critical);
   m_stop = true;
+  XBPython& python = CServiceBroker::GetXBPython();
 
   if (!IsRunning() && !m_threadState)
     return false;
@@ -484,32 +485,32 @@ bool CPythonInvoker::stop(bool abort)
       setState(InvokerStateStopping);
       lock.unlock();
 
-      PyThreadState* ts = PyThreadState_New(m_threadState->interp);
-      if (ts == nullptr)
+      //tell xbmc.Monitor to call onAbortRequested(). That needs no Python, but taking the GIL
+      //here finds a script stuck holding it before the 5 s wait below.
+      const auto abortNotify = [this]
       {
-        CLog::LogF(LOGERROR, "({}, {}) PyThreadState_New failed", GetId(), m_sourceFile);
+        if (m_addon)
+        {
+          CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): trigger Monitor abort request", GetId(),
+                    m_sourceFile);
+          AbortNotification();
+        }
+        return false;
+      };
+      if (!python.RunWithGil(abortNotify))
+      {
+        // without the GIL the script can't stop
+        setState(InvokerStateFailed);
         return false;
       }
-
-      PyEval_RestoreThread(ts);
-
-      //tell xbmc.Monitor to call onAbortRequested()
-      if (m_addon)
-      {
-        CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): trigger Monitor abort request", GetId(),
-                  m_sourceFile);
-        AbortNotification();
-      }
-
-      PyThreadState_Clear(ts);
-      PyThreadState_DeleteCurrent();
     }
     else
       //Release the lock while waiting for threads to finish
       lock.unlock();
 
     XbmcThreads::EndTime<> timeout(PYTHON_SCRIPT_TIMEOUT);
-    while (!m_stoppedEvent.Wait(15ms))
+    // no script can stop without the GIL
+    while (!python.IsGilLost() && !m_stoppedEvent.Wait(15ms))
     {
       if (timeout.IsTimePast())
       {
@@ -534,13 +535,13 @@ bool CPythonInvoker::stop(bool abort)
     setState(InvokerStateExecutionDone);
 
     // Useful for add-on performance metrics
-    if (!timeout.IsTimePast())
+    if (!timeout.IsTimePast() && !python.IsGilLost())
       CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script termination took {}ms", GetId(),
                 m_sourceFile, (PYTHON_SCRIPT_TIMEOUT - timeout.GetTimeLeft()).count());
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL
-    if (m_threadState != NULL)
+    if (m_threadState != NULL && !python.IsGilLost())
     {
       PyThreadState* ts = PyThreadState_New(m_threadState->interp);
       if (ts == nullptr)

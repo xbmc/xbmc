@@ -15,7 +15,10 @@
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
+#include <atomic>
+#include <functional>
 #include <memory>
+#include <optional>
 #include <set>
 #include <vector>
 
@@ -105,6 +108,12 @@ public:
 
   PyThreadState* GetMainThreadState() const { return m_mainThreadState; }
 
+  // Runs fn with the GIL, under a new thread state of the main interpreter, and returns its
+  // result, or nothing if the GIL couldn't be had. fn returns true to keep the GIL for good.
+  // Once Kodi is stopping, gives up if a script holds the GIL too long.
+  std::optional<bool> RunWithGil(const std::function<bool()>& fn);
+  bool IsGilLost() const { return m_gilLost; }
+
   // false means an inconsistent binding runtime: types would be created by a sub-interpreter
   bool BindingModulesLoaded() const { return m_bindingModulesLoaded; }
 
@@ -115,8 +124,9 @@ private:
   PyThreadState* m_mainThreadState{nullptr};
   bool m_bindingModulesLoaded{true};
   std::set<const ILanguageInvoker*> m_scriptsStarted; // between OnScriptInitialized/Finalized
-  bool m_skipFinalize{false}; // GIL kept since Uninitialize()
+  bool m_skipFinalize{false}; // Python left running at exit
   bool m_scriptsClosed{false}; // no script starts once Uninitialize() counts them
+  std::atomic<bool> m_gilLost{false}; // a GIL wait timed out, no more Python runs
 
   //Vector with list of threads used for running scripts
   PyList m_vecPyList;
