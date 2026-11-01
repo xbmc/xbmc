@@ -41,12 +41,18 @@ public:
   void Clear(); // clear the fifo and delete all overlays
 
   /*
+   * \brief Delete all overlays except disc menus, which are not redrawn until they change.
+   */
+  void ClearSubtitles();
+
+  /*
    * \brief Flush the overlays.
    */
   void Flush();
 
   void CleanUp(double pts); // validates all overlays against current pts
   size_t GetSize();
+  size_t GetSubtitleSize(); // number of overlays that are not disc menus
 
   void UpdateOverlayInfo(const std::shared_ptr<CDVDInputStreamNavigator>& pStream,
                          CDVDDemuxSPU* pSpu,
