@@ -1105,7 +1105,7 @@
 					<textcolor>grey</textcolor>
 					<aligny>center</aligny>
 					<align>right</align>
-					<visible>!String.IsEmpty(ListItem.Property(achievement.earned))</visible>
+					<visible>String.IsEmpty(ListItem.Property(achievement.measured))</visible>
 				</control>
 				<control type="label">
 					<left>494</left>
