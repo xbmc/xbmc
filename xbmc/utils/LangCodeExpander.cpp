@@ -13,9 +13,8 @@
 #include "language/i18n/Bcp47.h"
 #include "language/i18n/Bcp47Registry/SubTagRegistryManager.h"
 #include "language/i18n/Iso639.h"
-#include "language/i18n/Iso639_1.h"
-#include "language/i18n/Iso639_2.h"
-#include "language/i18n/TableLanguageCodes.h"
+#include "language/i18n/Iso639_2_Table.h"
+#include "language/i18n/LanguageTable.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -108,18 +107,9 @@ bool CLangCodeExpander::ConvertISO6391ToISO6392B(const std::string& strISO6391,
   StringUtils::ToLower(strISO6391Lower);
   StringUtils::Trim(strISO6391Lower);
 
-  const auto it = std::ranges::lower_bound(LanguageCodes, strISO6391Lower, {}, &ISO639::iso639_1);
-  if (it != LanguageCodes.end() && it->iso639_1 == strISO6391Lower)
+  if (const auto alpha3B = CIso639::Alpha2ToAlpha3B(strISO6391Lower); alpha3B.has_value())
   {
-    strISO6392B = it->iso639_2b;
-    return true;
-  }
-
-  const auto deprecated =
-      std::ranges::lower_bound(DeprecatedLanguageCodes, strISO6391Lower, {}, &ISO639::iso639_1);
-  if (deprecated != DeprecatedLanguageCodes.end() && deprecated->iso639_1 == strISO6391Lower)
-  {
-    strISO6392B = deprecated->iso639_2b;
+    strISO6392B = *alpha3B;
     return true;
   }
   return false;
@@ -133,12 +123,9 @@ bool CLangCodeExpander::ConvertISO6392ToISO6391(std::string iso6392, std::string
   if (iso6392.length() != 3)
     return false;
 
-  const std::string bCode = CIso639_2::TCodeToBCode(iso6392).value_or(iso6392);
-
-  const auto it = std::ranges::lower_bound(LanguageCodesByIso639_2b, bCode, {}, &ISO639::iso639_2b);
-  if (it != LanguageCodesByIso639_2b.end() && it->iso639_2b == bCode && !it->iso639_1.empty())
+  if (const auto alpha2 = CIso639::Alpha3ToAlpha2(iso6392); alpha2.has_value())
   {
-    iso6391 = it->iso639_1;
+    iso6391 = *alpha2;
     return true;
   }
   return false;
@@ -160,22 +147,15 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode, std::s
 
   if (code.size() == 3)
   {
-    if (std::ranges::binary_search(LanguageCodesByIso639_2b, code, {}, &ISO639::iso639_2b))
-    {
-      strISO6392B = code;
-      return true;
-    }
-
-    if (const auto bCode{CIso639_2::TCodeToBCode(code)}; bCode.has_value())
+    if (const auto bCode{CIso639::TCodeToBCode(code)}; bCode.has_value())
     {
       strISO6392B = *bCode;
       return true;
     }
 
-    // The table searched above holds only the languages that also have an ISO 639-1 code. A code
-    // that is itself an ISO 639-2 code is already the wanted one - had a differing B form existed,
-    // the conversion above would have found it.
-    if (CIso639_2::LookupByCode(code).has_value())
+    // Any other ISO 639-2 code is already the wanted one - had a differing B form existed, the
+    // conversion above would have found it
+    if (CLanguageTable::GetInstance().NameOf(code).has_value())
     {
       strISO6392B = code;
       return true;
@@ -186,10 +166,13 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode, std::s
 
   if (code.size() > 3)
   {
-    if (const auto tCode = CIso639_2::LookupByName(code); tCode.has_value())
+    if (const auto named = CLanguageTable::GetInstance().CodeOf(code); named.has_value())
     {
-      // Map T to B code for the few languages that have differences
-      strISO6392B = CIso639_2::TCodeToBCode(*tCode).value_or(*tCode);
+      // Named by its alpha-2 code where it has one, otherwise by its ISO 639-2/T code
+      if (named->size() == 2)
+        return ConvertISO6391ToISO6392B(*named, strISO6392B);
+
+      strISO6392B = CIso639::TCodeToBCode(*named).value_or(*named);
       return true;
     }
 
@@ -286,13 +269,7 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     return true;
   }
 
-  if (const auto ret = CIso639_1::LookupByName(descTmp); ret.has_value())
-  {
-    code = *ret;
-    return true;
-  }
-
-  if (const auto ret = CIso639_2::LookupByName(descTmp); ret.has_value())
+  if (const auto ret = CLanguageTable::GetInstance().CodeOf(descTmp); ret.has_value())
   {
     code = *ret;
     return true;
@@ -361,31 +338,13 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   StringUtils::ToLower(sCode);
   StringUtils::Trim(sCode);
 
-  if (sCode.length() == 2)
-  {
-    const auto ret = CIso639_1::LookupByCode(StringToLongCode(sCode));
-    if (ret)
-    {
-      desc = *ret;
-      return true;
-    }
-  }
-  else if (sCode.length() == 3)
-  {
-    uint32_t longCode = StringToLongCode(sCode);
+  if (sCode.length() != 2 && sCode.length() != 3)
+    return false;
 
-    // Map B to T for the few codes that have differences
-    const auto tCode = CIso639_2::BCodeToTCode(longCode);
-    if (tCode.has_value())
-      longCode = *tCode;
-
-    // Lookup the T code
-    const auto ret = CIso639_2::LookupByCode(longCode);
-    if (ret)
-    {
-      desc = *ret;
-      return true;
-    }
+  if (const auto ret = CLanguageTable::GetInstance().NameOf(sCode); ret.has_value())
+  {
+    desc = *ret;
+    return true;
   }
   return false;
 }
@@ -397,9 +356,12 @@ std::vector<std::string> CLangCodeExpander::GetLanguageNames(
   std::map<std::string, std::string> langMap;
 
   if (format == CLangCodeExpander::ISO_639_2)
-    CIso639_2::ListLanguages(langMap);
+  {
+    for (const LCENTRY& entry : TableISO639_2ByCode)
+      langMap.emplace(LongCodeToString(entry.code), entry.name);
+  }
   else
-    CIso639_1::ListLanguages(langMap);
+    CLanguageTable::GetInstance().List(langMap);
 
   if (list == LANG_LIST::INCLUDE_ADDONS || list == LANG_LIST::INCLUDE_ADDONS_USERDEFINED)
   {
