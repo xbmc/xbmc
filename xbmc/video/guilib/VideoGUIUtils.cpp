@@ -358,21 +358,19 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
   int pos = 0;
   if (itemToPlay)
   {
-    for (const std::shared_ptr<CFileItem>& queuedItem : queuedItems)
+    // CPlayList::Add may have shuffled the playlist when the sticky video
+    // playlist shuffle flag is set, so locate the chosen item in the live
+    // playlist to play it rather than whichever item ended up at its
+    // pre-shuffle index.
+    for (int i = 0; i < playList.size(); ++i)
     {
-      if (queuedItem->IsSamePath(itemToPlay.get()))
+      if (playList[i]->IsSamePath(itemToPlay.get()))
       {
-        queuedItem->SetStartPartNumber(itemToPlay->GetStartPartNumber());
+        playList[i]->SetStartPartNumber(itemToPlay->GetStartPartNumber());
+        pos = i;
         break;
       }
-      pos++;
     }
-  }
-
-  if (playlistPlayer.IsShuffled(PLAYLIST::Id::TYPE_VIDEO))
-  {
-    playList.Swap(0, playList.FindOrder(pos));
-    pos = 0;
   }
 
   playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
