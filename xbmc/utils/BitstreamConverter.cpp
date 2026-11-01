@@ -1083,6 +1083,13 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t* data,
     {
       CBitReader bs({nal_start, static_cast<size_t>(end - nal_start)});
 
+      // The code and the four fields read below take 40 bits; a header cut short changes nothing
+      if (bs.BitsLeft() < 40)
+      {
+        nal_start = nal_end;
+        continue;
+      }
+
       // sequence_header_code
       bs.ReadBits(8);
 
