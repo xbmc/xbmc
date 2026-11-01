@@ -541,22 +541,27 @@ bool CPythonInvoker::stop(bool abort)
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL
+    PyThreadState* ts = nullptr;
     if (m_threadState != NULL && !python.IsGilLost())
     {
-      PyThreadState* ts = PyThreadState_New(m_threadState->interp);
+      ts = PyThreadState_New(m_threadState->interp);
       if (ts == nullptr)
       {
         CLog::LogF(LOGERROR, "({}, {}) PyThreadState_New failed", GetId(), m_sourceFile);
         return false;
       }
+      // onExecutionDone() waits for it before ending the interpreter, which would free ts
+      ++m_raisingExit;
+    }
+    // grabbing the GIL while holding m_critical is asking for a deadlock, and so is taking
+    // m_critical back while holding the GIL: onExecutionDone() takes m_critical, then the GIL
+    lock.unlock();
 
-      {
-        // grabbing the PyLock while holding the m_critical is asking for a deadlock
-        CSingleExit ex2(m_critical);
-        PyEval_RestoreThread(ts);
-      }
+    if (ts != nullptr)
+    {
+      PyEval_RestoreThread(ts);
 
-      PyThreadState* state = PyInterpreterState_ThreadHead(m_threadState->interp);
+      PyThreadState* state = PyInterpreterState_ThreadHead(ts->interp);
       while (state)
       {
         // Raise a SystemExit exception in python threads; writing async_exc directly goes
@@ -571,8 +576,8 @@ bool CPythonInvoker::stop(bool abort)
 
       PyThreadState_Clear(ts);
       PyThreadState_DeleteCurrent();
+      --m_raisingExit;
     }
-    lock.unlock();
 
     setState(InvokerStateFailed);
   }
@@ -589,6 +594,19 @@ void CPythonInvoker::onExecutionDone()
     CLog::Log(LOGDEBUG, "{}({}, {})", __FUNCTION__, GetId(), m_sourceFile);
 
     PyEval_RestoreThread(m_threadState);
+
+    // let stop() finish with its thread state of this interpreter before ending it; a
+    // SystemExit it raised in this thread has nothing left to stop
+    if (m_raisingExit > 0)
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): waiting for stop() to raise SystemExit", GetId(),
+                m_sourceFile);
+    while (m_raisingExit > 0)
+    {
+      PyEval_SaveThread();
+      KODI::TIME::Sleep(1ms);
+      PyEval_RestoreThread(m_threadState);
+    }
+    PyThreadState_SetAsyncExc(m_threadState->thread_id, nullptr);
 
     onDeinitialization();
 
