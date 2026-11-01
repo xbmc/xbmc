@@ -11509,6 +11509,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
         if (images && !bSkip && (isDefault || !singleFile))
         {
+          ART::AdditionalIdentifiers identifiers{ART::AdditionalIdentifiers::NONE};
           if (singleFile)
           {
             std::string strFileName(movie.m_strTitle);
@@ -11516,20 +11517,21 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               strFileName += StringUtils::Format("_{}", movie.GetYear());
             item.SetPath(GetSafeFile(moviesDir, strFileName) + ".avi");
           }
-          else if (multiMovie)
+          else if (multiMovie && URIUtils::IsBlurayPath(item.GetDynPath()) &&
+                   (!isDefault || movie.HasVideoVersions()))
           {
-            // If multi-movie file then art files are specific to version (ie. playlist for blurays)
-            if (URIUtils::IsBlurayPath(item.GetDynPath()))
-            {
-              std::string file{URIUtils::GetDiscFile(item.GetDynPath())};
-              URIUtils::RemoveExtension(file);
-              item.SetPath(fmt::format("{}-{:05}.avi", file,
-                                       URIUtils::GetBlurayPlaylistFromPath(item.GetPath())));
-            }
+            // If multi-movie file then art files are specific to version (ie. playlist for blurays).
+            // A movie whose disc holds extras but no other version has the plain art, as a scan
+            // reads it.
+            item.SetProperty(ITEM::PROPERTY::BLURAY_PLAYLIST,
+                             URIUtils::GetBlurayPlaylistFromPath(item.GetPath()));
+            // Identifiers are only applied to items with a tag
+            *item.GetVideoInfoTag() = movie;
+            identifiers = ART::AdditionalIdentifiers::PLAYLIST;
           }
           for (const auto& [type, url] : artwork)
           {
-            std::string savedThumb = ART::GetLocalArt(item, type, false);
+            std::string savedThumb = ART::GetLocalArt(item, type, false, identifiers);
             if (CServiceBroker::GetTextureCache()->Export(
                     url, savedThumb, overwrite,
                     UncachedArt(IsCachedByScan(MEDIA::TYPE::MOVIE, type))))
