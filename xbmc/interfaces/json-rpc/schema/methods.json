@@ -4441,7 +4441,9 @@
       },
       {
         "name": "lastplayed",
-        "$ref": "Optional.String"
+        "$ref": "Optional.String",
+        "description":
+            "An empty string clears it, which is only allowed when the resulting playcount is 0."
       },
       {
         "name": "originaltitle",
@@ -4680,7 +4682,9 @@
       },
       {
         "name": "lastplayed",
-        "$ref": "Optional.String"
+        "$ref": "Optional.String",
+        "description":
+            "An empty string clears it, which is only allowed when every episode's resulting playcount is 0."
       },
       {
         "name": "originaltitle",
@@ -4847,7 +4851,9 @@
       },
       {
         "name": "lastplayed",
-        "$ref": "Optional.String"
+        "$ref": "Optional.String",
+        "description":
+            "An empty string clears it, which is only allowed when the resulting playcount is 0."
       },
       {
         "name": "writer",
@@ -5022,7 +5028,9 @@
       },
       {
         "name": "lastplayed",
-        "$ref": "Optional.String"
+        "$ref": "Optional.String",
+        "description":
+            "An empty string clears it, which is only allowed when the resulting playcount is 0."
       },
       {
         "name": "thumbnail",
