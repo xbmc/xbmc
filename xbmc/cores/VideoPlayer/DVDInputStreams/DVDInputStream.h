@@ -186,6 +186,11 @@ public:
    */
   virtual void SetReadRate(uint32_t rate) {}
 
+  /*! \brief As SetReadRate, for a stream the rate is only a ceiling for, so a cache sized by
+   *  rate keeps its size
+   */
+  virtual void SetReadRateLimit(uint32_t rate) { SetReadRate(rate); }
+
   /*! \brief Get the cache status
    \return true when cache status was successfully obtained
    */
