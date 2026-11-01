@@ -1722,17 +1722,11 @@ void CActiveAE::ClearDiscardedBuffers()
 
 void CActiveAE::SStopSound(CActiveAESound *sound)
 {
-  std::list<SoundState>::iterator it;
-  for (it=m_sounds_playing.begin(); it!=m_sounds_playing.end(); ++it)
-  {
-    if (it->sound == sound)
-    {
-      if (sound->GetChannel() != AE_CH_NULL)
-        m_aeGUISoundForce = false;
-      m_sounds_playing.erase(it);
-      return;
-    }
-  }
+  // A sound played again before it finished is in the list once for each play.
+  const auto removed = std::erase_if(m_sounds_playing, [sound](const SoundState& state)
+                                     { return state.sound == sound; });
+  if (removed > 0 && sound->GetChannel() != AE_CH_NULL)
+    m_aeGUISoundForce = false;
 }
 
 void CActiveAE::DiscardSound(CActiveAESound *sound)
