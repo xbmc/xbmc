@@ -493,13 +493,10 @@ bool CPythonInvoker::stop(bool abort)
 
       PyEval_RestoreThread(ts);
 
-      //tell xbmc.Monitor to call onAbortRequested()
-      if (m_addon)
-      {
-        CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): trigger Monitor abort request", GetId(),
-                  m_sourceFile);
-        AbortNotification();
-      }
+      // wake xbmc.Monitor's waitForAbort() and abortRequested()
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): trigger Monitor abort request", GetId(),
+                m_sourceFile);
+      AbortNotification();
 
       PyThreadState_Clear(ts);
       PyThreadState_DeleteCurrent();
@@ -675,10 +672,16 @@ void CPythonInvoker::onInitialization()
 
 void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 {
-  if (m_addon.get() == NULL || moduleDict == NULL)
+  if (moduleDict == NULL)
     return;
 
   PyObject* moduleDictionary = (PyObject*)moduleDict;
+
+  // xbmc.Monitor uses it to receive this script's abort request, add-on or not
+  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", PyLong_FromLong(GetId()));
+
+  if (m_addon.get() == NULL)
+    return;
 
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__",
                        PyObjectPtr(PyUnicode_FromString(m_addon->ID().c_str())).get());
@@ -686,8 +689,6 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
   ADDON::CAddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__",
                        PyObjectPtr(PyUnicode_FromString(version.asString().c_str())).get());
-
-  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", PyLong_FromLong(GetId()));
 
   CLog::Log(LOGDEBUG,
             "CPythonInvoker({}, {}): instantiating addon using automatically obtained id of \"{}\" "
