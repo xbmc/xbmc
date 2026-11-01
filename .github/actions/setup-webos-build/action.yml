@@ -1,0 +1,56 @@
+name: Set up the webOS build environment
+description: >
+  Installs the host packages tools/depends needs to bootstrap and provides
+  the buildroot toolchain docs/README.webOS.md recommends
+  (openlgtv/buildroot-nc4), cached per release.
+inputs:
+  toolchain-release:
+    description: Release tag of openlgtv/buildroot-nc4.
+    required: true
+  toolchain-asset:
+    description: Asset name in that release.
+    required: true
+  toolchain-root:
+    description: Directory the asset is extracted into.
+    required: true
+  toolchain-dir:
+    description: The SDK directory inside toolchain-root once extracted.
+    required: true
+runs:
+  using: composite
+  steps:
+    # tools/depends builds its own autotools, cmake, meson, ninja, nasm,
+    # gettext and python3; only the bootstrap tools are needed from the host.
+    - name: Install build tools and libraries
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          bison build-essential ccache curl flex gawk \
+          libcurl4-openssl-dev libtool pkg-config unzip
+
+    - name: Restore toolchain
+      id: toolchain-cache
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ inputs.toolchain-root }}
+        key: webos-toolchain-${{ inputs.toolchain-release }}-${{ inputs.toolchain-asset }}
+
+    # Buildroot SDKs embed their build path; relocate-sdk.sh rewrites it for
+    # the extraction directory.
+    - name: Download toolchain
+      if: steps.toolchain-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        mkdir -p "${{ inputs.toolchain-root }}"
+        curl -fsSL --retry 5 -o "${RUNNER_TEMP}/toolchain.tar.gz" \
+          "https://github.com/openlgtv/buildroot-nc4/releases/download/${{ inputs.toolchain-release }}/${{ inputs.toolchain-asset }}"
+        tar -xzf "${RUNNER_TEMP}/toolchain.tar.gz" -C "${{ inputs.toolchain-root }}"
+        "${{ inputs.toolchain-dir }}/relocate-sdk.sh"
+
+    - name: Save toolchain cache
+      if: steps.toolchain-cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ inputs.toolchain-root }}
+        key: webos-toolchain-${{ inputs.toolchain-release }}-${{ inputs.toolchain-asset }}

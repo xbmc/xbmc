@@ -1,0 +1,272 @@
+name: E2E (Windows)
+
+# Builds one Windows leg with Jenkins' scripts (tools/buildsteps/windows):
+# prebuilt dependencies, BuildSetup.bat, make-addons.bat and the NSIS
+# installer or UWP .msix, then optionally runs tools/e2e against it.
+#
+# Called from ci.yml once per leg; ci.yml owns the triggers, the legs and the
+# manual-run inputs.
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Leg name, used in cache keys and artifact names.
+        type: string
+        required: true
+      buildsteps:
+        description: The tools/buildsteps/windows subdirectory.
+        type: string
+        required: true
+      platform:
+        description: The kodi-build.<platform> tree BuildSetup.bat creates.
+        type: string
+        required: true
+      tests:
+        description: Whether to build and run kodi-test.
+        type: boolean
+        default: false
+      e2e:
+        description: Whether to run tools/e2e against this leg's build.
+        type: boolean
+        default: false
+      configuration:
+        description: Debug, Release or empty for the platform default.
+        type: string
+        default: ''
+      addons:
+        description: Space-separated binary add-on ids or patterns to build and bundle.
+        type: string
+        default: peripheral.joystick
+
+permissions:
+  contents: read
+
+env:
+  BINARY_ADDONS: ${{ inputs.addons }}
+  CCACHE_VERSION: 4.14.1
+
+jobs:
+  build:
+    name: ${{ inputs.tests && 'build and unit tests' || 'build' }}
+    # VS2022, the Windows SDK, the UWP workload and NSIS are on the image.
+    runs-on: windows-2022
+    timeout-minutes: 360
+    permissions:
+      contents: read
+      packages: write
+    env:
+      DEPS: project/BuildDependencies
+    steps:
+      - uses: actions/checkout@v7
+
+      # Release, as on Jenkins. BuildSetup.bat and run-tests.bat read buildconfig.
+      - name: Select configuration
+        shell: bash
+        env:
+          CONFIGURATION: ${{ inputs.configuration || (runner.debug == '1' && 'Debug' || 'Release') }}
+        run: echo "buildconfig=${CONFIGURATION}" >> "$GITHUB_ENV"
+
+      # cmake/modules/buildtools/FindCCache.cmake wraps cl.exe for the Visual
+      # Studio generator once a real ccache 4.13.3 or newer is on PATH.
+      - name: Install ccache
+        shell: bash
+        run: |
+          tmp=$(cygpath -u "${RUNNER_TEMP}")
+          curl -fsSL --retry 5 -o "${tmp}/ccache.zip" \
+            "https://github.com/ccache/ccache/releases/download/v${CCACHE_VERSION}/ccache-${CCACHE_VERSION}-windows-x86_64.zip"
+          echo "6219f3865ca59aec41ee4b678df171d5d35855ecb2b6dbbbd20690b3a68af7b4  ${tmp}/ccache.zip" | sha256sum -c -
+          unzip -q "${tmp}/ccache.zip" -d "${tmp}"
+          cygpath -w "${tmp}/ccache-${CCACHE_VERSION}-windows-x86_64" >> "$GITHUB_PATH"
+
+      - name: Restore ccache
+        uses: ./.github/actions/ccache-restore
+        with:
+          key: windows-${{ inputs.name }}-${{ env.buildconfig }}
+          dir: ${{ runner.temp }}\ccache
+          max-size: 2G
+
+      # Three images on ghcr.io, as tools/depends prefixes on the other
+      # platforms: the toolchain (downloads, MSYS2 and the host tools), FFmpeg
+      # (mingwlibs) and the target libraries, including those the build
+      # installs, as Jenkins' .build-cache keeps them. The arguments name the
+      # inputs beyond tools/depends, after download-dependencies.bat's
+      # getBuildHash; the bundled libraries are built with /GL, hence the
+      # Visual Studio version.
+      - name: Select dependency images
+        shell: bash
+        env:
+          BUILDSTEPS: ${{ inputs.buildsteps }}
+        run: |
+          target=$(sed -n 's/^CALL download-dependencies.bat \([^ \r]*\).*/\1/p' \
+            "tools/buildsteps/windows/${BUILDSTEPS}/download-dependencies.bat")
+          vs=$("/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" -latest -property installationVersion)
+          tree() { git rev-parse "HEAD:$1"; }
+          {
+            echo "DEPS_TARGET=${target}"
+            echo "TOOLCHAIN_ARGS=vs=${vs} $(tree project/BuildDependencies/scripts) $(tree tools/buildsteps/windows)"
+            echo "FFMPEG_ARGS=vs=${vs} $(tree tools/buildsteps/windows)"
+            echo "TARGET_ARGS=vs=${vs} $(tree CMakeLists.txt) $(tree cmake/modules) $(tree cmake/platform) $(tree cmake/scripts) $(tree project/BuildDependencies/scripts) $(tree tools/buildsteps/windows)"
+          } >> "$GITHUB_ENV"
+
+      - name: Restore the toolchain image
+        uses: ./.github/actions/depends-prefix-restore
+        id: toolchain
+        with:
+          key: windows-${{ inputs.name }}-toolchain
+          configure-args: ${{ env.TOOLCHAIN_ARGS }}
+          prefix: ${{ env.DEPS }}
+
+      - name: Restore the FFmpeg image
+        uses: ./.github/actions/depends-prefix-restore
+        id: ffmpeg
+        with:
+          key: windows-${{ inputs.name }}-ffmpeg
+          configure-args: ${{ env.FFMPEG_ARGS }}
+          prefix: ${{ env.DEPS }}/mingwlibs
+
+      # make-mingwlibs.sh rebuilds FFmpeg unless its stamp names the last commit
+      # touching FFmpeg's inputs, which a shallow clone reports as HEAD.
+      - name: Stamp the restored FFmpeg as current
+        if: steps.ffmpeg.outputs.hit == 'true'
+        shell: bash
+        run: |
+          rev=$(git rev-list HEAD --max-count=1 -- tools/depends/target/ffmpeg tools/buildsteps/windows \
+            tools/depends/target/dav1d/DAV1D-VERSION tools/depends/target/libopus/LIBOPUS-VERSION)
+          sed -i -E "1s/^[0-9a-f]{40} /${rev} /" "${DEPS}/mingwlibs/${DEPS_TARGET}/.last_success_revision"
+
+      # The scripts find the repository from their own location.
+      - name: Download prebuilt Windows dependencies
+        id: download-dependencies
+        shell: cmd
+        working-directory: tools\buildsteps\windows\${{ inputs.buildsteps }}
+        run: download-dependencies.bat
+
+      - name: Download and set up MSYS2 build environment
+        id: download-msys2
+        shell: cmd
+        working-directory: tools\buildsteps\windows\${{ inputs.buildsteps }}
+        run: download-msys2.bat sh
+
+      # After download-dependencies.bat, which empties the target directory.
+      - name: Restore the target libraries image
+        uses: ./.github/actions/depends-prefix-restore
+        id: target
+        with:
+          key: windows-${{ inputs.name }}-${{ env.buildconfig }}
+          configure-args: ${{ env.TARGET_ARGS }}
+          prefix: ${{ env.DEPS }}/${{ env.DEPS_TARGET }}
+
+      # make-addons.bat returns 0 for a failed add-on, as on Jenkins.
+      - name: Build binary add-ons
+        shell: cmd
+        working-directory: tools\buildsteps\windows\${{ inputs.buildsteps }}
+        run: make-addons.bat %BINARY_ADDONS%
+
+      - name: Report add-on results
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "### Binary add-ons"
+            if [ -s cmake/addons/.success ]; then echo "Built:"; sed 's/^/- /' cmake/addons/.success; fi
+            if [ -s cmake/addons/.failure ]; then echo "Failed:"; sed 's/^/- /' cmake/addons/.failure; fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -s cmake/addons/.failure ]; then
+            echo "::warning::Binary add-ons failed to build: $(tr '\n' ' ' < cmake/addons/.failure)"
+          fi
+
+      - name: Build Kodi and create the installer
+        id: build-kodi
+        shell: cmd
+        working-directory: tools\buildsteps\windows\${{ inputs.buildsteps }}
+        run: BuildSetup.bat nobinaryaddons noclean noprompt sh
+
+      - name: Publish the toolchain image
+        uses: ./.github/actions/depends-prefix-push
+        if: steps.build-kodi.outcome == 'success' && steps.toolchain.outputs.hit != 'true' && github.ref == 'refs/heads/master'
+        with:
+          ref: ${{ steps.toolchain.outputs.ref }}
+          prefix: ${{ env.DEPS }}
+          paths: downloads downloads2 msys64 tools
+
+      - name: Publish the FFmpeg image
+        uses: ./.github/actions/depends-prefix-push
+        if: steps.build-kodi.outcome == 'success' && steps.ffmpeg.outputs.hit != 'true' && github.ref == 'refs/heads/master'
+        with:
+          ref: ${{ steps.ffmpeg.outputs.ref }}
+          prefix: ${{ env.DEPS }}/mingwlibs
+
+      - name: Publish the target libraries image
+        uses: ./.github/actions/depends-prefix-push
+        if: steps.build-kodi.outcome == 'success' && steps.target.outputs.hit != 'true' && github.ref == 'refs/heads/master'
+        with:
+          ref: ${{ steps.target.outputs.ref }}
+          prefix: ${{ env.DEPS }}/${{ env.DEPS_TARGET }}
+
+      - name: Upload installer
+        if: inputs.buildsteps != 'x64-uwp'
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-installer-windows-${{ inputs.name }}
+          path: |
+            project/Win32BuildSetup/*Setup-*.exe
+            project/Win32BuildSetup/*Setup-*.pdb
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload UWP package
+        if: inputs.buildsteps == 'x64-uwp'
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-installer-windows-${{ inputs.name }}
+          path: project/UWPBuildSetup/*
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload runtime for E2E
+        if: inputs.e2e
+        uses: actions/upload-artifact@v7
+        with:
+          name: kodi-build-windows
+          path: project/Win32BuildSetup/BUILD_WIN32/application
+          retention-days: 7
+
+      - name: Run unit tests
+        if: inputs.tests
+        shell: cmd
+        working-directory: tools\buildsteps\windows\${{ inputs.buildsteps }}
+        run: run-tests.bat
+
+      # After the unit tests, which build kodi-test through the same cache.
+      - name: Save ccache
+        uses: ./.github/actions/ccache-save
+        if: '!cancelled()'
+        with:
+          key: windows-${{ inputs.name }}-${{ env.buildconfig }}
+          save: ${{ github.ref == 'refs/heads/master' }}
+
+      - name: Report unit tests
+        uses: ./.github/actions/report-unit-tests
+        if: always() && inputs.tests
+        with:
+          name: windows-${{ inputs.name }}
+          results: kodi-build.${{ inputs.platform }}/gtestresults.xml
+
+  e2e:
+    needs: build
+    if: inputs.e2e
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: kodi-build-windows
+          path: build
+
+      - name: Run E2E suite
+        uses: ./.github/actions/run-e2e
+        with:
+          name: windows
+          kodi-binary: ${{ github.workspace }}\build\kodi.exe
