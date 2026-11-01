@@ -29,14 +29,19 @@ void CVideoPlayerWebOS::CreatePlayers()
       std::ranges::any_of(m_SelectionStreams.Get(StreamType::VIDEO),
                           [](const auto& stream)
                           {
-                            if (stream.codecId != AV_CODEC_ID_NONE)
-                              return CMediaPipelineWebOS::Supports(stream.codecId, stream.profile);
-                            const AVCodec* codec =
-                                avcodec_find_decoder_by_name(stream.codec.data());
-                            if (!codec)
-                              return false;
+                            CDVDStreamInfo hint;
+                            hint.codec = stream.codecId;
+                            hint.profile = stream.profile;
+                            if (hint.codec == AV_CODEC_ID_NONE)
+                            {
+                              const AVCodec* codec =
+                                  avcodec_find_decoder_by_name(stream.codec.data());
+                              if (!codec)
+                                return false;
+                              hint.codec = codec->id;
+                            }
 
-                            return CMediaPipelineWebOS::Supports(codec->id, stream.profile);
+                            return CMediaPipelineWebOS::Supports(hint);
                           });
 
   if (canStarfish && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
