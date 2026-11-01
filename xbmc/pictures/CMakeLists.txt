@@ -2,6 +2,7 @@ set(SOURCES GUIDialogPictureInfo.cpp
             GUIViewStatePictures.cpp
             GUIWindowPictures.cpp
             GUIWindowSlideShow.cpp
+            MotionPhoto.cpp
             Picture.cpp
             PictureFolderImageFileLoader.cpp
             PictureInfoLoader.cpp
@@ -16,6 +17,7 @@ set(HEADERS interfaces/ISlideShowDelegate.h
             GUIViewStatePictures.h
             GUIWindowPictures.h
             GUIWindowSlideShow.h
+            MotionPhoto.h
             Picture.h
             PictureFolderImageFileLoader.h
             PictureInfoLoader.h
