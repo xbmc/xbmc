@@ -35,6 +35,7 @@ public:
   void GetDelay(AEDelayStatus& status) override;
   double GetLatency() override;
   double GetCacheTotal() override;
+  bool IsOutputUnavailable() const override { return m_outputUnavailable; }
   unsigned int AddPackets(uint8_t** data, unsigned int frames, unsigned int offset) override;
   void AddPause(unsigned int millis) override;
   void Drain() override;
@@ -101,6 +102,7 @@ private:
   CJNIAudioTimestamp m_timestamp;
   XbmcThreads::EndTime<> m_stampTimer;
   bool m_superviseAudioDelay = false;
+  bool m_outputUnavailable = false;
 
   std::vector<float> m_floatbuf;
   std::vector<int16_t> m_shortbuf;
