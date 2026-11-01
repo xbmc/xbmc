@@ -20,6 +20,8 @@
 #include "imagefiles/ImageFileURL.h"
 #include "imagefiles/SpecialImageLoaderFactory.h"
 #include "pictures/Picture.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -103,6 +105,15 @@ bool CTextureCacheJob::CacheTexture()
 
   const auto& image = imageURL.GetTargetFile();
   m_details.updateable = ShouldCheckForChanges(imageURL.GetSpecialType(), image);
+
+  const bool artworkOffline{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_artworkOffline};
+
+  if (artworkOffline && HasCachedFile())
+  {
+    m_details.hashRevalidated = true;
+    return true;
+  }
 
   if (m_details.updateable)
   {
