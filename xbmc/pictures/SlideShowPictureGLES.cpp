@@ -150,6 +150,7 @@ bool CSlideShowPicGLES::RenderHdr(float* x,
     pTexture->BindToUnit(1);
   }
   m_gainMapShader->SetGainMap(params, weight);
+  m_gainMapShader->SetColorMatrix(pTexture->GetColorMatrix());
   m_gainMapShader->SetAlpha(
       KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f);
 

@@ -8,9 +8,11 @@
 
 #pragma once
 
+#include "guilib/ImageColor.h"
 #include "guilib/Shader.h"
 
 #include <array>
+#include <optional>
 #include <string>
 
 namespace KODI::PICTURE
@@ -32,6 +34,8 @@ public:
   void SetGainMap(const KODI::PICTURE::GainMapParams& params, float weight);
   void SetGainMapScale(float x, float y);
   void SetAlpha(float alpha) { m_alpha = alpha; }
+  //! The picture's linear RGB to BT.2020; none for sRGB pictures
+  void SetColorMatrix(const std::optional<ImageColorMatrix>& matrix);
 
   GLint GetPosLoc() const { return m_hPos; }
   GLint GetTexLoc() const { return m_hTex; }
@@ -50,6 +54,7 @@ private:
   float m_scaleX{1.0f};
   float m_scaleY{1.0f};
   float m_alpha{1.0f};
+  ImageColorMatrix m_toBT2020{};
 
   GLint m_hPos{-1};
   GLint m_hTex{-1};
@@ -65,4 +70,5 @@ private:
   GLint m_hWeight{-1};
   GLint m_hScale{-1};
   GLint m_hAlpha{-1};
+  GLint m_hToBT2020{-1};
 };
