@@ -100,7 +100,8 @@ std::unique_ptr<CTexture> CTexture::LoadFromFile(const std::string& texturePath,
                                                  unsigned int idealWidth,
                                                  unsigned int idealHeight,
                                                  CAspectRatio::AspectRatio aspectRatio,
-                                                 const std::string& strMimeType)
+                                                 const std::string& strMimeType,
+                                                 ImageColorMode colorMode)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -125,7 +126,8 @@ std::unique_ptr<CTexture> CTexture::LoadFromFile(const std::string& texturePath,
   }
 #endif
   std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
-  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, aspectRatio, strMimeType))
+  if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, aspectRatio, strMimeType,
+                                    colorMode))
     return texture;
   return {};
 }
@@ -135,11 +137,12 @@ std::unique_ptr<CTexture> CTexture::LoadFromFileInMemory(unsigned char* buffer,
                                                          const std::string& mimeType,
                                                          unsigned int idealWidth,
                                                          unsigned int idealHeight,
-                                                         CAspectRatio::AspectRatio aspectRatio)
+                                                         CAspectRatio::AspectRatio aspectRatio,
+                                                         ImageColorMode colorMode)
 {
   std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
-  if (texture->LoadFromFileInMem(buffer, bufferSize, mimeType, idealWidth, idealHeight,
-                                 aspectRatio))
+  if (texture->LoadFromFileInMem(buffer, bufferSize, mimeType, idealWidth, idealHeight, aspectRatio,
+                                 colorMode))
     return texture;
   return {};
 }
@@ -148,7 +151,8 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
                                     unsigned int idealWidth,
                                     unsigned int idealHeight,
                                     CAspectRatio::AspectRatio aspectRatio,
-                                    const std::string& strMimeType)
+                                    const std::string& strMimeType,
+                                    ImageColorMode colorMode)
 {
   if (URIUtils::HasExtension(texturePath, ".dds"))
   { // special case for DDS images
@@ -207,7 +211,7 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
   else
     pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
 
-  if (!LoadIImage(pImage, buf.data(), buf.size(), idealWidth, idealHeight, aspectRatio))
+  if (!LoadIImage(pImage, buf.data(), buf.size(), idealWidth, idealHeight, aspectRatio, colorMode))
   {
     CLog::Log(LOGDEBUG, "{} - Load of {} failed.", __FUNCTION__, CURL::GetRedacted(texturePath));
     delete pImage;
@@ -223,13 +227,14 @@ bool CTexture::LoadFromFileInMem(unsigned char* buffer,
                                  const std::string& mimeType,
                                  unsigned int idealWidth,
                                  unsigned int idealHeight,
-                                 CAspectRatio::AspectRatio aspectRatio)
+                                 CAspectRatio::AspectRatio aspectRatio,
+                                 ImageColorMode colorMode)
 {
   if (!buffer || !size)
     return false;
 
   IImage* pImage = ImageFactory::CreateLoaderFromMimeType(mimeType);
-  if (!LoadIImage(pImage, buffer, size, idealWidth, idealHeight, aspectRatio))
+  if (!LoadIImage(pImage, buffer, size, idealWidth, idealHeight, aspectRatio, colorMode))
   {
     delete pImage;
     return false;
@@ -243,7 +248,8 @@ bool CTexture::LoadIImage(IImage* pImage,
                           unsigned int bufSize,
                           unsigned int idealWidth,
                           unsigned int idealHeight,
-                          CAspectRatio::AspectRatio aspectRatio)
+                          CAspectRatio::AspectRatio aspectRatio,
+                          ImageColorMode colorMode)
 {
   if (pImage == nullptr)
     return false;
@@ -339,6 +345,7 @@ bool CTexture::LoadIImage(IImage* pImage,
   if (m_pixels == nullptr)
     return false;
 
+  pImage->SetColorMode(colorMode);
   if (!pImage->Decode(m_pixels, width, height, GetPitch(), XB_FMT_A8R8G8B8))
     return false;
 
@@ -346,6 +353,7 @@ bool CTexture::LoadIImage(IImage* pImage,
     m_orientation = pImage->Orientation() - 1;
 
   m_textureAlpha = pImage->hasAlpha() ? KD_TEX_ALPHA_STRAIGHT : KD_TEX_ALPHA_OPAQUE;
+  m_colorMatrix = pImage->GetColorMatrix();
   m_originalWidth = pImage->originalWidth();
   m_originalHeight = pImage->originalHeight();
   m_imageWidth = pImage->Width();
