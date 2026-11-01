@@ -1430,3 +1430,57 @@ TEST_F(TestVideoDatabaseClean, EndsItsTransactionWhenThePathsHoldNoMedia)
 
   EXPECT_FALSE(m_db.InTransaction());
 }
+
+// A refresh removes a disc's versions to add them again, which leaves its folder as it was
+TEST_F(TestVideoDatabase, DeleteVideoAssetCanKeepTheHashOfItsFolder)
+{
+  const std::string folder{"/movies/Film (2010)/"};
+  const int idMovie{AddMovie(folder + "Film.mkv")};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{folder + "Film Extended.mkv", false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+  const int idFile{
+      m_db.GetSingleValueInt("SELECT idFile FROM files WHERE strFilename = 'Film Extended.mkv'")};
+  ASSERT_GT(idFile, 0);
+  ASSERT_TRUE(m_db.SetPathHash(folder, "hash"));
+
+  ASSERT_TRUE(m_db.DeleteVideoAsset(idFile, DeleteMovieHashAction::HASH_PRESERVE));
+
+  std::string hash;
+  ASSERT_TRUE(m_db.GetPathHash(folder, hash));
+  EXPECT_EQ("hash", hash);
+}
+
+TEST_F(TestVideoDatabase, GetMovieIdFindsTheMovieOnTheDiscPlaylistsOfADiscImageWithoutOne)
+{
+  const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
+
+  // Left by a refresh that found the movie on two of the disc's playlists
+  ASSERT_GT(m_db.AddFile(disc), 0);
+  EXPECT_EQ(-1, m_db.GetMovieId(disc));
+
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 801))};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{URIUtils::GetBlurayPlaylistPath(disc, 800), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  EXPECT_EQ(idMovie, m_db.GetMovieId(disc));
+}
+
+// The movie GetMovieId() finds for such a disc image is read through its default version, as the
+// image's own file is none of its versions
+TEST_F(TestVideoDatabase, GetMovieInfoReadsTheMovieOfADiscImageWithoutOne)
+{
+  const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
+  ASSERT_GT(m_db.AddFile(disc), 0);
+  const std::string main{URIUtils::GetBlurayPlaylistPath(disc, 801)};
+  const int idMovie{AddMovie(main)};
+  ASSERT_GT(idMovie, 0);
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo(disc, tag));
+  EXPECT_EQ(idMovie, tag.m_iDbId);
+  EXPECT_EQ(main, tag.m_strFileNameAndPath);
+}
