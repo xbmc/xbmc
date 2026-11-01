@@ -261,14 +261,15 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, std::string& line)
   return true;
 }
 
-void CDVDDemuxVobsub::EnableStream(int id, bool enable)
+bool CDVDDemuxVobsub::EnableStream(int id, bool enable)
 {
   for (auto &stream : m_Streams)
   {
     if (stream->uniqueId == id)
     {
       stream->m_discard = !enable;
-      break;
+      return true;
     }
   }
+  return false;
 }
