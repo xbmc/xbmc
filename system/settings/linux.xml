@@ -255,6 +255,36 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoscreen.colorformat" type="integer" label="36926" help="36927">
+          <visible>false</visible>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="16316">0</option> <!-- Auto -->
+              <option label="36928">1</option> <!-- RGB -->
+              <option label="36929">2</option> <!-- YCbCr 4:4:4 -->
+              <option label="36930">3</option> <!-- YCbCr 4:2:2 -->
+              <option label="36931">4</option> <!-- YCbCr 4:2:0 -->
+              <option label="36932">5</option> <!-- Adaptive -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="videoscreen.maxbpc" type="integer" label="36933" help="36934">
+          <visible>false</visible>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="16316">0</option> <!-- Auto -->
+              <option label="36935">1</option> <!-- 8 bit -->
+              <option label="36936">2</option> <!-- 10 bit -->
+              <option label="36937">3</option> <!-- 12 bit -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
       </group>
     </category>
     <category id="input">
