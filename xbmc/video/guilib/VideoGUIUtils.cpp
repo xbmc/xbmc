@@ -346,7 +346,8 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
 {
   // recursively add items to list
   CFileItemList queuedItems;
-  VIDEO::UTILS::GetItemsForPlayList(itemToQueue, queuedItems, mode);
+  if (!VIDEO::UTILS::GetItemsForPlayList(itemToQueue, queuedItems, mode))
+    return; // enumeration cancelled by the user via the busy dialog
 
   auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
   playlistPlayer.ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
