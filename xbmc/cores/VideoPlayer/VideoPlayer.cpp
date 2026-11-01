@@ -2733,18 +2733,21 @@ bool CVideoPlayer::CheckSceneSkip(const CCurrentStream& current)
   return hasEdit && hasEdit.value()->action == EDL::Action::CUT;
 }
 
+bool CVideoPlayer::IsNearStreamEnd(std::chrono::milliseconds time) const
+{
+  // Cut/skip time arithmetic can produce a result fractionally past the true stream end due to
+  // millisecond rounding, which would cause the demuxer to stall rather than ending cleanly.
+  const auto streamLength{GetSourceStreamLength()};
+  return streamLength > 0ms && time + 50ms >= streamLength;
+}
+
 void CVideoPlayer::QueueAutoSceneSkip(std::chrono::milliseconds seekTime)
 {
-  const auto streamLength{GetSourceStreamLength()};
-
-  // Use the same 50ms tolerance as the chapter-seek EOF guard (see HandleMessages PLAYER_SEEK_CHAPTER):
-  // cut/skip time arithmetic can produce a result fractionally past the true stream end due to
-  // millisecond rounding, which would cause the demuxer to stall rather than ending cleanly.
-  if (streamLength > 0ms && seekTime + 50ms >= streamLength)
+  if (IsNearStreamEnd(seekTime))
   {
     CLog::Log(LOGDEBUG, "{} - Resolved EDL skip target [{}] is at/near EOF [{}]. Ending playback.",
               __FUNCTION__, StringUtils::MillisecondsToTimeString(seekTime),
-              StringUtils::MillisecondsToTimeString(streamLength));
+              StringUtils::MillisecondsToTimeString(GetSourceStreamLength()));
 
     SetCaching(CACHESTATE_DONE);
 
@@ -2769,6 +2772,20 @@ void CVideoPlayer::QueueAutoSceneSkip(std::chrono::milliseconds seekTime)
   m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
 }
 
+void CVideoPlayer::MarkCommBreakSkipped(const EDL::Edit& edit, std::chrono::milliseconds seekTime)
+{
+  CVariant announcement{StringUtils::SecondsToTimeString(
+      std::chrono::duration_cast<std::chrono::seconds>(edit.end - edit.start).count(),
+      TIME_FORMAT_MM_SS)};
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnCommercial",
+                                                     announcement);
+
+  // use resolved seek target, not edit.start, to also suppress
+  // adjacent commercial breaks encountered while seeking
+  m_Edl.SetLastEditTime(seekTime);
+  m_Edl.SetLastEditActionType(EDL::Action::COMM_BREAK);
+}
+
 void CVideoPlayer::CheckAutoSceneSkip()
 {
   if (!m_Edl.HasEdits())
@@ -2785,10 +2802,36 @@ void CVideoPlayer::CheckAutoSceneSkip()
       m_CurrentVideo.inited == false)
     return;
 
-  const std::chrono::milliseconds clock{GetTime()};
+  // m_State.time is refreshed only every 200 ms, so up to that much of a break would be shown
+  // before skipping it. Advance it by what the clock moved since, unless a seek lies in between.
+  std::chrono::milliseconds clock{GetTime()};
+  const double elapsed{GetCaughtUpClock() - m_stateClock};
+  if (elapsed > 0 && elapsed < DVD_MSEC_TO_TIME(1000))
+    clock += std::chrono::milliseconds{llrint(DVD_TIME_TO_MSEC(elapsed))};
 
   const std::chrono::milliseconds correctClock = m_Edl.GetTimeAfterRestoringCuts(clock);
-  const auto hasEdit = m_Edl.InEdit(correctClock);
+  auto hasEdit = m_Edl.InEdit(correctClock);
+
+  // The renderer shows pictures ahead of the clock by its display latency, and the picture on
+  // screen when a skip starts stays there until the seek is done. Skip a commercial break that
+  // early, plus a margin for the time the skip takes to reach the renderer.
+  if (!hasEdit && m_playSpeed == DVD_PLAYSPEED_NORMAL && m_SkipCommercials)
+  {
+    constexpr std::chrono::milliseconds SKIP_MARGIN{100};
+    const std::chrono::milliseconds lead{
+        std::max(0ll, llrint(DVD_TIME_TO_MSEC(m_renderManager.GetDisplayLatency()))) +
+        SKIP_MARGIN.count()};
+    auto ahead = m_Edl.InEdit(correctClock + lead);
+    if (ahead && ahead.value()->action == EDL::Action::COMM_BREAK)
+    {
+      if (m_Edl.GetLastEditTime() != m_Edl.GetNextPlayableTime(ahead.value()->end))
+        CLog::Log(LOGDEBUG, "{} - Commercial break [{}] is less than {} ms ahead of the clock.",
+                  __FUNCTION__, StringUtils::MillisecondsToTimeString(ahead.value()->start),
+                  lead.count());
+      hasEdit = std::move(ahead);
+    }
+  }
+
   if (!hasEdit)
   {
     // @note: Users are allowed to jump back into EDL commercial breaks
@@ -2877,16 +2920,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
     // total cut time grows.
     if (m_playSpeed >= 0 && m_Edl.GetLastEditTime() != seek && correctClock < edit->end - 1s)
     {
-      CVariant announcement{StringUtils::SecondsToTimeString(
-          std::chrono::duration_cast<std::chrono::seconds>(edit->end - edit->start).count(),
-          TIME_FORMAT_MM_SS)};
-      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnCommercial",
-                                                         announcement);
-
-      // use resolved seek target, not edit->start, to also suppress
-      // adjacent commercial breaks encountered while seeking
-      m_Edl.SetLastEditTime(seek);
-      m_Edl.SetLastEditActionType(edit->action);
+      MarkCommBreakSkipped(*edit, seek);
 
       if (m_SkipCommercials)
       {
@@ -3139,6 +3173,40 @@ void CVideoPlayer::HandleMessages()
                        .count()
                  : time;
 
+      bool accurate = msg.GetAccurate();
+      bool backward = msg.GetBackward();
+
+      // Skip a commercial break now, CheckAutoSceneSkip() would show a picture of it first.
+      if (m_SkipCommercials && m_playSpeed >= 0 && !msg.GetTrickPlay())
+      {
+        const std::chrono::milliseconds target(std::lround(time));
+        const auto commEdit = m_Edl.InEdit(target);
+        if (commEdit && commEdit.value()->action == EDL::Action::COMM_BREAK &&
+            target < commEdit.value()->end - 1s)
+        {
+          const auto& edit = commEdit.value();
+          const std::chrono::milliseconds seek = m_Edl.GetNextPlayableTime(edit->end);
+
+          // Leave a break at the end of the stream to CheckAutoSceneSkip(), which ends playback.
+          if (m_Edl.GetLastEditTime() != seek && !IsNearStreamEnd(seek))
+          {
+            CLog::Log(LOGDEBUG,
+                      "{} - Seek target {} is in commercial break [{} - {}]. Seeking to next "
+                      "playable point [{}] instead.",
+                      __FUNCTION__, StringUtils::MillisecondsToTimeString(target),
+                      StringUtils::MillisecondsToTimeString(edit->start),
+                      StringUtils::MillisecondsToTimeString(edit->end),
+                      StringUtils::MillisecondsToTimeString(seek));
+
+            MarkCommBreakSkipped(*edit, seek);
+
+            time = static_cast<double>(seek.count());
+            accurate = true;
+            backward = true;
+          }
+        }
+      }
+
       // if input stream doesn't support ISeekTime, convert back to pts
       //! @todo
       //! After demuxer we add an offset to input pts so that displayed time and clock are
@@ -3149,12 +3217,12 @@ void CVideoPlayer::HandleMessages()
         time -= m_State.time_offset/1000l;
 
       CLog::Log(LOGDEBUG, "demuxer seek to: {:f}", time);
-      if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
+      if (m_pDemuxer && m_pDemuxer->SeekTime(time, backward, &start))
       {
         CLog::Log(LOGDEBUG, "demuxer seek to: {:f}, success", time);
         if(m_pSubtitleDemuxer)
         {
-          if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
+          if (!m_pSubtitleDemuxer->SeekTime(time, backward))
             CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: {:f}, success", time);
         }
         // dts after successful seek
@@ -3164,7 +3232,7 @@ void CVideoPlayer::HandleMessages()
         m_State.dts = start;
         m_State.lastSeek = m_clock.GetAbsoluteClock();
 
-        FlushBuffers(start, msg.GetAccurate(), msg.GetSync());
+        FlushBuffers(start, accurate, msg.GetSync());
       }
       else if (m_pDemuxer)
       {
@@ -3475,6 +3543,7 @@ void CVideoPlayer::HandleMessages()
           offset = -1000;
         m_State.time += offset;
         m_State.timestamp = m_clock.GetAbsoluteClock();
+        m_stateClock = GetCaughtUpClock();
       }
 
       if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
@@ -5724,11 +5793,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
       chapterNbEnabled = true;
     }
 
-    state.time = DVD_TIME_TO_MSEC(m_clock.GetClock());
-    // Let the clock catch up after seek
-    if (m_CurrentVideo.startpts != DVD_NOPTS_VALUE &&
-        state.time < DVD_TIME_TO_MSEC(m_CurrentVideo.startpts))
-      state.time = DVD_TIME_TO_MSEC(m_CurrentVideo.startpts);
+    state.time = DVD_TIME_TO_MSEC(GetCaughtUpClock());
 
     state.timeMax = static_cast<double>(rawStreamLength.count());
   }
@@ -5931,6 +5996,16 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   std::unique_lock lock(m_StateSection);
   m_State = state;
+  m_stateClock = GetCaughtUpClock();
+}
+
+double CVideoPlayer::GetCaughtUpClock()
+{
+  // Let the clock catch up after seek
+  const double clock{m_clock.GetClock()};
+  if (m_CurrentVideo.startpts != DVD_NOPTS_VALUE && clock < m_CurrentVideo.startpts)
+    return m_CurrentVideo.startpts;
+  return clock;
 }
 
 bool CVideoPlayer::CanTempo()
