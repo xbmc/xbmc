@@ -1,0 +1,3 @@
+set(SOURCES TestPVRGUITimeshiftProgress.cpp)
+
+core_add_test_library(pvr_guilib_guiinfo_test)
