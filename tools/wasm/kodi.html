@@ -172,6 +172,47 @@
   <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
 
   <script>
+    var isTizenRuntime =
+      typeof window !== 'undefined' &&
+      (typeof window.tizen !== 'undefined' ||
+       typeof window.webapis !== 'undefined' ||
+       /Tizen/i.test(navigator.userAgent || ''));
+
+    // ---------------------------------------------------------------------
+    // Tizen TV remote: keep navigation keys inside the app. Kodi consumes
+    // them through the wasm input layer; prevent the TV browser from moving
+    // DOM focus or handling Back while still letting Emscripten see the event.
+    // ---------------------------------------------------------------------
+    (function () {
+      var tizenRemoteKeys = {
+        13: true,    // Enter / OK
+        37: true,    // Left
+        38: true,    // Up
+        39: true,    // Right
+        40: true,    // Down
+        10009: true  // Back
+      };
+      ['keydown', 'keyup'].forEach(function (type) {
+        window.addEventListener(type, function (e) {
+          var focused = document.activeElement;
+          if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA' ||
+                          focused.isContentEditable)) {
+            return;
+          }
+          if (isTizenRuntime && (tizenRemoteKeys[e.keyCode] || e.key === 'Back')) {
+            // Keep directional navigation in-app, but let Back keep its
+            // platform behavior when Kodi doesn't explicitly consume it.
+            if (!(e.keyCode === 10009 || e.key === 'Back')) {
+              e.preventDefault();
+            }
+          }
+        }, true);
+      });
+    })();
+
+    // ---------------------------------------------------------------------
+    // Splash / loader controller
+    // ---------------------------------------------------------------------
     var splashEl     = document.getElementById('splash');
     var statusTextEl = document.getElementById('statusText');
     var statusPctEl  = document.getElementById('statusPct');
@@ -239,6 +280,7 @@
     }
 
     var Module = {
+      kodi: { webApiProvider: 'browser' },
       canvas: canvas,
       print:    function (t) { console.log(t); },
       printErr: function (t) { console.error(t); },
@@ -280,8 +322,77 @@
 
     setStatusText('Downloading Kodi…');
     setProgress(null);
-  </script>
 
-  <script async src="kodi.js" onerror="showError('Could not load kodi.js')"></script>
+    function loadKodi() {
+      var script = document.createElement('script');
+      script.src = 'kodi.js';
+      script.onerror = function () { showError('Could not load kodi.js'); };
+      document.body.appendChild(script);
+    }
+
+    function loadTitanDeviceInfo() {
+      var finished = false;
+      var timeout = setTimeout(function () { finish(); }, 5000);
+      function finish(info) {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timeout);
+        if (info && info.Channel && info.Product) {
+          var channel = info.Channel;
+          var product = info.Product;
+          var version = /TitanOS\/([\d.]+)/i.exec(navigator.userAgent || '');
+          var text = function (value) { return typeof value === 'string' ? value : ''; };
+          var mac = text(product.mac);
+          Module.kodi = Module.kodi || {};
+          Module.kodi.titanDeviceInfo = {
+            manufacturer: text(channel.brand),
+            model: text(product.platform),
+            firmware: text(product.firmwareVersion),
+            platformVersion: version ? version[1] : '',
+            macAddress: /^(?:[0-9a-f]{2}:){5}[0-9a-f]{2}$/i.test(mac) ? mac : ''
+          };
+        }
+        loadKodi();
+      }
+      function readDeviceInfo() {
+        if (finished) return;
+        Promise.resolve().then(function () {
+          return window.TitanSDK.deviceInfo.getDeviceInfo();
+        }).then(finish, function (error) {
+          console.warn('[kodi] Titan device info unavailable:', error);
+          finish();
+        });
+      }
+      if (typeof window.TitanSDK !== 'undefined') {
+        readDeviceInfo();
+      } else {
+        var script = document.createElement('script');
+        script.src = 'https://sdk.titanos.tv/sdk/sdk.js';
+        script.crossOrigin = 'anonymous';
+        script.onload = readDeviceInfo;
+        script.onerror = function () { finish(); };
+        document.head.appendChild(script);
+      }
+    }
+
+    // Samsung's product APIs (webapis.network, webapis.productinfo) live in a
+    // script the TV web runtime serves; Kodi reads network and device details
+    // from them. Skipped in ordinary browsers, where the file does not exist.
+    if (isTizenRuntime) {
+      Module.kodi.webApiProvider = 'tizen';
+      var webapisScript = document.createElement('script');
+      webapisScript.src = '$WEBAPIS/webapis/webapis.js';
+      // Initial device queries must run after the Samsung APIs have loaded.
+      webapisScript.onload = loadKodi;
+      webapisScript.onerror = loadKodi;
+      document.head.appendChild(webapisScript);
+    } else if (typeof window.TitanSDK !== 'undefined' ||
+               /TitanOS\//i.test(navigator.userAgent || '')) {
+      Module.kodi.webApiProvider = 'titan';
+      loadTitanDeviceInfo();
+    } else {
+      loadKodi();
+    }
+  </script>
 </body>
 </html>

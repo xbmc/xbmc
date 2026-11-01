@@ -39,11 +39,11 @@ option(ENABLE_WASM_DEV_PROXY "Route cross-origin requests through tools/wasm/ser
 # Threading + memory (COOP/COEP headers required in HTML for pthreads).
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options(
-    "SHELL:-sUSE_PTHREADS=1"
+    "-pthread"
     "SHELL:-sPTHREAD_POOL_SIZE=16"
     "SHELL:-sAUDIO_WORKLET"
     "SHELL:-sWASM_WORKERS"
-    "SHELL:-sINITIAL_MEMORY=512MB"
+    "SHELL:-sINITIAL_MEMORY=1GB"
     # Emscripten's getHeapMax() (src/lib/libcore.js) caps this at
     # 4GB - WASM_PAGE_SIZE on non-MEMORY64 builds, so emscripten_get_heap_max()
     # never actually wraps to 0 despite the literal 4GB here.
@@ -87,8 +87,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   #   - Exception catching enabled: C++ exceptions surface with a message
   #     rather than silently aborting.
   #
-  # Release mode: assertions stay at level 1 (cheap; useful while the port is
-  # still maturing) and the optimiser is left to Emscripten/CMake defaults.
+  # Release mode: Emscripten/CMake defaults, which disable assertions in
+  # optimized builds.
   # ---------------------------------------------------------------------------
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-g -O0)
@@ -101,8 +101,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       "SHELL:--source-map-base=http://localhost:8080/"
     )
     message(STATUS "WASM: Debug build — SAFE_HEAP + DWARF symbols + source maps enabled")
-  else()
-    add_link_options("SHELL:-sASSERTIONS=1")
   endif()
 
   if(ENABLE_WASM_PROFILING)
