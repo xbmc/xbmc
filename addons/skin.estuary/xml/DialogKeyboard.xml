@@ -75,92 +75,92 @@
 					<onright>95200</onright>
 					<control type="button" id="100">
 						<description>(0,0) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">304</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">304</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>120</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="101">
 						<description>(0,1) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">303</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">303</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>121</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="102">
 						<description>(0,2) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">302</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">302</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>122</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="103">
 						<description>(0,3) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>123</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="104">
 						<description>(0,4) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>124</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="105">
 						<description>(0,5) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>125</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="106">
 						<description>(0,6) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">32</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">32</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>126</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="107">
 						<description>(0,7) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">305</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">305</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>127</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="108">
 						<description>(0,8) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">306</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">306</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>128</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="109">
 						<description>(0,9) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>129</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="110">
 						<description>(0,10) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">170</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">170</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>130</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="111">
 						<description>(0,11) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">171</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">171</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>131</ondown>
 						<include>KeyboardButton</include>
 					</control>
 					<control type="button" id="112">
 						<description>(0,12) key button</description>
-						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">172</onup>
-						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">172</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 						<ondown>132</ondown>
 						<include>KeyboardButton</include>
 					</control>
@@ -550,8 +550,8 @@
 				<height>460</height>
 				<centerleft>88%</centerleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
-				<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">95200</onup>
-				<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+				<onup condition="[!Integer.IsGreater(Container(9010).NumItems,0) | !Control.IsVisible(9010)]">95200</onup>
+				<onup condition="Integer.IsGreater(Container(9010).NumItems,0) + Control.IsVisible(9010)">9010</onup>
 				<ondown>95200</ondown>
 				<onleft>78500</onleft>
 				<onright>140</onright>
@@ -592,7 +592,7 @@
 				<onright>9010</onright>
 				<onup>noop</onup>
 				<ondown>105</ondown>
-				<visible>!Control.IsVisible(313)</visible>
+				<visible>!Control.IsVisible(313) + !String.IsEmpty(Control.GetLabel(312).index(1))</visible>
 				<itemlayout width="500" height="60">
 					<control type="image">
 						<left>10</left>
