@@ -1257,7 +1257,19 @@ void CDVDVideoCodecAndroidMediaCodec::Reset()
 
 bool CDVDVideoCodecAndroidMediaCodec::Reconfigure(CDVDStreamInfo &hints)
 {
-  if (m_hints.Equal(hints, CDVDStreamInfo::COMPARE_ALL &
+  // Open() sets up the bitstream converter for avcC/hvcC streams only. A codec opened for
+  // one of avcC or Annex B can't take the other.
+  bool needsBitstream = false;
+  if (hints.extradata && !hints.cryptoSession &&
+      (hints.codec == AV_CODEC_ID_H264 || hints.codec == AV_CODEC_ID_HEVC))
+  {
+    CBitstreamConverter bitstream;
+    needsBitstream = bitstream.Open(hints.codec, hints.extradata.GetData(),
+                                    hints.extradata.GetSize(), true);
+  }
+
+  if (needsBitstream == (m_bitstream != nullptr) &&
+      m_hints.Equal(hints, CDVDStreamInfo::COMPARE_ALL &
                                ~(CDVDStreamInfo::COMPARE_ID | CDVDStreamInfo::COMPARE_EXTRADATA)))
   {
     CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Reconfigure: true");
