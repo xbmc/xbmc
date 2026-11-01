@@ -952,7 +952,9 @@ bool CVideoPlayer::OpenInputStream()
 
     if (!URIUtils::IsUPnP(m_item.GetPath()) &&
         !m_item.GetProperty("no-ext-subs-scan").asBoolean(false))
-      CUtil::ScanForExternalSubtitles(m_item.GetSubtitleAnchorPath(), filenames);
+      CUtil::ScanForExternalSubtitles(m_item.GetSubtitleAnchorPath(), filenames,
+                                      m_item.HasVideoInfoTag() ? m_item.GetVideoInfoTag()
+                                                               : nullptr);
 
     // load any subtitles from file item
     std::string key("subtitle:1");
@@ -5615,8 +5617,9 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       pDemux = pDemuxFFmpeg;
     }
 
-    ExternalStreamInfo info =
-        CUtil::GetExternalStreamDetailsFromFilename(m_item.GetDynPath(), filename);
+    ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(
+        m_item.GetDynPath(), filename,
+        m_item.HasVideoInfoTag() ? m_item.GetVideoInfoTag() : nullptr);
 
     for (auto sub : pDemux->GetStreams())
     {
@@ -5659,7 +5662,8 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
   s.type = StreamType::SUBTITLE;
   s.id       = 0;
   s.filename = filename;
-  ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(m_item.GetDynPath(), filename);
+  ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(
+      m_item.GetDynPath(), filename, m_item.HasVideoInfoTag() ? m_item.GetVideoInfoTag() : nullptr);
   s.name = info.name;
   s.language = info.language;
   if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)

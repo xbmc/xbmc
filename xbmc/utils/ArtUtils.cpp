@@ -242,27 +242,33 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
   if (URIUtils::IsBlurayPath(item.GetDynPath()))
     file = strFile = URIUtils::GetDiscFile(item.GetDynPath());
 
+  bool isOpticalMediaFolder{false};
   if (URIUtils::IsOpticalMediaFile(file) && !URIUtils::IsArchive(url))
   {
     // Optical media files (VIDEO_TS.IFO/INDEX.BDMV) should be treated like folders
     useFolder = true; // ByRef so changes behaviour in GetLocalArt()
     strFile = URIUtils::GetParentPath(file);
+    isOpticalMediaFolder = true;
   }
 
   if (!URIUtils::GetFileName(file).empty() && item.HasVideoInfoTag() &&
       additionalIdentifiers != AdditionalIdentifiers::NONE)
   {
+    std::string baseFile{file};
+    URIUtils::RemoveExtension(baseFile);
+    // Like all disc folder art, an episode's or version's art is stored in the folder holding
+    // BDMV/VIDEO_TS
+    if (isOpticalMediaFolder)
+      baseFile = URIUtils::AddFileToFolder(strFile, URIUtils::GetFileName(baseFile));
+
     using enum AdditionalIdentifiers;
     switch (additionalIdentifiers)
     {
       case SEASON_AND_EPISODE:
       {
-        // Note this is an exception to the optical media rule above - episode art files will be stored alongside the episode .nfo
         const CVideoInfoTag* tag{item.GetVideoInfoTag()};
         if (tag->m_iSeason > -1 && tag->m_iEpisode > -1)
         {
-          std::string baseFile{file};
-          URIUtils::RemoveExtension(baseFile);
           strFile = fmt::format("{}-S{:02}E{:02}{}", baseFile, tag->m_iSeason, tag->m_iEpisode,
                                 URIUtils::GetExtension(file));
           useFolder = false;
@@ -274,8 +280,6 @@ std::string GetLocalArtBaseFilename(const CFileItem& item,
         const int playlist{item.GetProperty("bluray_playlist").asInteger32(-1)};
         if (playlist > -1)
         {
-          std::string baseFile{file};
-          URIUtils::RemoveExtension(baseFile);
           strFile = fmt::format("{}-{:05}{}", baseFile, playlist, URIUtils::GetExtension(file));
           useFolder = false;
         }
