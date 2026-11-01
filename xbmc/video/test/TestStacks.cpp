@@ -133,6 +133,35 @@ TEST_F(TestStacks, TestStackPartToPlayIsVideo)
   EXPECT_TRUE(part.HasVideoInfoTag());
 }
 
+TEST_F(TestStacks, TestChosenDiscStackPartWithoutTimes)
+{
+  // Disc image stack parts have no times until played, so the part number selects the part
+  const std::string movieFolder =
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)");
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, VIDEO_EXTENSIONS, DIR_FLAG_DEFAULTS);
+  items.Stack();
+  ASSERT_EQ(items.Size(), 1);
+  ASSERT_TRUE(items.Get(0)->IsStack());
+
+  CApplicationStackHelper stackHelper;
+  ASSERT_TRUE(stackHelper.InitializeStack(*items.Get(0)));
+  ASSERT_EQ(stackHelper.GetKnownStackParts(), 0);
+
+  std::vector<std::string> paths;
+  CStackDirectory::GetPaths(items.Get(0)->GetDynPath(), paths);
+  ASSERT_EQ(paths.size(), 2);
+
+  CFileItem part{*items.Get(0)};
+  part.SetStartPartNumber(2);
+  part.SetStartOffset(0);
+  CPlayerOptions options;
+  stackHelper.GetStackPartAndOptions(part, options, false);
+  EXPECT_EQ(stackHelper.GetCurrentPartNumber(), 1);
+  EXPECT_EQ(part.GetPath(), paths[1]);
+  EXPECT_EQ(options.starttime, 0.0);
+}
+
 TEST_F(TestStacks, TestMovieFilesStackBlurayIso)
 {
   const std::string movieFolder =

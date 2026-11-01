@@ -108,6 +108,20 @@ void SetEpisodeCounts(CFileItem& item, int total, int watched);
   */
 std::optional<int> GetNextPartFromBookmark(const CBookmark& bookmark);
 
+/*! \brief Make the playerState of a bookmark that resumes a stack part.
+  \param part The stack part to resume (0-based)
+  \param playerState The player state within the part, or empty to resume from the start of the part
+  \return The playerState for the bookmark
+  */
+std::string MakeNextPartPlayerState(int part, const std::string& playerState);
+
+/*! \brief Get the player state within the part from a bookmark that resumes a stack part.
+  \param bookmark The bookmark to parse
+  \return std::nullopt if the bookmark doesn't resume within a part, otherwise the player state. The
+  bookmark time is then relative to the part.
+  */
+std::optional<std::string> GetNextPartPlayerStateFromBookmark(const CBookmark& bookmark);
+
 /*!
  \brief Get the resume offset and part number for the given stack item.
  \param item The stack item to retrieve the offset for.

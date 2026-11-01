@@ -362,6 +362,40 @@ std::optional<int> GetNextPartFromBookmark(const CBookmark& bookmark)
   return std::stoi(hRoot.ToElement()->GetText());
 }
 
+std::string MakeNextPartPlayerState(int part, const std::string& playerState)
+{
+  CXBMCTinyXML2 xmlDoc;
+  auto* eRoot{xmlDoc.NewElement("nextpart")};
+  eRoot->SetText(part);
+  if (!playerState.empty())
+    eRoot->SetAttribute("state", playerState.c_str());
+  xmlDoc.InsertEndChild(eRoot);
+
+  tinyxml2::XMLPrinter printer(nullptr, true);
+  xmlDoc.Accept(&printer);
+  return printer.CStr();
+}
+
+std::optional<std::string> GetNextPartPlayerStateFromBookmark(const CBookmark& bookmark)
+{
+  if (!bookmark.HasSavedPlayerState())
+    return std::nullopt;
+
+  CXBMCTinyXML2 xmlDoc;
+  if (!xmlDoc.Parse(bookmark.playerState))
+    return std::nullopt;
+
+  const auto* eRoot{xmlDoc.RootElement()};
+  if (!eRoot || !StringUtils::EqualsNoCase(eRoot->Value(), "nextpart"))
+    return std::nullopt;
+
+  const char* state{eRoot->Attribute("state")};
+  if (!state)
+    return std::nullopt;
+
+  return std::string{state};
+}
+
 namespace
 {
 bool GetStackTimes(const std::string& path, std::vector<std::chrono::milliseconds>& times)
@@ -386,7 +420,14 @@ std::optional<std::tuple<int64_t, unsigned int>> GetStackResumeOffsetAndPartNumb
     if (bookmark.IsPartWay())
     {
       if (std::optional<int> nextPart{GetNextPartFromBookmark(bookmark)}; nextPart)
-        return std::make_optional(std::make_tuple(0, *nextPart + 1));
+      {
+        // Resumes within the part (time relative to it) or from its start
+        const int64_t offset{GetNextPartPlayerStateFromBookmark(bookmark)
+                                 ? CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)
+                                 : 0};
+        return std::make_optional(
+            std::make_tuple(offset, static_cast<unsigned int>(*nextPart + 1)));
+      }
 
       int64_t offset{CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)};
       unsigned int partNumber{1};
@@ -416,8 +457,19 @@ int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber)
     const CBookmark bookmark{item.GetVideoInfoTag()->GetResumePoint()};
     if (bookmark.IsPartWay())
     {
+      // A next part bookmark names its part, and its time (if any) is relative to that part
+      if (const std::optional<int> nextPart{GetNextPartFromBookmark(bookmark)}; nextPart)
+      {
+        if (static_cast<unsigned int>(*nextPart + 1) != partNumber)
+          return 0;
+
+        return GetNextPartPlayerStateFromBookmark(bookmark)
+                   ? CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)
+                   : 0;
+      }
+
       std::vector<std::chrono::milliseconds> times;
-      if (GetStackTimes(path, times))
+      if (GetStackTimes(path, times) && partNumber <= times.size())
       {
         offset = 0;
         const int64_t offsetToCheck{CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)};
@@ -472,8 +524,20 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item)
   if (item.GetCurrentResumeTimeAndPartNumber(startOffset, partNumber) && startOffset > 0)
   {
     ResumeInformation resumeInfo;
-    resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
-    resumeInfo.partNumber = partNumber;
+    // Take a stack's part from its stack times (or next part bookmark) as the resume choice does
+    if (const auto stackResume{item.IsStack() ? GetStackResumeOffsetAndPartNumber(item)
+                                              : std::nullopt};
+        stackResume)
+    {
+      const auto& [offset, part] = *stackResume;
+      resumeInfo.startOffset = offset;
+      resumeInfo.partNumber = static_cast<int>(part);
+    }
+    else
+    {
+      resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
+      resumeInfo.partNumber = partNumber;
+    }
     resumeInfo.isResumable = true;
     return resumeInfo;
   }
