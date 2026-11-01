@@ -10,6 +10,8 @@
 
 #include "guilib/GUIKeyboard.h"
 
+#include <memory>
+
 struct CDarwinEmbedKeyboardImpl;
 
 class CDarwinEmbedKeyboard : public CGUIKeyboard
