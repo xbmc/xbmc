@@ -144,16 +144,20 @@ private:
   // Protocols from add-ons with encoded host names
   std::vector<std::string> m_encoded;
 
-  // Cached extension lists, copied and published atomically.
-  //
-  // std::atomic_load/store of std::shared_ptr<T> is deprecated in C++20 and removed in C++26, and
-  // gcc 16 warns on every use. The replacement, the std::atomic<std::shared_ptr<T>> partial
-  // specialization (P0718), is only provided by newer standard libraries: it is absent from
-  // libstdc++ 11 (the gcc 11 toolchain still used by several platform builders) and from libc++ as
-  // shipped with Xcode and clang 14, where std::atomic<T> static_asserts on non-trivially-copyable
-  // T. CAtomicStringPtr hides that difference behind load()/store() and uses the deprecated free
-  // functions only where the specialization is unavailable, so the warning disappears on modern
-  // toolchains without breaking the older ones.
+private:
+  /*!
+   * @brief Atomically replaceable immutable string, used for the cached extension lists
+   *
+   * std::atomic_load/store of std::shared_ptr<T> is deprecated in C++20 and removed in C++26, and
+   * gcc 16 warns on every use. The replacement, the std::atomic<std::shared_ptr<T>> partial
+   * specialization (P0718), is only provided by newer standard libraries: it is missing from
+   * libstdc++ 11 (the gcc 11 toolchain still used by some platform builders) and from libc++, where
+   * std::atomic<T> static_asserts on a non-trivially-copyable T. This class hides the difference
+   * behind load()/store() and falls back to the deprecated free functions only where the
+   * specialization is unavailable, so the warning disappears on modern toolchains without breaking
+   * the older ones.
+   */
+public:
   class CAtomicStringPtr
   {
   public:
@@ -185,6 +189,8 @@ private:
 #endif
   };
 
+private:
+  // Cached extension lists, copied and published atomically. See CAtomicStringPtr.
   mutable CAtomicStringPtr m_discStubExtensions;
   mutable CAtomicStringPtr m_musicExtensions;
   mutable CAtomicStringPtr m_pictureExtensions;
