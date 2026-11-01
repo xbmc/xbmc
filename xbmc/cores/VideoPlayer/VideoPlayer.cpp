@@ -66,6 +66,7 @@
 #include "windowing/WinSystem.h"
 
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <chrono>
 #include <iterator>
@@ -1489,6 +1490,7 @@ void CVideoPlayer::Prepare()
 
   // give players a chance to reconsider now codecs are known
   CreatePlayers();
+  m_VideoPlayerAudio->OnPlaybackStart();
 
   if (!discStateRestored)
     OpenDefaultStreams();
@@ -1630,6 +1632,24 @@ void CVideoPlayer::Process()
     {
       CThread::Sleep(50ms);
       continue;
+    }
+
+    // Does not service messages, like the display-lost guard above. A request from the user ends
+    // the hold instead of waiting behind it.
+    if (m_audioFormatHold)
+    {
+      if (m_audioFormatHoldRestart.exchange(false))
+        m_audioFormatHoldTimer.Set(m_audioFormatHoldTimer.GetInitialTimeoutValue());
+
+      if (!m_bAbortRequest && !m_audioFormatHoldTimer.IsTimePast() && !m_audioChainReady.load() &&
+          !HasPendingPlaybackRequest())
+      {
+        // Published from here: this guard skips the UpdatePlayState below it.
+        UpdatePlayState(200);
+        CThread::Sleep(50ms);
+        continue;
+      }
+      ReleaseAudioFormatHold();
     }
 
     // check if in an edit (cut or commercial break) that should be automatically skipped
@@ -3000,6 +3020,9 @@ void CVideoPlayer::OnExit()
 {
   CLog::Log(LOGINFO, "CVideoPlayer::OnExit()");
 
+  // The loop can exit on abort without reaching the release in it.
+  ReleaseAudioFormatHold();
+
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetCaching(CACHESTATE_DONE);
 
@@ -3690,6 +3713,10 @@ void CVideoPlayer::HandleMessages()
     {
       if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(pMsg)->Wait(100ms, SYNCSOURCE_PLAYER))
         CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::GENERAL_SYNCHRONIZE");
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_AUDIO_FORMAT_CHANGE))
+    {
+      HoldForAudioFormatChange();
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_AVCHANGE))
     {
@@ -5621,6 +5648,18 @@ int CVideoPlayer::GetCacheLevel() const
   return (int)(m_State.cache_level * 100);
 }
 
+bool CVideoPlayer::IsWaitingForAudio() const
+{
+  std::unique_lock lock(m_StateSection);
+  return m_State.waitingForAudio;
+}
+
+int CVideoPlayer::GetWaitingForAudioRemaining() const
+{
+  std::unique_lock lock(m_StateSection);
+  return static_cast<int>(std::lround(m_State.waitingForAudioRemaining * 100));
+}
+
 double CVideoPlayer::GetQueueTime()
 {
   int a = m_VideoPlayerAudio->GetLevel();
@@ -6017,6 +6056,16 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.cache_time = queueTime / 1000.0;
   }
 
+  state.waitingForAudio = m_audioFormatHold;
+  state.waitingForAudioRemaining = 0.0;
+  if (m_audioFormatHold)
+  {
+    const double total =
+        static_cast<double>(m_audioFormatHoldTimer.GetInitialTimeoutValue().count());
+    const double left = static_cast<double>(m_audioFormatHoldTimer.GetTimeLeft().count());
+    state.waitingForAudioRemaining = total > 0.0 ? std::min(1.0, left / total) : 0.0;
+  }
+
   XFILE::SCacheStatus status;
   if (m_pInputStream && m_pInputStream->GetCacheStatus(&status))
   {
@@ -6266,26 +6315,130 @@ void CVideoPlayer::UpdateVideoRender(bool video)
 void CVideoPlayer::OnLostDisplay()
 {
   CLog::Log(LOGINFO, "VideoPlayer: OnLostDisplay received");
-  if (m_VideoPlayerAudio->IsInited())
-    m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true), 1);
-  if (m_VideoPlayerVideo->IsInited())
-    m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true), 1);
-  m_clock.Pause(true);
-  m_displayLost = true;
+  {
+    std::unique_lock lock(m_holdSection);
+    if (m_VideoPlayerAudio->IsInited())
+      m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true),
+                                      1);
+    if (m_VideoPlayerVideo->IsInited())
+      m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true),
+                                      1);
+    m_clock.Pause(true);
+    m_displayLost = true;
+  }
   FlushRenderer();
 }
 
 void CVideoPlayer::OnResetDisplay()
 {
+  std::unique_lock lock(m_holdSection);
   if (!m_displayLost)
     return;
 
   CLog::Log(LOGINFO, "VideoPlayer: OnResetDisplay received");
-  m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false), 1);
-  m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false), 1);
-  m_clock.Pause(false);
+
+  // The format hold still wants playback down, and releases it itself. The HDMI sink was closed
+  // with the display, so the chain has the format to acquire again.
+  if (m_audioFormatHold)
+  {
+    m_audioChainReady = false;
+    m_audioFormatHoldRestart = true;
+  }
+  else
+  {
+    m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false),
+                                    1);
+    m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false),
+                                    1);
+    m_clock.Pause(false);
+  }
+  // Last: the player loop judges the hold as soon as it sees the display back
   m_displayLost = false;
   m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
+}
+
+bool CVideoPlayer::HasPendingPlaybackRequest()
+{
+  static constexpr std::array requests{
+      CDVDMsg::PLAYER_SEEK,        CDVDMsg::PLAYER_SEEK_CHAPTER,    CDVDMsg::PLAYER_SETSPEED,
+      CDVDMsg::PLAYER_OPENFILE,    CDVDMsg::PLAYER_SET_STATE,       CDVDMsg::PLAYER_FRAME_ADVANCE,
+      CDVDMsg::PLAYER_SET_PROGRAM, CDVDMsg::PLAYER_SET_AUDIOSTREAM, CDVDMsg::PLAYER_SET_VIDEOSTREAM,
+  };
+  return std::ranges::any_of(requests, [this](CDVDMsg::Message type)
+                             { return m_messenger.GetPacketCount(type) > 0; });
+}
+
+void CVideoPlayer::HoldForAudioFormatChange()
+{
+  const int tenths = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_AUDIOOUTPUT_DELAYFORMATCHANGE);
+  if (tenths <= 0)
+    return;
+
+  // A further change during a hold restarts it: the chain has a new format to acquire, and the
+  // time already served was spent on the previous one.
+  m_audioChainReady = false;
+  m_audioFormatHoldTimer.Set(std::chrono::milliseconds(tenths * 100));
+  if (m_audioFormatHold)
+    return;
+
+  CLog::Log(LOGINFO, "VideoPlayer: holding playback {:.1f}s for the audio format change",
+            static_cast<double>(tenths) / 10.0);
+
+  {
+    std::unique_lock lock(m_holdSection);
+    if (m_VideoPlayerAudio->IsInited())
+    {
+      m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true),
+                                      1);
+      m_VideoPlayerAudio->SendMessage(
+          std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_AUDIO_FORMAT_HOLD, true), 1);
+    }
+    if (m_VideoPlayerVideo->IsInited())
+      m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, true),
+                                      1);
+    m_clock.Pause(true);
+    m_audioFormatHold = true;
+  }
+}
+
+void CVideoPlayer::ReleaseAudioFormatHold()
+{
+  if (!m_audioFormatHold)
+    return;
+
+  const char* why = m_audioChainReady.load()              ? "chain reported ready"
+                    : m_audioFormatHoldTimer.IsTimePast() ? "timed out"
+                                                          : "ended early";
+  CLog::Log(LOGINFO, "VideoPlayer: audio format hold released after {:.1f}s ({})",
+            static_cast<double>((m_audioFormatHoldTimer.GetInitialTimeoutValue() -
+                                 m_audioFormatHoldTimer.GetTimeLeft())
+                                    .count()) /
+                1000.0,
+            why);
+  {
+    std::unique_lock lock(m_holdSection);
+    m_VideoPlayerAudio->SendMessage(
+        std::make_shared<CDVDMsgBool>(CDVDMsg::PLAYER_AUDIO_FORMAT_HOLD, false), 1);
+    // A display lost meanwhile keeps playback paused until its reset.
+    if (!m_displayLost)
+    {
+      m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false),
+                                      1);
+      m_VideoPlayerVideo->SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_PAUSE, false),
+                                      1);
+      m_clock.Pause(false);
+    }
+    m_audioFormatHold = false;
+    m_audioFormatHoldRestart = false;
+    m_audioChainReady = false;
+  }
+}
+
+void CVideoPlayer::NotifyAudioChainReady()
+{
+  if (!m_audioChainReady.exchange(true))
+    CLog::Log(LOGINFO, "VideoPlayer: audio chain reported ready");
 }
 
 void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item, UpdateStreamDetails update)
