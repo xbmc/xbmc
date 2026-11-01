@@ -346,7 +346,8 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
 {
   // recursively add items to list
   CFileItemList queuedItems;
-  VIDEO::UTILS::GetItemsForPlayList(itemToQueue, queuedItems, mode);
+  if (!VIDEO::UTILS::GetItemsForPlayList(itemToQueue, queuedItems, mode))
+    return; // enumeration cancelled by the user via the busy dialog
 
   auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
   playlistPlayer.ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
@@ -358,20 +359,40 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
   int pos = 0;
   if (itemToPlay)
   {
-    for (const std::shared_ptr<CFileItem>& queuedItem : queuedItems)
+    // CPlayList::Add may have shuffled the playlist when the sticky video
+    // playlist shuffle flag is set; locate the chosen item in the live
+    // playlist by identity.
+    bool found = false;
+    for (int i = 0; i < playList.size(); ++i)
     {
-      if (queuedItem->IsSamePath(itemToPlay.get()))
+      if (playList[i]->IsSamePath(itemToPlay.get()))
       {
-        queuedItem->SetStartPartNumber(itemToPlay->GetStartPartNumber());
+        playList[i]->SetStartPartNumber(itemToPlay->GetStartPartNumber());
+        pos = i;
+        found = true;
         break;
       }
-      pos++;
+    }
+
+    // Resume forces the UNWATCHED filter on the enumerator, so a chosen item
+    // with play count > 0 is dropped before it reaches the playlist. Append
+    // it and swap to the front so Resume still plays the explicitly chosen
+    // item.
+    if (!found)
+    {
+      playList.Add(itemToPlay);
+      const int lastPos = playList.size() - 1;
+      if (lastPos > 0)
+        playList.Swap(0, lastPos);
+      pos = 0;
     }
   }
 
-  if (playlistPlayer.IsShuffled(PLAYLIST::Id::TYPE_VIDEO))
+  // Keep the chosen item at the front of a shuffled playlist so every
+  // sibling remains reachable for subsequent autoplay.
+  if (playlistPlayer.IsShuffled(PLAYLIST::Id::TYPE_VIDEO) && pos > 0)
   {
-    playList.Swap(0, playList.FindOrder(pos));
+    playList.Swap(0, pos);
     pos = 0;
   }
 
