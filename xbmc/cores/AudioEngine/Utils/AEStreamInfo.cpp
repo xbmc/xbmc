@@ -639,6 +639,15 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       else
         header_size = (((data[m_fsize + 5] & 0x1f) << 3) | ((data[m_fsize + 6] & 0xe0) >> 5)) + 1;
 
+      if (size - skip < m_fsize + header_size + 4)
+      {
+        m_syncFunc = &CAEStreamParser::SyncDTS;
+        m_needBytes = m_fsize + header_size + 4;
+        m_fsize = 0;
+
+        return skip;
+      }
+
       hd_sync = data[m_fsize + header_size] << 24 | data[m_fsize + header_size + 1] << 16 |
                 data[m_fsize + header_size + 2] << 8 | data[m_fsize + header_size + 3];
 
@@ -667,8 +676,10 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
           dataType = m_info.m_type;
         }
       }
-      else
+      else if (m_info.m_type != CAEStreamInfo::STREAM_TYPE_NULL)
         dataType = m_info.m_type;
+      else
+        continue;
 
       m_coreSize = m_fsize;
       m_fsize += hd_size;
