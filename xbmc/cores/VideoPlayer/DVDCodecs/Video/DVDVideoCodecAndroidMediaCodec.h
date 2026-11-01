@@ -173,6 +173,10 @@ protected:
 
   int m_indexInputBuffer;
   bool m_render_surface;
+  // Tunneled playback: the codec renders on the audio clock without output buffers.
+  // Each queued frame is reported as a picture without buffer, in pts order.
+  bool m_tunneled = false;
+  std::vector<double> m_tunnelPts;
   mpeg2_sequence* m_mpeg2_sequence = nullptr;
   bool m_useDTSforPTS = false;
 

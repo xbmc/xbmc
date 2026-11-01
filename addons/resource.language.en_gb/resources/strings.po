@@ -22661,7 +22661,17 @@ msgctxt "#36541"
 msgid "Allows volume control from AirPlay clients."
 msgstr ""
 
-#empty strings from id 36542 to 36543
+#. Label of a setting, allowing the video decoder to be tunneled with the audio output
+#: system/settings/settings.xml
+msgctxt "#36542"
+msgid "Use tunneled playback"
+msgstr ""
+
+#. Description of setting with label #36542 "Use tunneled playback"
+#: system/settings/settings.xml
+msgctxt "#36543"
+msgid "Let the device keep audio and video in sync (MediaCodec tunneling). Audio is not resampled to keep it in sync, including on live streams. Multichannel audio is downmixed to stereo. Requires a decoder with tunneled playback and PCM audio output."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36544"

@@ -78,6 +78,7 @@ protected:
   bool m_bPassthrough;
   CAEChannelInfo m_channelLayout;
   CAEStreamInfo::DataType m_dataType;
+  int m_hwAvSyncId = 0;
   bool m_bPaused;
 
   std::atomic_bool m_bAbort;
