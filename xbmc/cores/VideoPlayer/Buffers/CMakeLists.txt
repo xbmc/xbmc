@@ -24,5 +24,8 @@ if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
     list(APPEND HEADERS VideoBufferStarfish.h)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL wasm)
+    list(APPEND HEADERS VideoBufferWasmMedia.h)
+endif()
 
 core_add_library(videoplayer-buffers)
