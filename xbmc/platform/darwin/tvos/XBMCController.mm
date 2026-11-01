@@ -42,7 +42,13 @@
 #import "platform/darwin/tvos/input/LibInputTouch.h"
 #include "platform/darwin/tvos/powermanagement/TVOSPowerSyscall.h"
 
+#import <AVFoundation/AVSampleBufferDisplayLayer.h>
 #import <AVKit/AVDisplayManager.h>
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+#import <AVFoundation/AVSampleBufferVideoRenderer.h>
+#endif
+#include <cmath>
+
 #import <AVKit/UIWindow.h>
 #include <unistd.h>
 
@@ -56,6 +62,9 @@ XBMCController* g_xbmcController;
 @synthesize displayManager;
 @synthesize inputHandler;
 @synthesize glView;
+@synthesize videoLayer;
+@synthesize videoLayerContainer;
+@synthesize videoLayerGeneration;
 
 #pragma mark - UIView Keyboard
 
@@ -157,6 +166,140 @@ XBMCController* g_xbmcController;
     return [glView presentFramebuffer];
   else
     return FALSE;
+}
+
+- (BOOL)enableVideoLayer
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    __block BOOL enabled = NO;
+    void (^configure)(void) = ^{
+      if (self.videoLayer == nil)
+      {
+        self.videoLayerGeneration = self.videoLayerGeneration + 1;
+        self.videoLayerContainer = [CALayer layer];
+        self.videoLayerContainer.frame = self.view.bounds;
+        self.videoLayerContainer.masksToBounds = YES;
+        self.videoLayer = [AVSampleBufferDisplayLayer layer];
+        self.videoLayer.videoGravity = AVLayerVideoGravityResize;
+        self.videoLayer.frame = self.videoLayerContainer.bounds;
+        [self.videoLayerContainer addSublayer:self.videoLayer];
+        [self.view.layer insertSublayer:self.videoLayerContainer below:self.glView.layer];
+      }
+      self.glView.opaque = NO;
+      self.glView.layer.opaque = NO;
+      enabled = self.videoLayer != nil;
+    };
+    if ([NSThread isMainThread])
+      configure();
+    else
+      dispatch_sync(dispatch_get_main_queue(), configure);
+    return enabled;
+  }
+#endif
+  return NO;
+}
+
+- (void)disableVideoLayer
+{
+  void (^disable)(void) = ^{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+    if (@available(tvOS 17.0, *))
+      [self.videoLayer.sampleBufferRenderer flush];
+#endif
+    self.videoLayerGeneration = self.videoLayerGeneration + 1;
+    [self.videoLayer removeFromSuperlayer];
+    self.videoLayer = nil;
+    [self.videoLayerContainer removeFromSuperlayer];
+    self.videoLayerContainer = nil;
+    self.glView.layer.opaque = YES;
+    self.glView.opaque = YES;
+  };
+  if ([NSThread isMainThread])
+    disable();
+  else
+    dispatch_sync(dispatch_get_main_queue(), disable);
+}
+
+- (void)setVideoLayerFrame:(CGRect)frame
+                sourceRect:(CGRect)sourceRect
+               orientation:(unsigned int)orientation
+{
+  const NSUInteger generation = self.videoLayerGeneration;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (self.videoLayerGeneration == generation)
+    {
+      [CATransaction begin];
+      [CATransaction setDisableActions:YES];
+      self.videoLayerContainer.frame = frame;
+      self.videoLayerContainer.hidden = CGRectIsEmpty(frame) || CGRectIsEmpty(sourceRect);
+      if (self.videoLayerContainer.hidden)
+      {
+        [CATransaction commit];
+        return;
+      }
+
+      const CGAffineTransform rotation = CGAffineTransformMakeRotation(orientation * M_PI / 180.0);
+      const CGRect unit = CGRectApplyAffineTransform(CGRectMake(0, 0, 1, 1), rotation);
+      CGRect source = CGRectApplyAffineTransform(sourceRect, rotation);
+      source.origin.x -= unit.origin.x;
+      source.origin.y -= unit.origin.y;
+      const CGSize fullSize =
+          CGSizeMake(frame.size.width / source.size.width, frame.size.height / source.size.height);
+      const CGSize size = orientation == 90 || orientation == 270
+                              ? CGSizeMake(fullSize.height, fullSize.width)
+                              : fullSize;
+      self.videoLayer.bounds = CGRectMake(0.0, 0.0, size.width, size.height);
+      self.videoLayer.position = CGPointMake((0.5 - source.origin.x) * fullSize.width,
+                                             (0.5 - source.origin.y) * fullSize.height);
+      [self.videoLayer setAffineTransform:rotation];
+      [CATransaction commit];
+    }
+  });
+}
+
+- (void)enqueueVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    const NSUInteger generation = self.videoLayerGeneration;
+    CFRetain(sampleBuffer);
+    dispatch_async(dispatch_get_main_queue(), ^{
+      AVSampleBufferVideoRenderer* renderer =
+          self.videoLayerGeneration == generation ? self.videoLayer.sampleBufferRenderer : nil;
+      if (renderer != nil)
+      {
+        if (renderer.status == AVQueuedSampleBufferRenderingStatusFailed)
+        {
+          CLog::Log(LOGWARNING, "XBMCController: video renderer failed (code {}), flushing",
+                    renderer.error.code);
+          [renderer flush];
+        }
+        if (renderer.readyForMoreMediaData)
+          [renderer enqueueSampleBuffer:sampleBuffer];
+      }
+      CFRelease(sampleBuffer);
+    });
+  }
+#endif
+}
+
+- (void)flushVideoLayer
+{
+#if __TV_OS_VERSION_MAX_ALLOWED >= 170000
+  if (@available(tvOS 17.0, *))
+  {
+    // Frames submitted before a seek must not arrive after the flush.
+    const NSUInteger generation = self.videoLayerGeneration + 1;
+    self.videoLayerGeneration = generation;
+    dispatch_async(dispatch_get_main_queue(), ^{
+      if (self.videoLayerGeneration == generation)
+        [self.videoLayer.sampleBufferRenderer flush];
+    });
+  }
+#endif
 }
 
 - (CGRect)fullscreenSubviewFrame

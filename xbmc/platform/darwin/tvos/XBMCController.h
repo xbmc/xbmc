@@ -9,11 +9,14 @@
 #include <memory>
 #include <string>
 
+#import <CoreMedia/CMSampleBuffer.h>
 #import <Foundation/Foundation.h>
 #import <OpenGLES/EAGL.h>
 #import <UIKit/UIKit.h>
 
 @class AVDisplayManager;
+@class AVSampleBufferDisplayLayer;
+@class CALayer;
 @class DarwinEmbedNowPlayingInfoManager;
 @class TVOSEAGLView;
 @class TVOSLibInputHandler;
@@ -38,6 +41,9 @@ class CFileItem;
 @property(nonatomic, strong) DarwinEmbedNowPlayingInfoManager* MPNPInfoManager;
 @property(nonatomic, strong) TVOSDisplayManager* displayManager;
 @property(nonatomic, strong) TVOSEAGLView* glView;
+@property(nonatomic, strong) AVSampleBufferDisplayLayer* videoLayer;
+@property(nonatomic, strong) CALayer* videoLayerContainer;
+@property(atomic) NSUInteger videoLayerGeneration;
 @property(nonatomic, strong) TVOSLibInputHandler* inputHandler;
 
 - (void)pauseAnimation;
@@ -49,6 +55,13 @@ class CFileItem;
 - (void)enterForeground;
 - (void)setFramebuffer;
 - (bool)presentFramebuffer;
+- (BOOL)enableVideoLayer;
+- (void)disableVideoLayer;
+- (void)setVideoLayerFrame:(CGRect)frame
+                sourceRect:(CGRect)sourceRect
+               orientation:(unsigned int)orientation;
+- (void)enqueueVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+- (void)flushVideoLayer;
 - (void)activateKeyboard:(UIView*)view;
 - (void)deactivateKeyboard:(UIView*)view;
 - (void)nativeKeyboardActive:(bool)active;
