@@ -144,18 +144,17 @@ private:
   // Protocols from add-ons with encoded host names
   std::vector<std::string> m_encoded;
 
-private:
   /*!
    * @brief Atomically replaceable immutable string, used for the cached extension lists
    *
    * std::atomic_load/store of std::shared_ptr<T> is deprecated in C++20 and removed in C++26, and
    * gcc 16 warns on every use. The replacement, the std::atomic<std::shared_ptr<T>> partial
-   * specialization (P0718), is only provided by newer standard libraries: it is missing from
-   * libstdc++ 11 (the gcc 11 toolchain still used by some platform builders) and from libc++, where
-   * std::atomic<T> static_asserts on a non-trivially-copyable T. This class hides the difference
-   * behind load()/store() and falls back to the deprecated free functions only where the
-   * specialization is unavailable, so the warning disappears on modern toolchains without breaking
-   * the older ones.
+   * specialization (P0718), is not available everywhere yet: libstdc++ only defines
+   * __cpp_lib_atomic_shared_ptr from gcc 12, and libc++ does not provide it at all as of LLVM 18
+   * (verified against libc++ 18 and current Xcode), where std::atomic<T> instead static_asserts on
+   * the non-trivially-copyable T. This class hides the difference behind load()/store() and falls
+   * back to the deprecated free functions only where the specialization is unavailable, so the
+   * warning disappears on modern toolchains without breaking the older ones.
    */
 public:
   class CAtomicStringPtr
