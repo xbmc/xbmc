@@ -361,14 +361,25 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
     // CPlayList::Add may have shuffled the playlist when the sticky video
     // playlist shuffle flag is set; locate the chosen item in the live
     // playlist by identity.
+    bool found = false;
     for (int i = 0; i < playList.size(); ++i)
     {
       if (playList[i]->IsSamePath(itemToPlay.get()))
       {
         playList[i]->SetStartPartNumber(itemToPlay->GetStartPartNumber());
         pos = i;
+        found = true;
         break;
       }
+    }
+
+    // Resume forces the UNWATCHED filter on the enumerator, so a chosen item
+    // with play count > 0 is dropped before it reaches the playlist. Inject
+    // it at the front so Resume still plays the explicitly chosen item.
+    if (!found)
+    {
+      playList.Add(itemToPlay, 0, -1);
+      pos = 0;
     }
   }
 
