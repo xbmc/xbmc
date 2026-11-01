@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<smartplaylist type="tvshows">
+    <name>Recently added TV shows</name>
+    <match>all</match>
+    <rule field="dateadded" operator="after">
+        <value>1970-01-01</value>
+    </rule>
+    <limit>25</limit>
+    <order direction="descending">dateadded</order>
+</smartplaylist>
