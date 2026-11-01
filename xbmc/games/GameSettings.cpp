@@ -43,6 +43,8 @@ const std::string SETTING_GAMES_SHOW_OSD_HELP = "gamesgeneral.showosdhelp";
 const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
 const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
+const std::string SETTING_GAMES_ENABLERUNAHEAD = "gamesgeneral.enablerunahead";
+const std::string SETTING_GAMES_RUNAHEADFRAMES = "gamesgeneral.runaheadframes";
 const std::string SETTING_GAMES_ACHIEVEMENTS_CREATE_ACCOUNT = "gamesachievements.createaccount";
 const std::string SETTING_GAMES_ACHIEVEMENTS_USERNAME = "gamesachievements.username";
 const std::string SETTING_GAMES_ACHIEVEMENTS_PASSWORD = "gamesachievements.password";
@@ -78,7 +80,8 @@ CGameSettings::CGameSettings()
       {SETTING_GAMES_ENABLEREWIND, SETTING_GAMES_REWINDTIME, SETTING_GAMES_ACHIEVEMENTS_USERNAME,
        SETTING_GAMES_ACHIEVEMENTS_PASSWORD, SETTING_GAMES_ACHIEVEMENTS_LOGGED_IN,
        SETTING_GAMES_ACHIEVEMENTS_HARDCORE, SETTING_GAMES_ACHIEVEMENTS_ENCORE,
-       SETTING_GAMES_ACHIEVEMENTS_INDICATOR, SETTING_GAMES_ACHIEVEMENTS_CREATE_ACCOUNT});
+       SETTING_GAMES_ACHIEVEMENTS_INDICATOR, SETTING_GAMES_ACHIEVEMENTS_CREATE_ACCOUNT,
+       SETTING_GAMES_ENABLERUNAHEAD, SETTING_GAMES_RUNAHEADFRAMES});
 
   // On startup reset logged-in flag if token is missing
   const std::string token = m_settings->GetString(SETTING_GAMES_ACHIEVEMENTS_TOKEN);
@@ -129,6 +132,16 @@ bool CGameSettings::AutosaveEnabled()
 bool CGameSettings::RewindEnabled()
 {
   return m_settings->GetBool(SETTING_GAMES_ENABLEREWIND);
+}
+
+bool CGameSettings::RunaheadEnabled() const
+{
+  return m_settings->GetBool(SETTING_GAMES_ENABLERUNAHEAD);
+}
+
+unsigned int CGameSettings::RunaheadFrames() const
+{
+  return static_cast<unsigned int>(std::max(m_settings->GetInt(SETTING_GAMES_RUNAHEADFRAMES), 0));
 }
 
 unsigned int CGameSettings::MaxRewindTimeSec()
@@ -202,6 +215,7 @@ void CGameSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& sett
 
   if (settingId == SETTING_GAMES_ENABLEREWIND || settingId == SETTING_GAMES_REWINDTIME ||
       settingId == SETTING_GAMES_ACHIEVEMENTS_HARDCORE ||
+      settingId == SETTING_GAMES_ENABLERUNAHEAD || settingId == SETTING_GAMES_RUNAHEADFRAMES ||
       settingId == SETTING_GAMES_ACHIEVEMENTS_ENCORE)
   {
     // Hardcore belongs with the rewind settings: turning it on has to drop the
