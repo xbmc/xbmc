@@ -187,42 +187,12 @@ void MysqlDatabase::configure_connection()
   // MySQL 5.7.5+: See #8393
   std::string sqlcmd{
       "SET SESSION sql_mode = (SELECT REPLACE(@@SESSION.sql_mode,'ONLY_FULL_GROUP_BY',''))"};
-  int ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
+  // MariaDB reads some views slower with derived tables merged
+  if (std::string_view(mysql_get_server_info(conn)).find("MariaDB") != std::string_view::npos)
+    sqlcmd += ", SESSION optimizer_switch = 'derived_merge=off'";
+  const int ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
   if (ret != MYSQL_OK)
-    throw DbErrors("Can't disable sql_mode ONLY_FULL_GROUP_BY: '%s' (%d)", db.c_str(), ret);
-
-  // MySQL 5.7.6+: See #8393. Non-fatal if error, as not supported by MySQL 5.0.x
-  sqlcmd = "SELECT @@SESSION.optimizer_switch";
-  ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
-  if (ret == MYSQL_OK)
-  {
-    MYSQL_RES* res = mysql_store_result(conn);
-    if (res)
-    {
-      const MYSQL_ROW row = mysql_fetch_row(res);
-      if (row)
-      {
-        std::string column = row[0];
-        std::vector<std::string> split = StringUtils::Split(column, ',');
-
-        for (std::string& itIn : split)
-        {
-          if (StringUtils::Trim(itIn) == "derived_merge=on")
-          {
-            sqlcmd = "SET SESSION optimizer_switch = 'derived_merge=off'";
-            ret = mysql_real_query(conn, sqlcmd.c_str(), sqlcmd.size());
-            if (ret != MYSQL_OK)
-              throw DbErrors("Can't set optimizer_switch = '%s': '%s' (%d)",
-                             StringUtils::Trim(itIn).c_str(), db.c_str(), ret);
-            break;
-          }
-        }
-      }
-      mysql_free_result(res);
-    }
-  }
-  else
-    CLog::Log(LOGWARNING, "Unable to query optimizer_switch: '{}' ({})", db, ret);
+    throw DbErrors("Can't configure the session: '%s' (%d)", db.c_str(), ret);
 }
 
 int MysqlDatabase::connect(bool create_new)
@@ -324,11 +294,7 @@ int MysqlDatabase::connect(bool create_new)
       configure_connection();
 
       // check existence
-      if (exists())
-      {
-        // nothing to see here
-      }
-      else if (create_new)
+      if (create_new && !exists())
       {
         const std::string sqlcmd{
             StringUtils::Format("CREATE DATABASE `{}` {}", db, SQL_CHARSET_COLLATION)};
@@ -460,6 +426,36 @@ int MysqlDatabase::copy(const char* backup_name)
       {
         mysql_free_result(res);
         throw DbErrors("Can't copy schema for table '%s' (%d)", row[0], ret);
+      }
+
+      // every index is rebuilt after the copy, and one kept here slows each inserted row
+      sqlcmd = StringUtils::Format(
+          "SELECT DISTINCT index_name FROM information_schema.statistics WHERE table_schema = "
+          "'{}' AND table_name = '{}' AND index_name != 'PRIMARY'",
+          backup_name, row[0]);
+      ret = query_with_reconnect(sqlcmd);
+      if (ret != MYSQL_OK)
+      {
+        mysql_free_result(res);
+        throw DbErrors("Can't list the indexes of table '%s' (%d)", row[0], ret);
+      }
+      std::string dropIndexes;
+      if (MYSQL_RES* indexes = mysql_store_result(conn))
+      {
+        while (const MYSQL_ROW index = mysql_fetch_row(indexes))
+          dropIndexes +=
+              StringUtils::Format("{}DROP INDEX `{}`", dropIndexes.empty() ? "" : ", ", index[0]);
+        mysql_free_result(indexes);
+      }
+      if (!dropIndexes.empty())
+      {
+        sqlcmd = StringUtils::Format("ALTER TABLE `{}`.`{}` {}", backup_name, row[0], dropIndexes);
+        ret = query_with_reconnect(sqlcmd);
+        if (ret != MYSQL_OK)
+        {
+          mysql_free_result(res);
+          throw DbErrors("Can't drop the indexes of table '%s' (%d)", row[0], ret);
+        }
       }
 
       // The copy inherits the storage engine, alter it for safety before setting the character set
