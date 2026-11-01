@@ -113,6 +113,8 @@ public:
   // Once Kodi is stopping, gives up if a script holds the GIL too long.
   std::optional<bool> RunWithGil(const std::function<bool()>& fn);
   bool IsGilLost() const { return m_gilLost; }
+  // Python wasn't finalized at exit, as a script was left running or the GIL couldn't be had
+  bool IsPythonLeftRunning() const { return m_skipFinalize || m_gilLost; }
 
   // false means an inconsistent binding runtime: types would be created by a sub-interpreter
   bool BindingModulesLoaded() const { return m_bindingModulesLoaded; }
