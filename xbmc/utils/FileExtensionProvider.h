@@ -144,17 +144,53 @@ private:
   // Protocols from add-ons with encoded host names
   std::vector<std::string> m_encoded;
 
-  // Cached extensions lists - use through atomic operations only
+  // Cached extension lists, copied and published atomically.
   //
-  // @todo: use the safer C++20 std::atomic<std::shared_ptr<std::string>> partial specialization
-  // once available for all platform builders
-  // std::atomic_load/store of std::shared_ptr<T> is deprecated in C++20 and removed in C++26
-  mutable std::shared_ptr<const std::string> m_discStubExtensions;
-  mutable std::shared_ptr<const std::string> m_musicExtensions;
-  mutable std::shared_ptr<const std::string> m_pictureExtensions;
-  mutable std::shared_ptr<const std::string> m_subtitlesExtensions;
-  mutable std::shared_ptr<const std::string> m_videoExtensions;
-  mutable std::shared_ptr<const std::string> m_archiveExtensions;
-  mutable std::shared_ptr<const std::string> m_compoundArchiveExtensions;
-  mutable std::shared_ptr<const std::string> m_fileFolderExtensions;
+  // std::atomic_load/store of std::shared_ptr<T> is deprecated in C++20 and removed in C++26, and
+  // gcc 16 warns on every use. The replacement, the std::atomic<std::shared_ptr<T>> partial
+  // specialization (P0718), is only provided by newer standard libraries: it is absent from
+  // libstdc++ 11 (the gcc 11 toolchain still used by several platform builders) and from libc++ as
+  // shipped with Xcode and clang 14, where std::atomic<T> static_asserts on non-trivially-copyable
+  // T. CAtomicStringPtr hides that difference behind load()/store() and uses the deprecated free
+  // functions only where the specialization is unavailable, so the warning disappears on modern
+  // toolchains without breaking the older ones.
+  class CAtomicStringPtr
+  {
+  public:
+    std::shared_ptr<const std::string> load(
+        std::memory_order order = std::memory_order_seq_cst) const
+    {
+#if defined(__cpp_lib_atomic_shared_ptr)
+      return m_value.load(order);
+#else
+      return std::atomic_load_explicit(&m_value, order);
+#endif
+    }
+
+    void store(std::shared_ptr<const std::string> value,
+               std::memory_order order = std::memory_order_seq_cst)
+    {
+#if defined(__cpp_lib_atomic_shared_ptr)
+      m_value.store(std::move(value), order);
+#else
+      std::atomic_store_explicit(&m_value, std::move(value), order);
+#endif
+    }
+
+  private:
+#if defined(__cpp_lib_atomic_shared_ptr)
+    mutable std::atomic<std::shared_ptr<const std::string>> m_value;
+#else
+    mutable std::shared_ptr<const std::string> m_value;
+#endif
+  };
+
+  mutable CAtomicStringPtr m_discStubExtensions;
+  mutable CAtomicStringPtr m_musicExtensions;
+  mutable CAtomicStringPtr m_pictureExtensions;
+  mutable CAtomicStringPtr m_subtitlesExtensions;
+  mutable CAtomicStringPtr m_videoExtensions;
+  mutable CAtomicStringPtr m_archiveExtensions;
+  mutable CAtomicStringPtr m_compoundArchiveExtensions;
+  mutable CAtomicStringPtr m_fileFolderExtensions;
 };
