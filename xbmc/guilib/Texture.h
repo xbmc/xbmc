@@ -9,11 +9,13 @@
 #pragma once
 
 #include "guilib/AspectRatio.h"
+#include "guilib/ImageColor.h"
 #include "guilib/TextureBase.h"
 #include "guilib/TextureFormats.h"
 
 #include <cstddef>
 #include <memory>
+#include <optional>
 #include <string>
 
 class IImage;
@@ -46,6 +48,7 @@ public:
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
    \param aspectRatio the aspect ratio mode of the texture (defaults to "center").
    \param strMimeType mimetype of the given texture if available (defaults to empty)
+   \param colorMode what to do with the picture's ICC profile (defaults to converting to sRGB)
    \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
   static std::unique_ptr<CTexture> LoadFromFile(
@@ -53,7 +56,8 @@ public:
       unsigned int idealWidth = 0,
       unsigned int idealHeight = 0,
       CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
-      const std::string& strMimeType = "");
+      const std::string& strMimeType = "",
+      ImageColorMode colorMode = ImageColorMode::CONVERT_TO_SRGB);
 
   /*! \brief Load a texture from a file in memory
    Loads a texture from a file in memory, restricting in size if needed based on maxHeight and maxWidth.
@@ -64,6 +68,7 @@ public:
    \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
    \param aspectRatio the aspect ratio mode of the texture (defaults to "center").
+   \param colorMode what to do with the picture's ICC profile (defaults to converting to sRGB)
    \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
   static std::unique_ptr<CTexture> LoadFromFileInMemory(
@@ -72,7 +77,13 @@ public:
       const std::string& mimeType,
       unsigned int idealWidth = 0,
       unsigned int idealHeight = 0,
-      CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER);
+      CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
+      ImageColorMode colorMode = ImageColorMode::CONVERT_TO_SRGB);
+
+  /*! \brief The matrix from this texture's linear RGB to linear BT.2020 when it was loaded with
+   ImageColorMode::KEEP_GAMUT and isn't sRGB, see IImage::GetColorMatrix()
+   */
+  const std::optional<ImageColorMatrix>& GetColorMatrix() const { return m_colorMatrix; }
 
   bool LoadFromMemory(unsigned int width,
                       unsigned int height,
@@ -146,16 +157,21 @@ protected:
                          const std::string& mimeType,
                          unsigned int idealWidth,
                          unsigned int idealHeight,
-                         CAspectRatio::AspectRatio aspectRatio);
+                         CAspectRatio::AspectRatio aspectRatio,
+                         ImageColorMode colorMode = ImageColorMode::CONVERT_TO_SRGB);
   bool LoadFromFileInternal(const std::string& texturePath,
                             unsigned int idealWidth,
                             unsigned int idealHeight,
                             CAspectRatio::AspectRatio aspectRatio,
-                            const std::string& strMimeType = "");
+                            const std::string& strMimeType = "",
+                            ImageColorMode colorMode = ImageColorMode::CONVERT_TO_SRGB);
   bool LoadIImage(IImage* pImage,
                   unsigned char* buffer,
                   unsigned int bufSize,
                   unsigned int idealWidth,
                   unsigned int idealHeight,
-                  CAspectRatio::AspectRatio aspectRatio);
+                  CAspectRatio::AspectRatio aspectRatio,
+                  ImageColorMode colorMode = ImageColorMode::CONVERT_TO_SRGB);
+
+  std::optional<ImageColorMatrix> m_colorMatrix;
 };
