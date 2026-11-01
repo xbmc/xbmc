@@ -374,11 +374,15 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
     }
 
     // Resume forces the UNWATCHED filter on the enumerator, so a chosen item
-    // with play count > 0 is dropped before it reaches the playlist. Inject
-    // it at the front so Resume still plays the explicitly chosen item.
+    // with play count > 0 is dropped before it reaches the playlist. Append
+    // it and swap to the front so Resume still plays the explicitly chosen
+    // item.
     if (!found)
     {
-      playList.Add(itemToPlay, 0, -1);
+      playList.Add(itemToPlay);
+      const int lastPos = playList.size() - 1;
+      if (lastPos > 0)
+        playList.Swap(0, lastPos);
       pos = 0;
     }
   }
