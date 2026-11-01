@@ -78,7 +78,9 @@ bool IsFullscreenVideo()
 
   // The modal-dialog lookup releases its lock before the window-history read.
   std::unique_lock lock(winSystem->GetGfxContext());
-  return gui->GetWindowManager().GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_VIDEO;
+  auto& windowManager = gui->GetWindowManager();
+  return windowManager.GetTopmostDialog() == WINDOW_INVALID &&
+         windowManager.GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_VIDEO;
 }
 
 struct VideoGestureMessage
