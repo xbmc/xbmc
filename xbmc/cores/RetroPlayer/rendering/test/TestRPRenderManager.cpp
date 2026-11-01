@@ -138,6 +138,8 @@ public:
   std::function<void()> onFlush;
   std::function<void()> onRendererFlush;
   CRPBaseRenderer* renderer{nullptr};
+  unsigned int rendererCreates{0};
+  unsigned int rendererDestroys{0};
 
 protected:
   bool ConfigureInternal() override
@@ -161,6 +163,7 @@ class CTestRenderer : public CRPBaseRenderer
 {
 public:
   using CRPBaseRenderer::CRPBaseRenderer;
+  ~CTestRenderer() override { ++static_cast<CTestPool*>(GetBufferPool())->rendererDestroys; }
   bool Supports(RENDERFEATURE) const override { return false; }
   SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
 
@@ -198,6 +201,7 @@ public:
   {
     auto* renderer = new CTestRenderer(settings, context, pool);
     static_cast<CTestPool*>(pool.get())->renderer = renderer;
+    ++static_cast<CTestPool*>(pool.get())->rendererCreates;
     return renderer;
   }
   RenderBufferPoolVector CreateBufferPools(CRenderContext&) override { return m_pools; }
@@ -328,6 +332,27 @@ TEST_F(TestRPRenderManager, ResetDuringRendererLookup)
   m_environment.Renderer().FrameMove();
   RenderControl();
   ExpectVideoBuffer();
+}
+
+TEST_F(TestRPRenderManager, UnusedRendererIsReleased)
+{
+  auto& manager = m_environment.Renderer();
+  Start();
+
+  for (unsigned int frame = 0; frame < 120; ++frame)
+  {
+    manager.FrameMove();
+    RenderControl();
+  }
+  EXPECT_EQ(m_pool->rendererCreates, 1);
+  EXPECT_EQ(m_pool->rendererDestroys, 0);
+
+  // A frame without it
+  manager.FrameMove();
+  manager.FrameMove();
+  RenderControl();
+  EXPECT_EQ(m_pool->rendererDestroys, 1);
+  EXPECT_EQ(m_pool->rendererCreates, 2);
 }
 
 TEST_F(TestRPRenderManager, SoftwareCallsDoNotBindPools)
