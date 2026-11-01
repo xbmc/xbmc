@@ -141,6 +141,25 @@ public:
    */
   bool IsDefaultStream(int pid) const;
 
+  struct ClipTime
+  {
+    uint64_t inTime{0};
+    uint64_t startTime{0};
+  };
+
+  uint64_t GetReadPos() const { return m_readPos; }
+
+  /*!
+   * \brief Get the in time and start time (90 kHz) of the clip a byte was read from.
+   * \param readPos The position of the byte in the bytes Read returned since Open
+   * \return The clip time, or nothing without a clip and in navigation mode
+   */
+  std::optional<ClipTime> GetClipTime(uint64_t readPos) const;
+
+  //! hand the clip start held at a join to the demuxer opened after it
+  void ReleaseClipStart() { m_clipStartHeld = false; }
+  bool IsClipStartHeld() const { return !m_navmode && m_clipStartHeld && !m_clipStart.empty(); }
+
   void OverlayCallback(const BD_OVERLAY * const);
 #ifdef HAVE_LIBBLURAY_BDJ
   void OverlayCallbackARGB(const struct bd_argb_overlay_s * const);
@@ -211,6 +230,8 @@ protected:
     void SetupPlayerSettings();
     void FreeTitleInfo();
     void FreeClipInfo();
+    void HoldClipStart(const uint8_t* buf, int size);
+    void DropClipStartOnJump();
 
     /*!
      * \brief Read the clip information of a play item of the playlist being played.
@@ -233,6 +254,8 @@ protected:
      * \return True if the clip carries the stream, false otherwise
      */
     bool GetClipStreamLanguage(int pid, std::string& language) const;
+    void OpenClipSpan();
+
     std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;
 
@@ -250,4 +273,17 @@ protected:
     std::chrono::steady_clock::time_point m_startWatchTime{};
     std::vector<PlaylistInformation> m_playedPlaylists;
     CCriticalSection m_statesLock;
+
+    struct ClipSpan
+    {
+      uint64_t readPos{0};
+      std::optional<ClipTime> time{};
+    };
+
+    uint64_t m_readPos{0};
+    std::vector<ClipSpan> m_clipSpans;
+    std::vector<uint8_t> m_clipStart;
+    size_t m_clipStartOffset{0};
+    bool m_clipStartHeld{false};
+    uint64_t m_clipStartEnd{0};
 };
