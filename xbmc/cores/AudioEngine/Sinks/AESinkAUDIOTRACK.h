@@ -15,7 +15,6 @@
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 
-#include <deque>
 #include <set>
 
 #include <androidjni/AudioTrack.h>
@@ -64,19 +63,14 @@ private:
   unsigned int          m_min_buffer_size;
   uint64_t              m_headPos;
   uint64_t m_headPosOld;
+  uint64_t m_headPosStep = 0;
+  double m_playStart = 0.0;
+  double m_playStartUpdated = 0.0;
   uint32_t m_stuckCounter;
   uint64_t m_timestampPos = 0;
   int64_t m_flushTime = 0;
   bool m_rawNeedsFlush = false;
   bool m_timestampValid = false;
-  // Moving Average computes the weighted average delay over
-  // a fixed size of delay values - current size: 20 values
-  double                GetMovingAverageDelay(double newestdelay);
-
-  // We maintain our linear weighted average delay counter in here
-  // The n-th value (timely oldest value) is weighted with 1/n
-  // the newest value gets a weight of 1
-  std::deque<double>   m_linearmovingaverage;
 
   static CAEDeviceInfo m_info;
   static CAEDeviceInfo m_info_raw;
