@@ -149,6 +149,7 @@ set(HEADERS AspectRatio.h
             IDirtyRegionSolver.h
             IGUIContainer.h
             iimage.h
+            ImageColor.h
             imagefactory.h
             ImageSettings.h
             IMsgTargetCallback.h

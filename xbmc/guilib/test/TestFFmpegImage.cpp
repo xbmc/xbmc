@@ -16,10 +16,14 @@
 #include <fstream>
 #include <iterator>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
 #include <gtest/gtest.h>
+#if defined(HAVE_LCMS2)
+#include <lcms2.h>
+#endif
 
 extern "C"
 {
@@ -64,7 +68,9 @@ std::vector<unsigned char> ReadFixture(const std::string& name)
 // no data when the image can't be loaded or decoded
 Pixels DecodeData(std::vector<unsigned char> data,
                   unsigned int width = SIZE,
-                  unsigned int height = SIZE)
+                  unsigned int height = SIZE,
+                  ImageColorMode mode = ImageColorMode::CONVERT_TO_SRGB,
+                  std::optional<ImageColorMatrix>* matrix = nullptr)
 {
   Pixels pixels;
   CFFmpegImage image("image/jpeg");
@@ -76,9 +82,19 @@ Pixels DecodeData(std::vector<unsigned char> data,
   pixels.height = height;
   pixels.pitch = width * 4;
   pixels.data.reset(static_cast<uint8_t*>(av_malloc(pixels.pitch * height)));
+  image.SetColorMode(mode);
   if (!image.Decode(pixels.data.get(), width, height, pixels.pitch, XB_FMT_A8R8G8B8))
     pixels.data.reset();
+  if (matrix)
+    *matrix = image.GetColorMatrix();
   return pixels;
+}
+
+Pixels DecodeAs(const std::string& name,
+                ImageColorMode mode,
+                std::optional<ImageColorMatrix>* matrix = nullptr)
+{
+  return DecodeData(ReadFixture(name), SIZE, SIZE, mode, matrix);
 }
 
 Pixels Decode(const std::string& name, unsigned int width = SIZE, unsigned int height = SIZE)
@@ -203,6 +219,82 @@ TEST(TestFFmpegImage, ConversionFollowsTheRowStride)
       ExpectBGRA(pixels.At(x, y), 97, 93, 215);
     }
   }
+}
+
+// Display P3 to BT.2020 in linear light, by rows; GetColorMatrix() is column-major
+constexpr float P3_TO_BT2020[3][3]{{0.75383f, 0.19860f, 0.04757f},
+                                   {0.04574f, 0.94178f, 0.01248f},
+                                   {-0.00121f, 0.01760f, 0.98361f}};
+
+void ExpectP3ToBT2020(const std::optional<ImageColorMatrix>& matrix)
+{
+  ASSERT_TRUE(matrix);
+  for (int r = 0; r < 3; ++r)
+  {
+    for (int c = 0; c < 3; ++c)
+      EXPECT_NEAR((*matrix)[c * 3 + r], P3_TO_BT2020[r][c], 1e-3) << "row " << r << " col " << c;
+  }
+}
+
+TEST(TestFFmpegImage, DisplayP3KeepsItsGamut)
+{
+  std::optional<ImageColorMatrix> matrix;
+  const Pixels pixels{DecodeAs("icc-p3.jpg", ImageColorMode::KEEP_GAMUT, &matrix)};
+  ASSERT_TRUE(pixels.data);
+  ExpectBGRA(pixels.At(SIZE / 2, SIZE / 2), 100, 100, 200);
+  ExpectP3ToBT2020(matrix);
+}
+
+TEST(TestFFmpegImage, SRGBHasNoColorMatrix)
+{
+  std::optional<ImageColorMatrix> matrix;
+  const Pixels pixels{DecodeAs("icc-srgb-v4.jpg", ImageColorMode::KEEP_GAMUT, &matrix)};
+  ASSERT_TRUE(pixels.data);
+  ExpectBGRA(pixels.At(SIZE / 2, SIZE / 2), 100, 100, 200);
+  EXPECT_FALSE(matrix);
+}
+
+TEST(TestFFmpegImage, LutProfileIsConvertedWhenKeepingGamut)
+{
+  std::optional<ImageColorMatrix> matrix;
+  const Pixels pixels{DecodeAs("icc-srgb-lut.jpg", ImageColorMode::KEEP_GAMUT, &matrix)};
+  ASSERT_TRUE(pixels.data);
+  ExpectBGRA(pixels.At(SIZE / 2, SIZE / 2), 200, 100, 100);
+  EXPECT_FALSE(matrix);
+}
+
+TEST(TestFFmpegImage, AsIsLeavesDisplayP3Alone)
+{
+  std::optional<ImageColorMatrix> matrix;
+  const Pixels pixels{DecodeAs("icc-p3.jpg", ImageColorMode::AS_IS, &matrix)};
+  ASSERT_TRUE(pixels.data);
+  ExpectBGRA(pixels.At(SIZE / 2, SIZE / 2), 100, 100, 200);
+  EXPECT_FALSE(matrix);
+}
+
+TEST(TestFFmpegImage, KeptGamutGetsSRGBCurves)
+{
+  // Display P3's primaries with a gamma 1.8 curve: 200 and 100 come out as 210 and 119 in sRGB's
+  const cmsCIExyY d65{0.3127, 0.3290, 1.0};
+  const cmsCIExyYTRIPLE p3{{0.680, 0.320, 1.0}, {0.265, 0.690, 1.0}, {0.150, 0.060, 1.0}};
+  cmsToneCurve* gamma{cmsBuildGamma(nullptr, 1.8)};
+  ASSERT_TRUE(gamma);
+  cmsToneCurve* const curves[3]{gamma, gamma, gamma};
+  cmsHPROFILE profile{cmsCreateRGBProfile(&d65, &p3, curves)};
+  cmsFreeToneCurve(gamma);
+  ASSERT_TRUE(profile);
+  cmsUInt32Number size{0};
+  ASSERT_TRUE(cmsSaveProfileToMem(profile, nullptr, &size));
+  std::vector<unsigned char> icc(size);
+  ASSERT_TRUE(cmsSaveProfileToMem(profile, icc.data(), &size));
+  cmsCloseProfile(profile);
+
+  std::optional<ImageColorMatrix> matrix;
+  const Pixels pixels{DecodeData(WithIcc(ReadFixture("icc-untagged.jpg"), icc), SIZE, SIZE,
+                                 ImageColorMode::KEEP_GAMUT, &matrix)};
+  ASSERT_TRUE(pixels.data);
+  ExpectBGRA(pixels.At(SIZE / 2, SIZE / 2), 119, 119, 210);
+  ExpectP3ToBT2020(matrix);
 }
 
 #else

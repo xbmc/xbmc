@@ -20,6 +20,7 @@
 #include <cmath>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <utility>
 
 #if defined(HAVE_LCMS2)
@@ -153,14 +154,30 @@ bool IsRGBProfile(cmsHPROFILE profile)
           deviceClass == cmsSigOutputClass || deviceClass == cmsSigColorSpaceClass);
 }
 
-// a matrix/curve profile with sRGB's colorants and tone curves, so the pixels are already sRGB.
-// Tone curves are sampled at every 8-bit code value, as v2 profiles store them as tables and v4
-// ones as parameters, and compared once encoded as sRGB, so within a code value or so.
+// sRGB's tone curve. Sampled at every 8-bit code value, as v2 profiles store curves as tables and
+// v4 ones as parameters, and compared once encoded as sRGB, so within a code value or so.
+bool IsSRGBCurve(const cmsToneCurve* curve)
+{
+  for (int i = 0; i <= SRGB_CURVE_SAMPLES; ++i)
+  {
+    const float x{static_cast<float>(i) / SRGB_CURVE_SAMPLES};
+    if (std::abs(EncodeSRGB(cmsEvalToneCurveFloat(curve, x)) - x) > SRGB_CURVE_TOLERANCE)
+      return false;
+  }
+  return true;
+}
+
+// lcms2 converts with the profile's LUT rather than its matrix and curves when it has one
+bool IsMatrixProfile(cmsHPROFILE profile)
+{
+  return cmsIsMatrixShaper(profile) && !cmsIsTag(profile, cmsSigDToB1Tag) &&
+         !cmsIsTag(profile, cmsSigAToB1Tag) && !cmsIsTag(profile, cmsSigAToB0Tag);
+}
+
+// a matrix/curve profile with sRGB's colorants and tone curves, so the pixels are already sRGB
 bool IsSRGB(cmsHPROFILE profile, cmsHPROFILE srgb)
 {
-  // lcms2 converts with the profile's LUT rather than its matrix and curves when it has one
-  if (!cmsIsMatrixShaper(profile) || cmsIsTag(profile, cmsSigDToB1Tag) ||
-      cmsIsTag(profile, cmsSigAToB1Tag) || cmsIsTag(profile, cmsSigAToB0Tag))
+  if (!IsMatrixProfile(profile))
     return false;
 
   static constexpr std::array<std::pair<cmsTagSignature, cmsTagSignature>, 3> channels{
@@ -177,15 +194,8 @@ bool IsSRGB(cmsHPROFILE profile, cmsHPROFILE srgb)
 
     if (std::abs(colorant->X - srgbColorant->X) > SRGB_COLORANT_TOLERANCE ||
         std::abs(colorant->Y - srgbColorant->Y) > SRGB_COLORANT_TOLERANCE ||
-        std::abs(colorant->Z - srgbColorant->Z) > SRGB_COLORANT_TOLERANCE)
+        std::abs(colorant->Z - srgbColorant->Z) > SRGB_COLORANT_TOLERANCE || !IsSRGBCurve(curve))
       return false;
-
-    for (int i = 0; i <= SRGB_CURVE_SAMPLES; ++i)
-    {
-      const float x{static_cast<float>(i) / SRGB_CURVE_SAMPLES};
-      if (std::abs(EncodeSRGB(cmsEvalToneCurveFloat(curve, x)) - x) > SRGB_CURVE_TOLERANCE)
-        return false;
-    }
   }
   return true;
 }
@@ -226,6 +236,175 @@ void ConvertToSRGB(
 
   const auto stride{static_cast<cmsUInt32Number>(linesize)};
   cmsDoTransformLineStride(transform.get(), pixels, pixels, width, height, stride, stride, 0, 0);
+}
+
+// how far a matrix profile's colorants may add up from the D50 white of the PCS
+constexpr double D50_WHITE_TOLERANCE = 0.01;
+
+// rows X, Y, Z; columns red, green, blue
+using Matrix3 = std::array<std::array<double, 3>, 3>;
+
+std::optional<Matrix3> ColorantsOf(cmsHPROFILE profile)
+{
+  static constexpr std::array<cmsTagSignature, 3> tags{cmsSigRedColorantTag, cmsSigGreenColorantTag,
+                                                       cmsSigBlueColorantTag};
+  Matrix3 m{};
+  for (size_t c = 0; c < tags.size(); ++c)
+  {
+    const auto* xyz{static_cast<const cmsCIEXYZ*>(cmsReadTag(profile, tags[c]))};
+    if (!xyz)
+      return {};
+    m[0][c] = xyz->X;
+    m[1][c] = xyz->Y;
+    m[2][c] = xyz->Z;
+  }
+  return m;
+}
+
+std::optional<Matrix3> Inverse(const Matrix3& m)
+{
+  const double det{m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+                   m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+                   m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0])};
+  if (std::abs(det) < 1e-9)
+    return {};
+  Matrix3 inv{};
+  for (size_t r = 0; r < 3; ++r)
+  {
+    for (size_t c = 0; c < 3; ++c)
+    {
+      // cofactor of (c, r), so the transpose of the cofactor matrix
+      const size_t r1{(c + 1) % 3};
+      const size_t r2{(c + 2) % 3};
+      const size_t c1{(r + 1) % 3};
+      const size_t c2{(r + 2) % 3};
+      inv[r][c] = (m[r1][c1] * m[r2][c2] - m[r1][c2] * m[r2][c1]) / det;
+    }
+  }
+  return inv;
+}
+
+// the matrix from a matrix profile's linear RGB to linear BT.2020. Both sets of colorants are
+// D50-adapted in the PCS, BT.2020's by lcms2 the same way, so white maps to white.
+std::optional<ImageColorMatrix> ToBT2020(cmsContext context, cmsHPROFILE profile)
+{
+  if (!IsMatrixProfile(profile))
+    return {};
+
+  const std::optional<Matrix3> source{ColorantsOf(profile)};
+  if (!source)
+    return {};
+
+  // old v2 profiles can carry colorants that aren't adapted to D50
+  const cmsCIEXYZ* d50{cmsD50_XYZ()};
+  const std::array<double, 3> white{d50->X, d50->Y, d50->Z};
+  for (size_t r = 0; r < 3; ++r)
+  {
+    if (std::abs((*source)[r][0] + (*source)[r][1] + (*source)[r][2] - white[r]) >
+        D50_WHITE_TOLERANCE)
+      return {};
+  }
+
+  const cmsCIExyY d65{0.3127, 0.3290, 1.0};
+  const cmsCIExyYTRIPLE primaries{{0.708, 0.292, 1.0}, {0.170, 0.797, 1.0}, {0.131, 0.046, 1.0}};
+  cmsToneCurve* linear{cmsBuildGamma(context, 1.0)};
+  if (!linear)
+    return {};
+  cmsToneCurve* const curves[3]{linear, linear, linear};
+  const ColorProfile bt2020{cmsCreateRGBProfileTHR(context, &d65, &primaries, curves),
+                            cmsCloseProfile};
+  cmsFreeToneCurve(linear);
+  if (!bt2020)
+    return {};
+
+  const std::optional<Matrix3> target{ColorantsOf(bt2020.get())};
+  const std::optional<Matrix3> toTarget{target ? Inverse(*target) : std::nullopt};
+  if (!toTarget)
+    return {};
+
+  ImageColorMatrix matrix{};
+  for (size_t r = 0; r < 3; ++r)
+  {
+    for (size_t c = 0; c < 3; ++c)
+    {
+      double sum{0.0};
+      for (size_t k = 0; k < 3; ++k)
+        sum += (*toTarget)[r][k] * (*source)[k][c];
+      matrix[c * 3 + r] = static_cast<float>(sum);
+    }
+  }
+  return matrix;
+}
+
+// give RGB32 pixels sRGB's tone curve in place of the profile's, keeping its primaries
+bool ToSRGBCurves(
+    cmsHPROFILE profile, uint8_t* pixels, unsigned int width, unsigned int height, int linesize)
+{
+  static constexpr std::array<cmsTagSignature, 3> tags{cmsSigRedTRCTag, cmsSigGreenTRCTag,
+                                                       cmsSigBlueTRCTag};
+  // where red, green and blue are in a pixel
+  constexpr std::array<size_t, 3> offsets{AV_PIX_FMT_RGB32 == AV_PIX_FMT_BGRA
+                                              ? std::array<size_t, 3>{2, 1, 0}
+                                              : std::array<size_t, 3>{1, 2, 3}};
+
+  std::array<std::array<uint8_t, 256>, 3> luts{};
+  bool unchanged{true};
+  for (size_t c = 0; c < tags.size(); ++c)
+  {
+    const auto* curve{static_cast<const cmsToneCurve*>(cmsReadTag(profile, tags[c]))};
+    if (!curve)
+      return false;
+    const bool srgb{IsSRGBCurve(curve)};
+    unchanged = unchanged && srgb;
+    for (int v = 0; v < 256; ++v)
+    {
+      const float x{static_cast<float>(v) / 255};
+      const float y{srgb ? x : EncodeSRGB(cmsEvalToneCurveFloat(curve, x))};
+      luts[c][v] = static_cast<uint8_t>(std::lround(std::clamp(y, 0.0f, 1.0f) * 255));
+    }
+  }
+  if (unchanged)
+    return true;
+
+  for (unsigned int y = 0; y < height; ++y)
+  {
+    uint8_t* pixel{pixels + static_cast<size_t>(y) * static_cast<size_t>(linesize)};
+    for (unsigned int x = 0; x < width; ++x, pixel += 4)
+    {
+      for (size_t c = 0; c < offsets.size(); ++c)
+        pixel[offsets[c]] = luts[c][pixel[offsets[c]]];
+    }
+  }
+  return true;
+}
+
+// keep the primaries of RGB32 pixels with a matrix profile, give them sRGB's tone curve and
+// return the matrix to BT.2020; nothing changes when there's no such profile
+std::optional<ImageColorMatrix> KeepGamut(
+    const AVFrame* frame, uint8_t* pixels, unsigned int width, unsigned int height, int linesize)
+{
+  const AVFrameSideData* sideData{av_frame_get_side_data(frame, AV_FRAME_DATA_ICC_PROFILE)};
+  if (!sideData || sideData->size == 0 || sideData->size > MAX_ICC_PROFILE_SIZE)
+    return {};
+
+  const cmsContext context{ColorContext()};
+  if (!context)
+    return {};
+
+  const ColorProfile profile{cmsOpenProfileFromMemTHR(context, sideData->data,
+                                                      static_cast<cmsUInt32Number>(sideData->size)),
+                             cmsCloseProfile};
+  if (!profile || !IsRGBProfile(profile.get()))
+    return {};
+
+  const ColorProfile srgb{cmsCreate_sRGBProfileTHR(context), cmsCloseProfile};
+  if (!srgb || IsSRGB(profile.get(), srgb.get()))
+    return {};
+
+  const std::optional<ImageColorMatrix> matrix{ToBT2020(context, profile.get())};
+  if (!matrix || !ToSRGBCurves(profile.get(), pixels, width, height, linesize))
+    return {};
+  return matrix;
 }
 #endif
 } // namespace
@@ -775,7 +954,11 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   sws_freeContext(context);
 
 #if defined(HAVE_LCMS2)
-  ConvertToSRGB(frame, pictureRGB->data[0], width, height, pictureRGB->linesize[0]);
+  m_colorMatrix.reset();
+  if (m_colorMode == ImageColorMode::KEEP_GAMUT)
+    m_colorMatrix = KeepGamut(frame, pictureRGB->data[0], width, height, pictureRGB->linesize[0]);
+  if (m_colorMode != ImageColorMode::AS_IS && !m_colorMatrix)
+    ConvertToSRGB(frame, pictureRGB->data[0], width, height, pictureRGB->linesize[0]);
 #endif
 
   if (needsCopy)
