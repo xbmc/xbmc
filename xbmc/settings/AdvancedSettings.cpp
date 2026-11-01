@@ -580,6 +580,16 @@ bool CAdvancedSettings::Load(const CProfileManager &profileManager)
   if (!m_discStubExtensions.empty())
     m_videoExtensions += "|" + m_discStubExtensions;
 
+  // Built after parsing so the defaults apply without an advancedsettings.xml or a
+  // <videoscanner> section.
+  StringUtils::ToLower(m_metadataSourcesPriv);
+  m_videoScannerMetadataSources.clear();
+  for (auto& source : StringUtils::Split(m_metadataSourcesPriv, '|'))
+  {
+    if (!source.empty())
+      m_videoScannerMetadataSources.insert(std::move(source));
+  }
+
   return true;
 }
 
@@ -944,14 +954,11 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     XMLUtils::GetBoolean(pElement, "ignoreerrors", m_bVideoScannerIgnoreErrors);
 
-    // Adjust the builtin list with the advanced setting then prepare for use.
+    // Adjust the builtin list with the advanced setting.
     if (const TiXmlElement* elem = pElement->FirstChildElement("metadatasources"); elem != nullptr)
       GetCustomExtensions(elem, m_metadataSourcesPriv);
 
     StringUtils::ToLower(m_metadataSourcesPriv);
-    const std::vector<std::string> split = StringUtils::Split(m_metadataSourcesPriv, '|');
-    m_videoScannerMetadataSources = std::unordered_set<std::string>(
-        std::make_move_iterator(split.begin()), std::make_move_iterator(split.end()));
   }
 
   // Backward-compatibility of ExternalPlayer config
