@@ -60,7 +60,9 @@
 
 extern "C"
 {
+#include <libavcodec/bsf.h>
 #include <libavutil/intreadwrite.h>
+#include <libavutil/opt.h>
 }
 
 using namespace KODI::MESSAGING;
@@ -625,6 +627,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         }
       }
 
+      if (m_mime == "video/hevc" && !m_hints.cryptoSession &&
+          m_hints.colorTransferCharacteristic == AVCOL_TRC_ARIB_STD_B67)
+        OpenHlgFilter();
+
       break;
     }
     case AV_CODEC_ID_WMV3:
@@ -967,6 +973,8 @@ FAIL:
   m_codec = nullptr;
 
   m_bitstream.reset();
+  av_bsf_free(&m_hlgFilter);
+  av_packet_free(&m_hlgPacket);
 
   return false;
 }
@@ -1008,6 +1016,8 @@ void CDVDVideoCodecAndroidMediaCodec::Dispose()
   }
 
   m_bitstream.reset();
+  av_bsf_free(&m_hlgFilter);
+  av_packet_free(&m_hlgPacket);
 
   m_opened = false;
 }
@@ -1076,6 +1086,11 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         pData = m_bitstream->GetConvertBuffer();
       }
 
+      uint8_t* unfilteredData = pData;
+      const size_t unfilteredSize = iSize;
+      if (m_hlgFilter)
+        FilterHlg(pData, iSize);
+
       if (m_state == MEDIACODEC_STATE_FLUSHED)
         m_state = MEDIACODEC_STATE_RUNNING;
 
@@ -1089,6 +1104,12 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       }
 
       size_t out_size = buffer.capacity();
+      // The filter can add VUI fields to the SPS, don't truncate the packet because of that
+      if (iSize > out_size && unfilteredSize <= out_size)
+      {
+        pData = unfilteredData;
+        iSize = unfilteredSize;
+      }
       if ((size_t)iSize > out_size)
       {
         CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::AddData: iSize({}) > size({})", iSize,
@@ -1427,6 +1448,11 @@ void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(CJNIMediaFormat& mediaform
     size = m_bitstream->GetExtraSize();
     src_ptr = m_bitstream->GetExtraData();
   }
+  if (m_hlgFilter && m_hlgFilter->par_out->extradata_size > 0)
+  {
+    size = m_hlgFilter->par_out->extradata_size;
+    src_ptr = m_hlgFilter->par_out->extradata;
+  }
   // Allocate a byte buffer via allocateDirect in java instead of NewDirectByteBuffer,
   // since the latter doesn't allocate storage of its own, and we don't know how long
   // the codec uses the buffer.
@@ -1436,6 +1462,71 @@ void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(CJNIMediaFormat& mediaform
   // codec will automatically handle buffers as extradata
   // using entries with keys "csd-0", "csd-1", etc.
   mediaformat.setByteBuffer("csd-0", bytebuffer);
+}
+
+// Some HLG broadcasts signal an SDR transfer in the SPS and HLG only in an
+// alternative transfer characteristics SEI that is not repeated with every
+// IRAP picture. Decoders that apply the SEI fall back to SDR at each IRAP,
+// which switches the display out of HLG until the next SEI. Rewrite the SPS
+// so that it signals HLG as well.
+void CDVDVideoCodecAndroidMediaCodec::OpenHlgFilter()
+{
+  const AVBitStreamFilter* filter = av_bsf_get_by_name("hevc_metadata");
+  if (!filter || av_bsf_alloc(filter, &m_hlgFilter) < 0)
+    return;
+
+  // The filter gets the same Annex B data as MediaCodec
+  const uint8_t* extradata = m_hints.extradata.GetData();
+  size_t size = m_hints.extradata.GetSize();
+  if (m_bitstream)
+  {
+    extradata = m_bitstream->GetExtraData();
+    size = static_cast<size_t>(m_bitstream->GetExtraSize());
+  }
+
+  AVCodecParameters* par = m_hlgFilter->par_in;
+  par->codec_id = AV_CODEC_ID_HEVC;
+  if (size > 0)
+  {
+    par->extradata = static_cast<uint8_t*>(av_mallocz(size + AV_INPUT_BUFFER_PADDING_SIZE));
+    if (par->extradata)
+    {
+      memcpy(par->extradata, extradata, size);
+      par->extradata_size = static_cast<int>(size);
+    }
+  }
+
+  if ((size > 0 && !par->extradata) ||
+      av_opt_set_int(m_hlgFilter, "transfer_characteristics", AVCOL_TRC_ARIB_STD_B67,
+                     AV_OPT_SEARCH_CHILDREN) < 0 ||
+      av_bsf_init(m_hlgFilter) < 0 || !(m_hlgPacket = av_packet_alloc()))
+  {
+    CLog::LogF(LOGERROR, "failed to set up the hevc_metadata filter");
+    av_bsf_free(&m_hlgFilter);
+    return;
+  }
+
+  CLog::LogF(LOGDEBUG, "signalling HLG in the HEVC SPS");
+}
+
+void CDVDVideoCodecAndroidMediaCodec::FilterHlg(uint8_t*& data, size_t& size)
+{
+  av_packet_unref(m_hlgPacket);
+  if (av_new_packet(m_hlgPacket, static_cast<int>(size)) < 0)
+    return;
+  memcpy(m_hlgPacket->data, data, size);
+
+  if (av_bsf_send_packet(m_hlgFilter, m_hlgPacket) < 0 ||
+      av_bsf_receive_packet(m_hlgFilter, m_hlgPacket) < 0)
+  {
+    // Pass the packet on unchanged
+    av_packet_unref(m_hlgPacket);
+    av_bsf_flush(m_hlgFilter);
+    return;
+  }
+
+  data = m_hlgPacket->data;
+  size = m_hlgPacket->size;
 }
 
 std::vector<uint8_t> CDVDVideoCodecAndroidMediaCodec::GetHDRStaticMetadata()
