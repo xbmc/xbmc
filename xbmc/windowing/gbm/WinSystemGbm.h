@@ -71,6 +71,8 @@ public:
   KODI::UTILS::Colorimetry GetColorimetry() const override { return m_colorimetry; }
   KODI::UTILS::Eotf GetEotf() const override { return m_eotf; }
   bool SetHDR(const VideoPicture* videoPicture) override;
+  void SetVideoStreamColor(const VideoPicture& videoPicture) override;
+  void ResetVideoStreamColor() override;
   bool IsHDRDisplay() override;
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
 
@@ -108,6 +110,12 @@ private:
 
   KODI::MESSAGING::ThreadMessageCallback m_limitGuiSizeCallback{ApplyLimitGuiSize, this};
 
+  bool IsVideoResolutionActive();
+  bool DeferSdrRestore();
+  void ApplySdrRestore();
+
+  bool m_sdrRestorePending = false;
+  bool m_applyingSdrRestore = false;
   CDRMPropertyBlob m_hdrBlob;
   KODI::UTILS::Eotf m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
   KODI::UTILS::Colorimetry m_colorimetry = KODI::UTILS::Colorimetry::DEFAULT;

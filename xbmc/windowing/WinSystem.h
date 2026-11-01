@@ -244,6 +244,24 @@ public:
    *
    */
   virtual bool SetHDR(const VideoPicture* videoPicture) { return false; }
+
+  /*!
+   * \brief Set the colorimetry and HDR state of a video stream before its
+   * display mode change.
+   *
+   * Called on the main thread by VideoPlayer before it changes the display
+   * mode for a new video stream. Window systems that commit the color state
+   * together with the display mode override this so the display sees one
+   * change. The renderer still applies the final state when it is configured.
+   */
+  virtual void SetVideoStreamColor(const VideoPicture& videoPicture) {}
+
+  /*!
+   * \brief Undo SetVideoStreamColor() when no renderer was configured for
+   * the stream.
+   */
+  virtual void ResetVideoStreamColor() {}
+
   virtual bool IsHDRDisplay() { return false; }
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
