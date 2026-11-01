@@ -29,6 +29,11 @@ if(TARGET ${APP_NAME_LC}::VAAPI)
   list(APPEND HEADERS VAAPI.h)
 endif()
 
+if(TARGET ${APP_NAME_LC}::NVDEC)
+  list(APPEND SOURCES NVDEC.cpp)
+  list(APPEND HEADERS NVDEC.h)
+endif()
+
 if(APPLE)
   list(APPEND SOURCES VTB.cpp)
   list(APPEND HEADERS VTB.h)
