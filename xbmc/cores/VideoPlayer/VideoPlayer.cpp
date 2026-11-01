@@ -734,7 +734,7 @@ void CVideoPlayer::CreatePlayers()
       std::make_unique<CVideoPlayerVideo>(&m_clock, &m_overlayContainer, m_messenger,
                                           m_renderManager, *m_processInfo, m_messageQueueTimeSize);
   m_VideoPlayerAudio = std::make_unique<CVideoPlayerAudio>(&m_clock, m_messenger, *m_processInfo,
-                                                           m_messageQueueTimeSize);
+                                                           m_messageQueueTimeSize, m_Edl);
   m_VideoPlayerSubtitle =
       std::make_unique<CVideoPlayerSubtitle>(&m_overlayContainer, *m_processInfo);
   m_VideoPlayerTeletext = std::make_unique<CDVDTeletextData>(*m_processInfo);
@@ -1971,7 +1971,8 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   else
   {
     const auto hasEdit = m_Edl.InEdit(GetEdlTime(m_CurrentAudio));
-    if (hasEdit && hasEdit.value()->action == EDL::Action::MUTE)
+    if (hasEdit && hasEdit.value()->action == EDL::Action::MUTE &&
+        !(m_CurrentAudio.hint.codec == AV_CODEC_ID_TRUEHD && m_VideoPlayerAudio->IsPassthrough()))
       drop = true;
   }
 

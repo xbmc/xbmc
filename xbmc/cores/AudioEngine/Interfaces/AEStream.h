@@ -60,6 +60,7 @@ public:
   struct ExtData
   {
     double pts = 0;
+    bool edlMute = false;
     bool hasDownmix = false;
     double centerMixLevel = 1;
   };

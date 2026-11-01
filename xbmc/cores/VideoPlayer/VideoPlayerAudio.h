@@ -9,6 +9,7 @@
 #pragma once
 
 #include "AudioSinkAE.h"
+#include "Edl.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
@@ -33,7 +34,8 @@ public:
   CVideoPlayerAudio(CDVDClock* pClock,
                     CDVDMessageQueue& parent,
                     CProcessInfo& processInfo,
-                    double messageQueueTimeSize);
+                    double messageQueueTimeSize,
+                    CEdl& edl);
   ~CVideoPlayerAudio() override;
 
   bool OpenStream(CDVDStreamInfo hints) override;
@@ -91,6 +93,7 @@ protected:
   double m_audioClock;
 
   CAudioSinkAE m_audioSink; // audio output device
+  CEdl& m_edl; // original-media EDL timeline
   CDVDClock* m_pClock; // dvd master clock
   std::unique_ptr<CDVDAudioCodec> m_pAudioCodec; // audio codec
   BitstreamStats m_audioStats;
