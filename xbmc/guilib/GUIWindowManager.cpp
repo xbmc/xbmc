@@ -69,6 +69,12 @@
 
 #include <mutex>
 
+namespace
+{
+// buffers older than this are fully redrawn
+constexpr int MAX_BUFFER_AGE = 10;
+} // namespace
+
 // Dialog includes
 #include "music/dialogs/GUIDialogMusicOSD.h"
 #include "music/dialogs/GUIDialogVisualisationPresetList.h"
@@ -1429,12 +1435,14 @@ bool CGUIWindowManager::Render()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions;
   if (visualizeDirtyRegions)
     bufferAge = 20;
-  if (bufferAge)
-    m_tracker.CleanMarkedRegions(bufferAge + 1);
-  else
-    m_tracker.CleanMarkedRegions(10);
+  // the buffer age counts presented frames and varies between frames, so keep the regions
+  // independently of it and only age them when a frame was presented
+  if (m_presentedFrame)
+    m_tracker.CleanMarkedRegions((visualizeDirtyRegions ? bufferAge : MAX_BUFFER_AGE) + 1);
+  m_presentedFrame = false;
 
-  CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
+  // one frame more than needed, as some platforms report a fixed buffer age
+  CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions(bufferAge + 1);
 
   bool hasRendered = false;
   // If we visualize the regions we will always render the entire viewport
@@ -1446,7 +1454,10 @@ bool CGUIWindowManager::Render()
     RenderPass();
     hasRendered = true;
   }
-  else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
+  else if (bufferAge > MAX_BUFFER_AGE ||
+           CServiceBroker::GetSettingsComponent()
+                   ->GetAdvancedSettings()
+                   ->m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
   {
     if (!dirtyRegions.empty())
     {
@@ -1481,6 +1492,7 @@ bool CGUIWindowManager::Render()
       CGUITexture::DrawQuad(i, 0x4c00ff00);
   }
 
+  m_presentedFrame |= hasRendered;
   return hasRendered;
 }
 
