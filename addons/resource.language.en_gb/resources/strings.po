@@ -18565,7 +18565,11 @@ msgctxt "#35012"
 msgid "A new controller has been detected. Configuration can be done at any time in \"Settings -> System Settings -> Input\". Would you like to configure it now?"
 msgstr ""
 
-#empty string with id 35013
+#. Label of a controller in the peripherals list that is powered by its cable
+#: xbmc/peripherals/dialogs/GUIDialogPeripherals.cpp
+msgctxt "#35013"
+msgid "Wired"
+msgstr ""
 
 #. Help text of the button to fix the bug where buttons are skipped in the controller dialog. {0:s} - list of disabled buttons and axes
 #: xbmc/games/controllers/dialogs/GUIDialogButtonCapture.cpp

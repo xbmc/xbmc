@@ -1908,6 +1908,76 @@
 	<!-- One corner indicator over a running game. The three of them are the
 	     same shape - a backdrop, something to look at, something to read - so
 	     they are described once here and differ only by what they are told. -->
+	<variable name="GamePlayerBatteryColorVar">
+		<value condition="String.IsEqual(ListItem.Property(game.batterystate),charging)">button_focus</value>
+		<value condition="Integer.IsGreater(ListItem.Property(game.batterylevel),60)">FF4CAF50</value>
+		<value condition="Integer.IsGreater(ListItem.Property(game.batterylevel),40)">FFFFB300</value>
+		<value>red</value>
+	</variable>
+	<include name="GamePlayerBatteryBar">
+		<param name="left" />
+		<param name="threshold" />
+		<definition>
+			<control type="image">
+				<left>$PARAM[left]</left>
+				<top>18</top>
+				<width>12</width>
+				<height>24</height>
+				<texture colordiffuse="40FFFFFF">colors/white.png</texture>
+			</control>
+			<control type="image">
+				<left>$PARAM[left]</left>
+				<top>18</top>
+				<width>12</width>
+				<height>24</height>
+				<texture colordiffuse="$VAR[GamePlayerBatteryColorVar]">colors/white.png</texture>
+				<visible>Integer.IsGreater(ListItem.Property(game.batterylevel),$PARAM[threshold])</visible>
+			</control>
+		</definition>
+	</include>
+	<include name="GamePlayerBatteryLayout">
+		<control type="image">
+			<description>Backdrop, so it stays readable over any game</description>
+			<width>180</width>
+			<height>60</height>
+			<texture border="10" colordiffuse="BB000000">dialogs/dialog-bg-nobo.png</texture>
+		</control>
+		<control type="image">
+			<width>60</width>
+			<height>60</height>
+			<texture colordiffuse="button_focus">colors/white.png</texture>
+		</control>
+		<control type="label">
+			<description>Player number</description>
+			<width>60</width>
+			<height>60</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font30_title</font>
+			<textcolor>white</textcolor>
+			<label>$INFO[ListItem.Label,P]</label>
+		</control>
+		<include content="GamePlayerBatteryBar">
+			<param name="left" value="78" />
+			<param name="threshold" value="0" />
+		</include>
+		<include content="GamePlayerBatteryBar">
+			<param name="left" value="96" />
+			<param name="threshold" value="20" />
+		</include>
+		<include content="GamePlayerBatteryBar">
+			<param name="left" value="114" />
+			<param name="threshold" value="40" />
+		</include>
+		<include content="GamePlayerBatteryBar">
+			<param name="left" value="132" />
+			<param name="threshold" value="60" />
+		</include>
+		<include content="GamePlayerBatteryBar">
+			<param name="left" value="150" />
+			<param name="threshold" value="80" />
+		</include>
+	</include>
 	<include name="GameIndicator">
 		<param name="condition" default="" />
 		<param name="badge" default="" />

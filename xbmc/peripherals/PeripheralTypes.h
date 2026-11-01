@@ -97,6 +97,26 @@ enum class CecPowerStatus
   UNKNOWN = 4,
 };
 
+/*!
+ * \brief How a peripheral is powered
+ */
+enum class PeripheralBatteryState
+{
+  UNKNOWN,
+  WIRED, //!< powered by its cable, with no battery
+  DISCHARGING,
+  CHARGING,
+  FULL, //!< plugged in with a full battery
+};
+
+struct PeripheralBattery
+{
+  PeripheralBatteryState state{PeripheralBatteryState::UNKNOWN};
+  int level{-1}; //!< battery charge in percent (0-100), or -1 if unknown
+
+  bool operator==(const PeripheralBattery& other) const = default;
+};
+
 class CPeripheral;
 using PeripheralPtr = std::shared_ptr<CPeripheral>;
 using PeripheralVector = std::vector<PeripheralPtr>;
