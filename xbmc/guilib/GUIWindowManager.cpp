@@ -1407,16 +1407,12 @@ void CGUIWindowManager::RenderEx() const
   if (pWindow)
     pWindow->RenderEx();
 
-  // We don't call RenderEx for now on dialogs since it is used
-  // to trigger non gui video rendering. We can activate it later at any time.
-  /*
-  vector<CGUIWindow *> &activeDialogs = m_activeDialogs;
-  for (iDialog it = activeDialogs.begin(); it != activeDialogs.end(); ++it)
+  // Dialogs draw their video in Render(), so only those that ask for it get RenderEx()
+  for (const auto& dialog : m_activeDialogs)
   {
-    if ((*it)->IsDialogRunning())
-      (*it)->RenderEx();
+    if (dialog->IsDialogRunning() && dialog->WantsRenderEx())
+      dialog->RenderEx();
   }
-  */
 }
 
 bool CGUIWindowManager::Render()
