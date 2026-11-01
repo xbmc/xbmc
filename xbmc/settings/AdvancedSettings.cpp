@@ -224,6 +224,7 @@ void CAdvancedSettings::Initialize()
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
   m_videoFpsDetect = 1;
+  m_gamesPacingMarginMs = 2.5f;
   m_maxTempo = 1.55f;
   m_videoPreferStereoStream = false;
 
@@ -871,6 +872,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
                          600.0f);
     }
   }
+
+  pElement = pRootElement->FirstChildElement("games");
+  if (pElement)
+    XMLUtils::GetFloat(pElement, "pacingmargin", m_gamesPacingMarginMs, 0.0f, 10.0f);
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
   if (pElement)
