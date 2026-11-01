@@ -469,6 +469,30 @@ void CPVRPlaybackState::StartPlayback(std::unique_ptr<CFileItem>& item,
                                              static_cast<void*>(item.release()));
 }
 
+void CPVRPlaybackState::OnBackendChannelChange(int clientId, int channelUid) const
+{
+  const std::shared_ptr<const CPVRChannel> playing{GetPlayingChannel()};
+  if (!playing || playing->ClientID() != clientId || playing->UniqueID() == channelUid)
+    return;
+
+  auto& pvrManager{CServiceBroker::GetPVRManager()};
+  const std::shared_ptr<CPVRChannel> channel{
+      pvrManager.ChannelGroups()->GetByUniqueID(channelUid, clientId)};
+  const std::shared_ptr<CPVRChannelGroupMember> groupMember{
+      pvrManager.Get<PVR::GUI::Channels>().GetChannelGroupMember(channel)};
+  if (!groupMember)
+  {
+    CLog::LogF(LOGERROR, "Cannot find channel '{}' of client {}", channelUid, clientId);
+    return;
+  }
+
+  if (pvrManager.IsParentalLocked(channel))
+    return;
+
+  auto item{std::make_unique<CFileItem>(groupMember)};
+  StartPlayback(item, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
+}
+
 bool CPVRPlaybackState::IsPlaying() const
 {
   std::unique_lock lock(m_critSection);
