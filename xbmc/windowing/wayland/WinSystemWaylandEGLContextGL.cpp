@@ -23,6 +23,11 @@
 
 #include <EGL/eglext.h>
 
+#if defined(HAVE_NVDEC)
+#include "cores/VideoPlayer/DVDCodecs/Video/NVDEC.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererNVDECGL.h"
+#endif
+
 using namespace KODI::WINDOWING::WAYLAND;
 
 void CWinSystemWaylandEGLContextGL::Register()
@@ -56,6 +61,11 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   {
     WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+
+#if defined(HAVE_NVDEC)
+  NVDEC::CDecoder::Register();
+  CRendererNVDECGL::Register();
+#endif
 
   CBufferObjectFactory::ClearBufferObjects();
 #if defined(HAVE_LINUX_MEMFD) && defined(HAVE_LINUX_UDMABUF)
