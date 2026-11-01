@@ -32,6 +32,11 @@
 
 #include <EGL/eglext.h>
 
+#if defined(HAVE_NVDEC)
+#include "cores/VideoPlayer/DVDCodecs/Video/NVDEC.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererNVDECGL.h"
+#endif
+
 using namespace KODI::WINDOWING::GBM;
 
 using namespace std::chrono_literals;
@@ -76,6 +81,11 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   {
     VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
+
+#if defined(HAVE_NVDEC)
+  NVDEC::CDecoder::Register();
+  CRendererNVDECGL::Register();
+#endif
 
   CScreenshotSurfaceGL::Register();
 

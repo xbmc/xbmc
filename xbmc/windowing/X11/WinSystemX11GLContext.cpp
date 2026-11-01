@@ -28,6 +28,11 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
+#if defined(HAVE_NVDEC)
+#include "cores/VideoPlayer/DVDCodecs/Video/NVDEC.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererNVDECGL.h"
+#endif
+
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -377,6 +382,10 @@ bool CWinSystemX11GLContext::RefreshGLContext(
   {
     VDPAURegister();
     VDPAURegisterRender();
+#if defined(HAVE_NVDEC)
+    NVDEC::CDecoder::Register();
+    CRendererNVDECGL::Register();
+#endif
   }
   return success;
 }
