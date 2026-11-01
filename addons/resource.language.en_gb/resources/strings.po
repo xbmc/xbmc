@@ -23350,7 +23350,32 @@ msgctxt "#36921"
 msgid "songs"
 msgstr ""
 
-#empty strings from id 36922 to 36999
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36922"
+msgid "Colour range"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36923"
+msgid "Full (0-255)"
+msgstr ""
+
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36924"
+msgid "Limited (16-235)"
+msgstr ""
+
+#. Help text for setting "Colour range" of label #36922
+#: system/settings/linux.xml
+#: system/settings/freebsd.xml
+msgctxt "#36925"
+msgid "Colour range of the video output. \"Auto\" hands the choice back to the graphics driver. \"Full\" and \"Limited\" tell the driver to output that range and signal it to the display, where the driver supports it. Without driver support, Kodi converts to limited range itself when Limited is selected. Choose the range your display expects: limited for a regular HDMI TV, full for a PC monitor or a display with a full range mode."
+msgstr ""
+
+#empty strings from id 36926 to 36999
 
 #: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 msgctxt "#37000"

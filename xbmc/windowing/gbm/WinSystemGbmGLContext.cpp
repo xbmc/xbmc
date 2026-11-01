@@ -9,6 +9,7 @@
 #include "WinSystemGbmGLContext.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMAOpenGL.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
@@ -17,6 +18,8 @@
 #include "cores/VideoPlayer/Process/gbm/ProcessInfoGBM.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "rendering/gl/GuiCompositeShaderGL.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
 #include "utils/BufferObjectFactory.h"
@@ -207,6 +210,7 @@ bool CWinSystemGbmGLContext::CreateContext()
 
 bool CWinSystemGbmGLContext::SetGuiCompositing(int colorTransfer)
 {
+  m_guiColorTransfer = colorTransfer;
   // TODO: add CreateLUTs(colorTransfer) support to GL composite shader to match
   // GLES (WinSystemGbmGLESContext). Currently GL only handles PQ via pow shader;
   // HLG and LUT-based PQ are not yet implemented.
@@ -217,7 +221,8 @@ bool CWinSystemGbmGLContext::SetGuiCompositing(int colorTransfer)
     if (!m_compositeShader)
     {
       std::string defines;
-      if (UseLimitedColor())
+      m_compositeShaderLimited = UseLimitedColor();
+      if (m_compositeShaderLimited)
         defines += "#define KODI_LIMITED_RANGE 1\n";
       m_compositeShader = std::make_unique<CGuiCompositeShaderGL>(defines);
       if (!m_compositeShader->CompileAndLink())
@@ -243,6 +248,17 @@ bool CWinSystemGbmGLContext::BeginGuiComposite(bool guiWillRender)
 {
   if (!m_guiCompositing)
     return false;
+
+  // the range is a compile time define, rebuild the shader when it changes
+  if (m_compositeShader && m_compositeShaderLimited != UseLimitedColor())
+  {
+    m_compositeShader.reset();
+    if (!SetGuiCompositing(m_guiColorTransfer))
+      return false;
+    // a skipped GUI walk would leave the GUI plane with the old range
+    if (!guiWillRender)
+      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+  }
 
   m_guiWillRender = guiWillRender;
 
