@@ -1312,6 +1312,9 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     return -1;
   }
 
+  if (m_decoderState == STATE_SW_SINGLE)
+    m_pFilterGraph->nb_threads = 1;
+
   const AVFilter* srcFilter = avfilter_get_by_name("buffer");
   const AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
