@@ -192,6 +192,8 @@ private:
   std::atomic_bool m_hdrStale{false};
   //! Reset() ran on another thread and left replacing the pictures to the GUI thread
   std::atomic_bool m_replacePictures{false};
+  bool m_reloadAsSRGB[2]{false, false}; //!< slot is loading again as sRGB after leaving HDR
+  int m_sRGBReloadSlide[2]{-1, -1}; //!< slide each slot last tried to load again as sRGB
 
   std::vector<CFileItemPtr> m_slides;
 

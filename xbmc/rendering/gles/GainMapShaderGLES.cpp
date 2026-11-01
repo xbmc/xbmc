@@ -27,6 +27,14 @@ void CGainMapShaderGLES::SetGainMap(const KODI::PICTURE::GainMapParams& params, 
   m_weight = weight;
 }
 
+void CGainMapShaderGLES::SetColorMatrix(const std::optional<ImageColorMatrix>& matrix)
+{
+  // BT.709 -> BT.2020 in linear light, column-major
+  static constexpr ImageColorMatrix BT709_TO_BT2020{0.6274f, 0.0691f, 0.0164f, 0.3293f, 0.9195f,
+                                                    0.0880f, 0.0433f, 0.0114f, 0.8956f};
+  m_toBT2020 = matrix.value_or(BT709_TO_BT2020);
+}
+
 void CGainMapShaderGLES::SetGainMapScale(float x, float y)
 {
   m_scaleX = x;
@@ -49,6 +57,7 @@ void CGainMapShaderGLES::OnCompiledAndLinked()
   m_hWeight = glGetUniformLocation(ProgramHandle(), "u_weight");
   m_hScale = glGetUniformLocation(ProgramHandle(), "u_gainMapScale");
   m_hAlpha = glGetUniformLocation(ProgramHandle(), "u_alpha");
+  m_hToBT2020 = glGetUniformLocation(ProgramHandle(), "u_toBT2020");
 
   glUseProgram(ProgramHandle());
   glUniform1i(m_hPicture, 0);
@@ -68,5 +77,6 @@ bool CGainMapShaderGLES::OnEnabled()
   glUniform1f(m_hWeight, m_weight);
   glUniform2f(m_hScale, m_scaleX, m_scaleY);
   glUniform1f(m_hAlpha, m_alpha);
+  glUniformMatrix3fv(m_hToBT2020, 1, GL_FALSE, m_toBT2020.data());
   return true;
 }
