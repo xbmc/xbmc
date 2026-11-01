@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "GameClientCallbacks.h"
+#include "GameClientExtractor.h"
 #include "GameClientFastForward.h"
 #include "GameClientInGameSaves.h"
 #include "GameClientProperties.h"
@@ -201,6 +202,12 @@ bool CGameClient::IsExtensionValid(const std::string& strExtension) const
   return m_extensions.contains(NormalizeExtension(strExtension));
 }
 
+bool CGameClient::SupportsFolders() const
+{
+  // Libretro's mark for an emulator that boots a whole folder
+  return m_extensions.contains(NormalizeExtension("/"));
+}
+
 bool CGameClient::Initialize(void)
 {
   using namespace XFILE;
@@ -314,6 +321,22 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
   CloseFile();
 
+  // Saves stay with the game, not with a copy taken out of its archive
+  const std::string gamePath = path;
+
+  if (!m_bSupportsVFS && URIUtils::IsInArchive(file.GetDynPath()))
+  {
+    path = CGameClientExtractor(SupportsFolders(), IsExtensionValid(".m3u"))
+               .Extract(file.GetDynPath());
+    if (path.empty())
+    {
+      // "Failed to play game"
+      // "This game can only be played directly from a hard drive or partition. Compressed files must be extracted."
+      MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{35214});
+      return false;
+    }
+  }
+
   GAME_ERROR error = GAME_ERROR_FAILED;
 
   // Loading the game might require the stream subsystem to be initialized
@@ -358,7 +381,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
     return false;
   }
 
-  if (!InitializeGameplay(path, streamManager, input))
+  if (!InitializeGameplay(gamePath, path, streamManager, input))
   {
     NotifyError(GAME_ERROR_UNKNOWN);
     Streams().Deinitialize();
@@ -366,7 +389,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
   }
 
   // After the game is up, so a cheat is applied to something that can take it
-  Cheats().Load(path);
+  Cheats().Load(gamePath);
 
   return true;
 }
@@ -417,7 +440,7 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
     return false;
   }
 
-  if (!InitializeGameplay("", streamManager, input))
+  if (!InitializeGameplay("", "", streamManager, input))
   {
     NotifyError(GAME_ERROR_UNKNOWN);
     Streams().Deinitialize();
@@ -428,6 +451,7 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
 }
 
 bool CGameClient::InitializeGameplay(const std::string& gamePath,
+                                     const std::string& mediaPath,
                                      RETRO::IStreamManager& streamManager,
                                      IGameInputCallback* input)
 {
@@ -445,6 +469,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
   m_bIsPlaying = true;
   m_hasFrameRun = false;
   m_gamePath = gamePath;
+  m_mediaPath = mediaPath;
   m_input = input;
 
   m_inGameSaves = std::make_unique<CGameClientInGameSaves>(this, m_ifc.game);
@@ -662,6 +687,7 @@ void CGameClient::CloseFile()
     m_bIsPlaying = false;
     m_hasFrameRun = false;
     m_gamePath.clear();
+    m_mediaPath.clear();
     m_serializeSize = 0;
     m_input = nullptr;
     m_fastForward->Reset();
