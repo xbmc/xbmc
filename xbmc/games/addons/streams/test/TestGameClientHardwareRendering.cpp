@@ -1046,6 +1046,13 @@ public:
 
   bool Hardcore() const { return m_settings->GetBool("gamesachievements.hardcore"); }
 
+  // Another achievements setting changing, which reaches the client the same way
+  void ChangeEncore()
+  {
+    CServiceBroker::GetGameServices().GameSettings().OnSettingChanged(
+        m_settings->GetSetting("gamesachievements.encore"));
+  }
+
 private:
   const std::shared_ptr<CSettings> m_settings;
   const bool m_hardcore;
@@ -1053,29 +1060,38 @@ private:
   const std::string m_token;
 };
 
+// How many times a client has been asked for hardcore
+int hardcoreRequests = 0;
+
 // A client that plays on in casual mode whenever it is asked for hardcore
 void RefuseHardcore(KodiToAddonFuncTable_Game& callbacks)
 {
   callbacks.SetRetroAchievementsCredentials = [](const AddonInstance_Game*, const char*,
                                                  const char*) { return GAME_ERROR_NO_ERROR; };
   callbacks.RCSetHardcoreEnabled = [](const AddonInstance_Game*, bool enabled)
-  { return enabled ? GAME_ERROR_REJECTED : GAME_ERROR_NO_ERROR; };
+  {
+    if (!enabled)
+      return GAME_ERROR_NO_ERROR;
+    ++hardcoreRequests;
+    return GAME_ERROR_REJECTED;
+  };
   callbacks.RCSetEncoreModeEnabled = [](const AddonInstance_Game*, bool)
   { return GAME_ERROR_NO_ERROR; };
 }
 } // namespace
 
-TEST_F(TestGameClientHardwareRendering, HardcoreTurnsOffWhenRefusedAtSignIn)
+TEST_F(TestGameClientHardwareRendering, HardcoreRefusedAtSignInOnlyLeavesThisGame)
 {
   RETRO::CPlaybackTestEnvironment environment;
   CHardcoreSettings settings(true);
   RefuseHardcore(*m_client->GetInstanceInterface()->toAddon);
 
   EXPECT_TRUE(m_client->Cheevos().SendCredentials());
-  EXPECT_FALSE(settings.Hardcore());
+  EXPECT_FALSE(m_client->Cheevos().IsHardcoreActive());
+  EXPECT_TRUE(settings.Hardcore());
 }
 
-TEST_F(TestGameClientHardwareRendering, HardcoreTurnsOffWhenRefusedDuringPlay)
+TEST_F(TestGameClientHardwareRendering, HardcoreRefusedDuringPlayOnlyLeavesThisGame)
 {
   RETRO::CPlaybackTestEnvironment environment;
   CHardcoreSettings settings(false);
@@ -1084,9 +1100,46 @@ TEST_F(TestGameClientHardwareRendering, HardcoreTurnsOffWhenRefusedDuringPlay)
   m_client->Cheevos().ObserveSettings();
 
   settings.SetHardcore(true);
-  EXPECT_FALSE(settings.Hardcore());
+  EXPECT_FALSE(m_client->Cheevos().IsHardcoreActive());
+  EXPECT_TRUE(settings.Hardcore());
 
   m_client->Cheevos().StopObservingSettings();
+}
+
+TEST_F(TestGameClientHardwareRendering, RefusedHardcoreIsAskedForAgainOnlyWhenTurnedBackOn)
+{
+  RETRO::CPlaybackTestEnvironment environment;
+  CHardcoreSettings settings(true);
+  RefuseHardcore(*m_client->GetInstanceInterface()->toAddon);
+  ASSERT_TRUE(m_client->Cheevos().SendCredentials());
+  m_client->Cheevos().ObserveSettings();
+  const int requests = hardcoreRequests;
+
+  settings.ChangeEncore();
+  EXPECT_EQ(hardcoreRequests, requests);
+
+  settings.SetHardcore(false);
+  settings.SetHardcore(true);
+  EXPECT_EQ(hardcoreRequests, requests + 1);
+  EXPECT_FALSE(m_client->Cheevos().IsHardcoreActive());
+
+  m_client->Cheevos().StopObservingSettings();
+}
+
+TEST_F(TestGameClientHardwareRendering, LeavingHardcoreKeepsTheSetting)
+{
+  RETRO::CPlaybackTestEnvironment environment;
+  CHardcoreSettings settings(true);
+  auto& callbacks = *m_client->GetInstanceInterface()->toAddon;
+  RefuseHardcore(callbacks);
+  callbacks.RCSetHardcoreEnabled = [](const AddonInstance_Game*, bool)
+  { return GAME_ERROR_NO_ERROR; };
+  ASSERT_TRUE(m_client->Cheevos().SendCredentials());
+  ASSERT_TRUE(m_client->Cheevos().IsHardcoreActive());
+
+  m_client->Cheevos().LeaveHardcore();
+  EXPECT_FALSE(m_client->Cheevos().IsHardcoreActive());
+  EXPECT_TRUE(settings.Hardcore());
 }
 
 TEST_F(TestGameClientHardwareRendering, RewindRetriesUntilSerializationBecomesAvailable)

@@ -16,10 +16,12 @@
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "games/AchievementRuntime.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
+#include "games/GameUtils.h"
+#include "games/addons/GameClient.h"
+#include "games/addons/cheevos/GameClientCheevos.h"
 #include "games/dialogs/DialogGameDefines.h"
 #include "guilib/GUIMacros.h"
 #include "guilib/GUIMessage.h"
@@ -166,9 +168,6 @@ void CDialogGameAchievements::OnInitWindow()
   // Before the base class, which focuses the list and can't focus an empty one
   m_viewControl->SetCurrentView(DEFAULT_VIEW_LIST);
   RefreshList();
-
-  if (!gameSettings.AchievementsHardcoreOffered())
-    SET_CONTROL_HIDDEN(CONTROL_CHEEVOS_HARDCORE);
 
   CGUIDialog::OnInitWindow();
 }
@@ -354,6 +353,9 @@ void CDialogGameAchievements::RefreshList()
     else if (achievement.type == AchievementType::MISSABLE)
       item->SetProperty(ACHIEVEMENT_MISSABLE, true);
 
+    if (achievement.earnedHardcore)
+      item->SetProperty(ACHIEVEMENT_HARDCORE, true);
+
     // Earned or not, so the player can see what beating the game took
     if (achievement.type == AchievementType::PROGRESSION)
       item->SetProperty(ACHIEVEMENT_PROGRESSION, true);
@@ -489,25 +491,15 @@ void CDialogGameAchievements::OnHardcoreToggled()
 
   const bool enabling = !gameSettings.GetAchievementsHardcore();
 
-  // Only turning it on is asked about, and only while a game is up: that is
-  // the case that costs the player the session they are in. The radio button
-  // takes its state from the setting, so a refusal here corrects it.
-  //
-  // "Hardcore mode", "Starting a hardcore session restarts the game...", "Continue?"
-  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
-  if (enabling && appPlayer->IsPlayingGame() &&
-      !CGUIDialogYesNo::ShowAndGetInput(CVariant{35700},
-                                        CVariant{Localize(35702) + "[CR][CR]" + Localize(19194)}))
-  {
-    return;
-  }
-
+  // Turning it on during a game asks first, and the radio button takes its
+  // state from the setting, so a refusal leaves both as they were
   gameSettings.SetAchievementsHardcore(enabling);
   CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 
   // The whole OSD goes, not just this dialog: the player asked for the game to
   // restart, and leaving them on the menu they opened hides it. An emulator
   // that refused hardcore doesn't restart.
-  if (enabling && gameSettings.GetAchievementsHardcore())
+  const GameClientPtr gameClient = CGameUtils::GetPlayingGameClient();
+  if (enabling && gameClient && gameClient->Cheevos().IsHardcoreActive())
     CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog()->CloseOSD();
 }
