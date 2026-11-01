@@ -56,6 +56,7 @@
 #include <algorithm>
 #include <memory>
 #include <mutex>
+#include <utility>
 
 using namespace KODI;
 using namespace KODI::VIDEO;
@@ -108,19 +109,21 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         auto start = std::chrono::steady_clock::now();
-        std::unique_ptr<CTexture> texture =
-            CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight);
-        std::string motionClip;
-        if (texture && m_checkMotion)
-          motionClip = KODI::PICTURE::ExtractMotionPhotoClip(m_strFileName);
-        std::unique_ptr<CTexture> gainMapTexture;
         KODI::PICTURE::GainMap gainMap;
-        if (texture && m_checkHdr)
+        if (m_checkHdr)
           gainMap = KODI::PICTURE::ReadGainMap(m_strFileName);
+        std::unique_ptr<CTexture> gainMapTexture;
         if (!gainMap.image.empty())
           gainMapTexture = CTexture::LoadFromFileInMemory(
               reinterpret_cast<unsigned char*>(gainMap.image.data()), gainMap.image.size(),
-              "image/jpeg", m_maxWidth, m_maxHeight);
+              "image/jpeg", m_maxWidth, m_maxHeight, CAspectRatio::CENTER, ImageColorMode::AS_IS);
+        // a picture drawn in HDR keeps its colours beyond sRGB; without its gain map it isn't
+        std::unique_ptr<CTexture> texture = CTexture::LoadFromFile(
+            m_strFileName, m_maxWidth, m_maxHeight, CAspectRatio::CENTER, "",
+            gainMapTexture ? ImageColorMode::KEEP_GAMUT : ImageColorMode::CONVERT_TO_SRGB);
+        std::string motionClip;
+        if (texture && m_checkMotion)
+          motionClip = KODI::PICTURE::ExtractMotionPhotoClip(m_strFileName);
 
         auto end = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -797,6 +800,29 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   if (m_hdrOutput && !m_showHdr)
     SetHdrOutput(false);
 
+  // out of HDR, a picture that kept its colours beyond sRGB would look dull, so load it again
+  if (!m_showHdr && !m_pBackgroundLoader->IsLoading())
+  {
+    for (const int pic : {m_iCurrentPic, 1 - m_iCurrentPic})
+    {
+      const int slide{m_Image[pic]->SlideNumber()};
+      // once per slide, so a picture that fails to load again isn't tried every frame
+      if (!m_reloadAsSRGB[pic] && m_sRGBReloadSlide[pic] != slide && m_Image[pic]->IsLoaded() &&
+          m_Image[pic]->HasColorMatrix() && slide >= 0 && slide < static_cast<int>(m_slides.size()))
+      {
+        int maxWidth;
+        int maxHeight;
+        GetCheckedSize(static_cast<float>(res.iWidth) * m_fZoom,
+                       static_cast<float>(res.iHeight) * m_fZoom, maxWidth, maxHeight);
+        m_reloadAsSRGB[pic] = true;
+        m_sRGBReloadSlide[pic] = slide;
+        m_pBackgroundLoader->LoadPic(pic, slide, GetPicturePath(m_slides.at(slide).get()), maxWidth,
+                                     maxHeight, false, false);
+        break;
+      }
+    }
+  }
+
   // The first HDR picture switches the display to HDR, and it stays there until the slideshow ends.
   // A video sets the display up for itself, so the next picture after one switches back.
   if (m_showHdr && !m_hdrOutput && !m_bPlayingVideo && m_Image[m_iCurrentPic]->IsLoaded() &&
@@ -1212,6 +1238,8 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
                   m_Image[0]->SupportsHdr() && CServiceBroker::GetWinSystem()->IsHDRDisplay() &&
                   std::ranges::none_of(m_slides, [](const auto& slide) { return IsVideo(*slide); });
       m_hdrEntered = false;
+      m_reloadAsSRGB[0] = m_reloadAsSRGB[1] = false;
+      m_sRGBReloadSlide[0] = m_sRGBReloadSlide[1] = -1;
 
       CGUIDialog::OnMessage(message);
 
@@ -1554,6 +1582,14 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic,
                                     std::unique_ptr<CTexture> gainMap,
                                     const KODI::PICTURE::GainMapParams& gainMapParams)
 {
+  // the sRGB copy of a picture that kept its colours for HDR replaces it where it still is
+  if (std::exchange(m_reloadAsSRGB[iPic], false))
+  {
+    if (pTexture && m_Image[iPic]->IsLoaded() && m_Image[iPic]->SlideNumber() == iSlideNumber)
+      m_Image[iPic]->UpdateTexture(std::move(pTexture));
+    return;
+  }
+
   if (pTexture)
   {
     // set the pic's texture + size etc.

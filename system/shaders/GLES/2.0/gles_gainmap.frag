@@ -15,7 +15,7 @@ precision mediump float;
 #endif
 
 varying vec2 v_tex;
-uniform sampler2D u_picture; // SDR picture, sRGB
+uniform sampler2D u_picture; // SDR picture, sRGB curve
 uniform sampler2D u_gainMap;
 uniform vec2 u_gainMapScale; // gain map texture coordinates from the picture's
 uniform vec3 u_min;         // log2
@@ -26,12 +26,8 @@ uniform vec3 u_offsetHdr;
 uniform float u_weight;      // how much of the gain map the display can show, 0 to 1
 uniform float u_alpha;
 
-// BT.709 -> BT.2020 in linear light
-const mat3 bt709_to_bt2020 = mat3(
-  0.6274,  0.0691,  0.0164,
-  0.3293,  0.9195,  0.0880,
-  0.0433,  0.0114,  0.8956
-);
+// the picture's linear RGB -> BT.2020, BT.709's unless it kept wider colours
+uniform mat3 u_toBT2020;
 
 // SDR white at the BT.2408 reference level, the same as the GUI
 const float SDR_WHITE = 203.0 / 10000.0;
@@ -63,7 +59,7 @@ void main()
   vec3 logBoost = mix(u_min, u_max, pow(gain, 1.0 / u_gamma));
   vec3 hdr = (sdr + u_offsetSdr) * exp2(logBoost * u_weight) - u_offsetHdr;
 
-  vec3 result = ToPQ(bt709_to_bt2020 * max(hdr, vec3(0.0)) * SDR_WHITE);
+  vec3 result = ToPQ(u_toBT2020 * max(hdr, vec3(0.0)) * SDR_WHITE);
 
 #if defined(KODI_LIMITED_RANGE)
   result = result * (235.0 - 16.0) / 255.0 + 16.0 / 255.0;

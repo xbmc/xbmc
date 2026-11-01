@@ -186,6 +186,8 @@ private:
   bool m_showHdr = false; //!< HDR pictures switch the display to HDR
   bool m_hdrOutput = false;
   bool m_hdrEntered = false; //!< An HDR picture has been shown in this slideshow
+  bool m_reloadAsSRGB[2]{false, false}; //!< slot is loading again as sRGB after leaving HDR
+  int m_sRGBReloadSlide[2]{-1, -1}; //!< slide each slot last tried to load again as sRGB
 
   std::vector<CFileItemPtr> m_slides;
 
