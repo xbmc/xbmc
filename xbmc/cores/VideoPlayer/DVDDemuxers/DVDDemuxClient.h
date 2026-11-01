@@ -40,7 +40,7 @@ public:
   int GetNrOfStreams() const override;
   std::string GetFileName() override;
   std::string GetStreamCodecName(int iStreamId) override;
-  void EnableStream(int id, bool enable) override;
+  bool EnableStream(int id, bool enable) override;
   void OpenStream(int id) override;
   void SetVideoResolution(unsigned int width, unsigned int height) override;
   bool IsStreaming() const override;

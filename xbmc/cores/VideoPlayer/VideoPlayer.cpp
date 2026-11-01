@@ -4142,8 +4142,10 @@ void CVideoPlayer::SetEnableStream(CCurrentStream& current, bool isEnabled)
   if (m_pDemuxer && STREAM_SOURCE_MASK(current.source) == STREAM_SOURCE_DEMUX &&
       m_SelectionStreams.Contains(current.type, current.source, current.demuxerId, current.id))
   {
-    m_pDemuxer->EnableStream(current.demuxerId, current.id, isEnabled);
-    current.demuxDisabled = !isEnabled;
+    // Only a demuxer that really supports it stops delivering a disabled stream. Others
+    // (e.g. ffmpeg) ignore the request and keep delivering, so there is nothing to reopen later.
+    if (m_pDemuxer->EnableStream(current.demuxerId, current.id, isEnabled))
+      current.demuxDisabled = !isEnabled;
   }
 }
 
