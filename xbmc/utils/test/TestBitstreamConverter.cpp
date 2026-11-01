@@ -278,3 +278,47 @@ TEST(TestBitstreamConverterMpeg2, SequenceHeader)
   EXPECT_EQ(afterGop.width, 1920u);
   EXPECT_EQ(afterGop.height, 1080u);
 }
+
+TEST(TestBitstreamConverterMpeg2, TruncatedSequenceHeader)
+{
+  // 1920x1080, aspect_ratio_information 3 (16:9), frame_rate_code 3 (25 fps)
+  const std::vector<uint8_t> header{0x00, 0x00, 0x01, 0xB3, 0x78, 0x04, 0x38, 0x33};
+
+  mpeg2_sequence sequence{};
+  ASSERT_TRUE(CBitstreamConverter::mpeg2_sequence_header(header.data(), header.size(), &sequence));
+
+  // Cut by the end of the packet right after the start code and inside vertical_size_value, and
+  // cut inside vertical_size_value by the next start code
+  const std::vector<std::vector<uint8_t>> packets{
+      {0x00, 0x00, 0x01, 0xB3},
+      {0x00, 0x00, 0x01, 0xB3, 0x78, 0x04},
+      {0x00, 0x00, 0x01, 0xB3, 0x78, 0x04, 0x00, 0x00, 0x01, 0xB8}};
+  for (const auto& packet : packets)
+  {
+    EXPECT_FALSE(CBitstreamConverter::mpeg2_sequence_header(
+        packet.data(), static_cast<uint32_t>(packet.size()), &sequence))
+        << "size " << packet.size();
+    EXPECT_EQ(sequence.width, 1920u);
+    EXPECT_EQ(sequence.height, 1080u);
+    EXPECT_EQ(sequence.ratio_info, 3u);
+    EXPECT_FLOAT_EQ(sequence.ratio, 16.0f / 9);
+    EXPECT_EQ(sequence.fps_rate, 25000u);
+    EXPECT_EQ(sequence.fps_scale, 1000u);
+  }
+}
+
+TEST(TestBitstreamConverterMpeg2, SequenceHeaderBeforeAnotherStartCode)
+{
+  // The 40 bits read from the header end right where a group of pictures starts
+  const std::vector<uint8_t> packet{0x00, 0x00, 0x01, 0xB3, 0x78, 0x04, 0x38,
+                                    0x33, 0x00, 0x00, 0x01, 0xB8, 0x00};
+
+  mpeg2_sequence sequence{};
+  EXPECT_TRUE(CBitstreamConverter::mpeg2_sequence_header(
+      packet.data(), static_cast<uint32_t>(packet.size()), &sequence));
+  EXPECT_EQ(sequence.width, 1920u);
+  EXPECT_EQ(sequence.height, 1080u);
+  EXPECT_EQ(sequence.ratio_info, 3u);
+  EXPECT_EQ(sequence.fps_rate, 25000u);
+  EXPECT_EQ(sequence.fps_scale, 1000u);
+}
