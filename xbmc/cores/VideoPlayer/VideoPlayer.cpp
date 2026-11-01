@@ -3402,6 +3402,16 @@ void CVideoPlayer::HandleMessages()
         }
         else if (!st.IsCurrent(m_CurrentAudio))
         {
+#if defined(HAVE_LIBBLURAY)
+          if (STREAM_SOURCE_MASK(st.source) == STREAM_SOURCE_DEMUX && m_pDemuxer &&
+              m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+          {
+            CDemuxStream* stream = m_pDemuxer->GetStream(st.demuxerId, st.id);
+            if (stream && std::static_pointer_cast<CDVDInputStreamBluray>(m_pInputStream)
+                              ->SetActiveAudioStream(stream->dvdNavId))
+              m_dvd.iSelectedAudioStream = stream->dvdNavId;
+          }
+#endif
           CloseStream(m_CurrentAudio, false);
           OpenStream(m_CurrentAudio, st.demuxerId, st.id, st.source);
           AdaptForcedSubtitles();
@@ -3471,6 +3481,17 @@ void CVideoPlayer::HandleMessages()
         }
         else if (!st.IsCurrent(m_CurrentSubtitle) || m_CurrentSubtitle.demuxDisabled)
         {
+#if defined(HAVE_LIBBLURAY)
+          if (STREAM_SOURCE_MASK(st.source) == STREAM_SOURCE_DEMUX && m_pDemuxer &&
+              m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+          {
+            CDemuxStream* stream = m_pDemuxer->GetStream(st.demuxerId, st.id);
+            if (stream && std::static_pointer_cast<CDVDInputStreamBluray>(m_pInputStream)
+                              ->SetActiveSubtitleStream(stream->dvdNavId,
+                                                        m_VideoPlayerVideo->IsSubtitleEnabled()))
+              m_dvd.iSelectedSPUStream = stream->dvdNavId;
+          }
+#endif
           // a stream disabled in the demuxer is only enabled again by a reopen
           ReopenSubtitleStream(st);
         }
@@ -3501,6 +3522,12 @@ void CVideoPlayer::HandleMessages()
         SetEnableStream(m_CurrentSubtitle, false);
 
       SetSubtitleVisibleInternal(isVisible);
+
+#if defined(HAVE_LIBBLURAY)
+      if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+        std::static_pointer_cast<CDVDInputStreamBluray>(m_pInputStream)
+            ->SetSubtitleVisible(isVisible);
+#endif
 
       // Image type subtitles (e.g. VOBSUB) can support "forced" flag on overlays (images)
       // so you need to keep the stream open to parse "forced" flag on each image

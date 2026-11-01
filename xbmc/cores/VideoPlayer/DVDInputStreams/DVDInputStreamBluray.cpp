@@ -625,6 +625,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
       pid = m_clip->pg_streams[m_event.param - 1].pid;
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PG_TEXTST_STREAM {}, {}", m_event.param,
               pid);
+    m_pgStreamNumber = m_event.param;
     NotifyPlayer(static_cast<void*>(&pid), BD_EVENT_PG_TEXTST_STREAM);
     break;
 
@@ -1201,6 +1202,60 @@ bool CDVDInputStreamBluray::IsDefaultStream(int pid) const
     return is_first_stream(pid, m_clip->pg_streams, m_clip->pg_stream_count);
 
   return false;
+}
+
+static unsigned int stream_number(int pid, const BLURAY_STREAM_INFO* info, int count)
+{
+  for (int i = 0; i < count; ++i)
+  {
+    if (info[i].pid == static_cast<uint16_t>(pid))
+      return i + 1;
+  }
+  return 0;
+}
+
+bool CDVDInputStreamBluray::CanSelectStream() const
+{
+  // libbluray already plays the play item of a held event, which m_clip does not describe yet
+  return m_bd && m_navmode && m_titleInfo && m_clip && m_hold != HOLD_HELD &&
+         m_event.event == BD_EVENT_NONE;
+}
+
+bool CDVDInputStreamBluray::SetActiveAudioStream(int pid)
+{
+  if (!CanSelectStream())
+    return false;
+
+  const unsigned int number{stream_number(pid, m_clip->audio_streams, m_clip->audio_stream_count)};
+  if (number == 0)
+    return false;
+
+  // returns an int only since libbluray 1.4.1, and 0 also when nothing changed
+  bd_select_stream(m_bd, BLURAY_AUDIO_STREAM, number, 1);
+  return true;
+}
+
+bool CDVDInputStreamBluray::SetActiveSubtitleStream(int pid, bool visible)
+{
+  if (!CanSelectStream())
+    return false;
+
+  const unsigned int number{stream_number(pid, m_clip->pg_streams, m_clip->pg_stream_count)};
+  if (number == 0)
+    return false;
+
+  bd_select_stream(m_bd, BLURAY_PG_TEXTST_STREAM, number, visible);
+  m_pgStreamNumber = number;
+  return true;
+}
+
+void CDVDInputStreamBluray::SetSubtitleVisible(bool visible)
+{
+  if (!CanSelectStream() || m_pgStreamNumber == 0 ||
+      m_pgStreamNumber > static_cast<uint32_t>(m_clip->pg_stream_count))
+    return;
+
+  bd_select_stream(m_bd, BLURAY_PG_TEXTST_STREAM, m_pgStreamNumber, visible);
 }
 
 CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
