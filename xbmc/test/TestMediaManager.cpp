@@ -11,6 +11,7 @@
 #if defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "jobs/JobManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "storage/cdioSupport.h"
@@ -130,6 +131,22 @@ protected:
 #endif
 
   void SetFirstDrive(const std::string& devicePath) { m_manager.m_strFirstAvailDrive = devicePath; }
+
+  bool IsPathOnDrive(const std::string& path, const std::string& drive)
+  {
+    return m_manager.IsPathOnDrive(path, {drive});
+  }
+  /*! A path whose host is another path, as the disc protocols build them */
+  static std::string Wrap(const std::string& protocol,
+                          const std::string& host,
+                          const std::string& file = "")
+  {
+    CURL url;
+    url.SetProtocol(protocol);
+    url.SetHostName(host);
+    url.SetFileName(file);
+    return url.Get();
+  }
 
   /*! Replace the TOC reader, so no hardware is touched and every read is counted */
   void ReadTocWith(std::function<std::unique_ptr<MEDIA_DETECT::CCdInfo>()> reader)
@@ -648,6 +665,52 @@ TEST_F(TestMediaManager, DrivePathsAreNormalised)
   EXPECT_EQ(m_manager.TranslateDevicePath(""), "E:");
   EXPECT_EQ(m_manager.TranslateDevicePath("", true), "\\\\.\\E:");
   EXPECT_EQ(m_manager.TranslateDevicePath("cdda://local/"), "E:");
+}
+
+// What is played from a drive
+
+TEST_F(TestMediaManager, PathsOnTheDiscAreOnItsDrive)
+{
+  SetFirstDrive("\\\\.\\D:\\");
+
+  EXPECT_TRUE(IsPathOnDrive("D:\\BDMV\\index.bdmv", "D:"));
+  // Drive letters are case insensitive
+  EXPECT_TRUE(IsPathOnDrive("d:\\VIDEO_TS\\VIDEO_TS.IFO", "D:"));
+  EXPECT_TRUE(IsPathOnDrive(Wrap("bluray", "D:\\", "BDMV/PLAYLIST/00800.mpls"), "D:"));
+  EXPECT_TRUE(IsPathOnDrive(Wrap("cdda", "D:", "1.cdda"), "D:"));
+  EXPECT_TRUE(IsPathOnDrive(Wrap("iso9660", "D:", "VIDEO_TS/VIDEO_TS.IFO"), "D:"));
+  // A disc image on the disc
+  EXPECT_TRUE(IsPathOnDrive(Wrap("udf", "D:\\movie.iso", "BDMV/STREAM/00001.m2ts"), "D:"));
+}
+
+TEST_F(TestMediaManager, PathsNamingNoDriveAreOnTheFirst)
+{
+  SetFirstDrive("\\\\.\\D:\\");
+
+  for (const auto& path : {"cdda://local/1.cdda", "dvd://1", "iso9660://"})
+  {
+    EXPECT_TRUE(IsPathOnDrive(path, "D:")) << path;
+    EXPECT_FALSE(IsPathOnDrive(path, "E:")) << path;
+  }
+}
+
+TEST_F(TestMediaManager, PathsElsewhereAreNotOnTheDrive)
+{
+  SetFirstDrive("\\\\.\\D:\\");
+
+  // On another drive
+  EXPECT_FALSE(IsPathOnDrive("D:\\BDMV\\index.bdmv", "E:"));
+  EXPECT_FALSE(IsPathOnDrive(Wrap("bluray", "D:\\", "BDMV/PLAYLIST/00800.mpls"), "E:"));
+  EXPECT_FALSE(IsPathOnDrive(Wrap("cdda", "D:", "1.cdda"), "E:"));
+  // In disc images that are not on a disc
+  EXPECT_FALSE(
+      IsPathOnDrive(Wrap("udf", "\\\\nas\\movies\\movie.iso", "VIDEO_TS/VIDEO_TS.IFO"), "D:"));
+  EXPECT_FALSE(IsPathOnDrive(
+      Wrap("bluray", Wrap("udf", "smb://nas/movies/movie.iso"), "BDMV/PLAYLIST/00800.mpls"), "D:"));
+  // Neither on a drive nor in a disc image
+  EXPECT_FALSE(IsPathOnDrive("C:\\Movies\\movie.mkv", "D:"));
+  EXPECT_FALSE(IsPathOnDrive("smb://nas/movies/movie.mkv", "D:"));
+  EXPECT_FALSE(IsPathOnDrive("", "D:"));
 }
 
 #endif

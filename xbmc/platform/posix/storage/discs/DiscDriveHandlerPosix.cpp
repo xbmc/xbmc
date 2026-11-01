@@ -112,11 +112,12 @@ bool CDiscDriveHandlerPosix::EjectDriveTray(const std::string& devicePath)
   }
 
   bool ejected{false};
+  driver_return_code_t ret{DRIVER_OP_UNINIT};
   int retries = MAX_OPEN_RETRIES;
   CdIo_t* cdio = libCdio->cdio_open(devicePath.c_str(), DRIVER_UNKNOWN);
   while (cdio && retries-- > 0)
   {
-    const driver_return_code_t ret = libCdio->cdio_eject_media(&cdio);
+    ret = libCdio->cdio_eject_media(&cdio);
     if (ret == DRIVER_OP_SUCCESS)
     {
       ejected = true;
@@ -124,6 +125,9 @@ bool CDiscDriveHandlerPosix::EjectDriveTray(const std::string& devicePath)
     }
   }
   libCdio->cdio_destroy(cdio);
+  if (!ejected)
+    CLog::LogF(LOGERROR, "Ejecting tray failed for device {}: {}", devicePath,
+               libCdio->cdio_driver_errmsg(ret));
   return ejected;
 }
 
