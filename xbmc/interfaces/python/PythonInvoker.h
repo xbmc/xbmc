@@ -14,6 +14,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+#include <atomic>
 #include <map>
 #include <string>
 #include <vector>
@@ -63,6 +64,7 @@ private:
   PyThreadState* m_threadState;
   PyThreadState* m_mainThreadState{nullptr};
   bool m_stop = false;
+  std::atomic<int> m_raisingExit{0}; // stop() thread states in this interpreter
   CEvent m_stoppedEvent;
 
   XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> m_languageHook;
