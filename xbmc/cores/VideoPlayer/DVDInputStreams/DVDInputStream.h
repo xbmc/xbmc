@@ -141,7 +141,12 @@ public:
     virtual DemuxPacket* ReadDemux() = 0;
     virtual CDemuxStream* GetStream(int iStreamId) const = 0;
     virtual std::vector<CDemuxStream*> GetStreams() const = 0;
-    virtual void EnableStream(int iStreamId, bool enable) {}
+    /*!
+     * \brief Enable or disable the delivery of packets of a stream.
+     * \return true if the request was passed on to an implementation that can act on it,
+     *         false if enabling/disabling streams is not supported
+     */
+    virtual bool EnableStream(int iStreamId, bool enable) { return false; }
     virtual bool OpenStream(int iStreamId) { return false; }
     virtual int GetNrOfStreams() const = 0;
     virtual void SetSpeed(int iSpeed) = 0;

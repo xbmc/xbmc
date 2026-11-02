@@ -35,7 +35,7 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override { return m_Streams.size(); }
   std::string GetFileName() override { return m_Filename; }
-  void EnableStream(int id, bool enable) override;
+  bool EnableStream(int id, bool enable) override;
 
 private:
   class CStream
