@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "imagefiles/ImageFileURL.h"
 #include "music/Artist.h"
@@ -89,6 +90,28 @@ std::string GetOwnLocalArt(const CFileItem& item, const std::string& artType)
   return found != art.end() ? found->second : std::string{};
 }
 
+//! Whether the plain art beside a video is another's, so a scan takes none of it for the video: that
+//! of a disc an extra shares, such as a featurette on the movie's disc, or of a file or disc holding
+//! several episodes, as the export tells them apart
+bool IsPlainArtAnothers(const CFileItem& item)
+{
+  if (!item.HasVideoInfoTag())
+    return false;
+
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  if (CUtil::IsDiscPlaylistExtra(item.GetDynPath(), &tag))
+    return true;
+  if (tag.m_type != MediaTypeEpisode || tag.m_iIdShow < 0)
+    return false;
+
+  CVideoDatabase db;
+  EpisodeFileMap episodes;
+  if (!db.Open() || !db.GetEpisodeMap(tag.m_iIdShow, episodes))
+    return false;
+  const std::string& file{item.GetDynPath()};
+  return episodes.count(URIUtils::IsBlurayPath(file) ? URIUtils::GetDiscFile(file) : file) > 1;
+}
+
 //-------------------------------------------------------------------------------------------------
 // CVideoItemArtworkHandler (Generic handler)
 //-------------------------------------------------------------------------------------------------
@@ -161,6 +184,9 @@ std::string CVideoItemArtworkHandler::GetLocalArt() const
   if (std::string art{GetOwnLocalArt(*m_item, m_artType)}; !art.empty())
     return art;
 
+  // As a scan, the plain art is offered only where it's the video's own
+  if (IsPlainArtAnothers(*m_item))
+    return {};
   return CVideoThumbLoader::GetLocalArt(*m_item, m_artType);
 }
 
@@ -544,6 +570,8 @@ std::string CVideoItemArtworkFanartHandler::GetLocalArt() const
   if (std::string art{GetOwnLocalArt(*m_item, "fanart")}; !art.empty())
     return art;
 
+  if (IsPlainArtAnothers(*m_item))
+    return {};
   return ART::GetLocalFanart(*m_item);
 }
 
