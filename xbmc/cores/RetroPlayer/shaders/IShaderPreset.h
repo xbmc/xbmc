@@ -81,5 +81,12 @@ public:
    * \return All the video shader passes of the currently loaded preset
    */
   virtual std::vector<ShaderPass>& GetPasses() = 0;
+
+  /*!
+   * \brief Frees the textures the passes draw into and their look-up textures,
+   * keeping the compiled passes. The textures are created again when the
+   * preset is next drawn.
+   */
+  virtual void ReleaseTextures() = 0;
 };
 } // namespace KODI::SHADER

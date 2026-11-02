@@ -624,6 +624,15 @@ void CRPRenderManager::FlushRendered()
     pool->FlushRendered();
 }
 
+void CRPRenderManager::ReleaseUnusedTextures()
+{
+  for (const auto& renderer : m_renderers)
+  {
+    if (renderer->IsUnused())
+      renderer->ReleaseTextures();
+  }
+}
+
 void CRPRenderManager::CheckFlush()
 {
   if (m_bFlush)
@@ -660,6 +669,7 @@ void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRe
   {
     std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
     m_oldRenderers.clear();
+    ReleaseUnusedTextures();
   }
 
   // Get a renderer for the fullscreen window
@@ -695,6 +705,7 @@ void CRPRenderManager::RenderControl(bool bClear,
   {
     std::unique_lock<std::mutex> lock{m_oldRenderersMutex};
     m_oldRenderers.clear();
+    ReleaseUnusedTextures();
   }
 
   // Get a renderer for the control
@@ -900,6 +911,9 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForPool(
     if (!renderer && !shaderPreset.empty())
       m_failedShaderPresets.insert(shaderPreset);
   }
+
+  if (renderer)
+    renderer->SetUsed();
 
   return renderer;
 }

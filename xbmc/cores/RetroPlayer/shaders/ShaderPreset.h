@@ -27,6 +27,7 @@ class CRenderContext;
 namespace SHADER
 {
 class IShader;
+class IShaderLut;
 class IShaderTexture;
 
 class CShaderPreset : public IShaderPreset
@@ -46,6 +47,7 @@ public:
   bool SetShaderPreset(const std::string& shaderPresetPath) override;
   const std::string& GetShaderPreset() const override;
   std::vector<ShaderPass>& GetPasses() override { return m_passes; }
+  void ReleaseTextures() override;
 
 protected:
   // Shader interface
@@ -87,6 +89,9 @@ protected:
 
   // Video shaders for the shader passes
   std::vector<std::unique_ptr<IShader>> m_pShaders;
+
+  // Look-up textures shared by the shader passes
+  std::vector<std::shared_ptr<IShaderLut>> m_luts;
 
   // Intermediate textures used for pixel shader passes
   std::vector<std::unique_ptr<IShaderTexture>> m_pShaderTextures;
