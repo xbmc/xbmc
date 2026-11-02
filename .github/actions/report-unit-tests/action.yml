@@ -1,7 +1,8 @@
 name: Report unit tests
 description: >
   Uploads gtest XML results and writes a summary with one annotation per failed
-  test. Informational: the step that ran kodi-test decides the job result.
+  test, and prints and uploads the backtrace of a kodi-test crash.
+  Informational: the step that ran kodi-test decides the job result.
 inputs:
   name:
     description: Platform suffix for the artifact name (e.g. linux-gbm-X64).
@@ -9,9 +10,29 @@ inputs:
   results:
     description: Glob of gtest XML files.
     default: build/gtestresults.xml
+  binary:
+    description: Path of the kodi-test executable, to print the backtrace of a crash.
+    default: build/kodi-test
 runs:
   using: composite
   steps:
+    - name: Print crash backtraces
+      if: always()
+      shell: bash
+      run: >-
+        python3 .github/scripts/crash_backtraces.py --binary "${{ inputs.binary }}"
+        --dumps "${RUNNER_TEMP}/crash-dumps" --results "${{ inputs.results }}"
+        --out "${RUNNER_TEMP}/crash-reports"
+
+    - name: Upload crash reports
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: crash-reports-${{ inputs.name }}
+        path: ${{ runner.temp }}/crash-reports
+        if-no-files-found: ignore
+        retention-days: 7
+
     - name: Summarise unit tests
       if: always()
       shell: bash
