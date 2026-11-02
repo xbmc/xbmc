@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/DirtyRegion.h"
+#include "pictures/UltraHdr.h"
 #include "threads/CriticalSection.h"
 #include "utils/ColorUtils.h"
 
@@ -40,12 +41,24 @@ public:
                   DISPLAY_EFFECT dispEffect = EFFECT_RANDOM,
                   TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateTexture(std::unique_ptr<CTexture> pTexture);
+  void SetGainMap(std::unique_ptr<CTexture> gainMap, const KODI::PICTURE::GainMapParams& params);
+  bool HasGainMap();
+  //! The picture kept its colours beyond sRGB, see CTexture::GetColorMatrix()
+  bool HasColorMatrix();
 
   bool IsLoaded() const { return m_bIsLoaded; }
   void UnLoad() { m_bIsLoaded = false; }
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  void Render();
+  void Render(bool picture = true);
+  //! Draw the picture to an HDR display output, where it can be brighter than the GUI's white
+  bool RenderHdr();
+  virtual bool SupportsHdr() const { return false; }
   void Close();
+
+  // Call while the render context is still valid: on app exit, CGUIWindowSlideShow's destructor
+  // runs only after CRenderSystemGLES::DestroyRenderSystem() has already torn the context down.
+  virtual void Free() {}
+
   void Reset(DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   DISPLAY_EFFECT DisplayEffect() const { return m_displayEffect; }
   bool DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
@@ -83,6 +96,15 @@ public:
 
 protected:
   virtual void Render(float* x, float* y, CTexture* pTexture, KODI::UTILS::COLOR::Color color) = 0;
+  virtual bool RenderHdr(float* x,
+                         float* y,
+                         CTexture* pTexture,
+                         CTexture* gainMap,
+                         const KODI::PICTURE::GainMapParams& params,
+                         KODI::UTILS::COLOR::Color color)
+  {
+    return false;
+  }
 
 private:
   void SetTexture_Internal(int iSlideNumber,
@@ -92,6 +114,8 @@ private:
   void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
 
   std::unique_ptr<CTexture> m_pImage;
+  std::unique_ptr<CTexture> m_gainMap;
+  KODI::PICTURE::GainMapParams m_gainMapParams;
 
   int m_iOriginalWidth;
   int m_iOriginalHeight;

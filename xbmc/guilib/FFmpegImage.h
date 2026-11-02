@@ -71,6 +71,8 @@ public:
                                   unsigned int &bufferoutSize) override;
   void ReleaseThumbnailBuffer() override;
   void SetColorMetadata(const ImageColorMetadata& color) override;
+  void SetColorMode(ImageColorMode mode) override { m_colorMode = mode; }
+  std::optional<ImageColorMatrix> GetColorMatrix() const override { return m_colorMatrix; }
 
   bool Initialize(unsigned char* buffer, size_t bufSize);
 
@@ -88,6 +90,9 @@ private:
 
   // CICP color metadata for the encoded output (fields default to unset).
   ImageColorMetadata m_color;
+
+  ImageColorMode m_colorMode{ImageColorMode::CONVERT_TO_SRGB};
+  std::optional<ImageColorMatrix> m_colorMatrix;
 
   MemBuffer m_buf;
 
