@@ -25,7 +25,7 @@
 #include <utility>
 #include <vector>
 
-class CXBMCTinyXML;
+class CXBMCTinyXML2;
 
 class CGUIColorManager
 {
@@ -51,7 +51,7 @@ public:
       bool sortColors);
 
 protected:
-  bool LoadXML(CXBMCTinyXML& xmlDoc);
+  bool LoadXML(CXBMCTinyXML2& xmlDoc);
 
   std::map<std::string, KODI::UTILS::COLOR::Color> m_colors;
 };

@@ -20,6 +20,7 @@
 #include "resources/ResourcesComponent.h"
 #include "utils/SystemInfo.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <limits>
 #include <string>
@@ -114,7 +115,7 @@ class CGUITestColorManager : public CGUIColorManager
 public:
   CGUITestColorManager()
   {
-    CXBMCTinyXML xmlDoc;
+    CXBMCTinyXML2 xmlDoc;
     xmlDoc.Parse(R"(<colors>
                       <color name="white">ffffffff</color>
                       <color name="black">00000000</color>

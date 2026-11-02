@@ -11,7 +11,7 @@
 #include "filesystem/File.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <algorithm>
 #include <cmath>
@@ -125,30 +125,31 @@ void Archive(CArchive& ar, ContentGeometryRecord& record)
   }
 }
 
-void SaveContentGeometryXML(TiXmlNode& movie, const ContentGeometryRecord& record)
+void SaveContentGeometryXML(tinyxml2::XMLNode& movie, const ContentGeometryRecord& record)
 {
   if (!record.HasReading())
     return;
 
-  TiXmlElement geometry("contentgeometry");
+  tinyxml2::XMLDocument* doc = movie.GetDocument();
+  tinyxml2::XMLElement* geometry = doc->NewElement("contentgeometry");
   for (const float aspect : record.aspects)
   {
-    TiXmlElement element("aspect");
-    element.InsertEndChild(TiXmlText(StringUtils::Format("{:.2f}", aspect)));
-    geometry.InsertEndChild(element);
+    tinyxml2::XMLElement* element = doc->NewElement("aspect");
+    element->InsertEndChild(doc->NewText(StringUtils::Format("{:.2f}", aspect).c_str()));
+    geometry->InsertEndChild(element);
   }
 
   movie.InsertEndChild(geometry);
 }
 
-std::optional<ContentGeometryRecord> LoadContentGeometryXML(const TiXmlElement& movie)
+std::optional<ContentGeometryRecord> LoadContentGeometryXML(const tinyxml2::XMLElement& movie)
 {
-  const TiXmlElement* geometry{movie.FirstChildElement("contentgeometry")};
+  const tinyxml2::XMLElement* geometry{movie.FirstChildElement("contentgeometry")};
   if (!geometry)
     return std::nullopt;
 
   ContentGeometryRecord record;
-  for (const TiXmlElement* element = geometry->FirstChildElement("aspect"); element;
+  for (const tinyxml2::XMLElement* element = geometry->FirstChildElement("aspect"); element;
        element = element->NextSiblingElement("aspect"))
   {
     if (!element->GetText())

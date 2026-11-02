@@ -47,7 +47,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "windowing/WinSystem.h"
@@ -317,16 +317,16 @@ bool CApplicationSkinHandling::LoadCustomWindows()
           std::string skinFileLower = skinFile;
           StringUtils::ToLower(skinFileLower);
 
-          CXBMCTinyXML xmlDoc;
+          CXBMCTinyXML2 xmlDoc;
           if (!xmlDoc.LoadFile(item->GetPath()))
           {
             CLog::Log(LOGERROR, "Unable to load custom window XML {}. Line {}\n{}", item->GetPath(),
-                      xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+                      xmlDoc.ErrorLineNum(), xmlDoc.ErrorStr());
             continue;
           }
 
           // Root element should be <window>
-          TiXmlElement* pRootElement = xmlDoc.RootElement();
+          const tinyxml2::XMLElement* pRootElement = xmlDoc.RootElement();
           std::string strValue = pRootElement->Value();
           if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
@@ -343,15 +343,17 @@ bool CApplicationSkinHandling::LoadCustomWindows()
             strType = pRootElement->Attribute("type");
           else
           {
-            const TiXmlNode* pType = pRootElement->FirstChild("type");
+            const tinyxml2::XMLNode* pType = pRootElement->FirstChildElement("type");
             if (pType && pType->FirstChild())
               strType = pType->FirstChild()->Value();
           }
 
           // Read the id attribute or element to get the window id
-          if (!pRootElement->Attribute("id", &id))
+          if (pRootElement->Attribute("id"))
+            pRootElement->QueryIntAttribute("id", &id);
+          else
           {
-            const TiXmlNode* pType = pRootElement->FirstChild("id");
+            const tinyxml2::XMLNode* pType = pRootElement->FirstChildElement("id");
             if (pType && pType->FirstChild())
               id = atol(pType->FirstChild()->Value());
           }
