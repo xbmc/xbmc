@@ -83,28 +83,20 @@ bool IsFullscreenVideo()
          windowManager.GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_VIDEO;
 }
 
-struct VideoGestureMessage
+void ApplyVideoGesture(int seekSeconds, KODI::TOUCH::VideoPinchMode pinchMode)
 {
-  KODI::MESSAGING::ThreadMessageCallback callback;
-  int seekSeconds;
-  KODI::TOUCH::VideoPinchMode pinchMode;
-};
-
-void ApplyVideoGesture(void* user)
-{
-  std::unique_ptr<VideoGestureMessage> message(static_cast<VideoGestureMessage*>(user));
   if (!IsFullscreenVideo())
     return;
   const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
   if (!appPlayer || !appPlayer->IsPlayingVideo())
     return;
-  if (message->seekSeconds != 0)
-    appPlayer->GetSeekHandler().SeekSeconds(message->seekSeconds);
+  if (seekSeconds != 0)
+    appPlayer->GetSeekHandler().SeekSeconds(seekSeconds);
   else
   {
     const auto settings = appPlayer->GetVideoSettings();
     const auto mode =
-        message->pinchMode == KODI::TOUCH::VideoPinchMode::ZOOM ? ViewModeZoom : ViewModeNormal;
+        pinchMode == KODI::TOUCH::VideoPinchMode::ZOOM ? ViewModeZoom : ViewModeNormal;
     appPlayer->SetRenderViewMode(mode, settings.m_CustomZoomAmount, settings.m_CustomPixelRatio,
                                  settings.m_CustomVerticalShift, settings.m_CustomNonLinStretch);
   }
@@ -115,9 +107,7 @@ void QueueVideoGesture(int seconds, KODI::TOUCH::VideoPinchMode mode)
   auto messenger = CServiceBroker::GetAppMessenger();
   if (!messenger)
     return;
-  auto* message = new VideoGestureMessage{{ApplyVideoGesture, nullptr}, seconds, mode};
-  message->callback.userptr = message;
-  messenger->PostMsg(TMSG_CALLBACK, -1, -1, &message->callback);
+  messenger->PostCallback([seconds, mode] { ApplyVideoGesture(seconds, mode); });
 }
 } // namespace
 
