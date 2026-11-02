@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DisplayPacing.h"
 #include "cores/GameSettings.h"
 #include "cores/RetroPlayer/RetroPlayerTypes.h"
 #include "threads/CriticalSection.h"
@@ -137,6 +138,11 @@ public:
   CRenderBufferManager& GetBufferManager() { return *m_renderBufferManager; }
 
   /*!
+   * \brief Get when the screen takes frames and how fast the game runs to match
+   */
+  CDisplayPacing& GetDisplayPacing() { return m_displayPacing; }
+
+  /*!
    * \brief Check if a buffer pool supports the given scaling method
    */
   bool HasScalingMethod(SCALINGMETHOD scalingMethod) const;
@@ -221,6 +227,7 @@ private:
   // Rendering parameters
   std::unique_ptr<CRenderContext> m_renderContext;
   SCALINGMETHOD m_defaultScalingMethod = SCALINGMETHOD::AUTO;
+  CDisplayPacing m_displayPacing;
 };
 
 } // namespace RETRO
