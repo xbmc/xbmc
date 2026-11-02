@@ -37,6 +37,7 @@
 #include "Process/ProcessInfo.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "filesystem/IFileTypes.h"
 
 #include <cstdint>
 #include <memory>
@@ -57,7 +58,8 @@ bool CDVDFileInfo::GetFileDuration(const std::string& path, int& duration)
   std::unique_ptr<CDVDDemux> demux;
 
   CFileItem item(path, false);
-  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  // Reads only the header, no file cache needed
+  auto input = CDVDFactoryInputStream::CreateInputStream(NULL, item, false, XFILE::READ_NO_CACHE);
   if (!input)
     return false;
 
@@ -308,7 +310,9 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
 
   CFileItem item(playablePath, false);
   item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  // Reads a few megabytes with seeks, no file cache needed
+  auto pInputStream =
+      CDVDFactoryInputStream::CreateInputStream(NULL, item, false, XFILE::READ_NO_CACHE);
   if (!pInputStream)
     return false;
 
