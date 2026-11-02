@@ -103,10 +103,14 @@ jobs:
 
       # The ping_group_range grant keeps TestNetwork.PingHost running instead of
       # skipping. Line-buffered so assertion messages stay next to their test.
+      # A crash leaves a core where report-unit-tests prints its backtrace.
       - name: Run unit tests
         working-directory: build
         run: |
           sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
+          mkdir -p "${RUNNER_TEMP}/crash-dumps"
+          sudo sysctl -w kernel.core_pattern="${RUNNER_TEMP}/crash-dumps/core.%e.%p"
+          ulimit -c unlimited
           stdbuf -oL ./kodi-test --gtest_output=xml:gtestresults.xml
 
       - name: Report unit tests
