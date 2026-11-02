@@ -28,10 +28,15 @@ public:
   CGUIVideoControl* Clone() const override { return new CGUIVideoControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  bool OnMessage(CGUIMessage& message) override;
   void Render() override;
   void RenderEx() override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool CanFocus() const override;
   bool CanFocusFromPoint(const CPoint &point) const override;
+
+private:
+  bool m_renderingVideo{false};
+  bool m_renderingInGui{false};
 };
 
