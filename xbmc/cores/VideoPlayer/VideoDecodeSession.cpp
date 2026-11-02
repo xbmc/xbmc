@@ -20,7 +20,20 @@
 #include "filesystem/IFileTypes.h"
 #include "utils/log.h"
 
+#include <mutex>
 #include <vector>
+
+namespace
+{
+//! One metadata frame decode at a time; see CMetadataFrameDecodeLock
+std::mutex s_metadataFrameDecodeMutex;
+} // namespace
+
+CMetadataFrameDecodeLock::CMetadataFrameDecodeLock(bool wait)
+  : m_lock(wait ? std::unique_lock<std::mutex>(s_metadataFrameDecodeMutex)
+                : std::unique_lock<std::mutex>(s_metadataFrameDecodeMutex, std::try_to_lock))
+{
+}
 
 std::optional<VideoDecodeSession> OpenVideoDecodeSession(const CFileItem& fileItem,
                                                          int codecOptions,
