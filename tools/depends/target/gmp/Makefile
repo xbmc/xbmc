@@ -1,6 +1,7 @@
 include ../../Makefile.include GMP-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile GMP-VERSION ../../download-files.include \
-                                       0001-acinclude.m4-for-C23.patch
+                                       0001-acinclude.m4-for-C23.patch \
+                                       0002-lshift-com-C23.patch
 
 # ABI selection
 ifeq ($(OS),linux)
@@ -40,6 +41,7 @@ $(PLATFORM)/config.status: $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../0001-acinclude.m4-for-C23.patch
+	cd $(PLATFORM); patch -p1 -i ../0002-lshift-com-C23.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
