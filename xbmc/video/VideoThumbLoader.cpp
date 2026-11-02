@@ -21,6 +21,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/StereoscopicsManager.h"
 #include "imagefiles/ImageFileURL.h"
+#include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/NetworkFileItemClassify.h"
@@ -394,7 +395,10 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       // No tag or no details set, so extract them
       CLog::LogF(LOGDEBUG, "trying to extract filestream details from video file {}",
                  CURL::GetRedacted(pItem->GetPath()));
-      if (CDVDFileInfo::GetFileStreamDetails(pItem))
+      // The GUI thread does not wait for the decode of another probe, and the incomplete details
+      // it gets then are not stored
+      if (CDVDFileInfo::GetFileStreamDetails(pItem,
+                                             !CServiceBroker::GetAppMessenger()->IsProcessThread()))
       {
         CVideoInfoTag* info = pItem->GetVideoInfoTag();
         m_videoDatabase->BeginTransaction();
