@@ -176,6 +176,8 @@ TEST(TestLanguageTag, MatchesTheSameLanguageInAnyNotation)
   EXPECT_TRUE(CLanguageTag::Parse("en-AU").Matches(CLanguageTag::Parse("en-GB")));
   EXPECT_TRUE(CLanguageTag::Parse("pt-BR").Matches(CLanguageTag::Parse("por")));
   EXPECT_TRUE(CLanguageTag::Parse("zh-Hant-HK").Matches(CLanguageTag::Parse("zh")));
+  EXPECT_TRUE(CLanguageTag::Parse("Portuguese (Brazil)").Matches(CLanguageTag::Parse("pob")));
+  EXPECT_TRUE(CLanguageTag::Parse("Portuguese (Brazil)").Matches(CLanguageTag::Parse("pt-BR")));
 
   EXPECT_FALSE(CLanguageTag::Parse("en-AU").Matches(CLanguageTag::Parse("fr-CA")));
 
