@@ -484,29 +484,40 @@ bool CVideoInfoScannerExtras::AddNfoDiscExtras(const std::string& disc,
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
 
   // The export writes each playlist of the disc as a <movie> of the nfo, and the disc as a whole as
-  // one without a playlist
-  bool recorded{false};
+  // one without a playlist. They are all read first, as how many there are decides whose the art
+  // named after the disc is.
+  struct Entry
+  {
+    CVideoInfoTag tag;
+    int playlist;
+  };
+  std::vector<Entry> entries;
   CVideoInfoTag tag;
   int index{1};
   for (CInfoScanner::InfoType result{loader->Load(tag, false)};
        result != CInfoScanner::InfoType::NONE; result = loader->LoadVersion(++index, tag))
   {
-    const int playlist{loader->GetBlurayPlaylist()};
-    const std::string title{tag.GetAssetInfo().GetTitle()};
-    const VideoAssetType assetType{tag.GetAssetInfo().GetType()};
-    if (result != CInfoScanner::InfoType::FULL || !IsExportedAsset(tag))
-    {
-      tag.Reset();
-      continue;
-    }
-    recorded = true;
+    if (result == CInfoScanner::InfoType::FULL && IsExportedAsset(tag))
+      entries.push_back({tag, loader->GetBlurayPlaylist()});
+    tag.Reset();
+  }
+
+  // An export names the art of the disc's only entry, or of the disc as a whole, after the disc,
+  // and that of each of several playing a playlist after its playlist. So an extra of several on
+  // the disc shares it, and takes none of the art named after it. A version inherits it, as one on
+  // the movie's disc inherits the movie's.
+  const bool severalEntries{entries.size() > 1};
+  for (Entry& entry : entries)
+  {
+    const int playlist{entry.playlist};
+    const std::string title{entry.tag.GetAssetInfo().GetTitle()};
+    const VideoAssetType assetType{entry.tag.GetAssetInfo().GetType()};
     const std::string_view kind{assetType == VideoAssetType::VERSION ? "version" : "extra"};
 
     const std::string path{playlist < 0 ? disc : URIUtils::GetBlurayPlaylistPath(disc, playlist)};
     CFileItem asset{path, false};
-    *asset.GetVideoInfoTag() = tag;
+    *asset.GetVideoInfoTag() = std::move(entry.tag);
     asset.GetVideoInfoTag()->m_strFileNameAndPath = path;
-    tag.Reset();
 
     if (m_database.GetVideoVersionInfo(path).m_assetTypeId != -1)
     {
@@ -531,7 +542,8 @@ bool CVideoInfoScannerExtras::AddNfoDiscExtras(const std::string& disc,
       assetTag.m_strPictureURL.Clear();
       assetTag.m_fanart.Clear();
     }
-    m_art.GetArtwork(&asset, ADDON::ContentType::MOVIES, false, true, "");
+    if (playlist < 0 || !severalEntries || assetType != VideoAssetType::EXTRA)
+      m_art.GetArtwork(&asset, ADDON::ContentType::MOVIES, false, true, "");
 
     // An export names the art of each entry of a disc holding several after its playlist. The
     // flags asking for that are set on a copy, so as not to be stored with the asset.
@@ -559,7 +571,7 @@ bool CVideoInfoScannerExtras::AddNfoDiscExtras(const std::string& disc,
     if (assetTag.GetResumePoint().IsSet())
       m_database.AddBookMarkToFile(path, assetTag.GetResumePoint(), CBookmark::RESUME);
   }
-  return recorded;
+  return !entries.empty();
 }
 
 const CFileItem* FindExtraOnAnotherDisc(const CFileItemList& existing, const CFileItem& extra)

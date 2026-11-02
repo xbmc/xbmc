@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
@@ -18,9 +19,12 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ItemProperties.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoInfoScannerArt.h"
 #include "video/VideoManagerTypes.h"
 
 #include <memory>
@@ -40,10 +44,11 @@ constexpr const char* DB_NAME = "TestVideoInfoScannerArt";
 class TestScanner : public CVideoInfoScanner
 {
 public:
-  explicit TestScanner(const DatabaseSettings& settings)
+  explicit TestScanner(const DatabaseSettings& settings, bool ignoreVideoExtras = true)
   {
     m_database.Connect(DB_NAME, settings, false);
     m_similarVideoAction = SimilarVideoScanAction::NONE;
+    m_ignoreVideoExtras = ignoreVideoExtras;
   }
 
   //! As Start() and Process() do
@@ -225,10 +230,53 @@ protected:
     return folder;
   }
 
-  void Scan()
+  void Scan(bool ignoreVideoExtras = true)
   {
-    TestScanner scanner{m_settings};
+    TestScanner scanner{m_settings, ignoreVideoExtras};
     scanner.Scan(m_root);
+  }
+
+  //! A movie, M3GAN, with a bluray folder rip in its extras folder, Extras\Bonus, whose export
+  //! records it as the given extras of the movie, each playing one of the disc's playlists
+  //! \return the folder holding the bonus disc's BDMV
+  std::string MovieWithABonusDisc(const std::vector<std::pair<int, std::string>>& extras)
+  {
+    const std::string folder{Folder(m_root, "M3GAN")};
+    File(folder, "movie.nfo", "<movie><title>M3GAN</title></movie>");
+    File(folder, "M3GAN.mkv");
+    const std::string bonus{Folder(Folder(folder, "Extras"), "Bonus")};
+    const std::string bdmv{Folder(bonus, "BDMV")};
+    File(bdmv, "index.bdmv");
+    File(bdmv, "MovieObject.bdmv");
+    File(Folder(bdmv, "STREAM"), "00000.m2ts");
+    const std::string playlists{Folder(bdmv, "PLAYLIST")};
+    // With the streamdetails an export writes, which spare reading the playlist from the disc
+    std::string nfo{"<movies>"};
+    for (const auto& [playlist, title] : extras)
+    {
+      File(playlists, StringUtils::Format("{:05}.mpls", playlist));
+      nfo += StringUtils::Format(
+          "<movie><title>M3GAN</title><playlist>{}</playlist>"
+          "<videoassettitle>{}</videoassettitle><videoassettype>2</videoassettype>"
+          "<fileinfo><streamdetails><video><codec>h264</codec>"
+          "<durationinseconds>600</durationinseconds></video></streamdetails></fileinfo>"
+          "</movie>",
+          playlist, title);
+    }
+    File(bdmv, "index.nfo", nfo + "</movies>");
+    return bonus;
+  }
+
+  //! The art of the movie's extra playing the given playlist of its disc
+  std::string ExtraArt(int playlist, const std::string& type)
+  {
+    return m_db.GetSingleValue(m_db.PrepareSQL(
+        "SELECT art.url FROM art JOIN videoversion ON art.media_id = videoversion.idFile "
+        "  JOIN files ON files.idFile = videoversion.idFile "
+        "WHERE art.media_type='videoversion' AND art.type='%s' AND videoversion.itemType=%i AND "
+        "files.strFilename='%s'",
+        type.c_str(), static_cast<int>(VideoAssetType::EXTRA),
+        StringUtils::Format("{:05}.mpls", playlist).c_str()));
   }
 
   //! The art of the movie, which is the version of playlist 800
@@ -463,6 +511,63 @@ TEST_F(TestVideoInfoScannerArt, AnExtraOfABlurayRipHasOnlyItsOwnArt)
   EXPECT_EQ(fanart, MovieArt("fanart"));
   EXPECT_EQ(extraPoster, ExtraArt("poster"));
   EXPECT_EQ("", ExtraArt("fanart"));
+}
+
+// An extra on the movie's ISO, which the movie's nfo records, has only the art named for its
+// playlist: none named after the ISO, nor the plain art beside it, which are the movie's. It is
+// looked for as the scan of the nfo looks for it, as a test's ISO can't be read as a disc, so the
+// scan would add only the nfo's first entry.
+TEST_F(TestVideoInfoScannerArt, AnExtraOfAnIsoHasOnlyItsOwnArt)
+{
+  const std::string folder{Folder(m_root, "M3GAN")};
+  const std::string iso{File(folder, "M3GAN.iso")};
+  File(folder, "M3GAN-poster.jpg");
+  File(folder, "M3GAN-fanart.jpg");
+  File(folder, "poster.jpg");
+  File(folder, "fanart.jpg");
+  const std::string poster805{File(folder, "M3GAN-00805-poster.jpg")};
+
+  CFileItem extra{URIUtils::GetBlurayPlaylistPath(iso, 805), false};
+  extra.GetVideoInfoTag()->m_strFileNameAndPath = extra.GetPath();
+  extra.GetVideoInfoTag()->GetAssetInfo().SetType(VideoAssetType::EXTRA);
+  extra.SetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST, 805);
+  const CVideoInfoScannerArt art;
+  art.GetArtwork(&extra, ADDON::ContentType::MOVIE_VERSIONS, true, true, "");
+
+  EXPECT_EQ(poster805, extra.GetArt("poster"));
+  EXPECT_FALSE(extra.HasArt("fanart"));
+}
+
+// A bonus disc in the extras folder that an export records as several extras is shared by them, so
+// each has only the art named for its playlist, and none of that beside the disc, named after it
+TEST_F(TestVideoInfoScannerArt, AnExtraOfSeveralOnABonusDiscHasNoneOfTheDiscsArt)
+{
+  const std::string bonus{MovieWithABonusDisc({{1, "Making Of"}, {2, "Deleted Scenes"}})};
+  File(bonus, "poster.jpg");
+  File(bonus, "fanart.jpg");
+  const std::string makingOfPoster{File(bonus, "index-00001-poster.jpg")};
+
+  Scan(false);
+
+  ASSERT_EQ(2, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM videoversion WHERE itemType=%i",
+                                   static_cast<int>(VideoAssetType::EXTRA))));
+  EXPECT_EQ(makingOfPoster, ExtraArt(1, "poster"));
+  EXPECT_EQ("", ExtraArt(1, "fanart"));
+  EXPECT_EQ("", ExtraArt(2, "poster"));
+  EXPECT_EQ("", ExtraArt(2, "fanart"));
+}
+
+// The only extra an export records on a bonus disc has the art named after the disc, as the export
+// names it so
+TEST_F(TestVideoInfoScannerArt, TheOnlyExtraOnABonusDiscHasTheDiscsArt)
+{
+  const std::string bonus{MovieWithABonusDisc({{1, "Making Of"}})};
+  const std::string poster{File(bonus, "poster.jpg")};
+
+  Scan(false);
+
+  EXPECT_EQ(poster, ExtraArt(1, "poster"));
 }
 
 // A movie whose disc holds an extra but no other version is exported with the plain art a scan
