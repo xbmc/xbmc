@@ -23,78 +23,22 @@ using namespace GAME::TOSEC;
 
 namespace
 {
-// The convention's country list, with the names the game library gives them
-constexpr auto countries = std::to_array<std::pair<std::string_view, std::string_view>>({
-    {"AE", "United Arab Emirates"},
-    {"AL", "Albania"},
-    {"AS", "Asia"},
-    {"AT", "Austria"},
-    {"AU", "Australia"},
-    {"BA", "Bosnia and Herzegovina"},
-    {"BE", "Belgium"},
-    {"BG", "Bulgaria"},
-    {"BR", "Brazil"},
-    {"CA", "Canada"},
-    {"CH", "Switzerland"},
-    {"CL", "Chile"},
-    {"CN", "China"},
-    {"CS", "Serbia and Montenegro"},
-    {"CY", "Cyprus"},
-    {"CZ", "Czech Republic"},
-    {"DE", "Germany"},
-    {"DK", "Denmark"},
-    {"EE", "Estonia"},
-    {"EG", "Egypt"},
-    {"ES", "Spain"},
-    {"EU", "Europe"},
-    {"FI", "Finland"},
-    {"FR", "France"},
-    {"GB", "United Kingdom"},
-    {"GR", "Greece"},
-    {"HK", "Hong Kong"},
-    {"HR", "Croatia"},
-    {"HU", "Hungary"},
-    {"ID", "Indonesia"},
-    {"IE", "Ireland"},
-    {"IL", "Israel"},
-    {"IN", "India"},
-    {"IR", "Iran"},
-    {"IS", "Iceland"},
-    {"IT", "Italy"},
-    {"JO", "Jordan"},
-    {"JP", "Japan"},
-    {"KR", "Korea"},
-    {"LT", "Lithuania"},
-    {"LU", "Luxembourg"},
-    {"LV", "Latvia"},
-    {"MN", "Mongolia"},
-    {"MX", "Mexico"},
-    {"MY", "Malaysia"},
-    {"NL", "Netherlands"},
-    {"NO", "Norway"},
-    {"NP", "Nepal"},
-    {"NZ", "New Zealand"},
-    {"OM", "Oman"},
-    {"PE", "Peru"},
-    {"PH", "Philippines"},
-    {"PL", "Poland"},
-    {"PT", "Portugal"},
-    {"QA", "Qatar"},
-    {"RO", "Romania"},
-    {"RU", "Russia"},
-    {"SE", "Sweden"},
-    {"SG", "Singapore"},
-    {"SI", "Slovenia"},
-    {"SK", "Slovakia"},
-    {"TH", "Thailand"},
-    {"TR", "Turkey"},
-    {"TW", "Taiwan"},
-    // Sets write the United Kingdom as UK, which ISO 3166-1 reserves for it
-    {"UK", "United Kingdom"},
-    {"US", "USA"},
-    {"VN", "Vietnam"},
-    {"YU", "Yugoslavia"},
-    {"ZA", "South Africa"},
+// The convention's country codes: ISO 3166-1 alpha-2's, CS and YU among them
+// from before ISO withdrew them, and UK, which sets write for GB
+constexpr auto countries = std::to_array<std::string_view>({
+    "AE", "AL", "AS", "AT", "AU", "BA", "BE", "BG", "BR", "CA", "CH", "CL", "CN", "CS",
+    "CY", "CZ", "DE", "DK", "EE", "EG", "ES", "EU", "FI", "FR", "GB", "GR", "HK", "HR",
+    "HU", "ID", "IE", "IL", "IN", "IR", "IS", "IT", "JO", "JP", "KR", "LT", "LU", "LV",
+    "MN", "MX", "MY", "NL", "NO", "NP", "NZ", "OM", "PE", "PH", "PL", "PT", "QA", "RO",
+    "RU", "SE", "SG", "SI", "SK", "TH", "TR", "TW", "UK", "US", "VN", "YU", "ZA",
+});
+
+// The codes whose meaning isn't BCP 47's: the convention's EU and AS are UN
+// M.49's Europe and Asia, not the European Union and American Samoa
+constexpr auto ownCodes = std::to_array<std::pair<std::string_view, std::string_view>>({
+    {"AS", "142"},
+    {"EU", "150"},
+    {"UK", "GB"},
 });
 
 constexpr auto demos = std::to_array<std::pair<std::string_view, Demo>>({
@@ -243,7 +187,7 @@ bool ReadCountries(std::string_view field, std::vector<std::string>& out)
     // and a country "Jp", which is read as one where it can't be a language
     if (IsCapitalised(code) && LanguageCode(code).empty())
       StringUtils::ToUpper(code);
-    if (CTosecNaming::CountryName(code).empty())
+    if (!CTosecNaming::Region(code))
       return false;
   }
   out = std::move(codes);
@@ -583,11 +527,13 @@ std::optional<Date> CTosecNaming::ParseDate(std::string_view field)
   return date;
 }
 
-std::string_view CTosecNaming::CountryName(std::string_view code)
+std::optional<GameRegion> CTosecNaming::Region(std::string_view code)
 {
-  if (const std::string_view* name = Find(countries, code))
-    return *name;
-  return {};
+  if (std::ranges::find(countries, code) == countries.end())
+    return std::nullopt;
+  if (const std::string_view* territory = Find(ownCodes, code))
+    return GameRegion::Make(*territory);
+  return GameRegion::Make(code);
 }
 
 bool CTosecNaming::IsLanguage(std::string_view code)

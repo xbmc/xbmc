@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "games/library/GameLibraryTypes.h"
+
 #include <optional>
 #include <string>
 #include <string_view>
@@ -163,15 +165,13 @@ public:
   static std::optional<TOSEC::Date> ParseDate(std::string_view field);
 
   /*!
-   * \brief The country a code names, or empty
+   * \brief The region a country code names, or nothing
    *
    * The codes are ISO 3166-1 alpha-2 in capitals, apart from EU for Europe
    * and AS for Asia, and UK, which sets write for GB. A code in lower case is
    * a language.
-   *
-   * \return The name the game library gives the country: "Germany", "Europe"
    */
-  static std::string_view CountryName(std::string_view code);
+  static std::optional<GameRegion> Region(std::string_view code);
 
   /*!
    * \brief Whether a code is one of ISO 639-1's, as TOSEC writes languages
