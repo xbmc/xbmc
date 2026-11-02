@@ -218,6 +218,11 @@ public:
    */
   bool IsTrayEmpty() const;
 
+  /*!
+   * \copydoc IPlayer::HasBezel
+   */
+  bool HasBezel() const;
+
 private:
   std::shared_ptr<const IPlayer> GetInternal() const;
   std::shared_ptr<IPlayer> GetInternal();

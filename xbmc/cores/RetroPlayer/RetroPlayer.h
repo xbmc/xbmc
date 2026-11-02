@@ -70,6 +70,7 @@ public:
   bool IsDiscEjected() const override;
   std::string DiscLabel() const override;
   bool IsTrayEmpty() const override;
+  bool HasBezel() const override;
 
   // Implementation of IGameCallback
   std::string GameClientID() const override;

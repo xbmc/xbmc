@@ -311,6 +311,14 @@ public:
    */
   virtual bool IsTrayEmpty() const { return false; }
 
+  /*!
+   * \brief Check if the currently playing game has a bezel to frame it
+   *
+   * \return True if a bezel has loaded with a window for the game, false
+   * otherwise
+   */
+  virtual bool HasBezel() const { return false; }
+
   std::string m_name;
   std::string m_type;
 

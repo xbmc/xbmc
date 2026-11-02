@@ -138,6 +138,10 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     int rotation;
     if (XMLUtils::GetInt(pElement, "rotation", rotation, 0, 270) && rotation >= 0)
       m_defaultGameSettings.SetRotationDegCCW(static_cast<unsigned int>(rotation));
+
+    bool bezelEnabled;
+    if (XMLUtils::GetBoolean(pElement, "bezel", bezelEnabled))
+      m_defaultGameSettings.SetBezelEnabled(bezelEnabled);
   }
 
   // mymusic settings
@@ -252,6 +256,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   std::string sm = RETRO::CRetroPlayerUtils::StretchModeToIdentifier(m_defaultGameSettings.StretchMode());
   XMLUtils::SetString(pNode, "stretchmode", sm);
   XMLUtils::SetInt(pNode, "rotation", m_defaultGameSettings.RotationDegCCW());
+  XMLUtils::SetBoolean(pNode, "bezel", m_defaultGameSettings.BezelEnabled());
 
   // mymusic
   pNode = settings->FirstChild("mymusic");

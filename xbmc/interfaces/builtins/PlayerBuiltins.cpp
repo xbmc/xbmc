@@ -424,6 +424,19 @@ static int PlayerControl(const std::vector<std::string>& params)
   {
     g_application.OnAction(CAction(ACTION_PLAYER_RESET));
   }
+  else if (paramlow == "bezel")
+  {
+    CGameSettings& gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
+    gameSettings.SetBezelEnabled(!gameSettings.BezelEnabled());
+
+    // Kept for the games that follow, as the other game video settings are
+    CGameSettings& defaultSettings = CMediaSettings::GetInstance().GetDefaultGameSettings();
+    if (defaultSettings != gameSettings)
+    {
+      defaultSettings = gameSettings;
+      CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
+    }
+  }
 
   return 0;
 }
@@ -840,6 +853,7 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     | Partymode(path to .xsp) | Partymode for *.xsp-file               | Partymode for *.xsp-file    |             |
 ///     | ShowVideoMenu           | Shows the DVD/BR menu if available     | none                        |             |
 ///     | FrameAdvance(n) ***     | Advance video by _n_ frames            | none                        | Kodi v18    |
+///     | Bezel                   | Turns game bezels on or off            | none                        | Kodi v23    |
 ///     <br>
 ///     '*' = For these controls\, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
 ///     <br>

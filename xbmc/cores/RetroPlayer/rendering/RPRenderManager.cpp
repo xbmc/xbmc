@@ -8,6 +8,7 @@
 
 #include "RPRenderManager.h"
 
+#include "RenderBezel.h"
 #include "RenderContext.h"
 #include "RenderSettings.h"
 #include "RenderTranslator.h"
@@ -25,8 +26,10 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "cores/RetroPlayer/streams/RetroPlayerVideo.h"
 #include "games/GameServices.h"
+#include "jobs/JobManager.h"
 #include "pictures/Picture.h"
 #include "rendering/capture/CaptureReadback.h"
+#include "settings/GameSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/ScopeGuard.h"
@@ -652,6 +655,48 @@ void CRPRenderManager::CheckFlush()
   }
 }
 
+void CRPRenderManager::SetBezel(const std::string& url)
+{
+  if (url.empty())
+    return;
+
+  // A remote bezel can take as long as its server likes, so nothing waits for
+  // the load: it keeps its own result, which is dropped if the game has gone
+  auto load = std::make_shared<BezelLoad>();
+  {
+    std::unique_lock lock(m_bezelMutex);
+    m_bezelLoad = load;
+  }
+
+  m_renderContext.JobManager().Submit(
+      [load, url, textureCache = m_renderContext.TextureCache()]()
+      {
+        std::shared_ptr<CRenderBezel> bezel = CRenderBezel::Load(url, *textureCache);
+        std::unique_lock lock(load->mutex);
+        load->bezel = std::move(bezel);
+        load->done = true;
+      });
+}
+
+std::shared_ptr<CRenderBezel> CRPRenderManager::GetBezel()
+{
+  std::unique_lock lock(m_bezelMutex);
+
+  if (m_bezelLoad)
+  {
+    std::unique_lock loadLock(m_bezelLoad->mutex);
+    if (m_bezelLoad->done)
+    {
+      m_bezel = std::move(m_bezelLoad->bezel);
+      m_hasBezel = static_cast<bool>(m_bezel);
+      loadLock.unlock();
+      m_bezelLoad.reset();
+    }
+  }
+
+  return m_bezel;
+}
+
 void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes)
 {
   // Clear any old renderers on the rendering thread
@@ -674,7 +719,18 @@ void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRe
     m_renderContext.Clear(m_renderContext.UseLimitedColor() ? UTILS::COLOR::LIMITED_BLACK
                                                             : UTILS::COLOR::BLACK);
 
+  const std::shared_ptr<CRenderBezel> bezel = GetBezel();
+  const CRect screen = m_renderContext.GetViewWindow();
+  if (bezel && m_renderContext.GetGameSettings().BezelEnabled())
+    renderer->SetBezelWindow(bezel->GetWindowRect(screen));
+
   RenderInternal(renderer, renderBuffer, bClear, 255);
+
+  if (renderer->IsBezelShown())
+    bezel->Render(screen);
+
+  // The renderer can be shared with a control, which has no bezel
+  renderer->SetBezelWindow({});
 
   m_renderContext.SetRenderingResolution(coordsRes, false);
 }
