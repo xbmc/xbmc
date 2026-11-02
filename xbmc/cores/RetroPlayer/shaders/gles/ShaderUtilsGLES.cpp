@@ -17,6 +17,7 @@ using namespace KODI::SHADER;
 
 namespace
 {
+#if defined(GL_CLAMP_TO_BORDER_EXT)
 bool SupportsBorderClamp()
 {
   const CRenderSystemBase* renderSystem = CServiceBroker::GetRenderSystem();
@@ -31,6 +32,7 @@ bool SupportsBorderClamp()
          renderSystem->IsExtSupported("GL_EXT_texture_border_clamp") ||
          renderSystem->IsExtSupported("GL_OES_texture_border_clamp");
 }
+#endif
 } // namespace
 
 GLint CShaderUtilsGLES::TranslateWrapType(WrapType wrapType)
