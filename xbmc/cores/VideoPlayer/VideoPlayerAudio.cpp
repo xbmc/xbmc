@@ -138,7 +138,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
   m_synctype = SYNC_DISCON;
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
     m_synctype = SYNC_RESAMPLE;
-  else if (m_processInfo.IsRealtimeStream())
+  else if (m_processInfo.IsRealtimeStream() && !m_processInfo.GetHwAvSyncId())
     m_synctype = SYNC_RESAMPLE;
 
   if (m_synctype == SYNC_DISCON)
@@ -488,7 +488,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
     // if stream switches to realtime, disable pass through
     // or switch to resample
-    if (m_processInfo.IsRealtimeStream() && m_synctype != SYNC_RESAMPLE)
+    if (m_processInfo.IsRealtimeStream() && !m_processInfo.GetHwAvSyncId() &&
+        m_synctype != SYNC_RESAMPLE)
     {
       m_synctype = SYNC_RESAMPLE;
       if (SwitchCodecIfNeeded())
@@ -512,6 +513,14 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     // demuxer reads metatags that influence channel layout
     if (m_streaminfo.codec == AV_CODEC_ID_FLAC && m_streaminfo.channellayout)
       audioframe.format.m_channelLayout = CAEUtil::GetAEChannelLayout(m_streaminfo.channellayout);
+
+    // the tunneled video decoder can be opened after the audio stream
+    if (m_processInfo.GetHwAvSyncId() && m_synctype == SYNC_RESAMPLE &&
+        !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
+      m_synctype = SYNC_DISCON;
+
+    audioframe.format.m_hwAvSyncId = m_processInfo.GetHwAvSyncId();
 
     // we have successfully decoded an audio frame, setup renderer to match
     if (!m_audioSink.IsValidFormat(audioframe))

@@ -178,6 +178,17 @@
           </updates>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usemediacodectunneling" type="boolean" parent="videoplayer.usemediacodecsurface" label="36542" help="36543">
+          <requirement>HAS_MEDIACODEC</requirement>
+          <level>3</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usemediacodecsurface" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usemediacodec" type="boolean" label="13439" help="36544">
           <requirement>HAS_MEDIACODEC</requirement>
           <level>2</level>
