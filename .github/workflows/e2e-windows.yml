@@ -231,6 +231,17 @@ jobs:
           path: project/Win32BuildSetup/BUILD_WIN32/application
           retention-days: 7
 
+      # gtest reports a crash inside a test as that test's failure; one outside
+      # any test leaves a minidump where report-unit-tests prints its stack.
+      - name: Write kodi-test crash dumps
+        if: inputs.tests
+        shell: pwsh
+        run: |
+          $key = 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\kodi-test.exe'
+          New-Item -Path $key -Force | Out-Null
+          New-ItemProperty -Path $key -Name DumpFolder -PropertyType ExpandString -Value "$env:RUNNER_TEMP\crash-dumps" -Force | Out-Null
+          New-ItemProperty -Path $key -Name DumpType -PropertyType DWord -Value 1 -Force | Out-Null
+
       - name: Run unit tests
         if: inputs.tests
         shell: cmd
@@ -251,6 +262,7 @@ jobs:
         with:
           name: windows-${{ inputs.name }}
           results: kodi-build.${{ inputs.platform }}/gtestresults.xml
+          binary: kodi-build.${{ inputs.platform }}/${{ env.buildconfig }}/kodi-test.exe
 
   e2e:
     needs: build

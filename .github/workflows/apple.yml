@@ -167,6 +167,7 @@ jobs:
         if: always() && inputs.kind == 'macos'
         with:
           name: macos-${{ runner.arch }}
+          binary: build/${{ env.CONFIGURATION }}/kodi-test
 
   e2e:
     name: e2e

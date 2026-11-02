@@ -42,6 +42,9 @@ jobs:
       - name: Build and run the unit tests
         run: |
           sudo sysctl -w net.ipv4.ping_group_range="0 2147483647"
+          mkdir -p "${RUNNER_TEMP}/crash-dumps"
+          sudo sysctl -w kernel.core_pattern="${RUNNER_TEMP}/crash-dumps/core.%e.%p"
+          ulimit -c unlimited
           cmake --build build --target kodi kodi-test -- -j"$(nproc)"
           cd build && stdbuf -oL ./kodi-test --gtest_output=xml:gtestresults.xml
 
