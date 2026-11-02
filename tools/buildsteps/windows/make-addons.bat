@@ -8,21 +8,24 @@ SET package=false
 SET addon=
 SET store=
 
-SETLOCAL EnableDelayedExpansion
-FOR %%b IN (%*) DO (
-  IF %%~b == install (
-    SET install=true
-  ) ELSE ( IF %%~b == clean (
-    SET clean=true
-  ) ELSE ( IF %%~b == package (
-    SET package=true
-  ) ELSE ( IF %%~b == win10 (
-    SET store=store
-  ) ELSE (
-    SET addon=!addon! %%~b
-  ))))
-)
 SETLOCAL DisableDelayedExpansion
+rem SHIFT passes add-on patterns such as pvr.* through as typed, for ADDONS_TO_BUILD
+:parseArgs
+IF "%~1" == "" GOTO argsParsed
+IF "%~1" == "install" (
+  SET install=true
+) ELSE IF "%~1" == "clean" (
+  SET clean=true
+) ELSE IF "%~1" == "package" (
+  SET package=true
+) ELSE IF "%~1" == "win10" (
+  SET store=store
+) ELSE (
+  SET "addon=%addon% %~1"
+)
+SHIFT /1
+GOTO parseArgs
+:argsParsed
 
 PUSHD %~dp0\..\..\..
 SET WORKDIR=%CD%
