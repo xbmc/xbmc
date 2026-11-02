@@ -41,6 +41,7 @@ namespace
 const std::string SETTING_GAMES_ENABLE = "gamesgeneral.enable";
 const std::string SETTING_GAMES_SHOW_OSD_HELP = "gamesgeneral.showosdhelp";
 const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
+const std::string SETTING_GAMES_REPLACE_LABELS = "gamesgeneral.replacelabels";
 const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 const std::string SETTING_GAMES_ACHIEVEMENTS_CREATE_ACCOUNT = "gamesachievements.createaccount";
@@ -124,6 +125,11 @@ void CGameSettings::ToggleGames()
 bool CGameSettings::AutosaveEnabled()
 {
   return m_settings->GetBool(SETTING_GAMES_ENABLEAUTOSAVE);
+}
+
+bool CGameSettings::ReplaceLabels()
+{
+  return m_settings->GetBool(SETTING_GAMES_REPLACE_LABELS);
 }
 
 bool CGameSettings::RewindEnabled()

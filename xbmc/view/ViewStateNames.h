@@ -31,6 +31,6 @@ inline constexpr char PROGRAMS[] = "programs";
 inline constexpr char PICTURES[] = "pictures";
 inline constexpr char VIDEO_FILES[] = "videofiles";
 inline constexpr char MUSIC_FILES[] = "musicfiles";
-inline constexpr char GAMES[] = "games";
+inline constexpr char GAMES[] = "gamefiles";
 
 } // namespace KODI::VIEW::STATE

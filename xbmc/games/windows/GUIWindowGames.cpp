@@ -19,7 +19,11 @@
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/FileDirectoryFactory.h"
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
 #include "games/GameUtils.h"
+#include "games/library/GameNameParser.h"
+#include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -43,6 +47,28 @@ using KODI::MEDIA::MediaSection;
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY 3
 #define CONTROL_BTNSORTASC 4
+
+namespace
+{
+// "Legend of Zelda, The - A Link to the Past (USA, Europe).sfc" is "The Legend of
+// Zelda - A Link to the Past", released in the USA and Europe
+void SetInfoFromFileName(CGameInfoTag& tag, const std::string& path)
+{
+  const ParsedGameName name = CGameNameParser::ParsePath(path);
+  if (name.displayTitle.empty())
+    return;
+
+  tag.SetTitle(name.displayTitle);
+  if (name.year > 0)
+    tag.SetYear(static_cast<unsigned int>(name.year));
+  tag.SetPublisher(name.publisher);
+
+  std::vector<std::string> regions;
+  for (const GameRegion& region : name.regions)
+    regions.emplace_back(CGameNameParser::RegionName(region));
+  tag.SetRegion(StringUtils::Join(regions, ", "));
+}
+} // namespace
 
 CGUIWindowGames::CGUIWindowGames() : CGUIMediaWindow(WINDOW_GAMES, "MyGames.xml")
 {
@@ -321,11 +347,24 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
   if (!content.empty())
     items.SetContent(content);
 
-  // Ensure a game info tag is created so that files are recognized as games
+  // Plugins and add-ons give their own titles
+  const bool namedByFile = !items.IsPlugin() && !items.IsAddonsPath();
+  const bool replaceLabels =
+      namedByFile && CServiceBroker::GetGameServices().GameSettings().ReplaceLabels();
+
   for (const CFileItemPtr& item : items)
   {
-    if (!item->IsFolder())
-      item->GetGameInfoTag();
+    if (item->IsFolder())
+      continue;
+
+    // Ensure a game info tag is created so that files are recognized as games
+    CGameInfoTag& tag = *item->GetGameInfoTag();
+    if (namedByFile && tag.GetTitle().empty())
+    {
+      SetInfoFromFileName(tag, item->GetPath());
+      if (replaceLabels && !tag.GetTitle().empty())
+        item->SetLabel(tag.GetTitle());
+    }
   }
 
   return true;

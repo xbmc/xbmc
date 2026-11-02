@@ -74,9 +74,13 @@ TEST(TestTosecNaming, TellsACountryFromALanguageByItsCase)
   EXPECT_TRUE(catalan->countries.empty());
   EXPECT_EQ(catalan->languages, (std::vector<std::string>{"ca"}));
 
-  EXPECT_EQ(CTosecNaming::CountryName("AS"), "Asia");
-  EXPECT_EQ(CTosecNaming::CountryName("EU"), "Europe");
-  EXPECT_TRUE(CTosecNaming::CountryName("de").empty());
+  // The convention's EU and AS are Europe and Asia, not BCP 47's European Union and American Samoa
+  EXPECT_EQ(CTosecNaming::Region("AS")->ToString(), "142");
+  EXPECT_EQ(CTosecNaming::Region("EU")->ToString(), "150");
+  EXPECT_EQ(CTosecNaming::Region("UK")->ToString(), "GB");
+  EXPECT_EQ(CTosecNaming::Region("YU")->ToString(), "YU");
+  EXPECT_FALSE(CTosecNaming::Region("de").has_value());
+  EXPECT_FALSE(CTosecNaming::Region("XX").has_value());
 }
 
 TEST(TestTosecNaming, CountsLanguagesItDoesNotName)

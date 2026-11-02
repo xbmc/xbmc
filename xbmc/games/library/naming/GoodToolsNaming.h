@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "games/library/GameLibraryTypes.h"
+
 #include <optional>
 #include <string>
 #include <string_view>
@@ -66,12 +68,12 @@ public:
   CGoodToolsNaming() = delete;
 
   /*!
-   * \brief The country a code names, or empty
+   * \brief The region a code names, or nothing
    *
    * \param code The code as GoodTools writes it: "U", "E", "UK", "As"
-   * \return The name the game library gives the country: "USA", "Europe"
+   * \return The region; an empty one for "Unk", a country GoodTools doesn't know
    */
-  static std::string_view CountryName(std::string_view code);
+  static std::optional<GameRegion> Region(std::string_view code);
 
   /*!
    * \brief Whether a tag only says how many languages there are: "(M3)"
