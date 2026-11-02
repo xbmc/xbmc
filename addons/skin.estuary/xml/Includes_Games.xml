@@ -1201,7 +1201,10 @@
 
 			<include content="GameIndicator">
 				<param name="condition" value="!String.IsEmpty(RetroPlayer.LeaderboardTracker)" />
-				<param name="title" value="RetroPlayer.LeaderboardTracker" />
+				<param name="title" value="RetroPlayer.LeaderboardTrackerTitle" />
+				<param name="detail" value="RetroPlayer.LeaderboardTracker" />
+				<param name="detail_width" value="140" />
+				<param name="title_width" value="184" />
 				<param name="height" value="56" />
 			</include>
 		</control>
@@ -1913,6 +1916,8 @@
 		<param name="badge" default="" />
 		<param name="title" default="" />
 		<param name="detail" default="" />
+		<param name="detail_width" default="90" />
+		<param name="title_width" default="234" />
 		<param name="bar" default="" />
 		<param name="height" default="72" />
 		<definition>
@@ -1944,12 +1949,26 @@
 					<shadowcolor>black</shadowcolor>
 					<label>$INFO[$PARAM[title]]</label>
 					<scroll>true</scroll>
-					<scrollsuffix>   </scrollsuffix>
+					<scrollsuffix> • </scrollsuffix>
+					<visible>String.IsEmpty($PARAM[detail])</visible>
+				</control>
+				<control type="label">
+					<description>The title again, stopping short of the detail beside it</description>
+					<left>72</left><top>6</top>
+					<width>$PARAM[title_width]</width><height>32</height>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>$INFO[$PARAM[title]]</label>
+					<scroll>true</scroll>
+					<scrollsuffix> • </scrollsuffix>
+					<visible>!String.IsEmpty($PARAM[detail])</visible>
 				</control>
 				<control type="label">
 					<description>How far along, where that is counted</description>
 					<right>14</right><top>6</top>
-					<width>90</width><height>32</height>
+					<width>$PARAM[detail_width]</width><height>32</height>
 					<align>right</align><aligny>center</aligny>
 					<font>font12</font>
 					<textcolor>white</textcolor>

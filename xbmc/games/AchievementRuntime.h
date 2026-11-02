@@ -13,6 +13,7 @@
 #include <functional>
 #include <mutex>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace KODI::GAME
@@ -450,6 +451,20 @@ public:
   std::vector<LeaderboardTracker> GetLeaderboardTrackers() const;
 
   /*!
+   * \brief Note a leaderboard attempt starting or ending
+   *
+   * A tracker doesn't say which leaderboard it times, so the skin is given the
+   * names of the attempts running while it is shown.
+   */
+  void SetLeaderboardAttempt(unsigned int leaderboardId, const std::string& title, bool running);
+
+  /*!
+   * \brief The names of the leaderboard attempts running, one per attempt and
+   * empty for an attempt without one
+   */
+  std::vector<std::string> GetLeaderboardAttemptTitles() const;
+
+  /*!
    * \brief Replace the leaderboards of the loaded game
    */
   void SetLeaderboardState(const LeaderboardState& state);
@@ -565,6 +580,7 @@ private:
   //! that publishing one cannot drop an attempt already on screen. Usually
   //! empty, and rarely more than one at a time.
   std::vector<LeaderboardTracker> m_trackers;
+  std::vector<std::pair<unsigned int, std::string>> m_attempts;
   unsigned int m_selectedLeaderboard{0};
 
   //! Moved on whenever the signed-in account does, so an answer asked for by
