@@ -9,6 +9,7 @@
 #include "ShaderUtilsGLES.h"
 
 #include "ServiceBroker.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/gles/RenderSystemGLES.h"
 
 #include <string_view>
@@ -29,8 +30,8 @@ bool SupportsBorderClamp()
   renderSystem->GetRenderVersion(major, minor);
 
   return major > 3 || (major == 3 && minor >= 2) ||
-         renderSystem->IsExtSupported("GL_EXT_texture_border_clamp") ||
-         renderSystem->IsExtSupported("GL_OES_texture_border_clamp");
+         CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_border_clamp) ||
+         CGLExtensions::IsExtensionSupported(CGLExtensions::OES_texture_border_clamp);
 }
 #endif
 } // namespace
