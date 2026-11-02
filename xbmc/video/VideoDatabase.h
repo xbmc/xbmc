@@ -552,6 +552,20 @@ public:
   bool GetStreamDetails(CFileItem& item);
   bool GetStreamDetails(CVideoInfoTag& tag);
   bool GetStreamDetails(const std::string& filenameAndPath, CStreamDetails& details);
+  /*! \brief Get many items' stream details as GetStreamDetails() does; keeps m_parsedDetails. */
+  void GetStreamDetailsForList(const std::vector<CVideoInfoTag*>& tags);
+  /*!
+   * \brief Add many items' stream details without picking best streams, which copying them does.
+   * \return false if the database isn't open or the query failed, leaving the details incomplete.
+   */
+  bool AddStreamDetailsForList(const std::vector<CVideoInfoTag*>& tags);
+  /*!
+   * \brief Get the art of many items of one media type; items without art get no entry.
+   * \return false if the database isn't open or the query failed, leaving the art incomplete.
+   */
+  bool GetArtForItems(const std::string& mediaType,
+                      const std::vector<int>& ids,
+                      std::map<int, KODI::ART::Artwork>& art);
   /*! \brief Get play count, last played, resume point and stream details of all files of a path
    Obtaining the metadata of many files one by one is expensive if the database connection has
    high latency, as every single value requires its own round trip.
@@ -1242,6 +1256,10 @@ protected:
   void GetTags(int media_id, KODI::MEDIA::TYPE media_type, std::vector<std::string> &tags);
   void GetRatings(int media_id, KODI::MEDIA::TYPE media_type, RatingMap &ratings);
   void GetUniqueIDs(int media_id, KODI::MEDIA::TYPE media_type, CVideoInfoTag& details);
+  /*! \brief Get requested details for a whole list at once, as the per-item loaders fill them. */
+  void GetDetailsForList(const std::vector<CVideoInfoTag*>& tags,
+                         KODI::MEDIA::TYPE media_type,
+                         int getDetails);
 
   template<typename T>
   void GetDetailsFromDB(const dbiplus::sql_record* const record,
