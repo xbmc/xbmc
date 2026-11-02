@@ -41,6 +41,15 @@ public:
 
   std::vector<uint8_t> GetEDID() const;
 
+  /*!
+   * \brief Max_FRL_Rate of the sink from the HDMI Forum block of the EDID, 0 if it does no FRL.
+   *        1 is 3 Gbit/s x 3 lanes, 2 is 6x3, 3 is 6x4, 4 is 8x4, 5 is 10x4 and 6 is 12x4
+   */
+  int GetMaxFrlRate() const;
+
+  //! True if the connector has a mode with a pixel clock above the given one, in kHz
+  bool HasModeAboveClock(uint32_t clockKHz) const;
+
 private:
   struct DrmModeConnectorDeleter
   {
