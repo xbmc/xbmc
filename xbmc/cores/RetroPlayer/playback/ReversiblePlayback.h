@@ -46,6 +46,7 @@ public:
   CReversiblePlayback(GAME::CGameClient* gameClient,
                       CRPRenderManager& renderManager,
                       CGUIGameMessenger& guiMessenger,
+                      CDisplayPacing& displayPacing,
                       double fps,
                       size_t serializeSize);
 
