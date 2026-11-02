@@ -58,6 +58,11 @@ public:
    */
   virtual CTexture* GetTexture() = 0;
 
+  /*!
+   * \brief Free the texture, which is loaded again the next time it's asked for
+   */
+  virtual void ReleaseTexture() = 0;
+
 protected:
   std::string m_id;
   std::string m_path;
