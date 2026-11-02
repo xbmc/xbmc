@@ -63,16 +63,11 @@ constexpr int GLYPH_STRENGTH_BOLD = 24;
 constexpr int GLYPH_STRENGTH_LIGHT = -48;
 constexpr int TAB_SPACE_LENGTH = 4;
 constexpr const char* EMOJI_FONT = "special://xbmc/media/Fonts/TwemojiMozilla.ttf";
-// set in Character::m_glyphAndStyle for glyphs of the emoji font
-constexpr character_t EMOJI_GLYPH = 1 << 24;
+constexpr const char* SYMBOLS_FONT = "special://xbmc/media/Fonts/UnicodeSymbols.ttf";
+// face identity in Character::m_glyphAndStyle
+constexpr character_t FONT_FACE_MASK = 3 << 24;
 // set in Character::m_glyphAndStyle for glyphs cached in their own colors
-constexpr character_t COLOR_GLYPH = 1 << 25;
-
-character_t GlyphAndStyle(FT_UInt glyphIndex, character_t style, bool emoji, bool silhouette)
-{
-  return (emoji ? EMOJI_GLYPH : 0) | (emoji && !silhouette ? COLOR_GLYPH : 0) | (style << 16) |
-         glyphIndex;
-}
+constexpr character_t COLOR_GLYPH = 1 << 26;
 
 // Code points displayed as emoji by default (Emoji_Presentation in Unicode 18.0 emoji-data.txt)
 // clang-format off
@@ -202,6 +197,13 @@ void ValidateAlignments(uint32_t& aligns)
 
 class CFreeTypeLibrary
 {
+  struct FallbackFont
+  {
+    const char* filename;
+    std::vector<uint8_t> data{};
+    bool missing{false};
+  };
+
 public:
   CFreeTypeLibrary() = default;
   virtual ~CFreeTypeLibrary()
@@ -251,30 +253,12 @@ public:
 
   FT_Face GetEmojiFont(float size, float aspect)
   {
-    if (!Init())
-      return nullptr;
+    return GetFallbackFont(m_emojiFontFile, size, aspect);
+  }
 
-    // loaded once, shared by the emoji faces of all fonts
-    if (m_emojiFontFile.empty())
-    {
-      if (m_emojiFontMissing)
-        return nullptr;
-
-      XFILE::CFile file;
-      if (file.LoadFile(EMOJI_FONT, m_emojiFontFile) <= 0)
-      {
-        CLog::LogF(LOGERROR, "Unable to load emoji font {}", EMOJI_FONT);
-        m_emojiFontMissing = true;
-        return nullptr;
-      }
-    }
-
-    FT_Face face;
-    if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(m_emojiFontFile.data()),
-                           m_emojiFontFile.size(), 0, &face) != 0)
-      return nullptr;
-
-    return SetFontSize(face, size, aspect);
+  FT_Face GetSymbolsFont(float size, float aspect)
+  {
+    return GetFallbackFont(m_symbolsFontFile, size, aspect);
   }
 
   FT_Stroker GetStroker()
@@ -302,6 +286,34 @@ public:
   }
 
 private:
+  FT_Face GetFallbackFont(FallbackFont& font, float size, float aspect)
+  {
+    if (!Init())
+      return nullptr;
+
+    // loaded once, shared by the fallback faces of all fonts
+    if (font.data.empty())
+    {
+      if (font.missing)
+        return nullptr;
+
+      XFILE::CFile file;
+      if (file.LoadFile(font.filename, font.data) <= 0)
+      {
+        CLog::LogF(LOGERROR, "Unable to load fallback font {}", font.filename);
+        font.missing = true;
+        return nullptr;
+      }
+    }
+
+    FT_Face face;
+    if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(font.data.data()),
+                           font.data.size(), 0, &face) != 0)
+      return nullptr;
+
+    return SetFontSize(face, size, aspect);
+  }
+
   bool Init()
   {
     // don't have it yet - create it
@@ -335,8 +347,8 @@ private:
   }
 
   FT_Library m_library{nullptr};
-  std::vector<uint8_t> m_emojiFontFile;
-  bool m_emojiFontMissing{false};
+  FallbackFont m_emojiFontFile{EMOJI_FONT};
+  FallbackFont m_symbolsFontFile{SYMBOLS_FONT};
 };
 
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
@@ -406,6 +418,12 @@ void CGUIFontTTF::Clear()
   if (m_emojiFace)
     g_freeTypeLibrary.ReleaseFont(m_emojiFace);
   m_emojiFace = nullptr;
+  if (m_hbSymbolsFont)
+    hb_font_destroy(m_hbSymbolsFont);
+  m_hbSymbolsFont = nullptr;
+  if (m_symbolsFace)
+    g_freeTypeLibrary.ReleaseFont(m_symbolsFace);
+  m_symbolsFace = nullptr;
   if (m_stroker)
     g_freeTypeLibrary.ReleaseStroker(m_stroker);
   m_stroker = nullptr;
@@ -432,6 +450,9 @@ bool CGUIFontTTF::Load(
   m_emojiFace = g_freeTypeLibrary.GetEmojiFont(height, aspect);
   if (m_emojiFace)
     m_hbEmojiFont = hb_ft_font_create(m_emojiFace, 0);
+  m_symbolsFace = g_freeTypeLibrary.GetSymbolsFont(height, aspect);
+  if (m_symbolsFace)
+    m_hbSymbolsFont = hb_ft_font_create(m_symbolsFace, 0);
   /*
    the values used are described below
 
@@ -651,7 +672,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       {
         const character_t ch = text[itRGlyph->m_glyphInfo.cluster];
         Character* c =
-            GetCharacter(ch, itRGlyph->m_glyphInfo.codepoint, itRGlyph->m_emoji, silhouette);
+            GetCharacter(ch, itRGlyph->m_glyphInfo.codepoint, itRGlyph->m_fontFace, silhouette);
         if (!c)
           continue;
 
@@ -679,7 +700,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       for (const Glyph& glyph : glyphs)
       {
         const character_t ch = text[glyph.m_glyphInfo.cluster];
-        Character* c = GetCharacter(ch, glyph.m_glyphInfo.codepoint, glyph.m_emoji, silhouette);
+        Character* c = GetCharacter(ch, glyph.m_glyphInfo.codepoint, glyph.m_fontFace, silhouette);
         if (!c)
           continue;
 
@@ -716,7 +737,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       for (const auto& glyph : glyphs)
       {
         Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint,
-                                     glyph.m_emoji, silhouette);
+                                     glyph.m_fontFace, silhouette);
         if (ch)
         {
           if ((text[glyph.m_glyphInfo.cluster] & 0xffffffff) == L' ')
@@ -745,7 +766,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     for (auto itGlyph = glyphBegin; itGlyph != glyphs.cend(); ++itGlyph)
     {
       Character* ch = GetCharacter(text[itGlyph->m_glyphInfo.cluster],
-                                   itGlyph->m_glyphInfo.codepoint, itGlyph->m_emoji, silhouette);
+                                   itGlyph->m_glyphInfo.codepoint, itGlyph->m_fontFace, silhouette);
       if (!ch)
       {
         Character null = {};
@@ -895,7 +916,7 @@ float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text,
   for (auto it = glyphs.begin(); it != glyphs.end(); it++)
   {
     const character_t ch = text[(*it).m_glyphInfo.cluster];
-    Character* c = GetCharacter(ch, (*it).m_glyphInfo.codepoint, (*it).m_emoji);
+    Character* c = GetCharacter(ch, (*it).m_glyphInfo.codepoint, (*it).m_fontFace);
     if (c)
     {
       // If last character in line, we want to add render width
@@ -996,47 +1017,47 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
 
   // Characters the font has no glyph for, or that are presented as emoji, are taken from the emoji
   // font. Sequences like flags or ZWJ sequences must stay in one run to be shaped together.
-  std::vector<bool> emoji(text.size(), false);
-  if (m_hbEmojiFont)
+  std::vector<FontFace> fontFaces(text.size(), FontFace::Primary);
+  for (size_t i = 0; i < text.size(); ++i)
   {
-    for (size_t i = 0; i < text.size(); ++i)
+    const char32_t codepoint = static_cast<char32_t>(text[i] & 0xffffffff);
+    if (i > 0 && (KODI::UTILS::ContinuesEmoji(codepoint) ||
+                  (fontFaces[i - 1] == FontFace::Emoji && (text[i - 1] & 0xffffffff) == 0x200D)))
     {
-      const char32_t codepoint = static_cast<char32_t>(text[i] & 0xffffffff);
-      if (i > 0 && (KODI::UTILS::ContinuesEmoji(codepoint) ||
-                    (emoji[i - 1] && (text[i - 1] & 0xffffffff) == 0x200D)))
-      {
-        emoji[i] = emoji[i - 1];
-        continue;
-      }
-      const char32_t next =
-          i + 1 < text.size() ? static_cast<char32_t>(text[i + 1] & 0xffffffff) : 0;
-      const bool emojiPresentation = next == 0xFE0F || next == 0x20E3 ||
-                                     KODI::UTILS::IsEmojiModifier(next) ||
-                                     (next != 0xFE0E && HasEmojiPresentation(codepoint));
-      emoji[i] = (emojiPresentation || !FT_Get_Char_Index(m_face, codepoint)) &&
-                 FT_Get_Char_Index(m_emojiFace, codepoint);
+      fontFaces[i] = fontFaces[i - 1];
+      continue;
     }
+    const char32_t next = i + 1 < text.size() ? static_cast<char32_t>(text[i + 1] & 0xffffffff) : 0;
+    const bool emojiPresentation = next == 0xFE0F || next == 0x20E3 ||
+                                   KODI::UTILS::IsEmojiModifier(next) ||
+                                   (next != 0xFE0E && HasEmojiPresentation(codepoint));
+    if (m_hbEmojiFont && (emojiPresentation || !FT_Get_Char_Index(m_face, codepoint)) &&
+        FT_Get_Char_Index(m_emojiFace, codepoint))
+      fontFaces[i] = FontFace::Emoji;
+    else if (m_hbSymbolsFont && !FT_Get_Char_Index(m_face, codepoint) &&
+             FT_Get_Char_Index(m_symbolsFace, codepoint))
+      fontFaces[i] = FontFace::Symbols;
   }
 
   lastScript = scripts[0];
-  bool lastEmoji = emoji[0];
+  FontFace lastFontFace = fontFaces[0];
   int lastRunStart = 0;
 
   for (unsigned int i = 0; i <= static_cast<unsigned int>(scripts.size()); ++i)
   {
-    if (i == scripts.size() || scripts[i] != lastScript || emoji[i] != lastEmoji)
+    if (i == scripts.size() || scripts[i] != lastScript || fontFaces[i] != lastFontFace)
     {
       RunInfo run{};
       run.m_startOffset = lastRunStart;
       run.m_endOffset = i;
       run.m_script = lastScript;
-      run.m_emoji = lastEmoji;
+      run.m_fontFace = lastFontFace;
       runs.emplace_back(run);
 
       if (i < scripts.size())
       {
         lastScript = scripts[i];
-        lastEmoji = emoji[i];
+        lastFontFace = fontFaces[i];
         lastRunStart = i;
       }
       else
@@ -1058,14 +1079,19 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
     }
 
     hb_buffer_set_content_type(run.m_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
-    hb_shape(run.m_emoji ? m_hbEmojiFont : m_hbFont, run.m_buffer, nullptr, 0);
+    hb_font_t* font = m_hbFont;
+    if (run.m_fontFace == FontFace::Emoji)
+      font = m_hbEmojiFont;
+    else if (run.m_fontFace == FontFace::Symbols)
+      font = m_hbSymbolsFont;
+    hb_shape(font, run.m_buffer, nullptr, 0);
     unsigned int glyphCount;
     run.m_glyphInfos = hb_buffer_get_glyph_infos(run.m_buffer, &glyphCount);
     run.m_glyphPositions = hb_buffer_get_glyph_positions(run.m_buffer, &glyphCount);
 
     for (size_t k = 0; k < glyphCount; k++)
     {
-      glyphs.emplace_back(run.m_glyphInfos[k], run.m_glyphPositions[k], run.m_emoji);
+      glyphs.emplace_back(run.m_glyphInfos[k], run.m_glyphPositions[k], run.m_fontFace);
     }
 
     hb_buffer_destroy(run.m_buffer);
@@ -1074,9 +1100,28 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
   return glyphs;
 }
 
+FT_Face CGUIFontTTF::GetFace(FontFace fontFace) const
+{
+  if (fontFace == FontFace::Emoji)
+    return m_emojiFace;
+  if (fontFace == FontFace::Symbols)
+    return m_symbolsFace;
+  return m_face;
+}
+
+character_t CGUIFontTTF::GlyphAndStyle(FT_UInt glyphIndex,
+                                       uint32_t style,
+                                       FontFace fontFace,
+                                       bool silhouette)
+{
+  return (static_cast<character_t>(fontFace) << 24) |
+         (fontFace == FontFace::Emoji && !silhouette ? COLOR_GLYPH : 0) | (style << 16) |
+         glyphIndex;
+}
+
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
                                                   FT_UInt glyphIndex,
-                                                  bool emoji /* = false */,
+                                                  FontFace fontFace /* = FontFace::Primary */,
                                                   bool silhouette /* = false */)
 {
   const char32_t letter = static_cast<char32_t>(chr & 0xffffffff);
@@ -1086,13 +1131,14 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
     return nullptr;
 
   // emoji are not styled
-  const uint32_t style = emoji ? 0 : static_cast<uint32_t>((chr >> 40) & 0x7); // style = 0 - 6
+  const uint32_t style =
+      fontFace == FontFace::Emoji ? 0 : static_cast<uint32_t>((chr >> 40) & 0x7); // style = 0 - 6
 
   if (!glyphIndex)
-    glyphIndex = FT_Get_Char_Index(emoji ? m_emojiFace : m_face, letter);
+    glyphIndex = FT_Get_Char_Index(GetFace(fontFace), letter);
 
   // quick access to the most frequently used glyphs
-  if (!emoji && glyphIndex < MAX_GLYPH_IDX)
+  if (fontFace == FontFace::Primary && glyphIndex < MAX_GLYPH_IDX)
   {
     character_t ch = (style << 12) | glyphIndex; // 2^12 = 4096
 
@@ -1101,7 +1147,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
   }
 
   // letters are stored based on style and glyph
-  character_t ch = GlyphAndStyle(glyphIndex, style, emoji, silhouette);
+  character_t ch = GlyphAndStyle(glyphIndex, style, fontFace, silhouette);
 
   // perform binary search on sorted array by m_glyphAndStyle and
   // if not found obtains position to insert the new m_char to keep sorted
@@ -1136,7 +1182,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
     End();
 
   m_char.emplace(m_char.begin() + low);
-  if (!CacheCharacter(glyphIndex, style, emoji, silhouette, m_char.data() + low))
+  if (!CacheCharacter(glyphIndex, style, fontFace, silhouette, m_char.data() + low))
   { // unable to cache character - try clearing them all out and starting over
     CLog::LogF(LOGDEBUG, "Unable to cache character. Clearing character cache of {} characters",
                m_char.size());
@@ -1144,7 +1190,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
     low = 0;
     startIndex = 0;
     m_char.emplace(m_char.begin());
-    if (!CacheCharacter(glyphIndex, style, emoji, silhouette, m_char.data()))
+    if (!CacheCharacter(glyphIndex, style, fontFace, silhouette, m_char.data()))
     {
       CLog::LogF(LOGERROR, "Unable to cache character (out of memory?)");
       if (nestedBeginCount)
@@ -1161,7 +1207,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
   // update the lookup table with only the m_char addresses that have changed
   for (size_t i = startIndex; i < m_char.size(); ++i)
   {
-    if (!(m_char[i].m_glyphAndStyle & EMOJI_GLYPH) && m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
+    if (!(m_char[i].m_glyphAndStyle & FONT_FACE_MASK) && m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
     {
       // >> 16 is style (0-6), then 16 - 12 (>> 4) is equivalent to style * 4096
       character_t ch = ((m_char[i].m_glyphAndStyle & 0xffff0000) >> 4) | m_char[i].m_glyphIndex;
@@ -1175,9 +1221,10 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
 }
 
 bool CGUIFontTTF::CacheCharacter(
-    FT_UInt glyphIndex, uint32_t style, bool emoji, bool silhouette, Character* ch)
+    FT_UInt glyphIndex, uint32_t style, FontFace fontFace, bool silhouette, Character* ch)
 {
-  FT_Face face = emoji ? m_emojiFace : m_face;
+  FT_Face face = GetFace(fontFace);
+  const bool emoji = fontFace == FontFace::Emoji;
   FT_Glyph glyph = nullptr;
   if (FT_Load_Glyph(face, glyphIndex, emoji ? FT_LOAD_COLOR : FT_LOAD_TARGET_LIGHT))
   {
@@ -1285,7 +1332,7 @@ bool CGUIFontTTF::CacheCharacter(
   }
 
   // set the character in our table
-  ch->m_glyphAndStyle = GlyphAndStyle(glyphIndex, style, emoji, silhouette);
+  ch->m_glyphAndStyle = GlyphAndStyle(glyphIndex, style, fontFace, silhouette);
   ch->m_glyphIndex = glyphIndex;
   ch->m_offsetX = static_cast<short>(bitGlyph->left);
   ch->m_offsetY = static_cast<short>(m_cellBaseLine - bitGlyph->top);
