@@ -18,6 +18,9 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
+#ifdef HAVE_LIBBLURAY
+#include "filesystem/BlurayDiscCache.h"
+#endif
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -591,7 +594,10 @@ TEST_F(TestVideoInfoScanner, ABlurayFolderRipIsOneMovie)
   Nfo(folder, "movie.nfo", "Film");
   const std::string disc{BlurayRip(folder)};
 
+  // The test environment has no disc cache
+  CServiceBroker::RegisterBlurayDiscCache(std::make_shared<XFILE::CBlurayDiscCache>());
   Scan();
+  CServiceBroker::UnregisterBlurayDiscCache();
 
   EXPECT_EQ(1, CountMovies());
   EXPECT_GT(m_db.GetMovieId(disc), 0);
