@@ -38,7 +38,8 @@ CCPictureType CH264AnnexBBitstreamParser::ParsePacket(DemuxPacket* pPacket,
       // Slice NAL units (types 1-5) - determine picture type
       if (scode >= 1 && scode <= 5)
       {
-        std::span<const uint8_t> buf(pPacket->pData + p, len);
+        // Start at the NAL header, the last byte of startcode, as DetectSliceType expects
+        std::span<const uint8_t> buf(pPacket->pData + p - 1, len + 1);
 
         if (len > 1)
         {

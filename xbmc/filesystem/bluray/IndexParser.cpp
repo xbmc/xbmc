@@ -8,7 +8,7 @@
 
 #include "IndexParser.h"
 
-#include "BitReader.h"
+#include "ByteHelpers.h"
 #include "URL.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"

@@ -8,6 +8,8 @@
 
 #include "HevcSei.h"
 
+#include "utils/BitReader.h"
+
 void HevcAddStartCodeEmulationPrevention3Byte(std::vector<uint8_t>& buf)
 {
   size_t i = 0;
@@ -46,7 +48,7 @@ void HevcClearStartCodeEmulationPrevention3Byte(const uint8_t* buf,
   }
 }
 
-int CHevcSei::ParseSeiMessage(CBitstreamReader& br, std::vector<CHevcSei>& messages)
+int CHevcSei::ParseSeiMessage(CBitReader& br, std::vector<CHevcSei>& messages)
 {
   CHevcSei sei;
   uint8_t lastPayloadTypeByte{0};
@@ -74,7 +76,7 @@ int CHevcSei::ParseSeiMessage(CBitstreamReader& br, std::vector<CHevcSei>& messa
   sei.m_payloadOffset = br.Position() / 8;
 
   // Invalid size
-  if (sei.m_payloadSize > br.AvailableBits())
+  if (br.Error() || sei.m_payloadSize > br.BitsLeft() / 8)
     return 1;
 
   br.SkipBits(sei.m_payloadSize * 8);
@@ -89,7 +91,7 @@ std::vector<CHevcSei> CHevcSei::ParseSeiRbspInternal(const uint8_t* buf, const s
 
   if (len > 4)
   {
-    CBitstreamReader br(buf, len);
+    CBitReader br({buf, len});
 
     // forbidden_zero_bit, nal_type, nuh_layer_id, temporal_id
     // nal_type == SEI_PREFIX should already be verified by caller
@@ -100,7 +102,7 @@ std::vector<CHevcSei> CHevcSei::ParseSeiRbspInternal(const uint8_t* buf, const s
       if (ParseSeiMessage(br, messages))
         break;
 
-      if (br.AvailableBits() <= 8)
+      if (br.BitsLeft() <= 8)
         break;
     }
   }
@@ -129,7 +131,7 @@ std::optional<const CHevcSei*> CHevcSei::FindHdr10PlusSeiMessage(
     // User Data Registered ITU-T T.35
     if (sei.m_payloadType == 4 && sei.m_payloadSize >= 7)
     {
-      CBitstreamReader br(buf.data() + sei.m_payloadOffset, sei.m_payloadSize);
+      CBitReader br({buf.data() + sei.m_payloadOffset, sei.m_payloadSize});
       const auto itu_t_t35_country_code = br.ReadBits(8);
       const auto itu_t_t35_terminal_provider_code = br.ReadBits(16);
       const auto itu_t_t35_terminal_provider_oriented_code = br.ReadBits(16);

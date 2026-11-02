@@ -16,6 +16,7 @@
 
 #include "BitstreamConverter.h"
 #include "HevcSei.h"
+#include "utils/BitReader.h"
 
 #include <algorithm>
 
@@ -101,91 +102,6 @@ enum
   SEI_TONE_MAPPING
 };
 
-/*
- *  GStreamer h264 parser
- *  Copyright (C) 2005 Michal Benes <michal.benes@itonis.tv>
- *            (C) 2008 Wim Taymans <wim.taymans@gmail.com>
- *  gsth264parse.c
- *  
- *  SPDX-License-Identifier: LGPL-2.1-or-later
- *  See LICENSES/README.md for more information.
- */
-static void nal_bs_init(nal_bitstream* bs, const uint8_t* data, size_t size)
-{
-  bs->data = data;
-  bs->end = data + size;
-  bs->head = 0;
-  // fill with something other than 0 to detect
-  //  emulation prevention bytes
-  bs->cache = 0xffffffff;
-}
-
-static uint32_t nal_bs_read(nal_bitstream* bs, int n)
-{
-  uint32_t res = 0;
-  int shift;
-
-  if (n == 0)
-    return res;
-
-  // fill up the cache if we need to
-  while (bs->head < n)
-  {
-    uint8_t a_byte;
-    bool check_three_byte;
-
-    check_three_byte = true;
-  next_byte:
-    if (bs->data >= bs->end)
-    {
-      // we're at the end, can't produce more than head number of bits
-      n = bs->head;
-      break;
-    }
-    // get the byte, this can be an emulation_prevention_three_byte that we need
-    // to ignore.
-    a_byte = *bs->data++;
-    if (check_three_byte && a_byte == 0x03 && ((bs->cache & 0xffff) == 0))
-    {
-      // next byte goes unconditionally to the cache, even if it's 0x03
-      check_three_byte = false;
-      goto next_byte;
-    }
-    // shift bytes in cache, moving the head bits of the cache left
-    bs->cache = (bs->cache << 8) | a_byte;
-    bs->head += 8;
-  }
-
-  // bring the required bits down and truncate
-  if ((shift = bs->head - n) > 0)
-    res = static_cast<uint32_t>(bs->cache >> shift);
-  else
-    res = static_cast<uint32_t>(bs->cache);
-
-  // mask out required bits
-  if (n < 32)
-    res &= (1 << n) - 1;
-  bs->head = shift;
-
-  return res;
-}
-
-static bool nal_bs_eos(nal_bitstream* bs)
-{
-  return (bs->data >= bs->end) && (bs->head == 0);
-}
-
-// read unsigned Exp-Golomb code
-static int nal_bs_read_ue(nal_bitstream* bs)
-{
-  int i = 0;
-
-  while (nal_bs_read(bs, 1) == 0 && !nal_bs_eos(bs) && i < 31)
-    i++;
-
-  return ((1 << i) - 1 + nal_bs_read(bs, i));
-}
-
 static const uint8_t* avc_find_startcode_internal(const uint8_t* p, const uint8_t* end)
 {
   const uint8_t* a = p + 4 - ((intptr_t)p & 3);
@@ -235,85 +151,36 @@ static const uint8_t* avc_find_startcode(const uint8_t* p, const uint8_t* end)
   return out;
 }
 
-static bool has_sei_recovery_point(const uint8_t* p, const uint8_t* end)
+static bool has_sei_recovery_point(const uint8_t* p, const uint8_t* end, int headerSize)
 {
-  int pt(0), ps(0), offset(1);
-
-  do
-  {
-    pt = 0;
-    do
-    {
-      pt += p[offset];
-    } while (p[offset++] == 0xFF);
-
-    ps = 0;
-    do
-    {
-      ps += p[offset];
-    } while (p[offset++] == 0xFF);
-
-    if (pt == SEI_RECOVERY_POINT)
-    {
-      nal_bitstream bs;
-      nal_bs_init(&bs, p + offset, ps);
-      return nal_bs_read_ue(&bs) >= 0;
-    }
-    offset += ps;
-  } while (p + offset < end && p[offset] != 0x80);
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////
-CBitstreamParser::CBitstreamParser() = default;
-
-void CBitstreamParser::Close()
-{
-}
-
-bool CBitstreamParser::CanStartDecode(const uint8_t* buf, int buf_size)
-{
-  if (!buf)
+  if (end - p <= headerSize)
     return false;
+  p += headerSize;
 
-  bool rtn = false;
-  uint32_t state = -1;
-  const uint8_t *buf_begin, *buf_end = buf + buf_size;
-
-  for (; rtn == false;)
+  while (p < end && *p != 0x80)
   {
-    buf = find_start_code(buf, buf_end, &state);
-    if (buf >= buf_end)
-    {
-      break;
-    }
+    size_t pt = 0;
+    while (p < end && *p == 0xFF)
+      pt += *p++;
+    if (p == end)
+      return false;
+    pt += *p++;
 
-    switch (state & 0x1f)
-    {
-      case AVC_NAL_SLICE:
-        break;
-      case AVC_NAL_IDR_SLICE:
-        rtn = true;
-        break;
-      case AVC_NAL_SEI:
-        buf_begin = buf - 1;
-        buf = find_start_code(buf, buf_end, &state) - 4;
-        if (has_sei_recovery_point(buf_begin, buf))
-          rtn = true;
-        break;
-      case AVC_NAL_SPS:
-        rtn = true;
-        break;
-      case AVC_NAL_PPS:
-        break;
-      default:
-        break;
-    }
+    size_t ps = 0;
+    while (p < end && *p == 0xFF)
+      ps += *p++;
+    if (p == end)
+      return false;
+    ps += *p++;
+
+    if (ps > static_cast<size_t>(end - p))
+      return false;
+    if (pt == SEI_RECOVERY_POINT)
+      return true;
+    p += ps;
   }
 
-  return rtn;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -936,8 +803,10 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData,
     if (m_sps_pps_context.first_idr && (unit_type == nal_sps || unit_type == nal_pps))
       m_sps_pps_context.idr_sps_pps_seen = 1;
 
-    if (!m_start_decode && (unit_type == nal_sps || IsIDR(unit_type) ||
-                            (unit_type == nal_sei && has_sei_recovery_point(buf, buf + nal_size))))
+    if (!m_start_decode &&
+        (unit_type == nal_sps || IsIDR(unit_type) ||
+         (unit_type == nal_sei &&
+          has_sei_recovery_point(buf, buf + nal_size, m_codec == AV_CODEC_ID_HEVC ? 2 : 1))))
       m_start_decode = true;
 
     // prepend only to the first access unit of an IDR picture, if no sps/pps already present
@@ -1212,15 +1081,21 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t* data,
     nal_end = avc_find_startcode(nal_start, end);
     if (*nal_start == 0xB3)
     {
-      nal_bitstream bs;
-      nal_bs_init(&bs, nal_start, end - nal_start);
+      CBitReader bs({nal_start, static_cast<size_t>(end - nal_start)});
+
+      // The code and the four fields read below take 40 bits; a header cut short changes nothing
+      if (bs.BitsLeft() < 40)
+      {
+        nal_start = nal_end;
+        continue;
+      }
 
       // sequence_header_code
-      nal_bs_read(&bs, 8);
+      bs.ReadBits(8);
 
       // width
       // nal_start + 12 bits == horizontal_size_value
-      uint32_t width = nal_bs_read(&bs, 12);
+      uint32_t width = bs.ReadBits(12);
       if (width != sequence->width)
       {
         changed = true;
@@ -1228,7 +1103,7 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t* data,
       }
       // height
       // nal_start + 24 bits == vertical_size_value
-      uint32_t height = nal_bs_read(&bs, 12);
+      uint32_t height = bs.ReadBits(12);
       if (height != sequence->height)
       {
         changed = true;
@@ -1238,7 +1113,7 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t* data,
       // aspect ratio
       // nal_start + 28 bits == aspect_ratio_information
       float ratio = sequence->ratio;
-      uint32_t ratio_info = nal_bs_read(&bs, 4);
+      uint32_t ratio_info = bs.ReadBits(4);
       switch (ratio_info)
       {
         case 0x01:
@@ -1266,7 +1141,7 @@ bool CBitstreamConverter::mpeg2_sequence_header(const uint8_t* data,
       // nal_start + 32 bits == frame_rate_code
       uint32_t fpsrate = sequence->fps_rate;
       uint32_t fpsscale = sequence->fps_scale;
-      uint32_t rate_info = nal_bs_read(&bs, 4);
+      uint32_t rate_info = bs.ReadBits(4);
 
       switch (rate_info)
       {

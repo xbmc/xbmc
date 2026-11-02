@@ -8,9 +8,9 @@
 
 #include "H264CCBitstreamParser.h"
 
-#include "Bitstream.h"
 #include "CaptionBlock.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "utils/BitReader.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -83,17 +83,17 @@ CCPictureType CH264CCBitstreamParser::DetectSliceType(std::span<const uint8_t> b
   }
 
   // Skip NAL header byte - RBSP data starts at buf+1
-  CBitstream bs(buf.data() + 1, (buf.size() - 1) * 8);
+  CBitReader bs(buf.subspan(1));
 
-  bs.readGolombUE(); // first_mb_in_slice
-  if (bs.hasError())
+  bs.ReadUE(); // first_mb_in_slice
+  if (bs.Error())
   {
     CLog::LogF(LOGDEBUG, "Failed to read first_mb_in_slice");
     return CCPictureType::INVALID;
   }
 
-  int sliceType = bs.readGolombUE(); // slice_type
-  if (bs.hasError())
+  int sliceType = bs.ReadUE(); // slice_type
+  if (bs.Error())
   {
     CLog::LogF(LOGDEBUG, "Failed to read slice_type");
     return CCPictureType::INVALID;

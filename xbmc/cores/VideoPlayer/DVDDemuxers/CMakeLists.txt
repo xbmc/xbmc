@@ -18,7 +18,6 @@ set(HEADERS DemuxMultiSource.h
             DVDDemux.h
             DVDDemuxBXA.h
             DVDDemuxCC.h
-            DVDDemuxCC/Bitstream.h
             DVDDemuxCC/CaptionBlock.h
             DVDDemuxCC/CCBitstreamParserFactory.h
             DVDDemuxCC/H264AnnexBBitstreamParser.h
