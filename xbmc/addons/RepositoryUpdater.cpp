@@ -267,7 +267,8 @@ void CRepositoryUpdater::OnTimeout()
   }
 
   CLog::Log(LOGDEBUG,"CRepositoryUpdater: running scheduled update");
-  CheckForUpdates();
+  // ScheduleUpdate() holds m_criticalSection while it waits for this callback
+  CServiceBroker::GetJobManager()->Submit([this] { CheckForUpdates(); });
 }
 
 void CRepositoryUpdater::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
