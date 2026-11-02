@@ -81,7 +81,7 @@ public:
   DemuxPacket* ReadDemux() override;
   CDemuxStream* GetStream(int streamId) const override;
   std::vector<CDemuxStream*> GetStreams() const override;
-  void EnableStream(int streamId, bool enable) override;
+  bool EnableStream(int streamId, bool enable) override;
   bool OpenStream(int streamid) override;
 
   int GetNrOfStreams() const override;

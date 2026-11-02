@@ -593,12 +593,13 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   return demuxStream;
 }
 
-void CInputStreamAddon::EnableStream(int streamId, bool enable)
+bool CInputStreamAddon::EnableStream(int streamId, bool enable)
 {
   if (!m_ifc.inputstream->toAddon->enable_stream)
-    return;
+    return false;
 
   m_ifc.inputstream->toAddon->enable_stream(m_ifc.inputstream, streamId, enable);
+  return true;
 }
 
 bool CInputStreamAddon::OpenStream(int streamId)
