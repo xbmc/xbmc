@@ -1,0 +1,60 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [master, Piers]
+  # Overlay-base databases are only built on master, so a pull request to Piers
+  # would need a full C++ analysis of about an hour.
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: '13 22 * * 5'
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    if: github.repository == 'xbmc/xbmc'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [actions, c-cpp, csharp, java-kotlin, javascript-typescript, python]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+      - uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:${{ matrix.language }}
+
+  # CodeQL saves an overlay-base database per language for every analysis of
+  # master but only restores the newest, and never deletes the others. Keys end
+  # in -<language>-<CodeQL version>-<commit>-<run id>-<attempt>; entries are
+  # grouped on everything up to the version.
+  prune:
+    needs: analyze
+    if: ${{ !cancelled() && github.repository == 'xbmc/xbmc' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete all but the newest overlay-base database per language and CodeQL version
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh cache list --ref refs/heads/master --key codeql-overlay-base-database- \
+              --sort created_at --limit 1000 --json id,key \
+              --jq '.[] | "\(.id) \(.key | split("-")[:-3] | join("-"))"' |
+          awk 'seen[$2]++ { print $1 }' | xargs -rn1 gh cache delete
