@@ -128,3 +128,23 @@ TEST(TestBackgroundInfoLoader, StopWakesWaitForHeldItem)
   EXPECT_FALSE(loader.IsLoading());
   EXPECT_EQ(loader.Calls(), (std::vector<std::string>{"cached:b", "lookup:b"}));
 }
+
+TEST(TestBackgroundInfoLoader, ItemHeldTwiceIsLoadedAfterBothHolds)
+{
+  CFileItemList items;
+  AddItems(items);
+  CRecordingLoader loader;
+  {
+    const CBackgroundInfoLoader::CItemHold outer{loader, items[0].get()};
+    {
+      const CBackgroundInfoLoader::CItemHold inner{loader, items[0].get()};
+      loader.Load(items);
+      ASSERT_TRUE(ConditionPoll::poll([&loader] { return loader.Calls().size() >= 2; }));
+    }
+    std::this_thread::sleep_for(200ms);
+    EXPECT_EQ(loader.Calls(), (std::vector<std::string>{"cached:b", "lookup:b"}));
+  }
+  ASSERT_TRUE(ConditionPoll::poll([&loader] { return !loader.IsLoading(); }));
+  EXPECT_EQ(loader.Calls(),
+            (std::vector<std::string>{"cached:b", "lookup:b", "cached:a", "lookup:a"}));
+}
