@@ -99,6 +99,9 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
     return false;
   }
 
+  // Publish the selected codec mode before the audio thread processes packets.
+  m_codecIsPassthrough = codec->NeedPassthrough();
+
   if(m_messageQueue.IsInited())
     m_messageQueue.Put(std::make_shared<CDVDMsgAudioCodecChange>(hints, std::move(codec)), 0);
   else
@@ -114,6 +117,7 @@ bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
 void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAudioCodec> codec)
 {
   m_pAudioCodec = std::move(codec);
+  m_codecIsPassthrough = m_pAudioCodec->NeedPassthrough();
 
   m_processInfo.ResetAudioCodecInfo();
 
@@ -195,6 +199,7 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
     m_pAudioCodec->Dispose();
     m_pAudioCodec.reset();
   }
+  m_codecIsPassthrough = false;
 }
 
 void CVideoPlayerAudio::OnStartup()
@@ -731,6 +736,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   }
 
   m_pAudioCodec = std::move(codec);
+  m_codecIsPassthrough = m_pAudioCodec->NeedPassthrough();
 
   return true;
 }
@@ -748,6 +754,5 @@ int CVideoPlayerAudio::GetAudioChannels()
 
 bool CVideoPlayerAudio::IsPassthrough() const
 {
-  std::unique_lock lock(m_info_section);
-  return m_info.passthrough;
+  return m_codecIsPassthrough;
 }

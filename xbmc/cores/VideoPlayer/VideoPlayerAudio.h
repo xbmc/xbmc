@@ -98,6 +98,7 @@ protected:
   CEdl& m_edl; // original-media EDL timeline
   CDVDClock* m_pClock; // dvd master clock
   std::unique_ptr<CDVDAudioCodec> m_pAudioCodec; // audio codec
+  std::atomic_bool m_codecIsPassthrough{false};
   BitstreamStats m_audioStats;
 
   int m_speed;
