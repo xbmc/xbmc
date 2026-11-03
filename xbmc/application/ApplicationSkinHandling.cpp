@@ -200,6 +200,22 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
   lock.unlock();
 
   // restore active window
+  // The previous window may be missing or its ID may now identify a dialog.
+  // Neither can restore an initialized main window, even if Home remains in history.
+  if (!m_bInitializing && currentWindowID != WINDOW_INVALID)
+  {
+    const auto* previousWindow =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow(currentWindowID);
+    if (!previousWindow || previousWindow->IsDialog())
+    {
+      CLog::Log(LOGWARNING,
+                "Previous window {} is unavailable or is now a dialog after skin load; activating Home",
+                currentWindowID);
+      currentWindowID = WINDOW_HOME;
+      currentFocusedControlID = -1;
+    }
+  }
+
   if (currentWindowID != WINDOW_INVALID)
   {
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(currentWindowID);
