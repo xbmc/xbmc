@@ -42,15 +42,10 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
   auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
-    return nullptr;
-
-  if (buffer && settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
+  auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
+  if (buf && (settings->GetInt(CSettings::SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0 ||
+              buf->PrefersPlane()))
   {
-    auto buf = dynamic_cast<CVideoBufferDRMPRIME*>(buffer);
-    if (!buf)
-      return nullptr;
-
     auto winSystem = static_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
     if (!winSystem)
       return nullptr;

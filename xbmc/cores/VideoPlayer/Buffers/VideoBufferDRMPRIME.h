@@ -41,6 +41,12 @@ public:
   virtual bool AcquireDescriptor() { return true; }
   virtual void ReleaseDescriptor() {}
 
+  /*!
+   * \brief Show the buffer on a display plane wherever one can, whichever
+   * renderer the settings pick for video
+   */
+  virtual bool PrefersPlane() const { return false; }
+
 protected:
   explicit CVideoBufferDRMPRIME(int id);
 
