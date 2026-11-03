@@ -9,6 +9,7 @@
 #pragma once
 
 #include "WebAudioServer.h"
+#include "WebFilterLists.h"
 #include "WebVideoServer.h"
 #include "application/IApplicationComponent.h"
 #include "guilib/DispResource.h"
@@ -176,6 +177,7 @@ private:
   std::unique_ptr<WAYLANDHOST::CWaylandHost> m_host;
   std::unique_ptr<CWebAudioServer> m_audio;
   std::unique_ptr<CWebVideoServer> m_video;
+  std::unique_ptr<CWebFilterLists> m_filterLists;
   mutable CCriticalSection m_lock;
   State m_state{State::ABSENT};
   bool m_respawned{false};

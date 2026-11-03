@@ -144,6 +144,32 @@ void NotifyOpenError(const std::string& profile, const std::string& reason)
       CGUIDialogKaiToast::Error, StringUtils::Format(localizeStrings.Get(13329), name), reason);
 }
 
+const ADDON::CAddonType* WebAppType(const std::shared_ptr<ADDON::CAddon>& webapp)
+{
+  return webapp ? webapp->Type(ADDON::AddonType::WEBAPP) : nullptr;
+}
+
+std::set<std::string> FilterListsOfInstalledWebApps()
+{
+  std::set<std::string> lists;
+  ADDON::VECADDONS addons;
+  CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, ADDON::AddonType::WEBAPP);
+  for (const auto& addon : addons)
+  {
+    const ADDON::CAddonType* type = WebAppType(std::dynamic_pointer_cast<ADDON::CAddon>(addon));
+    if (!type)
+      continue;
+
+    for (const auto& [element, values] : type->GetValues())
+    {
+      const std::string list = values.GetValue("contentfilter@list").asString();
+      if (element == "contentfilter" && !list.empty())
+        lists.insert(list);
+    }
+  }
+  return lists;
+}
+
 // web apps run at the screen's resolution, whatever size the GUI renders at
 WaylandHostConfig OutputMode()
 {
@@ -184,6 +210,9 @@ void CWebClientManager::Start()
     m_audio.reset();
   StartVideo();
 
+  m_filterLists = std::make_unique<CWebFilterLists>(*m_host);
+  m_filterLists->Start(FilterListsOfInstalledWebApps());
+
   CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
   CServiceBroker::GetWinSystem()->Register(this);
   if (settings->GetBool(CSettings::SETTING_WEB_PRELOAD))
@@ -197,12 +226,17 @@ void CWebClientManager::Stop()
 
   CServiceBroker::GetWinSystem()->Unregister(this);
   CServiceBroker::GetWinSystem()->UnregisterRenderLoop(this);
+  std::unique_lock lock(m_lock);
+  std::unique_ptr<CWebFilterLists> filterLists = std::move(m_filterLists);
+  lock.unlock();
+  // destroyed while the host still runs: its fetch thread posts to the host
+  filterLists.reset();
   m_host->Stop();
   m_host.reset();
   m_audio.reset();
   m_video.reset();
 
-  std::unique_lock lock(m_lock);
+  lock.lock();
   m_state = State::ABSENT;
   m_views.clear();
   m_surfaces.clear();
@@ -517,7 +551,7 @@ bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
     return false;
 
   const auto webapp = std::dynamic_pointer_cast<ADDON::CAddon>(addon);
-  const ADDON::CAddonType* type = webapp ? webapp->Type(ADDON::AddonType::WEBAPP) : nullptr;
+  const ADDON::CAddonType* type = WebAppType(webapp);
   if (!type)
     return false;
 
@@ -539,7 +573,13 @@ bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
     {
       const std::string list = values.GetValue("contentfilter@list").asString();
       if (!list.empty())
+      {
+        std::unique_lock lock(m_lock);
+        if (m_filterLists)
+          m_filterLists->Want(list);
+        lock.unlock();
         m_host->WebViewAddContentFilterList(profile, list);
+      }
       else
         SendProfileFile(
             profile,

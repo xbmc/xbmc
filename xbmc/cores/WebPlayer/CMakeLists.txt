@@ -4,6 +4,7 @@ if(TARGET ${APP_NAME_LC}::WaylandServer)
               GUIWindowFullScreenWeb.cpp
               WebAudioServer.cpp
               WebClientManager.cpp
+              WebFilterLists.cpp
               WebPlayer.cpp
               WebVideoBuffer.cpp
               WebVideoServer.cpp)
@@ -14,6 +15,7 @@ if(TARGET ${APP_NAME_LC}::WaylandServer)
               WebApp.h
               WebAudioServer.h
               WebClientManager.h
+              WebFilterLists.h
               WebPlayer.h
               WebPlayerDefs.h
               WebVideoBuffer.h
