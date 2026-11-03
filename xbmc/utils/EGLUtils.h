@@ -207,7 +207,7 @@ public:
   void SetDamagedRegions(const CDirtyRegionList& dirtyRegions);
   int GetBufferAge();
   bool IsPlatformSupported() const;
-  EGLint GetConfigAttrib(EGLint attribute) const;
+  EGLint GetConfigAttrib(EGLint attribute, bool hdr = false) const;
 
   EGLDisplay GetEGLDisplay() const
   {
