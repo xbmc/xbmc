@@ -89,17 +89,41 @@ IF DEFINED BUILDDIR (
   SET CCACHE_STATSLOG=%BUILDDIR%\ccache-stats.log
   IF EXIST "%CCACHE_STATSLOG%" DEL /Q "%CCACHE_STATSLOG%"
 
+  rem MSBuild copies the whole environment into every out-of-proc node it spawns, and
+  rem .NET refuses to set any single variable whose value exceeds 32767 characters,
+  rem throwing "System.ArgumentException: Environment variable name or value is too
+  rem long" from OutOfProcNode.HandleNodeConfiguration (see xbmc/infrastructure#84).
+  rem Jenkins/ghprb export the pull request text here; on a long or much-edited PR
+  rem ghprbPullLongDescription alone exceeds the cap and every node dies with MSB4166
+  rem before compiling anything.
+  rem
+  rem The fix for this belongs in the Jenkins job configuration, which should not
+  rem export a pull request body this large into the build environment. This in-repo
+  rem clearing is belt-and-braces so the build survives a job-config regression or a
+  rem different ghprb-based builder. Nothing in this repository reads these variables
+  rem (grep -rn -i ghprb matches only this file), so dropping them cannot affect the
+  rem build itself.
+  SET ghprbPullTitle=
+  SET ghprbPullDescription=
+  SET ghprbPullLongDescription=
+  SET ghprbCommentBody=
+  SET ghprbActualCommitDescription=
+  SET ghprbPullLink=
+
   cmake.exe -G "%cmakeGenerator%" -A %cmakeArch% -T host=x64 %cmakeProps% %base_dir%
-  IF %errorlevel%==1 (
-    set DIETEXT="%APP_NAME%.EXE failed to build!"
+  SET configureresult=%errorlevel%
+  IF NOT "%configureresult%"=="0" (
+    set DIETEXT="%APP_NAME%.EXE failed to configure! (cmake returned %configureresult%)"
+    POPD
     goto DIE
   )
 
   cmake.exe --build . --config "%buildconfig%" --parallel
   SET buildresult=%errorlevel%
   CALL :CCACHE_REPORT
-  IF %buildresult%==1 (
-    set DIETEXT="%APP_NAME%.EXE failed to build!"
+  IF NOT "%buildresult%"=="0" (
+    set DIETEXT="%APP_NAME%.EXE failed to build! (cmake --build returned %buildresult%)"
+    POPD
     goto DIE
   )
 
@@ -180,6 +204,15 @@ rem Runs in the build directory, where CMakeCache.txt records the selected CCACH
   rem Exclude dlls from system to avoid duplicates
   Echo .dll>>exclude_dll.txt
 
+  rem A failed or aborted compiler run can leave the build directory without a binary
+  rem even when the exit code looked fine (e.g. MSBuild aborting its out-of-proc nodes
+  rem with an internal error), so never package from an empty build tree.
+  IF NOT EXIST %EXE% (
+    set DIETEXT="%APP_NAME%.EXE was not produced by the build, check the build log for compiler or MSBuild errors"
+    POPD
+    goto DIE
+  )
+
   md BUILD_WIN32\application
 
   xcopy %EXE% BUILD_WIN32\application > NUL
@@ -217,6 +250,7 @@ rem Runs in the build directory, where CMakeCache.txt records the selected CCACH
     IF %errorlevel%==1 (
       set DIETEXT="failed to build addons"
       cd %build_path%
+      POPD
       goto DIE
     )
 
