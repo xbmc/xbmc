@@ -19,7 +19,7 @@
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 
-#include <atomic>
+#include <cstdint>
 #include <list>
 #include <mutex>
 #include <utility>
@@ -79,7 +79,12 @@ protected:
 
   bool ProcessDecoderOutput(DVDAudioFrame &audioframe);
   void UpdatePlayerInfo();
-  void OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAudioCodec> codec);
+  void OpenStream(CDVDStreamInfo& hints,
+                  std::unique_ptr<CDVDAudioCodec> codec,
+                  std::uint64_t codecGeneration);
+  std::uint64_t BeginCodecSelection(bool passthrough);
+  void PublishCodecState(std::uint64_t codecGeneration, bool passthrough);
+  void InvalidateCodecState();
   //! Switch codec if needed. Called when the sample rate gotten from the
   //! codec changes, in which case we may want to switch passthrough on/off.
   bool SwitchCodecIfNeeded();
@@ -97,7 +102,12 @@ protected:
   CEdl& m_edl; // original-media EDL timeline
   CDVDClock* m_pClock; // dvd master clock
   std::unique_ptr<CDVDAudioCodec> m_pAudioCodec; // audio codec
-  std::atomic_bool m_codecIsPassthrough{false};
+  // Protects the selected codec state shared by the player and audio threads.
+  mutable std::mutex m_codecStateMutex;
+  std::uint64_t m_codecGeneration{0};
+  bool m_codecIsPassthrough{false};
+  // Audio-thread-only generation for the codec currently being processed.
+  std::uint64_t m_activeCodecGeneration{0};
   BitstreamStats m_audioStats;
 
   int m_speed;
