@@ -864,6 +864,8 @@ bool CVideoPlayer::CloseFile(bool reopen)
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
   m_bCloseRequest = true;
+  // OpenStream() bails out on it, StopThread() sets it again
+  m_bStop = true;
 
   // tell demuxer to abort
   if(m_pDemuxer)
