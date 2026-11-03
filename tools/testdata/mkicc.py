@@ -16,17 +16,25 @@ Each file is a flat 32x32 JPEG, RGB (200, 100, 100) or gray 128, untagged or tag
 profile that lcms2 builds from the primaries and curves below, so the files stay small and
 nothing in them comes from a camera or a vendor. The profiles' creation date is fixed, so the
 output is the same on every run with the same Pillow and lcms2.
+
+icc-p3-grid.heic is a HEIC tile grid of two 64x64 tiles in the same colour, with the Display
+P3 profile, which heif-enc from libheif puts on the grid and on each tile. It's skipped when
+heif-enc isn't installed.
 """
 
 import ctypes
 import ctypes.util
+import shutil
 import struct
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from PIL import Image
 
 SIZE = 32
+TILE = 64
 COLOUR = (200, 100, 100)
 GRAY = 128
 CREATED = (2026, 1, 1, 0, 0, 0)  # year, month, day, hours, minutes, seconds
@@ -173,14 +181,33 @@ def fixtures():
     )
 
 
+def write_heic_grid(path: Path, icc: bytes) -> None:
+    heif_enc = shutil.which("heif-enc")
+    if not heif_enc:
+        print(f"skipped {path}: needs heif-enc from libheif")
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        png = Path(tmp) / "grid.png"
+        Image.new("RGB", (2 * TILE, TILE), COLOUR).save(png, icc_profile=icc)
+        subprocess.run(
+            [heif_enc, "--cut-tiles", str(TILE), "-q", "90", "-o", str(path), str(png)],
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+    print(f"wrote {path} ({path.stat().st_size} bytes)")
+
+
 def main() -> None:
     outdir = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("xbmc/guilib/test/testdata")
     outdir.mkdir(parents=True, exist_ok=True)
+    profiles = {}
     for name, image, icc in fixtures():
         path = outdir / f"icc-{name}.jpg"
         extra = {"icc_profile": icc} if icc else {}
         image.save(path, quality=100, subsampling=0, **extra)
         print(f"wrote {path} ({path.stat().st_size} bytes)")
+        profiles[name] = icc
+    write_heic_grid(outdir / "icc-p3-grid.heic", profiles["p3"])
 
 
 if __name__ == "__main__":

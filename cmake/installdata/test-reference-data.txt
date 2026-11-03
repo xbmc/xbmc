@@ -55,6 +55,7 @@ xbmc/games/library/test/program.zip
 xbmc/games/library/test/quoted.gdi
 xbmc/guilib/test/testdata/icc-gray-untagged.jpg
 xbmc/guilib/test/testdata/icc-gray.jpg
+xbmc/guilib/test/testdata/icc-p3-grid.heic
 xbmc/guilib/test/testdata/icc-p3.jpg
 xbmc/guilib/test/testdata/icc-srgb-lut.jpg
 xbmc/guilib/test/testdata/icc-srgb-notch.jpg
