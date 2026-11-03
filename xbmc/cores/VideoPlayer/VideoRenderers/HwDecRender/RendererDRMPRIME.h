@@ -51,6 +51,8 @@ protected:
 private:
   bool m_bConfigured = false;
   int m_iLastRenderBuffer = -1;
+  uint32_t m_drmFormat = 0;
+  uint64_t m_drmModifier = 0;
   CRect m_planeDestRect;
 
   std::shared_ptr<CVideoLayerBridgeDRMPRIME> m_videoLayerBridge;
