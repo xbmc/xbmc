@@ -18,6 +18,8 @@
 #import <signal.h>
 #import <stdio.h>
 
+#import <OpenGLES/ES2/glext.h>
+
 using namespace KODI::MESSAGING;
 
 @implementation TVOSEAGLView
@@ -111,10 +113,21 @@ using namespace KODI::MESSAGING;
 
     glGenRenderbuffers(1, &m_depthRenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, m_depthRenderbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_framebufferWidth,
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, m_framebufferWidth,
                           m_framebufferHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
                               m_depthRenderbuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
+                              m_depthRenderbuffer);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+      CLog::Log(LOGWARNING,
+                "Failed to attach GUI stencil buffer; rotated GUI masks will be hidden");
+      glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
+      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_framebufferWidth,
+                            m_framebufferHeight);
+    }
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
       CLog::Log(LOGERROR, "Failed to make complete framebuffer object {}",

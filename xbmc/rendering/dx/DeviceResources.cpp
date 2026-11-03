@@ -1032,9 +1032,9 @@ void DX::DeviceResources::Present()
   }
 }
 
-void DX::DeviceResources::ClearDepthStencil() const
+void DX::DeviceResources::ClearDepthStencil(bool clearDepth) const
 {
-  const UINT flags = D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL;
+  const UINT flags = D3D11_CLEAR_STENCIL | (clearDepth ? D3D11_CLEAR_DEPTH : 0);
   m_deferrContext->ClearDepthStencilView(m_d3dDepthStencilView.Get(), flags, 0.0f, 0);
 }
 

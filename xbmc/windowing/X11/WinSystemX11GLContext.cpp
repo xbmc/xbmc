@@ -32,6 +32,9 @@
 #include <mutex>
 #include <vector>
 
+#if defined(HAS_GLX)
+#include <GL/glx.h>
+#endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -149,7 +152,7 @@ bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, c
   CWinSystemX11::SetWindow(width, height, fullscreen, output, &newwin);
   if (newwin)
   {
-    RefreshGLContext(m_currentOutput.compare(output) != 0);
+    RefreshGLContext(m_currentOutput.compare(output) != 0, width, height, fullscreen, output);
     XSync(m_dpy, False);
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
     CServiceBroker::GetWinSystem()->GetGfxContext().Flip(true, false);
@@ -241,6 +244,27 @@ bool CWinSystemX11GLContext::DestroyWindow()
 
 XVisualInfo* CWinSystemX11GLContext::GetVisual()
 {
+#if defined(HAS_GLX)
+  if ((m_pGLContext && m_pGLContext->ExtPrefix() == "GLX_") ||
+      CServiceBroker::GetAppParams()->GetGlInterface() == "glx")
+  {
+    int attribs[] = {GLX_RGBA,
+                     GLX_DOUBLEBUFFER,
+                     GLX_RED_SIZE,
+                     8,
+                     GLX_GREEN_SIZE,
+                     8,
+                     GLX_BLUE_SIZE,
+                     8,
+                     GLX_DEPTH_SIZE,
+                     24,
+                     GLX_STENCIL_SIZE,
+                     8,
+                     None};
+    return glXChooseVisual(m_dpy, m_screen, attribs);
+  }
+#endif
+
   int count = 0;
   XVisualInfo vTemplate;
   XVisualInfo *visual = nullptr;
@@ -262,7 +286,8 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
   return visual;
 }
 
-bool CWinSystemX11GLContext::RefreshGLContext(bool force)
+bool CWinSystemX11GLContext::RefreshGLContext(
+    bool force, int width, int height, bool fullscreen, const std::string& output)
 {
   bool success = false;
   if (m_pGLContext)
@@ -340,6 +365,13 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
 
   // fallback for vdpau
   m_pGLContext = GLXContextCreate(m_dpy);
+  if (gli != "glx")
+  {
+    // GLX requires the window and context to use the same visual.
+    m_windowDirty = true;
+    if (!CWinSystemX11::SetWindow(width, height, fullscreen, output))
+      return false;
+  }
   success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
   if (success)
   {

@@ -69,7 +69,8 @@ protected:
   bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) override;
   void PresentRenderImpl(bool rendered) override;
   void SetVSyncImpl(bool enable) override;
-  bool RefreshGLContext(bool force);
+  bool RefreshGLContext(
+      bool force, int width, int height, bool fullscreen, const std::string& output);
   XVisualInfo* GetVisual() override;
 
   CGLContext *m_pGLContext = nullptr;

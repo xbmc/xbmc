@@ -27,6 +27,7 @@ public:
   static void Register(CGUIQuadDrawerGLES& quadDrawer);
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
+  static void DrawStencilQuad(const CRect& coords, STENCIL_LAYER mask);
 
   CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo& texture);
   ~CGUITextureGLES() override = default;

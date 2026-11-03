@@ -32,6 +32,7 @@ struct Vertex {
 };
 
 class ID3DResource;
+enum class STENCIL_LAYER;
 
 class CGUIShaderDX
 {
@@ -82,6 +83,7 @@ public:
   void SetTexStep(float stepX, float stepY, float stepX2, float stepY2);
 
   void DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4);
+  void DrawStencilQuad(const CRect& rect, STENCIL_LAYER mask);
   void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int startVertex);
   void Draw(unsigned int vertexCount, unsigned int startVertex);
 
@@ -163,6 +165,7 @@ private:
   void SetSamplers(void);
   void ApplyChanges(void);
   void ClipToScissorParams(void);
+  void DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4, STENCIL_LAYER mask);
 
   // GUI constants
   cbViewPort m_cbViewPort = {};

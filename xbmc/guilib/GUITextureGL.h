@@ -30,6 +30,7 @@ public:
                        const CRect* texCoords = nullptr,
                        const float depth = 1.0,
                        const bool blending = true);
+  static void DrawStencilQuad(const CRect& coords, const STENCIL_LAYER mask);
 
   CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo& texture);
   ~CGUITextureGL() override = default;
