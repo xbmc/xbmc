@@ -275,3 +275,20 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 
   return m_HDRColorSpace == HDRColorSpace;
 }
+
+int CWinSystemAndroidGLESContext::GetOutputBitDepth() const
+{
+  return m_pGLContext.GetConfigAttrib(EGL_RED_SIZE, m_HDRColorSpace != EGL_NONE);
+}
+
+KODI::UTILS::Eotf CWinSystemAndroidGLESContext::GetEotf() const
+{
+  return m_HDRColorSpace == EGL_GL_COLORSPACE_BT2020_PQ_EXT ? KODI::UTILS::Eotf::PQ
+                                                            : KODI::UTILS::Eotf::TRADITIONAL_SDR;
+}
+
+KODI::UTILS::Colorimetry CWinSystemAndroidGLESContext::GetColorimetry() const
+{
+  return m_HDRColorSpace == EGL_GL_COLORSPACE_BT2020_PQ_EXT ? KODI::UTILS::Colorimetry::BT2020_RGB
+                                                            : KODI::UTILS::Colorimetry::DEFAULT;
+}
