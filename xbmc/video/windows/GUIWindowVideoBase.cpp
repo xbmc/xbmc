@@ -1207,6 +1207,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
                                       const std::string& player)
 {
+  const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, pItem.get()};
+
   // party mode
   if (g_partyModeManager.IsEnabled(PartyModeContext::VIDEO))
   {
