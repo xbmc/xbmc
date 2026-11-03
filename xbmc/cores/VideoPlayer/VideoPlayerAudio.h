@@ -9,10 +9,10 @@
 #pragma once
 
 #include "AudioSinkAE.h"
-#include "Edl.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
 #include "DVDStreamInfo.h"
+#include "Edl.h"
 #include "IVideoPlayer.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "threads/SystemClock.h"
@@ -23,7 +23,6 @@
 #include <list>
 #include <mutex>
 #include <utility>
-
 
 class CVideoPlayer;
 class CDVDAudioCodec;
