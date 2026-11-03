@@ -26063,7 +26063,25 @@ msgctxt "#40250"
 msgid "Keep the files web apps download in Kodi's profile, so that apps start faster on a slow connection after a restart. Off caches them in memory only, which spares the storage the writes."
 msgstr ""
 
-#empty strings from id 40251 to 40399
+#. Progress text while a web app waits for a content filter list to download
+#: xbmc/cores/WebPlayer/WebPlayer.cpp
+msgctxt "#40251"
+msgid "Fetching the content filter list {0:s}"
+msgstr ""
+
+#. Progress text while the web client prepares a content filter list
+#: xbmc/cores/WebPlayer/WebPlayer.cpp
+msgctxt "#40252"
+msgid "Preparing the content filter list {0:s}"
+msgstr ""
+
+#. Notification text when a web app cannot open without a content filter list
+#: xbmc/cores/WebPlayer/WebClientManager.cpp
+msgctxt "#40253"
+msgid "The content filter list {0:s} is not available."
+msgstr ""
+
+#empty strings from id 40254 to 40399
 
 # Video versions
 

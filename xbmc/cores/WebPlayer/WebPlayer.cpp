@@ -17,6 +17,7 @@
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -28,6 +29,10 @@
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "kodi-web-video.h"
 #include "messaging/ApplicationMessenger.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
@@ -135,6 +140,40 @@ AVColorTransferCharacteristic TransferOf(uint32_t transfer)
   }
 }
 
+// the shared list a web app still waits for, and the message telling why, or
+// one it cannot have
+struct FilterListWait
+{
+  std::string list;
+  uint32_t message{0};
+  bool failed{false};
+};
+
+FilterListWait NextFilterListWait(const CWebClientManager& manager,
+                                  const std::set<std::string>& lists)
+{
+  FilterListWait wait;
+  for (const auto& list : lists)
+  {
+    switch (manager.FilterListState(list))
+    {
+      case CWebFilterLists::ListState::PREPARED:
+        break;
+      case CWebFilterLists::ListState::FETCHING:
+        // "Fetching the content filter list {0:s}"
+        return {list, 40251, false};
+      case CWebFilterLists::ListState::PREPARING:
+        // "Preparing the content filter list {0:s}"
+        if (wait.list.empty())
+          wait = {list, 40252, false};
+        break;
+      default:
+        return {list, 0, true};
+    }
+  }
+  return wait;
+}
+
 } // unnamed namespace
 
 CWebPlayer::CWebPlayer(IPlayerCallback& callback)
@@ -191,7 +230,7 @@ bool CWebPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   m_openFailed = false;
   playLock.unlock();
 
-  if (!m_manager->RequestView(m_profile, *this))
+  if (!m_manager->RequestView(m_profile, *this) || !AwaitFilterLists())
   {
     playLock.lock();
     m_opening = false;
@@ -845,12 +884,62 @@ bool CWebPlayer::ConfigureRenderer(const VideoPicture& picture)
   return true;
 }
 
+// a web app never opens without its shared content filter lists; the user
+// waits while they are fetched and prepared, or cancels
+bool CWebPlayer::AwaitFilterLists()
+{
+  const std::set<std::string> lists = m_manager->WantFilterLists(m_profile);
+  const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+  CGUIDialogProgress* dialog = nullptr;
+  FilterListWait wait;
+
+  while (!(wait = NextFilterListWait(*m_manager, lists)).list.empty() && !wait.failed)
+  {
+    std::unique_lock lock(m_playLock);
+    if (m_openFailed)
+      break;
+    lock.unlock();
+
+    if (!dialog)
+    {
+      dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
+          WINDOW_DIALOG_PROGRESS);
+      if (!dialog)
+        return false;
+      dialog->SetHeading(CVariant{m_item->GetLabel().empty() ? m_profile : m_item->GetLabel()});
+      dialog->SetLine(1, CVariant{""});
+      dialog->SetLine(2, CVariant{""});
+      dialog->ShowProgressBar(false);
+      dialog->SetCanCancel(true);
+      dialog->Open();
+    }
+    dialog->SetLine(0, CVariant{StringUtils::Format(localizeStrings.Get(wait.message), wait.list)});
+    if (!dialog->WaitOnEvent(m_manager->FilterListsChanged()))
+      break;
+  }
+  if (dialog)
+    dialog->Close();
+
+  if (wait.failed)
+  {
+    CLog::Log(LOGERROR, "CWebPlayer::{}: {} cannot open without the content filter list {}",
+              __FUNCTION__, m_profile, wait.list);
+    m_manager->NotifyFilterListMissing(m_profile, wait.list);
+    return false;
+  }
+  std::unique_lock lock(m_playLock);
+  return wait.list.empty() && !m_openFailed;
+}
+
 void CWebPlayer::StopFromClient(bool error)
 {
   std::unique_lock lock(m_playLock);
   if (m_opening)
   {
+    // wakes AwaitFilterLists()
     m_openFailed = true;
+    if (m_manager)
+      m_manager->FilterListsChanged().Set();
     return;
   }
   if (!m_playing.exchange(false))

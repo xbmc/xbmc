@@ -9,6 +9,7 @@
 #pragma once
 
 #include "WebAudioServer.h"
+#include "WebFilterLists.h"
 #include "WebVideoServer.h"
 #include "application/IApplicationComponent.h"
 #include "guilib/DispResource.h"
@@ -23,6 +24,11 @@
 #include <memory>
 #include <set>
 #include <string>
+
+namespace ADDON
+{
+struct AddonEvent;
+}
 
 namespace KODI
 {
@@ -127,6 +133,23 @@ public:
    */
   void SetVideoObserver(IWebVideoObserver* observer);
 
+  /*!
+   * \brief The shared content filter lists a web app uses, fetched now if
+   * they are not yet
+   */
+  std::set<std::string> WantFilterLists(const std::string& profile);
+  CWebFilterLists::ListState FilterListState(const std::string& name) const;
+
+  /*!
+   * \brief Set whenever a filter list's state changes
+   */
+  CEvent& FilterListsChanged() { return m_filterListsChanged; }
+
+  /*!
+   * \brief Tell the user that a web app cannot open without a filter list
+   */
+  void NotifyFilterListMissing(const std::string& profile, const std::string& list);
+
   void LoadUrl(const std::string& profile, const std::string& url);
   void Navigate(const std::string& profile, WAYLANDHOST::WebNavigation action);
   void SetActive(const std::string& profile, bool active);
@@ -150,6 +173,7 @@ public:
   void OnWebClientReady() override;
   void OnWebViewCreated(const std::string& profile, WAYLANDHOST::CWaylandSurface& surface) override;
   void OnWebViewUnavailable(const std::string& profile, const std::string& message) override;
+  void OnWebFilterListPrepared(const std::string& name, bool prepared) override;
   void OnWebViewUrl(const std::string& profile, const std::string& url) override;
   void OnWebViewTitle(const std::string& profile, const std::string& title) override;
   void OnWebViewProgress(const std::string& profile, uint32_t percent) override;
@@ -193,6 +217,7 @@ private:
     IWebViewObserver* m_observer;
   };
 
+  void OnAddonEvent(const ADDON::AddonEvent& event);
   bool StartHost();
   void UpdateVideo();
   void Spawn();
@@ -214,6 +239,8 @@ private:
   std::unique_ptr<CWebAudioServer> m_audio;
   std::unique_ptr<CWebVideoServer> m_video;
   IWebVideoObserver* m_videoObserver{nullptr};
+  std::unique_ptr<CWebFilterLists> m_filterLists;
+  CEvent m_filterListsChanged;
   mutable CCriticalSection m_lock;
   State m_state{State::ABSENT};
   bool m_respawned{false};

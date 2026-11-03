@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Content filter lists a web app may ask for by name. Kodi keeps the lists
+     its installed web apps name up to date. advancedsettings.xml adds lists
+     or replaces them by name with the same elements; an empty URL drops a
+     list. -->
+<advancedsettings>
+  <webapps>
+    <contentfilterlists>
+      <list name="easylist">https://easylist.to/easylist/easylist.txt</list>
+      <list name="easyprivacy">https://easylist.to/easylist/easyprivacy.txt</list>
+    </contentfilterlists>
+  </webapps>
+</advancedsettings>

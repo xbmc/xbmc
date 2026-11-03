@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "WebApp.h"
 #include "addons/Addon.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
@@ -68,6 +69,7 @@
 #include <limits>
 #include <mutex>
 #include <tuple>
+#include <typeinfo>
 #include <utility>
 
 #include <fcntl.h>
@@ -155,6 +157,45 @@ void NotifyOpenError(const std::string& profile, const std::string& reason)
   // "Error opening {0:s}"
   CGUIDialogKaiToast::QueueNotification(
       CGUIDialogKaiToast::Error, StringUtils::Format(localizeStrings.Get(13329), name), reason);
+}
+
+const ADDON::CAddonType* WebAppType(const std::shared_ptr<ADDON::CAddon>& webapp)
+{
+  return webapp ? webapp->Type(ADDON::AddonType::WEBAPP) : nullptr;
+}
+
+void AddFilterListsOf(const ADDON::AddonPtr& addon, std::set<std::string>& lists)
+{
+  const ADDON::CAddonType* type = WebAppType(std::dynamic_pointer_cast<ADDON::CAddon>(addon));
+  if (!type)
+    return;
+
+  for (const auto& [element, values] : type->GetValues())
+  {
+    const std::string list = values.GetValue("contentfilter@list").asString();
+    if (element == "contentfilter" && !list.empty())
+      lists.insert(list);
+  }
+}
+
+std::set<std::string> FilterListsOfInstalledWebApps()
+{
+  std::set<std::string> lists;
+  ADDON::VECADDONS addons;
+  CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, ADDON::AddonType::WEBAPP);
+  for (const auto& addon : addons)
+    AddFilterListsOf(addon, lists);
+  return lists;
+}
+
+std::set<std::string> FilterListsOfWebApp(const std::string& id)
+{
+  std::set<std::string> lists;
+  ADDON::AddonPtr addon;
+  if (CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON::AddonType::WEBAPP,
+                                             ADDON::OnlyEnabled::CHOICE_YES))
+    AddFilterListsOf(addon, lists);
+  return lists;
 }
 
 // the command is run as execvpe() runs it: a name with a slash as a path,
@@ -296,6 +337,12 @@ void CWebClientManager::Start()
   if (!m_audio->Start(CSpecialProtocol::TranslatePath(AUDIO_SOCKET)))
     m_audio.reset();
 
+  m_filterLists = std::make_unique<CWebFilterLists>(*m_host, m_filterListsChanged);
+  m_filterLists->Start(FilterListsOfInstalledWebApps());
+  // a web app's lists are fetched when it is installed, not when it opens
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, [this](const ADDON::AddonEvent& event)
+                                                   { OnAddonEvent(event); });
+
   CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
   CServiceBroker::GetWinSystem()->Register(this);
   settings->RegisterCallback(
@@ -319,19 +366,70 @@ void CWebClientManager::Stop()
 
   if (const auto settingsComponent = CServiceBroker::GetSettingsComponent())
     settingsComponent->GetSettings()->UnregisterCallback(this);
+  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   CServiceBroker::GetWinSystem()->Unregister(this);
   CServiceBroker::GetWinSystem()->UnregisterRenderLoop(this);
+  std::unique_lock lock(m_lock);
+  std::unique_ptr<CWebFilterLists> filterLists = std::move(m_filterLists);
+  lock.unlock();
+  // destroyed while the host still runs: its fetch thread posts to the host
+  filterLists.reset();
   m_host->Stop();
   m_host.reset();
   m_audio.reset();
   m_video.reset();
 
-  std::unique_lock lock(m_lock);
+  lock.lock();
   m_state = State::ABSENT;
   m_views.clear();
   m_surfaces.clear();
   m_closing.clear();
   m_observer = nullptr;
+}
+
+void CWebClientManager::OnAddonEvent(const ADDON::AddonEvent& event)
+{
+  if (typeid(event) != typeid(ADDON::AddonEvents::ReInstalled) &&
+      typeid(event) != typeid(ADDON::AddonEvents::Enabled))
+    return;
+
+  const std::set<std::string> lists = FilterListsOfWebApp(event.addonId);
+  std::unique_lock lock(m_lock);
+  if (!m_filterLists)
+    return;
+  for (const auto& list : lists)
+    m_filterLists->Want(list);
+}
+
+std::set<std::string> CWebClientManager::WantFilterLists(const std::string& profile)
+{
+  const std::set<std::string> lists = FilterListsOfWebApp(profile);
+  std::unique_lock lock(m_lock);
+  if (m_filterLists)
+  {
+    for (const auto& list : lists)
+      m_filterLists->Want(list);
+  }
+  return lists;
+}
+
+CWebFilterLists::ListState CWebClientManager::FilterListState(const std::string& name) const
+{
+  std::unique_lock lock(m_lock);
+  return m_filterLists ? m_filterLists->State(name) : CWebFilterLists::ListState::UNKNOWN;
+}
+
+void CWebClientManager::NotifyFilterListMissing(const std::string& profile, const std::string& list)
+{
+  const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+  NotifyOpenError(profile, StringUtils::Format(localizeStrings.Get(40253), list));
+}
+
+void CWebClientManager::OnWebFilterListPrepared(const std::string& name, bool prepared)
+{
+  std::unique_lock lock(m_lock);
+  if (m_filterLists)
+    m_filterLists->OnPrepared(name, prepared);
 }
 
 // the client finds a video socket only while pages' video goes to a display plane
@@ -709,6 +807,8 @@ void CWebClientManager::OnClientExited(pid_t pid, int status)
   m_views.clear();
   m_surfaces.clear();
   m_closing.clear();
+  if (m_filterLists)
+    m_filterLists->ClientGone();
   if (m_restarting)
   {
     m_restarting = false;
@@ -772,7 +872,7 @@ bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
     return false;
 
   const auto webapp = std::dynamic_pointer_cast<ADDON::CAddon>(addon);
-  const ADDON::CAddonType* type = webapp ? webapp->Type(ADDON::AddonType::WEBAPP) : nullptr;
+  const ADDON::CAddonType* type = WebAppType(webapp);
   if (!type)
     return false;
 
@@ -798,7 +898,13 @@ bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
     {
       const std::string list = values.GetValue("contentfilter@list").asString();
       if (!list.empty())
+      {
+        std::unique_lock lock(m_lock);
+        if (m_filterLists)
+          m_filterLists->Want(list);
+        lock.unlock();
         m_host->WebViewAddContentFilterList(profile, list);
+      }
       else
         SendProfileFile(
             profile,

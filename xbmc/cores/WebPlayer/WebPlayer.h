@@ -141,6 +141,7 @@ private:
   bool InputWakesDisplay() const;
   bool DisplayAsleep() const;
   void StopFromClient(bool error = false);
+  bool AwaitFilterLists();
 
   std::unique_ptr<CProcessInfo> m_processInfo;
   CDVDClock m_clock;
