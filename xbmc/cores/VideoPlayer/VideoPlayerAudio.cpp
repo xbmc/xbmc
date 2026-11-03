@@ -603,11 +603,9 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
   if (m_streaminfo.codec == AV_CODEC_ID_TRUEHD && IsPassthrough() &&
       audioframe.pts != DVD_NOPTS_VALUE && audioframe.duration > 0)
   {
-    const double edlPts = audioframe.edlPts != DVD_NOPTS_VALUE ? audioframe.edlPts
-                                                                  : audioframe.pts;
+    const double edlPts = audioframe.edlPts != DVD_NOPTS_VALUE ? audioframe.edlPts : audioframe.pts;
     const auto frameStart = std::chrono::milliseconds{DVD_TIME_TO_MSEC(edlPts)};
-    const auto frameEnd =
-        std::chrono::milliseconds{DVD_TIME_TO_MSEC(edlPts + audioframe.duration)};
+    const auto frameEnd = std::chrono::milliseconds{DVD_TIME_TO_MSEC(edlPts + audioframe.duration)};
     const auto edits = m_edl.GetRawEditListSnapshot();
     for (const auto& edit : *edits)
     {

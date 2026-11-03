@@ -92,7 +92,7 @@ void CAudioSinkAE::Destroy(bool finish)
   m_playingPts = DVD_NOPTS_VALUE;
 }
 
-unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe, bool edlMute)
+unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame& audioframe, bool edlMute)
 {
   m_bAbort = false;
 
