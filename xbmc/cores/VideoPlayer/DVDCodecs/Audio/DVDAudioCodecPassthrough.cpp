@@ -49,6 +49,8 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 {
   m_parser.SetCoreOnly(false);
   m_parser.SetDTSHDMA(m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
+  // After a seek, TrueHD data can contain bytes that pass as an E-AC3 header.
+  m_parser.SetExpectedType(m_format.m_streamInfo.m_type);
   switch (m_format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
