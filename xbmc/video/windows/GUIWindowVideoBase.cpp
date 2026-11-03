@@ -1170,6 +1170,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return OnPlayMedia(itemNumber);
   case CONTEXT_BUTTON_CHOOSE_PLAYLIST:
   {
+    const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, item.get()};
+
     // The chosen playlist is assigned to a library item either way, so ask whether to play it
     if (VIDEO::UTILS::CanSaveDiscPlaylist(*item))
     {
