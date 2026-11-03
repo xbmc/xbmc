@@ -86,8 +86,8 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   m_backlogSize = 0;
   m_currentPts = DVD_NOPTS_VALUE;
   m_nextPts = DVD_NOPTS_VALUE;
-  m_currentEdlPts = DVD_NOPTS_VALUE;
-  m_nextEdlPts = DVD_NOPTS_VALUE;
+  m_currentOriginalPts = DVD_NOPTS_VALUE;
+  m_nextOriginalPts = DVD_NOPTS_VALUE;
   return true;
 }
 
@@ -130,20 +130,20 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
       if (m_nextPts != DVD_NOPTS_VALUE)
       {
         m_currentPts = m_nextPts;
-        m_currentEdlPts = m_nextEdlPts;
+        m_currentOriginalPts = m_nextOriginalPts;
         m_nextPts = packet.pts;
-        m_nextEdlPts = packet.edlPts;
+        m_nextOriginalPts = packet.originalPts;
       }
       else if (packet.pts != DVD_NOPTS_VALUE)
       {
         m_currentPts = packet.pts;
-        m_currentEdlPts = packet.edlPts;
+        m_currentOriginalPts = packet.originalPts;
       }
     }
     else
     {
       m_nextPts = packet.pts;
-      m_nextEdlPts = packet.edlPts;
+      m_nextOriginalPts = packet.originalPts;
     }
   }
 
@@ -258,9 +258,9 @@ void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
   frame.bits_per_sample = 8;
   frame.duration = DVD_MSEC_TO_TIME(frame.format.m_streamInfo.GetDuration());
   frame.pts = m_currentPts;
-  frame.edlPts = m_currentEdlPts;
+  frame.originalPts = m_currentOriginalPts;
   m_currentPts = DVD_NOPTS_VALUE;
-  m_currentEdlPts = DVD_NOPTS_VALUE;
+  m_currentOriginalPts = DVD_NOPTS_VALUE;
 }
 
 int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
@@ -286,8 +286,8 @@ void CDVDAudioCodecPassthrough::Reset()
   m_backlogSize = 0;
   m_currentPts = DVD_NOPTS_VALUE;
   m_nextPts = DVD_NOPTS_VALUE;
-  m_currentEdlPts = DVD_NOPTS_VALUE;
-  m_nextEdlPts = DVD_NOPTS_VALUE;
+  m_currentOriginalPts = DVD_NOPTS_VALUE;
+  m_nextOriginalPts = DVD_NOPTS_VALUE;
   m_parser.Reset();
 }
 

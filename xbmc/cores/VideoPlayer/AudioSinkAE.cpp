@@ -92,7 +92,7 @@ void CAudioSinkAE::Destroy(bool finish)
   m_playingPts = DVD_NOPTS_VALUE;
 }
 
-unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame& audioframe, bool edlMute)
+unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame& audioframe, bool silence)
 {
   m_bAbort = false;
 
@@ -134,7 +134,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame& audioframe, bool edlM
   do
   {
     IAEStream::ExtData ext;
-    ext.edlMute = edlMute;
+    ext.silence = silence;
     if (offset == 0)
     {
       ext.pts = audioframe.pts / DVD_TIME_BASE * 1000;
