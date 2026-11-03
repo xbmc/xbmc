@@ -23,13 +23,14 @@
 
 extern "C"
 {
+#include <libavcodec/avcodec.h>
 #include <libavutil/mem.h>
 }
 
 namespace
 {
-// the test images are flat 32x32 JPEGs, RGB (200, 100, 100) or gray 128, made by
-// tools/testdata/mkicc.py
+// the test images are flat 32x32 JPEGs, RGB (200, 100, 100) or gray 128, and a HEIC tile grid,
+// made by tools/testdata/mkicc.py
 constexpr unsigned int SIZE = 32;
 constexpr char ICC_NAME[] = "ICC_PROFILE"; // with its NUL, as JPEG's APP2 segments name it
 
@@ -64,10 +65,11 @@ std::vector<unsigned char> ReadFixture(const std::string& name)
 // no data when the image can't be loaded or decoded
 Pixels DecodeData(std::vector<unsigned char> data,
                   unsigned int width = SIZE,
-                  unsigned int height = SIZE)
+                  unsigned int height = SIZE,
+                  const std::string& mimeType = "image/jpeg")
 {
   Pixels pixels;
-  CFFmpegImage image("image/jpeg");
+  CFFmpegImage image(mimeType);
   if (!image.LoadImageFromMemory(data.data(), static_cast<unsigned int>(data.size()), width,
                                  height))
     return pixels;
@@ -83,7 +85,8 @@ Pixels DecodeData(std::vector<unsigned char> data,
 
 Pixels Decode(const std::string& name, unsigned int width = SIZE, unsigned int height = SIZE)
 {
-  return DecodeData(ReadFixture(name), width, height);
+  return DecodeData(ReadFixture(name), width, height,
+                    name.ends_with(".heic") ? "image/heic" : "image/jpeg");
 }
 
 // the ICC profile in a JPEG's APP2 segments
@@ -172,6 +175,18 @@ TEST(TestFFmpegImage, DisplayP3IsConvertedToSRGB)
   const Pixels pixels{Decode("icc-p3.jpg")};
   ASSERT_TRUE(pixels.data);
   ExpectBGRA(pixels.At(SIZE / 2, SIZE / 2), 97, 93, 215);
+}
+
+TEST(TestFFmpegImage, TileGridIsConverted)
+{
+  if (!avcodec_find_decoder(AV_CODEC_ID_HEVC))
+    GTEST_SKIP() << "no HEVC decoder";
+
+  // two 64x64 tiles, which HEVC decodes as (200, 99, 99)
+  const Pixels pixels{Decode("icc-p3-grid.heic", 128, 64)};
+  ASSERT_TRUE(pixels.data);
+  ExpectBGRA(pixels.At(32, 32), 96, 91, 215);
+  ExpectBGRA(pixels.At(96, 32), 96, 91, 215);
 }
 
 TEST(TestFFmpegImage, LutIsUsedOverAnSRGBMatrix)
