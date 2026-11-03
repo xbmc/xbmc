@@ -1141,6 +1141,16 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
     bool isDisc{false};
     std::string strPath;
 
+    // A disc's own file is left without a movie when its movie moves onto the disc's playlists, so
+    // the disc is then looked up by its playlists as it is when it has no file
+    if (idFile >= 0 &&
+        (URIUtils::IsBDFile(strFilenameAndPath) || URIUtils::IsDiscImage(strFilenameAndPath)) &&
+        GetSingleValueInt(PrepareSQL("SELECT COUNT(1) FROM videoversion "
+                                     "WHERE idFile = %i AND media_type = '%s' AND itemType = %i",
+                                     idFile, NameOf(MEDIA::TYPE::MOVIE).c_str(),
+                                     VideoAssetType::VERSION)) == 0)
+      idFile = -1;
+
     if (idFile < 0)
     {
       if (URIUtils::IsBDFile(strFilenameAndPath) || URIUtils::IsDiscImage(strFilenameAndPath))
@@ -2181,6 +2191,8 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath,
       return false;
 
     std::string sql;
+    // a file named by its path rather than by its id
+    bool fileOfPath{false};
     if (idFile >= 0)
     {
       sql = PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND videoVersionIdFile = %i",
@@ -2197,16 +2209,29 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath,
     {
       idFile = GetFileId(strFilenameAndPath);
       if (idFile != -1)
+      {
         sql = PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND videoVersionIdFile = %i",
                          idMovie, idFile);
+        fileOfPath = true;
+      }
     }
 
+    const std::string defaultVersion{PrepareSQL(
+        "SELECT * FROM movie_view WHERE idMovie = %i AND isDefaultVersion = 1", idMovie)};
     if (sql.empty())
-      sql = PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND isDefaultVersion = 1",
-                       idMovie);
+      sql = defaultVersion;
 
     if (!m_pDS->query(sql))
       return false;
+
+    // The file of a disc image left by a refresh that found its movie on the disc's playlists is
+    // none of the movie's, so the movie found by those playlists is read through its default
+    if (fileOfPath && m_pDS->eof())
+    {
+      m_pDS->close();
+      if (!m_pDS->query(defaultVersion))
+        return false;
+    }
 
     details = GetDetailsForMovie(*m_pDS, getDetails);
     return !details.IsEmpty();
@@ -4432,7 +4457,9 @@ void CVideoDatabase::DeleteSeason(int idSeason, bool bKeepId /* = false */)
   }
 }
 
-void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteEpisode(int idEpisode,
+                                   bool bKeepId /* = false */,
+                                   DeleteMovieHashAction hashAction /* = HASH_DELETE */)
 {
   if (idEpisode < 0)
     return;
@@ -4455,9 +4482,14 @@ void CVideoDatabase::DeleteEpisode(int idEpisode, bool bKeepId /* = false */)
     // the ancillary tables are still purged
     if (!bKeepId)
     {
-      std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
-      if (!path.empty())
-        InvalidatePathHash(path);
+      if (hashAction == DeleteMovieHashAction::HASH_DELETE)
+      {
+        std::string path = GetSingleValue(PrepareSQL(
+            "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
+            idFile));
+        if (!path.empty())
+          InvalidatePathHash(path);
+      }
 
       // Removed first to avoid being orphaned
       DeleteBookMarkForEpisode(idEpisode);
@@ -13774,7 +13806,8 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idFile)
   return false;
 }
 
-bool CVideoDatabase::DeleteVideoAsset(int idFile)
+bool CVideoDatabase::DeleteVideoAsset(int idFile,
+                                      DeleteMovieHashAction hashAction /* = HASH_DELETE */)
 {
   if (!m_pDB || !m_pDS)
     return false;
@@ -13789,11 +13822,14 @@ bool CVideoDatabase::DeleteVideoAsset(int idFile)
     if (!inTransaction)
       BeginTransaction();
 
-    const std::string path = GetSingleValue(PrepareSQL(
-        "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
-        idFile));
-    if (!path.empty())
-      InvalidatePathHash(path);
+    if (hashAction == DeleteMovieHashAction::HASH_DELETE)
+    {
+      const std::string path = GetSingleValue(PrepareSQL(
+          "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
+          idFile));
+      if (!path.empty())
+        InvalidatePathHash(path);
+    }
 
     m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile=%i", idFile));
 
