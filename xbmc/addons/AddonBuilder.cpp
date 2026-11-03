@@ -85,6 +85,7 @@ AddonPtr CAddonBuilder::Generate(const AddonInfoPtr& info, AddonType type)
     case AddonType::SCRIPT_MODULE:
     case AddonType::SUBTITLE_MODULE:
     case AddonType::SCRIPT_WEATHER:
+    case AddonType::WEBAPP:
       return std::make_shared<CAddon>(info, type);
     case AddonType::WEB_INTERFACE:
       return std::make_shared<CWebinterface>(info);

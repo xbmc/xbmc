@@ -82,6 +82,7 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
     NONE,
     VIDEO,
     GAME,
+    WEB,
   } previousRenderingState = RENDERING_STATE::NONE;
 
   auto& components = CServiceBroker::GetAppComponents();
@@ -102,6 +103,12 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
       previousRenderingState = RENDERING_STATE::GAME;
+    }
+    else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() ==
+             WINDOW_FULLSCREEN_WEB)
+    {
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
+      previousRenderingState = RENDERING_STATE::WEB;
     }
   }
 
@@ -227,6 +234,9 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
         break;
       case RENDERING_STATE::GAME:
         CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_FULLSCREEN_GAME);
+        break;
+      case RENDERING_STATE::WEB:
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_FULLSCREEN_WEB);
         break;
       default:
         break;

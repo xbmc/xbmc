@@ -540,7 +540,7 @@ bool CGUIDialogAddonInfo::CanRun() const
 {
   if (m_localAddon)
   {
-    if (m_localAddon->Type() == AddonType::SCRIPT)
+    if (m_localAddon->Type() == AddonType::SCRIPT || m_localAddon->Type() == AddonType::WEBAPP)
       return true;
 
     if (GAME::CGameUtils::IsStandaloneGame(m_localAddon))

@@ -631,7 +631,8 @@ bool CInputManager::HandleKey(const CKey& key)
     return true;
   }
 
-  if (iWin != WINDOW_FULLSCREEN_VIDEO && iWin != WINDOW_FULLSCREEN_GAME)
+  if (iWin != WINDOW_FULLSCREEN_VIDEO && iWin != WINDOW_FULLSCREEN_GAME &&
+      iWin != WINDOW_FULLSCREEN_WEB)
   {
     // current active window isnt the fullscreen window
     // just use corresponding section from keymap.xml

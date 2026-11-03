@@ -1004,3 +1004,8 @@ msgstr ""
 msgctxt "#31615"
 msgid "Subtitle language"
 msgstr ""
+
+#: /xml/Home.xml
+msgctxt "#31616"
+msgid "Open streaming services and other web pages inside Kodi. Install web apps from your add-on repositories."
+msgstr ""
