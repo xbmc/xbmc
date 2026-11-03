@@ -86,11 +86,6 @@ CDVDInputStreamBluray::~CDVDInputStreamBluray()
   Close();
 }
 
-void CDVDInputStreamBluray::Abort()
-{
-  m_aborted = true;
-}
-
 bool CDVDInputStreamBluray::IsEOF()
 {
   return false;
