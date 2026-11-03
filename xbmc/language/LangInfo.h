@@ -185,6 +185,12 @@ public:
   const CLocale& GetLocale() const;
 
   /*!
+   \brief Whether a language, by default the current one, is written right to left.
+   \param language The language add-on id or locale, as GetLanguageAddon() takes it
+   */
+  bool IsRightToLeft(const std::string& language = "") const;
+
+  /*!
    \brief Returns the system's current locale.
    */
   const std::locale& GetSystemLocale() const { return m_systemLocale; }

@@ -61,6 +61,12 @@ public:
   bool UseLimitedColor() override;
 
   bool Hide() override;
+  bool HasKeyboard() const;
+  /*!
+   * \brief The screen's width and height in millimetres: the touch screen's,
+   * else the display's; 0 when unknown
+   */
+  std::pair<int, int> GetPhysicalSize() const;
   bool Show(bool raise = true) override;
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;

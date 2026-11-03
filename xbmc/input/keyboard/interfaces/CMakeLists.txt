@@ -1,4 +1,5 @@
 set(HEADERS IKeyboardDriverHandler.h
+            IKeyboardEventHandler.h
             IKeyboardInputHandler.h
             IKeyboardInputProvider.h
 )
