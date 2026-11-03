@@ -997,18 +997,10 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size,
     }
     else
     {
-      // Find matching Kodi resolution member
-      RESOLUTION res{FindMatchingCustomResolution(sizes.bufferSize, refreshRate)};
-      if (res == RES_INVALID)
-      {
-        // Add new resolution if none found
-        RESOLUTION_INFO newResInfo;
-        // we just assume the compositor put us on the right output
-        UpdateDesktopResolution(newResInfo, CDisplaySettings::GetInstance().GetCurrentResolutionInfo().strOutput, sizes.bufferSize.Width(), sizes.bufferSize.Height(), refreshRate, 0);
-        CDisplaySettings::GetInstance().AddResolutionInfo(newResInfo);
-        CDisplaySettings::GetInstance().ApplyCalibrations();
-        res = static_cast<RESOLUTION> (CDisplaySettings::GetInstance().ResolutionInfoSize() - 1);
-      }
+      // we just assume the compositor put us on the right output
+      RESOLUTION res{FindOrAddCustomResolution(
+          sizes.bufferSize, refreshRate,
+          CDisplaySettings::GetInstance().GetCurrentResolutionInfo().strOutput)};
 
       XBMC_Event msg{};
       msg.type = XBMC_MODECHANGE;
@@ -1026,6 +1018,24 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size,
     // Apply directly, Kodi resolution does not change
     ApplyNextState();
   }
+}
+
+RESOLUTION CWinSystemWayland::FindOrAddCustomResolution(CSizeInt size,
+                                                        float refreshRate,
+                                                        std::string const& output)
+{
+  // Find matching Kodi resolution member
+  RESOLUTION res{FindMatchingCustomResolution(size, refreshRate)};
+  if (res == RES_INVALID)
+  {
+    // Add new resolution if none found
+    RESOLUTION_INFO newResInfo;
+    UpdateDesktopResolution(newResInfo, output, size.Width(), size.Height(), refreshRate, 0);
+    CDisplaySettings::GetInstance().AddResolutionInfo(newResInfo);
+    CDisplaySettings::GetInstance().ApplyCalibrations();
+    res = static_cast<RESOLUTION>(CDisplaySettings::GetInstance().ResolutionInfoSize() - 1);
+  }
+  return res;
 }
 
 void CWinSystemWayland::FinishModeChange(RESOLUTION res)
