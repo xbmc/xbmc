@@ -384,7 +384,7 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     return;
 
   forceClose |= (nextWindowID == WINDOW_FULLSCREEN_VIDEO ||
-                 nextWindowID == WINDOW_FULLSCREEN_GAME);
+                 nextWindowID == WINDOW_FULLSCREEN_GAME || nextWindowID == WINDOW_FULLSCREEN_WEB);
 
   if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {

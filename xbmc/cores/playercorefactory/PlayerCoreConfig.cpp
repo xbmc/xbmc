@@ -19,6 +19,9 @@
 #ifdef TARGET_WEBOS
 #include "VideoPlayerWebOS.h"
 #endif
+#if defined(HAVE_WAYLAND_SERVER)
+#include "cores/WebPlayer/WebPlayer.h"
+#endif
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -67,6 +70,12 @@ std::shared_ptr<IPlayer> CPlayerCoreConfig::CreatePlayer(IPlayerCallback& callba
   {
     player = std::make_shared<CExternalPlayer>(callback);
   }
+#if defined(HAVE_WAYLAND_SERVER)
+  else if (m_type.compare("web") == 0)
+  {
+    player = std::make_shared<KODI::WEB::CWebPlayer>(callback);
+  }
+#endif
 
 #if defined(HAS_UPNP)
   else if (m_type.compare("remote") == 0)

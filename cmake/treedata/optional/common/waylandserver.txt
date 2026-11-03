@@ -1,1 +1,2 @@
 xbmc/platform/linux/waylandhost platform/linux/waylandhost # WAYLANDSERVER
+xbmc/cores/WebPlayer cores/webplayer # WAYLANDSERVER

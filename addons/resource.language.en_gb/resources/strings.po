@@ -6375,7 +6375,12 @@ msgctxt "#12906"
 msgid "Fullscreen game"
 msgstr ""
 
-#empty strings from id 12907 to 12998
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#12907"
+msgid "Fullscreen web"
+msgstr ""
+
+#empty strings from id 12908 to 12998
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12999"
@@ -25959,7 +25964,106 @@ msgctxt "#40232"
 msgid "When exporting the library with images, retrieve art that isn't cached yet. Turn off to only export art that is already cached."
 msgstr ""
 
-#empty strings from id 40233 to 40399
+#. Settings section for pages shown inside Kodi
+#: system/settings/settings.xml
+msgctxt "#40233"
+msgid "Web"
+msgstr ""
+
+#. Help for the Web settings section
+#: system/settings/settings.xml
+msgctxt "#40234"
+msgid "Settings for the web pages Kodi shows through its web client."
+msgstr ""
+
+#. Help for the Web settings category
+#: system/settings/settings.xml
+msgctxt "#40235"
+msgid "This category contains the settings of the web client Kodi starts to show pages."
+msgstr ""
+
+#. Settings group with the web client's settings
+#: system/settings/settings.xml
+msgctxt "#40236"
+msgid "Web client"
+msgstr ""
+
+#. Name of the setting holding the web client's executable
+#: system/settings/settings.xml
+msgctxt "#40237"
+msgid "Client command"
+msgstr ""
+
+#. Help for setting Client command
+#: system/settings/settings.xml
+msgctxt "#40238"
+msgid "The program Kodi starts as its web client. It connects to Kodi as a Wayland client over an inherited socket and shows the requested page."
+msgstr ""
+
+#. Name of the setting that turns the web client on
+#: system/settings/settings.xml
+msgctxt "#40239"
+msgid "Show web pages"
+msgstr ""
+
+#. Help for setting Show web pages
+#: system/settings/settings.xml
+msgctxt "#40240"
+msgid "Start a web client and show web pages inside Kodi. Turning this off removes every web entry point."
+msgstr ""
+
+#. Name of the setting that starts the web client with Kodi
+#: system/settings/settings.xml
+msgctxt "#40241"
+msgid "Start the web client with Kodi"
+msgstr ""
+
+#. Help for setting Start the web client with Kodi
+#: system/settings/settings.xml
+msgctxt "#40242"
+msgid "Keep the web client running from start-up so that pages open at once. Turn off to start it on first use and save memory."
+msgstr ""
+
+
+
+#. Add-on type: a web application shown through Kodi's web view
+#: xbmc/addons/addoninfo/AddonInfo.cpp
+msgctxt "#40243"
+msgid "Web apps"
+msgstr ""
+
+
+#. Web OSD button going back in the page's history
+#: addons/skin.estuary/xml/DialogWebOSD.xml
+msgctxt "#40246"
+msgid "Back"
+msgstr ""
+
+#. Web OSD button going forward in the page's history
+#: addons/skin.estuary/xml/DialogWebOSD.xml
+msgctxt "#40247"
+msgid "Forward"
+msgstr ""
+
+#. Web OSD button loading the page again
+#: addons/skin.estuary/xml/DialogWebOSD.xml
+msgctxt "#40248"
+msgid "Reload"
+msgstr ""
+
+#. Name of the setting that keeps the files web apps download on disk
+#: system/settings/settings.xml
+msgctxt "#40249"
+msgid "Cache web apps on disk"
+msgstr ""
+
+#. Help for setting Cache web apps on disk
+#: system/settings/settings.xml
+msgctxt "#40250"
+msgid "Keep the files web apps download in Kodi's profile, so that apps start faster on a slow connection after a restart. Off caches them in memory only, which spares the storage the writes."
+msgstr ""
+
+#empty strings from id 40251 to 40399
 
 # Video versions
 

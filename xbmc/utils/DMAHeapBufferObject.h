@@ -12,11 +12,14 @@
 
 #include <memory>
 #include <stdint.h>
+#include <string>
+#include <utility>
 
 class CDMAHeapBufferObject : public CBufferObject
 {
 public:
   CDMAHeapBufferObject() = default;
+  explicit CDMAHeapBufferObject(std::string heapPath) : m_heapPath(std::move(heapPath)) {}
   virtual ~CDMAHeapBufferObject() override;
 
   // Registration
@@ -32,6 +35,7 @@ public:
   std::string GetName() const override { return "CDMAHeapBufferObject"; }
 
 private:
+  std::string m_heapPath;
   int m_dmaheapfd{-1};
   uint64_t m_size{0};
   uint8_t* m_map{nullptr};

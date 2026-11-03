@@ -104,10 +104,11 @@ bool CDMAHeapBufferObject::CreateBufferObject(uint64_t size)
 
   if (m_dmaheapfd < 0)
   {
-    m_dmaheapfd = open(DMA_HEAP_PATH, O_RDWR);
+    const char* path = m_heapPath.empty() ? DMA_HEAP_PATH : m_heapPath.c_str();
+    m_dmaheapfd = open(path, O_RDWR);
     if (m_dmaheapfd < 0)
     {
-      CLog::LogF(LOGERROR, "failed to open {}:", DMA_HEAP_PATH, strerror(errno));
+      CLog::LogF(LOGERROR, "failed to open {}:", path, strerror(errno));
       return false;
     }
   }

@@ -135,7 +135,7 @@ constexpr uint32_t SYSTEM_MEDIA_DVD                  = 127;
 constexpr uint32_t SYSTEM_DVDREADY                   = 128;
 constexpr uint32_t SYSTEM_HAS_ALARM                  = 129;
 constexpr uint32_t SYSTEM_SUPPORTS_CPU_USAGE         = 130;
-// unused id 131
+constexpr uint32_t SYSTEM_SUPPORTS_WEB_APPS          = 131;
 constexpr uint32_t SYSTEM_SCREEN_MODE                = 132;
 constexpr uint32_t SYSTEM_SCREEN_WIDTH               = 133;
 constexpr uint32_t SYSTEM_SCREEN_HEIGHT              = 134;

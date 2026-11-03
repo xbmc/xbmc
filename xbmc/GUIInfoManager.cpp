@@ -2023,6 +2023,14 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     @skinning_v19 **[New Boolean Condition]** \link  System_SupportsCPUUsage `
 ///     System.SupportsCPUUsage`\endlink <p>
 ///   }
+///   \table_row3{   <b>`System.SupportsWebApps`</b>,
+///                  \anchor System_SupportsWebApps
+///                  _boolean_,
+///     @return **True** if web apps can be played here.
+///     <p><hr>
+///     @skinning_v23 **[New Boolean Condition]** \link System_SupportsWebApps `
+///     System.SupportsWebApps`\endlink <p>
+///   }
 ///   \table_row3{   <b>`System.SupportedHDRTypes`</b>,
 ///                  \anchor System_SupportedHDRTypes
 ///                  _string_,
@@ -2038,7 +2046,7 @@ constexpr std::array<InfoMap, 10> weather = {{
 ///     <p>
 ///   }
 // clang-format off
-constexpr std::array<InfoMap, 76> system_labels = {{
+constexpr std::array<InfoMap, 77> system_labels = {{
     {"hasnetwork",              SYSTEM_ETHERNET_LINK_ACTIVE},
     {"hasmediadvd",             SYSTEM_MEDIA_DVD},
     {"hasmediaaudiocd",         SYSTEM_MEDIA_AUDIO_CD},
@@ -2113,6 +2121,7 @@ constexpr std::array<InfoMap, 76> system_labels = {{
     {"haspvraddon",             SYSTEM_HAS_PVR_ADDON},
     {"addonupdatecount",        SYSTEM_ADDON_UPDATE_COUNT},
     {"supportscpuusage",        SYSTEM_SUPPORTS_CPU_USAGE},
+    {"supportswebapps",         SYSTEM_SUPPORTS_WEB_APPS},
     {"supportedhdrtypes",       SYSTEM_SUPPORTED_HDR_TYPES},
     {"isscreensaverinhibited",  SYSTEM_IS_SCREENSAVER_INHIBITED},
 }};

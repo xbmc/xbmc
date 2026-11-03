@@ -2999,6 +2999,43 @@
       </group>
     </category>
   </section>
+  <section id="web" label="40233" help="40234">
+    <category id="client" label="16000" help="40235">
+      <requirement>HAVE_WAYLAND_SERVER</requirement>
+      <group id="1" label="40236">
+        <setting id="web.enabled" type="boolean" label="40239" help="40240">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="web.preload" type="boolean" parent="web.enabled" label="40241" help="40242">
+          <level>1</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="web.enabled" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="web.diskcache" type="boolean" parent="web.enabled" label="40249" help="40250">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="web.enabled" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="web.clientcommand" type="string" label="40237" help="40238">
+          <level>2</level>
+          <default>kodi-webview</default>
+          <control type="edit" format="string" />
+        </setting>
+      </group>
+    </category>
+  </section>
   <section id="system" label="13000" help="36349">
     <category id="display" label="14220" help="36603">
       <group id="1" label="16000">
