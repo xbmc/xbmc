@@ -61,6 +61,7 @@ public:
   bool UseLimitedColor() override;
 
   bool Hide() override;
+  bool HasKeyboard() const;
   bool Show(bool raise = true) override;
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;

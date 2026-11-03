@@ -123,9 +123,14 @@ private:
 };
 
 CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
-: CGUIDialog(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
-, CGUIKeyboard()
-, m_pCharCallback(NULL)
+  : CGUIDialogKeyboardGeneric(WINDOW_DIALOG_KEYBOARD, "DialogKeyboard.xml")
+{
+}
+
+CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric(int id, const std::string& xmlFile)
+  : CGUIDialog(id, xmlFile),
+    CGUIKeyboard(),
+    m_pCharCallback(NULL)
 {
   m_bIsConfirmed = false;
   m_bShift = false;
@@ -704,7 +709,8 @@ void CGUIDialogKeyboardGeneric::Cancel()
 
 bool CGUIDialogKeyboardGeneric::ShowAndGetInput(char_callback_t pCallback, const std::string &initialString, std::string &typedString, const std::string &heading, bool bHiddenInput)
 {
-  CGUIDialogKeyboardGeneric *pKeyboard = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboardGeneric* pKeyboard =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardGeneric>(GetID());
 
   if (!pKeyboard)
     return false;

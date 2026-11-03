@@ -25,6 +25,7 @@
 #include "input/keyboard/KeyboardEasterEgg.h"
 #include "input/keyboard/XBMC_vkeys.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
+#include "input/keyboard/interfaces/IKeyboardEventHandler.h"
 #include "input/keymaps/ButtonTranslator.h"
 #include "input/keymaps/KeymapEnvironment.h"
 #include "input/keymaps/joysticks/JoystickMapper.h"
@@ -364,6 +365,30 @@ bool CInputManager::Process(int windowId, float frameTime)
   return true;
 }
 
+void CInputManager::RegisterKeyboardEventHandler(KEYBOARD::IKeyboardEventHandler* handler)
+{
+  if (handler == nullptr)
+    return;
+
+  if (std::ranges::find(m_keyboardEventHandlers, handler) == m_keyboardEventHandlers.end())
+    m_keyboardEventHandlers.insert(m_keyboardEventHandlers.begin(), handler);
+}
+
+void CInputManager::UnregisterKeyboardEventHandler(KEYBOARD::IKeyboardEventHandler* handler)
+{
+  std::erase(m_keyboardEventHandlers, handler);
+}
+
+bool CInputManager::OnKeyboardEvent(const XBMC_keysym& keysym, const CKey& key, bool pressed)
+{
+  for (auto* handler : m_keyboardEventHandlers)
+  {
+    if (handler->OnKeyboardEvent(keysym, key, pressed))
+      return true;
+  }
+  return false;
+}
+
 bool CInputManager::OnEvent(XBMC_Event& newEvent)
 {
   switch (newEvent.type)
@@ -372,13 +397,20 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     {
       m_Keyboard.ProcessKeyDown(newEvent.key.keysym);
       CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
+      if (OnKeyboardEvent(newEvent.key.keysym, key, true))
+        break;
       OnKey(key);
       break;
     }
     case XBMC_KEYUP:
+    {
       m_Keyboard.ProcessKeyUp();
-      OnKeyUp(m_Keyboard.TranslateKey(newEvent.key.keysym));
+      CKey key = m_Keyboard.TranslateKey(newEvent.key.keysym);
+      if (OnKeyboardEvent(newEvent.key.keysym, key, false))
+        break;
+      OnKeyUp(key);
       break;
+    }
     case XBMC_KEYCOMPOSING_COMPOSING:
     case XBMC_KEYCOMPOSING_CANCELLED:
     case XBMC_KEYCOMPOSING_FINISHED:

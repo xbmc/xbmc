@@ -390,6 +390,11 @@ bool CWinSystemGbm::UseLimitedColor()
       CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
+bool CWinSystemGbm::HasKeyboard() const
+{
+  return m_libinput && m_libinput->HasKeyboard();
+}
+
 bool CWinSystemGbm::Hide()
 {
   bool ret = m_DRM->SetActive(false);
