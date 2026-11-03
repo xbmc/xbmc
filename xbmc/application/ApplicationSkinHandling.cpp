@@ -208,9 +208,10 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
         CServiceBroker::GetGUI()->GetWindowManager().GetWindow(currentWindowID);
     if (!previousWindow || previousWindow->IsDialog())
     {
-      CLog::Log(LOGWARNING,
-                "Previous window {} is unavailable or is now a dialog after skin load; activating Home",
-                currentWindowID);
+      CLog::Log(
+          LOGWARNING,
+          "Previous window {} is unavailable or is now a dialog after skin load; activating Home",
+          currentWindowID);
       currentWindowID = WINDOW_HOME;
       currentFocusedControlID = -1;
     }
