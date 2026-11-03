@@ -139,6 +139,13 @@ AVFrame* AllocCanvas(const AVFrame* tile, int width, int height)
   canvas->color_trc = tile->color_trc;
   canvas->colorspace = tile->colorspace;
   canvas->chroma_location = tile->chroma_location;
+  // the first tile's ICC profile, in case the grid has none; FFmpeg exports the grid's since 8.0
+  const AVFrameSideData* tileProfile{av_frame_get_side_data(tile, AV_FRAME_DATA_ICC_PROFILE)};
+  AVFrameSideData* profile{
+      tileProfile ? av_frame_new_side_data(canvas, AV_FRAME_DATA_ICC_PROFILE, tileProfile->size)
+                  : nullptr};
+  if (profile)
+    std::memcpy(profile->data, tileProfile->data, tileProfile->size);
   if (av_frame_get_buffer(canvas, 0) < 0)
   {
     av_frame_free(&canvas);
@@ -828,6 +835,18 @@ AVFrame* CFFmpegImage::ExtractTileGridFrame()
                : nullptr};
   if (matrix)
     std::memcpy(matrix->data, sideData->data, sideData->size);
+
+  // the grid's own ICC profile describes the picture, so it wins over the tiles'
+  const AVPacketSideData* gridProfile{av_packet_side_data_get(
+      grid->coded_side_data, grid->nb_coded_side_data, AV_PKT_DATA_ICC_PROFILE)};
+  if (gridProfile)
+  {
+    av_frame_remove_side_data(canvas, AV_FRAME_DATA_ICC_PROFILE);
+    AVFrameSideData* profile{
+        av_frame_new_side_data(canvas, AV_FRAME_DATA_ICC_PROFILE, gridProfile->size)};
+    if (profile)
+      std::memcpy(profile->data, gridProfile->data, gridProfile->size);
+  }
 #endif
 
   return canvas;
