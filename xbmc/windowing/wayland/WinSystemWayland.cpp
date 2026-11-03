@@ -42,6 +42,7 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/linux/OSScreenSaverFreedesktop.h"
 
 #include "platform/linux/TimeUtils.h"
@@ -795,8 +796,16 @@ void CWinSystemWayland::ProcessMessages()
       {
         CLog::LogF(LOGDEBUG, "Output hotplug, re-reading resolutions");
         UpdateResolutions();
+        // Copy, FindOrAddCustomResolution() may reallocate the resolution list
+        auto const desktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+        if (m_bFullScreen)
+        {
+          // UpdateResolutions() dropped the custom resolutions, so the GUI may be on an index
+          // that no longer exists or now describes another mode
+          GetGfxContext().ApplyModeChange(
+              FindOrAddCustomResolution(m_bufferSize, m_fRefreshRate, desktopRes.strOutput));
+        }
         std::unique_lock lock(m_outputsMutex);
-        auto const& desktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
         auto output = FindOutputByUserFriendlyName(desktopRes.strOutput);
         auto const& wlOutput = output->GetWaylandOutput();
         // Maybe the output that was added was the one we should be on?
