@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol name="kodi_web_v1">
+
+  <copyright>
+    Copyright (C) 2026 Team Kodi
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice (including the next
+    paragraph) shall be included in all copies or substantial portions of the
+    Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+  </copyright>
+
+  <description summary="web views hosted by a media centre compositor">
+    This protocol lets a compositor that hosts a web browser as one of its
+    clients drive the browser's views and learn their state, so that the
+    compositor can present a page as part of its own user interface: open
+    a URL on the user's behalf, navigate, show the title and favicon,
+    offer bookmarks, and hand input to the page while it is in front.
+
+    The compositor spawns the browser itself and the browser connects over
+    an inherited socket. The browser is the Wayland client: requests are
+    what the browser tells the compositor, events are what the compositor
+    asks of the browser.
+
+    Views are grouped by profile. A profile names a hermetic set of
+    cookies, storage and credentials kept by the browser; views of
+    different profiles never share them. The compositor decides which
+    profile a URL opens in and what that profile looks like to the web:
+    user agent, user scripts and content filters are configured per view
+    before the first page loads, as file descriptors the browser reads.
+
+    Content filters use the Adblock Plus filter syntax, the format
+    maintained ad and tracker lists such as EasyList are published in, so
+    that one list serves any engine. The browser applies the filters its
+    engine can express and ignores the others.
+
+    Warning! The protocol described in this file is experimental and
+    backward incompatible changes may be made. Backward compatible changes
+    may be added together with the corresponding interface version bump.
+    Backward incompatible changes are done by bumping the version number in
+    the protocol and interface names and resetting the interface version.
+  </description>
+
+  <interface name="kodi_web_manager_v1" version="1">
+    <description summary="create and announce web views">
+      The global through which the browser announces itself and creates
+      views. A browser binds it once.
+
+      The compositor asks for a view of a profile with the want_view
+      event; the browser answers with a create_view request for that
+      profile. The browser may also create views on its own, for example
+      the warm default view it keeps ready at start-up. One view per
+      profile: a second create_view for a profile the compositor already
+      knows is a protocol error.
+
+      A profile identifier is 1 to 255 bytes of ASCII letters, digits,
+      '.', '_' and '-', other than "." and "..", compared case-sensitively.
+      The browser may use it verbatim as a file name. The identifier
+      "default" names the browser's own warm view, which keeps nothing
+      across runs.
+    </description>
+
+    <enum name="error">
+      <entry name="duplicate_profile" value="0"
+             summary="a view for this profile already exists"/>
+      <entry name="invalid_surface" value="1"
+             summary="the surface already belongs to another view"/>
+      <entry name="invalid_profile" value="2"
+             summary="the profile identifier is not valid"/>
+    </enum>
+
+    <request name="destroy" type="destructor">
+      <description summary="destroy the manager">
+        Destroy the manager. Existing views are unaffected.
+      </description>
+    </request>
+
+    <request name="create_view">
+      <description summary="create a view for a profile">
+        Create a view that renders into the given surface and associate
+        the view with it. The browser makes the surface an xdg_toplevel
+        through xdg_wm_base as usual; the compositor configures it
+        fullscreen at its own resolution.
+
+        The profile names the hermetic storage this view uses. The
+        compositor configures the view with set_user_agent,
+        add_user_script, add_content_filter and add_content_filter_list
+        events before its first load_url, so the browser loads nothing
+        into a fresh view on its own.
+      </description>
+      <arg name="id" type="new_id" interface="kodi_web_view_v1"/>
+      <arg name="profile" type="string" summary="profile identifier"/>
+      <arg name="surface" type="object" interface="wl_surface"
+           summary="the surface the view renders into"/>
+    </request>
+
+    <request name="ready">
+      <description summary="the browser is ready to serve views">
+        Sent once the browser's engine processes are up and it can
+        create and load views without further start-up cost. The
+        compositor shows no web entry point as available before it.
+      </description>
+    </request>
+
+    <event name="want_view">
+      <description summary="the compositor wants a view for a profile">
+        The compositor needs a view for the given profile and none exists.
+        The browser answers with create_view for that profile. If it
+        cannot, or the profile identifier is not valid, it answers with a
+        view_unavailable request.
+
+        The uplink names the local source address every connection of
+        the profile's view is bound to, so that a host with more than one
+        uplink can choose the one a profile leaves through. It is an IPv4
+        address, an IPv4 subnet such as 192.168.5.0/24, or an interface
+        name; a subnet or an interface name is resolved for every new
+        connection, so it survives a new DHCP lease. A connection whose
+        uplink does not resolve fails rather than leaving through another
+        uplink. An empty string leaves the connections to the system's
+        routing. A browser that cannot bind connections answers a
+        non-empty uplink with view_unavailable.
+      </description>
+      <arg name="profile" type="string" summary="profile identifier"/>
+      <arg name="uplink" type="string" summary="source address, subnet or interface, or empty"/>
+    </event>
+
+    <request name="view_unavailable">
+      <description summary="a wanted view cannot be created">
+        The browser cannot create the view asked for by want_view, for
+        example because the profile's storage is unusable.
+      </description>
+      <arg name="profile" type="string" summary="profile identifier"/>
+      <arg name="message" type="string" summary="reason, for the log"/>
+    </request>
+
+    <event name="content_filter_list">
+      <description summary="a shared content filter list">
+        A content filter list the compositor keeps for every view, such as
+        a maintained ad or tracker list, in Adblock Plus filter syntax as
+        UTF-8 text. The compositor sends every list it holds after the
+        browser binds the manager, and a list again whenever its content
+        changes; a list sent under a name the browser already has
+        replaces it. Views apply a list once they ask for it with
+        add_content_filter_list.
+
+        The browser prepares the list at once, independently of any view.
+        A list the browser cannot apply is treated as not there; views
+        keep the last version of it they applied. The fd holds exactly
+        size bytes; the browser closes it.
+      </description>
+      <arg name="name" type="string" summary="list identifier, same syntax as a profile identifier"/>
+      <arg name="fd" type="fd" summary="the filter list"/>
+      <arg name="size" type="uint" summary="list size in bytes"/>
+    </event>
+
+    <event name="remove_content_filter_list">
+      <description summary="a shared content filter list is gone">
+        The compositor no longer keeps the named list. Views that applied
+        it drop it.
+      </description>
+      <arg name="name" type="string" summary="list identifier"/>
+    </event>
+  </interface>
+
+  <interface name="kodi_web_view_v1" version="1">
+    <description summary="one web view of one profile">
+      A view is one page container bound to one surface. The compositor
+      drives it with events and learns its state through requests.
+
+      Configuration events (set_user_agent, add_user_script,
+      add_content_filter, add_content_filter_list) apply to this view
+      only and take effect from the next navigation. They arrive before
+      the first load_url of a view the compositor asked for, and the
+      browser holds that load until it has applied them. A shared list
+      the browser does not have yet, or has not finished preparing, does
+      not hold the load; it applies once it is there.
+
+      An inactive view keeps its page alive: media keeps playing and
+      scripts keep running, so that the user can leave the page and come
+      back to it. The browser may lower an inactive view's rendering
+      frequency. The compositor stops a view's media by loading
+      about:blank, and discards a view with the close event.
+    </description>
+
+    <enum name="navigation">
+      <entry name="back" value="0" summary="go back in history"/>
+      <entry name="forward" value="1" summary="go forward in history"/>
+      <entry name="reload" value="2" summary="reload the current page"/>
+      <entry name="stop" value="3" summary="stop the current load"/>
+    </enum>
+
+    <enum name="error_code">
+      <description summary="what went wrong with a view">
+        Reported by the error request. The message carries the engine's
+        own text for the log; the code is what the compositor acts on.
+      </description>
+      <entry name="load_failed" value="0"
+             summary="the page could not be loaded"/>
+      <entry name="tls_failed" value="1"
+             summary="the TLS handshake or certificate check failed"/>
+      <entry name="engine_crashed" value="2"
+             summary="the engine process rendering this view terminated"/>
+      <entry name="unresponsive" value="3"
+             summary="the page stopped responding"/>
+      <entry name="config_failed" value="4"
+             summary="a user script or content filter could not be applied"/>
+    </enum>
+
+    <request name="destroy" type="destructor">
+      <description summary="destroy the view">
+        The browser is done with the view. Sent in answer to the close
+        event, or on its own when the view can no longer be served, after
+        an error request. The association with the surface ends; the
+        browser destroys the surface or its role object afterwards.
+      </description>
+    </request>
+
+    <request name="url_changed">
+      <description summary="the view's URL changed">
+        Sent whenever the committed URL of the view changes, including
+        fragment navigation within the page.
+      </description>
+      <arg name="url" type="string" summary="the current URL"/>
+    </request>
+
+    <request name="title_changed">
+      <description summary="the page title changed">
+        Sent whenever the document title changes. An empty string means
+        the page has no title.
+      </description>
+      <arg name="title" type="string" summary="the current title"/>
+    </request>
+
+    <request name="favicon">
+      <description summary="the page favicon is available">
+        Hands the compositor the page's favicon as an ARGB8888 wl_shm
+        buffer. The compositor copies what it needs and releases the
+        buffer with wl_buffer.release; the browser destroys it after the
+        release. A view sends a new favicon request whenever the icon
+        changes.
+      </description>
+      <arg name="buffer" type="object" interface="wl_buffer"
+           summary="the icon pixels"/>
+    </request>
+
+    <request name="load_progress">
+      <description summary="load progress of the current page">
+        Progress of the current load in percent, 0 at the start of a
+        navigation and 100 when the load finished.
+      </description>
+      <arg name="percent" type="uint" summary="progress from 0 to 100"/>
+    </request>
+
+    <request name="navigation_state">
+      <description summary="history availability changed">
+        Whether the view can go back or forward in its history.
+      </description>
+      <arg name="can_go_back" type="uint" summary="1 if back is possible"/>
+      <arg name="can_go_forward" type="uint" summary="1 if forward is possible"/>
+    </request>
+
+    <request name="error">
+      <description summary="the view failed">
+        Something went wrong with the view. After engine_crashed the
+        browser either recovers the view, in which case it follows up
+        with url_changed, or destroys it.
+
+        After config_failed the browser loads nothing into the view; a
+        later load_url fails the same way. The message names the script
+        or filter.
+      </description>
+      <arg name="code" type="uint" enum="error_code" summary="what went wrong"/>
+      <arg name="message" type="string" summary="engine text, for the log"/>
+    </request>
+
+    <request name="exit">
+      <description summary="the page asks to leave">
+        The page asks to leave the app and return to the compositor's own
+        interface, for example from its Quit menu entry. The compositor
+        decides what follows, usually closing the view. Sent at most once
+        per load_url.
+      </description>
+    </request>
+
+    <request name="media_state">
+      <description summary="what the page's media is doing">
+        Whether the media of the view's current page has video, has
+        audio, and is paused. paused is 1 unless some media of the view is
+        potentially playing; buffering counts as playing. A page without
+        media reports video 0, audio 0, paused 1. Sent when any of the
+        three changes, and after each committed load.
+      </description>
+      <arg name="video" type="uint" summary="1 if the media has video"/>
+      <arg name="audio" type="uint" summary="1 if the media has audio"/>
+      <arg name="paused" type="uint" summary="1 unless media is playing"/>
+    </request>
+
+    <event name="set_user_agent">
+      <description summary="set the user agent of this view">
+        The user agent string this view presents. Takes effect from the
+        next navigation. A view configured without it uses the browser's
+        default.
+      </description>
+      <arg name="user_agent" type="string" summary="user agent string"/>
+    </event>
+
+    <event name="add_user_script">
+      <description summary="inject a user script into this view">
+        A script the browser injects into every document of this view at
+        document start, in the main world, before any page script runs.
+        The script is read from the file descriptor, which holds exactly
+        size bytes and which the browser closes; fewer bytes is
+        config_failed. Scripts apply in the order they are added.
+      </description>
+      <arg name="name" type="string" summary="name, for the log"/>
+      <arg name="fd" type="fd" summary="the script source, UTF-8"/>
+      <arg name="size" type="uint" summary="script size in bytes"/>
+    </event>
+
+    <event name="add_content_filter">
+      <description summary="apply a content filter to this view">
+        Filters the browser applies to every load of this view, in
+        Adblock Plus filter syntax as UTF-8 text. The fd holds exactly
+        size bytes; the browser closes it. A filter sent again under the
+        same name replaces the earlier one.
+
+        A filter that cannot be read in full, is not UTF-8, holds no
+        filter the engine can apply, or holds more than the engine
+        accepts, is config_failed.
+      </description>
+      <arg name="name" type="string" summary="filter identifier"/>
+      <arg name="fd" type="fd" summary="the filter list"/>
+      <arg name="size" type="uint" summary="list size in bytes"/>
+    </event>
+
+    <event name="add_content_filter_list">
+      <description summary="apply a shared content filter list to this view">
+        Apply the shared list of this name, as sent by the
+        content_filter_list event of the manager. A list that is not
+        there yet, or that is replaced later, is applied to this view once
+        it is there; a list that is removed is removed from the view.
+      </description>
+      <arg name="name" type="string" summary="list identifier"/>
+    </event>
+
+    <event name="load_url">
+      <description summary="load a URL">
+        Navigate the view to the URL. about:blank unloads the page and
+        stops its media.
+      </description>
+      <arg name="url" type="string" summary="the URL to load"/>
+    </event>
+
+    <event name="navigate">
+      <description summary="history and load control">
+        Go back or forward, reload, or stop the current load.
+      </description>
+      <arg name="action" type="uint" enum="navigation" summary="what to do"/>
+    </event>
+
+    <event name="set_active">
+      <description summary="the view is shown or hidden">
+        Active means the compositor presents the view's surface and routes
+        input to it. An inactive view keeps running and may render less
+        often; it must still commit a frame when its content changes, so
+        that the compositor has a current picture when it activates the
+        view again.
+      </description>
+      <arg name="active" type="uint" summary="1 while the view is presented"/>
+    </event>
+
+    <event name="close">
+      <description summary="the compositor is done with the view">
+        The browser unloads the page, unmaps the surface and destroys the
+        view. The profile's storage stays.
+      </description>
+    </event>
+  </interface>
+</protocol>
