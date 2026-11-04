@@ -26,6 +26,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "windowing/GraphicContext.h" //! @todo Remove me
+#include "windowing/Resolution.h"
 #include "windowing/WinSystem.h"
 
 using namespace KODI;
@@ -183,6 +184,18 @@ void CGameWindowFullScreen::OnInitWindow()
 
   CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(true);
 
+  // At a film rate a game shows 24 of its 60 frames a second, late.
+  CGraphicContext& gfx = CServiceBroker::GetWinSystem()->GetGfxContext();
+  const RESOLUTION_INFO current = gfx.GetResInfo();
+  m_resolutionBeforeGame = RES_INVALID;
+  if (current.fRefreshRate < 49.0f)
+  {
+    m_resolutionBeforeGame = gfx.GetVideoResolution();
+    gfx.SetVideoResolution(CResolutionUtils::ChooseBestResolution(60.0f, current.iScreenWidth,
+                                                                  current.iScreenHeight, false),
+                           false);
+  }
+
   CGUIWindow::OnInitWindow();
 
   GAME::CDialogGameIndicators::SetOverGame(true);
@@ -218,6 +231,10 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
   CServiceBroker::GetWinSystem()->SetLowLatencyPresentation(false);
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false); //! @todo
+
+  if (m_resolutionBeforeGame != RES_INVALID)
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(m_resolutionBeforeGame,
+                                                                       false);
 }
 
 void CGameWindowFullScreen::TriggerOSD()
