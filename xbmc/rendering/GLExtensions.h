@@ -23,6 +23,7 @@ struct CGLExtensions
     ARB_texture_swizzle,
     EXT_color_buffer_float,
     EXT_framebuffer_object,
+    EXT_texture_border_clamp,
     EXT_texture_filter_anisotropic,
     EXT_texture_format_BGRA8888,
     EXT_texture_norm16,
@@ -33,6 +34,7 @@ struct CGLExtensions
     NVX_gpu_memory_info,
     NV_vdpau_interop,
     OES_EGL_image_external,
+    OES_texture_border_clamp,
     EXTENSION_MAX
   };
   using enum Extension;
@@ -45,6 +47,7 @@ struct CGLExtensions
       {ARB_texture_swizzle, "GL_ARB_texture_swizzle"},
       {EXT_color_buffer_float, "GL_EXT_color_buffer_float"},
       {EXT_framebuffer_object, "GL_EXT_framebuffer_object"},
+      {EXT_texture_border_clamp, "GL_EXT_texture_border_clamp"},
       {EXT_texture_filter_anisotropic, "GL_EXT_texture_filter_anisotropic"},
       {EXT_texture_format_BGRA8888, "GL_EXT_texture_format_BGRA8888"},
       {EXT_texture_norm16, "GL_EXT_texture_norm16"},
@@ -55,6 +58,7 @@ struct CGLExtensions
       {NVX_gpu_memory_info, "GL_NVX_gpu_memory_info"},
       {NV_vdpau_interop, "GL_NV_vdpau_interop"},
       {OES_EGL_image_external, "GL_OES_EGL_image_external"},
+      {OES_texture_border_clamp, "GL_OES_texture_border_clamp"},
   });
 
   static_assert(static_cast<size_t>(EXTENSION_MAX) == stringMap.size(),
