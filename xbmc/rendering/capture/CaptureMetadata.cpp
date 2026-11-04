@@ -8,7 +8,6 @@
 
 #include "CaptureMetadata.h"
 
-#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 extern "C"
@@ -25,8 +24,10 @@ namespace CAPTURE
 
 ImageColorMetadata GetOutputColorMetadata(CWinSystemBase& winSystem)
 {
-  // Tag color as the display interpreted it. PQ/HLG from the winsystem HDR
-  // state; SDR by CTA-861 mode inference (HD/UHD = BT.709, SD = SMPTE-170M).
+  // Tag color as the display interpreted it where that's known: PQ/HLG from
+  // the winsystem HDR state. SDR is tagged sRGB, the coding the GUI and games
+  // are drawn in, as whether an SDR display decodes it as sRGB or BT.1886
+  // isn't known.
   using KODI::UTILS::Colorimetry;
   using KODI::UTILS::Eotf;
   ImageColorMetadata color;
@@ -45,14 +46,8 @@ ImageColorMetadata GetOutputColorMetadata(CWinSystemBase& winSystem)
   //! 16-bit float AR4H/AB4H (DRM_FORMAT_ARGB16161616F/ABGR16161616F)
   else if (color.primaries == AVCOL_PRI_BT2020)
     color.transfer = AVCOL_TRC_BT2020_10;
-  else if (winSystem.GetGfxContext().GetWidth() > 1024 ||
-           winSystem.GetGfxContext().GetHeight() >= 600)
-    color.transfer = AVCOL_TRC_BT709;
   else
-  {
-    color.primaries = AVCOL_PRI_SMPTE170M;
-    color.transfer = AVCOL_TRC_SMPTE170M;
-  }
+    color.transfer = AVCOL_TRC_IEC61966_2_1;
 
   // Display output is limited-range whenever videoscreen.limitedrange is on.
   color.range = winSystem.UseLimitedColor() ? AVCOL_RANGE_MPEG : AVCOL_RANGE_JPEG;
