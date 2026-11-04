@@ -2644,9 +2644,11 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     }
   }
 
-  // While the error is averaged, samples that will not be skipped stay audible.
+  // While the error is averaged, samples that will not be skipped stay audible. Not in passthrough,
+  // where the correction that follows interrupts the bitstream the receiver just locked on to.
   double errorSoFar{0.0};
-  const bool audible{stream->m_syncError.GetSoFar(errorSoFar) && keepAudible(errorSoFar)};
+  const bool audible{m_mode != MODE_RAW && stream->m_syncError.GetSoFar(errorSoFar) &&
+                     keepAudible(errorSoFar)};
   if (stream->m_syncState == CAESyncInfo::AESyncState::SYNC_MUTE && !audible)
   {
     CSampleBuffer *buf = stream->m_processingBuffers->m_outputSamples.front();
