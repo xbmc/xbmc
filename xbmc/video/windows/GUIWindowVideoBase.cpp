@@ -226,9 +226,21 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       }
     }
     break;
-  case GUI_MSG_SEARCH:
-    OnSearch();
-    break;
+    case GUI_MSG_NOTIFY_ALL:
+      if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
+      {
+        const auto newItem{std::static_pointer_cast<CFileItem>(message.GetItem())};
+        // the item that CFileItemList::UpdateItem() updates
+        const auto it{std::ranges::find_if(*m_vecItems, [&newItem](const auto& item)
+                                           { return item->IsSamePath(newItem.get()); })};
+        const std::shared_ptr<CFileItem> listItem{it != m_vecItems->end() ? *it : nullptr};
+        const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, listItem.get()};
+        return CGUIMediaWindow::OnMessage(message);
+      }
+      break;
+    case GUI_MSG_SEARCH:
+      OnSearch();
+      break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
@@ -1170,6 +1182,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return OnPlayMedia(itemNumber);
   case CONTEXT_BUTTON_CHOOSE_PLAYLIST:
   {
+    const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, item.get()};
+
     // The chosen playlist is assigned to a library item either way, so ask whether to play it
     if (VIDEO::UTILS::CanSaveDiscPlaylist(*item))
     {
@@ -1207,6 +1221,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
                                       const std::string& player)
 {
+  const CBackgroundInfoLoader::CItemHold itemHold{m_thumbLoader, pItem.get()};
+
   // party mode
   if (g_partyModeManager.IsEnabled(PartyModeContext::VIDEO))
   {
