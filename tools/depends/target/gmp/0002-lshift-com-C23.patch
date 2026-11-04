@@ -1,0 +1,31 @@
+From: Kodi depends
+Subject: [PATCH] gmp: Fix lshift_com configure tests for C23
+
+GMP 6.3.0 uses K&R-style definitions in two compiler probes, which Clang
+rejects in -std=gnu23 mode. Use equivalent prototype-style definitions.
+
+---
+--- a/acinclude.m4
++++ b/acinclude.m4
+@@ -661,9 +661,5 @@
+ #if ! defined (__cplusplus)
+ unsigned long
+-lshift_com (rp, up, n, cnt)
+-  unsigned long *rp;
+-  unsigned long *up;
+-  long n;
+-  unsigned cnt;
++lshift_com (unsigned long *rp, unsigned long *up, long n, unsigned cnt)
+ {
+   unsigned long retval, high_limb, low_limb;
+@@ -712,9 +708,5 @@
+ #include <stdlib.h>
+ void
+-lshift_com (rp, up, n, cnt)
+-  unsigned long *rp;
+-  unsigned long *up;
+-  long n;
+-  unsigned cnt;
++lshift_com (unsigned long *rp, unsigned long *up, long n, unsigned cnt)
+ {
+   unsigned long high_limb, low_limb;
