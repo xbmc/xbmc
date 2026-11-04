@@ -84,13 +84,15 @@ INSTANTIATE_TEST_SUITE_P(TestVideoUtils, OpticalMediaPathTest, testing::ValuesIn
 
 TEST_P(TrailerTest, FindTrailer)
 {
+  std::string temp_root;
   std::string temp_path;
   std::string trailer{GetParam().second};
   if (!trailer.empty())
   {
     std::error_code ec;
-    temp_path = fs::create_temp_directory(ec);
-    EXPECT_FALSE(ec);
+    temp_root = fs::create_temp_directory(ec);
+    ASSERT_FALSE(ec);
+    temp_path = URIUtils::AddFileToFolder(temp_root, "trailer_test");
     XFILE::CDirectory::Create(temp_path);
     // A disc folder rip's trailer is named after the folder holding the disc
     StringUtils::Replace(trailer, "#FOLDER#", URIUtils::GetFileName(temp_path));
@@ -116,8 +118,8 @@ TEST_P(TrailerTest, FindTrailer)
   EXPECT_EQ(VIDEO::UTILS::FindTrailer(item, true),
             trailer.empty() ? "" : URIUtils::AddFileToFolder(temp_path, trailer));
 
-  if (!temp_path.empty())
-    XFILE::CDirectory::RemoveRecursive(temp_path);
+  if (!temp_root.empty())
+    XFILE::CDirectory::RemoveRecursive(temp_root);
 }
 
 const auto trailer_tests = std::array{
