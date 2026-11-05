@@ -320,8 +320,7 @@ void CDialogGameAchievements::RefreshList()
                    [](const AchievementInfo& lhs, const AchievementInfo& rhs)
                    { return lhs.earned && !rhs.earned; });
 
-  uint64_t totalPoints = 0;
-  uint64_t earnedPoints = 0;
+  size_t earnedCount = 0;
 
   for (const AchievementInfo& achievement : achievements)
   {
@@ -396,9 +395,8 @@ void CDialogGameAchievements::RefreshList()
                                      std::clamp(achievement.measuredPercent, 0.0f, 100.0f)))
                                : 0);
 
-    totalPoints += achievement.points;
     if (achievement.earned)
-      earnedPoints += achievement.points;
+      ++earnedCount;
 
     m_items->Add(std::move(item));
   }
@@ -425,12 +423,12 @@ void CDialogGameAchievements::RefreshList()
     m_viewControl->SetSelectedItem(std::clamp(selectedItem, 0, m_items->Size() - 1));
   }
 
-  // Progress weighted by point value, which is how RetroAchievements measures
-  // completion. Guard against a game whose achievements are all worth 0 points.
+  // Achievements earned over the set's achievements, as RetroAchievements counts
+  // completion
   std::string progress;
-  if (totalPoints > 0)
+  if (!achievements.empty())
   {
-    const int percent = static_cast<int>((earnedPoints * 100) / totalPoints);
+    const int percent = static_cast<int>((earnedCount * 100) / achievements.size());
 
     // "{0:d}% complete"
     progress = StringUtils::Format(Localize(35288), percent);
