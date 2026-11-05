@@ -282,7 +282,6 @@ public:
   {
     return m_stats.GetSinkNeedIecPack();
   }
-  bool SupportsPassthroughSilence() { return m_stats.GetSinkNeedIecPack(); }
 
   void RegisterAudioCallback(IAudioCallback* pCallback) override;
   void UnregisterAudioCallback(IAudioCallback* pCallback) override;
