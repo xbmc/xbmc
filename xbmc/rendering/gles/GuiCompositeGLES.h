@@ -21,9 +21,10 @@ public:
   CGuiCompositeGLES();
   ~CGuiCompositeGLES();
 
-  bool Enable(int colorTransfer, bool limitedRange);
+  bool Enable(int colorTransfer, bool limitedRange, float sdrPeak = 203.0f / 10000.0f);
   void Disable();
   bool IsActive() const { return m_guiCompositing; }
+  void SetSdrPeak(float peak);
 
   bool Prepare(int width, int height, bool attachDepth);
   bool Begin(bool guiWillRender, int width, int height, bool attachDepth);

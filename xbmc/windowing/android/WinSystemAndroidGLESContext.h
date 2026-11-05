@@ -9,6 +9,7 @@
 #pragma once
 
 #include "WinSystemAndroid.h"
+#include "rendering/gles/GuiCompositeGLES.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/EGLUtils.h"
 #include "utils/GlobalsHandling.h"
@@ -20,7 +21,7 @@ class CWinSystemAndroidGLESContext : public CWinSystemAndroid, public CRenderSys
 {
 public:
   CWinSystemAndroidGLESContext() = default;
-  ~CWinSystemAndroidGLESContext() override = default;
+  ~CWinSystemAndroidGLESContext() override;
 
   static void Register();
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
@@ -28,6 +29,7 @@ public:
   // Implementation of CWinSystemBase via CWinSystemAndroid
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
+  bool DestroyRenderSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
                        RESOLUTION_INFO& res) override;
@@ -39,10 +41,18 @@ public:
 
   float GetFrameLatencyAdjustment() override;
   bool IsHDRDisplay() override;
+  bool SetVideoOutput(const VideoPicture* videoPicture) override;
+  bool IsHDRGameOutputValid() const override;
   bool SetHDR(const VideoPicture* videoPicture) override;
   int GetOutputBitDepth() const override;
   KODI::UTILS::Eotf GetEotf() const override;
   KODI::UTILS::Colorimetry GetColorimetry() const override;
+
+  bool SetGuiCompositing(int colorTransfer) override;
+  bool BeginGuiComposite(bool guiWillRender) override;
+  void EndGuiComposite() override;
+  void CompositeGui() override;
+  bool IsHdrComposite() const override { return m_guiComposite.IsActive(); }
 
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
@@ -54,6 +64,7 @@ protected:
 
 private:
   bool CreateSurface();
+  bool SupportsHDRGameOutput();
 
   CEGLContextUtils m_pGLContext;
   bool m_hasHDRConfig = false;
@@ -63,4 +74,6 @@ private:
   EGLint m_HDRColorSpace = EGL_NONE;
   bool m_hasEGL_ST2086_Extension = false;
   bool m_hasEGL_BT2020_PQ_Colorspace_Extension = false;
+
+  CGuiCompositeGLES m_guiComposite;
 };
