@@ -87,6 +87,12 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
     return false;
   }
 
+  m_hasSurfacelessContext =
+      CEGLUtils::HasExtension(GetEGLDisplay(), "EGL_KHR_surfaceless_context") &&
+      eglMakeCurrent(GetEGLDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, GetEGLContext()) == EGL_TRUE;
+  if (m_hasSurfacelessContext)
+    eglMakeCurrent(GetEGLDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+
   return true;
 }
 
@@ -108,6 +114,7 @@ bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
 
   if (!m_pGLContext.BindContext())
   {
+    m_pGLContext.DestroySurface();
     return false;
   }
 
@@ -120,6 +127,24 @@ bool CWinSystemAndroidGLESContext::ResizeWindow(int newWidth, int newHeight, int
   m_nHeight = newHeight;
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight);
   return true;
+}
+
+bool CWinSystemAndroidGLESContext::DestroyWindow()
+{
+  bool contextBound = true;
+  if (m_guiComposite.IsActive())
+  {
+    m_pGLContext.DestroySurface();
+    // Background game cleanup still needs the context after the window is gone.
+    contextBound =
+        eglMakeCurrent(GetEGLDisplay(), EGL_NO_SURFACE, EGL_NO_SURFACE, GetEGLContext()) == EGL_TRUE;
+    if (!contextBound)
+    {
+      m_hasSurfacelessContext = false;
+      CEGLUtils::Log(LOGERROR, "Failed to bind background game context");
+    }
+  }
+  return CWinSystemAndroid::DestroyWindow() && contextBound;
 }
 
 bool CWinSystemAndroidGLESContext::DestroyRenderSystem()
@@ -272,7 +297,8 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
       m_lightMetadata = nullptr;
     }
 
-    if (HDRColorSpace != m_HDRColorSpace || displayMetadataChanged)
+    const bool missingSurface = m_nativeWindow && GetEGLSurface() == EGL_NO_SURFACE;
+    if (HDRColorSpace != m_HDRColorSpace || displayMetadataChanged || missingSurface)
     {
       if (!m_nativeWindow)
       {
@@ -301,7 +327,10 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
         m_lightMetadata.reset();
         m_pGLContext.DestroySurface();
         if (!CreateSurface() || !m_pGLContext.BindContext())
+        {
+          m_pGLContext.DestroySurface();
           CLog::Log(LOGERROR, "CWinSystemAndroidGLESContext: failed to restore SDR surface");
+        }
         return false;
       }
 
@@ -319,7 +348,7 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 bool CWinSystemAndroidGLESContext::SupportsHDRGameOutput()
 {
   const auto player = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
-  if (!player->IsPlayingGame() || !IsHDRGameOutputValid() || !m_hasHDRConfig ||
+  if (!player->IsPlayingGame() || !IsHDRGameOutputValid() || !m_hasHDRConfig || !m_hasSurfacelessContext ||
       !m_hasEGL_BT2020_PQ_Colorspace_Extension || !m_hasEGL_ST2086_Extension ||
       !IsHDRDisplaySettingEnabled() || !GetDisplayHDRCapabilities().SupportsHDR10())
     return false;

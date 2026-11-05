@@ -33,6 +33,7 @@ public:
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
                        RESOLUTION_INFO& res) override;
+  bool DestroyWindow() override;
 
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
@@ -68,6 +69,7 @@ private:
 
   CEGLContextUtils m_pGLContext;
   bool m_hasHDRConfig = false;
+  bool m_hasSurfacelessContext = false;
 
   std::unique_ptr<AVMasteringDisplayMetadata> m_displayMetadata;
   std::unique_ptr<AVContentLightMetadata> m_lightMetadata;
