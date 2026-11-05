@@ -57,7 +57,7 @@ public:
   void Flush();
   void Drain();
   void AbortAddPackets();
-  bool SupportsPassthroughSilence() const { return m_bSupportsPassthroughSilence; }
+  bool SupportsPassthroughSilence() const;
 
   double GetClock() override;
   double GetClockSpeed() override;
@@ -71,13 +71,12 @@ protected:
   double m_syncError;
   unsigned int m_syncErrorTime;
   double m_resampleRatio = 0.0; // invalid
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
 
   AEDataFormat m_dataFormat;
   unsigned int m_sampleRate;
   int m_iBitsPerSample;
   bool m_bPassthrough;
-  bool m_bSupportsPassthroughSilence{false};
   CAEChannelInfo m_channelLayout;
   CAEStreamInfo::DataType m_dataType;
   bool m_bPaused;
