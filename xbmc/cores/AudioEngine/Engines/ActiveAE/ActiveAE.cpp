@@ -302,6 +302,12 @@ bool CEngineStats::IsSuspended()
   return m_suspended;
 }
 
+void CEngineStats::SetSinkNeedIec(bool needIEC)
+{
+  std::unique_lock lock(m_lock);
+  m_sinkNeedIecPack = needIEC;
+}
+
 void CEngineStats::SetCurrentSinkFormat(const AEAudioFormat& SinkFormat)
 {
   std::unique_lock lock(m_lock);
