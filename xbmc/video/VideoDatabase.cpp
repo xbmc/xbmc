@@ -344,6 +344,65 @@ bool CVideoDatabase::GetPaths(std::set<std::string, std::less<>>& paths)
   return false;
 }
 
+bool CVideoDatabase::GetContentForPaths(const std::set<std::string, std::less<>>& paths,
+                                       std::map<std::string, ADDON::ContentType>& contents)
+{
+  contents.clear();
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  try
+  {
+    if (!m_pDS->query("SELECT strPath, strContent, exclude FROM path "
+                      "WHERE strContent <> '' OR exclude = 1"))
+      return false;
+
+    std::map<std::string, ContentType> sources;
+    while (!m_pDS->eof())
+    {
+      const bool excluded = m_pDS->fv("exclude").get_asBool();
+      const ContentType content =
+          TranslateContent(StringUtils::ToLower(m_pDS->fv("strContent").get_asString()));
+      if (excluded || content != ContentType::NONE)
+        sources.emplace(m_pDS->fv("strPath").get_asString(),
+                        excluded ? ContentType::NONE : content);
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    for (const auto& path : paths)
+    {
+      std::string directory{path};
+      if (URIUtils::IsMultiPath(directory))
+        directory = CMultiPathDirectory::GetFirstPath(directory);
+      else if (URIUtils::IsStack(directory))
+        directory = CStackDirectory::GetFirstStackedFile(directory);
+      directory = URIUtils::GetDirectory(directory);
+
+      // The nearest content setting or exclusion wins, including for paths absent from the DB.
+      while (!directory.empty())
+      {
+        if (const auto it = sources.find(directory); it != sources.end())
+        {
+          if (it->second != ContentType::NONE)
+            contents.emplace(path, it->second);
+          break;
+        }
+        std::string parent;
+        if (!URIUtils::GetParentPath(directory, parent))
+          break;
+        directory = std::move(parent);
+      }
+    }
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed");
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetPathsLinkedToTvShow(int idShow, std::vector<std::string> &paths)
 {
   std::string sql;
