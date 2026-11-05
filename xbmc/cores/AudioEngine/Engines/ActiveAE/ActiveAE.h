@@ -206,7 +206,7 @@ public:
   void SetCurrentSinkFormat(const AEAudioFormat& SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
-  void SetSinkNeedIec(bool needIEC) { m_sinkNeedIecPack = needIEC; }
+  void SetSinkNeedIec(bool needIEC);
   bool IsSuspended();
   AEAudioFormat GetCurrentSinkFormat();
   bool GetSinkNeedIecPack();
