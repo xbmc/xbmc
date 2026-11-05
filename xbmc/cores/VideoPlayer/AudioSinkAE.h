@@ -61,6 +61,7 @@ public:
   void Flush();
   void Drain();
   void AbortAddPackets();
+  bool SupportsPassthroughSilence() const { return m_bSupportsPassthroughSilence; }
 
   double GetClock() override;
   double GetClockSpeed() override;
@@ -80,6 +81,7 @@ protected:
   unsigned int m_sampleRate;
   int m_iBitsPerSample;
   bool m_bPassthrough;
+  bool m_bSupportsPassthroughSilence{false};
   CAEChannelInfo m_channelLayout;
   CAEStreamInfo::DataType m_dataType;
   bool m_bPaused;
