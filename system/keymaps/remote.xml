@@ -187,8 +187,8 @@
       <nine>Number9</nine>
       <left>StepBack</left>
       <right>StepForward</right>
-      <up>ChapterOrBigStepForward</up>
-      <down>ChapterOrBigStepBack</down>
+      <up>ChapterOrSceneOrBigStepForward</up>
+      <down>ChapterOrSceneOrBigStepBack</down>
       <back>Back</back>
       <menu>OSD</menu>
       <contentsmenu>OSD</contentsmenu>

@@ -148,8 +148,8 @@
   </Music>
   <FullscreenVideo>
     <customcontroller name="Harmony">
-      <!-- up       	-->      <button id="101">ChapterOrBigStepForward</button>
-      <!-- down      	-->      <button id="102">ChapterOrBigStepBack</button>
+      <!-- up       	-->      <button id="101">ChapterOrSceneOrBigStepForward</button>
+      <!-- down      	-->      <button id="102">ChapterOrSceneOrBigStepBack</button>
       <!-- left       	-->      <button id="103">StepBack</button>
       <!-- right      	-->      <button id="104">StepForward</button>
       <!-- menu       	-->      <button id="106">OSD</button>
