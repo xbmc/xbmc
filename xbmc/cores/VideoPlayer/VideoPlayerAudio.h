@@ -71,7 +71,10 @@ public:
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;
   void OnPlaybackStart() override { m_playbackStart = true; }
-  bool SupportsPassthroughSilence() const override { return true; }
+  bool SupportsPassthroughSilence() const override
+  {
+    return m_audioSink.SupportsPassthroughSilence();
+  }
 
 protected:
 
