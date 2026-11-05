@@ -1108,7 +1108,7 @@
 					<textcolor>grey</textcolor>
 					<aligny>center</aligny>
 					<align>right</align>
-					<visible>!String.IsEmpty(ListItem.Property(achievement.earned))</visible>
+					<visible>String.IsEmpty(ListItem.Property(achievement.measured))</visible>
 				</control>
 				<control type="label">
 					<left>494</left>
@@ -1426,7 +1426,7 @@
 								<height>370</height>
 								<font>font12</font>
 								<textcolor>grey</textcolor>
-								<label>$LOCALIZE[35304]</label>
+								<label>$LOCALIZE[35304][CR][CR]$LOCALIZE[35719]</label>
 								<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
 							</control>
 						</control>

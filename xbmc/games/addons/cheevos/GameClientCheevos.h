@@ -17,6 +17,7 @@
 class CCriticalSection;
 
 struct AddonInstance_Game;
+struct game_rc_achievement;
 struct game_rc_achievement_challenge;
 struct game_rc_achievement_sets;
 struct game_rc_achievement_progress;
@@ -36,6 +37,7 @@ namespace GAME
 
 class CAchievementRuntime;
 class CGameClient;
+struct AchievementInfo;
 
 /*!
  * \ingroup games
@@ -61,8 +63,7 @@ public:
   void OnGameLoaded(const game_rc_game_loaded& data);
   void OnAchievementTriggered(const game_rc_achievement_triggered& data);
   static void OnAchievementTriggered(const game_rc_achievement_triggered& data,
-                                     CAchievementRuntime& runtime,
-                                     bool encoreModeEnabled);
+                                     CAchievementRuntime& runtime);
   void OnGameCompleted(const std::string& title, bool hardcore);
   void OnRichPresenceUpdated(const std::string& evaluation);
   void OnLoginResult(const game_rc_login_result& data);
@@ -91,6 +92,16 @@ public:
 
   void OnAchievementSets(const game_rc_achievement_sets& data);
   //@}
+
+  /*!
+   * \brief Set whether a loaded achievement starts out earned
+   *
+   * Encore re-arms everything earned before, so an encore run starts with
+   * nothing earned and keeps only the date of the earlier unlock.
+   */
+  static void SetEarned(AchievementInfo& info,
+                        const game_rc_achievement& achievement,
+                        bool encoreModeEnabled);
 
   /*!
    * \brief Drop the published state when the game closes
@@ -202,6 +213,10 @@ private:
   //! callbacks read it on the add-on's thread while loading and closing a game
   //! write it on Kodi's.
   std::atomic<bool> m_encoreModeEnabled{false};
+
+  //! The encore setting as last seen, so a change made during a game is
+  //! announced once. Atomic for the same reason as m_hardcoreEnabled.
+  std::atomic<bool> m_encoreSetting{false};
 
   //! Hardcore as last applied to this client. Atomic because the setting can
   //! change on the player's thread as well as Kodi's.
