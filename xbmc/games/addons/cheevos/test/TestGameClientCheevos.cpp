@@ -91,13 +91,13 @@ protected:
     m_runtime.SetState(state);
   }
 
-  void Trigger(bool encoreModeEnabled, unsigned int id = 540267)
+  void Trigger(unsigned int id = 540267)
   {
     game_rc_achievement_triggered event{};
     event.id = id;
     event.title = "100% Discount";
     event.badge_url = "badge.png";
-    CGameClientCheevos::OnAchievementTriggered(event, m_runtime, encoreModeEnabled);
+    CGameClientCheevos::OnAchievementTriggered(event, m_runtime);
   }
 
   void ExpectUnlockNotification()
@@ -132,7 +132,7 @@ TEST_F(TestGameClientCheevos, FirstUnlockChangesStateAndNotifies)
 {
   LoadAchievement(false);
   const auto before = CDateTime::GetCurrentDateTime();
-  Trigger(false);
+  Trigger();
 
   const auto state = m_runtime.GetState();
   EXPECT_EQ(state.unlockedAchievements, 1U);
@@ -145,7 +145,7 @@ TEST_F(TestGameClientCheevos, FirstUnlockChangesStateAndNotifies)
   ExpectUnlockNotification();
   EXPECT_EQ(TakeDialogRefreshes(), 1);
 
-  Trigger(false);
+  Trigger();
   EXPECT_TRUE(ToastQueue::TakeNotifications().empty());
   EXPECT_EQ(TakeDialogRefreshes(), 0);
   EXPECT_EQ(m_runtime.GetState().achievements.front().unlockedDate,
@@ -153,46 +153,82 @@ TEST_F(TestGameClientCheevos, FirstUnlockChangesStateAndNotifies)
   EXPECT_EQ(m_runtime.GetUnlockedAchievements(), 1U);
 }
 
-TEST_F(TestGameClientCheevos, EarnedAchievementWithoutEncoreIsSuppressed)
+TEST_F(TestGameClientCheevos, EarnedAchievementIsSuppressed)
 {
   LoadAchievement(true);
-  Trigger(false);
+  Trigger();
 
   EXPECT_TRUE(ToastQueue::TakeNotifications().empty());
   EXPECT_EQ(TakeDialogRefreshes(), 0);
   ExpectEarnedStateUnchanged();
 }
 
-TEST_F(TestGameClientCheevos, EarnedAchievementWithEncoreNotifiesWithoutChangingState)
+TEST_F(TestGameClientCheevos, UnknownAchievementIsSuppressed)
 {
   LoadAchievement(true);
-  Trigger(true);
-
-  ExpectUnlockNotification();
-  EXPECT_EQ(TakeDialogRefreshes(), 0);
-  ExpectEarnedStateUnchanged();
-}
-
-TEST_F(TestGameClientCheevos, UnknownAchievementWithEncoreIsSuppressed)
-{
-  LoadAchievement(true);
-  Trigger(true, 999999);
+  Trigger(999999);
 
   EXPECT_TRUE(ToastQueue::TakeNotifications().empty());
   EXPECT_EQ(TakeDialogRefreshes(), 0);
   ExpectEarnedStateUnchanged();
 }
 
-TEST_F(TestGameClientCheevos, EncoreEventAfterGameClosesIsSuppressed)
+TEST_F(TestGameClientCheevos, EventAfterGameClosesIsSuppressed)
 {
   LoadAchievement(true);
   m_runtime.Clear();
-  Trigger(true);
+  Trigger();
 
   EXPECT_TRUE(ToastQueue::TakeNotifications().empty());
   EXPECT_EQ(TakeDialogRefreshes(), 0);
   EXPECT_FALSE(m_runtime.GetState().loaded);
   EXPECT_EQ(m_runtime.GetUnlockedAchievements(), 0U);
+}
+
+TEST_F(TestGameClientCheevos, EncoreLoadsEarnedAchievementsLocked)
+{
+  game_rc_achievement achievement{};
+  achievement.unlock_state = GAME_RC_UNLOCK_STATE_HARDCORE;
+  achievement.unlock_time = 1754421600;
+  const CDateTime unlockedDate = CDateTime::FromUTCDateTime(static_cast<time_t>(1754421600));
+
+  AchievementInfo encore;
+  CGameClientCheevos::SetEarned(encore, achievement, true);
+  EXPECT_FALSE(encore.earned);
+  EXPECT_FALSE(encore.unlockedDate.IsValid());
+  EXPECT_EQ(encore.previouslyUnlockedDate, unlockedDate);
+
+  AchievementInfo normal;
+  CGameClientCheevos::SetEarned(normal, achievement, false);
+  EXPECT_TRUE(normal.earned);
+  EXPECT_EQ(normal.unlockedDate, unlockedDate);
+  EXPECT_FALSE(normal.previouslyUnlockedDate.IsValid());
+
+  achievement.unlock_state = GAME_RC_UNLOCK_STATE_LOCKED;
+  AchievementInfo locked;
+  CGameClientCheevos::SetEarned(locked, achievement, true);
+  EXPECT_FALSE(locked.earned);
+  EXPECT_FALSE(locked.previouslyUnlockedDate.IsValid());
+}
+
+TEST_F(TestGameClientCheevos, EncoreUnlockOfAnEarlierUnlockIsNew)
+{
+  LoadAchievement(false);
+  AchievementState rearmed = m_runtime.GetState();
+  rearmed.achievements.front().previouslyUnlockedDate = m_originalDate;
+  m_runtime.SetState(rearmed);
+
+  const auto before = CDateTime::GetCurrentDateTime();
+  Trigger();
+
+  const auto state = m_runtime.GetState();
+  EXPECT_EQ(state.unlockedAchievements, 1U);
+  ASSERT_EQ(state.achievements.size(), 1U);
+  EXPECT_TRUE(state.achievements.front().earned);
+  EXPECT_GE(state.achievements.front().unlockedDate, before);
+  EXPECT_EQ(state.achievements.front().previouslyUnlockedDate, m_originalDate);
+  ExpectUnlockNotification();
+  EXPECT_EQ(TakeDialogRefreshes(), 1);
 }
 
 namespace
@@ -238,7 +274,7 @@ protected:
     game_rc_achievement_triggered event{};
     event.id = 2;
     event.title = "Achievement 2";
-    CGameClientCheevos::OnAchievementTriggered(event, m_runtime, false);
+    CGameClientCheevos::OnAchievementTriggered(event, m_runtime);
   }
 };
 

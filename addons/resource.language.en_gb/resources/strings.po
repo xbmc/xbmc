@@ -19623,7 +19623,7 @@ msgstr ""
 #. Help text for the encore mode setting
 #: system/settings/settings.xml
 msgctxt "#35304"
-msgid "Allow achievements you have already earned to be triggered again.[CR][CR]Applies the next time you load the game."
+msgid "Allow achievements you have already earned to be triggered again."
 msgstr ""
 
 #. Notification shown when hardcore mode refuses something, {0:s} is the feature
@@ -20078,7 +20078,14 @@ msgctxt "#35718"
 msgid "Attempt active"
 msgstr ""
 
-#empty strings from id 35719 to 35999
+#. Shown when Encore mode is switched on or off during a game, and under its help text in the game's settings
+#: xbmc/games/addons/cheevos/GameClientCheevos.cpp
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35719"
+msgid "Applies the next time you load the game."
+msgstr ""
+
+#empty strings from id 35720 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
