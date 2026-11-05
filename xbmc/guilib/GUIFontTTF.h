@@ -225,12 +225,24 @@ protected:
 
   // Fills RGBA pixels with transparent white, so that filtering at glyph edges keeps the color
   static void ClearTexturePixels(uint8_t* pixels, size_t size);
+  // Clears newTexture and copies the glyphs of m_texture into it, converting them to RGBA if
+  // m_texture is alpha only and newTexture is not
+  void FillNewTexture(CTexture& newTexture) const;
+  // Writes RGBA glyph pixels to m_texture, only their alpha if m_texture is alpha only
+  void WriteCharPixels(const uint8_t* pixels,
+                       unsigned int pitch,
+                       unsigned int x1,
+                       unsigned int y1,
+                       unsigned int x2,
+                       unsigned int y2);
 
   // modifying glyphs
   void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);
   static void ObliqueGlyph(FT_GlyphSlot slot);
 
-  std::unique_ptr<CTexture> m_texture; // texture that holds our rendered characters (RGBA)
+  std::unique_ptr<CTexture> m_texture; // texture that holds our rendered characters
+  // m_texture is RGBA once it holds color glyphs, and alpha only before
+  bool m_colorTexture{false};
 
   unsigned int m_textureWidth{0}; // width of our texture
   unsigned int m_textureHeight{0}; // height of our texture
