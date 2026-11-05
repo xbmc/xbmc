@@ -12,6 +12,7 @@
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
+#include <array>
 #include <memory>
 #include <stdint.h>
 #include <string>
@@ -86,7 +87,6 @@ class CGUIFontTTF
   // use lookup table for the first 4096 glyphs (almost any letter or symbol) to
   // speed up GUI rendering and decrease CPU usage and less memory reallocations
   static constexpr int MAX_GLYPH_IDX = 4096;
-  static constexpr size_t LOOKUPTABLE_SIZE = MAX_GLYPH_IDX * FONT_STYLES_COUNT;
 
   friend class CGUIFont;
 
@@ -244,8 +244,8 @@ protected:
 
   std::vector<Character> m_char; // our characters
 
-  // room for the first MAX_GLYPH_IDX glyphs in 7 styles
-  Character* m_charquick[LOOKUPTABLE_SIZE]{nullptr};
+  // room for the first MAX_GLYPH_IDX glyphs of each style, allocated when the style is first used
+  std::array<std::unique_ptr<Character*[]>, FONT_STYLES_COUNT> m_charquick;
 
   bool m_ellipseCached{false};
   float m_ellipsesWidth{0.0f}; // this is used every character (width of '.')
