@@ -189,6 +189,7 @@ public:
 
   unsigned int GetSampleRate() const override ;
   enum AEDataFormat GetDataFormat() const override;
+  bool SupportsPassthroughSilence() const override;
 
   double GetResampleRatio() override;
   void SetResampleRatio(double ratio) override;
