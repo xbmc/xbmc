@@ -53,6 +53,7 @@ public:
 
   void FrameMove();
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
+  bool CompositeVideoCapture(KODI::RENDERING::CAPTURE::CaptureResult& result);
   void FlushRenderer();
   void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch);
   float GetRenderAspectRatio() const;

@@ -81,6 +81,17 @@ public:
   std::string stereo_mode; // stereoscopic 3d mode
   AVDOVIDecoderConfigurationRecord dovi{};
 
+  // Dolby Vision profile 8 compatibility IDs 1 and 4 identify HDR10 and HLG
+  // base layers respectively.
+  bool HasHDR10DolbyVisionBaseLayer() const
+  {
+    return dovi.dv_profile == 8 && dovi.dv_bl_signal_compatibility_id == 1;
+  }
+  bool HasHLGDolbyVisionBaseLayer() const
+  {
+    return dovi.dv_profile == 8 && dovi.dv_bl_signal_compatibility_id == 4;
+  }
+
   // AUDIO
   int channels;
   int samplerate;

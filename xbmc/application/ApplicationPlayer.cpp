@@ -888,6 +888,12 @@ void CApplicationPlayer::Render(bool clear, uint32_t alpha, bool gui)
     player->Render(clear, alpha, gui);
 }
 
+bool CApplicationPlayer::CompositeVideoCapture(KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+  const std::shared_ptr<IPlayer> player = GetInternal();
+  return !player || player->CompositeVideoCapture(result);
+}
+
 void CApplicationPlayer::FlushRenderer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
