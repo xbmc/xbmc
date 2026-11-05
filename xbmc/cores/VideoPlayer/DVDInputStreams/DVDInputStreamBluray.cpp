@@ -783,6 +783,8 @@ void CDVDInputStreamBluray::OverlayClose()
     plane.o.clear();
   auto group = std::make_shared<CDVDOverlayGroup>();
   group->bForced = true;
+  group->SetDiscMenu(true);
+  group->SetOverlayContainerFlushable(false);
   m_player->OnDiscNavResult(static_cast<void*>(&group), BD_EVENT_MENU_OVERLAY);
   m_hasOverlay = false;
 #endif
@@ -843,6 +845,8 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
   group->bForced       = true;
   group->iPTSStartTime = static_cast<double>(pts);
   group->iPTSStopTime  = 0;
+  group->SetDiscMenu(true);
+  group->SetOverlayContainerFlushable(false);
 
   for(SPlane& plane : m_planes)
   {
@@ -956,11 +960,14 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
     SOverlay overlay = std::make_shared<CDVDOverlayImage>();
 
     overlay->palette.clear();
-    size_t bytes = static_cast<size_t>(ov->stride * ov->h * 4);
-    overlay->pixels.resize(bytes);
-    memcpy(overlay->pixels.data(), ov->argb, bytes);
+    overlay->linesize = ov->w * 4;
+    overlay->pixels.resize(static_cast<size_t>(overlay->linesize) * ov->h);
 
-    overlay->linesize = ov->stride * 4;
+    // argb points into libbluray's full width image, so the last line's stride runs past its end
+    for (int row = 0; row < ov->h; ++row)
+      memcpy(overlay->pixels.data() + static_cast<size_t>(row) * overlay->linesize,
+             ov->argb + static_cast<size_t>(row) * ov->stride, overlay->linesize);
+
     overlay->x = ov->x;
     overlay->y = ov->y;
     overlay->height = ov->h;
