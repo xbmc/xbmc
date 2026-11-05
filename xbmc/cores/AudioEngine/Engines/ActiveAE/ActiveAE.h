@@ -208,6 +208,7 @@ public:
   void SetSinkNeedIec(bool needIEC) { m_sinkNeedIecPack = needIEC; }
   bool IsSuspended();
   AEAudioFormat GetCurrentSinkFormat();
+  bool GetSinkNeedIecPack();
 protected:
   float m_sinkCacheTotal;
   float m_sinkLatency;
