@@ -29,7 +29,6 @@ using namespace std::chrono_literals;
 CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 {
   m_bPassthrough = false;
-  m_bSupportsPassthroughSilence = false;
   m_iBitsPerSample = 0;
   m_sampleRate = 0;
   m_bPaused = true;
@@ -69,7 +68,6 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
   m_sampleRate = audioframe.format.m_sampleRate;
   m_iBitsPerSample = audioframe.bits_per_sample;
   m_bPassthrough = audioframe.passthrough;
-  m_bSupportsPassthroughSilence = m_pAudioStream->SupportsPassthroughSilence();
   m_channelLayout = audioframe.format.m_channelLayout;
   m_dataType = audioframe.format.m_streamInfo.m_type;
 
@@ -90,7 +88,6 @@ void CAudioSinkAE::Destroy(bool finish)
   m_sampleRate = 0;
   m_iBitsPerSample = 0;
   m_bPassthrough = false;
-  m_bSupportsPassthroughSilence = false;
   m_bPaused = true;
   m_playingPts = DVD_NOPTS_VALUE;
 }
@@ -240,6 +237,12 @@ void CAudioSinkAE::Flush()
   m_playingPts = DVD_NOPTS_VALUE;
   m_syncError = 0.0;
   m_syncErrorTime = 0;
+}
+
+bool CAudioSinkAE::SupportsPassthroughSilence() const
+{
+  std::unique_lock lock(m_critSection);
+  return m_pAudioStream && m_pAudioStream->SupportsPassthroughSilence();
 }
 
 void CAudioSinkAE::AbortAddPackets()
