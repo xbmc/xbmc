@@ -48,6 +48,10 @@ public:
   void SetModifier(const uint64_t newModifier) { m_modifier = newModifier; }
   uint64_t GetModifier() const { return m_modifier; }
   std::vector<uint64_t>& GetModifiersForFormat(uint32_t format) { return m_modifiers_map[format]; }
+  std::vector<uint32_t> GetFormats() const
+  {
+    return {m_plane->formats, m_plane->formats + m_plane->count_formats};
+  }
 
   bool SupportsFormat(uint32_t format);
   bool SupportsFormatAndModifier(uint32_t format, uint64_t modifier);

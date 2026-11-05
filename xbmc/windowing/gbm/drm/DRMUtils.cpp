@@ -38,6 +38,29 @@ void DrmFbDestroyCallback(gbm_bo* bo, void* data)
 
   delete fb;
 }
+
+// pairwise moves on top of each other leave no level in between, so three
+// planes get the lowest, a middle and the highest level of their ranges
+bool StackPlanes(CDRMPlane* bottom, CDRMPlane* middle, CDRMPlane* top)
+{
+  const auto level = [](CDRMPlane* plane) { return plane->GetPropertyValue("zpos").value_or(0); };
+  const auto fixed = [](CDRMPlane* plane)
+  { return plane->IsPropertyImmutable("zpos").value_or(true); };
+  const auto range = [](CDRMPlane* plane)
+  { return plane->GetRangePropertyLimits("zpos").value_or(std::pair<uint64_t, uint64_t>(0, 0)); };
+
+  if (fixed(bottom) || fixed(middle) || fixed(top))
+    return level(bottom) < level(middle) && level(middle) < level(top);
+
+  const uint64_t low = range(bottom).first;
+  const uint64_t high = range(top).second;
+  const uint64_t mid = std::max(range(middle).first, low + 1);
+  if (mid >= high || mid > range(middle).second)
+    return false;
+
+  return bottom->SetProperty("zpos", low) && middle->SetProperty("zpos", mid) &&
+         top->SetProperty("zpos", high);
+}
 } // namespace
 
 CDRMUtils::~CDRMUtils()
@@ -367,6 +390,56 @@ bool CDRMUtils::FindVideoAndGuiPlane(uint32_t format,
              DRMHELPERS::FourCCToString(m_gui_plane->GetFormat()),
              DRMHELPERS::ModifierToString(m_gui_plane->GetModifier()));
   return false;
+}
+
+std::vector<std::pair<uint32_t, uint64_t>> CDRMUtils::GetVideoFormats()
+{
+  std::vector<std::pair<uint32_t, uint64_t>> formats;
+  const auto add = [&formats](uint32_t format, uint64_t modifier)
+  {
+    if (std::ranges::find(formats, std::make_pair(format, modifier)) == formats.end())
+      formats.emplace_back(format, modifier);
+  };
+
+  for (auto& plane : m_planes)
+  {
+    if (plane.get() == m_gui_plane ||
+        !plane->Check(0, 0, DRM_FORMAT_INVALID, DRM_FORMAT_MOD_INVALID, m_crtc, PLANE_TYPE_ANY))
+      continue;
+
+    for (uint32_t format : plane->GetFormats())
+    {
+      add(format, DRM_FORMAT_MOD_LINEAR);
+      for (uint64_t modifier : plane->GetModifiersForFormat(format))
+        add(format, modifier);
+    }
+  }
+  return formats;
+}
+
+CDRMPlane* CDRMUtils::FindOverlayPlane(uint32_t format,
+                                       uint64_t modifier,
+                                       uint64_t width,
+                                       uint64_t height)
+{
+  if (!m_video_plane || !m_gui_plane)
+    return nullptr;
+
+  for (auto& plane : m_planes)
+  {
+    if (plane.get() == m_video_plane || plane.get() == m_gui_plane ||
+        !plane->Check(width, height, format, modifier, m_crtc, PLANE_TYPE_ANY) ||
+        !StackPlanes(m_video_plane, plane.get(), m_gui_plane))
+      continue;
+
+    plane->SetFormat(format);
+    plane->SetModifier(modifier);
+    CLog::LogF(LOGINFO,
+               "Using overlay plane [{}x{}] id:{} between video plane id:{} and gui plane id:{}",
+               width, height, plane->GetId(), m_video_plane->GetId(), m_gui_plane->GetId());
+    return plane.get();
+  }
+  return nullptr;
 }
 
 void CDRMUtils::PrintDrmDeviceInfo(drmDevicePtr device)
