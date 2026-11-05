@@ -2035,6 +2035,7 @@ bool CActiveAE::InitSink()
     CLog::Log(LOGERROR, "ActiveAE::{} - failed to init", __FUNCTION__);
     m_stats.SetSinkCacheTotal(0);
     m_stats.SetSinkLatency(0);
+    m_stats.SetSinkNeedIec(false);
     AEAudioFormat invalidFormat;
     invalidFormat.m_dataFormat = AE_FMT_INVALID;
     m_stats.SetCurrentSinkFormat(invalidFormat);
@@ -2072,6 +2073,8 @@ void CActiveAE::DrainSink()
 
 void CActiveAE::UnconfigureSink()
 {
+  m_stats.SetSinkNeedIec(false);
+
   // send message to sink
   Message *reply;
   if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::UNCONFIGURE, &reply, 2s))
