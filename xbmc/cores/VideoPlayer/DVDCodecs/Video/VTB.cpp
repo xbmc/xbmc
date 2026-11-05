@@ -205,6 +205,15 @@ void CDecoder::Close()
 
 }
 
+/*!
+ * \brief Configure VideoToolbox frame output for the current stream.
+ *
+ * Returning false lets codec selection fall back to software decoding when
+ * VideoToolbox is disabled or the tvOS VP9 requirements are not met.
+ *
+ * \param avctx FFmpeg codec context receiving the hardware frame context.
+ * \return True when hardware frame output is configured.
+ */
 bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
 {
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
