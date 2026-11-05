@@ -40,6 +40,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoUtils.h"
 
 #include <chrono>
 #include <memory>
@@ -266,6 +267,23 @@ bool UpdateDiscStackBookmark(CBookmark& bookmark,
     else if (stackHelper->GetCurrentPartNumber() == 0 &&
              bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
       bookmark.timeInSeconds = 0.0;
+    else if (bookmark.partNumber > 0 && bookmark.partNumber >= stackHelper->GetKnownStackParts())
+    {
+      // Part played out of order has no start time in the stack, so keep the time relative to the
+      // part with the player state needed to restore it. Resume from its start if barely played.
+      if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart ||
+          bookmark.playerState.empty())
+      {
+        bookmark.timeInSeconds = bookmark.partNumber;
+        bookmark.totalTimeInSeconds = stackHelper->GetTotalPartNumbers();
+        bookmark.playerState = VIDEO::UTILS::MakeNextPartPlayerState(bookmark.partNumber, "");
+      }
+      else
+      {
+        bookmark.playerState =
+            VIDEO::UTILS::MakeNextPartPlayerState(bookmark.partNumber, bookmark.playerState);
+      }
+    }
     else
       ConvertRelativeStackTimesToAbsolute(bookmark, file, stackHelper);
   }
@@ -335,6 +353,10 @@ bool UpdatePlayCount(const CFileItem& fileItem, const CBookmark& bookmark)
   if (bookmark.timeInSeconds < 0.0)
     return true; // Finished
 
+  // A next part bookmark's time isn't progress through the whole stack
+  if (VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
+    return false;
+
   const auto advancedSettings{CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()};
   const float percent{static_cast<float>(bookmark.timeInSeconds / bookmark.totalTimeInSeconds) *
                       100.0f};
@@ -382,14 +404,19 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
     if (stackHelper->GetStack(file) != nullptr)
       UpdateStackAndItem(file, fileItem, bookmark, stackHelper);
 
-    if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
-        IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
+    // Time based checks don't apply once finished, or to a next part bookmark (counts parts
+    // rather than seconds)
+    if (bookmark.timeInSeconds >= 0.0 && !VIDEO::UTILS::GetNextPartFromBookmark(bookmark))
     {
-      bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
-    }
-    else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
-    {
-      bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)
+      if (WithinPercentOfEnd(bookmark, advancedSettings->m_videoIgnorePercentAtEnd) ||
+          IsFinished(bookmark.timeInSeconds, bookmark.totalTimeInSeconds))
+      {
+        bookmark.timeInSeconds = -1.0; // Finished (bookmark cleared)
+      }
+      else if (bookmark.timeInSeconds < advancedSettings->m_videoIgnoreSecondsAtStart)
+      {
+        bookmark.timeInSeconds = 0.0; // Not played enough to bookmark (bookmark cleared)
+      }
     }
   }
   else if (MUSIC::IsAudio(fileItem))

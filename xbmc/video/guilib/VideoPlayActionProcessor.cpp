@@ -28,6 +28,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
 
@@ -184,8 +185,18 @@ void CVideoPlayActionProcessor::SetResumeData()
   const auto item{GetItem()};
   if (m_chosenStackPart)
   {
+    const int64_t offset{VIDEO::UTILS::GetStackPartResumeOffset(*item, m_chosenStackPart)};
+    if (offset <= 0)
+    {
+      SetStartData(); // No resume point in the chosen part
+      return;
+    }
     item->SetStartPartNumber(m_chosenStackPart);
-    item->SetStartOffset(VIDEO::UTILS::GetStackPartResumeOffset(*item, m_chosenStackPart));
+    // A player state (DVD/Blu-ray) is only restored through the resume path
+    if (item->GetVideoInfoTag()->GetResumePoint().HasSavedPlayerState())
+      item->SetStartOffset(STARTOFFSET_RESUME);
+    else
+      item->SetStartOffset(offset);
   }
   else
   {
@@ -200,7 +211,10 @@ void CVideoPlayActionProcessor::SetStartData()
   if (m_chosenStackPart)
   {
     item->SetStartPartNumber(m_chosenStackPart);
-    item->SetStartOffset(VIDEO::UTILS::GetStackPartStartOffset(*item, m_chosenStackPart));
+    // Offset is unknown (-1, same as STARTOFFSET_RESUME) for disc stack parts not yet played,
+    // so the part number alone selects the part
+    const int64_t offset{VIDEO::UTILS::GetStackPartStartOffset(*item, m_chosenStackPart)};
+    item->SetStartOffset(offset > 0 ? offset : 0);
   }
   else
   {
