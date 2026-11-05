@@ -136,6 +136,13 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
       else if (packet.pts != DVD_NOPTS_VALUE)
       {
         m_currentPts = packet.pts;
+        if (m_currentOriginalPts == DVD_NOPTS_VALUE)
+          m_currentOriginalPts = packet.originalPts;
+      }
+      else if (m_currentOriginalPts == DVD_NOPTS_VALUE)
+      {
+        // Preserve the first original-media timestamp while waiting for a valid
+        // corrected PTS; the passthrough frame may still overlap an EDL mute.
         m_currentOriginalPts = packet.originalPts;
       }
     }
