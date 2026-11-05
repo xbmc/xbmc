@@ -69,7 +69,10 @@ public:
 
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;
-  bool SupportsPassthroughSilence() const override { return true; }
+  bool SupportsPassthroughSilence() const override
+  {
+    return m_audioSink.SupportsPassthroughSilence();
+  }
 
 protected:
 
