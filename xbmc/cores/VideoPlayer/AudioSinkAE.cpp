@@ -241,7 +241,6 @@ void CAudioSinkAE::Flush()
 
 bool CAudioSinkAE::SupportsPassthroughSilence() const
 {
-  std::unique_lock lock(m_critSection);
   return CServiceBroker::GetActiveAE()->SupportsPassthroughSilence();
 }
 
