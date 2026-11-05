@@ -19,6 +19,7 @@
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
 
+#include <atomic>
 #include <cstdint>
 #include <list>
 #include <mutex>
@@ -70,6 +71,7 @@ public:
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;
   void OnPlaybackStart() override { m_playbackStart = true; }
+  bool SupportsPassthroughSilence() const override { return true; }
 
 protected:
 
