@@ -158,6 +158,19 @@ public:
   const std::string& GetEmulatorName() const { return m_emulatorName; }
   const std::string& GetPlatforms() const { return m_platforms; }
   const std::string& GetLibretroCore() const { return m_libretroCore; }
+
+  /*!
+   * \brief How far the core's states can be trusted, from libretro's core info
+   */
+  enum class SavestateFeatures
+  {
+    UNKNOWN,
+    DISABLED,
+    BASIC,
+    SERIALIZED,
+    DETERMINISTIC,
+  };
+  SavestateFeatures GetSavestateFeatures() const { return m_savestateFeatures; }
   bool SupportsDiscControl() const { return m_supportsDiscControl; }
 
   // Start/stop gameplay
@@ -178,6 +191,19 @@ public:
   double GetSampleRate() const { return m_samplerate.load(); }
   void PollInput();
   void RunFrame(bool pollInput = true);
+
+  /*!
+   * \brief Run a frame that will be rolled back, without the side effects of a
+   *        real one such as evaluating achievements
+   *
+   * \return False if the client can't, or the frame failed
+   */
+  bool RunFrameSpeculative();
+
+  /*!
+   * \brief Whether RunFrameSpeculative() may work, as far as is known yet
+   */
+  bool SupportsSpeculativeFrames() const;
 
   /*!
    * \brief Tell the client what speed the player is running at
@@ -203,6 +229,26 @@ public:
   RestoreResult Deserialize(const uint8_t* data,
                             size_t size,
                             const CGameClientDiscModel* discState = nullptr);
+
+  /*!
+   * \brief Save the client's state to be put back by RestoreState() after
+   * running frames ahead
+   *
+   * The client may refuse while a state couldn't be loaded back, such as
+   * while a tape is loading.
+   */
+  bool SerializeSpeculative(uint8_t* data, size_t size);
+
+  //! Whether SerializeSpeculative() asks the client for a state of its own
+  bool HasSpeculativeStates() const;
+
+  /*!
+   * \brief Put back a state this client produced moments ago
+   *
+   * Unlike Deserialize(), leaves the discs alone: the state was taken from the
+   * running client with the same media inserted.
+   */
+  bool RestoreState(const uint8_t* data, size_t size);
 
   /*!
    * \brief Hold the client still for the duration of a savestate snapshot
@@ -360,11 +406,13 @@ private:
   std::string m_emulatorName;
   std::string m_platforms;
   std::string m_libretroCore;
+  SavestateFeatures m_savestateFeatures{SavestateFeatures::UNKNOWN};
   bool m_supportsDiscControl{false};
 
   // Properties of the current playing file
   std::atomic_bool m_bIsPlaying; // True between OpenFile() and CloseFile()
   std::atomic_bool m_hasFrameRun{false};
+  std::atomic_bool m_speculativeSupported{true};
   // The speed the player is running at, as a multiple of normal speed. Written
   // by the thread that changes the speed and read by the client's own, so it is
   // atomic; a client asks for it from inside a call of its own, which can be on

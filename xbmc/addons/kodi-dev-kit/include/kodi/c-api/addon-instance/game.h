@@ -1812,6 +1812,10 @@ extern "C"
     (const struct AddonInstance_Game*, const uint8_t*, size_t);
     void(__cdecl* FreeString)(const AddonInstance_Game*, char*);
     GAME_ERROR(__cdecl* RCSetAchievementSetEnabled)(const AddonInstance_Game*, unsigned int, bool);
+    GAME_ERROR(__cdecl* RunFrameSpeculative)(const struct AddonInstance_Game*);
+    GAME_ERROR(__cdecl* SerializeSpeculative)(const struct AddonInstance_Game*, uint8_t*, size_t);
+    GAME_ERROR(__cdecl* DeserializeSpeculative)
+    (const struct AddonInstance_Game*, const uint8_t*, size_t);
   } KodiToAddonFuncTable_Game;
 
   /*!

@@ -15,6 +15,7 @@
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
+#include "cores/RetroPlayer/streams/RPStreamManager.h"
 #include "games/GameServices.h"
 #include "games/controllers/ControllerManager.h"
 #include "input/InputManager.h"
@@ -41,10 +42,12 @@ public:
     m_processInfo = std::make_unique<CProcessInfo>();
     m_renderer = std::make_unique<CRPRenderManager>(*m_processInfo);
     m_messenger = std::make_unique<CGUIGameMessenger>(*m_processInfo);
+    m_streams = std::make_unique<CRPStreamManager>(*m_renderer, *m_processInfo);
   }
 
   ~CPlaybackTestEnvironment()
   {
+    m_streams.reset();
     m_messenger.reset();
     m_renderer.reset();
     m_processInfo.reset();
@@ -58,6 +61,7 @@ public:
   CRPRenderManager& Renderer() { return *m_renderer; }
   CRPProcessInfo& ProcessInfo() { return *m_processInfo; }
   CGUIGameMessenger& Messenger() { return *m_messenger; }
+  CRPStreamManager& Streams() { return *m_streams; }
 
 private:
   class CServices : public CServiceManager
@@ -96,5 +100,6 @@ private:
   std::unique_ptr<CProcessInfo> m_processInfo;
   std::unique_ptr<CRPRenderManager> m_renderer;
   std::unique_ptr<CGUIGameMessenger> m_messenger;
+  std::unique_ptr<CRPStreamManager> m_streams;
 };
 } // namespace KODI::RETRO
