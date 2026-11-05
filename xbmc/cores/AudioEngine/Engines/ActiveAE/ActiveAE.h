@@ -278,6 +278,10 @@ public:
   void DefaultDeviceChange() override;
   void DeviceCountChange(const std::string& driver) override;
   bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) override;
+  bool SupportsPassthroughSilence() override
+  {
+    return m_stats.GetSinkNeedIecPack();
+  }
   bool SupportsPassthroughSilence() { return m_stats.GetSinkNeedIecPack(); }
 
   void RegisterAudioCallback(IAudioCallback* pCallback) override;
