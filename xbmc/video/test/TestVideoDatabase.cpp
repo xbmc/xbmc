@@ -1155,6 +1155,23 @@ TEST_F(TestVideoDatabaseClean, KeepsThePathsOfAnUnavailableSource)
   EXPECT_EQ("hash", PathHash(other));
 }
 
+// The path the movie was scanned from is no longer in the library
+TEST_F(TestVideoDatabaseClean, KeepsAMovieWithoutAParentPathWhileItsSourceIsUnavailable)
+{
+  const std::string offline{Folder(m_root, "offline", false)};
+  AddSource(offline, "movies");
+  const std::string film{
+      URIUtils::AddFileToFolder(Folder(offline, "Film (2010)", false), "Film (2010).mkv")};
+  const int idMovie{AddMovie(film)};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE movie SET c23='999999' WHERE idMovie=%i", idMovie)));
+
+  Clean();
+
+  EXPECT_GT(m_db.GetMovieId(film), 0);
+}
+
 TEST_F(TestVideoDatabaseClean, ClearsTheHashesOfEveryFolderOfAShowThatLosesEpisodes)
 {
   const std::string shows{Folder(m_root, "shows")};
@@ -1289,16 +1306,9 @@ namespace
 class CQueuedAnnouncements : public ANNOUNCEMENT::CAnnouncementManager
 {
 public:
-  long CountRemoved(const std::string& type, int id) const
-  {
-    return std::ranges::count_if(m_announcementQueue,
-                                 [&type, id](const CAnnounceData& announcement)
-                                 {
-                                   return announcement.message == "OnRemove" &&
-                                          announcement.data["type"].asString() == type &&
-                                          announcement.data["id"].asInteger() == id;
-                                 });
-  }
+  long CountRemoved(const std::string& type, int id) const { return Count("OnRemove", type, id); }
+
+  long CountUpdated(const std::string& type, int id) const { return Count("OnUpdate", type, id); }
 
   std::vector<CAnnounceData> Files() const
   {
@@ -1307,6 +1317,18 @@ public:
                          [](const CAnnounceData& announcement)
                          { return announcement.flag == ANNOUNCEMENT::Files; });
     return files;
+  }
+
+private:
+  long Count(const std::string& message, const std::string& type, int id) const
+  {
+    return std::ranges::count_if(m_announcementQueue,
+                                 [&message, &type, id](const CAnnounceData& announcement)
+                                 {
+                                   return announcement.message == message &&
+                                          announcement.data["type"].asString() == type &&
+                                          announcement.data["id"].asInteger() == id;
+                                 });
   }
 };
 } // namespace
@@ -1340,6 +1362,170 @@ TEST_F(TestVideoDatabaseClean, AnnouncesAnEpisodeOfAShowWithTwoFoldersRemovedOnc
   EXPECT_EQ(0, m_db.GetSingleValueInt(
                    m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
   EXPECT_EQ(1, announcements->CountRemoved("episode", idEpisode));
+}
+
+// No file is left for the clean to start from
+TEST_F(TestVideoDatabaseClean, RemovesMediaWhoseFileHasGoneFromTheLibrary)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const int idMovie{AddMovie(File(Folder(movies, "Film (2010)"), "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const std::string shows{Folder(m_root, "shows")};
+  AddSource(shows, "tvshows");
+  const std::string show{Folder(shows, "Show")};
+  const int idShow{AddTvShow(show)};
+  ASSERT_GT(idShow, 0);
+  const int idEpisode{AddEpisode(idShow, File(show, "Show S01E01.mkv"), 1)};
+  ASSERT_GT(idEpisode, 0);
+  const std::string musicVideos{Folder(m_root, "musicvideos")};
+  AddSource(musicVideos, "musicvideos");
+  CVideoInfoTag tag{Tag(File(musicVideos, "Artist - Song.mkv"))};
+  const int idMVideo{m_db.SetDetailsForMusicVideo(tag, KODI::ART::Artwork{})};
+  ASSERT_GT(idMVideo, 0);
+
+  ASSERT_TRUE(m_db.ExecuteQuery("DELETE FROM files"));
+  Clean();
+
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM movie WHERE idMovie=%i", idMovie)));
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM musicvideo WHERE idMVideo=%i", idMVideo)));
+}
+
+// Nothing ties media without a file to the source being cleaned
+TEST_F(TestVideoDatabaseClean, KeepsAMovieWhoseFileHasGoneInACleanOfOneSource)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string film{Folder(movies, "Film (2010)")};
+  const int idMovie{AddMovie(File(film, "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_GT(AddMovie(File(film, "Film (2010) Kept.mkv")), 0);
+
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("DELETE FROM files WHERE idFile=%i", m_db.GetFileIdByMovie(idMovie))));
+  m_db.CleanDatabase(nullptr, {m_db.GetPathId(film)}, false);
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM movie WHERE idMovie=%i", idMovie)));
+}
+
+// The clean removes a file whose path has gone without checking it
+TEST_F(TestVideoDatabaseClean, RemovesAMovieWhoseFileHasLostItsPath)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string film{Folder(movies, "Film (2010)")};
+  const int idMovie{AddMovie(File(film, "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const int idFile{m_db.GetFileIdByMovie(idMovie)};
+
+  ASSERT_TRUE(
+      m_db.ExecuteQuery(m_db.PrepareSQL("DELETE FROM path WHERE idPath=%i", m_db.GetPathId(film))));
+  Clean();
+
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM movie WHERE idMovie=%i", idMovie)));
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM files WHERE idFile=%i", idFile)));
+}
+
+TEST_F(TestVideoDatabaseClean, AnnouncesAMovieWhoseDefaultFileHasGoneFromTheLibraryUpdated)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string film{Folder(movies, "Film (2010)")};
+  const int idMovie{AddMovie(File(film, "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const int idVersion{AddAsset(idMovie, File(film, "Film (2010) Extended.mkv"))};
+  ASSERT_GT(idVersion, 0);
+
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("DELETE FROM files WHERE idFile=%i", m_db.GetFileIdByMovie(idMovie))));
+  const auto announcements{std::make_shared<CQueuedAnnouncements>()};
+  CServiceBroker::UnregisterAnnouncementManager();
+  CServiceBroker::RegisterAnnouncementManager(announcements);
+  Clean();
+
+  EXPECT_EQ(idVersion, m_db.GetFileIdByMovie(idMovie));
+  EXPECT_EQ(1, announcements->CountUpdated("movie", idMovie));
+  EXPECT_EQ(0, announcements->CountRemoved("movie", idMovie));
+}
+
+// A version is only reached through its own table once its file has gone
+TEST_F(TestVideoDatabaseClean, RemovesAVersionWhoseFileHasGoneFromTheLibrary)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string film{Folder(movies, "Film (2010)")};
+  const int idMovie{AddMovie(File(film, "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const int idVersion{AddAsset(idMovie, File(film, "Film (2010) Extended.mkv"))};
+  ASSERT_GT(idVersion, 0);
+
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE videoversion SET idFile=999999 WHERE idFile=%i", idVersion)));
+  const auto announcements{std::make_shared<CQueuedAnnouncements>()};
+  CServiceBroker::UnregisterAnnouncementManager();
+  CServiceBroker::RegisterAnnouncementManager(announcements);
+  Clean();
+
+  EXPECT_EQ(0, m_db.GetSingleValueInt("SELECT COUNT(*) FROM videoversion WHERE idFile=999999"));
+  EXPECT_GT(m_db.GetMovieId(File(film, "Film (2010).mkv")), 0);
+  EXPECT_EQ(1, announcements->CountUpdated("movie", idMovie));
+}
+
+// Another client of a shared library can have a source this one hasn't
+TEST_F(TestVideoDatabaseClean, KeepsAnEpisodeOutsideTheSourcesWhileItExists)
+{
+  const std::string shows{Folder(m_root, "shows")};
+  AddSource(shows, "tvshows");
+  const std::string outside{Folder(m_root, "outside")};
+  const std::string inSource{Folder(shows, "Show")};
+  const std::string notInSource{Folder(outside, "Show")};
+
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Show";
+  tag.m_strPath = inSource;
+  const int idShow{m_db.SetDetailsForTvShow({inSource, notInSource}, tag, KODI::ART::Artwork{},
+                                            KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(idShow, 0);
+  const int idEpisode{AddEpisode(idShow, File(notInSource, "Show S01E01.mkv"), 1)};
+  ASSERT_GT(idEpisode, 0);
+
+  Clean();
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
+}
+
+// The source of the show's other folder is available, but doesn't hold the episode
+TEST_F(TestVideoDatabaseClean, KeepsAnEpisodeInAnUnavailableFolderOfAShow)
+{
+  const std::string shows{Folder(m_root, "shows")};
+  AddSource(shows, "tvshows");
+  const std::string offline{Folder(m_root, "offline", false)};
+  AddSource(offline, "tvshows");
+  const std::string available{Folder(shows, "Show")};
+  const std::string unavailable{Folder(offline, "Show", false)};
+
+  CVideoInfoTag tag;
+  tag.m_strTitle = "Show";
+  tag.m_strPath = available;
+  const int idShow{m_db.SetDetailsForTvShow({available, unavailable}, tag, KODI::ART::Artwork{},
+                                            KODI::ART::SeasonsArtwork{})};
+  ASSERT_GT(idShow, 0);
+  const int idEpisode{
+      AddEpisode(idShow, URIUtils::AddFileToFolder(unavailable, "Show S01E01.mkv"), 1)};
+  ASSERT_GT(idEpisode, 0);
+
+  Clean();
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM episode WHERE idEpisode=%i", idEpisode)));
 }
 
 TEST_F(TestVideoDatabaseClean, KeepsAVersionOutsideTheSourcesWhileItExists)
@@ -1538,6 +1724,24 @@ TEST_F(TestVideoDatabaseClean, KeepsThePathOfAFolderStillOnDiskThatLostItsMedia)
   Clean();
 
   EXPECT_GT(m_db.GetPathId(film), 0);
+}
+
+// No path of the source has content set, so the movie's parent path stands in for the source
+TEST_F(TestVideoDatabaseClean, RemovesAMovieThatHasGoneFromASourceWithoutContent)
+{
+  const std::string videos{Folder(m_root, "videos")};
+  CMediaSource source;
+  source.FromNameAndPaths(videos, {videos});
+  CMediaSourceSettings::GetInstance()
+      .GetSources(KODI::MEDIA::MediaSection::VIDEO)
+      .push_back(source);
+  const std::string gone{File(Folder(videos, "Film (2010)"), "Film (2010).mkv")};
+  ASSERT_GT(AddMovie(gone), 0);
+
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+  Clean();
+
+  EXPECT_LE(m_db.GetMovieId(gone), 0);
 }
 
 // Media outside the paths being cleaned is not checked, so the entry of its path must stay too
