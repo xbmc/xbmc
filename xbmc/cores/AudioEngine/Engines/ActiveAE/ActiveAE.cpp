@@ -314,6 +314,12 @@ AEAudioFormat CEngineStats::GetCurrentSinkFormat()
   return m_sinkFormat;
 }
 
+bool CEngineStats::GetSinkNeedIecPack()
+{
+  std::unique_lock lock(m_lock);
+  return m_sinkNeedIecPack;
+}
+
 CActiveAE::CActiveAE() :
   CThread("ActiveAE"),
   m_controlPort("OutputControlPort", &m_inMsgEvent, &m_outMsgEvent),
