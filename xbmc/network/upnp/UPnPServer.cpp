@@ -1473,8 +1473,12 @@ failure:
 NPT_Result CUPnPServer::ServeFile(const NPT_HttpRequest& request,
                                   const NPT_HttpRequestContext& context,
                                   NPT_HttpResponse& response,
-                                  const NPT_String& md5)
+                                  const NPT_String& requested_path)
 {
+  // Platinum joins the requested hash to the "/" file root
+  const NPT_String md5(requested_path.StartsWith("/") ? requested_path.SubString(1)
+                                                      : requested_path);
+
   // Translate hash to filename
   NPT_String file_path(md5), *file_path2;
   {
