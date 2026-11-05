@@ -220,6 +220,9 @@ public:
    */
   virtual enum AEDataFormat GetDataFormat() const = 0;
 
+  // True when RAW passthrough silence is emitted as IEC pause bursts.
+  virtual bool SupportsPassthroughSilence() const { return false; }
+
   /**
    * Return the resample ratio
    * @note This will return an undefined value if the stream is not resampling
