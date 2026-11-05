@@ -1998,7 +1998,8 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   {
     const auto hasEdit = m_Edl.InEdit(GetEdlTime(m_CurrentAudio));
     if (hasEdit && hasEdit.value()->action == EDL::Action::MUTE &&
-        !(m_CurrentAudio.hint.codec == AV_CODEC_ID_TRUEHD && m_VideoPlayerAudio->IsPassthrough()))
+        !(m_CurrentAudio.hint.codec == AV_CODEC_ID_TRUEHD && m_VideoPlayerAudio->IsPassthrough() &&
+          m_VideoPlayerAudio->SupportsPassthroughSilence()))
       drop = true;
   }
 
