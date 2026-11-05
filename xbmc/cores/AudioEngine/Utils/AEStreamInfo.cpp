@@ -293,8 +293,7 @@ unsigned int CAEStreamParser::DetectType(uint8_t* data, unsigned int size)
     }
 
     // if it could be TrueHD
-    if (AllowsTrueHD() && data[4] == 0xf8 && data[5] == 0x72 && data[6] == 0x6f &&
-        data[7] == 0xba)
+    if (AllowsTrueHD() && data[4] == 0xf8 && data[5] == 0x72 && data[6] == 0x6f && data[7] == 0xba)
     {
       unsigned int skip = SyncTrueHD(data, size);
       if (m_hasSync)
