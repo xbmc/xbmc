@@ -69,6 +69,7 @@ AchievementState CAchievementRuntime::GetState() const
 
 AchievementState CAchievementRuntime::MarkEarned(unsigned int achievementId,
                                                  const CDateTime& unlockedDate,
+                                                 bool hardcore,
                                                  bool& newlyEarned)
 {
   std::lock_guard<std::mutex> lock(m_mutex);
@@ -89,6 +90,14 @@ AchievementState CAchievementRuntime::MarkEarned(unsigned int achievementId,
         RecountUnlocked();
         newlyEarned = true;
       }
+      else if (hardcore && !info.earnedHardcore)
+      {
+        info.unlockedDate = unlockedDate;
+        newlyEarned = true;
+      }
+
+      if (hardcore)
+        info.earnedHardcore = true;
       break;
     }
   }
