@@ -35,6 +35,40 @@
 
 using namespace std::chrono_literals;
 
+namespace
+{
+void ClearBuffersWithStencil(GLbitfield flags)
+{
+  GLint stencilMask, stencilBackMask, stencilClear;
+  glGetIntegerv(GL_STENCIL_WRITEMASK, &stencilMask);
+  glGetIntegerv(GL_STENCIL_BACK_WRITEMASK, &stencilBackMask);
+  glGetIntegerv(GL_STENCIL_CLEAR_VALUE, &stencilClear);
+  glStencilMask(0xFF);
+  glClearStencil(0);
+
+  GLboolean depthMask{GL_FALSE};
+  GLfloat depthClear{0.0f};
+  if (flags & GL_DEPTH_BUFFER_BIT)
+  {
+    glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
+    glGetFloatv(GL_DEPTH_CLEAR_VALUE, &depthClear);
+    glDepthMask(GL_TRUE);
+    glClearDepthf(0.0f);
+  }
+
+  glClear(flags | GL_STENCIL_BUFFER_BIT);
+
+  if (flags & GL_DEPTH_BUFFER_BIT)
+  {
+    glDepthMask(depthMask);
+    glClearDepthf(depthClear);
+  }
+  glStencilMaskSeparate(GL_FRONT, stencilMask);
+  glStencilMaskSeparate(GL_BACK, stencilBackMask);
+  glClearStencil(stencilClear);
+}
+} // namespace
+
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
 {
@@ -281,14 +315,12 @@ void CRenderSystemGLES::InvalidateColorBuffer()
 
   // some platforms prefer a clear, instead of rendering over
   if (GetClearFunction() == ClearFunction::FIXED_FUNCTION)
+  {
     ClearBuffers(0);
-
-  if (!GetEnabledFrontToBackRendering())
     return;
+  }
 
-  glClearDepthf(0);
-  glDepthMask(true);
-  glClear(GL_DEPTH_BUFFER_BIT);
+  ClearBuffersWithStencil(GetEnabledFrontToBackRendering() ? GL_DEPTH_BUFFER_BIT : 0);
 }
 
 bool CRenderSystemGLES::ClearBuffers(KODI::UTILS::COLOR::Color color)
@@ -306,13 +338,9 @@ bool CRenderSystemGLES::ClearBuffers(KODI::UTILS::COLOR::Color color)
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
 
   if (GetEnabledFrontToBackRendering())
-  {
-    glClearDepthf(0);
-    glDepthMask(GL_TRUE);
     flags |= GL_DEPTH_BUFFER_BIT;
-  }
 
-  glClear(flags);
+  ClearBuffersWithStencil(flags);
 
   return true;
 }
@@ -690,6 +718,28 @@ void CRenderSystemGLES::InitialiseShaders()
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA].reset();
     CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_noalpha.frag - compile and link failed");
   }
+
+  const std::string definesFontsRGBA = defines + "#define KODI_FONTS_RGBA 1\n";
+
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA] = std::make_unique<CGLESShader>(
+      "gles_shader_simple.vert", "gles_shader_fonts.frag", definesFontsRGBA);
+  if (!m_pShader[ShaderMethodGLES::SM_FONTS_RGBA]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA]->Free();
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_simple.vert + gles_shader_fonts.frag (RGBA) - "
+                        "compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP] = std::make_unique<CGLESShader>(
+      "gles_shader_clip.vert", "gles_shader_fonts.frag", definesFontsRGBA);
+  if (!m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP]->Free();
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_clip.vert + gles_shader_fonts.frag (RGBA) - "
+                        "compile and link failed");
+  }
 }
 
 void CRenderSystemGLES::ReleaseShaders()
@@ -761,6 +811,14 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA]->Free();
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_FONTS_RGBA])
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA]->Free();
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP])
+    m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP]->Free();
+  m_pShader[ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP].reset();
 }
 
 void CRenderSystemGLES::EnableGUIShader(ShaderMethodGLES method)

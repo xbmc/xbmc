@@ -1444,8 +1444,10 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         // if input format does not follow ffmpeg channel mask, we may need to remap channels
         (*it)->InitRemapper();
       }
+      double resampleRatio = 1.0;
       if (initSink && (*it)->m_processingBuffers)
       {
+        resampleRatio = (*it)->m_processingBuffers->GetRR();
         (*it)->m_processingBuffers->Flush();
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetResampleBuffers());
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetAtempoBuffers());
@@ -1459,6 +1461,10 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
         (*it)->m_processingBuffers->Create(MAX_CACHE_LEVEL * 1000, false, m_settings.stereoupmix,
                                            m_settings.normalizelevels, m_settings.mixSubLevel);
+
+        // A stream only sends its resample ratio when it changes, so keep it
+        // across a sink change
+        (*it)->m_processingBuffers->SetRR(resampleRatio, m_settings.atempoThreshold);
       }
       if (m_mode == MODE_TRANSCODE || m_streams.size() > 1)
         (*it)->m_processingBuffers->FillBuffer();
@@ -1656,13 +1662,13 @@ void CActiveAE::SFlushStream(CActiveAEStream *stream)
   // flush the engine if we only have a single stream
   if (m_streams.size() == 1)
   {
-    FlushEngine();
+    FlushEngine(true);
   }
 
   m_stats.UpdateStream(stream);
 }
 
-void CActiveAE::FlushEngine()
+void CActiveAE::FlushEngine(bool discardOutput)
 {
   if (m_sinkBuffers)
     m_sinkBuffers->Flush();
@@ -1692,7 +1698,8 @@ void CActiveAE::FlushEngine()
 
   // send message to sink
   Message *reply;
-  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s))
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s,
+                                              &discardOutput, sizeof(discardOutput)))
   {
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
@@ -2455,7 +2462,9 @@ bool CActiveAE::RunStages()
               CLog::Log(LOGWARNING, "ActiveAE::{} - viz ran out of free buffers", __FUNCTION__);
             AEDelayStatus status;
             m_stats.GetDelay(status);
-            int64_t now = std::chrono::steady_clock::now().time_since_epoch().count();
+            int64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
+                              std::chrono::steady_clock::now().time_since_epoch())
+                              .count();
             int64_t timestamp = now + status.GetDelay() * 1000;
             busy |= m_vizBuffers->ResampleBuffers(timestamp);
             while(!m_vizBuffers->m_outputSamples.empty())

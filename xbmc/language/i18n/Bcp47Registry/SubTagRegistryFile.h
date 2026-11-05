@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "filesystem/File.h"
 #include "language/i18n/Bcp47Registry/RegistryRecordProvider.h"
 
+#include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
@@ -20,15 +21,31 @@ namespace KODI::LANGUAGE::I18N
 class CRegistryFile : public IRegistryRecordProvider
 {
 public:
-  class CRegFile : public XFILE::CFile
+  /*!
+   * \brief The registry file, read into memory in one go.
+   */
+  class CRegFile
   {
   public:
+    /*!
+     * \brief Load the whole file
+     * \param[in] filePath path of the file
+     * \return true for success, otherwise false
+     */
+    bool Open(const std::string& filePath);
+
     /*!
      * \brief Read the file record by record
      * \param[out] lines the fetched record
      * \return true for success, otherwise false for EOF or error
      */
     bool ReadRecord(std::vector<std::string>& lines);
+
+  private:
+    bool ReadLine(std::string& line);
+
+    std::vector<uint8_t> m_data;
+    std::size_t m_pos{0};
   };
 
   CRegistryFile(std::string filePath) : m_filePath(filePath) {}

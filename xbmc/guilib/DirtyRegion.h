@@ -20,6 +20,8 @@ public:
   CDirtyRegion() : CRect() { m_age = 0; }
 
   int UpdateAge() { return ++m_age; }
+  int GetAge() const { return m_age; }
+
 private:
   int m_age;
 };

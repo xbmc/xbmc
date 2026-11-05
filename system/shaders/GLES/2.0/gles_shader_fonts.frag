@@ -28,10 +28,14 @@ uniform float m_sdrPeak;
 
 void main ()
 {
+#if defined(KODI_FONTS_RGBA)
+  vec4 rgb = m_colour * texture2D(m_samp0, m_cord0.xy);
+#else
   vec4 rgb;
 
   rgb.rgb = m_colour.rgb;
   rgb.a = m_colour.a * texture2D(m_samp0, m_cord0.xy).a;
+#endif
 
 #if defined(KODI_LIMITED_RANGE)
   rgb.rgb *= (235.0 - 16.0) / 255.0;

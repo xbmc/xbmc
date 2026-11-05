@@ -12,6 +12,7 @@
 
 #include <androidjni/ActivityManager.h>
 #include <androidjni/Context.h>
+#include <androidjni/jutils-details.hpp>
 
 namespace KODI
 {
@@ -50,8 +51,9 @@ void GetMemoryStatus(MemoryStatus* buffer)
     }
 
     *buffer = {};
-    buffer->totalPhys = static_cast<unsigned long>(info.totalMem());
-    buffer->availPhys = static_cast<unsigned long>(info.availMem());
+    // The libandroidjni accessors return long, which truncates Java long values on 32-bit Android.
+    buffer->totalPhys = static_cast<uint64_t>(jni::get_field<jlong>(info.get_raw(), "totalMem"));
+    buffer->availPhys = static_cast<uint64_t>(jni::get_field<jlong>(info.get_raw(), "availMem"));
   }
 }
 

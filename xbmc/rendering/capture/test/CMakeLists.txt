@@ -1,4 +1,5 @@
 set(SOURCES TestCaptureConvert.cpp
+            TestCaptureMetadata.cpp
             TestCaptureReadback.cpp
             TestCaptureService.cpp)
 

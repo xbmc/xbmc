@@ -189,7 +189,13 @@ CInfoScanner::InfoType CNfoFile::SearchNfoForScraperUrls(CInfoScanner::InfoType 
   SetScraperInfo(info); // assume we can use these settings
   const AddonType addonType = ScraperTypeFromContent(info->Content());
 
-  for (const auto& scraper : GetScrapers(addonType, info))
+  // A video's url is only taken from the scraper chosen for its path, which is the one the url is
+  // fetched with. A tv show's episodes are also looked up in the episode guide stored with it,
+  // which only the scraper that added it understands.
+  const bool isVideo{addonType == AddonType::SCRAPER_MOVIES ||
+                     addonType == AddonType::SCRAPER_TVSHOWS ||
+                     addonType == AddonType::SCRAPER_MUSICVIDEOS};
+  for (const auto& scraper : isVideo ? std::vector<ScraperPtr>{info} : GetScrapers(addonType, info))
   {
     if (scraper->IsNoop())
     {

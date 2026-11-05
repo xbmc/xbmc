@@ -54,6 +54,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
 
 #include <memory>
@@ -1369,7 +1370,10 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
       NPT_CHECK_LABEL(position.ToInteger32(resume), args);
 
       if (resume <= 0)
+      {
         db.ClearBookMarksOfFile(file_path, CBookmark::RESUME);
+        VIDEO::UTILS::AnnounceResumePointChanged(file_path, {});
+      }
       else
       {
         CBookmark bookmark;
@@ -1378,6 +1382,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
         bookmark.playerState = new_vals["lastPlayerState"];
 
         db.AddBookMarkToFile(file_path, bookmark, CBookmark::RESUME);
+        VIDEO::UTILS::AnnounceResumePointChanged(file_path, bookmark);
       }
       if (playCount.IsEmpty())
       {
@@ -1401,6 +1406,7 @@ NPT_Result CUPnPServer::OnUpdateObject(PLT_ActionReference& action,
         lastPlayedObj.SetFromW3CDateTime(lastPlayed.GetChars());
 
       db.SetPlayCount(updated, count, lastPlayedObj);
+      VIDEO::UTILS::AnnouncePlayCountChanged(file_path, count);
       updatelisting = true;
     }
 

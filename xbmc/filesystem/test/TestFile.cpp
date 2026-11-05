@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "URL.h"
 #include "filesystem/File.h"
 #include "test/TestUtils.h"
 
@@ -14,6 +15,47 @@
 #include <string_view>
 
 #include <gtest/gtest.h>
+
+#ifdef TARGET_POSIX
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+
+TEST(TestFile, OpenExplicitNativeColonFilename)
+{
+  struct ScopedDirectory
+  {
+    const std::filesystem::path previous{std::filesystem::current_path()};
+    std::filesystem::path temporary;
+    ~ScopedDirectory()
+    {
+      std::filesystem::current_path(previous);
+      if (!temporary.empty())
+      {
+        std::filesystem::remove(temporary / "notes:2026");
+        std::filesystem::remove(temporary);
+      }
+    }
+  } directory;
+  std::string path = (std::filesystem::temp_directory_path() / "kodi-native-XXXXXX").string();
+  ASSERT_NE(nullptr, mkdtemp(path.data()));
+  directory.temporary = path;
+  std::filesystem::current_path(directory.temporary);
+  {
+    std::ofstream output("notes:2026");
+    output << "native";
+    ASSERT_TRUE(output.good());
+  }
+
+  CURL native;
+  native.ParseNativePath("notes:2026");
+  XFILE::CFile file;
+  ASSERT_TRUE(file.Open(native, XFILE::READ_NO_CACHE));
+  char contents[6]{};
+  ASSERT_EQ(sizeof(contents), file.Read(contents, sizeof(contents)));
+  EXPECT_EQ("native", std::string(contents, sizeof(contents)));
+}
+#endif
 
 TEST(TestFile, Read)
 {

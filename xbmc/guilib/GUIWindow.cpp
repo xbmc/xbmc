@@ -639,6 +639,10 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         //tell focused control that it has lost the focus
         CGUIMessage msgLostFocus(GUI_MSG_LOSTFOCUS, GetID(), control->GetID(), control->GetID());
         control->OnMessage(msgLostFocus);
+        // the groups containing the control don't unfocus themselves as it's still their child
+        for (CGUIControl* parent = control->GetParentControl(); parent && parent != this;
+             parent = parent->GetParentControl())
+          parent->SetFocus(false);
         CLog::Log(LOGDEBUG, "Unfocus WindowID: {}, ControlID: {}", GetID(), control->GetID());
       }
       return true;
@@ -653,9 +657,13 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         // this can happen when one control overlap the other one in the same
         // coordinates with similar sizes and the mouse pointer is over them
         // in this case only the control in the highest layer will have the focus
+        const CGUIControl* focusedChild = GetFocusedControl();
+        while (focusedChild && focusedChild->GetParentControl() != this)
+          focusedChild = focusedChild->GetParentControl();
         for (CGUIControl* control : m_children)
         {
-          if (control->GetID() != m_focusedControl)
+          // the group containing the focused control keeps its focus
+          if (control->GetID() != m_focusedControl && control != focusedChild)
             control->SetFocus(false);
         }
         return true;

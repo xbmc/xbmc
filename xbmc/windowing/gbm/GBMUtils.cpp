@@ -79,12 +79,17 @@ CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer& CGBMUtils::CGBMDevice::CG
 {
   m_buffers.emplace(std::make_unique<CGBMSurfaceBuffer>(m_surface));
 
-  if (!static_cast<bool>(gbm_surface_has_free_buffers(m_surface)))
+  /*
+   * Hold the buffer being scanned out and the one just submitted; anything older cannot
+   * still be in use. Releasing the rest keeps the implementation from having to allocate
+   * a deeper set of buffers than the flip needs. If the implementation has none left, one
+   * must still be released for the next eglSwapBuffers().
+   */
+  while (m_buffers.size() > BUFFERS_HELD ||
+         (m_buffers.size() > 1 && !static_cast<bool>(gbm_surface_has_free_buffers(m_surface))))
   {
     /*
-     * We want to use call_once here because we want it to be logged the first time that
-     * we have to release buffers. This means that the maximum amount of buffers had been reached.
-     * For mesa this should be 4 buffers but it may vary across other implementations.
+     * Logged once, the first time a buffer is released, so it shows the most buffers held.
      */
     std::call_once(flag, [this]()
                    { CLog::Log(LOGDEBUG, "CGBMUtils - using {} buffers", m_buffers.size()); });

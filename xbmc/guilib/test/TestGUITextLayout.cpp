@@ -116,6 +116,14 @@ static const std::vector<TagTestParam> filterTestCases{
     {"[B][/B]", ""},
     {"[B][B][/B][/B]", ""},
     {"[b]text[/b]", "[b]text[/b]"},
+
+    // Characters beyond the Basic Multilingual Plane
+    {"\xF0\x9F\xA4\xAF text", "\xF0\x9F\xA4\xAF text"},
+    {"[B]\xF0\x9F\xA4\xAF[/B] text", "\xF0\x9F\xA4\xAF text"},
+    {"[UPPERCASE]a\xF0\x9F\x98\x80"
+     "b[/UPPERCASE]",
+     "A\xF0\x9F\x98\x80"
+     "B"},
 };
 
 INSTANTIATE_TEST_SUITE_P(TestGUITextLayoutFilter,

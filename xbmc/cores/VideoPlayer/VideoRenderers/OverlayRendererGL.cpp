@@ -101,7 +101,7 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
   }
   else
   {
-    std::vector<uint32_t> rgba(o.width * o.height);
+    std::vector<uint32_t> rgba(static_cast<size_t>(o.width) * o.height);
     m_pma = !!USE_PREMULTIPLIED_ALPHA;
     convert_rgba(o, m_pma, rgba);
     LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.width * 4, &m_u, &m_v, false, rgba.data());
@@ -158,7 +158,7 @@ std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o)
 COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
 {
   int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba(o.width * o.height);
+  std::vector<uint32_t> rgba(static_cast<size_t>(o.width) * o.height);
 
   convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
 

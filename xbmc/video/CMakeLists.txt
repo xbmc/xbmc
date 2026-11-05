@@ -26,6 +26,7 @@ set(SOURCES Bookmark.cpp
             VideoInfoDownloader.cpp
             VideoInfoScanner.cpp
             VideoInfoScannerArt.cpp
+            VideoInfoScannerExtras.cpp
             VideoInfoTag.cpp
             VideoItemArtworkHandler.cpp
             VideoLibraryQueue.cpp
@@ -58,6 +59,7 @@ set(HEADERS Bookmark.h
             VideoDatabase.h
             VideoDatabaseColumns.h
             VideoDatabaseDDL.h
+            VideoDatabaseMigration.h
             VideoDbPaths.h
             VideoDbUrl.h
             VideoEmbeddedImageFileLoader.h
@@ -66,6 +68,7 @@ set(HEADERS Bookmark.h
             VideoInfoDownloader.h
             VideoInfoScanner.h
             VideoInfoScannerArt.h
+            VideoInfoScannerExtras.h
             VideoInfoTag.h
             VideoItemArtworkHandler.h
             VideoLibraryQueue.h

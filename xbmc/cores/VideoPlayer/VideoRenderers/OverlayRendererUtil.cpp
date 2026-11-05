@@ -223,7 +223,7 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
   // allocate space for the glyph positions and texturedata
   quads.quad.resize(count);
-  quads.texture.resize(quads.size_x * quads.size_y);
+  quads.texture.resize(static_cast<size_t>(quads.size_x) * quads.size_y);
 
   SQuad* v = quads.quad.data();
   uint8_t* data = quads.texture.data();

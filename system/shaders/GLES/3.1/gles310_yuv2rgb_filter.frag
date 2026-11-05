@@ -97,6 +97,9 @@ void main()
 #endif
 
   rgb = m_yuvmat * yuv;
+#if defined(KODI_HUESAT_PQ) || defined(KODI_HUESAT_HLG)
+  rgb.rgb = hueSaturation(rgb.rgb);
+#endif
   rgb.a = m_alpha;
 
 #if defined(XBMC_COL_CONVERSION)
@@ -123,6 +126,10 @@ void main()
   rgb.rgb = pow(rgb.rgb, vec3(1.0 / 2.2));
 #endif
 
+#endif
+
+#if defined(KODI_GAMMA)
+  rgb.rgb = pow(clamp((rgb.rgb - m_gammaRange.y) / m_gammaRange.x, 0.0, 1.0), vec3(m_gammaInv)) * m_gammaRange.x + m_gammaRange.y;
 #endif
 
   fragColor = rgb;

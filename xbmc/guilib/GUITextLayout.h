@@ -33,7 +33,7 @@ class CScrollInfo;
 // 5.  Each item in the vector is length-calculated, and then layout occurs governed by alignment and wrapping rules.
 // 6.  A new vector<CGUIString> is constructed
 
-typedef uint32_t character_t;
+typedef uint64_t character_t;
 typedef std::vector<character_t> vecText;
 
 class CGUIString
@@ -45,10 +45,10 @@ public:
 
   std::string GetAsString() const;
 
-  // The text is UTF-16 and the data stored in a character_t hold multiple information by bits:
-  // <16 bits: are unicode code bits
-  // 16-24 bits: are color bits
-  // 24-32 bits: are style bits (see FONT_STYLE_* flags)
+  // The text is UTF-32 and the data stored in a character_t hold multiple information by bits:
+  // <32 bits: are unicode code bits
+  // 32-40 bits: are color bits
+  // 40-48 bits: are style bits (see FONT_STYLE_* flags)
   vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
 };
@@ -148,9 +148,9 @@ protected:
   void LineBreakText(const vecText &text, std::vector<CGUIString> &lines);
   void WrapText(const vecText &text, float maxWidth);
   static void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
-  static std::wstring BidiFlip(const std::wstring& text,
-                               bool forceLTRReadingOrder,
-                               int* visualToLogicalMap = nullptr);
+  static std::u32string BidiFlip(const std::u32string& text,
+                                 bool forceLTRReadingOrder,
+                                 int* visualToLogicalMap = nullptr);
   void CalcTextExtent();
   void UpdateCommon(const std::wstring &text, float maxWidth, bool forceLTRReadingOrder);
 
@@ -189,11 +189,11 @@ protected:
 private:
   inline bool IsSpace(character_t letter) const XBMC_FORCE_INLINE
   {
-    return (letter & 0xffff) == L' ';
+    return (letter & 0xffffffff) == L' ';
   };
   inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
   {
-    character_t ch = letter & 0xffff;
+    character_t ch = letter & 0xffffffff;
     //! @todo: unicode spaces are not handled, to check also all other GUI parts
     return ch == L' ';
   };

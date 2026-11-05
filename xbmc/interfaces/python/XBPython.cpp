@@ -19,6 +19,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/legacy/AddonUtils.h"
+#include "interfaces/legacy/CallbackHandler.h"
 #include "interfaces/legacy/Monitor.h"
 #include "interfaces/python/AddonPythonInvoker.h"
 #include "interfaces/python/PythonInvoker.h"
@@ -497,6 +498,9 @@ void XBPython::Uninitialize()
 
   // cleanup threads that are still running
   tmpvec.clear();
+
+  // callbacks for the stopped scripts can still be queued
+  XBMCAddon::RetardedAsyncCallbackHandler::clearAllPendingCalls();
 }
 
 void XBPython::Process()

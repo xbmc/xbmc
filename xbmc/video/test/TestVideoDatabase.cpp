@@ -11,6 +11,7 @@
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "XBDateTime.h"
 #include "cores/VideoSettings.h"
 #include "filesystem/Directory.h"
@@ -19,9 +20,13 @@
 #include "filesystem/SpecialProtocol.h"
 #include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
+#include "language/LangInfo.h"
 #include "playlists/SmartPlayList.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/StreamDetails.h"
@@ -33,14 +38,21 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoScannerExtras.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
+#include "video/VideoUtils.h"
+#include "video/jobs/VideoLibraryMarkWatchedJob.h"
+#include "video/jobs/VideoLibraryResetResumePointJob.h"
 
 #include <algorithm>
 #include <filesystem>
+#include <iterator>
 #include <memory>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -678,6 +690,59 @@ TEST_F(TestVideoDatabase, ExportToXMLWritesStoredRuntime)
   EXPECT_EQ(22, runtime);
 }
 
+// The entries of a disc share its nfo even where another of the movie's files sorts between them,
+// as a file extra's folder does between the disc's raw default and its playlists
+TEST_F(TestVideoDatabase, ExportToSeparateFilesKeepsADiscsEntriesTogether)
+{
+  const std::string root{
+      CSpecialProtocol::TranslatePath("special://temp/ExportDisc/Movie (2020)/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  const std::string bdmv{URIUtils::AddFileToFolder(root, "Disc 1", "BDMV")};
+  const std::string extras{URIUtils::AddFileToFolder(root, "Extras")};
+  for (const std::string& folder : {root, URIUtils::AddFileToFolder(root, "Disc 1"), bdmv,
+                                    URIUtils::AddFileToFolder(bdmv, "PLAYLIST"), extras})
+    ASSERT_TRUE(XFILE::CDirectory::Create(folder));
+  const std::string disc{URIUtils::AddFileToFolder(bdmv, "index.bdmv")};
+  const std::string trailer{URIUtils::AddFileToFolder(extras, "trailer.mkv")};
+  for (const std::string& file :
+       {disc, URIUtils::AddFileToFolder(bdmv, "PLAYLIST", "00801.mpls"), trailer})
+  {
+    XFILE::CFile out;
+    ASSERT_TRUE(out.OpenForWrite(file, true));
+    out.Close();
+  }
+
+  const int idMovie{AddMovie(disc)};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{URIUtils::GetBlurayPlaylistPath(disc, 801), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(
+      VideoDbContentType::MOVIES, idMovie,
+      m_db.AddVideoVersionType("Extended", VideoAssetTypeOwner::USER, VideoAssetType::VERSION),
+      VideoAssetType::VERSION, version));
+  CFileItem extra{trailer, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(
+      VideoDbContentType::MOVIES, idMovie,
+      m_db.AddVideoVersionType("Trailer", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA),
+      VideoAssetType::EXTRA, extra));
+
+  m_db.ExportToXML(root, false);
+
+  CXBMCTinyXML doc;
+  const bool loaded{doc.LoadFile(URIUtils::AddFileToFolder(bdmv, "index.nfo"))};
+  std::vector<int> playlists;
+  for (const TiXmlElement* movie{loaded ? doc.RootElement()->FirstChildElement("movie") : nullptr};
+       movie; movie = movie->NextSiblingElement("movie"))
+  {
+    int playlist{-1};
+    XMLUtils::GetInt(movie, "playlist", playlist);
+    playlists.emplace_back(playlist);
+  }
+  XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath("special://temp/ExportDisc/"));
+  ASSERT_TRUE(loaded);
+  EXPECT_EQ(2u, playlists.size());
+  EXPECT_NE(playlists.end(), std::ranges::find(playlists, 801));
+}
+
 // The converted movie's file is kept as the version, so its streamdetails must be kept too
 TEST_F(TestVideoDatabase, ConvertVideoToVersionKeepsStreamDetails)
 {
@@ -1234,6 +1299,15 @@ public:
                                           announcement.data["id"].asInteger() == id;
                                  });
   }
+
+  std::vector<CAnnounceData> Files() const
+  {
+    std::vector<CAnnounceData> files;
+    std::ranges::copy_if(m_announcementQueue, std::back_inserter(files),
+                         [](const CAnnounceData& announcement)
+                         { return announcement.flag == ANNOUNCEMENT::Files; });
+    return files;
+  }
 };
 } // namespace
 
@@ -1306,6 +1380,27 @@ TEST_F(TestVideoDatabaseClean, KeepsAVersionOutsideTheSourcesWhoseFolderIsUnavai
   Clean();
 
   EXPECT_EQ(idMovie, m_db.GetMovieId(unavailable));
+}
+
+TEST_F(TestVideoDatabaseClean, RemovesAnExtraOutsideTheSourcesWhoseDiscHasGone)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const int idMovie{AddMovie(File(Folder(movies, "Film (2010)"), "Film (2010).mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const std::string gone{URIUtils::GetBlurayPlaylistPath(
+      URIUtils::AddFileToFolder(Folder(m_root, "outside"), "BDMV", "index.bdmv"), 801)};
+  const int idExtra{AddAsset(idMovie, gone, VideoAssetType::EXTRA)};
+  ASSERT_GT(idExtra, 0);
+  const std::string unavailable{URIUtils::GetBlurayPlaylistPath(
+      URIUtils::AddFileToFolder(Folder(m_root, "unplugged", false), "BDMV", "index.bdmv"), 801)};
+  ASSERT_GT(AddAsset(idMovie, unavailable, VideoAssetType::EXTRA), 0);
+
+  Clean();
+
+  EXPECT_EQ(0, m_db.GetSingleValueInt(
+                   m_db.PrepareSQL("SELECT COUNT(*) FROM files WHERE idFile=%i", idExtra)));
+  EXPECT_EQ(idMovie, m_db.GetVideoVersionInfo(unavailable).m_idMedia);
 }
 
 TEST_F(TestVideoDatabaseClean, KeepsAPromotedVersionOutsideTheSourcesOnTheNextClean)
@@ -1585,4 +1680,663 @@ TEST_F(TestVideoDatabase, SetDefaultVideoVersionKeepsOnlyTheMovieArt)
                    "SELECT COUNT(*) FROM art WHERE media_id = " + std::to_string(movieId) +
                    " AND media_type = 'movie' AND type = 'fanart'"));
   EXPECT_EQ("old-fanart.jpg", m_db.GetArtForItem(movieId, KODI::MEDIA::TYPE::MOVIE, "fanart"));
+}
+
+namespace
+{
+// The jobs run on the test database instead of the library's
+class MarkWatchedJob : public CVideoLibraryMarkWatchedJob
+{
+public:
+  using CVideoLibraryMarkWatchedJob::CVideoLibraryMarkWatchedJob;
+  using CVideoLibraryMarkWatchedJob::Work;
+};
+
+class ResetResumePointJob : public CVideoLibraryResetResumePointJob
+{
+public:
+  using CVideoLibraryResetResumePointJob::CVideoLibraryResetResumePointJob;
+  using CVideoLibraryResetResumePointJob::Work;
+};
+
+class TestPlayStateAnnouncements : public TestVideoDatabase
+{
+protected:
+  void SetUp() override
+  {
+    TestVideoDatabase::SetUp();
+    CServiceBroker::UnregisterAnnouncementManager();
+    CServiceBroker::RegisterAnnouncementManager(m_announcements);
+  }
+
+  const std::shared_ptr<CQueuedAnnouncements> m_announcements{
+      std::make_shared<CQueuedAnnouncements>()};
+};
+
+constexpr const char* PLUGIN_ITEM = "plugin://plugin.video.example/play/?id=1";
+
+// A plugin item showing the play count and resume point its add-on gave it, unknown to the database
+std::shared_ptr<CFileItem> PluginItem(int playCount, double resumeSeconds = 0.0)
+{
+  auto item{std::make_shared<CFileItem>(PLUGIN_ITEM, false)};
+  item->GetVideoInfoTag()->SetPlayCount(playCount);
+  CBookmark resumePoint;
+  resumePoint.timeInSeconds = resumeSeconds;
+  resumePoint.totalTimeInSeconds = 3600.0;
+  item->GetVideoInfoTag()->SetResumePoint(resumePoint);
+  return item;
+}
+} // namespace
+
+TEST_F(TestPlayStateAnnouncements, MarkingUnwatchedAnnouncesAPlayCountTheDatabaseNeverHad)
+{
+  ASSERT_TRUE(MarkWatchedJob(PluginItem(1), false).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("OnPlayCountChanged", files[0].message);
+  EXPECT_EQ(PLUGIN_ITEM, files[0].data["file"].asString());
+  EXPECT_EQ(0, files[0].data["playcount"].asInteger());
+}
+
+TEST_F(TestPlayStateAnnouncements, MarkingWatchedResetsTheResumePointShownFirst)
+{
+  ASSERT_TRUE(MarkWatchedJob(PluginItem(0, 600.0), true).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(2u, files.size());
+  EXPECT_EQ("OnResumePointChanged", files[0].message);
+  EXPECT_EQ(0.0, files[0].data["resume"]["position"].asDouble());
+  EXPECT_EQ("OnPlayCountChanged", files[1].message);
+  EXPECT_EQ(1, files[1].data["playcount"].asInteger());
+}
+
+TEST_F(TestPlayStateAnnouncements, MarkingAnItemShownInThatStateAnnouncesNothing)
+{
+  ASSERT_TRUE(MarkWatchedJob(PluginItem(1), true).Work(m_db));
+
+  EXPECT_TRUE(m_announcements->Files().empty());
+}
+
+TEST_F(TestPlayStateAnnouncements, MarkingWatchedResetsAResumePointOnlyTheDatabaseHad)
+{
+  CBookmark resumePoint;
+  resumePoint.timeInSeconds = 600.0;
+  resumePoint.totalTimeInSeconds = 3600.0;
+  ASSERT_TRUE(m_db.AddBookMarkToFile("/videos/film.mkv", resumePoint, CBookmark::RESUME));
+
+  // As the items of a folder come, without a video info tag
+  ASSERT_TRUE(
+      MarkWatchedJob(std::make_shared<CFileItem>("/videos/film.mkv", false), true).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(2u, files.size());
+  EXPECT_EQ("OnResumePointChanged", files[0].message);
+  EXPECT_EQ("/videos/film.mkv", files[0].data["file"].asString());
+  EXPECT_EQ("OnPlayCountChanged", files[1].message);
+}
+
+TEST_F(TestPlayStateAnnouncements, ResettingAResumePointTheDatabaseNeverHadAnnouncesIt)
+{
+  ASSERT_TRUE(ResetResumePointJob(PluginItem(0, 600.0)).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("OnResumePointChanged", files[0].message);
+  EXPECT_EQ(PLUGIN_ITEM, files[0].data["file"].asString());
+  EXPECT_EQ(0.0, files[0].data["resume"]["position"].asDouble());
+}
+
+TEST_F(TestPlayStateAnnouncements, ResettingALibraryItemAnnouncesItsFile)
+{
+  auto item{std::make_shared<CFileItem>("videodb://movies/titles/1", false)};
+  item->GetVideoInfoTag()->m_strFileNameAndPath = "/movies/film.mkv";
+
+  ASSERT_TRUE(ResetResumePointJob(item).Work(m_db));
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("/movies/film.mkv", files[0].data["file"].asString());
+}
+
+TEST_F(TestPlayStateAnnouncements, AnnouncesAFileWithoutCredentials)
+{
+  KODI::VIDEO::UTILS::AnnouncePlayCountChanged("smb://user:secret@server/videos/film.mkv", 1);
+
+  const auto files{m_announcements->Files()};
+  ASSERT_EQ(1u, files.size());
+  EXPECT_EQ("smb://server/videos/film.mkv", files[0].data["file"].asString());
+}
+
+// Writes made later on the connection would otherwise never be committed
+TEST_F(TestVideoDatabaseClean, EndsItsTransactionWhenThePathsHoldNoMedia)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+
+  m_db.CleanDatabase(nullptr, {m_db.GetPathId(movies)}, false);
+
+  EXPECT_FALSE(m_db.InTransaction());
+}
+
+// A bonus disc's folder sits beside the folders holding the movie's own discs
+TEST_F(TestVideoDatabase, GetMovieIdInFolderFindsTheMovieOnTheDiscsBesideAnExtrasFolder)
+{
+  const std::string folder{"/movies/Aliens (1986)/"};
+  const std::string extras{folder + "Bonus Disc/"};
+
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(folder + "Disc 1/ALIENS.iso", 800))};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{URIUtils::GetBlurayPlaylistPath(folder + "Disc 2/ALIENS.iso", 800), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  // Scraped as a movie of its own before extras were recognised there
+  ASSERT_GT(AddMovie(URIUtils::GetBlurayPlaylistPath(extras + "ALIENS_BONUS.iso", 800)), 0);
+
+  EXPECT_EQ(idMovie, m_db.GetMovieIdInFolder(folder, extras));
+
+  // Nor is there a single movie where a folder holds two
+  ASSERT_GT(AddMovie(folder + "Aliens (1986) Special Edition.mkv"), 0);
+  EXPECT_EQ(-1, m_db.GetMovieIdInFolder(folder, extras));
+}
+
+// A refresh removes a disc's versions to add them again, which leaves its folder as it was
+TEST_F(TestVideoDatabase, DeleteVideoAssetCanKeepTheHashOfItsFolder)
+{
+  const std::string folder{"/movies/Film (2010)/"};
+  const int idMovie{AddMovie(folder + "Film.mkv")};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{folder + "Film Extended.mkv", false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+  const int idFile{
+      m_db.GetSingleValueInt("SELECT idFile FROM files WHERE strFilename = 'Film Extended.mkv'")};
+  ASSERT_GT(idFile, 0);
+  ASSERT_TRUE(m_db.SetPathHash(folder, "hash"));
+
+  ASSERT_TRUE(m_db.DeleteVideoAsset(idFile, DeleteMovieHashAction::HASH_PRESERVE));
+
+  std::string hash;
+  ASSERT_TRUE(m_db.GetPathHash(folder, hash));
+  EXPECT_EQ("hash", hash);
+}
+
+// The extras of a disc are its playlists, so the folder holding the disc is known by them. An
+// archive below the folder is not one of its folders, nor is the folder of another movie.
+TEST_F(TestVideoDatabase, GetKnownFoldersTakesADiscsPlaylistsAsTheFolderHoldingIt)
+{
+  ASSERT_GT(m_db.AddPath("/movies/Film/Extras/"), 0);
+  ASSERT_GT(m_db.AddFile(URIUtils::GetBlurayPlaylistPath("/movies/Film/Bonus Disc/BONUS.iso", 1)),
+            0);
+  ASSERT_GT(m_db.AddFile(ArchivePath("zip", "/movies/Film/Extras.zip", "Trailer.mkv")), 0);
+  ASSERT_GT(m_db.AddFile(URIUtils::GetBlurayPlaylistPath("/movies/Other/Bonus Disc/BONUS.iso", 1)),
+            0);
+
+  const std::vector<std::string> folders{
+      KODI::VIDEO::CVideoInfoScannerExtras::GetKnownFolders(m_db, "/movies/Film/")};
+
+  EXPECT_NE(std::ranges::find(folders, "/movies/Film/Extras/"), folders.end());
+  EXPECT_NE(std::ranges::find(folders, "/movies/Film/Bonus Disc/"), folders.end());
+  for (const std::string& folder : folders)
+    EXPECT_TRUE(folder.starts_with("/movies/Film/")) << folder;
+}
+
+TEST_F(TestVideoDatabase, GetMovieIdFindsTheMovieOnTheDiscPlaylistsOfADiscImageWithoutOne)
+{
+  const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
+
+  // Left by a refresh that found the movie on two of the disc's playlists
+  ASSERT_GT(m_db.AddFile(disc), 0);
+  EXPECT_EQ(-1, m_db.GetMovieId(disc));
+
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 801))};
+  ASSERT_GT(idMovie, 0);
+  CFileItem version{URIUtils::GetBlurayPlaylistPath(disc, 800), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  EXPECT_EQ(idMovie, m_db.GetMovieId(disc));
+}
+
+// The movie GetMovieId() finds for such a disc image is read through its default version, as the
+// image's own file is none of its versions
+TEST_F(TestVideoDatabase, GetMovieInfoReadsTheMovieOfADiscImageWithoutOne)
+{
+  const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};
+  ASSERT_GT(m_db.AddFile(disc), 0);
+  const std::string main{URIUtils::GetBlurayPlaylistPath(disc, 801)};
+  const int idMovie{AddMovie(main)};
+  ASSERT_GT(idMovie, 0);
+
+  CVideoInfoTag tag;
+  ASSERT_TRUE(m_db.GetMovieInfo(disc, tag));
+  EXPECT_EQ(idMovie, tag.m_iDbId);
+  EXPECT_EQ(main, tag.m_strFileNameAndPath);
+}
+
+TEST_F(TestVideoDatabase, KindsOfExtraAreBuiltInExtraTypes)
+{
+  // The types were named when the database was made, before any strings were loaded
+  auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  m_db.UpdateVideoVersionTypeTable();
+
+  const auto names{[this](VideoAssetType assetType)
+                   {
+                     CFileItemList types;
+                     m_db.GetVideoVersionTypes(VideoDbContentType::MOVIES, assetType, types);
+                     std::set<std::string> labels;
+                     for (const auto& type : types)
+                       labels.emplace(type->GetLabel());
+                     return labels;
+                   }};
+  const std::set<std::string> extras{names(VideoAssetType::EXTRA)};
+  const std::set<std::string> versions{names(VideoAssetType::VERSION)};
+
+  EXPECT_TRUE(extras.contains("Deleted scenes"));
+  EXPECT_TRUE(extras.contains("Play all"));
+  EXPECT_FALSE(versions.contains("Deleted scenes"));
+  EXPECT_TRUE(versions.contains("Standard Edition"));
+  EXPECT_FALSE(extras.contains("Deleted scene: {0:s}"));
+  EXPECT_FALSE(versions.contains("Deleted scene: {0:s}"));
+
+  // A disc's extra known only by its kind takes the built-in type
+  EXPECT_EQ(m_db.AddVideoVersionType("Behind the scenes", VideoAssetTypeOwner::AUTO,
+                                     VideoAssetType::EXTRA),
+            40506);
+
+  strings.Clear();
+}
+
+// A file can be only one asset, so each extra on a disc is a playlist of its own
+TEST_F(TestVideoDatabase, ExtrasOnADiscAreItsPlaylists)
+{
+  const std::string disc{"/movies/Nope (2022)/NOPE.iso"};
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 800))};
+  ASSERT_GT(idMovie, 0);
+
+  for (const auto& [playlist, name] : {std::pair{1244, "Gag Reel"}, std::pair{1245, "Making Of"}})
+  {
+    const int idType{
+        m_db.AddVideoVersionType(name, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+    CFileItem extra{URIUtils::GetBlurayPlaylistPath(disc, playlist), false};
+    ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                   VideoAssetType::EXTRA, extra));
+  }
+
+  std::set<int> extras;
+  for (const auto& playlist : m_db.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(disc)))
+  {
+    EXPECT_EQ(idMovie, playlist.idMedia);
+    if (playlist.itemType == VideoAssetType::EXTRA)
+      extras.emplace(playlist.playlist);
+  }
+  EXPECT_EQ(extras, (std::set<int>{1244, 1245}));
+}
+
+// A name used for both a version and an extra is a type of each kind, so neither is stored with a
+// type of the other kind
+TEST_F(TestVideoDatabase, VideoVersionTypeIsLookedUpByItemType)
+{
+  const int version{m_db.AddOrValidateVideoVersionType("Prologue", VideoAssetType::VERSION)};
+  const int extra{m_db.AddOrValidateVideoVersionType("Prologue", VideoAssetType::EXTRA)};
+  ASSERT_GT(version, 0);
+  ASSERT_GT(extra, 0);
+  EXPECT_NE(version, extra);
+  EXPECT_EQ(version, m_db.GetVideoVersionByTitle("Prologue", VideoAssetType::VERSION));
+  EXPECT_EQ(extra, m_db.GetVideoVersionByTitle("Prologue", VideoAssetType::EXTRA));
+  EXPECT_EQ(extra, m_db.AddOrValidateVideoVersionType("Prologue", VideoAssetType::EXTRA));
+}
+
+// The name of an extra other than a built-in kind is that of the one extra, so goes once no extra
+// has it, whether the extra is removed or given another type
+TEST_F(TestVideoDatabase, AnExtrasTypeGoesWithItsLastExtra)
+{
+  auto& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  ASSERT_TRUE(strings.Load(g_langInfo.GetLanguagePath(), "resource.language.en_gb"));
+  m_db.UpdateVideoVersionTypeTable();
+
+  const int idMovie{AddMovie("/movies/Movie (2020)/movie.mkv")};
+  ASSERT_GT(idMovie, 0);
+  const int made{
+      m_db.AddVideoVersionType("Gag Reel", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+  const int typed{
+      m_db.AddVideoVersionType("My Scene", VideoAssetTypeOwner::USER, VideoAssetType::EXTRA)};
+  const int version{
+      m_db.AddVideoVersionType("My Cut", VideoAssetTypeOwner::USER, VideoAssetType::VERSION)};
+  const std::string kind{m_db.GetVideoVersionById(VIDEO_EXTRA_ID_BEGIN + 1)};
+  ASSERT_FALSE(kind.empty());
+
+  const auto addExtra{[this, idMovie](const std::string& path, int idType)
+                      {
+                        CFileItem extra{path, false};
+                        EXPECT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                                       VideoAssetType::EXTRA, extra));
+                        return m_db.GetVideoVersionInfo(path).m_idFile;
+                      }};
+  const int first{addExtra("/movies/Movie (2020)/Extras/gag reel 1.mkv", made)};
+  const int second{addExtra("/movies/Movie (2020)/Extras/gag reel 2.mkv", made)};
+  const int third{addExtra("/movies/Movie (2020)/Extras/my scene.mkv", typed)};
+
+  ASSERT_TRUE(m_db.DeleteVideoAsset(first));
+  EXPECT_EQ("Gag Reel", m_db.GetVideoVersionById(made));
+  ASSERT_TRUE(m_db.DeleteVideoAsset(second));
+  EXPECT_EQ("", m_db.GetVideoVersionById(made));
+
+  m_db.SetVideoVersion(third, VIDEO_EXTRA_ID_BEGIN + 1);
+  EXPECT_EQ("", m_db.GetVideoVersionById(typed));
+  ASSERT_TRUE(m_db.DeleteVideoAsset(third));
+  EXPECT_EQ(kind, m_db.GetVideoVersionById(VIDEO_EXTRA_ID_BEGIN + 1));
+  EXPECT_EQ("My Cut", m_db.GetVideoVersionById(version));
+
+  strings.Clear();
+}
+
+// A name typed for an extra is not offered for others, as one typed for a version is
+TEST_F(TestVideoDatabase, TypedExtraNamesAreNotOffered)
+{
+  ASSERT_GT(m_db.AddVideoVersionType("My Scene", VideoAssetTypeOwner::USER, VideoAssetType::EXTRA),
+            0);
+  ASSERT_GT(m_db.AddVideoVersionType("My Cut", VideoAssetTypeOwner::USER, VideoAssetType::VERSION),
+            0);
+
+  const auto offered{[this](VideoAssetType assetType, const std::string& name)
+                     {
+                       CFileItemList types;
+                       m_db.GetVideoVersionTypes(VideoDbContentType::MOVIES, assetType, types);
+                       return std::ranges::any_of(types, [&name](const auto& type)
+                                                  { return type->GetLabel() == name; });
+                     }};
+  EXPECT_FALSE(offered(VideoAssetType::EXTRA, "My Scene"));
+  EXPECT_TRUE(offered(VideoAssetType::VERSION, "My Cut"));
+}
+
+// What an import needs to restore a disc's extra as an extra, with its playlist
+TEST_F(TestVideoDatabase, ExportToXMLWritesABlurayExtra)
+{
+  const std::string disc{"/movies/Nope (2022)/NOPE.iso"};
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 800))};
+  ASSERT_GT(idMovie, 0);
+  const int idType{
+      m_db.AddVideoVersionType("Gag Reel", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+  CFileItem extra{URIUtils::GetBlurayPlaylistPath(disc, 12), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType, VideoAssetType::EXTRA,
+                                 extra));
+
+  const std::string exportPath{CSpecialProtocol::TranslatePath("special://temp/")};
+  const std::string exportRoot{URIUtils::AddFileToFolder(
+      exportPath, "kodi_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate())};
+  m_db.ExportToXML(exportPath, true);
+
+  CXBMCTinyXML doc;
+  const bool loaded{doc.LoadFile(URIUtils::AddFileToFolder(exportRoot, "videodb.xml"))};
+  XFILE::CDirectory::RemoveRecursive(exportRoot);
+  ASSERT_TRUE(loaded);
+
+  // The movie comes first, so an import can add the extra to it
+  const TiXmlElement* exportedMovie{doc.RootElement()->FirstChildElement("movie")};
+  ASSERT_NE(nullptr, exportedMovie);
+  int playlist{-1};
+  EXPECT_TRUE(XMLUtils::GetInt(exportedMovie, "playlist", playlist));
+  EXPECT_EQ(800, playlist);
+
+  const TiXmlElement* exportedExtra{exportedMovie->NextSiblingElement("movie")};
+  ASSERT_NE(nullptr, exportedExtra);
+  int assetType{-1};
+  EXPECT_TRUE(XMLUtils::GetInt(exportedExtra, "videoassettype", assetType));
+  EXPECT_EQ(static_cast<int>(VideoAssetType::EXTRA), assetType);
+  std::string title;
+  EXPECT_TRUE(XMLUtils::GetString(exportedExtra, "videoassettitle", title));
+  EXPECT_EQ("Gag Reel", title);
+  EXPECT_TRUE(XMLUtils::GetInt(exportedExtra, "playlist", playlist));
+  EXPECT_EQ(12, playlist);
+  std::string path;
+  EXPECT_TRUE(XMLUtils::GetString(exportedExtra, "filenameandpath", path));
+  EXPECT_EQ(URIUtils::GetBlurayPlaylistPath(disc, 12), path);
+}
+
+TEST_F(TestVideoDatabase, SetFileForMediaRepointsAnExtra)
+{
+  const int idMovie{AddMovie("/movies/Movie (2020)/movie.mkv")};
+  ASSERT_GT(idMovie, 0);
+
+  const std::string disc{"/movies/Movie (2020)/Extras/Disc 1/BDMV/index.bdmv"};
+  const int idType{
+      m_db.AddVideoVersionType("Disc 1", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+  CFileItem extra{disc, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType, VideoAssetType::EXTRA,
+                                 extra));
+  const int oldFile{m_db.GetVideoVersionInfo(disc).m_idFile};
+  ASSERT_GT(oldFile, 0);
+
+  CStreamDetails streams;
+  auto* video{new CStreamDetailVideo()};
+  video->m_iDuration = 600;
+  streams.AddStream(video);
+  ASSERT_TRUE(m_db.SetStreamDetailsForFileId(streams, oldFile));
+  ASSERT_TRUE(m_db.SetArtForItem(oldFile, KODI::MEDIA::TYPE::VIDEO_VERSION, "thumb", "thumb.jpg"));
+
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(disc, 12)};
+  m_db.BeginTransaction();
+  const int newFile{m_db.SetFileForMedia(playlist, VideoDbContentType::MOVIES, idMovie,
+                                         CVideoDatabase::FileRecord{.m_idFile = oldFile})};
+  m_db.CommitTransaction();
+  ASSERT_GT(newFile, 0);
+
+  const VideoAssetInfo asset{m_db.GetVideoVersionInfo(playlist)};
+  EXPECT_EQ(asset.m_idMedia, idMovie);
+  EXPECT_EQ(asset.m_assetType, VideoAssetType::EXTRA);
+  EXPECT_LT(m_db.GetVideoVersionInfo(disc).m_idFile, 0);
+
+  CStreamDetails moved;
+  EXPECT_TRUE(m_db.GetStreamDetails(playlist, moved));
+  EXPECT_EQ(moved.GetVideoDuration(), 600);
+  KODI::ART::Artwork art;
+  EXPECT_TRUE(m_db.GetArtForItem(newFile, KODI::MEDIA::TYPE::VIDEO_VERSION, art));
+  EXPECT_EQ(art["thumb"], "thumb.jpg");
+}
+
+// A movie restored from its nfos has only the extras they record, so a video without an nfo in its
+// extras folder is left out during that scan, and added by a later one
+TEST_F(TestVideoDatabase, ARestoredMovieHasOnlyTheExtrasOfItsNfos)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/RestoredExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+  const std::string video{URIUtils::AddFileToFolder(folder, "Interview.mkv")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(video));
+    file.Close();
+  }
+
+  const int idMovie{AddMovie(URIUtils::AddFileToFolder(root, "Movie.mkv"))};
+  ASSERT_GT(idMovie, 0);
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  {
+    KODI::VIDEO::CVideoInfoScannerExtras restoringScan{m_db, art};
+    restoringScan.SetRestoredFromNfo(idMovie);
+    restoringScan.AddVideoExtras(idMovie, folder);
+    EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
+  }
+
+  KODI::VIDEO::CVideoInfoScannerExtras laterScan{m_db, art};
+  laterScan.AddVideoExtras(idMovie, folder);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetType, VideoAssetType::EXTRA);
+
+  XFILE::CDirectory::RemoveRecursive(root);
+}
+
+TEST_F(TestVideoDatabase, ExtrasBesideADiscNoticeANewVideo)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/ScannerExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+
+  const int idMovie{AddMovie(URIUtils::AddFileToFolder(root, "Movie.mkv"))};
+  ASSERT_GT(idMovie, 0);
+  const auto addVideo{[this](const std::string& path)
+                      {
+                        XFILE::CFile file;
+                        EXPECT_TRUE(file.OpenForWrite(path));
+                        file.Close();
+                        return AddMovie(path);
+                      }};
+  const std::string first{URIUtils::AddFileToFolder(folder, "First.mkv")};
+  ASSERT_GT(addVideo(first), 0);
+
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, true));
+  EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetType, VideoAssetType::EXTRA);
+  std::string previousHash;
+  EXPECT_TRUE(m_db.GetPathHash(folder, previousHash));
+  EXPECT_FALSE(previousHash.empty());
+
+  const int renamed{
+      m_db.AddVideoVersionType("Renamed", VideoAssetTypeOwner::USER, VideoAssetType::EXTRA)};
+  m_db.SetVideoVersion(m_db.GetVideoVersionInfo(first).m_idFile, renamed);
+
+  const std::string second{URIUtils::AddFileToFolder(folder, "Second.mkv")};
+  EXPECT_GT(addVideo(second), 0);
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false));
+  EXPECT_EQ(m_db.GetVideoVersionInfo(second).m_assetType, VideoAssetType::EXTRA);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(first).m_assetTypeId, renamed);
+  std::string hash;
+  EXPECT_TRUE(m_db.GetPathHash(folder, hash));
+  EXPECT_NE(hash, previousHash);
+
+  EXPECT_FALSE(scanner.AddVideoExtrasBesideDisc(root, false));
+  CFileItemList extras;
+  m_db.GetVideoVersions(VideoDbContentType::MOVIES, idMovie, extras, VideoAssetType::EXTRA);
+  EXPECT_EQ(extras.Size(), 2);
+
+  // A deleted video is reported too, so that the scanner's clean removes it
+  EXPECT_TRUE(XFILE::CFile::Delete(second));
+  EXPECT_TRUE(scanner.AddVideoExtrasBesideDisc(root, false));
+
+  EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(root));
+}
+
+// A video in an extras folder made a version of the movie stays one when the folder is scanned
+// again, and the movie keeps its own file
+TEST_F(TestVideoDatabase, AVersionInAnExtrasFolderStaysAVersion)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/VersionInExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+  const std::string video{URIUtils::AddFileToFolder(folder, "Director's Cut.mkv")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(video));
+    file.Close();
+  }
+
+  const std::string movie{URIUtils::AddFileToFolder(root, "Movie.mkv")};
+  const int idMovie{AddMovie(movie)};
+  ASSERT_GT(idMovie, 0);
+  const int idType{m_db.AddVideoVersionType("Director's Cut", VideoAssetTypeOwner::USER,
+                                            VideoAssetType::VERSION)};
+  CFileItem version{video, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, idType,
+                                 VideoAssetType::VERSION, version));
+
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
+  scanner.AddVideoExtras(idMovie, folder);
+
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, idType);
+  const VideoAssetInfo own{m_db.GetVideoVersionInfo(movie)};
+  EXPECT_EQ(own.m_assetType, VideoAssetType::VERSION);
+  EXPECT_EQ(own.m_idMedia, idMovie);
+
+  XFILE::CDirectory::RemoveRecursive(root);
+}
+
+// A refresh adds the extras of a movie's extras folders, which a scan passes by where the folder
+// hasn't changed since it was last added, as in a library scanned before they were recognised.
+// Those of a movie on several discs are beside the discs' folders.
+TEST_F(TestVideoDatabase, ARefreshAddsTheExtrasOfAnUnchangedFolder)
+{
+  const std::string root{CSpecialProtocol::TranslatePath("special://temp/RefreshedExtras/")};
+  const std::string folder{URIUtils::AddFileToFolder(root, "Extras/")};
+  XFILE::CDirectory::RemoveRecursive(root);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(folder));
+  const std::string video{URIUtils::AddFileToFolder(folder, "Interview.mkv")};
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(video));
+    file.Close();
+  }
+
+  const int idMovie{AddMovie(URIUtils::AddFileToFolder(root, "Disc 1", "Movie.mkv"))};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+      "UPDATE path SET strContent='movies', strScraper='metadata.local' WHERE idPath=%i",
+      m_db.AddPath(root))));
+
+  // A version outside the sources, which a scan never looks at
+  const std::string elsewhere{
+      CSpecialProtocol::TranslatePath("special://temp/RefreshedElsewhere/")};
+  const std::string elsewhereExtra{URIUtils::AddFileToFolder(elsewhere, "Extras", "Other.mkv")};
+  XFILE::CDirectory::RemoveRecursive(elsewhere);
+  ASSERT_TRUE(CUtil::CreateDirectoryEx(URIUtils::GetDirectory(elsewhereExtra)));
+  {
+    XFILE::CFile file;
+    ASSERT_TRUE(file.OpenForWrite(elsewhereExtra));
+    file.Close();
+  }
+  CFileItem version{URIUtils::AddFileToFolder(elsewhere, "Movie Extended.mkv"), false};
+  ASSERT_TRUE(m_db.AddVideoAsset(VideoDbContentType::MOVIES, idMovie, VIDEO_VERSION_ID_DEFAULT,
+                                 VideoAssetType::VERSION, version));
+
+  // The folder's hash is that of its extras, as the scanner stores it
+  CFileItemList extras;
+  KODI::VIDEO::UTILS::EnumerateVideoExtras(folder, [&extras](const std::shared_ptr<CFileItem>& item)
+                                           { extras.Add(item); });
+  extras.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+  std::string hash;
+  KODI::VIDEO::UTILS::GetPathHash(extras, hash);
+  m_db.SetPathHash(folder, hash);
+
+  KODI::VIDEO::CVideoInfoScannerArt art;
+  KODI::VIDEO::CVideoInfoScannerExtras scanner{m_db, art};
+  scanner.AddVideoExtrasBesideDisc(root, true);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
+
+  // Without folder names a movie has no extras folders
+  scanner.AddMovieExtras(idMovie, false);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(video).m_assetTypeId, -1);
+
+  scanner.AddMovieExtras(idMovie, true);
+  const VideoAssetInfo extra{m_db.GetVideoVersionInfo(video)};
+  EXPECT_EQ(extra.m_assetType, VideoAssetType::EXTRA);
+  EXPECT_EQ(extra.m_idMedia, idMovie);
+  EXPECT_EQ(m_db.GetVideoVersionInfo(elsewhereExtra).m_assetTypeId, -1);
+
+  XFILE::CDirectory::RemoveRecursive(root);
+  XFILE::CDirectory::RemoveRecursive(elsewhere);
+}
+
+// The search's path for an extra ends in its file id, so the extra is played from its file
+TEST_F(TestVideoDatabase, AnExtraFoundBySearchPlaysItsFile)
+{
+  const std::string disc{"/movies/Movie (2000)/BDMV/index.bdmv"};
+  const int idMovie{AddMovie(URIUtils::GetBlurayPlaylistPath(disc, 800))};
+  ASSERT_GT(idMovie, 0);
+  const std::string playlist{URIUtils::GetBlurayPlaylistPath(disc, 802)};
+  CFileItem extra{playlist, false};
+  ASSERT_TRUE(m_db.AddVideoAsset(
+      VideoDbContentType::MOVIES, idMovie,
+      m_db.AddVideoVersionType("Gag Reel", VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA),
+      VideoAssetType::EXTRA, extra));
+
+  CFileItemList items;
+  m_db.GetMovieExtrasByName("Gag", items);
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(items[0]->GetDynPath(), playlist);
 }

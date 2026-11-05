@@ -33,6 +33,7 @@
 #include "video/ViewModeSettings.h"
 #include "windowing/WinSystem.h"
 
+#include <cmath>
 #include <utility>
 
 #define SETTING_VIDEO_VIEW_MODE           "video.viewmode"
@@ -40,6 +41,8 @@
 #define SETTING_VIDEO_PIXEL_RATIO         "video.pixelratio"
 #define SETTING_VIDEO_BRIGHTNESS          "video.brightness"
 #define SETTING_VIDEO_CONTRAST            "video.contrast"
+#define SETTING_VIDEO_HUE "video.hue"
+#define SETTING_VIDEO_SATURATION "video.saturation"
 #define SETTING_VIDEO_GAMMA               "video.gamma"
 #define SETTING_VIDEO_NONLIN_STRETCH      "video.nonlinearstretch"
 #define SETTING_VIDEO_POSTPROCESS         "video.postprocess"
@@ -60,6 +63,21 @@
 #define SETTING_VIDEO_MAKE_DEFAULT        "video.save"
 #define SETTING_VIDEO_CALIBRATION         "video.calibration"
 #define SETTING_VIDEO_STREAM              "video.stream"
+
+namespace
+{
+// picture adjustments are integer sliders, or float ones with a finer granularity
+float GetAdjustmentValue(const std::shared_ptr<const CSetting>& setting)
+{
+  if (setting->GetType() == SettingType::Integer)
+    return static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+
+  // keep the steps exact, the slider accumulates rounding errors
+  return static_cast<float>(
+      std::round(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue() * 100.0) /
+      100.0);
+}
+} // namespace
 
 CGUIDialogVideoSettings::CGUIDialogVideoSettings()
     : CGUIDialogSettingsManualBase(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "DialogSettings.xml")
@@ -148,19 +166,31 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
   else if (settingId == SETTING_VIDEO_BRIGHTNESS)
   {
     CVideoSettings vs = appPlayer->GetVideoSettings();
-    vs.m_Brightness = static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    vs.m_Brightness = GetAdjustmentValue(setting);
     appPlayer->SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_CONTRAST)
   {
     CVideoSettings vs = appPlayer->GetVideoSettings();
-    vs.m_Contrast = static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    vs.m_Contrast = GetAdjustmentValue(setting);
+    appPlayer->SetVideoSettings(vs);
+  }
+  else if (settingId == SETTING_VIDEO_HUE)
+  {
+    CVideoSettings vs = appPlayer->GetVideoSettings();
+    vs.m_Hue = GetAdjustmentValue(setting);
+    appPlayer->SetVideoSettings(vs);
+  }
+  else if (settingId == SETTING_VIDEO_SATURATION)
+  {
+    CVideoSettings vs = appPlayer->GetVideoSettings();
+    vs.m_Saturation = GetAdjustmentValue(setting);
     appPlayer->SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_GAMMA)
   {
     CVideoSettings vs = appPlayer->GetVideoSettings();
-    vs.m_Gamma = static_cast<float>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    vs.m_Gamma = GetAdjustmentValue(setting);
     appPlayer->SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_VDPAU_NOISE)
@@ -423,12 +453,34 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   if (appPlayer->Supports(RENDERFEATURE_POSTPROCESS))
     AddToggle(groupVideo, SETTING_VIDEO_POSTPROCESS, 16400, SettingLevel::Basic, videoSettings.m_PostProcess);
+  // step size in hundredths, 100 is the default step of 1
+  const int granularity{CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_IMAGEADJUSTMENTGRANULARITY)};
+  const auto addAdjustment = [&](const std::string& id, int label, float value)
+  {
+    if (granularity >= 100)
+    {
+      AddPercentageSlider(groupVideo, id, label, SettingLevel::Basic,
+                          static_cast<int>(std::lround(value)), 14047, 1, label, usePopup);
+      return;
+    }
+
+    // start on the step grid, a finer granularity may have stored values in between
+    const float step{granularity / 100.0f};
+    AddSlider(groupVideo, id, label, SettingLevel::Basic, std::round(value / step) * step,
+              granularity % 10 == 0 ? "{:.1f} %" : "{:.2f} %", 0.0f, step, 100.0f, label, usePopup);
+  };
+
   if (appPlayer->Supports(RENDERFEATURE_BRIGHTNESS))
-    AddPercentageSlider(groupVideo, SETTING_VIDEO_BRIGHTNESS, 464, SettingLevel::Basic, static_cast<int>(videoSettings.m_Brightness), 14047, 1, 464, usePopup);
+    addAdjustment(SETTING_VIDEO_BRIGHTNESS, 464, videoSettings.m_Brightness);
   if (appPlayer->Supports(RENDERFEATURE_CONTRAST))
-    AddPercentageSlider(groupVideo, SETTING_VIDEO_CONTRAST, 465, SettingLevel::Basic, static_cast<int>(videoSettings.m_Contrast), 14047, 1, 465, usePopup);
+    addAdjustment(SETTING_VIDEO_CONTRAST, 465, videoSettings.m_Contrast);
+  if (appPlayer->Supports(RENDERFEATURE_HUE))
+    addAdjustment(SETTING_VIDEO_HUE, 471, videoSettings.m_Hue);
+  if (appPlayer->Supports(RENDERFEATURE_SATURATION))
+    addAdjustment(SETTING_VIDEO_SATURATION, 472, videoSettings.m_Saturation);
   if (appPlayer->Supports(RENDERFEATURE_GAMMA))
-    AddPercentageSlider(groupVideo, SETTING_VIDEO_GAMMA, 466, SettingLevel::Basic, static_cast<int>(videoSettings.m_Gamma), 14047, 1, 466, usePopup);
+    addAdjustment(SETTING_VIDEO_GAMMA, 466, videoSettings.m_Gamma);
   if (appPlayer->Supports(RENDERFEATURE_NOISE))
     AddSlider(groupVideo, SETTING_VIDEO_VDPAU_NOISE, 16312, SettingLevel::Basic,
               videoSettings.m_NoiseReduction, "{:2.2f}", 0.0f, 0.01f, 1.0f, 16312, usePopup);

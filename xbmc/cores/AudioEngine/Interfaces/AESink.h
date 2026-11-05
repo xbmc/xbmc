@@ -73,6 +73,13 @@ public:
   virtual void Drain() {}
 
   /*
+    Discard queued RAW output at an explicit stream discontinuity.
+    Called by the sink thread. Only RAW sinks need to implement this;
+    PCM and IEC sinks keep the default no-op.
+   */
+  virtual void Flush() {}
+
+  /*
     Indicates if sink can handle volume control.
   */
   virtual bool HasVolume() { return false; }

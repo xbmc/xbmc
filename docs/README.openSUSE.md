@@ -94,7 +94,7 @@ sudo zypper install alsa-devel autoconf automake bluez-devel boost-devel capi4li
 
 Building for Wayland requires some extra packages:
 ```
-sudo zypper install wayland-devel libwayland-egl1 libwayland-egl-devel libxkbcommon-devel scons wayland-protocols-devel
+sudo zypper install wayland-devel libwayland-egl1 libwayland-egl-devel libxkbcommon-devel pugixml-devel wayland-protocols-devel
 ```
 
 Similarly, building for GBM also requires some extra packages:

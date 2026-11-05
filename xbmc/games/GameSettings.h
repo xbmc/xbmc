@@ -37,8 +37,11 @@ public:
   void SetShowOSDHelp(bool bShow);
   void ToggleGames();
   bool AutosaveEnabled();
+  bool ReplaceLabels();
   bool RewindEnabled();
   unsigned int MaxRewindTimeSec();
+  bool SyncPlaybackToDisplay();
+  double SyncToDisplayLimit();
   std::string GetRAUsername() const;
   std::string GetRAToken() const;
 
@@ -89,6 +92,11 @@ public:
    * says which one it is.
    */
   bool IsAchievementSetDisabled(unsigned int setId) const;
+
+  /*!
+   * \brief Whether the player turned any achievement set off
+   */
+  bool HasDisabledAchievementSets() const;
 
   /*!
    * \brief Remember whether the player turned an achievement set off

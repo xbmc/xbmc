@@ -269,12 +269,27 @@ macro(BUILD_DEP_TARGET)
     if(WIN32 OR WINDOWS_STORE)
       if(CCACHE_FOUND AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
          CMAKE_GENERATOR MATCHES "Visual Studio")
+        set(_ccache_project_include "-DCMAKE_PROJECT_INCLUDE=${PROJECTSOURCE}/cmake/scripts/windows/CCache.cmake")
+        foreach(_ccache_arg IN LISTS CMAKE_ARGS)
+          if(_ccache_arg MATCHES "^-DCMAKE_PROJECT_INCLUDE(:[^=]+)?=")
+            if(NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR)
+              set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR LIST_SEPARATOR |)
+            endif()
+            list(GET ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR 1 _ccache_list_separator)
+            set(_ccache_project_include "${_ccache_arg}${_ccache_list_separator}${PROJECTSOURCE}/cmake/scripts/windows/CCache.cmake")
+            list(REMOVE_ITEM CMAKE_ARGS "${_ccache_arg}")
+          endif()
+        endforeach()
         list(APPEND CMAKE_ARGS "-DCCACHE_PROGRAM=${CCACHE_PROGRAM}"
-                               "-DCMAKE_PROJECT_INCLUDE=${PROJECTSOURCE}/cmake/scripts/windows/CCache.cmake"
+                               "${_ccache_project_include}"
                                -DCMAKE_POLICY_DEFAULT_CMP0141=NEW)
+        unset(_ccache_arg)
+        unset(_ccache_list_separator)
+        unset(_ccache_project_include)
       elseif(CMAKE_GENERATOR MATCHES "Visual Studio")
         # External projects retain their CMake cache when ccache is disabled.
-        list(APPEND CMAKE_ARGS -UCMAKE_PROJECT_INCLUDE -UCCACHE_PROGRAM)
+        # Apply package initialization hooks after clearing the cached value.
+        list(INSERT CMAKE_ARGS 1 -UCMAKE_PROJECT_INCLUDE -UCCACHE_PROGRAM)
       endif()
       if(NOT (DEFINED WIN_DISABLE_PROJECT_FLAGS OR
          ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "native"))

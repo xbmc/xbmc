@@ -172,7 +172,7 @@ COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSour
       paletteOverride = &convertedPalette;
     }
 
-    std::vector<uint32_t> rgba(o.width * o.height);
+    std::vector<uint32_t> rgba(static_cast<size_t>(o.width) * o.height);
     m_pma = !!USE_PREMULTIPLIED_ALPHA;
     convert_rgba(o, m_pma, rgba, paletteOverride);
 
@@ -250,7 +250,7 @@ std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o)
 COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlaySpu& o)
 {
   int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba(o.width * o.height);
+  std::vector<uint32_t> rgba(static_cast<size_t>(o.width) * o.height);
 
   convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
 

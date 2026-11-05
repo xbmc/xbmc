@@ -65,6 +65,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoItemArtworkHandler.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
@@ -130,19 +131,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       ClearCastList();
-
-      if (m_startUserrating != m_movieItem->GetVideoInfoTag()->m_iUserRating)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          m_hasUpdatedUserrating = true;
-          db.SetVideoUserRating(m_movieItem->GetVideoInfoTag()->m_iDbId,
-                                m_movieItem->GetVideoInfoTag()->m_iUserRating,
-                                m_movieItem->GetVideoInfoTag()->GetMediaType());
-          db.Close();
-        }
-      }
+      SaveUserrating();
     }
     break;
 
@@ -181,11 +170,13 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_MANAGE_VIDEO_VERSIONS)
       {
-        m_hasUpdatedItems = OnManageVideoVersions();
+        if (OnManageVideoVersions())
+          m_hasUpdatedItems = true;
       }
       else if (iControl == CONTROL_BTN_MANAGE_VIDEO_EXTRAS)
       {
-        m_hasUpdatedItems = OnManageVideoExtras();
+        if (OnManageVideoExtras())
+          m_hasUpdatedItems = true;
       }
       else if (iControl == CONTROL_BTN_PLAY)
       {
@@ -249,9 +240,16 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
           std::string strItem = m_castList->Get(iItem)->GetLabel();
           if (m_movieItem->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::VIDEO_COLLECTION)
           {
+            SaveUserrating();
             SetMovie(m_castList->Get(iItem).get());
+            const bool hasUpdatedThumb{m_hasUpdatedThumb};
+            const bool hasUpdatedUserrating{m_hasUpdatedUserrating};
+            const bool hasUpdatedItems{m_hasUpdatedItems};
             Close();
             Open();
+            m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
+            m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
+            m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
           }
           else
             OnSearch(strItem);
@@ -284,6 +282,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   m_bRefreshAll = true;
   m_hasUpdatedThumb = false;
   m_hasUpdatedUserrating = false;
+  m_hasUpdatedItems = false;
   m_bViewReview = true;
 
   const std::shared_ptr<CProfileManager> profileManager =
@@ -354,6 +353,23 @@ void CGUIDialogVideoInfo::SetUserrating(int userrating) const
   }
 }
 
+void CGUIDialogVideoInfo::SaveUserrating()
+{
+  if (m_startUserrating == m_movieItem->GetVideoInfoTag()->m_iUserRating)
+    return;
+
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    m_hasUpdatedUserrating = true;
+    db.SetVideoUserRating(m_movieItem->GetVideoInfoTag()->m_iDbId,
+                          m_movieItem->GetVideoInfoTag()->m_iUserRating,
+                          m_movieItem->GetVideoInfoTag()->GetMediaType());
+    db.Close();
+    m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
+  }
+}
+
 void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;
@@ -366,6 +382,23 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     return;
 
   const MEDIA::TYPE type = item->GetVideoInfoTag()->GetMediaType();
+
+  // An extra's art is only its thumb, so the information, which is its movie's, has the movie's art
+  if (VIDEO::IsVideoAssetFile(*item) &&
+      item->GetVideoInfoTag()->GetAssetInfo().GetType() == VideoAssetType::EXTRA)
+  {
+    CVideoDatabase database;
+    KODI::ART::Artwork art;
+    if (database.Open() &&
+        database.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, MEDIA::TYPE::MOVIE, art))
+    {
+      for (const auto& [artType, url] : art)
+      {
+        if (!m_movieItem->HasArt(artType))
+          m_movieItem->SetArt(artType, url);
+      }
+    }
+  }
 
   m_startUserrating = m_movieItem->GetVideoInfoTag()->m_iUserRating;
 
@@ -463,19 +496,25 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     if (m_movieItem->GetVideoInfoTag()->m_strTrailer.empty() ||
         URIUtils::IsInternetStream(m_movieItem->GetVideoInfoTag()->m_strTrailer))
     {
-      std::string localTrailer = VIDEO::UTILS::FindTrailer(*m_movieItem);
+      CVideoDatabase database;
+      const bool databaseOpen{database.Open()};
+      // As a scan finds a movie's trailer, by whether its source has movies in folders of their own
+      const bool movieFolder{databaseOpen &&
+                             VIDEO::UTILS::HasMovieFolder(
+                                 database, m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath)};
+      std::string localTrailer = VIDEO::UTILS::FindTrailer(*m_movieItem, movieFolder);
       if (!localTrailer.empty())
       {
         m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
-        CVideoDatabase database;
-        if (database.Open())
+        if (databaseOpen)
         {
           database.SetTrailerForMovie(m_movieItem->GetVideoInfoTag()->m_iDbId,
                                       m_movieItem->GetVideoInfoTag()->m_strTrailer);
-          database.Close();
           CUtil::DeleteVideoDatabaseDirectoryCache();
         }
       }
+      if (databaseOpen)
+        database.Close();
     }
   }
 
@@ -552,7 +591,7 @@ void CGUIDialogVideoInfo::Update()
   // are likely to have had this image in use so will need refreshing)
   if (m_hasUpdatedThumb)
   {
-    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, m_movieItem);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(reload);
   }
 }
@@ -697,6 +736,8 @@ void CGUIDialogVideoInfo::DoSearch(std::string& strSearch, CFileItemList& items)
 
 void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
+  SaveUserrating();
+
   VideoDbContentType type = pItem->GetVideoContentType();
 
   CVideoDatabase db;
@@ -733,8 +774,14 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   *item.GetVideoInfoTag() = movieDetails;
   SetMovie(&item);
   // refresh our window entirely
+  const bool hasUpdatedThumb{m_hasUpdatedThumb};
+  const bool hasUpdatedUserrating{m_hasUpdatedUserrating};
+  const bool hasUpdatedItems{m_hasUpdatedItems};
   Close();
   Open();
+  m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
+  m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
+  m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
 }
 
 void CGUIDialogVideoInfo::ClearCastList()
@@ -809,7 +856,13 @@ void CGUIDialogVideoInfo::Play(bool resume)
       {
         // The Resume dialog was closed without any choice
         SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
+        const bool hasUpdatedThumb{m_hasUpdatedThumb};
+        const bool hasUpdatedUserrating{m_hasUpdatedUserrating};
+        const bool hasUpdatedItems{m_hasUpdatedItems};
         Open();
+        m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
+        m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
+        m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
       }
     }
   }
@@ -1094,6 +1147,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   {
     // manage video versions
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS, 40001); // Manage versions
+    buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS, 40057); // Manage extras
   }
 
   if (type == MEDIA::TYPE::EPISODE && item->GetVideoInfoTag()->m_iBookmarkId > 0)
@@ -1174,6 +1228,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
       case CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS:
         ManageVideoVersions(item);
+        result = true;
+        break;
+
+      case CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS:
+        CGUIDialogVideoManagerExtras::ManageVideoExtras(item);
         result = true;
         break;
 
@@ -1294,6 +1353,48 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const std::shared_ptr<CFileItem>&
   return true;
 }
 
+namespace
+{
+//! A version or an extra listed under its movie, other than the default version, which is the movie
+bool IsRemovableVideoAsset(const CFileItem& item)
+{
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  const VideoAssetType type{tag.GetAssetInfo().GetType()};
+  return VIDEO::IsVideoAssetFile(item) && !tag.IsDefaultVideoVersion() &&
+         (type == VideoAssetType::VERSION || type == VideoAssetType::EXTRA);
+}
+
+//! Remove a version or an extra from its movie, as Manage versions and Manage extras do
+bool DeleteVideoAssetFromDatabase(const CFileItem& item, bool unavailable)
+{
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  const bool extra{tag.GetAssetInfo().GetType() == VideoAssetType::EXTRA};
+  const CLocalizeStrings& strings{CServiceBroker::GetResourcesComponent().GetLocalizeStrings()};
+  if (!CGUIDialogYesNo::ShowAndGetInput(
+          extra ? 40039 : 40018, unavailable
+                                     ? strings.Get(662)
+                                     : StringUtils::Format(strings.Get(extra ? 40040 : 40020),
+                                                           tag.GetAssetInfo().GetTitle())))
+    return false;
+
+  CVideoDatabase database;
+  if (!database.Open())
+    return false;
+
+  database.BeginTransaction();
+  if (!database.DeleteVideoAsset(tag.m_iFileId) ||
+      (URIUtils::IsBlurayPath(item.GetDynPath()) && !database.DeleteFile(tag.m_iFileId)))
+  {
+    database.RollbackTransaction();
+    return false;
+  }
+  database.CommitTransaction();
+
+  CVideoDatabase::AnnounceUpdate(MEDIA::TYPE::MOVIE, tag.m_iDbId);
+  return true;
+}
+} // namespace
+
 bool CGUIDialogVideoInfo::CanDeleteVideoItem(const std::shared_ptr<CFileItem>& item)
 {
   if (item == nullptr || !item->HasVideoInfoTag())
@@ -1324,6 +1425,9 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
     HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
     return false;
   }
+
+  if (IsRemovableVideoAsset(*item))
+    return DeleteVideoAssetFromDatabase(*item, unavailable);
 
   CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (pDialog == nullptr)
@@ -1431,8 +1535,13 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
+  // A version or an extra that is a playlist shares its disc with the movie and others
+  const bool playlistAsset{IsRemovableVideoAsset(*item) &&
+                           URIUtils::IsBlurayPath(item->GetVideoInfoTag()->GetPath())};
+
   // check if the user is allowed to delete the actual file as well
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+  if (!playlistAsset &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
       (profileManager->GetCurrentProfile().getLockMode() == LockMode::EVERYONE ||
        !profileManager->GetCurrentProfile().filesLocked() ||
@@ -1839,9 +1948,11 @@ bool CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(const std::shared_ptr<
       break;
 
     const std::string chosenArtType{chooser.GetArtType()};
-    result = ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, chosenArtType);
-    if (result)
+    if (ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, chosenArtType))
+    {
+      result = true;
       chooser.UpdateArtType(chosenArtType, item->GetArt(chosenArtType));
+    }
 
   } while (true);
 
@@ -2008,7 +2119,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache();
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS, 0, item);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
   return true;

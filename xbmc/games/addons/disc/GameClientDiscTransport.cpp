@@ -176,26 +176,6 @@ bool CGameClientDiscTransport::RemoveImageIndex(unsigned int imageIndex)
   return error == GAME_ERROR_NO_ERROR;
 }
 
-bool CGameClientDiscTransport::SetInitialImage(unsigned int imageIndex, const std::string& filePath)
-{
-  GAME_ERROR error = GAME_ERROR_NO_ERROR;
-
-  std::unique_lock lock(m_clientAccess);
-
-  try
-  {
-    m_gameClient.LogError(
-        error = m_struct.toAddon->SetInitialImage(&m_struct, imageIndex, filePath.c_str()),
-        "SetInitialImage()");
-  }
-  catch (...)
-  {
-    m_gameClient.LogException("SetInitialImage()");
-  }
-
-  return error == GAME_ERROR_NO_ERROR;
-}
-
 std::string CGameClientDiscTransport::GetImagePath(unsigned int imageIndex)
 {
   std::string imagePath;

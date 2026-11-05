@@ -527,7 +527,8 @@ void CDVDFileInfo::ProcessExternalSubtitles(const CFileItem& item, CStreamDetail
   std::vector<std::string> externalSubtitles;
   const std::string videoPath = item.GetSubtitleAnchorPath();
 
-  CUtil::ScanForExternalSubtitles(videoPath, externalSubtitles);
+  CUtil::ScanForExternalSubtitles(videoPath, externalSubtitles,
+                                  item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr);
 
   for (const auto& externalSubtitle : externalSubtitles)
   {

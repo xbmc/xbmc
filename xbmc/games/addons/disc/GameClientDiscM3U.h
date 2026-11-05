@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "games/addons/disc/GameClientDiscPlaylist.h"
-
 #include <string>
 
 namespace KODI
@@ -18,27 +16,14 @@ namespace GAME
 {
 
 class CGameClientDiscModel;
-struct GameClientDiscEntry;
 
-class CGameClientDiscM3U : public CGameClientDiscPlaylist
+class CGameClientDiscM3U
 {
 public:
-  static std::string GetM3UPath(const std::string& gamePath);
-
   /*!
    * \brief Load disc entries from an existing playlist file path
    */
   static bool Load(const std::string& m3uPath, CGameClientDiscModel& model);
-
-  /*!
-   * \brief Save the model to Kodi's persisted disc-state playlist path for a game
-   */
-  static bool Save(const std::string& gamePath, const CGameClientDiscModel& model);
-
-private:
-  static std::string BuildM3U(const CGameClientDiscModel& model);
-  static void AppendDiscToM3U(std::string& m3u, const GameClientDiscEntry& disc);
-  static std::string NormalizeDiscPath(const std::string& discPath);
 };
 
 } // namespace GAME

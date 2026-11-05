@@ -306,4 +306,5 @@ private:
 
   CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;
+  bool m_presentedFrame{false};
 };

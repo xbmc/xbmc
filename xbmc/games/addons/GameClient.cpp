@@ -351,16 +351,6 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
   error = loadGame();
 
-  if (error != GAME_ERROR_NO_ERROR && SupportsDiscControl() && Discs().HasPersistedState())
-  {
-    CLog::Log(LOGWARNING,
-              "GameClient: Load with persisted disc hint failed; retrying original source media");
-    Streams().Deinitialize();
-    Streams().Initialize(streamManager);
-    Discs().Initialize(path, false);
-    error = loadGame();
-  }
-
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
@@ -441,42 +431,14 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
                                      RETRO::IStreamManager& streamManager,
                                      IGameInputCallback* input)
 {
-  bool gameInfoLoaded = LoadGameInfo();
-  if (SupportsDiscControl() && Discs().HasPersistedState() &&
-      (!gameInfoLoaded || !Discs().RestoreDiscList()))
-  {
-    CLog::Log(
-        LOGWARNING,
-        "GameClient: Startup with persisted disc state failed; reloading original source media");
-    if (!UnloadGame() || gamePath.empty())
-      return false;
-
-    Streams().Deinitialize();
-    Streams().Initialize(streamManager);
-    Discs().Initialize(gamePath, false);
-    GAME_ERROR error = GAME_ERROR_FAILED;
-    try
-    {
-      CClientFrameScope hwScope(Streams());
-      if (hwScope.IsBound())
-        LogError(error = m_ifc.game->toAddon->LoadGame(m_ifc.game, gamePath.c_str()), "LoadGame()");
-    }
-    catch (...)
-    {
-      LogException("LoadGame()");
-    }
-    if (error != GAME_ERROR_NO_ERROR)
-      return false;
-    gameInfoLoaded = LoadGameInfo();
-  }
-
+  const bool gameInfoLoaded = LoadGameInfo();
   if (!gameInfoLoaded)
   {
     UnloadGame();
     return false;
   }
   if (SupportsDiscControl())
-    Discs().RefreshDiscStateLive();
+    Discs().RefreshDiscState();
 
   Input().Start(input);
 
@@ -484,9 +446,6 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
   m_hasFrameRun = false;
   m_gamePath = gamePath;
   m_input = input;
-
-  if (SupportsDiscControl())
-    Discs().SaveDiscState();
 
   m_inGameSaves = std::make_unique<CGameClientInGameSaves>(this, m_ifc.game);
   m_inGameSaves->Load();
@@ -926,12 +885,7 @@ RestoreResult CGameClient::Deserialize(const uint8_t* data,
   if (bSuccess && SupportsDiscControl())
   {
     bSuccess = Discs().RestoreDiscList();
-    if (discState)
-    {
-      if (bSuccess && previousDiscs)
-        Discs().SaveDiscState();
-    }
-    else if (bSuccess)
+    if (bSuccess && !discState)
       Discs().RefreshDiscState();
   }
 

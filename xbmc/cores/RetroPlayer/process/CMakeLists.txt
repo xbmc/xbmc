@@ -1,7 +1,9 @@
-set(SOURCES RPProcessInfo.cpp
+set(SOURCES DisplayPacing.cpp
+            RPProcessInfo.cpp
 )
 
-set(HEADERS RPProcessInfo.h
+set(HEADERS DisplayPacing.h
+            RPProcessInfo.h
 )
 
 if(TARGET ${APP_NAME_LC}::EGL)

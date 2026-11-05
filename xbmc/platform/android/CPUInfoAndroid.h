@@ -11,7 +11,12 @@
 #include "platform/posix/CPUInfoPosix.h"
 #include "platform/posix/filesystem/PosixFile.h"
 
+#include <chrono>
+#include <cstdint>
 #include <memory>
+#include <unordered_map>
+
+#include <sys/types.h>
 
 using namespace XFILE;
 
@@ -21,12 +26,15 @@ public:
   CCPUInfoAndroid();
   ~CCPUInfoAndroid() = default;
 
-  bool SupportsCPUUsage() const override { return false; }
-  int GetUsedPercentage() override { return 0; }
+  int GetUsedPercentage() override;
   float GetCPUFrequency() override;
 
 private:
   std::unique_ptr<CPosixFile> m_posixFile;
+  std::unordered_map<pid_t, uint64_t> m_threadTicks;
+  std::chrono::steady_clock::time_point m_lastUsageRead;
+  double m_lastProcessCpuTime{0.0};
+  long m_clockTicks;
 
   int GetCPUCount();
   bool HasNeon();

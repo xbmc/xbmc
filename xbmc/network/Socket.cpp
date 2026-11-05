@@ -161,7 +161,7 @@ bool CPosixUDPSocket::CheckIPv6(int port, int range)
   }
 
   // Try to bind a socket to validate ipv6 status
-  for (; port <= port + range; port++)
+  for (const int lastPort = port + range; port <= lastPort; port++)
   {
     testaddr.saddr.saddr6.sin6_port = htons(port);
     if (bind(static_cast<SOCKET>(testSocket), reinterpret_cast<struct sockaddr*>(&testaddr.saddr),

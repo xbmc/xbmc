@@ -11,6 +11,7 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
 
@@ -31,6 +32,8 @@ void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(const std::shared_ptr<CDV
   for(int i = m_overlays.size();i>0;)
   {
     i--;
+    if (m_overlays[i]->IsDiscMenu() != pOverlay->IsDiscMenu())
+      continue;
     if(m_overlays[i]->iPTSStopTime)
     {
       if(!m_overlays[i]->replace)
@@ -43,7 +46,12 @@ void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(const std::shared_ptr<CDV
       m_overlays[i]->iPTSStopTime = pOverlay->iPTSStartTime;
   }
 
-  m_overlays.emplace_back(pOverlay);
+  // Overlays are drawn in container order, and disc menus belong above subtitles
+  auto position = m_overlays.end();
+  if (!pOverlay->IsDiscMenu())
+    position =
+        std::ranges::find_if(m_overlays, [](const auto& overlay) { return overlay->IsDiscMenu(); });
+  m_overlays.insert(position, pOverlay);
 }
 
 VecOverlays* CDVDOverlayContainer::GetOverlays()
@@ -87,7 +95,8 @@ void CDVDOverlayContainer::CleanUp(double pts)
         const std::shared_ptr<CDVDOverlay>& pOverlay2 = *it2;
         // There can be multiple overlays queued at same start point.
         // Skip them to find a new start point.
-        if (pOverlay2->bForced && pOverlay2->iPTSStartTime <= pts)
+        if (pOverlay2->bForced && pOverlay2->IsDiscMenu() == pOverlay->IsDiscMenu() &&
+            pOverlay2->iPTSStartTime <= pts)
           bNewer = true;
       }
 
@@ -120,9 +129,23 @@ void CDVDOverlayContainer::Clear()
   m_overlays.clear();
 }
 
+void CDVDOverlayContainer::ClearSubtitles()
+{
+  std::unique_lock lock(*this);
+  std::erase_if(m_overlays,
+                [](const std::shared_ptr<CDVDOverlay>& ov) { return !ov->IsDiscMenu(); });
+}
+
 size_t CDVDOverlayContainer::GetSize()
 {
   return m_overlays.size();
+}
+
+size_t CDVDOverlayContainer::GetSubtitleSize()
+{
+  std::unique_lock lock(*this);
+  return static_cast<size_t>(std::ranges::count_if(
+      m_overlays, [](const std::shared_ptr<CDVDOverlay>& ov) { return !ov->IsDiscMenu(); }));
 }
 
 bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)

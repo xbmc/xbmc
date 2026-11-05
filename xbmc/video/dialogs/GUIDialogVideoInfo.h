@@ -103,6 +103,7 @@ protected:
   void OnGetArt();
   void OnGetFanart();
   void OnSetUserrating() const;
+  void SaveUserrating();
   void PlayTrailer();
 
   static bool UpdateVideoItemSortTitle(const std::shared_ptr<CFileItem>& pItem);

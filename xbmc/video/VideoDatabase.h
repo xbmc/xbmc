@@ -455,7 +455,16 @@ public:
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
-  void DeleteEpisode(int idEpisode, bool bKeepId = false);
+
+  /*!
+   * \brief Remove an episode from the library.
+   * \param[in] idEpisode The id of the episode
+   * \param[in] bKeepId Keep the episode's entry, so that its details are updated in place
+   * \param[in] hashAction Preserve or invalidate the hash of the episode's path, and its show's
+   */
+  void DeleteEpisode(int idEpisode,
+                     bool bKeepId = false,
+                     DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
   void DeleteMusicVideo(int idMusicVideo, bool bKeepId = false);
   void DeleteDetailsForTvShow(int idTvShow);
   void DeleteStreamDetails(int idFile);
@@ -629,6 +638,10 @@ public:
   // scanning hashes and paths scanned
   bool SetPathHash(const std::string &path, const std::string &hash);
   bool GetPathHash(const std::string &path, std::string &hash);
+  /*! \brief Clear the hash of the folder of a video's path, and of the folder above it
+   where that is what names the video, so that the next scan looks at them again.
+   */
+  void InvalidatePathHash(const std::string& strPath);
   bool GetPaths(std::set<std::string, std::less<>>& paths);
   bool GetPathsForTvShow(int idShow, std::set<int>& paths);
 
@@ -1002,7 +1015,7 @@ public:
 
   std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
   std::string GetVideoVersionById(int id);
-  int GetVideoVersionByTitle(const std::string& title) const;
+  int GetVideoVersionByTitle(const std::string& title, VideoAssetType itemType) const;
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,
@@ -1042,7 +1055,7 @@ public:
 
   bool SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
-  int AddOrValidateVideoVersionType(const std::string& typeVideoVersion);
+  int AddOrValidateVideoVersionType(const std::string& typeVideoVersion, VideoAssetType itemType);
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);
@@ -1061,7 +1074,8 @@ public:
                      int idVideoAsset,
                      VideoAssetType videoAssetType,
                      CFileItem& item);
-  bool DeleteVideoAsset(int idFile);
+  bool DeleteVideoAsset(int idFile,
+                        DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
   bool IsDefaultVideoVersion(int idFile);
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType assetType,
@@ -1085,6 +1099,14 @@ public:
   bool UpdateAssetsOwner(KODI::MEDIA::TYPE mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
+
+  /*!
+   \brief The movie whose files lie in a folder or below it, other than below excludedFolder.
+   Files on a disc or in an archive in the folder count too.
+   \return the movie, or -1 if there is none or more than one
+   */
+  int GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder);
+
   std::string GetMovieTitle(int idMovie);
 
   enum MatchingMask : uint8_t
@@ -1341,7 +1363,6 @@ private:
   void SplitPath(const std::string& strFileNameAndPath,
                  std::string& strPath,
                  std::string& strFileName) const;
-  void InvalidatePathHash(const std::string& strPath);
 
   /*! \brief Clear the hash of a path, without adding it to the path table if unknown
    \param strPath the path to clear the hash of

@@ -26,6 +26,7 @@ public:
 
   // Feature support
   CRenderInfo GetRenderInfo() override;
+  bool Supports(ERENDERFEATURE feature) const override;
 
 protected:
   // textures

@@ -41,8 +41,8 @@ constexpr unsigned int SCREEN_HEIGHT_4K = 2160;
 
 constexpr unsigned int WIDTH_720P = 1280;
 constexpr unsigned int HEIGHT_720P = 720;
-constexpr unsigned int SCREEN_WIDTH_1080P = 1080;
-constexpr unsigned int SCREEN_HEIGHT_1080P = 1920;
+constexpr unsigned int SCREEN_WIDTH_1080P = 1920;
+constexpr unsigned int SCREEN_HEIGHT_1080P = 1080;
 } // namespace
 
 namespace KODI::WINDOWING::WAYLAND

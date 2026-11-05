@@ -318,8 +318,13 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
       {
+        // an item sent along limits the refresh to the list items showing it
+        const auto item{std::static_pointer_cast<CFileItem>(message.GetItem())};
         for (int i = 0; i < m_vecItems->Size(); i++)
-          m_vecItems->Get(i)->FreeMemory(true);
+        {
+          if (!item || m_vecItems->Get(i)->IsSamePath(item.get()))
+            m_vecItems->Get(i)->FreeMemory(true);
+        }
         break;  // the window will take care of any info images
       }
       else if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
@@ -1966,6 +1971,9 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     if (pItem->IsFolder())
     {
       CURL itemUrl(pItem->GetPath());
+      if (itemUrl.IsLosslessURI())
+        continue;
+
       if (!filterOption.empty())
         itemUrl.SetOption("filter", filterOption);
       else
@@ -1977,12 +1985,14 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   SetProperty("filter", filter);
   if (filtered && m_canFilterAdvanced)
   {
+    CURL curUrl;
     // to be able to select the same item as before we need to adjust
     // the path of the item i.e. add or remove the "filter=" URL option
     // but that's only necessary for folder items
-    if (currentItem.get() && currentItem->IsFolder())
+    if (currentItem.get() && currentItem->IsFolder() &&
+        !(curUrl = CURL{currentItemPath}).IsLosslessURI())
     {
-      CURL curUrl(currentItemPath), newUrl(m_strFilterPath);
+      CURL newUrl{m_strFilterPath};
       if (newUrl.HasOption("filter"))
         curUrl.SetOption("filter", newUrl.GetOption("filter"));
       else if (curUrl.HasOption("filter"))

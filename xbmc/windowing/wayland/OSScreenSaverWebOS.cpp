@@ -74,7 +74,7 @@ bool COSScreenSaverWebOS::OnScreenSaverAboutToStart(LSHandle* sh, LSMessage* rep
 
   CLog::LogF(LOGDEBUG, "Responded {}", msg);
 
-  if (request["state"] != "Active")
+  if (!request.isMember("timestamp"))
     return true;
 
   CVariant response;

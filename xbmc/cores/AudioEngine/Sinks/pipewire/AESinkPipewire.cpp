@@ -634,6 +634,10 @@ void CAESinkPipewire::Drain()
 
   PIPEWIRE::CLoopLockGuard lock(loop);
 
+  // A paused stream has nothing queued, and PipeWire only reports drained while streaming
+  if (m_stream->GetState() != PW_STREAM_STATE_STREAMING)
+    return;
+
   m_stream->Flush(true);
 
   int ret = loop.Wait(1s);

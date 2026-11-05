@@ -59,12 +59,13 @@ bool HardcoreRestrictionsApply()
 CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient,
                                          CRPRenderManager& renderManager,
                                          CGUIGameMessenger& guiMessenger,
+                                         CDisplayPacing& displayPacing,
                                          double fps,
                                          size_t serializeSize)
   : m_gameClient(gameClient),
     m_renderManager(renderManager),
     m_guiMessenger(guiMessenger),
-    m_gameLoop(this, fps),
+    m_gameLoop(this, fps, &displayPacing),
     m_savestateDatabase(new CSavestateDatabase),
     m_memorySize(serializeSize),
     m_gamePath(gameClient->GetGamePath()),
@@ -285,7 +286,6 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave, const std::strin
   snapshot->captureUs = 0;
   snapshot->path = GetSavestatePath(autosave, savestatePath, snapshot->created);
   const std::string savePath = snapshot->path;
-  m_renderManager.CacheVideoFrame(savePath);
   m_saveWorker->Submit(snapshot);
   return savePath;
 }
@@ -304,7 +304,7 @@ void CReversiblePlayback::CaptureMetadata(Snapshot& snapshot)
   {
     if (m_gameClient->SupportsDiscControl())
     {
-      m_gameClient->Discs().RefreshDiscStateLive();
+      m_gameClient->Discs().RefreshDiscState();
       snapshot.discState = m_gameClient->Discs().GetDiscsForSnapshot().GetState();
     }
     m_gameClient->SerializeAchievementState(snapshot.achievements);
@@ -375,9 +375,6 @@ bool CReversiblePlayback::CommitSavestate(const Snapshot& snapshot)
   savestate->SetGameClientID(m_gameClientId);
   savestate->SetGameClientVersion(m_gameClientVersion);
 
-  if (!snapshot.video.empty())
-    m_renderManager.CacheVideoFrame(savePath, snapshot.video);
-  m_renderManager.SaveVideoFrame(savePath, *savestate, snapshot.video);
   savestate->Finalize();
   bool success;
   {
@@ -385,7 +382,7 @@ bool CReversiblePlayback::CommitSavestate(const Snapshot& snapshot)
     success = m_savestateDatabase->AddSavestate(savePath, m_gamePath, *savestate);
   }
   if (success)
-    m_renderManager.SaveThumbnail(CSavestateDatabase::MakeThumbnailPath(savePath));
+    m_renderManager.SaveThumbnail(CSavestateDatabase::MakeThumbnailPath(savePath), snapshot.video);
   else
     CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to write savestate");
   m_guiMessenger.RefreshSavestates(savePath, savestate.get());
@@ -429,17 +426,20 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
   if (m_savestateDatabase->GetSavestate(savestatePath, *savestate))
   {
-    if (!savestate->PrepareMemoryData(memorySize))
+    // The size a client reports can change as it runs, so a savestate is
+    // restored at its own size and the client decides whether it fits
+    const size_t savedSize = savestate->GetMemorySize();
+
+    if (!savestate->PrepareMemoryData(savedSize))
     {
       CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to prepare memory data");
     }
-    else if (savestate->GetMemorySize() != memorySize)
-    {
-      CLog::Log(LOGERROR, "Invalid memory size, got {}, expected {}", savestate->GetMemorySize(),
-                memorySize);
-    }
     else
     {
+      if (savedSize != memorySize)
+        CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Savestate size is {}, client reports {}", savedSize,
+                  memorySize);
+
       std::optional<GAME::CGameClientDiscModel> discModel;
       if (const auto discState = savestate->GetDiscState())
       {
@@ -460,7 +460,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
                   discState->slots.size(), discState->selectedSlot, discState->trayEjected);
       }
 
-      const RestoreResult result = m_gameClient->Deserialize(savestate->GetMemoryData(), memorySize,
+      const RestoreResult result = m_gameClient->Deserialize(savestate->GetMemoryData(), savedSize,
                                                              discModel ? &*discModel : nullptr);
       if (result == RestoreResult::Restored)
       {
@@ -490,12 +490,16 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
           const uint64_t maxFrames = m_memoryStream->MaxFrameCount();
           m_memoryStream->Init(memorySize, maxFrames);
           m_discStateHistory.Clear();
-          std::memcpy(m_memoryStream->BeginFrame(), savestate->GetMemoryData(), memorySize);
-          const uint32_t discStateId =
-              m_gameClient->SupportsDiscControl()
-                  ? m_discStateHistory.Intern(m_gameClient->Discs().GetDiscsForSnapshot())
-                  : 0;
-          m_memoryStream->SubmitFrame(discStateId, savestate->TimestampFrames());
+          // Rewind frames are the client's current size
+          if (savedSize == memorySize)
+          {
+            std::memcpy(m_memoryStream->BeginFrame(), savestate->GetMemoryData(), memorySize);
+            const uint32_t discStateId =
+                m_gameClient->SupportsDiscControl()
+                    ? m_discStateHistory.Intern(m_gameClient->Discs().GetDiscsForSnapshot())
+                    : 0;
+            m_memoryStream->SubmitFrame(discStateId, savestate->TimestampFrames());
+          }
           UpdatePlaybackStats();
         }
         m_totalFrameCount = savestate->TimestampFrames();
@@ -597,7 +601,7 @@ void CReversiblePlayback::AddFrame()
       uint32_t discStateId = 0;
       if (m_gameClient->SupportsDiscControl())
       {
-        m_gameClient->Discs().RefreshDiscStateLive();
+        m_gameClient->Discs().RefreshDiscState();
         discStateId = m_discStateHistory.Intern(m_gameClient->Discs().GetDiscsForSnapshot());
       }
       m_memoryStream->SubmitFrame(discStateId, m_totalFrameCount + 1);

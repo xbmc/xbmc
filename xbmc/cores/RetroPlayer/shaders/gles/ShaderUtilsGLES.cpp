@@ -9,11 +9,32 @@
 #include "ShaderUtilsGLES.h"
 
 #include "ServiceBroker.h"
+#include "rendering/GLExtensions.h"
 #include "rendering/gles/RenderSystemGLES.h"
 
 #include <string_view>
 
 using namespace KODI::SHADER;
+
+namespace
+{
+#if defined(GL_CLAMP_TO_BORDER_EXT)
+bool SupportsBorderClamp()
+{
+  const CRenderSystemBase* renderSystem = CServiceBroker::GetRenderSystem();
+  if (renderSystem == nullptr)
+    return false;
+
+  unsigned int major{0};
+  unsigned int minor{0};
+  renderSystem->GetRenderVersion(major, minor);
+
+  return major > 3 || (major == 3 && minor >= 2) ||
+         CGLExtensions::IsExtensionSupported(CGLExtensions::EXT_texture_border_clamp) ||
+         CGLExtensions::IsExtensionSupported(CGLExtensions::OES_texture_border_clamp);
+}
+#endif
+} // namespace
 
 GLint CShaderUtilsGLES::TranslateWrapType(WrapType wrapType)
 {
@@ -32,7 +53,11 @@ GLint CShaderUtilsGLES::TranslateWrapType(WrapType wrapType)
       break;
     case WrapType::BORDER:
     default:
+#if defined(GL_CLAMP_TO_BORDER_EXT)
+      glWrap = SupportsBorderClamp() ? GL_CLAMP_TO_BORDER_EXT : GL_CLAMP_TO_EDGE;
+#else
       glWrap = GL_CLAMP_TO_EDGE;
+#endif
       break;
   }
 

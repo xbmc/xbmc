@@ -179,7 +179,7 @@ public:
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; }
 
   bool CheckCondition();
-  void UpdateCondition(const CGUIListItem *item = NULL);
+  bool UpdateCondition(const CGUIListItem* item = NULL); // returns true if the animation was reset
   void SetInitialCondition();
 
 private:

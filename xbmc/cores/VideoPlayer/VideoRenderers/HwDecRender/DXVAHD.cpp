@@ -23,6 +23,7 @@
 
 #include "platform/win32/WIN32Util.h"
 
+#include <cmath>
 #include <mutex>
 
 #include <Windows.h>
@@ -234,7 +235,8 @@ bool CProcessorHD::OpenProcessor()
   return true;
 }
 
-void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const
+void CProcessorHD::ApplyFilter(
+    D3D11_VIDEO_PROCESSOR_FILTER filter, float value, int min, int max, int def) const
 {
   if (filter >= static_cast<D3D11_VIDEO_PROCESSOR_FILTER>(NUM_FILTERS))
     return;
@@ -244,14 +246,14 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
     return;
 
   D3D11_VIDEO_PROCESSOR_FILTER_RANGE range = m_procCaps.m_Filters[filter].Range;
-  int val;
+  float scaled = static_cast<float>(range.Default);
 
-  if(value > def)
-    val = range.Default + (range.Maximum - range.Default) * (value - def) / (max - def);
-  else if(value < def)
-    val = range.Default + (range.Minimum - range.Default) * (value - def) / (min - def);
-  else
-    val = range.Default;
+  if (value > def)
+    scaled += (range.Maximum - range.Default) * (value - def) / (max - def);
+  else if (value < def)
+    scaled += (range.Minimum - range.Default) * (value - def) / (min - def);
+
+  const int val = static_cast<int>(std::lround(scaled));
 
   m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
 }
@@ -286,6 +288,8 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
                                         const UINT& rotation,
                                         const float& contrast,
                                         const float& brightness,
+                                        const float& hue,
+                                        const float& saturation,
                                         const CRenderBuffer& rb)
 {
   bool updatedParameter{false};
@@ -316,7 +320,7 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
 
   if (!m_configured || m_lastBrightness != brightness)
   {
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, static_cast<int>(brightness), 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, brightness, 0, 100, 50);
 
     m_lastBrightness = brightness;
     updatedParameter = true;
@@ -324,17 +328,26 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
 
   if (!m_configured || m_lastContrast != contrast)
   {
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, static_cast<int>(contrast), 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, contrast, 0, 100, 50);
 
     m_lastContrast = contrast;
     updatedParameter = true;
   }
 
-  // unused filters - set once and forget
-  if (!m_configured)
+  if (!m_configured || m_lastHue != hue)
   {
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
-    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, hue, 0, 100, 50);
+
+    m_lastHue = hue;
+    updatedParameter = true;
+  }
+
+  if (!m_configured || m_lastSaturation != saturation)
+  {
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, saturation, 0, 100, 50);
+
+    m_lastSaturation = saturation;
+    updatedParameter = true;
   }
 
   if (!m_configured || m_lastRotation != rotation)
@@ -394,7 +407,17 @@ bool CProcessorHD::CheckVideoParameters(const CRect& src,
   return updatedParameter;
 }
 
-bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
+bool CProcessorHD::Render(CRect src,
+                          CRect dst,
+                          ID3D11Resource* target,
+                          CRenderBuffer** views,
+                          DWORD flags,
+                          UINT frameIdx,
+                          UINT rotation,
+                          float contrast,
+                          float brightness,
+                          float hue,
+                          float saturation)
 {
   std::unique_lock lock(m_section);
 
@@ -406,7 +429,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     return false;
 
   const bool updatedParam =
-      CheckVideoParameters(src, dst, rotation, contrast, brightness, *views[2]);
+      CheckVideoParameters(src, dst, rotation, contrast, brightness, hue, saturation, *views[2]);
 
   D3D11_VIDEO_FRAME_FORMAT dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
 
@@ -682,6 +705,10 @@ bool CProcessorHD::Supports(ERENDERFEATURE feature) const
       return m_procCaps.m_Filters[D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS].bSupported;
     case RENDERFEATURE_CONTRAST:
       return m_procCaps.m_Filters[D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST].bSupported;
+    case RENDERFEATURE_HUE:
+      return m_procCaps.m_Filters[D3D11_VIDEO_PROCESSOR_FILTER_HUE].bSupported;
+    case RENDERFEATURE_SATURATION:
+      return m_procCaps.m_Filters[D3D11_VIDEO_PROCESSOR_FILTER_SATURATION].bSupported;
     case RENDERFEATURE_ROTATION:
       return (m_procCaps.m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_ROTATION);
     default:

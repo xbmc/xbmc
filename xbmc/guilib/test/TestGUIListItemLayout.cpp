@@ -9,17 +9,20 @@
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIColorManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlGroup.h"
 #include "guilib/GUIListContainer.h"
 #include "guilib/GUIListItem.h"
 #include "guilib/GUIListItemLayout.h"
+#include "guilib/GUIListLabel.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/XBMCTinyXML.h"
 #include "windowing/WinSystem.h"
 
 #include <memory>
 #include <string>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -31,6 +34,21 @@ class CTestGroup : public CGUIControlGroup
 {
 public:
   using CGUIControlLookup::GetLookup;
+};
+
+class CTestLabel : public CGUILabel
+{
+public:
+  explicit CTestLabel(const CGUILabel& label) : CGUILabel(label) {}
+  using CGUILabel::GetColor;
+};
+
+class CTestListLabel : public CGUIListLabel
+{
+public:
+  explicit CTestListLabel(const CGUIListLabel& label) : CGUIListLabel(label) {}
+  auto GetColor() const { return CTestLabel(m_label).GetColor(); }
+  bool IsScrolling() { return !m_label.SetScrolling(true); }
 };
 
 class CTestContainer : public CGUIListContainer
@@ -58,6 +76,7 @@ public:
   {
     m_pWindowManager = std::make_unique<CGUIWindowManager>();
     m_guiInfoManager = std::make_unique<CGUIInfoManager>();
+    m_guiColorManager = std::make_unique<CGUIColorManager>();
     CServiceBroker::RegisterGUI(this);
   }
 };
@@ -248,4 +267,63 @@ TEST_F(TestGUIListItemLayout, ContainerCopyDoesNotRegisterWithSourceAncestor)
   EXPECT_EQ(item->GetLayout(), nullptr);
   EXPECT_EQ(item->GetFocusedLayout(), nullptr);
   EXPECT_EQ(sourceAncestor.GetLookup(), sourceLookup);
+}
+
+TEST_F(TestGUIListItemLayout, LabelsReceiveSelectionAndFocusThroughGroups)
+{
+  for (const auto& groups : {std::pair{"group", "group"}, std::pair{"groupmask", "group"},
+                             std::pair{"groupmask", "groupmask"}})
+  {
+    SCOPED_TRACE(groups.first);
+    SCOPED_TRACE(groups.second);
+    CXBMCTinyXML xml;
+    ASSERT_TRUE(xml.Parse("<itemlayout width=\"100\" height=\"20\">"
+                          "<control type=\""s +
+                          groups.first +
+                          "\" id=\"10\">"
+                          "<control type=\"label\" id=\"11\">"
+                          "<label>First label</label>"
+                          "<textcolor>FF112233</textcolor><selectedcolor>FF445566</selectedcolor>"
+                          "</control><control type=\"" +
+                          groups.second +
+                          "\" id=\"20\">"
+                          "<control type=\"label\" id=\"21\">"
+                          "<label>Nested label</label>"
+                          "<textcolor>FF112233</textcolor><selectedcolor>FF445566</selectedcolor>"
+                          "</control></control></control></itemlayout>"));
+    CTestGroup parent;
+    CGUIListItemLayout layout;
+    layout.SetParentControl(&parent);
+    layout.LoadLayout(xml.RootElement(), 0, true, 100, 20);
+    const auto* outer = parent.GetControl(10);
+    ASSERT_NE(outer, nullptr);
+    auto* listGroup = dynamic_cast<CGUIListGroup*>(outer->GetParentControl());
+    ASSERT_NE(listGroup, nullptr);
+    for (bool selected : {false, true, false})
+    {
+      SCOPED_TRACE(selected);
+      listGroup->SetState(selected, true);
+      for (int id : {11, 21})
+      {
+        SCOPED_TRACE(id);
+        const auto* label = dynamic_cast<CGUIListLabel*>(parent.GetControl(id));
+        ASSERT_NE(label, nullptr);
+        EXPECT_EQ(CTestListLabel(*label).GetColor(), selected ? 0xff445566 : 0xff112233);
+      }
+    }
+    for (unsigned int focus : {0, 1, 0, 1})
+    {
+      SCOPED_TRACE(focus);
+      layout.SetFocusedItem(focus);
+      EXPECT_EQ(layout.GetFocusedItem(), focus);
+      for (int id : {11, 21})
+      {
+        SCOPED_TRACE(id);
+        const auto* label = dynamic_cast<CGUIListLabel*>(parent.GetControl(id));
+        ASSERT_NE(label, nullptr);
+        EXPECT_EQ(label->HasFocus(), focus != 0);
+        EXPECT_EQ(CTestListLabel(*label).IsScrolling(), focus != 0);
+      }
+    }
+  }
 }

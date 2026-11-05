@@ -22,11 +22,16 @@ std::vector<std::unique_ptr<IEdlParser>> CEdlParserFactory::GetEdlParsersForItem
     const CFileItem& item)
 {
   std::vector<std::unique_ptr<IEdlParser>> parsers;
+  const bool hasEdlPath = item.HasProperty("edlpath");
+  if (hasEdlPath)
+    parsers.emplace_back(std::make_unique<CEdlFileParser>());
+
   if (URIUtils::IsLocalOrLAN(item.GetDynPath()))
   {
     // File-based parsers for local/LAN items
     parsers.emplace_back(std::make_unique<CVideoReDoParser>());
-    parsers.emplace_back(std::make_unique<CEdlFileParser>());
+    if (!hasEdlPath)
+      parsers.emplace_back(std::make_unique<CEdlFileParser>());
     parsers.emplace_back(std::make_unique<CComskipParser>());
     parsers.emplace_back(std::make_unique<CBeyondTVParser>());
   }

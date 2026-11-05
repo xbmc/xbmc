@@ -52,6 +52,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<>();
   private boolean mPaused = true;
   private static boolean mActivityRunning = false;
+  // Never reset: once the activity goes away, the native side exits the process.
+  private static boolean mShuttingDown = false;
 
   // Launchers that support the Recommended Content API
   private final Set<String> mRecommendedLaunchers = new HashSet<String>() {{
@@ -301,8 +303,17 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   }
 
   @Override
+  public void finish()
+  {
+    beginShutdown();
+    super.finish();
+  }
+
+  @Override
   public void onDestroy()
   {
+    beginShutdown();
+
     TvUtil.cancelAllScheduledJobs(this);
 
     // unregister the InputDeviceListener implementation
@@ -316,6 +327,19 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
   public static boolean isActivityRunning() {
     return mActivityRunning;
+  }
+
+  public static boolean isShuttingDown() {
+    return mShuttingDown;
+  }
+
+  private void beginShutdown()
+  {
+    if (mShuttingDown)
+      return;
+
+    mShuttingDown = true;
+    RestartActivity.watchForRelaunch(getApplicationContext());
   }
 
   @Override

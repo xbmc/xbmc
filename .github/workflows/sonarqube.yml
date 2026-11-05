@@ -6,6 +6,8 @@ on:
   push:
     branches:
       - master
+permissions:
+  contents: read
 jobs:
   sonarqube:
     if: github.repository == 'xbmc/xbmc'

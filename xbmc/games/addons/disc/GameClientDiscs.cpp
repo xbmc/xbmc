@@ -16,8 +16,6 @@
 #include "games/addons/disc/GameClientDiscMergeUtils.h"
 #include "games/addons/disc/GameClientDiscModel.h"
 #include "games/addons/disc/GameClientDiscTransport.h"
-#include "games/addons/disc/GameClientDiscXML.h"
-#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -43,7 +41,6 @@ CGameClientDiscs::CGameClientDiscs(CGameClient& gameClient,
                                    CCriticalSection& clientAccess)
   : CGameClientSubsystem(gameClient, addonStruct, clientAccess),
     m_transport(std::make_unique<CGameClientDiscTransport>(gameClient, addonStruct, clientAccess)),
-    m_discXml(std::make_unique<CGameClientDiscXML>()),
     m_discM3u(std::make_unique<CGameClientDiscM3U>()),
     m_discModel(std::make_unique<CGameClientDiscModel>())
 {
@@ -76,60 +73,15 @@ bool CGameClientDiscs::IsMediaSupported(const CGameClientDiscModel& model) const
   return true;
 }
 
-void CGameClientDiscs::Initialize(const std::string& gamePath, bool usePersistedState)
+void CGameClientDiscs::Initialize(const std::string& gamePath)
 {
   std::unique_lock lock(m_clientAccess);
 
-  const bool replaceInitialHint = m_initialHintAttempted;
   // Disc state is per running game session. Always reset the in-memory model
-  // before loading persisted state for the game being started.
+  // for the game being started.
   ResetSessionState();
 
   const auto supportedExtensions = GetSupportedExtensions(m_gameClient);
-
-  const bool persistedStateExists = CFileUtils::Exists(CGameClientDiscXML::GetXMLPath(gamePath));
-  CGameClientDiscModel restoredModel;
-  bool persistedStateValid = false;
-  if (usePersistedState && persistedStateExists && m_discXml->Load(gamePath, restoredModel))
-  {
-    persistedStateValid = IsMediaSupported(restoredModel);
-    for (size_t i = 0; persistedStateValid && i < restoredModel.Size(); ++i)
-    {
-      if (restoredModel.IsRemovedSlotByIndex(i))
-        continue;
-
-      const std::string path = restoredModel.GetPathByIndex(i);
-      if (path.empty() || !CFileUtils::Exists(path))
-      {
-        CLog::Log(LOGWARNING,
-                  "RetroPlayer[DISC]: Ignoring persisted disc state: slot {} has {} media {}", i,
-                  path.empty() ? "empty" : "missing", CURL::GetRedacted(path));
-        persistedStateValid = false;
-        break;
-      }
-    }
-
-    if (persistedStateValid)
-    {
-      *m_discModel = restoredModel;
-      PruneRemovedDiscs(*m_discModel);
-      m_isEjected = m_discModel->IsEjected();
-      m_preserveSlotTopology = true;
-      m_hasPersistedState = true;
-
-      const std::optional<size_t> startupIndex = m_discModel->GetSelectedDiscIndex();
-      if (startupIndex)
-      {
-        m_initialHintAttempted = true;
-        m_transport->SetInitialImage(static_cast<unsigned int>(*startupIndex),
-                                     m_discModel->GetPathByIndex(*startupIndex));
-      }
-    }
-  }
-
-  if (usePersistedState && persistedStateExists && !persistedStateValid)
-    CLog::Log(LOGWARNING, "RetroPlayer[DISC]: Falling back to source media for {}",
-              CURL::GetRedacted(gamePath));
 
   CGameClientDiscModel sourceModel;
   if (URIUtils::HasExtension(gamePath, ".m3u"))
@@ -140,30 +92,15 @@ void CGameClientDiscs::Initialize(const std::string& gamePath, bool usePersisted
   if (sourceModel.Empty())
     sourceModel.AddDisc(gamePath);
 
-  if (!m_hasPersistedState)
-  {
-    *m_discModel = sourceModel;
-    m_discModel->SetSelectedDiscByIndex(0);
-  }
-  else
-  {
-    // Source media can resolve older savestates without changing the current playlist.
-    m_discModel->RememberDiscs(sourceModel);
-  }
-
-  if (!m_hasPersistedState && replaceInitialHint && !m_discModel->Empty())
-  {
-    m_initialHintAttempted = true;
-    m_transport->SetInitialImage(0, m_discModel->GetPathByIndex(0));
-  }
+  *m_discModel = sourceModel;
+  m_discModel->SetSelectedDiscByIndex(0);
 }
 
 void CGameClientDiscs::Deinitialize()
 {
   std::unique_lock lock(m_clientAccess);
 
-  // Stopping a game must discard all live disc UI/model state. Persisted state
-  // remains keyed by game path and will be loaded explicitly for the next game.
+  // Stopping a game must discard all live disc UI/model state
   ResetSessionState();
 }
 
@@ -328,13 +265,6 @@ bool CGameClientDiscs::RestoreDiscList()
 }
 
 void CGameClientDiscs::RefreshDiscState()
-{
-  std::unique_lock lock(m_clientAccess);
-  RefreshDiscStateLive();
-  SaveDiscState();
-}
-
-void CGameClientDiscs::RefreshDiscStateLive()
 {
   std::unique_lock lock(m_clientAccess);
 
@@ -556,8 +486,6 @@ void CGameClientDiscs::ResetSessionState()
   m_discModel->Clear();
   m_isEjected = false;
   m_preserveSlotTopology = false;
-  m_hasPersistedState = false;
-  m_initialHintAttempted = false;
   m_restoredImageCount.reset();
 }
 
@@ -591,31 +519,6 @@ void CGameClientDiscs::LoadModelFromCore(CGameClientDiscModel& model) const
     model.SetSelectedDiscByIndex(*selectedModelIndex);
   else
     model.SetSelectedNoDisc();
-}
-
-void CGameClientDiscs::SaveDiscState() const
-{
-  std::unique_lock lock(m_clientAccess);
-
-  if (!m_gameClient.GetGamePath().empty())
-  {
-    m_discXml->Save(m_gameClient.GetGamePath(), *m_discModel);
-    m_discM3u->Save(m_gameClient.GetGamePath(), *m_discModel);
-  }
-}
-
-void CGameClientDiscs::PruneRemovedDiscs(CGameClientDiscModel& model)
-{
-  for (size_t i = 0; i < model.Size();)
-  {
-    if (!model.IsRemovedSlotByIndex(i))
-    {
-      ++i;
-      continue;
-    }
-
-    model.EraseDiscByIndex(i);
-  }
 }
 
 void CGameClientDiscs::PruneExtensions(CGameClientDiscModel& model,

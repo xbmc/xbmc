@@ -718,12 +718,12 @@ void CDVDDemuxClient::FillBuffer(bool mode)
   }
 }
 
-void CDVDDemuxClient::EnableStream(int id, bool enable)
+bool CDVDDemuxClient::EnableStream(int id, bool enable)
 {
   if (m_IDemux)
-  {
-    m_IDemux->EnableStream(id, enable);
-  }
+    return m_IDemux->EnableStream(id, enable);
+
+  return false;
 }
 
 void CDVDDemuxClient::OpenStream(int id)

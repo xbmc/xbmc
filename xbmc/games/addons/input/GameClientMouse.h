@@ -39,10 +39,13 @@ public:
    * \param controllerId The controller profile used for input
    * \param dllStruct The emulator or game to which the events are sent.
    * \param inputProvider The interface providing us with mouse input.
+   * \param portAddress The port the input is sent to: the mouse port, or a
+   *        controller port with a mouse connected
    */
   CGameClientMouse(CGameClient& gameClient,
                    std::string controllerId,
-                   MOUSE::IMouseInputProvider* inputProvider);
+                   MOUSE::IMouseInputProvider* inputProvider,
+                   std::string portAddress);
 
   /*!
    * \brief Destructor unregisters from mouse events from CInputManager.
@@ -74,6 +77,7 @@ private:
   CGameClient& m_gameClient;
   const std::string m_controllerId;
   MOUSE::IMouseInputProvider* const m_inputProvider;
+  const std::string m_portAddress;
 
   // Input parameters
   PERIPHERALS::PeripheralPtr m_sourcePeripheral;

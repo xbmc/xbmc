@@ -440,7 +440,8 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scroller.ScrollTo(std::clamp(offset, 0.0f, std::max(m_totalSize - Size(), 0.0f)));
   if (m_scroller.IsScrolling())
     SetInvalid();
-  MarkDirtyRegion();
+  // Process() marks the control dirty while it scrolls
+  MarkDirtyRegion(DIRTY_STATE_CHILD);
 }
 
 void CGUIControlGroupList::SetScrollOffset(float offset)
@@ -587,6 +588,17 @@ void CGUIControlGroupList::CalculateItemGap()
     if (itemsCount > 0)
       m_itemGap = (Size() - itemsSize) / itemsCount;
   }
+}
+
+CRect CGUIControlGroupList::CalcRenderRegion() const
+{
+  // the items are drawn with the alignment offset
+  CRect rect = CGUIControlGroup::CalcRenderRegion();
+  if (m_orientation == VERTICAL)
+    rect += CPoint(0, GetAlignOffset());
+  else
+    rect += CPoint(GetAlignOffset(), 0);
+  return rect;
 }
 
 float CGUIControlGroupList::GetAlignOffset() const

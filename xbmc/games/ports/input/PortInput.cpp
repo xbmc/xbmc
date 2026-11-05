@@ -54,6 +54,12 @@ void CPortInput::UnregisterInput(JOYSTICK::IInputProvider* provider)
     provider->UnregisterInputHandler(this);
     provider->UnregisterInputHandler(m_inputSink.get());
   }
+  else
+  {
+    // The provider is gone, and the receivers it gave us go with it
+    ResetInputReceiver();
+    m_inputSink->ResetInputReceiver();
+  }
 }
 
 float CPortInput::GetActivation() const

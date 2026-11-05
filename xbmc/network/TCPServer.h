@@ -53,6 +53,8 @@ namespace JSONRPC
   protected:
     void Process() override;
   private:
+    friend class TestTCPServer;
+
     CTCPServer(int port, bool nonlocal);
     bool Initialize();
     bool InitializeBlue();

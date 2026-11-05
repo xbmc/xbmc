@@ -46,7 +46,7 @@ public:
     source_height = src.source_height;
     m_isHDROverlay = src.m_isHDROverlay;
 
-    pixels.resize(sub_h * linesize);
+    pixels.resize(static_cast<size_t>(sub_h) * linesize);
 
     uint8_t* s = src.data_at(sub_x, sub_y);
     uint8_t* t = pixels.data();

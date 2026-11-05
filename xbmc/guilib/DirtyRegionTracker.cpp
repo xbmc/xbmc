@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <iterator>
 #include <stdio.h>
 
 CDirtyRegionTracker::CDirtyRegionTracker()
@@ -65,12 +66,16 @@ const CDirtyRegionList &CDirtyRegionTracker::GetMarkedRegions() const
   return m_markedRegions;
 }
 
-CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
+CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions(int maxAge)
 {
   CDirtyRegionList output;
 
+  CDirtyRegionList input;
+  std::ranges::copy_if(m_markedRegions, std::back_inserter(input),
+                       [maxAge](const CDirtyRegion& r) { return r.GetAge() <= maxAge; });
+
   if (m_solver)
-    m_solver->Solve(m_markedRegions, output);
+    m_solver->Solve(input, output);
 
   return output;
 }

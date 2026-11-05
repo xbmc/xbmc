@@ -12,9 +12,13 @@ uniform sampler2D m_samp0;
 varying vec2 m_cord0;
 varying vec4 m_colour;
 
-// SM_FONTS shader
+// SM_FONTS and SM_FONTS_RGBA shader
 void main()
 {
+#if defined(KODI_FONTS_RGBA)
+  gl_FragColor = m_colour * texture2D(m_samp0, m_cord0);
+#else
   gl_FragColor = m_colour;
   gl_FragColor.a *= texture2D(m_samp0, m_cord0).r;
+#endif
 }

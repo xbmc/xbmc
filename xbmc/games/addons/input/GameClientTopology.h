@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/game.h"
 #include "games/GameTypes.h"
 #include "games/controllers/types/ControllerTree.h"
 
@@ -37,6 +38,7 @@ public:
   // Utility functions
   static std::string MakeAddress(const std::string& baseAddress, const std::string& nodeId);
   static std::pair<std::string, std::string> SplitAddress(const std::string& nodeAddress);
+  static GAME_PORT_TYPE GetPortType(const std::string& portAddress);
 
 private:
   static CControllerTree GetControllerTree(const GameClientPortVec& ports);

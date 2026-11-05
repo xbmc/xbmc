@@ -136,6 +136,7 @@ protected:
   // Implementation of CRPBaseRenderer
   bool ConfigureInternal() override;
   void RenderInternal(uint8_t alpha) override;
+  void FlushInternal() override;
 
   void Render(CD3DTexture& target, uint8_t alpha);
 

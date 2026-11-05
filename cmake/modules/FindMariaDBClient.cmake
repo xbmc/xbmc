@@ -126,6 +126,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(ZSTD_LIBRARY)
       string(REPLACE ";" "|" ZSTD_LIBRARY "${ZSTD_LIBRARY}")
       list(APPEND CMAKE_ARGS "-DZSTD_LIBRARIES:STRING=${ZSTD_LIBRARY}")
+      if(WIN32 OR WINDOWS_STORE)
+        # MariaDB's unconditional FindCURL also uses the singular variable.
+        list(APPEND CMAKE_ARGS "-DZSTD_LIBRARY:STRING=${ZSTD_LIBRARY}")
+      endif()
     endif()
 
     BUILD_DEP_TARGET()

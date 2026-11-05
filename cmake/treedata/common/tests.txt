@@ -1,8 +1,10 @@
 xbmc/addons/gui/skin/test         test/skin
 xbmc/addons/test                  test/addons
+xbmc/cores/AudioEngine/Engines/ActiveAE/test test/audioengine_activeae
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
 xbmc/cores/AudioEngine/Utils/test test/audioengine_utils
 xbmc/cores/RetroPlayer/playback/test test/retroplayer_playback
+xbmc/cores/RetroPlayer/process/test test/retroplayer_process
 xbmc/cores/RetroPlayer/rendering/test test/retroplayer_rendering
 xbmc/cores/RetroPlayer/savestates/test test/retroplayer_savestates
 xbmc/cores/RetroPlayer/shaders/test test/retroplayer_shaders
@@ -28,6 +30,8 @@ xbmc/games/addons/streams/test    test/games/addons/streams
 xbmc/games/controllers/input/test test/games/controllers/input
 xbmc/games/controllers/test       test/games/controllers
 xbmc/games/dialogs/disc/test      test/games/dialogs/disc
+xbmc/games/library/test           test/games/library
+xbmc/games/library/naming/test    test/games/library/naming
 xbmc/games/tags/test              test/games/tags
 xbmc/games/test                   test/games
 xbmc/guilib/test                  test/guilib
@@ -58,4 +62,5 @@ xbmc/threads/test                 test/threads
 xbmc/utils/test                   test/utils
 xbmc/video/geometry/test          test/video/geometry
 xbmc/video/test                   test/video
+xbmc/view/test                    test/view
 xbmc/windowing/test               test/windowing

@@ -115,6 +115,11 @@ private:
   void ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
   void ProcessKeyboard();
   void ProcessMouse();
+  /*!
+   * \param mouse The mouse to play a controller port, or empty if there is
+   *        none, which closes the one that was playing
+   */
+  void ProcessControllerMouse(const PERIPHERALS::PeripheralPtr& mouse);
 
   // Internal helpers
   void ProcessAgentControllers(const PERIPHERALS::PeripheralVector& peripherals,

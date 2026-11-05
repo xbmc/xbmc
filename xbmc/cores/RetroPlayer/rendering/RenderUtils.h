@@ -45,6 +45,15 @@ public:
 
   static ViewportCoordinates ReorderDrawPoints(const CRect& destRect,
                                                unsigned int orientationDegCCW);
+
+  /*!
+   * \brief Get the width a frame is shown at for its height
+   *
+   * \param displayAspectRatio The frame's display aspect ratio, or 0 for square pixels
+   */
+  static unsigned int GetDisplayWidth(unsigned int width,
+                                      unsigned int height,
+                                      float displayAspectRatio);
 };
 } // namespace RETRO
 } // namespace KODI

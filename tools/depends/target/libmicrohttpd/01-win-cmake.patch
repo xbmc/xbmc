@@ -102,8 +102,8 @@
 +
 +if(MSVC)
 +  set_target_properties(libmicrohttpd PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} COMPILE_PDB_NAME libmicrohttpd COMPILE_PDB_NAME_DEBUG libmicrohttpd_d)
-+  install(FILES ${PROJECT_BINARY_DIR}/RelWithDebInfo/libmicrohttpd.pdb DESTINATION lib CONFIGURATIONS RelWithDebInfo)
-+  install(FILES ${PROJECT_BINARY_DIR}/Debug/libmicrohttpd_d.pdb DESTINATION lib CONFIGURATIONS Debug)
++  install(FILES ${PROJECT_BINARY_DIR}/RelWithDebInfo/libmicrohttpd.pdb DESTINATION lib CONFIGURATIONS RelWithDebInfo OPTIONAL)
++  install(FILES ${PROJECT_BINARY_DIR}/Debug/libmicrohttpd_d.pdb DESTINATION lib CONFIGURATIONS Debug OPTIONAL)
 +endif()
 +
 +include(CMakePackageConfigHelpers)

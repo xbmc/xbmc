@@ -45,6 +45,7 @@
       NSOpenGLPFAAlphaSize, 8,
       NSOpenGLPFAColorSize, 32,
       NSOpenGLPFADepthSize, 24,
+      NSOpenGLPFAStencilSize, 8,
       NSOpenGLPFADoubleBuffer,
       NSOpenGLPFANoRecovery,
       0

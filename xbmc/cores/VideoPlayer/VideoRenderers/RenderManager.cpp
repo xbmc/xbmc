@@ -508,6 +508,15 @@ void CRenderManager::DeleteRenderer()
   }
 }
 
+bool CRenderManager::CompositeVideoCapture(KODI::RENDERING::CAPTURE::CaptureResult& result)
+{
+  std::unique_lock lock(m_statelock);
+  if (m_renderState != STATE_CONFIGURED || !m_pRenderer)
+    return true;
+
+  return m_pRenderer->CompositeVideoCapture(result);
+}
+
 void CRenderManager::ServiceVideoCaptures()
 {
   using namespace KODI::RENDERING::CAPTURE;

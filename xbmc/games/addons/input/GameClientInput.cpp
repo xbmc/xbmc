@@ -634,7 +634,8 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller)
     if (!mice.empty())
     {
       PERIPHERALS::PeripheralPtr mouse = std::move(mice.at(0));
-      m_mouse = std::make_unique<CGameClientMouse>(m_gameClient, controller->ID(), mouse.get());
+      m_mouse = std::make_unique<CGameClientMouse>(m_gameClient, controller->ID(), mouse.get(),
+                                                   MOUSE_PORT_ADDRESS);
       m_mouse->SetSource(std::move(mouse));
     }
   }
@@ -642,16 +643,48 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller)
   return bSuccess;
 }
 
+bool CGameClientInput::OpenControllerMouse(const std::string& portAddress,
+                                           const ControllerPtr& controller,
+                                           PERIPHERALS::PeripheralPtr mouse)
+{
+  if (!controller || !mouse || m_mouse)
+    return false;
+
+  // The controller is already connected to the port, so the game client isn't
+  // asked to enable a mouse
+  m_mouse =
+      std::make_unique<CGameClientMouse>(m_gameClient, controller->ID(), mouse.get(), portAddress);
+  m_mouse->SetSource(std::move(mouse));
+  m_mouseControllerPort = portAddress;
+
+  return true;
+}
+
 bool CGameClientInput::IsMouseOpen() const
 {
   return static_cast<bool>(m_mouse);
+}
+
+bool CGameClientInput::IsControllerMouseOpen(const std::string& portAddress,
+                                             const std::string& controllerId,
+                                             const PERIPHERALS::PeripheralPtr& mouse) const
+{
+  return m_mouse && m_mouseControllerPort == portAddress &&
+         m_mouse->GetControllerID() == controllerId && m_mouse->GetSource() == mouse;
 }
 
 bool CGameClientInput::CloseMouse()
 {
   bool bSuccess = false;
 
-  if (m_mouse)
+  if (m_mouse && !m_mouseControllerPort.empty())
+  {
+    // The controller stays connected to its port
+    m_mouse.reset();
+    m_mouseControllerPort.clear();
+    bSuccess = true;
+  }
+  else if (m_mouse)
   {
     // Reset input handler
     m_mouse.reset();

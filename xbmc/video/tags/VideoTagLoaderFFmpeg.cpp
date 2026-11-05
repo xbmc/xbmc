@@ -18,6 +18,9 @@
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 
+#include <charconv>
+#include <string_view>
+
 using namespace XFILE;
 
 namespace
@@ -262,7 +265,13 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       hasfull = true;
     }
     else if (strcmp(avtag->key, "track") == 0)
-      tag.m_iTrack = std::stoi(avtag->value);
+    {
+      // A number, possibly followed by the total ("3/12")
+      const std::string_view value{avtag->value};
+      if (int track{0};
+          std::from_chars(value.data(), value.data() + value.size(), track).ec == std::errc{})
+        tag.m_iTrack = track;
+    }
     else if (strcmp(avtag->key, "album") == 0)
       tag.SetAlbum(avtag->value);
     else if (strcmp(avtag->key, "artist") == 0)

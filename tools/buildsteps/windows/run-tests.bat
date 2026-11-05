@@ -25,7 +25,7 @@ rem -------------------------------------------------------------
 rem  CONFIG START
 SET exitcode=0
 SET useshell=sh
-SET buildconfig=Release
+IF NOT DEFINED buildconfig SET buildconfig=Release
 SET PreferredToolArchitecture=x64
 
 
@@ -37,9 +37,14 @@ IF EXIST buildlog.html del buildlog.html /q
 
 ECHO Compiling testsuite...
 cmake.exe --build . --config "%buildconfig%" --target %APP_NAME%-test
+SET buildresult=%errorlevel%
 
-IF %errorlevel%==1 (
-  set DIETEXT="%APP_NAME%-test.exe failed to build!  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
+rem Compare against "0" rather than using `IF %errorlevel%==1` or `IF ERRORLEVEL 1`:
+rem the first misses every code but 1, the second misses negative codes. Either way
+rem RUNTESTSUITE would then run a stale %APP_NAME%-test.exe left over from a previous
+rem build and publish its results as if this build had produced them.
+IF NOT "%buildresult%"=="0" (
+  set DIETEXT="%APP_NAME%-test.exe failed to build! (cmake --build returned %buildresult%)  See %CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
   type "%CD%\..\vs2010express\XBMC\%buildconfig%\objs\XBMC.log"
   goto DIE
 )
@@ -48,7 +53,11 @@ ECHO ------------------------------------------------------------
 
 :RUNTESTSUITE
 ECHO Running testsuite...
+  rem Remove any result file from a previous run first: the existence check below
+  rem would otherwise accept a stale file and publish the previous run's results.
+  IF EXIST "%BUILDDIR%\gtestresults.xml" del "%BUILDDIR%\gtestresults.xml" > NUL
   "%buildconfig%\%APP_NAME%-test.exe" --gtest_output=xml:%BUILDDIR%\gtestresults.xml
+  SET testexitcode=%errorlevel%
 
   IF NOT EXIST %BUILDDIR%\gtestresults.xml (
     set DIETEXT="%APP_NAME%-test.exe failed to execute or output test results!"
@@ -64,6 +73,11 @@ ECHO Running testsuite...
   @PowerShell "(GC %BUILDDIR%\gtestresults.xml)|%%{$_ -Replace '(<testcase.+)("notrun")(.+)(/>)','$1$2$3><skipped/></testcase>'}|SC %BUILDDIR%\gtestresults-skipped.xml"
   del %BUILDDIR%\gtestresults.xml
   move %BUILDDIR%\gtestresults-skipped.xml %BUILDDIR%\gtestresults.xml
+
+  IF NOT "%testexitcode%"=="0" (
+    set DIETEXT="%APP_NAME%-test.exe reported failing tests (exit code %testexitcode%), see %BUILDDIR%\gtestresults.xml"
+    goto DIE
+  )
 ECHO Done running testsuite!
 ECHO ------------------------------------------------------------
 GOTO END

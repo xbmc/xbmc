@@ -73,7 +73,10 @@ set(SOURCES ActorProtocol.cpp
             Temperature.cpp
             TextSearch.cpp
             TimeUtils.cpp
+            URI.cpp
             URIParser.cpp
+            URIPolicy.cpp
+            URIRedactor.cpp
             URIUtils.cpp
             UrlOptions.cpp
             Utf8Utils.cpp
@@ -112,6 +115,7 @@ set(HEADERS ActorProtocol.h
             Digest.h
             DiscsUtils.h
             DolbyVisionRpu.h
+            EmojiUtils.h
             EndianSwap.h
             EpisodeUtils.h
             EventStream.h
@@ -190,7 +194,10 @@ set(HEADERS ActorProtocol.h
             TimeFormat.h
             TimeUtils.h
             TransformMatrix.h
+            URI.h
             URIParser.h
+            URIPolicy.h
+            URIRedactor.h
             URIUtils.h
             UrlOptions.h
             Utf8Utils.h

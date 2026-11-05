@@ -28,9 +28,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/VideoVersionsSettings.h"
-#include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -38,12 +36,13 @@
 #include "video/VideoDbPaths.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoUtils.h"
-#include "video/guilib/VideoGUIUtils.h"
 
+#include <algorithm>
+#include <cstdlib>
 #include <memory>
-#include <optional>
+#include <ranges>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -452,129 +451,6 @@ void CGUIDialogVideoManagerVersions::RemovePartNumberFromTitle(int dbId,
   }
 }
 
-bool CGUIDialogVideoManagerVersions::ChoosePlaylist(const std::shared_ptr<CFileItem>& item,
-                                                    ReplaceExistingFile replaceExistingFile)
-{
-  // Open database
-  if (!m_database.IsOpen() && !m_database.Open())
-  {
-    CLog::LogF(LOGERROR, "Failed to open video database!");
-    return false;
-  }
-
-  // Select the playlist using the simple menu
-  const std::string oldPath{item->GetDynPath()};
-  const int idMovie{m_database.GetMovieId(oldPath)};
-
-  CFileItem chosen{*item};
-  if (!KODI::VIDEO::UTILS::ChooseDiscPlaylist(chosen))
-    return false;
-
-  const CFileItem& owner{item->GetVideoInfoTag()->GetMediaType() == KODI::MEDIA::TYPE::VIDEO_VERSION
-                             ? *m_videoAsset
-                             : *item};
-  const VideoAssetInfo existing{m_database.GetVideoVersionInfo(chosen.GetDynPath())};
-  if (existing.m_idFile >= 0 && existing.m_mediaType == KODI::MEDIA::TYPE::MOVIE &&
-      existing.m_idMedia == owner.GetVideoInfoTag()->m_iDbId &&
-      (replaceExistingFile == ReplaceExistingFile::NO ||
-       existing.m_idFile != item->GetVideoInfoTag()->m_iFileId))
-  {
-    CGUIDialogOK::ShowAndGetInput(CVariant{257}, CVariant{40047});
-    return false;
-  }
-
-  // The list row is item itself, so it is put back on any exit that skips Refresh()
-  const CFileItem original{*item};
-  *item = chosen;
-
-  // Add playlist file as bluray://
-  bool videoDbSuccess{false};
-  try
-  {
-    int idFile{-1};
-    std::optional<std::pair<KODI::MEDIA::TYPE, int>> announce;
-    m_database.BeginTransaction();
-    if (replaceExistingFile == ReplaceExistingFile::YES)
-    {
-      idFile = KODI::VIDEO::UTILS::SaveDiscPlaylistToLibrary(
-          *item, owner.GetVideoContentType(), owner.GetVideoInfoTag()->m_iDbId, m_database);
-      videoDbSuccess = idFile > 0;
-      if (videoDbSuccess)
-      {
-        CVideoInfoTag* tag{item->GetVideoInfoTag()};
-        const int oldFileId{tag->m_iFileId};
-        if (tag->GetMediaType() == KODI::MEDIA::TYPE::VIDEO_VERSION)
-          tag->m_iDbId = idFile;
-        tag->m_iFileId = idFile;
-        KODI::VIDEO::UTILS::NotifyItemPathChanged(*item, oldPath, oldFileId);
-        announce = {owner.GetVideoInfoTag()->GetMediaType(), owner.GetVideoInfoTag()->m_iDbId};
-      }
-    }
-    else
-    {
-      // Choose a video version for the video
-      const int idVideoVersion{ChooseVideoAsset(item, VideoAssetType::VERSION, "")};
-      if (idVideoVersion < 0)
-      {
-        m_database.RollbackTransaction();
-        *item = original;
-        return false;
-      }
-
-      idFile = m_database.AddFile(item->GetDynPath(), "", item->GetVideoInfoTag()->m_dateAdded);
-      if (idFile > 0)
-      {
-        videoDbSuccess = true;
-        m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
-        if (!m_database.AddOrUpdateVideoVersion(item->GetVideoContentType(), idMovie, idFile,
-                                                idVideoVersion, VideoAssetType::VERSION))
-        {
-          m_database.RollbackTransaction();
-          *item = original;
-          return false;
-        }
-      }
-    }
-
-    if (videoDbSuccess)
-    {
-      // Remove (Disc n) from title if we are now spanning discs or folders
-      if (!URIUtils::CompareDiscPaths(m_videoAsset->GetDynPath(), item->GetDynPath()))
-        RemovePartNumberFromTitle(m_videoAsset->GetVideoInfoTag()->m_iDbId,
-                                  m_videoAsset->GetVideoContentType(), m_database);
-
-      // New disc video version will not have any art so use the art from the disc
-      m_database.SetArtForItem(idFile, KODI::MEDIA::TYPE::VIDEO_VERSION, item->GetArt());
-
-      m_database.CommitTransaction();
-
-      // Widgets reload on the announcement
-      if (announce)
-      {
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-        CVideoDatabase::AnnounceUpdate(announce->first, announce->second);
-      }
-    }
-    else
-      m_database.RollbackTransaction();
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "Exception adding bluray playlist '{}'",
-               CURL::GetRedacted(item->GetDynPath()));
-    m_database.RollbackTransaction();
-    *item = original;
-    return false;
-  }
-
-  // refresh data and controls
-  Refresh();
-  UpdateControls();
-  m_hasUpdatedItems = true;
-
-  return videoDbSuccess;
-}
-
 bool CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerVersions* dialog{
@@ -767,9 +643,88 @@ bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFi
   return true;
 }
 
+namespace
+{
+/*!
+ * \brief Without the user to choose among several similar movies, those in the folder of the item
+ * are taken to be its other discs or copies, and made one movie.
+ * \param[in] item the movie that is to become a version of another
+ * \param[in,out] list the similar movies, left with just the one those beside the item now are.
+ * Left as it was when none is beside it.
+ * \param[in] videodb database connection to use
+ * \return false if making them one movie failed
+ */
+bool MergeMoviesBeside(const CFileItem& item, CFileItemList& list, CVideoDatabase& videodb)
+{
+  // A stack plays its discs in turn, so isn't a copy of any of them
+  const std::string& file{item.GetVideoInfoTag()->m_strFileNameAndPath};
+  if (URIUtils::IsStack(file))
+    return true;
+
+  // The folder above any "Disc n" folder, which holds all the discs of a movie
+  const auto movieFolder{[](const std::string& path)
+                         { return CFileItem{path, false}.GetBaseMoviePath(true); }};
+  const std::string folder{movieFolder(file)};
+
+  std::vector<std::shared_ptr<CFileItem>> beside;
+  for (const auto& movie : list)
+  {
+    const std::string& movieFile{movie->GetVideoInfoTag()->m_strFileNameAndPath};
+    if (!URIUtils::IsStack(movieFile) && URIUtils::PathEquals(movieFolder(movieFile), folder, true))
+      beside.emplace_back(movie);
+  }
+  if (beside.empty())
+    return true;
+
+  // The candidates were only compared with the item, which may lack the kind of id they differ by
+  for (auto first = beside.cbegin(); first != beside.cend(); ++first)
+  {
+    for (auto second = first + 1; second != beside.cend(); ++second)
+    {
+      if ((*first)->GetVideoInfoTag()->HasConflictingUniqueID(*(*second)->GetVideoInfoTag()))
+      {
+        CLog::LogF(LOGINFO, "Automated video version creation stopped by conflicting unique ids");
+        return true;
+      }
+    }
+  }
+
+  // Of the movies already in the library, the one of the lowest disc is kept and the others join
+  // it, as does the item. The item has just been added from its scraper or nfo, while they may
+  // hold what the user set on them, which a movie made a version loses.
+  std::ranges::sort(beside, {},
+                    [](const std::shared_ptr<CFileItem>& movie)
+                    {
+                      const CVideoInfoTag& tag{*movie->GetVideoInfoTag()};
+                      const std::string disc{
+                          CUtil::GetPartNumberFromPath(tag.m_strFileNameAndPath)};
+                      return std::make_tuple(disc.empty(), std::atoi(disc.c_str()), tag.m_iDbId);
+                    });
+  const int targetDbId{beside.front()->GetVideoInfoTag()->m_iDbId};
+  for (const auto& movie : beside | std::views::drop(1))
+  {
+    const int dbId{movie->GetVideoInfoTag()->m_iDbId};
+    if (!videodb.ConvertVideoToVersion(VideoDbContentType::MOVIES, dbId, targetDbId, -1,
+                                       VideoAssetType::VERSION))
+    {
+      CLog::LogF(LOGERROR, "Failed to convert movie id {} into a version of movie id {}", dbId,
+                 targetDbId);
+      return false;
+    }
+    CLog::LogF(LOGDEBUG, "Converted movie id {} into a version of movie id {} beside it in '{}'",
+               dbId, targetDbId, CURL::GetRedacted(folder));
+  }
+
+  list.Clear();
+  list.Add(beside.front());
+  return true;
+}
+} // namespace
+
 std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessVideoVersion(
     VideoDbContentType itemType,
     int dbId,
+    CVideoDatabase& videodb,
     int targetDbId /* = -1 */,
     bool canBecomeDefault /* = true */)
 {
@@ -783,13 +738,6 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessV
   {
     CLog::LogF(LOGDEBUG, "Version creation disabled by settings");
     return {VersionConversionResult::NOT_ALLOWED, NO_VERSION};
-  }
-
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-  {
-    CLog::LogF(LOGERROR, "Failed to open video database!");
-    return {VersionConversionResult::FAILED, NO_VERSION};
   }
 
   CFileItem item;
@@ -894,6 +842,9 @@ std::pair<VersionConversionResult, int> CGUIDialogVideoManagerVersions::ProcessV
       CLog::LogF(LOGINFO, "Automated video version creation stopped by conflicting unique ids");
       return {VersionConversionResult::NOT_NEEDED, NO_VERSION};
     }
+
+    if (list.Size() > 1 && !MergeMoviesBeside(item, list, videodb))
+      return {VersionConversionResult::FAILED, NO_VERSION};
   }
 
   return ChooseVideoAndConvertToVideoVersion(list, itemType, dbId, videodb, MediaRole::NewVersion,
@@ -908,10 +859,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
   // prompt to choose a video file
   std::vector<CMediaSource> sources{
-      CMediaSourceSettings::GetInstance().GetSources(MediaSection::FILES)};
-
-  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
-  CServiceBroker::GetMediaManager().GetNetworkLocations(sources);
+      CMediaSourceSettings::GetInstance().GetSources(MediaSection::VIDEO)};
   AppendItemFolderToFileBrowserSources(sources);
 
   std::string path;

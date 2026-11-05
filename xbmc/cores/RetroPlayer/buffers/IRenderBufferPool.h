@@ -20,6 +20,11 @@ extern "C"
 
 namespace KODI
 {
+namespace RENDERING::CAPTURE
+{
+struct ReadbackBuffer;
+}
+
 namespace RETRO
 {
 class CRenderBufferManager;
@@ -163,6 +168,16 @@ public:
                                             unsigned int height)
   {
     return nullptr;
+  }
+
+  /*!
+   * \brief Read a frame taken by CaptureClientFrame() into system memory
+   *
+   * Call between BeginClientFrame() and EndClientFrame().
+   */
+  virtual bool ReadCapture(IRenderBuffer* buffer, RENDERING::CAPTURE::ReadbackBuffer& pixels)
+  {
+    return false;
   }
 
   /*!

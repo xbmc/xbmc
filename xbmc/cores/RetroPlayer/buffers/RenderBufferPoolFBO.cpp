@@ -26,6 +26,7 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererFBO.h"
 #include "cores/RetroPlayer/rendering/contexts/IHwRenderingContext.h"
 #include "messaging/ApplicationMessenger.h"
+#include "rendering/capture/CaptureReadback.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -345,6 +346,57 @@ IRenderBuffer* CRenderBufferPoolFBO::CaptureClientFrame(IRenderBuffer* clientBuf
     return nullptr;
   }
   return target;
+}
+
+bool CRenderBufferPoolFBO::ReadCapture(IRenderBuffer* buffer,
+                                       RENDERING::CAPTURE::ReadbackBuffer& pixels)
+{
+  std::unique_lock lock(m_contextMutex);
+  if (m_clientFrameDepth == 0 || m_clientThread != std::this_thread::get_id() || !buffer)
+    return false;
+
+  // A stream handing over from hardware to software publishes the other pool's buffers
+  if (buffer->GetPool() != this)
+    return false;
+
+  auto* capture = static_cast<CRenderBufferFBO*>(buffer);
+  auto resourcesLock = capture->Lock();
+  if (!capture->IsCapture() || capture->GetCurrentFramebuffer() == 0)
+    return false;
+
+  GLint prevRead = 0;
+  glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevRead);
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, capture->GetCurrentFramebuffer());
+  GLint prevReadBuffer = 0;
+  glGetIntegerv(GL_READ_BUFFER, &prevReadBuffer);
+  glReadBuffer(GL_COLOR_ATTACHMENT0);
+
+  // This is the client's context, so its pixel-pack state would apply to the read
+  GLint prevPackBuffer = 0, prevAlignment = 4, prevRowLength = 0, prevSkipRows = 0,
+        prevSkipPixels = 0;
+  glGetIntegerv(GL_PIXEL_PACK_BUFFER_BINDING, &prevPackBuffer);
+  glGetIntegerv(GL_PACK_ALIGNMENT, &prevAlignment);
+  glGetIntegerv(GL_PACK_ROW_LENGTH, &prevRowLength);
+  glGetIntegerv(GL_PACK_SKIP_ROWS, &prevSkipRows);
+  glGetIntegerv(GL_PACK_SKIP_PIXELS, &prevSkipPixels);
+  glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+  glPixelStorei(GL_PACK_ALIGNMENT, 4);
+  glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+  glPixelStorei(GL_PACK_SKIP_ROWS, 0);
+  glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
+
+  // Captures are stored top row first, which is the order glReadPixels returns them in
+  const bool read = RENDERING::CAPTURE::ReadFramebufferRegion(
+      0, 0, capture->GetWidth(), capture->GetHeight(), 8, false, pixels);
+
+  glPixelStorei(GL_PACK_SKIP_PIXELS, prevSkipPixels);
+  glPixelStorei(GL_PACK_SKIP_ROWS, prevSkipRows);
+  glPixelStorei(GL_PACK_ROW_LENGTH, prevRowLength);
+  glPixelStorei(GL_PACK_ALIGNMENT, prevAlignment);
+  glBindBuffer(GL_PIXEL_PACK_BUFFER, static_cast<GLuint>(prevPackBuffer));
+  glReadBuffer(prevReadBuffer);
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, prevRead);
+  return read;
 }
 
 IRenderBuffer* CRenderBufferPoolFBO::GetCaptureBuffer(unsigned int width, unsigned int height)

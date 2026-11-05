@@ -12,6 +12,7 @@
 #include "video/Bookmark.h"
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -19,6 +20,7 @@
 #include <vector>
 
 class CFileItem;
+class CFileItemList;
 class CVideoDatabase;
 class CVideoInfoTag;
 enum class VideoDbContentType;
@@ -29,10 +31,23 @@ namespace KODI::VIDEO::UTILS
 /*! \brief
  *  Find a local trailer file for a given file item
  *  \param[in] item the file item
+ *  \param[in] movieFolder whether the movie has a folder of its own, its source's movies being in
+ *             separate folders, when a movie-trailer file there is its trailer. A disc folder
+ *             rip's folder is always its own.
  *  \param[in] optional Regexp cache to avoid recompilation
  *  \return non-empty string with path of trailer if found
  */
-std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache = nullptr);
+std::string FindTrailer(const CFileItem& item,
+                        bool movieFolder,
+                        KODI::REGEXP::RegExpCache* cache = nullptr);
+
+/*! \brief Whether a movie has a folder of its own: its source has movies in separate folders, and it
+ *         isn't in the source's root. A disc's is that of its file, not of its playlist.
+ *  \param[in] database an open video database
+ *  \param[in] videoPath the path of the movie's video
+ *  \return true if the movie has a folder of its own
+ */
+bool HasMovieFolder(CVideoDatabase& database, const std::string& videoPath);
 
 /*!
  \brief Check whether an item is an optical media folder or its parent.
@@ -42,6 +57,38 @@ std::string FindTrailer(const CFileItem& item, KODI::REGEXP::RegExpCache* cache 
  \return non-empty string if item is optical media folder, empty otherwise.
  */
 std::string GetOpticalMediaPath(const CFileItem& item);
+
+/*!
+ \brief Call back for each video in a folder of video extras, and in the folders below it.
+  A disc (BDMV or VIDEO_TS) is one video, its index.bdmv or VIDEO_TS.IFO, however many files it
+  holds. The folder may itself be a disc. A folder below it holding a .nomedia file is skipped.
+ \param folder [in] the folder of video extras
+ \param callback [in] called for each video
+ */
+void EnumerateVideoExtras(const std::string& folder,
+                          const std::function<void(const std::shared_ptr<CFileItem>&)>& callback);
+
+/*! \brief Retrieve a "fast" hash of the given directory (if available)
+ Performs a stat() on the directory, and uses modified time to create a "fast"
+ hash of the folder. If no modified time is available, the create time is used,
+ and if neither are available, an empty hash is returned.
+ In case exclude from scan expressions are present, the string array will be appended
+ to the md5 hash to ensure we're doing a re-scan whenever the user modifies those.
+ \param directory folder to hash
+ \param excludes string array of exclude expressions
+ \return the md5 hash of the folder"
+ */
+std::string GetFastHash(const std::string& directory, const std::vector<std::string>& excludes);
+
+/*! \brief As above but from an already known raw modification time */
+std::string GetFastHash(const std::vector<std::string>& excludes, int64_t time);
+
+/*! \brief Retrieve a hash of a folder's listing, from the names, sizes and dates of its items
+ \param items the listing, sorted so that the hash is the same on every platform
+ \param hash [out] the md5 hash of the listing, unchanged if it has no items
+ \return the number of videos in the listing
+ */
+int GetPathHash(const CFileItemList& items, std::string& hash);
 
 /*! \brief Check whether auto play next item is set for the media type of the given item.
   \param item [in] the item to check
@@ -179,5 +226,21 @@ int SaveDiscPlaylistToLibrary(const CFileItem& item,
  \return True if the playlist was saved
  */
 bool SaveDiscPlaylist(CFileItem& item);
+
+/*!
+ * \brief Announce a change of a file's play count as Files.OnPlayCountChanged, for any file in or
+ * outside the library, so that e.g. the add-on whose plugin item it is can react.
+ * \param[in] file The file. Its credentials are not announced.
+ * \param[in] playCount The new play count
+ */
+void AnnouncePlayCountChanged(const std::string& file, int playCount);
+
+/*!
+ * \brief Announce a change of a file's resume point as Files.OnResumePointChanged, for any file in
+ * or outside the library, so that e.g. the add-on whose plugin item it is can react.
+ * \param[in] file The file. Its credentials are not announced.
+ * \param[in] resumePoint The new resume point, at 0 seconds if it was reset
+ */
+void AnnounceResumePointChanged(const std::string& file, const CBookmark& resumePoint);
 
 } // namespace KODI::VIDEO::UTILS

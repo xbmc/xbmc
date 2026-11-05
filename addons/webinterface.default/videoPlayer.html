@@ -14,15 +14,17 @@
 
         // Helpers.
         function getParameterByName(name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            name = name.replace(/[\[]/g, "\\[").replace(/[\]]/g, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                     results = regex.exec(location.search);
             var res = results == null ? "" : results[1].replace(/\+/g, " ");
             try { res = decodeURIComponent(res); } catch (e) { return ""; }
-            res = res.replace(/[\u0000-\u001F\u007F]/g, "").trim();
+            res = res.replace(/[\u0000-\u001F\u007F<>"]/g, "").trim();
             // Reject any absolute/protocol-relative URL or URL with a scheme (prevents javascript:, data:, http:, etc.)
-            if (/^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|\/\/)/.test(res)) return "";
-            return res.replace(/[<>\"]/g, "");
+            // Browsers treat "\" like "/", and src is prefixed with "/" in places, so reject any leading slash in src.
+            if (/^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|\/\/)/.test(res) ||
+                (name === "src" && /^[\/\\]/.test(res))) return "";
+            return res;
         }
         function getBaseURL() {
             var parts = window.location.href.split('videoPlayer.html');

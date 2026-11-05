@@ -62,6 +62,7 @@ public:
   bool InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
   virtual bool RemoveControl(const CGUIControl *control);
   virtual void ClearAll();
+  const std::vector<CGUIControl*>& GetChildren() const { return m_children; }
   void SetDefaultControl(int id, bool always)
   {
     m_defaultControl = id;

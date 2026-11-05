@@ -2256,7 +2256,19 @@ msgctxt "#470"
 msgid "Credits"
 msgstr ""
 
-#empty strings from id 471 to 473
+#. Option to alter the image hue in video settings
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#471"
+msgid "Hue"
+msgstr ""
+
+#. Option to alter the image saturation in video settings
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#472"
+msgid "Saturation"
+msgstr ""
+
+#empty string with id 473
 
 msgctxt "#474"
 msgid "Off"
@@ -8031,7 +8043,13 @@ msgctxt "#13601"
 msgid "Apple TV"
 msgstr ""
 
-#empty strings from id 13602 to 13999
+#. Option to set the granularity (default 1.0) of the brightness/contrast/hue/saturation/gamma settings in video settings
+#: system/settings/settings.xml
+msgctxt "#13602"
+msgid "Image adjustment granularity"
+msgstr ""
+
+#empty strings from id 13603 to 13999
 
 msgctxt "#14000"
 msgid "Stack"
@@ -9559,7 +9577,13 @@ msgctxt "#16297"
 msgid "Smooth"
 msgstr ""
 
-#empty strings from id 16298 to 16299
+#. Name of the video filter category that holds the filters without a shader
+#: xbmc/games/dialogs/osd/DialogGameVideoFilter.cpp
+msgctxt "#16298"
+msgid "Built-in"
+msgstr ""
+
+#empty string with id 16299
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16300"
@@ -19058,7 +19082,11 @@ msgctxt "#35201"
 msgid "Gameplay"
 msgstr ""
 
-#empty string with id 35202
+#. Help text for setting "Sync playback to display" of label #13510
+#: system/settings/settings.xml
+msgctxt "#35202"
+msgid "Run the game in step with the display when their rates are close, and resample its sound to match. This avoids repeated frames and lowers input lag."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35203"
@@ -19285,7 +19313,19 @@ msgctxt "#35241"
 msgid "The emulator \"{0:s}\" couldn't find files it needs, such as BIOS files."
 msgstr ""
 
-#empty strings from id 35242 to 35248
+#. Label of setting "Games -> General -> Maximum speed change"
+#: system/settings/settings.xml
+msgctxt "#35242"
+msgid "Maximum speed change"
+msgstr ""
+
+#. Help text for setting "Maximum speed change" of label #35242
+#: system/settings/settings.xml
+msgctxt "#35243"
+msgid "How far a game's own rate may be from the display's and still run in step with it. Its speed and sound change by up to this much."
+msgstr ""
+
+#empty strings from id 35244 to 35248
 
 #. Button to open the savestate manager from the game OSD
 #: addons/skin.estuary/xml/GameOSD.xml
@@ -19652,7 +19692,13 @@ msgctxt "#35309"
 msgid "Rewind"
 msgstr ""
 
-#empty strings from id 35310 to 35319
+#. Label of the Manual button in the game OSD, which shows the game's instruction booklet
+#: addons/skin.estuary/xml/GameOSD.xml
+msgctxt "#35310"
+msgid "Manual"
+msgstr ""
+
+#empty strings from id 35311 to 35319
 
 #. Label of the Cheats button in the game OSD, heading of the cheats dialog, and
 #. of the cheats group in settings
@@ -20059,7 +20105,25 @@ msgctxt "#35715"
 msgid "Main Set"
 msgstr ""
 
-#empty strings from id 35716 to 35999
+#. Label of a setting in Settings > Games > General
+#: system/settings/settings.xml
+msgctxt "#35716"
+msgid "Replace file names with game titles"
+msgstr ""
+
+#. Help text for setting "Replace file names with game titles" of label #35716
+#: system/settings/settings.xml
+msgctxt "#35717"
+msgid "Show each game by the title read from its file name instead of the file name itself."
+msgstr ""
+
+#. Marks an achievement being attempted in the list of a game's achievements
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35718"
+msgid "Attempt active"
+msgstr ""
+
+#empty strings from id 35719 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
@@ -20274,6 +20338,7 @@ msgstr ""
 #: xbmc/video/VideoItemArtworkHandler.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
+#: xbmc/video/dialogs/GUIDialogSubtitleSettings.cpp
 msgctxt "#36041"
 msgid "* Item folder"
 msgstr ""
@@ -20376,7 +20441,13 @@ msgctxt "#36058"
 msgid "Automatic"
 msgstr ""
 
-#empty strings from id 36059 to 36095
+#. Description of setting with label #13602 "Image adjustment granularity"
+#: system/settings/settings.xml
+msgctxt "#36059"
+msgid "Step size of the brightness, contrast, hue and saturation sliders in the video settings."
+msgstr ""
+
+#empty strings from id 36060 to 36095
 
 #. Label of setting "System / Display / Use system HDR/SDR brightness balance"
 #: system/settings/settings.xml
@@ -25608,7 +25679,7 @@ msgstr ""
 
 #. Shown when the playlist chosen for a movie version already belongs to another version of it
 #: xbmc/dialogs/GUIDialogSimpleMenu.cpp
-#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40047"
 msgid "This playlist already belongs to another version of this movie."
 msgstr ""
@@ -25637,7 +25708,50 @@ msgctxt "#40051"
 msgid "This playlist is still in use by another movie version and could not be reassigned."
 msgstr ""
 
-#empty strings with id 40052 to 40201
+#. Asked before choosing one of a disc's playlists for an extra that plays the whole disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40052"
+msgid "Assign a playlist to this extra?"
+msgstr ""
+
+#. Asked before choosing an extra from the playlists of the movie's own disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40053"
+msgid "Add an extra from this disc?"
+msgstr ""
+
+#. Asked when a disc is picked as an extra, to add one of its playlists rather than the whole disc
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40054"
+msgid "Choose a playlist from this disc?"
+msgstr ""
+
+#. Shown when a playlist chosen for an extra already belongs to the same movie, or one chosen for a version is already its extra
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40055"
+msgid "This playlist already belongs to this movie."
+msgstr ""
+
+#. Asked before taking a playlist away from another movie's extra that uses it
+#: xbmc/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#40056"
+msgid "The selected playlist is already assigned to another extra. Reassign it?"
+msgstr ""
+
+#. Manage video extras context menu item
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#40057"
+msgid "Manage extras"
+msgstr ""
+
+#. Asked when adding an extra while an extra on a disc is selected
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40058"
+msgid "Add another extra from this disc?"
+msgstr ""
+
+#empty strings with id 40059 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml
@@ -25660,7 +25774,7 @@ msgstr ""
 #. Help for ignore video extras settting
 #: system/settings/settings.xml
 msgctxt "#40205"
-msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
+msgid "Select scanner action for video extras, in an \"extras\" folder or named by a Blu-ray disc.[CR][Enabled] Leave video extras out of the library, other than those a movie's nfo records.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
 #empty strings from id 40206 to 40208 freed in v22
@@ -25953,6 +26067,124 @@ msgstr ""
 msgctxt "#40436"
 msgid "50th Anniversary Edition"
 msgstr ""
+
+#empty strings from id 40437 to 40499
+
+# Video extras
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40500"
+msgid "Deleted scenes"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40501"
+msgid "Music videos"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40502"
+msgid "Sing-alongs"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40503"
+msgid "Trailers"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40504"
+msgid "Commercials"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40505"
+msgid "Promos"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40506"
+msgid "Behind the scenes"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40507"
+msgid "Cast"
+msgstr ""
+
+#. Name of a kind of video extra, like "Deleted scenes"
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40508"
+msgid "Play all"
+msgstr ""
+
+#empty strings from id 40509 to 40699
+
+# Names of video extras of a kind, which are not types
+
+#. Name of a deleted scene found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40700"
+msgid "Deleted scene: {0:s}"
+msgstr ""
+
+#. Name of a music video found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40701"
+msgid "Music video: {0:s}"
+msgstr ""
+
+#. Name of a sing-along found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40702"
+msgid "Sing-along: {0:s}"
+msgstr ""
+
+#. Name of a trailer found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40703"
+msgid "Trailer: {0:s}"
+msgstr ""
+
+#. Name of a commercial found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40704"
+msgid "Commercial: {0:s}"
+msgstr ""
+
+#. Name of a promo found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40705"
+msgid "Promo: {0:s}"
+msgstr ""
+
+#. Name of a behind the scenes extra found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40706"
+msgid "Behind the scenes: {0:s}"
+msgstr ""
+
+#. Name of an extra about a member of the cast found on a disc - {0:s} is what the disc calls it
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40707"
+msgid "Cast: {0:s}"
+msgstr ""
+
+#. Name of a disc's playlist playing a group of extras one after the other - {0:s} is the group
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#40708"
+msgid "{0:s} (play all)"
+msgstr ""
+
+#empty strings from id 40709 to 40800
 
 # 40000 to 40800 are reserved for Video Versions feature
 

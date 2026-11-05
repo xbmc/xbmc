@@ -19,7 +19,13 @@ using namespace DirectX;
 
 void CGUITextureD3D::Register()
 {
-  CGUITexture::Register(CGUITextureD3D::CreateTexture, CGUITextureD3D::DrawQuad);
+  CGUITexture::Register(CGUITextureD3D::CreateTexture, CGUITextureD3D::DrawQuad,
+                        CGUITextureD3D::DrawStencilQuad);
+}
+
+void CGUITextureD3D::DrawStencilQuad(const CRect& rect, STENCIL_LAYER mask)
+{
+  DX::Windowing()->GetGUIShader()->DrawStencilQuad(rect, mask);
 }
 
 CGUITexture* CGUITextureD3D::CreateTexture(

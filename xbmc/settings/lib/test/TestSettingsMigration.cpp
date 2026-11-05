@@ -10,6 +10,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "settings/lib/SettingsMigration.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 
 #include <stdexcept>
 #include <string>
@@ -127,6 +128,75 @@ TEST(TestSettingsMigration, MultipleMigrationStepsSameTarget)
 
   EXPECT_THROW({ CSettingsMigration(std::move(steps)); }, std::invalid_argument);
 }
+
+namespace
+{
+struct VideoVersionsMigrationTest
+{
+  std::string_view settings;
+  std::string_view expectedSettings;
+};
+
+constexpr VideoVersionsMigrationTest VideoVersionsMigrationTests[]{
+    {R"(<setting id="videolibrary.ignorevideoversions">true</setting>)",
+     R"(<setting id="videolibrary.similarvideoaction">0</setting>)"},
+    {R"(<setting id="videolibrary.ignorevideoversions">false</setting>)",
+     R"(<setting id="videolibrary.similarvideoaction">1</setting>)"},
+    {R"(<setting id="videolibrary.ignorevideoversions" default="true">true</setting>)",
+     R"(<setting id="videolibrary.ignorevideoversions" default="true">true</setting>)"},
+    {R"(<setting id="videolibrary.ignorevideoversions" default="TrUe">true</setting>)"
+     R"(<setting id="dvds.autorun">true</setting>)",
+     R"(<setting id="videolibrary.ignorevideoversions" default="TrUe">true</setting>)"
+     R"(<setting id="dvds.autoaction">1</setting>)"},
+    {R"(<setting id="videolibrary.ignorevideoversions" default="false">true</setting>)",
+     R"(<setting id="videolibrary.similarvideoaction">0</setting>)"},
+    {"", ""},
+    {R"(<setting id="dvds.autorun">true</setting>)",
+     R"(<setting id="dvds.autoaction">1</setting>)"},
+    {R"(<setting id="videolibrary.ignorevideoversions">true</setting>)"
+     R"(<setting id="videolibrary.similarvideoaction">1</setting>)",
+     R"(<setting id="videolibrary.ignorevideoversions">true</setting>)"
+     R"(<setting id="videolibrary.similarvideoaction">1</setting>)"},
+    {R"(<setting id="videolibrary.ignorevideoversions">false</setting>)"
+     R"(<setting id="videolibrary.similarvideoaction" default="true">2</setting>)"
+     R"(<setting id="dvds.autorun">true</setting>)",
+     R"(<setting id="videolibrary.ignorevideoversions">false</setting>)"
+     R"(<setting id="videolibrary.similarvideoaction" default="true">2</setting>)"
+     R"(<setting id="dvds.autoaction">1</setting>)"},
+};
+} // namespace
+
+class TestSettingsMigrationToV3VideoVersions
+  : public testing::WithParamInterface<VideoVersionsMigrationTest>,
+    public testing::Test
+{
+};
+
+TEST_P(TestSettingsMigrationToV3VideoVersions, MigratesVideoVersionPreference)
+{
+  const auto& params = GetParam();
+  const std::string prefix = R"(<settings version="2">)"
+                             R"(<setting id="lookandfeel.skin">skin.estuary</setting>)";
+  const std::string xml = prefix + std::string{params.settings} + "</settings>";
+  const std::string expectedXml = prefix + std::string{params.expectedSettings} + "</settings>";
+
+  for (const int targetVersion : {3, static_cast<int>(CSettingsManager::Version)})
+  {
+    SCOPED_TRACE(targetVersion);
+    CXBMCTinyXML doc;
+    ASSERT_TRUE(doc.Parse(xml));
+
+    CSettingsMigration migration;
+    ASSERT_TRUE(migration.UpdateXMLSettings(doc.RootElement(), 2, targetVersion));
+
+    EXPECT_EQ(expectedXml, XMLUtils::NodeStringSerialization(
+                               doc.RootElement(), XMLUtils::SerializationFormat::COMPACT));
+  }
+}
+
+INSTANTIATE_TEST_SUITE_P(TestSettingsMigration,
+                         TestSettingsMigrationToV3VideoVersions,
+                         testing::ValuesIn(VideoVersionsMigrationTests));
 
 namespace
 {

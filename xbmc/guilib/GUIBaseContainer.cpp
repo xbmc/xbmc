@@ -263,6 +263,20 @@ void CGUIBaseContainer::ProcessItem(float posX,
     {
       item->SetFocusedLayout(std::make_unique<CGUIListItemLayout>(*m_focusedLayout, this));
     }
+    if (item != m_lastItem)
+    {
+      // the layouts don't mark the switch between them as dirty
+      const auto addLayoutRegions = [&dirtyregions](CGUIListItem& listItem)
+      {
+        if (listItem.GetLayout())
+          dirtyregions.emplace_back(listItem.GetLayout()->GetRenderRegion());
+        if (listItem.GetFocusedLayout())
+          dirtyregions.emplace_back(listItem.GetFocusedLayout()->GetRenderRegion());
+      };
+      addLayoutRegions(*item);
+      if (m_lastItem)
+        addLayoutRegions(*m_lastItem);
+    }
     if (item->GetFocusedLayout())
     {
       if (item != m_lastItem || !HasFocus())
@@ -1722,8 +1736,9 @@ void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter) const
 
 void CGUIBaseContainer::SetCursor(int cursor)
 {
+  // ProcessItem() marks the items whose focus changed
   if (m_cursor != cursor)
-    MarkDirtyRegion();
+    MarkDirtyRegion(DIRTY_STATE_CHILD);
   m_cursor = cursor;
 }
 

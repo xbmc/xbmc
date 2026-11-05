@@ -19,6 +19,7 @@
 #include "filesystem/IFileTypes.h"
 #include "games/GameUtils.h"
 #include "games/dialogs/DialogGameDefines.h"
+#include "imagefiles/ImageFileURL.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/URIUtils.h"
@@ -189,7 +190,13 @@ void CSavestateDatabase::GetSavestateItem(const ISavestate& savestate,
   item.SetLabel(label);
   item.SetLabel2(label2);
   item.SetPath(savestatePath);
-  item.SetArt("screenshot", MakeThumbnailPath(savestatePath));
+  // Overwriting a savestate rewrites its thumbnail at the same path, so the
+  // time it was made is part of the image's URL. Otherwise the GUI keeps
+  // showing the image it already has for that path.
+  IMAGE_FILES::CImageFileURL thumbnail =
+      IMAGE_FILES::CImageFileURL::FromFile(MakeThumbnailPath(savestatePath));
+  thumbnail.AddOption("created", dateUTC.GetAsDBDateTime());
+  item.SetArt("screenshot", thumbnail.ToString());
   item.SetProperty(SAVESTATE_LABEL, savestate.Label());
   item.SetProperty(SAVESTATE_CAPTION, savestate.Caption());
   item.SetProperty(SAVESTATE_GAME_CLIENT, savestate.GameClientID());

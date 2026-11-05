@@ -341,6 +341,12 @@ void CDialogGameAchievements::RefreshList()
 
     // "{0:d} pts"
     item->SetProperty(ACHIEVEMENT_POINTS, StringUtils::Format(Localize(35294), achievement.points));
+
+    // A corner shows only so many indicators, and the player can turn them off
+    if (std::ranges::any_of(state.challenges, [&achievement](const AchievementChallenge& challenge)
+                            { return challenge.id == achievement.id; }))
+      item->SetProperty(ACHIEVEMENT_ATTEMPTING, true);
+
     // Only set when true: a CVariant holding false stringifies to "false",
     // which String.IsEmpty() in the skin reads as present
     if (achievement.earned)

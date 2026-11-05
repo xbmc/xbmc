@@ -41,6 +41,7 @@ bool CShaderPresetGLES::CreateShaders()
         presetLUTsGL.emplace_back(std::move(presetLut));
     }
   }
+  m_luts = presetLUTsGL;
 
   const auto numPasses = static_cast<unsigned int>(m_passes.size());
   for (unsigned int shaderIdx = 0; shaderIdx < numPasses; ++shaderIdx)

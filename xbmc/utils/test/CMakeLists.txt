@@ -55,6 +55,7 @@ set(SOURCES TestAlarmClock.cpp
             TestStreamUtils.cpp
             TestStringUtils.cpp
             TestSystemInfo.cpp
+            TestURI.cpp
             TestURIParser.cpp
             TestURIUtils.cpp
             TestUrlOptions.cpp

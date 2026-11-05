@@ -18,6 +18,8 @@
 
 #include <memory>
 
+class CVideoReferenceClock;
+
 namespace KODI
 {
 namespace GAME
@@ -77,7 +79,6 @@ public:
   std::string CreateSavestate(bool autosave) override;
   bool UpdateSavestate(const std::string& savestatePath) override;
   bool LoadSavestate(const std::string& savestatePath) override;
-  void FreeSavestateResources(const std::string& savestatePath) override;
   void CloseOSDCallback() override;
 
   // Implementation of IPlaybackCallback
@@ -148,6 +149,7 @@ private:
   GAME::CGameServices& m_gameServices;
 
   // Subsystems
+  std::unique_ptr<CVideoReferenceClock> m_displayClock;
   std::unique_ptr<CRPProcessInfo> m_processInfo;
   std::unique_ptr<CGUIGameMessenger> m_guiMessenger;
   std::unique_ptr<CRPRenderManager> m_renderManager;

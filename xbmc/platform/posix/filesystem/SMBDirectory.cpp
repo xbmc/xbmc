@@ -356,6 +356,22 @@ bool CSMBDirectory::Exists(const CURL& url2)
   std::unique_lock lock(smb);
   smb.Init();
 
+  // A bare server URL (smb://server/) has no share to stat, so smbc_stat() fails on it
+  // even when the server is up. Count the server as existing if it can list its shares,
+  // as it does when browsing.
+  if (!url2.GetHostName().empty() && url2.GetFileName().empty())
+  {
+    lock.unlock(); // OpenDir is locked
+    std::string strAuth;
+    const int fd = OpenDir(url2, strAuth);
+    if (fd < 0)
+      return false;
+
+    lock.lock();
+    smbc_closedir(fd);
+    return true;
+  }
+
   CURL url = CSMB::GetResolvedUrl(url2);
   CPasswordManager::GetInstance().AuthenticateURL(url);
   std::string strFileName = smb.URLEncode(url);

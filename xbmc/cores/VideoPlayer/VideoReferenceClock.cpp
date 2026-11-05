@@ -19,7 +19,9 @@
 
 #include <mutex>
 
-CVideoReferenceClock::CVideoReferenceClock() : CThread("RefClock")
+CVideoReferenceClock::CVideoReferenceClock(bool alwaysRun /* = false */)
+  : CThread("RefClock"),
+    m_alwaysRun(alwaysRun)
 {
   m_SystemFrequency = CurrentHostFrequency();
   m_ClockSpeed = 1.0;
@@ -46,7 +48,9 @@ CVideoReferenceClock::~CVideoReferenceClock()
 
 void CVideoReferenceClock::Start()
 {
-  if(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
+  if ((m_alwaysRun || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                          CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK)) &&
+      !IsRunning())
     Create();
 }
 

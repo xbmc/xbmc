@@ -162,12 +162,18 @@ public:
   void STDMETHODCALLTYPE NotifyAEDefaultDeviceChange()
   {
     if (!CWin32PowerSyscall::IsSuspending())
-      CServiceBroker::GetActiveAE()->DefaultDeviceChange();
+    {
+      if (auto* audioEngine = CServiceBroker::GetActiveAE())
+        audioEngine->DefaultDeviceChange();
+    }
   }
 
   void STDMETHODCALLTYPE NotifyAEDeviceCountChange()
   {
     if (!CWin32PowerSyscall::IsSuspending())
-      CServiceBroker::GetActiveAE()->DeviceCountChange("");
+    {
+      if (auto* audioEngine = CServiceBroker::GetActiveAE())
+        audioEngine->DeviceCountChange("");
+    }
   }
 };

@@ -377,17 +377,18 @@ bool CMediaPipelineWebOS::OpenVideoStream(CDVDStreamInfo hint)
       m_processInfo.SetVideoInterlaced(hint.interlaced);
       m_processInfo.SetVideoDimensions(hint.width, hint.height);
       m_processInfo.SetVideoDAR(static_cast<float>(hint.aspect));
+      double fps = 0.0;
       if (m_videoHint.fpsrate && m_videoHint.fpsscale)
       {
-        m_processInfo.SetVideoFps(static_cast<float>(hint.fpsrate) /
-                                  static_cast<float>(hint.fpsscale));
+        fps = static_cast<double>(hint.fpsrate) / static_cast<double>(hint.fpsscale);
+        m_processInfo.SetVideoFps(static_cast<float>(fps));
       }
       else
       {
         m_processInfo.SetVideoFps(1.0);
       }
 
-      return true;
+      return ConfigureRenderer(hint, fps);
     }
 
     // Different codec => unload the current stream
@@ -762,35 +763,8 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
     m_clock.UpdateFramerate(fps);
     m_picture.iDuration = 1000.0 / fps;
   }
-  m_picture.iWidth = videoHint.width;
-  m_picture.iHeight = videoHint.height;
-  m_picture.iDisplayWidth = videoHint.width;
-  m_picture.iDisplayHeight = videoHint.height;
-  m_picture.stereoMode = videoHint.stereo_mode;
-  m_picture.hdrType = videoHint.hdrType;
-  m_picture.color_transfer = videoHint.colorTransferCharacteristic;
-
-  // apply forced aspect
-  if (videoHint.forced_aspect && videoHint.aspect > 0.0)
-  {
-    m_picture.iDisplayWidth = std::lround(m_picture.iDisplayHeight * videoHint.aspect);
-    if (m_picture.iDisplayWidth > m_picture.iWidth)
-    {
-      m_picture.iDisplayWidth = m_picture.iWidth;
-      m_picture.iDisplayHeight = std::lround(m_picture.iDisplayWidth / videoHint.aspect);
-    }
-  }
-
-  const int sorient = m_processInfo.GetVideoSettings().m_Orientation;
-  const int orientation =
-      sorient != 0 ? (sorient + videoHint.orientation) % 360 : videoHint.orientation;
-
-  if (!m_renderManager.Configure(m_picture, static_cast<float>(fps), orientation))
-  {
-    CLog::LogF(LOGERROR, "RenderManager configure failed");
-    m_messageQueueParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_ABORT));
+  if (!ConfigureRenderer(videoHint, fps))
     return false;
-  }
 
   std::unique_lock lock(m_eventMutex);
   if (!m_eventCondition.wait_for(lock, 1s, [this] { return m_loaded == true; }))
@@ -838,6 +812,40 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
   if (m_hasAudio)
     m_audioClosed = false;
   m_renderManager.ShowVideo(true);
+  return true;
+}
+
+bool CMediaPipelineWebOS::ConfigureRenderer(const CDVDStreamInfo& videoHint, const double fps)
+{
+  m_picture.iWidth = videoHint.width;
+  m_picture.iHeight = videoHint.height;
+  m_picture.iDisplayWidth = videoHint.width;
+  m_picture.iDisplayHeight = videoHint.height;
+  m_picture.stereoMode = videoHint.stereo_mode;
+  m_picture.hdrType = videoHint.hdrType;
+  m_picture.color_transfer = videoHint.colorTransferCharacteristic;
+
+  // apply forced aspect
+  if (videoHint.forced_aspect && videoHint.aspect > 0.0)
+  {
+    m_picture.iDisplayWidth = std::lround(m_picture.iDisplayHeight * videoHint.aspect);
+    if (m_picture.iDisplayWidth > m_picture.iWidth)
+    {
+      m_picture.iDisplayWidth = m_picture.iWidth;
+      m_picture.iDisplayHeight = std::lround(m_picture.iDisplayWidth / videoHint.aspect);
+    }
+  }
+
+  const int sorient = m_processInfo.GetVideoSettings().m_Orientation;
+  const int orientation =
+      sorient != 0 ? (sorient + videoHint.orientation) % 360 : videoHint.orientation;
+
+  if (!m_renderManager.Configure(m_picture, static_cast<float>(fps), orientation))
+  {
+    CLog::LogF(LOGERROR, "RenderManager configure failed");
+    m_messageQueueParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_ABORT));
+    return false;
+  }
   return true;
 }
 

@@ -90,5 +90,13 @@ public:
    * Should usually only be called when the viewport/window size changes.
    */
   virtual void UpdateMVP() = 0;
+
+  /*!
+   * \brief Drops the references the shader keeps to the textures it last rendered with
+   *
+   * Called when the preset releases its textures, so they're freed while the compiled shader
+   * is kept.
+   */
+  virtual void ReleaseTextureReferences() {}
 };
 } // namespace KODI::SHADER

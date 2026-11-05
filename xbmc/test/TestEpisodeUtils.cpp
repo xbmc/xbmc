@@ -102,6 +102,7 @@ static const TestEntry TestData[] = {
      {{3, 1}, {3, 2}, {3, 3}, {3, 4}},
      {{1, 3}, {2, 2}, {3, 1}, {3, 4}}}, // first range invalid
     {"foo.S02E03-1080p.mkv", {{2, 3}}, {{2, 3}}}, // resolution
+    {"foo.S02E03_20231105123456.mkv", {{2, 3}}, {{2, 3}}}, // timestamp
     {"foo.S02E03-special.mkv", {{2, 3}}, {{2, 3}}}, // comment (starting with s)
     {"foo.S02E03-extended.mkv", {{2, 3}}, {{2, 3}}}, // comment (starting with e)
 };

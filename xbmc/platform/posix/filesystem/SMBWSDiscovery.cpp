@@ -49,12 +49,12 @@ CWSDiscoveryPosix::CWSDiscoveryPosix()
 
 CWSDiscoveryPosix::~CWSDiscoveryPosix()
 {
-  StopServices();
+  StopServices(true);
 }
 
-bool CWSDiscoveryPosix::StopServices()
+bool CWSDiscoveryPosix::StopServices(bool bWait)
 {
-  m_WSDListenerUDP->Stop();
+  m_WSDListenerUDP->Stop(bWait);
 
   return true;
 }

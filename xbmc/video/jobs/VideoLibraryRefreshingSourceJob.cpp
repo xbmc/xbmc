@@ -125,11 +125,13 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
   if (itemsToRefresh.empty())
     return true;
 
-  if (auto* dialog{
-          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
-              WINDOW_DIALOG_EXT_PROGRESS)})
-    SetProgressBar(
-        dialog->GetHandle(CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13363)));
+  if (auto* gui{CServiceBroker::GetGUI()})
+  {
+    if (auto* dialog{gui->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
+            WINDOW_DIALOG_EXT_PROGRESS)})
+      SetProgressBar(dialog->GetHandle(
+          CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(13363)));
+  }
 
   const auto total{static_cast<unsigned int>(itemsToRefresh.size())};
   for (unsigned int i = 0; i < total; ++i)
@@ -142,17 +144,35 @@ bool CVideoLibraryRefreshingSourceJob::Work(CVideoDatabase& db)
     const auto& [item, refreshAll] = itemsToRefresh[i];
     const CVideoInfoTag& listed{*item->GetVideoInfoTag()};
 
-    // refreshing an earlier item may have merged it with this one as a version, changing its
-    // default version, or removed this one
+    // Refreshing an earlier item may have merged it with this one as a version, changing its
+    // default version, or removed this one. A movie is found by the file it was listed with, as
+    // merging the discs of a film may have made it a version of another movie the earlier item
+    // joined, though its disc wasn't refreshed.
     CVideoInfoTag tag;
     bool found{false};
     if (listed.GetMediaType() == KODI::MEDIA::TYPE::MOVIE)
-      found = db.GetMovieInfo({}, tag, listed.m_iDbId);
+    {
+      const int idMovie{db.GetMovieId(listed.m_strFileNameAndPath)};
+      found = idMovie > 0 && db.GetMovieInfo({}, tag, idMovie);
+    }
     else if (listed.GetMediaType() == KODI::MEDIA::TYPE::TV_SHOW)
       found = db.GetTvShowInfo({}, tag, listed.m_iDbId);
     else
       found = db.GetMusicVideoInfo({}, tag, listed.m_iDbId);
     if (!found)
+      continue;
+
+    // A playlist an earlier item merged into this movie may have become its default. Refreshing
+    // the movie from that would refresh the earlier item's disc again rather than this one's, so
+    // the movie gets back the default it was listed with.
+    if (listed.GetMediaType() == KODI::MEDIA::TYPE::MOVIE && tag.m_iFileId != listed.m_iFileId &&
+        db.GetSingleValueInt(db.PrepareSQL(
+            "SELECT COUNT(1) FROM videoversion WHERE idFile = %i AND idMedia = %i AND "
+            "media_type = '%s' AND itemType = %i",
+            listed.m_iFileId, tag.m_iDbId, KODI::MEDIA::NameOf(KODI::MEDIA::TYPE::MOVIE).c_str(),
+            static_cast<int>(VideoAssetType::VERSION))) > 0 &&
+        db.SetDefaultVideoVersion(VideoDbContentType::MOVIES, tag.m_iDbId, listed.m_iFileId) &&
+        !db.GetMovieInfo({}, tag, tag.m_iDbId))
       continue;
     SetText(tag.GetTitle());
 

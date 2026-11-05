@@ -15,6 +15,7 @@
 #include "settings/VideoVersionsSettings.h"
 #include "utils/RegExp.h"
 #include "video/VideoInfoScannerArt.h"
+#include "video/VideoInfoScannerExtras.h"
 
 #include <atomic>
 #include <cstdint>
@@ -124,6 +125,33 @@ namespace KODI::VIDEO
                            bool fetchEpisodes = true,
                            CGUIDialogProgress* pDlgProgress = nullptr);
 
+    /*! \brief Leave adding the extras of the movies RetrieveVideoInfo() adds to AddMovieExtras().
+     A refresh adds a movie again before moving its old versions and extras to it, and they must
+     be its own for those already there to be seen.
+     */
+    void DeferMovieExtras() { m_deferMovieExtras = true; }
+
+    /*! \brief Look the videos up with these scrapers, as CVideoDatabase::GetScraperForPath()
+     cached them, so that the details already read with them are read from their cache.
+     */
+    void UseScrapers(const CVideoDatabase::ScraperCache& scrapers)
+    {
+      m_scraperCache.insert(scrapers.begin(), scrapers.end());
+    }
+
+    /*! \brief Look the movies or tv shows up by these ids with a python scraper, rather than search
+     for them.
+     */
+    void LookUpBy(const ADDON::CScraper::UniqueIDs& uniqueIDs) { m_uniqueIDs = uniqueIDs; }
+
+    /*! \brief Add the extras of a refreshed movie: those its discs name, and those of the extras
+     folders beside it, which a scan finds as it lists the movie's folders.
+     \param dbId the movie, once its versions and extras are its own
+     \param useFolderNames whether the movie's folder names it (the scraper's "movies are in
+     separate folders"), without which it has no extras folders
+     */
+    void AddMovieExtras(int dbId, bool useFolderNames);
+
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
     /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
@@ -231,23 +259,6 @@ namespace KODI::VIDEO
      */
     bool GetEpisodeTitleFromRegExp(CRegExp& reg, EPISODE& episodeInfo);
 
-    static int GetPathHash(const CFileItemList &items, std::string &hash);
-
-    /*! \brief Retrieve a "fast" hash of the given directory (if available)
-     Performs a stat() on the directory, and uses modified time to create a "fast"
-     hash of the folder. If no modified time is available, the create time is used,
-     and if neither are available, an empty hash is returned.
-     In case exclude from scan expressions are present, the string array will be appended
-     to the md5 hash to ensure we're doing a re-scan whenever the user modifies those.
-     \param directory folder to hash
-     \param excludes string array of exclude expressions
-     \return the md5 hash of the folder"
-     */
-    std::string GetFastHash(const std::string &directory, const std::vector<std::string> &excludes) const;
-
-    /*! \brief As above but from an already known raw modification time */
-    std::string GetFastHash(const std::vector<std::string>& excludes, int64_t time) const;
-
     /*! \brief Retrieve a "fast" hash of the given directory recursively (if available)
      Performs a stat() on the directory, and uses modified time to create a "fast"
      hash of each folder. If no modified time is available, the create time is used,
@@ -309,9 +320,10 @@ namespace KODI::VIDEO
     EpisodeResult EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
-    bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
-    static std::pair<VersionConversionResult, int> ProcessVideoVersion(
-        VideoDbContentType itemType, int dbId, int targetDbId = -1, bool canBecomeDefault = true);
+    std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
+                                                                int dbId,
+                                                                int targetDbId = -1,
+                                                                bool canBecomeDefault = true);
     static void RemovePartNumberFromTitle(int dbId,
                                           VideoDbContentType itemType,
                                           CVideoDatabase& db);
@@ -337,8 +349,18 @@ namespace KODI::VIDEO
     bool m_scanAll;
     bool m_scanSubtree{false};
 
+    //! Lookups so far that failed, rather than finding nothing. A directory in which one failed
+    //! isn't hashed, so that the next scan tries it again.
+    unsigned int m_failedLookups{0};
+
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
+
+    //! Whether RetrieveVideoInfo() leaves a movie's extras to AddMovieExtras()
+    bool m_deferMovieExtras{false};
+
+    //! The ids RetrieveVideoInfo() looks movies and tv shows up by, where it would otherwise search
+    ADDON::CScraper::UniqueIDs m_uniqueIDs;
 
     //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
     bool m_useFolderNames{false};
@@ -350,6 +372,7 @@ namespace KODI::VIDEO
 
     //! The artwork side of the scan
     CVideoInfoScannerArt m_art;
+    CVideoInfoScannerExtras m_extras{m_database, m_art};
 
   private:
     /*!

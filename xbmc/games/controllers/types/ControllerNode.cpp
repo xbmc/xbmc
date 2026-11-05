@@ -165,6 +165,11 @@ void CControllerNode::GetMousePorts(std::vector<std::string>& mousePorts) const
   m_hub->GetMousePorts(mousePorts);
 }
 
+void CControllerNode::GetMouseControllerPorts(std::vector<std::string>& mouseControllerPorts) const
+{
+  m_hub->GetMouseControllerPorts(mouseControllerPorts);
+}
+
 bool CControllerNode::Serialize(tinyxml2::XMLElement& controllerElement) const
 {
   // Validate state

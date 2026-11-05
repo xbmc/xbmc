@@ -202,7 +202,7 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
     {
       if ((GetOffset() + m_itemsPerPage) * m_itemsPerRow >= (int)m_items.size() || (int)m_items.size() < m_itemsPerPage)
       { // already at the last page, so move to the last item.
-        SetCursor(m_items.size() - GetOffset() * m_itemsPerRow - 1);
+        SetCursor(static_cast<int>(m_items.size()) - GetOffset() * m_itemsPerRow - 1);
       }
       else
       { // scroll down to the next page
@@ -425,7 +425,7 @@ void CGUIPanelContainer::SetCursor(int cursor)
     cursor = m_itemsPerPage * m_itemsPerRow - 1;
 
   // exceeds the number of items being displayed
-  const int itemsOn = m_items.size() - 1 - GetOffset() * m_itemsPerRow;
+  const int itemsOn = static_cast<int>(m_items.size()) - 1 - GetOffset() * m_itemsPerRow;
   if (cursor > itemsOn)
     cursor = itemsOn;
 

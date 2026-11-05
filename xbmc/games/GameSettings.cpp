@@ -41,8 +41,11 @@ namespace
 const std::string SETTING_GAMES_ENABLE = "gamesgeneral.enable";
 const std::string SETTING_GAMES_SHOW_OSD_HELP = "gamesgeneral.showosdhelp";
 const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
+const std::string SETTING_GAMES_REPLACE_LABELS = "gamesgeneral.replacelabels";
 const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
+const std::string SETTING_GAMES_SYNC_TO_DISPLAY = "gamesgeneral.synctodisplay";
+const std::string SETTING_GAMES_SYNC_TO_DISPLAY_LIMIT = "gamesgeneral.synctodisplaylimit";
 const std::string SETTING_GAMES_ACHIEVEMENTS_CREATE_ACCOUNT = "gamesachievements.createaccount";
 const std::string SETTING_GAMES_ACHIEVEMENTS_USERNAME = "gamesachievements.username";
 const std::string SETTING_GAMES_ACHIEVEMENTS_PASSWORD = "gamesachievements.password";
@@ -126,6 +129,11 @@ bool CGameSettings::AutosaveEnabled()
   return m_settings->GetBool(SETTING_GAMES_ENABLEAUTOSAVE);
 }
 
+bool CGameSettings::ReplaceLabels()
+{
+  return m_settings->GetBool(SETTING_GAMES_REPLACE_LABELS);
+}
+
 bool CGameSettings::RewindEnabled()
 {
   return m_settings->GetBool(SETTING_GAMES_ENABLEREWIND);
@@ -136,6 +144,16 @@ unsigned int CGameSettings::MaxRewindTimeSec()
   int rewindTimeSec = m_settings->GetInt(SETTING_GAMES_REWINDTIME);
 
   return static_cast<unsigned int>(std::max(rewindTimeSec, 0));
+}
+
+bool CGameSettings::SyncPlaybackToDisplay()
+{
+  return m_settings->GetBool(SETTING_GAMES_SYNC_TO_DISPLAY);
+}
+
+double CGameSettings::SyncToDisplayLimit()
+{
+  return std::max(m_settings->GetInt(SETTING_GAMES_SYNC_TO_DISPLAY_LIMIT), 0) / 100.0;
 }
 
 std::string CGameSettings::GetRAUsername() const
@@ -153,6 +171,11 @@ bool CGameSettings::IsAchievementSetDisabled(unsigned int setId) const
   const std::vector<std::string> disabled =
       StringUtils::Split(m_settings->GetString(SETTING_GAMES_ACHIEVEMENTS_DISABLED_SETS), ",");
   return std::ranges::find(disabled, std::to_string(setId)) != disabled.end();
+}
+
+bool CGameSettings::HasDisabledAchievementSets() const
+{
+  return !m_settings->GetString(SETTING_GAMES_ACHIEVEMENTS_DISABLED_SETS).empty();
 }
 
 void CGameSettings::SetAchievementSetDisabled(unsigned int setId, bool disabled)

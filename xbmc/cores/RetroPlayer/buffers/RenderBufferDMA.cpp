@@ -60,7 +60,7 @@ bool CRenderBufferDMA::Allocate(AVPixelFormat format, unsigned int width, unsign
 
 size_t CRenderBufferDMA::GetFrameSize() const
 {
-  return m_bo->GetStride() * m_height;
+  return static_cast<size_t>(m_bo->GetStride()) * m_height;
 }
 
 uint32_t CRenderBufferDMA::GetStride() const

@@ -41,9 +41,10 @@ important, as xml tags are case-sensitive.
 | videofilter   | The filter to use, see \ref RetroPlayer_VideoFilter "RetroPlayer.VideoFilter" for supported values. If empty, the value of the \ref RetroPlayer_VideoFilter "RetroPlayer.VideoFilter" info label is used.
 | stretchmode   | The stretch mode, see \ref RetroPlayer_StretchMode "RetroPlayer.StretchMode" for supported values. If empty, the value of the \ref RetroPlayer_StretchMode "RetroPlayer.StretchMode" info label is used.
 | rotation      | The rotation, in degrees counter-clockwise, see \ref RetroPlayer_VideoRotation "RetroPlayer.VideoRotation" for supported values. If empty, the value of the \ref RetroPlayer_VideoRotation "RetroPlayer.VideoRotation" info label is used.
-| pixels        | A path to a v20 savestate, whose pixels will be rendered instead of the active game. A value of <b>`-`</b> will disable rendering of any pixels.
 
 @skinning_v20 <b>pixels</b> New tag added for rendering savestate pixels. Requires savestate v3 schema, introduced with the Savestate Manager in v20.
+
+@skinning_v23 <b>pixels</b> Removed. Savestates no longer keep their video frame; show a savestate's thumbnail with <b>`ListItem.Art(screenshot)`</b> instead.
 
 
 --------------------------------------------------------------------------------

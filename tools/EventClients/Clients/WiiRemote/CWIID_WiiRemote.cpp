@@ -144,10 +144,8 @@ CWiiRemote::~CWiiRemote()
   if (m_connected == true)
     this->DisconnectNow(false);
 
-  if (m_SamplesY != NULL)
-    free(m_SamplesY);
-  if (m_SamplesX != NULL)
-    free(m_SamplesX);
+  delete[] m_SamplesY;
+  delete[] m_SamplesX;
 
   if (m_JoyMap)
     free(m_JoyMap);

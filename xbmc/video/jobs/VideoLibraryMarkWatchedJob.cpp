@@ -24,6 +24,7 @@
 #include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoUtils.h"
 
 #include <memory>
 #include <vector>
@@ -72,6 +73,10 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
       continue;
 #endif
 
+    // Marking a recording as watched clears its resume point
+    const bool clearsRecordingResumePoint{m_mark && item->IsPVRRecording() &&
+                                          item->GetVideoInfoTag()->GetResumePoint().IsPartWay()};
+
     if (item->IsPVRRecording() && CServiceBroker::GetPVRManager().Recordings()->MarkWatched(
                                       item->GetPVRRecordingInfoTag(), m_mark))
     {
@@ -82,7 +87,14 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
         newLastPlayed = db.SetPlayCount(*item, 0);
 
       if (newLastPlayed.IsValid())
+      {
         item->GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
+        KODI::VIDEO::UTILS::AnnouncePlayCountChanged(item->GetPath(),
+                                                     m_mark ? db.GetPlayCount(*item) : 0);
+      }
+
+      if (clearsRecordingResumePoint)
+        KODI::VIDEO::UTILS::AnnounceResumePointChanged(item->GetPath(), {});
 
       if (m_mark)
       {
@@ -111,8 +123,16 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
       path = item->GetVideoInfoTag()->GetPath();
 
+    // The items of a folder come without a video info tag
+    CBookmark storedResumePoint;
+    const bool hadResumePoint{
+        (item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetResumePoint().IsPartWay()) ||
+        db.GetResumeBookMark(path, storedResumePoint)};
+
     // With both mark as watched and unwatched we want the resume bookmarks to be reset
     db.ClearBookMarksOfFile(path, CBookmark::RESUME);
+    if (hadResumePoint)
+      KODI::VIDEO::UTILS::AnnounceResumePointChanged(path, {});
 
     CDateTime newLastPlayed;
     if (m_mark)
@@ -120,8 +140,12 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
     else
       newLastPlayed = db.SetPlayCount(*item, 0);
 
-    if (newLastPlayed.IsValid() && item->HasVideoInfoTag())
-      item->GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
+    if (newLastPlayed.IsValid())
+    {
+      if (item->HasVideoInfoTag())
+        item->GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
+      KODI::VIDEO::UTILS::AnnouncePlayCountChanged(path, m_mark ? db.GetPlayCount(*item) : 0);
+    }
   }
 
   db.CommitTransaction();

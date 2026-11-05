@@ -183,6 +183,15 @@ TEST(TestGameClientTopology, TestMouse)
   EXPECT_EQ(mouseController.second, DEFAULT_MOUSE_ID);
 }
 
+TEST(TestGameClientTopology, GetPortType)
+{
+  EXPECT_EQ(CGameClientTopology::GetPortType(KEYBOARD_PORT_ADDRESS), GAME_PORT_KEYBOARD);
+  EXPECT_EQ(CGameClientTopology::GetPortType(MOUSE_PORT_ADDRESS), GAME_PORT_MOUSE);
+  EXPECT_EQ(CGameClientTopology::GetPortType("/1"), GAME_PORT_CONTROLLER);
+  EXPECT_EQ(CGameClientTopology::GetPortType("/1/game.controller.snes.multitap/2"),
+            GAME_PORT_CONTROLLER);
+}
+
 TEST(TestGameClientTopology, GameApiAutoConnect)
 {
   game_input_port port{};

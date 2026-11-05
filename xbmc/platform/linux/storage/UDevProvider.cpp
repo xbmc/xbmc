@@ -8,9 +8,11 @@
 
 #include "UDevProvider.h"
 
-#include "platform/posix/PosixMountProvider.h"
-#include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
+
+#include "platform/posix/PosixMountProvider.h"
 
 extern "C" {
 #include <libudev.h>
@@ -206,7 +208,10 @@ bool CUDevProvider::Eject(const std::string& mountpath)
 {
   // just go ahead and try to umount the disk
   // if it does umount, life is good, if not, no loss.
-  std::string cmd = "umount \"" + mountpath + "\"";
+  // Single quoted, as the mount point can be named after a volume label the shell must not expand
+  std::string quotedPath{mountpath};
+  StringUtils::Replace(quotedPath, "'", "'\\''");
+  std::string cmd = "umount '" + quotedPath + "'";
   int status = system(cmd.c_str());
 
   if (status == 0)

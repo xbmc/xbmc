@@ -59,6 +59,8 @@ public:
   void ReleaseOutputBuffer(bool render,
                            int64_t displayTime,
                            CMediaCodecVideoBufferPool* pool = nullptr);
+  // MediaCodec took the output buffer back without it being released
+  void InvalidateOutputBuffer() { m_bufferId = -1; }
   // SurfaceTexture released
   int GetBufferId() const;
   int GetTextureId() const;
@@ -93,6 +95,9 @@ public:
   std::shared_ptr<CJNIMediaCodec> GetMediaCodec();
   void ResetMediaCodec();
   void ReleaseMediaCodecBuffers();
+  void InvalidateMediaCodecBuffers();
+  // Held while an output buffer is released and while MediaCodec is flushed
+  CCriticalSection& GetCriticalSection() { return m_criticalSection; }
 
 private:
   CCriticalSection m_criticalSection;

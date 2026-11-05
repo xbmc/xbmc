@@ -639,6 +639,15 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       else
         header_size = (((data[m_fsize + 5] & 0x1f) << 3) | ((data[m_fsize + 6] & 0xe0) >> 5)) + 1;
 
+      if (size - skip < m_fsize + header_size + 4)
+      {
+        m_syncFunc = &CAEStreamParser::SyncDTS;
+        m_needBytes = m_fsize + header_size + 4;
+        m_fsize = 0;
+
+        return skip;
+      }
+
       hd_sync = data[m_fsize + header_size] << 24 | data[m_fsize + header_size + 1] << 16 |
                 data[m_fsize + header_size + 2] << 8 | data[m_fsize + header_size + 3];
 
@@ -646,13 +655,31 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       if (m_coreOnly)
         dataType = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
       else if (hd_sync == DTS_PREAMBLE_XLL)
+      {
         dataType = CAEStreamInfo::STREAM_TYPE_DTSHD_MA;
+        m_skipCount = 0;
+      }
       else if (hd_sync == DTS_PREAMBLE_XCH || hd_sync == DTS_PREAMBLE_XXCH ||
                hd_sync == DTS_PREAMBLE_X96K || hd_sync == DTS_PREAMBLE_XBR ||
                hd_sync == DTS_PREAMBLE_LBR)
-        dataType = CAEStreamInfo::STREAM_TYPE_DTSHD;
-      else
+      {
+        // DTS-HD is only confirmed if no other preceding format detected or format is
+        // already DTS-HD or it's the third DTS-HD syncword, with no DTS-HD MA in between.
+        if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_NULL ||
+            m_info.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD || m_skipCount > 1)
+        {
+          dataType = CAEStreamInfo::STREAM_TYPE_DTSHD;
+        }
+        else
+        {
+          m_skipCount++;
+          dataType = m_info.m_type;
+        }
+      }
+      else if (m_info.m_type != CAEStreamInfo::STREAM_TYPE_NULL)
         dataType = m_info.m_type;
+      else
+        continue;
 
       m_coreSize = m_fsize;
       m_fsize += hd_size;

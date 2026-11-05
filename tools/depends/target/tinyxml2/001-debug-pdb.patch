@@ -17,12 +17,12 @@
 +  install(FILES
 +      ${PROJECT_BINARY_DIR}/Debug/tinyxml2d.pdb
 +      DESTINATION lib
-+      CONFIGURATIONS Debug
++      CONFIGURATIONS Debug OPTIONAL
 +  )
 +  install(FILES
 +      ${PROJECT_BINARY_DIR}/RelWithDebInfo/tinyxml2.pdb
 +      DESTINATION lib
-+      CONFIGURATIONS RelWithDebInfo
++      CONFIGURATIONS RelWithDebInfo OPTIONAL
 +  )
 +endif()
 +

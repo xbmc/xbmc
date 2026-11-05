@@ -27,6 +27,11 @@ class CStreamDetails;
 class CAction;
 class IPlayerCallback;
 
+namespace KODI::RENDERING::CAPTURE
+{
+struct CaptureResult;
+} // namespace KODI::RENDERING::CAPTURE
+
 class CPlayerOptions
 {
 public:
@@ -82,7 +87,9 @@ enum ERENDERFEATURE
   RENDERFEATURE_VERTICAL_SHIFT,
   RENDERFEATURE_PIXEL_RATIO,
   RENDERFEATURE_POSTPROCESS,
-  RENDERFEATURE_TONEMAP
+  RENDERFEATURE_TONEMAP,
+  RENDERFEATURE_HUE,
+  RENDERFEATURE_SATURATION
 };
 
 class IPlayer
@@ -233,6 +240,10 @@ public:
    \brief hook into render loop of render thread
    */
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {}
+  virtual bool CompositeVideoCapture(KODI::RENDERING::CAPTURE::CaptureResult& result)
+  {
+    return true;
+  }
   virtual void FlushRenderer() {}
   virtual void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) {}
   virtual float GetRenderAspectRatio() const { return 1.0; }

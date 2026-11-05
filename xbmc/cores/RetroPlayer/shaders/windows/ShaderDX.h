@@ -46,6 +46,7 @@ public:
                          const std::vector<std::unique_ptr<IShader>>& pShaders,
                          uint64_t frameCount) override;
   void UpdateMVP() override;
+  void ReleaseTextureReferences() override;
 
   /*!
    * \brief Construct the vertex buffer that will be used to render the shader

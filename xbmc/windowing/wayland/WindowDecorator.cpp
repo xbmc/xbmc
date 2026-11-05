@@ -164,7 +164,7 @@ std::size_t MemoryBytesForSize(CSizeInt windowSurfaceSize, int scale)
     size += SurfaceGeometry(surface, windowSurfaceSize).Area();
   }
 
-  size *= scale * scale;
+  size *= static_cast<std::size_t>(scale) * scale;
 
   size *= BYTES_PER_PIXEL;
 
@@ -199,7 +199,7 @@ void DrawHorizontalLine(CWindowDecorator::Buffer& buffer, std::uint32_t color, C
 void DrawLineWithStride(CWindowDecorator::Buffer& buffer, std::uint32_t color, CPointInt position, int length, int stride)
 {
   auto offsetStart = PositionInBuffer(buffer, position);
-  auto offsetEnd = offsetStart + stride * (length - 1);
+  auto offsetEnd = offsetStart + static_cast<std::size_t>(stride) * (length - 1);
   if (offsetEnd * BYTES_PER_PIXEL >= buffer.dataSize)
   {
     throw std::invalid_argument("Position out of bounds");

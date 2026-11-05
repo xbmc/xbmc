@@ -298,7 +298,7 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTR
   {
     CGUIString& line = lines[i];
     unsigned int lineLength = line.m_text.size();
-    std::wstring logicalText;
+    std::u32string logicalText;
     vecText style;
 
     logicalText.reserve(lineLength);
@@ -307,13 +307,13 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTR
     // Separate the text and style for the input styled text
     for (const auto& it : line.m_text)
     {
-      logicalText.push_back((wchar_t)(it & 0xffff));
-      style.push_back(it & 0xffff0000);
+      logicalText.push_back(static_cast<char32_t>(it & 0xffffffff));
+      style.push_back(it & 0xffffffff00000000);
     }
 
     // Allocate memory for visual to logical map and call bidi
     int* visualToLogicalMap = new (std::nothrow) int[lineLength + 1]();
-    std::wstring visualText = BidiFlip(logicalText, forceLTRReadingOrder, visualToLogicalMap);
+    std::u32string visualText = BidiFlip(logicalText, forceLTRReadingOrder, visualToLogicalMap);
 
     vecText styledVisualText;
     styledVisualText.reserve(lineLength);
@@ -341,21 +341,13 @@ void CGUITextLayout::BidiTransform(std::vector<CGUIString>& lines, bool forceLTR
   }
 }
 
-std::wstring CGUITextLayout::BidiFlip(const std::wstring& text,
-                                      bool forceLTRReadingOrder,
-                                      int* visualToLogicalMap /*= nullptr*/)
+std::u32string CGUITextLayout::BidiFlip(const std::u32string& text,
+                                        bool forceLTRReadingOrder,
+                                        int* visualToLogicalMap /*= nullptr*/)
 {
-  std::wstring visualText;
-  std::u32string utf32logical;
-  std::u32string utf32visual;
-
-  // Convert to utf32, call bidi then convert the result back to utf16
-  g_charsetConverter.wToUtf32(text, utf32logical);
-  g_charsetConverter.utf32logicalToVisualBiDi(utf32logical, utf32visual, forceLTRReadingOrder,
-                                              false,
+  std::u32string visualText;
+  g_charsetConverter.utf32logicalToVisualBiDi(text, visualText, forceLTRReadingOrder, false,
                                               visualToLogicalMap);
-  g_charsetConverter.utf32ToW(utf32visual, visualText);
-
   return visualText;
 }
 
@@ -366,10 +358,11 @@ void CGUITextLayout::Filter(std::string &text)
   std::vector<KODI::UTILS::COLOR::Color> colors;
   vecText parsedText;
   ParseText(utf16, 0, 0xffffffff, colors, parsedText);
-  utf16.clear();
-  for (unsigned int i = 0; i < parsedText.size(); i++)
-    utf16 += (wchar_t)(0xffff & parsedText[i]);
-  g_charsetConverter.wToUTF8(utf16, text);
+  std::u32string utf32;
+  utf32.reserve(parsedText.size());
+  for (const character_t letter : parsedText)
+    utf32 += static_cast<char32_t>(letter & 0xffffffff);
+  g_charsetConverter.utf32ToUtf8(utf32, text);
 }
 
 void CGUITextLayout::ParseText(const std::wstring& text,
@@ -564,7 +557,10 @@ void CGUITextLayout::ParseText(const std::wstring& text,
         StringUtils::ToLower(subText);
       if (currentStyle & FONT_STYLE_CAPITALIZE)
         StringUtils::ToCapitalize(subText);
-      AppendToUTF32(subText, ((currentStyle & FONT_STYLE_MASK) << 24) | (currentColor << 16), parsedText);
+      AppendToUTF32(subText,
+                    (static_cast<character_t>(currentStyle & FONT_STYLE_MASK) << 40) |
+                        (static_cast<character_t>(currentColor) << 32),
+                    parsedText);
       if (newLine)
         parsedText.push_back(L'\n');
       for (int i = 0; i < tabs; ++i)
@@ -597,7 +593,10 @@ void CGUITextLayout::ParseText(const std::wstring& text,
     StringUtils::ToLower(subText);
   if (currentStyle & FONT_STYLE_CAPITALIZE)
     StringUtils::ToCapitalize(subText);
-  AppendToUTF32(subText, ((currentStyle & FONT_STYLE_MASK) << 24) | (currentColor << 16), parsedText);
+  AppendToUTF32(subText,
+                (static_cast<character_t>(currentStyle & FONT_STYLE_MASK) << 40) |
+                    (static_cast<character_t>(currentColor) << 32),
+                parsedText);
 }
 
 void CGUITextLayout::SetMaxHeight(float fHeight)
@@ -768,7 +767,7 @@ void CGUITextLayout::LineBreakText(const vecText &text, std::vector<CGUIString> 
     character_t letter = *pos;
 
     // Handle the newline character
-    if ((letter & 0xffff) == L'\n' )
+    if ((letter & 0xffffffff) == L'\n')
     { // push back everything up till now
       CGUIString string(lineStart, pos, true);
       lines.push_back(string);
@@ -825,7 +824,7 @@ float CGUITextLayout::GetTextWidth(const std::wstring &text) const
   // NOTE: Assumes a single line of text
   if (!m_font) return 0;
   vecText utf32;
-  AppendToUTF32(text, (m_font->GetStyle() & FONT_STYLE_MASK) << 24, utf32);
+  AppendToUTF32(text, static_cast<character_t>(m_font->GetStyle() & FONT_STYLE_MASK) << 40, utf32);
   return m_font->GetTextWidth(utf32);
 }
 
@@ -863,8 +862,19 @@ void CGUITextLayout::AppendToUTF32(const std::wstring &utf16, character_t colSty
 {
   // NOTE: Assumes a single line of text
   utf32.reserve(utf32.size() + utf16.size());
-  for (unsigned int i = 0; i < utf16.size(); i++)
-    utf32.push_back(utf16[i] | colStyle);
+  for (size_t i = 0; i < utf16.size(); i++)
+  {
+    character_t letter = static_cast<character_t>(utf16[i]);
+    // wchar_t is UTF-16 on Windows
+    if (letter >= 0xD800 && letter < 0xDC00 && i + 1 < utf16.size() &&
+        static_cast<character_t>(utf16[i + 1]) >= 0xDC00 &&
+        static_cast<character_t>(utf16[i + 1]) < 0xE000)
+    {
+      letter =
+          0x10000 + ((letter - 0xD800) << 10) + (static_cast<character_t>(utf16[++i]) - 0xDC00);
+    }
+    utf32.push_back(letter | colStyle);
+  }
 }
 
 void CGUITextLayout::AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32)

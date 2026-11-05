@@ -140,6 +140,7 @@ dependent_option(ENABLE_INTERNAL_SWIG "Enable internal swig?")
 dependent_option(ENABLE_INTERNAL_UDFREAD "Enable internal libudfread?")
 dependent_option(ENABLE_INTERNAL_XSLT "Enable internal libxslt?")
 dependent_option(ENABLE_INTERNAL_ZSTD "Enable internal Zstandard?")
+dependent_option(ENABLE_INTERNAL_FRIBIDI "Enable internal fribidi?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
 # dependency on fmt
@@ -450,6 +451,13 @@ if(CORE_SYSTEM_NAME STREQUAL "darwin_embedded")
   add_library(lib${APP_NAME_LC} STATIC)
   add_dependencies(lib${APP_NAME_LC} compileinfo)
   target_link_libraries(lib${APP_NAME_LC} PUBLIC compileinfo_obj)
+elseif(CCACHE_FOUND AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND
+       CMAKE_GENERATOR MATCHES "Visual Studio")
+  # Embedded debug information can exceed the static archive size limit.
+  add_library(lib${APP_NAME_LC} OBJECT)
+  set_target_properties(lib${APP_NAME_LC} PROPERTIES
+    VS_USER_PROPS "${CMAKE_SOURCE_DIR}/cmake/scripts/windows/ObjectLibrary.props")
+  target_link_libraries(lib${APP_NAME_LC} PUBLIC $<TARGET_OBJECTS:compileinfo>)
 else()
   add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
 endif()
@@ -613,6 +621,13 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   # Enable unit-test related targets
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
+  # Windows permits concurrent servers to bind the listening port these tests share.
+  get_property(tcp_server_tests DIRECTORY PROPERTY TESTS)
+  list(FILTER tcp_server_tests INCLUDE REGEX "^TestTCPServer\\.")
+  if(tcp_server_tests)
+    set_tests_properties(${tcp_server_tests} PROPERTIES RESOURCE_LOCK tcp_server_port)
+  endif()
+  unset(tcp_server_tests)
   find_program(TEST_DPKG_DEB_EXECUTABLE NAMES dpkg-deb)
   find_program(TEST_RSYNC_EXECUTABLE NAMES rsync)
   if(TEST_DPKG_DEB_EXECUTABLE AND TEST_RSYNC_EXECUTABLE)

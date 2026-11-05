@@ -120,6 +120,10 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
 #endif
 
   float4 rgb = mul(YUV, g_ColorMatrix);
+#if defined(KODI_HUESAT_YUV)
+  // before the primaries conversion, the signal is still BT.2020
+  rgb.rgb = hueSaturation(rgb.rgb);
+#endif
 #if defined(XBMC_COL_CONVERSION)
   rgb.rgb = pow(max(0.0, rgb.rgb), g_gammaSrc);
   rgb.rgb = max(0.0, mul(rgb, g_primMat).rgb);
@@ -128,11 +132,17 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
   return output4(rgb, In.TextureY);
 }
 
+#if defined(KODI_HUESAT_YUV)
+#define YUV2RGB_PS_PROFILE ps_4_0_level_9_3
+#else
+#define YUV2RGB_PS_PROFILE ps_4_0_level_9_1
+#endif
+
 technique11 YUV2RGB_T
 {
   pass P0
   {
     SetVertexShader( CompileShader( vs_4_0_level_9_1, VS() ) );
-    SetPixelShader( CompileShader( ps_4_0_level_9_1, YUV2RGB() ) );
+    SetPixelShader( CompileShader( YUV2RGB_PS_PROFILE, YUV2RGB() ) );
   }
 };

@@ -128,6 +128,8 @@ public:
       CGBMSurfaceBuffer& LockFrontBuffer();
 
     private:
+      static constexpr size_t BUFFERS_HELD{2};
+
       gbm_surface* m_surface{nullptr};
       std::queue<std::unique_ptr<CGBMSurfaceBuffer>> m_buffers;
     };

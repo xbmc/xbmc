@@ -123,7 +123,7 @@ sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 ```
 
 > [!WARNING]  
-> Building `waylandpp` has some dependencies of its own, namely `scons, libwayland-dev (>= 1.11.0) and libwayland-egl1-mesa`
+> Building `waylandpp` has some dependencies of its own, namely `libpugixml-dev and libwayland-dev (>= 1.11.0)`
 
 > [!TIP]
 > Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.

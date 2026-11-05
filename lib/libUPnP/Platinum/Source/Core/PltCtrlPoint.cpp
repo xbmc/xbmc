@@ -1614,8 +1614,8 @@ PLT_CtrlPoint::ProcessSubscribeResponse(NPT_Result                    res,
     PLT_EventSubscriberReference sub;
     bool                 subscription = (request.GetMethod().ToUppercase() == "SUBSCRIBE");
 
-    NPT_String prefix = NPT_String::Format("PLT_CtrlPoint::ProcessSubscribeResponse %ubscribe for service \"%s\" (result = %d, status code = %d)", 
-        (const char*)subscription?"S":"Uns",
+    NPT_String prefix = NPT_String::Format("PLT_CtrlPoint::ProcessSubscribeResponse %subscribe for service \"%s\" (result = %d, status code = %d)",
+        subscription?"S":"Uns",
         (const char*)service->GetServiceID(),
         res,
         response?response->GetStatusCode():0);
