@@ -1962,6 +1962,8 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
     pPacket->originalPts = DVD_MSEC_TO_TIME(pPacket->dispTime);
   else if (pPacket->pts != DVD_NOPTS_VALUE)
     pPacket->originalPts = pPacket->pts + m_offset_pts;
+  else if (pPacket->dts != DVD_NOPTS_VALUE)
+    pPacket->originalPts = pPacket->dts + m_offset_pts;
 
   if (checkcont && (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CHECK))
     m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
