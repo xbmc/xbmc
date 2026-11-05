@@ -593,6 +593,12 @@ bool CActiveAEStream::HasSinkFormatChanged() const
   return m_sinkFormatChanged;
 }
 
+bool CActiveAEStream::SupportsPassthroughSilence() const
+{
+  return m_format.m_dataFormat == AE_FMT_RAW && m_activeAE->SupportsPassthroughSilence();
+}
+
+
 void CActiveAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 {
 }
