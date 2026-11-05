@@ -69,6 +69,7 @@ public:
 
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;
+  bool SupportsPassthroughSilence() const override { return true; }
 
 protected:
 
