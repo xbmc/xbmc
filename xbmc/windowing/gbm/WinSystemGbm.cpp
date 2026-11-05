@@ -311,6 +311,8 @@ bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  ApplySdrRestore();
+
   // Notify other subsystems that we will change resolution
   OnLostDevice();
 
@@ -359,6 +361,9 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
     // disable video plane when video layer no longer is active
     m_videoLayerBridge->Disable();
   }
+
+  if (m_sdrRestorePending && !IsVideoResolutionActive())
+    ApplySdrRestore();
 
   struct gbm_bo* bo = nullptr;
 
@@ -489,8 +494,47 @@ bool CWinSystemGbm::SetVideoOutput(const VideoPicture* videoPicture)
                       : m_DRM->FindGuiPlane(current->GetFormat(), current->GetModifier());
 }
 
+bool CWinSystemGbm::IsVideoResolutionActive()
+{
+  const int adjustRefreshRate = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE);
+  if (adjustRefreshRate == ADJUST_REFRESHRATE_OFF ||
+      adjustRefreshRate == ADJUST_REFRESHRATE_ON_START)
+    return false;
+
+  RESOLUTION guiResolution = CDisplaySettings::GetInstance().GetCurrentResolution();
+  if (guiResolution <= RES_DESKTOP)
+    guiResolution = RES_DESKTOP;
+
+  return GetGfxContext().GetVideoResolution() != guiResolution;
+}
+
+bool CWinSystemGbm::DeferSdrRestore()
+{
+  if (m_applyingSdrRestore || !IsVideoResolutionActive())
+    return false;
+
+  m_sdrRestorePending = true;
+  return true;
+}
+
+void CWinSystemGbm::ApplySdrRestore()
+{
+  if (!m_sdrRestorePending)
+    return;
+
+  m_sdrRestorePending = false;
+  m_applyingSdrRestore = true;
+  SetColorimetry(nullptr);
+  SetHDR(nullptr);
+  m_applyingSdrRestore = false;
+}
+
 void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
 {
+  if (!videoPicture && DeferSdrRestore())
+    return;
+
   auto drm = std::dynamic_pointer_cast<CDRMAtomic>(m_DRM);
   if (!drm)
     return;
@@ -547,6 +591,12 @@ void CWinSystemGbm::SetColorimetry(const VideoPicture* videoPicture)
 
 bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
 {
+  if (!videoPicture && DeferSdrRestore())
+    return false;
+
+  if (videoPicture)
+    m_sdrRestorePending = false;
+
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
     return false;
@@ -585,6 +635,15 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
   if (videoPicture->color_transfer != AVCOL_TRC_SMPTE2084 &&
       videoPicture->color_transfer != AVCOL_TRC_ARIB_STD_B67)
   {
+    if (m_hdrBlob.IsValid() && connector->SupportsProperty("HDR_OUTPUT_METADATA") &&
+        drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0))
+    {
+      CLog::LogF(LOGDEBUG, "clearing HDR_OUTPUT_METADATA");
+      drm->SetActive(true);
+
+      m_hdrBlob.Reset();
+    }
+
     m_eotf = KODI::UTILS::Eotf::TRADITIONAL_SDR;
     return false;
   }
@@ -671,6 +730,19 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
   }
 
   return m_hdrBlob.IsValid();
+}
+
+void CWinSystemGbm::SetVideoStreamColor(const VideoPicture& videoPicture)
+{
+  SetColorimetry(&videoPicture);
+  SetGuiCompositing(SetHDR(&videoPicture) ? videoPicture.color_transfer : 0);
+}
+
+void CWinSystemGbm::ResetVideoStreamColor()
+{
+  SetGuiCompositing(0);
+  SetHDR(nullptr);
+  SetColorimetry(nullptr);
 }
 
 bool CWinSystemGbm::IsHDRDisplay()
