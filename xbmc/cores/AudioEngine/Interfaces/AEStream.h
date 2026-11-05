@@ -227,9 +227,6 @@ public:
    */
   virtual enum AEDataFormat GetDataFormat() const = 0;
 
-  // True when RAW passthrough silence is emitted as IEC pause bursts.
-  virtual bool SupportsPassthroughSilence() const { return false; }
-
   /**
    * Whether the sink was reconfigured to carry this stream, so that the format on the wire
    * changed and a downstream device has to acquire it again.
