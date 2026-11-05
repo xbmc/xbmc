@@ -76,7 +76,7 @@ TEST(TestBytes, General)
 
 TEST(TestMPLSParser, InvalidExtensionDataIsIgnored)
 {
-  // Léon (2in1 UHD), whose ExtensionData_start_address points into its sub-path
+  // LÃ©on (2in1 UHD), whose ExtensionData_start_address points into its sub-path
   CURL url;
   url.SetProtocol("bluray");
   url.SetHostName(XBMC_REF_FILE_PATH("xbmc/utils/test/data/bluray/"));
