@@ -27,6 +27,7 @@ enum class NodeType;
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool Exists(const CURL& url) override;
     bool AllowAll() const override { return true; }
+    CacheType GetCacheType(const CURL& url) const override { return CacheType::NEVER; }
     static VIDEODATABASEDIRECTORY::NodeType GetDirectoryChildType(const std::string& strPath);
     static VIDEODATABASEDIRECTORY::NodeType GetDirectoryType(const std::string& strPath);
     static VIDEODATABASEDIRECTORY::NodeType GetDirectoryParentType(const std::string& strPath);

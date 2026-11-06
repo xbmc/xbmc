@@ -23,6 +23,7 @@ namespace XFILE
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool Exists(const CURL& url) override;
     bool AllowAll() const override { return true; }
+    CacheType GetCacheType(const CURL& url) const override { return CacheType::NEVER; }
   private:
     /*! \brief parse the given path and return the node corresponding to this path
      \param path the library:// path to parse
