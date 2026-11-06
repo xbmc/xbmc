@@ -1767,8 +1767,6 @@ bool CApplication::Stop(int exitCode)
 
   cleanup_emu_environ();
 
-  KODI::TIME::Sleep(200ms);
-
   return success;
 }
 
