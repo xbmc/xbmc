@@ -124,6 +124,19 @@ namespace KODI::VIDEO
                            bool fetchEpisodes = true,
                            CGUIDialogProgress* pDlgProgress = nullptr);
 
+    /*! \brief Look the videos up with these scrapers, as CVideoDatabase::GetScraperForPath()
+     cached them, so that the details already read with them are read from their cache.
+     */
+    void UseScrapers(const CVideoDatabase::ScraperCache& scrapers)
+    {
+      m_scraperCache.insert(scrapers.begin(), scrapers.end());
+    }
+
+    /*! \brief Look the movies or tv shows up by these ids with a python scraper, rather than search
+     for them.
+     */
+    void LookUpBy(const ADDON::CScraper::UniqueIDs& uniqueIDs) { m_uniqueIDs = uniqueIDs; }
+
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
 
     /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
@@ -310,8 +323,10 @@ namespace KODI::VIDEO
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     bool AddVideoExtras(CFileItemList& items, ADDON::ContentType content, const std::string& path);
-    static std::pair<VersionConversionResult, int> ProcessVideoVersion(
-        VideoDbContentType itemType, int dbId, int targetDbId = -1, bool canBecomeDefault = true);
+    std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
+                                                                int dbId,
+                                                                int targetDbId = -1,
+                                                                bool canBecomeDefault = true);
     static void RemovePartNumberFromTitle(int dbId,
                                           VideoDbContentType itemType,
                                           CVideoDatabase& db);
@@ -343,6 +358,9 @@ namespace KODI::VIDEO
 
     SimilarVideoScanAction m_similarVideoAction{SimilarVideoScanAction::NONE};
     bool m_ignoreVideoExtras{false};
+
+    //! The ids RetrieveVideoInfo() looks movies and tv shows up by, where it would otherwise search
+    ADDON::CScraper::UniqueIDs m_uniqueIDs;
 
     //! Whether the folder a movie is in names it (the scraper's "movies are in separate folders")
     bool m_useFolderNames{false};
