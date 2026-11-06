@@ -52,7 +52,7 @@ constexpr int ThreadPriorityToNativePriority(const ThreadPriority& priority)
   }
 }
 
-#if !defined(TARGET_ANDROID) && (defined(__GLIBC__) || defined(__UCLIBC__))
+#if !defined(TARGET_ANDROID) && defined(__GLIBC__) && !defined(__UCLIBC__)
 #if defined(__UCLIBC__) || !__GLIBC_PREREQ(2, 30)
 static pid_t gettid()
 {
