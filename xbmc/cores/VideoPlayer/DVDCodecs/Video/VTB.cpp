@@ -237,7 +237,7 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   {
     // The GLES renderer only supports 8-bit NV12 surfaces.
     const AVPixFmtDescriptor* descriptor = av_pix_fmt_desc_get(avctx->sw_pix_fmt);
-    if (!descriptor || descriptor->comp[0].depth != 8)
+    if (!descriptor || descriptor->nb_components == 0 || descriptor->comp[0].depth != 8)
       return false;
 
     if (__builtin_available(tvOS 26.2, *))
