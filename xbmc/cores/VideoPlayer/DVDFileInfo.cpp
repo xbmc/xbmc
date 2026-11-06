@@ -36,12 +36,17 @@
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "Process/ProcessInfo.h"
 #include "Util.h"
+#include "VideoRenderers/VideoShaders/ToneMappers.h"
 #include "filesystem/File.h"
 
+#include <algorithm>
+#include <array>
+#include <cmath>
 #include <cstdint>
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -94,6 +99,123 @@ int DegreeToOrientation(int degrees)
 
 namespace
 {
+bool IsBT2020HDR(const VideoPicture& picture)
+{
+  return picture.color_primaries == AVCOL_PRI_BT2020 &&
+         (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+          picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
+}
+
+float Hable(float x)
+{
+  constexpr float A = 0.15f;
+  constexpr float B = 0.5f;
+  constexpr float C = 0.1f;
+  constexpr float D = 0.2f;
+  constexpr float E = 0.02f;
+  constexpr float F = 0.3f;
+  return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - E / F;
+}
+
+//! Tone map a PQ or HLG BT.2020 picture to BT.709 with the Hable curve of the GL renderer.
+//! libswscale's color management builds a 3D LUT for every source colorspace, which takes
+//! seconds on weak CPUs, so the scaled down picture is mapped pixel by pixel instead.
+bool ToneMapToTexture(const VideoPicture& picture,
+                      uint8_t* planes[],
+                      int stride[],
+                      CTexture& texture)
+{
+  const int width = static_cast<int>(texture.GetWidth());
+  const int height = static_cast<int>(texture.GetHeight());
+
+  SwsContext* context =
+      sws_getContext(picture.iWidth, picture.iHeight, picture.videoBuffer->GetFormat(), width,
+                     height, AV_PIX_FMT_RGB48, SWS_BILINEAR, nullptr, nullptr, nullptr);
+  if (!context)
+    return false;
+
+  sws_setColorspaceDetails(context, sws_getCoefficients(picture.color_space),
+                           picture.color_range == 1 ? 1 : 0, sws_getCoefficients(AVCOL_SPC_BT709),
+                           1, 0, 1 << 16, 1 << 16);
+  std::vector<uint16_t> rgb(static_cast<size_t>(width) * height * 3);
+  uint8_t* src[4] = {planes[0], planes[1], planes[2], nullptr};
+  int srcStride[4] = {stride[0], stride[1], stride[2], 0};
+  uint8_t* dst[4] = {reinterpret_cast<uint8_t*>(rgb.data()), nullptr, nullptr, nullptr};
+  int dstStride[4] = {width * 6, 0, 0, 0};
+  const int rows = sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
+  sws_freeContext(context);
+  if (rows != height)
+    return false;
+
+  constexpr int LUT_BITS = 12;
+  constexpr int LUT_SIZE = 1 << LUT_BITS;
+  const bool pq = picture.color_transfer == AVCOL_TRC_SMPTE2084;
+
+  // linear light, 1.0 = 10000 nits
+  std::array<float, LUT_SIZE> toLinear;
+  for (int i = 0; i < LUT_SIZE; i++)
+  {
+    const double v = static_cast<double>(i) / (LUT_SIZE - 1);
+    if (pq)
+    {
+      constexpr double m1 = 2610.0 / 16384;
+      constexpr double m2 = 2523.0 / 32;
+      constexpr double c1 = 3424.0 / 4096;
+      constexpr double c2 = 2413.0 / 128;
+      constexpr double c3 = 2392.0 / 128;
+      const double p = std::pow(v, 1 / m2);
+      toLinear[i] = static_cast<float>(std::pow(std::max(p - c1, 0.0) / (c2 - c3 * p), 1 / m1));
+    }
+    else
+    {
+      // inverse OETF and the OOTF of a 1000 nit display, per channel
+      constexpr double a = 0.17883277;
+      constexpr double b = 0.28466892;
+      constexpr double c = 0.55991073;
+      const double e = v <= 0.5 ? v * v / 3 : (std::exp((v - c) / a) + b) / 12;
+      toLinear[i] = static_cast<float>(0.1 * std::pow(e, 1.2));
+    }
+  }
+
+  // indexed by the square root of linear light, for precision in the shadows
+  const float luminance =
+      pq ? CToneMappers::GetLuminanceValue(picture.hasDisplayMetadata, picture.displayMetadata,
+                                           picture.hasLightMetadata, picture.lightMetadata)
+         : 1000.0f;
+  const float white = Hable(luminance / 100.0f);
+  std::array<uint8_t, LUT_SIZE> toDisplay;
+  for (int i = 0; i < LUT_SIZE; i++)
+  {
+    const float s = static_cast<float>(i) / (LUT_SIZE - 1);
+    const float mapped = std::clamp(Hable(s * s * 200.0f) / white, 0.0f, 1.0f);
+    toDisplay[i] = static_cast<uint8_t>(std::lround(std::pow(mapped, 1.0f / 2.2f) * 255.0f));
+  }
+
+  const auto display = [&toDisplay](float linear)
+  {
+    const float s = std::sqrt(std::clamp(linear, 0.0f, 1.0f));
+    return toDisplay[static_cast<int>(s * (LUT_SIZE - 1) + 0.5f)];
+  };
+
+  for (int y = 0; y < height; y++)
+  {
+    const uint16_t* in = rgb.data() + static_cast<size_t>(y) * width * 3;
+    uint8_t* out = texture.GetPixels() + static_cast<size_t>(y) * texture.GetPitch();
+    for (int x = 0; x < width; x++, in += 3, out += 4)
+    {
+      const float r = toLinear[in[0] >> (16 - LUT_BITS)];
+      const float g = toLinear[in[1] >> (16 - LUT_BITS)];
+      const float b = toLinear[in[2] >> (16 - LUT_BITS)];
+      // BT.2020 to BT.709 primaries
+      out[0] = display(-0.0182f * r - 0.1006f * g + 1.1187f * b);
+      out[1] = display(-0.1246f * r + 1.1329f * g - 0.0083f * b);
+      out[2] = display(1.6605f * r - 0.5876f * g - 0.0728f * b);
+      out[3] = 0xff;
+    }
+  }
+  return true;
+}
+
 //! Convert a decoded picture to a BGRA texture sized for the thumbnail cache.
 std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CDVDStreamInfo& hint)
 {
@@ -117,7 +239,11 @@ std::unique_ptr<CTexture> PictureToTexture(const VideoPicture& picture, const CD
 
   bool converted = false;
 
+  if (IsBT2020HDR(picture))
+    converted = ToneMapToTexture(picture, planes, stride, *result);
+
 #if LIBSWSCALE_BUILD >= AV_VERSION_INT(9, 0, 100)
+  if (!converted)
   {
     AVFrame* srcFrame = av_frame_alloc();
     AVFrame* dstFrame = av_frame_alloc();
