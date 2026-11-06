@@ -375,6 +375,15 @@ bool CApplicationPlayer::SeekScene(Direction seekDirection)
   return (player && player->SeekScene(seekDirection));
 }
 
+void CApplicationPlayer::SeekChapterOrSceneOrBigStep(Direction direction)
+{
+  m_seekHandler.ResetAndClearSeekStepValue();
+
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SeekChapterOrSceneOrBigStep(direction);
+}
+
 void CApplicationPlayer::SeekTime(int64_t iTime)
 {
   m_seekHandler.ResetAndClearSeekStepValue();
