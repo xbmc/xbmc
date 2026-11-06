@@ -274,12 +274,21 @@ std::string CMediaPipelineWebOS::GetVideoInfo() const
                      mbps, fps, m_droppedFrames);
 }
 
-bool CMediaPipelineWebOS::Supports(const AVCodecID codec, const int profile)
+bool CMediaPipelineWebOS::Supports(const CDVDStreamInfo& hint)
 {
-  if ((codec == AV_CODEC_ID_H264 || codec == AV_CODEC_ID_AVS || codec == AV_CODEC_ID_CAVS) &&
-      profile == AV_PROFILE_H264_HIGH_10)
+  if ((hint.codec == AV_CODEC_ID_H264 || hint.codec == AV_CODEC_ID_AVS ||
+       hint.codec == AV_CODEC_ID_CAVS) &&
+      hint.profile == AV_PROFILE_H264_HIGH_10)
     return false;
-  return ms_codecMap.contains(codec);
+
+  // Starfish is configured from channels, profile and sample rate only; the sample rate can be
+  // recovered from extradata. Realtime streams skip stream probing, so these can be unknown.
+  if ((hint.codec == AV_CODEC_ID_AAC || hint.codec == AV_CODEC_ID_AAC_LATM) &&
+      (!hint.channels || hint.profile == AV_PROFILE_UNKNOWN ||
+       (!hint.samplerate && !hint.extradata)))
+    return false;
+
+  return ms_codecMap.contains(hint.codec);
 }
 
 void CMediaPipelineWebOS::AcbCallback(
@@ -331,7 +340,7 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
       m_processInfo.SetAudioChannels(CAEUtil::GetAEChannelLayout(audioHint.channellayout));
       m_processInfo.SetAudioSampleRate(audioHint.samplerate);
       m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
-      if (Supports(audioHint.codec, audioHint.profile))
+      if (Supports(audioHint))
         m_processInfo.SetAudioDecoderName("starfish-" +
                                           std::string(ms_codecMap.at(audioHint.codec).data()));
       else if (m_audioEncoder)
@@ -357,7 +366,7 @@ bool CMediaPipelineWebOS::OpenAudioStream(CDVDStreamInfo& audioHint)
 
 bool CMediaPipelineWebOS::OpenVideoStream(CDVDStreamInfo hint)
 {
-  if (!Supports(hint.codec, hint.profile))
+  if (!Supports(hint))
   {
     CLog::LogF(LOGERROR, "Unsupported codec: {}", hint.codec);
     return false;
@@ -793,7 +802,7 @@ bool CMediaPipelineWebOS::Load(CDVDStreamInfo videoHint, CDVDStreamInfo audioHin
       m_processInfo.SetAudioChannels(CAEUtil::GuessChLayout(audioHint.channels));
     m_processInfo.SetAudioSampleRate(audioHint.samplerate);
     m_processInfo.SetAudioBitsPerSample(audioHint.bitspersample);
-    if (Supports(audioHint.codec, audioHint.profile))
+    if (Supports(audioHint))
       m_processInfo.SetAudioDecoderName(std::string("starfish-") +
                                         ms_codecMap.at(audioHint.codec).data());
     else if (m_audioEncoder)
@@ -892,7 +901,7 @@ std::string CMediaPipelineWebOS::SetupAudio(CDVDStreamInfo& audioHint, CVariant&
   const bool allowPassthrough = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                                     CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH) ||
                                 audioHint.cryptoSession;
-  const bool supported = Supports(audioHint.codec, audioHint.profile);
+  const bool supported = Supports(audioHint);
 
   if (!supported && audioHint.cryptoSession)
   {
