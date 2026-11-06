@@ -1,0 +1,50 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 98c0a1a..883ae8b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -275,10 +275,11 @@ set(f include/lzo/lzo1.h include/lzo/lzo1a.h include/lzo/lzo1b.h
+ install(FILES ${f} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/lzo")
+ 
+ if(ENABLE_STATIC)
+-    install(TARGETS lzo_static_lib ARCHIVE DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
++    install(TARGETS lzo_static_lib EXPORT lzo2 ARCHIVE DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+ endif()
+ if(ENABLE_SHARED)
+     install(TARGETS lzo_shared_lib
++        EXPORT lzo2
+         ARCHIVE DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}"
+         LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}"
+         RUNTIME DESTINATION "${CMAKE_INSTALL_FULL_BINDIR}"
+@@ -297,6 +298,25 @@ if(PKG_CONFIG_FOUND)
+     #endif()
+ endif()
+ 
++install(EXPORT lzo2
++    FILE lzo2.cmake
++    NAMESPACE lzo2::
++    DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/lzo2
++)
++
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++    "${CMAKE_CURRENT_BINARY_DIR}/lzo2-config-version.cmake"
++    VERSION ${PROJECT_VERSION}
++    COMPATIBILITY SameMajorVersion
++)
++
++install(FILES
++    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/lzo2-config.cmake"
++    "${CMAKE_CURRENT_BINARY_DIR}/lzo2-config-version.cmake"
++    DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/cmake/lzo2
++)
++
+ endif() # CMAKE_INSTALL_FULL_LIBDIR
+ 
+ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.maint.txt")
+diff --git a/cmake/lzo2-config.cmake b/cmake/lzo2-config.cmake
+new file mode 100644
+index 0000000..a5f7f67
+--- /dev/null
++++ b/cmake/lzo2-config.cmake
+@@ -0,0 +1 @@
++include(${CMAKE_CURRENT_LIST_DIR}/lzo2.cmake)
