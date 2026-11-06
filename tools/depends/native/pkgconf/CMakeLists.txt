@@ -56,7 +56,6 @@ ExternalProject_Add(pkgconf_build
                     --libdir=lib
                     --bindir=bin
                     --buildtype=release
-                    -Dtests=disabled
   BUILD_COMMAND     ${NINJA_EXECUTABLE} -C ./build
   INSTALL_COMMAND   ${NINJA_EXECUTABLE} -C ./build install
   BUILD_IN_SOURCE   1
