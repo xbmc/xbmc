@@ -6,11 +6,26 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
+#include "FileItemList.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "filesystem/BlurayDirectory.h"
+#include "filesystem/BlurayDiscCache.h"
+#include "filesystem/Directory.h"
 #include "filesystem/DiscDirectoryHelper.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "language/LanguageTag.h"
+#include "test/TestUtils.h"
+#include "utils/ItemProperties.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 #include <chrono>
+#include <map>
+#include <memory>
+#include <string>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -32,6 +47,12 @@ protected:
                               ClipMap& clips)
   {
     CBlurayDirectory::ProcessPlaylist(playlists, titleInfo, clips);
+  }
+
+  static bool GetPlaylists(const CURL& url, CFileItemList& items)
+  {
+    std::map<unsigned int, ClipInformation> clipCache;
+    return CBlurayDirectory::GetPlaylists(url, "", 0, ALL_PLAYLISTS, items, clipCache);
   }
 };
 
@@ -304,4 +325,43 @@ TEST_F(TestBlurayDirectory, ProcessPlaylist_CarriesThePlaylistThrough)
   ASSERT_TRUE(clips.contains(1u));
   EXPECT_EQ(clips[1u].duration, 1h);
   EXPECT_EQ(clips[1u].playlists, (std::vector<unsigned int>{801u}));
+}
+
+// A disc folder can hold other files named after a playlist, eg. a checksum of each file
+TEST_F(TestBlurayDirectory, GetPlaylists_IgnoresOtherFilesNamedAfterAPlaylist)
+{
+  const auto previousCache{CServiceBroker::GetBlurayDiscCache()};
+  CServiceBroker::RegisterBlurayDiscCache(std::make_shared<CBlurayDiscCache>());
+
+  const std::string disc{CSpecialProtocol::TranslatePath("special://temp/TestBlurayDirectory/")};
+  const std::string playlistFolder{URIUtils::AddFileToFolder(disc, "BDMV", "PLAYLIST")};
+  ASSERT_TRUE(CDirectory::Create(disc));
+  ASSERT_TRUE(CDirectory::Create(URIUtils::AddFileToFolder(disc, "BDMV")));
+  ASSERT_TRUE(CDirectory::Create(playlistFolder));
+  ASSERT_TRUE(
+      CFile::Copy(XBMC_REF_FILE_PATH("xbmc/utils/test/data/bluray/BDMV/PLAYLIST/00888.mpls"),
+                  URIUtils::AddFileToFolder(playlistFolder, "00888.mpls")));
+  {
+    CFile hash;
+    ASSERT_TRUE(
+        hash.OpenForWrite(URIUtils::AddFileToFolder(playlistFolder, "00888.mpls.hash"), true));
+    const std::string content{"d41d8cd98f00b204e9800998ecf8427e"};
+    ASSERT_EQ(hash.Write(content.data(), content.size()), static_cast<ssize_t>(content.size()));
+  }
+
+  CURL url;
+  url.SetProtocol("bluray");
+  url.SetHostName(disc);
+  CFileItemList items;
+  const bool found{GetPlaylists(url, items)};
+
+  CDirectory::RemoveRecursive(disc);
+  if (previousCache)
+    CServiceBroker::RegisterBlurayDiscCache(previousCache);
+  else
+    CServiceBroker::UnregisterBlurayDiscCache();
+
+  EXPECT_TRUE(found);
+  ASSERT_EQ(items.Size(), 1);
+  EXPECT_EQ(items[0]->GetProperty(KODI::ITEM::PROPERTY::BLURAY_PLAYLIST).asInteger(), 888);
 }
