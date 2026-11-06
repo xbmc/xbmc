@@ -70,6 +70,13 @@ bool COSScreenSaverWebOS::OnScreenSaverAboutToStart(LSHandle* sh, LSMessage* rep
 {
   CVariant request;
   const char* msg = HLunaServiceMessage(reply);
+
+  if (!msg)
+  {
+    CLog::LogF(LOGERROR, "Invalid response from Luna");
+    return false;
+  }
+
   CJSONVariantParser::Parse(msg, request);
 
   CLog::LogF(LOGDEBUG, "Responded {}", msg);
