@@ -100,6 +100,21 @@ public:
    */
   static bool MayBeAnImage(const std::string& mimeType);
 
+  /*! \brief retrieve a hash for the given image
+   Combines the size, ctime and mtime of the image file into a "unique" hash
+   \param url location of the image
+   \return a hash string for this image
+   */
+  static std::string GetImageHashFromStat(const std::string& url);
+
+  /*! \brief Format a hash from a file's modification time and size
+
+   \param modificationTime the file's modification time, as a unix timestamp
+   \param size the file's size in bytes
+   \return the hash, or empty if neither value was usable
+   */
+  static std::string FormatImageHash(int64_t modificationTime, int64_t size);
+
   std::string m_url;
   CTextureDetails m_oldDetails;
   CTextureDetails m_details;
@@ -116,21 +131,6 @@ private:
    there - if it has been deleted the image needs caching again.
    */
   bool HasCachedFile() const;
-
-  /*! \brief retrieve a hash for the given image
-   Combines the size, ctime and mtime of the image file into a "unique" hash
-   \param url location of the image
-   \return a hash string for this image
-   */
-  static std::string GetImageHashFromStat(const std::string& url);
-
-  /*! \brief Format a hash from a file's modification time and size
-
-   \param modificationTime the file's modification time, as a unix timestamp
-   \param size the file's size in bytes
-   \return the hash, or empty if neither value was usable
-   */
-  static std::string FormatImageHash(int64_t modificationTime, int64_t size);
 
   std::string m_knownHash;
 
