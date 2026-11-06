@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "imagefiles/ImageFileURL.h"
 #include "music/Artist.h"
@@ -41,6 +42,76 @@ namespace KODI::VIDEO
 
 namespace
 {
+//! The art of a version (playlist) of a bluray, or of an episode of several in one file, named for
+//! it as a scan looks for it (index-00800-poster.jpg, Show-S01E01-thumb.jpg), or for a disc folder
+//! rip by its playlist or episode alone (00800-poster.jpg, S01E01-thumb.jpg)
+std::string GetOwnLocalArt(const CFileItem& item, const std::string& artType)
+{
+  if (!item.HasVideoInfoTag() || item.SkipLocalArt())
+    return {};
+
+  // A library item's path is the database's, and its file is its dynamic path
+  CFileItem fileItem{item};
+  fileItem.SetPath(item.GetDynPath());
+
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  ART::AdditionalIdentifiers identifiers;
+  std::string ownName;
+  if (tag.m_type == MediaTypeEpisode && tag.m_iSeason > -1 && tag.m_iEpisode > -1)
+  {
+    identifiers = ART::AdditionalIdentifiers::SEASON_AND_EPISODE;
+    ownName = StringUtils::Format("S{:02}E{:02}", tag.m_iSeason, tag.m_iEpisode);
+  }
+  else if (const int playlist{URIUtils::GetBlurayPlaylistFromPath(item.GetDynPath())};
+           playlist > -1 && (tag.m_type == MediaTypeVideoVersion || tag.HasVideoVersions()))
+  {
+    fileItem.SetProperty("bluray_playlist", playlist);
+    identifiers = ART::AdditionalIdentifiers::PLAYLIST;
+    ownName = StringUtils::Format("{:05}", playlist);
+  }
+  else
+    return {};
+
+  bool useFolder{false};
+  const std::string base{ART::GetLocalArtBaseFilename(fileItem, useFolder, identifiers)};
+  if (useFolder)
+    return {};
+
+  // Matched as a scan matches them, the name by itself first so the prefixed one wins
+  ART::Artwork art;
+  if (URIUtils::HasExtension(base, ".bdmv|.ifo"))
+    ART::AddLocalItemArtwork(art, {artType},
+                             URIUtils::AddFileToFolder(URIUtils::GetDirectory(base),
+                                                       ownName + URIUtils::GetExtension(base)),
+                             false, true, false);
+  ART::AddLocalItemArtwork(art, {artType}, base, false, true, false);
+
+  const auto found{art.find(artType)};
+  return found != art.end() ? found->second : std::string{};
+}
+
+//! Whether the plain art beside a video is another's, so a scan takes none of it for the video: that
+//! of a disc an extra shares, such as a featurette on the movie's disc, or of a file or disc holding
+//! several episodes, as the export tells them apart
+bool IsPlainArtAnothers(const CFileItem& item)
+{
+  if (!item.HasVideoInfoTag())
+    return false;
+
+  const CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+  if (CUtil::IsDiscPlaylistExtra(item.GetDynPath(), &tag))
+    return true;
+  if (tag.m_type != MediaTypeEpisode || tag.m_iIdShow < 0)
+    return false;
+
+  CVideoDatabase db;
+  EpisodeFileMap episodes;
+  if (!db.Open() || !db.GetEpisodeMap(tag.m_iIdShow, episodes))
+    return false;
+  const std::string& file{item.GetDynPath()};
+  return episodes.count(URIUtils::IsBlurayPath(file) ? URIUtils::GetDiscFile(file) : file) > 1;
+}
+
 //-------------------------------------------------------------------------------------------------
 // CVideoItemArtworkHandler (Generic handler)
 //-------------------------------------------------------------------------------------------------
@@ -110,6 +181,12 @@ std::vector<std::string> CVideoItemArtworkHandler::GetRemoteArt() const
 
 std::string CVideoItemArtworkHandler::GetLocalArt() const
 {
+  if (std::string art{GetOwnLocalArt(*m_item, m_artType)}; !art.empty())
+    return art;
+
+  // As a scan, the plain art is offered only where it's the video's own
+  if (IsPlainArtAnothers(*m_item))
+    return {};
   return CVideoThumbLoader::GetLocalArt(*m_item, m_artType);
 }
 
@@ -490,6 +567,11 @@ std::vector<std::string> CVideoItemArtworkFanartHandler::GetRemoteArt() const
 
 std::string CVideoItemArtworkFanartHandler::GetLocalArt() const
 {
+  if (std::string art{GetOwnLocalArt(*m_item, "fanart")}; !art.empty())
+    return art;
+
+  if (IsPlainArtAnothers(*m_item))
+    return {};
   return ART::GetLocalFanart(*m_item);
 }
 

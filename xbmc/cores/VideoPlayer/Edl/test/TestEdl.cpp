@@ -6,18 +6,28 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "DatabaseManager.h"
 #include "Edl/EdlParsers/MultipleEpisodeEdlParser.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Edl.h"
+#include "filesystem/Directory.h"
+#include "platform/Filesystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
+#include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
+#include <fstream>
+#include <set>
+#include <string>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -944,4 +954,288 @@ TEST_F(TestParseEditsForEpisode, EditStraddlingBothBoundariesIsClamped)
     }
   }
   EXPECT_TRUE(clampedFound) << "Expected wide commbreak clamped to episode window [500s - 600s]";
+}
+
+namespace
+{
+struct DiscEdlTest
+{
+  //! The disc, from the test's folder
+  std::string disc;
+  //! The version (playlist) played, or none for the disc itself
+  int playlist;
+  //! The EDL files, from the test's folder
+  std::vector<std::string> edlFiles;
+  //! The one of them read, or none
+  std::string read;
+  //! The season and episode of the episode played, if it is one
+  int season{-1};
+  int episode{-1};
+};
+
+void PrintTo(const DiscEdlTest& test, std::ostream* os)
+{
+  *os << test.disc << " playlist " << test.playlist << " episode " << test.season << "x"
+      << test.episode << " reads '" << test.read << "'";
+}
+
+//! The EDL of a disc, among files of a test's own folder. The nth of the files cuts at n seconds.
+class TestDiscEdl : public ::testing::TestWithParam<DiscEdlTest>
+{
+protected:
+  void SetUp() override
+  {
+    std::error_code ec;
+    m_root = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
+    ASSERT_FALSE(ec);
+  }
+
+  void TearDown() override { XFILE::CDirectory::RemoveRecursive(m_root); }
+
+  std::string File(const std::string& name, const std::string& content = {}) const
+  {
+    const std::string path{URIUtils::AddFileToFolder(m_root, name)};
+    std::string folder{URIUtils::GetDirectory(path)};
+    // The folders holding it, from the outermost
+    std::vector<std::string> folders;
+    while (URIUtils::PathHasParent(folder, m_root) && !XFILE::CDirectory::Exists(folder))
+    {
+      folders.push_back(folder);
+      folder = URIUtils::GetParentPath(folder);
+    }
+    for (auto it = folders.rbegin(); it != folders.rend(); ++it)
+      EXPECT_TRUE(XFILE::CDirectory::Create(*it));
+    std::ofstream of(path);
+    of << content;
+    return path;
+  }
+
+  std::string m_root;
+};
+} // namespace
+
+TEST_P(TestDiscEdl, ReadsTheDiscsEdl)
+{
+  const std::string disc{File(GetParam().disc)};
+  for (size_t i = 0; i < GetParam().edlFiles.size(); ++i)
+    File(GetParam().edlFiles[i], std::to_string(i + 1) + " " + std::to_string(i + 2) + " 0\n");
+
+  CFileItem item{
+      GetParam().playlist > -1 ? URIUtils::GetBlurayPlaylistPath(disc, GetParam().playlist) : disc,
+      false};
+  item.GetVideoInfoTag()->m_iSeason = GetParam().season;
+  item.GetVideoInfoTag()->m_iEpisode = GetParam().episode;
+  CEdl edl;
+  const bool found{edl.ReadEditDecisionLists(item, 0, 0ms)};
+
+  if (GetParam().read.empty())
+  {
+    EXPECT_FALSE(found);
+    return;
+  }
+  ASSERT_TRUE(found);
+  const auto read{std::ranges::find(GetParam().edlFiles, GetParam().read)};
+  ASSERT_NE(read, GetParam().edlFiles.end());
+  ASSERT_EQ(1u, edl.GetCutMarkers().size());
+  EXPECT_EQ(std::chrono::seconds(read - GetParam().edlFiles.begin() + 1),
+            edl.GetCutMarkers().at(0));
+}
+
+// clang-format off
+const DiscEdlTest discEdlTests[] = {
+    // A version of a folder rip has its own beside BDMV, named as its art is, or the movie's, or as
+    // up to v21, the disc's inside BDMV
+    {"M3GAN/BDMV/index.bdmv", 800,
+     {"M3GAN/index-00800.edl", "M3GAN/00800.edl", "M3GAN/M3GAN.edl", "M3GAN/BDMV/index.edl"},
+     "M3GAN/index-00800.edl"},
+    {"M3GAN/BDMV/index.bdmv", 800,
+     {"M3GAN/00800.edl", "M3GAN/M3GAN.edl", "M3GAN/BDMV/index.edl"}, "M3GAN/00800.edl"},
+    {"M3GAN/BDMV/index.bdmv", 800, {"M3GAN/M3GAN.edl", "M3GAN/BDMV/index.edl"}, "M3GAN/M3GAN.edl"},
+    {"M3GAN/BDMV/index.bdmv", 800, {"M3GAN/BDMV/index.edl"}, "M3GAN/BDMV/index.edl"},
+    // ..but not another version's, nor in the playlist's folder
+    {"M3GAN/BDMV/index.bdmv", 800, {"M3GAN/index-00801.edl", "M3GAN/00801.edl"}, ""},
+    {"M3GAN/BDMV/index.bdmv", 800, {"M3GAN/BDMV/PLAYLIST/00800.edl"}, ""},
+    // The disc itself has the movie's, or as up to v21, the disc's inside BDMV
+    {"M3GAN/BDMV/index.bdmv", -1, {"M3GAN/M3GAN.edl", "M3GAN/BDMV/index.edl"}, "M3GAN/M3GAN.edl"},
+    {"M3GAN/BDMV/index.bdmv", -1, {"M3GAN/BDMV/index.edl"}, "M3GAN/BDMV/index.edl"},
+    // A disc in a folder of its own within the movie's has them beside it, named after the movie
+    {"M3GAN/disc 1/BDMV/index.bdmv", 800,
+     {"M3GAN/disc 1/index-00800.edl", "M3GAN/disc 1/M3GAN.edl"}, "M3GAN/disc 1/index-00800.edl"},
+    {"M3GAN/disc 1/BDMV/index.bdmv", 800, {"M3GAN/disc 1/M3GAN.edl"}, "M3GAN/disc 1/M3GAN.edl"},
+    {"M3GAN/disc 1/BDMV/index.bdmv", 800, {"M3GAN/disc 1/disc 1.edl", "M3GAN/M3GAN.edl"}, ""},
+    // A version of an ISO has its own named as its art is, or the ISO's, but not by its playlist
+    // alone, as several ISOs can share a folder
+    {"M3GAN/M3GAN.iso", 800, {"M3GAN/M3GAN-00800.edl", "M3GAN/M3GAN.edl"}, "M3GAN/M3GAN-00800.edl"},
+    {"M3GAN/M3GAN.iso", 800, {"M3GAN/M3GAN.edl"}, "M3GAN/M3GAN.edl"},
+    {"M3GAN/M3GAN.iso", 800, {"M3GAN/00800.edl", "M3GAN/M3GAN-00801.edl"}, ""},
+    {"M3GAN/disc 1/M3GAN.iso", 800, {"M3GAN/disc 1/M3GAN-00800.edl"}, "M3GAN/disc 1/M3GAN-00800.edl"},
+    // A dvd folder rip has the movie's beside VIDEO_TS, or as up to v21, the disc's inside it
+    {"M3GAN/VIDEO_TS/VIDEO_TS.IFO", -1, {"M3GAN/M3GAN.edl", "M3GAN/VIDEO_TS/VIDEO_TS.edl"},
+     "M3GAN/M3GAN.edl"},
+    {"M3GAN/VIDEO_TS/VIDEO_TS.IFO", -1, {"M3GAN/VIDEO_TS/VIDEO_TS.edl"},
+     "M3GAN/VIDEO_TS/VIDEO_TS.edl"},
+    {"M3GAN/disc 1/VIDEO_TS/VIDEO_TS.IFO", -1, {"M3GAN/disc 1/M3GAN.edl"}, "M3GAN/disc 1/M3GAN.edl"},
+    // Several ISOs can share a folder: each has only what is named after it
+    {"Movies/A.iso", 800, {"Movies/A-00800.edl", "Movies/A.edl", "Movies/B.edl", "Movies/00800.edl"},
+     "Movies/A-00800.edl"},
+    {"Movies/A.iso", 800, {"Movies/B-00800.edl", "Movies/B.edl", "Movies/00800.edl"}, ""},
+    {"Movies/A.iso", -1, {"Movies/A.edl", "Movies/B.edl"}, "Movies/A.edl"},
+
+    // As up to v21, inside a disc in a folder of its own within the movie's
+    {"M3GAN/disc 1/BDMV/index.bdmv", 800, {"M3GAN/disc 1/BDMV/index.edl"},
+     "M3GAN/disc 1/BDMV/index.edl"},
+    {"M3GAN/disc 1/VIDEO_TS/VIDEO_TS.IFO", -1, {"M3GAN/disc 1/VIDEO_TS/VIDEO_TS.edl"},
+     "M3GAN/disc 1/VIDEO_TS/VIDEO_TS.edl"},
+    // A video file's is named after it, as always
+    {"Film/Film.mkv", -1, {"Film/Film.edl", "Film/movie.edl"}, "Film/Film.edl"},
+    // An episode has its own named as its art is, before its playlist's and the disc's, but not
+    // another episode's
+    {"Show/S02/BDMV/index.bdmv", 1001,
+     {"Show/S02/index-S02E01.edl", "Show/S02/S02E01.edl", "Show/S02/index-01001.edl",
+      "Show/S02/S02.edl", "Show/S02/BDMV/index.edl"},
+     "Show/S02/index-S02E01.edl", 2, 1},
+    {"Show/S02/BDMV/index.bdmv", 1001,
+     {"Show/S02/S02E01.edl", "Show/S02/index-01001.edl", "Show/S02/S02.edl"},
+     "Show/S02/S02E01.edl", 2, 1},
+    {"Show/S02/BDMV/index.bdmv", 1001,
+     {"Show/S02/index-S02E02.edl", "Show/S02/S02E02.edl", "Show/S02/S02.edl"},
+     "Show/S02/S02.edl", 2, 1},
+    {"Show/S01/VIDEO_TS/VIDEO_TS.IFO", -1,
+     {"Show/S01/VIDEO_TS-S01E03.edl", "Show/S01/S01E03.edl", "Show/S01/S01.edl"},
+     "Show/S01/VIDEO_TS-S01E03.edl", 1, 3},
+    {"Show/S01/VIDEO_TS/VIDEO_TS.IFO", -1, {"Show/S01/VIDEO_TS-S01E04.edl", "Show/S01/S01E04.edl"},
+     "", 1, 3},
+    // ..of an ISO or video file, named after the file, not by the episode alone
+    {"Show/Show.S01E05E06.iso", 800,
+     {"Show/Show.S01E05E06-S01E05.edl", "Show/Show.S01E05E06.edl"},
+     "Show/Show.S01E05E06-S01E05.edl", 1, 5},
+    {"Show/Show.S01E05E06.iso", 800, {"Show/S01E05.edl", "Show/Show.S01E05E06-S01E06.edl"}, "",
+     1, 5},
+    {"Show/Show.S01E07E08.mkv", -1,
+     {"Show/Show.S01E07E08-S01E07.edl", "Show/Show.S01E07E08.edl"},
+     "Show/Show.S01E07E08-S01E07.edl", 1, 7},
+    {"Show/Show.S01E07E08.mkv", -1, {"Show/Show.S01E07E08-S01E08.edl"}, "", 1, 7},
+    // A name with dots keeps them all
+    {"The.Matrix.1999/BDMV/index.bdmv", 800, {"The.Matrix.1999/The.Matrix.1999.edl"},
+     "The.Matrix.1999/The.Matrix.1999.edl"},
+};
+// clang-format on
+
+INSTANTIATE_TEST_SUITE_P(TestEdl, TestDiscEdl, testing::ValuesIn(discEdlTests));
+
+namespace
+{
+//! The EDL of a disc's playlist, played as an extra or a version of the movie, among files of a
+//! test's own folder
+class TestDiscExtraEdl : public ::testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    // The library tells an extra stored as a disc's playlist from one that is a whole disc
+    if (!CServiceBroker::GetDatabaseManager().CanOpen("MyVideos"))
+    {
+      ASSERT_TRUE(CServiceBroker::GetDatabaseManager().Initialize());
+    }
+    std::error_code ec;
+    m_root = KODI::PLATFORM::FILESYSTEM::create_temp_directory(ec);
+    ASSERT_FALSE(ec);
+    m_folder = URIUtils::AddFileToFolder(m_root, "M3GAN");
+    ASSERT_TRUE(XFILE::CDirectory::Create(m_folder));
+    ASSERT_TRUE(XFILE::CDirectory::Create(URIUtils::AddFileToFolder(m_folder, "BDMV")));
+    File("BDMV/index.bdmv");
+    File("M3GAN.iso");
+  }
+
+  void TearDown() override
+  {
+    CVideoDatabase db;
+    if (!m_storedFiles.empty() && db.Open())
+    {
+      for (const int idFile : m_storedFiles)
+        db.DeleteFile(idFile);
+    }
+    XFILE::CDirectory::RemoveRecursive(m_root);
+  }
+
+  //! A file of the movie's folder, an EDL cutting at the given second if it has one
+  void File(const std::string& name, int cut = 0) const
+  {
+    std::ofstream of(URIUtils::AddFileToFolder(m_folder, name));
+    if (cut > 0)
+      of << cut << " " << cut + 1 << " 0\n";
+  }
+
+  //! The second the EDL read for a playlist of a disc cuts at, or 0 if none is read. An extra is
+  //! stored in the library as the playlist, or as the whole disc.
+  int CutOf(const std::string& disc, int playlist, VideoAssetType type, bool wholeDisc = false)
+  {
+    const std::string discPath{URIUtils::AddFileToFolder(m_folder, disc)};
+    CFileItem item{URIUtils::GetBlurayPlaylistPath(discPath, playlist), false};
+    CVideoInfoTag& tag{*item.GetVideoInfoTag()};
+    tag.GetAssetInfo().SetType(type);
+    if (type == VideoAssetType::EXTRA)
+    {
+      CVideoDatabase db;
+      EXPECT_TRUE(db.Open());
+      tag.m_iFileId = db.AddFile(wholeDisc ? discPath : item.GetDynPath());
+      m_storedFiles.insert(tag.m_iFileId);
+    }
+    CEdl edl;
+    if (!edl.ReadEditDecisionLists(item, 0, 0ms) || edl.GetCutMarkers().size() != 1)
+      return 0;
+    return static_cast<int>(
+        std::chrono::duration_cast<std::chrono::seconds>(edl.GetCutMarkers().at(0)).count());
+  }
+
+  std::string m_root;
+  std::string m_folder;
+  //! The files of the extras stored in the library
+  std::set<int> m_storedFiles;
+};
+} // namespace
+
+// An extra of the movie on its disc, such as a featurette, which the library stores as one of the
+// disc's playlists, has only its own EDL, named for its playlist, as the disc's is the movie's. A
+// version of the movie has the disc's.
+TEST_F(TestDiscExtraEdl, AFolderRipsExtraHasOnlyItsOwnEdl)
+{
+  File("M3GAN.edl", 1);
+  File("BDMV/index.edl", 2);
+
+  EXPECT_EQ(0, CutOf("BDMV/index.bdmv", 805, VideoAssetType::EXTRA));
+  EXPECT_EQ(1, CutOf("BDMV/index.bdmv", 801, VideoAssetType::VERSION));
+
+  File("00805.edl", 3);
+  EXPECT_EQ(3, CutOf("BDMV/index.bdmv", 805, VideoAssetType::EXTRA));
+  File("index-00805.edl", 4);
+  EXPECT_EQ(4, CutOf("BDMV/index.bdmv", 805, VideoAssetType::EXTRA));
+}
+
+TEST_F(TestDiscExtraEdl, AnIsosExtraHasOnlyItsOwnEdl)
+{
+  File("M3GAN.edl", 1);
+
+  EXPECT_EQ(0, CutOf("M3GAN.iso", 805, VideoAssetType::EXTRA));
+  EXPECT_EQ(1, CutOf("M3GAN.iso", 801, VideoAssetType::VERSION));
+
+  File("M3GAN-00805.edl", 2);
+  EXPECT_EQ(2, CutOf("M3GAN.iso", 805, VideoAssetType::EXTRA));
+}
+
+// An extra that is a whole disc of its own, such as Bonus.iso in an extras folder, plays one of the
+// disc's playlists, but has the disc's EDL, as it is the disc's only video
+TEST_F(TestDiscExtraEdl, AnExtraThatIsAWholeDiscHasItsDiscsEdl)
+{
+  File("Bonus.iso");
+  File("Bonus.edl", 1);
+  EXPECT_EQ(1, CutOf("Bonus.iso", 1, VideoAssetType::EXTRA, true));
+  File("Bonus-00001.edl", 2);
+  EXPECT_EQ(2, CutOf("Bonus.iso", 1, VideoAssetType::EXTRA, true));
+
+  // ..as does a folder rip, named after the folder holding BDMV, or as up to v21 inside BDMV
+  File("BDMV/index.edl", 3);
+  EXPECT_EQ(3, CutOf("BDMV/index.bdmv", 1, VideoAssetType::EXTRA, true));
+  File("M3GAN.edl", 4);
+  EXPECT_EQ(4, CutOf("BDMV/index.bdmv", 1, VideoAssetType::EXTRA, true));
 }

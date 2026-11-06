@@ -92,6 +92,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
@@ -101,6 +102,7 @@
 
 #include <algorithm>
 #include <array>
+#include <charconv>
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>
@@ -2057,6 +2059,9 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     if (std::ranges::any_of(item_exts, [&](std::string_view ext)
                             { return StringUtils::EqualsNoCase(extension, ext); }))
     {
+      // skip duplicates, as an archive is scanned once for each name matched
+      if (std::ranges::find(associatedFiles, path) != associatedFiles.end())
+        continue;
       CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__, CURL::GetRedacted(path));
       associatedFiles.push_back(path);
       ++nItemsAdded;
@@ -2066,7 +2071,143 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
   return nItemsAdded;
 }
 
-void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<std::string>& vecSubtitles)
+namespace
+{
+//! An episode's own name (S01E01), if the info is an episode's
+std::string GetEpisodeName(const CVideoInfoTag* tag)
+{
+  if (!tag || tag->m_iSeason < 0 || tag->m_iEpisode < 0)
+    return {};
+  return StringUtils::Format("S{:02}E{:02}", tag->m_iSeason, tag->m_iEpisode);
+}
+
+//! The season and episode a name starts with (S01E02), if it does
+std::optional<std::pair<int, int>> GetEpisodeOfName(std::string_view name)
+{
+  int season{-1};
+  int episode{-1};
+  const char* const end{name.data() + name.size()};
+  if (name.empty() || (name[0] != 'S' && name[0] != 's'))
+    return {};
+  const auto [seasonEnd, seasonError] = std::from_chars(name.data() + 1, end, season);
+  if (seasonError != std::errc{} || seasonEnd == end || (*seasonEnd != 'E' && *seasonEnd != 'e'))
+    return {};
+  if (std::from_chars(seasonEnd + 1, end, episode).ec != std::errc{})
+    return {};
+  return std::pair{season, episode};
+}
+
+//! The name of the disc file a version's or episode's files are named after (index, VIDEO_TS,
+//! M3GAN for M3GAN.iso), or of the video file
+std::string GetDiscName(const std::string& videoPath)
+{
+  std::string disc{URIUtils::GetFileName(
+      URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath) : videoPath)};
+  URIUtils::RemoveExtension(disc);
+  return disc;
+}
+
+//! Whether a file found for a disc's extra is named for its playlist, as its art is (index-00805,
+//! 00805, M3GAN-00805), or is in an archive so named
+bool IsDiscExtrasOwnFile(const std::string& file,
+                         const std::string& videoName,
+                         const std::string& videoPath,
+                         const CVideoInfoTag* tag)
+{
+  if (URIUtils::IsInArchive(file) &&
+      IsDiscExtrasOwnFile(CURL(file).GetHostName(), videoName, videoPath, tag))
+    return true;
+
+  std::vector<std::string> ownNames{CUtil::GetVersionFileNames(videoPath, tag)};
+  ownNames.emplace_back(
+      StringUtils::Format("{}-{:05}", videoName, URIUtils::GetBlurayPlaylistFromPath(videoPath)));
+  const std::string name{URIUtils::GetFileName(file)};
+  return std::ranges::any_of(ownNames, [&name](const std::string& own)
+                             { return StringUtils::StartsWithNoCase(name, own); });
+}
+} // namespace
+
+std::vector<std::string> CUtil::GetVersionFileNames(const std::string& videoPath,
+                                                    const CVideoInfoTag* tag /* = nullptr */)
+{
+  const int playlist{URIUtils::GetBlurayPlaylistFromPath(videoPath)};
+  const std::string episode{GetEpisodeName(tag)};
+  if (playlist < 0 && episode.empty())
+    return {};
+
+  const std::string disc{GetDiscName(videoPath)};
+  // Several ISOs or video files can share a folder, so only a folder rip's are named by the
+  // episode or playlist alone too
+  const bool discFolder{URIUtils::IsOpticalMediaFile(
+      URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath) : videoPath)};
+  std::vector<std::string> names;
+  for (const std::string& own :
+       {episode, playlist > -1 ? StringUtils::Format("{:05}", playlist) : std::string{}})
+  {
+    if (own.empty())
+      continue;
+    names.emplace_back(disc + "-" + own);
+    if (discFolder)
+      names.emplace_back(own);
+  }
+  return names;
+}
+
+bool CUtil::IsAnotherVersionsFile(const std::string& file,
+                                  const std::string& videoName,
+                                  const std::string& videoPath,
+                                  const CVideoInfoTag* tag /* = nullptr */)
+{
+  const int playlist{URIUtils::GetBlurayPlaylistFromPath(videoPath)};
+  const bool episode{!GetEpisodeName(tag).empty()};
+  if (playlist < 0 && !episode)
+    return false;
+
+  // What is in another version's or episode's archive is its, whatever its own name
+  if (URIUtils::IsInArchive(file) &&
+      IsAnotherVersionsFile(CURL(file).GetHostName(), videoName, videoPath, tag))
+    return true;
+
+  const std::string version{playlist > -1 ? StringUtils::Format("{:05}", playlist) : ""};
+  const std::string name{URIUtils::GetFileName(file)};
+  for (const std::string& prefix : {videoName + "-", GetDiscName(videoPath) + "-", std::string{}})
+  {
+    if (!StringUtils::StartsWithNoCase(name, prefix))
+      continue;
+    // A file named after the video is the video's own, not a bare playlist's (10000 BC.eng.srt),
+    // unless the video's name is only the start of an episode's (S02 of S02E02)
+    if (prefix.empty() && StringUtils::StartsWithNoCase(name, videoName) &&
+        (!episode || GetEpisodeOfName(name) == GetEpisodeOfName(videoName)))
+      return false;
+    // A playlist number is five digits, as its file name is
+    const std::string_view rest{std::string_view{name}.substr(prefix.size())};
+    if (!version.empty() && rest.size() > 5 &&
+        std::all_of(rest.begin(), rest.begin() + 5, StringUtils::isasciidigit) &&
+        !StringUtils::isasciidigit(rest[5]))
+      return !rest.starts_with(version);
+    if (const auto other{GetEpisodeOfName(rest)}; episode && other)
+      return *other != std::pair{tag->m_iSeason, tag->m_iEpisode};
+  }
+  return false;
+}
+
+bool CUtil::IsDiscPlaylistExtra(const std::string& videoPath, const CVideoInfoTag* tag)
+{
+  if (!tag || tag->GetAssetInfo().GetType() != VideoAssetType::EXTRA || tag->m_iFileId <= 0 ||
+      URIUtils::GetBlurayPlaylistFromPath(videoPath) < 0)
+    return false;
+
+  // A whole disc played from one of its playlists has the playlist's path in its tag, but the
+  // library still holds the disc under the same file id
+  CVideoDatabase db;
+  CVideoInfoTag stored;
+  return db.Open() && db.GetFileInfo("", stored, tag->m_iFileId) &&
+         URIUtils::IsBlurayPath(stored.m_strFileNameAndPath);
+}
+
+void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
+                                     std::vector<std::string>& vecSubtitles,
+                                     const CVideoInfoTag* tag /* = nullptr */)
 {
   auto start = std::chrono::steady_clock::now();
 
@@ -2098,6 +2239,13 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
   const std::string subtitleExtensions = CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
   GetItemsToScan(strBasePath, subtitleExtensions, common_sub_dirs, items);
+
+  // A version (playlist) of a bluray has subtitles of its own beside the disc, and only there, as
+  // another folder could be shared by many discs
+  const std::vector<std::string> versionNames{GetVersionFileNames(strMovie, tag)};
+  CFileItemList discItems;
+  if (!versionNames.empty())
+    discItems.Append(items);
 
   const std::string customPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH);
 
@@ -2142,6 +2290,16 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   std::erase_if(subtitleExts, [&](const std::string& ext) { return archiveSet.contains(ext); });
 
   ScanPathsForAssociatedItems(strSubtitle, items, subtitleExts, vecSubtitles);
+  for (const std::string& name : versionNames)
+    ScanPathsForAssociatedItems(name, discItems, subtitleExts, vecSubtitles);
+
+  std::erase_if(vecSubtitles, [&strSubtitle, &strMovie, tag](const std::string& subtitle)
+                { return IsAnotherVersionsFile(subtitle, strSubtitle, strMovie, tag); });
+
+  // An extra on a disc it shares has only those named for it: the others there are another video's
+  if (IsDiscPlaylistExtra(strMovie, tag))
+    std::erase_if(vecSubtitles, [&strSubtitle, &strMovie, tag](const std::string& subtitle)
+                  { return !IsDiscExtrasOwnFile(subtitle, strSubtitle, strMovie, tag); });
 
   size_t iSize = vecSubtitles.size();
   for (size_t i = 0; i < iSize; i++)
@@ -2220,7 +2378,10 @@ std::optional<KODI::UTILS::CLanguageTag> ExternalStreamLanguageFromToken(const s
 }
 } // namespace
 
-ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string& videoPath, const std::string& associatedFile)
+ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(
+    const std::string& videoPath,
+    const std::string& associatedFile,
+    const CVideoInfoTag* tag /* = nullptr */)
 {
   ExternalStreamInfo info;
 
@@ -2229,6 +2390,16 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
 
   std::string toParse = URIUtils::GetFileName(associatedFile);
   URIUtils::RemoveExtension(toParse);
+
+  // A version's or episode's own is named as its art is (index-00800, M3GAN-00800,
+  // index-S01E01, S01E01), which is left out as the video's name is
+  for (const std::string& own : GetVersionFileNames(videoPath, tag))
+  {
+    if (StringUtils::StartsWithNoCase(toParse, own) &&
+        (own.size() > videoBaseName.size() ||
+         !StringUtils::StartsWithNoCase(toParse, videoBaseName)))
+      videoBaseName = own;
+  }
 
   // we check left part - if it's same as video base name - strip it
   if (StringUtils::StartsWithNoCase(toParse, videoBaseName))
@@ -2403,12 +2574,17 @@ std::string CUtil::GetVobSubIdxFromSub(const std::string& vobSub)
   return std::string();
 }
 
-void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::string>& vecAudio)
+void CUtil::ScanForExternalAudio(const std::string& videoPath,
+                                 std::vector<std::string>& vecAudio,
+                                 const CVideoInfoTag* tag /* = nullptr */)
 {
   CFileItem item(videoPath, false);
   if (NETWORK::IsInternetStream(item) || PLAYLIST::IsPlayList(item) || item.IsLiveTV() ||
       item.IsPVR() || !VIDEO::IsVideo(item))
     return;
+
+  // What the caller passes in, such as the video itself ahead of its audio, is kept as it is
+  const auto passedIn{static_cast<std::ptrdiff_t>(vecAudio.size())};
 
   std::string strBasePath;
   std::string strAudio;
@@ -2423,17 +2599,38 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
 
   CVideoDatabase database;
   database.Open();
-  bool useAllExternalAudio = database.GetUseAllExternalAudioForVideo(videoPath);
+  // The setting is a source's, found by the start of the video's path, which for a disc is its file
+  bool useAllExternalAudio = database.GetUseAllExternalAudioForVideo(
+      URIUtils::IsBlurayPath(videoPath) ? URIUtils::GetDiscFile(videoPath) : videoPath);
 
   if (useAllExternalAudio)
   {
     for (const auto& audioItem : items.GetList())
     {
-      vecAudio.push_back(audioItem.get()->GetPath());
+      // The folders listed with the audio, such as a disc's BDMV, are not tracks
+      if (!audioItem->IsFolder())
+        vecAudio.push_back(audioItem.get()->GetPath());
     }
   }
   else
+  {
     ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
+    // A version (playlist) of a bluray folder rip has audio of its own beside BDMV
+    for (const std::string& name : GetVersionFileNames(videoPath, tag))
+      ScanPathsForAssociatedItems(name, items, exts, vecAudio);
+  }
+
+  // Another version's is left out. An extra on a disc it shares has only that named for it, even
+  // where all the audio beside a video is used: the rest there is another video's.
+  const bool discExtra{IsDiscPlaylistExtra(videoPath, tag)};
+  vecAudio.erase(std::remove_if(vecAudio.begin() + passedIn, vecAudio.end(),
+                                [&strAudio, &videoPath, tag, discExtra](const std::string& audio)
+                                {
+                                  return IsAnotherVersionsFile(audio, strAudio, videoPath, tag) ||
+                                         (discExtra &&
+                                          !IsDiscExtrasOwnFile(audio, strAudio, videoPath, tag));
+                                }),
+                 vecAudio.end());
 }
 
 bool CUtil::CanBindPrivileged()
