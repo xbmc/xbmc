@@ -744,6 +744,39 @@ float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text,
   return width;
 }
 
+size_t CGUIFontTTF::GetFittingLengthInternal(std::span<const character_t> text, float maxPixelWidth)
+{
+  const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
+  size_t length = 0;
+  float width = 0;
+  for (auto it = glyphs.begin(); it != glyphs.end(); ++it)
+  {
+    const character_t ch = text[it->m_glyphInfo.cluster];
+    const Character* c = GetCharacter(ch, it->m_glyphInfo.codepoint);
+    float advance = 0;
+    float renderWidth = 0;
+    if (c)
+    {
+      advance =
+          (ch & 0xffff) == static_cast<character_t>('\t') ? GetTabSpaceLength() : c->m_advance;
+      renderWidth = std::max(c->m_right - c->m_left + c->m_offsetX, c->m_advance);
+    }
+
+    // Like GetTextWidthInternal(), the last glyph of the prefix counts with its render width
+    const auto next = std::next(it);
+    const size_t clusterEnd = next == glyphs.end() ? text.size() : next->m_glyphInfo.cluster;
+    if (clusterEnd != it->m_glyphInfo.cluster)
+    {
+      if (width + renderWidth > maxPixelWidth)
+        break;
+      length = clusterEnd;
+    }
+    width += advance;
+  }
+
+  return length;
+}
+
 float CGUIFontTTF::GetCharWidthInternal(character_t ch)
 {
   Character* c = GetCharacter(ch, 0);

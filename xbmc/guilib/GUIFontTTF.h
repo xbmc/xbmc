@@ -151,6 +151,9 @@ protected:
 
   float GetTextWidthInternal(std::span<const character_t> text);
   float GetTextWidthInternal(std::span<const character_t> text, const std::vector<Glyph>& glyph);
+  // Returns how many characters from the start of text fit into maxPixelWidth, without splitting
+  // a cluster
+  size_t GetFittingLengthInternal(std::span<const character_t> text, float maxPixelWidth);
   float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetTextBaseLine() const { return static_cast<float>(m_cellBaseLine); }
