@@ -200,6 +200,33 @@ private:
 
   bool IsOpticalDrivePresent();
 
+#ifdef HAS_OPTICAL_DRIVE
+  /*! \brief Stop playback from the disc in a drive and unmount it, before the tray opens
+   * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
+   */
+  void ReleaseDisc(const std::string& translatedDevicePath);
+
+  /*! \brief Whether the player is playing something from the disc in a drive
+   * Only for the application thread, which owns the current item.
+   * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
+   */
+  bool IsPlayingFromDrive(const std::string& translatedDevicePath);
+
+  /*! \brief Whether a path is on the disc in a drive
+   * \param path A playing item's path or dynamic path
+   * \param roots The drive's path, as TranslateDevicePath() returns it, then the disc's mount
+   * points
+   */
+  bool IsPathOnDrive(std::string path, const std::vector<std::string>& roots);
+
+#ifndef TARGET_WINDOWS
+  /*! \brief Where the OS has mounted the disc in a drive
+   * \param translatedDevicePath The optical drive path, as TranslateDevicePath() returns it
+   */
+  std::vector<std::string> GetDiscMountPoints(const std::string& translatedDevicePath);
+#endif
+#endif
+
   struct DiscInfoCacheEntry
   {
     /*! What the disc reported about itself, exactly as GetDiscInfo() returned it */
