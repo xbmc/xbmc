@@ -344,15 +344,15 @@ void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
   {
     if (m_iInfoCode)
     {
-      int value;
-      if (CServiceBroker::GetGUI()->GetInfoManager().GetInt(value, m_iInfoCode, m_parentID, item))
-        m_fPercent = std::max(0.0f, std::min(static_cast<float>(value), 100.0f));
+      float value;
+      if (CServiceBroker::GetGUI()->GetInfoManager().GetFloat(value, m_iInfoCode, m_parentID, item))
+        m_fPercent = std::max(0.0f, std::min(value, 100.0f));
     }
     if (m_iInfoCode2)
     {
-      int value;
-      if (CServiceBroker::GetGUI()->GetInfoManager().GetInt(value, m_iInfoCode2, m_parentID, item))
-        m_fPercent2 = std::max(0.0f, std::min(static_cast<float>(value), 100.0f));
+      float value;
+      if (CServiceBroker::GetGUI()->GetInfoManager().GetFloat(value, m_iInfoCode2, m_parentID, item))
+        m_fPercent2 = std::max(0.0f, std::min(value, 100.0f));
     }
   }
 }

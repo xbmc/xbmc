@@ -76,7 +76,7 @@ bool CStaticListProvider::Update(bool forceRefresh)
   {
     m_updateTime = CTimeUtils::GetFrameTime();
   }
-  else if (CTimeUtils::GetFrameTime() - m_updateTime > 1000)
+  else if (CTimeUtils::GetFrameTime() - m_updateTime > 10)
   {
     m_updateTime = CTimeUtils::GetFrameTime();
     for (const auto& i : m_items)

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="videowindow">
+			<description>Video background</description>
+		</control>
+		<control type="group">
+			<description>Ventura logo area</description>
+			<top>200</top>
+			<bottom>200</bottom>
+			<left>200</left>
+			<right>200</right>
+			<control type="image">
+				<description>Ventura logo</description>
+				<texture>Ventura_Ambigram.png</texture>
+				<aspectratio>keep</aspectratio>
+				<animation effect="rotate" start="0" end="360" center="auto" time="10000" loop="true" condition="true">Conditional</animation>
+			</control>
+		</control>
+	</controls>
+</window>
