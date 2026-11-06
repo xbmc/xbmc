@@ -493,8 +493,9 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
   {
     // local trailers should always override non-local, so check
     // for a local one if the registered trailer is online
-    if (m_movieItem->GetVideoInfoTag()->m_strTrailer.empty() ||
-        URIUtils::IsInternetStream(m_movieItem->GetVideoInfoTag()->m_strTrailer))
+    if (!VIDEO::IsVideoDb(*m_movieItem) &&
+        (m_movieItem->GetVideoInfoTag()->m_strTrailer.empty() ||
+         URIUtils::IsInternetStream(m_movieItem->GetVideoInfoTag()->m_strTrailer)))
     {
       std::string localTrailer = VIDEO::UTILS::FindTrailer(*m_movieItem);
       if (!localTrailer.empty())
