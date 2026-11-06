@@ -8,8 +8,11 @@
 
 #include "DatabaseManager.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/Artwork.h"
@@ -95,4 +98,19 @@ TEST_F(TestVideoDatabaseFile, VersionPathFindsItsOwnFile)
   const std::string path{"videodb://movies/titles/" + std::to_string(m_idMovie) + "/-2/" +
                          std::to_string(idFile) + "?assetType=-2"};
   EXPECT_TRUE(XFILE::CFile::Exists(path, false));
+}
+
+// A library listing is not kept in the directory cache
+TEST_F(TestVideoDatabaseFile, LibraryListingIsNotCached)
+{
+  ASSERT_GT(AddMovieWithVersion(), 0);
+
+  const std::string path{"videodb://movies/titles/" + std::to_string(m_idMovie) + "/-2/"};
+  CFileItemList items;
+  ASSERT_TRUE(XFILE::CDirectory::GetDirectory(path, items, "", XFILE::DIR_FLAG_DEFAULTS));
+  ASSERT_FALSE(items.IsEmpty());
+
+  bool inCache{true};
+  g_directoryCache.FileExists(CURL(items[0]->GetPath()), inCache);
+  EXPECT_FALSE(inCache);
 }
