@@ -8,6 +8,7 @@ CMAKE_OPTIONS=-DEXPAT_BUILD_TOOLS=OFF \
               -DEXPAT_SHARED_LIBS=OFF \
               -DEXPAT_BUILD_DOCS=OFF \
               -DEXPAT_BUILD_PKGCONFIG=ON \
+              -DEXPAT_DEV_URANDOM=ON \
               -DCMAKE_BUILD_TYPE=Release
 
 LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
