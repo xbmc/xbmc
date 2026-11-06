@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+reviews:
+  auto_review:
+    enabled: true
+    # Review PRs targeting any branch instead of only the default branch, so
+    # release and backport PRs (Piers, Omega, ...) are covered as well.
+    base_branches:
+      - ".*"
