@@ -5,10 +5,10 @@ DEPS =../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=pugixml
-VERSION=1.10
+VERSION=1.16
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-SHA512=bfc80661005d0a0fb82ca6d5299e5efdd1bb468e11ee52d7ee9367e15776d28efb60266ce03842715cd43aae023afc2b369797bb3cbecd6d6a65c3ae3903e469
+SHA512=d9fe54d844b75ecced304045dc160aa3811c8567cceed06cda4b1382b07f52cfbf02b6933c2fbe964bd5bb4678b8eb863ea5a7b708b51fc6a57397d12b01d384
 include ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/build/libpugixml.a
