@@ -1,21 +1,39 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -1,13 +1,14 @@
+@@ -1,11 +1,12 @@
  DESTDIR ?= /
  PREFIX  ?= /usr/local
--OPENSSL_LDFLAGS := $(shell pkg-config --libs-only-L openssl)
--OPENSSL_CFLAGS  := $(shell pkg-config --cflags openssl)
--CFLAGS += $(OPENSSL_CFLAGS) -O2
--LDFLAGS ?= $(LDID_LIBS) $(OPENSSL_LDFLAGS)
-+#OPENSSL_LDFLAGS := $(shell pkg-config --libs-only-L openssl)
-+#OPENSSL_CFLAGS  := $(shell pkg-config --cflags openssl)
-+#CFLAGS += $(OPENSSL_CFLAGS) -O2 -DLDID_NOSMIME=1 -DLDID_NOPLIST=1
-+CFLAGS += -O2 -DLDID_NOSMIME=1 -DLDID_NOPLIST=1
-+#LDFLAGS ?= $(LDID_LIBS) $(OPENSSL_LDFLAGS)
-
- .PHONY: all clean
- LDID_OBJS = ldid.cpp.o lookup2.c.o
--LDID_LIBS = -lplist -lcrypto
-+#LDID_LIBS = -lplist -lcrypto
-
- all: ldid
+-OPENSSL_LDFLAGS := $(shell pkg-config --libs libcrypto)
+-OPENSSL_CFLAGS  := $(shell pkg-config --cflags libcrypto)
+-PLIST_LDFLAGS   := $(shell pkg-config --libs libplist)
+-PLIST_CFLAGS    := $(shell pkg-config --cflags libplist)
+-CFLAGS          := $(OPENSSL_CFLAGS) $(PLIST_CFLAGS) -O2
+-LDFLAGS         := $(OPENSSL_LDFLAGS) $(PLIST_LDFLAGS)
++#OPENSSL_LDFLAGS := $(shell pkg-config --libs libcrypto)
++#OPENSSL_CFLAGS  := $(shell pkg-config --cflags libcrypto)
++#PLIST_LDFLAGS   := $(shell pkg-config --libs libplist)
++#PLIST_CFLAGS    := $(shell pkg-config --cflags libplist)
++#CFLAGS          := $(OPENSSL_CFLAGS) $(PLIST_CFLAGS) -O2
++CFLAGS          := -O2 -DLDID_NOSMIME=1 -DLDID_NOPLIST=1
++#LDFLAGS         := $(OPENSSL_LDFLAGS) $(PLIST_LDFLAGS)
+ LDID_VERSION	:= $(shell git describe --tags --match="v*" | sed -e 's@-\([^-]*\)-\([^-]*\)$$@+\1.\2@;s@^v@@;s@%@~@g')
+ 
+ ifeq (LDID_VERSION,)
+--- a/ldid.cpp
++++ b/ldid.cpp
+@@ -634,6 +634,7 @@
+     return data.str();
+ }
+ 
++#ifndef LDID_NOPLIST
+ static std::string der(plist_t data) {
+     switch (const auto type = plist_get_node_type(data)) {
+         case PLIST_BOOLEAN: {
+@@ -714,6 +715,7 @@
+         } break;
+     }
+ }
++#endif
+ 
+ static inline uint16_t Swap_(uint16_t value) {
+     return
