@@ -128,8 +128,10 @@ void CVideoThumbLoader::PrefetchFrom(const CFileItem& item)
 
 void CVideoThumbLoader::Prefetch(const std::vector<CFileItem*>& items)
 {
+  constexpr int listDetails{VideoDbDetailsRating | VideoDbDetailsTag | VideoDbDetailsUniqueID};
   std::map<std::string, std::vector<int>> artIds;
   std::vector<CVideoInfoTag*> streamTags;
+  std::map<MEDIA::TYPE, std::vector<CVideoInfoTag*>> listTags;
   // held items are another thread's; no queries under the lock, a new hold waits on it
   std::unique_lock lock(m_itemLock);
   for (CFileItem* item : items)
@@ -148,6 +150,18 @@ void CVideoThumbLoader::Prefetch(const std::vector<CFileItem*>& items)
       loaded->m_iFileId = tag.m_iFileId;
       streamTags.push_back(loaded.get());
     }
+
+    const MEDIA::TYPE type{tag.GetMediaType()};
+    if (tag.m_iDbId > 0 && !(tag.m_parsedDetails & listDetails) &&
+        (type == MEDIA::TYPE::MOVIE || type == MEDIA::TYPE::TV_SHOW ||
+         type == MEDIA::TYPE::EPISODE || type == MEDIA::TYPE::MUSIC_VIDEO))
+    {
+      auto& loaded{m_prefetched[item]};
+      if (!loaded)
+        loaded = std::make_unique<CVideoInfoTag>();
+      loaded->m_iDbId = tag.m_iDbId;
+      listTags[type].push_back(loaded.get());
+    }
   }
   lock.unlock();
 
@@ -158,6 +172,9 @@ void CVideoThumbLoader::Prefetch(const std::vector<CFileItem*>& items)
     for (CVideoInfoTag* tag : streamTags)
       tag->m_iFileId = -1;
   }
+
+  for (const auto& [type, tags] : listTags)
+    m_videoDatabase->GetDetailsForList(tags, type, listDetails);
 }
 
 void CVideoThumbLoader::PrefetchArt(std::map<std::string, std::vector<int>> artIds)
@@ -258,6 +275,21 @@ bool IsPlainFileArt(const std::string& art)
   return !art.empty() && !StringUtils::StartsWith(art, "image://") &&
          !URIUtils::IsInternetStream(art);
 }
+
+//! Merge ratings, unique ids and tags loaded for a list into an item's tag, keeping what it has.
+void MergeListDetails(CVideoInfoTag& tag, const CVideoInfoTag& loaded)
+{
+  for (const auto& [name, rating] : loaded.m_ratings)
+    tag.m_ratings.try_emplace(name, rating);
+  for (const auto& [name, value] : loaded.GetUniqueIDs())
+  {
+    if (tag.GetUniqueID(name).empty())
+      tag.SetUniqueID(value, name);
+  }
+  if (tag.m_tags.empty())
+    tag.m_tags = loaded.m_tags;
+  tag.m_parsedDetails |= loaded.m_parsedDetails;
+}
 } // namespace
 
 std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
@@ -354,6 +386,12 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
       else if (m_videoDatabase->GetStreamDetails(*pItem))
         pItem->SetInvalid();
     }
+  }
+
+  if (loaded && loaded->m_iDbId > 0)
+  {
+    MergeListDetails(*pItem->GetVideoInfoTag(), *loaded);
+    pItem->SetInvalid();
   }
 
   // video db items normally have info in the database
