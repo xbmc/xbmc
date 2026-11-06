@@ -5,11 +5,11 @@ DEPS = ../../Makefile.include Makefile 01-disable-openssl-plist.patch ../../down
 
 # lib name, version
 LIBNAME=ldid
-VERSION=2.1.2-b462a92
-# tarball source: https://github.com/sbingner/ldid/commit/b462a92349c57f38f2a6844adabee940afe01ca6
+VERSION=2.1.4-b8252d1
+# tarball source: https://github.com/sbingner/ldid/commit/b8252d1f755ee95a589c18cdab8798c666325207
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-SHA512=9582d747f55e8fd1d54c20b6a3f0825d2ab0cfaffeb6992e53b39343b3aa3936f31e6353d59518f294ecc154adf687fd2dee0405d9b2e594cc16b19409f3c0f4
+SHA512=a54825e675d31902c9d75d5228a684e7ffced0bab9a3b213eb5a69f2274571d834af17dc6f75452be19ad6bae4e5ebd243678d48679df9e000c41aa58c151d0a
 include ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/ldid
@@ -24,7 +24,7 @@ all: .installed-$(PLATFORM)
 	touch $@
 
 $(LIBDYLIB): .configured-$(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM) LDID_VERSION=$(VERSION)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	cp $(PLATFORM)/ldid $(NATIVEPREFIX)/bin
