@@ -1,6 +1,6 @@
---- a/setuptools/_distutils/sysconfig.py
-+++ b/setuptools/_distutils/sysconfig.py
-@@ -335,6 +335,12 @@ def customize_compiler(compiler: CCompiler) -> None:
+--- a/setuptools/_distutils/compilers/C/unix.py
++++ b/setuptools/_distutils/compilers/C/unix.py
+@@ -216,6 +216,12 @@
              'ARFLAGS',
          )
  
