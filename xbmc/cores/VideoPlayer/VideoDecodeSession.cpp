@@ -17,9 +17,23 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "FileItem.h"
 #include "Process/ProcessInfo.h"
+#include "filesystem/IFileTypes.h"
 #include "utils/log.h"
 
+#include <mutex>
 #include <vector>
+
+namespace
+{
+//! One metadata frame decode at a time; see CMetadataFrameDecodeLock
+std::mutex s_metadataFrameDecodeMutex;
+} // namespace
+
+CMetadataFrameDecodeLock::CMetadataFrameDecodeLock(bool wait)
+  : m_lock(wait ? std::unique_lock<std::mutex>(s_metadataFrameDecodeMutex)
+                : std::unique_lock<std::mutex>(s_metadataFrameDecodeMutex, std::try_to_lock))
+{
+}
 
 std::optional<VideoDecodeSession> OpenVideoDecodeSession(const CFileItem& fileItem,
                                                          int codecOptions,
@@ -29,7 +43,9 @@ std::optional<VideoDecodeSession> OpenVideoDecodeSession(const CFileItem& fileIt
   item.SetMimeTypeForInternetFile();
 
   VideoDecodeSession session;
-  session.inputStream = CDVDFactoryInputStream::CreateInputStream(nullptr, item);
+  // Reads a few megabytes with seeks, no file cache needed
+  session.inputStream =
+      CDVDFactoryInputStream::CreateInputStream(nullptr, item, false, XFILE::READ_NO_CACHE);
   if (!session.inputStream || !session.inputStream->Open())
   {
     CLog::Log(LOGERROR, "VideoDecodeSession: error opening input stream for {}", redactPath);
