@@ -71,6 +71,7 @@ Kodi currently contains files and code licensed under:
 * **[LGPL-2.1-or-later](LGPL-2.1-or-later)**: GNU Lesser General Public License v2.1 or later
 * **[MIT](MIT)**: MIT License
 * **[Unlicense](Unlicense)**: Unlicense (Public Domain)
+* **[Zlib](Zlib)**: zlib License
 
 These licensing rules were adapted from the **[Linux kernel licensing rules](https://github.com/torvalds/linux/blob/master/Documentation/process/license-rules.rst)**.
 
