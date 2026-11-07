@@ -686,7 +686,10 @@ void ConvertDiscFoldersToFiles(std::vector<std::shared_ptr<CFileItem>> items)
                                })};
   for (const auto& item : folderItems)
   {
-    if (auto playPath{VIDEO::UTILS::GetOpticalMediaPath(*item)}; !playPath.empty())
+    if (auto playPath{item->HasProperty(PROPERTY_DISC_PATH)
+                          ? item->GetProperty(PROPERTY_DISC_PATH).asString()
+                          : VIDEO::UTILS::GetOpticalMediaPath(*item)};
+        !playPath.empty())
     {
       CURL url(playPath);
       if (url.IsProtocol("udf"))

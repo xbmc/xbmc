@@ -2191,6 +2191,27 @@ TEST_F(TestVideoDatabase, GetKnownFoldersTakesADiscsPlaylistsAsTheFolderHoldingI
     EXPECT_TRUE(folder.starts_with("/movies/Film/")) << folder;
 }
 
+// A scan reads the movies of a folder at once, and finds the same movie for each file as it would
+// one at a time
+TEST_F(TestVideoDatabase, TheMoviesOfAFolderAreThoseOfItsFiles)
+{
+  const int first{AddMovie("/movies/First.mkv")};
+  const int second{AddMovie("/movies/Second.mkv")};
+  const int other{AddMovie("/other/Third.mkv")};
+  ASSERT_GT(first, 0);
+  ASSERT_GT(second, 0);
+  ASSERT_GT(other, 0);
+
+  const CVideoDatabase::FolderMovies movies{m_db.GetFolderMovies("/movies/")};
+
+  EXPECT_EQ(2U, movies.byFile.size());
+  EXPECT_EQ(first, m_db.GetMovieId("/movies/First.mkv", movies));
+  EXPECT_EQ(second, m_db.GetMovieId("/movies/Second.mkv", movies));
+  // A file of another folder, or one not in the library, is looked up on its own
+  EXPECT_EQ(other, m_db.GetMovieId("/other/Third.mkv", movies));
+  EXPECT_EQ(-1, m_db.GetMovieId("/movies/New.mkv", movies));
+}
+
 TEST_F(TestVideoDatabase, GetMovieIdFindsTheMovieOnTheDiscPlaylistsOfADiscImageWithoutOne)
 {
   const std::string disc{"/movies/M3GAN 2.0 (2025)/M3GAN20_UPK1.iso"};

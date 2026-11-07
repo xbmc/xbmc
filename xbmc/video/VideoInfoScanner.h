@@ -20,6 +20,7 @@
 
 #include <atomic>
 #include <cstdint>
+#include <deque>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -440,8 +441,12 @@ namespace KODI::VIDEO
     std::unique_ptr<CScanPathTable> m_pathTable{std::make_unique<CScanPathTable>(m_database)};
     //! Listings taken of folders the scan has yet to leave
     std::unordered_map<std::string, std::shared_ptr<const CDirectorySnapshot>> m_snapshots;
+    //! The order the listings were taken in, the oldest let go of first
+    std::deque<std::string> m_snapshotOrder;
     //! The modified time of each folder as its parent's listing gave it
     std::unordered_map<std::string, std::optional<int64_t>> m_listedTimes;
+    //! The movies of the folder whose items are being looked up
+    CVideoDatabase::FolderMovies m_folderMovies;
     //! The settings digest of each folder looked at
     std::unordered_map<std::string, std::string> m_folderSettings;
     //! The records of the folders of each show, stored once its episodes are added

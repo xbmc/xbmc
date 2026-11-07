@@ -1222,6 +1222,50 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
   return -1;
 }
 
+CVideoDatabase::FolderMovies CVideoDatabase::GetFolderMovies(const std::string& folder)
+{
+  FolderMovies movies;
+  movies.folder = folder;
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return movies;
+
+    m_pDS->query(PrepareSQL("SELECT files.strFileName, videoversion.idMedia FROM files "
+                            "JOIN path ON path.idPath = files.idPath "
+                            "JOIN videoversion ON videoversion.idFile = files.idFile "
+                            "WHERE path.strPath = '%s' AND videoversion.media_type = '%s' "
+                            "AND videoversion.itemType = %i",
+                            folder.c_str(), NameOf(MEDIA::TYPE::MOVIE).c_str(),
+                            VideoAssetType::VERSION));
+    while (!m_pDS->eof())
+    {
+      movies.byFile.try_emplace(m_pDS->fv(0).get_asString(), m_pDS->fv(1).get_asInt());
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", CURL::GetRedacted(folder));
+  }
+  return movies;
+}
+
+int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known)
+{
+  // A file of the folder that is a version of a movie is that movie's, as GetMovieId() finds it
+  std::string path;
+  std::string file;
+  SplitPath(strFilenameAndPath, path, file);
+  if (path == known.folder)
+  {
+    if (const auto movie{known.byFile.find(file)}; movie != known.byFile.end())
+      return movie->second;
+  }
+  return GetMovieId(strFilenameAndPath);
+}
+
 int CVideoDatabase::GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder)
 {
   if (!m_pDB || !m_pDS)

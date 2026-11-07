@@ -68,6 +68,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <deque>
 #include <iterator>
 #include <map>
 #include <memory>
@@ -545,9 +546,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                        { return re.RegFind(label) != -1; })};
             if (!stackMember && FolderUnchangedUnlisted(subfolder))
               items[i]->SetProperty(PROPERTY_UNCHANGED, true);
-            else if (!CUtil::ExcludeFileOrFolder(subfolder, regexps, &m_regexpCache) &&
-                     FolderHasNoMedia(subfolder))
+            else if (CUtil::ExcludeFileOrFolder(subfolder, regexps, &m_regexpCache))
+              items[i]->SetProperty(PROPERTY_DISC_PATH, "");
+            // Listed now rather than probed by Stack(), as it is about to be scanned or stacked
+            else if (FolderHasNoMedia(subfolder, true))
               items.Remove(i);
+            else if (const auto listing{Snapshot(subfolder)}; listing)
+              items[i]->SetProperty(PROPERTY_DISC_PATH, listing->GetDiscPath());
           }
         }
         else
@@ -973,6 +978,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     if (const auto taken{m_snapshots.find(folder)}; taken != m_snapshots.end())
       return taken->second;
+
+    // A folder listed before its parent is left is taken again where it has been let go of. A cold
+    // scan of a large folder lists every folder in it before visiting them.
+    constexpr size_t MAX_SNAPSHOTS{512};
+    while (m_snapshots.size() >= MAX_SNAPSHOTS && !m_snapshotOrder.empty())
+    {
+      m_snapshots.erase(m_snapshotOrder.front());
+      m_snapshotOrder.pop_front();
+    }
+    m_snapshotOrder.emplace_back(folder);
     // Read before the folder is listed, so that its record never holds a later time than its
     // listing
     FolderTime(folder);
@@ -1149,6 +1164,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     std::erase_if(m_snapshots,
                   [&folder](const auto& snapshot) { return snapshot.first.starts_with(folder); });
+    std::erase_if(m_snapshotOrder,
+                  [&folder](const std::string& path) { return path.starts_with(folder); });
     std::erase_if(m_listedTimes,
                   [&folder](const auto& time) { return time.first.starts_with(folder); });
   }
@@ -1303,6 +1320,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     m_database.Open();
 
+    // The movies already in the library, which a scan of a folder mostly finds
+    if (content == ContentType::MOVIES)
+      m_folderMovies = m_database.GetFolderMovies(items.GetPath());
+
     bool FoundSomeInfo = false;
     std::vector<int> seenPaths;
     seenPaths.reserve(items.Size());
@@ -1351,7 +1372,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         ret = RetrieveInfoForTvShow(pItem.get(), bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
       else if (info2->Content() == ContentType::MOVIES)
       {
-        knownMovie = m_database.HasMovieInfo(pItem->GetDynPath());
+        knownMovie = m_database.GetMovieId(pItem->GetDynPath(), m_folderMovies) > 0;
         ret = RetrieveInfoForMovie(pItem.get(), bDirNames, info2, useLocal, pURL, pDlgProgress);
       }
       else if (info2->Content() == ContentType::MUSICVIDEOS)
@@ -1530,6 +1551,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
+    // A show already in the library only gets its new episodes. The show is taken from the library,
+    // so its nfo isn't read.
+    if (idTvShow > -1 && (fetchEpisodes || !pItem->IsFolder()))
+    {
+      const InfoRet ret = files.empty() ? InfoRet::NOT_NEEDED
+                                        : RetrieveInfoForEpisodes(pItem, idTvShow, files, info2,
+                                                                  useLocal, pDlgProgress);
+      if (ret == InfoRet::ADDED || ret == InfoRet::NOT_NEEDED)
+        setFolderHash();
+      return ret;
+    }
+
     InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
     // handle .nfo files
@@ -1558,17 +1591,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
-    }
-
-    // Process episodes added later after nfo is scanned in case there is an episode group and parsing url
-    if (idTvShow > -1 && (fetchEpisodes || !pItem->IsFolder()))
-    {
-      const InfoRet ret = files.empty() ? InfoRet::NOT_NEEDED
-                                        : RetrieveInfoForEpisodes(pItem, idTvShow, files, info2,
-                                                                  useLocal, pDlgProgress);
-      if (ret == InfoRet::ADDED || ret == InfoRet::NOT_NEEDED)
-        setFolderHash();
-      return ret;
     }
 
     CScraperUrl url;
@@ -1958,7 +1980,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // A movie already in the library keeps its details.
     // This means adding a version to an existing nfo is not processed but
     // this doesn't cause a hash change anyway. A refresh will re-read.
-    if (m_database.HasMovieInfo(pItem->GetDynPath()))
+    if (m_database.GetMovieId(pItem->GetDynPath(), m_folderMovies) > 0)
       return InfoRet::HAVE_ALREADY;
 
     if (m_handle)
@@ -3084,6 +3106,23 @@ CVideoInfoScanner::~CVideoInfoScanner()
     bool hasEpisodeGuide = false;
     bool episodeGuideFailed{false};
 
+    // The episodes already in the library, which a scan of a show mostly finds
+    EpisodeFileMap knownEpisodes;
+    if (showInfo.m_iDbId > 0)
+      m_database.GetEpisodeMap(showInfo.m_iDbId, knownEpisodes);
+    const auto isKnownEpisode{
+        [&knownEpisodes](const EPISODE& file)
+        {
+          const auto [first, last]{knownEpisodes.equal_range(file.strPath)};
+          return std::any_of(first, last,
+                             [&file](const EpisodeFileMapEntry& known)
+                             {
+                               return (file.iEpisode == -1 ||
+                                       known.second.episode == file.iEpisode) &&
+                                      (file.iSeason == -1 || known.second.season == file.iSeason);
+                             });
+        }};
+
     std::unordered_map<std::string, int> episodeMap;
     for (const auto& file : files)
       episodeMap[file.strPath]++;
@@ -3112,7 +3151,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if ((pDlgProgress && pDlgProgress->IsCanceled()) || m_bStop)
         return InfoRet::CANCELLED;
 
-      if (m_database.GetEpisodeId(file->strPath, file->iEpisode, file->iSeason) > -1)
+      if (isKnownEpisode(*file) ||
+          m_database.GetEpisodeId(file->strPath, file->iEpisode, file->iSeason) > -1)
       {
         if (m_handle)
           m_handle->SetText(

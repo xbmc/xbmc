@@ -136,6 +136,48 @@ const DirectoryEntry* CDirectorySnapshot::Find(std::string_view name) const
   return entry == m_entries.end() ? nullptr : &*entry;
 }
 
+std::string CDirectorySnapshot::GetDiscPath() const
+{
+  // The names, in the order UTILS::GetOpticalMediaPath() looks for them
+  struct DiscFile
+  {
+    std::string_view folder;
+    std::string_view file;
+  };
+  static constexpr std::array discFiles{
+      DiscFile{"", "VIDEO_TS.IFO"},   DiscFile{"VIDEO_TS", "VIDEO_TS.IFO"},
+#ifdef HAVE_LIBBLURAY
+      DiscFile{"", "index.bdmv"},     DiscFile{"", "INDEX.BDM"},
+      DiscFile{"BDMV", "index.bdmv"}, DiscFile{"BDMV", "INDEX.BDM"},
+#endif
+  };
+
+  for (const DiscFile& disc : discFiles)
+  {
+    if (disc.folder.empty())
+    {
+      // Named as GetOpticalMediaPath() names it, where it exists by that name
+      if (const DirectoryEntry * entry{Find(disc.file)}; entry && !entry->isFolder)
+      {
+        const std::string path{URIUtils::AddFileToFolder(m_path, std::string{disc.file})};
+        if (entry->name == disc.file || CFile::Exists(path))
+          return path;
+      }
+      continue;
+    }
+
+    // A file in a folder of the disc's is looked for as GetOpticalMediaPath() does
+    if (const DirectoryEntry * entry{Find(disc.folder)}; entry && entry->isFolder)
+    {
+      const std::string path{
+          URIUtils::AddFileToFolder(m_path, std::string{disc.folder}, std::string{disc.file})};
+      if (CFile::Exists(path))
+        return path;
+    }
+  }
+  return {};
+}
+
 void CDirectorySnapshot::GetItems(CFileItemList& items,
                                   const std::string& mask,
                                   bool expandArchives) const

@@ -48,6 +48,7 @@
 #include <chrono>
 #include <filesystem>
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -2222,6 +2223,43 @@ TEST_F(TestVideoInfoScannerTvShows, AShowsCastHaveTheThumbsInItsActorsFolder)
 
   EXPECT_EQ(thumb, m_db.GetSingleValue(
                        "SELECT url FROM art WHERE media_type = 'actor' AND type = 'thumb'"));
+}
+
+// Shows and episodes looked up at once each find the thumbs in their own show's actors folder
+TEST_F(TestVideoInfoScannerTvShows, EachShowsCastAndGuestsHaveTheThumbsInItsActorsFolder)
+{
+  UseTextureCache();
+  std::map<std::string, std::string> thumbs;
+  for (const std::string name : {"A", "B", "C", "D"})
+  {
+    const std::string show{Folder(m_root, "Show " + name)};
+    File(show, "tvshow.nfo",
+         "<tvshow><title>Show " + name + "</title><actor><name>Star " + name +
+             "</name></actor></tvshow>");
+    const std::string actors{Folder(show, ".actors")};
+    thumbs["Star " + name] = File(actors, "Star_" + name + ".jpg");
+    thumbs["Guest " + name] = File(actors, "Guest_" + name + ".jpg");
+    const std::string season{Folder(show, "Season 1")};
+    for (int episode = 1; episode <= 4; ++episode)
+    {
+      const std::string file{"Show " + name + " S01E0" + std::to_string(episode) + ".mkv"};
+      File(season, URIUtils::ReplaceExtension(file, ".nfo"),
+           "<episodedetails><title>" + file + "</title><actor><name>Guest " + name +
+               "</name></actor></episodedetails>");
+      File(season, file);
+    }
+  }
+
+  Scan();
+
+  for (const auto& [actor, thumb] : thumbs)
+  {
+    EXPECT_EQ(thumb, m_db.GetSingleValue(m_db.PrepareSQL(
+                         "SELECT url FROM art JOIN actor ON art.media_id = actor.actor_id WHERE "
+                         "art.media_type = 'actor' AND art.type = 'thumb' AND actor.name = '%s'",
+                         actor.c_str())))
+        << actor;
+  }
 }
 
 // TV shows looked up with a scraper

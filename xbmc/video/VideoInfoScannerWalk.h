@@ -112,6 +112,13 @@ public:
   //! \brief The entry of this name, matched as the file system would, or nullptr
   const DirectoryEntry* Find(std::string_view name) const;
   bool HasNoMedia() const { return Find(".nomedia") != nullptr; }
+
+  /*!
+   \brief The disc structure file the folder holds, as UTILS::GetOpticalMediaPath() finds it: its
+   own entries are looked at, and a BDMV or VIDEO_TS folder looked into only where there is one
+   \return the file, or empty where the folder holds no disc
+   */
+  std::string GetDiscPath() const;
   const std::string& Digest() const { return m_digest; }
 
   /*!

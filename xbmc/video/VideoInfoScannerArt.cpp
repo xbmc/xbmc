@@ -558,10 +558,19 @@ void CVideoInfoScannerArt::GetSeasonThumbs(const CVideoInfoTag& show,
   }
 }
 
-void CVideoInfoScannerArt::FetchActorThumbs(
-    std::vector<SActorInfo>& actors,
-    const std::string& actorsDir,
-    UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+const CVideoInfoScannerArt::ActorThumbs& CVideoInfoScannerArt::GetActorThumbs(
+    const std::string& actorsDir) const
+{
+  ListedActorThumbs* folder{nullptr};
+  {
+    std::unique_lock lock(m_actorThumbsLock);
+    folder = &m_actorThumbs.try_emplace(actorsDir).first->second;
+  }
+  std::call_once(folder->listed, [&] { ListActorThumbs(actorsDir, folder->thumbs); });
+  return folder->thumbs;
+}
+
+void CVideoInfoScannerArt::ListActorThumbs(const std::string& actorsDir, ActorThumbs& actorThumbs)
 {
   CFileItemList items;
   // don't try to fetch anything local with plugin source
@@ -570,8 +579,6 @@ void CVideoInfoScannerArt::FetchActorThumbs(
 
   // Index the thumbs by filename (without extension), and the hashes taken from the directory
   // listing by url
-  std::map<std::string, std::string> thumbs;
-  std::map<std::string, std::string> listedHashes;
   for (const auto& item : items)
   {
     if (item->IsFolder())
@@ -579,10 +586,18 @@ void CVideoInfoScannerArt::FetchActorThumbs(
 
     std::string name{URIUtils::GetFileName(item->GetPath())};
     URIUtils::RemoveExtension(name);
-    thumbs.try_emplace(std::move(name), item->GetPath());
+    actorThumbs.thumbs.try_emplace(std::move(name), item->GetPath());
     if (std::string hash{CTextureCacheJob::GetImageHash(*item)}; !hash.empty())
-      listedHashes.emplace(item->GetPath(), std::move(hash));
+      actorThumbs.listedHashes.emplace(item->GetPath(), std::move(hash));
   }
+}
+
+void CVideoInfoScannerArt::FetchActorThumbs(
+    std::vector<SActorInfo>& actors,
+    const std::string& actorsDir,
+    UseRemoteArtWithLocalScraper useRemoteArt /* = YES */) const
+{
+  const auto& [thumbs, listedHashes]{GetActorThumbs(actorsDir)};
 
   for (auto& actor : actors)
   {

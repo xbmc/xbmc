@@ -1166,6 +1166,25 @@ public:
    */
   int GetMovieIdInFolder(const std::string& folder, const std::string& excludedFolder);
 
+  //! \brief The movies the files of a folder are versions of, by file name
+  struct FolderMovies
+  {
+    std::string folder;
+    std::map<std::string, int, std::less<>> byFile;
+  };
+
+  /*!
+   \brief The movies the files of a folder are versions of, read at once rather than for each file
+   \param folder the folder, with a slash at its end
+   */
+  FolderMovies GetFolderMovies(const std::string& folder);
+
+  /*!
+   \brief As GetMovieId(), from the movies of the file's folder where it is one of them
+   \param known the movies of a folder, which may not be the file's
+   */
+  int GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known);
+
   std::string GetMovieTitle(int idMovie);
 
   enum MatchingMask : uint8_t
