@@ -2,7 +2,8 @@
 include CROSSGUID-VERSION
 DEPS = Makefile CROSSGUID-VERSION ../../download-files.include \
                                   001-fix-unused-function.patch \
-                                  002-disable-Wall-error.patch
+                                  002-disable-Wall-error.patch \
+                                  004-cmake-install.patch
 
 CMAKE_OPTIONS=-DCROSSGUID_TESTS=OFF \
               -DCMAKE_BUILD_TYPE=Release \
@@ -48,6 +49,7 @@ endif
 	cd $(PLATFORM); patch -p1 -i ../001-fix-unused-function.patch
 	cd $(PLATFORM); patch -p1 -i ../002-disable-Wall-error.patch
 	cd $(PLATFORM); patch -p1 -i ../003-add-cstdint-include.patch
+	cd $(PLATFORM); patch -p1 -i ../004-cmake-install.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 	touch $@
 

@@ -1,0 +1,27 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 76b5a62..6944363 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -80,9 +80,21 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+ 
+ 	# Make cmake config files for all targets
+ 	install(EXPORT  crossguidTargets
+-		DESTINATION ${CROSSGUID_CMAKE_CONFIG_INSTALL_DIR}
++		DESTINATION ${CROSSGUID_LIBRARY_INSTALL_DIR}/cmake/crossguid
+ 		FILE crossguid-config.cmake)
+ 
++    include(CMakePackageConfigHelpers)
++    write_basic_package_version_file(
++        "${CMAKE_CURRENT_BINARY_DIR}/crossguid-config-version.cmake"
++        VERSION ${PROJECT_VERSION}
++        COMPATIBILITY SameMajorVersion
++    )
++
++    install(FILES
++        "${CMAKE_CURRENT_BINARY_DIR}/crossguid-config-version.cmake"
++        DESTINATION ${CROSSGUID_LIBRARY_INSTALL_DIR}/cmake/crossguid
++    )
++
+ 	# Install readme and license
+ 	install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE" "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+ 		DESTINATION ${CROSSGUID_ADDITIONAL_FILES_INSTALL_DIR})
