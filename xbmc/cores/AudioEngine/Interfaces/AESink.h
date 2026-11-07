@@ -47,6 +47,13 @@ public:
   virtual double GetLatency() { return 0.0; }
 
   /*!
+   * @brief True if the sink was opened but can't output anything, for example because
+   * the platform rejected a passthrough format it advertised. The engine then discards
+   * the audio instead of failing to open the sink.
+   */
+  virtual bool IsOutputUnavailable() const { return false; }
+
+  /*!
    * @brief Adds packets to be sent out, this routine MUST block or sleep.
    * @param data array of pointers to planes holding audio data
    * @param frames number of audio frames in data

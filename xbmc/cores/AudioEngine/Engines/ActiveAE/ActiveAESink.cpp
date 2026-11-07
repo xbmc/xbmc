@@ -9,13 +9,18 @@
 #include "ActiveAESink.h"
 
 #include "ActiveAE.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkNULL.h"
 #include "cores/AudioEngine/Utils/AEBitstreamPacker.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "resources/LocalizeStrings.h"
+#include "resources/ResourcesComponent.h"
 #include "utils/EndianSwap.h"
 #include "utils/MemUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -25,6 +30,34 @@
 using namespace AE;
 using namespace ActiveAE;
 using namespace std::chrono_literals;
+
+namespace
+{
+// format names are not localized
+const char* GetStreamTypeName(CAEStreamInfo::DataType type)
+{
+  switch (type)
+  {
+    case CAEStreamInfo::STREAM_TYPE_AC3:
+      return "DD (AC3)";
+    case CAEStreamInfo::STREAM_TYPE_EAC3:
+      return "DD+ (E-AC3)";
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+      return "DTS";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+      return "DTS-HD";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+      return "DTS-HD MA";
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      return "TrueHD";
+    default:
+      return CAEUtil::StreamTypeToStr(type);
+  }
+}
+} // namespace
 
 CActiveAESink::CActiveAESink(CEvent* inMsgEvent)
   : CThread("AESink"),
@@ -178,7 +211,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
 bool CActiveAESink::NeedIECPacking()
 {
   // the null sink only handles pcm, let a raw stream be packed for it
-  if (m_extReserved)
+  if (m_extReserved || m_outputUnavailable)
     return true;
 
   const AESinkDevice dev = CAESinkFactory::ParseDevice(m_device);
@@ -261,6 +294,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_device = *(data->device);
           }
           m_extError = false;
+          m_outputUnavailable = false;
           m_extSilenceTimer.Set(0ms);
           m_extStreaming = false;
           ReturnBuffers();
@@ -630,6 +664,7 @@ void CActiveAESink::Process()
   m_bStateMachineSelfTrigger = false;
   m_extAppFocused = true;
   m_extReserved = false;
+  m_outputUnavailable = false;
 
   while (!m_bStop)
   {
@@ -958,9 +993,10 @@ void CActiveAESink::OpenSink()
   // WARNING: this changes format and does not use passthrough
   m_sinkFormat = m_requestedFormat;
 
-  if (m_extReserved)
+  if (m_extReserved || m_outputUnavailable)
   {
-    CLog::LogF(LOGDEBUG, "device {} is reserved, discarding output", device);
+    CLog::LogF(LOGDEBUG, "device {} is {}, discarding output", device,
+               m_extReserved ? "reserved" : "unavailable");
     auto nullSink = std::make_unique<CAESinkNULL>(m_reservedCacheTotal, m_reservedLatency);
     if (nullSink->Initialize(m_sinkFormat, device))
       m_sink = std::move(nullSink);
@@ -987,6 +1023,21 @@ void CActiveAESink::OpenSink()
   {
     CLog::LogF(LOGERROR, "no sink was returned");
     m_extError = true;
+    return;
+  }
+
+  if (m_sink->IsOutputUnavailable())
+  {
+    // retrying doesn't help, discard the output instead
+    CLog::LogF(LOGERROR, "device {} can't output this stream", device);
+    m_outputUnavailable = true;
+    const auto& strings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    CGUIDialogKaiToast::QueueNotification(
+        CGUIDialogKaiToast::Warning, strings.Get(29806),
+        StringUtils::Format(strings.Get(29807),
+                            GetStreamTypeName(m_requestedFormat.m_streamInfo.m_type)));
+    CloseSink(false);
+    OpenSink();
     return;
   }
 
