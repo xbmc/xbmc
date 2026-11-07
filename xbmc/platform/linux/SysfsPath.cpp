@@ -45,3 +45,30 @@ std::optional<std::string> CSysfsPath::Get()
     return std::nullopt;
   }
 }
+
+std::string HwmonTemperaturePath(std::string_view sensor)
+{
+  const std::size_t slash = sensor.find('/');
+  const std::string_view name = sensor.substr(0, slash);
+  const std::string input{slash == std::string_view::npos ? "temp1_input"
+                                                          : sensor.substr(slash + 1)};
+
+  for (int i = 0; i < 20; i++)
+  {
+    const std::string device{"/sys/class/hwmon/hwmon" + std::to_string(i)};
+
+    CSysfsPath namePath{device + "/name"};
+    if (!namePath.Exists())
+      continue;
+
+    const auto deviceName = namePath.Get<std::string>();
+    if (!deviceName.has_value() || *deviceName != name)
+      continue;
+
+    const std::string temperature{device + "/" + input};
+    if (CSysfsPath{temperature}.Exists())
+      return temperature;
+  }
+
+  return {};
+}
