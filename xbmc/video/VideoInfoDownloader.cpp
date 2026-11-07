@@ -48,8 +48,29 @@ int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int m
   return 1;  // success
 }
 
+namespace
+{
+thread_local CVideoInfoDownloader::CKeptErrors* keptErrors{nullptr};
+} // namespace
+
+CVideoInfoDownloader::CKeptErrors::CKeptErrors() : m_previous(keptErrors)
+{
+  keptErrors = this;
+}
+
+CVideoInfoDownloader::CKeptErrors::~CKeptErrors()
+{
+  keptErrors = m_previous;
+}
+
 void CVideoInfoDownloader::ShowErrorDialog(const ADDON::CScraperError &sce)
 {
+  if (keptErrors)
+  {
+    keptErrors->m_errors.push_back(sce);
+    return;
+  }
+
   if (!sce.Title().empty())
     HELPERS::ShowOKDialogText(CVariant{ sce.Title() }, CVariant{ sce.Message() });
 }

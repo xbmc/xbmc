@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/Addon.h"
+#include "threads/CriticalSection.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 #include "video/Episode.h"
@@ -223,6 +224,10 @@ private:
   CDateTimeSpan m_persistence;
   ContentType m_pathContent = ContentType::NONE;
   CScraperParser m_parser;
+
+  //! A scraper is called by one thread at a time, as its parser and caches are its own. Nothing in
+  //! the add-on API promises that a scraper's functions can run alongside each other.
+  mutable CCriticalSection m_callSection;
 };
 
 } // namespace ADDON

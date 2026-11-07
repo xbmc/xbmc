@@ -2324,7 +2324,7 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(path);
+  m_db.PrepareDateAdded(path, CVideoDatabase::ReadDateAdded(path));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CFile::Delete(path));
   const int idFile{m_db.AddFile(path)};
@@ -2377,7 +2377,7 @@ TEST_F(TestVideoDatabase, AShowsFolderDateAddedIsReadBeforeItIsAdded)
   ASSERT_TRUE(modified.IsValid());
   ASSERT_LT(modified, CDateTime::GetCurrentDateTime() - CDateTimeSpan(1, 0, 0, 0));
 
-  m_db.PrepareDateAdded(folder);
+  m_db.PrepareDateAdded(folder, CVideoDatabase::ReadDateAdded(folder));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CDirectory::RemoveRecursive(root));
   CVideoInfoTag show;
