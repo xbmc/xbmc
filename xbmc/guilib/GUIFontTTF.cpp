@@ -390,7 +390,8 @@ void CGUIFontTTF::ClearCharacterCache()
   m_texture = nullptr;
   m_char.clear();
   m_char.reserve(CHAR_CHUNK);
-  memset(m_charquick, 0, sizeof(m_charquick));
+  for (auto& table : m_charquick)
+    table.reset();
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
   m_posY = -static_cast<int>(GetTextureLineHeight());
@@ -401,7 +402,8 @@ void CGUIFontTTF::Clear()
 {
   m_texture.reset();
   m_texture = nullptr;
-  memset(m_charquick, 0, sizeof(m_charquick));
+  for (auto& table : m_charquick)
+    table.reset();
   m_posX = 0;
   m_posY = 0;
   m_nestedBeginCount = 0;
@@ -1171,12 +1173,11 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
     glyphIndex = FT_Get_Char_Index(GetFace(fontFace), letter);
 
   // quick access to the most frequently used glyphs
-  if (fontFace == FontFace::Primary && glyphIndex < MAX_GLYPH_IDX)
+  if (fontFace == FontFace::Primary && glyphIndex < MAX_GLYPH_IDX && style < m_charquick.size())
   {
-    character_t ch = (style << 12) | glyphIndex; // 2^12 = 4096
-
-    if (ch < LOOKUPTABLE_SIZE && m_charquick[ch])
-      return m_charquick[ch];
+    const auto& table = m_charquick[style];
+    if (table && table[glyphIndex])
+      return table[glyphIndex];
   }
 
   // letters are stored based on style and glyph
@@ -1242,11 +1243,14 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr,
   {
     if (!(m_char[i].m_glyphAndStyle & FONT_FACE_MASK) && m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
     {
-      // >> 16 is style (0-6), then 16 - 12 (>> 4) is equivalent to style * 4096
-      character_t ch = ((m_char[i].m_glyphAndStyle & 0xffff0000) >> 4) | m_char[i].m_glyphIndex;
-
-      if (ch < LOOKUPTABLE_SIZE)
-        m_charquick[ch] = m_char.data() + i;
+      const size_t charStyle = (m_char[i].m_glyphAndStyle & 0xffff0000) >> 16;
+      if (charStyle < m_charquick.size())
+      {
+        auto& table = m_charquick[charStyle];
+        if (!table)
+          table = std::make_unique<Character*[]>(MAX_GLYPH_IDX);
+        table[m_char[i].m_glyphIndex] = m_char.data() + i;
+      }
     }
   }
 
