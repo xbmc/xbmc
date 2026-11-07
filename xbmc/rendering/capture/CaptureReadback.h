@@ -23,8 +23,8 @@ namespace RENDERING
 namespace CAPTURE
 {
 
-//! Raw pixels read back from the GPU, tagged with their coding. No swap, flip,
-//! expand, or alpha fixup happens here; the consumer's swscale does it in one pass.
+//! Pixels read back from the GPU, tagged with their coding. Floating-point channels
+//! are normalized to 16-bit; channel order, row order and alpha are unchanged.
 struct ReadbackBuffer
 {
   std::unique_ptr<uint8_t[]> pixels;
@@ -36,10 +36,11 @@ struct ReadbackBuffer
 };
 
 //! Read a width x height region of the bound read framebuffer at (x, y) in GL
-//! (bottom-left origin) coordinates. The bytes land verbatim in out.pixels;
+//! (bottom-left origin) coordinates. The bytes land in out.pixels;
 //! out.format names their coding and out.stride is signed (negative when flipY,
 //! i.e. bottom-up window rows). bitDepth selects an 8-bit or deep readback; on
-//! GLES the deep type is negotiated and falls back to 8-bit when none is offered.
+//! GLES normalized buffers negotiate a deep type and fall back to 8-bit when none
+//! is offered; floating-point buffers are converted to RGBA64 at either depth.
 //! Returns false on GL error, leaving out untouched. The single GPU readback
 //! shared by the screenshot surfaces and the capture blit.
 bool ReadFramebufferRegion(int x,
