@@ -17,6 +17,7 @@
 #include "ServiceBroker.h"
 #include "ServiceManager.h"
 #include "Util.h"
+#include "addons/Skin.h"
 #include "application/AppInboundProtocol.h"
 #include "application/Application.h"
 #include "application/ApplicationEnums.h"
@@ -64,8 +65,10 @@
 #include "utils/ItemProperties.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <chrono>
 #include <memory>
 
 #ifdef TARGET_ANDROID
@@ -98,12 +101,89 @@ public:
 private:
   const CFileItem m_item;
 };
+
+// Windows kept in memory keep the skin coordinates of the aspect ratio they
+// were loaded for. Leave video playback alone, its refresh rate switches may
+// use other aspect ratios for a while, and the calibration window, which
+// switches resolutions itself.
+bool IsSkinReloadNeeded()
+{
+  // the deferred check may run while Kodi is shutting down
+  const auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return false;
+
+  const auto skin = gui->GetSkinInfo();
+  return skin && skin->IsResolutionChanged() &&
+         !CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>()->IsPlayingVideo() &&
+         !CServiceBroker::GetWinSystem()->GetGfxContext().IsCalibrating();
+}
+
+// Add-ons fill their windows and dialogs from code, and a skin reload would
+// leave them empty.
+bool IsAddonWindowOpen()
+{
+  const auto& windowManager = CServiceBroker::GetGUI()->GetWindowManager();
+  for (const int id : {windowManager.GetActiveWindow(), windowManager.GetActiveWindowOrDialog()})
+  {
+    if (windowManager.IsPythonWindow(id) || windowManager.IsAddonWindow(id))
+      return true;
+  }
+  return false;
+}
+
+// resizing a window sends a resize for every step, reload once it settles
+constexpr auto SKIN_RELOAD_DELAY = std::chrono::milliseconds(500);
 } // unnamed namespace
 
 CApplicationMessageHandling::CApplicationMessageHandling(CApplication& app)
   : CAppInboundProtocol(app),
-    m_app(app)
+    m_app(app),
+    m_reloadSkinCallback(std::make_unique<MESSAGING::ThreadMessageCallback>(
+        MESSAGING::ThreadMessageCallback{ReloadSkinIfNeeded, this})),
+    m_skinReloadTimer(
+        [this]
+        {
+          if (const auto messenger = CServiceBroker::GetAppMessenger())
+            messenger->PostMsg(TMSG_CALLBACK, -1, -1, m_reloadSkinCallback.get());
+        })
 {
+}
+
+CApplicationMessageHandling::~CApplicationMessageHandling() = default;
+
+void CApplicationMessageHandling::ReloadSkinIfNeeded(void* data)
+{
+  if (!IsSkinReloadNeeded())
+    return;
+
+  // ReloadSkin() drops requests while Kodi is starting, and a reload would empty
+  // add-on windows, so try again later
+  auto* handling = static_cast<CApplicationMessageHandling*>(data);
+  if (!handling->m_app.IsInitialized() || IsAddonWindowOpen())
+  {
+    handling->ScheduleSkinReload();
+    return;
+  }
+
+  CServiceBroker::GetAppComponents().GetComponent<CApplicationSkinHandling>()->ReloadSkin();
+}
+
+void CApplicationMessageHandling::ScheduleSkinReload()
+{
+  // the timer callback checks again whether the reload is needed
+  if (m_skinReloadTimer.IsRunning())
+    m_skinReloadTimer.RestartAsync(SKIN_RELOAD_DELAY);
+  else
+    m_skinReloadTimer.Start(SKIN_RELOAD_DELAY);
+}
+
+void CApplicationMessageHandling::ScheduleSkinReloadAfterPlayback()
+{
+  // pick up a window resized during playback, in full screen only video modes
+  // change and the GUI resolution is restored when playback stops
+  if (!CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
+    ScheduleSkinReload();
 }
 
 void CApplicationMessageHandling::OnApplicationMessage(MESSAGING::ThreadMessage* pMsg)
@@ -492,6 +572,11 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
         if (message.GetSenderId() == WINDOW_SETTINGS_PROFILES)
           m_app.GetComponent<CApplicationSkinHandling>()->ReloadSkin(false);
       }
+      else if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+      {
+        if (IsSkinReloadNeeded())
+          ScheduleSkinReload();
+      }
       else if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
         CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
@@ -654,6 +739,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
     case GUI_MSG_PLAYBACK_STOPPED:
     {
+      ScheduleSkinReloadAfterPlayback();
+
       pvrManager.OnPlaybackStopped(m_app.CurrentFileItem());
       CServiceBroker::GetFavouritesService().OnPlaybackStopped(m_app.CurrentFileItem());
 
@@ -678,6 +765,8 @@ bool CApplicationMessageHandling::OnMessage(const CGUIMessage& message)
 
     case GUI_MSG_PLAYBACK_ENDED:
     {
+      ScheduleSkinReloadAfterPlayback();
+
       pvrManager.OnPlaybackEnded(m_app.CurrentFileItem());
       CServiceBroker::GetFavouritesService().OnPlaybackEnded(m_app.CurrentFileItem());
 
