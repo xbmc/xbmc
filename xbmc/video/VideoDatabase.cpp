@@ -13660,9 +13660,9 @@ bool CVideoDatabase::SetVideoUserRating(int dbId, int rating, MEDIA::TYPE mediaT
   return false;
 }
 
-void CVideoDatabase::PrepareDateAdded(const std::string& fileAndPath)
+void CVideoDatabase::PrepareDateAdded(const std::string& fileAndPath, const CDateTime& dateAdded)
 {
-  m_preparedDatesAdded.insert_or_assign(fileAndPath, GetDateAdded(fileAndPath));
+  m_preparedDatesAdded.insert_or_assign(fileAndPath, dateAdded);
 }
 
 void CVideoDatabase::ForgetPreparedDatesAdded()

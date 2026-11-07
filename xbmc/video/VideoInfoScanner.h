@@ -8,9 +8,11 @@
 
 #pragma once
 
+#include "FileItem.h"
 #include "InfoScanner.h"
 #include "VideoDatabase.h"
 #include "VideoManagerTypes.h"
+#include "XBDateTime.h"
 #include "addons/Scraper.h"
 #include "settings/VideoVersionsSettings.h"
 #include "utils/RegExp.h"
@@ -154,6 +156,41 @@ namespace KODI::VIDEO
     virtual void Process();
     std::pair<ScanComplete, ContentFound> DoScan(const std::string& strDirectory) override;
 
+    //! \brief What AddVideo() reads before it writes a video: from the file system, never from
+    //! the database, so that it can be read for several videos alongside each other
+    struct PreparedVideo
+    {
+      ADDON::ContentType content{ADDON::ContentType::NONE};
+      CVideoInfoScannerArt::UseRemoteArtWithLocalScraper useRemoteArt{
+          CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::YES};
+      std::string path;
+      KODI::ART::Artwork art;
+      KODI::ART::SeasonsArtwork seasonArt;
+      std::optional<CDateTime> dateAdded;
+    };
+
+    /*! \brief The first half of AddVideo(): the item's playlist, art, streams, trailer and date added
+     \param regexps the cache of regular expressions of the thread preparing the item
+     \param lastProbed the file the thread probed last, and its own streams
+     */
+    PreparedVideo PrepareVideo(
+        CFileItem* pItem,
+        const ADDON::ScraperPtr& scraper,
+        bool videoFolder,
+        bool useLocal,
+        const CVideoInfoTag* showInfo,
+        bool libraryImport,
+        ADDON::ContentType contentOverride,
+        KODI::REGEXP::RegExpCache& regexps,
+        std::optional<std::pair<std::string, CStreamDetails>>& lastProbed) const;
+
+    //! \brief The second half of AddVideo(): the item written in one transaction, and announced
+    long WriteVideo(CFileItem* pItem,
+                    const PreparedVideo& video,
+                    bool videoFolder,
+                    const CVideoInfoTag* showInfo,
+                    bool libraryImport);
+
     InfoRet RetrieveInfoForTvShow(CFileItem* pItem,
                                   bool bDirNames,
                                   ADDON::ScraperPtr& scraper,
@@ -161,12 +198,104 @@ namespace KODI::VIDEO
                                   CScraperUrl* pURL,
                                   bool fetchEpisodes,
                                   CGUIDialogProgress* pDlgProgress);
+    //! \brief How many threads a scan looks videos up on: enough to keep a scraper busy while the
+    //! others read and probe
+    static size_t LookUpThreads() { return 4; }
+
+    //! \brief What looking a video up found on a thread of its own, for the scan thread to add
+    struct VideoLookup
+    {
+      //! Whether the video was looked up
+      bool done{false};
+      InfoType nfoResult{InfoType::NONE};
+      std::unique_ptr<IVideoInfoTagLoader> loader;
+      //! The video as its nfo has it, or as the scraper has it where it was found
+      CFileItem item;
+      //! Whether the scraper found the video and its details were read
+      bool found{false};
+      //! What the scraper's search returned, where the video was searched for
+      std::optional<int> searchResult;
+      //! Whether the search found the video
+      bool searchFound{false};
+      //! The errors the scraper reported, shown as the video is added
+      std::vector<ADDON::CScraperError> errors;
+    };
+
+    //! \brief What looking a movie up found, for RetrieveInfoForMovie() to add
+    struct MovieLookup : VideoLookup
+    {
+      std::string edition;
+      bool setUpdated{false};
+      std::optional<PreparedVideo> prepared;
+    };
+
+    /*! \param lookup the movie as it was looked up already, or nullptr to look it up now
+     */
     InfoRet RetrieveInfoForMovie(CFileItem* pItem,
                                  bool bDirNames,
                                  ADDON::ScraperPtr& scraper,
                                  bool useLocal,
                                  CScraperUrl* pURL,
-                                 CGUIDialogProgress* pDlgProgress);
+                                 CGUIDialogProgress* pDlgProgress,
+                                 MovieLookup* lookup = nullptr);
+
+    /*! \brief Whether a movie can be looked up on a thread of its own, alongside others: its nfo,
+     the scraper, its art and its streams. A movie a refresh looks up is not.
+     */
+    bool CanLookUpMovieAlongside(const CFileItem& item) const;
+
+    /*! \brief The part of RetrieveInfoForMovie() that reads the movie's nfo, asks the scraper and
+     prepares the movie, which neither writes to the database nor shows a dialog. A disc is prepared
+     as it is added, as its playlists are chosen with those the library already has.
+     */
+    void LookUpMovie(const CFileItem& source,
+                     bool bDirNames,
+                     const ADDON::ScraperPtr& info2,
+                     bool useLocal,
+                     MovieLookup& lookup) const;
+
+    //! \brief Where a video's name may give an identifier the scraper can look it up by
+    enum class IdentifierIn
+    {
+      FILE_NAME, //!< as a movie's file is named
+      TITLE, //!< as a show's folder, or its nfo, names it
+    };
+
+    /*! \brief The part of a look-up that finds the video with the scraper and reads its details: by
+     an identifier its name gives, by the url its nfo gives, or by searching for its title, as the
+     look-up's nfo result has it. A search is recorded in the look-up.
+     \param item the video as its nfo has it
+     \param[in,out] found the video, with its details where they were read
+     \return whether the video was found and its details read
+     */
+    bool FindVideoAhead(const CFileItem& source,
+                        const CFileItem& item,
+                        IdentifierIn identifierIn,
+                        bool bDirNames,
+                        const ADDON::ScraperPtr& info2,
+                        VideoLookup& lookup,
+                        CFileItem& found,
+                        KODI::REGEXP::RegExpCache& regexps) const;
+
+    /*! \brief What a look-up done ahead that didn't find its video means, as FindVideo() decides on
+     what its search returned: the scan stopped, or the video not found
+     */
+    InfoRet LookupNotFound(const VideoLookup& lookup, CGUIDialogProgress* pDlgProgress);
+
+    //! \brief The edition a movie's file or folder name gives
+    std::string MovieEdition(const CFileItem& item,
+                             bool bDirNames,
+                             KODI::REGEXP::RegExpCache& regexps) const;
+
+    /*! \brief The details the scraper has for an item, as GetDetails() reads them, without reporting
+     on progress
+     */
+    bool LookUpDetails(CFileItem& item,
+                       const ADDON::CScraper::UniqueIDs& uniqueIDs,
+                       CScraperUrl& url,
+                       const ADDON::ScraperPtr& scraper,
+                       VIDEO::IVideoInfoTagLoader* loader,
+                       CGUIDialogProgress* pDialog = nullptr) const;
     InfoRet RetrieveInfoForMusicVideo(CFileItem* pItem,
                                       bool bDirNames,
                                       ADDON::ScraperPtr& scraper,
@@ -379,7 +508,7 @@ namespace KODI::VIDEO
                                       bool useLocal);
 
     std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(
-        CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag);
+        CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag) const;
 
     //! Sticky - never reset, so a scanner instance is good for one scan only
     std::atomic<bool> m_bStop{false};
@@ -485,15 +614,19 @@ namespace KODI::VIDEO
                                        std::string_view directory,
                                        std::function<void(const std::string&)> f);
 
+    //! \brief Read the editions known to the library, once
+    void LoadVideoVersionTypes();
+
     /*!
      * \brief Look for the name of an edition known to the library (ex. "Director's Cut") within the
-     *        name of the folder holding a disc. The longest match wins, and a match at the very
-     *        start of the folder name is ignored as that is a movie whose title is an edition name
-     *        (ex. "The Final Cut (2004)") rather than a version of another movie.
+     *        name of the folder holding a disc, once the editions have been read. The longest match
+     *        wins, and a match at the very start of the folder name is ignored as that is a movie
+     *        whose title is an edition name (ex. "The Final Cut (2004)") rather than a version of
+     *        another movie.
      * \param[in] folderName Name of the folder holding the disc
      * \return The edition's name as held in the library, empty if none was recognised
      */
-    std::string GetEditionFromFolderName(const std::string& folderName);
+    std::string FindEditionInFolderName(const std::string& folderName) const;
 
     mutable KODI::REGEXP::RegExpCache m_regexpCache;
 

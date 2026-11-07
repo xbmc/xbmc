@@ -167,7 +167,10 @@ void CVideoInfoScannerArt::Cache(std::vector<ArtToCache> art) const
       if (a.priority == ArtPriority::LIST)
         CacheArtwork(a.url, false, a.hash);
       else
+      {
+        std::unique_lock lock(m_deferredArtLock);
         m_deferredArt.push_back(std::move(a));
+      }
     }
     return;
   }
@@ -215,6 +218,7 @@ void CVideoInfoScannerArt::Cache(std::vector<ArtToCache> art) const
 
 void CVideoInfoScannerArt::FlushDeferred()
 {
+  std::unique_lock lock(m_deferredArtLock);
   DedupeArt(m_deferredArt);
   if (m_deferredArt.empty())
     return;

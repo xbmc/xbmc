@@ -2253,7 +2253,7 @@ TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
   const CDateTime modified{CFileUtils::GetModificationDate(path, false)};
   ASSERT_TRUE(modified.IsValid());
 
-  m_db.PrepareDateAdded(path);
+  m_db.PrepareDateAdded(path, CVideoDatabase::ReadDateAdded(path));
   // Gone once the date is known, so that it can't be read again
   ASSERT_TRUE(XFILE::CFile::Delete(path));
   const int idFile{m_db.AddFile(path)};

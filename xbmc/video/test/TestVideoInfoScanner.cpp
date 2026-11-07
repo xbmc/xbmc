@@ -181,6 +181,8 @@ public:
 
   //! Looks the videos up with this scraper, which the add-on manager doesn't know of. The path's
   //! scraper is looked for here before it is asked.
+  using CVideoInfoScanner::CanLookUpMovieAlongside;
+
   void UseScraper(const ADDON::ScraperPtr& scraper)
   {
     m_scraperCache.try_emplace(scraper->ID() + ADDON::TranslateContent(scraper->Content()),
@@ -636,6 +638,13 @@ protected:
   {
     Found(title);
     Details(title, "<error/>");
+  }
+
+  //! The title is found, with details titling it "<title> from the scraper"
+  static void FoundFromTheScraper(const std::string& title)
+  {
+    Found(title);
+    Details(title, "<details><title>" + title + " from the scraper</title></details>");
   }
 
   bool IsExtraOf(const std::string& path, int idMovie)
@@ -1383,6 +1392,87 @@ TEST_F(TestVideoInfoScanner, AMovieIsAddedFromTheScraper)
 
   EXPECT_GT(m_db.GetMovieId(movie), 0);
   EXPECT_EQ("Film from the scraper", m_db.GetSingleValue("SELECT c00 FROM movie"));
+}
+
+// The movies of a folder are looked up alongside each other, and each is added with its own
+// details, one whose search failed among them
+TEST_F(TestVideoInfoScanner, TheMoviesOfAFolderAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  std::vector<std::string> movies;
+  constexpr int count{8};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    if (movie == 4)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    movies.emplace_back(File(m_root, name + ".mkv"));
+  }
+
+  Scan();
+
+  EXPECT_EQ(count - 1, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(movies[movie - 1])};
+    if (movie == 4)
+    {
+      EXPECT_EQ(-1, idMovie);
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+  }
+  // A failed search leaves the folder to be looked at again
+  EXPECT_FALSE(Record(m_root).starts_with("2|"));
+}
+
+TEST_F(TestVideoInfoScanner, ADiscIsLookedUpAlongsideOtherMovies)
+{
+  const TestScanner scanner{m_settings};
+
+  EXPECT_TRUE(
+      scanner.CanLookUpMovieAlongside(CFileItem{DvdRip(Folder(m_root, "Film (2010)")), false}));
+  EXPECT_TRUE(scanner.CanLookUpMovieAlongside(
+      CFileItem{URIUtils::AddFileToFolder(m_root, "Other (2011).iso"), false}));
+}
+
+TEST_F(TestVideoInfoScanner, TheDiscsOfFoldersBesideEachOtherAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
+  std::vector<std::string> folders;
+  std::vector<std::string> discs;
+  constexpr int count{4};
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const std::string name{"Film" + std::to_string(movie)};
+    folders.emplace_back(Folder(m_root, name));
+    if (movie == 2)
+      SearchFails(name);
+    else
+      FoundFromTheScraper(name);
+    discs.emplace_back(DvdRip(folders.back()));
+  }
+
+  Scan();
+
+  EXPECT_EQ(count - 1, CountMovies());
+  for (int movie = 1; movie <= count; ++movie)
+  {
+    const int idMovie{m_db.GetMovieId(discs[movie - 1])};
+    if (movie == 2)
+    {
+      EXPECT_EQ(-1, idMovie);
+      // A failed search leaves its folder to be looked at again
+      std::string record;
+      EXPECT_FALSE(m_db.GetPathHash(folders[movie - 1], record) && record.starts_with("2|"));
+      continue;
+    }
+    ASSERT_GT(idMovie, 0) << movie;
+    EXPECT_EQ("Film" + std::to_string(movie) + " from the scraper", m_db.GetMovieTitle(idMovie));
+  }
 }
 
 TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
@@ -2408,6 +2498,42 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeWhoseDetailsFailedIsLookedUpAgain)
 
   EXPECT_GT(m_db.GetEpisodeId(first, 1, 1), 0);
   EXPECT_EQ(2, CountEpisodes());
+}
+
+// The episodes of a show are looked up alongside each other, and each is added with its own details
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAShowAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  const std::string show{Folder(m_root, "Show")};
+  File(show, "tvshow.nfo",
+       "<tvshow><title>Show</title><episodeguide><url cache=\"guide.xml\">"
+       "http://scraper.invalid/guide</url></episodeguide></tvshow>");
+  const std::string season{Folder(show, "Season 1")};
+  std::string guide{"<episodeguide>"};
+  std::vector<std::string> files;
+  constexpr int episodes{8};
+  for (int episode = 1; episode <= episodes; ++episode)
+  {
+    const std::string name{"episode" + std::to_string(episode)};
+    guide += "<episode><title>" + name + "</title><url cache=\"" + name + ".xml\">" +
+             "http://scraper.invalid/" + name + "</url><epnum>" + std::to_string(episode) +
+             "</epnum><season>1</season></episode>";
+    ScraperFile(name + ".xml",
+                "<details><title>Title " + std::to_string(episode) + "</title></details>");
+    files.emplace_back(File(season, "Show S01E0" + std::to_string(episode) + ".mkv"));
+  }
+  ScraperFile("guide.xml", guide + "</episodeguide>");
+
+  Scan();
+
+  ASSERT_EQ(episodes, CountEpisodes());
+  for (int episode = 1; episode <= episodes; ++episode)
+  {
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetEpisodeInfo(files[episode - 1], tag,
+                                    m_db.GetEpisodeId(files[episode - 1], episode, 1)));
+    EXPECT_EQ("Title " + std::to_string(episode), tag.m_strTitle);
+  }
 }
 
 // A show's episodes are looked up in the episode guide stored when it was added, which only the

@@ -66,6 +66,26 @@ public:
 
   static void ShowErrorDialog(const ADDON::CScraperError &sce);
 
+  /*!
+   \brief While one lives, the errors the scraper reports on its thread are kept for it rather than
+   shown. A scan that looks videos up on several threads shows each video's in turn, as it adds them.
+   */
+  class CKeptErrors
+  {
+  public:
+    CKeptErrors();
+    ~CKeptErrors();
+    CKeptErrors(const CKeptErrors&) = delete;
+    CKeptErrors& operator=(const CKeptErrors&) = delete;
+
+    std::vector<ADDON::CScraperError> Take() { return std::move(m_errors); }
+
+  private:
+    friend class CVideoInfoDownloader;
+    CKeptErrors* m_previous{nullptr};
+    std::vector<ADDON::CScraperError> m_errors;
+  };
+
 protected:
   enum LOOKUP_STATE { DO_NOTHING = 0,
                       FIND_MOVIE = 1,

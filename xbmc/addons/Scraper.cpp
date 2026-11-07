@@ -181,6 +181,7 @@ bool CScraper::Supports(ContentType content) const
 
 bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
 {
+  std::unique_lock lock(m_callSection);
   m_pathContent = content;
   if (!LoadSettings(false, false))
     return false;
@@ -195,6 +196,7 @@ bool CScraper::SetPathSettings(ContentType content, const std::string& xml)
 
 std::string CScraper::GetPathSettings()
 {
+  std::unique_lock lock(m_callSection);
   if (!LoadSettings(false, true))
     return "";
 
@@ -209,6 +211,7 @@ std::string CScraper::GetPathSettings()
 
 void CScraper::ClearCache() const
 {
+  std::unique_lock lock(m_callSection);
   std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers");
 
   // create scraper cache dir if needed
@@ -349,6 +352,7 @@ std::string CScraper::InternalRun(const std::string& function,
 
 std::string CScraper::GetPathSettingsAsJSON()
 {
+  std::unique_lock lock(m_callSection);
   static const std::string EmptyPathSettings = "{}";
 
   if (!LoadSettings(false, true))
@@ -364,6 +368,7 @@ std::string CScraper::GetPathSettingsAsJSON()
 
 bool CScraper::Load()
 {
+  std::unique_lock lock(m_callSection);
   if (m_fLoaded || m_isPython)
     return true;
 
@@ -428,6 +433,7 @@ bool CScraper::IsInUse() const
 
 bool CScraper::IsNoop()
 {
+  std::unique_lock lock(m_callSection);
   if (!Load())
     throw CScraperError();
 
@@ -438,6 +444,7 @@ bool CScraper::IsNoop()
 // and may populate strId, or throws CScraperError on error
 CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 {
+  std::unique_lock lock(m_callSection);
   CScraperUrl scurlRet;
 
   if (IsNoop())
@@ -525,6 +532,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 
 CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
 {
+  std::unique_lock lock(m_callSection);
   CScraperUrl scurlRet;
 
   if (m_isPython)
@@ -956,6 +964,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::IHttpClient& fcurl,
                                              int movieYear,
                                              bool fFirst)
 {
+  std::unique_lock lock(m_callSection);
   // The title is cleaned below, so the arguments as given identify the search
   const std::string key{StringUtils::Format("{}\n{}\n{}", movieTitle, movieYear, fFirst)};
   if (const auto it = m_findCache.find(key); it != m_findCache.end())
@@ -1133,6 +1142,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
                                                  const std::string& sAlbum,
                                                  const std::string& sArtist)
 {
+  std::unique_lock lock(m_callSection);
   CLog::LogF(LOGDEBUG,
              "Searching for '{} - {}' using {} scraper (path: '{}', content: '{}', version: '{}')",
              sArtist, sAlbum, Name(), Path(), Content(), Version().asString());
@@ -1233,6 +1243,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
 std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
                                                    const std::string& sArtist)
 {
+  std::unique_lock lock(m_callSection);
   CLog::LogF(LOGDEBUG,
              "Searching for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              sArtist, Name(), Path(), Content(), Version().asString());
@@ -1318,6 +1329,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
 // fetch list of episodes from URL (from video database)
 VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl)
 {
+  std::unique_lock lock(m_callSection);
   VIDEO::EPISODELIST vcep;
   if (!scurl.HasUrls())
     return vcep;
@@ -1420,6 +1432,7 @@ bool CScraper::GetVideoDetails(XFILE::IHttpClient& fcurl,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)
 {
+  std::unique_lock lock(m_callSection);
   // The id as well as the url, since an xml scraper is given both and two search results can
   // carry the same url under different ids
   const std::string key{Keyed(scurl.GetId()) + SerialiseUrls(scurl) + (fMovie ? "m" : "e") +
@@ -1500,6 +1513,7 @@ bool CScraper::GetVideoDetailsUncached(XFILE::IHttpClient& fcurl,
 // takes a URL; returns true and populates album on success, false otherwise
 bool CScraper::GetAlbumDetails(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl, CAlbum& album)
 {
+  std::unique_lock lock(m_callSection);
   CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
@@ -1532,6 +1546,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
                                 const std::string& sSearch,
                                 CArtist& artist)
 {
+  std::unique_lock lock(m_callSection);
   if (!scurl.HasUrls())
     return false;
 
@@ -1569,6 +1584,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
 
 bool CScraper::GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details)
 {
+  std::unique_lock lock(m_callSection);
   if (!details.HasUniqueID())
     return false;
 
