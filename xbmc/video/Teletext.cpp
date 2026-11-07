@@ -709,7 +709,20 @@ bool CTeletextDecoder::InitDecoder()
   m_RenderInfo.TranspMode = false;
   m_LastPage              = 0x100;
 
+  std::unique_lock lock(m_txtCache->m_critSection);
+  m_SubtitleFlushGeneration = m_txtCache->FlushGeneration;
+
   return true;
+}
+
+void CTeletextDecoder::InvalidateSubtitleCache()
+{
+  for (TextSubtitleCache_t* const entry : m_RenderInfo.SubtitleCache)
+  {
+    if (entry)
+      entry->Valid = false;
+  }
+  m_RenderInfo.DelayStarted = false;
 }
 
 void CTeletextDecoder::EndDecoder()
@@ -1181,10 +1194,25 @@ void CTeletextDecoder::RenderCatchedPage()
 
 void CTeletextDecoder::RenderPage()
 {
+  const auto appPlayer = CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>();
+  const bool hasDisplayClock = appPlayer != nullptr;
+  const int64_t currentDisplayTime = appPlayer ? appPlayer->GetTime() : 0;
+
   std::unique_lock lock(m_txtCache->m_critSection);
+
+  // The demuxer side was flushed (seek, stream change, ...). Any subtitle still waiting for its
+  // display time belongs to the old playback position, so drop it before evaluating anything
+  if (m_txtCache->FlushGeneration != m_SubtitleFlushGeneration)
+  {
+    m_SubtitleFlushGeneration = m_txtCache->FlushGeneration;
+    InvalidateSubtitleCache();
+  }
 
   int StartRow = 0;
   int national_subset_bak = m_txtCache->NationalSubset;
+  const int64_t subtitleDelayMs =
+      std::chrono::duration_cast<std::chrono::milliseconds>(m_RenderInfo.SubtitleDelay * 1s)
+          .count();
 
   if (m_txtCache->PageUpdate)
     m_updateTexture = true;
@@ -1192,9 +1220,20 @@ void CTeletextDecoder::RenderPage()
   /* update page or timestring */
   if (m_txtCache->PageUpdate && m_txtCache->PageReceiving != m_txtCache->Page && m_RenderInfo.InputCounter == 2)
   {
-    /* reset update flag */
+    const bool isSubtitlePage = IsSubtitlePage(m_txtCache->Page);
+
+    // Packet timing is single use and only valid for the page the packet updated.
+    // If the user navigated to another page since the packet was decoded, ignore it.
+    const bool hasPacketDisplayTime =
+        m_txtCache->PageUpdateHasDisplayTime && m_txtCache->PageUpdatePage == m_txtCache->Page;
+
+    // Reset update flag and consume packet timing
     m_txtCache->PageUpdate = false;
-    if (m_RenderInfo.Boxed && m_RenderInfo.SubtitleDelay)
+    m_txtCache->PageUpdateHasDisplayTime = false;
+    m_txtCache->PageUpdatePage = -1;
+
+    if (isSubtitlePage &&
+        (hasPacketDisplayTime || m_RenderInfo.SubtitleDelay || m_RenderInfo.Boxed))
     {
       TextSubtitleCache_t* c = NULL;
       int j = -1;
@@ -1222,6 +1261,21 @@ void CTeletextDecoder::RenderPage()
       }
       c->Valid = true;
       c->Timestamp = std::chrono::steady_clock::now();
+      if (hasPacketDisplayTime)
+      {
+        c->HasDisplayTime = true;
+        c->DisplayTime = m_txtCache->PageUpdateDisplayTime + subtitleDelayMs;
+      }
+      else if (hasDisplayClock && m_RenderInfo.SubtitleDelay)
+      {
+        c->HasDisplayTime = true;
+        c->DisplayTime = currentDisplayTime + subtitleDelayMs;
+      }
+      else
+      {
+        c->HasDisplayTime = false;
+        c->DisplayTime = 0;
+      }
 
       if (m_txtCache->SubPageTable[m_txtCache->Page] != 0xFF)
       {
@@ -1230,6 +1284,27 @@ void CTeletextDecoder::RenderPage()
         {
           m_RenderInfo.Boxed = p->boxed;
         }
+      }
+      const bool delayedByWallClock =
+          !hasDisplayClock && !c->HasDisplayTime && m_RenderInfo.SubtitleDelay;
+      const auto now = delayedByWallClock ? std::chrono::steady_clock::now()
+                                          : std::chrono::steady_clock::time_point{};
+
+      if ((!c->HasDisplayTime || currentDisplayTime >= c->DisplayTime) &&
+          (hasDisplayClock || !c->HasDisplayTime))
+      {
+        if (delayedByWallClock &&
+            std::chrono::duration_cast<std::chrono::seconds>(now - c->Timestamp).count() <
+                m_RenderInfo.SubtitleDelay)
+        {
+          m_RenderInfo.DelayStarted = true;
+          return;
+        }
+        memcpy(m_RenderInfo.PageChar, c->PageChar, 40 * 25);
+        memcpy(m_RenderInfo.PageAtrb, c->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
+        DoRenderPage(StartRow, national_subset_bak);
+        InvalidateSubtitleCache();
+        return;
       }
       m_RenderInfo.DelayStarted = true;
       return;
@@ -1261,19 +1336,47 @@ void CTeletextDecoder::RenderPage()
   {
     if (m_RenderInfo.DelayStarted)
     {
-      auto now = std::chrono::steady_clock::now();
-      for (TextSubtitleCache_t* const subtitleCache : m_RenderInfo.SubtitleCache)
+      const auto now = std::chrono::steady_clock::now();
+
+      auto isEligible = [&](const TextSubtitleCache_t* c)
       {
-        if (subtitleCache && subtitleCache->Valid &&
-            std::chrono::duration_cast<std::chrono::seconds>(now - subtitleCache->Timestamp)
-                    .count() >= m_RenderInfo.SubtitleDelay)
+        if (c->HasDisplayTime)
+          return hasDisplayClock && currentDisplayTime >= c->DisplayTime;
+
+        return !(!hasDisplayClock && m_RenderInfo.SubtitleDelay &&
+                 std::chrono::duration_cast<std::chrono::seconds>(now - c->Timestamp).count() <
+                     m_RenderInfo.SubtitleDelay);
+      };
+
+      auto isNewer = [](const TextSubtitleCache_t* a, const TextSubtitleCache_t* b)
+      {
+        if (a->HasDisplayTime && b->HasDisplayTime)
+          return a->DisplayTime > b->DisplayTime;
+
+        return a->Timestamp > b->Timestamp; // arrival order as fallback
+      };
+
+      TextSubtitleCache_t* latest = nullptr;
+      for (TextSubtitleCache_t* const c : m_RenderInfo.SubtitleCache)
+      {
+        if (c && c->Valid && isEligible(c) && (!latest || isNewer(c, latest)))
+          latest = c;
+      }
+
+      if (latest)
+      {
+        // Drop overdue entries; keep scheduled future entries
+        for (TextSubtitleCache_t* const c : m_RenderInfo.SubtitleCache)
         {
-          memcpy(m_RenderInfo.PageChar, subtitleCache->PageChar, 40 * 25);
-          memcpy(m_RenderInfo.PageAtrb, subtitleCache->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
-          DoRenderPage(StartRow, national_subset_bak);
-          subtitleCache->Valid = false;
-          return;
+          if (c && c->Valid && c != latest && isEligible(c))
+            c->Valid = false;
         }
+
+        memcpy(m_RenderInfo.PageChar, latest->PageChar, 40 * 25);
+        memcpy(m_RenderInfo.PageAtrb, latest->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
+        DoRenderPage(StartRow, national_subset_bak);
+        latest->Valid = false;
+        return;
       }
     }
     if (m_RenderInfo.ZoomMode != 2)
