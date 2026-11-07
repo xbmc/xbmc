@@ -18,11 +18,15 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/GameUtils.h"
+#include "games/library/GameNameInfo.h"
 #include "games/library/GameNameParser.h"
+#include "games/library/GameVersions.h"
+#include "games/library/ReleasePolicy.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -37,8 +41,13 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
 
 #include <algorithm>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace KODI;
 using namespace GAME;
@@ -50,23 +59,26 @@ using KODI::MEDIA::MediaSection;
 
 namespace
 {
-// "Legend of Zelda, The - A Link to the Past (USA, Europe).sfc" is "The Legend of
-// Zelda - A Link to the Past", released in the USA and Europe
-void SetInfoFromFileName(CGameInfoTag& tag, const std::string& path)
+//! The paths of a game's versions, the listed one first, on the item that lists it
+const std::string PROPERTY_VERSIONS = "gameversions";
+
+// Lists each game once, as the version the policy picks, and keeps the paths
+// of all its versions for "Choose version"
+void ShowOneVersionPerGame(CFileItemList& items,
+                           const std::vector<CFileItemPtr>& files,
+                           const std::vector<ParsedGameName>& names,
+                           const CReleasePolicy& policy)
 {
-  const ParsedGameName name = CGameNameParser::ParsePath(path);
-  if (name.displayTitle.empty())
-    return;
+  for (const std::vector<size_t>& versions : CGameVersions::Group(names, policy))
+  {
+    CVariant paths(CVariant::VariantTypeArray);
+    for (size_t version : versions)
+      paths.push_back(files[version]->GetPath());
+    files[versions.front()]->SetProperty(PROPERTY_VERSIONS, paths);
 
-  tag.SetTitle(name.displayTitle);
-  if (name.year > 0)
-    tag.SetYear(static_cast<unsigned int>(name.year));
-  tag.SetPublisher(name.publisher);
-
-  std::vector<std::string> regions;
-  for (const GameRegion& region : name.regions)
-    regions.emplace_back(CGameNameParser::RegionName(region));
-  tag.SetRegion(StringUtils::Join(regions, ", "));
+    for (size_t i = 1; i < versions.size(); ++i)
+      items.Remove(files[versions[i]].get());
+  }
 }
 } // namespace
 
@@ -203,6 +215,9 @@ void CGUIWindowGames::GetContextButtons(int itemNumber, CContextButtons& buttons
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
       }
 
+      if (item->GetProperty(PROPERTY_VERSIONS).size() > 1)
+        buttons.Add(CONTEXT_BUTTON_CHOOSE_GAME_VERSION, 35724); // "Choose version"
+
       // Offered on folders as well as games: setting one on a folder is the
       // point, and a game only overrides the folder it sits in
       if (item->IsFolder() || CanPlay(*item))
@@ -243,6 +258,9 @@ bool CGUIWindowGames::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         return true;
       case CONTEXT_BUTTON_SET_DEFAULT_EMULATOR:
         CGameUtils::ChooseAndSetDefaultGameClient(*item);
+        return true;
+      case CONTEXT_BUTTON_CHOOSE_GAME_VERSION:
+        ChooseVersionAndPlay(*item);
         return true;
       case CONTEXT_BUTTON_INFO:
         CGUIDialogAddonInfo::ShowForItem(item);
@@ -349,8 +367,11 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
 
   // Plugins and add-ons give their own titles
   const bool namedByFile = !items.IsPlugin() && !items.IsAddonsPath();
-  const bool replaceLabels =
-      namedByFile && CServiceBroker::GetGameServices().GameSettings().ReplaceLabels();
+  CGameSettings& gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  const bool replaceLabels = namedByFile && gameSettings.ReplaceLabels();
+
+  std::vector<CFileItemPtr> files;
+  std::vector<ParsedGameName> names;
 
   for (const CFileItemPtr& item : items)
   {
@@ -361,10 +382,21 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
     CGameInfoTag& tag = *item->GetGameInfoTag();
     if (namedByFile && tag.GetTitle().empty())
     {
-      SetInfoFromFileName(tag, item->GetPath());
+      ParsedGameName name = CGameNameParser::ParsePath(item->GetPath());
+      CGameNameInfo::SetInfoTag(tag, name);
       if (replaceLabels && !tag.GetTitle().empty())
         item->SetLabel(tag.GetTitle());
+      files.emplace_back(item);
+      names.emplace_back(std::move(name));
     }
+  }
+
+  // Listed by file name, every version stays: one name can't stand for the others
+  if (replaceLabels && gameSettings.OneVersionPerGame())
+  {
+    const CReleasePolicy policy(CReleasePolicy::RegionPriority(
+        {GameRegion::Make(gameSettings.Region()), GameRegion::Make(gameSettings.SecondRegion())}));
+    ShowOneVersionPerGame(items, files, names, policy);
   }
 
   return true;
@@ -411,6 +443,40 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
       CGUIDialogAddonInfo::ShowForItem(item);
   }
 
+}
+
+void CGUIWindowGames::ChooseVersionAndPlay(const CFileItem& item)
+{
+  const CVariant paths = item.GetProperty(PROPERTY_VERSIONS);
+
+  CFileItemList versions;
+  for (auto it = paths.begin_array(); it != paths.end_array(); ++it)
+  {
+    const std::string path = it->asString();
+    const ParsedGameName name = CGameNameParser::ParsePath(path);
+    auto version = std::make_shared<CFileItem>(path, false);
+    CGameNameInfo::SetInfoTag(*version->GetGameInfoTag(), name);
+    version->SetLabel(CGameNameInfo::VersionLabel(name));
+    version->SetLabel2(URIUtils::GetFileName(path));
+    versions.Add(version);
+  }
+  if (versions.IsEmpty())
+    return;
+
+  auto* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+      WINDOW_DIALOG_SELECT);
+  if (dialog == nullptr)
+    return;
+
+  dialog->Reset();
+  dialog->SetHeading(CVariant{35724}); // "Choose version"
+  dialog->SetItems(versions);
+  dialog->SetUseDetails(true);
+  dialog->SetSelected(0);
+  dialog->Open();
+
+  if (dialog->IsConfirmed() && dialog->GetSelectedFileItem())
+    PlayGame(*dialog->GetSelectedFileItem());
 }
 
 bool CGUIWindowGames::PlayGame(const CFileItem& item)

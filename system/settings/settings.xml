@@ -2929,6 +2929,82 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="gamesgeneral.oneversion" type="boolean" label="35720" help="35721">
+          <level>1</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="gamesgeneral.replacelabels">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="gamesgeneral.region" type="string" label="35722" help="35723">
+          <level>1</level>
+          <default>auto</default>
+          <constraints>
+            <options>
+              <option label="35756">auto</option>
+              <option label="35725">150</option>
+              <option label="35726">GB</option>
+              <option label="35727">DE</option>
+              <option label="35728">FR</option>
+              <option label="35729">ES</option>
+              <option label="35730">IT</option>
+              <option label="35731">AU</option>
+              <option label="35732">US</option>
+              <option label="35733">CA</option>
+              <option label="35734">BR</option>
+              <option label="35735">JP</option>
+              <option label="35736">KR</option>
+              <option label="35752">CN</option>
+              <option label="35753">TW</option>
+              <option label="35754">HK</option>
+              <option label="35755">IN</option>
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="gamesgeneral.replacelabels">true</condition>
+                <condition setting="gamesgeneral.oneversion">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="gamesgeneral.secondregion" type="string" label="35757" help="35758">
+          <level>1</level>
+          <default>none</default>
+          <constraints>
+            <options>
+              <option label="231">none</option>
+              <option label="35725">150</option>
+              <option label="35726">GB</option>
+              <option label="35727">DE</option>
+              <option label="35728">FR</option>
+              <option label="35729">ES</option>
+              <option label="35730">IT</option>
+              <option label="35731">AU</option>
+              <option label="35732">US</option>
+              <option label="35733">CA</option>
+              <option label="35734">BR</option>
+              <option label="35735">JP</option>
+              <option label="35736">KR</option>
+              <option label="35752">CN</option>
+              <option label="35753">TW</option>
+              <option label="35754">HK</option>
+              <option label="35755">IN</option>
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="gamesgeneral.replacelabels">true</condition>
+                <condition setting="gamesgeneral.oneversion">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
       </group>
     </category>
     <category id="gamesachievements" label="15312">

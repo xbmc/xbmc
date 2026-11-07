@@ -20160,7 +20160,241 @@ msgctxt "#35719"
 msgid "Applies the next time you load the game."
 msgstr ""
 
-#empty strings from id 35720 to 35999
+#. Label of a setting in Settings > Games > General
+#: system/settings/settings.xml
+msgctxt "#35720"
+msgid "Show one version of each game"
+msgstr ""
+
+#. Help text for setting "Show one version of each game" of label #35720
+#: system/settings/settings.xml
+msgctxt "#35721"
+msgid "List a game once when a folder holds several versions of it, such as releases for different regions, revisions or hacks. The best version plays, a finished, good dump for the preferred region where there is one, and \"Choose version\" in the context menu plays another."
+msgstr ""
+
+#. Label of a setting in Settings > Games > General
+#: system/settings/settings.xml
+msgctxt "#35722"
+msgid "Preferred region"
+msgstr ""
+
+#. Help text for setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35723"
+msgid "Where you play. Of a game's finished, good versions, the one from here plays, or failing that one for its wider region or the whole world. Automatic follows the region in Settings > Interface > Regional."
+msgstr ""
+
+#. Context menu item for a game with several versions, and the heading of the list of them
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35724"
+msgid "Choose version"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35725"
+msgid "Europe"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35726"
+msgid "United Kingdom"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35727"
+msgid "Germany"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35728"
+msgid "France"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35729"
+msgid "Spain"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35730"
+msgid "Italy"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35731"
+msgid "Australia"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35732"
+msgid "USA"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35733"
+msgid "Canada"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35734"
+msgid "Brazil"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35735"
+msgid "Japan"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35736"
+msgid "South Korea"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35737"
+msgid "Hack"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35738"
+msgid "Fan translation"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35739"
+msgid "Beta"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35740"
+msgid "Prototype"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35741"
+msgid "Sample"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35742"
+msgid "Demo"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35743"
+msgid "Alpha"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35744"
+msgid "Debug"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35745"
+msgid "Program"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35746"
+msgid "Unlicensed"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35747"
+msgid "Aftermarket"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35748"
+msgid "Homebrew"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35749"
+msgid "Pirate"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35750"
+msgid "Alternate"
+msgstr ""
+
+#. Describes one version of a game in the list of its versions
+#: xbmc/games/windows/GUIWindowGames.cpp
+msgctxt "#35751"
+msgid "Bad dump"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35752"
+msgid "China"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35753"
+msgid "Taiwan"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35754"
+msgid "Hong Kong"
+msgstr ""
+
+#. A region in the list of setting "Preferred region" of label #35722
+#: system/settings/settings.xml
+msgctxt "#35755"
+msgid "India"
+msgstr ""
+
+#. A choice in the list of setting "Preferred region" of label #35722: the region set in Settings > Interface > Regional
+#: system/settings/settings.xml
+msgctxt "#35756"
+msgid "Automatic"
+msgstr ""
+
+#. Label of a setting in Settings > Games > General
+#: system/settings/settings.xml
+msgctxt "#35757"
+msgid "Second choice"
+msgstr ""
+
+#. Help text for setting "Second choice" of label #35757
+#: system/settings/settings.xml
+msgctxt "#35758"
+msgid "The region whose versions play when a game has none for your preferred region, before Europe, USA and Japan in turn."
+msgstr ""
+
+#empty strings from id 35759 to 35999
 
 #: xbmc/peripherals/devices/PeripheralCecAdapter.cpp
 msgctxt "#36000"
