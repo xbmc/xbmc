@@ -149,6 +149,10 @@
         "ControlPVR": {
           "type": "boolean",
           "required": true
+        },
+        "WriteSetting": {
+          "type": "boolean",
+          "required": true
         }
       }
     }
