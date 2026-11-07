@@ -7,10 +7,15 @@
  */
 
 #include "TestUtils.h"
+
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "platform/Filesystem.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -23,6 +28,8 @@
 #endif
 
 #include <system_error>
+
+#include <gtest/gtest.h>
 
 namespace fs = KODI::PLATFORM::FILESYSTEM;
 
@@ -317,4 +324,35 @@ std::string CXBMCTestUtils::getNewLineCharacters() const
 #else
   return "\n";
 #endif
+}
+
+namespace
+{
+std::shared_ptr<CSettings> CurrentSettings()
+{
+  return CServiceBroker::GetSettingsComponent()->GetSettings();
+}
+} // namespace
+
+CScopedSetting::CScopedSetting(const std::string& id)
+  : m_id(id),
+    m_previous(CurrentSettings()->GetSetting(id)->ToString())
+{
+}
+
+CScopedSetting::CScopedSetting(const std::string& id, bool value) : CScopedSetting(id)
+{
+  if (!CurrentSettings()->SetBool(id, value))
+    ADD_FAILURE() << "could not set " << id;
+}
+
+CScopedSetting::CScopedSetting(const std::string& id, const std::string& value) : CScopedSetting(id)
+{
+  if (!CurrentSettings()->SetString(id, value))
+    ADD_FAILURE() << "could not set " << id;
+}
+
+CScopedSetting::~CScopedSetting()
+{
+  CurrentSettings()->GetSetting(m_id)->FromString(m_previous);
 }
