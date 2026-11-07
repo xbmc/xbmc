@@ -20,8 +20,8 @@ namespace KODI::VIDEO
 
  A look-up mostly waits: on the scraper, on the file system, on the file's streams. The calling
  thread writes the videos to the library as they are handed back, so a look-up neither writes to
- the database nor shows a dialog. A few look-ups at most run ahead of the video being handed back,
- so that a slow one holds no more than those back.
+ the database nor shows a dialog. A bounded number of look-ups run ahead of the video being handed
+ back, so that a slow one holds no more than those back.
  */
 class CVideoLookups
 {
