@@ -12,8 +12,7 @@ endif
 # configuration settings
 CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson setup \
 	--buildtype=$(MESON_BUILD_TYPE) \
-	--prefix=$(PREFIX) \
-  -Dtests=disabled
+	--prefix=$(PREFIX)
 
 export CC CXX CFLAGS CXXFLAGS
 
