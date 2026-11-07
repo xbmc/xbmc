@@ -48,6 +48,7 @@
 #include "video/jobs/VideoLibraryResetResumePointJob.h"
 
 #include <algorithm>
+#include <atomic>
 #include <filesystem>
 #include <iterator>
 #include <map>
@@ -2116,6 +2117,38 @@ TEST_F(TestPlayStateAnnouncements, AnnouncesAFileWithoutCredentials)
   const auto files{m_announcements->Files()};
   ASSERT_EQ(1u, files.size());
   EXPECT_EQ("smb://server/videos/film.mkv", files[0].data["file"].asString());
+}
+
+// A clean stopped, as with the scan it is part of, removes nothing and ends its transaction
+TEST_F(TestVideoDatabaseClean, AStoppedCleanRemovesNothing)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string gone{File(Folder(movies, "Film (2010)"), "Film (2010).mkv")};
+  const int idMovie{AddMovie(gone)};
+  ASSERT_GT(idMovie, 0);
+  ASSERT_TRUE(XFILE::CFile::Delete(gone));
+
+  const std::atomic<bool> stop{true};
+  m_db.CleanDatabase(nullptr, {}, false, &stop);
+
+  EXPECT_FALSE(m_db.InTransaction());
+  EXPECT_EQ(idMovie, m_db.GetMovieId(gone));
+}
+
+TEST_F(TestVideoDatabaseClean, AStoppedCleanOfALibraryWithoutFilesRemovesNothing)
+{
+  const std::string movies{Folder(m_root, "movies")};
+  AddSource(movies, "movies");
+  const std::string gone{Folder(movies, "Film (2010)")};
+  ASSERT_TRUE(m_db.SetPathHash(gone, "hash"));
+  ASSERT_TRUE(XFILE::CDirectory::Remove(gone));
+
+  const std::atomic<bool> stop{true};
+  m_db.CleanDatabase(nullptr, {}, false, &stop);
+
+  EXPECT_FALSE(m_db.InTransaction());
+  EXPECT_GE(m_db.GetPathId(gone), 0);
 }
 
 // Writes made later on the connection would otherwise never be committed

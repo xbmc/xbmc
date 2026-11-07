@@ -39,6 +39,7 @@
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "tags/SetInfoTagLoaderFactory.h"
@@ -207,7 +208,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (!m_bStop)
         {
           std::set<int> paths;
-          m_database.CleanDatabase(m_handle, paths, false);
+          m_database.CleanDatabase(m_handle, paths, false, &m_bStop);
         }
 
         if (m_handle)
@@ -246,6 +247,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
          * occurs.
          */
         std::string directory = *m_pathsToScan.begin();
+        m_progress.Start(m_pathsToScan, directory);
         if (m_bStop)
         {
           bCancelled = true;
@@ -260,6 +262,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           CLog::LogF(LOGWARNING, "directory '{}' does not exist - skipping scan{}.",
                      CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
           m_pathsToScan.erase(directory);
+          m_progress.Finished();
 
           SkipRelatedDirectories(directory);
         }
@@ -282,6 +285,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             const bool countMissing{CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG)};
             auto f{[this, &missing, countMissing](const std::string& dir)
                    {
+                     m_progress.Finished();
                      if (m_bClean)
                        m_pathsToClean.insert(m_database.GetPathId(dir));
 
@@ -304,7 +308,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         // An empty set cleans the whole library, which a scan of part of it must not do
         if (m_bClean && !(m_scanSubtree && m_pathsToClean.empty()))
-          m_database.CleanDatabase(m_handle, m_pathsToClean, false);
+          m_database.CleanDatabase(m_handle, m_pathsToClean, false, &m_bStop);
         else
         {
           if (m_handle)
@@ -385,6 +389,32 @@ CVideoInfoScanner::~CVideoInfoScanner()
       m_database.Interrupt();
 
     m_bStop = true;
+    m_downloads.CancelAll();
+  }
+
+  void CVideoInfoScanner::CDownloads::CancelAll()
+  {
+    std::unique_lock lock(m_lock);
+    m_cancelled = true;
+    for (CVideoInfoDownloader* downloader : m_downloaders)
+      downloader->Cancel();
+  }
+
+  CVideoInfoScanner::CDownloads::CRegistration::CRegistration(CDownloads& downloads,
+                                                              CVideoInfoDownloader& downloader)
+    : m_downloads(downloads),
+      m_downloader(downloader)
+  {
+    std::unique_lock lock(m_downloads.m_lock);
+    m_downloads.m_downloaders.insert(&m_downloader);
+    if (m_downloads.m_cancelled)
+      m_downloader.Cancel();
+  }
+
+  CVideoInfoScanner::CDownloads::CRegistration::~CRegistration()
+  {
+    std::unique_lock lock(m_downloads.m_lock);
+    m_downloads.m_downloaders.erase(&m_downloader);
   }
 
   std::pair<CInfoScanner::ScanComplete, CInfoScanner::ContentFound> CVideoInfoScanner::DoScan(
@@ -397,7 +427,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     const std::unique_ptr<DirectoryScan> scan{PlanDirectory(strDirectory)};
     if (!scan)
+    {
+      FolderFinished();
       return std::make_pair(ScanComplete::Completed, ContentFound::None);
+    }
 
     RetrieveDirectory(*scan);
     return FinishDirectory(*scan);
@@ -458,7 +491,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping extras dir '{}'",
                 CURL::GetRedacted(strDirectory));
-      RemoveSubDirectories(m_pathsToScan, strDirectory, {});
+      m_progress.Finished(RemoveSubDirectories(m_pathsToScan, strDirectory, {}));
       return nullptr;
     }
 
@@ -488,7 +521,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         int str = content == ContentType::MOVIES ? 20317 : 20318;
         m_handle->SetTitle(StringUtils::Format(
-            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(str), info->Name()));
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(str), info->Name(),
+            SourceName(strDirectory)));
       }
 
       bool unchanged{false};
@@ -626,7 +660,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       if (m_handle)
         m_handle->SetTitle(StringUtils::Format(
-            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20319), info->Name()));
+            CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(20319), info->Name(),
+            SourceName(strDirectory)));
 
       if (foundDirectly && !settings.parent_name_root)
       {
@@ -692,7 +727,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Ignoring extras item '{}'",
                   CURL::GetRedacted(items[i]->GetPath()));
-        RemoveSubDirectories(m_pathsToScan, extrasFolder, {});
+        m_progress.Finished(RemoveSubDirectories(m_pathsToScan, extrasFolder, {}));
         items.Remove(i);
       }
     }
@@ -710,6 +745,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           RemoveSubDirectories(m_pathsToScan, folder,
                                [this](const std::string& dir)
                                {
+                                 m_progress.Finished();
                                  if (m_bClean)
                                    m_pathsToClean.insert(m_database.GetPathId(dir));
                                });
@@ -750,7 +786,57 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
 
+    CountFoldersFound(*scan);
     return scan;
+  }
+
+  void CVideoInfoScanner::CountFoldersFound(DirectoryScan& scan)
+  {
+    if (scan.content != ContentType::TVSHOWS && scan.settings.recurse <= 0)
+      return;
+
+    size_t listed{0};
+    size_t counted{0};
+    for (const auto& item : scan.items)
+    {
+      const std::string& path{item->GetPath()};
+      if (!item->IsParentFolder())
+        ++listed;
+      if (!item->IsFolder() || item->IsParentFolder() || PLAYLIST::IsPlayList(*item) ||
+          path == scan.path)
+        continue;
+      // An extras folder is added with its movie, rather than scanned
+      if (scan.content == ContentType::MOVIES && scan.settings.parent_name &&
+          !m_ignoreVideoExtras && IsVideoExtrasFolder(*item))
+        continue;
+
+      ++counted;
+      if (!m_pathsToScan.contains(path))
+        m_progress.Found();
+      if (scan.content == ContentType::TVSHOWS)
+        m_progressShows.insert(path);
+    }
+
+    // A folder of nothing but folders to scan takes no share of the bar, as its time is theirs. A
+    // tv source's folders are shows, which it looks up itself.
+    if (scan.content != ContentType::TVSHOWS && counted > 0 && counted == listed)
+    {
+      scan.leftOut = true;
+      m_progress.LeaveOut();
+    }
+  }
+
+  void CVideoInfoScanner::FolderFinished()
+  {
+    m_progress.Finished();
+    ReportProgress();
+  }
+
+  void CVideoInfoScanner::ReportProgress(float share /* = 0.f */)
+  {
+    const float percentage{m_progress.Percentage(share)};
+    if (m_handle)
+      m_handle->SetPercentage(percentage);
   }
 
   void CVideoInfoScanner::RetrieveDirectory(DirectoryScan& scan)
@@ -819,6 +905,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           RemoveSubDirectories(m_pathsToScan, folder,
                                [this](const std::string& dir)
                                {
+                                 m_progress.Finished();
                                  if (m_bClean)
                                    m_pathsToClean.insert(m_database.GetPathId(dir));
                                });
@@ -934,6 +1021,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                     CURL::GetRedacted(pItem->GetPath()));
           m_pathsToScan.erase(pItem->GetPath());
           ++m_summary.unchangedDirectories;
+          FolderFinished();
           continue;
         }
         if (alongside)
@@ -948,6 +1036,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           if (!subfolder)
           {
             ForgetListings(pItem->GetPath());
+            FolderFinished();
             continue;
           }
           if (CanScanAlongside(*subfolder))
@@ -1059,6 +1148,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                    CURL::GetRedacted(strDirectory));
     }
 
+    if (!scan.leftOut)
+      FolderFinished();
     return std::make_pair(m_bStop ? ScanComplete::Stopped : ScanComplete::Completed,
                           foundSomething || foundSomethingInArchive ? ContentFound::NewContentFound
                                                                     : ContentFound::None);
@@ -1740,10 +1831,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     MovieLookup* const lookup{lookups[index].done ? &lookups[index] : nullptr};
 
     if (info2->Content() == ContentType::MOVIES || info2->Content() == ContentType::MUSICVIDEOS)
-    {
-      if (m_handle)
-        m_handle->SetPercentage(i * 100.f / items.Size());
-    }
+      ReportProgress(static_cast<float>(i) / static_cast<float>(items.Size()));
 
     // A movie already in the library had its discs read when added, or by a refresh
     bool knownMovie{false};
@@ -1757,8 +1845,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
       type = ScanSummary::Type::MUSIC_VIDEO;
     InfoRet ret = InfoRet::CANCELLED;
     if (info2->Content() == ContentType::TVSHOWS)
+    {
       ret = RetrieveInfoForTvShow(pItem.get(), bDirNames, info2, useLocal, pURL, fetchEpisodes,
                                   pDlgProgress);
+      if (m_progressShows.erase(pItem->GetPath()))
+      {
+        m_progress.Finished(RemoveSubDirectories(m_pathsToScan, pItem->GetPath(),
+                                                 [this](const std::string& dir)
+                                                 {
+                                                   if (m_bClean)
+                                                     m_pathsToClean.insert(
+                                                         m_database.GetPathId(dir));
+                                                 }));
+        FolderFinished();
+      }
+    }
     else if (info2->Content() == ContentType::MOVIES)
     {
       knownMovie = m_database.GetMovieId(pItem->GetDynPath(), batch.folderMovies) > 0;
@@ -1840,6 +1941,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
   void CVideoInfoScanner::EndLookups(ItemLookups& batch)
   {
     m_folderMovies = nullptr;
+
+    // A show left out, or not reached as the scan stopped, is finished too
+    for (const auto& item : *batch.items)
+    {
+      if (m_progressShows.erase(item->GetPath()))
+        FolderFinished();
+    }
+
     if (batch.content == ContentType::TVSHOWS && !batch.seenPaths.empty())
     {
       std::vector<std::pair<int, std::string>> libPaths;
@@ -2797,6 +2906,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       MOVIELIST results;
       CVideoInfoDownloader imdb(info2);
+      const CDownloads::CRegistration downloading{m_downloads, imdb};
       lookup.searchResult = imdb.FindMovie(title, year, results, nullptr);
       lookup.searchFound = *lookup.searchResult > 0 && !results.empty();
       if (!lookup.searchFound)
@@ -2964,6 +3074,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (!alreadyHasArt && !item->IsPlugin() && scraper->ID() != "metadata.local")
         {
           CVideoInfoDownloader loader(scraper);
+          const CDownloads::CRegistration downloading{m_downloads, loader};
           CVideoInfoTag tag{showInfo};
           loader.GetArtwork(tag); // Can alter other fields in the tag
           showInfo.m_strPictureURL = tag.m_strPictureURL; // We only want artwork
@@ -3722,6 +3833,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return {InfoType::NONE, nullptr};
   }
 
+  std::string CVideoInfoScanner::SourceName(const std::string& folder)
+  {
+    std::vector<CMediaSource>& sources{
+        CMediaSourceSettings::GetInstance().GetSources(MEDIA::MediaSection::VIDEO)};
+    bool isSourceName{false};
+    if (const int source{CUtil::GetMatchingSource(folder, sources, isSourceName)}; source >= 0)
+      return sources[source].strName;
+
+    std::string name{folder};
+    URIUtils::RemoveSlashAtEnd(name);
+    return URIUtils::GetFileName(name);
+  }
+
   std::string CVideoInfoScanner::GetMovieSetInfoFolder(const std::string& setTitle)
   {
     if (setTitle.empty())
@@ -3897,6 +4021,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                 }
 
                 CVideoInfoDownloader imdb(scraper);
+                const CDownloads::CRegistration downloading{m_downloads, imdb};
                 if (!imdb.GetEpisodeList(url, guide.episodes))
                 {
                   CLog::Log(LOGWARNING,
@@ -4048,6 +4173,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             }
 
             CVideoInfoDownloader imdb(scraper);
+            const CDownloads::CRegistration downloading{m_downloads, imdb};
             CFileItem scraperItem;
             scraperItem.SetPath(file->strPath);
             if (!imdb.GetEpisodeDetails(guideEntry->cScraperUrl, *scraperItem.GetVideoInfoTag(),
@@ -4127,8 +4253,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
             pDlgProgress->SetPercentage(static_cast<int>(100.f * (index + 1) / lookups.size()));
             pDlgProgress->Progress();
           }
-          if (m_handle)
-            m_handle->SetPercentage(100.f * (index + 1) / lookups.size());
+          ReportProgress(static_cast<float>(index + 1) / static_cast<float>(lookups.size()));
 
           if ((pDlgProgress && pDlgProgress->IsCanceled()) || m_bStop)
           {
@@ -4214,6 +4339,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     CVideoInfoTag movieDetails;
     CVideoInfoDownloader imdb(scraper);
+    const CDownloads::CRegistration downloading{m_downloads, imdb};
     if (!imdb.GetDetails(uniqueIDs, url, movieDetails, pDialog))
       return false;
 
@@ -4274,6 +4400,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     MOVIELIST movielist;
     CVideoInfoDownloader imdb(scraper);
+    const CDownloads::CRegistration downloading{m_downloads, imdb};
     int returncode = imdb.FindMovie(title, year, movielist, progress);
     // An error the scraper reported ends an interactive lookup, but a scan only stops for it when
     // the user chooses to - as it does for any other failed lookup
@@ -4516,7 +4643,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
 
     if (auto count = RemoveSubDirectories(m_pathsToScan, directory, nullptr))
+    {
+      m_progress.Finished(count);
       CLog::LogF(LOGWARNING, "skipped {} sub directories.", count);
+    }
   }
 
   size_t CVideoInfoScanner::RemoveSubDirectories(std::set<std::string, std::less<>>& directories,

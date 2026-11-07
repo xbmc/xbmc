@@ -30,6 +30,11 @@ void CCurlHttpClient::Cancel()
   m_curl.Cancel();
 }
 
+void CCurlHttpClient::RequestCancel()
+{
+  m_curl.RequestCancel();
+}
+
 void CCurlHttpClient::Reset()
 {
   m_curl.Reset();

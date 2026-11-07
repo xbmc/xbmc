@@ -47,6 +47,7 @@
 #include "video/jobs/VideoLibraryScanningJob.h"
 #include "video/tags/IVideoInfoTagLoader.h"
 
+#include <algorithm>
 #include <chrono>
 #include <filesystem>
 #include <functional>
@@ -194,6 +195,15 @@ public:
     return CountPlanned(*scan);
   }
 
+  //! The progress shown once \p directory, which the scan was asked to scan, is listed and \p share
+  //! of the first folder it holds is done
+  float ProgressOnceListed(const std::string& directory, float share)
+  {
+    m_progress.Start({directory}, directory);
+    const std::unique_ptr<DirectoryScan> scan{PlanDirectory(directory)};
+    return m_progress.Percentage(share);
+  }
+
   void UseScraper(const ADDON::ScraperPtr& scraper)
   {
     m_scraperCache.try_emplace(scraper->ID() + ADDON::TranslateContent(scraper->Content()),
@@ -217,6 +227,7 @@ public:
     {
       // A copy, as DoScan() first removes the path from the set
       const std::string folder{*m_pathsToScan.begin()};
+      m_progress.Start(m_pathsToScan, folder);
       DoScan(folder);
       std::erase_if(m_pathsToScan,
                     [this, &folder](const std::string& path)
@@ -252,12 +263,16 @@ public:
 
   using CVideoInfoScanner::EnumerateSeriesFolder;
   using CVideoInfoScanner::FolderSettings;
+  using CVideoInfoScanner::SourceName;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
   using ScanSummary = CVideoInfoScanner::ScanSummary;
 
   const ScanSummary& Summary() const { return m_summary; }
 
   CVideoDatabase& Database() { return m_database; }
+
+  //! The progress of the whole scan, as its bar shows it
+  float Progress() { return m_progress.Percentage(); }
 };
 
 class TestVideoInfoScanner : public ::testing::Test
@@ -1600,6 +1615,34 @@ TEST_F(TestVideoInfoScanner, AnUpdateFindsEachFolderOfATreeUnchangedOnce)
   EXPECT_EQ(5u, summary.unchangedDirectories);
 }
 
+// The bar runs once over the whole scan, to its end, folders found on the way and unchanged ones
+// skipped included
+TEST_F(TestVideoInfoScanner, TheProgressOfAScanEndsAtItsEnd)
+{
+  for (const std::string name : {"Film1", "Film2", "Film3"})
+    FolderMovie(Folder(m_root, name), name + ".mkv");
+  FolderMovie(Folder(Folder(m_root, "Collection"), "Film4"), "Film4.mkv");
+
+  for (int scan = 0; scan < 2; ++scan)
+  {
+    TestScanner scanner{m_settings};
+    scanner.Scan(m_root);
+    EXPECT_FLOAT_EQ(100.f, scanner.Progress()) << scan;
+  }
+  EXPECT_EQ(4, CountMovies());
+}
+
+// A folder holding nothing but folders takes no share of the bar, which runs over the folders it
+// holds instead
+TEST_F(TestVideoInfoScanner, AFolderOfFoldersTakesNoShareOfTheProgress)
+{
+  const std::string collection{Folder(m_root, "Collection")};
+  File(collection, "Film1 (2001).mkv");
+  File(collection, "Film2 (2002).mkv");
+
+  EXPECT_FLOAT_EQ(50.f, TestScanner{m_settings}.ProgressOnceListed(m_root, 0.5f));
+}
+
 TEST_F(TestVideoInfoScanner, AFailedSearchDoesNotStopTheScan)
 {
   UseTestScraper(ADDON::AddonType::SCRAPER_MOVIES);
@@ -2170,6 +2213,20 @@ TEST_F(TestVideoInfoScanner, ARefreshOfAMovieWithAnExportedNfoAddsItsExtras)
   refresh.AddMovieExtras(idRefreshed, true);
 
   EXPECT_TRUE(IsExtraOf(trailer, idRefreshed));
+}
+
+TEST_F(TestVideoInfoScanner, AFolderIsNamedAfterTheSourceHoldingIt)
+{
+  std::vector<CMediaSource>& sources{
+      CMediaSourceSettings::GetInstance().GetSources(KODI::MEDIA::MediaSection::VIDEO)};
+  const auto source{std::ranges::find(sources, m_root, &CMediaSource::strPath)};
+  ASSERT_NE(sources.end(), source);
+  source->strName = "Test Films";
+
+  EXPECT_EQ("Test Films", TestScanner::SourceName(m_root));
+  EXPECT_EQ("Test Films", TestScanner::SourceName(URIUtils::AddFileToFolder(m_root, "Film/")));
+  // A folder of no source is named after itself
+  EXPECT_EQ("Elsewhere", TestScanner::SourceName("smb://host/Elsewhere/"));
 }
 
 // Showing hidden files changes which are scanned, though not the listings they are in

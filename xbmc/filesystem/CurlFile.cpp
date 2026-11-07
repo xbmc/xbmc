@@ -1110,6 +1110,11 @@ void CCurlFile::Cancel()
     KODI::TIME::Sleep(1ms);
 }
 
+void CCurlFile::RequestCancel()
+{
+  m_state->m_cancelled = true;
+}
+
 void CCurlFile::Reset()
 {
   m_state->m_cancelled = false;

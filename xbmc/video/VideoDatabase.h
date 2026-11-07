@@ -18,6 +18,7 @@
 #include "utils/UrlOptions.h"
 
 #include <array>
+#include <atomic>
 #include <functional>
 #include <map>
 #include <memory>
@@ -872,9 +873,13 @@ public:
   bool HasContent(VideoDbContentType type);
   bool HasSets() const;
 
+  /*!
+   \param stop if given, whether to give the clean up, as its progress dialog's cancel does
+   */
   void CleanDatabase(CGUIDialogProgressBarHandle* handle = nullptr,
                      const std::set<int>& paths = std::set<int>(),
-                     bool showProgress = true);
+                     bool showProgress = true,
+                     const std::atomic<bool>* stop = nullptr);
 
   enum class FileExistsAction
   {

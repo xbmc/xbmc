@@ -27,6 +27,7 @@
 #include <deque>
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <set>
 #include <string>
@@ -39,6 +40,7 @@ class CAdvancedSettings;
 class CRegExp;
 class CFileItem;
 class CFileItemList;
+class CVideoInfoDownloader;
 
 namespace KODI::VIDEO
 {
@@ -157,6 +159,9 @@ namespace KODI::VIDEO
     virtual void Process();
     std::pair<ScanComplete, ContentFound> DoScan(const std::string& strDirectory) override;
 
+    //! \brief The name of the video source holding \p folder, else the folder's own name
+    static std::string SourceName(const std::string& folder);
+
     struct ItemLookups;
     //! \brief A directory a scan visits, from its listing to its record
     struct DirectoryScan
@@ -178,6 +183,8 @@ namespace KODI::VIDEO
       bool extrasAddedAgain{false};
       bool foundSomething{false};
       bool lookupFailed{false};
+      //! Whether it holds nothing but folders to scan, and so takes no share of the progress
+      bool leftOut{false};
       //! The folders it holds to scan, by path, planned before its turn so that their movies are
       //! looked up ahead
       std::vector<std::pair<std::string, std::unique_ptr<DirectoryScan>>> plannedAhead;
@@ -211,6 +218,16 @@ namespace KODI::VIDEO
     void PlanAhead(DirectoryScan& scan, size_t& budget);
     //! \brief The folders a directory stands for: itself and those it planned ahead
     static size_t CountPlanned(const DirectoryScan& scan);
+
+    /*!
+     \brief Count the folders a directory holds to scan, which its listing has found, and leave the
+     directory out of the progress where it holds nothing else
+     */
+    void CountFoldersFound(DirectoryScan& scan);
+    //! \brief A folder the scan has finished with
+    void FolderFinished();
+    //! \brief Show the progress of the whole scan \param share how much of the folder in hand is done
+    void ReportProgress(float share = 0.f);
 
     /*! \brief Scan folders beside each other: their movies are looked up alongside each other, and
      each folder is finished once its own are added. One holding folders to scan scans them as it
@@ -664,6 +681,38 @@ namespace KODI::VIDEO
     //! The artwork side of the scan
     CVideoInfoScannerArt m_art;
     CVideoInfoScannerExtras m_extras{m_database, m_art};
+
+    //! \brief The scraper's downloads in flight, which Stop() gives up
+    class CDownloads
+    {
+    public:
+      void CancelAll();
+
+      //! \brief A download the scan waits on, for as long as the registration lives
+      class CRegistration
+      {
+      public:
+        CRegistration(CDownloads& downloads, CVideoInfoDownloader& downloader);
+        ~CRegistration();
+        CRegistration(const CRegistration&) = delete;
+        CRegistration& operator=(const CRegistration&) = delete;
+
+      private:
+        CDownloads& m_downloads;
+        CVideoInfoDownloader& m_downloader;
+      };
+
+    private:
+      std::mutex m_lock;
+      std::set<CVideoInfoDownloader*> m_downloaders;
+      bool m_cancelled{false};
+    };
+    mutable CDownloads m_downloads;
+
+    //! The progress of the whole scan, by folder
+    CScanProgress m_progress;
+    //! The shows of a source counted as found, finished once their episodes are added
+    std::set<std::string, std::less<>> m_progressShows;
 
     //! The rows of the path table below the folders scanned, read once
     std::unique_ptr<CScanPathTable> m_pathTable{std::make_unique<CScanPathTable>(m_database)};

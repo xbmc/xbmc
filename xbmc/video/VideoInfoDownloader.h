@@ -86,6 +86,12 @@ public:
     std::vector<ADDON::CScraperError> m_errors;
   };
 
+  /*! \brief Give up the request in flight, from another thread, without waiting for it to close,
+   and any made after it. A scan cancelled while waiting on the scraper's site isn't held until the
+   site answers.
+   */
+  void Cancel();
+
 protected:
   enum LOOKUP_STATE { DO_NOTHING = 0,
                       FIND_MOVIE = 1,

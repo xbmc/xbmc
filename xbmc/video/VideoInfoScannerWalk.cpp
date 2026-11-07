@@ -239,6 +239,32 @@ bool IsDiscStructureFolder(std::string_view name)
                              { return StringUtils::EqualsNoCase(name, discName); });
 }
 
+void CScanProgress::Start(const std::set<std::string, std::less<>>& toScan, std::string_view folder)
+{
+  // The folders below it follow it, as its path is the start of theirs
+  size_t below{0};
+  if (const auto first{toScan.find(folder)}; first != toScan.end())
+  {
+    for (auto path{std::next(first)}; path != toScan.end() && path->starts_with(folder); ++path)
+      ++below;
+  }
+
+  m_folders = 1 + below;
+  m_finished = 0;
+  m_shown = 0.f;
+}
+
+float CScanProgress::Percentage(float share /* = 0.f */)
+{
+  share = std::clamp(share, 0.f, 1.f);
+  const size_t inHand{share > 0.f ? m_finished + 1 : m_finished};
+  const size_t folders{std::max({m_folders, inHand, size_t{1}})};
+  const float percentage{100.f * (static_cast<float>(m_finished) + share) /
+                         static_cast<float>(folders)};
+  m_shown = std::max(m_shown, std::min(percentage, 100.f));
+  return m_shown;
+}
+
 void CScanPathTable::Load(const std::string& root)
 {
   std::string base{root};
