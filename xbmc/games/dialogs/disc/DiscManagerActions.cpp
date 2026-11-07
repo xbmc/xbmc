@@ -156,7 +156,7 @@ void CDiscManagerActions::OnAdd()
 
   // Fall back to currently playing game
   if (startingPath.empty())
-    startingPath = m_gameClient->GetGamePath();
+    startingPath = m_gameClient->GetMediaPath();
 
   std::string filePath;
   if (!BrowseForDiscImage(startingPath, filePath) || filePath.empty())
