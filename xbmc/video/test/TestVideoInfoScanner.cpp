@@ -19,6 +19,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
+#include "events/EventLog.h"
 #include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -230,6 +231,9 @@ public:
 
   using CVideoInfoScanner::EnumerateSeriesFolder;
   using EpisodeResult = CVideoInfoScanner::EpisodeResult;
+  using ScanSummary = CVideoInfoScanner::ScanSummary;
+
+  const ScanSummary& Summary() const { return m_summary; }
 
   CVideoDatabase& Database() { return m_database; }
 };
@@ -310,8 +314,6 @@ protected:
           CSettings::SETTING_VIDEOLIBRARY_SIMILARVIDEOACTION, m_similarVideoAction);
     if (m_scraperInfo)
     {
-      CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
-          CSettings::SETTING_EVENTLOG_ENABLED, m_eventLog);
       XFILE::CDirectory::RemoveRecursive(m_scraperInfo->Path());
       XFILE::CDirectory::RemoveRecursive(ScraperCacheFolder());
     }
@@ -423,7 +425,10 @@ protected:
                                      std::filesystem::last_write_time(path) + std::chrono::days{1});
   }
 
-  void Scan(bool ignoreVideoExtras = false, bool clean = false, const std::string& path = {})
+  //! \return What the scan did
+  TestScanner::ScanSummary Scan(bool ignoreVideoExtras = false,
+                                bool clean = false,
+                                const std::string& path = {})
   {
     TestScanner scanner{m_settings, ignoreVideoExtras, clean};
     if (m_scraperInfo)
@@ -431,6 +436,7 @@ protected:
     if (m_similarVideoAction >= 0)
       scanner.GroupSimilarVideos();
     scanner.Scan(path.empty() ? m_root : path);
+    return scanner.Summary();
   }
 
   //! Looks the source's videos up with the test scraper, rather than reading them only from their
@@ -450,12 +456,6 @@ protected:
                         SCRAPER_ID, m_db.GetPathId(m_root))));
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors =
         true;
-    // A video with no information found is logged as an event, which is sent to the GUI a test
-    // doesn't have
-    m_eventLog = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_EVENTLOG_ENABLED);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
-        CSettings::SETTING_EVENTLOG_ENABLED, false);
   }
 
   //! Installs the test scraper, as a refresh finds the scraper of a path through the add-on manager
@@ -695,7 +695,6 @@ protected:
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoScannerIgnoreErrors};
   ADDON::AddonInfoPtr m_scraperInfo;
   ADDON::AddonType m_scraperType{ADDON::AddonType::SCRAPER_MOVIES};
-  bool m_eventLog{false};
   std::string m_otherScraper;
   std::string m_installedScraper;
   int m_similarVideoAction{-1};
@@ -767,10 +766,14 @@ TEST_F(TestVideoInfoScanner, AMovieAddedToAScannedFolderIsFound)
   Nfo(m_root, "Second.nfo", "Second");
   const std::string second{File(m_root, "Second.mkv")};
   Touch(m_root);
-  Scan();
+  const auto summary{Scan()};
 
   EXPECT_GT(m_db.GetMovieId(second), 0);
   EXPECT_EQ(2, CountMovies());
+  ASSERT_EQ(1u, summary.added.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::MOVIE, summary.added[0].type);
+  ASSERT_EQ(1u, summary.existing.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::MOVIE, summary.existing[0].type);
 }
 
 TEST_F(TestVideoInfoScanner, AnUnchangedFolderAddsNothingAgain)
@@ -1684,6 +1687,25 @@ TEST_F(TestVideoInfoScanner, ARefreshOfAMovieWithAnExportedNfoAddsItsExtras)
   EXPECT_TRUE(IsExtraOf(trailer, idRefreshed));
 }
 
+// Music videos
+
+TEST_F(TestVideoInfoScanner, AFolderOfAMusicVideoSourceIsNotReportedAsNotFound)
+{
+  ASSERT_TRUE(m_db.ExecuteQuery(
+      m_db.PrepareSQL("UPDATE path SET strContent='musicvideos', useFolderNames=0 WHERE idPath=%i",
+                      m_db.GetPathId(m_root))));
+  const std::string folder{Folder(m_root, "Artist")};
+  File(folder, "Video.nfo", "<musicvideo><title>Video</title><artist>Artist</artist></musicvideo>");
+  File(folder, "Video.mkv");
+
+  const auto summary{Scan()};
+
+  EXPECT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(*) FROM musicvideo"));
+  ASSERT_EQ(1u, summary.added.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::MUSIC_VIDEO, summary.added[0].type);
+  EXPECT_TRUE(summary.notFound.empty());
+}
+
 // TV shows
 
 namespace
@@ -1824,10 +1846,14 @@ TEST_F(TestVideoInfoScannerTvShows, AnEpisodeAddedToAScannedSeasonIsFound)
 
   const std::string second{Episode(season, "Show S01E02.mkv")};
   Touch(season);
-  Scan();
+  const auto summary{Scan()};
 
   EXPECT_GT(m_db.GetEpisodeId(second, 2, 1), 0);
   EXPECT_EQ(2, CountEpisodes());
+  ASSERT_EQ(1u, summary.added.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::EPISODE, summary.added[0].type);
+  ASSERT_EQ(1u, summary.existing.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::EPISODE, summary.existing[0].type);
 }
 
 TEST_F(TestVideoInfoScannerTvShows, AnUnchangedShowAddsNothingAgain)
@@ -1837,10 +1863,13 @@ TEST_F(TestVideoInfoScannerTvShows, AnUnchangedShowAddsNothingAgain)
   Episode(season, "Show S01E02.mkv");
   Scan();
 
-  Scan();
+  const auto summary{Scan()};
 
   EXPECT_EQ(1, CountShows());
   EXPECT_EQ(2, CountEpisodes());
+  EXPECT_EQ(1u, summary.unchangedDirectories);
+  EXPECT_TRUE(summary.existing.empty());
+  EXPECT_TRUE(summary.added.empty());
 }
 
 TEST_F(TestVideoInfoScannerTvShows, AFileOfTwoEpisodesIsTwoEpisodes)
@@ -1902,9 +1931,16 @@ TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
   UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
   DetailsFail("Show");
   const std::string episode{Episode(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv")};
-  Scan();
+  CEventLog* eventLog{CServiceBroker::GetEventLog()};
+  ASSERT_NE(nullptr, eventLog);
+  const size_t warnings{eventLog->Get(EventLevel::Warning).size()};
+  const auto summary{Scan()};
   ASSERT_EQ(0, CountShows());
   EXPECT_EQ(0, CountEpisodes());
+  ASSERT_EQ(1u, summary.failed.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::TV_SHOW, summary.failed[0].type);
+  EXPECT_TRUE(summary.notFound.empty());
+  EXPECT_EQ(warnings + 1, eventLog->Get(EventLevel::Warning).size());
 
   Details("Show", "<details><title>Show</title></details>");
   Scan();
