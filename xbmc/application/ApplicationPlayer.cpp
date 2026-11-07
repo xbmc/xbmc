@@ -475,6 +475,18 @@ bool CApplicationPlayer::IsCaching() const
   return (player && player->IsCaching());
 }
 
+bool CApplicationPlayer::IsWaitingForAudio() const
+{
+  std::shared_ptr<const IPlayer> player = GetInternal();
+  return (player && player->IsWaitingForAudio());
+}
+
+int CApplicationPlayer::GetWaitingForAudioRemaining() const
+{
+  std::shared_ptr<const IPlayer> player = GetInternal();
+  return player ? player->GetWaitingForAudioRemaining() : 0;
+}
+
 bool CApplicationPlayer::IsInMenu() const
 {
   std::shared_ptr<const IPlayer> player = GetInternal();
@@ -990,6 +1002,13 @@ void CApplicationPlayer::SetDynamicRangeCompression(long drc)
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     player->SetDynamicRangeCompression(drc);
+}
+
+void CApplicationPlayer::NotifyAudioChainReady()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->NotifyAudioChainReady();
 }
 
 void CApplicationPlayer::LoadPage(int p, int sp, unsigned char* buffer)
