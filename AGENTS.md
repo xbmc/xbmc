@@ -41,6 +41,17 @@ Keep commit messages concise and focused on information needed to understand the
 * Do not turn commit messages into test reports, review histories, or inventories of every behavior covered.
 * Wrap all commit message body text at 76 columns. Do not exceed 76 columns except for URLs or other unbreakable text.
 
+## AI disclosure
+
+AI use is expected and encouraged. We want to know which models and effort levels were used so reviewers and their own AI can judge the work appropriately.
+
+* AI agents must disclose their model/version and effort level when generating code or reviewing PRs, even when no bugs are found.
+* If the agent doesn't know, ask the human running it. Never guess.
+* Humans are responsible for their AI's disclosure. If an AI-assisted contribution or review lacks model/effort disclosure, the human's submission or review fails the policy, regardless of approval or findings.
+* AI reviewers must fail the review if the contribution lacks model/version or effort disclosure, even if no code issues are found. This circuit breaker takes precedence over the instruction to stop when no blocking findings are found.
+
+Prefer the most capable model available and the highest practical reasoning effort. Don't sacrifice code quality to save tokens, especially for complex, security-sensitive, rendering, or concurrency changes.
+
 ## Reviews
 
 Review only for issues that should block the change.
