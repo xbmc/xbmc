@@ -35,28 +35,66 @@ InvokerState CLanguageInvokerThread::GetState() const
   return m_invoker->GetState();
 }
 
+void CLanguageInvokerThread::SetReserved(bool reserved)
+{
+  bool shouldWake = false;
+  {
+    std::unique_lock<std::mutex> lck(m_mutex);
+    m_reserved = reserved;
+    if (!m_reserved && m_releasePending)
+    {
+      m_releasePending = false;
+      m_released = true;
+      m_bStop = true;
+      shouldWake = true;
+    }
+  }
+  if (shouldWake)
+    m_condition.notify_one();
+}
+
 void CLanguageInvokerThread::Release()
 {
-  m_bStop = true;
+  {
+    std::unique_lock<std::mutex> lck(m_mutex);
+    if (m_reserved)
+    {
+      m_releasePending = true;
+      return;
+    }
+    m_released = true;
+    m_bStop = true;
+  }
   m_condition.notify_one();
 }
 
 bool CLanguageInvokerThread::execute(const std::string &script, const std::vector<std::string> &arguments)
 {
   if (m_invoker == NULL || script.empty())
+  {
+    SetReserved(false);
     return false;
-
-  m_script = script;
-  m_args = arguments;
+  }
 
   if (CThread::IsRunning())
   {
-    std::unique_lock<std::mutex> lck(m_mutex);
-    m_restart = true;
+    {
+      std::unique_lock<std::mutex> lck(m_mutex);
+      m_script = script;
+      m_args = arguments;
+      m_restart = true;
+    }
     m_condition.notify_one();
   }
   else
+  {
+    {
+      std::unique_lock<std::mutex> lck(m_mutex);
+      m_script = script;
+      m_args = arguments;
+    }
     Create();
+  }
 
   //Todo wait until running
 
@@ -71,7 +109,13 @@ bool CLanguageInvokerThread::stop(bool wait)
   if (!CThread::IsRunning())
     return false;
 
-  Release();
+  {
+    std::unique_lock<std::mutex> lck(m_mutex);
+    m_releasePending = false;
+    m_released = true;
+    m_bStop = true;
+  }
+  m_condition.notify_one();
 
   bool result = true;
   if (m_invoker->GetState() < InvokerStateExecutionDone)
@@ -100,18 +144,40 @@ void CLanguageInvokerThread::Process()
   if (m_invoker == NULL)
     return;
 
-  std::unique_lock<std::mutex> lckdl(m_mutex);
-  do
+  while (true)
   {
-    m_restart = false;
-    m_invoker->Execute(m_script, m_args);
+    std::string script;
+    std::vector<std::string> args;
+    {
+      std::unique_lock<std::mutex> lck(m_mutex);
+      if (m_bStop || m_released)
+        break;
 
+      script = m_script;
+      args = m_args;
+    }
+
+    m_invoker->Execute(script, args);
+
+    std::unique_lock<std::mutex> lck(m_mutex);
     if (m_invoker->GetState() != InvokerStateScriptDone)
       m_reusable = false;
 
-    m_condition.wait(lckdl, [this] { return m_bStop || m_restart || !m_reusable; });
+    m_reserved = false;
+    if (m_releasePending && !m_restart)
+    {
+      m_releasePending = false;
+      m_released = true;
+      m_bStop = true;
+    }
 
-  } while (m_reusable && !m_bStop);
+    m_condition.wait(lck, [this] { return m_bStop || m_released || m_restart || !m_reusable; });
+
+    if (m_bStop || m_released || !m_reusable || !m_restart)
+      break;
+
+    m_restart = false;
+  }
 }
 
 void CLanguageInvokerThread::OnExit()
