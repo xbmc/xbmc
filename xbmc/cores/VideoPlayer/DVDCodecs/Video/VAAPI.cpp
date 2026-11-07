@@ -2145,13 +2145,18 @@ void COutput::InitCycle()
   // order to not change deint methods every few frames in PAFF streams.
   m_seenInterlaced = m_seenInterlaced || interlaced;
 
+  if (method != VS_INTERLACEMETHOD_NONE && !m_config.processInfo->Supports(method))
+  {
+    if (m_config.processInfo->Supports(VS_INTERLACEMETHOD_VAAPI_BOB))
+      method = VS_INTERLACEMETHOD_VAAPI_BOB;
+    else
+      method = VS_INTERLACEMETHOD_NONE;
+  }
+
   if (!(flags & DVD_CODEC_CTRL_NO_POSTPROC) &&
       m_seenInterlaced &&
       method != VS_INTERLACEMETHOD_NONE)
   {
-    if (!m_config.processInfo->Supports(method))
-      method = VS_INTERLACEMETHOD_VAAPI_BOB;
-
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
       CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Current postproc does not want new deinterlace mode, removing");
