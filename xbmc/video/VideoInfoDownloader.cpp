@@ -281,6 +281,11 @@ bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,
     return !(movieDetails = m_info->GetEpisodeList(*m_http, url)).empty();
 }
 
+void CVideoInfoDownloader::Cancel()
+{
+  m_http->RequestCancel();
+}
+
 void CVideoInfoDownloader::CloseThread()
 {
   m_http->Cancel();

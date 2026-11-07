@@ -21,6 +21,7 @@ public:
   bool IsInternet() override;
 
   void Cancel() override;
+  void RequestCancel() override;
   void Reset() override;
 
   void SetUserAgent(const std::string& userAgent) override;

@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -153,6 +154,46 @@ std::optional<int64_t> ReadModifiedTime(const std::string& path);
  a scan doesn't look inside
  */
 bool IsDiscStructureFolder(std::string_view name);
+
+/*!
+ \brief The progress of a whole scan, by folder: those finished, out of those known when it started
+ and those found since. A folder is found when the folder holding it is listed, before it is
+ scanned, so that a bar runs once from start to end rather than once per folder.
+ */
+class CScanProgress
+{
+public:
+  /*!
+   \brief Starts the bar again, on a folder the scan was asked to scan that isn't inside another,
+   such as a source. The folders below it the scan was asked to scan are known.
+   \param toScan the folders the scan was asked to scan still to scan, \p folder among them
+   */
+  void Start(const std::set<std::string, std::less<>>& toScan, std::string_view folder);
+  void Found(size_t folders = 1) { m_folders += folders; }
+  void Finished(size_t folders = 1) { m_finished += folders; }
+
+  /*!
+   \brief Leaves out a folder holding nothing but folders to scan, whose time is theirs, so that it
+   takes no share of the bar. It isn't then counted as finished.
+   */
+  void LeaveOut()
+  {
+    if (m_folders > 1)
+      --m_folders;
+  }
+
+  /*!
+   \brief The percentage to show, which never goes back as folders are found
+   \param share how much of the folder in hand is done, from 0 to 1
+   */
+  float Percentage(float share = 0.f);
+
+private:
+  //! The folders of the one started on known and finished, itself among them unless left out
+  size_t m_folders{1};
+  size_t m_finished{0};
+  float m_shown{0.f};
+};
 
 /*!
  \brief The rows of the path table below the folders a scan was asked to scan, read once, and the
