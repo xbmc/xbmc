@@ -200,6 +200,23 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
   lock.unlock();
 
   // restore active window
+  // The previous window may be missing or its ID may now identify a dialog.
+  // Neither can restore an initialized main window, even if Home remains in history.
+  if (!m_bInitializing && currentWindowID != WINDOW_INVALID)
+  {
+    const auto* previousWindow =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow(currentWindowID);
+    if (!previousWindow || previousWindow->IsDialog())
+    {
+      CLog::Log(
+          LOGWARNING,
+          "Previous window {} is unavailable or is now a dialog after skin load; activating Home",
+          currentWindowID);
+      currentWindowID = WINDOW_HOME;
+      currentFocusedControlID = -1;
+    }
+  }
+
   if (currentWindowID != WINDOW_INVALID)
   {
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(currentWindowID);
@@ -211,6 +228,21 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
         CGUIMessage msg(GUI_MSG_SETFOCUS, currentWindowID, currentFocusedControlID, 0);
         pWindow->OnMessage(msg);
       }
+    }
+  }
+
+  // Runtime skin loads can follow a separate UnloadSkin() during an in-use skin update.
+  // If unloading removed the last custom window from history, make sure the new skin does
+  // not come up with WINDOW_INVALID as its active window. Initial startup handles its own
+  // splash/start window and is intentionally left unchanged.
+  if (!m_bInitializing)
+  {
+    auto& windowManager = CServiceBroker::GetGUI()->GetWindowManager();
+    const int activeWindow = windowManager.GetActiveWindow();
+    if (activeWindow == WINDOW_INVALID || !windowManager.GetWindow(activeWindow))
+    {
+      CLog::Log(LOGWARNING, "Skin load left no valid active window; activating Home");
+      windowManager.ActivateWindow(WINDOW_HOME);
     }
   }
 
@@ -465,8 +497,8 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm)
   std::string newSkin = settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   if (LoadSkin(newSkin))
   {
-    // The new skin is up and the previous active window has been restored, so listeners
-    // can safely rebuild any windows they had open.
+    // The new skin is up with a valid active window, so listeners can safely rebuild
+    // any windows they had open.
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "OnSkinLoaded");
 
     /* The Reset() or SetString() below will cause recursion, so the m_confirmSkinChange boolean is set so as to not prompt the
