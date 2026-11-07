@@ -17,6 +17,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "VideoInfoDownloader.h"
+#include "addons/AddonVersion.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -51,6 +52,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/ItemProperties.h"
 #include "utils/RegExp.h"
+#include "utils/ScopeGuard.h"
 #include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -66,8 +68,10 @@
 
 #include <algorithm>
 #include <chrono>
+#include <iterator>
 #include <map>
 #include <memory>
+#include <optional>
 #include <ranges>
 #include <set>
 #include <string>
@@ -390,14 +394,20 @@ CVideoInfoScanner::~CVideoInfoScanner()
      */
     m_pathsToScan.erase(strDirectory);
 
+    // What the scan read of this folder and of those below it is of no use once it has left them
+    const KODI::UTILS::CScopeGuard<CVideoInfoScanner*, nullptr, void(CVideoInfoScanner*)> leaving(
+        [&strDirectory](CVideoInfoScanner* scanner) { scanner->ForgetListings(strDirectory); },
+        this);
+
+    m_pathTable->Load(strDirectory);
+
     // load subfolder
     CFileItemList items;
     bool foundDirectly = false;
     bool bSkip = false;
 
     SScanSettings settings;
-    ScraperPtr info =
-        m_database.GetScraperForPath(strDirectory, settings, foundDirectly, &m_scraperCache);
+    ScraperPtr info = ScraperForPath(strDirectory, settings, foundDirectly);
     ContentType content = info ? info->Content() : ContentType::NONE;
 
     // exclude folders that match our exclude regexps
@@ -408,7 +418,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps, &m_regexpCache))
       return std::make_pair(ScanComplete::Completed, ContentFound::None);
 
-    if (HasNoMedia(strDirectory))
+    const bool isPlugin{URIUtils::IsPlugin(strDirectory)};
+    // A plugin's folders are not listed as the file system's are, so are looked into for .nomedia
+    if (isPlugin && HasNoMedia(strDirectory))
       return std::make_pair(ScanComplete::Completed, ContentFound::None);
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
@@ -427,7 +439,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return std::make_pair(ScanComplete::Completed, ContentFound::None);
     }
 
-    if (URIUtils::IsPlugin(strDirectory) && !CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(content), strDirectory))
+    if (isPlugin &&
+        !CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(content), strDirectory))
     {
       CLog::Log(
           LOGINFO,
@@ -436,8 +449,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
       return std::make_pair(ScanComplete::Completed, ContentFound::None);
     }
 
-    std::string hash, dbHash;
-    bool listingHash = false; // hash came from GetPathHash over a fetched listing
+    // An archive (eg. rar://) has no record of its own: it is a file of the folder holding it,
+    // which is listed again whenever the archive changes
+    const bool isArchive{URIUtils::IsArchive(CURL(strDirectory))};
+    const bool fastHash{m_advancedSettings->m_bVideoLibraryUseFastHash};
+    const std::string cfg{FolderSettings(strDirectory)};
+    const std::optional<FolderRecord> record{isArchive ? std::nullopt
+                                                       : m_pathTable->Record(strDirectory)};
+    // What is recorded for the directory once its items have been looked up
+    std::optional<FolderRecord> newRecord;
+
     if (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS)
     {
       if (m_handle)
@@ -447,100 +468,100 @@ CVideoInfoScanner::~CVideoInfoScanner()
             CServiceBroker::GetResourcesComponent().GetLocalizeStrings().Get(str), info->Name()));
       }
 
-      std::string fastHash;
-      if (m_advancedSettings->m_bVideoLibraryUseFastHash && !URIUtils::IsPlugin(strDirectory))
-        fastHash = UTILS::GetFastHash(strDirectory, regexps);
-
-      // An extra added beside a disc rip changes neither this folder nor the rip's, so the
-      // listing is still needed for the checks made from it
-      const bool addExtras{content == ContentType::MOVIES && settings.parent_name &&
-                           !m_ignoreVideoExtras};
-      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() &&
-          StringUtils::EqualsNoCase(fastHash, dbHash) && !addExtras)
-      { // fast hashes match - no need to process anything
-        hash = fastHash;
-      }
-      else
-      { // need to fetch the folder
-        CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+      bool unchanged{false};
+      if (isPlugin)
+      {
+        CDirectory::GetDirectory(strDirectory, items,
+                                 CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
-
-        // mark subfolders whose stored fast hash matches the listing mtime digest;
-        // the disc structure probes in Stack() and the recursion loop (which also
-        // drops them from m_pathsToScan) skip marked items. Full listing hashes
-        // never match here, so folders containing subfolders are still visited.
-        std::vector<CRegExp> stackRegExps{m_advancedSettings->m_folderStackRegExps};
-        for (int i = items.Size() - 1; i >= 0; --i)
-        {
-          if (!items[i]->IsFolder())
-            continue;
-          // a marked folder-stack member (label like "cd1") stays a folder in
-          // Stack() and its stack cannot form; leave such folders unmarked
-          std::string label = StringUtils::ToLower(items[i]->GetLabel());
-          URIUtils::RemoveSlashAtEnd(label);
-          std::string dbh;
-          int64_t rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
-          if (rawTime == 0)
-            rawTime = items[i]->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
-          if (m_advancedSettings->m_bVideoLibraryUseFastHash &&
-              std::none_of(stackRegExps.begin(), stackRegExps.end(),
-                           [&label](CRegExp& re) { return re.RegFind(label) != -1; }) &&
-              m_database.GetPathHash(items[i]->GetPath(), dbh) && !dbh.empty() &&
-              StringUtils::EqualsNoCase(rawTime != 0
-                                            ? UTILS::GetFastHash(regexps, rawTime)
-                                            : UTILS::GetFastHash(items[i]->GetPath(), regexps),
-                                        dbh))
-            items[i]->SetProperty(PROPERTY_UNCHANGED, true);
-          else if (HasNoMedia(items[i]->GetPath()))
-            items.Remove(i);
-        }
         items.Stack();
 
         // force sorting consistency to avoid hash mismatch between platforms
         // sort by filename as always present for any files, but keep case sensitivity
         items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
 
-        // A folder holding a disc rip is listed as its disc only until the folder's own hash is
-        // stored, after which it is marked unchanged above and stays a folder. It is hashed as the
-        // folder, so that this folder's hash doesn't change between the two.
-        CFileItemList hashed;
-        for (const auto& item : items)
+        std::string hash;
+        UTILS::GetPathHash(items, hash);
+        if (!hash.empty())
         {
-          std::string discFolder;
-          if (!item->IsFolder() && !URIUtils::IsStack(item->GetPath()) &&
-              URIUtils::IsOpticalMediaFile(item->GetPath()))
-          {
-            discFolder = URIUtils::RemoveDiscPath(item->GetPath());
-            URIUtils::AddSlashAtEnd(discFolder);
-          }
-          if (discFolder.empty() || URIUtils::PathEquals(discFolder, strDirectory, true))
-          {
-            hashed.Add(item);
-            continue;
-          }
-          auto folder{std::make_shared<CFileItem>(*item)};
-          folder->SetPath(discFolder);
-          folder->SetFolder(true);
-          hashed.Add(folder);
+          newRecord = FolderRecord{.cfg = cfg, .mtime = std::nullopt, .digest = hash};
+          unchanged = record && record->UnchangedListing(cfg, hash);
         }
-        hashed.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+      }
+      else
+      {
+        const std::optional<int64_t> time{FolderTime(strDirectory)};
+        if (record && record->UnchangedUnlisted(cfg, time, fastHash))
+        {
+          // Nothing below it is looked at either, as it holds no folder to scan
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change (fasthash)",
+                    CURL::GetRedacted(strDirectory));
+          ++m_summary.unchangedDirectories;
+          return std::make_pair(ScanComplete::Completed, ContentFound::None);
+        }
 
-        // check whether to re-use previously computed fast hash
-        listingHash = !CanFastHash(hashed, regexps) || fastHash.empty();
-        if (listingHash)
-          UTILS::GetPathHash(hashed, hash);
+        if (const auto snapshot{Snapshot(strDirectory)}; snapshot)
+        {
+          if (snapshot->HasNoMedia())
+          {
+            if (!isArchive)
+              m_pathTable->Store(strDirectory, FolderRecord{.cfg = cfg,
+                                                            .mtime = time,
+                                                            .digest = snapshot->Digest(),
+                                                            .noMedia = true});
+            return std::make_pair(ScanComplete::Completed, ContentFound::None);
+          }
+
+          newRecord = FolderRecord{.cfg = cfg,
+                                   .mtime = time,
+                                   .digest = snapshot->Digest(),
+                                   .hasSubfolders = HasScannedSubfolders(*snapshot, regexps)};
+          unchanged = record && record->UnchangedListing(cfg, snapshot->Digest());
+
+          // An archive is looked inside only once it, or another file beside it, has changed
+          snapshot->GetItems(items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                             !unchanged);
+
+          // mark subfolders whose record shows them unchanged since their parent listed them;
+          // the disc structure probes in Stack() and the recursion loop (which also drops them
+          // from m_pathsToScan) skip marked items. A folder that has folders of its own to scan
+          // is never marked, so is still visited.
+          std::vector<CRegExp> stackRegExps{m_advancedSettings->m_folderStackRegExps};
+          for (int i = items.Size() - 1; i >= 0; --i)
+          {
+            if (!items[i]->IsFolder())
+              continue;
+            const std::string& subfolder{items[i]->GetPath()};
+            if (URIUtils::IsArchive(CURL(subfolder)))
+              continue;
+            if (auto& time{m_listedTimes[subfolder]}; !time)
+              time = ListedModifiedTime(*items[i]);
+
+            // a marked folder-stack member (label like "cd1") stays a folder in
+            // Stack() and its stack cannot form; leave such folders unmarked
+            std::string label = StringUtils::ToLower(items[i]->GetLabel());
+            URIUtils::RemoveSlashAtEnd(label);
+            const bool stackMember{std::ranges::any_of(stackRegExps, [&label](CRegExp& re)
+                                                       { return re.RegFind(label) != -1; })};
+            if (!stackMember && FolderUnchangedUnlisted(subfolder))
+              items[i]->SetProperty(PROPERTY_UNCHANGED, true);
+            else if (!CUtil::ExcludeFileOrFolder(subfolder, regexps, &m_regexpCache) &&
+                     FolderHasNoMedia(subfolder))
+              items.Remove(i);
+          }
+        }
         else
-          hash = fastHash;
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Unable to list dir '{}'",
+                    CURL::GetRedacted(strDirectory));
+
+        items.Stack();
+
+        // force sorting consistency to avoid hash mismatch between platforms
+        // sort by filename as always present for any files, but keep case sensitivity
+        items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
       }
 
-      if (StringUtils::EqualsNoCase(hash, dbHash))
-      { // hash matches - skipping
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change{}",
-                  CURL::GetRedacted(strDirectory), listingHash ? "" : " (fasthash)");
-        bSkip = true;
-        ++m_summary.unchangedDirectories;
-      }
-      else if (hash.empty())
+      if (!newRecord)
       { // directory empty or non-existent - add to clean list and skip
         CLog::Log(LOGDEBUG,
                   "VideoInfoScanner: Skipping dir '{}' as it's empty or doesn't exist - adding to "
@@ -549,16 +570,29 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (m_bClean)
           AddPathToClean(strDirectory);
         bSkip = true;
+        // Its record would otherwise let a later scan pass it over by its time alone
+        if (record && !isArchive)
+          m_pathTable->Clear(strDirectory);
       }
-      else if (dbHash.empty())
+      else if (unchanged)
+      { // listing matches - skipping
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change",
+                  CURL::GetRedacted(strDirectory));
+        bSkip = true;
+        ++m_summary.unchangedDirectories;
+        // Only the time it was listed with has moved
+        if (!isArchive && record->mtime != newRecord->mtime)
+          m_pathTable->Store(strDirectory, *newRecord);
+      }
+      else if (!record)
       { // new folder - scan
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '{}' as not in the database",
                   CURL::GetRedacted(strDirectory));
       }
       else
-      { // hash changed - rescan
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '{}' due to change ({} != {})",
-                  CURL::GetRedacted(strDirectory), dbHash, hash);
+      { // listing changed - rescan
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '{}' due to change",
+                  CURL::GetRedacted(strDirectory));
       }
     }
     else if (content == ContentType::TVSHOWS)
@@ -569,20 +603,36 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if (foundDirectly && !settings.parent_name_root)
       {
-        CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
-                                 DIR_FLAG_DEFAULTS);
+        // Each show is a folder of the source, which decides from its own record whether it has
+        // changed, so the source's listing is always looked at
+        if (isPlugin)
+          CDirectory::GetDirectory(strDirectory, items,
+                                   CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                                   DIR_FLAG_DEFAULTS);
+        else if (const auto snapshot{Snapshot(strDirectory)}; snapshot)
+        {
+          if (snapshot->HasNoMedia())
+            return std::make_pair(ScanComplete::Completed, ContentFound::None);
+
+          newRecord = FolderRecord{.cfg = cfg,
+                                   .mtime = FolderTime(strDirectory),
+                                   .digest = snapshot->Digest(),
+                                   .hasSubfolders = HasScannedSubfolders(*snapshot, {})};
+          snapshot->GetItems(items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                             true);
+          for (const auto& item : items)
+          {
+            if (!item->IsFolder())
+              continue;
+            if (auto& time{m_listedTimes[item->GetPath()]}; !time)
+              time = ListedModifiedTime(*item);
+          }
+        }
         items.SetPath(strDirectory);
 
         // force sorting consistency to avoid hash mismatch between platforms
         // sort by filename as always present for any files, but keep case sensitivity
         items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
-
-        UTILS::GetPathHash(items, hash);
-        bSkip = true;
-        if (!m_database.GetPathHash(strDirectory, dbHash) || !StringUtils::EqualsNoCase(dbHash, hash))
-          bSkip = false;
-        else
-          items.Clear();
       }
       else
       {
@@ -597,7 +647,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // Drop everything belonging to a video extras folder (eg. "Extras", "Bonus Disc") when video
     // extras are ignored. Stack() has already turned such a folder into a playable file item when
     // it holds a disc structure (BDMV/VIDEO_TS), so the path of the item is matched and not only
-    // its name. Done after hashing so that the stored hash still describes the whole listing.
+    // its name. Done after the listing was recorded, so that the record still describes all of it.
     if (m_ignoreVideoExtras && content == ContentType::MOVIES)
     {
       for (int i = items.Size() - 1; i >= 0; --i)
@@ -609,8 +659,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // Leave a folder with content set on it (a source root) alone
         SScanSettings extrasSettings;
         bool extrasFoundDirectly{false};
-        if (m_database.GetScraperForPath(extrasFolder, extrasSettings, extrasFoundDirectly,
-                                         &m_scraperCache) &&
+        if (ScraperForPath(extrasFolder, extrasSettings, extrasFoundDirectly) &&
             extrasFoundDirectly)
           continue;
 
@@ -625,8 +674,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // an extras folder holding a disc structure as the disc's file, which is taken out here rather
     // than scraped as a movie.
     std::vector<std::string> extrasFolders;
-    // Whether an unchanged listing has extras folders, which may have changed below their own folder
-    bool skippedExtras{false};
+    // Whether extras folders of an unchanged listing were added again, which may have lost extras
+    bool extrasAddedAgain{false};
     // As Process() does for the folders a scan leaves
     const auto removeExtrasFolder{
         [this](const std::string& folder)
@@ -637,6 +686,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                  if (m_bClean)
                                    m_pathsToClean.insert(m_database.GetPathId(dir));
                                });
+        }};
+    // An extras folder of a listing that has changed is looked at again, as its movie may be new.
+    // One of an unchanged listing is looked at only where something below it has changed.
+    const auto addExtrasFolder{
+        [this, bSkip, &extrasFolders, &extrasAddedAgain](const std::string& folder)
+        {
+          if (!bSkip)
+            extrasFolders.emplace_back(folder);
+          else if (FolderChanged(folder, m_advancedSettings->m_moviesExcludeFromScanRegExps))
+          {
+            extrasFolders.emplace_back(folder);
+            extrasAddedAgain = true;
+          }
         }};
     if (!m_ignoreVideoExtras && content == ContentType::MOVIES && settings.parent_name)
     {
@@ -651,22 +713,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         SScanSettings extrasSettings;
         bool extrasFoundDirectly{false};
-        if (m_database.GetScraperForPath(extrasFolder, extrasSettings, extrasFoundDirectly,
-                                         &m_scraperCache) &&
+        if (ScraperForPath(extrasFolder, extrasSettings, extrasFoundDirectly) &&
             extrasFoundDirectly)
           continue;
 
         removeExtrasFolder(extrasFolder);
-        if (!bSkip)
-          extrasFolders.emplace_back(extrasFolder);
-        else
-          skippedExtras = true;
+        addExtrasFolder(extrasFolder);
         items.Remove(i);
       }
     }
 
     bool foundSomething = false;
-    // The directory's hash stands for its own items and the archives in it, so it isn't stored
+    // The directory's record stands for its own items and the archives in it, so it isn't stored
     // where a lookup failed in either, and the next scan tries them again
     bool lookupFailed{false};
     if (!bSkip)
@@ -690,52 +748,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
       else
       {
-        // an all-folder listing has nothing to directly import, so foundSomething
-        // is false here even when nothing changed; store the hash or GetPathHash
-        // output never matches dbHash and every scan repeats the full rescan.
-        // Only store a listing-hash, as an mtime-hash would match the fasthash
-        // gate before the listing is fetched, hiding content that never imported.
-        if ((content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
-            listingHash && !URIUtils::IsArchive(CURL(strDirectory)) &&
-            std::all_of(items.begin(), items.end(),
-                        [](const auto& item) { return item->IsFolder(); }))
-          m_database.SetPathHash(strDirectory, hash);
         if (m_bClean)
           AddPathToClean(strDirectory);
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir {}",
                   CURL::GetRedacted(strDirectory));
       }
     }
-    else if (!StringUtils::EqualsNoCase(hash, dbHash) &&
-             (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS))
-    {
-      // update the hash either way - we may have changed the hash to a fast version
-      if (!URIUtils::IsArchive(CURL(strDirectory)))
-        m_database.SetPathHash(strDirectory, hash);
-    }
 
     if (m_handle)
       OnDirectoryScanned(strDirectory);
-
-    // The folders the library knows have an extras folder, looked up once rather than per folder
-    // or disc
-    std::set<std::string> foldersWithExtras;
-    if (content == ContentType::MOVIES && settings.parent_name && !m_ignoreVideoExtras &&
-        std::ranges::any_of(items,
-                            [](const auto& item)
-                            {
-                              return item->GetProperty(PROPERTY_UNCHANGED).asBoolean() ||
-                                     (!item->IsFolder() && !URIUtils::IsStack(item->GetPath()) &&
-                                      URIUtils::IsOpticalMediaFile(item->GetPath()));
-                            }))
-    {
-      for (const std::string& path :
-           CVideoInfoScannerExtras::GetKnownFolders(m_database, strDirectory))
-      {
-        if (IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(path)))
-          foldersWithExtras.insert(URIUtils::GetParentPath(path));
-      }
-    }
 
     bool foundSomethingInArchive = false;
     for (int i = 0; i < items.Size(); ++i)
@@ -753,18 +774,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         SScanSettings extrasSettings;
         bool extrasFoundDirectly{false};
-        m_database.GetScraperForPath(pItem->GetPath(), extrasSettings, extrasFoundDirectly,
-                                     &m_scraperCache);
+        ScraperForPath(pItem->GetPath(), extrasSettings, extrasFoundDirectly);
         addAsExtras = !extrasFoundDirectly;
       }
       if (addAsExtras)
       {
         removeExtrasFolder(pItem->GetPath());
         // Added once the folders beside it (eg. Disc 1, Disc 2) are scanned, to the one movie there
-        if (!bSkip)
-          extrasFolders.emplace_back(pItem->GetPath());
-        else
-          skippedExtras = true;
+        addExtrasFolder(pItem->GetPath());
 
         // no further processing required
         continue;
@@ -775,40 +792,43 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // or under a bluray:// playlist row (current imports); DVD rips under
       // VIDEO_TS/; flat rips with the structure file directly in the movie
       // folder. In every form the movie folder itself, the item the scanner
-      // lists, has no hashed row, so each parent rescan re-imports the movie
-      // from NFO. Store its fast hash here; GetMovieId resolves all anchor
-      // forms. ISOs hash normally as plain files and never reach this block.
-      if (content == ContentType::MOVIES && !URIUtils::IsPlugin(strDirectory) &&
-          !pItem->IsFolder() && !URIUtils::IsStack(pItem->GetPath()) &&
-          URIUtils::IsOpticalMediaFile(pItem->GetPath()))
+      // lists, has no row of its own, so each parent rescan would re-import the
+      // movie from NFO. Record the folder here; GetMovieId resolves all anchor
+      // forms. ISOs are recorded as plain files of their folder and never reach this block.
+      if (content == ContentType::MOVIES && !isPlugin && !pItem->IsFolder() &&
+          !URIUtils::IsStack(pItem->GetPath()) && URIUtils::IsOpticalMediaFile(pItem->GetPath()))
       {
         std::string discFolder = URIUtils::RemoveDiscPath(pItem->GetPath());
         URIUtils::AddSlashAtEnd(discFolder);
         if (!URIUtils::PathEquals(discFolder, strDirectory, true))
         {
-          std::string fh;
-          if (m_advancedSettings->m_bVideoLibraryUseFastHash)
+          const std::string discCfg{FolderSettings(discFolder)};
+          const std::optional<FolderRecord> discRecord{m_pathTable->Record(discFolder)};
+          const std::optional<int64_t> discTime{FolderTime(discFolder)};
+          std::shared_ptr<const CDirectorySnapshot> discListing;
+          bool unchanged{discRecord && discRecord->UnchangedUnlisted(discCfg, discTime, fastHash)};
+          if (!unchanged)
           {
-            int64_t rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_MTIME).asInteger(0);
-            if (rawTime == 0)
-              rawTime = pItem->GetProperty(DIR_PROPERTY_STAT_CTIME).asInteger(0);
-            fh = rawTime != 0 ? UTILS::GetFastHash(regexps, rawTime)
-                              : UTILS::GetFastHash(discFolder, regexps);
+            discListing = Snapshot(discFolder);
+            unchanged = discRecord && discListing &&
+                        discRecord->UnchangedListing(discCfg, discListing->Digest());
           }
-          std::string dbh;
-          const bool unchanged{!fh.empty() && m_database.GetPathHash(discFolder, dbh) &&
-                               StringUtils::EqualsNoCase(fh, dbh)};
 
           // An extra deleted beside the disc changes its extras folder, or the disc's folder
-          if (settings.parent_name && !m_ignoreVideoExtras &&
-              (((!unchanged || foldersWithExtras.contains(discFolder)) &&
-                m_extras.AddVideoExtrasBesideDisc(discFolder, !unchanged)) ||
-               !unchanged) &&
-              m_bClean)
+          bool extrasAdded{false};
+          if (settings.parent_name && !m_ignoreVideoExtras && discListing)
+            extrasAdded = AddExtrasBesideDisc(*discListing);
+          if ((extrasAdded || !unchanged) && m_bClean)
             AddPathToClean(discFolder);
 
-          if (!fh.empty() && !unchanged && m_database.HasMovieInfo(pItem->GetDynPath()))
-            m_database.SetPathHash(discFolder, fh);
+          if (!unchanged && discListing && m_database.HasMovieInfo(pItem->GetDynPath()))
+            m_pathTable->Store(
+                discFolder, FolderRecord{.cfg = discCfg,
+                                         .mtime = discTime,
+                                         .digest = discListing->Digest(),
+                                         .hasSubfolders = HasScannedSubfolders(
+                                             *discListing,
+                                             m_advancedSettings->m_moviesExcludeFromScanRegExps)});
         }
       }
 
@@ -823,11 +843,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
                     CURL::GetRedacted(pItem->GetPath()));
           m_pathsToScan.erase(pItem->GetPath());
           ++m_summary.unchangedDirectories;
-
-          // An unchanged folder is not listed, so its extras folders are looked at here
-          if (foldersWithExtras.contains(pItem->GetPath()) &&
-              m_extras.AddVideoExtrasBesideDisc(pItem->GetPath(), false) && m_bClean)
-            AddPathToClean(pItem->GetPath());
           continue;
         }
         const unsigned int failedLookups{m_failedLookups};
@@ -864,33 +879,341 @@ CVideoInfoScanner::~CVideoInfoScanner()
         continue;
       }
 
-      m_extras.AddVideoExtras(dbId, extrasFolder);
-      m_extras.SetVideoExtrasHash(extrasFolder);
+      // Recorded only once all of it could be listed, so that a later scan adds what couldn't be
+      if (m_extras.AddVideoExtras(dbId, extrasFolder))
+        StoreFolderRecords(extrasFolder, m_advancedSettings->m_moviesExcludeFromScanRegExps);
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
                 CURL::GetRedacted(extrasFolder));
     }
 
-    if (skippedExtras && m_extras.AddVideoExtrasBesideDisc(strDirectory, false) && m_bClean)
+    if (extrasAddedAgain && m_bClean)
       AddPathToClean(strDirectory);
 
-    // Content found directly or in an archive subfolder is recorded by the hash of the physical
-    // directory, rather than of the archive's (eg. rar://) virtual path, once every lookup of it
-    // has been made
-    if (!bSkip && !m_bStop && !lookupFailed && (foundSomething || foundSomethingInArchive) &&
-        (content == ContentType::MOVIES || content == ContentType::MUSICVIDEOS) &&
-        !URIUtils::IsArchive(CURL(strDirectory)))
+    // Content found directly or in an archive subfolder is recorded by the physical directory,
+    // rather than by the archive's (eg. rar://) virtual path, once every lookup of it has been
+    // made. A listing of nothing but folders has nothing of its own to find, but is recorded only
+    // where a later scan lists it: passed over by its time, an archive it holds would not be looked
+    // in again for a movie not found there, or changed inside it. An empty one isn't recorded where
+    // an update cleans, so that a scan stopped before its clean leaves the folder to the next.
+    const bool onlyFolders{
+        std::ranges::all_of(items, [](const auto& item) { return item->IsFolder(); }) &&
+        ((items.IsEmpty() && !m_bClean) || !newRecord || newRecord->hasSubfolders ||
+         !newRecord->mtime)};
+    if (!bSkip && !m_bStop && !lookupFailed && newRecord && !isArchive &&
+        (foundSomething || foundSomethingInArchive || onlyFolders ||
+         content == ContentType::TVSHOWS))
     {
-      m_database.SetPathHash(strDirectory, hash);
+      m_pathTable->Store(strDirectory, *newRecord);
       if (foundSomethingInArchive)
         CLog::LogF(LOGDEBUG,
-                   "Stored hash for physical dir '{}' after finding content in "
-                   "archive subfolder",
+                   "Recorded physical dir '{}' after finding content in archive subfolder",
                    CURL::GetRedacted(strDirectory));
     }
 
     return std::make_pair(m_bStop ? ScanComplete::Stopped : ScanComplete::Completed,
                           foundSomething || foundSomethingInArchive ? ContentFound::NewContentFound
                                                                     : ContentFound::None);
+  }
+
+  ScraperPtr CVideoInfoScanner::ScraperForPath(const std::string& path,
+                                               SScanSettings& settings,
+                                               bool& foundDirectly)
+  {
+    return m_pathTable->Resolve(path, settings, foundDirectly, &m_scraperCache);
+  }
+
+  std::string CVideoInfoScanner::FolderSettings(const std::string& folder)
+  {
+    if (const auto known{m_folderSettings.find(folder)}; known != m_folderSettings.end())
+      return known->second;
+
+    SScanSettings settings;
+    bool foundDirectly{false};
+    const ScraperPtr scraper{ScraperForPath(folder, settings, foundDirectly)};
+    std::string fingerprint;
+    if (scraper)
+    {
+      // Everything that changes what a folder is scanned for
+      const bool tvShows{scraper->Content() == ContentType::TVSHOWS};
+      std::string text{StringUtils::Format(
+          "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}", TranslateContent(scraper->Content()), scraper->ID(),
+          scraper->Version().asString(), scraper->GetPathSettings(), settings.parent_name,
+          settings.parent_name_root, settings.recurse,
+          m_advancedSettings->m_bVideoLibraryUseFastHash, m_ignoreVideoExtras,
+          CServiceBroker::GetFileExtensionProvider().GetVideoExtensions())};
+      // Whether hidden files are shown changes which are scanned, but not the listing they are in
+      const bool showHidden{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_FILELISTS_SHOWHIDDEN)};
+      text += showHidden ? "|1" : "|0";
+      text += "|" + StringUtils::Join(tvShows ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
+                                              : m_advancedSettings->m_moviesExcludeFromScanRegExps,
+                                      "|");
+      if (tvShows)
+      {
+        for (const TVShowRegexp& regexp : m_advancedSettings->m_tvshowEnumRegExps)
+          text += StringUtils::Format("|{}{}{}{}", regexp.byDate, regexp.byTitle,
+                                      regexp.defaultSeason, regexp.regexp);
+        text += "|" + m_advancedSettings->m_tvshowMultiPartEnumRegExp;
+      }
+      else
+      {
+        for (const CRegExp& regexp : m_advancedSettings->m_videoStackRegExps)
+          text += "|" + regexp.GetPattern();
+        for (const CRegExp& regexp : m_advancedSettings->m_folderStackRegExps)
+          text += "|" + regexp.GetPattern();
+      }
+      CDigest digest{CDigest::Type::MD5};
+      digest.Update(text);
+      fingerprint = digest.Finalize();
+    }
+    return m_folderSettings.try_emplace(folder, std::move(fingerprint)).first->second;
+  }
+
+  std::shared_ptr<const CDirectorySnapshot> CVideoInfoScanner::Snapshot(const std::string& folder)
+  {
+    if (const auto taken{m_snapshots.find(folder)}; taken != m_snapshots.end())
+      return taken->second;
+    // Read before the folder is listed, so that its record never holds a later time than its
+    // listing
+    FolderTime(folder);
+    return m_snapshots.try_emplace(folder, CDirectorySnapshot::Take(folder)).first->second;
+  }
+
+  std::optional<int64_t> CVideoInfoScanner::FolderTime(const std::string& folder)
+  {
+    if (const auto listed{m_listedTimes.find(folder)};
+        listed != m_listedTimes.end() && listed->second)
+      return listed->second;
+    if (URIUtils::IsPlugin(folder))
+      return std::nullopt;
+    return m_listedTimes.insert_or_assign(folder, ReadModifiedTime(folder)).first->second;
+  }
+
+  bool CVideoInfoScanner::HasScannedSubfolders(const CDirectorySnapshot& snapshot,
+                                               const std::vector<std::string>& excludes)
+  {
+    return !ScannedSubfolders(snapshot, excludes).empty();
+  }
+
+  std::vector<std::string> CVideoInfoScanner::ScannedSubfolders(
+      const CDirectorySnapshot& snapshot, const std::vector<std::string>& excludes)
+  {
+    std::vector<std::string> subfolders;
+    // Nothing below a folder holding .nomedia is scanned
+    if (snapshot.HasNoMedia())
+      return subfolders;
+
+    const bool showHidden{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_FILELISTS_SHOWHIDDEN)};
+    for (const DirectoryEntry& entry : snapshot.Entries())
+    {
+      if (!entry.isFolder || (entry.hidden && !showHidden) || IsDiscStructureFolder(entry.name))
+        continue;
+      std::string subfolder{URIUtils::AddFileToFolder(snapshot.Path(), entry.name)};
+      URIUtils::AddSlashAtEnd(subfolder);
+      if (CUtil::ExcludeFileOrFolder(subfolder, excludes, &m_regexpCache))
+        continue;
+      if (auto& time{m_listedTimes[subfolder]}; !time)
+        time = entry.mtime;
+      subfolders.emplace_back(std::move(subfolder));
+    }
+    return subfolders;
+  }
+
+  bool CVideoInfoScanner::FolderUnchangedUnlisted(const std::string& folder)
+  {
+    const std::optional<FolderRecord> record{m_pathTable->Record(folder)};
+    return record && record->UnchangedUnlisted(FolderSettings(folder), FolderTime(folder),
+                                               m_advancedSettings->m_bVideoLibraryUseFastHash);
+  }
+
+  bool CVideoInfoScanner::FolderHasNoMedia(const std::string& folder, bool list)
+  {
+    if (URIUtils::IsPlugin(folder) || URIUtils::IsArchive(CURL(folder)))
+      return HasNoMedia(folder);
+
+    const std::optional<FolderRecord> record{m_pathTable->Record(folder)};
+    if (record && record->UnchangedUnlisted(FolderSettings(folder), FolderTime(folder),
+                                            m_advancedSettings->m_bVideoLibraryUseFastHash))
+      return record->noMedia;
+
+    // A folder the scan hasn't listed yet is looked into rather than listed, so that the listings
+    // of a folder's subfolders aren't all held until each is visited
+    const auto taken{m_snapshots.find(folder)};
+    if (!list && taken == m_snapshots.end())
+      return HasNoMedia(folder);
+
+    const auto snapshot{taken != m_snapshots.end() ? taken->second : Snapshot(folder)};
+    if (!snapshot || !snapshot->HasNoMedia())
+      return false;
+
+    // So that the next scan knows without listing it again
+    m_pathTable->Store(folder, FolderRecord{.cfg = FolderSettings(folder),
+                                            .mtime = FolderTime(folder),
+                                            .digest = snapshot->Digest(),
+                                            .noMedia = true});
+    return true;
+  }
+
+  bool CVideoInfoScanner::FolderChanged(const std::string& folder,
+                                        const std::vector<std::string>& excludes)
+  {
+    const std::string cfg{FolderSettings(folder)};
+    const std::optional<FolderRecord> record{m_pathTable->Record(folder)};
+    const std::optional<int64_t> time{FolderTime(folder)};
+    if (record &&
+        record->UnchangedUnlisted(cfg, time, m_advancedSettings->m_bVideoLibraryUseFastHash))
+      return false;
+
+    const auto snapshot{Snapshot(folder)};
+    if (!snapshot || !record || !record->UnchangedListing(cfg, snapshot->Digest()))
+      return true;
+
+    // Only the time it was listed with has moved
+    if (record->mtime != time)
+    {
+      FolderRecord moved{*record};
+      moved.mtime = time;
+      m_pathTable->Store(folder, moved);
+    }
+
+    return std::ranges::any_of(ScannedSubfolders(*snapshot, excludes),
+                               [this, &excludes](const std::string& subfolder)
+                               { return FolderChanged(subfolder, excludes); });
+  }
+
+  void CVideoInfoScanner::StoreFolderRecords(const std::string& folder,
+                                             const std::vector<std::string>& excludes)
+  {
+    for (const auto& [path, record] : ListFolderRecords(folder, excludes))
+      m_pathTable->Store(path, record);
+  }
+
+  std::vector<std::pair<std::string, FolderRecord>> CVideoInfoScanner::ListFolderRecords(
+      const std::string& folder, const std::vector<std::string>& excludes)
+  {
+    std::vector<std::pair<std::string, FolderRecord>> records;
+    const auto snapshot{Snapshot(folder)};
+    if (!snapshot)
+      return records;
+
+    const std::vector<std::string> subfolders{ScannedSubfolders(*snapshot, excludes)};
+    records.emplace_back(folder, FolderRecord{.cfg = FolderSettings(folder),
+                                              .mtime = FolderTime(folder),
+                                              .digest = snapshot->Digest(),
+                                              .hasSubfolders = !subfolders.empty(),
+                                              .noMedia = snapshot->HasNoMedia()});
+    for (const std::string& subfolder : subfolders)
+      std::ranges::move(ListFolderRecords(subfolder, excludes), std::back_inserter(records));
+    return records;
+  }
+
+  bool CVideoInfoScanner::AddExtrasBesideDisc(const CDirectorySnapshot& discFolder)
+  {
+    // A new extras folder changes the disc's folder, and a file added below one changes the folder
+    // holding it, each of which its record shows
+    bool added{false};
+    const std::vector<std::string>& excludes{m_advancedSettings->m_moviesExcludeFromScanRegExps};
+    for (const std::string& folder : ScannedSubfolders(discFolder, excludes))
+    {
+      if (!IsVideoExtrasFolderName(URIUtils::GetFileOrFolderName(folder)))
+        continue;
+
+      // Leave a folder with content set on it (a source root) alone
+      SScanSettings settings;
+      bool foundDirectly{false};
+      if (ScraperForPath(folder, settings, foundDirectly) && foundDirectly)
+        continue;
+
+      if (FolderHasNoMedia(folder, true) || !FolderChanged(folder, excludes))
+        continue;
+
+      const int dbId{m_database.GetMovieIdInFolder(discFolder.Path(), folder)};
+      if (dbId < 0)
+      {
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: No single movie found for video extras {}",
+                  CURL::GetRedacted(folder));
+        continue;
+      }
+
+      if (m_extras.AddVideoExtras(dbId, folder))
+        StoreFolderRecords(folder, excludes);
+      added = true;
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
+                CURL::GetRedacted(folder));
+    }
+    return added;
+  }
+
+  void CVideoInfoScanner::ForgetListings(const std::string& folder)
+  {
+    std::erase_if(m_snapshots,
+                  [&folder](const auto& snapshot) { return snapshot.first.starts_with(folder); });
+    std::erase_if(m_listedTimes,
+                  [&folder](const auto& time) { return time.first.starts_with(folder); });
+  }
+
+  void CVideoInfoScanner::CollectShowFiles(
+      const std::string& folder,
+      CFileItemList& files,
+      std::vector<std::pair<std::string, FolderRecord>>& records,
+      bool recorded)
+  {
+    const auto snapshot{Snapshot(folder)};
+    if (!snapshot)
+      return;
+
+    // As a recursive listing of the show, which leaves out what is below a .nomedia file
+    if (snapshot->HasNoMedia())
+    {
+      if (recorded)
+        records.emplace_back(folder, FolderRecord{.cfg = FolderSettings(folder),
+                                                  .mtime = FolderTime(folder),
+                                                  .digest = snapshot->Digest(),
+                                                  .noMedia = true});
+      return;
+    }
+
+    CFileItemList listing;
+    snapshot->GetItems(listing, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                       true);
+    for (const auto& item : listing)
+    {
+      if (!item->IsFolder())
+        files.Add(item);
+    }
+
+    if (recorded)
+      records.emplace_back(folder,
+                           FolderRecord{.cfg = FolderSettings(folder),
+                                        .mtime = FolderTime(folder),
+                                        .digest = snapshot->Digest(),
+                                        .hasSubfolders = HasScannedSubfolders(*snapshot, {})});
+
+    // A disc's playlists and streams are below its index, which is all that is kept of it
+    const bool discStructure{IsDiscStructureFolder(URIUtils::GetFileOrFolderName(folder))};
+    if (discStructure && snapshot->Find("index.bdmv"))
+      return;
+
+    // What is inside an archive or a disc structure is never looked at on its own, so isn't recorded
+    for (const auto& item : listing)
+    {
+      if (item->IsFolder())
+        CollectShowFiles(
+            item->GetPath(), files, records,
+            recorded && !discStructure && !URIUtils::IsArchive(CURL(item->GetPath())) &&
+                !IsDiscStructureFolder(URIUtils::GetFileOrFolderName(item->GetPath())));
+    }
+  }
+
+  void CVideoInfoScanner::StoreShowRecords(const std::string& show)
+  {
+    const auto records{m_showRecords.find(show)};
+    if (records == m_showRecords.end())
+      return;
+    for (const auto& [folder, record] : records->second)
+      m_pathTable->Store(folder, record);
+    m_showRecords.erase(records);
   }
 
   bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag)
@@ -991,13 +1314,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         continue;
 
       // we do this since we may have a override per dir
-      ScraperPtr info2 = m_database.GetScraperForPath(
-          pItem->IsFolder() ? pItem->GetPath() : items.GetPath(), &m_scraperCache);
+      ScraperPtr info2 = ScraperForPath(pItem->IsFolder() ? pItem->GetPath() : items.GetPath());
       if (!info2) // skip
         continue;
 
       // Discard all .nomedia folders
-      if (pItem->IsFolder() && HasNoMedia(pItem->GetPath()))
+      if (pItem->IsFolder() && FolderHasNoMedia(pItem->GetPath()))
         continue;
 
       // Discard all exclude files defined by regExExclude
@@ -1091,7 +1413,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       // Keep track of directories we've seen
       if (m_bClean && pItem->IsFolder())
-        seenPaths.push_back(m_database.GetPathId(pItem->GetPath()));
+      {
+        // A show added by the scan is known to the database only
+        const int idPath{m_pathTable->PathId(pItem->GetPath())};
+        seenPaths.push_back(idPath >= 0 ? idPath : m_database.GetPathId(pItem->GetPath()));
+      }
     }
 
     if (content == ContentType::TVSHOWS && !seenPaths.empty())
@@ -1132,6 +1458,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
     const bool isSeason =
         pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::SEASON;
 
+    // Enumerate episodes here as this compares the records of folders containing episodes from
+    // this show, and we want to do this before processing nfo files. A show folder whose episodes
+    // are wanted is looked at before the library is asked about it, as nothing is needed from it
+    // where the folder hasn't changed.
+    EPISODELIST files;
+    std::optional<EpisodeResult> epResult;
+    if (pItem->IsFolder() && fetchEpisodes)
+    {
+      epResult = EnumerateSeriesFolder(pItem, files);
+      if (*epResult == EpisodeResult::NOT_CHANGED)
+        return InfoRet::HAVE_ALREADY;
+      if (*epResult == EpisodeResult::NO_MEDIA || *epResult == EpisodeResult::NO_EPISODES)
+        return InfoRet::NOT_NEEDED;
+    }
+
     int idTvShow = -1;
     std::string strPath = pItem->GetPath();
     if (pItem->IsFolder())
@@ -1159,27 +1500,26 @@ CVideoInfoScanner::~CVideoInfoScanner()
     const bool refreshShowInfoOnly =
         idTvShow > -1 && pItem->IsFolder() && !isSeason && !fetchEpisodes;
 
-    // Enumerate episodes here as this compares hashes of folders containing episodes from this show
-    //  and we want to do this before processing nfo files
-    EPISODELIST files;
     if (!refreshShowInfoOnly)
     {
-      const auto epResult = EnumerateSeriesFolder(pItem, files);
-      if (epResult == EpisodeResult::NOT_CHANGED)
-        return InfoRet::HAVE_ALREADY;
-      if (epResult == EpisodeResult::NO_MEDIA)
-        return InfoRet::NOT_NEEDED;
-      if (epResult == EpisodeResult::NO_EPISODES)
-        return InfoRet::NOT_NEEDED;
+      if (!epResult)
+      {
+        epResult = EnumerateSeriesFolder(pItem, files);
+        if (*epResult == EpisodeResult::NOT_CHANGED)
+          return InfoRet::HAVE_ALREADY;
+        if (*epResult == EpisodeResult::NO_MEDIA || *epResult == EpisodeResult::NO_EPISODES)
+          return InfoRet::NOT_NEEDED;
+      }
       if (isSeason && idTvShow < 0)
         return InfoRet::NOT_NEEDED;
     }
 
-    // An episode whose lookup failed leaves the folder unhashed, so the next scan tries it again
+    // An episode whose lookup failed leaves the show's folders unrecorded, so the next scan tries
+    // it again
     const auto setFolderHash = [this, pItem, failedLookups = m_failedLookups]
     {
       if (pItem->IsFolder() && m_failedLookups == failedLookups)
-        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
+        StoreShowRecords(pItem->GetPath());
     };
 
     if (ProgressCancelled(pDlgProgress, pItem->IsFolder() ? 20353 : 20361,
@@ -2050,94 +2390,109 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CFileItemList items;
     const std::vector<std::string>& regexps = m_advancedSettings->m_tvshowExcludeFromScanRegExps;
 
-    bool bSkip = false;
-
     if (item->IsFolder())
     {
+      const std::string& path{item->GetPath()};
+
       /*
        * Note: DoScan() will not remove this path as it's not recursing for tvshows.
        * Remove this path from the list we're processing in order to avoid hitting
        * it twice in the main loop.
        */
-      m_pathsToScan.erase(item->GetPath());
+      m_pathsToScan.erase(path);
 
-      if (HasNoMedia(item->GetPath()))
-        return EpisodeResult::NO_MEDIA;
-
-      std::string hash, dbHash;
-      bool allowEmptyHash = false;
+      const std::string cfg{FolderSettings(path)};
+      const std::optional<FolderRecord> record{m_pathTable->Record(path)};
+      bool unchanged{false};
       if (item->IsPlugin())
       {
+        if (HasNoMedia(path))
+          return EpisodeResult::NO_MEDIA;
+
         // if plugin has already calculated a hash for directory contents - use it
         // in this case we don't need to get directory listing from plugin for hash checking
+        std::string hash;
         if (item->HasProperty("hash"))
         {
           hash = item->GetProperty("hash").asString();
-          allowEmptyHash = true;
+          // A record's fields are separated by '|'
+          StringUtils::Replace(hash, '|', '_');
         }
-      }
-      else if (m_advancedSettings->m_bVideoLibraryUseFastHash)
-        hash = GetRecursiveFastHash(item->GetPath(), regexps);
-
-      const bool pathKnown = m_database.GetPathHash(item->GetPath(), dbHash);
-      if (pathKnown && (allowEmptyHash || !hash.empty()) && StringUtils::EqualsNoCase(dbHash, hash))
-      {
-        // fast hashes match - no need to process anything
-        bSkip = true;
-      }
-
-      // fast hash cannot be computed or we need to rescan. fetch the listing.
-      if (!bSkip)
-      {
-        int flags = DIR_FLAG_DEFAULTS;
-        if (!hash.empty())
-          flags |= DIR_FLAG_NO_FILE_INFO;
-
-        // Listing that ignores files inside and below folders containing .nomedia files.
-        CDirectory::EnumerateDirectory(
-            item->GetPath(), [&items](const std::shared_ptr<CFileItem>& item) { items.Add(item); },
-            [](const std::shared_ptr<CFileItem>& folder) { return !HasNoMedia(folder->GetPath()); },
-            true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), flags);
-
-        // fast hash failed - compute slow one
-        if (hash.empty())
+        unchanged = record && record->UnchangedListing(cfg, hash);
+        if (!unchanged)
         {
-          // force sorting consistency to avoid hash mismatch between platforms
-          // sort by filename as always present for any files, but keep case sensitivity
-          items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
-          UTILS::GetPathHash(items, hash);
-          if (pathKnown && StringUtils::EqualsNoCase(dbHash, hash))
+          CDirectory::EnumerateDirectory(
+              path, [&items](const std::shared_ptr<CFileItem>& item) { items.Add(item); },
+              [](const std::shared_ptr<CFileItem>& folder)
+              { return !HasNoMedia(folder->GetPath()); }, true,
+              CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+              hash.empty() ? DIR_FLAG_DEFAULTS : DIR_FLAG_NO_FILE_INFO);
+
+          if (hash.empty())
           {
-            // slow hashes match - no need to process anything
-            bSkip = true;
+            // force sorting consistency to avoid hash mismatch between platforms
+            // sort by filename as always present for any files, but keep case sensitivity
+            items.Sort(SortBy::FILE, SortOrder::ASCENDING, SortAttributeNone);
+            UTILS::GetPathHash(items, hash);
+            unchanged = record && record->UnchangedListing(cfg, hash);
           }
         }
+        m_showRecords.insert_or_assign(
+            path, std::vector<std::pair<std::string, FolderRecord>>{
+                      {path, FolderRecord{.cfg = cfg, .mtime = std::nullopt, .digest = hash}}});
+      }
+      else
+      {
+        if (record && record->UnchangedUnlisted(cfg, FolderTime(path),
+                                                m_advancedSettings->m_bVideoLibraryUseFastHash))
+        {
+          if (record->noMedia)
+            return EpisodeResult::NO_MEDIA;
+          unchanged = true;
+        }
+        else if (FolderHasNoMedia(path, true))
+        {
+          ForgetListings(path);
+          return EpisodeResult::NO_MEDIA;
+        }
+        else
+          unchanged = !FolderChanged(path, {});
       }
 
-      if (bSkip)
+      if (unchanged)
       {
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '{}' due to no change",
-                  CURL::GetRedacted(item->GetPath()));
+                  CURL::GetRedacted(path));
+        ForgetListings(path);
         ++m_summary.unchangedDirectories;
         // update our dialog with our progress
         if (m_handle)
-          OnDirectoryScanned(item->GetPath());
+          OnDirectoryScanned(path);
         return EpisodeResult::NOT_CHANGED;
       }
 
-      if (dbHash.empty())
+      if (!record)
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '{}' as not in the database",
-                  CURL::GetRedacted(item->GetPath()));
+                  CURL::GetRedacted(path));
       else
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '{}' due to change ({} != {})",
-                  CURL::GetRedacted(item->GetPath()), dbHash, hash);
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '{}' due to change",
+                  CURL::GetRedacted(path));
 
       if (m_bClean)
       {
-        m_pathsToClean.insert(m_database.GetPathId(item->GetPath()));
-        m_database.GetPathsForTvShow(m_database.GetTvShowId(item->GetPath()), m_pathsToClean);
+        m_pathsToClean.insert(m_database.GetPathId(path));
+        m_database.GetPathsForTvShow(m_database.GetTvShowId(path), m_pathsToClean);
       }
-      item->SetProperty("hash", hash);
+
+      if (!item->IsPlugin())
+      {
+        // Every file of the show, from a listing of each of its folders, which are recorded once
+        // its episodes are added
+        std::vector<std::pair<std::string, FolderRecord>> records;
+        CollectShowFiles(path, items, records);
+        m_showRecords.insert_or_assign(path, std::move(records));
+        ForgetListings(path);
+      }
     }
     else
     {
@@ -3050,58 +3405,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
           !GetExtrasFolder(directory, path).empty())
         m_pathsToClean.insert(idPath);
     }
-  }
-
-  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const
-  {
-    if (!m_advancedSettings->m_bVideoLibraryUseFastHash || items.IsPlugin())
-      return false;
-
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      // For the purposes of fast hashing archives are not considered folders
-      if (items[i]->IsFolder() && !URIUtils::IsArchive(CURL(items[i]->GetPath())) &&
-          !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes, &m_regexpCache))
-        return false;
-    }
-    return true;
-  }
-
-  std::string CVideoInfoScanner::GetRecursiveFastHash(const std::string &directory,
-      const std::vector<std::string> &excludes) const
-  {
-    CFileItemList items;
-    items.Add(std::make_shared<CFileItem>(directory, true));
-    CUtil::GetRecursiveDirsListing(directory, items, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
-
-    CDigest digest{CDigest::Type::MD5};
-
-    if (!excludes.empty())
-      digest.Update(StringUtils::Join(excludes, "|"));
-
-    int64_t time = 0;
-    for (int i=0; i < items.Size(); ++i)
-    {
-      int64_t stat_time = 0;
-      struct __stat64 buffer;
-      if (XFILE::CFile::Stat(items[i]->GetPath(), &buffer) == 0)
-      {
-        //! @todo some filesystems may return the mtime/ctime inline, in which case this is
-        //! unnecessarily expensive. Consider supporting Stat() in our directory cache?
-        stat_time = buffer.st_mtime ? buffer.st_mtime : buffer.st_ctime;
-        time += stat_time;
-      }
-
-      if (!stat_time)
-        return "";
-    }
-
-    if (time)
-    {
-      digest.Update((unsigned char *)&time, sizeof(time));
-      return digest.Finalize();
-    }
-    return "";
   }
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)

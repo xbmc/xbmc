@@ -16,13 +16,17 @@
 #include "utils/RegExp.h"
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoScannerExtras.h"
+#include "video/VideoInfoScannerWalk.h"
 
 #include <atomic>
 #include <cstdint>
 #include <functional>
+#include <memory>
+#include <optional>
 #include <set>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -35,25 +39,6 @@ namespace KODI::VIDEO
 {
   class IVideoInfoTagLoader;
   class ISetInfoTagLoader;
-
-  typedef struct SScanSettings
-  {
-    SScanSettings()
-    {
-      parent_name = false;
-      parent_name_root = false;
-      noupdate = false;
-      exclude = false;
-      m_allExtAudio = false;
-      recurse = 1;
-    }
-    bool parent_name;       /* use the parent dirname as name of lookup */
-    bool parent_name_root;  /* use the name of directory where scan started as name for files in that dir */
-    int  recurse;           /* recurse into sub folders (indicate levels) */
-    bool noupdate;          /* exclude from update library function */
-    bool exclude;           /* exclude this path from scraping */
-    bool m_allExtAudio; /* treat all audio files in video directory as external tracks */
-  } SScanSettings;
 
   class CVideoInfoScanner : public CInfoScanner
   {
@@ -260,28 +245,6 @@ namespace KODI::VIDEO
      */
     bool GetEpisodeTitleFromRegExp(CRegExp& reg, EPISODE& episodeInfo);
 
-    /*! \brief Retrieve a "fast" hash of the given directory recursively (if available)
-     Performs a stat() on the directory, and uses modified time to create a "fast"
-     hash of each folder. If no modified time is available, the create time is used,
-     and if neither are available, an empty hash is returned.
-     In case exclude from scan expressions are present, the string array will be appended
-     to the md5 hash to ensure we're doing a re-scan whenever the user modifies those.
-     \param directory folder to hash (recursively)
-     \param excludes string array of exclude expressions
-     \return the md5 hash of the folder
-     */
-    std::string GetRecursiveFastHash(const std::string &directory, const std::vector<std::string> &excludes) const;
-
-    /*! \brief Decide whether a folder listing could use the "fast" hash
-     Fast hashing can be done whenever the folder contains no scannable subfolders, as the
-     fast hash technique uses modified time to determine when folder content changes, which
-     is generally not propagated up the directory tree.
-     \param items the directory listing
-     \param excludes string array of exclude expressions
-     \return true if this directory listing can be fast hashed, false otherwise
-     */
-    bool CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const;
-
     /*! \brief Queue a scanned directory to be cleaned, along with the paths holding its media
      A disc rip or archive is not anchored in the folder that was scanned but under a
      bluray:// or zip:// path of its own. Those are queued too, otherwise the clean never
@@ -319,6 +282,77 @@ namespace KODI::VIDEO
     };
 
     EpisodeResult EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
+
+    //! \brief As CVideoDatabase::GetScraperForPath(), from the rows of the path table the scan read
+    ADDON::ScraperPtr ScraperForPath(const std::string& path,
+                                     SScanSettings& settings,
+                                     bool& foundDirectly);
+    ADDON::ScraperPtr ScraperForPath(const std::string& path)
+    {
+      SScanSettings settings;
+      bool foundDirectly{false};
+      return ScraperForPath(path, settings, foundDirectly);
+    }
+
+    /*! \brief A digest of everything that changes what a folder is scanned for, which its record is
+     stored with, so that a folder scanned otherwise before is scanned again
+     \param folder the folder, with a slash at its end
+     \return the digest, empty where the folder has no content
+     */
+    std::string FolderSettings(const std::string& folder);
+
+    //! \brief The listing of a folder, taken unless the scan took it already
+    std::shared_ptr<const CDirectorySnapshot> Snapshot(const std::string& folder);
+
+    //! \brief The modified time of a folder, as its parent's listing gave it or read now
+    std::optional<int64_t> FolderTime(const std::string& folder);
+
+    /*! \brief The folders of a listing that a scan looks into: neither hidden, nor part of a disc
+     structure, nor excluded. Their times are kept for FolderTime().
+     */
+    std::vector<std::string> ScannedSubfolders(const CDirectorySnapshot& snapshot,
+                                               const std::vector<std::string>& excludes);
+    bool HasScannedSubfolders(const CDirectorySnapshot& snapshot,
+                              const std::vector<std::string>& excludes);
+
+    //! \brief Whether a folder's record shows it unchanged, without listing it
+    bool FolderUnchangedUnlisted(const std::string& folder);
+
+    /*! \brief Whether a folder holds .nomedia, from its record where it is unchanged
+     \param list whether to list the folder, which a scan is about to, rather than look into it
+     */
+    bool FolderHasNoMedia(const std::string& folder, bool list = false);
+
+    /*! \brief Whether anything in a folder, or in a folder below it, has changed since their records
+     were stored. Only the folders with folders of their own to look into are listed.
+     */
+    bool FolderChanged(const std::string& folder, const std::vector<std::string>& excludes);
+
+    //! \brief The records of a folder and of the folders below it, from listings of them
+    std::vector<std::pair<std::string, FolderRecord>> ListFolderRecords(
+        const std::string& folder, const std::vector<std::string>& excludes);
+    void StoreFolderRecords(const std::string& folder, const std::vector<std::string>& excludes);
+
+    /*! \brief Add the extras folders beside a movie's disc that have changed since they were added
+     \param discFolder the listing of the folder holding the disc structure
+     \return whether an extras folder was added again, so may have lost an extra
+     */
+    bool AddExtrasBesideDisc(const CDirectorySnapshot& discFolder);
+
+    /*! \brief The files of a show that has changed, from a listing of each of its folders, and the
+     records of those folders
+     \param recorded whether the folder is one a scan records
+     */
+    void CollectShowFiles(const std::string& folder,
+                          CFileItemList& files,
+                          std::vector<std::pair<std::string, FolderRecord>>& records,
+                          bool recorded = true);
+
+    //! \brief Record the folders of a show once its episodes have been added
+    void StoreShowRecords(const std::string& show);
+
+    //! \brief Forget the listings of a folder and of those below it, once the scan has left them
+    void ForgetListings(const std::string& folder);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
     std::pair<VersionConversionResult, int> ProcessVideoVersion(VideoDbContentType itemType,
@@ -401,6 +435,18 @@ namespace KODI::VIDEO
     //! The artwork side of the scan
     CVideoInfoScannerArt m_art;
     CVideoInfoScannerExtras m_extras{m_database, m_art};
+
+    //! The rows of the path table below the folders scanned, read once
+    std::unique_ptr<CScanPathTable> m_pathTable{std::make_unique<CScanPathTable>(m_database)};
+    //! Listings taken of folders the scan has yet to leave
+    std::unordered_map<std::string, std::shared_ptr<const CDirectorySnapshot>> m_snapshots;
+    //! The modified time of each folder as its parent's listing gave it
+    std::unordered_map<std::string, std::optional<int64_t>> m_listedTimes;
+    //! The settings digest of each folder looked at
+    std::unordered_map<std::string, std::string> m_folderSettings;
+    //! The records of the folders of each show, stored once its episodes are added
+    std::unordered_map<std::string, std::vector<std::pair<std::string, FolderRecord>>>
+        m_showRecords;
 
   private:
     /*!

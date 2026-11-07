@@ -192,8 +192,10 @@ public:
   static bool IsInPlaylistsFolder(const std::string& path, KODI::MEDIA::MediaSection section);
 
   static void GetSkinThemes(std::vector<std::string>& vecTheme);
-  static void GetRecursiveListing(const std::string& strPath, CFileItemList& items, const std::string& strMask, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
-  static void GetRecursiveDirsListing(const std::string& strPath, CFileItemList& items, unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
+  static void GetRecursiveListing(const std::string& strPath,
+                                  CFileItemList& items,
+                                  const std::string& strMask,
+                                  unsigned int flags = 0 /* DIR_FLAG_DEFAULTS */);
   static void ForceForwardSlashes(std::string& strPath);
 
   static double AlbumRelevance(const std::string& strAlbumTemp1, const std::string& strAlbum1, const std::string& strArtistTemp1, const std::string& strArtist1);

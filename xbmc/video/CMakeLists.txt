@@ -27,6 +27,7 @@ set(SOURCES Bookmark.cpp
             VideoInfoScanner.cpp
             VideoInfoScannerArt.cpp
             VideoInfoScannerExtras.cpp
+            VideoInfoScannerWalk.cpp
             VideoInfoTag.cpp
             VideoItemArtworkHandler.cpp
             VideoLibraryQueue.cpp
@@ -69,6 +70,7 @@ set(HEADERS Bookmark.h
             VideoInfoScanner.h
             VideoInfoScannerArt.h
             VideoInfoScannerExtras.h
+            VideoInfoScannerWalk.h
             VideoInfoTag.h
             VideoItemArtworkHandler.h
             VideoLibraryQueue.h

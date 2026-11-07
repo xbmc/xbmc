@@ -9199,6 +9199,21 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
                                              bool& foundDirectly,
                                              ScraperCache* scraperCache /*= nullptr*/)
 {
+  foundDirectly = false;
+  if (strPath.empty() || !m_pDB || !m_pDS)
+    return ScraperPtr();
+
+  return GetScraperForPath(
+      strPath, [this](const std::string& path) { return GetPathScanRow(path); }, settings,
+      foundDirectly, scraperCache);
+}
+
+ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
+                                             const PathScanRowLookup& lookup,
+                                             SScanSettings& settings,
+                                             bool& foundDirectly,
+                                             ScraperCache* scraperCache)
+{
   // Returns a pair of bool and CScraperPtr.
   // The boolean is true if an addon matching the scraperID exists.
   // If true the CScraper can still be nullptr if the addon isn't a CScraper.
@@ -9233,7 +9248,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
   foundDirectly = false;
   try
   {
-    if (strPath.empty() || !m_pDB || !m_pDS)
+    if (strPath.empty())
       return ScraperPtr();
 
     ScraperPtr scraper;
@@ -9247,55 +9262,41 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
       strPath2 = strPath;
 
     std::string strPath1 = URIUtils::GetDirectory(strPath2);
-    int idPath = GetPathId(strPath1);
-
-    if (idPath > -1)
-    {
-      std::string strSQL = PrepareSQL(
-          "SELECT path.strContent, path.strScraper, path.scanRecursive, path.useFolderNames, "
-          "path.strSettings, path.noUpdate, path.exclude, path.allAudio FROM path WHERE idPath=%i",
-          idPath);
-      m_pDS->query( strSQL );
-    }
+    URIUtils::AddSlashAtEnd(strPath1);
+    const std::optional<PathScanRow> row{lookup(strPath1)};
 
     int iFound = 1;
     ContentType content = ContentType::NONE;
-    if (!m_pDS->eof())
+    if (row)
     { // path is stored in db
 
-      settings.m_allExtAudio = m_pDS->fv("path.allAudio").get_asBool();
+      settings.m_allExtAudio = row->allAudio;
 
-      if (m_pDS->fv("path.exclude").get_asBool())
+      if (row->exclude)
       {
         settings.exclude = true;
-        m_pDS->close();
         return ScraperPtr();
       }
       settings.exclude = false;
 
       // try and ascertain scraper for this path
-      std::string strcontent = m_pDS->fv("path.strContent").get_asString();
-      StringUtils::ToLower(strcontent);
-      content = TranslateContent(strcontent);
+      content = TranslateContent(StringUtils::ToLower(row->content));
 
       //FIXME paths stored should not have empty strContent
       //assert(content != ContentType::CONTENT_NONE);
-      std::string scraperID = m_pDS->fv("path.strScraper").get_asString();
-
-      if (!scraperID.empty())
+      if (!row->scraper.empty())
       {
         bool found = false;
-        std::tie(found, scraper) =
-            getScraper(content, scraperID, m_pDS->fv("path.strSettings").get_asString());
+        std::tie(found, scraper) = getScraper(content, row->scraper, row->settings);
 
         if (found && !scraper)
           return ScraperPtr();
 
         if (scraper)
         {
-          settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-          settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-          settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+          settings.parent_name = row->useFolderNames;
+          settings.recurse = row->scanRecursive;
+          settings.noupdate = row->noUpdate;
         }
       }
     }
@@ -9308,40 +9309,26 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
       {
         iFound++;
 
-        std::string strSQL =
-            PrepareSQL("SELECT path.strContent, path.strScraper, path.scanRecursive, "
-                       "path.useFolderNames, path.strSettings, path.noUpdate, path.exclude, "
-                       "path.allAudio FROM path WHERE strPath='%s'",
-                       strParent.c_str());
-        m_pDS->query(strSQL);
-
-        ContentType content2 = ContentType::NONE;
-        if (!m_pDS->eof())
+        if (const std::optional<PathScanRow> parent{lookup(strParent)}; parent)
         {
-          settings.m_allExtAudio = m_pDS->fv("path.allAudio").get_asBool();
-          std::string strcontent = m_pDS->fv("path.strContent").get_asString();
-          StringUtils::ToLower(strcontent);
-          if (m_pDS->fv("path.exclude").get_asBool())
+          settings.m_allExtAudio = parent->allAudio;
+          if (parent->exclude)
           {
             settings.exclude = true;
             scraper.reset();
-            m_pDS->close();
             break;
           }
 
-          content2 = TranslateContent(strcontent);
-
+          const ContentType content2{TranslateContent(StringUtils::ToLower(parent->content))};
           if (content2 != ContentType::NONE)
           {
             bool found = false;
-            std::tie(found, scraper) =
-                getScraper(content2, m_pDS->fv("path.strScraper").get_asString(),
-                           m_pDS->fv("path.strSettings").get_asString());
+            std::tie(found, scraper) = getScraper(content2, parent->scraper, parent->settings);
             if (found)
             {
-              settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-              settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-              settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+              settings.parent_name = parent->useFolderNames;
+              settings.recurse = parent->scanRecursive;
+              settings.noupdate = parent->noUpdate;
               settings.exclude = false;
               break;
             }
@@ -9350,7 +9337,6 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
         strPath1 = strParent;
       }
     }
-    m_pDS->close();
 
     if (!scraper || scraper->Content() == ContentType::NONE)
       return ScraperPtr();
@@ -9385,6 +9371,76 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
     CLog::LogF(LOGERROR, "failed");
   }
   return ScraperPtr();
+}
+
+namespace
+{
+constexpr std::string_view PATH_SCAN_SELECT{
+    "SELECT idPath, strPath, strContent, strScraper, strSettings, scanRecursive, useFolderNames, "
+    "noUpdate, exclude, allAudio, strHash FROM path "};
+
+CVideoDatabase::PathScanRow ReadPathScanRow(dbiplus::Dataset& ds)
+{
+  return {.idPath = ds.fv(0).get_asInt(),
+          .path = ds.fv(1).get_asString(),
+          .content = ds.fv(2).get_asString(),
+          .scraper = ds.fv(3).get_asString(),
+          .settings = ds.fv(4).get_asString(),
+          .scanRecursive = ds.fv(5).get_asInt(),
+          .useFolderNames = ds.fv(6).get_asBool(),
+          .noUpdate = ds.fv(7).get_asBool(),
+          .exclude = ds.fv(8).get_asBool(),
+          .allAudio = ds.fv(9).get_asBool(),
+          .hash = ds.fv(10).get_asString()};
+}
+} // namespace
+
+std::optional<CVideoDatabase::PathScanRow> CVideoDatabase::GetPathScanRow(const std::string& path)
+{
+  if (!m_pDB || !m_pDS)
+    return std::nullopt;
+
+  std::optional<PathScanRow> row;
+  try
+  {
+    m_pDS->query(PrepareSQL(std::string{PATH_SCAN_SELECT} + "WHERE strPath='%s'", path.c_str()));
+    if (!m_pDS->eof())
+      row = ReadPathScanRow(*m_pDS);
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", CURL::GetRedacted(path));
+  }
+  return row;
+}
+
+bool CVideoDatabase::GetPathScanRows(const std::string& basepath, std::vector<PathScanRow>& rows)
+{
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return false;
+
+    std::string path(basepath);
+    URIUtils::AddSlashAtEnd(path);
+
+    // As GetSubPaths() finds them, so that both backends give the same rows
+    m_pDS->query(PrepareSQL(std::string{PATH_SCAN_SELECT} + "WHERE SUBSTR(strPath,1,%i)='%s'",
+                            StringUtils::utf8_strlen(path), path.c_str()));
+    while (!m_pDS->eof())
+    {
+      rows.push_back(ReadPathScanRow(*m_pDS));
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed for {}", CURL::GetRedacted(basepath));
+  }
+  return false;
 }
 
 bool CVideoDatabase::GetUseAllExternalAudioForVideo(const std::string& videoPath)

@@ -147,13 +147,13 @@ CVideoInfoScannerExtras::CVideoInfoScannerExtras(CVideoDatabase& database,
 {
 }
 
-void CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
+bool CVideoInfoScannerExtras::AddVideoExtras(int dbId, const std::string& path)
 {
   // No need to check for .nomedia in the current directory, the caller already checked and this
   // function would not have been called if it existed.
 
   // Add video extras to library
-  UTILS::EnumerateVideoExtras(
+  return UTILS::EnumerateVideoExtras(
       path,
       [this, dbId, path](const std::shared_ptr<CFileItem>& item)
       {

@@ -625,6 +625,47 @@ public:
                                       bool& foundDirectly,
                                       ScraperCache* scraperCache = nullptr);
 
+  //! \brief What a row of the path table stores for scanning a path
+  struct PathScanRow
+  {
+    int idPath{-1};
+    std::string path;
+    std::string content;
+    std::string scraper;
+    std::string settings;
+    int scanRecursive{0};
+    bool useFolderNames{false};
+    bool noUpdate{false};
+    bool exclude{false};
+    bool allAudio{false};
+    std::string hash;
+  };
+
+  //! \brief The row stored for a path, as GetScraperForPath() looks it up
+  using PathScanRowLookup = std::function<std::optional<PathScanRow>(const std::string& path)>;
+
+  /*! \brief GetScraperForPath(), with the rows of the path table it walks looked up by \p lookup
+   rather than queried one at a time. A scan loads them once.
+   */
+  static ADDON::ScraperPtr GetScraperForPath(const std::string& strPath,
+                                             const PathScanRowLookup& lookup,
+                                             KODI::VIDEO::SScanSettings& settings,
+                                             bool& foundDirectly,
+                                             ScraperCache* scraperCache);
+
+  /*! \brief The row stored for a path
+   \param path the path, with a slash at its end
+   \return the row, or nullopt if the path isn't stored
+   */
+  std::optional<PathScanRow> GetPathScanRow(const std::string& path);
+
+  /*! \brief The rows stored for a path and the paths below it, as GetSubPaths() finds them
+   \param basepath the path
+   \param rows [out] the rows
+   \return true if the rows were read, which may be none
+   */
+  bool GetPathScanRows(const std::string& basepath, std::vector<PathScanRow>& rows);
+
   /*! \brief Retrieve the content type of videos in the given path
    If content is set on the folder, we return the given content type, except in the case of tvshows,
    where we first check for whether we have episodes directly in the path (thus return episodes) or whether

@@ -1476,20 +1476,6 @@ void CUtil::GetRecursiveListing(const std::string& strPath, CFileItemList& items
   }
 }
 
-void CUtil::GetRecursiveDirsListing(const std::string& strPath, CFileItemList& item, unsigned int flags /* = DIR_FLAG_DEFAULTS */)
-{
-  CFileItemList myItems;
-  CDirectory::GetDirectory(strPath,myItems,"",flags);
-  for (const auto &i : myItems)
-  {
-    if (i->IsFolder() && !i->IsPath(".."))
-    {
-      item.Add(i);
-      CUtil::GetRecursiveDirsListing(i->GetPath(),item,flags);
-    }
-  }
-}
-
 void CUtil::ForceForwardSlashes(std::string& strPath)
 {
   size_t iPos = strPath.rfind('\\');
