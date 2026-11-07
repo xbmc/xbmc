@@ -47,7 +47,9 @@
 
 #include <algorithm>
 #include <array>
+#include <mutex>
 #include <sstream>
+#include <utility>
 
 #include <fstrcmp.h>
 
@@ -414,6 +416,31 @@ bool CScraper::Load()
   return m_fLoaded = result;
 }
 
+std::unique_lock<CCriticalSection> CScraper::LockCall() const
+{
+  if (m_isPython)
+    return {};
+  return std::unique_lock(m_callSection);
+}
+
+CScraper::CLookingUp::CLookingUp(CScraper& scraper, std::string key)
+  : m_scraper(scraper),
+    m_key(std::move(key))
+{
+  std::unique_lock lock(m_scraper.m_resultsLock);
+  m_scraper.m_resultsChanged.wait(lock, [this] { return !m_scraper.m_lookingUp.contains(m_key); });
+  m_scraper.m_lookingUp.insert(m_key);
+}
+
+CScraper::CLookingUp::~CLookingUp()
+{
+  {
+    std::unique_lock lock(m_scraper.m_resultsLock);
+    m_scraper.m_lookingUp.erase(m_key);
+  }
+  m_scraper.m_resultsChanged.notify_all();
+}
+
 bool CScraper::IsInUse() const
 {
   if (Supports(ContentType::ALBUMS) || Supports(ContentType::ARTISTS))
@@ -444,7 +471,7 @@ bool CScraper::IsNoop()
 // and may populate strId, or throws CScraperError on error
 CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   CScraperUrl scurlRet;
 
   if (IsNoop())
@@ -532,7 +559,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 
 CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   CScraperUrl scurlRet;
 
   if (m_isPython)
@@ -964,16 +991,21 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::IHttpClient& fcurl,
                                              int movieYear,
                                              bool fFirst)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   // The title is cleaned below, so the arguments as given identify the search
   const std::string key{StringUtils::Format("{}\n{}\n{}", movieTitle, movieYear, fFirst)};
-  if (const auto it = m_findCache.find(key); it != m_findCache.end())
-    return it->second;
+  const CLookingUp lookingUp{*this, "find" + key};
+  {
+    std::unique_lock lock(m_resultsLock);
+    if (const auto it = m_findCache.find(key); it != m_findCache.end())
+      return it->second;
+  }
 
   auto result = FindMovieUncached(fcurl, movieTitle, movieYear, fFirst);
 
   if (!result.empty())
   {
+    std::unique_lock lock(m_resultsLock);
     if (m_findCache.size() >= MAX_CACHED_RESULTS)
       m_findCache.clear();
     m_findCache.emplace(key, result);
@@ -1142,7 +1174,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
                                                  const std::string& sAlbum,
                                                  const std::string& sArtist)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   CLog::LogF(LOGDEBUG,
              "Searching for '{} - {}' using {} scraper (path: '{}', content: '{}', version: '{}')",
              sArtist, sAlbum, Name(), Path(), Content(), Version().asString());
@@ -1243,7 +1275,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(XFILE::IHttpClient& fcurl,
 std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
                                                    const std::string& sArtist)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   CLog::LogF(LOGDEBUG,
              "Searching for '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              sArtist, Name(), Path(), Content(), Version().asString());
@@ -1329,7 +1361,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(XFILE::IHttpClient& fcurl,
 // fetch list of episodes from URL (from video database)
 VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   VIDEO::EPISODELIST vcep;
   if (!scurl.HasUrls())
     return vcep;
@@ -1432,21 +1464,26 @@ bool CScraper::GetVideoDetails(XFILE::IHttpClient& fcurl,
                                bool fMovie /*else episode*/,
                                CVideoInfoTag& video)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   // The id as well as the url, since an xml scraper is given both and two search results can
   // carry the same url under different ids
   const std::string key{Keyed(scurl.GetId()) + SerialiseUrls(scurl) + (fMovie ? "m" : "e") +
                         SerialiseUniqueIDs(uniqueIDs)};
-  if (const auto it = m_detailsCache.find(key); it != m_detailsCache.end())
+  const CLookingUp lookingUp{*this, "details" + key};
   {
-    // A copy - the caller goes on to fill in where this came from and what art it ended up with
-    video = *it->second;
-    return true;
+    std::unique_lock lock(m_resultsLock);
+    if (const auto it = m_detailsCache.find(key); it != m_detailsCache.end())
+    {
+      // A copy - the caller goes on to fill in where this came from and what art it ended up with
+      video = *it->second;
+      return true;
+    }
   }
 
   if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
     return false;
 
+  std::unique_lock lock(m_resultsLock);
   if (m_detailsCache.size() >= MAX_CACHED_RESULTS)
     m_detailsCache.clear();
   m_detailsCache.emplace(key, std::make_shared<const CVideoInfoTag>(video));
@@ -1513,7 +1550,7 @@ bool CScraper::GetVideoDetailsUncached(XFILE::IHttpClient& fcurl,
 // takes a URL; returns true and populates album on success, false otherwise
 bool CScraper::GetAlbumDetails(XFILE::IHttpClient& fcurl, const CScraperUrl& scurl, CAlbum& album)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   CLog::LogF(LOGDEBUG, "Reading '{}' using {} scraper (file: '{}', content: '{}', version: '{}')",
              scurl.GetFirstThumbUrl(), Name(), Path(), Content(), Version().asString());
 
@@ -1546,7 +1583,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
                                 const std::string& sSearch,
                                 CArtist& artist)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   if (!scurl.HasUrls())
     return false;
 
@@ -1584,7 +1621,7 @@ bool CScraper::GetArtistDetails(XFILE::IHttpClient& fcurl,
 
 bool CScraper::GetArtwork(XFILE::IHttpClient& fcurl, CVideoInfoTag& details)
 {
-  std::unique_lock lock(m_callSection);
+  const auto call = LockCall();
   if (!details.HasUniqueID())
     return false;
 
