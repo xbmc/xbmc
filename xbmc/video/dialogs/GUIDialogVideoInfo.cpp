@@ -249,7 +249,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
             Open();
             m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
             m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
-            m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
+            m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems || hasUpdatedThumb;
           }
           else
             OnSearch(strItem);
@@ -781,7 +781,7 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   Open();
   m_hasUpdatedThumb = m_hasUpdatedThumb || hasUpdatedThumb;
   m_hasUpdatedUserrating = m_hasUpdatedUserrating || hasUpdatedUserrating;
-  m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems;
+  m_hasUpdatedItems = m_hasUpdatedItems || hasUpdatedItems || hasUpdatedThumb;
 }
 
 void CGUIDialogVideoInfo::ClearCastList()
