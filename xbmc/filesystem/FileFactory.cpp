@@ -75,6 +75,9 @@
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
+#ifdef HAS_LIBTORRENT
+#include "MagnetFile.h"
+#endif
 
 using namespace ADDON;
 using namespace XFILE;
@@ -186,6 +189,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_UPNP
   else if (url.IsProtocol("upnp")) return new CUPnPFile();
+#endif
+#ifdef HAS_LIBTORRENT
+  else if (url.IsProtocol("magnet"))
+    return new CMagnetFile();
 #endif
 
   CLog::Log(LOGWARNING, "{} - unsupported protocol({}) in {}", __FUNCTION__, url.GetProtocol(),
