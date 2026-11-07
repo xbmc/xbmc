@@ -425,7 +425,7 @@ void RestateVideo154(CDatabase& db)
 
 } // unnamed namespace
 
-//! The real 154 to 155 upgrade, driven through CDatabaseManager.
+//! The real 154 to 155 upgrade, driven through CDatabaseManager to the current schema.
 TEST(TestVideoDatabaseContentGeometryMigration, UpgradingFrom154AddsTheTableAndItsCascade)
 {
   const DatabaseSettings settings{TestDatabaseSettings()};
@@ -447,9 +447,9 @@ TEST(TestVideoDatabaseContentGeometryMigration, UpgradingFrom154AddsTheTableAndI
 
   CVideoDatabase migrated;
   ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED,
-            migrated.Connect("MyVideosMigration155", settings, false));
+            migrated.Connect("MyVideosMigration156", settings, false));
 
-  EXPECT_EQ(155, migrated.GetSingleValueInt("SELECT idVersion FROM version"));
+  EXPECT_EQ(156, migrated.GetSingleValueInt("SELECT idVersion FROM version"));
 
   // The same upgrade carries the declaration columns, which live with the other per-file
   // overrides rather than in the cache.
