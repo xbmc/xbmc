@@ -45,7 +45,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # but no corresponding library. Other platforms retain normal package discovery.
   if(ANDROID)
     message(STATUS "Building CrossGUID internally for Android")
-    set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_FOUND FALSE)
   else()
     SEARCH_EXISTING_PACKAGES()
   endif()
