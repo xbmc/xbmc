@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include <string>
@@ -37,6 +38,9 @@ using namespace dbiplus;
 namespace
 {
 constexpr int MAX_COMPRESS_COUNT = 20;
+// Compress when at least this percentage of the file is free pages,
+// regardless of the counter.
+constexpr int COMPRESS_FREE_PERCENT = 20;
 } // unnamed namespace
 
 CDatabase::Filter::Filter() = default;
@@ -739,7 +743,17 @@ bool CDatabase::Compress(bool bForce /* =true */)
         if (iCount > MAX_COMPRESS_COUNT)
           iCount = -1;
         m_pDS->close();
-        std::string strSQL = PrepareSQL("update version set iCompressCount=%i\n", ++iCount);
+        ++iCount;
+        if (iCount != 0)
+        {
+          // Not due by count, but don't leave a good part of the file free, as after a big clean
+          const int64_t pages = GetSingleValueInt("SELECT page_count FROM pragma_page_count");
+          const int64_t freePages =
+              GetSingleValueInt("SELECT freelist_count FROM pragma_freelist_count");
+          if (pages > 0 && freePages * 100 >= pages * COMPRESS_FREE_PERCENT)
+            iCount = 0; // Due now, and the count starts again
+        }
+        std::string strSQL = PrepareSQL("update version set iCompressCount=%i\n", iCount);
         m_pDS->exec(strSQL);
         if (iCount != 0)
           return true;
