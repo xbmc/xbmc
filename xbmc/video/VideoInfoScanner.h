@@ -14,12 +14,14 @@
 #include "addons/Scraper.h"
 #include "settings/VideoVersionsSettings.h"
 #include "utils/RegExp.h"
+#include "utils/StreamDetails.h"
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoScannerExtras.h"
 
 #include <atomic>
 #include <cstdint>
 #include <functional>
+#include <optional>
 #include <set>
 #include <string>
 #include <string_view>
@@ -402,7 +404,19 @@ namespace KODI::VIDEO
     CVideoInfoScannerArt m_art;
     CVideoInfoScannerExtras m_extras{m_database, m_art};
 
+    //! The file probed last, and its own streams, which its other episodes have too
+    std::optional<std::pair<std::string, CStreamDetails>> m_lastProbed;
+    //! The folders of the files the scan has listed itself, whose listings the directory cache holds
+    //! as they were then \sa NoteListed()
+    std::set<std::string, std::less<>> m_listedFolders;
+
   private:
+    /*!
+     * \brief Note the folders of the files a listing the scan has just taken holds, so that the
+     * subtitles of a video in one are looked for in that listing, from the directory cache
+     */
+    void NoteListed(const CFileItemList& items);
+
     /*!
      * \brief Count an item that wasn't added in the summary, and log it as an event
      * \param[in] type What the item is

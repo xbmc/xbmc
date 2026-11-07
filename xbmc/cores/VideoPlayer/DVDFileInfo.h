@@ -37,8 +37,21 @@ public:
   */
   static bool IsExtractableLocation(const std::string& path);
 
-  // Probe the files streams and store the info in the VideoInfoTag
-  static bool GetFileStreamDetails(CFileItem* pItem);
+  /*!
+   * @brief Probe the file's streams, look for its external subtitles, and store them in its tag
+   * @param listingFlags added to the flags the video's folder is listed with to look for subtitles
+   * @param[out] probed if given, the file's own streams, without the external subtitles, which
+   * another video of the same file (eg. another episode of it) can be given by AddExternalSubtitles()
+   */
+  static bool GetFileStreamDetails(CFileItem* pItem,
+                                   int listingFlags = 0,
+                                   CStreamDetails* probed = nullptr);
+
+  /*!
+   * @brief Store streams probed already in an item's tag, with the item's own external subtitles
+   * @param streams the streams of the item's file, as GetFileStreamDetails() probed them
+   */
+  static void AddExternalSubtitles(CFileItem& item, CStreamDetails streams, int listingFlags = 0);
 
   static bool GetFileDuration(const std::string& path, int& duration);
 
@@ -66,5 +79,7 @@ private:
   *   \param[out] details The stream details to add the subtitles to
   *   \sa AddExternalSubtitleToDetails
   */
-  static void ProcessExternalSubtitles(const CFileItem& item, CStreamDetails& details);
+  static void ProcessExternalSubtitles(const CFileItem& item,
+                                       CStreamDetails& details,
+                                       int listingFlags = 0);
 };

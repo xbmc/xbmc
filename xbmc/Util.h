@@ -106,10 +106,14 @@ public:
   *   \param[in] strMovie The full path of the video file.
   *   \param[out] vecSubtitles The full paths of the subtitle files found.
   *   \param[in] tag The video's info, if any, so an episode's own subtitles are found
+  *   \param[in] listingFlags added to the flags the video's folder is listed with, eg.
+  *   DIR_FLAG_READ_CACHE by a scan that has just listed it. The folders of subtitles in it, archives
+  *   and the custom folder are listed as without them.
   */
   static void ScanForExternalSubtitles(const std::string& strMovie,
                                        std::vector<std::string>& vecSubtitles,
-                                       const CVideoInfoTag* tag = nullptr);
+                                       const CVideoInfoTag* tag = nullptr,
+                                       int listingFlags = 0);
 
   /** \brief Retrieves stream info of external associated files, e.g., subtitles, for a given video.
   *   \param[in] videoPath The full path of the video file.
@@ -331,7 +335,8 @@ protected:
   static void GetItemsToScan(const std::string& videoPath,
                              const std::string& item_exts,
                              const std::vector<std::string>& sub_dirs,
-                             CFileItemList& items);
+                             CFileItemList& items,
+                             int listingFlags = 0);
 
   /** \brief Searches for associated files of a given video.
     *   \param[in]  videoName The name of the video file.
