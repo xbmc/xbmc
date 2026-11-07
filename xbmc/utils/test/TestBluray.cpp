@@ -7,7 +7,7 @@
  */
 
 #include "URL.h"
-#include "filesystem/bluray/BitReader.h"
+#include "filesystem/bluray/ByteHelpers.h"
 #include "filesystem/bluray/M2TSParser.h"
 #include "filesystem/bluray/MPLSParser.h"
 #include "filesystem/bluray/PlaylistStructure.h"
@@ -19,23 +19,6 @@
 #include <ranges>
 
 #include <gtest/gtest.h>
-
-TEST(TestBitReader, General)
-{
-  std::vector<std::byte> data{std::byte{0xAA}, std::byte{0x55}, std::byte{0b00010010},
-                              std::byte{0b00010010}, std::byte{0xFF}};
-  BitReader br(data);
-  EXPECT_EQ(br.ReadBits(4), 0xA);
-  EXPECT_EQ(br.ReadBits(8), 0xA5);
-  br.SkipBits(4);
-  EXPECT_EQ(br.ReadUE(), 8); // 0001001b = 8
-  br.ByteAlign();
-  EXPECT_EQ(br.ReadSE(), -4); // 0001001b = -4
-  br.ByteAlign();
-
-  EXPECT_THROW(br.ReadBits(64), std::out_of_range); // max 32
-  EXPECT_THROW(br.ReadBits(16), std::out_of_range); // only 8 bits left
-}
 
 TEST(TestBytes, General)
 {

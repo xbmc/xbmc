@@ -10,6 +10,7 @@
 
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "utils/BitReader.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
@@ -281,30 +282,6 @@ bool SampleHasKeyNalUnit(const uint8_t* data, int size, int nalLengthSize, NalPr
   return false;
 }
 
-// MSB-first bit reader; reads past the end yield zero bits.
-class CBitReader
-{
-public:
-  CBitReader(const uint8_t* data, int size) : m_data(data), m_bits(size * 8) {}
-
-  uint32_t Read(int count)
-  {
-    uint32_t value = 0;
-    for (int i = 0; i < count; ++i)
-    {
-      const uint32_t bit = m_pos < m_bits ? (m_data[m_pos >> 3] >> (7 - (m_pos & 7))) & 1u : 0u;
-      ++m_pos;
-      value = (value << 1) | bit;
-    }
-    return value;
-  }
-
-private:
-  const uint8_t* m_data;
-  int m_bits;
-  int m_pos{0};
-};
-
 bool ReadLeb128(const uint8_t* data, int size, int& offset, uint32_t& value)
 {
   uint64_t result = 0;
@@ -352,20 +329,20 @@ bool AV1TemporalUnitIsKeyFrame(const uint8_t* data, int size, bool& reducedStill
     if (obuSize > static_cast<uint32_t>(size - offset))
       return false;
 
-    CBitReader bits(data + offset, static_cast<int>(obuSize));
+    CBitReader bits({data + offset, obuSize});
     if (obuType == AV1_OBU_SEQUENCE_HEADER)
     {
-      bits.Read(3); // seq_profile
-      bits.Read(1); // still_picture
-      reducedStillPictureHeader = bits.Read(1) != 0;
+      bits.ReadBits(3); // seq_profile
+      bits.ReadBits(1); // still_picture
+      reducedStillPictureHeader = bits.ReadBits(1) != 0;
     }
     else if (obuType == AV1_OBU_FRAME_HEADER || obuType == AV1_OBU_FRAME)
     {
       if (reducedStillPictureHeader)
         return true;
-      if (bits.Read(1) != 0) // show_existing_frame
+      if (bits.ReadBits(1) != 0) // show_existing_frame
         return false;
-      return bits.Read(2) == AV1_FRAME_TYPE_KEY;
+      return bits.ReadBits(2) == AV1_FRAME_TYPE_KEY;
     }
     offset += static_cast<int>(obuSize);
   }

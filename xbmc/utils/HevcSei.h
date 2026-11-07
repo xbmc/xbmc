@@ -8,10 +8,12 @@
 
 #pragma once
 
-#include "BitstreamReader.h"
-
+#include <cstddef>
+#include <cstdint>
 #include <optional>
 #include <vector>
+
+class CBitReader;
 
 /*!
  * \brief Parses HEVC SEI messages for supplemental video information.
@@ -59,7 +61,7 @@ public:
 
 private:
   // Parses single SEI message from the reader and pushes it to the list
-  static int ParseSeiMessage(CBitstreamReader& br, std::vector<CHevcSei>& messages);
+  static int ParseSeiMessage(CBitReader& br, std::vector<CHevcSei>& messages);
 
   static std::vector<CHevcSei> ParseSeiRbspInternal(const uint8_t* buf, const size_t len);
 };

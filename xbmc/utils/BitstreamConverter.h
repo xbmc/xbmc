@@ -14,23 +14,13 @@
 
 extern "C"
 {
-#include <libavutil/avutil.h>
-#include <libavformat/avformat.h>
-#include <libavfilter/avfilter.h>
 #include <libavcodec/avcodec.h>
+#include <libavcodec/bsf.h>
 
 #ifdef HAVE_LIBDOVI
 #include <libdovi/rpu_parser.h>
 #endif
 }
-
-typedef struct
-{
-  const uint8_t* data;
-  const uint8_t* end;
-  int head;
-  uint64_t cache;
-} nal_bitstream;
 
 typedef struct mpeg2_sequence
 {
@@ -42,58 +32,13 @@ typedef struct mpeg2_sequence
   uint32_t ratio_info;
 } mpeg2_sequence;
 
-typedef struct
-{
-  int profile_idc;
-  int level_idc;
-  int sps_id;
-
-  int chroma_format_idc;
-  int separate_colour_plane_flag;
-  int bit_depth_luma_minus8;
-  int bit_depth_chroma_minus8;
-  int qpprime_y_zero_transform_bypass_flag;
-  int seq_scaling_matrix_present_flag;
-
-  int log2_max_frame_num_minus4;
-  int pic_order_cnt_type;
-  int log2_max_pic_order_cnt_lsb_minus4;
-
-  int max_num_ref_frames;
-  int gaps_in_frame_num_value_allowed_flag;
-  int pic_width_in_mbs_minus1;
-  int pic_height_in_map_units_minus1;
-
-  int frame_mbs_only_flag;
-  int mb_adaptive_frame_field_flag;
-
-  int direct_8x8_inference_flag;
-
-  int frame_cropping_flag;
-  int frame_crop_left_offset;
-  int frame_crop_right_offset;
-  int frame_crop_top_offset;
-  int frame_crop_bottom_offset;
-} sps_info_struct;
-
-class CBitstreamParser
-{
-public:
-  CBitstreamParser();
-  ~CBitstreamParser() = default;
-
-  static bool Open() { return true; }
-  static void Close();
-  static bool CanStartDecode(const uint8_t* buf, int buf_size);
-};
-
 class CBitstreamConverter
 {
 public:
   CBitstreamConverter();
   ~CBitstreamConverter();
 
-  bool Open(enum AVCodecID codec, uint8_t* in_extradata, int in_extrasize, bool to_annexb);
+  bool Open(enum AVCodecID codec, const uint8_t* in_extradata, int in_extrasize);
   void Close();
   bool NeedConvert() const { return m_convert_bitstream; }
   bool Convert(uint8_t* pData, int iSize);
@@ -114,52 +59,32 @@ public:
                                     mpeg2_sequence* sequence);
 
 protected:
-  static int avc_parse_nal_units(AVIOContext* pb, const uint8_t* buf_in, int size);
-  static int avc_parse_nal_units_buf(const uint8_t* buf_in, uint8_t** buf, int* size);
-  int isom_write_avcc(AVIOContext* pb, const uint8_t* data, int len);
   // bitstream to bytestream (Annex B) conversion support.
   bool IsIDR(uint8_t unit_type);
-  bool IsSlice(uint8_t unit_type);
-  bool BitstreamConvertInitAVC(void* in_extradata, int in_extrasize);
-  bool BitstreamConvertInitHEVC(void* in_extradata, int in_extrasize);
-  bool BitstreamConvert(uint8_t* pData, int iSize, uint8_t** poutbuf, int* poutbuf_size);
-  static void BitstreamAllocAndCopy(uint8_t** poutbuf,
-                                    int* poutbuf_size,
-                                    const uint8_t* sps_pps,
-                                    uint32_t sps_pps_size,
-                                    const uint8_t* in,
-                                    uint32_t in_size,
-                                    uint8_t nal_type);
 
 #ifdef HAVE_LIBDOVI
   const DoviData* processDoviRpu(uint8_t* buf, uint32_t nalSize);
 #endif
 
-  typedef struct omx_bitstream_ctx {
-      uint8_t  length_size;
-      uint8_t  first_idr;
-      uint8_t  idr_sps_pps_seen;
-      uint8_t *sps_pps_data;
-      uint32_t size;
-  } omx_bitstream_ctx;
-
   uint8_t* m_convertBuffer;
   int m_convertSize;
-  uint8_t* m_inputBuffer;
-  int m_inputSize;
 
-  uint32_t m_sps_pps_size;
-  omx_bitstream_ctx m_sps_pps_context;
   bool m_convert_bitstream;
-  bool m_to_annexb;
 
   FFmpegExtraData m_extraData;
-  bool m_convert_3byteTo4byteNALSize;
-  bool m_convert_bytestream;
   AVCodecID m_codec;
   bool m_start_decode;
   bool m_convert_dovi;
   bool m_removeDovi;
   bool m_removeHdr10Plus;
   bool m_setDoviZeroLevel5;
+
+private:
+  bool BitstreamConvertInit(const char* filterName, const uint8_t* extraData, int extraDataSize);
+  bool HasRecoveryPoint(const uint8_t* data, int size);
+  bool BitstreamConvert(const uint8_t* pData, int iSize);
+  bool ProcessAnnexB(uint8_t* data, int size);
+
+  AVBSFContext* m_bitstreamFilter{nullptr};
+  uint8_t m_nalLengthSize{0};
 };
