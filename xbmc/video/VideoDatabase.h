@@ -1185,6 +1185,14 @@ public:
    */
   int GetMovieId(const std::string& strFilenameAndPath, const FolderMovies& known);
 
+  /*!
+   \brief Work out the date a file is added to the library with, where nothing gives it one, before
+   the transaction it is added in, so that the file system isn't asked while the database is held
+   \param fileAndPath the file, as it is added
+   */
+  void PrepareDateAdded(const std::string& fileAndPath);
+  void ForgetPreparedDatesAdded();
+
   std::string GetMovieTitle(int idMovie);
 
   enum MatchingMask : uint8_t
@@ -1460,4 +1468,7 @@ private:
   static void AnnounceRemove(KODI::MEDIA::TYPE content, int id, bool scanning = false);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
+
+  //! The dates added of files about to be added \sa PrepareDateAdded
+  std::map<std::string, CDateTime, std::less<>> m_preparedDatesAdded;
 };

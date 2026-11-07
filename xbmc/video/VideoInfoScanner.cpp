@@ -2787,8 +2787,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     if (movieDetails.m_basePath.empty())
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
-    movieDetails.m_parentPathID =
-        m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
     movieDetails.m_strFileNameAndPath = path;
 
@@ -2827,17 +2825,43 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::LogF(LOGDEBUG, "Filestream details already present for {}", CURL::GetRedacted(path));
     }
 
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
-              CURL::GetRedacted(path));
-    long lResult = -1;
-
     if (content == ContentType::MOVIES)
     {
       // find local trailer first
       std::string strTrailer = UTILS::FindTrailer(*pItem, videoFolder, &m_regexpCache);
       if (!strTrailer.empty())
         movieDetails.m_strTrailer = strTrailer;
+    }
 
+    KODI::ART::SeasonsArtwork seasonArt;
+    if (content == ContentType::TVSHOWS && pItem->IsFolder() && !libraryImport)
+    {
+      CVideoInfoScannerArt::GetSeasonThumbs(
+          movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::SEASON),
+          useLocal && !pItem->IsPlugin(), useRemoteArt, &m_regexpCache);
+      for (const auto& seasonArtwork : seasonArt | std::views::values)
+        m_art.Cache(seasonArtwork);
+    }
+
+    // A file's date added may be read from the file itself
+    if (!pItem->IsFolder())
+      m_database.PrepareDateAdded(path);
+
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", content,
+              CURL::GetRedacted(path));
+    long lResult = -1;
+
+    // Written in one transaction, with nothing left to wait on but the database. A caller writing
+    // more with it has its own open.
+    const bool ownTransaction{!m_database.InTransaction()};
+    if (ownTransaction)
+      m_database.BeginTransaction();
+
+    movieDetails.m_parentPathID =
+        m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
+
+    if (content == ContentType::MOVIES)
+    {
       // Remove remote set art (if need)
       if (useRemoteArt == CVideoInfoScannerArt::UseRemoteArtWithLocalScraper::NO)
         std::erase_if(art,
@@ -2947,17 +2971,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (!URIUtils::IsMultiPath(path) || !CMultiPathDirectory::GetPaths(path, multipath))
           multipath.push_back(path);
 
-        KODI::ART::SeasonsArtwork seasonArt;
-
-        if (!libraryImport)
-        {
-          CVideoInfoScannerArt::GetSeasonThumbs(
-              movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MEDIA::TYPE::SEASON),
-              useLocal && !pItem->IsPlugin(), useRemoteArt, &m_regexpCache);
-          for (const auto& seasonArtwork : seasonArt | std::views::values)
-            m_art.Cache(seasonArtwork);
-        }
-
         lResult = m_database.SetDetailsForTvShow(multipath, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
         movieDetails.SetMediaType(MEDIA::TYPE::TV_SHOW);
@@ -2999,6 +3012,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
         m_database.AddBookMarkToFile(path, movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
 
+    // An episode added without its details leaves no episode behind
+    if (ownTransaction)
+    {
+      if (lResult < 0)
+        m_database.RollbackTransaction();
+      else
+        m_database.CommitTransaction();
+    }
+    m_database.ForgetPreparedDatesAdded();
+
     m_database.Close();
 
     if (lResult > -1)
@@ -3011,15 +3034,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       else if (content == ContentType::MUSICVIDEOS)
         type = ScanSummary::Type::MUSIC_VIDEO;
       m_summary.added.push_back({type, path, strTitle});
-    }
 
-    CFileItemPtr itemCopy = std::make_shared<CFileItem>(*pItem);
-    CVariant data;
-    data["added"] = true;
-    if (m_bRunning)
-      data["transaction"] = true;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
-                                                       itemCopy, data);
+      CFileItemPtr itemCopy = std::make_shared<CFileItem>(*pItem);
+      CVariant data;
+      data["added"] = true;
+      if (m_bRunning)
+        data["transaction"] = true;
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
+                                                         itemCopy, data);
+    }
     return lResult;
   }
 

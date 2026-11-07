@@ -29,6 +29,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Artwork.h"
 #include "utils/DatabaseUtils.h"
+#include "utils/FileUtils.h"
 #include "utils/StreamDetails.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -2189,6 +2190,81 @@ TEST_F(TestVideoDatabase, GetKnownFoldersTakesADiscsPlaylistsAsTheFolderHoldingI
   EXPECT_NE(std::ranges::find(folders, "/movies/Film/Bonus Disc/"), folders.end());
   for (const std::string& folder : folders)
     EXPECT_TRUE(folder.starts_with("/movies/Film/")) << folder;
+}
+
+// An actor is the one of that name, whatever its case, and _ and % in a name are no wildcards
+TEST_F(TestVideoDatabase, AnActorIsFoundByTheirNameExactly)
+{
+  const auto movieWithCast{[this](const std::string& file, const std::string& actor)
+                           {
+                             CVideoInfoTag tag{Tag(file)};
+                             SActorInfo info;
+                             info.strName = actor;
+                             tag.m_cast.emplace_back(info);
+                             return m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{});
+                           }};
+  ASSERT_GT(movieWithCast("/movies/First.mkv", "Ann_Lee"), 0);
+  ASSERT_GT(movieWithCast("/movies/Second.mkv", "AnnxLee"), 0);
+  ASSERT_GT(movieWithCast("/movies/Third.mkv", "ann_lee"), 0);
+  ASSERT_GT(movieWithCast("/movies/Fourth.mkv", "Ann%"), 0);
+
+  EXPECT_EQ(3, m_db.GetSingleValueInt("SELECT COUNT(*) FROM actor"));
+  EXPECT_EQ(2,
+            m_db.GetSingleValueInt("SELECT COUNT(*) FROM actor_link JOIN actor ON actor.actor_id = "
+                                   "actor_link.actor_id WHERE actor.name = 'Ann_Lee'"));
+}
+
+// A genre, studio, country or tag is the one of that name, whatever its case, and _ and % in a name
+// are no wildcards
+TEST_F(TestVideoDatabase, AGenreIsFoundByItsNameExactly)
+{
+  const auto movieWithGenre{[this](const std::string& file, const std::string& genre)
+                            {
+                              CVideoInfoTag tag{Tag(file)};
+                              tag.m_genre = {genre};
+                              return m_db.SetDetailsForMovie(tag, KODI::ART::Artwork{});
+                            }};
+  ASSERT_GT(movieWithGenre("/movies/First.mkv", "Sci_Fi"), 0);
+  ASSERT_GT(movieWithGenre("/movies/Second.mkv", "SciXFi"), 0);
+  ASSERT_GT(movieWithGenre("/movies/Third.mkv", "sci_fi"), 0);
+  ASSERT_GT(movieWithGenre("/movies/Fourth.mkv", "Sci%"), 0);
+
+  EXPECT_EQ(3, m_db.GetSingleValueInt("SELECT COUNT(*) FROM genre"));
+  EXPECT_EQ(2, m_db.GetSingleValueInt("SELECT COUNT(*) FROM genre_link JOIN genre ON "
+                                      "genre.genre_id = genre_link.genre_id WHERE genre.name = "
+                                      "'Sci_Fi'"));
+}
+
+// The date a file is added with is read from the file before it is added, inside a transaction
+// that would otherwise wait on the file system
+TEST_F(TestVideoDatabase, AFilesDateAddedIsReadBeforeItIsAdded)
+{
+  auto& dateAdded{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iVideoLibraryDateAdded};
+  const int previous{dateAdded};
+  dateAdded = 1; // the file's modified time
+  const std::string folder{
+      CSpecialProtocol::TranslatePath("special://temp/TestVideoDatabaseDateAdded/")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(folder));
+  const std::string path{URIUtils::AddFileToFolder(folder, "Film.mkv")};
+  XFILE::CFile file;
+  ASSERT_TRUE(file.OpenForWrite(path, true));
+  file.Close();
+  const CDateTime modified{CFileUtils::GetModificationDate(path, false)};
+  ASSERT_TRUE(modified.IsValid());
+
+  m_db.PrepareDateAdded(path);
+  // Gone once the date is known, so that it can't be read again
+  ASSERT_TRUE(XFILE::CFile::Delete(path));
+  const int idFile{m_db.AddFile(path)};
+  m_db.ForgetPreparedDatesAdded();
+  dateAdded = previous;
+  XFILE::CDirectory::RemoveRecursive(folder);
+
+  ASSERT_GT(idFile, 0);
+  EXPECT_EQ(modified.GetAsDBDateTime(),
+            m_db.GetSingleValue(
+                m_db.PrepareSQL("SELECT dateAdded FROM files WHERE idFile = %i", idFile)));
 }
 
 // A scan reads the movies of a folder at once, and finds the same movie for each file as it would
