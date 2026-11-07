@@ -530,9 +530,34 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     SetViewAsControl(
         CViewStateSettings::GetInstance().Get(VIEW::STATE::MUSIC_NAV_ALBUMS)->m_viewMode);
   }
+  else if (items.GetContent() == MEDIA::CONTENT::ARTISTS)
+  {
+    AddSortMethod(SortBy::ARTIST, sortAttribute, 557,
+                  LABEL_MASKS("%F", "", "%A", "")); // Filename, empty | Artist, empty
+    AddSortMethod(SortBy::DATE_ADDED, sortAttribute, 570,
+                  LABEL_MASKS("%F", "", "%A", "%a")); // Filename, empty | Artist, dateAdded
+
+    // The artists are listed alphabetically unless the playlist defines an order of its own that
+    // applies to artists, e.g. a random one. Otherwise that order is lost when sorting the list.
+    const SortBy playlistOrder = GetPlaylistSortBy(items);
+    if ((PLAYLIST::IsSmartPlayList(items) || items.IsLibraryFolder()) &&
+        (playlistOrder == SortBy::ARTIST || playlistOrder == SortBy::DATE_ADDED ||
+         playlistOrder == SortBy::RANDOM))
+      AddPlaylistOrder(items, LABEL_MASKS("%F", "", "%A", ""));
+    else
+    {
+      const CViewState* artistViewState =
+          CViewStateSettings::GetInstance().Get(VIEW::STATE::MUSIC_NAV_ARTISTS);
+      SetSortMethod(SortBy::ARTIST);
+      SetSortOrder(artistViewState->m_sortDescription.sortOrder);
+    }
+
+    SetViewAsControl(
+        CViewStateSettings::GetInstance().Get(VIEW::STATE::MUSIC_NAV_ARTISTS)->m_viewMode);
+  }
   else
   {
-    CLog::Log(LOGERROR,"Music Smart Playlist must be one of songs, mixed or albums");
+    CLog::Log(LOGERROR, "Music Smart Playlist must be one of songs, mixed, albums or artists");
   }
 
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
@@ -540,8 +565,12 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
 
 void CGUIViewStateMusicSmartPlaylist::SaveViewState()
 {
+  // The view state of an artist playlist is only saved for the playlist. As the global state
+  // of the artists node it would also change the view and the sort order of Library > Artists.
   SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV,
-               CViewStateSettings::GetInstance().Get(VIEW::STATE::MUSIC_NAV_SONGS));
+               m_items.GetContent() == MEDIA::CONTENT::ARTISTS
+                   ? nullptr
+                   : CViewStateSettings::GetInstance().Get(VIEW::STATE::MUSIC_NAV_SONGS));
 }
 
 CGUIViewStateMusicPlaylist::CGUIViewStateMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
@@ -681,6 +710,8 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
 
     SetSortOrder(SortOrder::ASCENDING);
   }
+
+  AddRandomPlaylistOrder(items, LABEL_MASKS("%F", "", "%L", "")); // Filename, empty | Label, empty
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
 }
 

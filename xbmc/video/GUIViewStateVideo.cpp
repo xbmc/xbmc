@@ -466,6 +466,8 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
     SetViewAsControl(viewState->m_viewMode);
     SetSortOrder(viewState->m_sortDescription.sortOrder);
   }
+
+  AddRandomPlaylistOrder(items, LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
   LoadViewState(items.GetPath(), WINDOW_VIDEO_NAV);
 }
 
