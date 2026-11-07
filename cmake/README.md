@@ -9,7 +9,7 @@ Welcome to Kodi's CMake Based Build System. CMake is a cross-platform tool for g
 * Android
 * FreeBSD
 * webOS
-* WebAssembly (Emscripten) — experimental; see [docs/WASM.md](../docs/WASM.md)
+* WebAssembly (Emscripten) — experimental; see [docs/README.WASM.md](../docs/README.WASM.md)
 
 While the legacy build systems typically used in-source builds, it's recommended to use out-of-source builds with CMake. The necessary runtime dependencies such as dlls, skins and configuration files are copied over to the build directory automatically. Instructions are highly dependent on your operating system and target platform but we prepared a set of **[build guides](../docs/README.md)** for your convenience.
 
@@ -30,7 +30,7 @@ The buildsystem uses the following variables (which can be passed into it when e
 - `ARCH_DEFINES` specifies the platform-specific C/C++ preprocessor defines (defaults to empty)
 
 ## Building
-To trigger the cmake-based buildsystem the following command must be executed with `<path>` set to this directory (absolute or relative) allowing for in-source and out-of-source builds
+To trigger the cmake-based buildsystem the following command must be executed with `<path>` set to the Kodi source root directory (absolute or relative) allowing for in-source and out-of-source builds
 
 `cmake <path> -G <generator>`
 
@@ -84,7 +84,7 @@ make
 
 It is recommended to specify the directories as absolute paths. If relative paths are used, they are considered relative to the build directory in which `cmake` was executed (the current working directory).
 
-Both methods work only for already existing add-ons. See this **[forum thread](https://forum.kodi.tv/showthread.php?tid=219166&pid=1934922)** and add-ons **[README](cmake/addons/README.md)**
+Both methods work only for already existing add-ons. See this **[forum thread](https://forum.kodi.tv/showthread.php?tid=219166&pid=1934922)** and add-ons **[README](addons/README.md)**
 for add-on development and detailed documentation about the add-on build system.
 
 ## Sanitizers
