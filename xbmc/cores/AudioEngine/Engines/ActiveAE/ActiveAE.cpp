@@ -955,7 +955,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         case CActiveAEControlProtocol::INIT:
           m_extError = false;
           m_extSuspended = false;
-          if (!displayReset)
+          if (!displayReset || m_extDeviceChanged)
           {
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEFAULTDEVICECHANGE);
@@ -964,6 +964,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             LoadSettings();
             ValidateOutputDevices(false);
           }
+          m_extDeviceChanged = false;
           Configure();
           if (!displayReset)
             msg->Reply(CActiveAEControlProtocol::ACC);
@@ -981,6 +982,10 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_extDeferData = false;
           return;
         case CActiveAEControlProtocol::DEVICECHANGE:
+          // Nobody repeats this, so look at the sinks again when the display is back.
+          CLog::Log(LOGDEBUG, "CActiveAE - device change event while suspended");
+          m_extDeviceChanged = true;
+          return;
         case CActiveAEControlProtocol::DEFAULTDEVICECHANGE:
         case CActiveAEControlProtocol::DEVICECOUNTCHANGE:
           return;

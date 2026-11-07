@@ -64,6 +64,7 @@
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 #include "platform/android/storage/AndroidStorageProvider.h"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
 #include <sstream>
@@ -302,6 +303,23 @@ bool isHeadsetPlugged()
   {
     return audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
   }
+}
+
+std::vector<int> getHdmiEncodings()
+{
+  std::vector<int> encodings;
+  CJNIAudioManager audioManager(CXBMCApp::getSystemService(CJNIContext::AUDIO_SERVICE));
+  for (const CJNIAudioDeviceInfo& device :
+       audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS))
+  {
+    if (device.getType() == CJNIAudioDeviceInfo::TYPE_HDMI)
+    {
+      const std::vector<int> deviceEncodings = device.getEncodings();
+      encodings.insert(encodings.end(), deviceEncodings.begin(), deviceEncodings.end());
+    }
+  }
+  std::sort(encodings.begin(), encodings.end());
+  return encodings;
 }
 } // namespace
 
@@ -1268,11 +1286,22 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
         dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
-    if (m_hdmiPlugged && m_aeReset)
+    if (m_hdmiPlugged)
     {
-      android_printf("CXBMCApp::onReceive: Reset audio engine");
-      CServiceBroker::GetActiveAE()->DeviceChange();
-      m_aeReset = false;
+      // A sink such as an AVR powering on changes the HDMI encodings, while a
+      // refresh rate switch keeps them, so only the former needs a rescan.
+      std::vector<int> encodings = getHdmiEncodings();
+      const bool encodingsChanged = encodings != m_hdmiEncodings;
+      m_hdmiEncodings = std::move(encodings);
+
+      if (m_aeReset || (encodingsChanged && g_application.IsInitialized()))
+      {
+        android_printf("CXBMCApp::onReceive: Reset audio engine");
+        IAE* iae = CServiceBroker::GetActiveAE();
+        if (iae)
+          iae->DeviceChange();
+        m_aeReset = false;
+      }
     }
     if (m_hdmiPlugged && m_wakeUp)
     {
