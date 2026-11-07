@@ -55,34 +55,12 @@ public:
   void AddMovieDiscExtras(const CFileItem& item);
 
   /*!
-   \brief Add the video extras folders of a movie whose folder holds its disc structure. Such a
-   folder is listed as the disc's file, so its extras folders are not in the listing scanned.
-   An extras folder is looked at only where its extras, in it or in the folders below it, have
-   changed since it was last added, unless rescan.
+   \brief Add the video extras folders of a movie whose folder holds its disc structure, as a
+   refresh does: each is looked at, whether or not it has changed since it was last added.
    \param discFolder the folder holding the movie's disc structure
-   \param discChanged whether that folder has changed, so may hold a new extras folder
-   \param rescan whether an extras folder is looked at even where it hasn't changed
-   \return whether an extras folder was added again, so may have lost an extra
+   \return whether an extras folder was added
    */
-  bool AddVideoExtrasBesideDisc(const std::string& discFolder,
-                                bool discChanged,
-                                bool rescan = false);
-
-  /*!
-   \brief Record the extras of an extras folder as added, so that it is looked at again only once
-   they change.
-   \param folder the extras folder
-   */
-  void SetVideoExtrasHash(const std::string& folder);
-
-  /*!
-   \brief The folders below a folder the library knows of. The extras of a disc are known only
-   by the paths of its playlists (bluray://), which are taken as the folder holding the disc.
-   \param db database connection to use
-   \param folder the folder to look below
-   \return the folders, each with a slash at its end
-   */
-  static std::vector<std::string> GetKnownFolders(CVideoDatabase& db, const std::string& folder);
+  bool AddVideoExtrasBesideDisc(const std::string& discFolder);
 
   /*!
    \brief Add the extras of a movie being refreshed: those each of its blurays names, and those of
