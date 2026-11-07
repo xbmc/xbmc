@@ -1408,6 +1408,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return edition;
   }
 
+  bool CVideoInfoScanner::GetMovieIdentifier(const CFileItem& item,
+                                             bool bDirNames,
+                                             const CFilenameAttributes& filenameAttributes,
+                                             std::string& identifierType,
+                                             std::string& identifier) const
+  {
+    return filenameAttributes.GetIdentifier(identifierType, identifier) ||
+           CFilenameAttributes(item.GetMovieName(bDirNames), &m_regexpCache)
+               .GetIdentifier(identifierType, identifier);
+  }
+
   CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForMovie(CFileItem* pItem,
                                                                 bool bDirNames,
                                                                 ScraperPtr& info2,
@@ -1637,7 +1648,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     std::string identifierType;
     std::string identifier;
-    if (info2->IsPython() && filenameAttributes.GetIdentifier(identifierType, identifier))
+    if (info2->IsPython() &&
+        GetMovieIdentifier(*pItem, bDirNames, filenameAttributes, identifierType, identifier))
     {
       const ADDON::CScraper::UniqueIDs uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
