@@ -18,12 +18,15 @@
 #include "filesystem/IHttpClient.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "interfaces/generic/HeldNotifications.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/ContentNames.h"
 #include "utils/ScraperUrl.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoDownloader.h"
+#include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <chrono>
@@ -81,7 +84,8 @@ constexpr const char* PYTHON_SCRAPER_ADDON = R"(<?xml version="1.0" encoding="UT
 </addon>)";
 
 //! What the runs of the scraper share: how many have started, how many run at once, whether they
-//! may finish, and the threads they ran on
+//! may finish, and the threads they ran on; how many details requests and searches were made, how
+//! many of the first of each fail, and how many notifications of a failure were shown
 struct SSearches
 {
   std::mutex lock;
@@ -91,11 +95,18 @@ struct SSearches
   int most{0};
   bool finish{false};
   std::vector<int> threads;
+  int details{0};
+  int detailsFailing{0};
+  int searches{0};
+  int searchesFailing{0};
+  int notified{0};
 };
 
 /*!
  \brief Stands in for the python interpreter running a scraper: a search for a title finds one
- movie, by that title, once the search may finish
+ movie, by that title, once the search may finish. A details request reads a movie called
+ 'Details'. A search or details request set to fail does as the TMDb scraper does: it raises a
+ notification and ends the directory without a result.
  */
 class CSearchingInvoker : public ILanguageInvoker
 {
@@ -114,20 +125,46 @@ protected:
     const int handle{std::stoi(arguments[1])};
     const CURL options{"plugin://" + std::string{PYTHON_SCRAPER_ID} + "/" + arguments[2]};
     const std::string title{options.GetOption("title")};
+    bool failing{false};
     {
       std::unique_lock lock(m_searches.lock);
       ++m_searches.started;
       m_searches.most = std::max(m_searches.most, ++m_searches.running);
       if (std::ranges::find(m_searches.threads, GetId()) == m_searches.threads.end())
         m_searches.threads.push_back(GetId());
+      if (options.GetOption("action") == "getdetails")
+        failing = ++m_searches.details <= m_searches.detailsFailing;
+      else
+        failing = ++m_searches.searches <= m_searches.searchesFailing;
       m_searches.changed.notify_all();
       m_searches.changed.wait_for(lock, TIMEOUT, [this] { return m_searches.finish; });
     }
 
-    CFileItem movie{"http://movies.invalid/" + title, false};
-    movie.SetLabel(title);
-    XFILE::CPluginDirectory::AddItem(handle, &movie, 1);
-    XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+    if (failing)
+    {
+      // As xbmcgui.Dialog().notification() does
+      auto show = [this]
+      {
+        std::unique_lock lock(m_searches.lock);
+        ++m_searches.notified;
+      };
+      if (!CHeldNotifications::Hold(GetId(), show))
+        show();
+      XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+    }
+    else if (options.GetOption("action") == "getdetails")
+    {
+      CFileItem movie{"Details"};
+      movie.GetVideoInfoTag()->SetTitle("Details");
+      XFILE::CPluginDirectory::SetResolvedUrl(handle, true, &movie);
+    }
+    else
+    {
+      CFileItem movie{"http://movies.invalid/" + title, false};
+      movie.SetLabel(title);
+      XFILE::CPluginDirectory::AddItem(handle, &movie, 1);
+      XFILE::CPluginDirectory::EndOfDirectory(handle, true, false, false);
+    }
 
     std::unique_lock lock(m_searches.lock);
     setState(InvokerStateScriptDone);
@@ -250,6 +287,48 @@ protected:
     m_handler.m_searches.changed.notify_all();
   }
 
+  //! Reads the details of a movie, with the requests made for them failing \p failing times
+  bool ReadDetails(int failing, CVideoInfoTag& details)
+  {
+    {
+      std::unique_lock lock(m_handler.m_searches.lock);
+      m_handler.m_searches.detailsFailing = failing;
+    }
+    Finish();
+    CScraperUrl url;
+    CScraperUrl::SUrlEntry entry;
+    entry.m_url = R"({"tmdb": "1"})";
+    url.AppendUrl(entry);
+    const std::unique_ptr<XFILE::IHttpClient> http{XFILE::CreateHttpClient()};
+    return m_scraper->GetVideoDetails(*http, {}, url, true, details);
+  }
+
+  //! Searches for 'Alpha' as a scan does, with the first \p failing searches failing
+  std::vector<CScraperUrl> SearchAsAScan(int failing)
+  {
+    {
+      std::unique_lock lock(m_handler.m_searches.lock);
+      m_handler.m_searches.searchesFailing = failing;
+    }
+    Finish();
+    std::vector<CScraperUrl> found;
+    CVideoInfoDownloader scan{m_scraper};
+    static_cast<void>(scan.FindMovie("Alpha", 2000, found));
+    return found;
+  }
+
+  int Notified()
+  {
+    std::unique_lock lock(m_handler.m_searches.lock);
+    return m_handler.m_searches.notified;
+  }
+
+  int DetailsRequests()
+  {
+    std::unique_lock lock(m_handler.m_searches.lock);
+    return m_handler.m_searches.details;
+  }
+
   std::vector<int> Threads()
   {
     std::unique_lock lock(m_handler.m_searches.lock);
@@ -322,4 +401,49 @@ TEST_F(TestPythonScraper, ItsInterpretersAreKeptForItsLaterCalls)
   std::unique_lock lock(m_handler.m_searches.lock);
   EXPECT_EQ(4, m_handler.m_searches.started);
   EXPECT_EQ(2u, m_handler.m_searches.threads.size());
+}
+
+TEST_F(TestPythonScraper, ADetailsRequestThatFailsIsMadeOnceMoreAndWhatItSaysIsNotShown)
+{
+  CVideoInfoTag details;
+  EXPECT_TRUE(ReadDetails(1, details));
+  EXPECT_EQ("Details", details.GetTitle());
+  EXPECT_EQ(2, DetailsRequests());
+  EXPECT_EQ(0, Notified());
+}
+
+TEST_F(TestPythonScraper, ADetailsRequestIsMadeOnlyOnceMoreAndWhatItSaysTwiceIsShownOnce)
+{
+  CVideoInfoTag details;
+  EXPECT_FALSE(ReadDetails(2, details));
+  EXPECT_EQ(2, DetailsRequests());
+  EXPECT_EQ(1, Notified());
+}
+
+TEST_F(TestPythonScraper, ADetailsRequestThatSucceedsIsMadeOnce)
+{
+  CVideoInfoTag details;
+  EXPECT_TRUE(ReadDetails(0, details));
+  EXPECT_EQ(1, DetailsRequests());
+}
+
+TEST_F(TestPythonScraper, WhatASearchThatFailsSaysIsNotShownWhenTheNextSearchFindsTheMovie)
+{
+  const std::vector<CScraperUrl> found{SearchAsAScan(1)};
+  ASSERT_EQ(1u, found.size());
+  EXPECT_EQ("Alpha", found[0].GetTitle());
+  EXPECT_EQ(0, Notified());
+}
+
+TEST_F(TestPythonScraper, WhatASearchThatNothingTriesAgainSaysIsShownAtOnce)
+{
+  {
+    std::unique_lock lock(m_handler.m_searches.lock);
+    m_handler.m_searches.searchesFailing = 1;
+  }
+  Finish();
+  std::vector<CScraperUrl> found;
+  Search("Alpha", found).wait();
+  EXPECT_TRUE(found.empty());
+  EXPECT_EQ(1, Notified());
 }

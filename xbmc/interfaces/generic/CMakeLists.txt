@@ -1,10 +1,12 @@
-set(SOURCES ILanguageInvoker.cpp
+set(SOURCES HeldNotifications.cpp
+            ILanguageInvoker.cpp
             LanguageInvokerThread.cpp
             RunningScriptObserver.cpp
             ScriptInvocationManager.cpp
             ScriptRunner.cpp)
 
-set(HEADERS ILanguageInvocationHandler.h
+set(HEADERS HeldNotifications.h
+            ILanguageInvocationHandler.h
             ILanguageInvoker.h
             LanguageInvokerThread.h
             RunningScriptsHandler.h

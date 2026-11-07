@@ -9,6 +9,7 @@
 #include "ScriptInvocationManager.h"
 
 #include "addons/addoninfo/AddonType.h"
+#include "interfaces/generic/HeldNotifications.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/LanguageInvokerThread.h"
@@ -328,6 +329,7 @@ int CScriptInvocationManager::ExecuteAsync(
     // After we leave the lock, the thread can be released -> copy!
     auto invokerThread = reusable->thread;
     lock.unlock();
+    CHeldNotifications::ScriptStarting(invokerThread->GetId());
     invokerThread->Execute(script, arguments);
 
     // No ReleasePluginHandle() follows a run without a handle. The thread isn't free again until
@@ -381,6 +383,7 @@ int CScriptInvocationManager::ExecuteAsync(
   m_scripts.insert(std::make_pair(invokerThread->GetId(), thread));
   m_scriptPaths.insert(std::make_pair(script, invokerThread->GetId()));
   lock.unlock();
+  CHeldNotifications::ScriptStarting(invokerThread->GetId());
   invokerThread->Execute(script, arguments);
 
   return invokerThread->GetId();

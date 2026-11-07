@@ -22,6 +22,7 @@
 #include "filesystem/HttpClientFactory.h"
 #include "filesystem/IHttpClient.h"
 #include "filesystem/PluginDirectory.h"
+#include "interfaces/generic/HeldNotifications.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
@@ -1480,8 +1481,18 @@ bool CScraper::GetVideoDetails(XFILE::IHttpClient& fcurl,
     }
   }
 
+  // Asked once more, as a request the scraper makes can fail now and then (a dropped connection),
+  // which it reports only as no details. A notification the scraper raises as the first try fails
+  // is dropped: the second try's say how it went.
+  CHeldNotifications held;
   if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
-    return false;
+  {
+    CLog::LogF(LOGDEBUG, "No details read from '{}' using {} scraper, trying once more",
+               scurl.GetFirstThumbUrl(), Name());
+    held.Drop();
+    if (!GetVideoDetailsUncached(fcurl, uniqueIDs, scurl, fMovie, video))
+      return false;
+  }
 
   std::unique_lock lock(m_resultsLock);
   if (m_detailsCache.size() >= MAX_CACHED_RESULTS)

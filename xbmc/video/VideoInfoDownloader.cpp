@@ -11,6 +11,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/HttpClientFactory.h"
 #include "filesystem/IHttpClient.h"
+#include "interfaces/generic/HeldNotifications.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -157,10 +158,14 @@ int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear
   }
 
   // unthreaded
+  // A notification the scraper raises as the first search fails is dropped if it searches again:
+  // the second search's say how it went
+  CHeldNotifications held;
   int success = InternalFindMovie(movieTitle, movieYear, movieList);
   // NOTE: this might be improved by rescraping if the match quality isn't high?
   if (success == 1 && movieList.empty())
   { // no results. try without cleaning chars like '.' and '_'
+    held.Drop();
     success = InternalFindMovie(movieTitle, movieYear, movieList, false);
   }
   return success;
