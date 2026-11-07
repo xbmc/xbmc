@@ -27,7 +27,7 @@ class CBusyWaiter : public CThread
   IRunnable *m_runnable;
 public:
   explicit CBusyWaiter(IRunnable *runnable) :
-  CThread(runnable, "waiting"), m_done(new CEvent()),  m_runnable(runnable) { }
+  CThread(runnable, "waiting"), m_done(std::make_shared<CEvent>()),  m_runnable(runnable) { }
 
   ~CBusyWaiter() override { StopThread(); }
 

@@ -11,6 +11,7 @@
 #include "guilib/GUIDialog.h"
 #include "media/MediaSection.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -53,7 +54,7 @@ protected:
 
   KODI::MEDIA::MediaSection m_section{KODI::MEDIA::MediaSection::FILES};
   std::string m_name;
-  CFileItemList* m_paths;
+  std::unique_ptr<CFileItemList> m_paths;
   bool m_confirmed = false;
   bool m_bNameChanged = false;
 };
