@@ -136,8 +136,12 @@ protected:
   TRANSPORT_STREAM_STATE TransportStreamVideoState();
   bool IsTransportStreamReady();
   void ResetVideoStreams();
+  void FlushInputSeek();
   AVDictionary* GetFFMpegOptionsFromInput();
   double ConvertTimestamp(int64_t pts, int den, int num);
+#ifdef HAVE_LIBBLURAY
+  void ConvertBlurayTimestamps(DemuxPacket* packet, const AVStream* stream);
+#endif
   bool IsProgramChange();
   unsigned int HLSSelectProgram();
 
@@ -200,4 +204,8 @@ protected:
   bool m_seekToKeyFrame = false;
   double m_startTime = 0;
   std::vector<ChapterFFmpeg> m_chapters;
+#ifdef HAVE_LIBBLURAY
+  uint64_t m_blurayReadBase{0};
+  std::map<int, uint64_t> m_blurayReadPos;
+#endif
 };

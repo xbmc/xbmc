@@ -389,6 +389,14 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     if (blockSize > 1 && seekable) // non seakable input streams are not supposed to set block size
       bufferSize = blockSize;
 
+#ifdef HAVE_LIBBLURAY
+    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+    {
+      std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->ReleaseClipStart();
+      m_blurayReadBase = std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->GetReadPos();
+      m_blurayReadPos.clear();
+    }
+#endif
     unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
     m_ioContext = avio_alloc_context(buffer, bufferSize, 0, this, dvd_file_read, NULL, dvd_file_seek);
 
@@ -774,6 +782,9 @@ void CDVDDemuxFFmpeg::Flush()
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
   m_seekToKeyFrame = false;
+#ifdef HAVE_LIBBLURAY
+  m_blurayReadPos.clear();
+#endif
 }
 
 void CDVDDemuxFFmpeg::Abort()
@@ -1075,6 +1086,48 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   return timestamp * DVD_TIME_BASE;
 }
 
+#ifdef HAVE_LIBBLURAY
+// the start term of ConvertTimestamp steps back at every seamless clip join, so a bluray packet
+// gets its title time from the clip it was read in
+void CDVDDemuxFFmpeg::ConvertBlurayTimestamps(DemuxPacket* packet, const AVStream* stream)
+{
+  constexpr AVRational CLIP_TIME_BASE = {1, 90000};
+  const auto bluray = static_cast<CDVDInputStreamBluray*>(m_pInput.get());
+
+  // a packet without position stays in the clip of its stream's last packet
+  const auto readPos =
+      m_blurayReadPos.try_emplace(m_pkt.pkt.stream_index, bluray->GetReadPos()).first;
+  if (m_pkt.pkt.pos >= 0)
+    readPos->second = m_blurayReadBase + m_pkt.pkt.pos;
+
+  const auto clip = bluray->GetClipTime(readPos->second);
+  if (!clip)
+    return;
+
+  const int64_t inTime =
+      av_rescale_q(static_cast<int64_t>(clip->inTime), CLIP_TIME_BASE, stream->time_base);
+  const int64_t startTime =
+      av_rescale_q(static_cast<int64_t>(clip->startTime), CLIP_TIME_BASE, stream->time_base);
+  const int64_t wrap = INT64_C(1) << stream->pts_wrap_bits;
+
+  const auto toTitleTime = [&](int64_t ts) -> double
+  {
+    if (ts == AV_NOPTS_VALUE)
+      return DVD_NOPTS_VALUE;
+
+    int64_t clipTime = (ts - inTime) & (wrap - 1);
+    if (clipTime >= wrap / 2)
+      clipTime -= wrap;
+
+    return static_cast<double>(clipTime + startTime) * stream->time_base.num /
+           stream->time_base.den * DVD_TIME_BASE;
+  };
+
+  packet->pts = toTitleTime(m_pkt.pkt.pts);
+  packet->dts = toTitleTime(m_pkt.pkt.dts);
+}
+#endif
+
 DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
 {
   DemuxPacket* pPacket = NULL;
@@ -1109,6 +1162,12 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
       }
       else if (m_pkt.result == AVERROR_EOF)
       {
+#ifdef HAVE_LIBBLURAY
+        // the input holds the next clip for the reset it queued, so this is not the end
+        if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) &&
+            static_cast<CDVDInputStreamBluray*>(m_pInput.get())->IsClipStartHeld())
+          bReturnEmpty = true;
+#endif
       }
       else if (m_pkt.result < 0)
       {
@@ -1198,6 +1257,10 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
               ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
           pPacket->dts =
               ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
+#ifdef HAVE_LIBBLURAY
+          if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+            ConvertBlurayTimestamps(pPacket, stream);
+#endif
           pPacket->duration = DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num /
                                               stream->time_base.den);
           pPacket->m_keyFrame = (m_pkt.pkt.flags & AV_PKT_FLAG_KEY) != 0;
@@ -1304,6 +1367,21 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   return ReadInternal(false);
 }
 
+void CDVDDemuxFFmpeg::FlushInputSeek()
+{
+  Flush();
+
+#ifdef HAVE_LIBBLURAY
+  // mpegts only drops its partial packets when the position changes
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY) && m_ioContext && m_pFormatContext &&
+      m_pFormatContext->pb == m_ioContext && !m_ioContext->seekable)
+  {
+    m_blurayReadBase += m_ioContext->pos;
+    m_ioContext->pos = 0;
+  }
+#endif
+}
+
 bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 {
   bool hitEnd = false;
@@ -1329,7 +1407,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
     if (startpts)
       *startpts = DVD_NOPTS_VALUE;
 
-    Flush();
+    FlushInputSeek();
 
     return true;
   }
@@ -2395,7 +2473,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
           DVD_SEC_TO_TIME(std::chrono::duration<double>(ich->GetChapterPos(chapter)).count());
     }
 
-    Flush();
+    FlushInputSeek();
     return true;
   }
 
