@@ -91,7 +91,15 @@ public:
     */
     CFileCache(unsigned int flags, std::unique_ptr<IFileCacheSource> source);
 
+    //! Builds an unopened memory cache of the given size and records its forward capacity
+    virtual std::unique_ptr<CCacheStrategy> CreateMemoryCache(size_t cacheSize);
+
   private:
+    //! The per-buffer size holding a minute of content at the given rate, within a memory budget
+    size_t CacheSizeForRate(uint32_t bytesPerSecond) const;
+    //! Grows a default-sized memory cache once the content's rate is known
+    void GrowCacheForRate(uint32_t bytesPerSecond);
+
     // Allow the EOF regression test to observe seek waiters without exposing
     // the events
     friend class ::TestFileCache;
@@ -119,6 +127,9 @@ public:
     unsigned int m_flags;
     CCriticalSection m_sync;
     std::chrono::milliseconds m_processWait{100ms};
+    size_t m_memoryCacheSize = 0; // per buffer, 0 when caching to disk
+    size_t m_pendingCacheSize = 0; // size the fill thread rebuilds the cache at, 0 for none
+    bool m_autoSizeCache = false;
   };
 
 }
