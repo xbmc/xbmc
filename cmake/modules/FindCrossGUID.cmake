@@ -16,10 +16,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS HAVE_NEW_CROSSGUID)
 
-    if(ANDROID)
-      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS GUID_ANDROID)
-    endif()
-
     set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/001-fix-unused-function.patch"
                 "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch"
                 "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/003-add-cstdint-include.patch"
@@ -93,6 +89,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       if(TARGET UUID::UUID)
         target_link_libraries(${LIB_TARGET} INTERFACE UUID::UUID)
       endif()
+    endif()
+
+    # The Android overload of CrossGUID::newGuid requires GUID_ANDROID,
+    # regardless of whether CrossGUID is built internally or found externally.
+    if(ANDROID)
+      list(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS GUID_ANDROID)
     endif()
 
     ADD_TARGET_COMPILE_DEFINITION()
