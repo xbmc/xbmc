@@ -2812,9 +2812,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // EXTERNAL - Plugin content (CVideoTagLoaderPlugin)
       if (!movieDetails.HasStreamDetails())
       {
-        if (CDVDFileInfo::GetFileStreamDetails(pItem))
+        // The scan has just listed the folders the subtitles are looked for in. The episodes of a
+        // file are added one after the other, and the file is probed for the first of them only:
+        // each still has its own external subtitles.
+        if (m_lastProbed && m_lastProbed->first == path)
+        {
+          CDVDFileInfo::AddExternalSubtitles(*pItem, m_lastProbed->second, DIR_FLAG_READ_CACHE);
+          CLog::LogF(LOGDEBUG, "Filestream details of video file {} already extracted",
+                     CURL::GetRedacted(path));
+        }
+        else if (CStreamDetails probed;
+                 CDVDFileInfo::GetFileStreamDetails(pItem, DIR_FLAG_READ_CACHE, &probed))
+        {
+          m_lastProbed.emplace(path, std::move(probed));
           CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
                      CURL::GetRedacted(path));
+        }
         else
           CLog::LogF(LOGDEBUG, "No filestream details extracted from video file {}",
                      CURL::GetRedacted(path));

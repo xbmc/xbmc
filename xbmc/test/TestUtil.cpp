@@ -7,6 +7,7 @@
  */
 
 #include "DatabaseManager.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -29,6 +30,8 @@
 #include "video/VideoManagerTypes.h"
 
 #include <algorithm>
+#include <filesystem>
+#include <fstream>
 #include <set>
 #include <string>
 #include <vector>
@@ -1625,6 +1628,31 @@ protected:
 };
 } // namespace
 
+// A scan that has just listed the video's folder looks for its subtitles in that listing
+TEST_F(TestCustomSubtitleFolder, SubtitlesAreFoundInTheListingsAScanTook)
+{
+  XFILE::CFile file;
+  ASSERT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(m_folder, "Film.en.srt"), true));
+  file.Close();
+  const std::string subs{URIUtils::AddFileToFolder(m_folder, "Subs\\")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(subs));
+  ASSERT_TRUE(file.OpenForWrite(URIUtils::AddFileToFolder(subs, "Film.fr.srt"), true));
+  file.Close();
+
+  std::vector<std::string> listed;
+  CUtil::ScanForExternalSubtitles(m_video, listed);
+  CFileItemList items;
+  ASSERT_TRUE(XFILE::CDirectory::GetDirectory(
+      m_folder, items, "", XFILE::DIR_FLAG_GET_HIDDEN | XFILE::DIR_FLAG_NO_FILE_DIRS));
+  std::vector<std::string> cached;
+  CUtil::ScanForExternalSubtitles(m_video, cached, nullptr, XFILE::DIR_FLAG_READ_CACHE);
+
+  std::ranges::sort(listed);
+  std::ranges::sort(cached);
+  EXPECT_EQ(2U, listed.size());
+  EXPECT_EQ(listed, cached);
+}
+
 TEST_F(TestCustomSubtitleFolder, AFolderThatDoesNotExistStaysDisabled)
 {
   ASSERT_TRUE(Settings()->SetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH,
@@ -1649,6 +1677,29 @@ TEST_F(TestCustomSubtitleFolder, AFolderThatExistsIsSearched)
   CUtil::ScanForExternalSubtitles(m_video, found);
 
   EXPECT_EQ(1, CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked());
+  EXPECT_EQ(1U, found.size());
+}
+
+// A scan reads what it has just listed from the directory cache, but lists the custom folder afresh
+TEST_F(TestCustomSubtitleFolder, AScanListsTheFolderAfresh)
+{
+  const std::string subtitles{URIUtils::AddFileToFolder(m_folder, "AlternateCaptions\\")};
+  ASSERT_TRUE(XFILE::CDirectory::Create(subtitles));
+  ASSERT_TRUE(Settings()->SetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH, subtitles));
+  std::vector<std::string> before;
+  CUtil::ScanForExternalSubtitles(m_video, before);
+  // Added as another program adds it, unseen by the directory cache
+  const std::string subtitle{URIUtils::AddFileToFolder(subtitles, "Film.en.srt")};
+  {
+    const std::ofstream file{std::filesystem::path{
+        std::u8string{reinterpret_cast<const char8_t*>(subtitle.data()), subtitle.size()}}};
+    ASSERT_TRUE(file.is_open());
+  }
+
+  std::vector<std::string> found;
+  CUtil::ScanForExternalSubtitles(m_video, found, nullptr, XFILE::DIR_FLAG_READ_CACHE);
+
+  EXPECT_TRUE(before.empty());
   EXPECT_EQ(1U, found.size());
 }
 

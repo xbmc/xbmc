@@ -1961,9 +1961,10 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
 void CUtil::GetItemsToScan(const std::string& videoPath,
                            const std::string& item_exts,
                            const std::vector<std::string>& sub_dirs,
-                           CFileItemList& items)
+                           CFileItemList& items,
+                           int listingFlags /* = 0 */)
 {
-  int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
+  int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO | listingFlags;
 
   if (!videoPath.empty())
     CDirectory::GetDirectory(videoPath, items, item_exts, flags);
@@ -1991,7 +1992,8 @@ static constexpr int NOT_ARCHIVE{-1};
 void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
                                         CFileItemList& items,
                                         const std::vector<std::string>& item_exts,
-                                        std::vector<std::string>& associatedFiles)
+                                        std::vector<std::string>& associatedFiles,
+                                        int listingFlags /* = 0 */)
 {
   for (int i = items.Size() - 1; i >= 0; --i)
   {
@@ -2010,8 +2012,8 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
     if (StringUtils::StartsWithNoCase(strCandidate, videoName) ||
         (StringUtils::StartsWithNoCase(strCandidate, CURL::Decode(videoName))))
     {
-      if (DetermineArchiveAndScanForAssociatedItems(item->GetPath(), "", item_exts,
-                                                    associatedFiles) == NOT_ARCHIVE)
+      if (DetermineArchiveAndScanForAssociatedItems(item->GetPath(), "", item_exts, associatedFiles,
+                                                    0, listingFlags) == NOT_ARCHIVE)
       {
         associatedFiles.push_back(item->GetPath());
         CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__,
@@ -2027,7 +2029,7 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
     else
     {
       DetermineArchiveAndScanForAssociatedItems(item->GetPath(), videoName, item_exts,
-                                                associatedFiles);
+                                                associatedFiles, 0, listingFlags);
     }
   }
 }
@@ -2036,7 +2038,8 @@ int CUtil::DetermineArchiveAndScanForAssociatedItems(const std::string& path,
                                                      const std::string& videoName,
                                                      const std::vector<std::string>& item_exts,
                                                      std::vector<std::string>& associatedFiles,
-                                                     int depth /* = 0 */)
+                                                     int depth /* = 0 */,
+                                                     int listingFlags /* = 0 */)
 {
   std::string archiveExtensions{CServiceBroker::GetFileExtensionProvider().GetArchiveExtensions()};
   if (!archiveExtensions.empty() && archiveExtensions.back() != '|')
@@ -2046,7 +2049,8 @@ int CUtil::DetermineArchiveAndScanForAssociatedItems(const std::string& path,
   if (URIUtils::IsRAR(path) || URIUtils::IsZIP(path) ||
       (!extension.empty() && archiveExtensions.find(extension + "|") != std::string::npos))
   {
-    return ScanArchiveForAssociatedItems(path, videoName, item_exts, associatedFiles, depth);
+    return ScanArchiveForAssociatedItems(path, videoName, item_exts, associatedFiles, depth,
+                                         listingFlags);
   }
   return NOT_ARCHIVE;
 }
@@ -2055,7 +2059,8 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
                                          const std::string& videoNameNoExt,
                                          const std::vector<std::string>& item_exts,
                                          std::vector<std::string>& associatedFiles,
-                                         int depth)
+                                         int depth,
+                                         int listingFlags /* = 0 */)
 {
   CLog::LogF(LOGDEBUG, "Scanning archive {} depth {}", CURL::GetRedacted(strArchivePath), depth);
 
@@ -2077,7 +2082,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
   else
     url = URIUtils::CreateArchivePath("archive", pathToUrl, "");
 
-  if (!CDirectory::GetDirectory(url, ItemList, "", DIR_FLAG_NO_FILE_DIRS))
+  if (!CDirectory::GetDirectory(url, ItemList, "", DIR_FLAG_NO_FILE_DIRS | listingFlags))
   {
     CLog::LogF(LOGDEBUG, "Failed to scan archive {}", CURL::GetRedacted(strArchivePath));
     return 0;
@@ -2088,8 +2093,8 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     std::string path{item->GetPath()};
     std::string extension{URIUtils::GetExtension(path)};
 
-    if (const int result{DetermineArchiveAndScanForAssociatedItems(path, videoNameNoExt, item_exts,
-                                                                   associatedFiles, depth + 1)};
+    if (const int result{DetermineArchiveAndScanForAssociatedItems(
+            path, videoNameNoExt, item_exts, associatedFiles, depth + 1, listingFlags)};
         result != NOT_ARCHIVE)
     {
       nItemsAdded += result;
@@ -2254,7 +2259,8 @@ bool CUtil::IsDiscPlaylistExtra(const std::string& videoPath, const CVideoInfoTa
 
 void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
                                      std::vector<std::string>& vecSubtitles,
-                                     const CVideoInfoTag* tag /* = nullptr */)
+                                     const CVideoInfoTag* tag /* = nullptr */,
+                                     int listingFlags /* = 0 */)
 {
   auto start = std::chrono::steady_clock::now();
 
@@ -2285,7 +2291,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
   CFileItemList items;
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
   const std::string subtitleExtensions = CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
-  GetItemsToScan(strBasePath, subtitleExtensions, common_sub_dirs, items);
+  GetItemsToScan(strBasePath, subtitleExtensions, common_sub_dirs, items, listingFlags);
 
   // A version (playlist) of a bluray has subtitles of its own beside the disc, and only there, as
   // another folder could be shared by many discs
@@ -2321,6 +2327,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
     strLookInPaths.push_back(strPath2);
   }
 
+  // Not read from the cache, as a scan lists it nowhere else: what the cache holds may be old
   int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
   for (const std::string& path : strLookInPaths)
   {
@@ -2336,9 +2343,9 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie,
   std::unordered_set<std::string> archiveSet{archiveExts.begin(), archiveExts.end()};
   std::erase_if(subtitleExts, [&](const std::string& ext) { return archiveSet.contains(ext); });
 
-  ScanPathsForAssociatedItems(strSubtitle, items, subtitleExts, vecSubtitles);
+  ScanPathsForAssociatedItems(strSubtitle, items, subtitleExts, vecSubtitles, listingFlags);
   for (const std::string& name : versionNames)
-    ScanPathsForAssociatedItems(name, discItems, subtitleExts, vecSubtitles);
+    ScanPathsForAssociatedItems(name, discItems, subtitleExts, vecSubtitles, listingFlags);
 
   std::erase_if(vecSubtitles, [&strSubtitle, &strMovie, tag](const std::string& subtitle)
                 { return IsAnotherVersionsFile(subtitle, strSubtitle, strMovie, tag); });

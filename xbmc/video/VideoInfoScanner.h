@@ -14,6 +14,7 @@
 #include "addons/Scraper.h"
 #include "settings/VideoVersionsSettings.h"
 #include "utils/RegExp.h"
+#include "utils/StreamDetails.h"
 #include "video/VideoInfoScannerArt.h"
 #include "video/VideoInfoScannerExtras.h"
 #include "video/VideoInfoScannerWalk.h"
@@ -445,6 +446,8 @@ namespace KODI::VIDEO
     std::deque<std::string> m_snapshotOrder;
     //! The modified time of each folder as its parent's listing gave it
     std::unordered_map<std::string, std::optional<int64_t>> m_listedTimes;
+    //! The file probed last, and its own streams, which its other episodes have too
+    std::optional<std::pair<std::string, CStreamDetails>> m_lastProbed;
     //! The movies of the folder whose items are being looked up
     CVideoDatabase::FolderMovies m_folderMovies;
     //! The settings digest of each folder looked at

@@ -33,6 +33,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "test/TestUtils.h"
 #include "utils/Artwork.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -308,6 +309,8 @@ protected:
         m_ignoreErrors;
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps =
         m_excludes;
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(
+        CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, m_extractFlags);
     if (!m_installedScraper.empty())
     {
       CServiceBroker::GetAddonMgr().UnloadAddon(SCRAPER_ID);
@@ -800,6 +803,8 @@ protected:
   const std::vector<std::string> m_excludes{CServiceBroker::GetSettingsComponent()
                                                 ->GetAdvancedSettings()
                                                 ->m_moviesExcludeFromScanRegExps};
+  const bool m_extractFlags{CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS)};
   ADDON::AddonInfoPtr m_scraperInfo;
   ADDON::AddonType m_scraperType{ADDON::AddonType::SCRAPER_MOVIES};
   std::string m_otherScraper;
@@ -2182,6 +2187,33 @@ TEST_F(TestVideoInfoScannerTvShows, AFileOfTwoEpisodesIsTwoEpisodes)
   EXPECT_GT(m_db.GetEpisodeId(episodes, 1, 1), 0);
   EXPECT_GT(m_db.GetEpisodeId(episodes, 2, 1), 0);
   EXPECT_EQ(1, m_db.GetSingleValueInt("SELECT COUNT(DISTINCT idFile) FROM episode"));
+}
+
+// The file is probed for its first episode only; the second has the same streams, and its subtitles
+// are still looked for
+TEST_F(TestVideoInfoScannerTvShows, TheEpisodesOfAFileHaveItsStreamsAndSubtitles)
+{
+  Settings()->SetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS, true);
+  const std::string season{Folder(Show("Show"), "Season 1")};
+  const std::string episodes{URIUtils::AddFileToFolder(season, "Show S01E01E02.mkv")};
+  ASSERT_TRUE(XFILE::CFile::Copy(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/testdata/h264_8bit_320x240.mkv"), episodes));
+  // Each episode of a file of several has an nfo of its own, named by its season and episode
+  File(season, "Show S01E01E02-S01E01.nfo", "<episodedetails><title>1</title></episodedetails>");
+  File(season, "Show S01E01E02-S01E02.nfo", "<episodedetails><title>2</title></episodedetails>");
+  File(season, "Show S01E01E02.en.srt", "1\n00:00:00,000 --> 00:00:01,000\nHello\n");
+
+  Scan();
+
+  for (const int episode : {1, 2})
+  {
+    CVideoInfoTag tag;
+    ASSERT_TRUE(m_db.GetEpisodeInfo(episodes, tag, m_db.GetEpisodeId(episodes, episode, 1)));
+    EXPECT_EQ(std::to_string(episode), tag.m_strTitle);
+    ASSERT_TRUE(m_db.GetStreamDetails(tag));
+    EXPECT_EQ(320, tag.m_streamDetails.GetVideoWidth()) << episode;
+    EXPECT_EQ(1, tag.m_streamDetails.GetSubtitleStreamCount()) << episode;
+  }
 }
 
 TEST_F(TestVideoInfoScannerTvShows, ASpecialIsInSeasonZero)
