@@ -8,6 +8,7 @@
 
 #include "RPRendererOpenGL.h"
 
+#include "RPHdrShader.h"
 #include "cores/RetroPlayer/buffers/RenderBufferOpenGL.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolOpenGL.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
@@ -89,6 +90,8 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings& renderSettings,
 
 CRPRendererOpenGL::~CRPRendererOpenGL()
 {
+  glDeleteBuffers(1, &m_hdrVBO);
+  glDeleteVertexArrays(1, &m_hdrVAO);
   glDeleteBuffers(1, &m_mainIndexVBO);
   glDeleteBuffers(1, &m_mainVertexVBO);
   glDeleteVertexArrays(1, &m_mainVAO);
@@ -134,12 +137,15 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   {
     RenderBufferTextures* rbTextures;
 
-    // Drop cached textures if target size is changed
-    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight)
+    // Drop cached textures if target size or HDR state is changed
+    const bool hdr = m_hdrPeak != 0;
+    if (m_fullDestWidth != m_lastTargetWidth || m_fullDestHeight != m_lastTargetHeight ||
+        hdr != m_lastTargetHdr)
     {
       m_RBTexturesMap.clear();
       m_lastTargetWidth = m_fullDestWidth;
       m_lastTargetHeight = m_fullDestHeight;
+      m_lastTargetHdr = hdr;
     }
 
     const auto it = m_RBTexturesMap.find(renderBuffer);
@@ -161,9 +167,7 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
               static_cast<unsigned int>(renderBuffer->GetWidth()),
               static_cast<unsigned int>(renderBuffer->GetHeight()), renderBuffer->TextureID()),
           // Target texture
-          std::make_shared<SHADER::CShaderTextureGL>(static_cast<unsigned int>(m_fullDestWidth),
-                                                     static_cast<unsigned int>(m_fullDestHeight),
-                                                     GL_UNSIGNED_BYTE, GL_RGBA8, GL_BGRA, false)};
+          CreateTargetTexture()};
       rbTextures->targetTexture->CreateTexture(); // Create new internal texture
       m_RBTexturesMap.emplace(renderBuffer, rbTextures);
     }
@@ -207,6 +211,66 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
     glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
+  DrawFrame(alpha, renderBuffer->GetWidth(), renderBuffer->GetHeight());
+}
+
+std::shared_ptr<SHADER::CShaderTextureGL> CRPRendererOpenGL::CreateTargetTexture() const
+{
+  // More than 8 bits, as the HDR shader raises the brightest values steeply
+  if (m_hdrPeak != 0)
+    return std::make_shared<SHADER::CShaderTextureGL>(static_cast<unsigned int>(m_fullDestWidth),
+                                                      static_cast<unsigned int>(m_fullDestHeight),
+                                                      GL_HALF_FLOAT, GL_RGBA16F, GL_RGBA, false);
+
+  return std::make_shared<SHADER::CShaderTextureGL>(static_cast<unsigned int>(m_fullDestWidth),
+                                                    static_cast<unsigned int>(m_fullDestHeight),
+                                                    GL_UNSIGNED_BYTE, GL_RGBA8, GL_BGRA, false);
+}
+
+bool CRPRendererOpenGL::LoadHdrShader()
+{
+  if (m_hdrShader)
+    return true;
+
+  if (m_hdrShaderFailed)
+    return false;
+
+  std::string defines;
+  if (m_context.UseLimitedColor())
+    defines += "#define KODI_LIMITED_RANGE 1\n";
+
+  auto shader = std::make_unique<CRPHdrShader>(defines);
+  if (!shader->CompileAndLink() || shader->GetPosLoc() < 0)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to compile the HDR shader");
+    m_hdrShaderFailed = true;
+    return false;
+  }
+
+  // A core profile draws from a vertex array. Triangle strip order: top left,
+  // top right, bottom left, bottom right.
+  static constexpr GLfloat unitQuad[4][2] = {
+      {0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}};
+
+  glGenVertexArrays(1, &m_hdrVAO);
+  glBindVertexArray(m_hdrVAO);
+
+  glGenBuffers(1, &m_hdrVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_hdrVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(unitQuad), unitQuad, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(shader->GetPosLoc(), 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+  glEnableVertexAttribArray(shader->GetPosLoc());
+
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  m_hdrShader = std::move(shader);
+  return true;
+}
+
+void CRPRendererOpenGL::DrawFrame(uint8_t alpha, float width, float height)
+{
   if (alpha < 255)
   {
     glEnable(GL_BLEND);
@@ -215,6 +279,29 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   else
   {
     glDisable(GL_BLEND);
+  }
+
+  // Setup texture coordinates
+  CRect rect = m_sourceRect;
+  rect.x1 /= width;
+  rect.x2 /= width;
+  rect.y1 /= height;
+  rect.y2 /= height;
+
+  if (m_hdrPeak != 0 && LoadHdrShader())
+  {
+    m_hdrShader->SetLuminance(m_hdrPaperWhite, m_hdrPeak);
+    m_hdrShader->SetAlpha(alpha / 255.0f);
+    m_hdrShader->SetQuad(m_rotatedDestCoords[0], m_rotatedDestCoords[1], m_rotatedDestCoords[3],
+                         rect);
+    m_hdrShader->Enable();
+
+    glBindVertexArray(m_hdrVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+
+    m_hdrShader->Disable();
+    return;
   }
 
   // Use GUI shader
@@ -234,13 +321,6 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
               (col[3] / 255.0f));
   glUniform1f(depthLoc, -1.0f);
-
-  // Setup destination rectangle
-  CRect rect = m_sourceRect;
-  rect.x1 /= renderBuffer->GetWidth();
-  rect.x2 /= renderBuffer->GetWidth();
-  rect.y1 /= renderBuffer->GetHeight();
-  rect.y2 /= renderBuffer->GetHeight();
 
   PackedVertex vertex[4];
 
