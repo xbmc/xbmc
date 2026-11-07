@@ -7,6 +7,7 @@
  */
 #pragma once
 
+#include "LutLoader.h"
 #include "VideoRenderers/ColorManager.h"
 #include "VideoRenderers/DebugInfo.h"
 #include "VideoRenderers/RenderInfo.h"
@@ -153,7 +154,9 @@ protected:
                                 unsigned int height,
                                 bool dynamic = false,
                                 DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN);
-  void OnCMSConfigChanged(AVColorPrimaries srcPrimaries);
+  bool LoadLut(AVColorPrimaries primaries,
+               int& lutSize,
+               Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& view);
   void ReorderDrawPoints(const CRect& destRect, CPoint(&rotatedPoints)[4]) const;
   bool CreateRenderBuffer(int index);
   void DeleteRenderBuffer(int index);
@@ -195,7 +198,6 @@ protected:
   bool m_toneMapping = false;
   bool m_useDithering = false;
   bool m_cmsOn = false;
-  bool m_lutIsLoading = false;
   bool m_useHLGtoPQ = false;
   ETONEMAPMETHOD m_toneMapMethod = VS_TONEMAPMETHOD_OFF;
   // PQ/HLG streams get hue and saturation from the output shader instead of the YUV conversion
@@ -209,7 +211,6 @@ protected:
   int m_iBuffersRequired = 0;
   int m_ditherDepth = 0;
   int m_cmsToken = -1;
-  int m_lutSize = 0;
   unsigned m_sourceWidth = 0;
   unsigned m_sourceHeight = 0;
   unsigned m_viewWidth = 0;
@@ -232,7 +233,6 @@ protected:
     float gamma = 0.0f;
     bool limitedColor = false;
     float toneMapParam = 0.0f;
-    bool lutLoading = false;
     bool operator==(const IntermediateState&) const = default;
   };
   IntermediateState m_intermediateState;
@@ -244,7 +244,7 @@ protected:
   CD3DTexture m_IntermediateTarget;
   std::shared_ptr<COutputShader> m_outputShader;
   std::unique_ptr<CColorManager> m_colorManager;
-  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pLUTView;
+  CLutLoader m_lut;
   CVideoSettings& m_videoSettings;
   std::map<int, CRenderBuffer*> m_renderBuffers;
 

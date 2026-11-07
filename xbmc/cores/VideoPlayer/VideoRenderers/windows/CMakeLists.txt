@@ -1,10 +1,12 @@
-set(SOURCES RendererBase.cpp
+set(SOURCES LutLoader.cpp
+            RendererBase.cpp
             RendererDXVA.cpp
             RendererHQ.cpp
             RendererShaders.cpp
             RendererSoftware.cpp)
 
-set(HEADERS RendererBase.h
+set(HEADERS LutLoader.h
+            RendererBase.h
             RendererDXVA.h
             RendererHQ.h
             RendererShaders.h
