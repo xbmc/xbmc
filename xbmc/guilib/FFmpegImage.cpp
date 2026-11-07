@@ -853,8 +853,19 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   AVColorRange range = frame->color_range;
   AVPixelFormat pixFormat = ConvertFormats(frame);
 
+  int swsFlags = SWS_BICUBIC;
+  // FFmpeg's unscaled YUV-to-RGB C path leaves the last column of an odd width unwritten;
+  // accurate rounding makes swscale take its generic path instead.
+  const bool oddUnscaledYuv = (width & 1) != 0 && (height & 1) == 0 &&
+                              width == static_cast<unsigned int>(frame->width) &&
+                              height == static_cast<unsigned int>(frame->height) &&
+                              (pixFormat == AV_PIX_FMT_YUV420P || pixFormat == AV_PIX_FMT_YUV422P ||
+                               pixFormat == AV_PIX_FMT_YUVA420P);
+  if (oddUnscaledYuv)
+    swsFlags |= SWS_ACCURATE_RND;
+
   SwsContext* context = sws_getContext(frame->width, frame->height, pixFormat, width, height,
-                                       AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+                                       AV_PIX_FMT_RGB32, swsFlags, NULL, NULL, NULL);
 
   if (range == AVCOL_RANGE_JPEG)
   {
