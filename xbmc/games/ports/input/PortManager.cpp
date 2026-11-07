@@ -228,10 +228,16 @@ void CPortManager::DeserializePort(const tinyxml2::XMLElement* pPort, CPortNode&
   bool connected = (XMLUtils::GetAttribute(pPort, XML_ATTR_PORT_CONNECTED) == "true");
   port.SetConnected(connected);
 
-  // Controller
+  // Controller, or the port's default if it no longer accepts the saved one
   const std::string activeControllerId = XMLUtils::GetAttribute(pPort, XML_ATTR_PORT_CONTROLLER);
   if (!port.SetActiveController(activeControllerId))
-    port.SetConnected(false);
+  {
+    if (port.GetCompatibleControllers().empty())
+      port.SetConnected(false);
+    else if (!activeControllerId.empty())
+      CLog::Log(LOGDEBUG, "Port {} doesn't accept controller \"{}\", using its default",
+                port.GetAddress(), activeControllerId);
+  }
 
   DeserializeControllers(pPort, port.GetCompatibleControllers());
 }
