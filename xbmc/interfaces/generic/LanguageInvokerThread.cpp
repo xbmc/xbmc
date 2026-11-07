@@ -37,7 +37,11 @@ InvokerState CLanguageInvokerThread::GetState() const
 
 void CLanguageInvokerThread::Release()
 {
-  m_bStop = true;
+  {
+    // Under the lock the thread waits with, so that it can't be told between looking and waiting
+    std::unique_lock<std::mutex> lock(m_mutex);
+    m_bStop = true;
+  }
   m_condition.notify_one();
 }
 
@@ -103,8 +107,13 @@ void CLanguageInvokerThread::Process()
   std::unique_lock<std::mutex> lckdl(m_mutex);
   do
   {
+    // Here, as the next run starts, once the state of the last has been looked at below
+    m_invoker->Reset();
     m_restart = false;
+    // Not held while the script runs, so that Release() doesn't wait for the run
+    lckdl.unlock();
     m_invoker->Execute(m_script, m_args);
+    lckdl.lock();
 
     if (m_invoker->GetState() != InvokerStateScriptDone)
       m_reusable = false;
