@@ -98,12 +98,13 @@ void CRenderer::Flush()
   for(std::vector<SElement>& buffer : m_buffers)
     Release(buffer);
 
-  ReleaseCache();
   Reset();
 }
 
 void CRenderer::Reset()
 {
+  ReleaseCache();
+  MarkDirty();
   m_subtitlePosition = 0;
   m_subtitlePosResInfo = -1;
 }
