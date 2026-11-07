@@ -464,6 +464,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
+        NoteListed(items);
 
         // mark subfolders whose stored fast hash matches the listing mtime digest;
         // the disc structure probes in Stack() and the recursion loop (which also
@@ -571,6 +572,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       {
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
+        NoteListed(items);
         items.SetPath(strDirectory);
 
         // force sorting consistency to avoid hash mismatch between platforms
@@ -2095,7 +2097,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         // Listing that ignores files inside and below folders containing .nomedia files.
         CDirectory::EnumerateDirectory(
-            item->GetPath(), [&items](const std::shared_ptr<CFileItem>& item) { items.Add(item); },
+            item->GetPath(),
+            [this, &items](const std::shared_ptr<CFileItem>& item)
+            {
+              items.Add(item);
+              m_listedFolders.insert(URIUtils::GetDirectory(item->GetPath()));
+            },
             [](const std::shared_ptr<CFileItem>& folder) { return !HasNoMedia(folder->GetPath()); },
             true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), flags);
 
@@ -2437,9 +2444,29 @@ CVideoInfoScanner::~CVideoInfoScanner()
       // EXTERNAL - Plugin content (CVideoTagLoaderPlugin)
       if (!movieDetails.HasStreamDetails())
       {
-        if (CDVDFileInfo::GetFileStreamDetails(pItem))
+        // The folder the subtitles are looked for in is read from the cache where the scan has
+        // just listed it, but not that of a disc, which it finds by name, nor that of a video it is
+        // given, as a refresh is. The episodes of a file are added one after the other, and the file
+        // is probed for the first of them only: each still has its own external subtitles.
+        std::string subtitleFolder;
+        std::string videoName;
+        CUtil::GetVideoBasePathAndFileName(pItem->GetSubtitleAnchorPath(), subtitleFolder,
+                                           videoName);
+        const int listingFlags{m_listedFolders.contains(subtitleFolder) ? DIR_FLAG_READ_CACHE
+                                                                        : DIR_FLAG_DEFAULTS};
+        if (m_lastProbed && m_lastProbed->first == path)
+        {
+          CDVDFileInfo::AddExternalSubtitles(*pItem, m_lastProbed->second, listingFlags);
+          CLog::LogF(LOGDEBUG, "Filestream details of video file {} already extracted",
+                     CURL::GetRedacted(path));
+        }
+        else if (CStreamDetails probed;
+                 CDVDFileInfo::GetFileStreamDetails(pItem, listingFlags, &probed))
+        {
+          m_lastProbed.emplace(path, std::move(probed));
           CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
                      CURL::GetRedacted(path));
+        }
         else
           CLog::LogF(LOGDEBUG, "No filestream details extracted from video file {}",
                      CURL::GetRedacted(path));
@@ -2708,6 +2735,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
         setTitle,
         CURL::GetRedacted(path));
     return CDirectory::Exists(path) ? path : "";
+  }
+
+  void CVideoInfoScanner::NoteListed(const CFileItemList& items)
+  {
+    for (const auto& item : items)
+    {
+      if (!item->IsFolder())
+        m_listedFolders.insert(URIUtils::GetDirectory(item->GetPath()));
+    }
   }
 
   CInfoScanner::InfoRet CVideoInfoScanner::OnProcessSeriesFolder(
