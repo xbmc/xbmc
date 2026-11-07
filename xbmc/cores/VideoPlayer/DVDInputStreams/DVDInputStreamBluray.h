@@ -15,7 +15,6 @@
 #include "filesystem/UDFContext.h"
 #endif
 
-#include <atomic>
 #include <chrono>
 #include <list>
 #include <memory>
@@ -67,7 +66,6 @@ public:
   int Read(uint8_t* buf, int buf_size) override;
   int ReadBlocks(uint8_t* buf, int lba, int num_blocks);
   int64_t Seek(int64_t offset, int whence) override;
-  void Abort() override;
   bool IsEOF() override;
   int64_t GetLength() override;
   int GetBlockSize() override { return 6144; }
@@ -202,9 +200,6 @@ protected:
     HOLD_STILL,
     HOLD_ERROR,
   } m_hold = HOLD_NONE;
-  //! Set by Abort() from the thread closing the player. Kept apart from m_hold, which playback
-  //! events overwrite
-  std::atomic<bool> m_aborted{false};
   //! Units libbluray has failed to read since it last returned data
   unsigned int m_readErrors = 0;
   BD_EVENT m_event;
