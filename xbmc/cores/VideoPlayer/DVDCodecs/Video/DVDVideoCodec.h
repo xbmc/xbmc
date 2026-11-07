@@ -50,7 +50,14 @@ public:
   VideoPicture& CopyRef(const VideoPicture &pic);
   VideoPicture& SetParams(const VideoPicture &pic);
   void Reset(); // reinitialize members, videoBuffer will be released if set!
-  bool IsSameParams(const VideoPicture& pic) const;
+  /*!
+   * \brief Compare the parameters that require a renderer reconfigure.
+   * \param liveHDRMetadata true if the renderer pushes changes of the HDR mastering display
+   * metadata content (luminance, primaries, white point) live; only its presence is then compared
+   */
+  bool IsSameParams(const VideoPicture& pic, bool liveHDRMetadata = false) const;
+  /*! \brief Compare HDR light metadata (MaxCLL/MaxFALL) independently of IsSameParams() */
+  bool CompareLightMetadata(const VideoPicture& pic) const;
 
   /*!
    * \brief Whether a picture of \p format is full range when its stream gives \p range. RGB with
@@ -101,7 +108,7 @@ private:
   VideoPicture(VideoPicture const&) = default;
   VideoPicture& operator=(VideoPicture const&) = default;
 
-  bool CompareDisplayMetadata(const VideoPicture& pic) const;
+  bool CompareDisplayMetadata(const VideoPicture& pic, bool presenceOnly) const;
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
