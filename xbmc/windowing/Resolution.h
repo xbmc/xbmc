@@ -119,6 +119,8 @@ class CResolutionUtils
 {
 public:
   static RESOLUTION ChooseBestResolution(float fps, int width, int height, bool is3D);
+  static void FindResolutionFromWhitelist(
+      float fps, int width, int height, bool is3D, RESOLUTION& resolution);
   static bool HasWhitelist();
   static void PrintWhitelist();
 
@@ -130,7 +132,6 @@ public:
   static void GetMaxAllowedScreenResolution(unsigned int& width, unsigned int& height);
 
 protected:
-  static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);
   static bool FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback);
   static float RefreshWeight(float refresh, float fps);
 };

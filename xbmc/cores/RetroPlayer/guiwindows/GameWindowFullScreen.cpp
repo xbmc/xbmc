@@ -190,11 +190,13 @@ void CGameWindowFullScreen::OnInitWindow()
   m_resolutionBeforeGame = RES_INVALID;
   if (gfx.IsFullScreenRoot() && current.fRefreshRate < 49.0f)
   {
-    // The chooser can settle on a mode of another size or rate, which wouldn't help.
+    // Refresh overrides are meant for video, so only the whitelist is searched. It can
+    // still settle on a mode of another size or rate, which wouldn't help.
     const auto chooseMode = [&gfx, &current](float fps)
     {
-      const RESOLUTION res = CResolutionUtils::ChooseBestResolution(fps, current.iScreenWidth,
-                                                                    current.iScreenHeight, false);
+      RESOLUTION res = gfx.GetVideoResolution();
+      CResolutionUtils::FindResolutionFromWhitelist(fps, current.iScreenWidth,
+                                                    current.iScreenHeight, false, res);
       const RESOLUTION_INFO info = gfx.GetResInfo(res);
       const bool suitable = info.fRefreshRate >= 49.0f &&
                             info.iScreenWidth == current.iScreenWidth &&
