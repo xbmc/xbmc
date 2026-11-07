@@ -44,8 +44,9 @@ public:
    \brief Add the videos in an extras folder, and in the folders below it, as extras of a movie.
    \param dbId the movie
    \param path the extras folder
+   \return whether all of it could be listed
    */
-  void AddVideoExtras(int dbId, const std::string& path);
+  bool AddVideoExtras(int dbId, const std::string& path);
 
   /*!
    \brief Add the extras each bluray of a movie names, once the movie is in the library.
