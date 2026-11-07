@@ -27,6 +27,11 @@
 #include "utils/StringUtils.h"
 #include "windowing/WinSystem.h"
 
+#ifdef TARGET_WASM
+#include "platform/wasm/MseBridge.h"
+#include "platform/wasm/TizenEmss.h"
+#endif
+
 namespace
 {
 bool AddonHasSettings(const std::string& condition,
@@ -415,6 +420,9 @@ void CSettingConditions::Initialize()
 #endif
 #ifdef TARGET_WASM
   m_simpleConditions.emplace("have_wasm");
+  // Samsung TVs always play through the TV's own player.
+  if (mse_available() && !tizen_emss_available())
+    m_simpleConditions.emplace("has_browser_video_player");
 #endif
 #if defined(TARGET_WINDOWS)
   m_simpleConditions.emplace("has_dx");

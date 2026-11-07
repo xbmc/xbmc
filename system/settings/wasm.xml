@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings version="1">
+  <section id="player">
+    <category id="videoplayer">
+      <group id="3">
+        <setting id="videoplayer.usebrowserplayer" type="boolean" label="39220" help="39221">
+          <requirement>HAS_BROWSER_VIDEO_PLAYER</requirement>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
+  </section>
   <section id="services">
     <category id="control">
       <group id="2">
