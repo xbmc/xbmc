@@ -8,11 +8,14 @@
 
 #include "video/VideoInfoScannerLookups.h"
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <future>
 #include <mutex>
 #include <set>
 #include <stdexcept>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -205,4 +208,272 @@ TEST(TestVideoInfoScannerLookups, ALookUpThatThrowsIsStillHandedBack)
   EXPECT_EQ((std::vector<size_t>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}), run(10, 4));
   EXPECT_EQ(std::vector<size_t>{0}, run(1, 4));
   EXPECT_EQ((std::vector<size_t>{0, 1, 2}), run(3, 1));
+}
+
+namespace
+{
+//! Waits until the condition holds, for a while at most
+bool Eventually(const std::function<bool()>& condition)
+{
+  for (int i = 0; i < 500 && !condition(); ++i)
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  return condition();
+}
+} // namespace
+
+TEST(TestVideoInfoScannerLookups, DiscsAreReadInTheOrderTheyWereQueued)
+{
+  std::mutex lock;
+  std::vector<std::string> read;
+  CDiscReadAhead reads{4, 1};
+  const std::vector<std::string> discs{"a", "b", "c", "d"};
+  for (const std::string& disc : discs)
+    reads.Queue(disc,
+                [&lock, &read, disc]
+                {
+                  std::unique_lock guard(lock);
+                  read.push_back(disc);
+                });
+  ASSERT_TRUE(Eventually(
+      [&lock, &read]
+      {
+        std::unique_lock guard(lock);
+        return read.size() == 4;
+      }));
+
+  for (const std::string& disc : discs)
+  {
+    EXPECT_TRUE(reads.Take(disc)) << disc;
+    reads.Release(disc);
+  }
+  std::unique_lock guard(lock);
+  EXPECT_EQ(discs, read);
+}
+
+TEST(TestVideoInfoScannerLookups, OnlyAFewDiscsAreReadAheadOfThoseTaken)
+{
+  std::atomic<int> read{0};
+  CDiscReadAhead reads{2, 1};
+  for (const std::string disc : {"a", "b", "c", "d"})
+    reads.Queue(disc, [&read] { ++read; });
+
+  ASSERT_TRUE(Eventually([&read] { return read == 2; }));
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_EQ(2, read);
+
+  EXPECT_TRUE(reads.Take("a"));
+  reads.Release("a");
+  EXPECT_TRUE(Eventually([&read] { return read == 3; }));
+}
+
+// A disc not yet read is left to the scan, and one being read is waited for. The scan may come back
+// to a disc it passed while it was being read, as it does to a folder of extras after the folders
+// beside it.
+TEST(TestVideoInfoScannerLookups, ADiscBeingReadIsWaitedForAndOneNotYetReadIsLeftToTheScan)
+{
+  CDiscReadAhead reads{1, 1};
+  std::promise<void> started;
+  std::promise<void> carryOn;
+  std::shared_future<void> carryingOn{carryOn.get_future()};
+  std::atomic<bool> finished{false};
+  std::atomic<bool> secondRead{false};
+  reads.Queue("a",
+              [&started, carryingOn, &finished]
+              {
+                started.set_value();
+                carryingOn.wait();
+                finished = true;
+              });
+  reads.Queue("b", [&secondRead] { secondRead = true; });
+  started.get_future().wait();
+  EXPECT_FALSE(reads.Take("b"));
+
+  std::thread reading(
+      [&carryOn]
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        carryOn.set_value();
+      });
+  EXPECT_TRUE(reads.Take("a"));
+  EXPECT_TRUE(finished);
+  reading.join();
+  reads.Release("a");
+  reads.Stop();
+  EXPECT_FALSE(secondRead);
+}
+
+// A disc the scan turns out not to need, its movie added from its nfo, is not read. One being read
+// already is read, and taken as before.
+TEST(TestVideoInfoScannerLookups, ADiscDroppedBeforeItIsReadIsNotRead)
+{
+  CDiscReadAhead reads{2, 1};
+  std::promise<void> started;
+  std::promise<void> carryOn;
+  std::shared_future<void> carryingOn{carryOn.get_future()};
+  std::atomic<bool> firstRead{false};
+  std::atomic<bool> secondRead{false};
+  reads.Queue("a",
+              [&started, carryingOn, &firstRead]
+              {
+                started.set_value();
+                carryingOn.wait();
+                firstRead = true;
+              });
+  reads.Queue("b", [&secondRead] { secondRead = true; });
+  started.get_future().wait();
+
+  reads.Drop("a");
+  reads.Drop("b");
+  carryOn.set_value();
+  EXPECT_TRUE(reads.Take("a"));
+  EXPECT_TRUE(firstRead);
+  reads.Release("a");
+  EXPECT_FALSE(reads.Take("b"));
+  reads.Stop();
+  EXPECT_FALSE(secondRead);
+}
+
+// A disc held for its movie's look-up is read only once the look-up allows it, and not at all if
+// the look-up drops it, so that no reader takes it before the look-up knows whether it is needed
+TEST(TestVideoInfoScannerLookups, ADiscHeldForItsLookUpIsReadOnlyOnceAllowed)
+{
+  CDiscReadAhead reads{4, 2};
+  std::atomic<bool> allowedRead{false};
+  std::atomic<bool> droppedRead{false};
+  reads.Queue("a", [&allowedRead] { allowedRead = true; }, true);
+  reads.Queue("b", [&droppedRead] { droppedRead = true; }, true);
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  EXPECT_FALSE(allowedRead);
+
+  reads.Allow("a");
+  reads.Drop("b");
+  EXPECT_TRUE(Eventually([&allowedRead] { return allowedRead.load(); }));
+  EXPECT_TRUE(reads.Take("a"));
+  reads.Release("a");
+  EXPECT_FALSE(reads.Take("b"));
+  reads.Stop();
+  EXPECT_FALSE(droppedRead);
+}
+
+// A disc still held when the scan comes to it, its look-up not done, is left to the scan
+TEST(TestVideoInfoScannerLookups, ADiscStillHeldIsLeftToTheScan)
+{
+  CDiscReadAhead reads{4, 2};
+  std::atomic<bool> read{false};
+  reads.Queue("a", [&read] { read = true; }, true);
+  EXPECT_FALSE(reads.Take("a"));
+  reads.Allow("a");
+  reads.Stop();
+  EXPECT_FALSE(read);
+}
+
+// Those let go of as a disc is taken leave room for another to be read while the scan waits for it
+TEST(TestVideoInfoScannerLookups, ADiscIsReadWhileTheScanWaitsForTheOneItTook)
+{
+  CDiscReadAhead reads{2, 2};
+  std::atomic<bool> firstRead{false};
+  std::promise<void> started;
+  std::promise<void> carryOn;
+  std::shared_future<void> carryingOn{carryOn.get_future()};
+  std::atomic<bool> thirdRead{false};
+  reads.Queue("a", [&firstRead] { firstRead = true; });
+  reads.Queue("b",
+              [&started, carryingOn]
+              {
+                started.set_value();
+                carryingOn.wait();
+              });
+  started.get_future().wait();
+  ASSERT_TRUE(Eventually([&firstRead] { return firstRead.load(); }));
+  // For "a" to count as read, not as being read, so that "c" has no room until "a" is let go of
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  reads.Queue("c", [&thirdRead] { thirdRead = true; });
+
+  auto taking{std::async(std::launch::async, [&reads] { return reads.Take("b"); })};
+  EXPECT_TRUE(Eventually([&thirdRead] { return thirdRead.load(); }));
+  carryOn.set_value();
+  EXPECT_TRUE(taking.get());
+  reads.Release("b");
+  reads.Stop();
+}
+
+TEST(TestVideoInfoScannerLookups, TakingADiscLetsThoseBeforeItGo)
+{
+  std::atomic<int> read{0};
+  CDiscReadAhead reads{2, 1};
+  for (const std::string disc : {"a", "b"})
+    reads.Queue(disc, [&read] { ++read; });
+  ASSERT_TRUE(Eventually([&read] { return read == 2; }));
+
+  // A movie the scan added without its disc, as nothing was found for it
+  EXPECT_TRUE(reads.Take("b"));
+  reads.Release("b");
+
+  for (const std::string disc : {"c", "d"})
+    reads.Queue(disc, [&read] { ++read; });
+  EXPECT_TRUE(Eventually([&read] { return read == 4; }));
+}
+
+TEST(TestVideoInfoScannerLookups, NoMoreDiscsAreReadOnceAbandoned)
+{
+  CDiscReadAhead reads{1, 1};
+  std::atomic<int> read{0};
+  std::promise<void> started;
+  std::promise<void> carryOn;
+  std::shared_future<void> carryingOn{carryOn.get_future()};
+  reads.Queue("a",
+              [&read, &started, carryingOn]
+              {
+                started.set_value();
+                carryingOn.wait();
+                ++read;
+              });
+  reads.Queue("b", [&read] { ++read; });
+  started.get_future().wait();
+
+  reads.Abandon();
+  carryOn.set_value();
+  reads.Stop();
+  EXPECT_EQ(1, read);
+}
+
+TEST(TestVideoInfoScannerLookups, DiscsAreReadAsManyAtATimeAsThereAreReaders)
+{
+  CDiscReadAhead reads{4, 2};
+  std::mutex lock;
+  int reading{0};
+  int most{0};
+  std::promise<void> carryOn;
+  std::shared_future<void> carryingOn{carryOn.get_future()};
+  std::atomic<int> read{0};
+  for (const std::string disc : {"a", "b", "c"})
+    reads.Queue(disc,
+                [&lock, &reading, &most, carryingOn, &read]
+                {
+                  {
+                    std::unique_lock guard(lock);
+                    most = std::max(most, ++reading);
+                  }
+                  carryingOn.wait();
+                  {
+                    std::unique_lock guard(lock);
+                    --reading;
+                  }
+                  ++read;
+                });
+
+  const bool together{Eventually(
+      [&lock, &reading]
+      {
+        std::unique_lock guard(lock);
+        return reading == 2;
+      })};
+  carryOn.set_value();
+  const bool allRead{Eventually([&read] { return read == 3; })};
+  reads.Stop();
+  ASSERT_TRUE(together);
+  ASSERT_TRUE(allRead);
+
+  std::unique_lock guard(lock);
+  EXPECT_EQ(2, most);
 }

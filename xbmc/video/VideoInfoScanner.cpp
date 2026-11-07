@@ -304,6 +304,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         }
       }
 
+      m_discReadAhead.Stop();
+
       if (!bCancelled)
       {
         // An empty set cleans the whole library, which a scan of part of it must not do
@@ -390,6 +392,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     m_bStop = true;
     m_downloads.CancelAll();
+    m_discReadAhead.Abandon();
   }
 
   void CVideoInfoScanner::CDownloads::CancelAll()
@@ -849,8 +852,26 @@ CVideoInfoScanner::~CVideoInfoScanner()
     m_useFolderNames = scan.settings.parent_name;
 
     const unsigned int failedLookups{m_failedLookups};
-    EndRetrieve(scan, RetrieveVideoInfo(scan.items, scan.settings.parent_name_root, scan.content),
-                failedLookups);
+    m_database.Open();
+    ItemLookups batch;
+    SetUpLookups(scan, batch);
+    PlanLookups(batch);
+    ReadDiscsAhead(batch);
+    CVideoLookups::Run(
+        static_cast<size_t>(scan.items.Size()), LookUpThreads(),
+        [this, &batch](size_t i) { LookUpItem(batch, i); },
+        [this, &batch](size_t i) { return HandBackItem(batch, i); }, m_bStop);
+    EndLookups(batch);
+    m_database.Close();
+    EndRetrieve(scan, batch.foundSomeInfo, failedLookups);
+  }
+
+  void CVideoInfoScanner::SetUpLookups(const DirectoryScan& scan, ItemLookups& batch)
+  {
+    batch.items = &scan.items;
+    batch.bDirNames = scan.settings.parent_name_root;
+    batch.content = scan.content;
+    batch.useFolderNames = scan.settings.parent_name;
   }
 
   void CVideoInfoScanner::EndRetrieve(DirectoryScan& scan,
@@ -1109,6 +1130,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (m_bStop)
         break;
 
+      const CDiscReadAhead::CTaken discs{m_discReadAhead, extrasFolder};
       const int dbId{m_database.GetMovieIdInFolder(strDirectory, extrasFolder)};
       if (dbId < 0)
       {
@@ -1233,12 +1255,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
     const auto setUp{[this](DirectoryScan& scan)
                      {
                        scan.lookups = std::make_unique<ItemLookups>();
-                       ItemLookups& batch{*scan.lookups};
-                       batch.items = &scan.items;
-                       batch.bDirNames = scan.settings.parent_name_root;
-                       batch.content = scan.content;
-                       batch.useFolderNames = scan.settings.parent_name;
-                       PlanLookups(batch);
+                       SetUpLookups(scan, *scan.lookups);
+                       PlanLookups(*scan.lookups);
+                       ReadDiscsAhead(*scan.lookups);
                      }};
     const std::function<void(DirectoryScan&)> lookUpAhead{
         [this, &entries, &setUp, &lookUpAhead](DirectoryScan& scan)
@@ -1254,6 +1273,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                 entries.push_back({planned.get(), std::nullopt, item});
             }
             lookUpAhead(*planned);
+            ReadExtrasDiscsAhead(*planned);
           }
         }};
     for (size_t folder = 0; folder < folders.size(); ++folder)
@@ -1267,6 +1287,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           entries.push_back({&scan, folder, item});
       }
       lookUpAhead(scan);
+      ReadExtrasDiscsAhead(scan);
       entries.push_back({&scan, folder, std::nullopt});
     }
 
@@ -1843,6 +1864,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
       type = ScanSummary::Type::TV_SHOW;
     else if (info2->Content() == ContentType::MUSICVIDEOS)
       type = ScanSummary::Type::MUSIC_VIDEO;
+    // Its disc read ahead, held until its extras are added too
+    std::optional<CDiscReadAhead::CTaken> disc;
     InfoRet ret = InfoRet::CANCELLED;
     if (info2->Content() == ContentType::TVSHOWS)
     {
@@ -1862,6 +1885,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     else if (info2->Content() == ContentType::MOVIES)
     {
+      disc.emplace(m_discReadAhead, pItem->GetPath());
       knownMovie = m_database.GetMovieId(pItem->GetDynPath(), batch.folderMovies) > 0;
       ret =
           RetrieveInfoForMovie(pItem.get(), bDirNames, info2, useLocal, pURL, pDlgProgress, lookup);
@@ -2777,6 +2801,82 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return InfoRet::NOT_FOUND;
   }
 
+  void CVideoInfoScanner::ReadDiscsAhead(const ItemLookups& batch)
+  {
+    if (batch.content != ContentType::MOVIES)
+      return;
+
+    // A disc already in the library is not read, nor one a refresh looks up in turn
+    for (size_t i = 0; i < batch.candidates.size(); ++i)
+    {
+      if (const auto& candidate{batch.candidates[i]}; candidate && candidate->lookUpAlongside)
+      {
+        const CFileItem& item{*(*batch.items)[static_cast<int>(i)]};
+        // Held until its look-up has read the movie's nfo, which may give all the scan needs
+        if (IsDiscByName(item.GetPath()))
+          m_discReadAhead.Queue(item.GetPath(), [this, item] { ReadMovieDisc(item); }, true);
+      }
+    }
+  }
+
+  void CVideoInfoScanner::ReadExtrasDiscsAhead(DirectoryScan& scan)
+  {
+    // Once, as the folder holding it queues them before its turn, and not for an unchanged
+    // listing, whose extras are added only where something below them has changed
+    if (std::exchange(scan.extrasReadAhead, true) || scan.skip ||
+        !m_advancedSettings->m_parseBlurayProjectFile)
+      return;
+
+    for (const auto& item : scan.items)
+    {
+      if (AddsAsExtras(scan, *item))
+        m_discReadAhead.Queue(item->GetPath(),
+                              [this, folder = item->GetPath()] { ReadExtrasDiscs(folder); });
+    }
+  }
+
+  void CVideoInfoScanner::ReadMovieDisc(CFileItem movie) const
+  {
+    if (!IsBluray(movie.GetPath()))
+      return;
+
+    // As RetrieveInfoForMovie() and AddMovieDiscExtras() do: its playlists, the details of each,
+    // and the extras it names
+    CFileItemList playlists;
+    if (!CDiscDirectoryHelper::GetOrShowPlaylistSelection(movie, playlists, MenuDecision::SILENT))
+      return;
+
+    for (const auto& playlist : playlists)
+    {
+      CFileItem chosen{*playlist};
+      CDiscDirectoryHelper::ReadResolvedPlaylist(chosen);
+    }
+    if (!m_ignoreVideoExtras && !m_deferMovieExtras && !playlists.IsEmpty() &&
+        m_advancedSettings->m_parseBlurayProjectFile)
+    {
+      CFileItem extras{playlists[0]->GetDynPath(), false};
+      extras.GetVideoInfoTag()->GetAssetInfo().SetType(VideoAssetType::EXTRA);
+      CFileItemList named;
+      CDiscDirectoryHelper::GetOrShowPlaylistSelection(extras, named, MenuDecision::SILENT);
+    }
+  }
+
+  void CVideoInfoScanner::ReadExtrasDiscs(const std::string& folder) const
+  {
+    // As AddVideoExtras() does, the extras each disc names
+    UTILS::EnumerateVideoExtras(
+        folder,
+        [](const std::shared_ptr<CFileItem>& item)
+        {
+          if (!IsBluray(item->GetPath()))
+            return;
+          CFileItem disc{item->GetPath(), false};
+          disc.GetVideoInfoTag()->GetAssetInfo().SetType(VideoAssetType::EXTRA);
+          CFileItemList named;
+          CDiscDirectoryHelper::GetOrShowPlaylistSelection(disc, named, MenuDecision::SILENT);
+        });
+  }
+
   std::string CVideoInfoScanner::MovieEdition(const CFileItem& item,
                                               bool bDirNames,
                                               bool useFolderNames,
@@ -2828,6 +2928,13 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CFileItem item{source};
     if (useLocal)
       std::tie(lookup.nfoResult, lookup.loader) = ReadInfoTag(item, info2, bDirNames, true);
+
+    // Added as its nfo gives it, a movie on a disc doesn't need its playlists read ahead
+    if (lookup.nfoResult == InfoType::FULL)
+      m_discReadAhead.Drop(source.GetPath());
+    else
+      m_discReadAhead.Allow(source.GetPath());
+
     if (lookup.nfoResult == InfoType::FULL)
     {
       item.SetProperty("from_nfo", true);

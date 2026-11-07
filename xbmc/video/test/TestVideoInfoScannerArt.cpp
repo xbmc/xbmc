@@ -10,6 +10,7 @@
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -84,6 +85,10 @@ protected:
     m_settings.host = CSpecialProtocol::TranslatePath("special://temp/");
     ASSERT_EQ(CDatabase::ConnectionState::STATE_CONNECTED, m_db.Connect(DB_NAME, m_settings, true));
 
+    // The test environment has no cache of what discs hold, which a look-up reading a disc fills
+    m_previousDiscCache = CServiceBroker::GetBlurayDiscCache();
+    CServiceBroker::RegisterBlurayDiscCache(std::make_shared<XFILE::CBlurayDiscCache>());
+
     // One of the test's own, so a scan's announcements go nowhere
     m_previousAnnouncementManager = CServiceBroker::GetAnnouncementManager();
     CServiceBroker::RegisterAnnouncementManager(
@@ -125,6 +130,10 @@ protected:
     CServiceBroker::UnregisterAnnouncementManager();
     if (m_previousAnnouncementManager)
       CServiceBroker::RegisterAnnouncementManager(m_previousAnnouncementManager);
+    if (m_previousDiscCache)
+      CServiceBroker::RegisterBlurayDiscCache(m_previousDiscCache);
+    else
+      CServiceBroker::UnregisterBlurayDiscCache();
 
     m_db.Close();
     XFILE::CFile::Delete(m_settings.host + DB_NAME + ".db");
@@ -303,6 +312,7 @@ protected:
   CVideoDatabase m_db;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_previousAnnouncementManager;
   std::shared_ptr<CJobManager> m_previousJobManager;
+  std::shared_ptr<XFILE::CBlurayDiscCache> m_previousDiscCache;
   const bool m_extractThumb{Settings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB)};
   const bool m_retrieveAllArt{
       Settings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_RETRIEVEALLARTONEXPORT)};
