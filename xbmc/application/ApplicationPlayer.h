@@ -47,6 +47,10 @@ public:
                 const CPlayerCoreFactory &factory,
                 const std::string &playerName, IPlayerCallback& callback);
   void OpenNext(const CPlayerCoreFactory &factory);
+  /*!
+   \brief Whether a file waits to be opened once the playing one is closed.
+   */
+  bool HasNextItem() const { return m_nextItem.pItem != nullptr; }
   void SetPlaySpeed(float speed);
   void SetTempo(float tempo);
   void FrameAdvance(int frames);
