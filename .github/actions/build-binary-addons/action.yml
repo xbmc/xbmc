@@ -1,0 +1,36 @@
+name: Build binary add-ons
+description: >
+  Builds binary add-ons through tools/depends/target/binary-addons and reports
+  each add-on's result in the step summary. A failing add-on is a warning, not
+  a failure, as on Jenkins. Works for cross builds (after tools/depends) and for
+  native Linux builds against system libraries (pass PREFIX in make-args).
+inputs:
+  addons:
+    description: Space-separated add-on ids or regular expressions (ADDONS).
+    default: peripheral.joystick
+  make-args:
+    description: Extra make variables, e.g. PREFIX=... for a native build.
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Build binary add-ons
+      shell: bash
+      run: |
+        rm -f cmake/addons/.success cmake/addons/.failure
+        make -C tools/depends/target/binary-addons -j"$(getconf _NPROCESSORS_ONLN)" \
+          ADDONS="${{ inputs.addons }}" ${{ inputs.make-args }} V=1 VERBOSE=1
+
+    - name: Report add-on results
+      if: always()
+      shell: bash
+      run: |
+        {
+          echo "### Binary add-ons"
+          if [ -s cmake/addons/.success ]; then echo "Built:"; sed 's/^/- /' cmake/addons/.success; fi
+          if [ -s cmake/addons/.failure ]; then echo "Failed:"; sed 's/^/- /' cmake/addons/.failure; fi
+          if [ ! -s cmake/addons/.success ] && [ ! -s cmake/addons/.failure ]; then echo "No add-on was built."; fi
+        } >> "$GITHUB_STEP_SUMMARY"
+        if [ -s cmake/addons/.failure ]; then
+          echo "::warning::Binary add-ons failed to build: $(tr '\n' ' ' < cmake/addons/.failure)"
+        fi
