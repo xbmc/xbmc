@@ -392,6 +392,7 @@ void CGUIFontTTF::ClearCharacterCache()
   m_char.reserve(CHAR_CHUNK);
   for (auto& table : m_charquick)
     table.reset();
+  m_colorTexture = false;
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
   m_posY = -static_cast<int>(GetTextureLineHeight());
@@ -404,6 +405,7 @@ void CGUIFontTTF::Clear()
   m_texture = nullptr;
   for (auto& table : m_charquick)
     table.reset();
+  m_colorTexture = false;
   m_posX = 0;
   m_posY = 0;
   m_nestedBeginCount = 0;
@@ -1320,6 +1322,24 @@ bool CGUIFontTTF::CacheCharacter(
     bitGlyph->top += m_borderRadius;
   }
 
+  if (emoji && !silhouette && !isEmptyGlyph && !m_colorTexture)
+  {
+    m_colorTexture = true;
+    if (m_texture)
+    {
+      unsigned int height = m_textureHeight;
+      std::unique_ptr<CTexture> newTexture = ReallocTexture(height);
+      if (!newTexture)
+      {
+        m_colorTexture = false;
+        FT_Done_Glyph(glyph);
+        CLog::LogF(LOGDEBUG, "Failed to allocate a color texture of height {}", height);
+        return false;
+      }
+      m_texture = std::move(newTexture);
+    }
+  }
+
   if (!isEmptyGlyph)
   {
     if (bitGlyph->left < 0)
@@ -1407,6 +1427,58 @@ void CGUIFontTTF::ClearTexturePixels(uint8_t* pixels, size_t size)
   {
     pixels[i] = pixels[i + 1] = pixels[i + 2] = 255;
     pixels[i + 3] = 0;
+  }
+}
+
+void CGUIFontTTF::FillNewTexture(CTexture& newTexture) const
+{
+  if (m_colorTexture)
+    ClearTexturePixels(newTexture.GetPixels(), newTexture.GetRows() * newTexture.GetPitch());
+  else
+    memset(newTexture.GetPixels(), 0, newTexture.GetRows() * newTexture.GetPitch());
+
+  if (!m_texture)
+    return;
+
+  const bool expand = m_colorTexture && m_texture->GetPitch() < m_texture->GetWidth() * 4;
+  const unsigned int width = std::min(m_texture->GetWidth(), newTexture.GetWidth());
+  const unsigned int rows = std::min(m_texture->GetRows(), newTexture.GetRows());
+  for (unsigned int y = 0; y < rows; y++)
+  {
+    const uint8_t* src = m_texture->GetPixels() + y * m_texture->GetPitch();
+    uint8_t* dst = newTexture.GetPixels() + y * newTexture.GetPitch();
+    if (!expand)
+    {
+      memcpy(dst, src, std::min(m_texture->GetPitch(), newTexture.GetPitch()));
+      continue;
+    }
+    for (unsigned int x = 0; x < width; x++)
+      dst[4 * x + 3] = src[x];
+  }
+}
+
+void CGUIFontTTF::WriteCharPixels(const uint8_t* pixels,
+                                  unsigned int pitch,
+                                  unsigned int x1,
+                                  unsigned int y1,
+                                  unsigned int x2,
+                                  unsigned int y2)
+{
+  const unsigned int bpp = m_colorTexture ? 4 : 1;
+  uint8_t* target = m_texture->GetPixels() + y1 * m_texture->GetPitch() + x1 * bpp;
+  for (unsigned int y = y1; y < y2; y++)
+  {
+    if (m_colorTexture)
+    {
+      memcpy(target, pixels, (x2 - x1) * 4);
+    }
+    else
+    {
+      for (unsigned int x = 0; x < x2 - x1; x++)
+        target[x] = pixels[4 * x + 3];
+    }
+    pixels += pitch;
+    target += m_texture->GetPitch();
   }
 }
 
