@@ -277,6 +277,18 @@ float CGUIFont::GetTextWidth(std::span<const character_t> text)
   return m_font->GetTextWidthInternal(text) * context.GetGUIScaleX();
 }
 
+size_t CGUIFont::GetFittingLength(std::span<const character_t> text, float maxWidth)
+{
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+  if (!m_font || !winSystem)
+    return 0;
+
+  CGraphicContext& context = winSystem->GetGfxContext();
+
+  std::unique_lock lock(context);
+  return m_font->GetFittingLengthInternal(text, maxWidth / context.GetGUIScaleX());
+}
+
 float CGUIFont::GetCharWidth(character_t ch)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();

@@ -168,6 +168,8 @@ public:
   bool UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& scrollInfo);
 
   float GetTextWidth(std::span<const character_t> text);
+  //! Number of characters from the start of text that fit into maxWidth, without splitting a cluster
+  size_t GetFittingLength(std::span<const character_t> text, float maxWidth);
   float GetCharWidth(character_t ch);
   float GetTextHeight(int numLines) const;
   float GetTextBaseLine() const;

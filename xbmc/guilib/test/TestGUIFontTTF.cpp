@@ -38,7 +38,9 @@ public:
 
   using CGUIFontTTF::FontFace;
   using CGUIFontTTF::GetCharacter;
+  using CGUIFontTTF::GetFittingLengthInternal;
   using CGUIFontTTF::GetHarfBuzzShapedGlyphs;
+  using CGUIFontTTF::GetTextWidthInternal;
   using CGUIFontTTF::m_color;
   using CGUIFontTTF::RenderCharacter;
 
@@ -254,4 +256,37 @@ TEST_F(TestGUIFontTTF, SymbolReceivesTextBorder)
   ASSERT_NE(border, nullptr);
   EXPECT_GT(border->m_right - border->m_left, normal->m_right - normal->m_left);
   EXPECT_GT(border->m_bottom - border->m_top, normal->m_bottom - normal->m_top);
+}
+
+TEST_F(TestGUIFontTTF, FittingLengthMatchesWidthOfPrefixes)
+{
+  // digits have no kerning, so the width of a prefix does not depend on the following character
+  vecText text;
+  for (int i = 0; i < 200; ++i)
+    text.push_back(U'0' + i % 10);
+  const float textWidth = m_font->GetTextWidthInternal(text);
+  for (float maxWidth = 0; maxWidth <= textWidth + 10; maxWidth += 7.5f)
+  {
+    SCOPED_TRACE(maxWidth);
+    size_t expected = 0;
+    for (size_t n = 1; n <= text.size(); ++n)
+    {
+      if (m_font->GetTextWidthInternal({text.data(), n}) <= maxWidth)
+        expected = n;
+    }
+    EXPECT_EQ(m_font->GetFittingLengthInternal(text, maxWidth), expected);
+  }
+}
+
+TEST_F(TestGUIFontTTF, FittingLengthKeepsClustersTogether)
+{
+  vecText text;
+  for (int i = 0; i < 50; ++i)
+    text.insert(text.end(), {U'e', 0x0301});
+  const float textWidth = m_font->GetTextWidthInternal(text);
+  for (float maxWidth = 0; maxWidth <= textWidth; maxWidth += 3.0f)
+  {
+    SCOPED_TRACE(maxWidth);
+    EXPECT_EQ(m_font->GetFittingLengthInternal(text, maxWidth) % 2, 0u);
+  }
 }
