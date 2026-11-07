@@ -171,7 +171,12 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   UpdateControlStats();
 
-  changed |= (m_controlDirtyState & DIRTY_STATE_CONTROL) != 0;
+  if (m_controlDirtyState & DIRTY_STATE_CONTROL)
+  {
+    changed = true;
+    // the region is added below, only keep processing in the next frame
+    m_controlDirtyState = DIRTY_STATE_CHILD;
+  }
 
   if (changed)
   {
