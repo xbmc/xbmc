@@ -345,6 +345,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_curlDisableIPV6;
     bool m_curlDisableHTTP2;
 
+    // shared content filter lists for web apps, name to URL; an empty URL drops a list
+    std::map<std::string, std::string> m_webFilterLists;
+
     std::string m_caTrustFile;
 
     bool m_minimizeToTray; /* win32 only */

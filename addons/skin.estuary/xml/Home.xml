@@ -840,6 +840,36 @@
 						</include>
 					</control>
 				</control>
+				<control type="group" id="22000">
+					<visible>String.IsEqual(Container(9000).ListItem.Property(id),webapps)</visible>
+					<include content="Visible_Right_Delayed">
+						<param name="id" value="webapps"/>
+					</include>
+					<control type="grouplist" id="22001">
+						<include>WidgetGroupListCommon</include>
+						<pagecontrol>22010</pagecontrol>
+						<include content="WidgetListSquare">
+							<param name="content_path" value="addons://sources/webapp/"/>
+							<param name="widget_header" value="$LOCALIZE[40243]"/>
+							<param name="widget_target" value="programs"/>
+							<param name="sortby" value="lastused"/>
+							<param name="sortorder" value="descending"/>
+							<param name="list_id" value="22200"/>
+							<param name="fallback_icon" value="DefaultAddonWebSkin.png"/>
+						</include>
+					</control>
+					<include content="ImageWidget">
+						<param name="text_label" value="$LOCALIZE[31616]" />
+						<param name="button_label" value="$LOCALIZE[31144]" />
+						<param name="button_onclick" value="ActivateWindow(addonbrowser,addons://more/webapp/,return)"/>
+						<param name="button_id" value="22100"/>
+						<param name="visible" value="!Integer.IsGreater(Container(22001).NumItems,0)"/>
+						<param name="button2_onclick" value="Skin.SetBool(HomeMenuNoWebAppsButton)"/>
+					</include>
+					<include content="WidgetScrollbar" condition="Skin.HasSetting(touchmode)">
+						<param name="scrollbar_id" value="22010"/>
+					</include>
+				</control>
 				<control type="group" id="17000">
 					<visible>String.IsEqual(Container(9000).ListItem.Property(id),games)</visible>
 					<include content="Visible_Right_Delayed">
@@ -1038,6 +1068,14 @@
 							<thumb>icons/sidemenu/radio.png</thumb>
 							<property name="id">radio</property>
 							<visible>!Skin.HasSetting(HomeMenuNoRadioButton)</visible>
+						</item>
+						<item>
+							<label>$LOCALIZE[40243]</label>
+							<property name="menu_id">$NUMBER[22000]</property>
+							<onclick>ActivateWindow(Programs,addons://sources/webapp/,return)</onclick>
+							<thumb>DefaultAddonWebSkin.png</thumb>
+							<property name="id">webapps</property>
+							<visible>System.SupportsWebApps + !Skin.HasSetting(HomeMenuNoWebAppsButton)</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[15016]</label>

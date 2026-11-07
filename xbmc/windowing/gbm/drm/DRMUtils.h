@@ -78,6 +78,10 @@ public:
   // FindGuiPlane never releases a D2P video plane reservation; a caller that
   // means "video is over" states it here before revalidating the gui plane.
   void ReleaseVideoPlane() { m_video_plane = nullptr; }
+  //! \brief The formats and modifiers a plane besides the GUI plane shows on the CRTC
+  std::vector<std::pair<uint32_t, uint64_t>> GetVideoFormats();
+  //! \brief A free plane stacked between the video and the GUI plane, or nullptr
+  CDRMPlane* FindOverlayPlane(uint32_t format, uint64_t modifier, uint64_t width, uint64_t height);
   bool HasQuirk(int quirk) const { return m_drm_quirks & quirk; }
 
   std::vector<std::string> GetConnectedConnectorNames();

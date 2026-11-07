@@ -98,6 +98,8 @@
 #define WINDOW_DIALOG_INFOPROVIDER_SETTINGS 10158
 #define WINDOW_DIALOG_SUBTITLE_OSD_SETTINGS  10159
 #define WINDOW_DIALOG_BUSY_NOCANCEL       10160
+#define WINDOW_DIALOG_WEB_KEYBOARD        10161
+#define WINDOW_DIALOG_WEB_OSD             10162
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_NAV                  10502
@@ -199,6 +201,7 @@
 #define WINDOW_VIDEO_TIME_SEEK            12905 // virtual window for time seeking during fullscreen video
 
 #define WINDOW_FULLSCREEN_GAME            12906
+#define WINDOW_FULLSCREEN_WEB             12907
 
 #define WINDOW_SPLASH                     12997 // splash window
 #define WINDOW_START                      12998 // first window to load

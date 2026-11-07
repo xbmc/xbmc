@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">13</defaultcontrol>
+	<depth>DepthOSD</depth>
+	<include>Animation_TopSlide</include>
+	<controls>
+		<control type="group">
+			<left>0</left>
+			<top>0</top>
+			<width>100%</width>
+			<height>250</height>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>100%</width>
+				<height>250</height>
+				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+			</control>
+			<control type="label" id="2">
+				<left>60</left>
+				<top>20</top>
+				<width>1800</width>
+				<height>60</height>
+				<font>font37</font>
+				<aligny>center</aligny>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label" id="3">
+				<left>60</left>
+				<top>80</top>
+				<width>1800</width>
+				<height>40</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<aligny>center</aligny>
+			</control>
+			<control type="grouplist" id="9000">
+				<left>60</left>
+				<top>135</top>
+				<width>1800</width>
+				<height>100</height>
+				<orientation>horizontal</orientation>
+				<itemgap>20</itemgap>
+				<include content="DefaultDialogButton">
+					<param name="id" value="11" />
+					<param name="label" value="$LOCALIZE[40246]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="12" />
+					<param name="label" value="$LOCALIZE[40247]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="13" />
+					<param name="label" value="$LOCALIZE[40248]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="14" />
+					<param name="label" value="$LOCALIZE[15067]" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -266,6 +266,13 @@
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoRadioButton)</enable>
 				</control>
+				<control type="radiobutton" id="6191">
+					<label>$LOCALIZE[40243]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(HomeMenuNoWebAppsButton)</selected>
+					<onclick>Skin.ToggleSetting(HomeMenuNoWebAppsButton)</onclick>
+					<visible>System.SupportsWebApps</visible>
+				</control>
 				<control type="radiobutton" id="614">
 					<label>$LOCALIZE[24001]</label>
 					<include>DefaultSettingButton</include>

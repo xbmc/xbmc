@@ -78,6 +78,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"yesnodialog", WINDOW_DIALOG_YES_NO},
     {"progressdialog", WINDOW_DIALOG_PROGRESS},
     {"virtualkeyboard", WINDOW_DIALOG_KEYBOARD},
+    {"webkeyboard", WINDOW_DIALOG_WEB_KEYBOARD},
     {"volumebar", WINDOW_DIALOG_VOLUME_BAR},
     {"submenu", WINDOW_DIALOG_SUB_MENU},
     {"contextmenu", WINDOW_DIALOG_CONTEXT_MENU},
@@ -147,6 +148,8 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"fullscreenradioinput", WINDOW_FULLSCREEN_RADIO_INPUT},
 
     {"fullscreengame", WINDOW_FULLSCREEN_GAME},
+    {"fullscreenweb", WINDOW_FULLSCREEN_WEB},
+    {"webosd", WINDOW_DIALOG_WEB_OSD},
     {"visualisation", WINDOW_VISUALISATION},
     {"slideshow", WINDOW_SLIDESHOW},
     {"weather", WINDOW_WEATHER},
@@ -201,6 +204,7 @@ static const std::vector<FallbackWindowMapping> FallbackWindows = {
     {WINDOW_FULLSCREEN_RADIO, WINDOW_VISUALISATION},
     {WINDOW_FULLSCREEN_RADIO_INPUT, WINDOW_FULLSCREEN_RADIO},
     {WINDOW_FULLSCREEN_RADIO_PREVIEW, WINDOW_FULLSCREEN_RADIO},
+    {WINDOW_DIALOG_WEB_KEYBOARD, WINDOW_DIALOG_KEYBOARD},
 };
 } // anonymous namespace
 
