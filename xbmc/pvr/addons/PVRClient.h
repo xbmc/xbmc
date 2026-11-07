@@ -1096,6 +1096,13 @@ private:
   static void cb_trigger_epg_update(void* kodiInstance, unsigned int iChannelUid);
 
   /*!
+   * @brief Notify that the backend itself changed the channel it is playing
+   * @param kodiInstance Pointer to Kodi's CPVRClient class
+   * @param iChannelUid The unique id of the channel for this add-on
+   */
+  static void cb_playing_channel_change(void* kodiInstance, unsigned int iChannelUid);
+
+  /*!
    * @brief Free a packet that was allocated with AllocateDemuxPacket
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    * @param pPacket The packet to free.
