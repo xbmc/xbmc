@@ -13,6 +13,9 @@
 #include "utils/RegExp.h"
 
 #include <cstdint>
+#include <functional>
+#include <map>
+#include <mutex>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -160,6 +163,27 @@ private:
   //! Artwork found during the scan, to be cached once it has finished \sa FlushDeferred
   //! Mutable, as the art is found by the const methods that gather it
   mutable std::vector<ArtToCache> m_deferredArt;
+
+  //! The thumbs of an actors folder by name, and the hashes its listing gave them by path
+  struct ActorThumbs
+  {
+    std::map<std::string, std::string, std::less<>> thumbs;
+    std::map<std::string, std::string, std::less<>> listedHashes;
+  };
+
+  //! Each actors folder looked in, listed once rather than for each video, as the episodes of a
+  //! show all look in the show's. Different folders are listed at once, and one being listed is
+  //! waited for.
+  const ActorThumbs& GetActorThumbs(const std::string& actorsDir) const;
+  static void ListActorThumbs(const std::string& actorsDir, ActorThumbs& actorThumbs);
+  struct ListedActorThumbs
+  {
+    std::once_flag listed;
+    ActorThumbs thumbs;
+  };
+  mutable std::map<std::string, ListedActorThumbs, std::less<>> m_actorThumbs;
+  //! Held only to find a folder's entry, not while the folder is listed
+  mutable std::mutex m_actorThumbsLock;
 };
 
 } // namespace KODI::VIDEO
