@@ -121,6 +121,10 @@ namespace XBMCAddon
       XBMC_TRACE;
 
       deallocating();
+
+      // the window manager owns the windows we create, but not the proxy of an existing one
+      if (existingWindow)
+        delete window;
     }
 
     void Window::deallocating()
