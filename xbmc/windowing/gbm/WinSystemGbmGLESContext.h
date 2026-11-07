@@ -56,6 +56,8 @@ protected:
 
 private:
   bool m_guiCompositing{false};
+  int m_guiColorTransfer{0};
+  bool m_compositeShaderLimited{false};
   CFrameBufferObject m_guiFbo;
   int m_guiFboWidth{0};
   int m_guiFboHeight{0};
