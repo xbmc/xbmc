@@ -33,27 +33,29 @@ class CFileItemList;
 
 namespace KODI::VIDEO
 {
-  class IVideoInfoTagLoader;
-  class ISetInfoTagLoader;
+class CFilenameAttributes;
+class IVideoInfoTagLoader;
+class ISetInfoTagLoader;
 
-  typedef struct SScanSettings
+typedef struct SScanSettings
+{
+  SScanSettings()
   {
-    SScanSettings()
-    {
-      parent_name = false;
-      parent_name_root = false;
-      noupdate = false;
-      exclude = false;
-      m_allExtAudio = false;
-      recurse = 1;
-    }
-    bool parent_name;       /* use the parent dirname as name of lookup */
-    bool parent_name_root;  /* use the name of directory where scan started as name for files in that dir */
-    int  recurse;           /* recurse into sub folders (indicate levels) */
-    bool noupdate;          /* exclude from update library function */
-    bool exclude;           /* exclude this path from scraping */
-    bool m_allExtAudio; /* treat all audio files in video directory as external tracks */
-  } SScanSettings;
+    parent_name = false;
+    parent_name_root = false;
+    noupdate = false;
+    exclude = false;
+    m_allExtAudio = false;
+    recurse = 1;
+  }
+  bool parent_name; /* use the parent dirname as name of lookup */
+  bool
+      parent_name_root; /* use the name of directory where scan started as name for files in that dir */
+  int recurse; /* recurse into sub folders (indicate levels) */
+  bool noupdate; /* exclude from update library function */
+  bool exclude; /* exclude this path from scraping */
+  bool m_allExtAudio; /* treat all audio files in video directory as external tracks */
+} SScanSettings;
 
   class CVideoInfoScanner : public CInfoScanner
   {
@@ -180,6 +182,22 @@ namespace KODI::VIDEO
                                  bool useLocal,
                                  CScraperUrl* pURL,
                                  CGUIDialogProgress* pDlgProgress);
+
+    /*!
+     * \brief Get a movie's identifier (ex. "{tmdb=603}") from its filename or, failing that, from
+     *        the name it is looked up by - its folder's name when folder names are used.
+     * \param[in] item The movie
+     * \param[in] dirNames Whether the movie is looked up by its folder's name
+     * \param[in] filenameAttributes The attributes of the movie's filename
+     * \param[out] identifierType The identifier's type (ex. "tmdb")
+     * \param[out] identifier The identifier
+     * \return true if an identifier was found
+     */
+    bool GetMovieIdentifier(const CFileItem& item,
+                            bool dirNames,
+                            const CFilenameAttributes& filenameAttributes,
+                            std::string& identifierType,
+                            std::string& identifier) const;
     InfoRet RetrieveInfoForMusicVideo(CFileItem* pItem,
                                       bool bDirNames,
                                       ADDON::ScraperPtr& scraper,
