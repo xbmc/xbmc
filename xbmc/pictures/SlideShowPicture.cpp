@@ -57,6 +57,7 @@ void CSlideShowPic::Close()
 {
   std::unique_lock lock(m_textureAccess);
   m_pImage.reset();
+  m_gainMap.reset();
   m_bIsLoaded = false;
   m_bDrawNextImage = false;
   m_bTransitionImmediately = false;
@@ -259,6 +260,26 @@ void CSlideShowPic::UpdateTexture(std::unique_ptr<CTexture> pTexture)
   m_fWidth = static_cast<float>(m_pImage->GetWidth());
   m_fHeight = static_cast<float>(m_pImage->GetHeight());
   m_bIsDirty = true;
+}
+
+void CSlideShowPic::SetGainMap(std::unique_ptr<CTexture> gainMap,
+                               const KODI::PICTURE::GainMapParams& params)
+{
+  std::unique_lock lock(m_textureAccess);
+  m_gainMap = std::move(gainMap);
+  m_gainMapParams = params;
+}
+
+bool CSlideShowPic::HasColorMatrix()
+{
+  std::unique_lock lock(m_textureAccess);
+  return m_pImage && m_pImage->GetColorMatrix();
+}
+
+bool CSlideShowPic::HasGainMap()
+{
+  std::unique_lock lock(m_textureAccess);
+  return m_gainMap != nullptr;
 }
 
 static CRect GetRectangle(const float x[4], const float y[4])
@@ -757,14 +778,15 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
  // m_transitionEnd.start = m_iCounter + m_transitionStart.length + (int)(CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS() * CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SLIDESHOW_STAYTIME));
 }
 
-void CSlideShowPic::Render()
+void CSlideShowPic::Render(bool picture /* = true */)
 {
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
       RENDER_ORDER_FRONT_TO_BACK)
     return;
   std::unique_lock lock(m_textureAccess);
 
-  Render(m_ax, m_ay, m_pImage.get(), (m_alpha << 24) | 0xFFFFFF);
+  if (picture)
+    Render(m_ax, m_ay, m_pImage.get(), (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
   if (m_fZoomAmount == 1.0f || m_bIsComic) return ;
@@ -772,4 +794,11 @@ void CSlideShowPic::Render()
   Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
   Render(m_sx, m_sy, m_pImage.get(), 0xFFFFFFFF);
   Render(m_ox, m_oy, NULL, PICTURE_VIEW_BOX_COLOR);
+}
+
+bool CSlideShowPic::RenderHdr()
+{
+  std::unique_lock lock(m_textureAccess);
+  return RenderHdr(m_ax, m_ay, m_pImage.get(), m_gainMap.get(), m_gainMapParams,
+                   (m_alpha << 24) | 0xFFFFFF);
 }

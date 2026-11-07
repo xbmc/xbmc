@@ -9,8 +9,10 @@ set(SOURCES GUIDialogPictureInfo.cpp
             PictureInfoTag.cpp
             PictureScalingAlgorithm.cpp
             PictureThumbLoader.cpp
+            PictureXmp.cpp
             SlideShowDelegator.cpp
-            SlideShowPicture.cpp)
+            SlideShowPicture.cpp
+            UltraHdr.cpp)
 
 set(HEADERS interfaces/ISlideShowDelegate.h
             GUIDialogPictureInfo.h
@@ -24,8 +26,10 @@ set(HEADERS interfaces/ISlideShowDelegate.h
             PictureInfoTag.h
             PictureScalingAlgorithm.h
             PictureThumbLoader.h
+            PictureXmp.h
             SlideShowDelegator.h
-            SlideShowPicture.h)
+            SlideShowPicture.h
+            UltraHdr.h)
 
 if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES SlideShowPictureGL.cpp)
