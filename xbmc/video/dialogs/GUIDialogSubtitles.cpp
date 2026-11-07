@@ -221,19 +221,29 @@ void CGUIDialogSubtitles::OnInitWindow()
 
 void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (m_bInvalidated)
+  // take copies of our variables to ensure we don't hold the lock for long.
+  std::string status;
+  CFileItemList subs;
+  bool updateSubsList;
+  bool invalidated;
   {
-    // take copies of our variables to ensure we don't hold the lock for long.
-    std::string status;
-    CFileItemList subs;
+    std::unique_lock lock(m_critsection);
+    updateSubsList = m_updateSubsList;
+    // A list set by the search job while the dialog was processed can have lost its
+    // invalidation, as m_bInvalidated is reset after Process() without the lock.
+    invalidated = m_bInvalidated || updateSubsList;
+    if (invalidated)
     {
-      std::unique_lock lock(m_critsection);
       status = m_status;
       subs.Assign(*m_subtitles);
+      m_updateSubsList = false;
     }
+  }
+  if (invalidated)
+  {
     SET_CONTROL_LABEL(CONTROL_SUBSTATUS, status);
 
-    if (m_updateSubsList)
+    if (updateSubsList)
     {
       CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_SUBLIST, 0, 0, &subs);
       OnMessage(message);
@@ -243,7 +253,6 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
         CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), CONTROL_SUBLIST);
         OnMessage(msg);
       }
-      m_updateSubsList = false;
     }
 
     int control = GetFocusedControlID();
