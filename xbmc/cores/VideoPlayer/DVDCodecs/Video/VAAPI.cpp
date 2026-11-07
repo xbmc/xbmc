@@ -575,17 +575,19 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   m_vaapiConfig.surfaceWidth = avctx->coded_width;
   m_vaapiConfig.surfaceHeight = avctx->coded_height;
   m_vaapiConfig.aspect = avctx->sample_aspect_ratio;
-  m_vaapiConfig.bitDepth = avctx->bits_per_raw_sample;
-  // ffmpeg's HEVC, VP9, and AV1 decoders do not set bits_per_raw_sample,
-  // but they do set pix_fmt correctly (e.g. yuv420p10le for 10-bit).
-  // Derive bit depth from the pixel format when bits_per_raw_sample is 0,
-  // otherwise ConfigVAAPI creates NV12 surfaces for 10-bit content.
-  if (m_vaapiConfig.bitDepth == 0)
-  {
-    const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(avctx->pix_fmt);
-    if (desc)
-      m_vaapiConfig.bitDepth = desc->comp[0].depth;
-  }
+  // Open() runs inside get_format, where ffmpeg has already set sw_pix_fmt to the format the
+  // bitstream decodes to; take the bit depth and chroma from it. bits_per_raw_sample and
+  // pix_fmt come from the stream hints instead: for a live stream joined before its parameter
+  // sets the demuxer adds the stream with no pixel format and reports 8 bits, and ConfigVAAPI
+  // would then create NV12 surfaces for 10-bit content (every vaEndPicture fails with
+  // VA_STATUS_ERROR_INVALID_PARAMETER). ffmpeg's HEVC, VP9 and AV1 decoders also leave
+  // bits_per_raw_sample at 0.
+  const AVPixelFormat swFormat =
+      avctx->sw_pix_fmt != AV_PIX_FMT_NONE ? avctx->sw_pix_fmt : avctx->pix_fmt;
+  if (const AVPixFmtDescriptor* desc = av_pix_fmt_desc_get(swFormat))
+    m_vaapiConfig.bitDepth = desc->comp[0].depth;
+  else
+    m_vaapiConfig.bitDepth = avctx->bits_per_raw_sample;
   m_DisplayState = VAAPI_OPEN;
   m_vaapiConfigured = false;
   m_presentPicture = nullptr;
@@ -595,7 +597,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   // pick the right VA profile. log2_chroma_{w,h} encodes the subsampling
   // factor: (1,1) = 4:2:0, (1,0) = 4:2:2, (0,0) = 4:4:4.
   int chroma = 0;
-  if (const AVPixFmtDescriptor* d = av_pix_fmt_desc_get(avctx->pix_fmt))
+  if (const AVPixFmtDescriptor* d = av_pix_fmt_desc_get(swFormat))
   {
     if (d->log2_chroma_w == 1 && d->log2_chroma_h == 1)
       chroma = 420;
