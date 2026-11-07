@@ -6,7 +6,6 @@ set(SOURCES ActorProtocol.cpp
             AspectRatioVocabulary.cpp
             Base64.cpp
             BitstreamConverter.cpp
-            BitstreamReader.cpp
             BitstreamStats.cpp
             BooleanLogic.cpp
             CharArrayParser.cpp
@@ -81,7 +80,6 @@ set(SOURCES ActorProtocol.cpp
             UrlOptions.cpp
             Utf8Utils.cpp
             Variant.cpp
-            VC1BitstreamParser.cpp
             Vector.cpp
             XBMCTinyXML.cpp
             XBMCTinyXML2.cpp
@@ -96,8 +94,8 @@ set(HEADERS ActorProtocol.h
             Artwork.h
             AspectRatioVocabulary.h
             Base64.h
+            BitReader.h
             BitstreamConverter.h
-            BitstreamReader.h
             BitstreamStats.h
             BooleanLogic.h
             CharArrayParser.h
@@ -202,7 +200,6 @@ set(HEADERS ActorProtocol.h
             UrlOptions.h
             Utf8Utils.h
             Variant.h
-            VC1BitstreamParser.h
             Vector.h
             XBMCTinyXML.h
             XBMCTinyXML2.h
