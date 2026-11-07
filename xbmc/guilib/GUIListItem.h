@@ -107,11 +107,11 @@ public:
   std::string GetArt(const std::string &type) const;
 
   /*! \brief get artwork for an item
-   Retrieves artwork in a type:url map
+   Retrieves a copy of the artwork in a type:url map
    \return a type:url map for artwork
    \sa SetArt
    */
-  const KODI::ART::Artwork& GetArt() const;
+  KODI::ART::Artwork GetArt() const;
 
   /*! \brief Check whether an item has a particular piece of art
    Equivalent to !GetArt(type).empty()
@@ -205,4 +205,7 @@ private:
 
   KODI::ART::Artwork m_art;
   KODI::ART::Artwork m_artFallbacks;
+
+  //! Guards m_art and m_artFallbacks, which loader threads write while the GUI thread reads them
+  mutable CCriticalSection m_artSection;
 };
