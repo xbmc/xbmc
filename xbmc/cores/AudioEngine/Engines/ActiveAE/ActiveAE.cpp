@@ -302,6 +302,12 @@ bool CEngineStats::IsSuspended()
   return m_suspended;
 }
 
+void CEngineStats::SetSinkNeedIec(bool needIEC)
+{
+  std::unique_lock lock(m_lock);
+  m_sinkNeedIecPack = needIEC;
+}
+
 void CEngineStats::SetCurrentSinkFormat(const AEAudioFormat& SinkFormat)
 {
   std::unique_lock lock(m_lock);
@@ -312,6 +318,12 @@ AEAudioFormat CEngineStats::GetCurrentSinkFormat()
 {
   std::unique_lock lock(m_lock);
   return m_sinkFormat;
+}
+
+bool CEngineStats::GetSinkNeedIecPack()
+{
+  std::unique_lock lock(m_lock);
+  return m_sinkNeedIecPack;
 }
 
 CActiveAE::CActiveAE() :
@@ -1999,6 +2011,7 @@ bool CActiveAE::InitSink()
     CLog::Log(LOGERROR, "ActiveAE::{} - failed to init", __FUNCTION__);
     m_stats.SetSinkCacheTotal(0);
     m_stats.SetSinkLatency(0);
+    m_stats.SetSinkNeedIec(false);
     AEAudioFormat invalidFormat;
     invalidFormat.m_dataFormat = AE_FMT_INVALID;
     m_stats.SetCurrentSinkFormat(invalidFormat);
@@ -2036,6 +2049,8 @@ void CActiveAE::DrainSink()
 
 void CActiveAE::UnconfigureSink()
 {
+  m_stats.SetSinkNeedIec(false);
+
   // send message to sink
   Message *reply;
   if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::UNCONFIGURE, &reply, 2s))

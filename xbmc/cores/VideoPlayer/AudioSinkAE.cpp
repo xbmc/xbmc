@@ -92,7 +92,7 @@ void CAudioSinkAE::Destroy(bool finish)
   m_playingPts = DVD_NOPTS_VALUE;
 }
 
-unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
+unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame& audioframe, bool silence)
 {
   m_bAbort = false;
 
@@ -134,6 +134,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
   do
   {
     IAEStream::ExtData ext;
+    ext.silence = silence;
     if (offset == 0)
     {
       ext.pts = audioframe.pts / DVD_TIME_BASE * 1000;
@@ -228,6 +229,11 @@ void CAudioSinkAE::Flush()
   m_playingPts = DVD_NOPTS_VALUE;
   m_syncError = 0.0;
   m_syncErrorTime = 0;
+}
+
+bool CAudioSinkAE::SupportsPassthroughSilence() const
+{
+  return CServiceBroker::GetActiveAE()->SupportsPassthroughSilence();
 }
 
 void CAudioSinkAE::AbortAddPackets()

@@ -14,6 +14,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstring>
 #include <mutex>
 
 using namespace ActiveAE;
@@ -286,12 +287,20 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
         }
         m_lastPts = pts;
         m_currentBuffer->timestamp = pts;
+        const bool silence = extData && extData->silence;
+        if (m_format.m_dataFormat == AE_FMT_RAW)
+          m_currentBuffer->pkt->pause_burst_ms =
+              silence ? m_format.m_streamInfo.GetDuration() : 0;
         m_currentBuffer->pkt_start_offset = m_currentBuffer->pkt->nb_samples;
       }
 
-      for (int i=0; i<planes; i++)
+      for (int i = 0; i < planes; i++)
       {
-        memcpy(m_currentBuffer->pkt->data[i]+start, buf[i]+bufOffset, minFrames*m_format.m_frameSize/planes);
+        const int bytes = minFrames * m_format.m_frameSize / planes;
+        if (extData && extData->silence && m_format.m_dataFormat != AE_FMT_RAW)
+          std::memset(m_currentBuffer->pkt->data[i] + start, 0, bytes);
+        else
+          memcpy(m_currentBuffer->pkt->data[i] + start, buf[i] + bufOffset, bytes);
       }
       copied += minFrames;
 

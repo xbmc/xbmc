@@ -70,7 +70,7 @@ void CVideoPlayerWebOS::CreatePlayers()
         &m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo,
         m_messageQueueTimeSize);
     m_VideoPlayerAudio = std::make_unique<CVideoPlayerAudio>(&m_clock, m_messenger, *m_processInfo,
-                                                             m_messageQueueTimeSize);
+                                                             m_messageQueueTimeSize, m_Edl);
   }
 
   if (m_players_created)

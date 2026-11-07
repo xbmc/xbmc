@@ -734,7 +734,7 @@ void CVideoPlayer::CreatePlayers()
       std::make_unique<CVideoPlayerVideo>(&m_clock, &m_overlayContainer, m_messenger,
                                           m_renderManager, *m_processInfo, m_messageQueueTimeSize);
   m_VideoPlayerAudio = std::make_unique<CVideoPlayerAudio>(&m_clock, m_messenger, *m_processInfo,
-                                                           m_messageQueueTimeSize);
+                                                           m_messageQueueTimeSize, m_Edl);
   m_VideoPlayerSubtitle =
       std::make_unique<CVideoPlayerSubtitle>(&m_overlayContainer, *m_processInfo);
   m_VideoPlayerTeletext = std::make_unique<CDVDTeletextData>(*m_processInfo);
@@ -1961,6 +1961,15 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   bool checkcont = CheckContinuity(m_CurrentAudio, pPacket);
   UpdateTimestamps(m_CurrentAudio, pPacket);
 
+  // Keep the original-media timeline alongside the corrected audio PTS. Some
+  // input streams provide their authoritative timeline through dispTime.
+  if (pPacket->dispTime > 0)
+    pPacket->originalPts = DVD_MSEC_TO_TIME(pPacket->dispTime);
+  else if (pPacket->pts != DVD_NOPTS_VALUE)
+    pPacket->originalPts = pPacket->pts + m_offset_pts;
+  else if (pPacket->dts != DVD_NOPTS_VALUE)
+    pPacket->originalPts = pPacket->dts + m_offset_pts;
+
   if (checkcont && (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CHECK))
     m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_NONE;
 
@@ -1978,7 +1987,9 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   else
   {
     const auto hasEdit = m_Edl.InEdit(GetEdlTime(m_CurrentAudio));
-    if (hasEdit && hasEdit.value()->action == EDL::Action::MUTE)
+    if (hasEdit && hasEdit.value()->action == EDL::Action::MUTE &&
+        !(m_CurrentAudio.hint.codec == AV_CODEC_ID_TRUEHD && m_VideoPlayerAudio->IsPassthrough() &&
+          m_VideoPlayerAudio->SupportsPassthroughSilence()))
       drop = true;
   }
 

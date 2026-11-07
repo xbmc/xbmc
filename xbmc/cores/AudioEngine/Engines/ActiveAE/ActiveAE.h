@@ -205,9 +205,10 @@ public:
   void SetCurrentSinkFormat(const AEAudioFormat& SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
-  void SetSinkNeedIec(bool needIEC) { m_sinkNeedIecPack = needIEC; }
+  void SetSinkNeedIec(bool needIEC);
   bool IsSuspended();
   AEAudioFormat GetCurrentSinkFormat();
+  bool GetSinkNeedIecPack();
 protected:
   float m_sinkCacheTotal;
   float m_sinkLatency;
@@ -277,6 +278,10 @@ public:
   void DefaultDeviceChange() override;
   void DeviceCountChange(const std::string& driver) override;
   bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) override;
+  bool SupportsPassthroughSilence() override
+  {
+    return m_stats.GetSinkNeedIecPack();
+  }
 
   void RegisterAudioCallback(IAudioCallback* pCallback) override;
   void UnregisterAudioCallback(IAudioCallback* pCallback) override;
