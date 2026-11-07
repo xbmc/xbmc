@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -350,7 +351,15 @@ private:
   std::list<CEpgUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon */
   CCriticalSection m_updateRequestsLock; /*!< protect update requests */
 
+  // client id, channel uid, broadcast id (unique per channel)
+  using EpgTagChangeKey = std::tuple<int, int, unsigned int>;
+
+  // queue a change, replacing a pending one for the same epg tag; hold m_epgTagChangesLock
+  void QueueEpgTagChange(const EpgTagChangeKey& key, const CEpgTagStateChange& change);
+
   std::list<CEpgTagStateChange> m_epgTagChanges; /*!< list of updated epg tags announced by addon */
+  std::map<EpgTagChangeKey, std::list<CEpgTagStateChange>::iterator>
+      m_epgTagChangesIndex; /*!< pending change per epg tag */
   CCriticalSection m_epgTagChangesLock; /*!< protect changed epg tags list */
 
   bool m_bUpdateNotificationPending =
