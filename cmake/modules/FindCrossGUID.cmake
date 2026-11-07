@@ -39,7 +39,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # Additional pkg-config search name
   list(APPEND ${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME_PC crossguid2)
 
-  SEARCH_EXISTING_PACKAGES()
+  # Android builds use Kodi's own CrossGUID dependency build. Do not accept
+  # a cached CMake or pkg-config package from the shared dependency prefix:
+  # its metadata can outlive the library and leave the final link with -lcrossguid
+  # but no corresponding library. Other platforms retain normal package discovery.
+  if(ANDROID)
+    message(STATUS "Building CrossGUID internally for Android")
+    set(${CMAKE_FIND_PACKAGE_NAME}_FOUND FALSE)
+  else()
+    SEARCH_EXISTING_PACKAGES()
+  endif()
 
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CROSSGUID)
     message(STATUS "Building ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}: \(version \"${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}\"\)")
