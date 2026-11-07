@@ -24,6 +24,7 @@
 #include "utils/DefaultArt.h"
 #include "utils/FileUtils.h"
 #include "utils/PlaceholderPaths.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 
@@ -34,14 +35,25 @@ CSourcesDirectory::CSourcesDirectory(void) = default;
 
 CSourcesDirectory::~CSourcesDirectory(void) = default;
 
-bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
+std::string CSourcesDirectory::PathOf(KODI::MEDIA::MediaSection section)
 {
-  // break up our path
-  // format is:  sources://<type>/
-  std::string type(url.GetFileName());
-  URIUtils::RemoveSlashAtEnd(type);
+  return StringUtils::Format("sources://{}/", KODI::MEDIA::NameOf(section));
+}
 
-  const std::optional<KODI::MEDIA::MediaSection> section{KODI::MEDIA::MediaSectionFromName(type)};
+std::optional<KODI::MEDIA::MediaSection> CSourcesDirectory::SectionOf(const std::string& path)
+{
+  const CURL url{path};
+  if (!url.IsProtocol("sources"))
+    return {};
+
+  std::string name{url.GetFileName()};
+  URIUtils::RemoveSlashAtEnd(name);
+  return KODI::MEDIA::MediaSectionFromName(name);
+}
+
+bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList& items)
+{
+  const std::optional<KODI::MEDIA::MediaSection> section{SectionOf(url.Get())};
   if (!section)
     return false;
 
