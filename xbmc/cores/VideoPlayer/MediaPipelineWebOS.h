@@ -156,12 +156,11 @@ public:
   ~CMediaPipelineWebOS() override;
 
   /**
-   * @brief Check if a codec is supported by the pipeline.
-   * @param codec AVCodecID to check.
-   * @param profile profile to check.
+   * @brief Check if a stream is supported by the pipeline.
+   * @param hint stream info to check.
    * @return True if supported, false otherwise.
    */
-  static bool Supports(AVCodecID codec, int profile);
+  static bool Supports(const CDVDStreamInfo& hint);
 
   /**
    * @brief Flush all pending video messages.
