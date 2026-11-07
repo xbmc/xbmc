@@ -251,6 +251,42 @@ extern "C"
   } ATTR_PACKED JOYSTICK_INFO;
 
   //============================================================================
+  /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_BATTERY_STATE enum JOYSTICK_BATTERY_STATE
+  /// @ingroup cpp_kodi_addon_peripheral_Defs_Joystick
+  /// @brief **Battery state**\n
+  /// How a joystick is powered.
+  ///
+  ///@{
+  typedef enum JOYSTICK_BATTERY_STATE
+  {
+    /// @brief The driver can't tell
+    JOYSTICK_BATTERY_STATE_UNKNOWN,
+
+    /// @brief Powered by its cable and has no battery
+    JOYSTICK_BATTERY_STATE_WIRED,
+
+    /// @brief Running on its battery
+    JOYSTICK_BATTERY_STATE_DISCHARGING,
+
+    /// @brief Charging its battery
+    JOYSTICK_BATTERY_STATE_CHARGING,
+
+    /// @brief Plugged in with a full battery
+    JOYSTICK_BATTERY_STATE_FULL,
+  } JOYSTICK_BATTERY_STATE;
+  ///@}
+  //----------------------------------------------------------------------------
+
+  /*!
+   * @brief Battery info of a joystick
+   */
+  typedef struct JOYSTICK_BATTERY
+  {
+    JOYSTICK_BATTERY_STATE state; /*!< @brief how the joystick is powered */
+    int level; /*!< @brief battery charge in percent (0-100), or -1 if unknown */
+  } ATTR_PACKED JOYSTICK_BATTERY;
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_DRIVER_PRIMITIVE_TYPE enum JOYSTICK_DRIVER_PRIMITIVE_TYPE
   /// @ingroup cpp_kodi_addon_peripheral_Defs_Joystick
   /// @brief **Driver primitive type**\n
@@ -724,6 +760,11 @@ extern "C"
 
     void(__cdecl* power_off_joystick)(const struct AddonInstance_Peripheral* addonInstance,
                                       unsigned int index);
+
+    PERIPHERAL_ERROR(__cdecl* get_joystick_battery)
+    (const struct AddonInstance_Peripheral* addonInstance,
+     unsigned int index,
+     struct JOYSTICK_BATTERY* battery);
     ///}
   } KodiToAddonFuncTable_Peripheral;
 

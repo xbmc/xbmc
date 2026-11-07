@@ -44,6 +44,8 @@ public:
 
   static KODI::JOYSTICK::HAT_STATE TranslateHatState(JOYSTICK_STATE_HAT state);
 
+  static PeripheralBattery TranslateBattery(const JOYSTICK_BATTERY& battery);
+
   static KODI::JOYSTICK::SEMIAXIS_DIRECTION TranslateSemiAxisDirection(
       JOYSTICK_DRIVER_SEMIAXIS_DIRECTION dir);
   static JOYSTICK_DRIVER_SEMIAXIS_DIRECTION TranslateSemiAxisDirection(

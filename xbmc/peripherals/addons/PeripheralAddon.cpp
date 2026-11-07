@@ -27,6 +27,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <chrono>
 #include <mutex>
 #include <shared_mutex>
 #include <string.h>
@@ -36,6 +37,11 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
+
+namespace
+{
+constexpr auto BATTERY_POLL_INTERVAL = std::chrono::seconds(30);
+} // namespace
 
 #define KEYBOARD_BUTTON_MAP_NAME "Keyboard"
 #define KEYBOARD_PROVIDER "application"
@@ -196,6 +202,7 @@ bool CPeripheralAddon::Register(unsigned int peripheralIndex, const PeripheralPt
     if (peripheral->Type() == PERIPHERAL_JOYSTICK)
     {
       m_peripherals[peripheralIndex] = std::static_pointer_cast<CPeripheralJoystick>(peripheral);
+      m_batteryRefresh = true;
 
       CLog::Log(LOGINFO, "{} - new {} device registered on {}->{}: {}", __FUNCTION__,
                 PeripheralTypeTranslator::TypeToString(peripheral->Type()),
@@ -487,6 +494,10 @@ bool CPeripheralAddon::ProcessEvents(void)
 
     for (const auto& joystick : joysticks)
       joystick->OnInputFrame();
+
+    // New joysticks don't wait for the poll interval
+    if (m_batteryRefresh.exchange(false) || m_batteryTimeout.IsTimePast())
+      UpdateBatteries();
 
     m_ifc.peripheral->toAddon->free_events(m_ifc.peripheral, eventCount, pEvents);
 
@@ -842,6 +853,41 @@ void CPeripheralAddon::PowerOffJoystick(unsigned int index)
     return;
 
   m_ifc.peripheral->toAddon->power_off_joystick(m_ifc.peripheral, index);
+}
+
+void CPeripheralAddon::UpdateBatteries()
+{
+  m_batteryTimeout.Set(BATTERY_POLL_INTERVAL);
+
+  if (!m_ifc.peripheral->toAddon->get_joystick_battery)
+    return;
+
+  std::vector<std::pair<unsigned int, std::shared_ptr<CPeripheralJoystick>>> joysticks;
+  {
+    std::unique_lock lock(m_critSection);
+    for (const auto& [index, peripheral] : m_peripherals)
+    {
+      if (peripheral->Type() == PERIPHERAL_JOYSTICK)
+        joysticks.emplace_back(index, std::static_pointer_cast<CPeripheralJoystick>(peripheral));
+    }
+  }
+
+  for (const auto& [index, joystick] : joysticks)
+  {
+    JOYSTICK_BATTERY batteryStruct{JOYSTICK_BATTERY_STATE_UNKNOWN, -1};
+
+    PeripheralBattery battery;
+    if (m_ifc.peripheral->toAddon->get_joystick_battery(m_ifc.peripheral, index,
+                                                         &batteryStruct) == PERIPHERAL_NO_ERROR)
+      battery = CPeripheralAddonTranslator::TranslateBattery(batteryStruct);
+
+    if (battery != joystick->GetBattery())
+    {
+      CLog::Log(LOGDEBUG, "{} - {}: battery {}%, state {}", __FUNCTION__, joystick->DeviceName(),
+                battery.level, static_cast<int>(battery.state));
+      joystick->SetBattery(battery);
+    }
+  }
 }
 
 void CPeripheralAddon::RegisterButtonMap(CPeripheral* device, IButtonMap* buttonMap)
