@@ -71,6 +71,23 @@ public:
   void SetRenderRotation(unsigned int rotationDegCCW);
   void SetShaderPreset(const std::string& presetPath);
 
+  /*!
+   * \brief Draw the game inside a bezel's window, where the bezel frames it well
+   *
+   * \param window The window on screen, or an empty rectangle for no bezel
+   * \param sizeLimits False to frame the game however small the window
+   */
+  void SetBezelWindow(const CRect& window, bool sizeLimits = true)
+  {
+    m_bezelWindow = window;
+    m_bezelSizeLimits = sizeLimits;
+  }
+
+  /*!
+   * \brief True if the last frame was drawn inside the bezel's window
+   */
+  bool IsBezelShown() const { return m_bezelShown; }
+
   // Rendering properties
   bool IsVisible() const;
   IRenderBuffer* GetRenderBuffer() const;
@@ -117,6 +134,9 @@ protected:
   float m_lastTargetWidth{0.0f};
   float m_lastTargetHeight{0.0f};
   ViewportCoordinates m_rotatedDestCoords{};
+  CRect m_bezelWindow;
+  bool m_bezelSizeLimits{true};
+  bool m_bezelShown{false};
 
   // Video shaders
   void UpdateShaders();

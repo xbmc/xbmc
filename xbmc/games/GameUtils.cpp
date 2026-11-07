@@ -486,6 +486,19 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   return extensions;
 }
 
+std::string CGameUtils::GetBezel(const CFileItem& item, bool& forThisGame)
+{
+  forThisGame = false;
+  std::string bezel = item.GetArt("bezel");
+  if (bezel.empty())
+  {
+    bezel = item.FindLocalArt("bezel.png", true);
+    forThisGame =
+        !bezel.empty() && !StringUtils::EqualsNoCase(URIUtils::GetFileName(bezel), "bezel.png");
+  }
+  return bezel;
+}
+
 std::string CGameUtils::GetGameFolder(const std::string& gamePath)
 {
   // A game reaches here as the item's path or as the game client loaded it,
