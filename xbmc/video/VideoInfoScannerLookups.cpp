@@ -50,8 +50,9 @@ void CVideoLookups::Run(size_t count,
     return;
   }
 
-  // Look-ups run this far at most ahead of the video handed back
-  const size_t window{workers * 4};
+  // Look-ups run this far at most ahead of the video handed back: far enough to keep the scraper
+  // busy while the calling thread adds a slow one, such as a movie of several discs
+  const size_t window{workers * 8};
 
   std::mutex lock;
   std::condition_variable changed;

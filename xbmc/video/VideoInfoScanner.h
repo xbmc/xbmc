@@ -9,6 +9,7 @@
 #pragma once
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "InfoScanner.h"
 #include "VideoDatabase.h"
 #include "VideoManagerTypes.h"
@@ -156,6 +157,68 @@ namespace KODI::VIDEO
     virtual void Process();
     std::pair<ScanComplete, ContentFound> DoScan(const std::string& strDirectory) override;
 
+    struct ItemLookups;
+    //! \brief A directory a scan visits, from its listing to its record
+    struct DirectoryScan
+    {
+      std::string path;
+      SScanSettings settings;
+      ADDON::ScraperPtr info;
+      ADDON::ContentType content{ADDON::ContentType::NONE};
+      bool foundDirectly{false};
+      bool isPlugin{false};
+      bool isArchive{false};
+      //! The directory's items to look up, and its folders to scan
+      CFileItemList items;
+      //! Whether its listing is unchanged, so that its items aren't looked up
+      bool skip{false};
+      //! What is recorded for the directory once its items have been added
+      std::optional<FolderRecord> newRecord;
+      std::vector<std::string> extrasFolders;
+      bool extrasAddedAgain{false};
+      bool foundSomething{false};
+      bool lookupFailed{false};
+      //! The folders it holds to scan, by path, planned before its turn so that their movies are
+      //! looked up ahead
+      std::vector<std::pair<std::string, std::unique_ptr<DirectoryScan>>> plannedAhead;
+      //! The look-up of its items, once set up
+      std::unique_ptr<ItemLookups> lookups;
+    };
+
+    /*! \brief The first part of DoScan(): whether a directory is scanned, its listing and its items
+     \return the directory to scan, or nullptr where it is left alone
+     */
+    std::unique_ptr<DirectoryScan> PlanDirectory(const std::string& strDirectory);
+    //! \brief The second part of DoScan(): the directory's items looked up and added
+    void RetrieveDirectory(DirectoryScan& scan);
+    void EndRetrieve(DirectoryScan& scan, bool foundSomething, unsigned int failedLookups);
+    //! \brief The last part of DoScan(): extras, discs, the folders below and the record
+    std::pair<ScanComplete, ContentFound> FinishDirectory(DirectoryScan& scan);
+
+    //! \brief Whether a directory is scanned with the folders beside it, its movies looked up
+    //! alongside theirs
+    bool CanScanAlongside(const DirectoryScan& scan) const;
+    //! \brief Whether an item of a directory is a folder of extras, added to its movie
+    bool AddsAsExtras(const DirectoryScan& scan, const CFileItem& item);
+    //! \brief Whether an item of a directory is a folder it scans with those beside it
+    bool IsScannedAlongside(const DirectoryScan& scan,
+                            const CFileItem& item,
+                            bool addAsExtras) const;
+    /*! \brief Plan the folders a directory holds to scan, where they are few, as those of a movie's
+     discs are, so that their movies are looked up with those of the folders beside it
+     \param budget how many more folders may be planned ahead, the folders below them included
+     */
+    void PlanAhead(DirectoryScan& scan, size_t& budget);
+    //! \brief The folders a directory stands for: itself and those it planned ahead
+    static size_t CountPlanned(const DirectoryScan& scan);
+
+    /*! \brief Scan folders beside each other: their movies are looked up alongside each other, and
+     each folder is finished once its own are added. One holding folders to scan scans them as it
+     finishes, while the look-ups of those after it go on; the movies of those it planned ahead are
+     looked up before its turn.
+     */
+    void ScanAlongside(std::vector<std::unique_ptr<DirectoryScan>>& folders);
+
     //! \brief What AddVideo() reads before it writes a video: from the file system, never from
     //! the database, so that it can be read for several videos alongside each other
     struct PreparedVideo
@@ -252,6 +315,7 @@ namespace KODI::VIDEO
                      bool bDirNames,
                      const ADDON::ScraperPtr& info2,
                      bool useLocal,
+                     bool useFolderNames,
                      MovieLookup& lookup) const;
 
     //! \brief Where a video's name may give an identifier the scraper can look it up by
@@ -285,7 +349,41 @@ namespace KODI::VIDEO
     //! \brief The edition a movie's file or folder name gives
     std::string MovieEdition(const CFileItem& item,
                              bool bDirNames,
+                             bool useFolderNames,
                              KODI::REGEXP::RegExpCache& regexps) const;
+
+    //! \brief The items of a directory RetrieveVideoInfo() looks up and adds
+    struct ItemLookups
+    {
+      const CFileItemList* items{nullptr};
+      bool bDirNames{false};
+      ADDON::ContentType content{ADDON::ContentType::NONE};
+      bool useLocal{true};
+      CScraperUrl* pURL{nullptr};
+      bool fetchEpisodes{true};
+      CGUIDialogProgress* pDlgProgress{nullptr};
+      //! Whether the folder a movie is in names it, for the items of this directory
+      bool useFolderNames{false};
+      CVideoDatabase::FolderMovies folderMovies;
+      struct Candidate
+      {
+        ADDON::ScraperPtr info2;
+        bool lookUpAlongside{false};
+      };
+      std::vector<std::optional<Candidate>> candidates;
+      std::vector<MovieLookup> lookups;
+      bool foundSomeInfo{false};
+      std::vector<int> seenPaths;
+    };
+
+    //! \brief Which of the items are looked up, and with which scraper, before any is
+    void PlanLookups(ItemLookups& batch);
+    //! \brief Look an item up, on any thread
+    void LookUpItem(ItemLookups& batch, size_t i) const;
+    //! \brief Add an item once it is looked up \return false to look up no more
+    bool HandBackItem(ItemLookups& batch, size_t i);
+    //! \brief Once all the items are added
+    void EndLookups(ItemLookups& batch);
 
     /*! \brief The details the scraper has for an item, as GetDetails() reads them, without reporting
      on progress
@@ -577,8 +675,8 @@ namespace KODI::VIDEO
     std::unordered_map<std::string, std::optional<int64_t>> m_listedTimes;
     //! The file probed last, and its own streams, which its other episodes have too
     std::optional<std::pair<std::string, CStreamDetails>> m_lastProbed;
-    //! The movies of the folder whose items are being looked up
-    CVideoDatabase::FolderMovies m_folderMovies;
+    //! The movies of the folder whose items are being added
+    const CVideoDatabase::FolderMovies* m_folderMovies{nullptr};
     //! The settings digest of each folder looked at
     std::unordered_map<std::string, std::string> m_folderSettings;
     //! The records of the folders of each show, stored once its episodes are added
