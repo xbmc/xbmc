@@ -615,6 +615,7 @@ private:
   std::string m_mimetype;
   std::string m_extrainfo;
   bool m_doContentLookup{true};
+  std::mutex m_infoTagMutex; ///< guards creating the lazy info tags below
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag{nullptr};
   CVideoInfoTag* m_videoInfoTag{nullptr};
   std::shared_ptr<PVR::CPVREpgInfoTag> m_epgInfoTag;
