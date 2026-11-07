@@ -945,15 +945,12 @@ void CActiveAESink::OpenSink()
     dev.driver = m_sink->GetName();
 
   // iec packing or raw
-  if (passthrough)
+  m_needIecPack = passthrough && NeedIECPacking();
+  if (m_needIecPack)
   {
-    m_needIecPack = NeedIECPacking();
-    if (m_needIecPack)
-    {
-      m_packer = std::make_unique<CAEBitstreamPacker>();
-      m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
-      m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
-    }
+    m_packer = std::make_unique<CAEBitstreamPacker>();
+    m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
+    m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
   }
 
   CLog::LogF(LOGINFO, "initialize sink");
