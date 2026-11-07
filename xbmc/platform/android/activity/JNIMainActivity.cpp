@@ -161,3 +161,8 @@ CJNIRect CJNIMainActivity::getDisplayRect()
   return call_method<jhobject>(m_context,
                                "getDisplayRect", "()Landroid/graphics/Rect;");
 }
+
+void CJNIMainActivity::setHomeScreen(bool enabled)
+{
+  call_method<void>(m_context, "setHomeScreen", "(Z)V", static_cast<jboolean>(enabled));
+}
