@@ -279,11 +279,12 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
   {
     WriteHeader();
 
-    // initial header, don't count it for the frame size
+    // initial header: the IEC burst header is not part of the first frame, but the
+    // MAT start code is
     if (m_state.init == false)
     {
       m_state.init = true;
-      m_state.matFramesize = 0;
+      m_state.matFramesize = mat_start_code.size();
     }
   }
 

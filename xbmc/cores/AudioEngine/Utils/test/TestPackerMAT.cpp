@@ -74,5 +74,5 @@ TEST(TestPackerMAT, PackTrueHD)
   // A change means the parsing of the major sync changed
   EXPECT_EQ(frames, 2u);
   EXPECT_EQ(bytes, 122880u);
-  EXPECT_EQ(static_cast<uint32_t>(crc), 1524721697u);
+  EXPECT_EQ(static_cast<uint32_t>(crc), 3000242471u);
 }
