@@ -71,6 +71,8 @@ using namespace winrt::Windows::System::Profile;
 #include "platform/linux/SysfsPath.h"
 
 #include <linux/version.h>
+#elif defined(TARGET_WASM)
+#include "platform/wasm/WasmWebApis.h"
 #endif
 
 #include <system_error>
@@ -698,6 +700,8 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
       osName = "Android";
 #elif defined(TARGET_WEBOS)
     osName = "webOS";
+#elif defined(TARGET_WASM)
+    osName = KODI::PLATFORM::WASM::CWasmWebApis::GetDeviceInfo().osName;
 #elif defined(TARGET_LINUX)
     osName = getValueFromOs_release("NAME");
     if (osName.empty())
@@ -741,6 +745,8 @@ std::string CSysInfo::GetOsVersion(void)
     else if (osVersion.find('.', pointPos + 1) == std::string::npos)
       osVersion += ".0";
   }
+#elif defined(TARGET_WASM)
+  osVersion = KODI::PLATFORM::WASM::CWasmWebApis::GetDeviceInfo().platformVersion;
 #elif defined(TARGET_LINUX)
   osVersion = getValueFromOs_release("VERSION_ID");
   if (osVersion.empty())
@@ -828,6 +834,9 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
 #elif defined(TARGET_ANDROID)
   osNameVer =
       GetOsName() + " " + GetOsVersion() + " API level " + std::to_string(CJNIBuild::SDK_INT);
+#elif defined(TARGET_WASM)
+  if (!GetOsName(true).empty())
+    osNameVer = GetOsName() + " " + GetOsVersion();
 #elif defined(TARGET_LINUX)
   osNameVer = getValueFromOs_release("PRETTY_NAME");
   if (osNameVer.empty())
@@ -867,6 +876,8 @@ std::string CSysInfo::GetManufacturerName(void)
     auto eas = EasClientDeviceInformation();
     auto manufacturer = eas.SystemManufacturer();
     g_charsetConverter.wToUTF8(std::wstring(manufacturer.c_str()), manufName);
+#elif defined(TARGET_WASM)
+    manufName = KODI::PLATFORM::WASM::CWasmWebApis::GetDeviceInfo().manufacturer;
 #elif defined(TARGET_LINUX)
 
     auto cpuInfo = CServiceBroker::GetCPUInfo();
@@ -906,6 +917,8 @@ std::string CSysInfo::GetModelName(void)
     auto eas = EasClientDeviceInformation();
     auto manufacturer = eas.SystemProductName();
     g_charsetConverter.wToUTF8(std::wstring(manufacturer.c_str()), modelName);
+#elif defined(TARGET_WASM)
+    modelName = KODI::PLATFORM::WASM::CWasmWebApis::GetDeviceInfo().model;
 #elif defined(TARGET_LINUX)
     auto cpuInfo = CServiceBroker::GetCPUInfo();
     modelName = cpuInfo->GetCPUHardware();
@@ -1405,6 +1418,8 @@ std::string CSysInfo::GetBuildTargetPlatformName(void)
   return "Android";
 #elif defined(TARGET_WEBOS)
   return "webOS";
+#elif defined(TARGET_WASM)
+  return "WebAssembly";
 #elif defined(TARGET_LINUX)
   return "Linux";
 #elif defined(TARGET_WINDOWS)

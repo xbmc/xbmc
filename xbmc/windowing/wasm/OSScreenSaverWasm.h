@@ -14,7 +14,8 @@ namespace KODI::WINDOWING::WASM
 {
 
 /*!
- * \brief Keeps the display awake through the browser's Screen Wake Lock API.
+ * \brief Keeps the display awake through the Samsung AppCommon API on Tizen and
+ * the Screen Wake Lock API in other browsers.
  */
 class COSScreenSaverWasm : public IOSScreenSaver
 {
