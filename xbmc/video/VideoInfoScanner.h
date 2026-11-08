@@ -401,6 +401,14 @@ namespace KODI::VIDEO
     void ReadMovieDisc(CFileItem movie) const;
     //! \brief Read what adding a folder of extras reads of the discs in it, into the disc cache
     void ReadExtrasDiscs(const std::string& folder) const;
+    //! \brief Have the discs of a show's episodes read ahead, in the order the episodes are added
+    void ReadEpisodeDiscsAhead(const std::vector<std::string>& discs);
+    /*! \brief The discs of a show new to the scan, in the order its episodes are added, from the
+     listings EnumerateSeriesFolder() then lists the show from
+     */
+    std::vector<std::string> ShowDiscs(const std::string& show);
+    //! \brief Read what choosing the playlists of a disc's episodes reads, into the disc cache
+    void ReadEpisodeDisc(const std::string& disc) const;
 
     //! \brief The edition a movie's file or folder name gives
     std::string MovieEdition(const CFileItem& item,
@@ -578,6 +586,11 @@ namespace KODI::VIDEO
     };
 
     EpisodeResult EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
+
+    /*! \brief The episodes of the files listed for a show, of which a disc structure gives its index
+     \return whether any of the files could hold an episode
+     */
+    bool EnumerateShowFiles(CFileItemList& items, EPISODELIST& episodeList);
 
     //! \brief As CVideoDatabase::GetScraperForPath(), from the rows of the path table the scan read
     ADDON::ScraperPtr ScraperForPath(const std::string& path,

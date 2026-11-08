@@ -149,4 +149,12 @@ private:
   bool m_stopping{false};
   std::vector<std::thread> m_threads;
 };
+
+struct EPISODE;
+
+/*!
+ \brief The discs among a show's episode files, each once, in the order the scan comes to them
+ \param files the files of the episodes to be added, in the order they are added
+ */
+std::vector<std::string> EpisodeDiscs(const std::vector<const EPISODE*>& files);
 } // namespace KODI::VIDEO

@@ -25,6 +25,7 @@
 #include "events/MediaLibraryEvent.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
@@ -1909,6 +1910,18 @@ CVideoInfoScanner::~CVideoInfoScanner()
     {
       ShowLookup* const show{
           index < batch.shows.size() && batch.shows[index].done ? &batch.shows[index] : nullptr};
+      // A show looked up ahead has its discs read while it is added, and then those of the next
+      // show looked up ahead, so that the readers keep ahead of the scan from show to show. A show
+      // after another looked up ahead was listed already, as that one's next.
+      if (show)
+      {
+        if ((show->found || show->nfoResult == InfoType::FULL) &&
+            !(index > 0 && batch.shows[index - 1].done))
+          ReadEpisodeDiscsAhead(ShowDiscs(pItem->GetPath()));
+        if (index + 1 < candidates.size() && candidates[index + 1] &&
+            candidates[index + 1]->lookUpShow)
+          ReadEpisodeDiscsAhead(ShowDiscs(items[i + 1]->GetPath()));
+      }
       ret = RetrieveInfoForTvShow(pItem.get(), bDirNames, info2, useLocal, pURL, fetchEpisodes,
                                   pDlgProgress, show);
       // Its interpreter is let go for the shows after it, and its details, the item's now, aren't
@@ -2969,6 +2982,50 @@ CVideoInfoScanner::~CVideoInfoScanner()
         });
   }
 
+  void CVideoInfoScanner::ReadEpisodeDiscsAhead(const std::vector<std::string>& discs)
+  {
+    for (const std::string& disc : discs)
+      m_discReadAhead.Queue(disc, [this, disc] { ReadEpisodeDisc(disc); });
+  }
+
+  std::vector<std::string> CVideoInfoScanner::ShowDiscs(const std::string& show)
+  {
+    // A show scanned before may be unchanged, so isn't listed until its turn
+    if (m_pathTable->Record(show))
+      return {};
+
+    CFileItemList items;
+    std::vector<std::pair<std::string, FolderRecord>> records;
+    CollectShowFiles(show, items, records, false);
+    // Most shows have no disc, so their files aren't parsed for episodes here
+    if (std::ranges::none_of(items, [](const auto& item) { return IsDiscByName(item->GetPath()); }))
+      return {};
+
+    EPISODELIST files;
+    EnumerateShowFiles(items, files);
+    std::vector<const EPISODE*> episodes;
+    std::ranges::transform(files, std::back_inserter(episodes),
+                           [](const EPISODE& file) { return &file; });
+    return EpisodeDiscs(episodes);
+  }
+
+  void CVideoInfoScanner::ReadEpisodeDisc(const std::string& disc) const
+  {
+    if (!IsBluray(disc))
+      return;
+
+    // What choosing its episodes' playlists reads: the disc, and the streams of the playlists its
+    // episodes are found on, all looked for at once. Without the duration and title the scraper
+    // gives each, a few may be found on others, which the scan reads itself. Listed without
+    // CDirectory, as a disc on which none is found is no error.
+    const CURL episodes{URIUtils::GetBlurayAllEpisodesPath(disc)};
+    if (const std::unique_ptr<IDirectory> directory{CDirectoryFactory::Create(episodes)}; directory)
+    {
+      CFileItemList playlists;
+      directory->GetDirectory(episodes, playlists);
+    }
+  }
+
   std::string CVideoInfoScanner::MovieEdition(const CFileItem& item,
                                               bool bDirNames,
                                               bool useFolderNames,
@@ -3344,7 +3401,6 @@ CVideoInfoScanner::~CVideoInfoScanner()
       CFileItem* item, EPISODELIST& episodeList)
   {
     CFileItemList items;
-    const std::vector<std::string>& regexps = m_advancedSettings->m_tvshowExcludeFromScanRegExps;
 
     if (item->IsFolder())
     {
@@ -3456,6 +3512,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       items.Add(newItem);
     }
 
+    if (!EnumerateShowFiles(items, episodeList))
+      return EpisodeResult::NO_FILES;
+    return episodeList.empty() ? EpisodeResult::NO_EPISODES : EpisodeResult::FOUND_EPISODES;
+  }
+
+  bool CVideoInfoScanner::EnumerateShowFiles(CFileItemList& items, EPISODELIST& episodeList)
+  {
+    const std::vector<std::string>& regexps = m_advancedSettings->m_tvshowExcludeFromScanRegExps;
+
     /*
     stack down any dvd folders
     need to sort using the full path since this is a collapsed recursive listing of all subdirs
@@ -3539,9 +3604,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Could not enumerate file {}",
                   CURL::GetRedacted(items[i]->GetPath()));
     }
-    if (!hasEpisodeCandidates)
-      return EpisodeResult::NO_FILES;
-    return episodeList.empty() ? EpisodeResult::NO_EPISODES : EpisodeResult::FOUND_EPISODES;
+    return hasEpisodeCandidates;
   }
 
   bool CVideoInfoScanner::ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList)
@@ -4167,6 +4230,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
         lookups.push_back({file});
     }
 
+    // Their discs are read ahead of them, unless a dialog shows each in turn
+    if (!pDlgProgress)
+    {
+      std::vector<const EPISODE*> toAdd;
+      for (const auto& lookup : lookups)
+        std::ranges::transform(lookup, std::back_inserter(toAdd),
+                               [](const EPISODELIST::const_iterator& file) { return &*file; });
+      ReadEpisodeDiscsAhead(EpisodeDiscs(toAdd));
+    }
+
     // The show's episode guide, fetched by the first episode that needs it, unless it was with the
     // show
     struct
@@ -4522,6 +4595,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
           m_failedLookups += lookup.failedLookups;
           for (const auto& [path, lookupFailed] : lookup.notAdded)
             NotAdded(ScanSummary::Type::EPISODE, path, lookupFailed);
+          // Its disc, where read ahead, is held until its episodes are added
+          const CDiscReadAhead::CTaken disc{m_discReadAhead, lookups[index].front()->strPath};
           for (FoundEpisode& episode : lookup.found)
           {
             if (!episode.prepared)
