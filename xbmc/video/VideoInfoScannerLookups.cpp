@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/Episode.h"
 
 #include <algorithm>
 #include <chrono>
@@ -305,5 +306,16 @@ void CDiscReadAhead::Work()
     }
     m_changed.notify_all();
   }
+}
+
+std::vector<std::string> EpisodeDiscs(const std::vector<const EPISODE*>& files)
+{
+  std::vector<std::string> discs;
+  for (const EPISODE* file : files)
+  {
+    if (IsDiscByName(file->strPath) && std::ranges::find(discs, file->strPath) == discs.end())
+      discs.push_back(file->strPath);
+  }
+  return discs;
 }
 } // namespace KODI::VIDEO

@@ -6,12 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "video/Episode.h"
 #include "video/VideoInfoScannerLookups.h"
 
 #include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <future>
+#include <iterator>
 #include <mutex>
 #include <set>
 #include <stdexcept>
@@ -502,4 +504,29 @@ TEST(TestVideoInfoScannerLookups, DiscsAreReadAsManyAtATimeAsThereAreReaders)
 
   std::unique_lock guard(lock);
   EXPECT_EQ(2, most);
+}
+
+// A disc's episodes are added together, so it is read once, in the turn of the first of them
+TEST(TestVideoInfoScannerLookups, TheDiscsOfAShowAreReadInTheOrderItsEpisodesAreAdded)
+{
+  const auto episode{[](const std::string& path, int season, int number)
+                     {
+                       EPISODE file{season, number};
+                       file.strPath = path;
+                       return file;
+                     }};
+  const EPISODELIST files{episode("/tv/Show/Season 1/A S01E01E02.iso", 1, 1),
+                          episode("/tv/Show/Season 1/A S01E01E02.iso", 1, 2),
+                          episode("/tv/Show/Season 1/Show S01E03.mkv", 1, 3),
+                          episode("/tv/Show/Season 2/Show.S02E01/BDMV/index.bdmv", 2, 1),
+                          episode("/tv/Show/Specials/Show 2023-11-05.iso", -1, -1),
+                          episode("/tv/Show/Season 2/B S02E02.iso", 2, 2),
+                          episode("/tv/Show/Season 1/A S01E01E02.iso", 1, 1)};
+  std::vector<const EPISODE*> toAdd;
+  std::ranges::transform(files, std::back_inserter(toAdd),
+                         [](const EPISODE& file) { return &file; });
+
+  EXPECT_EQ((std::vector<std::string>{files[0].strPath, files[3].strPath, files[4].strPath,
+                                      files[5].strPath}),
+            EpisodeDiscs(toAdd));
 }
