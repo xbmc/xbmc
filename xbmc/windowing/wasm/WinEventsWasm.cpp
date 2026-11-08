@@ -145,8 +145,9 @@ uint16_t TranslateUnicode(const EmscriptenKeyboardEvent* e)
 
 XBMCKey TranslateDomKey(const EmscriptenKeyboardEvent* e)
 {
+  // A TV remote's Back gets the remote rules keymaps give browser_back, not Escape's.
   if (std::strcmp(e->key, "Back") == 0)
-    return XBMCK_ESCAPE;
+    return XBMCK_BROWSER_BACK;
 
   if (e->location == DOM_KEY_LOCATION_NUMPAD)
   {
@@ -186,7 +187,7 @@ XBMCKey TranslateDomKey(const EmscriptenKeyboardEvent* e)
   switch (e->keyCode)
   {
     case 10009: // Tizen TV hardware Back key
-      return XBMCK_ESCAPE;
+      return XBMCK_BROWSER_BACK;
     case DOM_VK_BACK_SPACE:
       return XBMCK_BACKSPACE;
     case DOM_VK_TAB:

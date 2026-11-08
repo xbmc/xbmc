@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TV remotes have no exit key: their Back key, which arrives as browser_back,
+     opens the power menu on the Home window. -->
+<keymap>
+  <Home>
+    <keyboard>
+      <browser_back>ActivateWindow(ShutdownMenu)</browser_back>
+    </keyboard>
+  </Home>
+</keymap>
