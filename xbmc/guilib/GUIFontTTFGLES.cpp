@@ -62,9 +62,10 @@ bool CGUIFontTTFGLES::FirstBegin()
 {
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS_RGBA);
-  GLenum pixformat = GL_RGBA;
-  GLenum internalFormat = GL_RGBA;
+  renderSystem->EnableGUIShader(m_colorTexture ? ShaderMethodGLES::SM_FONTS_RGBA
+                                               : ShaderMethodGLES::SM_FONTS);
+  GLenum pixformat = m_colorTexture ? GL_RGBA : GL_ALPHA;
+  GLenum internalFormat = pixformat;
 
   if (renderSystem->ScissorsCanEffectClipping())
   {
@@ -74,7 +75,8 @@ bool CGUIFontTTFGLES::FirstBegin()
   {
     m_scissorClip = false;
     renderSystem->ResetScissors();
-    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP);
+    renderSystem->EnableGUIShader(m_colorTexture ? ShaderMethodGLES::SM_FONTS_RGBA_SHADER_CLIP
+                                                 : ShaderMethodGLES::SM_FONTS_SHADER_CLIP);
   }
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
@@ -364,7 +366,7 @@ std::unique_ptr<CTexture> CGUIFontTTFGLES::ReallocTexture(unsigned int& newHeigh
   newHeight = CTexture::PadPow2(newHeight);
 
   std::unique_ptr<CTexture> newTexture =
-      CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_RGBA8);
+      CTexture::CreateTexture(m_textureWidth, newHeight, m_colorTexture ? XB_FMT_RGBA8 : XB_FMT_A8);
 
   if (!newTexture || !newTexture->GetPixels())
   {
@@ -382,20 +384,11 @@ std::unique_ptr<CTexture> CGUIFontTTFGLES::ReallocTexture(unsigned int& newHeigh
   m_staticCache.Flush();
   m_dynamicCache.Flush();
 
-  ClearTexturePixels(newTexture->GetPixels(), m_textureHeight * newTexture->GetPitch());
+  FillNewTexture(*newTexture);
   if (m_texture)
   {
     m_updateY1 = 0;
     m_updateY2 = m_texture->GetHeight();
-
-    unsigned char* src = m_texture->GetPixels();
-    unsigned char* dst = newTexture->GetPixels();
-    for (unsigned int y = 0; y < m_texture->GetHeight(); y++)
-    {
-      memcpy(dst, src, m_texture->GetPitch());
-      src += m_texture->GetPitch();
-      dst += newTexture->GetPitch();
-    }
   }
 
   m_textureStatus = TEXTURE_REALLOCATED;
@@ -410,14 +403,7 @@ bool CGUIFontTTFGLES::CopyCharToTexture(const uint8_t* pixels,
                                         unsigned int x2,
                                         unsigned int y2)
 {
-  unsigned char* target = m_texture->GetPixels() + y1 * m_texture->GetPitch() + x1 * 4;
-
-  for (unsigned int y = y1; y < y2; y++)
-  {
-    memcpy(target, pixels, (x2 - x1) * 4);
-    pixels += pitch;
-    target += m_texture->GetPitch();
-  }
+  WriteCharPixels(pixels, pitch, x1, y1, x2, y2);
 
   switch (m_textureStatus)
   {
