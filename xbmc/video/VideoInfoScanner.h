@@ -15,6 +15,7 @@
 #include "VideoManagerTypes.h"
 #include "XBDateTime.h"
 #include "addons/Scraper.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 #include "settings/VideoVersionsSettings.h"
 #include "utils/RegExp.h"
 #include "utils/StreamDetails.h"
@@ -432,11 +433,16 @@ namespace KODI::VIDEO
                                       bool useLocal,
                                       CScraperUrl* pURL,
                                       CGUIDialogProgress* pDlgProgress);
+    /*!
+     \param showAffinity the interpreter the show's scraper calls keep to, where what the scraper
+     fetched for the show is kept
+     */
     InfoRet RetrieveInfoForEpisodes(CFileItem* item,
                                     long showID,
                                     EPISODELIST& files,
                                     const ADDON::ScraperPtr& scraper,
                                     bool useLocal,
+                                    const CScriptInvocationManager::CAffinity& showAffinity,
                                     CGUIDialogProgress* progress = nullptr,
                                     bool alreadyHasArt = false);
 
@@ -531,6 +537,7 @@ namespace KODI::VIDEO
                                   const ADDON::ScraperPtr& scraper,
                                   bool useLocal,
                                   const CVideoInfoTag& showInfo,
+                                  const CScriptInvocationManager::CAffinity& showAffinity,
                                   CGUIDialogProgress* pDlgProgress = nullptr);
 
     enum class EpisodeResult
