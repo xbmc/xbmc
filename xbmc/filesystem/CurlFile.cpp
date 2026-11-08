@@ -832,6 +832,11 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       m_dnsCacheList = tempCache;
   }
 
+  // passed to curl as options, Open() replaces m_url with
+  // CURLINFO_EFFECTIVE_URL which has no credentials since curl 8.23.0
+  m_username = url2.GetUserName();
+  m_password = url2.GetPassWord();
+
   if( url2.IsProtocol("ftp")
    || url2.IsProtocol("ftps") )
   {
@@ -920,10 +925,6 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Using proxy {}, type {}", url2.GetRedacted(),
                   m_proxyhost, proxyType2CUrlProxyType.at(m_proxytype));
     }
-
-    // get username and password
-    m_username = url2.GetUserName();
-    m_password = url2.GetPassWord();
 
     // handle any protocol options
     std::map<std::string, std::string> options;
