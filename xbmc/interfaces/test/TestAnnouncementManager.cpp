@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "interfaces/AnnouncementManager.h"
 #include "threads/Event.h"
 #include "utils/Variant.h"
+#include "video/VideoInfoTag.h"
 
 #include <atomic>
 #include <chrono>
@@ -55,10 +57,14 @@ public:
   {
     if (m_removed)
       m_calledAfterRemoval = true;
+    m_data = data;
+    m_called.Set();
   }
 
   std::atomic<bool> m_removed{false};
   std::atomic<bool> m_calledAfterRemoval{false};
+  CVariant m_data; //!< Of the last announcement
+  CEvent m_called;
 };
 
 class CSelfRemovingAnnouncer : public IAnnouncer
@@ -165,6 +171,33 @@ TEST_F(TestAnnouncementManager, AnAnnouncerCanRemoveItselfWhileBeingCalled)
 
   EXPECT_TRUE(announcer.m_removed.Wait(TIMEOUT));
   m_manager.Deinitialize();
+}
+
+// An item given by reference is copied as it is announced, so that it may change, or go, at once
+TEST_F(TestAnnouncementManager, AnItemGivenByReferenceIsAnnouncedAsItWasThen)
+{
+  // The announcement thread is held until the item has changed and gone
+  m_manager.AddAnnouncer(&m_blocking, Other);
+  m_manager.AddAnnouncer(&m_recording, VideoLibrary);
+  m_manager.Announce(Other, "Hold");
+  ASSERT_TRUE(m_blocking.m_entered.Wait(TIMEOUT));
+  {
+    CFileItem item{"smb://host/Show/Show S01E01.mkv", false};
+    item.GetVideoInfoTag()->m_iDbId = 7;
+    item.GetVideoInfoTag()->m_type = "episode";
+    CVariant data;
+    data["added"] = true;
+    m_manager.Announce(VideoLibrary, "OnUpdate", item, data);
+    item.GetVideoInfoTag()->m_iDbId = 8;
+  }
+  m_blocking.m_release.Set();
+  const bool called{m_recording.m_called.Wait(TIMEOUT)};
+  m_manager.RemoveAnnouncer(&m_recording);
+
+  ASSERT_TRUE(called);
+  EXPECT_EQ(7, m_recording.m_data["item"]["id"].asInteger());
+  EXPECT_EQ("episode", m_recording.m_data["item"]["type"].asString());
+  EXPECT_TRUE(m_recording.m_data["added"].asBoolean());
 }
 
 TEST(TestAnnouncementManagerFailure, RemovingAnAnnouncerWhoseCallThrewDoesNotWait)
