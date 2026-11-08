@@ -79,9 +79,19 @@ public:
 
   std::shared_ptr<CPVREpgInfoTag> GetTag() const { return m_epgtag; }
 
+  // Make this the successor of a pending change for the same broadcast id. A deletion must
+  // survive a following creation/update, as the old event may have a different start time.
+  void Supersede(const CEpgTagStateChange& pending)
+  {
+    if (m_state != EPG_EVENT_DELETED &&
+        (pending.m_state == EPG_EVENT_DELETED || pending.m_deleteFirst))
+      m_deleteFirst = true;
+  }
+
 private:
   std::shared_ptr<CPVREpgInfoTag> m_epgtag;
   EPG_EVENT_STATE m_state = EPG_EVENT_CREATED;
+  bool m_deleteFirst = false;
 };
 
 void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg) const
@@ -92,6 +102,9 @@ void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg) const
     m_epgtag->SetEpgID(epg->EpgID());
     m_epgtag->SetChannelData(epg->GetChannelData());
   }
+
+  if (m_deleteFirst)
+    epg->UpdateEntry(m_epgtag, EPG_EVENT_DELETED);
 
   epg->UpdateEntry(m_epgtag, m_state);
 }
@@ -171,6 +184,7 @@ void CPVREpgContainer::Unload()
   {
     std::unique_lock lock(m_epgTagChangesLock);
     m_epgTagChanges.clear();
+    m_epgTagChangesIndex.clear();
   }
 
   std::vector<std::shared_ptr<CPVREpg>> epgs;
@@ -389,11 +403,16 @@ void CPVREpgContainer::Process()
           change = m_epgTagChanges.front();
           m_epgTagChanges.pop_front();
 
-          epg = GetByChannelUid(change.GetTag()->ClientID(), change.GetTag()->UniqueChannelID());
+          const std::shared_ptr<CPVREpgInfoTag> tag = change.GetTag();
+          const EpgTagChangeKey key{tag->ClientID(), tag->UniqueChannelID(),
+                                    tag->UniqueBroadcastID()};
+          m_epgTagChangesIndex.erase(key);
+
+          epg = GetByChannelUid(tag->ClientID(), tag->UniqueChannelID());
           if (!epg)
           {
             // try later; channel might not have been loaded yet
-            m_epgTagChanges.emplace_back(change);
+            QueueEpgTagChange(key, change);
             continue;
           }
         }
@@ -925,11 +944,42 @@ void CPVREpgContainer::UpdateRequest(int iClientID, int iUniqueChannelID)
   m_updateRequests.emplace_back(iClientID, iUniqueChannelID);
 }
 
+void CPVREpgContainer::QueueEpgTagChange(const EpgTagChangeKey& key,
+                                         const CEpgTagStateChange& change)
+{
+  const auto it = m_epgTagChangesIndex.find(key);
+  if (it != m_epgTagChangesIndex.end())
+  {
+    // newer announcement replaces the pending one and moves to the back to keep announcement order
+    CEpgTagStateChange newer{change};
+    newer.Supersede(*it->second);
+    *it->second = newer;
+    m_epgTagChanges.splice(m_epgTagChanges.end(), m_epgTagChanges, it->second);
+    return;
+  }
+
+  // index only after the node exists, so a throw can't leave a dangling entry
+  const auto listIt = m_epgTagChanges.emplace(m_epgTagChanges.end(), change);
+  try
+  {
+    m_epgTagChangesIndex.emplace(key, listIt);
+  }
+  catch (...)
+  {
+    m_epgTagChanges.erase(listIt);
+    throw;
+  }
+}
+
 void CPVREpgContainer::UpdateFromClient(const std::shared_ptr<CPVREpgInfoTag>& tag,
                                         EPG_EVENT_STATE eNewState)
 {
+  const EpgTagChangeKey key{tag->ClientID(), tag->UniqueChannelID(), tag->UniqueBroadcastID()};
+
   std::unique_lock lock(m_epgTagChangesLock);
-  m_epgTagChanges.emplace_back(tag, eNewState);
+
+  // keep only the latest pending change per event, bounding the queue by the number of events
+  QueueEpgTagChange(key, CEpgTagStateChange(tag, eNewState));
 }
 
 int CPVREpgContainer::GetPastDaysToDisplay() const
