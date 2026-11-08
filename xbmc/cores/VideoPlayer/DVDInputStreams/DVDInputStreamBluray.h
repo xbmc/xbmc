@@ -226,6 +226,7 @@ protected:
   std::atomic<bool> m_aborted{false};
   //! Units libbluray has failed to read since it last returned data
   unsigned int m_readErrors = 0;
+  bool m_seekFlushed = false;
   BD_EVENT m_event;
 #ifdef HAVE_LIBBLURAY_BDJ
   struct bd_argb_buffer_s m_argb;

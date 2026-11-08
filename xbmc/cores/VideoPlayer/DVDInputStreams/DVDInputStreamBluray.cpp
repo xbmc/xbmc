@@ -750,7 +750,10 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
           // by the disc program. Drop the data queued from the old position instead of playing
           // it out while the demuxer is reopened.
           if (m_hold != HOLD_DATA)
+          {
             m_player->OnDiscNavResult(nullptr, BD_EVENT_SEEK);
+            m_seekFlushed = true;
+          }
           [[fallthrough]];
         case BD_EVENT_TITLE:
         case BD_EVENT_ANGLE:
@@ -1388,11 +1391,24 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
     return NEXTSTREAM_NONE;
 
   /* process any current event */
+  bool seek = m_event.event == BD_EVENT_SEEK;
+  bool playlist = m_event.event == BD_EVENT_PLAYLIST;
   ProcessEvent();
 
   /* process all queued up events */
   while(bd_get_event(m_bd, &m_event))
+  {
+    seek |= m_event.event == BD_EVENT_SEEK;
+    playlist |= m_event.event == BD_EVENT_PLAYLIST;
     ProcessEvent();
+  }
+
+  // A jump within the playlist can be reported behind the event that held the stream, e.g. a
+  // play item change. A new playlist also starts with a seek, but it follows the end of the
+  // previous one, or a playlist stop that already flushed.
+  if (seek && !playlist && !m_seekFlushed)
+    m_player->OnDiscNavResult(nullptr, BD_EVENT_SEEK);
+  m_seekFlushed = false;
 
   // The last read error can be queued with the events of a clip boundary
   if (HasGivenUpReading())
