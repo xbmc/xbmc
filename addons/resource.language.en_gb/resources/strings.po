@@ -26081,7 +26081,37 @@ msgctxt "#40253"
 msgid "The content filter list {0:s} is not available."
 msgstr ""
 
-#empty strings from id 40254 to 40399
+#. Label of the category of the settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40254"
+msgid "Network"
+msgstr ""
+
+#. Help text of the category of the settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40255"
+msgid "Which uplink the app's connections leave through."
+msgstr ""
+
+#. Label of the setting that picks the uplink of a web app
+#: system/settings/webapp.xml
+msgctxt "#40256"
+msgid "Uplink"
+msgstr ""
+
+#. Help text of the setting that picks the uplink of a web app
+#: system/settings/webapp.xml
+msgctxt "#40257"
+msgid "Leave every connection of this app through a chosen uplink. Give an address, a subnet such as 192.168.5.0/24, or an interface name. An address or a subnet binds each connection to that local source address; an interface name also pins each connection to that interface, so it never leaves through another one, even when the routing or the address changes. A subnet or an interface name is resolved for every connection, so a new DHCP lease is picked up. A connection that cannot be bound fails rather than taking the default route. Empty means the system default route."
+msgstr ""
+
+#. Notification text when the settings of a web app cannot be loaded
+#: xbmc/cores/WebPlayer/WebClientManager.cpp
+msgctxt "#40258"
+msgid "The settings of the web app cannot be loaded."
+msgstr ""
+
+#empty strings from id 40259 to 40399
 
 # Video versions
 

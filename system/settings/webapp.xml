@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings version="1">
+  <section id="kodi.webapp">
+    <category id="network" label="40254" help="40255">
+      <group id="1">
+        <setting id="uplinkaddress" type="string" label="40256" help="40257">
+          <level>3</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>

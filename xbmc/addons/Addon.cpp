@@ -297,19 +297,9 @@ bool CAddon::LoadSettings(bool bForce,
     GetSettings(id)->Uninitialize();
 
   // load the settings definition XML file
-  const auto addonSettingsDefinitionFile = m_settings[id].m_addonSettingsPath;
   CXBMCTinyXML addonSettingsDefinitionDoc;
-  if (!addonSettingsDefinitionDoc.LoadFile(addonSettingsDefinitionFile))
-  {
-    if (CFile::Exists(addonSettingsDefinitionFile))
-    {
-      CLog::Log(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", ID(),
-                addonSettingsDefinitionFile, addonSettingsDefinitionDoc.ErrorRow(),
-                addonSettingsDefinitionDoc.ErrorDesc());
-    }
-
+  if (!LoadSettingsDefinition(m_settings[id].m_addonSettingsPath, addonSettingsDefinitionDoc, id))
     return false;
-  }
 
   // initialize the settings definition
   if (!GetSettings(id)->Initialize(addonSettingsDefinitionDoc))
@@ -592,6 +582,18 @@ bool CAddon::SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id /* = ADDON_SETT
   }
 
   return true;
+}
+
+bool CAddon::LoadSettingsDefinition(const std::string& path, CXBMCTinyXML& doc, AddonInstanceId id)
+{
+  if (doc.LoadFile(path))
+    return true;
+
+  if (CFile::Exists(path))
+    CLog::Log(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", ID(), path, doc.ErrorRow(),
+              doc.ErrorDesc());
+
+  return false;
 }
 
 bool CAddon::InitSettings(AddonInstanceId id)

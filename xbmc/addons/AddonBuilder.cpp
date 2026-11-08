@@ -21,6 +21,7 @@
 #include "addons/Skin.h"
 #include "addons/SkinResource.h"
 #include "addons/UISoundsResource.h"
+#include "addons/WebApp.h"
 #include "addons/Webinterface.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
@@ -85,8 +86,9 @@ AddonPtr CAddonBuilder::Generate(const AddonInfoPtr& info, AddonType type)
     case AddonType::SCRIPT_MODULE:
     case AddonType::SUBTITLE_MODULE:
     case AddonType::SCRIPT_WEATHER:
-    case AddonType::WEBAPP:
       return std::make_shared<CAddon>(info, type);
+    case AddonType::WEBAPP:
+      return std::make_shared<CWebApp>(info);
     case AddonType::WEB_INTERFACE:
       return std::make_shared<CWebinterface>(info);
     case AddonType::SERVICE:

@@ -16,6 +16,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
+#include "addons/WebApp.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -157,6 +158,17 @@ void NotifyOpenError(const std::string& profile, const std::string& reason)
   // "Error opening {0:s}"
   CGUIDialogKaiToast::QueueNotification(
       CGUIDialogKaiToast::Error, StringUtils::Format(localizeStrings.Get(13329), name), reason);
+}
+
+bool WebAppSettingsLoad(const std::string& profile)
+{
+  ADDON::AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(profile, addon, ADDON::AddonType::WEBAPP,
+                                              ADDON::OnlyEnabled::CHOICE_YES))
+    return true;
+
+  const auto webapp = std::dynamic_pointer_cast<ADDON::CWebApp>(addon);
+  return !webapp || !webapp->LeavesKodiSettingsToKodi() || webapp->HasSettings();
 }
 
 const ADDON::CAddonType* WebAppType(const std::shared_ptr<ADDON::CAddon>& webapp)
@@ -600,6 +612,14 @@ bool CWebClientManager::RequestView(const std::string& profile, IWebViewObserver
   {
     CLog::Log(LOGERROR, "CWebClientManager::{}: \"{}\" cannot name a web profile", __FUNCTION__,
               profile);
+    return false;
+  }
+
+  // a web app opened without its settings would ignore the uplink it is meant to use
+  if (!WebAppSettingsLoad(profile))
+  {
+    const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    NotifyOpenError(profile, localizeStrings.Get(40258));
     return false;
   }
 
