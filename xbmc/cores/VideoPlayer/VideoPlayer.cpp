@@ -5109,6 +5109,13 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       else
         m_VideoPlayerSubtitle->Flush();
       break;
+    case BD_EVENT_SEEK:
+      // Called from within a demuxer read, so only the players are flushed here. A queued
+      // GENERAL_FLUSH would be handled only after the old streams have played out.
+      m_VideoPlayerAudio->Flush(false);
+      m_VideoPlayerVideo->Flush(false);
+      m_VideoPlayerSubtitle->Flush();
+      break;
     case BD_EVENT_AUDIO_STREAM:
       m_dvd.iSelectedAudioStream = *static_cast<int*>(pData);
       break;

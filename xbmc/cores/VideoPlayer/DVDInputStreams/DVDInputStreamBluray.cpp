@@ -746,6 +746,12 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
       /* Check for holding events */
       switch(m_event.event) {
         case BD_EVENT_SEEK:
+          // Kodi's own seeks consume this event in PosTime() / SeekChapter(), so this is a jump
+          // by the disc program. Drop the data queued from the old position instead of playing
+          // it out while the demuxer is reopened.
+          if (m_hold != HOLD_DATA)
+            m_player->OnDiscNavResult(nullptr, BD_EVENT_SEEK);
+          [[fallthrough]];
         case BD_EVENT_TITLE:
         case BD_EVENT_ANGLE:
         case BD_EVENT_PLAYLIST:
