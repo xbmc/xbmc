@@ -119,6 +119,11 @@ class CRendererBase
 public:
   virtual ~CRendererBase();
 
+  //! The playback continues with a new renderer, so the Windows HDR state is not restored.
+  void KeepHdrStateOnDestroy() { m_keepHdrState = true; }
+  //! Restores the Windows HDR state stored at the start of the playback, if one was stored.
+  static void RestoreHdrStateBeforePlayback();
+
   virtual CRenderInfo GetRenderInfo();
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation);
   virtual bool Supports(ESCALINGMETHOD method) const = 0;
@@ -251,9 +256,9 @@ protected:
   DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
   HDR_TYPE m_HdrType = HDR_TYPE::HDR_INVALID;
   bool m_AutoSwitchHDR = false;
-  bool m_initialHdrEnabled = false;
   bool m_DolbyVisionOutput = false;
   bool m_canRenderDolbyVision = false;
   bool m_dolbyVisionEffect = false; // frames are already display-referred RGB
+  bool m_keepHdrState = false;
   std::string m_renderMethodName;
 };
