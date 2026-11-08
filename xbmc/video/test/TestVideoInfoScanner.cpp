@@ -2659,6 +2659,57 @@ TEST_F(TestVideoInfoScannerTvShows, AShowWhoseDetailsFailedIsLookedUpAgain)
   EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
 }
 
+// A show is looked up ahead of its turn, so a search that failed is reported as it is added
+TEST_F(TestVideoInfoScannerTvShows, AShowWhoseSearchFailedIsLookedUpAgain)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  SearchFails("Show");
+  const std::string episode{Episode(Folder(Folder(m_root, "Show"), "Season 1"), "Show S01E01.mkv")};
+  const auto summary{Scan()};
+  ASSERT_EQ(0, CountShows());
+  ASSERT_EQ(1u, summary.failed.size());
+  EXPECT_EQ(TestScanner::ScanSummary::Type::TV_SHOW, summary.failed[0].type);
+  EXPECT_TRUE(summary.notFound.empty());
+
+  Found("Show");
+  Details("Show", "<details><title>Show</title></details>");
+  Scan();
+
+  EXPECT_EQ(1, CountShows());
+  EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0);
+}
+
+// The shows of a source are looked up ahead of their turn, and each is still added with its own
+// details and episodes, in the order of their folders
+TEST_F(TestVideoInfoScannerTvShows, TheShowsOfASourceAreEachAddedWithTheirDetails)
+{
+  UseTestScraper(ADDON::AddonType::SCRAPER_TVSHOWS);
+  const std::vector<std::string> names{"Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot"};
+  std::vector<std::string> episodes;
+  for (const std::string& name : names)
+  {
+    Found(name);
+    Details(name, "<details><title>Title of " + name + "</title></details>");
+    episodes.push_back(Episode(Folder(Folder(m_root, name), "Season 1"), name + " S01E01.mkv"));
+  }
+
+  Scan();
+
+  ASSERT_EQ(6, CountShows());
+  int previous{0};
+  for (const std::string& name : names)
+  {
+    const int idShow{m_db.GetTvShowId(URIUtils::AddFileToFolder(m_root, name + "/"))};
+    EXPECT_GT(idShow, previous) << name;
+    previous = idShow;
+    CVideoInfoTag show;
+    ASSERT_TRUE(m_db.GetTvShowInfo("", show, idShow)) << name;
+    EXPECT_EQ("Title of " + name, show.m_strTitle);
+  }
+  for (const std::string& episode : episodes)
+    EXPECT_GT(m_db.GetEpisodeId(episode, 1, 1), 0) << episode;
+}
+
 // A refresh of a show with all its episodes removes it before adding it again, so one whose
 // details can't be read is kept
 TEST_F(TestVideoInfoScannerTvShows, ARefreshThatCantReadTheDetailsKeepsTheShow)

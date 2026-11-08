@@ -278,13 +278,17 @@ namespace KODI::VIDEO
                     const CVideoInfoTag* showInfo,
                     bool libraryImport);
 
+    struct ShowLookup;
+    /*! \param lookup the show as it was looked up already, or nullptr to look it up now
+     */
     InfoRet RetrieveInfoForTvShow(CFileItem* pItem,
                                   bool bDirNames,
                                   ADDON::ScraperPtr& scraper,
                                   bool useLocal,
                                   CScraperUrl* pURL,
                                   bool fetchEpisodes,
-                                  CGUIDialogProgress* pDlgProgress);
+                                  CGUIDialogProgress* pDlgProgress,
+                                  ShowLookup* lookup = nullptr);
     //! \brief How many threads a scan looks videos up on: enough to keep a scraper busy while the
     //! others read and probe
     static size_t LookUpThreads() { return 4; }
@@ -370,6 +374,25 @@ namespace KODI::VIDEO
      */
     InfoRet LookupNotFound(const VideoLookup& lookup, CGUIDialogProgress* pDlgProgress);
 
+    //! \brief What looking a show up found on a thread of its own, for RetrieveInfoForTvShow() to add
+    struct ShowLookup : VideoLookup
+    {
+      //! The interpreter the show's scraper calls keep to, from its look-up to its last episode
+      std::unique_ptr<CScriptInvocationManager::CAffinity> affinity;
+      //! The show's episode guide, where it could be fetched
+      std::optional<EPISODELIST> guide;
+    };
+
+    /*! \brief The part of RetrieveInfoForTvShow() that reads the show's nfo, asks the scraper for it
+     and fetches its episode guide, which neither writes to the database nor shows a dialog. Its
+     scraper calls keep to an affinity of its own, which its episodes' calls keep to after.
+     */
+    void LookUpShow(const CFileItem& source,
+                    bool bDirNames,
+                    const ADDON::ScraperPtr& info2,
+                    bool useLocal,
+                    ShowLookup& lookup) const;
+
     //! \brief Have the discs of a directory's movies about to be looked up read ahead
     void ReadDiscsAhead(const ItemLookups& batch);
     //! \brief Have the discs in a directory's folders of extras read ahead
@@ -402,9 +425,12 @@ namespace KODI::VIDEO
       {
         ADDON::ScraperPtr info2;
         bool lookUpAlongside{false};
+        //! Whether the show is looked up ahead of its turn
+        bool lookUpShow{false};
       };
       std::vector<std::optional<Candidate>> candidates;
       std::vector<MovieLookup> lookups;
+      std::vector<ShowLookup> shows;
       bool foundSomeInfo{false};
       std::vector<int> seenPaths;
     };
@@ -444,7 +470,8 @@ namespace KODI::VIDEO
                                     bool useLocal,
                                     const CScriptInvocationManager::CAffinity& showAffinity,
                                     CGUIDialogProgress* progress = nullptr,
-                                    bool alreadyHasArt = false);
+                                    bool alreadyHasArt = false,
+                                    const EPISODELIST* guide = nullptr);
 
     /*! \brief Update the progress bar with the heading and line and check for cancellation
      \param progress CGUIDialogProgress bar
@@ -538,7 +565,8 @@ namespace KODI::VIDEO
                                   bool useLocal,
                                   const CVideoInfoTag& showInfo,
                                   const CScriptInvocationManager::CAffinity& showAffinity,
-                                  CGUIDialogProgress* pDlgProgress = nullptr);
+                                  CGUIDialogProgress* pDlgProgress = nullptr,
+                                  const EPISODELIST* fetchedGuide = nullptr);
 
     enum class EpisodeResult
     {

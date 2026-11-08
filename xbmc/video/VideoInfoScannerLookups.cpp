@@ -26,7 +26,8 @@ void CVideoLookups::Run(size_t count,
                         size_t workers,
                         const std::function<void(size_t)>& lookUp,
                         const std::function<bool(size_t)>& handBack,
-                        const std::atomic<bool>& stop)
+                        const std::atomic<bool>& stop,
+                        size_t window /* = 0 */)
 {
   // A video whose look-up throws is still handed back, on one thread as on several
   const auto lookUpOrLog{[&lookUp, count](size_t i)
@@ -55,7 +56,8 @@ void CVideoLookups::Run(size_t count,
 
   // Look-ups run this far at most ahead of the video handed back: far enough to keep the scraper
   // busy while the calling thread adds a slow one, such as a movie of several discs
-  const size_t window{workers * 8};
+  if (window == 0)
+    window = workers * 8;
 
   std::mutex lock;
   std::condition_variable changed;
