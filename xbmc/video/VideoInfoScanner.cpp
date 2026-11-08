@@ -2042,6 +2042,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
     const bool isSeason =
         pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->GetMediaType() == MEDIA::TYPE::SEASON;
 
+    // The show's scraper calls, its episodes' included, keep to one interpreter, where what the
+    // scraper fetched for the show is kept
+    const CScriptInvocationManager::CAffinity showAffinity;
+    const CScriptInvocationManager::CAffinity::CScope showCalls{showAffinity};
+
     // Enumerate episodes here as this compares the records of folders containing episodes from
     // this show, and we want to do this before processing nfo files. A show folder whose episodes
     // are wanted is looked at before the library is asked about it, as nothing is needed from it
@@ -2124,9 +2129,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // so its nfo isn't read.
     if (idTvShow > -1 && (fetchEpisodes || !pItem->IsFolder()))
     {
-      const InfoRet ret = files.empty() ? InfoRet::NOT_NEEDED
-                                        : RetrieveInfoForEpisodes(pItem, idTvShow, files, info2,
-                                                                  useLocal, pDlgProgress);
+      const InfoRet ret = files.empty()
+                              ? InfoRet::NOT_NEEDED
+                              : RetrieveInfoForEpisodes(pItem, idTvShow, files, info2, useLocal,
+                                                        showAffinity, pDlgProgress);
       if (ret == InfoRet::ADDED || ret == InfoRet::NOT_NEEDED)
         setFolderHash();
       return ret;
@@ -2146,8 +2152,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         return InfoRet::INFO_ERROR;
       if (fetchEpisodes && !files.empty())
       {
-        const InfoRet ret =
-            RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress);
+        const InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal,
+                                                    showAffinity, pDlgProgress);
         if (ret == InfoRet::ADDED)
           setFolderHash();
         return ret;
@@ -2196,8 +2202,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         if (fetchEpisodes && !files.empty())
         {
-          const InfoRet ret =
-              RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress, true);
+          const InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal,
+                                                      showAffinity, pDlgProgress, true);
           if (ret == InfoRet::ADDED)
           {
             setFolderHash();
@@ -2236,8 +2242,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     if (fetchEpisodes && !files.empty())
     {
-      const InfoRet ret =
-          RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal, pDlgProgress, true);
+      const InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, files, info2, useLocal,
+                                                  showAffinity, pDlgProgress, true);
       if (ret == InfoRet::ADDED)
         setFolderHash();
     }
@@ -3198,13 +3204,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return InfoRet::NOT_FOUND;
   }
 
-  CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItem* item,
-                                                                   long showID,
-                                                                   EPISODELIST& files,
-                                                                   const ADDON::ScraperPtr& scraper,
-                                                                   bool useLocal,
-                                                                   CGUIDialogProgress* progress,
-                                                                   bool alreadyHasArt /* = false */)
+  CInfoScanner::InfoRet CVideoInfoScanner::RetrieveInfoForEpisodes(
+      CFileItem* item,
+      long showID,
+      EPISODELIST& files,
+      const ADDON::ScraperPtr& scraper,
+      bool useLocal,
+      const CScriptInvocationManager::CAffinity& showAffinity,
+      CGUIDialogProgress* progress,
+      bool alreadyHasArt /* = false */)
   {
     if (m_bStop || (progress && progress->IsCanceled()))
       return InfoRet::CANCELLED;
@@ -3224,7 +3232,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         showInfo.m_strPath = *showPath;
     }
 
-    InfoRet ret = OnProcessSeriesFolder(files, scraper, useLocal, showInfo, progress);
+    InfoRet ret = OnProcessSeriesFolder(files, scraper, useLocal, showInfo, showAffinity, progress);
 
     if (ret == InfoRet::ADDED)
     {
@@ -4108,6 +4116,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       const ADDON::ScraperPtr& scraper,
       bool useLocal,
       const CVideoInfoTag& showInfo,
+      const CScriptInvocationManager::CAffinity& showAffinity,
       CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
@@ -4538,8 +4547,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
         }};
 
     // With a dialog to update, as a refresh has, each episode is looked up on its own
-    CVideoLookups::Run(lookups.size(), pDlgProgress ? 1 : LookUpThreads(), lookUp, handBack,
-                       m_bStop);
+    CVideoLookups::Run(
+        lookups.size(), pDlgProgress ? 1 : LookUpThreads(),
+        [&lookUp, &showAffinity](size_t index)
+        {
+          const CScriptInvocationManager::CAffinity::CScope showCalls{showAffinity};
+          lookUp(index);
+        },
+        handBack, m_bStop);
 
     if (failed)
       return InfoRet::INFO_ERROR;
