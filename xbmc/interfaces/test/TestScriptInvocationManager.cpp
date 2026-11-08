@@ -18,8 +18,10 @@
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
+#include <future>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <set>
 #include <string>
 #include <thread>
@@ -129,6 +131,14 @@ protected:
       EXPECT_TRUE(Eventually([id] { return !Manager().IsRunning(id); }));
     Manager().UnregisterLanguageInvocationHandler(&m_handler);
     XBMC_DELETETEMPFILE(m_file);
+    SetSlowRun(CScriptInvocationManager::SLOW_RUN);
+  }
+
+  //! How long another run of its affinity may have a thread before a run stops waiting for it
+  static void SetSlowRun(std::chrono::milliseconds slowRun)
+  {
+    std::unique_lock lock(Manager().m_critSection);
+    Manager().m_slowRun = slowRun;
   }
 
   static CScriptInvocationManager& Manager() { return CScriptInvocationManager::GetInstance(); }
@@ -167,6 +177,19 @@ protected:
     m_handler.m_runs.changed.notify_all();
     return WaitForRuns([started](const SRuns& runs)
                        { return runs.started >= started && runs.running == 0; });
+  }
+
+  //! Leaves a thread bound to \p affinity free, with \p handle, and lets the runs after wait again
+  void LeaveIdleThread(const CScriptInvocationManager::CAffinity& affinity, int handle)
+  {
+    {
+      const CScriptInvocationManager::CAffinity::CScope scope{affinity};
+      Start(handle);
+    }
+    ASSERT_TRUE(Finish(1));
+    Manager().ReleasePluginHandle(handle);
+    std::unique_lock lock(m_handler.m_runs.lock);
+    m_handler.m_runs.finish = false;
   }
 
   CWaitingHandler m_handler;
@@ -275,4 +298,176 @@ TEST_F(TestScriptInvocationManager, AThreadKeptForAScriptIsLetGoWhenAnotherIsRun
   EXPECT_EQ(-1, Manager().GetReusablePluginHandle(m_script + ".other.waiting"));
   EXPECT_TRUE(Eventually([id] { return !Manager().IsRunning(id); }));
   EXPECT_EQ(-1, Manager().GetReusablePluginHandle(m_script));
+}
+
+using Affinity = CScriptInvocationManager::CAffinity;
+
+TEST_F(TestScriptInvocationManager, TheRunsOfAnAffinityKeepToItsThread)
+{
+  const Affinity affinity;
+  const Affinity::CScope scope{affinity};
+  int first{1001};
+  const int id{Start(first)};
+  ASSERT_TRUE(Finish(1));
+  Manager().ReleasePluginHandle(first);
+
+  int again{1002};
+  EXPECT_EQ(id, Start(again));
+  EXPECT_EQ(1001, again);
+  ASSERT_TRUE(Finish(2));
+  Manager().ReleasePluginHandle(again);
+}
+
+TEST_F(TestScriptInvocationManager, AThreadBoundToAnAffinityIsLeftToItsRunsUntilItGoes)
+{
+  std::optional<Affinity> affinity{std::in_place};
+  int handle{1001};
+  {
+    const Affinity::CScope scope{*affinity};
+    Start(handle);
+  }
+  ASSERT_TRUE(Finish(1));
+  Manager().ReleasePluginHandle(handle);
+
+  // Neither a run tied to no affinity nor one tied to another takes it
+  EXPECT_EQ(-1, Manager().GetReusablePluginHandle(m_script));
+  {
+    const Affinity other;
+    const Affinity::CScope scope{other};
+    EXPECT_EQ(-1, Manager().GetReusablePluginHandle(m_script));
+  }
+
+  affinity.reset();
+  EXPECT_EQ(1001, Manager().GetReusablePluginHandle(m_script));
+  Manager().ReleasePluginHandle(1001);
+}
+
+TEST_F(TestScriptInvocationManager, ARunWaitsWhileAnotherRunOfItsAffinityHasItsThread)
+{
+  // However long the waiting run takes to start
+  SetSlowRun(TIMEOUT);
+  const Affinity affinity;
+  int first{1001};
+  {
+    const Affinity::CScope scope{affinity};
+    Start(first);
+  }
+  ASSERT_TRUE(RunningAtOnce(1));
+
+  auto waiting{std::async(std::launch::async,
+                          [this, &affinity]
+                          {
+                            const Affinity::CScope scope{affinity};
+                            return Manager().GetReusablePluginHandle(m_script);
+                          })};
+  const bool waited{waiting.wait_for(std::chrono::milliseconds(20)) == std::future_status::timeout};
+  // Lets the first run end soon, as one served by what the plugin kept does, and free the thread,
+  // which the waiting run then takes
+  ASSERT_TRUE(Finish(1));
+  Manager().ReleasePluginHandle(first);
+  ASSERT_EQ(std::future_status::ready, waiting.wait_for(TIMEOUT));
+  const int taken{waiting.get()};
+  Manager().ReleasePluginHandle(taken);
+
+  EXPECT_TRUE(waited);
+  EXPECT_EQ(1001, taken);
+}
+
+// A run doesn't wait for one of its affinity that has had the thread a while, as a run that slow
+// gains little from keeping to it: it has a thread of its own
+TEST_F(TestScriptInvocationManager, ARunDoesntWaitForASlowRunOfItsAffinity)
+{
+  const Affinity affinity;
+  int first{1001};
+  {
+    const Affinity::CScope scope{affinity};
+    Start(first);
+  }
+  ASSERT_TRUE(RunningAtOnce(1));
+  std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
+  auto taking{std::async(std::launch::async,
+                         [this, &affinity]
+                         {
+                           const Affinity::CScope scope{affinity};
+                           return Manager().GetReusablePluginHandle(m_script);
+                         })};
+  const bool tookAnother{taking.wait_for(std::chrono::seconds(1)) == std::future_status::ready};
+  ASSERT_TRUE(Finish(1));
+  Manager().ReleasePluginHandle(first);
+  ASSERT_EQ(std::future_status::ready, taking.wait_for(TIMEOUT));
+  const int taken{taking.get()};
+  Manager().ReleasePluginHandle(taken);
+
+  EXPECT_TRUE(tookAnother);
+  EXPECT_EQ(-1, taken);
+}
+
+// Rather than start a thread of its own, a run that doesn't wait for its thread borrows an idle one
+// bound to another affinity, which stays bound to it
+TEST_F(TestScriptInvocationManager, ARunNotWaitingForItsThreadBorrowsAnIdleOneOfAnotherAffinity)
+{
+  const Affinity other;
+  LeaveIdleThread(other, 1001);
+  const Affinity affinity;
+  const Affinity::CScope scope{affinity};
+  int slow{1002};
+  Start(slow);
+  ASSERT_TRUE(RunningAtOnce(1));
+  std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
+  const int borrowed{Manager().GetReusablePluginHandle(m_script)};
+  Manager().ReleasePluginHandle(borrowed);
+  ASSERT_TRUE(Finish(2));
+  Manager().ReleasePluginHandle(slow);
+  int boundToOther{-1};
+  {
+    const Affinity::CScope otherScope{other};
+    boundToOther = Manager().GetReusablePluginHandle(m_script);
+  }
+  Manager().ReleasePluginHandle(boundToOther);
+
+  EXPECT_EQ(1001, borrowed);
+  EXPECT_EQ(1001, boundToOther);
+}
+
+// A run waits for its thread while another affinity has borrowed it, however long, so that what
+// the plugin kept on it stays with the runs it was kept for
+TEST_F(TestScriptInvocationManager, ARunWaitsForItsThreadWhileAnotherAffinityHasBorrowedIt)
+{
+  const Affinity other;
+  LeaveIdleThread(other, 1001);
+  const Affinity affinity;
+  int slow{1002};
+  {
+    const Affinity::CScope scope{affinity};
+    Start(slow);
+  }
+  ASSERT_TRUE(RunningAtOnce(1));
+  std::this_thread::sleep_for(std::chrono::milliseconds(150));
+  int borrowed{-1};
+  {
+    const Affinity::CScope scope{affinity};
+    borrowed = Manager().GetReusablePluginHandle(m_script);
+  }
+  ASSERT_EQ(1001, borrowed);
+  std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
+  auto waiting{std::async(std::launch::async,
+                          [this, &other]
+                          {
+                            const Affinity::CScope scope{other};
+                            return Manager().GetReusablePluginHandle(m_script);
+                          })};
+  const bool waited{waiting.wait_for(std::chrono::milliseconds(200)) ==
+                    std::future_status::timeout};
+  Manager().ReleasePluginHandle(borrowed);
+  ASSERT_EQ(std::future_status::ready, waiting.wait_for(TIMEOUT));
+  const int taken{waiting.get()};
+  Manager().ReleasePluginHandle(taken);
+  ASSERT_TRUE(Finish(2));
+  Manager().ReleasePluginHandle(slow);
+
+  EXPECT_TRUE(waited);
+  EXPECT_EQ(1001, taken);
 }
