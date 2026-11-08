@@ -57,6 +57,7 @@ enum class AddonType
   GAME_CONTROLLER,
   VIDEOCODEC,
   WEBAPP,
+  WEBAPP_MODULE,
 
   /**
     * @brief virtual addon types

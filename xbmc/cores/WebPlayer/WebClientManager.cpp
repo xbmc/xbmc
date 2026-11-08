@@ -17,6 +17,7 @@
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/WebApp.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -174,6 +175,91 @@ bool WebAppSettingsLoad(const std::string& profile)
 const ADDON::CAddonType* WebAppType(const std::shared_ptr<ADDON::CAddon>& webapp)
 {
   return webapp ? webapp->Type(ADDON::AddonType::WEBAPP) : nullptr;
+}
+
+struct WebAppFile
+{
+  std::string path;
+  std::string name;
+  bool script;
+};
+
+ADDON::AddonPtr FileOwnerOf(const ADDON::AddonPtr& webapp, const std::string& id)
+{
+  if (id.empty())
+    return webapp;
+
+  const auto& dependencies = webapp->GetDependencies();
+  if (std::none_of(dependencies.begin(), dependencies.end(),
+                   [&id](const ADDON::DependencyInfo& dependency) { return dependency.id == id; }))
+    return nullptr;
+
+  ADDON::AddonPtr module;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, module, ADDON::AddonType::WEBAPP_MODULE,
+                                              ADDON::OnlyEnabled::CHOICE_YES))
+    return nullptr;
+  return module;
+}
+
+std::string WebAppFileError(const ADDON::AddonPtr& owner,
+                            const std::string& path,
+                            const std::string& name,
+                            std::set<std::string>* names)
+{
+  if (!owner)
+    return "is in no web app module the app imports";
+  if (!XFILE::CFile::Exists(path))
+    return "does not exist";
+  if (!CWaylandHost::IsValidWebProfile(name))
+    return "cannot name a file of the web client";
+  // the web client replaces a content filter by one of the same name
+  if (names && !names->insert(name).second)
+    return "has the name of another file of the app";
+  return {};
+}
+
+//! The user scripts and content filter files of a web app, with the names the client knows them by
+bool WebAppFilesOf(const ADDON::AddonPtr& webapp,
+                   const ADDON::CAddonType& type,
+                   std::vector<WebAppFile>& files,
+                   std::string& failed)
+{
+  std::set<std::string> filterNames;
+  for (const auto& [element, values] : type.GetValues())
+  {
+    const bool script = element == "userscript";
+    if (!script && (element != "contentfilter" || !values.GetValue("contentfilter@list").empty()))
+      continue;
+
+    const std::string file = values.GetValue(element).asString();
+    const std::string id = values.GetValue(element + "@addon").asString();
+    const ADDON::AddonPtr owner = FileOwnerOf(webapp, id);
+    const std::string path = owner ? URIUtils::AddFileToFolder(owner->Path(), file) : file;
+    const std::string name =
+        id.empty() ? URIUtils::GetFileName(file) : id + "." + URIUtils::GetFileName(file);
+    const std::string error = WebAppFileError(owner, path, name, script ? nullptr : &filterNames);
+    if (!error.empty())
+    {
+      failed = id.empty() ? file : id + "/" + file;
+      CLog::Log(LOGERROR, "CWebClientManager::{}: {}: {} {}", __FUNCTION__, webapp->ID(), failed,
+                error);
+      return false;
+    }
+    files.push_back({path, name, script});
+  }
+  return true;
+}
+
+bool WebAppFilesUsable(const std::string& profile, std::string& failed)
+{
+  ADDON::AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(profile, addon, ADDON::AddonType::WEBAPP,
+                                              ADDON::OnlyEnabled::CHOICE_YES))
+    return true;
+
+  const ADDON::CAddonType* type = WebAppType(std::dynamic_pointer_cast<ADDON::CAddon>(addon));
+  std::vector<WebAppFile> files;
+  return !type || WebAppFilesOf(addon, *type, files, failed);
 }
 
 void AddFilterListsOf(const ADDON::AddonPtr& addon, std::set<std::string>& lists)
@@ -623,6 +709,13 @@ bool CWebClientManager::RequestView(const std::string& profile, IWebViewObserver
     return false;
   }
 
+  if (std::string failed; !WebAppFilesUsable(profile, failed))
+  {
+    const auto& localizeStrings = CServiceBroker::GetResourcesComponent().GetLocalizeStrings();
+    NotifyOpenError(profile, StringUtils::Format(localizeStrings.Get(40260), failed));
+    return false;
+  }
+
   const std::string uplink = UplinkOf(profile);
 
   std::unique_lock lock(m_lock);
@@ -903,35 +996,30 @@ bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
   if (!userAgent.empty())
     m_host->WebViewSetUserAgent(profile, userAgent);
 
+  std::vector<WebAppFile> files;
+  std::string failed;
+  if (!WebAppFilesOf(addon, *type, files, failed))
+    files.clear();
+
   for (const auto& [element, values] : type->GetValues())
   {
-    if (element == "userscript")
-      SendProfileFile(
-          profile,
-          URIUtils::AddFileToFolder(webapp->Path(), values.GetValue("userscript").asString()),
-          true);
-    else if (element == "viewport")
+    const std::string list = values.GetValue("contentfilter@list").asString();
+    if (element == "viewport")
       m_host->WebViewSetViewport(profile,
                                  std::max(values.GetValue("viewport@width").asInteger(), 0),
                                  std::max(values.GetValue("viewport@height").asInteger(), 0));
-    else if (element == "contentfilter")
+    else if (element == "contentfilter" && !list.empty())
     {
-      const std::string list = values.GetValue("contentfilter@list").asString();
-      if (!list.empty())
-      {
-        std::unique_lock lock(m_lock);
-        if (m_filterLists)
-          m_filterLists->Want(list);
-        lock.unlock();
-        m_host->WebViewAddContentFilterList(profile, list);
-      }
-      else
-        SendProfileFile(
-            profile,
-            URIUtils::AddFileToFolder(webapp->Path(), values.GetValue("contentfilter").asString()),
-            false);
+      std::unique_lock lock(m_lock);
+      if (m_filterLists)
+        m_filterLists->Want(list);
+      lock.unlock();
+      m_host->WebViewAddContentFilterList(profile, list);
     }
   }
+
+  for (const WebAppFile& file : files)
+    SendProfileFile(profile, file.path, file.name, file.script);
   return true;
 }
 
@@ -972,11 +1060,12 @@ void CWebClientManager::SendProfileFiles(const std::string& profile,
   std::sort(files.begin(), files.end());
 
   for (const std::string& file : files)
-    SendProfileFile(profile, file, scripts);
+    SendProfileFile(profile, file, URIUtils::GetFileName(file), scripts);
 }
 
 void CWebClientManager::SendProfileFile(const std::string& profile,
                                         const std::string& file,
+                                        const std::string& name,
                                         bool script)
 {
   const int fd = open(CSpecialProtocol::TranslatePath(file).c_str(), O_RDONLY | O_CLOEXEC);
@@ -989,7 +1078,6 @@ void CWebClientManager::SendProfileFile(const std::string& profile,
     return;
   }
 
-  const std::string name = URIUtils::GetFileName(file);
   const auto size = static_cast<uint32_t>(st.st_size);
   if (script)
     m_host->WebViewAddUserScript(profile, name, fd, size);

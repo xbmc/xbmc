@@ -26111,7 +26111,19 @@ msgctxt "#40258"
 msgid "The settings of the web app cannot be loaded."
 msgstr ""
 
-#empty strings from id 40259 to 40399
+#. Name of the add-on type that holds files web apps share
+#: xbmc/addons/addoninfo/AddonInfo.cpp
+msgctxt "#40259"
+msgid "Web app modules"
+msgstr ""
+
+#. Notification text when a file a web app names cannot be used
+#: xbmc/cores/WebPlayer/WebClientManager.cpp
+msgctxt "#40260"
+msgid "The web app's file {0:s} is missing or cannot be used."
+msgstr ""
+
+#empty strings from id 40261 to 40399
 
 # Video versions
 

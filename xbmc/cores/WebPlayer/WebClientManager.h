@@ -230,7 +230,10 @@ private:
                         const std::string& path,
                         const std::string& extension,
                         bool scripts);
-  void SendProfileFile(const std::string& profile, const std::string& file, bool script);
+  void SendProfileFile(const std::string& profile,
+                       const std::string& file,
+                       const std::string& name,
+                       bool script);
   CObserverCall ObserverOf(const std::string& profile);
   void CloseView(const std::string& profile);
   void EnsureCaretVisible();
