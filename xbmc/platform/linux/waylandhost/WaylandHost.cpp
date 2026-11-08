@@ -1702,6 +1702,17 @@ void CWaylandHost::WebViewSetViewport(std::string profile, uint32_t width, uint3
       });
 }
 
+void CWaylandHost::WebViewSetSoftwareVideoDecoding(std::string profile, bool allowed)
+{
+  Post(
+      [this, profile = std::move(profile), allowed]()
+      {
+        auto* view = FindWebView(profile);
+        if (view)
+          kodi_web_view_v1_send_set_software_video_decoding(view->resource, allowed ? 1 : 0);
+      });
+}
+
 void CWaylandHost::WebViewAddUserScript(std::string profile,
                                         std::string name,
                                         int fd,

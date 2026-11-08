@@ -226,6 +226,7 @@ private:
   void ConfigureView(const std::string& profile);
   bool ConfigureViewFromAddon(const std::string& profile);
   std::string UplinkOf(const std::string& profile) const;
+  void SendSoftwareVideoDecoding(const std::string& profile);
   void SendProfileFiles(const std::string& profile,
                         const std::string& path,
                         const std::string& extension,

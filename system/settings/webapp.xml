@@ -13,5 +13,14 @@
         </setting>
       </group>
     </category>
+    <category id="video" label="40261" help="40262">
+      <group id="1">
+        <setting id="softwarevideodecoding" type="boolean" label="40263" help="40264">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>

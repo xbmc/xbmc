@@ -247,6 +247,7 @@ public:
   void WebViewClose(std::string profile);
   void WebViewSetUserAgent(std::string profile, std::string userAgent);
   void WebViewSetViewport(std::string profile, uint32_t width, uint32_t height);
+  void WebViewSetSoftwareVideoDecoding(std::string profile, bool allowed);
 
   /*!
    * \brief Replace the text around the cursor of the enabled text input;

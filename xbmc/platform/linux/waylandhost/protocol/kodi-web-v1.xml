@@ -436,5 +436,18 @@
       <arg name="width" type="uint" summary="viewport width in CSS pixels"/>
       <arg name="height" type="uint" summary="viewport height in CSS pixels"/>
     </event>
+
+    <event name="set_software_video_decoding">
+      <description summary="whether pages may play video decoded in software">
+        Whether the view's pages may play video that the browser decodes
+        in software. Without it, the browser offers pages only the video
+        codecs it decodes in hardware, so that a page choosing among
+        several codecs picks one of those. Video that a content decryption
+        module decrypts and decodes itself is not affected. Takes effect
+        from the next navigation. A view configured without it plays
+        video decoded in hardware only.
+      </description>
+      <arg name="allowed" type="uint" summary="1 to allow software video decoding"/>
+    </event>
   </interface>
 </protocol>

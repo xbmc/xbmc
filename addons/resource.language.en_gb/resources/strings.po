@@ -26123,7 +26123,31 @@ msgctxt "#40260"
 msgid "The web app's file {0:s} is missing or cannot be used."
 msgstr ""
 
-#empty strings from id 40261 to 40399
+#. Label of the category of the video settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40261"
+msgid "Video"
+msgstr ""
+
+#. Help text of the category of the video settings Kodi gives every web app
+#: system/settings/webapp.xml
+msgctxt "#40262"
+msgid "How the app plays video."
+msgstr ""
+
+#. Label of the setting that lets a web app play video decoded in software
+#: system/settings/webapp.xml
+msgctxt "#40263"
+msgid "Allow software decoding"
+msgstr ""
+
+#. Help text of the setting that lets a web app play video decoded in software
+#: system/settings/webapp.xml
+msgctxt "#40264"
+msgid "Let the app play video that only a software decoder can decode. Off offers the app only the codecs the hardware decodes, so that an app choosing among several picks one of those; on most devices software decoding cannot keep up with high definition video. Video that a DRM module such as Widevine decodes itself is not affected."
+msgstr ""
+
+#empty strings from id 40265 to 40399
 
 # Video versions
 

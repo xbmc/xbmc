@@ -730,6 +730,7 @@ bool CWebClientManager::RequestView(const std::string& profile, IWebViewObserver
   {
     CWaylandSurface& surface = *view->second;
     lock.unlock();
+    SendSoftwareVideoDecoding(profile);
     observer.OnWebViewAvailable(profile, surface);
     return true;
   }
@@ -977,6 +978,16 @@ std::string CWebClientManager::UplinkOf(const std::string& profile) const
   return addon->GetSetting("uplinkaddress");
 }
 
+void CWebClientManager::SendSoftwareVideoDecoding(const std::string& profile)
+{
+  ADDON::AddonPtr addon;
+  bool allowed = false;
+  if (CServiceBroker::GetAddonMgr().GetAddon(profile, addon, ADDON::AddonType::WEBAPP,
+                                             ADDON::OnlyEnabled::CHOICE_YES) &&
+      addon->GetSettingBool("softwarevideodecoding", allowed))
+    m_host->WebViewSetSoftwareVideoDecoding(profile, allowed);
+}
+
 bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
 {
   ADDON::AddonPtr addon;
@@ -995,6 +1006,8 @@ bool CWebClientManager::ConfigureViewFromAddon(const std::string& profile)
                                     : KODI::WEB::WebAppElement(*type, "useragent", identity);
   if (!userAgent.empty())
     m_host->WebViewSetUserAgent(profile, userAgent);
+
+  SendSoftwareVideoDecoding(profile);
 
   std::vector<WebAppFile> files;
   std::string failed;
