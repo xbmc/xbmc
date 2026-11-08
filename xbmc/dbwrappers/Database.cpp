@@ -652,7 +652,7 @@ CDatabase::ConnectionState CDatabase::Connect(const std::string& dbName,
   try
   {
     // test if db already exists, if not we need to create the tables
-    if (!m_pDB->exists() && create)
+    if (create && !m_pDB->exists())
     {
       if (dbSettings.type == "sqlite3")
       {
