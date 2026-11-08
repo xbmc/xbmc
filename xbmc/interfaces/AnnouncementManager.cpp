@@ -325,18 +325,33 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag,
                                     const std::shared_ptr<const CFileItem>& item,
                                     const CVariant& data)
 {
+  Queue(flag, sender, message, item ? std::make_shared<CFileItem>(*item) : nullptr, data);
+}
+
+void CAnnouncementManager::Announce(AnnouncementFlag flag,
+                                    const std::string& message,
+                                    const CFileItem& item,
+                                    const CVariant& data)
+{
+  Queue(flag, ANNOUNCEMENT_SENDER, message, std::make_shared<CFileItem>(item), data);
+}
+
+void CAnnouncementManager::Queue(AnnouncementFlag flag,
+                                 const std::string& sender,
+                                 const std::string& message,
+                                 std::shared_ptr<CFileItem> item,
+                                 const CVariant& data)
+{
   CAnnounceData announcement;
   announcement.flag = flag;
   announcement.sender = sender;
   announcement.message = message;
+  announcement.item = std::move(item);
   announcement.data = data;
-
-  if (item != nullptr)
-    announcement.item = std::make_shared<CFileItem>(*item);
 
   {
     std::unique_lock lock(m_queueCritSection);
-    m_announcementQueue.push_back(announcement);
+    m_announcementQueue.push_back(std::move(announcement));
   }
   m_queueEvent.Set();
 }

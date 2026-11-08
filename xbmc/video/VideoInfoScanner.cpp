@@ -4018,13 +4018,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
         type = ScanSummary::Type::MUSIC_VIDEO;
       m_summary.added.push_back({type, path, strTitle});
 
-      CFileItemPtr itemCopy = std::make_shared<CFileItem>(*pItem);
       CVariant data;
       data["added"] = true;
       if (m_bRunning)
         data["transaction"] = true;
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
-                                                         itemCopy, data);
+                                                         *pItem, data);
     }
     return lResult;
   }

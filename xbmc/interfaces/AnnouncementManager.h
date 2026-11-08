@@ -46,6 +46,14 @@ namespace ANNOUNCEMENT
                   const std::string& message,
                   const std::shared_ptr<const CFileItem>& item,
                   const CVariant& data);
+    /*!
+     \brief Announces \p item as it is now, copying it once for the announcement, so that it may
+     change, or go, as soon as this returns
+     */
+    void Announce(AnnouncementFlag flag,
+                  const std::string& message,
+                  const CFileItem& item,
+                  const CVariant& data);
 
     void Announce(AnnouncementFlag flag, const std::string& sender, const std::string& message);
     void Announce(AnnouncementFlag flag,
@@ -89,6 +97,13 @@ namespace ANNOUNCEMENT
   private:
     CAnnouncementManager(const CAnnouncementManager&) = delete;
     CAnnouncementManager const& operator=(CAnnouncementManager const&) = delete;
+
+    //! \brief Queues an announcement for the announcement thread, with the copy of its item, if any
+    void Queue(AnnouncementFlag flag,
+               const std::string& sender,
+               const std::string& message,
+               std::shared_ptr<CFileItem> item,
+               const CVariant& data);
 
     CCriticalSection m_announcersCritSection;
     CCriticalSection m_queueCritSection;
