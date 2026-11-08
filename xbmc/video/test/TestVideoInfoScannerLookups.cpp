@@ -65,6 +65,32 @@ TEST(TestVideoInfoScannerLookups, VideosAreHandedBackInTheOrderTheyWereGivenOnTh
   EXPECT_GT(lookingUp.size(), 1U);
 }
 
+// No more are looked up than the window holds, the one being handed back among them
+TEST(TestVideoInfoScannerLookups, NoMoreAreLookedUpThanTheWindowHolds)
+{
+  constexpr size_t count{12};
+  constexpr size_t window{3};
+  std::atomic<size_t> started{0};
+  size_t handedBack{0};
+  size_t most{0};
+  const std::atomic<bool> stop{false};
+
+  CVideoLookups::Run(
+      count, 4, [&started](size_t) { ++started; },
+      [&started, &handedBack, &most](size_t)
+      {
+        // Slow, so that the threads look up as far ahead as they may meanwhile
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        most = std::max(most, started - handedBack);
+        ++handedBack;
+        return true;
+      },
+      stop, window);
+
+  EXPECT_EQ(count, handedBack);
+  EXPECT_EQ(window, most);
+}
+
 // Once a video is refused, none after it is handed back, and no more are looked up than are already
 // on their way
 TEST(TestVideoInfoScannerLookups, NoMoreAreLookedUpOnceOneIsRefused)

@@ -41,12 +41,15 @@ public:
    \param handBack takes video i once it and those before it have been looked up, on the calling
    thread, and returns false to look up no more
    \param stop whether to look up no more, as the scan is cancelled
+   \param window the most videos looked up and not yet handed back, the one being handed back
+   among them; 0 for 8 a thread
    */
   static void Run(size_t count,
                   size_t workers,
                   const std::function<void(size_t)>& lookUp,
                   const std::function<bool(size_t)>& handBack,
-                  const std::atomic<bool>& stop);
+                  const std::atomic<bool>& stop,
+                  size_t window = 0);
 };
 
 //! \brief Whether a file is a disc, by its name alone, as telling a bluray image from another mounts it
