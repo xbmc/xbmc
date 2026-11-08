@@ -350,13 +350,17 @@ public:
    \param artwork the artwork map for the show.
    \param seasonArt the artwork map for seasons.
    \param idTvShow the database id of the tvshow if known (defaults to -1)
+   \param exactPathOnly only reuse directly linked paths for newly discovered nested TV shows
+   \param createdNewShow optional result set only when a new TV-show row was created
    \return the id of the tvshow.
    */
   int SetDetailsForTvShow(const std::vector<std::string>& paths,
                           CVideoInfoTag& details,
                           const KODI::ART::Artwork& artwork,
                           const KODI::ART::SeasonsArtwork& seasonArt,
-                          int idTvShow = -1);
+                          int idTvShow = -1,
+                          bool exactPathOnly = false,
+                          bool* createdNewShow = nullptr);
   bool UpdateDetailsForTvShow(int idTvShow,
                               CVideoInfoTag& details,
                               const KODI::ART::Artwork& artwork,
