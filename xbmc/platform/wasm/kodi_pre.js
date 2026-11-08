@@ -11,6 +11,7 @@
 // main() until IDBFS has finished loading from IndexedDB.
 (function installIdbfsPersistence() {
   var Module = globalThis.Module = globalThis.Module || {};
+  var kodi = (Module.kodi = Module.kodi || {});
   var PROFILE_PATH = '/home/web_user/.kodi';
 
   Module.preRun = Module.preRun || [];
@@ -28,15 +29,21 @@
       return;
     }
 
-    // Debounced background flush to IndexedDB.
+    // Debounced background flush to IndexedDB. A callback runs once a flush
+    // that started after it was queued has finished.
     var syncing = false;
     var pending = false;
-    function flushToIdb() {
+    var waiting = [];
+    function flushToIdb(done) {
+      if (typeof done === 'function') { waiting.push(done); }
       if (syncing) { pending = true; return; }
       syncing = true;
+      var callbacks = waiting;
+      waiting = [];
       FS.syncfs(false, function (err) {
         syncing = false;
         if (err) { console.warn('[kodi] IDBFS persist:', err); }
+        callbacks.forEach(function (cb) { cb(); });
         if (pending) { pending = false; flushToIdb(); }
       });
     }
@@ -51,6 +58,7 @@
         return;
       }
 
+      kodi.flushProfile = flushToIdb;
       setInterval(flushToIdb, 5000);
 
       if (typeof window !== 'undefined') {
@@ -72,6 +80,21 @@
 
   var Module = globalThis.Module = globalThis.Module || {};
   var kodi = (Module.kodi = Module.kodi || {});
+
+  // Called once Kodi has shut down. A Tizen app has to close itself, after the
+  // last profile changes are saved.
+  kodi.onExit = function () {
+    function close() {
+      try {
+        if (typeof tizen !== 'undefined' && tizen.application) {
+          tizen.application.getCurrentApplication().exit();
+        }
+      } catch (e) {
+        console.warn('[kodi] closing the app:', e);
+      }
+    }
+    if (typeof kodi.flushProfile === 'function') { kodi.flushProfile(close); } else { close(); }
+  };
 
   var canvas = document.getElementById('canvas');
   if (!canvas) {
