@@ -23,6 +23,11 @@ class CSettings;
 class TiXmlNode;
 class IAESound;
 
+namespace tinyxml2
+{
+class XMLNode;
+} // namespace tinyxml2
+
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };
 
 class CGUIAudioManager : public ISettingCallback
@@ -83,7 +88,7 @@ private:
   CCriticalSection    m_cs;
 
   std::shared_ptr<IAESound> LoadSound(const std::string& filename);
-  std::shared_ptr<IAESound> LoadWindowSound(TiXmlNode* pWindowNode,
+  std::shared_ptr<IAESound> LoadWindowSound(const tinyxml2::XMLNode* pWindowNode,
                                             const std::string& strIdentifier);
 };
 

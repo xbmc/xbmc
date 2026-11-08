@@ -38,7 +38,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -295,9 +295,9 @@ void CDialogGameVideoFilter::InitScalingMethods()
 
 namespace
 {
-TiXmlNode* GetFirstChildOfNode(TiXmlNode& node, const char* childName)
+const tinyxml2::XMLNode* GetFirstChildOfNode(const tinyxml2::XMLNode& node, const char* childName)
 {
-  TiXmlNode* ret{node.FirstChild(childName)};
+  const tinyxml2::XMLNode* ret{node.FirstChildElement(childName)};
   if (ret)
     return ret->FirstChild();
 
@@ -311,7 +311,7 @@ void CDialogGameVideoFilter::InitVideoFilters()
   std::vector<VideoFilterProperties> videoFilters;
 
   std::string xmlPath;
-  std::unique_ptr<CXBMCTinyXML> xml;
+  std::unique_ptr<CXBMCTinyXML2> xml;
 
   //! @todo Have the add-on give us the xml as a string (or parse it)
   std::string xmlFilename;
@@ -338,8 +338,8 @@ void CDialogGameVideoFilter::InitVideoFilters()
 
     if (XFILE::CFile::Exists(xmlPath))
     {
-      xml = std::make_unique<CXBMCTinyXML>(xmlPath);
-      if (xml->LoadFile())
+      xml = std::make_unique<CXBMCTinyXML2>();
+      if (xml->LoadFile(xmlPath))
         break;
 
       CLog::LogF(LOGERROR, "Couldn't load shader presets from XML, {}", CURL::GetRedacted(xmlPath));
@@ -350,27 +350,26 @@ void CDialogGameVideoFilter::InitVideoFilters()
   if (!xml)
     return;
 
-  auto root = xml->RootElement();
-  TiXmlNode* child = nullptr;
+  const auto* root = xml->RootElement();
 
-  while ((child = root->IterateChildren(child)))
+  for (const tinyxml2::XMLNode* child = root->FirstChild(); child; child = child->NextSibling())
   {
     VideoFilterProperties videoFilter;
 
     if (child->FirstChild() == nullptr)
       continue;
 
-    const TiXmlNode* pathNode{GetFirstChildOfNode(*child, "path")};
+    const tinyxml2::XMLNode* pathNode{GetFirstChildOfNode(*child, "path")};
     if (pathNode)
       videoFilter.path =
           URIUtils::AddFileToFolder(URIUtils::GetBasePath(xmlPath), pathNode->Value());
 
-    const TiXmlNode* nameNode{GetFirstChildOfNode(*child, "name")};
+    const tinyxml2::XMLNode* nameNode{GetFirstChildOfNode(*child, "name")};
     if (nameNode)
       videoFilter.name = nameNode->Value();
 
     // Presets named their category "folder" before
-    const TiXmlNode* categoryNode{GetFirstChildOfNode(*child, "category")};
+    const tinyxml2::XMLNode* categoryNode{GetFirstChildOfNode(*child, "category")};
     if (!categoryNode)
       categoryNode = GetFirstChildOfNode(*child, "folder");
     if (categoryNode)
