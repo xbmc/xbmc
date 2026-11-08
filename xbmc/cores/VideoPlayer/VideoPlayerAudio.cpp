@@ -163,6 +163,10 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   // send abort message to the audio queue
   m_messageQueue.Abort();
 
+  // don't let the thread wait out its add-data timeout on a stalled sink
+  if (!bWait)
+    m_audioSink.AbortAddPackets();
+
   CLog::Log(LOGINFO, "Waiting for audio thread to exit");
 
   // shut down the adio_decode thread and wait for it
