@@ -12,6 +12,9 @@
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "threads/CriticalSection.h"
 
+#include <chrono>
+#include <condition_variable>
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <set>
@@ -53,6 +56,38 @@ public:
    * \brief Frees the thread claimed with \p pluginHandle for another run of its script.
    */
   void ReleasePluginHandle(int pluginHandle);
+
+  /*!
+   * \brief Ties the runs of a reusable plugin made for one purpose, such as the calls to a scraper
+   * for one show, to one kept thread, so that what the plugin keeps in memory from one run serves
+   * the next. A run started on a thread where a CScope for it lives is tied to the affinity (see
+   * GetReusablePluginHandle()); runs tied to no affinity leave the threads bound to one alone.
+   */
+  class CAffinity
+  {
+  public:
+    CAffinity();
+    ~CAffinity();
+    CAffinity(const CAffinity&) = delete;
+    CAffinity& operator=(const CAffinity&) = delete;
+
+    //! \brief While one lives on a thread, the plugin runs the thread starts are tied to the affinity
+    class CScope
+    {
+    public:
+      explicit CScope(const CAffinity& affinity);
+      ~CScope();
+      CScope(const CScope&) = delete;
+      CScope& operator=(const CScope&) = delete;
+
+    private:
+      const CAffinity* const m_previous;
+    };
+
+  private:
+    friend class CScriptInvocationManager;
+    const uint64_t m_id;
+  };
 
   /*!
    * \brief Executes the given script asynchronously in a separate thread.
@@ -148,6 +183,7 @@ public:
 
 protected:
   friend class CLanguageInvokerThread;
+  friend class TestScriptInvocationManager;
 
   void OnExecutionDone(int scriptId);
 
@@ -177,10 +213,24 @@ private:
     int pluginHandle;
     //! Whether a run has taken it
     bool claimed;
+    //! The affinity it is bound to, or 0
+    uint64_t affinity{0};
+    //! When a run took it
+    std::chrono::steady_clock::time_point claimedAt{};
+    //! Whether the run that has it is of another affinity than its own
+    bool borrowed{false};
   };
 
   //! Lets the free threads kept for scripts other than \p script go, and forgets those that ended
   void ReleaseReusableThreads(const std::string& script);
+
+  //! Frees the thread bound to an affinity that has gone
+  void ForgetAffinity(uint64_t affinity);
+
+  //! How long another run of its affinity may have a thread before a run stops waiting for it: runs
+  //! served by what the plugin kept take a few ms, and slower ones gain little from keeping to it
+  static constexpr std::chrono::milliseconds SLOW_RUN{100};
+  std::chrono::milliseconds m_slowRun{SLOW_RUN};
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
@@ -193,4 +243,6 @@ private:
   std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;
   mutable CCriticalSection m_critSection;
+  //! Told when a kept thread is released, or an affinity goes
+  std::condition_variable_any m_released;
 };

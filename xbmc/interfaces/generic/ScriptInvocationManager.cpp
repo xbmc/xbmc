@@ -20,7 +20,9 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <atomic>
 #include <cerrno>
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <tuple>
@@ -203,8 +205,9 @@ void CScriptInvocationManager::ReleaseReusableThreads(const std::string& script)
             running.thread == nullptr || running.done)
           return true;
 
-        // One still finishing its last run is kept for the next
-        if (reusable.script == script)
+        // One still finishing its last run is kept for the next, and one bound to an affinity is
+        // left to its runs until the affinity goes
+        if (reusable.script == script || reusable.affinity != 0)
           return false;
 
         reusable.thread->Release();
@@ -212,18 +215,93 @@ void CScriptInvocationManager::ReleaseReusableThreads(const std::string& script)
       });
 }
 
+namespace
+{
+//! The affinity of the CScope living on the thread, if any
+thread_local const CScriptInvocationManager::CAffinity* currentAffinity{nullptr};
+std::atomic<uint64_t> lastAffinity{0};
+
+//! How long a run waits for the thread bound to its affinity to finish a run already released
+constexpr auto FINISHING_WAIT{std::chrono::seconds(1)};
+constexpr auto RELEASE_POLL{std::chrono::milliseconds(10)};
+} // namespace
+
+CScriptInvocationManager::CAffinity::CAffinity() : m_id(++lastAffinity)
+{
+}
+
+CScriptInvocationManager::CAffinity::~CAffinity()
+{
+  GetInstance().ForgetAffinity(m_id);
+}
+
+CScriptInvocationManager::CAffinity::CScope::CScope(const CAffinity& affinity)
+  : m_previous(currentAffinity)
+{
+  currentAffinity = &affinity;
+}
+
+CScriptInvocationManager::CAffinity::CScope::~CScope()
+{
+  currentAffinity = m_previous;
+}
+
 int CScriptInvocationManager::GetReusablePluginHandle(const std::string& script)
 {
   std::unique_lock lock(m_critSection);
 
-  ReleaseReusableThreads(script);
-  const auto free =
-      std::ranges::find_if(m_reusableThreads, [&script](const ReusableThread& reusable)
-                           { return !reusable.claimed && reusable.thread->Reuseable(script); });
+  const uint64_t affinity{currentAffinity ? currentAffinity->m_id : 0};
+  // The thread bound to the run's affinity, waited for while another run has it, unless a slow one
+  // of its affinity, and for a moment while a run finishes once released
+  auto finishedBy{std::chrono::steady_clock::now() + FINISHING_WAIT};
+  bool boundIsSlow{false};
+  while (true)
+  {
+    ReleaseReusableThreads(script);
+    const auto bound{std::ranges::find_if(
+        m_reusableThreads, [affinity, &script](const ReusableThread& reusable)
+        { return affinity != 0 && reusable.affinity == affinity && reusable.script == script; })};
+    if (bound == m_reusableThreads.end())
+      break;
+    if (!bound->claimed && bound->thread->Reuseable(script))
+    {
+      bound->claimed = true;
+      bound->claimedAt = std::chrono::steady_clock::now();
+      return bound->pluginHandle;
+    }
+    if (bound->claimed)
+    {
+      // One borrowed by another affinity is waited for, however long, as it is for one run
+      if (!bound->borrowed && std::chrono::steady_clock::now() - bound->claimedAt >= m_slowRun)
+      {
+        boundIsSlow = true;
+        break;
+      }
+      finishedBy = std::chrono::steady_clock::now() + FINISHING_WAIT;
+    }
+    // Still finishing a run its caller has done with: this run has a thread of its own
+    else if (std::chrono::steady_clock::now() >= finishedBy)
+      return -1;
+    m_released.wait_for(lock, RELEASE_POLL);
+  }
+
+  // Else a free thread no affinity is bound to, bound to the run's unless its own is in use, or,
+  // for a run that doesn't wait for its own, one bound to another affinity, borrowed for the run
+  const auto isFree{[&script](const ReusableThread& reusable)
+                    { return !reusable.claimed && reusable.thread->Reuseable(script); }};
+  auto free{std::ranges::find_if(m_reusableThreads, [&isFree](const ReusableThread& reusable)
+                                 { return reusable.affinity == 0 && isFree(reusable); })};
+  if (free == m_reusableThreads.end() && boundIsSlow)
+    free = std::ranges::find_if(m_reusableThreads, isFree);
   if (free == m_reusableThreads.end())
     return -1;
 
   free->claimed = true;
+  free->claimedAt = std::chrono::steady_clock::now();
+  if (free->affinity != 0)
+    free->borrowed = true;
+  else if (!boundIsSlow)
+    free->affinity = affinity;
   return free->pluginHandle;
 }
 
@@ -236,8 +314,23 @@ void CScriptInvocationManager::ReleasePluginHandle(int pluginHandle)
   for (ReusableThread& reusable : m_reusableThreads)
   {
     if (reusable.pluginHandle == pluginHandle)
+    {
       reusable.claimed = false;
+      reusable.borrowed = false;
+    }
   }
+  m_released.notify_all();
+}
+
+void CScriptInvocationManager::ForgetAffinity(uint64_t affinity)
+{
+  std::unique_lock lock(m_critSection);
+  for (ReusableThread& reusable : m_reusableThreads)
+  {
+    if (reusable.affinity == affinity)
+      reusable.affinity = 0;
+  }
+  m_released.notify_all();
 }
 
 std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
@@ -258,9 +351,11 @@ std::shared_ptr<ILanguageInvoker> CScriptInvocationManager::GetLanguageInvoker(
   // A run without a handle, such as a plugin's action, takes a free kept thread for the run
   if (pluginHandle < 0)
   {
-    const auto free{
-        std::ranges::find_if(m_reusableThreads, [&script](const ReusableThread& reusable)
-                             { return !reusable.claimed && reusable.thread->Reuseable(script); })};
+    const auto free{std::ranges::find_if(m_reusableThreads,
+                                         [&script](const ReusableThread& reusable) {
+                                           return !reusable.claimed && reusable.affinity == 0 &&
+                                                  reusable.thread->Reuseable(script);
+                                         })};
     if (free != m_reusableThreads.end())
     {
       free->claimed = true;
@@ -342,6 +437,7 @@ int CScriptInvocationManager::ExecuteAsync(
         if (kept.thread == invokerThread)
           kept.claimed = false;
       }
+      m_released.notify_all();
     }
 
     return invokerThread->GetId();
@@ -376,8 +472,17 @@ int CScriptInvocationManager::ExecuteAsync(
   invokerThread->SetId(m_nextId++);
   if (keep)
   {
-    m_reusableThreads.push_back(
-        {.thread = invokerThread, .script = script, .pluginHandle = pluginHandle, .claimed = true});
+    // Bound to the run's affinity, unless another thread is
+    uint64_t affinity{currentAffinity ? currentAffinity->m_id : 0};
+    if (std::ranges::any_of(m_reusableThreads, [affinity, &script](const ReusableThread& reusable)
+                            { return reusable.affinity == affinity && reusable.script == script; }))
+      affinity = 0;
+    m_reusableThreads.push_back({.thread = invokerThread,
+                                 .script = script,
+                                 .pluginHandle = pluginHandle,
+                                 .claimed = true,
+                                 .affinity = affinity,
+                                 .claimedAt = std::chrono::steady_clock::now()});
   }
 
   LanguageInvokerThread thread = {invokerThread, script, false};
