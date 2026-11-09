@@ -71,7 +71,6 @@ bool CGUIFontTTFGLES::FirstBegin()
   else
   {
     m_scissorClip = false;
-    renderSystem->ResetScissors();
     renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS_SHADER_CLIP);
   }
 
@@ -197,8 +196,6 @@ void CGUIFontTTFGLES::LastEnd()
       else
       {
         // clip using vertex shader
-        renderSystem->ResetScissors();
-
         const float clipBoundaries[4] = {
             (m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX -
              m_vertexTrans[i].m_offsetX) /
