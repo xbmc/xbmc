@@ -52,6 +52,8 @@ public:
   {
   }
 
+  ~CLastWatchedUpdateTimer() override { Stop(true); }
+
   // ITimerCallback implementation
   void OnTimeout() override { m_state.UpdateLastWatched(m_channel, m_time); }
 
