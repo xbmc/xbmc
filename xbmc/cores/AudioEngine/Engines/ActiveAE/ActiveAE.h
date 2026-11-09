@@ -209,6 +209,7 @@ public:
   bool IsSuspended();
   AEAudioFormat GetCurrentSinkFormat();
   bool GetSinkNeedIecPack();
+
 protected:
   float m_sinkCacheTotal;
   float m_sinkLatency;
@@ -278,10 +279,7 @@ public:
   void DefaultDeviceChange() override;
   void DeviceCountChange(const std::string& driver) override;
   bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) override;
-  bool SupportsPassthroughSilence() override
-  {
-    return m_stats.GetSinkNeedIecPack();
-  }
+  bool SupportsPassthroughSilence() override { return m_stats.GetSinkNeedIecPack(); }
 
   void RegisterAudioCallback(IAudioCallback* pCallback) override;
   void UnregisterAudioCallback(IAudioCallback* pCallback) override;
