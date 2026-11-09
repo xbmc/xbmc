@@ -654,6 +654,16 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
       GotoCurrentProgramme();
       bReturn = true;
       break;
+    case GUI_MSG_PVR_SELECT_CHANNEL_NUMBER:
+    {
+      CGUIEPGGridContainer* epgGridContainer = GetGridControl();
+      if (epgGridContainer)
+        epgGridContainer->SetChannel(
+            CPVRChannelNumber(static_cast<unsigned int>(message.GetParam1()),
+                              static_cast<unsigned int>(message.GetParam2())));
+      bReturn = true;
+      break;
+    }
     default:
       break;
   }
@@ -922,10 +932,15 @@ bool CGUIWindowPVRGuideBase::GotoPlayingChannel()
 void CGUIWindowPVRGuideBase::OnInputDone()
 {
   const CPVRChannelNumber channelNumber = GetChannelNumber();
-  if (channelNumber.IsValid())
-  {
-    GetGridControl()->SetChannel(channelNumber);
-  }
+  if (!channelNumber.IsValid())
+    return;
+
+  CGUIMessage msg(GUI_MSG_PVR_SELECT_CHANNEL_NUMBER, GetID(), 0, channelNumber.GetChannelNumber(),
+                  channelNumber.GetSubChannelNumber());
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
+    OnMessage(msg);
+  else
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());
 }
 
 void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
