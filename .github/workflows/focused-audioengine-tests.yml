@@ -43,18 +43,19 @@ jobs:
 
       - name: Configure Kodi test build
         run: |
-          cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=Debug \
-            -DCMAKE_INSTALL_PREFIX=/usr \
-            -DCORE_PLATFORM_NAME=x11 \
-            -DAPP_RENDER_SYSTEM=gl \
-            -DENABLE_TESTING=ON \
-            -DENABLE_INTERNAL_GTEST=ON \
-            -DENABLE_INTERNAL_EXIV2=ON \
-            -DENABLE_INTERNAL_FFMPEG=ON \
-            -DENABLE_PYTHON=OFF \
-            -DENABLE_UPNP=OFF \
-            -DENABLE_AIRTUNES=OFF \
+          cmake -S . -B build \\
+            -DCMAKE_BUILD_TYPE=Debug \\
+            -DCMAKE_INSTALL_PREFIX=/usr \\
+            -DCORE_PLATFORM_NAME=x11 \\
+            -DAPP_RENDER_SYSTEM=gl \\
+            -DENABLE_TESTING=ON \\
+            -DENABLE_INTERNAL_GTEST=ON \\
+            -DENABLE_INTERNAL_EXIV2=ON \\
+            -DENABLE_INTERNAL_FFMPEG=ON \\
+            -DENABLE_INTERNAL_NLOHMANNJSON=ON \\
+            -DENABLE_PYTHON=OFF \\
+            -DENABLE_UPNP=OFF \\
+            -DENABLE_AIRTUNES=OFF \\
             -DENABLE_OPTICAL=OFF
 
       - name: Build Kodi test executable
@@ -63,5 +64,5 @@ jobs:
 
       - name: Run focused parser and MAT packer tests
         run: |
-          ./build/kodi-test \
+          ./build/kodi-test \\
             --gtest_filter='TestAEStreamParser.*:TestPackerMAT.*'
