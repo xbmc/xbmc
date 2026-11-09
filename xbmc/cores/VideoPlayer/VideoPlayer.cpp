@@ -1972,6 +1972,7 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
   // Preserve the original-media timeline before CheckContinuity can invalidate
   // packet timestamps while waiting to confirm a discontinuity.
+  pPacket->originalPts = DVD_NOPTS_VALUE;
   if (pPacket->dispTime > 0)
     pPacket->originalPts = DVD_MSEC_TO_TIME(pPacket->dispTime);
   else if (pPacket->pts != DVD_NOPTS_VALUE)

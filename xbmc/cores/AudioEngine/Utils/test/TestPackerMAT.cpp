@@ -11,6 +11,7 @@
 
 #include <array>
 #include <cstdint>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -55,18 +56,38 @@ TEST(TestPackerMAT, PackTrueHD)
   Crc32 crc;
   unsigned int frames{0};
   size_t bytes{0};
+  std::vector<double> outputPts;
+  std::vector<double> outputOriginalPts;
+  constexpr double FIRST_PTS = 100000.0;
+  constexpr double FIRST_ORIGINAL_PTS = 500000.0;
+  constexpr double MAT_DURATION = 20000.0;
 
   for (uint16_t i = 0; i < 60; ++i)
   {
     const bool majorSync{i == 0 || i == 16};
     const auto frame{MakeFrame(i * FRAME_SAMPLES, majorSync,
                                i == 0 ? FIRST_OUTPUT_TIMING : BRANCH_OUTPUT_TIMING)};
-    packer.PackTrueHD(frame.data(), FRAME_SIZE);
+    const double pts =
+        FIRST_PTS + i * (static_cast<double>(FRAME_SAMPLES) / 48000.0) * 1000000.0;
+    const double originalPts = FIRST_ORIGINAL_PTS + i * 40.0 / 48000.0 * 1000000.0;
+    packer.PackTrueHD(frame.data(), FRAME_SIZE, pts, originalPts, MAT_DURATION, true, true);
 
-    for (auto output{packer.GetOutputFrame()}; !output.empty(); output = packer.GetOutputFrame())
+    double outputPtsValue{0.0};
+    double outputOriginalPtsValue{0.0};
+    bool hasPts{false};
+    bool hasOriginalPts{false};
+    for (auto output{packer.GetOutputFrame(outputPtsValue, hasPts, outputOriginalPtsValue,
+                                           hasOriginalPts)};
+         !output.empty();
+         output = packer.GetOutputFrame(outputPtsValue, hasPts, outputOriginalPtsValue,
+                                        hasOriginalPts))
     {
       ++frames;
       bytes += output.size();
+      ASSERT_TRUE(hasPts);
+      ASSERT_TRUE(hasOriginalPts);
+      outputPts.push_back(outputPtsValue);
+      outputOriginalPts.push_back(outputOriginalPtsValue);
       crc.Compute(reinterpret_cast<const char*>(output.data()), output.size());
     }
   }
@@ -74,5 +95,11 @@ TEST(TestPackerMAT, PackTrueHD)
   // A change means the parsing of the major sync changed
   EXPECT_EQ(frames, 2u);
   EXPECT_EQ(bytes, 122880u);
+  ASSERT_EQ(2u, outputPts.size());
+  EXPECT_DOUBLE_EQ(FIRST_PTS, outputPts[0]);
+  EXPECT_DOUBLE_EQ(FIRST_PTS + MAT_DURATION, outputPts[1]);
+  ASSERT_EQ(2u, outputOriginalPts.size());
+  EXPECT_DOUBLE_EQ(FIRST_ORIGINAL_PTS, outputOriginalPts[0]);
+  EXPECT_DOUBLE_EQ(FIRST_ORIGINAL_PTS + MAT_DURATION, outputOriginalPts[1]);
   EXPECT_EQ(static_cast<uint32_t>(crc), 3000242471u);
 }

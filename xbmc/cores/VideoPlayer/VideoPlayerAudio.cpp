@@ -580,7 +580,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
   bool silence = false;
   if (m_streaminfo.codec == AV_CODEC_ID_TRUEHD && audioframe.passthrough &&
-      audioframe.pts != DVD_NOPTS_VALUE && audioframe.duration > 0)
+      (audioframe.originalPts != DVD_NOPTS_VALUE || audioframe.pts != DVD_NOPTS_VALUE) &&
+      audioframe.duration > 0)
   {
     const double originalPts =
         audioframe.originalPts != DVD_NOPTS_VALUE ? audioframe.originalPts : audioframe.pts;
