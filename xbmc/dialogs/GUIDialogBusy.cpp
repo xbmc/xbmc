@@ -9,12 +9,16 @@
 #include "GUIDialogBusy.h"
 
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "threads/IRunnable.h"
+#include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <algorithm>
 #include <optional>
@@ -103,9 +107,21 @@ CGUIDialogBusy::WaitResult CGUIDialogBusy::DoWaitOnEvent(
   const auto initialWait{timeout ? std::min(std::chrono::milliseconds(displaytime), *timeout)
                                  : std::chrono::milliseconds(displaytime)};
 
+  // Let the busy thread (e.g. a Python add-on) use GUI APIs while we wait.
+  const auto waitUnlocked = [&event](std::chrono::milliseconds duration)
+  {
+    auto* winSystem = CServiceBroker::GetWinSystem();
+    if (!winSystem)
+      return event.Wait(duration);
+
+    CSingleExit exitGfx(winSystem->GetGfxContext());
+    CSingleExit exitFrameMove(g_application.GetFrameMoveGuard());
+    return event.Wait(duration);
+  };
+
   bool cancelled = false;
   bool timedout = false;
-  if (!event.Wait(initialWait))
+  if (!waitUnlocked(initialWait))
   {
     // Nothing below can change the answer once the deadline has passed, and the dialog is not
     // worth looking up to abandon it.
@@ -122,7 +138,7 @@ CGUIDialogBusy::WaitResult CGUIDialogBusy::DoWaitOnEvent(
         dialog->Open();
       }
 
-      while (!event.Wait(1ms))
+      while (!waitUnlocked(1ms))
       {
         if (level == dialog->m_waiters)
           dialog->ProcessRenderLoop(false);

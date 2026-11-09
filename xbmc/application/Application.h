@@ -197,6 +197,8 @@ public:
   */
   void UnlockFrameMoveGuard();
 
+  CCriticalSection& GetFrameMoveGuard() { return m_frameMoveGuard; }
+
 protected:
   bool OnSettingsSaving() const override;
   void PlaybackCleanup();
