@@ -1101,6 +1101,33 @@ TEST_F(TestVideoDatabase, RemoveContentForPathRemovesDiscRips)
   EXPECT_EQ(-1, m_db.GetMovieId(playlist));
 }
 
+TEST_F(TestVideoDatabase, RemoveContentForPathRemovesEachPathOfANestedMultiPath)
+{
+  const std::string inner{XFILE::CMultiPathDirectory::ConstructMultiPath(
+      std::vector<std::string>{"/other/", "/more/"})};
+  const std::string source{
+      XFILE::CMultiPathDirectory::ConstructMultiPath(std::vector<std::string>{"/movies/", inner})};
+  for (const std::string& path :
+       {source, inner, std::string{"/movies/"}, std::string{"/other/"}, std::string{"/more/"}})
+  {
+    const int idPath{m_db.AddPath(path)};
+    ASSERT_GT(idPath, 0);
+    ASSERT_TRUE(m_db.ExecuteQuery(m_db.PrepareSQL(
+        "UPDATE path SET strContent='movies', strScraper='metadata.local' WHERE idPath=%i",
+        idPath)));
+  }
+  const std::vector<std::string> files{"/movies/Film/Film.mkv", "/other/Other.mkv",
+                                       "/more/More/More.mkv"};
+  for (const auto& file : files)
+    ASSERT_GT(AddMovie(file), 0);
+
+  m_db.RemoveContentForPath(source);
+
+  for (const auto& file : files)
+    EXPECT_EQ(-1, m_db.GetMovieId(file)) << file;
+  EXPECT_EQ(0, m_db.GetSingleValueInt("SELECT COUNT(*) FROM path WHERE strContent<>''"));
+}
+
 namespace
 {
 // A silent library clean of real files, below a temporary folder
