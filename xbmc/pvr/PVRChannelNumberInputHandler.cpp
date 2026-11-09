@@ -135,10 +135,8 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
   }
 
   lock.unlock();
-  if (!m_timer.IsRunning())
-    m_timer.Start(std::chrono::milliseconds(m_delay));
-  else
-    m_timer.Restart();
+  m_timer.Stop(true);
+  m_timer.Start(std::chrono::milliseconds(m_delay));
 }
 
 CPVRChannelNumber CPVRChannelNumberInputHandler::GetChannelNumber() const
