@@ -50,6 +50,7 @@ jobs:
             -DAPP_RENDER_SYSTEM=gl \
             -DENABLE_TESTING=ON \
             -DENABLE_INTERNAL_GTEST=ON \
+            -DENABLE_INTERNAL_EXIV2=ON \
             -DENABLE_PYTHON=OFF \
             -DENABLE_UPNP=OFF \
             -DENABLE_AIRTUNES=OFF \
